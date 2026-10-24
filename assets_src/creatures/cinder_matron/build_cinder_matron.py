@@ -437,8 +437,8 @@ def head(mesh: ck.Mesh, rig: ck.Rig) -> None:
         r = stack(Y) + (hood(Y) - stack(Y)) * w
         u = A * 0.35
         mo2 = (u / 0.3) ** 2 + ((Y - cy) / 0.27) ** 2
-        mask = ck.smoothstep(1.0, 0.9, mo2) * (1.0 - w)
-        rim = 0.014 * np.exp(-((mo2 - 0.9) / 0.06) ** 2)
+        mask = ck.smoothstep(1.02, 0.8, mo2) * (1.0 - w)  # a bevel two grid cells wide, so the edge stays clean
+        rim = 0.012 * np.exp(-((mo2 - 0.88) / 0.12) ** 2)
         brow_y = cy + 0.15 - 0.4 * np.abs(u) - 0.8 * u ** 2  # inner ends raised: grief
         brow = 0.03 * np.exp(-((Y - brow_y) / 0.026) ** 2) * ck.smoothstep(0.24, 0.16, np.abs(u))
         e = np.zeros_like(A)
@@ -469,7 +469,11 @@ def head(mesh: ck.Mesh, rig: ck.Rig) -> None:
     col = ck.mix(col, PAL["ember_orange"], (0.7 * mouth * mask)[:, None])
     seam = ck.smoothstep(0.03, 0.0, np.abs((Y - 2.52) / 0.17 - np.round((Y - 2.52) / 0.17))) * w
     cav = np.maximum.reduce([0.7 * seam, lash * mask, mouth * mask, 0.7 * state["edge"] * (1 - w)])
-    plain(mesh, P, T, col, hb, cav=cav, emission=0.95 * mouth * mask)
+    # the mask is polished: wet-smooth vertex data damps the slot's hammered detail on it (bump x0.6, a clearcoat),
+    # its colour lifted to offset the wet darkening
+    polish = 0.6 * mask * (1.0 - mouth)
+    col = col / (1.0 - 0.3 * polish)[:, None]
+    ck.finish(mesh, P, T, "metal", col, hb, wet=polish, cavity=cav, emission=0.95 * mouth * mask)
     for ux in (-0.045, 0.0, 0.045):  # the mouth grille, set back in the mouth
         a = ux / 0.35
         yy = cy - 0.155
@@ -547,50 +551,196 @@ def slag_colour(P: np.ndarray, seed: int) -> np.ndarray:
     return ck.mix(PAL["lacquer_black"], PAL["volcanic_stone"], (0.3 + 0.5 * ck.fbm(P * 5.0, seed))[:, None])
 
 
-def pillows(mesh: ck.Mesh, Pb: np.ndarray, D: np.ndarray, T: np.ndarray, m: np.ndarray, bone: int, seed: int,
-            n_cells: int, thick: float, lift: float = 0.0) -> None:
-    """Pillowed slag over a surface: cells of cooled crust, each domed and sinking at its edges into a glowing
-    molten underlayer, so the cracks are the lines where the two shells meet (crisp at any distance).
-    `Pb` the base surface, `D` its outward directions, `m` the coverage (0 bare .. 1 crusted)."""
-    keep = (m > 0.02)[T].any(axis=1)
-    T = T[keep]
-    used = np.unique(T.reshape(-1))
-    remap = np.full(len(Pb), -1, dtype=np.int64)
-    remap[used] = np.arange(len(used))
-    T = remap[T]
-    Pb, D, m = Pb[used], D[used], m[used]
+def poisson(lo, hi, spacing, rng: np.random.Generator, tries: int = 6000) -> np.ndarray:
+    """Seeds over the box lo..hi no closer than `spacing(p)` (dart throwing, so the cells come out even)."""
+    lo, hi = np.asarray(lo, dtype=np.float64), np.asarray(hi, dtype=np.float64)
+    cand = lo + (hi - lo) * rng.random((tries, 2))
+    rad = spacing(cand)
+    out: list[int] = []
+    for i in range(tries):
+        if not out or np.min(np.linalg.norm(cand[out] - cand[i], axis=1) - rad[out]) >= 0.0:
+            out.append(i)
+    return cand[out]
+
+
+def clip_poly(V: np.ndarray, E: list[int], nrm: np.ndarray, c: np.ndarray, label: int):
+    """Keeps the part of a convex polygon where (x - c).nrm <= 0. `E[i]` labels the edge V[i] -> V[i+1]; the new
+    edge along the cut takes `label`."""
+    d = (V - c) @ nrm
+    out_v, out_e = [], []
+    for i in range(len(V)):
+        j = (i + 1) % len(V)
+        a, b, da, db = V[i], V[j], d[i], d[j]
+        if da <= 0.0:
+            out_v.append(a)
+            out_e.append(E[i])
+            if db > 0.0:
+                out_v.append(a + (b - a) * (da / (da - db)))
+                out_e.append(label)
+        elif db <= 0.0:
+            out_v.append(a + (b - a) * (da / (da - db)))
+            out_e.append(E[i])
+    keep = [i for i in range(len(out_v)) if np.linalg.norm(out_v[i] - out_v[(i + 1) % len(out_v)]) > 1e-7]
+    return np.array([out_v[i] for i in keep]), [out_e[i] for i in keep]
+
+
+def voronoi(S: np.ndarray, lo, hi, period: float | None = None, reach: float = 0.6):
+    """2D Voronoi cells of seeds `S` in the box lo..hi (u wraps every `period`): per cell its corners
+    (counter-clockwise) and per edge the neighbour across it (-1 the box)."""
+    n = len(S)
+    G, gid = S, np.arange(n)
+    if period:
+        G = np.vstack([S, S + [period, 0.0], S - [period, 0.0]])
+        gid = np.tile(np.arange(n), 3)
+    cells = []
+    for i in range(n):
+        s = S[i]
+        u0, u1 = (s[0] - reach, s[0] + reach) if period else (lo[0], hi[0])
+        V = np.array([[u0, lo[1]], [u1, lo[1]], [u1, hi[1]], [u0, hi[1]]])
+        E = [-1, -1, -1, -1]
+        d = np.linalg.norm(G - s, axis=1)
+        for j in np.argsort(d)[1:]:
+            if d[j] > 2.0 * reach or len(V) < 3:
+                break
+            if np.max(np.linalg.norm(V - s, axis=1)) * 2.0 < d[j]:
+                break  # no farther seed can cut this cell
+            V, E = clip_poly(V, E, G[j] - s, 0.5 * (G[j] + s), int(gid[j]))
+        cells.append((V, E))
+    return cells
+
+
+def inset(V: np.ndarray, h: float) -> np.ndarray | None:
+    """Each corner of a convex CCW polygon moved onto the polygon with every edge pulled inward by h (an edge too
+    short for that collapses into its neighbours' corner); None if the whole cell collapses."""
+    W, E = V, list(range(len(V)))
+    for i in range(len(V)):
+        e = V[(i + 1) % len(V)] - V[i]
+        out = np.array([e[1], -e[0]]) / max(float(np.linalg.norm(e)), 1e-9)
+        W, E = clip_poly(W, E, out, V[i] - out * h, -1)
+        if len(W) < 3:
+            return None
+    seg_a, seg_b = W, np.roll(W, -1, axis=0)
+    d = seg_b - seg_a
+    t = np.clip(np.einsum("nmk,mk->nm", V[:, None, :] - seg_a[None], d) / np.maximum(np.sum(d * d, axis=1), 1e-12),
+                0.0, 1.0)
+    near = seg_a[None] + t[..., None] * d[None]
+    best = np.argmin(np.linalg.norm(near - V[:, None, :], axis=2), axis=1)
+    return near[np.arange(len(V)), best]
+
+
+def slag_cells(mesh: ck.Mesh, S: np.ndarray, lo, hi, place, cover, bone: int, seed: int, thick: float,
+               gap: float = 0.03, period: float | None = None, cut=None, clear=None, keep: float = 0.25) -> None:
+    """Pillowed slag as separate domed cells of cooled crust with a narrow crack between neighbours, each cell's
+    rim running down into the crack where the slag is still molten: the cracks are crisp lines of ember (a
+    network, not patches) at any distance, whatever the tessellation.
+    `S` the cell seeds in a 2D domain lo..hi (u wraps every `period`); `place(Q) -> (P, D)` maps domain points to
+    the surface and its outward directions (NaN off it); `cover(P)` where the slag lies (a cell is kept where its
+    centre's cover is > `keep`, thinner where it is low); `cut(V, E, centre) -> (V, E)` an optional extra clip
+    (label -2: no glow on that edge); `clear(P)` points no cell may touch."""
+    built = {}
+    for i, (V, E) in enumerate(voronoi(S, lo, hi, period)):
+        if len(V) < 3:
+            continue
+        if cut is not None:
+            V, E = cut(V, E, V.mean(axis=0))
+            if len(V) < 3:
+                continue
+        W = inset(V, 0.5 * gap)
+        if W is None:
+            continue
+        c = W.mean(axis=0)
+        P, D = place(np.vstack([c[None], W, V]))
+        m = cover(P[:1])[0] if np.all(np.isfinite(P)) else 0.0
+        if m <= keep or (clear is not None and clear(P).any()):
+            continue
+        built[i] = (E, P, D, m)
     rng = np.random.default_rng(seed)
-    seeds = Pb[rng.choice(len(Pb), size=min(n_cells, len(Pb)), replace=False)]
-    d = np.linalg.norm(Pb[:, None, :] - seeds[None, :, :], axis=2)
-    order = np.argsort(d, axis=1)
-    d1 = np.take_along_axis(d, order[:, :1], axis=1)[:, 0]
-    d2 = np.take_along_axis(d, order[:, 1:2], axis=1)[:, 0]
-    cell = order[:, 0]
-    edge = ck.smoothstep(0.0, 0.09, d2 - d1) ** 0.6
-    h = thick * (0.6 + 0.5 * hash01(cell, seed)) * (1.0 + 0.25 * ck.fbm(Pb * 7.0, seed + 1))
-    up = lift + m * h * edge - 0.022 - 0.05 * (1.0 - m)
-    Pp = Pb + D * up[:, None]
-    ck.finish(mesh, Pp, T, "crust", slag_colour(Pp, seed + 2), bone, cavity=0.3 * (1.0 - edge) + 0.1)
-    Pu = Pb + D * (lift - 0.15 * np.sqrt(np.clip(1.0 - m, 0.0, 1.0)))[:, None]
-    glow = 0.75 + 0.25 * ck.fbm(Pu * 6.0, seed + 3)
-    ck.finish(mesh, Pu, T, "crust", ck.mix(PAL["lacquer_black"], PAL["ember_orange"], glow[:, None]), bone,
-              emission=glow)
+    for i in sorted(built):
+        E, P, D, m = built[i]
+        k = len(E)
+        h = thick * (0.65 + 0.45 * rng.random()) * (0.5 + 0.5 * m) * (1.0 + 0.3 * ck.fbm(P * 6.0, seed + 1))
+        lift = np.concatenate([[1.0], np.full(k, 0.42), np.zeros(k)])
+        P = P + D * (h * lift)[:, None]
+        ring = np.arange(k)
+        nx = (ring + 1) % k
+        T = [np.column_stack([np.zeros(k, dtype=np.int64), 1 + ring, 1 + nx])]
+        for r0 in (1,):  # the rim -> the crack's floor
+            T.append(np.column_stack([r0 + ring, r0 + k + ring, r0 + k + nx]))
+            T.append(np.column_stack([r0 + ring, r0 + k + nx, r0 + nx]))
+        T = np.vstack(T)
+        fn = np.cross(P[T[0, 1]] - P[T[0, 0]], P[T[0, 2]] - P[T[0, 0]])
+        if fn @ D[0] < 0.0:
+            T = T[:, ::-1]
+        live = np.array([e in built for e in E])  # an edge with a kept neighbour is a crack
+        hot = (live | np.roll(live, 1)).astype(np.float64)  # a corner glows if either of its edges does
+        glow = np.concatenate([np.zeros(1 + k), hot * (0.85 + 0.15 * ck.fbm(P[1 + k:] * 6.0, seed + 3))])
+        col = slag_colour(P, seed + 2) * (0.85 + 0.3 * rng.random())
+        col = ck.mix(col, PAL["ember_orange"], glow[:, None])
+        cav = np.concatenate([[0.1], np.full(k, 0.5), 1.0 - glow[1 + k:]])
+        ck.finish(mesh, P, T, "crust", col, bone, cavity=cav, emission=glow)
+
+
+def drape(Pm: np.ndarray, Tm: np.ndarray, Q: np.ndarray):
+    """Projects top-view points Q = (x, -z) straight down onto the upward-facing triangles of a mesh: (P, D), the
+    surface point and its (interpolated) normal; NaN off the mesh."""
+    N = ck.vertex_normals(Pm, Tm)
+    fn = np.cross(Pm[Tm[:, 1]] - Pm[Tm[:, 0]], Pm[Tm[:, 2]] - Pm[Tm[:, 0]])
+    Tu = Tm[fn[:, 1] > 1e-9]
+    a, b, c = (np.column_stack([Pm[Tu[:, k], 0], -Pm[Tu[:, k], 2]]) for k in range(3))
+    x = Q[:, None, :]
+    v0, v1, v2 = b - a, c - a, x - a[None]
+    den = v0[:, 0] * v1[:, 1] - v1[:, 0] * v0[:, 1]
+    w1 = (v2[..., 0] * v1[None, :, 1] - v1[None, :, 0] * v2[..., 1]) / den[None]
+    w2 = (v0[None, :, 0] * v2[..., 1] - v2[..., 0] * v0[None, :, 1]) / den[None]
+    w0 = 1.0 - w1 - w2
+    inside = (w0 >= -1e-9) & (w1 >= -1e-9) & (w2 >= -1e-9)
+    ys = (w0 * Pm[Tu[:, 0], 1][None] + w1 * Pm[Tu[:, 1], 1][None] + w2 * Pm[Tu[:, 2], 1][None])
+    ys = np.where(inside, ys, -np.inf)
+    t = np.argmax(ys, axis=1)
+    r = np.arange(len(Q))
+    ok = np.isfinite(ys[r, t])
+    W = np.column_stack([w0[r, t], w1[r, t], w2[r, t]])
+    tri = Tu[t]
+    P = np.einsum("nk,nkd->nd", W, Pm[tri])
+    D = np.einsum("nk,nkd->nd", W, N[tri])
+    D /= np.maximum(np.linalg.norm(D, axis=1, keepdims=True), 1e-9)
+    P[~ok] = np.nan
+    return P, D
 
 
 def crust(rig: ck.Rig) -> ck.Mesh:
-    """Slag poured over the kiln and cooled: pillows over the belly and shoulders (thickest on top, clear of the
-    firebox, a slit left over the heart), a collar at the belt, ropes run down the skirt, gouts on the arms."""
+    """Slag poured over the kiln and cooled: pillow cells over the belly, the yoke and the pauldrons with ember
+    cracks between them (thickest on top, clear of the firebox, a slit left over the heart), a collar at the belt,
+    ropes run down the skirt, gouts on the arms."""
     mesh = ck.Mesh("Crust")
     tb = rig.rigid("torso")
-    cols = thetas(20, 18)
-    ys = rows(2.6, 1.24, 19, [HEART[0] - 0.03, HEART[0] + 0.03])
-    A = np.tile(cols, len(ys))
-    Y = np.repeat(ys, len(cols))
-    r = R(Y) + 0.045
-    Pb = np.column_stack([np.sin(A) * r, Y, np.cos(A) * r])
-    D = np.column_stack([np.sin(A), np.zeros_like(A), np.cos(A)])
-    m = crust_cover(A, Y)
-    pillows(mesh, Pb, D, ck.grid_tris(len(ys), len(cols), True), m, tb, SEED + 61, 110, 0.09)
+    rm = 0.85  # the domain's radius: u = angle * rm, v = height
+    lo, hi = (-math.pi * rm, 1.24), (math.pi * rm, 2.6)
+
+    def place(Q):
+        A, Y = Q[:, 0] / rm, Q[:, 1]
+        r = R(Y) + 0.03
+        D = np.column_stack([np.sin(A), np.zeros_like(A), np.cos(A)])
+        return np.column_stack([np.sin(A) * r, Y, np.cos(A) * r]), D
+
+    def cover(P):
+        return crust_cover(np.arctan2(P[:, 0], P[:, 2]), P[:, 1])
+
+    def clear(P):  # the firebox stays clear, whole cells away from its frame
+        return door_mask(np.arctan2(P[:, 0], P[:, 2]), P[:, 1], 0.04)
+
+    def slit(V, E, c):  # a slit over the heart: the cells across it are cut back to a level edge
+        half = 0.13 * rm / R(HEART[0])
+        if V[:, 0].max() < -half or V[:, 0].min() > half or V[:, 1].max() < HEART[0] - 0.035 \
+                or V[:, 1].min() > HEART[0] + 0.035:
+            return V, E
+        up = c[1] > HEART[0]
+        return clip_poly(V, E, np.array([0.0, -1.0 if up else 1.0]),
+                         np.array([0.0, HEART[0] + (0.035 if up else -0.035)]), -2)
+
+    rng = np.random.default_rng(SEED + 61)
+    S = poisson(lo, hi, lambda Q: 0.13 + 0.11 * ck.smoothstep(1.0, 2.2, np.abs(Q[:, 0] / rm)), rng)
+    slag_cells(mesh, S, lo, hi, place, cover, tb, SEED + 62, 0.08, 0.03, 2.0 * math.pi * rm, slit, clear)
 
     P, T = ck.tube(ring_path(WAIST + 0.03, R(WAIST) + 0.06, 36), 0.08, 9, cap_start=False, cap_end=False)  # belt
     lump = ck.fbm(P * 5.0, SEED + 63)
@@ -614,21 +764,33 @@ def crust(rig: ck.Rig) -> ck.Mesh:
         ck.finish(mesh, P, T, "crust", slag_colour(P, SEED + 70 + k), rb, cavity=0.3)
 
     yy, size = YOKE  # slag heaped over the yoke
-    P, T = block((0, yy, -0.04), size, 10, 20, round_=0.5)
-    c = np.array([0.0, yy, -0.04])
-    D = (P - c) / np.maximum(np.linalg.norm(P - c, axis=1, keepdims=True), 1e-6)
-    n = ck.fbm(P * 3.0, SEED + 90)
-    m = ck.smoothstep(-0.1, 0.15, n + 1.5 * (P[:, 1] - yy) / 0.13 - 0.35 * np.abs(P[:, 0]))
-    pillows(mesh, P, D, T, m, tb, SEED + 91, 18, 0.08, lift=0.03)
+    Pm, Tm = block((0, yy, -0.04), size, 10, 20, round_=0.5)
+
+    def yoke_cover(P):
+        n = ck.fbm(P * 3.0, SEED + 90)
+        return ck.smoothstep(-0.1, 0.15, n + 1.5 * (P[:, 1] - yy) / 0.13 - 0.35 * np.abs(P[:, 0]))
+
+    def lifted(Pm, Tm, lift):
+        def place(Q):
+            P, D = drape(Pm, Tm, Q)
+            return P + D * lift, D
+        return place
+
+    lo, hi = (-size[0] / 2, 0.04 - size[2] / 2), (size[0] / 2, 0.04 + size[2] / 2)
+    S = poisson(lo, hi, lambda Q: np.full(len(Q), 0.15), np.random.default_rng(SEED + 91))
+    slag_cells(mesh, S, lo, hi, lifted(Pm, Tm, 0.03), yoke_cover, tb, SEED + 91, 0.07, 0.03)
     for s, tag in ((1.0, "l"), (-1.0, "r")):
         ab = rig.rigid(f"arm_{tag}")
         c = np.array([s * (SHOULDER + 0.06), SHOULDER_Y + 0.02, -0.02])
-        P, T = ck.ellipsoid(c, (0.34, 0.22, 0.36), 8, 14)
-        P = ck.transform(P - c, ck.rot_z(-12.0 * s), c)
-        D = (P - c) / np.maximum(np.linalg.norm(P - c, axis=1, keepdims=True), 1e-6)
-        n = ck.fbm(P * 4.0, SEED + 92)
-        m = ck.smoothstep(-0.05, 0.2, n + 2.5 * (P[:, 1] - c[1]) / 0.2)
-        pillows(mesh, P, D, T, m, ab, SEED + 93 + int(s), 6, 0.06, lift=0.02)
+        Pm, Tm = ck.ellipsoid(c, (0.34, 0.22, 0.36), 8, 14)
+        Pm = ck.transform(Pm - c, ck.rot_z(-12.0 * s), c)
+
+        def pauldron_cover(P, c=c):
+            return ck.smoothstep(-0.05, 0.2, ck.fbm(P * 4.0, SEED + 92) + 2.5 * (P[:, 1] - c[1]) / 0.2)
+
+        lo, hi = (c[0] - 0.36, -c[2] - 0.38), (c[0] + 0.36, -c[2] + 0.38)
+        S = poisson(lo, hi, lambda Q: np.full(len(Q), 0.1), np.random.default_rng(SEED + 93 + int(s)))
+        slag_cells(mesh, S, lo, hi, lifted(Pm, Tm, 0.02), pauldron_cover, ab, SEED + 93 + int(s), 0.05, 0.025)
         el = np.array([s * ELBOW[0], ELBOW[1], ELBOW[2]])
         sh = np.array([s * SHOULDER, SHOULDER_Y, -0.02])
         path = sh[None] + (el - sh)[None] * np.linspace(0.3, 0.75, 6)[:, None] + np.array([s * 0.08, 0.0, 0.1])
