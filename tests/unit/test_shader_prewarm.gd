@@ -488,6 +488,157 @@ func test_compile_check_detects_a_broken_shader() -> void:
 # --- helpers -----------------------------------------------------------------------------------
 
 
+## M1-RND-27 (ADR 0029 follow-up 3): a boot run draws its stage plain first and turns the game
+## viewport's TAA and upscaler on one a frame before it stages anything; it holds each resident entry
+## as its batch loads it, not all in the spawn frame.
+func test_boot_brings_the_stage_up_one_feature_a_frame_and_holds_residents_in_their_batch() -> void:
+	var reg_path := _write_registry(
+		"registry_boot.json",
+		{"materials": [{"path": TEST_SHADER, "scenes": ["res://only/battle.tscn"], "resident": true}]}
+	)
+	var game := get_viewport_for_test()
+	var was := [game.use_taa, game.scaling_3d_mode]
+	game.use_taa = true
+	game.scaling_3d_mode = Viewport.SCALING_3D_MODE_FSR2
+	var before := ShaderPrewarm.resident_count()
+	var node := (load(ShaderPrewarm.SCENE_PATH) as PackedScene).instantiate() as ShaderPrewarm
+	node.registry_path = reg_path
+	node.resident_only = true
+	node.preset_id = "high"
+	_host().add_child(node)
+	assert_eq(node.start(""), 1)
+	var vp := node.get_node("Viewport") as SubViewport
+	assert_false(vp.use_taa, "the first frame is plain")
+	assert_eq(vp.scaling_3d_mode, Viewport.SCALING_3D_MODE_BILINEAR)
+	assert_eq(node.stage_node_count(), 0, "nothing staged while the viewport comes up")
+	assert_eq(ShaderPrewarm.resident_count(), before, "nothing loaded in the spawn frame")
+	node.tick(5.0)
+	assert_true(vp.use_taa, "TAA on the second frame")
+	assert_eq(vp.scaling_3d_mode, Viewport.SCALING_3D_MODE_BILINEAR, "the upscaler a frame later")
+	node.tick(5.0)
+	assert_eq(vp.scaling_3d_mode, Viewport.SCALING_3D_MODE_FSR2)
+	assert_eq(node.stage_node_count(), 1, "then the first batch")
+	assert_eq(ShaderPrewarm.resident_count(), before + 1, "held as its batch loaded it")
+	node.free()
+	game.use_taa = was[0]
+	game.scaling_3d_mode = was[1]
+	_clean_tmp()
+
+
+## M1-RND-27 (RND-27 criterion 2, ADR 0028): the Undertow body's spatial shaders are marked as having a
+## compute twin; without a RenderingDevice (here, headless) the spatial body is what draws, so it is
+## staged as before.
+func test_undertow_bodies_have_compute_twins_and_fall_back_without_a_device() -> void:
+	var reg := JSON.parse_string(FileAccess.get_file_as_string(ShaderPrewarm.REGISTRY_PATH)) as Dictionary
+	var twins := 0
+	for e: Dictionary in reg["materials"]:
+		if bool(e.get("compute_twin", false)):
+			twins += 1
+			var twin := UndertowBodyEffect.compute_path_for(str(e["path"]))
+			assert_true(twin != "" and ResourceLoader.exists(twin), "%s has a compute twin on disk" % e["path"])
+	assert_eq(twins, 3, "Medium, High and Ultra bodies")
+	if RenderingServer.get_rendering_device() == null:
+		assert_false(ShaderPrewarm.undertow_uses_compute("high"), "no device: the spatial body draws")
+		var reg_path := _write_registry(
+			"registry_twin.json",
+			{
+				"materials":
+				[{"path": "res://game/shaders/undertow/undertow_body.gdshader", "scenes": [], "compute_twin": true}]
+			}
+		)
+		var node := (load(ShaderPrewarm.SCENE_PATH) as PackedScene).instantiate() as ShaderPrewarm
+		node.registry_path = reg_path
+		node.preset_id = "high"
+		_host().add_child(node)
+		node.start("")
+		assert_eq(node.stage_node_count(), 1, "staged as a spatial draw")
+		node.free()
+		_clean_tmp()
+
+
+## M1-RND-27 (ADR 0029 follow-up 2): the harvest reads the scene's SceneState, follows instanced scenes
+## (with the instancing scene's overrides on their root), reads a PrimitiveMesh's material without
+## building it, and builds every draw in its batch, not in start().
+func test_harvest_reads_scene_states_and_builds_draws_in_their_batch() -> void:
+	DirAccess.make_dir_recursive_absolute(TMP_DIR)
+	var sub := MeshInstance3D.new()
+	var cyl := CylinderMesh.new()
+	var stone := StandardMaterial3D.new()
+	stone.albedo_color = Color.GRAY
+	cyl.material = stone
+	sub.mesh = cyl
+	var sub_packed := PackedScene.new()
+	sub_packed.pack(sub)
+	sub.free()
+	var sub_path := TMP_DIR + "/harvest_sub.tscn"
+	ResourceSaver.save(sub_packed, sub_path)
+	var root := Node3D.new()
+	var a := (load(sub_path) as PackedScene).instantiate()
+	root.add_child(a)
+	a.owner = root
+	var b := (load(sub_path) as PackedScene).instantiate() as MeshInstance3D
+	var red := StandardMaterial3D.new()
+	red.albedo_color = Color.RED
+	b.material_override = red
+	root.add_child(b)
+	b.owner = root
+	var packed := PackedScene.new()
+	packed.pack(root)
+	root.free()
+	var scene_path := TMP_DIR + "/harvest_outer.tscn"
+	ResourceSaver.save(packed, scene_path)
+	var reg_path := _write_registry(
+		"registry_state.json", {"scene_materials": true, "max_scene_materials": 16, "materials_per_frame": 1}
+	)
+	var node := (load(ShaderPrewarm.SCENE_PATH) as PackedScene).instantiate() as ShaderPrewarm
+	node.registry_path = reg_path
+	_host().add_child(node)
+	assert_eq(node.start(scene_path), 2, "the sub-scene's stone, and the override on the second instance")
+	assert_eq(node.stage_node_count(), 1, "one batch built")
+	assert_eq(node.pending_count(), 1, "the other waits, unbuilt")
+	node.tick(5.0)
+	var colors := node.get_node("Viewport/Stage3D").find_children("*", "MeshInstance3D", true, false).map(
+		func(n: Node) -> Color: return ((n as MeshInstance3D).material_override as StandardMaterial3D).albedo_color
+	)
+	assert_eq(colors.size(), 2)
+	assert_true(colors.has(Color.RED), "the instancing scene's override on the instance root")
+	assert_true(colors.has(Color.GRAY), "the sub-scene's PrimitiveMesh material")
+	node.free()
+	_clean_tmp()
+
+
+func get_viewport_for_test() -> Viewport:
+	return (Engine.get_main_loop() as SceneTree).root
+
+
+func _write_registry(file: String, extra: Dictionary) -> String:
+	DirAccess.make_dir_recursive_absolute(TMP_DIR)
+	var reg := {
+		"frames_to_render": 1,
+		"measure_frames": 2,
+		"hitch_budget_ms": 50.0,
+		"viewport_width": 32,
+		"viewport_height": 32,
+		"quad_size": 1.0,
+		"quad_distance": 1.5,
+		"particle_amount": 1,
+		"multimesh_instances": 2,
+		"materials": [],
+	}
+	reg.merge(extra, true)
+	var path := TMP_DIR + "/" + file
+	var f := FileAccess.open(path, FileAccess.WRITE)
+	f.store_string(JSON.stringify(reg))
+	f.close()
+	return path
+
+
+func _clean_tmp() -> void:
+	for file in DirAccess.get_files_at(TMP_DIR):
+		DirAccess.remove_absolute(TMP_DIR + "/" + file)
+	DirAccess.remove_absolute(TMP_DIR)
+
+
 func _host() -> Node:
 	# The tree root is busy while the runner scene is readying, so attach under the running scene.
 	return (Engine.get_main_loop() as SceneTree).current_scene

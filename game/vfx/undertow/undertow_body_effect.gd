@@ -17,6 +17,10 @@ const GROUP_SIZE := 8
 const FMT_BODY := RenderingDevice.DATA_FORMAT_R16G16B16A16_SFLOAT
 const FMT_FRONT := RenderingDevice.DATA_FORMAT_R32_SFLOAT
 
+## Compute shaders and pipelines created ahead of the first storm frame (M1-RND-27, ShaderPrewarm
+## "compute_twin"): path -> [shader RID, pipeline RID] on the main RenderingDevice, held for the session.
+static var _warm: Dictionary = {}
+
 ## The textures the composite samples. Their RIDs are (re)set on the render thread when the size changes.
 var body_texture := Texture2DRD.new()
 var front_texture := Texture2DRD.new()
@@ -56,7 +60,8 @@ func _notification(what: int) -> void:
 		body_texture.texture_rd_rid = RID()
 		front_texture.texture_rd_rid = RID()
 		for rid: RID in [_tex_body, _tex_front, _ubo, _sampler_noise, _sampler_depth, _shader]:
-			if rid.is_valid():
+			# A warm pipeline (M1-RND-27) is held for the session, not by this effect.
+			if rid.is_valid() and not (rid == _shader and _owns_warm(rid)):
 				_rd.free_rid(rid)
 
 
@@ -165,8 +170,42 @@ func _init_render() -> void:
 	_sampler_depth = _rd.sampler_create(d)
 
 
+## Creates the compute pipeline for `path` on the main RenderingDevice and holds it, so a storm's first
+## frame finds it ready (M1-RND-27). Call on the render thread (RenderingServer.call_on_render_thread).
+static func warm_pipeline(path: String) -> bool:
+	if _warm.has(path):
+		return true
+	var rd := RenderingServer.get_rendering_device()
+	var file := load(path) as RDShaderFile if rd != null else null
+	if file == null:
+		return false
+	var spirv := file.get_spirv()
+	if spirv.compile_error_compute != "":
+		push_error("UndertowBodyEffect: %s: %s" % [path, spirv.compile_error_compute])
+		return false
+	var shader := rd.shader_create_from_spirv(spirv)
+	var pipeline := rd.compute_pipeline_create(shader)
+	if not pipeline.is_valid():
+		rd.free_rid(shader)
+		return false
+	_warm[path] = [shader, pipeline]
+	return true
+
+
+## Whether `path`'s compute pipeline is held warm (tests, the prewarm bench).
+static func is_warm(path: String) -> bool:
+	return _warm.has(path)
+
+
 func _ensure_pipeline(path: String) -> bool:
 	if path == _shader_path and _pipeline.is_valid():
+		return true
+	if _shader.is_valid() and not _owns_warm(_shader):
+		_rd.free_rid(_shader)  # frees its pipeline too
+	if _warm.has(path):
+		_shader = (_warm[path] as Array)[0]
+		_pipeline = (_warm[path] as Array)[1]
+		_shader_path = path
 		return true
 	var file := load(path) as RDShaderFile
 	if file == null:
@@ -175,12 +214,17 @@ func _ensure_pipeline(path: String) -> bool:
 	if spirv.compile_error_compute != "":
 		push_error("UndertowBodyEffect: %s: %s" % [path, spirv.compile_error_compute])
 		return false
-	if _shader.is_valid():
-		_rd.free_rid(_shader)  # frees its pipeline too
 	_shader = _rd.shader_create_from_spirv(spirv)
 	_pipeline = _rd.compute_pipeline_create(_shader)
 	_shader_path = path
 	return _pipeline.is_valid()
+
+
+static func _owns_warm(shader: RID) -> bool:
+	for pair: Array in _warm.values():
+		if pair[0] == shader:
+			return true
+	return false
 
 
 func _ensure_targets(size: Vector2i) -> void:

@@ -32,6 +32,24 @@ extends Node
 ## release_swap, M1-RND-23), so a SceneRouter parent waits before showing the new scene; any other
 ## parent (a cutscene's spawn_with_state) is not held.
 ##
+## Hidden frames (ADR 0029, M1-RND-27): a transition behind the router's fade, and the boot run under
+## the boot screen, count as loading time: no single frame over 1 s.
+## - Boot bring-up: the process's first 3D render of a stage with TAA and an upscaler compiles all of
+##   their pipelines in one frame (0.96-1.2 s cold on an RX 9070 XT). A boot run draws its stage plain
+##   first and turns the game viewport's AA and scaling on one feature a frame before any draw is staged.
+## - Resident entries load in their batch, as transition entries do (a load compiles the shader on the
+##   CPU), and are held from there, not all in the spawn frame.
+## - The Undertow's body (registry "compute_twin"): on a tier that marches it in compute (M2-RND-01,
+##   ADR 0028) the spatial shader never draws, so its compute pipeline is created instead
+##   (UndertowBodyEffect.warm_pipeline, on the render thread).
+## - Scene harvest reads the incoming scene's SceneState (no instance, no nodes), and the SceneStates of
+##   the scenes it instances.
+## - Threaded loading (ResourceLoader.load_threaded_request) is rejected: it crashed Godot 4.6.3 on Haluna
+##   in 3 of 6 runs (docs/kb/qa/gpu/2026-10-24-rnd-22-prewarm.md).
+## - materials_per_frame stays 2 for Undertow-class scenes: measured cold on the storm scene (High), 2
+##   gives a worst frame of 79-127 ms over 15 frames and 12 gives 133-142 ms over 6. Both are far under the
+##   1 s limit; 2 keeps the worst frame lower (docs/kb/qa/gpu/2026-10-24-rnd-27-prewarm.md).
+##
 ## Hook-up (autoload-free): `ShaderPrewarm.install(SceneRouter)` connects to
 ## SceneRouter.prewarm_requested and spawns this scene as a child of the router (which survives the
 ## scene change). Headless-safe: the dummy renderer simply draws nothing.
@@ -47,6 +65,17 @@ const RELEASE_METHOD := &"release_swap"
 const MSEC_PER_SEC := 1000.0
 const LOG_PREFIX := "ShaderPrewarm"
 const MODE_UNSUPPORTED := -1
+## How deep the scene harvest follows instanced scenes (M1-RND-27).
+const HARVEST_MAX_DEPTH := 8
+## Viewport features a boot run turns on one a frame before it stages anything (M1-RND-27), in order.
+const BRING_UP_PROPS: Array[StringName] = [&"use_taa", &"scaling_3d_mode", &"msaa_3d", &"screen_space_aa"]
+## Their values for the plain first frame.
+const BRING_UP_PLAIN := {
+	&"use_taa": false,
+	&"scaling_3d_mode": Viewport.SCALING_3D_MODE_BILINEAR,
+	&"msaa_3d": Viewport.MSAA_DISABLED,
+	&"screen_space_aa": Viewport.SCREEN_SPACE_AA_DISABLED,
+}
 
 ## Shaders and materials loaded at boot and held for the session (M1-RND-22, registry "resident"):
 ## their load compiles the shader, 75-220 ms each, so it happens once under the boot screen instead of
@@ -65,6 +94,10 @@ var viewport_state: Dictionary = {}
 var preset_id: String = ""
 ## Boot run (M1-RND-22): stage every "resident" entry, whatever its scenes, and nothing else.
 var resident_only := false
+## Diagnosis (M1-RND-27, tools/gpu_bench/prewarm_bench): when true, `trace` gets one row per frame,
+## [frame_ms, the paths staged on the frame before it], so a slow frame names the draws that cost it.
+var record_trace := false
+var trace: Array = []
 
 var _running := false
 var _stage_alive := false
@@ -77,7 +110,8 @@ var _instanced := 0
 var _skipped := 0
 var _filtered := 0
 var _spawned: Array[Node] = []
-## Draws waiting for the stage: built Nodes (scene harvest) or registry entries loaded in their batch.
+## Draws waiting for the stage: [material, mesh, multimesh] harvested from the scene, or registry entries;
+## both are built and loaded in their batch.
 var _pending: Array = []
 var _batch := 0
 var _min_batch_seen := 0
@@ -86,6 +120,11 @@ var _frames_since_batch := 0
 var _stage_env: Environment
 ## The parent whose swap this stage holds while staging (null when the parent has no hold_swap).
 var _held: Node
+var _last_batch_paths := PackedStringArray()
+## [property, value] the boot bring-up still has to turn on, one a frame (M1-RND-27).
+var _bring_up: Array = []
+## Compute pipelines warmed instead of a spatial draw (registry "compute_twin").
+var _computes := 0
 
 @onready var _viewport: SubViewport = $Viewport
 @onready var _stage_3d: Node3D = $Viewport/Stage3D
@@ -179,7 +218,10 @@ func start(for_scene: String = "") -> int:
 	_running = true
 	_stage_alive = true
 	_hold_parent_swap()
-	_stage_next_batch()
+	if resident_only:
+		_begin_bring_up()
+	else:
+		_stage_next_batch()
 	return _instanced
 
 
@@ -209,15 +251,16 @@ static func load_resident(preset: String, path: String = REGISTRY_PATH) -> int:
 	return count
 
 
-## The boot warm-up (M1-RND-22): holds the resident entries (load_resident) and stages them once under
-## `parent`, so their shader variants compile under the boot screen. A held Shader keeps its compiled
-## variants, and a transition then only builds pipelines (a load alone compiles nothing: Godot compiles
-## a shader variant the first time a material that uses it is drawn).
-static func spawn_resident(parent: Node, preset: String) -> ShaderPrewarm:
-	load_resident(preset)
+## The boot warm-up (M1-RND-22): stages the resident entries once under `parent`, so their shader
+## variants compile under the boot screen, and holds each as its batch loads it (M1-RND-27: loading
+## them all here put 0.1 s into the spawn frame). A held Shader keeps its compiled variants, and a
+## transition then only builds pipelines (Godot compiles a shader variant the first time a material
+## that uses it is drawn).
+static func spawn_resident(parent: Node, preset: String, with_trace := false) -> ShaderPrewarm:
 	var node := (load(SCENE_PATH) as PackedScene).instantiate() as ShaderPrewarm
 	node.resident_only = true
 	node.preset_id = preset
+	node.record_trace = with_trace
 	parent.add_child(node)
 	node.start("")
 	return node
@@ -244,6 +287,15 @@ static func entry_wanted(entry: Dictionary, preset: String) -> bool:
 		_:
 			want = GraphicsSettings.preset_tier(preset, system)
 	return want == "" or want == str((pt as Dictionary).get("tier", ""))
+
+
+## True when `preset`'s storm tier marches the body in compute (M2-RND-01: a RenderingDevice, and a
+## body_scale under 1), so its spatial body shader never draws and its compute twin is warmed instead.
+static func undertow_uses_compute(preset: String) -> bool:
+	if RenderingServer.get_rendering_device() == null:
+		return false
+	var state := UndertowState.new()
+	return state.set_quality(preset) and float(state.quality_plan()["body_scale"]) < UndertowState.MAX_BODY_SCALE
 
 
 ## Copies the AA and 3D scaling state of the game viewport onto the stage, so the pipelines
@@ -295,8 +347,16 @@ func tick(frame_ms: float) -> void:
 		return
 	_frames_measured += 1
 	_max_frame_ms = maxf(_max_frame_ms, frame_ms)
+	if record_trace:
+		trace.append([frame_ms, _last_batch_paths])
+		_last_batch_paths = PackedStringArray()
 	_total_ms += frame_ms
-	if _stage_alive:
+	if _stage_alive and not _bring_up.is_empty():
+		var step: Array = _bring_up.pop_front()
+		_viewport.set(step[0], step[1])
+		if _bring_up.is_empty():
+			_stage_next_batch()
+	elif _stage_alive:
 		if not _pending.is_empty():
 			# The first frame also carries start() and the stage's set-up, so it says nothing about how
 			# big a batch the card can take (review-sweep-J S3): never halve on it.
@@ -320,11 +380,21 @@ func _stage_next_batch() -> void:
 	var batch := _pending.slice(0, n)
 	_pending = _pending.slice(n)
 	for item: Variant in batch:
-		var node: Node = item as Node if item is Node else _build_entry(item as Dictionary)
+		var node: Node
+		if item is Node:
+			node = item as Node
+		elif item is Array:
+			node = _draw_for(
+				(item as Array)[0] as Material, (item as Array)[1] as Mesh, (item as Array)[2] as MultiMesh
+			)
+		else:
+			node = _build_entry(item as Dictionary)
 		if node == null:
 			continue
 		(_stage_2d if node is Control else _stage_3d).add_child(node)
 		_spawned.append(node)
+		if record_trace:
+			_last_batch_paths.append(_trace_name(item, node))
 	_batches += 1
 	_frames_since_batch = 0
 
@@ -357,6 +427,7 @@ func _finish() -> void:
 		"over_budget": _max_frame_ms > budget,
 		"batches": _batches,
 		"min_batch": _min_batch_seen,
+		"computes": _computes,
 	}
 	var line := (
 		"%s: '%s' warmed %d material(s) (%d skipped); max frame %.1f ms over %d frames (budget %.0f ms)"
@@ -394,6 +465,16 @@ func _release_parent_swap() -> void:
 	if is_instance_valid(_held) and _held.has_method(RELEASE_METHOD):
 		_held.call(RELEASE_METHOD, self)
 	_held = null
+
+
+static func _trace_name(item: Variant, node: Node) -> String:
+	if item is Dictionary:
+		return str((item as Dictionary).get("path", ""))
+	if item is Array:
+		var mat := (item as Array)[0] as Material
+		return mat.resource_path if mat.resource_path != "" else "%s on %s" % [mat.get_class(), (item as Array)[1]]
+	var g := node as GeometryInstance3D
+	return g.material_override.resource_path if g != null and g.material_override != null else str(node.name)
 
 
 static func _load_registry(path: String) -> Dictionary:
@@ -464,10 +545,33 @@ static func entry_mesh(entry: Dictionary, fallback: Mesh) -> Mesh:
 	return fallback
 
 
-## Loads a registry entry's material and builds its draw (null when it cannot be drawn, or for a
-## sky, which goes on the stage environment instead of a node).
+## Draws the stage plain first and queues the game viewport's features to come on one a frame
+## (M1-RND-27); a feature the game viewport does not use is not a step.
+func _begin_bring_up() -> void:
+	for prop in BRING_UP_PROPS:
+		var want: Variant = _viewport.get(prop)
+		if want != BRING_UP_PLAIN[prop]:
+			_bring_up.append([prop, want])
+			_viewport.set(prop, BRING_UP_PLAIN[prop])
+	if _bring_up.is_empty():
+		_stage_next_batch()
+
+
+## Loads a registry entry's material and builds its draw (null when it cannot be drawn, for a sky,
+## which goes on the stage environment instead of a node, and for a compute twin, warmed instead).
 func _build_entry(entry: Dictionary) -> Node:
-	var mat := _load_material(str(entry.get("path", "")))
+	var path := str(entry.get("path", ""))
+	if bool(entry.get("compute_twin", false)) and undertow_uses_compute(active_preset()):
+		var twin := UndertowBodyEffect.compute_path_for(path)
+		if twin != "":
+			RenderingServer.call_on_render_thread(UndertowBodyEffect.warm_pipeline.bind(twin))
+			_computes += 1
+			return null
+	if resident_only:
+		var res := load(path) if ResourceLoader.exists(path) else null
+		if res != null and not _resident.has(res):
+			_resident.append(res)
+	var mat := _load_material(path)
 	var node: Node = _instance(mat, entry) if mat != null else null
 	if mat == null or (node == null and _shader_mode(mat) != Shader.MODE_SKY):
 		_instanced -= 1
@@ -538,79 +642,106 @@ func _instance(mat: Material, entry: Dictionary = {}) -> Node:
 
 
 ## Draws every (material, mesh) pair on the incoming scene's geometry, and its sky. Returns how
-## many draws were staged (capped at `cap`, deduplicated).
+## many draws were staged (capped at `cap`, deduplicated). M1-RND-27: read from the scene's SceneState
+## and those of the scenes it instances, without instancing anything (an off-tree instance of Haluna
+## built every node and every instanced plant first).
 func _instance_scene_materials(path: String, cap: int) -> int:
 	var packed := load(path) as PackedScene
 	if packed == null:
 		return 0
-	var inst := packed.instantiate(PackedScene.GEN_EDIT_STATE_DISABLED)
 	var seen := {}
-	var count := 0
-	var in_front := Vector3.FORWARD * float(config.get("quad_distance", 0.0))
-	for n in inst.find_children("*", "", true, false) + [inst]:
-		if count >= cap:
-			break
-		if n is WorldEnvironment:
-			var env := (n as WorldEnvironment).environment
+	var counter := [0]
+	_harvest_state(packed.get_state(), {}, seen, cap, counter, 0)
+	return int(counter[0])
+
+
+## One SceneState's draws. `root_overrides` are the properties an instancing scene sets on this scene's
+## root node (they win over the root's own).
+func _harvest_state(
+	state: SceneState, root_overrides: Dictionary, seen: Dictionary, cap: int, counter: Array, depth: int
+) -> void:
+	if state == null or depth > HARVEST_MAX_DEPTH:
+		return
+	for i in state.get_node_count():
+		if int(counter[0]) >= cap:
+			return
+		var props := {}
+		for j in state.get_node_property_count(i):
+			props[state.get_node_property_name(i, j)] = state.get_node_property_value(i, j)
+		if i == 0:
+			props.merge(root_overrides, true)
+		var sub := state.get_node_instance(i)
+		if sub != null:
+			_harvest_state(sub.get_state(), props, seen, cap, counter, depth + 1)
+			continue
+		var type := state.get_node_type(i)
+		if type == &"WorldEnvironment":
+			var env := props.get(&"environment") as Environment
 			if env != null and env.sky != null and env.sky.sky_material != null:
 				var sky := Sky.new()
 				sky.sky_material = env.sky.sky_material
 				_ensure_stage_env().background_mode = Environment.BG_SKY
 				_stage_env.sky = sky
 			continue
-		if not (n is GeometryInstance3D):
-			continue
-		for pair in _geometry_draws(n as GeometryInstance3D):
+		for pair in _state_draws(props):
 			var key := [pair[0], pair[1]]
-			if seen.has(key) or count >= cap:
+			if seen.has(key) or int(counter[0]) >= cap:
 				continue
 			seen[key] = true
-			var node: GeometryInstance3D
-			if n is MultiMeshInstance3D:
-				var mm := MultiMesh.new()
-				var src := (n as MultiMeshInstance3D).multimesh
-				mm.transform_format = src.transform_format
-				mm.use_colors = src.use_colors
-				mm.use_custom_data = src.use_custom_data
-				mm.mesh = pair[1] as Mesh
-				mm.instance_count = int(config.get("multimesh_instances", 1))
-				var mmi := MultiMeshInstance3D.new()
-				mmi.multimesh = mm
-				node = mmi
-			else:
-				var mi := MeshInstance3D.new()
-				mi.mesh = pair[1] as Mesh
-				node = mi
-			node.material_override = pair[0] as Material
-			node.position = in_front
-			_pending.append(node)
-			count += 1
-	inst.free()
-	return count
+			# Built in its batch: assigning a PrimitiveMesh generates it and compiles its StandardMaterial3D
+			# (about 75 ms each), which belongs in a batch frame, not in start().
+			_pending.append(pair)
+			counter[0] = int(counter[0]) + 1
 
 
-## [material, mesh] pairs a GeometryInstance3D draws (override, per-surface overrides, mesh materials).
-static func _geometry_draws(g: GeometryInstance3D) -> Array:
-	var mesh: Mesh = null
-	if g is MeshInstance3D:
-		mesh = (g as MeshInstance3D).mesh
-	elif g is MultiMeshInstance3D and (g as MultiMeshInstance3D).multimesh != null:
-		mesh = (g as MultiMeshInstance3D).multimesh.mesh
+## [material, mesh, source multimesh or null] pairs of one node's stored properties: a MeshInstance3D's
+## or MultiMeshInstance3D's override, per-surface overrides, else the mesh's own surface materials.
+static func _state_draws(props: Dictionary) -> Array:
+	var mm := props.get(&"multimesh") as MultiMesh
+	var mesh := props.get(&"mesh") as Mesh
+	if mm != null:
+		mesh = mm.mesh
 	if mesh == null:
 		return []
 	var out := []
-	if g.material_override != null:
-		out.append([g.material_override, mesh])
+	var override := props.get(&"material_override") as Material
+	if override != null:
+		out.append([override, mesh, mm])
 		return out
-	for i in mesh.get_surface_count():
-		var m: Material = null
-		if g is MeshInstance3D:
-			m = (g as MeshInstance3D).get_surface_override_material(i)
+	# A PrimitiveMesh builds its arrays on the first surface query, and that builds its StandardMaterial3D's
+	# shader: about 75 ms each, synchronously in start() (Haluna's save shrine, M1-RND-27). It has one
+	# surface, whose material is its `material`: read that, and the compile happens in the draw's batch.
+	var primitive := mesh as PrimitiveMesh
+	for i in 1 if primitive != null else mesh.get_surface_count():
+		var m := props.get(StringName("surface_material_override/%d" % i)) as Material
 		if m == null:
-			m = mesh.surface_get_material(i)
+			m = primitive.material if primitive != null else mesh.surface_get_material(i)
 		if m != null:
-			out.append([m, mesh])
+			out.append([m, mesh, mm])
 	return out
+
+
+## The stage draw of one harvested pair: a MeshInstance3D, or a MultiMeshInstance3D with the source's
+## vertex format (colours, custom data) when it came from one.
+func _draw_for(mat: Material, mesh: Mesh, src: MultiMesh) -> GeometryInstance3D:
+	var node: GeometryInstance3D
+	if src != null:
+		var mm := MultiMesh.new()
+		mm.transform_format = src.transform_format
+		mm.use_colors = src.use_colors
+		mm.use_custom_data = src.use_custom_data
+		mm.mesh = mesh
+		mm.instance_count = int(config.get("multimesh_instances", 1))
+		var mmi := MultiMeshInstance3D.new()
+		mmi.multimesh = mm
+		node = mmi
+	else:
+		var mi := MeshInstance3D.new()
+		mi.mesh = mesh
+		node = mi
+	node.material_override = mat
+	node.position = Vector3.FORWARD * float(config.get("quad_distance", 0.0))
+	return node
 
 
 func _ensure_stage_env() -> Environment:

@@ -19,7 +19,8 @@ const CSV_HEADER := (
 	+ "prewarm_frames,prewarm_wall_max_ms,prewarm_trace_ms"
 )
 ## Prewarm frames listed in the trace column (M1-RND-15).
-## --resident: load the registry's resident entries first, as boot does (M1-RND-22).
+## --resident: load the registry's resident entries first, as boot does (M1-RND-22). With --trace, prints
+## one PREWARM_RESIDENT_FRAME line per boot frame: its ms and the entries drawn on it (M1-RND-27).
 ## Prints PREWARM_START_MS: the synchronous ShaderPrewarm.start() (in the spawn frame), M1-RND-22.
 const TRACE_FRAMES := 16
 ## Frames the --pre-scene (a field played before the transition, M1-RND-15) runs first.
@@ -57,13 +58,18 @@ func _run() -> void:
 	# incoming scene's pipelines, not the engine's first use of TAA in this process.
 	if _opts.has("resident"):  # M1-RND-22: what boot loads and holds, before the field
 		var t_res := Time.get_ticks_usec()
-		var boot := ShaderPrewarm.spawn_resident(self, gs.preset_id)
+		var boot := ShaderPrewarm.spawn_resident(self, gs.preset_id, _opts.has("trace"))
+		print("PREWARM_RESIDENT_SPAWN_MS %.1f" % (float(Time.get_ticks_usec() - t_res) / US_PER_MS))
 		var boot_max := 0.0
 		var prev_res := Time.get_ticks_usec()
+		var boot_trace: Array = []
+		var boot_wall := PackedFloat64Array()
 		while is_instance_valid(boot) and boot.is_running():
+			boot_trace = boot.trace
 			await RenderingServer.frame_post_draw
 			var now_res := Time.get_ticks_usec()
 			boot_max = maxf(boot_max, float(now_res - prev_res) / US_PER_MS)
+			boot_wall.append(float(now_res - prev_res) / US_PER_MS)
 			prev_res = now_res
 		print(
 			(
@@ -71,6 +77,12 @@ func _run() -> void:
 				% [ShaderPrewarm.resident_count(), float(Time.get_ticks_usec() - t_res) / US_PER_MS, boot_max]
 			)
 		)
+		if _opts.has("trace"):
+			print(
+				"PREWARM_RESIDENT_WALL %s" % " ".join(Array(boot_wall).map(func(v: float) -> String: return "%.0f" % v))
+			)
+		for row: Array in boot_trace:  # --trace: every boot frame and what it drew (M1-RND-27)
+			print("PREWARM_RESIDENT_FRAME %.1f %s" % [float(row[0]), ",".join(row[1] as PackedStringArray)])
 	if _opts.has("pre-scene"):
 		var field := (load(str(_opts["pre-scene"])) as PackedScene).instantiate()
 		add_child(field)
