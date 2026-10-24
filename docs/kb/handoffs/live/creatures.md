@@ -3,6 +3,11 @@
 Feature track for the battle creatures (cloud session_01CYks9e592YBEfygyTawcJD), branch `claude/creatures`, started from `origin/claude/undertow-lead-handoff-423ixt` aeb0875. **This environment owns this file** (CLAUDE.md §7a). The Lead is session_019iimsngAgPLEram1wcbLpE.
 
 ## Now
+- **Resumed after the usage-limit stop (17:30).** Integration 81651b7e merged. The Lead's resume list (Ch6–Ch9, clips,
+  slice polish) was already done (see the entries below). New since then: m2-slice's Ch4 boss phase `hauled_down` for
+  the spar_wraith is built at d2848fbd (Shroud, drop, water Sheath, deck strikes; new `show_after` phase key; the
+  kit's `pose_of`/`in_pose`). Now running: one agent on the three minor polish notes (the Matron's cell-size variety,
+  the wreck crab's leg detail, the squall wing's saw-toothed rents).
 - **MERGE-READY @ 63f7bed3: polish batch.** The Cinder Matron's crack lines (Voronoi slag cells with ember seams, 23.2k
   triangles) and a cleaner mask; the squall wing's see-through rents in wings and body; the wreck crab's salt-plate
   crust and bleached legs; phase strikes (a phase `clips` map, the Reach's Dark and Breach strikes).
