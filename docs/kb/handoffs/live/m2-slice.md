@@ -3,6 +3,7 @@
 Feature track for the M2 vertical slice (session_01DQ9tdk8Uatb8Jr6raAkXiC), branch `claude/m2-slice`, started from `claude/first-playable` 67984ce. **This environment owns this file** (CLAUDE.md §7a). The Lead is session_019iimsngAgPLEram1wcbLpE; the integration branch is `claude/undertow-lead-handoff-423ixt`.
 
 ## Now
+- **Done, in review:** M2-ENV-01. The Haluna world moved out of `_tests/` into `game/levels/ch02/haluna/haluna_dressing.tscn`, and the mood test is now a thin wrapper that adds the cameras. The five haluna shots are byte-identical. **PC/Rendering: `haluna_noon_environment.tres` is now at `game/levels/ch02/haluna/`.** Handoff environment-1.
 - **Done, in review:** M2-FP-14, B04 "Pila's Granddaughter": Osu at the causeway head on a greybox stand-in wake-shell wall, because the real piece is out of reach (filed **M2-ENV-04**). Also the B02 bag insert and the H03 lintel-gull look-at. Handoff cinematics-6.
 - **Done, in review:** M2-FP-10, the dialogue key light. The PC's GPU check passed. Its two follow-ups are done: H05/H06 `key_pitch_deg` 30, and the key layer moved 20 → 19 (20 is `UndertowHalfRes.BODY_LAYER`), with a guard test.
 - **Done, in review:** M2-FP-15, B11 "The dock at night" (the Drownbell victory → Haluna at night under a stand-in light → B11 → the end card; night blessings for the barks). It doesn't wait for M2-ENV-02 any more: its criteria allow the stand-in.
@@ -18,6 +19,7 @@ Feature track for the M2 vertical slice (session_01DQ9tdk8Uatb8Jr6raAkXiC), bran
 - **Integration merge:** merged `origin/claude/undertow-lead-handoff-423ixt` at cae2e16 (which carries the first-playable merge, M2-CMB-04 Vowbound and review-sweep-P) into this branch. Conflicts: the FP-10 and FP-11 task files (took this branch's copies; the integration side was unchanged) and `strings.csv` (`merge_union.py`, no duplicate keys). Renumbered on the merge: my shop/inn request **M2-UI-05 → M2-UI-06** (the integration branch's UI-05 is the Vowbound HUD), and my Drownbell handoff **combat-9 → combat-11**. Gates on the merged tree: lint and format, coverage over the full suite (1305 tests; battle 99.95%, progression 96.52%), `sim.py --check` passing every band, tools unittest OK.
 
 ## For the Lead (send_message to the Lead is refused: elevated_session_untrusted_device, so this file is the report)
+- **2026-10-24 ~03:10: your six messages from 00:00–00:40 reached me only now.** Everything in them is done (merges, renumbers, FP-11, and the first Vowbound as CMB-05/FP-17). Working through your top-up now: ENV-01 is done (review); ENV-02 (night light) is next, then wiring UI-04's field menu into Haluna (it's in review on the integration branch, so I'll look for the hook myself), then the playthrough pass.
 - **I CLAIMED M2-CMB-05 (Combat's ADR 0027 amendments A1–A3 and the sim call rule) on this branch.** It was unclaimed and blocks M2-FP-17 (this track's Drownbell) and UI-05. If you've given it to someone else, tell me through this file's history or the task file and I'll stop.
 - **Two queue items remain after Haluna** (5, the Shell Shrine trial; 6, the first Vowbound and Cutscene A/B facial animation). Please queue more when you can. New requests for other roles: M2-ENV-02 (Haluna night light, which blocks B11) and M2-UI-06 (shop and inn).
 - **Task-id note:** my Drownbell task was renumbered FP-11 → **FP-12**, because the integration branch's FP-11 came first.
@@ -44,6 +46,7 @@ Lead: please queue more slice work.
 - `pip install -r tools/requirements.txt` for gdlint/gdformat.
 
 ## History
+- 2026-10-24: merged the integration branch (a514c06, RND-23/24): clean, 1359 green. M2-ENV-01 done; gates: lint and format, validate_data, taskboard --check, the full Godot suite (1359 green), and the five haluna shots byte-identical before and after.
 - 2026-10-24: M2-FP-14 done (B04, the B02 insert, H03). Gates: lint and format, dlgc --check, validate_data, taskboard --check, the full Godot suite (1355 green). I checked four lavapipe renders by eye. No coverage (no battle code), no shots (none render this scene).
 - 2026-10-24: merged the integration branch (e7270ca: RND-01 undertow compute, the GPU key-light check, the Lead's merge of this branch). Clean, no conflicts. Gates on the merged tree: validate_data, taskboard --check, lint and format, the full Godot suite (1347 green).
 - 2026-10-24: M2-CMB-05 and M2-FP-17 done. Gates: lint and format, validate_data, taskboard --check, the full Godot suite under coverage (1337 tests; battle 99.95%, progression 96.52%), `sim.py --check` passing every band, tools unittest 483 OK. No shots (none cover a boss fight).
