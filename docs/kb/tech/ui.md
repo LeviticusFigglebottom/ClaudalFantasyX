@@ -488,6 +488,39 @@ SPEC §6.11: a lore codex that also unlocks text records found in the world. No 
 - **Shot:** `field_menu_codex` (CodexShot: the field menu's Codex row, then Places, the cursor on the Saltgrass Causeway; "New" still on the Shell Shrine). **Tests:** `test_codex.gd` (model, unlocks, the record hook through the EventBus and a scratch Interactable, the menu, the field menu row, parity with all three devices).
 - **Mouse on the categories:** while the entries or the text have the cursor, the categories page is dimmed, so hover passes it by (M2-UI-26). A click on a category opens it.
 
+## Pseudo-localisation (M2-UI-28)
+
+- **What it is.** A debug-only locale (`en_XA`) in which every loc string is accented and about 40% longer, in brackets: "Settings" becomes "[Šéţţîñĝš ····]".
+  - Text with no brackets is not localized.
+  - Text missing its closing bracket is cut.
+  - A box that holds English but not the longer text is too small for German or French.
+- **The generator.** `PseudoLoc` (`game/core/debug/pseudo_loc.gd`, data `game/data/debug/pseudo_loc.json`) builds a `Translation` from every loc CSV.
+  - It accents the letters, pads each line by `expansion` of its visible length in groups of `pad_group` dots (so word wrapping can break them), and wraps the whole string in `prefix` / `suffix`.
+  - `{placeholders}`, `%`-formats, BBCode tags and newlines are copied untouched, so `String.format`, `%` and RichTextLabel markup keep working.
+  - Godot's own `internationalization/pseudolocalization` is not used: it works headless, but it accents `{placeholders}` and BBCode tags, which breaks `String.format`.
+- **Turning it on (debug builds only):**
+  - Launch with `--pseudo-loc` (after `--` or before it) or with `HYMN_PSEUDO_LOC=1`. UiInput applies it at startup, before the first scene builds its text.
+  - Or press **F10** in the debug overlay. Screens built afterwards show it; reopen a menu to see it.
+  - Release exports strip `game/core/debug/`. Nothing outside it names `PseudoLoc` (UiInput loads it by path; `test_pseudo_locale.gd` checks this), and `enable()` refuses in a non-debug build.
+- **The screen walk** (`tests/unit/test_pseudo_loc_screens.gd`). One test per screen group, each at 100% and 130% text (UiSettings `text_scale`), on a 1920 x 1080 canvas.
+  - Groups: the title with the Settings hub and every page and the Memories gallery; the field menu (root, Swell, Quit); every party page; the map, the bestiary and the codex; the shop and the inn; save and load; the dialogue box with every compiled line and every choice set, and the backlog; the objective line (every objective), the tip card (every tip), the interaction prompt (every verb) and the area title (every location); every battle capture state and the battle pause.
+  - The headless window is square, so the test sets the root's `content_scale_aspect` to `keep`, or anchored screens would lay out on a 1920 x 1920 canvas.
+- **The rule** (`tests/text_fit_probe.gd`, `TextFitProbe`). The probe first settles the screen: a test never ends a frame, so it grows each control to its minimum size the way its grow direction says, and sorts every container.
+  - It then measures every visible Label, Button and RichTextLabel.
+  - **Fail, "overflows":** the text's glyphs leave their box. The box is the nearest Panel, PanelContainer or NinePatchRect around the text: an ancestor, or else the smallest one on the screen holding the label's centre (menus draw their panels beside their labels). It is also cut by every clipping ancestor (not along a scroll: a ScrollContainer, or a clip inside a page that answers `max_scroll()`, like the backlog and the codex text) and by the 1920 x 1080 reference.
+    - Glyphs, not line boxes: a badge's line box may graze its panel while its digits sit well inside. An accent over a capital may rise past the font's ascent, as the font intends.
+    - A PanelContainer that grows past its own box fails the same way.
+  - **Fail, "clipped":** text cut with no sign of it: `clip_text` with no ellipsis, a wrapped label whose `max_lines_visible` hides lines with no ellipsis, a RichTextLabel that hides lines it cannot scroll to, or one word wider than a wrapping label.
+  - **Warning, "trimmed":** an ellipsis. The player sees the cut, and the full text is usually elsewhere (a detail pane). The test prints these for review and never fails on them. **"Grew"** (a PanelContainer grew but still fits its box) is also a warning.
+  - Overflows in screens another track owns are listed in the test's `KNOWN` with their request task. They print as warnings until the owner fixes them and deletes the row.
+- **`HudLayout.wrap_upward(label)`:** the fix for a help or hint line at a panel's foot. It wraps onto as many lines as the text needs and grows upward from the foot. A line that fits keeps its rect and alignment, so no screenshot moved. A shorter text later gives the extra lines back (a grown Control never shrinks on its own, so it refits on `minimum_size_changed`, and on `draw` for a text set while hidden).
+  - Used by the field menu, the shop and the inn, the Swell input panels, and every FieldSubmenu page (Items, Equip, Lattice, Status, Formation, Memories, the battle pause).
+- **Other fixes:**
+  - `EnemyPageView.max_width` (set by the bestiary and the Read panel): the stat grid drops from four pairs a row to two, then one, when four would push the page past its frame.
+  - MenuPage headers ellipsize instead of running past the page.
+  - The shop and the inn now follow the player's text size (`UiSettings.follow`), which they had never done.
+- **Findings and requests:** `docs/kb/tasks/M2/M2-UI-28-pseudo-localisation.md`.
+
 ## Party pages, Quit to Title and the battle pause (M2-MNU-01..05)
 
 - **The field menu's root has ten rows** (`FieldMenuModel.ROOT_IDS`): Items, Equip, Lattice, Status, Swell, Map (M2-UI-18), Bestiary, Settings, Quit to Title, Close. Equip, Lattice and Status (`PARTY_ROWS`) are off, saying why, when nobody has joined. `field_menu.json` grew the panel to 639 px and the root page to nine rows; every rect is still a multiple of 3.

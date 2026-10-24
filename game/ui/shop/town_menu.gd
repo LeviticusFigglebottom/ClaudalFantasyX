@@ -48,6 +48,7 @@ func _ready() -> void:
 	_d = load_data(_section())
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	set_anchors_preset(Control.PRESET_FULL_RECT)
+	UiSettings.shared().follow(self)  # the player's text size and palette (M2-UI-28 found it missing)
 	mouse_filter = Control.MOUSE_FILTER_STOP
 	_build_frame()
 	_build()
@@ -195,7 +196,7 @@ func _build_frame() -> void:
 	_purse.add_theme_color_override(&"font_color", _c(&"text_dim"))
 	var help_h := HudLayout.num(pm, "help_height")
 	var help_at := Vector2(pr.position.x + pad, pr.end.y - pad - help_h)
-	_help = _label(&"HelpDimLabel", Rect2(help_at, Vector2(pr.size.x - pad * 2.0, help_h)))
+	_help = HudLayout.wrap_upward(_label(&"HelpDimLabel", Rect2(help_at, Vector2(pr.size.x - pad * 2.0, help_h))))
 	var dr := HudLayout.rect_of(_d.get("detail", {}))
 	_desc = _label(&"BodyLabel", Rect2(dr.position, Vector2(dr.size.x, HudLayout.num(_d.get("desc", {}), "height"))))
 	_desc.vertical_alignment = VERTICAL_ALIGNMENT_TOP

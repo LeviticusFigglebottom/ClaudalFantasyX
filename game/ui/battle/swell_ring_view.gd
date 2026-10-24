@@ -75,7 +75,7 @@ func _ready() -> void:
 	var title_h := metric("title_height")
 	var hint_h := metric("hint_height")
 	_title = _label(&"HeaderLabel", Rect2(0, 0, size.x, title_h))
-	_hint = _label(&"HelpLabel", Rect2(0, size.y - hint_h, size.x, hint_h))
+	_hint = HudLayout.wrap_upward(_label(&"HelpLabel", Rect2(0, size.y - hint_h, size.x, hint_h)))
 	var pad := metric("pad")
 	var side := Vector2(metric("assist_width"), metric("assist_height"))
 	_assist = _label(&"DimLabel", Rect2(Vector2(pad, title_h), side))
