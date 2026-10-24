@@ -15,6 +15,10 @@
     {"id": "ch01_scuttlers", "name_key": "ENC_CH01_SCUTTLERS", "scripted": true, "opening": "normal",
      "enemies": ["scuttler", "scuttler"]},
     {"id": "ch01_hullgnaw", "name_key": "ENC_CH01_HULLGNAW", "scripted": true, "opening": "normal",
-     "prompt_key": "TUT_HULLGNAW_TIMELINE", "party_skills": {"rhen": ["kick_off"]}, "enemies": ["hullgnaw"]}
+     "prompt_key": "TUT_HULLGNAW_TIMELINE", "party_skills": {"rhen": ["kick_off"]}, "enemies": ["hullgnaw"]},
+    {"id": "ch01_underway_shoals", "name_key": "ENC_CH01_WICKFRY", "scripted": false, "opening": "roll",
+     "enemies": ["wickfry", "wickfry"]},
+    {"id": "ch01_underway_limpet", "name_key": "ENC_CH01_SHAFT_LIMPET", "scripted": false, "opening": "roll",
+     "enemies": ["wickfry", "tower_limpet"]}
   ]
 }

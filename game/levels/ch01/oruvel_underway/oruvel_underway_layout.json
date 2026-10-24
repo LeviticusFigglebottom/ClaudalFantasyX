@@ -1,5 +1,5 @@
 {
-  "doc": "M3-C01-02 greybox: ch01/oruvel_underway, the drowned Lit Age tower under Oruvel (act1_ch01.md C1-02 to C1-07). Three floors laid side by side at y 0, joined by tether points (story beats that place Rhen on the next floor): the crown (x -8..8), the first bell-room (x 34..46) and the galleries (x 74..86) with the gauge room and the current shaft off them (x 86..100). Bell-rooms are rest points (a full heal, no save). lantern: what the open shutter finds (Ch01UnderwayZone). fog: the murk. The underwater look is a stand-in (dark sun, ambient and fog) until env-art's drowned-tower kit and an UnderwaterRig replace the blocks.",
+  "doc": "M3-C01-02 greybox: ch01/oruvel_underway, the drowned Lit Age tower under Oruvel (act1_ch01.md C1-02 to C1-07). Three floors laid side by side at y 0, joined by tether points (story beats that place Rhen on the next floor): the crown (x -8..8), the first bell-room (x 34..46) and the galleries (x 74..86) with the gauge room and the current shaft off them (x 86..100). Bell-rooms are rest points (a full heal, no save). lantern: what the open shutter finds (Ch01UnderwayZone). encounters: the random table (act1_ch01.md §9: shoals, or a limpet with a shoal), for the shared field encounters (M2-FP-25) to read; until then only the scripted fights play. fog: the murk. The underwater look is a stand-in (dark sun, ambient and fog) until env-art's drowned-tower kit and an UnderwaterRig replace the blocks.",
   "block_color": "#4f6a6c",
   "sun": {"pitch_deg": -80.0, "yaw_deg": 20.0, "energy": 0.35, "color": "#7fc0c8"},
   "environment": {"background": "#06222c", "ambient_color": "#2f6470", "ambient_energy": 0.35},
@@ -80,5 +80,6 @@
     {"id": "limpet", "activation": "interact", "at": [92, 0, -37], "size": [3, 0, 3], "prompt_key": "FIELD_PROMPT_LOOK", "blocked_by_flag": "ch01_limpet_won", "payload": {"beat": "limpet"}},
     {"id": "current_shaft", "activation": "interact", "at": [97, 0, -38], "size": [3, 0, 3], "prompt_key": "FIELD_PROMPT_RIDE", "requires_flag": "ch01_cut_gauge_wheel", "payload": {"beat": "ride_shaft"}}
   ],
-  "lantern": {"reveals": ["old_tin"], "curtains": ["CoralCurtain"]}
+  "lantern": {"reveals": ["old_tin"], "curtains": ["CoralCurtain"]},
+  "encounters": {"table": [{"encounter": "ch01_underway_shoals", "weight": 3}, {"encounter": "ch01_underway_limpet", "weight": 1}], "min_m": 18, "max_m": 34}
 }

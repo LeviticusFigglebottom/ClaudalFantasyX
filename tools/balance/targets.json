@@ -289,6 +289,62 @@
       "p90_turns_max": 60,
       "loadout": "ch01_hullgnaw",
       "swell": "good"
+    },
+    {
+      "id": "ch01_underway_shoals",
+      "chapter": "Ch1 Underway random (solo Rhen)",
+      "kind": "tutorial",
+      "encounter": "ch01_underway_shoals",
+      "active": [
+        "rhen"
+      ],
+      "reserve": [],
+      "bands": {
+        "naive": [
+          80,
+          100
+        ],
+        "naive_swell": null,
+        "role_answer": [
+          95,
+          100
+        ],
+        "smart": [
+          98,
+          100
+        ]
+      },
+      "p90_turns_max": 30,
+      "loadout": "ch01_underway",
+      "swell": "good"
+    },
+    {
+      "id": "ch01_underway_limpet",
+      "chapter": "Ch1 Underway random (solo Rhen)",
+      "kind": "tutorial",
+      "encounter": "ch01_underway_limpet",
+      "active": [
+        "rhen"
+      ],
+      "reserve": [],
+      "bands": {
+        "naive": [
+          80,
+          100
+        ],
+        "naive_swell": null,
+        "role_answer": [
+          95,
+          100
+        ],
+        "smart": [
+          98,
+          100
+        ]
+      },
+      "p90_turns_max": 30,
+      "loadout": "ch01_underway",
+      "swell": "good"
     }
   ]
 }

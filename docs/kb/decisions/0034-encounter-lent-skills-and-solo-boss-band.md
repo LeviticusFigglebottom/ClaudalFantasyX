@@ -24,7 +24,7 @@ Option 4.
 
 **The band:** `ch01_hullgnaw` keeps the Ch1–Ch3 boss band for `naive` (≤ 10%) and `smart` (80–95%), and p90 ≤ 60. `role_answer` is **report only** for this one suite: the logged tutorial exception the sheet allows (§5). The other Ch1 fights:
 - `ch01_scuttlers` is on the Ch1–Ch3 regular band.
-- The three Underway tutorial fights (`ch01_wickfry`, `ch01_oil_slug`, `ch01_shaft_limpet`) are a logged **tutorial** exception: `naive` 80–100%, so a first-time masher doesn't lose a tutorial fight. `role_answer` and `smart` stay on the regular band.
+- The three Underway tutorial fights (`ch01_wickfry`, `ch01_oil_slug`, `ch01_shaft_limpet`) and the Underway's two random lineups (`ch01_underway_shoals`, `ch01_underway_limpet`) are a logged **tutorial** exception: `naive` 80–100%, so a first-time masher doesn't lose a tutorial fight. `role_answer` and `smart` stay on the regular band.
 
 ## Consequences
 - **Easier:** any later tutorial fight can lend the skill it teaches without touching the hero's base kit or the Lattice.

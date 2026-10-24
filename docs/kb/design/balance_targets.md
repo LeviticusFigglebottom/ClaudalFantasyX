@@ -129,7 +129,7 @@ Rhen fights alone all chapter (act1_ch01.md §9 Combat), with `active: [rhen]` a
 
 | Suite | Kind | `naive` | `role_answer` | `smart` | p90 turns |
 |---|---|---|---|---|---|
-| `ch01_wickfry`, `ch01_oil_slug`, `ch01_shaft_limpet` | tutorial (logged exception) | 80–100% | ≥ 95% | ≥ 98% | ≤ 30 |
+| `ch01_wickfry`, `ch01_oil_slug`, `ch01_shaft_limpet`, and the random `ch01_underway_shoals` and `ch01_underway_limpet` | tutorial (logged exception) | 80–100% | ≥ 95% | ≥ 98% | ≤ 30 |
 | `ch01_scuttlers` | Ch1–Ch3 regular | 40–80% | ≥ 95% | ≥ 98% | ≤ 30 |
 | `ch01_hullgnaw` | Ch1–Ch3 boss | 0–10% | report only | 80–95% | ≤ 60 |
 

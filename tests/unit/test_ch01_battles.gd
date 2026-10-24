@@ -21,7 +21,13 @@ func before_each() -> void:
 
 func test_a_one_hero_party_plays_every_ch1_fight_to_an_outcome() -> void:
 	for enc: StringName in [
-		&"ch01_wickfry", &"ch01_oil_slug", &"ch01_shaft_limpet", &"ch01_scuttlers", &"ch01_hullgnaw"
+		&"ch01_wickfry",
+		&"ch01_oil_slug",
+		&"ch01_shaft_limpet",
+		&"ch01_scuttlers",
+		&"ch01_hullgnaw",
+		&"ch01_underway_shoals",
+		&"ch01_underway_limpet"
 	]:
 		engine = BattleEngine.new()
 		engine.setup(db, SOLO, NO_RESERVE, enc, SEED)
