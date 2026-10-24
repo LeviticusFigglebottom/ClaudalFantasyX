@@ -499,6 +499,43 @@
      "swell": true,
      "vowbound": true,
      "clears_field": "flood"
+    },
+    {
+     "id": "shallows_verse",
+     "name_key": "SKILL_SHALLOWS_VERSE",
+     "kind": "heal",
+     "power": 4,
+     "rank": 3,
+     "element": "none",
+     "target": "all_other_allies",
+     "mp_cost": 0,
+     "magic": true,
+     "swell": true
+    },
+    {
+     "id": "return_tide",
+     "name_key": "SKILL_RETURN_TIDE",
+     "kind": "physical",
+     "power": 14,
+     "rank": 3,
+     "accuracy": 100,
+     "element": "none",
+     "target": "single_foe",
+     "mp_cost": 0,
+     "magic": false,
+     "swell": true
+    },
+    {
+     "id": "written_light",
+     "name_key": "SKILL_WRITTEN_LIGHT",
+     "kind": "magical",
+     "power": 10,
+     "rank": 3,
+     "element": "none",
+     "target": "all_foes",
+     "mp_cost": 0,
+     "magic": true,
+     "swell": true
     }
    ],
    "statuses": [
@@ -1031,6 +1068,127 @@
        }
       }
      }
+    }
+   },
+   "swell_chant": {
+    "active": [
+     "asha",
+     "rhen"
+    ],
+    "reserve": [
+     "toma",
+     "ysolde"
+    ],
+    "encounter": "fixture_reef",
+    "seed": 20261022,
+    "opening": {
+     "asha": {
+      "swell": 100,
+      "hp": 60
+     }
+    }
+   },
+   "swell_brace": {
+    "active": [
+     "toma",
+     "rhen"
+    ],
+    "reserve": [
+     "asha",
+     "ysolde"
+    ],
+    "encounter": "fixture_reef",
+    "seed": 20261022,
+    "opening": {
+     "toma": {
+      "swell": 100
+     }
+    }
+   },
+   "swell_glyph": {
+    "active": [
+     "ysolde",
+     "rhen"
+    ],
+    "reserve": [
+     "asha",
+     "toma"
+    ],
+    "encounter": "fixture_reef",
+    "seed": 20261022,
+    "opening": {
+     "ysolde": {
+      "swell": 100
+     }
+    }
+   },
+   "statuses_colorblind": {
+    "active": [
+     "rhen",
+     "asha",
+     "ysolde"
+    ],
+    "reserve": [
+     "toma"
+    ],
+    "encounter": "fixture_reef",
+    "seed": 20261022,
+    "overrides": {
+     "characters": {
+      "ysolde": {
+       "stats": {
+        "agility": 40
+       }
+      }
+     }
+    },
+    "opening": {
+     "rhen": {
+      "hp": 90,
+      "statuses": [
+       {
+        "id": "doom",
+        "duration": 4
+       },
+       {
+        "id": "zombie",
+        "duration": -1
+       },
+       {
+        "id": "regen",
+        "duration": 4
+       }
+      ]
+     },
+     "asha": {
+      "statuses": [
+       {
+        "id": "petrify",
+        "duration": -1
+       }
+      ]
+     },
+     "lantern_eel#2": {
+      "statuses": [
+       {
+        "id": "reflect",
+        "duration": 4
+       }
+      ]
+     },
+     "ysolde": {
+      "statuses": [
+       {
+        "id": "provoke",
+        "duration": 3
+       }
+      ],
+      "provoked_by": "lantern_eel#2"
+     }
+    },
+    "script": "statuses",
+    "ui_settings": {
+     "palette": "colorblind"
     }
    }
   }

@@ -66,17 +66,19 @@ func test_the_flood_seats_its_polyps_and_queues_its_prompt() -> void:
 	_free()
 
 
-func test_call_ilun_follows_the_story_flag() -> void:
+func test_ilun_is_bound_by_the_story_flag_not_a_skill() -> void:
+	# M2-FP-17: the call_ilun stand-in is gone; the story flag binds Ilun through vowbound.json's
+	# bound_flag (M2-UI-05), and no skill is locked behind it any more.
 	var db := BattleDB.load_default()
-	assert_eq(BattleBossHud.story_flags(db, func(_f: StringName) -> bool: return false), [] as Array[StringName])
 	var set_flags := BattleBossHud.story_flags(db, func(f: StringName) -> bool: return f == FLAG)
-	assert_eq(set_flags, [FLAG] as Array[StringName])
-	var had: Variant = Game.get_flag(FLAG)
-	Game.set_flag(FLAG, true)
-	assert_true(BattleBossHud.live_flags(db).has(FLAG))
-	Game.set_flag(FLAG, had)
+	assert_eq(set_flags, [] as Array[StringName], "no skill needs the flag")
+	var rows: Array = BattleVowbound.load_config()
+	assert_eq(
+		BattleVowboundHud.bound_ids(rows, func(f: StringName) -> bool: return f == FLAG), [&"ilun"] as Array[StringName]
+	)
+	assert_eq(BattleVowboundHud.bound_ids(rows, func(_f: StringName) -> bool: return false), [] as Array[StringName])
 	_start()
-	assert_false(ctl.engine.find(&"asha").skills.has(&"call_ilun"), "tests and fixtures pass no story flags")
+	assert_false(ctl.engine.find(&"asha").skills.has(&"call_ilun"), "Asha has no stand-in skill")
 	assert_eq(ctl.menus.fail_text(BossMechanics.FAIL_NO_FIELD, ctl.engine.party_active[0]), tr("HUD_FAIL_NO_FIELD"))
 	_free()
 

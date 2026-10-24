@@ -9,18 +9,21 @@ Owner: UI/UX + Combat (M1-UI-01, M1-CMB-01, M1-UI-02). Art rules: [`docs/kb/art/
 | `game/data/ui/theme.json` | The theme recipe: palette roles (swatch + alpha), line weights, chamfers, fonts, and the type variations. |
 | `game/ui/theme/hymn_theme_builder.gd` | Builds the `Theme` from `theme.json` and `docs/kb/art/palette.json`. |
 | `game/ui/theme/hymn_theme.tres` | **Generated.** Never hand-edit it. `tests/unit/test_ui_theme.gd` fails if it drifts from the builder. |
-| `game/ui/theme/tide_notch_style_box.gd` | `TideNotchStyleBox`: the panel recipe (gradient, sheen, inner rule, gold frame, chamfers, lamp-nodes). |
+| `game/ui/theme/tide_notch_style_box.gd` | `TideNotchStyleBox`: the panel recipe (gradient, sheen, inner rule, gold frame, chamfers, lamp-nodes; ADR 0033: glint, corner ticks, tide lines). |
+| `game/ui/theme/cursor_style_box.gd`, `ornament_rule.gd`, `caustic_backdrop.gd` | ADR 0033 flair: the lamplit menu cursor, the gold header rule, the drifting caustic backdrop (§ Flair). |
 | `game/ui/shaders/lamp_mote.gdshader`, `scrim.gdshader` | The breathing focus dot and the result-screen vignette. |
 | `game/data/ui/battle_hud.json` | Every HUD rect, pitch, timing and pacing value, at the 1920 × 1080 reference. |
 | `game/ui/battle/` | HUD components (below) and `battle_hud.tscn`. |
 | `game/data/ui/battle_sandbox.json` | Sandbox roster, encounter, seed, greybox stand-in shapes and colors, ring metrics, the stone look and the camera shake. |
 | `game/data/ui/accessibility.json` | The accessibility settings (ids, types, options, loc keys), the colorblind palette overrides and the reduced-motion numbers. |
-| `game/ui/settings/ui_settings.gd` | `UiSettings`: the settings layer the future settings menu calls (§ Accessibility below). |
+| `game/ui/settings/ui_settings.gd` | `UiSettings`: the accessibility settings layer (§ Accessibility below); `follow(root)` themes any menu (M2-UI-09). |
+| `game/ui/settings/` | `SettingsMenu` (the hub), `SettingsPage` + `SettingsPageModel`, `GraphicsMenu`/`GraphicsMenuModel`, `AccessibilityMenu`/`AccessibilityMenuModel`, `ControlsMenu`/`ControlsModel` (M2-UI-13, § Controls below), `SettingsShot` (M2-UI-09, § Settings below). |
 | `game/data/ui/battle_fixtures.json` | Frozen battle tables and per-state setups for the HUD captures (§ Capture fixtures below). |
 | `game/battle/scene/` | `battle_sandbox.tscn`, `BattleController`, `BattleStage`, `BattleMenus`, `BattleFixture`, `FighterStandIn`, `ground_ring.gdshader`, and `shots/` (capture entry scenes). |
 | `assets/fonts/` | Source Sans 3 and EB Garamond, each with its `OFL.txt`. |
 | `game/ui/bestiary/` | `BestiaryMenu` (+ `bestiary_menu.tscn`), `BestiaryMenuModel`, and the `bestiary_menu` capture driver (`BestiaryShot`, `shots/`). Layout: `game/data/ui/bestiary_menu.json` (M2-UI-02). |
 | `game/ui/field_menu/` | `FieldMenu` (+ `field_menu.tscn`), `FieldMenuModel`, and the `field_menu` / `field_menu_swell_modes` capture driver (`FieldMenuShot`, `shots/`). Layout: `game/data/ui/field_menu.json` (M2-UI-04). |
+| `game/ui/shop/` | `ShopMenu` / `ShopMenuModel`, `InnMenu` / `InnMenuModel`, their shared base `TownMenu`, the zone-agnostic `TownServices` hook, and the `shop_menu_buy` / `shop_menu_sell` / `inn_menu` capture driver (`TownMenuShot`, `shots/`). Layout: `game/data/ui/shop_menu.json` (M2-UI-06). |
 
 ## Theme
 
@@ -76,6 +79,7 @@ Every component is a view: it reads `BattleCombatant` / `TurnEntry` data and nev
 - **Pacing:** `pacing_scale` (1 = readable, 0 = instant). Waits run through `tick(delta)` from `_process`, and a drain loop means instant mode never recurses. The values are in `battle_hud.json → pacing`.
 - **Lattice:** `start_sandbox()` loads `Game.state.lattice` (or a fresh `LatticeProgress` on the standard board) and sets `engine.party_modifier = progress.apply_to`. On victory, `xp_awards()` feeds `award_battle()`, and the result is written back to `Game.state.lattice` (`persist_progress`). A fighter with no start on the board (Ysolde) shows "no Lattice path yet". Participants who fell show "Fell before the end: no XP".
 - **Engine hook (the only engine change):** `BattleEngine.party_modifier: Callable`. When set, it runs once on every party combatant (active and reserve) right after `_make_party_member` builds it. It is unset by default; tests are in `tests/unit/test_battle_engine.gd`.
+- **Hero actors (M2-UI-07):** a stand-in spec with `"scene"` (a battle-scale hero, `game/characters/heroes/*_battle.tscn`) shows that scene instead of the primitive. It stands at `hover`, turned by `yaw_deg`, plays `idle`, keeps the ring and the spec-height head, and fades (KO) or turns to stone (Petrify) on every surface. A missing scene falls back to the primitive. The hero rows name their scenes once M2-CHR-06 is on the integration branch.
 - **Stage:** `BattleStage` seats `FighterStandIn`s on `PartySlots/SlotN` and `EnemySlots/SlotN`, swaps them on `swap_members`, sinks and fades KO'd fighters, and projects heads to screen space for the HUD. `ground_ring.gdshader` draws the ring at radius 1.4 × the stand-in radius, 0.06 m wide, with a 0.25 m inner gradient and 6 notches, rotating 12°/s from script time.
 - **Staged build (M1-UI-03, SPEC §4.2 swap budget):** entered through `SceneRouter`, the sandbox does not build in one frame. `start_sandbox(-1, true)` → `start_battle_staged()` runs one group per frame behind the router's fade: (0) Lattice progress; (1) engine, fixture opening state, 3D stand-ins, and 8 hidden timeline chips; (2) timeline identities, party panel, and the other 8 chips; (3) `engine.begin()` and the first order, filled from the pooled chips; (4) the first turn (command menu). Entering the tree, which propagates the theme through each chip's labels, was most of the old 25–30 ms block, so `TurnTimeline.prebuild(n)` adds chips hidden ahead of time and `show_turns()` takes them from the pool. `building` is true until the first turn is open; input is ignored meanwhile (state `idle`). Tests, captures and Retry keep the one-call `start_battle()`, so baselines cannot change. Tests drive the staged path synchronously by setting `frame_wait`.
 - **Reaching it:** in a debug build, press **F9** on the boot screen. It is temporary until the M1-ARC-02 debug overlay.
@@ -99,7 +103,7 @@ The captures used to play the live sandbox, so any change to `enemies.json` move
 |---|---|---|
 | `reduced_motion` | `false`, `true` | Timeline chips snap to their slot with a 120 ms cross-fade (no slide, no stagger, no turn-start pulse); the command cursor jumps and sub-menus fade in place; the lamp motes stop breathing and the markers stop bobbing; translations (result panel rise, damage number rise) are halved; the camera never shakes. |
 | `text_scale` | `1.0`, `1.15`, `1.3` | Every font size in the theme (variations and the default) is multiplied and rounded. Layout rects stay put, so long labels ellipsize. |
-| `palette` | `standard`, `colorblind` | Overrides theme roles: `danger` → `#F08A24`, `enemy_chip` → `#2A2414` (art/ui.md §9). Shapes already carry every distinction (chip edges, portraits, glyph silhouettes and backings, hatching). |
+| `palette` | `standard`, `colorblind` | Overrides theme roles: `danger` → `#D15E1F` (M2-UI-11; it was art/ui.md §9's `#F08A24`), `enemy_chip` → `#2A2414`. Shapes already carry every distinction (chip edges, portraits, glyph silhouettes and backings, hatching). |
 | `timing_assist` | `off`, `wide`, `auto` | Timed Swell inputs (M2-UI-01). `wide` scales the perfect and good windows by 1.5 (kept inside the beat); `auto` makes a miss count as Good. Applied to the input row (`timing_input(row)`), never in the engine; the ring panel shows a short tag while it is on. Numbers: formulas.md § Swell, Timing assist. |
 
 API (what a menu or a view calls):
@@ -130,7 +134,7 @@ s.theme_for(base_theme)                 # base itself at the defaults, else a ca
 6. **Reduced motion keeps a short cross-fade on chips** that change slot (120 ms from alpha 0.25), as art/ui.md §5 asks, instead of no animation at all.
 7. **The help line may take two lines.** With Provoke and Reflect notes the line no longer fits 800 px; it wraps (up to two lines) only when it must, and the notes come first.
 8. **The Swell gauge sits under the name, not in its own column** (M1-CMB-04). The row has no room for a fourth 64 px column (name 134 + HP 220 + MP 120 + gaps fill the 594 px row), so the gauge is 64 x 4 px at the name's left edge, bottom-aligned with the HP and MP bars. Only heroes with a Swell draw one. When full, it is framed (a shape cue, not hue alone) and its fill pulses on the 1.6 s sine; with reduced motion it holds the full glow. **M1-UI-05:** the frame was `focus_gold` at 1 px, which sat on the `ui_swell` fill at about 1.1:1 and could not be seen in `battle_swell_ring`. It is now a 2 px `outline` (night) gap and then a 2 px `text` (white) line outside the bar, drawn as filled whole-pixel bands under the bar. 2 px, because the 1280x720 captures (and a 720p window) draw the 1080p layout at 2/3 scale, where a 1 px band is 0.67 px and vanishes; that is also part of why the old frame could not be seen (`swell_full_gap_px`, `swell_full_frame_px` in battle_hud.json). Both edges of the gap clear 3:1 (WCAG non-text contrast) whatever the fill's hue; `tests/unit/test_hud_gauge.gd` checks it on the real theme colours. The frame is now also in art/ui.md §6.2 (M1-NIT-01).
-9. **Rhen's Swell input is a panel where the command menu was** (`battle_hud.json` `swell_ring`, 480 x 332 at (48, 700)), so it never covers the fighters, and the menu is hidden while it is open. It has no doc spec yet; see § Swell below.
+9. **Every hero's Swell input is a panel where the command menu was** (Rhen's since M1-CMB-04, the others since M2-UI-03) (`battle_hud.json` `swell_ring`, 480 x 332 at (48, 700)), so it never covers the fighters, and the menu is hidden while it is open. It has no doc spec yet; see § Swell below.
 
 10. **The Read panel and the bestiary page have no doc spec** (M2-UI-02). Both use the result panel's tide-notch and the existing type roles (header serif for the name, `DimLabel` for labels, `HudNumber` for numbers, `FlavorLabel` for lore). The Read panel sits at (560, 128), 800 wide, between the help line and the command menu, so the timeline stays uncovered (pillar 4; a test checks the rects).
 11. **The opening banner is art/ui.md §7's location banner, shortened for battle** (0.3 s in, 1.8 s hold, 0.5 s out instead of 0.6 / 2.5 / 0.8) and given a dark band that fades at both ends, because the words sit over a bright sky (§9's contrast floor). The rule ends carry the timeline's side shapes: squares for a preemptive strike, outward chevrons for an ambush.
@@ -164,7 +168,7 @@ s.theme_for(base_theme)                 # base itself at the defaults, else a ca
 
 - **Opening it.** In the field, `ui_cancel` (Escape, B / Circle) opens `FieldMenu.open_in(player)`. That's a three-line `elif` in `FieldController._unhandled_input`, under the same `accepts_input` guard as interact, so a cutscene or a conversation (the sequencer turns `accepts_input` off) never opens it. Like `SaveMenu`, it brings its own CanvasLayer (layer 60, under the bestiary's 64) and pauses the tree while open, so the player can't get a second Escape.
 - **Three levels.** All three are `MenuPage`s, with words from `FieldMenuModel` and loc keys `FIELD_MENU_*`:
-  - **Root** (left): Bestiary, Swell, Return to the path.
+  - **Root** (left): Bestiary, Swell, Settings (M2-UI-09: the Settings hub), Return to the path.
   - **Heroes** (right): each Swell hero, with the mode in use on the right.
   - **Modes** (right, headed "Rhen's fill mode"): `BattleSwellCarry.mode_rows(cid)`. Each row shows its `name_key`, and the current one also says "In use" (`HUD_SWELL_MODE_IN_USE`, the battle page's word).
 
@@ -183,7 +187,8 @@ s.theme_for(base_theme)                 # base itself at the defaults, else a ca
   - A fixture binds its `vowbound` list from the frozen `tables.vowbound`. Fixture `overrides` merge into those rows too.
   - Any other battle loads the rows with nothing bound.
 - **The caller's Call row** (`BattleMenus.call_rows`) comes after Skills: "Call Ilun", with the call's rank (`R3`) on the right.
-  - Refused, it is greyed and the reason replaces the rank: "Silenced", "Fallen", or, with nothing bound yet, a nameless "Call · None bound". Disabled rows cannot be highlighted, so the reason has to sit on the row.
+  - Refused, it is greyed and the reason replaces the rank: "Silenced" or "Fallen". Disabled rows cannot be highlighted, so the reason has to sit on the row.
+  - **With nothing bound yet there is no row** (Lead decision on M2-UI-05, ADR 0030 amendment): a greyed "Call · None bound" before Chapter 3 would be a dead row hinting at a beat to come. The `not_bound` refusal keeps its words for the engine's reason only.
   - Highlighting it shows the whole order after the call (`BattleVowbound.preview_call`, a full preview as for Swap): Ilun takes slot 0 and the party is gone.
   - The help line says what the call costs: "Ilun answers and takes this turn, and the party stands down. When it returns, Asha waits a rank 3 delay; the others keep their place." The return cannot be drawn before the call, because it depends on when Ilun leaves.
 - **The Vowbound's own page** (`vowbound_root_rows`, titled with its name) has these rows:
@@ -192,7 +197,7 @@ s.theme_for(base_theme)                 # base itself at the defaults, else a ca
   - **Skills:** Brine Lash and Tidal Ward.
   - **Dismiss** ("Ends turn").
   - **Escape and Swap**, greyed (the engine refuses them with `vowbound_out`). Items is left off ("a Vowbound uses no items"), so the page never needs more than six rows.
-- **The root page grows upward.** Its rect (`commands.rect`, 272 px) holds five rows, and a sixth used to spill below the frame. That could already happen to live Rhen with a bag (Attack, Swell, Skills, Items, Escape, Swap), and now to Asha with a bag and her Call row. `CommandMenu.open_root` now sizes the page to `MenuPage.height_for(rows)` when that is taller, from the same foot. Five-row pages, and so every baseline, are unchanged. A seventh row would scroll (`max_rows` 6). Asha reaches seven once her Swell input is drawn (M2-UI-03), so that task should revisit the root.
+- **The root page grows upward.** Its rect (`commands.rect`, 272 px) holds five rows, and a sixth used to spill below the frame. That could already happen to live Rhen with a bag (Attack, Swell, Skills, Items, Escape, Swap), and now to Asha with a bag and her Call row. `CommandMenu.open_root` now sizes the page to `MenuPage.height_for(rows)` when that is taller, from the same foot. Five-row pages, and so every baseline, are unchanged. Asha reaches seven rows with a bag and Ilun bound (Attack, Swell, Skills, Call Ilun, Items, Escape, Swap); M2-UI-03 raised `max_rows` to 7, so the whole root stands above the same foot (top at y 684, well clear of the help line) instead of scrolling Swap out of sight.
 
   Floodnet goes through the normal target pick, and `act()` hands it to `BattleVowbound.unleash` (`vow.perform`). Highlighting Dismiss shows the whole order with the party back (`preview_dismiss`), the caller after its call delay, and the help line says when the caller acts again.
 - **The field.**
@@ -205,6 +210,63 @@ s.theme_for(base_theme)                 # base itself at the defaults, else a ca
   - `battle_vowbound_call` (fixture `vowbound_call`): Asha's turn, the Call row highlighted.
   - `battle_vowbound_out` (fixture `vowbound_out`): Ilun out after one exchange, Dismiss highlighted. The fixture makes Ilun quicker, so he lives to a second turn with some gauge.
 - **Tests:** `tests/unit/test_battle_vowbound_hud.gd` (scene) and `test_battle_vowbound_preview.gd` (each preview against the engine's real order after the action); `tools/tests/test_vowbound_flag_validate.py`.
+
+## Flair (ADR 0033)
+
+At the human's request (more character, less plain), the theme adds faint, original ornament. All of it is theme data in `theme.json` (the `surface_glint`, `tide_line`, `cursor_wash`, `caustic` and `ornament_gold` colours, and the `glint_*`, `corner_tick_*`, `tide_*`, `cursor_*` and `ornament_*` constants):
+- **Panels (`TideNotchStyleBox`):**
+  - A gold glint under the top frame.
+  - Gold corner ticks on the two square corners.
+  - Two faint tide lines in the bottom margin of panels at least 120 px tall.
+- **The cursor (`CursorStyleBox`, theme stylebox `cursor` of type `Hymn`; MenuPage reads it):**
+  - A raised fill lit from the left, plus a focus wash, inside the 2 px gold frame and glow.
+  - The cursor row's text nudges right by `cursor_nudge_px` (`MenuPage.label_x`).
+- **`OrnamentRule`** (game/ui/theme/): the gold header rule under titled MenuPages and the field menu's and bestiary's banner titles.
+- **`CausticBackdrop`** (game/ui/theme/, `menu_caustics.gdshader`): drifting caustic light behind the field menu, the bestiary and the settings screens. It is still under reduced motion and deterministic in captures.
+- **Tests:** `tests/unit/test_ui_flair.gd`.
+
+## Settings, accessibility and the polish pass (M2-UI-09)
+
+- **The Settings hub** (`SettingsMenu`, game/ui/settings/) has two rows, Graphics and Accessibility. Each opens its page over the hub, and closing a page returns to the hub with the cursor where it was. The hub opens from the title's Settings row (`TitleMenu.open_settings`) and from the field menu's new Settings row (`SettingsMenu.open_in`, on CanvasLayer `hub.canvas_layer` 66, over the field menu's 60 and the bestiary's 64, processing while the tree is paused).
+- **Settings pages share one view.** `SettingsPage` is the old Graphics page's view, generalised: a MenuPage with each value in the right column (in `focus_gold`), a help line that wraps to two lines, and a backdrop. Its logic is a `SettingsPageModel`:
+  - `GraphicsMenuModel` (M1-UI-10) for the Graphics page. Its percent and times formats are now loc keys.
+  - `AccessibilityMenuModel` for the Accessibility page. Its rows are UiSettings' settings in accessibility.json order: reduced motion, text size, color palette, timing assist. A bool shows On or Off; an enum shows its `option_keys`. Left and Right step a value (Confirm steps forward), and every change saves user://settings.cfg at once.
+  - All three use graphics_menu.json's `page`, `help` and `backdrop_alpha`, so they read as one family.
+- **Text size, palette and reduced motion outside battle.** `UiSettings.follow(root)` sets `root.theme` to `theme_for(base)` now and on every change, until the root leaves the tree. The base is the root's own theme, or hymn_theme.tres when it sets none. The field menu, the bestiary, the title, the hub and both settings pages call it in `_ready` and give their MenuPages `reduced_motion` before `setup()`. The Accessibility page follows its own settings, so a new text size or palette shows on the page the moment it is chosen (`settings_accessibility` shows 130%). Rects still do not reflow (§ Known gaps).
+- **Consistency fixes from the audit:**
+  - One help-line style: the new `HelpDimLabel` variation (HelpLabel in `text_dim`) replaces the per-menu `text_dim` overrides, which went stale on a palette switch. It is used in the field menu, the title and the settings pages, and the bestiary's white help line now matches.
+  - The field menu's "In use" is in `swell`, as on the battle Swell page.
+  - The bestiary's defeat counts use `text` (M2-UI-08).
+- **Navigation fixes:**
+  - The bestiary jumps a page with `ui_page_up` / `ui_page_down` (or Left / Right on a pad), stopping at the ends, and the mouse wheel steps it.
+  - **Bug fixed:** hovering a title row now moves the title model's cursor, so the help line and the next key press agree. Before, hover moved only the MenuPage.
+  - Settings pages now follow hover the same way.
+- **Left as they are (with reasons):**
+  - MenuPage metrics differ between the command family (pitch 40) and the list family (pitch 44–48). Unifying them would move every menu's baseline for a 4–8 px rhythm change; record it for the art review.
+  - The bestiary and save panels are not multiples of 3 (field_menu.json's rule). Their baselines pass, and changing that is an art-review call.
+  - The field menu's description stays `BodyLabel`: it is the panel's main text, not a help line.
+  - `BattleVowboundHud.DEFAULT_TINT` is a data fallback for a stand-in spec with no `tint`; every spec sets one.
+  - The save menu and the dialogue box are Systems' and Architect's (ownership.md). Request: M2-ARC-06.
+- **Captures:** `settings_hub` (cursor on Accessibility) and `settings_accessibility` (text size at 130%, cursor on Text size), from `SettingsShot` on its own UiSettings. `field_menu`, `field_menu_swell_modes` and `bestiary_menu` were re-approved for the Settings row, the swell "In use" and the help line.
+- **Tests:** `tests/unit/test_settings_menu.gd`.
+
+## Swell input panels for the chant, brace and glyph (M2-UI-03)
+
+`SwellRingView` (`hud.swell_ring`) is now the panel for every kind. It holds the title, one pip per grade, the last grade in words at the top right, the hint and the assist tag. The last-grade word (`callout_text()`) is drawn in the grade's role: swell for the best grade, focus for one that earns power, danger for a miss. The view draws Rhen's lamp itself and hands each other kind to a drawer in `game/ui/battle/`: `SwellChantDraw`, `SwellBraceDraw` and `SwellGlyphDraw`. Each draws its input's state and decides nothing. Metrics are in `battle_hud.json → swell_ring`.
+- **Grades read by shape, not hue.** The best grade (perfect, swift) is a filled diamond with a gold halo. Braced, traced and good are filled diamonds. A miss is a cross. The step that finishes a kind (the brace's counter, the glyph's swift) waits as a hollow circle, not a diamond.
+- **Asha, the chant.** The phrase's notes scroll from the right onto a gold line. Each is an arrow pointing at its direction, spaced by its time, so the rhythm reads before it sounds. A band shows the good window and, brighter, the perfect one, so the timing assist's wider window is visible. The waiting note is a focus outline in a gold diamond frame. A perfect note is filled swell with a halo, and "Perfect" shows at the top right: Shallows Verse's power hangs on it.
+- **Toma, the brace.** A track runs from the opening to the end of the counter's window. The blows hang over it as wedges at their times, the counter is a gold diamond in its window band, and a white playhead moves along it. A shield under the track is filled while Confirm is held and hollow when it is not, and the status line says "Holding" or "Not holding".
+  - **Lead-in (M2-NIT-03).** A release during the lead-in only lets go (`SwellBrace.release`, formulas.md § Swell), so the tap that chose Return Tide cannot spoil it. `SwellInputKeys.carry_held` starts the hold when that Confirm is still held as the brace opens.
+- **Ysolde, the glyph.** The whole glyph is drawn as strokes from a gold start node. Traced strokes are solid swell; a missed one is a dashed danger line with a cross; the one asked for now is dashed focus with an arrowhead; later ones are dim. A bar under the glyph runs down with the window's time left. A gold notch marks where Swift closes, and the bar is swell-colored past it while a Swift trace is still possible.
+- **Hints.** `SwellRingView.hint_key(kind, locked)` picks `HUD_SWELL_{RING,CHANT,BRACE,GLYPH}_HINT[_LOCKED]`; "locked" drops Cancel once a step is graded. The help line still leads with the row's `help_key`.
+- **Grade words.** `BattleMenus.grade_text` reads `SwellRingView.grade_key`, so Braced, Traced and Swift are named in the result line.
+- **The gate is gone.** `DRAWN_KINDS` lists all four kinds, so Asha, Toma and Ysolde have gauges and Swell rows. A capture fixture gives a hero a Swell row only when the hero's technique is in the frozen tables. Shallows Verse, Return Tide and Written Light are now there, so Asha's root in `battle_vowbound_call` and Ysolde's in `battle_statuses` gained the row.
+- **Unlocks are seen.** `BattleSwell.mode_unlocked` floats "{mode} unlocked" over the field in the swell color (`SwellModeRows.announce`, at `swell_ring.unlock_at`). Like every float, it follows `show_damage_numbers`.
+- **Captures:**
+  - `battle_swell_chant`: the first note perfect, the second closing on the line.
+  - `battle_swell_brace`: Confirm held, the first blow braced, the second coming.
+  - `battle_swell_glyph`: two strokes traced, with Swift still in reach.
+- **Tests:** `tests/unit/test_swell_input_panels.gd`.
 
 ## Swell (M1-CMB-04)
 
@@ -220,6 +282,34 @@ s.theme_for(base_theme)                 # base itself at the defaults, else a ca
   - **Below 20 fps** (a frame longer than `max_step_sec`) the ring runs slower than real time, by design: the ring draws its own `elapsed`, so what the player sees and what is graded still match.
 - **Help text:** `SWELL_INPUT_TIMING_RING_HELP` takes `{beats}` from the input row, so a tuning of `beats` never leaves the text wrong.
 - **Capture:** `battle_swell_ring` (fixture `swell_ring`) freezes the ring 0.2 s before the second peak, with the first beat perfect (`BattleController.swell_input_live = false`).
+
+## Shops and inns (M2-UI-06)
+
+- **Opening them.** Any field `Interactable` opens one by its payload: `{"shop": "<shops.json shops id>"}` opens `ShopMenu`, `{"inn": "<shops.json inns id>"}` opens `InnMenu`. The hook is `TownServices`, a plain `Node` that `FieldController._ready` adds as its child `TownServices` (three lines), so it is in every zone with a player and nothing in a zone script knows about it. It listens to `FieldEvents.INTERACTED` on the EventBus, ignores every other payload (HalunaStory and friends keep reading their own keys), and opens at most one town menu at a time. Give the Interactable `prompt_key` `SHOP_PROMPT` ("Browse the wares") or `INN_PROMPT` ("Ask for a room"). Don't also put `dialogue` in the same payload: HalunaStory would play the bark under the menu.
+- **Pause and layers.** `TownMenu` (the shared base) brings its own CanvasLayer (layer 60, like the field menu) and pauses the tree while open, as `FieldMenu` and `SaveMenu` do. Closing unpauses and frees the layer.
+- **Shop.** Root: Buy, Sell, Leave (Buy and Sell are off while the shop's `requires_flag` is unset, and the line says the shutters are down). Buy lists `Shop.stock` with "Held N" and the price; Sell lists the bag in listing order and then every owned piece with its wearer's name. Every row stays choosable, so the cursor can rest on a refused one: its price is in `text_disabled` (a key item or worn piece shows "—"), and the status line under the description says why in `danger`, word for word from `Shop.*_error` (`SHOP_ERR_*`, with the numbers: price, purse, room left, held count, wearer). Left and Right change how many (1 up to `max_count`, the bag's room or what is held; they wrap). A deal's receipt stays on the status line until the cursor or the count moves. Selling into a full purse warns how much would be lost.
+- **Inn.** Rest (the price on the right) and Leave. The description says what a rest restores and that **an inn does not save** (`INN_MENU_NO_SAVE`). Rest pays `Inn.price()` and requests `EventBus.party_full_heal_requested(inn id)`, the save shrine's own heal, so `Game.heal_party` fills HP and MP and cures `party_rest.json` `shrine_cures`. It writes no save, sets no shrine flag and leaves the respawn point alone. After a rest the cursor moves to Leave.
+- **Model/view split.** `ShopMenuModel` and `InnMenuModel` are Node-free and take their `Shop`/`Inn`, `PartyGoods`, `FlagReader` (and for the inn a `heal` Callable), so tests run them on a scratch `GameStateData`. `from_game(id)` wires the live save, `GameFlagAccess` flags and the EventBus heal.
+- **Captures:** `shop_menu_buy` (Haluna Market, 100 lume, asking for 3 Salt Tonics: the refusal in `danger`), `shop_menu_sell` (the cursor on Rhen's worn hooks), `inn_menu` (Haluna's inn, the cursor on Rest). All from `TownMenuShot` on a scratch save with fixed flags.
+- **Tests:** `test_shop_menu.gd`, `test_inn_menu.gd` (including "no save written"), `test_inn.gd` (the `Inn` logic) and `test_town_services.gd` (the payload hook in the plain field test zone).
+
+## Controls (M2-UI-13)
+
+SPEC §6.11 input remapping. The Settings hub's third row, **Controls**, comes after Accessibility so the existing row indexes keep their places.
+- **Data:** `game/data/ui/controls.json` lists the remappable actions in display order: `ui_up`/`down`/`left`/`right`/`accept`/`cancel`, then the field actions from `field_input.json` (interact, the four moves, walk, the two camera turns). Debug actions are left out. Each action has a `label_key` and its `contexts` (`menu`, `field`; `ui_cancel` is in both because it opens the field menu). The file also holds `pad_defaults`, `listen_cancel`, `reserved_keys` (F1 to F12, the debug overlay's), `fixed_actions` (`ui_page_up`/`ui_page_down` in `menu`), and the pad button and stick names (generic: "A", "Left shoulder", "D-pad Up", with no console-brand glyphs).
+- **`ControlsModel`** (node-free, a `SettingsPageModel`). Rows: **Rebinding** (Keyboard or Gamepad, the column that Confirm rebinds), one row per action, and **Reset to defaults**. An action's value is `"<key> · <pad>"`, with the active column in brackets and the cell being listened for shown as "…". Keys are named by `OS.get_keycode_string`. The pad cell shows the first button, or the fixed stick direction for an action that only has an axis.
+- **Rules:**
+  - **Listening.** `start_listen(action, kind)`, then `feed(event)`. The first pressed key (keyboard column) or pad button (pad column) binds. Releases, echoes, the other device and stick motion are ignored.
+  - **Hard-wired escape.** Keyboard Escape and pad button 1 (B) cancel listening on either column. A mouse click cancels too. This check reads `listen_cancel`, never `ui_cancel`, so rebinding Cancel cannot trap the player. As a result, Escape and B can't be bound by listening; they only move by a swap.
+  - **One input per action and kind.** A binding replaces all of the action's keys (or all of its pad buttons) with the one pressed. Stick axes are fixed and always kept.
+  - **Swap, never duplicate.** If another action that shares a context holds the key or button, it takes the rebound action's old first one. Actions in different contexts may share an input, as the defaults do (Enter is both Confirm and Interact).
+  - **Rejected.** `ControlsModel.check` refuses any result that would leave an action without a key or without a pad input, put one input on two actions in a context, use a reserved key, or clash with a fixed action. The page then says so and keeps listening. Cancel is therefore never unbound: it always keeps a key and a pad button.
+- **Defaults** are the InputMap as boot leaves it, captured once by `ControlsModel.defaults()` before any saved binding applies. `FieldInput.ensure_actions()` runs first, so the field actions exist at boot. `pad_defaults` then give `ui_accept` pad A and `ui_cancel` pad B, because Godot's built-in ones ship without a pad button. Reset puts the exact default events back (`restore_defaults`) and removes the saved section.
+- **Saving:** every bind saves `user://settings.cfg [controls]` as `{action: {keys: [physical keycode...], pad: [button...]}}`, and other sections are kept. `ControlsModel.apply_saved(path)` is called from `boot.gd` `_ready` (one line, before the title takes input). It applies a saved section only if the section passes `check`; a broken or hand-edited file keeps the defaults. A key that matches a default event reuses that event (Godot's `ui_*` keys are keycode events); a new key is a physical-keycode event, and a new pad button matches every device (`device_all`).
+- **`ControlsMenu`** (a `SettingsPage`). Left and Right switch the column on any row. Confirm on an action listens, on Rebinding switches the column, and on Reset resets. While listening, `is_busy()` is true and every event goes to `feed`, so Cancel, navigation and closing are swallowed. The help line reads "Press a key… (Escape: cancel)" or "Press a gamepad button… (B or Escape: cancel)", and after a swap it names the action that took the old binding. Mouse: hover moves the cursor (not while listening), a click on the cursor row activates it, and a click while listening cancels. With 16 rows the page scrolls (MenuPage `max_rows` 14).
+- **Capture:** `settings_controls` shows the defaults while listening for a new Confirm key. `settings_hub` was re-approved for the third row.
+- **Tests:** `tests/unit/test_controls_menu.gd` covers the rows, binding, key and pad swaps, the hard-wired escape after Cancel is rebound, rejection, reset, the save/load round trip and the broken file, the view swallowing input while it listens, and the hub row. Each test restores InputMap and writes only to a test cfg.
+- **Left as they are:** the keyboard column names keys by their US-layout keycode string. `ui_select`, the text-editing `ui_*` actions and the debug keys are not remappable. Battle commands use `ui_*` only, so they follow these bindings.
 
 ## Known gaps
 

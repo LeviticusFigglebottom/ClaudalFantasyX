@@ -11,19 +11,35 @@
       {"id": "palette", "type": "enum", "default": "standard", "options": ["standard", "colorblind"],
        "option_keys": ["SET_PALETTE_STANDARD", "SET_PALETTE_COLORBLIND"],
        "label_key": "SET_PALETTE", "help_key": "SET_PALETTE_HELP"},
-      {"id": "timing_assist", "type": "enum", "default": "off", "options": ["off", "wide", "auto"],
-       "option_keys": ["SET_TIMING_ASSIST_OFF", "SET_TIMING_ASSIST_WIDE", "SET_TIMING_ASSIST_AUTO"],
-       "label_key": "SET_TIMING_ASSIST", "help_key": "SET_TIMING_ASSIST_HELP"}
+      {"id": "timing_assist", "type": "enum", "default": "off", "options": ["off", "wide", "auto", "hold"],
+       "option_keys": ["SET_TIMING_ASSIST_OFF", "SET_TIMING_ASSIST_WIDE", "SET_TIMING_ASSIST_AUTO",
+                       "SET_TIMING_ASSIST_HOLD"],
+       "label_key": "SET_TIMING_ASSIST", "help_key": "SET_TIMING_ASSIST_HELP"},
+      {"id": "text_speed", "type": "enum", "default": "normal", "options": ["slow", "normal", "fast", "instant"],
+       "option_keys": ["SET_TEXT_SPEED_SLOW", "SET_TEXT_SPEED_NORMAL", "SET_TEXT_SPEED_FAST", "SET_TEXT_SPEED_INSTANT"],
+       "label_key": "SET_TEXT_SPEED", "help_key": "SET_TEXT_SPEED_HELP"},
+      {"id": "dialogue_backing", "type": "enum", "default": "soft", "options": ["off", "soft", "solid"],
+       "option_keys": ["SET_BACKING_OFF", "SET_BACKING_SOFT", "SET_BACKING_SOLID"],
+       "label_key": "SET_BACKING", "help_key": "SET_BACKING_HELP"}
     ],
+    "text_speeds": {
+      "doc": "M2-UI-12: text_speed option -> multiplier of the dialogue box's default chars_per_sec (text_box.json), clamped to its min/max; 0 = instant (the box shows the whole line at once).",
+      "slow": 0.6, "normal": 1.0, "fast": 1.8, "instant": 0.0
+    },
+    "dialogue_backings": {
+      "doc": "M2-UI-12: dialogue_backing option -> the alpha of the panel_low band behind dialogue and cutscene lines (0 = none).",
+      "off": 0.0, "soft": 0.45, "solid": 0.85
+    },
     "palettes": {
       "standard": {},
-      "colorblind": {"danger": ["#F08A24", 1.0], "enemy_chip": ["#2A2414", 0.85]}
+      "colorblind": {"danger": ["#D15E1F", 1.0], "enemy_chip": ["#2A2414", 0.85]}
     },
     "timing_assist": {
-      "doc": "M2-UI-01: what each timing_assist option does to a Swell input row (swell.json inputs, every kind) before the input is built. window_scale widens the windows, clamped per kind so the row still passes validate_data (max_duration_sec is its longest input, edge_margin_sec keeps the brace's counter window clear of the last blow); assist_floor is the quality a miss is recorded at (SwellInput._record); tag_key is the short tag the input panel shows while the assist is on. Numbers: docs/kb/design/formulas.md section Swell, Timing assist.",
+      "doc": "M2-UI-01: what each timing_assist option does to a Swell input row (swell.json inputs, every kind) before the input is built. window_scale widens the windows, clamped per kind so the row still passes validate_data (max_duration_sec is its longest input, edge_margin_sec keeps the brace's counter window clear of the last blow); assist_floor is the quality a miss is recorded at (SwellInput._record); assist_hold (M2-UI-14, 'hold') applies that floor only while Confirm is held, so holding Confirm plays the input by itself; tag_key is the short tag the input panel shows while the assist is on. Numbers: docs/kb/design/formulas.md section Swell, Timing assist.",
       "off": {},
       "wide": {"window_scale": 1.5, "tag_key": "HUD_SWELL_ASSIST_WIDE"},
       "auto": {"assist_floor": "good", "tag_key": "HUD_SWELL_ASSIST_AUTO"},
+      "hold": {"assist_floor": "good", "assist_hold": true, "tag_key": "HUD_SWELL_ASSIST_HOLD"},
       "max_duration_sec": 5.0,
       "edge_margin_sec": 0.01
     },

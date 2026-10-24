@@ -1,0 +1,10 @@
+// Ch2 B03/B05 (M2-FP-20): Rhen walks into the causeway head before he has rested at Haluna's save
+// shrine (ch02_saved_once unset). Overheard field bark on the field camera (no @camera cues): Rhen
+// keeps walking while Toma and Asha point him back to the shrine in town. Plays on every walk-in
+// until the first save; afterwards the causeway head plays B05 instead.
+title: ch02_bark_causeway_unsaved
+location: ch02/haluna
+---
+Toma [neutral]: Hold, Rhen. No one walks the causeway without resting at the town shrine first. #line:ch02_bark_causeway_unsaved_001
+Asha [soft_smile]: It only takes a moment. Sit at the little shrine in town, then we'll go. #line:ch02_bark_causeway_unsaved_002
+===

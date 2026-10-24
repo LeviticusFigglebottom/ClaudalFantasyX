@@ -1,4 +1,6 @@
 keys,en
+DLG_CH02_BARK_CAUSEWAY_UNSAVED_001,"Hold, Rhen. No one walks the causeway without resting at the town shrine first."
+DLG_CH02_BARK_CAUSEWAY_UNSAVED_002,"It only takes a moment. Sit at the little shrine in town, then we'll go."
 DLG_CH02_BARK_CHAPEL_001,The Lady Cantor's shell is cut. They'll set it at the wake.
 DLG_CH02_BARK_CHAPEL_002,I'm sorry. Was she very old?
 DLG_CH02_BARK_CHAPEL_003,"Mind the steps, please. I've only just swept them."
@@ -49,6 +51,11 @@ DLG_CH02_BEACH_034,Later. You're shaking.
 DLG_CH02_BEACH_014,"Come up to the village. Bring your father's light. You'll eat first, and then we'll tell you what we know."
 DLG_CH02_BEACH_015,"Come up to the village. You'll eat first, and then we'll tell you what we know."
 DLG_CH02_BEACH_035,She smiled first. Every time. It took me a long while to understand why.
+DLG_CH02_LOOK_LINTEL_GULL_001,"Every roof's got one, and every one faces the sea. Nobody carves a gull to watch the land."
+DLG_CH02_LOW_TIDE_005,"Once we cross, we won't be back before dark. Is there anyone you want to see first?"
+DLG_CH02_LOW_TIDE_006,Go now.
+DLG_CH02_LOW_TIDE_007,Not yet.
+DLG_CH02_LOW_TIDE_008,Then go and see them. The tide will hold a while yet.
 DLG_CH02_LOW_TIDE_001,The tide-readers set the day. The causeway opens this far twice a month.
 DLG_CH02_LOW_TIDE_002,"Come and see it, Rhen. It's the most beautiful thing we have."
 DLG_CH02_LOW_TIDE_003,"He is not sworn to anything, Asha."
@@ -57,6 +64,39 @@ DLG_CH02_NEMES_TABLE_001,"Up, then. Sit. Not that stool, it bites."
 DLG_CH02_NEMES_TABLE_002,"Fish, then bread, then more fish. The sea gave you back thin."
 DLG_CH02_NEMES_TABLE_003,That's a lot of food for one stranger.
 DLG_CH02_NEMES_TABLE_004,It's the right amount. Eat. Asha's at the market. She'll want to show you everything today.
+DLG_CH02_PILA_GRANDDAUGHTER_015,"They don't need two washings, diver. Go on. She'll be waiting at the causeway."
+DLG_CH02_PILA_GRANDDAUGHTER_001,"Mind the bowl. That's fresh water, and it came a long way."
+DLG_CH02_PILA_GRANDDAUGHTER_002,"Here, let me. I've scrubbed worse off a hull. ...That one was already clean, wasn't it?"
+DLG_CH02_PILA_GRANDDAUGHTER_003,"With the ridges, not against them. Gently. You'd wash a face that way."
+DLG_CH02_PILA_GRANDDAUGHTER_004,"There. Shoulder height, clean-edged. Nobody is in that one yet."
+DLG_CH02_PILA_GRANDDAUGHTER_005,And this one I can find with my eyes shut. Teyo Marrin.
+DLG_CH02_PILA_GRANDDAUGHTER_006,Family?
+DLG_CH02_PILA_GRANDDAUGHTER_007,"My grandmother Pila's big brother. He went as Cantor at sixteen, so the Order would take him and not her. She was the stronger hearer."
+DLG_CH02_PILA_GRANDDAUGHTER_008,He was frightened the whole way. Grandmother said he went anyway.
+DLG_CH02_PILA_GRANDDAUGHTER_009,And Pila?
+DLG_CH02_PILA_GRANDDAUGHTER_010,"Lived to ninety-one. Mended nets to the end, and never once sang. Not even to children, in case anyone was listening."
+DLG_CH02_PILA_GRANDDAUGHTER_011,Salt and stone. Ninety-one years of not singing.
+DLG_CH02_PILA_GRANDDAUGHTER_012,You'll go up to the shrine with her? Say hello to him for us.
+DLG_CH02_PILA_GRANDDAUGHTER_013,To who?
+DLG_CH03_BARK_CHAPEL_NIGHT_001,Guardian. Keep her feet dry and her lamp lit. That's the whole of the rite.
+DLG_CH03_BARK_CHAPEL_NIGHT_002,I can do that.
+DLG_CH03_BARK_DOCK_NIGHT_001,"Fair weather to you, diver. Bring her back the long way round."
+DLG_CH03_BARK_DOCK_NIGHT_002,The long way. I'll remember.
+DLG_CH03_BARK_LANE_NIGHT_001,Are you going with the Lady? Then you have to learn the rhyme.
+DLG_CH03_BARK_LANE_NIGHT_002,Teach me tomorrow.
+DLG_CH03_BARK_MARKET_NIGHT_001,So you're the one walking with her. Take the dried fish. All of it.
+DLG_CH03_BARK_MARKET_NIGHT_002,I'll carry it for both of us.
+DLG_CH03_DOCK_001,"Asha. On the shrine steps, Toma said..."
+DLG_CH03_DOCK_002,"How was your day, Rhen? Truly."
+DLG_CH03_DOCK_003,"...Long. Good, mostly."
+DLG_CH03_DOCK_004,You leave the day after tomorrow.
+DLG_CH03_DOCK_005,At first tide. The causeway won't wait for me.
+DLG_CH03_DOCK_006,"Then let me come. As your guardian. I can dive, and I can carry, and I don't scare."
+DLG_CH03_DOCK_007,Yes.
+DLG_CH03_DOCK_008,"Asha. A guardian is not chosen on a dock, at night—"
+DLG_CH03_DOCK_009,"This one was, Toma."
+DLG_CH03_DOCK_010,...
+DLG_CH03_DOCK_011,Then you walk behind me.
 DLG_CH03_VERSE_001,"Don't look so worried, both of you. It's only my first one."
 DLG_CH03_VERSE_002,Shout if it bites.
 DLG_CH03_VERSE_003,He's been in there a hundred and forty years. I think he'll be polite.

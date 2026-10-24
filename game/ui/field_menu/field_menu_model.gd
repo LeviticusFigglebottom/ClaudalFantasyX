@@ -11,16 +11,19 @@ extends RefCounted
 
 const ROW_BESTIARY := &"bestiary"
 const ROW_SWELL := &"swell"
+const ROW_SETTINGS := &"settings"
 const ROW_CLOSE := &"close"
-const ROOT_IDS: Array[StringName] = [ROW_BESTIARY, ROW_SWELL, ROW_CLOSE]
+const ROOT_IDS: Array[StringName] = [ROW_BESTIARY, ROW_SWELL, ROW_SETTINGS, ROW_CLOSE]
 const ROOT_LABEL_KEYS := {
 	ROW_BESTIARY: "FIELD_MENU_BESTIARY",
 	ROW_SWELL: "FIELD_MENU_SWELL",
+	ROW_SETTINGS: "FIELD_MENU_SETTINGS",
 	ROW_CLOSE: "FIELD_MENU_CLOSE",
 }
 const ROOT_DESC_KEYS := {
 	ROW_BESTIARY: "FIELD_MENU_BESTIARY_DESC",
 	ROW_SWELL: "FIELD_MENU_SWELL_DESC",
+	ROW_SETTINGS: "FIELD_MENU_SETTINGS_DESC",
 	ROW_CLOSE: "FIELD_MENU_CLOSE_DESC",
 }
 const NO_SWELL_KEY := "FIELD_MENU_SWELL_NONE"
@@ -63,7 +66,7 @@ static func name_keys_from(characters: Dictionary) -> Dictionary:
 	return out
 
 
-## MenuPage rows for the root: Bestiary, Swell (off when no hero has a gauge), Close.
+## MenuPage rows for the root: Bestiary, Swell (off when no hero has a gauge), Settings, Close.
 func root_rows() -> Array[Dictionary]:
 	var out: Array[Dictionary] = []
 	for id in ROOT_IDS:
@@ -127,7 +130,8 @@ func mode_rows(cid: StringName) -> Array[Dictionary]:
 	return BattleSwellCarry.mode_rows(cid, state)
 
 
-## MenuPage rows for one hero's modes: name, and "In use" on the current one.
+## MenuPage rows for one hero's modes: name, and "In use" on the current one, in the swell color
+## as on the battle Swell page (M2-UI-09).
 func mode_page_rows(cid: StringName) -> Array[Dictionary]:
 	var out: Array[Dictionary] = []
 	for m in mode_rows(cid):
@@ -139,7 +143,7 @@ func mode_page_rows(cid: StringName) -> Array[Dictionary]:
 					"id": m["id"],
 					"label": _tr(str(m["name_key"])),
 					"right": _tr(IN_USE_KEY) if cur else "",
-					"right_role": &"focus",
+					"right_role": &"swell",
 					"enabled": true,
 				}
 			)

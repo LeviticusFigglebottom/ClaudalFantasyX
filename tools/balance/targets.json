@@ -97,6 +97,10 @@
         "smart": [
           80,
           95
+        ],
+        "flood_call": [
+          0,
+          95
         ]
       },
       "p90_turns_max": 60,
@@ -125,6 +129,29 @@
       "p90_turns_max": 40,
       "loadout": "sandbox_vowbound",
       "swell": "off"
+    },
+    {
+      "id": "sandbox_reef_vowbound_good",
+      "chapter": "M1 sandbox, Ilun called, heroes' Swell on (stress test)",
+      "kind": "vowbound",
+      "encounter": "sandbox_reef",
+      "active": [
+        "rhen",
+        "asha"
+      ],
+      "reserve": [
+        "toma"
+      ],
+      "bands": {
+        "naive": null,
+        "naive_swell": [
+          0,
+          50
+        ]
+      },
+      "p90_turns_max": 40,
+      "loadout": "sandbox_vowbound",
+      "swell": "good"
     }
   ]
 }

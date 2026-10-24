@@ -1,6 +1,6 @@
 {
   "graphics_menu": {
-    "doc": "The Graphics settings page (M1-UI-10; docs/kb/tech/graphics_settings.md, 'The Graphics menu'). Rects are top-left x, y, w, h at the 1920 x 1080 reference. 'page' are MenuPage metrics. value_keys: loc key per string option of graphics_presets.json 'settings' (booleans use on_key / off_key; numbers print as they are, except percent_settings, shown as a percentage, and multiplier_settings, shown with a times sign). The rows are the preset, then every setting in graphics_presets.json order.",
+    "doc": "The Graphics settings page (M1-UI-10; docs/kb/tech/graphics_settings.md, 'The Graphics menu'). Rects are top-left x, y, w, h at the 1920 x 1080 reference. 'page' are MenuPage metrics. value_keys: loc key per string option of graphics_presets.json 'settings' (booleans use on_key / off_key; numbers print as they are, except percent_settings, shown as a percentage, and multiplier_settings, shown with a times sign). The rows are the preset, then every setting in graphics_presets.json order. M2-UI-09: every settings page (SettingsPage: Graphics, Accessibility) and the Settings hub (SettingsMenu) share 'page', 'help' and 'backdrop_alpha', so they read as one family; the help line wraps to two lines; 'hub' canvas_layer is the hub's layer when the field menu opens it (over the field menu's 60 and the bestiary's 64).",
     "backdrop_alpha": 0.82,
     "page": {
       "rect": [560, 150, 800, 0],
@@ -20,7 +20,19 @@
       "submenu_dim": 0.5
     },
     "help": {
-      "rect": [460, 860, 1000, 40]
+      "rect": [459, 858, 1002, 72]
+    },
+    "hub": {"canvas_layer": 66},
+    "apply": {
+      "doc": "M1-UI-11: a preset change with GraphicsRuntime armed spawns the resident shader warm-up (a frame can freeze 0.5-1.7 s), so the page fades to an opaque veil over fade_out_sec, lets settle_frames opaque frames draw, selects the preset, holds card_key until the warm-up is done (max_hold_sec is a safety net), then fades back over fade_in_sec. Input is blocked throughout. card.rect is x, y, w, h at 1920 x 1080.",
+      "fade_out_sec": 0.18,
+      "fade_in_sec": 0.3,
+      "settle_frames": 1,
+      "max_hold_sec": 8.0,
+      "card_key": "GFX_MENU_APPLYING",
+      "card": {
+        "rect": [460, 520, 1000, 40]
+      }
     },
     "on_key": "GFX_VALUE_ON",
     "off_key": "GFX_VALUE_OFF",

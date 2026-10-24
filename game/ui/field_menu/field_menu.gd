@@ -1,17 +1,20 @@
 class_name FieldMenu
 extends Control
 ## The field menu (M2-UI-04, SPEC §6.6): opened from the field with ui_cancel (Escape, B /
-## Circle), it pauses the tree like SaveMenu and reaches the bestiary (BestiaryMenu) and each
-## hero's Swell fill mode (SPEC §6.2; BattleSwellCarry through FieldMenuModel).
+## Circle), it pauses the tree like SaveMenu and reaches the bestiary (BestiaryMenu), each
+## hero's Swell fill mode (SPEC §6.2; BattleSwellCarry through FieldMenuModel) and the Settings
+## hub (SettingsMenu: Graphics, Accessibility; M2-UI-09). It follows UiSettings (text size,
+## palette, reduced motion).
 ## Layout: game/data/ui/field_menu.json (1920x1080 reference). Words: FieldMenuModel.
 ##
-## Three levels: ROOT (Bestiary / Swell / Close) on the left; HEROES (each Swell hero and the mode
+## Three levels: ROOT (Bestiary / Swell / Settings / Close) on the left; HEROES (each Swell hero and the mode
 ## in use) and MODES (one hero's unlocked modes, "In use" on the current one) on the right. The
 ## line under the right page says what the highlighted row means (pillar 4).
 ##
 ## Input (keyboard and controller through ui_*): ui_up / ui_down move, ui_accept chooses,
 ## ui_cancel goes back a level and closes from the root. Mouse: hover to move, click to choose.
-## While the bestiary is open it takes the input, and this menu hides until it closes.
+## While the bestiary or the Settings hub is open it takes the input, and this menu hides until
+## it closes.
 
 signal closed
 
@@ -32,6 +35,8 @@ var level := Level.ROOT
 var hero: StringName = &""
 ## The bestiary opened from here (null when closed).
 var bestiary: BestiaryMenu
+## The Settings hub opened from here (null when closed).
+var settings_menu: SettingsMenu
 
 var _d: Dictionary = {}
 var _root: MenuPage
@@ -78,6 +83,7 @@ func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	set_anchors_preset(Control.PRESET_FULL_RECT)
 	mouse_filter = Control.MOUSE_FILTER_STOP
+	UiSettings.shared().follow(self)
 	_build()
 	_root.replace_rows(model.root_rows())
 	_render()
@@ -101,7 +107,7 @@ func _unhandled_input(event: InputEvent) -> void:
 
 ## Applies one input event. Returns true when the menu used it. Tests call this directly.
 func handle_input(event: InputEvent) -> bool:
-	if not is_open() or (bestiary != null and bestiary.is_open()):
+	if not is_open() or _child_open():
 		return false
 	if event.is_action_pressed(&"ui_up", true):
 		_move(-1)
@@ -150,6 +156,8 @@ func close() -> void:
 	_is_closed = true
 	if bestiary != null and bestiary.is_open():
 		bestiary.close()
+	if settings_menu != null and settings_menu.is_open():
+		settings_menu.close()
 	_restore_pause()
 	closed.emit()
 
@@ -178,8 +186,28 @@ func _accept_root(id: StringName) -> void:
 		FieldMenuModel.ROW_SWELL:
 			if not model.swell_heroes().is_empty():
 				_open_heroes(&"")
+		FieldMenuModel.ROW_SETTINGS:
+			_open_settings()
 		FieldMenuModel.ROW_CLOSE:
 			close()
+
+
+## True while the bestiary or the Settings hub is open over this menu (it has the input).
+func _child_open() -> bool:
+	return (bestiary != null and bestiary.is_open()) or (settings_menu != null and settings_menu.is_open())
+
+
+func _open_settings() -> void:
+	settings_menu = SettingsMenu.open_in(self)
+	visible = false
+	settings_menu.closed.connect(_on_settings_closed)
+
+
+func _on_settings_closed() -> void:
+	settings_menu = null
+	visible = true
+	_root.replace_rows(model.root_rows())  # in the text size or palette just chosen
+	_render()
 
 
 func _open_bestiary() -> void:
@@ -273,6 +301,7 @@ func _build() -> void:
 	mat.set_shader_parameter(&"tint", get_theme_color(&"scrim", HymnThemeBuilder.PALETTE_TYPE))
 	scrim.material = mat
 	add_child(scrim)
+	add_child(CausticBackdrop.new())  # ADR 0033
 	var pm: Dictionary = _d.get("panel", {})
 	var panel := Panel.new()
 	HudLayout.place(panel, pm)
@@ -283,10 +312,10 @@ func _build() -> void:
 	var title := _label(&"BannerLabel", Rect2(pr.position + Vector2(pad, pad), Vector2(pr.size.x - pad * 2.0, 0.0)))
 	title.size.y = HudLayout.num(pm, "title_height")
 	title.text = tr("FIELD_MENU_TITLE")
+	_title_rule(Rect2(title.position, Vector2(pr.size.x * 0.5, title.size.y)))
 	var help_h := HudLayout.num(pm, "help_height")
 	var help_at := Vector2(pr.position.x + pad, pr.end.y - pad - help_h)
-	_help = _label(&"HelpLabel", Rect2(help_at, Vector2(pr.size.x - pad * 2.0, help_h)))
-	_help.add_theme_color_override(&"font_color", get_theme_color(&"text_dim", HymnThemeBuilder.PALETTE_TYPE))
+	_help = _label(&"HelpDimLabel", Rect2(help_at, Vector2(pr.size.x - pad * 2.0, help_h)))
 	var rm: Dictionary = _d.get("root", {})
 	_root = _page(rm, &"field_root", "", 0)
 	_root.row_hovered.connect(_on_hovered.bind(Level.ROOT))
@@ -308,6 +337,7 @@ func _page(metrics: Dictionary, pid: StringName, title: String, rows: int) -> Me
 	var count := rows if rows > 0 else FieldMenuModel.ROOT_IDS.size()
 	page.size.y = MenuPage.height_for(metrics, count, title != "")
 	add_child(page)
+	page.reduced_motion = UiSettings.shared().reduced_motion()
 	page.setup(metrics, pid, title, [])
 	return page
 
@@ -319,7 +349,7 @@ func _on_hovered(_index: int, page_level: Level) -> void:
 
 
 func _on_clicked(index: int, page_level: Level) -> void:
-	if not is_open() or (bestiary != null and bestiary.is_open()):
+	if not is_open() or _child_open():
 		return
 	if page_level == Level.ROOT and level != Level.ROOT:
 		level = Level.ROOT  # a click on the root page goes back to it
@@ -338,3 +368,12 @@ func _label(variation: StringName, r: Rect2) -> Label:
 	l.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(l)
 	return l
+
+
+## The gold OrnamentRule under the menu's title (ADR 0033), across the left half of the panel.
+func _title_rule(title: Rect2) -> void:
+	var rule := OrnamentRule.new()
+	var node := float(get_theme_constant(&"ornament_node_px", HymnThemeBuilder.PALETTE_TYPE))
+	rule.position = Vector2(title.position.x, title.end.y - node)
+	rule.size = Vector2(title.size.x, node * 2.0)
+	add_child(rule)

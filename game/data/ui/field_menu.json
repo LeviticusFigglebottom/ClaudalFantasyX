@@ -4,10 +4,10 @@
     "canvas_layer": 60,
     "panel": {"rect": [399, 219, 1122, 600], "pad": 27, "title_height": 56, "help_height": 40},
     "root": {
-      "rect": [426, 318, 339, 168],
+      "rect": [426, 318, 339, 216],
       "header_height": 0,
       "row_pitch": 48,
-      "max_rows": 3,
+      "max_rows": 4,
       "row_inset": 12,
       "text_indent": 40,
       "cost_width": 60,

@@ -511,14 +511,14 @@ BESTIARY_DEFEATED_FMT,Defeated: {n}
 BESTIARY_ROW_COUNT_FMT,×{n}
 BESTIARY_UNREAD,"Not yet Read. Use Read on it in battle to learn its strengths, weaknesses and story."
 BESTIARY_EMPTY,No foes recorded yet. Foes you Read or defeat are written here.
-BESTIARY_HELP,Up and Down: choose · Cancel: close
+BESTIARY_HELP,Up and Down: choose · Left and Right: a page · Cancel: close
 HUD_SWELL_MODE_IN_USE,In use
 HUD_HELP_SWELL_GAUGE_FMT,{name}'s Swell is at {pct}% and fills by {mode}. Choose a fill mode here at no time cost
 HUD_HELP_SWELL_MODE_FMT,{mode}: {desc} Choosing it costs no time
 HUD_HELP_SWELL_MODE_CURRENT_FMT,{mode} is in use: {desc}
 HUD_SWELL_MODE_SET_FMT,{name}'s gauge now fills by {mode}. No time passed
 SET_TIMING_ASSIST,Timing assist
-SET_TIMING_ASSIST_HELP,"Makes timed Swell inputs easier: a wider window, or a miss counts as Good."
+SET_TIMING_ASSIST_HELP,"Makes timed Swell inputs easier: a wider window, a miss counts as Good, or hold Confirm to play them."
 SET_TIMING_ASSIST_OFF,Off
 SET_TIMING_ASSIST_WIDE,Wider window
 SET_TIMING_ASSIST_AUTO,Misses count as Good
@@ -542,7 +542,7 @@ HUD_BOSS_FIELD_FMT,{field}: {count} bound to it
 PHASE_DROWNBELL_TOLL,The Toll
 FIELD_DROWNBELL_FLOOD,The flood
 TITLE_SETTINGS,Settings
-TITLE_HELP_SETTINGS,"Graphics quality, from a whole preset down to each setting."
+TITLE_HELP_SETTINGS,"Graphics, and accessibility: text size, motion, colors and timing."
 GFX_MENU_TITLE,Graphics
 GFX_MENU_PRESET,Preset
 GFX_MENU_HELP_PRESET,Left and right choose a preset. It sets every row below.
@@ -616,3 +616,146 @@ HUD_FAIL_NOT_BOUND_FMT,{name} has bound no Vowbound yet.
 HUD_FAIL_NOT_CALLER_FMT,{name} cannot call that Vowbound.
 HUD_FAIL_VOWBOUND_FALLEN,That Vowbound has fallen and cannot answer again this battle.
 HUD_FAIL_NO_VOWBOUND,No Vowbound is on the field.
+HUD_SWELL_CHANT_HINT,Directions: each note on the line · Cancel: back
+HUD_SWELL_CHANT_HINT_LOCKED,Directions: each note on the line
+HUD_SWELL_BRACE_HINT,Hold Confirm · let go on the counter · Cancel: back
+HUD_SWELL_BRACE_HINT_LOCKED,Hold Confirm · let go on the counter
+HUD_SWELL_GLYPH_HINT,Directions: trace each stroke · Cancel: back
+HUD_SWELL_GLYPH_HINT_LOCKED,Directions: trace each stroke
+HUD_SWELL_GRADE_BRACED,Braced
+HUD_SWELL_GRADE_TRACED,Traced
+HUD_SWELL_GRADE_SWIFT,Swift
+HUD_SWELL_BRACE_HOLDING,Holding
+HUD_SWELL_BRACE_NOT_HOLDING,Not holding
+HUD_SWELL_MODE_UNLOCKED_FMT,{mode} unlocked
+FIELD_MENU_SETTINGS,Settings
+FIELD_MENU_SETTINGS_DESC,"Graphics, and accessibility: text size, motion, colors and timing."
+SET_MENU_TITLE,Settings
+SET_MENU_GRAPHICS,Graphics
+SET_MENU_ACCESSIBILITY,Accessibility
+SET_MENU_HELP_GRAPHICS,"Graphics quality, from a whole preset down to each setting."
+SET_MENU_HELP_ACCESSIBILITY,"Text size, reduced motion, a colorblind-friendly palette and timing assist. Changes show at once."
+GFX_VALUE_PERCENT_FMT,{n}%
+GFX_VALUE_TIMES_FMT,×{n}
+CHAR_OSU,Grandmother Osu
+FIELD_PROMPT_LOOK,Look
+GFX_MENU_APPLYING,Applying the preset…
+SHOP_PROMPT,Browse the wares
+SHOP_MENU_BUY,Buy
+SHOP_MENU_SELL,Sell
+SHOP_MENU_LEAVE,Leave
+SHOP_MENU_BUY_DESC,"See what is for sale, and buy it with lume."
+SHOP_MENU_SELL_DESC,Sell what you carry. A shop pays less than it asks.
+SHOP_MENU_LEAVE_DESC,Step back out into the street.
+SHOP_MENU_PURSE_FMT,Purse: {amount}
+SHOP_MENU_HELD_FMT,Held {count}
+SHOP_MENU_NO_PRICE,—
+SHOP_MENU_BUY_TITLE,For sale
+SHOP_MENU_SELL_TITLE,Your goods
+SHOP_MENU_BUY_EMPTY,Nothing is for sale today.
+SHOP_MENU_SELL_EMPTY,You carry nothing to sell.
+SHOP_MENU_BUY_PREVIEW_FMT,Buy {count} × {name} for {price}.
+SHOP_MENU_SELL_PREVIEW_FMT,Sell {count} × {name} for {price}.
+SHOP_MENU_BOUGHT_FMT,Bought {count} × {name} for {price}.
+SHOP_MENU_SOLD_FMT,Sold {count} × {name} for {price}.
+SHOP_MENU_PURSE_FULL_FMT,Your purse is full: {lost} of it would be lost.
+SHOP_MENU_FOR_FMT,For {name}.
+SHOP_MENU_UNKNOWN_TITLE,A shuttered stall
+SHOP_MENU_HELP_ROOT,Up and Down: choose · Confirm: open · Cancel: leave
+SHOP_MENU_HELP_DEAL,Up and Down: choose · Left and Right: how many · Confirm: trade · Cancel: back
+SHOP_ERR_UNKNOWN_SHOP,No one is keeping this stall.
+SHOP_ERR_CLOSED,The shutters are down. Come back later.
+SHOP_ERR_NOT_IN_STOCK,{name} is not for sale here.
+SHOP_ERR_BAD_COUNT,Choose how many first.
+SHOP_ERR_NO_ROOM_FMT,Your bag has room for only {room} more {name}.
+SHOP_ERR_NO_FUNDS_FMT,"Not enough lume: this costs {price}, and the purse holds {purse}."
+SHOP_ERR_NOT_SELLABLE_FMT,No one here will buy {name}.
+SHOP_ERR_NOT_ENOUGH_FMT,You hold only {held} {name}.
+SHOP_ERR_UNKNOWN_PIECE,That piece is no longer in your pack.
+SHOP_ERR_EQUIPPED_FMT,{wearer} is wearing it. Take it off first.
+INN_PROMPT,Ask for a room
+INN_HALUNA,The Mooring Lamp
+INN_HALUNA_DESC,"Salt-stiff blankets, fish broth, and a lamp left low in the window."
+INN_MENU_REST,Rest
+INN_MENU_LEAVE,Leave
+INN_MENU_LEAVE_DESC,Step back out into the street.
+INN_MENU_REST_DESC,"Everyone wakes with full HP and MP, cured as a shrine would cure them."
+INN_MENU_NO_SAVE,An inn keeps no record of your journey. Save at a shrine.
+INN_MENU_RESTED,"The party rests, and wakes restored."
+INN_MENU_PREVIEW_FMT,A rest costs {price}.
+INN_MENU_UNKNOWN_TITLE,An empty room
+INN_MENU_HELP,Up and Down: choose · Confirm: choose · Cancel: leave
+INN_ERR_UNKNOWN,No one keeps this house.
+INN_ERR_CLOSED,The door is barred. No rooms for now.
+INN_ERR_NO_FUNDS_FMT,"Not enough lume: a rest costs {price}, and the purse holds {purse}."
+SET_TIMING_ASSIST_HOLD,Hold Confirm to play
+HUD_SWELL_ASSIST_HOLD,Assist: hold Confirm to play
+SET_TEXT_SPEED,Text speed
+SET_TEXT_SPEED_HELP,How fast dialogue and cutscene lines appear. Instant shows each line whole.
+SET_TEXT_SPEED_SLOW,Slow
+SET_TEXT_SPEED_NORMAL,Normal
+SET_TEXT_SPEED_FAST,Fast
+SET_TEXT_SPEED_INSTANT,Instant
+SET_BACKING,Subtitle backing
+SET_BACKING_HELP,A dark band behind dialogue and cutscene lines so they stay readable over bright scenes.
+SET_BACKING_OFF,Off
+SET_BACKING_SOFT,Soft
+SET_BACKING_SOLID,Solid
+SET_MENU_CONTROLS,Controls
+SET_MENU_HELP_CONTROLS,"Rebind every action, on the keyboard and on a gamepad."
+CTRL_ROW_DEVICE,Rebinding
+CTRL_ROW_RESET,Reset to defaults
+CTRL_DEVICE_KEYBOARD,Keyboard
+CTRL_DEVICE_PAD,Gamepad
+CTRL_VALUE_FMT,{key}  ·  {pad}
+CTRL_CELL_ACTIVE_FMT,[ {v} ]
+CTRL_CELL_WAITING,…
+CTRL_PAD_BUTTON_FMT,Button {n}
+CTRL_ACT_UI_UP,Menu up
+CTRL_ACT_UI_DOWN,Menu down
+CTRL_ACT_UI_LEFT,Menu left
+CTRL_ACT_UI_RIGHT,Menu right
+CTRL_ACT_UI_ACCEPT,Confirm
+CTRL_ACT_UI_CANCEL,Cancel and field menu
+CTRL_ACT_FIELD_INTERACT,Interact
+CTRL_ACT_FIELD_MOVE_FORWARD,Move forward
+CTRL_ACT_FIELD_MOVE_BACK,Move back
+CTRL_ACT_FIELD_MOVE_LEFT,Move left
+CTRL_ACT_FIELD_MOVE_RIGHT,Move right
+CTRL_ACT_FIELD_WALK,Walk
+CTRL_ACT_FIELD_CAMERA_LEFT,Turn the camera left
+CTRL_ACT_FIELD_CAMERA_RIGHT,Turn the camera right
+CTRL_HELP_DEVICE,Left and Right: choose which column Confirm rebinds · Cancel: back
+CTRL_HELP_ACTION_KEYS,Confirm: press a new key for this action · Left and Right: the gamepad column
+CTRL_HELP_ACTION_PAD,Confirm: press a new gamepad button for this action · Left and Right: the keyboard column
+CTRL_HELP_RESET,"Confirm: put every key and button back as it was, on both columns."
+CTRL_HELP_LISTEN_KEYS,Press a key… (Escape: cancel)
+CTRL_HELP_LISTEN_PAD,Press a gamepad button… (B or Escape: cancel)
+CTRL_HELP_REJECTED,"That one cannot go here: it is reserved, or another action would be left without it. Press another… (Escape: cancel)"
+CTRL_HELP_SWAPPED_FMT,Swapped: {action} now uses the old one.
+CTRL_HELP_WAS_RESET,Every key and button is back as it was.
+CTRL_PAD_A,A
+CTRL_PAD_B,B
+CTRL_PAD_X,X
+CTRL_PAD_Y,Y
+CTRL_PAD_BACK,Back
+CTRL_PAD_GUIDE,Guide
+CTRL_PAD_START,Start
+CTRL_PAD_LEFT_STICK_PRESS,Left stick press
+CTRL_PAD_RIGHT_STICK_PRESS,Right stick press
+CTRL_PAD_LEFT_SHOULDER,Left shoulder
+CTRL_PAD_RIGHT_SHOULDER,Right shoulder
+CTRL_PAD_DPAD_UP,D-pad Up
+CTRL_PAD_DPAD_DOWN,D-pad Down
+CTRL_PAD_DPAD_LEFT,D-pad Left
+CTRL_PAD_DPAD_RIGHT,D-pad Right
+CTRL_PAD_LSTICK_LEFT,Left stick left
+CTRL_PAD_LSTICK_RIGHT,Left stick right
+CTRL_PAD_LSTICK_UP,Left stick up
+CTRL_PAD_LSTICK_DOWN,Left stick down
+CTRL_PAD_RSTICK_LEFT,Right stick left
+CTRL_PAD_RSTICK_RIGHT,Right stick right
+CTRL_PAD_RSTICK_UP,Right stick up
+CTRL_PAD_RSTICK_DOWN,Right stick down
+CTRL_PAD_LEFT_TRIGGER,Left trigger
+CTRL_PAD_RIGHT_TRIGGER,Right trigger

@@ -892,6 +892,190 @@
           }
         }
       }
+    },
+    {
+      "id": "battle_swell_chant",
+      "scene": "res://game/battle/scene/shots/battle_swell_chant.tscn"
+    },
+    {
+      "id": "battle_swell_brace",
+      "scene": "res://game/battle/scene/shots/battle_swell_brace.tscn"
+    },
+    {
+      "id": "battle_swell_glyph",
+      "scene": "res://game/battle/scene/shots/battle_swell_glyph.tscn"
+    },
+    {
+      "id": "settings_hub",
+      "scene": "res://game/ui/settings/shots/settings_hub.tscn"
+    },
+    {
+      "id": "settings_accessibility",
+      "scene": "res://game/ui/settings/shots/settings_accessibility.tscn"
+    },
+    {
+      "id": "settings_controls",
+      "scene": "res://game/ui/settings/shots/settings_controls.tscn"
+    },
+    {
+      "id": "haluna_h10_dock_night",
+      "scene": "res://game/levels/_tests/haluna_mood/haluna_mood.tscn",
+      "camera": "Cameras/H10",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        },
+        "nodes": {
+          ".": {
+            "mood": "night"
+          }
+        }
+      }
+    },
+    {
+      "id": "shop_menu_buy",
+      "scene": "res://game/ui/shop/shots/shop_buy.tscn"
+    },
+    {
+      "id": "shop_menu_sell",
+      "scene": "res://game/ui/shop/shots/shop_sell.tscn"
+    },
+    {
+      "id": "inn_menu",
+      "scene": "res://game/ui/shop/shots/inn.tscn"
+    },
+    {
+      "id": "shrine_s01_approach",
+      "scene": "res://game/levels/_tests/shell_shrine/shell_shrine_shots.tscn",
+      "camera": "Cameras/S01",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        },
+        "nodes": {
+          ".": {
+            "state": "start"
+          }
+        }
+      }
+    },
+    {
+      "id": "shrine_s02_threshold",
+      "scene": "res://game/levels/_tests/shell_shrine/shell_shrine_shots.tscn",
+      "camera": "Cameras/S02",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        },
+        "nodes": {
+          ".": {
+            "state": "start"
+          }
+        }
+      }
+    },
+    {
+      "id": "shrine_s03_overview",
+      "scene": "res://game/levels/_tests/shell_shrine/shell_shrine_shots.tscn",
+      "camera": "Cameras/S03",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        },
+        "nodes": {
+          ".": {
+            "state": "start"
+          }
+        }
+      }
+    },
+    {
+      "id": "shrine_s04_lip",
+      "scene": "res://game/levels/_tests/shell_shrine/shell_shrine_shots.tscn",
+      "camera": "Cameras/S04",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        },
+        "nodes": {
+          ".": {
+            "state": "flow"
+          }
+        }
+      }
+    },
+    {
+      "id": "shrine_s05_side_pool",
+      "scene": "res://game/levels/_tests/shell_shrine/shell_shrine_shots.tscn",
+      "camera": "Cameras/S05",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        },
+        "nodes": {
+          ".": {
+            "state": "drained"
+          }
+        }
+      }
+    },
+    {
+      "id": "battle_statuses_colorblind",
+      "scene": "res://game/battle/scene/shots/battle_statuses_colorblind.tscn"
     }
   ]
 }

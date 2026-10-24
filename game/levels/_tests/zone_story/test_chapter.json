@@ -1,0 +1,21 @@
+{
+  "doc": "M3-ARC-01 test fixture: a two-zone chapter for tests/integration/test_zone_story.gd. Never listed in chapters.json. test_flag is reserved for tests.",
+  "chapter": "test",
+  "zones": {
+    "zone_story_a": {
+      "party": {"party": ["rhen"], "reserve": []},
+      "arrive": [
+        {"when": {"unset": ["test_flag"]}, "steps": [{"place": "Start"}, {"play": "test_cutscene_fixture"}, {"set": "test_flag"}]}
+      ],
+      "beats": {
+        "gate": {"when": {"set": ["test_flag"]}, "steps": [{"battle": "ch02_tideline", "return_spawn": "AfterFight", "escape_spawn": "Start", "seed": 7}]},
+        "leave": {"steps": [{"play": "test_cutscene_fixture"}, {"if_event": "fixture_event", "steps": [{"place": "Start"}]}, {"go": {"location": "zone_story_b", "spawn": "In"}}]},
+        "onward": {"steps": [{"zone": "show_actor", "args": ["asha", false]}, {"go": {"location": "zone_story_b", "spawn": "In"}}]}
+      },
+      "barks": [{"when": {"set": ["test_flag"]}, "map": {"test_dialogue_fixture": "test_cutscene_fixture"}}]
+    },
+    "zone_story_b": {
+      "arrive": [{"steps": [{"scene": "res://game/flow/end_card.tscn"}]}]
+    }
+  }
+}

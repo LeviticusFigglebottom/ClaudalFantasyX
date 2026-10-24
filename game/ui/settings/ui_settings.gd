@@ -18,9 +18,14 @@ const REDUCED_MOTION := &"reduced_motion"
 const TEXT_SCALE := &"text_scale"
 const PALETTE := &"palette"
 const TIMING_ASSIST := &"timing_assist"
+const TEXT_SPEED := &"text_speed"
+const DIALOGUE_BACKING := &"dialogue_backing"
 const KIND_BOOL := "bool"
 const KIND_ENUM := "enum"
 const PALETTE_STANDARD := &"standard"
+## The theme a followed root starts from when it sets none of its own (follow()).
+const BASE_THEME_PATH := "res://game/ui/theme/hymn_theme.tres"
+const META_BASE_THEME := &"hymn_base_theme"
 
 static var _shared: UiSettings
 
@@ -138,6 +143,20 @@ func timing_assist() -> StringName:
 	return StringName(str(get_value(TIMING_ASSIST)))
 
 
+## The dialogue reveal speed for this text_speed (M2-UI-12): `default_cps` times the option's
+## multiplier (accessibility.json "text_speeds"), clamped to [min_cps, max_cps]; 0 = instant.
+func dialogue_chars_per_sec(default_cps: float, min_cps: float, max_cps: float) -> float:
+	var k := float((data.get("text_speeds", {}) as Dictionary).get(str(get_value(TEXT_SPEED)), 1.0))
+	if k <= 0.0:
+		return 0.0
+	return clampf(default_cps * k, min_cps, max_cps)
+
+
+## The alpha of the band behind dialogue and cutscene lines (M2-UI-12; 0 = no band).
+func dialogue_backing_alpha() -> float:
+	return float((data.get("dialogue_backings", {}) as Dictionary).get(str(get_value(DIALOGUE_BACKING)), 0.0))
+
+
 ## The short on-screen tag of the timing assist in force (its "tag_key"; "" when it is off).
 func timing_assist_tag_key() -> String:
 	return str(_assist().get("tag_key", ""))
@@ -149,7 +168,8 @@ func timing_assist_tag_key() -> String:
 ##   "wide" scales the windows by window_scale: perfect_sec and good_sec (ring, chant, brace), each
 ##   clamped (ring: inside the beat; chant: half the closest note gap; brace: before the counter's
 ##   window would reach the last blow), or window_sec (glyph: within max_duration_sec);
-##   "auto" sets assist_floor ("good"): a miss records the step's good grade (SwellInput._record).
+##   "auto" sets assist_floor ("good"): a miss records the step's good grade (SwellInput._record);
+##   "hold" (M2-UI-14) sets it too, with assist_hold: only while Confirm is held.
 ## A copy; off returns it as is.
 func timing_input(row: Dictionary) -> Dictionary:
 	var out := row.duplicate(true)
@@ -158,6 +178,8 @@ func timing_input(row: Dictionary) -> Dictionary:
 		_widen(out, float(assist["window_scale"]))
 	if assist.has("assist_floor"):
 		out["assist_floor"] = str(assist["assist_floor"])
+	if bool(assist.get("assist_hold", false)):
+		out["assist_hold"] = true
 	return out
 
 
@@ -222,6 +244,29 @@ func theme_for(base: Theme) -> Theme:
 	if not _theme_cache.has(key):
 		_theme_cache[key] = HymnThemeBuilder.build(theme_config())
 	return _theme_cache[key] as Theme
+
+
+## Gives `root` this palette and text size now (theme_for over its own theme, or the Hymn theme
+## when it sets none) and again on every later change, until it leaves the tree. Every menu
+## outside battle calls it in _ready (M2-UI-09); BattleHud has its own apply_settings().
+func follow(root: Control) -> void:
+	apply_to(root)
+	var on_change := func(_key: StringName) -> void:
+		if is_instance_valid(root):
+			apply_to(root)
+	changed.connect(on_change)
+	var stop := func() -> void:
+		if changed.is_connected(on_change):
+			changed.disconnect(on_change)
+	root.tree_exited.connect(stop, CONNECT_ONE_SHOT)
+
+
+## Sets `root`'s theme for the current palette and text size once.
+func apply_to(root: Control) -> void:
+	if not root.has_meta(META_BASE_THEME):
+		var base := root.theme if root.theme != null else load(BASE_THEME_PATH) as Theme
+		root.set_meta(META_BASE_THEME, base)
+	root.theme = theme_for(root.get_meta(META_BASE_THEME) as Theme)
 
 
 # --- persistence (the same user://settings.cfg as GraphicsSettings, its own section) -------
