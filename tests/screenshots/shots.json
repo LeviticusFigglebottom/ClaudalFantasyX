@@ -845,6 +845,18 @@
           }
         }
       }
+    },
+    {
+      "id": "shop_menu_buy",
+      "scene": "res://game/ui/shop/shots/shop_buy.tscn"
+    },
+    {
+      "id": "shop_menu_sell",
+      "scene": "res://game/ui/shop/shots/shop_sell.tscn"
+    },
+    {
+      "id": "inn_menu",
+      "scene": "res://game/ui/shop/shots/inn.tscn"
     }
   ]
 }
