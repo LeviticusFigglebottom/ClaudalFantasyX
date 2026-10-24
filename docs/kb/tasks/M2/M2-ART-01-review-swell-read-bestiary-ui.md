@@ -2,8 +2,8 @@
 id: M2-ART-01
 title: Art review of the Swell gauge and ring panel, the Read panel, the opening banner and the bestiary
 role: character
-status: todo
-owner_session: ""
+status: doing
+owner_session: "env-art"
 depends_on: [M2-UI-01, M2-UI-02]
 milestone: M2
 request-from: ui

@@ -2,8 +2,8 @@
 id: M2-ART-02
 title: Art sign-off on the underwater look (M2-RND-02)
 role: character
-status: todo
-owner_session: ""
+status: doing
+owner_session: "env-art"
 depends_on: [M2-RND-02]
 milestone: M2
 request-from: rendering

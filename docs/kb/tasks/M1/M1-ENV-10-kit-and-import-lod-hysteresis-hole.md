@@ -2,8 +2,8 @@
 id: M1-ENV-10
 title: The same LOD hysteresis hole in the Haluna kit dresser and the import LOD rules
 role: environment
-status: todo
-owner_session: ""
+status: doing
+owner_session: "env-art"
 depends_on: [M1-ENV-09]
 milestone: M1
 request-from: "environment"

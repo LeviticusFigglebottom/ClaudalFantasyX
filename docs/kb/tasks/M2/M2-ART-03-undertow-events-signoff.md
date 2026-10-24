@@ -2,8 +2,8 @@
 id: M2-ART-03
 title: Art sign-off on the Undertow's storm events and chapter presets (M2-RND-05)
 role: character
-status: todo
-owner_session: ""
+status: doing
+owner_session: "env-art"
 depends_on: [M2-RND-05]
 milestone: M2
 request-from: rendering

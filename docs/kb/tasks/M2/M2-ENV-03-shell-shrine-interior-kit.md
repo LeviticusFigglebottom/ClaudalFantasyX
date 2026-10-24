@@ -2,8 +2,8 @@
 id: M2-ENV-03
 title: Shell Shrine interior kit to replace the trial's greybox (haluna.md §3.2)
 role: environment
-status: todo
-owner_session: ""
+status: doing
+owner_session: "env-art"
 depends_on: [M2-FP-16]
 milestone: M2
 request-from: cinematics
