@@ -232,9 +232,9 @@ def _signed_volume(mb: kc.MeshBuilder, t0: int, t1: int) -> float:
 
 
 def _turn_lofts_outward(mb: kc.MeshBuilder) -> None:
-    """village.lintel_gull's lofts come out wound inside-out (their signed volume is negative while its perch
-    block's is positive), so a back-face-culled material shows their inner faces and the gull renders dark. This
-    piece turns them outward: the windings of every triangle before the perch reversed, their normals negated."""
+    """A guard: village.lintel_gull's lofts came out wound inside-out until M2-ENV-12 fixed them at the source, so
+    a back-face-culled material showed their inner faces. If their signed volume is ever negative again, this turns
+    them outward: the windings of every triangle before the perch reversed, their normals negated. Now a no-op."""
     n_loft = mb.triangle_count - PERCH_TRIS
     if _signed_volume(mb, 0, n_loft) >= 0.0:
         return
