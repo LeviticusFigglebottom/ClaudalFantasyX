@@ -15,18 +15,14 @@
     },
     "banyan_placeholder": {
       "budget": [
-        16000,
-        2400
+        60000,
+        10000
       ],
-      "bytes": 542624,
+      "bytes": 3559288,
       "lods": {
-        "banyan_placeholder": 8230,
-        "banyan_placeholder-lod1": 2020
-      },
-      "placeholder": "stand-in hero banyan (cluster-card crown); the vegetation stream builds the real tree (haluna.md 1.3, vegetation.md 'Not built')",
-      "tags": [
-        "PLACEHOLDER"
-      ]
+        "banyan_placeholder": 59949,
+        "banyan_placeholder-lod1": 6999
+      }
     },
     "dock_haluna": {
       "budget": [
@@ -331,18 +327,14 @@
     },
     "windbreak_placeholder": {
       "budget": [
-        2600,
-        500
+        6500,
+        1000
       ],
-      "bytes": 76244,
+      "bytes": 443264,
       "lods": {
-        "windbreak_placeholder": 583,
-        "windbreak_placeholder-lod1": 175
-      },
-      "placeholder": "stand-in windbreak tree (cluster-card crown); the vegetation stream builds the real tree (haluna.md 1.3)",
-      "tags": [
-        "PLACEHOLDER"
-      ]
+        "windbreak_placeholder": 5785,
+        "windbreak_placeholder-lod1": 430
+      }
     }
   },
   "schema": "hymn-kit/1"

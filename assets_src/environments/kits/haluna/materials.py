@@ -203,5 +203,49 @@ def main(argv: list[str] | None = None) -> int:
     return 0
 
 
+# ---- M2-ENV-07 (appended by env-art): the hero banyan and the windbreak tree (trees.py) ----------
+# Bark and leaves of one tree share every wind uniform (vegetation.md: the primary sway must match, and
+# the secondary bob too, because twigs hand their bob on to the sprays they carry). Textures are the
+# vegetation stream's (textures.py "trees"): one leaf atlas for both trees, one banyan bark.
+def _tree_wind(height_m: float, response: float) -> dict:
+    return {"wind_response": response, "plant_height_m": height_m, "sway_lean": 0.005, "sway_amplitude": 0.004,
+            "sway_frequency_hz": 0.15, "gust_contrast": 1, "secondary_amplitude_m": 0.06,
+            "secondary_frequency_hz": 0.6}
+
+
+def _tree_bark(height_m: float, response: float, base: str, top: str, **kw) -> dict:
+    d = {"tex_albedo": ("tex", VEG_TEX + "banyan_bark_albedo.png"),
+         "tex_normal": ("tex", VEG_TEX + "banyan_bark_normal.png"), "flutter_amplitude_m": 0,
+         "col_base": base, "col_top": top, "normal_strength": 1.4, "roughness_value": 0.88, "specular_value": 0.3,
+         "ao_strength": 0.6}
+    d.update(_tree_wind(height_m, response))
+    d.update(kw)
+    return {"shader": BARK, "params": d}
+
+
+def _tree_leaf(height_m: float, response: float, **kw) -> dict:
+    d = dict(_FOLIAGE)
+    d.update({"tex_albedo": ("tex", VEG_TEX + "coastal_tree_leaf_albedo.png"),
+              "tex_normal_trans": ("tex", VEG_TEX + "coastal_tree_leaf_normal.png"),
+              "flutter_amplitude_m": 0.012, "flutter_frequency_hz": 3, "underside_lighten": 0.08,
+              "mip_coverage_boost": 0.35, "roughness_value": 0.42, "specular_value": 0.5, "ao_in_albedo": 0.55,
+              "col_tint_variation": "Color(1.08, 1.05, 0.8, 1)", "tint_variation": 0.3})
+    d.update(_tree_wind(height_m, response))
+    d.update(kw)
+    return {"shader": FOLIAGE, "params": d}
+
+
+# The banyan's old bark is a pale grey-brown (~#8C8477 painted); the hanging and young prop roots are
+# warmer and a little darker (review-sweep-F S4: neither white sticks nor black poles).
+MATERIALS["kit_banyan_bark"] = _tree_bark(14, 0.15, "Color(0.92, 0.9, 0.88, 1)", "Color(1, 0.98, 0.95, 1)")
+MATERIALS["kit_banyan_root"] = _tree_bark(14, 0.15, "Color(0.84, 0.72, 0.6, 1)", "Color(0.92, 0.8, 0.68, 1)",
+                                          roughness_value=0.8)
+MATERIALS["kit_banyan_leaf"] = _tree_leaf(14, 0.15, col_tint=hexc("#F2F5EC"))
+# The windbreak tree: foliage_shadow-heavy, thick leaves (less transmission), dark bark.
+MATERIALS["kit_windbreak_bark"] = _tree_bark(8, 0.2, "Color(0.5, 0.47, 0.44, 1)", "Color(0.58, 0.55, 0.5, 1)")
+MATERIALS["kit_windbreak_leaf"] = _tree_leaf(8, 0.2, col_tint=hexc("#D6DED8"), translucency=0.45,
+                                             roughness_value=0.38)
+
+
 if __name__ == "__main__":
     sys.exit(main())
