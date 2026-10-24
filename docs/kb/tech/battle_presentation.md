@@ -82,13 +82,19 @@ hero actor scene, M2-UI-07, or a creature actor, M2-CRE-03). A creature actor pl
 | `finisher` | no | `finisher`, `chant`, `dive`, `verse`, `brace`, `glyph` strike (Swell techniques, Vowbound finishers; M2-BPR-04) | each style's own shape (see Specials) |
 | `hit` | no | a damaging hit's target, on contact | recoil and tip back |
 | `dodge` | no | a missed target, on contact | sidestep |
-| `ko` | no (holds the last frame) | a felled target, `ko.delay_sec` after contact | drop and tip over, then the stand-in's sink and fade |
-| `victory` | yes | the party at the battle's end (M2-BPR-05) | a small hop |
+| `ko` | no (holds the last frame) | a felled target, `ko.delay_sec` after contact; plays once (M2-BPR-11) | drop and tip over, then the stand-in's sink and fade |
+| `victory` | yes | the party at the battle's end (M2-BPR-05), each fighter `stagger_sec` after the last | a small hop |
 
 - **Timing on the clip.** A strike clip should reach its contact frame at `contact_at` of its length at 1x
   speed; the sequencer plays it at the battle speed (`speed_scale`). A model clip replaces the procedural strike
   (no lunge or lean on top) but the travel still happens: the root moves, the clip animates in place.
 - **Root motion.** Clips are **in place** (no root translation). Travel belongs to the sequencer.
+- **KO pose.** Any pose that reads as down: a fall, or a kneel or slump (the heroes' M2-CHR-07 clips kneel). A
+  model with a `ko` clip is not sunk by the stand-in (its clip puts it on the ground; M2-HER-1103). A fallen party
+  member holds that last frame, faint, until a revive; a fallen foe fades out.
+- **Blends.** BattleClips plays by name and leaves the blend to the model's AnimationPlayer: a hero scene sets short
+  per-pair blend times into its strikes (0.12–0.2 s, hero-integration M2-HER-1103) so the wind-up before an early
+  contact frame isn't swallowed by the 0.3 s default.
 - **Agreed with:** the characters track (`claude/characters`, heroes, M2-CHR-06 / M2-UI-07) and the creatures
   track (`claude/creatures`, CreatureActor `clip_by_kind`, M2-CRE-03); see their live logs. A creature's
   `clip_by_kind` names its own clips per skill kind; until those rows map onto the contract names, the creature
