@@ -2227,6 +2227,12 @@ def zone_weather_errors(doc: object, scene_exists) -> list[str]:
     for i, row in enumerate(zones):
         w = f"{w0} zones[{i}]"
         errs += _wind_row_errors(row, w)
+        variants = row.get("variants", {}) if isinstance(row, dict) else {}  # m2-slice: e.g. Haluna at night
+        if not isinstance(variants, dict):
+            errs.append(f"{w}.variants: must be an object")
+        else:
+            for name, v in variants.items():
+                errs += _wind_row_errors(v, f"{w}.variants.{name}")
         scene = row.get("scene") if isinstance(row, dict) else None
         if not isinstance(scene, str) or not scene.startswith("res://") or not scene.endswith(".tscn"):
             errs.append(f"{w}.scene: must be a res://...tscn path")
