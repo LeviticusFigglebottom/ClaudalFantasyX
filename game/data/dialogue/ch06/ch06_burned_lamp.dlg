@@ -1,0 +1,50 @@
+// Ch6 B09, side scene (optional): "The Burned Lamp" (act1_ch06.md §4; W16). In-engine, opened by the
+// tideline marker below the camp at dusk. Liss digs a hole in the wet sand with a hull-scraper; beside
+// her a scorched lamp housing, its salt-glass crazed, a name scratched on its collar under her thumb.
+// Rules, every one (tests/integration/test_ch06_thread.gd checks the name):
+//   - Nobody ever says whose name it was. The camera never reads the collar: one locked shot (W16)
+//     and inserts on hands and sand only, never one that could read it.
+//   - Rhen doesn't joke and says nothing about his father or his lantern.
+//   - No more than four lines from Liss in a row.
+//   - One faint glimmer_held mote slips out of the sand and drifts seaward, down the beach, into the
+//     water. Neither of them looks at it (bible §2, §7: Saltwrights hold their dead too; never said).
+// Sets ch06_saw_lamp_buried; digging without asking sets ch06_dug_without_asking (Ch11's truce).
+title: ch06_burned_lamp
+location: ch06/brine_shoals
+---
+@camera W16
+@music silence fade=2.0
+@sfx tide_ambience
+@anim liss dig_sand
+@wait 1.5
+Liss [neutral]: Don't touch that. #line:ch06_lamp_001
+-> Whose was it? #line:ch06_lamp_002
+    Liss [cold]: Don't. #line:ch06_lamp_003
+    @mark rhen tideline_sit walk
+    @anim rhen sit
+    @wait 1.5
+-> (Kneel and dig beside her.) #line:ch06_lamp_004
+    @anim rhen dig_sand
+    @wait 2.5
+    @anim liss hand_over rhen
+    <<set $ch06_dug_without_asking = true>>
+    @wait 1.0
+Liss [sad]: Housing's cracked at the seam. Burner side's fused. Seals gone. She'd not hold. #line:ch06_lamp_005
+@wait 1.5
+Liss [grief]: She'd never hold again. #line:ch06_lamp_006
+@anim liss set_in_hole lamp_hole
+@anim liss flatten_sand
+@vfx glimmer_held at=lamp_hole drift=down_seaward count=1
+@wait 3.0
+Rhen [neutral]: In Oruvel we'd hang a lamp on a mooring line. For the ones who didn't come up. #line:ch06_lamp_007
+Liss [neutral]: We put them to work. That's how we keep them. #line:ch06_lamp_008
+Rhen [neutral]: And when they break? #line:ch06_lamp_009
+Liss [neutral]: Then you dig. #line:ch06_lamp_010
+@anim liss stand
+@wait 1.0
+Liss [neutral]: You didn't see this, diver. #line:ch06_lamp_011
+Rhen [neutral]: See what. #line:ch06_lamp_012
+@face liss soft_smile 0.6
+@wait 1.0
+<<set $ch06_saw_lamp_buried = true>>
+===

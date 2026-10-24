@@ -1,0 +1,31 @@
+// Ch6 B06 "After the barge" (act1_ch06.md; W06). In-engine. The wrights are led away up the shoals
+// toward the Corrow road under escort, unbranded, their camp still burning behind them. Toma is
+// radiant, with tears he doesn't wipe. Liss, in profile, watching the wrights go, says the chapter's
+// only dissent, once the barge has gone (W06_after: the escort in the background, Liss in profile).
+// Nobody answers it: the silence is held, and Toma's smile holds, then doesn't quite. Then the joining (~60 words), and Asha's tell (when hurting, ask about
+// the other's day). The chapter flow seats Liss in the party after this scene.
+title: ch06_after_barge
+location: ch06/brine_shoals
+---
+@camera W06_after
+@music liss_theme fade=2.0
+@mark wrights escort_road walk
+@face toma tender 0.5
+Toma [smile]: You saw him. That is the Order. That is what it is for. #line:ch06_after_001
+@anim liss look_at wrights
+@wait 1.0
+Liss [cold]: He put the fire out once it had finished. #line:ch06_after_002
+@wait 2.5
+@face toma neutral 1.5
+@wait 1.0
+Liss [neutral]: Your papers get me past the Corrow checkpoints. I'll pull my weight, and I'll stop when we're square. #line:ch06_after_003
+Toma [neutral]: You are written in, Mistress Varrow. You are under my papers now. #line:ch06_after_004
+Liss [neutral]: Lucky me. #line:ch06_after_005
+Ysolde [soft_smile]: Welcome to the Lady Cantor's party. #line:ch06_after_006
+@mark asha toma_apart walk
+@anim asha look_at toma
+Asha [tender]: Are you all right? #line:ch06_after_007
+Toma [smile]: I am better than all right. #line:ch06_after_008
+@wait 1.0
+<<set $ch06_liss_joined = true>>
+===

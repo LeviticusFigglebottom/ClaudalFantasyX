@@ -1,0 +1,21 @@
+// Ch6 B01, walking banter 2 (act1_ch06.md; W02): the midday stop on a hull. Everyone eats, and
+// Kerrid doesn't. The insert holds his share untouched beside him (the second clue after Ch5's
+// bowl). No line from him; Rhen takes it after a while. In-engine, played by the layout's trigger.
+// Watch (ADR 0020): Kerrid says nothing, nobody remarks on him, and the camera only looks.
+title: ch06_midday
+location: ch06/brine_shoals
+---
+@camera W02
+@anim asha sit
+@anim toma sit
+@anim ysolde sit
+@anim kerrid stand_apart
+@wait 1.5
+@camera W02_share
+@wait 2.0
+@camera W02
+@wait 1.5
+@anim rhen take kerrid_share
+Rhen [neutral]: ...Seems a shame. #line:ch06_midday_001
+@wait 0.8
+===
