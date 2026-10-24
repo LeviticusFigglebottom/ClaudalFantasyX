@@ -22,4 +22,6 @@ rows once m2-slice adds them (M3-C04-02).
 ## Notes
 - 2026-10-24: all three have first passes, rows, identical jobs, PROVENANCE and approved review shots. No enemies.json rows yet (m2-slice, M3-C04-02); add `model` with them. Heights: Spar-Wraith 3.6 m (spar tips), bottle hermit 0.45 m, sail leech built around its hover point (spec hover about 1.4 m).
 
+- 2026-10-24: m2-slice's two-phase spar_wraith (`hauled_down`): a `Shroud` mesh (hidden by the phase), a `Sheath` water skin (`show_after`, a new phase key), the drop and deck strikes (phase `clips`). The kit gained `pose_of`/`in_pose`, shared with the Reach (its build is byte-identical). Shot re-approved after viewing (0.03089).
+
 ## Review log

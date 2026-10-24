@@ -9,6 +9,7 @@ const BELL := "res://game/creatures/drownbell/drownbell_battle.tscn"
 const GNAW := "res://game/creatures/hullgnaw/hullgnaw_battle.tscn"
 const MATRON := "res://game/creatures/cinder_matron/cinder_matron_battle.tscn"
 const REACH := "res://game/creatures/undertows_reach/undertows_reach_battle.tscn"
+const WRAITH := "res://game/creatures/spar_wraith/spar_wraith_battle.tscn"
 const RING := {"radius_factor": 1.4, "inner_soft_m": 0.25, "notches": 6}
 const SANDBOX := "res://game/battle/scene/battle_sandbox.tscn"
 const SEED := 20261024
@@ -46,6 +47,9 @@ func test_every_creature_row_names_a_scene_with_its_clips() -> void:
 			needed.append(str((phase as Dictionary).get("idle", "")))
 			for clip: Variant in ((phase as Dictionary).get("clips", {}) as Dictionary).values():
 				needed.append(str(clip))
+		for clip: Variant in row["hit_variants"]:
+			needed.append(str(clip))
+		needed.append(str((row["idle_variety"] as Dictionary).get("clip", "")))
 		for clip in needed:
 			if clip == "":
 				continue  # a phase may keep the creature's idle (no `idle` of its own)
@@ -244,6 +248,16 @@ func test_phase_nodes_hide_at_once_or_after_the_clip() -> void:
 	var h := _actor(GNAW)
 	h.enter_phase(&"breaking", true)
 	assert_false((h.find_child("Ribs", true, false) as Node3D).visible, "an instant phase change hides them at once")
+	var w := _actor(WRAITH)
+	var shroud := w.find_child("Shroud", true, false) as Node3D
+	var sheath := w.find_child("Sheath", true, false) as Node3D
+	assert_true(shroud.visible and not sheath.visible, "shrouded in the rigging; the sheath starts hidden")
+	assert_true(w.enter_phase(&"hauled_down"))
+	assert_false(shroud.visible, "the shroud burns away at once")
+	assert_false(sheath.visible, "the sea comes up its lines after the drop")
+	w.settle()
+	assert_true(sheath.visible, "show_after: sheathed once the drop has played")
+	assert_eq(w.phase_clip(&"attack"), &"attack_deck", "it strikes from the deck")
 
 
 func test_a_phase_plays_its_own_strikes() -> void:
@@ -260,6 +274,46 @@ func test_a_phase_plays_its_own_strikes() -> void:
 	assert_true(a.play_action(&"", &"magical"))
 	assert_eq(a.current_clip, &"cast_breach")
 	assert_eq(a.phase_clip(&"hit"), &"hit", "the Breach has no hit of its own")
+
+
+func test_hits_rotate_their_variants_and_a_phase_keeps_its_own() -> void:
+	var a := _actor(CRAB)
+	var played: Array[StringName] = []
+	for i in 4:
+		assert_true(a.play_hit())
+		played.append(a.current_clip)
+	assert_eq(played, [&"hit", &"hit_b", &"hit", &"hit_b"] as Array[StringName], "hits alternate their recoil")
+	var r := _actor(REACH)
+	r.enter_phase(&"dark", true)
+	assert_true(r.play_hit())
+	assert_eq(r.current_clip, &"hit_dark", "a phase's own hit wins over the variants")
+
+
+func test_an_idling_creature_fidgets_now_and_then() -> void:
+	var a := _actor(CRAB)
+	var cfg: Dictionary = CreatureActor.row_for(&"reef_crab")["idle_variety"] as Dictionary
+	var most := float((cfg["every_sec"] as Array)[1])
+	var seen := false
+	var t := 0.0
+	while t < most + 0.5 and not seen:
+		a._process(0.1)
+		t += 0.1
+		seen = a.current_clip == &"idle_b"
+	assert_true(seen, "it fidgets within its longest interval")
+	var player := a.find_children("*", "AnimationPlayer", true, false)[0] as AnimationPlayer
+	player.advance(player.get_animation(&"idle_b").length + 0.05)
+	assert_eq(a.current_clip, &"idle", "and idles again")
+	var b := _actor(CRAB)
+	b.set_ko(true, 0.0)
+	for i in int((most + 0.5) / 0.1):
+		b._process(0.1)
+	assert_eq(b.current_clip, &"ko", "a fallen creature never fidgets")
+	var c := _actor(CRAB)
+	player = c.find_children("*", "AnimationPlayer", true, false)[0] as AnimationPlayer
+	player.pause()
+	for i in int((most + 0.5) / 0.1):
+		c._process(0.1)
+	assert_eq(c.current_clip, &"idle", "a held (paused) pose, as in a portrait, never fidgets")
 
 
 func test_a_drownbell_fight_breaks_the_rim_and_floods_the_bell() -> void:
