@@ -14,6 +14,7 @@ const BASE_BODY := "res://assets/characters/base_body/base_body_slender.glb"
 const BUST := "res://assets/characters/shader_test/shader_test_bust.glb"
 const ASHA_DIR := "res://assets/characters/asha/"
 const KINDS: Array[String] = [
+	"ashcrown_kit",
 	"base_body",
 	"brine_shoals_kit",
 	"characters",
