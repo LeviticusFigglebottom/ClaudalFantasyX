@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "doc": "Hero motion tuning (M2-HRO-01..04, ADR 0038): how the real hero models turn, blend their gait and idle in the field, in battle and in cutscenes. Metres, seconds, degrees. Read by HeroLocomotion (game/hero_motion/hero_locomotion.gd).",
+  "turn": {
+    "doc": "The visible body turns toward its travel (or its node's facing when still) at most max_rate_deg_per_sec, never snapping. The turn speed eases in (max_accel) and out (settle_gain: degrees per second per degree of error left).",
+    "max_rate_deg_per_sec": 400.0,
+    "max_accel_deg_per_sec2": 2600.0,
+    "settle_gain": 9.0,
+    "min_move_speed_mps": 0.2
+  },
+  "gait": {
+    "doc": "Locomotion blend (BlendSpace1D on ground speed): idle at 0, walk at walk_clip_mps, run at run_clip_mps, the speeds at which each in-place clip's feet plant without sliding. Above run the clip speeds up to max_playback_scale. speed_smoothing_sec filters the speed the blend sees, so a start or stop rolls through the gait instead of popping.",
+    "walk_clip_mps": 1.6,
+    "run_clip_mps": 4.2,
+    "max_playback_scale": 1.35,
+    "speed_smoothing_sec": 0.12,
+    "teleport_m": 2.5
+  }
+}
