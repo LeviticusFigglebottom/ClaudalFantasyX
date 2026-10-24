@@ -71,6 +71,11 @@ func build() -> void:
 	_build_ground()
 	_build_props()
 	_build_bounds()
+	# M1-ENV-11: the bodies enter with their shapes. A shape added to a body already in the physics space
+	# is only queryable after the next physics step, and the plants' AUTO shelter probes on the first
+	# physics frame after entry, before that step: they would see an empty world and stay open.
+	for body in [ground, props, bounds]:
+		add_child(body)
 	build_msec = Time.get_ticks_msec() - t0
 	built.emit()
 
@@ -85,10 +90,10 @@ func covers(x: float, z: float) -> bool:
 	return walk_rect.has_point(Vector2(x, z))
 
 
+## A new body, not yet added (build() adds it once its shapes are in).
 func _body(body_name: StringName) -> StaticBody3D:
 	var b := StaticBody3D.new()
 	b.name = body_name
-	add_child(b)
 	return b
 
 
