@@ -3,6 +3,13 @@
 Feature track for the M2 vertical slice (session_01DQ9tdk8Uatb8Jr6raAkXiC), branch `claude/m2-slice`, started from `claude/first-playable` 67984ce. **This environment owns this file** (CLAUDE.md §7a). The Lead is session_019iimsngAgPLEram1wcbLpE; the integration branch is `claude/undertow-lead-handoff-423ixt`.
 
 ## Now
+- **M3-C07-02 is merged** (Ch7's story half; in review, reviewer narrative). Handoff cinematics-16.
+  - **For the Reefball agent:** replace only the steps of beat `reefball_match` in `game/data/flow/chapters/ch07.json`, zone `ch07/tamsule_bell_galleries`.
+    - Today that beat is a stand-in: it sets `ch07_tidecup_played`, then goes to `ch07/tamsule_bell_galleries` `CatchPool`. The real match must make the same return.
+    - B05 ends on `<<event start_reefball tidecup_opening>>`. Set `ch07_tidecup_won` on a win only; no story script reads it.
+  - **Names to change in your loc rows** (M3-C07-03): Sorrin (captain Ione Sabe) and Pio, and Oruvel's divers Brann Ollo, Mae Ketter, Dovic Saan and Tull Arro, not "Pemakar Terraces", "Noa" and "Old Ama".
+  - **Follow-ups:** M3-C07-03 to -07.
+- **Creatures:** their Act I models are on claude/creatures. Their `"model"` lines and the wickfry→glassfry rename go into m2-slice's first merge after creatures reaches the integration branch.
 - **In flight:** three build subagents.
   - M3-C04-02, Ch4.
   - M3-C05-02, Ch5: provisional Kerrid and Kahre rows, to be flagged for combat.
