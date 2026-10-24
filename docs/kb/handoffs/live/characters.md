@@ -40,7 +40,7 @@
     - 3 new shots (`<hero>_battle_attack`), viewed and approved.
   - **Ratchet:** Asha's VerseSleeve count limit rose 4 → 6 (sleeve-top vertices under the sleeve at hit and defend; viewed). The depth limit is unchanged.
   - **Requests sent to the battle track:** read the `contact` marker (contact currently lands late), finisher and support per-style timing, and ko revive.
-  - **The battle track has wired all three:** strikes land on the `contact` marker, the shared finisher and cast clips are fine, and a revive returns a hero to idle. **To do:** review M2-BPR-10 (their placeholder battle poses; reviewer: character) once claude/battle-presentation and this branch meet on the integration branch.
+  - **The battle track has wired all three:** strikes land on the `contact` marker, the shared finisher and cast clips are fine, and a revive returns a hero to idle. **M2-BPR-10 reviewed (approved; sent to them to log):** the axis conventions match hero_clips. The placeholders cover heroes without a battle set (Ysolde, and Liss and Kerrid later). This was a data-only review; the poses weren't seen rendered.
 - **MERGE-READY @ e32848cc: M3-CHR-02 Sefir Aurane** (review: rendering). Handoff: 2026-10-24-character-11.md; review: sefir_review.md.
   - **Build:** LOD0 58,426 tris, sefir.glb 4.42 MB.
   - **Probe:** passes at the default limits, with no ratchet.
