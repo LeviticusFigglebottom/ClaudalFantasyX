@@ -393,3 +393,18 @@ Rules:
 | assets/audio/music/hush_coda.ogg | assets_src/music/hush_first_verse.py (render_coda) + assets_src/music/hush_coda.py + tools/audio/synth/ | python3 assets_src/music/hush_coda.py | Audio (claude/audio, M2-AUD-03) | 2026-10-24 | original |
 | assets/audio/music/haluna_dawn.ogg | assets_src/music/haluna_dawn.py + tools/audio/synth/ | python3 assets_src/music/haluna_dawn.py | Audio (claude/audio, M2-AUD-03) | 2026-10-24 | original |
 | assets/audio/sfx/ilun_summon.ogg | assets_src/music/ilun_summon.py + tools/audio/synth/ | python3 assets_src/music/ilun_summon.py | Audio (claude/audio, M2-AUD-03) | 2026-10-24 | original |
+| assets/audio/sfx/voice/blip_soft_1.ogg | assets_src/sfx/voice_blips.py + tools/audio/synth/ | python3 assets_src/sfx/voice_blips.py | Audio (claude/audio, M3-AUD-07) | 2026-10-24 | original |
+| assets/audio/sfx/voice/blip_soft_2.ogg | assets_src/sfx/voice_blips.py + tools/audio/synth/ | python3 assets_src/sfx/voice_blips.py | Audio (claude/audio, M3-AUD-07) | 2026-10-24 | original |
+| assets/audio/sfx/voice/blip_soft_3.ogg | assets_src/sfx/voice_blips.py + tools/audio/synth/ | python3 assets_src/sfx/voice_blips.py | Audio (claude/audio, M3-AUD-07) | 2026-10-24 | original |
+| assets/audio/sfx/voice/blip_bright_1.ogg | assets_src/sfx/voice_blips.py + tools/audio/synth/ | python3 assets_src/sfx/voice_blips.py | Audio (claude/audio, M3-AUD-07) | 2026-10-24 | original |
+| assets/audio/sfx/voice/blip_bright_2.ogg | assets_src/sfx/voice_blips.py + tools/audio/synth/ | python3 assets_src/sfx/voice_blips.py | Audio (claude/audio, M3-AUD-07) | 2026-10-24 | original |
+| assets/audio/sfx/voice/blip_bright_3.ogg | assets_src/sfx/voice_blips.py + tools/audio/synth/ | python3 assets_src/sfx/voice_blips.py | Audio (claude/audio, M3-AUD-07) | 2026-10-24 | original |
+| assets/audio/sfx/voice/blip_low_1.ogg | assets_src/sfx/voice_blips.py + tools/audio/synth/ | python3 assets_src/sfx/voice_blips.py | Audio (claude/audio, M3-AUD-07) | 2026-10-24 | original |
+| assets/audio/sfx/voice/blip_low_2.ogg | assets_src/sfx/voice_blips.py + tools/audio/synth/ | python3 assets_src/sfx/voice_blips.py | Audio (claude/audio, M3-AUD-07) | 2026-10-24 | original |
+| assets/audio/sfx/voice/blip_low_3.ogg | assets_src/sfx/voice_blips.py + tools/audio/synth/ | python3 assets_src/sfx/voice_blips.py | Audio (claude/audio, M3-AUD-07) | 2026-10-24 | original |
+| assets/audio/sfx/voice/blip_breathy_1.ogg | assets_src/sfx/voice_blips.py + tools/audio/synth/ | python3 assets_src/sfx/voice_blips.py | Audio (claude/audio, M3-AUD-07) | 2026-10-24 | original |
+| assets/audio/sfx/voice/blip_breathy_2.ogg | assets_src/sfx/voice_blips.py + tools/audio/synth/ | python3 assets_src/sfx/voice_blips.py | Audio (claude/audio, M3-AUD-07) | 2026-10-24 | original |
+| assets/audio/sfx/voice/blip_breathy_3.ogg | assets_src/sfx/voice_blips.py + tools/audio/synth/ | python3 assets_src/sfx/voice_blips.py | Audio (claude/audio, M3-AUD-07) | 2026-10-24 | original |
+| assets/audio/sfx/voice/blip_child_1.ogg | assets_src/sfx/voice_blips.py + tools/audio/synth/ | python3 assets_src/sfx/voice_blips.py | Audio (claude/audio, M3-AUD-07) | 2026-10-24 | original |
+| assets/audio/sfx/voice/blip_child_2.ogg | assets_src/sfx/voice_blips.py + tools/audio/synth/ | python3 assets_src/sfx/voice_blips.py | Audio (claude/audio, M3-AUD-07) | 2026-10-24 | original |
+| assets/audio/sfx/voice/blip_child_3.ogg | assets_src/sfx/voice_blips.py + tools/audio/synth/ | python3 assets_src/sfx/voice_blips.py | Audio (claude/audio, M3-AUD-07) | 2026-10-24 | original |
