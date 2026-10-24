@@ -31,6 +31,18 @@
       ]
     },
     {
+      "id": "rhen",
+      "owner": "character",
+      "_note": "M2-CHR-01: Rhen reuses Asha's modules (build_asha as a helper library, asha_textures with per-hero knobs), so her sources are his too.",
+      "sources": ["assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**"],
+      "outputs": ["assets/characters/rhen/*.glb", "assets/characters/rhen/textures/*.png", "assets/characters/rhen/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/characters/rhen/build_rhen.py", "--", "--out", "assets/characters/rhen/rhen.glb", "--bake-dir", "{scratch}/rhen_bake"],
+        ["{python}", "assets_src/characters/rhen/rhen_textures.py", "--bake-dir", "{scratch}/rhen_bake"],
+        ["{python}", "assets_src/characters/rhen/write_materials.py"]
+      ]
+    },
+    {
       "id": "shader_test",
       "owner": "rendering",
       "sources": ["assets_src/characters/shader_test/build_shader_test_meshes.py", "assets_src/characters/shader_test/layout.py"],

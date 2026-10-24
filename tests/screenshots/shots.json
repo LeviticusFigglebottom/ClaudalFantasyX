@@ -731,6 +731,66 @@
       "settle_frames": 30
     },
     {
+      "id": "rhen_front",
+      "scene": "res://game/levels/_tests/characters/rhen/rhen_stage.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "rhen_q34",
+      "scene": "res://game/levels/_tests/characters/rhen/rhen_stage.tscn",
+      "camera": "Cameras/ThreeQuarterLeft",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "rhen_profile",
+      "scene": "res://game/levels/_tests/characters/rhen/rhen_stage.tscn",
+      "camera": "Cameras/Profile",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "rhen_back",
+      "scene": "res://game/levels/_tests/characters/rhen/rhen_stage.tscn",
+      "camera": "Cameras/Back",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "rhen_face_neutral",
+      "scene": "res://game/levels/_tests/characters/rhen/rhen_stage.tscn",
+      "camera": "Cameras/Face",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "rhen_face_smile",
+      "scene": "res://game/levels/_tests/characters/rhen/rhen_face_smile.tscn",
+      "camera": "Cameras/Face",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
       "id": "battle_swell_ring",
       "scene": "res://game/battle/scene/shots/battle_swell_ring.tscn"
     },

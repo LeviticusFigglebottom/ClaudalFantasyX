@@ -10,6 +10,8 @@ extends Node3D
 ## glTF material name -> hero material (skin_head, hair, cloth_sleeve, ...).
 @export var materials: Dictionary = {}
 @export var character_scene: PackedScene
+## Node name of the instanced character (M2-CHR-01: the stage also serves Rhen and Toma).
+@export var character_name: StringName = &"Asha"
 ## Emotion tag from game/data/dialogue/emotions.json, resolved through `face_poses`.
 @export var emotion: String = "neutral"
 ## Extra blendshape weights on top of the emotion (shape name -> weight), like a Cinematics @face.
@@ -52,7 +54,7 @@ func _ready() -> void:
 		push_warning("AshaStage %s: no character_scene" % name)
 		return
 	_character = character_scene.instantiate() as Node3D
-	_character.name = &"Asha"
+	_character.name = character_name
 	_turntable.rotation_degrees.y = yaw_degrees
 	_turntable.add_child(_character)
 	_assign_materials(_character)
@@ -66,7 +68,7 @@ func _ready() -> void:
 
 func _build_compare() -> void:
 	var other := character_scene.instantiate() as Node3D
-	other.name = &"AshaCompare"
+	other.name = StringName("%sCompare" % character_name)
 	other.position = compare_offset
 	other.rotation_degrees.y = yaw_degrees
 	add_child(other)

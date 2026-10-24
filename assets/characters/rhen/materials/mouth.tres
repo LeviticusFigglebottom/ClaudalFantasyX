@@ -1,0 +1,12 @@
+[gd_resource type="StandardMaterial3D" load_steps=2 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/characters/rhen/textures/rhen_head_orm.png" id="t0"]
+
+[resource]
+resource_name = "mouth"
+albedo_color = Color(0.28, 0.10, 0.09, 1)
+roughness = 0.5
+ao_enabled = true
+ao_light_affect = 0.5
+ao_texture_channel = 0
+ao_texture = ExtResource("t0")

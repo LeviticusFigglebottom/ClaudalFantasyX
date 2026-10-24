@@ -146,3 +146,20 @@ Since M1-CHR-03 the mesh is no longer the procedural cage. `bb_donor.generate(pa
 Base bodies: 13,380 vertices, 13,378 quads (26,756 triangles) for every variant, closed and manifold. The hero adds one Catmull-Clark level (`bb_donor.subdivide`, a linear stencil that also carries weights, masks and shape deltas) on the face mask and lips; the neighbouring quads are fan-triangulated through the edge points, so the mesh stays watertight. `python3 assets_src/characters/base_body/preview.py ... --zoom face` is the quick clay view.
 
 Known weaknesses: the base bodies' breasts are flattened by the girth fit (the field's breast volume, not the donor's). The heavy variant's depth comes only from the field's torso and is still shallow. The donor's ears and hands keep the native density.
+
+## 12. Adding a hero (M2-CHR-01, Rhen)
+
+A new hero is a folder `assets_src/characters/<hero>/` that **imports** Asha's modules instead of copying them:
+- `build_<hero>.py` imports `build_asha` as a helper library (`make_object`, `unwrap_faces`, `submesh`, weights, `dump_bake`,
+  `make_lod1`, …). It adds preview colours for new material names to `build_asha.MATERIALS` and replaces `build_asha.LOD1_RATIO`
+  with its own object names. Head, face shapes, eyes and teeth are built exactly as Asha's.
+- Hair, costume and props are the hero's own modules, written on the shared helpers (`asha_hair` cards and atlas columns;
+  `asha_costume` charts; `asha_mesh`). A hair module must also provide `hairline_v`, `in_hair`, `_gather` and `_flow_dir`, which
+  the skin maps read to paint the scalp.
+- `<hero>_textures.py` sets `asha_textures.OUT`, `PREFIX`, `SKIN_HEX`, `FRECKLES` and `HAIR_UNDERPAINT`, may wrap
+  `asha_textures.albedo` for its own skin terms, then calls `skin_maps`; it writes its own cloth atlas.
+- `write_materials.py` loads Asha's writer by path and points it at the hero's folder; generic atlases (eyes, hair, lashes,
+  brows, detail normals) are referenced from `assets/characters/asha/textures/`.
+- A job in `tools/dev/blender_builds.json` whose sources include `assets_src/characters/asha/**` (so a shared change
+  re-verifies every hero), PROVENANCE rows, a stage `game/levels/_tests/characters/<hero>/` on `asha_stage.gd`
+  (`character_name`), and shots. Rhen's review: [`rhen_review.md`](rhen_review.md).

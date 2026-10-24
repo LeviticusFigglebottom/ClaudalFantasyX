@@ -1,8 +1,8 @@
 {
-  "_about": "M1-ART-02 post-import rules for hero characters (game/core/import/characters_post_import.gd, AssetImportRules). Each glTF material slot maps to <asset dir>/materials/<slot>.tres, the table AshaStage applies at runtime. LODs: Godot's auto LODs inside each file plus a separate <hero>_lod1.glb (no authored -lodN chains). Characters have no static collision. Asha is listed under adoption_pending while M1-CHR-03 rebuilds her; docs/kb/tech/asset_import.md says how she adopts these rules.",
+  "_about": "M1-ART-02 post-import rules for hero characters (game/core/import/characters_post_import.gd, AssetImportRules). Each glTF material slot maps to <asset dir>/materials/<slot>.tres, the table AshaStage applies at runtime. LODs: Godot's auto LODs inside each file plus a separate <hero>_lod1.glb (no authored -lodN chains). Characters have no static collision. Asha is listed under adoption_pending while M1-CHR-03 rebuilds her; docs/kb/tech/asset_import.md says how she adopts these rules. Rhen (M2-CHR-01) adopts them from the start.",
   "kind": "characters",
   "script": "res://game/core/import/characters_post_import.gd",
-  "assets": ["res://assets/characters/asha/"],
+  "assets": ["res://assets/characters/asha/", "res://assets/characters/rhen/"],
   "adoption_pending": {
     "res://assets/characters/asha/": "M1-CHR-03 is rebuilding Asha; she adopts these rules after it lands (docs/kb/tech/asset_import.md)"
   },

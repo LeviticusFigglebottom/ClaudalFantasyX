@@ -63,6 +63,11 @@ LASH_LINE_DARKEN = 0.30
 HAIR_UNDERPAINT = "#16161A"
 SKIN_MOTTLE = 0.26  # M1-CHR-10: head albedo mottle amplitude (fbm spans about +-0.25: +-6.5% value)
 SKIN_MOTTLE_SCALE = 0.009  # m (times the head scale): the mottle's base cell
+# M2-CHR-01: the per-hero knobs. rhen_textures (and later heroes) import this module and set them
+# before calling skin_maps; the defaults are Asha's, so her maps are unchanged.
+PREFIX = "asha"  # file prefix of the skin maps
+SKIN_HEX = "#B9876A"  # base skin albedo (asha.md §6.1 skin_asha)
+FRECKLES = 18  # freckles across the nose bridge (asha.md §6.1: 12-20)
 
 
 # ---------------------------------------------------------------------------------------------
@@ -354,8 +359,8 @@ def skin_maps(key: str, npz: dict, size: int, size_small: int, body, face, lm, h
     ormi = dilate(scatter(r, orm, np.array([1.0, 0.5, 0.0])), cov, 6)
     if key == "head":
         teeth_patch(albi, ormi, size)
-    write(f"asha_{key}_albedo.png", albi)
-    write(f"asha_{key}_normal.png", nrm)
+    write(f"{PREFIX}_{key}_albedo.png", albi)
+    write(f"{PREFIX}_{key}_normal.png", nrm)
     maski = dilate(scatter(r, mask, np.array([1.0, 1.0, 0.5, 1.0])), cov, 6)
     if size_small != big:
         ormi = np.asarray(Image.fromarray((np.clip(ormi, 0, 1) * 255).astype(np.uint8)).resize(
@@ -373,8 +378,8 @@ def skin_maps(key: str, npz: dict, size: int, size_small: int, body, face, lm, h
         maski = maski.copy()
         maski[..., 1] = levels(maski[..., 1], 64)
         maski[..., 2] = levels(maski[..., 2], 32)
-    write(f"asha_{key}_orm.png", ormi)
-    write(f"asha_{key}_skinmask.png", maski)
+    write(f"{PREFIX}_{key}_orm.png", ormi)
+    write(f"{PREFIX}_{key}_skinmask.png", maski)
     if key == "head":
         texel_report(r, npz)
         texel_report(r, npz, face_only=True)
@@ -715,7 +720,7 @@ def lip_mask(Ph: np.ndarray, face, lm) -> np.ndarray:
 
 def albedo(Ph, Nh, key, face, lm, hair_mod, r, npz) -> np.ndarray:
     s = lm.h / 0.222
-    base = hexc("#B9876A")
+    base = hexc(SKIN_HEX)
     n = len(Ph)
     col = np.tile(base, (n, 1))
     zc = lm.P("chin")[2]
@@ -798,7 +803,7 @@ def albedo(Ph, Nh, key, face, lm, hair_mod, r, npz) -> np.ndarray:
             col = col * (1 - car[:, None]) + hexc("#B8786E") * car[:, None]
         # freckles across the nose bridge (12-20 dots, 0.8-1.5 mm, 8% darker)
         rng = np.random.default_rng(31)
-        nf = 18
+        nf = FRECKLES
         fx = rng.normal(0.0, 0.022, nf) * s
         fz = lm.P("eye")[2] - 0.012 * s - np.abs(rng.normal(0.0, 0.009, nf)) * s
         fr = rng.uniform(0.0004, 0.00075, nf) * s
