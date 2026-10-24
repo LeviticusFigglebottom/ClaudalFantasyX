@@ -384,6 +384,15 @@ The human's top priority for the slice: the player always knows the next step. A
 - **Gating:** it waits while the field refuses input (an opening cutscene), and a menu or a scene that takes over ends it for good. Reduced motion drops the rise. Layout and timing: `game/data/ui/area_title.json`.
 - **Shot:** `field_area_title`. **Tests:** `test_area_title_card.gd`. Field shot drivers live in `game/levels/_tests/ui_shots/` because they load `_tests` scenes, which release exports leave out.
 
+## First-time tips (M2-UI-24)
+
+- **Rows** live in `game/data/ui/tutorial_tips.json`. A tip is raised by `on`: `field_ready` (the field takes input in a scene), `near` (an interactable in reach whose tags include `tag`; the tags are its payload keys plus `shrine` for a SaveShrine), or `flag` (story flag `when` turns true). All of its `requires` flags must be set. Its seen `flag` (declared in flags.tres) is set when it shows, so each tip shows once per journey. `validate_data.py` (`check_tutorial_tips`) checks triggers, flags and keys.
+- **`TutorialTips`** (node-free) queues raised tips in order. **`TipCard`** (attached by `FieldHud`) shows one at a time at the upper right: a lamp glyph, a HeaderLabel title and the body. It holds `hold_sec + sec_per_char * length` and is gated like the other field HUD pieces, with its clock stopped while hidden.
+- **Bindings in text:** a body writes `{field_interact}`; `InputNames.fill` puts in the first key's name, or the pad button's after the pad was used (`InputNames.using_pad`, shared with the interaction prompt).
+- **Off switch:** Accessibility **Tips** (`tutorial_tips`). While it is off nothing is raised and nothing is marked seen.
+- Ch1's story prompts (dialogue scenes) and the battle `prompt_key` lines are separate systems.
+- **Shot:** `field_tip_card`. **Tests:** `test_tutorial_tips.gd`, `tools/tests/test_tutorial_tips.py`.
+
 ## Party pages, Quit to Title and the battle pause (M2-MNU-01..05)
 
 - **The field menu's root has ten rows** (`FieldMenuModel.ROOT_IDS`): Items, Equip, Lattice, Status, Swell, Map (M2-UI-18), Bestiary, Settings, Quit to Title, Close. Equip, Lattice and Status (`PARTY_ROWS`) are off, saying why, when nobody has joined. `field_menu.json` grew the panel to 639 px and the root page to nine rows; every rect is still a multiple of 3.

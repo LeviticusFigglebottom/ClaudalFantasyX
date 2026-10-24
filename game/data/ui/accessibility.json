@@ -22,7 +22,9 @@
        "option_keys": ["SET_BACKING_OFF", "SET_BACKING_SOFT", "SET_BACKING_SOLID"],
        "label_key": "SET_BACKING", "help_key": "SET_BACKING_HELP"},
       {"id": "objective_cue", "type": "bool", "default": true, "label_key": "SET_OBJECTIVE_CUE",
-       "help_key": "SET_OBJECTIVE_CUE_HELP"}
+       "help_key": "SET_OBJECTIVE_CUE_HELP"},
+      {"id": "tutorial_tips", "type": "bool", "default": true, "label_key": "SET_TUTORIAL_TIPS",
+       "help_key": "SET_TUTORIAL_TIPS_HELP"}
     ],
     "text_speeds": {
       "doc": "M2-UI-12: text_speed option -> multiplier of the dialogue box's default chars_per_sec (text_box.json), clamped to its min/max; 0 = instant (the box shows the whole line at once).",
