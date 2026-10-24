@@ -29,6 +29,20 @@ and ADR 0190 "hero motion layer", proposed).
   playback scale past the run's clip speed, a filtered speed so a stop rolls through the gait). 9 tests,
   `-- --filter=hero_locomotion` 9/0, lint and format clean, validate_data 0.
 
+- **M2-HER-1104 cutscene motion → review (cinematics)** (408a5bc1, da6dd917):
+  - `HeroMotion` (static): `play(actor, clip, blend, restart)` goes to the body's `play_clip`, or cross-fades the
+    AnimationPlayer; `set_locomotion_speed`; `add_micro_motion`.
+  - `HeroIdleMicro` (a SkeletonModifier3D): breathing, a weight shift with the feet planted, and the head leading
+    the turn (capped at 24°). Deterministic per actor id. Data: `idle_micro.json`.
+  - **The sequencer patch** is `docs/kb/tech/hero_motion_sequencer.patch`, against claude/m2-slice 94feee33. It
+    builds on M2-FP-29 rather than replacing it. `git apply --check` is clean, and with the patch applied cutscene is
+    44/0, prologue 5/0, fp_ 26/0, sequencer 17/0. m2-slice merges this branch first, then applies the patch.
+  - **Tests:** 15 new, plus the hero filter at 30/0.
+  - **Shot `hero_cutscene_turn_strip`** (viewed): Asha through a 120° turn on M2-FP-29's curve. The head visibly
+    leads the torso at ¼ and ¾ and settles over the body at the end.
+  - **Open for m2-slice:** Haluna's posed Asha faces +Z under her root, while the sequencer treats -Z as forward. A
+    `_turn_to` would turn her back to the target. Her root or body needs a 180° offset.
+
 ## In progress
 - Field: HeroFieldActor via one hook line in FieldController._ready (no zone scene edits), AnimationTree BlendSpace1D,
   measured clip speeds, followers; tuning the field acceleration and deceleration (field_movement.json) with m2-slice.
