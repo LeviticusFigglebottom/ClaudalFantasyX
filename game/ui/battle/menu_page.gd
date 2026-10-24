@@ -28,6 +28,8 @@ var _header_h := 0.0
 var _rule: OrnamentRule
 var _nudge_tweens: Dictionary = {}
 var _dimmed := false
+## False while a page beside this one has the input (set_cursor_shown).
+var _cursor_shown := true
 
 
 ## Height a page needs for `row_count` rows (header, rows, and a half-row of breathing room).
@@ -89,8 +91,8 @@ func replace_rows(page_rows: Array[Dictionary]) -> void:
 	_first = 0
 	_build_rows()
 	# A page set up empty hid its cursor (_place_cursor): show it again for the new rows.
-	_cursor_box.visible = not rows.is_empty()
-	_mote.visible = not rows.is_empty() and is_equal_approx(_content.modulate.a, 1.0)
+	_cursor_box.visible = _cursor_shown and not rows.is_empty()
+	_mote.visible = _cursor_shown and not rows.is_empty() and is_equal_approx(_content.modulate.a, 1.0)
 	var keep := cursor < rows.size() and bool(rows[cursor].get("enabled", true))
 	cursor = cursor if keep else first_enabled(0, 1)
 	_scroll_to_cursor()
@@ -155,7 +157,21 @@ func first_enabled(from: int, step: int) -> int:
 func set_dimmed(dim: bool) -> void:
 	_dimmed = dim
 	_content.modulate.a = HudLayout.num(_m, "submenu_dim") if dim else 1.0
-	_mote.visible = not dim
+	_mote.visible = not dim and _cursor_shown
+
+
+## Hides the cursor, its mote and the cursor row's nudge while another page beside this one has
+## the input (M2-MNU-07: the formation's two lists); the cursor index is kept. A hidden cursor sits
+## on no row, so a pointer moving over its row takes it like any other (row_hovered).
+func set_cursor_shown(shown: bool) -> void:
+	_cursor_shown = shown
+	_cursor_box.visible = shown and not rows.is_empty()
+	_mote.visible = shown and not rows.is_empty() and not _dimmed
+	_nudge_rows(false)
+
+
+func is_cursor_shown() -> bool:
+	return _cursor_shown
 
 
 ## The Control of row `index` (null when out of range); input parity tests hover and click it.
@@ -280,7 +296,7 @@ func _c(role: StringName) -> Color:
 ## event, not mouse_entered): a page that rebuilds its rows under a still pointer (a wheel notch, a
 ## key press) would otherwise snap the cursor back to it (M2-UI-26).
 func _on_row_mouse(index: int) -> void:
-	if not _dimmed and index != cursor and bool(rows[index].get("enabled", true)):
+	if not _dimmed and (index != cursor or not _cursor_shown) and bool(rows[index].get("enabled", true)):
 		set_cursor(index)
 		row_hovered.emit(index)
 
@@ -313,7 +329,7 @@ func _nudge_rows(animate: bool) -> void:
 		if node.get_child_count() == 0 or node.is_queued_for_deletion():
 			continue
 		var label := node.get_child(0) as Control
-		var x := base + (nudge if i == cursor else 0.0)
+		var x := base + (nudge if i == cursor and _cursor_shown else 0.0)
 		var old_tw: Tween = _nudge_tweens.get(i)
 		if old_tw != null and old_tw.is_valid():
 			old_tw.kill()

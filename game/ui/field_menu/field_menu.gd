@@ -23,7 +23,8 @@ extends Control
 ## (FieldSubmenu children in game/ui/menus/, each over a PartySheet of this model's state and
 ## heroes) the same way. Quit asks first on the right page (Level.QUIT: Stay / Quit to the title,
 ## Stay under the cursor, the line saying what is lost) and then returns to the title (boot.tscn)
-## through FlowRouting.
+## through FlowRouting. M2-MNU-07 added Formation (FormationMenu, the same way); when it closes the
+## heroes follow the saved line's order.
 
 signal closed
 
@@ -43,6 +44,7 @@ const CHILD_PAGES := {
 	FieldMenuModel.ROW_EQUIP: preload("res://game/ui/menus/equip/equip_menu.gd"),
 	FieldMenuModel.ROW_LATTICE: preload("res://game/ui/menus/lattice/lattice_menu.gd"),
 	FieldMenuModel.ROW_STATUS: preload("res://game/ui/menus/status/status_menu.gd"),
+	FieldMenuModel.ROW_FORMATION: preload("res://game/ui/menus/formation/formation_menu.gd"),
 }
 
 ## Pause the tree while open (the field must not move under a menu).
@@ -280,10 +282,21 @@ func _open_child(id: StringName) -> void:
 
 
 func _on_child_closed() -> void:
+	if child is FormationMenu:
+		_follow_formation()
 	child = null
 	visible = true
 	_root.replace_rows(model.root_rows())
 	_render()
+
+
+## After the Formation page: the heroes follow the saved line's order (party_ids, then
+## reserve_ids), so the other pages list them as the next fight has them. A stand-in party (nobody
+## joined) is left as it is.
+func _follow_formation() -> void:
+	var joined := PartyGoods.joined_members(model.state)
+	if not joined.is_empty():
+		model.heroes = joined
 
 
 func _open_quit() -> void:
