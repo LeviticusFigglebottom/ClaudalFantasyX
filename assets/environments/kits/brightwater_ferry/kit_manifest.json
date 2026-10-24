@@ -2,6 +2,17 @@
   "generator": "assets_src/environments/kits/brightwater_ferry/build.py",
   "kit": "brightwater_ferry",
   "pieces": {
+    "alongside_gear": {
+      "budget": [
+        4000,
+        400
+      ],
+      "bytes": 51084,
+      "lods": {
+        "alongside_gear": 638,
+        "alongside_gear-lod1": 348
+      }
+    },
     "derelict_hulk_a": {
       "budget": [
         16000,
@@ -121,6 +132,138 @@
       "lods": {
         "reef_awash": 3920,
         "reef_awash-lod1": 320
+      }
+    },
+    "terrace_derelict": {
+      "budget": [
+        6000,
+        600
+      ],
+      "bytes": 52624,
+      "lods": {
+        "terrace_derelict": 816,
+        "terrace_derelict-lod1": 300
+      }
+    },
+    "terrace_galley": {
+      "budget": [
+        10000,
+        1000
+      ],
+      "bytes": 427268,
+      "lods": {
+        "terrace_galley": 4436,
+        "terrace_galley-lod1": 636
+      }
+    },
+    "terrace_hold": {
+      "budget": [
+        10000,
+        1000
+      ],
+      "bytes": 218632,
+      "lods": {
+        "terrace_hold": 1976,
+        "terrace_hold-lod1": 858
+      }
+    },
+    "terrace_hull": {
+      "budget": [
+        40000,
+        4000
+      ],
+      "bytes": 1493212,
+      "lods": {
+        "terrace_hull": 21714,
+        "terrace_hull-lod1": 3616
+      }
+    },
+    "terrace_membrane": {
+      "budget": [
+        8000,
+        800
+      ],
+      "bytes": 65916,
+      "lods": {
+        "terrace_membrane": 1280,
+        "terrace_membrane-lod1": 128
+      }
+    },
+    "terrace_moored": {
+      "budget": [
+        8000,
+        800
+      ],
+      "bytes": 140340,
+      "lods": {
+        "terrace_moored": 2372,
+        "terrace_moored-lod1": 584
+      }
+    },
+    "terrace_name_board": {
+      "budget": [
+        8000,
+        800
+      ],
+      "bytes": 238556,
+      "lods": {
+        "terrace_name_board": 3588,
+        "terrace_name_board-lod1": 132
+      }
+    },
+    "terrace_rig": {
+      "budget": [
+        14000,
+        1400
+      ],
+      "bytes": 124080,
+      "lods": {
+        "terrace_rig": 2034,
+        "terrace_rig-lod1": 216
+      }
+    },
+    "terrace_sails_furled": {
+      "budget": [
+        12000,
+        1200
+      ],
+      "bytes": 177516,
+      "lods": {
+        "terrace_sails_furled": 3308,
+        "terrace_sails_furled-lod1": 480
+      }
+    },
+    "terrace_sails_lowered": {
+      "budget": [
+        14000,
+        1400
+      ],
+      "bytes": 180076,
+      "lods": {
+        "terrace_sails_lowered": 3488,
+        "terrace_sails_lowered-lod1": 480
+      }
+    },
+    "terrace_sails_set": {
+      "budget": [
+        24000,
+        2400
+      ],
+      "bytes": 169356,
+      "lods": {
+        "terrace_sails_set": 3468,
+        "terrace_sails_set-lod1": 268
+      }
+    },
+    "terrace_wheel": {
+      "budget": [
+        2500,
+        300
+      ],
+      "bytes": 52448,
+      "lods": {
+        "terrace_wheel": 714,
+        "terrace_wheel-lod1": 274
       }
     }
   },

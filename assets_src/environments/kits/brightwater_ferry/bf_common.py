@@ -67,8 +67,9 @@ M_REEF = "bf_reef"
 # Haluna generator slots reused (the lintel-gull carving) -> this kit's slots.
 RENAME = {"kit_carved_wood": M_CARVED, "kit_timber": M_TIMBER, "kit_lashing": M_ROPE}
 
-# Slots that emit light (only the lanterns' glass and the deckhouse windows; never on a drowned hull).
-EMISSIVE = (M_GLASS, M_WINDOW)
+# Slots that emit light (only the lanterns' glass and the deckhouse windows; never on a drowned hull), and the
+# Spar-Wraith's membrane seams on the Seventh Terrace (M3-ENV-08B: spawn_wound, Ch4 only).
+EMISSIVE = (M_GLASS, M_WINDOW, "bf_spawn_wound")
 
 # Weathering presets (vertex-colour multipliers, kit_common.Weathering). No moss at sea.
 DECK_W = kc.Weathering(moss=0.0, salt=0.35, wet=0.04, erosion=0.45, noise_scale_m=0.9)
