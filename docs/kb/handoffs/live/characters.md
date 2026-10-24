@@ -70,6 +70,13 @@
   2. **M2-CHR-12, field locomotion** (new): idle variants, walk and run with starts and stops, turns in place. Worktree sub-agent.
   3. **M2-CHR-11, host snaps** (new): rhen and toma are folded into M1-CHR-15, which is rebuilding them anyway; base_body and the seven villagers go to a worktree sub-agent.
   - The hero-integration track's live log is read each cycle. The branch didn't exist at 2026-10-24 ~20:00.
+- **hero-integration clip requests (M2-HER-1105 on claude/hero-integration), which I take:**
+  - **Locomotion, in M2-CHR-12 (in flight; names aligned):** walk_start, walk_stop, run_stop, turn_in_place_l90, turn_in_place_r90, turn_in_place_180, idle_shift.
+  - **Battle fixes, next after M2-CHR-12 lands:**
+    - a livelier `victory` (it barely moves);
+    - `ko` as a fall that lies down, unless battle-presentation rewords the contract;
+    - Rhen's hooks in hand for attack and finisher (needs a hook bone; with M1-CHR-15's Rhen rebuild);
+    - a ~0.8 s `revive`.
 - **Id blocks (the Lead's rule, CONSOLIDATED §4):** my new task ids are 500–599, ADRs 0140–0149, and handoffs are named `<date>-character-characters-<n>.md`.
   - Kerrid and Pell are renumbered M3-CHR-05/06 → **M3-CHR-505/506**, so they don't collide with big8's M3-CHR-05 (the 32 Ch4–Ch9 clips). That task folds into the clip work when it lands.
   - The duplicate M2-CHR-11 is removed. The canonical `M2-CHR-11-host-snaps-heroes-villagers.md` is claimed, with the PC evidence that hair positions and the LOD1 decimate inputs differ too.
