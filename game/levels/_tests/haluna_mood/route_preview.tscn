@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3]
+[gd_scene load_steps=9 format=3]
 
 [ext_resource type="PackedScene" path="res://game/levels/_tests/haluna_mood/haluna_mood.tscn" id="1_mood"]
 [ext_resource type="Script" path="res://game/levels/_tests/haluna_mood/route_preview_dresser.gd" id="2_route"]
@@ -26,6 +26,13 @@ position = Vector3(4.0, 2.4, -91.0)
 look_at = Vector3(-8.0, 1.3, -101.0)
 fov_deg = 37.8
 
+[sub_resource type="Resource" id="ShotEndingDock"]
+script = ExtResource("4_shot")
+id = &"ENDING_DOCK_NOON"
+position = Vector3(20.2, 2.9, 41.6)
+look_at = Vector3(40.0, 1.6, 27.7)
+fov_deg = 27.0
+
 [node name="HalunaMood" instance=ExtResource("1_mood")]
 
 [node name="RouteDresser" type="Node3D" parent="." node_paths=PackedStringArray("terrain", "tide")]
@@ -51,3 +58,9 @@ near = 0.1
 far = 6000.0
 script = ExtResource("3_cam")
 shot = SubResource("ShotRouteProps")
+
+[node name="EndingDock" type="Camera3D" parent="Cameras"]
+near = 0.1
+far = 6000.0
+script = ExtResource("3_cam")
+shot = SubResource("ShotEndingDock")

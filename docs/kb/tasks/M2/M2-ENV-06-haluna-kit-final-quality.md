@@ -85,4 +85,9 @@ materials, kit geometry) and `game/shaders/environment/**`. Set dressing in the 
   13978, _b 11753, _c 18547 tris (budget 22000). Mostly under the eave shadow at H02 range: h02 rmse 0.00044
   (baseline left). verify haluna_kit identical; kit unittests OK.
 
+- **The dock from `ending_dock`** (haluna.md H10 note): previewed at noon from the framing (camera on the
+  planks 4 m shoreward of the end, 1.5 m, 50 mm, looking out to sea; `route_preview.tscn` camera
+  `EndingDock`, shot `ending_dock_noon` in `route_preview_shots.json`). The planks, the end edge and the
+  drowned columns beyond read well; no change. The night look is m2-slice's ENV-02.
+
 ## Review log
