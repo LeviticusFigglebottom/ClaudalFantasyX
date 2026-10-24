@@ -23,3 +23,6 @@ ADR 0027 is accepted (review-sweep-P). The m2-slice track's `call_ilun` stand-in
 - Filed on the integration branch. The m2-slice track owns the Drownbell, and its task ids run to M2-FP-16, so this is FP-17.
 
 ## Review log
+
+## Lead note (2026-10-24)
+M2-CMB-05 is **merged** on the integration branch (3e59f8d): absorb fills the gauge (A1, read as the rolled absorb), Floodnet is non-elemental and clears the flood (A2), and the call runs the caller's end-of-turn ticks (A3). The sim has the call rule (`call_vowbound` in sim_policies.json) and a `sandbox_reef_vowbound` suite. The exact steps for this task are in handoff `2026-10-24-combat-13.md` § "What m2-slice needs for M2-FP-17". Start from the scratch results there: role_answer 72.0%, smart 87.0% (p90 60, at the ceiling).
