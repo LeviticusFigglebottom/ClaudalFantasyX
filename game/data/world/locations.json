@@ -92,6 +92,13 @@
       "spawn": "Landing",
       "name_key": "LOCATION_CH04_BRIGHTWATER_FERRY",
       "_note": "M3-C04-02: the islet's seaward landing, the ferry Kind Weather and the drifting Seventh Terrace (C4-09 to C4-15), a greybox zone (Ch04Zone)."
+    },
+    {
+      "id": "ch09/corrow_night",
+      "scene": "res://game/levels/ch09/corrow_night/corrow_night.tscn",
+      "spawn": "Strand",
+      "name_key": "LOCATION_CH09_CORROW_NIGHT",
+      "_note": "M3-C09-02: Corrow on the night of the Ebbing and the dawn road (Ch9 B01-B10), a greybox zone (Ch09Zone) standing in for the ch08/corrow night variant until Ch8 lands. Ch8 hands off here at Strand; until then it is reached from this row. The act break hands off to the end card (Ch10 is Act II, not in M3)."
     }
   ],
   "shrines": [
