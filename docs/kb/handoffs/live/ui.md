@@ -38,13 +38,18 @@ UI track (cloud session session_01NyuYPSZn7o7gYirTvz4zjs), branch `claude/ui`, s
 - **Fixes found by the full gate:**
   - **Field shot drivers moved to `game/levels/_tests/ui_shots/`:** they load `_tests` scenes, and `test_release_excludes_tests` failed. The Menus track reported it too.
   - **`test_town_services` leak:** a FieldController left behind by a test opened a second shop.
-- **In progress:** M2-UI-25, the dialogue box's continue glyph, backlog and auto-advance, in a worktree agent. These are UI-owned pieces in `game/ui/dialogue_assist/`, attached by one line in DialogueBox (Architect's file).
+- **M2-UI-25 (review, merged at 19838a8d):** the dialogue box's continue glyph, backlog (L / pad Y) and auto-advance setting (Off by default). UI-owned in `game/ui/dialogue_assist/`.
+  - **One line added to `dialogue_box.gd`** (Architect's file; please accept). Nothing of M2-ARC-06/07 is done there.
+  - **Shots:** `dialogue_continue` and `dialogue_backlog` are new; `settings_accessibility` is re-approved (11 rows).
+  - **Full suite for 19838a8d:** running in the background; the result goes here.
 - **Blocked:**
   - **M2-UI-07:** claude/characters (M2-CHR-06) is still not on the integration branch.
   - **M3-UI-01 (Reefball HUD):** no Reefball engine on any branch yet.
 
 ## Exact next step
-- Merge the M2-UI-25 agent branch when it reports. Then write the MERGE-READY line, and ask the Lead for more queue: after M2-UI-25 only the two blocked items remain.
+- **The queue is empty apart from blocked items. Lead: please queue more.**
+- **M2-UI-07:** when claude/characters (M2-CHR-06) reaches the integration branch, add the three `"scene"` lines and re-approve the battle shots.
+- **M3-UI-01, the Reefball HUD:** file and build it once the Reefball engine lands.
 
 ## Un-pushed state
 - None.
