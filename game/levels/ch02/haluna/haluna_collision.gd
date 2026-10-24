@@ -108,7 +108,7 @@ func _build_ground() -> void:
 	for j in nz:
 		var z := walk_rect.position.y + j * cell_m
 		for i in nx:
-			heights[j * nx + i] = terrain.height_at(walk_rect.position.x + i * cell_m, z)
+			heights[j * nx + i] = terrain.grid_height(walk_rect.position.x + i * cell_m, z)  # M2-ENV-05
 	heightmap = HeightMapShape3D.new()
 	heightmap.map_width = nx
 	heightmap.map_depth = nz

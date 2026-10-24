@@ -55,12 +55,18 @@ func prebuild() -> void:
 	if prebuilt or is_inside_tree():
 		return
 	var t0 := Time.get_ticks_msec()
+	# M2-ENV-05: the cast's materials (about a second of texture decoding) load on the loader's threads
+	# while this thread dresses the zone and builds its collision.
+	var cast: Array[HalunaActorPose] = []
+	for actor in get_node(^"CutsceneStage").find_children("*", "", true, false):
+		if actor is HalunaActorPose:
+			cast.append(actor as HalunaActorPose)
+			(actor as HalunaActorPose).request_materials()
 	var dresser := get_node(^"HalunaMood/Dresser") as HalunaDresser
 	HalunaZoneDresser.adopt(dresser).dress()
 	(get_node(^"Collision") as HalunaCollision).build()
-	for actor in get_node(^"CutsceneStage").find_children("*", "", true, false):
-		if actor is HalunaActorPose:
-			(actor as HalunaActorPose).assign_materials()
+	for actor in cast:
+		actor.assign_materials()
 	# The sea builds its ocean grid in _ready (~40 ms) unless handed one: hand it the same grid.
 	var water := get_node_or_null(^"HalunaMood/Water") as WaterSurface
 	if water != null and water.surface_mesh == null:

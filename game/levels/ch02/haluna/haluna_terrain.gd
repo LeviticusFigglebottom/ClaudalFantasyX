@@ -10,6 +10,8 @@ extends Node3D
 ## build stays O(vertices + lane cells) in GDScript.
 
 const CORE_SINK_M := 0.6
+## How close to a core grid point a sample must be to read the cached height (grid cells).
+const GRID_EPS := 1e-4
 
 ## All shape numbers live in the zone layout JSON ("terrain"); these are only the fallbacks.
 var shore_tip_x_m: float = 50.0
@@ -57,6 +59,11 @@ var _lane_mask := PackedFloat32Array()
 var _mask_origin := Vector2.ZERO
 var _mask_cell := 1.0
 var _mask_size := Vector2i.ZERO
+## M2-ENV-05: the core mesh's heights (row-major on the core_cell_m grid from core_rect.position), kept
+## for grid_height(): the zone's walk collision samples the same 1 m grid and reads them instead of
+## computing every height a second time.
+var _core_heights := PackedFloat32Array()
+var _core_n := Vector2i.ZERO
 
 
 func configure(data: Dictionary) -> void:
@@ -84,6 +91,8 @@ func build() -> void:
 	_rasterise_lanes()
 	for c in get_children():
 		c.queue_free()
+	_core_heights = PackedFloat32Array()
+	_core_n = Vector2i.ZERO
 	_add_mesh("Core", core_rect, core_cell_m, 0.0)
 	_add_mesh("Outer", outer_rect, outer_cell_m, CORE_SINK_M)
 	for k in far_islands.size():
@@ -97,6 +106,27 @@ func inland_m(x: float, z: float) -> float:
 	if az > shore_half_len_m:
 		shore -= tip_recede * (az - shore_half_len_m)
 	return shore - x
+
+
+## height_at(x, z), read from the core mesh's samples when (x, z) is one of its grid points (M2-ENV-05;
+## the mesh computed it with height_at at those exact coordinates and keeps it at 32-bit precision, the
+## precision the collision heightmap stores), else computed.
+func grid_height(x: float, z: float) -> float:
+	if not _core_heights.is_empty():
+		var fx := (x - core_rect.position.x) / core_cell_m
+		var fz := (z - core_rect.position.y) / core_cell_m
+		var i := roundi(fx)
+		var k := roundi(fz)
+		if (
+			absf(fx - i) < GRID_EPS
+			and absf(fz - k) < GRID_EPS
+			and i >= 0
+			and k >= 0
+			and i < _core_n.x
+			and k < _core_n.y
+		):
+			return _core_heights[k * _core_n.x + i]
+	return height_at(x, z)
 
 
 ## Ground height (m above datum) at world (x, z).
@@ -197,20 +227,37 @@ func _rasterise_lanes() -> void:
 func _add_mesh(mesh_name: String, rect: Rect2, cell: float, sink_inside_core: float) -> void:
 	var nx := int(rect.size.x / cell) + 1
 	var nz := int(rect.size.y / cell) + 1
-	var verts := PackedVector3Array()
-	var colors := PackedColorArray()
-	verts.resize(nx * nz)
-	colors.resize(nx * nz)
 	var inner := core_rect.grow(-cell * 1.5)
+	# M2-ENV-05: the rows are independent (height_at and _masks only read this node's settings, the noise
+	# and the lane mask), so they are computed in parallel, each into its own holder (no shared writes).
+	# The values and their order are the same as a single loop's.
+	var rows: Array[Row] = []
 	for j in nz:
+		rows.append(Row.new())
+	var fill := func(j: int) -> void:
+		var row := rows[j]
+		row.verts.resize(nx)
+		row.colors.resize(nx)
 		for i in nx:
 			var x := rect.position.x + i * cell
 			var z := rect.position.y + j * cell
 			var h := height_at(x, z)
 			if sink_inside_core > 0.0 and inner.has_point(Vector2(x, z)):
 				h -= sink_inside_core
-			verts[j * nx + i] = Vector3(x, h, z)
-			colors[j * nx + i] = _masks(x, z, h)
+			row.verts[i] = Vector3(x, h, z)
+			row.colors[i] = _masks(x, z, h)
+	var task := WorkerThreadPool.add_group_task(fill, nz, -1, true, "HalunaTerrain %s" % mesh_name)
+	WorkerThreadPool.wait_for_group_task_completion(task)
+	var verts := PackedVector3Array()
+	var colors := PackedColorArray()
+	for row in rows:
+		verts.append_array(row.verts)
+		colors.append_array(row.colors)
+	if rect == core_rect:
+		_core_n = Vector2i(nx, nz)
+		_core_heights.resize(nx * nz)
+		for k in verts.size():
+			_core_heights[k] = verts[k].y
 	var normals := PackedVector3Array()
 	normals.resize(nx * nz)
 	var tangents := PackedFloat32Array()
@@ -286,3 +333,10 @@ func _add_far_island(index: int, isl: Vector4) -> void:
 	mi.material_override = material
 	mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	add_child(mi)
+
+
+## One row of a mesh grid, filled by its own WorkerThreadPool task (M2-ENV-05).
+class Row:
+	extends RefCounted
+	var verts := PackedVector3Array()
+	var colors := PackedColorArray()
