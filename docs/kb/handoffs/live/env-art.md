@@ -73,8 +73,19 @@ Scope: assets and kit pieces (Blender jobs, materials, import rules), handed to 
         `lut_ch04_crossing` keeps the sea's teal (`lut_ch04_wake` is untouched).
       - Follow-up **M3-ENV-08B**: the boardable derelict *Seventh Terrace*. It depends on M3-ENV-07.
       - For Rendering: the daylight `ch04_derelict` grade.
-    - **Running (worktree agents):** M3-ENV-07 Oruvel raft-town, M3-ENV-09 Ashcrown, M3-ENV-10 Coilspire.
-      **Next:** M3-ENV-08B, once 07 lands.
+    - **M3-ENV-07 Oruvel raft-town: in review, merged here** (06ef403d).
+      - Kit: 18 pieces, 23 materials, Blender job `oruvel_kit` (42 identical). Its import kind `oruvel_kit` needs
+        Character + Tools sign-off.
+      - The `oruvel_raft_morning` arena's town is now built from this kit; its baseline was re-approved after
+        viewing.
+      - Baselines: `oruvel_o01_surfacing` and `oruvel_o19_dive_mooring`.
+      - Checks: oruvel 11/11, post_import 21/21, arena 13/13, oruvel_kit and haluna_kit Blender jobs identical.
+      - Weak: the O10 gull and the drowned tower showing through the water.
+      - Follow-up **M3-ENV-07B**: the storm state and Hullgnaw's deck split.
+      - Found **M2-ENV-12**: Haluna's lintel-gulls are built inside-out and shade dark. Filed; fixing it moves
+        the Haluna gull shots.
+    - **Running (worktree agents):** M3-ENV-09 Ashcrown, M3-ENV-10 Coilspire, M3-ENV-08B the Seventh Terrace.
+      **Next:** M2-ENV-12 and M3-ENV-07B.
 - **Done (merge-ready):**
   - **M2-ART-01/02/03, Art sign-offs:** all three approve-with-fixes, status done. Fixes filed: **M2-UI-08** (Swell lamp at rest, bestiary defeat counts white not focus cyan), **M2-RND-09** (underwater: scatter/transmit to `lagoon_teal`, TIR to `deep_teal_shadow`, lantern halo warm, motes boosted only below the surface, recapture `waterline_high`), **M2-RND-10** (storm: narrower rents with darker lips, softer curtains, per-chapter flash table, landfall darker and slate-teal, rain ≤12% bright streaks, the Letting's wound_intensity 1.8 and rise_ratio 2.0). palette.json 0.2.1 extends the `spawn_wound`, `glimmer_held` and `glimmer_lift` usage notes to the storm. art/ui.md §10 records the accepted UI.
   - **M2-ENV-06 pass 1 (still `doing`):** Haluna kit textures, materials and tide-wall geometry to final quality; the five haluna baselines **re-approved after viewing** (h01 0.01584, h02 0.06091, h03 0.01360, h04 0.01108, h07 0.01049; palette checks 19/19). Details in the task file. **Only haluna_mood shots use these files.**
