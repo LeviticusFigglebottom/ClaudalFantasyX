@@ -5,7 +5,8 @@ extends Node
 ##   ~/.cache/hymn/godot-4.6.3+ds-2/godot-render --path . --audio-driver Dummy --fixed-fps 60 \
 ##     res://game/levels/_tests/swatches/water_look_probe.tscn -- --look=lagoon_clear --out=/abs/dir
 ## Optional overrides: --camera=Cameras/Lagoon | survey  --sea_glow=0  --moon=0.25  --exposure=0.65  --scale=1.0
-##   --deep=#0E4A55  --scatter=#1FA3A6  --tag=name (appended to the output stem). The validation in
+##   --deep=#0E4A55  --scatter=#1FA3A6  --sss=#2BB8A8 (col_sss, e.g. the M1-RND-18 control run without
+##   editing water_looks.json)  --tag=name (appended to the output stem). The validation in
 ##   docs/kb/art/color_script.md ("Water looks") measures the Lagoon and survey views (Night for night_sea).
 ## Writes <out>/<look>[_<camera>].png and .json: the median on-screen sRGB per depth band, plus dry sand.
 ## The water test scene itself is not modified; everything is applied to the instance at runtime.
@@ -66,8 +67,8 @@ func _run() -> void:
 	)
 	mat.set_shader_parameter(PARAM_ABSORPTION, sigma * scale)
 	mat.set_shader_parameter(PARAM_SCATTER, Color(str(opts.get("scatter", look["scatter_shallow"]))))
-	if look.has("sss"):
-		mat.set_shader_parameter(PARAM_SSS, Color(str(look["sss"])))
+	if opts.has("sss") or look.has("sss"):
+		mat.set_shader_parameter(PARAM_SSS, Color(str(opts.get("sss", look.get("sss", "")))))
 	water.material = mat
 	add_child(rig)
 
