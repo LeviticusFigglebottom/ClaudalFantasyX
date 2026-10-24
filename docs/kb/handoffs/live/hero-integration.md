@@ -118,7 +118,8 @@ and ADR 0190 "hero motion layer", proposed).
   - **Known limits:** after a teleport, a follower can briefly stand inside a wall until the trail fills in. The
     Haluna Lantern turns with the controller, not the eased body.
 
-## MERGE-READY @ (this commit; code as of 555714d3, later commits are the log and a missing .uid)
+## MERGE-READY @ 96a93363 (+ this log commit)
+- **Since the full suite on 555714d3:** the lantern carry (e758a9a5; hero_field 13/0) and the field shot re-approvals.
 - **Items:** M2-HER-1101, 1102, 1104 (with its sequencer patch for m2-slice) and 1103's helper; claims, ADR 0190.
 - **Checks run** (on 32d59835, with the integration branch 0b1e76a4 merged in):
 
