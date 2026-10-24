@@ -13,10 +13,10 @@ request-from: lead
 The Ch5 creatures from docs/kb/art/creatures/act1/ through the pipeline; `model` on m2-slice's enemy rows (M3-C05-02) when they land. Foes on screen: Ashcrown stair 2–3, the Matron alone.
 
 ## Acceptance criteria
-- [x] ashwing (first pass: 4.2k triangles; origin is its hover point)
+- [x] ashwing (first pass: 4.2k triangles; origin is its hover point; ember eye-spots per act1_ch05 §9)
 - [x] slag_tortoise (first pass: 4.6k triangles)
 - [x] cinder_matron (first pass: 21k triangles, phase `crust_breaks` hides the `Crust` mesh; CreatureActor phases gained `show`/`hide`)
-- [ ] vein_sparker (optional, m2-slice act1_ch05 §9; not started)
+- [x] vein_sparker (optional, m2-slice act1_ch05 §9: copper-green, the coiled charged tail, starlight charge; 3.9k triangles)
 - [ ] A dedicated art pass on the Cinder Matron (see Notes)
 
 ## Notes

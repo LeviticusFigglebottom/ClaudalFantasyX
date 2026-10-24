@@ -246,6 +246,16 @@
         ["{blender}", "--python", "assets_src/creatures/tide_crawler/build_tide_crawler.py", "--", "--out", "assets/creatures/tide_crawler/tide_crawler.glb"],
         ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "tide_crawler"]
       ]
+    },
+    {
+      "id": "creature_vein_sparker",
+      "owner": "character",
+      "sources": ["assets_src/creatures/vein_sparker/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/vein_sparker/*.glb", "assets/creatures/vein_sparker/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/vein_sparker/build_vein_sparker.py", "--", "--out", "assets/creatures/vein_sparker/vein_sparker.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "vein_sparker"]
+      ]
     }
   ]
 }
