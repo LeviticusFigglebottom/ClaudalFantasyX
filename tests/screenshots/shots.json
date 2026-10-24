@@ -1342,6 +1342,69 @@
           }
         }
       }
+    },
+    {
+      "id": "ysolde_front",
+      "scene": "res://game/levels/_tests/characters/ysolde/ysolde_stage.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [960, 540],
+      "settle_frames": 30
+    },
+    {
+      "id": "ysolde_back",
+      "scene": "res://game/levels/_tests/characters/ysolde/ysolde_stage.tscn",
+      "camera": "Cameras/Back",
+      "resolution": [960, 540],
+      "settle_frames": 30
+    },
+    {
+      "id": "ysolde_three_quarter",
+      "scene": "res://game/levels/_tests/characters/ysolde/ysolde_stage.tscn",
+      "camera": "Cameras/ThreeQuarterLeft",
+      "resolution": [960, 540],
+      "settle_frames": 30
+    },
+    {
+      "id": "ysolde_face",
+      "scene": "res://game/levels/_tests/characters/ysolde/ysolde_stage.tscn",
+      "camera": "Cameras/Face",
+      "resolution": [960, 540],
+      "settle_frames": 30
+    },
+    {
+      "id": "ysolde_face_stylized",
+      "scene": "res://game/levels/_tests/characters/ysolde/ysolde_face_stylized.tscn",
+      "camera": "Cameras/Compare",
+      "resolution": [960, 540],
+      "settle_frames": 30
+    },
+    {
+      "id": "ysolde_silhouette_lineup",
+      "scene": "res://game/levels/_tests/characters/ysolde/ysolde_silhouette_lineup.tscn",
+      "camera": "Cameras/Lineup",
+      "resolution": [960, 540],
+      "settle_frames": 30
+    },
+    {
+      "id": "ysolde_clip_cast_glyph",
+      "scene": "res://game/levels/_tests/characters/ysolde/ysolde_clip_cast_glyph.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [960, 540],
+      "settle_frames": 30
+    },
+    {
+      "id": "ysolde_clip_reink_shell",
+      "scene": "res://game/levels/_tests/characters/ysolde/ysolde_clip_reink_shell.tscn",
+      "camera": "Cameras/ThreeQuarterLeft",
+      "resolution": [960, 540],
+      "settle_frames": 30
+    },
+    {
+      "id": "ysolde_night_ch4",
+      "scene": "res://game/levels/_tests/characters/ysolde/ysolde_night_ch4.tscn",
+      "camera": "Cameras/ThreeQuarterLeft",
+      "resolution": [960, 540],
+      "settle_frames": 30
     }
   ]
 }

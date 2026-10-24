@@ -214,5 +214,9 @@ class TestRigIntegrityToma(_HeroGuards, unittest.TestCase):
     hero = "toma"
 
 
+class TestRigIntegrityYsolde(_HeroGuards, unittest.TestCase):
+    hero = "ysolde"
+
+
 if __name__ == "__main__":
     unittest.main()
