@@ -244,7 +244,9 @@ def ambience_errors(doc: object, exists, flags: set[str], buses: set[str], music
         w = f"{AMBIENCE} zones.{scene}"
         if not scene.startswith("res://") or not scene.endswith(".tscn"):
             errs.append(f"{w}: the key must be a res://...tscn path")
-        elif not exists(scene):
+        elif not exists(scene) and not (isinstance(row, dict) and row.get("pending")):
+            # "pending": true marks a zone whose scene is on another track's branch (M3-AUD-16): its beds go live
+            # when the scene merges; everything else in the row is still checked.
             errs.append(f"{w}: {scene} does not exist")
         if not isinstance(row, dict):
             errs.append(f"{w}: must be an object")

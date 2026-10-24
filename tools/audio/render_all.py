@@ -51,7 +51,8 @@ M2_CUES = ("haluna_village", "haluna_night", "battle_standard_v2", "hush_first_v
            "tamsule", "iskarra_vigil", "brightwater_ferry", "brine_shoals")
 AMBIENCE_BUDGET = int(2.5 * 1024 * 1024)  # the M2-AUD-05 field beds together
 # Per-job budgets for later "ambience_loop" jobs (each job's beds together; the M2-AUD-05 job keeps AMBIENCE_BUDGET).
-AMBIENCE_JOB_BUDGETS = {"assets_src/sfx/causeway_ambience.py": int(1.2 * 1024 * 1024)}  # M2-AUD-13: two q1 beds
+AMBIENCE_JOB_BUDGETS = {"assets_src/sfx/causeway_ambience.py": int(1.2 * 1024 * 1024),
+                        "assets_src/sfx/act1_ambience.py": int(3.0 * 1024 * 1024)}  # M2-AUD-13: two q1 beds; M3-AUD-16: six
 AMBIENCE_LUFS, AMBIENCE_MAX_TP = -26.0, -5.0  # mix.md §2: ambience loops at -26 LUFS, rendered at <= -6 dBFS
 
 # (module source, output dir, output file names, kind)
@@ -101,6 +102,9 @@ JOBS = [
     ("assets_src/music/lamp_diver.py", "assets/audio/music", ["lamp_diver.ogg", "lamp_diver.loop.json"], "music_loop"),
     ("assets_src/music/sefir_theme.py", "assets/audio/music", ["sefir_theme.ogg", "sefir_theme.loop.json"], "music_loop"),
     ("assets_src/music/the_ebbing.py", "assets/audio/music", ["the_ebbing.ogg"], "music"),
+    ("assets_src/sfx/act1_ambience.py", "assets/audio/ambience",
+     [f"{b}{ext}" for b in ("tamsule_port", "tamsule_bell", "brine_shoals", "pemakar_terraces", "ashcrown",
+                           "corrow_seawall") for ext in (".ogg", ".loop.json")], "ambience_loop"),
     ("assets_src/sfx/field_ambience.py", "assets/audio/ambience",
      [f"{b}{ext}" for b in ("haluna_day", "haluna_night", "surf", "dock", "shrine_interior", "wind")
       for ext in (".ogg", ".loop.json")], "ambience_loop"),
@@ -285,7 +289,8 @@ def main() -> int:
             continue
         ils = f"{il:7.2f}" if il is not None else "      -"
         print(f"{path:48} {size:8d} {sec:6.2f} {ils} {mm:7.2f} {tp:6.2f}  {sha[:12]}")
-        held = os.path.basename(path).startswith(M1_AUD_02 + M2_CUES)
+        held = (path.startswith("assets/audio/music") or path.endswith("ilun_summon.ogg")) and os.path.basename(
+            path).startswith(M1_AUD_02 + M2_CUES)
         if il is not None and held and (abs(il + 16.0) > 0.5 or tp > -1.0):
             print(f"FAIL {path}: outside -16 +- 0.5 LUFS, or true peak above -1 dBTP")
             ok = False

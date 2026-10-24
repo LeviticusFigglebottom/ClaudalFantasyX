@@ -519,3 +519,12 @@ on their own. Both are at the music level (−16 LUFS). The scenes are in act_ou
 - **Is it heavy without being a battle?** This is the route before the raid and the Inquisitor fight, so it should
   feel wary. The fight has its own cue.
 - Does the 5/4 feel like trudging, or does it limp? Can you hear the wrap at 72.7 s?
+
+## M3: Act I zone beds (M3-AUD-16)
+
+`ambience/tamsule_port.ogg`, `tamsule_bell.ogg`, `brine_shoals.ogg`, `pemakar_terraces.ogg`, `ashcrown.ogg`,
+`corrow_seawall.ogg`: 40–46 s loops at −26 LUFS, meant to sit under the area music. Listen at a low volume, the way
+they play. Does each read as its place (a harbour; the inside of a great bell's arena; mud and smoke; running
+terrace water at a festival; a mountain under falling ash; a hard sea wall)? **Please check the wrap of
+`tamsule_bell.ogg`** (every 40 s): the Vorbis encoder leaves a tiny step at the file's ends that this quiet, humming
+bed shows more than the others; if you hear a tick, I'll mask it.
