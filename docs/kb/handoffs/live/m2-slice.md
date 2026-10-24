@@ -6,7 +6,7 @@ Feature track for the M2 vertical slice (session_01DQ9tdk8Uatb8Jr6raAkXiC), bran
 - **Done, in review:** M2-FP-10, the dialogue key light. The PC's GPU check passed. Its two follow-ups are done: H05/H06 `key_pitch_deg` 30, and the key layer moved 20 → 19 (20 is `UndertowHalfRes.BODY_LAYER`), with a guard test.
 - **Done, in review:** M2-FP-15, B11 "The dock at night" (the Drownbell victory → Haluna at night under a stand-in light → B11 → the end card; night blessings for the barks). It doesn't wait for M2-ENV-02 any more: its criteria allow the stand-in.
 - **Done, in review:** M2-FP-18, Cutscene A/B facial animation (seeded blinks, a blink on each expression change, text-driven visemes on Asha's viseme shapes; checked on lavapipe).
-- **Waiting:** M2-FP-17 (the Drownbell with the real Vowbound call, filed by the Lead for this track) depends on M2-CMB-05, which is still todo on the integration branch.
+- **Done, in review:** M2-CMB-05 (ADR 0027 A1–A3, the sim call rule, the `sandbox_vowbound` masher band of ≤40%, measured 37.0%) and M2-FP-17 (the Drownbell's bands now use the real Ilun call; the bell answers a lone absorber with Hood Slam; `flood_call` wins 38.7% with no timeouts). Handoff combat-12. The live game keeps `call_ilun` until M2-UI-05's Call command.
 - **Done, in review:** M2-FP-16, the Shell Shrine trial (B07). The puzzle rules are headless and data-driven; the room is a greybox built from JSON. The thread now runs the causeway head → low tide → the trial → Cutscene B. Filed M2-ENV-03 (the shrine kit) and M2-AUD-01 (the trial audio).
 - **Done, in review:** M2-FP-13, Haluna by day (B02 Neme's table after the tideline win, B03's four fragments overheard on walk-past, B05 Low tide). Filed M2-FP-14, M2-FP-15, M2-ENV-02 and M2-UI-06.
 - **Done, in review:** M2-FP-11 (the integration branch's task: zone suns back to bias 1.0, FlowRouting serving waiters in turn). I took it because it lives in my scenes and pairs with FP-10. The file is taken verbatim from the integration branch, so it should merge clean, apart from my status and notes.
@@ -25,7 +25,7 @@ Feature track for the M2 vertical slice (session_01DQ9tdk8Uatb8Jr6raAkXiC), bran
 
 ## Exact next step
 **The standing queue is done apart from blocked items.**
-- M2-FP-17 waits on M2-CMB-05. When CMB-05 merges: merge the integration branch, replace `call_ilun` with `engine.summon(&"ilun")`, add the "call into the flood" sim policy, and re-band.
+- M2-CMB-05 and M2-FP-17 are in review. When M2-UI-05 (the Call command) lands, remove `call_ilun` from Asha and from the `ch03_drownbell` loadout's `retire_skills`, then re-run `sim.py --check`.
 - M2-FP-14 (B04) waits on the wake-shell wall being reachable.
 - M2-FP-15 (B11) is done with the stand-in night; swap in M2-ENV-02's light when it lands.
 Lead: please queue more slice work.
@@ -36,13 +36,14 @@ Lead: please queue more slice work.
 3. ~~M2-FP-05 and M1-ARC-15 follow-ups; M1-UI-10~~: FP-05 and ARC-15 had no open review items (their known gaps are documented). M1-UI-10 is done (review).
 4. Haluna at vertical-slice quality: M2-FP-13 in review; M2-FP-14 (B04) next, M2-FP-15 (B11) in review (stand-in night)
 5. ~~Shell Shrine temple trial~~: M2-FP-16 (review)
-6. First Vowbound → M2-FP-17 (blocked on M2-CMB-05; the engine side is Combat's M2-CMB-04/05, ADR 0027); Cutscene A/B faces → M2-FP-18 (review)
+6. ~~First Vowbound~~ → M2-CMB-05 and M2-FP-17 (review); Cutscene A/B faces → M2-FP-18 (review)
 
 ## Setup notes
 - `fetch_godot.py` doesn't put Godot on PATH: `ln -s /root/.cache/hymn/godot-4.6.3+ds-2/godot ~/.local/bin/godot` (and `godot-render`).
 - `pip install -r tools/requirements.txt` for gdlint/gdformat.
 
 ## History
+- 2026-10-24: M2-CMB-05 and M2-FP-17 done. Gates: lint and format, validate_data, taskboard --check, the full Godot suite under coverage (1337 tests; battle 99.95%, progression 96.52%), `sim.py --check` passing every band, tools unittest 483 OK. No shots (none cover a boss fight).
 - 2026-10-24: M2-FP-15 done (B11). Gates: dlgc and `--check`, validate_data, lint and format, the full Godot suite (1316 green). I checked a lavapipe render of the night stand-in by eye.
 - 2026-10-24: merged the integration branch (763faeb), then finished the PC's FP-10 follow-ups (pitch 30 on H05/H06; key layer 19 with a guard test). Godot key_light 9, test_haluna_zone 6.
 - 2026-10-24: M2-FP-18 done (faces). Gates: lint and format, the full Godot suite (1311 green), validate_data, taskboard --check. I checked five lavapipe renders of Asha's face by eye.
