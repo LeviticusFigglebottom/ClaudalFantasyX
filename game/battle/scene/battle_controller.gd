@@ -230,6 +230,7 @@ func _build_engine(
 	bestiary.attach(engine, persist_progress and fixture == null)
 	engine.action_resolved.connect(floats.on_action_resolved)
 	boss = BattleBossHud.attached(self, engine)
+	BattleVfx.attached(self, engine)  # M2-RND-03: listen-only battle VFX (docs/kb/tech/battle_vfx.md)
 	stage.spawn(engine)
 	stage.refresh_ko(engine)
 
