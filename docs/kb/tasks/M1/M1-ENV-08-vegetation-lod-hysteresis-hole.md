@@ -2,9 +2,9 @@
 id: M1-ENV-08
 title: Vegetation LOD hysteresis hole (a plant at a switch distance can be invisible from a still camera)
 role: environment
-status: todo
+status: doing
 reviewer: rendering
-owner_session: ""
+owner_session: "worktree-agent-a573ddba06eb06eb2"
 depends_on: [M1-ENV-03]
 milestone: M1
 request-from: "rendering"

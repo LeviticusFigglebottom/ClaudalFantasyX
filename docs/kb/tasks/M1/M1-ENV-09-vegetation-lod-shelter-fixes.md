@@ -2,8 +2,8 @@
 id: M1-ENV-09
 title: Vegetation follow-ups from review-sweep-O (last-LOD hysteresis gap, ShaderGlobals cache)
 role: environment
-status: todo
-owner_session: ""
+status: doing
+owner_session: "worktree-agent-a573ddba06eb06eb2"
 depends_on: [M1-ENV-03]
 milestone: M1
 request-from: "lead"
