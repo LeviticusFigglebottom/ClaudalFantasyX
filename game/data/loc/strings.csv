@@ -616,3 +616,13 @@ HUD_FAIL_NOT_BOUND_FMT,{name} has bound no Vowbound yet.
 HUD_FAIL_NOT_CALLER_FMT,{name} cannot call that Vowbound.
 HUD_FAIL_VOWBOUND_FALLEN,That Vowbound has fallen and cannot answer again this battle.
 HUD_FAIL_NO_VOWBOUND,No Vowbound is on the field.
+SET_BATTLE_SPEED,Battle speed
+SET_BATTLE_SPEED_HELP,How fast each action plays out in battle. The turn order and every choice stay the same.
+SET_BATTLE_SPEED_075,Slower
+SET_BATTLE_SPEED_100,Normal
+SET_BATTLE_SPEED_150,Faster
+SET_BATTLE_SPEED_200,Fastest
+SET_BATTLE_ANIMATIONS,Battle animations
+SET_BATTLE_ANIMATIONS_HELP,"Full plays each action with movement and camera framing; Skip lands every action at once on a still camera."
+SET_BATTLE_ANIMATIONS_FULL,Full
+SET_BATTLE_ANIMATIONS_SKIP,Skip

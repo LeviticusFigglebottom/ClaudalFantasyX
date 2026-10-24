@@ -56,6 +56,20 @@ class ChoreoValidateTest(unittest.TestCase):
         self.assertTrue(self._errs(lambda c: c.update(settle_sec="x")))
         self.assertEqual(vc.choreo_errors({}, SKILLS), [f"{vc.CHOREO_FILE}: needs a 'choreo' object"])
 
+    def test_camera(self) -> None:
+        self.assertTrue(self._errs(lambda c: c["camera"]["shots"].pop("target")))
+        self.assertTrue(self._errs(lambda c: c["camera"]["shots"]["actor"].update(anchor="orbit")))
+        self.assertTrue(self._errs(lambda c: c["camera"]["shots"]["actor"].update(side_m=-1)))
+        self.assertTrue(self._errs(lambda c: c["camera"]["shots"]["actor"].update(fov=170)))
+        self.assertTrue(self._errs(lambda c: c["camera"]["shots"]["push"].update(push=2)))
+        self.assertTrue(self._errs(lambda c: c["camera"]["by_style"].pop("melee")))
+        self.assertTrue(self._errs(lambda c: c["camera"]["by_style"]["melee"].update(lead="swirl")))
+        self.assertTrue(self._errs(lambda c: c["camera"]["enemy"].update(contact="nope")))
+        self.assertTrue(self._errs(lambda c: c["camera"].update(blend_out_sec=-1)))
+        self.assertTrue(self._errs(lambda c: c["camera"]["safe_frame"].update(bottom=0.6)))
+        self.assertTrue(self._errs(lambda c: c.pop("camera")))
+        self.assertFalse(self._errs(lambda c: c["camera"]["by_style"]["melee"].update(contact="")))
+
 
 if __name__ == "__main__":
     unittest.main()
