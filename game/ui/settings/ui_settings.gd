@@ -152,7 +152,8 @@ func timing_assist_tag_key() -> String:
 ##   "wide" scales the windows by window_scale: perfect_sec and good_sec (ring, chant, brace), each
 ##   clamped (ring: inside the beat; chant: half the closest note gap; brace: before the counter's
 ##   window would reach the last blow), or window_sec (glyph: within max_duration_sec);
-##   "auto" sets assist_floor ("good"): a miss records the step's good grade (SwellInput._record).
+##   "auto" sets assist_floor ("good"): a miss records the step's good grade (SwellInput._record);
+##   "hold" (M2-UI-14) sets it too, with assist_hold: only while Confirm is held.
 ## A copy; off returns it as is.
 func timing_input(row: Dictionary) -> Dictionary:
 	var out := row.duplicate(true)
@@ -161,6 +162,8 @@ func timing_input(row: Dictionary) -> Dictionary:
 		_widen(out, float(assist["window_scale"]))
 	if assist.has("assist_floor"):
 		out["assist_floor"] = str(assist["assist_floor"])
+	if bool(assist.get("assist_hold", false)):
+		out["assist_hold"] = true
 	return out
 
 

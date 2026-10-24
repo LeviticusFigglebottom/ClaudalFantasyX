@@ -518,7 +518,7 @@ HUD_HELP_SWELL_MODE_FMT,{mode}: {desc} Choosing it costs no time
 HUD_HELP_SWELL_MODE_CURRENT_FMT,{mode} is in use: {desc}
 HUD_SWELL_MODE_SET_FMT,{name}'s gauge now fills by {mode}. No time passed
 SET_TIMING_ASSIST,Timing assist
-SET_TIMING_ASSIST_HELP,"Makes timed Swell inputs easier: a wider window, or a miss counts as Good."
+SET_TIMING_ASSIST_HELP,"Makes timed Swell inputs easier: a wider window, a miss counts as Good, or hold Confirm to play them."
 SET_TIMING_ASSIST_OFF,Off
 SET_TIMING_ASSIST_WIDE,Wider window
 SET_TIMING_ASSIST_AUTO,Misses count as Good
@@ -688,3 +688,5 @@ INN_MENU_HELP,Up and Down: choose · Confirm: choose · Cancel: leave
 INN_ERR_UNKNOWN,No one keeps this house.
 INN_ERR_CLOSED,The door is barred. No rooms for now.
 INN_ERR_NO_FUNDS_FMT,"Not enough lume: a rest costs {price}, and the purse holds {purse}."
+SET_TIMING_ASSIST_HOLD,Hold Confirm to play
+HUD_SWELL_ASSIST_HOLD,Assist: hold Confirm to play
