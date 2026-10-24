@@ -61,7 +61,12 @@ Scope: assets and kit pieces (Blender jobs, materials, import rules), handed to 
       the breach if the zone needs the full climb.
     - **For Rendering:** the Ch9 ambient is 0.7, not the colour script's 0.3, because the stair foot rendered black.
     - **For Art:** a `ch08_after` colour-script row is proposed in corrow.md §7.
-  - **Running:** M3-ENV-06's last two arenas. Nothing is queued after them.
+  - **M3-ENV-06: all five arenas merged** (169445e9). Request M3-RND-25 covers the underwater look.
+  - **New queue (the Lead's no-idle directive; filed by env-art 2026-10-24 evening):** the last four Act I zones
+    without kits.
+    - **Running (worktree agents):** M3-ENV-07 Oruvel raft-town (it also re-dresses the `oruvel_raft_morning`
+      arena's town), M3-ENV-08 Brightwater ferry deck, M3-ENV-09 Ashcrown temple.
+    - **Next:** M3-ENV-10 Coilspire temple. **Two items remain after the running three.**
 - **Done (merge-ready):**
   - **M2-ART-01/02/03, Art sign-offs:** all three approve-with-fixes, status done. Fixes filed: **M2-UI-08** (Swell lamp at rest, bestiary defeat counts white not focus cyan), **M2-RND-09** (underwater: scatter/transmit to `lagoon_teal`, TIR to `deep_teal_shadow`, lantern halo warm, motes boosted only below the surface, recapture `waterline_high`), **M2-RND-10** (storm: narrower rents with darker lips, softer curtains, per-chapter flash table, landfall darker and slate-teal, rain ≤12% bright streaks, the Letting's wound_intensity 1.8 and rise_ratio 2.0). palette.json 0.2.1 extends the `spawn_wound`, `glimmer_held` and `glimmer_lift` usage notes to the storm. art/ui.md §10 records the accepted UI.
   - **M2-ENV-06 pass 1 (still `doing`):** Haluna kit textures, materials and tide-wall geometry to final quality; the five haluna baselines **re-approved after viewing** (h01 0.01584, h02 0.06091, h03 0.01360, h04 0.01108, h07 0.01049; palette checks 19/19). Details in the task file. **Only haluna_mood shots use these files.**
@@ -76,6 +81,28 @@ Scope: assets and kit pieces (Blender jobs, materials, import rules), handed to 
 - **Un-pushed state:** none (worktree agents' branches are local until merged here).
 
 ## For the Lead
+- **MERGE-READY @ 169445e9** (claude/env-art; it includes the integration branch at 1e3ff5d6).
+  - **Items since ba7679c1, all in review:**
+    - M3-ENV-03 Terraces of Ash.
+    - M3-ENV-04 the Seawall.
+    - M3-ENV-04B the Seawall breach and Ch9.
+    - M3-ENV-05 the lamp-diver's sea floor.
+    - M3-ENV-06, all five Act I battle arenas.
+    - The Lead's fog-lamp rule (7ba0efb6), and the cross-kit `materials` import fix (1771dc09).
+  - **Checks run:**
+    - full Godot suite: 1578 run, 0 failed;
+    - full tools unittests: OK;
+    - Blender jobs touched: haluna, brine_shoals, pemakar, corrow, oruvel_underway, each byte-identical;
+    - gdlint, gdformat, validate_data, taskboard --check: clean.
+    - Shots: each item's own baselines, viewed by its author. No existing baseline was changed.
+  - **Checks skipped:** the full screenshot manifest and coverage (no changes to game/battle or game/progression).
+  - **Waiting on people:**
+    - Character + Tools sign-off on the import kinds `brine_shoals_kit`, `pemakar_kit`, `corrow_kit` and
+      `oruvel_underway_kit`.
+    - Rendering: M3-RND-24 and M3-RND-25 (the underwater rig).
+    - m2-slice: M3-ARC-02 (the shrine's shaft lights and the fog).
+    - Narrative: the Ch9 stair; the sea floor's floor count and its ship's ribs.
+    - Art: the `ch08_after` colour-script row.
 - **MERGE-READY @ ba7679c1** (claude/env-art, which includes the integration branch at 1e3ff5d6).
   - **Items:** M2-ENV-10 causeway route (review); M2-ENV-11 battle arenas (review; arena root renamed
     `BattleArenaRoot`, adopted by battle-presentation); M3-ENV-02 Brine Shoals (review).

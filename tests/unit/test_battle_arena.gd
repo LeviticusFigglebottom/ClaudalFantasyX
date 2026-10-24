@@ -87,7 +87,7 @@ func test_a_story_encounter_fights_in_its_arena() -> void:
 	var env := ctl.get_node(^"WorldEnvironment") as WorldEnvironment
 	assert_ne(env, sandbox_env, "the arena's environment replaced the sandbox's")
 	assert_true(ctl.get_node_or_null(^"Arena/Sea") != null, "the flood rig's sea is there")
-	assert_true(ctl.get_node_or_null(^"Arena/Dressing") != null, "the arena's other children are under Arena")
+	assert_true(ctl.get_node_or_null(^"Arena/CameraHints") != null, "the arena's other children are under Arena")
 	assert_eq(ctl.get_node(^"Arena").get_children().filter(func(n: Node) -> bool: return n.name == &"Dais").size(), 0)
 	assert_eq(ctl.get_children().filter(func(n: Node) -> bool: return n.name == &"Sun").size(), 1, "one sun")
 	ctl.start_battle(PARTY, empty, &"drownbell", 7)

@@ -139,6 +139,9 @@ An arena under the sea carries its own look, because the battle scene has none:
 The presentation track owns the battle scene and `encounters.json`; Environment does not edit them.
 **Adopted by battle-presentation at 972131e** (its `BattleArena` loader, `game/battle/scene/battle_arena.gd`;
 this side's root script is `BattleArenaRoot` so the two global class names don't collide):
+0. **Done in env-art after big7 (2026-10-24):** `arenas.json` points every id at `assets/environments/arenas/<id>/<id>.tscn`
+   (the seven arenas). `battle_arena_tideline`, `battle_arena_causeway` and `drownbell_flood` were re-captured,
+   viewed and re-approved. `test_battle_arena.gd` now checks the contract's `CameraHints`, not the greybox-only `Fill`.
 1. `encounters.json` rows carry `arena` (`ch02_tideline` → `tideline_dawn`, `drownbell` → `causeway_disc_sunset`;
    M3-ENV-06 adds `causeway_route_afternoon`, `derelict_deck_night`, `ash_terrace_lanternfall`,
    `oruvel_raft_morning` and `underway_tower`, each at

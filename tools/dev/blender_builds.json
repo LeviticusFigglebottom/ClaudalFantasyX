@@ -180,6 +180,79 @@
       ]
     },
     {
+      "id": "tamsule_bell_kit",
+      "owner": "environment",
+      "sources": ["assets_src/environments/kits/tamsule_bell/*.py", "assets_src/environments/kits/haluna/kit_common.py", "assets_src/environments/kits/haluna/village.py", "assets_src/environments/kits/haluna/causeway.py"],
+      "outputs": ["assets/environments/kits/tamsule_bell/*.glb", "assets/environments/kits/tamsule_bell/kit_manifest.json"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/environments/kits/tamsule_bell/build.py", "--", "--all", "--out-dir", "assets/environments/kits/tamsule_bell", "--manifest", "assets/environments/kits/tamsule_bell/kit_manifest.json"]
+      ]
+    },
+    {
+      "id": "brine_shoals_kit",
+      "owner": "environment",
+      "_doc": "M3-ENV-02: the Brine Shoals kit. Geometry reuses the Haluna kit's core (kit_common, causeway, village) read-only; the two {python} steps rebuild its maps and materials, so they are verified too.",
+      "sources": ["assets_src/environments/kits/brine_shoals/*.py", "assets_src/environments/kits/haluna/kit_common.py",
+                  "assets_src/environments/kits/haluna/causeway.py", "assets_src/environments/kits/haluna/village.py",
+                  "assets_src/environments/kits/haluna/kit_textures.py", "assets_src/environments/kits/haluna/materials.py",
+                  "assets_src/environments/vegetation/textures.py"],
+      "outputs": ["assets/environments/kits/brine_shoals/*.glb", "assets/environments/kits/brine_shoals/kit_manifest.json",
+                  "assets/environments/kits/brine_shoals/textures/*.png", "assets/environments/kits/brine_shoals/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/environments/kits/brine_shoals/build.py", "--", "--all", "--out-dir", "assets/environments/kits/brine_shoals", "--manifest", "assets/environments/kits/brine_shoals/kit_manifest.json"],
+        ["{python}", "assets_src/environments/kits/brine_shoals/bs_textures.py"],
+        ["{python}", "assets_src/environments/kits/brine_shoals/bs_materials.py"]
+      ]
+    },
+    {
+      "id": "pemakar_kit",
+      "threads": 4,
+      "owner": "environment",
+      "_doc": "M3-ENV-03: the Pemakar kit (Terraces of Ash). Geometry reuses the Haluna kit's core (kit_common, village, shrine_interior) read-only; the two {python} steps rebuild its maps and materials, so they are verified too. Pinned at 4 threads like haluna_kit.",
+      "sources": ["assets_src/environments/kits/pemakar/*.py", "assets_src/environments/kits/haluna/kit_common.py",
+                  "assets_src/environments/kits/haluna/village.py", "assets_src/environments/kits/haluna/shrine_interior.py",
+                  "assets_src/environments/kits/haluna/kit_textures.py", "assets_src/environments/kits/haluna/materials.py",
+                  "assets_src/environments/vegetation/textures.py"],
+      "outputs": ["assets/environments/kits/pemakar/*.glb", "assets/environments/kits/pemakar/kit_manifest.json",
+                  "assets/environments/kits/pemakar/textures/*.png", "assets/environments/kits/pemakar/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/environments/kits/pemakar/build.py", "--", "--all", "--out-dir", "assets/environments/kits/pemakar", "--manifest", "assets/environments/kits/pemakar/kit_manifest.json"],
+        ["{python}", "assets_src/environments/kits/pemakar/pemakar_textures.py"],
+        ["{python}", "assets_src/environments/kits/pemakar/pemakar_materials.py"]
+      ]
+    },
+    {
+      "id": "corrow_kit", "threads": 4,
+      "owner": "environment",
+      "_doc": "M3-ENV-04: the Corrow seawall kit. Geometry reuses the Haluna kit's core (kit_common, village's roof) and the Brine Shoals kit's heightfield (bs_common) read-only; pinned at 4 threads like haluna_kit. The two {python} steps rebuild its maps and materials, so they are verified too.",
+      "sources": ["assets_src/environments/kits/corrow/*.py", "assets_src/environments/kits/haluna/kit_common.py",
+                  "assets_src/environments/kits/haluna/village.py", "assets_src/environments/kits/haluna/kit_textures.py",
+                  "assets_src/environments/kits/haluna/materials.py", "assets_src/environments/kits/brine_shoals/bs_common.py",
+                  "assets_src/environments/vegetation/textures.py"],
+      "outputs": ["assets/environments/kits/corrow/*.glb", "assets/environments/kits/corrow/kit_manifest.json",
+                  "assets/environments/kits/corrow/textures/*.png", "assets/environments/kits/corrow/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/environments/kits/corrow/build.py", "--", "--all", "--out-dir", "assets/environments/kits/corrow", "--manifest", "assets/environments/kits/corrow/kit_manifest.json"],
+        ["{python}", "assets_src/environments/kits/corrow/cw_textures.py"],
+        ["{python}", "assets_src/environments/kits/corrow/cw_materials.py"]
+      ]
+    },
+    {
+      "id": "oruvel_underway_kit", "threads": 4,
+      "owner": "environment",
+      "_doc": "M3-ENV-05: the Oruvel Underway kit (the Ch1 drowned tower and its sea floor). Geometry reuses the Haluna kit's core (kit_common) read-only; the two {python} steps rebuild its maps and materials (with the Haluna texture helpers and material writers), so they are verified too. Threads pinned at 4, as haluna_kit.",
+      "sources": ["assets_src/environments/kits/oruvel_underway/*.py", "assets_src/environments/kits/haluna/kit_common.py",
+                  "assets_src/environments/kits/haluna/kit_textures.py", "assets_src/environments/kits/haluna/materials.py",
+                  "assets_src/environments/vegetation/textures.py"],
+      "outputs": ["assets/environments/kits/oruvel_underway/*.glb", "assets/environments/kits/oruvel_underway/kit_manifest.json",
+                  "assets/environments/kits/oruvel_underway/textures/*.png", "assets/environments/kits/oruvel_underway/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/environments/kits/oruvel_underway/build.py", "--", "--all", "--out-dir", "assets/environments/kits/oruvel_underway", "--manifest", "assets/environments/kits/oruvel_underway/kit_manifest.json"],
+        ["{python}", "assets_src/environments/kits/oruvel_underway/ou_textures.py"],
+        ["{python}", "assets_src/environments/kits/oruvel_underway/ou_materials.py"]
+      ]
+    },
+    {
       "id": "creature_reef_crab",
       "owner": "character",
       "sources": ["assets_src/creatures/reef_crab/**", "assets_src/creatures/common/**"],
@@ -447,79 +520,6 @@
       "runs": [
         ["{blender}", "--python", "assets_src/creatures/wall_polyp/build_wall_polyp.py", "--", "--out", "assets/creatures/wall_polyp/wall_polyp.glb"],
         ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "wall_polyp"]
-      ]
-    },
-    {
-      "id": "tamsule_bell_kit",
-      "owner": "environment",
-      "sources": ["assets_src/environments/kits/tamsule_bell/*.py", "assets_src/environments/kits/haluna/kit_common.py", "assets_src/environments/kits/haluna/village.py", "assets_src/environments/kits/haluna/causeway.py"],
-      "outputs": ["assets/environments/kits/tamsule_bell/*.glb", "assets/environments/kits/tamsule_bell/kit_manifest.json"],
-      "runs": [
-        ["{blender}", "--python", "assets_src/environments/kits/tamsule_bell/build.py", "--", "--all", "--out-dir", "assets/environments/kits/tamsule_bell", "--manifest", "assets/environments/kits/tamsule_bell/kit_manifest.json"]
-      ]
-    },
-    {
-      "id": "brine_shoals_kit",
-      "owner": "environment",
-      "_doc": "M3-ENV-02: the Brine Shoals kit. Geometry reuses the Haluna kit's core (kit_common, causeway, village) read-only; the two {python} steps rebuild its maps and materials, so they are verified too.",
-      "sources": ["assets_src/environments/kits/brine_shoals/*.py", "assets_src/environments/kits/haluna/kit_common.py",
-                  "assets_src/environments/kits/haluna/causeway.py", "assets_src/environments/kits/haluna/village.py",
-                  "assets_src/environments/kits/haluna/kit_textures.py", "assets_src/environments/kits/haluna/materials.py",
-                  "assets_src/environments/vegetation/textures.py"],
-      "outputs": ["assets/environments/kits/brine_shoals/*.glb", "assets/environments/kits/brine_shoals/kit_manifest.json",
-                  "assets/environments/kits/brine_shoals/textures/*.png", "assets/environments/kits/brine_shoals/materials/*.tres"],
-      "runs": [
-        ["{blender}", "--python", "assets_src/environments/kits/brine_shoals/build.py", "--", "--all", "--out-dir", "assets/environments/kits/brine_shoals", "--manifest", "assets/environments/kits/brine_shoals/kit_manifest.json"],
-        ["{python}", "assets_src/environments/kits/brine_shoals/bs_textures.py"],
-        ["{python}", "assets_src/environments/kits/brine_shoals/bs_materials.py"]
-      ]
-    },
-    {
-      "id": "pemakar_kit",
-      "threads": 4,
-      "owner": "environment",
-      "_doc": "M3-ENV-03: the Pemakar kit (Terraces of Ash). Geometry reuses the Haluna kit's core (kit_common, village, shrine_interior) read-only; the two {python} steps rebuild its maps and materials, so they are verified too. Pinned at 4 threads like haluna_kit.",
-      "sources": ["assets_src/environments/kits/pemakar/*.py", "assets_src/environments/kits/haluna/kit_common.py",
-                  "assets_src/environments/kits/haluna/village.py", "assets_src/environments/kits/haluna/shrine_interior.py",
-                  "assets_src/environments/kits/haluna/kit_textures.py", "assets_src/environments/kits/haluna/materials.py",
-                  "assets_src/environments/vegetation/textures.py"],
-      "outputs": ["assets/environments/kits/pemakar/*.glb", "assets/environments/kits/pemakar/kit_manifest.json",
-                  "assets/environments/kits/pemakar/textures/*.png", "assets/environments/kits/pemakar/materials/*.tres"],
-      "runs": [
-        ["{blender}", "--python", "assets_src/environments/kits/pemakar/build.py", "--", "--all", "--out-dir", "assets/environments/kits/pemakar", "--manifest", "assets/environments/kits/pemakar/kit_manifest.json"],
-        ["{python}", "assets_src/environments/kits/pemakar/pemakar_textures.py"],
-        ["{python}", "assets_src/environments/kits/pemakar/pemakar_materials.py"]
-      ]
-    },
-    {
-      "id": "corrow_kit", "threads": 4,
-      "owner": "environment",
-      "_doc": "M3-ENV-04: the Corrow seawall kit. Geometry reuses the Haluna kit's core (kit_common, village's roof) and the Brine Shoals kit's heightfield (bs_common) read-only; pinned at 4 threads like haluna_kit. The two {python} steps rebuild its maps and materials, so they are verified too.",
-      "sources": ["assets_src/environments/kits/corrow/*.py", "assets_src/environments/kits/haluna/kit_common.py",
-                  "assets_src/environments/kits/haluna/village.py", "assets_src/environments/kits/haluna/kit_textures.py",
-                  "assets_src/environments/kits/haluna/materials.py", "assets_src/environments/kits/brine_shoals/bs_common.py",
-                  "assets_src/environments/vegetation/textures.py"],
-      "outputs": ["assets/environments/kits/corrow/*.glb", "assets/environments/kits/corrow/kit_manifest.json",
-                  "assets/environments/kits/corrow/textures/*.png", "assets/environments/kits/corrow/materials/*.tres"],
-      "runs": [
-        ["{blender}", "--python", "assets_src/environments/kits/corrow/build.py", "--", "--all", "--out-dir", "assets/environments/kits/corrow", "--manifest", "assets/environments/kits/corrow/kit_manifest.json"],
-        ["{python}", "assets_src/environments/kits/corrow/cw_textures.py"],
-        ["{python}", "assets_src/environments/kits/corrow/cw_materials.py"]
-      ]
-    },
-    {
-      "id": "oruvel_underway_kit", "threads": 4,
-      "owner": "environment",
-      "_doc": "M3-ENV-05: the Oruvel Underway kit (the Ch1 drowned tower and its sea floor). Geometry reuses the Haluna kit's core (kit_common) read-only; the two {python} steps rebuild its maps and materials (with the Haluna texture helpers and material writers), so they are verified too. Threads pinned at 4, as haluna_kit.",
-      "sources": ["assets_src/environments/kits/oruvel_underway/*.py", "assets_src/environments/kits/haluna/kit_common.py",
-                  "assets_src/environments/kits/haluna/kit_textures.py", "assets_src/environments/kits/haluna/materials.py",
-                  "assets_src/environments/vegetation/textures.py"],
-      "outputs": ["assets/environments/kits/oruvel_underway/*.glb", "assets/environments/kits/oruvel_underway/kit_manifest.json",
-                  "assets/environments/kits/oruvel_underway/textures/*.png", "assets/environments/kits/oruvel_underway/materials/*.tres"],
-      "runs": [
-        ["{blender}", "--python", "assets_src/environments/kits/oruvel_underway/build.py", "--", "--all", "--out-dir", "assets/environments/kits/oruvel_underway", "--manifest", "assets/environments/kits/oruvel_underway/kit_manifest.json"],
-        ["{python}", "assets_src/environments/kits/oruvel_underway/ou_textures.py"],
-        ["{python}", "assets_src/environments/kits/oruvel_underway/ou_materials.py"]
       ]
     }
   ]
