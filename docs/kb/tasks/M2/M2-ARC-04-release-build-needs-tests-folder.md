@@ -2,8 +2,8 @@
 id: M2-ARC-04
 title: Release exports exclude game/levels/_tests, but shipped code depends on it (SceneRouter fails, Haluna won't load)
 role: architect
-status: todo
-owner_session: ""
+status: doing
+owner_session: "m2-slice (session_01DQ9tdk8Uatb8Jr6raAkXiC)"
 reviewer: environment
 depends_on: []
 milestone: M2
