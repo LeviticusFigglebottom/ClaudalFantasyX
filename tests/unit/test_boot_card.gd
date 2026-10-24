@@ -8,8 +8,33 @@ const BOOT_SCRIPT := "res://game/core/boot.gd"
 const FRAME_MS := 16.0
 const LIFT_SEC := 0.35
 const FADE_IN_SEC := 0.5
+## M2-ARC-05: what Godot hands _process for a long stall (it caps delta at ~150 ms; M1-RND-29).
+const CAPPED_DELTA_MS := 147.0
+const STALL_MS := 500.0
+const REAL_STALL_MS := 400.0
+const USEC_PER_MS := 1000.0
+## M2-ARC-08: a slow first launch on a fake clock (60 s of 500 ms frames, six times the old 10 s cap).
+const SLOW_FRAMES := 120
+const SLOW_FRAME_MS := 500.0
+## One frame longer than the data's stall time-out (a synchronous driver compile), which still made progress.
+const LONG_FRAME_MS := 12000.0
+const TEST_STALL_MS := 3000.0
+const TEST_CAP_MS := 20000.0
+## M1-RND-29: the measured first launch (Low, RX 9070 XT); the cap must leave this much headroom over it.
+const FIRST_RUN_MEASURED_MS := 9500.0
+const CAP_HEADROOM := 10.0
 
 var _nodes: Array[Node] = []
+
+
+## A clock the test moves by hand (microseconds).
+class FakeClock:
+	extends RefCounted
+
+	var t := 1_000_000
+
+	func now() -> int:
+		return t
 
 
 ## A stand-in for the ShaderPrewarm warm-up: busy until `running` is false.
@@ -22,6 +47,26 @@ class Worker:
 		return running
 
 
+## M2-ARC-08: a warm-up that reports progress (ShaderPrewarm.wait_progress / progress_fraction) and can be
+## cancelled (ShaderPrewarm.cancel).
+class ProgressWorker:
+	extends Worker
+
+	var progress := 0
+	var fraction := 0.0
+	var cancelled := false
+
+	func wait_progress() -> int:
+		return progress
+
+	func progress_fraction() -> float:
+		return fraction
+
+	func cancel() -> void:
+		cancelled = true
+		running = false
+
+
 func _cover(fade_in: float = 0.0, lift: float = 0.0) -> BootCard:
 	var card := BootCard.cover(_host(), fade_in, lift)
 	_nodes.append(card)
@@ -30,6 +75,13 @@ func _cover(fade_in: float = 0.0, lift: float = 0.0) -> BootCard:
 
 func _worker() -> Worker:
 	var w := Worker.new()
+	_host().add_child(w)
+	_nodes.append(w)
+	return w
+
+
+func _progress_worker() -> ProgressWorker:
+	var w := ProgressWorker.new()
 	_host().add_child(w)
 	_nodes.append(w)
 	return w
@@ -113,6 +165,221 @@ func test_the_worst_hidden_frame_is_recorded() -> void:
 	_done()
 
 
+## M2-ARC-05: a frame stalled past Godot's ~150 ms delta cap shows at its true length, timed by the card's
+## clock, whatever `delta` _process is handed.
+func test_a_stall_past_the_delta_cap_is_reported_at_its_true_length() -> void:
+	var fake := FakeClock.new()
+	var card := _cover()
+	card.clock = FrameClock.new(fake.now)
+	card.clock.reset()
+	var warm := _worker()
+	card.wait_for_node(warm)
+	card.arm()
+	fake.t += int(FRAME_MS * USEC_PER_MS)
+	card._process(FRAME_MS / BootCard.MSEC_PER_SEC)
+	fake.t += int(STALL_MS * USEC_PER_MS)
+	card._process(CAPPED_DELTA_MS / BootCard.MSEC_PER_SEC)
+	var stats := card.wait_stats()
+	assert_eq(float(stats["reveal_wait_max_frame_ms"]), STALL_MS, "the wall time, not the capped delta")
+	assert_eq(float(stats["reveal_wait_ms"]), STALL_MS + FRAME_MS)
+	assert_eq(int(stats["reveal_wait_frames"]), 2)
+	_done()
+
+
+## M2-ARC-05's acceptance: a real stall (OS.delay_msec) reads at least its length.
+func test_a_real_stall_under_the_card_reads_at_least_its_length() -> void:
+	var card := _cover()
+	card.wait_for_node(_worker())
+	card.arm()
+	card._process(FRAME_MS / BootCard.MSEC_PER_SEC)
+	OS.delay_msec(int(REAL_STALL_MS))
+	card._process(CAPPED_DELTA_MS / BootCard.MSEC_PER_SEC)
+	assert_true(float(card.wait_stats()["reveal_wait_max_frame_ms"]) >= REAL_STALL_MS, "%s" % card.wait_stats())
+	_done()
+
+
+## M2-ARC-05: the time-out is wall time too, so a few long stalls cannot stretch it past the stall time-out.
+func test_the_time_out_counts_wall_time() -> void:
+	var fake := FakeClock.new()
+	var card := _cover()
+	card.clock = FrameClock.new(fake.now)
+	card.clock.reset()
+	card.wait_for_node(_worker())
+	card.arm()
+	fake.t += int((card.wait.stall_ms + 1.0) * USEC_PER_MS)
+	assert_true(card.step(card.clock.lap()), "one stalled frame past the stall time-out opens it")
+	_done()
+
+
+## M2-ARC-08: the wait's values come from data, and the safety cap is far above any measured first launch
+## (9.5 s on Low, RX 9070 XT, M1-RND-29), so it never cuts a progressing one short.
+func test_the_wait_values_come_from_data() -> void:
+	var s := ProgressWait.load_settings()
+	var card := _cover()
+	assert_eq(card.wait.stall_ms, float(s["stall_timeout_ms"]))
+	assert_eq(card.wait.max_ms, float(s["max_wait_ms"]))
+	assert_true(card.wait.max_ms >= FIRST_RUN_MEASURED_MS * CAP_HEADROOM, "the cap is a safety net, not a budget")
+	assert_true(card.wait.stall_ms < card.wait.max_ms)
+	_done()
+
+
+## M2-ARC-08's acceptance: a slow first launch that keeps progressing, on a fake clock, never opens the card
+## however long it takes (here 60 s of 500 ms frames, six times the old cap), and opens once it is done.
+func test_a_slow_but_progressing_warm_up_never_times_out() -> void:
+	var fake := FakeClock.new()
+	var card := _cover()
+	card.clock = FrameClock.new(fake.now)
+	card.clock.reset()
+	var warm := _progress_worker()
+	card.wait_for_node(warm)
+	var opened: Array[Dictionary] = []
+	card.opened.connect(func(s: Dictionary) -> void: opened.append(s))
+	card.arm()
+	for i in SLOW_FRAMES:
+		fake.t += int(SLOW_FRAME_MS * USEC_PER_MS)
+		warm.progress += 1
+		card._process(CAPPED_DELTA_MS / BootCard.MSEC_PER_SEC)
+	assert_true(card.is_waiting(), "60 s in, still progressing: still covered")
+	assert_false(warm.cancelled)
+	fake.t += int(LONG_FRAME_MS * USEC_PER_MS)
+	warm.progress += 1
+	card._process(CAPPED_DELTA_MS / BootCard.MSEC_PER_SEC)
+	assert_true(card.is_waiting(), "one frame longer than the stall time-out that made progress is not a stall")
+	warm.running = false
+	fake.t += int(FRAME_MS * USEC_PER_MS)
+	card._process(FRAME_MS / BootCard.MSEC_PER_SEC)
+	assert_eq(opened.size(), 1)
+	assert_true(bool(opened[0]["reveal_work_done"]))
+	assert_eq(opened[0]["reveal_wait_end"], "done")
+	_done()
+
+
+## M2-ARC-08's acceptance: a warm-up whose progress stops opens the card after the stall time-out, unfinished,
+## and is cancelled first so nothing stages under the title.
+func test_a_stalled_warm_up_times_out_and_is_cancelled() -> void:
+	var fake := FakeClock.new()
+	var card := _cover()
+	card.clock = FrameClock.new(fake.now)
+	card.clock.reset()
+	card.wait = ProgressWait.new(TEST_STALL_MS, TEST_CAP_MS)
+	var warm := _progress_worker()
+	card.wait_for_node(warm)
+	var opened: Array[Dictionary] = []
+	card.opened.connect(func(s: Dictionary) -> void: opened.append(s))
+	card.arm()
+	for i in 5:
+		fake.t += int(SLOW_FRAME_MS * USEC_PER_MS)
+		warm.progress += 1
+		card._process(FRAME_MS / BootCard.MSEC_PER_SEC)
+	var frames_to_stall := ceili(TEST_STALL_MS / SLOW_FRAME_MS)
+	for i in frames_to_stall - 1:
+		fake.t += int(SLOW_FRAME_MS * USEC_PER_MS)
+		card._process(FRAME_MS / BootCard.MSEC_PER_SEC)
+	assert_true(card.is_waiting(), "not yet a full stall time-out without progress")
+	fake.t += int(SLOW_FRAME_MS * USEC_PER_MS)
+	card._process(FRAME_MS / BootCard.MSEC_PER_SEC)
+	assert_eq(opened.size(), 1, "the stall opens it")
+	assert_false(bool(opened[0]["reveal_work_done"]))
+	assert_eq(opened[0]["reveal_wait_end"], "stalled")
+	assert_true(warm.cancelled, "the stalled warm-up is stopped before the title shows")
+	_done()
+
+
+## M2-ARC-08: the absolute safety cap opens the card even while the work progresses, and cancels it too.
+func test_the_safety_cap_opens_a_progressing_wait() -> void:
+	var card := _cover()
+	card.wait = ProgressWait.new(TEST_STALL_MS, TEST_CAP_MS)
+	var warm := _progress_worker()
+	card.wait_for_node(warm)
+	var opened: Array[Dictionary] = []
+	card.opened.connect(func(s: Dictionary) -> void: opened.append(s))
+	card.arm()
+	var frames := ceili(TEST_CAP_MS / SLOW_FRAME_MS)
+	for i in frames - 1:
+		warm.progress += 1
+		assert_false(card.step(SLOW_FRAME_MS), "frame %d: progressing, under the cap" % i)
+	warm.progress += 1
+	assert_true(card.step(SLOW_FRAME_MS), "the cap")
+	assert_eq(opened[0]["reveal_wait_end"], "capped")
+	assert_true(warm.cancelled)
+	_done()
+
+
+## M2-ARC-08: a condition with a progress Callable (the font warm-up) is not taken for a stalled one.
+func test_a_condition_with_progress_keeps_the_card_waiting() -> void:
+	var card := _cover()
+	card.wait = ProgressWait.new(TEST_STALL_MS, TEST_CAP_MS)
+	var units := [0]
+	card.wait_until(func() -> bool: return false, func() -> int: return int(units[0]))
+	card.arm()
+	for i in int(TEST_STALL_MS / SLOW_FRAME_MS) * 2:
+		units[0] = int(units[0]) + 1
+		assert_false(card.step(SLOW_FRAME_MS), "frame %d: the units move" % i)
+	var before := card.wait_progress()
+	units[0] = int(units[0]) + 1
+	assert_eq(card.wait_progress(), before + 1, "the condition's progress is in the card's count")
+	_done()
+
+
+## M2-ARC-08: the card's count moves when an item finishes, and SceneRouter sums it for the reveal hold.
+func test_the_card_reports_its_progress_to_the_router() -> void:
+	var card := _cover()
+	var warm := _progress_worker()
+	var plain := _worker()
+	card.wait_for_node(warm)
+	card.wait_for_node(plain)
+	warm.progress = 7
+	assert_eq(card.wait_progress(), 7, "the plain worker reports nothing until it is done")
+	plain.running = false
+	assert_eq(card.wait_progress(), 8, "a finished item counts one")
+	var holders: Array[Object] = [card, RefCounted.new()]
+	assert_eq(SceneRouter.holders_progress(holders), 8, "holders without wait_progress count 0")
+	_done()
+
+
+## M2-ARC-08: the first-launch cue. Only when asked (boot: ShaderPrewarm.first_run), one loc-keyed line and a
+## bar of the warm-up's progress, invisible until its delay, then fading in; it lifts with the card.
+func test_the_first_run_cue_is_quiet_and_only_on_request() -> void:
+	var plain := _cover()
+	plain.arm()
+	assert_eq(plain.cue(), null, "no cue unless boot asks for one")
+	var s := ProgressWait.load_settings()["cue"] as Dictionary
+	var card := _cover(0.0, LIFT_SEC)
+	var warm := _progress_worker()
+	card.wait_for_node(warm)
+	card.show_first_run_cue()
+	var note := card.cue().get_node("Note") as Label
+	assert_eq(note.text, tr(str(s["text_key"])), "the text is a loc key")
+	assert_false(note.text == str(s["text_key"]), "and the key has a row")
+	card.arm()
+	warm.progress += 1
+	card.step(float(s["delay_ms"]) - 1.0)
+	assert_eq(card.cue_level(), 0.0, "nothing before the delay: a quick first launch shows no cue")
+	warm.fraction = 0.5
+	warm.progress += 1
+	card.step(float(s["fade_in_ms"]) / 2.0 + 1.0)
+	assert_between(card.cue_level(), 0.45, 0.55, "fading in")
+	var fill := card.cue().get_node("Bar/Fill") as ColorRect
+	assert_eq(fill.anchor_right, 0.5, "the bar shows the warm-up's progress")
+	warm.fraction = 0.25
+	warm.progress += 1
+	card.step(FRAME_MS)
+	assert_eq(fill.anchor_right, 0.5, "it never goes back")
+	var level := card.cue_level()
+	warm.running = false
+	assert_true(card.step(FRAME_MS))
+	card.step(LIFT_SEC * 500.0)
+	assert_between(card.cue().modulate.a, level * 0.49, level * 0.51, "it lifts with the card")
+	_done()
+
+
+func test_boot_shows_the_cue_only_on_a_first_run() -> void:
+	var src := (load(BOOT_SCRIPT) as GDScript).source_code
+	assert_true(src.contains("if warm != null and warm.first_run:\n\t\t_card.show_first_run_cue()"))
+	assert_true(src.contains('Callable(router, &"font_warm_progress")'), "the font warm-up reports progress")
+	_done()
+
+
 func test_it_lifts_over_its_lift_time_then_hides() -> void:
 	var card := _cover(0.0, LIFT_SEC)
 	var revealed := [0]
@@ -151,7 +418,7 @@ func test_it_opens_after_its_time_out_with_the_work_unfinished() -> void:
 	card.arm()
 	var opened: Array[Dictionary] = []
 	card.opened.connect(func(s: Dictionary) -> void: opened.append(s))
-	assert_false(card.step(BootCard.MAX_WAIT_MS - 1.0))
+	assert_false(card.step(card.wait.stall_ms - 1.0), "a worker that reports no progress: the stall time-out")
 	assert_true(card.step(1.0), "never hangs the title")
 	assert_false(bool(opened[0]["reveal_work_done"]))
 	_done()
