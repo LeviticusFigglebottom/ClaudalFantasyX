@@ -932,8 +932,9 @@
     }
   ],
   "first_run_live_scenes": [
-    "res://game/levels/ch02/haluna/haluna.tscn"
+    "res://game/levels/ch02/haluna/haluna.tscn",
+    "res://game/levels/ch03/shell_shrine/shell_shrine.tscn"
   ],
   "max_live_materials": 256,
-  "_note_first_run_live": "M2-RND-15: a first run also instances these scenes on a worker thread (a zone prebuilds itself off the tree), stages a draw of every mesh, MultiMesh and material the live instance holds (at most max_live_materials), and frees it. They cover the surfaces a zone builds at runtime, which no SceneState lists; on an empty driver cache Haluna's first frame compiled 92 surface pipelines at once (1.6-1.7 s)."
+  "_note_first_run_live": "M2-RND-15: a first run also instances these scenes on a worker thread (a zone prebuilds itself off the tree), stages a draw of every mesh, MultiMesh and material the live instance holds (at most max_live_materials), and frees it. They cover the surfaces a zone builds at runtime, which no SceneState lists; on an empty driver cache Haluna's first frame compiled 92 surface pipelines at once (1.6-1.7 s). M2-RND-17: the Shell Shrine too (its hall is built at runtime; effective once ShellShrineLevel builds it on instantiate, M2-ENV-12): its cold first frame 1.9 s -> 0.19 s."
 }
