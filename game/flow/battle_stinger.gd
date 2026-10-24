@@ -46,6 +46,8 @@ const COLOR_UNIFORMS: Array[String] = ["water_deep", "water_edge", "foam"]
 const U_PROGRESS := &"progress"
 const KEY_BARKS := "barks"
 const BARK_EVENT := &"battle_bark"
+## Announced on EventBus.dialogue_event as the tide line starts ([encounter]) so audio can play its sting.
+const STINGER_EVENT := &"battle_stinger"
 const U_PHASE := &"phase"
 
 ## The battle_transition block (load_config()).
@@ -159,6 +161,9 @@ func _ready() -> void:
 			_mat.set_shader_parameter(StringName(key), Color(str(cfg.get(key, ""))))
 		_rect.material = _mat
 	add_child(_rect)
+	var bus := get_node_or_null(^"/root/EventBus")
+	if bus != null:
+		bus.emit_signal(&"dialogue_event", STINGER_EVENT, [get_meta(&"encounter", &"")])
 	if not bark.is_empty():
 		_show_bark()
 	advance(0.0)

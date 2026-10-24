@@ -315,6 +315,9 @@ and announces it on `EventBus.dialogue_event("battle_bark", [encounter, line_key
 line or a stinger cue from claude/audio). `BattleRequest.submit` passes the encounter to `BattleStinger.play`.
 The table ships empty: the tideline's line is Narrative's (request M2-NAR-01).
 
+Every stinger also announces `EventBus.dialogue_event("battle_stinger", [encounter])` as the tide line starts (the
+audio track's rising-water sting, M3-AUD-18).
+
 ## Specials (M2-BPR-04)
 
 The Swell finishers, the Drownbell's set piece and the Vowbound. Everything stays a listen-only view of the
