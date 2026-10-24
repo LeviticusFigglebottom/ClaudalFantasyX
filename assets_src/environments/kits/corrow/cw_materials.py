@@ -13,13 +13,20 @@ read-only). The writers are the Haluna kit's.
 from __future__ import annotations
 
 import argparse
+import importlib.util
 import sys
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[3]
 sys.path.insert(0, str(HERE.parent / "haluna"))
-import materials as hm  # noqa: E402  (the Haluna kit's material writers, read-only)
+# the Haluna kit's material writers, read-only: loaded by path under its own name, so a sibling kit's `materials` module (tamsule_bell has one)
+# already in sys.modules is never picked up instead.
+_HM_SPEC = importlib.util.spec_from_file_location("haluna_materials", HERE.parent / "haluna" / "materials.py")
+hm = sys.modules.get("haluna_materials") or importlib.util.module_from_spec(_HM_SPEC)
+if "haluna_materials" not in sys.modules:
+    sys.modules["haluna_materials"] = hm
+    _HM_SPEC.loader.exec_module(hm)
 
 OUT_DEFAULT = ROOT / "assets" / "environments" / "kits" / "corrow" / "materials"
 TEX = "res://assets/environments/kits/corrow/textures/"

@@ -12,13 +12,20 @@ kit's (materials.py, read-only); material names match the glTF slots the generat
 from __future__ import annotations
 
 import argparse
+import importlib.util
 import sys
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[3]
 sys.path.append(str(HERE.parent / "haluna"))
-import materials as halmat  # noqa: E402  (Haluna's .tres writers, read-only)
+# Haluna's .tres writers, read-only: loaded by path under its own name, so a sibling kit's `materials` module (tamsule_bell has one)
+# already in sys.modules is never picked up instead.
+_HM_SPEC = importlib.util.spec_from_file_location("haluna_materials", HERE.parent / "haluna" / "materials.py")
+halmat = sys.modules.get("haluna_materials") or importlib.util.module_from_spec(_HM_SPEC)
+if "haluna_materials" not in sys.modules:
+    sys.modules["haluna_materials"] = halmat
+    _HM_SPEC.loader.exec_module(halmat)
 
 hexc = halmat.hexc
 OUT_DEFAULT = ROOT / "assets" / "environments" / "kits" / "pemakar" / "materials"
