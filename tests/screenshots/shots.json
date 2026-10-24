@@ -1222,6 +1222,10 @@
           "screen_space_aa": 1
         }
       }
+    },
+    {
+      "id": "formation_menu",
+      "scene": "res://game/ui/menus/formation/shots/formation_menu.tscn"
     }
   ]
 }
