@@ -268,6 +268,47 @@ func test_a_click_puts_the_cursor_on_a_node_and_a_second_click_acts() -> void:
 	_teardown()
 
 
+## M2-MNU-05: at every text size the side panel's lines, key, status line and confirm never overlap
+## and stay inside the panel (they flow by measured height; the key shrinks or hides first).
+func test_the_side_panel_never_overlaps_at_any_text_size() -> void:
+	var settings := UiSettings.shared()
+	var was: Variant = settings.get_value(UiSettings.TEXT_SCALE)
+	for scale: float in [1.0, 1.15, 1.3]:
+		settings.set_value(UiSettings.TEXT_SCALE, scale)
+		_open({"facet_ability": 1})
+		menu.model.traveler().movement_points = 5
+		menu.set_cursor(&"rh_05", false)
+		_assert_no_overlap("x%s walk plan" % scale)
+		menu.set_cursor(&"rh_07", false)
+		menu.request_act()
+		assert_ne(menu.status_text(), "", "a refusal on the status line")
+		_assert_no_overlap("x%s refusal" % scale)
+		menu.set_cursor(&"rh_03", false)
+		menu.request_act()
+		menu.choose(0)
+		menu.request_act()
+		assert_true(menu.is_confirming(), "walked onto Kick Off the Wall: the wake confirm")
+		_assert_no_overlap("x%s confirm" % scale)
+		menu.handle_input(_ev(&"ui_cancel"))
+		menu.set_cursor(&"rh_02", false)
+		menu.request_act()
+		menu.choose(0)
+		assert_ne(menu.status_text(), "", "a result on the status line")
+		_assert_no_overlap("x%s result" % scale)
+		_teardown()
+	settings.set_value(UiSettings.TEXT_SCALE, was)
+
+
+func _assert_no_overlap(what: String) -> void:
+	var side := HudLayout.rect_of(menu.load_layout().get("side", {}))
+	var rects := menu.side_rects()
+	assert_true(rects.size() >= 5, "%s: the lines are laid out" % what)
+	for i in rects.size():
+		assert_true(side.encloses(rects[i]), "%s: %s inside the panel %s" % [what, rects[i], side])
+		for j in range(i + 1, rects.size()):
+			assert_false(rects[i].intersects(rects[j]), "%s: %s overlaps %s" % [what, rects[i], rects[j]])
+
+
 func _model(facets: Dictionary = {}) -> LatticeMenuModel:
 	var state := GameStateData.new()
 	state.inventory = facets.duplicate()

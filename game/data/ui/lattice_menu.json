@@ -1,6 +1,6 @@
 {
   "lattice_menu": {
-    "doc": "The Lattice page (M2-MNU-01; docs/kb/tech/ui.md section Lattice page). Rects are x, y, w, h at the 1920 x 1080 reference, multiples of 3. 'board' holds the LatticeBoardView drawing metrics in reference px (unit_px: one lattice unit; node shapes are half-diagonals of a lozenge), the camera pan time, the direction-pick cone (cone_cos: the cosine of the widest angle off the pressed direction; angle_weight: how much a slanted node counts as farther) and the palette role of each board region (theme colours of type Hymn, never hard-coded). 'side' is the details panel, 'legend' the key above its foot (each node look, drawn as the board draws it, and its meaning), 'status' the foot (the last result or refusal), and 'confirm' the two-row MenuPage that takes its place before anything is spent.",
+    "doc": "The Lattice page (M2-MNU-01; docs/kb/tech/ui.md section Lattice page). Rects are x, y, w, h at the 1920 x 1080 reference, multiples of 3. 'board' holds the LatticeBoardView drawing metrics in reference px (unit_px: one lattice unit; node shapes are half-diagonals of a lozenge), the camera pan time, the direction-pick cone (cone_cos: the cosine of the widest angle off the pressed direction; angle_weight: how much a slanted node counts as farther) and the palette role of each board region (theme colours of type Hymn, never hard-coded). 'side' is the details panel, 'legend' the key (each node look, drawn as the board draws it, and its meaning; its rect is where it sits when the lines above end higher, else it follows them, and it shows only its first rows that end side.foot_gap above the foot, hiding when fewer than min_rows fit), 'status' the foot (the last result or refusal), and 'confirm' the two-row MenuPage that takes its place before anything is spent.",
     "canvas_layer": 64,
     "panel": {
       "rect": [96, 54, 1728, 972],
@@ -58,9 +58,10 @@
     "side": {
       "rect": [1305, 153, 492, 795],
       "pad": 21,
-      "gap": 3
+      "gap": 3,
+      "foot_gap": 12
     },
-    "legend": {"rect": [1326, 597, 450, 180], "row_pitch": 30, "sample_x": 30, "sample_scale": 0.66, "text_x": 66},
+    "legend": {"rect": [1326, 588, 450, 180], "row_pitch": 30, "sample_x": 30, "sample_scale": 0.66, "text_x": 66, "min_rows": 2},
     "status": {"rect": [1326, 789, 450, 138]},
     "confirm": {
       "rect": [1305, 783, 492, 0],

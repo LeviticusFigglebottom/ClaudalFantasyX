@@ -41,6 +41,8 @@ var _node_woken: Label
 var _plan_line: Label
 var _status: Label
 var _legend: LatticeLegend
+## The side panel's lines, top to bottom (_layout_side stacks them).
+var _flow: Array[Control] = []
 var _help: Label
 
 
@@ -128,6 +130,7 @@ func request_act() -> void:
 	_confirm.set_cursor(0, false)
 	_confirm.visible = true
 	_status.visible = false
+	_layout_side()
 
 
 ## Chooses confirm row `index` (0 does it, 1 steps back).
@@ -207,29 +210,21 @@ func _build_side() -> void:
 	side.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	HudLayout.place(side, sm)
 	add_child(side)
-	var r := HudLayout.rect_of(sm)
-	var pad := HudLayout.num(sm, "pad")
-	var legend_metrics: Dictionary = _d.get("legend", {})
-	var foot := HudLayout.rect_of(legend_metrics)
-	var box := VBoxContainer.new()
-	box.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	box.position = r.position + Vector2(pad, pad)
-	box.size = Vector2(r.size.x - pad * 2.0, foot.position.y - r.position.y - pad)
-	box.add_theme_constant_override(&"separation", int(HudLayout.num(sm, "gap")))
-	add_child(box)
-	_points = _side_label(box, &"MenuLabel")
+	_points = _side_label(&"MenuLabel")
 	_points.add_theme_color_override(&"font_color", _c(&"focus_gold"))
-	_facets = _side_label(box, &"DimLabel")
+	_facets = _side_label(&"DimLabel")
 	var rule := OrnamentRule.new()
 	rule.custom_minimum_size = Vector2(
 		0.0, float(get_theme_constant(&"ornament_node_px", HymnThemeBuilder.PALETTE_TYPE)) * 2.0
 	)
-	box.add_child(rule)
-	_node_title = _side_label(box, &"BodyLabel")
-	_node_gives = _side_label(box, &"SmallLabel")
-	_node_facet = _side_label(box, &"DimLabel")
-	_node_woken = _side_label(box, &"DimLabel")
-	_plan_line = _side_label(box, &"MenuLabel")
+	add_child(rule)
+	_flow.append(rule)
+	_node_title = _side_label(&"BodyLabel")
+	_node_gives = _side_label(&"SmallLabel")
+	_node_facet = _side_label(&"DimLabel")
+	_node_woken = _side_label(&"DimLabel")
+	_plan_line = _side_label(&"MenuLabel")
+	var legend_metrics: Dictionary = _d.get("legend", {})
 	_legend = LatticeLegend.new()
 	HudLayout.place(_legend, legend_metrics)
 	add_child(_legend)
@@ -237,15 +232,93 @@ func _build_side() -> void:
 	_status = _label(&"HelpLabel", HudLayout.rect_of(_d.get("status", {})))
 	_status.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_status.vertical_alignment = VERTICAL_ALIGNMENT_TOP
+	UiSettings.shared().changed.connect(_on_settings_changed)
 
 
-func _side_label(box: VBoxContainer, variation: StringName) -> Label:
+## A side-panel line, stacked by _layout_side in the order made.
+func _side_label(variation: StringName) -> Label:
 	var l := Label.new()
 	l.theme_type_variation = variation
 	l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	l.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	box.add_child(l)
+	# Its width before any text: a wrapped label shapes (and caches its minimum height) at the width
+	# it has when its text first changes, and a 0-wide label would reserve a line per letter.
+	var sm: Dictionary = _d.get("side", {})
+	l.size = Vector2(HudLayout.rect_of(sm).size.x - HudLayout.num(sm, "pad") * 2.0, 0.0)
+	add_child(l)
+	_flow.append(l)
 	return l
+
+
+## Stacks the side panel by measured height (text size and wrapping change it; M2-MNU-05): the lines
+## from the top, each as tall as its wrapped text; the foot (the confirm, else the status line, grown
+## upward to fit its text) at the bottom; the key at its own row when the lines end above it, else
+## right under them, and hidden when it would reach the foot. Nothing overlaps at any text size.
+func _layout_side() -> void:
+	if _legend == null or not is_instance_valid(_legend):
+		return
+	var sm: Dictionary = _d.get("side", {})
+	var r := HudLayout.rect_of(sm)
+	var pad := HudLayout.num(sm, "pad")
+	var gap := HudLayout.num(sm, "gap")
+	var x := r.position.x + pad
+	var w := r.size.x - pad * 2.0
+	var foot_top := r.end.y - pad
+	if _confirm != null and _confirm.visible:
+		foot_top = _confirm.position.y
+	elif _status.visible and _status.text != "":
+		var home := HudLayout.rect_of(_d.get("status", {}))
+		var sh := _measure(_status, home.size.x)
+		_status.position = Vector2(home.position.x, minf(home.position.y, r.end.y - pad - sh))
+		_resize(_status, Vector2(home.size.x, sh))
+		foot_top = _status.position.y
+	var y := r.position.y + pad
+	for c in _flow:
+		if c.visible:
+			var h := _measure(c, w)
+			c.position = Vector2(x, y)
+			_resize(c, Vector2(w, h))
+			y += h + gap
+	var lm: Dictionary = _d.get("legend", {})
+	var legend_at := maxf(HudLayout.rect_of(lm).position.y, y)
+	var shown := _legend.fit(foot_top - HudLayout.num(sm, "foot_gap") - legend_at)
+	_legend.position.y = legend_at
+	_legend.size.y = _legend.content_height()
+	_legend.visible = shown >= int(HudLayout.num(lm, "min_rows"))
+
+
+## Sizes `c` to `to`, width first: a wrapped label's minimum height is shaped at its width at the
+## time, so setting both at once would clamp the height to what the old (narrower) width needed.
+func _resize(c: Control, to: Vector2) -> void:
+	c.size = Vector2(to.x, 0.0)
+	c.size = to
+
+
+## The height `c` needs at width `w`. A wrapped label is measured from its theme font as Label lays it
+## out (each line the font's height, line_spacing between), not from its cached minimum size, which
+## lags a text or theme change by a frame.
+func _measure(c: Control, w: float) -> float:
+	var l := c as Label
+	if l == null:
+		return c.get_combined_minimum_size().y
+	var font := l.get_theme_font(&"font")
+	var fs := l.get_theme_font_size(&"font_size")
+	var para := TextParagraph.new()
+	para.break_flags = TextServer.BREAK_MANDATORY | TextServer.BREAK_WORD_BOUND | TextServer.BREAK_ADAPTIVE
+	para.width = w
+	para.add_string(l.text, font, fs)
+	var lines := maxi(para.get_line_count(), 1)
+	var spacing := float(l.get_theme_constant(&"line_spacing"))
+	return lines * font.get_height(fs) + (lines - 1) * spacing
+
+
+## The side panel's flowing lines and the key, as laid out now (tests check that none overlap).
+func side_rects() -> Array[Rect2]:
+	var out: Array[Rect2] = []
+	for c: Control in _flow + [_legend, _status, _confirm]:
+		if c.visible and (not c is Label or (c as Label).text != ""):
+			out.append(c.get_rect())
+	return out
 
 
 ## Redraws the board marks and the side panel for the cursor node and the hero on show.
@@ -278,6 +351,7 @@ func _refresh() -> void:
 	_board.queue_redraw()
 	_legend.rows = model.legend_rows()
 	_legend.queue_redraw()
+	_layout_side()
 
 
 func _tag(p: Dictionary, path: Array[StringName]) -> String:
@@ -293,6 +367,7 @@ func _say(text: String, ok: bool) -> void:
 	_status.text = text
 	_status.visible = true
 	_status.add_theme_color_override(&"font_color", _c(&"text") if ok else _c(&"danger"))
+	_layout_side()
 
 
 func _confirm_input(event: InputEvent) -> bool:
@@ -313,6 +388,18 @@ func _confirm_input(event: InputEvent) -> bool:
 func _close_confirm() -> void:
 	_confirm.visible = false
 	_status.visible = true
+	_layout_side()
+
+
+## Text size changed while open: the theme follows (UiSettings.follow), so measure again once it has.
+func _on_settings_changed(_key: StringName) -> void:
+	_layout_side.call_deferred()
+
+
+func _exit_tree() -> void:
+	super()
+	if UiSettings.shared().changed.is_connected(_on_settings_changed):
+		UiSettings.shared().changed.disconnect(_on_settings_changed)
 
 
 func _on_node_clicked(nid: StringName) -> void:

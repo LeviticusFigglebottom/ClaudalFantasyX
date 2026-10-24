@@ -12,7 +12,7 @@ Why this track exists: the progression and equipment systems (Lattice, equipment
 | M2-MNU-02 Equip + Customize, gear applied in live battles | **merged on the branch, review** (f25f4d6): stat-delta preview, ability slots, Customize with shortfalls; BattleVitals.setup now applies worn gear and Full Net's lume multiplier in live battles (fixtures unchanged); shots equip_menu, equip_customize viewed and approved |
 | M2-MNU-03 Items + Status pages | **merged on the branch, review** (bcf4780): field use through ItemBattleAction.resolve_on, sort by kind/name/count, status split base + Lattice + gear; shots items_menu, items_menu_use, status_menu viewed and approved |
 | M2-MNU-04 Quit to Title + battle pause | **done on the branch** (cdbb916): Quit behind a Stay-first confirm; battle pause on P / Pause / pad Start; shot `battle_pause` |
-| M2-MNU-05 screenshots, navigation, accessibility sweep | **doing**: every new screen rendered at 130% text and with the colorblind palette and viewed. Palette OK everywhere; Items, Status, field menu and pause OK at 130%. Lattice side panel and Equip stat table overlap at 130%: sent back to their agents |
+| M2-MNU-05 screenshots, navigation, accessibility sweep | **review**: every new screen viewed at 130% text and in the colorblind palette; the Lattice side panel and the Equip table now flow at any text size (tests at 1.0/1.15/1.3) |
 
 ## For other tracks
 - **ui (claude/ui):** I changed your field-menu shell, minimally: `FieldMenuModel` gained the rows (ROOT_IDS, PARTY_ROWS, root_enabled, quit_rows, `field_heroes()` extracted from from_game), `FieldMenu` gained `Level.QUIT`, `child` (a FieldSubmenu opened from `CHILD_PAGES`) and `quit_to_title()`; `field_menu.json` panel and root rects grew for nine rows; `FieldMenuShot` now walks down to Swell by id. Baselines `field_menu` and `field_menu_swell_modes` re-approved after viewing. Please merge `claude/menus` before your next field-menu change.
@@ -21,6 +21,8 @@ Why this track exists: the progression and equipment systems (Lattice, equipment
 - **Controls:** `battle_pause` is added to the InputMap at runtime (FieldInput.add_actions), not yet in `controls.json`, so it can't be remapped yet. Follow-up for the UI track's Controls page (a `battle` context).
 
 ## Exact next step
+**Two items remain:** the full `tools/ci_local.sh` on the merged head (running), then MERGE-READY. After that the queue is empty; follow-ups listed below.
+
 Merge the three worktree agents' branches as they report (Lattice, Equip, Items/Status), view every new shot, then M2-MNU-05; then merge the integration branch and `claude/ui`, run the FULL `tools/ci_local.sh`, and write MERGE-READY here.
 
 ## Log
@@ -28,3 +30,11 @@ Merge the three worktree agents' branches as they report (Lattice, Equip, Items/
 - 2026-10-24: M2-MNU-03 merged (Items 11/11, Status 5/5, field_menu 19/19, battle_pause 6/6). Field menu root widened for 130% text (ce979d0). Two worktree agents still running (Lattice, Equip).
 - 2026-10-24: M2-MNU-01 merged (lattice 49/49, field_menu 19/19). Equip agent still running.
 - 2026-10-24: M2-MNU-02 merged (equip 61/61, battle_vitals 14/14, menu 185/185). claude/ui merged (fd8f484). M2-MNU-05 sweep started: 130% and colorblind renders of all 7 new shots viewed; two layout bugs sent back.
+- 2026-10-24: Lattice and Equip 130% fixes merged and viewed; M2-MNU-05 to review. Merged the integration branch and claude/ui (M2-UI-17/18: objective line and a Map row, ten root rows; field_menu shots still rmse 0). Full ci_local started.
+
+## Follow-ups (not in this queue)
+- `battle_pause` into controls.json (remappable; the UI track's Controls page).
+- Light Step (`encounter_rate_pct`) is not read by the field encounter meter yet.
+- Lattice page: no overview zoom or drag-pan; a sealed gate not next to the hero doesn't offer to walk there.
+- Customize works only on worn pieces (equip a spare first).
+- 2026-10-24: full ci_local on 8c2b427 stopped at the tool unit tests: 541 run, 1 failed, `test_release_excludes_tests::test_no_shipped_file_names_a_tests_path` -> `game/ui/objectives/objective_shot.gd` (claude/ui M2-UI-17's capture driver loads `res://game/levels/_tests/haluna_mood/haluna_mood.tscn`, which release presets exclude). Not this track's code; reported to the UI track with a proposed fix (move the driver under game/levels/_tests/). Re-running every other step with that one test recorded instead of fatal.
