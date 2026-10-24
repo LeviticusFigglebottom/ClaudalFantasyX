@@ -787,3 +787,23 @@ MAP_POI_SHRINE_ENTRANCE,The entrance
 MAP_POI_SIDE_POOL,The side pool
 MAP_POI_INNER_POOL,The inner pool
 MAP_POI_CHAMBER_DOOR,The chamber door
+FIELD_MENU_MAP,Map
+FIELD_MENU_MAP_DESC,"Where you stand, where your errand leads, and the road ahead."
+FIELD_MENU_MAP_NONE,There is no map of this place.
+FIELD_MENU_MAP_NONE_TAG,No map
+MAP_PLACES,Places
+MAP_ERRANDS,Errands
+MAP_ERRANDS_NONE,No errands here.
+MAP_HELP,Up and Down: choose a place · Cancel: back
+MAP_NORTH,N
+MAP_POI_LINE_FMT,{name}: {m} m to the {dir}.
+MAP_POI_HERE_FMT,{name}: you are here.
+MAP_POI_GOAL,Your errand leads here.
+MAP_DIR_N,north
+MAP_DIR_NE,north-east
+MAP_DIR_E,east
+MAP_DIR_SE,south-east
+MAP_DIR_S,south
+MAP_DIR_SW,south-west
+MAP_DIR_W,west
+MAP_DIR_NW,north-west
