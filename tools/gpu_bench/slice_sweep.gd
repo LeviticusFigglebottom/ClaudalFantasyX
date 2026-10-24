@@ -16,6 +16,7 @@ extends Node
 ## It prints "SLICE_SWEEP <segment> ..." and appends one row per segment to --csv: perf_baseline.csv's
 ## columns (scene = "slice:<segment>", camera = the spawn) plus gpu_mean_ms, frame_max_ms,
 ## hidden_max_ms, hidden_total_ms (the whole load under the fade) and visible_max_ms.
+## --override=key=value,...: GraphicsSettings overrides on top of --preset (M2-RND-14; e.g. aa=fxaa, TAA off).
 ## Diagnosis (M2-RND-15): --pipeline-trace prints SLICE_PIPE for every frame over 50 ms or with a draw-time pipeline
 ## compile, with the frame's Performance pipeline-compilation counts (canvas, mesh, surface, draw, specialization).
 ## Diagnosis (M2-RND-07): --flood-trace prints the Flood's first 12 frames; --flood-variant=no_boss_vfx forces
@@ -106,6 +107,11 @@ func _run() -> void:
 	win.size = Vector2i(int(res[0]), int(res[1]))
 	var gs := GraphicsSettings.new()
 	gs.set_preset(str(_opts.get("preset", "high")))
+	# --override=key=value,... (M2-RND-14): a player's settings on top of the preset, e.g. aa=fxaa (TAA off).
+	for pair in str(_opts.get("override", "")).split(",", false):
+		var kv := pair.split("=", true, 1)
+		if kv.size() == 2:
+			gs.set_override(kv[0], kv[1].to_float() if kv[1].is_valid_float() else kv[1])
 	GraphicsRuntime.set_settings(gs)
 	_rid = get_viewport().get_viewport_rid()
 	RenderingServer.viewport_set_measure_render_time(_rid, true)
