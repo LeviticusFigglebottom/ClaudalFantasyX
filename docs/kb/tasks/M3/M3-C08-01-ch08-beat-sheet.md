@@ -2,7 +2,7 @@
 id: M3-C08-01
 title: Ch8 "The Seawall" beat sheet
 role: narrative
-status: review
+status: done
 owner_session: "m2-slice subagent C (Ch8, Ch9 beats)"
 depends_on: []
 reviewer: cinematics
@@ -39,3 +39,4 @@ It covers Coilspire's flue trial and Virel, the Fisher Stair evacuation set-piec
 - **Checks:** `validate_data` is clean (it includes the banned-terms grep over docs/kb/story), and `taskboard --check` passes. This is docs only, so there was no Godot run.
 
 ## Review log
+- 2026-10-24 cinematics (m2-slice): **approved.** Kerrid at the stair foot is staged inside ADR 0020/0022: who sees whom, no glow, and he never shares a frame with the figure. The set-piece as chained battles with the Climb on the timeline keeps pillar 4. The new battle pieces are filed as **M3-CMB-01** (role combat). M3-C08-02 depends on it.

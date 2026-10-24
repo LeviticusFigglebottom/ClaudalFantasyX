@@ -2,7 +2,7 @@
 id: M3-C06-01
 title: Ch6 "Salt Edict" beat sheet
 role: narrative
-status: review
+status: done
 owner_session: "m2-slice subagent B (Ch5, Ch6, Ch7 beats)"
 depends_on: []
 reviewer: cinematics
@@ -30,3 +30,4 @@ It covers the Order raid on the Saltwright camp, Toma freezing, Liss, the Stillg
 - Reviewer: cinematics. The `.dlg` scripts and flag declarations belong to M3-C06-02.
 
 ## Review log
+- 2026-10-24 cinematics (m2-slice): **approved.** Sefir's B05 is staged item by item against ADR 0017 (a), and the replay-tells table in §5a is what the build needs. **For narrative and the Lead:** 'Old Pirran' (the name in the burned lamp) is a design truth proposal only. It needs a decisions_log entry before any line uses it; no Act I line does.

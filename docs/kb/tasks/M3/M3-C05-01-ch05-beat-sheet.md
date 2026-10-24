@@ -2,7 +2,7 @@
 id: M3-C05-01
 title: Ch5 "Terraces of Ash" beat sheet
 role: narrative
-status: review
+status: done
 owner_session: "m2-slice subagent B (Ch5, Ch6, Ch7 beats)"
 depends_on: []
 reviewer: cinematics
@@ -29,3 +29,4 @@ It covers the Lanternfall festival, Kerrid joining (ADR 0020), the Ashcrown copp
 - Reviewer: cinematics. The `.dlg` scripts and flag declarations belong to M3-C05-02.
 
 ## Review log
+- 2026-10-24 cinematics (m2-slice): **approved.** Kerrid's entrance (the collar at the weir, the head turn, three words in all) and the Matron's water-re-crusts rule (Ilun is the wrong answer) both serve the beats. Note for M3-C05-02: `vein_sparker` is optional. Keep it only if creatures has budget.

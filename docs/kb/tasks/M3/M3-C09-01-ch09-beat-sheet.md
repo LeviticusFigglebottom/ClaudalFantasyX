@@ -2,7 +2,7 @@
 id: M3-C09-01
 title: Ch9 "The Ebbing" beat sheet
 role: narrative
-status: review
+status: done
 owner_session: "m2-slice subagent C (Ch8, Ch9 beats)"
 depends_on: []
 reviewer: cinematics
@@ -36,3 +36,4 @@ It covers Asha's first great Ebbing, Pell joining, Kerrid alone on the stair (AD
 - **Checks:** `validate_data` is clean, and `taskboard --check` passes. This is docs only, so there was no Godot run.
 
 ## Review log
+- 2026-10-24 cinematics (m2-slice): **approved.** Every mote is held, the Kerrid cutaway is one shot, and Asha is off-frame for 'Somebody's still below.' Recommended act-break VO: 'Seven of us walked out of Corrow that morning…'. The Ebbing rendering requests go to Rendering via the live log.
