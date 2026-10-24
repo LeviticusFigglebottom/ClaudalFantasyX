@@ -201,12 +201,13 @@ def _trace(scalp, lm, roots: np.ndarray, length: np.ndarray, lift: float, G: np.
     paths = [scalp.project(roots, lift)]
     alive = np.ones(len(roots), dtype=bool)
     stop = np.full(len(roots), seg)
+    Gs = scalp.project(G[None, :])[0]  # M1-CHR-14: the gather on the scalp, where the braid root is seated
     for k in range(seg):
         cur = paths[-1]
         N = scalp.normal(cur)
         fdir = _flow_dir(lm, cur, N, G)
         nxt = scalp.project(cur + fdir * step[:, None], lift, iters=3)
-        near = np.linalg.norm(nxt - G, axis=1) < 0.03 * s
+        near = np.linalg.norm(nxt - Gs, axis=1) < CARD_STOP_AT_ROOT * s
         newly = alive & near
         stop[newly] = k + 1
         alive &= ~near
@@ -359,6 +360,21 @@ def crown_clumps(part: Part, scalp, lm, params: dict, rng: np.random.Generator, 
                     taper=0.35, v_range=(0.0, 0.85))
 
 
+BRAID_ROOT_SEAT = 0.004  # m at s = 1: the braid's root centre off the skin, inside the scalp cards' lift
+BRAID_ROOT_RAMP = 0.07  # m along the braid over which the clearance grows to BRAID_CLEAR
+BRAID_CLEAR = 0.024  # m: the braid's clearance from the body below the root
+CARD_STOP_AT_ROOT = 0.012  # m at s = 1: scalp cards stop this close to the braid root (CHR-04: 0.03)
+
+
+def _sdf_grad(fn, P: np.ndarray, e: float = 3e-4) -> np.ndarray:
+    g = np.zeros_like(P)
+    for i in range(3):
+        d = np.zeros(3)
+        d[i] = e
+        g[:, i] = fn(P + d) - fn(P - d)
+    return g / np.maximum(np.linalg.norm(g, axis=1, keepdims=True), 1e-12)
+
+
 def braid_spine(lm, body, params: dict) -> np.ndarray:
     s = lm.h / 0.222
     G = _gather(lm)
@@ -375,20 +391,33 @@ def braid_spine(lm, body, params: dict) -> np.ndarray:
         np.array([nip[0] * 0.95, nip[1] - 0.02 * s, lm.P("waist")[2] - 0.02 * s]),
         np.array([nip[0] * 1.0, nip[1] + 0.0 * s, lm.P("waist")[2] - 0.25 * s]),
     ])
+    # M1-CHR-14: the root is seated in the hair, not hung beside it. G sits 15 mm off the donor scalp
+    # (bb_donor), and the clearance pass below used to push every spine point, the root included,
+    # 24 mm off the body (the head is part of it), so the braid floated beside the nape. The root now
+    # starts BRAID_ROOT_SEAT off the skin (inside the scalp cards' lift) and the clearance ramps up
+    # from that to the full value over the first BRAID_ROOT_RAMP of the braid.
+    head = body.regions["head"]
+    gh = _sdf_grad(head.sdf, G[None, :])[0]
+    root = G - gh * (float(head.sdf(G[None, :])[0]) - BRAID_ROOT_SEAT * s)
+    ctrl[0] = root
     C = catmull_rom(ctrl, 400)
     L = arclen(C)
     total = params["braid_length_m"] * s + params["tail_m"] * s
     C = C[L <= total]
+    L = L[L <= total]
     # keep it clear of the body (+ the vest on the chest) and the costume
-    clear = 0.024 * s
+    ramp = np.clip(L / (BRAID_ROOT_RAMP * s), 0.0, 1.0)
+    ramp = ramp * ramp * (3.0 - 2.0 * ramp)
+    clear = (BRAID_ROOT_SEAT + (BRAID_CLEAR - BRAID_ROOT_SEAT) * ramp) * s
     for _ in range(6):
         d = body.sdf(C)
         g = body.grad(C)
         g /= np.maximum(np.linalg.norm(g, axis=1, keepdims=True), 1e-9)
         push = np.maximum(clear - d, 0.0)
         C = C + g * push[:, None]
-        # smooth
+        # smooth (the root stays where it is seated)
         C[1:-1] = 0.5 * C[1:-1] + 0.25 * (C[:-2] + C[2:])
+        C[0] = root
     _ = zc
     return catmull_rom(C, 200)
 
