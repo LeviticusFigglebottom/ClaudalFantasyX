@@ -23,8 +23,8 @@ extends Node3D
 ##   GlimmerField.set_scene_glimmer(tint, a)     writes hymn_glimmer (a = scene mote intensity)
 ##   GlimmerField.set_scene_sea_glow(energy)     writes hymn_zone_sea_glow (zone night sea-glow, rule 3;
 ##                                               0 = hard off, e.g. ending_dock)
-##   GlimmerField.clear_scene_sea_glow()         unsets it (materials decide); SceneRouter calls it on
-##                                               every zone change
+##   GlimmerField.clear_scene_sea_glow()         unsets it (materials decide); every scene swap does too
+##                                               (ShaderGlobals.ZONE_GLOBALS, M1-RND-23)
 ##   GlimmerField.sea_glow_violation(...)        checks a frame's sea-glow against rule 3
 
 signal mode_changed(mode: GlimmerState.Mode)
@@ -290,15 +290,17 @@ static func set_scene_glimmer(tint: Color, scene_intensity: float) -> void:
 ## energy <= 0 is a HARD off (ending_dock, day zones that want no glow): it writes SEA_GLOW_ZONE_OFF,
 ## which every water material honours whatever its own sea_glow_energy (M1-RND-15). Otherwise it is
 ## clamped to the rule-3 ceiling; it does not enforce the night minimum, so scene exceptions (the
-## Ending's E4 0.07, E5 0.06) pass. Check frames with sea_glow_violation().
+## Ending's E4 0.07, E5 0.06) pass. Check frames with sea_glow_violation(). It is a zone global
+## (ShaderGlobals.ZONE_GLOBALS): the next scene swap unsets it, so a zone writes it in its _ready.
 static func set_scene_sea_glow(energy: float) -> void:
-	RenderingServer.global_shader_parameter_set(GLOBAL_SEA_GLOW, zone_sea_glow_value(energy))
+	ShaderGlobals.set_value(GLOBAL_SEA_GLOW, zone_sea_glow_value(energy))
 
 
-## Unsets the zone sea-glow: surfaces show their own material energy, if any. SceneRouter calls it on
-## every zone change, so a zone that never writes the global does not inherit the last zone's glow.
+## Unsets the zone sea-glow: surfaces show their own material energy, if any. Every scene swap does
+## this too (ShaderGlobals.ZONE_GLOBALS, reset on SceneRouter.scene_swapping), so a zone that never
+## writes the global does not inherit the last zone's glow.
 static func clear_scene_sea_glow() -> void:
-	RenderingServer.global_shader_parameter_set(GLOBAL_SEA_GLOW, SEA_GLOW_ZONE_UNSET)
+	ShaderGlobals.set_value(GLOBAL_SEA_GLOW, SEA_GLOW_ZONE_UNSET)
 
 
 ## What set_scene_sea_glow(energy) writes to hymn_zone_sea_glow.

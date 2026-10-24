@@ -73,8 +73,20 @@ const LEVEL_PUBLISHERS_GROUP := &"hymn_water_level_publishers"
 @export var tide_line_y: float = 0.0
 ## Write hymn_water_level (current level, datum) every frame. Off by default (M1-RND-15): turn it on
 ## for the zone's sea only, so pools and rivers never drive the zone's weathering. With two publishers
-## in the tree the second warns. Leaving the tree resets the global to (0, 0).
-@export var publishes_water_level: bool = false
+## in the tree the second warns, whether it entered publishing or was switched on at runtime
+## (M1-RND-23). The global resets to (0, 0) when the last publisher stops (left the tree or switched
+## off) and on every scene swap (ShaderGlobals.ZONE_GLOBALS).
+@export var publishes_water_level: bool = false:
+	set(value):
+		if value == publishes_water_level:
+			return
+		publishes_water_level = value
+		if not is_inside_tree():
+			return
+		if value:
+			_join_publishers()
+		else:
+			_leave_publishers()
 
 @export_group("Mesh")
 ## Optional authored mesh (rivers, pools). Empty = generate the ocean grid below.
@@ -100,7 +112,21 @@ func _ready() -> void:
 
 
 func _enter_tree() -> void:
-	if not publishes_water_level:
+	if publishes_water_level:
+		_join_publishers()
+
+
+func _exit_tree() -> void:
+	_leave_publishers()
+
+
+## Resets hymn_water_level to its project default (0, 0). Every scene swap does this too.
+static func clear_water_level() -> void:
+	ShaderGlobals.set_value(GLOBAL_WATER_LEVEL, Vector2.ZERO)
+
+
+func _join_publishers() -> void:
+	if is_in_group(LEVEL_PUBLISHERS_GROUP):
 		return
 	if get_tree().get_node_count_in_group(LEVEL_PUBLISHERS_GROUP) > 0:
 		push_warning(
@@ -112,21 +138,19 @@ func _enter_tree() -> void:
 	add_to_group(LEVEL_PUBLISHERS_GROUP)
 
 
-func _exit_tree() -> void:
-	if publishes_water_level or is_in_group(LEVEL_PUBLISHERS_GROUP):
-		remove_from_group(LEVEL_PUBLISHERS_GROUP)
+## Leaves the publisher group; the global resets only when no publisher is left, so a second (warned)
+## publisher leaving does not zero the level the first one owns (review-sweep-J S4).
+func _leave_publishers() -> void:
+	if not is_in_group(LEVEL_PUBLISHERS_GROUP):
+		return
+	remove_from_group(LEVEL_PUBLISHERS_GROUP)
+	if get_tree().get_node_count_in_group(LEVEL_PUBLISHERS_GROUP) == 0:
 		clear_water_level()
-
-
-## Resets hymn_water_level to its project default (0, 0). SceneRouter also calls it on every zone change.
-static func clear_water_level() -> void:
-	RenderingServer.global_shader_parameter_set(GLOBAL_WATER_LEVEL, Vector2.ZERO)
 
 
 func _process(_delta: float) -> void:
 	if publishes_water_level:
-		var level := water_level()
-		RenderingServer.global_shader_parameter_set(GLOBAL_WATER_LEVEL, level)
+		ShaderGlobals.set_value(GLOBAL_WATER_LEVEL, water_level())
 	if follow_target == null or _surface == null:
 		return
 	var p := follow_target.global_position

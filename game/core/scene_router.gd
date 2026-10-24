@@ -1,13 +1,23 @@
 extends Node
 ## Autoload "SceneRouter": async scene loading behind a fade, with a shader-prewarm hook.
 ##
-## Public API (stable since M0): change_scene(path), is_busy(), signal prewarm_requested(path), FADE_SEC.
+## Public API (stable since M0, additions below): change_scene(path), is_busy(), signal
+## prewarm_requested(path), FADE_SEC.
 ## M1-ARC-06: change_scene(path, spawn) also places the player on Spawns/<spawn> once the new scene
 ## is in the tree (still under the opaque fade), and `world_return` (a WorldReturn child) returns
 ## the party to its respawn point on EventBus.game_loaded once boot.gd arms it.
 ## Added in the M1-RND-06 fix: signal swap_measured(stats) and last_swap_stats (see below).
 ## M1-ARC-15: when the new scene's root is ready (main thread, in the tree, before its first draw),
 ## the player's graphics settings are applied to it (attach_graphics_hook; only after boot armed it).
+## M1-RND-15 / M1-RND-23 (review-sweep-J S2):
+##   - signal scene_swapping(scene_path): under the opaque fade, just before the new scene enters the
+##     tree. Zone render globals reset on it (ShaderGlobals.install connects ShaderGlobals.ZONE_GLOBALS:
+##     the zone sea-glow and the water level go back to their project defaults), so the router names
+##     no system that owns a global.
+##   - hold_swap(holder) / release_swap(holder) / swap_holders(): while anything holds the swap, the
+##     new scene waits under the opaque fade, at most PREWARM_WAIT_MAX_FRAMES frames (the time-sliced
+##     ShaderPrewarm stage holds it while staging). Callers can see a change take up to that many
+##     frames (2 s at 60 fps) longer; the wait is recorded in last_swap_stats["prewarm_wait_frames"].
 ##
 ## SPEC §4.2 allows no frame over 50 ms in a transition, so the expensive steps are kept out of the
 ## frame that shows the new scene (docs/kb/tech/architecture.md, "Scene-swap hitch"):
@@ -16,8 +26,8 @@ extends Node
 ##      first-use glyph rasterization was the largest CPU cost of a cold swap.
 ##   2. prewarm_requested fires before the swap, so the ShaderPrewarm stage is built (scene load,
 ##      material load, shader front-end compile) in a frame of its own. The stage then feeds its draws
-##      in a few per frame (M1-RND-15); the router waits while it is staging, up to
-##      PREWARM_WAIT_MAX_FRAMES, so pipelines compile in small slices under the opaque fade.
+##      in a few per frame (M1-RND-15) and holds the swap (hold_swap) while it is staging, up
+##      to PREWARM_WAIT_MAX_FRAMES, so pipelines compile in small slices under the opaque fade.
 ##   3. The PackedScene is instantiated on a WorkerThreadPool thread (the node is not in the tree
 ##      yet, which Godot 4 allows), never on the main thread.
 ##   4. The old scene is unloaded one frame before the new one is added, so freeing it and
@@ -26,6 +36,8 @@ extends Node
 ## warns when the swap frame exceeds SWAP_BUDGET_MS.
 
 signal prewarm_requested(scene_path: String)
+## Emitted under the opaque fade, just before the new scene enters the tree (zone globals reset here).
+signal scene_swapping(scene_path: String)
 ## Emitted after each successful swap with the same dictionary stored in last_swap_stats.
 signal swap_measured(stats: Dictionary)
 
@@ -35,7 +47,8 @@ const FADE_LAYER := 128
 const SWAP_BUDGET_MS := 50.0
 ## Frames measured after the new scene is handed to the tree (its _ready and first draw land here).
 const MEASURE_FRAMES := 4
-## Upper bound on frames spent waiting for a time-sliced ShaderPrewarm stage (M1-RND-15).
+## Upper bound on frames a swap waits for its holders (hold_swap), e.g. a time-sliced ShaderPrewarm
+## stage (M1-RND-15).
 const PREWARM_WAIT_MAX_FRAMES := 120
 const USEC_PER_MSEC := 1000.0
 const LOG_PREFIX := "SceneRouter"
@@ -56,6 +69,8 @@ var _fade_rect: ColorRect
 var _busy := false
 var _font_warmer: FontWarmer
 var _fonts_warm := false
+## instance id -> WeakRef of each object holding the swap (hold_swap).
+var _swap_holds: Dictionary = {}
 
 
 func _ready() -> void:
@@ -68,6 +83,7 @@ func _ready() -> void:
 	_fade_rect.set_anchors_preset(Control.PRESET_FULL_RECT)
 	_fade_layer.add_child(_fade_rect)
 	ShaderPrewarm.install(self)
+	ShaderGlobals.install(self)
 	world_return = WorldReturn.new()
 	world_return.name = "WorldReturn"
 	add_child(world_return)
@@ -75,6 +91,30 @@ func _ready() -> void:
 
 func is_busy() -> bool:
 	return _busy
+
+
+## Holds the next swap under the opaque fade until release_swap(holder), until `holder` is freed, or
+## for at most PREWARM_WAIT_MAX_FRAMES frames. Holding twice with the same object is one hold.
+func hold_swap(holder: Object) -> void:
+	if holder != null:
+		_swap_holds[holder.get_instance_id()] = weakref(holder)
+
+
+func release_swap(holder: Object) -> void:
+	if holder != null:
+		_swap_holds.erase(holder.get_instance_id())
+
+
+## The live objects holding the swap (freed holders are dropped here).
+func swap_holders() -> Array[Object]:
+	var out: Array[Object] = []
+	for id: Variant in _swap_holds.keys():
+		var o: Variant = (_swap_holds[id] as WeakRef).get_ref()
+		if o == null:
+			_swap_holds.erase(id)
+		else:
+			out.append(o as Object)
+	return out
 
 
 ## `spawn` (optional): a marker under the new scene's Spawns node to place the player on
@@ -115,7 +155,7 @@ func _swap(packed: PackedScene, scene_path: String, stats: Dictionary, spawn: St
 		push_error("SceneRouter: failed to instantiate %s" % scene_path)
 		return
 	var waited := 0
-	while waited < PREWARM_WAIT_MAX_FRAMES and ShaderPrewarm.is_staging_under(self):
+	while waited < PREWARM_WAIT_MAX_FRAMES and not swap_holders().is_empty():
 		await get_tree().process_frame
 		waited += 1
 	stats["prewarm_wait_frames"] = waited
@@ -129,10 +169,9 @@ func _swap(packed: PackedScene, scene_path: String, stats: Dictionary, spawn: St
 		swap_frame_start = Time.get_ticks_usec()
 	var frames: Array[float] = []
 	t = swap_frame_start
-	# Zone render globals (M1-RND-15): the new zone starts from the project defaults, so one that never
-	# writes them does not inherit the last zone's night sea-glow or tide line.
-	GlimmerField.clear_scene_sea_glow()
-	WaterSurface.clear_water_level()
+	# Zone render globals (M1-RND-15) reset on this signal: the new zone starts from the project
+	# defaults, so one that never writes them does not inherit the last zone's sea-glow or tide line.
+	scene_swapping.emit(scene_path)
 	attach_graphics_hook(node, stats)
 	get_tree().change_scene_to_node(node)
 	for i in MEASURE_FRAMES:

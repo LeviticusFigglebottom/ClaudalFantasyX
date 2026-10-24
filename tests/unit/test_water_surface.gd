@@ -52,6 +52,29 @@ class ShaderErrorLog:
 			_mutex.unlock()
 
 
+## Counts the second-publisher warnings (push_warning) while a check runs.
+class WarningLog:
+	extends Logger
+	var count := 0
+	var _mutex := Mutex.new()
+
+	func _log_error(
+		_function: String,
+		_file: String,
+		_line: int,
+		code: String,
+		rationale: String,
+		_editor_notify: bool,
+		error_type: int,
+		_script_backtraces: Array[ScriptBacktrace]
+	) -> void:
+		var text := "%s %s" % [code, rationale]
+		if error_type == Logger.ERROR_TYPE_WARNING and text.contains("already publishes hymn_water_level"):
+			_mutex.lock()
+			count += 1
+			_mutex.unlock()
+
+
 func _root() -> Node:
 	# The tree root is busy while the runner scene is readying, so attach under the running scene.
 	return (Engine.get_main_loop() as SceneTree).current_scene
@@ -157,19 +180,62 @@ func test_water_level_has_one_publisher_and_resets_on_exit() -> void:
 	sea.free()
 	assert_eq(host.get_tree().get_node_count_in_group(WaterSurface.LEVEL_PUBLISHERS_GROUP), 0, "left the group")
 	pool.free()
-	var src := FileAccess.get_file_as_string("res://game/world/water/water_surface.gd")
-	var exit := src.substr(src.find("func _exit_tree()"))
-	exit = exit.substr(0, exit.find("\n\n\n"))
-	assert_true(exit.contains("clear_water_level()"), "leaving the tree resets the level")
-	var router := FileAccess.get_file_as_string("res://game/core/scene_router.gd")
-	assert_true(router.contains("WaterSurface.clear_water_level()"), "SceneRouter resets it on a zone change")
-	assert_true(router.contains("GlimmerField.clear_scene_sea_glow()"), "and the zone sea-glow")
+	assert_eq(
+		ShaderGlobals.get_value(WaterSurface.GLOBAL_WATER_LEVEL), Vector2.ZERO, "leaving the tree resets the level"
+	)
+	# M1-RND-23 (review-sweep-J S2): the swap reset goes through ShaderGlobals' zone globals on
+	# SceneRouter.scene_swapping; the router no longer names WaterSurface or GlimmerField.
+	assert_true(ShaderGlobals.ZONE_GLOBALS.has(WaterSurface.GLOBAL_WATER_LEVEL), "a zone global")
+	assert_true(ShaderGlobals.ZONE_GLOBALS.has(GlimmerField.GLOBAL_SEA_GLOW), "and the zone sea-glow")
 	for scene: String in [
 		"res://game/levels/_tests/water/water_test.tscn", "res://game/levels/_tests/undertow/undertow_test.tscn"
 	]:
 		assert_true(
 			FileAccess.get_file_as_string(scene).contains("publishes_water_level = true"), "%s sea opts in" % scene
 		)
+
+
+## M1-RND-23 (review-sweep-J S4): publishes_water_level is a setter, so a runtime toggle joins and
+## leaves the publisher group (and gets the second-publisher warning), and the level resets only when
+## the last publisher stops: a second, warned publisher leaving does not zero the first one's level.
+func test_runtime_toggle_joins_the_group_and_only_the_last_publisher_clears() -> void:
+	var host := (Engine.get_main_loop() as SceneTree).current_scene
+	var warnings := WarningLog.new()
+	OS.add_logger(warnings)
+	var sea := WaterSurface.new()
+	sea.tide_line_y = 0.4
+	host.add_child(sea)
+	sea.publishes_water_level = true
+	assert_true(sea.is_in_group(WaterSurface.LEVEL_PUBLISHERS_GROUP), "a runtime toggle joins the group")
+	assert_eq(warnings.count, 0, "the first publisher does not warn")
+	var pool := WaterSurface.new()
+	host.add_child(pool)
+	pool.publishes_water_level = true
+	assert_eq(warnings.count, 1, "a second publisher switched on at runtime warns")
+	assert_eq(host.get_tree().get_node_count_in_group(WaterSurface.LEVEL_PUBLISHERS_GROUP), 2)
+	sea.position.y = 0.6
+	sea._process(0.0)
+	assert_eq(ShaderGlobals.get_value(WaterSurface.GLOBAL_WATER_LEVEL), Vector2(0.6, 0.4), "the sea published")
+	pool.free()
+	assert_eq(
+		ShaderGlobals.get_value(WaterSurface.GLOBAL_WATER_LEVEL),
+		Vector2(0.6, 0.4),
+		"the warned publisher leaving keeps the sea's level"
+	)
+	sea.publishes_water_level = false
+	assert_false(sea.is_in_group(WaterSurface.LEVEL_PUBLISHERS_GROUP), "switching off leaves the group")
+	assert_eq(ShaderGlobals.get_value(WaterSurface.GLOBAL_WATER_LEVEL), Vector2.ZERO, "the last publisher clears")
+	sea.publishes_water_level = true
+	assert_eq(warnings.count, 1, "re-joining alone does not warn")
+	sea.free()
+	assert_eq(host.get_tree().get_node_count_in_group(WaterSurface.LEVEL_PUBLISHERS_GROUP), 0)
+	OS.remove_logger(warnings)
+	var off := WaterSurface.new()
+	off.publishes_water_level = true  # before the tree: joins on entry
+	assert_false(off.is_in_group(WaterSurface.LEVEL_PUBLISHERS_GROUP))
+	host.add_child(off)
+	assert_true(off.is_in_group(WaterSurface.LEVEL_PUBLISHERS_GROUP))
+	off.free()
 
 
 func test_light_is_nan_safe_and_sss_is_view_dependent() -> void:
