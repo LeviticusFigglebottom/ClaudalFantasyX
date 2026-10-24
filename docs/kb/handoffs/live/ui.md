@@ -41,7 +41,15 @@ UI track (cloud session session_01NyuYPSZn7o7gYirTvz4zjs), branch `claude/ui`, s
 - **M2-UI-25 (review, merged at 19838a8d):** the dialogue box's continue glyph, backlog (L / pad Y) and auto-advance setting (Off by default). UI-owned in `game/ui/dialogue_assist/`.
   - **One line added to `dialogue_box.gd`** (Architect's file; please accept). Nothing of M2-ARC-06/07 is done there.
   - **Shots:** `dialogue_continue` and `dialogue_backlog` are new; `settings_accessibility` is re-approved (11 rows).
-  - **Full suite for 19838a8d:** running in the background; the result goes here.
+- **MERGE-READY @ 19838a8d:**
+  - **Items:** M2-UI-25 on top of the 4d8798c7 batch.
+  - **Checks run:**
+    - full Godot suite **1728 run, 0 failed** (log check clean);
+    - validate_data, taskboard, gdlint and gdformat clean;
+    - shots `dialogue_continue`, `dialogue_backlog` and `settings_accessibility` viewed and approved.
+  - **Checks skipped:**
+    - the tools unittest rerun, because M2-UI-25 changed nothing under `tools/` (its release-excludes and loc-literal tests passed in the agent's run);
+    - the full manifest, Blender and coverage, which the Lead runs at merge.
 - **Blocked:**
   - **M2-UI-07:** claude/characters (M2-CHR-06) is still not on the integration branch.
   - **M3-UI-01 (Reefball HUD):** no Reefball engine on any branch yet.
