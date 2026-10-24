@@ -406,6 +406,32 @@ def transfer_weights(P: np.ndarray, src_P: np.ndarray, src_W: np.ndarray, k: int
     return limit4(out)
 
 
+SKIRT_PARTS = ("SkirtOuter", "SkirtInner")
+TORSO_PARTS = ("Bodice", "Vest", "Collar")
+SKIRT_SIDE_BLEND = 0.07  # m (at s = 1): half-width of the band across the middle where a skirt follows both legs
+SKIRT_LEG_FROM = 0.03  # m above the crotch where a skirt starts to hand over from the hips to the legs
+SKIRT_LEG_RAMP = 0.14  # m over which the handover completes
+SKIRT_PELVIS_SHARE = 0.0  # of the weight below the handover kept on the pelvis (eases the stretch between the legs)
+
+
+def skirt_weights(P: np.ndarray, W0: np.ndarray, V: np.ndarray, W: np.ndarray, reg: np.ndarray, lm,
+                  spine_i: int) -> np.ndarray:
+    """M1-CHR-14: below the crotch a skirt follows the legs, not the pelvis. Each vertex blends its nearest
+    left-leg and right-leg skin weights by its side (+x is her left), so the front and back middles stretch
+    between the knees instead of one leg passing through the cloth."""
+    S = lm.S
+    z_c = float(lm.P("crotch")[2])
+    WL = transfer_weights(P, V[reg == "leg_L"], W[reg == "leg_L"], k=8)
+    WR = transfer_weights(P, V[reg == "leg_R"], W[reg == "leg_R"], k=8)
+    t = np.clip(0.5 + P[:, 0] / (2.0 * SKIRT_SIDE_BLEND * S), 0.0, 1.0)
+    t = t * t * (3.0 - 2.0 * t)
+    legs = WL * t[:, None] + WR * (1.0 - t[:, None])
+    d = np.clip((z_c + SKIRT_LEG_FROM * S - P[:, 2]) / (SKIRT_LEG_RAMP * S), 0.0, 1.0)
+    d = d * d * (3.0 - 2.0 * d)
+    legs = legs * (1.0 - SKIRT_PELVIS_SHARE) + np.eye(W.shape[1])[spine_i] * SKIRT_PELVIS_SHARE
+    return limit4(W0 * (1.0 - d[:, None]) + legs * d[:, None])
+
+
 def limit4(W: np.ndarray) -> np.ndarray:
     if W.shape[1] > 4:
         thr = -np.sort(-W, axis=1)[:, 3:4]
@@ -554,16 +580,23 @@ def main() -> int:
     spine_i = wnames.index("DEF-spine")
     garment_objs = []
     if costume:
-        src_mask = np.isin(reg, ["torso", "leg_L", "leg_R", "arm_L", "arm_R"])
+        src_mask = np.isin(reg, ["torso", "leg_L", "leg_R", "arm_L", "arm_R", "foot_L", "foot_R"])  # feet: the sandals
         opaque = Part("Costume")
+        is_skirt = []
+        is_torso = []
         for key, p in costume.items():
             if key != "VerseSleeve":
                 opaque.extend(p)
+                is_skirt += [key in SKIRT_PARTS] * len(p.V)
+                is_torso += [key in TORSO_PARTS] * len(p.V)
         Pc = opaque.varr()
         Wc = transfer_weights(Pc, V[src_mask], W[src_mask])
-        z_crotch = float(lm.P("crotch")[2])
-        low = np.clip((z_crotch + 0.05 - Pc[:, 2]) / 0.25, 0.0, 1.0) * 0.5  # long skirts follow the pelvis
-        Wc = limit4(Wc * (1.0 - low[:, None]) + np.outer(low, np.eye(len(wnames))[spine_i]))
+        # M1-CHR-14: the bodice, vest and collar ride the torso only; arm weights at the armholes dragged
+        # the side panels out past a lowered arm
+        tm = np.array(is_torso, bool)
+        Wc[tm] = transfer_weights(Pc[tm], V[reg == "torso"], W[reg == "torso"])
+        sk = np.array(is_skirt, bool)
+        Wc[sk] = skirt_weights(Pc[sk], Wc[sk], V, W, reg, lm, spine_i)
         ob = part_object(opaque)
         apply_weights(ob, Wc, wnames, skel)
         garment_objs.append(ob)

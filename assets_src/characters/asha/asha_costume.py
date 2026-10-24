@@ -188,12 +188,15 @@ class TorsoChart:
         return th, H
 
 
+VEST_ARMHOLE_DROP = 0.115  # m below the shoulder joint (M1-CHR-14: 0.085 sat at the armpit and wrapped onto the arm)
+
+
 def vest_top(lm, chart: TorsoChart, th_deg: np.ndarray) -> np.ndarray:
     """The vest's top edge: the neckline all round, except the halter cut-away at the left shoulder
     and the deep scoop at the back (asha.md §2.4, §4.1 #5)."""
     S = lm.S
     neck = chart.z_sh + _deg(58) * chart.k
-    arm = float(lm.P("shoulder")[2] - 0.085 * S)
+    arm = float(lm.P("shoulder")[2] - VEST_ARMHOLE_DROP * S)
     scoop = float(lm.P("notch")[2] - 0.135 * S)
     xs = [0, 22, 40, 62, 90, 118, 145, 165, 180, 198, 220, 242, 260, 360]
     vs = [neck, neck, chart.z_sh + _deg(32) * chart.k, chart.z_sh + _deg(4) * chart.k, arm, arm + 0.01 * S,
@@ -546,6 +549,9 @@ def build_costume(body, params: dict) -> dict[str, Part]:
     return out
 
 
+KEEP_ABOVE_KNEE = 0.16  # m (at s = 1) of thigh kept above the knee joint under the skirts
+
+
 def coverage(body, params: dict, V: np.ndarray, reg: np.ndarray) -> np.ndarray:
     """True for body vertices hidden under opaque clothing (with a margin), asha.md §8.1."""
     lm = body.lm
@@ -561,5 +567,9 @@ def coverage(body, params: dict, V: np.ndarray, reg: np.ndarray) -> np.ndarray:
     hl, hr = float(params["hem_left_m"]) * S, float(params["hem_right_m"]) * S
     hem = 0.5 * (hl + hr) + 0.5 * (hl - hr) * np.sin(th)
     legs = (reg == "leg_L") | (reg == "leg_R") | torso
-    skirt = legs & (V[:, 2] < z_waist - 0.03 * S - m * 0.5) & (V[:, 2] > np.maximum(hem, 0.065 * S) + 0.045 * S)
+    # M1-CHR-14: the knees and shins stay under the skirts (a stride or a kneel carries them out through the
+    # cloth, and a deleted shin left a floating foot); only the thighs and hips are cut
+    z_keep = max(float(lm.side_pt("knee", sd)[2]) for sd in ("L", "R")) + KEEP_ABOVE_KNEE * S
+    lo = np.maximum(np.maximum(hem, 0.065 * S) + 0.045 * S, z_keep)
+    skirt = legs & (V[:, 2] < z_waist - 0.03 * S - m * 0.5) & (V[:, 2] > lo)
     return vest | bodice | skirt
