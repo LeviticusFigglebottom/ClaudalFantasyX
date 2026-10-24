@@ -2,7 +2,8 @@ class_name CtbTimeline
 extends RefCounted
 ## Conditional Turn-Based ordering. Each combatant has an absolute `next_time`; the lowest
 ## acts next. Ties break by higher agility, then by roster order (stable, deterministic).
-## Predictions assume every future action uses DEFAULT_RANK and statuses stay as they are.
+## Predictions assume every future party action uses DEFAULT_RANK (the player has not chosen
+## yet) and every foe action the rank its AI will pick (`tempo`); statuses stay as they are.
 
 const PREVIEW_LENGTH := 16
 ## Statuses that change when a combatant acts; predictions simulate their countdown. Doom
@@ -22,6 +23,12 @@ const WAKES := &"_wakes"
 ## Pseudo-status for status_changes: the candidate action breaks this unit's charge (its weak
 ## point's last hit), so the telegraphed skill leaves the preview.
 const BREAKS_CHARGE := &"_breaks_charge"
+
+## The skill row a combatant's turn `ahead` own turns on will use ({} = a standard action):
+## (c: BattleCombatant, ahead: int) -> Dictionary. BattleEngine sets EnemyAI.predicted_skill for foes, so
+## a foe quicker or slower than a standard action shows its real turns, and its delay push lands on the
+## foe it must hit (all foes, or the only one left) as in play (pillar 4). Unset: DEFAULT_RANK for everyone.
+var tempo: Callable = Callable()
 
 var _roster: Array[BattleCombatant] = []
 
@@ -106,6 +113,7 @@ func predict(
 		var sim := {"c": c, "idx": i, "t": t, "first_preview": first_is_preview, "timed": timed}
 		sim["prior"] = prior
 		sim["charge_k"] = charge_k
+		sim["ahead"] = 1 if first_is_preview else 0
 		sims.append(sim)
 	var out: Array[TurnEntry] = []
 	while out.size() < count and not sims.is_empty():
@@ -126,8 +134,13 @@ func predict(
 		if intent != &"":
 			rank = int(c.charge_row.get("rank", Formulas.DEFAULT_RANK))
 			_sim_charge_push(sims, c)
+		elif not skipped and tempo.is_valid():
+			var row: Dictionary = tempo.call(c, int(s["ahead"]))
+			rank = int(row.get("rank", Formulas.DEFAULT_RANK))
+			_sim_push(sims, c, row)
 		if not skipped:
 			s["charge_k"] = int(s["charge_k"]) - 1
+			s["ahead"] = int(s["ahead"]) + 1
 		s["t"] = int(s["t"]) + Formulas.action_delay(c.agility, rank, _sim_speed(timed))
 		if _sim_tick(timed):
 			sims.remove_at(bi)
@@ -137,8 +150,21 @@ func predict(
 ## A charged all-foes skill with a delay push (the toll) firing in the prediction: every foe of
 ## `actor` still predicted is pushed back as BattleEngine.push_delay would push it.
 static func _sim_charge_push(sims: Array[Dictionary], actor: BattleCombatant) -> void:
-	var ranks := int(actor.charge_row.get("delay_ranks", 0))
-	if ranks <= 0 or str(actor.charge_row.get("target", "")) != "all_foes":
+	if str(actor.charge_row.get("target", "")) == "all_foes":
+		_sim_push(sims, actor, actor.charge_row)
+
+
+## A predicted skill row with a delay push: it pushes every foe of `actor` for an all-foes skill, and
+## the only foe left for a single-foe one (with more, its target is the AI's draw, so none is pushed).
+static func _sim_push(sims: Array[Dictionary], actor: BattleCombatant, row: Dictionary) -> void:
+	var ranks := int(row.get("delay_ranks", 0))
+	var target := str(row.get("target", "single_foe"))
+	if ranks <= 0 or not target in ["all_foes", "single_foe"]:
+		return
+	var foes := 0
+	for other in sims:
+		foes += 1 if (other["c"] as BattleCombatant).team != actor.team else 0
+	if target == "single_foe" and foes != 1:
 		return
 	for other in sims:
 		var o: BattleCombatant = other["c"]
