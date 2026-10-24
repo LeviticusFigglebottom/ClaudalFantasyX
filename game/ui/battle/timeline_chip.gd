@@ -87,7 +87,7 @@ func apply(slot: Dictionary, identity: Dictionary, current: bool) -> void:
 	tint = identity.get("tint", Color.WHITE)
 	intent_label = str(slot.get("intent_label", ""))
 	# A committed turn names its skill alone ("The Toll"): the glyph and the side colour already say
-	# whose turn it is, and "<name> · <skill>" ran past the chip's width (M2-FP-11).
+	# whose turn it is, and "<name> · <skill>" ran past the chip's width (M2-FP-12).
 	_name.text = label_text if intent_label == "" else intent_label
 	_initial.text = label_text.left(1)
 	_caption.text = caption

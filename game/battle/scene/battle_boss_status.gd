@@ -1,6 +1,6 @@
 class_name BattleBossStatus
 extends PanelContainer
-## The boss's standing read-out (M2-FP-11; battle_ctb.md "The Drownbell", "Status strip"): under the
+## The boss's standing read-out (M2-FP-12; battle_ctb.md "The Drownbell", "Status strip"): under the
 ## target info, top left, for as long as a boss with mechanics is on the field. Floats come and go
 ## (and are off with damage numbers); this stays, so the player can always see what the boss is
 ## building toward and what answers it (pillar 4). A view: it reads combatant state, never writes.

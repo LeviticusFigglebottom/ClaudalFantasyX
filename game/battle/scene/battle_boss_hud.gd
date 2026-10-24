@@ -9,7 +9,7 @@ extends RefCounted
 ##   charge_broken      floats "<part> breaks" over the user; weak-point hits float a count
 ##   field_cleared      floats the field clearing over each fighter that leaves with it
 ## After each of those (and every action) the standing read-out, BattleBossStatus, refreshes
-## (M2-FP-11): floats are transient and off with damage numbers; the read-out is neither.
+## (M2-FP-12): floats are transient and off with damage numbers; the read-out is neither.
 ## The encounter's own prompt_key is the opening prompt. show_prompt() puts a queued prompt on the
 ## help line once, when the next command menu opens.
 

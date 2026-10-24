@@ -1,5 +1,5 @@
 ---
-id: M2-FP-11
+id: M2-FP-12
 title: The Drownbell at slice quality (standing boss read-out, retry loop)
 role: combat
 status: review
@@ -20,6 +20,7 @@ M2-FP-06 follow-up from the m2-slice standing queue. The Drownbell's mechanics w
 - [x] Tests; `sim.py --check` unchanged (no balance data touched).
 
 ## Notes (m2-slice, 2026-10-24)
+- Filed as M2-FP-11 and renumbered to FP-12: the integration branch's M2-FP-11 (zone-sun bias and FlowRouting) took that id first. Commits 331e9c2 and 09db8b2 say FP-11.
 - `game/battle/scene/battle_boss_status.gd` (`BattleBossStatus`), built and refreshed by `BattleBossHud`. Layout: `battle_hud.json` `boss_status` (top left, under the target info). Data: enemies.json `phase_name_key` and `field_name_key` on the bell. Loc: `HUD_BOSS_CHARGE_NEXT_FMT`, `HUD_BOSS_CHARGE_IN_FMT`, `HUD_BOSS_FIELD_FMT`, `PHASE_DROWNBELL_TOLL`, `FIELD_DROWNBELL_FLOOD`. Docs: battle_ctb.md, "Status strip".
 - **A lavapipe render found a second clarity bug.** The toll chip read "The Drown…", because "The Drownbell · The Toll" ran past the chip, so the telegraphed turn couldn't be told from the bell's other turns. A committed turn's chip now names its skill alone ("The Toll"); the glyph and the foe colour still say whose turn it is. This is a one-line change in UI's `timeline_chip.gd`, so **UI reviews it**.
 - The phase change is announced by the phase's help-line prompt (already independent of damage numbers) and by the strip's title.

@@ -1,5 +1,5 @@
 extends TestCase
-## M2-FP-11: the Drownbell's standing read-out (BattleBossStatus) on the real battle scene and data,
+## M2-FP-12: the Drownbell's standing read-out (BattleBossStatus) on the real battle scene and data,
 ## and the defeat → Fight again loop starting the bell over.
 
 const SANDBOX := "res://game/battle/scene/battle_sandbox.tscn"
