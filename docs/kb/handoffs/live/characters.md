@@ -35,7 +35,17 @@
   - **Ratchet:** Asha's VerseSleeve count limit rose 4 → 6 (sleeve-top vertices under the sleeve at hit and defend; viewed). The depth limit is unchanged.
   - **Requests sent to the battle track:** read the `contact` marker (contact currently lands late), finisher and support per-style timing, and ko revive.
   - **The battle track has wired all three:** strikes land on the `contact` marker, the shared finisher and cast clips are fine, and a revive returns a hero to idle. **To do:** review M2-BPR-10 (their placeholder battle poses; reviewer: character) once claude/battle-presentation and this branch meet on the integration branch.
-- **In flight, two worktree sub-agents:** M3-CHR-01 Ysolde (hero) and M3-CHR-02 Sefir (hero).
+- **MERGE-READY @ e32848cc: M3-CHR-02 Sefir Aurane** (review: rendering). Handoff: 2026-10-24-character-11.md; review: sefir_review.md.
+  - **Build:** LOD0 58,426 tris, sefir.glb 4.42 MB.
+  - **Probe:** passes at the default limits, with no ratchet.
+  - **Reproducibility:** `verify --job sefir` 32 identical, on both numpy SIMD paths.
+  - **Gold:** the mantle's gold is cut to 14%, which gives a waist-up frame of 4.96% (under the 5% limit). Chest-up close-ups are still 8–9%, from the crown. That needs a Cinematics framing rule or an Art Director ruling; no exception claimed.
+  - **New shots:** 7, viewed and approved. Request tasks: M3-CIN-01 (slow blink), M3-RND-03, M3-ENV-01.
+  - **Gates after merging with M2-CHR-07:**
+    - hero_clips merged as the union of both blocks; all four clip libraries regenerate byte-identical;
+    - test_hero_clips, test_hero_battle_clips, test_sefir and test_rig_integrity: OK;
+    - post_import 19/19.
+- **In flight, three worktree sub-agents** (two resumed after the usage limit): M3-CHR-01 Ysolde, M3-CHR-03 Tavi Orse and Mother Kell (villager path), and M1-CHR-15 skirt and corrective bones.
 - **From the M3 sheets:**
   - Liss is a party member, so she is on the hero path; she stays in M3-CHR-03.
   - Mother Kell is Oruvel's chandler, not the diver. The story corrected this; glossary rows 195 and 254 are stale.
