@@ -268,6 +268,125 @@ Ch4 (act1_ch01.md §9: "build it once"), so it is a follow-up (**M3-ENV-08B**), 
 Oruvel kit settles the mooring. Its hull should come from this kit's hull generator (the same vocabulary,
 Pemakar lacquer and copper sheathing). The islet's seaward landing (F01) is a Haluna kit addition.
 
+## 7. The *Seventh Terrace* (M3-ENV-08B): one hero ship for Ch1 and Ch4
+
+Story: [act1_ch01.md](../../story/beats/act1_ch01.md) C1-09 bark 5 (Sadi Moru's coaster at the outer mooring,
+loading salvage; the insert on the name-board, O07), C1-12 (O13: she casts off and runs under full sail, the last
+time anyone sees her crewed), §7 (O07 "must match D06 exactly") and §9 item 4 ("build it once"); [act1_ch04.md](../../story/beats/act1_ch04.md)
+C4-11 to C4-14 (F05, D01–D08), §5 (the Spar-Wraith under the mainmast, its sail-membranes along her shrouds, "when
+it dies, the sails come down"), §7 and §9 item 2 (boardable deck, the galley's four bowls, the hold's copper ingots
+and lamp-housing, the stern name-board, sails set and torn with a lowered state, spawn membrane on the rigging,
+fenders and boathooks between the hulls, never a lashing). Mooring: [oruvel.md](oruvel.md) §0 (the outer mooring,
+open water west at (−58, 8)). Materials: the Pemakar kit's lacquer and copper (pemakar_materials.py's
+`kit_lacquer_*`, `kit_copper_raw`), written as this kit's own `bf_*` slots. Grade: Ch1 is the colour script's
+`ch01` (10:30); Ch4 is **`ch04_derelict`**, which Rendering has not added yet (requested in act1_ch04.md §9 and
+the M3-ENV-08 handoff), so the Ch4 view uses a **provisional** frame (below) that Rendering replaces.
+
+**The feeling in one line:** the same proud little ship twice: busy and argued-over in the sun at Oruvel, then
+three days later sailing on with nobody aboard, the table still laid.
+
+**Influences** (references.md, in words): the battened lug sails of East and Southeast Asian coastal traders
+(cloth stiffened by horizontal battens, so a lowered sail stacks on its boom in folds); Pemakar's own lacquer
+craft (bible §5.2; Thai and Burmese black-and-red lacquer, already in references.md §2). **Our originals:**
+the **terrace sail**: each battened lug has *seven* cloths between its battens, so a set sail reads as stepped
+bands and a lowered one stacks into terraces on the boom; the **hull in lacquer and copper**: black-lacquered
+topsides with one red-lacquered sheer strake and a red wale, copper sheathing from the keel to a hand's breadth
+above the waterline, verdigris at the wet line; the **name-board** in **Pemakar terrace script**, an original
+script whose glyphs are stacks of stepped bars (each glyph a little hillside of terraces), carved in relief,
+red lacquer on a black ground, inside a copper-banded frame, with a seven-step terrace emblem at each end.
+
+### 7.1 The ship (kit frame: bow to −Z, origin on the centre line at main-deck level amidships, waterline y −1.5)
+
+- **Hull:** `bf_common.HullForm` (the ferry's and the drowned hulls' generator, so all three read as one sea's
+  ships): 21.0 m from stem (z −11.0) to transom (z +10.0), half-beam 3.0 m, transom half 2.3 m, keel y −2.2;
+  a stronger bow rise (1.25 m) and sheer than the ferry (a coaster built to carry, not to ferry). **Main deck**
+  flat at y 0; **poop** at y +1.0 from z +5.2 aft, the helm **wheel** on it (act1_ch04 C4-11: "the wheel turning
+  by itself"), the rudder hung on the transom with its head inside the counter, so nothing crosses the
+  name-board. **Gangways** port and starboard at z +0.9 … +1.9 (the boarding place in C4-11 and the mooring's
+  gangplank in Ch1). Same plank, seam and bulwark proportions as the ferry and `arena_derelict_deck`.
+- **Bands:** copper sheathing below y −1.15 (0.35 m above the waterline: the copper boot-top shows in every
+  view), black lacquer above, a red-lacquered wale at y −0.45 and a red sheer strake under the cap rail.
+- **Main hatch (open)** at z −3.6, 1.8 × 1.6 m coaming, a ladder down into **the hold** (y −1.9 floor, from
+  z −5.4 to −1.8): copper ingots in crossed stacks, crates, and on a shelf **the lamp-housing** Rhen sold the
+  skipper (a dead Lit Age ceramic housing with a brass rim; C4-12 "he finds the housing and puts it back").
+- **Masts:** foremast at z −6.8 (11.0 m), mainmast at z −0.6 (14.0 m), each with a battened lug; three shrouds
+  a side to chain-plates (ratlines on the main), a forestay to the bowsprit, a spring stay. The deck round the
+  mainmast is open from the hatch's after coaming to the galley (the Spar-Wraith's arena, §5: 3.6 m clear fore
+  and aft, the full beam athwart).
+- **Galley:** a deckhouse 3.2 × 2.6 m (x ±1.6, z +2.4 … +5.0), walls 2.0 m, black lacquer boards over a red
+  dado, the door in the fore face toward the mainmast, a window each side. Inside: the table athwartships with
+  **four bowls**, the meal half-eaten (rice and a ladle left in the pot), two benches, a clay stove with a copper
+  pot, the galley's hourglass on a shelf (Ysolde's bark), a lamp hook.
+- **Poop:** the wheel on a pedestal at z +7.0, the scuttle, the stern lantern's post (unlit), the open quarter
+  rail. **The name-board** hangs on the transom's outer face, centre y +0.95, on two copper brackets (the hull
+  carries the brackets; the board is its own piece, so Ch4 can take it away).
+
+### 7.2 The states (the pieces each state places; all share the ship's origin)
+
+| State | Beats | Pieces |
+|---|---|---|
+| **moored, crewed** (Ch1) | C1-09 (O07) | `terrace_hull`, `terrace_name_board`, `terrace_galley`, `terrace_hold`, `terrace_rig`, **`terrace_sails_furled`** (yards lowered onto the booms, the sails stacked and tied with gaskets, lazy-jacks taut), **`terrace_moored`** (mooring lines to the stage raft, rope fenders on the port side, the gangplank out, salvage crates and a lamp-housing crate by the hatch, a lantern on the boom gallows) |
+| **under sail** (Ch1 O13; Ch4 F05, C4-11 to C4-13) | O13, F05, D01–D05, D07 | `terrace_sails_set` in place of the furled sails (wind-filled, two cloths torn at the leech, sheets hauled), no `terrace_moored`; in Ch4 add **`terrace_membrane`** (the spawn membrane webbing the shrouds and fringing the main yard, `spawn_wound` seams faint in daylight) and **`terrace_derelict`** (three days drowned: a capsized bucket, a slack sheet across the deck, spilled coils, salt-crusted weed on the rails) |
+| **sails lowered** (Ch4) | C4-14 after the Canticle (D08 → F05) | `terrace_sails_lowered` in place of the set sails (the yards fallen onto the booms askew, the cloth in loose folds hanging over the booms and the rail), no membrane (it died with the wraith), and no `terrace_name_board` once Rhen has taken it |
+| alongside (Ch4) | C4-11 to C4-14 | **`alongside_gear`** in the *ferry's* frame: four rope fenders hung outside her port bulwark and three boathooks laid across the gap to the derelict's cap rail. **Nothing ties the hulls together** (sea-law: never lash a living hull to a drowned one) |
+
+The name-board is the **same piece** in both chapters (one `.glb`, one material set); O07 and D06 frame it with
+the same lens from the same point in the ship's frame (§7.4), so the carving matches by construction.
+
+### 7.3 Budgets and materials
+
+Budgets (triangles, LOD0 / LOD1): hull 40,000 / 4,000; name-board 8,000 / 800; galley 10,000 / 1,000; hold
+10,000 / 1,000; rig 14,000 / 1,400; sails set 24,000 / 2,400; sails furled 12,000 / 1,200; sails lowered
+14,000 / 1,400; membrane 8,000 / 800; moored 8,000 / 800; derelict 6,000 / 600; alongside gear 4,000 / 400.
+LOD chains as the rest of the kit (LOD1 from 70 m).
+
+| Slot | Shader | Look |
+|---|---|---|
+| `bf_lacquer_black` | weathering (Haluna `timber`, lacquered) | topsides, galley walls, the name-board's ground: `lacquer_black` `#1D1916` at near-full cover, worn to timber on proud edges, salt bloom low |
+| `bf_lacquer_red_worn` | weathering (Haluna `timber`, lacquered) | the sheer strake, the wale, the galley dado, the name-board's glyphs and emblems: `lacquer_red` `#B3261E` (red stays ≤ 8% of any frame) |
+| `bf_copper_sheathing` | `env_bronze` (Tamsule's copper-alloy stack) | the sheathing: `hair_copper` `#A65A2A` darkened, worn bright on edges, `bronze_patina` verdigris gathered low and in streaks |
+| `bf_copper_bright` | standard, metallic | the hold's ingots, the galley pot, the name-board's frame band and brackets: raw copper `#A65A2A` |
+| `bf_canvas_tan` | weathering (`woven_panel`, painted) | the terrace sails: tanned cloth `#A8865E` (`sand_cloth` toward `sand_wet`), salt low |
+| `bf_ceramic` | standard | the lamp-housing: Lit Age ceramic `#DCE3E0`, dead (no glimmer anywhere: C4-12's housing is empty) |
+| `bf_rice` | standard | the half-eaten meal: `bone` `#E6DAC0` |
+| `bf_membrane` | standard, glossy | the spawn membrane: wet black (`lacquer_black`), a hard sheen, double-sided |
+| `bf_spawn_wound` | standard, emissive | the membrane's seams: `spawn_wound` `#3FE0C8` at a low energy (faint in daylight; the motes are VFX's) |
+
+Reused: `bf_deck`, `bf_timber`, `bf_timber_tar` (inside the hold), `bf_rope`, `bf_iron`, `bf_brass`,
+`bf_earthenware`, `bf_interior_dark`, `bf_tarpaulin`, `bf_lacquer_red` (small trim).
+
+### 7.4 Shots (D for the derelict, act1_ch04.md §7; O07 and O13 for Ch1, act1_ch01.md §7)
+
+| # | Lens (vFOV) | Height | Framing | About |
+|---|---|---|---|---|
+| O07 ◆ (Oruvel preview) | 85 mm (16.1°) | 9 m astern of the transom, 0.25 m below the board's centre, 0.6 m to starboard (ship frame) | The name-board fills the frame's middle: the terrace-script name, the two seven-step emblems, the copper band; the transom's black lacquer and the red sheer strake around it; the quarter rail above. | The plant: the board the player will see again. |
+| O21 ◆ (Oruvel preview, review) | 35 mm (37.8°) | 1.4 m above the water, off her port quarter | The *Seventh Terrace* at the outer mooring: furled terrace sails, the stage raft, the gangplank, salvage on deck, the town behind. | She was real and busy. |
+| O13 | — | — | She casts off under full sail (`terrace_sails_set`): the storm variant's frame (M3-ENV-07B, Cinematics). | |
+| D01 | 35 mm | 1.6 m on the ferry's port rail | Across the gap: the fenders, the boathooks on her cap rail, her starboard chain-plates. | The jump. |
+| D02 ◆ | 24 mm (53.1°) | 1.6 m above the poop, by the wheel, looking forward | The set sails overhead, the main deck, the open hatch, the galley roof, the membrane on the shrouds against the low sun. | A dead ship, sailing. |
+| D03 ◆ | 50 mm (27.0°) | 1.5 m at the galley door | The table: four bowls, the pot, the benches, the hourglass. | The crew were at their food. |
+| D04 ◆ | 35 mm (37.8°) | at the hatch coaming, looking down | The hold: ingots, crates, the lamp-housing on its shelf. | What Rhen sold her skipper. |
+| D05 | 24 mm | low on deck under the mainmast, tilted up | The wraith (Character Art) in the membrane-webbed shrouds against the low sun through the sails. | |
+| D06 ◆ | 85 mm (16.1°) | **the same point as O07 in the ship's frame** | The name-board; Rhen's hooks enter from the top (character). | Must match O07. |
+| D07 | 35 mm | 1.6 m on deck | Phase 2 under the mainmast. | |
+| D08 | 50 mm | 1.5 m at her starboard rail | The sea alongside, the motes going down (VFX). | |
+| D09 ◆ (review) | 35 mm (37.8°) | 1.4 m above the sea, 30 m off her starboard bow | The lowered state from the sea: the sails fallen on the booms, the ferry beyond (setup toggles the state). | She is only a hull now. |
+
+**Provisional `ch04_derelict` (until Rendering adds it):** 08:10, the sun at 15° / 100° (low in the east, ahead
+of the ships' beam), key `#FFD9B0` at 2.6, sky ambient at 0.5, exposure 0.75, no grade LUT, the open-sea day water
+(this preview's own material, the `lagoon_clear` scatter over a deep `#0E4A55` at absorption ×1.0), the trade
+wind from the ENE. The ferry's lanterns are out. Registered baseline (at most one): **O07** (the plant).
+
+### 7.5 Review checklist (M3-ENV-08B)
+
+- [ ] O07 and D06 show the same board, same carving, same framing in the ship's frame.
+- [ ] Reads as Pemakar (black and red lacquer, copper), not Low Reaches (no sea-blue paint on her), and as kin to
+      the ferry (the same plank deck, bulwark and covering board).
+- [ ] The three sail states read at a glance: furled tidy (Ch1), set and torn (under way), fallen askew (C4-14).
+- [ ] No lashing between the ferry and the derelict; fenders and boathooks only.
+- [ ] Red ≤ 8% of any frame; `spawn_wound` only on the membrane's seams; no glimmer anywhere on the ship.
+- [ ] The deck round the mainmast is open for the boss (no prop within 1.8 m of the mast's foot).
+
 ## Revisions
 
 - **After the preview (M3-ENV-08):** the moon moved from setting in the WSW to a waning crescent low in the east
