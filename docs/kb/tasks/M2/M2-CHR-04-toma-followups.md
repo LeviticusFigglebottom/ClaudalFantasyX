@@ -47,4 +47,8 @@ clips). Handoff: docs/kb/handoffs/2026-10-24-character-6.md.
   then rerun `python3 assets_src/characters/asha/hero_clips.py --hero toma` (the clips read the GLB's rest), then
   re-approve the toma_* shots.
 
+- **Merged and rebuilt on claude/characters** (2026-10-24) onto M1-CHR-13 and M1-RND-25: `verify --job toma` 38 identical;
+  59,152 LOD0 tris, `toma.glb` 4.71 MB. Re-approved after viewing: toma_front 0.0160, toma_q34 0.0107, toma_profile 0.0108,
+  toma_back 0.0110, toma_battle_idle 0.0594 (now in his idle). Face shots pass (0.0027).
+
 ## Review log
