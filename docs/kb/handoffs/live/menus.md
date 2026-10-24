@@ -21,7 +21,10 @@ Why this track exists: the progression and equipment systems (Lattice, equipment
 - **Controls:** `battle_pause` is added to the InputMap at runtime (FieldInput.add_actions), not yet in `controls.json`, so it can't be remapped yet. Follow-up for the UI track's Controls page (a `battle` context).
 
 ## Exact next step
-**Two items remain:** the full `tools/ci_local.sh` on the merged head (running), then MERGE-READY. After that the queue is empty; follow-ups listed below.
+
+**MERGE-READY @ c9d47562** (merges claude/ui @ 8dc44923 and the integration branch @ 174f949f): items M2-MNU-01 Lattice page, M2-MNU-02 Equip + Customize (+ live battles wear gear and pay Full Net's lume multiplier, BattleVitals.setup), M2-MNU-03 Items + Status pages, M2-MNU-04 Quit to Title + battle pause, M2-MNU-05 screenshot/navigation/accessibility sweep; all five in review. Checks run on c9d47562: gdlint + gdformat (468 files clean), validate_data 0/0, taskboard --check OK, full Godot suite 1719 run / 0 failed. Earlier on this branch: tool unit tests (541; the one failure was claude/ui's objective_shot.gd, fixed there and test_release_excludes_tests now OK), audio synth OK, coverage OK within baseline (game/battle 99.95%, game/progression 96.69%). New shots captured, viewed and compared at rmse 0: battle_pause, items_menu, items_menu_use, status_menu, lattice_menu, lattice_menu_activate, equip_menu, equip_customize, field_menu, field_menu_swell_modes. Skipped: the full screenshot manifest (the Lead runs it at merge), a fresh coverage run (no game/progression change since), the Blender step (no Blender source touched).
+
+The queue is empty. Next: answer reviews of M2-MNU-01..05, and re-merge claude/ui when it fixes the interact-prompt test leak. Follow-ups below.
 
 Merge the three worktree agents' branches as they report (Lattice, Equip, Items/Status), view every new shot, then M2-MNU-05; then merge the integration branch and `claude/ui`, run the FULL `tools/ci_local.sh`, and write MERGE-READY here.
 
@@ -33,8 +36,10 @@ Merge the three worktree agents' branches as they report (Lattice, Equip, Items/
 - 2026-10-24: Lattice and Equip 130% fixes merged and viewed; M2-MNU-05 to review. Merged the integration branch and claude/ui (M2-UI-17/18: objective line and a Map row, ten root rows; field_menu shots still rmse 0). Full ci_local started.
 
 ## Follow-ups (not in this queue)
-- `battle_pause` into controls.json (remappable; the UI track's Controls page).
+- ~~`battle_pause` into controls.json~~ done by claude/ui (dce9ab43).
 - Light Step (`encounter_rate_pct`) is not read by the field encounter meter yet.
 - Lattice page: no overview zoom or drag-pan; a sealed gate not next to the hero doesn't offer to walk there.
 - Customize works only on worn pieces (equip a spare first).
 - 2026-10-24: full ci_local on 8c2b427 stopped at the tool unit tests: 541 run, 1 failed, `test_release_excludes_tests::test_no_shipped_file_names_a_tests_path` -> `game/ui/objectives/objective_shot.gd` (claude/ui M2-UI-17's capture driver loads `res://game/levels/_tests/haluna_mood/haluna_mood.tscn`, which release presets exclude). Not this track's code; reported to the UI track with a proposed fix (move the driver under game/levels/_tests/). Re-running every other step with that one test recorded instead of fatal.
+- 2026-10-24: merged claude/ui (fast-forward to bfd4436a; includes the sandbox_reef foe-order fix 667c4d56 that had made test_battle_vowbound loop forever on this branch, and the objective_shot move). Full Godot suite 1700/1 (claude/ui's interact-prompt leak, bisected and reported). MERGE-READY written.
+- 2026-10-24: claude/ui fixed the interact-prompt test leak (a FieldController left in the tree); merged with the integration branch at c9d47562: full Godot suite 1719/0. MERGE-READY moved to c9d47562.
