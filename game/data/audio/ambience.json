@@ -7,7 +7,11 @@
     "surf": {"file": "res://assets/audio/ambience/surf.ogg", "volume_db": 0.0, "bus": "Ambience"},
     "dock": {"file": "res://assets/audio/ambience/dock.ogg", "volume_db": 0.0, "bus": "Ambience"},
     "shrine_interior": {"file": "res://assets/audio/ambience/shrine_interior.ogg", "volume_db": 0.0, "bus": "Ambience"},
-    "wind": {"file": "res://assets/audio/ambience/wind.ogg", "volume_db": 0.0, "bus": "Ambience"}
+    "wind": {"file": "res://assets/audio/ambience/wind.ogg", "volume_db": 0.0, "bus": "Ambience"},
+    "underwater_deep": {"file": "res://assets/audio/ambience/underwater_deep.ogg", "volume_db": 0.0, "bus": "Ambience", "_note": "M3-AUD-06: open deep water; no zone yet"},
+    "drowned_tower": {"file": "res://assets/audio/ambience/drowned_tower.ogg", "volume_db": 0.0, "bus": "Ambience", "_note": "M3-AUD-06: inside Ch1's drowned tower (ch01/oruvel_underway); no scene yet"},
+    "reefball_crowd_murmur": {"file": "res://assets/audio/sfx/reefball/crowd_murmur.ogg", "volume_db": 0.0, "bus": "Ambience", "_note": "M3-AUD-06: the stands before and between play (-26 LUFS)"},
+    "reefball_crowd_excited": {"file": "res://assets/audio/sfx/reefball/crowd_excited.ogg", "volume_db": 0.0, "bus": "Ambience", "_note": "M3-AUD-06: the stands in play (-23 LUFS); crossfade from the murmur"}
   },
   "zones": {
     "res://game/levels/ch02/haluna/haluna.tscn": {

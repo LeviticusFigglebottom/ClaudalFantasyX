@@ -166,6 +166,31 @@ class AudioDataTest(unittest.TestCase):
         self.assertTrue(any("pitch_jitter" in e for e in errs), errs)
 
 
+class LoopImportTest(unittest.TestCase):
+    """M3-AUD-06: every shipped loop (an .ogg with a .loop.json sidecar, music or not) imports with loop on at the
+    sidecar's offset, so a bed, a crowd or the lantern hum played through Godot keeps going (render_all.py syncs
+    the .import file; tests/unit/test_audio_loops.gd covers only the long music cues)."""
+
+    def test_every_loop_imports_looping(self) -> None:
+        import json
+        import re
+
+        bad = []
+        for side in sorted((ROOT / "assets" / "audio").rglob("*.loop.json")):
+            imp = side.with_name(side.name[: -len(".loop.json")] + ".ogg.import")
+            if not imp.is_file():
+                bad.append(f"{imp.relative_to(ROOT)}: missing (run godot --headless --path . --import)")
+                continue
+            txt = imp.read_text(encoding="utf-8")
+            meta = json.loads(side.read_text(encoding="utf-8"))
+            off = re.search(r"(?m)^loop_offset=(.*)$", txt)
+            if not re.search(r"(?m)^loop=true$", txt):
+                bad.append(f"{imp.relative_to(ROOT)}: loop is not true")
+            if off is None or abs(float(off.group(1)) - float(meta["loop_offset_seconds"])) > 1e-6:
+                bad.append(f"{imp.relative_to(ROOT)}: loop_offset != sidecar {meta['loop_offset_seconds']}")
+        self.assertEqual(bad, [])
+
+
 def load_tests(loader: unittest.TestLoader, tests: unittest.TestSuite, pattern: str) -> unittest.TestSuite:
     """Also runs tools/audio/tests (the synth regression tests), which the discovery root does not reach."""
     import importlib.util
