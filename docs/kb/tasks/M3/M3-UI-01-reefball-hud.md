@@ -69,10 +69,8 @@ SPEC §6.10: the HUD for the Reefball minigame. It needs the score and clock, th
   Pemakar lifter) and `reefball_hud_goal` (the AI on both sides; Old Ama brings the first float up at 48%,
   1 to 0, the kickoff positions after it). Over a plain backdrop; `game/levels/_tests/reefball/` is
   rendering's and untouched.
-- **Found while merging:** `test_pseudo_loc_screens.gd` `test_party_pages_fit` fails on the Lattice page after
-  big8's M3-MNU-04 overview button met M2-UI-28's walk. Not touched here: M3-MNU-201.
-  The `battle` filter has 4 failures this diff does not touch (no battle, choreo or asset file changed):
-  `test_battle_choreo.gd` (victory pose, creature actor contact frame) and `test_battle_specials_choreo.gd`
-  (Written Light, Return Tide). They appear on the big8 merge; the Lead should check them on the gate.
+- **Found while merging (resolved on this branch):**
+  - `test_pseudo_loc_screens.gd::test_party_pages_fit` failed on the Lattice page. This was a TextFitProbe false positive: big8's Whole board button (M3-MNU-04) sits over the centre of the page title's full-width row, so the probe took the button's frame as the title's box. The probe now takes as a label's box the smallest panel that holds the label's whole designed rect, and falls back to the centre only when none does. Test: `tests/unit/test_text_fit_probe.gd`; the old rule fails it. No Menus change is needed, so no request task.
+  - Four battle-presentation tests failed (victory hop, primitive contact probe, Written Light trace, Return Tide brace) once big8's tests met claude/ui's hero actor scenes. They pass on the gate alone and on claude/ui alone. The fix is hero-integration's proposed test hunks (`docs/kb/tech/hero_battle_proposed.patch` on claude/hero-integration, M2-HER-1103), ported verbatim. The battle filter is now 615/0.
 
 ## Review log
