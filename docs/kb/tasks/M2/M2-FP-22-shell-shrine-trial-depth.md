@@ -2,8 +2,8 @@
 id: M2-FP-22
 title: The Shell Shrine trial needs more puzzle for B07's five minutes (data only)
 role: cinematics
-status: todo
-owner_session: ""
+status: doing
+owner_session: "m2-slice (session_01DQ9tdk8Uatb8Jr6raAkXiC)"
 reviewer: lead
 depends_on: [M2-FP-16]
 milestone: M2
