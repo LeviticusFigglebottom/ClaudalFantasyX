@@ -730,6 +730,7 @@ def choreo_errors(doc: object, rows: dict, classes: dict[str, list[str]] | None,
     for k in doc.get("reduced_skip", []):
         if k not in CHOREO_SKIPS:
             errs.append(f"{w0} reduced_skip: {k} is not one of {sorted(CHOREO_SKIPS)}")
+    return errs
 
 
 CREATURE_EVENTS = ("idle", "attack", "hurt", "death", "move")
