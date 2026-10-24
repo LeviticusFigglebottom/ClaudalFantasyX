@@ -1,27 +1,49 @@
 class_name FieldMenu
 extends Control
 ## The field menu (M2-UI-04, SPEC §6.6): opened from the field with ui_cancel (Escape, B /
-## Circle), it pauses the tree like SaveMenu and reaches the bestiary (BestiaryMenu) and each
-## hero's Swell fill mode (SPEC §6.2; BattleSwellCarry through FieldMenuModel).
+## Circle), it pauses the tree like SaveMenu and reaches the bestiary (BestiaryMenu), each
+## hero's Swell fill mode (SPEC §6.2; BattleSwellCarry through FieldMenuModel) and the Settings
+## hub (SettingsMenu: Graphics, Accessibility; M2-UI-09). It follows UiSettings (text size,
+## palette, reduced motion).
 ## Layout: game/data/ui/field_menu.json (1920x1080 reference). Words: FieldMenuModel.
 ##
-## Three levels: ROOT (Bestiary / Swell / Close) on the left; HEROES (each Swell hero and the mode
+## Map (M2-UI-18) opens the zone map page (ZoneMapMenu) over it, like the bestiary; the zone and
+## the player come from the field when the menu opens (ZoneMapMenu.live_model).
+##
+## Three levels: ROOT (Bestiary / Swell / Map / Settings / Close) on the left; HEROES (each Swell hero and the mode
 ## in use) and MODES (one hero's unlocked modes, "In use" on the current one) on the right. The
 ## line under the right page says what the highlighted row means (pillar 4).
 ##
 ## Input (keyboard and controller through ui_*): ui_up / ui_down move, ui_accept chooses,
 ## ui_cancel goes back a level and closes from the root. Mouse: hover to move, click to choose.
-## While the bestiary is open it takes the input, and this menu hides until it closes.
+## While the bestiary, the map or the Settings hub is open it takes the input, and this menu hides
+## until it closes.
+##
+## M2-MNU-01..04 (the Menus track): Items, Equip, Lattice and Status open the party's pages
+## (FieldSubmenu children in game/ui/menus/, each over a PartySheet of this model's state and
+## heroes) the same way. Quit asks first on the right page (Level.QUIT: Stay / Quit to the title,
+## Stay under the cursor, the line saying what is lost) and then returns to the title (boot.tscn)
+## through FlowRouting.
 
 signal closed
 
-enum Level { ROOT, HEROES, MODES }
+enum Level { ROOT, HEROES, MODES, QUIT }
 
 const SCENE_PATH := "res://game/ui/field_menu/field_menu.tscn"
 const DATA_PATH := "res://game/data/ui/field_menu.json"
 const SCRIM_SHADER := preload("res://game/ui/shaders/scrim.gdshader")
 ## The field action that opens the menu (FieldController).
 const OPEN_ACTION := &"ui_cancel"
+## Where Quit goes (EndCard's return scene: the title).
+const TITLE_SCENE := "res://game/core/boot.tscn"
+
+## Root row -> the party page it opens (a FieldSubmenu script with static create(PartySheet)).
+const CHILD_PAGES := {
+	FieldMenuModel.ROW_ITEMS: preload("res://game/ui/menus/items/items_menu.gd"),
+	FieldMenuModel.ROW_EQUIP: preload("res://game/ui/menus/equip/equip_menu.gd"),
+	FieldMenuModel.ROW_LATTICE: preload("res://game/ui/menus/lattice/lattice_menu.gd"),
+	FieldMenuModel.ROW_STATUS: preload("res://game/ui/menus/status/status_menu.gd"),
+}
 
 ## Pause the tree while open (the field must not move under a menu).
 @export var pause_tree := true
@@ -32,12 +54,20 @@ var level := Level.ROOT
 var hero: StringName = &""
 ## The bestiary opened from here (null when closed).
 var bestiary: BestiaryMenu
+## The Settings hub opened from here (null when closed).
+var settings_menu: SettingsMenu
+## The zone map opened from here (null when closed).
+var map_menu: ZoneMapMenu
+## The party page opened from here (Items, Equip, Lattice, Status; null when closed).
+var child: FieldSubmenu
 
 var _d: Dictionary = {}
 var _root: MenuPage
 var _detail: MenuPage
 var _desc: Label
 var _help: Label
+var _objective_head: Label
+var _objective: Label
 var _owns_pause := false
 var _is_closed := false
 ## A line that stays on the description until the cursor moves ("Rhen's gauge now fills by ...").
@@ -74,10 +104,13 @@ func configure(with_model: FieldMenuModel = null) -> void:
 func _ready() -> void:
 	if model == null:
 		model = FieldMenuModel.from_game()
+	if model.map == null and model.live_map:
+		model.map = ZoneMapMenu.live_model(self)
 	_d = load_data()
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	set_anchors_preset(Control.PRESET_FULL_RECT)
 	mouse_filter = Control.MOUSE_FILTER_STOP
+	UiSettings.shared().follow(self)
 	_build()
 	_root.replace_rows(model.root_rows())
 	_render()
@@ -101,7 +134,7 @@ func _unhandled_input(event: InputEvent) -> void:
 
 ## Applies one input event. Returns true when the menu used it. Tests call this directly.
 func handle_input(event: InputEvent) -> bool:
-	if not is_open() or (bestiary != null and bestiary.is_open()):
+	if not is_open() or _child_open():
 		return false
 	if event.is_action_pressed(&"ui_up", true):
 		_move(-1)
@@ -130,6 +163,11 @@ func accept() -> void:
 			_notice = model.choose_mode(hero, mode)
 			_detail.replace_rows(model.mode_page_rows(hero))
 			_render()
+		Level.QUIT:
+			if StringName(str(_detail.current_row().get("id", ""))) == FieldMenuModel.QUIT_GO:
+				quit_to_title()
+			else:
+				back()
 
 
 ## Goes back one level; closes from the root.
@@ -137,7 +175,7 @@ func back() -> void:
 	match level:
 		Level.ROOT:
 			close()
-		Level.HEROES:
+		Level.HEROES, Level.QUIT:
 			level = Level.ROOT
 			_render()
 		Level.MODES:
@@ -150,8 +188,21 @@ func close() -> void:
 	_is_closed = true
 	if bestiary != null and bestiary.is_open():
 		bestiary.close()
+	if settings_menu != null and settings_menu.is_open():
+		settings_menu.close()
+	if map_menu != null and map_menu.is_open():
+		map_menu.close()
+	if child != null and child.is_open():
+		child.close()
 	_restore_pause()
 	closed.emit()
+
+
+## Closes the menu and returns to the title (FlowRouting waits for an idle router). Unsaved
+## progress is lost, as the confirm said.
+func quit_to_title() -> void:
+	close()
+	FlowRouting.change_scene(TITLE_SCENE)
 
 
 ## The root row under the cursor, the right page's rows and the lines on show (tests read these).
@@ -167,6 +218,11 @@ func desc_text() -> String:
 	return _desc.text
 
 
+## The root's Objective block ("" when hidden).
+func objective_text() -> String:
+	return _objective.text if _objective.visible else ""
+
+
 func help_text() -> String:
 	return _help.text
 
@@ -178,8 +234,77 @@ func _accept_root(id: StringName) -> void:
 		FieldMenuModel.ROW_SWELL:
 			if not model.swell_heroes().is_empty():
 				_open_heroes(&"")
+		FieldMenuModel.ROW_MAP:
+			if model.has_map():
+				_open_map()
+		FieldMenuModel.ROW_SETTINGS:
+			_open_settings()
+		FieldMenuModel.ROW_QUIT:
+			_open_quit()
 		FieldMenuModel.ROW_CLOSE:
 			close()
+		_:
+			if model.root_enabled(id) and CHILD_PAGES.has(id):
+				_open_child(id)
+
+
+## True while the bestiary, the map, the Settings hub or a party page is open over this menu (it
+## has the input).
+func _child_open() -> bool:
+	return (
+		(bestiary != null and bestiary.is_open())
+		or (settings_menu != null and settings_menu.is_open())
+		or (map_menu != null and map_menu.is_open())
+		or (child != null and child.is_open())
+	)
+
+
+func _open_map() -> void:
+	map_menu = ZoneMapMenu.open_in(self, model.map)
+	visible = false
+	map_menu.closed.connect(_on_map_closed)
+
+
+func _on_map_closed() -> void:
+	map_menu = null
+	visible = true
+
+
+## Opens the party page for root row `id` (CHILD_PAGES) over a PartySheet of this menu's state.
+func _open_child(id: StringName) -> void:
+	var sheet := PartySheet.new(model.state, model.heroes)
+	var page := (CHILD_PAGES[id] as Script).call(&"create", sheet) as FieldSubmenu
+	child = FieldSubmenu.mount(page, self)
+	visible = false
+	child.closed.connect(_on_child_closed)
+
+
+func _on_child_closed() -> void:
+	child = null
+	visible = true
+	_root.replace_rows(model.root_rows())
+	_render()
+
+
+func _open_quit() -> void:
+	level = Level.QUIT
+	_detail.replace_rows(model.quit_rows())
+	_detail.set_cursor(0, false)  # Stay
+	_notice = ""
+	_render()
+
+
+func _open_settings() -> void:
+	settings_menu = SettingsMenu.open_in(self)
+	visible = false
+	settings_menu.closed.connect(_on_settings_closed)
+
+
+func _on_settings_closed() -> void:
+	settings_menu = null
+	visible = true
+	_root.replace_rows(model.root_rows())  # in the text size or palette just chosen
+	_render()
 
 
 func _open_bestiary() -> void:
@@ -231,8 +356,17 @@ func _render() -> void:
 	var at_root := level == Level.ROOT
 	_root.set_dimmed(not at_root)
 	_detail.visible = not at_root
-	_detail.set_header(model.modes_title(hero) if level == Level.MODES else model.heroes_title())
+	match level:
+		Level.MODES:
+			_detail.set_header(model.modes_title(hero))
+		Level.QUIT:
+			_detail.set_header(model.quit_title())
+		_:
+			_detail.set_header(model.heroes_title())
 	_place_detail(at_root)
+	_objective.text = model.objective_line()
+	_objective.visible = at_root and _objective.text != ""
+	_objective_head.visible = _objective.visible
 	var id := StringName(str((_root if at_root else _detail).current_row().get("id", "")))
 	match level:
 		Level.ROOT:
@@ -244,6 +378,9 @@ func _render() -> void:
 		Level.MODES:
 			_desc.text = _notice if _notice != "" else model.mode_desc(hero, id)
 			_help.text = tr("FIELD_MENU_HELP_MODES")
+		Level.QUIT:
+			_desc.text = model.quit_desc(id)
+			_help.text = tr("FIELD_MENU_HELP_QUIT")
 
 
 ## The right page is as tall as its rows; the line sits under it (at its top on the root).
@@ -273,6 +410,7 @@ func _build() -> void:
 	mat.set_shader_parameter(&"tint", get_theme_color(&"scrim", HymnThemeBuilder.PALETTE_TYPE))
 	scrim.material = mat
 	add_child(scrim)
+	add_child(CausticBackdrop.new())  # ADR 0033
 	var pm: Dictionary = _d.get("panel", {})
 	var panel := Panel.new()
 	HudLayout.place(panel, pm)
@@ -283,10 +421,10 @@ func _build() -> void:
 	var title := _label(&"BannerLabel", Rect2(pr.position + Vector2(pad, pad), Vector2(pr.size.x - pad * 2.0, 0.0)))
 	title.size.y = HudLayout.num(pm, "title_height")
 	title.text = tr("FIELD_MENU_TITLE")
+	_title_rule(Rect2(title.position, Vector2(pr.size.x * 0.5, title.size.y)))
 	var help_h := HudLayout.num(pm, "help_height")
 	var help_at := Vector2(pr.position.x + pad, pr.end.y - pad - help_h)
-	_help = _label(&"HelpLabel", Rect2(help_at, Vector2(pr.size.x - pad * 2.0, help_h)))
-	_help.add_theme_color_override(&"font_color", get_theme_color(&"text_dim", HymnThemeBuilder.PALETTE_TYPE))
+	_help = _label(&"HelpDimLabel", Rect2(help_at, Vector2(pr.size.x - pad * 2.0, help_h)))
 	var rm: Dictionary = _d.get("root", {})
 	_root = _page(rm, &"field_root", "", 0)
 	_root.row_hovered.connect(_on_hovered.bind(Level.ROOT))
@@ -299,6 +437,14 @@ func _build() -> void:
 	_desc = _label(&"BodyLabel", Rect2(dr.position, Vector2(dr.size.x, HudLayout.num(_d.get("desc", {}), "height"))))
 	_desc.vertical_alignment = VERTICAL_ALIGNMENT_TOP
 	_desc.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	var om: Dictionary = _d.get("objective", {})
+	var orr := HudLayout.rect_of(om)
+	var head_h := HudLayout.num(om, "label_height")
+	_objective_head = _label(&"DimLabel", Rect2(orr.position, Vector2(orr.size.x, head_h)))
+	_objective_head.text = tr("OBJ_LABEL")
+	_objective = _label(&"BodyLabel", Rect2(orr.position + Vector2(0.0, head_h), orr.size - Vector2(0.0, head_h)))
+	_objective.vertical_alignment = VERTICAL_ALIGNMENT_TOP
+	_objective.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 
 
 ## A MenuPage at its block's rect, as tall as `rows` rows need (0 = the root's three).
@@ -308,6 +454,7 @@ func _page(metrics: Dictionary, pid: StringName, title: String, rows: int) -> Me
 	var count := rows if rows > 0 else FieldMenuModel.ROOT_IDS.size()
 	page.size.y = MenuPage.height_for(metrics, count, title != "")
 	add_child(page)
+	page.reduced_motion = UiSettings.shared().reduced_motion()
 	page.setup(metrics, pid, title, [])
 	return page
 
@@ -319,7 +466,7 @@ func _on_hovered(_index: int, page_level: Level) -> void:
 
 
 func _on_clicked(index: int, page_level: Level) -> void:
-	if not is_open() or (bestiary != null and bestiary.is_open()):
+	if not is_open() or _child_open():
 		return
 	if page_level == Level.ROOT and level != Level.ROOT:
 		level = Level.ROOT  # a click on the root page goes back to it
@@ -338,3 +485,12 @@ func _label(variation: StringName, r: Rect2) -> Label:
 	l.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(l)
 	return l
+
+
+## The gold OrnamentRule under the menu's title (ADR 0033), across the left half of the panel.
+func _title_rule(title: Rect2) -> void:
+	var rule := OrnamentRule.new()
+	var node := float(get_theme_constant(&"ornament_node_px", HymnThemeBuilder.PALETTE_TYPE))
+	rule.position = Vector2(title.position.x, title.end.y - node)
+	rule.size = Vector2(title.size.x, node * 2.0)
+	add_child(rule)

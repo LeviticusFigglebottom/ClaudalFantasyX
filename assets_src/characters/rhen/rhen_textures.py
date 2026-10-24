@@ -1,26 +1,23 @@
 #!/usr/bin/env python3
-"""Rhen's procedural textures (numpy + Pillow, deterministic). rhen.md §3-§7 and the map contract in
-docs/kb/tech/character_shading.md.
+"""Rhen's procedural textures (numpy + Pillow, deterministic). rhen.md §4-§7, the shared mask packing
+of asha.md §4.2 and the map contract in docs/kb/tech/character_shading.md.
 
     python3 assets_src/characters/rhen/rhen_textures.py --bake-dir DIR [--only skin,cloth]
 
-DIR holds the mesh dumps from `build_rhen.py --bake-dir DIR` (head.npz, body.npz). Writes PNGs to
+DIR holds the mesh dumps from `build_rhen.py --bake-dir DIR`. Writes PNGs to
 assets/characters/rhen/textures/:
 
-* **Skin** (head 2K albedo, normal, ORM and skinmask; body 1K): Asha's skin generator
-  (asha_textures.skin_maps) run with Rhen's settings through its M2-CHR-01 hooks: `skin_rhen`
-  #A87556 as the base, his scalp underpaint (dark brown roots), fewer freckles, and an albedo pass
-  of his own (`albedo_post`): peeling-sun warmth across the nose and the tops of the ears (+6%
-  redness, rhen.md §6) and, on the body, the half-finished reach-band on the right forearm (a 10 mm
-  ring 7 cm below the elbow, outline complete, 40% of the fill, tattoo_ink at 60%, softened by age).
-* **Cloth** (one 2K atlas on rhen_costume.ATLAS: albedo, normal, ORM at 1K, clothmask): the
-  sun-faded teal jacket (losing saturation toward the shoulders, a worn wave stitch along the hem),
-  sand undershirt and canvas trousers (two or three salt tide-marks), oiled leather (gauntlet, belt,
-  strap), linen wraps, palm sandals, rope and the grip wraps. **No gold, no lacquer** (rhen.md §7):
-  the clothmask's G and B stay 0.
+* Skin (head 2K, body 1K): Asha's skin generator (asha_textures.skin_maps) with Rhen's knobs: skin
+  `skin_rhen` #A87556, no freckles, his dark-brown scalp underpaint and hairline (rhen_hair), plus
+  his own terms: peeling-sun warmth across the nose and the tops of the ears (+6% redness), and the
+  half-finished reach-band on the right forearm (rhen.md §3: a 10 mm ring 7 cm below the elbow, the
+  outline complete, 40% of the fill, `tattoo_ink` at 60%, slightly blurred with age).
+* Cloth: the 2K atlas for the rhen_costume charts: albedo, normal, ORM, clothmask (R embroidery,
+  G gold, B lacquer, A sheen). The jacket's sun-fade (saturation down to 75% on the shoulders and the
+  back), Dace's worn wave stitch on the hem, salt tide-marks on the trousers, oiled leather, rope.
 
-The eye, pore-detail, thread-detail, strand-atlas and lash/brow maps are Asha's (generic; the
-materials tint them), so they are not duplicated here. No randomness outside the seeded generators.
+The eye, hair, lash and brow atlases and the tileable detail normals are generic, so Rhen's
+materials use Asha's (write_materials.py), with his colours as shader parameters.
 """
 from __future__ import annotations
 
@@ -38,78 +35,92 @@ sys.path.insert(0, str(HERE))
 sys.path.insert(0, str(HERE.parent / "asha"))
 sys.path.insert(0, str(HERE.parent / "base_body"))
 
-import asha_textures as AT  # noqa: E402
+import asha_textures as at  # noqa: E402
+from asha_textures import blur, height_to_normal, hexc, periodic_noise, smoothstep, weave  # noqa: E402
 
 OUT = ROOT / "assets" / "characters" / "rhen" / "textures"
 PARAMS = HERE / "rhen_params.json"
-SKIN = "#A87556"  # palette skin_rhen
-UNDERPAINT = "#24170F"  # the scalp under the cards: a shade under hair_dark_brown #2E1E14
-FRECKLES = 8
-SUN_PEEL = 0.06  # rhen.md §6: +6% redness on the nose and the ear tops
-INK = "#24323A"  # palette tattoo_ink
-INK_OPACITY = 0.6
-BAND_BELOW_ELBOW = 0.07  # m
-BAND_WIDTH = 0.010  # m
-BAND_LINE = 0.0011  # m, the outline's half-width
-TEAL, SAND, LEATHER, STRAP = "#5E9A96", "#C9B48E", "#5A3A26", "#4A3020"
-THATCH, SALT = "#B08A52", "#E2DACB"
+SUN_PEEL = 0.06  # rhen.md §6: +6% redness across the nose and the tops of the ears
+REACH_BAND_BELOW_ELBOW = 0.07  # m
+REACH_BAND_WIDTH = 0.010  # m
+REACH_BAND_LINE = 0.0012  # m, the outline's stroke
+REACH_BAND_OPACITY = 0.6
+TATTOO_INK = "#24323A"
+FADE_SAT = 0.75  # rhen.md §4: the jacket fades to 75% saturation at the shoulders
 
 
-def smoothstep(e0, e1, x):
-    return AT.smoothstep(e0, e1, x)
-
-
-def albedo_post(lm, params: dict):
-    """Rhen's own albedo pass for asha_textures.albedo (the ALBEDO_POST hook)."""
-    s = lm.h / 0.222
-    el, wr = lm.side_pt("elbow", "R"), lm.side_pt("wrist", "R")
-    ax = (wr - el) / np.linalg.norm(wr - el)
-    fill = float(params["reach_band_fill"])
-    ink = AT.hexc(INK)
-
-    def post(P: np.ndarray, N: np.ndarray, key: str, col: np.ndarray, face, lm_) -> np.ndarray:
+def _albedo_rhen(orig):
+    def albedo(Ph, Nh, key, face, lm, hair_mod, r, npz):
+        col = orig(Ph, Nh, key, face, lm, hair_mod, r, npz)
+        s = lm.h / 0.222
         if key == "head":
-            yc = lm.P("head_c")[1]
             zc = lm.P("chin")[2]
-            u, v = P[:, 0] / lm.h, (P[:, 2] - zc) / lm.h
-            front = smoothstep(0.0, -0.3, (P[:, 1] - yc) / lm.h)
-            nose = np.exp(-((u / 0.045) ** 2) - ((v - (face.ve - 0.09)) / 0.09) ** 2) * front
-            ear_top = smoothstep(0.29, 0.34, np.abs(u)) * np.exp(-((v - (face.ve + 0.02)) / 0.04) ** 2)
-            w = np.clip(nose + ear_top, 0.0, 1.0)
-            return col * (1 + SUN_PEEL * w[:, None] * np.array([1.0, -0.3, -0.5]))
-        # body: the reach-band round the right forearm
-        q = P - el
-        t = q @ ax  # distance down the forearm
-        radial = q - np.outer(t, ax)
-        ref = np.array([0.0, 0.0, 1.0]) - ax * ax[2]
-        ref /= np.linalg.norm(ref)
-        side = np.cross(ax, ref)
-        ang = (np.arctan2(radial @ side, radial @ ref) / (2 * np.pi)) % 1.0  # 0..1 round the arm
-        c = BAND_BELOW_ELBOW * s
-        hw = 0.5 * BAND_WIDTH * s
-        d = np.abs(t - c)
-        near = np.linalg.norm(radial, axis=1) < 0.06 * s
-        line = np.exp(-((d - hw) / (BAND_LINE * s)) ** 2)  # the two edges of the ring
-        inside = smoothstep(hw + 0.0006 * s, hw - 0.0006 * s, d)
-        # the fill covers `fill` of the circumference, its leading edge ragged (unfinished work)
-        rag = 0.02 * np.sin(ang * 2 * np.pi * 9) + 0.012 * np.sin(ang * 2 * np.pi * 23 + 1.3)
-        filled = smoothstep(fill + 0.01, fill - 0.01, ang + rag * (np.abs(t - c) / hw))
-        a = np.clip(np.maximum(line, inside * filled), 0.0, 1.0) * INK_OPACITY * near
-        return col * (1 - a[:, None]) + ink * a[:, None]
+            u, v = Ph[:, 0] / lm.h, (Ph[:, 2] - zc) / lm.h
+            front = smoothstep(0.0, -0.3, (Ph[:, 1] - lm.P("head_c")[1]) / lm.h)
+            ve = face.ve
+            nose = np.exp(-((u / 0.05) ** 2) - ((v - (ve - 0.10)) / 0.08) ** 2) * front
+            ears = smoothstep(0.30, 0.36, np.abs(u)) * smoothstep(ve - 0.02, ve + 0.06, v)
+            peel = np.clip(nose + ears, 0.0, 1.0) * (0.75 + 0.5 * (at.noise3(Ph, 0.004 * s, 41) - 0.5))
+            col = col * (1 + SUN_PEEL * peel[:, None] * np.array([1.0, -0.3, -0.45]))
+        else:
+            el, wr = lm.side_pt("elbow", "R"), lm.side_pt("wrist", "R")
+            ax = (wr - el) / np.linalg.norm(wr - el)
+            d = (Ph - el) @ ax
+            c = REACH_BAND_BELOW_ELBOW * s
+            radial = Ph - el - np.outer(d, ax)
+            near_arm = np.linalg.norm(radial, axis=1) < 0.06 * s
+            ref = np.array([0.0, 0.0, 1.0]) - ax[2] * ax
+            ref /= np.linalg.norm(ref)
+            ang = np.arctan2(radial @ np.cross(ax, ref), radial @ ref)  # 0 = top of the forearm
+            half = 0.5 * REACH_BAND_WIDTH * s
+            line = REACH_BAND_LINE * s
+            edge = np.exp(-((np.abs(d - c) - half) / line) ** 2)
+            fill = (np.abs(d - c) < half) * ((ang % (2 * np.pi)) < 0.4 * 2 * np.pi)
+            wob = 0.85 + 0.3 * at.noise3(Ph, 0.002 * s, 43)
+            ink = np.clip(np.maximum(edge, 0.85 * fill) * wob, 0.0, 1.0) * near_arm * REACH_BAND_OPACITY
+            col = col * (1 - ink[:, None]) + hexc(TATTOO_INK) * ink[:, None]
+        return np.clip(col, at.FLOOR, at.CEIL)
 
-    return post
+    return albedo
 
 
-def cloth_atlas(params: dict, size: int = 2048) -> None:
+def skin(bake_dir: Path) -> None:
+    import bb_anatomy
+    import bb_donor
+    import bb_params
+    import rhen_hair
+
+    at.OUT = OUT
+    at.PREFIX = "rhen"
+    at.SKIN_HEX = "#A87556"
+    at.FRECKLES = 0
+    at.HAIR_UNDERPAINT = "#24180F"  # hair_dark_brown #2E1E14, a touch darker under the cards
+    at.albedo = _albedo_rhen(at.albedo)
+    params = bb_params.load_params(path=str(PARAMS))
+    lm = bb_donor.fit(params).lm
+    body = bb_anatomy.Body(lm)
+    for key, size, small in (("head", 2048, 2048), ("body", 1024, 1024)):
+        npz = dict(np.load(bake_dir / f"{key}.npz"))
+        at.skin_maps(key, npz, size, small, body, body.face, lm, rhen_hair)
+
+
+def _desaturate(col: np.ndarray, amount: np.ndarray) -> np.ndarray:
+    """amount 0 = unchanged, 1 = fully grey (at the same luma)."""
+    luma = col @ np.array([0.2126, 0.7152, 0.0722])
+    return col * (1 - amount[..., None]) + luma[..., None] * amount[..., None]
+
+
+def cloth_atlas(cparams: dict, size: int = 2048) -> None:
     import rhen_costume as C
 
-    rng = np.random.default_rng(int(params["seed"]) + 101)
+    at.OUT = OUT
+    rng = np.random.default_rng(61)
     alb = np.zeros((size, size, 3))
     mask = np.zeros((size, size, 4))
     hgt = np.zeros((size, size))
     orm = np.zeros((size, size, 3))
     orm[..., 0] = 1.0
-    orm[..., 1] = 0.9
+    orm[..., 1] = 0.85
     yy, xx = np.mgrid[0:size, 0:size]
     U = (xx + 0.5) / size
     V = (yy + 0.5) / size
@@ -119,109 +130,112 @@ def cloth_atlas(params: dict, size: int = 2048) -> None:
         m = (U >= u0) & (U < u1) & (V >= v0) & (V < v1)
         return m, (U - u0) / (u1 - u0), (V - v0) / (v1 - v0)
 
-    hexc = AT.hexc
-    teal, sand, leather, strap_c = hexc(TEAL), hexc(SAND), hexc(LEATHER), hexc(STRAP)
-    grain = AT.periodic_noise(size, size, 260, 260, rng) * 0.5 + AT.periodic_noise(size, size, 640, 640, rng) * 0.5
-    blotch = AT.periodic_noise(size, size, 12, 12, rng)
-    cotton = AT.weave(size, size, 380)
-
-    def faded(base: np.ndarray, fade: np.ndarray) -> np.ndarray:
-        """Sun fade: toward the colour's own grey and a little lighter."""
-        grey = base.mean() * np.ones(3)
-        k = float(params["sun_fade"]) * fade[..., None]
-        return (base * (1 - k) + grey * k) * (1 + 0.12 * fade[..., None])
-
-    # jacket body: rows run collar line (0) -> hem (1); the shoulders and the back take the sun
+    teal, sand = hexc("#5E9A96"), hexc("#C9B48E")
+    leather, strap_l, thatch = hexc("#5A3A26"), hexc("#4A3020"), hexc("#B08A52")
+    salt = hexc("#E6E1D6")
+    fade_k = float(cparams.get("sun_fade", 0.25)) / 0.25
+    mottle = periodic_noise(size, size, 24, 24, rng)
+    cotton = weave(size, size, 380)
+    # jacket: rows run top (0) -> hem (1), columns from the right lapel round the back (0.5) to the left
     m, iu, iv = island("jacket")
-    back = np.exp(-((iu - 0.5) / 0.3) ** 2)  # the back is the middle of the chart (azimuth 180)
-    fade = np.clip(smoothstep(0.45, 0.0, iv) * 0.85 + 0.35 * back + 0.25 * (blotch - 0.5), 0.0, 1.0)
-    col = faded(teal, fade) * (0.96 + 0.08 * (grain[..., None] - 0.5))
-    hem = 1.0 - iv
-    stitch = np.exp(-((hem - 0.06 - 0.012 * np.sin(iu * 2 * np.pi * 38)) / 0.006) ** 2)
-    worn = smoothstep(0.25, 0.55, AT.periodic_noise(size, size, 30, 90, rng))  # Dace's stitch, worn away in places
-    emb = stitch * worn
-    col = col * (1 - 0.8 * emb[..., None]) + sand * 0.8 * emb[..., None]
+    back = np.exp(-((iu - 0.5) / 0.22) ** 2)
+    sun = np.clip((smoothstep(0.55, 0.0, iv) * 0.8 + 0.5 * back * smoothstep(1.0, 0.3, iv)) * fade_k, 0, 1)
+    col = _desaturate(teal, (1 - FADE_SAT) * sun) * (1 + 0.06 * sun[..., None]) * (0.95 + 0.1 * mottle[..., None])
+    # Dace's current-song wave stitch along the hem, worn through in places
+    from_hem = 1.0 - iv
+    wave = np.exp(-((from_hem - 0.05 - 0.018 * np.sin(iu * 2 * np.pi * 26)) / 0.006) ** 2)
+    worn = smoothstep(0.35, 0.6, periodic_noise(size, size, 40, 8, rng))
+    emb = wave * worn
+    col = col * (1 - 0.75 * emb[..., None]) + sand * 0.75 * emb[..., None]
     alb[m] = col[m]
     mask[m] = np.stack([emb, np.zeros_like(emb), np.zeros_like(emb), np.full_like(emb, 0.35)], axis=-1)[m]
-    hgt[m] = (cotton * 0.35 + emb * 0.6)[m]
-    # left sleeve: rows shoulder (0) -> wrist (1); the top of the arm faded at the shoulder
+    hgt[m] = (cotton * 0.3 + emb * 0.6)[m]
+    orm[m, 1] = 0.82
+    # sleeve: U round the arm (0 = top), V shoulder (0) -> wrist (1); the top of the arm fades most
     m, iu, iv = island("sleeve")
-    top = np.exp(-((np.minimum(iu, 1 - iu)) / 0.22) ** 2)  # u 0 / 1 = the top of the arm
-    fade = np.clip(smoothstep(0.6, 0.0, iv) * 0.7 * (0.4 + 0.6 * top) + 0.2 * (blotch - 0.5), 0.0, 1.0)
-    alb[m] = (faded(teal, fade) * (0.96 + 0.08 * (grain[..., None] - 0.5)))[m]
+    top = np.cos(iu * 2 * np.pi) * 0.5 + 0.5
+    sun = np.clip(top * smoothstep(1.1, 0.0, iv) * 0.9 * fade_k, 0, 1)
+    col = _desaturate(teal, (1 - FADE_SAT) * sun) * (1 + 0.05 * sun[..., None]) * (0.95 + 0.1 * mottle[..., None])
+    alb[m] = col[m]
     mask[m] = (0, 0, 0, 0.35)
-    hgt[m] = (cotton * 0.35)[m]
+    hgt[m] = (cotton * 0.3)[m]
+    orm[m, 1] = 0.82
+    # collar: the same cloth, double-stitched along its top
     m, iu, iv = island("collar")
-    alb[m] = faded(teal, np.full_like(iu, 0.8))[m]
+    stitch = (np.sin(iu * 2 * np.pi * 120) > 0.3) * np.exp(-((iv - 0.18) / 0.05) ** 2)
+    alb[m] = (_desaturate(teal, np.full(iu.shape, 0.15)) * 0.92 * (1 - 0.3 * stitch[..., None]))[m]
     mask[m] = (0, 0, 0, 0.35)
-    hgt[m] = (cotton * 0.35 + smoothstep(0.85, 0.95, iv) * 0.5)[m]
+    hgt[m] = (cotton * 0.3 + stitch * 0.4)[m]
     # undershirt: thin sand cotton
     m, iu, iv = island("undershirt")
-    alb[m] = (sand * (0.95 + 0.06 * (grain[..., None] - 0.5)))[m]
+    alb[m] = (sand * (0.96 + 0.06 * mottle[..., None]))[m]
     mask[m] = (0, 0, 0, 0.3)
-    hgt[m] = (AT.weave(size, size, 520) * 0.2)[m]
-    # trousers: sand canvas with 2-3 salt tide-marks (wavy pale lines with a soft inner side)
-    canvas = AT.weave(size, size, 300)
-    for nm, marks in (("trousers_hip", ()), ("trousers_leg", (0.42, 0.63, 0.86))):
+    hgt[m] = (weave(size, size, 520) * 0.2)[m]
+    # trousers: sand canvas, salt tide-marks (2-3 white lines) on the legs, a seam down the outside
+    canvas = weave(size, size, 300)
+    for nm in ("trousers", "trouser_leg_L", "trouser_leg_R"):
         m, iu, iv = island(nm)
-        col = sand * (0.93 + 0.08 * (grain[..., None] - 0.5))
-        tide = np.zeros_like(iu)
-        for k, v0 in enumerate(marks):
-            wob = 0.03 * np.sin(iu * 2 * np.pi * 3 + k) + 0.015 * np.sin(iu * 2 * np.pi * 11 + 2 * k)
-            dv = iv - (v0 + wob)
-            tide = np.maximum(tide, np.exp(-(dv / 0.008) ** 2) + 0.35 * smoothstep(0.0, -0.05, dv) * (dv > -0.06))
-        tide = np.clip(tide, 0, 1) * smoothstep(0.3, 0.6, AT.periodic_noise(size, size, 20, 40, rng) + 0.3)
-        col = col * (1 - 0.45 * tide[..., None]) + hexc(SALT) * 0.45 * tide[..., None]
+        col = sand * (0.93 + 0.08 * mottle[..., None])
+        if nm != "trousers":
+            tide = np.zeros_like(iv)
+            for k, (c0, a) in enumerate(((0.55, 0.7), (0.72, 1.0), (0.86, 0.8))):
+                line = c0 + 0.03 * np.sin(iu * 2 * np.pi * (2 + k) + k) + 0.012 * (mottle - 0.5)
+                tide = np.maximum(tide, a * np.exp(-((iv - line) / 0.012) ** 2))
+            tide = tide * smoothstep(0.3, 0.6, periodic_noise(size, size, 30, 6, rng) + 0.2)
+            col = col * (1 - 0.55 * tide[..., None]) + salt * 0.55 * tide[..., None]
         alb[m] = col[m]
         mask[m] = (0, 0, 0, 0.3)
-        hgt[m] = (canvas * 0.3)[m]
-        orm[m, 1] = (0.92 + 0.05 * tide)[m]
-    # oiled leather: gauntlet, palm, belt, strap
-    for nm, base, rough in (("gauntlet", leather, 0.55), ("palm", leather * 0.85, 0.7), ("belt", leather, 0.6),
-                            ("strap", strap_c, 0.6)):
+        hgt[m] = (canvas * 0.35)[m]
+        orm[m, 1] = 0.88
+    # leather: gauntlet (oiled, darker and smoother along the grip), belt, strap
+    grain = periodic_noise(size, size, 260, 260, rng) * 0.5 + periodic_noise(size, size, 600, 600, rng) * 0.5
+    for nm, base, rough in (("gauntlet", leather, 0.52), ("gauntlet_hand", leather * 0.9, 0.48),
+                            ("belt", leather, 0.6), ("strap", strap_l, 0.62)):
         m, iu, iv = island(nm)
-        oil = AT.periodic_noise(size, size, 40, 40, rng)
-        col = base * (0.9 + 0.2 * (grain[..., None] - 0.5)) * (1 - 0.08 * oil[..., None])
+        wear = smoothstep(0.55, 0.8, mottle) * 0.12
+        col = base * (0.92 + 0.12 * grain[..., None]) * (1 + wear[..., None])
         if nm in ("belt", "strap"):
-            edge = smoothstep(0.12, 0.05, iv) + smoothstep(0.88, 0.95, iv)  # stitched edges
-            col = col * (1 - 0.15 * edge[..., None])
+            edge = smoothstep(0.12, 0.04, iv if nm == "belt" else iu) + smoothstep(0.88, 0.96, iv if nm == "belt" else iu)
+            col = col * (1 - 0.25 * edge[..., None])
+            hgt[m] = (grain * 0.1 + edge * 0.25)[m]
         else:
-            edge = np.zeros_like(iv)
+            seam = np.exp(-((iu - 0.5) / 0.012) ** 2)
+            col = col * (1 - 0.3 * seam[..., None])
+            hgt[m] = (grain * 0.12 - seam * 0.2)[m]
         alb[m] = col[m]
-        mask[m] = (0, 0, 0, 0)
-        hgt[m] = (grain * 0.12 + edge * 0.3)[m]
-        orm[m, 1] = (rough - 0.12 * oil)[m]
-    # calf wraps: linen strips (sand) with spiral strip edges
-    m, iu, iv = island("wraps")
-    strip = np.abs(np.sin((iv * 14 + iu * 1.0) * np.pi))
-    alb[m] = (sand * (0.9 + 0.1 * strip[..., None]))[m]
+        mask[m] = (0, 0, 0, 0.0)
+        orm[m, 1] = rough
+    # rope: thatch-coloured, twisted strands
+    m, iu, iv = island("rope")
+    twist = np.sin((iu * 3 + iv * 90) * 2 * np.pi) * 0.5 + 0.5
+    alb[m] = (thatch * (0.82 + 0.25 * twist[..., None]))[m]
     mask[m] = (0, 0, 0, 0.2)
-    hgt[m] = (strip * 0.6 + AT.weave(size, size, 300) * 0.2)[m]
-    # sandals: woven palm fibre
+    hgt[m] = twist[m]
+    orm[m, 1] = 0.9
+    # calf wraps: linen strips
+    m, iu, iv = island("wraps")
+    strip = np.abs(np.sin((iv * 10 + iu * 1.0) * np.pi))
+    alb[m] = (sand * (0.88 + 0.1 * strip[..., None]) * (0.95 + 0.08 * mottle[..., None]))[m]
+    mask[m] = (0, 0, 0, 0.2)
+    hgt[m] = (strip * 0.6 + weave(size, size, 300) * 0.2)[m]
+    # sandals: woven palm fibre over leather
     m, iu, iv = island("sandals")
-    wv = AT.weave(size, size, 160)
-    alb[m] = (hexc(THATCH) * (0.85 + 0.15 * wv[..., None]))[m]
+    wv = weave(size, size, 160)
+    alb[m] = (thatch * (0.82 + 0.15 * wv[..., None]))[m]
     mask[m] = (0, 0, 0, 0.1)
     hgt[m] = wv[m]
-    # rope: thatch-coloured fibre with a twist (diagonal ridges along the tube)
-    m, iu, iv = island("rope")
-    twist = np.abs(np.sin((iu * 3.0 + iv * 40.0) * np.pi))
-    alb[m] = (hexc(THATCH) * (0.8 + 0.2 * twist[..., None]))[m]
-    mask[m] = (0, 0, 0, 0.15)
-    hgt[m] = twist[m]
-    # grip wraps: faded teal cord, tight spiral
+    # reef-hook grips: a faded-teal cloth wrap
     m, iu, iv = island("grip")
-    wrap = np.abs(np.sin((iu * 1.0 + iv * 26.0) * np.pi))
-    alb[m] = (faded(teal, np.full_like(iu, 0.6)) * (0.8 + 0.2 * wrap[..., None]))[m]
+    spiral = np.abs(np.sin((iv * 14 + iu) * np.pi))
+    alb[m] = (_desaturate(teal, np.full(iu.shape, 0.3)) * (0.75 + 0.15 * spiral[..., None]))[m]
     mask[m] = (0, 0, 0, 0.3)
-    hgt[m] = wrap[m]
-    alb = np.clip(alb, AT.FLOOR, AT.CEIL)
-    AT.write("rhen_cloth_albedo.png", alb)
-    AT.write("rhen_cloth_clothmask.png", AT.blur(mask, 1))
-    AT.write("rhen_cloth_normal.png", AT.height_to_normal(AT.blur(hgt, 1), 2.5, wrap=False))
-    o = np.asarray(Image.fromarray((np.clip(orm, 0, 1) * 255).astype(np.uint8)).resize((size // 2, size // 2),
-                                                                                       Image.BOX))
-    AT.write("rhen_cloth_orm.png", o / 255.0)
+    hgt[m] = (spiral * 0.6)[m]
+    alb = np.clip(alb, at.FLOOR, at.CEIL)
+    at.write("rhen_cloth_albedo.png", alb)
+    at.write("rhen_cloth_clothmask.png", blur(mask, 1))
+    at.write("rhen_cloth_normal.png", height_to_normal(blur(hgt, 1), 2.5, wrap=False))
+    o = np.asarray(Image.fromarray((np.clip(orm, 0, 1) * 255).astype(np.uint8)).resize((size // 2, size // 2), Image.BOX))
+    at.write("rhen_cloth_orm.png", o / 255.0)
 
 
 def main() -> int:
@@ -230,26 +244,9 @@ def main() -> int:
     ap.add_argument("--only", default="skin,cloth")
     args = ap.parse_args()
     only = set(args.only.split(","))
-    import bb_anatomy
-    import bb_donor
-    import bb_params
-    import rhen_hair
-
-    params = bb_params.load_params(path=str(PARAMS))
     extra = json.loads(PARAMS.read_text(encoding="utf-8"))
-    lm = bb_donor.fit(params).lm  # the landmarks of the placed donor, as the build uses
-    body = bb_anatomy.Body(lm)
-    AT.OUT = OUT
-    AT.PREFIX = "rhen"
-    AT.SKIN_BASE = SKIN
-    AT.HAIR_UNDERPAINT = UNDERPAINT
-    AT.FRECKLES = FRECKLES
-    AT.ALBEDO_POST = albedo_post(lm, extra["_costume"])
     if "skin" in only:
-        bd = Path(args.bake_dir)
-        for key, size, small in (("head", 2048, 2048), ("body", 1024, 1024)):
-            npz = dict(np.load(bd / f"{key}.npz"))
-            AT.skin_maps(key, npz, size, small, body, body.face, lm, rhen_hair)
+        skin(Path(args.bake_dir))
     if "cloth" in only:
         cloth_atlas(extra["_costume"])
     return 0

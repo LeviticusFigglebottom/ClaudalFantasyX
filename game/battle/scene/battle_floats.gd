@@ -18,7 +18,15 @@ func reset() -> void:
 	_snap = {}
 
 
+## Snapshot and floats at once (BattleChoreo splits them: the snapshot as the action resolves, the floats on
+## its contact beat).
 func on_action_resolved(result: ActionResult) -> void:
+	snapshot(result)
+	show_hits(result, true)
+
+
+## Remembers the actor as the action resolved, for show_end_of_turn.
+func snapshot(result: ActionResult) -> void:
 	var actor := ctl.engine.find(result.actor_id)
 	if actor != null:
 		_snap = {
@@ -28,6 +36,11 @@ func on_action_resolved(result: ActionResult) -> void:
 			"regen": actor.has_status(&"regen"),
 			"doom": actor.doom_count(),
 		}
+
+
+## The action's damage numbers, float words and heavy-hit shake. `flinch` = false when BattleChoreo moves the
+## targets itself.
+func show_hits(result: ActionResult, flinch: bool) -> void:
 	var kind := str(ctl.engine.db.skill(result.skill_id).get("kind", ""))
 	var stacks: Dictionary = {}
 	var heavy := false
@@ -37,8 +50,8 @@ func on_action_resolved(result: ActionResult) -> void:
 		var f := ctl.stage.stand_in(tid)
 		# ActionResult.amount: positive = HP lost, negative = HP restored (BattleHits.resolve).
 		var amount := int(hit["amount"])
-		if f != null and amount > 0:
-			f.flinch()
+		if flinch and f != null and amount > 0:
+			f.flinch(ctl.stage.battle_speed(ctl.hud.battle_speed()))
 		heavy = heavy or bool(hit.get("crit", false))
 		if not ctl.show_damage_numbers or target == null:
 			continue
@@ -59,7 +72,7 @@ func on_action_resolved(result: ActionResult) -> void:
 		elif amount < 0:
 			ctl.hud.pop_number(str(-amount), at, DamageNumber.KIND_HEAL, ally, false, n)
 	if heavy and ctl.show_damage_numbers and ctl.hud.animations_enabled():
-		ctl.stage.shake()
+		ctl.stage.shake(ctl.stage.battle_speed(ctl.hud.battle_speed()))
 
 
 ## End-of-turn HP changes the ActionResult cannot carry (Poison, Regen, Regen turned to harm by

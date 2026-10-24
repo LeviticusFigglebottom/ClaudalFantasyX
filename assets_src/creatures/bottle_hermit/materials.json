@@ -1,0 +1,13 @@
+{
+  "_doc": "Bottle hermit surfaces (docs/kb/art/creatures/act1/bottle_hermit.md): glass is the salt-frosted lamp chimney lit from inside by the crab's own sea_glow (not glimmer), metal the brass collars, chitin the crab (its soft abdomen's spawn_wound glow from the mask), eye. write_materials.py on game/shaders/creature/creature.gdshader.",
+  "slots": {
+    "glass": {"roughness_dry": 0.12, "roughness_wet": 0.06, "specular": 0.8, "clearcoat_wet": 1.0, "detail_albedo": 0.04,
+              "detail_bump": 0.08, "detail_scale": 60.0, "rim_sheen": 0.6, "emission_color": "#1C6B78", "emission_energy": 2.2,
+              "emission_pulse_hz": 0.25, "emission_pulse_depth": 0.3},
+    "metal": {"metallic": 0.7, "roughness_dry": 0.45, "roughness_wet": 0.3, "detail_scale": 40.0, "detail_albedo": 0.15,
+              "detail_bump": 0.3, "cavity_albedo": 0.5},
+    "chitin": {"roughness_dry": 0.5, "roughness_wet": 0.22, "clearcoat_wet": 0.55, "detail_scale": 40.0, "detail_albedo": 0.08,
+               "detail_bump": 0.2, "cavity_albedo": 0.5, "emission_color": "#3FE0C8", "emission_energy": 1.6},
+    "eye": {"roughness_dry": 0.12, "roughness_wet": 0.06, "specular": 0.7, "clearcoat_wet": 1.0, "detail_albedo": 0.0, "detail_bump": 0.0}
+  }
+}

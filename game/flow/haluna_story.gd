@@ -5,7 +5,7 @@ extends Node
 ## `place_at(spawn)`. What it plays and where comes from first_playable.json "haluna".
 ##   arrival   while `ch02_met_asha` is unset: Rhen on the Beach spawn, Cutscene A
 ##             (ch02_girl_on_the_beach), then free play. Asha and Toma join Rhen there: once
-##             `ch02_met_asha` is set, an empty party is filled from party_after_intro (party and
+##             `ch02_met_asha` is set, they join (PartyJoins: first_playable.json "party" joins, party and
 ##             reserve ids, M2 slice), which the field menu's Heroes page reads (M2-UI-04). Once the
 ##             tideline battle is won (its victory flag) and until after_battle_flag is set, an
 ##             arrival plays B02 instead (M2-FP-13): Rhen at the after_battle spawn and Neme's table in-engine.
@@ -26,12 +26,17 @@ extends Node
 ##             opens on "Go now" / "Not yet" (M2-FP-21): "Not yet" (ending_decline_event) steps
 ##             Rhen back to ending_decline_spawn and hands nothing off. Before the first save the
 ##             same box plays an overheard bark instead (M2-FP-20, Triggers/CausewayHeadUnsaved).
+##   chapter   M2-FP-27: every arrival moves the story to cfg.chapter (2) when it is behind it, so
+##             Haluna's saves read "Chapter 2" and the chapter autosave runs.
+##   route     M2-FP-25: when cfg has ending_location, "Go now" travels there (the Saltgrass
+##             Causeway, B06) at ending_spawn instead of opening ending_scene.
 ## The zone's interactables only author ids, payloads and flags; nothing in them knows this script.
 
 const KEY_DIALOGUE := "dialogue"
 const KEY_BATTLE := "battle"
 const KEY_CUTSCENE := "cutscene"
 const KEY_OVERHEARD := "overheard"
+const KEY_GO := "go"
 
 ## Go live on _ready when the zone is the current scene (the game). Tests turn it off, set
 ## `active` and call begin() themselves, so a zone instanced by a test never hands off.
@@ -72,6 +77,9 @@ func _exit_tree() -> void:
 
 ## Plays the arrival (Cutscene A) or B02 when either is due. Await it.
 func begin() -> void:
+	var chapter := int(cfg.get("chapter", 0))
+	if chapter > Game.state.chapter:
+		Game.set_chapter(chapter)
 	if not _flag(&"intro_flag"):
 		busy = true
 		_zone.call(&"place_at", StringName(str(cfg.get("intro_spawn", ""))))
@@ -91,16 +99,13 @@ func begin() -> void:
 		busy = false
 
 
-## Asha and Toma join once Cutscene A has played: an empty party is filled from party_after_intro.
-## A save from before this existed (the flag set, no party) is filled on its next arrival.
+## Asha and Toma join when Cutscene A sets intro_flag (PartyJoins, first_playable.json "party" joins, through
+## Game's flag hook). A save from before joins existed (the flag set, no party) joins them on its next arrival,
+## through the same row, so they get their starting gear too.
 func _join_party() -> void:
 	if not _flag(&"intro_flag") or not Game.state.party_ids.is_empty():
 		return
-	var join: Dictionary = cfg.get("party_after_intro", {})
-	for id: Variant in join.get("party", []):
-		Game.state.party_ids.append(StringName(str(id)))
-	for id: Variant in join.get("reserve", []):
-		Game.state.reserve_ids.append(StringName(str(id)))
+	PartyJoins.on_flag(Game.state, StringName(str(cfg.get("intro_flag", ""))), true)
 
 
 func _autostart() -> void:
@@ -168,7 +173,11 @@ func _end() -> void:
 			_zone.call(&"place_at", spawn, _zone.call(&"spawn_yaw_deg", spawn))
 			busy = false
 			return
-	if is_inside_tree():
+	if not is_inside_tree():
+		return
+	if str(cfg.get("ending_location", "")) != "":
+		_go(KEY_GO, str(cfg["ending_location"]))
+	else:
 		_go(KEY_CUTSCENE, str(cfg.get("ending_scene", "")))
 
 
@@ -219,6 +228,8 @@ func _go(kind: StringName, target: String) -> void:
 			StringName(str(cfg.get("battle_victory_flag", ""))),
 			StringName(str(cfg.get("battle_escape_spawn", "")))
 		)
+	elif kind == KEY_GO:
+		FlowRouting.go_to(StringName(target), StringName(str(cfg.get("ending_spawn", ""))))
 	else:
 		FlowRouting.change_scene(target)
 

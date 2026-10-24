@@ -3,6 +3,7 @@ lists) and the greybox zone layouts they play in (docs/kb/tech/chapter_flow.md).
 tools/validate_data.py; `chapter_errors` and `layout_errors` are pure, so tests feed them fixtures."""
 from __future__ import annotations
 
+import functools
 import json
 import re
 from pathlib import Path
@@ -12,12 +13,14 @@ GREYBOX_SCRIPT = "res://game/world/zone/greybox_zone.gd"
 LAYOUT_PATH_RE = re.compile(r'^layout_path = "(res://[^"]+)"', re.M)
 ZONE_KEYS = {"party", "arrive", "beats", "barks", "overheard_hold_sec", "doc"}
 END_STEPS = {"battle", "go", "scene"}
-STEP_KEYS = {"play", "place", "set", "party", "zone", "beat", "if_event"} | END_STEPS
+STEP_KEYS = {"play", "place", "set", "chapter", "party", "zone", "beat", "if_event"} | END_STEPS
 STEP_EXTRA = {"battle": {"return_spawn", "escape_spawn", "victory_flag", "party", "reserve", "seed"},
               "zone": {"args"}, "if_event": {"steps"}}
 TRIGGER_KEYS = {"id", "at", "size", "yaw", "activation", "prompt_key", "payload", "requires_flag",
                 "blocked_by_flag", "sets_flag", "once"}
 ACTIVATIONS = {"touch", "interact"}
+SHOT_MODES = {"fixed", "pan_follow", "dolly"}
+ENCOUNTER_KEYS = {"table", "min_m", "max_m", "when", "seed"}
 
 
 class Context:
@@ -72,6 +75,8 @@ def _step_errors(step: object, w: str, loc: str, zone: dict, ctx: Context) -> li
     if not isinstance(step, dict):
         return [f"{w}: a step must be an object"]
     kinds = [k for k in step if k in STEP_KEYS]
+    if "battle" in kinds and "party" in kinds:
+        kinds.remove("party")  # a battle step's own party (STEP_EXTRA), not a party step
     if len(kinds) != 1:
         return [f"{w}: a step needs exactly one of {sorted(STEP_KEYS)}"]
     kind = kinds[0]
@@ -83,6 +88,8 @@ def _step_errors(step: object, w: str, loc: str, zone: dict, ctx: Context) -> li
         errs += _spawn_errors(v, loc, w, ctx)
     elif kind == "set" and v not in ctx.flags:
         errs.append(f"{w}: undeclared flag '{v}'")
+    elif kind == "chapter" and not (isinstance(v, int) and not isinstance(v, bool) and v >= 0):
+        errs.append(f"{w}: chapter must be a non-negative int")
     elif kind == "party":
         errs += _party_errors(v, w, ctx)
     elif kind == "beat" and v not in zone.get("beats", {}):
@@ -179,6 +186,8 @@ def layout_errors(layout: object, where: str, ctx: Context) -> list[str]:
     for k, s in (layout.get("shots") or {}).items():
         if not (isinstance(s, dict) and _nums(s.get("pos"), (3,)) and _nums(s.get("look_at"), (3,))):
             errs.append(f"{where}: shots.{k} needs pos and look_at as [x, y, z]")
+    errs += _volume_errors(layout, where)
+    errs += _encounter_block_errors(layout.get("encounters"), where, ctx)
     seen: set[str] = set()
     for i, t in enumerate(layout.get("triggers", [])):
         w = f"{where}: triggers[{i}]"
@@ -203,12 +212,105 @@ def layout_errors(layout: object, where: str, ctx: Context) -> list[str]:
     return errs
 
 
-def greybox_layout_path(scene_text: str) -> str | None:
-    """The layout_path of a greybox zone scene (its root uses greybox_zone.gd), else None."""
-    if GREYBOX_SCRIPT not in scene_text:
-        return None
+def _volume_errors(layout: dict, where: str) -> list[str]:
+    errs = []
+    for i, v in enumerate(layout.get("camera_volumes", [])):
+        w = f"{where}: camera_volumes[{i}]"
+        if not (isinstance(v, dict) and _nums(v.get("at"), (3,)) and _nums(v.get("size"), (3,))):
+            errs.append(f"{w}: needs at and size as [x, y, z]")
+            continue
+        mode = v.get("mode", "fixed")
+        if mode not in SHOT_MODES:
+            errs.append(f"{w}: mode must be one of {sorted(SHOT_MODES)}")
+        if mode == "dolly" and not (isinstance(v.get("dolly"), list) and len(v["dolly"]) >= 2):
+            errs.append(f"{w}: a dolly shot needs a dolly rail of at least two [x, y, z] points")
+        for key in ("dolly", "track"):
+            if key in v and not all(_nums(p, (3,)) for p in v[key]):
+                errs.append(f"{w}: {key} points must be [x, y, z]")
+        if mode != "dolly" and not _nums(v.get("pos"), (3,)):
+            errs.append(f"{w}: a {mode} shot needs pos as [x, y, z]")
+    return errs
+
+
+def _encounter_block_errors(block: object, where: str, ctx: Context) -> list[str]:
+    if block is None:
+        return []
+    w = f"{where}: encounters"
+    if not isinstance(block, dict):
+        return [f"{w}: must be an object"]
+    errs = [f"{w}: unknown key '{k}'" for k in set(block) - ENCOUNTER_KEYS]
+    table = block.get("table")
+    if not isinstance(table, list) or not table:
+        errs.append(f"{w}: table must be a non-empty list of {{encounter, weight}}")
+    for row in table if isinstance(table, list) else []:
+        if not isinstance(row, dict) or row.get("encounter") not in ctx.encounters:
+            errs.append(f"{w}: unknown encounter {row.get('encounter') if isinstance(row, dict) else row!r}")
+        elif not (isinstance(row.get("weight", 1), int) and row.get("weight", 1) > 0):
+            errs.append(f"{w}: weight must be a positive int")
+    lo, hi = block.get("min_m"), block.get("max_m", block.get("min_m"))
+    if not (isinstance(lo, (int, float)) and isinstance(hi, (int, float)) and 0 < lo <= hi):
+        errs.append(f"{w}: needs 0 < min_m <= max_m (metres between encounters)")
+    errs += _when_errors(block.get("when"), w, ctx)
+    return errs
+
+
+def greybox_layout_path(scene_text: str, root: Path | None = None) -> str | None:
+    """The layout_path of a greybox zone scene (its root uses greybox_zone.gd, or a script that extends
+    it: a chapter's zone root such as Ch01Zone, M3-C01-02), else None. `root` is the repo root the
+    scene's scripts are read from (default: this checkout)."""
     m = LAYOUT_PATH_RE.search(scene_text)
-    return m.group(1) if m else None
+    if m is None:
+        return None
+    if GREYBOX_SCRIPT in scene_text:
+        return m.group(1)
+    base = root or Path(__file__).resolve().parents[1]
+    for script in SCRIPT_EXT_RE.findall(scene_text):
+        if _extends_greybox(base, script):
+            return m.group(1)
+    return None
+
+
+SCRIPT_EXT_RE = re.compile(r'^\[ext_resource type="Script" path="(res://[^"]+\.gd)"', re.M)
+EXTENDS_RE = re.compile(r'^extends\s+"?([\w./:]+)"?', re.M)
+CLASS_NAME_RE = re.compile(r'^class_name\s+(\w+)', re.M)
+GREYBOX_CLASS = "GreyboxZone"
+EXTENDS_MAX_DEPTH = 8
+
+
+@functools.lru_cache(maxsize=4)
+def _class_index(root: Path) -> dict[str, str]:
+    """class_name -> res:// path for every script under game/ (cached per root for one run)."""
+    out: dict[str, str] = {}
+    for p in (root / "game").rglob("*.gd"):
+        m = CLASS_NAME_RE.search(p.read_text(encoding="utf-8"))
+        if m:
+            out[m.group(1)] = "res://" + p.relative_to(root).as_posix()
+    return out
+
+
+def _extends_greybox(root: Path, script: str) -> bool:
+    """True when the script at res:// path `script` extends GreyboxZone, directly or through classes."""
+    index: dict[str, str] | None = None
+    for _ in range(EXTENDS_MAX_DEPTH):
+        if script == GREYBOX_SCRIPT:
+            return True
+        p = _res(root, script)
+        if not p.is_file():
+            return False
+        m = EXTENDS_RE.search(p.read_text(encoding="utf-8"))
+        if m is None:
+            return False
+        parent = m.group(1)
+        if parent == GREYBOX_CLASS:
+            return True
+        if parent.startswith("res://"):
+            script = parent
+            continue
+        index = index if index is not None else _class_index(root)
+        if parent not in index:
+            return False
+        script = index[parent]
+    return False
 
 
 def _res(root: Path, res: str) -> Path:
@@ -239,7 +341,7 @@ def check(root: Path, files: dict[str, object], flags: set[str]) -> list[str]:
     errs: list[str] = []
     for lid, scene in locations.items():
         p = _res(root, scene)
-        lp = greybox_layout_path(p.read_text(encoding="utf-8")) if p.is_file() else None
+        lp = greybox_layout_path(p.read_text(encoding="utf-8"), root) if p.is_file() else None
         layouts[lid] = None
         if lp is not None:
             layouts[lid] = _load(_res(root, lp)) if _res(root, lp).is_file() else {}

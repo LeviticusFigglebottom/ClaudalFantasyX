@@ -82,13 +82,29 @@ class ChapterFlowTest(unittest.TestCase):
 
     def test_layout_shapes_and_flags(self) -> None:
         lay = copy.deepcopy(self.layout_a)
+        bad_block = len(lay["blocks"])
         lay["blocks"].append({"pos": [0, 0]})
         lay["spawns"]["Bad"] = [1, 2]
         lay["triggers"].append({"id": "gate", "at": [0, 0, 0], "size": [1, 0, 1], "requires_flag": "nope"})
         lay["triggers"].append({"id": "x", "at": [0, 0, 0], "size": [1, 0, 1], "activation": "shove"})
         errs = cf.layout_errors(lay, "a", self.ctx)
-        for needle in ("blocks[2]", "spawns.Bad", "unique non-empty id", "undeclared flag 'nope'", "activation"):
+        for needle in (f"blocks[{bad_block}]", "spawns.Bad", "unique non-empty id", "undeclared flag 'nope'", "activation"):
             self.assertTrue(any(needle in e for e in errs), f"{needle}: {errs}")
+
+    def test_camera_volumes_and_encounters(self) -> None:
+        lay = copy.deepcopy(self.layout_a)
+        lay["camera_volumes"].append({"id": "x", "at": [0, 0, 0], "size": [1, 1, 1], "mode": "dolly"})
+        lay["camera_volumes"].append({"id": "y", "at": [0, 0, 0], "size": [1, 1, 1], "mode": "crane"})
+        lay["encounters"]["table"].append({"encounter": "no_such_fight", "weight": 1})
+        lay["encounters"]["min_m"] = 30
+        errs = cf.layout_errors(lay, "a", self.ctx)
+        for needle in ("needs a dolly rail", "mode must be one of", "unknown encounter 'no_such_fight'", "min_m <= max_m"):
+            self.assertTrue(any(needle in e for e in errs), f"{needle}: {errs}")
+
+    def test_a_chapter_step_takes_an_int(self) -> None:
+        c = copy.deepcopy(self.chapter)
+        c["zones"]["zone_story_a"]["beats"]["promote"]["steps"][0]["chapter"] = "four"
+        self.assertTrue(any("chapter must be a non-negative int" in e for e in self._errs(c)))
 
     def test_greybox_scenes_read_their_spawns_from_the_layout(self) -> None:
         text = (FIXTURE / "zone_a.tscn").read_text(encoding="utf-8")

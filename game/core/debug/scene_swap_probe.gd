@@ -8,6 +8,9 @@ extends Node
 ## the M0 behaviour can be measured on the same build. tests/unit/test_scene_router_swap.gd runs it.
 ## --launch (M2-ARC-03) measures the launch instead: it enters `from` as the game boots and prints the
 ## stats of the boot card's reveal (SceneRouter.measure_reveal) once its visible window ends; no change.
+## --frame-usec=<n> (M2-MNU-06) measures on a fake clock that advances exactly n microseconds per process
+## frame (SceneRouter.set_measure_clock), so every window's frame times are known in advance and the test
+## judges the real swap deterministically, whatever the machine's load.
 
 const BUDGETS_PATH := "res://game/data/debug/perf_budgets.json"
 const SECTION := "scene_swap"
@@ -15,6 +18,7 @@ const OUTPUT_TAG := "SCENE_SWAP_PROBE"
 const ARG_TO := "--to="
 const ARG_LEGACY := "--legacy"
 const ARG_LAUNCH := "--launch"
+const ARG_FRAME_USEC := "--frame-usec="
 const EXIT_OK := 0
 const EXIT_FAILED := 1
 
@@ -42,13 +46,18 @@ func _run() -> void:
 	var to := ""
 	var legacy := false
 	var launch := false
+	var frame_usec := 0
 	for arg in OS.get_cmdline_user_args():
 		if arg.begins_with(ARG_TO):
 			to = arg.trim_prefix(ARG_TO)
+		elif arg.begins_with(ARG_FRAME_USEC):
+			frame_usec = arg.trim_prefix(ARG_FRAME_USEC).to_int()
 		elif arg == ARG_LEGACY:
 			legacy = true
 		elif arg == ARG_LAUNCH:
 			launch = true
+	if frame_usec > 0:
+		SceneRouter.set_measure_clock(frame_clock(frame_usec))
 	if launch and not cfg.is_empty():
 		_run_launch(cfg)
 		return
@@ -74,6 +83,12 @@ func _run() -> void:
 	stats["legacy"] = legacy
 	print("%s %s" % [OUTPUT_TAG, JSON.stringify(stats)])
 	get_tree().quit(EXIT_OK if stats.has("max_frame_ms") else EXIT_FAILED)
+
+
+## A fake clock for SceneRouter.set_measure_clock: `step_usec` microseconds per process frame, so two reads in
+## one frame are equal and a read one frame later is exactly `step_usec` on.
+static func frame_clock(step_usec: int) -> Callable:
+	return func() -> int: return Engine.get_process_frames() * step_usec
 
 
 ## --launch: the reveal of `from` entered as the main scene (no SceneRouter change runs).

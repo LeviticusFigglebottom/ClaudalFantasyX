@@ -22,6 +22,10 @@ static var _pending: BattleRequest
 ## How start() changes scene: (scene_path: String). Unset = SceneRouter.change_scene. Tests set a
 ## recorder and reset it to Callable() afterwards.
 static var change_scene: Callable = Callable()
+## How submit() plays the encounter stinger in the field before the router's change (M2-BPR-05): a
+## Callable() awaited with no arguments. Unset = BattleStinger.play. Skipped when change_scene is set.
+## Tests set a recorder and reset it to Callable() afterwards.
+static var play_stinger: Callable = Callable()
 
 var encounter: StringName = &""
 var active: Array[StringName] = []
@@ -76,7 +80,8 @@ static func start(
 	return r
 
 
-## Records `r` as the pending request and opens the field battle scene.
+## Records `r` as the pending request and opens the field battle scene: the encounter stinger plays
+## first (BattleStinger, in the field), then the router fades and builds the battle as before.
 static func submit(r: BattleRequest) -> void:
 	_pending = r
 	var path := scene_path()
@@ -87,7 +92,16 @@ static func submit(r: BattleRequest) -> void:
 	if tree == null or tree.root.get_node_or_null(^"SceneRouter") == null:
 		push_error("BattleRequest: no SceneRouter to open %s" % path)
 		return
+	await _stinger(r.encounter)
 	FlowRouting.change_scene(path)  # waits for an idle router, so the request is always opened
+
+
+## The encounter stinger before the change (play_stinger, else BattleStinger.play).
+static func _stinger(encounter: StringName = &"") -> void:
+	if play_stinger.is_valid():
+		await play_stinger.call()
+		return
+	await BattleStinger.play(null, encounter)
 
 
 ## The field battle scene (first_playable.json field_battle.scene).

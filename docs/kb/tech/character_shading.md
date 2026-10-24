@@ -234,6 +234,22 @@ character_shader_tiers.json and the prewarm registry.
     `GraphicsRuntime.on_scene_entered` both call it, so every hero gets it. A material no tree walk reached keeps
     the old fallback (`ATTENUATION`, shadow included). Parameters are copied when the pass is attached: if you
     change a mouth parameter at runtime, change it on `next_pass` too.
+  - **Drawn only where a positional light reaches the mouth (M1-RND-26, option a).** FSR2, the High
+    preset's default upscaler, resolves the pixels under a transparent draw differently, even when that draw
+    adds exactly nothing. Under directional light alone the pass made the teeth and interior edges of
+    `asha_face_grief` softer: up to 74/255 on the mouth's pixels. So the pass stays on the material (meta
+    `hymn_mouth_bounce`), but `next_pass` and `cavity_bounce_pass` are switched on only while a visible
+    `OmniLight3D` or `SpotLight3D` has that mouth within its range (`CharacterShaderTiers.refresh_bounce_passes`).
+    - `apply_to_tree` runs the check on every walk: zone entry and preset changes.
+    - Call it again when a positional light near the cast appears, moves out of reach or goes. The underwater
+      rig calls it when it builds Rhen's lantern.
+    - With the pass hidden, the base pass keeps the positional bounce (the old shadowed fallback). That case
+      only comes up for a light the check hasn't seen yet.
+    - GPU (High, FSR2): under the directional key, the shipped frame's mouth pixels now match the no-pass frame
+      within the capture's own run-to-run noise (max 21/255, mean 1.8, against 21 and 1.5 for two no-pass runs).
+      Under a shadowed spot the pass still adds the bounce (mean 23.7/255 over the mouth, as before).
+    - High captures aren't bit-repeatable here. FSR2 and TAA resolve the dithered hair, lashes and brows a little
+      differently each run, so compare the mouth pixels (the probe's `mask` variant), not whole frames.
   - **Cost:** one extra additive draw of the three small mouth meshes per frame. It runs only for positional lights
     and does no texture work beyond the base pass's albedo and ORM fetches.
   - **No current shot changes.** Every Asha shot is lit by directional lights (asha_stage.tscn), and no other hero

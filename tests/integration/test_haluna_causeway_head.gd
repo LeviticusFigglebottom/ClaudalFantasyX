@@ -6,7 +6,8 @@ extends TestCase
 
 const ZONE := "res://game/levels/ch02/haluna/haluna.tscn"
 const UNSAVED_BARK := &"ch02_bark_causeway_unsaved"
-const SHELL_SHRINE := "res://game/levels/ch03/shell_shrine/shell_shrine.tscn"
+## M2-FP-25: "Go now" travels to the Saltgrass Causeway (B06), which leads on to the Shell Shrine.
+const CAUSEWAY := "ch03/saltgrass_causeway"
 const ASK_LINE := &"ch02_low_tide_005"
 const DECLINE_LINE := &"ch02_low_tide_008"
 const DT := 1.0 / 60.0
@@ -112,17 +113,17 @@ func test_not_yet_returns_control_and_the_trigger_fires_again() -> void:
 	_walk_in()
 	assert_true(ASK_LINE in lines, "the trigger fired again")
 	assert_true(&"ch02_low_tide_004" in lines, "B05 plays to its end")
-	assert_eq(hand_offs, [[StringName(HalunaStory.KEY_CUTSCENE), SHELL_SHRINE]] as Array[Array], "the Shell Shrine")
+	assert_eq(hand_offs, [[StringName(HalunaStory.KEY_GO), CAUSEWAY]] as Array[Array], "the causeway")
 	_done()
 
 
-func test_go_now_hands_off_to_the_shell_shrine() -> void:
+func test_go_now_hands_off_to_the_causeway() -> void:
 	Game.set_flag(&"ch02_saved_once", true)
 	story.sequencer.auto_choice = GO_NOW
 	assert_true(_interactable(&"causeway_head").on_touched())
 	assert_false(DECLINE_LINE in lines)
 	assert_true(&"ch02_low_tide_001" in lines and &"ch02_low_tide_004" in lines, "B05 as before")
-	assert_eq(hand_offs, [[StringName(HalunaStory.KEY_CUTSCENE), SHELL_SHRINE]] as Array[Array])
+	assert_eq(hand_offs, [[StringName(HalunaStory.KEY_GO), CAUSEWAY]] as Array[Array])
 	_done()
 
 

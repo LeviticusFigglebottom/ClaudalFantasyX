@@ -1,0 +1,10 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="PackedScene" path="res://game/levels/_tests/characters/villagers/villager_stage.tscn" id="stage"]
+[ext_resource type="PackedScene" path="res://assets/characters/villagers/netmender/netmender.glb" id="npc"]
+
+[node name="NetmenderStage" instance=ExtResource("stage")]
+character_scene = ExtResource("npc")
+character_name = &"Netmender"
+emotion = "sad"
+face_poses_path = "res://game/levels/_tests/characters/villagers/netmender_face_poses.json"

@@ -3,13 +3,47 @@
 Feature track for the M2 vertical slice (session_01DQ9tdk8Uatb8Jr6raAkXiC), branch `claude/m2-slice`, started from `claude/first-playable` 67984ce. **This environment owns this file** (CLAUDE.md §7a). The Lead is session_019iimsngAgPLEram1wcbLpE; the integration branch is `claude/undertow-lead-handoff-423ixt`.
 
 ## Now
+- **For the Lead's QA agent on the shrine_s01/s02 capture deadlock (14:12).** What this branch changed near the shrine GI bake, threaded loading and prewarm, newest first:
+  1. **1b405ad2, M2-ENV-05:** prewarm registry only (`prewarm_materials.json`): Haluna's 17 entries are now `"resident": true` (vegetation, Haluna kit and ocean materials). No code changed. If your batch includes this commit, it's the first suspect for a resident hold or a threaded-load mutex.
+  2. **3fffb9b, M2-FP-27:** `shell_shrine_level.gd` gained `place_at()`, `Spawns/Entry` and `Spawns/Exit`, plus `SaveSystem.request_autosave` when the pool fills (never during a capture: the rig holds the start state). There's no GI or threading change.
+  3. **f38edea and 770090f, M2-ENV-03 (the kit):** the VoxelGI bake for both states at load (`bake_gi()`, "GI baked (2 states)"). On this branch at a30b664, `shrine_s01`–`s05` captured fine in a full ci_local (84/84 shots, lavapipe), so the bake alone didn't hang here. Audio's shrine streams arrive only in your batch.
+  - **What I'm doing:** I'm not touching the shrine GI, threaded loading or prewarm. My own full ci_local re-run on the current head (no audio) is under way. Its shrine shots will show whether the hang needs the audio branch.
+- **NOT merge-ready past a30b664 yet.** The full ci_local on 1c07667b failed:
+  - **Cause:** a `sed` that reordered the causeway's shallows fight also rewrote `sandbox_reef`'s identical foe list, which moved the sandbox bands and broke five battle tests.
+  - **Fixed:** in the commit after 1b405ad2.
+  - **Next:** a full ci_local plus `sim --check` re-run is under way. The MERGE-READY line comes when it's green. Don't merge anything between a30b664 and that line.
+- **The Lead's 13:09 M2-review blockers 1–3 are done, for review:**
+  - **M2-FP-25, B06 the Saltgrass Causeway:** the route, its rails, banters, the harrier lesson and random fights, all in band.
+  - **M2-FP-26, the B12 end card:** the voice-over and credits. The coda is audio's `hush_coda` zone cue, which arrives with claude/audio.
+  - **M2-FP-27:** chapters 1/2/3, the shrine checkpoint (no trial replay after a Drownbell loss) and the Prologue slot label.
+  - **Item 4,** objective data, waits on UI's note.
+  - Handoff cinematics-13.
+- **M3-C01-02, Ch1 "Lamp-Diver," is merged** (greybox, solo Rhen, Hullgnaw, every fight banded). It's in review: narrative for the story, combat for the bands. It has ADR 0034 (encounter-lent skills, the solo boss band), plus requests **M3-C01-03** (combat/design numbers) and **M3-C01-04** (env-art kits and the UnderwaterRig). The prologue now hands off to Ch1, and Ch1 ends at Haluna `Beach` with Ch2 unchanged.
+- **ADR renumber:** my chapter-flow ADR is now **0035** (it was 0033); claude/ui's `0033-ui-flair` came first.
+- **MERGE-READY @ a30b664:**
+  - `tools/ci_local.sh` exit 0, on the integration branch cf999e0 merged in.
+  - 1527 Godot tests, 0 failed; coverage battle 99.95%, progression 96.69% (within baseline).
+  - Tools unittest 524 + 9 OK.
+  - 84 shots compared, 0 failed.
+  - Blender: `HYMN_BLENDER_REQUIRED=1`, base cf999e0, `vegetation` and `haluna_kit` both identical. `haluna_kit` takes the manifest's `default_threads` 4.
+  - The only commit after the run is a30b664, a docs note.
+- **Lead 13:09, M2-review blockers taken ahead of M3:**
+  1. B06 Saltgrass Causeway;
+  2. the B12 end-card voice-over, coda and credits;
+  3. the chapter advance, plus an autosave before the shrine;
+  4. objective data (waiting on UI's note).
+  The Ch1 build subagent keeps running in its worktree.
+- **To the Lead, on Ch7** (send_message to the Lead is still refused):
+  - The Ch7 sheet's opponent is the atoll side **Sorrin**: Tamsule wins offscreen, and Pemakar is Ch5's town. Rhen plays in **Pio**'s place.
+  - I'll rename the Reefball engine's provisional loc rows to match in M3-C07-02.
+  - B05 ends on `<<event start_reefball tidecup_opening>>`.
 - **M3 Act I is under way** (the Lead's 12:00 message). The tasks are filed in `docs/kb/tasks/M3/`:
   - M3-C01..C09-01, the beat sheets;
   - M3-C0x-02, the playable chapters;
   - M3-C07-01, Ch7's story;
   - M3-ARC-01, the chapter flow.
   - **Ownership:** recorded in ownership.md (`game/levels/ch01`, `ch04`–`ch09`, the dialogue, `act1_*` beats, `game/data/flow/chapters/**`).
-  - **M3-ARC-01 is done, for review by lead (ADR 0033, `docs/kb/tech/chapter_flow.md`).**
+  - **M3-ARC-01 is done, for review by lead (ADR 0035, `docs/kb/tech/chapter_flow.md`).**
     - Chapters are data: `ZoneStory` plays each zone's arrive/beats/barks steps from `game/data/flow/chapters/chNN.json`, and `GreyboxZone` builds a playable zone from a layout JSON.
     - `validate_data` checks both. The tests are `test_zone_story` (7) and `test_chapter_flow` (8). The slice is untouched.
   - **Ch1 and Ch4 beat sheets are done:** `act1_ch01.md` and `act1_ch04.md`, reviewed and approved by cinematics. **For the Lead and narrative, two calls the sheets made:**
@@ -19,7 +53,30 @@ Feature track for the M2 vertical slice (session_01DQ9tdk8Uatb8Jr6raAkXiC), bran
     - Ch1 adds `scuttler`, an Undertow-spawn before the boss, and proposes renaming `wickfry` so "wick" stays Kell's.
     - At most 2 foes on screen in Ch1 and 3 on the derelict.
     - Hullgnaw's raft is the arena, and its rib-timbers are the boss.
-  - **The beat sheets are with three subagents:** Ch1 and Ch4; Ch5, Ch6 and Ch7 (story); Ch8 and Ch9.
+  - **All seven Act I beat sheets are done and approved by cinematics:** `docs/kb/story/beats/act1_ch01.md`, `ch04`–`ch09`. Each sheet's §9 lists its requests by role, written so they can be filed as tasks.
+  - **New tasks:**
+    - **M3-C07-02:** Ch7's dialogue and cutscenes around the Reefball match.
+    - **M3-CMB-01** (role combat): the Ch8 set-piece battle pieces. These are scripted timeline entries (the Climb, the Surge, Pell), an objective victory, a scripted escape, party locks, the `storm_dark` field and the new skills. M3-C08-02 depends on it.
+  - **For the Reefball agent:** Ch7's story hand-off is §5 of `act1_ch07.md`.
+    - B05 ends on `<<event start_reefball ch07_tidecup_oruvel_sorrin>>`.
+    - The match gets Tavi, four Oruvel players and Rhen in Pio's place, against the Sorrin side.
+    - It returns `ch07_tidecup_played`, and `ch07_tidecup_won` on a win only. The win is a reward only and never branches the story.
+  - **Decisions for the Lead and narrative:**
+    - Ch6's "Old Pirran" (the name in Liss's burned lamp) is only a proposed design truth. It needs a decisions_log entry before any line uses it; no Act I line does.
+    - **Glossary rows to add** (only the Lead edits the glossary):
+      - Ch8 and Ch9: Ivo Brannick, Old Marra, Hobb, Fenn, the kite custom, Storm-Call.
+      - Ch5–Ch7: Garo and Benet Tenmak, Hadric Moll, Pio, Sorrin, "Daro's hammer".
+  - **Creature answers** (for claude/creatures):
+    - **Ch5:** `vein_sparker` is optional; Cinder Matron is a creatures construct.
+    - **Ch6:** the Inquisitor is a person, so the character track builds him. `gull_harrier` is reused as the shoals' flier.
+    - **Ch8:** `tide_crawler`, `squall_wing`, `wall_polyp` and `undertows_reach` all kept. The fliers `stormgull`, `wallcrab` and `flue_moth` are unconfirmed.
+    - **Foes on screen:**
+      - Ashcrown stair 2–3, Matron 1;
+      - Shoals ridges 2–3, flats 3–4, raid pair 2;
+      - Ch8 waves 3/3/4, the Reach plus 2.
+  - **For Rendering, the Ch9 Ebbing:** held motes only, drifting down and seaward. The staff attractor lags and sinks behind the staff, and no mote turns toward Kerrid. Details are in act1_ch09.md §9.
+  - **In progress:** **M3-C01-02, the Ch1 build**, with a subagent.
+  - **Next:** after Ch1, Ch4 and Ch5. Ch8 waits on M3-CMB-01.
   - **Creatures** (claude/creatures, act1_roster.md 9243daa): their roster is adopted as the working ids and passed to the beat-sheet writers. Their open questions are answered in the sheets' request lists, summarised here when they land.
   - **Next:** review the sheets, then build the chapters on ARC-01, Ch1 first.
 - **Item 7 is done:** the playthrough pass (handoff cinematics-11). PLAYTEST.md is current (shops and inn, the real shrine room, four basins, ENV-04 and ENV-05), and filed **M2-FP-24**, the shrine's channel curbs have no collision. **Two items remain from the 07:56 queue:** item 6, which waits on characters, and nothing else. **Next: M3 Act I** (the Lead's 12:00 message, human-authorised).

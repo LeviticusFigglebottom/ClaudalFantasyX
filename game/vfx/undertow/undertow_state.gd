@@ -315,6 +315,7 @@ func quality_plan(id: String = "") -> Dictionary:
 		"curl_reuse": clampi(int(tier.get("curl_reuse", 1)), 1, MAX_CURL_REUSE),
 		"temporal_jitter": bool(tier.get("temporal_jitter", false)),
 		"body_scale": clampf(float(tier.get("body_scale", MAX_BODY_SCALE)), MIN_BODY_SCALE, MAX_BODY_SCALE),
+		"compute_body": bool(tier.get("compute_body", false)) and body == BODY_RAYMARCH,
 		"spray_layers": int(tier.get("spray_layers", 1)),
 		"sea_foam_octaves": int(tier.get("sea_foam_octaves", 1)),
 		"shell_fractions": (shells.get("fractions", []) as Array) if body == BODY_SHELLS else [],

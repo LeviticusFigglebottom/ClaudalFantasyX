@@ -168,6 +168,8 @@ At victory:
 
 Escape and defeat award nothing. Sandbox values: Reef Crab 24 lume (Crab Carapace 50%, Salt Tonic 10%), Lantern Eel 20 (Eel Lantern 50%, Salt Tonic 10%), Gull Harrier 18 (Gull Quill 50%, Salt Tonic 10%), so 62 lume per sandbox win. Drownbell's ~300 lands with its encounter data.
 
+**Paid in play (M2-CMB-07).** A live victory pays exactly these numbers: the lume through `Wallet.earn` (up to `currency_cap`) and each drop through `Inventory.add` (a full stack keeps what fits), in `BattleRewards.pay`. A live battle sets `currency_multiplier` from the party's equipped gear (`BattleVitals.live_gear`), so Full Net doubles in play as it does in the simulator. A new game opens with `starting_currency` lume (items.json `rules`, 100). No formula changed.
+
 ## Openings (M1-CMB-03)
 
 SPEC §6.1. A battle opens **normal**, **preemptive** (the party moves first) or **ambush** (the enemies move first). `BattleOpening` (`game/battle/battle_opening.gd`) holds the rules.
@@ -271,7 +273,7 @@ The first press in a beat is the one that counts, and a press before the beat op
 | good | ≤ 0.15 s, right button | +9% |
 | miss | wrong button, or no press before the window closes | 0 |
 
-*Toma: the tide brace* (`brace`, `SwellBrace`). Hold Confirm through three blows (0.4, 1.0 and 1.6 s after a 0.6 s lead-in) and let go on the counter at 2.3 s (at most 3.05 s in all). Letting go early turns the blows still to come into misses and is graded against the counter like any release.
+*Toma: the tide brace* (`brace`, `SwellBrace`). Hold Confirm through three blows (0.4, 1.0 and 1.6 s after a 0.6 s lead-in) and let go on the counter at 2.3 s (at most 3.05 s in all). Letting go early turns the blows still to come into misses and is graded against the counter like any release. A release during the lead-in only lets go and grades nothing, so the tap that chose the technique cannot spoil the brace; the battle HUD also starts the hold when that Confirm is still held as the brace opens (M2-UI-03, from M2-NIT-03).
 
 | Grade | When | Bonus |
 |---|---|---|

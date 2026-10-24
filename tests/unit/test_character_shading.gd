@@ -482,12 +482,27 @@ func test_mouth_bounce_is_unshadowed_for_positional_lights() -> void:
 	var copy := mi.material_override as ShaderMaterial
 	assert_true(copy != src, "on a copy")
 	assert_true(src.next_pass == null and src.get_shader_parameter(CharacterShaderTiers.PARAM_BOUNCE_PASS) != true)
-	assert_true(CharacterShaderTiers.is_bounce_pass(copy.next_pass), "the copy has the bounce pass")
+	var bounce := copy.get_meta(CharacterShaderTiers.BOUNCE_META) as ShaderMaterial
+	assert_true(CharacterShaderTiers.is_bounce_pass(bounce), "the copy keeps its bounce pass")
+	# M1-RND-26: with no positional light near, the pass is not drawn (FSR2 resolves a transparent draw's
+	# pixels differently even when it adds nothing) and the base pass keeps the bounce.
+	assert_true(copy.next_pass == null, "no positional light: the pass is not drawn")
+	assert_eq(copy.get_shader_parameter(CharacterShaderTiers.PARAM_BOUNCE_PASS), false)
+	var omni := OmniLight3D.new()
+	omni.omni_range = 3.0
+	root.add_child(omni)
+	omni.position = Vector3(0.0, 0.0, 2.0)
+	assert_eq(CharacterShaderTiers.refresh_bounce_passes(root), 1, "an omni in range draws it")
+	assert_true(copy.next_pass == bounce)
 	assert_eq(copy.get_shader_parameter(CharacterShaderTiers.PARAM_BOUNCE_PASS), true)
-	var bounce := copy.next_pass as ShaderMaterial
+	omni.position = Vector3(0.0, 0.0, 20.0)
+	assert_eq(CharacterShaderTiers.refresh_bounce_passes(root), 0, "out of range: hidden again")
+	assert_true(copy.next_pass == null)
+	omni.position = Vector3(0.0, 0.0, 2.0)
+	CharacterShaderTiers.refresh_bounce_passes(root)
 	for p: StringName in [&"cavity_bounce", &"cavity_occlusion", &"col_cavity_bounce", &"tex_orm", &"col_albedo"]:
 		assert_eq(bounce.get_shader_parameter(p), copy.get_shader_parameter(p), "the pass copies %s" % p)
 	assert_eq(CharacterShaderTiers.apply_to_tree(root, "high"), 0, "a second walk attaches nothing")
 	assert_eq(CharacterShaderTiers.apply_to_tree(root, "low"), 1, "a tier swap keeps the pass")
-	assert_true(CharacterShaderTiers.is_bounce_pass((mi.material_override as ShaderMaterial).next_pass))
+	assert_true(CharacterShaderTiers.is_bounce_pass((mi.material_override as ShaderMaterial).next_pass), "still lit")
 	root.free()

@@ -3,6 +3,7 @@
     {
       "id": "reef_crab", "name_key": "ENEMY_REEF_CRAB", "role_answer": "toma",
       "lore_key": "LORE_REEF_CRAB",
+      "model": "res://game/creatures/reef_crab/reef_crab_battle.tscn",
       "stats": {"level": 4, "hp": 380, "mp": 0, "strength": 12, "magic": 2, "defense": 40,
                 "magic_defense": 4, "agility": 8, "accuracy": 8, "evasion": 2, "luck": 4},
       "affinities": {"lightning": "weak", "water": "absorb"},
@@ -19,6 +20,7 @@
     {
       "id": "lantern_eel", "name_key": "ENEMY_LANTERN_EEL", "role_answer": "ysolde",
       "lore_key": "LORE_LANTERN_EEL",
+      "model": "res://game/creatures/lantern_eel/lantern_eel_battle.tscn",
       "stats": {"level": 4, "hp": 300, "mp": 20, "strength": 6, "magic": 12, "defense": 8,
                 "magic_defense": 30, "agility": 14, "accuracy": 8, "evasion": 10, "luck": 6},
       "affinities": {"fire": "weak", "lightning": "immune"},
@@ -31,6 +33,7 @@
     {
       "id": "gull_harrier", "name_key": "ENEMY_GULL_HARRIER", "role_answer": "rhen",
       "lore_key": "LORE_GULL_HARRIER",
+      "model": "res://game/creatures/gull_harrier/gull_harrier_battle.tscn",
       "stats": {"level": 4, "hp": 220, "mp": 0, "strength": 8, "magic": 2, "defense": 6,
                 "magic_defense": 6, "agility": 24, "accuracy": 10, "evasion": 30, "luck": 8},
       "affinities": {"ice": "weak"},
@@ -46,9 +49,10 @@
     {
       "id": "drownbell", "name_key": "ENEMY_DROWNBELL", "role_answer": "rhen",
       "lore_key": "LORE_DROWNBELL",
+      "model": "res://game/creatures/drownbell/drownbell_battle.tscn",
       "phase_name_key": "PHASE_DROWNBELL_TOLL",
       "field_name_key": "FIELD_DROWNBELL_FLOOD",
-      "stats": {"level": 6, "hp": 3000, "mp": 0, "strength": 18, "magic": 14, "defense": 30,
+      "stats": {"level": 6, "hp": 3000, "mp": 0, "strength": 18, "magic": 11, "defense": 30,
                 "magic_defense": 20, "agility": 12, "accuracy": 10, "evasion": 4, "luck": 8},
       "affinities": {"water": "absorb", "lightning": "weak"},
       "delay_immune": true,
@@ -80,6 +84,7 @@
     {
       "id": "spawn_polyp", "name_key": "ENEMY_SPAWN_POLYP", "role_answer": "asha",
       "lore_key": "LORE_SPAWN_POLYP",
+      "model": "res://game/creatures/spawn_polyp/spawn_polyp_battle.tscn",
       "stats": {"level": 4, "hp": 180, "mp": 0, "strength": 6, "magic": 10, "defense": 6,
                 "magic_defense": 10, "agility": 8, "accuracy": 6, "evasion": 6, "luck": 4},
       "affinities": {"water": "absorb"},
@@ -88,6 +93,83 @@
       "ai": [{"pick": [{"skill": "polyp_mend", "target": "largest_ally"}]}],
       "xp": 0,
       "currency": 0
+    },
+    {
+      "id": "wickfry", "name_key": "ENEMY_WICKFRY", "role_answer": "rhen",
+      "lore_key": "LORE_WICKFRY",
+      "stats": {"level": 2, "hp": 300, "mp": 0, "strength": 6, "magic": 2, "defense": 4,
+                "magic_defense": 4, "agility": 30, "accuracy": 8, "evasion": 12, "luck": 4},
+      "affinities": {},
+      "skills": ["shoal_nip"],
+      "ai": [{"pick": [{"skill": "shoal_nip", "target": "random_foe"}]}],
+      "xp": 12,
+      "currency": 10,
+      "drops": [{"item": "salt_tonic", "chance": 25}]
+    },
+    {
+      "id": "tower_limpet", "name_key": "ENEMY_TOWER_LIMPET", "role_answer": "rhen",
+      "lore_key": "LORE_TOWER_LIMPET",
+      "stats": {"level": 3, "hp": 1000, "mp": 0, "strength": 8, "magic": 2, "defense": 30,
+                "magic_defense": 10, "agility": 4, "accuracy": 6, "evasion": 0, "luck": 2},
+      "affinities": {},
+      "skills": ["limpet_clamp"],
+      "ai": [{"pick": [{"skill": "limpet_clamp", "target": "random_foe"}]}],
+      "xp": 30,
+      "currency": 24,
+      "drops": [{"item": "lit_age_brass", "chance": 25}]
+    },
+    {
+      "id": "oil_slug", "name_key": "ENEMY_OIL_SLUG", "role_answer": "rhen",
+      "lore_key": "LORE_OIL_SLUG",
+      "stats": {"level": 3, "hp": 300, "mp": 0, "strength": 8, "magic": 6, "defense": 10,
+                "magic_defense": 10, "agility": 10, "accuracy": 8, "evasion": 2, "luck": 4},
+      "affinities": {"fire": "weak"},
+      "skills": ["smother", "oil_slap"],
+      "ai": [
+        {"if": {"turn_mod": [3, 0]}, "pick": [{"skill": "smother", "target": "random_foe"}]},
+        {"pick": [{"skill": "oil_slap", "target": "random_foe"}]}
+      ],
+      "xp": 30,
+      "currency": 20,
+      "drops": [{"item": "lit_age_brass", "chance": 100}, {"item": "brine_eyewash", "chance": 30}]
+    },
+    {
+      "id": "scuttler", "name_key": "ENEMY_SCUTTLER", "role_answer": "rhen",
+      "lore_key": "LORE_SCUTTLER",
+      "stats": {"level": 4, "hp": 310, "mp": 0, "strength": 15, "magic": 2, "defense": 12,
+                "magic_defense": 6, "agility": 16, "accuracy": 8, "evasion": 6, "luck": 4},
+      "affinities": {},
+      "skills": ["scuttle_claw"],
+      "ai": [{"pick": [{"skill": "scuttle_claw", "target": "random_foe"}]}],
+      "xp": 25,
+      "currency": 15
+    },
+    {
+      "id": "hullgnaw", "name_key": "ENEMY_HULLGNAW", "role_answer": "rhen",
+      "lore_key": "LORE_HULLGNAW",
+      "phase_name_key": "PHASE_HULLGNAW_RIBS",
+      "stats": {"level": 6, "hp": 2000, "mp": 0, "strength": 3, "magic": 6, "defense": 40,
+                "magic_defense": 10, "agility": 12, "accuracy": 10, "evasion": 4, "luck": 6},
+      "affinities": {},
+      "skills": ["gnaw_coil", "gnaw", "rib_lash"],
+      "ai": [
+        {"if": {"turn_mod": [3, 0]}, "pick": [{"skill": "gnaw_coil", "target": "self"}]},
+        {"pick": [{"skill": "rib_lash", "target": "random_foe"}]}
+      ],
+      "phases": [
+        {
+          "id": "breaking", "at_hp_pct": 50, "name_key": "PHASE_HULLGNAW_BREAKING",
+          "prompt_key": "TUT_HULLGNAW_KICK_OFF",
+          "skills": ["thrash", "gnaw_coil", "gnaw"],
+          "stats": {"defense": 15, "agility": 20},
+          "ai": [
+            {"if": {"turn_mod": [4, 0]}, "pick": [{"skill": "gnaw_coil", "target": "self"}]},
+            {"pick": [{"skill": "thrash", "target": "random_foe"}]}
+          ]
+        }
+      ],
+      "xp": 300,
+      "currency": 150
     }
   ]
 }

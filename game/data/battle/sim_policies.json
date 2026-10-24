@@ -72,14 +72,14 @@
       "gear": {
         "rhen": [
           "rhen_coral_hooks",
-          "rhen_reefline_harness"
+          "rhen_patched_tether"
         ],
         "asha": [
-          "asha_bellshell_staff",
-          "asha_pearl_bangle"
+          "asha_vigil_staff",
+          "asha_cord_bangle"
         ],
         "toma": [
-          "toma_net_rack_spear",
+          "toma_boarding_spear",
           "toma_chiselled_shield"
         ]
       },
@@ -97,6 +97,30 @@
       "vowbound": [
         "ilun"
       ]
+    },
+    "ch01_underway": {
+      "gear": {
+        "rhen": [
+          "rhen_salvage_hooks",
+          "rhen_patched_tether"
+        ]
+      },
+      "items": {
+        "salt_tonic": 2,
+        "brine_eyewash": 1
+      }
+    },
+    "ch01_hullgnaw": {
+      "gear": {
+        "rhen": [
+          "rhen_salvage_hooks",
+          "rhen_patched_tether"
+        ]
+      },
+      "items": {
+        "salt_tonic": 2,
+        "brine_eyewash": 1
+      }
     }
   }
 }

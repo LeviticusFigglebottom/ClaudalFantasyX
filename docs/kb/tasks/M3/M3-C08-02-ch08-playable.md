@@ -4,7 +4,7 @@ title: Ch8 "The Seawall" playable (dialogue, flow, greybox levels, encounters, c
 role: cinematics
 status: todo
 owner_session: ""
-depends_on: [M3-C08-01, M3-ARC-01]
+depends_on: [M3-C08-01, M3-ARC-01, M3-CMB-01]
 reviewer: narrative
 milestone: M3
 request-from: lead

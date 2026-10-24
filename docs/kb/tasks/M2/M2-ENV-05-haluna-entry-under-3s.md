@@ -36,6 +36,25 @@ from the change request to the scene being in, under the opaque fade:
 - **Measured locally:** prebuild **1.65 s → 0.94 s** (−43%, three runs each). On the PC that should bring the 1.6–2.1 s `instantiate_ms` to about 0.9–1.2 s, so the 3.1–3.5 s entry lands under 3 s. To be confirmed there.
 - **Tests:** `tests/integration/test_haluna_entry_cost.gd` checks the heights' exactness and that the threaded material assignment still lands on every surface. The haluna and fp_ suites are green.
 
+- 2026-10-24 m2-slice, the **Lead's registry decision, applied.**
+  - **What the PC measured** (gpu/m2-rnd-11-sweep-r, `docs/kb/qa/gpu/2026-10-24-rnd-11-sweep-r.md`): a second launch's Haluna entry took 3.1 s on High and 3.5 s on Low, over ADR 0029's 3 s.
+  - **The fix:** Haluna's 17 prewarm registry entries are now `"resident": true` in `game/data/settings/prewarm_materials.json`: the six vegetation materials, the seven kit materials and the four ocean water tiers.
+  - **The cast's character materials** (Asha's 11) become resident through `gpu/hero-materials-resident` (its `resident_presets` code and data). That isn't on this branch or the integration branch yet, and I didn't duplicate it.
+  - **Expected cost:** the report's estimate with both changes is 1.6 s on High and 1.9 s on Low, for about 1.5 s more boot behind the card.
+  - **PC: please re-measure** with slice_sweep `--segments=haluna_beach`, second launch, High and Low, once both this and gpu/hero-materials-resident are on the integration branch.
+
+## Notes (PC GPU, M2-RND-11 item 5, 2026-10-24): why the second launch is slow
+Numbers are in `docs/kb/qa/gpu/2026-10-24-rnd-11-sweep-r.md` §5.
+- A first run holds every registry entry it stages, so Haluna's set and the cast's character materials stay
+  loaded and compiled. After it, Haluna's entry takes 1.5 s. A second launch holds only the resident entries,
+  so the worker-thread instantiate loads and compiles them again (1.9–2.2 s against 1.1 s), and the entry's
+  harvest reloads them (260 ms against 6 ms): 3.1 s on High and 3.5 s on Low.
+- It isn't the scene's other resources: holding or harvesting Haluna's PackedScene at boot barely helps
+  (2.7–3.3 s).
+- **Measured fix:** make Haluna's 17 registry entries resident, plus the character materials, which
+  `gpu/hero-materials-resident` does for Asha's 11. The second launch's entry is then 1.6 s (High) and 1.9 s (Low).
+  The cost is 1.3–1.7 s more boot behind the card, with its worst hidden frame at 0.38–0.53 s.
+
 ## Review log
 
 ## Lead routing (2026-10-24)

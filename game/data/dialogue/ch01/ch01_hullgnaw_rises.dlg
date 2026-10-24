@@ -1,0 +1,17 @@
+// Ch1 C1-14 "Boss: Hullgnaw", its rise (O16): the children are on the plank bridge behind Rhen, the
+// storm wall grows over the town behind them, and Hullgnaw comes up through the net-pen deck coiled in
+// a drowned ship's rib-cage. Its wounds are spawn_wound and every mote it sheds is held (cyan,
+// sinking). He fights it alone: the only one-hero boss in the game. Letterboxed, then the battle.
+title: ch01_hullgnaw_rises
+location: ch01/oruvel
+---
+@letterbox on
+@camera O16
+@sfx hullgnaw_ribs_creak
+@vfx glimmer_held at=net_pen count=8 drift=down_seaward
+@wait 1.5
+Rhen [afraid]: That's a ship. That's a whole ship, and it's wearing it. #line:ch01_hullgnaw_001
+@music hullgnaw fade=0.5
+Rhen [determined]: I'm not scared. I'm busy. #line:ch01_hullgnaw_002
+@letterbox off
+===

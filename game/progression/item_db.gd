@@ -35,6 +35,8 @@ var starting: Dictionary = {}
 var stack_cap: int = 0
 var key_item_cap: int = 0
 var currency_cap: int = 0
+## The purse a new game starts with (items.json rules.starting_currency; economy.md § Currency).
+var starting_currency: int = 0
 var category_order: Array[StringName] = []
 var max_slots: int = 0
 var equip_slots: Array[StringName] = []
@@ -107,6 +109,7 @@ static func from_tables(raw: Dictionary) -> ItemDB:
 	db.stack_cap = int(rules.get("stack_cap", 0))
 	db.key_item_cap = int(rules.get("key_item_cap", 0))
 	db.currency_cap = int(rules.get("currency_cap", 0))
+	db.starting_currency = clampi(int(rules.get("starting_currency", 0)), 0, db.currency_cap)
 	db.category_order = _names(rules.get("category_order", []))
 	for row: Variant in it.get("items", []):
 		var d: Dictionary = row

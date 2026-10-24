@@ -1,0 +1,19 @@
+{
+  "area_title": {
+    "doc": "M2-UI-21 (intro audit 4): the area title card. When the field first takes input in a location (game/data/world/locations.json, found by the current scene's path) other than the one whose card was shown last, its name (name_key) fades in at the centre of the upper screen over a soft band, holds, and fades out. A cutscene or a conversation at the start delays it until the field takes input; a menu hides it. Returning to the title forgets the last location, so New Game and Continue show it again. skip_locations never get a card (test rooms). Rects are x, y, w, h at the 1920 x 1080 reference (multiples of 3): 'name' is the label, 'rule' the centred gold rule under it, 'band' the dark band behind both (band_alpha at its middle, fading to 0 at its ends and over band_feather_px at its top and bottom). The rule is rule_px thick with a rule_node_px diamond. The card rises drift_px while it fades in (reduced motion: no rise). shadow_px offsets the name's shadow.",
+    "canvas_layer": 42,
+    "skip_locations": ["field_test"],
+    "in_sec": 0.8,
+    "hold_sec": 2.4,
+    "out_sec": 1.0,
+    "drift_px": 12,
+    "shadow_px": 3,
+    "band_alpha": 0.55,
+    "band_feather_px": 45,
+    "rule_px": 3,
+    "rule_node_px": 9,
+    "band": {"rect": [360, 204, 1200, 180]},
+    "name": {"rect": [360, 225, 1200, 96]},
+    "rule": {"rect": [660, 330, 600, 12]}
+  }
+}

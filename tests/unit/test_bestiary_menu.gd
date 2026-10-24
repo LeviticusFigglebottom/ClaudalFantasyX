@@ -74,6 +74,9 @@ func test_the_menu_lists_the_entries_and_shows_the_page_under_the_cursor() -> vo
 	assert_eq(str(rows[0]["mp"]), tr("BESTIARY_UNREAD_TAG"), "an unread row says so in words, not hue alone")
 	assert_eq(str(rows[1]["mp"]), "")
 	assert_eq(str(rows[1]["right"]), tr("BESTIARY_ROW_COUNT_FMT").format({"n": 4}))
+	# M2-UI-08: focus means the cursor, so a Read foe's count is plain text and an unread one dim.
+	assert_eq(StringName(str(rows[1]["right_role"])), &"text")
+	assert_eq(StringName(str(rows[0]["right_role"])), &"text_dim")
 	assert_true(page.shown_text().has(tr("BESTIARY_UNREAD")), "an unread foe says how to learn more")
 	assert_false(page.shown_text().has(tr("STAT_STRENGTH")), "and shows no stats")
 	assert_true(menu.handle_input(_ev(&"ui_down")))

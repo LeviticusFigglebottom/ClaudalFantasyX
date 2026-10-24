@@ -20,3 +20,4 @@ func _start() -> void:
 	BossMechanics.check_phases(ctl.engine)
 	var boss := (ctl.stage.get_node(^"BattleVfx") as BattleVfx).boss
 	boss.settle()
+	ctl.stage.settle_actors()  # M2-CRE-08: the bell model's sink and tilt, at their end

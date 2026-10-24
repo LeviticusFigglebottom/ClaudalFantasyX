@@ -59,6 +59,13 @@ func release(catch_up: bool = true, button: StringName = SwellInput.BUTTON_ACCEP
 	return ring.release(button)
 
 
+## Confirm went down (`on`) or up, for hold to confirm (SwellInput.held): time catches up to now
+## first, so steps that ran out before the change are graded with the old state.
+func hold(catch_up: bool, on: bool) -> void:
+	_catch_up(catch_up)
+	ring.held = on
+
+
 func _catch_up(catch_up: bool) -> void:
 	var now := int(now_usec.call())
 	if catch_up:

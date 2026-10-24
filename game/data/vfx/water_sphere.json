@@ -1,0 +1,69 @@
+{
+  "version": 1,
+  "doc": "M3-RND-01: the Reefball water sphere (WaterSphereRig, game/world/water/sphere/water_sphere_rig.gd). docs/kb/tech/water_sphere.md. Colours are palette.json swatches (named in `swatches`), the underwater look's lagoon set (M2-RND-09).",
+  "colors": {
+    "transmit": "#1FA3A6",
+    "scatter": "#1FA3A6",
+    "deep": "#0E4A55",
+    "tir": "#0E4A55"
+  },
+  "swatches": {
+    "transmit": "lagoon_teal",
+    "scatter": "lagoon_teal",
+    "deep": "deep_teal_shadow",
+    "tir": "deep_teal_shadow"
+  },
+  "sphere": {
+    "_note": "The ball's size and the mesh's tessellation (segments around, rings top to bottom).",
+    "radius_m": 16.0,
+    "radial_segments": 128,
+    "rings": 64
+  },
+  "optics": {
+    "_note": "As underwater.json's: sigma = -ln(transmit) / transmit_distance_m per channel; the in-scatter darkens with depth below the ball's top. The surface refracts the screen by refraction_strength (view-space normal xy, scaled by 1/depth), reflects the sky at roughness, and from inside shows the Snell window (asin(1/ior)) with TIR in tir x tir_gain outside it. The swell displaces the surface swell_m along its normal at swell_scale_m.",
+    "transmit_distance_m": 40.0,
+    "scatter_strength": 0.45,
+    "depth_falloff_m": 30.0,
+    "down_darkening": 0.5,
+    "lens_m": 0.25,
+    "meniscus_px": 1.5,
+    "ior": 1.333,
+    "refraction_strength": 0.6,
+    "window_soft_deg": 5.0,
+    "tir_gain": 2.2,
+    "tir_alpha": 0.9,
+    "roughness": 0.04,
+    "swell_m": 0.12,
+    "swell_scale_m": 6.0,
+    "swell_speed": 0.35,
+    "light_reference": 3.0,
+    "light_floor": 0.02
+  },
+  "god_rays": {
+    "_note": "An ellipsoid FogVolume filling the ball with underwater_shafts.gdshader (shafts along the sun, fading below the ball's top). Only on tiers with god_rays and volumetric fog on.",
+    "density": 0.3,
+    "shaft_scale_m": 3.0,
+    "shaft_contrast": 4.0,
+    "drift_m_s": 0.2,
+    "depth_falloff_m": 14.0,
+    "albedo_white_mix": 0.5
+  },
+  "quality": {
+    "low": {
+      "refraction": false,
+      "god_rays": false
+    },
+    "medium": {
+      "refraction": true,
+      "god_rays": false
+    },
+    "high": {
+      "refraction": true,
+      "god_rays": true
+    },
+    "ultra": {
+      "refraction": true,
+      "god_rays": true
+    }
+  }
+}
