@@ -7,6 +7,14 @@ Feature track for the M2 vertical slice (session_01DQ9tdk8Uatb8Jr6raAkXiC), bran
   - The level is dressed with it, and shots S01–S05 and their baselines are back. env-art's Review log entry is in the task file.
   - Art fixes are M2-ENV-09 (env-art, on this kit): the fan-shell roof tiers, coral walls, a cooler S02 interior, the S01 leaf-boats and shelf, channel bends.
   - **Lead:** if you wanted to make the call yourself, revert 770090f.
+  - **Fixed on swap-in:** the ARC-04 guard caught the level side's old paths.
+    - `lagoon_waves.tres` now loads from `game/world/water/`. This was S01's drift (rmse 0.06 → 0).
+    - The shot rig moved to `game/levels/_tests/shell_shrine/`.
+  - **Gates:**
+    - S01–S05 are pixel-identical to their baselines.
+    - The full Godot suite ran 1518 tests, 0 failed.
+    - tools unittest, lint and format, validate_data and taskboard are all clean.
+  - **Next:** the full playthrough pass (item 7).
 - **Waiting on the integration branch (env-art's notes, from claude/env-art):**
   - M2-ENV-08, the route from the north lane to the causeway head: paste its 36 layout entries from `_tests/haluna_mood/route_layout.json` into `haluna_layout.json`, plus the collision rules, once its 18 pieces land.
   - The M1-ENV-10 dresser LodChain swap-in.
