@@ -30,16 +30,30 @@ at f95b27cb. Items: M2-AUD-01..06 and M2-AUD-10/11, M3-AUD-01..07 (all `status: 
 - **Filed for m2-slice:** M2-AUD-12 (causeway zone rows, the B05 crossfade, the B12 coda).
 
 ## State (2026-10-24, newest queue)
-- **Done:** M3-AUD-16 Act I zone beds (Tamsule port and Bell galleries, Brine Shoals, Pemakar terraces, Ashcrown,
-  Corrow seawall) at fedff803, `review`. Zone entries for the four m2-slice scenes are `"pending": true` and go live
-  when those scenes merge. Scoped checks: validate_data, test_audio_data, Godot `--filter=audio` (52/0).
-- **In progress (worktree agents):** M3-AUD-13 battle choreography SFX, M3-AUD-14 creature voices, M3-AUD-15 menu UI SFX
-  and M3-AUD-17 Reefball crowd and sphere. **Two items remain after these three agents report** (the batch merge, then
-  MERGE-READY).
+- **Done and merged into claude/audio (all `review`, reviewer qa):**
+  - M3-AUD-13 battle choreography SFX (55 files). `ChoreoAudio` hooks BattleChoreo by name and is `pending` until
+    claude/battle-presentation merges.
+  - M3-AUD-14 creature voices and movement (194 files, 27 creatures). Hooked in BattleAudio; models by
+    `CreatureActor` name.
+  - M3-AUD-15 menu UI SFX (12 files). The title screen is live; Lattice, Equip, the map and tips are `pending`
+    until claude/ui or claude/menus merges.
+  - M3-AUD-16 Act I zone beds (6 beds).
+  - M3-AUD-17 Reefball crowd and sphere hooks, `pending` until gpu/m3-rnd-01-reefball merges. The match, ball and
+    goal names are guesses until the minigame exists.
+  - M3-AUD-18 stings on battle-presentation's `battle_stinger`, `battle_bark` and `boss_intro` EventBus events. They
+    go live when that branch merges.
+- **To check at those merges:**
+  - Drop the `pending` flags; validate_data then checks the real class and signal names.
+  - claude/ui's ShopMenu and InnMenu hooks name signals those classes don't have, and need a rewrite.
+  - Reefball swimmers must join the `reefball_swimmer` group.
+  - BattleStage's creature actors must be under the BattleController.
+  - The task Notes have the full lists.
 
 ## Exact next step
-Merge the three agent branches as they report, merge the integration branch, run the full Godot suite and the loudness
-test in the background, then write a batch MERGE-READY line.
+Queue empty. Waiting on: the human's listening verdict (listening_notes.md M2 and M3 sections; revise when it comes);
+the merges of claude/battle-presentation, claude/creatures, claude/ui and claude/menus, gpu/m3-rnd-01-reefball and
+claude/m2-slice, after which the pending hooks are switched on and tested against the real classes; and
+M2-AUD-07/08/09/12 and M3-ARC-01 (requests to other roles).
 
 ## Un-pushed state
 None.
