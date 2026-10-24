@@ -16,6 +16,8 @@ extends Node
 ## It prints "SLICE_SWEEP <segment> ..." and appends one row per segment to --csv: perf_baseline.csv's
 ## columns (scene = "slice:<segment>", camera = the spawn) plus gpu_mean_ms, frame_max_ms,
 ## hidden_max_ms, hidden_total_ms (the whole load under the fade) and visible_max_ms.
+## Diagnosis (M2-RND-07): --flood-trace prints the Flood's first 12 frames; --flood-variant=no_boss_vfx forces
+## the phase without the set piece (BattleBossVfx freed first).
 
 const BOOT_SCENE := "res://game/core/boot.tscn"
 const HALUNA := "res://game/levels/ch02/haluna/haluna.tscn"
@@ -147,10 +149,28 @@ func _segment(seg: Array, preset: String) -> void:
 		"flood":
 			var ctl := get_tree().current_scene as BattleController
 			if ctl != null and ctl.engine != null and not ctl.engine.enemies.is_empty():
+				# --flood-variant=no_boss_vfx (diagnosis, M2-RND-07): without the set piece, what the polyps cost.
+				if str(_opts.get("flood-variant", "")) == "no_boss_vfx":
+					var bv := ctl.stage.find_child("BossVfx", true, false)
+					if bv != null:
+						bv.queue_free()
+						await get_tree().process_frame
 				var bell := ctl.engine.enemies[0]
+				var vfx_node := ctl.stage.get_node_or_null(^"BattleVfx") as BattleVfx
+				var variant := str(_opts.get("flood-variant", ""))
+				if vfx_node != null and variant.begins_with("warm_"):  # play one effect first, then let it finish
+					vfx_node.play(StringName(variant.trim_prefix("warm_")), bell.id)
+					await _frames(180)
 				bell.hp = int(bell.max_hp * FLOOD_HP_SHARE)
 				BossMechanics.check_phases(ctl.engine)
 			visible = await _frames(VISIBLE_FRAMES)
+			if _opts.has("flood-trace"):
+				print(
+					(
+						"SLICE_FLOOD_TRACE %s"
+						% " ".join(Array(visible.slice(0, 12)).map(func(v: float) -> String: return "%.1f" % v))
+					)
+				)
 	var dwell_us := float(_opts.get("dwell", 8.0)) * 1e6
 	var walls := PackedFloat64Array()
 	var gpus := PackedFloat64Array()
