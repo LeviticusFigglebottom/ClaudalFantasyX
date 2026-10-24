@@ -19,7 +19,7 @@ Scope: assets and kit pieces (Blender jobs, materials, import rules), handed to 
 - **Un-pushed state:** none (worktree agents' branches are local until merged here).
 
 ## For the Lead
-- **Merge-ready again:** the five `shrine_s0*` baselines are re-approved after viewing (M2-ENV-09 notes). The head is gated green.
+- **MERGE-READY @ 4f450a7c: ci_local exit 0, 1532 tests (0 failed), coverage within baseline (battle 99.95%, progression 96.69%), boot smoke OK, 84 shots compared / 0 failed, Blender vegetation 7 + haluna_kit 68 identical** (HYMN_BLENDER_BASE = cf999e0a, the integration commit merged; claude/m2-slice 165ddb4c merged too). The only commit after it is this live-log update.
 - **Answered (2026-10-24):** the project owner and the Lead approved merging `claude/m2-slice`; done (70fa4c77 + bf18e854). The merge exposed two M2-ARC-04 release-build breaks, both fixed here: `LodChain` moved to `game/world/vegetation/` beside VegetationPlant (the import rules ship and used a `_tests` class), and `HalunaShotCamera` moved to `game/levels/ch02/haluna/` (the shrine's shots rig and the mood wrapper use it). `test_release_excludes_tests` passes.
 - **Import gotcha when merging this branch:** delete `.godot/imported/*.glb-*` in the gate worktree and run `--import`, or `--filter=import` fails 3 tests on stale LOD ranges.
 - **New standing queue started** (your message): M3-ENV-01 Tidecup, M3-ENV-02 Brine Shoals, M3-ENV-03 Terraces of Ash with worktree agents now; M3-ENV-04 Seawall and M3-ENV-05 the lamp-diver sea floor next.
@@ -71,16 +71,17 @@ Scope: assets and kit pieces (Blender jobs, materials, import rules), handed to 
 **Blocked, waiting:** (1) the Lead's answer to the question above (merge `claude/m2-slice` for M2-ENV-09, or wait for the integration branch); (2) `haluna_h10_dock_night` and the shrine kit reaching the integration branch (not there at 19118fba). When either lands: build M2-ENV-09 on `shrine_interior.py` (salvage per `assets_src/environments/kits/shell_shrine_salvage/README.md`); re-capture h10, view, re-approve if it drifts, close M2-ENV-06. Session handoff: `docs/kb/handoffs/2026-10-24-environment-6.md`.
 
 ## Queue
-1. ~~M2-ENV-09~~ (review: roof tiers, dressed stone, cool interior, tread offerings; bends not needed by the layout)
-2. ~~M2-ENV-06~~ (review: h10 passes with the new kit)
-3. M3-ENV-01: Ch7 Tidecup arena and stands (agent; the PC GPU owns the water sphere)
+Re-prioritised by the Lead (intro audit, M2-review blockers first):
+1. M2-ENV-10: the B06 Saltgrass Causeway route at final quality (next, env-art itself; swap-in note for m2-slice)
+2. M2-ENV-11: per-encounter battle arenas, `tideline_dawn` and `causeway_disc_sunset` (agent; contract proposed to battle-presentation: an arena scene replaces the sandbox's WorldEnvironment/Sun/Arena around the existing slots)
+3. M3-ENV-01: Ch7 Tidecup (agent)
 4. M3-ENV-02: Ch6 Brine Shoals (agent)
-5. M3-ENV-03: Ch5 Terraces of Ash (agent)
-6. M3-ENV-04: Ch8 the Seawall
-7. M3-ENV-05: Ch1 the lamp-diver's sea floor
-Done: M2-ART-01/02/03; in review: M1-ENV-10, M2-ENV-07, M2-ENV-08; M2-ENV-03 decided (m2-slice kit adopted).
+5. M3-ENV-03: Ch5 Terraces of Ash: **paused** for the blockers. WIP on the local worktree branch `worktree-agent-a5692132254e05def` (81b235d8: design notes `pemakar.md`, 25-piece kit source, preview, shaders); not mergeable yet (no Blender job; generated assets held in the scratchpad without PROVENANCE rows). Next steps in its task Notes.
+6. M3-ENV-04: Ch8 the Seawall; 7. M3-ENV-05: Ch1 the lamp-diver's sea floor
+Done or in review: M2-ART-01/02/03 (done); M1-ENV-10, M2-ENV-06, M2-ENV-07, M2-ENV-08, M2-ENV-09 (review); M2-ENV-03 decided.
 
 ## History
+- 2026-10-24: full ci_local green at 4f450a7c (after merging the integration branch cf999e0a and claude/m2-slice 165ddb4c; Blender threads pinned). M2-ENV-09 to review. Lead re-prioritised the causeway route and battle arenas.
 - 2026-10-24: ENV-03 verdict (m2-slice kit adopted, M2-ENV-09 filed), salvage kept (5274d59a), handoff environment-6, merged the integration branch (53ddbc36; no overlap with env-art files; validate_data and taskboard clean).
 - 2026-10-24: merged M1-ENV-10 and M2-ENV-07 (2236fab2). Gates: verify haluna_kit 49 + vegetation 7 identical; tools unittest OK; Godot haluna 16, post_import 19, vegetation 17, lod 3, import 19; validate_data; haluna shots re-captured, viewed, h01/h02/h07 re-approved, palette 19/19.
 - 2026-10-24: M2-ENV-08 (fa4c666) and M2-ENV-06 passes 2–3 (15ce492, a6d3974). Merged the integration branch (856c43f).
