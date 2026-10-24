@@ -122,3 +122,19 @@ From [act_outline.md](../story/beats/act_outline.md): two phases on the causeway
 | p90 turns | ≤ 60 | Two phases, still a slice-length fight. |
 
 The encounter landed in M2-FP-06 with a first-playable stand-in for the Vowbound summon (ADR 0026). Both `role_answer` and `smart` carry the "clear the field" rule: `sim_policies.json` `clear_field_skill: call_ilun`, so whoever can use it does so as soon as a field is up (`smart` heals first if someone is below 45%). Measured at 1000 seeds: naive 0.0%, role answer 79.7%, smart 89.6%, p90 51 actions (balance_report.md). `tests/integration/test_drownbell_battle.gd` asserts loose bands at 200 seeds on every run.
+
+### Ch1: solo Rhen (M3-C01-02, ADR 0034)
+
+Rhen fights alone all chapter (act1_ch01.md §9 Combat), with `active: [rhen]` and no reserve. The loadouts are `ch01_underway` (starting gear, 2 Salt Tonic, 1 Brine Eyewash) and `ch01_hullgnaw` (the same). Swell is `good`.
+
+| Suite | Kind | `naive` | `role_answer` | `smart` | p90 turns |
+|---|---|---|---|---|---|
+| `ch01_wickfry`, `ch01_oil_slug`, `ch01_shaft_limpet` | tutorial (logged exception) | 80–100% | ≥ 95% | ≥ 98% | ≤ 30 |
+| `ch01_scuttlers` | Ch1–Ch3 regular | 40–80% | ≥ 95% | ≥ 98% | ≤ 30 |
+| `ch01_hullgnaw` | Ch1–Ch3 boss | 0–10% | report only | 80–95% | ≤ 60 |
+
+- **Tutorial fights:** each teaches one thing (the command menu, items, escape), and a first-time masher shouldn't lose one.
+- **Hullgnaw's `role_answer`:** the policy never uses items, and in a one-hero fight nobody can swap in, so it measures only the masher plus MP skills and the Swell. Rhen's answer is tempo plus a Salt Tonic when the Coil telegraphs the Gnaw, and only `smart` plays that.
+- **Kick Off:** the encounter lends it (`party_skills`), because the second phase teaches it.
+
+Numbers are in the 2026-10-24 tuning log entry in balance_report.md.
