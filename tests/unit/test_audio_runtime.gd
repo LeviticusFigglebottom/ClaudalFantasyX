@@ -52,7 +52,7 @@ func before_each() -> void:
 
 func test_tables_name_real_files_scenes_and_flags() -> void:
 	var music := AudioData.table(AudioData.MUSIC)
-	var sfx := AudioData.table(AudioData.SFX)
+	var sfx := {"sfx": AudioData.sfx_rows()}
 	var mix := AudioData.table(AudioData.MIX)
 	assert_false(music.is_empty() or sfx.is_empty() or mix.is_empty(), "the three tables load")
 	for id: String in music["cues"]:

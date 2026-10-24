@@ -28,6 +28,27 @@ static func table(name: String) -> Dictionary:
 	return out
 
 
+## Every sfx row: sfx.json plus each sfx_<domain>.json (battle, field, ui, shrine, ...), so parallel work never
+## shares one file. A row id defined twice keeps the first file's (sfx.json, then the others by name).
+static func sfx_rows() -> Dictionary:
+	if _cache.has("@sfx_rows"):
+		return _cache["@sfx_rows"]
+	var out: Dictionary = {}
+	var names: Array[String] = [SFX]
+	var listing := DirAccess.get_files_at(DIR)
+	listing.sort()
+	for f in listing:
+		if f.begins_with("sfx_") and f.ends_with(".json"):
+			names.append(f.get_basename())
+	for name in names:
+		var rows := table(name).get("sfx", {}) as Dictionary
+		for id: String in rows:
+			if not out.has(id):
+				out[id] = rows[id]
+	_cache["@sfx_rows"] = out
+	return out
+
+
 ## Drops the cache (tests that swap a table).
 static func reload() -> void:
 	_cache.clear()

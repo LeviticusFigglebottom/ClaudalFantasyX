@@ -51,7 +51,7 @@ var _seen_battle := false
 
 
 func _ready() -> void:
-	setup(AudioData.table(AudioData.MIX), AudioData.table(AudioData.MUSIC), AudioData.table(AudioData.SFX))
+	setup(AudioData.table(AudioData.MIX), AudioData.table(AudioData.MUSIC), {"sfx": AudioData.sfx_rows()})
 	get_tree().node_added.connect(_on_node_added)
 	var router := get_node_or_null(^"/root/SceneRouter")
 	if router != null and router.has_signal(&"scene_swapping"):

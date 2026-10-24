@@ -12,6 +12,7 @@ from typing import Callable
 
 MIX = "game/data/audio/mix.json"
 MUSIC = "game/data/audio/music.json"
+SFX_DIR = "game/data/audio/"
 SFX = "game/data/audio/sfx.json"
 BATTLE_SFX = "game/data/audio/battle_sfx.json"
 SHRINE_SFX = "game/data/audio/shrine_sfx.json"
@@ -147,6 +148,8 @@ def sfx_errors(sfx: object, exists, buses: set[str]) -> tuple[list[str], set[str
     if not isinstance(sfx, dict):
         return [f"{SFX}: must be an object"], set()
     ids = set()
+    for sid in sfx.get("_dupes", []):
+        errs.append(f"{SFX}: row {sid} is defined in two sfx files")
     for sid, row in (sfx.get("sfx") or {}).items():
         w = f"{SFX} sfx.{sid}"
         ids.add(sid)
@@ -205,7 +208,7 @@ def audio_errors(files: dict[str, object], exists: Callable[[str], bool], flags:
     enc_doc = files.get(ENCOUNTERS) or {}
     encounters = {e.get("id") for e in enc_doc.get("encounters", []) if isinstance(e, dict)}
     e2, _ = music_errors(files.get(MUSIC), exists, flags, encounters)
-    e3, ids = sfx_errors(files.get(SFX), exists, buses)
+    e3, ids = sfx_errors(merged_sfx(files), exists, buses)
     errs += e2 + e3
     vfx_effects = set(((files.get(VFX_EFFECTS) or {}).get("effects") or {}).keys())
     for name in (BATTLE_SFX, SHRINE_SFX, UI_SFX):
@@ -214,9 +217,25 @@ def audio_errors(files: dict[str, object], exists: Callable[[str], bool], flags:
     return errs
 
 
+def merged_sfx(files: dict[str, object]) -> dict:
+    """sfx.json plus every sfx_<domain>.json (the runtime's AudioData.sfx_rows). A row in two files is an error."""
+    rows: dict = {}
+    dupes: list[str] = []
+    for rel in [SFX] + sorted(k for k in files if k.startswith(SFX_DIR + "sfx_")):
+        for sid, row in ((files.get(rel) or {}).get("sfx") or {}).items():
+            if sid in rows:
+                dupes.append(sid)
+            rows[sid] = row
+    out: dict = {"sfx": rows}
+    if dupes:
+        out["_dupes"] = dupes
+    return out
+
+
 def load_files(root: Path) -> dict[str, object]:
     out = {}
-    for rel in (MIX, MUSIC, SFX, BATTLE_SFX, SHRINE_SFX, UI_SFX, ENCOUNTERS, VFX_EFFECTS):
+    extra = [str(p.relative_to(root)) for p in sorted((root / SFX_DIR).glob("sfx_*.json"))]
+    for rel in [MIX, MUSIC, SFX, BATTLE_SFX, SHRINE_SFX, UI_SFX, ENCOUNTERS, VFX_EFFECTS] + extra:
         p = root / rel
         if p.is_file():
             out[rel] = json.loads(p.read_text(encoding="utf-8"))
