@@ -17,6 +17,10 @@ extends Node
 ## --manifest=res://...json reads another manifest (e.g. a pending-shots file); --hold-storm freezes
 ## every UndertowStorm clock while its temporal jitter keeps advancing (deterministic, TAA integrates);
 ## add --freeze-jitter to hold the jitter too (a static pattern, the control).
+## --node-set=Path:prop=value,... sets a property on a node of the shot's scene (e.g.
+## Storm:half_res_compute=false, M2-RND-01).
+## --add-box=x,y,z,sx,sy,sz adds an opaque grey box (world centre and size, metres) to the scene, e.g. a
+## pillar inside the Undertow's wall foot to check its occlusion (M2-RND-01).
 
 const MANIFEST := "res://tests/screenshots/shots.json"
 
@@ -66,6 +70,8 @@ func _run() -> void:
 				values[kv[0]] = parsed if parsed is float or parsed is int else kv[1]
 			handle = GraphicsSettings.push_override(scene, values, get_viewport(), gs)
 		_tweak(scene)
+		if _opts.has("add-box"):
+			_add_box(scene, str(_opts["add-box"]))
 		var held: Array[UndertowStorm] = []
 		if _opts.has("hold-storm"):
 			for n in scene.find_children("*", "", true, false):
@@ -90,6 +96,14 @@ func _run() -> void:
 
 
 func _tweak(scene: Node) -> void:
+	for pair in str(_opts.get("node-set", "")).split(",", false):
+		var kv := pair.split("=", true, 1)
+		var at := kv[0].split(":", true, 1)
+		var node := scene.get_node_or_null(NodePath(at[0]))
+		if node == null or at.size() < 2 or kv.size() < 2:
+			push_error("--node-set: cannot apply '%s'" % pair)
+			continue
+		node.set(at[1], str_to_var(kv[1]))
 	for pair in str(_opts.get("light-set", "")).split(",", false):
 		var kv := pair.split("=", true, 1)
 		for n in scene.find_children("*", "DirectionalLight3D", true, false):
@@ -126,3 +140,19 @@ func _args() -> Dictionary:
 		var kv := a.trim_prefix("--").split("=", true, 1)
 		out[kv[0]] = kv[1] if kv.size() > 1 else true
 	return out
+
+
+func _add_box(scene: Node, spec: String) -> void:
+	var v := spec.split_floats(",", false)
+	if v.size() != 6:
+		push_error("--add-box wants x,y,z,sx,sy,sz")
+		return
+	var box := MeshInstance3D.new()
+	var mesh := BoxMesh.new()
+	mesh.size = Vector3(v[3], v[4], v[5])
+	var mat := StandardMaterial3D.new()
+	mat.albedo_color = Color(0.5, 0.5, 0.5)
+	mesh.material = mat
+	box.mesh = mesh
+	scene.add_child(box)
+	box.global_position = Vector3(v[0], v[1], v[2])

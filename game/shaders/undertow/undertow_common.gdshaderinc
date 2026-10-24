@@ -21,6 +21,7 @@
 #define UNDERTOW_WOUND_OFFSET vec3(13.7, -41.3, 27.1)
 #define UNDERTOW_PRESENCE_OFFSET vec3(-71.9, 5.3, 33.8)
 #define UNDERTOW_DETAIL_OFFSET vec3(5.17, 19.3, -8.71)
+#define UNDERTOW_STRIATION_OFFSET vec3(-23.3, 11.9, 47.6)
 // Second wound octave: frequency ratio and weight (a lacunarity just off 2 hides the lattice).
 #define UNDERTOW_WOUND_LACUNARITY 2.03
 #define UNDERTOW_WOUND_DETAIL 0.35
@@ -29,72 +30,10 @@
 // Radii are clamped to this fraction of the eye radius before 1/r maths (the axis is singular).
 #define UNDERTOW_AXIS_GUARD 0.25
 
-group_uniforms storm;
-uniform vec3 storm_center = vec3(0.0);
-// The storm clock (s). Driven by UndertowStorm, never by TIME.
-uniform float storm_time_s = 0.0;
-// 0 = asleep (the Calm), 1 = fully risen. Scales coverage and height.
-uniform float storm_intensity : hint_range(0.0, 1.0) = 1.0;
-// Angular speed at the eyewall (rad/s); it falls off outward as (eye / r)^rotation_falloff.
-uniform float rotation_rad_s : hint_range(0.0, 0.2) = 0.012;
-uniform float rotation_falloff : hint_range(0.0, 2.0) = 0.85;
-// Two-phase advection period (s): differential rotation would wind the noise up without bound.
-uniform float flow_cycle_s : hint_range(10.0, 7200.0) = 900.0;
-uniform float updraft_m_s : hint_range(0.0, 60.0) = 9.0;
-
-group_uniforms shape;
-uniform float eye_radius_m : hint_range(50.0, 20000.0) = 1300.0;
-// The eye widens upward like a stadium: radius at the top = eye_radius_m * eye_flare.
-uniform float eye_flare : hint_range(1.0, 5.0) = 2.1;
-uniform float eye_flare_power : hint_range(0.5, 4.0) = 1.6;
-uniform float wall_thickness_m : hint_range(100.0, 20000.0) = 2700.0;
-uniform float wall_taper : hint_range(0.0, 0.9) = 0.3;
-uniform float wall_softness_m : hint_range(1.0, 5000.0) = 700.0;
-uniform float height_m : hint_range(500.0, 30000.0) = 11500.0;
-uniform float top_softness : hint_range(0.01, 0.5) = 0.12;
-uniform float canopy_height_m : hint_range(0.0, 30000.0) = 8600.0;
-uniform float canopy_thickness_m : hint_range(10.0, 10000.0) = 2600.0;
-uniform float canopy_radius_m : hint_range(100.0, 40000.0) = 8800.0;
-uniform float canopy_softness_m : hint_range(1.0, 10000.0) = 2400.0;
-uniform float band_radius_m : hint_range(100.0, 40000.0) = 10500.0;
-uniform float band_height_m : hint_range(10.0, 10000.0) = 3200.0;
-uniform float band_arms : hint_range(0.0, 8.0) = 3.0;
-// Log-spiral pitch of the rain bands: phase = theta + band_twist * ln(r / eye).
-uniform float band_twist : hint_range(0.0, 8.0) = 2.6;
-uniform float band_sharpness : hint_range(0.5, 8.0) = 2.2;
-uniform float band_density : hint_range(0.0, 1.0) = 0.55;
-// Fraction of its height a sleeping (intensity 0) storm keeps.
-uniform float calm_shrink : hint_range(0.0, 1.0) = 0.55;
-// Helical striations wound around the wall (the rotating "plates" that make a vortex read from the
-// side): vertical spacing, number of helix starts, depth of the modulation and its sharpness.
-uniform float striation_spacing_m : hint_range(10.0, 10000.0) = 1500.0;
-uniform float striation_starts : hint_range(0.0, 8.0) = 2.0;
-uniform float striation_strength : hint_range(0.0, 1.0) = 0.55;
-uniform float striation_sharpness : hint_range(0.5, 8.0) = 1.6;
-
-group_uniforms wounds;
-uniform float wound_intensity : hint_range(0.0, 4.0) = 1.0;
-uniform float wound_scale_m : hint_range(10.0, 10000.0) = 1100.0;
-uniform float wound_width : hint_range(0.005, 0.5) = 0.075;
-uniform float wound_coverage : hint_range(0.0, 1.0) = 0.42;
-// Depth of the skin on each wall face that the rents open in (m).
-uniform float wound_skin_m : hint_range(10.0, 10000.0) = 900.0;
-// Height window (fraction of the storm's height) the rents open in.
-uniform float wound_height_min : hint_range(0.0, 1.0) = 0.15;
-uniform float wound_height_max : hint_range(0.0, 1.0) = 0.85;
-uniform float wound_presence_scale_m : hint_range(10.0, 40000.0) = 4200.0;
-// Held light sinks: the seam pattern slides DOWN the wall at this speed.
-uniform float wound_sink_m_s : hint_range(0.0, 100.0) = 5.0;
-uniform vec3 col_wound : source_color = vec3(0.0497, 0.7454, 0.5776);
-uniform vec3 col_held : source_color = vec3(0.2122, 0.5647, 0.6939);
-
-group_uniforms lightning;
-// xyz = storm-local position (already rotated with the wall), w = flash level (0 = dark).
-uniform vec4 lightning_sites[UNDERTOW_MAX_FLASHES];
-uniform float lightning_radius_m : hint_range(10.0, 20000.0) = 2100.0;
-uniform vec3 col_lightning : source_color = vec3(0.552, 0.672, 1.0);
-uniform float lightning_energy : hint_range(0.0, 64.0) = 2.6;
-group_uniforms;
+// The uniforms (undertow_common_uniforms.gdshaderinc); the compute body declares them in its UBO.
+#ifndef UNDERTOW_COMPUTE
+#include "res://game/shaders/undertow/undertow_common_uniforms.gdshaderinc"
+#endif
 
 vec3 undertow_local(vec3 world_pos) {
 	return world_pos - storm_center;
@@ -137,11 +76,26 @@ float undertow_spiral_phase(vec2 xz) {
 }
 
 // Helical striation in [0, 1] at p: bands that wind up the wall and turn with the eyewall (rigidly,
-// so they never wind up). Phase = height / spacing + starts * angle / tau.
+// so they never wind up). Phase = height / spacing + starts * angle / tau, bent by the warp field.
 float undertow_striation(vec3 p) {
-	float a = atan(p.z, p.x) - rotation_rad_s * storm_time_s;
+	float spin = -rotation_rad_s * storm_time_s;
+	float a = atan(p.z, p.x) + spin;
 	float phase = p.y / striation_spacing_m + striation_starts * a / HYMN_TAU;
-	return pow(0.5 + 0.5 * cos(HYMN_TAU * phase), striation_sharpness);
+	float depth = 1.0;
+	if (striation_warp > 0.0 || striation_vary > 0.0) {
+		// Sampled in the frame that turns with the eyewall, so the bends ride the helix.
+		vec2 xz = undertow_rotate(p.xz, spin);
+		vec3 q = vec3(xz.x, p.y, xz.y) / striation_warp_scale_m + UNDERTOW_STRIATION_OFFSET;
+#ifdef UNDERTOW_BAKED_NOISE
+		// The body's baked lattice: two decorrelated channels for one fetch.
+		vec2 n = undertow_lattice(q).rg;
+#else
+		vec2 n = vec2(hymn_value_noise3(q), hymn_value_noise3(q + UNDERTOW_PRESENCE_OFFSET));
+#endif
+		phase += striation_warp * (2.0 * n.x - 1.0);
+		depth = 1.0 - striation_vary * n.y;
+	}
+	return mix(1.0, pow(0.5 + 0.5 * cos(HYMN_TAU * phase), striation_sharpness), depth);
 }
 
 // Analytic coverage envelope parts in [0, 1] (no noise): x = the eyewall, y = the anvil canopy,
@@ -159,12 +113,25 @@ vec3 undertow_envelope_parts(vec3 p) {
 	float wall = smoothstep(ri - wall_softness_m * 0.25, ri + wall_softness_m, r)
 			* (1.0 - smoothstep(ro - wall_softness_m, ro + wall_softness_m, r));
 	wall *= 1.0 - smoothstep(1.0 - top_softness, 1.0, h);
-	wall *= mix(1.0, undertow_striation(p), striation_strength);
+	if (wall > 0.0) {
+		wall *= mix(1.0, undertow_striation(p), striation_strength);
+	}
+	if (skirt_height_m > 0.0) {
+		float sh = clamp(p.y / skirt_height_m, 0.0, 1.0);
+		float reach = ro + skirt_reach_m * (1.0 - sh) * (1.0 - sh);
+		float skirt = (1.0 - smoothstep(0.55, 1.0, sh))
+				* smoothstep(ri - wall_softness_m * 0.25, ri + wall_softness_m, r)
+				* (1.0 - smoothstep(reach - wall_softness_m, reach + wall_softness_m, r));
+		wall = max(wall, skirt * skirt_density);
+	}
 	float ch = canopy_height_m * H / height_m;
 	float canopy = (1.0 - smoothstep(0.0, canopy_thickness_m * 0.5, abs(p.y - ch)))
 			* (1.0 - smoothstep(canopy_radius_m - canopy_softness_m, canopy_radius_m, r))
 			* smoothstep(ri, ri + wall_softness_m, r);
 	float arm = pow(0.5 + 0.5 * cos(band_arms * undertow_spiral_phase(p.xz)), band_sharpness);
+	if (band_join_m > 0.0) {
+		arm = mix(1.0, arm, smoothstep(ro, ro + band_join_m, r));
+	}
 	float band = arm * band_density * (1.0 - smoothstep(0.0, band_height_m, p.y))
 			* smoothstep(ro - wall_softness_m, ro + wall_softness_m, r)
 			* (1.0 - smoothstep(band_radius_m * 0.55, band_radius_m, r));

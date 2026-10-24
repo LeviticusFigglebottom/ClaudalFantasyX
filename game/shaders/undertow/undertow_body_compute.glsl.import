@@ -1,0 +1,14 @@
+[remap]
+
+importer="glsl"
+type="RDShaderFile"
+uid="uid://dhqewel0k6ha3"
+path="res://.godot/imported/undertow_body_compute.glsl-8e2f48c43c5a0df1e80e20a7cf614277.res"
+
+[deps]
+
+source_file="res://game/shaders/undertow/undertow_body_compute.glsl"
+dest_files=["res://.godot/imported/undertow_body_compute.glsl-8e2f48c43c5a0df1e80e20a7cf614277.res"]
+
+[params]
+
