@@ -35,16 +35,19 @@ This is a rough but complete thread through the first chapters of *Hymn of the U
      Both shops add new stock after the Drownbell.
    - **Escape** opens the field menu (bestiary, Swell fill modes) for Rhen, Asha and Toma.
 7. **Save** at the shrine: the glowing teal stone with a shell canopy, on the third lane into the village (past the tide-wall lanes). Resting there heals the party and opens the save menu.
-8. **The causeway head.** Once you have saved, walk north along the beach, away from the dock, to the causeway head at the beach's far end. (Before you've saved, Toma and Asha send you back to the shrine in town as you walk in; you keep walking.) **This leaves Haluna's day behind:** you come back only at night. Asha asks first: choose **Go now** to set off, or **Not yet** to step back with nothing lost (Osu, the barks and the lintel-gull are still there, and walking in again asks again). After Go now, Toma and Asha talk about the low tide, and you're inside the **Shell Shrine** for its trial.
-   - **The trial:** four stone basins, seen from above. Water runs from the spring through whichever channel each basin's lip faces, and the channels carrying water light up. Use a basin (**E**) to turn it a quarter turn. Send the water into the big pool on the far side; when the pool fills, the door at the end sinks, and walking through it plays **Cutscene B, "The First Verse"**, at sunset. Stuck for a minute and a half? Toma gives one hint. **Optional:** route the water into the small sluice near the second basin to drain the side pool, and pick up what's in it. Cutscene B notices.
+8. **The causeway head.** Once you have saved, walk north along the beach, away from the dock, to the causeway head at the beach's far end. (Before you've saved, Toma and Asha send you back to the shrine in town as you walk in; you keep walking.) **This leaves Haluna's day behind:** you come back only at night. Asha asks first: choose **Go now** to set off, or **Not yet** to step back with nothing lost (Osu, the barks and the lintel-gull are still there, and walking in again asks again). After Go now, Toma and Asha talk about the low tide, and you set off along the **Saltgrass Causeway**.
+   - **The causeway** (greybox for now): a long tidal path north to the shrine islet. Rhen, Asha and Toma talk as they pass the marker posts, a tidepool and a half-buried ring with a glint of teal in it; you overhear it as you walk.
+   - **The first fight is a gull harrier over the saltgrass:** fliers dodge most blows, and Rhen's precise strikes find them. After it, the shallows can throw a fight at you every so often as you walk.
+   - Climb the islet's steps into the **Shell Shrine** for its trial.
+   - **The trial:** four stone basins, seen from above. Water runs from the spring through whichever channel each basin's lip faces, and the channels carrying water light up. Use a basin (**E**) to turn it a quarter turn. Send the water into the big pool on the far side; when the pool fills, the door at the end sinks (this also saves your progress: a loss to the Drownbell brings you back here, with the trial already solved), and walking through it plays **Cutscene B, "The First Verse"**, at sunset. Stuck for a minute and a half? Toma gives one hint. **Optional:** route the water into the small sluice near the second basin to drain the side pool, and pick up what's in it. Cutscene B notices.
    - The room is a first art pass: a fan-shell hall with channels inlaid with mother-of-pearl, shafts of light from three openings, and water you can see running. Beyond the sunken door is only a dark passage for now.
 9. **The Drownbell.** The bell answers the verse. It's a two-phase boss, with Rhen, Asha and Toma and no reserve.
    - **Phase 1, the Toll:** watch the timeline. The bell gathers a toll that shoves everyone back, and the timeline shows it two turns out. Three fast strikes (Rhen's Attack or Quick Hit) break its rim and silence it.
    - **Phase 2, the Flood:** at about 40% health the water rises, and polyps heal the bell faster than you can cut them down. Asha's **Call** row brings in **Ilun**, the first Vowbound. The party steps back and he fights alone, his gauge filling as he drinks the flood. When it's full, his **Floodnet** clears the water. Dismiss him from his own menu, or he stays until he falls.
 
-   Lose, and you can fight again or return to your last save.
+   Lose, and you can fight again or return to your last save (the shrine's open door, past the trial).
 10. **The dock at night.** Win, and you're back in Haluna after dark: moonlight, stars, a faintly glowing sea and oil lamps under the eaves. Rhen finds Asha at the end of the dock and asks to come with her. Talking to the villagers again now gives their night lines.
-11. **End card.** Press accept to return to the title. **Continue** loads your save.
+11. **End card.** Rhen's voice-over on black, then the card and a short list of credits. When the prompt shows, press accept to return to the title. **Continue** loads your save, which now shows the chapter you reached.
 
 ## Running it
 
@@ -95,7 +98,7 @@ Debug keys (editor runs only): **F1** lists the debug pages. **F4** shows the st
 - Entering Haluna holds the black fade for about a second while the village builds itself; the picture no longer freezes when it appears.
 - In the field, Escape opens the field menu, which pauses the game. From it you can open the bestiary or choose each hero's Swell fill mode. Escape backs out a step at a time and then closes it. It doesn't open during a cutscene or a conversation. **E** also advances dialogue.
 
-- **Ch1 is greybox:** blocks and capsules, and a teal stand-in for the underwater look. Its music and sounds don't exist yet, so the chapter plays mostly silent. The sea between the hulls is a floor you can walk on. Ch1 has no random encounters yet (only its scripted fights and the optional limpet), and no save shrine.
+- **Ch1 is greybox:** blocks and capsules, and a teal stand-in for the underwater look. Its music and sounds don't exist yet, so the chapter plays mostly silent. The sea between the hulls is a floor you can walk on. Ch1 has no save shrine (its chapter start autosaves).
 
 ## Reporting
 

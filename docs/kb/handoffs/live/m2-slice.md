@@ -3,6 +3,14 @@
 Feature track for the M2 vertical slice (session_01DQ9tdk8Uatb8Jr6raAkXiC), branch `claude/m2-slice`, started from `claude/first-playable` 67984ce. **This environment owns this file** (CLAUDE.md §7a). The Lead is session_019iimsngAgPLEram1wcbLpE; the integration branch is `claude/undertow-lead-handoff-423ixt`.
 
 ## Now
+- **The Lead's 13:09 M2-review blockers 1–3 are done, for review:**
+  - **M2-FP-25, B06 the Saltgrass Causeway:** the route, its rails, banters, the harrier lesson and random fights, all in band.
+  - **M2-FP-26, the B12 end card:** the voice-over and credits. The coda is audio's `hush_coda` zone cue, which arrives with claude/audio.
+  - **M2-FP-27:** chapters 1/2/3, the shrine checkpoint (no trial replay after a Drownbell loss) and the Prologue slot label.
+  - **Item 4,** objective data, waits on UI's note.
+  - Handoff cinematics-13.
+- **M3-C01-02, Ch1 "Lamp-Diver," is merged** (greybox, solo Rhen, Hullgnaw, every fight banded). It's in review: narrative for the story, combat for the bands. It has ADR 0034 (encounter-lent skills, the solo boss band), plus requests **M3-C01-03** (combat/design numbers) and **M3-C01-04** (env-art kits and the UnderwaterRig). The prologue now hands off to Ch1, and Ch1 ends at Haluna `Beach` with Ch2 unchanged.
+- **ADR renumber:** my chapter-flow ADR is now **0035** (it was 0033); claude/ui's `0033-ui-flair` came first.
 - **MERGE-READY @ a30b664:**
   - `tools/ci_local.sh` exit 0, on the integration branch cf999e0 merged in.
   - 1527 Godot tests, 0 failed; coverage battle 99.95%, progression 96.69% (within baseline).
