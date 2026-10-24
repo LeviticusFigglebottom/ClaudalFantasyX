@@ -152,6 +152,40 @@ func call_in(engine: BattleEngine, vowbound_id: StringName) -> bool:
 	return true
 
 
+## The order right after the current actor calls `vowbound_id` (pillar 4, M2-UI-05; nothing
+## changes): the Vowbound takes this turn, then it and the foes act as their ticks fall. The
+## party is off the order until it comes back (preview_dismiss shows that). [] on a refusal.
+func preview_call(
+	engine: BattleEngine, vowbound_id: StringName, count: int = CtbTimeline.PREVIEW_LENGTH
+) -> Array[TurnEntry]:
+	if refusal(engine, vowbound_id) != &"":
+		return []
+	var s: BattleCombatant = _called.get(vowbound_id, null)
+	if s == null:
+		s = build(rows[vowbound_id], vowbound_id, engine.current)
+	var roster: Array[BattleCombatant] = [s]
+	roster.append_array(engine.enemies)
+	var tl := CtbTimeline.new()
+	tl.set_roster(roster)
+	return tl.predict(count, null, Formulas.DEFAULT_RANK, null, 0, {}, {s: engine.now})
+
+
+## The order right after the Vowbound is dismissed on this turn (pillar 4, M2-UI-05; nothing
+## changes): the party is back, the caller after its call delay and the others at the ticks they
+## kept. [] when the dismissal would be refused.
+func preview_dismiss(engine: BattleEngine, count: int = CtbTimeline.PREVIEW_LENGTH) -> Array[TurnEntry]:
+	if dismiss_refusal(engine) != &"":
+		return []
+	var roster: Array[BattleCombatant] = stood_down.duplicate()
+	roster.append_array(engine.enemies)
+	var times: Dictionary = {}
+	for i in stood_down.size():
+		times[stood_down[i]] = engine.now + _offsets[i]
+	var tl := CtbTimeline.new()
+	tl.set_roster(roster)
+	return tl.predict(count, null, Formulas.DEFAULT_RANK, null, 0, {}, times)
+
+
 ## Why the current actor may not dismiss the Vowbound now, or &"" if it may: only the Vowbound
 ## itself, on a turn it controls.
 func dismiss_refusal(engine: BattleEngine) -> StringName:
