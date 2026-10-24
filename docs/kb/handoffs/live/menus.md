@@ -46,7 +46,7 @@ Design call: **no save row** in the field menu; saving stays at shrines plus the
 | M2-MNU-300 Last saved block on the field menu root + the `menu_save` tip | **review** (abf5061a): the newest loadable save's place and time above the objective, shrine reminder; field_menu, field_menu_21x9, field_menu_16x10 re-approved after viewing |
 | M2-MNU-301 hero portraits in every menu (a lavapipe renderer under tools/portraits/, PROVENANCE rows, expressions) | **doing** (worktree agent). ADR 0120: baked PNGs, one renderer and manifest for heroes and creatures |
 | M2-MNU-302 bestiary creature portraits (27 Act I + the slice's five) | **todo**, after 301's renderer lands |
-| M2-MNU-303 menu motion (page transitions, cursor easing, ui_sfx focus sounds, Reduced motion) | **doing** (worktree agent) |
+| M2-MNU-303 menu motion (page transitions, cursor easing, ui_sfx focus sounds, Reduced motion) | **review** (merged): `MenuMotion` + `menu_motion.json` (open 0.18 s fade + 18 px rise, close 0.12 s, return 0.12 s); `closed` still fires at once, new `gone` after the fade frees the layer; menus-track `ui_sfx` hooks no longer pending, rows added for Status, Memories, battle pause; 12 shots unchanged by the motion. **For the Lead:** `battle_pause` (rmse 0.00486) and `dialogue_backlog` (0.00056) pass but drift in the 3D scene behind the menu, not from this change; their baselines may want a refresh. **For audio:** `test_field_audio.gd` pending check narrowed to the UI track's three rows |
 | Then M3 menu work from SPEC §8 | |
 
 ## Exact next step
