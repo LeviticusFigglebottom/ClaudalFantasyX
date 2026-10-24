@@ -1,0 +1,16 @@
+{
+ "format": 1,
+ "scene": "ch01_bark_net_lanes",
+ "source": "game/data/dialogue/ch01/ch01_bark_net_lanes.dlg",
+ "start": "ch01_bark_net_lanes",
+ "nodes": {
+  "ch01_bark_net_lanes": {
+   "headers": {"location": "ch01/oruvel"},
+   "ops": [
+    {"op": "line", "id": "ch01_bark_nets_001", "key": "DLG_CH01_BARK_NETS_001", "speaker": "netmender", "emotion": "worried", "voice": "", "src": 6},
+    {"op": "line", "id": "ch01_bark_nets_002", "key": "DLG_CH01_BARK_NETS_002", "speaker": "netmender", "emotion": "laugh", "voice": "", "src": 7, "name_key": "DLG_NAME_NETMENDER_THE_OTHER_MENDER"},
+    {"op": "line", "id": "ch01_bark_nets_003", "key": "DLG_CH01_BARK_NETS_003", "speaker": "netmender", "emotion": "neutral", "voice": "", "src": 8}
+   ]
+  }
+ }
+}

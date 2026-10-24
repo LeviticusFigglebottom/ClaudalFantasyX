@@ -1,7 +1,8 @@
 extends TestCase
 ## M2-FP-04, hardened in M2-FP-09: the whole first-playable thread, headless, with instant cutscenes
 ## and every scene change recorded instead of made (FlowRouting.record, BattleRequest.change_scene,
-## the battle's travel hooks): New Game → prologue → Haluna (Cutscene A) → three villagers → walk up
+## the battle's travel hooks): New Game → prologue (which hands off to Ch1, M3-C01-02; Ch1 itself is
+## tests/integration/test_ch01_thread.gd) → Haluna (Cutscene A) → three villagers → walk up
 ## the beach into the story's real tideline trigger → lose, Fight again, lose, Return to last save
 ## (none yet: the title) → walk in again and win → back at BattleReturn (not re-triggered) → save at
 ## the shrine, load it back → the causeway head → the Saltgrass Causeway (M2-FP-25: Ch3 starts, the
@@ -52,7 +53,7 @@ func _done() -> void:
 
 
 func test_the_first_playable_thread_end_to_end() -> void:
-	# New Game lands on the prologue, which hands off to the beach.
+	# New Game lands on the prologue, which hands off to Ch1; Ch1's end brings the party to the beach.
 	var reg := LocationRegistry.load_default()
 	assert_eq(reg.new_game_location, &"prologue")
 	var prologue := (load(PROLOGUE) as PackedScene).instantiate() as PrologueScene
@@ -62,7 +63,7 @@ func test_the_first_playable_thread_end_to_end() -> void:
 	prologue.travel = _record_travel
 	prologue.play()
 	assert_true(bool(Game.get_flag(&"prologue_seen")))
-	assert_eq(travels, [[&"ch02/haluna", &"Beach"]] as Array[Array])
+	assert_eq(travels, [[&"ch01/oruvel_underway", &"Drop"]] as Array[Array], "on to Ch1 (M3-C01-02)")
 	prologue.free()
 	var beach := reg.resolve(&"ch02/haluna", &"Beach")
 	assert_eq(beach.get("scene"), ZONE, "the registry enters the playable zone")
@@ -91,7 +92,7 @@ func test_the_first_playable_thread_end_to_end() -> void:
 	var lost := _lose_battle()
 	assert_eq(lost, [TITLE] as Array[String], "no save yet: Return to last save is the title")
 	assert_false(bool(Game.get_flag(&"ch02_tideline_won")), "a defeat never sets the flag")
-	assert_eq(travels, [[&"ch02/haluna", &"Beach"]] as Array[Array], "and never travels to the field")
+	assert_eq(travels, [[&"ch01/oruvel_underway", &"Drop"]] as Array[Array], "and never travels to the field")
 
 	# Continue would find nothing; New Game's way back is the prologue, so walk in again and win.
 	assert_eq(TitleSaveEntry.continue_slot(SaveSystem), -1, "no record to continue")

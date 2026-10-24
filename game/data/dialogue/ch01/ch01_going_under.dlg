@@ -1,0 +1,37 @@
+// Ch1 C1-15 "Cutscene: Going under". O18: Hullgnaw's last coil slides off the broken net-pen, the
+// children are on the bridge to the keel-hull; Rhen looks up and the wall is here, filling the frame,
+// the sky still blue above it. Across the water on the keel-hull, Kell's beacon lamp is STILL LIT.
+// The water comes over the frame before it goes out: he never sees her go under, and neither does
+// the player. U10: under, the storm's underwater look (no god rays, churned dark), and all round him
+// lamps going out above and their light coming down: held motes sinking past him, dozens, then
+// hundreds. His lantern still burns on his shoulder (oil_lamp, the only warm light). U11: looking
+// down into the dark, a man's voice singing the whole current-song from C1-06, far below. He stops
+// fighting the water and listens. That's all. Then black, the VO, silence, and a 3 s hold; the
+// chapter flow then goes to ch02/haluna Beach, where Cutscene A fades in on its first line.
+// Watches (ADR 0017, ADR 0022, act3_ending §0 rule 8): no figure guides him into or out of the
+// storm, and nothing carries him through time or space; the song is heard, never seen, sings no
+// words of Lamptongue and none to Rhen; the current-song is NOT the Hush lullaby; the motes sink.
+// Nothing lifts in Ch1. U11 shows no one.
+title: ch01_going_under
+location: ch01/oruvel
+---
+@letterbox on
+@camera O18
+@sfx undertow_wall_roar
+@wait 2.0
+Rhen [afraid]: Go! Don't look back, go! #line:ch01_under_001
+@sfx beacon_lamp_gutter
+@wait 1.5
+@fade out 0.4
+@camera U10
+@music going_under fade=0.5
+@fade in 1.5
+@vfx glimmer_held at=rhen count=60 drift=down_seaward
+@wait 4.0
+@camera U11
+@wait 6.0
+@fade out 2.5
+@music silence fade=2.0
+Narrator(rhen) [neutral]: My father used to sing the currents. I hadn't heard it in eleven years. Then nothing. #line:ch01_under_002 #vo
+@wait 3.0
+===

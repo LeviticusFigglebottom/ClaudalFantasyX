@@ -21,6 +21,16 @@
    "doc": "Runner tests only (game/data/dialogue/test/test_dialogue_fixture.dlg).",
    "test_only": true,
    "args": [{"name": "word", "type": "id"}, {"name": "count", "type": "int"}, {"name": "on", "type": "bool"}]
+  },
+  {
+   "id": "ch01_haggled",
+   "doc": "Ch1 C1-08 (the scale-hull): Rhen haggled the scale-man up; the chapter flow pays the few extra lume (expression only, no flag).",
+   "args": []
+  },
+  {
+   "id": "ch01_kell_first",
+   "doc": "Ch1 C1-13 (the breaking raft): Rhen chose \"Kell first\"; the chapter flow starts the run at her bridge instead of the net-pen path.",
+   "args": []
   }
  ]
 }

@@ -1,0 +1,21 @@
+{
+ "format": 1,
+ "scene": "ch01_gulls",
+ "source": "game/data/dialogue/ch01/ch01_gulls.dlg",
+ "start": "ch01_gulls",
+ "nodes": {
+  "ch01_gulls": {
+   "headers": {"location": "ch01/oruvel"},
+   "ops": [
+    {"op": "cue", "cue": "camera", "args": ["O10"], "kwargs": {}, "src": 10},
+    {"op": "cue", "cue": "sfx", "args": ["lintel_gull_cry"], "kwargs": {}, "src": 11},
+    {"op": "cue", "cue": "music", "args": ["silence"], "kwargs": {"fade": 0.2}, "src": 12},
+    {"op": "cue", "cue": "wait", "args": [3.0], "kwargs": {}, "src": 13},
+    {"op": "line", "id": "ch01_gulls_001", "key": "DLG_CH01_GULLS_001", "speaker": "rhen", "emotion": "afraid", "voice": "", "src": 14},
+    {"op": "cue", "cue": "sfx", "args": ["lintel_gull_cry"], "kwargs": {}, "src": 15},
+    {"op": "line", "id": "ch01_gulls_002", "key": "DLG_CH01_GULLS_002", "speaker": "sabe", "emotion": "afraid", "voice": "", "src": 16},
+    {"op": "set", "flag": "ch01_gulls_cried", "value": ["lit", true], "src": 17}
+   ]
+  }
+ }
+}

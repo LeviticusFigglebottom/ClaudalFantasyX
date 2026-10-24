@@ -8,7 +8,8 @@ extends Node
 ##   when      {"set": [...], "unset": [...]}  encounters happen only while this holds
 ##   seed      the rng seed (a zone's encounters are the same on every run from the same state)
 ## Light Step and the like stretch every gap: the party's encounter_rate_pct (EquipmentEffects) is
-## applied as gap * 100 / rate. A due encounter waits while the story is busy. When one fires it
+## applied as gap * 100 / rate. A zone root with encounter_rate_mult() (Ch1's lantern shutter) scales
+## each metre walked by it, live. A due encounter waits while the story is busy. When one fires it
 ## remembers where Rhen stood, and the battle returns to the zone's "Encounter" spawn there
 ## (GreyboxZone.place_at). Time passes only through walked(), so tests drive it exactly.
 
@@ -72,7 +73,9 @@ func _physics_process(_delta: float) -> void:
 func walked(metres: float) -> StringName:
 	if table.is_empty() or not ZoneStory.holds(when):
 		return &""
-	walked_m += metres
+	walked_m += (
+		metres * (float(_zone.call(&"encounter_rate_mult")) if _zone.has_method(&"encounter_rate_mult") else 1.0)
+	)
 	if walked_m < next_m or not _zone.story.is_free():
 		return &""
 	var id := pick()

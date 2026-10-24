@@ -1,0 +1,16 @@
+{
+ "format": 1,
+ "scene": "ch01_bark_roof",
+ "source": "game/data/dialogue/ch01/ch01_bark_roof.dlg",
+ "start": "ch01_bark_roof",
+ "nodes": {
+  "ch01_bark_roof": {
+   "headers": {"location": "ch01/oruvel"},
+   "ops": [
+    {"op": "line", "id": "ch01_bark_roof_001", "key": "DLG_CH01_BARK_ROOF_001", "speaker": "child", "emotion": "laugh", "voice": "", "src": 7},
+    {"op": "line", "id": "ch01_bark_roof_002", "key": "DLG_CH01_BARK_ROOF_002", "speaker": "rhen", "emotion": "neutral", "voice": "", "src": 8},
+    {"op": "set", "flag": "ch01_roof_dared", "value": ["lit", true], "src": 9}
+   ]
+  }
+ }
+}

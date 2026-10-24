@@ -1,0 +1,11 @@
+// Ch1 C1-09, bark 3 of 6, second talk: he does it. A short canned dive off the cabin roof
+// (rhen/roof_dive is a placeholder clip until his rig has one).
+title: ch01_bark_roof_dive
+location: ch01/oruvel
+---
+Child [laugh]: Scared! #line:ch01_bark_roof_003
+Rhen [determined]: Fine. Fine. Watch how it's done. #line:ch01_bark_roof_004
+@anim rhen roof_dive
+@sfx splash
+Child [laugh]: He did it! #line:ch01_bark_roof_005
+===

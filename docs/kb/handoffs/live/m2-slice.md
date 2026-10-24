@@ -26,7 +26,7 @@ Feature track for the M2 vertical slice (session_01DQ9tdk8Uatb8Jr6raAkXiC), bran
   - M3-C07-01, Ch7's story;
   - M3-ARC-01, the chapter flow.
   - **Ownership:** recorded in ownership.md (`game/levels/ch01`, `ch04`–`ch09`, the dialogue, `act1_*` beats, `game/data/flow/chapters/**`).
-  - **M3-ARC-01 is done, for review by lead (ADR 0033, `docs/kb/tech/chapter_flow.md`).**
+  - **M3-ARC-01 is done, for review by lead (ADR 0035, `docs/kb/tech/chapter_flow.md`).**
     - Chapters are data: `ZoneStory` plays each zone's arrive/beats/barks steps from `game/data/flow/chapters/chNN.json`, and `GreyboxZone` builds a playable zone from a layout JSON.
     - `validate_data` checks both. The tests are `test_zone_story` (7) and `test_chapter_flow` (8). The slice is untouched.
   - **Ch1 and Ch4 beat sheets are done:** `act1_ch01.md` and `act1_ch04.md`, reviewed and approved by cinematics. **For the Lead and narrative, two calls the sheets made:**

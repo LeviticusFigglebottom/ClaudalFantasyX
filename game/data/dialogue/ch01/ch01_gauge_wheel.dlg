@@ -1,0 +1,14 @@
+// Ch1 C1-06 "The gauge-wheel": the job. A Lit Age tide-gauge, a brass wheel two metres across in a
+// sealed room off the stair (U07), its teeth worth a month's oil. He cuts the rim free; it goes into
+// the bag as the key item gauge_wheel_brass, sold at the scale-hull (C1-08). In-engine.
+title: ch01_gauge_wheel
+location: ch01/oruvel_underway
+---
+@camera U07
+@sfx salvage_cut
+Rhen [determined]: Two metres of Lit Age brass. A month of oil, if the scale-man's sober. #line:ch01_gauge_001
+@sfx salvage_cut
+@wait 1.0
+Rhen [smile]: Come on. Come on. There. #line:ch01_gauge_002
+@camera release
+===
