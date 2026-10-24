@@ -3,6 +3,7 @@
     {
       "id": "reef_crab", "name_key": "ENEMY_REEF_CRAB", "role_answer": "toma",
       "lore_key": "LORE_REEF_CRAB",
+      "model": "res://game/creatures/reef_crab/reef_crab_battle.tscn",
       "stats": {"level": 4, "hp": 380, "mp": 0, "strength": 12, "magic": 2, "defense": 40,
                 "magic_defense": 4, "agility": 8, "accuracy": 8, "evasion": 2, "luck": 4},
       "affinities": {"lightning": "weak", "water": "absorb"},

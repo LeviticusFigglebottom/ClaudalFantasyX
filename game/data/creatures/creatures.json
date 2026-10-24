@@ -1,0 +1,22 @@
+{
+  "_doc": "Battle creature actors (M2-CRE-03, docs/kb/art/creatures/pipeline.md). Presentation only: no combat numbers. enemies.json `model` names a row's `scene`; BattleStage turns it into the FighterStandIn spec's `scene` (the M2-UI-07 hook) and merges `stand_in`. CreatureActor reads the rest: which clip an action plays (clip_by_skill, else clip_by_kind by the skill's kind), which clips loop, the KO fade, the boss's phases and breakable parts.",
+  "defaults": {
+    "idle": "idle",
+    "hit": "hit",
+    "ko": "ko",
+    "loop": ["idle"],
+    "blend_sec": 0.12,
+    "clip_by_kind": {"physical": "attack", "magical": "cast", "support": "cast", "heal": "cast"},
+    "clip_by_skill": {},
+    "ko_fade_sec": 0.6,
+    "stand_in": {"yaw_deg": 90.0},
+    "phases": {},
+    "break_parts": {}
+  },
+  "creatures": {
+    "reef_crab": {
+      "scene": "res://game/creatures/reef_crab/reef_crab_battle.tscn",
+      "clip_by_skill": {"brine_spit": "cast"}
+    }
+  }
+}

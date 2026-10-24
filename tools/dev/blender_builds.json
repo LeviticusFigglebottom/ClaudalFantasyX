@@ -56,6 +56,16 @@
       "runs": [
         ["{blender}", "--python", "assets_src/environments/kits/haluna/build.py", "--", "--all", "--out-dir", "assets/environments/kits/haluna", "--manifest", "assets/environments/kits/haluna/kit_manifest.json"]
       ]
+    },
+    {
+      "id": "creature_reef_crab",
+      "owner": "character",
+      "sources": ["assets_src/creatures/reef_crab/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/reef_crab/*.glb", "assets/creatures/reef_crab/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/reef_crab/build_reef_crab.py", "--", "--out", "assets/creatures/reef_crab/reef_crab.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "reef_crab"]
+      ]
     }
   ]
 }

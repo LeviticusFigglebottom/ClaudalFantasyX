@@ -21,7 +21,7 @@ stalked eyes, a flat face.
 
 - **Wide and low**: a flattened dome about 1.0 m across the carapace, 0.62 m to the top of the shell, 1.4 m across
   the leg-tips. At battle distance it is a **low trapezoid** with the legs as a fringe under it.
-- **Asymmetric chelae**: the crusher (its left, the camera side when it faces the party) is twice the size of the
+- **Asymmetric chelae**: the crusher (its right, the battle camera's side once the stage turns it to the party) is twice the size of the
   cutter, and its fixed finger is a slab of the same coral-stone. That asymmetry is its signature, and the crusher
   rising is its tell.
 - **Stalked eyes** stand clear of the shell, the only small vertical forms on it.

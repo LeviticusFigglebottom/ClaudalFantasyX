@@ -131,9 +131,33 @@ func flinch() -> void:
 	tw.tween_property(_body, "position", _rest, sec * 0.5)
 
 
+## M2-CRE-03: a creature actor (CreatureActor, the enemies.json `model`) plays body clips; these are no-ops for
+## a primitive or a hero actor. BattleActorMotion calls them.
+func creature() -> CreatureActor:
+	return _actor as CreatureActor
+
+
+func play_action(skill_id: StringName, kind: StringName) -> bool:
+	return creature() != null and creature().play_action(skill_id, kind)
+
+
+func play_hit() -> bool:
+	return creature() != null and creature().play_hit()
+
+
+func enter_phase(phase_id: StringName) -> bool:
+	return creature() != null and creature().enter_phase(phase_id)
+
+
+func set_part_broken(skill_id: StringName, broken: bool) -> bool:
+	return creature() != null and creature().set_part_broken(skill_id, broken)
+
+
 ## Petrify: the stand-in turns to matte stone (no glow) where it stands; it does not sink.
 func set_stone(on: bool, stone_color: Color, stone_roughness: float) -> void:
 	_stone = on
+	if creature() != null:
+		creature().set_frozen(on)
 	if _actor != null:
 		_set_actor_stone(on, stone_color, stone_roughness)
 		return
@@ -148,6 +172,9 @@ func is_stone() -> bool:
 
 func set_ko(ko: bool, sink_m: float, alpha: float) -> void:
 	_ko = ko
+	if creature() != null:  # it plays its own KO clip and fade, and does not sink
+		creature().set_ko(ko, alpha)
+		return
 	_body.position = _rest - Vector3(0.0, sink_m if ko else 0.0, 0.0)
 	if _actor != null:
 		for m in _surfaces:

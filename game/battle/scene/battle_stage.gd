@@ -19,6 +19,8 @@ var _fighters: Dictionary = {}
 ## Enemy combatant id -> the enemy slot index it stands on.
 var _enemy_slot_of: Dictionary = {}
 var _shake_tween: Tween
+## Plays the actors' body clips from the engine's signals (M2-CRE-03).
+var _motion: BattleActorMotion
 
 @onready var camera: Camera3D = %BattleCamera
 @onready var _fighter_root: Node3D = %Fighters
@@ -49,12 +51,14 @@ static func lattice_for(ids: Array[StringName], saved: Dictionary = {}) -> Latti
 	return p
 
 
-## Stand-in spec for a combatant id ("reef_crab#1" uses the "reef_crab" row), defaults merged.
+## Stand-in spec for a combatant id ("reef_crab#1" uses the "reef_crab" row), defaults merged. An enemy with
+## an enemies.json `model` also gets its creature actor `scene` and creatures.json overrides (M2-CRE-03).
 static func stand_in_spec(cid: StringName) -> Dictionary:
 	var cfg := config()
 	var base := String(cid).get_slice("#", 0)
 	var row: Dictionary = (cfg.get("stand_ins", {}) as Dictionary).get(base, {})
-	return (cfg.get("stand_in_defaults", {}) as Dictionary).merged(row, true)
+	var spec := (cfg.get("stand_in_defaults", {}) as Dictionary).merged(row, true)
+	return spec.merged(CreatureModels.stand_in_overrides(base), true)
 
 
 func _ready() -> void:
@@ -65,6 +69,7 @@ func _ready() -> void:
 
 
 func spawn(engine: BattleEngine) -> void:
+	_motion = BattleActorMotion.attach(self, engine, _motion)
 	for f: FighterStandIn in _fighters.values():
 		f.queue_free()
 	_fighters.clear()
