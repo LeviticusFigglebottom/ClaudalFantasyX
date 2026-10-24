@@ -58,7 +58,7 @@ class ValidatorTest(unittest.TestCase):
 
     def test_rows_are_checked(self) -> None:
         cr = copy.deepcopy(self.creatures)
-        row = next(iter(cr["creatures"].values()))
+        row = cr["creatures"]["drownbell"]  # an enemy uses it, so its phase names are checked too
         row["clip_by_skill"] = {"no_such_skill": "cast"}
         row["stand_in"] = {"tilt": 3}
         row["phases"] = {"no_such_phase": {"clip": "x", "offset_m": [0, 1]}}
@@ -68,6 +68,13 @@ class ValidatorTest(unittest.TestCase):
         for needle in ("unknown skill 'no_such_skill'", "stand_in: unknown key 'tilt'", "no enemy has a phase",
                        "offset_m: must be [x, y, z]", "break_parts.toll", "unknown key 'oops'"):
             self.assertTrue(any(needle in x for x in e), (needle, e))
+
+    def test_a_creature_no_enemy_uses_yet_may_name_its_own_phases(self) -> None:
+        cr = copy.deepcopy(self.creatures)
+        cr["creatures"]["cinder_matron"]["phases"] = {"crust_breaks": {"clip": "phase_change", "hide": ["Crust"]}}
+        self.assertFalse(any("no enemy has a phase" in x for x in self.errs(creatures=cr)))
+        cr["creatures"]["cinder_matron"]["phases"]["crust_breaks"]["hide"] = "Crust"
+        self.assertTrue(any("hide: must be a list" in x for x in self.errs(creatures=cr)))
 
     def test_defaults_must_be_complete(self) -> None:
         cr = copy.deepcopy(self.creatures)

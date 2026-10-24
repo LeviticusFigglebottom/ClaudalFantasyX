@@ -16,10 +16,17 @@
     "portrait": {"clip": "idle", "clip_time": 0.0, "yaw_deg": 30.0, "pitch_deg": 14.0, "fov_deg": 28.0, "margin": 0.85}
   },
   "creatures": {
+    "tide_crawler": {"scene": "res://game/creatures/tide_crawler/tide_crawler_battle.tscn", "contact": {"attack": 0.55}},
+    "raid_hound": {"scene": "res://game/creatures/raid_hound/raid_hound_battle.tscn", "contact": {"attack": 0.5}},
+    "shoal_skipper": {"scene": "res://game/creatures/shoal_skipper/shoal_skipper_battle.tscn", "contact": {"attack": 0.5}},
+    "cinder_matron": {"scene": "res://game/creatures/cinder_matron/cinder_matron_battle.tscn", "contact": {"attack": 0.85}, "phases": {"crust_breaks": {"clip": "phase_change", "hide": ["Crust"], "sec": 0.0}}},
+    "slag_tortoise": {"scene": "res://game/creatures/slag_tortoise/slag_tortoise_battle.tscn", "contact": {"attack": 0.55}},
+    "ashwing": {"scene": "res://game/creatures/ashwing/ashwing_battle.tscn", "contact": {"attack": 0.6}},
+    "scuttler": {"scene": "res://game/creatures/scuttler/scuttler_battle.tscn", "contact": {"attack": 0.45}},
     "spar_wraith": {"scene": "res://game/creatures/spar_wraith/spar_wraith_battle.tscn", "contact": {"attack": 0.8}},
     "sail_leech": {"scene": "res://game/creatures/sail_leech/sail_leech_battle.tscn", "contact": {"attack": 0.7}},
     "bottle_hermit": {"scene": "res://game/creatures/bottle_hermit/bottle_hermit_battle.tscn", "contact": {"attack": 0.45}},
-    "wickfry": {"scene": "res://game/creatures/wickfry/wickfry_battle.tscn", "contact": {"attack": 0.55}},
+    "glassfry": {"scene": "res://game/creatures/glassfry/glassfry_battle.tscn", "contact": {"attack": 0.55}},
     "oil_slug": {"scene": "res://game/creatures/oil_slug/oil_slug_battle.tscn", "contact": {"attack": 0.55, "cast": 0.6}},
     "tower_limpet": {"scene": "res://game/creatures/tower_limpet/tower_limpet_battle.tscn", "contact": {"attack": 0.55}},
     "drownbell": {

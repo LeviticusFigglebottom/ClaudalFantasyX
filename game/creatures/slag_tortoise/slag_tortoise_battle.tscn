@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://game/creatures/creature_actor.gd" id="1_actor"]
+[ext_resource type="PackedScene" uid="uid://usobhoedieu0" path="res://assets/creatures/slag_tortoise/slag_tortoise.glb" id="2_model"]
+
+[node name="SlagTortoise" type="Node3D"]
+script = ExtResource("1_actor")
+creature_id = &"slag_tortoise"
+metadata/hymn_battle_actor = true
+
+[node name="Model" parent="." instance=ExtResource("2_model")]

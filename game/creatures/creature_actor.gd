@@ -149,7 +149,8 @@ func set_frozen(on: bool) -> void:
 		_player.play()
 
 
-## A boss's phase change (creatures.json `phases`): plays its clip, moves the model by its offset and tilt over
+## A boss's phase change (creatures.json `phases`): plays its clip, hides and shows its listed nodes (the Cinder
+## Matron's crust bursting off), moves the model by its offset and tilt over
 ## its time (at once when `instant`, for captures), and idles on the phase's idle clip afterwards. An unknown phase
 ## does nothing.
 func enter_phase(phase_id: StringName, instant := false) -> bool:
@@ -178,6 +179,14 @@ func enter_phase(phase_id: StringName, instant := false) -> bool:
 		else:
 			model.position = target
 			model.rotation = tilt
+	for n: Variant in p.get("hide", []):
+		var node := find_child(str(n), true, false) as Node3D
+		if node != null:
+			node.visible = false
+	for n: Variant in p.get("show", []):
+		var node := find_child(str(n), true, false) as Node3D
+		if node != null:
+			node.visible = true
 	var clip := StringName(str(p.get("clip", "")))
 	if not _ko and not _frozen:
 		_play(clip if has_clip(clip) else _idle)

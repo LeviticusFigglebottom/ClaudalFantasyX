@@ -14,7 +14,7 @@ a slice creature (cheap: a materials.json and a creatures.json row, the same rig
 
 | Ch | Zone | Id | What it is | Battle role (what it teaches) | Kind |
 |---|---|---|---|---|---|
-| 1 | Oruvel Underway (the drowned-tower dive, lantern-lit) | `wickfry` | A shoal of finger-long glass shrimp drawn to lamp light, fought as one combatant: a loose cloud that tightens to strike | Fast, frail, acts often: the timeline's first lesson (who acts next) | reef beast |
+| 1 | Oruvel Underway (the drowned-tower dive, lantern-lit) | `glassfry` | A shoal of finger-long glass shrimp drawn to lamp light, fought as one combatant: a loose cloud that tightens to strike | Fast, frail, acts often: the timeline's first lesson (who acts next) | reef beast |
 | 1 | Oruvel Underway | `tower_limpet` | A cartwheel-sized limpet clamped to the tower stair, its shell grown over a shutter it took with it | Slow wall that delays: you can skip it, the timeline shows how long it takes | reef beast |
 | 1 | Oruvel Underway | `oil_slug` | A sea slug that feeds on lamp oil leaking from drowned lamps; its frills glow the warm colour it ate (`oil_lamp`), dimming the diver's lantern | Caster: blinds (the light is stolen), weak to fire | reef beast |
 | 1 | the breaking raft (boss) | `hullgnaw` | **Hullgnaw**: an Undertow-spawn eel grown through a ship's ribs, the ribs its carapace, wounds between them | Timeline tutorial boss (act_outline) | spawn, boss |
@@ -39,7 +39,7 @@ in line with Act I's share of the game.
 ## Order of work (art)
 
 1. Design sheets for all of them (this file's ids), Ch1 first (it opens the game), in `act1/<id>.md`. All written ([`act1/README.md`](act1/README.md)).
-2. Models in chapter order: Ch1 (wickfry, tower_limpet, oil_slug, Hullgnaw), Ch4, Ch5, Ch6, Ch8. Variants are cheap
+2. Models in chapter order: Ch1 (glassfry, tower_limpet, oil_slug, Hullgnaw), Ch4, Ch5, Ch6, Ch8. Variants are cheap
    and go with their chapter. The Reach needs the PC GPU session (the storm limb is theirs; the creature part is
    ours).
 3. Each lands with `"model"` on its enemies.json row once m2-slice has added the row; until then the model sits in

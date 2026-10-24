@@ -1,0 +1,30 @@
+{
+  "_doc": "The Cinder Matron (act1/cinder_matron.md): stone (laterite blocks, ember seams), crust (cooled magma, ember cracks; its own `Crust` mesh for phase 2). Ember emission is the mountain's fire, not glimmer. write_materials.py on game/shaders/creature/creature.gdshader.",
+  "slots": {
+    "stone": {
+      "roughness_dry": 0.88,
+      "roughness_wet": 0.5,
+      "detail_scale": 14.0,
+      "detail_albedo": 0.18,
+      "detail_bump": 0.6,
+      "cavity_albedo": 0.5,
+      "emission_color": "#E0702E",
+      "emission_energy": 2.0,
+      "emission_pulse_hz": 0.2,
+      "emission_pulse_depth": 0.35
+    },
+    "crust": {
+      "roughness_dry": 0.35,
+      "roughness_wet": 0.2,
+      "specular": 0.6,
+      "detail_scale": 20.0,
+      "detail_albedo": 0.15,
+      "detail_bump": 0.7,
+      "cavity_albedo": 0.4,
+      "emission_color": "#E0702E",
+      "emission_energy": 1.8,
+      "emission_pulse_hz": 0.25,
+      "emission_pulse_depth": 0.4
+    }
+  }
+}

@@ -16,8 +16,9 @@ rows once m2-slice adds them (M3-C01-02).
 
 ## Acceptance criteria
 - [x] hullgnaw (first pass: 5.4k triangles, 17 bones, the five clips; review shot creature_hullgnaw)
-- [x] wickfry (first pass: 44 glass shrimp on their own bones, 7k triangles, 46 bones; the cloud fists on attack, rings on cast, falls on KO)
+- [x] glassfry, renamed from wickfry at m2-slice's request so "wick" stays Mother Kell's (first pass: 44 glass shrimp on their own bones, 7k triangles, 46 bones; the cloud fists on attack, rings on cast, falls on KO)
 - [x] tower_limpet (first pass: 8.5k triangles, 3 bones, the five clips; review shot creature_tower_limpet)
+- [x] scuttler (added by m2-slice's act1_ch01: a small Undertow-spawn before the boss; a sea-louse arch of wet black plates, 3k triangles)
 - [x] oil_slug (first pass: 4.2k triangles, 9 bones, the five clips; review shot creature_oil_slug)
 
 ## Notes

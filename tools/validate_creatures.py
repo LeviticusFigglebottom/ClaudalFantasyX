@@ -21,7 +21,7 @@ DEFAULT_KEYS = {"idle", "hit", "ko", "loop", "blend_sec", "clip_by_kind", "clip_
                 "stand_in", "phases", "break_parts", "portrait", "contact"}
 ROW_KEYS = DEFAULT_KEYS | {"scene"}
 STAND_IN_KEYS = {"yaw_deg"}
-PHASE_KEYS = {"clip", "idle", "offset_m", "tilt_deg", "sec"}
+PHASE_KEYS = {"clip", "idle", "offset_m", "tilt_deg", "sec", "show", "hide"}
 PART_KEYS = {"whole", "broken"}
 PORTRAIT_KEYS = {"clip", "clip_time", "yaw_deg", "pitch_deg", "fov_deg", "margin"}
 
@@ -30,7 +30,9 @@ def _num(v: object) -> bool:
     return isinstance(v, (int, float)) and not isinstance(v, bool)
 
 
-def _row_errors(w: str, row: dict, skills: set[str], phase_ids: set[str]) -> list[str]:
+def _row_errors(w: str, row: dict, skills: set[str], phase_ids: set[str] | None) -> list[str]:
+    """`phase_ids` None skips the phase-name check (a creature no enemy uses yet: its enemy row and phases come
+    later, from the encounter designers)."""
     errs: list[str] = []
     for k in ("idle", "hit", "ko"):
         if k in row and not (isinstance(row[k], str) and row[k]):
@@ -75,7 +77,7 @@ def _row_errors(w: str, row: dict, skills: set[str], phase_ids: set[str]) -> lis
         phases = {}
     for pid, p in phases.items():
         pw = f"{w}.phases.{pid}"
-        if pid not in phase_ids:
+        if phase_ids is not None and pid not in phase_ids:
             errs.append(f"{pw}: no enemy has a phase '{pid}'")
         if not isinstance(p, dict):
             errs.append(f"{pw}: must be an object")
@@ -87,6 +89,9 @@ def _row_errors(w: str, row: dict, skills: set[str], phase_ids: set[str]) -> lis
         for k in ("offset_m", "tilt_deg"):
             if k in p and not (isinstance(p[k], list) and len(p[k]) == 3 and all(_num(x) for x in p[k])):
                 errs.append(f"{pw}.{k}: must be [x, y, z]")
+        for k in ("show", "hide"):
+            if k in p and not (isinstance(p[k], list) and all(isinstance(n, str) and n for n in p[k])):
+                errs.append(f"{pw}.{k}: must be a list of node names")
         if "sec" in p and not (_num(p["sec"]) and p["sec"] >= 0):
             errs.append(f"{pw}.sec: must be a number >= 0")
     parts = row.get("break_parts", {})
@@ -146,7 +151,8 @@ def creature_errors(creatures: object, enemies: object, skills: object, scene_ex
             scenes[scene] = cid
             if not scene_exists(scene):
                 errs.append(f"{w}.scene: {scene} does not exist")
-        errs += _row_errors(w, row, skill_ids, phase_ids)
+        used = isinstance(scene, str) and any(e.get("model") == scene for e in enemy_rows)
+        errs += _row_errors(w, row, skill_ids, phase_ids if used else None)
     for e in enemy_rows:
         if "model" not in e:
             continue

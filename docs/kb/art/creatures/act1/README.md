@@ -7,7 +7,7 @@ roster row is the brief.
 
 | Ch | Sheets |
 |---|---|
-| 1 | [hullgnaw](hullgnaw.md) (boss), [wickfry](wickfry.md), [tower_limpet](tower_limpet.md), [oil_slug](oil_slug.md) |
+| 1 | [hullgnaw](hullgnaw.md) (boss), [glassfry](glassfry.md), [tower_limpet](tower_limpet.md), [oil_slug](oil_slug.md) |
 | 4 | [spar_wraith](spar_wraith.md) (boss), [bottle_hermit](bottle_hermit.md), [sail_leech](sail_leech.md) |
 | 5 | [cinder_matron](cinder_matron.md) (boss), [ashwing](ashwing.md), [slag_tortoise](slag_tortoise.md) |
 | 6 | [raid_hound](raid_hound.md) (boss pair), [shoal_skipper](shoal_skipper.md) |

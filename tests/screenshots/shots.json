@@ -904,10 +904,17 @@
     {"id": "creature_lantern_eel", "scene": "res://game/levels/_tests/creatures/shots/creature_lantern_eel.tscn", "resolution": [960, 720]},
     {"id": "creature_oil_slug", "scene": "res://game/levels/_tests/creatures/shots/creature_oil_slug.tscn", "resolution": [960, 720]},
     {"id": "creature_spawn_polyp", "scene": "res://game/levels/_tests/creatures/shots/creature_spawn_polyp.tscn", "resolution": [960, 720]},
-    {"id": "creature_wickfry", "scene": "res://game/levels/_tests/creatures/shots/creature_wickfry.tscn", "resolution": [960, 720]},
+    {"id": "creature_glassfry", "scene": "res://game/levels/_tests/creatures/shots/creature_glassfry.tscn", "resolution": [960, 720]},
     {"id": "creature_bottle_hermit", "scene": "res://game/levels/_tests/creatures/shots/creature_bottle_hermit.tscn", "resolution": [960, 720]},
     {"id": "creature_gull_harrier", "scene": "res://game/levels/_tests/creatures/shots/creature_gull_harrier.tscn", "resolution": [960, 720]},
     {"id": "creature_sail_leech", "scene": "res://game/levels/_tests/creatures/shots/creature_sail_leech.tscn", "resolution": [960, 720]},
-    {"id": "creature_spar_wraith", "scene": "res://game/levels/_tests/creatures/shots/creature_spar_wraith.tscn", "resolution": [960, 720]}
+    {"id": "creature_spar_wraith", "scene": "res://game/levels/_tests/creatures/shots/creature_spar_wraith.tscn", "resolution": [960, 720]},
+    {"id": "creature_scuttler", "scene": "res://game/levels/_tests/creatures/shots/creature_scuttler.tscn", "resolution": [960, 720]},
+    {"id": "creature_ashwing", "scene": "res://game/levels/_tests/creatures/shots/creature_ashwing.tscn", "resolution": [960, 720]},
+    {"id": "creature_slag_tortoise", "scene": "res://game/levels/_tests/creatures/shots/creature_slag_tortoise.tscn", "resolution": [960, 720]},
+    {"id": "creature_cinder_matron", "scene": "res://game/levels/_tests/creatures/shots/creature_cinder_matron.tscn", "resolution": [960, 720]},
+    {"id": "creature_shoal_skipper", "scene": "res://game/levels/_tests/creatures/shots/creature_shoal_skipper.tscn", "resolution": [960, 720]},
+    {"id": "creature_raid_hound", "scene": "res://game/levels/_tests/creatures/shots/creature_raid_hound.tscn", "resolution": [960, 720]},
+    {"id": "creature_tide_crawler", "scene": "res://game/levels/_tests/creatures/shots/creature_tide_crawler.tscn", "resolution": [960, 720]}
   ]
 }
