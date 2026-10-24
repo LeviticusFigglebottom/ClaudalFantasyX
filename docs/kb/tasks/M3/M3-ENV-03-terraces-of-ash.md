@@ -30,4 +30,24 @@ docs/kb/handoffs/live/env-art.md.
       telling shots as screenshot baselines (the repo's binary budget).
 - [ ] Tests for anything with runtime code; a swap-in note for m2-slice.
 
+## Notes
+- 2026-10-24 (env-art): **PAUSED for the M2-review blockers (Lead), WIP committed.** Done: design notes
+  `docs/kb/art/environments/pemakar.md` (committed first); kit source `assets_src/environments/kits/pemakar/`
+  (25 pieces in budget: terraces, walls with copper vein, channels/inlets/spills with cross channels, paddy,
+  stair, graves, open-hand gate, lamp pillar, leaf-boat, shrine-box, two houses, smithy, massif, Ashcrown
+  silhouette, plume; textures, materials, import settings, layout generator writing ~940 boats / 376 lamps /
+  5,000 far lights); preview scene `game/levels/_tests/pemakar_kit/` (PemakarKitPreview, dusk/night moods,
+  7 cameras, shots manifest); shaders env_ash_plume, env_far_lights, env_sky_pemakar.
+  **Not committed:** the generated assets under `assets/environments/kits/pemakar/` (no PROVENANCE rows yet;
+  regenerate with build.py via Blender, pemakar_textures.py, pemakar_materials.py, pemakar_import_settings.py,
+  then `godot --import`). No Blender job, no tests, no shots registered yet.
+  **Next step:** (1) rework P01 as the view from the harbour looking north (sea-glow foreground, town lights,
+  mountain far lights, Ashcrown, plume; ~50 mm, camera about (-20, 6, 130)) and update pemakar.md §5 to match;
+  (2) plume: darker (fog_disabled, body_darken ~0.2), lumpier silhouette, afterglow rim; (3) far lights spread
+  lower and thinner near the crest; (4) render P05-P08 and iterate; (5) add the `pemakar_kit` Blender job to
+  tools/dev/blender_builds.json (sources: pemakar/*.py + haluna kit_common.py, village.py, shrine_interior.py),
+  commit assets + PROVENANCE rows, Python tests (tools/tests/test_pemakar_kit.py) and a GDScript test for
+  PemakarKitPreview; request a `pemakar_kit` import kind from Tools; register at most 2 shots (P01, P03).
+  P03 (dusk, among the graves) already reads well on lavapipe.
+
 ## Review log
