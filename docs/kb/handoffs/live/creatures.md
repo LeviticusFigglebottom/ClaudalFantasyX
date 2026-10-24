@@ -3,6 +3,10 @@
 Feature track for the battle creatures (cloud session_01CYks9e592YBEfygyTawcJD), branch `claude/creatures`, started from `origin/claude/undertow-lead-handoff-423ixt` aeb0875. **This environment owns this file** (CLAUDE.md §7a). The Lead is session_019iimsngAgPLEram1wcbLpE.
 
 ## Now
+- **22:20, m2-slice:** once wildlife_layer.gd reaches the integration branch, they add a WildlifeLayer to haluna.tscn,
+  and GreyboxZone will add one automatically for any location with a game/data/world/wildlife/<zone>.json. For
+  FieldNpc (after it lands) they'll call begin_talk/end_talk around HalunaStory/ZoneStory barks, or
+  follow_dialogue(runner).
 - **MERGE-READY @ d9001836: the Lead's new queue (M3-CRE-610..612), all in review.**
   - **611 ambient wildlife (merged):** gull (flying and perched), shore crab and shoal fish, built from the kit in a
     new `wildlife` import category. WildlifeLayer is MultiMesh, 4 draw calls a zone, 0.27 ms average and 0.56 ms worst
