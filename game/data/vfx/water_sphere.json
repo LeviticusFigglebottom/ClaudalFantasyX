@@ -20,7 +20,7 @@
     "rings": 64
   },
   "optics": {
-    "_note": "As underwater.json's: sigma = -ln(transmit) / transmit_distance_m per channel; the in-scatter darkens with depth below the ball's top. The surface refracts the screen by refraction_strength (view-space normal xy, scaled by 1/depth), reflects the sky at roughness, and from inside shows the Snell window (asin(1/ior)) with TIR in tir x tir_gain outside it. The swell displaces the surface swell_m along its normal at swell_scale_m.",
+    "_note": "As underwater.json's: sigma = -ln(transmit) / transmit_distance_m per channel; the in-scatter darkens with depth below the ball's top. The surface refracts the screen by refraction_strength (view-space normal xy, scaled by 1/depth), reflects the sky at roughness, and from inside shows the Snell window (asin(1/ior)) with TIR in tir x tir_gain outside it. The swell displaces the surface swell_m along its normal at swell_scale_m. At night the water column carries the sea-glow (glimmer.gdshaderinc, colour script rule 3) at the zone's hymn_zone_sea_glow, or the rig's own sea_glow_energy, x sea_glow_strength (as underwater.json's), independent of the light level (M3-RND-05).",
     "transmit_distance_m": 40.0,
     "scatter_strength": 0.45,
     "depth_falloff_m": 30.0,
@@ -37,7 +37,8 @@
     "swell_scale_m": 6.0,
     "swell_speed": 0.35,
     "light_reference": 3.0,
-    "light_floor": 0.02
+    "light_floor": 0.02,
+    "sea_glow_strength": 1.8
   },
   "god_rays": {
     "_note": "An ellipsoid FogVolume filling the ball with underwater_shafts.gdshader (shafts along the sun, fading below the ball's top). Only on tiers with god_rays and volumetric fog on.",

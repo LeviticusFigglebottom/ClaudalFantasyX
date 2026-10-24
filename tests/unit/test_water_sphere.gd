@@ -24,7 +24,8 @@ const SHADERS := {
 		"caustic_view_fade_m",
 		"caustic_wall_soft_m",
 	],
-	"res://game/shaders/water/sphere/water_sphere_post_add.gdshader": ["col_scatter", "col_deep", "light_level"],
+	"res://game/shaders/water/sphere/water_sphere_post_add.gdshader":
+	["col_scatter", "col_deep", "light_level", "sea_glow_energy", "sea_glow_strength"],
 }
 
 
@@ -86,3 +87,25 @@ func test_rig_builds_every_part_and_follows_the_tier() -> void:
 		(rig.post_add_material.get_shader_parameter(&"sphere_center") as Vector3).is_equal_approx(rig.global_position)
 	)
 	host.free()
+
+
+## M3-RND-05: the night match. The ball's water column carries the sea-glow (colour script rule 3: >= 0.08 at
+## night), the rig passes its own energy on, and the arena's lamps don't light the fog: a lamp's volumetric fog
+## energy lit the god-ray FogVolume into bright green bands (as Rhen's lantern, tech/underwater.md).
+func test_the_night_match_glows_and_its_lamps_leave_the_fog_alone() -> void:
+	var scene := (load("res://game/levels/_tests/reefball/reefball_night_test.tscn") as PackedScene).instantiate()
+	(Engine.get_main_loop() as SceneTree).current_scene.add_child(scene)
+	var rig := scene.get_node("Sphere") as WaterSphereRig
+	assert_between(rig.sea_glow_energy, 0.08, 0.15, "rule 3: a night frame's sea-glow")
+	assert_eq(float(rig.post_add_material.get_shader_parameter(&"sea_glow_energy")), rig.sea_glow_energy)
+	assert_eq(
+		float(rig.post_add_material.get_shader_parameter(&"sea_glow_strength")),
+		float((WaterSphereRig.load_data()["optics"] as Dictionary)["sea_glow_strength"])
+	)
+	rig.sea_glow_energy = 0.1
+	assert_eq(float(rig.post_add_material.get_shader_parameter(&"sea_glow_energy")), 0.1, "set at runtime too")
+	var lamps := scene.get_node("Lamps").find_children("*", "Light3D", true, false)
+	assert_true(lamps.size() > 0, "the arena is lamp-keyed")
+	for l: Light3D in lamps:
+		assert_eq(l.light_volumetric_fog_energy, 0.0, "%s leaves the ball's fog alone" % l.name)
+	scene.free()

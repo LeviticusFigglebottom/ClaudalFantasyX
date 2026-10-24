@@ -6,7 +6,7 @@ record. The newest copy is on the most recently pushed `gpu/*` branch.
 
 > **Current session:** `session_01UFcBRsk9M9EKtxJKdBU2mB` (Remote Control on this PC). It took over from
 > session_01778wbLbDFnRRLTKjnawv3T on 2026-10-23. The Lead is cloud session `session_019iimsngAgPLEram1wcbLpE`.
-> **This copy, on `gpu/m3-rnd-04-reefball-caustics`, is the newest.**
+> **This copy, on `gpu/m3-rnd-05-reefball-night`, is the newest.**
 
 ## PC setup for a new session
 
@@ -115,6 +115,8 @@ python -c "import sys; sys.path.insert(0,'tools/screenshots'); import compare, p
 
 | Branch | State | Content |
 |---|---|---|
+| gpu/m3-rnd-05-reefball-night | **M3-RND-05 in review** (reviewer Art) | The night match: the ball's water column carries the rule-3 sea-glow (on/off 1.56-5.0x, stone <= 2.36x the sea), lamp-keyed players; arena lamps need light_volumetric_fog_energy 0 (they lit the god-ray fog green). +0.01-0.08 ms. Stacked on RND-04. Two new pending shots. |
+| gpu/m2-nit-05-blender-test-windows | **M2-NIT-05** (accepted) | test_blender_builds on Windows: the expectation uses the scratch Path's own spelling. With NIT-04 merged, all tools tests are green on Windows (498, 6 skipped). |
 | gpu/m3-rnd-04-reefball-caustics | **M3-RND-04 in review** (reviewer Character) | Caustics on the Reefball players: the ocean's caustic web in the sphere's multiply pass, projected along the sun, sun-facing faces only; every tier (<= 0.013 ms at 1440p). Stacked on M3-RND-01. The four reefball shots change: re-approve on lavapipe with RND-01's. |
 | gpu/m2-rnd-19-cold-sweep-budget | **M2-RND-19** (accepted) | ADR 0037's gate: `slice_sweep --budget` (1.7 s behind the first-run cue, 1 s other hidden, 50 ms visible; exit 1 if over) + `tools/gpu_bench/run_cold_launch.sh`. Cold High 1379 ms / Low 1405 ms, all ok. Stacked on RND-18, with the integration branch and NIT-04 merged. |
 | gpu/m2-rnd-18-cold-boot-frame | **M2-RND-18** (accepted; ADR 0037) | Cold boot's worst hidden frame: High 2970 -> 1395-1434 ms, Low 1580 -> 1412-1678 (harvest spread on a worker thread, an empty frame after bring-up, 1 material per first-run batch). Irreducible: one material's synchronous pipeline set (palm frond, 1.36-1.68 s) -> ADR amendment ~1.7 s. Stacked on RND-17 (with RND-14 merged). |

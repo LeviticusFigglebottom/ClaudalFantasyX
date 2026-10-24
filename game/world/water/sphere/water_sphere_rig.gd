@@ -40,6 +40,14 @@ const OPTICS_SURFACE: Array[String] = [
 
 static var _data_cache: Dictionary = {}
 
+## The ball's own night sea-glow energy (colour script rule 3: 0.04-0.15, >= 0.08 at night); 0 uses the zone's
+## (hymn_zone_sea_glow, GlimmerField.set_scene_sea_glow), as a WaterSurface's does (M3-RND-05).
+@export_range(0.0, 0.15, 0.001) var sea_glow_energy: float = 0.0:
+	set(value):
+		sea_glow_energy = value
+		if post_add_material != null:
+			post_add_material.set_shader_parameter(&"sea_glow_energy", value)
+
 ## A preset id (low, medium, high, ultra).
 @export var quality: String = "high":
 	set(value):
@@ -168,6 +176,8 @@ func _build() -> void:
 	for key in OPTICS_SURFACE:
 		surface_material.set_shader_parameter(StringName(key), float(optics.get(key, 0.0)))
 	surface_material.set_shader_parameter(&"col_tir", Color(str(colors.get("tir", "#0E4A55"))))
+	post_add_material.set_shader_parameter(&"sea_glow_energy", sea_glow_energy)
+	post_add_material.set_shader_parameter(&"sea_glow_strength", float(optics.get("sea_glow_strength", 1.0)))
 	var caustics := data.get("caustics", {}) as Dictionary
 	for key in CAUSTIC_KEYS:
 		post_mul_material.set_shader_parameter(StringName("caustic_" + key), float(caustics.get(key, 0.0)))
