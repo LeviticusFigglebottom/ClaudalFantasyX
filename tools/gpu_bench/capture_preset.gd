@@ -5,8 +5,8 @@ extends Node
 ##     --shots=asha_front,asha_q34 --preset=high --out=C:/abs/dir [--scale=2 --settle=60]
 ## For each shot in tests/screenshots/shots.json: instances its scene, makes its camera current,
 ## sizes the window to its resolution x --scale, applies the preset through GraphicsSettings (the
-## viewport and the scene's Environment) and the matching character shader tier
-## (CharacterShaderTiers), renders max(shot settle_frames, --settle) frames and saves <id>.png.
+## viewport and the scene's Environment) and every system tier the game would set
+## (GraphicsRuntime.apply_system_tiers), renders max(shot settle_frames, --settle) frames and saves <id>.png.
 ## The capture rig (tests/screenshots/capture.tscn) renders scene defaults; this shows what the
 ## player's preset does to the same shot. Never writes baselines.
 ## Diagnosis (M1-QA-05): --light-set=prop=value,... on every DirectionalLight3D (e.g.
@@ -60,7 +60,8 @@ func _run() -> void:
 		gs.set_preset(preset)
 		var envs := scene.find_children("*", "WorldEnvironment", true, false)
 		gs.apply_current(get_viewport(), (envs[0] as WorldEnvironment).environment if envs.size() > 0 else null)
-		CharacterShaderTiers.apply_to_tree(scene, CharacterShaderTiers.tier_for_preset(preset))
+		# Every system tier the game sets on scene entry (M2-RND-02; it was character materials only).
+		GraphicsRuntime.apply_system_tiers(scene, preset)
 		var handle := 0
 		if _opts.has("push-override"):
 			var values := {}

@@ -159,7 +159,7 @@
     "override_keys": ["aa", "scaling_mode", "render_scale", "fsr_sharpness"],
     "override_keys_note": "M1-RND-16: the settings a scoped GraphicsSettings.push_override may name (the viewport's AA and 3D scaling: the pipeline state a cutscene switches at a cut, e.g. TAA + FSR1 for storm close-ups on High)."
   },
-  "system_tiers_note": "presets[].tiers: per-system quality tier for systems that keep their own variants (water: WaterSurface.quality_for_preset; vegetation: shader_families; weathering: Environment's WeatheringTide). Undertow, glimmer and character tiers map 1:1 from the preset id in their own data files (M1-RND-07).",
+  "system_tiers_note": "presets[].tiers: per-system quality tier for systems that keep their own variants (water: WaterSurface.quality_for_preset; vegetation: shader_families; weathering: Environment's WeatheringTide). Undertow, glimmer and character tiers map 1:1 from the preset id in their own data files (M1-RND-07). underwater: UnderwaterRig's quality row in game/data/vfx/underwater.json (M2-RND-02).",
   "sky_detail_note": "M1-RND-12: levels.sky_detail holds sky-material uniforms (march steps, erosion octaves, how much erosion the sun samples see, radiance-cubemap steps). GraphicsSettings sets each one on the Environment's sky material when its shader declares it (env_sky_cumulus.gdshader), so other skies are untouched. Measured costs: docs/kb/qa/gpu/2026-10-23-rnd-12-sky.md.",
   "vegetation_groups": {
     "_note": "M1-RND-07 vegetation_detail: zones tag nodes with these groups. lod: GeometryInstance3D whose visibility_range_begin/end scale (authored values captured once); multimesh: MultiMeshInstance3D whose visible_instance_count is the fraction; small_shadows: small foliage whose cast_shadow the setting may turn off.",
@@ -207,7 +207,7 @@
         "vegetation_detail": "low",
         "sky_detail": "low"
       },
-      "tiers": {"water": "low", "vegetation": "low", "weathering": "low"}
+      "tiers": {"water": "low", "vegetation": "low", "weathering": "low", "underwater": "low"}
     },
     {
       "id": "medium",
@@ -240,7 +240,7 @@
         "vegetation_detail": "medium",
         "sky_detail": "medium"
       },
-      "tiers": {"water": "medium", "vegetation": "high", "weathering": "medium"}
+      "tiers": {"water": "medium", "vegetation": "high", "weathering": "medium", "underwater": "medium"}
     },
     {
       "id": "high",
@@ -273,7 +273,7 @@
         "vegetation_detail": "high",
         "sky_detail": "high"
       },
-      "tiers": {"water": "high", "vegetation": "high", "weathering": "high"}
+      "tiers": {"water": "high", "vegetation": "high", "weathering": "high", "underwater": "high"}
     },
     {
       "id": "ultra",
@@ -306,7 +306,7 @@
         "vegetation_detail": "ultra",
         "sky_detail": "ultra"
       },
-      "tiers": {"water": "ultra", "vegetation": "high", "weathering": "ultra"}
+      "tiers": {"water": "ultra", "vegetation": "high", "weathering": "ultra", "underwater": "ultra"}
     }
   ]
 }
