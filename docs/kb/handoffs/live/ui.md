@@ -11,6 +11,16 @@ UI track (cloud session session_01NyuYPSZn7o7gYirTvz4zjs), branch `claude/ui`, s
 6. (Found on claude/characters) **M2-UI-07**, the hero actor hook: **hook done and pushed (08c872c)**. It is **blocked** on M2-CHR-06's scenes reaching the integration branch; after that it needs three `"scene"` lines in battle_sandbox.json and shot re-approval.
 
 ## Now
+- **MERGE-READY @ 81910b52: ci_local exit 0, 1586 tests, 91 shots** (full run, every shot, own HYMN_LOG_DIR). It includes the integration branch at cf999e0a and m2-slice at 386643c3. Coverage battle 99.95% / progression 96.69%. The Blender step was SKIPPED: no pinned Blender in this container, and this branch touches no Blender source.
+- **In progress, the human's top priority:** objectives, the objective line, the destination cue (M2-UI-16/17/19, done on the local branch `ui/objectives`) and the zone map (M2-UI-18, done in a worktree agent). They are merging into claude/ui with claude/menus (the Menus track's nine-row field menu). The next MERGE-READY line follows after a full gate.
+- **Queued after it (Lead, intro audit):**
+  1. A field interaction prompt.
+  2. First-time tutorial prompts.
+  3. The title screen.
+  4. Area title cards.
+  5. Dialogue box: a continue glyph, a backlog and auto-advance.
+  6. Settings: battle speed and summon-cinematic length.
+  Also add `battle_pause` to the Controls page (from the Menus track).
 - **The Lead's queue top-up (11:00) is done apart from M2-UI-07,** which waits on claude/characters. All in review:
   - **Item 1, M2-UI-08:** Art's two colour fixes (done earlier).
   - **Item 2, the accessibility audit, one task per item:**
