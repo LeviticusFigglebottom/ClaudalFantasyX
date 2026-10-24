@@ -3,6 +3,52 @@
 Feature track for the M2 vertical slice (session_01DQ9tdk8Uatb8Jr6raAkXiC), branch `claude/m2-slice`, started from `claude/first-playable` 67984ce. **This environment owns this file** (CLAUDE.md §7a). The Lead is session_019iimsngAgPLEram1wcbLpE; the integration branch is `claude/undertow-lead-handoff-423ixt`.
 
 ## Now
+- **M3 Act I is under way** (the Lead's 12:00 message). The tasks are filed in `docs/kb/tasks/M3/`:
+  - M3-C01..C09-01, the beat sheets;
+  - M3-C0x-02, the playable chapters;
+  - M3-C07-01, Ch7's story;
+  - M3-ARC-01, the chapter flow.
+  - **Ownership:** recorded in ownership.md (`game/levels/ch01`, `ch04`–`ch09`, the dialogue, `act1_*` beats, `game/data/flow/chapters/**`).
+  - **M3-ARC-01 is done, for review by lead (ADR 0033, `docs/kb/tech/chapter_flow.md`).**
+    - Chapters are data: `ZoneStory` plays each zone's arrive/beats/barks steps from `game/data/flow/chapters/chNN.json`, and `GreyboxZone` builds a playable zone from a layout JSON.
+    - `validate_data` checks both. The tests are `test_zone_story` (7) and `test_chapter_flow` (8). The slice is untouched.
+  - **Ch1 and Ch4 beat sheets are done:** `act1_ch01.md` and `act1_ch04.md`, reviewed and approved by cinematics. **For the Lead and narrative, two calls the sheets made:**
+    - Kell's wick is given on every path, so act3_ending E7 always has it; the optional side scene is staying to talk at her stall.
+    - The outline's "One month earlier" card may not fit the travel calendar, since Ch1–Ch4 take four days. The sheet keeps the card and flags it.
+  - **Creature answers from Ch1 and Ch4:**
+    - Ch1 adds `scuttler`, an Undertow-spawn before the boss, and proposes renaming `wickfry` so "wick" stays Kell's.
+    - At most 2 foes on screen in Ch1 and 3 on the derelict.
+    - Hullgnaw's raft is the arena, and its rib-timbers are the boss.
+  - **All seven Act I beat sheets are done and approved by cinematics:** `docs/kb/story/beats/act1_ch01.md`, `ch04`–`ch09`. Each sheet's §9 lists its requests by role, written so they can be filed as tasks.
+  - **New tasks:**
+    - **M3-C07-02:** Ch7's dialogue and cutscenes around the Reefball match.
+    - **M3-CMB-01** (role combat): the Ch8 set-piece battle pieces. These are scripted timeline entries (the Climb, the Surge, Pell), an objective victory, a scripted escape, party locks, the `storm_dark` field and the new skills. M3-C08-02 depends on it.
+  - **For the Reefball agent:** Ch7's story hand-off is §5 of `act1_ch07.md`.
+    - B05 ends on `<<event start_reefball ch07_tidecup_oruvel_sorrin>>`.
+    - The match gets Tavi, four Oruvel players and Rhen in Pio's place, against the Sorrin side.
+    - It returns `ch07_tidecup_played`, and `ch07_tidecup_won` on a win only. The win is a reward only and never branches the story.
+  - **Decisions for the Lead and narrative:**
+    - Ch6's "Old Pirran" (the name in Liss's burned lamp) is only a proposed design truth. It needs a decisions_log entry before any line uses it; no Act I line does.
+    - **Glossary rows to add** (only the Lead edits the glossary):
+      - Ch8 and Ch9: Ivo Brannick, Old Marra, Hobb, Fenn, the kite custom, Storm-Call.
+      - Ch5–Ch7: Garo and Benet Tenmak, Hadric Moll, Pio, Sorrin, "Daro's hammer".
+  - **Creature answers** (for claude/creatures):
+    - **Ch5:** `vein_sparker` is optional; Cinder Matron is a creatures construct.
+    - **Ch6:** the Inquisitor is a person, so the character track builds him. `gull_harrier` is reused as the shoals' flier.
+    - **Ch8:** `tide_crawler`, `squall_wing`, `wall_polyp` and `undertows_reach` all kept. The fliers `stormgull`, `wallcrab` and `flue_moth` are unconfirmed.
+    - **Foes on screen:**
+      - Ashcrown stair 2–3, Matron 1;
+      - Shoals ridges 2–3, flats 3–4, raid pair 2;
+      - Ch8 waves 3/3/4, the Reach plus 2.
+  - **For Rendering, the Ch9 Ebbing:** held motes only, drifting down and seaward. The staff attractor lags and sinks behind the staff, and no mote turns toward Kerrid. Details are in act1_ch09.md §9.
+  - **In progress:** **M3-C01-02, the Ch1 build**, with a subagent.
+  - **Next:** after Ch1, Ch4 and Ch5. Ch8 waits on M3-CMB-01.
+  - **Creatures** (claude/creatures, act1_roster.md 9243daa): their roster is adopted as the working ids and passed to the beat-sheet writers. Their open questions are answered in the sheets' request lists, summarised here when they land.
+  - **Next:** review the sheets, then build the chapters on ARC-01, Ch1 first.
+- **Item 7 is done:** the playthrough pass (handoff cinematics-11). PLAYTEST.md is current (shops and inn, the real shrine room, four basins, ENV-04 and ENV-05), and filed **M2-FP-24**, the shrine's channel curbs have no collision. **Two items remain from the 07:56 queue:** item 6, which waits on characters, and nothing else. **Next: M3 Act I** (the Lead's 12:00 message, human-authorised).
+  - Act I is Ch1 Lamp-Diver, Ch4, Ch5, Ch6 up to the Brine Shoals and Sefir, Ch8 and Ch9.
+  - **Story only:** Ch7 Tidecup's story beats and cutscenes are mine; its gameplay is another Lead agent's.
+  - **Order for each chapter:** a beat sheet, then .dlg, flow, a greybox level, encounters, then cutscenes.
 - **M2-ENV-03, the Shell Shrine kit, is swapped in** (770090f), after env-art's verdict at 11:28 (Art Director, the kit comparison you asked for): adopt the m2-slice kit.
   - The level is dressed with it, and shots S01–S05 and their baselines are back. env-art's Review log entry is in the task file.
   - Art fixes are M2-ENV-09 (env-art, on this kit): the fan-shell roof tiers, coral walls, a cooler S02 interior, the S01 leaf-boats and shelf, channel bends.
