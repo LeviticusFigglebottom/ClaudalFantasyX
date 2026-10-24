@@ -51,6 +51,7 @@ func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_STOP
 	_build_frame()
 	_build()
+	UiFrame.centre(self)  # M2-UI-29
 	_render()
 	if pause_tree and not get_tree().paused:
 		get_tree().paused = true

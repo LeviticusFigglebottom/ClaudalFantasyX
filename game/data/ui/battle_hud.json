@@ -1,10 +1,11 @@
 {
   "battle_hud": {
-    "doc": "Battle HUD layout at the 1920x1080 reference (docs/kb/art/ui.md section 6). Rects are [x, y, w, h] px.",
+    "doc": "Battle HUD layout at the 1920x1080 reference (docs/kb/art/ui.md section 6). Rects are [x, y, w, h] px. A section's pin is the screen edge or corner it keeps its margin to at 16:10 and 21:9 (HudLayout.place, M2-UI-29); none means top_left. commands.pin anchors the whole command menu frame (its root and sub-menu pages).",
     "target_info": {"rect": [48, 48, 480, 96], "hp_bar_px": 6, "hp_bar_width": 300},
-    "help_line": {"rect": [560, 48, 800, 48], "max_lines": 2},
+    "help_line": {"rect": [560, 48, 800, 48], "pin": "top", "max_lines": 2},
     "timeline": {
       "rect": [1648, 88, 224, 696],
+      "pin": "top_right",
       "inset": 8,
       "slot0_height": 72,
       "chip_height": 36,
@@ -33,6 +34,7 @@
     },
     "party": {
       "rect": [1272, 800, 600, 232],
+      "pin": "bottom_right",
       "row_height": 72,
       "row_gap": 8,
       "pad_x": 18,
@@ -63,6 +65,7 @@
     },
     "commands": {
       "rect": [48, 760, 480, 272],
+      "pin": "bottom_left",
       "header_height": 44,
       "row_pitch": 40,
       "max_rows": 7,
@@ -96,7 +99,7 @@
     "panel_open": {"sec": 0.18, "close_sec": 0.12, "rise_px": 8, "scale_from": 0.98},
     "pacing": {"enemy_think_sec": 0.55, "action_hold_sec": 0.8, "result_delay_sec": 0.6, "message_sec": 1.2,
                "auto_announce_sec": 1.1, "auto_hold_sec": 1.0},
-    "swell_ring": {"rect": [48, 700, 480, 332], "title_height": 44, "hint_height": 36, "pad": 14,
+    "swell_ring": {"rect": [48, 700, 480, 332], "pin": "bottom_left", "title_height": 44, "hint_height": 36, "pad": 14,
                    "ring_radius": 100, "lamp_radius": 20, "glow_radius": 44, "glow_alpha": 0.55, "lamp_rest": 0.25, "lamp_core_value": 0.3,
                    "flare_sec": 0.3, "flicker_hz": 7.0, "flicker_amp": 0.12, "target_px": 2, "ring_px": 4,
                    "ring_min_alpha": 0.35, "pip_px": 10, "pip_gap": 40, "assist_width": 150, "assist_height": 60,
@@ -105,11 +108,11 @@
                    "chant_now_x": 72, "chant_px_per_sec": 150, "chant_band_half": 30,
                    "brace_lift": 24, "brace_band_half": 18, "blow_gap": 6, "shield_drop": 52, "shield_px": 16,
                    "stroke_px": 68, "glyph_lift": 20, "node_px": 4, "glyph_px": 5, "dash_px": 6,
-                   "glyph_bar_drop": 76, "bar_px": 6, "unlock_at": [960, 420]},
+                   "glyph_bar_drop": 76, "bar_px": 6, "unlock_at": [960, 420], "unlock_pin": "center"},
     "read_panel": {"rect": [560, 128, 800, 600], "pad": 28},
     "enemy_page": {"gap": 8, "stat_columns": 4, "stat_gap": 14, "stat_value_width": 44, "fact_gap": 24,
                    "lore_lines": 3, "min_width": 640},
-    "opening_banner": {"rect": [560, 156, 800, 120], "title_height": 72, "rule_top": 6, "rule_bottom": 66,
+    "opening_banner": {"rect": [560, 156, 800, 120], "pin": "top", "title_height": 72, "rule_top": 6, "rule_bottom": 66,
                        "rule_length": 320, "rule_px": 1, "mark_px": 10, "chevron_px": 2, "rise_px": 8,
                        "fade_in_sec": 0.3, "hold_sec": 1.8, "fade_out_sec": 0.5, "band_alpha": 0.72,
                        "band_fade": 0.22},

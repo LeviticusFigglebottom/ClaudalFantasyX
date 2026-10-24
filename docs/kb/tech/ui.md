@@ -488,6 +488,40 @@ SPEC §6.11: a lore codex that also unlocks text records found in the world. No 
 - **Shot:** `field_menu_codex` (CodexShot: the field menu's Codex row, then Places, the cursor on the Saltgrass Causeway; "New" still on the Shell Shrine). **Tests:** `test_codex.gd` (model, unlocks, the record hook through the EventBus and a scratch Interactable, the menu, the field menu row, parity with all three devices).
 - **Mouse on the categories:** while the entries or the text have the cursor, the categories page is dimmed, so hover passes it by (M2-UI-26). A click on a category opens it.
 
+## Resolution and aspect (M2-UI-29)
+
+- **How the window maps to the layout.** `project.godot` stretches canvas items with aspect `expand` from 1920 x 1080 (unchanged; no ADR). Any 16:9 window (1280 x 720, 1920 x 1080, 3840 x 2160) lays out in 1920 x 1080. 16:10 (1920 x 1200, the 1280 x 800 handheld) lays out in 1920 x 1200. 21:9 lays out in 2560 x 1080, and 3440 x 1440 in 2580 x 1080. The extra room is always added at the right, or at the bottom.
+- **What was wrong.** Every UI rect in `game/data/ui/*.json` is at the 1920 x 1080 reference, and `HudLayout.place()` anchored everything top-left. At 16:10 and 21:9:
+  - **full-screen menus** sat off centre: 60 px high at 16:10, and 320 to 330 px left at 21:9;
+  - **HUD pieces** pinned right or bottom stayed at their 1920 x 1080 spot: the timeline and party bars 640 px from the right edge, and the bars, commands and Swell panel 120 px above the bottom;
+  - **centred pieces** (the help line, the opening banner, the area title, the Read and result panels) sat left of centre.
+  - Scrims and backdrops were already full-rect and covered the screen. The cutscene layer was already anchor-based and held. The full table is in the task file.
+- **Full-screen menus: `UiFrame.centre(root)`** (`game/ui/theme/ui_frame.gd`), called once after the menu is built.
+  - The root becomes the 1920 x 1080 reference frame, centred on the screen. Its children at reference coordinates, including ones added later, land centred.
+  - Its full-rect children (scrims, CausticBackdrop, TitleBackdrop) are stretched past the frame to the whole screen. This happens again on every window change (`Viewport.size_changed`).
+  - A root that takes the mouse gets a `FrameCatcher`: a pass-through Control under its content, as large as the screen. A click beside the frame still reaches the root, which swallows it as before (the Read panel still closes on it), and nothing behind the menu sees it.
+  - It is called in: FieldMenu, FieldSubmenu (all party pages, Memories, the backlog, the battle pause), Bestiary, Codex, ZoneMap, SettingsMenu, SettingsPage, TownMenu (shop and inn), SaveMenu, TitleMenu, ReadPanel and BattleResultPanel.
+- **HUD pieces: a section's `"pin"`.** It is one of `top_left` (the default), `top`, `top_right`, `left`, `center`, `right`, `bottom_left`, `bottom` or `bottom_right`.
+  - `HudLayout.place()` anchors the piece there, so it keeps its 16:9 margin to that edge, or stays centred on it. Content that outgrows the rect grows away from the edge.
+  - `HudLayout.pinned_rect(sec, parent_size)` gives the same spot for code that draws by hand (the area title's band and rule).
+  - `HudLayout.place_frame(c, pin)` makes a reference-sized frame on a corner. `CommandMenu` uses it for `bottom_left`, so the root and sub-menu pages keep their margins.
+  - Pinned: battle `help_line` and `opening_banner` (top), `timeline` (top_right), `party` (bottom_right), `commands` and `swell_ring` (bottom_left), and the Swell "unlocked" float (`unlock_pin`: center); field `tutorial_tips.panel` (top_right), `codex_notice.panel` (bottom_right, so a long title now grows up), and `area_title` band, name and rule (top).
+  - Unchanged: the objective line, the target info and the boss status (top_left). The interaction prompt, the objective cue, the damage numbers and the target marks follow the 3D projection.
+- **Text at 130 %.**
+  - The Swell panel's hint and the battle pause's help line ran past their panels. `UiFrame.fit_line(label, width)` shrinks a one-line label only as far as it must, never below its variation's size in the base theme, so the 100 % design is the floor. The Swell hint refits on a theme change.
+  - MenuPage row labels grow both ways, so a 46 px line box stays centred on its 40 px row.
+  - Formation's detail lines kept a wrapped height measured at the old width (a 1432 px tall, invisible box). They now refresh their minimum size before they are sized (one line in the Menus track's file).
+- **Known, not fixed here.** At 21:9 the dialogue box stretches to 2260 px, which makes very long lines. It is still pinned and readable, so M2-ARC-09 asks Architect for a maximum width. Menus stay a centred 16:9 composition, so at 21:9 the title's build label sits at the frame's corner, not the screen's.
+- **Tests:** `test_aspect_layouts.gd` builds every screen group at 16:9, 16:10, 21:9 and 43:18 with text at 100 % and 130 %, through a real window resize (`tests/aspect_host.gd`). It checks that:
+  - no visible Control leaves the screen;
+  - no text runs out of its panel (measured glyph extent, `AspectHost.ink_rect`);
+  - covers cover the screen and frames are centred and reference-sized;
+  - each HUD piece keeps its 16:9 margin to its pin;
+  - a live window change refits an open menu and the battle HUD.
+  - Headless tests never reach a frame's end, so `AspectHost.settle()` runs the deferred layout (container sorts, wrapped-label heights) first.
+  - Mutation check: with `centre()` and the pins switched off, 8 of the 11 tests fail.
+- **Shots:** `field_menu_21x9` and `battle_hud_21x9` (1280 x 540, laid out in 2560 x 1080), and `field_menu_16x10` and `battle_hud_16x10` (1280 x 800, laid out in 1920 x 1200).
+
 ## Party pages, Quit to Title and the battle pause (M2-MNU-01..05)
 
 - **The field menu's root has ten rows** (`FieldMenuModel.ROOT_IDS`): Items, Equip, Lattice, Status, Swell, Map (M2-UI-18), Bestiary, Settings, Quit to Title, Close. Equip, Lattice and Status (`PARTY_ROWS`) are off, saying why, when nobody has joined. `field_menu.json` grew the panel to 639 px and the root page to nine rows; every rect is still a multiple of 3.

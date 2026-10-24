@@ -90,6 +90,7 @@ func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_STOP
 	UiSettings.shared().follow(self)
 	_build()
+	UiFrame.centre(self)  # M2-UI-29
 	_cats.replace_rows(_category_page_rows())
 	_show_category(0)
 	if pause_tree and not get_tree().paused:

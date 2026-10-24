@@ -97,6 +97,7 @@ func _ready() -> void:
 	set_anchors_preset(Control.PRESET_FULL_RECT)
 	mouse_filter = Control.MOUSE_FILTER_STOP
 	_build()
+	UiFrame.centre(self)  # centred at 16:10 and 21:9, the scrim full screen (M2-UI-29, UI track)
 	model.changed.connect(_render)
 	model.refresh()
 	model.place_initial_cursor()
