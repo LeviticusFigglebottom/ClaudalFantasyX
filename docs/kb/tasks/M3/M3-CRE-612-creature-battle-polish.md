@@ -5,7 +5,7 @@ role: character
 status: doing
 owner_session: "creatures (cloud session_01CYks9e592YBEfygyTawcJD, branch claude/creatures)"
 reviewer: combat
-depends_on: [M2-BPR-11]
+depends_on: [M2-CRE-03]
 milestone: M3
 request-from: lead
 ---
