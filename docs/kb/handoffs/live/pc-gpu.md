@@ -84,6 +84,14 @@ python -c "import sys; sys.path.insert(0,'tools/screenshots'); import compare, p
   `timeout`.
 - **Line endings:** Python generators and gdformat write CRLF on Windows. Normalise to LF before committing.
 - `water_look_probe.tscn` needs its `--out` folder to exist, or it errors and hangs.
+- **The compute body's Godot traps** (undertow.md, "Gotchas"):
+  - A `.glsl` file expands one include level, and re-imports only when it changes itself, so run
+    `tools/rendering/gen_undertow_compute.py`.
+  - `get_cam_projection()` is already corrected.
+  - Set `Texture2DRD` RIDs on the main thread.
+  - Detach textures before freeing them.
+- **New capture options:** `--add-box=x,y,z,sx,sy,sz` (a test box) and `--node-set=Path:prop=value` (e.g.
+  `Storm:half_res_compute=false` for the SubViewport A/B).
 - **`capture_preset --mat-set` doesn't reach the Undertow body.** The body renders in the half-res SubViewport.
   Edit undertow.json for the run instead, and restore it afterwards.
 - **The capture size:** `capture_preset` writes 960×540 by default and 1920×1080 with `--scale=2`. Compare like with
@@ -107,7 +115,8 @@ python -c "import sys; sys.path.insert(0,'tools/screenshots'); import compare, p
 
 | Branch | State | Content |
 |---|---|---|
-| gpu/m2-rnd-01b-undertow-compute | **WIP** (from gpu/m2-rnd-01-undertow) | M2-RND-01 compute pass. Step A is done: the body's uniforms are split from `undertow_march()` (bit-identical render). Next: a generator for the compute UBO, then the CompositorEffect march at PRE_TRANSPARENT into a Texture2DRD that the composite samples. |
+| gpu/fp-10-keylight-check | pushed (from origin/claude/m2-slice 0408806; Lead request) | M2-FP-10 GPU check. No artefacts; cost ≤ 0.03 ms; Haluna sun at bias 1.0, no face regression. H05's 74° sun leaves the face in brow and nose shadow, so set `key_pitch_deg` 30 on H05 and H06. **Layer 20 conflict** between the key light and the Undertow half-res body. New tool `tools/gpu_bench/keylight_probe.tscn`. Report: `docs/kb/qa/gpu/2026-10-24-fp-10-keylight.md` |
+| gpu/m2-rnd-01b-undertow-compute | **M2-RND-01 in review** (contains gpu/m2-rnd-01-undertow; merge that first) | Compute body (ADR 0028): exact occlusion; High body_scale 0.35 (motion-checked). The storm's own cost is 0.58–0.80 ms at High 1440p. All 5 Undertow shots drift. Follow-up task M2-RND-05. Report: m2-rnd-01-start.md, the last two sections |
 | gpu/m2-rnd-01-undertow | **WIP, not merged** (task `doing`) | M2-RND-01. Earlier: the wall foot, the sea's storm response, joined flanks, the half-res body and 3-octave multiple scattering. This session: noise-warped striations, fringe billows with sun-ward shading, softer sea streaks, and the wound-stipple fix (skin step refinement). High 1440p: Day 2.56, Eye 3.11 ms. All 5 Undertow shots drift. Integration branch merged in (a504072). Report: `docs/kb/qa/gpu/2026-10-23-m2-rnd-01-start.md` |
 | gpu/qa-08-asha-recheck | task `review` (reviewer: character) | M1-QA-08: Asha GPU recheck at 2× High and Ultra (96a6585 / 9a133ee). Neutral passes; smile passes on shading but reads as a smirk at 1×; grief still fails on two Character mouth faults (black rim, peg teeth). CHR-12: crown, lid band (R:B 3.7 against 2.0–2.5) and smile eyes fail; lip bow and skin pass. ADR 0024 check 2 confirmed. Report: `docs/kb/qa/gpu/2026-10-24-qa-08-asha.md` |
 | gpu/qa-05d-asha-recheck | superseded by qa-08 | The first cut of the same recheck, before the task file existed. Don't merge. |
@@ -121,13 +130,12 @@ python -c "import sys; sys.path.insert(0,'tools/screenshots'); import compare, p
 
 ## Unfinished queue, in order (exact next step first)
 
-1. **M2-RND-01** (`gpu/m2-rnd-01-undertow`, WIP). The billows, striations and both sweep defects are done. The
-   exact next step is in the task file's "WIP handoff":
-   - Compute-pass occlusion inside the volume: a `CompositorEffect` march with the game view's depth and its own
-     reprojected history.
-   - Win back min-spec cost there (quarter res + reprojection). Undertow High 1440p is AT RISK on an RTX 3060
-     (~3×: Day ~7.7, Eye ~9.3 ms).
-   - Then torn rents and mote streamers; the storm in sky, reflections and rain; lightning; per-chapter presets.
+1. **M2-RND-01: in review** (reviewer Environment), on `gpu/m2-rnd-01b-undertow-compute`; merge
+   `gpu/m2-rnd-01-undertow` first.
+   - High `body_scale` is 0.35 (motion-checked); Medium stays at 0.5.
+   - The storm's own cost is 0.58–0.80 ms at High 1440p, ~2–2.4 ms projected on an RTX 3060.
+   - All 5 Undertow shots drift: re-approve them on lavapipe.
+   - The storm-event criteria moved to **M2-RND-05** (todo).
 2. **M1-RND-22:** the prewarm hitch floor, measured at Low, High and Ultra. If 50 ms is impossible, draft an ADR
    proposing a SPEC §4.2 clarification. The earlier finding (RND-15): the floor is ~230–310 ms of stage set-up plus
    single heavy shader compiles. The fixes are the shader baker or a boot-time stage.

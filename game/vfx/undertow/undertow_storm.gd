@@ -38,6 +38,8 @@ const BODY_NODE := "Body"
 const SHELL_NODE := "Shell"
 const SPRAY_NODE := "Spray"
 const PARAM_DEEP := &"col_deep"
+const PARAM_STORM_CENTER_XZ := &"storm_center_xz"
+const PARAM_STORM_REACH := &"storm_reach_m"
 const PARAM_FOAM := &"col_foam"
 const PARAM_SEA_GLOW := &"sea_glow_energy"
 ## 3D scaling modes that accumulate history like TAA (M1-RND-15).
@@ -117,6 +119,25 @@ const GIZMO_COLOR := Color(0.25, 0.88, 0.78)
 @export_group("Scene")
 ## The zone's ocean: its look is copied into the funnel, and the lid clears it over the funnel.
 @export var water: WaterSurface
+## Resolution fraction of the raymarched body (M2-RND-01, UndertowHalfRes): -1 = the quality tier's
+## body_scale (undertow.json; 0.5 on Medium, 0.35 on High, 1 on Ultra), else this value (1 = full resolution).
+@export_range(-1.0, 1.0) var half_res_body_scale: float = -1.0:
+	set(value):
+		half_res_body_scale = value
+		if _built:
+			_build()
+## Whether the half-res body marches as a compute pass on the game view (M2-RND-01, UndertowBodyEffect:
+## exact occlusion) where a RenderingDevice allows it. false = the SubViewport path (diagnosis and the
+## A/B control; its occlusion is analytic and misses geometry inside the wall's foot).
+@export var half_res_compute: bool = true:
+	set(value):
+		half_res_compute = value
+		if half_res != null:
+			half_res.teardown()
+			half_res.queue_free()
+			half_res = null
+		if _built:
+			_build()
 ## The zone's key light (sun or moon): its colour and energy light the storm.
 @export var sun: DirectionalLight3D
 @export var ambient_top: Color = Color("#6F7E8E")
@@ -135,6 +156,8 @@ var sea: MeshInstance3D
 var body: MeshInstance3D
 var sea_material: ShaderMaterial
 var body_material: ShaderMaterial
+## The half-resolution body renderer while half_res_body_scale < 1 (else null).
+var half_res: UndertowHalfRes
 var shell_materials: Array[ShaderMaterial] = []
 var spray_materials: Array[ShaderMaterial] = []
 var lid: MeshInstance3D
@@ -159,6 +182,47 @@ func _ready() -> void:
 		push_warning("UndertowStorm: unknown quality '%s', using default" % quality)
 		set_quality(str(state.config.get("default_quality", "")))
 	_place()
+
+
+func _update_half_res(body_priority: int) -> void:
+	var scale := body_scale()
+	var want := scale < 1.0 and body != null and body.visible and not Engine.is_editor_hint()
+	if not want:
+		if half_res != null:
+			half_res.teardown()
+			half_res.queue_free()
+			half_res = null
+		return
+	if half_res == null:
+		half_res = UndertowHalfRes.new()
+		half_res.name = "HalfRes"
+		add_child(half_res, false, Node.INTERNAL_MODE_FRONT)
+		half_res.scale = scale
+		half_res.allow_compute = half_res_compute
+		half_res.setup(visuals, body, body_priority)
+	half_res.scale = scale
+
+
+## The body's resolution fraction in use: the export when set (>= 0), else the tier's body_scale.
+func body_scale() -> float:
+	if half_res_body_scale >= 0.0:
+		return clampf(half_res_body_scale, UndertowState.MIN_BODY_SCALE, UndertowState.MAX_BODY_SCALE)
+	return float(state.quality_plan()["body_scale"])
+
+
+## Storm-local radius of the wall's foot (eye + wall + skirt): where the composite's occlusion starts.
+func _wall_foot_radius() -> float:
+	var sh := state.config.get("shape", {}) as Dictionary
+	return (
+		float(sh.get("eye_radius_m", 0.0))
+		+ float(sh.get("wall_thickness_m", 0.0))
+		+ float(sh.get("skirt_reach_m", 0.0))
+	)
+
+
+## A storm that leaves the tree takes its hold on the zone sea with it.
+func _exit_tree() -> void:
+	_clear_sea_response()
 
 
 func _enter_tree() -> void:
@@ -315,6 +379,7 @@ func water_parameters() -> Dictionary:
 		var deep: Variant = water.material.get_shader_parameter(PARAM_DEEP)
 		if deep is Color:
 			out[&"col_sea_deep"] = deep
+			out[&"col_water_wall"] = deep
 		var foam: Variant = water.material.get_shader_parameter(PARAM_FOAM)
 		if foam is Color:
 			out[PARAM_FOAM] = foam
@@ -384,10 +449,18 @@ func _build() -> void:
 			body_material = _material(path, int(prio.get("body", 0)))
 		body.material_override = body_material
 		body.visible = true
+		_update_half_res(int(prio.get("body", 0)))
 	elif body != null:
 		body.visible = false
+		# Shells: no half-res body (the compute effect would otherwise keep marching the hidden body).
+		_update_half_res(int(prio.get("body", 0)))
 	_build_shells(plan, bound, full_height, str(shaders.get("shell", "")), int(prio.get("shells", 0)))
-	_build_sprays(int(plan["spray_layers"]), str(shaders.get("spray", "")), int(prio.get("spray", 0)))
+	_build_sprays(
+		int(plan["spray_layers"]),
+		str(shaders.get("spray", "")),
+		int(prio.get("spray", 0)),
+		int(prio.get("spray_outer", prio.get("spray", 0)))
+	)
 	# In the editor `motes` is a placeholder (GlimmerField is not @tool).
 	if motes != null and not Engine.is_editor_hint() and motes.draw_material != null:
 		motes.draw_material.render_priority = int(prio.get("motes", 0))
@@ -421,7 +494,9 @@ func _build_shells(plan: Dictionary, bound: float, height: float, shader_path: S
 		shell_materials.pop_back()
 
 
-func _build_sprays(layers: int, shader_path: String, prio: int) -> void:
+## Layer 0 is the outer curtain, in front of the wall's foot: it draws after the body (the body
+## ignores depth, so it would cover it) and only its near half (the far half is behind the wall).
+func _build_sprays(layers: int, shader_path: String, prio: int, outer_prio: int) -> void:
 	var sp := state.config.get("spray", {}) as Dictionary
 	var radii: Array[float] = [float(sp.get("outer_radius_m", 1.0)), float(sp.get("inner_radius_m", 1.0))]
 	var sh := state.config.get("shells", {}) as Dictionary
@@ -430,8 +505,10 @@ func _build_sprays(layers: int, shader_path: String, prio: int) -> void:
 		mi.name = "%s%d" % [SPRAY_NODE, _sprays.size()]
 		mi.mesh = UndertowMeshBuilder.unit_tube(1, int(sh.get("segments", 3)))
 		mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-		var mat := _material(shader_path, prio)
+		var outer := _sprays.is_empty()
+		var mat := _material(shader_path, outer_prio if outer else prio)
 		mat.set_shader_parameter(&"spray_radius_m", radii[_sprays.size()])
+		mat.set_shader_parameter(&"spray_front_only", outer)
 		mi.material_override = mat
 		var r := radii[_sprays.size()]
 		var h := float(sp.get("height_m", 1.0))
@@ -466,6 +543,9 @@ func _push_static() -> void:
 func _push_dynamic() -> void:
 	if not _built:
 		return
+	if half_res != null:
+		var top := float((state.config.get("shape", {}) as Dictionary).get("height_m", 0.0))
+		half_res.set_occluder(storm_center(), _wall_foot_radius(), top)
 	state.temporal_aa = viewport_is_temporal(get_viewport() if is_inside_tree() else null)
 	var params := state.dynamic_parameters()
 	params["storm_center"] = storm_center()
@@ -474,6 +554,23 @@ func _push_dynamic() -> void:
 		params[PARAM_SEA_GLOW] = water.sea_glow_energy
 	for m in _active_materials():
 		_set_all(m, params)
+	_push_sea_response()
+
+
+## The zone sea answers the storm (M2-RND-01): undertow.json "sea_response" onto the water's
+## material, centred on the storm and scaled by its intensity. Cleared when the storm leaves.
+func _push_sea_response() -> void:
+	if water == null or water.material == null:
+		return
+	for key: String in state.sea_response_parameters():
+		water.material.set_shader_parameter(key, state.sea_response_parameters()[key])
+	var c := storm_center()
+	water.material.set_shader_parameter(PARAM_STORM_CENTER_XZ, Vector2(c.x, c.z))
+
+
+func _clear_sea_response() -> void:
+	if water != null and water.material != null:
+		water.material.set_shader_parameter(PARAM_STORM_REACH, 0.0)
 
 
 ## Editor-only footprint gizmo under the visuals (internal, so it is never saved with the scene).
