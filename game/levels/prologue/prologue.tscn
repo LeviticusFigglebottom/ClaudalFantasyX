@@ -30,8 +30,8 @@ sky_material = SubResource("Sky_dusk")
 background_mode = 2
 sky = SubResource("Sky_main")
 ambient_light_source = 3
-ambient_light_color = Color(0.353, 0.498, 0.659, 1)
-ambient_light_sky_contribution = 0.6
+ambient_light_color = Color(0.165, 0.42, 0.47, 1)
+ambient_light_sky_contribution = 0.3
 tonemap_mode = 4
 tonemap_exposure = 0.85
 glow_enabled = true
@@ -245,6 +245,11 @@ light_color = Color(1, 0.624, 0.275, 1)
 light_energy = 2.2
 shadow_enabled = true
 directional_shadow_max_distance = 120.0
+
+[node name="Rim" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.507, 0, 0.8619, 0.1212, 0.9901, -0.0713, -0.8534, 0.1406, 0.502, 0, 20, 0)
+light_color = Color(0.949, 0.651, 0.29, 1)
+light_energy = 1.4
 
 [node name="Fill" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.6402, 0, -0.7682, -0.5497, 0.6986, -0.4581, 0.5367, 0.7155, 0.4472, 0, 20, 0)
