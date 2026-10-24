@@ -11,12 +11,12 @@ walk start and stop). Make the real Rhen, Asha and Toma appear and move naturall
 ## Tasks (filed 2026-10-24; ids checked free on every branch)
 | Task | Role | State |
 |---|---|---|
-| M2-HER-1101 field hero actor (Rhen, locomotion blend, eased turns, start/stop, ground) | architect | doing (worktree agent) |
-| M2-HER-1102 field party followers (Asha, Toma on a trail) | architect | doing (same agent) |
-| M2-HER-1103 battle hero actors (meet UI-07 + CHR-07 + BPR-10, check every contract clip on the real models) | combat | doing (worktree agent, trial merge) |
-| M2-HER-1104 cutscene motion API (eased turn, walk start/stop, idle micro-motion) for m2-slice's sequencer | cinematics | doing (worktree agent) |
-| M2-HER-1105 clip-gap requests to the characters track | character | todo (list follows the field and cutscene passes) |
-| M2-HER-1106 shots and tests | qa | doing |
+| M2-HER-1101 field hero actor (Rhen, locomotion blend, eased turns, start/stop, ground) | architect | review (character) |
+| M2-HER-1102 field party followers (Asha, Toma on a trail) | architect | review (character) |
+| M2-HER-1103 battle hero actors (meet UI-07 + CHR-07 + BPR-10, check every contract clip on the real models) | combat | doing: waits on ui / characters / battle-presentation merges |
+| M2-HER-1104 cutscene motion API (eased turn, walk start/stop, idle micro-motion) for m2-slice's sequencer | cinematics | review (cinematics) |
+| M2-HER-1105 clip-gap requests to the characters track | character | doing (characters, M2-CHR-12) |
+| M2-HER-1106 shots and tests | qa | doing (battle shots wait on the merges) |
 
 **Lead: please record the claims on the integration branch** (commit 34f0ce2e: the six task files, the ownership row
 `game/hero_motion/**`, `game/data/hero_motion/**`, `game/levels/_tests/hero_motion/**`, `tests/unit/test_hero_*.gd`,
@@ -72,12 +72,70 @@ and ADR 0190 "hero motion layer", proposed).
   clip) and foot-down markers. The battle fixes follow it: victory, a lying KO, Rhen's hooks in hand, and a revive.
   They'll message each landing sha.
 
+- **M2-HER-1101 / 1102: field hero actor and followers → review (character).** Commits 9e9a3f70..d7b4237b,
+  then fa411948 and 32d59835.
+  - **One hook line** in `FieldController._ready`: `HeroFieldActor.attach(self)`. It hides the capsule
+    (StandIn/Facing) and shows the real Rhen (LOD1), in every zone, with no zone scene edits.
+  - **The same attach covers the cast.** It gives bodies to the CutsceneStage/Actors hero capsules: the greybox
+    `_build_stage` actors and the hand-placed ones in Haluna, the Shrine and First Verse. Villagers and real models
+    are left alone.
+  - **Animation:** an AnimationTree with an idle/walk/run BlendSpace1D by measured speed, and a playback scale.
+    `play_clip(name, blend, hold)` plays one-shots over the locomotion and returns to it; clips started on the
+    model's AnimationPlayer are routed through it.
+  - **Turning:** the visible yaw follows HeroLocomotion (400°/s cap, eased in and out). A still body eases to its
+    node's facing, so the sequencer's `_face` on the player eases too.
+  - **Idle micro-motion** (M2-HER-1104) is on every field body, fading out while walking.
+  - **Followers** (`HeroFieldParty`): up to 2 from `party_ids`, on Rhen's breadcrumb trail at 1.15 m. They
+    accelerate at 9 and brake at 12, and stand on a floor ray. They snap after a teleport, and hide during
+    `hold_player` cutscenes and while the stage shows the same hero.
+  - **Measured clip speeds** (`HeroClipGait`, foot plant from the bone tracks):
+
+    | Hero | Walk m/s | Run m/s |
+    |---|---|---|
+    | Rhen | 1.09 | 2.35 |
+    | Asha | 0.95 | 2.01 |
+    | Toma | 1.08 | 2.26 |
+
+    A test holds the data within 10% of these.
+  - **field_movement.json:** walk 2.4 → 1.5 m/s, acceleration 18 → 9, deceleration 24 → 12. Run stays 4.6 m/s;
+    that clip plays at its 1.5× cap, so the feet slide about 25% at a full run until M2-CHR-12's run clip lands.
+  - **Shots** `field_hero_rhen_walk` and `field_hero_party`, viewed and re-approved with the micro-motion on. Rhen
+    reads at the right scale with his feet on the floor. The party trails on his curve. The walk pose itself is
+    stiff; that's the clip, which M2-CHR-12 replaces.
+  - **Haluna** (viewed, not a baseline): Rhen at the spawn, with no capsule left.
+  - **Known limits:** after a teleport, a follower can briefly stand inside a wall until the trail fills in. The
+    Haluna Lantern turns with the controller, not the eased body.
+
+## MERGE-READY @ (pending the background full suite)
+- **Items:** M2-HER-1101, 1102, 1104 (with its sequencer patch for m2-slice) and 1103's helper; claims, ADR 0190.
+- **Checks run** (on 32d59835, with the integration branch 0b1e76a4 merged in):
+
+  | Check | Result |
+  |---|---|
+  | hero | 54/0 |
+  | field | 98/0 |
+  | zone | 42/0 |
+  | cutscene | 41/0 |
+  | haluna | 46/0 |
+  | fp_ | 24/0 |
+  | shrine | 35/1 |
+  | shots field_hero_rhen_walk, field_hero_party, hero_cutscene_turn_strip | 3/0, viewed |
+  | gdlint, gdformat, validate_data, taskboard | clean |
+
+- **The one shrine failure is pre-existing.** `test_shrine_audio::test_the_zone_plays_the_shrine_cue` fails the same
+  on a pristine checkout of the integration branch 0b1e76a4.
+- **Checks skipped:**
+  - coverage: no `game/battle` or `game/progression` change;
+  - Blender: no source touched;
+  - tools unittest: no `tools/` change;
+  - other shots: no other scene changed. Every zone shows Rhen instead of a capsule, so **zone shots will drift**;
+    the Lead's full run will flag those and they need viewing.
+- **The full Godot suite is running** in the background; the result is appended here.
+
 ## In progress
-- Field: HeroFieldActor via one hook line in FieldController._ready (no zone scene edits), AnimationTree BlendSpace1D,
-  measured clip speeds, followers; tuning the field acceleration and deceleration (field_movement.json) with m2-slice.
-- Cutscene: a HeroMotion API plus a ready-to-apply sequencer patch for m2-slice (they own game/cutscene/**).
-- Battle: a trial merge of claude/ui + claude/characters + claude/battle-presentation to check the real heroes play
-  the contract clips; gaps go back to the owners as exact patches.
+- Battle: waiting on the three tracks (see M2-HER-1103) to merge; then the battle_heroes_* shots get approved.
+- Characters' M2-CHR-12 clips: when they land, feed `locomotion.json`'s speeds to the gait, and slot start, stop and
+  turn clips into `play_clip`.
 
 ## Coordination (2026-10-24 ~20:55)
 - **m2-slice OK'd** the FieldController hook and the field_movement.json tuning. FieldEncounters only reads metres
@@ -92,7 +150,8 @@ and ADR 0190 "hero motion layer", proposed).
   log is the channel.
 
 ## Exact next step
-Merge the three worktree agents' branches as they finish, run scoped checks, post a MERGE-READY line here.
+Read the full suite result and finalise the MERGE-READY sha above. Then take M2-CHR-12's clips into the field gait
+when characters reports them.
 
 ## Un-pushed state
-None (the worktree agents' commits are local until merged here).
+None. The battle trial merge (`hro03-trial`) is local scratch by design.
