@@ -94,4 +94,16 @@ shots gave 0.0008 / 0.0019 / 0.0033)
 4. The windbreak has a single variant (49 instances vary by yaw and scale only). A second seed would need a new
    piece name in the layout.
 
+## Merge notes (2026-10-24, env-art parent)
+- Merged into claude/env-art after M1-ENV-10 and M2-ENV-08: build.py keeps props, causeway and trees;
+  kit rebuilt, `verify_blender_builds` haluna_kit 49 + vegetation 7 identical.
+- **Gap the worktree missed:** `test_post_import.gd::test_kit_placeholder_pieces_are_tagged...` still
+  asserted the two trees are PLACEHOLDER (the Godot tests were skipped as "no GDScript changed", but the
+  .glb extras changed). Updated: only `shell_shrine_massing` is a placeholder; the trees and dock aren't.
+- Shots on the merged tree (with M1-ENV-10), viewed and re-approved: h07 rmse 0.26145 (the banyan
+  frames the chapel with trunk, prop pillar and root curtains), h01 0.01872 (windbreak columns), h02
+  0.03102 (windbreaks, plus the ENV-10 house that sat in the old LOD hole). Palette checks 19/19.
+- **Follow-up (open, for the review):** at H07 the banyan's crown hardly enters the top of frame; the shot
+  reads as trunks and roots under open sky. A denser, lower crown edge over the court would finish it.
+
 ## Review log

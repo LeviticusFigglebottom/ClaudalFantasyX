@@ -137,13 +137,15 @@ func test_base_body_is_placeholder_and_keeps_its_gltf_materials() -> void:
 
 
 func test_kit_placeholder_pieces_are_tagged_and_finished_pieces_are_not() -> void:
-	for piece: String in ["banyan_placeholder", "shell_shrine_massing", "windbreak_placeholder"]:
+	for piece: String in ["shell_shrine_massing"]:
 		var root := _scene(KIT_DIR + piece + ".glb")
 		assert_eq(root.get_meta(AssetImportRules.TAG_META, &""), AssetImportRules.PLACEHOLDER, piece)
 		var notes: PackedStringArray = root.get_meta(AssetImportRules.NOTES_META, PackedStringArray())
 		assert_true(notes.size() == 1 and notes[0].begins_with("PLACEHOLDER: "), "%s note %s" % [piece, notes])
-	var dock := _scene(KIT_DIR + "dock_haluna.glb")
-	assert_false(dock.has_meta(AssetImportRules.TAG_META), "the dock is not placeholder")
+	# M2-ENV-07: the two trees are real now (they keep their old piece names, untagged).
+	for piece: String in ["dock_haluna", "banyan_placeholder", "windbreak_placeholder"]:
+		var finished := _scene(KIT_DIR + piece + ".glb")
+		assert_false(finished.has_meta(AssetImportRules.TAG_META), "%s is not placeholder" % piece)
 	_done()
 
 

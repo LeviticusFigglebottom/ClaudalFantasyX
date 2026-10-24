@@ -77,4 +77,12 @@ places set up LOD ranges the old way:
 - **Sign-off pending:** Character + Tools (owner of `game/core/import/**`, `tests/unit/test_post_import.gd`,
   `asset_import.md`) still has to sign off on the `_apply_lod` change. Reviewer: rendering.
 
+## Merge notes (2026-10-24, env-art parent)
+- Merged into claude/env-art. **Gotcha confirmed:** a checkout with an existing `.godot/` kept the old
+  import ranges (3 `--filter=import` failures) until the `.glb` imports were deleted and re-imported
+  (`rm .godot/imported/*.glb-*`, then `--import`): 19/19 after. The Lead's integration worktree needs the same.
+- h02 re-approved together with M2-ENV-07's windbreak change (rmse 0.03102 on the merged tree, viewed).
+- The patch for m2-slice's moved `game/levels/ch02/haluna/haluna_dresser.gd` (m2-slice OK'd env-art
+  applying it) is applied when env-art next merges claude/m2-slice.
+
 ## Review log
