@@ -39,10 +39,11 @@ with salt and spray darkening it low. The sky and sea carry the cold. Saturation
 ## 0. Layout, Orientation, and Lighting
 
 **Geography (world north = −Z, +X east).** Corrow sits at the head of a shallow bay on the Low Reaches'
-outer coast; the open sea is to the **south**. The **seawall** arcs across the bay's mouth for about 1.1 km,
-convex to the sea: its walk's centre line is an arc of **R = 240 m** about a centre inland (north). The
-**low town** (the fishers' quarter) lies behind it on reclaimed ground at **+1.0 m**, below storm-surge
-level, which is why the stair exists. The Bastion (the Stillguard garrison, a later task) stands at the
+outer coast; the open sea is to the **south**. The **seawall** follows the bay's shore for about 0.45 km,
+**concave to the sea**: its walk's centre line is an arc of **R = 300 m** about a centre out in the bay
+(south), so from anywhere on the wall the far Watchers turn their faces back across the curve toward you.
+The **low town** (the fishers' quarter) lies behind it on reclaimed ground at **+1.0 m**, below
+storm-surge level, which is why the stair exists. The Bastion (the Stillguard garrison, a later task) stands at the
 wall's west root on higher ground. The **Coilspire** headland closes the bay to the east: "the headland where
 storms always break". Its spire stands about 480 m east-south-east of the stair head, and its beacon is the
 one warm point on the skyline.
@@ -52,7 +53,7 @@ one warm point on the skyline.
                     |
      Bastion   low town (+1.0)   houses   houses
      (west)    lanes ↑ ↑ stair foot
-   ============\=====[ FISHER STAIR ]======================\\  seawall (R 240 m, convex to sea)
+   ============\=====[ FISHER STAIR ]======================\\  seawall (R 300 m, concave to sea)
      Watchers' heads (parapet, sea side) ▲ ▲ ▲ ▲ ▲ ▲ ▲ ▲ ▲ ▲  \\
      sea face reliefs, rip-rap apron ≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈ \\___ Coilspire headland
                     |          open sea (storm_grey)                (beacon lit), ESE
@@ -70,10 +71,13 @@ one warm point on the skyline.
   matter, not wide enough"), 11 m of rise in two flights with a half-way landing, 0.2 m risers and 0.34 m
   treads, dished in the middle by feet. Its open edge carries the **hand-line**: a tarred rope through iron
   eyes on stanchions every 2 m. The stair-watch's law is cut into nothing; it is spoken (no inscriptions).
-- **Liss's hoist** is bolted into the back of the Watcher's head nearest the stair head: a 5.5 m spar raking
-  out over the inner face, a block at its tip, the fall of rope to a sling-board in the lane below.
-- **The party arrives on the walk** from the west and holds the wall-head over the stair, looking east along
-  the curve with the sun behind them: the heads are front-lit warm against the storm.
+- **Liss's hoist** stands at the stair head: a 5.5 m spar stepped in an iron shoe on the inner kerb, raking
+  out over the inner face, its head-rope back across the walk to two strap-plates **bolted into the back of
+  the Watcher's head** nearest the stair head, a block at its tip, the fall of rope to a sling-board part-way
+  down the face.
+- **The party arrives on the walk** from the west and holds the wall-head over the stair. From the walk the
+  heads show their backs (they face the sea); from an embrasure, looking east along the curve with the sun
+  behind, the heads are side-lit warm against the storm and turn their faces toward you round the curve.
 - **The storm (the Undertow) comes from the south-east**, over the sea; the sun at 250° still slants in
   under its western edge. By 16:40 the front has covered the sun.
 
@@ -131,10 +135,10 @@ the sea on +Z and bent onto the R = 240 m arc)
 
 | Kit | Pieces | Key dimensions and parameters |
 |---|---|---|
-| **Seawall** | `seawall_curve` | One **12 m** run of the wall (arc length on the walk's centre line), bent about R = 240 m (centre at local z = −240), so segments laid edge to edge at 2.865° steps close exactly. Origin at walk level on the centre line. Walk, parapet course, kerb, battered sea face (12°) and inner face (6°), the footing at −1.0 m (sea) and +1.0 m (town). Faces are displaced grids carrying **0.5 m courses with staggered head joints** (geometry grooves, 1.5 cm) and a little per-block proud/sunken offset, so coursing reads at 100 m where the texture cannot. Per-segment seed varies blocks. |
+| **Seawall** | `seawall_curve` | One **12 m** run of the wall (arc length on the walk's centre line), bent about R = 300 m (centre out at sea, at local z = +300), so segments laid edge to edge at 2.29° steps close exactly. Origin at the datum (y 0) on the walk's centre line. Walk, parapet course, kerb, battered sea face (12°) and inner face (6°), the footing at −1.0 m (sea) and +1.0 m (town). Faces are displaced grids carrying **0.5 m courses with staggered head joints** (geometry grooves, 1.5 cm) and a little per-block proud/sunken offset, so coursing reads at 100 m where the texture cannot. Courses rebuilt after past Risings are a second slot (`cw_laterite_rebuilt`, fresher, less salt), set whole courses at a time by a seeded field. |
 | **The Watchers** | `watcher_head`, `watcher_relief` | Head: a parapet merlon carved as a colossal face, **2.4 m tall, 2.1 m wide, 1.2 m deep**, built of four courses of blocks (the joints cut through the face), standing on the parapet course. Face to the sea: high brow, **closed lids** (convex, a down-curving crease), straight nose, cheeks, **open, rounded mouth** as if humming, chin; a crown band of breaking-wave scallops. Back: plain blocks. Relief: the same face carved **3.0 m tall** in a 3.4 × 3.6 m panel set flush into the sea face (tilted to its 12° batter), in two staggered rows (+4.5 m and +8.5 m centres). Salted and wet low, worn smooth on the brows and noses (A channel). |
-| **The Fisher Stair** | `fisher_stair` | A 24 m piece set against the inner face (two segments long), bent onto the same arc, origin at the low-town ground at the stair foot. 3.2 m wide: flight 1 (27 risers, 0.2 / 0.34 m), a 3.2 m landing at +6.4 m, flight 2 (23 risers) to the walk at +12.0 m (local x from 0 to 22.6 m). Solid masonry body below the treads; tread tops **dished** up to 4 cm in the middle; nosings worn round; a hand-line on the open edge: iron stanchions (1.0 m) every 2 m, eyes, a tarred rope line in shallow sags. |
-| **Liss's hoist** | `liss_hoist` | Bolted to a `watcher_head`'s back (origin at the head's base centre, same yaw). A **5.5 m** salvaged spar (0.16 m), its heel in an iron shoe on the walk, raking 35° out over the inner face; two iron strap-plates with four bolt heads into the stone; a guy rope back to a ring in the walk; a double block at the tip; the fall of rope to a sling-board 6 m below. All rope and iron, nothing bound (no emissive). |
+| **The Fisher Stair** | `fisher_stair` | A 26 m piece set against the inner face, bent onto the same arc, in the wall's frame (origin at the datum on the walk's centre line at the stair foot's arc length). 3.2 m wide: flight 1 (27 risers, 0.2 / 0.34 m), a 3.2 m landing at +6.4 m, flight 2 (30 risers of 0.203 m) to a head landing that bridges the inner kerb at +12.53 m, and two steps down onto the walk. Solid masonry body below the treads; tread tops **dished** up to 4 cm in the middle; nosings worn round; a hand-line on the open edge: iron stanchions (1.0 m) every 2 m, eyes, a tarred rope line in shallow sags. |
+| **Liss's hoist** | `liss_hoist` | In the frame of the `watcher_head` it is bolted into (origin at the head's base centre, same yaw). A **5.5 m** salvaged spar (0.17 m), its heel in an iron shoe on the inner kerb, raking 35° out over the inner face; its two-part head-rope back across the walk to two iron strap-plates with four bolt heads on the head's back; side guys to ring-bolts in the kerb; a double block at the tip; the fall of rope to a sling-board 9 m below it. All rope and iron, nothing bound (no emissive). |
 | **The foot** | `wall_apron` | A 12 m strip of rip-rap on the sea foot (bent on the arc): tumbled laterite blocks and dark boulders 0.6–1.6 m from −1.5 to +1.0 m, wet, barnacled low. |
 | **Low town** | `lowtown_ground`, `lowtown_house_a`, `lowtown_house_b` | Ground: a 24 × 24 m cell at +1.0 m (edges exactly there so cells tile): packed-earth lanes, worn cobble patches, a stone gutter, puddles in the hollows (VC.B). Houses: fishers' houses of laterite rubble (2.6 m walls), dark door and windows, a timber lintel, net hooks, a **red clay tile hip roof** (the Haluna roof generator, read-only): a 5 × 6 m and a 4 × 7 m. Roofs stay below the walk's level so the wall dominates. |
 | **The skyline** | `coilspire_headland` | A far piece (seen at 300–800 m): a rocky headland 260 × 180 m rising to +34 m, and the **Coilspire** on it: a hollow tapering stone spire 46 m tall, its old **copper flues coiled** round it in three bands (bronze patina), and the **beacon cage** at the top with a fire (emissive `ember_orange`). The temple's interior is a later task (`ch08/coilspire`). |
@@ -175,17 +179,16 @@ All at `ch08` unless noted. **◆** marks the preview shots built in `corrow_kit
 
 | # | Lens (vFOV) | Height | Framing | What the shot is about |
 |---|---|---|---|---|
-| C01 ◆ | 28 mm (46.4°) | 1.7 m on the walk, west of the stair head, looking east-south-east along the curve | The Watchers' heads recede in a row on the right third, sunlit on their west cheeks, against the slate storm over the sea; the wet walk leads in; the Coilspire with its beacon on the left of the skyline. Sky ≈ 45%. | Arrival: the wall as the town's whole defence, beautiful and doomed. |
+| C01 ◆ | 28 mm (46.4°) | 1.4 m above the parapet course, just outside the heads' line west of the stair head (an embrasure, leaning out), looking east along the curve | The Watchers' faces in profile recede on the left, side-lit warm by the WSW sun; the sea face sweeps round the bay below; the Coilspire with its beacon on its headland at the right third, under the slate storm. Sky ≈ 45%. | Arrival: the wall as the town's whole defence, beautiful and doomed. |
 | C02 ◆ | 24 mm (53.1°) | 1.6 m in the lane at the stair foot, looking up | The Fisher Stair rising from the lower left to the wall-head; Liss's spar against the sky at the top right; a house corner frames the left. | "Wide enough to matter, not wide enough." |
 | C03 ◆ | 50 mm (27.0°) | 2.0 m above the sea, 40 m out, looking north-north-west | The sea face: two rows of relief faces and the parapet heads, the low sun raking across them from the west so every lid and lip throws a shadow; spray at the foot on the rip-rap. | The Watchers humming out to sea. |
 | C04 ◆ | 35 mm (37.8°) | 1.6 m on the walk beside the hoist's head | The back of a Watcher's head with the spar bolted into it, the rope falling over the edge to the lane; the walk curving away behind. | Plain rope and iron, bolted into something sacred. |
 | C05 ◆ | 35 mm (37.8°) | 1.1 m above the flood, `ch08_surge` | The stair foot from the flooded lane: dark water to the bottom step, the stair rising into haze, the beacon a far warm point. No glow on the stair. | Where the captain died in 1001 (the player does not know yet). |
 | C06 ◆ | 18 mm (67.4°) | 30 m above the low town, looking south over the wall | The layout as a diagram: the lanes, the stair, the walk, the heads, the sea face and the storm sea. | The player sees the space (pillar 4). |
-| C07 ◆ | 35 mm (37.8°) | 2.0 m, kit row | Review only: the kit pieces in a row on the far apron. | The kit, side by side. |
-| C08 | 85 mm (16.1°) | 12.5 m, from the walk | One Watcher's face in profile against the storm, its humming mouth. (Cinematics.) | The wall's voice. |
+| C08 ◆ | 85 mm (16.1°) | 1.4 m above the parapet course, outside the heads' line | The row of Watchers in profile, closed lids and humming mouths, receding round the curve against the storm. | The wall's voice. |
 | C09 | 65 mm (20.9°) | 13 m | Rhen at the wall's edge, the storm wall filling the frame. (Cinematics, with `UndertowStorm`.) | The figure in the storm. |
 
-**Registered baselines (the repo's binary budget: at most two):** chosen after the captures (§6).
+**Registered baselines (the repo's binary budget: at most two):** C01 and C08 (§6).
 
 ## 5. Review Checklist
 
@@ -199,8 +202,31 @@ All at `ch08` unless noted. **◆** marks the preview shots built in `corrow_kit
 
 ## 6. The Preview (M3-ENV-04)
 
-Filled in after the captures (lavapipe, 960 × 540).
+`game/levels/_tests/corrow_kit/corrow_preview.tscn` composes the kit for the ◆ shots (its README lists the
+files): 37 wall segments from s −138 to +294 m running into the Coilspire headland, 148 heads, 74 reliefs,
+the stair and hoist, 38 houses round the stair-foot lane and the back lane. Read of the final captures
+(lavapipe, 960 × 540):
+- **C01** (baseline): the frame the brief asked for: warm carved faces in profile on the left, the sea face
+  sweeping round the storm-grey bay, the beacon burning on its craggy headland under the slate sky.
+- **C08** (baseline): the strongest frame: the row of Watchers in profile, eyes closed, mouths open, the
+  storm behind; it carries pillar 2 on its own.
+- **C02** the stair from the lane (the hoist's spar on the skyline), **C03** the sea face from the bay (two
+  rows of reliefs, the rebuilt courses, the matte run-off under the embrasures), **C04** Liss's hoist bolted
+  into a head's back, **C05** the stair foot in the surge (the lane flooded, no glow), **C06** the overview.
+- Known limits: the storm wall (the Undertow) is Rendering's `UndertowStorm` and not in the preview, so the
+  sky is a static slate storm; the volumetric spray haze (0.03) is off on lavapipe (it doubled capture time
+  and veiled the sky warm), so the rig keeps the density for GPU tiers; all 148 heads share one carving (a
+  second head variant would help C03's long row); the houses reuse the Haluna roof generator, so the low
+  town reads a touch Haluna; the inland apron is a plain.
 
 ## Revisions
 - 2026-10-24 (env-art, M3-ENV-04): first version, written against the act outline Ch8 and Ch9, bible §5.4
   and its 1001 AL row, ADRs 0017, 0020 and 0022, and the colour script `ch08` row before any geometry.
+- 2026-10-24 (env-art, M3-ENV-04, after the preview): the wall is **concave to the sea** at **R = 300 m**
+  (convex, a camera on the walk only ever saw the heads' backs; concave, the far heads turn their faces
+  round the curve); C01 is taken from an embrasure, not the walk; the hoist's heel steps on the kerb (a
+  spar from the head's back could not reach over the inner face) and its head-rope is what is bolted into
+  the Watcher; the block texture is big dry-laid blocks on a 6 m tile with a per-band offset (1.2 m blocks
+  read as modern brick); rebuilt courses are a second slot; the run-off stains are matte (wet ones read as
+  glossy stripes); the review kit row was dropped for C08; the Sun's sky mode is light-and-sky (the storm
+  sky needs the sun's direction).
