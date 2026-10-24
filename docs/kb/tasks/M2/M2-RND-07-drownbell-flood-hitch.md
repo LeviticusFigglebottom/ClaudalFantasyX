@@ -2,8 +2,8 @@
 id: M2-RND-07
 title: The Drownbell's Flood phase is a visible 39-61 ms frame mid-battle (at risk of the 50 ms limit)
 role: rendering
-status: todo
-owner_session: ""
+status: doing
+owner_session: "session_01UFcBRsk9M9EKtxJKdBU2mB (PC GPU)"
 reviewer: combat
 depends_on: [M2-RND-04]
 milestone: M2
