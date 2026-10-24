@@ -530,3 +530,9 @@ func _ovec(key: String) -> Vector2:
 func _vec(key: String) -> Vector2:
 	var v: Array = _m.get(key, [0, 0])
 	return Vector2(float(v[0]), float(v[1]))
+
+
+## M2-AUD-15 (audio listens, never edits; ADR 0031): true while the player drags the board (a pan by hand, not the
+## camera following the cursor).
+func is_dragging() -> bool:
+	return _dragging

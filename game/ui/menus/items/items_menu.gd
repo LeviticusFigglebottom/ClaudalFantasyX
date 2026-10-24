@@ -420,3 +420,8 @@ func _on_clicked(index: int, page_level: Level) -> void:
 	(_list if level == Level.LIST else _picker).set_cursor(index, false)
 	_render()
 	accept()
+
+
+## M2-AUD-15 (audio listens, never edits; ADR 0031): true while the line on show is a refused use.
+func is_refused() -> bool:
+	return not _notice.is_empty() and not bool(_notice.get("ok", true))

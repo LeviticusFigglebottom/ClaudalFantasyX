@@ -354,6 +354,26 @@ func test_a_click_puts_the_cursor_on_a_node_and_a_second_click_acts() -> void:
 
 ## M2-MNU-05: at every text size the side panel's lines, key, status line and confirm never overlap
 ## and stay inside the panel (they flow by measured height; the key shrinks or hides first).
+func test_a_drag_is_readable_while_it_pans_and_ends_on_release() -> void:
+	_open({})
+	var view := menu.board_view()
+	var at := view.screen_point(&"rh_01")
+	assert_false(view.is_dragging())
+	view._gui_input(_click(at))
+	assert_false(view.is_dragging(), "a press alone is not a drag yet")
+	var mm := InputEventMouseMotion.new()
+	mm.button_mask = MOUSE_BUTTON_MASK_LEFT
+	mm.position = at + Vector2(view._num("drag_px") * 4.0, 0.0)
+	mm.relative = mm.position - at
+	view._gui_input(mm)
+	assert_true(view.is_dragging(), "M2-AUD-15: audio can hear a pan by hand")
+	var up := _click(mm.position)
+	up.pressed = false
+	view._gui_input(up)
+	assert_false(view.is_dragging(), "the release ends it")
+	_teardown()
+
+
 func test_the_side_panel_never_overlaps_at_any_text_size() -> void:
 	var settings := UiSettings.shared()
 	var was: Variant = settings.get_value(UiSettings.TEXT_SCALE)
