@@ -149,6 +149,7 @@ func _place_light() -> void:
 		_light.light_color = Color(str(cfg.get("light_color", "#FFFFFF")))
 		_light.omni_range = float(cfg.get("light_range_m", 0.0))
 		_light.shadow_enabled = false
+		_light.light_volumetric_fog_energy = 0.0  # Lead rule: lamps never band a dense fog volume
 		_ctl.stage.add_child(_light)
 	var f := _ctl.stage.stand_in(active_id)
 	if f != null:
