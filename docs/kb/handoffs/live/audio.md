@@ -10,8 +10,8 @@ Environment: cloud session `session_01FtDSYm5dJHkdC3RqXsDjif`, branch `claude/au
 - **Gates at the last commit:** validate_data 0 errors; taskboard --check OK; gdlint/gdformat clean; tools/tests
   audio files OK (test_audio_data, test_audio_loudness: every shipped .ogg on its target); Godot full suite
   1466 run, 0 failed after updating two other-role tests (see M2-AUD-02 notes). No screenshots (no scene/shader
-  touched). Byte-reproducibility: every new job was rendered and checked; a full `render_all.py --determinism`
-  over the M2 cues is running (result below when done).
+  touched). Byte-reproducibility: every new job was rendered and checked; `render_all.py --only <cue> --determinism`
+  on all eight M2-AUD-03 jobs: every file byte-identical (and identical to the committed files).
 - **Requests filed:** M2-AUD-07 (cinematics: sequencer -> Audio.play_music; drop music_volume_db −8), M2-AUD-08
   (ui: Audio section in settings), M2-AUD-09 (cinematics: footstep surface markers in Haluna).
 - **Touched outside audio paths (Lead, please note):** project.godot autoload line; one `check_audio` call in
