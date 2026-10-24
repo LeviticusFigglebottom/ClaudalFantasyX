@@ -4,7 +4,6 @@ extends GreyboxZone
 ## few things Ch1's story steps call that the generic zone doesn't have. Every one is reached with a
 ## ZoneStory `zone` step ({"zone": method, "args": [...]}) and reads its numbers from data
 ## (game/data/flow/ch01_field.json, the layout, the chapter file):
-##   begin_chapter(n)        Game.set_chapter(n): the chapter autosave (ADR 0018), at C1-01's card.
 ##   rest(source)            a full heal, no save: a bell-room (C1-03) or the breath before Hullgnaw.
 ##                           Emits EventBus.party_full_heal_requested(source), as a shrine or inn does.
 ##   give(items, lume)       adds {item id: count} to the bag (a negative count takes it away) and
@@ -39,10 +38,6 @@ func build() -> void:
 	hint.auto_advance = true
 	hint.auto_advance_hold_sec = float((field.get(KEY_PROMPTS, {}) as Dictionary).get(KEY_HOLD, 0.0))
 	add_child(hint)
-
-
-func begin_chapter(chapter: int) -> void:
-	Game.set_chapter(chapter)
 
 
 func rest(source: String) -> void:

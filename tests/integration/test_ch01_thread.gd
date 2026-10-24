@@ -90,7 +90,6 @@ func _underway() -> void:
 	var uw := zone as Ch01UnderwayZone
 	story.begin()
 	assert_true(bool(Game.get_flag(&"ch01_started")), "C1-01")
-	assert_eq(Game.state.chapter, 1, "Game.set_chapter(1) at the card")
 	assert_eq(Game.state.party_ids, [&"rhen"] as Array[StringName], "Rhen alone")
 	assert_true(&"ch01_drop_002" in lines, "the drop's VO")
 	assert_true(bool(Game.get_flag(&"tut_movement_seen")), "the movement prompt, once")

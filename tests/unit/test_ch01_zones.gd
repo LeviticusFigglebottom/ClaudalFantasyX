@@ -1,5 +1,5 @@
 extends TestCase
-## M3-C01-02: the Ch1 zone roots (game/levels/ch01/): Ch01Zone's story calls (the chapter, a rest, items
+## M3-C01-02: the Ch1 zone roots (game/levels/ch01/): Ch01Zone's story calls (a rest, items
 ## and lume in and out, one-time prompts, blocks gone and back), the Underway's lantern shutter (the
 ## light, the encounter-rate multiplier, the reveal) and Oruvel's storm variant (up from the flag on
 ## entry, the light and the cast, the lashed low hull).
@@ -32,8 +32,6 @@ func test_the_zone_calls_change_the_game() -> void:
 	EventBus.party_full_heal_requested.disconnect(on_heal)
 	assert_eq(heals, [&"ch01_bell_room_1"] as Array[StringName], "a rest is the shrine's full heal")
 	assert_eq(zone.rests, 1)
-	zone.begin_chapter(1)
-	assert_eq(Game.state.chapter, 1)
 	_done()
 
 
