@@ -15,7 +15,7 @@ Branch `claude/characters` (this environment; cloud session_01JqzzxgJU9Dmu7fRhmC
 5. **M3-CHR-03 villager half:** Tavi Orse and Mother Kell, plus the `props_wick` job.
 6. **M2-CHR-12:** field locomotion. Hero-integration has wired it in (M2-HER-1107).
 7. **M2-CHR-11, base_body and villager half:** identical on three numpy paths (@ 5ed6193d).
-- Head at handover: see "HANDOVER DONE" below.
+- **HANDOVER DONE @ 54f1376e** (plus this note's own commit).
 
 ### In progress (exact next steps)
 - **M1-CHR-15, skirt panels, shoulder correctives, spear turn, and Rhen/Toma host snaps:** COMPLETE on its branch and gated there, but NOT merged.
