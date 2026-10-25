@@ -566,6 +566,9 @@ BattleChoreo, listen-only) adds weight on the contact beat. Every number is in `
   slow-mo), so the controller waits for the stretched sequence.
 - **Reduced motion.** No shake (`reduced_motion.shake_scale` 0), the flash at `flash_scale` 0.5, a gentler slow-mo
   (`slowmo_factor` 0.6). Hit-stop stays: it is a pause, not motion.
+- **Screen shake setting.** Every battle shake (BattleStage.shake, so BattleFloats' too) scales by the
+  accessibility row `screen_shake` (Full 1, Half 0.5, Off 0) and is 0 under Reduced motion
+  (`BattleStage.shake_setting`).
 - **Damage numbers** already pop (6% in 80 ms) and ease out on the rise (DamageNumber, the UI track's, to
   docs/kb/art/ui.md §5); they land on the contact beat. Element particles on contact are the PC track's BattleVfx.
 - **Tests:** `tests/unit/test_battle_impact.gd`; data checks `tools/validate_choreo.py` `impact_errors`.

@@ -19,6 +19,8 @@ The human's note: battles look primitive. Add weight on the contact beat, all da
 - [x] Recoil scaled by damage; models with their own hit clip get a smaller root push.
 - [x] KO slow-mo on the last foe; the hand-off waits for it.
 - [x] Damage-number pop and easing: already to the art spec (UI's DamageNumber), landing on contact.
+- [x] A Screen shake setting (Full / Half / Off, accessibility.json `screen_shake`); Reduced motion drops every
+      battle shake, BattleFloats' too (BattleStage.shake_setting).
 - [x] Tests (test_battle_impact), validator (impact_errors), doc ("Impact").
 
 ## Notes
