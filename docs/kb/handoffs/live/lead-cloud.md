@@ -5,6 +5,8 @@
 ## NEW ACCOUNT (from 2026-10-25), Lead session_018aiGwGLGkxsnMnu8VfCu1m on claude/undertow-lead-handoff-ze8rrn
 - 01:45: the integration branch moved to -ze8rrn (a fast-forward). test_hero_clips on big9: 18/18 OK. The PC was briefed: gate big9, then M1-QA-09, the --budget re-sweep, the Act I playthrough, CHR-11 verify. Messaging the PC needed the owner's trust confirmation, now given.
 - 01:57: nine track sessions created (roster in CONSOLIDATED §3a). Next: build lead/big10 from every track head on top of big9, and gate it after big9.
+- 02:20: four tracks (audio, hero-integration, battle-presentation, act1-chapters) blocked on send_message permission prompts → interrupted and re-briefed. Every track is told: no send_message; use live logs and request tasks; the Lead relays.
+- 02:22: **lead/gate-big10 @ 181708a7 pushed** (big9 + integration de93e79e + bpr a3e489bb, creatures 5b32803d, hero-int 0eff0b34, characters 66529dba, menus 0b5c2bd9, ui 776a24a1, m2-slice 6c50823f, env-art 294577d6, audio 7141fef2). Cloud: validate/taskboard/dlgc/lint/format OK, tool tests 1141 OK, Godot 2637/2 (env-only: scene_router_swap without $GODOT; 15/0 with it). Watch: mixed battle baselines (menus vs big9); voices.json `wright` keeps audio's pending voice. PC gates it after big9.
 
 ## STATE AT HANDOVER (2026-10-25)
 - **Integration head:** 6c6e5514 plus handover docs. big8 is merged; the fast-tracked playtest fixes (M2-FP-28, M3-CMB-02, M2-BPR-11) are in.
