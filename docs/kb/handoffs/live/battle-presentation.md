@@ -4,6 +4,33 @@
 
 The gap (the human's playtest note): battles had no action animation. This track adds a listen-only presentation layer: choreography, a clip contract, a camera director, the specials, the intro and outro. Docs: `docs/kb/tech/battle_presentation.md`.
 
+## NEW ACCOUNT (from 2026-10-25)
+Session `session_015hKkhtpX67kS4yZeA8AAhv`. Integration branch `claude/undertow-lead-handoff-ze8rrn` merged in
+(c6a960ab).
+
+**FAST-TRACK MERGE-READY @ 4e89c967: M3-BPR-404 boss-intro framing (the human's "Hullgnaw framed too close").**
+- **Cherry-pick exactly these two commits, in order:** `269054a3 4e89c967`. They touch only
+  battle_boss_intro.gd, choreo.json (boss_intro), test_battle_boss_intro.gd, the 404 task file, one doc section and
+  the six baselines. Verified: the pair cherry-picks cleanly onto `-ze8rrn` c6a960ab, and `--filter=boss_intro`
+  gives 17 run, 0 failed there.
+- **What changed:** the camera fits the boss model's bounds, and the feet must clear the title card. The search
+  aims lower first, then widens. The Inquisitor's fit_margin 1.6 is gone, because it sank his capsule behind the
+  card.
+- **Shots that move (all six viewed and re-approved, captured on integration + 404 only):**
+  battle_boss_intro_hullgnaw (rmse 0.253), battle_boss_intro_matron (0.109), battle_boss_intro_drownbell (0.104),
+  battle_boss_intro_inquisitor (0.053), battle_boss_intro_hermit (0.039), battle_boss_intro_wraith (0.039).
+- **Checks run:** gdlint, gdformat, validate_data 0/0, taskboard --check, `--filter=boss_intro` 17/0, and the six
+  shots captured and compared.
+- **Checks skipped:** the full manifest (only boss-intro shots can move), Blender (none touched), coverage (no
+  battle-core change).
+
+**In progress (not merge-ready yet): 401/402.**
+- New commits: c3b01d7f (screen_shake setting), e5a1d3e6 (its doc), the audio hooks commit (BattleImpact `landed` /
+  `slowmo_planned`), request M3-BPR-405 to audio, and 9369e8c0 (the KO test no longer assumes the wickfry has no
+  model; it fails on `-ze8rrn` too).
+- Battle tests on the branch: 633 run, 1 failed before 9369e8c0 (that test); re-run pending.
+- **Next:** capture the battle_choreo_*, arena and battle shots, view them and re-approve, then post MERGE-READY.
+
 ## STATE AT HANDOVER (2026-10-25)
 
 **HANDOVER DONE @ e4b36a0d.**
