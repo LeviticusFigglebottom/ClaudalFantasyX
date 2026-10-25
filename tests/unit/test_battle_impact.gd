@@ -147,6 +147,27 @@ func test_reduced_motion_drops_the_shake_and_dims_the_flash() -> void:
 	_free()
 
 
+func test_the_screen_shake_setting_scales_or_drops_the_shake() -> void:
+	var settings := UiSettings.new()
+	UiSettings.set_shared(settings)
+	assert_eq(BattleStage.shake_setting(), 1.0, "full by default")
+	settings.set_value(BattleStage.SETTING_SHAKE, 0.5)
+	assert_eq(BattleStage.shake_setting(), 0.5, "half")
+	settings.set_value(UiSettings.REDUCED_MOTION, true)
+	assert_eq(BattleStage.shake_setting(), 0.0, "reduced motion: none")
+	settings.set_value(UiSettings.REDUCED_MOTION, false)
+	settings.set_value(BattleStage.SETTING_SHAKE, 0.0)
+	var foe := _heavy_foe()
+	_to_turn_of(&"rhen")
+	ctl.pacing_scale = 1.0
+	var shakes := ctl.stage.shakes_started
+	ctl.act(&"attack", [foe.id])
+	choreo.advance(float(choreo.current()["contact"]) + EPS)
+	assert_eq(ctl.stage.shakes_started, shakes, "Off: a heavy blow does not shake")
+	UiSettings.set_shared(null)
+	_free()
+
+
 func test_felling_the_last_foe_slows_the_collapse() -> void:
 	_to_turn_of(&"rhen")
 	for e in ctl.engine.enemies:
