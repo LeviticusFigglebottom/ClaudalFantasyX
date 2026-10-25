@@ -152,3 +152,18 @@ The human's playtest said cutscene turns snapped and walks started and stopped a
 - **Stand-in clip marks:** the actor glides onto the mark over `standin_glide_sec`, eased, instead of appearing there.
 
 Skipping and `instant` still land every motion at once. The hero integration track's clip blending (its AnimationTree) replaces `clip_blend_sec` for the heroes once it lands.
+
+### Hero bodies and fades (M2-HER-1104, M2-FP-102)
+- **Hero bodies:** the sequencer applies hero-integration's patch (`docs/kb/tech/hero_motion_sequencer.patch`). Every clip goes through `HeroMotion.play`: a hero body's `play_clip` (its AnimationTree) takes it, else the actor's AnimationPlayer. A walk reports the speed its root actually covers each frame (`HeroMotion.set_locomotion_speed`), so the gait blend follows the ramps above and the feet stop sliding; a `@mark ... run` sets off at `run_mps` and arrival sets 0. Every cast member on the stage gets `HeroIdleMicro` (breathing, a weight shift, a head that leads its turns); a capsule stand-in gets nothing. `walk_mps` is 1.0, the speed at which the field walk clip's feet plant.
+- **Fades and the letterbox** ease in and out on `fade_ease` / `letterbox_ease` (Godot's `ease()`, negative = in-out) instead of a linear ramp, so a scene never pops to or from black.
+
+## Viewing a cutscene (M2-FP-102)
+`tools/cutscene_frames/cutscene_frames.tscn` renders a location's arrival beat or cutscene to PNG frames, so it can be looked at frame by frame (on lavapipe, about 30 s of game time takes 10 minutes):
+
+```bash
+XDG_DATA_HOME=$SCRATCH/xdg godot-render --path . --audio-driver Dummy --fixed-fps 30 --resolution 960x540 \
+  res://tools/cutscene_frames/cutscene_frames.tscn -- --location=ch02/haluna --spawn=Beach \
+  --flags=prologue_seen --every=1.0 --max-sec=150 --out=$SCRATCH/frames/beach [--choice=0]
+```
+
+It travels through `SceneRouter.world_return` as the game does, with only `--flags` set. Dialogue advances by itself (the Accessibility auto-advance), every choice takes option `--choice`, and nothing is saved. It writes `f_<tenths of a second>.png` every `--every` seconds of game time, plus `lines.txt` with the time each line and choice appeared.

@@ -286,6 +286,12 @@ func _begin(scene_id: StringName, stage: CutsceneStage) -> void:
 	# Every actor with a face table gets its rig now, so it blinks before its first line (M2-FP-18).
 	for actor_id: String in (config.get("face_poses", {}) as Dictionary).keys():
 		_face_of(StringName(actor_id))
+	# M2-HER-1104: every hero body on the stage breathes, shifts its weight and leads its turns with its
+	# head (HeroIdleMicro, docs/kb/tech/hero_motion.md); a capsule stand-in gets nothing.
+	if stage != null:
+		for member: Node3D in stage.cast():
+			var member_id := &"rhen" if member == _player else StringName(String(member.name).to_lower())
+			HeroMotion.add_micro_motion(member, member_id)
 	SaveSystem.hold_autosave(self)
 	if not hold_player:
 		_player = null
@@ -497,7 +503,7 @@ func _cue_mark(step: DialogueStep) -> void:
 	var lead := float(config.get("walk_anticipation_sec", 0.0))
 	var walk := CutsceneMotion.walk_duration(dist, speed, accel, decel)
 	var dur := lead + walk
-	var state := {"walking": false}
+	var state := {"walking": false, "m": 0.0, "sec": 0.0}
 	_start_motion(
 		&"move:%s" % step.args[0],
 		dur,
@@ -508,11 +514,16 @@ func _cue_mark(step: DialogueStep) -> void:
 			if sec > 0.0 and t < 1.0 and not state["walking"]:
 				state["walking"] = true
 				_play_clip(actor, gait)
-			_place(actor, from.lerp(to, CutsceneMotion.walk_fraction(sec, dist, speed, accel, decel)))
+				if gait == GAIT_RUN:
+					HeroMotion.set_locomotion_speed(actor, speed)  # M2-HER-1104: a run sets off as a run
+			var frac := CutsceneMotion.walk_fraction(sec, dist, speed, accel, decel)
+			_place(actor, from.lerp(to, frac))
+			_locomotion(actor, state, frac * dist, t * dur)
 			if t >= 1.0:
 				if not state["walking"]:
 					_play_clip(actor, gait)  # instant or skipped: the walk still happened
 				_play_clip(actor, &"idle")
+				HeroMotion.set_locomotion_speed(actor, 0.0)
 	)
 
 
@@ -545,9 +556,7 @@ func _cue_anim(step: DialogueStep) -> void:
 			return
 		_turn_to(StringName(str(step.args[0])), actor, target.global_position - actor.global_position)
 		return
-	var ap := actor.find_child("AnimationPlayer", true, false) as AnimationPlayer
-	if ap != null and ap.has_animation(clip):
-		ap.play(clip, _clip_blend())
+	HeroMotion.play(actor, clip, _clip_blend())  # the body's play_clip, else its AnimationPlayer
 
 
 func _cue_music(step: DialogueStep) -> void:
@@ -703,14 +712,24 @@ func _on_mouth_flap(speaker: StringName, open: bool) -> void:
 		rig.set_mouth_open(open)
 
 
-## Plays the actor's AnimationPlayer clip for `role` (sequencer.json "clips": idle, talk, walk,
-## run) when the rig has it, cross-faded from the current one; nothing otherwise (M2-FP-07 asks
-## Character for the clips).
+## Plays the actor's clip for `role` (sequencer.json "clips": idle, talk, walk, run) when the rig
+## has it, cross-faded from the current one and never restarting one already playing; nothing
+## otherwise (M2-FP-07 asks Character for the clips). M2-HER-1104: through HeroMotion.play, so a hero
+## body's play_clip (its AnimationTree) takes it, else the actor's AnimationPlayer.
 func _play_clip(actor: Node3D, role: StringName) -> void:
 	var clip := StringName(str((config.get("clips", {}) as Dictionary).get(String(role), "")))
-	var ap := actor.find_child("AnimationPlayer", true, false) as AnimationPlayer
-	if ap != null and clip != &"" and ap.has_animation(clip) and ap.current_animation != clip:
-		ap.play(clip, _clip_blend())
+	if clip != &"":
+		HeroMotion.play(actor, clip, _clip_blend(), false)
+
+
+## M2-HER-1104: tells a hero body how fast its root walks (`metres` covered at `now` seconds into the
+## move), so a speed-driven gait blend follows the walk's ramps and the idle micro-motion fades out.
+func _locomotion(actor: Node3D, state: Dictionary, metres: float, now: float) -> void:
+	var dt := now - float(state["sec"])
+	var mps := (metres - float(state["m"])) / dt if dt > 0.0 else 0.0
+	state["m"] = metres
+	state["sec"] = now
+	HeroMotion.set_locomotion_speed(actor, mps)
 
 
 ## The cross-fade between two clips (sequencer.json clip_blend_sec; none while skipping or instant).
@@ -784,14 +803,23 @@ func _complete_motions() -> void:
 
 func _start_fade(to: float, sec: float) -> void:
 	var from := overlay.fade_alpha()
-	_start_motion(&"fade", sec, func(t: float) -> void: overlay.set_fade(lerpf(from, to, t)))
+	# M2-FP-102: the fade eases in and out (sequencer.json fade_ease), so a scene never pops to or from black.
+	var curve := float(config.get("fade_ease", 1.0))
+	_start_motion(
+		&"fade", sec, func(t: float) -> void: overlay.set_fade(lerpf(from, to, CutsceneMotion.eased(t, curve)))
+	)
 
 
 func _set_letterbox(on: bool) -> void:
 	var from := overlay.letterbox()
 	var to := 1.0 if on else 0.0
 	var sec := float(config.get("letterbox_sec", 0.0))
-	_start_motion(&"letterbox", sec, func(t: float) -> void: overlay.set_letterbox(lerpf(from, to, t)))
+	var curve := float(config.get("letterbox_ease", 1.0))
+	_start_motion(
+		&"letterbox",
+		sec,
+		func(t: float) -> void: overlay.set_letterbox(lerpf(from, to, CutsceneMotion.eased(t, curve)))
+	)
 
 
 func _fade_music(to_db: float, sec: float, stop_after: bool) -> void:
