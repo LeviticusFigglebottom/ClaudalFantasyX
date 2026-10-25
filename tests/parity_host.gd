@@ -79,6 +79,9 @@ static func back(d: InputDriver, over: Control) -> void:
 		InputDriver.right_click(over)
 	else:
 		d.press(&"ui_cancel")
+	# A screen that fades out (MenuMotion, M2-MNU-305) frees its layer once the fade ends.
+	if is_instance_valid(over) and over.has_method(&"motion") and over.call(&"motion") != null:
+		(over.call(&"motion") as MenuMotion).finish()
 	end_frame()
 
 

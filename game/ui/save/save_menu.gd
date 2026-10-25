@@ -16,6 +16,9 @@ extends Control
 signal closed(outcome: SaveMenuModel.Outcome)
 signal saved(slot: int)
 signal loaded(slot: int)
+## The close transition has finished (at once under Reduced motion): open_in's layer frees itself
+## (M2-MNU-305, MenuMotion; the open keeps this menu's own panel rise, panel_open).
+signal gone
 
 const SCENE_PATH := "res://game/ui/save/save_menu.tscn"
 const DATA_PATH := "res://game/data/ui/save_menu.json"
@@ -51,6 +54,7 @@ var _dialog_scrim: ColorRect
 ## True when this menu paused the tree (and so must unpause it).
 var _owns_pause := false
 var _is_closed := false
+var _motion: MenuMotion
 
 
 ## Instances the menu on its own CanvasLayer under `host` and opens it. The layer frees itself
@@ -64,7 +68,7 @@ static func open_in(
 	layer.layer = int(load_data().get("canvas_layer", 1))
 	layer.process_mode = Node.PROCESS_MODE_ALWAYS
 	layer.add_child(menu)
-	menu.closed.connect(func(_o: SaveMenuModel.Outcome) -> void: layer.queue_free())
+	menu.gone.connect(layer.queue_free)
 	host.add_child(layer)
 	return menu
 
@@ -104,6 +108,9 @@ func _ready() -> void:
 	if pause_tree and not get_tree().paused:
 		get_tree().paused = true
 		_owns_pause = true
+	MenuMotion.follow_reduced_motion(self)
+	_motion = MenuMotion.new(self)
+	_motion.gone.connect(gone.emit)
 	_animate_open()
 
 
@@ -172,9 +179,18 @@ func _close(outcome: SaveMenuModel.Outcome) -> void:
 	if _is_closed:
 		return
 	_is_closed = true
-	visible = false
+	if _motion != null and animate:
+		_motion.play_out()  # it never takes the pointer again while it fades (M2-UI-26)
+	else:
+		visible = false
+		gone.emit()
 	_restore_pause()
 	closed.emit(outcome)
+
+
+## The close transition (null before _ready). Tests drive it with motion().finish().
+func motion() -> MenuMotion:
+	return _motion
 
 
 func _restore_pause() -> void:
@@ -358,7 +374,7 @@ func _place_cursor() -> void:
 
 
 func _animate_open() -> void:
-	if not animate or not is_inside_tree():
+	if not animate or not is_inside_tree() or UiSettings.shared().reduced_motion():
 		return
 	var om := _d.get("panel_open", {}) as Dictionary
 	var dur := HudLayout.num(om, "sec")
