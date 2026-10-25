@@ -2,8 +2,8 @@
 id: M3-BPR-403
 title: "Battle line-up: space the slots by the real models' footprints"
 role: combat
-status: todo
-owner_session: ""
+status: doing
+owner_session: claude/battle-presentation
 depends_on: [M3-BPR-402]
 milestone: M3
 request-from: combat
@@ -16,7 +16,7 @@ footprints (BattleChoreoPlan.footprint) + spacing.clearance_m apart, within the 
 shots' safe frames.
 
 ## Acceptance criteria
-- [ ] No two fighters on their marks overlap (a test over every encounter's line-up, with models).
+- [x] No two fighters on their marks overlap (a test over every encounter's line-up, with models).
 - [ ] Every battle shot viewed and re-approved; the camera director's safe-frame tests pass.
 
 ## Review log

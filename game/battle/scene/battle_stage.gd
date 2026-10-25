@@ -81,6 +81,18 @@ func spawn(engine: BattleEngine) -> void:
 	_enemy_slot_of.clear()
 	for i in engine.enemies.size():
 		_seat_enemy(engine.enemies[i].id, mini(i, _enemy_slots.size() - 1))
+	if is_inside_tree():  # M3-BPR-403: the opening line-up keeps the real models' footprints apart
+		var data := BattleChoreo.load_data()
+		BattleLineup.apply(_side(engine.party_active), data)
+		BattleLineup.apply(_side(engine.enemies), data)
+
+
+func _side(cs: Array[BattleCombatant]) -> Array:
+	var out: Array = []
+	for c in cs:
+		if _fighters.has(c.id):
+			out.append(_fighters[c.id])
+	return out
 
 
 ## Seats an enemy that joined mid-battle (BossMechanics spawns and summons) in the first enemy
