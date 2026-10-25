@@ -100,6 +100,7 @@ func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	set_anchors_preset(Control.PRESET_FULL_RECT)
 	mouse_filter = Control.MOUSE_FILTER_STOP
+	UiSettings.shared().follow(self)  # text size and palette, as every menu (M2-ARC-06)
 	_build()
 	UiFrame.centre(self)  # centred at 16:10 and 21:9, the scrim full screen (M2-UI-29, UI track)
 	model.changed.connect(_render)
@@ -216,9 +217,8 @@ func _build() -> void:
 	_title = _label(&"BannerLabel", Rect2(pad, y, inner_w, HudLayout.num(p, "title_height")))
 	_title.text = tr("SAVE_MENU_TITLE_SAVE") if model.mode == SaveMenuModel.Mode.SAVE else tr("SAVE_MENU_TITLE_LOAD")
 	y += HudLayout.num(p, "title_height")
-	_subtitle = _label(&"FlavorLabel", Rect2(pad, y, inner_w, HudLayout.num(p, "subtitle_height")))
+	_subtitle = _label(&"FlavorDimLabel", Rect2(pad, y, inner_w, HudLayout.num(p, "subtitle_height")))
 	_subtitle.text = tr(subtitle_key) if subtitle_key != "" else ""
-	_subtitle.add_theme_color_override(&"font_color", _c(&"text_dim"))
 	y += HudLayout.num(p, "subtitle_height") + HudLayout.num(p, "gap")
 	_list = Control.new()
 	_list.position = Vector2(pad, y)
@@ -249,8 +249,7 @@ func _build() -> void:
 	_mote.size = Vector2(mp, mp)
 	_list.add_child(_mote)
 	y += list_h + HudLayout.num(p, "gap")
-	_help = _label(&"HelpLabel", Rect2(pad, y, inner_w, HudLayout.num(p, "help_height")))
-	_help.add_theme_color_override(&"font_color", _c(&"text_dim"))
+	_help = _label(&"HelpDimLabel", Rect2(pad, y, inner_w, HudLayout.num(p, "help_height")))
 	_build_dialog()
 
 
@@ -361,7 +360,7 @@ func _place_cursor() -> void:
 	if _cursor_tween != null and _cursor_tween.is_valid():
 		_cursor_tween.kill()
 	_cursor_box.size = row.size
-	if not animate or not is_inside_tree() or _cursor_box.position == target:
+	if not animate or not is_inside_tree() or _cursor_box.position == target or UiSettings.shared().reduced_motion():
 		_cursor_box.position = target
 		_mote.position = mote_pos
 		return
