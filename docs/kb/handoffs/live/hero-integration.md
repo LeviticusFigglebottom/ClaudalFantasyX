@@ -282,3 +282,5 @@ integration branch at 07781cba and merged with it again at 0b1e76a4. The handove
 - Never merge claude/characters into this branch just to test: it's ~340 files. Use a local trial merge (that is
   what `her1107-trial` and `hro03-trial` were; they're local scratch and were not pushed).
 - send_message to the Lead's session was refused ("trusted device"); this live log was the channel.
+
+HANDOVER DONE @ f6d90968 (this note is the commit after it).
