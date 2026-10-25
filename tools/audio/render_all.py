@@ -49,7 +49,8 @@ M2_CUES = ("haluna_village", "haluna_night", "battle_standard_v2", "hush_first_v
            "shell_shrine_interior", "ilun_summon", "saltgrass_causeway", "lamp_diver", "sefir_theme", "the_ebbing",
            "tidecup_match", "terraces_of_ash", "corrow_seawall", "hullgnaw", "spar_wraith", "oruvel", "pilgrims_wake",
            "tamsule", "iskarra_vigil", "brightwater_ferry", "brine_shoals", "ashcrown", "coilspire",
-           "tamsule_bell_galleries", "stillguard_inquisitor")
+           "tamsule_bell_galleries", "stillguard_inquisitor", "ossa_fen", "reedhollow", "sunken_vey", "lowlight",
+           "keth_pass", "quellan")
 AMBIENCE_BUDGET = int(2.5 * 1024 * 1024)  # the M2-AUD-05 field beds together
 # Per-job budgets for later "ambience_loop" jobs (each job's beds together; the M2-AUD-05 job keeps AMBIENCE_BUDGET).
 AMBIENCE_JOB_BUDGETS = {"assets_src/sfx/causeway_ambience.py": int(1.2 * 1024 * 1024),
@@ -200,6 +201,15 @@ JOBS = [
     # M3-AUD-20: the Ch6 boss, the Stillguard Inquisitor and the raid-hound
     ("assets_src/music/stillguard_inquisitor.py", "assets/audio/music",
      ["stillguard_inquisitor.ogg", "stillguard_inquisitor.loop.json"], "music_loop"),
+    # M3-AUD-802: the field heroes' footsteps by surface and gait, halts, turns, cloth and gear foley
+    ("assets_src/sfx/hero_foley.py", "assets/audio/sfx/foley", _source_files("assets_src/sfx/hero_foley.py"), "sfx"),
+    # M3-AUD-804: Act II sketches (Ch10 Ossa Fen and Reedhollow, Ch11 Sunken Vey and Lowlight, Ch12 Keth Pass and Quellan)
+    ("assets_src/music/ossa_fen.py", "assets/audio/music", ["ossa_fen.ogg", "ossa_fen.loop.json"], "music_loop"),
+    ("assets_src/music/reedhollow.py", "assets/audio/music", ["reedhollow.ogg", "reedhollow.loop.json"], "music_loop"),
+    ("assets_src/music/sunken_vey.py", "assets/audio/music", ["sunken_vey.ogg", "sunken_vey.loop.json"], "music_loop"),
+    ("assets_src/music/lowlight.py", "assets/audio/music", ["lowlight.ogg", "lowlight.loop.json"], "music_loop"),
+    ("assets_src/music/keth_pass.py", "assets/audio/music", ["keth_pass.ogg", "keth_pass.loop.json"], "music_loop"),
+    ("assets_src/music/quellan.py", "assets/audio/music", ["quellan.ogg", "quellan.loop.json"], "music_loop"),
 ]
 M1_JOBS = 5  # the first JOBS rows are M1's audio (SIZE_BUDGET)
 

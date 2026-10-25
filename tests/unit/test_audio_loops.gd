@@ -34,6 +34,12 @@ const LOOPING_CUES: Array[String] = [
 	"res://assets/audio/music/coilspire.ogg",
 	"res://assets/audio/music/tamsule_bell_galleries.ogg",
 	"res://assets/audio/music/stillguard_inquisitor.ogg",
+	"res://assets/audio/music/ossa_fen.ogg",
+	"res://assets/audio/music/reedhollow.ogg",
+	"res://assets/audio/music/sunken_vey.ogg",
+	"res://assets/audio/music/lowlight.ogg",
+	"res://assets/audio/music/keth_pass.ogg",
+	"res://assets/audio/music/quellan.ogg",
 ]
 const SAMPLE_RATE := 44100
 const MIN_LENGTH_S := 60.0
