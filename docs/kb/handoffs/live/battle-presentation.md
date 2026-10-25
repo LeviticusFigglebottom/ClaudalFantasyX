@@ -6,6 +6,8 @@ The gap (the human's playtest note): battles had no action animation. This track
 
 ## STATE AT HANDOVER (2026-10-25)
 
+**HANDOVER DONE @ e4b36a0d.**
+
 **Branch:** `claude/battle-presentation` @ 269054a3 (plus this docs commit). Integration branch
 `claude/undertow-lead-handoff-423ixt` merged in up to big8 (6c6e5514). No subagents or worktrees running; nothing
 un-pushed.
