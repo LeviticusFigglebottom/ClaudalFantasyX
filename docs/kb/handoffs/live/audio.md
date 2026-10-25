@@ -3,6 +3,18 @@
 ## NEW ACCOUNT (from 2026-10-25)
 Session `session_01Wmj8xaLtwcqiS3qwC6PciW`. Integration branch `claude/undertow-lead-handoff-ze8rrn`. Newest first.
 
+- **MERGE-READY @ f8298577:** everything since 261a827d: M3-AUD-812 (FAST-TRACK footsteps), M3-AUD-813 (menu hooks)
+  and **M3-AUD-805, Act II sketches II** (six cues: Ansedra, the Lamp Archive, the Peace Wedding, Unlamped, the Pale
+  Rim, the Drowned Choir; −16.0 LUFS, TP ≤ −1.4; 3.4 MiB, ADR 0170 budget kept; the wip/ folder is gone).
+  - Checks run: **full Godot suite on f8298577: 2367 run, 0 real failures.** test_scene_router_swap failed only
+    because that run had no `godot` on PATH (probe exit 127); re-run with PATH set it passed 15/0. Also the loudness
+    test OK, `render_all --determinism` identical for all six, `--filter=audio` 125/0, validate_data 0/0,
+    test_audio_data OK, taskboard --check, gdlint and gdformat.
+  - Checks skipped: screenshots (no scene or shader), Blender (none), coverage (no battle/progression code).
+  - Gotcha: a first render writes no `.import`, so the loop flags are synced after the first import
+    (`render_all._sync_import`), then imported again. Done here; the .import files are committed.
+- **Next:** M3-AUD-814, villager and wildlife life sounds (FieldNpc, WildlifeLayer on claude/creatures; hooks
+  `pending` until they merge).
 - **MERGE-READY @ f5f10d7e (FAST-TRACK: M3-AUD-812):** M3-AUD-812, footsteps change surface in every slice zone
   with no level edits: Haluna's sand, the dock's wood (the `dock_haluna` mesh), the shallows' water (feet under the
   sea's rest plane); the causeway's stone and tidepool; the shrine's stone and pools. Also M3-AUD-813, the menu hooks
@@ -16,8 +28,6 @@ Session `session_01Wmj8xaLtwcqiS3qwC6PciW`. Integration branch `claude/undertow-
   - Checks skipped: screenshots (no scene or shader touched), Blender (none), coverage (no battle/progression code).
   - Verified against claude/hero-integration's real `HeroFieldActor.foot_contact(foot, run)`: the body is the
     controller's `HeroBody` child, as footsteps.json expects. test_footsteps_slice_zones walks it once that merges.
-- **In progress:** M3-AUD-805 (Act II sketches II): 4 of 6 rendered with `--determinism` identical, at −16.0 LUFS.
-
 ## STATE AT HANDOVER (2026-10-25)
 
 **HANDOVER DONE @ 20ee527f** (claude/audio pushed; nothing un-pushed; no worktree holds unsaved work).
