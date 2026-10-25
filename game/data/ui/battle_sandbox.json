@@ -1,6 +1,6 @@
 {
   "battle_sandbox": {
-    "doc": "Greybox presentation of the M1 battle sandbox (M1-CMB-01). Colors are palette hexes; sizes in metres.",
+    "doc": "Greybox presentation of the M1 battle sandbox (M1-CMB-01). Colors are palette hexes; sizes in metres. ko_alpha: a fallen party member's fade (it can be revived); foe_ko_alpha: a fallen foe's, 0 = it fades out and is hidden (playtest fix M2-BPR-11).",
     "active": ["rhen", "asha"],
     "reserve": ["toma", "ysolde"],
     "encounter": "sandbox_reef",
@@ -11,6 +11,7 @@
     "stand_in_defaults": {"roughness": 0.85, "emission_energy": 0.6, "recoil_m": 0.12, "recoil_sec": 0.16},
     "ko_sink_m": 0.25,
     "ko_alpha": 0.35,
+    "foe_ko_alpha": 0.0,
     "stone": {"color": "#B9AE98", "roughness": 1.0},
     "shake": {"amplitude_m": 0.05, "sec": 0.24, "steps": 6},
     "stand_ins": {

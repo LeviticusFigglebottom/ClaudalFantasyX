@@ -179,6 +179,7 @@ func set_ko(ko: bool, sink_m: float, alpha: float) -> void:
 	# An actor with a KO clip lies down in the clip; a sink on top would put it through the floor (M2-HER-1103).
 	var sink := sink_m if ko and not BattleClips.has_clip(self, BattleClips.KO) else 0.0
 	_body.position = _rest - Vector3(0.0, sink, 0.0)
+	_body.visible = not (ko and alpha <= 0.0)  # faded right out: hidden, so it casts no shadow either
 	if _actor != null:
 		for m in _surfaces:
 			m.transparency = 1.0 - alpha if ko else 0.0

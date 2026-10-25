@@ -68,6 +68,41 @@ func test_bag_sort_pick_use_and_back_with_each_device() -> void:
 	_done()
 
 
+func test_the_key_items_view_with_each_device() -> void:
+	for kind in InputDriver.KINDS:
+		var d := InputDriver.new(kind)
+		var who := d.label()
+		state = GameStateData.new()
+		state.party_ids = ParityHost.HEROES.duplicate()
+		state.inventory = {"salt_tonic": 3, "brass_lantern": 1, "kell_wick": 1}
+		menu = ParityHost.open_field_menu(state)
+		var root := menu.root_page()
+		ParityHost.choose(d, root, ParityHost.row_of(root, FieldMenuModel.ROW_ITEMS))
+		var page := menu.child as ItemsMenu
+		if kind == InputDriver.Kind.MOUSE:
+			InputDriver.click(page.tab_label(ItemsMenuModel.VIEW_KEY))
+		else:
+			d.press(&"ui_page_down")
+		assert_eq(page.model.view, ItemsMenuModel.VIEW_KEY, "%s: the Key Items view" % who)
+		var bag := page.list_page()
+		var wick := ParityHost.row_of(bag, &"kell_wick")
+		ParityHost.choose(d, bag, wick)
+		assert_eq(page.current_item(), &"kell_wick", "%s: the cursor moves" % who)
+		assert_eq(page.desc_text(), page.model.desc(&"kell_wick"), "%s: its words follow" % who)
+		assert_eq(page.level, ItemsMenu.Level.LIST, "%s: nothing to use" % who)
+		if kind == InputDriver.Kind.MOUSE:
+			InputDriver.click(page.tab_label(ItemsMenuModel.VIEW_BAG))
+		else:
+			d.press(&"ui_page_up")
+		assert_eq(page.model.view, ItemsMenuModel.VIEW_BAG, "%s: back to the bag" % who)
+		assert_eq(page.current_item(), &"salt_tonic", "%s: on the bag's first item" % who)
+		ParityHost.back(d, bag)
+		assert_true(menu.child == null and menu.visible, "%s: Cancel closes the page" % who)
+		ParityHost.free_field_menu(menu)
+		menu = null
+	_done()
+
+
 func test_the_wheel_steps_the_bag_from_the_rows_and_the_page() -> void:
 	state = GameStateData.new()
 	state.party_ids = ParityHost.HEROES.duplicate()

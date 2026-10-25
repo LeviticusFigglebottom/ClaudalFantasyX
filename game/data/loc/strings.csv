@@ -616,6 +616,9 @@ HUD_FAIL_NOT_BOUND_FMT,{name} has bound no Vowbound yet.
 HUD_FAIL_NOT_CALLER_FMT,{name} cannot call that Vowbound.
 HUD_FAIL_VOWBOUND_FALLEN,That Vowbound has fallen and cannot answer again this battle.
 HUD_FAIL_NO_VOWBOUND,No Vowbound is on the field.
+
+BOOT_FIRST_RUN_NOTE,Preparing the graphics for first use. This happens only once.
+
 HUD_SWELL_CHANT_HINT,Directions: each note on the line · Cancel: back
 HUD_SWELL_CHANT_HINT_LOCKED,Directions: each note on the line
 HUD_SWELL_BRACE_HINT,Hold Confirm · let go on the counter · Cancel: back
@@ -858,7 +861,6 @@ CTRL_ACT_DIALOGUE_BACKLOG,Dialogue backlog
 BACKLOG_TITLE,Backlog
 BACKLOG_HELP,Up and Down: scroll · Page keys: a page · Cancel: close
 BACKLOG_EMPTY,Nothing has been said yet.
-BOOT_FIRST_RUN_NOTE,Preparing the graphics for first use. This happens only once.
 SHOP_MENU_COUNT_FMT,×{n}
 SET_MENU_AUDIO,Audio
 SET_MENU_HELP_AUDIO,"Music, effects and voice volume."
@@ -895,6 +897,7 @@ SET_VOLUME_70,70%
 SET_VOLUME_80,80%
 SET_VOLUME_90,90%
 SET_VOLUME_100,100%
+
 OBJ_U_CROWN_TETHER,Take the crown's tether down to the first bell-room.
 OBJ_U_BELL_TETHER,Follow the bell-room's tether down into the lamp galleries.
 OBJ_U_GALLERIES,"Work down the galleries to the stairwell, shutter open."

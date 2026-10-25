@@ -18,6 +18,7 @@ extends FieldSubmenu
 const DATA_PATH := "res://game/data/ui/formation_menu.json"
 const ACTIVE_ID := &"formation_active"
 const RESERVE_ID := &"formation_reserve"
+const PORTRAIT_PAGE := &"formation"
 
 var sheet: PartySheet
 var model: FormationMenuModel
@@ -34,6 +35,8 @@ var _chosen_line: Label
 var _plan: Label
 var _warn: Label
 var _chosen_frame: Panel
+## M2-MNU-301: the highlighted hero's portrait beside the detail lines.
+var _portrait: HeroPortraitFrame
 var _gauges: Array[HudGauge] = []
 ## The last move's result ({ok, text, warn}), shown until the cursor moves.
 var _notice: Dictionary = {}
@@ -100,6 +103,10 @@ func plan_refused() -> bool:
 
 func row_gauges() -> Array[HudGauge]:
 	return _gauges.duplicate()
+
+
+func portrait() -> HeroPortraitFrame:
+	return _portrait
 
 
 ## The frame around the picked hero's row (hidden while nobody is picked).
@@ -184,6 +191,8 @@ func _build_page() -> void:
 	_chosen_frame.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_chosen_frame.add_theme_stylebox_override(&"panel", _frame_style())
 	add_child(_chosen_frame)
+	_portrait = HeroPortraitFrame.new()
+	add_child(_portrait)
 	_name = _label(&"HeaderLabel", Rect2())
 	_place = _label(&"DimLabel", Rect2())
 	_chosen_line = _wrapping(&"HelpLabel")
@@ -227,6 +236,8 @@ func _render() -> void:
 	var at := cursor_spot()
 	var hero := current_hero()
 	_name.text = sheet.hero_name(hero) if hero != &"" else tr(FormationMenuModel.OPEN_KEY)
+	var fallen := hero != &"" and bool(model.vitals(hero)["fallen"])
+	_portrait.show_hero(hero, _name.text, HeroPortraits.page_emotion(PORTRAIT_PAGE, fallen))
 	_place.text = model.place_text(at["line"], at["index"])
 	_chosen_line.text = model.chosen_text(_hero_of(chosen)) if not chosen.is_empty() else ""
 	var p := _shown_plan()
@@ -256,6 +267,14 @@ func _layout_detail() -> void:
 	var active := list_page(FormationMenuModel.LINE_ACTIVE)
 	var y := active.position.y + active.size.y + HudLayout.num(dm, "gap")
 	var bottom := y + r.size.y
+	var pm: Dictionary = _d.get("portrait", {})
+	var side := HudLayout.num(pm, "size")
+	_portrait.position = Vector2(r.position.x, y)
+	_portrait.size = Vector2(side, side)
+	var indent := side + HudLayout.num(pm, "gap")
+	var full := r  # lines that start below the portrait take the whole width (130 % text)
+	var portrait_end := y + side
+	r = Rect2(r.position.x + indent, r.position.y, r.size.x - indent, r.size.y)
 	var line_gap := HudLayout.num(dm, "line_gap")
 	_name.position = Vector2(r.position.x, y)
 	_name.size = Vector2(r.size.x, HudLayout.num(dm, "name_height"))
@@ -264,6 +283,8 @@ func _layout_detail() -> void:
 	_place.size = Vector2(r.size.x, HudLayout.num(dm, "line_height"))
 	y += _place.size.y + line_gap
 	for l: Label in [_chosen_line, _plan, _warn]:
+		if y >= portrait_end:
+			r = full
 		l.position = Vector2(r.position.x, y)
 		l.size = Vector2(r.size.x, 0.0)
 		l.visible = l.text != "" and y < bottom
@@ -379,3 +400,8 @@ static func _wheel(event: InputEvent) -> int:
 	if mb.button_index == MOUSE_BUTTON_WHEEL_UP:
 		return -1
 	return 1 if mb.button_index == MOUSE_BUTTON_WHEEL_DOWN else 0
+
+
+## M2-AUD-15 (audio listens, never edits; ADR 0031): true while the line on show is a refused pick or move.
+func is_refused() -> bool:
+	return not _notice.is_empty() and not bool(_notice.get("ok", true))

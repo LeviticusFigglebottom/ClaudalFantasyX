@@ -23,3 +23,13 @@ BATTLE_PAUSE_RESUME_DESC,Return to the fight where it stood.
 BATTLE_PAUSE_QUIT_DESC,Leave the fight and return to the title screen.
 BATTLE_PAUSE_STAY_DESC,Close this question and keep fighting.
 BATTLE_PAUSE_HELP,Up and Down: choose · Confirm: choose · Cancel or Pause: resume
+FIELD_MENU_LAST_SAVE_HEAD,Last saved
+FIELD_MENU_LAST_SAVE_FMT,"{place}, {when}"
+FIELD_MENU_NOT_SAVED,Not saved yet
+FIELD_MENU_SAVE_HINT,Rest at a save shrine to keep your journey.
+TIP_MENU_SAVE_TITLE,Saving
+TIP_MENU_SAVE_BODY,"The menu does not save. Rest at a save shrine to keep your journey; each new chapter also saves on its own."
+FIELD_MENU_PARTY_HP_FMT,{hp}/{max}
+FIELD_MENU_PARTY_MP_FMT,{mp}/{max}
+FIELD_MENU_PARTY_HP,HP
+FIELD_MENU_PARTY_MP,MP

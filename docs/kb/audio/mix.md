@@ -163,3 +163,23 @@ which is a repository-size question for the Lead: Git LFS, STATUS.md). Each file
 **Loop import rule:** `.import` files keep `beat_count=0`. Godot 4.6 loops an Ogg after `beat_count` beats counted
 from the start of the file (not from `loop_offset`), so a cue with an intro would wrap early by its intro's length.
 The sidecars keep the musical beat count; `tests/unit/test_audio_loops.gd` asserts the import keeps 0.
+
+## 8. M3 mix pass (M3-AUD-23)
+
+`tools/audio/mix_report.py` writes `docs/kb/audio/mix_report.md`. It lists each set's effective level per bus: the
+decoded file plus its data row's `volume_db`. Re-run it after any batch of new audio.
+
+| Bus | Plan | As measured |
+|---|---|---|
+| Music | −16 integrated; boss stems stack to −16 | All cues are −16.0 to −16.1; stems are under −16 alone, as designed |
+| Combat | Hits, KO and surges −18; stingers, the toll and boss stings −16; Swell accents −19; whooshes −20; weapon accents, footfalls and flood braces −21; textures (read, mend, gather) −21; the bark's breath −22 | Every set within 0.5 LU of its plan. Creature attack, hurt and death are −18 files, played 3 dB under and just behind the hit (creature_voices.json `under_db`); creature movement −21 |
+| World | One-shot actions −18; repeating strokes −20; footsteps −18 files played at `walk_db` −3 (≈ −21, the same as the battle footfalls) and positional | On plan; sand steps are about 1 dB softer than wood, by material |
+| SFX | Reefball crowd one-shots −18; whistles −17 | On plan |
+| Ambience | Beds −26 integrated; the excited Reefball crowd −23 (a stadium, briefly) | Every bed −25.7 to −26.2 |
+| UI | −20 momentary | −19.9 to −20.6 |
+| Voice | A line's blip stream a few LU under the music ducked for dialogue (−16 − 4) | Was −29.3 (the text box's `blip_volume_db` −8 under the −27 blip). Now −23.3 with voices.json `mix_db` +6 |
+
+**Blip pace.** At the default reveal (40 chars/s, each voice's 60 ms gap), syllable pacing (M3-AUD-21) and letter
+pacing both come to about 9 blips a second, so the change of pace needed no level change. The stream was simply too
+far down. `mix_db` is audio's own offset, and `text_box.json` (the UI track's) is untouched. **Listen:** if the blips
+now crowd the text, lower `mix_db`; −23 is a starting point, not a verdict.

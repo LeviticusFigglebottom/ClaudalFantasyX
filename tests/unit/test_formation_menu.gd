@@ -225,6 +225,7 @@ func test_a_refusal_shows_in_danger_and_keeps_the_pick() -> void:
 	menu.handle_input(_ev(&"ui_accept"))
 	assert_true(menu.chosen.is_empty(), "an open place cannot be picked")
 	assert_true(menu.plan_refused())
+	assert_true(menu.is_refused(), "M2-AUD-15: audio can hear the refusal")
 	assert_eq(menu.plan_text(), tr("FORMATION_MENU_ERR_OPEN_PLACE"))
 	menu.handle_input(_ev(&"ui_up"))
 	menu.handle_input(_ev(&"ui_accept"))

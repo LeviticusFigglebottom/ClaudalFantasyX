@@ -40,10 +40,7 @@ const TOWN_DRIVERS: Array[String] = [
 ]
 ## Overflows in screens another track owns, filed as request tasks: printed as KNOWN, not failed,
 ## until the owner fixes them and deletes the row. Key: the start of the finding.
-const KNOWN := {
-	"status_menu @130%: overflows": "M2-MNU-11",
-	"equip_customize @130%: overflows": "M2-MNU-11",
-}
+const KNOWN := {}
 
 var failures_seen: PackedStringArray = []
 var warnings_seen: PackedStringArray = []

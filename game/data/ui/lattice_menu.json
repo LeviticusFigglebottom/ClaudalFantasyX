@@ -1,6 +1,6 @@
 {
   "lattice_menu": {
-    "doc": "The Lattice page (M2-MNU-01; docs/kb/tech/ui.md section Lattice page). Rects are x, y, w, h at the 1920 x 1080 reference, multiples of 3. 'board' holds the LatticeBoardView drawing metrics in reference px (unit_px: one lattice unit; node shapes are half-diagonals of a lozenge), the camera pan time, the mouse's zoom (zoom_min / zoom_max: the scale the wheel stops at; zoom_step: one notch's factor) and drag (drag_px: how far a press moves before it pans instead of clicking; M2-UI-26), the direction-pick cone (cone_cos: the cosine of the widest angle off the pressed direction; angle_weight: how much a slanted node counts as farther) and the palette role of each board region (theme colours of type Hymn, never hard-coded). 'side' is the details panel, 'legend' the key (each node look, drawn as the board draws it, and its meaning; its rect is where it sits when the lines above end higher, else it follows them, and it shows only its first rows that end side.foot_gap above the foot, hiding when fewer than min_rows fit), 'status' the foot (the last result or refusal), and 'confirm' the two-row MenuPage that takes its place before anything is spent.",
+    "doc": "The Lattice page (M2-MNU-01; docs/kb/tech/ui.md section Lattice page). Rects are x, y, w, h at the 1920 x 1080 reference, multiples of 3. 'board' holds the LatticeBoardView drawing metrics in reference px (unit_px: one lattice unit; node shapes are half-diagonals of a lozenge), the camera pan time, the mouse's zoom (zoom_min / zoom_max: the scale the wheel stops at; zoom_step: one notch's factor) and drag (drag_px: how far a press moves before it pans instead of clicking; M2-UI-26), the direction-pick cone (cone_cos: the cosine of the widest angle off the pressed direction; angle_weight: how much a slanted node counts as farther) and the palette role of each board region (theme colours of type Hymn, never hard-coded). 'portrait' (M2-MNU-301) is the hero on show's head (a face-cropped HeroPortraitFrame) right of the 'hero' line. 'side' is the details panel, 'legend' the key (each node look, drawn as the board draws it, and its meaning; its rect is where it sits when the lines above end higher, else it follows them, and it shows only its first rows that end side.foot_gap above the foot, hiding when fewer than min_rows fit), 'status' the foot (the last result or refusal), and 'confirm' the two-row MenuPage that takes its place before anything is spent.",
     "canvas_layer": 64,
     "panel": {
       "rect": [96, 54, 1728, 972],
@@ -8,7 +8,8 @@
       "title_height": 56,
       "help_height": 40
     },
-    "hero": {"rect": [1104, 81, 693, 56]},
+    "hero": {"rect": [1104, 81, 597, 56]},
+    "portrait": {"rect": [1713, 66, 84, 84]},
     "board": {
       "rect": [123, 153, 1158, 795],
       "unit_px": 51,
@@ -67,6 +68,17 @@
     },
     "legend": {"rect": [1326, 588, 450, 180], "row_pitch": 30, "sample_x": 30, "sample_scale": 0.66, "text_x": 66, "min_rows": 2},
     "status": {"rect": [1326, 789, 450, 138]},
+    "overview": {
+      "doc": "M3-MNU-04: the whole-board view. 'action' is added to the InputMap when missing (FieldInput.add_actions; remappable on the Controls page, menu context: M and pad X are free there). The view fits every node inside the board view less margin_px a side (zoom held between board zoom_min and zoom_max) and centres the board; it moves over pan_sec (board) unless motion is reduced. Each hero's name sits in a tag name_gap_px under their node (tags on one node stack by name_step_px), and every woken node carries the initials of the heroes who woke it, its top-left initials_offset right of and below the node's right point (clear of its neighbours). 'button' is the mouse affordance, a framed button in the title bar.",
+      "action": {"lattice_overview": {"keys": ["M"], "joy_buttons": [2]}},
+      "deadzone": 0.5,
+      "margin_px": 36,
+      "name_gap_px": 15,
+      "name_step_px": 33,
+      "name_pad": [6, 1],
+      "initials_offset": [3, 2],
+      "button": {"rect": [741, 81, 375, 48], "title_gap": 24}
+    },
     "confirm": {
       "rect": [1305, 783, 492, 0],
       "header_height": 45,
