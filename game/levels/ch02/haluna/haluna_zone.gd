@@ -65,6 +65,7 @@ func prebuild() -> void:
 	var dresser := get_node(^"HalunaMood/Dresser") as HalunaDresser
 	HalunaZoneDresser.adopt(dresser).dress()
 	(get_node(^"Collision") as HalunaCollision).build()
+	HalunaVillagers.populate(self)  # M2-FP-102: the villagers' actors replace the capsules
 	for actor in cast:
 		actor.assign_materials()
 	# The sea builds its ocean grid in _ready (~40 ms) unless handed one: hand it the same grid.
@@ -81,6 +82,7 @@ func _ready() -> void:
 	if not prebuilt:
 		# Not prebuilt (instanced on the main thread): the mood dressed itself in its own _ready.
 		collision.build()
+		HalunaVillagers.populate(self)
 	field_camera.make_current()
 	# After Cutscene A the girl and the guardian have walked up to the village.
 	_apply_face_key_bias()

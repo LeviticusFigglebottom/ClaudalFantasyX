@@ -136,6 +136,7 @@ func _bark(scene_id: StringName) -> void:
 	busy = true
 	_hush()
 	await sequencer.play(scene_id, _stage())
+	HalunaVillagers.end_talks(_zone)  # M2-FP-102: the villager turns back to its work
 	busy = false
 
 
