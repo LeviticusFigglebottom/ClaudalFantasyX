@@ -50,7 +50,8 @@ M2_CUES = ("haluna_village", "haluna_night", "battle_standard_v2", "hush_first_v
            "tidecup_match", "terraces_of_ash", "corrow_seawall", "hullgnaw", "spar_wraith", "oruvel", "pilgrims_wake",
            "tamsule", "iskarra_vigil", "brightwater_ferry", "brine_shoals", "ashcrown", "coilspire",
            "tamsule_bell_galleries", "stillguard_inquisitor", "ossa_fen", "reedhollow", "sunken_vey", "lowlight",
-           "keth_pass", "quellan")
+           "keth_pass", "quellan",
+           "ansedra", "lamp_archive", "peace_wedding", "unlamped", "pale_rim", "drowned_choir")
 AMBIENCE_BUDGET = int(2.5 * 1024 * 1024)  # the M2-AUD-05 field beds together
 # Per-job budgets for later "ambience_loop" jobs (each job's beds together; the M2-AUD-05 job keeps AMBIENCE_BUDGET).
 AMBIENCE_JOB_BUDGETS = {"assets_src/sfx/causeway_ambience.py": int(1.2 * 1024 * 1024),
@@ -210,6 +211,13 @@ JOBS = [
     ("assets_src/music/lowlight.py", "assets/audio/music", ["lowlight.ogg", "lowlight.loop.json"], "music_loop"),
     ("assets_src/music/keth_pass.py", "assets/audio/music", ["keth_pass.ogg", "keth_pass.loop.json"], "music_loop"),
     ("assets_src/music/quellan.py", "assets/audio/music", ["quellan.ogg", "quellan.loop.json"], "music_loop"),
+    # M3-AUD-805: Act II sketches II (Ch13 Ansedra and the Lamp Archive, Ch14 the wedding, Ch15, Ch16)
+    ("assets_src/music/ansedra.py", "assets/audio/music", ["ansedra.ogg", "ansedra.loop.json"], "music_loop"),
+    ("assets_src/music/lamp_archive.py", "assets/audio/music", ["lamp_archive.ogg", "lamp_archive.loop.json"], "music_loop"),
+    ("assets_src/music/peace_wedding.py", "assets/audio/music", ["peace_wedding.ogg", "peace_wedding.loop.json"], "music_loop"),
+    ("assets_src/music/unlamped.py", "assets/audio/music", ["unlamped.ogg", "unlamped.loop.json"], "music_loop"),
+    ("assets_src/music/pale_rim.py", "assets/audio/music", ["pale_rim.ogg", "pale_rim.loop.json"], "music_loop"),
+    ("assets_src/music/drowned_choir.py", "assets/audio/music", ["drowned_choir.ogg", "drowned_choir.loop.json"], "music_loop"),
 ]
 M1_JOBS = 5  # the first JOBS rows are M1's audio (SIZE_BUDGET)
 
