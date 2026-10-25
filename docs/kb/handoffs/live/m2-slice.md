@@ -3,6 +3,8 @@
 Feature track for the M2 vertical slice (session_01DQ9tdk8Uatb8Jr6raAkXiC), branch `claude/m2-slice`, started from `claude/first-playable` 67984ce. **This environment owns this file** (CLAUDE.md §7a). The Lead is session_019iimsngAgPLEram1wcbLpE; the integration branch is `claude/undertow-lead-handoff-423ixt`.
 
 ## STATE AT HANDOVER (2026-10-25)
+**HANDOVER DONE @ ce3e9615** (handover docs; code head 97620754).
+
 A newcomer starts here. Branch `claude/m2-slice`, head **97620754** (pushed). There are no worktrees and nothing un-pushed. The per-session handoff is `docs/kb/handoffs/2026-10-25-cinematics-m2-slice-1.md`.
 
 ### What this environment is
