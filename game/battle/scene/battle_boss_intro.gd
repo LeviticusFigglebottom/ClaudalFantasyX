@@ -259,15 +259,7 @@ func _frame_boss() -> void:
 	if not pose.is_empty() and bounds.size != Vector3.ZERO and row.get("fit", true) != false:
 		var mid := bounds.get_center()  # M3-BPR-404: framed on the model's real size, inside the safe frame
 		pts = [Vector3(mid.x, bounds.position.y, mid.z), Vector3(mid.x, bounds.end.y, mid.z)]
-		var shot := pose
-		var k := 1.0
-		pose = _fit(shot, bounds, k)
-		while (
-			not director._frames(pose, pts, none)
-			and k < float((cfg.get("fit", {}) as Dictionary).get("widen_max", 1.0))
-		):
-			k *= 1.1
-			pose = _fit(shot, bounds, k)
+		pose = _fit_search(pose, bounds, pts)
 	if pose.is_empty() or not director._frames(pose, pts, none):
 		return
 	_pose = pose
@@ -289,19 +281,59 @@ func _bounds(f: Node3D) -> AABB:
 	return out
 
 
+## True when `feet` (camera parent space) projects above the title card's top edge, less fit.card_clear_px (the
+## card is under the boss, M3-BPR-404: a small boss framed close sank behind it).
+func _clears_card(pose: Dictionary, feet: Vector3) -> bool:
+	var rect := (cfg.get("card", {}) as Dictionary).get("rect", []) as Array
+	if rect.size() < 2:
+		return true
+	var ref_h := float(ProjectSettings.get_setting("display/window/size/viewport_height", 1))
+	var clear := float((cfg.get("fit", {}) as Dictionary).get("card_clear_px", 0.0))
+	var bottom := clampf(1.0 - (float(rect[1]) - clear) / maxf(ref_h, 1.0), 0.0, 1.0)
+	var pos: Vector3 = pose["pos"]
+	var xform := Transform3D(Basis.looking_at((pose["look"] as Vector3) - pos, Vector3.UP), pos)
+	return _choreo.camera.in_frame(xform, float(pose["fov"]), feet, {"bottom": bottom})
+
+
+## The closest fitted pose whose bounds pass the safe frame with the feet clear of the card: each widening step
+## (x fit.widen_step up to widen_max) tries aiming lower first (look_drop up by drop_step to drop_max, which lifts the
+## boss in the frame). Failing the card everywhere, the closest pose that passes the safe frame; failing that, {}.
+func _fit_search(shot: Dictionary, bounds: AABB, pts: Array[Vector3]) -> Dictionary:
+	var fc := cfg.get("fit", {}) as Dictionary
+	var none: Array[Vector3] = []
+	var base := float(fc.get("look_drop", 0.0))
+	var step := maxf(float(fc.get("drop_step", 1.0)), 0.01)
+	var widen := maxf(float(fc.get("widen_step", 1.1)), 1.01)
+	var fallback := {}
+	var k := 1.0
+	while k <= float(fc.get("widen_max", 1.0)) + 0.0001:
+		var drop := base
+		while drop <= float(fc.get("drop_max", base)) + 0.0001:
+			var pose := _fit(shot, bounds, k, drop)
+			if _choreo.camera._frames(pose, pts, none):
+				if _clears_card(pose, pts[0]):
+					return pose
+				if fallback.is_empty() and is_equal_approx(drop, base):
+					fallback = pose
+			drop += step
+		k *= widen
+	return fallback
+
+
 ## `pose` moved along its own line of sight so the bounds' sphere fits the narrower field of view at `fit.margin`
-## (the row's fit_margin overrides it) times `k` (widened until the safe frame holds), aimed fit.look_drop of its
-## radius below the centre (the boss sits above the title card).
-func _fit(pose: Dictionary, bounds: AABB, k: float) -> Dictionary:
+## (the row's fit_margin overrides it), clamped, times `k`, aimed `drop` (fit.look_drop when negative) of its radius
+## below the centre (the boss sits above the title card).
+func _fit(pose: Dictionary, bounds: AABB, k: float, drop: float = -1.0) -> Dictionary:
 	var fc := cfg.get("fit", {}) as Dictionary
 	var margin := float(row.get("fit_margin", fc.get("margin", 1.0)))
 	var r := bounds.size.length() * 0.5
 	var half := deg_to_rad(float(pose["fov"])) * 0.5
 	var aspect := _choreo.camera._aspect()
 	var narrow := minf(half, atan(tan(half) * aspect)) if aspect >= 1.0 else atan(tan(half) * aspect)
-	var look := bounds.get_center() - Vector3.UP * r * float(fc.get("look_drop", 0.0))
+	var look := bounds.get_center() - Vector3.UP * r * (drop if drop >= 0.0 else float(fc.get("look_drop", 0.0)))
 	var dir := ((pose["pos"] as Vector3) - (pose["look"] as Vector3)).normalized()
-	var dist := clampf(r * margin * k / sin(narrow), float(fc.get("min_m", 0.0)), float(fc.get("max_m", 1000.0)))
+	var dist := clampf(r * margin / sin(narrow), float(fc.get("min_m", 0.0)), float(fc.get("max_m", 1000.0)))
+	dist *= k
 	return {"pos": look + dir * dist, "look": look, "fov": pose["fov"]}
 
 

@@ -503,6 +503,15 @@ Hadric Moll (`ch06_inquisitor`, M3-BPR-03) and the Drownbell (`drownbell`). Once
 
 - **The shot is checked**: the boss's feet and head must sit in the camera's `safe_frame` (as every director shot);
   a shot that fails keeps the default for the intro and only the card plays. A test checks every row passes.
+- **Fit to the model (M3-BPR-404; the human's playtest: Hullgnaw framed too close).** The shot keeps its angle and
+  fov, but its distance fits a sphere around the boss's visible meshes (their AABB in camera-parent space) in the
+  narrower field of view at `boss_intro.fit.margin` (1.05), clamped to `min_m`..`max_m`, aimed `look_drop` (0.3)
+  of the radius below the centre. The boss's top and bottom must pass the safe frame **and its feet must clear the
+  title card's top edge** by `card_clear_px` (a small boss framed close, the Inquisitor's capsule, and the Matron's
+  base sank behind the card). To get there it first aims lower (`drop_step` up to `drop_max`, which lifts the boss
+  in the frame), then widens (× `widen_step` up to `widen_max`); the closest pose that holds wins. If none clears
+  the card, the closest that passes the safe frame; if none passes, the default camera. A row's `fit_margin`
+  overrides the margin; `fit: false` keeps the shot's own offsets.
 - **The title card** is its own `CanvasLayer` (`card.layer` 2, above the HUD, below the router's fade) in the HUD's
   current theme: the name in `TitleLabel` over a thin `focus_gold` rule and the epithet in `FlavorLabel`, on a dark
   band that fades at both ends (art/ui.md §9 contrast). It sits centre-low (`card.rect` 560, 616, 800 × 140 at the
