@@ -247,7 +247,7 @@ Merge the three creature worktrees as they finish (they append to creatures.json
 - `ln -s ~/.cache/hymn/godot-4.6.3+ds-2/godot ~/.local/bin/godot` (and `godot-render`, and `~/.cache/hymn/blender-5.0.1+dfsg-5/blender`).
 
 ## NEW ACCOUNT (from 2026-10-25)
-- **MERGE-READY @ {sha}: integration -ze8rrn (de93e79e) merged; item 1 triage, no code change needed.**
+- **MERGE-READY @ 52c2d19c: integration -ze8rrn (de93e79e) merged; item 1 triage, no code change needed.**
   - `test_post_import.gd` (3 FAIL at handover): **21/0 on a fresh import.** It was a stale `.godot` import cache,
     not code.
   - `test_battle_ko_once.gd::test_a_primitive_foe_falls_once_and_is_hidden`: **it fails on the integration head too**
