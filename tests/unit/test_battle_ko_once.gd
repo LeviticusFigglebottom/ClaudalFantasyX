@@ -34,10 +34,15 @@ func test_a_creature_foe_plays_its_ko_once_then_fades_out() -> void:
 
 
 func test_a_primitive_foe_falls_once_and_is_hidden() -> void:
+	var models := CreatureModels.models()  # the wickfry has a model now: take it away for this test
+	var had: Variant = models.get("wickfry")
+	models.erase("wickfry")
 	_start(&"ch01_underway_shoals")
+	if had != null:
+		models["wickfry"] = had
 	var foe := _first_foe()
 	var f := ctl.stage.stand_in(foe.id)
-	assert_true(BattleClips.creature_of(f) == null, "wickfry has no model: a primitive stand-in")
+	assert_true(BattleClips.creature_of(f) == null, "a primitive stand-in")
 	_fell(foe)
 	var body: Node3D = f._body
 	var fallen := f.transform
