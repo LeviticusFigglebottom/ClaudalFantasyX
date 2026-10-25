@@ -7,6 +7,8 @@ extends TestCase
 const ZONE := "res://game/levels/_tests/field/field_test.tscn"
 const DT := 1.0 / 60.0
 const WALK_FRAMES := 240
+## Obstacles past the Court kink the trail and the followers sway on it; by now (at the run speed) they have settled.
+const RUN_FRAMES := 300
 const UP := Vector2(0, -1)
 const SLACK_M := 0.35
 
@@ -54,7 +56,7 @@ func test_followers_keep_their_spacing_on_the_trail() -> void:
 	var gap_min := float(party._cfg["min_gap_m"])
 	player.input_override = UP
 	var closest := INF
-	for i in WALK_FRAMES:
+	for i in RUN_FRAMES:
 		_step()
 		closest = minf(closest, _flat(player.global_position, party.followers[0].global_position))
 		closest = minf(closest, _flat(party.followers[0].global_position, party.followers[1].global_position))

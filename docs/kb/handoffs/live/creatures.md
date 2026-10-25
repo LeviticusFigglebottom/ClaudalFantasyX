@@ -2,7 +2,91 @@
 
 Feature track for the battle creatures (cloud session_01CYks9e592YBEfygyTawcJD), branch `claude/creatures`, started from `origin/claude/undertow-lead-handoff-423ixt` aeb0875. **This environment owns this file** (CLAUDE.md §7a). The Lead is session_019iimsngAgPLEram1wcbLpE.
 
+## STATE AT HANDOVER (2026-10-25)
+
+**HANDOVER DONE @ 7683996d** (claude/creatures, pushed; this line's own commit follows it).
+
+Branch `claude/creatures` @ 5065b869 (pushed). Nothing is uncommitted, and no subagents are running. Any worktree
+branches left under `.claude/worktrees/` are already merged or applied here and need nothing.
+
+### Done and merge-ready
+- **On the integration branch already** (big7 d6a0886d, big8 6c6e5514): all 27 Act I creatures, the creature pipeline,
+  battle wiring, the M2/M3 creature tasks.
+- **On claude/creatures since big8**, MERGE-READY @ 5065b869 for the Lead's next batch:
+  - integration big8 merged at its own merge commit, and claude/hero-integration (MERGE-READY for big9) merged at
+    9c5e4c26 with the Lead's approval;
+  - **M3-CRE-610 villagers alive** (ac7ea5b9..bada52a9): FieldNpc, docs/kb/tech/field_npc.md;
+  - **M3-CRE-611 ambient wildlife**: WildlifeLayer, the `wildlife` import category, docs/kb/art/wildlife.md;
+  - **M3-CRE-612 battle polish**: hit_b and idle_b for every creature, hit rotation, the idle fidget, and flier
+    `stand_in.hover` so KOs land;
+  - the spar_wraith's `hauled_down` phase, phase `clips` and `show_after`, and the polish passes.
+- **Checks at 5065b869** (combined tree):
+  - validate_data 0/0, taskboard, lint and format clean, tools creature, wildlife and post_import tests OK;
+  - Godot field_npc 10/0, hero 68/0, field_ 106/0, creature 24/0, wildlife 10/0;
+  - **post_import: 3 FAIL, battle: 1 FAIL (see Known bugs).**
+  - Shots not re-run after the big8 and hero merges.
+
+### Exact next steps (for the new environment)
+1. **Triage the failures after the big8 merge:**
+   - `test_post_import.gd`: test_fixture_lod_ranges_follow_the_rules, test_vegetation_import_matches_vegetation_plant_defaults
+     and test_a_distance_sweep_draws_exactly_one_lod.
+   - `test_battle_ko_once.gd`: test_a_primitive_foe_falls_once_and_is_hidden.
+   - First check whether they fail on the integration branch itself (6c6e5514). If so they aren't ours: tell the
+     owners. The KO test assumes `wickfry` has no model, but m2-slice's model lines (big8) give it glassfry's, so
+     battle-presentation needs another primitive foe for that test.
+2. Capture and compare the creature, battle, npc and wildlife shots on the merged tree (60+2). View any change before
+   approving. Big8 took the three battle baselines that conflicted from the integration branch.
+3. Write the MERGE-READY line for the Lead batch.
+4. When it lands: m2-slice adds a WildlifeLayer to haluna.tscn and GreyboxZone, and calls FieldNpc begin_talk/end_talk
+   around villager barks (agreed by message; see the 22:20 entry).
+5. Open: the Matron's re-crust hook (battle-presentation); the Undertow's Reach `water` slot (PC GPU look); a "dialogue
+   finished" signal on FieldEvents (Systems request, optional).
+
+### Open questions
+None for the human.
+
+### Known bugs
+- The 4 test failures above, not yet triaged.
+- The wreck crab's leg barnacles are faceted (budget nearly spent); the Matron's yoke cells are even.
+
+### Gotchas (the creature pipeline)
+- **Builds:** procedural numpy in `assets_src/creatures/<id>/build_<id>.py` on `common/creature_kit.py`, exported by
+  Blender 5.0.1 with `--threads 4`. Every job in `tools/dev/blender_builds.json` must rebuild byte-identical
+  (`tools/dev/verify_blender_builds.py --job <id>`). Append jobs as text: reformatting the JSON breaks merges.
+- **The kit changes every creature:** a kit change (`with_variety`, `IN_PLACE_CLIPS`) rebuilds all 27, so rebuild them
+  all and verify.
+- **Variants:** stormgull, wallcrab, wreck_crab, squall_wing and wall_polyp import their base build. Their jobs list
+  the base folder as a source.
+- **Vertex data carries the look:** COLOR_0 albedo and wetness, UV2 cavity and emission. Materials come from each
+  creature's `materials.json` through `write_materials.py`.
+- **Import rule:** the `game/data/import/creatures.json` `assets` list is not recursive: list each folder. Run
+  `godot --import` before new class_names resolve.
+- **Shots:** `capture.sh` ignores HYMN_SHOTS; use `--shots a,b`. Set HYMN_LOG_DIR and XDG_DATA_HOME to scratch dirs.
+  Never kill processes by pattern.
+- **Data:** creatures.json phase ids must match enemies.json phases once an enemy uses the model. KO end must sit on
+  the floor (a tools test pins a flier's drop to its `stand_in.hover`).
+- **Messages:** send_message to the Lead was refused (untrusted device) for most of the session, so the live log is the
+  channel.
+
 ## Now
+- **22:20, m2-slice:** once wildlife_layer.gd reaches the integration branch, they add a WildlifeLayer to haluna.tscn,
+  and GreyboxZone will add one automatically for any location with a game/data/world/wildlife/<zone>.json. For
+  FieldNpc (after it lands) they'll call begin_talk/end_talk around HalunaStory/ZoneStory barks, or
+  follow_dialogue(runner).
+- **MERGE-READY @ d9001836: the Lead's new queue (M3-CRE-610..612), all in review.**
+  - **611 ambient wildlife (merged):** gull (flying and perched), shore crab and shoal fish, built from the kit in a
+    new `wildlife` import category. WildlifeLayer is MultiMesh, 4 draw calls a zone, 0.27 ms average and 0.56 ms worst
+    in Haluna (budget 1 ms); off-screen groups pause and anything past 120 m hides. Data for ch02/haluna and
+    ch03/saltgrass_causeway. **Zone owners add one WildlifeLayer node** (docs/kb/art/wildlife.md); m2-slice has been
+    asked.
+  - **612 battle polish:** hit_b and idle_b for every creature, hit rotation, the idle fidget, and flier `hover` so
+    KOs land on the floor (KO audit viewed).
+  - **610 villagers:** parked as patches until hero-integration merges (see the 22:10 entry).
+  - **Checks run:** validate_data, taskboard, lint, format, tools unittest (creatures, wildlife, post_import; the
+    agent ran the full tools suite: 706 OK), Godot wildlife 10/0, creature 16/0, post_import 19/0, battle 527/0, the
+    Blender verify of all 27 creature jobs and 3 wildlife jobs (identical), 60 creature and battle shots unchanged,
+    wildlife_stage and npc_stage_field approved after viewing. **Skipped:** the full manifest and coverage (no change
+    in game/battle or game/progression).
 - **21:30, the Lead's new queue (M3-CRE-610..612, id block 600–699; ownership row added for game/world/npc,
   game/world/wildlife and their data, tests and assets paths):**
   - **610 villagers alive** (worktree agent): FieldNpc, which gives villager actors idle loops, a talk gesture, an eased

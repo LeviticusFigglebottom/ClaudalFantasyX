@@ -1,0 +1,18 @@
+{
+  "doc": "hero_gait_strip.gd (M2-HER-1107, shot field_hero_gait_strip). Rows of Rhen frozen after `frames` frames (at fps) of a move from rest_frames standing: a run start (stick, Input.get_vector convention; +x runs along +X, side-on to the camera), a run stop (run_frames running, then let go) and a turn in place (the facing turned turn_deg, + = left). Each copy simulates sim_gap_m apart from sim_origin (so the capsules never touch), then its body stands at spacing_m in its row, rows row_gap_m apart going away from the camera. start_yaw_deg -90 faces +X. Orthographic camera at camera_at looking at look_at, camera_size_m tall.",
+  "fps": 60,
+  "rest_frames": 30,
+  "start_yaw_deg": -90.0,
+  "sim_origin": [-20.0, 0.0, -20.0],
+  "sim_gap_m": 6.0,
+  "spacing_m": 1.25,
+  "row_gap_m": 2.8,
+  "rows": [
+    {"name": "run start", "stick": [1.0, 0.0], "frames": [4, 10, 16, 22, 28]},
+    {"name": "run stop", "stick": [1.0, 0.0], "run_frames": 60, "frames": [2, 8, 14, 20, 28]},
+    {"name": "turn in place", "turn_deg": -90.0, "frames": [6, 13, 20, 27, 36]}
+  ],
+  "camera_at": [0.0, 6.0, 5.2],
+  "look_at": [0.0, 0.5, -2.8],
+  "camera_size_m": 6.4
+}

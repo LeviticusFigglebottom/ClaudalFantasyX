@@ -3030,6 +3030,34 @@
           }
         }
       }
+    },
+    {
+      "id": "wildlife_stage",
+      "scene": "res://game/levels/_tests/wildlife/wildlife_stage.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
+      "id": "field_hero_gait_strip",
+      "scene": "res://game/levels/_tests/hero_motion/field_hero_gait_strip.tscn",
+      "camera": "ShotCamera",
+      "settle_frames": 30,
+      "resolution": [
+        1280,
+        720
+      ]
+    },
+    {
+      "id": "npc_stage_field",
+      "scene": "res://game/levels/_tests/npc/npc_stage.tscn",
+      "camera": "Camera",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 150
     }
   ]
 }
