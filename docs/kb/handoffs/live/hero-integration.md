@@ -284,3 +284,14 @@ integration branch at 07781cba and merged with it again at 0b1e76a4. The handove
 - send_message to the Lead's session was refused ("trusted device"); this live log was the channel.
 
 HANDOVER DONE @ f6d90968 (this note is the commit after it).
+
+## NEW ACCOUNT (from 2026-10-25)
+Session `session_01PzF7Jc4XVQdTWcaYUyCjPB`. Per the Lead: no send_message; requests go through task files and this log.
+- 4da79410: merged the integration branch (-ze8rrn @ c6a960ab). Conflicts: shots.json, baselines.json (union by id),
+  ownership.md (both rows kept). No duplicate loc keys.
+- **Patch status (for the Lead to relay):**
+  - `hero_motion_sequencer.patch` still applies cleanly to claude/m2-slice 6c50823f → request task **M2-HER-1109**
+    (slice-polish).
+  - `hero_battle_proposed.patch`: the choreo test hunks and the KO no-sink are ALREADY on claude/battle-presentation
+    (a3e489bb) and the no-sink on claude/ui (776a24a1). Nothing left for battle-presentation. Only the three-line
+    `battle_sandbox.json` repoint remains → request task **M2-HER-1108** (ui-menus), after big9 lands.
