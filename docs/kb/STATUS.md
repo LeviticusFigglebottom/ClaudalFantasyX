@@ -47,3 +47,6 @@ We're building *Hymn of the Undertow*: an original, cinematic, turn-based JRPG i
 - **Answered 2026-10-23:** Q2, MPFB/MakeHuman allowed as a tool (CC0 data only, heavily modified; ADR 0021 pending in M1-CHR-03). The prologue line was replaced at the human's direction (SPEC v1.1, ADR 0020 §g).
 - **Usage:** the account's weekly limit is at warning level until 29 Oct 17:00 UTC. The Lead keeps about 4 to 6 agents in parallel.
 - Q1 (title/world), Q4, Q5 and Q6 are at their defaults.
+
+## Handover (2026-10-25)
+The project moves to a new account. Start at docs/kb/handoffs/live/CONSOLIDATED.md, which gives the state, branches, recommended environments and the exact next steps. The integration branch is `claude/undertow-lead-handoff-423ixt`. The next batch, `lead/gate-big9`, is merged but not yet gated.
