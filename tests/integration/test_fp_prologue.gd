@@ -25,12 +25,18 @@ const MAX_SKY_CONTRIBUTION := 0.4
 ## Their cloth (palette.json cloth family) must have colour and enough value to read in the rim light.
 const MIN_FIGURE_SAT := 0.25
 const MIN_FIGURE_VALUE := 0.4
-const FIGURE_COUNT := 7
+## M2-FP-103: the three of the seven without a model yet stand as cloth-coloured silhouettes (City/Vigils);
+## the other four are the cast (CutsceneStage/Actors), three of them on HeroFieldActor bodies.
+const SILHOUETTE_COUNT := 3
+const BODY_CAST: Array[StringName] = [&"rhen", &"asha", &"toma"]
+const MODEL_CAST: Array[StringName] = [&"ysolde"]
 ## Colour script prologue_iskarra_dusk: saturation x1.05; the grade stand-in's points (lut_prologue_dusk).
 const SCRIPT_SATURATION := 1.05
 const GRADE_MID := 0.5
 const GRADE_TOE := 0.0
-const LANTERN_REACH_M := 1.0
+## The lantern rides Rhen's body at chest height (hero_motion.json field.heroes.rhen.carry).
+const LANTERN_REACH_M := 1.8
+const LANTERN_ENERGY := 1.5
 
 var travels: Array[Array] = []
 var scene: PrologueScene
@@ -131,7 +137,8 @@ func test_the_prologue_script_runs_to_the_end() -> void:
 		assert_eq(lines[0].narrator, &"rhen", "Rhen's voice-over")
 		assert_true(lines[0].tags.has("vo"))
 		assert_ne(tr(LINE_KEY), String(LINE_KEY), "the line is translated")
-	assert_eq(cameras, ["P01"], "framed on P01")
+	assert_eq(cameras, ["P01", "P02"], "the wide on P01, drifting into the P02 two-shot")
+	assert_true(cues.has(&"mark") and cues.has(&"light") and cues.has(&"vfx"), "he crosses, the wick catches, glimmer")
 	assert_true(cues.has(&"letterbox") and cues.has(&"fade") and cues.has(&"wait"))
 	_done()
 
@@ -167,7 +174,15 @@ func test_the_dusk_frame_carries_colour() -> void:
 func test_the_figures_and_the_grade_carry_colour_while_the_line_is_up() -> void:
 	_make_scene()
 	var figures := scene.get_node(^"City/Vigils").find_children("*", "MeshInstance3D", false, false)
-	assert_eq(figures.size(), FIGURE_COUNT, "seven vigils")
+	assert_eq(figures.size(), SILHOUETTE_COUNT, "the three still without models")
+	for id in BODY_CAST:
+		var a := scene.stage.actor(id)
+		assert_true(a != null and a.get_node_or_null(NodePath(String(HeroFieldActor.NAME))) != null, "%s's body" % id)
+	for id in MODEL_CAST:
+		var a := scene.stage.actor(id)
+		assert_true(
+			a != null and not a.find_children("*", "AnimationPlayer", true, false).is_empty(), "%s's model" % id
+		)
 	for n in figures:
 		var mi := n as MeshInstance3D
 		var mat := mi.material_override if mi.material_override != null else mi.mesh.surface_get_material(0)
@@ -177,11 +192,11 @@ func test_the_figures_and_the_grade_carry_colour_while_the_line_is_up() -> void:
 			var c := std.albedo_color
 			assert_true(c.s >= MIN_FIGURE_SAT, "%s wears a colour, not grey (s %.2f)" % [mi.name, c.s])
 			assert_true(c.v >= MIN_FIGURE_VALUE, "%s is not a black silhouette (v %.2f)" % [mi.name, c.v])
-	var lantern := scene.get_node_or_null(^"City/Vigils/RhenLantern") as OmniLight3D
+	var lantern := scene.stage.find_child("LanternLight", true, false) as OmniLight3D
 	assert_true(lantern != null, "Rhen's oil lantern (colour script: the one practical)")
 	if lantern != null:
 		assert_true(lantern.light_color.s >= MIN_LIGHT_SAT and lantern.light_color.h <= WARM_HUE_MAX, "warm oil light")
-		var rhen := scene.get_node(^"City/Vigils/Rhen") as Node3D
+		var rhen := scene.stage.actor(&"rhen")
 		var reach := lantern.global_position.distance_to(rhen.global_position)
 		assert_true(reach <= LANTERN_REACH_M, "the lantern is at Rhen's hand")
 	var env := (scene.get_node(^"WorldEnvironment") as WorldEnvironment).environment
@@ -193,4 +208,22 @@ func test_the_figures_and_the_grade_carry_colour_while_the_line_is_up() -> void:
 		assert_true(mid.r > GRADE_MID and mid.r > mid.b, "gold gain in the mids")
 		var toe := grade.gradient.sample(GRADE_TOE)
 		assert_true(toe.b > toe.r and toe.g > toe.r, "teal lift in the toe")
+	_done()
+
+
+## M2-FP-103: the lantern is dark until the line, then catches to its authored energy; glimmer rises at Rhen.
+func test_the_lantern_catches_and_glimmer_rises() -> void:
+	_make_scene()
+	var lantern := scene.stage.find_child("LanternLight", true, false) as OmniLight3D
+	var seq := CutsceneSequencer.new()
+	seq.instant = true
+	scene.add_child(seq)
+	scene.sequencer = seq
+	scene.play()
+	assert_true(seq.warnings.is_empty(), "no unplaced cue: %s" % [seq.warnings])
+	assert_between(lantern.light_energy, LANTERN_ENERGY - ENERGY_TOLERANCE, LANTERN_ENERGY + ENERGY_TOLERANCE, "lit")
+	var mark := scene.stage.mark(&"by_asha")
+	assert_false(mark.find_children("Vfx_glimmer_lift*", "", false, false).is_empty(), "glimmer at Rhen")
+	var rhen := scene.stage.actor(&"rhen")
+	assert_true(rhen.global_position.distance_to(mark.global_position) < ENERGY_TOLERANCE + 0.01, "he has crossed to Asha")
 	_done()

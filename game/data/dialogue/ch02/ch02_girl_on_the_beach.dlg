@@ -14,6 +14,9 @@ grade: ch02
 ---
 @letterbox on
 @camera H05
+// M2-FP-103: he is down in the shallows when the scene opens (lie_in_shallows is on Character's list;
+// until it is built sequencer.json clip_stand_ins kneels him, half risen, rather than standing him up).
+@anim rhen lie_in_shallows
 @music haluna_dawn fade=4.0
 @fade in 2.5
 The sea gave me back at dawn. Somebody was humming. #line:ch02_beach_001 #vo

@@ -57,6 +57,7 @@ CutsceneStage (director_path, player_path)
 | `@music track [fade]` | Plays `music_dir/<track>.ogg`, or its `music_stand_ins` row (placeholders until Audio ships the cues). `silence` fades out. |
 | `@sfx sound [vol]` | One-shot from `sfx_dir`. `at=` is ignored for now (2D). |
 | `@vfx effect [at] [count]` | `CutsceneMotes` at the mark or actor. `drift`, `motion` and `rate` come from the effect's row for now. |
+| `@light name on\|off [sec]` | Finds a `Light3D` named `name` anywhere under the stage (Rhen's `LanternLight` rides his body) and eases its energy on `light_ease` to the energy it was authored with, or to 0. The prologue lights his lantern as the line lands. |
 | lines | The `DialogueBox` shows the line; `ui_accept` (or the field's interact key) skips the reveal, then advances. The speaker's `[emotion]` blends their face like `@face`, `DialogueBox.mouth_flap` drives the `lip_flap` shapes (visemes), and the speaker's `talk` clip plays (then `idle`) when the rig has them. |
 | options | `CutsceneChoices` over the box; the pick goes to `runner.choose()`. |
 
@@ -167,3 +168,8 @@ XDG_DATA_HOME=$SCRATCH/xdg godot-render --path . --audio-driver Dummy --fixed-fp
 ```
 
 It travels through `SceneRouter.world_return` as the game does, with only `--flags` set. Dialogue advances by itself (the Accessibility auto-advance), every choice takes option `--choice`, and nothing is saved. It writes `f_<tenths of a second>.png` every `--every` seconds of game time, plus `lines.txt` with the time each line and choice appeared.
+
+### Held poses and clip stand-ins (M2-FP-103)
+The playtest found a kneeling Asha standing up for her first line: every line plays the speaker's `talk` clip, and since the hero bodies arrived a one-shot clip also returns to standing locomotion when it ends.
+- **Held poses:** an `@anim` of a clip in `sequencer.json` `hold_clips` (kneel_over_rhen, laugh, offer_hand, spear_level, sit_steps and the like) is a pose. A hero body plays it with `play_clip(..., hold = true)`, and the actor's lines don't play `talk` or `idle` over it, until that actor's next `@anim` or `@mark`. Any other `@anim` is a gesture: afterwards, lines play `talk` and `idle` again.
+- **Clip stand-ins:** `clip_stand_ins` is keyed `"<actor>/<clip>"`. While the actor's rig lacks a requested clip (`assets_src/characters/requested_clips.json`), the sequencer plays the named stand-in that the rig does have. The real clip plays as soon as it is built. Rhen's beach clips (`lie_in_shallows`, `sit_up`, `sit_in_shallows`) stand in as his kneel, so he is half risen in the shallows rather than standing; `stand_unsteady` stands in as his `rise_to_stand`. A requested clip with no stand-in is still skipped.

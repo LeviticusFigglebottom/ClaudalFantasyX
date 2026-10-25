@@ -17,6 +17,16 @@
   "_ease_note": "M2-FP-102 (the human's playtest: abrupt fades): @fade and the letterbox ease in and out on Godot's ease() curve (negative = in-out) instead of a linear ramp.",
   "fade_ease": -1.8,
   "letterbox_ease": -2.0,
+  "light_ease": 2.2,
+  "_hold_note": "M2-FP-103 (the playtest: a kneeling Asha stood up for her first line): an @anim of one of hold_clips is a pose the actor holds (a hero body's play_clip hold) until its own next @anim or @mark, and its lines don't play the talk or idle clip over it. Any other @anim is a gesture, after which lines play talk and idle again.",
+  "hold_clips": ["kneel_over_rhen", "laugh", "offer_hand", "face_west", "sit_in_shallows", "sit_up", "sit_steps", "spear_level", "catch_rhen", "take_hand", "vigil_book_shut", "stand_apart", "kneel", "lie_in_shallows"],
+  "_stand_in_note": "M2-FP-103: clip_stand_ins maps '<actor>/<clip>' to a clip the rig has, played while the requested clip (assets_src/characters/requested_clips.json) is not built yet; the real clip plays as soon as the rig carries it. Rhen's beach clips stand in as his kneel (half risen in the shallows) and his rise.",
+  "clip_stand_ins": {
+    "rhen/lie_in_shallows": "kneel_over_rhen",
+    "rhen/sit_up": "kneel_over_rhen",
+    "rhen/sit_in_shallows": "kneel_over_rhen",
+    "rhen/stand_unsteady": "rise_to_stand"
+  },
   "fade_color": "#05080B",
   "fade_back_sec": 0.8,
   "music_wait_fallback_sec": 4.0,

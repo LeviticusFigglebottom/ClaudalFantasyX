@@ -41,6 +41,8 @@ const GAIT_RUN := &"run"
 const FADE_OUT := &"out"
 const SWITCH_ON := &"on"
 const DEFAULT_SEED := 1
+## The energy a light was authored with, kept on it by the first @light (M2-FP-102).
+const META_LIGHT_ENERGY := &"cutscene_authored_energy"
 ## cues.json keys this sequencer accepts but does not perform yet; each warns once per scene.
 const UNSUPPORTED_KWARGS := {
 	&"camera": ["grade"],
@@ -89,6 +91,9 @@ var _player_input_was := true
 var _wait_left := 0.0
 ## key -> {elapsed, duration, apply: Callable(t: float)}; a new motion on a key replaces the old.
 var _motions: Dictionary = {}
+## M2-FP-103: actor -> the posing clip it holds (sequencer.json hold_clips) until its next @anim or @mark;
+## a held actor's lines don't play talk or idle over the pose.
+var _held: Dictionary = {}
 var _vfx_count := 0
 ## True while a skip fast-forwards (until the next choice or the end).
 var _skipping := false
@@ -326,6 +331,7 @@ func _finish() -> void:
 			await _wait_for(float(config.get("fade_back_sec", 0.0)))
 		_complete_motions()
 	_restore_player()
+	_held.clear()
 	_key_drop()
 	SaveSystem.release_autosave(self)
 	_playing = false
@@ -408,6 +414,8 @@ func _cue(step: DialogueStep) -> void:
 			_cue_sfx(step)
 		&"vfx":
 			_cue_vfx(step)
+		&"light":
+			_cue_light(step)
 		_:
 			_warn("unknown cue @%s" % step.cue)
 
@@ -488,6 +496,7 @@ func _cue_mark(step: DialogueStep) -> void:
 	if target == null:
 		_warn("no mark '%s' on the stage" % target_id)
 		return
+	_held.erase(actor)  # a walk ends any held pose
 	var gait := StringName(str(step.args[2])) if step.args.size() > 2 else &"walk"
 	var speed := maxf(float(config.get("run_mps" if gait == GAIT_RUN else "walk_mps", 1.0)), 0.01)
 	var from := actor.global_position
@@ -556,7 +565,16 @@ func _cue_anim(step: DialogueStep) -> void:
 			return
 		_turn_to(StringName(str(step.args[0])), actor, target.global_position - actor.global_position)
 		return
-	HeroMotion.play(actor, clip, _clip_blend())  # the body's play_clip, else its AnimationPlayer
+	_held.erase(actor)
+	var hold := String(clip) in (config.get("hold_clips", []) as Array)
+	clip = _built_clip(StringName(str(step.args[0])), actor, clip)
+	var body := HeroMotion.body_of(actor)
+	if body != null:
+		body.call(&"play_clip", clip, _clip_blend(), hold)  # M2-HER-1104: the hero body's AnimationTree
+	elif not HeroMotion.play(actor, clip, _clip_blend()):  # else its AnimationPlayer
+		return
+	if hold:
+		_held[actor] = clip
 
 
 func _cue_music(step: DialogueStep) -> void:
@@ -610,6 +628,30 @@ func _cue_vfx(step: DialogueStep) -> void:
 	host.add_child(motes)
 	motes.build(
 		rows[effect], int(step.kwargs.get("count", config.get("vfx_default_count", 1))), DEFAULT_SEED + _vfx_count
+	)
+
+
+## M2-FP-102: `@light <name> on|off [sec]` eases a stage practical's energy (a Light3D found by name under
+## the stage, wherever a body carries it) to its authored energy or to 0 (sequencer.json light_ease).
+func _cue_light(step: DialogueStep) -> void:
+	var light_name := str(step.args[0])
+	var light := _stage.find_child(light_name, true, false) as Light3D if _stage != null else null
+	if light == null:
+		_warn("no light '%s' on the stage" % light_name)
+		return
+	if not light.has_meta(META_LIGHT_ENERGY):
+		light.set_meta(META_LIGHT_ENERGY, light.light_energy)
+	var from := light.light_energy if light.visible else 0.0
+	var to := float(light.get_meta(META_LIGHT_ENERGY)) if StringName(str(step.args[1])) == SWITCH_ON else 0.0
+	var sec := float(step.args[2]) if step.args.size() > 2 else 0.0
+	var curve := float(config.get("light_ease", 1.0))
+	light.visible = true
+	_start_motion(
+		&"light:%s" % light_name,
+		sec,
+		func(t: float) -> void:
+			if is_instance_valid(light):
+				light.light_energy = lerpf(from, to, CutsceneMotion.eased(t, curve))
 	)
 
 
@@ -717,9 +759,29 @@ func _on_mouth_flap(speaker: StringName, open: bool) -> void:
 ## otherwise (M2-FP-07 asks Character for the clips). M2-HER-1104: through HeroMotion.play, so a hero
 ## body's play_clip (its AnimationTree) takes it, else the actor's AnimationPlayer.
 func _play_clip(actor: Node3D, role: StringName) -> void:
+	if _held.has(actor) and role != GAIT_RUN and role != &"walk":
+		return  # M2-FP-103: a held pose (kneeling, a levelled spear) is not stood up by a line
 	var clip := StringName(str((config.get("clips", {}) as Dictionary).get(String(role), "")))
 	if clip != &"":
 		HeroMotion.play(actor, clip, _clip_blend(), false)
+
+
+## M2-FP-103: `clip`, or the built clip sequencer.json clip_stand_ins names for "<actor>/<clip>" while the
+## actor's rig lacks it (a requested clip on Character's list); the real clip plays once it is built.
+func _built_clip(id: StringName, actor: Node3D, clip: StringName) -> StringName:
+	var stand_in := str((config.get("clip_stand_ins", {}) as Dictionary).get("%s/%s" % [id, clip], ""))
+	if stand_in == "" or _has_clip(actor, clip):
+		return clip
+	return StringName(stand_in)
+
+
+func _has_clip(actor: Node3D, clip: StringName) -> bool:
+	var body := HeroMotion.body_of(actor)
+	var tree := body.get(&"tree") as AnimationMixer if body != null else null
+	if tree != null:
+		return tree.has_animation(clip)
+	var ap := HeroMotion.player_of(actor)
+	return ap != null and ap.has_animation(clip)
 
 
 ## M2-HER-1104: tells a hero body how fast its root walks (`metres` covered at `now` seconds into the

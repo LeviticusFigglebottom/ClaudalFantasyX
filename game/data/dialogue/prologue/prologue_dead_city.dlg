@@ -2,16 +2,29 @@
 // apart in the drowned plaza of a dead city at dusk; Rhen's older voice says the one line, then the
 // story cuts back to the beach where it begins (M2-FP-03 hands off to ch02/haluna at Beach).
 // Grade intent: color script `prologue_iskarra_dusk` (no grade cue exists for it yet).
-// Shot: P01 is a fixed wide on the plaza, the towers behind, the sun low on the left.
+// Shots: P01 is a fixed wide on the plaza, the towers behind, the sun low on the left. P02 is the
+// two-shot on the rise, Rhen beside Asha, that P01 drifts into while he crosses to her.
+// M2-FP-103 (act_outline "The Last Time"): Rhen crosses the plaza to Asha on the steps and the line
+// lands as his lantern catches, the only flame in the frame; glimmer rises around him. His sit and
+// trim_wicks clips are on Character's list (requested_clips.json, M3-CHR-01): add them here when built.
 // The line is the human-approved text (ADR 0020 §(g)); never reword it here.
 title: prologue_dead_city
 location: prologue
 ---
 @letterbox on
 @camera P01
+@light LanternLight off
+@anim ysolde vigil_book_shut
 @fade in 3.0
-@wait 2.0
+@wait 1.5
+@mark rhen by_asha walk
+@camera P02 blend=7.0 ease=in_out_sine
+@anim rhen look_at asha
+@wait 1.0
+@light LanternLight on 1.4
+@wait 0.6
 Narrator(rhen) [tender]: Everyone I'm going to tell you about is still here tonight. Remember that, later. #line:prologue_dead_city_001 #vo
+@vfx glimmer_lift at=by_asha count=12
 @wait 4.0
 @fade out 2.5
 @letterbox off
