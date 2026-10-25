@@ -1,7 +1,7 @@
 extends TestCase
-## M2-UI-26: the bestiary page's live portrait (BestiaryPortraitSlot over the creatures track's CreaturePortrait):
-## a Read foe in colour, a never-Read one as a silhouette, a foe with no model as nothing; it follows the cursor,
-## sits square in the page's leftover corner between min_px and max_px, and stops rendering when the page closes.
+## M2-UI-201: the bestiary page's portrait (BestiaryPortraitSlot over the baked CreaturePortraits PNGs, ADR 0110):
+## a Read foe in colour, a never-Read one as a silhouette, a foe with no picture as nothing; it follows the cursor,
+## sits square in the page's leftover corner between min_px and max_px, and empties when the page closes.
 
 const LOG := {
 	"reef_crab": {"read": false, "defeated": 2},
@@ -21,8 +21,8 @@ func test_a_read_foe_shows_in_colour_and_an_unread_one_as_a_silhouette() -> void
 	_open()
 	var slot := menu.portrait_slot()
 	assert_eq(menu.current_id, &"reef_crab")
-	assert_true(slot.has_creature(), "the crab has a model")
-	assert_eq(slot.portrait().actor.creature_id, &"reef_crab")
+	assert_true(slot.has_creature(), "the crab has a picture")
+	assert_eq(slot.portrait().texture, CreaturePortraits.texture(&"reef_crab"), "its baked PNG")
 	assert_true(slot.silhouette, "never Read: a silhouette")
 	var mat := slot.portrait().material as ShaderMaterial
 	assert_true(mat != null and mat.shader == BestiaryPortraitSlot.SILHOUETTE_SHADER)
@@ -33,14 +33,14 @@ func test_a_read_foe_shows_in_colour_and_an_unread_one_as_a_silhouette() -> void
 	assert_true(Color(tint, 1.0).is_equal_approx(Color(role, 1.0)), "the theme's role colour")
 	menu.select(1)
 	assert_eq(slot.enemy_id, &"lantern_eel", "the portrait follows the cursor")
-	assert_eq(slot.portrait().actor.creature_id, &"lantern_eel")
+	assert_eq(slot.portrait().texture, CreaturePortraits.texture(&"lantern_eel"))
 	assert_false(slot.silhouette)
 	assert_true(slot.portrait().material == null, "a Read foe in its own colours")
-	assert_eq(slot.portrait().get_node(^"Viewport/Holder").get_child_count(), 1, "one model at a time")
+	assert_false(slot.portrait().texture is ViewportTexture, "a small texture, no live viewport (ADR 0110)")
 	_free()
 
 
-func test_a_foe_with_no_model_shows_nothing() -> void:
+func test_a_foe_with_no_picture_shows_nothing() -> void:
 	_open()
 	var slot := menu.portrait_slot()
 	assert_false(slot.show_enemy(&"no_such_enemy", true))
@@ -50,14 +50,13 @@ func test_a_foe_with_no_model_shows_nothing() -> void:
 	_free()
 
 
-func test_closing_the_page_clears_the_portrait_and_stops_its_viewport() -> void:
+func test_closing_the_page_clears_the_portrait() -> void:
 	_open()
 	var slot := menu.portrait_slot()
 	assert_true(slot.has_creature())
 	menu.close()
 	assert_false(slot.has_creature(), "clear() on close")
-	var vp := slot.portrait().get_node(^"Viewport") as SubViewport
-	assert_eq(vp.render_target_update_mode, SubViewport.UPDATE_DISABLED, "no rendering behind a closed page")
+	assert_false(slot.is_showing())
 	_free()
 
 

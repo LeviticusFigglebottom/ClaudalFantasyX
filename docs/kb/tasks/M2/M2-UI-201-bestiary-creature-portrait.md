@@ -56,4 +56,6 @@ page (`game/ui/bestiary/`) and, if it fits, the Read panel (`game/ui/battle/read
 - **Renumbered again (Lead merge, big8, 2026-10-24):** big7's M2-UI-26 collided with claude/ui's M2-UI-26 (input parity audit, ADR 0036). Now M2-UI-28, the next id free across all branches.
 - **Renumbered to M2-UI-201 (ui-menus, 2026-10-25):** M2-UI-28 collides with pseudo-loc's M2-UI-28. M2-UI-201 is from the ui-menus id block, so it cannot collide again.
 
+- **The baked PNGs (ui-menus, 2026-10-25; ADR 0110):** the slot now draws `CreaturePortraits.texture(id)` in a TextureRect with the same fit and silhouette, instead of a live `CreaturePortrait` viewport. bestiary_menu re-approved after viewing (rmse 0.0073 against the live render). The five glossy black creatures are re-rendered with `light_scale` key/rim/fill 3x and a cool reflected backdrop (`stage_environment`), viewed before and after.
+
 ## Review log

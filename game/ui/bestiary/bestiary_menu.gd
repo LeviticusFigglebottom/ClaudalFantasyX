@@ -3,7 +3,7 @@ extends Control
 ## The bestiary (M2-UI-02, SPEC §6.11): every foe the party has Read or defeated, listed on the
 ## left with its defeat count, and the chosen foe's page on the right (EnemyPageView, the same
 ## page as the battle Read panel, built from enemies.json by BestiaryMenuModel), with the foe's
-## live portrait under it (BestiaryPortraitSlot; a silhouette until it is Read; M2-UI-26). Out of battle.
+## baked portrait under it (BestiaryPortraitSlot; a silhouette until it is Read; M2-UI-201, ADR 0110). Out of battle.
 ## Layout: game/data/ui/bestiary_menu.json (1920x1080 reference).
 ##
 ## Input (keyboard and controller through ui_*): ui_up / ui_down choose, ui_page_up / ui_page_down
@@ -168,7 +168,7 @@ func close() -> void:
 	if _is_closed:
 		return
 	_is_closed = true
-	_portrait.clear()  # stop its viewport rendering behind a closed page
+	_portrait.clear()  # nothing held behind a closed page
 	_restore_pause()
 	_fade_out()
 	closed.emit()

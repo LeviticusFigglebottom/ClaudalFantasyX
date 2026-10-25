@@ -1,15 +1,14 @@
 class_name BestiaryPortraitSlot
 extends Control
-## The live portrait on the bestiary page (M2-UI-26): the chosen foe's battle model, rendered by the creatures
-## track's CreaturePortrait (its clip, time and framing come from creatures.json `portrait`, so the picture never
-## moves between frames). The slot takes the page's leftover height under the EnemyPageView and holds the portrait
-## square in its bottom-right corner, at most max_px and never past the slot, so it can never cover the text; below
-## min_px (a long page at a large text size) it hides. A foe never Read shows as a flat silhouette in the theme's
-## `silhouette_role` colour (its shape, which the party has seen in battle, but none of its colours); a foe with no
-## model shows nothing. clear() frees the model and stops the portrait's viewport: BestiaryMenu calls it on close.
-## Metrics: game/data/ui/bestiary_menu.json "portrait".
+## The portrait on the bestiary page (M2-UI-201): the chosen foe's baked picture (CreaturePortraits, ADR 0120;
+## tools/portraits/render.sh renders each creature from its own battle model, so the page loads a small
+## texture instead of a model in a live viewport; ADR 0110). The slot takes the page's leftover height under the
+## EnemyPageView and holds the picture square in its bottom-right corner, at most max_px and never past the
+## slot, so it can never cover the text; below min_px (a long page at a large text size) it hides. A foe never
+## Read shows as a flat silhouette in the theme's `silhouette_role` colour (its shape, which the party has seen in
+## battle, but none of its colours); a foe with no picture shows nothing. clear() empties it: BestiaryMenu calls
+## it on close. Metrics: game/data/ui/bestiary_menu.json "portrait".
 
-const PORTRAIT_SCENE := "res://game/creatures/creature_portrait.tscn"
 const SILHOUETTE_SHADER := preload("res://game/ui/shaders/silhouette.gdshader")
 
 ## The foe on show (&"" when none).
@@ -18,7 +17,7 @@ var enemy_id: StringName = &""
 var silhouette := false
 
 var _m: Dictionary = {}
-var _portrait: CreaturePortrait
+var _picture: TextureRect
 var _silhouette_mat: ShaderMaterial
 
 
@@ -26,11 +25,13 @@ func _init(metrics: Dictionary = {}) -> void:
 	_m = metrics
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	size_flags_vertical = Control.SIZE_EXPAND_FILL
-	_portrait = (load(PORTRAIT_SCENE) as PackedScene).instantiate() as CreaturePortrait
-	_portrait.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_portrait.custom_minimum_size = Vector2.ZERO
-	_portrait.visible = false
-	add_child(_portrait)
+	_picture = TextureRect.new()
+	_picture.name = &"Portrait"
+	_picture.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	_picture.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	_picture.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_picture.visible = false
+	add_child(_picture)
 	resized.connect(_fit)
 
 
@@ -43,48 +44,50 @@ func _ready() -> void:
 	_apply_silhouette()
 
 
-## Shows foe `id`, as a silhouette unless `read`. False (and an empty slot) when it has no model.
+## Shows foe `id`, as a silhouette unless `read`. False (and an empty slot) when it has no picture.
 func show_enemy(id: StringName, read: bool) -> bool:
 	silhouette = not read
-	if id != enemy_id or not _portrait.has_creature():
-		enemy_id = &""
-		if not _portrait.show_enemy(id):
+	if id != enemy_id or _picture.texture == null:
+		var tex := CreaturePortraits.texture(id)
+		if tex == null:
 			clear()
 			return false
+		_picture.texture = tex
 		enemy_id = id
 	_apply_silhouette()
 	_fit()
 	return true
 
 
-## Empties the slot and stops the portrait rendering (the page closed, or the book is empty).
+## Empties the slot (the page closed, or the book is empty).
 func clear() -> void:
 	enemy_id = &""
 	silhouette = false
-	_portrait.clear()
-	_portrait.visible = false
+	_picture.texture = null
+	_picture.visible = false
 
 
 func has_creature() -> bool:
-	return _portrait.has_creature()
+	return _picture.texture != null
 
 
-## True when the portrait is drawn (a model on show and room for it).
+## True when the picture is drawn (a foe on show and room for it).
 func is_showing() -> bool:
-	return _portrait.has_creature() and _portrait.visible
+	return has_creature() and _picture.visible
 
 
-func portrait() -> CreaturePortrait:
-	return _portrait
+## The picture (a TextureRect holding the baked PNG).
+func portrait() -> TextureRect:
+	return _picture
 
 
-## The portrait's side: the slot's smaller side, capped at max_px.
+## The picture's side: the slot's smaller side, capped at max_px.
 func _fit() -> void:
 	var side := minf(minf(size.x, size.y), HudLayout.num(_m, "max_px"))
-	_portrait.visible = _portrait.has_creature() and side >= HudLayout.num(_m, "min_px")
-	_portrait.size = Vector2(side, side)
-	_portrait.position = size - _portrait.size
+	_picture.visible = has_creature() and side >= HudLayout.num(_m, "min_px")
+	_picture.size = Vector2(side, side)
+	_picture.position = size - _picture.size
 
 
 func _apply_silhouette() -> void:
-	_portrait.material = _silhouette_mat if silhouette else null
+	_picture.material = _silhouette_mat if silhouette else null
