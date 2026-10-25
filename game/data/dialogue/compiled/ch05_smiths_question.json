@@ -1,0 +1,52 @@
+{
+ "format": 1,
+ "scene": "ch05_smiths_question",
+ "source": "game/data/dialogue/ch05/ch05_smiths_question.dlg",
+ "start": "ch05_smiths_question",
+ "nodes": {
+  "ch05_smiths_question": {
+   "headers": {"location": "ch05/pemakar"},
+   "ops": [
+    {"op": "cue", "cue": "camera", "args": ["P07"], "kwargs": {}, "src": 11},
+    {"op": "if_not", "cond": ["flag", "ch05_kahre_bound"], "to": 4, "src": 12},
+    {"op": "line", "id": "ch05_smith_001", "key": "DLG_CH05_SMITH_001", "speaker": "garo", "emotion": "neutral", "voice": "", "src": 13},
+    {"op": "goto", "to": 7, "src": 12},
+    {"op": "cue", "cue": "anim", "args": ["garo", "fold_boat"], "kwargs": {}, "src": 15},
+    {"op": "line", "id": "ch05_smith_002", "key": "DLG_CH05_SMITH_002", "speaker": "garo", "emotion": "neutral", "voice": "", "src": 16},
+    {"op": "goto", "to": 7, "src": 14},
+    {"op": "line", "id": "ch05_smith_003", "key": "DLG_CH05_SMITH_003", "speaker": "rhen", "emotion": "neutral", "voice": "", "src": 18},
+    {"op": "cue", "cue": "anim", "args": ["rhen", "fold_boat"], "kwargs": {}, "src": 19},
+    {"op": "cue", "cue": "wait", "args": [1.5], "kwargs": {}, "src": 20},
+    {"op": "line", "id": "ch05_smith_004", "key": "DLG_CH05_SMITH_004", "speaker": "garo", "emotion": "neutral", "voice": "", "src": 21},
+    {"op": "line", "id": "ch05_smith_005", "key": "DLG_CH05_SMITH_005", "speaker": "rhen", "emotion": "neutral", "voice": "", "src": 22},
+    {"op": "line", "id": "ch05_smith_006", "key": "DLG_CH05_SMITH_006", "speaker": "garo", "emotion": "neutral", "voice": "", "src": 23},
+    {"op": "line", "id": "ch05_smith_007", "key": "DLG_CH05_SMITH_007", "speaker": "garo", "emotion": "neutral", "voice": "", "src": 24},
+    {"op": "line", "id": "ch05_smith_008", "key": "DLG_CH05_SMITH_008", "speaker": "garo", "emotion": "sad", "voice": "", "src": 25},
+    {"op": "cue", "cue": "wait", "args": [1.0], "kwargs": {}, "src": 26},
+    {"op": "line", "id": "ch05_smith_009", "key": "DLG_CH05_SMITH_009", "speaker": "garo", "emotion": "neutral", "voice": "", "src": 27},
+    {"op": "cue", "cue": "anim", "args": ["rhen", "fold_boat"], "kwargs": {}, "src": 28},
+    {"op": "line", "id": "ch05_smith_010", "key": "DLG_CH05_SMITH_010", "speaker": "rhen", "emotion": "neutral", "voice": "", "src": 29},
+    {"op": "line", "id": "ch05_smith_011", "key": "DLG_CH05_SMITH_011", "speaker": "rhen", "emotion": "neutral", "voice": "", "src": 30},
+    {"op": "cue", "cue": "anim", "args": ["garo", "nod"], "kwargs": {}, "src": 31},
+    {"op": "line", "id": "ch05_smith_012", "key": "DLG_CH05_SMITH_012", "speaker": "garo", "emotion": "neutral", "voice": "", "src": 32},
+    {"op": "cue", "cue": "wait", "args": [1.0], "kwargs": {}, "src": 33},
+    {"op": "cue", "cue": "anim", "args": ["rhen", "fold_boat"], "kwargs": {}, "src": 34},
+    {"op": "options", "choices": [{"id": "ch05_smith_013", "key": "DLG_CH05_SMITH_013", "to": 25, "src": 35}, {"id": "ch05_smith_015", "key": "DLG_CH05_SMITH_015", "to": 27, "src": 37}], "src": 35, "next": 29},
+    {"op": "line", "id": "ch05_smith_014", "key": "DLG_CH05_SMITH_014", "speaker": "rhen", "emotion": "tender", "voice": "", "src": 36, "tags": ["long"]},
+    {"op": "goto", "to": 29, "src": 35},
+    {"op": "line", "id": "ch05_smith_016", "key": "DLG_CH05_SMITH_016", "speaker": "rhen", "emotion": "soft_smile", "voice": "", "src": 38},
+    {"op": "goto", "to": 29, "src": 37},
+    {"op": "line", "id": "ch05_smith_017", "key": "DLG_CH05_SMITH_017", "speaker": "garo", "emotion": "neutral", "voice": "", "src": 39},
+    {"op": "line", "id": "ch05_smith_018", "key": "DLG_CH05_SMITH_018", "speaker": "rhen", "emotion": "neutral", "voice": "", "src": 40},
+    {"op": "cue", "cue": "anim", "args": ["garo", "laugh"], "kwargs": {}, "src": 41},
+    {"op": "line", "id": "ch05_smith_019", "key": "DLG_CH05_SMITH_019", "speaker": "garo", "emotion": "laugh", "voice": "", "src": 42},
+    {"op": "cue", "cue": "anim", "args": ["garo", "take_boat"], "kwargs": {}, "src": 43},
+    {"op": "line", "id": "ch05_smith_020", "key": "DLG_CH05_SMITH_020", "speaker": "garo", "emotion": "neutral", "voice": "", "src": 44},
+    {"op": "cue", "cue": "wait", "args": [0.8], "kwargs": {}, "src": 45},
+    {"op": "line", "id": "ch05_smith_021", "key": "DLG_CH05_SMITH_021", "speaker": "garo", "emotion": "soft_smile", "voice": "", "src": 46},
+    {"op": "set", "flag": "ch05_told_the_smith", "value": ["lit", true], "src": 47},
+    {"op": "cue", "cue": "camera", "args": ["release"], "kwargs": {}, "src": 48}
+   ]
+  }
+ }
+}

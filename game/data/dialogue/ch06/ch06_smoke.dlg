@@ -1,0 +1,18 @@
+// Ch6 B02 "The smoke" (act1_ch06.md; W04). On the last wreck-ridge Toma stops walking first, before
+// the smoke is in frame: he knows the smell. Pan only after he stops (W04, then W04_smoke). The music
+// drops out under the crackle. ~15 words.
+title: ch06_smoke
+location: ch06/brine_shoals
+---
+@camera W04
+@mark toma ridge_stop walk
+@anim toma stop
+@wait 1.2
+@camera W04_smoke blend=2.0
+@sfx camp_burn
+@wait 1.0
+Rhen [neutral]: Somebody's cookfire. #line:ch06_smoke_001
+Toma [afraid]: No. #line:ch06_smoke_002
+@music silence fade=1.5
+@wait 1.0
+===

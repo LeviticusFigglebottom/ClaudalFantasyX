@@ -2607,6 +2607,147 @@
           "screen_space_aa": 1
         }
       }
+    },
+    {
+      "id": "field_menu_codex",
+      "scene": "res://game/ui/codex/shots/field_menu_codex.tscn"
+    },
+    {
+      "id": "formation_menu",
+      "scene": "res://game/ui/menus/formation/shots/formation_menu.tscn"
+    },
+    {
+      "id": "memories_menu",
+      "scene": "res://game/ui/menus/memories/shots/memories_menu.tscn"
+    },
+    {
+      "id": "battle_arena_raft",
+      "scene": "res://game/levels/_tests/battle_arenas/arena_raft.tscn",
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 12.0
+        }
+      }
+    },
+    {
+      "id": "battle_arena_underway",
+      "scene": "res://game/levels/_tests/battle_arenas/arena_underway.tscn",
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 12.0
+        }
+      }
+    },
+    {
+      "id": "battle_arena_route",
+      "scene": "res://game/levels/_tests/battle_arenas/arena_route.tscn",
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 12.0
+        }
+      }
+    },
+    {
+      "id": "battle_arena_derelict",
+      "scene": "res://game/levels/_tests/battle_arenas/arena_derelict.tscn",
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 12.0
+        }
+      }
+    },
+    {
+      "id": "battle_arena_terrace",
+      "scene": "res://game/levels/_tests/battle_arenas/arena_terrace.tscn",
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 12.0
+        }
+      }
+    },
+    {
+      "id": "battle_boss_intro_hullgnaw",
+      "scene": "res://game/battle/scene/shots/battle_boss_intro_hullgnaw.tscn"
+    },
+    {
+      "id": "asha_battle_attack",
+      "scene": "res://game/levels/_tests/characters/asha/asha_battle_attack.tscn",
+      "camera": "Cameras/ThreeQuarter",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "rhen_battle_attack",
+      "scene": "res://game/levels/_tests/characters/rhen/rhen_battle_attack.tscn",
+      "camera": "Cameras/ThreeQuarterLeft",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "toma_battle_attack",
+      "scene": "res://game/levels/_tests/characters/toma/toma_battle_attack.tscn",
+      "camera": "Cameras/ThreeQuarter",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "items_menu_key",
+      "scene": "res://game/ui/menus/items/shots/items_menu_key.tscn"
+    },
+    {
+      "id": "lattice_overview",
+      "scene": "res://game/ui/menus/lattice/shots/lattice_overview.tscn"
+    },
+    {
+      "id": "field_menu_map_underway",
+      "scene": "res://game/ui/map/shots/field_menu_map_underway.tscn"
+    },
+    {
+      "id": "battle_arena_shoals",
+      "scene": "res://game/levels/_tests/battle_arenas/arena_shoals.tscn",
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 12.0
+        }
+      }
+    },
+    {
+      "id": "battle_arena_camp",
+      "scene": "res://game/levels/_tests/battle_arenas/arena_camp.tscn",
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 12.0
+        }
+      }
+    },
+    {
+      "id": "battle_boss_intro_inquisitor",
+      "scene": "res://game/battle/scene/shots/battle_boss_intro_inquisitor.tscn"
+    },
+    {
+      "id": "battle_boss_intro_matron",
+      "scene": "res://game/battle/scene/shots/battle_boss_intro_matron.tscn"
+    },
+    {
+      "id": "battle_boss_intro_hermit",
+      "scene": "res://game/battle/scene/shots/battle_boss_intro_hermit.tscn"
+    },
+    {
+      "id": "battle_boss_intro_wraith",
+      "scene": "res://game/battle/scene/shots/battle_boss_intro_wraith.tscn"
+    },
+    {
+      "id": "battle_boss_intro_drownbell",
+      "scene": "res://game/battle/scene/shots/battle_boss_intro_drownbell.tscn"
     }
   ]
 }

@@ -1,0 +1,17 @@
+{
+ "format": 1,
+ "scene": "ch04_banter_once",
+ "source": "game/data/dialogue/ch04/ch04_banter_once.dlg",
+ "start": "ch04_banter_once",
+ "nodes": {
+  "ch04_banter_once": {
+   "headers": {"location": "ch04/brightwater_ferry"},
+   "ops": [
+    {"op": "line", "id": "ch04_banter_once_001", "key": "DLG_CH04_BANTER_ONCE_001", "speaker": "toma", "emotion": "neutral", "voice": "", "src": 7},
+    {"op": "line", "id": "ch04_banter_once_002", "key": "DLG_CH04_BANTER_ONCE_002", "speaker": "ysolde", "emotion": "neutral", "voice": "", "src": 8},
+    {"op": "line", "id": "ch04_banter_once_003", "key": "DLG_CH04_BANTER_ONCE_003", "speaker": "toma", "emotion": "neutral", "voice": "", "src": 9},
+    {"op": "line", "id": "ch04_banter_once_004", "key": "DLG_CH04_BANTER_ONCE_004", "speaker": "ysolde", "emotion": "neutral", "voice": "", "src": 10}
+   ]
+  }
+ }
+}

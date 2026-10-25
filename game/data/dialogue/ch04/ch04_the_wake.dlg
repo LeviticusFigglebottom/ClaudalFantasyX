@@ -1,0 +1,18 @@
+// Ch4 C4-03 "The wake feast", the way in (docs/kb/story/beats/act1_ch04.md). The causeway head (H12):
+// trestle tables along the wake-shell wall, a hundred oil lamps on its top and in the saltgrass, the
+// tide in and the causeway a dark line out to the islet, the game's first full sea-glow beyond the
+// lamps (color script ch04, lut_ch04_wake: Rendering's). Villagers sing work songs and star-paths; the
+// Order hums, and nobody here is humming. Played once, on the way into the lamplight.
+// Ysolde is seen once, at the edge of the lamplight beyond the last table: tall, indigo-black, very
+// straight, alone, not eating. A 1.5 s hold on H12; nobody points her out, and no line names her.
+// Then the walkable feast: Asha moves table to table (ch04_wake_vendor, _osu, _fisher, _neme).
+// Music: haluna_wake (diegetic).
+title: ch04_the_wake
+location: ch04/haluna_wake
+---
+@music haluna_wake fade=3.0
+@camera H12 blend=1.5
+Asha [smile]: Come and eat, Rhen. Neme cooked for a village, and the village cooked for three. #line:ch04_wake_001
+@wait 1.5
+@camera release
+===

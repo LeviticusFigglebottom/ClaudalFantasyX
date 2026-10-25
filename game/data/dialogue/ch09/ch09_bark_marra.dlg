@@ -1,0 +1,11 @@
+// Ch9 B01, bark 1 (optional): Old Marra, at the end of the Stillguard row, to a child sitting beside a
+// shroud. The game's only explanation of the all-clear before the Ending's E3, where Kerrid finally
+// says it. It names the living captain, Hobb, and says nothing of 1001 (Ch8 rule 3). Field bark.
+title: ch09_bark_marra
+location: ch09/corrow_night
+---
+Marra [tender]: When the last one's up, the captain calls it. "Stair's clear." That's how you know you can come off the wall. #line:ch09_bark_marra_001
+Child [neutral]: Did he call it? #line:ch09_bark_marra_002
+Marra [sad]: Hobb? No. You don't. Not while there's anyone below. #line:ch09_bark_marra_003
+<<set $ch09_heard_stair_clear = true>>
+===

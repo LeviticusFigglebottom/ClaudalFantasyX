@@ -24,7 +24,6 @@ M2-ENV-09. `shell_shrine_level.gd` `_pool_bounce()` builds an OmniLight3D in cod
 - [ ] Delete the shell shrine entry from `KNOWN_EXCEPTIONS` in `tools/tests/test_fog_lamps.py`, so the rule is
       enforced with no exceptions.
 
-## Notes
-- Renumbered by the Lead at big8 (2026-10-24): filed by env-art as M3-ARC-02, which collided with audio's voice-hook task.
+- **Renumbered (Lead merge, big8, 2026-10-24):** filed as M3-ARC-02, which collided with claude/m2-slice's M3-ARC-02 (debug chapter select; M3-ARC-03 is the big8 renumber of the dialogue voice hook). Now M3-ARC-04, the next id free across all branches.
 
 ## Review log

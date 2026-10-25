@@ -5,7 +5,8 @@ extends Control
 ## taken through LatticeMenuModel (the real rules), never written into the save by hand:
 ##   - Rhen woke the first two nodes of his spine (Agility, Strength), Asha and Toma one each;
 ##   - "path": Rhen's cursor on rh_05, three nodes on, the planned walk and its cost on show;
-##   - "activate": Rhen has walked onto Kick Off the Wall (rh_03), the confirm asking to wake it.
+##   - "activate": Rhen has walked onto Kick Off the Wall (rh_03), the confirm asking to wake it;
+##   - "overview" (M3-MNU-04): the "path" state with the whole board framed, every hero named.
 
 const HEROES: Array[StringName] = [&"rhen", &"asha", &"toma"]
 const FACETS := {"facet_speed": 3, "facet_power": 2, "facet_mind": 2, "facet_ability": 1, "facet_key_1": 1}
@@ -15,7 +16,7 @@ const WALKS := {&"rhen": [&"rh_01", &"rh_02"], &"asha": [&"as_01"], &"toma": [&"
 const PATH_CURSOR := &"rh_05"
 const ACTIVATE_AT := &"rh_03"
 
-## Which view to stage: &"path" or &"activate".
+## Which view to stage: &"path", &"activate" or &"overview".
 @export var view: StringName = &"path"
 
 var menu: LatticeMenu
@@ -48,3 +49,5 @@ func _ready() -> void:
 		menu.request_act()
 	else:
 		menu.set_cursor(PATH_CURSOR, false)
+		if view == &"overview":
+			menu.toggle_overview(false)  # M3-MNU-04: the whole board, every hero named

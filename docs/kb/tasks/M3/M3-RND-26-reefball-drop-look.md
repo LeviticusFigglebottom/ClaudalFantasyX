@@ -41,4 +41,6 @@ weep column of radius 0.8 to 0.6 m down to the catch-pool water at y 0.35; >= 2.
   StandardMaterial3D (`tb_salt_glass`), which Rendering may replace with a refractive one if the drop needs it.
 - Renumbered by the Lead at big8 (2026-10-24): filed by env-art as M3-RND-01, which collided with Rendering's sphere-look task.
 
+- **Renumbered (Lead merge, big8, 2026-10-24):** filed as M3-RND-01, which collided with the PC's M3-RND-01 (the Reefball water sphere, built and merged at big7). Now M3-RND-26, the next id free across all branches.
+
 ## Review log

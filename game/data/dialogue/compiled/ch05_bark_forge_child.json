@@ -1,0 +1,17 @@
+{
+ "format": 1,
+ "scene": "ch05_bark_forge_child",
+ "source": "game/data/dialogue/ch05/ch05_bark_forge_child.dlg",
+ "start": "ch05_bark_forge_child",
+ "nodes": {
+  "ch05_bark_forge_child": {
+   "headers": {"location": "ch05/pemakar"},
+   "ops": [
+    {"op": "cue", "cue": "sfx", "args": ["plume_crackle"], "kwargs": {}, "src": 7},
+    {"op": "line", "id": "ch05_bark_forge_001", "key": "DLG_CH05_BARK_FORGE_001", "speaker": "child", "emotion": "neutral", "voice": "", "src": 8},
+    {"op": "cue", "cue": "sfx", "args": ["plume_thunder"], "kwargs": {}, "src": 9},
+    {"op": "line", "id": "ch05_bark_forge_002", "key": "DLG_CH05_BARK_FORGE_002", "speaker": "child", "emotion": "smile", "voice": "", "src": 10}
+   ]
+  }
+ }
+}

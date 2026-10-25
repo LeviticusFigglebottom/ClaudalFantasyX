@@ -1,0 +1,38 @@
+{
+ "format": 1,
+ "scene": "ch04_name_board",
+ "source": "game/data/dialogue/ch04/ch04_name_board.dlg",
+ "start": "ch04_name_board",
+ "nodes": {
+  "ch04_name_board": {
+   "headers": {"location": "ch04/brightwater_ferry"},
+   "ops": [
+    {"op": "cue", "cue": "letterbox", "args": ["on"], "kwargs": {}, "src": 15},
+    {"op": "cue", "cue": "music", "args": ["name_board_home"], "kwargs": {"fade": 2.0}, "src": 16},
+    {"op": "cue", "cue": "camera", "args": ["D06"], "kwargs": {}, "src": 17},
+    {"op": "cue", "cue": "anim", "args": ["rhen", "prise_name_board"], "kwargs": {}, "src": 18},
+    {"op": "cue", "cue": "sfx", "args": ["name_board_prise"], "kwargs": {}, "src": 19},
+    {"op": "cue", "cue": "wait", "args": [3.0], "kwargs": {}, "src": 20},
+    {"op": "cue", "cue": "anim", "args": ["rhen", "lift_name_board"], "kwargs": {}, "src": 21},
+    {"op": "cue", "cue": "wait", "args": [1.5], "kwargs": {}, "src": 22},
+    {"op": "line", "id": "ch04_board_001", "key": "DLG_CH04_BOARD_001", "speaker": "ysolde", "emotion": "neutral", "voice": "", "src": 23},
+    {"op": "line", "id": "ch04_board_002", "key": "DLG_CH04_BOARD_002", "speaker": "ysolde", "emotion": "neutral", "voice": "", "src": 24},
+    {"op": "cue", "cue": "vfx", "args": ["glimmer_held"], "kwargs": {"at": "derelict_rigging", "count": 24, "drift": "down_seaward", "rate": "slow"}, "src": 25},
+    {"op": "cue", "cue": "camera", "args": ["D08"], "kwargs": {}, "src": 26},
+    {"op": "cue", "cue": "wait", "args": [3.0], "kwargs": {}, "src": 27},
+    {"op": "cue", "cue": "sfx", "args": ["sails_luff_and_fall"], "kwargs": {}, "src": 28},
+    {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 29},
+    {"op": "cue", "cue": "fade", "args": ["out", 1.0], "kwargs": {}, "src": 30},
+    {"op": "cue", "cue": "camera", "args": ["F05"], "kwargs": {}, "src": 31},
+    {"op": "cue", "cue": "fade", "args": ["in", 1.0], "kwargs": {}, "src": 32},
+    {"op": "line", "id": "ch04_board_003", "key": "DLG_CH04_BOARD_003", "speaker": "ferrymaster", "emotion": "neutral", "voice": "", "src": 33},
+    {"op": "line", "id": "ch04_board_004", "key": "DLG_CH04_BOARD_004", "speaker": "rhen", "emotion": "neutral", "voice": "", "src": 34},
+    {"op": "line", "id": "ch04_board_005", "key": "DLG_CH04_BOARD_005", "speaker": "ferrymaster", "emotion": "surprised", "voice": "", "src": 35},
+    {"op": "cue", "cue": "wait", "args": [1.0], "kwargs": {}, "src": 36},
+    {"op": "line", "id": "ch04_board_006", "key": "DLG_CH04_BOARD_006", "speaker": "", "emotion": "neutral", "voice": "", "src": 37, "narrator": "rhen", "tags": ["vo"]},
+    {"op": "cue", "cue": "wait", "args": [1.5], "kwargs": {}, "src": 38},
+    {"op": "cue", "cue": "letterbox", "args": ["off"], "kwargs": {}, "src": 39}
+   ]
+  }
+ }
+}

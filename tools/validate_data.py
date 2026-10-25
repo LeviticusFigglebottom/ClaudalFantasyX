@@ -796,28 +796,50 @@ def check_provenance(root: Path, rep: Report) -> None:
             rep.warn(f"PROVENANCE.md lists '{rel}' but the file does not exist")
 
 
-def load_banned(root: Path) -> list[re.Pattern[str]]:
-    pats: list[re.Pattern[str]] = []
+BANNED_BEFORE = r"(?<![A-Za-z0-9_])"
+BANNED_AFTER = r"(?![A-Za-z0-9_])"
+
+
+def load_banned_terms(root: Path) -> list[tuple[str, bool]]:
+    """(term, case_insensitive) per line of tools/banned_terms.txt."""
+    out: list[tuple[str, bool]] = []
     for line in (root / "tools" / "banned_terms.txt").read_text(encoding="utf-8").splitlines():
         line = line.strip()
         if not line or line.startswith("#"):
             continue
-        flags = 0
-        if line.startswith("i:"):
-            flags, line = re.I, line[2:]
-        pats.append(re.compile(r"(?<![A-Za-z0-9_])" + re.escape(line) + r"(?![A-Za-z0-9_])", flags))
-    return pats
+        out.append((line[2:], True) if line.startswith("i:") else (line, False))
+    return out
+
+
+def load_banned(root: Path) -> list[re.Pattern[str]]:
+    return [re.compile(BANNED_BEFORE + re.escape(t) + BANNED_AFTER, re.I if ci else 0)
+            for t, ci in load_banned_terms(root)]
+
+
+def banned_any(root: Path) -> re.Pattern[str]:
+    """One regex that matches wherever any load_banned() pattern matches (M2-NIT-06).
+    The shared word-boundary guards are hoisted out of the alternation and each term keeps its own case flag, so
+    a search position matches exactly when one of the per-term patterns matches there. Run per term and per line,
+    the 70 patterns cost about ten seconds per validate_data run; this one costs well under one."""
+    alts = "|".join(f"(?i:{re.escape(t)})" if ci else f"(?:{re.escape(t)})" for t, ci in load_banned_terms(root))
+    return re.compile(f"{BANNED_BEFORE}(?:{alts}){BANNED_AFTER}" if alts else r"(?!)")
 
 
 def check_banned(root: Path, rep: Report) -> None:
     pats = load_banned(root)
+    any_pat = banned_any(root)
     for entry in BANNED_SCAN:
         base = root / entry
         files = [base] if base.is_file() else (sorted(base.rglob("*")) if base.exists() else [])
         for p in files:
             if not p.is_file() or p.suffix not in BANNED_SCAN_EXT:
                 continue
-            for n, line in enumerate(p.read_text(encoding="utf-8", errors="replace").splitlines(), 1):
+            text = p.read_text(encoding="utf-8", errors="replace")
+            # Line breaks are not word characters, so a term matches somewhere in the file exactly when it
+            # matches in one of its lines: a file with no hit anywhere needs no line-by-line pass.
+            if not any_pat.search(text):
+                continue
+            for n, line in enumerate(text.splitlines(), 1):
                 for pat in pats:
                     m = pat.search(line)
                     if m:
@@ -1278,6 +1300,9 @@ def run(root: Path) -> Report:
     check_read_openings(files, rep)
     data_keys += check_objectives(files, declared_flags_quiet(root), rep)  # M2-UI-16/18
     data_keys += check_tutorial_tips(files, declared_flags_quiet(root), rep)  # M2-UI-24
+    data_keys += check_codex(files, declared_flags_quiet(root), rep)  # M3-UI-03
+    data_keys += check_memories(root, files, declared_flags_quiet(root), rep)  # M3-MNU-02
+    data_keys += check_reefball(files, rep)
     check_loc(root, data_keys, load_loc_keys(root, rep), rep)
     check_flags(root, load_flags(root, rep), rep)
     check_undertow(root, files, rep)
@@ -2318,6 +2343,9 @@ def check_choreo(files: dict[str, object], rep: Report) -> None:
     flags_text = (Path(__file__).resolve().parent.parent / vc.FLAGS_FILE).read_text(encoding="utf-8")
     for e in vc.summon_errors(doc, vc.declared_flags(flags_text)):
         rep.err(e)
+    loc = load_loc_keys(Path(__file__).resolve().parent.parent, Report())
+    for e in vc.boss_intro_errors(doc, files.get(vc.ENCOUNTERS_FILE), loc):  # M3-BPR-02
+        rep.err(e)
     arenas = files.get(vc.ARENAS_FILE)
     if arenas is not None:
         root = Path(__file__).resolve().parent.parent
@@ -2500,6 +2528,363 @@ def check_tutorial_tips(files: dict[str, object], declared: set[str], rep: Repor
     for e in errs:
         rep.err(e)
     return [k for k in keys if k]
+
+
+CODEX_FILE = "game/data/lore/codex.json"
+CODEX_UNLOCKS = {"flag", "record", "always"}
+
+
+def codex_errors(doc: object, declared: set[str]) -> tuple[list[str], list[str]]:
+    """M3-UI-03: the lore codex. Categories have unique ids and their keys; every entry has a unique
+    snake_case id, a known category, its loc keys, exactly one known unlock (a 'flag' unlock names a
+    declared flag; 'record' and 'always' take true), and its declared read flag codex_<id>_read
+    (plus codex_<id>_found for a record). Returns (errors, loc keys)."""
+    errs: list[str] = []
+    keys: list[str] = []
+    if doc is None:
+        return errs, keys
+    body = doc.get("codex") if isinstance(doc, dict) else None
+    if not isinstance(body, dict):
+        return [f"{CODEX_FILE}: no 'codex' object"], keys
+    cats: set[str] = set()
+    for i, c in enumerate(body.get("categories", [])):
+        cid = str(c.get("id", "")) if isinstance(c, dict) else ""
+        w = f"{CODEX_FILE} categories[{i}] ({cid or '?'})"
+        if not cid:
+            errs.append(f"{w}: no id")
+        elif cid in cats:
+            errs.append(f"{w}: duplicate category id")
+        cats.add(cid)
+        for k in ("name_key", "desc_key"):
+            if not isinstance(c, dict) or not c.get(k):
+                errs.append(f"{w}: no {k}")
+            else:
+                keys.append(str(c[k]))
+    ids: set[str] = set()
+    for i, e in enumerate(body.get("entries", [])):
+        if not isinstance(e, dict):
+            errs.append(f"{CODEX_FILE} entries[{i}]: not an object")
+            continue
+        eid = str(e.get("id", ""))
+        w = f"{CODEX_FILE} entries[{i}] ({eid or '?'})"
+        if not re.fullmatch(r"[a-z][a-z0-9_]*", eid):
+            errs.append(f"{w}: id must be snake_case")
+        elif eid in ids:
+            errs.append(f"{w}: duplicate entry id")
+        ids.add(eid)
+        if e.get("category") not in cats:
+            errs.append(f"{w}: category '{e.get('category')}' is not one of {sorted(cats)}")
+        for k in ("title_key", "body_key"):
+            if not e.get(k):
+                errs.append(f"{w}: no {k}")
+            else:
+                keys.append(str(e[k]))
+        unlock = e.get("unlock")
+        if not isinstance(unlock, dict) or len(unlock) != 1 or next(iter(unlock)) not in CODEX_UNLOCKS:
+            errs.append(f"{w}: 'unlock' must be one of {{'flag': <flag>}}, {{'record': true}}, {{'always': true}}")
+            unlock = {}
+        need = [f"codex_{eid}_read"]
+        if "flag" in unlock:
+            need.append(str(unlock["flag"]))
+        if "record" in unlock:
+            need.append(f"codex_{eid}_found")
+        if any(k in unlock and unlock[k] is not True for k in ("record", "always")):
+            errs.append(f"{w}: 'record' and 'always' unlocks take true")
+        for f in need:
+            if f and f not in declared:
+                errs.append(f"{w}: flag '{f}' is not declared in game/data/flags.tres")
+    return errs, keys
+
+
+def check_codex(files: dict[str, object], declared: set[str], rep: Report) -> list[str]:
+    errs, keys = codex_errors(files.get(CODEX_FILE), declared)
+    for e in errs:
+        rep.err(e)
+    return [k for k in keys if k]
+
+
+MEMORIES_FILE = "game/data/memories/memories.json"
+MEMORIES_COMPILED_DIR = "game/data/dialogue/compiled"
+MEMORY_OPTIONAL = {"stage_node": str, "spawn": str, "night": bool, "replay_flags": dict}
+
+
+def memories_errors(doc: object, declared: set[str], root: Path) -> tuple[list[str], list[str]]:
+    """M3-MNU-02: the Memories gallery. Chapters have unique ids and a name_key; every memory has a
+    unique snake_case id, a known chapter, a compiled dialogue scene, a stage scene that exists, a
+    declared unlock flag, a title_key, and well-typed optional fields (every replay_flags name
+    declared). Returns (errors, loc keys)."""
+    errs: list[str] = []
+    keys: list[str] = []
+    if doc is None:
+        return errs, keys
+    if not isinstance(doc, dict):
+        return [f"{MEMORIES_FILE}: not an object"], keys
+    chapters: set[str] = set()
+    for i, c in enumerate(doc.get("chapters", [])):
+        cid = str(c.get("id", "")) if isinstance(c, dict) else ""
+        w = f"{MEMORIES_FILE} chapters[{i}] ({cid or '?'})"
+        if not cid:
+            errs.append(f"{w}: no id")
+        elif cid in chapters:
+            errs.append(f"{w}: duplicate chapter id")
+        chapters.add(cid)
+        if not isinstance(c, dict) or not c.get("name_key"):
+            errs.append(f"{w}: no name_key")
+        else:
+            keys.append(str(c["name_key"]))
+    ids: set[str] = set()
+    memories = doc.get("memories", [])
+    if not isinstance(memories, list) or not memories:
+        errs.append(f"{MEMORIES_FILE}: 'memories' must be a non-empty list")
+        memories = []
+    for i, m in enumerate(memories):
+        if not isinstance(m, dict):
+            errs.append(f"{MEMORIES_FILE} memories[{i}]: not an object")
+            continue
+        mid = str(m.get("id", ""))
+        w = f"{MEMORIES_FILE} memories[{i}] ({mid or '?'})"
+        if not re.fullmatch(r"[a-z][a-z0-9_]*", mid):
+            errs.append(f"{w}: id must be snake_case")
+        elif mid in ids:
+            errs.append(f"{w}: duplicate memory id")
+        ids.add(mid)
+        if m.get("chapter") not in chapters:
+            errs.append(f"{w}: chapter '{m.get('chapter')}' is not one of {sorted(chapters)}")
+        scene = str(m.get("scene", ""))
+        if not scene or not (root / MEMORIES_COMPILED_DIR / f"{scene}.json").is_file():
+            errs.append(f"{w}: scene '{scene}' has no compiled dialogue under {MEMORIES_COMPILED_DIR}")
+        stage = str(m.get("stage", ""))
+        if not stage.startswith("res://") or not (root / stage.removeprefix("res://")).is_file():
+            errs.append(f"{w}: stage '{stage}' is not a res:// scene that exists")
+        flag = str(m.get("unlock_flag", ""))
+        if flag not in declared:
+            errs.append(f"{w}: unlock_flag '{flag}' is not declared in game/data/flags.tres")
+        if not m.get("title_key"):
+            errs.append(f"{w}: no title_key")
+        else:
+            keys.append(str(m["title_key"]))
+        for k, kind in MEMORY_OPTIONAL.items():
+            if k in m and not isinstance(m[k], kind):
+                errs.append(f"{w}: '{k}' must be a {kind.__name__}")
+        replay_flags = m.get("replay_flags", {})
+        for f in replay_flags if isinstance(replay_flags, dict) else {}:
+            if f not in declared:
+                errs.append(f"{w}: replay flag '{f}' is not declared in game/data/flags.tres")
+    return errs, keys
+
+
+def check_memories(root: Path, files: dict[str, object], declared: set[str], rep: Report) -> list[str]:
+    errs, keys = memories_errors(files.get(MEMORIES_FILE), declared, root)
+    for e in errs:
+        rep.err(e)
+    return [k for k in keys if k]
+
+
+# --- M3-RBL-01: Reefball rules, sides and matches (game/data/reefball, docs/kb/design/reefball.md) ---
+
+REEFBALL_DIR = "game/data/reefball"
+REEFBALL_RULES = f"{REEFBALL_DIR}/rules.json"
+REEFBALL_SIDES = f"{REEFBALL_DIR}/sides.json"
+REEFBALL_MATCHES = f"{REEFBALL_DIR}/matches.json"
+REEFBALL_STATS = ("breath", "stroke", "reach", "grip", "strip", "loft", "ward")
+REEFBALL_ACTIONS = ("rise", "dive", "pass", "loft")
+REEFBALL_COEFFS = {"rise": ("base", "edge_k", "crowd_k"),
+                   "pass": ("base", "skill_k", "dist_k", "mark_k", "crowd_k"),
+                   "loft": ("base", "skill_k", "depth_k", "ward_k", "press_k")}
+REEFBALL_INTS = {"clock": ("match_strokes", "overtime_strokes", "overtime_periods"),
+                 "breath": ("drain", "ring_recover", "winded_at", "rested_pct"),
+                 "swim": ("bands", "fast_stroke", "fast_bands")}
+REEFBALL_ROLE_SPECS = ("attack", "fetch", "defend")
+REEFBALL_AI_NUMS = ("score_value", "advance_value", "fetch_value", "fresh_value", "turnover_cost", "loft_min_odds",
+                    "whim_pct")
+
+
+def _rbl_band_spec_errors(spec: object, w: str, bed: int) -> list[str]:
+    """A role band spec is {"band": 0..bed} or {"rel": int}, exactly one of them."""
+    if not isinstance(spec, dict) or len(spec) != 1 or not ({"band", "rel"} & spec.keys()):
+        return [f'{w}: must be {{"band": n}} or {{"rel": n}}']
+    if "band" in spec and not (_is_int(spec["band"]) and 0 <= spec["band"] <= bed):
+        return [f"{w}.band: must be an int in 0..{bed}"]
+    if "rel" in spec and not _is_int(spec["rel"]):
+        return [f"{w}.rel: must be an int"]
+    return []
+
+
+def _rbl_block(r: dict, key: str) -> dict:
+    b = r.get(key)
+    return b if isinstance(b, dict) else {}
+
+
+def _rbl_scalar_errors(r: dict, bed: int) -> list[str]:
+    w = REEFBALL_RULES
+    errs: list[str] = []
+    if not (_is_int(r.get("fetch_depth")) and 1 <= r["fetch_depth"] <= bed):
+        errs.append(f"{w}: fetch_depth must be an int in 1..{bed}")
+    if not (_is_int(r.get("stat_min")) and _is_int(r.get("stat_max")) and 0 <= r["stat_min"] < r["stat_max"]):
+        errs.append(f"{w}: stat_min and stat_max must be ints with 0 <= stat_min < stat_max")
+    if not (_num(r.get("odds_min")) and _num(r.get("odds_max")) and 0 <= r["odds_min"] <= r["odds_max"] <= 1):
+        errs.append(f"{w}: odds_min and odds_max must be numbers with 0 <= odds_min <= odds_max <= 1")
+    for block, keys in REEFBALL_INTS.items():
+        b = _rbl_block(r, block)
+        for k in keys:
+            if not (_is_int(b.get(k)) and b[k] >= 0):
+                errs.append(f"{w}: {block}.{k} must be a non-negative int")
+    if not _pos_int(_rbl_block(r, "clock").get("match_strokes")):
+        errs.append(f"{w}: clock.match_strokes must be positive")
+    br = _rbl_block(r, "breath")
+    if not (_num(br.get("winded_penalty")) and 0 <= br["winded_penalty"] <= 1):
+        errs.append(f"{w}: breath.winded_penalty must be a number in 0..1")
+    if _is_int(br.get("rested_pct")) and br["rested_pct"] > 100:
+        errs.append(f"{w}: breath.rested_pct must be at most 100")
+    return errs
+
+
+def _rbl_action_errors(r: dict, bed: int) -> list[str]:
+    w = REEFBALL_RULES
+    errs: list[str] = []
+    acts = r.get("actions")
+    if not isinstance(acts, dict) or set(acts) != set(REEFBALL_ACTIONS):
+        return [f"{w}: actions must be exactly {list(REEFBALL_ACTIONS)}"]
+    for a in REEFBALL_ACTIONS:
+        row = acts[a] if isinstance(acts[a], dict) else {}
+        _need_keys(row, f"{w} actions.{a}", ("name_key",), errs)
+        # Every action costs a stroke, so a match always ends inside its clock (ReefballSim's cap).
+        if not _pos_int(row.get("strokes")):
+            errs.append(f"{w}: actions.{a}.strokes must be a positive int")
+        if not (_is_int(row.get("breath")) and row["breath"] >= 0):
+            errs.append(f"{w}: actions.{a}.breath must be a non-negative int")
+    for block, keys in REEFBALL_COEFFS.items():
+        b = _rbl_block(r, block)
+        for k in keys:
+            if not _num(b.get(k)):
+                errs.append(f"{w}: {block}.{k} must be a number")
+    reach = _rbl_block(r, "pass").get("open_reach")
+    if not (_is_int(reach) and reach >= 0):
+        errs.append(f"{w}: pass.open_reach must be a non-negative int")
+    md = _rbl_block(r, "loft").get("max_depth")
+    if not (_is_int(md) and 1 <= md <= bed):
+        errs.append(f"{w}: loft.max_depth must be an int in 1..{bed}")
+    return errs
+
+
+def _rbl_role_and_ai_errors(r: dict, bed: int) -> tuple[list[str], set[str], set[str]]:
+    w = REEFBALL_RULES
+    errs: list[str] = []
+    roles = _rows(r, "roles", f"{w} roles", errs)
+    for role in roles:
+        rw = f"{w} role {role['id']}"
+        _need_keys(role, rw, ("name_key",), errs)
+        for s in REEFBALL_ROLE_SPECS:
+            errs += _rbl_band_spec_errors(role.get(s), f"{rw}.{s}", bed)
+        kick = _rbl_block(role, "kickoff")
+        for k in ("attack", "defend"):
+            if not (_is_int(kick.get(k)) and 0 <= kick[k] <= bed):
+                errs.append(f"{rw}: kickoff.{k} must be an int in 0..{bed}")
+    profiles = _rows(r, "ai_profiles", f"{w} ai_profiles", errs)
+    for p in profiles:
+        for k in REEFBALL_AI_NUMS:
+            if not _num(p.get(k)):
+                errs.append(f"{w} ai_profile {p['id']}: {k} must be a number")
+        if _num(p.get("whim_pct")) and not 0 <= p["whim_pct"] <= 100:
+            errs.append(f"{w} ai_profile {p['id']}: whim_pct must be in 0..100")
+    return errs, {x["id"] for x in roles}, {p["id"] for p in profiles}
+
+
+def reefball_rules_errors(doc: object) -> tuple[list[str], set[str], set[str], tuple[int, int]]:
+    """Errors in rules.json, plus its role ids, AI profile ids and (stat_min, stat_max)."""
+    r = doc.get("rules") if isinstance(doc, dict) else None
+    if not isinstance(r, dict):
+        return [f"{REEFBALL_RULES}: needs a 'rules' object"], set(), set(), (0, 0)
+    bands = r.get("bands")
+    errs: list[str] = []
+    if not isinstance(bands, list) or len(bands) < 2:
+        errs.append(f"{REEFBALL_RULES}: bands must list at least the ring and one band below it")
+        bands = [{}, {}]
+    for i, b in enumerate(bands):
+        if not isinstance(b, dict) or not isinstance(b.get("id"), str) or not isinstance(b.get("name_key"), str):
+            errs.append(f"{REEFBALL_RULES}: bands[{i}] needs a string id and name_key")
+    bed = len(bands) - 1
+    errs += _rbl_scalar_errors(r, bed) + _rbl_action_errors(r, bed)
+    more, roles, profiles = _rbl_role_and_ai_errors(r, bed)
+    stat_range = (r.get("stat_min", 0), r.get("stat_max", 0))
+    return errs + more, roles, profiles, stat_range
+
+
+def _rbl_diver_errors(d: dict, dw: str, roles: set[str], stat_range: tuple[int, int]) -> list[str]:
+    errs: list[str] = []
+    _need_keys(d, dw, ("name_key",), errs)
+    if d.get("role") not in roles:
+        errs.append(f"{dw}: unknown role '{d.get('role')}'")
+    st = d.get("stats")
+    if not isinstance(st, dict) or set(st) != set(REEFBALL_STATS):
+        return errs + [f"{dw}: stats must be exactly {list(REEFBALL_STATS)}"]
+    for k, v in st.items():
+        if not (_is_int(v) and stat_range[0] <= v <= stat_range[1]):
+            errs.append(f"{dw}: stat {k} must be an int in {stat_range[0]}..{stat_range[1]}")
+    return errs
+
+
+def reefball_sides_errors(doc: object, roles: set[str], stat_range: tuple[int, int]) -> tuple[list[str], set[str]]:
+    """Errors in sides.json (divers unique across sides, known roles, every stat in range, captain and
+    kickoff diver on their own side), plus the side ids."""
+    errs: list[str] = []
+    sides = _rows(doc, "sides", REEFBALL_SIDES, errs)
+    seen: set[str] = set()
+    for s in sides:
+        w = f"{REEFBALL_SIDES} {s['id']}"
+        _need_keys(s, w, ("name_key",), errs)
+        divers = _rows(s, "divers", w, errs)
+        if not divers:
+            errs.append(f"{w}: needs at least one diver")
+        own = {d["id"] for d in divers}
+        for k in ("captain", "kickoff"):
+            if s.get(k) not in own:
+                errs.append(f"{w}: {k} '{s.get(k)}' is not one of its divers")
+        for d in divers:
+            if d["id"] in seen:
+                errs.append(f"{w} diver {d['id']}: diver id used by another side")
+            seen.add(d["id"])
+            errs += _rbl_diver_errors(d, f"{w} diver {d['id']}", roles, stat_range)
+    return errs, {s["id"] for s in sides}
+
+
+def reefball_matches_errors(doc: object, sides: set[str], profiles: set[str]) -> list[str]:
+    errs: list[str] = []
+    for m in _rows(doc, "matches", REEFBALL_MATCHES, errs):
+        w = f"{REEFBALL_MATCHES} {m['id']}"
+        _need_keys(m, w, ("name_key",), errs)
+        ms = m.get("sides")
+        if not isinstance(ms, list) or len(ms) != 2 or len(set(map(str, ms))) != 2:
+            errs.append(f"{w}: sides must name two different sides")
+        else:
+            errs += [f"{w}: unknown side '{x}'" for x in ms if x not in sides]
+        for k in ("player_side", "first_float"):
+            if not _is_int(m.get(k)) or m[k] not in (0, 1):
+                errs.append(f"{w}: {k} must be 0 or 1")
+        if m.get("ai_profile") not in profiles:
+            errs.append(f"{w}: unknown ai_profile '{m.get('ai_profile')}'")
+    return errs
+
+
+def reefball_errors(rules: object, sides: object, matches: object) -> list[str]:
+    """Every Reefball data error (rules, then sides, then matches)."""
+    errs, roles, profiles, stat_range = reefball_rules_errors(rules)
+    side_errs, side_ids = reefball_sides_errors(sides, roles, stat_range)
+    return errs + side_errs + reefball_matches_errors(matches, side_ids, profiles)
+
+
+def check_reefball(files: dict[str, object], rep: Report) -> list[str]:
+    """Validates game/data/reefball (M3-RBL-01). Returns its *_key values for the loc check."""
+    paths = (REEFBALL_RULES, REEFBALL_SIDES, REEFBALL_MATCHES)
+    docs = [files.get(p) for p in paths]
+    missing = [p for p, d in zip(paths, docs) if d is None]
+    for p in missing:
+        rep.err(f"{p}: missing")
+    if missing:
+        return []
+    for e in reefball_errors(*docs):
+        rep.err(e)
+    return collect_keys(docs)
 
 
 if __name__ == "__main__":

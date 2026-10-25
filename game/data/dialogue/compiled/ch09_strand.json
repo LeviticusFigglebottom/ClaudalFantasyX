@@ -1,0 +1,27 @@
+{
+ "format": 1,
+ "scene": "ch09_strand",
+ "source": "game/data/dialogue/ch09/ch09_strand.dlg",
+ "start": "ch09_strand",
+ "nodes": {
+  "ch09_strand": {
+   "headers": {"location": "ch09/corrow_night"},
+   "ops": [
+    {"op": "cue", "cue": "letterbox", "args": ["on"], "kwargs": {}, "src": 14},
+    {"op": "cue", "cue": "camera", "args": ["N01"], "kwargs": {}, "src": 15},
+    {"op": "cue", "cue": "fade", "args": ["in", 2.5], "kwargs": {}, "src": 16},
+    {"op": "cue", "cue": "music", "args": ["corrow_night"], "kwargs": {"fade": 2.0}, "src": 17},
+    {"op": "cue", "cue": "vfx", "args": ["glimmer_held"], "kwargs": {"at": "lowtown_motes", "count": 24, "drift": "down_seaward", "rate": "slow"}, "src": 18},
+    {"op": "cue", "cue": "vfx", "args": ["glimmer_held"], "kwargs": {"at": "strand_motes", "count": 18, "drift": "down_seaward", "rate": "slow"}, "src": 19},
+    {"op": "cue", "cue": "wait", "args": [4.0], "kwargs": {}, "src": 20},
+    {"op": "cue", "cue": "camera", "args": ["N02"], "kwargs": {}, "src": 21},
+    {"op": "cue", "cue": "wait", "args": [3.5], "kwargs": {}, "src": 22},
+    {"op": "cue", "cue": "camera", "args": ["N04"], "kwargs": {}, "src": 23},
+    {"op": "cue", "cue": "anim", "args": ["marra", "hold_hands", "toma"], "kwargs": {}, "src": 24},
+    {"op": "cue", "cue": "wait", "args": [3.5], "kwargs": {}, "src": 25},
+    {"op": "cue", "cue": "letterbox", "args": ["off"], "kwargs": {}, "src": 26},
+    {"op": "cue", "cue": "camera", "args": ["release"], "kwargs": {}, "src": 27}
+   ]
+  }
+ }
+}

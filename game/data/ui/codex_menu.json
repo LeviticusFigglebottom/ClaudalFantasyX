@@ -1,0 +1,50 @@
+{
+  "codex_menu": {
+    "doc": "The lore codex menu (M3-UI-03; docs/kb/tech/ui.md section Lore codex). Rects are top-left x, y, w, h at the 1920 x 1080 reference, multiples of 3 so every edge lands on a whole pixel at 1280 x 720. 'categories' (left) and 'entries' (middle) are MenuPage metrics blocks (the same keys as battle_hud.json commands); 'entries' is titled with the category and its count. 'text' is the page on the right: the entry's title (title_height), a dim line under it (sub_height), then the body, clipped to the page and scrolled by scroll_step_px per wheel notch or Page Up / Page Down; a thumb_px bar on its right edge shows where you are when it scrolls. canvas_layer: the bestiary's, over the field menu's 60.",
+    "canvas_layer": 64,
+    "panel": {"rect": [159, 87, 1602, 906], "pad": 27, "title_height": 57, "help_height": 39},
+    "categories": {
+      "rect": [186, 177, 402, 216],
+      "header_height": 0,
+      "row_pitch": 48,
+      "max_rows": 8,
+      "row_inset": 12,
+      "text_indent": 40,
+      "cost_width": 162,
+      "rank_width": 96,
+      "submenu_dim": 0.5,
+      "cursor_sec": 0.09,
+      "mote_lag_sec": 0.03,
+      "mote_px": 10,
+      "mote_offset": 14,
+      "breath_sec": 2.4,
+      "breath_min": 0.75
+    },
+    "entries": {
+      "rect": [606, 177, 480, 744],
+      "header_height": 45,
+      "row_pitch": 48,
+      "max_rows": 14,
+      "row_inset": 12,
+      "text_indent": 40,
+      "cost_width": 90,
+      "rank_width": 90,
+      "submenu_dim": 0.5,
+      "cursor_sec": 0.09,
+      "mote_lag_sec": 0.03,
+      "mote_px": 10,
+      "mote_offset": 14,
+      "breath_sec": 2.4,
+      "breath_min": 0.75
+    },
+    "text": {"rect": [1104, 177, 630, 744], "pad": 27, "title_height": 48, "sub_height": 36, "gap": 18,
+             "scroll_step_px": 90, "thumb_px": 3}
+  },
+  "codex_notice": {
+    "doc": "M3-UI-03: the notice in the field when a record is found (an Interactable whose payload is {\"record\": \"<codex id>\"}). The TipCard look, at the lower right: a gold page glyph, 'Record added to the Codex', and the record's title. It fades in over fade_sec, holds hold_sec, and fades out; a second record waits its turn. Like the tip card it hides, with its clock stopped, while the field refuses input or a menu pauses the tree. Rect x, y, w, h at the 1920 x 1080 reference (multiples of 3).",
+    "canvas_layer": 44,
+    "panel": {"rect": [1347, 846, 525, 108], "pad": 18, "title_height": 33, "glyph_px": 9},
+    "fade_sec": 0.3,
+    "hold_sec": 3.6
+  }
+}

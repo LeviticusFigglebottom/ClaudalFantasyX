@@ -95,10 +95,12 @@ func set_mouth_open(open: bool) -> void:
 
 ## Starts lip sync on `text`, revealed at `cps` characters per second (M2-CHR-10); `rng_seed`
 ## places the idle drift. An empty text, or cps <= 0 (an instant reveal), says nothing.
-func say(text: String, cps: float = 0.0, rng_seed: int = 0) -> void:
+## `reveal_times`: the box's DialogueBox.reveal_times(), so the mouth rests through its punctuation
+## pauses (M2-UI-27); empty = an even reveal at `cps`.
+func say(text: String, cps: float = 0.0, rng_seed: int = 0, reveal_times := PackedFloat64Array()) -> void:
 	if _lip == null:
 		return
-	_lip.start(text, cps, emotion, rng_seed)
+	_lip.start(text, cps, emotion, rng_seed, reveal_times)
 	_mouth_now = expand(_lip.weights())
 	_apply()
 

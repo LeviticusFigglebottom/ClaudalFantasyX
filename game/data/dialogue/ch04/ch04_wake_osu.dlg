@@ -1,0 +1,13 @@
+// Ch4 C4-03, the feast tables (optional): Osu, who keeps the wall. She has washed every shell on it
+// for tonight, Asha's mother's twice. If ch02_heard_pila (Ch2's side scene at this wall), she tells
+// Rhen quietly that he said hello to Teyo. Nothing here names the gap in the wall: C4-04 does.
+title: ch04_wake_osu
+location: ch04/haluna_wake
+---
+Osu [neutral]: Every shell on the wall, washed. Your mother's twice. She'd have wanted it done properly. #line:ch04_wake_osu_001
+Asha [tender]: She would. Thank you, Osu. #line:ch04_wake_osu_002
+<<if $ch02_heard_pila>>
+Osu [soft_smile]: You said hello to him. Teyo. She told me. #line:ch04_wake_osu_003
+Rhen [neutral]: It seemed rude not to. #line:ch04_wake_osu_004
+<<endif>>
+===

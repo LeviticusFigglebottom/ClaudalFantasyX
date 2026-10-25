@@ -24,6 +24,9 @@ RULES = [
     ("sfx/battle/bell_release.ogg", "momentary", -16.0, 1.0, -1.0, "the boss's death"),
     ("sfx/battle/victory.ogg", "momentary", -16.0, 1.0, -1.0, "the victory sting"),
     ("sfx/battle/flood_soft.ogg", "momentary", -20.0, 1.0, -1.0, "the reduced-audio Flood"),
+    ("sfx/battle/sting_boss*_soft.ogg", "momentary", -17.0, 1.0, -1.0, "reduced-audio boss stings (M3-AUD-18)"),
+    ("sfx/battle/sting_boss*.ogg", "momentary", -16.0, 1.0, -1.0, "boss intro stings (M3-AUD-18)"),
+    ("sfx/battle/sting_bark.ogg", "momentary", -22.0, 1.0, -1.0, "the bark's breath, under a line (M3-AUD-18)"),
     ("sfx/battle/*.ogg", "momentary", -19.0, 2.5, -1.0, "combat SFX (-18 nominal; quieter layers to -21.5)"),
     ("sfx/shrine/shrine_pool_fill.ogg", "integrated", -24.0, 0.5, -6.0, "the shrine pool's fill bed"),
     ("sfx/shrine/*.ogg", "momentary", -18.0, 0.5, -1.0, "the trial's world SFX"),
@@ -41,6 +44,21 @@ RULES = [
     ("sfx/dive/dive_lantern_hum.ogg", "integrated", -24.0, 0.5, -6.0, "the lantern's hum under water (a loop)"),
     ("sfx/dive/dive_stroke_*.ogg", "momentary", -20.0, 1.0, -1.0, "swimming strokes (they repeat)"),
     ("sfx/dive/*.ogg", "momentary", -18.0, 1.0, -1.0, "diving SFX"),
+    # M3-AUD-13 (assets_src/sfx/choreo_sfx.py): the battle choreography's layers under the -18 hits
+    ("sfx/choreo/whoosh_*.ogg", "momentary", -20.0, 1.0, -1.0, "strike whooshes (before the contact)"),
+    ("sfx/choreo/accent_*.ogg", "momentary", -21.0, 1.5, -1.0, "weapon accents, a layer under the hit"),
+    ("sfx/choreo/step_*.ogg", "momentary", -21.0, 1.5, -1.0, "battle footfalls on sand (they repeat)"),
+    ("sfx/choreo/flood_brace_*.ogg", "momentary", -21.0, 1.0, -1.0, "the party's brace at the Flood (staggered)"),
+    ("sfx/choreo/swell_*.ogg", "momentary", -19.0, 1.0, -1.0, "Swell finisher accents, over their own VFX sound"),
+    ("sfx/choreo/vowbound_beckon.ogg", "momentary", -19.0, 1.0, -1.0, "the caller's call, under vowbound_call"),
+    ("sfx/choreo/vowbound_sink.ogg", "momentary", -20.0, 1.0, -1.0, "the Vowbound's dismissal"),
+    ("sfx/choreo/*.ogg", "momentary", -18.0, 1.0, -1.0, "KO collapse, toll wave, surge, the Vowbound's rise and fall"),
+    # M3-AUD-14 (assets_src/sfx/creature_sfx.py): movement repeats on every action, idles sit under the battle
+    *[(f"sfx/creatures/*_{w}_*.ogg", "momentary", -21.0, 1.0, -1.0, f"creature movement ({w})")
+      for w in ("skitter", "slither", "wingbeat", "flutter", "squelch", "flap", "shift", "creak", "surge", "grind",
+                "plod", "scurry", "shimmer", "hop", "pad")],
+    ("sfx/creatures/*_idle_*.ogg", "momentary", -20.0, 1.0, -1.0, "a creature's idle voice (under the battle)"),
+    ("sfx/creatures/*.ogg", "momentary", -18.0, 1.0, -1.0, "creature voices: attack, hurt, death"),
 ]
 FILE_LIMIT = 5 * 1024 * 1024        # CLAUDE.md §8: no file over 5 MB
 TOTAL_BUDGET = 48 * 1024 * 1024     # every shipped audio file (mix.md §5: the slice + Act I; ~1 MB per minute of music)

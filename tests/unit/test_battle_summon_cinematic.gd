@@ -85,6 +85,12 @@ func test_call_length_setting_full_short_off() -> void:
 	assert_false(choreo.summon.wants_full(ILUN), "short: a later call plays the short entry")
 	s.set_value(BattleSummonCinematic.SETTING, BattleSummonCinematic.SETTING_FULL)
 	assert_true(choreo.summon.wants_full(ILUN), "full: every call plays in full")
+	s.set_value(BattleSummonCinematic.SETTING, BattleSummonCinematic.SETTING_OFF)
+	assert_false(choreo.summon.wants_full(ILUN), "off: never")
+	assert_eq(choreo.summon.entry_for(ILUN), cfg["off_entry"], "off: no rise")
+	assert_true(ctl.vow.call_vowbound(ILUN))
+	choreo.advance(0.0)
+	assert_false(choreo.is_entering(ILUN), "Ilun is simply there")
 	s.set_value(BattleSummonCinematic.SETTING, was)
 	_free()
 

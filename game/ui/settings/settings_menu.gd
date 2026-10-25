@@ -13,12 +13,18 @@ signal closed
 const ROW_GRAPHICS := &"graphics"
 const ROW_ACCESSIBILITY := &"accessibility"
 const ROW_CONTROLS := &"controls"
-const ROW_IDS: Array[StringName] = [ROW_GRAPHICS, ROW_ACCESSIBILITY, ROW_CONTROLS]
+const ROW_AUDIO := &"audio"
+## Every hub row in order; Audio shows only when UiSettings has an Audio row (row_ids()).
+const ROW_IDS: Array[StringName] = [ROW_GRAPHICS, ROW_AUDIO, ROW_ACCESSIBILITY, ROW_CONTROLS]
 const LABEL_KEYS := {
-	ROW_GRAPHICS: "SET_MENU_GRAPHICS", ROW_ACCESSIBILITY: "SET_MENU_ACCESSIBILITY", ROW_CONTROLS: "SET_MENU_CONTROLS"
+	ROW_GRAPHICS: "SET_MENU_GRAPHICS",
+	ROW_AUDIO: "SET_MENU_AUDIO",
+	ROW_ACCESSIBILITY: "SET_MENU_ACCESSIBILITY",
+	ROW_CONTROLS: "SET_MENU_CONTROLS",
 }
 const HELP_KEYS := {
 	ROW_GRAPHICS: "SET_MENU_HELP_GRAPHICS",
+	ROW_AUDIO: "SET_MENU_HELP_AUDIO",
 	ROW_ACCESSIBILITY: "SET_MENU_HELP_ACCESSIBILITY",
 	ROW_CONTROLS: "SET_MENU_HELP_CONTROLS",
 }
@@ -73,7 +79,7 @@ func _ready() -> void:
 	_list = MenuPage.new()
 	var r := HudLayout.rect_of(pm)
 	_list.position = r.position
-	_list.size = Vector2(r.size.x, MenuPage.height_for(pm, ROW_IDS.size()))
+	_list.size = Vector2(r.size.x, MenuPage.height_for(pm, row_ids().size()))
 	add_child(_list)
 	_list.reduced_motion = ui_settings.reduced_motion()
 	_list.setup(pm, &"settings", tr("SET_MENU_TITLE"), _rows())
@@ -127,13 +133,16 @@ func current() -> StringName:
 	return StringName(str(_list.current_row().get("id", "")))
 
 
-## Opens page `row` (ROW_GRAPHICS, ROW_ACCESSIBILITY or ROW_CONTROLS) over the hub. Returns it (null if unknown).
+## Opens page `row` (ROW_GRAPHICS, ROW_AUDIO, ROW_ACCESSIBILITY or ROW_CONTROLS) over the hub.
+## Returns it (null if unknown).
 func open_page(row: StringName) -> SettingsPage:
 	if is_page_open():
 		return page
 	match row:
 		ROW_GRAPHICS:
 			page = GraphicsMenu.new(graphics_viewport)
+		ROW_AUDIO:
+			page = AudioMenu.new(ui_settings, save_path)
 		ROW_ACCESSIBILITY:
 			page = AccessibilityMenu.new(ui_settings, save_path)
 		ROW_CONTROLS:
@@ -161,6 +170,7 @@ func close() -> void:
 	if is_page_open():
 		page.close()
 	_open = false
+	visible = false  # freed at the frame's end: until then it must not take the pointer (M2-UI-26)
 	closed.emit()
 	queue_free()
 
@@ -176,9 +186,19 @@ func row_labels() -> PackedStringArray:
 	return out
 
 
+## The hub's rows: ROW_IDS, without Audio while UiSettings has none of its rows (M3-UI-02).
+func row_ids() -> Array[StringName]:
+	var out: Array[StringName] = []
+	var no_audio := AudioMenuModel.new(ui_settings, "").row_ids().is_empty()
+	for id in ROW_IDS:
+		if not (id == ROW_AUDIO and no_audio):
+			out.append(id)
+	return out
+
+
 func _rows() -> Array[Dictionary]:
 	var out: Array[Dictionary] = []
-	for id in ROW_IDS:
+	for id in row_ids():
 		out.append({"id": id, "label": tr(LABEL_KEYS[id]), "enabled": true})
 	return out
 

@@ -201,7 +201,7 @@ func _fill() -> void:
 	_goal_mark.visible = model.objective_poi() != &""
 	_errands.text = model.errands_text()
 	_route.setup(model.route_stops(), _d.get("route", {}))
-	_view.setup(model, _d.get("map", {}), _d.get("pieces", {}))
+	_view.setup(model, _d.get("map", {}), _d.get("pieces", {}), _d.get("greybox", {}))
 	_legend.replace_rows(model.poi_rows())
 	_place_legend()
 	select(model.first_index())

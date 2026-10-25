@@ -4,7 +4,8 @@ extends SimPolicy
 ## Each turn: if the actor answers a living foe, it takes the weakest such foe. Otherwise the
 ## focus is the lowest-HP foe, and if that foe's answer waits in reserve, it swaps in for the
 ## actor (free) and takes the turn. The answerer opens with a Break skill its foe lacks, then
-## uses its best expected damage per rank.
+## uses its best expected damage per rank. An actor the encounter forbids to strike every living foe
+## (M3-C06-02: Toma and the Stillguard) steps back first for a living reserve who may.
 
 
 func policy_name() -> StringName:
@@ -15,6 +16,8 @@ func decide(engine: BattleEngine) -> void:
 	var actor := engine.current
 	if call_vowbound(engine):  # the Drownbell's answer: Ilun into the flood (M2-FP-17)
 		return
+	if step_back(engine, actor):
+		actor = engine.current
 	var target := _target_for(engine, actor)
 	if target == null:
 		return
@@ -23,6 +26,28 @@ func decide(engine: BattleEngine) -> void:
 		if engine.swap(actor.id, answer):
 			actor = engine.current
 	attack_as_answer(engine, actor, target)
+
+
+## M3-C06-02: when `actor` may not strike any living foe (BossMechanics.forbidden_now on its basic
+## attack), swaps it for the first living reserve member, preferring one who answers a living foe.
+## True when it swapped.
+static func step_back(engine: BattleEngine, actor: BattleCombatant) -> bool:
+	if actor.forbidden_tag == &"":
+		return false
+	if not BossMechanics.forbidden_now(engine, actor, engine.db.skill(engine.basic_attack(actor))):
+		return false
+	var pick: BattleCombatant = null
+	for r in engine.party_reserve:
+		if not r.is_alive():
+			continue
+		var answers := false
+		for f in engine.living_foes_of(actor):
+			answers = answers or role_answer(engine, f) == r.id
+		if pick == null or answers:
+			pick = r
+		if answers:
+			break
+	return pick != null and engine.swap(actor.id, pick.id)
 
 
 ## Weakest living foe this actor answers, else the weakest living foe.

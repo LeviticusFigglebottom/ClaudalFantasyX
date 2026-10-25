@@ -6,7 +6,9 @@ extends Control
 ##   - "haluna": Haluna after supper at Neme's (the objective: the save shrine), the player just
 ##     up from the beach facing inland, the cursor on the shrine (the objective's place);
 ##   - "shrine": the Shell Shrine trial (the objective: the inner pool), the player by the
-##     entrance facing in, the side pool drained (its errand listed).
+##     entrance facing in, the side pool drained (its errand listed);
+##   - "underway" (M3-UI-04): Ch1's Underway after the glassfry shoal, the player in the galleries
+##     facing north, the objective the stairwell lip, the bell-room hinge left as an errand.
 
 const HEROES: Array[StringName] = [&"rhen", &"asha", &"toma"]
 const NAMES := {&"rhen": "CHAR_RHEN", &"asha": "CHAR_ASHA", &"toma": "CHAR_TOMA"}
@@ -25,9 +27,16 @@ const VIEWS := {
 		"yaw": -PI * 0.5,
 		"flags": [&"ch03_side_pool_drained"],
 	},
+	&"underway":
+	{
+		"zone": &"ch01/oruvel_underway",
+		"at": Vector3(80.0, 0.0, 0.0),
+		"yaw": 0.0,
+		"flags": [&"ch01_started", &"ch01_saw_bell_room", &"ch01_wickfry_won"],
+	},
 }
 
-## Which view to stage: &"haluna" or &"shrine".
+## Which view to stage: &"haluna", &"shrine" or &"underway".
 @export var view: StringName = &"haluna"
 
 var menu: FieldMenu

@@ -1,0 +1,14 @@
+{
+ "format": 1,
+ "scene": "ch05_trial_hint",
+ "source": "game/data/dialogue/ch05/ch05_trial_hint.dlg",
+ "start": "ch05_trial_hint",
+ "nodes": {
+  "ch05_trial_hint": {
+   "headers": {"location": "ch05/ashcrown"},
+   "ops": [
+    {"op": "line", "id": "ch05_hint_001", "key": "DLG_CH05_HINT_001", "speaker": "tender", "emotion": "neutral", "voice": "", "src": 6, "name_key": "DLG_NAME_TENDER_TENDER_RUWEN"}
+   ]
+  }
+ }
+}

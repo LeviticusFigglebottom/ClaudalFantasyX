@@ -1,0 +1,16 @@
+{
+ "format": 1,
+ "scene": "ch04_bark_galley_bowls",
+ "source": "game/data/dialogue/ch04/ch04_bark_galley_bowls.dlg",
+ "start": "ch04_bark_galley_bowls",
+ "nodes": {
+  "ch04_bark_galley_bowls": {
+   "headers": {"location": "ch04/brightwater_ferry"},
+   "ops": [
+    {"op": "cue", "cue": "anim", "args": ["toma", "stack_bowls"], "kwargs": {}, "src": 7},
+    {"op": "line", "id": "ch04_bark_bowls_001", "key": "DLG_CH04_BARK_BOWLS_001", "speaker": "toma", "emotion": "sad", "voice": "", "src": 8},
+    {"op": "line", "id": "ch04_bark_bowls_002", "key": "DLG_CH04_BARK_BOWLS_002", "speaker": "toma", "emotion": "neutral", "voice": "", "src": 9}
+   ]
+  }
+ }
+}

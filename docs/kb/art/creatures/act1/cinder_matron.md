@@ -38,10 +38,12 @@ Lit Age conduits use `glimmer_bound`; README rule 3's "creatures never use glimm
 she is a Lit Age machine): steady, no pulse, no motes, moving only with her body.
 
 **Phases.** Phase 1, *crust*: the `Crust` mesh (its own node) covers the belly, the yoke, the pauldrons and the upper
-arms in pillowed slag cells whose edges sink into a glowing molten underlayer, so the cracks are crisp ember lines at
-any distance; a slag collar sits on her belt and ropes of slag run down the skirt's sides and back. It leaves the
-firebox clear and a slit over the heart. Phase 2, *pour* (creatures.json phase `pour` hides `Crust`): the
-plates the slag lay on run red-hot, with molten seams glowing in the joints, and the whole heart port shows. The
+arms in pillowed slag cells: each cell is its own dark dome (a Voronoi cell of even, dart-thrown seeds), inset from
+its neighbours by a 3 cm crack whose floor glows `ember_orange`, so the cracks are a network of fine ember lines at
+any distance and any tessellation (M3-CRE-04 polish; the first pass's two-shell underlayer read as orange patches);
+a slag collar sits on her belt and ropes of slag run down the skirt's sides and back. It leaves the firebox clear
+and a slit over the heart. Phase 2, *pour* (creatures.json phase `pour` hides `Crust`): the plates the slag lay on run
+red-hot, with molten seams glowing in the joints, and the whole heart port shows. The
 re-crust telegraph and the quench reaction are VFX and battle-presentation work (not in the model): the re-crust can
 show `Crust` again through a phase `show` list.
 
@@ -52,7 +54,7 @@ arm out (the heart's flare is VFX). `hit`: a grinding shudder of the plates. `ph
 heaves up and throws her arms out as the crust bursts. `ko` (2.4 s): she settles onto her skirt, the head bowing
 low, the tools sagging. The rig keeps the first pass's bone names (root, torso, head, arm/fore/hand l and r).
 
-**Budget.** ≤ 24k triangles (the art pass raised it from 16k for the Ch5 boss): about 18.6k body and 5.2k crust.
+**Budget.** ≤ 24k triangles (the art pass raised it from 16k for the Ch5 boss): about 18.6k body and 4.6k crust.
 
 **Build.** `assets_src/creatures/cinder_matron/build_cinder_matron.py` (surfaces of revolution with dense front
 columns for the firebox, port and mask, shingled plate courses, pillowed crust cells), `materials.json` (`metal`,

@@ -1,0 +1,34 @@
+{
+ "format": 1,
+ "scene": "ch04_gangplank",
+ "source": "game/data/dialogue/ch04/ch04_gangplank.dlg",
+ "start": "ch04_gangplank",
+ "nodes": {
+  "ch04_gangplank": {
+   "headers": {"location": "ch04/brightwater_ferry"},
+   "ops": [
+    {"op": "cue", "cue": "fade", "args": ["in", 1.5], "kwargs": {}, "src": 15},
+    {"op": "cue", "cue": "music", "args": ["ysolde_theme"], "kwargs": {"fade": 2.0}, "src": 16},
+    {"op": "cue", "cue": "camera", "args": ["F01"], "kwargs": {}, "src": 17},
+    {"op": "cue", "cue": "sfx", "args": ["gangplank"], "kwargs": {}, "src": 18},
+    {"op": "line", "id": "ch04_plank_001", "key": "DLG_CH04_PLANK_001", "speaker": "ysolde", "emotion": "neutral", "voice": "", "src": 19},
+    {"op": "cue", "cue": "anim", "args": ["ysolde", "present_appointment", "asha"], "kwargs": {}, "src": 20},
+    {"op": "line", "id": "ch04_plank_002", "key": "DLG_CH04_PLANK_002", "speaker": "toma", "emotion": "neutral", "voice": "", "src": 21},
+    {"op": "line", "id": "ch04_plank_003", "key": "DLG_CH04_PLANK_003", "speaker": "ysolde", "emotion": "neutral", "voice": "", "src": 22},
+    {"op": "line", "id": "ch04_plank_004", "key": "DLG_CH04_PLANK_004", "speaker": "ysolde", "emotion": "neutral", "voice": "", "src": 23},
+    {"op": "line", "id": "ch04_plank_005", "key": "DLG_CH04_PLANK_005", "speaker": "asha", "emotion": "soft_smile", "voice": "", "src": 24},
+    {"op": "line", "id": "ch04_plank_006", "key": "DLG_CH04_PLANK_006", "speaker": "rhen", "emotion": "smile", "voice": "", "src": 25},
+    {"op": "cue", "cue": "wait", "args": [1.0], "kwargs": {}, "src": 26},
+    {"op": "line", "id": "ch04_plank_007", "key": "DLG_CH04_PLANK_007", "speaker": "ysolde", "emotion": "cold", "voice": "", "src": 27},
+    {"op": "cue", "cue": "anim", "args": ["ysolde", "turn_to_gangplank"], "kwargs": {}, "src": 28},
+    {"op": "if_not", "cond": ["flag", "ch04_saw_ysolde_ink"], "to": 18, "src": 29},
+    {"op": "line", "id": "ch04_plank_008", "key": "DLG_CH04_PLANK_008", "speaker": "rhen", "emotion": "neutral", "voice": "", "src": 30},
+    {"op": "line", "id": "ch04_plank_009", "key": "DLG_CH04_PLANK_009", "speaker": "ysolde", "emotion": "neutral", "voice": "", "src": 31},
+    {"op": "goto", "to": 18, "src": 29},
+    {"op": "cue", "cue": "mark", "args": ["ysolde", "gangplank_top", "walk"], "kwargs": {}, "src": 33},
+    {"op": "cue", "cue": "wait", "args": [1.0], "kwargs": {}, "src": 34},
+    {"op": "cue", "cue": "camera", "args": ["release"], "kwargs": {}, "src": 35}
+   ]
+  }
+ }
+}

@@ -47,6 +47,9 @@ EQUIP_MENU_CRAFT_ERR_SLOT_FILLED_FMT,This slot holds {ability}. Crafted abilitie
 EQUIP_MENU_CRAFT_ERR_MISSING_FMT,Not enough to craft {ability}: {items}.
 EQUIP_MENU_HELP_HEROES,Up and Down: choose a hero · Confirm: their gear · Cancel: close
 EQUIP_MENU_HELP_GEAR,Up and Down: choose · Left and Right: another hero · Confirm: change or Customize · Cancel: back
-EQUIP_MENU_HELP_PIECES,Up and Down: compare · Confirm: wear it · Cancel: back
+EQUIP_MENU_HELP_PIECES,Up and Down: compare · Confirm: wear it or Customize · Cancel: back
 EQUIP_MENU_HELP_RECIPES,Up and Down: choose an ability · Confirm: craft · Cancel: back
 EQUIP_MENU_ARROW,→
+EQUIP_MENU_CUSTOMIZE_ROW,· Customize
+EQUIP_MENU_EMPTY_COUNT_FMT,{n} empty
+EQUIP_MENU_CUSTOMIZE_ROW_DESC_FMT,"Craft an ability into an empty slot of {piece}, worn or not. Crafted abilities are permanent."

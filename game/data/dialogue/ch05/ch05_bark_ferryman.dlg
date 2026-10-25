@@ -1,0 +1,11 @@
+// Ch5 B02, bark 6 (optional): the harbour. An old ferryman to his mate; walking past sets
+// ch05_heard_straw_cape_tale (the layout's trigger), which Ch15 may pay off. This is the anonymous
+// fisher's tale of kerrid.md. Watch (ADR 0017, ADR 0020 (b)): it is heard before B05, never in
+// Kerrid's sight (the trigger is blocked once ch05_met_kerrid is set), nobody in the party connects
+// it to him, and nobody calls the man a hero.
+title: ch05_bark_ferryman
+location: ch05/pemakar
+---
+Ferryman [neutral]: Big man in a straw cape. Pulled my nephew off the reef at Sennet. #line:ch05_bark_ferry_001
+Ferryman [neutral]: Walked off before anyone could thank him. My sister swears to it. #line:ch05_bark_ferry_002
+===

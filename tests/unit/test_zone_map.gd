@@ -6,6 +6,7 @@ extends TestCase
 
 const HALUNA := &"ch02/haluna"
 const SHRINE := &"ch03/shell_shrine"
+const UNDERWAY := &"ch01/oruvel_underway"
 const NAMES := {&"rhen": "CHAR_RHEN", &"asha": "CHAR_ASHA", &"toma": "CHAR_TOMA"}
 const AT_SHRINE_FLAGS: Array[StringName] = [&"ch02_met_asha", &"ch02_tideline_won", &"ch02_ate_at_nemes"]
 const BEACH := Vector3(-8.0, 0.0, 6.0)
@@ -95,11 +96,23 @@ func test_the_line_under_the_map_says_how_far_and_which_way() -> void:
 
 func test_the_route_strip_marks_the_current_stop() -> void:
 	var stops := _haluna().route_stops()
-	assert_eq(stops.size(), 3)
-	assert_eq(stops[0]["name"], tr("MAP_ROUTE_HALUNA"))
-	assert_eq([stops[0]["current"], stops[1]["current"], stops[2]["current"]], [true, false, false])
+	assert_eq(stops.size(), 5, "M3-UI-04: two stops either side of Haluna")
+	assert_eq(stops[2]["name"], tr("MAP_ROUTE_HALUNA"))
+	var current: Array = []
+	for s in stops:
+		current.append(s["current"])
+	assert_eq(current, [false, false, true, false, false])
+	assert_eq(StringName(str(stops[0]["id"])), UNDERWAY, "Ch1 behind")
+	assert_eq(StringName(str(stops[4]["id"])), SHRINE, "the Shell Shrine ahead")
 	var at_shrine := MapModel.new(SHRINE, Vector3.INF, 0.0, _flags([])).route_stops()
 	assert_eq([at_shrine[0]["current"], at_shrine[2]["current"]], [false, true])
+	var first := MapModel.new(UNDERWAY, Vector3.INF, 0.0, _flags([])).route_stops()
+	assert_eq(first.size(), 3, "at the start of the road: itself and the two ahead")
+	assert_true(first[0]["current"])
+	var last := MapModel.new(&"ch09/corrow_night", Vector3.INF, 0.0, _flags([])).route_stops()
+	assert_eq(last.size(), 3, "at the end of Act I: the two behind and itself")
+	assert_true(last[2]["current"])
+	assert_eq(MapModel.new(&"nowhere").route_stops().size(), 5, "off the route: the first stops")
 	assert_false(MapModel.new(&"nowhere").has_map())
 
 
@@ -162,6 +175,113 @@ func test_shrine_shapes_come_from_its_trial() -> void:
 	assert_true(nearest >= float(g["door_w"]) * 0.5, "the wall is open where the door stands")
 
 
+# --- Act I greybox zones (M3-UI-04) --------------------------------------------------------------
+
+
+func test_every_act_one_greybox_zone_builds_a_map() -> void:
+	var maps := ZoneMaps.new()
+	var data := MapModel.load_data()
+	var seen := 0
+	for z: Variant in maps.data["zones"]:
+		var row := z as Dictionary
+		if str(row.get("shape_kind", "")) != String(ZoneMapShapes.KIND_GREYBOX):
+			continue
+		seen += 1
+		var id := StringName(str(row["id"]))
+		var m := MapModel.new(id, Vector3.INF, 0.0, _flags([]))
+		assert_true(m.has_map(), "%s has a map" % id)
+		assert_ne(m.zone_name(), str(row["name_key"]), "%s has its name" % id)
+		var layout := m.shape_source()
+		assert_true(layout.has("blocks"), "%s reads its layout" % id)
+		var s := ZoneMapShapes.build(
+			m.shape_kind(), layout, m.bounds(), data["map"], data["pieces"], data["greybox"], m.shape_hints()
+		)
+		assert_false(s.floors.is_empty() and s.pads.is_empty(), "%s has ground to walk" % id)
+		assert_false(s.buildings.is_empty() and s.structures.is_empty(), "%s has walls or buildings" % id)
+		var b := m.bounds()
+		assert_true(b.size.x > 0.0 and b.size.y > 0.0, "%s has bounds" % id)
+		assert_false(m.pois().is_empty(), "%s has places" % id)
+		for p in m.pois():
+			assert_true(b.has_point(p["at"]), "%s/%s inside the map" % [id, p["id"]])
+			assert_ne(str(p["name"]), "", "%s/%s has a name" % [id, p["id"]])
+			assert_true(MapGlyphs.KINDS.has(p["kind"]), "%s/%s draws as a known glyph" % [id, p["id"]])
+		var on_route := false
+		for r: Variant in maps.route():
+			on_route = on_route or StringName(str((r as Dictionary)["id"])) == id
+		assert_true(on_route, "%s is on the route" % id)
+	assert_eq(seen, 9, "Ch1's two zones, Ch4's two, Ch5's two, Ch7's two and Ch9's")
+
+
+func test_greybox_blocks_sort_by_height_and_hints() -> void:
+	var data := MapModel.load_data()
+	var g: Dictionary = data["greybox"]
+	var top := float(g["floor_top_m"])
+	var over := float(g["overhead_m"])
+	var thin := float(g["wall_thick_m"])
+	var post := float(g["post_max_m"])
+	var floor_row := {"id": "Deck", "pos": [0, -0.5, 0], "size": [8, 1, 30]}
+	assert_eq(ZoneMapShapes.greybox_layer(floor_row, {}, top, over, thin, post), ZoneMapShapes.LAYER_FLOOR)
+	var lane := {"id": "Lane", "pos": [0, 0.02, 0], "size": [4, 0.04, 40], "solid": false}
+	assert_eq(ZoneMapShapes.greybox_layer(lane, {}, top, over, thin, post), ZoneMapShapes.LAYER_PAD)
+	var rail := {"id": "Rail", "pos": [0, 0.5, 0], "size": [0.6, 1, 30]}
+	assert_eq(ZoneMapShapes.greybox_layer(rail, {}, top, over, thin, post), ZoneMapShapes.LAYER_STRUCTURE)
+	var house := {"id": "House", "pos": [0, 1.5, 0], "size": [6, 3, 6]}
+	assert_eq(ZoneMapShapes.greybox_layer(house, {}, top, over, thin, post), ZoneMapShapes.LAYER_BUILDING)
+	var mast := {"id": "Mast", "pos": [0, 4, 0], "size": [0.4, 8, 0.4]}
+	assert_eq(ZoneMapShapes.greybox_layer(mast, {}, top, over, thin, post), ZoneMapShapes.LAYER_SKIP, "a post")
+	var sail := {"id": "Sail", "pos": [0, 6, 0], "size": [6, 6, 0.1], "solid": false}
+	assert_eq(ZoneMapShapes.greybox_layer(sail, {}, top, over, thin, post), ZoneMapShapes.LAYER_SKIP)
+	var beam := {"id": "Beam", "pos": [0, 30, 0], "size": [20, 2, 3]}
+	assert_eq(ZoneMapShapes.greybox_layer(beam, {}, top, over, thin, post), ZoneMapShapes.LAYER_SKIP, "overhead")
+	var sea := {"id": "Sea", "pos": [0, -2, 0], "size": [80, 1, 80]}
+	assert_eq(ZoneMapShapes.greybox_layer(sea, {"sea": ["Sea"]}, top, over, thin, post), ZoneMapShapes.LAYER_SEA)
+	assert_eq(ZoneMapShapes.greybox_layer(house, {"skip": ["House"]}, top, over, thin, post), ZoneMapShapes.LAYER_SKIP)
+
+
+func test_a_greybox_block_turns_with_its_yaw() -> void:
+	var layout := {"blocks": [{"id": "Plank", "pos": [10, -0.5, 4], "size": [4, 1, 2], "yaw": 90.0}]}
+	var data := MapModel.load_data()
+	var s := ZoneMapShapes.build(
+		ZoneMapShapes.KIND_GREYBOX, layout, Rect2(), data["map"], data["pieces"], data["greybox"], {}
+	)
+	assert_eq(s.floors.size(), 1)
+	var corner := Basis(Vector3.UP, deg_to_rad(90.0)) * Vector3(-2.0, 0.0, -1.0) + Vector3(10.0, 0.0, 4.0)
+	assert_true(s.floors[0][0].is_equal_approx(Vector2(corner.x, corner.z)), "Basis(UP, yaw), as GreyboxZone")
+
+
+func test_oruvel_reads_its_sea_and_the_underway_has_none() -> void:
+	var data := MapModel.load_data()
+	var oruvel := MapModel.new(&"ch01/oruvel", Vector3.INF, 0.0, _flags([]))
+	var s := ZoneMapShapes.build(
+		oruvel.shape_kind(),
+		oruvel.shape_source(),
+		oruvel.bounds(),
+		data["map"],
+		data["pieces"],
+		data["greybox"],
+		oruvel.shape_hints()
+	)
+	assert_eq(s.seas.size(), 1, "the sea under the hulls")
+	assert_true(s.floors.size() >= 10, "the hulls and the bridges")
+	var under := MapModel.new(UNDERWAY, Vector3.INF, 0.0, _flags([]))
+	var u := ZoneMapShapes.build(
+		under.shape_kind(), under.shape_source(), under.bounds(), data["map"], data["pieces"], data["greybox"], {}
+	)
+	assert_eq(u.seas.size(), 0, "a drowned tower: no open water drawn")
+	assert_eq(u.floors.size(), 6, "the crown, the bell-room, the galleries, the gauge room, the alcove, the lip")
+
+
+func test_the_underway_view_marks_the_objective_on_its_tether() -> void:
+	var m := MapModel.new(UNDERWAY, Vector3(0.0, 0.0, 15.0), PI, _flags([&"ch01_started"]))
+	assert_eq(m.objective_line(), tr("OBJ_U_CROWN_TETHER"))
+	assert_eq(m.objective_poi(), &"crown_tether")
+	var v := _view(m)
+	assert_true(v.objective_marker_at().is_equal_approx(v.map_point(Vector2(0.0, 0.6))), "on the tether")
+	assert_true(Rect2(Vector2.ZERO, v.size).has_point(v.objective_marker_at()))
+	assert_false(v.shapes.floors.is_empty(), "the view built the greybox shapes")
+	v.free()
+
+
 # --- the view and the page -----------------------------------------------------------------------
 
 
@@ -200,7 +320,7 @@ func test_the_map_row_opens_the_page_and_input_moves_through_places() -> void:
 	assert_eq(page.objective_text(), tr("OBJ_SAVE_AT_SHRINE"))
 	assert_eq(page.errands_text(), tr("OBJ_SIDE_TOWN"))
 	assert_eq(page.help_text(), tr("MAP_HELP"))
-	assert_eq(page.route().current_index(), 0)
+	assert_eq(page.route().current_index(), 2, "Haluna, with Ch1's two stops behind it")
 	assert_eq(page.current_poi(), &"shrine", "the cursor starts on the objective's place")
 	assert_eq(page.view().highlight, &"shrine")
 	assert_true(page.handle_input(_ev(&"ui_down")))
@@ -299,7 +419,7 @@ func _view(m: MapModel) -> ZoneMapView:
 	v.size = Vector2(1035.0, 633.0)
 	_root().add_child(v)
 	var data := MapModel.load_data()
-	v.setup(m, data["map"], data["pieces"])
+	v.setup(m, data["map"], data["pieces"], data["greybox"])
 	_root().remove_child(v)
 	return v
 

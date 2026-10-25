@@ -1,0 +1,38 @@
+{
+ "format": 1,
+ "scene": "ch04_seventh_terrace",
+ "source": "game/data/dialogue/ch04/ch04_seventh_terrace.dlg",
+ "start": "ch04_seventh_terrace",
+ "nodes": {
+  "ch04_seventh_terrace": {
+   "headers": {"location": "ch04/brightwater_ferry"},
+   "ops": [
+    {"op": "cue", "cue": "letterbox", "args": ["on"], "kwargs": {}, "src": 19},
+    {"op": "cue", "cue": "sfx", "args": ["lookout_call"], "kwargs": {}, "src": 20},
+    {"op": "line", "id": "ch04_terrace_001", "key": "DLG_CH04_TERRACE_001", "speaker": "ferrymaster", "emotion": "surprised", "voice": "", "src": 21},
+    {"op": "cue", "cue": "camera", "args": ["F05"], "kwargs": {}, "src": 22},
+    {"op": "cue", "cue": "vfx", "args": ["glimmer_held"], "kwargs": {"at": "derelict_rigging", "count": 12, "drift": "down_seaward", "rate": "slow"}, "src": 23},
+    {"op": "cue", "cue": "sfx", "args": ["derelict_wheel_turning"], "kwargs": {}, "src": 24},
+    {"op": "cue", "cue": "music", "args": ["silence"], "kwargs": {"fade": 3.0}, "src": 25},
+    {"op": "cue", "cue": "wait", "args": [2.5], "kwargs": {}, "src": 26},
+    {"op": "line", "id": "ch04_terrace_002", "key": "DLG_CH04_TERRACE_002", "speaker": "rhen", "emotion": "surprised", "voice": "", "src": 27},
+    {"op": "line", "id": "ch04_terrace_003", "key": "DLG_CH04_TERRACE_003", "speaker": "rhen", "emotion": "grief", "voice": "", "src": 28},
+    {"op": "cue", "cue": "wait", "args": [1.5], "kwargs": {}, "src": 29},
+    {"op": "line", "id": "ch04_terrace_004", "key": "DLG_CH04_TERRACE_004", "speaker": "ferrymaster", "emotion": "neutral", "voice": "", "src": 30},
+    {"op": "line", "id": "ch04_terrace_005", "key": "DLG_CH04_TERRACE_005", "speaker": "ferrymaster", "emotion": "determined", "voice": "", "src": 31},
+    {"op": "line", "id": "ch04_terrace_006", "key": "DLG_CH04_TERRACE_006", "speaker": "ferrymaster", "emotion": "neutral", "voice": "", "src": 32},
+    {"op": "line", "id": "ch04_terrace_007", "key": "DLG_CH04_TERRACE_007", "speaker": "ferrymaster", "emotion": "worried", "voice": "", "src": 33},
+    {"op": "line", "id": "ch04_terrace_008", "key": "DLG_CH04_TERRACE_008", "speaker": "ferrymaster", "emotion": "worried", "voice": "", "src": 34},
+    {"op": "line", "id": "ch04_terrace_009", "key": "DLG_CH04_TERRACE_009", "speaker": "rhen", "emotion": "determined", "voice": "", "src": 35},
+    {"op": "line", "id": "ch04_terrace_010", "key": "DLG_CH04_TERRACE_010", "speaker": "asha", "emotion": "determined", "voice": "", "src": 36},
+    {"op": "line", "id": "ch04_terrace_011", "key": "DLG_CH04_TERRACE_011", "speaker": "toma", "emotion": "exhausted", "voice": "", "src": 37},
+    {"op": "line", "id": "ch04_terrace_012", "key": "DLG_CH04_TERRACE_012", "speaker": "ysolde", "emotion": "neutral", "voice": "", "src": 38},
+    {"op": "cue", "cue": "camera", "args": ["D01"], "kwargs": {}, "src": 39},
+    {"op": "cue", "cue": "anim", "args": ["rhen", "jump_gap"], "kwargs": {}, "src": 40},
+    {"op": "cue", "cue": "sfx", "args": ["gangplank"], "kwargs": {}, "src": 41},
+    {"op": "cue", "cue": "wait", "args": [1.5], "kwargs": {}, "src": 42},
+    {"op": "cue", "cue": "letterbox", "args": ["off"], "kwargs": {}, "src": 43}
+   ]
+  }
+ }
+}

@@ -22,15 +22,31 @@ extends RefCounted
 ##                 that one is never refused and clears the field only when it is up.
 ##                 "requires_flag": story flag: party members only know the skill when the flag is
 ##                 in BattleEngine.story_flags (passed in at setup; the engine never reads Game).
+##                 "cleanses": [status ids]: after the hits, those statuses are lifted off every
+##                 target the skill landed on (M3-C05-02: the Cinder Matron's recrust ends a break).
+##   enemies.json  "reactions": [{elements, from_phase?, cleanses?, statuses?: [{id, duration?}]}]:
+##                 a landed hit of one of `elements` on this enemy, while its phase is from_phase
+##                 (or any phase when unset), lifts `cleanses` off it and adds `statuses` (the
+##                 Matron's quench: water or cold re-crusts her). The hit records "reacted": true.
 ##   encounters.json "party_skills": {hero id: [skill ids]}: skills that hero knows for this fight only
 ##                 (a tutorial fight teaching one: Ch1's Hullgnaw lends Rhen Kick Off; ADR 0034).
 ##                 Added at setup after the Lattice and the flag locks, never twice.
+##   encounters.json "forbidden_skills": {hero id: {"against_tag": tag, "fail_key": loc key}}
+##                 (M3-C06-02: Toma will not strike the Stillguard). That hero's offensive skills (a
+##                 physical or magical skill aimed at foes) are refused, with FAIL_FORBIDDEN, on any
+##                 foe whose enemies.json "tags" hold the tag; the menus grey them out and say why
+##                 with fail_key. Its defensive kit (support, heals, Provoke) is untouched.
+##   enemies.json  "tags" and "yield_at_hp_pct": see BattleCombatant (a foe that yields or runs on
+##                 its feet instead of falling; the fight is won when every foe is down or gone).
 
 ## Stats a phase row may override ("hp", "mp" and "level" never change mid-fight).
 const PHASE_STATS: Array[String] = [
 	"strength", "magic", "defense", "magic_defense", "agility", "accuracy", "evasion", "luck"
 ]
 const FAIL_NO_FIELD := &"no_field"
+const FAIL_FORBIDDEN := &"forbidden"
+const OFFENSIVE_KINDS: Array[String] = ["physical", "magical"]
+const FOE_TARGETS: Array[String] = ["single_foe", "all_foes"]
 
 
 ## Drops `c`'s skills whose row names a requires_flag that is not in `flags`.
@@ -49,6 +65,45 @@ static func lend_skills(engine: BattleEngine, enc: Dictionary) -> void:
 			var skill_id := StringName(str(sid))
 			if not c.skills.has(skill_id):
 				c.skills.append(skill_id)
+
+
+## Sets encounter row `enc`'s "forbidden_skills" on the party members it names (see the class comment).
+static func forbid_skills(engine: BattleEngine, enc: Dictionary) -> void:
+	var rules: Dictionary = enc.get("forbidden_skills", {})
+	for c in engine.party_active + engine.party_reserve:
+		var row: Dictionary = rules.get(String(c.id), {})
+		if row.is_empty():
+			continue
+		c.forbidden_tag = StringName(str(row.get("against_tag", "")))
+		c.forbidden_key = str(row.get("fail_key", ""))
+
+
+## True for a skill that wounds: physical or magical, aimed at foes.
+static func is_offensive(sk: Dictionary) -> bool:
+	return str(sk.get("kind", "")) in OFFENSIVE_KINDS and str(sk.get("target", "single_foe")) in FOE_TARGETS
+
+
+## True when `actor` may not use skill row `sk` on `target` (its forbidden_tag is on the target).
+static func forbids(actor: BattleCombatant, sk: Dictionary, target: BattleCombatant) -> bool:
+	if actor == null or target == null or actor.forbidden_tag == &"":
+		return false
+	return target.tags.has(actor.forbidden_tag) and is_offensive(sk)
+
+
+## True when `sk` is forbidden to `actor` right now: a single-foe skill with no living foe it may
+## hit, or a group skill that would touch a forbidden foe. The menus grey it out; the sim skips it.
+static func forbidden_now(engine: BattleEngine, actor: BattleCombatant, sk: Dictionary) -> bool:
+	if actor == null or actor.forbidden_tag == &"" or not is_offensive(sk):
+		return false
+	var foes := engine.living_foes_of(actor)
+	var group := str(sk.get("target", "single_foe")) == "all_foes"
+	for f in foes:
+		var hit := forbids(actor, sk, f)
+		if group and hit:
+			return true
+		if not group and not hit:
+			return false
+	return not group and not foes.is_empty()
 
 
 ## Why skill row `sk` cannot be used now, or &"" if it can: a field clear with that field down
@@ -103,6 +158,7 @@ static func after_action(engine: BattleEngine, actor: BattleCombatant, sk: Dicti
 			t.clear_charge()
 			hit["charge_broken"] = broken
 			engine.charge_broken.emit(t, broken)
+	_cleanse_and_react(engine, sk, result)
 	var charge: Dictionary = sk.get("charge", {})
 	if not charge.is_empty() and actor.is_alive():
 		actor.charge_skill = StringName(str(charge.get("skill", "")))
@@ -120,6 +176,40 @@ static func after_action(engine: BattleEngine, actor: BattleCombatant, sk: Dicti
 	var cleared := StringName(str(sk.get("clears_field", "")))
 	if cleared != &"" and engine.fields.has(cleared):
 		clear_field(engine, cleared)
+
+
+## The skill's "cleanses" on every target it landed on, then each target's "reactions" to the
+## hit's element (see the class comment).
+static func _cleanse_and_react(engine: BattleEngine, sk: Dictionary, result: ActionResult) -> void:
+	var lift: Array = sk.get("cleanses", [])
+	for hit in result.hits:
+		var t := engine.find(StringName(str(hit.get("target_id", ""))))
+		if t == null or not bool(hit.get("hit", false)) or not t.is_alive():
+			continue
+		for sid: Variant in lift:
+			t.statuses.erase(StringName(str(sid)))
+		var element := str(hit.get("element", ""))
+		for r: Variant in t.reactions:
+			var row: Dictionary = r
+			var from := str(row.get("from_phase", ""))
+			if not (row.get("elements", []) as Array).has(element) or (from != "" and phase_id(t) != from):
+				continue
+			for sid: Variant in row.get("cleanses", []):
+				t.statuses.erase(StringName(str(sid)))
+			for inf: Variant in row.get("statuses", []):
+				var s := StringName(str((inf as Dictionary).get("id", "")))
+				var dur := int(
+					(inf as Dictionary).get("duration", engine.db.statuses.get(s, {}).get("default_duration", -1))
+				)
+				t.add_status(s, dur)
+			hit["reacted"] = true
+
+
+## The id of the phase `e` is in (&"" before its first "phases" row).
+static func phase_id(e: BattleCombatant) -> String:
+	if e.phase_index < 0 or e.phase_index >= e.phases.size():
+		return ""
+	return str((e.phases[e.phase_index] as Dictionary).get("id", ""))
 
 
 ## Whether a landed hit of `sk` from `actor` counts on `target`'s weak point right now.

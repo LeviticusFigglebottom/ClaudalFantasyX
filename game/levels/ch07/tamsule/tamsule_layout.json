@@ -1,0 +1,83 @@
+{
+  "doc": "M3-C07-02 greybox: ch07/tamsule, the port at the Tidecup (act1_ch07.md B01-B03, B08, B10). Flat decks at height 0 joined by plank bridges over the river: the river-mouth quay where the barge ties up (south), the floating market (centre), the stilt lane (west), the gantry foot under the Bell (north), the market boats by the gantry where Tavi finds Rhen (north-east), and the harbour where the coastal trader casts off (east). The Bell hangs on its gantry beyond the north edge, out of reach (the arena is ch07/tamsule_bell_galleries, a stand-in for env-art's and the Reefball agent's ch07/tamsule_bell). The river under the decks is a solid floor 1 m down: there is no swimming in the greybox. Env-art's 'Tamsule stilt' kit (tamsule.md) replaces the blocks; shot ids are the beat sheet's T01-T08 proposals, plus T09 (B10's look back at the moorings, a proposal).",
+  "block_color": "#a2825c",
+  "sun": {"pitch_deg": -70.0, "yaw_deg": 20.0, "energy": 1.8, "color": "#fff3dc"},
+  "environment": {"background": "#9fd0ea", "ambient_color": "#e4e0d2", "ambient_energy": 0.75},
+  "blocks": [
+    {"id": "River", "pos": [4, -1.5, -6], "size": [110, 1, 90], "color": "#3a7c8a"},
+    {"id": "Quay", "pos": [0, -0.5, 20], "size": [14, 1, 8]},
+    {"id": "QuayBridge", "pos": [0, -0.5, 14], "size": [3, 1, 4], "color": "#c4a57a"},
+    {"id": "Market", "pos": [0, -0.5, 4], "size": [24, 1, 16], "color": "#b08a5e"},
+    {"id": "MarketStallA", "pos": [-6, 0.6, 6], "size": [3, 1.2, 1.5], "color": "#c23a2a"},
+    {"id": "MarketStallB", "pos": [6, 0.6, 2], "size": [3, 1.2, 1.5], "color": "#d9a53a"},
+    {"id": "LaneBridge", "pos": [-13, -0.5, 4], "size": [2, 1, 2.5], "color": "#c4a57a"},
+    {"id": "StiltLane", "pos": [-20, -0.5, 4], "size": [12, 1, 6], "color": "#9a7a54"},
+    {"id": "StiltHouse", "pos": [-20, 2, 8], "size": [10, 4, 2], "color": "#7a5e40"},
+    {"id": "Signboard", "pos": [-20, 3.2, 6.9], "size": [3, 0.8, 0.1], "color": "#e0b84a", "solid": false, "emission": "#e0b84a", "emission_energy": 0.4},
+    {"id": "GantryBridge", "pos": [0, -0.5, -6], "size": [3, 1, 4], "color": "#c4a57a"},
+    {"id": "GantryFoot", "pos": [0, -0.5, -14], "size": [16, 1, 12], "color": "#8c6c48"},
+    {"id": "BoatBridge", "pos": [8.5, -0.5, -12], "size": [1.2, 1, 2.5], "color": "#c4a57a"},
+    {"id": "MarketBoats", "pos": [14, -0.5, -12], "size": [10, 1, 8], "color": "#6f5236"},
+    {"id": "HarbourBridge", "pos": [15.5, -0.5, 8], "size": [7.2, 1, 2], "color": "#c4a57a"},
+    {"id": "Harbour", "pos": [24, -0.5, 10], "size": [10, 1, 12], "color": "#8c6c48"},
+    {"id": "Trader", "pos": [31, 0.2, 10], "size": [3, 1.4, 9], "color": "#5a4632", "solid": false},
+    {"id": "GantryLegW", "pos": [-12, 18, -40], "size": [2, 40, 2], "color": "#8a2e22", "solid": false},
+    {"id": "GantryLegE", "pos": [12, 18, -40], "size": [2, 40, 2], "color": "#8a2e22", "solid": false},
+    {"id": "GantryBeam", "pos": [0, 37, -40], "size": [28, 2, 3], "color": "#8a2e22", "solid": false},
+    {"id": "Bell", "pos": [0, 30, -40], "size": [16, 10, 16], "color": "#9a7234", "solid": false},
+    {"id": "BellDrop", "pos": [0, 24, -40], "size": [11, 3, 11], "color": "#7fd6e8", "solid": false, "emission": "#bff4ff", "emission_energy": 1.8},
+    {"id": "BellColumn", "pos": [0, 11, -40], "size": [0.5, 22, 0.5], "color": "#bfeaf2", "solid": false},
+    {"id": "BellMoorings", "pos": [10, -0.4, -36], "size": [6, 0.6, 3], "color": "#6f5236", "solid": false}
+  ],
+  "spawns": {
+    "RiverMouth": [0, 0, 21, 180],
+    "FromBell": [0, 0, -11, 180],
+    "Harbour": [24, 0, 8, 90]
+  },
+  "marks": {
+    "barge_tie": [0, 0, 22, 180],
+    "tavi_run": [11, 0, -11, 270],
+    "ysolde_gantry": [-4, 0, -13, 0],
+    "liss_stall": [-6, 0, 7.5, 0],
+    "tavi_face": [10.4, 0, -12, 270],
+    "asha_step_back": [7.6, 0, -13.4, 90],
+    "rhen_stern": [30, 0, 13, 0],
+    "bell_moorings": [10, 0, -36, 0],
+    "east_water": [60, 0, -10, 90]
+  },
+  "actors": {
+    "liss": {"at": [-1.5, 0, 21.5, 180], "color": "#7a8c5a"},
+    "ysolde": {"at": [1.5, 0, 21.5, 180], "color": "#d0d4dc"},
+    "asha": {"at": [7.8, 0, -12, 90], "color": "#e0c890"},
+    "toma": {"at": [7.6, 0, -10.6, 90], "color": "#4a5a70", "radius": 0.36, "height": 1.9},
+    "kerrid": {"at": [-4, 0, -18, 0], "color": "#8a7a52", "radius": 0.38, "height": 2.0},
+    "tavi": {"at": [17, 0, -14, 270], "color": "#2a2420"},
+    "vendor": {"at": [-6, 0, 4.5, 0], "color": "#c48a5a"},
+    "board": {"at": [6, 0, 0.5, 0], "color": "#8aa070"},
+    "child": {"at": [2, 0, 8, 180], "color": "#d4b07a", "radius": 0.2, "height": 1.1},
+    "fisher": {"at": [-18, 0, 3, 90], "color": "#6e8a9a"},
+    "netmender": {"at": [-23, 0, 3, 90], "color": "#9a8a9a"},
+    "boatman": {"at": [3, 0, -16, 180], "color": "#7a6248"},
+    "trader_boatman": {"at": [28, 0, 13, 90], "color": "#6a5a48"}
+  },
+  "shots": {
+    "T01": {"pos": [0, 0.4, 30], "look_at": [0, 14, -30], "fov": 58},
+    "T02": {"pos": [3.5, 1.6, 17], "look_at": [0, 1.4, 21.5], "fov": 42},
+    "T06": {"pos": [14, 3, -3], "look_at": [11, 1, -13], "fov": 50},
+    "T07": {"pos": [8.4, 1.5, -12.4], "look_at": [10.4, 1.5, -12], "fov": 30},
+    "T08": {"pos": [31, 2.4, 15], "look_at": [0, 10, -40], "fov": 55},
+    "T09": {"pos": [26, 1.5, 0], "look_at": [10, 0, -36], "fov": 20}
+  },
+  "triggers": [
+    {"id": "npc_market", "activation": "interact", "at": [-6, 0, 3.5], "size": [2, 0, 2], "prompt_key": "FIELD_PROMPT_LISTEN", "payload": {"dialogue": "ch07_bark_market"}},
+    {"id": "npc_board", "activation": "interact", "at": [6, 0, -0.5], "size": [2, 0, 2], "prompt_key": "FIELD_PROMPT_LISTEN", "payload": {"dialogue": "ch07_bark_board"}},
+    {"id": "npc_child", "activation": "interact", "at": [2, 0, 9], "size": [2, 0, 2], "prompt_key": "FIELD_PROMPT_LISTEN", "payload": {"dialogue": "ch07_bark_child"}},
+    {"id": "npc_lane", "activation": "interact", "at": [-17, 0, 3], "size": [2, 0, 2], "prompt_key": "FIELD_PROMPT_LISTEN", "payload": {"dialogue": "ch07_bark_lane"}},
+    {"id": "npc_elder", "activation": "interact", "at": [-22, 0, 3], "size": [2, 0, 2], "prompt_key": "FIELD_PROMPT_LISTEN", "payload": {"dialogue": "ch07_bark_elder"}},
+    {"id": "npc_gantry", "activation": "interact", "at": [3, 0, -15], "size": [2, 0, 2], "prompt_key": "FIELD_PROMPT_LISTEN", "payload": {"dialogue": "ch07_bark_gantry"}},
+    {"id": "npc_ysolde", "activation": "interact", "at": [-4, 0, -12], "size": [2, 0, 2], "prompt_key": "FIELD_PROMPT_LISTEN", "requires_flag": "ch07_arrived", "payload": {"dialogue": "ch07_bark_ysolde"}},
+    {"id": "tavi", "at": [10.5, 0, -12], "size": [2, 0, 8], "requires_flag": "ch07_arrived", "blocked_by_flag": "ch07_met_tavi", "payload": {"beat": "tavi"}},
+    {"id": "to_bell", "at": [0, 0, -19.2], "size": [6, 0, 1.4], "requires_flag": "ch07_met_tavi", "payload": {"beat": "to_bell"}},
+    {"id": "harbour", "at": [27, 0, 10], "size": [2, 0, 10], "requires_flag": "ch07_tavi_withdrew", "payload": {"beat": "leave"}}
+  ]
+}

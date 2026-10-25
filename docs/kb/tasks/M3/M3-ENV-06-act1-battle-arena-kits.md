@@ -4,7 +4,7 @@ title: Act I battle arenas from the zone kits (five arenas on the M2-ENV-11 cont
 role: environment
 status: review
 owner_session: "env-art"
-depends_on: [M2-ENV-11]
+depends_on: [M3-BPR-01, M2-ENV-11]
 milestone: M3
 request-from: combat
 reviewer: rendering

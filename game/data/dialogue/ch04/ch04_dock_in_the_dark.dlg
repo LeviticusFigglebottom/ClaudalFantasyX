@@ -1,0 +1,68 @@
+// Ch4 C4-06 "The dock in the dark" (docs/kb/story/beats/act1_ch04.md; §0 reconciles it with B11,
+// ch03_dock_at_night, which must not be repeated: no re-asking, no re-swearing).
+// The village is dark: every lamp is at the wall behind them, small and far. The dock is lit only by
+// the sea-glow from below, cyan on the underside of everything (beautiful and wrong). Rhen sits at the
+// dock's end, legs over the water; Asha comes down the planks with two pieces of brown sugar cake on a
+// leaf and sits down beside him (the Prologue's staging reversed). Toma stops at the shore end.
+// Shots: H13 (35 mm, 0.4 m above the water, from the water side, looking up and back toward the dark
+// village) -> H14 (85 mm, Asha single: the facial beat) -> H13. NEVER the ending_dock axis: no shot
+// along the planks out to sea from behind her, and she never stands alone at the dock end.
+// The beats: 1 his line first (voice guide); 2 the cake and a wait of at least 5 s, no music; 3 why
+// nobody told him; 4 her tell, Oruvel (the choice: ch04_rhen_named_kell); 5 the smile goes while he
+// isn't looking (@face asha neutral, held 0.8 s) and is back before he turns (@face asha soft_smile
+// 0.3). Rhen never sees it. Shown, never said. No VO. 6 he's still coming; what she hears; 7 Toma on
+// the shore-end post.
+// Watches: no embrace, no kiss, no held hands; the cake is the only thing passed between them. Asha
+// doesn't cry. No line links the lantern, the comb or the lantern-man to Rhen or to Dace (ADR 0022);
+// her comb is in her hair and nobody mentions it.
+// Music: hearer_hum (ambience only). The chapter flow sets ch04_dock_comforted after it.
+title: ch04_dock_in_the_dark
+location: ch04/haluna_wake
+---
+@fade in 1.5
+@music hearer_hum fade=2.0
+@camera H13
+@anim rhen sit_dock_edge
+@mark asha dock_end walk
+@anim asha sit_beside rhen
+@mark toma dock_shore walk
+Rhen [angry]: Don't. Don't be kind about it. Just let me be angry for a minute. #line:ch04_dock_001
+@anim asha hold_out_cake rhen
+@wait 6.0
+@anim rhen take_cake
+Rhen [neutral]: Why did nobody tell me? #line:ch04_dock_002
+Asha [neutral]: Everyone did. In pieces. And I let them. #line:ch04_dock_003
+Asha [tender]: You looked at me on the beach like I was a person. I wanted two days of that. #line:ch04_dock_004
+@wait 1.5
+Asha [soft_smile]: Tell me about Oruvel. What did it sound like in the morning? #line:ch04_dock_005
+-> Tell her about Oruvel. #line:ch04_dock_006
+    <<set $ch04_rhen_named_kell = true>>
+    Rhen [soft_smile]: Gulls. Rope on wood. Forty cookboats all burning breakfast at once. #line:ch04_dock_007
+    Rhen [tender]: And Mother Kell, shouting at divers. She sold wicks. She sold everything. #line:ch04_dock_008
+    <<if $ch01_kell_side_scene>>
+    Rhen [soft_smile]: She said the sea owed her a favour. #line:ch04_dock_009
+    <<endif>>
+    <<if $ch02_rhen_stayed_with_dead>>
+    Asha [tender]: Mother Kell. You said it on the beach. #line:ch04_dock_010
+    <<endif>>
+-> Not tonight. #line:ch04_dock_011
+    Asha [soft_smile]: Then another night. I'll still want to know. #line:ch04_dock_012
+@camera H14
+@anim rhen look_out_to_sea
+@face asha neutral 0.3
+@wait 0.8
+@anim rhen look_back asha
+@face asha soft_smile 0.3
+@camera H13
+Rhen [determined]: I'm still coming. #line:ch04_dock_013
+Asha [soft_smile]: I know. I said yes before Toma could stop me. #line:ch04_dock_014
+@anim asha look_out_to_sea
+Asha [neutral]: I can hear them. It's like someone humming in the next room. All the time. #line:ch04_dock_015
+Rhen [worried]: Is Oruvel in there? #line:ch04_dock_016
+@wait 1.5
+Asha [soft_smile]: Eat your cake, Rhen. #line:ch04_dock_017
+@anim toma sit_post
+Asha [tender]: He'll sit there all night. He did it the night I was named. #line:ch04_dock_018
+@wait 2.0
+@camera release
+===
