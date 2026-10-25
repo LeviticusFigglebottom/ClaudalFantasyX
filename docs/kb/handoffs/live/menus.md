@@ -39,6 +39,43 @@ The scene-swap regression test now measures the real swap on an injected per-fra
 | ~~M3-MNU-01 Lore codex~~ | **withdrawn**: the UI track built it as M3-UI-03 at the same time (no task claimed when I checked); my agent was stopped before any commit landed here, and the task file is removed |
 | M2-MNU-10 Lattice: walk to a sealed gate | **review** (merged bbd45c8): the cheapest neighbour, cost shown, then the open confirm |
 
+## STATE AT HANDOVER (2026-10-25)
+**Clean.** Nothing is uncommitted or unpushed, and no subagent is running. The three worktree branches (`worktree-agent-a186d848…`, `a7732033…`, `a51eb998…`) are fully merged into claude/menus and need nothing.
+
+**Done and merge-ready.** `claude/menus` @ **681464f1** (MERGE-READY line below; the later commits are docs only).
+- Full Godot suite 2260/0, lint and format clean, validate_data 0/0.
+- In review: M2-MNU-01..11, M3-MNU-02..04, M2-AUD-15/16 (earlier queues), and this queue's M2-MNU-300 (Last saved, no save row), 301 (hero portraits), 302 (baked creature PNGs), 303 (menu motion), 304 (party cards on the field menu root).
+- ADR 0120: menu portraits are baked PNGs from `tools/portraits/render.sh`.
+
+**In progress.** Nothing. M2-MNU-305 (motion for the UI track's bestiary, codex, map, save and Settings screens) is filed as `todo`. Those are claude/ui's files, so it should be taken there or on the Lead's word.
+
+**Exact next steps for a new menus session.**
+1. Branch from the integration branch, or check out `claude/menus`.
+2. Merge the integration branch and `claude/ui`.
+3. `python3 tools/dev/fetch_godot.py && python3 tools/dev/fetch_render_deps.py && pip install -r tools/requirements.txt`, then `godot --headless --path . --import`.
+4. Run `XDG_DATA_HOME=<scratch> godot --headless --path . res://tests/run_tests.tscn` (must be 0 failed) and write a fresh MERGE-READY line here.
+5. Take Lead routing. Candidates: M2-MNU-305; a stronger rim light for the black creatures in `tools/portraits/portraits.json` `creature_stage` (with art); the Kite world-map menu (Act III); the shrine teleport list (Systems owns the shrine UI).
+
+**Open questions (for the Lead).**
+- SPEC §8 in the brief reads as §6.11 (§8 is Rendering). The §6.11 menu list is now built.
+- The bestiary has two portrait paths: the UI track's live `BestiaryPortraitSlot` (in use) and the baked PNGs (unused). Keep both, or switch the bestiary to the baked PNGs if the live viewport costs too much on weak machines (ADR 0120)?
+- `battle_pause` (rmse 0.0054) and `dialogue_backlog` (0.0006) pass with drift from the 3D scene behind them; refresh their baselines?
+
+**Known bugs and issues.**
+- `tools/tests` test_hero_clips: 2 failures (dialogue `@anim` clips missing for Asha and Toma; characters/story).
+- The Formation page has no role word, because characters.json has no role field (Story/Design).
+- Portraits do not follow model changes. Rerun `tools/portraits/render.sh [--only <id>]` (about 1 min per hero, a few seconds per creature) and commit the PNGs.
+
+**Gotchas.**
+- **Test runner:** it has no `after_each`, so free nodes at the end of each test. Parity tests call `InputDriver.clear_screen()` in `before_each`. Pages are at rest without frames; drive motion with `motion().finish()`.
+- **`closed` vs `gone`:** `FieldSubmenu.closed` fires at once, and `gone` fires after the fade. Free layers on `gone`.
+- **Merges:**
+  - Union `baselines.json` and `shots.json` entry by entry (a three-way dict merge; keep the file's own formatting). Merge `balance_report.md` by `###` section.
+  - `project.godot` `[autoload]` keeps both UiInput and Audio.
+  - After every merge, check that `cut -d, -f1 game/data/loc/strings.csv | sort | uniq -d` prints nothing.
+- **Screenshots:** they are 1280×720 renders of the 1920 reference. Reimport (`--import`) after adding loc keys, or captures show raw keys.
+- **Ids:** this track's block is tasks 300–399 and ADRs 0120–0129; handoffs are `<date>-ui-menus-<n>.md`.
+
 ## Third queue (from the Lead, 2026-10-24: the human's "parts look primitive" playtest note)
 Design call: **no save row** in the field menu; saving stays at shrines plus the chapter autosaves.
 | Task | State |
