@@ -1,0 +1,272 @@
+[gd_scene load_steps=22 format=3]
+
+[ext_resource type="Script" path="res://game/world/arenas/battle_arena_root.gd" id="1_r"]
+[ext_resource type="Shader" path="res://game/shaders/environment/env_sky_night.gdshader" id="2_r"]
+[ext_resource type="Texture3D" path="res://assets/environments/arenas/derelict_deck_night/lut_ch04_wake.png" id="3_r"]
+[ext_resource type="Script" path="res://game/world/arenas/arena_sea.gd" id="4_r"]
+[ext_resource type="Resource" path="res://game/world/water/lagoon_waves.tres" id="5_r"]
+[ext_resource type="Shader" path="res://game/shaders/water/water_ocean.gdshader" id="6_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/brine_shoals/arena_derelict_deck.glb" id="7_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/oil_lamp_post.glb" id="8_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/brine_shoals/wreck_mast_standing.glb" id="9_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/brine_shoals/crate_stack.glb" id="10_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/brine_shoals/salvage_pile.glb" id="11_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/brine_shoals/wreck_bow.glb" id="12_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/brine_shoals/wreck_hull_section.glb" id="13_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/brine_shoals/wreck_ribs_large.glb" id="14_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/brine_shoals/wreck_mast_fallen.glb" id="15_r"]
+
+[sub_resource type="ShaderMaterial" id="SkyMat"]
+shader = ExtResource("2_r")
+shader_parameter/col_ground = Color(0.02353, 0.102, 0.1686, 1)
+shader_parameter/col_horizon = Color(0.1176, 0.1804, 0.3059, 1)
+shader_parameter/col_zenith = Color(0.04314, 0.08627, 0.1882, 1)
+
+[sub_resource type="Sky" id="Sky"]
+sky_material = SubResource("SkyMat")
+process_mode = 2
+
+[sub_resource type="Environment" id="Env"]
+resource_name = "derelict_deck_night_ch04"
+background_mode = 2
+sky = SubResource("Sky")
+ambient_light_source = 2
+ambient_light_color = Color(0.1647, 0.2902, 0.4314, 1)
+ambient_light_energy = 0.2
+reflected_light_source = 2
+tonemap_mode = 4
+tonemap_exposure = 1.1
+tonemap_agx_white = 12.0
+ssao_enabled = true
+ssao_radius = 1.2
+ssao_intensity = 1.2
+glow_enabled = true
+glow_intensity = 0.6
+glow_bloom = 0.08
+glow_hdr_threshold = 0.9
+fog_enabled = true
+fog_mode = 0
+fog_light_color = Color(0.1333, 0.2078, 0.3098, 1)
+fog_density = 0.0016
+fog_sky_affect = 0.0
+fog_height = 0.0
+fog_height_density = 0.0
+adjustment_enabled = true
+adjustment_color_correction = ExtResource("3_r")
+
+[sub_resource type="ShaderMaterial" id="SeaMat"]
+resource_name = "arena_night_sea"
+render_priority = 0
+shader = ExtResource("6_r")
+shader_parameter/col_deep = Color(0.02353, 0.102, 0.1686, 1)
+shader_parameter/col_scatter_shallow = Color(0.1216, 0.6392, 0.651, 1)
+shader_parameter/absorption_per_m = Vector3(2, 0.5, 0.42)
+shader_parameter/absorption_scale = 1.0
+shader_parameter/scatter_energy = 0.25
+shader_parameter/caustic_strength = 0.25
+shader_parameter/col_foam = Color(0.9333, 0.9647, 0.9569, 1)
+shader_parameter/col_sss = Color(0.2471, 0.8157, 0.7882, 1)
+shader_parameter/foam_crest_threshold = 0.62
+
+[sub_resource type="StandardMaterial3D" id="FlameMat"]
+shading_mode = 0
+albedo_color = Color(1, 0.6941, 0.4314, 1)
+emission_enabled = true
+emission = Color(1, 0.6941, 0.4314, 1)
+emission_energy_multiplier = 8.0
+
+[sub_resource type="SphereMesh" id="FlameMesh"]
+material = SubResource("FlameMat")
+radius = 0.06
+height = 0.144
+radial_segments = 12
+rings = 6
+
+[node name="DerelictDeckNight" type="Node3D"]
+script = ExtResource("1_r")
+arena_id = &"derelict_deck_night"
+sub_frame = &"ch04"
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Env")
+
+[node name="Sun" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.669131, -0.415561, 0.616095, 0, 0.829038, 0.559193, -0.743145, 0.374173, -0.554734, 0, 30, 0)
+light_color = Color(0.6157, 0.7059, 0.851, 1)
+light_energy = 0.28
+shadow_enabled = true
+shadow_bias = 0.03
+shadow_normal_bias = 1.0
+shadow_blur = 1.0
+directional_shadow_mode = 2
+directional_shadow_split_1 = 0.06
+directional_shadow_split_2 = 0.18
+directional_shadow_split_3 = 0.45
+directional_shadow_max_distance = 60.0
+
+[node name="Sea" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2.2, 0)
+script = ExtResource("4_r")
+wave_set = ExtResource("5_r")
+material = SubResource("SeaMat")
+sea_glow_energy = 0.12
+tide_line_y = -2.2
+
+[node name="Ground" parent="." instance=ExtResource("7_r")]
+
+[node name="Dressing" type="Node3D" parent="."]
+
+[node name="oil_lamp_post_1" parent="Dressing" instance=ExtResource("8_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -7.02, 0, 3)
+
+[node name="oil_lamp_post_2" parent="Dressing" instance=ExtResource("8_r")]
+transform = Transform3D(-1, 0, 1.22465e-16, 0, 1, 0, -1.22465e-16, 0, -1, 7.02, 0, 2.6)
+
+[node name="oil_lamp_post_3" parent="Dressing" instance=ExtResource("8_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -7.02, 0, -4.8)
+
+[node name="oil_lamp_post_4" parent="Dressing" instance=ExtResource("8_r")]
+transform = Transform3D(-1, 0, 1.22465e-16, 0, 1, 0, -1.22465e-16, 0, -1, 7.02, 0, -7.6)
+
+[node name="wreck_mast_standing_1" parent="Dressing" instance=ExtResource("9_r")]
+transform = Transform3D(0.906308, 0, 0.422618, 0, 1, 0, -0.422618, 0, 0.906308, 1.3, 0, -10)
+
+[node name="crate_stack_1" parent="Dressing" instance=ExtResource("10_r")]
+transform = Transform3D(0.965926, 0, 0.258819, 0, 1, 0, -0.258819, 0, 0.965926, -5.7, 0, -6.4)
+
+[node name="salvage_pile_1" parent="Dressing" instance=ExtResource("11_r")]
+transform = Transform3D(0.906308, 0, -0.422618, 0, 1, 0, 0.422618, 0, 0.906308, 5, 0, -10.4)
+
+[node name="crate_stack_2" parent="Dressing" instance=ExtResource("10_r")]
+transform = Transform3D(0.307818, 0, 0.845723, 0, 0.9, 0, -0.845723, 0, 0.307818, -3.4, 1.3, -16.5)
+
+[node name="wreck_bow_1" parent="Dressing" instance=ExtResource("12_r")]
+transform = Transform3D(0.819152, 0, 0.573576, 0, 1, 0, -0.573576, 0, 0.819152, -36, -2.5, -64)
+
+[node name="wreck_mast_standing_2" parent="Dressing" instance=ExtResource("9_r")]
+transform = Transform3D(0.173648, 0, 0.984808, 0, 1, 0, -0.984808, 0, 0.173648, 27, -2.4, -52)
+
+[node name="wreck_hull_section_1" parent="Dressing" instance=ExtResource("13_r")]
+transform = Transform3D(-0.866025, 0, 0.5, 0, 1, 0, -0.5, 0, -0.866025, 58, -2.3, -118)
+
+[node name="wreck_ribs_large_1" parent="Dressing" instance=ExtResource("14_r")]
+transform = Transform3D(-0.5, 0, 0.866025, 0, 1, 0, -0.866025, 0, -0.5, -64, -2.3, -36)
+
+[node name="wreck_mast_standing_3" parent="Dressing" instance=ExtResource("9_r")]
+transform = Transform3D(0.55, 0, -0.952628, 0, 1.1, 0, 0.952628, 0, 0.55, -22, -2.4, -150)
+
+[node name="wreck_mast_fallen_1" parent="Dressing" instance=ExtResource("15_r")]
+transform = Transform3D(0.939693, 0, 0.34202, 0, 1, 0, -0.34202, 0, 0.939693, 40, -2.25, -30)
+
+[node name="Lamps" type="Node3D" parent="."]
+
+[node name="Lamp0" type="OmniLight3D" parent="Lamps"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.6, 1.76, 3.0)
+light_color = Color(1, 0.6941, 0.4314, 1)
+light_energy = 2.2
+omni_range = 9.0
+omni_attenuation = 1.0
+light_volumetric_fog_energy = 0.0
+shadow_enabled = true
+shadow_bias = 0.05
+
+[node name="Flame0" type="MeshInstance3D" parent="Lamps"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.6, 1.76, 3.0)
+cast_shadow = 0
+mesh = SubResource("FlameMesh")
+
+[node name="Lamp1" type="OmniLight3D" parent="Lamps"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.6, 1.76, 2.6)
+light_color = Color(1, 0.6941, 0.4314, 1)
+light_energy = 2.2
+omni_range = 9.0
+omni_attenuation = 1.0
+light_volumetric_fog_energy = 0.0
+shadow_enabled = true
+shadow_bias = 0.05
+
+[node name="Flame1" type="MeshInstance3D" parent="Lamps"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.6, 1.76, 2.6)
+cast_shadow = 0
+mesh = SubResource("FlameMesh")
+
+[node name="Lamp2" type="OmniLight3D" parent="Lamps"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.6, 1.76, -4.8)
+light_color = Color(1, 0.6941, 0.4314, 1)
+light_energy = 2.2
+omni_range = 9.0
+omni_attenuation = 1.0
+light_volumetric_fog_energy = 0.0
+
+[node name="Flame2" type="MeshInstance3D" parent="Lamps"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.6, 1.76, -4.8)
+cast_shadow = 0
+mesh = SubResource("FlameMesh")
+
+[node name="Lamp3" type="OmniLight3D" parent="Lamps"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.6, 1.76, -7.6)
+light_color = Color(1, 0.6941, 0.4314, 1)
+light_energy = 2.2
+omni_range = 9.0
+omni_attenuation = 1.0
+light_volumetric_fog_energy = 0.0
+
+[node name="Flame3" type="MeshInstance3D" parent="Lamps"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.6, 1.76, -7.6)
+cast_shadow = 0
+mesh = SubResource("FlameMesh")
+
+[node name="Lamp4" type="OmniLight3D" parent="Lamps"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.0, 2.7, -9.7)
+light_color = Color(1, 0.6941, 0.4314, 1)
+light_energy = 2.2
+omni_range = 9.0
+omni_attenuation = 1.0
+light_volumetric_fog_energy = 0.0
+
+[node name="Flame4" type="MeshInstance3D" parent="Lamps"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.0, 2.7, -9.7)
+cast_shadow = 0
+mesh = SubResource("FlameMesh")
+
+[node name="Lamp5" type="OmniLight3D" parent="Lamps"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.4, 0.45, 5.0)
+light_color = Color(1, 0.6941, 0.4314, 1)
+light_energy = 4.0
+omni_range = 12.0
+omni_attenuation = 1.0
+light_volumetric_fog_energy = 0.0
+shadow_enabled = true
+shadow_bias = 0.05
+
+[node name="Flame5" type="MeshInstance3D" parent="Lamps"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.4, 0.45, 5.0)
+cast_shadow = 0
+mesh = SubResource("FlameMesh")
+
+[node name="Lamp6" type="OmniLight3D" parent="Lamps"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.6, 0.62, -5.75)
+light_color = Color(1, 0.6941, 0.4314, 1)
+light_energy = 2.6
+omni_range = 8.0
+omni_attenuation = 1.0
+light_volumetric_fog_energy = 0.0
+
+[node name="Flame6" type="MeshInstance3D" parent="Lamps"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.6, 0.62, -5.75)
+cast_shadow = 0
+mesh = SubResource("FlameMesh")
+
+[node name="CameraHints" type="Node3D" parent="."]
+
+[node name="wide_high" type="Marker3D" parent="CameraHints"]
+transform = Transform3D(0.995037, 0.0428844, -0.0897882, -0, 0.90236, 0.430983, 0.0995037, -0.428844, 0.897882, -1.5, 7.5, 13)
+
+[node name="party_side" type="Marker3D" parent="CameraHints"]
+transform = Transform3D(0.5547, -0.0644214, 0.829553, 0, 0.996998, 0.0774249, -0.83205, -0.0429476, 0.553035, 6, 1.7, 4.5)
+
+[node name="foe_side" type="Marker3D" parent="CameraHints"]
+transform = Transform3D(0.470588, 0.0724192, -0.879376, -0, 0.996626, 0.0820751, 0.882353, -0.0386236, 0.469001, -6, 1.7, 4)
+
+[node name="from_the_foredeck" type="Marker3D" parent="CameraHints"]
+transform = Transform3D(-0.999414, -0.00599732, 0.033697, 0, 0.984529, 0.175224, -0.0342265, 0.175122, -0.983952, 0.5, 3.4, -13.6)

@@ -1,0 +1,41 @@
+{
+ "format": 1,
+ "scene": "ch07_reefball_barks",
+ "source": "game/data/dialogue/ch07/ch07_reefball_barks.dlg",
+ "start": "ch07_reefball_barks",
+ "nodes": {
+  "ch07_reefball_barks": {
+   "headers": {"location": "ch07/tamsule_bell"},
+   "ops": [
+    {"op": "line", "id": "ch07_rbl_001", "key": "DLG_CH07_RBL_001", "speaker": "tavi", "emotion": "determined", "voice": "", "src": 11},
+    {"op": "if_not", "cond": ["flag", "ch05_boat_for_oruvel"], "to": 4, "src": 12},
+    {"op": "line", "id": "ch07_rbl_002", "key": "DLG_CH07_RBL_002", "speaker": "crowd", "emotion": "determined", "voice": "", "src": 13, "name_key": "DLG_NAME_CROWD_GALLERY"},
+    {"op": "goto", "to": 4, "src": 12}
+   ]
+  },
+  "oruvel_scores": {
+   "headers": {},
+   "ops": [
+    {"op": "line", "id": "ch07_rbl_003", "key": "DLG_CH07_RBL_003", "speaker": "crowd", "emotion": "laugh", "voice": "", "src": 18}
+   ]
+  },
+  "sorrin_scores": {
+   "headers": {},
+   "ops": [
+    {"op": "line", "id": "ch07_rbl_004", "key": "DLG_CH07_RBL_004", "speaker": "tavi", "emotion": "determined", "voice": "", "src": 22}
+   ]
+  },
+  "rhen_first_score": {
+   "headers": {},
+   "ops": [
+    {"op": "line", "id": "ch07_rbl_005", "key": "DLG_CH07_RBL_005", "speaker": "tavi", "emotion": "laugh", "voice": "", "src": 26}
+   ]
+  },
+  "final_whistle": {
+   "headers": {},
+   "ops": [
+    {"op": "line", "id": "ch07_rbl_006", "key": "DLG_CH07_RBL_006", "speaker": "tavi", "emotion": "exhausted", "voice": "", "src": 30}
+   ]
+  }
+ }
+}

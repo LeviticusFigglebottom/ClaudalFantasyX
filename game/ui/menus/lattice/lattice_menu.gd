@@ -22,6 +22,9 @@ const DIRECTIONS := {
 const ROW_DO := &"do"
 const ROW_CANCEL := &"cancel"
 const CONFIRM_PAGE_ID := &"lattice_confirm"
+## M3-MNU-04: toggles the whole-board overview (lattice_menu.json overview.action; remappable).
+const OVERVIEW_ACTION := &"lattice_overview"
+const DATA_PATH := "res://game/data/ui/lattice_menu.json"
 
 var sheet: PartySheet
 var model: LatticeMenuModel
@@ -44,6 +47,7 @@ var _legend: LatticeLegend
 ## The side panel's lines, top to bottom (_layout_side stacks them).
 var _flow: Array[Control] = []
 var _help: Label
+var _overview_button: Button
 
 
 static func create(with_sheet: PartySheet = null) -> LatticeMenu:
@@ -58,16 +62,25 @@ static func open_in(host: Node, with_sheet: PartySheet = null) -> LatticeMenu:
 
 
 func data_path() -> String:
-	return "res://game/data/ui/lattice_menu.json"
+	return DATA_PATH
 
 
 func data_section() -> String:
 	return "lattice_menu"
 
 
+## Adds the overview action to the InputMap when it is missing (the page's _build_page calls it, and
+## the Controls page before it captures its defaults, so the action is remappable).
+static func ensure_action() -> void:
+	var page := FieldInput.load_json(DATA_PATH).get("lattice_menu", {}) as Dictionary
+	var o := page.get("overview", {}) as Dictionary
+	FieldInput.add_actions(o.get("action", {}) as Dictionary, float(o.get("deadzone", 0.0)))
+
+
 func handle_input(event: InputEvent) -> bool:
 	if not is_open():
 		return false
+	InputNames.note(event, float((_d.get("overview", {}) as Dictionary).get("deadzone", 0.0)))
 	if _confirm.visible:
 		return _confirm_input(event)
 	var used := true
@@ -80,9 +93,25 @@ func handle_input(event: InputEvent) -> bool:
 		switch_hero(1)
 	elif event.is_action_pressed(&"ui_accept"):
 		request_act()
+	elif event.is_action_pressed(OVERVIEW_ACTION):
+		toggle_overview()
 	else:
 		used = super(event)
 	return used
+
+
+## M3-MNU-04: the whole board at a glance, or back to the cursor view on the same node. The cursor,
+## the side panel and every action work the same in both.
+func toggle_overview(animate: bool = true) -> void:
+	_board.set_overview(not _board.overview, animate)
+
+
+func is_overview() -> bool:
+	return _board.overview
+
+
+func overview_button() -> Button:
+	return _overview_button
 
 
 ## Moves the cursor to the nearest node in board direction `dir` (y down). True if it moved.
@@ -188,10 +217,12 @@ func _build_page() -> void:
 	_board = LatticeBoardView.new()
 	HudLayout.place(_board, bm)
 	_board.reduced_motion = UiSettings.shared().reduced_motion()
-	_board.setup(bm, model)
+	_board.setup(bm, model, _d.get("overview", {}))
 	_board.node_clicked.connect(_on_node_clicked)
+	_board.overview_changed.connect(func(_on: bool) -> void: _label_overview_button())
 	add_child(_board)
 	_build_side()
+	_build_overview_button()
 	_confirm = _menu_page(_d.get("confirm", {}), CONFIRM_PAGE_ID, " ", 2)
 	_confirm.row_hovered.connect(func(i: int) -> void: _confirm.set_cursor(i))
 	_confirm.row_clicked.connect(choose)
@@ -201,6 +232,32 @@ func _build_page() -> void:
 		cursor = model.board().nodes.keys()[0]
 	_board.center_on(cursor, false)
 	_refresh()
+
+
+func _build_overview_button() -> void:
+	ensure_action()
+	var bm: Dictionary = (_d.get("overview", {}) as Dictionary).get("button", {})
+	var frame := Panel.new()  # the button's frame: a small tide-notch panel, exactly its size
+	frame.theme_type_variation = &"PanelSmall"
+	frame.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	HudLayout.place(frame, bm)
+	add_child(frame)
+	_overview_button = Button.new()
+	_overview_button.theme_type_variation = &"CommandButton"
+	_overview_button.focus_mode = Control.FOCUS_NONE
+	_overview_button.pressed.connect(toggle_overview)
+	HudLayout.place(_overview_button, bm)
+	add_child(_overview_button)
+	_label_overview_button()
+
+
+## The button names what it does and the key (or pad button, once the pad was used) that does it too.
+func _label_overview_button() -> void:
+	var key := InputNames.first_name(OVERVIEW_ACTION)
+	if _board.overview:
+		_overview_button.text = tr("LATTICE_MENU_OVERVIEW_BACK_FMT").format({"key": key})
+	else:
+		_overview_button.text = tr("LATTICE_MENU_OVERVIEW_FMT").format({"key": key})
 
 
 func _build_side() -> void:

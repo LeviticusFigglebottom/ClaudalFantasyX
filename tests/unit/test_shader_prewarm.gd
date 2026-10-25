@@ -6,6 +6,9 @@ const TEST_MATERIAL := "res://game/shaders/test/prewarm_test_material.tres"
 const TEST_SHADER := "res://game/shaders/test/prewarm_test.gdshader"
 const COMMON_INC := "res://game/shaders/include/common.gdshaderinc"
 const GLOBALS_INC := "res://game/shaders/include/globals.gdshaderinc"
+## M2-RND-910: a first run's warm-up frees within this at a quit (Haluna takes seconds to load).
+const QUIT_MS := 500
+const HALUNA_SCENE := "res://game/levels/ch02/haluna/haluna.tscn"
 const TMP_DIR := "user://test_shader_prewarm"
 const STATIC_STAGE_NODES := 4
 const WATER_GRID := "res://game/world/water/prewarm/water_grid_prewarm.tres"
@@ -491,6 +494,49 @@ func test_compile_check_detects_a_broken_shader() -> void:
 ## M1-RND-27 (ADR 0029 follow-up 3): a boot run draws its stage plain first and turns the game
 ## viewport's TAA and upscaler on one a frame before it stages anything; it holds each resident entry
 ## as its batch loads it, not all in the spawn frame.
+## M2-RND-14: with TAA off (and no FSR2) the boot still turns Forward+'s advanced shader group on under the card:
+## one frame of TAA on the stage right after the plain first frame, then TAA off again, before anything stages. With
+## the group switched on lazily, a TAA-off player's first VoxelGI frame (the Shell Shrine) could deadlock 4.6.3.
+func test_a_taa_off_boot_turns_the_advanced_shader_group_on_before_staging() -> void:
+	var reg_path := _write_registry(
+		"registry_adv.json", {"materials": [{"path": TEST_SHADER, "scenes": [], "resident": true}]}
+	)
+	var game := get_viewport_for_test()
+	var was := [game.use_taa, game.scaling_3d_mode, game.screen_space_aa]
+	game.use_taa = false
+	game.scaling_3d_mode = Viewport.SCALING_3D_MODE_BILINEAR
+	game.screen_space_aa = Viewport.SCREEN_SPACE_AA_FXAA
+	var node := (load(ShaderPrewarm.SCENE_PATH) as PackedScene).instantiate() as ShaderPrewarm
+	node.registry_path = reg_path
+	node.resident_only = true
+	node.preset_id = "high"
+	_host().add_child(node)
+	node.start("")
+	var vp := node.get_node("Viewport") as SubViewport
+	assert_false(vp.use_taa, "the first frame is plain")
+	node.tick(5.0)
+	assert_true(vp.use_taa, "one frame of TAA: the advanced shader group comes on under the card")
+	assert_eq(node.stage_node_count(), 0, "before anything stages")
+	node.tick(5.0)
+	assert_false(vp.use_taa, "then the player's AA again")
+	node.free()
+	# With TAA on the game has motion vectors already: no extra frame.
+	game.use_taa = true
+	var on := (load(ShaderPrewarm.SCENE_PATH) as PackedScene).instantiate() as ShaderPrewarm
+	on.registry_path = reg_path
+	on.resident_only = true
+	on.preset_id = "high"
+	_host().add_child(on)
+	on.start("")
+	var taa_steps := on._bring_up.filter(func(step: Array) -> bool: return step[0] == &"use_taa")
+	assert_eq(taa_steps.size(), 1, "TAA on: only its own TAA step, no extra frame")
+	on.free()
+	game.use_taa = was[0]
+	game.scaling_3d_mode = was[1]
+	game.screen_space_aa = was[2]
+	_clean_tmp()
+
+
 func test_boot_brings_the_stage_up_one_feature_a_frame_and_holds_residents_in_their_batch() -> void:
 	var reg_path := _write_registry(
 		"registry_boot.json",
@@ -720,12 +766,14 @@ func test_a_first_run_stages_every_wanted_entry_harvests_its_scenes_and_writes_i
 	node.first_run = true
 	node.preset_id = "high"
 	_host().add_child(node)
-	assert_eq(node.start(""), 3, "the first run: both entries, and the harvested scene's material")
+	assert_eq(node.start(""), 2, "the first run: both entries (the scene is harvested on later frames, M2-RND-18)")
 	for i in 400:
 		if not node.is_running():
 			break
+		OS.delay_msec(2)  # the harvested scene loads on a worker thread (M2-RND-18)
 		node.tick(4.0)
 	assert_false(node.is_running(), "the first run finishes")
+	assert_eq(int(node.stats.get("materials", 0)), 3, "both entries and the harvested scene's material")
 	assert_true(FileAccess.file_exists(marker), "and writes its marker")
 	var cfg := ConfigFile.new()
 	assert_eq(cfg.load(marker), OK)
@@ -734,6 +782,119 @@ func test_a_first_run_stages_every_wanted_entry_harvests_its_scenes_and_writes_i
 	assert_false(ShaderPrewarm.marker_current("low", reg_path), "another preset still needs one")
 	if is_instance_valid(node):
 		node.free()
+	_clean_tmp()
+
+
+## M2-RND-15: a first run instances each first_run_live_scenes entry on a worker thread and stages the draws its
+## live instance holds (a zone's runtime-built surfaces no SceneState lists), then frees the instance.
+func test_a_first_run_stages_the_draws_of_its_live_scenes_and_frees_them() -> void:
+	DirAccess.make_dir_recursive_absolute(TMP_DIR)
+	var mi := MeshInstance3D.new()
+	var mesh := BoxMesh.new()
+	var mat := StandardMaterial3D.new()
+	mat.albedo_color = Color.TEAL
+	mesh.material = mat
+	mi.mesh = mesh
+	var packed := PackedScene.new()
+	packed.pack(mi)
+	mi.free()
+	var scene_path := TMP_DIR + "/live_scene.tscn"
+	ResourceSaver.save(packed, scene_path)
+	var reg_path := _write_registry(
+		"registry_live.json", {"first_run_live_scenes": [scene_path], "max_live_materials": 8, "materials_per_frame": 4}
+	)
+	var nodes_before := Performance.get_monitor(Performance.OBJECT_NODE_COUNT)
+	var node := (load(ShaderPrewarm.SCENE_PATH) as PackedScene).instantiate() as ShaderPrewarm
+	node.registry_path = reg_path
+	node.resident_only = true
+	node.first_run = true
+	node.preset_id = "high"
+	_host().add_child(node)
+	assert_eq(node.start(""), 0, "nothing listed up front: the live scene comes later")
+	var got: Array[Dictionary] = []
+	node.finished.connect(func(st: Dictionary) -> void: got.append(st))
+	for i in 600:
+		if not node.is_running():
+			break
+		# The live scene instances on a worker thread: let it run between ticks.
+		OS.delay_msec(5)
+		node.tick(4.0)
+	assert_false(node.is_running(), "the first run finishes once its live scene is harvested and drawn")
+	assert_eq(got.size(), 1)
+	assert_eq(int(got[0]["materials"]), 1, "the live instance's material was staged")
+	if is_instance_valid(node):
+		node.free()
+	assert_eq(Performance.get_monitor(Performance.OBJECT_NODE_COUNT), nodes_before, "the live instance is freed")
+	_clean_tmp()
+
+
+## M2-RND-18: a first run harvests its first_run_scenes on later frames (each loaded on a worker thread), not in
+## start(), and keeps the frame after its bring-up empty: on an empty driver cache each of those had shared one
+## frame with the renderer's own first use or a scene's load (the boot's worst hidden frame, 3.0 s on High).
+func test_a_first_run_spreads_its_harvest_and_leaves_the_frame_after_bring_up_empty() -> void:
+	DirAccess.make_dir_recursive_absolute(TMP_DIR)
+	var mi := MeshInstance3D.new()
+	var box := BoxMesh.new()
+	var mat := StandardMaterial3D.new()
+	box.material = mat
+	mi.mesh = box
+	var packed := PackedScene.new()
+	packed.pack(mi)
+	mi.free()
+	var scene_path := TMP_DIR + "/spread_scene.tscn"
+	ResourceSaver.save(packed, scene_path)
+	var reg_path := _write_registry(
+		"registry_spread.json", {"first_run_scenes": [scene_path], "max_scene_materials": 8, "materials_per_frame": 4}
+	)
+	var node := (load(ShaderPrewarm.SCENE_PATH) as PackedScene).instantiate() as ShaderPrewarm
+	node.registry_path = reg_path
+	node.resident_only = true
+	node.first_run = true
+	node.preset_id = "high"
+	_host().add_child(node)
+	assert_eq(node.start(""), 0, "the scene isn't loaded or harvested in start()")
+	var staged_at := -1
+	for i in 400:
+		if not node.is_running():
+			break
+		OS.delay_msec(2)
+		node.tick(4.0)
+		if staged_at < 0 and node.stage_node_count() > 0:
+			staged_at = i
+	assert_true(staged_at > 0, "its draw stages on a later frame")
+	assert_eq(int(node.stats.get("materials", 0)), 1, "the harvested scene's material was staged")
+	if is_instance_valid(node):
+		node.free()
+	_clean_tmp()
+
+
+## M2-RND-910: quitting during a first run's warm-up exits promptly. Its scene loads run on ResourceLoader's threaded
+## requests, which teardown never waits on: a raw load() on a worker task, waited on in predelete, hung the quit.
+func test_quitting_mid_first_run_never_waits_on_its_scene_loads() -> void:
+	DirAccess.make_dir_recursive_absolute(TMP_DIR)
+	var reg_path := _write_registry(
+		"registry_quit.json",
+		{
+			"first_run_scenes": [HALUNA_SCENE],
+			"first_run_live_scenes": [HALUNA_SCENE],
+			"max_scene_materials": 8,
+			"materials_per_frame": 4,
+		}
+	)
+	var node := (load(ShaderPrewarm.SCENE_PATH) as PackedScene).instantiate() as ShaderPrewarm
+	node.registry_path = reg_path
+	node.resident_only = true
+	node.first_run = true
+	node.preset_id = "high"
+	_host().add_child(node)
+	node.start("")
+	for i in 3:
+		node.tick(4.0)
+	assert_true(node.is_running(), "the warm-up is mid-load")
+	var t0 := Time.get_ticks_msec()
+	node.free()
+	var took := Time.get_ticks_msec() - t0
+	assert_true(took < QUIT_MS, "freed without waiting on the scene loads (%d ms)" % took)
 	_clean_tmp()
 
 

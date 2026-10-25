@@ -15,8 +15,9 @@ extends RefCounted
 ##                mesh keeps its glTF material, so runtime dressers that key on its resource_name
 ##                (HalunaDresser, VegetationPlant, AshaStage) still find the slot and win over the
 ##                import with their own override.
-##   lods         authored `<name>-lodN` chains become visibility ranges (`end_m`, `margin_m`); LODs
-##                past the table are hidden. A mesh with no `-lod1` (or later) sibling gets no
+##   lods         authored `<name>-lodN` chains become visibility ranges (`end_m`, `margin_m`), each LOD
+##                the visibility_parent child of the next (LodChain, M1-ENV-10); LODs past the table
+##                are hidden. A mesh with no `-lod1` (or later) sibling gets no
 ##                range, so it never vanishes with nothing behind it. Auto-generated LODs are the .import option
 ##                `meshes/generate_lods`, which the rules state so tests can check the wiring.
 ##   animations   `animations.library` (with {asset_dir} and {asset_stem}, minus any `strip_suffixes`)
@@ -253,11 +254,10 @@ static func _apply_lod(mi: MeshInstance3D, rules: Dictionary, chained: Dictionar
 	if lod >= ends.size():
 		mi.visible = false
 		return
-	mi.visibility_range_begin = 0.0 if lod == 0 else float(ends[lod - 1])
-	mi.visibility_range_end = float(ends[lod])
-	mi.visibility_range_begin_margin = margin if lod > 0 else 0.0
-	mi.visibility_range_end_margin = margin
-	mi.visibility_range_fade_mode = GeometryInstance3D.VISIBILITY_RANGE_FADE_DISABLED
+	# M1-ENV-10: LOD n is the visibility child of LOD n+1, with the hysteresis on LOD n+1's begin
+	# margin only, so exactly one LOD draws at every distance (LodChain, as VegetationPlant does).
+	var table := PackedFloat32Array(ends)
+	LodChain.apply(mi, lod, table, margin, 0.0, LodChain.sibling(mi, lod + 1, suffix))
 	report["lods"] = int(report["lods"]) + 1
 
 

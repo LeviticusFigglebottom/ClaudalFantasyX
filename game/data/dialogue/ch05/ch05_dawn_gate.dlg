@@ -1,0 +1,15 @@
+// Ch5 B11, day 3, 06:30 (act1_ch05.md; in-engine, 0.5 min, P02 at dawn). The party comes down to the
+// harbour road. The sea-cut is full of spent leaf-boats rocking in the shallows, every wick out.
+// Kerrid is at the inn gate exactly where he was at 21:40; nobody saw him move. The bowl is gone from
+// the post (the innkeeper took it in). He falls in last. No line. Ch6 opens on the road down to the
+// Brine Shoals. Ends on black.
+title: ch05_dawn_gate
+location: ch05/pemakar
+---
+@camera P02D
+@fade in 1.5
+@wait 2.0
+@mark kerrid line_tail walk
+@wait 2.0
+@fade out 2.0
+===

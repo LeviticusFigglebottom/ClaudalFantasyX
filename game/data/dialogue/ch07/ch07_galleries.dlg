@@ -1,0 +1,46 @@
+// Ch7 B04 "The galleries" (docs/kb/story/beats/act1_ch07.md §2 B04). R01: the stilt galleries
+// inside the gantry, tier on tier round the catch-pool, packed. R02: up from the galleries into the
+// Bell's mouth, the drop hanging perfectly still. Toma and Asha in the third gallery (Toma's boyhood
+// seat; he hasn't played since the Stillguard oath, toma_okeru.md). Liss's line is the voice guide's
+// sample, verbatim but for the stress the box can't show yet ("*not looking*"). NOBODY ANSWERS IT:
+// Toma looks up and says nothing (his cracks start here), Asha holds neutral for 1.5 s in close
+// (R01A, inside R01's axis) while the bell_hum layer rises under her (Audio: a steady tone, no
+// breath), Ysolde turns a page, 2 s of crowd. R02K, R02's reverse through a salt-glass panel: Kerrid
+// knee-deep at the end of the river moorings outside, back to the Bell. He doesn't go under bound
+// light he can't account for; played as a man who doesn't like crowds. Rhen is already going down to
+// the pool; the flow puts him on the pool steps after this, with the checkpoint autosave (§5.1).
+// Watch (ADR 0017 Ch7): no Order official in any gallery shot, no Stillguard, no Level banners.
+title: ch07_galleries
+location: ch07/tamsule_bell_galleries
+---
+@letterbox on
+@camera R01
+@music tidecup_crowd fade=1.0
+@wait 1.5
+@camera R02
+@wait 2.5
+@camera R01
+Toma [soft_smile]: Haluna sat there. That gallery. We lost every match for six years. #line:ch07_gall_001
+Asha [surprised]: You never told me you played. #line:ch07_gall_002
+Toma [smile]: I was large. They put me in the ring and asked me not to move. #line:ch07_gall_003
+@anim asha laugh
+@anim toma look_at column_foot
+@wait 1.5
+@anim liss look_at bell_ribs
+Liss [cold]: Rust it, the Bell's glimmer-made. You're all just not looking at it. #line:ch07_gall_004
+@wait 1.0
+@anim toma look_at bell_ribs
+@camera R01A
+@face asha neutral 1.5
+@sfx bell_hum_rise
+@wait 1.5
+@camera R01
+@anim ysolde turn_page
+@wait 2.0
+@camera R02K
+@wait 2.0
+@camera R01
+@wait 1.0
+@letterbox off
+@camera release
+===

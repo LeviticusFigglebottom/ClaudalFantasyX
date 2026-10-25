@@ -1,10 +1,10 @@
 [gd_scene load_steps=8 format=3]
 
 [ext_resource type="Script" path="res://game/levels/_tests/haluna_mood/haluna_kit_sheet.gd" id="1_sheet"]
-[ext_resource type="Script" path="res://game/levels/_tests/haluna_mood/haluna_dresser.gd" id="2_dresser"]
-[ext_resource type="Script" path="res://game/levels/_tests/haluna_mood/haluna_mood.gd" id="3_rig"]
-[ext_resource type="Script" path="res://game/levels/_tests/haluna_mood/weathering_tide.gd" id="4_tide"]
-[ext_resource type="Environment" path="res://game/levels/_tests/haluna_mood/haluna_noon_environment.tres" id="5_env"]
+[ext_resource type="Script" path="res://game/levels/ch02/haluna/haluna_dresser.gd" id="2_dresser"]
+[ext_resource type="Script" path="res://game/levels/ch02/haluna/haluna_mood.gd" id="3_rig"]
+[ext_resource type="Script" path="res://game/levels/ch02/haluna/weathering_tide.gd" id="4_tide"]
+[ext_resource type="Environment" path="res://game/levels/ch02/haluna/haluna_noon_environment.tres" id="5_env"]
 
 [sub_resource type="PlaneMesh" id="Ground"]
 size = Vector2(160, 160)

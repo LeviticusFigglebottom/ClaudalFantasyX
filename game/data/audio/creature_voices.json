@@ -313,6 +313,7 @@
         "death": "cre_glassfry_death",
         "move": "cre_glassfry_shimmer"
       }
-    }
+    },
+    "stillguard_inquisitor": "silent"
   }
 }

@@ -160,8 +160,11 @@ func _show_result() -> void:
 	if not RETURN_ONLY.has(engine.outcome):
 		return
 	var keys: Array = RETURN_ONLY[engine.outcome]
+	var title := str(keys[0])
+	if engine.outcome == BattleEngine.OUTCOME_VICTORY:
+		title = BattleMenus.victory_title_key(engine)  # "The Inquisitor yields." (M3-C06-02)
 	var choices: Array[Dictionary] = [{"id": CHOICE_RETURN, "label": tr("HUD_RESULT_RETURN"), "enabled": true}]
-	hud.result.show_result(engine.outcome, tr(str(keys[0])), tr(str(keys[1])), hud.result.result_rows, choices)
+	hud.result.show_result(engine.outcome, tr(title), tr(str(keys[1])), hud.result.result_rows, choices)
 
 
 func _on_result_choice(choice: StringName) -> void:

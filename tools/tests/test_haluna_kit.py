@@ -115,8 +115,11 @@ class KitGeometryTests(unittest.TestCase):
         self.assertGreater(head[:, 0].mean(), 0.1, "the head (highest points) is at +X: the dresser yaws +X to sea")
 
     def test_placeholders_are_listed(self) -> None:
-        for name in ("banyan_placeholder", "windbreak_placeholder", "shell_shrine_massing"):
-            self.assertIn(name, BUILD.PLACEHOLDERS)
+        self.assertIn("shell_shrine_massing", BUILD.PLACEHOLDERS)
+        # M2-ENV-07: the two trees are real (trees.py); they keep their piece names as the scene contract.
+        for name in ("banyan_placeholder", "windbreak_placeholder"):
+            self.assertNotIn(name, BUILD.PLACEHOLDERS)
+            self.assertIn(name, BUILD.targets())
 
 
 @unittest.skipUnless(find_blender(), "Blender 5.0.1 not installed (tools/dev/fetch_blender or HYMN_BLENDER)")
@@ -169,3 +172,104 @@ class KitCommittedAssetTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class RouteKitTests(unittest.TestCase):
+    """M2-ENV-08: the causeway-head pieces and village props keep the brief's dimensions and slots."""
+
+    def _builders(self, target: str) -> list:
+        return BUILD.targets()[target][2]()
+
+    def test_marker_posts_stand_2_4_m_and_the_broken_one_is_short(self) -> None:
+        tall = self._builders("pilgrim_marker_post")[0]
+        broken = self._builders("pilgrim_marker_post_broken")[0]
+        self.assertAlmostEqual(float(tall.bounds()[1][1]), 2.4, delta=0.12)
+        self.assertLess(float(broken.bounds()[1][1]), 1.4)
+
+    def test_lit_age_ring_carries_a_bound_light_glint(self) -> None:
+        ring, lod = self._builders("lit_age_ring")
+        self.assertIn("kit_glimmer_glint", ring.materials)
+        self.assertNotIn("kit_glimmer_glint", lod.materials)  # no emissive sliver at range
+        span = ring.bounds()[1] - ring.bounds()[0]
+        self.assertAlmostEqual(float(max(span[0], span[2])), 3.0 + 0.64, delta=0.4)  # 3 m across, plus the wall
+
+    def test_causeway_pieces_use_the_ancient_stone(self) -> None:
+        for target in ("causeway_slab_flat", "causeway_slab_broken", "causeway_slab_steps", "coral_boulder_b"):
+            for mb in self._builders(target):
+                self.assertEqual(mb.materials, ["kit_causeway_stone"], target)
+
+    def test_slab_is_1_2_by_2_4_m(self) -> None:
+        lo, hi = self._builders("causeway_slab_flat")[0].bounds()
+        self.assertAlmostEqual(float(hi[0] - lo[0]), 1.2, delta=0.15)
+        self.assertAlmostEqual(float(hi[2] - lo[2]), 2.4, delta=0.15)
+
+    def test_lamp_post_is_2_2_m_with_brass_and_glass(self) -> None:
+        mb = self._builders("oil_lamp_post")[0]
+        self.assertAlmostEqual(float(mb.bounds()[1][1]), 2.2, delta=0.12)
+        for slot in ("kit_brass", "kit_salt_glass", "kit_lamp_flame"):
+            self.assertIn(slot, mb.materials)
+
+    def test_every_new_material_slot_has_a_material(self) -> None:
+        for target in ("water_jar", "basket_set", "oil_lamp_post", "fish_drying_rack", "net_float_cluster",
+                       "market_stall", "sandals", "lit_age_ring", "wreck_rib", "pilgrim_marker_post"):
+            for mb in self._builders(target):
+                for slot in mb.materials:
+                    self.assertTrue((ASSETS / "materials" / f"{slot}.tres").is_file(), f"{target}: {slot}")
+
+    def test_route_layout_names_only_kit_pieces(self) -> None:
+        layout = json.loads((ROOT / "game/levels/_tests/haluna_mood/route_layout.json").read_text())
+        manifest = json.loads((ASSETS / "kit_manifest.json").read_text())
+        for spec in layout["pieces"]:
+            self.assertIn(spec["piece"], manifest["pieces"], spec)
+
+
+class CausewayZoneTests(unittest.TestCase):
+    """M2-ENV-10: the B06 zone's layout is generated, so the committed copy must regenerate byte for byte, and
+    its placements must respect the brief (low water, saltgrass above -0.2 m, the path head to islet)."""
+
+    LAYOUT = ROOT / "assets/environments/zones/saltgrass_causeway/causeway_layout.json"
+
+    def setUp(self) -> None:
+        self.cz = _load("causeway_zone")
+
+    def test_committed_layout_regenerates_identically(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            out = Path(tmp) / "layout.json"
+            self.cz.main(["--layout", str(out)])
+            self.assertEqual(out.read_bytes(), self.LAYOUT.read_bytes())
+
+    def test_saltgrass_stands_above_the_grass_line_and_off_the_bed(self) -> None:
+        lay = json.loads(self.LAYOUT.read_text())
+        rows = [r for inst in lay["instances"] for r in inst["xforms"]]
+        self.assertGreater(len(rows), 1000)
+        xs = np.array([r[0] for r in rows])
+        zs = np.array([r[2] for r in rows])
+        self.assertTrue((np.array([r[1] for r in rows]) >= self.cz.SALTGRASS_ABOVE_M - 0.001).all())  # 3-decimal rounding
+        self.assertGreater(float(self.cz.path_distance(xs, zs).min()), self.cz.BED_HALF_W_M - 0.6)
+
+    def test_pieces_sit_on_the_shared_height_field(self) -> None:
+        lay = json.loads(self.LAYOUT.read_text())
+        field = self.cz.Field()
+        for spec in lay["pieces"][1:]:
+            if spec.get("on_datum"):
+                continue
+            x, z = spec["at"]
+            ground = float(field.height(np.array(x), np.array(z)))
+            self.assertLess(abs(spec["y"] - ground), 0.31, spec["piece"])
+
+    def test_ground_stays_under_the_drownbell_disc(self) -> None:
+        lay = json.loads(self.LAYOUT.read_text())
+        disc = [p for p in lay["pieces"] if p["piece"] == "causeway_disc"]
+        self.assertEqual(len(disc), 1)
+        field = self.cz.Field()
+        cx, cz_ = disc[0]["at"]
+        a = np.linspace(0.0, 2.0 * np.pi, 64)
+        for r in (0.0, 3.0, 8.0, 15.0, self.cz.DISC_WALL_R_M + 0.5, self.cz.DISC_WALL_R_M + 2.5):
+            h = field.height(cx + r * np.cos(a), cz_ + r * np.sin(a))
+            self.assertLess(float(h.max()), disc[0]["y"] - 0.1, r)
+
+    def test_path_runs_head_to_islet_and_pools_hold_water(self) -> None:
+        self.assertGreater(float(self.cz.PATH_S[-1]), 250.0)
+        field = self.cz.Field()
+        for (c, _r) in field.pool_xy:
+            self.assertLess(float(field.height(np.array(c[0]), np.array(c[1]))), self.cz.LOW_WATER_M)

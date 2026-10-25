@@ -192,6 +192,48 @@ static func teleports(path: String) -> Array[Dictionary]:
 	return out
 
 
+# --- F8 chapter select (M3-ARC-02) ---------------------------------------------------------------
+
+
+## The chapter starts in `path` (game/data/debug/chapter_select.json): {id, label, location, spawn,
+## chapter, party: Array[StringName], flags: Array[StringName]}.
+static func chapter_starts(path: String) -> Array[Dictionary]:
+	var out: Array[Dictionary] = []
+	for row: Variant in FieldInput.load_json(path).get("starts", []):
+		var e := row as Dictionary
+		var party: Array[StringName] = []
+		for h: Variant in e.get("party", []):
+			party.append(StringName(str(h)))
+		var flags: Array[StringName] = []
+		for f: Variant in e.get("flags", []):
+			flags.append(StringName(str(f)))
+		(
+			out
+			. append(
+				{
+					"id": StringName(str(e.get("id", ""))),
+					"label": str(e.get("label", "")),
+					"location": StringName(str(e.get("location", ""))),
+					"spawn": StringName(str(e.get("spawn", ""))),
+					"chapter": int(e.get("chapter", 0)),
+					"party": party,
+					"flags": flags,
+				}
+			)
+		)
+	return out
+
+
+## Begins a fresh game at a chapter start: the story-so-far flags, the chapter and the party. The
+## caller then goes to the start's location (DebugOverlay.start_chapter).
+static func apply_chapter_start(start: Dictionary) -> void:
+	Game.new_game()
+	for f: StringName in start["flags"]:
+		Game.set_flag(f)
+	Game.set_chapter(int(start["chapter"]))
+	Game.state.party_ids = (start["party"] as Array[StringName]).duplicate()
+
+
 # --- F6 Lattice cheat ----------------------------------------------------------------------------
 
 

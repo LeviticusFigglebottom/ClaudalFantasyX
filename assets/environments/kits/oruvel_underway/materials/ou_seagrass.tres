@@ -1,0 +1,7 @@
+[gd_resource type="StandardMaterial3D" load_steps=1 format=3]
+
+[resource]
+resource_name = "ou_seagrass"
+albedo_color = Color(0.3059, 0.4157, 0.2275, 1)
+cull_mode = 2
+roughness = 0.6

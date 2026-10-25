@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Line-coverage gate for game/battle/ and game/progression/ (M1-QA-03, ADR 0013).
+"""Line-coverage gate for game/battle/, game/progression/ and game/minigames/reefball/ (M1-QA-03, ADR 0013).
 
   python3 tools/coverage/run_coverage.py                    # measure, report, gate against baseline
   python3 tools/coverage/run_coverage.py --update-baseline  # after adding tests: ratchet the baseline
@@ -40,7 +40,8 @@ RECORDER_RES = "hymn_coverage/hymn_cov.gd"
 RECORDER_AUTOLOAD = "HymnCovSink"
 
 # Measured directories (SPEC §5.4). Everything below them is measured except EXCLUDE (UI glue).
-MEASURED_DIRS = ("game/battle", "game/progression")
+# game/minigames/reefball (M3-RBL-01): the headless Reefball rules core, held to the same bar.
+MEASURED_DIRS = ("game/battle", "game/progression", "game/minigames/reefball")
 EXCLUDE = ("game/battle/scene",)
 TOLERANCE_PP = 0.5
 

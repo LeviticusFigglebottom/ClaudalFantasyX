@@ -1,0 +1,40 @@
+{
+ "format": 1,
+ "scene": "ch07_naming",
+ "source": "game/data/dialogue/ch07/ch07_naming.dlg",
+ "start": "ch07_naming",
+ "nodes": {
+  "ch07_naming": {
+   "headers": {"location": "ch07/tamsule_bell_galleries"},
+   "ops": [
+    {"op": "cue", "cue": "letterbox", "args": ["on"], "kwargs": {}, "src": 19},
+    {"op": "cue", "cue": "camera", "args": ["R03"], "kwargs": {}, "src": 20},
+    {"op": "cue", "cue": "music", "args": ["silence"], "kwargs": {"fade": 3.0}, "src": 21},
+    {"op": "cue", "cue": "wait", "args": [3.0], "kwargs": {}, "src": 22},
+    {"op": "cue", "cue": "sfx", "args": ["column_weep"], "kwargs": {}, "src": 23},
+    {"op": "cue", "cue": "wait", "args": [1.5], "kwargs": {}, "src": 24},
+    {"op": "line", "id": "ch07_naming_001", "key": "DLG_CH07_NAMING_001", "speaker": "ione", "emotion": "neutral", "voice": "", "src": 25},
+    {"op": "cue", "cue": "wait", "args": [1.0], "kwargs": {}, "src": 26},
+    {"op": "line", "id": "ch07_naming_002", "key": "DLG_CH07_NAMING_002", "speaker": "crowd", "emotion": "neutral", "voice": "", "src": 27},
+    {"op": "cue", "cue": "sfx", "args": ["crowd_up"], "kwargs": {}, "src": 28},
+    {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 29},
+    {"op": "cue", "cue": "camera", "args": ["R04"], "kwargs": {}, "src": 30},
+    {"op": "cue", "cue": "wait", "args": [1.5], "kwargs": {}, "src": 31},
+    {"op": "line", "id": "ch07_naming_003", "key": "DLG_CH07_NAMING_003", "speaker": "tavi", "emotion": "grief", "voice": "", "src": 32},
+    {"op": "cue", "cue": "wait", "args": [2.5], "kwargs": {}, "src": 33},
+    {"op": "if_not", "cond": ["flag", "ch05_boat_for_oruvel"], "to": 18, "src": 34},
+    {"op": "cue", "cue": "face", "args": ["rhen", "grief", 0.5], "kwargs": {}, "src": 35},
+    {"op": "goto", "to": 18, "src": 34},
+    {"op": "line", "id": "ch07_naming_004", "key": "DLG_CH07_NAMING_004", "speaker": "crowd", "emotion": "grief", "voice": "", "src": 37},
+    {"op": "cue", "cue": "sfx", "args": ["crowd_up"], "kwargs": {"vol": 1.0}, "src": 38},
+    {"op": "cue", "cue": "face", "args": ["asha", "grief"], "kwargs": {}, "src": 39},
+    {"op": "cue", "cue": "face", "args": ["toma", "grief"], "kwargs": {}, "src": 40},
+    {"op": "cue", "cue": "anim", "args": ["rhen", "look_at", "drop"], "kwargs": {}, "src": 41},
+    {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 42},
+    {"op": "cue", "cue": "camera", "args": ["R05"], "kwargs": {}, "src": 43},
+    {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 44},
+    {"op": "event", "name": "start_reefball", "args": ["tidecup_opening"], "src": 45}
+   ]
+  }
+ }
+}

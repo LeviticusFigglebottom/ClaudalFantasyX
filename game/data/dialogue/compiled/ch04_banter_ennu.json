@@ -1,0 +1,17 @@
+{
+ "format": 1,
+ "scene": "ch04_banter_ennu",
+ "source": "game/data/dialogue/ch04/ch04_banter_ennu.dlg",
+ "start": "ch04_banter_ennu",
+ "nodes": {
+  "ch04_banter_ennu": {
+   "headers": {"location": "ch04/brightwater_ferry"},
+   "ops": [
+    {"op": "line", "id": "ch04_banter_ennu_001", "key": "DLG_CH04_BANTER_ENNU_001", "speaker": "asha", "emotion": "neutral", "voice": "", "src": 8, "tags": ["sung", "lamptongue", "notr"]},
+    {"op": "line", "id": "ch04_banter_ennu_002", "key": "DLG_CH04_BANTER_ENNU_002", "speaker": "ysolde", "emotion": "neutral", "voice": "", "src": 9},
+    {"op": "line", "id": "ch04_banter_ennu_003", "key": "DLG_CH04_BANTER_ENNU_003", "speaker": "asha", "emotion": "smile", "voice": "", "src": 10},
+    {"op": "line", "id": "ch04_banter_ennu_004", "key": "DLG_CH04_BANTER_ENNU_004", "speaker": "ysolde", "emotion": "neutral", "voice": "", "src": 11}
+   ]
+  }
+ }
+}

@@ -83,6 +83,9 @@ func allowed() -> bool:
 
 ## Steps the prompt by `delta` seconds: picks the target, fades, and places the plate.
 func advance(delta: float) -> void:
+	# Follow the shared tracking (UiInput, M2-UI-26): an event another node took first, such as a
+	# right click UiInput turned into Cancel, never reaches this node's _input.
+	using_pad = InputNames.using_pad
 	var it: Interactable = null
 	if allowed():
 		it = _pick()

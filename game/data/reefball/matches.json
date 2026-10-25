@@ -1,0 +1,13 @@
+{
+  "_comment": "Reefball matches (M3-RBL-01). The Ch7 Tidecup opening round: the result gives a reward only and never branches the story (ADR 0020 (h)). sides[0] and sides[1] are the two sides; player_side indexes the one the player directs.",
+  "matches": [
+    {
+      "id": "tidecup_opening",
+      "name_key": "RBL_MATCH_TIDECUP_OPENING",
+      "sides": ["oruvel", "pemakar"],
+      "player_side": 0,
+      "first_float": 1,
+      "ai_profile": "story_opponent"
+    }
+  ]
+}

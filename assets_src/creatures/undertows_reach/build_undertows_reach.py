@@ -204,7 +204,42 @@ def build_clips() -> list[ck.Clip]:
         for b, (r, l) in breach_pose.items():
             idle_breach.key(b, t, tuple(np.array(r) + [-3.0 * s, 0, 0]), tuple(np.array(l) + [0, 0.25 * s, 0]))
         curl(idle_breach, t, -1.1 + 0.25 * s)
-    return [idle, attack, cast, hit, ko, phase_dark, idle_dark, phase_breach, idle_breach]
+    # The strikes again from each phase's pose (creatures.json `phases.<id>.clips`), so a Dark or Breach skill plays
+    # from where the hand is rather than snapping back to the Grip.
+    def held(pose: dict, curl_amt: float):
+        def build(c: ck.Clip) -> None:
+            for b, (r, l) in pose.items():
+                c.key(b, 0.0, r, l)
+            curl(c, 0.0, curl_amt)
+        return build
+
+    dark_full = pose_of(held(dark_pose, 0.8))
+    breach_full = pose_of(held(breach_pose, -1.1))
+    variants = [in_pose(c, f"{c.name}_dark", dark_full) for c in (attack, cast, hit)]
+    variants += [in_pose(c, f"{c.name}_breach", breach_full) for c in (attack, cast)]
+    return [idle, attack, cast, hit, ko, phase_dark, idle_dark, phase_breach, idle_breach] + variants
+
+
+def pose_of(build) -> dict:
+    """A pose as {bone: (rot, loc)}, read from a one-key scratch clip that `build` keys at t = 0."""
+    c = ck.Clip("_pose", 1.0)
+    build(c)
+    return {b: (np.asarray(ks[0][1], float), np.asarray(ks[0][2], float)) for b, ks in c.keys.items()}
+
+
+def in_pose(base: ck.Clip, name: str, pose: dict) -> ck.Clip:
+    """`base` played from `pose`: the pose is added to every key of its bones, and held on bones `base` leaves alone."""
+    out = ck.Clip(name, base.length, loop=base.loop)
+    zero = (np.zeros(3), np.zeros(3))
+    for b, ks in base.keys.items():
+        pr, pl = pose.get(b, zero)
+        for t, r, l in ks:
+            out.key(b, t, tuple(np.asarray(r, float) + pr), tuple(np.asarray(l, float) + pl))
+    for b, (pr, pl) in pose.items():
+        if b not in base.keys:
+            out.key(b, 0.0, tuple(pr), tuple(pl))
+            out.key(b, base.length, tuple(pr), tuple(pl))
+    return out
 
 
 def main() -> None:

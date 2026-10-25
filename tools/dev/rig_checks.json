@@ -102,7 +102,7 @@
         ],
         "max_exposed": 2
       },
-      "_allowances": "Costume 45/8: the skirts fold between calf and thigh in the deep kneel (rise_to_stand), inside the leg. VerseSleeve 42/4: one gauze bag vertex enters the waist when the arm is down. Body 48/40: upper-arm skin passes the torso cloth's armhole edge as the arm hangs (the vest and bodice no longer poke out: viewed). max_exposed 2: two halter-edge vertices at the left shoulder in the extreme pose, under 2 mm.",
+      "_allowances": "Costume 45/8: the skirts fold between calf and thigh in the deep kneel (rise_to_stand), inside the leg. VerseSleeve 42/6 (count 4 -> 6, M2-CHR-07): one gauze bag vertex enters the waist when the arm is down; the battle clips (hit, defend, cast, finisher, ko) add a frame or two where up to 6 sleeve-top vertices (on DEF-spine.003, up to 32 mm) sit inside the upper arm as it starts forward, and the deepest stays 36.5 mm (hit, the bag at the pelvis). Hidden under the sleeve: viewed at asha hit@6 and defend@2 from the Sleeve and ThreeQuarter cameras. Body 48/40: upper-arm skin passes the torso cloth's armhole edge as the arm hangs (the vest and bodice no longer poke out: viewed). max_exposed 2: two halter-edge vertices at the left shoulder in the extreme pose, under 2 mm.",
       "penetration": {
         "limits_mm": {
           "Costume": 45.0,
@@ -111,7 +111,7 @@
         },
         "limits_count": {
           "Costume": 8,
-          "VerseSleeve": 4,
+          "VerseSleeve": 6,
           "Body": 40
         }
       }

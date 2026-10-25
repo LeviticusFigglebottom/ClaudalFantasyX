@@ -1,0 +1,22 @@
+{
+ "format": 1,
+ "scene": "ch05_matron_wakes",
+ "source": "game/data/dialogue/ch05/ch05_matron_wakes.dlg",
+ "start": "ch05_matron_wakes",
+ "nodes": {
+  "ch05_matron_wakes": {
+   "headers": {"location": "ch05/ashcrown"},
+   "ops": [
+    {"op": "cue", "cue": "camera", "args": ["A07"], "kwargs": {}, "src": 8},
+    {"op": "cue", "cue": "sfx", "args": ["anvil_crack"], "kwargs": {}, "src": 9},
+    {"op": "cue", "cue": "wait", "args": [1.2], "kwargs": {}, "src": 10},
+    {"op": "cue", "cue": "camera", "args": ["A08"], "kwargs": {}, "src": 11},
+    {"op": "cue", "cue": "anim", "args": ["matron", "unfold"], "kwargs": {}, "src": 12},
+    {"op": "line", "id": "ch05_matron_001", "key": "DLG_CH05_MATRON_001", "speaker": "tender", "emotion": "worried", "voice": "", "src": 13, "name_key": "DLG_NAME_TENDER_TENDER_RUWEN"},
+    {"op": "cue", "cue": "anim", "args": ["kerrid", "unsling_cleaver"], "kwargs": {}, "src": 14},
+    {"op": "cue", "cue": "mark", "args": ["kerrid", "court_front", "walk"], "kwargs": {}, "src": 15},
+    {"op": "cue", "cue": "wait", "args": [0.8], "kwargs": {}, "src": 16}
+   ]
+  }
+ }
+}

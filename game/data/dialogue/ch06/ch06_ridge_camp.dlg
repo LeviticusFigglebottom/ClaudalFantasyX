@@ -1,0 +1,15 @@
+// Ch6 B08 "Camp on the wreck-ridge" (act1_ch06.md; W15, 18:30), the establishing shot as the party
+// comes up onto the high hull. No line. A small oil fire, the Level-stone shrine in a wreck's bow,
+// the vendor's boat. Kerrid stands at the ridge's seaward end, facing the water (he never sits in
+// Act I). Liss isn't at the fire; a marker on the tideline below opens the side scene (B09).
+title: ch06_ridge_camp
+location: ch06/brine_shoals
+---
+@fade out 0.8
+@camera W15
+@music shoals_dusk fade=2.0
+@fade in 1.2
+@anim kerrid stand_watch_seaward
+@wait 2.0
+@camera release
+===

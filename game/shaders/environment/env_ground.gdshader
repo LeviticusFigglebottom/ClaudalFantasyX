@@ -45,6 +45,19 @@ uniform float damp_band_m : hint_range(0.0, 3.0) = 1.1;
 uniform float wet_roughness : hint_range(0.0, 1.0) = 0.25;
 group_uniforms;
 
+// M2 final pass (env-art): a beach is never one flat tone. Broad value drifts (wind-sorted sand),
+// the wrack line of dried weed and shell at high water, and leaf litter on village turf.
+group_uniforms breakup;
+uniform float sand_macro_variation : hint_range(0.0, 0.4) = 0.12;
+uniform float sand_macro_scale_m = 18.0;
+uniform float wrack_height_m = 0.9; // above tide_line_y: haluna.md §0 high water
+uniform float wrack_width_m : hint_range(0.0, 2.0) = 0.5;
+uniform float wrack_cover : hint_range(0.0, 1.0) = 0.55;
+uniform vec4 col_wrack : source_color = vec4(0.357, 0.298, 0.235, 1.0); // timber_weathered at ~72% value
+uniform float litter_cover : hint_range(0.0, 1.0) = 0.35;
+uniform vec4 col_litter : source_color = vec4(0.47, 0.37, 0.24, 1.0); // dry leaf (thatch x timber_weathered)
+group_uniforms;
+
 varying vec3 v_world_pos;
 
 void vertex() {
@@ -80,6 +93,12 @@ void fragment() {
 	float damp = 1.0 - smoothstep(wet_band_m, damp_band_m, above);
 	float under = 1.0 - smoothstep(-0.25, 0.0, above);
 	vec3 sand_c = mix(sand.rgb, col_sand_dry.rgb * (0.85 + 0.3 * sand.a), sand_tint);
+	float macro = texture(tex_detail, wp.xz / sand_macro_scale_m).g * 0.6 + big * 0.4;
+	sand_c *= 1.0 + (macro - 0.5) * 2.0 * sand_macro_variation;
+	// The wrack line: a ragged band of dried weed and shell grit left by the last high water.
+	float wrack_d = abs(wp.y - (tide_line_y + wrack_height_m) + (big - 0.5) * 0.3);
+	float wrack = (1.0 - smoothstep(0.0, wrack_width_m, wrack_d)) * smoothstep(0.45, 0.75, det.g * 0.7 + det.b * 0.6);
+	sand_c = mix(sand_c, col_wrack.rgb * (0.8 + 0.4 * det.r), wrack * wrack_cover);
 	vec3 albedo = mix(sand_c, sand_c * col_sand_wet.rgb / max(col_sand_dry.rgb, vec3(0.05)), max(wet, damp * 0.35));
 	albedo = mix(albedo, col_seabed.rgb * (0.85 + 0.2 * sand.a), under);
 	float rough = mix(0.92, wet_roughness, wet * (1.0 - under * 0.5));
@@ -96,6 +115,8 @@ void fragment() {
 	float turf = clamp(m.g, 0.0, 1.0);
 	float grass = smoothstep(0.35, 0.75, det.r * 0.7 + big * 0.5) * turf;
 	vec3 turf_c = mix(col_turf.rgb * (0.8 + 0.3 * sand.a), col_turf_grass.rgb * (0.7 + 0.5 * det.r), grass);
+	float litter = smoothstep(0.55, 0.8, det.b + det.r * 0.3) * litter_cover;
+	turf_c = mix(turf_c, col_litter.rgb * (0.8 + 0.4 * sand.a), litter);
 	albedo = mix(albedo, turf_c, turf * (1.0 - lane));
 	rough = mix(rough, 0.95, turf);
 

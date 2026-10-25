@@ -1,0 +1,14 @@
+{
+ "format": 1,
+ "scene": "ch06_bark_ysolde_reading",
+ "source": "game/data/dialogue/ch06/ch06_bark_ysolde_reading.dlg",
+ "start": "ch06_bark_ysolde_reading",
+ "nodes": {
+  "ch06_bark_ysolde_reading": {
+   "headers": {"location": "ch06/brine_shoals"},
+   "ops": [
+    {"op": "line", "id": "ch06_bark_ysolde_001", "key": "DLG_CH06_BARK_YSOLDE_001", "speaker": "ysolde", "emotion": "neutral", "voice": "", "src": 6}
+   ]
+  }
+ }
+}

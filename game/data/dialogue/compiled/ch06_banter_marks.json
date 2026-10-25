@@ -1,0 +1,17 @@
+{
+ "format": 1,
+ "scene": "ch06_banter_marks",
+ "source": "game/data/dialogue/ch06/ch06_banter_marks.dlg",
+ "start": "ch06_banter_marks",
+ "nodes": {
+  "ch06_banter_marks": {
+   "headers": {"location": "ch06/brine_shoals"},
+   "ops": [
+    {"op": "cue", "cue": "anim", "args": ["toma", "look_at", "chalk_mark"], "kwargs": {}, "src": 8},
+    {"op": "cue", "cue": "wait", "args": [1.5], "kwargs": {}, "src": 9},
+    {"op": "line", "id": "ch06_marks_001", "key": "DLG_CH06_MARKS_001", "speaker": "asha", "emotion": "worried", "voice": "", "src": 10},
+    {"op": "line", "id": "ch06_marks_002", "key": "DLG_CH06_MARKS_002", "speaker": "toma", "emotion": "neutral", "voice": "", "src": 11}
+   ]
+  }
+ }
+}

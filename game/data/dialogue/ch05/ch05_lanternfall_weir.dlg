@@ -1,0 +1,65 @@
+// Ch5 B05 "Lanternfall, part 2: the weir" (act1_ch05.md; the Kerrid beat). Letterboxed. The sea-cut
+// weir: the boats tip over the last stone lip one after another and the sea-glow takes them.
+// P11 (from the sea side, low): a child leans out after her snagged boat and slips; a big hand in a
+// wrapped sleeve takes her by the collar and sets her back on the step. No line. He is already
+// looking out to sea. P12 (the two-shot on the weir step): he sees Asha's face in the lamplight and
+// goes still (gesture slot). Toma's line to Rhen; Kerrid's head turns at "Sallow" (one look, 1.0 s).
+// The one line to Asha; her patience. Toma, courteous and wary. Kerrid falls in last (P11 again);
+// kerrid_stair enters. Sets ch05_met_kerrid; the chapter flow joins him to the roster.
+// Watches, every one (ADR 0017, ADR 0020 (b) and (d), ADR 0022 (g)):
+//   - Kerrid has exactly three lines in Ch5, all here: the one to Asha, his name, and Corrow.
+//     He says nothing to Rhen anywhere in the chapter; every Kerrid beat with Rhen is a gesture.
+//   - No glow on his hands at all, in any shot, and no close-up on his hands (no @vfx at kerrid).
+//   - Toma does not know the face: a guardian sizing up a big armed man, no recognition.
+//   - Nobody names Corrow's dead captain; nobody hails him or calls him a legend.
+//   - He asks nothing and is invited to nothing; he simply falls in at the back of the line.
+title: ch05_lanternfall_weir
+location: ch05/pemakar
+---
+@camera P11
+@sfx weir_spill
+@anim weir_child lean_out
+@wait 0.8
+@anim weir_child slip
+@anim kerrid catch_collar weir_child
+@wait 1.0
+@anim kerrid look_at sea
+@wait 1.0
+@camera P12
+@mark asha weir_step walk
+@wait 0.6
+@anim kerrid look_at asha
+@wait 1.2
+@anim rhen slip
+Toma [worried]: Rhen Sallow, if you fall in that channel I am not coming in after you. #line:ch05_weir_001
+@anim kerrid look_at rhen
+@wait 1.0
+@anim kerrid look_at asha
+@wait 0.6
+Kerrid [neutral]: I held a stair for your mother once. #line:ch05_weir_002
+@face asha neutral 0.2
+@wait 0.8
+Asha [tender]: Where? #line:ch05_weir_003
+@anim kerrid look_at sea
+@wait 1.5
+Asha [soft_smile]: ...Then another time. #line:ch05_weir_004
+@mark toma weir_guard walk
+Toma [neutral]: Your name, sir? #line:ch05_weir_005
+Kerrid [neutral]: Kerrid. #line:ch05_weir_006
+Toma [neutral]: And where are you bound? #line:ch05_weir_007
+Kerrid [neutral]: Corrow. #line:ch05_weir_008
+Toma [neutral]: The Lady Cantor's road goes by Corrow. #line:ch05_weir_009
+@wait 1.5
+Ysolde [neutral]: Then he will be walking our way whether we like it or not. #line:ch05_weir_010
+Asha [soft_smile]: He's going where we're going, Toma. #line:ch05_weir_011
+@camera P11
+@music kerrid_stair fade=2.0
+@mark asha line_head walk
+@mark kerrid line_tail walk
+@wait 1.5
+@anim rhen walk_backwards
+Rhen [smile]: Does the old man come with the town, or did we just collect him? #line:ch05_weir_012
+Asha [neutral]: Rhen. #line:ch05_weir_013
+<<set $ch05_met_kerrid = true>>
+@letterbox off
+===

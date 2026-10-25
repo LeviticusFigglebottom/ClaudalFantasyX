@@ -1,0 +1,10 @@
+// Ch4 C4-03, the feast tables (optional): the market vendor. People say things to Asha, to her face,
+// that you say at a graveside: warm, specific, in the past tense more often than they mean to. She
+// thanks each one. Rhen hears all of it. The vendor gives her the knot she taught him, tied, to keep.
+title: ch04_wake_vendor
+location: ch04/haluna_wake
+---
+Vendor [soft_smile]: Here. The bowline you taught me, the year the nets came in torn. Tied it myself. #line:ch04_wake_vendor_001
+Vendor [sad]: Your knots were always neater. #line:ch04_wake_vendor_002
+Asha [smile]: They still are. Thank you. I'll keep it. #line:ch04_wake_vendor_003
+===

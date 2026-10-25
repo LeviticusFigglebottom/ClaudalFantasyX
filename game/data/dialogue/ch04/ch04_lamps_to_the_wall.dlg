@@ -1,0 +1,28 @@
+// Ch4 C4-01 "Lamps to the wall" (docs/kb/story/beats/act1_ch04.md). Dusk, Day 2. House by house the
+// village carries its lamps out to the wake-shell wall at the causeway head, because at a Pilgrim's
+// Wake the village brings its light to the Cantor; the windows go dark behind them (H02 at night,
+// one window at a time: the chapter flow hides the greybox windows after this scene). Rhen comes out
+// of Neme's door carrying her table's other end, Toma on the heavy end; Neme carries the food, far too
+// much of it again (B02's tell, with nobody pretending now). The first verse band is on Asha's sleeve
+// (ch03_first_verse_sung, sleeve state S1): Character art's, no line. H12 is the wall, wide.
+// The chapter flow sets ch04_started and moves the story to chapter 4 before this plays.
+// Music: haluna_night (the slice's sketch). In-engine, letterboxed for its few shots.
+title: ch04_lamps_to_the_wall
+location: ch04/haluna_wake
+---
+@letterbox on
+@music haluna_night fade=2.0
+@camera H02
+@sfx wake_lamps_out
+@wait 1.5
+@anim neme carry_food
+@mark toma table_lane walk
+Rhen [neutral]: Where's everyone taking the lamps? #line:ch04_lamps_001
+@wait 0.6
+Toma [neutral]: To her. #line:ch04_lamps_002
+@wait 1.0
+@camera H12 blend=2.0
+@wait 2.0
+@letterbox off
+@camera release
+===

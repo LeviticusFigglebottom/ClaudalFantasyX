@@ -1,0 +1,18 @@
+{
+ "format": 1,
+ "scene": "ch05_banter_tenders_gate",
+ "source": "game/data/dialogue/ch05/ch05_banter_tenders_gate.dlg",
+ "start": "ch05_banter_tenders_gate",
+ "nodes": {
+  "ch05_banter_tenders_gate": {
+   "headers": {"location": "ch05/ashcrown"},
+   "ops": [
+    {"op": "line", "id": "ch05_banter_gate_001", "key": "DLG_CH05_BANTER_GATE_001", "speaker": "ysolde", "emotion": "neutral", "voice": "", "src": 6},
+    {"op": "line", "id": "ch05_banter_gate_002", "key": "DLG_CH05_BANTER_GATE_002", "speaker": "ysolde", "emotion": "neutral", "voice": "", "src": 7},
+    {"op": "line", "id": "ch05_banter_gate_003", "key": "DLG_CH05_BANTER_GATE_003", "speaker": "asha", "emotion": "soft_smile", "voice": "", "src": 8},
+    {"op": "line", "id": "ch05_banter_gate_004", "key": "DLG_CH05_BANTER_GATE_004", "speaker": "rhen", "emotion": "surprised", "voice": "", "src": 9},
+    {"op": "line", "id": "ch05_banter_gate_005", "key": "DLG_CH05_BANTER_GATE_005", "speaker": "asha", "emotion": "soft_smile", "voice": "", "src": 10}
+   ]
+  }
+ }
+}

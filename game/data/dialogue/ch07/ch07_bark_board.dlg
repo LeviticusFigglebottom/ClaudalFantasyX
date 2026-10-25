@@ -1,0 +1,9 @@
+// Ch7 B02: the Reefball board in the market, where the Tidecup's draw is chalked (act1_ch07.md §2
+// B02, §5.1). It says only who swims whom at noon; the Reefball agent may hang a pre-match tutorial
+// on this NPC (never between the naming and the match). The vendor's portrait, as the board-caller.
+title: ch07_bark_board
+location: ch07/tamsule
+---
+Vendor as "Board-caller" [neutral]: Tidecup draw! First round at noon: Oruvel against Sorrin, at the Bell. #line:ch07_bark_board_001
+Vendor as "Board-caller" [neutral]: The captains name their dead at the rim first. Be quiet for it. #line:ch07_bark_board_002
+===

@@ -1,0 +1,20 @@
+keys,en
+TITLE_MEMORIES,Memories
+TITLE_HELP_MEMORIES,Relive the scenes you have seen on the road.
+MEMORIES_TITLE,Memories
+MEMORIES_HELP_CHAPTERS,Up and Down: choose a chapter · Confirm or Right: open it · Cancel: back to the title
+MEMORIES_HELP_MEMORIES,Up and Down: choose · Confirm: relive it (hold Cancel to skip) · Left or Cancel: chapters
+MEMORIES_COUNT_FMT,{n} of {m}
+MEMORIES_REMEMBERED_FMT,{n} of {m} remembered
+MEMORIES_CHAPTER_PROLOGUE,Prologue: The Last Time
+MEMORIES_CHAPTER_CH01,Chapter 1: Lamp-Diver
+MEMORIES_CHAPTER_CH02,Chapter 2: Salt on the Tongue
+MEMORIES_CHAPTER_CH03,Chapter 3: The Shell Shrine
+MEMORY_PROLOGUE_DEAD_CITY,The Dead City
+MEMORY_CH01_KELL_STALL,The Sea Owes Me a Favour
+MEMORY_CH01_THE_RISING,The Rising
+MEMORY_CH01_GOING_UNDER,Going Under
+MEMORY_CH02_GIRL_ON_THE_BEACH,The Girl on the Beach
+MEMORY_CH02_PILA_GRANDDAUGHTER,Pila's Granddaughter
+MEMORY_CH03_THE_FIRST_VERSE,The First Verse
+MEMORY_CH03_DOCK_AT_NIGHT,The Dock at Night

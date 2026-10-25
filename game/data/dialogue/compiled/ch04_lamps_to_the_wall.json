@@ -1,0 +1,28 @@
+{
+ "format": 1,
+ "scene": "ch04_lamps_to_the_wall",
+ "source": "game/data/dialogue/ch04/ch04_lamps_to_the_wall.dlg",
+ "start": "ch04_lamps_to_the_wall",
+ "nodes": {
+  "ch04_lamps_to_the_wall": {
+   "headers": {"location": "ch04/haluna_wake"},
+   "ops": [
+    {"op": "cue", "cue": "letterbox", "args": ["on"], "kwargs": {}, "src": 13},
+    {"op": "cue", "cue": "music", "args": ["haluna_night"], "kwargs": {"fade": 2.0}, "src": 14},
+    {"op": "cue", "cue": "camera", "args": ["H02"], "kwargs": {}, "src": 15},
+    {"op": "cue", "cue": "sfx", "args": ["wake_lamps_out"], "kwargs": {}, "src": 16},
+    {"op": "cue", "cue": "wait", "args": [1.5], "kwargs": {}, "src": 17},
+    {"op": "cue", "cue": "anim", "args": ["neme", "carry_food"], "kwargs": {}, "src": 18},
+    {"op": "cue", "cue": "mark", "args": ["toma", "table_lane", "walk"], "kwargs": {}, "src": 19},
+    {"op": "line", "id": "ch04_lamps_001", "key": "DLG_CH04_LAMPS_001", "speaker": "rhen", "emotion": "neutral", "voice": "", "src": 20},
+    {"op": "cue", "cue": "wait", "args": [0.6], "kwargs": {}, "src": 21},
+    {"op": "line", "id": "ch04_lamps_002", "key": "DLG_CH04_LAMPS_002", "speaker": "toma", "emotion": "neutral", "voice": "", "src": 22},
+    {"op": "cue", "cue": "wait", "args": [1.0], "kwargs": {}, "src": 23},
+    {"op": "cue", "cue": "camera", "args": ["H12"], "kwargs": {"blend": 2.0}, "src": 24},
+    {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 25},
+    {"op": "cue", "cue": "letterbox", "args": ["off"], "kwargs": {}, "src": 26},
+    {"op": "cue", "cue": "camera", "args": ["release"], "kwargs": {}, "src": 27}
+   ]
+  }
+ }
+}
