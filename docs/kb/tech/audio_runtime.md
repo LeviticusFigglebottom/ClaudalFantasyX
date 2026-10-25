@@ -153,6 +153,12 @@ foley. Everything it reads is by name, guarded, and listen-only:
   `audio_surface_<surface>`, whose `CollisionShape3D` boxes, spheres, cylinders or capsules hold the feet. Otherwise
   it is the scene's. The surfaces are `sand`, `stone`, `wood` and `water` (shallow wading). No level marks an area
   yet; M3-AUD-810 asks for them.
+- **Ground without level marks (M3-AUD-812):** before the scene's surface, two listen-only reads. First
+  `mesh_surfaces`: a `MeshInstance3D` whose own or parent's name matches a rule's globs (`dock_*` is wood;
+  `Tidepool*` and `*PoolWater` are water) and whose bounds, grown `up_m` over the top and `down_m` under the
+  bottom, hold the feet. LOD meshes are skipped and the walker's zone is rescanned every `rescan_sec`. Then
+  `water_level`: feet under the rest plane of the zone sea (group `hymn_water_level_publishers`, WaterSurface's
+  publishers) by up to `wade_m` wade. A level's own area still wins over both.
 - Followers (`HeroFieldParty`) take no steps: only the leader's controller has a listener.
 
 **Menus (M2-AUD-05).** `UiAudio` watches each node whose script's global class (or a base class) has a hook in
@@ -184,8 +190,8 @@ classes, signals or expressions are never read as sfx ids.
 - The cutscene sequencer keeps its own music player and plays it at `music_volume_db` −8 dB (its stand-in
   setting). A request task asks m2-slice to call `Audio.play_music` instead (M2-AUD-07).
 - The area reverb is per zone, not per position inside a zone (see "Area reverb" below).
-- Footstep surfaces are per scene until a level marks its areas (M3-AUD-802's reader is in; M2-AUD-09 and M3-AUD-810
-  ask Haluna's owners for the dock, the jetty and the shallows).
+- Footstep surfaces come from kit mesh names and the sea level until a level marks its areas (M3-AUD-812). Mesh
+  bounds are coarse: under the Haluna dock the sand also reads as wood. M3-AUD-811 asks the level owners for areas.
 - UI hooks that read a menu's state through `watch` depend on public names (`level`, `root_page()`,
   `model.cursor`). Renaming one silences that sound, which is why `tests/unit/test_field_audio.gd` drives the real
   CommandMenu and FieldMenu.

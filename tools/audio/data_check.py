@@ -303,6 +303,26 @@ def footstep_errors(doc: object, exists, ids: set[str]) -> list[str]:
     areas = doc.get("surface_areas") or {}
     if areas and not (areas.get("group") or areas.get("group_prefix")):
         errs.append(f"{FOOTSTEPS} surface_areas: needs group or group_prefix")
+    meshes = doc.get("mesh_surfaces") or {}  # M3-AUD-812
+    for j, rule in enumerate(meshes.get("rules", [])):
+        w = f"{FOOTSTEPS} mesh_surfaces.rules[{j}]"
+        if rule.get("surface") not in surfaces:
+            errs.append(f"{w}: {rule.get('surface')} is not a surface")
+        pats = rule.get("match")
+        if not isinstance(pats, list) or not pats or not all(isinstance(p, str) and p for p in pats):
+            errs.append(f"{w}.match: a non-empty list of name patterns")
+        for k in ("up_m", "down_m"):
+            if k in rule and (not _num(rule[k]) or rule[k] < 0):
+                errs.append(f"{w}.{k}: a number >= 0")
+    water = doc.get("water_level") or {}
+    if water:
+        if water.get("surface") not in surfaces:
+            errs.append(f"{FOOTSTEPS} water_level.surface: {water.get('surface')} is not a surface")
+        if not water.get("group"):
+            errs.append(f"{FOOTSTEPS} water_level: needs group")
+        for k in ("wade_m", "above_m"):
+            if not _num(water.get(k)) or water[k] < 0:
+                errs.append(f"{FOOTSTEPS} water_level.{k}: a number >= 0")
     if doc.get("default") not in surfaces:
         errs.append(f"{FOOTSTEPS} default: {doc.get('default')} is not a surface")
     for scene, surf in (doc.get("scenes") or {}).items():
