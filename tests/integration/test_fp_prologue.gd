@@ -37,6 +37,9 @@ const GRADE_TOE := 0.0
 ## The lantern rides Rhen's body at chest height (hero_motion.json field.heroes.rhen.carry).
 const LANTERN_REACH_M := 1.8
 const LANTERN_ENERGY := 1.5
+const SETTLE_FRAMES := 90
+const SETTLE_DT := 1.0 / 30.0
+const FACING_TOLERANCE := 0.2
 
 var travels: Array[Array] = []
 var scene: PrologueScene
@@ -225,5 +228,19 @@ func test_the_lantern_catches_and_glimmer_rises() -> void:
 	var mark := scene.stage.mark(&"by_asha")
 	assert_false(mark.find_children("Vfx_glimmer_lift*", "", false, false).is_empty(), "glimmer at Rhen")
 	var rhen := scene.stage.actor(&"rhen")
-	assert_true(rhen.global_position.distance_to(mark.global_position) < ENERGY_TOLERANCE + 0.01, "he has crossed to Asha")
+	assert_true(
+		rhen.global_position.distance_to(mark.global_position) < ENERGY_TOLERANCE + 0.01, "he has crossed to Asha"
+	)
+	var body := rhen.get_node(NodePath(String(HeroFieldActor.NAME))) as HeroFieldActor
+	for i in SETTLE_FRAMES:
+		body.advance(SETTLE_DT)
+	var to_asha := scene.stage.actor(&"asha").global_position - rhen.global_position
+	var want := atan2(-to_asha.x, -to_asha.z)
+	var got := body.visible_yaw()
+	assert_between(
+		angle_difference(got, want),
+		-FACING_TOLERANCE,
+		FACING_TOLERANCE,
+		"his body turns to Asha (%.0f vs %.0f)" % [rad_to_deg(got), rad_to_deg(want)]
+	)
 	_done()
