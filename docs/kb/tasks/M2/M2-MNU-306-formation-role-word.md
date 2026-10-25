@@ -1,7 +1,7 @@
 ---
 id: M2-MNU-306
 title: "A role word for each hero (characters.json) for the Formation page"
-role: design
+role: progression
 status: todo
 owner_session: ""
 reviewer: ui
