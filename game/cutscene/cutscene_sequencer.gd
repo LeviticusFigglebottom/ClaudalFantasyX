@@ -43,6 +43,8 @@ const SWITCH_ON := &"on"
 const DEFAULT_SEED := 1
 ## The energy a light was authored with, kept on it by the first @light (M2-FP-102).
 const META_LIGHT_ENERGY := &"cutscene_authored_energy"
+## Process after the FieldCameraDirector (priority 0), so the breath turns the pose it just set.
+const PROCESS_AFTER_DIRECTOR := 10
 ## cues.json keys this sequencer accepts but does not perform yet; each warns once per scene.
 const UNSUPPORTED_KWARGS := {
 	&"camera": ["grade"],
@@ -94,6 +96,7 @@ var _motions: Dictionary = {}
 ## M2-FP-103: actor -> the posing clip it holds (sequencer.json hold_clips) until its next @anim or @mark;
 ## a held actor's lines don't play talk or idle over the pose.
 var _held: Dictionary = {}
+var _breath: CutsceneCameraBreath
 var _vfx_count := 0
 ## True while a skip fast-forwards (until the next choice or the end).
 var _skipping := false
@@ -126,6 +129,7 @@ static func load_config() -> Dictionary:
 
 
 func _ready() -> void:
+	process_priority = PROCESS_AFTER_DIRECTOR  # M2-FP-104: the camera breath goes on the director's pose
 	_ensure_overlay()
 
 
@@ -262,6 +266,7 @@ func advance(delta: float) -> void:
 		(m["apply"] as Callable).call(t)
 		if t >= 1.0:
 			_motions.erase(key)
+	_breathe(delta)
 	if _wait_left > 0.0:
 		_wait_left -= delta
 		if _wait_left <= 0.0:
@@ -764,6 +769,16 @@ func _play_clip(actor: Node3D, role: StringName) -> void:
 	var clip := StringName(str((config.get("clips", {}) as Dictionary).get(String(role), "")))
 	if clip != &"":
 		HeroMotion.play(actor, clip, _clip_blend(), false)
+
+
+## M2-FP-104: a landed scripted shot breathes (CutsceneCameraBreath); a blend, a skip or the field resets it.
+func _breathe(delta: float) -> void:
+	if _breath == null:
+		_breath = CutsceneCameraBreath.new(config.get("camera_breath", {}) as Dictionary)
+	if not _playing or _fast() or not _director_alive() or not _director.is_scripted() or _director.is_blending():
+		_breath.reset()
+		return
+	_breath.apply(_director.camera, delta)
 
 
 ## M2-FP-103: `clip`, or the built clip sequencer.json clip_stand_ins names for "<actor>/<clip>" while the
