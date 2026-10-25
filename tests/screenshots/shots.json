@@ -2559,6 +2559,14 @@
     {
       "id": "battle_boss_intro_drownbell",
       "scene": "res://game/battle/scene/shots/battle_boss_intro_drownbell.tscn"
+    },
+    {
+      "id": "reefball_hud_choice",
+      "scene": "res://game/ui/reefball/shots/reefball_hud_choice.tscn"
+    },
+    {
+      "id": "reefball_hud_goal",
+      "scene": "res://game/ui/reefball/shots/reefball_hud_goal.tscn"
     }
   ]
 }
