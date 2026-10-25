@@ -245,3 +245,16 @@ Merge the three creature worktrees as they finish (they append to creatures.json
 ## Setup notes
 - `fetch_blender.py` failed twice on truncated debs from the proxy (`dpkg-deb ... unexpected end of file`). Delete the named `.deb` under `~/.cache/hymn/blender-*/debs/` and rerun; it finished on the third pass.
 - `ln -s ~/.cache/hymn/godot-4.6.3+ds-2/godot ~/.local/bin/godot` (and `godot-render`, and `~/.cache/hymn/blender-5.0.1+dfsg-5/blender`).
+
+## NEW ACCOUNT (from 2026-10-25)
+- **MERGE-READY @ {sha}: integration -ze8rrn (de93e79e) merged; item 1 triage, no code change needed.**
+  - `test_post_import.gd` (3 FAIL at handover): **21/0 on a fresh import.** It was a stale `.godot` import cache,
+    not code.
+  - `test_battle_ko_once.gd::test_a_primitive_foe_falls_once_and_is_hidden`: **it fails on the integration head too**
+    (wickfry has glassfry's model since big8). It's **already fixed in lead/gate-big9 by 2e956d3f** (the test now
+    picks any encounter led by a model-less foe), so it clears when big9 lands. Nothing to file.
+  - **Lead, note:** big9 took claude/creatures @ 23f94ed5 (612 only). **611 wildlife and 610 FieldNpc are not in
+    big9**; take this head in big10. The zone wiring (slice-polish) waits on them.
+  - Checks run: validate_data 0/0, taskboard, Godot post_import 21/0, field_npc 10/0, wildlife 10/0, creature 24/0,
+    hero 68/0, battle_ko_once 4/1 (the known one above). Skipped: lint and format (no code change), shots, Blender
+    (nothing changed).
