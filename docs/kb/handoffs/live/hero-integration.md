@@ -206,3 +206,79 @@ when characters reports them.
 
 ## Un-pushed state
 None. The battle trial merge (`hro03-trial`) is local scratch by design.
+
+## STATE AT HANDOVER (2026-10-25)
+Read this section first; everything above is history. The branch is `claude/hero-integration`. It was cut from the
+integration branch at 07781cba and merged with it again at 0b1e76a4. The handover sha is in the last line.
+
+### Done and MERGE-READY (all on this branch, pushed)
+| Task | State | What | Key commits |
+|---|---|---|---|
+| M2-HER-1101 | review (character) | Real Rhen on the field player via one hook line in `FieldController._ready` (`HeroFieldActor.attach(self)`): AnimationTree gait, eased 400°/s turns, idle micro-motion, lantern light carried on his lantern; stage-actor capsules for hero ids get real bodies at runtime (every slice zone, no zone scene edits) | 9e9a3f70, fa411948, e758a9a5 |
+| M2-HER-1102 | review (character) | Asha and Toma followers on Rhen's breadcrumb trail (`HeroFieldParty`) | 7084976e |
+| M2-HER-1104 | review (cinematics) | `HeroMotion` (play / set_locomotion_speed / add_micro_motion), `HeroIdleMicro` (breathing, weight shift, head leads turns), sequencer patch `docs/kb/tech/hero_motion_sequencer.patch` for m2-slice | 408a5bc1, da6dd917 |
+| M2-HER-1107 | review (character) | Gait clips from characters' M2-CHR-12: starts and stops by distance, turns in place on `root_yaw_deg`, idle_shift; duck-typed (no-ops without the clips); ADR 0191 field speeds walk 1.0 / run 3.6 m/s | 17081887, c04639bf, ADR 0191 |
+| M3-AUD-810 (audio's request) | done here | `HeroFieldActor.foot_contact(foot, run)` from footfall markers | 696fa2f9 |
+| ADR 0190 | proposed | the hero motion layer | 34f0ce2e (renumbered in 0c86e694) |
+
+- **Last full Godot suite:** 1996/0 on 555714d3.
+- **Scoped since then on 6c8a0ec2:** hero 68/0 (+5 hero_foot), field 112/0, zone 42/0, fp_ 24/0, haluna 46/0, cutscene 41/0.
+- **Shots:** field_hero_rhen_walk, field_hero_party, field_hero_gait_strip, hero_cutscene_turn_strip,
+  field_lane_fixed, field_court_pan and field_causeway_dolly are approved after viewing. The shrine_s01..05 shots
+  are unchanged.
+- **Known pre-existing flake:** `test_shrine_audio::test_the_zone_plays_the_shrine_cue` fails in a filtered run on
+  the pristine integration branch too; it passes in the full suite.
+
+### In progress or waiting (nothing is half-written in code)
+- **M2-HER-1103 battle heroes (doing).**
+  - Built and on this branch: the `HeroBattleActor` wrapper scenes `game/hero_motion/battle/<hero>_battle_actor.tscn`
+    (per-pair clip cross-fades, offset idle phase, micro-motion; 6d5fcf4a).
+  - They take effect only when UI repoints `game/data/ui/battle_sandbox.json` stand_ins `scene` at them. UI agreed
+    to do it after this branch reaches the integration branch.
+  - UI's KO no-sink fix is on claude/ui 781f9da6.
+  - Patches still waiting for their owners:
+    - battle-presentation tests: `docs/kb/tech/hero_battle_proposed.patch`;
+    - the battle shot rig (stage, scenes and rows for battle_heroes_*): `docs/kb/tech/hero_battle_shots.patch`. It
+      was taken from a local trial merge that is not pushed; apply it after ui, characters and battle-presentation
+      merge, then capture, view and approve.
+- **M2-HER-1105 clip gaps (doing, owned by characters).**
+  - Locomotion clips landed as M2-CHR-12 on claude/characters eee3099a+ (MERGE-READY, not yet on the integration
+    branch).
+  - Battle fixes are pending as M2-CHR-513: a livelier victory, a lying-down KO, Rhen's hooks in hand, and a ~0.8 s
+    revive.
+  - Also requested: Rhen's forward arm reaches out at shoulder height in the run; lower its peak.
+- **M2-HER-1106 shots and tests (doing):** only the battle shots remain (see 1103).
+
+### EXACT next steps for the new owner
+1. **Lead:** gate and merge `claude/hero-integration`. Then merge claude/characters (M2-CHR-12), claude/ui and
+   claude/battle-presentation, then **re-approve after viewing** field_hero_rhen_walk, field_hero_party and
+   field_hero_gait_strip, which change with the new clips.
+2. **m2-slice** then applies `docs/kb/tech/hero_motion_sequencer.patch` (against claude/m2-slice 94feee33+).
+   Agreed in the same change: sequencer.json walk_mps 1.3 → 1.0, and `_cue_mark` calls
+   `HeroMotion.set_locomotion_speed(actor, run_mps)` at the start of a run move.
+3. **UI** repoints the battle stand_ins at `game/hero_motion/battle/*_battle_actor.tscn` and re-approves the battle
+   shots. battle-presentation takes the 4 test-only diffs in `hero_battle_proposed.patch` (its tests assume capsule
+   heroes once UI-07's data lands).
+4. **Hero track:**
+   - apply `hero_battle_shots.patch`, capture battle_heroes_{idle,attack,hit,ko,victory,cast,finisher}, view and
+     approve;
+   - when M2-CHR-513 lands, re-check KO, victory and revive;
+   - consider staggering the victory clips (a BattleOutro suggestion to battle-presentation).
+5. **Field polish backlog:**
+   - after a teleport next to a wall, a follower can briefly stand inside it;
+   - a cutscene `@move` can't tell its target speed, so it only gets a run start if the sequencer sets it (step 2).
+
+### Gotchas
+- **API consumers; keep these signatures, or tell the owners first:**
+  - creatures' FieldNpc (M3-CRE-610): HeroLocomotion new/configure/reset_yaw/step_yaw/step_speed/weights;
+    HeroMotion.play/add_micro_motion/set_locomotion_speed; HeroIdleMicro.
+  - audio: `foot_contact`, `HeroBody`, `hero_id`, and the tree node names loco / act_a / act_b / ts_a / ts_b / mode.
+  - m2-slice's patch: HeroMotion and `play_clip`.
+- **Ownership:** game/cutscene/** is m2-slice's; battle_sandbox.json and fighter_stand_in.gd are UI's; clips are
+  characters'. This track only edited the one FieldController hook line and the field_movement.json speed rows,
+  with m2-slice's OK.
+- The visible body is `top_level` and follows its source node. Gameplay (collision, interaction, encounters)
+  still uses the FieldController.
+- Never merge claude/characters into this branch just to test: it's ~340 files. Use a local trial merge (that is
+  what `her1107-trial` and `hro03-trial` were; they're local scratch and were not pushed).
+- send_message to the Lead's session was refused ("trusted device"); this live log was the channel.
