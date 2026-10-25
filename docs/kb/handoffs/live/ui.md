@@ -28,6 +28,14 @@ UI track (cloud session session_01NyuYPSZn7o7gYirTvz4zjs), branch `claude/ui`, s
   7. **Reefball HUD (M3-UI-01): waits for big8.**
 - **Cross-track gap, for the Lead and Audio:** after big7, `validate_data` has 14 errors and `test_voice_audio` fails. voices.json has no rows for m2-slice's new speakers (boatman, crowd, fenn, ferryman, ferrymaster, garo, hobb, ione, marra, poolkeeper, stillguard, tavi, tender, townsfolk). claude/audio already has them; the gap closes when audio reaches integration. The Menus track has told Audio as well.
 - **Merge note:** after merging claude/ui, run `godot --import`; there are new class_names (UiFrame, TextFitProbe, PseudoLoc).
+- **M3-UI-01 (Reefball HUD): review, held for big8.** It lives on local branch `ui/reefball-big8` @ fb685ac1 (= worktree-agent-a7467349dde9740ca), which is claude/ui 1b0d5eb2 plus the merge of `origin/lead/gate-big8` (6624f237) plus the HUD.
+  - **The HUD:** `game/ui/reefball/` (ReefballHud, ReefballHudController, side panel and drop view), with `reefball_hud.json` and `reefball_hud.csv`. Shots `reefball_hud_choice` and `reefball_hud_goal` were viewed and approved; reefball filter 67/0, battle 615/0, pseudo 21/0, aspect 13/0.
+  - **Also on that branch, needed for the big8 + claude/ui merge:**
+    - hero-integration's proposed choreo test hunks, ported verbatim: big8's battle-presentation tests assume capsule heroes;
+    - a TextFitProbe fix: big8's Lattice Whole board button made a false overflow on the page title.
+  - **Requests filed:** M3-RBL-201 (combat: preview() fields for the HUD).
+  - **Id collision, for the Lead:** big8 renumbers the bestiary-portrait task to `M2-UI-28-bestiary-creature-portrait.md`, but claude/ui's M2-UI-28 is pseudo-localisation; on claude/ui the portrait task is still `M2-UI-26-bestiary-creature-portrait.md`. Suggestion: give the portrait **M2-UI-201** at the big8 merge and drop the other two copies.
+  - **Next step once big8 is on integration:** merge integration into claude/ui, then `git merge ui/reefball-big8`, keeping claude/ui's battle baselines and recapturing them. If this container is gone, recreate it: merge integration into claude/ui and redo M3-UI-01 from the task file's notes.
 - **MERGE-READY @ 2bd80fe5** (supersedes 62d38cad):
   - **What changed:** integration (M3-CMB-02, M2-ARC-12) is merged into claude/ui.
   - **Conflicts:**
@@ -152,8 +160,81 @@ UI track (cloud session session_01NyuYPSZn7o7gYirTvz4zjs), branch `claude/ui`, s
   - **M3-UI-01 (Reefball HUD):** no Reefball engine on any branch yet.
 
 ## Exact next step
-- When big8 (Reefball) lands on integration, merge it and do M3-UI-01, the Reefball HUD.
-- Until then, the queue is empty apart from big8. Pick M3 UI work from `python3 tools/taskboard.py --role ui`.
+- When big8 is on integration, merge integration into claude/ui, then merge `ui/reefball-big8`. Recapture the battle shots, then view and re-approve them.
+- When claude/hero-integration is on integration, repoint the hero `stand_ins` at the `*_battle_actor.tscn` wrappers and re-approve the battle shots.
+- When M3-CRE-201 lands, drop the temporary model registration in `test_battle_part_cues.gd`.
+- Otherwise, pick M3 UI work from `python3 tools/taskboard.py --role ui`.
 
 ## Un-pushed state
-- None.
+- Local branch `ui/reefball-big8` @ fb685ac1 (M3-UI-01 on top of the big8 gate). It cannot be pushed to claude/ui before big8 is on integration; see above.
+
+## STATE AT HANDOVER (2026-10-25)
+
+UI track, branch `claude/ui`; the integration branch is `claude/undertow-lead-handoff-423ixt`. Nothing is running: no subagents and no background jobs.
+
+### Done and merge-ready
+- **claude/ui @ 2bd80fe5 is MERGE-READY.** Every commit after it is docs or handoff only. The full Godot suite is 2176 run, 1 failed: `test_voice_audio` (voices.json lacks 14 m2-slice speakers; claude/audio has the fix, and big8 already carries it).
+- **In review on claude/ui:**
+  - M2-UI-07 (hero actor scenes in battle);
+  - M2-UI-26 input parity, and M2-UI-26 bestiary creature portrait (two tasks share this id; see Open questions);
+  - M2-UI-27, M2-UI-28 (pseudo-loc), M2-UI-29 (aspect), M2-UI-30 (subtitles);
+  - M3-UI-02 (Audio page), M3-UI-03 (codex), M3-UI-04 (Act I maps);
+  - M2-AUD-08, M3-C05-07 (Matron Crust cues), M3-C09-05 (Ch9 HoldPrompt / ActCard / CharacterNames);
+  - M2-UI-03 and M2-UI-08 to M2-UI-25 from earlier.
+- **After merging claude/ui:** run `godot --import`. New class_names: UiFrame, TextFitProbe, PseudoLoc, HoldPrompt, ActCard, CharacterNames, BattlePartCues, BestiaryPortraitSlot.
+
+### In progress (not on claude/ui yet)
+- **M3-UI-01, the Reefball HUD: done, status review (reviewer lead), but built on top of `origin/lead/gate-big8`.**
+  - **Where it lives:**
+    - as a patch on claude/ui: `docs/kb/handoffs/live/patches/ui-reefball-big8.patch` (4 commits, `git format-patch --binary`);
+    - the same commits on local branch `ui/reefball-big8` @ fb685ac1, which is gone once this container is.
+  - **How the patch was checked:** it applies with `git am --3way` onto the big8 merge commit (`6624f237`: claude/ui 1b0d5eb2 merged with gate-big8) and gives a byte-identical tree.
+  - **The 4 commits:**
+    1. the HUD: `game/ui/reefball/`, `game/data/ui/reefball_hud.json`, `game/data/loc/reefball_hud.csv` plus one project.godot translations entry, tests, and the shots `reefball_hud_choice` and `reefball_hud_goal`;
+    2. the M3-RBL-201 request (and M3-MNU-201, which commit 4 removes);
+    3. hero-integration's choreo test hunks, ported verbatim;
+    4. a TextFitProbe fix plus `tests/unit/test_text_fit_probe.gd`.
+  - **Gates on that branch:** reefball 67/0, battle 615/0, pseudo 21/0, aspect 13/0, input_parity 55/0, validate_data 0 errors.
+
+### Exact next steps, in priority order
+1. **When big8 is on integration:**
+   - Merge integration into claude/ui. Resolve conflicts as below.
+     - PNG baselines: take ours.
+     - `baselines.json` and `shots.json`: JSON union by key or id.
+     - `balance_report.md`: keep both sides, or regenerate it.
+   - Run `git am --3way docs/kb/handoffs/live/patches/ui-reefball-big8.patch`. If it conflicts, apply the patch per file, or redo the work from the M3-UI-01 task notes.
+   - Recapture every `battle*` shot and `drownbell_flood` twice. Check the two runs are pixel-identical, view them, then re-approve.
+   - Run the full suite, then write MERGE-READY.
+2. **The bestiary-portrait task id:** big8 renames it to `M2-UI-28-bestiary-creature-portrait.md`, which collides with pseudo-loc's M2-UI-28. Give it **M2-UI-201** and delete the other copies (the M2-UI-26 and M2-UI-28 portrait files).
+3. **When claude/hero-integration is on integration:**
+   - Point `battle_sandbox.json` stand_ins rhen, asha and toma at `res://game/hero_motion/battle/<hero>_battle_actor.tscn`. The diff is `docs/kb/tech/hero_battle_proposed.patch` on that branch; its set_ko and test hunks are already in.
+   - Re-approve the battle shots after viewing them.
+4. **When M3-CRE-201 lands** (cinder_matron's `model` in enemies.json): drop the temporary `CreatureModels` registration in `tests/unit/test_battle_part_cues.gd`, and check the Ch5 boss shot.
+5. **When M3-C09-09 lands** (the `act_card` event): M3-C09-201 (cinematics) wires `ActCard.listen(seq)`.
+6. **Then:** M3 UI work from `python3 tools/taskboard.py --role ui`, and the reviews of the tasks above.
+
+### Open questions (for the Lead)
+- Duplicate ids:
+  - M2-UI-26 (input parity, and the bestiary portrait);
+  - M2-UI-28 (pseudo-loc, and the portrait as renamed in big8).
+- M3-RBL-201 (combat): fields in the Reefball engine's `preview()` that the HUD wants (who contests, fetches, stakes_key), and whether `strokes_left` may go below 0.
+- Speaker names are all gold, not one colour per hero: no four palette colours stay distinct under every colour-vision type (M2-UI-30 notes).
+
+### Known bugs and gaps
+- `test_voice_audio` and validate_data's 14 voice errors. Fixed by claude/audio and in big8.
+- `test_shrine_audio::test_the_zone_plays_the_shrine_cue` fails when run alone (no `flush_pending`). Fixed on claude/audio.
+- M3-C05-07 does nothing in play until M3-CRE-201 lands.
+- The ActCard is not shown at B11 until M3-C09-201 lands.
+- Pell has no `characters.json` row yet (M3-C09-07); a raw id would show once he joins a party.
+- The dialogue box is 2260 px wide at 21:9 (M2-ARC-09, architect).
+- Status and Customize overflow at 130 % text (M2-MNU-11, menus).
+- Cutscene choices do not follow the text size (M2-FP-29).
+
+### Gotchas
+- **Re-import after a merge:** after any merge that adds class_names, run `godot --import`. Otherwise scripts fail with "Identifier not declared", and a test run before the import is meaningless.
+- **Don't change files during a run:** capture and the test suite read the working tree live. A merge or a data edit during a run mixes versions, and `AudioData.table` caches JSON at startup.
+- **Heroes are models now:** battle_controller.gd is at 990 of its 1000-line cap, so put new battle-scene logic in helpers. Tests that want a primitive should build Ysolde, who is still a capsule.
+- **`tools/dev/merge_union.py`** crashes on binaries. Resolve the PNGs first.
+- **The Lead can't be messaged directly:** send_message to the Lead fails with `elevated_session_untrusted_device`, so this file is the channel.
+
+**HANDOVER DONE @ a8c8a9d2** (2026-10-25). claude/ui is pushed, the working tree is clean, and no agents or jobs are running.
