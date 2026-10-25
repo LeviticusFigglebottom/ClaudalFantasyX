@@ -1,0 +1,7 @@
+[gd_resource type="StandardMaterial3D" load_steps=1 format=3]
+
+[resource]
+resource_name = "ou_brass"
+albedo_color = Color(0.6902, 0.5529, 0.3412, 1)
+metallic = 0.85
+roughness = 0.42

@@ -1,0 +1,33 @@
+{
+  "codex": {
+    "doc": "The lore codex (M3-UI-03, SPEC §6.11; docs/kb/tech/ui.md section Lore codex). 'categories' are listed in this order, each with name_key and desc_key. An entry is {id, category, title_key, body_key, unlock}; entries show in file order within their category. 'unlock' is one of {\"flag\": <declared story flag>} (shown once the flag is set), {\"record\": true} (a text record found in the field: an Interactable whose payload is {\"record\": \"<id>\"} sets its seen flag codex_<id>_found), or {\"always\": true}. Every entry also has a read flag codex_<id>_read (the 'New' marker until it is opened). Both flags are declared in game/data/flags.tres; validate_data.py (check_codex) checks categories, flags, loc keys and unique ids. Text lives in game/data/loc/codex.csv. Narrative reviews and extends the entries (M3-NAR-01).",
+    "categories": [
+      {"id": "world", "name_key": "CODEX_CAT_WORLD", "desc_key": "CODEX_CAT_WORLD_DESC"},
+      {"id": "places", "name_key": "CODEX_CAT_PLACES", "desc_key": "CODEX_CAT_PLACES_DESC"},
+      {"id": "people", "name_key": "CODEX_CAT_PEOPLE", "desc_key": "CODEX_CAT_PEOPLE_DESC"},
+      {"id": "records", "name_key": "CODEX_CAT_RECORDS", "desc_key": "CODEX_CAT_RECORDS_DESC"}
+    ],
+    "entries": [
+      {"id": "glimmer", "category": "world", "title_key": "CODEX_GLIMMER_TITLE", "body_key": "CODEX_GLIMMER_BODY",
+       "unlock": {"always": true}},
+      {"id": "undertow", "category": "world", "title_key": "CODEX_UNDERTOW_TITLE", "body_key": "CODEX_UNDERTOW_BODY",
+       "unlock": {"flag": "ch02_met_asha"}},
+      {"id": "vowbound", "category": "world", "title_key": "CODEX_VOWBOUND_TITLE", "body_key": "CODEX_VOWBOUND_BODY",
+       "unlock": {"flag": "ch03_ilun_bound"}},
+      {"id": "haluna", "category": "places", "title_key": "CODEX_HALUNA_TITLE", "body_key": "CODEX_HALUNA_BODY",
+       "unlock": {"flag": "ch02_met_asha"}},
+      {"id": "saltgrass_causeway", "category": "places", "title_key": "CODEX_CAUSEWAY_TITLE",
+       "body_key": "CODEX_CAUSEWAY_BODY", "unlock": {"flag": "ch03_causeway_arrived"}},
+      {"id": "shell_shrine", "category": "places", "title_key": "CODEX_SHELL_SHRINE_TITLE",
+       "body_key": "CODEX_SHELL_SHRINE_BODY", "unlock": {"flag": "ch03_shrine_door_open"}},
+      {"id": "asha", "category": "people", "title_key": "CODEX_ASHA_TITLE", "body_key": "CODEX_ASHA_BODY",
+       "unlock": {"flag": "ch02_met_asha"}},
+      {"id": "toma", "category": "people", "title_key": "CODEX_TOMA_TITLE", "body_key": "CODEX_TOMA_BODY",
+       "unlock": {"flag": "ch02_met_asha"}},
+      {"id": "causeway_notice", "category": "records", "title_key": "CODEX_CAUSEWAY_NOTICE_TITLE",
+       "body_key": "CODEX_CAUSEWAY_NOTICE_BODY", "unlock": {"record": true}},
+      {"id": "basin_steps", "category": "records", "title_key": "CODEX_BASIN_STEPS_TITLE",
+       "body_key": "CODEX_BASIN_STEPS_BODY", "unlock": {"record": true}}
+    ]
+  }
+}

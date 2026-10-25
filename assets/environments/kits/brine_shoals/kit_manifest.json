@@ -1,0 +1,326 @@
+{
+  "generator": "assets_src/environments/kits/brine_shoals/build.py",
+  "kit": "brine_shoals",
+  "pieces": {
+    "arena_derelict_deck": {
+      "budget": [
+        60000,
+        8000
+      ],
+      "bytes": 1943120,
+      "lods": {
+        "arena_derelict_deck": 29264,
+        "arena_derelict_deck-lod1": 3262
+      }
+    },
+    "branding_brazier": {
+      "budget": [
+        3500,
+        350
+      ],
+      "bytes": 72756,
+      "lods": {
+        "branding_brazier": 764,
+        "branding_brazier-lod1": 97
+      }
+    },
+    "brine_vat": {
+      "budget": [
+        7000,
+        700
+      ],
+      "bytes": 130296,
+      "lods": {
+        "brine_vat": 2224,
+        "brine_vat-lod1": 36
+      }
+    },
+    "brine_vat_burned": {
+      "budget": [
+        7000,
+        700
+      ],
+      "bytes": 129464,
+      "lods": {
+        "brine_vat_burned": 2144,
+        "brine_vat_burned-lod1": 36
+      }
+    },
+    "camp_hard": {
+      "budget": [
+        4200,
+        400
+      ],
+      "bytes": 116128,
+      "lods": {
+        "camp_hard": 3456,
+        "camp_hard-lod1": 160
+      }
+    },
+    "camp_tent": {
+      "budget": [
+        9000,
+        900
+      ],
+      "bytes": 96668,
+      "lods": {
+        "camp_tent": 1856,
+        "camp_tent-lod1": 8
+      }
+    },
+    "camp_tent_burned": {
+      "budget": [
+        9000,
+        900
+      ],
+      "bytes": 123780,
+      "lods": {
+        "camp_tent_burned": 1886,
+        "camp_tent_burned-lod1": 8
+      }
+    },
+    "channel_straight_a": {
+      "budget": [
+        4800,
+        400
+      ],
+      "bytes": 158624,
+      "lods": {
+        "channel_straight_a": 4608,
+        "channel_straight_a-lod1": 392
+      }
+    },
+    "channel_straight_b": {
+      "budget": [
+        4800,
+        400
+      ],
+      "bytes": 158624,
+      "lods": {
+        "channel_straight_b": 4608,
+        "channel_straight_b-lod1": 392
+      }
+    },
+    "crate_stack": {
+      "budget": [
+        6000,
+        600
+      ],
+      "bytes": 146360,
+      "lods": {
+        "crate_stack": 2176,
+        "crate_stack-lod1": 48
+      }
+    },
+    "crate_stack_burned": {
+      "budget": [
+        6000,
+        600
+      ],
+      "bytes": 156212,
+      "lods": {
+        "crate_stack_burned": 2104,
+        "crate_stack_burned-lod1": 48
+      }
+    },
+    "lamp_burial": {
+      "budget": [
+        2400,
+        200
+      ],
+      "bytes": 28420,
+      "lods": {
+        "lamp_burial": 440,
+        "lamp_burial-lod1": 36
+      }
+    },
+    "liss_crate": {
+      "budget": [
+        2500,
+        250
+      ],
+      "bytes": 55976,
+      "lods": {
+        "liss_crate": 732,
+        "liss_crate-lod1": 12
+      }
+    },
+    "mudflat_far": {
+      "budget": [
+        3600,
+        900
+      ],
+      "bytes": 76408,
+      "lods": {
+        "mudflat_far": 1824,
+        "mudflat_far-lod1": 456
+      }
+    },
+    "mudflat_patch_a": {
+      "budget": [
+        4800,
+        320
+      ],
+      "bytes": 155304,
+      "lods": {
+        "mudflat_patch_a": 4608,
+        "mudflat_patch_a-lod1": 288
+      }
+    },
+    "mudflat_patch_b": {
+      "budget": [
+        4800,
+        320
+      ],
+      "bytes": 155300,
+      "lods": {
+        "mudflat_patch_b": 4608,
+        "mudflat_patch_b-lod1": 288
+      }
+    },
+    "plank_walk": {
+      "budget": [
+        1200,
+        160
+      ],
+      "bytes": 17496,
+      "lods": {
+        "plank_walk": 256,
+        "plank_walk-lod1": 12
+      }
+    },
+    "salvage_pile": {
+      "budget": [
+        7000,
+        700
+      ],
+      "bytes": 85524,
+      "lods": {
+        "salvage_pile": 1644,
+        "salvage_pile-lod1": 34
+      }
+    },
+    "salvage_pile_burned": {
+      "budget": [
+        7000,
+        700
+      ],
+      "bytes": 138776,
+      "lods": {
+        "salvage_pile_burned": 2354,
+        "salvage_pile_burned-lod1": 34
+      }
+    },
+    "salvage_rack": {
+      "budget": [
+        9000,
+        900
+      ],
+      "bytes": 103476,
+      "lods": {
+        "salvage_rack": 1896,
+        "salvage_rack-lod1": 224
+      }
+    },
+    "salvage_rack_burned": {
+      "budget": [
+        9000,
+        900
+      ],
+      "bytes": 134844,
+      "lods": {
+        "salvage_rack_burned": 2240,
+        "salvage_rack_burned-lod1": 152
+      }
+    },
+    "smoke_plume": {
+      "budget": [
+        1200,
+        200
+      ],
+      "bytes": 36840,
+      "lods": {
+        "smoke_plume": 936,
+        "smoke_plume-lod1": 60
+      }
+    },
+    "tideline_wrack": {
+      "budget": [
+        5000,
+        300
+      ],
+      "bytes": 252516,
+      "lods": {
+        "tideline_wrack": 4576,
+        "tideline_wrack-lod1": 108
+      }
+    },
+    "white_barge": {
+      "budget": [
+        12000,
+        1200
+      ],
+      "bytes": 151480,
+      "lods": {
+        "white_barge": 2544,
+        "white_barge-lod1": 108
+      }
+    },
+    "wreck_bow": {
+      "budget": [
+        9000,
+        900
+      ],
+      "bytes": 171012,
+      "lods": {
+        "wreck_bow": 3162,
+        "wreck_bow-lod1": 120
+      }
+    },
+    "wreck_hull_section": {
+      "budget": [
+        12000,
+        1200
+      ],
+      "bytes": 246208,
+      "lods": {
+        "wreck_hull_section": 4776,
+        "wreck_hull_section-lod1": 116
+      }
+    },
+    "wreck_mast_fallen": {
+      "budget": [
+        5000,
+        500
+      ],
+      "bytes": 31064,
+      "lods": {
+        "wreck_mast_fallen": 528,
+        "wreck_mast_fallen-lod1": 54
+      }
+    },
+    "wreck_mast_standing": {
+      "budget": [
+        4000,
+        400
+      ],
+      "bytes": 26952,
+      "lods": {
+        "wreck_mast_standing": 419,
+        "wreck_mast_standing-lod1": 41
+      }
+    },
+    "wreck_ribs_large": {
+      "budget": [
+        5000,
+        500
+      ],
+      "bytes": 45364,
+      "lods": {
+        "wreck_ribs_large": 754,
+        "wreck_ribs_large-lod1": 168
+      }
+    }
+  },
+  "schema": "hymn-kit/1"
+}

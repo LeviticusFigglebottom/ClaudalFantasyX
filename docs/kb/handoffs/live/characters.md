@@ -4,6 +4,37 @@
 `claude/characters` (cut from `claude/undertow-lead-handoff-423ixt` at 952ef7c). The Lead reads it hourly.
 
 ## Now
+- **MERGE-READY @ e253f302 (CHR-14 braid and clipping, villagers, Rhen and Toma, host determinism).**
+  - **Full `tools/ci_local.sh` at ad6e232:** merged with the integration branch, run with `taskset -c 0-3`, HYMN_BLENDER_REQUIRED=1, every shot and its own HYMN_LOG_DIR. It exited 0:
+    - 580 tool tests, 1459 Godot tests;
+    - 120 shots compared, 0 failed;
+    - Blender identical: asha 44, rhen 31, toma 38, and the 7 villager jobs (34 + 6×30).
+  - **What changed between ad6e232 and e253f302:** your 1-ULP head UV fix only. `quantize_uvs` puts Asha's head and body UVs on a 2^-16 grid right after the unwrap, before the bake dump and the export.
+  - **Scoped re-check for that delta:**
+    - `verify --job asha` under taskset (4 CPUs): 44 identical;
+    - the GLBs are identical with numpy's AVX-512 and AVX2 paths;
+    - the 18 asha_* shots pass unchanged (max RMSE 0.00797, asha_front, the same as before);
+    - test_asha and test_rig_integrity: OK.
+  - **Threads:** pinned at 4 on every character and villager job (ad6e232).
+- **Later heads (docs plus your branch only):** the M3 design sheets merge (Ysolde, Sefir, Liss, Tavi Orse, Mother Kell; M3-CHR-01 to 04) and an integration-branch merge that touches no character file.
+  - Per the new gate rules I stopped the second full `ci_local`. Scoped checks: `character_shading` 17/17, validate_data and taskboard OK.
+- **MERGE-READY @ (this commit): M2-CHR-07, the hero battle clip set** (review: combat). Handoff: 2026-10-24-character-12.md.
+  - Asha, Rhen and Toma each have the battle track's 12 contract clips: in place, with a `contact` Animation marker at contact_at.
+  - **Scoped gates:**
+    - tools/tests 590 OK;
+    - test_rig_integrity 34 OK;
+    - hero_stage 6/6 and post_import 19/19;
+    - verify asha 44, rhen 31, toma 38 identical (the existing clip sub-resources are byte-identical);
+    - asha_clip_*, rhen_clip_*, toma_clip_* and the battle_idle shots pass;
+    - 3 new shots (`<hero>_battle_attack`), viewed and approved.
+  - **Ratchet:** Asha's VerseSleeve count limit rose 4 → 6 (sleeve-top vertices under the sleeve at hit and defend; viewed). The depth limit is unchanged.
+  - **Requests sent to the battle track:** read the `contact` marker (contact currently lands late), finisher and support per-style timing, and ko revive.
+  - **The battle track has wired all three:** strikes land on the `contact` marker, the shared finisher and cast clips are fine, and a revive returns a hero to idle. **To do:** review M2-BPR-10 (their placeholder battle poses; reviewer: character) once claude/battle-presentation and this branch meet on the integration branch.
+- **In flight, two worktree sub-agents:** M3-CHR-01 Ysolde (hero) and M3-CHR-02 Sefir (hero).
+- **From the M3 sheets:**
+  - Liss is a party member, so she is on the hero path; she stays in M3-CHR-03.
+  - Mother Kell is Oruvel's chandler, not the diver. The story corrected this; glossary rows 195 and 254 are stale.
+  - Ysolde's Swell input is Glyph Trace.
 - **Blocker cleared (d523d43):** Toma's mouth/teeth/tongue are on `character_mouth`; the integration branch is merged;
   `--filter=character_shading` 17/17, hero_stage 6/6, post_import 19/19; `verify --job toma` 38 identical. Ready to merge.
   (send_message to the Lead was refused: "needs a trusted device", so this log is the channel.)

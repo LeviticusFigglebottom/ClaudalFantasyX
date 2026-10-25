@@ -21,7 +21,7 @@ DEFAULT_KEYS = {"idle", "hit", "ko", "loop", "blend_sec", "clip_by_kind", "clip_
                 "stand_in", "phases", "break_parts", "portrait", "contact"}
 ROW_KEYS = DEFAULT_KEYS | {"scene"}
 STAND_IN_KEYS = {"yaw_deg"}
-PHASE_KEYS = {"clip", "idle", "offset_m", "tilt_deg", "sec", "show", "hide", "hide_after"}
+PHASE_KEYS = {"clip", "idle", "offset_m", "tilt_deg", "sec", "show", "hide", "hide_after", "clips"}
 PART_KEYS = {"whole", "broken"}
 PORTRAIT_KEYS = {"clip", "clip_time", "yaw_deg", "pitch_deg", "fov_deg", "margin"}
 
@@ -92,6 +92,9 @@ def _row_errors(w: str, row: dict, skills: set[str], phase_ids: set[str] | None)
         for k in ("show", "hide", "hide_after"):
             if k in p and not (isinstance(p[k], list) and all(isinstance(n, str) and n for n in p[k])):
                 errs.append(f"{pw}.{k}: must be a list of node names")
+        if "clips" in p and not (isinstance(p["clips"], dict)
+                                 and all(isinstance(a, str) and a and isinstance(b, str) and b for a, b in p["clips"].items())):
+            errs.append(f"{pw}.clips: must map clip names to clip names")
         if "sec" in p and not (_num(p["sec"]) and p["sec"] >= 0):
             errs.append(f"{pw}.sec: must be a number >= 0")
     parts = row.get("break_parts", {})

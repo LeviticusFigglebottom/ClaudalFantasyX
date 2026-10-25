@@ -1,4 +1,4 @@
-"""M2-ENV-10: the Shell Shrine ships its baked GI (ADR 0029), so the baked files must exist, be listed in
+"""M2-ENV-13: the Shell Shrine ships its baked GI (ADR 0029), so the baked files must exist, be listed in
 PROVENANCE.md, be named by the trial data, and not be stale against their inputs.
 Run: python3 -m unittest discover -s tools/tests"""
 import json

@@ -19,13 +19,36 @@ extends RefCounted
 ##   water        the spring, the four basins, the octagonal inner pool and the side pool.
 ##   rims         the basins' and pools' kerbs; channels: the troughs between them (channel_w).
 ##   structures   the chamber door.
+## greybox_layout (a GreyboxZone's layout JSON, M3-UI-04; every Act I greybox zone): each block's
+##   footprint (its size turned by its yaw, Basis(UP, yaw), as GreyboxZone builds it), sorted by
+##   its height against zone_map_menu.json "greybox": a block whose top is at most floor_top_m is
+##   a floor (solid) or a pad (not solid: lanes, quays, plates); a solid block above that is a
+##   building, or a structure when it is at most wall_thick_m across (walls, rails); posts no
+##   wider than post_max_m, solid blocks that start overhead_m up, and other non-solid blocks
+##   (lamps, sails, glows) are left off. The zone's shape_hints (zone_maps.json) name blocks by
+##   id where the height alone would read them wrong: "sea" (open water under everything: the
+##   harbour, the river), "water", "floors", "pads", "buildings", "structures" and "skip".
 ## Every polygon is a PackedVector2Array of world (x, z) points.
 
 const KIND_HALUNA := &"haluna_layout"
 const KIND_SHRINE := &"shell_shrine_trial"
+const KIND_GREYBOX := &"greybox_layout"
+## A greybox block's map layer (greybox_layer); the hint lists in shape_hints use these names.
+const LAYER_SEA := &"sea"
+const LAYER_WATER := &"water"
+const LAYER_FLOOR := &"floors"
+const LAYER_PAD := &"pads"
+const LAYER_BUILDING := &"buildings"
+const LAYER_STRUCTURE := &"structures"
+const LAYER_SKIP := &"skip"
+const HINT_LAYERS: Array[StringName] = [
+	LAYER_SEA, LAYER_WATER, LAYER_FLOOR, LAYER_PAD, LAYER_BUILDING, LAYER_STRUCTURE, LAYER_SKIP
+]
 const STYLE_BUILDING := "building"
 const OCTAGON := 8
 
+## Open water drawn under everything else (a greybox zone's hinted sea blocks).
+var seas: Array[PackedVector2Array] = []
 var land: Array[PackedVector2Array] = []
 var floors: Array[PackedVector2Array] = []
 var sand: Array[PackedVector2Array] = []
@@ -46,9 +69,16 @@ var sea := false
 
 ## The shapes of a zone whose source is `source` (MapModel.shape_source), read as `kind`.
 ## `visible`: the world rectangle the view can show (land closes past it). `metrics`: the map
-## block of zone_map_menu.json; `pieces`: its "pieces" block.
+## block of zone_map_menu.json; `pieces`: its "pieces" block. `greybox`: its "greybox" block and
+## `hints`: the zone's shape_hints (both read only for a greybox layout).
 static func build(
-	kind: StringName, source: Dictionary, visible: Rect2, metrics: Dictionary, pieces: Dictionary
+	kind: StringName,
+	source: Dictionary,
+	visible: Rect2,
+	metrics: Dictionary,
+	pieces: Dictionary,
+	greybox: Dictionary = {},
+	hints: Dictionary = {}
 ) -> ZoneMapShapes:
 	var s := ZoneMapShapes.new()
 	match kind:
@@ -56,6 +86,8 @@ static func build(
 			s._haluna(source, visible, metrics, pieces)
 		KIND_SHRINE:
 			s._shrine(source, metrics)
+		KIND_GREYBOX:
+			s._greybox(source, greybox, hints)
 	return s
 
 
@@ -160,6 +192,64 @@ static func _beach(terrain: Dictionary, head: PackedVector2Array) -> PackedVecto
 	for i in range(head.size() - 1, -1, -1):
 		out.append(Vector2(shore_x(terrain, head[i].y), head[i].y))
 	return out
+
+
+# --- Greybox zones (M3-UI-04) -------------------------------------------------------------------
+
+
+func _greybox(layout: Dictionary, rules: Dictionary, hints: Dictionary) -> void:
+	var floor_top := float(rules.get("floor_top_m", 0.0))
+	var overhead := float(rules.get("overhead_m", INF))
+	var thin := float(rules.get("wall_thick_m", 0.0))
+	var post := float(rules.get("post_max_m", 0.0))
+	for b: Variant in layout.get("blocks", []):
+		var row := b as Dictionary
+		var size: Array = row.get("size", [1.0, 1.0, 1.0])
+		var pos: Array = row.get("pos", [0.0, 0.0, 0.0])
+		var poly := footprint(
+			Vector2(float(pos[0]), float(pos[2])),
+			[-float(size[0]) * 0.5, -float(size[2]) * 0.5, size[0], size[2]],
+			deg_to_rad(float(row.get("yaw", 0.0))),
+			1.0
+		)
+		var layer := greybox_layer(row, hints, floor_top, overhead, thin, post)
+		match layer:
+			LAYER_SEA:
+				seas.append(poly)
+			LAYER_WATER:
+				water.append(poly)
+			LAYER_FLOOR:
+				floors.append(poly)
+			LAYER_PAD:
+				pads.append(poly)
+			LAYER_BUILDING:
+				buildings.append(poly)
+			LAYER_STRUCTURE:
+				structures.append(poly)
+
+
+## Which layer greybox block `row` draws in (&"skip": left off): a shape hint naming its id wins;
+## otherwise its height and size decide (see the class notes).
+static func greybox_layer(
+	row: Dictionary, hints: Dictionary, floor_top: float, overhead: float, thin: float, post: float
+) -> StringName:
+	var id := str(row.get("id", ""))
+	for layer in HINT_LAYERS:
+		if (hints.get(String(layer), []) as Array).has(id):
+			return layer
+	var size: Array = row.get("size", [1.0, 1.0, 1.0])
+	var pos: Array = row.get("pos", [0.0, 0.0, 0.0])
+	var top := float(pos[1]) + float(size[1]) * 0.5
+	var bottom := float(pos[1]) - float(size[1]) * 0.5
+	var solid := bool(row.get("solid", true))
+	if top <= floor_top:
+		return LAYER_FLOOR if solid else LAYER_PAD
+	if not solid or bottom >= overhead:
+		return LAYER_SKIP
+	var across := minf(float(size[0]), float(size[2]))
+	if maxf(float(size[0]), float(size[2])) <= post:
+		return LAYER_SKIP
+	return LAYER_STRUCTURE if across <= thin else LAYER_BUILDING
 
 
 # --- The Shell Shrine ----------------------------------------------------------------------------

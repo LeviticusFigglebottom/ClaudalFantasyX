@@ -2,6 +2,13 @@
 
 **Session:** `session_019iimsngAgPLEram1wcbLpE` (new account) · **Branch:** `claude/undertow-lead-handoff-423ixt` (the integration branch) · **Container:** 4 CPUs, Ubuntu, lavapipe. The container has restarted twice; the disk and the worktrees survived both times.
 
+## STATE AT HANDOVER (2026-10-25)
+- **Integration head:** 6c6e5514 plus handover docs. big8 is merged; the fast-tracked playtest fixes (M2-FP-28, M3-CMB-02, M2-BPR-11) are in.
+- **Unmerged, staged:** `lead/gate-big9` @ ae4666e0. It is big8 plus the hero integration, the prologue fixes and every track's newest work. It isn't gated yet: gate it on the PC first (CONSOLIDATED §5.1).
+- **Local state:** no local agent branches are left unmerged. The old container's worktrees (wt-*) are disposable.
+- **Messages sent at handover:** every track was told to stop, push and write a "STATE AT HANDOVER" section plus a session handoff. The PC session was inactive, so its state is summarised in CONSOLIDATED §3/§5/§7 and in pc-gpu.md on its gpu/* branches.
+- **Exact next step:** CONSOLIDATED.md §5.
+
 ## Current state (2026-10-24, after the RND-05 and fix6 merges)
 - **HEAD:** a58fcbd+ (see `git log -1 origin/claude/undertow-lead-handoff-423ixt`).
 - **Merged since batch 2:**
@@ -26,6 +33,7 @@
 5. Review sweep R over the review column, and keep ~3 local agents busy (candidates: M1-QA-10, M2-CMB-06 if m2-slice doesn't take it).
 
 ## Log
+- 2026-10-24 ~19:55: **big7 merged (d6a0886d).** It carries ui, menus, battle-presentation, characters (CHR-14), creatures, combat (CMB-07/08), m2-slice, audio, the PC's RND-10..13 and 26 plus M3-RND-01, M2-QA-02 and M2-CHR-10. Gate: Blender 39/39 identical, Godot 1940/0, coverage OK, 196/196 shots across 3 lanes (my container plus gate runners A and B), 29 re-approved after viewing. Decisions: the Drownbell p90 ceiling 60 → 66; the menus' injected-clock swap test cherry-picked. **Next:** big8 (a local merge agent is building it on lead/big8: the newest menus, ui, m2-slice, BPR batch 2, creatures polish, env-art, audio, the PC's RND-14..19, NIT-05, M3-RND-04/05, M3-RBL-01 Reefball). Gate it on lead/gate-big8 with the PC (WSL) and runners A/B as shards. The human's playtest fixes (encounters, prologue default, greyscale) are m2-slice's top priority.
 - 2026-10-24 ~14:20: usage-limit stop at ~14:10. Resumed battle-presentation, ui, env-art and audio, and sent every track the no-waiting gate rules (CONSOLIDATED §4). Batch 5 is HELD: the shrine_s01 and s02 lavapipe captures deadlock after the GI bake (2/2); a QA agent is bisecting. Asha: 4 DIFF traced to one 1-ULP UV (Head vertex 3918) plus the texels around it; the characters track is snapping UVs. Gate queue (serial): rnd09 → batch 4 → the character shots → combat (batch 6).
 - 2026-10-24 ~14:05: **To pc-gpu: queue top-up, in this order. Read the entry below first, which has the Ultra storm budget decision.**
   1. **Ultra storm at or under 4 ms at 1440p**: your next item, ahead of M3-RND-01. Take a free M2-RND id.

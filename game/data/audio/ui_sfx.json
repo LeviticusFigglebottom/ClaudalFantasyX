@@ -1,18 +1,11 @@
 {
   "version": 1,
   "doc": "Menu sounds by listening (M2-AUD-05; ADR 0031; docs/kb/tech/audio_runtime.md). UiAudio (game/audio/ui_audio.gd) watches every node whose script's global class (or a base class) has a hook here, and never writes it. signals: signal -> sfx row (the signal's arguments are dropped). on_enter / on_exit: a row when the menu is attached (deferred, after its _ready) or leaves the tree. watch: Expressions over `node` read once a frame (the first read is the baseline; a failed read changes nothing): a change plays sfx; rise / fall when a number goes up / down; values maps the new value (as text) to a row; on_true plays only when the new value is truthy. page_with_row(page, row_id) is in scope: the page's instance id when it shows that row, else 0. priority: one frame plays at most one UI row, the first of this list among those asked for (unlisted rows come last). pending: the class has not landed yet (M2-UI-06's shop and inn); the checker skips its class and signal names until it does, and the hook does nothing until then. tools/audio/data_check.py checks every row, class and signal.",
-  "priority": [
-    "ui_error",
-    "ui_menu_close",
-    "ui_cancel",
-    "ui_vowbound_open",
-    "ui_menu_open",
-    "ui_inn_rest",
-    "ui_buy",
-    "ui_confirm",
-    "ui_page",
-    "ui_cursor"
-  ],
+  "priority": ["ui_error", "ui_title_confirm", "ui_lattice_node", "ui_lattice_unlock", "ui_craft", "ui_item_use",
+               "ui_formation_swap", "ui_unequip", "ui_equip", "ui_map_marker", "ui_lattice_step", "ui_customize_open",
+               "ui_formation_pick", "ui_menu_close", "ui_map_close", "ui_cancel", "ui_vowbound_open",
+               "ui_menu_open", "ui_map_open", "ui_title_swell", "ui_inn_rest", "ui_buy", "ui_tip", "ui_confirm",
+               "ui_item_sort", "ui_page", "ui_map_tick", "ui_map_pan", "ui_cursor"],
   "hooks": [
     {
       "class": "CommandMenu",
@@ -113,23 +106,14 @@
     },
     {
       "class": "TitleMenu",
-      "signals": {
-        "chosen": "ui_confirm"
-      },
+      "on_enter": "ui_title_swell",
+      "signals": {"chosen": "ui_confirm"},
       "watch": [
-        {
-          "expr": "node.model.cursor",
-          "sfx": "ui_cursor"
-        },
-        {
-          "expr": "node.model.confirm_cursor",
-          "sfx": "ui_cursor"
-        },
-        {
-          "expr": "node.model.confirming",
-          "on_true": true,
-          "sfx": "ui_page"
-        }
+        {"expr": "node.model.cursor", "sfx": "ui_cursor"},
+        {"expr": "node.model.confirm_cursor", "sfx": "ui_cursor"},
+        {"expr": "node.model.confirming", "on_true": true, "sfx": "ui_page"},
+        {"expr": "node.is_launched()", "on_true": true, "sfx": "ui_title_confirm",
+         "_note": "M3-AUD-15: Begin / Continue started the game (outranks chosen's ui_confirm)"}
       ]
     },
     {
@@ -180,6 +164,104 @@
         }
       ],
       "_note": "M2-UI-06 has not landed: class and signal names are a guess to correct when it does"
+    },
+    {
+      "class": "FieldSubmenu",
+      "pending": true,
+      "on_enter": "ui_menu_open",
+      "signals": {"closed": "ui_menu_close"},
+      "_note": "M3-AUD-15: the field menu's party pages (Status; claude/ui) open and close; Lattice, Equip, Items and Formation have their own rows"
+    },
+    {
+      "class": "LatticeMenu",
+      "pending": true,
+      "on_enter": "ui_menu_open",
+      "signals": {"closed": "ui_menu_close"},
+      "watch": [
+        {"expr": "node.cursor", "sfx": "ui_cursor"},
+        {"expr": "node.model.hero_index", "sfx": "ui_page"},
+        {"expr": "node.is_confirming()", "values": {"true": "ui_confirm", "false": "ui_cancel"}},
+        {"expr": "lattice_woken(node.model.progress())", "rise": "ui_lattice_node", "_note": "a node woken, by anyone"},
+        {"expr": "node.model.progress().opened_gates.size()", "rise": "ui_lattice_unlock", "_note": "a gate opened"},
+        {"expr": "lattice_places(node.model.progress())", "sfx": "ui_lattice_step", "_note": "a walk on the board"},
+        {"expr": "node.status_text() != '' and node.status_text() == node.plan_text()", "on_true": true,
+         "sfx": "ui_error", "_note": "a refused Confirm: the status line says the plan's own refusal"}
+      ],
+      "_note": "M3-AUD-15: claude/ui's Lattice page (M2-MNU-01); no signals of its own beyond FieldSubmenu.closed"
+    },
+    {
+      "class": "EquipMenu",
+      "pending": true,
+      "on_enter": "ui_menu_open",
+      "signals": {"closed": "ui_menu_close"},
+      "watch": [
+        {"expr": "node.level", "rise": "ui_confirm", "fall": "ui_cancel"},
+        {"expr": "node.hero_page().cursor", "sfx": "ui_cursor"},
+        {"expr": "node.gear_page().cursor", "sfx": "ui_cursor"},
+        {"expr": "node.choice_page().cursor", "sfx": "ui_cursor"},
+        {"expr": "worn_count(node.model.bag)", "rise": "ui_equip", "fall": "ui_unequip"},
+        {"expr": "gear_signature(node.model.bag)", "sfx": "ui_equip", "_note": "a swap or a craft"},
+        {"expr": "node.status_is_refusal()", "on_true": true, "sfx": "ui_error"},
+        {"expr": "node.level", "values": {"3": "ui_customize_open"},
+         "_note": "M2-AUD-14: EquipMenu.Level.RECIPES, Customize's recipes for an empty slot (outranks the level's confirm)"},
+        {"expr": "crafted_count(node.model.bag)", "rise": "ui_craft",
+         "_note": "M2-AUD-14: an ability crafted into a piece (outranks gear_signature's ui_equip and the level's cancel)"}
+      ],
+      "_note": "M3-AUD-15: claude/ui's Equip and Customize page (M2-MNU-02); M2-AUD-14 adds Customize's own rows (M2-MNU-09)"
+    },
+    {
+      "class": "ZoneMapMenu",
+      "pending": true,
+      "on_enter": "ui_map_open",
+      "signals": {"closed": "ui_map_close"},
+      "watch": [{"expr": "node.current_poi()", "sfx": "ui_map_tick"}],
+      "_note": "M3-AUD-15: claude/ui's zone map (M2-UI-18): a place chosen in the legend or by hovering the map ticks"
+    },
+    {
+      "class": "ZoneMapView",
+      "pending": true,
+      "signals": {"poi_clicked": "ui_map_marker"},
+      "watch": [
+        {"expr": "pans(node, node.map_point(Vector2(0, 0)), node.map_scale(), 2.0)", "rise": "ui_map_pan",
+         "_note": "M2-AUD-14: the map moved 2 px or more at the same scale (a resize or a zoom is not a pan); the row's cooldown spaces the slides"}
+      ],
+      "_note": "M3-AUD-15: a place clicked on the map itself sets its ring. M2-AUD-14: claude/menus' view fits the zone and has no pan yet, so the pan watch waits for one"
+    },
+    {
+      "class": "TipCard",
+      "pending": true,
+      "watch": [{"expr": "node.phase", "values": {"1": "ui_tip"}, "_note": "TipCard.Phase.IN: a tip fades in"}],
+      "_note": "M3-AUD-15: claude/ui's first-time tip card (M2-UI-24)"
+    },
+    {
+      "class": "ItemsMenu",
+      "pending": true,
+      "on_enter": "ui_menu_open",
+      "signals": {"closed": "ui_menu_close"},
+      "watch": [
+        {"expr": "node.level", "rise": "ui_confirm", "fall": "ui_cancel", "_note": "ItemsMenu.Level LIST / PICK"},
+        {"expr": "node.list_page().cursor", "sfx": "ui_cursor"},
+        {"expr": "node.picker_page().cursor", "sfx": "ui_cursor"},
+        {"expr": "node.model.sort", "sfx": "ui_item_sort", "_note": "kind, name or count (outranks the cursor it keeps)"},
+        {"expr": "item_total(node.model.inventory())", "fall": "ui_item_use",
+         "_note": "an item spent on a hero (outranks the picker closing after the last one)"}
+      ],
+      "_note": "M2-AUD-14: claude/menus' Items page (M2-MNU-03); no signals of its own beyond FieldSubmenu.closed"
+    },
+    {
+      "class": "FormationMenu",
+      "pending": true,
+      "on_enter": "ui_menu_open",
+      "signals": {"closed": "ui_menu_close"},
+      "watch": [
+        {"expr": "node.focus_page().cursor", "sfx": "ui_cursor"},
+        {"expr": "node.focus", "sfx": "ui_cursor", "_note": "the input crossed to the other list"},
+        {"expr": "node.chosen.size()", "rise": "ui_formation_pick", "fall": "ui_cancel",
+         "_note": "a hero picked up / put back (a move also empties it; the swap outranks the cancel)"},
+        {"expr": "node.model.active + node.model.reserve", "sfx": "ui_formation_swap",
+         "_note": "the line-up changed: two heroes traded places, or one took an open place"}
+      ],
+      "_note": "M2-AUD-14: claude/menus' Formation page (M2-MNU-07); no signals of its own beyond FieldSubmenu.closed"
     }
   ]
 }

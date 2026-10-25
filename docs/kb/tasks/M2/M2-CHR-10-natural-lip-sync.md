@@ -41,4 +41,12 @@ The human's note: the characters' mouthing of their lines in cutscenes looks unn
 - **Ownership.** `game/cutscene/**` is m2-slice's (M2-FP-18). This task edits `cutscene_face.gd`, `cutscene_sequencer.gd` (only the `_line` lip-sync call, `_set_face` setting `rig.emotion`, `_face_of` passing lipsync.json, and `advance` releasing on a skip) and `face_visemes.gd` (rewritten), and it adds `lip_sync.gd`. It removes sequencer.json's `visemes` block and adds `game/data/cutscene/lipsync.json`. The Lead asked for these edits for this task. The face rigs are the characters track's. No rig, shape key or Blender source changed: lip sync only drives Asha's existing `vis_*` shapes (asha.md §6.2), stays within §6.2's 0.6 cap, and drives four existing expression shapes for the idle. `game/ui/dialogue/` (UI) is untouched: the reveal speed is read from `box.settings`.
 - **Known limit.** The box reveals at 40 characters a second, about 2.7 times a speaking pace, and the mouth is locked to it. So syllables are short, and the speed cap keeps their openings modest. At the player's slower settings (min 5 cps) the same curves open fully to the rows. The reveal itself has no punctuation pauses (UI's file), so a comma's rest lasts as long as the comma and the spaces after it reveal. If UI ever adds reveal pauses, the timeline should take them from the box (one function: char index → time).
 
+## Notes (ui, 2026-10-24): timing follows the reveal's punctuation pauses (M2-UI-27)
+- `LipSync.start(text, cps, emotion, seed, reveal_times)` and `CutsceneFace.say(..., reveal_times)` take the box's `DialogueBox.reveal_times()`.
+  - `LipSync.starts_for` maps each character position to the moment it starts speaking: the 1 / cps before the box shows it. Inside a character it runs at 1 / cps (`_at`), so the pause the reveal holds after a mark lies outside every segment that ends there, and the mouth relaxes to rest.
+  - The speech end is the last reveal.
+  - With no reveal times it is x / cps, exactly as before.
+- `CutsceneSequencer._line` passes `overlay.box.reveal_times()`. This is a UI edit in `game/cutscene/` (m2-slice's), assigned by the Lead.
+- **Test:** `test_lip_sync.gd::test_the_mouth_rests_while_the_reveal_lingers_at_a_comma`. "Mama, wait." with the box's real timing: the mouth opens on "Mama", is under 35% of that mid-pause, and ends with the box.
+
 ## Review log

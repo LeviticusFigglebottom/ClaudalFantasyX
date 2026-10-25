@@ -107,7 +107,10 @@ func test_offsets_keep_keys_stable_across_a_turn() -> void:
 func test_skipped_turns_are_flagged() -> void:
 	var foe := engine.living_foes_of(engine.current)[0]
 	foe.add_status(&"stop", 2)
-	var slots := TurnTimeline.build_slots(engine.current.id, engine.preview(), [], {}, 16)
+	# A longer order than the HUD's 16: the slow crab's second Stopped turn falls behind the gull's real
+	# (rank-2) dives since the timeline predicts foes at their AI's rank (M3-CMB-02).
+	var n := CtbTimeline.PREVIEW_LENGTH * 2
+	var slots := TurnTimeline.build_slots(engine.current.id, engine.preview(&"", null, n), [], {}, n)
 	var skipped := slots.filter(func(s: Dictionary) -> bool: return s["id"] == foe.id and s["skipped"])
 	assert_eq(skipped.size(), 2, "Stop for 2 turns marks exactly two of that foe's turns")
 

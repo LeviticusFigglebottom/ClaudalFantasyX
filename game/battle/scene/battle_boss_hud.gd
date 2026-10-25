@@ -98,9 +98,10 @@ func show_prompt() -> bool:
 	return true
 
 
-## The named hero's first turn queues the encounter's turn prompt (once a fight).
+## The named hero's first turn queues the encounter's turn prompt (once a fight). If the opening prompt hasn't been
+## shown yet (the hero has the very first turn), the turn prompt waits for the hero's next turn instead of replacing it.
 func _on_turn_started(actor: BattleCombatant) -> void:
-	if turn_prompt_hero == &"" or actor.id != turn_prompt_hero:
+	if turn_prompt_hero == &"" or actor.id != turn_prompt_hero or pending_prompt != "":
 		return
 	pending_prompt = turn_prompt
 	turn_prompt_hero = &""

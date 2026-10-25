@@ -150,5 +150,17 @@ flags = {
 "ch08_wall_fell": "Ch8 B17: the seaward section of the wall-head fell and the sea came into the low town.",
 "ch08_rhen_froze": "Ch8 B17 (critical): Rhen froze at the broken edge before the figure in the storm, and Kerrid hauled him back by the collar (Ch17, Ch21 H02 payoffs).",
 "ch08_rhen_told_asha": "Ch8 B17 choice: Rhen told Asha he saw someone in the storm, humming a current-song (Ch21 H02 payoff).",
-"ch08_done": "Ch8 B18: the hoist is down and the chapter is over; the party goes down to Corrow's strand for the night (Ch9)."
+"ch08_done": "Ch8 B18: the hoist is down and the chapter is over; the party goes down to Corrow's strand for the night (Ch9).",
+"codex_glimmer_read": "Codex (M3-UI-03, game/data/lore/codex.json): the entry 'glimmer' has been opened in the Codex (clears its New marker).",
+"codex_undertow_read": "Codex (M3-UI-03, game/data/lore/codex.json): the entry 'undertow' has been opened in the Codex (clears its New marker).",
+"codex_vowbound_read": "Codex (M3-UI-03, game/data/lore/codex.json): the entry 'vowbound' has been opened in the Codex (clears its New marker).",
+"codex_haluna_read": "Codex (M3-UI-03, game/data/lore/codex.json): the entry 'haluna' has been opened in the Codex (clears its New marker).",
+"codex_saltgrass_causeway_read": "Codex (M3-UI-03, game/data/lore/codex.json): the entry 'saltgrass_causeway' has been opened in the Codex (clears its New marker).",
+"codex_shell_shrine_read": "Codex (M3-UI-03, game/data/lore/codex.json): the entry 'shell_shrine' has been opened in the Codex (clears its New marker).",
+"codex_asha_read": "Codex (M3-UI-03, game/data/lore/codex.json): the entry 'asha' has been opened in the Codex (clears its New marker).",
+"codex_toma_read": "Codex (M3-UI-03, game/data/lore/codex.json): the entry 'toma' has been opened in the Codex (clears its New marker).",
+"codex_causeway_notice_read": "Codex (M3-UI-03, game/data/lore/codex.json): the entry 'causeway_notice' has been opened in the Codex (clears its New marker).",
+"codex_basin_steps_read": "Codex (M3-UI-03, game/data/lore/codex.json): the entry 'basin_steps' has been opened in the Codex (clears its New marker).",
+"codex_causeway_notice_found": "Codex record (M3-UI-03): the tide-readers' notice on the Saltgrass Causeway has been read in the field (an Interactable with payload {record: causeway_notice}).",
+"codex_basin_steps_found": "Codex record (M3-UI-03): the words cut into the Shell Shrine's basin steps have been read in the field (an Interactable with payload {record: basin_steps})."
 }

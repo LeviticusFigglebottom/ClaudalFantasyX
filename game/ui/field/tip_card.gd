@@ -25,6 +25,8 @@ var _t := 0.0
 var _hold := 0.0
 var _readied := false
 var _near: Interactable
+## Whether the body on show names pad buttons (it is filled again when the device changes).
+var _body_pad := false
 
 
 ## Adds the card (on its own CanvasLayer) under field controller `c`, and returns it.
@@ -88,6 +90,8 @@ func advance(delta: float) -> void:
 			return
 	else:
 		_t += delta
+	if InputNames.using_pad != _body_pad:
+		_fill_body()  # the names follow the last device used (M2-UI-26); the hold stays as it was
 	match phase:
 		Phase.IN:
 			if _t >= _num("fade_sec"):
@@ -127,10 +131,15 @@ func _show_next() -> void:
 	if current.is_empty():
 		return
 	_title.text = tr(str(current.get("title_key", "")))
-	_body.text = InputNames.fill(tr(str(current.get("body_key", ""))))
+	_fill_body()
 	_hold = hold_for(_body.text)
 	phase = Phase.IN
 	_t = 0.0
+
+
+func _fill_body() -> void:
+	_body_pad = InputNames.using_pad
+	_body.text = InputNames.fill(tr(str(current.get("body_key", ""))), _body_pad)
 
 
 func _on_flag_changed(flag: StringName, value: Variant) -> void:

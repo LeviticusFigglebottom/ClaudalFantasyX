@@ -650,6 +650,24 @@ func target_notes(
 	return out
 
 
+## The help line for skill `skill_id` aimed at `chosen` and landing on `lands_on`: what changes the outcome
+## (Provoke, Reflect, Zombie) reads before the generic description (a Swell technique's, or the skill's).
+func skill_preview_help(
+	engine: BattleEngine,
+	swell: BattleSwell,
+	skill_id: StringName,
+	chosen: BattleCombatant,
+	lands_on: BattleCombatant,
+	next_in: int
+) -> String:
+	var parts := target_notes(engine, skill_id, chosen, lands_on)
+	if swell.is_technique(engine.current, skill_id):
+		parts.append(swell_help(engine, swell, skill_id, next_in))
+	else:
+		parts.append(skill_help(engine, skill_id, next_in))
+	return " · ".join(parts)
+
+
 ## The group pick's name: all foes, all allies, or all other allies for a skill that skips its
 ## user (`target` is the skill row's "target"; "" for items).
 func group_label(hostile: bool, target: String = "") -> String:

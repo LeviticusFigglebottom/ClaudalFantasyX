@@ -9,7 +9,7 @@ Session: a worktree agent of m2-slice (session_01DQ9tdk8Uatb8Jr6raAkXiC), branch
   - 14 new body clips are appended to `requested_clips.json` (M3-CHR-01).
 - **Flow:** `game/data/flow/chapters/ch08.json` is registered between Ch7 and Ch9. Its tunables are in `game/data/flow/ch08_field.json`.
   - Ch7's `leave` beat now goes to `ch08/corrow` at `Mole`. Ch8's B18 goes to `ch09/corrow_night` at `Strand`.
-- **The stair meter** (the combat-14 handoff's "For M3-C08-02"):
+- **The stair meter** (the combat-14-cmb01 handoff's "For M3-C08-02"):
   - A battle step takes `objective_flag`. ZoneStory puts it on the request with its current value (`BattleRequest.objective_flag` / `objective_start`).
   - After a win or a scripted escape, `FieldBattle` sets the flag to start + `engine.objective_count`. "Fight again" puts it back to start.
   - `tools/chapter_flow_check.py` accepts the key and checks the flag is declared.

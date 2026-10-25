@@ -3,5 +3,7 @@
   {"id": "reefball_outside", "scene": "res://game/levels/_tests/reefball/reefball_test.tscn", "camera": "Cameras/Outside"},
   {"id": "reefball_inside", "scene": "res://game/levels/_tests/reefball/reefball_test.tscn", "camera": "Cameras/Inside"},
   {"id": "reefball_lookup", "scene": "res://game/levels/_tests/reefball/reefball_test.tscn", "camera": "Cameras/LookUp"},
-  {"id": "reefball_crossing", "scene": "res://game/levels/_tests/reefball/reefball_test.tscn", "camera": "Cameras/Crossing"}
+  {"id": "reefball_crossing", "scene": "res://game/levels/_tests/reefball/reefball_test.tscn", "camera": "Cameras/Crossing"},
+  {"id": "reefball_night_inside", "scene": "res://game/levels/_tests/reefball/reefball_night_test.tscn", "camera": "Cameras/Inside"},
+  {"id": "reefball_night_outside", "scene": "res://game/levels/_tests/reefball/reefball_night_test.tscn", "camera": "Cameras/Outside"}
  ]}

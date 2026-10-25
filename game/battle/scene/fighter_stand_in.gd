@@ -177,6 +177,7 @@ func set_ko(ko: bool, sink_m: float, alpha: float) -> void:
 		creature().set_ko(ko, alpha)
 		return
 	_body.position = _rest - Vector3(0.0, sink_m if ko else 0.0, 0.0)
+	_body.visible = not (ko and alpha <= 0.0)  # faded right out: hidden, so it casts no shadow either
 	if _actor != null:
 		for m in _surfaces:
 			m.transparency = 1.0 - alpha if ko else 0.0

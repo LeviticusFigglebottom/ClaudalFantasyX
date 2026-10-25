@@ -31,7 +31,7 @@ The engine stays headless and deterministic (CLAUDE.md §3). Formulas change onl
 
 ## Notes
 - Requested by m2-slice (cinematics), the Act I owner. M3-C08-02 depends on this.
-- 2026-10-24 combat (worktree agent, handoff 2026-10-24-combat-14): built, status review, reviewer lead.
+- 2026-10-24 combat (worktree agent, handoff 2026-10-24-combat-14-cmb01): built, status review, reviewer lead.
   - Schema: `docs/kb/design/set_piece_battles.md`. Decision: ADR 0100. Code: `game/battle/battle_set_piece.gd` (+ hooks in the engine, BossMechanics, EnemyAI, the combatant), `game/battle/sim/sim_ward_guard.gd`, `sim_policy_ward_guard.gd`.
   - Ch8 data (provisional, for M3-C08-02 to keep or reshape): `ch08_stair_hold_1..3` and `undertows_reach` in encounters.json; `tide_crawler`, `squall_wing`, `wall_polyp`, `undertows_reach` in enemies.json; Virel in vowbound.json; strings in `game/data/loc/ch08.csv`; flags `ch08_hoist_rigged`, `ch08_virel_bound`.
   - Bands at 1000 seeds: see balance_targets.md § Ch8 and the handoff.

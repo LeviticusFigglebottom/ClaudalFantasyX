@@ -19,5 +19,6 @@ The Ch6 creatures (m2-slice: the shoals reuse gull_harrier as their flier). `mod
 
 ## Notes
 - The Inquisitor (Hadric Moll) is the character track's.
+- 2026-10-24 (polish, review notes): wreck_crab's salt crust now has real relief: buckled salt plates (cells lifted and tilted on their own) split by grimy cracks and knobbed with salt nodules, as displacement plus cavity in vertex data, faceted shading; the crust ring is 20 x 44. The legs, claws and eye-stalks are bleached to grey wreck tones (coral_stone_weathered into timber_weathered, a storm_slate-greyed timber below) with salt patches, via an in-memory palette override and a wrapped finish call (reef_crab's build untouched). Hidden parts were trimmed to pay for it (underside 20 segs, mouthparts, lamp-light and abdomen ellipsoids). The lamp's glimmer_bound stays steady (no pulse on glass or lamp_light; materials.json unchanged). 7,942 triangles (budget 8k). Screenshot creature_wreck_crab re-approved after viewing.
 
 ## Review log

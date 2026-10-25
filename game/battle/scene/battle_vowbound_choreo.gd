@@ -59,8 +59,9 @@ func leave_spec(cid: StringName) -> Dictionary:
 func enter_spec(cid: StringName) -> Dictionary:
 	var vb := engine.vowbound
 	if vb.is_out() and vb.summon != null and vb.summon.id == cid:
-		if choreo.summon != null and choreo.summon.wants_full(cid):  # C10: the first call (M2-BPR-08)
-			return choreo.summon.begin(cid)
+		var c10 := choreo.summon.entry_for(cid) if choreo.summon != null else {}  # C10 (M2-BPR-08)
+		if not c10.is_empty():
+			return c10
 		return cfg.get("entry", {}) as Dictionary
 	for vid: StringName in vb.rows:
 		var gone := choreo.leaving(vid)
