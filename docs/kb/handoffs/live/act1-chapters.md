@@ -20,7 +20,7 @@ cutscene sequencer (`game/cutscene/**`), `game/flow/**` and the playtest fixes.
   chapter select reaches Ch4–Ch9 meanwhile.
 
 ## NEW ACCOUNT (from 2026-10-25)
-- **MERGE-READY @ (see the commit after d7b55c10)**: the integration branch (big8, c6a960ab) merged in (d7b55c10).
+- **MERGE-READY @ 14ea50b9**: the integration branch (big8, c6a960ab) merged in (d7b55c10).
   Conflicts: encounters.json (theirs' arenas + Ch8's rows), voices.json (theirs + Ivo; the 17 Act I speakers' `pending`
   flags cleared now they're in speakers.json), translations (union, +ch08), validate_data (both sides' checks),
   test_hero_clips (the all-dialogue check with M3-CHR-01's pending list), the two different combat-14 handoffs (both
