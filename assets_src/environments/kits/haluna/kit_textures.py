@@ -57,6 +57,7 @@ OUT_DEFAULT = ROOT / "assets" / "environments" / "kits" / "haluna" / "textures"
 # Tile sizes in metres (the materials scale UVs / triplanar with these; keep in sync with the .tres).
 TILE_M = {
     "coral_stone": (1.2, 1.2),
+    "coral_dressed": (1.2, 1.2),
     "coral_concrete": (2.0, 2.0),
     "timber": (0.4, 1.6),
     "thatch": (1.6, 1.6),
@@ -148,28 +149,56 @@ def save_pair(out: Path, stem: str, rgb, height, nx, ny, cavity) -> list[Path]:
 # ---------------------------------------------------------------------------------------------
 # Painters
 # ---------------------------------------------------------------------------------------------
-def build_coral_stone(out: Path, n: int) -> list[Path]:
-    """Coral limestone: porous, with fossil polyp rings, sun-bleached; height in A, cavity in B."""
+def build_coral_stone(out: Path, n: int, *, stem: str = "coral_stone", vug_amount: float = 1.0,
+                      grey_amount: float = 1.0, pore_amount: float = 1.0) -> list[Path]:
+    """Coral limestone: porous, with fossil polyp rings, sun-bleached; height in A, cavity in B.
+    `vug_amount`, `grey_amount` and `pore_amount` scale the solution holes, the weathered-grey patches
+    and the fine pores: the village walls use 1.0; the Shell Shrine's dressed stone (`coral_dressed`) far
+    less (its pores read as hard dots in S04's close-up)."""
     rng = kc.rng_for("coral_stone_tex", SEED)
     shape = (n, n)
     big = fbm(shape, (3, 3), rng, octaves=5)
     f1, f2, cid = worley(shape, (14, 14), rng)
     polyp = np.exp(-((f1 - 0.28) / 0.07) ** 2) * (cid > 0.35)  # ring rims of old coral polyps
     pore_f1, _, _ = worley(shape, (56, 56), rng, jitter=1.0)
-    pores = np.clip((0.22 - pore_f1) * 7.0, 0, 1) * (fbm(shape, (6, 6), rng, 3) > 0.42)
+    pores = np.clip((0.22 - pore_f1) * 7.0, 0, 1) * (fbm(shape, (6, 6), rng, 3) > 0.42) * pore_amount
     cracks = np.clip(1.0 - (f2 - f1) * 14.0, 0, 1) ** 3 * smoothstep_np(0.5, 0.65, big)
     fine = fbm(shape, (64, 64), rng, octaves=3)
-    hgt = 0.55 * big + 0.18 * fine + 0.12 * polyp - 0.35 * pores - 0.25 * cracks
+    cracks = cracks * smoothstep_np(0.55, 0.7, fbm(shape, (6, 6), rng, 3))  # a few fissures, not a net
+    # M2 final pass (env-art): raised-reef limestone is vuggy. Solution holes at two scales (2-6 cm
+    # vugs, gathered in patches) read dark at gameplay distance, and fossil branch-coral casts (warped
+    # worm-like ridges) give the faces a grain, so a wall reads as stone, not plaster.
+    holes = fbm(shape, (30, 30), rng, octaves=3) * 0.7 + fbm(shape, (72, 72), rng, octaves=2) * 0.3
+    vug_patch = smoothstep_np(0.4, 0.62, fbm(shape, (4, 4), rng, 4))
+    vugs = smoothstep_np(0.6 - 0.06 * vug_patch, 0.68 - 0.06 * vug_patch, holes) * (0.35 + 0.65 * vug_patch) * vug_amount
+    warp = fbm(shape, (5, 5), rng, 3)
+    u = (np.arange(n) + 0.5) / n
+    U, V = np.meshgrid(u, u)
+    branch = np.abs(np.sin((U * 9.0 + V * 4.0 + warp * 3.0) * 2.0 * np.pi))
+    branch = (1.0 - smoothstep_np(0.0, 0.22, branch)) * smoothstep_np(0.5, 0.7, fbm(shape, (3, 3), rng, 3))
+    hgt = (0.5 * big + 0.16 * fine + 0.12 * polyp + 0.08 * branch - 0.35 * pores - 0.25 * cracks
+           - 0.45 * vugs)
     hgt = _norm01(hgt)
-    nx, ny = height_to_normal(hgt, n / 256.0 * 3.0)
-    cav = np.clip(cavity_from_height(hgt, 5) + pores * 0.6 + cracks * 0.5, 0, 1)
+    nx, ny = height_to_normal(hgt, n / 256.0 * 3.4)
+    cav = np.clip(cavity_from_height(hgt, 5) + pores * 0.6 + cracks * 0.5 + vugs * 0.8, 0, 1)
     tone = fbm(shape, (4, 4), rng, octaves=4)
-    col = CORAL * (0.86 + 0.18 * tone)[..., None]
-    col = col * (1.0 - 0.35 * np.clip(cav, 0, 1))[..., None] + CORAL_W * (0.35 * cav)[..., None] * 0.6
+    # Two stones in one tile: fresh-broken coral_stone and the sun-greyed coral_stone_weathered, in
+    # broad patches, so value varies across a face as well as between blocks (UV2.y variation).
+    grey = smoothstep_np(0.38, 0.66, fbm(shape, (2, 2), rng, 4))[..., None] * grey_amount
+    col = (CORAL * (1 - grey) + CORAL_W * grey) * (0.84 + 0.2 * tone)[..., None]
+    col = col * (1.0 - 0.5 * np.clip(cav, 0, 1))[..., None] + CORAL_W * (0.2 * cav)[..., None]
+    # The holes are shadowed inside: darker and warmer (a brown-grey), never a cold grey blot.
+    col = col * (1.0 - 0.38 * vugs)[..., None] * (1.0 + np.array([0.06, 0.0, -0.08]) * vugs[..., None])
     warm = np.clip((fbm(shape, (8, 8), rng, 3) - 0.55) * 3.0, 0, 1)[..., None]
-    col = col * (1 - 0.12 * warm) + hex_lin("#D9C29A") * 0.12 * warm
-    col = col * (0.92 + 0.1 * fine)[..., None]
-    return save_pair(out, "coral_stone", col, hgt, nx, ny, cav)
+    col = col * (1 - 0.14 * warm) + hex_lin("#D9C29A") * 0.14 * warm
+    col = col * (0.9 + 0.12 * fine)[..., None]
+    return save_pair(out, stem, col, hgt, nx, ny, cav)
+
+
+def build_coral_dressed(out: Path, n: int) -> list[Path]:
+    """The Shell Shrine's dressed coral limestone (M2-ENV-09): the same stone, tooled and tended, so its
+    pores and fossil grain stay but the dark solution holes and grey weathering are mostly gone."""
+    return build_coral_stone(out, n, stem="coral_dressed", vug_amount=0.18, grey_amount=0.3, pore_amount=0.3)
 
 
 def build_coral_concrete(out: Path, n: int) -> list[Path]:
@@ -204,6 +233,14 @@ def build_coral_concrete(out: Path, n: int) -> list[Path]:
     streak = value_noise(shape, (1, 18), rng) * fbm(shape, (6, 18), rng, 3)
     rust = np.clip((streak - 0.42) * 2.5, 0, 1)[..., None] * 0.22
     col = col * (1 - rust) + hex_lin("#8A5A3E") * rust
+    # M2 final pass (env-art): a thousand years of spray. Dark biofilm runs down from every lip and
+    # pit (vertical drip stains, broken by the formwork lifts), so the ruins sit in the sea as old
+    # grey-green stone, not as fresh white posts.
+    drip = value_noise(shape, (1, 40), rng) * fbm(shape, (3, 40), rng, 3)
+    drip = np.clip((drip - 0.3) * 2.6, 0, 1) * (0.55 + 0.45 * (1.0 - lift))
+    film = (drip * 0.55 + cav * 0.2)[..., None]
+    col = col * (1 - film) + hex_lin("#5E6650") * film
+    col = col * (0.88 + 0.12 * big)[..., None]
     return save_pair(out, "coral_concrete", col, hgt, nx, ny, cav)
 
 
@@ -274,8 +311,16 @@ def build_thatch(out: Path, n: int) -> list[Path]:
     cav = np.clip(cavity_from_height(hgt, 4) * 1.2 + (1.0 - t) * 0.25, 0, 1)
     age = fbm(shape, (3, 3), rng, octaves=4)
     old = np.clip((age - 0.45) * 2.0, 0, 1)[..., None]
+    # M2 final pass (env-art): sea-village thatch greys fast and is patched course by course. Each
+    # course gets its own age (a re-laid course is paler and more golden), and rain runoff greys
+    # vertical runs, so a roof reads as tended and weathered, not as one ochre sheet at range.
+    course_age = np.sin(course_id * 12.9898 + 4.1) * 43758.5453 % 1.0
+    old = np.clip(old + 0.45 * (course_age[..., None] - 0.4), 0, 1)
+    runs = np.clip((value_noise(shape, (2, 14), rng) - 0.5) * 2.5, 0, 1)[..., None]
+    old = np.clip(old + 0.35 * runs, 0, 1)
     col = THATCH * (1 - old) + THATCH_OLD * old
     col = col * (0.75 + 0.35 * strands)[..., None] * (1.0 - 0.45 * cav)[..., None]
+    col = col * (0.9 + 0.12 * (course_age[..., None] > 0.82))  # the newest courses catch the sun
     return save_pair(out, "thatch", col, hgt, nx, ny, cav)
 
 
@@ -519,6 +564,7 @@ BUILDERS = {
     "sand": (build_sand, 512),
     "canopy_cluster": (build_canopy_cluster, 512),
     "coral_stone": (build_coral_stone, 512),
+    "coral_dressed": (build_coral_dressed, 512),
     "coral_concrete": (build_coral_concrete, 512),
     "timber": (build_timber, 512),
     "thatch": (build_thatch, 512),

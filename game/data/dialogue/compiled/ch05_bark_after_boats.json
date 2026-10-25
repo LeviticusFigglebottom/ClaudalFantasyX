@@ -1,0 +1,15 @@
+{
+ "format": 1,
+ "scene": "ch05_bark_after_boats",
+ "source": "game/data/dialogue/ch05/ch05_bark_after_boats.dlg",
+ "start": "ch05_bark_after_boats",
+ "nodes": {
+  "ch05_bark_after_boats": {
+   "headers": {"location": "ch05/pemakar"},
+   "ops": [
+    {"op": "line", "id": "ch05_bark_after_boats_001", "key": "DLG_CH05_BARK_AFTER_BOATS_001", "speaker": "townsfolk", "emotion": "neutral", "voice": "", "src": 5, "name_key": "DLG_NAME_TOWNSFOLK_BOAT_FISHER"},
+    {"op": "line", "id": "ch05_bark_after_boats_002", "key": "DLG_CH05_BARK_AFTER_BOATS_002", "speaker": "townsfolk", "emotion": "soft_smile", "voice": "", "src": 6, "name_key": "DLG_NAME_TOWNSFOLK_BOAT_FISHER"}
+   ]
+  }
+ }
+}

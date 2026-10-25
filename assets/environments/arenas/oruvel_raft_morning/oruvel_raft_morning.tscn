@@ -1,0 +1,241 @@
+[gd_scene load_steps=31 format=3]
+
+[ext_resource type="Script" path="res://game/world/arenas/battle_arena_root.gd" id="1_r"]
+[ext_resource type="Shader" path="res://game/shaders/environment/env_sky_cumulus.gdshader" id="2_r"]
+[ext_resource type="Texture3D" path="res://assets/environments/arenas/oruvel_raft_morning/lut_ch01_raft.png" id="3_r"]
+[ext_resource type="Texture3D" path="res://assets/vfx/undertow/undertow_noise3d.png" id="4_r"]
+[ext_resource type="Texture2D" path="res://assets/vfx/sky/cloud_lattice2.png" id="5_r"]
+[ext_resource type="Script" path="res://game/world/arenas/arena_sea.gd" id="6_r"]
+[ext_resource type="Resource" path="res://game/world/water/lagoon_waves.tres" id="7_r"]
+[ext_resource type="Material" path="res://game/levels/ch02/haluna/haluna_water_material.tres" id="8_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/arena_raft_deck.glb" id="9_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/net_rack.glb" id="10_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/net_float_cluster.glb" id="11_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/oil_lamp_post.glb" id="12_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/brine_shoals/crate_stack.glb" id="13_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/basket_set.glb" id="14_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/water_jar.glb" id="15_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/stilt_house.glb" id="16_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/lintel_gull_a.glb" id="17_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/lintel_gull_c.glb" id="18_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/lintel_gull_b.glb" id="19_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/timber_stilt_post.glb" id="20_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/roof_thatch_hip.glb" id="21_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/storehouse_stilt.glb" id="22_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/awning_cloth.glb" id="23_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/fish_drying_rack.glb" id="24_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/brine_shoals/salvage_pile.glb" id="25_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/outrigger_7m.glb" id="26_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/market_stall.glb" id="27_r"]
+
+[sub_resource type="ShaderMaterial" id="SkyMat"]
+shader = ExtResource("2_r")
+shader_parameter/background_energy = 1.5
+shader_parameter/cloud_lattice = ExtResource("4_r")
+shader_parameter/cloud_lattice2 = ExtResource("5_r")
+shader_parameter/horizon_curve = 0.14
+
+[sub_resource type="Sky" id="Sky"]
+sky_material = SubResource("SkyMat")
+process_mode = 2
+
+[sub_resource type="Environment" id="Env"]
+resource_name = "oruvel_raft_morning_ch01"
+background_mode = 2
+sky = SubResource("Sky")
+ambient_light_source = 3
+ambient_light_energy = 0.6
+reflected_light_source = 2
+tonemap_mode = 4
+tonemap_exposure = 0.65
+tonemap_agx_white = 12.0
+ssao_enabled = true
+ssao_radius = 1.2
+ssao_intensity = 1.2
+glow_enabled = true
+glow_intensity = 0.35
+glow_bloom = 0.03
+glow_hdr_threshold = 1.2
+fog_enabled = true
+fog_mode = 0
+fog_light_color = Color(0.749, 0.8667, 0.9098, 1)
+fog_density = 0.0008
+fog_sky_affect = 0.0
+fog_height = 0.0
+fog_height_density = 0.0
+adjustment_enabled = true
+adjustment_color_correction = ExtResource("3_r")
+
+[node name="OruvelRaftMorning" type="Node3D"]
+script = ExtResource("1_r")
+arena_id = &"oruvel_raft_morning"
+sub_frame = &"ch01"
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Env")
+
+[node name="Sun" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.5, -0.734431, 0.458924, 0, 0.529919, 0.848048, -0.866025, -0.424024, 0.26496, 0, 30, 0)
+light_color = Color(1, 0.9373, 0.8824, 1)
+light_energy = 3.0
+shadow_enabled = true
+shadow_bias = 0.03
+shadow_normal_bias = 1.0
+shadow_blur = 1.0
+directional_shadow_mode = 2
+directional_shadow_split_1 = 0.06
+directional_shadow_split_2 = 0.18
+directional_shadow_split_3 = 0.45
+directional_shadow_max_distance = 120.0
+
+[node name="Sea" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.8, 0)
+script = ExtResource("6_r")
+wave_set = ExtResource("7_r")
+material = ExtResource("8_r")
+sea_glow_energy = 0.0
+tide_line_y = -0.8
+
+[node name="Ground" parent="." instance=ExtResource("9_r")]
+
+[node name="Dressing" type="Node3D" parent="."]
+
+[node name="net_rack_1" parent="Dressing" instance=ExtResource("10_r")]
+transform = Transform3D(6.12323e-17, 0, 1, 0, 1, 0, -1, 0, 6.12323e-17, -5.6, 0, -5.8)
+
+[node name="net_float_cluster_1" parent="Dressing" instance=ExtResource("11_r")]
+transform = Transform3D(0.939693, 0, 0.34202, 0, 1, 0, -0.34202, 0, 0.939693, -5.7, 0, -7)
+
+[node name="oil_lamp_post_1" parent="Dressing" instance=ExtResource("12_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -6, 0, 3.6)
+
+[node name="crate_stack_1" parent="Dressing" instance=ExtResource("13_r")]
+transform = Transform3D(0.886327, 0, 0.156283, 0, 0.9, 0, -0.156283, 0, 0.886327, 5.3, 0, -6.2)
+
+[node name="basket_set_1" parent="Dressing" instance=ExtResource("14_r")]
+transform = Transform3D(0.766044, 0, 0.642788, 0, 1, 0, -0.642788, 0, 0.766044, 4.3, 0, -6.9)
+
+[node name="water_jar_1" parent="Dressing" instance=ExtResource("15_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 5.6, 0, -4.6)
+
+[node name="stilt_house_1" parent="Dressing" instance=ExtResource("16_r")]
+transform = Transform3D(0.978148, 0, 0.207912, 0, 1, 0, -0.207912, 0, 0.978148, -18.879, -1.89, -23.826)
+
+[node name="lintel_gull_a_1" parent="Dressing" instance=ExtResource("17_r")]
+transform = Transform3D(-0.207912, 0, 0.978148, 0, 1, 0, -0.978148, 0, -0.207912, -18.65, 4.16, -22.75)
+
+[node name="stilt_house_2" parent="Dressing" instance=ExtResource("16_r")]
+transform = Transform3D(-0.0871557, 0, 0.996195, 0, 1, 0, -0.996195, 0, -0.0871557, -20.846, -1.93, -9.154)
+
+[node name="lintel_gull_c_1" parent="Dressing" instance=ExtResource("18_r")]
+transform = Transform3D(-0.996195, 0, -0.0871557, 0, 1, 0, 0.0871557, 0, -0.996195, -19.75, 4.12, -9.25)
+
+[node name="stilt_house_3" parent="Dressing" instance=ExtResource("16_r")]
+transform = Transform3D(0.766044, 0, 0.642788, 0, 1, 0, -0.642788, 0, 0.766044, -26.207, -1.95, -36.343)
+
+[node name="lintel_gull_b_1" parent="Dressing" instance=ExtResource("19_r")]
+transform = Transform3D(-0.642788, 0, 0.766044, 0, 1, 0, -0.766044, 0, -0.642788, -25.5, 4.1, -35.5)
+
+[node name="timber_stilt_post_1" parent="Dressing" instance=ExtResource("20_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 4.5, 0.16, -35.25)
+
+[node name="timber_stilt_post_2" parent="Dressing" instance=ExtResource("20_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 8.5, 0.16, -35.25)
+
+[node name="timber_stilt_post_3" parent="Dressing" instance=ExtResource("20_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 4.5, 0.16, -30.25)
+
+[node name="timber_stilt_post_4" parent="Dressing" instance=ExtResource("20_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 8.5, 0.16, -30.25)
+
+[node name="roof_thatch_hip_1" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 6.5, 2.46, -32.75)
+
+[node name="lintel_gull_c_2" parent="Dressing" instance=ExtResource("18_r")]
+transform = Transform3D(6.12323e-17, 0, 1, 0, 1, 0, -1, 0, 6.12323e-17, 6.5, 4.51, -32.75)
+
+[node name="stilt_house_4" parent="Dressing" instance=ExtResource("16_r")]
+transform = Transform3D(0.34202, 0, 0.939693, 0, 1, 0, -0.939693, 0, 0.34202, -47.034, -0.62, -27.376)
+
+[node name="lintel_gull_c_3" parent="Dressing" instance=ExtResource("18_r")]
+transform = Transform3D(-0.939693, 0, 0.34202, 0, 1, 0, -0.34202, 0, -0.939693, -46, 5.43, -27)
+
+[node name="stilt_house_5" parent="Dressing" instance=ExtResource("16_r")]
+transform = Transform3D(0.766044, 0, -0.642788, 0, 1, 0, 0.642788, 0, 0.766044, 30.707, -0.62, -62.843)
+
+[node name="lintel_gull_b_2" parent="Dressing" instance=ExtResource("19_r")]
+transform = Transform3D(0.642788, 0, 0.766044, 0, 1, 0, -0.766044, 0, 0.642788, 30, 5.43, -62)
+
+[node name="storehouse_stilt_1" parent="Dressing" instance=ExtResource("22_r")]
+transform = Transform3D(0.965926, 0, -0.258819, 0, 1, 0, 0.258819, 0, 0.965926, -8.3, 0.1, -29.2)
+
+[node name="net_rack_2" parent="Dressing" instance=ExtResource("10_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -16.6, 0.14, -12)
+
+[node name="crate_stack_2" parent="Dressing" instance=ExtResource("13_r")]
+transform = Transform3D(0.906308, 0, 0.422618, 0, 1, 0, -0.422618, 0, 0.906308, -23, 0.14, -6)
+
+[node name="net_rack_3" parent="Dressing" instance=ExtResource("10_r")]
+transform = Transform3D(6.12323e-17, 0, 1, 0, 1, 0, -1, 0, 6.12323e-17, -15.4, 0.18, -22.8)
+
+[node name="oil_lamp_post_2" parent="Dressing" instance=ExtResource("12_r")]
+transform = Transform3D(-1, 0, 1.22465e-16, 0, 1, 0, -1.22465e-16, 0, -1, -15, 0.18, -19)
+
+[node name="awning_cloth_1" parent="Dressing" instance=ExtResource("23_r")]
+transform = Transform3D(0.984808, 0, -0.173648, 0, 1, 0, 0.173648, 0, 0.984808, -4.6, 0.1, -25)
+
+[node name="fish_drying_rack_1" parent="Dressing" instance=ExtResource("24_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -10.6, 0.1, -24.6)
+
+[node name="basket_set_2" parent="Dressing" instance=ExtResource("14_r")]
+transform = Transform3D(0.965926, 0, 0.258819, 0, 1, 0, -0.258819, 0, 0.965926, -22, 0.12, -32)
+
+[node name="salvage_pile_1" parent="Dressing" instance=ExtResource("25_r")]
+transform = Transform3D(0.866025, 0, 0.5, 0, 1, 0, -0.5, 0, 0.866025, 3.4, 0.16, -29.6)
+
+[node name="outrigger_7m_1" parent="Dressing" instance=ExtResource("26_r")]
+transform = Transform3D(-0.0174524, 0, 0.999848, 0, 1, 0, -0.999848, 0, -0.0174524, 9.3, -0.8, 2.5)
+
+[node name="outrigger_7m_2" parent="Dressing" instance=ExtResource("26_r")]
+transform = Transform3D(-0.104528, 0, 0.994522, 0, 1, 0, -0.994522, 0, -0.104528, -9.6, -0.8, -6.5)
+
+[node name="outrigger_7m_3" parent="Dressing" instance=ExtResource("26_r")]
+transform = Transform3D(-0.984808, 0, 0.173648, 0, 1, 0, -0.173648, 0, -0.984808, -1, -0.8, -28)
+
+[node name="outrigger_7m_4" parent="Dressing" instance=ExtResource("26_r")]
+transform = Transform3D(-0.0174524, 0, 0.999848, 0, 1, 0, -0.999848, 0, -0.0174524, 9.3, -0.8, 2.5)
+
+[node name="outrigger_7m_5" parent="Dressing" instance=ExtResource("26_r")]
+transform = Transform3D(-0.104528, 0, 0.994522, 0, 1, 0, -0.994522, 0, -0.104528, -9.6, -0.8, -6.5)
+
+[node name="market_stall_1" parent="Dressing" instance=ExtResource("27_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -8.2, 0.12, -16.4)
+
+[node name="awning_cloth_2" parent="Dressing" instance=ExtResource("23_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -8.2, 0.12, -14.3)
+
+[node name="oil_lamp_post_3" parent="Dressing" instance=ExtResource("12_r")]
+transform = Transform3D(-1, 0, 1.22465e-16, 0, 1, 0, -1.22465e-16, 0, -1, -4.3, 0.12, -13.3)
+
+[node name="water_jar_2" parent="Dressing" instance=ExtResource("15_r")]
+transform = Transform3D(0.866025, 0, 0.5, 0, 1, 0, -0.5, 0, 0.866025, -5.2, 0.12, -17.9)
+
+[node name="basket_set_3" parent="Dressing" instance=ExtResource("14_r")]
+transform = Transform3D(0.34202, 0, 0.939693, 0, 1, 0, -0.939693, 0, 0.34202, -11.2, 0.12, -13.8)
+
+[node name="fish_drying_rack_2" parent="Dressing" instance=ExtResource("24_r")]
+transform = Transform3D(6.12323e-17, 0, 1, 0, 1, 0, -1, 0, 6.12323e-17, -11.4, 0.12, -17.2)
+
+[node name="CameraHints" type="Node3D" parent="."]
+
+[node name="wide_high" type="Marker3D" parent="CameraHints"]
+transform = Transform3D(0.995893, 0.0360842, -0.083034, -0, 0.917141, 0.398563, 0.0905357, -0.396927, 0.913374, -1.5, 7.5, 13.5)
+
+[node name="party_side" type="Marker3D" parent="CameraHints"]
+transform = Transform3D(0.575779, -0.0656933, 0.814962, 0, 0.996767, 0.0803484, -0.817606, -0.0462629, 0.573917, 5.6, 1.7, 4.5)
+
+[node name="foe_side" type="Marker3D" parent="CameraHints"]
+transform = Transform3D(0.490844, 0.0745636, -0.868051, -0, 0.996331, 0.0855825, 0.871248, -0.0420076, 0.489043, -5.6, 1.7, 4)
+
+[node name="from_the_bridge" type="Marker3D" parent="CameraHints"]
+transform = Transform3D(-0.894427, 0.021404, -0.446701, 0, 0.998854, 0.0478608, 0.447214, 0.042808, -0.893402, -4.6, 1.6, -10.2)

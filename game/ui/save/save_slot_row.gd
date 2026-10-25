@@ -5,6 +5,10 @@ extends Control
 ## A view only: it reads a SaveSlotInfo and never writes anything.
 
 signal clicked
+## The pointer came onto the row (M2-UI-26: hover moves the save menu's cursor).
+signal hovered
+## The wheel turned over the row: -1 up, 1 down (M2-UI-26).
+signal wheeled(step: int)
 
 var info: SaveSlotInfo
 var usable := true
@@ -23,6 +27,7 @@ func setup(metrics: Dictionary, row_size: Vector2) -> void:
 	_m = metrics
 	size = row_size
 	mouse_filter = Control.MOUSE_FILTER_STOP
+	mouse_entered.connect(func() -> void: hovered.emit())
 	var lh := _n("line_height")
 	var y1 := _n("line1_y")
 	var y2 := _n("line2_y")
@@ -82,8 +87,13 @@ func text_of(part: StringName) -> String:
 
 func _gui_input(event: InputEvent) -> void:
 	var mb := event as InputEventMouseButton
-	if mb != null and mb.pressed and mb.button_index == MOUSE_BUTTON_LEFT:
+	if mb == null or not mb.pressed:
+		return
+	if mb.button_index == MOUSE_BUTTON_LEFT:
 		clicked.emit()
+	elif mb.button_index == MOUSE_BUTTON_WHEEL_UP or mb.button_index == MOUSE_BUTTON_WHEEL_DOWN:
+		accept_event()
+		wheeled.emit(-1 if mb.button_index == MOUSE_BUTTON_WHEEL_UP else 1)
 
 
 func _label(variation: StringName, r: Rect2, align: HorizontalAlignment) -> Label:

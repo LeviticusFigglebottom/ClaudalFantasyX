@@ -38,6 +38,13 @@ game/data/battle/enemies.json  "model": "res://game/creatures/<id>/<id>_battle.t
   authored. A looping clip must end where it starts (`Clip.wave` does).
 - **The clip set** (design sheets; README rule 6): `idle` (loops), `attack`, `cast`, `hit`, `ko`, and for the
   boss `phase_change` plus a phase idle. Every creature has all five, even when no slice skill uses one yet.
+- **In place (battle-presentation's clip contract, M2-BPR-02).** The strike clips `attack` and `cast` play in place:
+  the sequencer moves the fighter to its target, so `export_creature` drops the `root` bone's horizontal travel in them
+  (`IN_PLACE_CLIPS`). Author the lunge on `root` if you like; vertical travel (a dive, a hop), body leans and `hit`'s
+  knock-back stay. The contact second in creatures.json `contact` is what the sequencer syncs the blow to. The
+  contract's other names (`dodge`, `defend`, `ready`, `victory`) are optional; a creature without them gets the
+  sequencer's procedural fallback. Audit of all 27 creatures (2026-10-24): each has `idle`, `attack`, `cast`, `hit`
+  and `ko`, and no strike clip keeps horizontal root travel.
 - **Determinism.** No randomness except a seeded `np.random.default_rng(SEED)` and the kit's hash noise; no
   exported tangents (Godot makes them on import). Two runs are byte-identical, which the gate checks.
 - **Budgets** are in each sheet (5k to 16k triangles). Keep each GLB well under 5 MB (the crab is about 0.8 MB).
@@ -80,6 +87,15 @@ creature folder to the rule's `assets` list (the folders are not searched recurs
 `import_script/path="res://game/core/import/creatures_post_import.gd"` in the `.glb.import` (run
 `godot --headless --path . --import` once to create it, edit the line, import again).
 
+**LODs (checked 2026-10-24, the Lead's LOD1 ask).** The creatures need no authored `-lod1` chain. Godot's import-time
+LODs (`meshes/generate_lods=true`) work on the skinned creature meshes: every surface carries an index-only LOD chain
+whose first level is about half the triangles. For example, the reef crab's shell 3,872 → 1,936 → 968 → 484, the gull
+harrier's body 6,240 → 3,120 → 1,560, and the Drownbell's body 11,024 → 5,512 → 2,756, with the `Rim` and `RimBroken`
+meshes reduced the same way. Godot picks the level by screen-space error (`mesh_lod_threshold`, 1 px by default), so
+a creature drops detail only where the loss is under a pixel. An authored chain (`<mesh>-lod1` plus a `lods.end_m`
+table, asset_import.md §3) would add a distance cutoff, which battles, held at 5–15 m, don't need. Re-check with
+`godot --headless --path . -s tools/dev/creature_lods.gd [-- <id> ...]` if a creature ever goes on the field at range.
+
 ## 5. Battle (M2-CRE-03)
 
 - **`enemies.json` `model`** names the creature's actor scene. `CreatureModels` reads it, and
@@ -93,7 +109,8 @@ creature folder to the rule's `assets` list (the folders are not searched recurs
   (`clip_by_skill`, else `clip_by_kind` by the skill's kind), `hit`, the `ko` clip held and faded to
   battle_sandbox.json's `ko_alpha` (no sink), a freeze under Petrify (FighterStandIn swaps the surfaces to stone),
   a boss's phase (`phases.<id>`: a clip, an idle afterwards, an offset and tilt of the model over `sec`, node names
-  to `hide` or `show` at once, and `hide_after` nodes hidden once the clip has played), and
+  to `hide` or `show` at once, `hide_after` nodes hidden once the clip has played, and a `clips` map of stand-in
+  clips the phase plays instead, e.g. `attack` → `attack_dark`, which `play_clip` and `contact_time` follow), and
   breakable parts (`break_parts.<charge skill>`: node names shown `whole` or `broken`).
 - **`BattleActorMotion`** (`game/creatures/battle_actor_motion.gd`) is attached by `BattleStage.spawn` and listens
   to the engine: `action_resolved` (the actor's clip, `hit` on each foe a landed damaging hit reaches),

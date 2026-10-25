@@ -1,0 +1,8 @@
+[gd_resource type="StandardMaterial3D" load_steps=1 format=3]
+
+[resource]
+resource_name = "ou_lantern_glass"
+albedo_color = Color(0.749, 0.902, 0.8784, 0.3)
+metallic_specular = 0.8
+roughness = 0.05
+transparency = 1

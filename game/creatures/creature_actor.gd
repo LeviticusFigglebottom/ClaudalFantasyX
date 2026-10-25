@@ -21,6 +21,7 @@ var _player: AnimationPlayer
 var _idle: StringName = &""
 var _ko := false
 var _frozen := false
+var _resume_after_freeze := false
 var _phase: StringName = &""
 var _surfaces: Array[GeometryInstance3D] = []
 var _fade: Tween
@@ -91,18 +92,29 @@ func play_hit() -> bool:
 	return play_clip(StringName(str(_row.get("hit", "hit"))))
 
 
-## Plays a one-shot clip, then idles again. Refused while KO'd or petrified.
+## Plays a one-shot clip, then idles again. Refused while KO'd or petrified. In a phase whose `clips` map names a
+## stand-in for `clip` (the Undertow's Reach strikes from its lifted or drawn-back pose), that clip plays instead.
 func play_clip(clip: StringName) -> bool:
+	clip = phase_clip(clip)
 	if _ko or _frozen or not has_clip(clip):
 		return false
 	_play(clip)
 	return true
 
 
+## The clip the current phase plays for `clip` (its `clips` map), or `clip` itself.
+func phase_clip(clip: StringName) -> StringName:
+	if _phase == &"":
+		return clip
+	var phase_row: Dictionary = (_row.get("phases", {}) as Dictionary).get(String(_phase), {})
+	var mapped := StringName(str((phase_row.get("clips", {}) as Dictionary).get(String(clip), "")))
+	return mapped if mapped != &"" and has_clip(mapped) else clip
+
+
 ## When `clip` lands its blow (creatures.json `contact`, seconds into the clip), for presentation that syncs hit
 ## reactions and VFX to it (the battle-presentation track's choreography). -1 when the clip has no contact beat.
 func contact_time(clip: StringName) -> float:
-	return float((_row.get("contact", {}) as Dictionary).get(String(clip), -1.0))
+	return float((_row.get("contact", {}) as Dictionary).get(String(phase_clip(clip)), -1.0))
 
 
 ## The clip's length in seconds (0 if the actor has no such clip).
@@ -132,22 +144,29 @@ func set_ko(on: bool, alpha: float) -> void:
 			_fade = create_tween()
 			_fade.tween_interval(wait)
 			_fade.tween_method(_set_transparency, 0.0, 1.0 - alpha, float(_row.get("ko_fade_sec", 0.0)))
+			if alpha <= 0.0:
+				_fade.tween_callback(hide)  # faded right out (a fallen foe): hidden, no shadow
 		else:
 			_set_transparency(1.0 - alpha)
+			visible = alpha > 0.0
 		return
+	visible = true
 	_set_transparency(0.0)
 	_play(_idle)
 
 
 ## Petrify: the clip stops where it is (FighterStandIn swaps the surfaces to stone).
 func set_frozen(on: bool) -> void:
+	if on == _frozen:
+		return  # the stage sets this on every fighter after every action: a repeat must not restart a held KO clip
 	_frozen = on
 	if _player == null:
 		return
 	if on:
+		_resume_after_freeze = _player.is_playing()
 		_player.pause()
-	elif not _player.is_playing():
-		_player.play()
+	elif _resume_after_freeze:
+		_player.play()  # resumes the clip Petrify paused (a finished one, such as the KO, stays on its last frame)
 
 
 ## A boss's phase change (creatures.json `phases`): plays its clip, hides and shows its listed nodes (the Cinder

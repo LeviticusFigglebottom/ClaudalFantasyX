@@ -1,0 +1,23 @@
+// Ch5 B06 "The inn gate" (act1_ch05.md). In-engine, 21:40, P06 at night. The party takes rooms.
+// Kerrid declines the inn with a shake of the head and stands at the gate. Rhen brings him a bowl
+// from the kitchen; Kerrid takes it, sets it on the gate post untouched, and goes back to watching
+// the dark toward the sea. No line from Kerrid. Rhen eats it himself on the step, keeping him company
+// without meaning to. Clues planted (kerrid.md): he never eats, he declines inns; both read as a
+// quiet man's habits. Ends on black: the chapter flow takes the party to Ashcrown in the morning.
+title: ch05_inn_gate
+location: ch05/pemakar
+---
+@camera P06N
+@music lanternfall fade=2.0
+@anim kerrid shake_head
+@mark kerrid inn_gate walk
+@wait 1.0
+@anim rhen give_bowl kerrid
+@anim kerrid set_bowl_down
+@wait 1.5
+@anim kerrid look_at sea
+Rhen [neutral]: ...Suit yourself. #line:ch05_inn_001
+@anim rhen eat_on_step
+@wait 2.0
+@fade out 1.5
+===

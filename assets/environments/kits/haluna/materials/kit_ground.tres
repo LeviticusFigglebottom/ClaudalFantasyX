@@ -1,0 +1,17 @@
+[gd_resource type="ShaderMaterial" load_steps=7 format=3]
+
+[ext_resource type="Shader" path="res://game/shaders/environment/env_ground.gdshader" id="1_shader"]
+[ext_resource type="Texture2D" path="res://assets/environments/kits/haluna/textures/coral_stone_albedo.png" id="2_tex"]
+[ext_resource type="Texture2D" path="res://assets/environments/kits/haluna/textures/coral_stone_normal.png" id="3_tex"]
+[ext_resource type="Texture2D" path="res://assets/environments/kits/haluna/textures/sand_albedo.png" id="4_tex"]
+[ext_resource type="Texture2D" path="res://assets/environments/kits/haluna/textures/sand_normal.png" id="5_tex"]
+[ext_resource type="Texture2D" path="res://assets/environments/kits/haluna/textures/weathering_detail.png" id="6_tex"]
+
+[resource]
+resource_name = "kit_ground"
+shader = ExtResource("1_shader")
+shader_parameter/tex_detail = ExtResource("6_tex")
+shader_parameter/tex_sand = ExtResource("4_tex")
+shader_parameter/tex_sand_normal = ExtResource("5_tex")
+shader_parameter/tex_stone = ExtResource("2_tex")
+shader_parameter/tex_stone_normal = ExtResource("3_tex")

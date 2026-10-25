@@ -156,3 +156,66 @@ Rhen fights alone all chapter (act1_ch01.md §9 Combat), with `active: [rhen]` a
 - **Tempo (M3-CMB-02):** no Ch1 regular should routinely double-turn a solo Rhen. A foe's rank × base delay should be no shorter than about 0.85 of Rhen's Attack (174 ticks): the Wickfry is 150, and every other regular is slower. Only Hullgnaw's second phase out-tempos him, by design. The timeline shows each foe at its AI's rank (ADR 0038).
 
 Numbers are in the 2026-10-24 tuning log entry in balance_report.md.
+
+### Ch5: the pilgrim stair and the Cinder Matron (M3-C05-02)
+
+The story party from the end of B05: active Rhen, Asha and Kerrid, with Toma and Ysolde in reserve. The Matron fight starts Kerrid, Rhen and Asha. Swell is `good`.
+
+Loadouts are `ch05_ashcrown` (2 Salt Tonic) and `ch05_matron` (4 Salt Tonic, 1 Relighting Wick, Ilun bound). Both carry the best gear a Ch5 player can own. Pemakar's shop tier doesn't exist yet, so that's Haluna's post-Drownbell weapons (Tidewalker Hooks, Dawnwick Staff, Saltgrass Pike), the tier-1 armour, Ysolde's tier-1 pieces and Kerrid's starting pieces.
+- **The Coral Hooks are left out on purpose.** Their Ember Edge makes Rhen's attacks fire, which the Matron absorbs. The policies can't change gear, and with them equipped every policy loses.
+
+| Suite | Kind | `naive` | `role_answer` | `smart` | p90 turns |
+|---|---|---|---|---|---|
+| `ch05_stair_tortoises` (scripted: two slag tortoises, Kerrid's lesson) | Ch4–Ch9 regular | 20–60% | ≥ 92% | ≥ 97% | ≤ 35 |
+| `ch05_stair_ashwings`, `ch05_stair_tortoise_sparker`, `ch05_stair_tortoise_ashwing` (the random stair table) | Ch4–Ch9 regular | 20–60% | ≥ 92% | ≥ 97% | ≤ 35 |
+| `ch05_cinder_matron` | Ch4–Ch9 boss | ≤ 5% | 65–85% | **report only**, ≥ 40 mean turns | ≤ 70 |
+| `ch05_cinder_matron_ilun` (`naive_swell`: Ilun called at once, the water mistake) | report only | | | | ≤ 70 |
+
+- **The Matron's `smart` band is report only.** With two reserves, Asha's Mend and the items, `smart` won every seed of every tuning tried: 100% even where `role_answer` won 0%. A boss with no time pressure can't push a healing five-hero party below 92%.
+  - The table's 75–92% needs a mechanic that punishes a long fight, such as an escalation by turn count. That's the combat request M3-C05-06.
+  - Until then, `mean_turns_min` (`smart` ≥ 40 actions) is the ease ceiling, as in the M1 sandbox.
+- **Foe order matters.** `naive` hits the first foe:
+  - both mixed groups put the slag tortoise first;
+  - `[vein_sparker, slag_tortoise]` gave a masher 78%, and `[ashwing, slag_tortoise]` 64%.
+- **The cut 3-foe group.** The sheet's "2 ashwings + 1 vein sparker" was cut from the table. All three foes are answered by Ysolde, who starts in reserve, so `role_answer` won only 48%. The stair stays at two foes for now (sheet §9 Creatures 15; M3-C05-05).
+- **Ashwings name Ysolde as their answer** (fire weak), not Rhen. The sheet allows either, and only Ysolde gives `role_answer` a swap to make.
+
+Numbers are in the 2026-10-24 tuning-log entry in balance_report.md.
+
+### Ch4: the first four-member party (M3-C04-02)
+
+The derelict's fights (act1_ch04.md C4-12, C4-13, §5, §9 Combat). Rhen, Asha and Toma are active and Ysolde is in reserve (she joins at the gangplank), at Swell `good`. Loadouts: `ch04_derelict` (every Haluna tier-1 piece for Rhen, Asha and Toma, Ysolde's starting gear, 4 Salt Tonic, 1 Brine Eyewash, 1 Relighting Wick) and `ch04_spar_wraith` (the same, plus Ilun bound). The Spar-Wraith suite seats Ysolde active and Toma in reserve: the formation a player brings once the bottle-hermit has taught the swap (with Ysolde in reserve, `role_answer` swaps out whoever acts first, usually Rhen and his ember-edged hooks, and measures that rather than the answer).
+
+| Suite | Kind | `naive` | `role_answer` | `smart` | p90 turns |
+|---|---|---|---|---|---|
+| `ch04_bottle_hermit`, and the random `ch04_derelict_glass` | Ch4–Ch9 regular | 20–60% | ≥ 92% | ≥ 97% | ≤ 35 |
+| `ch04_sail_leeches`, and the random `ch04_derelict_leeches` | Ch4–Ch9 regular, `role_answer` report only (logged exception) | 20–60% | report only | ≥ 97% | ≤ 35 |
+| `ch04_spar_wraith` | Ch4–Ch9 boss, `smart` ceiling lifted (logged exception) | 0–5% | 65–85% | 75–100%, ≥ 30 mean turns | ≤ 70 |
+
+- **The leeches' `role_answer`.** The leech's answer is Rhen, and he is already on the field with nothing a masher lacks but Quick Hit, so the policy plays almost exactly like `naive` (62.9% against 48.2%). Asking it for 92% would need a leech the masher also beats. Report only, as Ch1's Hullgnaw, until Combat rules (M3-C04-06).
+- **The Spar-Wraith's `smart` ceiling.** With four heroes and Asha's Mend, `smart` out-heals any damage that `role_answer` (which never heals) survives: every tuning that put `role_answer` in 65–85% left `smart` at 99–100%. No field mechanic like the Drownbell's flood is in the sheet. The ceiling is lifted to 100% and the ease ceiling is `smart` ≥ 30 mean turns (measured 33.3) until Combat rules (M3-C04-06).
+- **The sim plays every opening as normal.** BattleSim never sets `engine.opening`, so the scripted leech ambush and its random twin measure the same. The ambush makes the live fight a little harder than measured.
+- **Ysolde's lesson.** The hermit's glass resists blows and is immune to fire (the sheet's "reflects fire": the engine has no reflect), and ice cracks it. Rhen's ember-edged Coral Hooks turn his Attack to fire, so a masher's Rhen does nothing to it. The masher wins about half the time on Toma and Asha alone; Ysolde's Frost ends it in about eight actions.
+
+Numbers are in the 2026-10-24 tuning log entry in balance_report.md.
+
+### Ch6: the Brine Shoals and the Stillguard Inquisitor (M3-C06-02)
+
+The road's fights use Ch5's party: active Rhen, Asha and Kerrid, with Toma and Ysolde in reserve. The Inquisitor starts Toma, Rhen and Asha (Toma steps in front of Asha), with Kerrid and Ysolde in reserve. Liss joins after the fight and is in no suite. Swell is `good`.
+
+Loadouts are `ch06_shoals` (3 Salt Tonic, 1 Brine Eyewash) and `ch06_inquisitor` (4 Salt Tonic, 2 Brine Eyewash, 1 Relighting Wick, Ilun bound, flags `ch03_ilun_bound` and `ch05_kahre_bound`). Both carry Ch5's gear (`ch05_ashcrown`'s pieces), since Pemakar's shop tier doesn't exist yet.
+
+| Suite | Kind | `naive` | `role_answer` | `smart` | p90 turns |
+|---|---|---|---|---|---|
+| `ch06_ridge_skippers` (two shoal skippers) | Ch4–Ch9 regular, `role_answer` report only (logged exception) | 20–60% | report only | ≥ 97% | ≤ 35 |
+| `ch06_ridge_crab` (a wreck crab and a shoal skipper) | the same | 20–60% | report only | ≥ 97% | ≤ 35 |
+| `ch06_ridge_gulls` (two gull harriers and a shoal skipper) | the same | 20–60% | report only | ≥ 97% | ≤ 35 |
+| `ch06_flats_crabs` (the mud-flats: two wreck crabs and a gull harrier) | Ch4–Ch9 regular | 20–60% | ≥ 92% | ≥ 97% | ≤ 35 |
+| `ch06_inquisitor` | Ch4–Ch9 boss, `smart` ceiling lifted (logged exception) | ≤ 5% | 65–85% | 75–100%, ≥ 25 mean turns | ≤ 70 |
+
+- **The skipper suites' `role_answer`** is the Ch4 leech exception again. The skipper's answer is Rhen, who is already on the field, so the policy plays like the masher. Report only until Combat rules (M3-C06-05).
+- **The Inquisitor's `smart` ceiling** is the Ch4 Spar-Wraith exception again. With Asha's Mend, `smart` out-heals anything `role_answer` survives (100% wherever `role_answer` was in 65–85%). The ease ceiling is `smart` ≥ 25 mean turns (measured 29.0).
+- **Toma will not strike the Stillguard** (`forbidden_skills`), so `naive` fights with two blades and a guard, and loses. `role_answer` swaps Toma for a reserve striker (battle_ctb.md "Encounter rules"); that is how it reaches 65–85%.
+- **The flats are cut to three foes.** The sheet's 3–4 foe groups are too much for this party: three skippers gave `smart` 53–85%, and four foes pushed `smart`'s p90 to 43–51. The flats keep one 3-foe group (two crabs, whom Kerrid answers, and a gull), and `ch06_ridge_gulls` (three foes) is in their table too. The cut groups are `ch06_flats_skippers` and `ch06_flats_mixed` (M3-C06-05).
+
+Numbers are in the 2026-10-24 tuning-log entry in balance_report.md.

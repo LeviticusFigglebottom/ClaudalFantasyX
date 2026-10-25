@@ -1,0 +1,31 @@
+keys,en
+FIELD_MENU_FORMATION,Formation
+FIELD_MENU_FORMATION_DESC,Who walks into the fight and who waits in reserve.
+FORMATION_MENU_HELP,Up and Down: choose · Left and Right: active line or reserve · Confirm: pick a hero · Cancel: back
+FORMATION_MENU_HELP_PICKED,Up and Down: choose · Left and Right: active line or reserve · Confirm: move them here · Cancel: put them back
+FORMATION_MENU_ACTIVE_TITLE_FMT,Active line · {count} of {max}
+FORMATION_MENU_RESERVE_TITLE_FMT,Reserve · {count}
+FORMATION_MENU_OPEN,Open place
+FORMATION_MENU_FALLEN_TAG_FMT,{name} (fallen)
+FORMATION_MENU_PLACE_ACTIVE_FMT,"Active line, place {place} of {max}"
+FORMATION_MENU_PLACE_RESERVE_FMT,"Reserve, place {place}"
+FORMATION_MENU_CHOSEN_FMT,Moving {name}. Choose where they go.
+FORMATION_MENU_PLAN_PICK_FMT,Confirm to pick {name} up and choose where they go.
+FORMATION_MENU_PLAN_KEEP_FMT,Confirm to leave {name} where they stand.
+FORMATION_MENU_PLAN_SWAP_ACTIVE_FMT,{a} and {b} change places in the active line.
+FORMATION_MENU_PLAN_SWAP_RESERVE_FMT,{a} and {b} change places in the reserve.
+FORMATION_MENU_PLAN_SWAP_IN_OUT_FMT,{in} comes into the active line and {out} steps back to the reserve.
+FORMATION_MENU_PLAN_TO_ACTIVE_FMT,{name} joins the active line.
+FORMATION_MENU_PLAN_TO_RESERVE_FMT,{name} steps back to the reserve.
+FORMATION_MENU_DONE_SWAP_ACTIVE_FMT,{a} and {b} changed places in the active line. The next fight uses this line.
+FORMATION_MENU_DONE_SWAP_RESERVE_FMT,{a} and {b} changed places in the reserve.
+FORMATION_MENU_DONE_SWAP_IN_OUT_FMT,{in} came into the active line and {out} stepped back. The next fight uses this line.
+FORMATION_MENU_DONE_TO_ACTIVE_FMT,{name} joined the active line. The next fight uses this line.
+FORMATION_MENU_DONE_TO_RESERVE_FMT,{name} stepped back to the reserve. The next fight uses this line.
+FORMATION_MENU_WARN_FALLEN_ONE_FMT,"{name} has fallen. In the active line they start the fight unable to act, until someone revives them."
+FORMATION_MENU_WARN_FALLEN_MANY_FMT,"{names} have fallen. In the active line they start the fight unable to act, until someone revives them."
+FORMATION_MENU_ERR_NOT_GATHERED,"Nobody has joined the party yet, so there is no formation to change."
+FORMATION_MENU_ERR_OPEN_PLACE,An open place. Pick a hero first, then choose this place for them.
+FORMATION_MENU_ERR_TOO_FEW_FMT,"The active line needs at least {min} in it, so {name} stays."
+FORMATION_MENU_ERR_NONE_STANDING,Nobody left in the active line could fight: the battle would be lost before it began. Keep someone standing there.
+FORMATION_MENU_NAMES_JOIN,", "

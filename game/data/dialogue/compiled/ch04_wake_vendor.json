@@ -1,0 +1,16 @@
+{
+ "format": 1,
+ "scene": "ch04_wake_vendor",
+ "source": "game/data/dialogue/ch04/ch04_wake_vendor.dlg",
+ "start": "ch04_wake_vendor",
+ "nodes": {
+  "ch04_wake_vendor": {
+   "headers": {"location": "ch04/haluna_wake"},
+   "ops": [
+    {"op": "line", "id": "ch04_wake_vendor_001", "key": "DLG_CH04_WAKE_VENDOR_001", "speaker": "vendor", "emotion": "soft_smile", "voice": "", "src": 7},
+    {"op": "line", "id": "ch04_wake_vendor_002", "key": "DLG_CH04_WAKE_VENDOR_002", "speaker": "vendor", "emotion": "sad", "voice": "", "src": 8},
+    {"op": "line", "id": "ch04_wake_vendor_003", "key": "DLG_CH04_WAKE_VENDOR_003", "speaker": "asha", "emotion": "smile", "voice": "", "src": 9}
+   ]
+  }
+ }
+}

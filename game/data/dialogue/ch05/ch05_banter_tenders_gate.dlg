@@ -1,0 +1,11 @@
+// Ch5 B07, walking banter 1: the Tenders' gate at the foot of the pilgrim stair (A01). Overheard as the
+// party climbs. Warmth, and a crack in Asha for the player who listens.
+title: ch05_banter_tenders_gate
+location: ch05/ashcrown
+---
+Ysolde [neutral]: Daro Pemakan. The thirty-sixth. Seventy-one years old. #line:ch05_banter_gate_001
+Ysolde [neutral]: The roll records that he complained the whole way. #line:ch05_banter_gate_002
+Asha [soft_smile]: Good. #line:ch05_banter_gate_003
+Rhen [surprised]: Good? #line:ch05_banter_gate_004
+Asha [soft_smile]: Somebody should. #line:ch05_banter_gate_005
+===

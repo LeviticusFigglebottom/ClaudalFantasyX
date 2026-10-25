@@ -1,0 +1,8 @@
+// Ch7 B02, bark 6: Ysolde at the gantry foot, if the player talks to her. Watch (ADR 0017 Ch7): the
+// Bell's sanctification is a decree she has read, not a presence. Field bark.
+title: ch07_bark_ysolde
+location: ch07/tamsule
+---
+Ysolde [neutral]: The Order sanctified the Bell in the third century. I have read the decree. #line:ch07_bark_ysolde_001
+Ysolde [neutral]: It is very short. #line:ch07_bark_ysolde_002
+===

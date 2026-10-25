@@ -24,7 +24,9 @@ var _hint: Label
 func _ready() -> void:
 	_m = HudLayout.section(&"read_panel")
 	_open_m = HudLayout.section(&"panel_open")
-	set_anchors_preset(Control.PRESET_FULL_RECT)
+	# Built by script: the offsets must follow the anchors too, or it stays 0 x 0 and a click on
+	# it never lands (M2-UI-26).
+	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	# Modal: the whole screen takes the mouse while open, so nothing behind it can be clicked.
 	mouse_filter = Control.MOUSE_FILTER_STOP
 	gui_input.connect(_on_click)

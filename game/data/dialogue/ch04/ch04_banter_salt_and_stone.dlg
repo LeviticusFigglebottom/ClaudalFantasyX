@@ -1,0 +1,11 @@
+// Ch4 C4-10, banter 3 of 3 (field bark, overheard by the wheel): Rhen and the ferry-master, Imbe.
+// Imbe asks where he's from. A pause. "Salt and stone" (a Low Reaches oath; Kell swore by it
+// in Ch1). He is the first stranger to name the loss out loud.
+title: ch04_banter_salt_and_stone
+location: ch04/brightwater_ferry
+---
+Ferrymaster [neutral]: You're no Haluna boy, with that tether-scar. Where are you out of? #line:ch04_banter_salt_001
+Rhen [neutral]: The raft-town. Oruvel. #line:ch04_banter_salt_002
+@wait 1.5
+Ferrymaster [sad]: Salt and stone. I'm sorry, lad. #line:ch04_banter_salt_003
+===

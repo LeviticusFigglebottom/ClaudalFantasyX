@@ -1,0 +1,26 @@
+{
+ "format": 1,
+ "scene": "ch06_midday",
+ "source": "game/data/dialogue/ch06/ch06_midday.dlg",
+ "start": "ch06_midday",
+ "nodes": {
+  "ch06_midday": {
+   "headers": {"location": "ch06/brine_shoals"},
+   "ops": [
+    {"op": "cue", "cue": "camera", "args": ["W02"], "kwargs": {}, "src": 8},
+    {"op": "cue", "cue": "anim", "args": ["asha", "sit"], "kwargs": {}, "src": 9},
+    {"op": "cue", "cue": "anim", "args": ["toma", "sit"], "kwargs": {}, "src": 10},
+    {"op": "cue", "cue": "anim", "args": ["ysolde", "sit"], "kwargs": {}, "src": 11},
+    {"op": "cue", "cue": "anim", "args": ["kerrid", "stand_apart"], "kwargs": {}, "src": 12},
+    {"op": "cue", "cue": "wait", "args": [1.5], "kwargs": {}, "src": 13},
+    {"op": "cue", "cue": "camera", "args": ["W02_share"], "kwargs": {}, "src": 14},
+    {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 15},
+    {"op": "cue", "cue": "camera", "args": ["W02"], "kwargs": {}, "src": 16},
+    {"op": "cue", "cue": "wait", "args": [1.5], "kwargs": {}, "src": 17},
+    {"op": "cue", "cue": "anim", "args": ["rhen", "take", "kerrid_share"], "kwargs": {}, "src": 18},
+    {"op": "line", "id": "ch06_midday_001", "key": "DLG_CH06_MIDDAY_001", "speaker": "rhen", "emotion": "neutral", "voice": "", "src": 19},
+    {"op": "cue", "cue": "wait", "args": [0.8], "kwargs": {}, "src": 20}
+   ]
+  }
+ }
+}

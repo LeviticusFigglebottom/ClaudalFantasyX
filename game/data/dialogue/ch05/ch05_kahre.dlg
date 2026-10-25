@@ -1,0 +1,84 @@
+// Ch5 B10 "Kahre: the binding and the second verse" (act1_ch05.md). Letterboxed. Opens on the Matron
+// banking after the fight: the slag cools from orange to black, her bound core glows on behind it,
+// steady; no motes rise from her (she is bound).
+// A10: the Tender opens the chamber behind the anvil-stone; Asha goes in alone, by rite. Toma's name
+// for her is rung once, because Ch3 rang it. A11 (a single held frame; A10 → A11 cuts on a short
+// fade): Kahre is bound light, steady, never drifting, white sparks in his mane that never fall; the
+// keepsake hammer is a dark shape. Don't show the full form. No look passes between Kahre and Kerrid
+// (Kerrid is outside). A08, the wait: Kerrid at the sea-facing arch; his eyes go once to the lantern
+// on Rhen's shoulder, and away (gesture slot; he worked eight low tides beside its twin at Corrow).
+// A12: Asha comes out walking, smiling, a little scorched around the eyes; released light lifts off
+// her in slow upward spirals, less than in Ch3. Watch (ADR 0017, the Ch3 row): no stumble or catch at
+// the door, and no summon shown at the door. The second verse: four #sung #lamptongue lines over
+// hush_second_verse (Audio sets the final text). On "mir" the plume flashes and the thunder comes;
+// nothing comes up out of the ground (the rhyme with Ch3's Drownbell; Rhen's fear, remembered, lands
+// as relief: the only joke here). Ysolde's warmth closes it.
+// Sets ch05_kahre_bound (vowbound.json bound_flag: Kahre callable from here on) and
+// ch05_second_verse_sung (sleeve band 2). Kahre has no voice in Act I.
+title: ch05_kahre
+location: ch05/ashcrown
+---
+@letterbox on
+@camera A08
+@anim matron bank
+@sfx matron_bank
+@vfx glimmer_bound at=matron_heart
+@wait 4.0
+Tender as "Tender Ruwen" [soft_smile]: She'll sleep now. She always does. #line:ch05_kahre_001
+@camera A10
+@anim tender open_chamber
+Toma [neutral]: We will be here, Lady Cantor. #line:ch05_kahre_002
+Asha [soft_smile]: Toma. #line:ch05_kahre_003
+Toma [soft_smile]: ...Asha. #line:ch05_kahre_004
+@mark asha chamber_in walk
+@fade out 0.6
+@camera A11
+@vfx glimmer_bound at=kahre_heart
+@fade in 0.6
+@wait 2.5
+@fade out 0.8
+@camera A08
+@fade in 0.8
+@music silence fade=2.0
+Rhen [smile]: Three hundred years in there with a hammer. You'd think he'd run out of things to hit. #line:ch05_kahre_005
+@anim kerrid look_at rhen
+@wait 0.8
+@anim kerrid look_at sea
+@anim rhen grin
+Rhen [smile]: You've got a look like you're pricing it. #line:ch05_kahre_006
+@wait 1.0
+Ysolde [neutral]: The roll says he repaired the hinges of every temple door he passed through. Unasked. #line:ch05_kahre_007
+@anim toma laugh
+Toma [laugh]: That sounds like a smith. #line:ch05_kahre_008
+@camera A12
+@mark asha chamber_door walk
+@vfx glimmer_lift at=asha motion=spiral_up rate=slow
+@wait 1.5
+Rhen [neutral]: Well? #line:ch05_kahre_009
+Asha [laugh]: He was impatient with me. #line:ch05_kahre_010
+Asha [smile]: I liked him very much. #line:ch05_kahre_011
+<<if $ch05_found_quench_charm>>
+    @anim asha look_at rhen
+    Asha [soft_smile]: He'd have wanted that back, I think. He said nothing about it. Keep it. #line:ch05_kahre_012
+<<endif>>
+Ysolde [neutral]: The first verse is sung toward home. The second is sung to the mountain that taught it. #line:ch05_kahre_013
+@anim asha face_crown_sing
+@music hush_second_verse fade=0.5
+Asha [tender]: Ish karra, ish karra, #line:ch05_kahre_014 #sung #lamptongue #notr #tn:"Lamptongue (the Hush's second verse): keep as written. Audio sets the final text."
+Asha [tender]: vey hal ennu, #line:ch05_kahre_015 #sung #lamptongue #notr #tn:"Lamptongue: keep as written."
+Asha [tender]: re ish, re ish... #line:ch05_kahre_016 #sung #lamptongue #notr #tn:"Lamptongue: keep as written."
+Asha [tender]: ...mir. #line:ch05_kahre_017 #sung #lamptongue #notr #tn:"Lamptongue: keep as written. Every verse ends on mir."
+@sfx plume_thunder
+@wait 1.0
+@anim rhen brace
+Rhen [afraid]: Is something going to come up out of the ground again? #line:ch05_kahre_018
+Toma [tender]: Not this time, I think. #line:ch05_kahre_019
+@wait 1.5
+<<set $ch05_kahre_bound = true>>
+<<set $ch05_second_verse_sung = true>>
+@anim ysolde walk_past asha
+Ysolde [neutral]: Lift your chin when you sing. It is better for the breath. #line:ch05_kahre_020
+Asha [smile]: Yes, Scholar. #line:ch05_kahre_021
+@letterbox off
+@fade out 1.5
+===

@@ -1,6 +1,6 @@
 {
   "schema": "hymn-palette/1",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "owner": "art (M1-ART-01)",
   "color_space_note": "hex is sRGB-encoded (what you type into a Godot color picker). linear is the sRGB EOTF of that hex, rounded to 4 places, which is what shaders and the renderer use. luminance_linear is Rec.709 relative luminance.",
   "value_kinds_note": "Every swatch has two kinds of value. INPUT: hex/linear, what you type into a material, light, sky or shader parameter. ON-SCREEN: onscreen_hex, what that input shows after exposure and the AgX tonemap, measured on the swatch card (game/levels/_tests/swatches/, shot swatch_card). input_kind says where the input goes. UI swatches are drawn after the tonemap, so their hex IS the on-screen value and they have no onscreen_hex. See README.md, 'Two kinds of colour value'.",
@@ -582,7 +582,7 @@
       "family": "glimmer",
       "input_kind": "emission",
       "role": "Released (rising) mote core. Warm pale gold.",
-      "usage_limit": "Motes and their bloom only.",
+      "usage_limit": "Motes and their bloom, and released light in the Letting: the Undertow's rents, curtains and throat streaks once unbinding has turned them (colour script rule 1, M2-ART-03).",
       "onscreen_hex": {
         "-1": "#ADA088",
         "0": "#CCC1AD",
@@ -620,7 +620,7 @@
       "family": "glimmer",
       "input_kind": "emission",
       "role": "Held / anchored mote: cool cyan, drifting sideways and down.",
-      "usage_limit": "Held motes only, including motes shed from spawn wounds. Not bound lamps (glimmer_bound) and not wound surfaces (spawn_wound).",
+      "usage_limit": "Held motes, including motes shed from spawn wounds, and the Undertow's held light: the light pooled behind its rents, its curtains of held light and its throat streaks (M2-ART-03). Not bound lamps (glimmer_bound) and not wound surfaces (spawn_wound).",
       "onscreen_hex": {
         "-1": "#62909A",
         "0": "#8CB3BD",
@@ -657,8 +657,8 @@
       "temperature": "~10000 K, off-locus green tint",
       "family": "glimmer",
       "input_kind": "emission",
-      "role": "Undertow-spawn glimmer wounds and weak points.",
-      "usage_limit": "Creature weak points only.",
+      "role": "Undertow-spawn glimmer wounds and weak points, and the Undertow's own rents.",
+      "usage_limit": "Wound surfaces only: Undertow-spawn creature weak points, and the torn rents of the Undertow storm itself (body, Low shells and the funnel sea), because the storm is the spawn's source and its wounds are the same language (SPEC 7.5, bible 9; M2-ART-03). Never the held light that pours from a rent (glimmer_held), never bound light (glimmer_bound), and never a non-Undertow creature's weak point.",
       "onscreen_hex": {
         "-1": "#469D90",
         "0": "#77BFB4",

@@ -6,11 +6,11 @@ extends Control
 ## MapModel.fit: the zone's bounds at one scale, centred and letterboxed; what lies past the
 ## bounds still draws, clipped to the control. North is up.
 ##
-## Draw order: sea, land, floors, sand, pads, lanes, water, channels, rims, buildings, structures,
-## walls, foam; then the compass, the places (glyphs) with the highlighted place's ring, the
-## objective's gold diamond framing its place's glyph, and the player's arrow on top. Colours are
-## theme roles only (map_* and the UI roles). The objective's ring swells over pulse_sec from its
-## own clock; under reduced motion it holds.
+## Draw order: sea, seas (a greybox zone's open water), land, floors, sand, pads, lanes, water,
+## channels, rims, buildings, structures, walls, foam; then the compass, the places (glyphs) with
+## the highlighted place's ring, the objective's gold diamond framing its place's glyph, and the
+## player's arrow on top. Colours are theme roles only (map_* and the UI roles). The objective's
+## ring swells over pulse_sec from its own clock; under reduced motion it holds.
 ## Mouse: hovering or clicking a place emits poi_hovered / poi_clicked.
 
 signal poi_hovered(poi_id: StringName)
@@ -27,13 +27,16 @@ var reduced_motion := false
 var _xf := Transform2D.IDENTITY
 var _t := 0.0
 var _pieces: Dictionary = {}
+var _greybox: Dictionary = {}
 
 
-## Shows `with_model`. `map_metrics`: zone_map_menu.json "map"; `pieces`: its "pieces".
-func setup(with_model: MapModel, map_metrics: Dictionary, pieces: Dictionary) -> void:
+## Shows `with_model`. `map_metrics`: zone_map_menu.json "map"; `pieces`: its "pieces";
+## `greybox`: its "greybox" block (how a greybox zone's blocks are read).
+func setup(with_model: MapModel, map_metrics: Dictionary, pieces: Dictionary, greybox: Dictionary = {}) -> void:
 	model = with_model
 	metrics = map_metrics
 	_pieces = pieces
+	_greybox = greybox
 	clip_contents = true
 	mouse_filter = Control.MOUSE_FILTER_STOP
 	_layout()
@@ -57,7 +60,9 @@ func _layout() -> void:
 	_xf = MapModel.fit(model.bounds(), Rect2(Vector2.ZERO, size))
 	var margin := float(metrics.get("view_margin_m", 0.0))
 	var seen := _xf.affine_inverse() * Rect2(Vector2.ZERO, size)
-	shapes = ZoneMapShapes.build(model.shape_kind(), model.shape_source(), seen.grow(margin), metrics, _pieces)
+	shapes = ZoneMapShapes.build(
+		model.shape_kind(), model.shape_source(), seen.grow(margin), metrics, _pieces, _greybox, model.shape_hints()
+	)
 	queue_redraw()
 
 
@@ -141,6 +146,7 @@ func _draw() -> void:
 		return
 	if shapes.sea:
 		draw_rect(Rect2(Vector2.ZERO, size), _c(&"map_sea"))
+	_fill(shapes.seas, _c(&"map_sea"))
 	_fill(shapes.land, _c(&"map_land"))
 	_fill(shapes.floors, _c(&"map_floor"))
 	_fill(shapes.sand, _c(&"map_sand"))

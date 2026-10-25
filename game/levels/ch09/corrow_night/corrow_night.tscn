@@ -1,0 +1,8 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://game/levels/ch09/ch09_zone.gd" id="1_zone"]
+
+[node name="CorrowNight" type="Node3D"]
+script = ExtResource("1_zone")
+location_id = &"ch09/corrow_night"
+layout_path = "res://game/levels/ch09/corrow_night/corrow_night_layout.json"

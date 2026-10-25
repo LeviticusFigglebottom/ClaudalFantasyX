@@ -1,0 +1,24 @@
+{
+ "format": 1,
+ "scene": "ch04_wake_neme",
+ "source": "game/data/dialogue/ch04/ch04_wake_neme.dlg",
+ "start": "ch04_wake_neme",
+ "nodes": {
+  "ch04_wake_neme": {
+   "headers": {"location": "ch04/haluna_wake"},
+   "ops": [
+    {"op": "cue", "cue": "anim", "args": ["neme", "clear_plates"], "kwargs": {}, "src": 11},
+    {"op": "cue", "cue": "sfx", "args": ["neme_humming"], "kwargs": {"at": "neme"}, "src": 12},
+    {"op": "line", "id": "ch04_wake_neme_001", "key": "DLG_CH04_WAKE_NEME_001", "speaker": "neme", "emotion": "neutral", "voice": "", "src": 13},
+    {"op": "line", "id": "ch04_wake_neme_002", "key": "DLG_CH04_WAKE_NEME_002", "speaker": "asha", "emotion": "soft_smile", "voice": "", "src": 14},
+    {"op": "if_not", "cond": ["flag", "ch03_rhen_named_lullaby"], "to": 11, "src": 15},
+    {"op": "cue", "cue": "camera", "args": ["H12"], "kwargs": {}, "src": 16},
+    {"op": "cue", "cue": "face", "args": ["rhen", "tender", 0.4], "kwargs": {}, "src": 17},
+    {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 18},
+    {"op": "cue", "cue": "face", "args": ["rhen", "neutral", 0.4], "kwargs": {}, "src": 19},
+    {"op": "cue", "cue": "camera", "args": ["release"], "kwargs": {}, "src": 20},
+    {"op": "goto", "to": 11, "src": 15}
+   ]
+  }
+ }
+}

@@ -157,8 +157,8 @@ breaks colour-script rule 5. The measurements and the request to re-test on a GP
 
 | Piece | Visible in | Why |
 |---|---|---|
-| `banyan_placeholder` | H07 | The hero banyan isn't built (vegetation stream). This one has a cluster-card crown and straight roots. |
-| `windbreak_placeholder` | H01, H02, H07 | The windbreak tree isn't built. These have a cluster-card crown. |
+| ~~`banyan_placeholder`~~ | H07 | **Replaced (M2-ENV-07, 2026-10-24):** the real hero banyan, built by the vegetation generators (vegetation.md "Broadleaf trees"). The piece name is kept as the scene contract; it is no longer tagged. |
+| ~~`windbreak_placeholder`~~ | H01, H02, H07 | **Replaced (M2-ENV-07, 2026-10-24):** the real windbreak tree, same swap. |
 | `shell_shrine_massing` | H04 (tiny) | A distant massing. The shrine's walls, columns and channels are M2 work. |
 | Ground seagrass, lane litter | H01, H04 | Shader patches only, with no meshes or decals. |
 
