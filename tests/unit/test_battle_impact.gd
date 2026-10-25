@@ -168,6 +168,32 @@ func test_the_screen_shake_setting_scales_or_drops_the_shake() -> void:
 	_free()
 
 
+func test_audio_hears_each_weighty_blow_and_the_last_blow_slow_mo() -> void:
+	var foe := _heavy_foe()
+	_to_turn_of(&"rhen")
+	ctl.pacing_scale = 1.0
+	var heard: Array = []
+	choreo.impact.landed.connect(func(tid: StringName, s: float, stop: float) -> void: heard.append([tid, s, stop]))
+	ctl.act(&"attack", [foe.id])
+	choreo.advance(float(choreo.current()["contact"]) + EPS)
+	assert_eq(heard.size(), 1, "one landed event on the contact")
+	assert_eq(heard[0][0], foe.id, "on the struck foe")
+	assert_true(float(heard[0][1]) > 0.0 and float(heard[0][2]) > 0.0, "a heavy blow: its weight and its hit-stop")
+	_free()
+	before_each()
+	_to_turn_of(&"rhen")
+	for e in ctl.engine.enemies:
+		e.hp = 1 if e.id == _foe() else 0
+	ctl.pacing_scale = 1.0
+	choreo.outro.live = false
+	var slow: Array = []
+	choreo.impact.slowmo_planned.connect(func(_f: float, sec: float, k: float) -> void: slow.append([sec, k]))
+	ctl.act(&"attack", [_foe()])
+	assert_eq(slow.size(), 1, "the last blow announces its slow-mo")
+	assert_true(float(slow[0][0]) > 0.0 and float(slow[0][1]) < 1.0)
+	_free()
+
+
 func test_felling_the_last_foe_slows_the_collapse() -> void:
 	_to_turn_of(&"rhen")
 	for e in ctl.engine.enemies:
