@@ -29,6 +29,10 @@ extends Node3D
 ## leader's body on the player, the bodies on the zone's CutsceneStage hero capsules and the followers
 ## (HeroFieldParty). Tuning: game/data/hero_motion/hero_motion.json "field".
 
+## A foot touched down in the clip the body shows (&"l" / &"r"), from the clips' footfall markers; `run` when the
+## clip is a run (field.foot_contacts.run_clips). Audio's footsteps listen to it (M3-AUD-810).
+signal foot_contact(foot: StringName, run: bool)
+
 const NAME := &"HeroBody"
 const LOCO := &"scale"
 const SLOT_A := &"act_a"
@@ -58,6 +62,8 @@ var carried: Array[Node3D] = []
 var action: StringName = &""
 ## The starts, stops, turns and idle variant (null when the model has no AnimationPlayer).
 var gait: HeroGaitClips
+## Footfall tracking for foot_contact.
+var contacts: HeroFootContacts
 
 var _field: Dictionary = {}
 var _yaw_offset := 0.0
@@ -250,6 +256,7 @@ func _setup(m: Node3D) -> void:
 			loco.run_clip_mps,
 			hero_id
 		)
+		contacts = HeroFootContacts.new(_field.get("foot_contacts", {}) as Dictionary)
 	HeroMotion.add_micro_motion(model, hero_id)  # M2-HER-1104: breathing, weight shift, the head leads turns
 
 
@@ -405,6 +412,7 @@ func advance(delta: float) -> void:
 			if _action_left <= 0.0:
 				_to_locomotion(float(_field.get("clip_blend_sec", 0.0)))
 		tree.advance(delta)
+		_emit_contacts()
 
 
 ## Steps the gait clips from this frame's travel and shows what they pick (a cutscene clip holds them).
@@ -520,6 +528,33 @@ func _route_player_clip() -> void:
 	anim.stop()
 	if clip != &"":
 		play_clip(clip)
+
+
+## Emits foot_contact for every footfall marker the live clip crossed this frame: the action slot when one shows,
+## else the locomotion point with the most weight.
+func _emit_contacts() -> void:
+	if contacts == null:
+		return
+	var state := StringName(str(tree.get(&"parameters/mode/current_state")))
+	var clip := &""
+	var node := &""
+	if state == SLOT_A or state == SLOT_B:
+		node = state
+		clip = ((tree.tree_root as AnimationNodeBlendTree).get_node(state) as AnimationNodeAnimation).animation
+	else:
+		var w := gait_weights()
+		var idx := 0
+		for i in w.size():
+			if w[i] > w[idx]:
+				idx = i
+		var names := [&"idle", &"walk", &"run"]
+		clip = StringName(str((_field.get("locomotion_clips", {}) as Dictionary).get(String(names[idx]), "")))
+		node = StringName("loco/%d" % idx)
+	if clip == &"" or not tree.has_animation(clip):
+		return
+	var pos := float(tree.get(StringName("parameters/%s/current_position" % node)))
+	for foot in contacts.step(clip, tree.get_animation(clip), pos):
+		foot_contact.emit(foot, contacts.is_run(clip))
 
 
 ## The locomotion weights the tree is blending now (idle, walk, run), for tests and debugging.
