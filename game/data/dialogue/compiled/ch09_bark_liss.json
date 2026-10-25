@@ -1,0 +1,14 @@
+{
+ "format": 1,
+ "scene": "ch09_bark_liss",
+ "source": "game/data/dialogue/ch09/ch09_bark_liss.dlg",
+ "start": "ch09_bark_liss",
+ "nodes": {
+  "ch09_bark_liss": {
+   "headers": {"location": "ch09/corrow_night"},
+   "ops": [
+    {"op": "line", "id": "ch09_bark_liss_001", "key": "DLG_CH09_BARK_LISS_001", "speaker": "liss", "emotion": "exhausted", "voice": "", "src": 6}
+   ]
+  }
+ }
+}

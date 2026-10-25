@@ -14,6 +14,7 @@ func _ready() -> void:
 
 func _start() -> void:
 	var ctl := get_parent() as BattleController
+	ctl.set_meta(BattleBossIntro.META_PLAYED, "drownbell")  # M3-BPR-02: a flood frame, not the boss's intro
 	ctl.start_battle(PARTY, [], &"drownbell", SEED)
 	var bell := ctl.engine.enemies[0]
 	bell.hp = bell.max_hp * FLOOD_HP_PCT / 100

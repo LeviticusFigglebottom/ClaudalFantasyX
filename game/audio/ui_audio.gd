@@ -13,6 +13,9 @@ extends Node
 ## cursor plays the cancel, not both). The director steps it once a frame, paused tree or not (the field menu
 ## pauses the tree).
 
+## The meta a node may carry to name its hook instead of its script's class (tests' stand-ins; M3-AUD-15).
+const META_CLASS := &"audio_class"
+
 ## Plays a row: (id: StringName) -> void. The director sets it to its play_sfx; tests set their own.
 var player: Callable = Callable()
 ## ui_sfx.json's hooks by class name.
@@ -22,6 +25,8 @@ var priority: Array[StringName] = []
 ## Each watched node: {node, hook, watch: [{expr: Expression, row: Dictionary, last: Variant, seen: bool}]}.
 var watched: Array[Dictionary] = []
 var _pending: Array[StringName] = []
+## pans()'s memory: view instance id -> {origin, scale, count} (M2-AUD-14).
+var _pans: Dictionary = {}
 
 
 func _init(table: Dictionary = {}) -> void:
@@ -41,6 +46,8 @@ func configure(table: Dictionary) -> void:
 
 ## The hook row for `node` ({} when its class has none).
 func hook_for(node: Node) -> Dictionary:
+	if node.has_meta(META_CLASS):
+		return hooks.get(str(node.get_meta(META_CLASS)), {}) as Dictionary
 	var s := node.get_script() as Script
 	while s != null:
 		var cls := String(s.get_global_name())
@@ -98,6 +105,9 @@ func step() -> void:
 			_read(w, true)
 			alive.append(w)
 	watched = alive
+	for id: Variant in _pans.keys():
+		if not is_instance_id_valid(int(id)):
+			_pans.erase(id)
 	if _pending.is_empty():
 		return
 	var best := _pending[0]
@@ -185,3 +195,111 @@ func page_with_row(page: Variant, row_id: String) -> int:
 		if r is Dictionary and str((r as Dictionary).get("id", "")) == row_id:
 			return (page as Object).get_instance_id()
 	return 0
+
+
+## The Lattice nodes woken by every traveler of `progress` (a LatticeProgress: `travelers`, each with an `activated`
+## dictionary), so showing another hero changes nothing; -1 when it cannot be read (M3-AUD-15).
+func lattice_woken(progress: Variant) -> int:
+	var tv: Variant = _travelers(progress)
+	if tv == null:
+		return -1
+	var total := 0
+	for t: Variant in (tv as Dictionary).values():
+		var a: Variant = (t as Object).get(&"activated") if t is Object else null
+		if a is Dictionary:
+			total += (a as Dictionary).size()
+	return total
+
+
+## Where every traveler of `progress` stands, as one text (a walk changes it; showing another hero does not).
+func lattice_places(progress: Variant) -> String:
+	var tv: Variant = _travelers(progress)
+	if tv == null:
+		return ""
+	var keys := (tv as Dictionary).keys()
+	keys.sort()
+	var parts: PackedStringArray = []
+	for k: Variant in keys:
+		var t: Variant = (tv as Dictionary)[k]
+		parts.append("%s@%s" % [k, (t as Object).get(&"position") if t is Object else ""])
+	return ",".join(parts)
+
+
+## The pieces someone wears in `bag` (an EquipmentBag: uids() and wearer_of(uid)); -1 when it cannot be read.
+func worn_count(bag: Variant) -> int:
+	if not _has(bag, &"uids") or not _has(bag, &"wearer_of"):
+		return -1
+	var total := 0
+	for uid: Variant in (bag as Object).call(&"uids"):
+		if str((bag as Object).call(&"wearer_of", uid)) != "":
+			total += 1
+	return total
+
+
+## Who wears what in `bag`, and each piece's crafted abilities, as one text (a swap or a craft changes it).
+func gear_signature(bag: Variant) -> String:
+	if not _has(bag, &"uids") or not _has(bag, &"wearer_of"):
+		return ""
+	var parts: PackedStringArray = []
+	for uid: Variant in (bag as Object).call(&"uids"):
+		var abilities: Variant = (bag as Object).call(&"abilities_of", uid) if _has(bag, &"abilities_of") else []
+		parts.append("%s:%s:%s" % [uid, (bag as Object).call(&"wearer_of", uid), abilities])
+	return ",".join(parts)
+
+
+## The abilities crafted into every piece of `bag` (an EquipmentBag: uids() and abilities_of(uid), which lists only
+## filled slots), so a craft raises it and a swap does not; -1 when it cannot be read (M2-AUD-14).
+func crafted_count(bag: Variant) -> int:
+	if not _has(bag, &"uids") or not _has(bag, &"abilities_of"):
+		return -1
+	var total := 0
+	for uid: Variant in (bag as Object).call(&"uids"):
+		for a: Variant in (bag as Object).call(&"abilities_of", uid):
+			if str(a) != "":
+				total += 1
+	return total
+
+
+## Every item in `inventory` (an Inventory: `counts`, item id -> count), so spending one lowers it; -1 when it
+## cannot be read (M2-AUD-14).
+func item_total(inventory: Variant) -> int:
+	if not inventory is Object or not is_instance_valid(inventory):
+		return -1
+	var counts: Variant = (inventory as Object).get(&"counts")
+	if not counts is Dictionary:
+		return -1
+	var total := 0
+	for c: Variant in (counts as Dictionary).values():
+		total += int(c)
+	return total
+
+
+## How many times `view` has panned since its first read: `origin` (a fixed map point on screen) moved `min_px` or
+## more at an unchanged `map_scale`. A resize or a zoom changes the scale too and is not a pan; small moves add up
+## until they reach `min_px`. This helper's own memory, by the view's instance id: nothing is written (M2-AUD-14).
+func pans(view: Object, origin: Vector2, map_scale: float, min_px: float) -> int:
+	if not is_instance_valid(view):
+		return -1
+	var id := view.get_instance_id()
+	if not _pans.has(id):
+		_pans[id] = {"origin": origin, "scale": map_scale, "count": 0}
+		return 0
+	var p := _pans[id] as Dictionary
+	if not is_equal_approx(float(p["scale"]), map_scale):
+		p["origin"] = origin
+		p["scale"] = map_scale
+	elif origin.distance_to(p["origin"] as Vector2) >= min_px:
+		p["origin"] = origin
+		p["count"] = int(p["count"]) + 1
+	return int(p["count"])
+
+
+static func _has(o: Variant, method: StringName) -> bool:
+	return o is Object and is_instance_valid(o) and (o as Object).has_method(method)
+
+
+static func _travelers(progress: Variant) -> Variant:
+	if not progress is Object or not is_instance_valid(progress):
+		return null
+	var tv: Variant = (progress as Object).get(&"travelers")
+	return tv if tv is Dictionary else null

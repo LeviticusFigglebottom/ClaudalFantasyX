@@ -1,0 +1,238 @@
+{
+  "generator": "assets_src/environments/kits/corrow/build.py",
+  "kit": "corrow",
+  "pieces": {
+    "coilspire_headland": {
+      "budget": [
+        9000,
+        1500
+      ],
+      "bytes": 282552,
+      "lods": {
+        "coilspire_headland": 7268,
+        "coilspire_headland-lod1": 658
+      }
+    },
+    "corrow_far": {
+      "budget": [
+        3600,
+        900
+      ],
+      "bytes": 123444,
+      "lods": {
+        "corrow_far": 3200,
+        "corrow_far-lod1": 600
+      }
+    },
+    "fisher_stair": {
+      "budget": [
+        12000,
+        900
+      ],
+      "bytes": 352652,
+      "lods": {
+        "fisher_stair": 7990,
+        "fisher_stair-lod1": 543
+      }
+    },
+    "fisher_stair_broken": {
+      "budget": [
+        12000,
+        900
+      ],
+      "bytes": 171504,
+      "lods": {
+        "fisher_stair_broken": 3438,
+        "fisher_stair_broken-lod1": 288
+      }
+    },
+    "liss_hoist": {
+      "budget": [
+        3000,
+        300
+      ],
+      "bytes": 76740,
+      "lods": {
+        "liss_hoist": 1352,
+        "liss_hoist-lod1": 162
+      }
+    },
+    "liss_hoist_cut": {
+      "budget": [
+        3000,
+        300
+      ],
+      "bytes": 95500,
+      "lods": {
+        "liss_hoist_cut": 1780,
+        "liss_hoist_cut-lod1": 264
+      }
+    },
+    "lowtown_ground": {
+      "budget": [
+        4800,
+        320
+      ],
+      "bytes": 127924,
+      "lods": {
+        "lowtown_ground": 3200,
+        "lowtown_ground-lod1": 288
+      }
+    },
+    "lowtown_house_a": {
+      "budget": [
+        16000,
+        1400
+      ],
+      "bytes": 380064,
+      "lods": {
+        "lowtown_house_a": 8824,
+        "lowtown_house_a-lod1": 368
+      }
+    },
+    "lowtown_house_b": {
+      "budget": [
+        16000,
+        1400
+      ],
+      "bytes": 380060,
+      "lods": {
+        "lowtown_house_b": 8824,
+        "lowtown_house_b-lod1": 368
+      }
+    },
+    "lowtown_rubble": {
+      "budget": [
+        9000,
+        700
+      ],
+      "bytes": 481732,
+      "lods": {
+        "lowtown_rubble": 8608,
+        "lowtown_rubble-lod1": 544
+      }
+    },
+    "seawall_breach_a": {
+      "budget": [
+        14000,
+        1100
+      ],
+      "bytes": 362936,
+      "lods": {
+        "seawall_breach_a": 6756,
+        "seawall_breach_a-lod1": 312
+      }
+    },
+    "seawall_breach_b": {
+      "budget": [
+        14000,
+        1100
+      ],
+      "bytes": 375656,
+      "lods": {
+        "seawall_breach_b": 7292,
+        "seawall_breach_b-lod1": 336
+      }
+    },
+    "seawall_breach_end_e": {
+      "budget": [
+        16000,
+        1100
+      ],
+      "bytes": 566852,
+      "lods": {
+        "seawall_breach_end_e": 15646,
+        "seawall_breach_end_e-lod1": 222
+      }
+    },
+    "seawall_breach_end_w": {
+      "budget": [
+        16000,
+        1100
+      ],
+      "bytes": 563676,
+      "lods": {
+        "seawall_breach_end_w": 15598,
+        "seawall_breach_end_w-lod1": 222
+      }
+    },
+    "seawall_curve": {
+      "budget": [
+        12000,
+        900
+      ],
+      "bytes": 374596,
+      "lods": {
+        "seawall_curve": 11200,
+        "seawall_curve-lod1": 96
+      }
+    },
+    "wall_apron": {
+      "budget": [
+        6000,
+        500
+      ],
+      "bytes": 199920,
+      "lods": {
+        "wall_apron": 3392,
+        "wall_apron-lod1": 16
+      }
+    },
+    "watcher_head": {
+      "budget": [
+        8000,
+        500
+      ],
+      "bytes": 249504,
+      "lods": {
+        "watcher_head": 7502,
+        "watcher_head-lod1": 304
+      }
+    },
+    "watcher_head_b": {
+      "budget": [
+        8000,
+        500
+      ],
+      "bytes": 249560,
+      "lods": {
+        "watcher_head_b": 7502,
+        "watcher_head_b-lod1": 304
+      }
+    },
+    "watcher_head_cracked": {
+      "budget": [
+        9000,
+        600
+      ],
+      "bytes": 265916,
+      "lods": {
+        "watcher_head_cracked": 7688,
+        "watcher_head_cracked-lod1": 352
+      }
+    },
+    "watcher_head_fallen": {
+      "budget": [
+        9000,
+        600
+      ],
+      "bytes": 287496,
+      "lods": {
+        "watcher_head_fallen": 7928,
+        "watcher_head_fallen-lod1": 412
+      }
+    },
+    "watcher_relief": {
+      "budget": [
+        7000,
+        300
+      ],
+      "bytes": 225712,
+      "lods": {
+        "watcher_relief": 6912,
+        "watcher_relief-lod1": 288
+      }
+    }
+  },
+  "schema": "hymn-kit/1"
+}

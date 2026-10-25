@@ -1,0 +1,41 @@
+{
+ "format": 1,
+ "scene": "ch04_long_way_round",
+ "source": "game/data/dialogue/ch04/ch04_long_way_round.dlg",
+ "start": "ch04_long_way_round",
+ "nodes": {
+  "ch04_long_way_round": {
+   "headers": {"location": "ch04/haluna_wake"},
+   "ops": [
+    {"op": "cue", "cue": "letterbox", "args": ["on"], "kwargs": {}, "src": 17},
+    {"op": "cue", "cue": "music", "args": ["haluna_dawn"], "kwargs": {"fade": 3.0}, "src": 18},
+    {"op": "cue", "cue": "fade", "args": ["in", 2.0], "kwargs": {}, "src": 19},
+    {"op": "cue", "cue": "camera", "args": ["H08"], "kwargs": {"grade": "ch02"}, "src": 20},
+    {"op": "cue", "cue": "anim", "args": ["asha", "touch_shell"], "kwargs": {}, "src": 21},
+    {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 22},
+    {"op": "cue", "cue": "anim", "args": ["asha", "look_at_fingertip"], "kwargs": {}, "src": 23},
+    {"op": "cue", "cue": "wait", "args": [1.5], "kwargs": {}, "src": 24},
+    {"op": "if_not", "cond": ["flag", "ch04_saw_ysolde_ink"], "to": 12, "src": 25},
+    {"op": "cue", "cue": "anim", "args": ["rhen", "look_away"], "kwargs": {}, "src": 26},
+    {"op": "cue", "cue": "wait", "args": [1.2], "kwargs": {}, "src": 27},
+    {"op": "goto", "to": 12, "src": 25},
+    {"op": "cue", "cue": "anim", "args": ["neme", "watch", "asha"], "kwargs": {}, "src": 29},
+    {"op": "cue", "cue": "wait", "args": [1.5], "kwargs": {}, "src": 30},
+    {"op": "line", "id": "ch04_dawn_001", "key": "DLG_CH04_DAWN_001", "speaker": "neme", "emotion": "sad", "voice": "", "src": 31},
+    {"op": "line", "id": "ch04_dawn_002", "key": "DLG_CH04_DAWN_002", "speaker": "asha", "emotion": "soft_smile", "voice": "", "src": 32},
+    {"op": "cue", "cue": "wait", "args": [1.0], "kwargs": {}, "src": 33},
+    {"op": "cue", "cue": "camera", "args": ["C01"], "kwargs": {"grade": "ch02"}, "src": 34},
+    {"op": "cue", "cue": "mark", "args": ["toma", "causeway_toma", "walk"], "kwargs": {}, "src": 35},
+    {"op": "cue", "cue": "mark", "args": ["asha", "causeway_asha", "walk"], "kwargs": {}, "src": 36},
+    {"op": "cue", "cue": "mark", "args": ["rhen", "causeway_rhen", "walk"], "kwargs": {}, "src": 37},
+    {"op": "cue", "cue": "wait", "args": [6.0], "kwargs": {}, "src": 38},
+    {"op": "cue", "cue": "anim", "args": ["rhen", "look_back"], "kwargs": {}, "src": 39},
+    {"op": "cue", "cue": "wait", "args": [1.5], "kwargs": {}, "src": 40},
+    {"op": "cue", "cue": "camera", "args": ["C02"], "kwargs": {"grade": "ch02"}, "src": 41},
+    {"op": "cue", "cue": "wait", "args": [3.0], "kwargs": {}, "src": 42},
+    {"op": "cue", "cue": "fade", "args": ["out", 2.0], "kwargs": {}, "src": 43},
+    {"op": "cue", "cue": "letterbox", "args": ["off"], "kwargs": {}, "src": 44}
+   ]
+  }
+ }
+}

@@ -1,0 +1,49 @@
+{
+ "format": 1,
+ "scene": "ch06_burned_lamp",
+ "source": "game/data/dialogue/ch06/ch06_burned_lamp.dlg",
+ "start": "ch06_burned_lamp",
+ "nodes": {
+  "ch06_burned_lamp": {
+   "headers": {"location": "ch06/brine_shoals"},
+   "ops": [
+    {"op": "cue", "cue": "camera", "args": ["W16"], "kwargs": {}, "src": 15},
+    {"op": "cue", "cue": "music", "args": ["silence"], "kwargs": {"fade": 2.0}, "src": 16},
+    {"op": "cue", "cue": "sfx", "args": ["tide_ambience"], "kwargs": {}, "src": 17},
+    {"op": "cue", "cue": "anim", "args": ["liss", "dig_sand"], "kwargs": {}, "src": 18},
+    {"op": "cue", "cue": "wait", "args": [1.5], "kwargs": {}, "src": 19},
+    {"op": "line", "id": "ch06_lamp_001", "key": "DLG_CH06_LAMP_001", "speaker": "liss", "emotion": "neutral", "voice": "", "src": 20},
+    {"op": "options", "choices": [{"id": "ch06_lamp_002", "key": "DLG_CH06_LAMP_002", "to": 7, "src": 21}, {"id": "ch06_lamp_004", "key": "DLG_CH06_LAMP_004", "to": 12, "src": 26}], "src": 21, "next": 18},
+    {"op": "line", "id": "ch06_lamp_003", "key": "DLG_CH06_LAMP_003", "speaker": "liss", "emotion": "cold", "voice": "", "src": 22},
+    {"op": "cue", "cue": "mark", "args": ["rhen", "tideline_sit", "walk"], "kwargs": {}, "src": 23},
+    {"op": "cue", "cue": "anim", "args": ["rhen", "sit"], "kwargs": {}, "src": 24},
+    {"op": "cue", "cue": "wait", "args": [1.5], "kwargs": {}, "src": 25},
+    {"op": "goto", "to": 18, "src": 21},
+    {"op": "cue", "cue": "anim", "args": ["rhen", "dig_sand"], "kwargs": {}, "src": 27},
+    {"op": "cue", "cue": "wait", "args": [2.5], "kwargs": {}, "src": 28},
+    {"op": "cue", "cue": "anim", "args": ["liss", "hand_over", "rhen"], "kwargs": {}, "src": 29},
+    {"op": "set", "flag": "ch06_dug_without_asking", "value": ["lit", true], "src": 30},
+    {"op": "cue", "cue": "wait", "args": [1.0], "kwargs": {}, "src": 31},
+    {"op": "goto", "to": 18, "src": 26},
+    {"op": "line", "id": "ch06_lamp_005", "key": "DLG_CH06_LAMP_005", "speaker": "liss", "emotion": "sad", "voice": "", "src": 32},
+    {"op": "cue", "cue": "wait", "args": [1.5], "kwargs": {}, "src": 33},
+    {"op": "line", "id": "ch06_lamp_006", "key": "DLG_CH06_LAMP_006", "speaker": "liss", "emotion": "grief", "voice": "", "src": 34},
+    {"op": "cue", "cue": "anim", "args": ["liss", "set_in_hole", "lamp_hole"], "kwargs": {}, "src": 35},
+    {"op": "cue", "cue": "anim", "args": ["liss", "flatten_sand"], "kwargs": {}, "src": 36},
+    {"op": "cue", "cue": "vfx", "args": ["glimmer_held"], "kwargs": {"at": "lamp_hole", "drift": "down_seaward", "count": 1}, "src": 37},
+    {"op": "cue", "cue": "wait", "args": [3.0], "kwargs": {}, "src": 38},
+    {"op": "line", "id": "ch06_lamp_007", "key": "DLG_CH06_LAMP_007", "speaker": "rhen", "emotion": "neutral", "voice": "", "src": 39},
+    {"op": "line", "id": "ch06_lamp_008", "key": "DLG_CH06_LAMP_008", "speaker": "liss", "emotion": "neutral", "voice": "", "src": 40},
+    {"op": "line", "id": "ch06_lamp_009", "key": "DLG_CH06_LAMP_009", "speaker": "rhen", "emotion": "neutral", "voice": "", "src": 41},
+    {"op": "line", "id": "ch06_lamp_010", "key": "DLG_CH06_LAMP_010", "speaker": "liss", "emotion": "neutral", "voice": "", "src": 42},
+    {"op": "cue", "cue": "anim", "args": ["liss", "stand"], "kwargs": {}, "src": 43},
+    {"op": "cue", "cue": "wait", "args": [1.0], "kwargs": {}, "src": 44},
+    {"op": "line", "id": "ch06_lamp_011", "key": "DLG_CH06_LAMP_011", "speaker": "liss", "emotion": "neutral", "voice": "", "src": 45},
+    {"op": "line", "id": "ch06_lamp_012", "key": "DLG_CH06_LAMP_012", "speaker": "rhen", "emotion": "neutral", "voice": "", "src": 46},
+    {"op": "cue", "cue": "face", "args": ["liss", "soft_smile", 0.6], "kwargs": {}, "src": 47},
+    {"op": "cue", "cue": "wait", "args": [1.0], "kwargs": {}, "src": 48},
+    {"op": "set", "flag": "ch06_saw_lamp_buried", "value": ["lit", true], "src": 49}
+   ]
+  }
+ }
+}

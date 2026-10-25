@@ -1,0 +1,11 @@
+// Ch5 B07: the first fight after B05, a scripted pair of slag tortoises on the stair (Kerrid's Armor
+// Break introduced on something small). His first battle entrance is a gesture: he unslings the
+// anchor-cleaver and steps to the front without a word. Kerrid has no battle lines in Ch5.
+title: ch05_kerrid_steps_up
+location: ch05/ashcrown
+---
+@camera A02
+@anim kerrid unsling_cleaver
+@mark kerrid stair_front walk
+@wait 1.0
+===

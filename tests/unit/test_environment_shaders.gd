@@ -24,6 +24,7 @@ const EXPECTED: Dictionary = {
 	"env_sky_night.gdshader": ["star_density", "col_moon", "moon_disc_deg"],
 	"env_nacre_inlay.gdshader": ["col_base", "iridescence", "hue_shift_deg", "shimmer_energy"],
 	"env_water_spill.gdshader": ["col_water", "opacity", "fall_speed_m_s"],
+	"env_bronze.gdshader": ["col_patina", "patina_coverage", "streak_period_m", "tex_detail"],
 }
 
 

@@ -11,6 +11,10 @@ extends Control
 ##   Load      the load list (SaveMenu, LOAD mode); a load routes the same way as Continue.
 ##   Settings  the Settings hub (SettingsMenu, M2-UI-09): the Graphics page (M1-UI-10) and the
 ##             Accessibility page; each saves and applies as you change it.
+##   Memories  M3-MNU-02: the Memories gallery (MemoriesMenu), only once a memory is remembered
+##             (TitleMenuModel.has_memories). A replay comes back here with the gallery open on it
+##             (MemoryReplay.take_gallery_request). The page grows upward by a row for it
+##             (`choices.anchor_rows`), so the four-row title never moves.
 ## Input: ui_up / ui_down move, ui_accept chooses (keyboard and controller); hover moves, a click
 ## chooses; ui_cancel closes the New Game question. It follows UiSettings (text size, palette).
 ## M2-UI-22: behind the menu, a TitleBackdrop (caustics, light shafts, drifting motes) and the drawn
@@ -27,6 +31,7 @@ var world_return: WorldReturn
 var model: TitleMenuModel
 var load_menu: SaveMenu
 var settings_menu: SettingsMenu
+var memories_menu: MemoriesMenu
 ## True in debug builds; tests set it before the menu enters the tree to stand in for a release.
 var debug_build := OS.is_debug_build()
 var backdrop: TitleBackdrop
@@ -79,6 +84,9 @@ func _ready() -> void:
 	_build()
 	model.changed.connect(_render)
 	_render()
+	if MemoryReplay.take_gallery_request() and model.has_memories:
+		model.set_cursor(model.row_ids().find(TitleMenuModel.CHOICE_MEMORIES))
+		open_memories(MemoryReplay.last_memory)
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -88,7 +96,7 @@ func _unhandled_input(event: InputEvent) -> void:
 
 ## Applies one input event. Returns true when the menu used it. Tests call this directly.
 func handle_input(event: InputEvent) -> bool:
-	if _launched or is_load_menu_open() or is_settings_open():
+	if _launched or is_load_menu_open() or is_settings_open() or is_memories_open():
 		return false
 	if event.is_action_pressed(&"ui_up", true):
 		model.move(-1)
@@ -133,6 +141,9 @@ func choose(choice: StringName) -> Error:
 			TitleMenuModel.CHOICE_SETTINGS:
 				open_settings()
 				err = OK
+			TitleMenuModel.CHOICE_MEMORIES:
+				open_memories()
+				err = OK
 	if err != OK:
 		model.refresh()
 	chosen.emit(reported, err)
@@ -169,6 +180,20 @@ func open_settings() -> SettingsMenu:
 	return settings_menu
 
 
+## The Memories gallery, its cursor on `on_memory` when given (the one just replayed).
+func open_memories(on_memory: StringName = &"") -> MemoriesMenu:
+	if is_memories_open():
+		return memories_menu
+	memories_menu = MemoriesMenu.open_in(self, MemoriesModel.from_game(save_system), on_memory)
+	memories_menu.closed.connect(_on_memories_closed)
+	memories_menu.memory_chosen.connect(func(_id: StringName) -> void: _launched = true)
+	return memories_menu
+
+
+func is_memories_open() -> bool:
+	return memories_menu != null and is_instance_valid(memories_menu) and memories_menu.is_open()
+
+
 func is_settings_open() -> bool:
 	return settings_menu != null and is_instance_valid(settings_menu) and settings_menu.is_open()
 
@@ -184,6 +209,11 @@ func is_launched() -> bool:
 ## The help line as shown (tests and captures read it).
 func help_text() -> String:
 	return _help.text
+
+
+func _on_memories_closed() -> void:
+	memories_menu = null
+	model.refresh()
 
 
 func _on_load_closed(outcome: SaveMenuModel.Outcome) -> void:
@@ -235,7 +265,9 @@ func _build_page() -> void:
 	_page = MenuPage.new()
 	var r := HudLayout.rect_of(cm)
 	var ids := model.row_ids()
-	_page.position = r.position
+	# Rows past anchor_rows (the Memories row) raise the page, so its foot stays where it was.
+	var extra := maxi(ids.size() - int(cm.get("anchor_rows", ids.size())), 0)
+	_page.position = r.position - Vector2(0.0, extra * HudLayout.num(cm, "row_pitch"))
 	_page.size = Vector2(r.size.x, MenuPage.height_for(cm, ids.size(), false))
 	add_child(_page)
 	var rows: Array[Dictionary] = []

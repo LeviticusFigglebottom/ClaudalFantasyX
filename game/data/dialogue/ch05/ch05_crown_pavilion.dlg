@@ -1,0 +1,14 @@
+// Ch5 B08, the start of the Ashcrown trial (act1_ch05.md). Tender Ruwen opens the crown pavilion and
+// gives the rite in two lines. A04: the crown and the copper catch-spire under the plume. The puzzle
+// itself has no dialogue beyond one idle hint (ch05_trial_hint). Lightning is not glimmer: its VFX
+// (Art's, still to come) is white-violet, never gold, cyan or teal, so it is not cued here.
+title: ch05_crown_pavilion
+location: ch05/ashcrown
+---
+@music ashcrown_trial fade=2.0
+@camera A04
+@anim tender open_pavilion
+Tender as "Tender Ruwen" [neutral]: The strike comes down the mountain the way the water does, tier by tier. #line:ch05_crown_001
+Tender as "Tender Ruwen" [neutral]: Bring it to the anvil before it forgets where it was going. #line:ch05_crown_002
+@camera release
+===

@@ -1,0 +1,131 @@
+// Ch6 B05 "The barge leaves no wake": Sefir's first appearance (act1_ch06.md B05; ADR 0017 (a),
+// ADR 0020 (i), ADR 0022 (f)). Letterboxed. W10 → W11 → W10 → W12 → W13 → W12 → W10.
+// The staging contract, in order (every numbered block below is one item of the sheet):
+//   1 the impasse; 2 the barge leaves no wake; 3 Kerrid's back; 4 the one sentence; 5 the rebuke and
+//   the question he declines; 6 "I knelt beside your mother"; 7 Liss on Toma's papers, and the crate;
+//   8 Ysolde; 9 Rhen, a likeable boy; 10 Toma overjoyed; 11 the going.
+// Rules (tests/integration/test_ch06_thread.gd checks the ones a test can):
+//   - Sefir's lines are the sheet's, verbatim. He never raises his voice, never hurries, never uses a
+//     contraction. He answers no grief here.
+//   - He stays aboard at the bow for the whole scene: no @mark moves him, so his hem stays clean.
+//     His idle has no breath cycle and his reflection doesn't ripple (Art; sefir_aurane.md).
+//   - The barge leaves no wake, and the poles make no water sound: barge_pole is wood and footfalls
+//     only. The iron's hiss is the only water sound in the scene.
+//   - No close-up on Sefir before his first line: W10 and W11 show him small at the bow.
+//   - He must read as kind on a first play: no reaction shot undercuts him. No Liss glare, no Kerrid
+//     flinch, no ominous sting, no @vfx. Liss says nothing here; her one line comes in B06, after he
+//     has gone. sefir_theme enters only after his first line and resolves on the cut.
+//   - Kerrid keeps his back to the barge for the whole scene, for a practical reason (the hull-rib).
+//     Sefir's eyes rest on his back for half a beat (@wait 0.5) and move on. Nobody sees it.
+//   - The crate: his eyes rest on it a moment too long (@wait 1.5), no line, no change of face.
+// The Inquisitor's yield bark ("...Enough. Enough.") opens the scene, on one knee, until a
+// battle-bark system can say it at the yield (M3-C06-05).
+title: ch06_barge
+location: ch06/brine_shoals
+---
+@letterbox on
+// 1. W10, the impasse: the Inquisitor on one knee in the mud, the hound gone.
+@camera W10
+@music silence
+@anim inquisitor kneel
+Inquisitor [exhausted]: ...Enough. Enough. #line:ch06_barge_001
+@mark stillguard_a impasse_a run
+@mark stillguard_b impasse_b run
+@anim stillguard_a level_spear
+@anim stillguard_b level_spear
+@mark toma shield_line walk
+@anim toma shield_up
+@wait 1.5
+// 3. Kerrid, before the barge arrives: at the burning hulk, a smouldering hull-rib on his shoulder
+//    so two wright children can crawl out from under it. That is why his back is turned.
+@mark kerrid hulk_rib walk
+@anim kerrid hold_rib_on_shoulder
+@anim wright_child_a crawl_out
+@anim wright_child_b crawl_out
+@wait 1.0
+// 2. W11, the barge, from water level: the smoke thins; the stern and the flat water behind it, 3 s.
+@camera W11
+@sfx barge_pole
+@anim reed_a pole_barge
+@anim reed_b pole_barge
+@anim reed_c pole_barge
+@anim reed_d pole_barge
+@wait 3.0
+@anim stillguard_a kneel_palms_flat
+@anim stillguard_b kneel_palms_flat
+@anim stillguard_c kneel_palms_flat
+@anim wrights look_at sefir
+// 4. Back to W10: we see him small at the bow first. The one sentence, to the clerk.
+@camera W10
+@wait 1.0
+Sefir [neutral]: Put the iron in the water, please. #line:ch06_barge_002
+@music sefir_theme fade=3.0
+@anim clerk iron_into_water
+@sfx brine_iron_hiss
+@anim stillguard_c let_go brand_girl
+@wait 1.0
+// 5. The rebuke. He declines the question of who struck his Stillguard.
+Inquisitor [worried]: High Warden. They struck the Stillguard. The Cantor's own— #line:ch06_barge_003
+Sefir [neutral]: Be level, Inquisitor. The Edict burns things. It has never needed to burn people. #line:ch06_barge_004
+Sefir [soft_smile]: The Edict was written by frightened people. We need not be frightened today. #line:ch06_barge_005
+@anim sefir look_at wrights
+Sefir [tender]: Take them up to Corrow. See that they are fed. #line:ch06_barge_006
+// 6. W12, Asha: she bows, palms flat; he bows back, lower than he needs to.
+@camera W12
+@anim asha bow_palms_flat
+@anim sefir bow_from_barge
+Sefir [tender]: Lady Cantor. I knelt beside your mother once, on a day very like this one. #line:ch06_barge_007
+Asha [neutral]: It would honour me to hear of her, High Warden. #line:ch06_barge_008
+Sefir [soft_smile]: And you shall. Come to Ansedra, and we will sit, and I will tell you everything I can. #line:ch06_barge_009
+@face asha tender 0.6
+@wait 1.0
+// 7. Liss and the papers.
+Inquisitor [neutral]: And the wright with the crate. #line:ch06_barge_010
+@anim sefir look_at asha
+Sefir [neutral]: Is she one of yours? #line:ch06_barge_011
+Asha [determined]: She's my guardian. #line:ch06_barge_012
+@face liss surprised 0.3
+@wait 1.0
+Sefir [smile]: Then she is. A Cantor may take any guardian she chooses. It is the oldest custom we keep. Toma Okeru, your papers will carry her? #line:ch06_barge_013 #long
+Toma [neutral]: ...They will, High Warden. #line:ch06_barge_014
+@anim sefir look_at liss
+@camera W12_crate
+@wait 1.5
+@camera W12
+// 8. Ysolde.
+@anim sefir look_at ysolde
+Sefir [neutral]: Scholar Ysel. You will come to the Sanctum this year? #line:ch06_barge_015
+Ysolde [neutral]: As every year, High Warden. #line:ch06_barge_016
+Sefir [tender]: He will be glad of you. #line:ch06_barge_017
+// 9. W13, Sefir's eyeline over the party: it passes Kerrid's back for half a beat and finds Rhen,
+//    standing when everyone else is kneeling. He is visibly amused.
+@camera W13
+@anim sefir look_at kerrid
+@wait 0.5
+@anim sefir look_at rhen
+@wait 0.8
+-> Be... still? #line:ch06_barge_018
+    Sefir [smile]: That is the answer, young man, not the greeting. But I will take it gladly. #line:ch06_barge_019
+    <<set $ch06_rhen_greeted_sefir = true>>
+-> Does that barge ever make a wake? #line:ch06_barge_020
+    Sefir [soft_smile]: Not if it is poled well. There is very little in the world that needs to hurry. #line:ch06_barge_021
+// 10. Toma, last. A cut back to W12's axis: he kneels, palms flat, and his voice goes.
+@camera W12
+@anim toma kneel_palms_flat
+@anim sefir look_at toma
+Toma [tender]: Be level, High Warden. #line:ch06_barge_022
+Sefir [tender]: And still, Toma Okeru. #line:ch06_barge_023
+@face toma tender 0.6
+@wait 1.5
+// 11. W10, the going. The Reeds pole the barge back into the smoke. Still no wake.
+@camera W10
+Sefir [soft_smile]: Go gently, Lady Cantor. #line:ch06_barge_024
+@sfx barge_pole
+@anim reed_a pole_barge
+@anim reed_b pole_barge
+@anim reed_c pole_barge
+@anim reed_d pole_barge
+@wait 3.0
+<<set $ch06_met_sefir = true>>
+@letterbox off
+===

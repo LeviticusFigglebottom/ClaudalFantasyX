@@ -1,0 +1,26 @@
+// Ch5 B01 "The ferry comes in" (docs/kb/story/beats/act1_ch05.md). In-engine. The Brightwater ferry
+// noses into Pemakar's harbour at day 1, 19:10; above it every terrace channel is being dressed with
+// small fires. P01 from the water: the ferry-master carries Ch4's drowned trader's name-board ashore
+// first, to the harbour wake-wall (no line). P02 on the gangplank: N-01, Rhen sees Asha's first
+// reach-band on her left forearm. Then Ysolde with the Tenders' letter. ch05_arrived follows in the
+// chapter flow. Grade: the ch05 night frame until Art builds ch05_harbour_dusk.
+title: ch05_ferry_comes_in
+location: ch05/pemakar
+---
+@music pemakar_terraces fade=3.0
+@camera P01
+@fade in 2.0
+@anim ferryman carry_name_board
+@mark ferryman wake_wall walk
+@wait 2.5
+@camera P02
+@anim rhen look_at asha
+Rhen [surprised]: That's new. #line:ch05_ferry_001
+@anim asha touch_forearm
+Asha [soft_smile]: My first. Toma's hand shook. #line:ch05_ferry_002
+Toma [neutral]: It did not. #line:ch05_ferry_003
+@anim ysolde read_letter
+Ysolde [neutral]: The Tenders write that the trial is at noon tomorrow, "when the plume is awake." #line:ch05_ferry_004
+Ysolde [neutral]: Tonight is Lanternfall. #line:ch05_ferry_005
+@camera release
+===

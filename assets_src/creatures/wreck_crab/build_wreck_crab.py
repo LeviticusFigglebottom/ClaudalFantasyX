@@ -35,6 +35,9 @@ PAL = {k: ck.hexrgb(v) for k, v in {
     "spawn_wound": "#3FE0C8", "storm_slate": "#3E4A57",
 }.items()}
 SALT = PAL["mortar_white"] * 0.9  # salt crust held under the albedo ceiling
+# the limbs' chitin, bleached: pale grey wreck tones above, weathered timber grey-brown below
+LEG_PALE = ck.mix(PAL["coral_stone_weathered"], PAL["timber_weathered"], 0.6) * 0.92
+LEG_DARK = ck.mix(PAL["timber_weathered"], PAL["storm_slate"], 0.35) * 0.9
 BODY_Y = rc.BODY_Y
 CRUST_R = (0.47, 0.15, 0.38)  # lower than the reef crab's coral dome: the lamp is its height
 
@@ -66,47 +69,90 @@ def _radial(c: np.ndarray) -> np.ndarray:
 # The crab's own crust
 # ---------------------------------------------------------------------------------------------
 def crust(mesh: ck.Mesh, rig: ck.Rig, rng: np.random.Generator) -> None:
-    rings, segs = 16, 40
+    rings, segs = 20, 44
     prof = []
     for i in range(rings + 1):
         th = (math.pi / 2) * (i / rings) ** 0.85
         prof.append((math.sin(th), math.cos(th)))
     U, T = ck.lathe(prof, segs)
-    P = U * np.asarray(CRUST_R)
-    P[:, 2] += 0.04 * U[:, 2] * (U[:, 2] > 0)
+
+    def on_crust(Uq):
+        Pq = Uq * np.asarray(CRUST_R)
+        Pq[:, 2] += 0.04 * Uq[:, 2] * (Uq[:, 2] > 0)
+        return Pq
+
+    P = on_crust(U)
     n_out = U / np.asarray(CRUST_R)
     n_out /= np.linalg.norm(n_out, axis=1, keepdims=True)
     polar = np.arccos(np.clip(U[:, 1], -1, 1)) / (math.pi / 2)
     azim = np.arctan2(U[:, 0], U[:, 2])
     front = ck.smoothstep(0.2, 0.9, np.cos(azim)) * ck.smoothstep(0.75, 1.0, polar)
     lump = ck.fbm(P * 9.0, SEED + 1)
-    disp = 0.03 * ck.smoothstep(-0.1, 0.4, lump) + 0.02 * front * np.maximum(np.cos(azim * 9.0), 0.0)
+    # the salt grows in plates: cells (nearest of scattered centres on the dome) each lifted and tilted on its own,
+    # split by deep cracks, the way a salt pan dries and buckles; and on the plates, crusty nodules of salt
+    srng = np.random.default_rng(SEED + 7)
+    n_cell = 46
+    a_c = srng.uniform(-math.pi, math.pi, n_cell)
+    p_c = np.sqrt(srng.uniform(0.0, 1.0, n_cell)) * 0.97
+    Uc = np.column_stack([np.sin(p_c * math.pi / 2) * np.sin(a_c), np.cos(p_c * math.pi / 2),
+                          np.sin(p_c * math.pi / 2) * np.cos(a_c)])
+    Pc = on_crust(Uc)
+    dist = np.linalg.norm(P[:, None, :] - Pc[None, :, :], axis=2)
+    order = np.argsort(dist, axis=1)
+    near = order[:, 0]
+    f1 = dist[np.arange(len(P)), near]
+    f2 = dist[np.arange(len(P)), order[:, 1]]
+    crack = ck.smoothstep(0.03, 0.008, f2 - f1)
+    lift_c = srng.uniform(0.004, 0.03, n_cell)
+    tilt_c = srng.normal(0.0, 1.0, (n_cell, 3))
+    tilt = ((P - Pc[near]) * tilt_c[near]).sum(axis=1) * 0.18  # a buckled plate rises toward one edge
+    plate = np.clip(lift_c[near] + tilt - 0.25 * f1 * f1 / 0.01, 0.0, 0.04)
+    n_nod = 120
+    a_n = srng.uniform(-math.pi, math.pi, n_nod)
+    p_n = srng.uniform(0.3, 0.99, n_nod)  # most on the flanks that show under the lamp
+    Pn = on_crust(np.column_stack([np.sin(p_n * math.pi / 2) * np.sin(a_n), np.cos(p_n * math.pi / 2),
+                                   np.sin(p_n * math.pi / 2) * np.cos(a_n)]))
+    r_n = srng.uniform(0.024, 0.055, n_nod)
+    h_n = srng.uniform(0.014, 0.04, n_nod)
+    dn = np.linalg.norm(P[:, None, :] - Pn[None, :, :], axis=2)
+    nod = (h_n[None, :] * np.exp(-(dn / r_n[None, :]) ** 2)).max(axis=1)
+    nod_mask = ck.smoothstep(0.004, 0.02, nod)
+    rough = ck.fbm(P * 40.0, SEED + 8)
+    disp = (0.012 * ck.smoothstep(-0.1, 0.4, lump) + 0.01 * front
+            + plate * (1.0 - crack) - 0.012 * crack + nod + 0.004 * rough)
+    disp = disp * (1.0 - 0.5 * ck.smoothstep(0.96, 1.0, polar))  # the rim tucks under, onto the body
     P = P + n_out * disp[:, None]
     P[:, 1] += BODY_Y
     T = _orient(P, T, lambda c: c - np.array([0.0, BODY_Y, 0.0]))
-    col = ck.mix(PAL["coral_stone_weathered"], SALT, ck.smoothstep(-0.15, 0.25, lump)[:, None])
-    col = col * (0.92 + 0.1 * ck.fbm(P * 23.0, SEED + 2))[:, None]
-    col = ck.mix(col, PAL["sand_wet"] * 0.75, (0.7 * ck.smoothstep(0.7, 1.0, polar))[:, None])
+    tone_c = srng.uniform(0.0, 1.0, n_cell)
+    col = ck.mix(PAL["coral_stone_weathered"] * 0.82, SALT, ck.smoothstep(0.2, 0.7, tone_c[near])[:, None])
+    col = ck.mix(col, PAL["salt_glass"] * 0.85, (0.35 * ck.smoothstep(0.85, 1.0, tone_c[near]))[:, None])
+    col = col * (0.9 + 0.12 * ck.fbm(P * 23.0, SEED + 2))[:, None]
+    col = ck.mix(col, SALT * 1.04, (0.8 * nod_mask)[:, None])  # the nodules are the freshest, whitest salt
+    col = ck.mix(col, PAL["timber_weathered"] * 0.5, (0.85 * crack)[:, None])  # grime packed in the cracks
+    col = ck.mix(col, PAL["sand_wet"] * 0.75, (0.4 * ck.smoothstep(0.96, 1.0, polar))[:, None])
     # the weak point: a crack in the crust on the crusher's side (-x), at the shoulder, lit from inside
     centre = np.array([rc.SIDE_R * 0.66, 0.55, 0.42])
     wd = np.linalg.norm(U - centre / np.linalg.norm(centre), axis=1)
     jag = 0.5 + 0.5 * np.abs(np.sin(U[:, 2] * 38.0 + U[:, 1] * 11.0))
-    crack = ck.smoothstep(0.24, 0.08, wd) * jag
-    col = ck.mix(col, PAL["spawn_wound"] * 0.5, (0.85 * crack)[:, None])
-    wet = ck.smoothstep(0.7, 1.0, polar) * 0.8
-    ck.finish(mesh, P, T, "shell", col, rig.rigid("body"), wet=wet, cavity=0.4 * ck.smoothstep(0.1, -0.3, lump) + 0.3 * crack,
-              emission=crack)
+    wound = ck.smoothstep(0.24, 0.08, wd) * jag
+    col = ck.mix(col, PAL["spawn_wound"] * 0.5, (0.85 * wound)[:, None])
+    wet = ck.smoothstep(0.9, 1.0, polar) * 0.5 * (1.0 - nod_mask)  # salt is dry; only the skirt is damp
+    ck.finish(mesh, P, T, "shell", col, rig.rigid("body"), wet=wet,
+              cavity=np.clip(0.85 * crack + 0.3 * (1.0 - nod_mask) * ck.smoothstep(0.01, 0.0, plate) + 0.3 * wound,
+                             0.0, 1.0),
+              emission=wound, flat=True)
 
     # underside, as the reef crab's
     prof = [(0.0, -1.0)] + [(math.sin((math.pi / 2) * i / 8), -math.cos((math.pi / 2) * i / 8)) for i in range(1, 9)]
-    Pu, Tu = ck.lathe(prof, 28)
+    Pu, Tu = ck.lathe(prof, 20)
     Pu = Pu * np.array([0.44, 0.10, 0.35]) + np.array([0.0, BODY_Y - 0.03, 0.0])
     Tu = _orient(Pu, Tu, lambda c: c - np.array([0.0, BODY_Y, 0.0]))
-    cu = ck.mix(PAL["sand_wet"], PAL["laterite"], 0.5 + 0.5 * ck.fbm(Pu * 7.0, SEED + 3)[:, None])
+    cu = ck.mix(PAL["sand_wet"] * 0.85, LEG_DARK, 0.5 + 0.5 * ck.fbm(Pu * 7.0, SEED + 3)[:, None])
     ck.finish(mesh, Pu, Tu, "chitin", cu, rig.rigid("body"), wet=0.9, cavity=0.3)
     for x, y in ((0.0, 0.40), (-0.06, 0.37), (0.06, 0.37), (0.0, 0.34)):
-        Pm, Tm = ck.ellipsoid((x, y, 0.37), (0.05, 0.035, 0.03), 5, 8)
-        ck.finish(mesh, Pm, Tm, "chitin", ck.mix(PAL["laterite"], PAL["tortoiseshell"], 0.5), rig.rigid("body"),
+        Pm, Tm = ck.ellipsoid((x, y, 0.37), (0.05, 0.035, 0.03), 4, 6)
+        ck.finish(mesh, Pm, Tm, "chitin", ck.mix(LEG_PALE, LEG_DARK, 0.5), rig.rigid("body"),
                   wet=0.8, cavity=0.5)
 
     # salt crystals: small faceted clusters on the crust and the lamp's underside
@@ -245,34 +291,53 @@ def lamp(mesh: ck.Mesh, rig: ck.Rig, rng: np.random.Generator) -> None:
 
     # the bound light still in it: faint, steady, in the housing's heart
     lc = np.array([0.0, LAMP_H * 0.62, 0.0])
-    Pl, Tl = ck.ellipsoid(lc, (LAMP_R * 0.45, LAMP_H * 0.24, LAMP_R * 0.45), 8, 12)
+    Pl, Tl = ck.ellipsoid(lc, (LAMP_R * 0.45, LAMP_H * 0.24, LAMP_R * 0.45), 6, 10)
     Tl = _orient(Pl, Tl, lambda c: c - lc)
     glow = 0.65 + 0.35 * ck.fbm(Pl * 12.0, SEED + 99)
     ck.finish(mesh, _lamp(Pl), Tl, "lamp_light", PAL["glimmer_bound"] * 0.7, ib, emission=glow)
 
     # the crab's soft abdomen, curled into the housing's open collar the way a hermit crab fills its shell
     ac = np.array([0.0, LAMP_H * 0.2, 0.0])
-    Pa, Ta = ck.ellipsoid(ac, (LAMP_R * 0.92, LAMP_H * 0.26, LAMP_R * 0.92), 8, 14)
+    Pa, Ta = ck.ellipsoid(ac, (LAMP_R * 0.92, LAMP_H * 0.26, LAMP_R * 0.92), 7, 12)
     Ta = _orient(Pa, Ta, lambda c: c - ac)
     rib = 0.5 + 0.5 * np.cos(Pa[:, 1] * 70.0)
-    ca = ck.mix(PAL["sand_wet"] * 0.8, PAL["laterite"] * 0.8, (0.3 + 0.4 * rib)[:, None])
+    ca = ck.mix(PAL["sand_wet"] * 0.75, ck.mix(PAL["laterite"], LEG_DARK, 0.8) * 0.85, (0.3 + 0.4 * rib)[:, None])
     ck.finish(mesh, _lamp(Pa), Ta, "chitin", ca, ib, wet=0.9, cavity=0.4 * (1.0 - rib))
 
 
 def build_mesh(rig: ck.Rig) -> ck.Mesh:
     rng = np.random.default_rng(SEED)
     mesh = ck.Mesh("wreck_crab")
-    # the reef crab's limbs, in duller, salt-bleached chitin; the crusher's fixed finger (the reef crab's "shell"
-    # slot, which here is the salt crust) is salt, not coral
+    # the reef crab's limbs, bleached by the salt toward grey wreck timber, and crusted with salt where the
+    # wrecks rub (its parts are wrapped in memory: the reef crab's build is not edited); the crusher's fixed finger
+    # (the reef crab's "shell" slot, which here is the salt crust) is salt, not coral
     rc.PAL = dict(rc.PAL)
-    rc.PAL["laterite"] = ck.mix(PAL["laterite"], PAL["timber_weathered"], 0.55)
+    rc.PAL["laterite"] = LEG_PALE
+    rc.PAL["tortoiseshell"] = LEG_DARK
     rc.PAL["coral_stone_weathered"] = SALT / 0.92
     crust(mesh, rig, rng)
     timbers(mesh, rig, rng)
     lamp(mesh, rig, rng)
-    rc.eyes(mesh, rig)
-    rc.legs(mesh, rig)
-    rc.claws(mesh, rig, rng)
+    finish = rc.ck.finish
+
+    def salted(mesh_, P, T, mat, color, bones, **kw):
+        if mat != "chitin":
+            return finish(mesh_, P, T, mat, color, bones, **kw)
+        P = np.asarray(P, dtype=np.float64)
+        col = np.broadcast_to(np.asarray(color, dtype=np.float64), (len(P), 3))
+        salt = ck.smoothstep(0.02, 0.3, ck.fbm(P * 13.0, SEED + 120)) * ck.smoothstep(0.02, 0.2, P[:, 1])
+        col = ck.mix(col, SALT, (0.7 * salt)[:, None]) * (0.92 + 0.1 * ck.fbm(P * 31.0, SEED + 121))[:, None]
+        kw["cavity"] = np.clip(np.asarray(kw.get("cavity", 0.0)) + 0.7 * salt * (1.0 - salt), 0.0, 1.0)  # crusty edges
+        kw["wet"] = np.asarray(kw.get("wet", 0.0)) * (1.0 - 0.7 * salt)
+        return finish(mesh_, P, T, mat, col, bones, **kw)
+
+    rc.ck.finish = salted
+    try:
+        rc.eyes(mesh, rig)
+        rc.legs(mesh, rig)
+        rc.claws(mesh, rig, rng)
+    finally:
+        rc.ck.finish = finish
     return mesh
 
 

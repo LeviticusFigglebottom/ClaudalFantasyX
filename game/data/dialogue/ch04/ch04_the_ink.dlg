@@ -1,0 +1,44 @@
+// Ch4 C4-07, the optional side scene "The Ink" (docs/kb/story/beats/act1_ch04.md §4). The wake-shell
+// wall after the feast (H15: 85 mm, 1.0 m, shallow depth of field; Ysolde's ink-guarded hand and brush
+// on the shell, the oil lamp's pool, Rhen's hand holding it in the edge of frame; inserts on the two
+// shells). The lamps have burned low, the tables are bare, the village has gone home. Reached after
+// the dock, through the kneeling figure seen from the causeway-head path; going to Neme's door instead
+// ends the night and the scene is gone. In the world the re-inking always happens (C4-08 shows it).
+// Rules: no more than four Ysolde lines in a row; complete sentences, no contractions; she explains
+// nothing about herself and does not give her name (C4-09 does). She is cold because warmth would make
+// it unbearable. "Once." is a widow's answer the player can't read yet (Ch13 pays it).
+// Music: ysolde_theme (sketch). The chapter flow sets ch04_saw_ysolde_ink.
+title: ch04_the_ink
+location: ch04/haluna_wake
+---
+@letterbox on
+@music ysolde_theme fade=2.0
+@camera H15
+@anim ysolde ink_shell
+@sfx ink_brush at=ysolde
+Ysolde [cold]: Hold the lamp, if you are going to stand there. #line:ch04_ink_001
+@anim rhen hold_lamp
+Rhen [neutral]: What's wrong with the ink? #line:ch04_ink_002
+Ysolde [neutral]: They cut the name well. They inked it with fishing-ink, soot and oil. Salt lifts that in a season. #line:ch04_ink_003
+Ysolde [neutral]: Ansedran lacquer outlasts the stone it is in. #line:ch04_ink_004
+Rhen [smile]: So you go round villages fixing other people's spelling. #line:ch04_ink_005
+@wait 2.0
+Rhen [neutral]: ...Sorry. #line:ch04_ink_006
+@wait 1.5
+@anim ysolde move_lamp
+@sfx ink_brush at=ysolde
+@wait 1.5
+Rhen [sad]: That's her mother's. #line:ch04_ink_007
+Ysolde [neutral]: Yes. #line:ch04_ink_008
+@wait 2.0
+Rhen [neutral]: Have you done this before? #line:ch04_ink_009
+@wait 1.0
+Ysolde [neutral]: Once. #line:ch04_ink_010
+@wait 2.0
+@anim ysolde cap_ink
+Ysolde [cold]: Go to sleep. The tide will not wait for anyone tomorrow. #line:ch04_ink_011
+@mark ysolde wall_away walk
+@wait 1.5
+@letterbox off
+@camera release
+===

@@ -1,0 +1,9 @@
+// Ch6 B01, walking banter 1 (act1_ch06.md; W01): a Lit Age wreck on the first ridge. Overheard as
+// the party walks past (the layout's trigger). Rhen prices its brass aloud; Ysolde names the Edict.
+title: ch06_banter_brass
+location: ch06/brine_shoals
+---
+Rhen [smile]: Lit Age brass, the whole keel. Forty lume a plate, if you could get it off. #line:ch06_brass_001
+Ysolde [neutral]: Everything on these shoals is under the Edict, Master Sallow. #line:ch06_brass_002
+Rhen [neutral]: Everything everywhere's under something. #line:ch06_brass_003
+===

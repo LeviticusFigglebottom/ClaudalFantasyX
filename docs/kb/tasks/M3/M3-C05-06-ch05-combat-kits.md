@@ -1,0 +1,34 @@
+---
+id: M3-C05-06
+title: Ch5 combat follow-ups (Kerrid's real kit, Kahre, the Matron's smart band, the Quench Charm)
+role: combat
+status: todo
+owner_session: ""
+depends_on: [M3-C05-02]
+milestone: M3
+request-from: cinematics
+---
+## Goal
+M3-C05-02 made Ch5 playable with provisional combat data. Each item below is marked PROVISIONAL (`_note`) in the data and needs a combat design pass:
+1. **Kerrid** (`characters.json`, kerrid.md, act1_ch05.md §9 Combat 17–18).
+   - Today he has stats and four skills: Attack, Fluke Cleave (`fluke_cleave`, Armor Break for 3 turns, rank 5), Snub the Line (`snub_line`, Power Break for 3 turns, rank 5) and Anchor Fall (power 18, rank 7).
+   - Still needed: his Swell (the *weighted swing* input), a Lattice start node, and starting gear beyond the placeholder Anchor-Cleaver and Plain Wraps.
+   - **Distinguish Fluke Cleave from Toma's Shell Breaker.** Shell Breaker applies a permanent Armor Break (duration -1), which is stronger than Kerrid's. The sheet suggests weakening Shell Breaker to "a little, for a short time", but that moves `sandbox_reef`'s bands, so it needs re-measuring.
+   - **The skill names avoid the FF terms.** "Armor Break" and "Power Break" are also skill names in a Square Enix game, so his skills got original names. The statuses keep their existing names.
+2. **Kahre** (`vowbound.json`, vowbound.md §2): "raw lightning damage that ignores defence" has no engine rule yet; `forge_bolt` is a plain lightning spell. Last Strike is a stand-in. No sim suite calls him.
+3. **The Cinder Matron's `smart` band** (balance_targets.md, Ch5).
+   - It is report only: with two reserves and Asha's Mend, `smart` wins every seed, whatever the tuning. The table's 75–92% needs time pressure, for example an AI condition on turns since the phase began (an "at least" counterpart to `turn_mod`; `tools/validate_data.py` AI_CONDITIONS), or an escalating Pour.
+   - Then give `smart` its band.
+4. **Cleanses and reactions** (battle_ctb.md): show a reaction on the HUD (the quench re-crusting her), and add a battle VFX hook for it.
+5. **The Quench Charm** is a key item. The sheet wants an accessory with a Fire ward, and `equipment.json` has only weapon and armor slots. Decide the accessory slot, then add a `ch05_matron` variant suite with the charm.
+6. **The Pemakar shop tier** (sheet §9 Combat 21; Kerrid's first smith-made weapon included). The Ch5 loadouts stand in with Haluna's post-Drownbell weapons.
+7. **The Coral Hooks' Ember Edge heals the Matron**, who absorbs fire. Decide whether that lesson is wanted, or whether the forge-construct should only resist fire.
+
+## Acceptance criteria
+- [ ] The PROVISIONAL notes are gone from the Ch5 rows, or each is ruled on in this task's notes.
+- [ ] Every Ch5 suite passes `sim.py --check`, and the Matron's `smart` has a band.
+- [ ] No pre-Ch5 band moves; if one does, re-measure it and log why.
+
+## Notes
+
+## Review log

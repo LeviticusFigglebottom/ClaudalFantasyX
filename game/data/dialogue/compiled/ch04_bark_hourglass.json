@@ -1,0 +1,14 @@
+{
+ "format": 1,
+ "scene": "ch04_bark_hourglass",
+ "source": "game/data/dialogue/ch04/ch04_bark_hourglass.dlg",
+ "start": "ch04_bark_hourglass",
+ "nodes": {
+  "ch04_bark_hourglass": {
+   "headers": {"location": "ch04/brightwater_ferry"},
+   "ops": [
+    {"op": "line", "id": "ch04_bark_glass_001", "key": "DLG_CH04_BARK_GLASS_001", "speaker": "ysolde", "emotion": "neutral", "voice": "", "src": 6}
+   ]
+  }
+ }
+}

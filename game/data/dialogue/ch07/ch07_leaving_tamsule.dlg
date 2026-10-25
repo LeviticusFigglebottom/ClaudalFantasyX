@@ -1,0 +1,28 @@
+// Ch7 B10 "Leaving Tamsule" (docs/kb/story/beats/act1_ch07.md §2 B10). T08, 15:40, from the coastal
+// trader's stern as the party boards for Corrow, looking back at Tamsule and the Bell. A roar comes
+// down from the Bell, and a boatman casting off beside them says, to nobody in particular, the ONLY
+// mention of the cup's winner in the game (ADR 0020 (h): "mentioned once in passing"). Nobody in the
+// party reacts. Rhen, at the stern, looks east, where Tavi's boat went. If he blessed the moorings,
+// the camera also finds them under the Bell as they pull away: the rings, and on Oruvel's last ring,
+// Pio's side-band, tied (T09, a proposal; otherwise the band is still on his arm). No line. It ends on
+// black: Ch8 begins at sea (until ch08/corrow is built, the chapter flow hands off to the end card).
+title: ch07_leaving_tamsule
+location: ch07/tamsule
+---
+@letterbox on
+@camera T08
+@music tidecup_after fade=2.0
+@mark rhen rhen_stern walk
+@sfx bell_crowd_roar
+@wait 1.5
+Boatman [neutral]: That'll be Tamsule's cup, then. #line:ch07_leave_001
+@wait 1.5
+@anim rhen look_at east_water
+@wait 2.0
+<<if $ch07_blessed_moorings>>
+    @camera T09
+    @wait 3.0
+<<endif>>
+@wait 1.0
+@fade out 2.0
+===

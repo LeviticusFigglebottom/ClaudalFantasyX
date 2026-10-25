@@ -517,7 +517,7 @@ func _show_result() -> void:
 	if persist_progress and fixture == null:
 		BattleVitals.send_back(engine, swell)
 	var rows: Array[Dictionary] = []
-	var title_key := "HUD_VICTORY"
+	var title_key := BattleMenus.victory_title_key(engine)
 	var sub_key := "HUD_VICTORY_SUB"
 	if engine.outcome == BattleEngine.OUTCOME_VICTORY:
 		rows = BattleRewards.new().award_victory(self)
@@ -680,17 +680,7 @@ func _begin_swap_out() -> void:
 
 
 func _handle_pick_input(event: InputEvent) -> bool:
-	if event.is_action_pressed(&"ui_left", true) or event.is_action_pressed(&"ui_up", true):
-		_cycle_target(-1)
-	elif event.is_action_pressed(&"ui_right", true) or event.is_action_pressed(&"ui_down", true):
-		_cycle_target(1)
-	elif event.is_action_pressed(&"ui_accept"):
-		_confirm_pick()
-	elif event.is_action_pressed(&"ui_cancel"):
-		_cancel_pick()
-	else:
-		return false
-	return true
+	return BattlePointer.handle_pick(self, event, _target_index)  # keys, pad and mouse (M2-UI-26)
 
 
 func _cycle_target(delta: int) -> void:
@@ -727,7 +717,7 @@ func _commit_skill(skill_id: StringName, target_ids: Array[StringName]) -> void:
 ## The open input takes ui_accept and the directions (SwellInputKeys) and ui_cancel (back out,
 ## only before the first grade).
 func _handle_ring_input(event: InputEvent) -> bool:
-	if not SwellInputKeys.feed(event, _ring_clock, swell_input_live):
+	if not SwellInputKeys.feed(hud.swell_ring.pointer_event(event), _ring_clock, swell_input_live):  # M2-UI-26
 		return false
 	_after_ring()
 	return true
@@ -842,13 +832,7 @@ func _preview_skill(skill_id: StringName, targets: Array[BattleCombatant]) -> vo
 	if lands != chosen:
 		marked = [lands]
 	_show_timeline(TurnTimeline.MODE_PREVIEW, preview, BattleIds.of(marked))
-	# What changes the outcome (Provoke, Reflect, Zombie) reads before the generic description.
-	var parts := menus.target_notes(engine, skill_id, chosen, lands)
-	if swell.is_technique(engine.current, skill_id):
-		parts.append(menus.swell_help(engine, swell, skill_id, _ghost_slot() - 1))
-	else:
-		parts.append(menus.skill_help(engine, skill_id, _ghost_slot() - 1))
-	hud.set_help(" · ".join(parts))
+	hud.set_help(menus.skill_preview_help(engine, swell, skill_id, chosen, lands, _ghost_slot() - 1))
 
 
 ## Previews item `item_id` on `targets`. What the use will really do leads the help line; a use

@@ -1,0 +1,40 @@
+// Ch4 C4-14 "Cutscene: the name-board" (docs/kb/story/beats/act1_ch04.md). D06: the stern. Rhen takes
+// the name-board off with his reef-hooks: carved, lacquered, Seventh Terrace in Pemakar terrace script
+// (the same hero prop as Ch1's O07 insert; D06 must match O07 exactly). He has taken a thousand things
+// off drowned hulls, and he has never done one this carefully. He doesn't let it split.
+// The Canticle: Ysolde recites over the hull, recited, never sung (bible §4). The held motes in the
+// rigging drift down and seaward into the sea, as the Order's words send them. D08: Asha watches them
+// go a beat too long, and says nothing (a seed for Ch9's Ebbing and Ch10's farewell-tide; nobody says
+// it's wrong). The sails come down: with the Spar-Wraith dead nothing holds her lines.
+// Back aboard the ferry (F05): the harbour pays a boarder for a board, by custom. Older-Rhen VO, once.
+// Watch: the ferry was never attacked, and nothing from the derelict comes aboard but the board.
+// Music: name_board_home. The chapter flow sets ch04_name_board_carried and gives the key item.
+title: ch04_name_board
+location: ch04/brightwater_ferry
+---
+@letterbox on
+@music name_board_home fade=2.0
+@camera D06
+@anim rhen prise_name_board
+@sfx name_board_prise
+@wait 3.0
+@anim rhen lift_name_board
+@wait 1.5
+Ysolde [neutral]: The water keeps what it is given. #line:ch04_board_001 #tn:"The Canticle of Level Water, recited, never sung."
+Ysolde [neutral]: Go down to the level, and be still. #line:ch04_board_002 #tn:"The Canticle of Level Water, recited, never sung."
+@vfx glimmer_held at=derelict_rigging count=24 drift=down_seaward rate=slow
+@camera D08
+@wait 3.0
+@sfx sails_luff_and_fall
+@wait 2.0
+@fade out 1.0
+@camera F05
+@fade in 1.0
+Ferrymaster [neutral]: The harbour at Pemakar pays a boarder for bringing a board home. That's custom. #line:ch04_board_003
+Rhen [neutral]: Tell them it's paid. #line:ch04_board_004
+Ferrymaster [surprised]: Never heard a diver say that. #line:ch04_board_005
+@wait 1.0
+Narrator(rhen) [neutral]: I'd sold drowned brass my whole life. That was the first thing I ever brought up for nothing. #line:ch04_board_006 #vo
+@wait 1.5
+@letterbox off
+===

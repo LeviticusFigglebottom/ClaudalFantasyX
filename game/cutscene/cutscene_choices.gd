@@ -29,6 +29,7 @@ func show_options(options: Array[DialogueOption]) -> void:
 		if _font_size > 0:
 			b.add_theme_font_size_override(&"font_size", _font_size)
 		b.pressed.connect(_on_pressed.bind(opt.index))
+		UiFocus.follow_pointer(b)  # M2-UI-26: hover focuses, the wheel steps (UI-owned)
 		_list.add_child(b)
 		_buttons.append(b)
 	visible = true

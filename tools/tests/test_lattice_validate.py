@@ -1,15 +1,14 @@
 """Lattice and Facet checks in tools/validate_data.py. Run: python3 -m unittest discover -s tools/tests"""
 import json
-import os
 import shutil
 import sys
-import tempfile
 import unittest
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "tools"))
 import validate_data as vd  # noqa: E402
+from tree_mirror import scratch_repo  # noqa: E402
 
 BOARD = "game/data/progression/lattice_standard.json"
 FACETS = "game/data/progression/facets.json"
@@ -17,17 +16,8 @@ FACETS = "game/data/progression/facets.json"
 
 class LatticeValidatorTests(unittest.TestCase):
     def setUp(self) -> None:
-        # validate_data.run reads the whole tree, but these tests only rewrite a few JSON files (save()), so the
-        # tree is mirrored as real directories holding symlinks to the repo's files. Copying game/ and assets/
-        # (about 200 MB) for every test made this suite take many minutes (M2-NIT).
-        self.tmp = Path(tempfile.mkdtemp())
-        for rel in ("game", "assets", "tools/banned_terms.txt", "docs/kb/glossary.md"):
-            src, dst = ROOT / rel, self.tmp / rel
-            dst.parent.mkdir(parents=True, exist_ok=True)
-            if src.is_dir():
-                shutil.copytree(src, dst, copy_function=os.symlink)
-            elif src.exists():
-                shutil.copy(src, dst)
+        # validate_data.run reads the whole tree; tree_mirror copies game/ and symlinks assets/, in RAM (M2-NIT-06).
+        self.tmp = scratch_repo("lattice_validate_")
 
     def tearDown(self) -> None:
         shutil.rmtree(self.tmp)
@@ -37,7 +27,7 @@ class LatticeValidatorTests(unittest.TestCase):
 
     def save(self, rel: str, doc: dict) -> None:
         path = self.tmp / rel
-        path.unlink()  # a symlink to the repo's file: replace the link, never write through it
+        path.unlink()  # never write through a link (game/ is a real copy now, but keep the habit)
         path.write_text(json.dumps(doc), encoding="utf-8")
 
     def node(self, doc: dict, nid: str) -> dict:

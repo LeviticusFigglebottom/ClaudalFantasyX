@@ -1,0 +1,138 @@
+{
+ "doc": "M3-ENV-05 Oruvel Underway preview views (docs/kb/art/environments/oruvel_underway.md section 4). Only the two named in tests/screenshots/shots.json are registered baselines; capture the rest with --manifest.",
+ "shots": [
+  {
+   "id": "ou_u01_drop",
+   "scene": "res://game/levels/_tests/oruvel_underway_kit/oruvel_underway_preview.tscn",
+   "camera": "Cameras/U01",
+   "resolution": [
+    960,
+    540
+   ],
+   "settle_frames": 24,
+   "setup": {
+    "globals": {
+     "hymn_wind_time": 40.0
+    },
+    "viewport": {
+     "use_taa": false,
+     "screen_space_aa": 1
+    }
+   }
+  },
+  {
+   "id": "ou_u04_lamp_gallery",
+   "scene": "res://game/levels/_tests/oruvel_underway_kit/oruvel_underway_preview.tscn",
+   "camera": "Cameras/U04",
+   "resolution": [
+    960,
+    540
+   ],
+   "settle_frames": 24,
+   "setup": {
+    "globals": {
+     "hymn_wind_time": 40.0
+    },
+    "viewport": {
+     "use_taa": false,
+     "screen_space_aa": 1
+    }
+   }
+  },
+  {
+   "id": "ou_u06_low_lights",
+   "scene": "res://game/levels/_tests/oruvel_underway_kit/oruvel_underway_preview.tscn",
+   "camera": "Cameras/U06",
+   "resolution": [
+    960,
+    540
+   ],
+   "settle_frames": 24,
+   "setup": {
+    "globals": {
+     "hymn_wind_time": 40.0
+    },
+    "viewport": {
+     "use_taa": false,
+     "screen_space_aa": 1
+    }
+   }
+  },
+  {
+   "id": "ou_u07_gauge_wheel",
+   "scene": "res://game/levels/_tests/oruvel_underway_kit/oruvel_underway_preview.tscn",
+   "camera": "Cameras/U07",
+   "resolution": [
+    960,
+    540
+   ],
+   "settle_frames": 24,
+   "setup": {
+    "globals": {
+     "hymn_wind_time": 40.0
+    },
+    "viewport": {
+     "use_taa": false,
+     "screen_space_aa": 1
+    }
+   }
+  },
+  {
+   "id": "ou_u12_terrace",
+   "scene": "res://game/levels/_tests/oruvel_underway_kit/oruvel_underway_preview.tscn",
+   "camera": "Cameras/U12",
+   "resolution": [
+    960,
+    540
+   ],
+   "settle_frames": 24,
+   "setup": {
+    "globals": {
+     "hymn_wind_time": 40.0
+    },
+    "viewport": {
+     "use_taa": false,
+     "screen_space_aa": 1
+    }
+   }
+  },
+  {
+   "id": "ou_u13_ribs",
+   "scene": "res://game/levels/_tests/oruvel_underway_kit/oruvel_underway_preview.tscn",
+   "camera": "Cameras/U13",
+   "resolution": [
+    960,
+    540
+   ],
+   "settle_frames": 24,
+   "setup": {
+    "globals": {
+     "hymn_wind_time": 40.0
+    },
+    "viewport": {
+     "use_taa": false,
+     "screen_space_aa": 1
+    }
+   }
+  },
+  {
+   "id": "ou_u14_kit_row",
+   "scene": "res://game/levels/_tests/oruvel_underway_kit/oruvel_underway_preview.tscn",
+   "camera": "Cameras/U14",
+   "resolution": [
+    960,
+    540
+   ],
+   "settle_frames": 24,
+   "setup": {
+    "globals": {
+     "hymn_wind_time": 40.0
+    },
+    "viewport": {
+     "use_taa": false,
+     "screen_space_aa": 1
+    }
+   }
+  }
+ ]
+}

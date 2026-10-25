@@ -1,0 +1,16 @@
+{
+ "format": 1,
+ "scene": "ch06_banter_brass",
+ "source": "game/data/dialogue/ch06/ch06_banter_brass.dlg",
+ "start": "ch06_banter_brass",
+ "nodes": {
+  "ch06_banter_brass": {
+   "headers": {"location": "ch06/brine_shoals"},
+   "ops": [
+    {"op": "line", "id": "ch06_brass_001", "key": "DLG_CH06_BRASS_001", "speaker": "rhen", "emotion": "smile", "voice": "", "src": 6},
+    {"op": "line", "id": "ch06_brass_002", "key": "DLG_CH06_BRASS_002", "speaker": "ysolde", "emotion": "neutral", "voice": "", "src": 7},
+    {"op": "line", "id": "ch06_brass_003", "key": "DLG_CH06_BRASS_003", "speaker": "rhen", "emotion": "neutral", "voice": "", "src": 8}
+   ]
+  }
+ }
+}

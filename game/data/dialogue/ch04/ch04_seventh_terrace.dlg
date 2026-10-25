@@ -1,0 +1,44 @@
+// Ch4 C4-11 "Cutscene: the Seventh Terrace" (docs/kb/story/beats/act1_ch04.md). 07:30, mid-strait. A
+// lookout's call. F05 (50 mm, from the ferry's rail): a ship off the bow under full sail, red-and-black
+// lacquer, copper sheathing, running before the wind with nobody at the helm, the wheel turning by
+// itself. Held motes (glimmer_held, faint in daylight) hang in her rigging like spray that won't fall.
+// Rhen knows her: Sadi Moru's coaster from Oruvel's outer mooring, which ran for open water when the
+// gulls cried (act1_ch01.md C1-09, C1-12). The first proof since the beach that Oruvel was real and
+// that it's gone.
+// Sea-law (bible §5.1): no hull drowned in a Rising is passed without someone bringing its name-board
+// home. Imbe will lie alongside, an oar's length off, with fenders and boathooks, because you never
+// lash a living hull to a drowned one, and he won't send his crew aboard (ferrymen with families; the
+// rigging is moving wrong). Rhen goes; Asha won't let him go alone; Toma goes because she goes;
+// Ysolde goes because someone should say the Canticle over a drowned hull correctly.
+// D01: Rhen jumping the gap to her chain-plates.
+// ADR 0017 (d): the ferry is never attacked, and nothing from the derelict comes aboard her.
+// Music: brightwater_crossing -> silence. The chapter flow sets ch04_boarded_derelict.
+title: ch04_seventh_terrace
+location: ch04/brightwater_ferry
+---
+@letterbox on
+@sfx lookout_call
+Ferrymaster [surprised]: Sail! Sail off the bow, and she's not answering! #line:ch04_terrace_001
+@camera F05
+@vfx glimmer_held at=derelict_rigging count=12 drift=down_seaward rate=slow
+@sfx derelict_wheel_turning
+@music silence fade=3.0
+@wait 2.5
+Rhen [surprised]: That's the Seventh Terrace. #line:ch04_terrace_002
+Rhen [grief]: She was tied up at Oruvel three days ago. Her skipper paid me short. #line:ch04_terrace_003
+@wait 1.5
+Ferrymaster [neutral]: Then she drowned in the Rising, and she's still sailing. #line:ch04_terrace_004
+Ferrymaster [determined]: Sea-law. You don't pass a drowned hull without bringing her name-board home. #line:ch04_terrace_005
+Ferrymaster [neutral]: I'll lie alongside her, an oar's length off. Fenders and boathooks. #line:ch04_terrace_006
+Ferrymaster [worried]: You never lash a living hull to a drowned one. And my crew stays aboard. #line:ch04_terrace_007
+Ferrymaster [worried]: Look at her rigging. It's moving wrong. #line:ch04_terrace_008
+Rhen [determined]: I'm a diver. I've been on more drowned hulls than anyone on this deck. I'll go. #line:ch04_terrace_009
+Asha [determined]: You're my guardian. Guardians walk behind. So I'll go first. #line:ch04_terrace_010
+Toma [exhausted]: Then I am going. #line:ch04_terrace_011
+Ysolde [neutral]: Someone should say the Canticle over her correctly. I am the only one aboard who may. #line:ch04_terrace_012
+@camera D01
+@anim rhen jump_gap
+@sfx gangplank
+@wait 1.5
+@letterbox off
+===

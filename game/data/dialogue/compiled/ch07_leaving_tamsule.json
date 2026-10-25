@@ -1,0 +1,29 @@
+{
+ "format": 1,
+ "scene": "ch07_leaving_tamsule",
+ "source": "game/data/dialogue/ch07/ch07_leaving_tamsule.dlg",
+ "start": "ch07_leaving_tamsule",
+ "nodes": {
+  "ch07_leaving_tamsule": {
+   "headers": {"location": "ch07/tamsule"},
+   "ops": [
+    {"op": "cue", "cue": "letterbox", "args": ["on"], "kwargs": {}, "src": 12},
+    {"op": "cue", "cue": "camera", "args": ["T08"], "kwargs": {}, "src": 13},
+    {"op": "cue", "cue": "music", "args": ["tidecup_after"], "kwargs": {"fade": 2.0}, "src": 14},
+    {"op": "cue", "cue": "mark", "args": ["rhen", "rhen_stern", "walk"], "kwargs": {}, "src": 15},
+    {"op": "cue", "cue": "sfx", "args": ["bell_crowd_roar"], "kwargs": {}, "src": 16},
+    {"op": "cue", "cue": "wait", "args": [1.5], "kwargs": {}, "src": 17},
+    {"op": "line", "id": "ch07_leave_001", "key": "DLG_CH07_LEAVE_001", "speaker": "boatman", "emotion": "neutral", "voice": "", "src": 18},
+    {"op": "cue", "cue": "wait", "args": [1.5], "kwargs": {}, "src": 19},
+    {"op": "cue", "cue": "anim", "args": ["rhen", "look_at", "east_water"], "kwargs": {}, "src": 20},
+    {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 21},
+    {"op": "if_not", "cond": ["flag", "ch07_blessed_moorings"], "to": 14, "src": 22},
+    {"op": "cue", "cue": "camera", "args": ["T09"], "kwargs": {}, "src": 23},
+    {"op": "cue", "cue": "wait", "args": [3.0], "kwargs": {}, "src": 24},
+    {"op": "goto", "to": 14, "src": 22},
+    {"op": "cue", "cue": "wait", "args": [1.0], "kwargs": {}, "src": 26},
+    {"op": "cue", "cue": "fade", "args": ["out", 2.0], "kwargs": {}, "src": 27}
+   ]
+  }
+ }
+}

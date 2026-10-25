@@ -1,0 +1,43 @@
+{
+ "format": 1,
+ "scene": "ch07_galleries",
+ "source": "game/data/dialogue/ch07/ch07_galleries.dlg",
+ "start": "ch07_galleries",
+ "nodes": {
+  "ch07_galleries": {
+   "headers": {"location": "ch07/tamsule_bell_galleries"},
+   "ops": [
+    {"op": "cue", "cue": "letterbox", "args": ["on"], "kwargs": {}, "src": 16},
+    {"op": "cue", "cue": "camera", "args": ["R01"], "kwargs": {}, "src": 17},
+    {"op": "cue", "cue": "music", "args": ["tidecup_crowd"], "kwargs": {"fade": 1.0}, "src": 18},
+    {"op": "cue", "cue": "wait", "args": [1.5], "kwargs": {}, "src": 19},
+    {"op": "cue", "cue": "camera", "args": ["R02"], "kwargs": {}, "src": 20},
+    {"op": "cue", "cue": "wait", "args": [2.5], "kwargs": {}, "src": 21},
+    {"op": "cue", "cue": "camera", "args": ["R01"], "kwargs": {}, "src": 22},
+    {"op": "line", "id": "ch07_gall_001", "key": "DLG_CH07_GALL_001", "speaker": "toma", "emotion": "soft_smile", "voice": "", "src": 23},
+    {"op": "line", "id": "ch07_gall_002", "key": "DLG_CH07_GALL_002", "speaker": "asha", "emotion": "surprised", "voice": "", "src": 24},
+    {"op": "line", "id": "ch07_gall_003", "key": "DLG_CH07_GALL_003", "speaker": "toma", "emotion": "smile", "voice": "", "src": 25},
+    {"op": "cue", "cue": "anim", "args": ["asha", "laugh"], "kwargs": {}, "src": 26},
+    {"op": "cue", "cue": "anim", "args": ["toma", "look_at", "column_foot"], "kwargs": {}, "src": 27},
+    {"op": "cue", "cue": "wait", "args": [1.5], "kwargs": {}, "src": 28},
+    {"op": "cue", "cue": "anim", "args": ["liss", "look_at", "bell_ribs"], "kwargs": {}, "src": 29},
+    {"op": "line", "id": "ch07_gall_004", "key": "DLG_CH07_GALL_004", "speaker": "liss", "emotion": "cold", "voice": "", "src": 30},
+    {"op": "cue", "cue": "wait", "args": [1.0], "kwargs": {}, "src": 31},
+    {"op": "cue", "cue": "anim", "args": ["toma", "look_at", "bell_ribs"], "kwargs": {}, "src": 32},
+    {"op": "cue", "cue": "camera", "args": ["R01A"], "kwargs": {}, "src": 33},
+    {"op": "cue", "cue": "face", "args": ["asha", "neutral", 1.5], "kwargs": {}, "src": 34},
+    {"op": "cue", "cue": "sfx", "args": ["bell_hum_rise"], "kwargs": {}, "src": 35},
+    {"op": "cue", "cue": "wait", "args": [1.5], "kwargs": {}, "src": 36},
+    {"op": "cue", "cue": "camera", "args": ["R01"], "kwargs": {}, "src": 37},
+    {"op": "cue", "cue": "anim", "args": ["ysolde", "turn_page"], "kwargs": {}, "src": 38},
+    {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 39},
+    {"op": "cue", "cue": "camera", "args": ["R02K"], "kwargs": {}, "src": 40},
+    {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 41},
+    {"op": "cue", "cue": "camera", "args": ["R01"], "kwargs": {}, "src": 42},
+    {"op": "cue", "cue": "wait", "args": [1.0], "kwargs": {}, "src": 43},
+    {"op": "cue", "cue": "letterbox", "args": ["off"], "kwargs": {}, "src": 44},
+    {"op": "cue", "cue": "camera", "args": ["release"], "kwargs": {}, "src": 45}
+   ]
+  }
+ }
+}

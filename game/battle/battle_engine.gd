@@ -78,6 +78,7 @@ func setup(
 ) -> void:
 	db = battle_db
 	rng.seed = rng_seed
+	timeline.tempo = tempo_rank
 	encounter_id = encounter
 	opening = BattleOpening.NORMAL
 	party_active.clear()
@@ -92,6 +93,7 @@ func setup(
 	var enc: Dictionary = db.encounters.get(encounter, {})
 	scripted = bool(enc.get("scripted", false))
 	BossMechanics.lend_skills(self, enc)
+	BossMechanics.forbid_skills(self, enc)
 	var n := 0
 	for eid: Variant in enc.get("enemies", []):
 		n += 1
@@ -353,6 +355,9 @@ func _checked(
 	var valid := _valid_targets(actor, sk, targets)
 	if valid.is_empty():
 		return ActionResult.failed(actor.id, skill_id, &"no_valid_target")
+	for t in valid:
+		if BossMechanics.forbids(actor, sk, t):
+			return ActionResult.failed(actor.id, skill_id, BossMechanics.FAIL_FORBIDDEN)
 	var forced := forced_target(actor, skill_id)
 	if forced != null and valid[0] != forced:
 		return ActionResult.failed(actor.id, skill_id, &"provoked")
@@ -445,6 +450,7 @@ func preview_swap(out_id: StringName, in_id: StringName, count: int = CtbTimelin
 	roster[idx.x] = entering  # party slots come first in _field(), in active order
 	var tl := CtbTimeline.new()
 	tl.set_roster(roster)
+	tl.tempo = timeline.tempo
 	return tl.predict(count, null, Formulas.DEFAULT_RANK, null, 0, {}, {entering: _swap_in_time(leaving, entering)})
 
 
@@ -649,6 +655,14 @@ func _advance() -> void:
 		current = actor
 		turn_started.emit(actor)
 		return
+
+
+## The skill row `c`'s turn `ahead` own turns on is predicted to use (CtbTimeline.tempo): its AI's
+## for a foe or an automatic (Berserk/Confused) turn; {} (a standard action) for a turn the player chooses.
+func tempo_rank(c: BattleCombatant, ahead: int) -> Dictionary:
+	if c.team != BattleCombatant.TEAM_ENEMY and auto_reason(c) == &"":
+		return {}
+	return EnemyAI.predicted_skill(self, c, ahead)
 
 
 ## Petrified combatants count as KO here: is_alive() is false for stone.

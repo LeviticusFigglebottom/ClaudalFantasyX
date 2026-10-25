@@ -114,3 +114,43 @@ class ChapterFlowTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class ChapterSelectTest(unittest.TestCase):
+    """M3-ARC-02: the debug chapter select's starts (game/data/debug/chapter_select.json)."""
+
+    START = {"id": "a", "label": "A", "location": "zone_story_a", "spawn": "Start", "chapter": 1,
+             "party": ["rhen"], "flags": []}
+
+    def _errs(self, rows: list) -> list[str]:
+        return cf.starts_errors({"starts": rows}, "starts", ChapterFlowTest.ctx)
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        ChapterFlowTest.setUpClass()
+        cls.START = dict(cls.START, spawn=next(iter(ChapterFlowTest.layout_a["spawns"])))
+
+    def test_a_good_start_passes(self) -> None:
+        self.assertEqual(self._errs([self.START]), [])
+
+    def test_the_shipped_starts_pass(self) -> None:
+        errs = cf.starts_errors(_json(ROOT / cf.STARTS_FILE), cf.STARTS_FILE, cf.Context(
+            flags=vd.declared_flags_quiet(ROOT), dialogue=set(), encounters=set(),
+            heroes={r["id"] for r in _json(ROOT / "game/data/battle/characters.json")["characters"]},
+            locations={r["id"]: r["scene"] for r in _json(ROOT / "game/data/world/locations.json")["locations"]},
+            layouts={}, scene_exists=lambda res: True))
+        self.assertEqual(errs, [])
+
+    def test_bad_starts_are_caught(self) -> None:
+        bad = [
+            dict(self.START, spawn="Nowhere"),
+            dict(self.START, id="b", location="nowhere"),
+            dict(self.START, id="c", chapter=0),
+            dict(self.START, id="d", party=["nobody"]),
+            dict(self.START, id="e", flags=["no_such_flag"]),
+            dict(self.START, id="e"),
+        ]
+        errs = "\n".join(self._errs(bad))
+        for needle in ("no spawn 'Nowhere'", "unknown location 'nowhere'", "positive integer",
+                       "unknown hero 'nobody'", "undeclared flag 'no_such_flag'", "unique"):
+            self.assertIn(needle, errs)

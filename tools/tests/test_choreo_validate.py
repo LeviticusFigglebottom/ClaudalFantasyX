@@ -43,6 +43,19 @@ class ChoreoValidateTest(unittest.TestCase):
         self.assertTrue(self._errs(lambda c: c.update(item_style="nope")))
         self.assertTrue(self._errs(lambda c: c["styles"].pop("melee")))
 
+    def test_placeholder_clips(self) -> None:
+        pc = lambda c: c["placeholder_clips"]  # noqa: E731
+        self.assertTrue(self._errs(lambda c: pc(c)["clips"].update(twirl=copy.deepcopy(pc(c)["clips"]["hit"]))))
+        self.assertTrue(self._errs(lambda c: pc(c)["clips"].pop("ko")))
+        self.assertTrue(self._errs(lambda c: pc(c)["clips"]["hit"].update(length_sec=0)))
+        self.assertTrue(self._errs(lambda c: pc(c)["clips"]["hit"]["keys"].append({"t": 9.0})))
+        self.assertTrue(self._errs(lambda c: pc(c)["clips"]["hit"]["keys"][1]["pose"].update(tail=[0, 0, 0])))
+        self.assertTrue(self._errs(lambda c: pc(c)["clips"]["hit"]["keys"][1]["pose"].update(head=[0, 0])))
+        self.assertTrue(self._errs(lambda c: pc(c)["clips"]["hit"]["keys"][1].update(hips_m="down")))
+        self.assertTrue(self._errs(lambda c: pc(c)["bones"].update(head=[])))
+        self.assertTrue(self._errs(lambda c: pc(c).update(min_roles=0)))
+        self.assertTrue(self._errs(lambda c: pc(c)["clips"]["victory"].update(loop="yes")))
+
     def test_travel_needs_its_distance(self) -> None:
         self.assertTrue(self._errs(lambda c: c["styles"]["melee"].pop("stop_short_m")))
         self.assertTrue(self._errs(lambda c: c["styles"]["cast"].pop("step_m")))
@@ -128,6 +141,29 @@ class ChoreoValidateTest(unittest.TestCase):
         doc["choreo"]["camera"]["shots"].pop("summon")
         self.assertEqual(len(vc.summon_errors(doc, flags)), 4)
 
+    def test_boss_intro(self) -> None:
+        enc = json.loads((ROOT / vc.ENCOUNTERS_FILE).read_text(encoding="utf-8"))
+        loc = vd.load_loc_keys(ROOT, vd.Report())
+        self.assertEqual(vc.boss_intro_errors(DOC, enc, loc), [])
+        rows = DOC["choreo"]["boss_intro"]["rows"]
+        for eid in ("ch01_hullgnaw", "ch04_bottle_hermit", "ch04_spar_wraith", "ch05_cinder_matron", "drownbell"):
+            self.assertIn(eid, rows, f"{eid} has an intro row")
+            self.assertFalse(rows[eid].get("on_retry", False), "Fight again skips the intro by default")
+        doc = copy.deepcopy(DOC)
+        b = doc["choreo"]["boss_intro"]
+        b["rows"]["ch01_hullgnaw"]["shot"] = "nowhere"
+        b["rows"]["ch01_hullgnaw"]["title_key"] = "BOSS_TITLE_NEVER"
+        b["rows"]["drownbell"]["enemy"] = "hullgnaw"
+        b["rows"]["drownbell"]["hold_sec"] = 0
+        b["rows"]["no_such_fight"] = dict(rows["drownbell"])
+        b["card"]["band_alpha"] = 2
+        b["camera_in_sec"] = "x"
+        self.assertEqual(len(vc.boss_intro_errors(doc, enc, loc)), 7)
+        b["rows"]["drownbell"]["hold_sec"] = 0.1
+        b["camera_in_sec"] = 0.0
+        self.assertTrue(any("must fit" in e for e in vc.boss_intro_errors(doc, enc, loc)), "the card fits the hold")
+        self.assertTrue(vc.boss_intro_errors({"choreo": {"boss_intro": []}}, enc, loc))
+
 
 class ArenaValidateTest(unittest.TestCase):
     DOC = json.loads((ROOT / vc.ARENAS_FILE).read_text(encoding="utf-8"))
@@ -146,6 +182,10 @@ class ArenaValidateTest(unittest.TestCase):
         doc["arenas"]["scenes"]["ghost"] = "res://game/battle/arenas/ghost.tscn"
         self.assertEqual(len(vc.arena_errors(doc, enc, self._exists)), 2)
         self.assertTrue(vc.arena_errors({}, self.ENC, self._exists))
+        doc = copy.deepcopy(self.DOC)
+        doc["arenas"]["staging"]["nowhere"] = {"travel_scale": 1.0}
+        doc["arenas"]["staging"]["underway_tower"]["tempo"] = 0
+        self.assertEqual(len(vc.arena_errors(doc, self.ENC, self._exists)), 2)
 
 
 if __name__ == "__main__":

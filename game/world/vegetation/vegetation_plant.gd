@@ -175,57 +175,16 @@ func _apply_lod(mi: MeshInstance3D, lod: int) -> void:
 	mi.visible = lod < lod_end_m.size()
 	if not mi.visible:
 		return
-	var next := lod_mesh(mi, lod + 1) if lod + 1 < lod_end_m.size() else null
-	var r := lod_range(lod, lod_end_m, lod_margin_m, lod_fade_m, next != null)
-	mi.visibility_range_begin = r["begin"]
-	mi.visibility_range_end = r["end"]
-	mi.visibility_range_begin_margin = r["begin_margin"]
-	mi.visibility_range_end_margin = r["end_margin"]
-	mi.visibility_range_fade_mode = (
-		GeometryInstance3D.VISIBILITY_RANGE_FADE_SELF
-		if r["fade"]
-		else GeometryInstance3D.VISIBILITY_RANGE_FADE_DISABLED
-	)
-	if next != null:
-		mi.visibility_parent = mi.get_path_to(next)
+	LodChain.apply(mi, lod, lod_end_m, lod_margin_m, lod_fade_m, lod_mesh(mi, lod + 1))
 	if shadow_lod_max >= 0 and lod > shadow_lod_max:
 		mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 
 
 ## The sibling `<base>-lod<lod>` of `mi`'s chain (saltgrass_clumps holds two chains), else null.
 static func lod_mesh(mi: MeshInstance3D, lod: int) -> MeshInstance3D:
-	if mi.get_parent() == null:
-		return null
-	var base := String(mi.name)
-	var at := base.rfind(LOD_SUFFIX)
-	if at >= 0 and base.substr(at + LOD_SUFFIX.length()).is_valid_int():
-		base = base.substr(0, at)
-	return mi.get_parent().get_node_or_null(NodePath("%s%s%d" % [base, LOD_SUFFIX, lod])) as MeshInstance3D
+	return LodChain.sibling(mi, lod, LOD_SUFFIX)
 
 
-## LOD `lod`'s visibility range (M1-ENV-08/09): a Dictionary of begin, end, begin_margin, end_margin
-## and fade (bool). When `chained` (the chain has LOD lod+1), LOD lod becomes LOD lod+1's
-## visibility-parent child, and Godot draws it only while LOD lod+1 is hidden for being too close. So
-## each switch is one state machine, the parent's begin check: its begin margin is the hysteresis, and
-## exactly one LOD draws at every distance whatever the camera did before (no hole, no double draw).
-## The child's own end is a loose bound halfway into the parent's span; it only matters while the
-## parent hands its children through during its own fade. A faded last LOD fades in over its begin
-## margin as well (Godot uses both margins as fade spans), which is a 2 x margin crossfade over the
-## opaque LOD below it. Not `chained`: the plain switch interval, with no margins.
+## LOD `lod`'s visibility range (M1-ENV-08/09): LodChain.range_for, which documents the chain.
 static func lod_range(lod: int, ends: PackedFloat32Array, margin: float, fade: float, chained: bool) -> Dictionary:
-	var last := ends.size() - 1
-	var r := {
-		"begin": 0.0 if lod == 0 else ends[lod - 1],
-		"begin_margin": 0.0 if lod == 0 else margin,
-		"end": ends[lod],
-		"end_margin": 0.0,
-		"fade": lod == last and fade > 0.0,
-	}
-	if lod == last:
-		r["end_margin"] = fade if fade > 0.0 else margin
-	elif chained:
-		var parent_leaves := ends[lod + 1] - float(lod_range(lod + 1, ends, margin, fade, true)["end_margin"])
-		r["end"] = 0.5 * (ends[lod] + parent_leaves)
-	else:
-		r["begin_margin"] = 0.0
-	return r
+	return LodChain.range_for(lod, ends, margin, fade, chained)

@@ -1,0 +1,60 @@
+{
+  "doc": "Ch6 'Salt Edict' (M3-C06-02; docs/kb/story/beats/act1_ch06.md B01-B10; docs/kb/tech/chapter_flow.md 'Ch6'). One greybox zone, ch06/brine_shoals (Ch06Zone), played by ZoneStory. Entry: Entry, where Ch5's dawn hands off (also the location's own spawn). B01: the chapter becomes 6; the road's two overheard banters and the midday stop (Kerrid's share); random fights on the road until the raid (the layout's encounters). B02-B03: the last ridge: the smoke, the raid (Toma's freeze, Liss sheltered), and the Inquisitor fight (B04) with Toma, Rhen and Asha on the field, Kerrid and Ysolde in reserve (encounters.json ch06_inquisitor: Toma will not strike the Stillguard; they yield). The zone reloads at CampWaterline after the win: B05 (the barge; Sefir's first appearance), B06 (Liss joins on Toma's papers: a party step seats her in reserve), B07 (Liss and the lantern), and the ridge camp at dusk (B08: the shrine's rest and checkpoint, the vendor, three barks). B09: the tideline side scene, optional. B10: the channel at dawn, then on to ch07/tamsule at RiverMouth.",
+  "chapter": "ch06",
+  "zones": {
+    "ch06/brine_shoals": {
+      "party": {"party": ["rhen", "asha", "kerrid"], "reserve": ["toma", "ysolde"]},
+      "overheard_hold_sec": 2.4,
+      "arrive": [
+        {"when": {"set": ["ch06_inquisitor_yielded"], "unset": ["ch06_met_sefir"]}, "steps": [
+          {"place": "CampWaterline"},
+          {"play": "ch06_barge"},
+          {"zone": "refresh_states"},
+          {"play": "ch06_after_barge"},
+          {"party": {"party": ["rhen", "asha", "kerrid"], "reserve": ["toma", "ysolde", "liss"]}},
+          {"zone": "refresh_states"},
+          {"play": "ch06_liss_lantern"},
+          {"set": "ch06_camp_made"},
+          {"zone": "refresh_states"},
+          {"place": "RidgeCamp"},
+          {"play": "ch06_ridge_camp"}
+        ]},
+        {"when": {"unset": ["ch06_arrived"]}, "steps": [
+          {"place": "Entry"},
+          {"chapter": 6},
+          {"set": "ch06_arrived"},
+          {"zone": "refresh_states"}
+        ]}
+      ],
+      "beats": {
+        "midday": {"when": {"unset": ["ch06_midday_seen"]}, "steps": [
+          {"play": "ch06_midday"},
+          {"set": "ch06_midday_seen"},
+          {"zone": "refresh_states"}
+        ]},
+        "raid": {"when": {"set": ["ch06_arrived"], "unset": ["ch06_inquisitor_yielded"]}, "steps": [
+          {"place": "LastRidge"},
+          {"play": "ch06_smoke"},
+          {"zone": "show_actor", "args": ["liss", true]},
+          {"play": "ch06_raid"},
+          {"battle": "ch06_inquisitor", "party": ["toma", "rhen", "asha"], "reserve": ["kerrid", "ysolde"],
+           "return_spawn": "CampWaterline", "victory_flag": "ch06_inquisitor_yielded"}
+        ]},
+        "shrine": {"steps": [
+          {"zone": "rest", "args": ["ch06_wayside_shrine"]},
+          {"zone": "checkpoint", "args": ["RidgeCamp"]}
+        ]},
+        "burned_lamp": {"when": {"set": ["ch06_camp_made"], "unset": ["ch06_saw_lamp_buried"]}, "steps": [
+          {"play": "ch06_burned_lamp"},
+          {"zone": "refresh_states"}
+        ]},
+        "dawn": {"when": {"set": ["ch06_camp_made"], "unset": ["ch06_done"]}, "steps": [
+          {"place": "Channel"},
+          {"play": "ch06_channel_dawn"},
+          {"set": "ch06_done"},
+          {"go": {"location": "ch07/tamsule", "spawn": "RiverMouth"}}
+        ]}
+      }
+    }
+  }
+}

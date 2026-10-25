@@ -61,6 +61,10 @@ var restore_fade := true
 ## Freeze the stage's player for the scene. Overheard barks (M2-FP-13) set false: Rhen walks on
 ## while the lines advance by themselves (auto_advance).
 var hold_player := true
+## A replay (the Memories gallery, SPEC §6.11): flags read the live game but every <<set>> stays in
+## this play (ReplayFlagAccess), and <<event>>s are recorded in `events` but never emitted or forwarded
+## to the EventBus, so a replayed scene starts no battle and changes no save.
+var replay := false
 ## Every <<event>> of the last play(), in order: [{"name": StringName, "args": Array}].
 var events: Array[Dictionary] = []
 ## Soft failures (a missing shot, actor, mark or track), each reported once.
@@ -209,7 +213,8 @@ func play(scene_id: StringName, stage: CutsceneStage) -> bool:
 	if _playing:
 		push_error("CutsceneSequencer: play(%s) while %s is playing" % [scene_id, _scene_id])
 		return false
-	runner = DialogueRunner.new()
+	runner = DialogueRunner.new(ReplayFlagAccess.new() if replay else null)
+	runner.forward_events_to_bus = not replay
 	if not runner.load_scene(scene_id) or not runner.start():
 		push_error("CutsceneSequencer: cannot start scene '%s'" % scene_id)
 		return false
@@ -342,7 +347,8 @@ func _line(step: DialogueStep) -> void:
 		_speaking = rig
 		if rig != null:
 			var cps := overlay.box.settings.chars_per_sec if overlay.box.settings != null else 0.0
-			rig.say(tr(String(step.text_key)), 0.0 if _fast() else cps, hash(step.text_key))
+			# The box's reveal times (M2-UI-27): the mouth rests while the reveal lingers at punctuation.
+			rig.say(tr(String(step.text_key)), 0.0 if _fast() else cps, hash(step.text_key), overlay.box.reveal_times())
 	if _fast():
 		overlay.box.skip_reveal()
 		return
@@ -402,7 +408,8 @@ func _cue(step: DialogueStep) -> void:
 
 func _on_event(event_name: StringName, args: Array) -> void:
 	events.append({"name": event_name, "args": args})
-	event_requested.emit(event_name, args)
+	if not replay:
+		event_requested.emit(event_name, args)
 
 
 # --- cues ------------------------------------------------------------------------------------

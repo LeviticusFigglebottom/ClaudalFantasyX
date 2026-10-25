@@ -1,0 +1,17 @@
+{
+ "format": 1,
+ "scene": "ch04_bark_hold_housing",
+ "source": "game/data/dialogue/ch04/ch04_bark_hold_housing.dlg",
+ "start": "ch04_bark_hold_housing",
+ "nodes": {
+  "ch04_bark_hold_housing": {
+   "headers": {"location": "ch04/brightwater_ferry"},
+   "ops": [
+    {"op": "cue", "cue": "anim", "args": ["rhen", "lift_housing"], "kwargs": {}, "src": 6},
+    {"op": "line", "id": "ch04_bark_housing_001", "key": "DLG_CH04_BARK_HOUSING_001", "speaker": "rhen", "emotion": "neutral", "voice": "", "src": 7},
+    {"op": "cue", "cue": "anim", "args": ["rhen", "set_down_housing"], "kwargs": {}, "src": 8},
+    {"op": "line", "id": "ch04_bark_housing_002", "key": "DLG_CH04_BARK_HOUSING_002", "speaker": "rhen", "emotion": "sad", "voice": "", "src": 9}
+   ]
+  }
+ }
+}

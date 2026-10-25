@@ -32,6 +32,9 @@ BATTER_DEG = 6.0
 BLOCK_MIN_M, BLOCK_MAX_M = 0.25, 0.5
 WINDGAP_M = (0.15, 0.6, 1.2)  # width, bottom, top
 GATE_W_M = 1.3
+# Broken-coral faces (M2 final pass): a tight edge radius and a broad, shallow displacement read as
+# flat-faced quarried chunks; the old 3.5 cm radius at 6 cm / 17 cm displacement read as pillows.
+BLOCK_EDGE_R_M, BLOCK_DISP_M, BLOCK_DISP_PERIOD_M = 0.018, 0.04, 0.26
 
 TRI_BUDGET = {
     "tidewall": (5600, 500),
@@ -91,8 +94,9 @@ def tidewall(name: str, seed: int, *, height: float = 1.6, gap: str = "none",
                 kc.rounded_block(mb, ((a + b) * 0.5, yc - sink, rng.uniform(-0.035, 0.035)),
                                  ((b - a) * 0.5 - 0.015, bh * 0.5 - 0.008, thick * 0.5), mat,
                                  rot=kc.rot_z(rng.normal(0, 0.05)) @ kc.rot_y(rng.normal(0, 0.04))
-                                 @ kc.rot_x(rng.normal(0, 0.03)), radius=0.035, seg=3, noise=noise, disp_m=0.06,
-                                 disp_period_m=0.17, weather=weather, variation=float(rng.random()))
+                                 @ kc.rot_x(rng.normal(0, 0.03)), radius=BLOCK_EDGE_R_M, seg=3, noise=noise,
+                                 disp_m=BLOCK_DISP_M, disp_period_m=BLOCK_DISP_PERIOD_M, weather=weather,
+                                 variation=float(rng.random()))
         y += ch
         course += 1
     # Lime-mortared cap (rounded), stepped down over the gate opening.

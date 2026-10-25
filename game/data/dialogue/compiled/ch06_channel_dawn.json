@@ -1,0 +1,21 @@
+{
+ "format": 1,
+ "scene": "ch06_channel_dawn",
+ "source": "game/data/dialogue/ch06/ch06_channel_dawn.dlg",
+ "start": "ch06_channel_dawn",
+ "nodes": {
+  "ch06_channel_dawn": {
+   "headers": {"location": "ch06/brine_shoals"},
+   "ops": [
+    {"op": "cue", "cue": "camera", "args": ["W10_dawn"], "kwargs": {}, "src": 8},
+    {"op": "cue", "cue": "music", "args": ["brine_shoals"], "kwargs": {"fade": 2.0}, "src": 9},
+    {"op": "cue", "cue": "wait", "args": [2.5], "kwargs": {}, "src": 10},
+    {"op": "line", "id": "ch06_dawn_001", "key": "DLG_CH06_DAWN_001", "speaker": "rhen", "emotion": "smile", "voice": "", "src": 11},
+    {"op": "line", "id": "ch06_dawn_002", "key": "DLG_CH06_DAWN_002", "speaker": "liss", "emotion": "neutral", "voice": "", "src": 12},
+    {"op": "line", "id": "ch06_dawn_003", "key": "DLG_CH06_DAWN_003", "speaker": "rhen", "emotion": "smile", "voice": "", "src": 13},
+    {"op": "cue", "cue": "wait", "args": [1.0], "kwargs": {}, "src": 14},
+    {"op": "cue", "cue": "fade", "args": ["out", 1.5], "kwargs": {}, "src": 15}
+   ]
+  }
+ }
+}
