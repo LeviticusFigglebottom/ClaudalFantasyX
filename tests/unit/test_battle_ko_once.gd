@@ -6,6 +6,7 @@ extends TestCase
 const SANDBOX := "res://game/battle/scene/battle_sandbox.tscn"
 const SEED := 20261022
 const LATER_ACTIONS := 3
+const PRIMITIVE_FOE := "wickfry"
 
 var ctl: BattleController
 var ko_starts := 0
@@ -34,10 +35,17 @@ func test_a_creature_foe_plays_its_ko_once_then_fades_out() -> void:
 
 
 func test_a_primitive_foe_falls_once_and_is_hidden() -> void:
+	# wickfry has a model now (claude/creatures); the stand-in is still what a foe without one shows, so take
+	# wickfry's model away for this fight and give it back after.
+	var models := CreatureModels.models()
+	var model: Variant = models.get(PRIMITIVE_FOE)
+	models.erase(PRIMITIVE_FOE)
 	_start(&"ch01_underway_shoals")
+	if model != null:
+		models[PRIMITIVE_FOE] = model
 	var foe := _first_foe()
 	var f := ctl.stage.stand_in(foe.id)
-	assert_true(BattleClips.creature_of(f) == null, "wickfry has no model: a primitive stand-in")
+	assert_true(BattleClips.creature_of(f) == null, "wickfry without its model: a primitive stand-in")
 	_fell(foe)
 	var body: Node3D = f._body
 	var fallen := f.transform

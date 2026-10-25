@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "doc": "Menu sounds by listening (M2-AUD-05; ADR 0031; docs/kb/tech/audio_runtime.md). UiAudio (game/audio/ui_audio.gd) watches every node whose script's global class (or a base class) has a hook here, and never writes it. signals: signal -> sfx row (the signal's arguments are dropped). on_enter / on_exit: a row when the menu is attached (deferred, after its _ready) or leaves the tree. watch: Expressions over `node` read once a frame (the first read is the baseline; a failed read changes nothing): a change plays sfx; rise / fall when a number goes up / down; values maps the new value (as text) to a row; on_true plays only when the new value is truthy. page_with_row(page, row_id) is in scope: the page's instance id when it shows that row, else 0. priority: one frame plays at most one UI row, the first of this list among those asked for (unlisted rows come last). pending: the class has not landed on this branch yet (FormationMenu); the checker skips its class and signal names until it does, and the hook does nothing until then. tools/audio/data_check.py checks every row, class and signal.",
+  "doc": "Menu sounds by listening (M2-AUD-05; ADR 0031; docs/kb/tech/audio_runtime.md). UiAudio (game/audio/ui_audio.gd) watches every node whose script's global class (or a base class) has a hook here, and never writes it. signals: signal -> sfx row (the signal's arguments are dropped). on_enter / on_exit: a row when the menu is attached (deferred, after its _ready) or leaves the tree. watch: Expressions over `node` read once a frame (the first read is the baseline; a failed read changes nothing): a change plays sfx; rise / fall when a number goes up / down; values maps the new value (as text) to a row; on_true plays only when the new value is truthy. page_with_row(page, row_id) is in scope: the page's instance id when it shows that row, else 0. priority: one frame plays at most one UI row, the first of this list among those asked for (unlisted rows come last). pending: the class has not landed on this branch yet; the checker skips its class and signal names until it does, and the hook does nothing until then. tools/audio/data_check.py checks every row, class and signal.",
   "priority": ["ui_error", "ui_title_confirm", "ui_lattice_node", "ui_lattice_unlock", "ui_craft", "ui_item_use",
                "ui_formation_swap", "ui_unequip", "ui_equip", "ui_map_marker", "ui_lattice_step", "ui_customize_open",
                "ui_formation_pick", "ui_menu_close", "ui_map_close", "ui_cancel", "ui_vowbound_open",
@@ -192,7 +192,9 @@
         {"expr": "node.level", "values": {"3": "ui_customize_open"},
          "_note": "M2-AUD-14: EquipMenu.Level.RECIPES, Customize's recipes for an empty slot (outranks the level's confirm)"},
         {"expr": "crafted_count(node.model.bag)", "rise": "ui_craft",
-         "_note": "M2-AUD-14: an ability crafted into a piece (outranks gear_signature's ui_equip and the level's cancel)"}
+         "_note": "M2-AUD-14: an ability crafted into a piece (outranks gear_signature's ui_equip and the level's cancel)"},
+        {"expr": "node.is_refused()", "on_true": true, "sfx": "ui_error",
+         "_note": "M3-AUD-813: a refused equip, take-off or craft, on Confirm (M2-AUD-15's public read), on every level"}
       ],
       "_note": "M3-AUD-15: claude/menus' Equip and Customize page (M2-MNU-02); M2-AUD-14 adds Customize's own rows (M2-MNU-09)"
     },
@@ -227,7 +229,11 @@
         {"expr": "node.picker_page().cursor", "sfx": "ui_cursor"},
         {"expr": "node.model.sort", "sfx": "ui_item_sort", "_note": "kind, name or count (outranks the cursor it keeps)"},
         {"expr": "item_total(node.model.inventory())", "fall": "ui_item_use",
-         "_note": "an item spent on a hero (outranks the picker closing after the last one)"}
+         "_note": "an item spent on a hero (outranks the picker closing after the last one)"},
+        {"expr": "node.model.view", "sfx": "ui_page",
+         "_note": "M3-AUD-813: the Bag / Key Items tabs (M3-MNU-03; outranks the cursor the switch resets)"},
+        {"expr": "node.is_refused()", "on_true": true, "sfx": "ui_error",
+         "_note": "M3-AUD-813: a use the picker refused (M2-AUD-15's public read; set on Confirm, never on a hover)"}
       ],
       "_note": "M2-AUD-14: claude/menus' Items page (M2-MNU-03); no signals of its own beyond FieldSubmenu.closed"
     },
@@ -256,7 +262,6 @@
     },
     {
       "class": "FormationMenu",
-      "pending": true,
       "on_enter": "ui_menu_open",
       "signals": {"closed": "ui_menu_close"},
       "watch": [
@@ -265,7 +270,9 @@
         {"expr": "node.chosen.size()", "rise": "ui_formation_pick", "fall": "ui_cancel",
          "_note": "a hero picked up / put back (a move also empties it; the swap outranks the cancel)"},
         {"expr": "node.model.active + node.model.reserve", "sfx": "ui_formation_swap",
-         "_note": "the line-up changed: two heroes traded places, or one took an open place"}
+         "_note": "the line-up changed: two heroes traded places, or one took an open place"},
+        {"expr": "node.is_refused()", "on_true": true, "sfx": "ui_error",
+         "_note": "M3-AUD-813: a refused pick or move (M2-AUD-15's public read)"}
       ],
       "_note": "M2-AUD-14: claude/menus' Formation page (M2-MNU-07); no signals of its own beyond FieldSubmenu.closed"
     }

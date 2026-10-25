@@ -354,7 +354,8 @@ func test_new_menu_rows_exist_and_the_pages_are_live() -> void:
 	]:
 		assert_true(ui.hooks.has(cls), "%s has a hook" % cls)
 		assert_false(bool((ui.hooks[cls] as Dictionary).get("pending", false)), "%s is live (M2-AUD-17)" % cls)
-	assert_true(bool((ui.hooks["FormationMenu"] as Dictionary).get("pending", false)), "Formation waits")
+	# M3-AUD-813: claude/menus' Formation page has merged, so its hook is live too.
+	assert_false(bool((ui.hooks["FormationMenu"] as Dictionary).get("pending", false)), "Formation is live")
 	for id: String in [
 		"ui_lattice_node",
 		"ui_lattice_unlock",
@@ -514,8 +515,17 @@ func test_ui_hooks_play_the_real_items_page() -> void:
 			[&"ui_left", &"ui_item_sort", "and back"],
 		]
 	)
+	# M3-MNU-03: key items have their own tab; switching tabs is a page turn, not the cursor it resets
+	_keys(ui, menu, [[&"ui_page_down", &"ui_page", "the Key Items tab"]])
 	_seek(ui, menu, func(r: Dictionary) -> bool: return r.get("id", &"") == &"brass_lantern", menu.list_page())
-	_keys(ui, menu, [[&"ui_accept", &"", "a key item opens nothing (a refusal its line already said)"]])
+	_keys(
+		ui,
+		menu,
+		[
+			[&"ui_accept", &"", "a key item opens nothing (a refusal its line already said)"],
+			[&"ui_page_up", &"ui_page", "back to the bag"],
+		]
+	)
 	_seek(ui, menu, func(r: Dictionary) -> bool: return r.get("id", &"") == &"salt_tonic", menu.list_page())
 	_keys(
 		ui,
