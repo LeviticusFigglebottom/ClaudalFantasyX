@@ -40,6 +40,8 @@ The scene-swap regression test now measures the real swap on an injected per-fra
 | M2-MNU-10 Lattice: walk to a sealed gate | **review** (merged bbd45c8): the cheapest neighbour, cost shown, then the open confirm |
 
 ## STATE AT HANDOVER (2026-10-25)
+**HANDOVER DONE @ fc70e774** (this note is the only later commit).
+
 **Clean.** Nothing is uncommitted or unpushed, and no subagent is running. The three worktree branches (`worktree-agent-a186d848…`, `a7732033…`, `a51eb998…`) are fully merged into claude/menus and need nothing.
 
 **Done and merge-ready.** `claude/menus` @ **681464f1** (MERGE-READY line below; the later commits are docs only).
