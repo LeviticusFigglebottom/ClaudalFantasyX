@@ -1,0 +1,24 @@
+{
+  "_about": "M3-ENV-01 post-import rules for the Tamsule Bell kit (game/core/import/tamsule_bell_kit_post_import.gd, AssetImportRules), the same contract as haluna_kit.json: each glTF material slot maps to the .tres of the same name, and every authored <piece>-lod1 chain gets the LodChain ranges. LOD0 holds longer than Haluna's because the arena's ring pieces are 30-40 m across and are composed from 150 m (tamsule_bell.md T01). No -col proxies yet: m2-slice builds walk collision for the zone.",
+  "kind": "tamsule_bell_kit",
+  "script": "res://game/core/import/tamsule_bell_kit_post_import.gd",
+  "assets": ["res://assets/environments/kits/tamsule_bell/"],
+  "adoption_pending": {},
+  "generate_lods": false,
+  "materials": {
+    "slot_dir": "res://assets/environments/kits/tamsule_bell/materials/",
+    "by_node": {},
+    "warn_unmapped": true
+  },
+  "lods": {
+    "suffix": "-lod",
+    "end_m": [120.0, 3000.0],
+    "margin_m": 3.0
+  },
+  "collision": {
+    "proxy_suffix": "-col",
+    "shape": "trimesh",
+    "layer": 1,
+    "mask": 1
+  }
+}

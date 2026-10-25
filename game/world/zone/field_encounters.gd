@@ -84,7 +84,7 @@ func setup(zone: GreyboxZone, block: Dictionary, defaults: Dictionary = {}) -> v
 	next_m = float(saved["next_m"])
 	grace_m = float(saved["grace_m"])
 	rng.state = int(saved["rng_state"])
-	# The gap was scaled at the rate it was kept with; a rate changed since (gear, the party) rescales the rest of it.
+	# M2-MNU-08 with M2-FP-28: the kept gap was drawn at the rate of its time; gear changed since rescales it.
 	rate_pct = float(saved.get("rate_pct", rate_pct))
 	refresh_rate()
 

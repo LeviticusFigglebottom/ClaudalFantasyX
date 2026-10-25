@@ -466,6 +466,24 @@ func test_a_creature_actor_strikes_with_its_own_clip_on_its_own_contact_frame() 
 	_free()
 
 
+func test_a_hero_strike_lands_on_its_clips_contact_marker() -> void:
+	var f := Node3D.new()
+	var player := AnimationPlayer.new()
+	var lib := AnimationLibrary.new()
+	for clip in [BattleClips.IDLE, BattleClips.ATTACK]:
+		var a := Animation.new()
+		a.length = 0.6
+		lib.add_animation(clip, a)
+	lib.get_animation(BattleClips.ATTACK).add_marker(BattleClips.CONTACT_MARKER, 0.33)
+	player.add_animation_library(&"", lib)
+	f.add_child(player)
+	ctl.add_child(f)
+	assert_between(BattleClips.contact_sec(f, BattleClips.ATTACK), 0.33 - EPS, 0.33 + EPS, "the clip's own marker")
+	assert_eq(BattleClips.contact_sec(f, BattleClips.IDLE), -1.0, "no marker, no say")
+	f.queue_free()
+	_free()
+
+
 func test_a_primitive_stand_in_has_no_clips() -> void:
 	var f := FighterStandIn.new()  # Ysolde is still a capsule; the heroes and foes are actor scenes (M2-UI-07)
 	f.setup(&"ysolde", BattleStage.stand_in_spec(&"ysolde"), {})

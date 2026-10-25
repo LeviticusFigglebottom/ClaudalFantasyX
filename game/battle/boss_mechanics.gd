@@ -31,12 +31,22 @@ extends RefCounted
 ##   encounters.json "party_skills": {hero id: [skill ids]}: skills that hero knows for this fight only
 ##                 (a tutorial fight teaching one: Ch1's Hullgnaw lends Rhen Kick Off; ADR 0034).
 ##                 Added at setup after the Lattice and the flag locks, never twice.
+##   encounters.json "forbidden_skills": {hero id: {"against_tag": tag, "fail_key": loc key}}
+##                 (M3-C06-02: Toma will not strike the Stillguard). That hero's offensive skills (a
+##                 physical or magical skill aimed at foes) are refused, with FAIL_FORBIDDEN, on any
+##                 foe whose enemies.json "tags" hold the tag; the menus grey them out and say why
+##                 with fail_key. Its defensive kit (support, heals, Provoke) is untouched.
+##   enemies.json  "tags" and "yield_at_hp_pct": see BattleCombatant (a foe that yields or runs on
+##                 its feet instead of falling; the fight is won when every foe is down or gone).
 
 ## Stats a phase row may override ("hp", "mp" and "level" never change mid-fight).
 const PHASE_STATS: Array[String] = [
 	"strength", "magic", "defense", "magic_defense", "agility", "accuracy", "evasion", "luck"
 ]
 const FAIL_NO_FIELD := &"no_field"
+const FAIL_FORBIDDEN := &"forbidden"
+const OFFENSIVE_KINDS: Array[String] = ["physical", "magical"]
+const FOE_TARGETS: Array[String] = ["single_foe", "all_foes"]
 
 
 ## Drops `c`'s skills whose row names a requires_flag that is not in `flags`.
@@ -55,6 +65,45 @@ static func lend_skills(engine: BattleEngine, enc: Dictionary) -> void:
 			var skill_id := StringName(str(sid))
 			if not c.skills.has(skill_id):
 				c.skills.append(skill_id)
+
+
+## Sets encounter row `enc`'s "forbidden_skills" on the party members it names (see the class comment).
+static func forbid_skills(engine: BattleEngine, enc: Dictionary) -> void:
+	var rules: Dictionary = enc.get("forbidden_skills", {})
+	for c in engine.party_active + engine.party_reserve:
+		var row: Dictionary = rules.get(String(c.id), {})
+		if row.is_empty():
+			continue
+		c.forbidden_tag = StringName(str(row.get("against_tag", "")))
+		c.forbidden_key = str(row.get("fail_key", ""))
+
+
+## True for a skill that wounds: physical or magical, aimed at foes.
+static func is_offensive(sk: Dictionary) -> bool:
+	return str(sk.get("kind", "")) in OFFENSIVE_KINDS and str(sk.get("target", "single_foe")) in FOE_TARGETS
+
+
+## True when `actor` may not use skill row `sk` on `target` (its forbidden_tag is on the target).
+static func forbids(actor: BattleCombatant, sk: Dictionary, target: BattleCombatant) -> bool:
+	if actor == null or target == null or actor.forbidden_tag == &"":
+		return false
+	return target.tags.has(actor.forbidden_tag) and is_offensive(sk)
+
+
+## True when `sk` is forbidden to `actor` right now: a single-foe skill with no living foe it may
+## hit, or a group skill that would touch a forbidden foe. The menus grey it out; the sim skips it.
+static func forbidden_now(engine: BattleEngine, actor: BattleCombatant, sk: Dictionary) -> bool:
+	if actor == null or actor.forbidden_tag == &"" or not is_offensive(sk):
+		return false
+	var foes := engine.living_foes_of(actor)
+	var group := str(sk.get("target", "single_foe")) == "all_foes"
+	for f in foes:
+		var hit := forbids(actor, sk, f)
+		if group and hit:
+			return true
+		if not group and not hit:
+			return false
+	return not group and not foes.is_empty()
 
 
 ## Why skill row `sk` cannot be used now, or &"" if it can: a field clear with that field down

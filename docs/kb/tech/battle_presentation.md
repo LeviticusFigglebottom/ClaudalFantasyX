@@ -99,6 +99,21 @@ hero actor scene, M2-UI-07, or a creature actor, M2-CRE-03). A creature actor pl
   the action's contact beat (`BattleChoreo.contact`), hides before shows within one hit (the engine's order).
   `BattleStage`'s `choreo` setter attaches it, so a retry's new sequencer gets a fresh one. Listens only.
 
+**Placeholder clips (M2-BPR-10).** Until the heroes' battle clips land (M2-CHR-07), `BattlePlaceholderClips`
+(`game/battle/scene/battle_placeholder_clips.gd`) gives a model with a `Skeleton3D` and an `AnimationPlayer` a
+generated pose clip for every contract name it lacks. `BattleClips.player_of` calls it the first time it finds the
+player. The poses are data, in `choreo.json` `placeholder_clips`: per clip a `length_sec`, `loop`, and keys of
+role → `[x, y, z]` degrees at times. A pose is a turn in the model's axes on top of what the bone inherits, the same
+convention as the characters' `hero_clips.py`. Roles map to bone names with alternatives: the MPFB2 rig as the
+characters track exports it (`DEF-spine.003`, `DEF-upper_arm.R`, ...), then MPFB2's default names. The clips are
+added to the player's own copy of its default library, and **only for missing names**, so a real clip always wins and
+M2-CHR-07 replaces them with no code change. A skeleton that resolves fewer than `min_roles` roles (a creature) and a
+creature actor get nothing; a primitive stand-in has no player and keeps the procedural motion. A placeholder counts
+as a clip everywhere (`has_clip`), so the strike's lunge and lean are skipped and the travel still moves the root.
+The hero's `ko` clip now plays on the collapse beat and holds its last frame (`BattleClips.play_ko`). On a revive the
+hero idles again (`ko_changed`). `tools/validate_choreo.py` checks the rows: every contract clip present, positive
+lengths, key times within the clip, poses naming known roles.
+
 ## Encounter transition
 
 M2-BPR-05 part 1: the beat between a field battle being asked for and the battle's first turn, and the
@@ -279,15 +294,35 @@ the fighters. A retry of the same encounter keeps the arena (the `hymn_arena` me
 |---|---|---|---|
 | `tideline_dawn` | `ch02_tideline` | Ch2 dawn: 06:20, sun 6° over the eastern sea, key `#FFB87B` 2.4, fill `#7FA6CC` 0.5, sky `#4E7FB8` / `#F6C9A0`, fog `#E9C9A8`, exposure 0.75 | dry sand behind the party, a wet band and rocks before the lagoon |
 | `causeway_disc_sunset` | `drownbell` | Ch3: sun 6° over the western sea, key `#FFAE67` 2.6, fill `#6E8FC0` 0.4, sky `#46609A` / `#F0A35C`, fog `#D9A27A`, exposure 0.80 | a stone road along the battle axis, water both sides, leaning posts and salt-grass tufts; the flood takes the road |
+| `oruvel_raft_morning` | `ch01_scuttlers`, `ch01_hullgnaw` | Ch1 10:30: sun 58°, key `#FFEFE1` 3.0, fill `#8FC3E0` 0.6, sky `#2E7FD6` / `#A9DCF2`, fog `#BFDDE8`, exposure 0.65, sat ×1.12; `lagoon_clear` sea | the net-pen hull: a lashed plank deck, the Reefball net behind the foes, the plank bridge to the keel-hull (Kell's beacon lit) behind the party, raft huts, the storm wall low on the horizon under a blue sky |
+| `underway_tower` | `ch01_wickfry`, `ch01_oil_slug`, `ch01_shaft_limpet`, `ch01_underway_shoals`, `ch01_underway_limpet` | Ch1 Underway note: only Rhen's `oil_lamp` (`#FFB16E` omni by the party) and held cyan (`#7FC6D9`) points; a `deep_teal_shadow` colour background, exponential fog 0.055, a dim cyan Sun from above; no Sea | a gallery floor, a ring of pillars and lintels behind the fighters, fallen blocks and coral, the dark shaft beyond the foes |
+| `causeway_route_afternoon` | `ch03_causeway_shore`, `ch03_causeway_harrier` | haluna.md `ch03_causeway` 14:30: sun 52°, key `#FFEAD8` 3.0, sky fill `#A9DCF2` 0.6, `lut_ch02_noon` (+200 K): exposure 0.65, sat ×1.12, a far haze only | low tide: a slab landing on the stone path over tidal flats, coral boulders, tidepools and salt-grass, the lagoon at the horizon |
+| `derelict_deck_night` | `ch04_sail_leeches`, `ch04_bottle_hermit`, `ch04_spar_wraith`, `ch04_derelict_*` | Ch4: key `#FFB16E` lamp 1.2 (the Sun), fill `#2A4A6E` 0.2, rim `#9DB4D9` 0.5, sky `#0B1630` / `#1E2E4E`, fog `#22354F`, exposure 1.10, sat ×0.95; `night_sea` with sea-glow 0.12 | a planked deck, mainmast and foremast behind the fighters (yards and set sails above the frame), the far bulwark only (no near rail), two hung deck lamps, the ferry's lamps far off |
+| `ash_terrace_lanternfall` | `ch05_stair_*`, `ch05_cinder_matron` | Ch5: key `#FFA757` lamp 1.6 (the Sun), fill `#3A4A6A` 0.25, rim `#E0702E` 0.9, sky `#101A33` / `#3A2A3A`, fog `#5A3A2E`, exposure 1.05, sat ×1.15; no Sea | a volcanic-stone terrace, four tiers stepping up behind the foes with graves and small warm lanterns on their lips, a leaf-boat channel down the steps, the mountain's cone and plume beyond |
+| `brine_shoals_afternoon` | `ch06_ridge_skippers`, `ch06_ridge_crab`, `ch06_ridge_gulls`, `ch06_flats_crabs` | Ch6 15:30 haze: sun 35°, key `#FFD5B3` 2.4, fill `#A8B8B0` 0.55, rim `#E0702E` 0.35 (the far smoke), sky `#7FA3C0` / `#D8C8A8`, fog `#B8A890` (thick), exposure 0.70, sat ×0.9; `silted_flats` sea (deep `#4A5A50`) | a grey-brown mud bank with puddles, a tide channel behind the foes, wreck-ridges of black Lit Age hull plating (one with a Saltwright chalk camp-sign) and wooden hulks' ribs, gulls high over the ridges |
+| `salvage_camp_burning` | `ch06_inquisitor` | the same Ch6 grade, rim 0.7, plus four steady orange fire points (`#FF8A3A`, no flicker); `silted_flats` sea at the waterline | the camp's mud bank; behind the foes the hulk the party hid in, charred and burning low along its gunwale, lashed hulls with a tide-wheel behind the party's side, lamp racks alight, three dark smoke columns of stacked billows far behind; sober: no embers, nothing falling |
+
+- **Act I (M3-BPR-01):** the Underway's scripted fights (`ch01_wickfry`, `ch01_oil_slug`) are underwater in the
+  drowned tower (act1_ch01.md C1-04, C1-06), so they take `underway_tower`, not the raft. Two grades are the
+  chapter's frame, not the fight's hour: the derelict is boarded at 07:40 (act1_ch04.md C4-12) and the stair and
+  anvil court are fought on day 2 at 11:30–13:40 (act1_ch05.md B07–B09); a morning-ferry and an Ashcrown-day
+  sub-frame are open with Art and env-art (M3-ENV-06).
 
 - **Env-art's kits** land at `assets/environments/arenas/<id>/<id>.tscn`; they repoint `arenas.json` then (M2-ENV-11
   / their own task). The greybox stays as the fallback until they do.
 - **Unchanged:** the sandbox's own encounters and every capture fixture (`fixture_reef`) have no arena, so no
   battle baseline moved except `drownbell_flood` (now on the causeway at sunset, as battle_vfx.md's "the arena is
   the noon sandbox" asked).
-- **Shots:** `battle_arena_tideline`, `battle_arena_causeway` (`game/levels/_tests/battle_arenas/`; shot fixtures live under `_tests` so release builds and the game/battle coverage gate exclude them).
+- **Shots:** `battle_arena_tideline`, `battle_arena_causeway`, `battle_arena_raft`, `battle_arena_underway`,
+  `battle_arena_route`, `battle_arena_derelict`, `battle_arena_terrace`, `battle_arena_shoals`, `battle_arena_camp`
+  (`game/levels/_tests/battle_arenas/`; shot fixtures live under `_tests` so release builds and the game/battle
+  coverage gate exclude them).
+- **Ch6 (M3-BPR-03):** every light in the two Ch6 arenas sets `light_volumetric_fog_energy = 0.0` (Lead rule: the
+  default 1.0 bands dense fog volumes). Env-art's Brine Shoals zone (M3-ENV-02) is the kit for the final versions.
+- **Staging** (`arenas.json` `staging`, M3-BPR-01): `travel_scale` scales every run, step, walk-in and exit, `tempo`
+  the battle speed. The underway tower: shorter runs (0.6) and slower (0.8); the derelict deck: shorter runs (0.85).
 - **Checked by** `tools/validate_choreo.py` `arena_errors` (from validate_data): every scene exists, every
-  encounter's `arena` is a known id.
+  encounter's `arena` is a known id, staging rows name known arenas with positive scales.
 
 ### Lead-in bark
 
@@ -296,6 +331,9 @@ An encounter with a row in `battle_transition.json` `barks.rows` shows one line 
 and announces it on `EventBus.dialogue_event("battle_bark", [encounter, line_key, speaker_key])` for audio (a voice
 line or a stinger cue from claude/audio). `BattleRequest.submit` passes the encounter to `BattleStinger.play`.
 The table ships empty: the tideline's line is Narrative's (request M2-NAR-01).
+
+Every stinger also announces `EventBus.dialogue_event("battle_stinger", [encounter])` as the tide line starts (the
+audio track's rising-water sting, M3-AUD-18).
 
 ## Specials (M2-BPR-04)
 
@@ -400,10 +438,11 @@ The slice's one Vowbound and its first call must be unmissable (vertical_slice.m
 (`game/battle/scene/battle_summon_cinematic.gd`), attached by `BattleChoreo.attached`, gives the Vowbound's entrance
 when `BattleVowboundChoreo.enter_spec` asks:
 - **When:** the first call of each Vowbound in a live story battle (its `first_call_flags` seen-flag,
-  `ch03_ilun_first_call_seen`, is unset; the cinematic sets it), with the accessibility setting **Vowbound
-  calls** (`summon_cinematic`, M2-UI-23) on Short (the default) or Full; Full also plays it on every later call, and
-  Off never plays it (`UiSettings.summon_cinematic_cut`, M2-BPR-09). Off, a capture fixture, instant pacing and
-  "skip animations" play the short entry (`vowbound.entry`), and so does every later call under Short.
+  `ch03_ilun_first_call_seen`, is unset; the cinematic sets it) under the accessibility setting **Vowbound calls**
+  (`summon_cinematic`, the UI track's row, M2-UI-23) on Short, the default. Full plays it on every call; Off skips
+  the rise (`off_entry`: the Vowbound is simply there). A capture fixture, instant pacing and "skip animations" play
+  the short entry (`vowbound.entry`). The decision reads
+  `UiSettings.summon_cinematic_cut` (accessibility.json `summon_cinematics`, M2-BPR-11).
 - **What:** the water stills (`entry.delay_sec` 1.4 s after the party steps off), Ilun rises slowly (2.6 s), and a
   steady bound light (`glimmer_bound`, color script C10: no flicker, no drift, no trails) fades in at his slot and
   stays while he is out. The camera eases to the low `summon` frame (camera.shots), holds, and is back on the
@@ -414,3 +453,91 @@ when `BattleVowboundChoreo.enter_spec` asks:
 - **Shot:** `battle_choreo_summon` (the capture forces the full version). Checked by `validate_choreo.summon_errors`
   (the flag declared, the numbers, the `summon` shot).
 - **Not here:** a line for Ilun or Asha (Narrative has none for C10 yet) and his face (save it for the model).
+
+## Mouse targeting (M2-BPR-09, superseded)
+
+The UI track's input-parity audit (M2-UI-26, ADR 0036) built mouse targeting and Swell play in battle
+(`BattlePointer`, wired through the controller). This track's own picker was removed so the battle has one mouse
+path; `docs/kb/tech/ui.md` and the UI track's parity tests are the reference.
+
+For the input-parity audit (ADR 0036). The command menus already take hover and click (MenuPage's row signals);
+**`BattleMousePick`** (`game/battle/scene/battle_mouse_pick.gd`, built by `BattleStage._ready`, no controller line)
+adds the pick:
+- In `STATE_TARGET` and `STATE_SWAP_OUT` only. Hovering a candidate's fighter (its projected body: feet to head,
+  its stand-in radius wide, plus a margin; the nearest when two overlap) moves the cursor onto it; a left click aims
+  and confirms. Group targets: hovering any one of them keeps the whole group; a click confirms it.
+- It sends the keyboard's own actions through `BattleController.handle_input` (`ui_right` steps the cursor,
+  `ui_accept` confirms), so the mouse can't pick anything the keyboard couldn't.
+- Right click is Cancel: `UiInput` turns it into `ui_cancel` for every screen once it is in the tree; until then this
+  helper does it.
+- Non-candidates, empty space and every other state: the mouse does nothing here.
+- Tests: `tests/unit/test_battle_mouse_pick.gd`. When UiInput merges, the UI track's `InputDriver` parity walk can
+  drive the battle with real mouse events through the viewport.
+
+## Boss intros (M3-BPR-02)
+
+A boss fight opens with a short, quiet intro: the camera finds the boss, its name and an epithet show, and the first
+turn follows. **`BattleBossIntro`** (`game/battle/scene/battle_boss_intro.gd`) is built by `BattleChoreo.attached`
+(one line; the controller is untouched) and listens to the engine's first `turn_started`.
+
+**When.** An encounter with a row in `choreo.json → boss_intro.rows`: Hullgnaw (`ch01_hullgnaw`), the Bottle Hermit
+(`ch04_bottle_hermit`), the Spar-Wraith (`ch04_spar_wraith`), the Cinder Matron (`ch05_cinder_matron`), Inquisitor
+Hadric Moll (`ch06_inquisitor`, M3-BPR-03) and the Drownbell (`drownbell`). Once per battle.
+- **Sequenced, never on top of anything.** At the first turn it waits while the router's fade covers the screen
+  (`SceneRouter.is_busy`) and while the opening banner is pending or showing, at most `reveal_wait_max_sec`. The boss
+  encounters open `normal`, so in practice no banner shows; the order is still fixed.
+- **Fight again** rebuilds the engine on the same controller; the intro plays again only when the row says
+  `on_retry` (every row says false). The controller's meta `hymn_boss_intro_played` remembers the encounter.
+- **Instant** at pacing 0 and with "skip animations"; `force_play` overrides that (its capture).
+
+**What** (all times data; the battle speed scales them):
+
+| Beat | When | What happens |
+|---|---|---|
+| in | 0 → `camera_in_sec` | The camera eases from the default to the row's `shot` (`boss`, or `boss_tall` for the Matron and the Drownbell), placed on the boss's slot like any placed shot: a low 3/4 view from the party's side, on the viewer's side of the axis. |
+| card | from `card_at_sec`, in over `card_in_sec` | The title card fades in (and rises `rise_px`). |
+| hold | `hold_sec` (per row) | The boss holds the frame; the card is fully shown. The card fades out over `card_out_sec`, ending as the camera turns home. |
+| home | the last `camera_out_sec` | The camera eases back to the default and stands exactly on it at the end. |
+
+- **The shot is checked**: the boss's feet and head must sit in the camera's `safe_frame` (as every director shot);
+  a shot that fails keeps the default for the intro and only the card plays. A test checks every row passes.
+- **The title card** is its own `CanvasLayer` (`card.layer` 2, above the HUD, below the router's fade) in the HUD's
+  current theme: the name in `TitleLabel` over a thin `focus_gold` rule and the epithet in `FlavorLabel`, on a dark
+  band that fades at both ends (art/ui.md §9 contrast). It sits centre-low (`card.rect` 560, 616, 800 × 140 at the
+  1920 × 1080 reference), under the framed boss's feet and clear of the timeline, the party panel, the help line,
+  the target info and the opening banner (tested). Text: `BOSS_TITLE_*` and `BOSS_EPITHET_*` (strings.csv), drawn
+  from the story beats and the bestiary lore: *Storm-born, caged in a drowned ship's ribs*; *It keeps house in the
+  old lamp glass*; *It hauls a dead ship's lines*; *Woken by the anvil's ring*; *It still rings for the drowned*.
+  The Inquisitor is a living officer of the Order, not a monster (act1_ch06.md B03, §5): his card is his name and
+  rank, *Inquisitor Hadric Moll*, over *A tired officer who still believes the Edict* (Narrative may refine). His
+  encounter's opening prompt (`TUT_CH06_HOUND`) is hidden while the intro plays and shows after it; Toma's
+  first-turn bark (`turn_prompt_key`) still shows on his first turn (tested). Shot: `battle_boss_intro_inquisitor`.
+- **Original staging.** A slow ease to a still frame and a fading card: no screen break, no spin, no flash, no
+  name plate sweeping in, no letterbox bars.
+
+**The first turn waits.** While the intro waits or plays, `BattleHud.holds_battle()` is true through a new generic
+hook, `BattleHud.holds` (name → Callable; the intro registers `boss_intro`, a retried battle's replaces it, a freed
+owner holds nothing), so `BattleController.tick` holds its first wait: an enemy's think time never runs under it.
+A party first turn's command menu, help line and actor marker are hidden by modulate (the controller's own
+visibility is untouched) and come back when it ends; the timeline and party panel stay. While it holds, the intro
+takes every input (`_input`): **confirm or cancel skips it** (the card goes, the camera is home at once), the rest is
+dropped.
+
+**Accessibility.** Reduced motion keeps the camera on the default (as the director and the summon do) and the card
+only fades, no rise. Nothing flashes.
+
+**Data:** `choreo.json → boss_intro` and two shots in `camera.shots`, checked by `validate_choreo.boss_intro_errors`
+(from `validate_data`): real encounters listing the row's enemy, known shots, `hold_sec` > 0 with room for the card's
+fades, loc keys that exist, a boolean `on_retry`, the card's numbers.
+
+**Tests and shot.** `tests/unit/test_battle_boss_intro.gd` (rows and keys, every boss framed, the card's place, the
+first turn waits and nobody acts, the fade and banner waits and the cap, confirm skips, instant pacing and skip
+animations, reduced motion, the camera home, retry, no row no intro); `tools/tests/test_choreo_validate.py`.
+Shot `battle_boss_intro_hullgnaw` (`game/battle/scene/shots/boss_intro_shot.gd`, a live-data fixture like the arena
+shots: Rhen alone against Hullgnaw, the intro forced and frozen half way through its hold).
+
+**Open.** No sound cue yet (Audio may hang a sting on the intro's start); the stand-ins stand still under it, and a
+creature actor could play a `ready` or roar clip at the hold when the creatures track has one.
+
+- **Audio hook (boss intros):** as an intro starts it announces `EventBus.dialogue_event("boss_intro",
+  [encounter_id, title_key])`, the same channel as the stinger's `battle_bark`, so audio can play a sting.

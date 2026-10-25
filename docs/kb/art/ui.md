@@ -165,3 +165,33 @@ At (560, 48), 800 × 48, a single line: the action's description and its effect 
 - Every state carries a shape or pattern cue as well as hue (chips, low HP, targets).
 - There is a colorblind palette swap option: `ui_danger` becomes `#F08A24` (orange), and the enemy chip fill becomes `#2A2414`. Text contrast is at least 4.5:1 against the panel's worst case (white on `ui_panel_deep` at 0.80 over a `sun_noon` background measures about 8:1).
 - Text size runs 100 to 130%, there is a reduced-motion option, and the typewriter can be set to instant.
+
+## 10. Swell Input, Read Panel, Opening Banner and Bestiary (M2-ART-01)
+
+Accepted from tech/ui.md deviations 8–12 after Art review on 2026-10-24 (the measurements are in M2-ART-01's Review log). Changes Art asked for are in M2-UI-08. Layout numbers are in `game/data/ui/battle_hud.json` (`swell_ring`, `read_panel`, `enemy_page`, `opening_banner`) and `game/data/ui/bestiary_menu.json`. The 1080p reference applies, as in §6.
+
+### 10.1 Swell gauge (deviation 8)
+- The gauge is **64 × 4 px under the hero's name**, bottom-aligned with the HP and MP bars. Only heroes with a Swell draw one. This replaces the separate column §6.2 assumed.
+- **Full** adds a 2 px `outline` (night) gap, then a 2 px `ui_line_white` line, outside the bar, plus the 1.6 s pulse. It is 2 px and not 1 px because 720p draws the 1080p layout at 2/3 scale. Measured on `battle_swell_ring`: white `#F2F5FA`, gap `#050A14`, fill `#F5C771`–`#F6CC7F` (`ui_swell` with its glow). Full is a shape cue and not hue alone.
+
+### 10.2 Swell input panel (deviation 9)
+- The input panel takes **the command menu's place** (48, 700, 480 × 332), and the menu hides while it is open. It never covers the fighters or the timeline (pillar 4). It is a tide-notch panel. The technique name is the header (Cormorant small caps), and the hint is a help line at the foot.
+- **The ring** has a lamp at the centre, a `ui_line_gold` rim on the lamp's edge, and a closing `ui_focus` ring. The pips are hollow diamonds while they wait. The next beat's pip is outlined in `ui_focus`, and the later ones in `ui_text_dim`. A perfect beat is a filled `ui_swell` diamond with a gold halo, a good one a filled `ui_focus` diamond, and a miss a `ui_danger` cross. A graded beat therefore differs in shape and fill as well as hue.
+- **The lamp at rest must still read as lamplight**: a dim warm ember, never a grey or olive disc and never a grey halo (M2-UI-08). The flare toward the peak is the timing cue and carries the brightness. The rest state carries only the hue.
+- **Timing-assist tag:** `DimLabel` at the panel's top left under the header, 150 px wide and wrapping to at most two lines ("Assist: misses count as Good"). It stays clear of the ring's outer radius. While an assist is on, it is the only text besides the title and the hint.
+
+### 10.3 Read panel and bestiary page (deviation 10)
+- **Read panel:** at (560, 128), 800 wide, between the help line and the command menu. It never overlaps the timeline. It uses the standard panel recipe, translucent over the battlefield. Body text measures 10:1 to 12:1 against its fill and the lore 6.7:1, with a fighter behind it. Its parts are a header (the name in Cormorant small caps, the level in `ui_text_dim` on the right), a numbers line, the stat grid (labels `ui_text_dim`, values `ui_line_white` tabular), a 1 px separator, the affinity facts (label dim, value white; "None" dim), the lore in italic, and the close hint in dim on the right.
+- **Bestiary page** (out of battle): a full-screen panel over a `night_sky` scrim, with the list on the left and the same `EnemyPageView` on the right, so the page in battle and the page in the book are one design. An unread foe says "Not Read" in words. That is the shape cue, so the state is never shown by colour alone.
+- **Defeat counts (`×N`) are `ui_line_white` when the foe has been Read and `ui_text_dim` when it hasn't, never `ui_focus`** (M2-UI-08). `ui_focus` means "this is where you are or who acts" (cursor, focus, current actor, ally target). The one standing exception is the "No time" cost word (M1). A teal count in the list would compete with the cursor row.
+
+### 10.4 Opening banner (deviation 11)
+- This is §7's location banner, shortened for battle: 0.3 s in, 1.8 s hold, 0.5 s out. It sits at (560, 156), 800 × 120, under the help line, and never covers the timeline.
+- **Band:** `ui_panel_low` at 0.72, fading to nothing over the outer 22% at each side. It is a band, not a panel: no frame, no chamfer. Measured over the noon sky, the band reads `#324253`. The title (`#F2F5FA`) is 9.4:1 against it and the caption 9.0:1.
+- **Rules:** two 1 px `ui_line_gold` rules, 320 px, above and below the title. The rule ends carry the timeline's side shapes: **squares for First Strike** and **outward chevrons in `ui_danger` for Caught Unaware**. So the opening is read by shape as well as by the danger hue. The caption ("Every foe acts before your party.") sits under the lower rule, and it is what makes the order legible.
+- It never takes input and never holds the battle.
+
+### 10.5 Swell root row and fill-mode rows (deviation 12)
+- A Swell hero's root menu always shows the **Swell** row. Below full, it names the fill mode in force on the right, in `ui_text_dim`. At full, it names the input in `ui_swell`.
+- **The Swell page** lists the techniques (disabled at 0.5 until full), then one row per unlocked fill mode. The mode in force says **"In use"** in `ui_swell` (7.2:1 on the panel). The others say **"No time"** in `ui_focus` (5.6:1 on the raised row), the same word and colour as the Swap row, because choosing a mode costs no turn. The help line names the mode and repeats "Choosing it costs no time", and the timeline shows no ghost.
+- IP note: fill modes are presented as plain rows on our own Swell page, with original names and no per-mode use counters or separate mode screen. Keep it that way.

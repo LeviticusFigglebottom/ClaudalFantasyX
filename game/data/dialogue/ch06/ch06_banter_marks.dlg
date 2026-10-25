@@ -1,0 +1,12 @@
+// Ch6 B01, walking banter 3 (act1_ch06.md; W03): the Saltwright chalk camp-signs on the hulls (a
+// circle with fine parallel lines). Toma stops at one and looks at it too long. Overheard.
+// Do not surface: Toma was on a Brine Shoals raid out of Corrow at twenty-two (1003); it pays off in
+// his Ch15 confession to Liss. Nobody asks again.
+title: ch06_banter_marks
+location: ch06/brine_shoals
+---
+@anim toma look_at chalk_mark
+@wait 1.5
+Asha [worried]: Toma? #line:ch06_marks_001
+Toma [neutral]: It is nothing. Old marks. #line:ch06_marks_002
+===

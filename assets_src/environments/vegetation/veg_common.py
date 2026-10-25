@@ -73,6 +73,28 @@ VINE_ATLAS = {
     "bud": (0.5, 0.625, 0.75, 0.875),
 }
 
+# M2-ENV-07: one leaf atlas for the two broadleaf trees (hero banyan, windbreak tree). A spray cell
+# is one twig with its leaves, drawn at real leaf size; the cell's metres are COASTAL_SPRAY_M (height,
+# and width by the cell's aspect). The "mass" cells are opaque leaf mosaics that tile inside their
+# cell, for the crown cores (one quad per core face maps the whole cell).
+COASTAL_LEAF_SIZE = (1024, 1024)
+COASTAL_ATLAS = {
+    "banyan_spray_a": (0.0, 0.0, 0.5, 0.5),
+    "banyan_spray_b": (0.5, 0.0, 1.0, 0.5),
+    "windbreak_spray_a": (0.0, 0.5, 0.5, 1.0),
+    "windbreak_spray_b": (0.5, 0.5, 0.75, 1.0),
+    "banyan_mass": (0.75, 0.5, 1.0, 0.75),
+    "windbreak_mass": (0.75, 0.75, 1.0, 1.0),
+}
+COASTAL_SPRAY_M = {"banyan": 0.8, "windbreak": 0.62}  # metres covered by a spray cell's height
+BANYAN_BARK_SIZE = (512, 1024)  # tiles in U (around) and V (along)
+BANYAN_BARK_TILE_M = 1.4  # metres of stem covered by one V repeat (one U repeat covers half that)
+
+
+def cell_aspect(rect: tuple[float, float, float, float], size: tuple[int, int]) -> float:
+    """Width / height of an atlas cell in texels."""
+    return (rect[2] - rect[0]) * size[0] / ((rect[3] - rect[1]) * size[1])
+
 
 def atlas_uv(rect: tuple[float, float, float, float], u: np.ndarray, v: np.ndarray) -> np.ndarray:
     """Maps local (u, v) in [0, 1] into an atlas rectangle. Returns (..., 2)."""

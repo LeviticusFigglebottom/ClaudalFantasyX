@@ -1017,3 +1017,38 @@ MAP_POI_C_MILESTONE,The milestone
 CHAR_PELL_UNNAMED,The Kirru
 ACT_CARD_2_LABEL,Act II
 ACT_CARD_2_TITLE,The Truth
+BOSS_TITLE_HULLGNAW,Hullgnaw
+BOSS_EPITHET_HULLGNAW,"Storm-born, caged in a drowned ship's ribs"
+BOSS_TITLE_BOTTLE_HERMIT,Bottle Hermit
+BOSS_EPITHET_BOTTLE_HERMIT,It keeps house in the old lamp glass
+BOSS_TITLE_SPAR_WRAITH,Spar-Wraith
+BOSS_EPITHET_SPAR_WRAITH,It hauls a dead ship's lines
+BOSS_TITLE_CINDER_MATRON,The Cinder Matron
+BOSS_EPITHET_CINDER_MATRON,Woken by the anvil's ring
+BOSS_TITLE_DROWNBELL,The Drownbell
+BOSS_EPITHET_DROWNBELL,It still rings for the drowned
+RBL_BAND_RING,The ring
+RBL_BAND_HIGH,High water
+RBL_BAND_MID,Mid water
+RBL_BAND_LOW,Low water
+RBL_BAND_WEEP,The weep
+RBL_ACTION_RISE,Rise
+RBL_ACTION_DIVE,Dive
+RBL_ACTION_PASS,Pass
+RBL_ACTION_LOFT,Loft
+RBL_ROLE_LIFTER,Lifter
+RBL_ROLE_ANCHOR,Anchor
+RBL_ROLE_PRESSER,Presser
+RBL_ROLE_RINGWARD,Ringward
+RBL_SIDE_ORUVEL,Oruvel
+RBL_SIDE_PEMAKAR,Pemakar Terraces
+RBL_DIVER_TAVI,Tavi Orse
+RBL_DIVER_NOA,Noa
+RBL_DIVER_AMA,Old Ama
+RBL_DIVER_PEM_LIFTER,Pemakar lifter
+RBL_DIVER_PEM_ANCHOR,Pemakar anchor
+RBL_DIVER_PEM_PRESSER,Pemakar presser
+RBL_DIVER_PEM_RINGWARD,Pemakar ringward
+RBL_MATCH_TIDECUP_OPENING,"The Tidecup, opening round"
+BOSS_TITLE_INQUISITOR,Inquisitor Hadric Moll
+BOSS_EPITHET_INQUISITOR,A tired officer who still believes the Edict

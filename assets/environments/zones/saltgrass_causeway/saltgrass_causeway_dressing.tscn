@@ -1,0 +1,53 @@
+[gd_scene load_steps=9 format=3]
+
+[ext_resource type="Script" path="res://game/levels/ch02/haluna/haluna_mood.gd" id="1_rig"]
+[ext_resource type="Script" path="res://game/levels/ch02/haluna/weathering_tide.gd" id="2_tide"]
+[ext_resource type="Script" path="res://assets/environments/zones/saltgrass_causeway/causeway_dresser.gd" id="3_dresser"]
+[ext_resource type="Script" path="res://game/world/water/water_surface.gd" id="4_water"]
+[ext_resource type="Resource" path="res://game/world/water/lagoon_waves.tres" id="5_waves"]
+[ext_resource type="Material" path="res://game/levels/ch02/haluna/haluna_water_material.tres" id="6_water_mat"]
+[ext_resource type="Environment" path="res://assets/environments/zones/saltgrass_causeway/causeway_environment.tres" id="7_env"]
+
+[node name="SaltgrassCauseway" type="Node3D" node_paths=PackedStringArray("sun", "tide", "water", "world_environment", "dresser")]
+script = ExtResource("1_rig")
+sun = NodePath("Sun")
+tide = NodePath("Tide")
+water = NodePath("Water")
+world_environment = NodePath("WorldEnvironment")
+dresser = NodePath("Dresser")
+sun_elevation_deg = 52.0
+sun_azimuth_deg = 250.0
+time_of_day_h = 14.5
+water_height_m = -0.7
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = ExtResource("7_env")
+
+[node name="Sun" type="DirectionalLight3D" parent="."]
+light_color = Color(1, 0.918, 0.847, 1)
+light_energy = 3.0
+shadow_enabled = true
+shadow_bias = 0.03
+shadow_normal_bias = 1.0
+shadow_blur = 1.2
+sky_mode = 1
+directional_shadow_mode = 2
+directional_shadow_split_1 = 0.04
+directional_shadow_split_2 = 0.12
+directional_shadow_split_3 = 0.35
+directional_shadow_max_distance = 400.0
+
+[node name="Water" type="Node3D" parent="."]
+script = ExtResource("4_water")
+publishes_water_level = true
+wave_set = ExtResource("5_waves")
+material = ExtResource("6_water_mat")
+
+[node name="Tide" type="Node" parent="." node_paths=PackedStringArray("water")]
+script = ExtResource("2_tide")
+water = NodePath("../Water")
+
+[node name="Dresser" type="Node3D" parent="." node_paths=PackedStringArray("tide")]
+script = ExtResource("3_dresser")
+layout_path = "res://assets/environments/zones/saltgrass_causeway/causeway_layout.json"
+tide = NodePath("../Tide")

@@ -1,0 +1,71 @@
+// Ch6 B03 "The raid" (act1_ch06.md; W05 → W06 → W07 → W05 → W08). Letterboxed.
+// W05: the Saltwright salvage camp from the ridge, burning; Stillguard in red-lacquered shell armour
+// move through it with torches, unhurried, and they hum the Order's congregational tune with no
+// words (bible §4). W06: at the waterline the wrights kneel with their sleeves pushed up; the clerk
+// heats the brine-irons in a brazier of coarse salt; a Stillguard holds a girl's arm out over it.
+// W07: Toma freezes. Asha says his name twice, the second softer; the camera holds him 2 s past
+// comfort. W05: Liss's run along the ridge, straight into Rhen. Asha decides: the hold. W08: the dark
+// hold, the lantern the only key light on Liss's face. Then the Inquisitor, and the hound, and Toma
+// moves at last. The chapter flow opens the battle (ch06_inquisitor) when this scene ends.
+// Watches: never cut Toma's freeze; the decision to hide Liss is Asha's; Toma's line is the slice's
+// "On my shield.", now aimed at his own order.
+// Ysolde's field bark ("They have raised a hand to a Cantor...") is spoken here, just before the
+// fight, until a battle-bark system exists (as Ch4 did; M3-C06-05).
+title: ch06_raid
+location: ch06/brine_shoals
+---
+@letterbox on
+@camera W05
+@music raid fade=1.0
+@sfx stillguard_hum
+@anim stillguard_a walk_torch
+@anim stillguard_b walk_torch
+@wait 2.5
+@camera W06
+@anim clerk heat_iron brazier
+@anim stillguard_c hold_arm brand_girl
+@wait 2.0
+@camera W07
+@face toma afraid 0.6
+@wait 1.0
+Asha [worried]: Toma. #line:ch06_raid_001
+@wait 1.2
+Asha [tender]: Toma. #line:ch06_raid_002
+@wait 2.0
+@camera W05
+@sfx hatch_burst
+@mark liss ridge_run run
+@sfx raid_hound_bay
+@anim liss collide rhen
+Liss [determined]: Move or hide me, pick one. #line:ch06_raid_003
+Asha [determined]: Here. #line:ch06_raid_004
+@mark asha hold_asha walk
+@mark liss hold_liss walk
+@anim rhen throw_sail hatch
+@mark rhen hold_rhen walk
+@camera W08
+@wait 1.0
+@anim liss look_at rhen
+Liss [neutral]: That's wright work. #line:ch06_raid_005 #whisper
+Rhen [worried]: Not now. #line:ch06_raid_006 #whisper
+<<set $ch06_sheltered_liss = true>>
+@wait 1.0
+@sfx sail_pulled
+@mark inquisitor hatch walk
+@mark hound hatch_side walk
+@camera W08_hatch
+Inquisitor [neutral]: Lady Cantor. Step away from the hold. #line:ch06_raid_007
+Asha [determined]: No. #line:ch06_raid_008
+Inquisitor [neutral]: The Edict— #line:ch06_raid_009
+Ysolde [cold]: —does not give you a Cantor's party, Inquisitor. #line:ch06_raid_010
+@wait 1.0
+@anim inquisitor look_at hound
+Inquisitor [exhausted]: Loose. #line:ch06_raid_011
+@sfx raid_hound_bay
+@mark hound hold_mouth run
+@mark toma shield_line run
+@anim toma shield_up
+Toma [determined]: On my shield. #line:ch06_raid_012
+Ysolde [cold]: They have raised a hand to a Cantor. The Edict does not cover that. #line:ch06_raid_013
+@letterbox off
+===

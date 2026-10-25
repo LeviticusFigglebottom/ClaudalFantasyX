@@ -29,5 +29,6 @@ mesh, rig and the finger `break_parts`; Rendering makes it water. Budget ≤ 24k
 - **For the PC GPU session:** the materials (`water`, `crust`, `wreck`) are creature-shader stand-ins. The forearm's
   vertex data carries the wound mask in the emission channel and a streak pattern in the albedo. Swap the `water`
   slot for the Undertow look whenever it suits; the mesh and rig won't change shape under you.
-- **Known:** `attack` and `cast` start from the Grip pose, so in the Breach phase a skill clip would pop. The Breach
-  only charges (`breach`), so map that to no clip, or ask for a breach-pose charge clip.
+- **Phase strikes (fixed 2026-10-24):** the Dark and the Breach play their own strikes from their pose
+  (`attack_dark`, `cast_dark`, `hit_dark`, `attack_breach`, `cast_breach`, built by adding the phase pose to the
+  base clip), mapped by each phase's `clips` in creatures.json, so nothing snaps back to the Grip.

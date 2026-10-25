@@ -2,6 +2,61 @@
   "generator": "assets_src/environments/kits/haluna/build.py",
   "kit": "haluna",
   "pieces": {
+    "arena_causeway_arms": {
+      "budget": [
+        30000,
+        6000
+      ],
+      "bytes": 1389468,
+      "lods": {
+        "arena_causeway_arms": 23112,
+        "arena_causeway_arms-lod1": 2568
+      }
+    },
+    "arena_causeway_flats": {
+      "budget": [
+        60000,
+        12000
+      ],
+      "bytes": 1269228,
+      "lods": {
+        "arena_causeway_flats": 38364,
+        "arena_causeway_flats-lod1": 3280
+      }
+    },
+    "arena_causeway_route_ground": {
+      "budget": [
+        60000,
+        12000
+      ],
+      "bytes": 1549348,
+      "lods": {
+        "arena_causeway_route_ground": 47400,
+        "arena_causeway_route_ground-lod1": 3526
+      }
+    },
+    "arena_raft_deck": {
+      "budget": [
+        60000,
+        8000
+      ],
+      "bytes": 2161524,
+      "lods": {
+        "arena_raft_deck": 43271,
+        "arena_raft_deck-lod1": 4312
+      }
+    },
+    "arena_tideline_ground": {
+      "budget": [
+        60000,
+        12000
+      ],
+      "bytes": 897284,
+      "lods": {
+        "arena_tideline_ground": 27360,
+        "arena_tideline_ground-lod1": 1984
+      }
+    },
     "awning_cloth": {
       "budget": [
         1800,
@@ -15,18 +70,113 @@
     },
     "banyan_placeholder": {
       "budget": [
-        16000,
-        2400
+        60000,
+        10000
       ],
-      "bytes": 542624,
+      "bytes": 3375764,
       "lods": {
-        "banyan_placeholder": 8230,
-        "banyan_placeholder-lod1": 2020
-      },
-      "placeholder": "stand-in hero banyan (cluster-card crown); the vegetation stream builds the real tree (haluna.md 1.3, vegetation.md 'Not built')",
-      "tags": [
-        "PLACEHOLDER"
-      ]
+        "banyan_placeholder": 54651,
+        "banyan_placeholder-lod1": 7351
+      }
+    },
+    "basket_set": {
+      "budget": [
+        3600,
+        300
+      ],
+      "bytes": 35184,
+      "lods": {
+        "basket_set": 564,
+        "basket_set-lod1": 153
+      }
+    },
+    "causeway_disc": {
+      "budget": [
+        60000,
+        24000
+      ],
+      "bytes": 3154540,
+      "lods": {
+        "causeway_disc": 57892,
+        "causeway_disc-lod1": 21320
+      }
+    },
+    "causeway_flats": {
+      "budget": [
+        90000,
+        12000
+      ],
+      "bytes": 2223836,
+      "lods": {
+        "causeway_flats": 66000,
+        "causeway_flats-lod1": 7260
+      }
+    },
+    "causeway_slab_broken": {
+      "budget": [
+        3000,
+        300
+      ],
+      "bytes": 83052,
+      "lods": {
+        "causeway_slab_broken": 2088,
+        "causeway_slab_broken-lod1": 24
+      }
+    },
+    "causeway_slab_flat": {
+      "budget": [
+        1800,
+        200
+      ],
+      "bytes": 38536,
+      "lods": {
+        "causeway_slab_flat": 972,
+        "causeway_slab_flat-lod1": 12
+      }
+    },
+    "causeway_slab_steps": {
+      "budget": [
+        4000,
+        300
+      ],
+      "bytes": 110272,
+      "lods": {
+        "causeway_slab_steps": 2916,
+        "causeway_slab_steps-lod1": 36
+      }
+    },
+    "coral_boulder_a": {
+      "budget": [
+        3600,
+        450
+      ],
+      "bytes": 136484,
+      "lods": {
+        "coral_boulder_a": 3264,
+        "coral_boulder_a-lod1": 408
+      }
+    },
+    "coral_boulder_b": {
+      "budget": [
+        3600,
+        450
+      ],
+      "bytes": 103276,
+      "lods": {
+        "coral_boulder_b": 2496,
+        "coral_boulder_b-lod1": 300
+      }
+    },
+    "coral_boulder_c": {
+      "budget": [
+        3600,
+        450
+      ],
+      "bytes": 136480,
+      "lods": {
+        "coral_boulder_c": 3264,
+        "coral_boulder_c-lod1": 408
+      }
     },
     "dock_haluna": {
       "budget": [
@@ -37,6 +187,17 @@
       "lods": {
         "dock_haluna": 12630,
         "dock_haluna-lod1": 152
+      }
+    },
+    "fish_drying_rack": {
+      "budget": [
+        5000,
+        400
+      ],
+      "bytes": 65852,
+      "lods": {
+        "fish_drying_rack": 1122,
+        "fish_drying_rack-lod1": 76
       }
     },
     "garland_string": {
@@ -55,9 +216,9 @@
         22000,
         1600
       ],
-      "bytes": 566472,
+      "bytes": 617496,
       "lods": {
-        "house_tile_a": 13034,
+        "house_tile_a": 13978,
         "house_tile_a-lod1": 376
       }
     },
@@ -66,9 +227,9 @@
         22000,
         1600
       ],
-      "bytes": 486348,
+      "bytes": 519900,
       "lods": {
-        "house_tile_b": 11129,
+        "house_tile_b": 11753,
         "house_tile_b-lod1": 368
       }
     },
@@ -77,9 +238,9 @@
         22000,
         1600
       ],
-      "bytes": 740252,
+      "bytes": 795308,
       "lods": {
-        "house_tile_c": 17507,
+        "house_tile_c": 18547,
         "house_tile_c-lod1": 400
       }
     },
@@ -88,7 +249,7 @@
         2400,
         400
       ],
-      "bytes": 89912,
+      "bytes": 89916,
       "lods": {
         "lintel_gull_a": 502,
         "lintel_gull_a-lod1": 260
@@ -99,7 +260,7 @@
         2400,
         400
       ],
-      "bytes": 89904,
+      "bytes": 89912,
       "lods": {
         "lintel_gull_b": 502,
         "lintel_gull_b-lod1": 260
@@ -110,10 +271,43 @@
         2400,
         400
       ],
-      "bytes": 95740,
+      "bytes": 95744,
       "lods": {
         "lintel_gull_c": 532,
         "lintel_gull_c-lod1": 290
+      }
+    },
+    "lit_age_ring": {
+      "budget": [
+        5000,
+        500
+      ],
+      "bytes": 58140,
+      "lods": {
+        "lit_age_ring": 1348,
+        "lit_age_ring-lod1": 144
+      }
+    },
+    "market_stall": {
+      "budget": [
+        6000,
+        600
+      ],
+      "bytes": 101340,
+      "lods": {
+        "market_stall": 1884,
+        "market_stall-lod1": 192
+      }
+    },
+    "net_float_cluster": {
+      "budget": [
+        2400,
+        200
+      ],
+      "bytes": 99012,
+      "lods": {
+        "net_float_cluster": 2166,
+        "net_float_cluster-lod1": 114
       }
     },
     "net_rack": {
@@ -125,6 +319,17 @@
       "lods": {
         "net_rack": 1673,
         "net_rack-lod1": 112
+      }
+    },
+    "oil_lamp_post": {
+      "budget": [
+        2600,
+        300
+      ],
+      "bytes": 27824,
+      "lods": {
+        "oil_lamp_post": 353,
+        "oil_lamp_post-lod1": 27
       }
     },
     "order_chapel": {
@@ -147,6 +352,39 @@
       "lods": {
         "outrigger_7m": 1940,
         "outrigger_7m-lod1": 300
+      }
+    },
+    "pilgrim_marker_post": {
+      "budget": [
+        2600,
+        300
+      ],
+      "bytes": 43684,
+      "lods": {
+        "pilgrim_marker_post": 685,
+        "pilgrim_marker_post-lod1": 15
+      }
+    },
+    "pilgrim_marker_post_broken": {
+      "budget": [
+        2600,
+        300
+      ],
+      "bytes": 21224,
+      "lods": {
+        "pilgrim_marker_post_broken": 314,
+        "pilgrim_marker_post_broken-lod1": 15
+      }
+    },
+    "pilgrim_marker_post_leaning": {
+      "budget": [
+        2600,
+        300
+      ],
+      "bytes": 43708,
+      "lods": {
+        "pilgrim_marker_post_leaning": 685,
+        "pilgrim_marker_post_leaning-lod1": 15
       }
     },
     "roof_fan_shell": {
@@ -213,6 +451,17 @@
       "lods": {
         "ruin_wall_sunk": 2235,
         "ruin_wall_sunk-lod1": 12
+      }
+    },
+    "sandals": {
+      "budget": [
+        400,
+        60
+      ],
+      "bytes": 12732,
+      "lods": {
+        "sandals": 108,
+        "sandals-lod1": 20
       }
     },
     "shell_shrine_massing": {
@@ -356,7 +605,7 @@
         60000,
         8000
       ],
-      "bytes": 1363088,
+      "bytes": 1363084,
       "lods": {
         "shrine_roof_fan": 36144,
         "shrine_roof_fan-lod1": 1752
@@ -389,9 +638,9 @@
         16000,
         2000
       ],
-      "bytes": 217744,
+      "bytes": 374500,
       "lods": {
-        "shrine_steps": 2519,
+        "shrine_steps": 5889,
         "shrine_steps-lod1": 484
       }
     },
@@ -444,9 +693,9 @@
         14000,
         1300
       ],
-      "bytes": 395024,
+      "bytes": 454128,
       "lods": {
-        "stilt_house": 8534,
+        "stilt_house": 9590,
         "stilt_house-lod1": 408
       }
     },
@@ -455,9 +704,9 @@
         7000,
         900
       ],
-      "bytes": 193356,
+      "bytes": 232156,
       "lods": {
-        "storehouse_stilt": 3738,
+        "storehouse_stilt": 4442,
         "storehouse_stilt-lod1": 364
       }
     },
@@ -488,7 +737,7 @@
         5600,
         500
       ],
-      "bytes": 210040,
+      "bytes": 210044,
       "lods": {
         "tidewall_windgap": 4188,
         "tidewall_windgap-lod1": 24
@@ -538,20 +787,38 @@
         "wakeshell_wall-lod1": 96
       }
     },
+    "water_jar": {
+      "budget": [
+        2400,
+        300
+      ],
+      "bytes": 28632,
+      "lods": {
+        "water_jar": 524,
+        "water_jar-lod1": 72
+      }
+    },
     "windbreak_placeholder": {
       "budget": [
-        2600,
-        500
+        6500,
+        1000
       ],
-      "bytes": 76244,
+      "bytes": 443264,
       "lods": {
-        "windbreak_placeholder": 583,
-        "windbreak_placeholder-lod1": 175
-      },
-      "placeholder": "stand-in windbreak tree (cluster-card crown); the vegetation stream builds the real tree (haluna.md 1.3)",
-      "tags": [
-        "PLACEHOLDER"
-      ]
+        "windbreak_placeholder": 5785,
+        "windbreak_placeholder-lod1": 430
+      }
+    },
+    "wreck_rib": {
+      "budget": [
+        4000,
+        400
+      ],
+      "bytes": 45336,
+      "lods": {
+        "wreck_rib": 754,
+        "wreck_rib-lod1": 168
+      }
     }
   },
   "schema": "hymn-kit/1"

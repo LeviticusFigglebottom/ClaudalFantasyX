@@ -2,6 +2,13 @@
 
 **Session:** `session_019iimsngAgPLEram1wcbLpE` (new account) · **Branch:** `claude/undertow-lead-handoff-423ixt` (the integration branch) · **Container:** 4 CPUs, Ubuntu, lavapipe. The container has restarted twice; the disk and the worktrees survived both times.
 
+## STATE AT HANDOVER (2026-10-25)
+- **Integration head:** 6c6e5514 plus handover docs. big8 is merged; the fast-tracked playtest fixes (M2-FP-28, M3-CMB-02, M2-BPR-11) are in.
+- **Unmerged, staged:** `lead/gate-big9` @ ae4666e0. It is big8 plus the hero integration, the prologue fixes and every track's newest work. It isn't gated yet: gate it on the PC first (CONSOLIDATED §5.1).
+- **Local state:** no local agent branches are left unmerged. The old container's worktrees (wt-*) are disposable.
+- **Messages sent at handover:** every track was told to stop, push and write a "STATE AT HANDOVER" section plus a session handoff. The PC session was inactive, so its state is summarised in CONSOLIDATED §3/§5/§7 and in pc-gpu.md on its gpu/* branches.
+- **Exact next step:** CONSOLIDATED.md §5.
+
 ## Current state (2026-10-24, after the RND-05 and fix6 merges)
 - **HEAD:** a58fcbd+ (see `git log -1 origin/claude/undertow-lead-handoff-423ixt`).
 - **Merged since batch 2:**

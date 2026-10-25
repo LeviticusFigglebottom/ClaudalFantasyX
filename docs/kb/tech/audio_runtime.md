@@ -199,7 +199,7 @@ SPEC §16 Q4: no voice acting yet, but the architecture is ready for it. Every s
   The box already leaves out sung lines, skipped reveals and narration (unless `narration_blip`), so the voices do
   too. The box's own `Blip` player is kept at −80 dB. The voice comes from `CutsceneSequencer.line_shown(step)`
   (the speaker, else the narrator identity); a box without a sequencer reports only `mouth_flap(speaker)` at its
-  first vowel. Request task **M3-ARC-02** asks the Architect for a `blip(voice)` signal and a switch that leaves the
+  first vowel. Request task **M3-ARC-03** asks the Architect for a `blip(voice)` signal and a switch that leaves the
   box's player out, which would remove the poll and the muting.
 - **Recorded lines (VO), later:** a line's file is its compiled `voice` field (ADR 0004; empty today), else
   `vo.pattern`, `res://assets/audio/vo/{speaker}/{line_id}.ogg` (`{speaker}` is the narrator identity for

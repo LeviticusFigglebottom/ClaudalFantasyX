@@ -9,6 +9,7 @@
     "debug_page_teleport": {"keys": ["F5"]},
     "debug_page_lattice": {"keys": ["F6"]},
     "debug_page_camera": {"keys": ["F7"]},
+    "debug_page_chapters": {"keys": ["F8"]},
     "debug_battle_sandbox": {"keys": ["F9"]},
     "debug_pseudo_loc": {"keys": ["F10"]},
     "debug_overlay_hide": {"keys": ["F12"]}
@@ -21,10 +22,12 @@
     {"id": "flags", "action": "debug_page_flags", "title": "Flag inspector (F4)", "list": true},
     {"id": "teleport", "action": "debug_page_teleport", "title": "Teleport (F5)", "list": true},
     {"id": "lattice", "action": "debug_page_lattice", "title": "Lattice cheat (F6)", "list": true},
-    {"id": "camera", "action": "debug_page_camera", "title": "Field camera (F7)"}
+    {"id": "camera", "action": "debug_page_camera", "title": "Field camera (F7)"},
+    {"id": "chapters", "action": "debug_page_chapters", "title": "Chapter select (F8)", "list": true}
   ],
   "battle_sandbox_scene": "res://game/battle/scene/battle_sandbox.tscn",
   "teleports_path": "res://game/data/debug/teleports.json",
+  "chapter_select_path": "res://game/data/debug/chapter_select.json",
   "lattice_cheat": {
     "movement_points": 10,
     "facets_each": 5,

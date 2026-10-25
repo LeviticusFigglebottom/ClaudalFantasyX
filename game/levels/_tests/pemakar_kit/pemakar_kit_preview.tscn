@@ -1,0 +1,130 @@
+[gd_scene load_steps=22 format=3]
+
+[ext_resource type="Script" path="res://game/levels/_tests/pemakar_kit/pemakar_kit_preview.gd" id="1_preview"]
+[ext_resource type="Environment" path="res://game/levels/_tests/pemakar_kit/pemakar_night_environment.tres" id="2_env"]
+[ext_resource type="Script" path="res://game/world/water/water_surface.gd" id="3_water"]
+[ext_resource type="Resource" path="res://game/world/water/lagoon_waves.tres" id="4_waves"]
+[ext_resource type="Material" path="res://game/levels/_tests/pemakar_kit/pemakar_sea_material.tres" id="5_sea"]
+[ext_resource type="Script" path="res://game/levels/ch02/haluna/haluna_shot_camera.gd" id="6_cam"]
+[ext_resource type="Script" path="res://game/world/camera_shot.gd" id="7_shot"]
+
+[sub_resource type="Resource" id="ShotP01"]
+script = ExtResource("7_shot")
+id = &"PEMAKAR_P01"
+position = Vector3(-20, 4, 130)
+look_at = Vector3(0, 68.6, -150)
+fov_deg = 37.8
+
+[sub_resource type="Resource" id="ShotP02"]
+script = ExtResource("7_shot")
+id = &"PEMAKAR_P02"
+position = Vector3(0.8, 6.9, 9.0)
+look_at = Vector3(0.0, 30.0, -60.0)
+fov_deg = 37.8
+
+[sub_resource type="Resource" id="ShotP03"]
+script = ExtResource("7_shot")
+id = &"PEMAKAR_P03"
+position = Vector3(-5.9, 28.5, -57.79)
+look_at = Vector3(-35.02, 27.2, -63.09)
+fov_deg = 46.4
+
+[sub_resource type="Resource" id="ShotP05"]
+script = ExtResource("7_shot")
+id = &"PEMAKAR_P05"
+position = Vector3(-11.37, 27.63, -57.59)
+look_at = Vector3(-12.24, 27.34, -57.46)
+fov_deg = 13.7
+
+[sub_resource type="Resource" id="ShotP06"]
+script = ExtResource("7_shot")
+id = &"PEMAKAR_P06"
+position = Vector3(39.89, 23.4, -52.18)
+look_at = Vector3(41.2, 23.5, -57.13)
+fov_deg = 27.0
+
+[sub_resource type="Resource" id="ShotP07"]
+script = ExtResource("7_shot")
+id = &"PEMAKAR_P07"
+position = Vector3(24.94, 9.52, -2.28)
+look_at = Vector3(21.4, 8.72, -6.78)
+fov_deg = 46.4
+
+[sub_resource type="Resource" id="ShotP08"]
+script = ExtResource("7_shot")
+id = &"PEMAKAR_P08"
+position = Vector3(10.0, 11.8, -8.85)
+look_at = Vector3(14.5, 11.6, -14.7)
+fov_deg = 27.0
+
+[node name="PemakarKitPreview" type="Node3D" node_paths=PackedStringArray("world_environment", "water", "lights_root")]
+script = ExtResource("1_preview")
+world_environment = NodePath("WorldEnvironment")
+water = NodePath("Sea")
+lights_root = NodePath("Lights")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = ExtResource("2_env")
+
+[node name="Lights" type="Node3D" parent="."]
+
+[node name="SkyFill" type="DirectionalLight3D" parent="Lights"]
+light_color = Color(0.2275, 0.2902, 0.4157, 1)
+light_energy = 0.25
+shadow_enabled = false
+
+[node name="Afterglow" type="DirectionalLight3D" parent="Lights"]
+visible = false
+light_color = Color(0.788, 0.471, 0.29, 1)
+light_energy = 0.3
+shadow_enabled = false
+
+[node name="Sea" type="Node3D" parent="."]
+script = ExtResource("3_water")
+wave_set = ExtResource("4_waves")
+material = ExtResource("5_sea")
+sea_glow_energy = 0.08
+
+[node name="Cameras" type="Node3D" parent="."]
+
+[node name="P01" type="Camera3D" parent="Cameras"]
+near = 0.1
+far = 6000.0
+script = ExtResource("6_cam")
+shot = SubResource("ShotP01")
+
+[node name="P02" type="Camera3D" parent="Cameras"]
+near = 0.1
+far = 6000.0
+script = ExtResource("6_cam")
+shot = SubResource("ShotP02")
+
+[node name="P03" type="Camera3D" parent="Cameras"]
+near = 0.05
+far = 6000.0
+script = ExtResource("6_cam")
+shot = SubResource("ShotP03")
+
+[node name="P05" type="Camera3D" parent="Cameras"]
+near = 0.02
+far = 6000.0
+script = ExtResource("6_cam")
+shot = SubResource("ShotP05")
+
+[node name="P06" type="Camera3D" parent="Cameras"]
+near = 0.05
+far = 6000.0
+script = ExtResource("6_cam")
+shot = SubResource("ShotP06")
+
+[node name="P07" type="Camera3D" parent="Cameras"]
+near = 0.05
+far = 6000.0
+script = ExtResource("6_cam")
+shot = SubResource("ShotP07")
+
+[node name="P08" type="Camera3D" parent="Cameras"]
+near = 0.05
+far = 6000.0
+script = ExtResource("6_cam")
+shot = SubResource("ShotP08")

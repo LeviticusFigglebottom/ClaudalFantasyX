@@ -751,6 +751,165 @@
       "p90_turns_max": 70,
       "loadout": "ch04_spar_wraith",
       "swell": "good"
+    },
+    {
+      "id": "ch06_ridge_skippers",
+      "chapter": "Ch6 route (Brine Shoals wreck-ridges): two shoal skippers (Rhen answers; role_answer report only, logged exception)",
+      "kind": "regular",
+      "encounter": "ch06_ridge_skippers",
+      "active": [
+        "rhen",
+        "asha",
+        "kerrid"
+      ],
+      "reserve": [
+        "toma",
+        "ysolde"
+      ],
+      "bands": {
+        "naive": [
+          20,
+          60
+        ],
+        "naive_swell": null,
+        "role_answer": null,
+        "smart": [
+          97,
+          100
+        ]
+      },
+      "p90_turns_max": 35,
+      "loadout": "ch06_shoals",
+      "swell": "good"
+    },
+    {
+      "id": "ch06_ridge_crab",
+      "chapter": "Ch6 route, wreck-ridges: a wreck crab and a shoal skipper (Kerrid, Rhen; role_answer report only, logged exception)",
+      "kind": "regular",
+      "encounter": "ch06_ridge_crab",
+      "active": [
+        "rhen",
+        "asha",
+        "kerrid"
+      ],
+      "reserve": [
+        "toma",
+        "ysolde"
+      ],
+      "bands": {
+        "naive": [
+          20,
+          60
+        ],
+        "naive_swell": null,
+        "role_answer": null,
+        "smart": [
+          97,
+          100
+        ]
+      },
+      "p90_turns_max": 35,
+      "loadout": "ch06_shoals",
+      "swell": "good"
+    },
+    {
+      "id": "ch06_ridge_gulls",
+      "chapter": "Ch6 route, wreck-ridges and mud-flats: two gull harriers and a shoal skipper (Rhen answers; role_answer report only, logged exception)",
+      "kind": "regular",
+      "encounter": "ch06_ridge_gulls",
+      "active": [
+        "rhen",
+        "asha",
+        "kerrid"
+      ],
+      "reserve": [
+        "toma",
+        "ysolde"
+      ],
+      "bands": {
+        "naive": [
+          20,
+          60
+        ],
+        "naive_swell": null,
+        "role_answer": null,
+        "smart": [
+          97,
+          100
+        ]
+      },
+      "p90_turns_max": 35,
+      "loadout": "ch06_shoals",
+      "swell": "good"
+    },
+    {
+      "id": "ch06_flats_crabs",
+      "chapter": "Ch6 route (the mud-flats short-cut): two wreck crabs and a gull harrier (Kerrid answers the crabs)",
+      "kind": "regular",
+      "encounter": "ch06_flats_crabs",
+      "active": [
+        "rhen",
+        "asha",
+        "kerrid"
+      ],
+      "reserve": [
+        "toma",
+        "ysolde"
+      ],
+      "bands": {
+        "naive": [
+          20,
+          60
+        ],
+        "naive_swell": null,
+        "role_answer": [
+          92,
+          100
+        ],
+        "smart": [
+          97,
+          100
+        ]
+      },
+      "p90_turns_max": 35,
+      "loadout": "ch06_shoals",
+      "swell": "good"
+    },
+    {
+      "id": "ch06_inquisitor",
+      "chapter": "Ch6 boss: the Stillguard Inquisitor and raid-hound (Toma will not strike; they yield; smart ceiling lifted, logged exception)",
+      "kind": "boss",
+      "encounter": "ch06_inquisitor",
+      "active": [
+        "toma",
+        "rhen",
+        "asha"
+      ],
+      "reserve": [
+        "kerrid",
+        "ysolde"
+      ],
+      "bands": {
+        "naive": [
+          0,
+          5
+        ],
+        "naive_swell": null,
+        "role_answer": [
+          65,
+          85
+        ],
+        "smart": [
+          75,
+          100
+        ]
+      },
+      "mean_turns_min": {
+        "smart": 25
+      },
+      "p90_turns_max": 70,
+      "loadout": "ch06_inquisitor",
+      "swell": "good"
     }
   ]
 }

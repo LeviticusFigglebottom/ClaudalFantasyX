@@ -92,18 +92,29 @@ func play_hit() -> bool:
 	return play_clip(StringName(str(_row.get("hit", "hit"))))
 
 
-## Plays a one-shot clip, then idles again. Refused while KO'd or petrified.
+## Plays a one-shot clip, then idles again. Refused while KO'd or petrified. In a phase whose `clips` map names a
+## stand-in for `clip` (the Undertow's Reach strikes from its lifted or drawn-back pose), that clip plays instead.
 func play_clip(clip: StringName) -> bool:
+	clip = phase_clip(clip)
 	if _ko or _frozen or not has_clip(clip):
 		return false
 	_play(clip)
 	return true
 
 
+## The clip the current phase plays for `clip` (its `clips` map), or `clip` itself.
+func phase_clip(clip: StringName) -> StringName:
+	if _phase == &"":
+		return clip
+	var phase_row: Dictionary = (_row.get("phases", {}) as Dictionary).get(String(_phase), {})
+	var mapped := StringName(str((phase_row.get("clips", {}) as Dictionary).get(String(clip), "")))
+	return mapped if mapped != &"" and has_clip(mapped) else clip
+
+
 ## When `clip` lands its blow (creatures.json `contact`, seconds into the clip), for presentation that syncs hit
 ## reactions and VFX to it (the battle-presentation track's choreography). -1 when the clip has no contact beat.
 func contact_time(clip: StringName) -> float:
-	return float((_row.get("contact", {}) as Dictionary).get(String(clip), -1.0))
+	return float((_row.get("contact", {}) as Dictionary).get(String(phase_clip(clip)), -1.0))
 
 
 ## The clip's length in seconds (0 if the actor has no such clip).
