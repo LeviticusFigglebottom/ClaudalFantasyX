@@ -346,6 +346,53 @@ Five new suites, all with Rhen alone (`active: [rhen]`, no reserve) at Swell `go
 - **The scuttlers** sit near the top of the regular band (naive 75.4%): the first Undertow-spawn fight before the boss.
 - Every existing suite reran unchanged (sandbox 10.9 / 97.1 / 100.0, Drownbell 0.0 / 71.0 / 85.3).
 
+### 2026-10-24: Ch5, the pilgrim stair and the Cinder Matron (M3-C05-02, m2-slice)
+Six new suites. The party is active Rhen, Asha and Kerrid, with Toma and Ysolde in reserve; the Matron fight starts Kerrid, Rhen and Asha. Loadouts are `ch05_ashcrown` and `ch05_matron`; Swell is `good`. 1000 seeds (`sim.py --check`):
+
+| Suite | Band | naive | role_answer | smart | p90 |
+|---|---|---|---|---|---|
+| `ch05_stair_tortoises` (scripted) | Ch4–Ch9 regular | 51.8 | 93.1 | 100.0 | 28 |
+| `ch05_stair_ashwings` | Ch4–Ch9 regular | 46.8 | 93.4 | 99.8 | 26 |
+| `ch05_stair_tortoise_sparker` | Ch4–Ch9 regular | 43.0 | 99.4 | 100.0 | 21 |
+| `ch05_stair_tortoise_ashwing` | Ch4–Ch9 regular | 26.8 | 96.6 | 100.0 | 27 |
+| `ch05_cinder_matron` | Ch4–Ch9 boss (smart report only, ≥ 40 mean turns) | 0.7 | 70.9 | 100.0 | 53 |
+| `ch05_cinder_matron_ilun` (naive_swell, Ilun at once) | report only | | | 6.4 (naive_swell) | |
+
+**The tuning knobs:**
+- **Slag tortoise:** HP 520, defense 200 (`armor_break` takes it to 0), strength 24, agility 9, Shell Ram power 11, and Pull In (Protect, 2 turns) every third turn.
+- **Ashwing:** HP 340, evasion 70 (mashers miss), strength 20, Ash Rake power 8 at rank 2, and Wing Dust (Sleep 20%) every third turn. Fire is weak, and `role_answer` is Ysolde.
+- **Vein sparker:** HP 260, defense 120, magic defense 6 (magic finds it), magic 16, Spark Spit power 9.
+- **The Matron:**
+  - HP 4000, defense 90, agility 13, delay-immune, fire absorbed, lightning weak.
+  - The Crust: Ladle Swing power 11, and Bank the Fire (Protect) every third turn.
+  - The Pour, at 60%: Gathering Crust, then Re-crust two turns later (it lifts the break and gives Protect for 2 turns), Slag Pour (fire, all foes, power 7) on the other turns, and a Ladle Swing.
+  - In the Pour, any water or ice hit re-crusts her at once (Protect and Shell for 2 turns, and the break is lifted).
+- **Kerrid (provisional):** agility 9. Fluke Cleave is power 9 at rank 5, with Armor Break for 3 turns.
+
+**Findings:**
+- **The Matron's `smart` is 100% in every tuning tried.** That held even where `role_answer` won 0%, with and without the reserve. Asha's Mend, the items and two reserves out-heal any boss that has no time pressure, so `smart` is report only for now (M3-C05-06).
+- **The Ilun mistake is punished:** calling him at once wins 6.4%, against 70.9% for the role answer.
+- **The Coral Hooks (Ember Edge) make Rhen heal the Matron,** who absorbs fire. With them in the loadout every policy lost, so the Ch5 loadouts use Haluna's post-Drownbell weapons.
+- **Every pre-Ch5 suite reran unchanged** (sandbox_reef keeps its order and bands; the Drownbell is 0.0 / 71.0 / 85.3).
+
+### 2026-10-24: Ch4, the derelict (M3-C04-02, m2-slice)
+
+Five new suites at Swell `good` (balance_targets.md "Ch4"). 1000 seeds:
+
+| Suite | Band | naive | role_answer | smart | worst p90 |
+|---|---|---|---|---|---|
+| `ch04_sail_leeches` (scripted, ambush) | Ch4–Ch9 regular, role_answer report only | 48.2 | 62.9 | 99.7 | 29 |
+| `ch04_derelict_leeches` (random) | the same | 48.2 | 62.9 | 99.7 | 29 |
+| `ch04_bottle_hermit` (scripted lesson) | Ch4–Ch9 regular | 48.0 | 100.0 | 100.0 | 32 |
+| `ch04_derelict_glass` (random) | Ch4–Ch9 regular | 48.0 | 100.0 | 100.0 | 32 |
+| `ch04_spar_wraith` | Ch4–Ch9 boss, smart 75–100 and ≥ 30 mean turns | 3.7 | 72.8 | 100.0 (33.3 mean turns) | 49 |
+
+- **Knobs.** Sail leech: HP 600, strength 22, evasion 30, agility 22, Sail Drop power 7. Bottle hermit: HP 760, strength 24, defense 30, glass resists blows (none: resist), fire immune, ice weak; Glass Jab 6, Glass Flare 6 (fire, every third turn). Spar-Wraith: HP 2700, strength 10, magic 12; phase 1 (Shrouded) resists blows, water and ice and is weak to fire; at 60% it is Hauled Down: blows and fire resisted, ice weak, water absorbed, defense 20, and a two-turn Lines Taut telegraph fires Haul (power 20, delay 2 ranks) every fourth turn, with Sea Lash (water, all) between.
+- **The phase at 60%, not 50%.** Rhen's ember-edged Attack is weak-fire in phase 1, so a masher burns the shroud well; phase 2 is where only Frost answers. Moving the phase to 60% and resisting blows in phase 2 took `naive` from 17.5% to 3.7%.
+- **Lineups tried and dropped.** Three leeches (naive 1.0%), a leech with the hermit (naive 4.5%: the hermit's lesson plus a leech is too much for a masher), and the boss with Ysolde in reserve (`role_answer` 4.5 to 14%: the policy swaps out the first actor, Rhen).
+- `naive_swell` (report only) is 14.6% on the boss, 56.5% on the leeches and 75.9% on the hermit: Ilun called at once is strong against foes that don't punish water.
+- `sim.py --check` over every suite at 1000 seeds: 75 rows, all in band. The existing suites are unchanged (sandbox_reef 10.9 / 97.1 / 100.0, with its foe order untouched; Drownbell 0.0 / 71.0 / 85.3).
+
 ### 2026-10-24: the Drownbell on an affordable party (M2-CMB-07 follow-up, combat)
 
 The Lead's decision: the `ch03_drownbell` loadout assumed every hero's tier-1 piece (about 2,160 lume of gear), but the slice pays about 800–900 lume in all. The loadout is now **starting gear plus two tier-1 pieces**, the most likely buys at the Net-Rack Forge: Rhen's **Coral-Bitten Hooks** (380, the protagonist's weapon, Ember Edge) and Toma's **Chiselled Shield** (340, DEF +3, Ember Guard), 720 lume. Asha keeps her starter staff and bangle, Rhen his Patched Tether, Toma his Boarding Spear. Consumables are unchanged (4 Salt Tonic, 1 Relighting Wick). Slice income is unchanged.
