@@ -2,6 +2,8 @@
 
 **Handover snapshot:** 2026-10-25, written by the outgoing Lead (cloud `session_019iimsngAgPLEram1wcbLpE`) for a **new account with no prior knowledge**. The previous version is `CONSOLIDATED-history-2026-10-24.md`; older history is in git.
 
+> **2026-10-25 (new Lead, `session_018aiGwGLGkxsnMnu8VfCu1m`): the integration branch is now `claude/undertow-lead-handoff-ze8rrn`** (fast-forwarded from `claude/undertow-lead-handoff-423ixt` @ 73a4c3fa, which is now frozen history). Every merge, gate base and track sync uses the new branch. Read "integration branch" below as `-ze8rrn`.
+
 **Fetch every branch first** (`git fetch origin`). Each environment's newest live log is on its own branch: `docs/kb/handoffs/live/<env>.md`, under the "STATE AT HANDOVER (2026-10-25)" section.
 
 ## 0. Read these, in this order
