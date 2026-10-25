@@ -6,6 +6,8 @@ Scope: assets and kit pieces (Blender jobs, materials, import rules), handed to 
 
 ## STATE AT HANDOVER (2026-10-25)
 
+**HANDOVER DONE @ 1fee4436** (`claude/env-art`; the code is merge-ready at d065835e, and only docs changed after it).
+
 Read this section first; everything below it is history. The branch is `claude/env-art`. The env-art session
 (cloud) stopped for the account move with no subagents running.
 
