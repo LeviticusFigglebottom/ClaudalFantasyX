@@ -4,6 +4,8 @@ Feature track for the battle creatures (cloud session_01CYks9e592YBEfygyTawcJD),
 
 ## STATE AT HANDOVER (2026-10-25)
 
+**HANDOVER DONE @ 7683996d** (claude/creatures, pushed; this line's own commit follows it).
+
 Branch `claude/creatures` @ 5065b869 (pushed). Nothing is uncommitted, and no subagents are running. Any worktree
 branches left under `.claude/worktrees/` are already merged or applied here and need nothing.
 
