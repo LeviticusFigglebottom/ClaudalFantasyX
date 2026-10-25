@@ -27,3 +27,32 @@ Ch4–Ch9 onward. `m2-slice.md` beside this file is the history up to the 2026-1
     manifest shot covers the cutscenes or Haluna's NPC bodies; the viewer renders are in the next entry); sim
     (encounters only merged, regenerated report next).
   - **Lead:** cherry-pick the M2-FP-102 commits after big9 lands; they need big9's HeroMotion.
+- **MERGE-READY @ 51e73a22 (FAST-TRACK, M2-FP-102..105):**
+  - **M2-FP-103 the prologue:** restaged per act_outline. Rhen, Asha and Toma on their hero bodies, Ysolde on her
+    model, and Kerrid, Pell and Liss as cloth silhouettes (no models yet). Rhen crosses to Asha while P01 drifts into
+    a new P02 two-shot; his lantern catches as the line lands (new `@light` cue); glimmer rises. VIEWED: real figures,
+    warm dusk, the lit lantern.
+  - **M2-FP-103 Cutscene A (found by viewing big9's heroes):** every line's talk clip stood a kneeling Asha up, and
+    Rhen (the player body) stood in the shallows, so H06 framed two pairs of legs.
+    - **Held poses:** `sequencer.json hold_clips`.
+    - **Clip stand-ins:** `clip_stand_ins` kneels Rhen until his requested `lie_in_shallows`/`sit_up` are built.
+    - HalunaActorPose drops its static lowering when a clip starts, and Asha's kneel starts under the opening black.
+    - VIEWED: Asha kneels in profile and Rhen is half risen.
+  - **M2-FP-104:** a held cutscene shot breathes (`CutsceneCameraBreath`, about 0.2°, deterministic).
+  - **M2-FP-105:** the tideline, the M2 route's first battle, now opens on a timeline prompt and prompts the
+    commands on Rhen's first turn (Pillar 4).
+  - **Wildlife (M3-CRE-611, cherry-picked)** in Haluna and the causeway.
+  - **Balance report** regenerated.
+  - **Checks run:**
+    - validate_data, taskboard, dlgc, lint and format clean;
+    - tools tests: test_wildlife, test_post_import and test_hero_clips (34 OK);
+    - `sim.py --check`: exit 0;
+    - Godot: cutscene 60, prologue 7, fp_ 28, haluna 54, zone 51, wildlife 10, post_import 21, swap 15, field_npc 10,
+      slice_first_battle 1, boss_hud 4, all 0 failed.
+  - **Checks skipped:** coverage (no battle or progression code); Blender (no source changed; the wildlife models came
+    as built by creatures); the shot manifest (no manifest shot covers these scenes; the renders were made with
+    tools/cutscene_frames and viewed).
+  - **For the Lead:** every M2-FP-10x commit needs big9 (HeroMotion). Creatures' wildlife and FieldNpc are
+    cherry-picked here, so their merge from claude/creatures will be a no-op for those files apart from the shot rows.
+  - **For Character (requested_clips.json):** rhen `lie_in_shallows` is new. Rhen's `sit` and `trim_wicks` would
+    complete the prologue.

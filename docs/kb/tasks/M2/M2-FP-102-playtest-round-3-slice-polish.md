@@ -28,11 +28,14 @@ rigid or snapping animation, greyscale or flat frames, placeholder villagers, an
 - [x] **Villagers (Haluna):** FieldNpc (M3-CRE-610) and the M2-CHR-03 villager actors replace Haluna's ten capsule
   NPCs (`HalunaVillagers`, `game/data/flow/haluna_villagers.json`, `test_haluna_villagers`). The shopkeeper, smith
   and innkeeper wear other villagers' models until M2-CHR-100.
-- [ ] **Villagers (the other slice zones)** and creatures' WildlifeLayer (M3-CRE-611) once it lands.
+- [x] **Ambient life:** creatures' WildlifeLayer (M3-CRE-611, cherry-picked) in Haluna (HalunaZone prebuild) and in
+  every GreyboxZone with a wildlife file (the causeway). The causeway and the shrine have no villagers to wire.
 - [ ] **Primitive moments:** the slice walked from the scripts; each one fixed here or routed as a request task.
 - [ ] **Hullgnaw intro framing** (M3-BPR-404, battle-presentation): verified in the slice once it lands.
 
 ## Notes
+- Wildlife came over from claude/creatures as cherry-picks of 4fac2939, 185719dc, 27562bb8 and 01a19d34, again
+  without the `wildlife_stage` shot rows and baseline.
 - FieldNpc came over from claude/creatures as cherry-picks of ac7ea5b9, a846b42e and bada52a9 (without the
   `npc_stage_field` shot rows, which stay with creatures' own merge so the manifest never carries the id twice).
 
