@@ -1,0 +1,20 @@
+// Ch8 B08 "The run back" (act1_ch08.md §2 B08; F02 storm grade, W07). In-engine, played as the party
+// comes back in through the wall-gate. The sky has gone slate (`ch08_storm` blending in). The kites over
+// the wall are coming down, and one is torn loose and goes out toward the storm wall (one shot, no
+// comment). The wall-gate stands open. NO Kerrid at it or near it. Toma trusts him, and he is right,
+// and that is the irony.
+title: ch08_run_back
+location: ch08/corrow
+---
+@camera W07_storm
+@music undertow_rising
+@sfx wind_landward
+@wait 1.0
+@camera W04_kite
+@sfx kite_torn
+@wait 2.0
+@camera W07_storm
+Rhen [worried]: Where's Kerrid? #line:ch08_run_back_001
+Toma [determined]: He will be where he is needed. #line:ch08_run_back_002
+@wait 0.5
+===

@@ -1,0 +1,34 @@
+// Ch8 B02, in-engine insert 1, "Okeru!" (act1_ch08.md §2 B02; W04). On the wall-head among the
+// Watchers' backs and the kite posts, a Stillguard drops his shield and hugs Toma hard enough to lift
+// him: Ivo Brannick, Toma's shield-mate for seven years on this wall. Warm and loud. He kneels properly
+// to Asha, takes to Rhen at once, eyes Liss's line-marks, then Toma's papers, then shrugs. Toma laughs
+// out loud for the first time in the game (his laugh clip). Critical path: sets ch08_met_ivo (Ch9's
+// side scene reads it).
+// Do not surface: Ivo stood beside Toma at the 1003 Brine Shoals burning. Nothing of it is said here.
+title: ch08_okeru
+location: ch08/corrow
+---
+@camera W04
+@sfx shield_dropped
+@mark ivo ivo_hug run
+@anim ivo hug_lift toma
+Ivo [laugh]: Okeru! Level preserve us, they let you out of the village? You got fat on Haluna fish. #line:ch08_okeru_001
+@anim toma laugh
+Toma [laugh]: Put me down, Brannick. You'll crack the shield. #line:ch08_okeru_002
+Ivo [smile]: Crack it? You still carry it like a tray of fish. #line:ch08_okeru_003
+@mark ivo ivo_kneel walk
+@anim ivo kneel_palms_flat
+Ivo [tender]: Lady Cantor. Be level. #line:ch08_okeru_004
+Asha [soft_smile]: And still, Ivo. He's told us nothing about you. #line:ch08_okeru_005
+Ivo [laugh]: He wouldn't. Seven years on this wall and I got four words a month out of him. #line:ch08_okeru_006
+@anim ivo look_at rhen
+Ivo [smile]: And this one's the diver? Good shoulders. Stand on my left at the beacon-fire tonight and I'll teach you to drink. #line:ch08_okeru_007
+Rhen [smile]: I'll hold you to that. #line:ch08_okeru_008
+@anim ivo look_at liss
+@wait 1.0
+@anim ivo look_at toma
+Toma [neutral]: She's on my papers. #line:ch08_okeru_009
+@wait 0.6
+Ivo [neutral]: Then she's on mine. #line:ch08_okeru_010
+<<set $ch08_met_ivo = true>>
+===

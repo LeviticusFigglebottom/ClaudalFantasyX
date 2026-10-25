@@ -10,7 +10,9 @@ extends BattleController
 ##            Return (a story fight is not replayed); after a defeat (M2-FP-05) it offers Fight again (the same start,
 ##            BattleVitals records nothing on a defeat) and Return to last save.
 ##   Return   sets the request's victory_flag (victory only, Game.set_flag) and sends the party to
-##            the request's location and spawn (SceneRouter.world_return.go_to); after an escape,
+##            the request's location and spawn (SceneRouter.world_return.go_to); a set piece's
+##            objective_flag becomes objective_start + engine.objective_count (M3-C08-02: Ch8's
+##            stair meter), and "Fight again" puts it back to objective_start; after an escape,
 ##            to the request's escape_spawn when it names one (Haluna: BeforeBattle, the beach side
 ##            of the trigger). A defeat never returns to the field, so a field trigger cannot be
 ##            walked past by losing. Without a request, Return goes to the title as in the sandbox.
@@ -83,6 +85,8 @@ func return_to_field() -> bool:
 	returned = true
 	if engine.outcome in BattleSpoils.SPOILS_OUTCOMES and request.victory_flag != &"":
 		Game.set_flag(request.victory_flag)  # a set piece's scripted escape is its win (M3-CMB-01)
+	if engine.outcome in BattleSpoils.SPOILS_OUTCOMES and request.objective_flag != &"":
+		Game.set_flag(request.objective_flag, request.objective_start + engine.objective_count)
 	if request.return_scene != "":
 		_open_scene(request.return_scene)
 		return true
@@ -169,6 +173,8 @@ func _show_result() -> void:
 
 
 func _on_result_choice(choice: StringName) -> void:
+	if choice == CHOICE_RETRY and request != null and request.objective_flag != &"":
+		Game.set_flag(request.objective_flag, request.objective_start)  # the meter as the fight began
 	if choice == CHOICE_RETURN and request != null:
 		return_to_field()
 		return

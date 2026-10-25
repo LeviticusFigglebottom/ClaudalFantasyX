@@ -1,0 +1,39 @@
+// Ch8 B07 "The storm against the wind", first half (act1_ch08.md §2 B07; F08). Letterboxed, scripted.
+// The beacon gallery at the crown, looking south-west: the sea has gone the wrong colour. The wind is
+// from the land and the cloud is coming the other way (bible §9: it moves against the wind), a wall of
+// dark water and cloud lit from inside by wounds. @music silence holds on F08 until the Tender speaks;
+// nobody speaks for a long beat. The Tender, panicking, starts the Canticle and gets a line wrong;
+// Ysolde quietly gives him the right words, and he steadies (her tell: a correction mid-crisis is her
+// warmth). Then the great flue-key is put in Asha's hands: by old Fenn, if she fed the beacon with him
+// (ch08_fed_the_beacon; he has climbed after them), else by the Tender. THE PLAYER OPENS IT: the scene
+// ends, and the field's interact on the great key plays the second half (ch08_beacon_opened).
+// Nothing bound or machine-made is turned against the storm (rule 1): a beacon is a warning.
+title: ch08_storm_against_wind
+location: ch08/coilspire
+---
+@letterbox on
+@camera F08
+@music silence fade=1.0
+@sfx wind_landward
+@mark asha gallery_asha walk
+@mark toma gallery_toma walk
+@mark ysolde gallery_ysolde walk
+@mark liss gallery_liss walk
+@wait 4.0
+@anim tender palms_level
+Tender [afraid]: Be level, be still, the Hush is over the water and the water— the water is— #line:ch08_storm_001
+@wait 0.8
+Ysolde [tender]: "...and the water is kept." Go on. You have it. #line:ch08_storm_002
+Tender [afraid]: And the water is kept. And the keeping is still. #line:ch08_storm_003
+@wait 1.0
+<<if $ch08_fed_the_beacon>>
+@anim fenn hand_key asha
+Fenn [neutral]: You know the way of her now. #line:ch08_storm_004
+<<else>>
+@anim tender hand_key asha
+Tender [afraid]: The great key, Lady Cantor. It has to be a Cantor's hand. #line:ch08_storm_005
+<<endif>>
+@camera F08_key
+@wait 1.0
+@letterbox off
+===
