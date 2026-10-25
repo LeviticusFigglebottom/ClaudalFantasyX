@@ -14,6 +14,9 @@ const ENVIRONMENT := "res://game/levels/_tests/oruvel_kit/oruvel_ch01_environmen
 const MATERIALS := "res://assets/environments/kits/oruvel/materials"
 const WEATHERING := "res://game/shaders/environment/env_weathering.gdshader"
 const LUT := "res://assets/environments/arenas/oruvel_raft_morning/lut_ch01_raft.png"
+## M3-ENV-07B: the storm frame.
+const STORM_ENVIRONMENT := "res://game/levels/_tests/oruvel_kit/oruvel_storm_environment.tres"
+const STORM_LUT := "res://assets/environments/kits/oruvel/lut_ch01_storm.png"
 
 
 func _pieces_exist(path: String) -> int:
@@ -87,3 +90,88 @@ func test_cameras_follow_the_layout_shots() -> void:
 		assert_true(sc.shot.position.distance_to(Vector3(eye[0], eye[1], eye[2])) < 0.01, "%s eye" % c.name)
 		assert_between(sc.shot.fov_deg, float(s["fov"]) - 0.01, float(s["fov"]) + 0.01, "%s lens" % c.name)
 	scene.free()
+
+
+# ---- M3-ENV-07B: the storm --------------------------------------------------------------------
+
+
+func test_storm_frame_is_the_stand_in() -> void:
+	var env := load(STORM_ENVIRONMENT) as Environment
+	assert_eq(env.adjustment_color_correction.resource_path, STORM_LUT, "lut_ch01_storm")
+	assert_true(env.adjustment_color_correction is Texture3D, "the LUT imports as a 3D texture")
+	var scene := (load(SCENE) as PackedScene).instantiate()
+	var rig := scene as OruvelPreview
+	assert_true(rig != null, "the preview's root is OruvelPreview")
+	assert_eq(rig.phase, OruvelPreview.PHASE_DAY, "the scene is authored in the day (the baselines' frame)")
+	assert_eq(rig.storm_environment.resource_path, STORM_ENVIRONMENT, "the storm frame")
+	assert_true(rig.storm_waves != null and rig.storm_waves.components.size() >= 3, "the storm swell")
+	assert_true((scene.get_node("Cameras/O17") as Camera3D).far > 18000.0, "O17 reaches the Undertow")
+	assert_between((scene.get_node("Cameras/O01") as Camera3D).far, 5999.0, 6001.0, "the day views are untouched")
+	scene.free()
+
+
+func test_storm_state_swaps_pieces_and_lights_the_beacon() -> void:
+	var root := (Engine.get_main_loop() as SceneTree).current_scene
+	var dresser := HalunaDresser.new()  # never in the tree: it would dress the default layout
+	dresser.layout = {
+		"kit_dir": "res://assets/environments/kits/oruvel/",
+		"materials_dir": "res://assets/environments/kits/oruvel/materials/",
+		"states":
+		{
+			"storm":
+			{
+				"hide": [{"piece": "plank_bridge", "at": [1.0, 2.0], "y": 0.8}],
+				"pieces": [{"piece": "plank_bridge_broken", "at": [1.0, 2.0], "y": 0.8, "yaw_deg": 0.0}],
+			}
+		},
+		"storm_lights": [{"id": "kell_beacon", "at": [0.0, 5.0, 0.0], "color": "#FFB466", "energy": 3.0}],
+	}
+	var intact := dresser.instance_piece("plank_bridge")
+	intact.position = Vector3(1.0, 0.8, 2.0)
+	dresser.add_child(intact)
+	var rig := OruvelPreview.new()
+	rig.dresser = dresser
+	rig.undertow_enabled = false
+	root.add_child(rig)
+	assert_true(rig.state_root() == null, "a day scene is never touched")
+	rig.phase = OruvelPreview.PHASE_STORM
+	var state := rig.state_root()
+	assert_true(state != null and state.visible and state.get_child_count() == 1, "the broken bridge is placed")
+	assert_false(intact.visible, "the bridge it replaces is hidden")
+	var lamp := rig.get_node(NodePath(String(OruvelPreview.LIGHTS_ROOT) + "/kell_beacon")) as OmniLight3D
+	assert_true(lamp != null and lamp.is_visible_in_tree(), "Kell's beacon is lit")
+	assert_eq(lamp.light_volumetric_fog_energy, 0.0, "the fog-lamp rule")
+	rig.phase = OruvelPreview.PHASE_DAY
+	assert_false(state.visible, "back to the day: the storm hides")
+	assert_true(intact.visible, "and the bridge stands again")
+	assert_false(lamp.is_visible_in_tree(), "the beacon is out")
+	rig.free()
+	dresser.free()
+
+
+func test_split_rig_composes_the_pen_at_rest_and_matches_the_state() -> void:
+	var layout := HalunaDresser._load_json(LAYOUT)
+	var rig := OruvelPreview.pen_rig(layout)
+	var sections: Array = rig["sections"]
+	assert_eq(sections.size(), 3, "three sections")
+	var state: Array = layout["states"]["storm"]["pieces"]
+	for s: Dictionary in sections:
+		var hinge: Array = s["hinge"]
+		var rest := OruvelPreview.section_transform(s, 0.0, 3.7)
+		assert_true(
+			rest.origin.is_equal_approx(Vector3(hinge[0], hinge[1], hinge[2])), "%s rests at its hinge" % s["piece"]
+		)
+		assert_true(rest.basis.is_equal_approx(Basis.IDENTITY), "%s: no turn at rest, whatever the swell" % s["piece"])
+		var open := OruvelPreview.section_transform(s, 1.0, 0.0)
+		var placed: Dictionary = {}
+		for spec: Dictionary in state:
+			if (
+				spec["piece"] == s["piece"]
+				and CorrowPreview.piece_transform(spec).origin.distance_to(rest.origin) < 3.0
+			):
+				placed = spec
+		assert_false(placed.is_empty(), "%s is in the state at the pen" % s["piece"])
+		var t := CorrowPreview.piece_transform(placed)
+		assert_true(t.origin.distance_to(open.origin) < 0.002, "%s: the state's pose is the rig's at 1" % s["piece"])
+		var turn := (t.basis.x - open.basis.x).length() + (t.basis.y - open.basis.y).length()
+		assert_true(turn < 0.001, "%s: and its turn (the layout rounds to 0.001)" % s["piece"])

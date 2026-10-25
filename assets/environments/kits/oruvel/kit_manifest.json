@@ -68,6 +68,17 @@
         "hull_cabin-lod1": 144
       }
     },
+    "hull_capsized": {
+      "budget": [
+        5500,
+        300
+      ],
+      "bytes": 177256,
+      "lods": {
+        "hull_capsized": 4302,
+        "hull_capsized-lod1": 144
+      }
+    },
     "hull_outrigger": {
       "budget": [
         4500,
@@ -123,6 +134,39 @@
         "net_pen-lod1": 544
       }
     },
+    "net_pen_split_a": {
+      "budget": [
+        7000,
+        400
+      ],
+      "bytes": 195524,
+      "lods": {
+        "net_pen_split_a": 3962,
+        "net_pen_split_a-lod1": 148
+      }
+    },
+    "net_pen_split_b": {
+      "budget": [
+        7000,
+        400
+      ],
+      "bytes": 262484,
+      "lods": {
+        "net_pen_split_b": 5061,
+        "net_pen_split_b-lod1": 272
+      }
+    },
+    "net_pen_split_c": {
+      "budget": [
+        7000,
+        400
+      ],
+      "bytes": 234296,
+      "lods": {
+        "net_pen_split_c": 4533,
+        "net_pen_split_c-lod1": 272
+      }
+    },
     "plank_bridge": {
       "budget": [
         5000,
@@ -132,6 +176,17 @@
       "lods": {
         "plank_bridge": 4182,
         "plank_bridge-lod1": 128
+      }
+    },
+    "plank_bridge_broken": {
+      "budget": [
+        5000,
+        220
+      ],
+      "bytes": 194684,
+      "lods": {
+        "plank_bridge_broken": 3954,
+        "plank_bridge_broken-lod1": 64
       }
     },
     "raft_deck": {
@@ -145,6 +200,17 @@
         "raft_deck-lod1": 604
       }
     },
+    "raft_deck_broken": {
+      "budget": [
+        18000,
+        900
+      ],
+      "bytes": 807508,
+      "lods": {
+        "raft_deck_broken": 17866,
+        "raft_deck_broken-lod1": 628
+      }
+    },
     "raft_deck_small": {
       "budget": [
         12000,
@@ -154,6 +220,17 @@
       "lods": {
         "raft_deck_small": 11384,
         "raft_deck_small-lod1": 524
+      }
+    },
+    "reef_edge_far": {
+      "budget": [
+        6000,
+        1500
+      ],
+      "bytes": 198192,
+      "lods": {
+        "reef_edge_far": 2382,
+        "reef_edge_far-lod1": 254
       }
     },
     "salvage_heap": {
@@ -187,6 +264,17 @@
       "lods": {
         "stall_awning": 1368,
         "stall_awning-lod1": 96
+      }
+    },
+    "storm_debris": {
+      "budget": [
+        9000,
+        500
+      ],
+      "bytes": 338268,
+      "lods": {
+        "storm_debris": 6328,
+        "storm_debris-lod1": 460
       }
     },
     "town_far": {
