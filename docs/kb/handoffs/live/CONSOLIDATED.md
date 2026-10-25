@@ -1,155 +1,179 @@
 # CONSOLIDATED HANDOFF: start here
 
-**Rewritten:** 2026-10-24 by the Lead, cloud session `session_019iimsngAgPLEram1wcbLpE` (new account). It replaces the old account's handoff; that version is in git history at a504072. Each environment's detail is in this folder (`lead-cloud.md`, `pc-gpu.md`, and `m2-slice.md` / `characters.md` on those tracks' branches). **Fetch every branch first: the newest per-environment log is on that environment's own branch.**
+**Handover snapshot:** 2026-10-25, written by the outgoing Lead (cloud `session_019iimsngAgPLEram1wcbLpE`) for a **new account with no prior knowledge**. The previous version is `CONSOLIDATED-history-2026-10-24.md`; older history is in git.
 
-> **The human's direction (2026-10-24, ~11:30):** no environment idles waiting on another or on the human. Reviews the human must give are collected and never block work, and M3+ (Act I) runs in parallel with the M2 review. The Lead must stay active: it monitors every session, routes work, merges in batches, and lets tracks merge each other's branches directly when that unblocks them (e.g. env-art and ui merge claude/m2-slice).
+> **2026-10-25 (new Lead, `session_018aiGwGLGkxsnMnu8VfCu1m`): the integration branch is now `claude/undertow-lead-handoff-ze8rrn`** (fast-forwarded from `claude/undertow-lead-handoff-423ixt` @ 73a4c3fa, which is now frozen history). Every merge, gate base and track sync uses the new branch. Read "integration branch" below as `-ze8rrn`.
+
+**Fetch every branch first** (`git fetch origin`). Each environment's newest live log is on its own branch: `docs/kb/handoffs/live/<env>.md`, under the "STATE AT HANDOVER (2026-10-25)" section.
 
 ## 0. Read these, in this order
-1. [`CLAUDE.md`](../../../CLAUDE.md): the operating rules for every agent. They include "Gate scope", §7a live logs, and §8a shared-machine and scratch rules.
-2. [`SPEC.md`](../../../SPEC.md) v1.3: the brief. Only the Lead edits it, and every change needs an ADR plus a version note.
-3. [`docs/kb/STATUS.md`](../../STATUS.md): milestone, risks, and questions for the human.
-4. This file, then `python3 tools/taskboard.py` for the live task board (about 91 of 121 done).
-5. ADRs 0001–0024 in [`docs/kb/decisions/`](../../decisions/), skimming the titles.
+1. [`CLAUDE.md`](../../../CLAUDE.md): the binding rules. They cover pillars, IP guardrails, coding standards, gate scope, claiming work, ownership, live logs and shared-machine etiquette.
+2. [`SPEC.md`](../../../SPEC.md) **v1.4**: the brief. Only the Lead edits it, and every change needs an ADR plus a version note.
+3. This file, then [`lead-cloud.md`](lead-cloud.md), then each environment's live log on its branch.
+4. [`docs/kb/STATUS.md`](../../STATUS.md), and `python3 tools/taskboard.py` for the task board.
+5. ADR titles in [`docs/kb/decisions/`](../../decisions/) (0001–0038). These matter most:
+   - 0009: lavapipe baselines.
+   - 0029 and 0037: hitch budgets, including the cold first-launch exception.
+   - 0032: port to Godot 4.7.2 after the M2 review.
+   - 0034–0036.
+   - 0038: the timeline predicts each foe's real tempo.
 
-## 1. What the project is and where it stands
-- *Hymn of the Undertow* is an original, cinematic, turn-based RPG in Godot **4.6.3** (Forward+, typed GDScript, data-driven JSON, a headless and deterministic battle engine).
-- **IP guardrail:** it is inspired in tone only by a classic 2001 JRPG. Many story re-stagings removed echoes of it: ADRs 0015, 0016, 0017, 0020 and 0022, plus SPEC v1.1 and v1.2. Keep that strictness. For example, never use the inspiring game's -ra/-ga spell-tier suffixes.
-- **Milestone M1 (tech and look prototypes):** nearly done.
-  - **Exit criteria met:** CTB battle, water, glimmer, the Undertow prototype (perf solved), and the five-shot mood test.
-  - **Remaining exit criterion:** "one hero at final fidelity". Asha has been through rounds CHR-02 to CHR-11, plus RND-20 and RND-21 (all merged). Round 7 is M1-CHR-12, on the characters track.
-    - Latest GPU verdict (docs/kb/qa/gpu/2026-10-24-qa-08-asha.md): neutral passes; smile passes on shading but reads as a smirk at 1x; grief fails, closely, on a lip-edge black rim and peg teeth.
-    - Still open: the lid band (R:B 3.7 against 2.0–2.5), the crown and hairline, the smile's eyes, and lashes that read spiky.
-    - The fallback is ADR 0019, stronger stylisation, which needs the human's call.
-  - **Then:** M1-LEAD-01, the M1 review. It also waits on the human listening to the music (AUD-02).
-- **Already into M2 (vertical slice):**
-  - A **playable first-minutes thread** (title → prologue → beach cutscene → playable Haluna → villagers → first battle → shrine save → Ch3 cutscene → end card). See [`docs/PLAYTEST.md`](../../../PLAYTEST.md).
-  - Save **v6**: party vitals, bestiary, Swell carry.
-  - Swell gauges with a unique input for each of the four heroes. Shallows Verse heals every ally except Asha: "the Cantor's song is for the others".
-  - Read, bestiary and preemptive/ambush openings.
-  - The Read panel, the bestiary menu and the Swell mode menu.
-  - Post-import scripts, and fully byte-reproducible Blender builds.
-- **The M2 vertical-slice review is a BLOCKING human review** (SPEC §16 Q7).
+## 1. The project and where it stands
+- **What it is:** *Hymn of the Undertow*, an original, cinematic CTB (conditional turn-based) RPG in **Godot 4.6.3**:
+  - Forward+ renderer, typed GDScript, data-driven JSON under game/data/;
+  - a headless, deterministic battle engine;
+  - every asset reproducible from source (Blender scripts under assets_src/).
+- **IP guardrail:** it's inspired in tone only by a classic 2001 JRPG. Keep the strictness: the banned terms in `tools/banned_terms.txt` are grepped, and there are no pixel-copied UI, names, music or spell-tier suffixes.
+- **M1, the prototypes:** effectively done. The M1 review waits on the human: their music listen and the Asha face direction.
+- **M2, the vertical slice:** feature-complete on the integration branch, being polished from the human's playtests. The M2 review is a **blocking human review** (SPEC §16 Q7). Reviews never block work, so M3 runs in parallel.
+- **M3, Act I:** under way:
+  - Ch1 and Ch4–Ch9 as **greybox** chapters (m2-slice);
+  - 27 Act I creatures;
+  - Act I kits (env-art);
+  - the Reefball engine (M3-RBL-01) and its look (PC).
+- **The intro thread the human plays:** title → prologue → Haluna beach (the cutscene) → playable Haluna → B06 Saltgrass Causeway → Shell Shrine trial → the Drownbell boss → B12 end card.
+  - Act I sits behind `first_playable.json` switches (`prologue.next_location`, `end_card.next_location`), left EMPTY (back to the title) until the human signs off M2.
+  - The F8 debug chapter select reaches Act I.
 
-## 2. Branches (all on `LeviticusFigglebottom/ClaudalFantasyX`)
-| Branch | Status |
+## 2. Branches (repo `LeviticusFigglebottom/ClaudalFantasyX`)
+| Branch | State at handover |
 |---|---|
-| `claude/undertow-lead-handoff-423ixt` | **The integration branch, standing in for `main`** (CLAUDE.md §4: the Lead's session branch). Every merge lands here. |
-| `main` | **Stale**: not updated since the old account. The integration branch below is the real main; the Lead may fast-forward `main` only with the human's permission. |
-| `claude/new-session-mj8c3c` | The old integration branch. **Frozen at a504072**; don't merge into it. |
-| `claude/m2-slice` | The M2 vertical-slice track (from `claude/first-playable` 67984ce). |
-| `claude/characters` | The Characters track (from the integration branch). |
-| `claude/first-playable` | The old First Playable branch, stopped at 67984ce. Being merged in (see §5). |
-| `gpu/*` | The PC GPU session's branches, one per item. Merged: rnd-21-mouth-fill, qa-07, qa-08-asha-recheck. **Don't merge:** qa-05d-asha-recheck (superseded by qa-08), chr-04-materials and qa-05b-asha-recheck (overtaken by later rounds). Merged on 2026-10-24: rnd-01(b), rnd-22, rnd-02, rnd-03 and fp-10-keylight-check. **Pending:** m2-rnd-04-drownbell-vfx. |
-| `lead/test`, `lead/fp`, `worktree-agent-*` | Local to the Lead's container. Lost on a restart; anything unmerged is redone from its task file. |
+| **`claude/undertow-lead-handoff-423ixt`** | **The integration branch, i.e. the real "main".** Head ≈ 6c6e5514 plus doc commits. Every merge lands here, behind a passing gate. |
+| `main` | **Stale** since the old account. Fast-forward it to the integration branch only with the human's explicit permission. |
+| **`lead/gate-big9`** (ae4666e0) | **The next batch, merged but NOT yet gated.** It is big8 plus the integration head plus: m2-slice's newest (the prologue colour fix for "everyone is still here", CutsceneMotion eased turns and walks M2-FP-29, Ch8), **hero-integration** (the real heroes in field and battle), and the newest battle-presentation, characters, creatures, menus, ui, env-art and audio. Last local `ci_local.sh` run: passed (the Godot suite, coverage including reefball 100%, the boot smoke, sim --check). An earlier tool-test run failed `test_hero_clips`, so re-check it. **FIRST JOB for the new Lead: gate it on the PC runner, view the drifted shots, merge.** |
+| `claude/m2-slice`, `claude/ui`, `claude/menus`, `claude/battle-presentation`, `claude/characters`, `claude/creatures`, `claude/env-art`, `claude/audio`, `claude/hero-integration` | The track branches. Each has a "STATE AT HANDOVER" section in its live log. Each has moved since big9 was cut, so a big10 pass merges their heads. |
+| `gpu/*` | The PC's branches, one per item. Merged: everything up to RND-19, 910, NIT-05, 901 and 902 (the runner), M3-RND-01/04/05. Check `pc-gpu.md` for any unmerged. |
+| `claude/gate-runner-a`, `claude/gate-runner-b` | Old cloud screenshot-shard runners; reports only. Superseded by the PC runner. |
+| `claude/first-playable`, `claude/new-session-mj8c3c` | Frozen history; don't merge into them. |
+| `lead/*` (other), `worktree-agent-*` | Local to the old Lead's container. Everything of value is merged or pushed. |
 
-## 3. Environments (live)
-1. **Lead:** cloud `session_019iimsngAgPLEram1wcbLpE`, 4 CPUs. It orchestrates, merges, reviews and runs the gates, with up to ~3 local subagents in worktrees (Character, Combat, UI, Reviewer). An **hourly check-in routine** (`trig_01LJyLo42xCq3WVmAza3BMhe`, :54 each hour) checks every environment, merges what's ready and refreshes these logs.
-2. **pc-gpu:** Remote Control `session_01UFcBRsk9M9EKtxJKdBU2mB` (desktop-jj0o43o) on the human's PC (RX 9070 XT, Windows, official Godot 4.6.3). It **can message the Lead**.
-   - **Queue:** M2-RND-01 Undertow production (with the compute-pass occlusion) → M1-RND-22 prewarm floor → M2-RND-03 battle VFX → M2-RND-02 underwater → M2-RND-04 Drownbell VFX and flood rig. GPU checks before any lavapipe re-approval jump the queue.
-   - **The human's rules:** total CPU, memory and GPU load ≤ 75%; one GPU benchmark at a time (a CPU-light subagent alongside is fine); new `gpu/*` branches only; never overwrite baselines; Asha's materials change only via write_materials.py; keep pc-gpu.md current; message the Lead when two items remain.
-3. **m2-slice:** cloud `session_01DQ9tdk8Uatb8Jr6raAkXiC`, branch `claude/m2-slice`, Auto mode, 2–3 subagents allowed. Queue: M2-FP-10 dialogue key light → M2-FP-11 (undo FP-09's zone-sun bias 3.0; two waiting router callers) → Drownbell follow-ups (its boss status strip is being renumbered from a colliding FP-11 to FP-12) → FP-05/ARC-15 follow-ups → Haluna at slice quality → Shell Shrine trial → first Vowbound, Cutscene A/B faces. Log: `m2-slice.md` on its branch.
-4. **characters:** cloud `session_01JqzzxgJU9Dmu7fRhmCG9aQ`, branch `claude/characters`, Auto mode, 2–3 subagents allowed. Queue: **M1-CHR-12 Asha round 7 first** (grief lip-edge rim and peg teeth, lid band, smile eyes, crown; from QA-08), with M2-CHR-01 Rhen and Toma in parallel (parked WIP in assets_src/characters/rhen/, see WIP.md) → Asha's clips (M2-FP-07) → M1-ART-06. Log: `characters.md` on its branch.
-- **Permissions:** `.claude/settings.json` allow-lists the read-only checks and cross-session messaging (the human's directive). Sessions pick it up after merging the integration branch.
-
-### 3b. Added 2026-10-24 ~09:50 (the human asked to supplement bottlenecks)
-| Track | Session | Branch | Queue |
+## 3. Environments at handover, with recommendations for the new account
+| Old env | Branch | Did | Recommendation |
 |---|---|---|---|
-| audio | `session_01FtDSYm5dJHkdC3RqXsDjif` | `claude/audio` | M2-AUD-01 → the slice's 3 final music cues (the human judges, §16 Q3) → battle SFX for the VFX library → field ambience → the mixing pass |
-| env-art | `session_01QmWUfYxd8DMg7XM3MyR6ps` | `claude/env-art` | M2-ENV-03 shrine kit → M1-ENV-10 → Haluna final-quality kit → Art sign-offs M2-ART-01/02/03 → the route |
-| ui | `session_01NyuYPSZn7o7gYirTvz4zjs` | `claude/ui` | M2-UI-03 → hide the Call row until bound → M2-UI-06 shop and inn → UI polish pass |
-| creatures | `session_01CYks9e592YBEfygyTawcJD` | `claude/creatures` | Enemy and boss models (all 5 enemies were primitive stand-ins): design sheets → creature pipeline → the `model` field in enemies.json → reef_crab, lantern_eel, gull_harrier, spawn_polyp, then the Drownbell → shots → bestiary art |
-| battle-presentation | `session_014EcW9e5tEmjDi5S2HmCECd` | `claude/battle-presentation` | Battle choreography (none existed: static fighters): a listen-only BattleChoreo sequencer, the clip contract with characters and creatures, a battle camera director, specials (Swell, Drownbell, Vowbound), battle intro and outro |
-| menus | `session_01Q26A4D653s52czT76QPURY` | `claude/menus` | Intro-audit M2 blockers: the Lattice board menu → Equip/Customize → field Items and Status pages → quit to title and battle pause → screenshots and tests. It merges claude/ui and adds its rows to the UI track's field-menu model |
-These were created in default permission mode; the human sets Auto in each one's mode dropdown. m2-slice was told that ENV-03, UI-06 and UI-03 moved off its queue.
+| Lead (cloud) | integration | Orchestration, merges, gates, decisions, local agents | Keep. The new Lead takes the role. |
+| **pc-gpu** (Remote Control on the human's PC) | `gpu/*` | GPU perf and look-dev, hardware QA, and the **gate runner** (WSL2) | Keep, as the new empty Remote Control session the human provides. It is THE gate runner: about 16 min for tests, about 27 min for screenshots (2 shards), about 12 min for Blender `--all`, against 2–3 h on a 4-CPU cloud container. |
+| m2-slice | `claude/m2-slice` | Story flow, zones, cutscenes, encounters; the M2 slice plus M3 Act I greybox (Ch1, Ch4–Ch9) | **The bottleneck: split it into two.** (a) **slice-polish**: the M2 slice the human plays, the prologue and cutscenes, encounters, playtest fixes. (b) **act1-chapters**: the Act I chapters (Ch8 and Ch9 onward), the greybox-to-final swaps with env-art. |
+| ui | `claude/ui` | The HUD, objectives and map, prompts, title, tips, dialogue box, settings, input parity, pseudo-loc, resolutions | **Merge menus into it**: one "ui-menus" track. They share the field-menu shell and constantly merge each other. |
+| menus | `claude/menus` | Lattice, Equip, Items, Status, Formation, portraits | → folded into ui-menus. |
+| battle-presentation | `claude/battle-presentation` | Choreography, camera, specials, arenas wiring, KO, boss intros, battle feel | Keep. |
+| characters | `claude/characters` | Hero and villager models, faces, clips (Blender) | Keep. Its focus is hero battle and locomotion clips plus M2-CHR-11. |
+| **hero-integration** | `claude/hero-integration` | The real heroes in field and battle: locomotion blend, eased turns, followers | Keep until heroes and villagers are alive everywhere, then fold into characters. |
+| creatures | `claude/creatures` | 27+ creature models, clips, villager life, wildlife | Keep while Act I creature, battle polish and villager life remain. It often idles, so give it long queues. |
+| env-art | `claude/env-art` | Final kits (Haluna, causeway, shrine, arenas, Act I zones) | Keep. Heavy and productive. |
+| audio | `claude/audio` | Synthesised original music and SFX, voices (blips), mix | Keep, but it idles often: always give it a long queue. |
+| gate-runner-a/b (cloud) | n/a | Screenshot shards | **Retire.** The PC runner replaces them; spin up cloud shard runners only if the PC is busy benchmarking. |
 
-### Intro audit (2026-10-24): M2-review blockers, ahead of M3 in every queue
-- B06 Saltgrass Causeway route (m2-slice greybox, env-art final kit); the Lattice and Equip menus (menus); live battles pay lume and drops, and the slice party gets Read (a Lead combat agent).
-- Major items: objectives and map (ui, top priority); the interaction prompt, tutorials, title screen, area cards, dialogue-box polish and settings (ui); battle choreography, per-encounter arenas, the battle transition and the C10 summon cinematic (battle-presentation, with env-art for the arenas); the B12 end card and credits, plus chapter advance and an autosave before the shrine (m2-slice).
+**Recommended setup for the new account:** Lead (cloud) + pc-gpu (the empty Remote Control session) + slice-polish + act1-chapters + ui-menus + battle-presentation + characters + hero-integration + creatures + env-art + audio. That's 10 sessions plus the Lead. The usage limits were hit several times at this scale; if limits bite, pause creatures and audio first, then act1-chapters.
 
-### 3a. Standing queues (2026-10-24, also sent by message; messages can arrive hours late, so this section is authoritative)
-- **m2-slice:**
-  0. CMB-05 reconciliation: take the integration branch's mechanics (rolled absorb, HP 100%, rate 150), keep the FP-17 wiring, remove `call_ilun` (UI-05's Call row is merged), do M2-CMB-06.
-  1. M2-FP-22, M1-UI-11, M1-ENV-11.
-  2. M2-FP-20, M2-FP-21.
-  3. M2-ENV-04 (wake-shell wall), M2-ENV-03 (shrine interior kit).
-  4. M2-UI-06 (shop and inn).
-  5. zone_weather.json rows for first_verse, shell_shrine and Haluna-night.
-  6. Swap the capsules for Rhen, Toma and the villagers when the characters branch merges.
-  7. Another playthrough pass.
-  8. M2-ENV-05: Haluna's zone entry is 3.1–3.5 s against the 3 s limit (PC slice perf sweep).
-- **characters:**
-  0. **TOP PRIORITY (the human, 2026-10-24): M1-CHR-14.** Asha's braid is detached from her head; clothing and staff clip; some limbs look detached. Fix it properly and add automated guards; same checks for Rhen and Toma.
-  1. M1-CHR-13 (vest normals, plus the shared `_panel` winding fix; rebuild Asha, Rhen and Toma).
-  2. M1-RND-25 (the inner lip onto the mouth material).
-  3. Toma follow-ups, plus Toma's clips.
-  4. M2-CHR-03 (the Haluna villagers: Neme, Osu, Pila, the lane child, plus 3 generic).
-  5. The CHR-12 smile §12.4 as a switchable variant, for the human.
-  6. Battle-scale hero LODs.
-- **pc-gpu:** (ADR 0029 follow-ups and the slice perf sweep DONE) M1-RND-28 export shader baker → M2-RND-07 (the Drownbell Flood hitch) → M1-QA-09 (Asha re-check, after CHR-12 merges) → the night GPU cost at Haluna H10 (M2-ENV-02) → the Low-preset storm cost (Low's full-res shells cost 1.36 ms against High's 0.66 ms compute; file it).
-- **Wake-ups:** the hourly routine `trig_01LJyLo42xCq3WVmAza3BMhe` FAILS with ACCESS_DENIED (as in the old account). The Lead keeps a background `sleep 2700` heartbeat in its own session instead, and re-arms it on each wake.
+## 3a. Live roster (new account, from 2026-10-25)
+| Track | Session | Branch | Live log | Ids |
+|---|---|---|---|---|
+| Lead | session_018aiGwGLGkxsnMnu8VfCu1m | claude/undertow-lead-handoff-ze8rrn (integration) | lead-cloud.md | 1000–1099 |
+| pc-gpu (Remote Control) | session_01DKdurcvrzq9PEvuSu5L2nA | gpu/* | pc-gpu.md | 900–999, ADR 0180+ |
+| slice-polish | session_01KZCgTqxhHKjvMCm1dAosvZ | claude/m2-slice | slice-polish.md | 100–199, ADR 0101–0109 |
+| act1-chapters | session_01TbP4NmiuX6qan2V9CWsDNN | claude/act1-chapters (new, cut from m2-slice 6c50823f) | act1-chapters.md | 1200–1299, ADR 0200–0209 |
+| ui-menus | session_01KGBUwbYgXe9JS6D8jXw6ZG | claude/ui (claude/menus merged in, then retired) | ui-menus.md | 200–399, ADR 0110–0129 |
+| battle-presentation | session_015hKkhtpX67kS4yZeA8AAhv | claude/battle-presentation | battle-presentation.md | 400–499, ADR 0130–0139 |
+| characters | session_014AiZf1ZSvb9MAjxtUka4pd | claude/characters | characters.md | 500–599, ADR 0140–0149 |
+| hero-integration | session_01PzF7Jc4XVQdTWcaYUyCjPB | claude/hero-integration | hero-integration.md | 1100–1199, ADR 0190–0199 |
+| creatures | session_01EbDaRQ5n7hpvwuRG6jEDQY | claude/creatures | creatures.md | 600–699, ADR 0150–0159 |
+| env-art | session_01YbaV2c8yquRHqj6afQYg89 | claude/env-art | env-art.md | 700–799, ADR 0160–0169 |
+| audio | session_01Wmj8xaLtwcqiS3qwC6PciW | claude/audio | audio.md | 800–899, ADR 0170–0179 |
 
-## 4. Process that works (keep it)
-- **Gate branches (the human's permission, 2026-10-24 ~17:20).** The Lead may push merge batches as `lead/gate-<name>`: staging-only branches for parallel gate runners (the PC under WSL2 or natively, and cloud runner sessions), deleted after merging. Only the integration branch carries merged work. The PC is the primary gate runner between its GPU benchmarks (never during one), within its 75% cap; procedure in tools/dev/gate_runner.md (PC). Results go in pc-gpu.md as `GATE <branch>@<sha>: PASS/FAIL`.
-- **Task, handoff and ADR id blocks (2026-10-24 ~21:20; collisions cost every merge renumbers).** New ids are numbered from 100 up, with each track's own block, so parallel branches can't collide:
-  m2-slice 100–199; ui 200–299; menus 300–399; battle-presentation 400–499; characters 500–599; creatures 600–699; env-art 700–799; audio 800–899; PC (rnd and nit) 900–999; Lead and its local agents 1000–1099; hero-integration 1100–1199 (e.g. M2-UI-210, M3-CHR-505, M2-RND-912).
-  Handoffs use `<date>-<role>-<track>-<n>.md`. New ADRs take numbers from 0100 up per the same blocks, divided by 10 (m2-slice 0100–0109, ui 0110–0119, and so on in block order: menus 0120, bpr 0130, characters 0140, creatures 0150, env-art 0160, audio 0170, PC 0180, hero-integration 0190; the Lead keeps 0038–0099).
-  Existing ids are untouched.
-- **No idle sessions, no stalled agents (the human's directive, 2026-10-24 ~15:55).** A track whose queue empties, or that waits on another track or on a human verdict, takes its next item, adjacent work or M3 at once, and says so in its live log. Human reviews never block. The Lead checks every session's real status (`list_sessions`: idle, failed or completed means wake it with work) every 20 minutes, not just commit recency. A watcher alerts the Lead when a local agent's transcript goes quiet for 12 minutes. Tests are never waited on in the foreground. A pathologically slow test is a bug to fix (e.g. test_lattice_validate's setUp copies all of assets/ per test).
-- **Gates without waiting (the human's directive, 2026-10-24 ~14:20; supersedes the full pre-merge gate on tracks).** Per item, tracks run only fast scoped checks: lint, format, validate_data, taskboard, dlgc, Godot tests filtered to their area, and Blender verify only for jobs they changed. Long runs go in the background while work continues; nobody idles on a check. Tracks batch several items into one "MERGE-READY @ <sha>: items, checks run, checks skipped" line, after merging the integration branch and one background full Godot suite. The **Lead** runs the screenshot shots and full gates at merge, serially (one gate at a time on the Lead container), and cherry-picks when a batch has one bad item. Every Blender job pins `threads`, and outputs must also be SIMD-independent (numpy dispatch: snap tiny values and UVs to a grid). In shell waiters, never `pgrep -f <pattern>` for a pattern your own command line contains: it matches itself.
-- **Standing queues:** never one task at a time; ask each environment to message when it's two items from the end.
-- **Review sweeps:** after each merge batch, a fresh reviewer agent covers every `status: review` task. On approve or approve-with-fixes, close the task and file the fixes as new tasks. On request-changes, reopen it.
-- **Gate scope** (CLAUDE.md): agents run only checks their change can break. The Lead runs the full `tools/ci_local.sh` (about 60–90 min on 4 CPUs) after a batch of code or render merges, in a separate `lead/integration` worktree.
-- **NEVER merge a `gpu/*` branch before running its affected shots on lavapipe.** Test-merge in a scratch worktree (for example `lead/test`), run `HYMN_SKIP_BLENDER=1 HYMN_SHOTS=<ids> HYMN_LOG_DIR=$(mktemp -d) tools/ci_local.sh`, view every drift side by side, then copy `tests/screenshots/out/<id>.png` to `baselines/` and merge. Two PC merges had to be reverted for skipping this.
-- **Merging:**
-  - Append-only conflicts go through `python3 tools/dev/merge_union.py <file>`. Check for duplicate loc keys with `cut -d, -f1 game/data/loc/strings.csv | sort | uniq -d`.
-  - Never commit conflict markers; check with `git grep -n '^<<<<<<< '`.
-  - Run `timeout 900 python3 -m unittest discover -s tools/tests`, which takes about 4 minutes; a 280 s timeout cuts it off silently.
-- **Number collisions:** at handoff, the integration branch's task files were renumbered to match `claude/first-playable`: FP-05 is polish and FP-06 the Drownbell boss on that branch; thread hardening is FP-09 and the dialogue key light FP-10. Parallel agents collide on task ids, ADR numbers and handoff numbers, so check every merge. Valid task roles are listed by `taskboard.py --check`; use `character` for art.
-- **Coverage baseline:** ratchet it up after test-adding merges with `python3 tools/coverage/run_coverage.py --update-baseline`. Currently battle 99.93% and progression 96.52%.
+The common brief is [`TRACK-RULES.md`](TRACK-RULES.md). The gate runners are retired.
 
-## 5. Exact next steps for the Lead
-**The live list is in [`lead-cloud.md`](lead-cloud.md) § "Exact next step"**, updated after every merge batch. As of 3e59f8d:
-1. Merge `gpu/m2-rnd-04-drownbell-vfx` (built on RND-03, which is merged). Add the pending shots (drownbell_flood, underwater_below/window/waterline) to shots.json, approve them on lavapipe after viewing, and merge.
-2. m2-slice does M2-FP-17 (the real Ilun call) now that CMB-05 is in. The steps are in handoff combat-13.
-3. Review sweep Q over the review column.
-4. Keep ~3 local agents busy on M2 work (M2-UI-05 Vowbound HUD, M1-ENV-10, ...). The PC queue was topped up 2026-10-24; message it when it reports two items left.
-5. When the characters track lands M1-CHR-12, the PC does M1-QA-09, and then M1-LEAD-01 waits only on the human's music listen.
-## 6. Open questions for the human (also in STATUS.md)
-- **Playtest** the first minutes (docs/PLAYTEST.md; a ready copy may be at `C:\Users\Aaron\Hymn_Playtest\PLAY.bat`). Is Asha's close-up face acceptable as a direction, or should we take ADR 0019's stronger stylisation?
-- **Music:** listen to the three cues (docs/kb/audio/listening_notes.md, §16 Q3). This blocks AUD-02 and M1-LEAD-01.
-- **Git LFS?** The 5 MB file cap binds Asha's GLB and textures.
-- **GitHub Actions:** runs never leave `queued`; check the repo settings.
-- **Reefball arena form:** default is to keep it.
+## 4. Process rules that work: keep them
+- **Never idle** (the human, 2026-10-24).
+  - Every track keeps a long standing queue. When it empties, or the track waits on another track or a human verdict, it takes its next item, adjacent work or M3, and logs it.
+  - **Human reviews never block work.**
+  - The Lead checks every session's **real status** (`list_sessions` / `get_session`: idle, failed or completed means wake it with work) **every 20 minutes**, not just commit recency.
+  - Sessions frequently end turns with items left, so re-wake them with explicit queues and "never end a turn while items remain".
+- **Lead stays active:** monitor, route, merge, be the point of contact. Keep a 20-minute background heartbeat (`sleep 1200`) re-armed on every wake; scheduled routines (`create_trigger`/`send_later`) failed with ACCESS_DENIED. Run a stall watcher on each local merge agent (alert if its transcript is quiet AND no gate process of its own is running).
+- **Gates without waiting.**
+  - **Tracks:** per item, scoped checks only:
+    - lint, format, validate_data, taskboard, dlgc;
+    - Godot tests filtered to their area;
+    - Blender verify only for changed jobs.
+  - **Long runs:** in the background; never wait in the foreground.
+  - **Batching:** several items per "MERGE-READY @ <sha>: items, checks run, checks skipped" line in the live log.
+  - **The Lead** runs full gates **on the PC runner**.
+- **Merge batches:** a local merge agent merges every MERGE-READY branch into `lead/bigN` (resolving conflicts properly). The Lead pushes `lead/gate-bigN` (the human allowed `lead/gate-*` staging branches) and the PC gates it. The PC pushes the out and diff PNGs of every failing shot to `gpu/gate-<name>-shots`. The Lead **views every drifted shot** before re-approving (`compare.py --update-baselines`), then merges into the integration branch and deletes the gate branch. **Never re-approve a baseline without viewing it.**
+- **Fast-track playtest fixes:** cherry-pick the specific fix commits onto the integration branch with a scoped gate (filtered tests, affected shots, boot smoke) rather than waiting for a big batch. The human plays the integration branch, so tell them when a fix lands, and say plainly what is NOT merged yet.
+- **Batch size:** keep batches small and frequent. Backlogs of 6+ branches caused multi-hour conflict merges.
+- **Id blocks:** each track numbers new task, handoff and ADR ids from its own block, so ids never collide:
+  - task ids: m2-slice 100–199, ui 200–299, menus 300–399, bpr 400–499, characters 500–599, creatures 600–699, env-art 700–799, audio 800–899, PC 900–999, Lead 1000–1099, hero-integration 1100–1199;
+  - ADRs: 0100+ in blocks of ten in the same order;
+  - handoff names: `<date>-<role>-<track>-<n>.md`.
+  For new tracks in the new account, assign the next free blocks (slice-polish keeps 100s; act1-chapters takes 1200–1299 and ADR 0200–0209).
+- **Shared append-only files:** strings.csv, flags.tres, PROVENANCE.md, validate_data.py, ownership.md, accessibility.json.
+  - Merge them with `python3 tools/dev/merge_union.py <file>`.
+  - Then **check duplicate loc keys** and keep the newer text: `cut -d, -f1 game/data/loc/strings.csv | sort | uniq -d`.
+  - The union re-adds old duplicates on every merge, so check every time.
+- **IP and asset rules:** no AI image or audio generation, no asset packs (except MPFB2 CC0 data, ADR 0021), every asset reproducible, with PROVENANCE rows.
+
+## 5. Exact next steps for the new Lead (priority order)
+1. **Gate `lead/gate-big9`** on the PC runner. Re-check `test_hero_clips` (tools) first. View the drifted shots: expect field shots with the real heroes, battle shots with hero rigs, prologue cutscene colour, and the arena or boss changes. Approve, merge, and tell the human, who has asked repeatedly for the real heroes and the prologue fixes.
+2. **big10:** merge every track's newest head (each wrote a HANDOVER section with its MERGE-READY sha) and gate the same way.
+3. **The human's open playtest complaints,** and where each stands:
+   - The heroes are placeholders in the field and in battle: hero-integration plus characters; **in big9**, verify in play.
+   - The prologue's motion is rigid and snapping: m2-slice's CutsceneMotion, M2-FP-29, **in big9**.
+   - "Everyone is still here" was greyscale: m2-slice 583759c0, **in big9**.
+   - The Hullgnaw boss intro framed too close: battle-presentation (fit the camera to the boss AABB). **Not done yet.**
+   - "Parts look primitive": the queues of creatures (villager life, wildlife), menus (portraits), audio (footsteps) and battle-presentation (battle feel: hit-stop, shake, impact).
+   - Fixed and merged: back-to-back encounters; enemies acting twice (M3-CMB-02, ADR 0038); the KO replay (M2-BPR-11); the start point; the coloured dusk frame.
+4. **PC queue:** M1-QA-09 (Asha's braid, clipping and limbs on hardware), the slice re-sweep with `--budget`, then the Act I playthrough on hardware. M3-RND-02 (the min-spec proxy) waits on the owner's OK to limit GPU clocks. RND-16 (exit leak) is last.
+5. **M2-CHR-11:** opt rhen, toma, base_body and the villagers into the SIMD snaps, so Blender rebuilds identically on the PC (AVX2), not just on the cloud (AVX-512). Until then the PC shows 9–10 known Blender DIFFs.
+6. **After the human signs off M2:**
+   - flip `prologue.next_location` and `end_card.next_location` to Act I;
+   - run the **Godot 4.7.2 port** (ADR 0032; the PC has gpu/godot-472-port ready, with 4.7.2 parity checked; every baseline gets re-approved);
+   - consider fast-forwarding `main` (it needs the human's permission).
+
+## 6. Open questions for the human
+- The M2 slice review (blocking; play the integration branch).
+- Music: the listening verdict (docs/kb/audio/listening_notes.md), which blocks M1-LEAD-01.
+- The Asha face direction (ADR 0019's stronger stylisation, or keep).
+- Git LFS for files over 5 MB? GitHub Actions never leave "queued"; check the repo settings.
+- M3-RND-02: OK to cap the PC GPU's clocks or power for the min-spec proxy?
 
 ## 7. Toolchain and gotchas
-**Getting the tools:**
-- Godot 4.6.3 and Blender 5.0.1 come from the Ubuntu archive via `tools/dev/fetch_*.py`; GitHub release downloads are blocked in the cloud.
-- **Baselines are lavapipe** (software Forward+, ADR 0009). Never approve GPU captures as baselines.
-
-**Shared-machine safety:**
-- Never kill processes by pattern; kill only your own PIDs (CLAUDE.md §8a).
-- Give every run a unique `HYMN_LOG_DIR` and `XDG_DATA_HOME`.
-- Put scratch files in a per-task subfolder.
-
-**Blender gate:**
-- `tools/dev/verify_blender_builds.py`; thread counts are pinned per job.
-- The known-failure list is EMPTY: every Blender output rebuilds byte-identically.
-- With no `main` ref, set `HYMN_BLENDER_BASE=<sha>`, or it rebuilds every job (about 6 minutes).
-
-**Assets:** Asha's materials come from `write_materials.py` (pure Python); hand-editing a `.tres` breaks the gate.
-
-**Line caps and RNG:**
-- `battle_controller.gd` is at about 994 of gdlint's 1000-line cap. Put new logic in helper classes.
-- Live battles draw one opening roll (preemptive or ambush). Story encounters set `"opening": "normal"`.
-
-**Things that didn't work in the old account:**
-- `send_later` scheduled check-ins failed with ACCESS_DENIED.
-- Background subagents die on a container restart; only what they committed in their worktree survives.
+- **Setup (cloud):** `pip install -r tools/requirements.txt` (it now includes Pillow), `python3 tools/dev/fetch_godot.py`, `python3 tools/dev/fetch_render_deps.py`. These come from the Ubuntu archive; Blender 5.0.1 via fetch_blender.
+- **Tools tests:** `python3 tools/run_tool_tests.py -j 4` takes 2–3 min. ci_local uses it.
+- **Baselines are lavapipe** (software Forward+). The PC's WSL2 distro `hymn` reproduces them pixel-for-pixel (llvmpipe "LLVM 22.1.8, 256 bits"). Never approve GPU captures.
+- **The PC gate runner:**
+  - **Docs:** `tools/dev/gate_runner.md`, plus `tools/dev/pc_gate/{sync,gate}.sh`.
+  - **Fresh import:** it always does a fresh `.godot` import; stale caches made false shot drifts once.
+  - **Resources:** WSL is capped at 10 GB with 2 shards (the owner approved this). Blender ignores `VIRTUAL_ENV`, so use the distro's Python.
+  - **Scheduling:** gates never run during a GPU benchmark; total load stays ≤ 75%.
+- **PC rules (the human's):**
+  - ≤ 75% total CPU, memory and GPU;
+  - one GPU benchmark at a time;
+  - new `gpu/*` branches only, and never overwrite baselines;
+  - Asha's materials only via `write_materials.py`;
+  - keep pc-gpu.md current.
+- **Blender determinism:** pin `threads` per job, and snap tiny values and UVs to a grid. numpy's SIMD dispatch differs between AVX-512 (cloud) and AVX2 (PC).
+- **Known engine issues (4.6.3):**
+  - **A RenderingDevice `vertex_formats` race:** a rare capture abort; re-run the shot once and never re-approve it.
+  - **A shader-variant deadlock:** it hits when the advanced group (TAA motion vectors, VoxelGI, SSS) turns on lazily. M2-RND-14 turns it on at boot. Capture shots with TAA off plus VoxelGI need `"warm_shader_groups": true`.
+  - **A per-shot hang guard** (`HYMN_SHOT_TIMEOUT`) is in capture.sh.
+- **Hitch budgets (ADR 0029/0037):**
+  - visible frames 50 ms;
+  - hidden frames 1 s;
+  - zone entry 3 s;
+  - cold first launch: one hidden frame up to 1.7 s, only behind the boot card's first-run cue.
+- **Line caps:** gdlint caps files at 1000 lines. `battle_controller.gd` and `shader_prewarm.gd` sit at the cap, so put new logic in helpers.
+- **Shell safety:** never kill processes by pattern; never `pgrep -f` a pattern your own command contains; give every run a unique `HYMN_LOG_DIR` and `XDG_DATA_HOME`.
+- **Cross-session messaging:**
+  - **Lead → sessions:** works via `send_message`.
+  - **Sessions → Lead:** often refused (an "untrusted device"). Read their live logs instead; the human sometimes relays.
+  - **Bridge (PC) session:** it can message the Lead when it's active.
+- **Usage limits:** they hit several times. When a limit resets, nudge EVERY session and local agent; they don't resume by themselves.
 
 ## 8. Where things are
-- **Story:** docs/kb/story/; ADRs 0015–0017, 0020, 0022.
-- **Art:** docs/kb/art/ (palette.json, color_script.md, characters/asha*.md).
-- **Tech:** docs/kb/tech/ (architecture: save v6 and DataHealth; field_camera; dialogue_format; battle_ctb; ui; water; glimmer; undertow; character_shading; asset_import).
-- **Design:** docs/kb/design/ (formulas, balance_report, economy).
+- **Story:** docs/kb/story/ (beats, act outline).
+- **Art:** docs/kb/art/.
+- **Tech:** docs/kb/tech/ (architecture, battle_ctb, battle_presentation, chapter_flow, cutscenes, ui, water, undertow).
+- **Design:** docs/kb/design/ (formulas, balance_targets, balance_report, economy).
 - **GPU reports:** docs/kb/qa/gpu/.
-- **Per-task handoffs:** docs/kb/handoffs/2026-10-23-*.md.
+- **Gate runs:** docs/kb/qa/gate-runs/ (on the gpu/*-shots branches).
+- **Task files:** docs/kb/tasks/M1–M3/.
+- **Handoffs:** docs/kb/handoffs/ and live/.
