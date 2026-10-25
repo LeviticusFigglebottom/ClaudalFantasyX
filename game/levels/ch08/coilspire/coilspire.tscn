@@ -1,0 +1,8 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://game/levels/ch08/coilspire/coilspire_zone.gd" id="1_zone"]
+
+[node name="Coilspire" type="Node3D"]
+script = ExtResource("1_zone")
+location_id = &"ch08/coilspire"
+layout_path = "res://game/levels/ch08/coilspire/coilspire_layout.json"

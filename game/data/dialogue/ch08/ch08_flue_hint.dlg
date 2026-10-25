@@ -1,0 +1,7 @@
+// Ch8 B05, the flue trial's one hint (act1_ch08.md §2 B05): Asha, after the trial's idle time on a tier
+// (ch08_field.json trial.hint_sec). Played on the zone's hint sequencer: it never holds the player.
+title: ch08_flue_hint
+location: ch08/coilspire
+---
+Asha [neutral]: It wants to climb. We keep letting it out the side. #line:ch08_flue_hint_001
+===

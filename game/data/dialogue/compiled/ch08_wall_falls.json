@@ -1,0 +1,53 @@
+{
+ "format": 1,
+ "scene": "ch08_wall_falls",
+ "source": "game/data/dialogue/ch08/ch08_wall_falls.dlg",
+ "start": "ch08_wall_falls",
+ "nodes": {
+  "ch08_wall_falls": {
+   "headers": {"location": "ch08/corrow"},
+   "ops": [
+    {"op": "cue", "cue": "letterbox", "args": ["on"], "kwargs": {}, "src": 22},
+    {"op": "cue", "cue": "camera", "args": ["W20"], "kwargs": {}, "src": 23},
+    {"op": "cue", "cue": "sfx", "args": ["wall_breach"], "kwargs": {}, "src": 24},
+    {"op": "cue", "cue": "music", "args": ["undertow_reach"], "kwargs": {}, "src": 25},
+    {"op": "cue", "cue": "wait", "args": [3.0], "kwargs": {}, "src": 26},
+    {"op": "set", "flag": "ch08_wall_fell", "value": ["lit", true], "src": 27},
+    {"op": "cue", "cue": "camera", "args": ["W21"], "kwargs": {}, "src": 28},
+    {"op": "cue", "cue": "mark", "args": ["rhen", "breach_lip", "walk"], "kwargs": {}, "src": 29},
+    {"op": "cue", "cue": "wait", "args": [1.5], "kwargs": {}, "src": 30},
+    {"op": "cue", "cue": "camera", "args": ["W22"], "kwargs": {}, "src": 31},
+    {"op": "cue", "cue": "music", "args": ["silence"], "kwargs": {"fade": 0.5}, "src": 32},
+    {"op": "cue", "cue": "sfx", "args": ["current_song"], "kwargs": {"at": "figure"}, "src": 33},
+    {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 34},
+    {"op": "cue", "cue": "camera", "args": ["W23"], "kwargs": {}, "src": 35},
+    {"op": "cue", "cue": "face", "args": ["rhen", "afraid", 0.3], "kwargs": {}, "src": 36},
+    {"op": "cue", "cue": "wait", "args": [3.5], "kwargs": {}, "src": 37},
+    {"op": "set", "flag": "ch08_rhen_froze", "value": ["lit", true], "src": 38},
+    {"op": "cue", "cue": "camera", "args": ["W22"], "kwargs": {}, "src": 39},
+    {"op": "cue", "cue": "mark", "args": ["figure", "figure_gone", "walk"], "kwargs": {}, "src": 40},
+    {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 41},
+    {"op": "cue", "cue": "camera", "args": ["W24"], "kwargs": {}, "src": 42},
+    {"op": "cue", "cue": "mark", "args": ["kerrid", "kerrid_collar", "run"], "kwargs": {}, "src": 43},
+    {"op": "cue", "cue": "anim", "args": ["kerrid", "catch_collar", "rhen"], "kwargs": {}, "src": 44},
+    {"op": "cue", "cue": "sfx", "args": ["stone_falls"], "kwargs": {}, "src": 45},
+    {"op": "cue", "cue": "mark", "args": ["rhen", "rhen_fallen", "walk"], "kwargs": {}, "src": 46},
+    {"op": "cue", "cue": "wait", "args": [1.5], "kwargs": {}, "src": 47},
+    {"op": "cue", "cue": "camera", "args": ["W25"], "kwargs": {}, "src": 48},
+    {"op": "cue", "cue": "mark", "args": ["kerrid", "kerrid_drowned_stair", "walk"], "kwargs": {}, "src": 49},
+    {"op": "cue", "cue": "anim", "args": ["kerrid", "look_at", "drowned_stair"], "kwargs": {}, "src": 50},
+    {"op": "cue", "cue": "wait", "args": [3.0], "kwargs": {}, "src": 51},
+    {"op": "cue", "cue": "mark", "args": ["asha", "asha_to_rhen", "run"], "kwargs": {}, "src": 52},
+    {"op": "line", "id": "ch08_wall_falls_001", "key": "DLG_CH08_WALL_FALLS_001", "speaker": "asha", "emotion": "worried", "voice": "", "src": 53},
+    {"op": "options", "choices": [{"id": "ch08_wall_falls_002", "key": "DLG_CH08_WALL_FALLS_002", "to": 33, "src": 54}, {"id": "ch08_wall_falls_004", "key": "DLG_CH08_WALL_FALLS_004", "to": 36, "src": 57}], "src": 54, "next": 38},
+    {"op": "line", "id": "ch08_wall_falls_003", "key": "DLG_CH08_WALL_FALLS_003", "speaker": "asha", "emotion": "sad", "voice": "", "src": 55},
+    {"op": "set", "flag": "ch08_rhen_told_asha", "value": ["lit", true], "src": 56},
+    {"op": "goto", "to": 38, "src": 54},
+    {"op": "line", "id": "ch08_wall_falls_005", "key": "DLG_CH08_WALL_FALLS_005", "speaker": "asha", "emotion": "tender", "voice": "", "src": 58},
+    {"op": "goto", "to": 38, "src": 57},
+    {"op": "cue", "cue": "wait", "args": [1.0], "kwargs": {}, "src": 59},
+    {"op": "cue", "cue": "letterbox", "args": ["off"], "kwargs": {}, "src": 60}
+   ]
+  }
+ }
+}

@@ -1,0 +1,25 @@
+{
+ "format": 1,
+ "scene": "ch08_spire_door",
+ "source": "game/data/dialogue/ch08/ch08_spire_door.dlg",
+ "start": "ch08_spire_door",
+ "nodes": {
+  "ch08_spire_door": {
+   "headers": {"location": "ch08/coilspire"},
+   "ops": [
+    {"op": "cue", "cue": "camera", "args": ["F02_door"], "kwargs": {}, "src": 9},
+    {"op": "cue", "cue": "music", "args": ["coilspire_flues"], "kwargs": {"fade": 3.0}, "src": 10},
+    {"op": "cue", "cue": "anim", "args": ["tender", "look_at", "liss"], "kwargs": {}, "src": 11},
+    {"op": "cue", "cue": "wait", "args": [1.2], "kwargs": {}, "src": 12},
+    {"op": "cue", "cue": "anim", "args": ["tender", "look_at", "toma"], "kwargs": {}, "src": 13},
+    {"op": "cue", "cue": "anim", "args": ["toma", "present_papers"], "kwargs": {}, "src": 14},
+    {"op": "cue", "cue": "wait", "args": [1.0], "kwargs": {}, "src": 15},
+    {"op": "line", "id": "ch08_spire_door_001", "key": "DLG_CH08_SPIRE_DOOR_001", "speaker": "tender", "emotion": "cold", "voice": "", "src": 16},
+    {"op": "cue", "cue": "sfx", "args": ["spire_door"], "kwargs": {}, "src": 17},
+    {"op": "cue", "cue": "mark", "args": ["asha", "door_asha", "walk"], "kwargs": {}, "src": 18},
+    {"op": "cue", "cue": "mark", "args": ["liss", "door_liss", "walk"], "kwargs": {}, "src": 19},
+    {"op": "cue", "cue": "wait", "args": [0.8], "kwargs": {}, "src": 20}
+   ]
+  }
+ }
+}
