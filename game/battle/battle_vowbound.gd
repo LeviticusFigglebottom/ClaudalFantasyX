@@ -168,6 +168,7 @@ func preview_call(
 	roster.append_array(engine.entries)  # the Climb keeps climbing (M3-CMB-01)
 	var tl := CtbTimeline.new()
 	tl.set_roster(roster)
+	tl.tempo = engine.timeline.tempo
 	return tl.predict(count, null, Formulas.DEFAULT_RANK, null, 0, {}, {s: engine.now})
 
 
@@ -185,6 +186,7 @@ func preview_dismiss(engine: BattleEngine, count: int = CtbTimeline.PREVIEW_LENG
 		times[stood_down[i]] = engine.now + _offsets[i]
 	var tl := CtbTimeline.new()
 	tl.set_roster(roster)
+	tl.tempo = engine.timeline.tempo
 	return tl.predict(count, null, Formulas.DEFAULT_RANK, null, 0, {}, times)
 
 

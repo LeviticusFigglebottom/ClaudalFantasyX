@@ -10,10 +10,15 @@ extends FieldSubmenu
 ## it is refused (in the danger color). A use writes the saved vitals at once and stays in PICK, so
 ## a second tonic is one more Confirm; when the last one is spent the page goes back to LIST.
 ##
+## M3-MNU-03: two views, tabs in the title row (ItemsMenuModel.VIEWS): the Bag (everything but key
+## items, sortable, usable) and Key Items (each key item with its description; nothing to use, the
+## line under it says it is kept).
+##
 ## Input (keyboard and controller through ui_*): ui_up / ui_down move, ui_left / ui_right change
-## the sort (LIST), ui_page_up / ui_page_down jump a page, ui_accept opens the picker or uses,
-## ui_cancel goes back a level and closes from LIST. Mouse: hover moves, a click chooses, the
-## wheel steps, a click on the sort line changes the sort.
+## the sort (the bag), ui_page_up / ui_page_down (the pad's shoulders) switch the view, ui_accept
+## opens the picker or uses, ui_cancel goes back a level and closes from LIST. Mouse: hover moves,
+## a click chooses, the wheel steps, a click on the sort line changes the sort, a click on a tab
+## shows that view.
 
 enum Level { LIST, PICK }
 
@@ -33,6 +38,8 @@ var item_id: StringName = &""
 var _list: MenuPage
 var _picker: MenuPage
 var _sort: Label
+## View id -> its tab label in the title row.
+var _tabs: Dictionary = {}
 var _help: Label
 var _name: Label
 var _held: Label
@@ -110,9 +117,9 @@ func handle_input(event: InputEvent) -> bool:
 	elif event.is_action_pressed(&"ui_right", true):
 		change_sort(1)
 	elif event.is_action_pressed(&"ui_page_up", true):
-		_page_step(-1)
+		change_view(-1)
 	elif event.is_action_pressed(&"ui_page_down", true):
-		_page_step(1)
+		change_view(1)
 	elif _wheel(event) != 0:
 		_move(_wheel(event))
 	elif event.is_action_pressed(&"ui_accept"):
@@ -161,9 +168,33 @@ func back() -> void:
 	_render()
 
 
-## Steps the sort (LIST only), keeping the cursor on the same item.
-func change_sort(step: int) -> void:
+## Steps the view (LIST only); the cursor starts at the top of the new list.
+func change_view(step: int) -> void:
 	if level != Level.LIST:
+		return
+	show_view(ItemsMenuModel.VIEWS[posmod(ItemsMenuModel.VIEWS.find(model.view) + step, ItemsMenuModel.VIEWS.size())])
+
+
+## Shows view `to` (an ItemsMenuModel.VIEWS id) from LIST; from PICK it goes back to LIST first.
+func show_view(to: StringName) -> void:
+	if not ItemsMenuModel.VIEWS.has(to):
+		return
+	level = Level.LIST
+	_notice = {}
+	if to != model.view:
+		model.view = to
+		_list.replace_rows(model.rows())
+		_list.set_cursor(0, false)
+	_render()
+
+
+func tab_label(of_view: StringName) -> Label:
+	return _tabs.get(of_view) as Label
+
+
+## Steps the sort (the bag's LIST only), keeping the cursor on the same item.
+func change_sort(step: int) -> void:
+	if level != Level.LIST or model.view != ItemsMenuModel.VIEW_BAG:
 		return
 	var keep := current_item()
 	_notice = {}
@@ -184,6 +215,7 @@ func _build_page() -> void:
 	_sort.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	_sort.mouse_filter = Control.MOUSE_FILTER_STOP
 	_sort.gui_input.connect(_on_sort_input)
+	_build_tabs(_d.get("tabs", {}))
 	var lm: Dictionary = _d.get("list", {})
 	_list = _menu_page(lm, LIST_ID, "", int(HudLayout.num(lm, "max_rows")))
 	_list.row_hovered.connect(_on_hovered.bind(Level.LIST))
@@ -198,6 +230,20 @@ func _build_page() -> void:
 	_preview.vertical_alignment = VERTICAL_ALIGNMENT_TOP
 	_refresh_list()
 	_render()
+
+
+## One clickable label per view, side by side from the tabs rect's left edge.
+func _build_tabs(tm: Dictionary) -> void:
+	var r := HudLayout.rect_of(tm)
+	var x := r.position.x
+	for v in ItemsMenuModel.VIEWS:
+		var l := _label(&"HeaderLabel", Rect2(x, r.position.y, 0.0, r.size.y))
+		l.text = model.view_label(v)
+		l.size.x = l.get_minimum_size().x
+		l.mouse_filter = Control.MOUSE_FILTER_STOP
+		l.gui_input.connect(_on_tab_input.bind(v))
+		_tabs[v] = l
+		x += l.size.x + HudLayout.num(tm, "gap")
 
 
 func _build_detail(dm: Dictionary) -> void:
@@ -232,13 +278,19 @@ func _refresh_list(keep: StringName = &"") -> void:
 
 func _render() -> void:
 	var picking := level == Level.PICK
+	var bag := model.view == ItemsMenuModel.VIEW_BAG
 	_sort.text = model.sort_text()
+	_sort.visible = bag
+	for v: StringName in _tabs:
+		(_tabs[v] as Label).add_theme_color_override(
+			&"font_color", _c(&"focus_gold" if v == model.view else &"text_dim")
+		)
 	_list.set_dimmed(picking)
 	_picker.visible = picking
 	for l: Label in [_name, _held, _desc, _use]:
 		l.visible = not picking
 	_preview.visible = picking
-	_help.text = tr("ITEMS_MENU_HELP_PICK" if picking else "ITEMS_MENU_HELP")
+	_help.text = tr("ITEMS_MENU_HELP_PICK" if picking else ("ITEMS_MENU_HELP" if bag else "ITEMS_MENU_HELP_KEY"))
 	if picking:
 		_render_pick()
 	else:
@@ -260,6 +312,8 @@ func _render_item() -> void:
 	var line := _notice if not _notice.is_empty() else model.item_line(iid)
 	_use.text = str(line["text"])
 	_set_role(_use, bool(line["ok"]))
+	if model.view == ItemsMenuModel.VIEW_KEY:
+		_use.add_theme_color_override(&"font_color", _c(&"text_dim"))  # kept, not refused
 
 
 func _render_pick() -> void:
@@ -327,15 +381,6 @@ func _move(delta: int) -> void:
 		_render()
 
 
-func _page_step(direction: int) -> void:
-	if level != Level.LIST or _list.row_count() == 0:
-		return
-	var rows := int(HudLayout.num(_d.get("list", {}), "max_rows"))
-	_notice = {}
-	_list.set_cursor(clampi(_list.cursor + direction * rows, 0, _list.row_count() - 1), false)
-	_render()
-
-
 ## -1 / 1 for a mouse wheel turn up / down, else 0.
 static func _wheel(event: InputEvent) -> int:
 	var mb := event as InputEventMouseButton
@@ -350,6 +395,12 @@ func _on_sort_input(event: InputEvent) -> void:
 	var mb := event as InputEventMouseButton
 	if mb != null and mb.pressed and mb.button_index == MOUSE_BUTTON_LEFT:
 		change_sort(1)
+
+
+func _on_tab_input(event: InputEvent, of_view: StringName) -> void:
+	var mb := event as InputEventMouseButton
+	if mb != null and mb.pressed and mb.button_index == MOUSE_BUTTON_LEFT:
+		show_view(of_view)
 
 
 func _on_hovered(_index: int, page_level: Level) -> void:
@@ -369,3 +420,8 @@ func _on_clicked(index: int, page_level: Level) -> void:
 	(_list if level == Level.LIST else _picker).set_cursor(index, false)
 	_render()
 	accept()
+
+
+## M2-AUD-15 (audio listens, never edits; ADR 0031): true while the line on show is a refused use.
+func is_refused() -> bool:
+	return not _notice.is_empty() and not bool(_notice.get("ok", true))

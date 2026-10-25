@@ -1,5 +1,5 @@
 keys,en
-LATTICE_MENU_HELP,"Arrows: choose a node · Confirm: walk, wake or open · Page Up / Page Down: hero · Cancel: back"
+LATTICE_MENU_HELP,"Arrows: choose a node · Confirm: walk, wake or open · Page Up / Page Down or the shoulders: hero · Cancel: back"
 LATTICE_MENU_HERO_FMT,‹ {name} ›   {i} of {n}
 LATTICE_MENU_POINTS_FMT,Movement: {n}
 LATTICE_MENU_FACETS_FMT,Facets held: {list}
@@ -56,3 +56,14 @@ LATTICE_MENU_LEGEND_NEW_FMT,Not yet woken: {n} movement to enter
 LATTICE_MENU_LEGEND_ABILITY,Inner frame: teaches a skill
 LATTICE_MENU_LEGEND_GATE,Sealed gate: opens with a Key Facet
 LATTICE_MENU_LEGEND_HERE_FMT,Where {name} stands
+LATTICE_MENU_GATE_NO_WAY,"No open way reaches this gate: every node beside it lies behind another sealed gate."
+LATTICE_MENU_GATE_TOO_FAR_FMT,"Not enough movement: walking beside this gate costs {cost}, and {name} has {have}."
+LATTICE_MENU_PLAN_GATE_WALK_FMT,Walk beside the gate for {cost} movement; {left} left after.
+LATTICE_MENU_PLAN_GATE_WALK_FREE,"Walk beside the gate free: the way is already woken."
+LATTICE_MENU_PLAN_GATE_KEY_FMT,"Then open it with {need} {facet}."
+LATTICE_MENU_PLAN_GATE_NO_KEY_FMT,"Opening it then needs {need} {facet}, and the party holds {held}."
+LATTICE_MENU_CONFIRM_GATE_WALK_FMT,Walk beside the gate ({cost} movement)
+LATTICE_MENU_CONFIRM_GATE_WALK_FREE,Walk beside the gate (free)
+LATTICE_MENU_OVERVIEW_FMT,Whole board ({key})
+LATTICE_MENU_OVERVIEW_BACK_FMT,Back to the cursor ({key})
+CTRL_ACT_LATTICE_OVERVIEW,Lattice: whole board

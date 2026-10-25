@@ -24,6 +24,7 @@ BARK = "res://game/shaders/vegetation/vegetation_bark.gdshader"
 NACRE = "res://game/shaders/environment/env_nacre_inlay.gdshader"
 SPILL = "res://game/shaders/environment/env_water_spill.gdshader"
 FOLIAGE = "res://game/shaders/vegetation/vegetation_foliage.gdshader"
+GROUND = "res://game/shaders/environment/env_ground.gdshader"
 
 
 def hexc(h: str, a: float = 1.0) -> str:
@@ -52,17 +53,27 @@ def stone(albedo: str, normal: str, tile: tuple[float, float], **kw) -> dict:
 
 
 MATERIALS: dict[str, dict] = {
+    # M2 final pass (env-art): per-block value spread 0.2 and a deeper cavity, so dry-stacked blocks
+    # read one by one; the spray-zone salt is thinner on village walls (it whitened them to plaster).
     "kit_coral_stone": stone("coral_stone_albedo.png", "coral_stone_normal.png", (1.2, 1.2), base_triplanar=True,
-                             normal_strength=1.3, roughness_base=0.86, cavity_darken=0.2, ao_strength=0.5),
+                             normal_strength=1.5, roughness_base=0.86, cavity_darken=0.38, ao_strength=0.75,
+                             variation_value=0.2, salt_coverage="Vector2(0.15, 0.4)"),
     "kit_coral_concrete": stone("coral_concrete_albedo.png", "coral_concrete_normal.png", (2.0, 2.0),
-                                base_triplanar=True, normal_strength=1.1, roughness_base=0.8, cavity_darken=0.4,
-                                barnacle_coverage=0.65, salt_coverage="Vector2(0.4, 0.7)"),
-    # The Shell Shrine's dressed coral limestone (M2-ENV-03, haluna.md §3.3): fresher than the causeway's,
-    # because the place is tended; dry inside (no algae, barnacles or spray salt), shallow pits.
-    "kit_shrine_stone": stone("coral_stone_albedo.png", "coral_stone_normal.png", (0.6, 0.6), base_triplanar=True,
-                              col_tint=hexc("#F6F1E6"), normal_strength=0.7, roughness_base=0.82, cavity_darken=0.12,
-                              erosion_pit_darken=0.1, ao_strength=0.55, variation_value=0.06, use_algae=False,
-                              use_barnacles=False, use_salt=False, moss_min_height_m=40.0),
+                                base_triplanar=True, normal_strength=1.1, roughness_base=0.8, cavity_darken=0.5,
+                                barnacle_coverage=0.65, salt_coverage="Vector2(0.15, 0.35)",
+                                algae_coverage="Vector2(0.6, 0.95)", variation_value=0.16,
+                                # Drowned a thousand years (M2 final pass): greyed below lit_ceramic, so
+                                # the ruins read as old stone in the sea, not as glowing white posts.
+                                col_tint=hexc("#D2D4CB")),
+    # M2-ENV-09 (Art Director): coral-limestone courses, not beige ashlar: the Haluna stone's holes and
+    # two tones in the dressed variant (`coral_dressed`: pores and grain, few holes, so floor and vault don't blotch; a 0.6 m tile, because at 1.2 m S04's close-up showed single texels), a per-block spread, a soft cavity; tinted a
+    # touch cool, because the warm stone was bouncing the oculus sun into a brown hall (the brief: cool
+    # after the glare). Still lighter and cleaner than the village (no algae, barnacles or salt indoors).
+    "kit_shrine_stone": stone("coral_dressed_albedo.png", "coral_dressed_normal.png", (0.6, 0.6),
+                              base_triplanar=True, col_tint=hexc("#F2F3F0"), normal_strength=1.0, roughness_base=0.84,
+                              cavity_darken=0.22, erosion_pit_darken=0.14, ao_strength=0.65, variation_value=0.12,
+                              variation_warmth=0.02, use_algae=False, use_barnacles=False, use_salt=False,
+                              moss_min_height_m=40.0),
     "kit_mortar_white": stone("coral_stone_albedo.png", "coral_stone_normal.png", (0.9, 0.9), base_triplanar=True,
                               normal_strength=0.35, roughness_base=0.9, col_paint=hexc("#E6E1D6"), paint_cover=0.97,
                               cavity_darken=0.04, erosion_pit_darken=0.05, ao_strength=0.4),
@@ -81,15 +92,29 @@ MATERIALS: dict[str, dict] = {
     "kit_timber": stone("timber_albedo.png", "timber_normal.png", (0.4, 1.6), base_triplanar=False,
                         col_tint=hexc("#CFCDC8"), normal_strength=1.2, roughness_base=0.8, specular_base=0.3,
                         cavity_darken=0.45, variation_value=0.24, variation_warmth=0.03, moss_min_height_m=1.0),
+    # The lintel-gull carvings (M2 final pass): the loft UVs stretched the board grain into hard
+    # stripes (H03 gull L p05 0.20 .. p95 0.78). Triplanar grain at carving scale, sun-silvered towards
+    # timber_weathered +1, with a soft cavity: one carved piece of grey driftwood, not striped plywood.
+    "kit_carved_wood": stone("timber_albedo.png", "timber_normal.png", (0.25, 0.5), base_triplanar=True,
+                             triplanar_sharpness=6.0, col_tint=hexc("#E4E0DA"), normal_strength=0.7,
+                             roughness_base=0.78, specular_base=0.3, cavity_darken=0.25, variation_value=0.06,
+                             variation_warmth=0.02, use_algae=False, use_barnacles=False, moss_min_height_m=3.0),
     "kit_thatch": stone("thatch_albedo.png", "thatch_normal.png", (1.6, 1.6), base_triplanar=False,
-                        normal_strength=1.4, roughness_base=0.95, specular_base=0.2, use_algae=False,
+                        # A blue-weighted gain (measured, M2 final pass): the roof rendered at Oklab C 0.098
+                        # against thatch's 0.070-0.079 on screen; this brings it back onto the swatch.
+                        col_tint="Color(1.0, 1.04, 1.16, 1)",
+                        normal_strength=1.8, roughness_base=0.95, specular_base=0.2, cavity_darken=0.5,
+                        variation_value=0.18, use_algae=False,
                         use_barnacles=False, use_salt=False, moss_normal_y=0.5),
     "kit_roof_tile": stone("roof_tile_albedo.png", "roof_tile_normal.png", (2.0, 2.4), base_triplanar=False,
                            normal_strength=1.0, roughness_base=0.62, specular_base=0.45, cavity_darken=0.2,
                            use_algae=False, use_barnacles=False, moss_normal_y=0.75),
+    # Pandanus infill weathers grey-brown and unevenly (M2 final pass): a sun-greyed tint, per-panel
+    # value spread and a deeper weave cavity, so a house wall is not one flat ochre card at H02 range.
     "kit_woven_panel": stone("woven_panel_albedo.png", "woven_panel_normal.png", (0.8, 0.8), base_triplanar=False,
-                             normal_strength=1.0, roughness_base=0.9, specular_base=0.25, use_algae=False,
-                             use_barnacles=False, use_moss=False),
+                             col_tint=hexc("#DCD3C6"), normal_strength=1.4, roughness_base=0.9, specular_base=0.25,
+                             cavity_darken=0.5, variation_value=0.22, use_algae=False, use_barnacles=False,
+                             use_moss=False),
     "kit_lashing": stone("woven_panel_albedo.png", "woven_panel_normal.png", (0.12, 0.12), base_triplanar=False,
                          col_tint=hexc("#9C7E5A"), normal_strength=1.0, roughness_base=0.95, use_algae=False,
                          use_barnacles=False, use_moss=False),
@@ -165,6 +190,39 @@ STANDARD: dict[str, dict] = {
                        "metallic_specular": 0.7},
 }
 
+# Route and village props (M2-ENV-08).
+MATERIALS["kit_earthenware"] = stone("coral_concrete_albedo.png", "coral_concrete_normal.png", (0.6, 0.6),
+                                     base_triplanar=True, col_paint=hexc("#A8573A"), paint_cover=0.86,  # laterite
+                                     normal_strength=0.6, roughness_base=0.82, cavity_darken=0.3, variation_value=0.14,
+                                     use_algae=False, use_barnacles=False, use_moss=False)
+# Ancient causeway stone (haluna.md §2.2): the village coral greyed and darkened by a thousand tides,
+# heavy algae and barnacle bands, little salt crust (it is awash at every high water).
+MATERIALS["kit_causeway_stone"] = stone("coral_stone_albedo.png", "coral_stone_normal.png", (1.2, 1.2),
+                                        base_triplanar=True, col_tint=hexc("#C4C1B8"), normal_strength=1.8,
+                                        roughness_base=0.88, cavity_darken=0.45, ao_strength=0.8, variation_value=0.18,
+                                        salt_coverage="Vector2(0.1, 0.3)", algae_coverage="Vector2(0.55, 0.9)",
+                                        barnacle_coverage=0.7)
+# The Saltgrass Causeway's flats (M2-ENV-10): env_ground over the zone mesh's masks (R lane, G turf,
+# B seagrass, A rubble). The lane is the causeway's packed bed; the stone shows through as old paving.
+MATERIALS["kit_causeway_ground"] = {"shader": GROUND, "params": {
+    "tex_sand": ("tex", TEX + "sand_albedo.png"), "tex_sand_normal": ("tex", TEX + "sand_normal.png"),
+    "tex_stone": ("tex", TEX + "coral_stone_albedo.png"), "tex_stone_normal": ("tex", TEX + "coral_stone_normal.png"),
+    "tex_detail": ("tex", TEX + "weathering_detail.png"),
+    "col_lane": "Color(0.7, 0.66, 0.58, 1)", "col_turf": "Color(0.6, 0.57, 0.4, 1)",
+    # The tide left an hour ago: the flats stay wet-dark with a sheen up to ~0.6 m above the water and damp
+    # well beyond, so they read as tidal flats, not a dry beach.
+    "wet_band_m": 0.6, "damp_band_m": 1.3, "wet_roughness": 0.18,
+    # Tidal mud, not beach sand: sand_wet #B59D74 darkened and greyed, so the flats read dark and wet
+    # against the pale dry banks and the slab path (in full sun sand_wet alone renders as pale as a beach).
+    "col_sand_wet": hexc("#8A7D68"), "sand_macro_variation": 0.18}}
+STANDARD["kit_brass"] = {"albedo_color": hexc("#B08D57"), "metallic": 0.9, "roughness": 0.45}
+STANDARD["kit_dried_fish"] = {"albedo_color": hexc("#7A6550"), "roughness": 0.55, "metallic_specular": 0.6}  # sun-dried, tannin-dark
+STANDARD["kit_lamp_flame"] = {"albedo_color": hexc("#FFB16E"), "emission_enabled": "true",  # oil_lamp
+                              "emission": hexc("#FFB16E"), "emission_energy_multiplier": 0.6, "roughness": 1.0}
+# haluna.md §2.2: the Lit Age ring's crack glints glimmer_bound at emission 0.6, steady (bound light).
+STANDARD["kit_glimmer_glint"] = {"albedo_color": hexc("#4FB3B0"), "emission_enabled": "true",
+                                 "emission": hexc("#4FB3B0"), "emission_energy_multiplier": 0.6, "roughness": 0.3}
+
 
 def _value(v) -> str:
     if isinstance(v, bool):
@@ -218,6 +276,58 @@ def main(argv: list[str] | None = None) -> int:
         write_standard_material(out / f"{name}.tres", name, spec)
     print(f"KIT_MAT {len(MATERIALS) + len(STANDARD)} materials -> {out}")
     return 0
+
+
+# ---- M2-ENV-07 (appended by env-art): the hero banyan and the windbreak tree (trees.py) ----------
+# Bark and leaves of one tree share every wind uniform (vegetation.md: the primary sway must match, and
+# the secondary bob too, because twigs hand their bob on to the sprays they carry). Textures are the
+# vegetation stream's (textures.py "trees"): one leaf atlas for both trees, one banyan bark.
+def _tree_wind(height_m: float, response: float) -> dict:
+    return {"wind_response": response, "plant_height_m": height_m, "sway_lean": 0.005, "sway_amplitude": 0.004,
+            "sway_frequency_hz": 0.15, "gust_contrast": 1, "secondary_amplitude_m": 0.06,
+            "secondary_frequency_hz": 0.6}
+
+
+def _tree_bark(height_m: float, response: float, base: str, top: str, **kw) -> dict:
+    d = {"tex_albedo": ("tex", VEG_TEX + "banyan_bark_albedo.png"),
+         "tex_normal": ("tex", VEG_TEX + "banyan_bark_normal.png"), "flutter_amplitude_m": 0,
+         "col_base": base, "col_top": top, "normal_strength": 1.4, "roughness_value": 0.88, "specular_value": 0.3,
+         "ao_strength": 0.6}
+    d.update(_tree_wind(height_m, response))
+    d.update(kw)
+    return {"shader": BARK, "params": d}
+
+
+def _tree_leaf(height_m: float, response: float, **kw) -> dict:
+    d = dict(_FOLIAGE)
+    d.update({"tex_albedo": ("tex", VEG_TEX + "coastal_tree_leaf_albedo.png"),
+              "tex_normal_trans": ("tex", VEG_TEX + "coastal_tree_leaf_normal.png"),
+              "flutter_amplitude_m": 0.012, "flutter_frequency_hz": 3, "underside_lighten": 0.08,
+              "mip_coverage_boost": 0.35, "roughness_value": 0.42, "specular_value": 0.5, "ao_in_albedo": 0.55,
+              "col_tint_variation": "Color(1.08, 1.05, 0.8, 1)", "tint_variation": 0.3})
+    d.update(_tree_wind(height_m, response))
+    d.update(kw)
+    return {"shader": FOLIAGE, "params": d}
+
+
+# The banyan's old bark is a pale grey-brown (~#8C8477 painted); the hanging and young prop roots are
+# warmer and a little darker (review-sweep-F S4: neither white sticks nor black poles).
+MATERIALS["kit_banyan_bark"] = _tree_bark(14, 0.15, "Color(0.92, 0.9, 0.88, 1)", "Color(1, 0.98, 0.95, 1)")
+MATERIALS["kit_banyan_root"] = _tree_bark(14, 0.15, "Color(0.84, 0.72, 0.6, 1)", "Color(0.92, 0.8, 0.68, 1)",
+                                          roughness_value=0.8)
+MATERIALS["kit_banyan_leaf"] = _tree_leaf(14, 0.15, col_tint=hexc("#F2F5EC"))
+# The windbreak tree: foliage_shadow-heavy, thick leaves (less transmission), dark bark.
+MATERIALS["kit_windbreak_bark"] = _tree_bark(8, 0.2, "Color(0.5, 0.47, 0.44, 1)", "Color(0.58, 0.55, 0.5, 1)")
+MATERIALS["kit_windbreak_leaf"] = _tree_leaf(8, 0.2, col_tint=hexc("#D6DED8"), translucency=0.45,
+                                             roughness_value=0.38)
+
+# ---- M2-ENV-11 (appended by env-art): the battle arenas' ground (arenas.py) -----------------------
+# The zone ground shader (the Haluna terrain's GroundMat) on the kit's ground meshes: masks in the vertex
+# colours (R lane, G turf, B seagrass, A reef rubble), the wet band from the live water height.
+MATERIALS["kit_ground"] = {"shader": "res://game/shaders/environment/env_ground.gdshader", "params": {
+    "tex_sand": ("tex", TEX + "sand_albedo.png"), "tex_sand_normal": ("tex", TEX + "sand_normal.png"),
+    "tex_stone": ("tex", TEX + "coral_stone_albedo.png"), "tex_stone_normal": ("tex", TEX + "coral_stone_normal.png"),
+    "tex_detail": ("tex", TEX + "weathering_detail.png")}}
 
 
 if __name__ == "__main__":

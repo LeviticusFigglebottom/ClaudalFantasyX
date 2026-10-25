@@ -8,7 +8,10 @@ extends RefCounted
 ##
 ##   BattleRequest.start(&"ch02_tideline", &"ch02/haluna", &"BattleReturn", &"ch02_tideline_won", &"BeforeBattle")
 ##
-## The party and the rng seed default to game/data/flow/first_playable.json "field_battle".
+## The party is the save's formation (Game.state.party_ids / reserve_ids, set on the field menu's
+## Formation page, M2-MNU-07) once the party has gathered, else first_playable.json "field_battle"'s
+## stand-in; the rng seed comes from "field_battle". A scripted fight that names its own party sets
+## `active` / `reserve` after make() (ZoneStory's "party" steps, the first verse).
 
 ## The field battle scene start() opens when the data file names none.
 const DEFAULT_SCENE := "res://game/flow/field_battle.tscn"
@@ -49,7 +52,8 @@ var objective_flag: StringName = &""
 var objective_start := 0
 
 
-## A request with the data file's party and seed; nothing is recorded or opened.
+## A request with the saved formation (or the data file's party) and the data file's seed; nothing
+## is recorded or opened.
 static func make(
 	encounter_id: StringName,
 	location: StringName,
@@ -62,6 +66,9 @@ static func make(
 	r.encounter = encounter_id
 	r.active = FirstPlayableConfig.ids(cfg.get(KEY_ACTIVE, []))
 	r.reserve = FirstPlayableConfig.ids(cfg.get(KEY_RESERVE, []))
+	if not Game.state.party_ids.is_empty():
+		r.active = Game.state.party_ids.duplicate()
+		r.reserve = Game.state.reserve_ids.duplicate()
 	r.rng_seed = int(cfg.get(KEY_SEED, 0))
 	r.return_location = location
 	r.return_spawn = spawn

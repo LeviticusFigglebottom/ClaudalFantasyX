@@ -1,4 +1,4 @@
-"""M2-ENV-10: the Shell Shrine's shipped VoxelGI states (assets/levels/ch03/shell_shrine/shrine_gi_*.res,
+"""M2-ENV-13: the Shell Shrine's shipped VoxelGI states (assets/levels/ch03/shell_shrine/shrine_gi_*.res,
 made by tools/shrine/bake_shrine_gi.tscn) are a function of these inputs. `--write` records their hash next
 to the baked data after a rebake; `--check` (and tools/tests/test_shrine_gi_bake.py) fails when an input
 changed since, i.e. the shipped lighting is stale.

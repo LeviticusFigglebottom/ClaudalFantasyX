@@ -1,6 +1,8 @@
 {
   "version": 1,
-  "doc": "Dialogue voices (M3-AUD-07; SPEC §16 Q4: no voice acting yet, but ready for it; docs/kb/tech/audio_runtime.md \"Voices\"). VoiceAudio (game/audio/voice_audio.gd) listens to each DialogueBox and plays the speaker's blips in place of the box's one shared blip. speakers: a speakers.json id (every one needs a row; validate_data checks) -> blips (sfx row ids on the Voice bus; the blips cycle through the set), pitch (a pitch scale on top of the row's own timbre), rate_ms (the shortest gap between two blips; a blip sooner than that is dropped), jitter (each blip is pitched within +- this fraction, from a seeded generator), volume_db (added to the text box's blip_volume_db). default: the voice of an unknown speaker. vo: recorded lines, for later. A line's file is its compiled `voice` field when that is set, else `pattern` with {speaker} (the speaker, or the narrator identity of narration, else the `narrator` value) and {line_id}. When the file exists it plays on `bus` and, with suppress_blips, the line plays no blips; a missing file falls back to the blips.",
+  "doc": "Dialogue voices (M3-AUD-07; SPEC §16 Q4: no voice acting yet, but ready for it; docs/kb/tech/audio_runtime.md \"Voices\"). VoiceAudio (game/audio/voice_audio.gd) listens to each DialogueBox and plays the speaker's blips in place of the box's one shared blip. speakers: a speakers.json id (every one needs a row; validate_data checks) -> blips (sfx row ids on the Voice bus; the blips cycle through the set), pitch (a pitch scale on top of the row's own timbre), rate_ms (the shortest gap between two blips; a blip sooner than that is dropped), jitter (each blip is pitched within +- this fraction, from a seeded generator), volume_db (added to the text box's blip_volume_db). default: the voice of an unknown speaker. vo: recorded lines, for later. A line's file is its compiled `voice` field when that is set, else `pattern` with {speaker} (the speaker, or the narrator identity of narration, else the `narrator` value) and {line_id}. When the file exists it plays on `bus` and, with suppress_blips, the line plays no blips; a missing file falls back to the blips. pace (M3-AUD-21): syllable (the default) blips once per syllable, on the box's mouth_flap opening (each vowel group, which the lip sync also follows), so blips rest through the reveal's punctuation pauses; letter blips once per blip the box counts (text_box.json blip_every_n_chars). mix_db (M3-AUD-23): added to every blip, on top of the voice's volume_db and the text box's blip_volume_db; set from the mix report (docs/kb/audio/mix_report.md, 'Blip streams') so a line's blip stream sits a few LU under the music ducked for dialogue. pending: the speaker is not in this branch's speakers.json yet (claude/m2-slice's Ch4-Ch9 cast); data_check skips the speaker-exists check for that row until it lands, then the flag comes off.",
+  "pace": "syllable",
+  "mix_db": 6.0,
   "default": {
     "blips": [
       "voice_soft"
@@ -146,91 +148,91 @@
     },
     "cook": {
       "blips": [
-        "voice_soft"
+        "voice_bright"
       ],
-      "pitch": 0.94,
-      "rate_ms": 60,
-      "jitter": 0.05,
+      "pitch": 0.9,
+      "rate_ms": 55,
+      "jitter": 0.08,
       "volume_db": 0.0
     },
     "kell": {
       "blips": [
-        "voice_soft"
+        "voice_low"
       ],
-      "pitch": 0.82,
-      "rate_ms": 60,
+      "pitch": 1.15,
+      "rate_ms": 70,
       "jitter": 0.05,
       "volume_db": 0.0
     },
     "osu": {
       "blips": [
-        "voice_soft"
+        "voice_breathy"
       ],
-      "pitch": 0.85,
-      "rate_ms": 60,
-      "jitter": 0.05,
+      "pitch": 0.9,
+      "rate_ms": 75,
+      "jitter": 0.04,
       "volume_db": 0.0
     },
     "sabe": {
       "blips": [
-        "voice_soft"
+        "voice_low"
       ],
-      "pitch": 0.8,
-      "rate_ms": 60,
-      "jitter": 0.05,
+      "pitch": 1.05,
+      "rate_ms": 80,
+      "jitter": 0.03,
       "volume_db": 0.0
     },
     "scaleman": {
       "blips": [
-        "voice_soft"
+        "voice_low"
       ],
-      "pitch": 0.86,
+      "pitch": 0.95,
       "rate_ms": 60,
-      "jitter": 0.05,
+      "jitter": 0.06,
       "volume_db": 0.0
     },
     "skipper_sadi": {
       "blips": [
-        "voice_soft"
+        "voice_bright"
       ],
-      "pitch": 1.02,
-      "rate_ms": 60,
-      "jitter": 0.05,
+      "pitch": 1.0,
+      "rate_ms": 55,
+      "jitter": 0.07,
       "volume_db": 0.0
     },
     "tavi": {
       "blips": [
-        "voice_soft"
+        "voice_child"
       ],
-      "pitch": 0.9,
-      "rate_ms": 60,
-      "jitter": 0.05,
+      "pitch": 1.0,
+      "rate_ms": 55,
+      "jitter": 0.08,
       "volume_db": 0.0
     },
     "ione": {
       "blips": [
-        "voice_soft"
+        "voice_low"
       ],
-      "pitch": 0.94,
-      "rate_ms": 60,
-      "jitter": 0.05,
+      "pitch": 1.05,
+      "rate_ms": 80,
+      "jitter": 0.03,
       "volume_db": 0.0
     },
     "poolkeeper": {
       "blips": [
-        "voice_soft"
+        "voice_breathy"
       ],
-      "pitch": 0.84,
-      "rate_ms": 60,
-      "jitter": 0.05,
+      "pitch": 0.86,
+      "rate_ms": 75,
+      "jitter": 0.04,
       "volume_db": 0.0
     },
     "boatman": {
       "blips": [
-        "voice_soft"
+        "voice_low"
       ],
-      "pitch": 0.88,
-      "rate_ms": 60,
+      "pitch": 1.0,
+      "rate_ms": 65,
       "jitter": 0.05,
       "volume_db": 0.0
     },
@@ -238,35 +240,35 @@
       "blips": [
         "voice_soft"
       ],
-      "pitch": 0.8,
-      "rate_ms": 60,
-      "jitter": 0.05,
+      "pitch": 0.9,
+      "rate_ms": 50,
+      "jitter": 0.12,
       "volume_db": 0.0
     },
     "garo": {
       "blips": [
-        "voice_soft"
+        "voice_low"
       ],
-      "pitch": 0.74,
-      "rate_ms": 60,
-      "jitter": 0.05,
+      "pitch": 0.85,
+      "rate_ms": 75,
+      "jitter": 0.04,
       "volume_db": 0.0
     },
     "tender": {
       "blips": [
-        "voice_soft"
+        "voice_breathy"
       ],
-      "pitch": 0.92,
-      "rate_ms": 60,
-      "jitter": 0.05,
+      "pitch": 0.95,
+      "rate_ms": 70,
+      "jitter": 0.03,
       "volume_db": 0.0
     },
     "ferryman": {
       "blips": [
-        "voice_soft"
+        "voice_low"
       ],
-      "pitch": 0.8,
-      "rate_ms": 60,
+      "pitch": 0.95,
+      "rate_ms": 70,
       "jitter": 0.05,
       "volume_db": 0.0
     },
@@ -275,80 +277,80 @@
         "voice_soft"
       ],
       "pitch": 1.0,
-      "rate_ms": 60,
-      "jitter": 0.05,
+      "rate_ms": 55,
+      "jitter": 0.1,
       "volume_db": 0.0
     },
     "ferrymaster": {
       "blips": [
-        "voice_soft"
+        "voice_low"
       ],
-      "pitch": 0.88,
-      "rate_ms": 60,
+      "pitch": 0.9,
+      "rate_ms": 65,
       "jitter": 0.05,
       "volume_db": 0.0
     },
     "marra": {
       "blips": [
-        "voice_soft"
+        "voice_bright"
       ],
-      "pitch": 0.86,
-      "rate_ms": 60,
-      "jitter": 0.05,
+      "pitch": 1.04,
+      "rate_ms": 55,
+      "jitter": 0.06,
       "volume_db": 0.0
     },
     "hobb": {
       "blips": [
-        "voice_soft"
+        "voice_low"
       ],
-      "pitch": 0.78,
-      "rate_ms": 60,
-      "jitter": 0.05,
+      "pitch": 0.92,
+      "rate_ms": 70,
+      "jitter": 0.04,
       "volume_db": 0.0
     },
     "fenn": {
       "blips": [
-        "voice_soft"
+        "voice_breathy"
       ],
-      "pitch": 0.74,
-      "rate_ms": 60,
+      "pitch": 0.8,
+      "rate_ms": 85,
       "jitter": 0.05,
       "volume_db": 0.0
     },
     "stillguard": {
       "blips": [
-        "voice_soft"
+        "voice_low"
       ],
-      "pitch": 0.82,
-      "rate_ms": 60,
-      "jitter": 0.05,
+      "pitch": 0.85,
+      "rate_ms": 75,
+      "jitter": 0.02,
       "volume_db": 0.0
     },
     "inquisitor": {
       "blips": [
-        "voice_soft"
+        "voice_low"
       ],
-      "pitch": 0.76,
-      "rate_ms": 60,
-      "jitter": 0.05,
+      "pitch": 0.78,
+      "rate_ms": 85,
+      "jitter": 0.02,
       "volume_db": 0.0
     },
     "clerk": {
       "blips": [
-        "voice_soft"
+        "voice_bright"
       ],
-      "pitch": 0.96,
+      "pitch": 0.92,
       "rate_ms": 60,
-      "jitter": 0.05,
+      "jitter": 0.03,
       "volume_db": 0.0
     },
     "wright": {
       "blips": [
-        "voice_soft"
+        "voice_bright"
       ],
-      "pitch": 1.04,
-      "rate_ms": 60,
-      "jitter": 0.05,
+      "pitch": 1.02,
+      "rate_ms": 55,
+      "jitter": 0.06,
       "volume_db": 0.0
     },
     "ivo": {

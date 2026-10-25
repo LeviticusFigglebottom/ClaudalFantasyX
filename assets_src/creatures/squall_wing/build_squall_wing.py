@@ -48,6 +48,11 @@ LEAD = (  # the leading edge, by x
     (0.03, 0.212, 0.075), SHOULDER, ELBOW, WRIST, (0.70, 0.305, 0.04), (0.86, 0.255, -0.06), TIP,
 )
 CHORD = ((0.03, 0.21), (0.32, 0.15), (0.56, 0.12), (0.80, 0.075), (1.0, 0.012))
+# the rents torn through each wing: (span x of the centre, chord fraction of the centre, length m, angle from
+# chordwise toward the tip in degrees, half-width m); the right wing faces the camera and is torn worst
+RENTS_R = ((0.16, 0.5, 0.13, 12.0, 0.03), (0.31, 0.5, 0.14, -14.0, 0.034), (0.46, 0.5, 0.12, 22.0, 0.03),
+           (0.58, 0.45, 0.09, 30.0, 0.022), (0.72, 0.4, 0.07, 38.0, 0.016))
+RENTS_L = ((0.22, 0.55, 0.12, -15.0, 0.026), (0.48, 0.5, 0.10, 20.0, 0.024), (0.66, 0.45, 0.07, 30.0, 0.016))
 HIP = (0.035, 0.12, -0.04)
 ANKLE = (0.04, 0.07, -0.20)
 
@@ -68,8 +73,12 @@ STATIONS = (
     (0.45, 0.258, 0.032, 0.032, 0.028),
     (0.47, 0.256, 0.000, 0.000, 0.000),
 )
+# the body's tears: (z of the centre, angle about the spine in degrees from the back, +90 the left flank,
+# length m, angle off the body's length in degrees, half-width m); most on the camera side (-x)
+BODY_TEARS = ((-0.06, -92.0, 0.16, 12.0, 0.03), (0.08, -128.0, 0.09, -25.0, 0.018),
+              (-0.18, -62.0, 0.08, 30.0, 0.015), (0.03, 100.0, 0.11, -12.0, 0.02), (-0.13, 138.0, 0.08, 18.0, 0.016))
 CORE_C = (0.0, 0.186, -0.03)
-CORE_R = (0.068, 0.05, 0.19)
+CORE_R = (0.026, 0.022, 0.10)  # small in the hollow, so the tears show depth before light
 
 
 def _lead(x):
@@ -109,37 +118,80 @@ def body(mesh: ck.Mesh, rig: ck.Rig) -> None:
     segs = 22
     zs = np.concatenate([np.linspace(-0.34, 0.18, 14), np.linspace(0.21, 0.47, 9)])
     cols = list(zip(*STATIONS))
-    a = np.arange(segs) * (2.0 * math.pi / segs)
-    s, c = np.sin(a), np.cos(a)
-    rows, centre = [], []
-    for z in zs:
-        cy, rx, top, bot = (float(np.interp(z, cols[0], cols[k])) for k in (1, 2, 3, 4))
-        ry = np.where(c >= 0.0, top, bot)
+
+    def loft(zv, av):
+        """The shell at length z and angle a about the spine (0 on the back, +pi/2 on the left flank)."""
+        cy, rx, top, bot = (np.interp(zv, cols[0], cols[k]) for k in (1, 2, 3, 4))
+        sv, cv = np.sin(av), np.cos(av)
+        ry = np.where(cv >= 0.0, top, bot)
         e = 0.9
-        rows.append(np.column_stack([rx * np.sign(s) * np.abs(s) ** e, cy + ry * np.sign(c) * np.abs(c) ** e,
-                                     np.full(segs, z)]))
-        centre.append(np.tile([0.0, cy, z], (segs, 1)))
-    P = np.vstack(rows)
-    C = np.vstack(centre)
-    T = gh._outward(P, ck.grid_tris(len(zs), segs, True), C)
+        return (np.column_stack([rx * np.sign(sv) * np.abs(sv) ** e, cy + ry * np.sign(cv) * np.abs(cv) ** e, zv]),
+                np.column_stack([np.zeros(len(zv)), cy, zv]))
+
+    Z = np.repeat(zs, segs)
+    A = np.tile(np.arange(segs) * (2.0 * math.pi / segs), len(zs))
+    T = ck.grid_tris(len(zs), segs, True)
+    # the tears: ragged lens-shaped rents ripped along the ribs, through to the hollow (most on the camera side,
+    # -x). Grid vertices inside a rent are pushed out onto its outline, and the triangles inside it dropped, so the
+    # coarse loft still cuts a clean torn shape. Measured on the surface: z, and arc length about the spine.
+    R0 = 0.075
+    Zn, An = Z.copy(), A.copy()
+    tear_d = np.full(len(Z), 9.0)
+    rents = []
+    for k, (zc, a_deg, length, ang, hw) in enumerate(BODY_TEARS):
+        ac = math.radians(a_deg)
+        dr = np.array([math.cos(math.radians(ang)), math.sin(math.radians(ang))])  # 0 deg: along the body
+        rents.append((zc, ac, length, dr, hw, k))
+
+    def rent_frame(zq, aq, zc, ac, length, dr):
+        q = np.column_stack([zq - zc, ((aq - ac + math.pi) % (2.0 * math.pi) - math.pi) * R0])
+        t = np.clip((q @ dr) / length + 0.5, 0.0, 1.0)
+        foot = (t[:, None] - 0.5) * (length * dr)
+        return q, t, foot
+
+    for zc, ac, length, dr, hw, k in rents:
+        q, t, foot = rent_frame(Zn, An, zc, ac, length, dr)
+        dvec = q - foot
+        d = np.linalg.norm(dvec, axis=1)
+        perp = np.array([-dr[1], dr[0]])
+        sgn = np.where(dvec @ perp >= 0.0, 1.0, -1.0)
+        jag = ck.value_noise(np.column_stack([t * 8.0, sgn * 3.0, np.full(len(t), float(k))]), SEED + 60 + k)
+        w = hw * np.sin(math.pi * t) ** 0.55 * (1.0 + 0.5 * jag) + 1e-4
+        inside = d < w
+        dirn = np.where((d > 1e-6)[:, None], dvec / np.maximum(d, 1e-9)[:, None], sgn[:, None] * perp)
+        qn = np.where(inside[:, None], foot + dirn * w[:, None], q)
+        Zn = zc + qn[:, 0]
+        An = ac + qn[:, 1] / R0
+        tear_d = np.minimum(tear_d, np.linalg.norm(qn - foot, axis=1) / w)
+    P, C = loft(Zn, An)
+    T = gh._outward(P, T, C)
     radial = P - C
     nrm = radial / np.maximum(np.linalg.norm(radial, axis=1, keepdims=True), 1e-9)
     # ridged like a keel and ribs showing through: the storm's idea of feathers
     rib = np.abs(np.sin(P[:, 2] * 70.0)) ** 6 * ck.smoothstep(-0.25, 0.15, P[:, 2]) * (1.0 - ck.smoothstep(0.15, 0.2, P[:, 2]))
     P = P + nrm * (0.004 * rib + ck.fbm(P * 22.0, SEED + 1) * 0.004)[:, None]
-    z = P[:, 2]
-    # the tears: ragged holes in the torso's flanks and belly, more on the camera side (-x)
-    torso = ck.smoothstep(-0.27, -0.18, z) * (1.0 - ck.smoothstep(0.12, 0.2, z))
-    flank = 1.0 - 0.5 * ck.smoothstep(0.6, 0.95, nrm[:, 1])
-    tear = ck.fbm(np.column_stack([P[:, 0] * 9.0, P[:, 1] * 14.0, z * 7.0]), SEED + 2) * torso * flank
-    tear = tear + 0.08 * torso * (P[:, 0] < 0.0)
-    cut = 0.11
-    tri_tear = tear[T].mean(axis=1)
-    T = T[tri_tear < cut]
-    edge = ck.smoothstep(0.04, cut, tear)
+    # drop the triangles inside a rent: centroid (on the rest grid) inside an outline, or all corners on one
+    tri_in = (tear_d < 1.02)[T].all(axis=1)
+    zc_t, ac_t = Z[T].mean(axis=1), np.angle(np.exp(1j * A[T]).mean(axis=1))
+    for zc, ac, length, dr, hw, k in rents:
+        q, t, foot = rent_frame(zc_t, ac_t, zc, ac, length, dr)
+        tri_in |= np.linalg.norm(q - foot, axis=1) < hw * np.sin(math.pi * t) ** 0.55
+    T = T[~tri_in]
+    # a rent, not a patch: the lips curl inward and darken (no glow on the shell itself, so the hole reads as a
+    # hole onto the dark inside); the light is a thin lit wall around each hole (the lip strip below)
+    lip = ck.smoothstep(1.8, 1.0, tear_d)
+    rag = ck.fbm(P * 60.0, SEED + 4)
+    P = P - nrm * (0.006 * lip * (0.6 + 0.4 * rag))[:, None]
     col = ck.mix(BLACK, PAL["abyss_navy"], (0.35 * ck.smoothstep(0.0, -0.8, nrm[:, 1]))[:, None])
-    col = ck.mix(col, SHEEN, (0.5 * rib)[:, None])
-    col = ck.mix(col, WOUND * 0.55, (0.85 * edge)[:, None])
+    col = ck.mix(col, SHEEN, (0.5 * rib * (1.0 - lip))[:, None])
+    col = col * (1.0 - 0.5 * lip)[:, None]
+    # the holes' outlines: edges used by one kept triangle (the loft's ends close on degenerate rows)
+    E = np.concatenate([T[:, [0, 1]], T[:, [1, 2]], T[:, [2, 0]]])
+    opp = np.concatenate([T[:, 2], T[:, 0], T[:, 1]])
+    key = np.sort(E, axis=1)
+    _, inv, cnt = np.unique(key, axis=0, return_inverse=True, return_counts=True)
+    open_e = (cnt[inv.reshape(-1)] == 1) & (np.linalg.norm(P[E[:, 0]] - P[E[:, 1]], axis=1) > 1e-6)
+    E, opp = E[open_e], opp[open_e]
     J_b, J_n, J_h, J_t = (rig.index(n) for n in ("body", "neck", "head", "tail"))
 
     def bones(Pv):
@@ -161,13 +213,49 @@ def body(mesh: ck.Mesh, rig: ck.Rig) -> None:
         W[head] = np.column_stack([1.0 - wh, wh])[head]
         return J, W
 
-    ck.finish(mesh, P, T, "shell", col, bones, wet=1.0, cavity=0.3 * rib + 0.3 * edge, emission=edge * 0.9)
+    ck.finish(mesh, P, T, "shell", col, bones, wet=1.0, cavity=0.3 * rib + 0.6 * lip)
 
-    # the held light inside: what the tears show (the weak point)
+    # the lit lip: a thin wall down from each hole's edge into the hollow, facing across the hole, glowing where
+    # it meets the shell and going dark with depth, so a tear reads as a lit rim around a dark opening
+    n_e = len(E)
+    a, b = P[E[:, 0]], P[E[:, 1]]
+    na, nb = nrm[E[:, 0]], nrm[E[:, 1]]
+    across = (a + b) * 0.5 - P[opp]  # from the shell's side of the edge into the hole
+    # two bands down the wall: a thin lit one at the lip, then the dark of the hollow
+    for d0, d1, h0, h1 in ((0.0, 0.0035, 1.0, 0.7), (0.0035, 0.02, 0.15, 0.0)):
+        Pl = np.vstack([a - na * d0, b - nb * d0, b - nb * d1, a - na * d1])
+        ar = np.arange(n_e)
+        Tl = np.vstack([np.column_stack([ar, ar + n_e, ar + 2 * n_e]),
+                        np.column_stack([ar, ar + 2 * n_e, ar + 3 * n_e])])
+        fn = np.cross(Pl[Tl[:, 1]] - Pl[Tl[:, 0]], Pl[Tl[:, 2]] - Pl[Tl[:, 0]])
+        Tl = np.where(((fn * np.tile(across, (2, 1))).sum(axis=1) >= 0.0)[:, None], Tl, Tl[:, ::-1])
+        hot = np.repeat([h0, h0, h1, h1], n_e)
+        cl = ck.mix(PAL["abyss_navy"] * 0.4, WOUND * 0.6, hot[:, None])
+        ck.finish(mesh, Pl, Tl, "shell", cl, bones, wet=0.5 * hot, cavity=1.0 - hot, emission=0.9 * hot)
+
+    # the hollow: an inner wall well inside the shell, wound inward, so a tear shows the dark far side of the
+    # cavity (its near side faces away and is culled) with the held light hanging in the depth
+    zi = np.linspace(-0.29, 0.19, 9)
+    segi = 12
+    ai = np.arange(segi) * (2.0 * math.pi / segi)
+    si, ci = np.sin(ai), np.cos(ai)
+    rows, centre = [], []
+    for z in zi:
+        cy, rx, top, bot = (float(np.interp(z, cols[0], cols[k])) for k in (1, 2, 3, 4))
+        ry = np.where(ci >= 0.0, top, bot) * 0.72
+        rows.append(np.column_stack([0.72 * rx * si, cy + ry * ci, np.full(segi, z)]))
+        centre.append(np.tile([0.0, cy, z], (segi, 1)))
+    Pi, Ci = np.vstack(rows), np.vstack(centre)
+    Ti = ck.flip(gh._outward(Pi, ck.grid_tris(len(zi), segi, True), Ci))
+    depth = ck.smoothstep(-0.29, -0.05, Pi[:, 2]) * (1.0 - ck.smoothstep(0.05, 0.19, Pi[:, 2]))
+    ci_col = ck.mix(PAL["abyss_navy"] * 0.3, PAL["deep_teal_shadow"] * 0.35, (0.6 * depth)[:, None])
+    ck.finish(mesh, Pi, Ti, "shell", ci_col, bones, cavity=1.0)
+
+    # the held light inside: what the tears show (the weak point), hanging in the dark of the hollow
     Pc, Tc = gh._ellipsoid(CORE_C, CORE_R, 8, 14)
-    glow = 0.75 + 0.25 * ck.fbm(Pc * 18.0, SEED + 3)
-    ck.finish(mesh, Pc, Tc, "core", ck.mix(PAL["deep_teal_shadow"], WOUND, glow[:, None]), J_b, wet=1.0,
-              emission=glow)
+    glow = ck.smoothstep(0.05, 0.4, ck.fbm(Pc * 30.0, SEED + 3))  # dark, with a few hot seams
+    ck.finish(mesh, Pc, Tc, "core", ck.mix(PAL["deep_teal_shadow"] * 0.4, WOUND * 0.8, glow[:, None]), J_b, wet=1.0,
+              emission=0.06 + 0.6 * glow)
     # two lit slits where a gull's eyes would be
     for sx in (1.0, -1.0):
         Pe, Te = gh._ellipsoid((0.0, 0.0, 0.0), (0.006, 0.0045, 0.017), 4, 8)
@@ -206,39 +294,87 @@ def wing(mesh: ck.Mesh, rig: ck.Rig, side: float) -> None:
     # the membrane: rows back from the leading edge, the trailing edge scalloped and torn
     NX, NV = 34, 9
     x = np.linspace(0.03, 1.0, NX)
-    lead = _lead(x)
-    chord = np.interp(x, [p[0] for p in CHORD], [p[1] for p in CHORD])
-    sweep = 0.35 * ck.smoothstep(0.5, 1.0, x)
-    back = np.column_stack([sweep, -0.12 * ck.smoothstep(0.6, 1.0, x), -np.ones(NX)])
-    back /= np.linalg.norm(back, axis=1, keepdims=True)
+    chord_x = [p[0] for p in CHORD]
+    chord_c = [p[1] for p in CHORD]
     scallop = np.abs(np.sin(math.pi * (x - 0.03) / 0.115)) ** 0.6
     rag = 0.30 * scallop * ck.smoothstep(0.12, 0.3, x) + 0.18 * ck.fbm(np.column_stack([x * 9.0, x * 3.0, x]), SEED + 11 + int(side > 0))
     v_end = np.clip(1.0 - rag, 0.45, 1.0)
-    rows = []
-    vv = []
-    for k in range(NV):
-        v = k / (NV - 1)
-        vk = v * v_end
-        cup = 0.022 * np.sin(math.pi * vk) * (chord / 0.2)
-        rows.append(lead + back * (vk * chord)[:, None] + np.column_stack([np.zeros(NX), cup, np.zeros(NX)]))
-        vv.append(vk)
-    P = np.vstack(rows)
-    V = np.concatenate(vv)
+
+    def membrane(xs, vk):
+        """A point on the membrane at span xs and chord fraction vk (from the leading edge)."""
+        ch = np.interp(xs, chord_x, chord_c)
+        bk = np.column_stack([0.35 * ck.smoothstep(0.5, 1.0, xs), -0.12 * ck.smoothstep(0.6, 1.0, xs),
+                              -np.ones(len(xs))])
+        bk /= np.linalg.norm(bk, axis=1, keepdims=True)
+        cup = 0.022 * np.sin(math.pi * vk) * (ch / 0.2)
+        return _lead(xs) + bk * (vk * ch)[:, None] + np.column_stack([np.zeros(len(xs)), cup, np.zeros(len(xs))])
+
     X = np.tile(x, NV)
+    V = np.concatenate([(k / (NV - 1)) * v_end for k in range(NV)])
     T = ck.grid_tris(NV, NX, False)
+    # rents: ragged lens-shaped holes torn right through the membrane between spar and trailing edge. Vertices
+    # that fall inside a rent are pushed out onto its outline (so a coarse grid still cuts a clean torn shape),
+    # then the triangles inside it are dropped; the lips are lifted and twisted a little apart
+    rent_d = np.full(len(X), 9.0)  # distance to the nearest rent's outline, in its half-widths (<1 inside)
+    lift = np.zeros(len(X))
+    Xn, Vn = X.copy(), V.copy()
+    for k, (xc, vc, length, ang, hw) in enumerate(RENTS_R if side < 0 else RENTS_L):
+        q = np.column_stack([Xn, Vn * np.interp(Xn, chord_x, chord_c)])
+        cc = np.array([xc, vc * float(np.interp(xc, chord_x, chord_c))])
+        dr = np.array([math.sin(math.radians(ang)), math.cos(math.radians(ang))])
+        a = cc - 0.5 * length * dr
+        t = np.clip(((q - a) @ dr) / length, 0.0, 1.0)
+        foot = a + t[:, None] * (length * dr)
+        dvec = q - foot
+        d = np.linalg.norm(dvec, axis=1)
+        jag = ck.value_noise(np.column_stack([t * 7.0, np.sign(dvec @ np.array([dr[1], -dr[0]])) * 3.0,
+                                              np.full(len(t), float(k))]), SEED + 50 + k)
+        w = hw * np.sin(math.pi * t) ** 0.55 * (1.0 + 0.45 * jag) + 1e-4
+        inside = d < w
+        perp = np.array([dr[1], -dr[0]])
+        dirn = np.where((d > 1e-6)[:, None], dvec / np.maximum(d, 1e-9)[:, None],
+                        np.where(((q - cc) @ perp >= 0.0)[:, None], perp, -perp))
+        qn = np.where(inside[:, None], foot + dirn * w[:, None], q)
+        Xn = qn[:, 0]
+        Vn = qn[:, 1] / np.interp(Xn, chord_x, chord_c)
+        dd = np.linalg.norm(qn - foot, axis=1) / w
+        side_s = np.sign(dirn @ perp)
+        closer = dd < rent_d
+        lift = np.where(closer, side_s * np.sin(math.pi * t) * ck.smoothstep(2.0, 1.0, dd), lift)
+        rent_d = np.minimum(rent_d, dd)
+    P = membrane(Xn, Vn)
+    jit = ck.fbm(P * 40.0, SEED + 31 + int(side > 0))
+    P = P + np.column_stack([np.zeros(len(P)), 0.010 * lift + 0.004 * jit * ck.smoothstep(2.0, 1.0, rent_d),
+                             np.zeros(len(P))])
     fn = np.cross(P[T[:, 1]] - P[T[:, 0]], P[T[:, 2]] - P[T[:, 0]])
     if fn[:, 1].sum() < 0:
         T = ck.flip(T)
-    # tears through the membrane, away from the leading edge (the right wing, toward the camera, is worse)
+    # which triangles lie inside a rent: their centroid in the rest grid falls inside an outline
+    Xc, Vc = X[T].mean(axis=1), V[T].mean(axis=1)
+    qc = np.column_stack([Xc, Vc * np.interp(Xc, chord_x, chord_c)])
+    tri_in = np.zeros(len(T), dtype=bool)
+    for xc, vc, length, ang, hw in RENTS_R if side < 0 else RENTS_L:
+        cc = np.array([xc, vc * float(np.interp(xc, chord_x, chord_c))])
+        dr = np.array([math.sin(math.radians(ang)), math.cos(math.radians(ang))])
+        a = cc - 0.5 * length * dr
+        t = np.clip(((qc - a) @ dr) / length, 0.0, 1.0)
+        d = np.linalg.norm(qc - (a + t[:, None] * (length * dr)), axis=1)
+        tri_in |= d < hw * np.sin(math.pi * t) ** 0.55
+    tri_in |= (rent_d < 1.02)[T].all(axis=1)
+    # older holes: ragged tears through the membrane, away from the leading edge
     tear = ck.fbm(np.column_stack([P[:, 0] * 7.0, P[:, 2] * 9.0, P[:, 1] * 3.0]), SEED + (21 if side > 0 else 37))
     tear = tear * ck.smoothstep(0.3, 0.6, V) * ck.smoothstep(0.12, 0.25, X)
-    cut = 0.2 if side > 0 else 0.14
-    T = T[tear[T].mean(axis=1) < cut]
-    edge = ck.smoothstep(max(cut - 0.1, 0.04), cut, tear)
-    vein = 1.0 - scallop[np.tile(np.arange(NX), NV)]  # the membrane gathers into ridges between the scallops
+    cut = 0.17 if side > 0 else 0.13
+    T = T[(tear[T].mean(axis=1) < cut) & ~tri_in]
+    rim = np.maximum(ck.smoothstep(cut - 0.03, cut, tear), ck.smoothstep(1.35, 1.0, rent_d))
+    X, V = Xn, Vn
+    xi = np.clip(np.searchsorted(x, X), 0, NX - 1)
+    vein = 1.0 - scallop[xi]  # the membrane gathers into ridges between the scallops
     col = ck.mix(BLACK, PAL["abyss_navy"], (0.3 * V)[:, None])
     col = ck.mix(col, SHEEN, (0.45 * ck.smoothstep(0.12, 0.0, V) + 0.25 * vein)[:, None])
-    col = ck.mix(col, WOUND * 0.5, (0.8 * edge)[:, None])
+    # the lips stay black and wet (a wet catch-light, no glow): the sky through the hole is the read
+    col = ck.mix(col, SHEEN, (0.35 * rim)[:, None])
+    edge = np.zeros_like(rim)
     uv = np.column_stack([X * 3.0, V * 0.6])
     for up in (True, False):
         Tw = T if up else ck.flip(T)

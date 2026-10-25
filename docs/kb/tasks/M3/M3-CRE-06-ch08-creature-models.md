@@ -21,6 +21,6 @@ The Ch8 seawall creatures. `model` on m2-slice's rows (M3-C08-02). Waves of 3 / 
 - [x] stormgull and wallcrab (m2-slice's headland-path variants: imports of the gull harrier and reef crab builds with a palette override; jobs list the base folders)
 
 ## Notes
-
+- 2026-10-24 (polish, review notes): squall_wing's tears now read as holes. The wing membranes have ragged lens-shaped rents cut clean through (5 on the camera-side right wing, 3 on the left): grid vertices inside a rent are pushed onto its jagged outline and the triangles inside dropped, the lips lifted apart and left black (no glow), so the ground and sky show through. The body's fbm tears (which had grown into flank-wide openings filled by a big bright core, so they read as cyan patches) are replaced by five explicit rents cut the same way, each with a two-band lip wall (a 3.5 mm lit spawn_wound rim, then dark) dropping into a dark inner hollow (an inward-wound inner wall), with a smaller, mostly dark core with a few hot seams hanging inside. 5,618 triangles (budget 6k). Screenshot creature_squall_wing re-approved after viewing.
 
 ## Review log

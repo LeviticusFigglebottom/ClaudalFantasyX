@@ -1,9 +1,10 @@
 {
   "title_menu": {
-    "doc": "Minimal title menu (M1-ARC-06; docs/kb/tech/architecture.md, Saves). Rects are top-left x, y, w, h at the 1920 x 1080 reference. 'choices' are MenuPage metrics (the save menu's dialog choices, with four rows). Lives beside the scene until UI owns a title screen under game/data/ui/. M2-UI-22 (docs/kb/tech/ui.md, Title screen): 'logo' is the drawn logotype (TitleLogo): word sizes are percentages of the theme's TitleLabel and BannerLabel sizes, baselines and the flourish's y are inside its rect; the join rules flank the small-caps 'of the'; the tide flourish is two fading waves under the name. 'backdrop' is the animated backdrop (TitleBackdrop): the caustic layer, light shafts as [top x, top width, bottom width, slant, alpha] at the 1920 x 1080 reference, and seeded drifting motes (pairs are [min, max] ranges). 'version' is the build label, shown only in debug builds while 'debug_only' is true; 'fallback' names the build when project.godot sets no version.",
+    "doc": "Minimal title menu (M1-ARC-06; docs/kb/tech/architecture.md, Saves). Rects are top-left x, y, w, h at the 1920 x 1080 reference. 'choices' are MenuPage metrics (the save menu's dialog choices, with four rows; M3-MNU-02: a fifth, Memories, shows once a memory is remembered, and rows past 'anchor_rows' raise the page by a row pitch each so its foot never moves). Lives beside the scene until UI owns a title screen under game/data/ui/. M2-UI-22 (docs/kb/tech/ui.md, Title screen): 'logo' is the drawn logotype (TitleLogo): word sizes are percentages of the theme's TitleLabel and BannerLabel sizes, baselines and the flourish's y are inside its rect; the join rules flank the small-caps 'of the'; the tide flourish is two fading waves under the name. 'backdrop' is the animated backdrop (TitleBackdrop): the caustic layer, light shafts as [top x, top width, bottom width, slant, alpha] at the 1920 x 1080 reference, and seeded drifting motes (pairs are [min, max] ranges). 'version' is the build label, shown only in debug builds while 'debug_only' is true; 'fallback' names the build when project.godot sets no version.",
     "choices": {
       "rect": [810, 620, 300, 0],
-      "max_rows": 4,
+      "max_rows": 5,
+      "anchor_rows": 4,
       "header_height": 0,
       "row_inset": 8,
       "row_pitch": 44,

@@ -1,0 +1,84 @@
+{
+  "doc": "The Memories gallery (M3-MNU-02, SPEC §6.11; docs/kb/tech/ui.md section Memories gallery). 'chapters' are listed in this order, each with its name_key. Each memory replays one compiled dialogue scene ('scene', a .dlg title) on a freshly instanced 'stage' scene that ReplayStage.prepare() has quietened (no story autostart, no field encounters), through a CutsceneSequencer with replay on: flags are read live, nothing is written, no <<event>> is acted on, no autosave. 'stage_node' (optional) is the path to the scene's CutsceneStage when it is not the root's 'stage' property. 'spawn' (optional) places the player on Spawns/<spawn> first (the spawn the story plays it from). 'night' (optional, true) gives the zone first_playable.json haluna's night staging, as HalunaStory._night does: set_night(night, night_hide) and place_cast(night_cast, night_marks). 'replay_flags' (optional) are flags as they stood when the scene was first seen, set on the replay's copy of the record before the stage is built (a scene that checks its own unlock flag for a second visit, a zone whose look follows a later flag). A memory shows once 'unlock_flag' is set in the live run or the newest readable save. Titles are loc keys in game/data/loc/memories.csv.",
+  "chapters": [
+    {"id": "prologue", "name_key": "MEMORIES_CHAPTER_PROLOGUE"},
+    {"id": "ch01", "name_key": "MEMORIES_CHAPTER_CH01"},
+    {"id": "ch02", "name_key": "MEMORIES_CHAPTER_CH02"},
+    {"id": "ch03", "name_key": "MEMORIES_CHAPTER_CH03"}
+  ],
+  "memories": [
+    {
+      "id": "prologue_dead_city",
+      "chapter": "prologue",
+      "scene": "prologue_dead_city",
+      "stage": "res://game/levels/prologue/prologue.tscn",
+      "stage_node": "CutsceneStage",
+      "title_key": "MEMORY_PROLOGUE_DEAD_CITY",
+      "unlock_flag": "prologue_seen"
+    },
+    {
+      "id": "ch01_kell_stall",
+      "chapter": "ch01",
+      "scene": "ch01_kell_stall",
+      "stage": "res://game/levels/ch01/oruvel/oruvel.tscn",
+      "replay_flags": {"ch01_gulls_cried": false},
+      "title_key": "MEMORY_CH01_KELL_STALL",
+      "unlock_flag": "ch01_kell_side_scene"
+    },
+    {
+      "id": "ch01_the_rising",
+      "chapter": "ch01",
+      "scene": "ch01_the_rising",
+      "stage": "res://game/levels/ch01/oruvel/oruvel.tscn",
+      "title_key": "MEMORY_CH01_THE_RISING",
+      "unlock_flag": "ch01_hullgnaw_defeated"
+    },
+    {
+      "id": "ch01_going_under",
+      "chapter": "ch01",
+      "scene": "ch01_going_under",
+      "stage": "res://game/levels/ch01/oruvel/oruvel.tscn",
+      "spawn": "NetPenAfter",
+      "title_key": "MEMORY_CH01_GOING_UNDER",
+      "unlock_flag": "ch01_went_under"
+    },
+    {
+      "id": "ch02_girl_on_the_beach",
+      "chapter": "ch02",
+      "scene": "ch02_girl_on_the_beach",
+      "stage": "res://game/levels/ch02/haluna/haluna.tscn",
+      "spawn": "Beach",
+      "replay_flags": {"ch02_met_asha": false},
+      "title_key": "MEMORY_CH02_GIRL_ON_THE_BEACH",
+      "unlock_flag": "ch02_met_asha"
+    },
+    {
+      "id": "ch02_pila_granddaughter",
+      "chapter": "ch02",
+      "scene": "ch02_pila_granddaughter",
+      "stage": "res://game/levels/ch02/haluna/haluna.tscn",
+      "spawn": "CausewayHead",
+      "replay_flags": {"ch02_heard_pila": false},
+      "title_key": "MEMORY_CH02_PILA_GRANDDAUGHTER",
+      "unlock_flag": "ch02_heard_pila"
+    },
+    {
+      "id": "ch03_the_first_verse",
+      "chapter": "ch03",
+      "scene": "ch03_the_first_verse",
+      "stage": "res://game/levels/ch03/first_verse/first_verse.tscn",
+      "title_key": "MEMORY_CH03_THE_FIRST_VERSE",
+      "unlock_flag": "ch03_first_verse_sung"
+    },
+    {
+      "id": "ch03_dock_at_night",
+      "chapter": "ch03",
+      "scene": "ch03_dock_at_night",
+      "stage": "res://game/levels/ch02/haluna/haluna.tscn",
+      "spawn": "DockNight",
+      "night": true,
+      "title_key": "MEMORY_CH03_DOCK_AT_NIGHT",
+      "unlock_flag": "ch03_rhen_sworn_guardian"
+    }
+  ]
+}

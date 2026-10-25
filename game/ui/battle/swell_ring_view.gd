@@ -54,6 +54,9 @@ var _assist: Label
 var _callout: Label
 ## A kind's state in words under its figure (the brace's hold); empty for the others.
 var _status: Label
+## The action the left mouse button stands for while it is down (&"" when up, or pressed before
+## this input opened, so the click that chose the target never plays a step).
+var _pointer_action: StringName = &""
 
 
 func _ready() -> void:
@@ -113,6 +116,7 @@ static func grade_key(grade: StringName) -> String:
 ## Shows `r` under the technique's name `title_text`, with `hint` (what to press) below.
 func open(r: SwellInput, title_text: String, hint: String) -> void:
 	ring = r
+	_pointer_action = &""
 	_title.text = title_text
 	_hint.text = hint
 	visible = true
@@ -126,6 +130,39 @@ func refresh() -> void:
 	_callout.add_theme_color_override(&"font_color", color(_grade_role(_last_grade())))
 	_status.text = _status_text()
 	_canvas.queue_redraw()
+
+
+## The mouse playing the open input (M2-UI-26): the left button's press becomes a Confirm press, or,
+## for a kind played with directions (Asha's chant, Ysolde's glyph), the direction the click lies in
+## from the figure's centre (Confirm within pointer.swell_centre_px of it, for hold to confirm);
+## its release becomes the same action's release, so a held click holds (Toma's brace). Every other
+## event comes back as it was. BattleController feeds the result to SwellInputKeys.
+func pointer_event(event: InputEvent) -> InputEvent:
+	var mb := event as InputEventMouseButton
+	if mb == null or mb.button_index != MOUSE_BUTTON_LEFT or ring == null:
+		return event
+	var action := pointer_action_at(mb.position) if mb.pressed else _pointer_action
+	if action == &"":
+		return event
+	_pointer_action = action if mb.pressed else &""
+	var a := InputEventAction.new()
+	a.action = action
+	a.pressed = mb.pressed
+	return a
+
+
+## The ui_* action a left click at `at` (viewport coordinates) plays on the open input.
+func pointer_action_at(at: Vector2) -> StringName:
+	var used := ring.buttons_used() if ring != null else ([] as Array[StringName])
+	var d := at - get_global_transform_with_canvas() * figure_center()
+	var button := SwellInput.BUTTON_ACCEPT
+	var centre := HudLayout.num(HudLayout.section(&"pointer"), "swell_centre_px")
+	if not used.has(SwellInput.BUTTON_ACCEPT) and d.length() > centre:
+		if absf(d.x) > absf(d.y):
+			button = SwellInput.BUTTON_RIGHT if d.x > 0.0 else SwellInput.BUTTON_LEFT
+		else:
+			button = SwellInput.BUTTON_DOWN if d.y > 0.0 else SwellInput.BUTTON_UP
+	return SwellInputKeys.BUTTONS.find_key(button) as StringName
 
 
 func close() -> void:

@@ -6,6 +6,7 @@ extends Control
 ##   - &"items": a mixed bag sorted by kind, the cursor on a Reef Draught (its description);
 ##   - &"items_use": a Salt Tonic's hero picker, Rhen wounded, Asha fallen, Toma low on MP and
 ##     poisoned, the cursor on Rhen with "Rhen: HP a → b" under it;
+##   - &"items_key": the Key Items view (M3-MNU-03), the cursor on the second key item;
 ##   - &"status": Rhen with Coral-Bitten Hooks (two abilities) and a Reefline Harness, five Lattice
 ##     nodes woken, a part-filled Swell gauge on Wake and a carried Poison.
 
@@ -22,6 +23,9 @@ const BAG := {
 	"facet_power": 3,
 	"facet_speed": 1,
 	"brass_lantern": 1,
+	"net_float_charm": 1,
+	"gauge_wheel_brass": 1,
+	"kell_wick": 1,
 }
 const VITALS := {
 	"rhen": {"hp": 151, "swell": 46, "swell_mode": "wake"},
@@ -39,7 +43,7 @@ const ARMOR_ABILITIES: Array[StringName] = [&"hard_carapace", &"deep_lungs"]
 const WOKEN := 5
 const MOVEMENT := 3
 
-## Which page to stage: &"items", &"items_use" or &"status".
+## Which page to stage: &"items", &"items_use", &"items_key" or &"status".
 @export var view: StringName = &"items"
 
 var page: FieldSubmenu
@@ -71,6 +75,9 @@ func _ready() -> void:
 	page = items
 	if view == &"items_use":
 		items.accept()  # Salt Tonic, first in the bag: the picker, Rhen first
+	elif view == &"items_key":
+		items.handle_input(_ev(&"ui_page_down"))  # Key Items
+		items.handle_input(_ev(&"ui_down"))
 	else:
 		items.handle_input(_ev(&"ui_down"))  # Reef Draught
 

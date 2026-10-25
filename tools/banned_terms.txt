@@ -68,3 +68,14 @@ i:the unsent
 Calm Lands
 Eternal Calm
 Unbroken Calm
+# M3-RBL-01 (combat): the inspiring game's sport, its players, arena and named shots.
+i:blitz
+i:blitzer
+i:blitzers
+i:sphere pool
+i:jecht shot
+i:sphere shot
+i:venom shot
+i:nap shot
+i:wither shot
+Aurochs

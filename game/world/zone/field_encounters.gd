@@ -15,6 +15,9 @@ extends Node
 ## each metre walked by it, live. A due encounter waits while the story is busy. When one fires it
 ## remembers where Rhen stood, and the battle returns to the zone's "Encounter" spawn there
 ## (GreyboxZone.place_at). Time passes only through walked(), so tests drive it exactly.
+## M2-MNU-08: gear changed in the field (the Equip page) reaches the gap in progress: the meter joins
+## GROUP, and refresh_rate() rescales what is left of the gap by old rate / new rate (no new draw, so a run
+## stays deterministic). With no joined party (the first playable), the field menu's heroes count.
 ## M2-FP-28 (the human's playtest: battles back to back): the meter (metres walked, the next gap, the
 ## grace left and the rng) is kept per location in `meters`, so the zone instanced again after the
 ## battle carries on instead of redrawing the same first gap; place_at re-anchors the walk, so the
@@ -22,6 +25,8 @@ extends Node
 
 const RETURN_SPAWN := &"Encounter"
 const FULL_RATE_PCT := 100.0
+## The SceneTree group of live meters; the Equip page calls refresh_rate() on it when it closes.
+const GROUP := &"field_encounters"
 
 ## Where the last encounter left Rhen, per location (the battle scene replaces the zone, so it is
 ## kept here for the return).
@@ -59,6 +64,7 @@ static func reset() -> void:
 
 func setup(zone: GreyboxZone, block: Dictionary, defaults: Dictionary = {}) -> void:
 	_zone = zone
+	add_to_group(GROUP)
 	if not EventBus.new_game_started.is_connected(reset):
 		EventBus.new_game_started.connect(reset)  # a new game, or a loaded one, starts every meter afresh
 		EventBus.game_loaded.connect(func(_slot: int) -> void: reset())
@@ -78,6 +84,9 @@ func setup(zone: GreyboxZone, block: Dictionary, defaults: Dictionary = {}) -> v
 	next_m = float(saved["next_m"])
 	grace_m = float(saved["grace_m"])
 	rng.state = int(saved["rng_state"])
+	# M2-MNU-08 with M2-FP-28: the kept gap was drawn at the rate of its time; gear changed since rescales it.
+	rate_pct = float(saved.get("rate_pct", rate_pct))
+	refresh_rate()
 
 
 ## Forgets where Rhen was, so the next frame's position starts the walk afresh (after a placement).
@@ -93,18 +102,29 @@ func _exit_tree() -> void:
 func remember() -> void:
 	if _zone != null:
 		meters[String(_zone.location_id)] = {
-			"walked_m": walked_m, "next_m": next_m, "grace_m": grace_m, "rng_state": rng.state
+			"walked_m": walked_m, "next_m": next_m, "grace_m": grace_m, "rng_state": rng.state, "rate_pct": rate_pct
 		}
 
 
 ## The party's encounter rate in percent (100 = normal; Light Step halves it).
 static func party_rate_pct() -> float:
 	var db := ItemDB.load_default()
-	if db == null or Game.state.party_ids.is_empty():
+	var party := Game.state.party_ids if not Game.state.party_ids.is_empty() else FieldMenuModel.field_heroes()
+	if db == null or party.is_empty():
 		return FULL_RATE_PCT
 	var goods := PartyGoods.from_state(db, Game.state)
 	var fx := EquipmentEffects.new(db, goods.equipment)
-	return float(maxi(fx.encounter_rate_pct(Game.state.party_ids), 1))
+	return float(maxi(fx.encounter_rate_pct(party), 1))
+
+
+## Re-reads the party's rate (party_rate_pct, or `pct` when given) and rescales the rest of the gap in
+## progress: at half the rate, what is left to walk doubles. Returns the new rate.
+func refresh_rate(pct: float = -1.0) -> float:
+	var new_rate := pct if pct > 0.0 else party_rate_pct()
+	if not is_equal_approx(new_rate, rate_pct):
+		next_m = walked_m + maxf(next_m - walked_m, 0.0) * rate_pct / new_rate
+		rate_pct = new_rate
+	return rate_pct
 
 
 func _physics_process(_delta: float) -> void:
