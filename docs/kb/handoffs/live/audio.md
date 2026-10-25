@@ -1,5 +1,23 @@
 # Live log: audio (branch `claude/audio`)
 
+## NEW ACCOUNT (from 2026-10-25)
+Session `session_01Wmj8xaLtwcqiS3qwC6PciW`. Integration branch `claude/undertow-lead-handoff-ze8rrn`. Newest first.
+
+- **MERGE-READY @ f5f10d7e (FAST-TRACK: M3-AUD-812):** M3-AUD-812, footsteps change surface in every slice zone
+  with no level edits: Haluna's sand, the dock's wood (the `dock_haluna` mesh), the shallows' water (feet under the
+  sea's rest plane); the causeway's stone and tidepool; the shrine's stone and pools. Also M3-AUD-813, the menu hooks
+  after the merge: FormationMenu live, the Key Items tab, refusals through M2-AUD-15's reads; test_battle_ko_once
+  lifts wickfry's new model for its primitive case. Integration merged at 261a827d (two task-file conflicts,
+  resolved).
+  - Checks run: full Godot suite on 261a827d (2355 run, 7 failed: 4 from the uncommitted M3-AUD-805 patch, rendering
+    mid-run, and 3 real merge fallout, fixed in M3-AUD-813). Then filtered `footstep` 16/0, `footsteps_slice` 4/0,
+    `field_audio` 19/0, `ko_once` 5/0; loudness test OK; validate_data, taskboard --check, gdlint and gdformat
+    clean on the committed tree.
+  - Checks skipped: screenshots (no scene or shader touched), Blender (none), coverage (no battle/progression code).
+  - Verified against claude/hero-integration's real `HeroFieldActor.foot_contact(foot, run)`: the body is the
+    controller's `HeroBody` child, as footsteps.json expects. test_footsteps_slice_zones walks it once that merges.
+- **In progress:** M3-AUD-805 (Act II sketches II): 4 of 6 rendered with `--determinism` identical, at −16.0 LUFS.
+
 ## STATE AT HANDOVER (2026-10-25)
 
 **HANDOVER DONE @ 20ee527f** (claude/audio pushed; nothing un-pushed; no worktree holds unsaved work).
