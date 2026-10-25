@@ -7,6 +7,8 @@ extends TestCase
 
 const SANDBOX := "res://game/battle/scene/battle_sandbox.tscn"
 const BOX_SCENE := "res://game/ui/dialogue/dialogue_box.tscn"
+## The dialogue box panel's width at 16:9 (dialogue_box.tscn: centred, offsets -800 to 800), its cap (M2-ARC-09).
+const DIALOGUE_MAX_WIDTH_PX := 1600.0
 const SEQUENCER_CONFIG := "res://game/data/cutscene/sequencer.json"
 const LINE_KEY := &"DLG_CH02_BEACH_004"
 const TEST_DIR := "user://test_aspect_saves"
@@ -255,11 +257,21 @@ func _framed(root: Node) -> Array:
 
 
 func _box_pieces(box: Node) -> Array:
+	_box_width_capped(box.get_node(^"Panel") as Control)
 	return [["box panel", box.get_node(^"Panel"), "bottom"]]
+
+
+## M2-ARC-09: the box's panel is never wider than at 16:9 (centred at the bottom on wider screens).
+func _box_width_capped(panel: Control) -> void:
+	assert_true(
+		panel.size.x <= DIALOGUE_MAX_WIDTH_PX + 0.5,
+		"the dialogue box is at most %d px wide (%s)" % [DIALOGUE_MAX_WIDTH_PX, panel.size.x]
+	)
 
 
 func _cutscene_pieces(o: Node) -> Array:
 	var overlay := o as CutsceneOverlay
+	_box_width_capped(overlay.box.get_node(^"Panel") as Control)
 	return [
 		["letterbox top", overlay.bar_top, "top"],
 		["letterbox bottom", overlay.bar_bottom, "bottom"],
