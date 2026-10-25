@@ -128,7 +128,8 @@ func test_written_light_writes_its_glyph_and_reaches_each_foe_in_turn() -> void:
 	var from: Vector3 = plan["to"]
 	var dir: Vector3 = plan["dir"]
 	var side := Vector3.UP.cross(dir).normalized()
-	assert_between((_at(&"rhen") - from).dot(side), float(st["trace_m"]) - 0.01, float(st["trace_m"]) + 0.01)
+	if not bool(plan["actor_clip"]):  # a hero model's finisher clip writes it in place of the traced strokes
+		assert_between((_at(&"rhen") - from).dot(side), float(st["trace_m"]) - 0.01, float(st["trace_m"]) + 0.01)
 	var stagger := float(st["stagger_sec"])
 	choreo.seek(c + stagger * 0.5)
 	assert_true(_struck(foes[0]), "the first foe is struck")
@@ -151,6 +152,12 @@ func test_return_tide_braces_back_then_counters() -> void:
 	var c := float(plan["contact"])
 	var to: Vector3 = plan["to"]
 	var dir: Vector3 = plan["dir"]
+	if bool(plan["actor_clip"]):  # a hero model's finisher clip braces and counters in place of the procedural shape
+		choreo.seek(c)
+		var p := BattleClips.player_of(ctl.stage.stand_in(&"rhen"))
+		assert_eq(StringName(p.current_animation), BattleClips.FINISHER, "the finisher clip plays to its contact")
+		_free()
+		return
 	choreo.seek(a + (c - a) * float(st["windup_at"]))
 	var braced := _at(&"rhen")
 	assert_true((braced - to).dot(dir) < -0.1, "planted and pushed back by the tide")

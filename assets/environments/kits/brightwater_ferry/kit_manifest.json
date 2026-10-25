@@ -1,0 +1,271 @@
+{
+  "generator": "assets_src/environments/kits/brightwater_ferry/build.py",
+  "kit": "brightwater_ferry",
+  "pieces": {
+    "alongside_gear": {
+      "budget": [
+        4000,
+        400
+      ],
+      "bytes": 51084,
+      "lods": {
+        "alongside_gear": 638,
+        "alongside_gear-lod1": 348
+      }
+    },
+    "derelict_hulk_a": {
+      "budget": [
+        16000,
+        1600
+      ],
+      "bytes": 841792,
+      "lods": {
+        "derelict_hulk_a": 13572,
+        "derelict_hulk_a-lod1": 1293
+      }
+    },
+    "derelict_hulk_b": {
+      "budget": [
+        12000,
+        1200
+      ],
+      "bytes": 302064,
+      "lods": {
+        "derelict_hulk_b": 5538,
+        "derelict_hulk_b-lod1": 526
+      }
+    },
+    "ferry_awning": {
+      "budget": [
+        6000,
+        600
+      ],
+      "bytes": 77872,
+      "lods": {
+        "ferry_awning": 1394,
+        "ferry_awning-lod1": 152
+      }
+    },
+    "ferry_cargo": {
+      "budget": [
+        14000,
+        1400
+      ],
+      "bytes": 215224,
+      "lods": {
+        "ferry_cargo": 3648,
+        "ferry_cargo-lod1": 864
+      }
+    },
+    "ferry_deckhouse": {
+      "budget": [
+        16000,
+        1600
+      ],
+      "bytes": 235864,
+      "lods": {
+        "ferry_deckhouse": 2340,
+        "ferry_deckhouse-lod1": 724
+      }
+    },
+    "ferry_hull": {
+      "budget": [
+        60000,
+        6000
+      ],
+      "bytes": 1842436,
+      "lods": {
+        "ferry_hull": 26845,
+        "ferry_hull-lod1": 4031
+      }
+    },
+    "ferry_lantern": {
+      "budget": [
+        1500,
+        200
+      ],
+      "bytes": 28732,
+      "lods": {
+        "ferry_lantern": 392,
+        "ferry_lantern-lod1": 168
+      }
+    },
+    "ferry_rig": {
+      "budget": [
+        40000,
+        4000
+      ],
+      "bytes": 362360,
+      "lods": {
+        "ferry_rig": 6906,
+        "ferry_rig-lod1": 500
+      }
+    },
+    "ferry_skiff": {
+      "budget": [
+        10000,
+        1000
+      ],
+      "bytes": 160144,
+      "lods": {
+        "ferry_skiff": 3936,
+        "ferry_skiff-lod1": 298
+      }
+    },
+    "passenger_bundles": {
+      "budget": [
+        8000,
+        800
+      ],
+      "bytes": 73284,
+      "lods": {
+        "passenger_bundles": 1256,
+        "passenger_bundles-lod1": 282
+      }
+    },
+    "reef_awash": {
+      "budget": [
+        8000,
+        800
+      ],
+      "bytes": 135884,
+      "lods": {
+        "reef_awash": 3920,
+        "reef_awash-lod1": 320
+      }
+    },
+    "terrace_derelict": {
+      "budget": [
+        6000,
+        600
+      ],
+      "bytes": 52624,
+      "lods": {
+        "terrace_derelict": 816,
+        "terrace_derelict-lod1": 300
+      }
+    },
+    "terrace_galley": {
+      "budget": [
+        10000,
+        1000
+      ],
+      "bytes": 427268,
+      "lods": {
+        "terrace_galley": 4436,
+        "terrace_galley-lod1": 636
+      }
+    },
+    "terrace_hold": {
+      "budget": [
+        10000,
+        1000
+      ],
+      "bytes": 218632,
+      "lods": {
+        "terrace_hold": 1976,
+        "terrace_hold-lod1": 858
+      }
+    },
+    "terrace_hull": {
+      "budget": [
+        40000,
+        4000
+      ],
+      "bytes": 1493212,
+      "lods": {
+        "terrace_hull": 21714,
+        "terrace_hull-lod1": 3616
+      }
+    },
+    "terrace_membrane": {
+      "budget": [
+        8000,
+        800
+      ],
+      "bytes": 65916,
+      "lods": {
+        "terrace_membrane": 1280,
+        "terrace_membrane-lod1": 128
+      }
+    },
+    "terrace_moored": {
+      "budget": [
+        8000,
+        800
+      ],
+      "bytes": 140340,
+      "lods": {
+        "terrace_moored": 2372,
+        "terrace_moored-lod1": 584
+      }
+    },
+    "terrace_name_board": {
+      "budget": [
+        8000,
+        800
+      ],
+      "bytes": 238556,
+      "lods": {
+        "terrace_name_board": 3588,
+        "terrace_name_board-lod1": 132
+      }
+    },
+    "terrace_rig": {
+      "budget": [
+        14000,
+        1400
+      ],
+      "bytes": 124080,
+      "lods": {
+        "terrace_rig": 2034,
+        "terrace_rig-lod1": 216
+      }
+    },
+    "terrace_sails_furled": {
+      "budget": [
+        12000,
+        1200
+      ],
+      "bytes": 177516,
+      "lods": {
+        "terrace_sails_furled": 3308,
+        "terrace_sails_furled-lod1": 480
+      }
+    },
+    "terrace_sails_lowered": {
+      "budget": [
+        14000,
+        1400
+      ],
+      "bytes": 180076,
+      "lods": {
+        "terrace_sails_lowered": 3488,
+        "terrace_sails_lowered-lod1": 480
+      }
+    },
+    "terrace_sails_set": {
+      "budget": [
+        24000,
+        2400
+      ],
+      "bytes": 169356,
+      "lods": {
+        "terrace_sails_set": 3468,
+        "terrace_sails_set-lod1": 268
+      }
+    },
+    "terrace_wheel": {
+      "budget": [
+        2500,
+        300
+      ],
+      "bytes": 52448,
+      "lods": {
+        "terrace_wheel": 714,
+        "terrace_wheel-lod1": 274
+      }
+    }
+  },
+  "schema": "hymn-kit/1"
+}

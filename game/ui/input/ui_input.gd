@@ -9,12 +9,16 @@ extends Node
 ##   confirm and cancel (controls.json pad_defaults) in every scene, not only after boot.tscn.
 ## - **Last device:** remembers whether the pad or the keyboard and mouse was used last
 ##   (InputNames.using_pad), so key glyphs and prompts switch with the player's hands.
+## - **Debug launch options (M2-UI-28):** in debug builds, `--pseudo-loc` or HYMN_PSEUDO_LOC turns
+##   on the pseudo-localisation here, before the first scene builds its text. The tool is loaded by
+##   path (DEBUG_PSEUDO_LOC), so release exports can leave game/core/debug/ out.
 ## Data: game/data/ui/ui_input.json.
 
 ## Emitted when the last device used changes (true: the pad).
 signal device_changed(pad: bool)
 
 const DATA_PATH := "res://game/data/ui/ui_input.json"
+const DEBUG_PSEUDO_LOC := "res://game/core/debug/pseudo_loc.gd"
 
 var _d: Dictionary = {}
 var _cancel_buttons: Array[int] = []
@@ -26,6 +30,13 @@ func _ready() -> void:
 	for b: Variant in _d.get("cancel_mouse_buttons", []):
 		_cancel_buttons.append(int(b))
 	ControlsModel.defaults()  # the pad's Confirm and Cancel buttons, before any scene asks
+	_debug_launch_options()
+
+
+## Debug builds: the pseudo-localisation when the launch asks for it (M2-UI-28).
+static func _debug_launch_options() -> void:
+	if OS.is_debug_build() and ResourceLoader.exists(DEBUG_PSEUDO_LOC):
+		(load(DEBUG_PSEUDO_LOC) as GDScript).call(&"apply_launch_options")
 
 
 static func load_data() -> Dictionary:

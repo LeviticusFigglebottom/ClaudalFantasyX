@@ -20,7 +20,7 @@ Both greybox builders go through `_capsule_mesh(d)`. One seam covers every greyb
 
   Since M2-FP-29 they cross-fade over `clip_blend_sec` (0.25 s). If the track drives the bodies with an AnimationTree, give the sequencer one entry point instead, such as `play_clip(name, blend)` on the body. Point m2-slice at it and m2-slice will switch the sequencer to it. The walk's start and stop now accelerate and decelerate (`walk_accel_sec` / `walk_decel_sec`), so a locomotion blend driven by speed will look right.
 - **Faces:** `sequencer.json` `face_poses` and `lipsync.json`. These are the character track's, already wired.
-- **Missing clips:** about 100 Act I clips are requested in `assets_src/characters/requested_clips.json` (M3-CHR-01). Calls to them are skipped until they exist.
+- **Missing clips:** about 100 Act I clips are requested in `assets_src/characters/requested_clips.json` (M3-CHR-1000). Calls to them are skipped until they exist.
 
 ## Field walking
 `FieldController` (`game/world/field_controller.gd`) and its motor drive the player from input. Field encounters (`FieldEncounters`) and story triggers read only `player.global_position`. Anything that places the player (`place_at`) calls `encounters.reanchor()` (M2-FP-28), so a body swap that re-parents or re-places the player should go through `place_at`.

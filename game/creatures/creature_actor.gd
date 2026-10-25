@@ -7,6 +7,8 @@ extends Node3D
 ## writes combat state. FighterStandIn calls it; BattleActorMotion decides when.
 
 const DATA_PATH := "res://game/data/creatures/creatures.json"
+## Buckets a path hash is cut into for the fidget interval.
+const FIDGET_BUCKETS := 10007
 
 static var _data: Dictionary = {}
 
@@ -28,6 +30,13 @@ var _fade: Tween
 var _phase_tween: Tween
 var _phase_pose: Array = []  # [position, rotation] the phase moves the model to
 var _hide_after: Array = []  # nodes a phase hides once its clip has played (hullgnaw's falling frames)
+var _show_after: Array = []  # nodes a phase shows once its clip has played (the spar-wraith's water sheath)
+## Hits taken (rotates the row's `hit_variants`).
+var _hits := 0
+## Seconds idling since the last fidget, and when the next one plays (the row's `idle_variety`).
+var _idle_clock := 0.0
+var _next_fidget := 0.0
+var _fidgets := 0
 ## Charge skill -> broken (the boss's breakable parts).
 var _broken: Dictionary = {}
 
@@ -68,6 +77,11 @@ func _ready() -> void:
 		_player.animation_finished.connect(_on_clip_finished)
 	for part: Variant in _row.get("break_parts", {}):
 		_show_part(StringName(str(part)), false)
+	for p: Variant in (_row.get("phases", {}) as Dictionary).values():  # what a phase brings in starts hidden
+		for n: Variant in (p as Dictionary).get("show", []) + (p as Dictionary).get("show_after", []):
+			var node := find_child(str(n), true, false) as Node3D
+			if node != null:
+				node.visible = false
 	_play(_idle)
 
 
@@ -94,12 +108,27 @@ func play_hit() -> bool:
 
 ## Plays a one-shot clip, then idles again. Refused while KO'd or petrified. In a phase whose `clips` map names a
 ## stand-in for `clip` (the Undertow's Reach strikes from its lifted or drawn-back pose), that clip plays instead.
+## A hit rotates through the row's `hit_variants` (the hit, then its mirrored heavier `hit_b`, ...) outside phases
+## that map their own hit.
 func play_clip(clip: StringName) -> bool:
-	clip = phase_clip(clip)
-	if _ko or _frozen or not has_clip(clip):
+	var mapped := phase_clip(clip)
+	if mapped == clip and clip == StringName(str(_row.get("hit", "hit"))) and not _ko and not _frozen:
+		mapped = _next_hit(clip)
+	if _ko or _frozen or not has_clip(mapped):
 		return false
-	_play(clip)
+	_play(mapped)
 	return true
+
+
+func _next_hit(clip: StringName) -> StringName:
+	var options: Array[StringName] = []
+	for v: Variant in _row.get("hit_variants", []):
+		if has_clip(StringName(str(v))):
+			options.append(StringName(str(v)))
+	if options.is_empty():
+		return clip
+	_hits += 1
+	return options[(_hits - 1) % options.size()]
 
 
 ## The clip the current phase plays for `clip` (its `clips` map), or `clip` itself.
@@ -170,10 +199,10 @@ func set_frozen(on: bool) -> void:
 
 
 ## A boss's phase change (creatures.json `phases`): plays its clip, hides and shows its listed nodes (the Cinder
-## Matron's crust bursting off), hides its `hide_after` nodes once the clip has played (the hullgnaw's frames fall
-## first), moves the model by its offset and tilt over
-## its time (at once when `instant`, for captures), and idles on the phase's idle clip afterwards. An unknown phase
-## does nothing.
+## Matron's crust bursting off), hides its `hide_after` and shows its `show_after` nodes once the clip has played
+## (the hullgnaw's frames fall first; the spar-wraith's water sheath comes after its drop), moves the model by its
+## offset and tilt over its time (at once when `instant`, for captures), and idles on the phase's idle clip
+## afterwards. An unknown phase does nothing.
 func enter_phase(phase_id: StringName, instant := false) -> bool:
 	var phases: Dictionary = _row.get("phases", {})
 	if not phases.has(String(phase_id)) or phase_id == _phase:
@@ -212,6 +241,7 @@ func enter_phase(phase_id: StringName, instant := false) -> bool:
 	if not _ko and not _frozen:
 		_play(clip if has_clip(clip) else _idle)
 	_hide_after = p.get("hide_after", [])
+	_show_after = p.get("show_after", [])
 	if is_inside_tree() and not instant and has_clip(clip):
 		get_tree().create_timer(clip_length(clip)).timeout.connect(_apply_hide_after.bind(phase_id))
 	else:
@@ -226,6 +256,10 @@ func _apply_hide_after(phase_id: StringName) -> void:
 		var node := find_child(str(n), true, false) as Node3D
 		if node != null:
 			node.visible = false
+	for n: Variant in _show_after:
+		var node := find_child(str(n), true, false) as Node3D
+		if node != null:
+			node.visible = true
 
 
 func phase() -> StringName:
@@ -277,6 +311,33 @@ func _model() -> Node3D:
 		if c is Node3D:
 			return c as Node3D
 	return null
+
+
+## The idle fidget (the row's `idle_variety`): while it idles on its own idle clip, outside any phase, playing (a
+## portrait's held pose is paused, so it never fidgets) and neither KO'd nor frozen, it plays the fidget once every
+## `every_sec` [min, max], the interval picked from a hash of its node path, so a scene replays the same way.
+func _process(delta: float) -> void:
+	var cfg: Dictionary = _row.get("idle_variety", {})
+	var clip := StringName(str(cfg.get("clip", "")))
+	if clip == &"" or not has_clip(clip) or _ko or _frozen or _phase != &"" or current_clip != _idle:
+		_idle_clock = 0.0
+		return
+	if not _player.is_playing():
+		return
+	if _next_fidget <= 0.0:
+		_next_fidget = _fidget_interval(cfg)
+	_idle_clock += delta
+	if _idle_clock >= _next_fidget:
+		_idle_clock = 0.0
+		_fidgets += 1
+		_next_fidget = _fidget_interval(cfg)
+		_play(clip)
+
+
+func _fidget_interval(cfg: Dictionary) -> float:
+	var span: Array = cfg.get("every_sec", [1.0, 1.0])
+	var u := float(absi(hash("%s:%d" % [str(get_path()), _fidgets])) % FIDGET_BUCKETS) / float(FIDGET_BUCKETS)
+	return lerpf(float(span[0]), float(span[1]), u)
 
 
 func _play(clip: StringName) -> void:

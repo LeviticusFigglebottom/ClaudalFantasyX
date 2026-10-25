@@ -1,179 +1,132 @@
 extends TestCase
-## M2-UI-15: localization readiness. A pseudo-locale ("xx") built from strings.csv makes every
-## string about 35% longer and accented, keeping its {placeholders} and %-formats. Each menu is
-## built under it through its capture driver (the shots' own staging), and every visible Label must
-## fit its rect, or wrap or ellipsize; silent overflow fails, naming the label and its text.
+## Localization readiness. M2-UI-15 started it with a pseudo-locale built here from strings.csv;
+## M2-UI-28 moved the generator into the game's debug tools (PseudoLoc, game/core/debug/: every loc
+## CSV, about 40% longer, accented, {placeholders}, %-formats, BBCode and newlines kept), and the
+## screen walks into test_pseudo_loc_screens.gd (TextFitProbe). This file checks the generator, the
+## switch (launch flag, environment, debug overlay) and that release builds never reach it.
 
-const STRINGS := "res://game/data/loc/strings.csv"
-const PSEUDO_LOCALE := "xx"
-const GROWTH := 0.35
-const ACCENTS := {
-	"a": "á",
-	"e": "é",
-	"i": "í",
-	"o": "ö",
-	"u": "ü",
-	"y": "ý",
-	"c": "ç",
-	"n": "ñ",
-	"s": "š",
-	"A": "Å",
-	"E": "É",
-	"I": "Í",
-	"O": "Ö",
-	"U": "Ü",
-	"C": "Ç",
-	"N": "Ñ",
-	"S": "Š",
-}
-## Capture drivers that stage a menu: scene path -> what it shows.
-const DRIVERS := {
-	"res://game/ui/field_menu/shots/field_menu.tscn": "field menu",
-	"res://game/ui/field_menu/shots/field_menu_swell_modes.tscn": "field menu, Swell modes",
-	"res://game/ui/bestiary/shots/bestiary_menu.tscn": "bestiary",
-	"res://game/ui/settings/shots/settings_hub.tscn": "settings hub",
-	"res://game/ui/settings/shots/settings_accessibility.tscn": "accessibility page",
-	"res://game/ui/settings/shots/settings_controls.tscn": "controls page",
-	"res://game/ui/shop/shots/shop_buy.tscn": "shop, buy",
-	"res://game/ui/shop/shots/shop_sell.tscn": "shop, sell",
-	"res://game/ui/shop/shots/inn.tscn": "inn",
-}
-## Battle fixtures whose capture states show the HUD's pages and panels.
-const BATTLE_STATES: Array[StringName] = [
-	&"player_preview", &"swap_menu", &"read_panel", &"swell_chant", &"swell_brace", &"vowbound_call"
-]
-
-var _pseudo: Translation
-var _was_locale := ""
+const OVERLAY_DATA := "res://game/data/debug/debug_overlay.json"
+const THEME_PATH := "res://game/ui/theme/hymn_theme.tres"
+const GAME_DIR := "res://game"
+const DEBUG_DIR := "res://game/core/debug"
 
 
 func before_each() -> void:
-	if _pseudo == null:
-		_pseudo = make_pseudo()
-	_was_locale = TranslationServer.get_locale()
-	TranslationServer.add_translation(_pseudo)
-	TranslationServer.set_locale(PSEUDO_LOCALE)
+	PseudoLoc.disable()
 
 
-## The pseudo-locale translation of every strings.csv key.
-static func make_pseudo() -> Translation:
-	var t := Translation.new()
-	t.locale = PSEUDO_LOCALE
-	var f := FileAccess.open(STRINGS, FileAccess.READ)
-	f.get_csv_line()  # keys,en
-	while not f.eof_reached():
-		var row := f.get_csv_line()
-		if row.size() >= 2 and row[0] != "":
-			t.add_message(row[0], pseudo(row[1]))
-	return t
+func test_pseudo_accents_pads_and_brackets() -> void:
+	var cfg := PseudoLoc.config()
+	var p := PseudoLoc.pseudo("Settings")
+	assert_true(p.begins_with(str(cfg["prefix"])) and p.ends_with(str(cfg["suffix"])), p)
+	assert_true(p.contains("Šéţţîñĝš"), "accented: " + p)
+	var dots := p.count(str(cfg["pad_char"]))
+	assert_eq(dots, ceili("Settings".length() * float(cfg["expansion"])), "padded by the expansion: " + p)
+	var long := "The tide turns twice before the bell rings over the drowned quarter."
+	assert_true(PseudoLoc.pseudo(long).length() >= long.length() * (1.0 + float(cfg["expansion"])), "about 40% longer")
 
 
-## `text` accented and padded about GROWTH longer, in brackets; {placeholders} and %-formats kept.
-static func pseudo(text: String) -> String:
-	var out := ""
-	var depth := 0
-	var i := 0
-	while i < text.length():
-		var ch := text[i]
-		if ch == "{":
-			depth += 1
-		elif ch == "}":
-			depth -= 1
-		if ch == "%" and i + 1 < text.length():
-			out += text.substr(i, 2)
-			i += 2
+func test_pseudo_keeps_placeholders_formats_bbcode_and_newlines() -> void:
+	var src := "Not enough lume: {cost} costs %d, [b]%s[/b] holds %.1f%%\nPress {ui_cancel}"
+	var p := PseudoLoc.pseudo(src)
+	for kept: String in ["{cost}", "%d", "[b]", "%s", "[/b]", "%.1f", "%%", "{ui_cancel}"]:
+		assert_true(p.contains(kept), "%s kept in %s" % [kept, p])
+	assert_eq(p.count("\n"), 1, "the newline stays: " + p)
+	assert_true(p.contains("Ñöţ"), "the words around them are accented")
+	assert_eq(p.format({"cost": "12"}).contains("12"), true, "String.format still finds its placeholder")
+	var lines := p.split("\n")
+	assert_true(lines[0].contains(str(PseudoLoc.config()["pad_char"])), "each line is padded on its own")
+	assert_true(lines[1].contains(str(PseudoLoc.config()["pad_char"])), "each line is padded on its own")
+	assert_eq(PseudoLoc.pseudo(""), str(PseudoLoc.config()["prefix"]) + str(PseudoLoc.config()["suffix"]))
+
+
+func test_the_padding_breaks_into_groups_a_wrap_can_split() -> void:
+	var cfg := PseudoLoc.config()
+	var p := PseudoLoc.pseudo("x".repeat(100))
+	var group := str(cfg["pad_char"]).repeat(int(cfg["pad_group"]))
+	assert_false(p.contains(group + str(cfg["pad_char"])), "no run longer than pad_group: " + p)
+
+
+func test_every_loc_csv_reaches_the_pseudo_translation() -> void:
+	var csvs := PseudoLoc.source_csvs()
+	assert_true(csvs.size() >= 2, "strings.csv and the per-domain CSVs")
+	assert_true(csvs.has("res://game/data/loc/strings.csv"))
+	assert_true(csvs.has("res://game/data/loc/dialogue.csv"))
+	var t := PseudoLoc.build()
+	assert_eq(t.locale, PseudoLoc.locale())
+	assert_eq(str(t.get_message("FIELD_MENU_TITLE")), PseudoLoc.pseudo(TranslationServer.translate("FIELD_MENU_TITLE")))
+
+
+func test_enable_switches_the_locale_and_disable_puts_it_back() -> void:
+	var was := TranslationServer.get_locale()
+	var english := tr("FIELD_MENU_TITLE")
+	assert_true(PseudoLoc.enable(), "debug builds (the test runner) may turn it on")
+	assert_true(PseudoLoc.is_enabled())
+	assert_eq(TranslationServer.get_locale(), PseudoLoc.locale())
+	assert_eq(tr("FIELD_MENU_TITLE"), PseudoLoc.pseudo(english))
+	assert_eq(tr("NO_SUCH_KEY_ANYWHERE"), "NO_SUCH_KEY_ANYWHERE", "an unknown key stays itself")
+	assert_false(PseudoLoc.toggle(), "toggle turns it off")
+	assert_eq(TranslationServer.get_locale(), was)
+	assert_eq(tr("FIELD_MENU_TITLE"), english)
+	assert_true(PseudoLoc.toggle(), "and on again")
+	PseudoLoc.disable()
+	assert_eq(TranslationServer.get_locale(), was)
+
+
+func test_the_launch_flag_and_the_environment_turn_it_on() -> void:
+	var cfg := PseudoLoc.config()
+	assert_true(PseudoLoc.wanted(PackedStringArray([str(cfg["flag"])]), ""), "--pseudo-loc")
+	assert_true(PseudoLoc.wanted(PackedStringArray(), "1"), "HYMN_PSEUDO_LOC=1")
+	for off: String in ["", "0", "false", "OFF"]:
+		assert_false(PseudoLoc.wanted(PackedStringArray(["--other"]), off), "'%s' leaves it off" % off)
+
+
+func test_the_debug_overlay_toggles_it_on_f10() -> void:
+	var cfg: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(OVERLAY_DATA))
+	var keys: Array = ((cfg["actions"] as Dictionary)[String(DebugOverlay.ACTION_PSEUDO_LOC)] as Dictionary)["keys"]
+	assert_eq(keys, ["F10"])
+	var overlay := DebugOverlay.install(ParityHost.scene_root())
+	assert_true(overlay.toggle_pseudo_loc(), "F10 turns it on")
+	assert_eq(TranslationServer.get_locale(), PseudoLoc.locale())
+	assert_true(overlay.last_message.contains("on"), overlay.last_message)
+	assert_true("\n".join(overlay.render_page(DebugOverlay.PAGE_HELP)).contains("pseudo-localisation (on)"))
+	assert_false(overlay.toggle_pseudo_loc(), "and off")
+	overlay.get_parent().remove_child(overlay)
+	overlay.free()
+
+
+## Every accent the pseudo-locale draws is in the theme's fonts, so a missing glyph never shows as a
+## box (and the width the screen walks measure is the real one).
+func test_the_theme_fonts_have_every_accent() -> void:
+	var theme := load(THEME_PATH) as Theme
+	var fonts: Array[Font] = [theme.default_font]
+	for type in theme.get_font_type_list():
+		for fname in theme.get_font_list(type):
+			fonts.append(theme.get_font(fname, type))
+	var accents: Dictionary = PseudoLoc.config()["accents"]
+	var chars: Array = accents.values() + [str(PseudoLoc.config()["pad_char"])]
+	for f in fonts:
+		if f == null:
 			continue
-		out += ch if depth > 0 else str(ACCENTS.get(ch, ch))
-		i += 1
-	return "[" + out + " " + "~".repeat(ceili(text.length() * GROWTH)) + "]"
+		for ch: String in chars:
+			assert_true(f.has_char(ch.unicode_at(0)), "%s has %s" % [f.get_font_name(), ch])
 
 
-func test_pseudo_keeps_placeholders_and_grows() -> void:
-	var p := pseudo("Not enough lume: {cost} costs %d")
-	assert_true(p.contains("{cost}") and p.contains("%d"), p)
-	assert_true(p.length() >= ceili("Not enough lume: {cost} costs %d".length() * (1.0 + GROWTH)))
-	assert_true(p.contains("Ñöt"), "accented")
-	assert_eq(tr("FIELD_MENU_TITLE"), pseudo(_english("FIELD_MENU_TITLE")), "the locale is live")
-	_done()
-
-
-func test_every_menu_fits_the_pseudo_locale() -> void:
-	var problems: PackedStringArray = []
-	for path: String in DRIVERS:
-		var packed := load(path) as PackedScene
-		if packed == null:
-			problems.append("%s: no driver scene" % path)
+## Release exports leave game/core/debug/ out: no game script outside it may name PseudoLoc (UiInput
+## loads it by path).
+func test_no_game_code_names_the_debug_tool() -> void:
+	var code_ref := RegEx.create_from_string('(?<!["\\w/])PseudoLoc(?!["\\w])')
+	for path in _scripts(GAME_DIR):
+		if path.begins_with(DEBUG_DIR):
 			continue
-		var root := packed.instantiate()
-		_host().add_child(root)
-		problems.append_array(overflows(root, str(DRIVERS[path])))
-		root.get_parent().remove_child(root)
-		root.free()
-		(Engine.get_main_loop() as SceneTree).paused = false
-	UiSettings.set_shared(null)
-	assert_eq(problems, PackedStringArray(), "labels overflow in the pseudo-locale:\n" + "\n".join(problems))
-	_done()
+		assert_true(code_ref.search(FileAccess.get_file_as_string(path)) == null, "%s names PseudoLoc" % path)
 
 
-func test_the_battle_hud_fits_the_pseudo_locale() -> void:
-	var problems: PackedStringArray = []
-	for sid in BATTLE_STATES:
-		var ctl := (
-			(load("res://game/battle/scene/battle_sandbox.tscn") as PackedScene).instantiate() as BattleController
-		)
-		ctl.auto_start = false
-		ctl.pacing_scale = 0.0
-		ctl.persist_progress = false
-		ctl.show_damage_numbers = false
-		_host().add_child(ctl)
-		ctl.run_script(sid)
-		problems.append_array(overflows(ctl.hud, "battle " + String(sid)))
-		ctl.get_parent().remove_child(ctl)
-		ctl.free()
-	assert_eq(problems, PackedStringArray(), "HUD labels overflow in the pseudo-locale:\n" + "\n".join(problems))
-	_done()
-
-
-## Every visible Label under `root` that is wider (one line) or taller (wrapped) than its rect,
-## with no ellipsis, clip or line limit to absorb it.
-static func overflows(root: Node, what: String) -> PackedStringArray:
-	var out: PackedStringArray = []
-	for n in root.find_children("*", "Label", true, false):
-		var l := n as Label
-		if not l.is_visible_in_tree() or l.text.strip_edges() == "" or l.clip_text:
-			continue
-		if l.get_parent() is Container:
-			continue  # a container sizes it to its text (the container grows instead; the shots show it)
-		if l.text_overrun_behavior != TextServer.OVERRUN_NO_TRIMMING:
-			continue
-		var font := l.get_theme_font(&"font")
-		var fsize := l.get_theme_font_size(&"font_size")
-		if l.autowrap_mode == TextServer.AUTOWRAP_OFF:
-			var w := font.get_multiline_string_size(l.text, HORIZONTAL_ALIGNMENT_LEFT, -1, fsize).x
-			if w > l.size.x + 1.0:
-				out.append("%s: %s (%d > %d px): %s" % [what, l.name, int(w), int(l.size.x), l.text])
-			continue
-		if l.max_lines_visible >= 0:
-			continue
-		var h := font.get_multiline_string_size(l.text, HORIZONTAL_ALIGNMENT_LEFT, l.size.x, fsize).y
-		if h > l.size.y + 1.0:
-			out.append("%s: %s wraps to %d px in %d: %s" % [what, l.name, int(h), int(l.size.y), l.text])
+func _scripts(dir: String) -> PackedStringArray:
+	var out := PackedStringArray()
+	for f in DirAccess.get_files_at(dir):
+		if f.ends_with(".gd"):
+			out.append(dir.path_join(f))
+	for d in DirAccess.get_directories_at(dir):
+		out.append_array(_scripts(dir.path_join(d)))
 	return out
-
-
-func _english(key: String) -> String:
-	TranslationServer.set_locale("en")
-	var s := tr(key)
-	TranslationServer.set_locale(PSEUDO_LOCALE)
-	return s
-
-
-func _host() -> Node:
-	var tree := Engine.get_main_loop() as SceneTree
-	return tree.current_scene if tree.current_scene != null else tree.root
-
-
-## Back to English (the runner has no after_each).
-func _done() -> void:
-	TranslationServer.remove_translation(_pseudo)
-	TranslationServer.set_locale(_was_locale if _was_locale != "" else "en")

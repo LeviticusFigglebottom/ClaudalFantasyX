@@ -1,0 +1,199 @@
+[gd_scene load_steps=21 format=3]
+
+[ext_resource type="Script" path="res://game/levels/_tests/brightwater_ferry_kit/brightwater_ferry_preview.gd" id="1_rig"]
+[ext_resource type="Script" path="res://game/levels/ch02/haluna/weathering_tide.gd" id="2_tide"]
+[ext_resource type="Script" path="res://game/levels/ch02/haluna/haluna_dresser.gd" id="3_dresser"]
+[ext_resource type="Script" path="res://game/world/water/water_surface.gd" id="4_water"]
+[ext_resource type="Script" path="res://game/world/water/wave_set.gd" id="5_set"]
+[ext_resource type="Script" path="res://game/world/water/wave_component.gd" id="6_comp"]
+[ext_resource type="Material" path="res://game/levels/_tests/brightwater_ferry_kit/brightwater_ferry_water_material.tres" id="7_water_mat"]
+[ext_resource type="Environment" path="res://game/levels/_tests/brightwater_ferry_kit/brightwater_ferry_ch04_environment.tres" id="8_env"]
+[ext_resource type="Script" path="res://game/levels/ch02/haluna/haluna_shot_camera.gd" id="9_cam"]
+[ext_resource type="Script" path="res://game/world/camera_shot.gd" id="10_shot"]
+
+[sub_resource type="Resource" id="Swell0"]
+script = ExtResource("6_comp")
+direction_deg = 70.0
+wavelength_m = 64.0
+amplitude_m = 0.32
+steepness = 0.45
+phase_rad = 0.0
+
+[sub_resource type="Resource" id="Swell1"]
+script = ExtResource("6_comp")
+direction_deg = 52.0
+wavelength_m = 33.0
+amplitude_m = 0.16
+steepness = 0.55
+phase_rad = 1.7
+
+[sub_resource type="Resource" id="Swell2"]
+script = ExtResource("6_comp")
+direction_deg = 88.0
+wavelength_m = 17.0
+amplitude_m = 0.07
+steepness = 0.6
+phase_rad = 4.1
+
+[sub_resource type="Resource" id="Swell3"]
+script = ExtResource("6_comp")
+direction_deg = 61.0
+wavelength_m = 8.0
+amplitude_m = 0.03
+steepness = 0.6
+phase_rad = 2.6
+
+[sub_resource type="Resource" id="SeaWaves"]
+script = ExtResource("5_set")
+components = Array[ExtResource("6_comp")]([SubResource("Swell0"), SubResource("Swell1"), SubResource("Swell2"), SubResource("Swell3")])
+amplitude_scale = 1.0
+
+[sub_resource type="Resource" id="ShotB01"]
+script = ExtResource("10_shot")
+id = &"B01"
+position = Vector3(2.90, 4.60, 11.00)
+look_at = Vector3(0.60, 2.40, -8.00)
+fov_deg = 53.1
+
+[sub_resource type="Resource" id="ShotB02"]
+script = ExtResource("10_shot")
+id = &"B02"
+position = Vector3(-2.85, 3.00, -7.60)
+look_at = Vector3(1.40, 2.00, -2.20)
+fov_deg = 37.8
+
+[sub_resource type="Resource" id="ShotB03"]
+script = ExtResource("10_shot")
+id = &"B03"
+position = Vector3(2.20, 2.80, -1.15)
+look_at = Vector3(101.00, -0.60, -11.50)
+fov_deg = 27.0
+
+[sub_resource type="Resource" id="ShotB04"]
+script = ExtResource("10_shot")
+id = &"B04"
+position = Vector3(-42.00, 1.30, 4.00)
+look_at = Vector3(0.00, 4.20, 0.00)
+fov_deg = 37.8
+
+[sub_resource type="Resource" id="ShotB05"]
+script = ExtResource("10_shot")
+id = &"B05"
+position = Vector3(-0.50, 3.05, 0.50)
+look_at = Vector3(0.00, 2.50, 7.20)
+fov_deg = 27.0
+
+[sub_resource type="Resource" id="ShotB06"]
+script = ExtResource("10_shot")
+id = &"B06"
+position = Vector3(14.00, 19.00, -16.00)
+look_at = Vector3(0.00, 2.00, 2.00)
+fov_deg = 53.1
+
+[sub_resource type="Resource" id="ShotB07"]
+script = ExtResource("10_shot")
+id = &"B07"
+position = Vector3(-1.00, 4.30, -8.60)
+look_at = Vector3(-3.50, 2.60, -40.00)
+fov_deg = 27.0
+
+[node name="BrightwaterFerryPreview" type="Node3D" node_paths=PackedStringArray("sun", "tide", "water", "moon", "world_environment", "dresser")]
+script = ExtResource("1_rig")
+sun = NodePath("Sun")
+moon = NodePath("Moon")
+tide = NodePath("Tide")
+water = NodePath("Water")
+world_environment = NodePath("WorldEnvironment")
+dresser = NodePath("Dresser")
+mood = &"night"
+sun_elevation_deg = -12.0
+sun_azimuth_deg = 95.0
+time_of_day_h = 5.83
+wind_azimuth_deg = 250.0
+wind_speed_m_s = 7.0
+wind_gust = 0.3
+water_height_m = 0.0
+night_environment = ExtResource("8_env")
+moon_elevation_deg = 16.0
+moon_azimuth_deg = 88.0
+night_time_of_day_h = 5.83
+night_sea_glow = 0.12
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = ExtResource("8_env")
+
+[node name="Sun" type="DirectionalLight3D" parent="."]
+visible = false
+light_energy = 0.0
+
+[node name="Moon" type="DirectionalLight3D" parent="."]
+light_color = Color(0.6157, 0.7059, 0.851, 1)
+light_energy = 0.28
+shadow_enabled = true
+shadow_bias = 0.03
+shadow_normal_bias = 1.0
+shadow_blur = 1.0
+directional_shadow_mode = 2
+directional_shadow_split_1 = 0.05
+directional_shadow_split_2 = 0.15
+directional_shadow_split_3 = 0.4
+directional_shadow_max_distance = 120.0
+
+[node name="Water" type="Node3D" parent="."]
+script = ExtResource("4_water")
+publishes_water_level = true
+wave_set = SubResource("SeaWaves")
+material = ExtResource("7_water_mat")
+
+[node name="Tide" type="Node" parent="." node_paths=PackedStringArray("water")]
+script = ExtResource("2_tide")
+water = NodePath("../Water")
+
+[node name="Dresser" type="Node3D" parent="." node_paths=PackedStringArray("tide")]
+script = ExtResource("3_dresser")
+layout_path = "res://game/levels/_tests/brightwater_ferry_kit/brightwater_ferry_layout.json"
+tide = NodePath("../Tide")
+
+[node name="Cameras" type="Node3D" parent="."]
+
+[node name="B01" type="Camera3D" parent="Cameras"]
+near = 0.05
+far = 6000.0
+script = ExtResource("9_cam")
+shot = SubResource("ShotB01")
+
+[node name="B02" type="Camera3D" parent="Cameras"]
+near = 0.05
+far = 6000.0
+script = ExtResource("9_cam")
+shot = SubResource("ShotB02")
+
+[node name="B03" type="Camera3D" parent="Cameras"]
+near = 0.05
+far = 6000.0
+script = ExtResource("9_cam")
+shot = SubResource("ShotB03")
+
+[node name="B04" type="Camera3D" parent="Cameras"]
+near = 0.05
+far = 6000.0
+script = ExtResource("9_cam")
+shot = SubResource("ShotB04")
+
+[node name="B05" type="Camera3D" parent="Cameras"]
+near = 0.05
+far = 6000.0
+script = ExtResource("9_cam")
+shot = SubResource("ShotB05")
+
+[node name="B06" type="Camera3D" parent="Cameras"]
+near = 0.05
+far = 6000.0
+script = ExtResource("9_cam")
+shot = SubResource("ShotB06")
+
+[node name="B07" type="Camera3D" parent="Cameras"]
+near = 0.05
+far = 6000.0
+script = ExtResource("9_cam")
+shot = SubResource("ShotB07")
