@@ -1639,3 +1639,15 @@ Rules:
 | assets/audio/music/keth_pass.loop.json | assets_src/music/keth_pass.py + tools/audio/synth/looping.py | python3 assets_src/music/keth_pass.py | Audio (claude/audio, M3-AUD-804) | 2026-10-24 | original |
 | assets/audio/music/quellan.ogg | assets_src/music/quellan.py + assets_src/music/act2_voices.py + tools/audio/synth/ | python3 assets_src/music/quellan.py | Audio (claude/audio, M3-AUD-804) | 2026-10-24 | original |
 | assets/audio/music/quellan.loop.json | assets_src/music/quellan.py + tools/audio/synth/looping.py | python3 assets_src/music/quellan.py | Audio (claude/audio, M3-AUD-804) | 2026-10-24 | original |
+| assets/audio/music/ansedra.ogg | assets_src/music/ansedra.py + tools/audio/synth/ | python3 assets_src/music/ansedra.py | Audio (claude/audio, M3-AUD-805) | 2026-10-24 | original |
+| assets/audio/music/ansedra.loop.json | assets_src/music/ansedra.py + tools/audio/synth/looping.py | python3 assets_src/music/ansedra.py | Audio (claude/audio, M3-AUD-805) | 2026-10-24 | original |
+| assets/audio/music/lamp_archive.ogg | assets_src/music/lamp_archive.py + tools/audio/synth/ | python3 assets_src/music/lamp_archive.py | Audio (claude/audio, M3-AUD-805) | 2026-10-24 | original |
+| assets/audio/music/lamp_archive.loop.json | assets_src/music/lamp_archive.py + tools/audio/synth/looping.py | python3 assets_src/music/lamp_archive.py | Audio (claude/audio, M3-AUD-805) | 2026-10-24 | original |
+| assets/audio/music/peace_wedding.ogg | assets_src/music/peace_wedding.py + tools/audio/synth/ | python3 assets_src/music/peace_wedding.py | Audio (claude/audio, M3-AUD-805) | 2026-10-24 | original |
+| assets/audio/music/peace_wedding.loop.json | assets_src/music/peace_wedding.py + tools/audio/synth/looping.py | python3 assets_src/music/peace_wedding.py | Audio (claude/audio, M3-AUD-805) | 2026-10-24 | original |
+| assets/audio/music/unlamped.ogg | assets_src/music/unlamped.py + tools/audio/synth/ | python3 assets_src/music/unlamped.py | Audio (claude/audio, M3-AUD-805) | 2026-10-24 | original |
+| assets/audio/music/unlamped.loop.json | assets_src/music/unlamped.py + tools/audio/synth/looping.py | python3 assets_src/music/unlamped.py | Audio (claude/audio, M3-AUD-805) | 2026-10-24 | original |
+| assets/audio/music/pale_rim.ogg | assets_src/music/pale_rim.py + tools/audio/synth/ | python3 assets_src/music/pale_rim.py | Audio (claude/audio, M3-AUD-805) | 2026-10-24 | original |
+| assets/audio/music/pale_rim.loop.json | assets_src/music/pale_rim.py + tools/audio/synth/looping.py | python3 assets_src/music/pale_rim.py | Audio (claude/audio, M3-AUD-805) | 2026-10-24 | original |
+| assets/audio/music/drowned_choir.ogg | assets_src/music/drowned_choir.py + tools/audio/synth/ | python3 assets_src/music/drowned_choir.py | Audio (claude/audio, M3-AUD-805) | 2026-10-24 | original |
+| assets/audio/music/drowned_choir.loop.json | assets_src/music/drowned_choir.py + tools/audio/synth/looping.py | python3 assets_src/music/drowned_choir.py | Audio (claude/audio, M3-AUD-805) | 2026-10-24 | original |
