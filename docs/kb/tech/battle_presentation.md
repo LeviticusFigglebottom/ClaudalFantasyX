@@ -571,6 +571,10 @@ BattleChoreo, listen-only) adds weight on the contact beat. Every number is in `
   (`BattleStage.shake_setting`).
 - **Damage numbers** already pop (6% in 80 ms) and ease out on the rise (DamageNumber, the UI track's, to
   docs/kb/art/ui.md §5); they land on the contact beat. Element particles on contact are the PC track's BattleVfx.
+- **Audio hooks (listen-only).** `BattleImpact.landed(target_id, strength, stop_sec)` fires on each contact with
+  weight (the hardest-hit target, 0..1, the hit-stop in real seconds). `slowmo_planned(from_sec, sec, factor)`
+  fires when a sequence will fell the last foe. Audio layers an impact by weight and a KO swell on them
+  (request M3-BPR-405).
 - **Tests:** `tests/unit/test_battle_impact.gd`; data checks `tools/validate_choreo.py` `impact_errors`.
 
 ## Spacing: no overlaps (M3-BPR-402)
