@@ -2,6 +2,8 @@
 
 ## STATE AT HANDOVER (2026-10-25)
 
+**HANDOVER DONE @ 20ee527f** (claude/audio pushed; nothing un-pushed; no worktree holds unsaved work).
+
 Written for a fresh Lead with no prior context. The branch is **claude/audio**, at ca22f8ae when this was written. The
 integration branch is `claude/undertow-lead-handoff-423ixt` (last merged into claude/audio at 2a699ddb).
 
