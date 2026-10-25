@@ -236,3 +236,5 @@ UI track, branch `claude/ui`; the integration branch is `claude/undertow-lead-ha
 - **Heroes are models now:** battle_controller.gd is at 990 of its 1000-line cap, so put new battle-scene logic in helpers. Tests that want a primitive should build Ysolde, who is still a capsule.
 - **`tools/dev/merge_union.py`** crashes on binaries. Resolve the PNGs first.
 - **The Lead can't be messaged directly:** send_message to the Lead fails with `elevated_session_untrusted_device`, so this file is the channel.
+
+**HANDOVER DONE @ a8c8a9d2** (2026-10-25). claude/ui is pushed, the working tree is clean, and no agents or jobs are running.
