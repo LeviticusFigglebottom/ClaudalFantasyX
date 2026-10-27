@@ -371,6 +371,16 @@ env-art is cloud session `session_01YbaV2c8yquRHqj6afQYg89` on `claude/env-art`;
 
   Checks run: haluna_kit full rebuild (older pieces identical), `test_haluna_kit`, `test_arenas`, validate_data,
   Godot import.
+- **MERGE-READY @ 191e5e89: M3-ENV-720**, the Wakefin's arena `bridal_barge_night` (Ch15), with the sheet
+  `open_sea_ch15.md`.
+  - **The barge.** Merel's bridal barge is in the Haluna kit (`bridal_barge.py`): a wedding-red hull with a gilt band,
+    the stern canopy over Tobin's bier, and an empty lamp hook at the bow.
+  - **The grade.** `lut_ch15_unlamped` is a new `zone_lut.py` grade: no warm source anywhere.
+  - **The anchor.** The `BossAnchor` is in the water off the bow.
+  - **For act1/creatures:** set the Ch15 Wakefin encounter's arena to `bridal_barge_night`.
+
+  Checks run: haluna_kit full rebuild (older pieces identical; every other arena byte-identical), `test_bridal_barge`
+  5, Godot `--filter=arena` 18/0, and the full tools suite (red only on screenshots and the integration's audio).
 
 ### Render requests
 RENDER-REQUEST @ a0d2549f: battle_arena_tideline_dawn,battle_arena_causeway_disc_sunset,battle_arena_causeway,battle_arena_tideline,causeway_c02_profile_against_the_lagoon,causeway_c08_drownbell_disc_approach,drownbell_flood,battle_boss_intro_drownbell,haluna_h01_village_from_sea,haluna_h10_dock_night,field_objective_line,field_interact_prompt,field_area_title,field_tip_card,dialogue_continue; why: M3-ENV-701 set dressing in Haluna, the causeway and the two arenas (the five field/dialogue shots frame Haluna's lane 1)
@@ -394,6 +404,7 @@ ANSWERED: 8770a06 (gpu/render-env-art-8770a06): corrow_c01_wall_head and corrow_
 ANSWERED: 22a5de1 and 1a42247 (3 pass each after the import-crash re-render): nothing to approve.
 RENDER-REQUEST @ 29ddd021: haluna_h01_village_from_sea,haluna_h04_dock,battle_arena_causeway_route_afternoon; why: the fish weirs (ba16d48) and the route arena's tidal mud (179069d), not on the integration branch, now with big11's villagers and stances
 RENDER-REQUEST @ c990e2c2: battle_arena_ossa_fen_roots; why: M3-ENV-718 the Mangrove Drowner's fen arena (new shot)
+RENDER-REQUEST @ 191e5e89: battle_arena_bridal_barge_night; why: M3-ENV-720 the Wakefin's unlamped bridal barge (new shot)
 
 ## STATE AT HANDOVER (2026-10-25)
 
