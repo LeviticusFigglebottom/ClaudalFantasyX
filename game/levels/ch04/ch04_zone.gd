@@ -12,6 +12,7 @@ extends Ch01Zone
 ## Haluna's wake-night uses it for the windows going dark, Asha's shell in the wall, the village going
 ## home and the stranger at the wall; the ferry for the party crossing to the derelict and back, its
 ## sails, the wraith and the board. A battle reloads the zone, so this is what keeps it right.
+## Kit collision (ADR 0200): the layout's "collision_path" and "ramps" (KitCollision).
 
 const KEY_STATES := "states"
 const KEY_PLACE := "place"
@@ -20,6 +21,13 @@ const KEY_PLACE := "place"
 func _ready() -> void:
 	super()
 	refresh_states()
+
+
+## The layout's blocks plus its collision file's; then the ramps (KitCollision).
+func _build_blocks() -> void:
+	KitCollision.merge(self)
+	super()
+	KitCollision.build_ramps(self)
 
 
 ## Applies every "states" row whose flag is set (see the class comment).

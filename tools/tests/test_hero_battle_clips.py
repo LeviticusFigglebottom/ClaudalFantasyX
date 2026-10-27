@@ -138,9 +138,11 @@ class TestHeroBattleClips(unittest.TestCase):
                     node, _, bone = path.partition(":")
                     self.assertEqual(node, f"{root}/Skeleton3D", f"{hero} {clip} {path}")
                     hooks = [hero_clips.HOOK_BONE + s for s in self.sk[hero].hooks]  # M2-CHR-513: Rhen's reef-hooks
-                    self.assertIn(bone, self.sk[hero].keyed + hooks, f"{hero} {clip} {path}")  # M1-CHR-15: helpers
+                    prop = [self.sk[hero].prop["bone"]] if self.sk[hero].prop else []  # M2-CHR-515: the held prop
+                    extra = hooks + prop + hero_clips.grip_bones(self.sk[hero])  # and the fingers round it
+                    self.assertIn(bone, self.sk[hero].keyed + extra, f"{hero} {clip} {path}")  # M1-CHR-15: helpers
                     if kind == "position_3d":
-                        self.assertIn(bone, [hero_clips.HIPS] + hooks, f"{hero} {clip}")
+                        self.assertIn(bone, [hero_clips.HIPS] + hooks + prop, f"{hero} {clip}")
                 hips = [np.asarray(p.get("hips", (0.0, 0.0, 0.0)), dtype=float) for _t, p in self._keys(hero, clip)]
                 if clip in HOLD_LAST | OPTIONAL:  # a body lying down is in place when centred on the spot (below)
                     continue

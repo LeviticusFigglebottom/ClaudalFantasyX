@@ -29,6 +29,8 @@ Ch9 plays on one greybox zone, `ch09/corrow_night` (M3-C09-02; `game/levels/ch09
 - [ ] **The Iskarra vigil (B10).** The greybox stages it on a stand-in plaza far east in the same zone (x 300), so the cut from D03 to P02 is a camera cut in one scene. Either dress that stand-in with the Prologue's plaza pieces or propose another way to keep the cut hard. A scene change fades through the router.
 
 ## Notes
+- 2026-10-27 (env-art): the kit pieces are M3-ENV-708 (`cw_night.py`): shrouds, strand lamps, round shields, the
+  Ebbing raft, flood debris, the milestone. Placement and the zone decision stay with act1-chapters.
 - The layout's `doc` describes each block. `tests/integration/test_ch09_thread.gd` names the spawns, marks, shots and triggers it depends on.
 - In the greybox, +Z is south, out to sea; the placeholder held motes drift that way. On the real Corrow the sea is south-west (act1_ch09.md §9 Rendering 2).
 

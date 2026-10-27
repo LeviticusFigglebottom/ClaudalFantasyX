@@ -16,6 +16,11 @@ extends Node
 ##   `swim.teleport_m` is not swum.
 ## - `muffle` (M3-AUD-22): while the ear (the viewport's Camera3D with `use_camera`, else the first node in
 ##   `ear_groups`) is inside a sphere, the director's BusMuffle is on for `reason`: the world heard through water.
+## - `by` (M3-AUD-824): an action may pick sub-actions from the signal: [{arg, key?, equals_prop?, values}] (or one such
+##   row). The value is argument `arg` (its `key` when it is a Dictionary; compared with the watched object's
+##   `equals_prop` when given, giving true or false), as lower-case text, and values[text] runs as an action too.
+## - `holder_property` (M3-AUD-824): the hook's class is a headless object (ReefballMatch) that a node holds in that
+##   property; the node is watched, the object's signals are connected, and positional rows sound at the node.
 ## The crowd's beds are ambience.json beds; a move keeps the zone's other beds and swaps only the crowd's.
 ## Time passes only through advance(delta) (AudioDirector.advance calls it; tests call it directly).
 
@@ -50,6 +55,8 @@ var played: Array = []
 var watched: Array[Dictionary] = []
 ## Each swimmer's state by instance id: {inside: bool, last: Vector3, swum: float}.
 var swimmers: Dictionary = {}
+## Holders whose hooked object was not set yet when they arrived.
+var _holders: Array[Node] = []
 ## A crowd move waiting: {crowd, left} ({} when none).
 var _restore: Dictionary = {}
 
@@ -87,18 +94,41 @@ func bind_director(dir: AudioDirector) -> void:
 func hook_for(node: Node) -> Dictionary:
 	if node.has_meta(META_CLASS):
 		return hooks.get(str(node.get_meta(META_CLASS)), {}) as Dictionary
-	var s := node.get_script() as Script
-	while s != null:
-		var cls := String(s.get_global_name())
-		if hooks.has(cls):
-			return hooks[cls]
-		s = s.get_base_script()
+	var cls := class_of(node)
+	if hooks.has(cls) and not (hooks[cls] as Dictionary).has("holder_property"):
+		return hooks[cls]
 	return {}
 
 
-## True when `node` has a hook (the director then calls watch() deferred).
+## The global class name of `obj`'s script (or a base script's that has a hook), else "".
+func class_of(obj: Object) -> String:
+	var s := obj.get_script() as Script if obj != null else null
+	while s != null:
+		var cls := String(s.get_global_name())
+		if hooks.has(cls):
+			return cls
+		s = s.get_base_script()
+	return ""
+
+
+## The holder hook `node` carries: a hook with `holder_property` whose class the node's property holds, and that
+## object ({} when none). The property may still be unset when the node arrives (it is read again each frame).
+func holder_for(node: Node) -> Array:
+	for cls: String in hooks:
+		var prop := str((hooks[cls] as Dictionary).get("holder_property", ""))
+		if prop == "" or not prop in node:
+			continue
+		var obj: Variant = node.get(StringName(prop))
+		if obj is Object and class_of(obj as Object) == cls:
+			return [hooks[cls], obj]
+		if obj == null:
+			return [hooks[cls], null]
+	return []
+
+
+## True when `node` has a hook, or holds (or will hold) a hooked object (the director then calls watch() deferred).
 func wants(node: Node) -> bool:
-	return not hooks.is_empty() and not hook_for(node).is_empty()
+	return not hooks.is_empty() and (not hook_for(node).is_empty() or not holder_for(node).is_empty())
 
 
 ## Connects to `node`'s signals (those it has) and runs its on_enter.
@@ -109,11 +139,25 @@ func watch(node: Node) -> void:
 		if w["node"] == node:
 			return
 	var hook := hook_for(node)
+	var source: Object = node
 	if hook.is_empty():
-		return
+		var held := holder_for(node)
+		if held.is_empty():
+			return
+		if held[1] == null:
+			if not _holders.has(node):
+				_holders.append(node)  # its object comes later: advance() looks again
+			return
+		hook = held[0]
+		source = held[1]
+		_holders.erase(node)
+	_connect(source, hook, node)
+
+
+func _connect(source: Object, hook: Dictionary, node: Node) -> void:
 	var sigs := hook.get("signals", {}) as Dictionary
 	for sig: String in sigs:
-		var argc := UiAudio._arg_count(node, StringName(sig))
+		var argc := UiAudio._arg_count(source, StringName(sig))
 		if argc < 0:
 			continue
 		var fire: Callable
@@ -126,10 +170,10 @@ func watch(node: Node) -> void:
 				fire = _fire2.bind(sig, node)
 			_:
 				fire = _fire3.bind(sig, node).unbind(argc - 3) if argc > 3 else _fire3.bind(sig, node)
-		node.connect(StringName(sig), fire)
+		source.connect(StringName(sig), fire)
 	if hook.has("on_exit"):
 		node.tree_exiting.connect(run.bind(hook["on_exit"], [], node))
-	watched.append({"node": node, "hook": hook})
+	watched.append({"node": node, "hook": hook, "object": source})
 	if hook.has("on_enter"):
 		run(hook["on_enter"], [], node)
 
@@ -139,6 +183,9 @@ func run(action: Variant, args: Array, node: Node) -> void:
 	if not action is Dictionary:
 		return
 	var a := action as Dictionary
+	var by: Variant = a.get("by")
+	for pick: Variant in by as Array if by is Array else [by] if by is Dictionary else []:
+		run(_picked(pick as Dictionary, args, node), args, node)
 	for id: StringName in _ids(a.get("sfx_at")):
 		var at: Variant = place_of(args, node)
 		if at is Vector3 and player_at.is_valid():
@@ -155,6 +202,23 @@ func run(action: Variant, args: Array, node: Node) -> void:
 		set_crowd(StringName(str(a["crowd"])))
 	if a.has("restore") and float(a.get("restore_after_sec", 0.0)) > 0.0:
 		_restore = {"crowd": StringName(str(a["restore"])), "left": float(a["restore_after_sec"])}
+
+
+## The sub-action `pick` ({arg, key?, equals_prop?, values}) chooses for the signal's `args` (null for none).
+func _picked(pick: Dictionary, args: Array, node: Node) -> Variant:
+	var i := int(pick.get("arg", 0))
+	if i < 0 or i >= args.size():
+		return null
+	var v: Variant = args[i]
+	if pick.has("key") and v is Dictionary:
+		v = (v as Dictionary).get(str(pick["key"]))
+	if pick.has("equals_prop"):
+		var obj: Variant = node
+		for w in watched:
+			if w["node"] == node:
+				obj = w.get("object", node)
+		v = obj != null and str(v) == str((obj as Object).get(StringName(str(pick["equals_prop"]))))
+	return (pick.get("values", {}) as Dictionary).get(str(v).to_lower())
 
 
 ## The place a positional row sounds: the first Vector3 or Node3D argument, else `node` if it is a Node3D, else null.
@@ -192,6 +256,12 @@ func set_crowd(state: StringName) -> void:
 
 ## Reads the swimmers against each sphere and runs a waiting crowd move.
 func advance(delta: float) -> void:
+	for i in range(_holders.size() - 1, -1, -1):
+		var h := _holders[i]
+		if not is_instance_valid(h) or not h.is_inside_tree():
+			_holders.remove_at(i)
+		else:
+			watch(h)
 	var alive: Array[Dictionary] = []
 	for w in watched:
 		if is_instance_valid(w["node"]) and (w["node"] as Node).is_inside_tree():

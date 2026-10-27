@@ -502,6 +502,10 @@ def limit4(W: np.ndarray) -> np.ndarray:
     return W / np.maximum(W.sum(axis=1, keepdims=True), 1e-12)
 
 
+STAFF_BONE = "DEF-staff"  # M2-CHR-515: the held staff's prop bone, under DEF-hand.R
+STAFF_BONE_LEN = 0.3  # m, up the shaft from the grip
+
+
 def rigid(ob: bpy.types.Object, bone: str, skel: bpy.types.Object) -> None:
     vg = ob.vertex_groups.new(name=bone)
     vg.add(list(range(len(ob.data.vertices))), 1.0, "REPLACE")
@@ -787,9 +791,10 @@ def main() -> int:
 
     staff = asha_staff.staff(lm)
     ob_staff = part_object(staff)
-    Wst = np.zeros((len(staff.V), len(wnames)), dtype=np.float32)
-    Wst[:, wnames.index("DEF-hand.R")] = 1.0
-    apply_weights(ob_staff, Wst, wnames, skel)
+    # M2-CHR-515: the staff rides its own bone in the right hand, so the clips can slide it through the fist
+    staff_head, staff_tail = asha_staff.staff_bone(lm, STAFF_BONE_LEN)
+    add_bones(skel, [(STAFF_BONE, staff_head, staff_tail, "DEF-hand.R")])
+    rigid(ob_staff, STAFF_BONE, skel)
 
     # ---- body ---------------------------------------------------------------------------------
     keep_b = ~is_head & ~hidden

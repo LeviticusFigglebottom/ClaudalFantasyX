@@ -125,6 +125,7 @@ func test_open_in_brings_its_own_layer_and_frees_it_on_close() -> void:
 	assert_true(layer != null, "on a CanvasLayer")
 	assert_eq(layer.layer, int(BestiaryMenu.load_data()["canvas_layer"]))
 	m.close()
+	m.motion().finish()  # the layer goes once the fade ends (M2-MNU-305)
 	assert_true(layer.is_queued_for_deletion())
 	host.get_tree().paused = false
 	_root().remove_child(host)

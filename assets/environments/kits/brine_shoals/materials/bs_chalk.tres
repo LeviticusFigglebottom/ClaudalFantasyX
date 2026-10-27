@@ -1,0 +1,6 @@
+[gd_resource type="StandardMaterial3D" load_steps=1 format=3]
+
+[resource]
+resource_name = "bs_chalk"
+albedo_color = Color(0.851, 0.8314, 0.7765, 1)
+roughness = 1

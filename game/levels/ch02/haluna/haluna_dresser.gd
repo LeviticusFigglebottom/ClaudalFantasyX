@@ -16,7 +16,10 @@ const GROUND_KEY := "ground"
 ## keys pieces by their first mesh name, and the zone's piece_rules give this one no shape.
 const NIGHT_LAMPS := &"NightLamps"
 const LAMP_FLAME := &"night_lamp_flame"
+const LAMP_HOUSE_META := &"night_lamp_house"  ## the index (in the layout's pieces) of the house a lamp hangs on
 const SEA_NORMAL := Vector2(1.0, 0.0)
+const STORY_SETS := "StorySets"
+const STORY_SET_PREFIX := "StorySet_"
 
 @export_file("*.json") var layout_path: String = "res://game/levels/ch02/haluna/haluna_layout.json"
 @export var terrain: HalunaTerrain
@@ -56,7 +59,89 @@ func dress() -> void:
 	for spec: Dictionary in layout.get("scatter", []):
 		_scatter(spec)
 	_place_night_lamps(pieces, kinds, layout.get("night_lamps", {}))
+	_place_yard_sets(pieces, kinds, layout.get("yard_sets", {}))
+	_place_story_sets(layout.get("story_sets", {}))
 	dressed.emit()
+
+
+## M3-ENV-709: dressing a chapter shows only in its own state (Ch4's wake night at the causeway head, the wake
+## shells' states). Each "story_sets" entry becomes a hidden `StorySet_<name>` holding its pieces (placed as the
+## layout's pieces are) and its lights (an OmniLight3D at each "lights" "at", fog energy 0). The chapter's zone
+## shows a set with `story_set(name).visible = true`. Sets draw nothing from the scatter rng and have no
+## collision: they live under a plain Node (`StorySets`), which HalunaCollision skips (it reads the dresser's
+## Node3D children as pieces). The dresser sits at the zone's origin, so the sets' world frame is the layout's.
+func _place_story_sets(cfg: Dictionary) -> void:
+	var holder: Node = null
+	for key: Variant in cfg:
+		var set_id := String(key)
+		if set_id.begins_with("_"):
+			continue
+		var spec: Dictionary = cfg[key]
+		if holder == null:
+			holder = Node.new()
+			holder.name = STORY_SETS
+			add_child(holder)
+		var root := Node3D.new()
+		root.name = STORY_SET_PREFIX + set_id
+		root.visible = false
+		holder.add_child(root)
+		for piece_spec: Dictionary in spec.get("pieces", []):
+			var node := _place_piece(piece_spec)
+			if node != null:
+				node.reparent(root, false)
+		var lights: Dictionary = spec.get("lights", {})
+		var color := Color.html(str(lights.get("color", "#FFFFFF")))
+		for at: Array in lights.get("at", []):
+			var light := OmniLight3D.new()
+			light.light_color = color
+			light.light_energy = float(lights.get("energy", 1.0))
+			light.omni_range = float(lights.get("range_m", 5.0))
+			light.omni_attenuation = float(lights.get("attenuation", 1.0))
+			light.light_volumetric_fog_energy = 0.0
+			light.shadow_enabled = false
+			light.position = Vector3(float(at[0]), float(at[1]), float(at[2]))
+			root.add_child(light)
+
+
+## A story set's node (hidden until the chapter shows it), or null when the layout has none of that name.
+func story_set(set_name: StringName) -> Node3D:
+	return get_node_or_null(NodePath(STORY_SETS + "/" + STORY_SET_PREFIX + String(set_name))) as Node3D
+
+
+## M3-ENV-701: the lived-in clutter round each house (crates, laundry, rope, jars), from the layout's
+## "yard_sets". House i of a listed kind takes variant (i + offset) % n; each entry's local offset is
+## `edge` x the kind's half size plus `at`, in the house's frame, on the ground (`dy` above it). An entry
+## that would land within `lane_clear_m` of a lane's centre line is left out (the lanes stay walkable).
+## Deterministic and draws nothing from the scatter rng, so the rest of the dressing is unchanged.
+func _place_yard_sets(pieces: Array[Node3D], kinds: Array[String], cfg: Dictionary) -> void:
+	var variants: Array = cfg.get("variants", [])
+	var per_kind: Dictionary = cfg.get("per_kind", {})
+	if variants.is_empty():
+		return
+	var offset := int(cfg.get("variant_offset", 0))
+	var clear := float(cfg.get("lane_clear_m", 0.0))
+	for i in pieces.size():
+		if not per_kind.has(kinds[i]):
+			continue
+		var half: Array = per_kind[kinds[i]]
+		var house := pieces[i].transform
+		var variant: Array = variants[(i + offset) % variants.size()]
+		for entry: Dictionary in variant:
+			var edge: Array = entry.get("edge", [0.0, 0.0])
+			var at: Array = entry.get("at", [0.0, 0.0])
+			var local := Vector3(
+				float(edge[0]) * float(half[0]) + float(at[0]), 0.0, float(edge[1]) * float(half[1]) + float(at[1])
+			)
+			var world := house * local
+			if clear > 0.0 and lane_distance(world.x, world.z) < clear:
+				continue
+			var node := instance_piece(String(entry["piece"]), entry.get("materials", {}))
+			if node == null:
+				continue
+			var yaw := house.basis.get_euler().y + deg_to_rad(float(entry.get("yaw_deg", 0.0)))
+			world.y = ground_y(world.x, world.z) + float(entry.get("dy", 0.0))
+			node.transform = Transform3D(Basis(Vector3.UP, yaw), world)
+			add_child(node)
 
 
 ## The night lamps (`NightLamps`, hidden): an oil lamp, an OmniLight3D and a small emissive flame, at
@@ -87,6 +172,7 @@ func _place_night_lamps(pieces: Array[Node3D], kinds: Array[String], cfg: Dictio
 			var p := pieces[i].transform * Vector3(float(at[0]), float(at[1]), float(at[2]))
 			var flame := MeshInstance3D.new()
 			flame.name = LAMP_FLAME
+			flame.set_meta(LAMP_HOUSE_META, i)
 			flame.mesh = flame_mesh
 			flame.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 			flame.position = p
@@ -98,7 +184,44 @@ func _place_night_lamps(pieces: Array[Node3D], kinds: Array[String], cfg: Dictio
 			light.omni_attenuation = float(cfg.get("attenuation", 1.0))
 			light.shadow_enabled = false
 			light.position = p
+			light.set_meta(LAMP_HOUSE_META, i)
 			lamps.add_child(light)
+
+
+## Distance from (x, z) to the nearest lane centre line of the layout.
+func lane_distance(x: float, z: float) -> float:
+	var p := Vector2(x, z)
+	var best := INF
+	for lane: Array in layout.get("lanes", []):
+		for k in lane.size() - 1:
+			var a := Vector2(float(lane[k][0]), float(lane[k][1]))
+			var b := Vector2(float(lane[k + 1][0]), float(lane[k + 1][1]))
+			best = minf(best, p.distance_to(Geometry2D.get_closest_point_to_segment(p, a, b)))
+	return best
+
+
+## M3-ENV-709 (Ch4 C4-01, the windows going dark one at a time): the houses that hang night lamps, in placement
+## order, and a switch for one house's lamps (its flame and light). Every lamp starts lit inside the hidden
+## NightLamps; the zone shows NightLamps and turns houses off as their people leave with their lamps.
+func night_lamp_houses() -> PackedInt32Array:
+	var out := PackedInt32Array()
+	var lamps := night_lamps()
+	if lamps == null:
+		return out
+	for child in lamps.get_children():
+		var house := int(child.get_meta(LAMP_HOUSE_META, -1))
+		if house >= 0 and not out.has(house):
+			out.append(house)
+	return out
+
+
+func set_night_lamp(house: int, lit: bool) -> void:
+	var lamps := night_lamps()
+	if lamps == null:
+		return
+	for child in lamps.get_children():
+		if int(child.get_meta(LAMP_HOUSE_META, -1)) == house:
+			(child as Node3D).visible = lit
 
 
 ## The night lamps' container, or null when the layout has none.
@@ -176,11 +299,21 @@ func instance_piece(piece: String, overrides: Dictionary = {}, lod1_from_m: floa
 	var node := packed.instantiate() as Node3D
 	node.name = piece
 	var lod_from := lod1_from_m if lod1_from_m > 0.0 else float(layout.get("lod1_from_m", 70.0))
-	var ends := PackedFloat32Array([lod_from, float(layout.get("lod_end_m", 2000.0))])
+	var lod_end := float(layout.get("lod_end_m", 2000.0))
+	# M3-ENV-701: small props switch and cull close ([lod1_from, end] in "prop_lods"), and the smallest
+	# cast no shadow ("prop_no_shadow"), so the set dressing stays inside the draw and shadow budgets.
+	var prop_lod: Array = layout.get("prop_lods", {}).get(piece, [])
+	if prop_lod.size() == 2:
+		lod_from = float(prop_lod[0]) if lod1_from_m <= 0.0 else lod_from
+		lod_end = float(prop_lod[1])
+	var no_shadow: bool = layout.get("prop_no_shadow", []).has(piece)
+	var ends := PackedFloat32Array([lod_from, lod_end])
 	var margin := float(layout.get("lod_margin_m", 2.0))
 	for child: Node in node.find_children("*", "MeshInstance3D", true, false):
 		var mi := child as MeshInstance3D
 		_apply_materials(mi, overrides)
+		if no_shadow:
+			mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 		# M1-ENV-10: `<piece>` is the visibility child of `<piece>-lod1`, so exactly one draws.
 		var lod := 1 if String(mi.name).ends_with(LOD_SUFFIX) else 0
 		LodChain.apply(mi, lod, ends, margin, 0.0, LodChain.sibling(mi, lod + 1))

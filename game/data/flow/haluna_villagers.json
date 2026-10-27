@@ -1,0 +1,30 @@
+{
+  "doc": "M2-FP-102/113: the three Haluna villager bodies creatures' VillagerLayer (M3-CRE-613, game/data/world/npc/zones/ch02_haluna.json, the owner of Haluna's villagers) doesn't cover yet: the shopkeeper, smith and innkeeper have no model of their own, so each wears another villager's (stand_in_for) until M2-CHR-100. HalunaVillagers (game/levels/ch02/haluna/haluna_villagers.gd) gives each body a FieldNpc with that actor. body: the StaticBody3D's path in haluna.tscn; talk: its Interactable (a sibling); hide: the stand-in meshes the actor replaces. Move these rows into VillagerLayer's data (request M3-CRE-100) and delete this file once the models exist.",
+  "hide": [
+    "StandIn",
+    "Facing"
+  ],
+  "villagers": [
+    {
+      "body": "NPCs/Town/Shopkeeper",
+      "npc_id": "shopkeeper",
+      "actor": "res://assets/characters/villagers/netmender/netmender_actor.tscn",
+      "talk": "ShopkeeperTalk",
+      "stand_in_for": "netmender"
+    },
+    {
+      "body": "NPCs/Town/Smith",
+      "npc_id": "smith",
+      "actor": "res://assets/characters/villagers/fisher/fisher_actor.tscn",
+      "talk": "SmithTalk",
+      "stand_in_for": "fisher"
+    },
+    {
+      "body": "NPCs/Town/Innkeeper",
+      "npc_id": "innkeeper",
+      "actor": "res://assets/characters/villagers/vendor/vendor_actor.tscn",
+      "talk": "InnkeeperTalk",
+      "stand_in_for": "vendor"
+    }
+  ]
+}

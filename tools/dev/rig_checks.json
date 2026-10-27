@@ -57,7 +57,15 @@
       "max_exposed": 0,
       "weight_sum_tol": 0.001
     },
-    "_allowances": "Per-hero limits_mm / limits_count / max_exposed are RATCHETS (M1-CHR-14): each pins a known linear-blend-skinning limit, viewed in the clip shots, at about today's worst. Lower them when a fix lands; never raise one without a reason in the hero's '_allowances' note."
+    "_allowances": "Per-hero limits_mm / limits_count / max_exposed are RATCHETS (M1-CHR-14): each pins a known linear-blend-skinning limit, viewed in the clip shots, at about today's worst. Lower them when a fix lands; never raise one without a reason in the hero's '_allowances' note.",
+    "_prop_grip": "M2-CHR-515 (M1-QA-09): a hero in game/data/characters/grips.json keeps its prop in the fist in every pose: the fist's grip point stays on the shaft's axis (max_offset_mm; sliding along the shaft is free) and the prop turns in the hand's frame by no more than hero_clips.prop_pivot's cap (max_turn_deg: it pivots in the fist to clear the skirt and legs), and no line along the shaft (its centre and four lines at surface_lines_at x its median radius) crosses a garment outside grip_clear_mm of the fist",
+    "prop_grip": {
+      "max_turn_deg": 30.5,
+      "max_offset_mm": 2.0,
+      "grip_clear_mm": 60.0,
+      "surface_lines_at": 0.8,
+      "allow_clips": []
+    }
   },
   "heroes": {
     "asha": {
@@ -114,6 +122,25 @@
           "VerseSleeve": 6,
           "Body": 24
         }
+      },
+      "_prop_grip": "M2-CHR-515: Asha's staff still crosses her floor-length skirt in the clips that kneel, sit or bow with the staff hand low (the story clips, the poling pair, and Cutscene A's kneel_over_rhen, laugh, offer_hand and rise_to_stand): no pivot in the fist (prop_pivot, capped at 30 degrees) clears pooled cloth there. The fix is to set the staff down on the floor and pick it up again (keyed per clip, as the hook draw): M2-CHR-520. attack is listed for one line through her own sleeve at the strike's wind-up (the shaft against the forearm, outside grip_clear_mm). Walking, running, battle (but that frame) and every stand are clean; Toma has no allowance.",
+      "prop_grip": {
+        "allow_clips": [
+          "attack",
+          "bow_palms_flat",
+          "feed_fire",
+          "float_boat",
+          "kneel_hum",
+          "kneel_over_rhen",
+          "kneel_touch_ring",
+          "laugh",
+          "offer_hand",
+          "pole_in",
+          "pole_out",
+          "rise_to_stand",
+          "sit",
+          "sit_beside"
+        ]
       }
     },
     "rhen": {

@@ -7,6 +7,7 @@
 * An encounter's turn prompt (BattleBossHud: "turn_prompt_hero" and "turn_prompt_key") names a real
   hero, and comes as a pair.
 * Ch4's zone roots count as greybox zones for the validators (their spawns come from the layout).
+* A layout's "collision_path" (ADR 0200: the kit's generated collision) adds its blocks and ramps to the ids.
 Run: python3 -m unittest discover -s tools/tests"""
 import json
 import sys
@@ -29,12 +30,21 @@ def _json(rel: str) -> dict:
     return json.loads((ROOT / rel).read_text())
 
 
+def _block_ids(layout: dict) -> set:
+    """The layout's blocks, plus its collision file's blocks and ramps (Ch04Zone builds both under Greybox)."""
+    ids = {b["id"] for b in layout.get("blocks", [])}
+    if layout.get("collision_path"):
+        extra = _json(layout["collision_path"].removeprefix("res://"))
+        ids |= {b["id"] for b in extra.get("blocks", [])} | {r["id"] for r in extra.get("ramps", [])}
+    return ids
+
+
 class StatesTest(unittest.TestCase):
     def test_every_state_row_names_declared_flags_and_real_ids(self) -> None:
         flags = vd.declared_flags_quiet(ROOT)
         for rel in LAYOUTS.values():
             layout = _json(rel)
-            things = {b["id"] for b in layout.get("blocks", [])} | set(layout.get("actors", {}))
+            things = _block_ids(layout) | set(layout.get("actors", {}))
             marks = set(layout.get("marks", {}))
             self.assertTrue(layout.get("states"), rel)
             for row in layout["states"]:

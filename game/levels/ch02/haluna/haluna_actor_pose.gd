@@ -64,6 +64,11 @@ func apply() -> void:
 	skeleton = found[0] as Skeleton3D
 	skeleton.reset_bone_poses()
 	model.position = Vector3.ZERO
+	# M2-FP-103: a real clip (the cutscene's @anim) carries its own ground contact, so the static pose's
+	# lowering comes off the moment one starts; otherwise a kneel clip kneels into the sand.
+	var ap := model.find_child("AnimationPlayer", true, false) as AnimationPlayer
+	if ap != null and not ap.animation_started.is_connected(_on_clip_started):
+		ap.animation_started.connect(_on_clip_started)
 	var rel := global_basis.orthonormalized().inverse() * skeleton.global_basis.orthonormalized()
 	for bone_name: Variant in world_pose:
 		var idx := skeleton.find_bone(String(bone_name))
@@ -133,3 +138,8 @@ func _take(path: String) -> Material:
 		if got != null:
 			return got
 	return load(path) as Material
+
+
+func _on_clip_started(_clip: StringName) -> void:
+	if model != null and is_instance_valid(model):
+		model.position = Vector3.ZERO

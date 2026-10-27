@@ -53,6 +53,12 @@ var muffle := BusMuffle.new()
 var ui: UiAudio
 ## Reefball's sphere and match, by listening (M3-AUD-17; reefball_audio.gd).
 var reefball: ReefballAudio
+## Villagers' talk and work and the wildlife, by listening (M3-AUD-814; life_audio.gd).
+var life: LifeAudio
+## A blow's weight and the KO slow-mo, on battle-presentation's BattleImpact (M3-AUD-816; impact_audio.gd).
+var impact: ImpactAudio
+## Cutscene foley on each sequencer's cues (M3-AUD-817; cutscene_audio.gd).
+var cutscene: CutsceneAudio
 var stings := StingAudio.new()
 var music: MusicDeck
 var sfx: SfxBank
@@ -90,6 +96,10 @@ func _ready() -> void:
 	)
 	ui.configure(AudioData.table(AudioData.UI_SFX))
 	reefball.configure(AudioData.table(AudioData.REEFBALL_HOOKS))
+	life.configure(AudioData.table(AudioData.LIFE))
+	life.footstep_data = AudioData.table(AudioData.FOOTSTEPS)
+	impact.configure(AudioData.table(AudioData.IMPACT))
+	cutscene.data = AudioData.table(AudioData.CUTSCENE_FOLEY)
 	stings.data = AudioData.table(AudioData.BATTLE_STINGS)
 	var bus := get_node_or_null(^"/root/EventBus")
 	if bus != null and bus.has_signal(&"dialogue_event"):
@@ -123,6 +133,21 @@ func setup(mix_table: Dictionary, music_table: Dictionary, sfx_table: Dictionary
 		reefball.name = "ReefballAudio"
 		reefball.bind_director(self)
 		add_child(reefball)
+	if life == null:
+		life = LifeAudio.new()
+		life.name = "LifeAudio"
+		life.bind_director(self)
+		add_child(life)
+	if impact == null:
+		impact = ImpactAudio.new()
+		impact.name = "ImpactAudio"
+		impact.bind_director(self)
+		add_child(impact)
+	if cutscene == null:
+		cutscene = CutsceneAudio.new()
+		cutscene.name = "CutsceneAudio"
+		cutscene.bind_director(self)
+		add_child(cutscene)
 	build_buses(mix)
 	verb.configure(mix)
 	muffle.configure(mix)
@@ -169,6 +194,8 @@ func advance(delta: float) -> void:
 	_poll_pending()
 	ui.step()
 	reefball.advance(delta)
+	life.advance(delta)
+	impact.advance(delta)
 	stings.advance(delta)
 	for l: Variant in listeners.values():
 		if not is_instance_valid(l):
@@ -417,6 +444,10 @@ func _on_node_added(node: Node) -> void:
 		var seq := node as CutsceneSequencer
 		if not seq.line_shown.is_connected(_on_line_shown):
 			seq.line_shown.connect(_on_line_shown.bind(seq))
+		if cutscene != null:
+			cutscene.watch(seq)
+	elif node is CutsceneStage:
+		_later(attach_cast, node)
 	elif node is AudioStreamPlayer and node.get_parent() is CutsceneSequencer:
 		_route_sequencer_player(node as AudioStreamPlayer)
 	elif node is DialogueBox:
@@ -431,10 +462,16 @@ func _on_node_added(node: Node) -> void:
 		_later(attach_battle, node)
 	elif node is ShellShrineLevel:
 		_later(attach_shrine, node)
+	elif node is Ch05AshcrownZone:
+		_later(attach_ashcrown, node)
 	elif node is FieldController:
 		_later(attach_footsteps, node)
 	elif reefball != null and reefball.wants(node):
 		_later(reefball.watch, node)
+	elif life != null and life.wants(node):
+		_later(life.watch, node)
+	elif impact != null and impact.wants(node):
+		_later(impact.watch, node)
 	elif ChoreoAudio.wants(node):  # M3-AUD-13: the battle choreography's layers (choreo_sfx.json hooks)
 		_later(ChoreoAudio.attach_to.bind(self), node)
 	elif ui != null and ui.wants(node):
@@ -535,6 +572,18 @@ func attach_shrine(level: Node) -> void:
 	listeners[level] = l
 
 
+## An AshcrownAudio for the Ashcrown zone `zone` (M3-AUD-825): the strike trial's sounds.
+func attach_ashcrown(zone: Node) -> void:
+	if not is_instance_valid(zone) or not zone.is_inside_tree() or listeners.has(zone):
+		return
+	var l := AshcrownAudio.new(AudioData.table(AudioData.ASHCROWN_SFX))
+	l.name = "AshcrownAudio"
+	l.bind_director(self)
+	add_child(l)
+	l.attach(zone as Node3D)
+	listeners[zone] = l
+
+
 ## A FootstepAudio for the field walker `walker`, on the surface of the zone applied last (else the running scene).
 func attach_footsteps(walker: Node) -> void:
 	if not is_instance_valid(walker) or not walker.is_inside_tree() or listeners.has(walker):
@@ -547,6 +596,15 @@ func attach_footsteps(walker: Node) -> void:
 	var path := zone_path if zone_path != "" or scene == null else scene.scene_file_path
 	l.attach(walker as Node3D, path)
 	listeners[walker] = l
+
+
+## A FootstepAudio for every actor a cutscene stage can move (M3-AUD-817): their walks and runs step from their
+## own foot contacts (or by distance), on the zone's ground. The player already has one; attach_footsteps skips it.
+func attach_cast(stage: Node) -> void:
+	if not is_instance_valid(stage) or not stage is CutsceneStage:
+		return
+	for actor: Node3D in (stage as CutsceneStage).cast():
+		attach_footsteps(actor)
 
 
 ## A VoiceAudio for dialogue box `box` (once; M3-AUD-07). Its blips play through play_sfx.

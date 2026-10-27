@@ -308,6 +308,7 @@ the fighters. A retry of the same encounter keeps the arena (the `hymn_arena` me
 | `ash_terrace_lanternfall` | `ch05_stair_*`, `ch05_cinder_matron` | Ch5: key `#FFA757` lamp 1.6 (the Sun), fill `#3A4A6A` 0.25, rim `#E0702E` 0.9, sky `#101A33` / `#3A2A3A`, fog `#5A3A2E`, exposure 1.05, sat ×1.15; no Sea | a volcanic-stone terrace, four tiers stepping up behind the foes with graves and small warm lanterns on their lips, a leaf-boat channel down the steps, the mountain's cone and plume beyond |
 | `brine_shoals_afternoon` | `ch06_ridge_skippers`, `ch06_ridge_crab`, `ch06_ridge_gulls`, `ch06_flats_crabs` | Ch6 15:30 haze: sun 35°, key `#FFD5B3` 2.4, fill `#A8B8B0` 0.55, rim `#E0702E` 0.35 (the far smoke), sky `#7FA3C0` / `#D8C8A8`, fog `#B8A890` (thick), exposure 0.70, sat ×0.9; `silted_flats` sea (deep `#4A5A50`) | a grey-brown mud bank with puddles, a tide channel behind the foes, wreck-ridges of black Lit Age hull plating (one with a Saltwright chalk camp-sign) and wooden hulks' ribs, gulls high over the ridges |
 | `salvage_camp_burning` | `ch06_inquisitor` | the same Ch6 grade, rim 0.7, plus four steady orange fire points (`#FF8A3A`, no flicker); `silted_flats` sea at the waterline | the camp's mud bank; behind the foes the hulk the party hid in, charred and burning low along its gunwale, lashed hulls with a tide-wheel behind the party's side, lamp racks alight, three dark smoke columns of stacked billows far behind; sober: no embers, nothing falling |
+| `wall_head_storm` (greybox, M3-BPR-406) | `ch08_stair_hold_1..3`, `undertows_reach` | Ch8 "The Seawall": key `#FFE4CE` 2.0 (sun 30 deg az 250), fill `#5E6E80` 0.5, rim `#CFE8FF` 1.2, sky `#3E4A57` / `#8A8070`, fog `#5E6670`, exposure 0.80, sat ×0.95; two steady watch lamps | the warm laterite wall-walk; the crenellated parapet behind everyone with the storm sea below and dark storm columns on the horizon; the Fisher Stair going down landward at the party's side, `EntryMarker_ward` at its head; Liss's hoist (rope and iron); no glow at the stair foot (Kerrid). Final kit requested: M3-BPR-407 |
 
 - **Act I (M3-BPR-01):** the Underway's scripted fights (`ch01_wickfry`, `ch01_oil_slug`) are underwater in the
   drowned tower (act1_ch01.md C1-04, C1-06), so they take `underway_tower`, not the raft. Two grades are the
@@ -508,6 +509,15 @@ Hadric Moll (`ch06_inquisitor`, M3-BPR-03) and the Drownbell (`drownbell`). Once
 
 - **The shot is checked**: the boss's feet and head must sit in the camera's `safe_frame` (as every director shot);
   a shot that fails keeps the default for the intro and only the card plays. A test checks every row passes.
+- **Fit to the model (M3-BPR-404; the human's playtest: Hullgnaw framed too close).** The shot keeps its angle and
+  fov, but its distance fits a sphere around the boss's visible meshes (their AABB in camera-parent space) in the
+  narrower field of view at `boss_intro.fit.margin` (1.05), clamped to `min_m`..`max_m`, aimed `look_drop` (0.3)
+  of the radius below the centre. The boss's top and bottom must pass the safe frame **and its feet must clear the
+  title card's top edge** by `card_clear_px` (a small boss framed close, the Inquisitor's capsule, and the Matron's
+  base sank behind the card). To get there it first aims lower (`drop_step` up to `drop_max`, which lifts the boss
+  in the frame), then widens (× `widen_step` up to `widen_max`); the closest pose that holds wins. If none clears
+  the card, the closest that passes the safe frame; if none passes, the default camera. A row's `fit_margin`
+  overrides the margin; `fit: false` keeps the shot's own offsets.
 - **The title card** is its own `CanvasLayer` (`card.layer` 2, above the HUD, below the router's fade) in the HUD's
   current theme: the name in `TitleLabel` over a thin `focus_gold` rule and the epithet in `FlavorLabel`, on a dark
   band that fades at both ends (art/ui.md §9 contrast). It sits centre-low (`card.rect` 560, 616, 800 × 140 at the
@@ -571,8 +581,15 @@ BattleChoreo, listen-only) adds weight on the contact beat. Every number is in `
   slow-mo), so the controller waits for the stretched sequence.
 - **Reduced motion.** No shake (`reduced_motion.shake_scale` 0), the flash at `flash_scale` 0.5, a gentler slow-mo
   (`slowmo_factor` 0.6). Hit-stop stays: it is a pause, not motion.
+- **Screen shake setting.** Every battle shake (BattleStage.shake, so BattleFloats' too) scales by the
+  accessibility row `screen_shake` (Full 1, Half 0.5, Off 0) and is 0 under Reduced motion
+  (`BattleStage.shake_setting`).
 - **Damage numbers** already pop (6% in 80 ms) and ease out on the rise (DamageNumber, the UI track's, to
   docs/kb/art/ui.md §5); they land on the contact beat. Element particles on contact are the PC track's BattleVfx.
+- **Audio hooks (listen-only).** `BattleImpact.landed(target_id, strength, stop_sec)` fires on each contact with
+  weight (the hardest-hit target, 0..1, the hit-stop in real seconds). `slowmo_planned(from_sec, sec, factor)`
+  fires when a sequence will fell the last foe. Audio layers an impact by weight and a KO swell on them
+  (request M3-BPR-405).
 - **Tests:** `tests/unit/test_battle_impact.gd`; data checks `tools/validate_choreo.py` `impact_errors`.
 
 ## Spacing: no overlaps (M3-BPR-402)
@@ -587,3 +604,44 @@ the real hero rigs (claude/hero-integration) the footprint comes from their mesh
 slots were sized for the primitives, so some real models overlap each other on their marks (the reef crab and the
 gull harrier); a run never brings an actor closer to such a body than it started. Spreading the slots by footprint
 is M3-BPR-403.
+- **Detour.** A body *beside* the path (the gull harrier's wings next to the reef crab) used to stop the run short:
+  Rhen struck the air 2.9 m from the crab. `BattleChoreoPlan.melee_approach` now tries the straight line first.
+  If something other than the targets stops it short, it turns by `spacing.detour_step_deg` each way, up to
+  `detour_max_deg`, and takes the smallest turn whose run ends within `detour_reach_m` of where an unobstructed run
+  would. So the actor comes at the target a little from one side and still meets it. Test:
+  `test_a_body_beside_the_path_turns_the_run_instead_of_stopping_it`.
+
+### The opening line-up (M3-BPR-403)
+The slot markers were laid out for primitive stand-ins, and real models overlapped on their marks (in sandbox_reef
+the reef crab and the gull harrier stood 1.92 m apart against 2.45 m of footprints and clearance). At spawn,
+`BattleLineup` (`game/battle/scene/battle_lineup.gd`) pushes each side's fighters apart on the ground in fixed pair
+order, `spacing.lineup_iters` passes, until every pair keeps both footprints + `clearance_m`. It pushes only
+sideways on screen (along the battle camera's horizontal), because a first try along the pair's own axis moved the
+reef crab toward the camera and behind the command menu. Each fighter moves at
+most `lineup_max_shift_m` (0.6) off its mark, which keeps the camera's safe frames valid. It runs only at spawn,
+before BattleChoreo caches each fighter's home; fighters who join mid-battle keep their marks.
+Test: `tests/unit/test_battle_lineup.gd` (every encounter's opening line-up; it fails with the spread off).
+
+## Set pieces on stage (M3-BPR-406, ADR 0100)
+Ch8's evacuation battles (docs/kb/design/set_piece_battles.md) add things the stage had never seen.
+- **Entries** (the Climb, the Surge, the Kirru) have no fighter. Their turns plan and play with no actor body
+  (tested: all four Ch8 encounters play to their result panel through the controller at full pacing,
+  `tests/unit/test_battle_set_piece_stage.gd`). UI draws their timeline glyphs (set_piece_battles.md §8 request 1).
+- **Withdrawals** (`BattleCombatant.withdrawn`: Pell's Storm-Call, the foes left when an objective ends) used to
+  leave the foe standing. BattleStage.refresh_ko knew only HP 0 and yielded. The foe now backs away from the party by
+  choreo.json `withdraw.back_m` over `sec` and is hidden, with no KO collapse; it is not a death. Reduced motion or
+  instant pacing hide it at once.
+- **Counters** (`counter_by` on an appended hit). The planner used to skip any hit on the actor, so the riposte
+  showed nothing. Now:
+  - the countering hero plays its attack clip `counter.delay_sec` after the blow's strike;
+  - the attacker's reaction (clip only, so it keeps its run) lands on that clip's contact frame;
+  - an attacker felled by the riposte collapses once it is home.
+- **Intercepts** (`ActionResult.intercepted_by`). The engine already aims the ward skill at the guard, so the foe
+  runs at Toma and strikes him. Showing the intercept in words is UI's (§8 request 3).
+- **The Reach** has a boss intro row (W18: `boss_skyward`, low and looking up; shot battle_boss_intro_reach).
+- **The Breach closes in.** While a foe gathers a skill named in `camera.pressure` (`breach` over 4 turns,
+  `hand_closes` over 2), the camera's resting frame narrows by up to `max_fov_deg`, a step each turn as the charge
+  counts down (BattleCameraDirector.rest_fov). It reads as a closing clock (Pillar 4). Reduced motion keeps the
+  plain default.
+- **Still to do** (task M3-BPR-406): the intercept step-in, which needs EntryMarker_ward on the Ch8 arena
+  (request M3-BPR-407 to env-art); a look for untargetable or damage-immune phases; freeze-frame shots.

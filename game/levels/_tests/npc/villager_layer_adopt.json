@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "doc": "VillagerLayer adoption test data (M3-CRE-613, test_villager_routines.gd): both stand-ins already carry a FieldNpc the zone placed; the layer only wires the chat pair.",
+  "zone": "_tests/villager_layer_adopt",
+  "storm_flag": "",
+  "villagers": [
+    {
+      "npc_id": "child",
+      "stand_in": "NPCs/Walker",
+      "chat_with": "neme"
+    },
+    {
+      "npc_id": "neme",
+      "stand_in": "NPCs/Sitter",
+      "chat_with": "child"
+    }
+  ]
+}

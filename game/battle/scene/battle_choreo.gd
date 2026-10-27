@@ -177,6 +177,14 @@ func _bodies(skip: StringName) -> Array:
 	return out
 
 
+func _target_bodies(ids: Array[StringName]) -> Array:
+	var out: Array = []
+	for cid in ids:
+		if _ctl.stage.stand_in(cid) != null:
+			out.append([_home_of(cid).origin, _radius(cid)])
+	return out
+
+
 ## A fighter's footprint: its model's (BattleChoreoPlan.footprint, cached), else its stand-in spec radius.
 func _radius(cid: StringName) -> float:
 	if not _radii.has(cid):
@@ -327,7 +335,12 @@ func _start(result: ActionResult, plan: Dictionary) -> void:
 	var to := from
 	match str(st.get("travel", "")):
 		TRAVEL_TARGET:
-			to = from + dir * BattleChoreoPlan.melee_gap(data, st, from, dir, aim, _bodies(actor_id), _radius(actor_id))
+			var run := BattleChoreoPlan.melee_approach(
+				data, st, from, aim, _bodies(actor_id), _target_bodies(targets), _radius(actor_id)
+			)
+			if run["dir"] != Vector3.ZERO:
+				dir = run["dir"]  # M3-BPR-402: it may come at the target from a little to one side
+			to = from + dir * float(run["gap"])
 		TRAVEL_STEP:
 			to = from + dir * float(st.get("step_m", 0.0))
 	to = from + (to - from) * (_rm("travel_scale") if reduced_motion else 1.0) * arena_travel
@@ -349,6 +362,10 @@ func _start(result: ActionResult, plan: Dictionary) -> void:
 			str(((data.get("reaction", {}) as Dictionary).get(r["kind"], {}) as Dictionary).get("clip", ""))
 		)
 		r["clip"] = BattleClips.has_clip(_ctl.stage.stand_in(tid), clip)
+		if str(r["counter_by"]) != "":  # the riposte's own blow lands the reaction (M3-BPR-406)
+			r["strike_at"] = r["at"]
+			r["at"] = float(r["at"]) + maxf(BattleClips.contact_sec(_node_of(r["counter_by"]), BattleClips.ATTACK), 0.0)
+			_retime(plan)
 	var wave := float(st.get("wave_m_s", 0.0))
 	if wave > 0.0:  # a shockwave (the toll): each target reacts as the wave reaches it
 		for r: Dictionary in plan["reactions"]:
@@ -422,6 +439,8 @@ func _step_beats() -> void:
 	_fire(BEAT_RETURN, float(p["recover_end"]), Callable())
 	var reactions: Array = p["reactions"]
 	for i in reactions.size():
+		if reactions[i].has("strike_at"):
+			_fire(StringName("riposte_%d" % i), float(reactions[i]["strike_at"]), _riposte.bind(reactions[i]))
 		_fire(StringName("react_%d" % i), float(reactions[i]["at"]), _react.bind(reactions[i]), false)
 	if not (p["kos"] as Array).is_empty():
 		_fire(BEAT_KO, float(p["ko_at"]), _beat_ko)
@@ -486,6 +505,10 @@ func _react(r: Dictionary) -> void:
 	if bool(r["clip"]):
 		var def := (data.get("reaction", {}) as Dictionary).get(r["kind"], {}) as Dictionary
 		BattleClips.play(_ctl.stage.stand_in(StringName(str(r["target"]))), StringName(str(def["clip"])), speed)
+
+
+func _riposte(r: Dictionary) -> void:
+	BattleClips.play(_node_of(StringName(str(r["counter_by"]))), BattleClips.ATTACK, speed)
 
 
 ## A KO with a clip on the model plays it (BattleClips.play_ko) and lets the stage apply it; a stand-in
@@ -572,7 +595,7 @@ func _apply() -> void:
 	var poses: Dictionary = {}
 	for r: Dictionary in p["reactions"]:
 		var tid := StringName(str(r["target"]))
-		if not _ko_pose.has(tid):
+		if not _ko_pose.has(tid) and tid != actor_id:  # an answered actor keeps its run (a counter: clip only)
 			poses[tid] = _reaction_pose(r)
 	if _fired.has(BEAT_KO) and not _fired.has(&"ko_end"):
 		_add_collapse(poses)

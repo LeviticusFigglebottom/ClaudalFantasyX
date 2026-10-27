@@ -1,0 +1,11 @@
+// Fixture for tests/unit/test_cutscene_pose.gd (M2-FP-103): held poses, clip stand-ins and @light.
+// Never played by game content.
+title: test_cutscene_pose
+---
+@light Lamp off
+@anim asha kneel_over_rhen
+Asha [neutral]: Pose fixture line. #line:test_cutscene_pose_001
+@anim asha sit_up
+@light Lamp on 1.0
+Asha [neutral]: Pose fixture closing line. #line:test_cutscene_pose_002
+===

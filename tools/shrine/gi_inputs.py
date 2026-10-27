@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import struct
 import sys
 from pathlib import Path
 
@@ -19,15 +20,28 @@ INPUT_GLOBS = [
     "game/levels/ch03/shell_shrine/shrine_lighting.gd",
     "game/data/trials/shell_shrine.json",
     "assets/environments/kits/haluna/shrine_*.glb",
-    "assets/environments/kits/haluna/materials/*.tres",
     "tools/shrine/bake_shrine_gi.gd",
 ]
+KIT_MATERIALS = "assets/environments/kits/haluna/materials"
+
+
+def _glb_materials(path: Path) -> set[str]:
+    """The material slot names a kit .glb uses (its post-import maps each to <slot>.tres)."""
+    data = path.read_bytes()
+    jlen = struct.unpack("<I", data[12:16])[0]
+    return {m.get("name", "") for m in json.loads(data[20:20 + jlen]).get("materials", [])}
 
 
 def inputs() -> list[Path]:
+    """The hashed files. Of the kit's materials only those the shrine's pieces use count: M3-ENV-701 added
+    village props' materials, which never light the hall, and they must not stale the shipped bake."""
     out: set[Path] = set()
     for g in INPUT_GLOBS:
         out.update(p for p in ROOT.glob(g) if p.is_file())
+    slots: set[str] = set()
+    for glb in ROOT.glob("assets/environments/kits/haluna/shrine_*.glb"):
+        slots |= _glb_materials(glb)
+    out.update(p for p in (ROOT / KIT_MATERIALS / f"{s}.tres" for s in slots) if p.is_file())
     return sorted(out)
 
 

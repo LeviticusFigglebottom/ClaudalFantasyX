@@ -18,12 +18,15 @@ SKILLS_FILE = "game/data/battle/skills.json"
 SCENE_PREFIX = "res://game/creatures/"
 
 DEFAULT_KEYS = {"idle", "hit", "ko", "loop", "blend_sec", "clip_by_kind", "clip_by_skill", "ko_fade_sec",
-                "stand_in", "phases", "break_parts", "portrait", "contact", "hit_variants", "idle_variety"}
+                "stand_in", "phases", "break_parts", "portrait", "contact", "hit_variants", "idle_variety",
+                "hit_snap"}
 ROW_KEYS = DEFAULT_KEYS | {"scene"}
 STAND_IN_KEYS = {"yaw_deg", "hover"}
 PHASE_KEYS = {"clip", "idle", "offset_m", "tilt_deg", "sec", "show", "hide", "hide_after", "show_after", "clips"}
 PART_KEYS = {"whole", "broken"}
-PORTRAIT_KEYS = {"clip", "clip_time", "yaw_deg", "pitch_deg", "fov_deg", "margin"}
+HIT_SNAP_KEYS = {"preroll_sec", "blend_sec", "_note"}
+PORTRAIT_KEYS = {"clip", "clip_time", "yaw_deg", "pitch_deg", "fov_deg", "margin", "key_energy", "rim_energy",
+                 "rim_side_deg", "rim_elev_deg", "kick_energy", "kick_elev_deg"}
 IDLE_VARIETY_KEYS = {"clip", "every_sec"}
 
 
@@ -85,6 +88,14 @@ def _row_errors(w: str, row: dict, skills: set[str], phase_ids: set[str] | None)
         ev = iv.get("every_sec", [1.0, 1.0])
         if not (isinstance(ev, list) and len(ev) == 2 and all(_num(x) for x in ev) and 0 < ev[0] <= ev[1]):
             errs.append(f"{w}.idle_variety.every_sec: must be [min, max] seconds, 0 < min <= max")
+    hs = row.get("hit_snap", {})
+    if not isinstance(hs, dict):
+        errs.append(f"{w}.hit_snap: must be an object")
+    else:
+        errs += [f"{w}.hit_snap: unknown key '{k}'" for k in sorted(set(hs) - HIT_SNAP_KEYS)]
+        for k in ("preroll_sec", "blend_sec"):
+            if k in hs and not (_num(hs[k]) and 0 <= hs[k] <= 1.0):
+                errs.append(f"{w}.hit_snap.{k}: must be 0..1 seconds")
     phases = row.get("phases", {})
     if not isinstance(phases, dict):
         errs.append(f"{w}.phases: must be an object")

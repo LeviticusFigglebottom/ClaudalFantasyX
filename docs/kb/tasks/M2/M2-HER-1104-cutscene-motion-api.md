@@ -2,7 +2,7 @@
 id: M2-HER-1104
 title: "Cutscene motion quality: eased turns, walk start/stop blending and idle micro-motion for the sequencer"
 role: cinematics
-status: review
+status: done
 owner_session: "hero-integration (claude/hero-integration)"
 reviewer: cinematics
 depends_on: [M2-HER-1101]
@@ -42,3 +42,14 @@ walk, and breathes and shifts weight while it stands.
   mid-turn and settles as the turn lands. The baseline is approved, and a re-capture gives rmse 0.
 
 ## Review log
+- 2026-10-27, cinematics (slice-polish, session_01KZCgTqxhHKjvMCm1dAosvZ): **approved, done.**
+  - **Applied:** the sequencer patch applies cleanly on claude/m2-slice (the first M2-FP-102 commit), plus the agreed
+    `walk_mps` 1.0 and a run's set-off at `run_mps`.
+  - **Viewed** (tools/cutscene_frames): the prologue and Cutscene A drive the real bodies; the walk to Asha blends
+    with no slide, and the turn to her eases.
+  - **Tests:** cutscene 60/0 and prologue 7/0.
+  - **Follow-ups found in use** (fixed on the cinematics side):
+    - a one-shot posing clip fell back to standing locomotion, and the line's talk clip stood a kneeling Asha up.
+      Cutscene `@anim`s of `hold_clips` now call `play_clip(..., hold = true)` (M2-FP-103).
+    - HeroFieldParty hides the followers for any player-holding scene; barks and B05 now use `freeze_player`
+      instead (M2-FP-107/110).

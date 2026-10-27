@@ -15,6 +15,16 @@ extends Node3D
 ##             so the feet keep planting), eased turns at the corners, a pause at each point, loop or
 ##             ping-pong. It stops when the player comes within stop_radius_m or talks to it.
 ## The node itself moves and turns (its Interactable comes along); the actor faces the node's -Z.
+## M3-CRE-613 routines on top (all optional, from data or the VillagerLayer):
+##   attention a NpcLook modifier turns the head: to the player while talking, a glance at a party that
+##             comes near, the sky in a storm, the chat partner, the work in its hands, and now and then
+##             a look around;
+##   chat      two villagers with `chat_with` face each other and take turns talking;
+##   work      `work.clip` replaces idle at rest (and at route points marked `activity = work`), the head
+##             down on the work;
+##   storm     set_storm(true) (or FieldNpc.set_storm_all): after a per-villager delay it hurries to its
+##             shelter point (if it has one), braces, and keeps glancing at the sky; set_storm(false)
+##             walks it home.
 ## Ground: the route's own Y (linear between points); villagers have no physics body.
 ## Tuning: game/data/world/npc/npc.json (defaults plus per-villager overrides). Deterministic: no
 ## randomness, and the state only advances by tick(delta).
@@ -23,7 +33,7 @@ signal talk_started(player: Node3D)
 signal talk_ended
 signal point_reached(index: int)
 
-enum Mode { REST, WALK, PAUSE, TALK, AFTER_TALK }
+enum Mode { REST, WALK, PAUSE, TALK, AFTER_TALK, GO }
 
 const DATA_PATH := "res://game/data/world/npc/npc.json"
 const ACTOR_NAME := &"Actor"
@@ -36,6 +46,14 @@ const SALT_IDLE := "idle_clip"
 const CLIP_IDLE := &"idle"
 const CLIP_TALK := &"talk"
 const CLIP_WALK := &"walk"
+const CLIP_WORK := &"work"
+const CLIP_STORM := &"storm"
+## Every FieldNpc joins this group (set_storm_all).
+const GROUP := &"field_npc"
+## A route Marker3D's metadata: `activity = "work"` plays the work clip while it pauses there.
+const META_ACTIVITY := &"activity"
+const ACTIVITY_WORK := "work"
+const LOOK_NAME := &"NpcLook"
 
 ## Which villager this is (its tuning row and its phases). Empty: the node name in snake_case.
 @export var npc_id: StringName = &""
@@ -49,8 +67,17 @@ const CLIP_WALK := &"walk"
 @export var route_path: NodePath = ^"Route"
 ## The route in the parent's space, used when there is no Route node.
 @export var route_points: PackedVector3Array = PackedVector3Array()
+## Per route point (with route_points): its pause (seconds; 0 or missing: the data's) and its activity.
+@export var route_pauses: PackedFloat32Array = PackedFloat32Array()
+@export var route_activities: PackedStringArray = PackedStringArray()
 ## False: nothing advances unless the owner calls tick(delta) (tests, cutscenes).
 @export var auto_process := true
+## Another FieldNpc to chat with while both rest (M3-CRE-613).
+@export var chat_with: NodePath
+## A Node3D its head looks at while it works. Empty: the data's `work.look_at` (node space).
+@export var work_target_path: NodePath
+## A Node3D it hurries to in a storm. Empty: it braces where it stands.
+@export var shelter_path: NodePath
 
 var tuning: Dictionary = {}
 var loco: HeroLocomotion
@@ -71,6 +98,17 @@ var current_clip: StringName = &""
 var idle_offset_sec := 0.0
 ## The filtered ground speed this frame (m/s).
 var ground_speed := 0.0
+## The head (null on a rig without a skeleton).
+var look: NpcLook
+var partner: FieldNpc
+var storm := false
+## Seconds the current talk has run, and whether the player was held (a dialogue) during it.
+var talk_sec := 0.0
+## Where it came from (parent space), so a storm's run to shelter can walk home again.
+var home := Vector3.ZERO
+var work_target: Node3D
+var shelter: Node3D
+var activities := PackedStringArray()
 
 var _direction := 1
 var _timer := 0.0
@@ -79,6 +117,26 @@ var _talk_yaw := 0.0
 var _face_hold := 0.0
 var _face_yaw := 0.0
 var _player_searched := false
+var _go_target := Vector3.ZERO
+var _go_yaw := 0.0
+var _go_then := Mode.REST
+var _storm_wait := -1.0
+var _storm_on := false
+var _talk_held := false
+var _glance_until := -1.0
+var _glance_next := 0.0
+var _glance_count := 0
+var _was_near := false
+var _look_index := 0
+var _look_next := 0.0
+var _look_until := -1.0
+var _look_yaw := 0.0
+var _chat_slot := -1
+var _chat_slot_end := 0.0
+var _chat_speaker: StringName = &""
+var _bout := -1
+var _bout_end := 0.0
+var _bout_on := false
 
 
 func _ready() -> void:
@@ -87,15 +145,22 @@ func _ready() -> void:
 	tuning = tuning_for(npc_id)
 	loco = HeroLocomotion.new(merged(HeroLocomotion.load_data(), tuning.get("locomotion", {}) as Dictionary))
 	rest_yaw = rotation.y
+	home = position
 	loco.reset_yaw(rest_yaw)
 	loco.reset_speed(0.0)
+	add_to_group(GROUP)
 	_attach_actor()
 	_read_route()
+	if not chat_with.is_empty():
+		partner = get_node_or_null(chat_with) as FieldNpc
+	if not work_target_path.is_empty():
+		work_target = get_node_or_null(work_target_path) as Node3D
+	if not shelter_path.is_empty():
+		shelter = get_node_or_null(shelter_path) as Node3D
+	_look_next = _share_range("look_around", "every_sec", 0)
 	if route.size() >= 2:
 		mode = Mode.WALK
-	var inter := get_node_or_null(interactable_path) as Interactable
-	if inter != null:
-		inter.used.connect(_on_used)
+	listen_to(get_node_or_null(interactable_path) as Interactable)
 	if not player_path.is_empty():
 		player = get_node_or_null(player_path) as Node3D
 		_player_searched = true
@@ -143,6 +208,29 @@ func _clip(kind: StringName) -> StringName:
 	return StringName(str(clips.get(String(kind), String(kind))))
 
 
+func _section(key: String) -> Dictionary:
+	return tuning.get(key, {}) as Dictionary
+
+
+func _sub(section: String, key: String) -> float:
+	return float(_section(section).get(key, 0.0))
+
+
+## A deterministic value in [section.key[0], section.key[1]] (or the number itself) for the `index`th draw.
+func _share_range(section: String, key: String, index: int) -> float:
+	var v: Variant = _section(section).get(key, 0.0)
+	if v is Array and (v as Array).size() == 2:
+		var u := HeroIdleMicro.share(npc_id, "%s/%s/%d" % [section, key, index])
+		return lerpf(float(v[0]), float(v[1]), u)
+	return float(v)
+
+
+## Starts the talk when `inter` is used (several can be connected; the VillagerLayer passes the zone's).
+func listen_to(inter: Interactable) -> void:
+	if inter != null and not inter.used.is_connected(_on_used):
+		inter.used.connect(_on_used)
+
+
 func _attach_actor() -> void:
 	actor = get_node_or_null(actor_path) as Node3D
 	if actor == null and actor_scene != null:
@@ -154,6 +242,13 @@ func _attach_actor() -> void:
 		return
 	anim = HeroMotion.player_of(actor)
 	HeroMotion.add_micro_motion(actor, npc_id)
+	var skel := HeroMotion.skeleton_of(actor)
+	if skel != null:
+		look = skel.get_node_or_null(NodePath(String(LOOK_NAME))) as NpcLook
+		if look == null:
+			look = NpcLook.new(_section("look"))
+			look.name = LOOK_NAME
+			skel.add_child(look)
 	if anim != null and anim.has_animation(_clip(CLIP_IDLE)):
 		var length := anim.get_animation(_clip(CLIP_IDLE)).length
 		idle_offset_sec = HeroIdleMicro.share(npc_id, SALT_IDLE) * length
@@ -162,16 +257,20 @@ func _attach_actor() -> void:
 func _read_route() -> void:
 	route = PackedVector3Array()
 	pauses = PackedFloat32Array()
+	activities = PackedStringArray()
 	var holder := get_node_or_null(route_path)
 	if holder != null:
 		for c: Node in holder.get_children():
 			if c is Marker3D:
 				route.append(_to_parent((c as Marker3D).global_position))
 				pauses.append(float(c.get_meta(META_PAUSE, _num("pause_sec"))))
+				activities.append(str(c.get_meta(META_ACTIVITY, "")))
 	if route.is_empty():
 		route = route_points.duplicate()
 		for i in route.size():
-			pauses.append(_num("pause_sec"))
+			var own := route_pauses[i] if i < route_pauses.size() else 0.0
+			pauses.append(own if own > 0.0 else _num("pause_sec"))
+			activities.append(route_activities[i] if i < route_activities.size() else "")
 	target_index = 0
 	_direction = 1
 
@@ -217,9 +316,13 @@ func begin_talk(with_player: Node3D = null) -> void:
 		_player_searched = true
 	if mode == Mode.TALK:
 		return
-	if mode != Mode.AFTER_TALK:
-		_resume_mode = Mode.WALK if route.size() >= 2 else Mode.REST
+	if mode == Mode.GO:
+		_resume_mode = Mode.GO
+	elif mode != Mode.AFTER_TALK:
+		_resume_mode = Mode.WALK if route.size() >= 2 and not _storm_on else Mode.REST
 	mode = Mode.TALK
+	talk_sec = 0.0
+	_talk_held = false
 	_talk_yaw = yaw()
 	var off := player_offset()
 	if off != Vector3.INF and off.length() > 0.0:
@@ -254,16 +357,20 @@ func tick(delta: float) -> void:
 	if loco == null or delta <= 0.0:
 		return
 	clock += delta
+	_step_storm(delta)
 	var off := player_offset()
 	var dist := off.length() if off != Vector3.INF else INF
-	var target_yaw := rest_yaw
+	var target_yaw := _rest_heading()
 	var want_speed := 0.0
 	match mode:
 		Mode.TALK:
+			talk_sec += delta
 			if dist != INF and dist > 0.0:
 				_talk_yaw = HeroLocomotion.yaw_of(off)
 			target_yaw = _talk_yaw
 			if dist != INF and dist > _num("release_radius_m"):
+				end_talk()
+			elif _player_free_again():
 				end_talk()
 		Mode.AFTER_TALK:
 			target_yaw = _talk_yaw
@@ -276,9 +383,9 @@ func tick(delta: float) -> void:
 			if _timer <= 0.0:
 				_next_target()
 				mode = Mode.WALK
-		Mode.WALK:
+		Mode.WALK, Mode.GO:
 			target_yaw = yaw()
-			if dist > _num("stop_radius_m"):
+			if dist > _num("stop_radius_m") or (mode == Mode.GO and _storm_on):
 				var plan := _walk_plan()
 				target_yaw = plan.x
 				want_speed = plan.y
@@ -287,14 +394,20 @@ func tick(delta: float) -> void:
 	rotation.y = loco.step_yaw(target_yaw, delta)
 	ground_speed = loco.step_speed(want_speed, delta)
 	_move(delta)
+	_step_chat()
+	_attend(delta, off, dist)
 	_update_clip()
 
 
 ## (heading, speed) toward the current route point; arriving there starts the pause.
 func _walk_plan() -> Vector2:
-	var to := route[target_index] - position
+	var to := _goal() - position
 	var flat := Vector3(to.x, 0.0, to.z)
 	if flat.length() <= _num("arrive_m"):
+		if mode == Mode.GO:
+			mode = _go_then
+			rest_yaw = _go_yaw
+			return Vector2(yaw(), 0.0)
 		mode = Mode.PAUSE
 		_timer = pauses[target_index]
 		point_reached.emit(target_index)
@@ -303,7 +416,7 @@ func _walk_plan() -> Vector2:
 	var err := absf(angle_difference(yaw(), heading))
 	var tolerance := deg_to_rad(_num("walk_heading_tolerance_deg"))
 	# Turn first at a corner: no ground speed until it roughly faces the next point, then ease in.
-	var speed := 0.0 if err >= tolerance else _num("walk_speed_mps") * cos(err / tolerance * PI * 0.5)
+	var speed := 0.0 if err >= tolerance else _walk_speed() * cos(err / tolerance * PI * 0.5)
 	# Slow into the point over the last arrive_ease_m so the gait rolls down to idle as it lands.
 	var ease_m := _num("arrive_ease_m")
 	if ease_m > 0.0:
@@ -336,9 +449,9 @@ func _face_player(fallback: float, off: Vector3, dist: float, delta: float) -> f
 
 
 func _move(delta: float) -> void:
-	if ground_speed <= 0.0 or route.is_empty():
+	if ground_speed <= 0.0 or (route.is_empty() and mode != Mode.GO):
 		return
-	var to := route[target_index] - position
+	var to := _goal() - position
 	var step := minf(ground_speed * delta, to.length())
 	if step > 0.0:
 		position += to.normalized() * step
@@ -353,17 +466,25 @@ func _update_clip(force: bool = false) -> void:
 	var kind := CLIP_IDLE
 	if walk_weight >= _num("gait_switch_weight"):
 		kind = CLIP_WALK
-	elif mode == Mode.TALK:
+	elif mode == Mode.TALK or (_chat_speaker == npc_id and chatting()):
 		kind = CLIP_TALK
+	elif _storm_on and _has_clip(CLIP_STORM):
+		kind = CLIP_STORM
+	elif working() and _has_clip(CLIP_WORK):
+		kind = CLIP_WORK
 	if kind == CLIP_WALK:
 		var rate := ground_speed / loco.walk_clip_mps if loco.walk_clip_mps > 0.0 else 1.0
 		anim.speed_scale = clampf(rate, _num("walk_playback_min"), _num("walk_playback_max"))
+	elif _storm_on:
+		anim.speed_scale = _sub("storm", "idle_playback")
 	else:
 		anim.speed_scale = 1.0
 	var clip := _clip(kind)
 	if clip == current_clip and not force:
 		return
-	var blend := 0.0 if force else _num("%s_blend_sec" % kind)
+	var blend := (
+		0.0 if force else _num("%s_blend_sec" % (kind if kind != CLIP_WORK and kind != CLIP_STORM else CLIP_IDLE))
+	)
 	if not HeroMotion.play(actor, clip, blend):
 		push_warning("FieldNpc %s: no clip %s" % [npc_id, clip])
 	current_clip = clip
@@ -376,3 +497,272 @@ func idle_phase() -> float:
 	if anim == null or not anim.has_animation(_clip(CLIP_IDLE)):
 		return 0.0
 	return fposmod(idle_offset_sec + clock, anim.get_animation(_clip(CLIP_IDLE)).length)
+
+
+## True when the data names a clip for `kind` and the actor has it (work and storm clips are optional).
+func _has_clip(kind: StringName) -> bool:
+	return anim != null and _section("clips").has(String(kind)) and anim.has_animation(_clip(kind))
+
+
+## The point it walks toward: the run's goal (GO) or the current route point.
+func _goal() -> Vector3:
+	return _go_target if mode == Mode.GO else route[target_index]
+
+
+func _walk_speed() -> float:
+	return _sub("storm", "walk_speed_mps") if _storm_on else _num("walk_speed_mps")
+
+
+## The heading it rests on: toward its chat partner while they chat, else its resting heading.
+func _rest_heading() -> float:
+	if chatting():
+		var d := partner_offset()
+		return HeroLocomotion.yaw_of(Vector3(d.x, 0.0, d.z))
+	return rest_yaw
+
+
+## True when the talk should end because the player has control again: a dialogue held them and let go,
+## or nothing held them for talk_unheld_sec (a bark that never takes control).
+func _player_free_again() -> bool:
+	if player == null or not is_instance_valid(player) or not &"accepts_input" in player:
+		return false
+	var free := bool(player.get(&"accepts_input"))
+	if not free:
+		_talk_held = true
+		return false
+	if _talk_held:
+		return true
+	return talk_sec >= _num("talk_unheld_sec")
+
+
+## The partner's offset from this node in this node's parent space (the partner may sit under another parent: a
+## villager inside a cutscene actor), planar.
+func partner_offset() -> Vector3:
+	var d := _to_parent(partner.global_position) - position
+	return Vector3(d.x, 0.0, d.z)
+
+
+# --- chat pairs ---------------------------------------------------------------------------------------
+
+
+## True while it rests near its partner and both are free to chat (no talk with the player, no storm).
+func chatting() -> bool:
+	if partner == null or not is_instance_valid(partner) or _storm_on or partner._storm_on:
+		return false
+	if mode != Mode.REST or partner.mode != Mode.REST:
+		return false
+	var d := partner_offset()
+	if Vector2(d.x, d.z).length() > _sub("chat", "max_distance_m"):
+		return false
+	return _bout_on if _chat_lead() else partner._bout_on
+
+
+## Advances the lead's bouts: chat.bout_sec of chatting, then chat.quiet_sec back at their own business.
+func _step_bouts() -> void:
+	if partner == null or not _chat_lead():
+		return
+	if not _section("chat").has("bout_sec"):
+		_bout_on = true
+		return
+	while clock >= _bout_end:
+		_bout += 1
+		_bout_on = _bout % 2 == 0
+		_bout_end += _share_range("chat", "bout_sec" if _bout_on else "quiet_sec", _bout)
+
+
+## The pair's lead: the partner whose id sorts first runs the turn schedule; the other reads it.
+func _chat_lead() -> bool:
+	return partner != null and String(npc_id) < String(partner.npc_id)
+
+
+## Who speaks now (&"" in a pause): turns of chat.turn_sec, alternating, with a pause now and then.
+func _step_chat() -> void:
+	_step_bouts()
+	if not chatting():
+		_chat_speaker = &""
+		return
+	if not _chat_lead():
+		_chat_speaker = partner._chat_speaker
+		return
+	while clock >= _chat_slot_end:
+		_chat_slot += 1
+		# A chat that resumes after a break starts its next turn now, not in the past.
+		_chat_slot_end = maxf(_chat_slot_end, clock) + _share_range("chat", "turn_sec", _chat_slot)
+		var pause := HeroIdleMicro.share(npc_id, "chat/pause/%d" % _chat_slot) < _sub("chat", "pause_share")
+		if pause:
+			_chat_speaker = &""
+		else:
+			_chat_speaker = npc_id if _chat_slot % 2 == 0 else partner.npc_id
+
+
+# --- work -----------------------------------------------------------------------------------------------
+
+
+## True while it rests (or pauses at a work point) with work to do and nothing else to attend to.
+func working() -> bool:
+	if _storm_on or chatting() or _section("work").is_empty():
+		return false
+	if mode == Mode.REST:
+		return true
+	return mode == Mode.PAUSE and target_index < activities.size() and activities[target_index] == ACTIVITY_WORK
+
+
+## The work's focus in world space: work_target, else `work.look_at` in node space.
+func work_point() -> Vector3:
+	if work_target != null and is_instance_valid(work_target):
+		return work_target.global_position
+	var at: Variant = _section("work").get("look_at", [])
+	if at is Array and (at as Array).size() == 3:
+		return to_global(Vector3(float(at[0]), float(at[1]), float(at[2])))
+	return to_global(Vector3(0.0, 0.0, -1.0))
+
+
+# --- storm ----------------------------------------------------------------------------------------------
+
+
+## Every FieldNpc in the tree braces for (or comes out of) the storm.
+static func set_storm_all(tree: SceneTree, on: bool) -> void:
+	if tree == null:
+		return
+	for n: Node in tree.get_nodes_in_group(GROUP):
+		(n as FieldNpc).set_storm(on)
+
+
+## The storm begins or ends; each villager reacts after its own delay (storm.react_sec).
+func set_storm(on: bool) -> void:
+	if on == storm:
+		return
+	storm = on
+	_storm_wait = _share_range("storm", "react_sec", 0 if on else 1)
+
+
+func _step_storm(delta: float) -> void:
+	if _storm_wait < 0.0:
+		return
+	_storm_wait -= delta
+	if _storm_wait > 0.0:
+		return
+	_storm_wait = -1.0
+	_storm_on = storm
+	if mode == Mode.TALK or mode == Mode.AFTER_TALK:
+		_resume_mode = Mode.REST
+	if storm and shelter != null and is_instance_valid(shelter):
+		_go(_to_parent(shelter.global_position), shelter.global_rotation.y)
+	elif not storm and position.distance_to(home) > _num("arrive_m"):
+		_go(home, _home_yaw())
+	elif storm and (mode == Mode.WALK or mode == Mode.PAUSE):
+		mode = Mode.REST
+	elif not storm and mode == Mode.REST and route.size() >= 2:
+		mode = Mode.WALK
+
+
+func _home_yaw() -> float:
+	return float(get_meta(&"home_yaw", rest_yaw))
+
+
+## Walks to `point` (parent space), then rests there facing `yaw_at`; a route resumes after a walk home.
+func _go(point: Vector3, yaw_at: float) -> void:
+	if not has_meta(&"home_yaw"):
+		set_meta(&"home_yaw", rest_yaw)
+	_go_target = point
+	_go_yaw = yaw_at
+	_go_then = Mode.WALK if not storm and route.size() >= 2 else Mode.REST
+	if mode == Mode.TALK or mode == Mode.AFTER_TALK:
+		_resume_mode = Mode.GO
+	else:
+		mode = Mode.GO
+
+
+# --- attention (the head) -------------------------------------------------------------------------------
+
+
+## Picks where the head looks this frame, in priority order, and eases it there.
+func _attend(delta: float, off: Vector3, dist: float) -> void:
+	if look == null:
+		return
+	var aim := _attention(off, dist)
+	if aim == Vector2.INF:
+		look.look_ahead()
+	else:
+		look.look(aim.x, aim.y)
+	look.advance(delta)
+
+
+## (relative yaw, pitch) in radians, or Vector2.INF for straight ahead.
+func _attention(off: Vector3, dist: float) -> Vector2:
+	var near := dist <= _sub("glance", "radius_m") and dist > 0.0
+	if mode == Mode.TALK or mode == Mode.AFTER_TALK:
+		return _aim_at_player(off)
+	# A glance: when the party comes near, then again every glance.rest_sec while it stays.
+	if near and (not _was_near or clock >= _glance_next):
+		_glance_until = clock + _share_range("glance", "hold_sec", _glance_count)
+		_glance_count += 1
+		_glance_next = _glance_until + _share_range("glance", "rest_sec", _glance_count)
+	_was_near = near
+	if near and clock < _glance_until:
+		var aim := _aim_at_player(off)
+		if aim != Vector2.INF and look.can_reach(aim.x):
+			return aim
+	if _storm_on:
+		return _storm_aim()
+	if chatting():
+		return _aim_at(partner.global_position + Vector3.UP * _sub("look", "head_height_m"))
+	if working():
+		return _work_aim()
+	return _look_around()
+
+
+## Toward a world point from the head (the node plus look.head_height_m).
+func _aim_at(world_point: Vector3) -> Vector2:
+	var head := global_position + Vector3.UP * _sub("look", "head_height_m")
+	var d := world_point - head
+	var flat := Vector2(d.x, d.z).length()
+	if flat < 0.001:
+		return Vector2.INF
+	var rel := angle_difference(global_rotation.y, HeroLocomotion.yaw_of(Vector3(d.x, 0.0, d.z)))
+	return Vector2(rel, atan2(d.y, flat))
+
+
+func _aim_at_player(off: Vector3) -> Vector2:
+	if off == Vector3.INF or player == null or not is_instance_valid(player):
+		return Vector2.INF
+	return _aim_at(player.global_position + Vector3.UP * _sub("look", "player_eye_height_m"))
+
+
+## Down at the work, looking up now and then (work.look_up_every_sec, work.look_up_sec).
+func _work_aim() -> Vector2:
+	var aim := _aim_at(work_point())
+	var cycle := _share_range("work", "look_up_every_sec", 0)
+	if cycle > 0.0 and fposmod(clock + idle_offset_sec, cycle) < _sub("work", "look_up_sec"):
+		var k := floori((clock + idle_offset_sec) / cycle)
+		var side := HeroIdleMicro.share(npc_id, "work/side/%d" % k) * 2.0 - 1.0
+		return Vector2(side * deg_to_rad(_sub("work", "look_up_yaw_deg")), 0.0)
+	return aim
+
+
+## Braced (head down against the wind), with a look up at the sky every storm.sky_every_sec.
+func _storm_aim() -> Vector2:
+	var cycle := _share_range("storm", "sky_every_sec", 0)
+	var rel := 0.0
+	var az: Variant = _section("storm").get("look_azimuth_deg", null)
+	if az != null:
+		# Azimuth clockwise from north (-Z), as zone_weather.json; yaw is counter-clockwise from -Z.
+		rel = angle_difference(global_rotation.y, -deg_to_rad(float(az)))
+	if cycle > 0.0 and fposmod(clock + idle_offset_sec, cycle) < _sub("storm", "sky_look_sec"):
+		return Vector2(rel, deg_to_rad(_sub("storm", "sky_pitch_deg")))
+	return Vector2(rel * _sub("storm", "brace_yaw_share"), -deg_to_rad(_sub("storm", "brace_pitch_deg")))
+
+
+## Now and then a slow look to one side and back (look_around.every_sec, hold_sec, yaw_deg).
+func _look_around() -> Vector2:
+	if _section("look_around").is_empty():
+		return Vector2.INF
+	if clock >= _look_next:
+		_look_until = clock + _share_range("look_around", "hold_sec", _look_index)
+		var u := HeroIdleMicro.share(npc_id, "look_around/yaw/%d" % _look_index) * 2.0 - 1.0
+		_look_yaw = u * deg_to_rad(_sub("look_around", "yaw_deg"))
+		_look_index += 1
+		_look_next = _look_until + _share_range("look_around", "every_sec", _look_index)
+	if clock < _look_until:
+		return Vector2(_look_yaw, 0.0)
+	return Vector2.INF

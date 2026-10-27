@@ -54,7 +54,7 @@
     "pen_child": {"at": [30, 0, -24, 0], "color": "#d4907a", "radius": 0.2, "height": 1.2},
     "skipper_sadi": {"at": [-28, 0, -12, 270], "color": "#b0503a"},
     "sabe": {"at": [0, 0, -37, 0], "color": "#9a8a9a"},
-    "kell": {"at": [31, 0, -7.5, 200], "color": "#7a5a8a"},
+    "kell": {"at": [31, 0, -7.5, 200], "color": "#7a5a8a", "model": "res://assets/characters/villagers/kell/kell_actor.tscn"},
     "pen_child_2": {"at": [29, 0, -25, 0], "color": "#c4a07a", "radius": 0.18, "height": 1.0, "hidden": true},
     "pen_child_3": {"at": [31, 0, -25, 0], "color": "#b4907a", "radius": 0.18, "height": 0.9, "hidden": true}
   },

@@ -147,6 +147,53 @@ func test_reduced_motion_drops_the_shake_and_dims_the_flash() -> void:
 	_free()
 
 
+func test_the_screen_shake_setting_scales_or_drops_the_shake() -> void:
+	var settings := UiSettings.new()
+	UiSettings.set_shared(settings)
+	assert_eq(BattleStage.shake_setting(), 1.0, "full by default")
+	settings.set_value(BattleStage.SETTING_SHAKE, 0.5)
+	assert_eq(BattleStage.shake_setting(), 0.5, "half")
+	settings.set_value(UiSettings.REDUCED_MOTION, true)
+	assert_eq(BattleStage.shake_setting(), 0.0, "reduced motion: none")
+	settings.set_value(UiSettings.REDUCED_MOTION, false)
+	settings.set_value(BattleStage.SETTING_SHAKE, 0.0)
+	var foe := _heavy_foe()
+	_to_turn_of(&"rhen")
+	ctl.pacing_scale = 1.0
+	var shakes := ctl.stage.shakes_started
+	ctl.act(&"attack", [foe.id])
+	choreo.advance(float(choreo.current()["contact"]) + EPS)
+	assert_eq(ctl.stage.shakes_started, shakes, "Off: a heavy blow does not shake")
+	UiSettings.set_shared(null)
+	_free()
+
+
+func test_audio_hears_each_weighty_blow_and_the_last_blow_slow_mo() -> void:
+	var foe := _heavy_foe()
+	_to_turn_of(&"rhen")
+	ctl.pacing_scale = 1.0
+	var heard: Array = []
+	choreo.impact.landed.connect(func(tid: StringName, s: float, stop: float) -> void: heard.append([tid, s, stop]))
+	ctl.act(&"attack", [foe.id])
+	choreo.advance(float(choreo.current()["contact"]) + EPS)
+	assert_eq(heard.size(), 1, "one landed event on the contact")
+	assert_eq(heard[0][0], foe.id, "on the struck foe")
+	assert_true(float(heard[0][1]) > 0.0 and float(heard[0][2]) > 0.0, "a heavy blow: its weight and its hit-stop")
+	_free()
+	before_each()
+	_to_turn_of(&"rhen")
+	for e in ctl.engine.enemies:
+		e.hp = 1 if e.id == _foe() else 0
+	ctl.pacing_scale = 1.0
+	choreo.outro.live = false
+	var slow: Array = []
+	choreo.impact.slowmo_planned.connect(func(_f: float, sec: float, k: float) -> void: slow.append([sec, k]))
+	ctl.act(&"attack", [_foe()])
+	assert_eq(slow.size(), 1, "the last blow announces its slow-mo")
+	assert_true(float(slow[0][0]) > 0.0 and float(slow[0][1]) < 1.0)
+	_free()
+
+
 func test_felling_the_last_foe_slows_the_collapse() -> void:
 	_to_turn_of(&"rhen")
 	for e in ctl.engine.enemies:
@@ -278,4 +325,43 @@ func test_a_creature_models_footprint_is_its_real_size() -> void:
 	)
 	assert_true(r < 3.0, "but a sane size")
 	assert_eq(choreo._radius(foe), r, "the run uses it")
+	_free()
+
+
+func test_a_body_beside_the_path_turns_the_run_instead_of_stopping_it() -> void:
+	# M3-BPR-402: a big flier beside the crab used to stop Rhen's run 2.9 m short of it.
+	var st := choreo.style("melee")
+	var from := Vector3(2.0, 0.0, 0.0)
+	var aim := Vector3(-2.5, 0.0, 0.0)
+	var target := [aim, 0.9]
+	var beside := [Vector3(-1.0, 0.0, -1.6), 1.4]
+	var straight := BattleChoreoPlan.melee_gap(choreo.data, st, from, Vector3.LEFT, aim, [target, beside], 0.3)
+	var run := BattleChoreoPlan.melee_approach(choreo.data, st, from, aim, [target, beside], [target], 0.3)
+	var end := from + (run["dir"] as Vector3) * float(run["gap"])
+	var free := BattleChoreoPlan.melee_gap(choreo.data, st, from, Vector3.LEFT, aim, [target], 0.3)
+	assert_true(end.distance_to(aim) < (from + Vector3.LEFT * straight).distance_to(aim), "it gets closer than before")
+	var reach := float(choreo.data["spacing"]["detour_reach_m"])
+	assert_true(end.distance_to(aim) <= (from + Vector3.LEFT * free).distance_to(aim) + reach + EPS, "it reaches")
+	assert_true((run["dir"] as Vector3).z > 0.0, "turning away from the body beside the path")
+	var clear := float(choreo.data["spacing"]["clearance_m"])
+	assert_true(end.distance_to(beside[0]) >= 0.3 + 1.4 + clear - EPS, "and never ends inside it")
+	var open := BattleChoreoPlan.melee_approach(choreo.data, st, from, aim, [target], [target], 0.3)
+	assert_eq(open["dir"], Vector3.LEFT, "an open path stays straight")
+	_free()
+
+
+func test_the_struck_creature_stays_frozen_through_the_hit_stop() -> void:
+	# The creatures track's report: the reaction beat restarted the target's clip at full speed inside the hold.
+	var foe := _heavy_foe()
+	var player := BattleClips.player_of(ctl.stage.stand_in(foe.id))
+	assert_true(player != null, "the sandbox's foes are creature models")
+	_to_turn_of(&"rhen")
+	ctl.pacing_scale = 1.0
+	ctl.act(&"attack", [foe.id])
+	choreo.advance(float(choreo.current()["contact"]) + EPS)
+	assert_eq(choreo.impact.stops, 1, "a hit-stop on the contact")
+	assert_eq(player.speed_scale, 0.0, "its hit clip holds with everyone else")
+	choreo.impact.finish()
+	assert_eq(player.speed_scale, choreo.speed, "and plays on at the battle speed after")
+	assert_false(player.has_meta(BattleClips.HELD_META), "the hold is released")
 	_free()
