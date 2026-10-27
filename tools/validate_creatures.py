@@ -7,6 +7,8 @@
   a creatures.json row names as its `scene`.
 - A row with `vowbound` true (M3-CRE-638) is a Vowbound's actor: its id is a game/data/battle/vowbound.json row (the
   stand-in CreatureModels gives that Vowbound), and no enemy uses its scene as a `model`.
+- `stand_in` may also carry `height` and `radius` (M3-CRE-640, numbers > 0): a Vowbound with no battle_sandbox.json
+  stand-in row (UI's) gives its own, so the VFX anchors and the ring fit the model.
 """
 
 from __future__ import annotations
@@ -24,7 +26,7 @@ DEFAULT_KEYS = {"idle", "hit", "ko", "loop", "blend_sec", "clip_by_kind", "clip_
                 "stand_in", "phases", "break_parts", "portrait", "contact", "hit_variants", "idle_variety",
                 "hit_snap"}
 ROW_KEYS = DEFAULT_KEYS | {"scene", "vowbound"}
-STAND_IN_KEYS = {"yaw_deg", "hover"}
+STAND_IN_KEYS = {"yaw_deg", "hover", "height", "radius"}
 PHASE_KEYS = {"clip", "idle", "offset_m", "tilt_deg", "sec", "show", "hide", "hide_after", "show_after", "clips"}
 PART_KEYS = {"whole", "broken"}
 HIT_SNAP_KEYS = {"preroll_sec", "blend_sec", "_note"}
@@ -63,6 +65,9 @@ def _row_errors(w: str, row: dict, skills: set[str], phase_ids: set[str] | None)
         errs += [f"{w}.stand_in: unknown key '{k}'" for k in sorted(set(st) - STAND_IN_KEYS)]
         if "yaw_deg" in st and not _num(st["yaw_deg"]):
             errs.append(f"{w}.stand_in.yaw_deg: must be a number")
+        for k in ("height", "radius"):
+            if k in st and not (_num(st[k]) and st[k] > 0):
+                errs.append(f"{w}.stand_in.{k}: must be a number > 0")
     con = row.get("contact", {})
     if not (isinstance(con, dict) and all(isinstance(k, str) and _num(v) and v >= 0 for k, v in con.items())):
         errs.append(f"{w}.contact: must map clip names to seconds >= 0")

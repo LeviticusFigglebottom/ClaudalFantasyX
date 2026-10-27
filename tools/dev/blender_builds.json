@@ -859,6 +859,16 @@
         ["{blender}", "--python", "assets_src/creatures/ilun/build_ilun.py", "--", "--out", "assets/creatures/ilun/ilun.glb"],
         ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "ilun"]
       ]
+    },
+    {
+      "id": "creature_kahre",
+      "owner": "character",
+      "sources": ["assets_src/creatures/kahre/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/kahre/*.glb", "assets/creatures/kahre/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/kahre/build_kahre.py", "--", "--out", "assets/creatures/kahre/kahre.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "kahre"]
+      ]
     }
 ]
 }

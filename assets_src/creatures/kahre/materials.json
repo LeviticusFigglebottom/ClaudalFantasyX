@@ -1,0 +1,23 @@
+{
+  "_doc": "Kahre's surfaces (docs/kb/art/creatures/vowbound/kahre.md). Slots are the glTF material names; write_materials.py writes assets/creatures/kahre/materials/<slot>.tres on game/shaders/creature/creature.gdshader. He is bound light (color_script.md rule 2): every emissive slot is glimmer_bound #4FB3B0 at energy 1.2 with no pulse (steady: no flicker, no drift, no particles). body is the hide, neck, legs and tail feathers (volcanic_stone, ash-dusted, by vertex colour) with a faint inner light (a low emission mask) and a rim sheen. anvil is the iron chest plate (worn to brass at the edges), not lit. strike is the struck star on its flanks (emission mask 1). mane is the zig-zag spark-bolts (salt_glass, emission mask 0.75 to 1). beak is the bill, casque, knuckle plates and claws (bone and brass), not lit. eye is soft and glowing. hammer is the keepsake, iron and ash wood with a sand_cloth wrap, and not lit (the one part of him that is an object). Colours are palette.json swatches.",
+  "slots": {
+    "body": {"roughness_dry": 0.7, "roughness_wet": 0.4, "specular": 0.4, "wet_darken": 0.8, "clearcoat_wet": 0.2,
+             "detail_scale": 9.0, "detail_albedo": 0.08, "detail_bump": 0.12, "rim_sheen": 0.5,
+             "emission_color": "#4FB3B0", "emission_energy": 1.2},
+    "anvil": {"roughness_dry": 0.45, "roughness_wet": 0.3, "metallic": 0.8, "specular": 0.5, "wet_darken": 0.9,
+              "detail_scale": 18.0, "detail_albedo": 0.1, "detail_bump": 0.2, "cavity_albedo": 0.4,
+              "emission_energy": 0.0},
+    "strike": {"roughness_dry": 0.4, "roughness_wet": 0.2, "specular": 0.3, "detail_albedo": 0.0, "detail_bump": 0.0,
+               "emission_color": "#4FB3B0", "emission_energy": 1.2},
+    "mane": {"roughness_dry": 0.4, "roughness_wet": 0.2, "specular": 0.3, "detail_albedo": 0.0, "detail_bump": 0.0,
+             "rim_sheen": 0.4, "emission_color": "#4FB3B0", "emission_energy": 1.2},
+    "beak": {"roughness_dry": 0.35, "roughness_wet": 0.2, "specular": 0.5, "wet_darken": 0.85, "clearcoat_wet": 0.4,
+             "detail_scale": 24.0, "detail_albedo": 0.06, "detail_bump": 0.06, "rim_sheen": 0.3,
+             "emission_energy": 0.0},
+    "eye": {"roughness_dry": 0.12, "roughness_wet": 0.06, "specular": 0.7, "clearcoat_wet": 1.0, "detail_albedo": 0.0,
+            "detail_bump": 0.0, "emission_color": "#4FB3B0", "emission_energy": 1.2},
+    "hammer": {"roughness_dry": 0.6, "roughness_wet": 0.4, "metallic": 0.35, "specular": 0.45, "wet_darken": 0.85,
+               "detail_scale": 40.0, "detail_albedo": 0.12, "detail_bump": 0.25, "cavity_albedo": 0.45,
+               "emission_energy": 0.0}
+  }
+}

@@ -136,6 +136,10 @@ table, asset_import.md §3) would add a distance cutoff, which battles, held at 
   stand-in the row's `scene` and `stand_in` the same way (Ilun: `yaw_deg` −90, facing the foes as the heroes do).
   validate_creatures.py checks the id and that no enemy uses the scene. The VFX anchors are fractions of the height
   from the ground and ignore `hover`, so a hovering Vowbound is built hovering (origin at the water) instead.
+  A Vowbound with no battle_sandbox.json stand-in row (UI's) gives its own `height` and `radius` in its `stand_in`
+  (M3-CRE-640, Kahre: 3.3 and 0.75), merged last, so the anchors and the ring fit the model. **Check the default
+  camera**: the Vowbound slot's mark sits at 0.765 of the screen width and the safe frame's right edge at 0.85, so
+  only about 0.85 m behind the mark is inside it; a model long along the battle axis has to be built compact.
 - **`game/creatures/<id>/<id>_battle.tscn`**: a `Node3D` root with `creature_actor.gd` (`creature_id = &"<id>"`,
   `metadata/hymn_battle_actor = true`) and the GLB instanced as its first child, `Model`.
 - **`CreatureActor`** (`game/creatures/creature_actor.gd`) plays what creatures.json says: an action's clip
