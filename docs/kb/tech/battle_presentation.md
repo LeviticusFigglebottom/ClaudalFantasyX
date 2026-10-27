@@ -604,3 +604,14 @@ is M3-BPR-403.
   `detour_max_deg`, and takes the smallest turn whose run ends within `detour_reach_m` of where an unobstructed run
   would. So the actor comes at the target a little from one side and still meets it. Test:
   `test_a_body_beside_the_path_turns_the_run_instead_of_stopping_it`.
+
+### The opening line-up (M3-BPR-403)
+The slot markers were laid out for primitive stand-ins, and real models overlapped on their marks (in sandbox_reef
+the reef crab and the gull harrier stood 1.92 m apart against 2.45 m of footprints and clearance). At spawn,
+`BattleLineup` (`game/battle/scene/battle_lineup.gd`) pushes each side's fighters apart on the ground in fixed pair
+order, `spacing.lineup_iters` passes, until every pair keeps both footprints + `clearance_m`. It pushes only
+sideways on screen (along the battle camera's horizontal), because a first try along the pair's own axis moved the
+reef crab toward the camera and behind the command menu. Each fighter moves at
+most `lineup_max_shift_m` (0.6) off its mark, which keeps the camera's safe frames valid. It runs only at spawn,
+before BattleChoreo caches each fighter's home; fighters who join mid-battle keep their marks.
+Test: `tests/unit/test_battle_lineup.gd` (every encounter's opening line-up; it fails with the spread off).

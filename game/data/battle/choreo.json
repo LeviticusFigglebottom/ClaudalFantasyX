@@ -65,6 +65,8 @@
     "spacing": {
       "doc": "M3-BPR-402: a melee run stops so the actor, at the end of its lunge, keeps its radius + each body's radius + clearance_m from everyone in its path: heroes and creatures never interpenetrate. A radius is the model's footprint (the mean of its meshes' half-width and half-depth about the stand-in's origin, times footprint_k), else battle_sandbox.json stand_ins radius for a primitive.",
       "clearance_m": 0.12, "footprint_k": 1.0,
+      "lineup_doc": "M3-BPR-403 BattleLineup: at spawn each side is pushed apart on the ground until every pair keeps both footprints + clearance_m, each fighter at most lineup_max_shift_m off its mark (lineup_iters passes).",
+      "lineup_max_shift_m": 0.6, "lineup_iters": 16,
       "detour_doc": "M3-BPR-402: a melee run that a body beside its path stops short turns by detour_step_deg each way, up to detour_max_deg, taking the smallest turn that ends within detour_reach_m of where an unobstructed run would (it comes at the target from a little to one side).",
       "detour_step_deg": 5.0, "detour_max_deg": 50.0, "detour_reach_m": 0.15
     },
