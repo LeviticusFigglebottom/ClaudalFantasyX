@@ -45,7 +45,8 @@ game/data/battle/enemies.json  "model": "res://game/creatures/<id>/<id>_battle.t
   clip, outside phases, playing (never on a portrait's paused pose) and alive; the interval comes from a hash of its
   node path, so a scene replays the same way.
 - **Hits land on the contact frame (M3-CRE-617).** Every `hit` peaks 0.10–0.20 s in (authored so). A hit cuts into
-  its clip at creatures.json `hit_snap.preroll_sec` (0.1 s, about half its recoil) with no cross-fade, so the frame
+  its clip at creatures.json `hit_snap.preroll_sec` (0.067 s since M3-CRE-630 put clips on time: about half its
+  recoil, measured over all 42 hits; a row overrides it for a late peak, as the ashwing's 0.1 s) with no cross-fade, so the frame
   battle-presentation's hit-stop holds (M3-BPR-401) shows the blow landing, not the pose the hit came from; the
   rest of the recoil plays after the hold. Strikes, casts and every other clip still start at 0 with the row's
   blend. A boss's hit has real weight too: the Drownbell rocks back on braced legs with its rim ringing, the Cinder
