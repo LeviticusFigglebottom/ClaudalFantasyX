@@ -1,4 +1,4 @@
-[gd_scene load_steps=22 format=3]
+[gd_scene load_steps=23 format=3]
 
 [ext_resource type="PackedScene" path="res://assets/environments/zones/iskarra/iskarra_city.tscn" id="iskarra_city"]
 [ext_resource type="Script" path="res://game/levels/prologue/prologue_scene.gd" id="1_root"]
@@ -7,6 +7,9 @@
 [ext_resource type="Script" path="res://game/cutscene/cutscene_stage.gd" id="4_stage"]
 [ext_resource type="Script" path="res://game/cutscene/cutscene_shot_node.gd" id="5_shot_node"]
 [ext_resource type="PackedScene" path="res://assets/characters/ysolde/ysolde.glb" id="6_ysolde"]
+[ext_resource type="Script" path="res://game/world/water/water_surface.gd" id="7_water"]
+[ext_resource type="Resource" path="res://game/world/water/lagoon_waves.tres" id="8_waves"]
+[ext_resource type="Material" path="res://game/levels/ch02/haluna/haluna_water_material.tres" id="9_water_mat"]
 
 [sub_resource type="Resource" id="ShotP01"]
 script = ExtResource("2_shot")
@@ -81,15 +84,6 @@ roughness = 0.9
 albedo_color = Color(0.169, 0.227, 0.42, 1)
 roughness = 0.9
 
-[sub_resource type="StandardMaterial3D" id="Mat_water"]
-albedo_color = Color(0.055, 0.29, 0.333, 1)
-roughness = 0.08
-metallic_specular = 0.9
-
-[sub_resource type="PlaneMesh" id="Mesh_0"]
-material = SubResource("Mat_water")
-size = Vector2(600, 600)
-
 [sub_resource type="CapsuleMesh" id="Mesh_25"]
 material = SubResource("Mat_cloth_sand")
 radius = 0.3
@@ -122,10 +116,10 @@ light_energy = 0.35
 
 [node name="City" type="Node3D" parent="."]
 
-[node name="Water" type="MeshInstance3D" parent="City"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
-cast_shadow = 0
-mesh = SubResource("Mesh_0")
+[node name="Water" type="Node3D" parent="City"]
+script = ExtResource("7_water")
+wave_set = ExtResource("8_waves")
+material = ExtResource("9_water_mat")
 
 [node name="Iskarra" parent="City" instance=ExtResource("iskarra_city")]
 
