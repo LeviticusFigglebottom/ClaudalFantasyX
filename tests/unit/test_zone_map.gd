@@ -455,3 +455,18 @@ func _ev(action: StringName) -> InputEventAction:
 	ev.action = action
 	ev.pressed = true
 	return ev
+
+
+## ADR 0200 kits: a hint ending in "*" names a kit's numbered pieces, and a zone dressed from a kit reads its
+## walkable shape from the layout's collision_path (blocks, and ramps as pads).
+func test_kit_dressed_zones_read_their_collision_and_prefix_hints() -> void:
+	assert_true(ZoneMapShapes.hint_names("Wall-*", "Wall-10"))
+	assert_false(ZoneMapShapes.hint_names("Wall-*", "WallSection"), "a prefix, not a substring")
+	assert_true(ZoneMapShapes.hint_names("WallSection", "WallSection"))
+	assert_false(ZoneMapShapes.hint_names("WallSection", "WallSectionKerb"), "no star: the id itself")
+	var data := MapModel.load_data()
+	var m := MapModel.new(&"ch08/coilspire", Vector3.INF, 0.0, _flags([]))
+	var s := ZoneMapShapes.build(
+		m.shape_kind(), m.shape_source(), m.bounds(), data["map"], data["pieces"], data["greybox"], m.shape_hints()
+	)
+	assert_true(s.pads.size() >= 89, "every ramp of the spire's flights is ground to walk")
