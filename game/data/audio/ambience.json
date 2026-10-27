@@ -172,7 +172,8 @@
       "wind": true,
       "pending": true,
       "_note": "M3-AUD-16: Corrow's shoreline on the night of the Ebbing (claude/m2-slice); the seawall bed under the_ebbing"
-    }
+    },
+    "res://game/levels/ch03/saltgrass_causeway/saltgrass_causeway.tscn": {"day": ["causeway_wind", "tidepools", "surf"], "wind": true, "_note": "B06 (M2-AUD-12)"}
   },
   "wind": {
     "bed": "wind",

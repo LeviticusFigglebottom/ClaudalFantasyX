@@ -257,7 +257,8 @@
       "scene": "res://game/flow/end_card.tscn",
       "music": "hush_coda",
       "_note": "B12"
-    }
+    },
+    {"scene": "res://game/levels/ch03/saltgrass_causeway/saltgrass_causeway.tscn", "music": "saltgrass_causeway", "reverb": "open_sea", "_note": "B06 (M2-AUD-12): the route from Haluna to the shrine"}
   ],
   "battle": {
     "default": "battle_standard_v2",
