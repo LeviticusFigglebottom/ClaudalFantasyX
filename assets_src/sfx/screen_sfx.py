@@ -20,6 +20,9 @@ by their row's volume_db (sfx_ui_screens.json), as ui_map_pan is.
                         bound light's chime, over a rising wash of water that thins as the router's fade takes it
     ui_reefball_choices the Reefball choices rising at the player's contact: three small bubbles rising and a soft bar
     ui_reefball_glint   the preview shows a scoring choice under the cursor: one bright small glint, very short
+    ui_count_run        the battle result's numbers counting up (BattleResultPanel, count_sec 0.6): a quick run of tiny
+                        bar ticks climbing the D-A-E palette and speeding up, like coins told out (M3-AUD-848)
+    ui_count_done       the count settled: two soft bars a fifth apart (A5 over D5), let ring
 
 Render:  python3 assets_src/sfx/screen_sfx.py   (or tools/audio/render_all.py --only screen_sfx)
 """
@@ -140,6 +143,32 @@ def ui_reefball_glint() -> np.ndarray:
     return _tail_fade(_room(buf, 0.3, 0.1, SEED + 803), 0.05)
 
 
+def ui_count_run() -> np.ndarray:
+    g = rng(SEED + 901)
+    sec = 0.62
+    buf = np.zeros(int((sec + 0.25) * SR))
+    notes = ["D6", "E6", "A6", "D7", "E7"]
+    t, i = 0.0, 0
+    while t < sec:
+        gap = 0.075 * (1.0 - 0.55 * t / sec)  # the ticks speed up toward the end, as the count eases out
+        _place(buf, metallophone_note(n(notes[min(i // 3, len(notes) - 1)]), 0.12, seed=SEED + 902 + i, decay=0.12,
+                                      hardness=0.55, pair=False), t)
+        t += gap
+        i += 1
+    buf = filt(buf, [bq_highpass(900, 0.7), bq_lowpass(9500, 0.7)])
+    return _tail_fade(_room(buf, 0.3, 0.1, SEED + 903), 0.05)
+
+
+def ui_count_done() -> np.ndarray:
+    g = rng(SEED + 951)
+    buf = np.zeros(int(0.9 * SR))
+    _place(buf, metallophone_note(n("D5"), 0.32, seed=SEED + 952, decay=0.6, hardness=0.3, ombak_hz=5.0), 0.0)
+    _place(buf, metallophone_note(n("A5"), 0.3, seed=SEED + 953, decay=0.6, hardness=0.3, ombak_hz=5.0), 0.02)
+    _place(buf, 0.15 * _glass(midi_to_hz(n("A6")), 0.5, 0.12, g), 0.03)
+    buf = filt(buf, [bq_highpass(220, 0.7), bq_lowpass(8500, 0.7)])
+    return _tail_fade(_room(buf, 0.5, 0.18, SEED + 954), 0.12)
+
+
 UI = {
     "ui_whoosh_in": ui_whoosh_in,
     "ui_whoosh_out": ui_whoosh_out,
@@ -149,6 +178,8 @@ UI = {
     "ui_shrine_travel": ui_shrine_travel,
     "ui_reefball_choices": ui_reefball_choices,
     "ui_reefball_glint": ui_reefball_glint,
+    "ui_count_run": ui_count_run,
+    "ui_count_done": ui_count_done,
 }
 FILES = [f"{u}.ogg" for u in UI]
 
