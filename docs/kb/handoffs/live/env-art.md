@@ -114,6 +114,38 @@ env-art is cloud session `session_01YbaV2c8yquRHqj6afQYg89` on `claude/env-art`;
   append-only files (union). Checks run: full tools suite OK, `--filter=haluna` 53/0, `--filter=arena` 18/0,
   `gi_inputs --check`, validate_data, taskboard. The render requests above still stand.
 
+- **Lead's item 3, the `offering_step` PROVENANCE warning:** not a bad row. The row landed in b2fbee29 and the glb in
+  39f66d4c, one commit later. slice-polish merged b2fbee29 but not 39f66d4c, so its branch has the row without the
+  file. Merge env-art at 39f66d4c or later and the warning goes. On env-art's head both exist (validate_data: 0
+  warnings).
+- **Lead's item 4, Act I past Ch9:** Act I is Ch1–Ch9 (act_outline.md), so there are no Act I zones past Ch9.
+  Every Act I zone has its kit, and every Act I encounter arena is at final quality (Ch6's two since M3-ENV-706).
+  The primitive-built scene left in the act's frame is the **Prologue's Iskarra**, so that is the next item (below).
+- **MERGE-READY @ 86155bfc: M3-ENV-710**, Iskarra for the Prologue (reused in Ch19). New pieces in the Haluna kit
+  (`iskarra.py`):
+  - five white Lit Age ceramic towers (spire, stepped, broken, small, small broken), with flutes, galleries, window
+    slits, a waterline band, domes and finials or jagged hollow tops;
+  - a fallen crown, the broken plaza (34 x 18 m) and its rise, a standing and a fallen gate, dead lamp columns;
+  - 3 materials.
+
+  `assets/environments/zones/iskarra/iskarra_city.tscn` places each piece where the Prologue's primitives stand.
+  Checks run:
+  - full tools suite (1156) OK; `test_iskarra`, and the Godot `--filter=iskarra`;
+  - `haluna_kit` rebuild (every older piece byte-identical);
+  - `gi_inputs --check`, validate_data, taskboard.
+
+  Also in this merge: re-approved after viewing the eight shots from `gpu/render-env-art-71f19fb` and
+  `gpu/render-env-art-a0d2549` (0f19d868). The Ch6 arenas replace the greybox; the five UI shots differ only by lane
+  1's new jars.
+  - **For slice-polish:** request **M3-ENV-711** swaps the Prologue's `City` primitives for the instance (you own
+    `game/levels/prologue/**`).
+  - **24bf927a is NOT merge-ready yet.** It adds the preview stage `game/levels/_tests/iskarra_kit/` and three new
+    shots. `test_screenshots` stays red until the PC renders them and env-art approves.
+- **M3-ENV-1000** (Sefir's barge: no wake, a still reflection) is blocked.
+  - The barge exists (`white_barge`, `bs_barge.py`).
+  - The still reflection is M3-RND-03 (Rendering, todo).
+  - No boat in the game draws a wake yet, so "the others leave one" needs a water wake feature first.
+
 ### Render requests
 RENDER-REQUEST @ a0d2549f: battle_arena_tideline_dawn,battle_arena_causeway_disc_sunset,battle_arena_causeway,battle_arena_tideline,causeway_c02_profile_against_the_lagoon,causeway_c08_drownbell_disc_approach,drownbell_flood,battle_boss_intro_drownbell,haluna_h01_village_from_sea,haluna_h10_dock_night,field_objective_line,field_interact_prompt,field_area_title,field_tip_card,dialogue_continue; why: M3-ENV-701 set dressing in Haluna, the causeway and the two arenas (the five field/dialogue shots frame Haluna's lane 1)
 RENDER-REQUEST @ 22a5de11: battle_arena_oruvel_raft_morning,battle_arena_causeway,drownbell_flood; why: the merge took the PC gate's copies of these three over env-art's; confirm they still match with the arena dressing
@@ -121,6 +153,8 @@ RENDER-REQUEST @ 1a422476: ashcrown_a01_approach,ashcrown_a04_anvil_hall,ashcrow
 RENDER-REQUEST @ 71f19fbc: battle_arena_shoals,battle_arena_camp,battle_boss_intro_inquisitor; why: M3-ENV-706 Ch6 arenas replace the greybox
 RENDER-REQUEST @ ba16d48b: haluna_h01_village_from_sea,haluna_h04_dock,haluna_h10_dock_night,field_menu_map_haluna; why: the lagoon's fish weirs (M3-ENV-701)
 RENDER-REQUEST @ 179069de: battle_arena_causeway_route_afternoon; why: M3-ENV-705 its ground takes the zone's tidal-mud material
+ANSWERED: 71f19fbc (gpu/render-env-art-71f19fb) and a0d2549f (gpu/render-env-art-a0d2549), all eight non-passing shots viewed and re-approved in 0f19d868.
+RENDER-REQUEST @ 24bf927a: iskarra_p01_plaza_dusk,iskarra_i02_gate_from_the_plaza,iskarra_i03_broken_tower; why: M3-ENV-710 Iskarra kit for the Prologue under its dusk (new shots, no baseline yet)
 
 ## STATE AT HANDOVER (2026-10-25)
 
