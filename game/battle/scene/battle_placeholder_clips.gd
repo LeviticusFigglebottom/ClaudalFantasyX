@@ -118,6 +118,8 @@ static func build(
 	if roles.has(HIPS_ROLE) and keyed.has(HIPS_ROLE):
 		hips_track = a.add_track(Animation.TYPE_POSITION_3D)
 		a.track_set_path(hips_track, NodePath("%s:%s" % [skel_path, skel.get_bone_name(int(roles[HIPS_ROLE]))]))
+	var last := {}  # track -> [time, quaternion] of its previous key
+	var max_deg := maxf(float(cfg.get("max_key_deg", 180.0)), 1.0)
 	for key: Dictionary in clip.get("keys", []):
 		var time := float(key.get("t", 0.0))
 		var pose := base.duplicate()
@@ -128,11 +130,30 @@ static func build(
 				turns[int(roles[role])] = turn_of(pose[role])
 		var local := local_rotations(skel, turns)
 		for role in keyed:
-			a.rotation_track_insert_key(int(tracks[role]), time, local[int(roles[role])])
+			_rotation_key(a, int(tracks[role]), time, local[int(roles[role])] as Quaternion, last, max_deg)
 		if hips_track >= 0:
 			var hips := int(roles[HIPS_ROLE])
 			a.position_track_insert_key(hips_track, time, hips_position(skel, hips, _vec(key.get("hips_m", []))))
 	return a
+
+
+## Inserts rotation key `q` at `time` on `track` (M2-HER-1114): on the previous key's hemisphere, so a blend never
+## takes the long way round, and with slerped keys between when the two are more than `max_deg` apart
+## (placeholder_clips.max_key_deg; a near-antipodal pair flipped an arm mid cross-fade).
+static func _rotation_key(
+	a: Animation, track: int, time: float, q: Quaternion, last: Dictionary, max_deg: float
+) -> void:
+	if last.has(track):
+		var prev_t := float(last[track][0])
+		var prev := last[track][1] as Quaternion
+		if prev.dot(q) < 0.0:
+			q = -q
+		var steps := ceili(rad_to_deg(prev.angle_to(q)) / max_deg)
+		for i in range(1, steps):
+			var u := float(i) / steps
+			a.rotation_track_insert_key(track, lerpf(prev_t, time, u), prev.slerp(q, u))
+	a.rotation_track_insert_key(track, time, q)
+	last[track] = [time, q]
 
 
 ## [x, y, z] degrees in the model's axes -> a turn (YXZ, as Basis.from_euler and the characters' hero_clips.py).
@@ -194,6 +215,8 @@ static func _install(player: AnimationPlayer, built: Dictionary) -> void:
 	var current := player.current_animation
 	var at := player.current_animation_position if current != "" else 0.0
 	var playing := player.is_playing()
+	if playing:
+		player.stop()  # swapping the library under a playing player segfaults Godot 4.6.3 (M2-HER-1114)
 	if old != null:
 		player.remove_animation_library(&"")
 	player.add_animation_library(&"", lib)

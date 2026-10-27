@@ -186,6 +186,8 @@
     "placeholder_clips": {
       "doc": "M2-BPR-10, BattlePlaceholderClips: until the heroes' battle clips land (M2-CHR-07), a model with a Skeleton3D and an AnimationPlayer gets a generated pose clip for every contract clip it lacks; a real clip of that name always wins. bones: role -> candidate bone names, the first the skeleton has wins (the MPFB2 rig as the characters track exports it, DEF-*, then MPFB2's default names). A skeleton that resolves fewer than min_roles roles (a creature) gets nothing. A pose is role -> [x, y, z] degrees, a turn in the model's axes (X = the fighter's left, Y = up, Z = the way it faces; composed YXZ) on top of what the bone inherits, as the characters' hero_clips.py writes them: +X bends the spine forward and swings a hanging limb backward, +Y turns to the fighter's left, +Z tilts to its right. base is the standing pose (arms down from the rest); a key's pose replaces base per role, a key with no pose is base, and hips_m moves the hips role (metres, model axes). Every clip keys every role named in base or any clip, so no limb is left in the last clip's pose. A strike clip's blow key sits at its main style's contact_at x strike_sec.",
       "min_roles": 12,
+      "max_key_deg_doc": "M2-HER-1114: the widest turn between two consecutive rotation keys of one bone; a wider pair gets slerped keys between, each key on the previous key's hemisphere (a near-antipodal pair flipped Ysolde's arm mid cross-fade).",
+      "max_key_deg": 60.0,
       "bones": {
         "hips": ["DEF-spine", "root"],
         "spine": ["DEF-spine.001", "spine04"],
