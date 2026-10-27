@@ -30,7 +30,7 @@ import numpy as np  # noqa: E402
 
 from field_ambience import gull_call, lap, modal, murmur_phrase, stick_slip  # noqa: E402
 from field_sfx import _env, _noise, _place, _room, _tail_fade  # noqa: E402
-from motifs import phrases_in_seconds  # noqa: E402
+from motifs import order_hum_in_seconds, phrases_in_seconds  # noqa: E402
 from synth.bells import tower_bell  # noqa: E402
 from synth.dsp import SR, bq_bandpass, bq_highpass, bq_lowpass, filt, rng  # noqa: E402
 from synth.mixer import measure, normalize_momentary, write_ogg  # noqa: E402
@@ -454,15 +454,18 @@ def tide_ambience(g):  # the burned lamp: the tide coming in over the mud flats,
     return wash + _laps(g, sec, 1.8, 0.7) * _shape(n, 1.0, 2.5)
 
 
-def stillguard_hum(g):  # the raid: the Stillguard's low marching hum, many men, one drone a fifth apart
-    sec = 5.0
+def stillguard_hum(g):  # the raid: the Stillguard humming the Order's congregational tune, calmly, a dozen men
+    # (act1_ch06.md §6: the Order's existing hummed tune, so the player knows it: motifs.py ORDER_HUM)
+    line = order_hum_in_seconds()
     voices = []
-    for k in range(6):
-        root = 45.0 if k % 2 == 0 else 52.0
-        notes = [(root + float(g.normal(0, 0.08)), sec - 0.6)]
-        voices.append(_hum(g, notes, "m", 0.95, int(g.integers(1 << 30)), vib=4.0))
-    y = sum(v[: min(len(v) for v in voices)] for v in voices)
-    return y * _shape(len(y), 0.8, 1.2)
+    for k in range(12):
+        octave = -12.0 if k % 3 == 0 else 0.0
+        notes = [(m + octave + float(g.normal(0, 0.06)), d * float(g.uniform(0.98, 1.02))) for m, d in line]
+        voices.append(_hum(g, notes, "m", float(g.uniform(0.9, 1.0)), int(g.integers(1 << 30)), vib=5.0)
+                      * float(g.uniform(0.5, 1.0)))
+    n = min(len(v) for v in voices)
+    y = sum(v[:n] for v in voices)
+    return _room_tail(g, y * _shape(n, 0.6, 1.5), 1.6, 0.3)
 
 
 def hatch_burst(g):  # a hatch kicked open from below: the bar splinters, the lid slams back

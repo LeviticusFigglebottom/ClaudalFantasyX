@@ -161,6 +161,8 @@ shrine's pool fill. Every rule is in `tools/audio/targets.py`.
 which is a repository-size question for the Lead: Git LFS, STATUS.md). Each file stays under 5 MB.
 **ADR 0170 (2026-10-24):** 56 MiB, so the Act II sketches (M3-AUD-804/805) and the field foley fit (47.1 MiB before
 the second sketch set). The full game's storage plan is still the Lead's to decide before Act III's cues.
+**ADR 0171 (2026-10-27):** 72 MiB, to finish Act I's scripted cues (53.8 MiB before them). The storage plan (Git LFS
+or a release audio pack) is now needed before Act II's final cues.
 
 **Loop import rule:** `.import` files keep `beat_count=0`. Godot 4.6 loops an Ogg after `beat_count` beats counted
 from the start of the file (not from `loop_offset`), so a cue with an intro would wrap early by its intro's length.

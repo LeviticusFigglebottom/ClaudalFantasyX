@@ -9,6 +9,11 @@ Every statement uses these notes: `rhen_current_hum` hums phrase 1 (Ch1, C1-06),
 sing the whole tune (Ch1 C1-15, Ch8 B17), and E2's `goodbye_dace` returns to it.
 
 Each phrase is [(midi, beats)] at CURRENT_SONG_BPM; a phrase ends on a held note so a singer can breathe after it.
+
+ORDER_HUM (bible §4: the Order hums; only Cantors sing): the congregation's tune, first heard far off in the Shell
+Shrine (shell_shrine_interior.py CHANT, G3 A3 B3 A3 G3 E3 G3 D3 E3 G3, slow). The Stillguard hum it in Ch6's raid
+(`raid`, `stillguard_hum`) and Corrow hums it, broken, in Ch9 (`corrow_night`), so the player knows it. Here at
+ORDER_HUM_BPM, in beats; the shrine's own slow layer stretches the same notes over seconds.
 """
 from __future__ import annotations
 
@@ -20,7 +25,18 @@ CURRENT_SONG = [
 ]
 
 
+ORDER_HUM_BPM = 52.0
+ORDER_HUM = [(55, 2.0), (57, 1.5), (59, 2.0), (57, 1.0), (55, 2.0), (52, 2.0), (55, 1.5), (50, 1.5), (52, 1.5),
+             (55, 3.0)]
+
+
 def phrases_in_seconds(bpm: float = CURRENT_SONG_BPM) -> list[list[tuple[float, float]]]:
     """CURRENT_SONG as [(midi, seconds)] per phrase."""
     beat = 60.0 / bpm
     return [[(float(m), b * beat) for m, b in phrase] for phrase in CURRENT_SONG]
+
+
+def order_hum_in_seconds(bpm: float = ORDER_HUM_BPM) -> list[tuple[float, float]]:
+    """ORDER_HUM as [(midi, seconds)]."""
+    beat = 60.0 / bpm
+    return [(float(m), b * beat) for m, b in ORDER_HUM]
