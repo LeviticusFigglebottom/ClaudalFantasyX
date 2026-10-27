@@ -115,6 +115,20 @@
       "_note": "M4-C10-02: Reedhollow, the Kirru village round its lagoon (act_outline Ch10), a greybox zone (Ch10Zone). Ossa Fen's root-walks hand off here at Gate; Pell is not let in."
     },
     {
+      "id": "ch11/sunken_vey",
+      "scene": "res://game/levels/ch11/sunken_vey/sunken_vey.tscn",
+      "spawn": "Landing",
+      "name_key": "LOCATION_CH11_SUNKEN_VEY",
+      "_note": "M4-C11-02: Sunken Vey, the drowned galleries (act_outline Ch11), a greybox zone (Ch11Zone) from tools/act1/ch11_greybox.py: the landing, the conduit court (Liss's housing-mark), the fig-choked side gallery, the way on to Lowlight."
+    },
+    {
+      "id": "ch11/lowlight",
+      "scene": "res://game/levels/ch11/lowlight/lowlight.tscn",
+      "spawn": "Gate",
+      "name_key": "LOCATION_CH11_LOWLIGHT",
+      "_note": "M4-C11-02: Lowlight, the temple half underwater (act_outline Ch11), a greybox zone (Ch11Zone): the atrium (the lamp bench), the Lamp Engine's hall, the well-shaft's flights down to the drowned sanctum (Nhoa)."
+    },
+    {
       "id": "ch06/brine_shoals",
       "scene": "res://game/levels/ch06/brine_shoals/brine_shoals.tscn",
       "spawn": "Entry",

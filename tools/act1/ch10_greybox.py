@@ -58,34 +58,37 @@ def box(bid: str, x: float, y: float, z: float, sx: float, sy: float, sz: float,
 
 
 def walk(bid: str, a: tuple[float, float], b: tuple[float, float], rails: tuple[bool, bool] = (True, True),
-         trim: float = 0.0) -> list[dict]:
-    """A level root-walk from a to b (overlapping its neighbours by half its width), its two root rails (trimmed `trim`
-    m short at each end, so junctions stay open) and mangrove trunks along both sides."""
+         trim: float = 0.0, posts: tuple[str, float, float, str] = ("Trunk", TRUNK[0], TRUNK[1], COL_TRUNK),
+         colors: tuple[str, str] = (COL_WALK, COL_RAIL)) -> list[dict]:
+    """A level walk from a to b (overlapping its neighbours by half its width), its two rails (trimmed `trim` m short at
+    each end, so junctions stay open) and posts along both sides (`posts`: name, width, height, colour; Ch10's mangrove
+    trunks by default, Ch11's drowned pillars)."""
     dx, dz = b[0] - a[0], b[1] - a[1]
     length = math.hypot(dx, dz)
     yaw = math.degrees(math.atan2(-dz, dx))  # Godot: the box's local x along a -> b
     mx, mz = (a[0] + b[0]) * 0.5, (a[1] + b[1]) * 0.5
     nx, nz = -dz / length, dx / length  # left of a -> b
-    out = [box(bid, mx, -WALK_T * 0.5, mz, length + WALK_W, WALK_T, WALK_W, yaw, color=COL_WALK)]
+    post_name, post_w, post_h, post_col = posts
+    out = [box(bid, mx, -WALK_T * 0.5, mz, length + WALK_W, WALK_T, WALK_W, yaw, color=colors[0])]
     for side, on in zip((1.0, -1.0), rails):
         off = side * (WALK_W * 0.5 + RAIL[0] * 0.5)
         if on:
             out.append(box(f"{bid}Rail{'LR'[side < 0]}", mx + nx * off, RAIL[1] * 0.5, mz + nz * off,
-                           max(length - 2.0 * trim, 0.5), RAIL[1], RAIL[0], yaw, color=COL_RAIL))
+                           max(length - 2.0 * trim, 0.5), RAIL[1], RAIL[0], yaw, color=colors[1]))
         k = 0
         s = TRUNK_STEP_M * 0.5
         while s < length:
             t = s / length
             back = side * (WALK_W * 0.5 + TRUNK_BACK_M + (0.8 if k % 2 else 0.0))
-            out.append(box(f"{bid}Trunk{'LR'[side < 0]}{k}", a[0] + dx * t + nx * back, TRUNK[1] * 0.5 + WATER_Y,
-                           a[1] + dz * t + nz * back, TRUNK[0], TRUNK[1], TRUNK[0], color=COL_TRUNK, solid=False))
+            out.append(box(f"{bid}{post_name}{'LR'[side < 0]}{k}", a[0] + dx * t + nx * back, post_h * 0.5 + WATER_Y,
+                           a[1] + dz * t + nz * back, post_w, post_h, post_w, color=post_col, solid=False))
             k += 1
             s += TRUNK_STEP_M
     return out
 
 
-def water(x0: float, x1: float, z0: float, z1: float) -> list[dict]:
-    return [box("Water", (x0 + x1) * 0.5, WATER_Y - 0.05, (z0 + z1) * 0.5, x1 - x0, 0.1, z1 - z0, color=COL_WATER,
+def water(x0: float, x1: float, z0: float, z1: float, color: str = COL_WATER) -> list[dict]:
+    return [box("Water", (x0 + x1) * 0.5, WATER_Y - 0.05, (z0 + z1) * 0.5, x1 - x0, 0.1, z1 - z0, color=color,
                 solid=False),
             box("Bed", (x0 + x1) * 0.5, BED_Y - 0.5, (z0 + z1) * 0.5, x1 - x0, 1.0, z1 - z0, color=COL_BED)]
 
