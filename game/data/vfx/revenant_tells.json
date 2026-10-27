@@ -1,0 +1,13 @@
+{
+  "_doc": "M3-RND-03: a revenant's tells (RevenantTells, game/vfx/revenant/revenant_tells.gd; docs/kb/tech/revenant_tells.md). still_layer: the visual layer (1-based) a still actor's meshes join (19 is the cutscene key light, 20 UndertowHalfRes). Reflection: the water's SSR uses a flat normal wherever the mirror ray meets the actor's capsule (radius and height from the meshes' AABB, padded by capsule_pad_m; at most max_still_actors at once). Shadow: each shadowed DirectionalLight3D stops casting the actor, and a cancelling pair of spot lights stands in for it on the actor alone: one positive and shadowed (shadow_blur = shadow_blur, sharper than the key's), one negative and unshadowed, both spot_distance_m up the light's direction; the cone covers shadow_reach_m around the actor (its shadow at low sun), widened by cone_margin so the cone's own edge falloff stays outside.",
+  "still_layer": 18,
+  "max_still_actors": 2,
+  "capsule_pad_m": 0.06,
+  "shadow_blur": 0.12,
+  "spot_distance_m": 200.0,
+  "shadow_reach_m": 9.0,
+  "cone_margin": 1.6,
+  "spot_angle_attenuation": 0.05,
+  "spot_shadow_bias": 0.03,
+  "spot_shadow_normal_bias": 1.0
+}

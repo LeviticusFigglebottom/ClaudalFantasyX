@@ -74,6 +74,18 @@ hymn_water_level={
 "type": "vec2",
 "value": Vector2(0, 0)
 }
+hymn_still_actor_0={
+"type": "vec4",
+"value": Vector4(0, 0, 0, 0)
+}
+hymn_still_actor_1={
+"type": "vec4",
+"value": Vector4(0, 0, 0, 0)
+}
+hymn_still_actor_heights={
+"type": "vec2",
+"value": Vector2(0, 0)
+}
 
 [rendering]
 

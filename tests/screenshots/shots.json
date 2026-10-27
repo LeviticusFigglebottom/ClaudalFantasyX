@@ -3161,6 +3161,70 @@
           "screen_space_aa": 1
         }
       }
+    },
+    {
+      "id": "revenant_tells_reflection",
+      "scene": "res://game/levels/_tests/revenant/revenant_tells_reflection.tscn",
+      "camera": "Cameras/Reflections",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 12.0
+        }
+      }
+    },
+    {
+      "id": "revenant_tells_reflection_off",
+      "scene": "res://game/levels/_tests/revenant/revenant_tells_reflection.tscn",
+      "camera": "Cameras/Reflections",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 12.0
+        },
+        "nodes": {
+          "RevenantTells": {
+            "still_reflection": false,
+            "sharp_shadow": false
+          }
+        }
+      }
+    },
+    {
+      "id": "revenant_tells_shadow",
+      "scene": "res://game/levels/_tests/revenant/revenant_tells_shadow.tscn",
+      "camera": "Cameras/Shadows",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "revenant_tells_shadow_off",
+      "scene": "res://game/levels/_tests/revenant/revenant_tells_shadow.tscn",
+      "camera": "Cameras/Shadows",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30,
+      "setup": {
+        "nodes": {
+          "RevenantTells": {
+            "still_reflection": false,
+            "sharp_shadow": false
+          }
+        }
+      }
     }
   ]
 }
