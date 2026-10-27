@@ -125,6 +125,13 @@
       "ko_fade_sec": 1.2,
       "stand_in": {"yaw_deg": 60.0},
       "portrait": {"yaw_deg": 40.0, "pitch_deg": 10.0}
+    },
+    "wakefin": {
+      "scene": "res://game/creatures/wakefin/wakefin_battle.tscn",
+      "contact": {"attack": 0.8, "cast": 1.5},
+      "ko_fade_sec": 1.2,
+      "stand_in": {"yaw_deg": 60.0},
+      "portrait": {"yaw_deg": 60.0, "pitch_deg": 10.0, "rim_energy": 2.8, "kick_energy": 1.8}
     }
   }
 }

@@ -632,6 +632,16 @@
       ]
     },
     {
+      "id": "creature_wakefin",
+      "owner": "character",
+      "sources": ["assets_src/creatures/wakefin/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/wakefin/*.glb", "assets/creatures/wakefin/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/wakefin/build_wakefin.py", "--", "--out", "assets/creatures/wakefin/wakefin.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "wakefin"]
+      ]
+    },
+    {
       "id": "wildlife_gull",
       "owner": "character",
       "sources": ["assets_src/wildlife/gull/**", "assets_src/wildlife/common/**", "assets_src/creatures/common/creature_kit.py"],
