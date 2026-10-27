@@ -598,6 +598,12 @@ the real hero rigs (claude/hero-integration) the footprint comes from their mesh
 slots were sized for the primitives, so some real models overlap each other on their marks (the reef crab and the
 gull harrier); a run never brings an actor closer to such a body than it started. Spreading the slots by footprint
 is M3-BPR-403.
+- **Detour.** A body *beside* the path (the gull harrier's wings next to the reef crab) used to stop the run short:
+  Rhen struck the air 2.9 m from the crab. `BattleChoreoPlan.melee_approach` now tries the straight line first.
+  If something other than the targets stops it short, it turns by `spacing.detour_step_deg` each way, up to
+  `detour_max_deg`, and takes the smallest turn whose run ends within `detour_reach_m` of where an unobstructed run
+  would. So the actor comes at the target a little from one side and still meets it. Test:
+  `test_a_body_beside_the_path_turns_the_run_instead_of_stopping_it`.
 
 ### The opening line-up (M3-BPR-403)
 The slot markers were laid out for primitive stand-ins, and real models overlapped on their marks (in sandbox_reef

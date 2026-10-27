@@ -326,3 +326,25 @@ func test_a_creature_models_footprint_is_its_real_size() -> void:
 	assert_true(r < 3.0, "but a sane size")
 	assert_eq(choreo._radius(foe), r, "the run uses it")
 	_free()
+
+
+func test_a_body_beside_the_path_turns_the_run_instead_of_stopping_it() -> void:
+	# M3-BPR-402: a big flier beside the crab used to stop Rhen's run 2.9 m short of it.
+	var st := choreo.style("melee")
+	var from := Vector3(2.0, 0.0, 0.0)
+	var aim := Vector3(-2.5, 0.0, 0.0)
+	var target := [aim, 0.9]
+	var beside := [Vector3(-1.0, 0.0, -1.6), 1.4]
+	var straight := BattleChoreoPlan.melee_gap(choreo.data, st, from, Vector3.LEFT, aim, [target, beside], 0.3)
+	var run := BattleChoreoPlan.melee_approach(choreo.data, st, from, aim, [target, beside], [target], 0.3)
+	var end := from + (run["dir"] as Vector3) * float(run["gap"])
+	var free := BattleChoreoPlan.melee_gap(choreo.data, st, from, Vector3.LEFT, aim, [target], 0.3)
+	assert_true(end.distance_to(aim) < (from + Vector3.LEFT * straight).distance_to(aim), "it gets closer than before")
+	var reach := float(choreo.data["spacing"]["detour_reach_m"])
+	assert_true(end.distance_to(aim) <= (from + Vector3.LEFT * free).distance_to(aim) + reach + EPS, "it reaches")
+	assert_true((run["dir"] as Vector3).z > 0.0, "turning away from the body beside the path")
+	var clear := float(choreo.data["spacing"]["clearance_m"])
+	assert_true(end.distance_to(beside[0]) >= 0.3 + 1.4 + clear - EPS, "and never ends inside it")
+	var open := BattleChoreoPlan.melee_approach(choreo.data, st, from, aim, [target], [target], 0.3)
+	assert_eq(open["dir"], Vector3.LEFT, "an open path stays straight")
+	_free()
