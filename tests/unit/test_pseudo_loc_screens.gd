@@ -102,6 +102,19 @@ func test_title_and_settings_fit() -> void:
 	_done("title and settings")
 
 
+## The options pass: the Accessibility page's speed previews (SpeedPreview) with the cursor on each speed row.
+func test_speed_previews_fit() -> void:
+	for scale in _scales():
+		var s := _settings_at(scale)
+		for row: StringName in [UiSettings.TEXT_SPEED, UiSettings.BATTLE_SPEED]:
+			var page := AccessibilityMenu.new(s, "")
+			_host(page)
+			page.model.set_cursor(page.model.row_ids().find(row))
+			_probe(page, "speed preview " + String(row))
+			_clear()
+	_done("speed previews")
+
+
 func test_field_menu_fits() -> void:
 	for scale in _scales():
 		_settings_at(scale)

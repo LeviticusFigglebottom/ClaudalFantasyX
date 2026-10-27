@@ -35,7 +35,6 @@ const BOUGHT_KEY := "SHOP_MENU_BOUGHT_FMT"
 const SOLD_KEY := "SHOP_MENU_SOLD_FMT"
 const PURSE_FULL_KEY := "SHOP_MENU_PURSE_FULL_FMT"
 const FOR_HERO_KEY := "SHOP_MENU_FOR_FMT"
-const WORN_BY_KEY := "SHOP_MENU_WORN_BY_FMT"
 const UNKNOWN_SHOP_TITLE_KEY := "SHOP_MENU_UNKNOWN_TITLE"
 ## Shop ERR_* -> the loc key that says it ({name}, {count}, {price}, {purse}, {room}, {held},
 ## {wearer} are filled in where the line uses them).
