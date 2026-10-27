@@ -3270,6 +3270,14 @@
         960,
         720
       ]
+    },
+    {
+      "id": "creature_conduit_crawler",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_conduit_crawler.tscn",
+      "resolution": [
+        960,
+        720
+      ]
     }
   ]
 }

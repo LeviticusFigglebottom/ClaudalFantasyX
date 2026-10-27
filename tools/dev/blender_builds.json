@@ -672,6 +672,16 @@
       ]
     },
     {
+      "id": "creature_conduit_crawler",
+      "owner": "character",
+      "sources": ["assets_src/creatures/conduit_crawler/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/conduit_crawler/*.glb", "assets/creatures/conduit_crawler/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/conduit_crawler/build_conduit_crawler.py", "--", "--out", "assets/creatures/conduit_crawler/conduit_crawler.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "conduit_crawler"]
+      ]
+    },
+    {
       "id": "wildlife_gull",
       "owner": "character",
       "sources": ["assets_src/wildlife/gull/**", "assets_src/wildlife/common/**", "assets_src/creatures/common/creature_kit.py"],

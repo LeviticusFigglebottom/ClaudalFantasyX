@@ -148,6 +148,11 @@
       "scene": "res://game/creatures/rime_urchin/rime_urchin_battle.tscn",
       "contact": {"attack": 0.5, "cast": 0.8},
       "portrait": {"pitch_deg": 10.0}
+    },
+    "conduit_crawler": {
+      "scene": "res://game/creatures/conduit_crawler/conduit_crawler_battle.tscn",
+      "contact": {"attack": 0.45, "cast": 1.0},
+      "portrait": {"yaw_deg": 40.0, "pitch_deg": 20.0}
     }
   }
 }

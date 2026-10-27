@@ -45,6 +45,10 @@ const URCHIN := "res://game/creatures/rime_urchin/rime_urchin_battle.tscn"
 const URCHIN_CLENCH_RAD := 0.15
 const URCHIN_AIM_RAD := 0.3
 const URCHIN_SETTLE_M := 0.03
+## The conduit crawler: its body sinks at least this far between its folded legs in the KO, and stays this high.
+const CRAWLER := "res://game/creatures/conduit_crawler/conduit_crawler_battle.tscn"
+const CRAWLER_KO_DROP_M := 0.12
+const CRAWLER_KO_BODY_MIN_Y := 0.05
 const RING := {"radius_factor": 1.4, "inner_soft_m": 0.25, "notches": 6}
 const SANDBOX := "res://game/battle/scene/battle_sandbox.tscn"
 const SEED := 20261024
@@ -643,3 +647,28 @@ func test_the_rime_urchin_clenches_aims_its_spines_and_settles_on_its_ice() -> v
 	skel = _pose(a, &"ko", INF)
 	assert_true(_bone_at(skel, "body").y < body_rest.y - URCHIN_SETTLE_M, "the KO settles the test")
 	assert_true(_bone_at(skel, "root").is_equal_approx(plinth), "on the ice plinth, which stays")
+
+
+func test_the_conduit_crawler_scrubs_jabs_and_folds_its_legs() -> void:
+	var bones: Array[String] = ["root", "body"]
+	var legs: Array[String] = []
+	for side in ["l", "r"]:
+		for k in 3:
+			legs.append_array(["leg_%s%d_a" % [side, k], "leg_%s%d_b" % [side, k]])
+		bones.append_array(["arm_%s_a" % side, "arm_%s_b" % side])
+	bones.append_array(legs)
+	var a := _act2_regular(CRAWLER, [0.45, 1.0], bones)
+	var skel := _pose(a, &"idle", 0.0)
+	var body_rest := _bone_at(skel, "body").y
+	for clip: StringName in [&"attack", &"cast", &"hit", &"hit_b"]:
+		skel = _pose(a, clip, INF)
+		for leg in legs:
+			var b := skel.find_bone(leg)
+			var moved := skel.get_bone_global_pose(b).origin.distance_to(skel.get_bone_global_rest(b).origin)
+			assert_true(moved < RAM_FOOT_TOL_M, "%s ends with %s back where it stood" % [clip, leg])
+	skel = _pose(a, &"ko", INF)
+	var body := _bone_at(skel, "body").y
+	assert_true(body < body_rest - CRAWLER_KO_DROP_M, "its legs fold and it sinks")
+	assert_true(body > CRAWLER_KO_BODY_MIN_Y, "onto its belly plate, not through the floor")
+	for leg in legs:
+		assert_true(_bone_at(skel, leg).y > -RAM_FOOT_TOL_M, "%s stays above the floor" % leg)
