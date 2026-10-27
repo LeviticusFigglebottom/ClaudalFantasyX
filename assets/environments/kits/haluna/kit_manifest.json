@@ -321,6 +321,17 @@
         "crate_stack-lod1": 36
       }
     },
+    "dace_hull_frame": {
+      "budget": [
+        12000,
+        800
+      ],
+      "bytes": 216052,
+      "lods": {
+        "dace_hull_frame": 3538,
+        "dace_hull_frame-lod1": 608
+      }
+    },
     "dock_haluna": {
       "budget": [
         26000,
@@ -418,6 +429,61 @@
       "lods": {
         "ground_lamp": 96,
         "ground_lamp-lod1": 47
+      }
+    },
+    "hm_far_flotilla": {
+      "budget": [
+        9000,
+        2500
+      ],
+      "bytes": 513276,
+      "lods": {
+        "hm_far_flotilla": 4134,
+        "hm_far_flotilla-lod1": 1386
+      }
+    },
+    "hm_lashed_hulls": {
+      "budget": [
+        9000,
+        700
+      ],
+      "bytes": 206520,
+      "lods": {
+        "hm_lashed_hulls": 3418,
+        "hm_lashed_hulls-lod1": 368
+      }
+    },
+    "hm_signal_lamp": {
+      "budget": [
+        1500,
+        150
+      ],
+      "bytes": 25432,
+      "lods": {
+        "hm_signal_lamp": 136,
+        "hm_signal_lamp-lod1": 68
+      }
+    },
+    "hm_tide_wheel": {
+      "budget": [
+        6000,
+        450
+      ],
+      "bytes": 100488,
+      "lods": {
+        "hm_tide_wheel": 1348,
+        "hm_tide_wheel-lod1": 340
+      }
+    },
+    "hm_windmill": {
+      "budget": [
+        5000,
+        400
+      ],
+      "bytes": 46828,
+      "lods": {
+        "hm_windmill": 296,
+        "hm_windmill-lod1": 208
       }
     },
     "house_tile_a": {

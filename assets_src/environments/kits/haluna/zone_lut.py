@@ -137,6 +137,12 @@ GRADES = {
                      "cool_strength": 0.3},
     # M3-ENV-722: lut_ch16_choir (colour script ch16, the Choir variant): moonlit, the stone faces cold, Kesh's held
     # light a pale cyan; low contrast (the Rim's), saturation x0.7, the toe a cold slate.
+    # M3-ENV-723: lut_act3_dusk (colour script ch17, Hollowmere): the Act III base grade. Gold gain returns in the
+    # highlights but held under 0.92 (evening, not noon), shadows a cool slate-blue, S-curve 0.5, saturation x1.05.
+    "act3_dusk": {"saturation": 1.05, "s_curve": 0.5, "toe_hex": "#24324A", "toe_strength": 0.4, "toe_end": 0.3,
+                  "black_floor": 0.4, "highlight_hex": "#FFD9A8", "highlight_start": 0.62, "highlight_strength": 0.45,
+                  "warm_deg": (-20.0, 60.0), "warm_sat": 1.12, "cool_sat": 0.95, "cool_hex": "#B8C8E0",
+                  "cool_strength": 0.25, "white_cap": 0.92},
     "ch16_choir": {"saturation": 0.7, "s_curve": 0.3, "toe_hex": "#1E2A3A", "toe_strength": 0.45, "toe_end": 0.32,
                    "black_floor": 0.5, "highlight_hex": "#E6EEFA", "highlight_start": 0.68, "highlight_strength": 0.4,
                    "warm_deg": (-20.0, 60.0), "warm_sat": 0.7, "cool_sat": 0.9, "cool_hex": "#C8DCEE",
@@ -268,6 +274,8 @@ def grade(srgb: np.ndarray, g: dict | None = None) -> np.ndarray:
         out = np.maximum(out, lin_to_srgb(hex_lin(g["toe_hex"]) * g["black_floor"]))
     if "band_sat" in g:
         out = band_saturation(out, g["band_sat"])
+    if "white_cap" in g:  # M3-ENV-723: the highlights held under a ceiling (Act III's evening grade)
+        out = np.minimum(out, g["white_cap"])
     return out
 
 
