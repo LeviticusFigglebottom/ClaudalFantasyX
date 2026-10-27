@@ -692,6 +692,16 @@
       ]
     },
     {
+      "id": "creature_scree_crawler",
+      "owner": "character",
+      "sources": ["assets_src/creatures/scree_crawler/**", "assets_src/creatures/slag_tortoise/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/scree_crawler/*.glb", "assets/creatures/scree_crawler/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/scree_crawler/build_scree_crawler.py", "--", "--out", "assets/creatures/scree_crawler/scree_crawler.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "scree_crawler"]
+      ]
+    },
+    {
       "id": "wildlife_gull",
       "owner": "character",
       "sources": ["assets_src/wildlife/gull/**", "assets_src/wildlife/common/**", "assets_src/creatures/common/creature_kit.py"],

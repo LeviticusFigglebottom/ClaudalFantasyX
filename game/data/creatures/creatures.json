@@ -162,6 +162,11 @@
       "stand_in": {"hover": 1.38},
       "contact": {"attack": 0.7},
       "portrait": {"rim_energy": 2.8, "kick_energy": 1.8}
+    },
+    "scree_crawler": {
+      "scene": "res://game/creatures/scree_crawler/scree_crawler_battle.tscn",
+      "contact": {"attack": 0.55},
+      "portrait": {"rim_energy": 2.8, "kick_energy": 1.8}
     }
   }
 }
