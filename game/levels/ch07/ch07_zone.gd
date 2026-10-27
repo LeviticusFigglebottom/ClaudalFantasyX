@@ -12,6 +12,8 @@ extends Ch01Zone
 ##                       entered after a beat moved someone (Tavi at his boat after B07) starts
 ##                       with them where the beat left them.
 ## Ch7 has no foes, no tutorial prompts and no fog; Ch01Zone's ch01_field.json prompts go unused.
+## The galleries stand on env-art's Tamsule Bell kit (M3-C07-1211, ADR 0200): a ZoneKitDressing child and a
+## generated collision file with ramps.
 
 
 ## Moves the respawn point to this zone's `spawn` and asks for the autosave. False when there is no
@@ -38,3 +40,10 @@ func stand(actor: String, mark: String) -> bool:
 	a.position = m.position
 	a.rotation.y = m.rotation.y
 	return true
+
+
+## Kit collision (ADR 0200): the layout's "collision_path" and "ramps" (KitCollision); the galleries only.
+func _build_blocks() -> void:
+	KitCollision.merge(self)
+	super()
+	KitCollision.build_ramps(self)

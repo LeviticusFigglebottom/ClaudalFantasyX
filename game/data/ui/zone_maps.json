@@ -195,13 +195,13 @@
         "name_key": "LOCATION_CH07_TAMSULE_BELL_GALLERIES",
         "shapes": "res://game/levels/ch07/tamsule_bell_galleries/tamsule_bell_galleries_layout.json",
         "shape_kind": "greybox_layout",
-        "shape_hints": {"sea": ["River"], "water": ["CatchPool"], "buildings": ["GalleryThird", "GalleryTierW", "GalleryTierE", "GalleryTierS"]},
-        "bounds": [-18.0, -18.0, 46.0, 36.0],
+        "shape_hints": {"sea": ["River"], "water": ["CatchPool"], "buildings": ["MapGallery0", "MapGallery1", "MapGallery2", "MapGallery3", "MapGallery4", "MapGallery5", "MapGallery6", "MapGallery7", "MapGallery8", "MapGallery9", "MapGallery10", "MapGallery11"]},
+        "bounds": [-44.0, -44.0, 88.0, 88.0],
         "pois": [
-          {"id": "gallery", "name_key": "MAP_POI_G_GALLERY", "kind": "path", "at": [0.0, 10.0], "source": "spawn:Gallery"},
-          {"id": "rim", "name_key": "MAP_POI_G_RIM", "kind": "pool", "at": [0.0, 5.6], "source": "trigger:rim"},
-          {"id": "moorings", "name_key": "MAP_POI_G_MOORINGS", "kind": "dock", "at": [21.5, 3.5], "source": "trigger:moorings"},
-          {"id": "to_port", "name_key": "MAP_POI_G_TO_PORT", "kind": "door", "at": [-6.0, 14.4], "source": "trigger:to_port"}
+          {"id": "gallery", "name_key": "MAP_POI_G_GALLERY", "kind": "path", "at": [-32.5, 4.6], "source": "spawn:Gallery"},
+          {"id": "rim", "name_key": "MAP_POI_G_RIM", "kind": "pool", "at": [-16.2, 0.0], "source": "trigger:rim"},
+          {"id": "moorings", "name_key": "MAP_POI_G_MOORINGS", "kind": "dock", "at": [-11.6, -20.0], "source": "trigger:moorings"},
+          {"id": "to_port", "name_key": "MAP_POI_G_TO_PORT", "kind": "door", "at": [-29.5, 14.4], "source": "trigger:to_port"}
         ]
       },
       {
