@@ -1259,8 +1259,62 @@ def _tier_hall_arena() -> dict:
 
 TIER_HALL = _tier_hall_arena()
 
+
+# ---------------------------------------------------------------------------------------------
+# M3-ENV-717: the Avalanche Ram's terrace under the seeping Lit Age wall, Keth Pass (keth.py; keth_pass.md §2)
+# ---------------------------------------------------------------------------------------------
+def _keth():
+    import keth  # noqa: PLC0415
+
+    return keth
+
+
+KETH_ARENA = {
+    "id": "keth_seep_terrace",
+    "sub_frame": "ch12",
+    "ground": "deck",
+    "ground_glb": KIT + "keth_terrace_ground.glb",
+    "lut": "res://assets/environments/arenas/keth_seep_terrace/lut_ch12_heights.png",
+    # Colour script ch12 (09:00, thin air, hard sun between cloud banks): sun 30 deg / 140 deg, key #FAF6FF 2.8,
+    # fill #7FA6DC 0.8, sky #1E5BB8 / #C8D8E8, fog #D0DCE8 thin, exposure 0.65, lut_ch12_heights.
+    "sun": {"elev": 30.0, "az": 140.0, "color": "#FAF6FF", "energy": 2.8},
+    "fill": {"color": "#7FA6DC", "energy": 0.8},
+    "exposure": 0.65,
+    "fog": {"color": "#D0DCE8", "aerial": 0.5, "density": 0.0012, "sky_affect": 0.15, "height": 0.0,
+            "height_density": 0.0},
+    "sky_shader": LOW_SUN_SKY,
+    "sky": {"col_zenith": "#1E5BB8", "col_horizon_sun": "#E8EEF5", "col_horizon_away": "#C8D8E8", "col_ground": "#5A6470",
+            "sky_energy": 1.6, "horizon_curve": 0.3, "azimuth_power": 1.5, "col_band": "#F4F6FA", "band_energy": 0.2,
+            "band_height": 0.05, "mid_strength": 0.0, "col_glow": "#FFFFFF", "glow_energy": 0.6, "glow_power": 6.0,
+            "halo_energy": 1.0, "halo_power": 120.0, "sun_disc_energy": 8.0, "col_cloud_lit": "#F6F8FC",
+            "col_cloud_shadow": "#8C98A8", "cloud_coverage": 0.45, "cloud_softness": 0.3, "cloud_opacity": 0.85,
+            "cloud_height_m": 1400.0, "cloud_scale_m": 3500.0, "cloud_stretch": "Vector2(1, 1.6)",
+            "cloud_wind_deg": 300.0, "cloud_sun_energy": 2.0, "cloud_ambient_energy": 1.2, "cloud_horizon_fade": 0.1},
+    # No sea on the pass: the arena's Sea (the contract's water publisher) lies far down the valley, out of frame.
+    "sea": {"y": -160.0, "tide_line_y": -160.0, "sea_glow": 0.0, "material": CORROW_SEA},
+    "pieces": [
+        {"glb": KIT + "lit_terrace_wall.glb", "at": (x, 0.0, _keth().WALL_Z), "yaw": 0.0, "structure": True}
+        for x in (-12.0, 0.0, 12.0)
+    ] + [
+        {"glb": KIT + "seep_pool.glb", "at": (_keth().SEEP_POOL_AT[0], 0.0, _keth().SEEP_POOL_AT[1]), "yaw": 20.0},
+        {"glb": KIT + "pass_cord.glb", "at": (0.0, 0.0, -4.0), "yaw": 0.0, "structure": True},
+        {"glb": KIT + "cairn.glb", "at": (-8.6, 0.0, 3.6), "yaw": 30.0},
+        {"glb": KIT + "cairn.glb", "at": (8.8, 0.0, 3.4), "yaw": 200.0},
+        {"glb": KIT + "keth_far_ridges.glb", "at": (0.0, -20.0, 0.0), "yaw": 0.0},
+    ],
+    "scatters": [],
+    "hints": {
+        "wide_high": ((-1.5, 7.5, 13.5), (0.0, 0.8, -3.0)),
+        "party_side": ((5.6, 1.7, 4.5), (-1.5, 1.0, -0.5)),
+        "foe_side": ((-5.6, 1.7, 4.0), (1.5, 1.0, 0.0)),
+        "under_the_wall": ((3.0, 0.9, 3.5), (-6.0, 4.5, -6.0)),
+        "the_pass_below": ((-2.0, 1.6, -3.5), (3.0, -4.0, 20.0)),
+    },
+    "anchors": {"BossAnchor": (-7.5, 0.0, -3.0)},
+}
+
 ARENAS = {a["id"]: a for a in (TIDELINE, CAUSEWAY, CAUSEWAY_ROUTE, DERELICT_DECK, ASH_TERRACE, UNDERWAY_TOWER,
-                               RAFT_MORNING, SHOALS, CAMP, WALLHEAD_STORM, WALLHEAD_HOIST, WALLHEAD_SURGE, HEADLAND, TIER_HALL)}
+                               RAFT_MORNING, SHOALS, CAMP, WALLHEAD_STORM, WALLHEAD_HOIST, WALLHEAD_SURGE, HEADLAND, TIER_HALL, KETH_ARENA)}
 
 
 # ---------------------------------------------------------------------------------------------

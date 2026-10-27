@@ -6,8 +6,8 @@ Owner: Environment Artist (M3-ENV-717, sheet first; the kit follows). Lighting r
 the pass's snow and wind are weather, allowed but not featured). Boss: the creatures track's
 [avalanche_ram.md](../creatures/act2/avalanche_ram.md) (on `claude/creatures`). Grade target:
 [color script](../color_script.md) `ch12`. Colours: [palette.json](../palette.json). Format: [haluna.md](haluna.md).
-Zone: `ch12/keth_pass`, with Quellan (`ch12/quellan`) and Cloudloom (`ch12/cloudloom`) to follow. Kit (to build):
-`assets_src/environments/kits/keth/`. Arena: `keth_seep_terrace` (the Avalanche Ram).
+Zone: `ch12/keth_pass`, with Quellan (`ch12/quellan`) and Cloudloom (`ch12/cloudloom`) to follow. Kit: `assets_src/environments/kits/haluna/keth.py`
+(in the Haluna kit, its import kind and materials, as Iskarra). Arena: `keth_seep_terrace` (the Avalanche Ram).
 
 **The feeling in one line:** an enormous sky, thin cold light, and the few motes up here rising fast. The
 breath that doesn't fog (Kerrid) needs a clean dark background, so compose for it.
@@ -95,3 +95,9 @@ live log for the creatures track.
 ## Revisions
 
 - 2026-10-27 (env-art, M3-ENV-717): first issue, the sheet before the kit (the Lead's queue item 4).
+- 2026-10-27 (env-art, M3-ENV-717): the arena pieces are built in the Haluna kit (`keth.py`, `kit_keth_*` materials,
+  other kits' crag, shingle and paving textures read as they are). `keth_terrace_ground`, `lit_terrace_wall`,
+  `seep_pool`, `pass_cord`, `cairn`, `keth_far_ridges`; `lut_ch12_heights` from `keth_zone_lut.py`. The arena
+  `keth_seep_terrace` puts the pool at (−9, −4.2), clear of the slots' floor, the Ram's `BossAnchor` beside it, and
+  a pass-cord across the terrace behind the enemy line. The switchback, scree-slope module and the Quellan and
+  Cloudloom pieces follow with the zone.

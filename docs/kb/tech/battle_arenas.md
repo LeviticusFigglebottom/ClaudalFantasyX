@@ -180,6 +180,24 @@ across, and the battle camera stands 8 m off the slots, so no true tier fits a f
 Light `ch08_coilspire_int` (coilspire.md): ambient `#5A7E78` 2.0, fog `#24443F`, exposure 1.5,
 `lut_ch08_coilspire_int`, and the sun steep down the shaft (64°, 0.9). Hint `up_the_well`.
 
+### Keth Pass's seeping terrace (`keth_seep_terrace`, M3-ENV-717, the Haluna kit's keth.py)
+
+For the Avalanche Ram (Ch12; the encounter id is the creatures and combat tracks'). The old Lit Age road's level
+top is the floor. Laid stone flags have their tops at y 0, with a kerb along the front edge.
+
+| Where | What |
+|---|---|
+| Behind the enemy line | Three 12 m modules of `lit_terrace_wall` rise 8.5 m; the seep runs down their face in sheets of held light (not ice: ADR 0015) |
+| By the wall's foot | `seep_pool` at (−9, −4.2) in pale grass; the `BossAnchor` beside it |
+| Behind the foes | `pass_cord` across the terrace at z −4 |
+| Front corners | Two cairns |
+| Behind the camera | The scree falls 14 m to the switchback; crags rise either side; `keth_far_ridges` rings the pass |
+
+Light `ch12` (09:00): sun 30° / 140°, key `#FAF6FF` 2.8, ambient `#7FA6DC` 0.8, exposure 0.65, and
+`lut_ch12_heights` (`keth_zone_lut.py`: ×0.9, the keth reds spared, whites slightly blue). There is no sea in
+frame: the contract's `Sea` lies 160 m down the valley. Hints `under_the_wall`, `the_pass_below` (Kerrid's breath
+frame).
+
 ### The underwater arena (`underway_tower`)
 
 An arena under the sea carries its own look, because the battle scene has none:

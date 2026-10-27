@@ -5,8 +5,8 @@ Owner: Environment Artist (M3-ENV-716, sheet first; the kit follows). Lighting r
 and [ADR 0016](../../decisions/0016-act-two-restaging.md) (nothing frozen; no founders' records here). Boss: the
 creatures track's [lamp_engine.md](../creatures/act2/lamp_engine.md) (on `claude/creatures`). Grade target:
 [color script](../color_script.md) `ch11`. Colours: [palette.json](../palette.json). Format: [haluna.md](haluna.md).
-Zones: `ch11/sunken_vey` (the drowned galleries) and `ch11/lowlight` (the temple, half underwater). Kit (to build):
-`assets_src/environments/kits/lowlight/`. Arena: `lowlight_engine_hall` (the Lamp Engine).
+Zones: `ch11/sunken_vey` (the drowned galleries) and `ch11/lowlight` (the temple, half underwater). Kit (to build): in the Haluna
+kit as `lowlight.py` (its import kind and materials, as Iskarra and Keth). Arena: `lowlight_engine_hall` (the Lamp Engine).
 
 **The feeling in one line:** silent, gorgeous, dead. A turquoise lagoon lies still under a grey sky; Lit Age light
 bleeds from every conduit, and in the hall below, a machine is still trimming its lamps for a congregation that

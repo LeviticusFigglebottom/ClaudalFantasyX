@@ -90,6 +90,17 @@
         "basket_set-lod1": 153
       }
     },
+    "cairn": {
+      "budget": [
+        2500,
+        150
+      ],
+      "bytes": 42812,
+      "lods": {
+        "cairn": 652,
+        "cairn-lod1": 36
+      }
+    },
     "cargo_sacks": {
       "budget": [
         3200,
@@ -431,6 +442,28 @@
         "iskarra_tower_stepped-lod1": 352
       }
     },
+    "keth_far_ridges": {
+      "budget": [
+        4000,
+        1500
+      ],
+      "bytes": 33912,
+      "lods": {
+        "keth_far_ridges": 576,
+        "keth_far_ridges-lod1": 240
+      }
+    },
+    "keth_terrace_ground": {
+      "budget": [
+        26000,
+        2400
+      ],
+      "bytes": 954300,
+      "lods": {
+        "keth_terrace_ground": 14832,
+        "keth_terrace_ground-lod1": 2048
+      }
+    },
     "laundry_line": {
       "budget": [
         3600,
@@ -484,6 +517,17 @@
       "lods": {
         "lit_age_ring": 1348,
         "lit_age_ring-lod1": 144
+      }
+    },
+    "lit_terrace_wall": {
+      "budget": [
+        16000,
+        1200
+      ],
+      "bytes": 129488,
+      "lods": {
+        "lit_terrace_wall": 1976,
+        "lit_terrace_wall-lod1": 44
       }
     },
     "market_stall": {
@@ -572,6 +616,17 @@
       "lods": {
         "outrigger_7m": 1940,
         "outrigger_7m-lod1": 300
+      }
+    },
+    "pass_cord": {
+      "budget": [
+        7000,
+        400
+      ],
+      "bytes": 347060,
+      "lods": {
+        "pass_cord": 3510,
+        "pass_cord-lod1": 276
       }
     },
     "pilgrim_marker_post": {
@@ -704,6 +759,17 @@
       "lods": {
         "sandals": 108,
         "sandals-lod1": 20
+      }
+    },
+    "seep_pool": {
+      "budget": [
+        5000,
+        300
+      ],
+      "bytes": 111576,
+      "lods": {
+        "seep_pool": 1424,
+        "seep_pool-lod1": 24
       }
     },
     "shell_shrine_massing": {

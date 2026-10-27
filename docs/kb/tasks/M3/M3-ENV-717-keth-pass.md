@@ -13,7 +13,8 @@ The Lead's queue item 4: the Act II places that the creatures track's Ch10–12 
 
 ## Acceptance criteria
 - [x] The design sheet: `docs/kb/art/environments/keth_pass.md`.
-- [ ] The kit's arena pieces and the arena `keth_seep_terrace` for the Avalanche Ram (creatures' avalanche_ram), to the battle contract (battle_arenas.md).
+- [x] The kit's arena pieces (`haluna/keth.py`) and the arena `keth_seep_terrace` for the Avalanche Ram, to the
+      battle contract: `test_battle_arenas` passes for it (floor and camera line); `test_arenas`, `test_fog_lamps` OK.
 - [ ] The zone kit's remaining pieces (the sheet's §1).
 - [ ] PC renders viewed and approved.
 
