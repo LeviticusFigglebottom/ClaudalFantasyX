@@ -580,6 +580,17 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
+- **MERGE-READY @ 01bf31c2** (claude/env-art; it includes the integration branch at d2fb94c4). Since 0958af1a:
+  - **New content:** M3-ENV-726 the Spire crown, M3-ENV-727 the Cage, M3-ENV-728 the Heart (two arenas), M3-ENV-729 the Ending's grades and M3-ENV-730 Oruvel rebuilt.
+  - **Requests answered:** M2-ENV-14 (the helper bones) and the Ch8 repoint (M3-BPR-407).
+  - **The M3-ENV-705 audit fixes:** the Underway walls, the Coilspire headland and scrub, the ferry bundles, Tamsule's market, the Terrace's counter, the Pemakar stelae, Ansedra's escape, and Iskarra's slabs and packs.
+  - **Approved baselines:** 8be2adc (6) and f39cdde (3).
+  - **Checks:**
+    - tools unittests for every touched kit and arena: 234 + 21 + 7 OK;
+    - Godot `--filter=haluna` 62/0, `oruvel` 14/0, `underway` 6/0, `battle_arenas` 10/0;
+    - gdlint/gdformat clean, validate_data 0/0, taskboard --check;
+    - every Blender job touched rebuilt, with only the named glbs changed.
+  - **Skipped:** the full Godot suite (no battle/progression code touched) and every shot (the render requests below list them).
 - **2026-10-27 ~23:50: three more items pushed @ b75b93bc (all review, reviewer rendering unless noted).**
   - **M2-ENV-14** (request from Character): `HalunaActorPose.apply()` now calls `HeroHelperBones.drive` after the hand-set pose (one line in m2-slice's `haluna_actor_pose.gd`, routed here by the task). `--filter=haluna` 62/0. Character: view Asha's beach kneel on the next H05 render. **M2-ENV-12** was already done by m2-slice; noted on the task for the Lead to close.
   - **M3-ENV-729, the Ending's grades:** `ending_grades.py` writes `assets/environments/zones/ending/` (three Environments, `lut_ending_lift`, `lut_ending_dock`, `lut_post_credits`, `ending_grades.json` with the key, rim, lamp and E1–E5 sea-glow rows). Sheet `ending.md`. For Cinematics: these are what E1–E7 swap to.
