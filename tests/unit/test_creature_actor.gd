@@ -380,3 +380,26 @@ func _add(n: Node) -> void:
 	var tree := Engine.get_main_loop() as SceneTree
 	(tree.current_scene if tree.current_scene != null else tree.root).add_child(n)
 	made.append(n)
+
+
+## M3-CRE-617: a hit cuts into its clip at hit_snap.preroll_sec with no blend, so a hit-stop that holds the player on
+## the contact frame (M3-BPR-401) shows a struck pose, not the idle the hit came from.
+func test_a_hit_snaps_onto_its_struck_pose() -> void:
+	var a := _actor(CRAB)
+	var player := a.find_children("*", "AnimationPlayer", true, false)[0] as AnimationPlayer
+	var skel := a.find_children("*", "Skeleton3D", true, false)[0] as Skeleton3D
+	var snap := CreatureActor.data()["defaults"]["hit_snap"] as Dictionary
+	var idle_pose: Array[Quaternion] = []
+	for i in skel.get_bone_count():
+		idle_pose.append(skel.get_bone_pose_rotation(i))
+	assert_true(a.play_hit())
+	player.speed_scale = 0.0  # the hit-stop's hold
+	player.advance(0.0)
+	assert_between(player.current_animation_position, float(snap["preroll_sec"]) - 0.001, 1.0, "pre-rolled")
+	var moved := 0.0
+	for i in skel.get_bone_count():
+		moved += idle_pose[i].angle_to(skel.get_bone_pose_rotation(i))
+	assert_true(moved > 0.05, "the held frame is a struck pose (%.3f rad off idle)" % moved)
+	assert_true(a.is_hit_clip(&"hit_b") and not a.is_hit_clip(&"attack"), "hit variants snap, strikes do not")
+	assert_true(a.play_action(&"pinch", &"physical"))
+	assert_between(player.current_animation_position, 0.0, 0.001, "a strike still starts at its beginning")

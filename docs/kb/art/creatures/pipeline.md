@@ -44,6 +44,13 @@ game/data/battle/enemies.json  "model": "res://game/creatures/<id>/<id>_battle.t
   own hit) and plays the `idle_variety` fidget once every `every_sec` [min, max] while it idles on its own idle
   clip, outside phases, playing (never on a portrait's paused pose) and alive; the interval comes from a hash of its
   node path, so a scene replays the same way.
+- **Hits land on the contact frame (M3-CRE-617).** Every `hit` peaks 0.10–0.20 s in (authored so). A hit cuts into
+  its clip at creatures.json `hit_snap.preroll_sec` (0.1 s, about half its recoil) with no cross-fade, so the frame
+  battle-presentation's hit-stop holds (M3-BPR-401) shows the blow landing, not the pose the hit came from; the
+  rest of the recoil plays after the hold. Strikes, casts and every other clip still start at 0 with the row's
+  blend. A boss's hit has real weight too: the Drownbell rocks back on braced legs with its rim ringing, the Cinder
+  Matron rocks back under her plates, the tower limpet clamps and tips on its foot, the Undertow's Reach's hand is
+  thrown back. A new `hit` should keep its peak near 0.1 s.
 - **In place (battle-presentation's clip contract, M2-BPR-02).** The strike clips `attack` and `cast` play in place:
   the sequencer moves the fighter to its target, so `export_creature` drops the `root` bone's horizontal travel in them
   (`IN_PLACE_CLIPS`). Author the lunge on `root` if you like; vertical travel (a dive, a hop), body leans and `hit`'s
