@@ -386,6 +386,13 @@ def ui_hook_errors(doc: object, ids: set[str], classes: dict[str, list[str]] | N
                 errs.append(f"{ww}: plays nothing (needs sfx, rise, fall or values)")
             for sid in sounds:
                 row(sid, ww)
+    mo = doc.get("motion")
+    if mo is not None:  # M3-AUD-832: the menu motion whooshes
+        if not isinstance(mo, dict) or not isinstance(mo.get("accessor"), str) or not mo["accessor"]:
+            errs.append(f"{UI_SFX} motion: an object with an accessor (the method returning a node's MenuMotion)")
+        else:
+            for k in ("in", "out"):
+                row(mo.get(k), f"{UI_SFX} motion.{k}")
     return errs
 
 

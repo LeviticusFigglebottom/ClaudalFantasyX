@@ -204,6 +204,8 @@ JOBS = [
     ("assets_src/sfx/menu_page_sfx.py", "assets/audio/sfx",
      [f"{u}.ogg" for u in ("ui_item_use", "ui_item_sort", "ui_formation_pick", "ui_formation_swap",
                            "ui_customize_open", "ui_craft", "ui_map_pan")], "sfx"),
+    # M3-AUD-832: the UI track's new screens (menu motion, the title's reveal, save slots, shrine travel, Reefball HUD)
+    ("assets_src/sfx/screen_sfx.py", "assets/audio/sfx", _source_files("assets_src/sfx/screen_sfx.py"), "sfx"),
     # M3-AUD-19: Act I temple and dungeon music (Ch5 Ashcrown, Ch8 Coilspire, Ch7 the Tamsule Bell's galleries)
     ("assets_src/music/ashcrown.py", "assets/audio/music", ["ashcrown.ogg", "ashcrown.loop.json"], "music_loop"),
     ("assets_src/music/coilspire.py", "assets/audio/music", ["coilspire.ogg", "coilspire.loop.json"], "music_loop"),
