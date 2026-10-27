@@ -218,7 +218,7 @@
         "name_key": "LOCATION_CH07_TAMSULE_BELL_GALLERIES",
         "shapes": "res://game/levels/ch07/tamsule_bell_galleries/tamsule_bell_galleries_layout.json",
         "shape_kind": "greybox_layout",
-        "shape_hints": {"sea": ["River"], "water": ["CatchPool"], "buildings": ["MapGallery0", "MapGallery1", "MapGallery2", "MapGallery3", "MapGallery4", "MapGallery5", "MapGallery6", "MapGallery7", "MapGallery8", "MapGallery9", "MapGallery10", "MapGallery11"]},
+        "shape_hints": {"sea": ["River"], "water": ["CatchPool", "WaterFloor"], "buildings": ["MapGallery0", "MapGallery1", "MapGallery2", "MapGallery3", "MapGallery4", "MapGallery5", "MapGallery6", "MapGallery7", "MapGallery8", "MapGallery9", "MapGallery10", "MapGallery11"], "floors": ["Walk0", "Walk1", "Walk2", "Walk3", "Walk4", "Walk5", "Walk6", "Walk7", "Walk8", "Walk9", "Walk10", "Walk11", "Walk12", "Walk13", "Walk14", "Walk15", "Walk16", "Walk17", "Walk18", "Walk19", "Walk20", "Walk21", "Walk22", "Walk23", "Walk24", "Walk25", "Walk26", "Walk27", "Walk28", "Walk29", "WalkEnd*", "OurPlatform", "TheirPlatform", "OurProw*", "TheirProw*", "Staging", "StagingEnd*", "TierFront*"], "structures": ["WalkRail*", "BridgeRail*", "OurRail*", "TheirRail*", "StagingRail*"]},
         "bounds": [-44.0, -44.0, 88.0, 88.0],
         "pois": [
           {"id": "gallery", "name_key": "MAP_POI_G_GALLERY", "kind": "path", "at": [-32.5, 4.6], "source": "spawn:Gallery"},
@@ -269,7 +269,7 @@
         "name_key": "LOCATION_CH09_CORROW_NIGHT",
         "shapes": "res://game/levels/ch09/corrow_night/corrow_night_layout.json",
         "shape_kind": "greybox_layout",
-        "shape_hints": {"sea": ["LowTownLake"]},
+        "shape_hints": {"sea": ["LowTownLake", "Harbour"], "floors": ["Wall-*", "Wall+*", "WalkEnd*", "TownFloor", "BastionPlatform", "MolePier", "MoleEnd", "StrandFloor", "RoadEnd"], "structures": ["Parapet*", "Kerb*", "BastionRim*", "MoleRail*", "MoleBridgeRail*", "StrandBound*", "PaleBlocks"], "skip": ["WatchersSection"]},
         "bounds": [-62.0, -34.0, 150.0, 72.0],
         "pois": [
           {"id": "strand", "name_key": "MAP_POI_C_STRAND", "kind": "path", "at": [-53.7, 25.7], "source": "spawn:Strand"},

@@ -26,3 +26,11 @@ func test_liss_names_her_battle_wrapper_with_a_capsule_until_it_lands() -> void:
 	assert_eq(str(spec.get("shape", "")), "capsule", "her own capsule, not the default primitive")
 	assert_eq(float(spec.get("yaw_deg", 0.0)), -90.0, "faces the foes like the other heroes")
 	assert_eq(str(spec.get("tint", "")), "#7A8F6A", "her timeline tint")
+
+
+func test_the_heroes_with_wrappers_stand_in_through_them() -> void:
+	# M2-HER-1108: every hero with a HeroBattleActor wrapper on this branch is shown through it.
+	for hero: StringName in [&"rhen", &"asha", &"toma", &"ysolde"]:
+		var scene := str(BattleStage.stand_in_spec(hero).get("scene", ""))
+		assert_eq(scene, "res://game/hero_motion/battle/%s_battle_actor.tscn" % hero, "%s's wrapper" % hero)
+		assert_true(ResourceLoader.exists(scene), "%s's wrapper is on the branch" % hero)
