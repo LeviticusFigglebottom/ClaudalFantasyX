@@ -197,6 +197,25 @@ Ch4–Ch9 onward. `m2-slice.md` beside this file is the history up to the 2026-1
   - **Open:** Ilun's chamber behind the east door isn't built, so S08 holds him over the inner pool under the
     vault.
 
+- **MERGE-READY @ e215ef8b** (the primitives audit, test fixes and three requests).
+  - **test_slice_primitives (new).** It fails on any visible PrimitiveMesh in the slice's scenes (prologue, Haluna,
+    causeway, shrine, First Verse) beyond a listed allowlist. The runtime audit found two primitive sets left:
+    - the **Prologue's whole Iskarra set** (cylinder towers, box arches). No kit has Iskarra's architecture →
+      **M3-ENV-100** (request to env-art), with the staging, shots and light to keep;
+    - **Haluna's save shrine** → **M3-ENV-101** (request to env-art; Systems/ui-menus does the swap).
+  - **GOTCHA, everyone: the test runner never steps a frame.** It runs every test inside `_ready` and doesn't await
+    them, so a test that awaits `process_frame` or `physics_frame` stops there and PASSES without its later
+    assertions.
+    - Two of mine were vacuous: test_slice_shots and test_causeway_route's spawn floors. Both now run for real.
+    - test_slice_shots also hid a bug: it added rigs to `tree.root`, which is busy during the run, so no level ever
+      staged. It now uses `current_scene` and starts each rig by hand (a new idempotent `SliceCutsceneShot.start()`).
+    - Instant-sequencer awaits resume synchronously and are fine (probed).
+    - **M2-QA-100** asks QA to make the runner fail a suspended test. Lead: when it lands, the full suite may turn
+      up more.
+  - **Checks:** slice_primitives 1 (and proven to fail with the Prologue's entry removed), slice_shots 1 (now every
+    rig shot, including the Ch1 ones), causeway_route 4, haluna_villagers and cutscene_pose (probed), all 0 failed;
+    lint, format and taskboard clean.
+
 - **Correction (ec3ba50a):** my first B11 pass (4f616566) added a letterbox and three scripted camera setups.
   vertical_slice.md defines B11 (and B02) as **E** scenes: in-engine, no letterbox, and the player keeps the camera
   rail. Those cues are out. B11 keeps Rhen's walk out to Asha and the turns between them. Lead: take ec3ba50a with
