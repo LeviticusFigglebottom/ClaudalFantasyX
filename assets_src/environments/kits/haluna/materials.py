@@ -393,9 +393,9 @@ MATERIALS["kit_keth_road"] = _ext_stone(_AC + "paving_slabs_albedo.png", _AC + "
                                         roughness_base=0.85, cavity_darken=0.3, variation_value=0.12, **_DRY)
 # The Lit Age wall: the white ceramic weathered grey-white by the mountain (lit_ceramic under lichen and grime).
 MATERIALS["kit_keth_lit_ceramic"] = stone("coral_concrete_albedo.png", "coral_concrete_normal.png", (2.4, 2.4),
-                                          base_triplanar=True, col_paint=hexc("#CBD0CF"), paint_cover=0.7,
-                                          normal_strength=0.8, roughness_base=0.7, cavity_darken=0.45,
-                                          variation_value=0.14, col_lichen=hexc("#9AA284"), **_DRY)
+                                          base_triplanar=True, col_paint=hexc("#AEB1AB"), paint_cover=0.5,
+                                          normal_strength=1.1, roughness_base=0.78, cavity_darken=0.55,
+                                          variation_value=0.22, col_lichen=hexc("#9AA284"), **_DRY)
 # Undyed wool and the keth red (the frame's only warm notes, kept at full saturation by lut_ch12_heights).
 MATERIALS["kit_keth_wool"] = stone("woven_panel_albedo.png", "woven_panel_normal.png", (0.2, 0.2), base_triplanar=False,
                                    col_paint=hexc("#D9CFBC"), paint_cover=0.9, normal_strength=0.4, roughness_base=0.95,
@@ -404,9 +404,9 @@ MATERIALS["kit_keth_red"] = stone("woven_panel_albedo.png", "woven_panel_normal.
                                   col_paint=hexc("#B3261E"), paint_cover=0.95, normal_strength=0.4, roughness_base=0.92,
                                   use_moss=False, **_DRY)
 # The seep: drowned glimmer running out of the wall, held light (palette glimmer_held #7FC6D9), steady, not ice.
-STANDARD["kit_keth_seep"] = {"albedo_color": hexc("#7FC6D9", 0.55), "transparency": 1, "cull_mode": 2,
+STANDARD["kit_keth_seep"] = {"albedo_color": hexc("#7FC6D9", 0.35), "transparency": 1, "cull_mode": 2,
                              "roughness": 0.15, "emission_enabled": "true", "emission": hexc("#7FC6D9"),
-                             "emission_energy_multiplier": 1.4}
+                             "emission_energy_multiplier": 0.7}
 # Pale grass grown too long by the seep (two-sided blade cards).
 STANDARD["kit_keth_grass"] = {"albedo_color": hexc("#C6CBA4"), "roughness": 0.9, "cull_mode": 2,
                               "backlight_enabled": "true", "backlight": "Color(0.4, 0.42, 0.3, 1)"}

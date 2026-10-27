@@ -174,9 +174,13 @@ def build_wall(seed: int = 1502) -> list[kc.MeshBuilder]:
                     continue  # the broken coping: a block gone
                 cy = y + ch * 0.5
                 fz = -cy * 0.06  # a slight batter
-                kc.rounded_block(mb, (xa + ln * 0.5, cy, fz - WALL_T * 0.5), (ln * 0.5 - 0.02, ch * 0.5 - 0.02, WALL_T * 0.5),
-                                 lit, rot=kc.rot_z(rng.normal(0.0, 0.015)), radius=0.12, seg=2, noise=noise, disp_m=0.05,
-                                 disp_period_m=0.6, weather=LIT, variation=float(rng.random()))
+                # M3-ENV-717 rework (95be611's render): crisper arrises and a deeper joint, each block set a hair
+                # proud or back of its neighbours, so the courses read as cut stone, not pillows.
+                proud = rng.uniform(-0.05, 0.06)
+                kc.rounded_block(mb, (xa + ln * 0.5, cy, fz - WALL_T * 0.5 + proud), (ln * 0.5 - 0.035,
+                                 ch * 0.5 - 0.035, WALL_T * 0.5), lit, rot=kc.rot_z(rng.normal(0.0, 0.015)),
+                                 radius=0.05, seg=1, noise=noise, disp_m=0.03, disp_period_m=0.6, weather=LIT,
+                                 variation=float(rng.random()))
                 x += ln
             y += ch
             course += 1
@@ -190,7 +194,8 @@ def build_wall(seed: int = 1502) -> list[kc.MeshBuilder]:
 
 def _seeps(mb, rng, *, lod: bool) -> None:
     """The seep: thin sheets of cold light from the joints down the face to the foot (both faces built)."""
-    sheets = ((-3.0, 6.4, 0.42), (3.2, 5.6, 0.36), (-0.6, 3.8, 0.7), (4.8, 2.6, 0.5))
+    # M3-ENV-717 rework: threads, not ribbons (95be611 read them as pale-blue bands).
+    sheets = ((-3.0, 6.4, 0.16), (3.2, 5.6, 0.13), (-0.6, 3.8, 0.22), (4.8, 2.6, 0.18))
     for k, (x, y0, w) in enumerate(sheets):
         rows = 3 if lod else 9
         t = np.linspace(0.0, 1.0, rows)
