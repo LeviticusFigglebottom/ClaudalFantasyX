@@ -33,7 +33,7 @@ Sizes are estimates (about 0.95 MB a minute at q3) until a final is rendered; th
 | 12 | `quellan` | sketch | loop ~150 s | 2.4 MB | 1.34 MB, 125.2 s, −16.02 LUFS |
 | 12 | `cloudloom` | new | loop ~120 s, the open-roofed weaving-hall | 1.9 MB | |
 | 12 | `hesk_bound` / `hesk_summon` | new | stings | 0.3 MB | |
-| 12 | `avalanche_ram` | new | boss, 2 stems (no phases: the second stem is the bellow's rage under 50% HP) | 3.8 MB | |
+| 12 | `avalanche_ram` | new | boss, 2 stems (no phases: the second stem is the bellow's rage under 50% HP) | 3.8 MB | 2 × 1.06 MB, 83.5 s, stack −16.05 LUFS |
 | 13 | `ansedra` | sketch | loop ~150 s | 2.4 MB | 1.65 MB, 152.4 s, −16.01 LUFS |
 | 13 | `sanctum_of_the_level` | new | loop ~120 s, the still mirror | 1.9 MB | |
 | 13 | `lamp_archive` | sketch | loop ~150 s | 2.4 MB | 1.25 MB, 137.3 s, −16.07 LUFS |
@@ -42,7 +42,7 @@ Sizes are estimates (about 0.95 MB a minute at q3) until a final is rendered; th
 | 14 | `lagoon_escape` | new | cue ~2 min, the first ripples; the bells; Merel left behind | 1.9 MB | |
 | 14 | `malcor_venn` | new | boss, 2 stems (phase 1 the still water slows; phase 2 he boards) | 3.8 MB | |
 | 15 | `unlamped` | sketch | loop ~150 s | 2.4 MB | 1.74 MB, 155.3 s, −16.04 LUFS |
-| 15 | `wakefin` | new | boss, 2 stems, in the dark | 3.8 MB | |
+| 15 | `wakefin` | new | boss, 2 stems, in the dark | 3.8 MB | 0.81 + 0.74 MB, 75.3 s, stack −16.09 LUFS |
 | 15 | `kerrid_at_sea` | new | cue ~2.5 min under his telling (a bed for a voice, as `iskarra_vigil`; KERRID_STAIR far below) | 2.4 MB | |
 | 15 | `hollowmere_answers` | new | cue ~60 s: Liss's current-song into the fog, Hollowmere answering (CURRENT_SONG) | 1.0 MB | |
 | 16 | `pale_rim` | sketch | loop ~150 s | 2.4 MB | 1.68 MB, 155.3 s, −16.03 LUFS |
