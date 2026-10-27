@@ -139,9 +139,9 @@
         2000,
         160
       ],
-      "bytes": 43664,
+      "bytes": 98476,
       "lods": {
-        "scrub_clump_a": 848,
+        "scrub_clump_a": 1532,
         "scrub_clump_a-lod1": 24
       }
     },
@@ -150,9 +150,9 @@
         2000,
         160
       ],
-      "bytes": 43664,
+      "bytes": 98476,
       "lods": {
-        "scrub_clump_b": 848,
+        "scrub_clump_b": 1532,
         "scrub_clump_b-lod1": 24
       }
     },
