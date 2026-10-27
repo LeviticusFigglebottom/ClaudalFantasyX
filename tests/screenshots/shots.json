@@ -2904,6 +2904,56 @@
         540
       ],
       "settle_frames": 30
+    },
+    {
+      "id": "asha_clip_bow_palms_flat",
+      "scene": "res://game/levels/_tests/characters/asha/asha_clip_bow_palms_flat.tscn",
+      "camera": "Cameras/Profile",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "rhen_clip_lift_housing",
+      "scene": "res://game/levels/_tests/characters/rhen/rhen_clip_lift_housing.tscn",
+      "camera": "Cameras/ThreeQuarterLeft",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "toma_clip_stack_bowls",
+      "scene": "res://game/levels/_tests/characters/toma/toma_clip_stack_bowls.tscn",
+      "camera": "Cameras/ThreeQuarterLeft",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "ysolde_clip_read_letter",
+      "scene": "res://game/levels/_tests/characters/ysolde/ysolde_clip_read_letter.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "rhen_clip_talk_explain",
+      "scene": "res://game/levels/_tests/characters/rhen/rhen_clip_talk_explain.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
     }
   ]
 }
