@@ -2,8 +2,8 @@
 id: M3-UI-100
 title: Battle HUD for Ch8's set-piece fights (timeline entries, locked/unavailable heroes, intercept floats, the stair meter)
 role: ui
-status: todo
-owner_session: ""
+status: doing
+owner_session: "claude/ui (ui-menus)"
 depends_on: [M3-CMB-01]
 milestone: M3
 request-from: cinematics
