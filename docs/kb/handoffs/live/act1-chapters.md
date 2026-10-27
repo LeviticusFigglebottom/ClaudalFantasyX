@@ -145,6 +145,18 @@ cutscene sequencer (`game/cutscene/**`), `game/flow/**` and the playtest fixes.
   11/0, `act1_cutscene_walks` 1/0, validate_data. Still greybox in Ch9: the landing, the rocks, the bridge, the lake,
   the burner. **@ 2d3ccdf2:** the Iskarra set is env-art's Iskarra (its drop-in scene's 20 pieces; ZoneKitDressing
   `scale_y`); `ch09_corrow_walkable` 5/0 (a test of the pieces), `zone_kit` 8/0, walks 1/0.
+- **MERGE-READY @ 46b2f418: Ch6 has no greybox left** (M3-ENV-1201's pieces: the burning tide-wheel and its light, the
+  fire, the purser's boat, the Level-stone shrine with its rest light, the chalk sign, the hatch). `zone_kit` 8/0
+  (the Ch6 fire-light count now 5), `ch06` 5/0, `brine` 5/0. Requested **M3-ENV-1222** (env-art): Ch4's islet landing
+  pieces and Coilspire's flue gates, niche seal and wright's mark, the last Act I story boxes without a kit piece.
+- **ACT II STARTED: MERGE-READY @ e0358dc3, M4-C10-02 Ch10 greybox** (`ch10/ossa_fen`, `ch10/reedhollow`, from
+  `tools/act1/ch10_greybox.py`): the fen's edge where Pell stops (act1_ch09.md §10), the root-walks, the Drowner's
+  clearing, the way on; Reedhollow's causeway, lagoon ring, houses and shore. `chapters/ch10.json` (the chapter
+  becomes 10; there and back; Pell out of Reedhollow), two flags, `loc/ch10.csv` (imported in project.godot: one
+  translation path appended), `locations.json` rows. `--filter=ch10` 3/0 (thread, walkable), validate_data,
+  test_chapter_flow, test_locations_validate, test_zone_map_pois, test_loc_literals. Requested the beat sheet
+  (M4-C10-01, narrative). Pell isn't a party hero yet (M3-C09-07), so he's not in the formation. Ch9's act break
+  still ends on the end card: switching it to Ch10 is the Lead's call (Act I switches stay empty).
 - **Lead queue (21:23), status:**
   1. Ch9 road capsule: it is **Kerrid** at the milestone (no model yet: M3-CHR-505, characters); so are the two on
      ch06_brine_road (Ysolde, no field body yet: M3-HER-1219; Kerrid). They go when those land; no villager body on a
