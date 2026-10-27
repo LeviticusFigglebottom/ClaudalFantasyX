@@ -734,6 +734,12 @@ SPEC §6.6's teleport network (`ShrineNetwork`, M1-ARC-06: attunement in `Game.s
 
 **Greybox shrines (M3-C07-05).** A greybox zone has layout triggers, not SaveShrine nodes, so ShrineServices (`game/world/save_shrine/shrine_services.gd`, mounted by FieldController next to TownServices) answers a `{"save_shrine": "<network id>"}` payload. For a locations.json `shrines` row, it makes one SaveShrine per id under itself (no position: the zone's trigger is what the player uses) and rests there. The party is healed and given a respawn point, the shrine is attuned, the save menu opens, and the travel list follows. Other keys on the same trigger (a `beat`) still run. An id with no row is ignored with a warning. The layouts' payloads are M3-UI-204 (act1-chapters). Tests: `test_shrine_services.gd`.
 
+**Battle barks (M3-C08-100).** BattleBarks (`game/battle/scene/battle_barks.gd`, a node under the battle HUD that the controller attaches in one line) floats a hero's word over them:
+- skills.json `bark_key` as the skill resolves (Toma's "Hold.", Liss's "Pull!");
+- vowbound.json `call_bark_key` as the Vowbound is called (Asha's "Virel."; over the Vowbound if the caller has already stepped off).
+
+It shows even with damage numbers off, because it is speech. `said` keeps the battle's lines for tests and captures.
+
 ## "Parts look primitive": the pass of 2026-10-27
 
 The human's playtest note, the Lead's item 5. Everything below honours Reduced motion and ends inside its shot's settle frames.

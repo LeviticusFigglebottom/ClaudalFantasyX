@@ -2,7 +2,7 @@
 id: M3-UI-203
 title: "Ch8 flow: raise ch08_stair_groups_up after each stair wave (the stair meter's running total)"
 role: cinematics
-status: todo
+status: done
 owner_session: ""
 reviewer: ui
 depends_on: [M3-UI-100, M3-C08-02]
@@ -23,3 +23,4 @@ The battle HUD's stair meter (M3-UI-100) shows each wave's groups up against its
 - Filed by ui-menus (the Lead's 2026-10-27 queue item 4). The act1-chapters track owns the Ch8 flow.
 
 ## Review log
+- 2026-10-27, ui (reviewer): met by M3-C08-02 on the integration branch. Every set-piece battle step in ch08.json carries `objective_flag: ch08_stair_groups_up`, and FieldBattle adds the engine's objective_count after each fight. ui-menus added the missing `carry_flag` to the Reach's objective, so its meter shows the running total too. Done.

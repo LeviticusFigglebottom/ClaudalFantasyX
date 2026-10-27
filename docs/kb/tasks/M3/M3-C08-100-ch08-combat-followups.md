@@ -2,8 +2,8 @@
 id: M3-C08-100
 title: "Ch8 combat follow-ups: the sailmaker's needle, the set piece's battle barks"
 role: combat
-status: todo
-owner_session: ""
+status: blocked
+owner_session: "ui-menus (claude/ui, session_01KGBUwbYgXe9JS6D8jXw6ZG)"
 depends_on: [M3-C08-02, M3-CMB-01]
 milestone: M3
 request-from: cinematics
@@ -22,5 +22,10 @@ Two things the Ch8 flow (M3-C08-02) sets up but the battle data doesn't have yet
 - The headland's and the spire's fights (`ch08_headland_gulls`, `ch08_headland_crabs`, `ch08_flue_moths`) and their enemies were added by M3-C08-02 with `sim.py` bands; the combat reviewer should look at them:
   - the stormgull fight's `role_answer` is report only, the same logged exception as `ch06_ridge_gulls`;
   - the wallcrab is a high-defence shell (defence 220), so Toma's Shell Breaker is the answer.
+
+- **2026-10-27, ui-menus (owns combat's UI-adjacent work).**
+  - **Battle barks: done.** `BattleBarks` (`game/battle/scene/battle_barks.gd`) is a listen-only view that the controller attaches in one line. It floats a speaker's line as the skill resolves, or as a Vowbound is called. Damage numbers being off doesn't hide it, because it is speech.
+  - **The data:** skills.json `bark_key` on `hold_the_stair` ("Hold.") and `hoist_haul` ("Pull!"), and vowbound.json `call_bark_key` on Virel ("Virel."). Flare Line and Virel himself stay silent. The loc rows are in battle_set_piece.csv; the validator's loc check covers the keys. Tests: `tests/unit/test_battle_barks.gd`.
+  - **The sailmaker's needle: blocked** on the Lead's accessory-slot ruling. There is no accessory slot (see M3-C07-05; the Oruvel Float has the same question). Once it's ruled, add the item, and have `Ch08CoilspireZone._on_niche` give it (cinematics' code).
 
 ## Review log
