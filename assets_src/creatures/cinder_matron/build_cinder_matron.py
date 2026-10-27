@@ -551,14 +551,20 @@ def slag_colour(P: np.ndarray, seed: int) -> np.ndarray:
     return ck.mix(PAL["lacquer_black"], PAL["volcanic_stone"], (0.3 + 0.5 * ck.fbm(P * 5.0, seed))[:, None])
 
 
-def poisson(lo, hi, spacing, rng: np.random.Generator, tries: int = 6000) -> np.ndarray:
-    """Seeds over the box lo..hi no closer than `spacing(p)` (dart throwing, so the cells come out even)."""
+def poisson(lo, hi, spacing, rng: np.random.Generator, tries: int = 6000, mixed: bool = False) -> np.ndarray:
+    """Seeds over the box lo..hi no closer than `spacing(p)` (dart throwing, so the cells come out even). `mixed`
+    throws the widest-spaced darts first and keeps two seeds apart by the mean of their spacings, so a varying
+    `spacing` gives broad plates broken up by runs of small shards, the way cooled slag cracks."""
     lo, hi = np.asarray(lo, dtype=np.float64), np.asarray(hi, dtype=np.float64)
     cand = lo + (hi - lo) * rng.random((tries, 2))
     rad = spacing(cand)
+    if mixed:
+        order = np.argsort(-rad, kind="stable")
+        cand, rad = cand[order], rad[order]
     out: list[int] = []
     for i in range(tries):
-        if not out or np.min(np.linalg.norm(cand[out] - cand[i], axis=1) - rad[out]) >= 0.0:
+        need = 0.5 * (rad[out] + rad[i]) if mixed else rad[out]
+        if not out or np.min(np.linalg.norm(cand[out] - cand[i], axis=1) - need) >= 0.0:
             out.append(i)
     return cand[out]
 
@@ -738,8 +744,18 @@ def crust(rig: ck.Rig) -> ck.Mesh:
         return clip_poly(V, E, np.array([0.0, -1.0 if up else 1.0]),
                          np.array([0.0, HEART[0] + (0.035 if up else -0.035)]), -2)
 
+    def cell_size(Q):  # broad plates over the belly, shards toward the yoke, the belt and every edge of the crust
+        A, Y = Q[:, 0] / rm, Q[:, 1]
+        P, _ = place(Q)
+        belly = ck.smoothstep(1.36, 1.6, Y) * ck.smoothstep(2.3, 1.95, Y)
+        edge = np.maximum(ck.smoothstep(0.6, 0.3, crust_cover(A, Y)), ck.smoothstep(0.4, 0.2, heart_dist(A, Y)))
+        edge = np.maximum(edge, door_mask(A, Y, 0.16).astype(np.float64))
+        big = belly * (1.0 - edge) * (0.55 + 0.45 * ck.smoothstep(0.4, 1.2, np.abs(A)))
+        back = ck.smoothstep(1.6, 2.6, np.abs(A))  # coarser round the back, which battle rarely shows
+        return (0.12 + 0.1 * back + 0.3 * big) * np.exp(0.9 * ck.fbm(P * 1.6, SEED + 66))
+
     rng = np.random.default_rng(SEED + 61)
-    S = poisson(lo, hi, lambda Q: 0.13 + 0.11 * ck.smoothstep(1.0, 2.2, np.abs(Q[:, 0] / rm)), rng)
+    S = poisson(lo, hi, cell_size, rng, mixed=True)
     slag_cells(mesh, S, lo, hi, place, cover, tb, SEED + 62, 0.08, 0.03, 2.0 * math.pi * rm, slit, clear)
 
     P, T = ck.tube(ring_path(WAIST + 0.03, R(WAIST) + 0.06, 36), 0.08, 9, cap_start=False, cap_end=False)  # belt

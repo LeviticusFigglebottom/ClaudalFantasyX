@@ -1,0 +1,124 @@
+{
+  "_about": "Mother Kell, Oruvel's chandler, about 70 (rhen_sallow.md; act_outline Ch1; N-25: a chandler who never learned to swim, not a diver). Short and stout; cropped grey hair; a faded-teal wrap top with rolled elbow sleeves, a faded indigo calf skirt and sash, a wide oil-darkened ochre apron (wicks and shears are scene props). Nearly bare forearms (reach-bands 2/1): she never sailed far. Oil-dark fingertips. Face sliders relative to the MakeHuman donor (ADR 0021). Keys starting with '_' are read by the villager_* modules, not by bb_params. (M3-CHR-03.)",
+  "name": "kell",
+  "height_m": 1.52,
+  "heads_tall": 6.9,
+  "shoulder_width_heads": 1.66,
+  "chest_width_heads": 1.34,
+  "chest_depth_heads": 1.04,
+  "waist_width_heads": 1.34,
+  "hip_width_heads": 1.6,
+  "crotch_height_heads": 3.25,
+  "arm_span_ratio": 1.0,
+  "hand_length_heads": 0.8,
+  "foot_length_ratio": 0.148,
+  "neck_length_heads": 0.34,
+  "neck_width_ratio": 0.56,
+  "head_width_ratio": 0.7,
+  "femininity": 0.95,
+  "muscle": 0.35,
+  "mass": 0.62,
+  "breast": 0.55,
+  "eye_scale": 1.06,
+  "ipd_m": 0.062,
+  "arm_abduction_deg": 47.0,
+  "skin_hex": "#A0694A",
+  "eye_tilt_deg": 0.5,
+  "jaw_width": 1.03,
+  "cheekbone_height": 0.0,
+  "cheekbone_width": 1.05,
+  "chin_size": 0.98,
+  "nose_bridge_width": 1.08,
+  "nose_tip_projection": 0.94,
+  "lip_fullness": 0.72,
+  "lip_close": 0.6,
+  "lip_seal": 0.96,
+  "lip_lower_fullness": 0.7,
+  "mouth_corner_lift": 0.0004,
+  "brow_ridge": 1.0,
+  "donor_mix_african": 0.45,
+  "donor_mix_asian": 0.4,
+  "donor_mix_caucasian": 0.15,
+  "_skin": {
+    "hex": "#A0694A",
+    "age": 0.85,
+    "freckles": 0,
+    "reach_bands": {
+      "L": 2,
+      "R": 1
+    },
+    "ink_opacity": 0.45,
+    "seed": 112,
+    "lip": "#7E4C40",
+    "fingertip_oil": 0.25
+  },
+  "_hair": {
+    "kind": "short",
+    "hairline": "female",
+    "seed": 32,
+    "length_m": [
+      0.022,
+      0.038
+    ],
+    "scalp_cards": [
+      240,
+      190,
+      120
+    ],
+    "hairline_cards": 50,
+    "rise": 0.5,
+    "colour": "#9A948B",
+    "grey": "#AFA99F",
+    "grey_share": 0.7,
+    "underpaint": "#8C867D",
+    "brow": "#6A645C"
+  },
+  "_eyes": {
+    "iris": "#2A1A10"
+  },
+  "_costume": {
+    "top": {
+      "mat": "cloth_c",
+      "hem": "hip",
+      "sleeve": 0.42,
+      "neck_v_m": 0.06
+    },
+    "skirt": {
+      "mat": "cloth_b",
+      "hem": "calf",
+      "folds": 8,
+      "fold_amp": 0.008,
+      "flare": 0.14,
+      "seed": 61,
+      "keep_above_knee_m": 1.0
+    },
+    "apron": {
+      "mat": "cloth_a",
+      "hem": "knee",
+      "half_deg": 58,
+      "seed": 62
+    },
+    "sash": {
+      "mat": "cloth_b",
+      "width_m": 0.08,
+      "turns": 2
+    },
+    "sandals": "leather"
+  },
+  "_tints": {
+    "cloth_a": "#8A6A3A",
+    "cloth_b": "#46557F",
+    "cloth_c": "#6F8F8C",
+    "leather": "#FFFFFF"
+  },
+  "_build": {
+    "shapes": "all",
+    "host_snaps": true,
+    "garment_fit": true
+  },
+  "_persona": {
+    "sway": 0.6,
+    "lean": 5.0,
+    "arms_down": 38.0
+  }
+}

@@ -18,12 +18,13 @@ SKILLS_FILE = "game/data/battle/skills.json"
 SCENE_PREFIX = "res://game/creatures/"
 
 DEFAULT_KEYS = {"idle", "hit", "ko", "loop", "blend_sec", "clip_by_kind", "clip_by_skill", "ko_fade_sec",
-                "stand_in", "phases", "break_parts", "portrait", "contact"}
+                "stand_in", "phases", "break_parts", "portrait", "contact", "hit_variants", "idle_variety"}
 ROW_KEYS = DEFAULT_KEYS | {"scene"}
-STAND_IN_KEYS = {"yaw_deg"}
-PHASE_KEYS = {"clip", "idle", "offset_m", "tilt_deg", "sec", "show", "hide", "hide_after", "clips"}
+STAND_IN_KEYS = {"yaw_deg", "hover"}
+PHASE_KEYS = {"clip", "idle", "offset_m", "tilt_deg", "sec", "show", "hide", "hide_after", "show_after", "clips"}
 PART_KEYS = {"whole", "broken"}
 PORTRAIT_KEYS = {"clip", "clip_time", "yaw_deg", "pitch_deg", "fov_deg", "margin"}
+IDLE_VARIETY_KEYS = {"clip", "every_sec"}
 
 
 def _num(v: object) -> bool:
@@ -71,6 +72,19 @@ def _row_errors(w: str, row: dict, skills: set[str], phase_ids: set[str] | None)
                 errs.append(f"{w}.portrait.{k}: must be a number")
         if _num(por.get("fov_deg")) and not 1.0 <= por["fov_deg"] <= 120.0:
             errs.append(f"{w}.portrait.fov_deg: must be 1..120")
+    hv = row.get("hit_variants", [])
+    if not (isinstance(hv, list) and all(isinstance(c, str) and c for c in hv)):
+        errs.append(f"{w}.hit_variants: must be a list of clip names")
+    iv = row.get("idle_variety", {})
+    if not isinstance(iv, dict):
+        errs.append(f"{w}.idle_variety: must be an object")
+    else:
+        errs += [f"{w}.idle_variety: unknown key '{k}'" for k in sorted(set(iv) - IDLE_VARIETY_KEYS)]
+        if "clip" in iv and not (isinstance(iv["clip"], str) and iv["clip"]):
+            errs.append(f"{w}.idle_variety.clip: must be a clip name")
+        ev = iv.get("every_sec", [1.0, 1.0])
+        if not (isinstance(ev, list) and len(ev) == 2 and all(_num(x) for x in ev) and 0 < ev[0] <= ev[1]):
+            errs.append(f"{w}.idle_variety.every_sec: must be [min, max] seconds, 0 < min <= max")
     phases = row.get("phases", {})
     if not isinstance(phases, dict):
         errs.append(f"{w}.phases: must be an object")
@@ -89,7 +103,7 @@ def _row_errors(w: str, row: dict, skills: set[str], phase_ids: set[str] | None)
         for k in ("offset_m", "tilt_deg"):
             if k in p and not (isinstance(p[k], list) and len(p[k]) == 3 and all(_num(x) for x in p[k])):
                 errs.append(f"{pw}.{k}: must be [x, y, z]")
-        for k in ("show", "hide", "hide_after"):
+        for k in ("show", "hide", "hide_after", "show_after"):
             if k in p and not (isinstance(p[k], list) and all(isinstance(n, str) and n for n in p[k])):
                 errs.append(f"{pw}.{k}: must be a list of node names")
         if "clips" in p and not (isinstance(p["clips"], dict)

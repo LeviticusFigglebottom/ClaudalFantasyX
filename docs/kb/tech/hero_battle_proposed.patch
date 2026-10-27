@@ -1,0 +1,89 @@
+diff --git a/game/battle/scene/fighter_stand_in.gd b/game/battle/scene/fighter_stand_in.gd
+index aec498dd..663e68b3 100644
+--- a/game/battle/scene/fighter_stand_in.gd
++++ b/game/battle/scene/fighter_stand_in.gd
+@@ -176,7 +176,9 @@ func set_ko(ko: bool, sink_m: float, alpha: float) -> void:
+ 	if creature() != null:  # it plays its own KO clip and fade, and does not sink
+ 		creature().set_ko(ko, alpha)
+ 		return
+-	_body.position = _rest - Vector3(0.0, sink_m if ko else 0.0, 0.0)
++	# A model with a KO clip lies on the ground itself (M2-HER-1103): sinking it too puts it through the floor.
++	var sink := sink_m if ko and not BattleClips.has_clip(self, BattleClips.KO) else 0.0
++	_body.position = _rest - Vector3(0.0, sink, 0.0)
+ 	_body.visible = not (ko and alpha <= 0.0)  # faded right out: hidden, so it casts no shadow either
+ 	if _actor != null:
+ 		for m in _surfaces:
+diff --git a/game/data/ui/battle_sandbox.json b/game/data/ui/battle_sandbox.json
+index fc0613df..515dfd19 100644
+--- a/game/data/ui/battle_sandbox.json
++++ b/game/data/ui/battle_sandbox.json
+@@ -16,11 +16,11 @@
+     "shake": {"amplitude_m": 0.05, "sec": 0.24, "steps": 6},
+     "stand_ins": {
+       "rhen": {"shape": "capsule", "color": "#5E9A96", "radius": 0.32, "height": 1.77, "tint": "#5E9A96",
+-               "scene": "res://game/characters/heroes/rhen_battle.tscn", "yaw_deg": -90.0},
++               "scene": "res://game/hero_motion/battle/rhen_battle_actor.tscn", "yaw_deg": -90.0},
+       "asha": {"shape": "capsule", "color": "#3C78A8", "radius": 0.28, "height": 1.63, "tint": "#3C78A8",
+-               "scene": "res://game/characters/heroes/asha_battle.tscn", "yaw_deg": -90.0},
++               "scene": "res://game/hero_motion/battle/asha_battle_actor.tscn", "yaw_deg": -90.0},
+       "toma": {"shape": "capsule", "color": "#2B3A6B", "radius": 0.42, "height": 1.89, "tint": "#5B6FB0",
+-               "scene": "res://game/characters/heroes/toma_battle.tscn", "yaw_deg": -90.0},
++               "scene": "res://game/hero_motion/battle/toma_battle_actor.tscn", "yaw_deg": -90.0},
+       "ysolde": {"shape": "capsule", "color": "#B08A52", "radius": 0.27, "height": 1.66, "tint": "#B08A52"},
+       "reef_crab": {"shape": "box", "color": "#B5523A", "radius": 0.62, "height": 0.62, "tint": "#B5523A"},
+       "lantern_eel": {"shape": "cylinder", "color": "#1C6B78", "radius": 0.24, "height": 2.1, "tint": "#3FA9B5",
+diff --git a/tests/unit/test_battle_choreo.gd b/tests/unit/test_battle_choreo.gd
+index 3680c25e..efd1ffe7 100644
+--- a/tests/unit/test_battle_choreo.gd
++++ b/tests/unit/test_battle_choreo.gd
+@@ -368,7 +368,11 @@ func test_the_party_holds_a_victory_pose_before_the_result() -> void:
+ 	assert_eq(outro.playing, BattleOutro.VICTORY)
+ 	var cfg := outro.cfg(BattleOutro.VICTORY)
+ 	outro.advance(float(cfg["delay_sec"]) + float(cfg["sec"]) * 0.25)
+-	assert_true(_pos(&"rhen").y > _home_pos(&"rhen").y + EPS, "Rhen hops")
++	var rhen := ctl.stage.stand_in(&"rhen")
++	if BattleClips.has_clip(rhen, BattleClips.VICTORY):  # a hero model plays its victory clip in place of the hop
++		assert_eq(StringName(BattleClips.player_of(rhen).current_animation), BattleClips.VICTORY, "Rhen's victory")
++	else:
++		assert_true(_pos(&"rhen").y > _home_pos(&"rhen").y + EPS, "Rhen hops")
+ 	var hold := ctl.stage.outro_hold(0.0)
+ 	assert_between(hold, outro.remaining_sec(), outro.remaining_sec() + 1.0)
+ 	outro.advance(outro.duration(BattleOutro.VICTORY))
+@@ -454,7 +458,9 @@ func test_a_creature_actor_strikes_with_its_own_clip_on_its_own_contact_frame()
+ 	assert_eq(BattleClips.contact_sec(f, BattleClips.ATTACK), _FakeCreature.CONTACT)
+ 	assert_true(BattleClips.play_action(f, &"pinch", &"physical", BattleClips.ATTACK))
+ 	assert_eq(cr.actions, [&"pinch"] as Array[StringName], "the creature plays its own action clip")
+-	assert_eq(BattleClips.contact_sec(ctl.stage.stand_in(&"rhen"), BattleClips.ATTACK), -1.0, "a primitive can't say")
++	var bare := Node3D.new()
++	assert_eq(BattleClips.contact_sec(bare, BattleClips.ATTACK), -1.0, "a primitive can't say")
++	bare.free()
+ 	var plan := choreo.plan_for(_result(&"attack", [_hit(_foe(), 10)]))
+ 	var strike_end := float(plan["strike_end"])
+ 	var late := float(plan["approach_end"]) + 1.2
+diff --git a/tests/unit/test_battle_specials_choreo.gd b/tests/unit/test_battle_specials_choreo.gd
+index 166c822e..99bd4f84 100644
+--- a/tests/unit/test_battle_specials_choreo.gd
++++ b/tests/unit/test_battle_specials_choreo.gd
+@@ -128,7 +128,8 @@ func test_written_light_writes_its_glyph_and_reaches_each_foe_in_turn() -> void:
+ 	var from: Vector3 = plan["to"]
+ 	var dir: Vector3 = plan["dir"]
+ 	var side := Vector3.UP.cross(dir).normalized()
+-	assert_between((_at(&"rhen") - from).dot(side), float(st["trace_m"]) - 0.01, float(st["trace_m"]) + 0.01)
++	if not bool(plan["actor_clip"]):  # a hero model's finisher clip writes it in place of the traced strokes
++		assert_between((_at(&"rhen") - from).dot(side), float(st["trace_m"]) - 0.01, float(st["trace_m"]) + 0.01)
+ 	var stagger := float(st["stagger_sec"])
+ 	choreo.seek(c + stagger * 0.5)
+ 	assert_true(_struck(foes[0]), "the first foe is struck")
+@@ -151,6 +152,12 @@ func test_return_tide_braces_back_then_counters() -> void:
+ 	var c := float(plan["contact"])
+ 	var to: Vector3 = plan["to"]
+ 	var dir: Vector3 = plan["dir"]
++	if bool(plan["actor_clip"]):  # a hero model's finisher clip braces and counters in place of the procedural shape
++		choreo.seek(c)
++		var p := BattleClips.player_of(ctl.stage.stand_in(&"rhen"))
++		assert_eq(StringName(p.current_animation), BattleClips.FINISHER, "the finisher clip plays to its contact")
++		_free()
++		return
+ 	choreo.seek(a + (c - a) * float(st["windup_at"]))
+ 	var braced := _at(&"rhen")
+ 	assert_true((braced - to).dot(dir) < -0.1, "planted and pushed back by the tide")

@@ -155,6 +155,106 @@
       "seams": {
         "max_exposed": 2
       }
+    },
+    "sefir": {
+      "_garments": "act1_npcs.md §1.10: the long hair is a garment (HairBack), so hair passing through the mantle or the shoulders in a head turn shows up in garment_in_body and is fixed by weights, not hidden",
+      "garments": [
+        "Costume",
+        "Mantle",
+        "HairBack"
+      ],
+      "props": [
+        "Crown"
+      ],
+      "braid": null,
+      "seams": {
+        "groups": [
+          [
+            "Body",
+            "Head:skin_head"
+          ],
+          [
+            "Costume"
+          ],
+          [
+            "Mantle"
+          ]
+        ]
+      }
+    },
+    "ysolde": {
+      "garments": [
+        "Costume",
+        "Collar"
+      ],
+      "props": [
+        "Book",
+        "InkGuards",
+        "Pin"
+      ],
+      "braid": null,
+      "seams": {
+        "groups": [
+          [
+            "Body",
+            "Head:skin_head"
+          ],
+          [
+            "Costume"
+          ],
+          [
+            "Collar"
+          ]
+        ],
+        "max_exposed": 4
+      },
+      "_allowances": "Costume 31/6: the trousers and the back robe panel fold into the calf behind the bent knee in the run (85 degrees; under the robe, unseen), and the sleeve's underarm enters the side of the chest by up to 22 mm as the arm hangs (ysolde_clip_reink_shell, ysolde_clip_cast_glyph: covered by the sleeve itself). Body 45/70: with the arm raised forward (book_fan, cast_glyph) the top of the upper arm passes the dropped shoulder's gusset (the sleeve's top, blended to the torso) by up to 45 mm, and elsewhere the side of the chest passes it by up to 33 mm as the arm comes down or across (vigil_book_shut, stand_apart): linear skinning, covered by the sleeve and the arm (ysolde_clip_cast_glyph); the gusset already blends to the torso's weights, and the sleeve reaches in over the shoulder top and the bodice holds the strap's height over the front and back of the shoulder cap with its own gusset toward the arm (no skin shows between the bodice and the sleeve). max_exposed 4: four upper-arm boundary vertices at the armpit, inside the sleeve's mouth, open by up to 15 mm in talk and cast_glyph. Everything else is at the defaults: no limb, foot or prop penetration (the book, the guards and the pin at 0), welded seams 0.",
+      "penetration": {
+        "limits_mm": {
+          "Costume": 31.0,
+          "Body": 45.0
+        },
+        "limits_count": {
+          "Costume": 6,
+          "Body": 70
+        }
+      }
+    },
+    "tavi": {
+      "_villager": "M3-CHR-03: a villager build (assets/characters/villagers/tavi/tavi.glb, clips from villager_clips.py). No props in a villager GLB: the woven float is a scene prop on a BoneAttachment3D.",
+      "villager": true,
+      "_allowances": "M3-CHR-03 ratchets (garment_fit build: the top rides the torso only, armholes 11.5 cm below the shoulder). Costume 30/6: the swimmer's broad lats take the hanging upper arm into the top's side under the armpit (linear skinning; worst talk@42, the arm nearly at rest); viewed in a talk@2.8 s Front frame and villager_tavi_idle: the arm reads in front of the top's edge, no cloth shows through. Body 67/1: one armhole-edge vertex of the upper arm passes the top's edge in the walk's arm swing (walk@0), hidden under the arm in a ThreeQuarter frame. max_exposed 2: two back-strap boundary vertices at rest, 5 mm from the top's edge (unchanged by a 12, 20 or 30 mm cover margin).",
+      "penetration": {
+        "limits_mm": {
+          "Costume": 30.0,
+          "Body": 67.0
+        },
+        "limits_count": {
+          "Costume": 6,
+          "Body": 1
+        }
+      },
+      "seams": {
+        "max_exposed": 2
+      }
+    },
+    "kell": {
+      "_villager": "M3-CHR-03: a villager build (assets/characters/villagers/kell/kell.glb, clips from villager_clips.py). The wick, wick bundle and shears are scene props (assets/characters/props/wick/) on BoneAttachment3Ds, not in the GLB.",
+      "villager": true,
+      "_allowances": "M3-CHR-03 ratchets (garment_fit build; the knees, shins and thighs stay under the calf skirt, keep_above_knee_m 1.0, which took the walk's exposed thigh edge from 110 mm to 0). Costume 32/6: her stout torso is as wide as her shoulders, so the hanging upper arm sinks into the top's side (idle, haggle_laugh; arms_down 34 instead of 38 did not change it); viewed in haggle_laugh@1.6 s Front and villager_kell_idle: the sleeve covers it. Body 5/2: two shoulder vertices pass the top as the arm lifts for the counter slap (haggle_laugh@4). max_exposed 6: the shoulder's hidden-face edge under the sleeve opens up to 4.6 mm in the walk's arm swing (walk@15, viewed in a ThreeQuarter frame: inside the sleeve).",
+      "penetration": {
+        "limits_mm": {
+          "Costume": 32.0,
+          "Body": 5.0
+        },
+        "limits_count": {
+          "Costume": 6,
+          "Body": 2
+        }
+      },
+      "seams": {
+        "max_exposed": 6
+      }
     }
   }
 }

@@ -2,8 +2,26 @@ class_name HudLayout
 extends RefCounted
 ## Battle HUD metrics from game/data/ui/battle_hud.json (docs/kb/art/ui.md §6). Every UI number
 ## lives there; components read one section each: HudLayout.section(&"timeline").
+##
+## Rects are at the 1920x1080 reference (UiFrame.reference_size()). A section's optional "pin"
+## names the screen edge or corner it keeps its margin to when the window is wider or taller than
+## 16:9 (M2-UI-29): "top_left" (the default), "top", "top_right", "left", "center", "right",
+## "bottom_left", "bottom", "bottom_right". "top" keeps the top margin and the horizontal centre.
 
 const DATA_PATH := "res://game/data/ui/battle_hud.json"
+## Anchor fractions (x, y) per pin.
+const PINS := {
+	"top_left": Vector2(0.0, 0.0),
+	"top": Vector2(0.5, 0.0),
+	"top_right": Vector2(1.0, 0.0),
+	"left": Vector2(0.0, 0.5),
+	"center": Vector2(0.5, 0.5),
+	"right": Vector2(1.0, 0.5),
+	"bottom_left": Vector2(0.0, 1.0),
+	"bottom": Vector2(0.5, 1.0),
+	"bottom_right": Vector2(1.0, 1.0),
+}
+const DEFAULT_PIN := "top_left"
 
 static var _cache: Dictionary = {}
 
@@ -27,12 +45,48 @@ static func rect_of(sec: Dictionary) -> Rect2:
 	return Rect2(float(r[0]), float(r[1]), float(r[2]), float(r[3]))
 
 
-## Places `c` at its section's rect (top-left anchored, 1920x1080 reference coordinates).
+## The anchor fractions of `sec`'s pin (DEFAULT_PIN when it names none).
+static func pin_of(sec: Dictionary) -> Vector2:
+	var p := str(sec.get("pin", DEFAULT_PIN))
+	if not PINS.has(p):
+		push_error("HudLayout: unknown pin '%s'" % p)
+		p = DEFAULT_PIN
+	return PINS[p] as Vector2
+
+
+## Places `c` at its section's rect (1920x1080 reference coordinates), anchored to its pin: in a
+## parent larger than the reference it keeps its margin to that edge (or stays centred on it).
+## A Control grown past its rect by its content grows away from the pinned edge.
 static func place(c: Control, sec: Dictionary) -> void:
+	place_rect(c, rect_of(sec), pin_of(sec))
+
+
+## Places `c` at `r` (reference coordinates) anchored at the fractions `pin` (PINS values).
+static func place_rect(c: Control, r: Rect2, pin: Vector2) -> void:
+	var shift := UiFrame.reference_size() * pin
+	c.anchor_left = pin.x
+	c.anchor_right = pin.x
+	c.anchor_top = pin.y
+	c.anchor_bottom = pin.y
+	c.offset_left = r.position.x - shift.x
+	c.offset_right = r.end.x - shift.x
+	c.offset_top = r.position.y - shift.y
+	c.offset_bottom = r.end.y - shift.y
+	c.grow_horizontal = _grow(pin.x)
+	c.grow_vertical = _grow(pin.y)
+
+
+## Where `sec`'s rect lands in a parent of `parent_size` (place() puts it there), for code that
+## positions or draws by hand.
+static func pinned_rect(sec: Dictionary, parent_size: Vector2) -> Rect2:
 	var r := rect_of(sec)
-	c.set_anchors_preset(Control.PRESET_TOP_LEFT)
-	c.position = r.position
-	c.size = r.size
+	return Rect2(r.position + (parent_size - UiFrame.reference_size()) * pin_of(sec), r.size)
+
+
+## Makes `c` a reference-sized frame (1920x1080) anchored at `pin`: children at reference
+## coordinates keep their margins to that corner, as place() does for one rect.
+static func place_frame(c: Control, pin: String) -> void:
+	place_rect(c, Rect2(Vector2.ZERO, UiFrame.reference_size()), PINS.get(pin, PINS[DEFAULT_PIN]) as Vector2)
 
 
 static func num(sec: Dictionary, key: String) -> float:
@@ -40,3 +94,34 @@ static func num(sec: Dictionary, key: String) -> float:
 		push_error("HudLayout: missing metric '%s'" % key)
 		return 0.0
 	return float(sec[key])
+
+
+static func _grow(fraction: float) -> Control.GrowDirection:
+	if is_zero_approx(fraction):
+		return Control.GROW_DIRECTION_END
+	if is_equal_approx(fraction, 1.0):
+		return Control.GROW_DIRECTION_BEGIN
+	return Control.GROW_DIRECTION_BOTH
+
+
+## M2-UI-28 (localisation readiness): makes `l`, a help or hint line sitting at the foot of its
+## panel, wrap onto as many lines as its text needs and grow upward from that foot, so a longer
+## language or a larger text size never runs it past the panel's side. A line that fits looks as
+## it did (same rect, same alignment); only a longer one takes more lines, above, and a shorter
+## text after it gives them back (a grown Control never shrinks on its own). Call it after
+## placing `l`; returns `l`.
+static func wrap_upward(l: Label) -> Label:
+	l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	l.grow_vertical = Control.GROW_DIRECTION_BEGIN
+	var h := l.size.y
+	var foot := l.position.y + h
+	var refit := func() -> void:
+		var want := maxf(h, l.get_combined_minimum_size().y)
+		if l.size.y != want:
+			l.size = Vector2(l.size.x, want)
+		if l.position.y != foot - l.size.y:
+			l.position.y = foot - l.size.y
+	l.minimum_size_changed.connect(refit)
+	# A hidden label skips its minimum-size update, so a text set while hidden refits on its draw.
+	l.draw.connect(refit, CONNECT_DEFERRED)
+	return l

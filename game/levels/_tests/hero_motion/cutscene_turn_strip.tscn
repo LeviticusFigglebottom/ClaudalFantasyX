@@ -1,0 +1,24 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://game/levels/_tests/hero_motion/cutscene_turn_strip.gd" id="strip"]
+[ext_resource type="PackedScene" path="res://game/levels/_tests/characters/asha/asha_stage.tscn" id="stage"]
+
+[node name="CutsceneTurnStrip" type="Node3D" node_paths=PackedStringArray("stage")]
+script = ExtResource("strip")
+stage = NodePath("Stage")
+frames = 5
+spacing_m = 1.0
+start_yaw_deg = -60.0
+turn_deg = 120.0
+turn_ease = -2.0
+turn_min_sec = 0.25
+turn_max_sec = 0.45
+
+[node name="Stage" parent="." instance=ExtResource("stage")]
+
+[node name="Camera" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.996195, 0.0871557, 0, -0.0871557, 0.996195, 0, 1.25, 5.0)
+projection = 1
+size = 2.15
+near = 0.05
+current = true

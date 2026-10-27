@@ -90,6 +90,41 @@ func test_audio_page_with_each_device() -> void:
 	_done()
 
 
+## M2-AUD-08: the menu sounds (UiAudio over ui_sfx.json) play a cursor tick on each volume step, so the player
+## hears the new level, and on moving between rows.
+func test_a_volume_step_plays_a_tick() -> void:
+	var played: Array[StringName] = []
+	var ui := UiAudio.new(AudioData.table(AudioData.UI_SFX))
+	ui.player = func(id: StringName) -> void: played.append(id)
+	_add(ui)
+	var hub := _hub(s)
+	hub.handle_input(_ev(&"ui_down"))
+	hub.handle_input(_ev(&"ui_accept"))
+	var page := hub.page as AudioMenu
+	assert_true(page != null and ui.wants(page), "the Audio page has a sound hook")
+	ui.watch(page)
+	ui.step()
+	played.clear()
+	page.handle_input(_ev(&"ui_left"))
+	ui.step()
+	assert_eq(played, [&"ui_cursor"] as Array[StringName], "a step down ticks once")
+	played.clear()
+	ui.step()
+	assert_eq(played.size(), 0, "nothing more without a change")
+	page.handle_input(_ev(&"ui_down"))
+	ui.step()
+	assert_eq(played, [&"ui_cursor"] as Array[StringName], "a new row ticks")
+	assert_true(ui.hooks.has("GraphicsMenu") and ui.hooks.has("SettingsPage"), "Graphics keeps its own row")
+	_done()
+
+
+func _ev(action: StringName) -> InputEventAction:
+	var ev := InputEventAction.new()
+	ev.action = action
+	ev.pressed = true
+	return ev
+
+
 func _hub(with: UiSettings) -> SettingsMenu:
 	var hub := SettingsMenu.new()
 	hub.ui_settings = with

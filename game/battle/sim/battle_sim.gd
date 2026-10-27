@@ -7,9 +7,12 @@ extends RefCounted
 
 ## naive_swell (M2-NIT-03) is report only: naive plus the Swell row (balance_targets.md).
 ## flood_call (M2-FP-17): naive_swell that calls its Vowbound when a field rises and leaves it out.
+## ward_guard (M3-CMB-01): naive that guards a set piece's ward first (SimWardGuard).
 const POLICY_NAMES: Array[StringName] = [
-	&"naive", &"naive_swell", &"lowest_hp", &"role_answer", &"smart", &"flood_call"
+	&"naive", &"naive_swell", &"lowest_hp", &"role_answer", &"smart", &"flood_call", &"ward_guard"
 ]
+## Outcomes counted as a win: a set piece's scripted way out is the Reach survived (M3-CMB-01).
+const WIN_OUTCOMES: Array[String] = ["victory", "scripted_escape"]
 const CONFIG_PATH := "res://game/data/battle/sim_policies.json"
 
 var db: BattleDB
@@ -37,6 +40,8 @@ func make_policy(policy: StringName) -> SimPolicy:
 			p = SimPolicyNaiveSwell.new()
 		&"flood_call":
 			p = SimPolicyFloodCall.new()
+		&"ward_guard":
+			p = SimPolicyWardGuard.new()
 		&"lowest_hp":
 			p = SimPolicyLowestHp.new()
 		&"role_answer":
@@ -252,7 +257,7 @@ static func summarize(runs: Array[Dictionary]) -> Dictionary:
 	var lume_total := 0
 	var swells_total := 0
 	for r in runs:
-		if r["outcome"] == "victory":
+		if r["outcome"] in WIN_OUTCOMES:
 			wins += 1
 		elif r["outcome"] == "timeout":
 			timeouts += 1

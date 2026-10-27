@@ -910,6 +910,142 @@
       "p90_turns_max": 70,
       "loadout": "ch06_inquisitor",
       "swell": "good"
+    },
+    {
+      "id": "ch08_stair_hold_1",
+      "chapter": "Ch8 set piece, Wave 1 'Hold': two Tide Crawlers and the Surge; 3 groups up (Toma holds the stair)",
+      "kind": "set_piece",
+      "encounter": "ch08_stair_hold_1",
+      "active": [
+        "toma",
+        "ysolde",
+        "liss"
+      ],
+      "reserve": [
+        "rhen",
+        "asha"
+      ],
+      "bands": {
+        "naive": [
+          10,
+          60
+        ],
+        "naive_swell": null,
+        "role_answer": [
+          85,
+          95
+        ],
+        "smart": [
+          97,
+          100
+        ],
+        "ward_guard": null
+      },
+      "p90_turns_max": 100,
+      "loadout": "ch08_seawall",
+      "swell": "good"
+    },
+    {
+      "id": "ch08_stair_hold_2",
+      "chapter": "Ch8 set piece, Wave 2 'The Rope': a Tide Crawler, two Squall Wings and the Surge; 4 groups up (Liss hauls)",
+      "kind": "set_piece",
+      "encounter": "ch08_stair_hold_2",
+      "active": [
+        "toma",
+        "rhen",
+        "liss"
+      ],
+      "reserve": [
+        "asha",
+        "ysolde"
+      ],
+      "bands": {
+        "naive": [
+          10,
+          60
+        ],
+        "naive_swell": null,
+        "role_answer": [
+          85,
+          95
+        ],
+        "smart": [
+          97,
+          100
+        ],
+        "ward_guard": null
+      },
+      "p90_turns_max": 100,
+      "loadout": "ch08_seawall",
+      "swell": "good"
+    },
+    {
+      "id": "ch08_stair_hold_3",
+      "chapter": "Ch8 set piece, Wave 3 'The Last of the Low Town': crawlers, a wing, the rooted Wall Polyp, the Surge and Pell; 4 groups up",
+      "kind": "set_piece",
+      "encounter": "ch08_stair_hold_3",
+      "active": [
+        "toma",
+        "liss",
+        "ysolde"
+      ],
+      "reserve": [
+        "rhen",
+        "asha"
+      ],
+      "bands": {
+        "naive": [
+          10,
+          60
+        ],
+        "naive_swell": null,
+        "role_answer": [
+          85,
+          95
+        ],
+        "smart": [
+          97,
+          100
+        ],
+        "ward_guard": null
+      },
+      "p90_turns_max": 100,
+      "loadout": "ch08_seawall",
+      "swell": "good"
+    },
+    {
+      "id": "ch08_undertows_reach",
+      "chapter": "Ch8 boss: the Undertow's Reach (survived, not beaten: scripted_escape counts as the win)",
+      "kind": "set_piece",
+      "encounter": "undertows_reach",
+      "active": [
+        "toma",
+        "asha",
+        "liss"
+      ],
+      "reserve": [
+        "rhen",
+        "ysolde"
+      ],
+      "bands": {
+        "naive": [
+          0,
+          10
+        ],
+        "naive_swell": null,
+        "role_answer": [
+          75,
+          85
+        ],
+        "smart": [
+          75,
+          95
+        ],
+        "ward_guard": null
+      },
+      "p90_turns_max": 90,
+      "loadout": "ch08_seawall",
+      "swell": "good"
     }
   ]
 }

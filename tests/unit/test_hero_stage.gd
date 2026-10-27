@@ -4,11 +4,15 @@ extends TestCase
 ## resolves through Rhen's pose table (his crooked smile: the right corner higher, the right dimple).
 ## M2-CHR-02: the same stage serving Toma (his smile read through the cheeks and lids; the beard cards
 ## in the Head share its blendshapes).
+## M3-CHR-01: the same stage serving Ysolde (her rest brow on every pose; the book fans open on its
+## blend shape in cast_glyph).
 
 const RHEN_STAGE := "res://game/levels/_tests/characters/rhen/rhen_stage.tscn"
 const RHEN_SMILE := "res://game/levels/_tests/characters/rhen/rhen_face_smile.tscn"
 const TOMA_STAGE := "res://game/levels/_tests/characters/toma/toma_stage.tscn"
 const TOMA_SMILE := "res://game/levels/_tests/characters/toma/toma_face_smile.tscn"
+const YSOLDE_STAGE := "res://game/levels/_tests/characters/ysolde/ysolde_stage.tscn"
+const YSOLDE_CAST := "res://game/levels/_tests/characters/ysolde/ysolde_clip_cast_glyph.tscn"
 
 
 func test_rhen_stage_names_the_character_and_assigns_every_material() -> void:
@@ -92,6 +96,66 @@ func test_toma_smile_reads_through_cheeks_and_lids() -> void:
 		assert_between(float(weights["mouth_smile_L"]), 0.59, 0.61, "symmetric smile")
 		assert_between(float(weights["mouth_smile_R"]), 0.59, 0.61, "symmetric smile")
 	stage.free()
+
+
+func test_ysolde_stage_assigns_every_material_and_keeps_her_rest_brow() -> void:
+	var stage := (load(YSOLDE_STAGE) as PackedScene).instantiate() as AshaStage
+	_host().add_child(stage)
+	var ysolde := stage.find_child("Ysolde", true, false)
+	assert_true(ysolde != null, "the character is named after the stage's character_name")
+	var missing: Array[String] = []
+	var names := {}
+	var weights := {}
+	for mi: MeshInstance3D in _meshes(ysolde):
+		for s: int in mi.mesh.get_surface_count():
+			var src := mi.mesh.surface_get_material(s)
+			if src == null:
+				continue
+			names[src.resource_name] = true
+			if not stage.materials.has(src.resource_name):
+				missing.append(src.resource_name)
+		var mesh := mi.mesh as ArrayMesh
+		if mesh != null and mi.name == &"Head":
+			for i: int in mesh.get_blend_shape_count():
+				weights[String(mesh.get_blend_shape_name(i))] = mi.get_blend_shape_value(i)
+	assert_eq(missing, [] as Array[String], "every glTF material has a hero material")
+	for m: String in ["hair", "hair_grey", "hair_streak", "cloth", "props", "silver", "gold"]:
+		assert_true(names.has(m), m)
+	assert_true(weights.has("brow_outer_up_L"), "the head has the shared shapes")
+	if weights.has("brow_outer_up_L"):
+		assert_between(float(weights["brow_outer_up_L"]), 0.07, 0.09, "the left brow sits higher at rest")
+		assert_between(float(weights["brow_outer_up_R"]), -0.01, 0.01, "the right brow at rest")
+		assert_between(float(weights["mouth_press"]), 0.09, 0.11, "the composed face presses the mouth")
+	stage.free()
+
+
+func test_ysolde_cast_glyph_holds_the_book_open() -> void:
+	var stage := (load(YSOLDE_CAST) as PackedScene).instantiate() as AshaStage
+	_host().add_child(stage)
+	var book: MeshInstance3D = null
+	for mi: MeshInstance3D in _meshes(stage):
+		if mi.name == &"Book":
+			book = mi
+	assert_true(book != null, "the book is a mesh of its own")
+	if book != null:
+		var idx: int = book.find_blend_shape_by_name(&"book_fan")
+		assert_true(idx >= 0, "the book has its book_fan shape")
+		if idx >= 0:
+			assert_between(book.get_blend_shape_value(idx), 0.99, 1.01, "fanned open while the glyph is traced")
+	stage.free()
+
+
+## M3-CHR-01: Ysolde's battle actor (her LOD1) shares her clips, and its book keeps the shape book_fan keys.
+func test_ysolde_battle_actor_carries_her_clips_and_book() -> void:
+	var node := (load("res://game/characters/heroes/ysolde_battle.tscn") as PackedScene).instantiate()
+	var ap := node.find_child("AnimationPlayer", true, false) as AnimationPlayer
+	assert_true(ap != null, "ysolde battle actor has the clips")
+	if ap != null:
+		for clip: StringName in [&"idle", &"book_fan", &"cast_glyph"]:
+			assert_true(ap.has_animation(clip), String(clip))
+	var book := node.find_child("Book", true, false) as MeshInstance3D
+	assert_true(book != null and book.find_blend_shape_by_name(&"book_fan") >= 0, "the LOD1 book can fan open")
+	node.free()
 
 
 func _meshes(root: Node) -> Array[MeshInstance3D]:

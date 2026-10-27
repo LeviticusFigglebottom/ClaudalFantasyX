@@ -11,19 +11,49 @@ UI track (cloud session session_01NyuYPSZn7o7gYirTvz4zjs), branch `claude/ui`, s
 6. (Found on claude/characters) **M2-UI-07**, the hero actor hook: **hook done and pushed (08c872c)**. It is **blocked** on M2-CHR-06's scenes reaching the integration branch; after that it needs three `"scene"` lines in battle_sandbox.json and shot re-approval.
 
 ## Now (Lead queue of 15:13 and 15:46)
-- **Lead queue of 17:40 (items 1–7):**
-  1. **Lip sync on the reveal timing: done, on local branch `ui/lipsync`** (commit 038bf8bc, on lead/gate-big7 plus M2-UI-27). It can't go to claude/ui until big7 lands, because `lip_sync.gd` is only on the gate.
-     - `LipSync.start(..., reveal_times)` uses `starts_for`; `CutsceneFace.say` passes the times on; `CutsceneSequencer._line` passes `overlay.box.reveal_times()`.
-     - **Test:** the mouth is near rest mid-comma.
-     - **Next step when big7 is on integration:** merge integration into claude/ui, then `git cherry-pick 038bf8bc` (a patch copy is in the scratchpad's `ui/lipsync-patch/`).
-  2. **M2-UI-07:** waits for big7.
-  3. **Pseudo-localisation (M2-UI-28):** worktree agent, in progress.
-  4. **Resolution and aspect audit (M2-UI-29):** worktree agent, in progress.
-  5. **Subtitles (M2-UI-30): review.** The box follows the text size with a backing and gold names.
-     - The colour-vision check found no four palette colours that stay apart, so names are not colour-coded per hero.
-     - This covers part of M2-ARC-06/07 from UI code.
-  6. **Act I area maps and objectives (M3-UI-04):** worktree agent, in progress.
-  7. **The Reefball HUD:** waits for big8.
+- **Lead queue of 17:40 (items 1–7), status at 20:45:**
+  1. **Lip sync on reveal times (M2-CHR-10 UI notes): done** and on claude/ui (cherry-picked after the big7 merge). The mouth rests through a comma pause; test `test_the_mouth_rests_while_the_reveal_lingers_at_a_comma`.
+  2. **M2-UI-07: review** (reviewer character). Heroes are their battle actor scenes. 27 battle shots were re-approved after viewing; two captures were pixel-identical. Two tests updated, including one line in the Creatures track's `test_creature_actor.gd` (see the task file).
+  3. **Pseudo-localisation (M2-UI-28): review**, merged.
+     - `--pseudo-loc`, `HYMN_PSEUDO_LOC=1` or F10 in the debug overlay.
+     - `tests/unit/test_pseudo_loc_screens.gd` walks every screen at 100 % and 130 %.
+     - Filed **M2-MNU-11** (Menus: Status and Customize overflow at 130 %) and **M2-FP-29** (cutscene choices should follow the text size).
+  4. **Resolution and aspect audit (M2-UI-29): review**, merged.
+     - `UiFrame.centre` for menus and HUD `"pin"`s.
+     - New shots battle_hud_/field_menu_ 16x10 and 21x9.
+     - Filed **M2-ARC-09** (the dialogue box at 21:9 is 2260 px wide).
+     - Merge note: the Swell hint and pause help both shrink toward 100 % (M2-UI-29) and then wrap upward (M2-UI-28).
+  5. **Subtitles (M2-UI-30): review.**
+  6. **Act I maps and objectives (M3-UI-04): review**, merged.
+  7. **Reefball HUD (M3-UI-01): waits for big8.**
+- **Cross-track gap, for the Lead and Audio:** after big7, `validate_data` has 14 errors and `test_voice_audio` fails. voices.json has no rows for m2-slice's new speakers (boatman, crowd, fenn, ferryman, ferrymaster, garo, hobb, ione, marra, poolkeeper, stillguard, tavi, tender, townsfolk). claude/audio already has them; the gap closes when audio reaches integration. The Menus track has told Audio as well.
+- **Merge note:** after merging claude/ui, run `godot --import`; there are new class_names (UiFrame, TextFitProbe, PseudoLoc).
+- **MERGE-READY @ 62d38cad** (handoff and live-log commits since are docs only):
+  - **Items:**
+    - M2-UI-07 hero actor scenes, with the KO-clip no-sink fix from hero-integration;
+    - M2-UI-28 pseudo-loc;
+    - M2-UI-29 aspect audit;
+    - M2-UI-30 subtitles;
+    - M3-UI-04 Act I maps;
+    - M2-AUD-08 value-step tick;
+    - M2-UI-26 bestiary creature portrait;
+    - M3-C05-07 Matron Crust cues;
+    - M3-C09-05 Ch9 HoldPrompt / ActCard / CharacterNames;
+    - the lip sync on reveal times.
+  - **Requests filed:** M2-MNU-11, M2-FP-29, M2-ARC-09, M3-CRE-201, M3-C09-201.
+  - **Checks run:**
+    - gdlint and gdformat are clean;
+    - `taskboard --check` is OK;
+    - `validate_data` has only the 14 known voices errors;
+    - the full Godot suite is 2167 run, 1 failed: `test_voice_audio`, the same voices gap.
+    - **Shots:** the 31 battle shots were captured twice, pixel-identical, and 27 re-approved after viewing. The agents approved bestiary_menu, cutscene_hold_prompt, cutscene_act_card and the four aspect shots; I viewed them after merging.
+  - **Checks skipped:** the full screenshot manifest (the Lead runs it), Blender (no Blender sources touched), and coverage (no core `game/battle/` or `game/progression/` code).
+  - **After merging:** run `godot --import` for the new class_names.
+  - **Next step:** the hero-integration stand_ins repoint, once claude/hero-integration is on integration.
+- **Id blocks (Lead, 21:00):** this track's new task ids are 200–299 (any prefix, e.g. M2-UI-210), new ADRs 0110–0119, and handoffs are named `<date>-<role>-ui-<n>.md`.
+- **Since 20:45:**
+  - **M2-AUD-08: review.** It is M3-UI-02's Audio page plus a `SettingsPage` sound hook in ui_sfx.json, so each value step ticks.
+  - **Claimed (fe4f2bd0):** M2-UI-26 (the bestiary creature portrait; not the input parity task, which shares the id), M3-C05-07 (the Matron's Crust hook) and M3-C09-05 (Ch9 UI). Two worktree agents are on them.
 - **17:20:** claude/ui fast-forwarded to claude/menus @ 6f192c17. That includes everything above, the Menus track's Memories gallery, m2-slice d034c31d and the integration branch. The Menus track's full suite there: 1913 run, 0 failed.
   - **Queue:** all UI items are done or in review.
   - **Blocked:** M2-UI-07 (M2-CHR-06 is not on integration yet) and M3-UI-01 (no Reefball engine). **Lead: please queue more.**
@@ -115,8 +145,8 @@ UI track (cloud session session_01NyuYPSZn7o7gYirTvz4zjs), branch `claude/ui`, s
   - **M3-UI-01 (Reefball HUD):** no Reefball engine on any branch yet.
 
 ## Exact next step
-- Merge the three agent branches as they report (field-menu parity, battle/dialogue parity, codex). Run the full Godot suite in the background, then write the MERGE-READY line.
-- M2-UI-07 when claude/characters is on integration (Lead batch big7).
+- When big8 (Reefball) lands on integration, merge it and do M3-UI-01, the Reefball HUD.
+- Until then, the queue is empty apart from big8. Pick M3 UI work from `python3 tools/taskboard.py --role ui`.
 
 ## Un-pushed state
 - None.
