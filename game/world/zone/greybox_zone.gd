@@ -38,6 +38,8 @@ var field_camera: Camera3D
 var stage: CutsceneStage
 var story: ZoneStory
 var sun: DirectionalLight3D
+## The final zone scene a layout's "dressing" instanced (M2-FP-108); null for a pure greybox.
+var dressing: Node3D
 var encounters: FieldEncounters
 var layout: Dictionary = {}
 var defaults: Dictionary = {}
@@ -61,6 +63,7 @@ func build() -> void:
 	_built = true
 	defaults = read_json(DEFAULTS_PATH)
 	layout = read_json(layout_path) if layout_path != "" else {}
+	_build_dressing()
 	_build_lighting()
 	_build_blocks()
 	var spawns: Dictionary = (layout.get("spawns", {}) as Dictionary).duplicate()
@@ -146,7 +149,28 @@ static func read_json(path: String) -> Dictionary:
 	return parsed as Dictionary
 
 
+## M2-FP-108: a layout "dressing" {scene, adopt} instances a final zone scene (env-art's route: its own sky,
+## sun and sea) and dresses it here, off the tree, through the adopt script's static adopt(dresser), whose
+## dresser then skips dressing again in _ready. The greybox lighting is not built over it.
+func _build_dressing() -> void:
+	var spec: Dictionary = layout.get("dressing", {})
+	var packed := load(str(spec.get("scene", ""))) as PackedScene if spec.has("scene") else null
+	if packed == null:
+		return
+	dressing = packed.instantiate() as Node3D
+	dressing.name = "Dressing"
+	add_child(dressing)
+	var dresser := dressing.get_node_or_null(^"Dresser")
+	var adopt := load(str(spec.get("adopt", ""))) as Script if spec.has("adopt") else null
+	if dresser != null and adopt != null:
+		var adopted: Node = adopt.call(&"adopt", dresser)
+		adopted.call(&"dress")
+	sun = dressing.get_node_or_null(^"Sun") as DirectionalLight3D
+
+
 func _build_lighting() -> void:
+	if dressing != null:
+		return
 	var s: Dictionary = _merged("sun")
 	sun = DirectionalLight3D.new()
 	sun.name = "Sun"
@@ -192,11 +216,12 @@ func _build_blocks() -> void:
 		var body: Node3D = StaticBody3D.new() if bool(b.get("solid", true)) else Node3D.new()
 		body.name = str(b.get("id", "Block"))
 		body.position = _vec3(b.get("pos", [0, 0, 0]))
-		body.rotation_degrees.y = float(b.get("yaw", 0.0))
-		var mi := MeshInstance3D.new()
-		mi.name = "Mesh"
-		mi.mesh = mesh
-		body.add_child(mi)
+		body.rotation_degrees = Vector3(float(b.get("pitch", 0.0)), float(b.get("yaw", 0.0)), 0.0)
+		if bool(b.get("visible", true)):  # M2-FP-108: false = collision only, under a dressing
+			var mi := MeshInstance3D.new()
+			mi.name = "Mesh"
+			mi.mesh = mesh
+			body.add_child(mi)
 		if body is StaticBody3D:
 			var shape := BoxShape3D.new()
 			shape.size = size
