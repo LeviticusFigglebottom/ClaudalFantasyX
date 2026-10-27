@@ -70,10 +70,10 @@ RENDER-REQUEST @ 99623a0c: portraits:hullgnaw,scuttler,squall_wing,tide_crawler,
 ### Queue from the Lead (2026-10-27 17:19): ui-menus also owns combat's, progression's and systems' UI-adjacent work
 | # | Item | State |
 |---|---|---|
-| 1 | M3-RBL-201 Reefball preview fields (engine + HUD) | doing |
-| 2 | M2-MNU-306 Formation role word (characters.json role_key, loc, validator, Formation) | queued |
-| 3 | Shrine teleport list (visited shrines, confirm, fade) | queued |
-| 4 | M3-UI-100 running total (`ch08_stair_groups_up` flag + request to act1-chapters) | queued |
+| 1 | M3-RBL-201 Reefball preview fields (engine + HUD) | **done** (fe4faefa): against, fetches, refused_actions(), stakes_key; reefball 70/0, pseudo 22/0, aspect 14/0, parity 3/0; coverage running |
+| 2 | M2-MNU-306 Formation role word (characters.json role_key, loc, validator, Formation) | **done** (89ff0d23): six role words, validator rule + test, on Formation's place line; formation 18/0, pseudo 22/0 |
+| 3 | Shrine teleport list (visited shrines, confirm, fade) | **done** (f1b22523): ShrineTravelMenu after the save menu; shrine 43/0 (6 new), save_menu 20/0 |
+| 4 | M3-UI-100 running total (`ch08_stair_groups_up` flag + request to act1-chapters) | doing |
 | 5 | "Parts look primitive" pass: title life, save slots with place/playtime/party portraits, battle result pacing, eased transitions | queued |
 | 6 | Accessibility sweep (100/130 %, colour vision, reduced motion; aspect + pseudo-loc for every new screen) | queued |
 | 7 | Controller and keyboard prompt audit | queued |
