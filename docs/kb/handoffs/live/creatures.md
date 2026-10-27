@@ -371,4 +371,5 @@ RENDER-REQUEST @ 21125780: creature_avalanche_ram; why: M3-CRE-624 new Act II bo
   - **For the arena owner (Ch15, act1-chapters or whoever builds Act II arenas):** the submerged body stays hidden only if the barge arena has an opaque water surface at y 0. Its portrait shows the whole fish.
   - **Checks run:** Godot creature 29/0, Blender verify identical, validate_data, taskboard, manifest, lint, format, tools test_creatures.
 RENDER-REQUEST @ b99be560: creature_wakefin; why: M3-CRE-626 new Act II boss, never rendered (no baseline); check the fin reads at battle distance and the waterline sits at the blade's base.
+- **RENDERED @ b5e05d2f (gpu/render-creatures-b5e05d2), viewed:** 28 of 29 pass on the PC (most rmse 0), so every cloud-approved shot in it has pixel parity. npc_wake_feast had no baseline; viewed (Osu and the vendor face each other) and approved. Still open: the Lamp Engine, Avalanche Ram and Wakefin requests.
 
