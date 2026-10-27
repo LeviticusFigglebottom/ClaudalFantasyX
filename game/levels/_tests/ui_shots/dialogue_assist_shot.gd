@@ -4,7 +4,8 @@ extends Node3D
 ## scene (its H02 camera, down Tidewall lane) under a letterboxed cutscene overlay.
 ##   - "continue" (`dialogue_continue`): Rhen's line fully shown, the continue glyph waiting;
 ##   - "backlog" (`dialogue_backlog`): the first beach lines said, then the Backlog page open over
-##     the box (not pausing the tree, so the capture's frames still run).
+##     the box (not pausing the tree, so the capture's frames still run);
+##   - "voice_over" (`dialogue_voice_over`): the prologue's narrated line, drawn as a subtitle (M2-UI-100).
 
 const MOOD_SCENE := "res://game/levels/_tests/haluna_mood/haluna_mood.tscn"
 const SEQUENCER_CONFIG := "res://game/data/cutscene/sequencer.json"
@@ -20,8 +21,11 @@ const BEACH := [
 	[&"asha", &"DLG_CH02_BEACH_007"],
 ]
 const CONTINUE_LINE := 3
+## The prologue's narrated line (prologue_dead_city.dlg, Narrator(rhen) ... #vo).
+const VOICE_OVER_KEY := &"DLG_PROLOGUE_DEAD_CITY_001"
+const VOICE_OVER_NARRATOR := &"rhen"
 
-## Which view to stage: &"continue" or &"backlog".
+## Which view to stage: &"continue", &"backlog" or &"voice_over".
 @export var view: StringName = &"continue"
 
 var overlay: CutsceneOverlay
@@ -41,6 +45,10 @@ func _ready() -> void:
 	box.visible = true
 	if view == &"continue":
 		_say(box, BEACH[CONTINUE_LINE])
+		return
+	if view == &"voice_over":
+		box.show_text(&"", VOICE_OVER_KEY, &"", false, VOICE_OVER_NARRATOR, true)
+		box.skip_reveal()
 		return
 	for line: Array in BEACH:
 		_say(box, line)
