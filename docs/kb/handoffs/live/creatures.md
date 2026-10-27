@@ -258,7 +258,7 @@ Merge the three creature worktrees as they finish (they append to creatures.json
   - Checks run: validate_data 0/0, taskboard, Godot post_import 21/0, field_npc 10/0, wildlife 10/0, creature 24/0,
     hero 68/0, battle_ko_once 4/1 (the known one above). Skipped: lint and format (no code change), shots, Blender
     (nothing changed).
-- **MERGE-READY @ {sha}: M3-CRE-613, villagers alive (FAST-TRACK candidate: the human's "placeholder villagers").**
+- **MERGE-READY @ 78b8a992: M3-CRE-613, villagers alive (FAST-TRACK candidate: the human's "placeholder villagers").**
   - **What it adds:**
     - NpcLook head modifier;
     - FieldNpc attention (a glance at a party that comes near, look-arounds), chat pairs in bouts, work, storm (shelter, brace, sky looks, home again), and a talk that ends on its own;
