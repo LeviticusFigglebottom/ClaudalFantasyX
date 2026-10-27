@@ -103,8 +103,18 @@ def _ground(name: str, seed: int, fn, *, hard: bool) -> list[kc.MeshBuilder]:
             zs = _axis(z0, z1, (-40.0, 16.0), 1.0, 4.0)
         height = fn(noise)
         mat = mb.material(bc.M_GRIT if hard else bc.M_MUD)
+
+        def wet(X, Z, Y):
+            low = 0.75 + 0.25 * (1.0 - kc.smoothstep(-0.1, 0.1, Y + (1.15 if hard else 0.0)))
+            if not hard:
+                return np.clip(low, 0, 1)
+            # The camp's hard (the PC render at 71f19fbc: one even pebble field): trampled damp tracks and
+            # sun-dried patches in a few-metre fbm, so the shingle tile stops reading as one repeat.
+            patch = noise.fbm(np.stack([X / 7.0, np.zeros_like(X), Z / 7.0], axis=-1), 3)
+            return np.clip(low - 0.55 + 0.6 * kc.smoothstep(0.4, 0.6, patch), 0, 1)
+
         bc.heightfield(mb, xs, zs, height, mat,
-                       wet=lambda X, Z, Y: np.clip(0.75 + 0.25 * (1.0 - kc.smoothstep(-0.1, 0.1, Y + (1.15 if hard else 0.0))), 0, 1),
+                       wet=wet,
                        salt=lambda X, Z, Y: kc.smoothstep(0.04, 0.12, Y) * 0.35,
                        ao=lambda X, Z, Y: np.clip(0.8 + 0.5 * np.clip(Y, -0.3, 0.3), 0.6, 1.0), erosion=0.3,
                        variation=float(rng.random()))

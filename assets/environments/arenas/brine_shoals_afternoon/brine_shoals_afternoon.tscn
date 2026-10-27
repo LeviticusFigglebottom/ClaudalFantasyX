@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=3]
+[gd_scene load_steps=30 format=3]
 
 [ext_resource type="Script" path="res://game/world/arenas/battle_arena_root.gd" id="1_r"]
 [ext_resource type="Shader" path="res://game/shaders/environment/env_sky_low_sun.gdshader" id="2_r"]
@@ -15,7 +15,16 @@
 [ext_resource type="PackedScene" path="res://assets/environments/kits/brine_shoals/plank_walk.glb" id="13_r"]
 [ext_resource type="PackedScene" path="res://assets/environments/kits/brine_shoals/tideline_wrack.glb" id="14_r"]
 [ext_resource type="PackedScene" path="res://assets/environments/kits/brine_shoals/lamp_burial.glb" id="15_r"]
-[ext_resource type="PackedScene" path="res://assets/environments/kits/brine_shoals/smoke_plume.glb" id="16_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/brine_shoals/vendor_boat.glb" id="16_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/brine_shoals/crate_stack.glb" id="17_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/brine_shoals/salvage_pile.glb" id="18_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/brine_shoals/mudflat_patch_a.glb" id="19_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/brine_shoals/mudflat_patch_b.glb" id="20_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/net_heap.glb" id="21_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/tide_debris.glb" id="22_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/rope_coil.glb" id="23_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/cargo_sacks.glb" id="24_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/brine_shoals/smoke_plume.glb" id="25_r"]
 
 [sub_resource type="ShaderMaterial" id="SkyMat"]
 shader = ExtResource("2_r")
@@ -160,19 +169,52 @@ transform = Transform3D(-0.34202, 0, 0.939693, 0, 1, 0, -0.939693, 0, -0.34202, 
 [node name="lamp_burial_1" parent="Dressing" instance=ExtResource("15_r")]
 transform = Transform3D(0.866025, 0, 0.5, 0, 1, 0, -0.5, 0, 0.866025, -15, 0.014, -6)
 
+[node name="vendor_boat_1" parent="Dressing" instance=ExtResource("16_r")]
+transform = Transform3D(-0.422618, 0, 0.906308, 0, 1, 0, -0.906308, 0, -0.422618, -21, -0.22, -12)
+
+[node name="crate_stack_1" parent="Dressing" instance=ExtResource("17_r")]
+transform = Transform3D(0.866025, 0, 0.5, 0, 1, 0, -0.5, 0, 0.866025, -9, -0.038, -12.5)
+
+[node name="salvage_pile_1" parent="Dressing" instance=ExtResource("18_r")]
+transform = Transform3D(-0.939693, 0, -0.34202, 0, 1, 0, 0.34202, 0, -0.939693, 9, -0.228, -19)
+
+[node name="mudflat_patch_a_1" parent="Dressing" instance=ExtResource("19_r")]
+transform = Transform3D(0.939693, 0, 0.34202, 0, 1, 0, -0.34202, 0, 0.939693, -7, 0, -5)
+
+[node name="mudflat_patch_b_1" parent="Dressing" instance=ExtResource("20_r")]
+transform = Transform3D(0.34202, 0, 0.939693, 0, 1, 0, -0.939693, 0, 0.34202, 13, 0.017, -16)
+
+[node name="net_heap_1" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(0.766044, 0, 0.642788, 0, 1, 0, -0.642788, 0, 0.766044, 11.5, -0.027, -12)
+
+[node name="tide_debris_1" parent="Dressing" instance=ExtResource("22_r")]
+transform = Transform3D(0.173648, 0, 0.984808, 0, 1, 0, -0.984808, 0, 0.173648, -5, 0, -9)
+
+[node name="tide_debris_2" parent="Dressing" instance=ExtResource("22_r")]
+transform = Transform3D(-0.939693, 0, -0.34202, 0, 1, 0, 0.34202, 0, -0.939693, 6, 0.003, -9.5)
+
+[node name="rope_coil_1" parent="Dressing" instance=ExtResource("23_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 4, 0.002, -14)
+
+[node name="cargo_sacks_1" parent="Dressing" instance=ExtResource("24_r")]
+transform = Transform3D(-0.866025, 0, 0.5, 0, 1, 0, -0.5, 0, -0.866025, -12.5, -0.066, -16.5)
+
+[node name="wreck_mast_standing_2" parent="Dressing" instance=ExtResource("12_r")]
+transform = Transform3D(0.68944, 0, 0.578509, 0, 0.9, 0, -0.578509, 0, 0.68944, -32, -0.204, -58)
+
 [node name="wreck_ribs_large_2" parent="Dressing" instance=ExtResource("11_r")]
 transform = Transform3D(1.03923, 0, 0.6, 0, 1.2, 0, -0.6, 0, 1.03923, -60, -0.788, -80)
 
 [node name="wreck_bow_2" parent="Dressing" instance=ExtResource("8_r")]
 transform = Transform3D(-0.376222, 0, -1.03366, 0, 1.1, 0, 1.03366, 0, -0.376222, 52, -0.602, -95)
 
-[node name="wreck_mast_standing_2" parent="Dressing" instance=ExtResource("12_r")]
+[node name="wreck_mast_standing_3" parent="Dressing" instance=ExtResource("12_r")]
 transform = Transform3D(0.34202, 0, 0.939693, 0, 1, 0, -0.939693, 0, 0.34202, -8, -0.646, -120)
 
-[node name="smoke_plume_1" parent="Dressing" instance=ExtResource("16_r")]
+[node name="smoke_plume_1" parent="Dressing" instance=ExtResource("25_r")]
 transform = Transform3D(1.4, 0, 0, 0, 1.4, 0, -0, 0, 1.4, 26, -0.328, -140)
 
-[node name="smoke_plume_2" parent="Dressing" instance=ExtResource("16_r")]
+[node name="smoke_plume_2" parent="Dressing" instance=ExtResource("25_r")]
 transform = Transform3D(1.03366, 0, 0.376222, 0, 1.1, 0, -0.376222, 0, 1.03366, 36, -0.483, -150)
 
 [node name="CameraHints" type="Node3D" parent="."]

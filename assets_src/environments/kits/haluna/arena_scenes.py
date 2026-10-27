@@ -885,6 +885,19 @@ SHOALS = {
         (BS + "tideline_wrack.glb", -12.0, -13.0, 75.0, 1.0, 0.0),
         (BS + "tideline_wrack.glb", 13.5, -10.0, 110.0, 1.0, 0.0),
         (BS + "lamp_burial.glb", -15.0, -6.0, 30.0, 1.0, 0.0),
+        # What the raid left strewn across the flats behind the foes (the PC render at 71f19fbc read as bare sand):
+        # a skiff stranded on its side, salvage dropped in the run, nets and coils, wet mud patches.
+        (BS + "vendor_boat.glb", -21.0, -12.0, 115.0, 1.0, 0.25),
+        (BS + "crate_stack.glb", -9.0, -12.5, 30.0, 1.0, 0.05),
+        (BS + "salvage_pile.glb", 9.0, -19.0, 200.0, 1.0, 0.1),
+        (BS + "mudflat_patch_a.glb", -7.0, -5.0, 20.0, 1.0, 0.0),
+        (BS + "mudflat_patch_b.glb", 13.0, -16.0, 70.0, 1.0, 0.0),
+        (KIT + "net_heap.glb", 11.5, -12.0, 40.0, 1.0, 0.05),
+        (KIT + "tide_debris.glb", -5.0, -9.0, 80.0, 1.0, 0.0),
+        (KIT + "tide_debris.glb", 6.0, -9.5, 200.0, 1.0, 0.0),
+        (KIT + "rope_coil.glb", 4.0, -14.0, 0.0, 1.0, 0.0),
+        (KIT + "cargo_sacks.glb", -12.5, -16.5, 150.0, 1.0, 0.05),
+        (BS + "wreck_mast_standing.glb", -32.0, -58.0, 40.0, 0.9, 0.2),
         # Far off: more wrecks out on the flats, and the burning camp's smoke leaning away.
         (BS + "wreck_ribs_large.glb", -60.0, -80.0, 30.0, 1.2, 0.3),
         (BS + "wreck_bow.glb", 52.0, -95.0, 250.0, 1.1, 0.3),
