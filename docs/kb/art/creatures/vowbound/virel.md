@@ -1,0 +1,168 @@
+# Virel, the Kite-Serpent (`virel`), Asha's Fire Vowbound
+
+**Who:** the third Vowbound (docs/kb/story/vowbound.md §3): the glimmer of **Wenna Corr**, the 53rd Cantor, who sang
+about 95 years ago. She was a Corrow-born girl of hidden Saltwright blood who passed as Order-faithful all her life
+and scratched tiny line-marks into the stones of every temple she visited, a trail for her people that nobody found.
+She has been bound in Coilspire on the Corrow headland since. **Kind:** a Vowbound, so bound light, not a creature
+and not Undertow-spawn. **Role:** an ally. Asha binds her in Ch8 (B06, `ch08_virel_bound`) and calls her from the
+Undertow's Reach on (B16 phase 2). vowbound.json `virel`: `attack`, `kite_flare` (fast fire that pushes its target
+down the timeline) and the Swell technique `flare_line` (fire to every foe, a delay, `clears_field: storm_dark`).
+She takes the middle party slot alone while the party has stepped off.
+**Where you see her:** the binding's held frame (act1_ch08.md F07), the first call's full summon cinematic at the
+wall-head (B16, with Liss's reaction shot on the tuning key), and every later call.
+
+**The idea:** a long ribbon-serpent sewn from sailcloth panels, with bound light running along every seam: a Saltwright
+signal kite flown alight as a flare and held still. She is built **as a kite**: taut panels on a light timber frame
+(a spine spar and a batten across every panel), a bridle of three lines meeting under her throat, two ribbon
+streamers at her tail. From the bridle knot hangs **a brass tuning key**, the keepsake: the knot is where a flyer ties
+the string, so the one human object about her hangs exactly where a hand would hold her. Her shape is what Dace
+modelled the Kite's sails on (Act III), so the panels, battens and scalloped hems are the same language the Kite's
+sails will speak.
+
+Original design (README rule 1). It starts from a sewn cloth kite of many cells, a ribbon serpent's coil, and one
+human object, a sailmaker's or wright's brass tuning key. No scales, no fangs, no horns, no claws: nothing about her
+is a beast. Her crest is the kite's bowed spar, swept back past the head; her eye is a ring of seam-light on the cloth.
+
+## Silhouette and size
+
+| | |
+|---|---|
+| Length | **6.25 m** of ribbon: a 0.75 m head and a 5.5 m body, plus 0.55 m streamers |
+| Width | the head 0.56 m, the neck 0.58 m, the loop 0.48 m, tapering to 0.16 m at the tail |
+| The coil | the body coils **once** round an upright oval (1.2 m across by 1.36 m tall, its centre 1.7 m over the water) in a plane turned 22° off the battle axis; the neck enters the loop at its top, the tail leaves it at its top and goes back, the tail's pass 0.55 m deeper than the neck's so they clear |
+| Head | a long lozenge of cloth, widest at the cheek, pointed at the nose (2.64 m up, 1.5 m ahead of her mark), with a seam-ringed eye on each face and the bowed crest-spar swept back over it |
+| Panels | 14 body panels 0.4 m long between cross-seams, each hem drawn in 6% mid-panel (kite cells, a scalloped edge) and the cloth bellied 5% of the width behind the frame |
+| Streamers | two ribbons 0.55 m long, 7 cm wide, hanging down and back from the tail end |
+| The key | a 0.26 m brass tuning key (a 9 cm ring bow, a collar, a shaft and a square socket) on a 10 cm cord from the bridle knot, 0.38 m under the throat |
+
+As built: x −0.92 to +0.61, y 0.76 (the loop's lowest hem) to 2.94 (the crest-spar), z −0.58 to +1.51 at rest.
+
+**Why coiled, and why in that plane.** A Vowbound stands on the middle party slot (battle_sandbox.json
+`vowbound_slot` 1), which sits 1.1 m from the right edge of the default battle camera's HUD safe frame (choreo.json
+`camera.safe_frame`: 4% left, 15% right, 10% top, 26% bottom). Ilun's tail crossed it. A 6 m serpent laid out would
+cross it by metres, so Virel is coiled into a figure 2.1 m along the battle axis and 2.2 m tall with her head toward the foes (where the frame
+has room) and her tail kept short of her mark. The coil's plane is turned 22° from the battle axis so its sails face
+a direction between the two cameras that see her: the default camera (about 76° to her side, 16° above) and the
+`summon` shot (behind her along the axis and to the side, low). Both see the sails at about 37° off square, never on
+edge. The summon shot holds 0.6 m to 3.3 m in height around her mark; she spans 0.76 m to 2.94 m.
+
+**The framing check** (every baked frame of every clip, projected through both cameras from the build's vertices:
+the margin to each edge of the safe frame as a fraction of the screen; negative is outside). Default camera, at
+rest: left 0.61, right 0.05, top 0.09, bottom 0.24; summon shot, at rest: left 0.32, right 0.21, top 0.15, bottom 0.04. The tightest frames per clip: right 0.028 (idle, the streamers),
+0.019 (attack), 0.020 (hit), 0.011 (victory's gust); top 0.016 (attack's rear), 0.033 (victory). **Every clip is
+inside the default camera's safe frame**, except Flare Line's release (`special`, 2.07 s), which touches the right
+edge (−0.002, under 3 px at 1280) as the line swings back into the coil. Summon shot: every clip the summon plays
+(`ready`, `rise`, `idle`) is inside it (bottom 0.03–0.04, the loop's lowest hem); the KO (−0.008 at the bottom) and
+Flare Line's line (−0.057) leave it at the bottom, and neither is played on that shot.
+
+**The stand-in's anchors.** Unlike Ilun, Virel has no `stand_ins` row in battle_sandbox.json (UI's), so her stand-in
+spec has no `height`: FighterStandIn takes 1.0 m (the damage numbers' and markers' head point is 1.0 m) and BattleVfx
+takes 1.7 m for its anchors (effects.json `anchor_heights`: chest 1.02 m, head 1.7 m, feet 0.09 m). Both land on the
+lower half of her loop, so the effects hit her body, but the head point sits under her head. **Request to UI:** add
+`stand_ins.virel` with `height` 2.6 (chest 1.56 m, the loop's middle; head 2.6 m, her head) and a placeholder in her
+colours, as Ilun has. She is **built hovering** like Ilun: the origin is the water under her mark and creatures.json
+gives her no `hover`; `yaw_deg` −90 turns her +Z face toward the foes.
+
+## Colour (palette.json swatches; README rule 7)
+
+| Part | Albedo | Light |
+|---|---|---|
+| Sailcloth | `sand_cloth` `#C9B48E`; every third panel a `faded_teal_cloth` `#5E9A96` patch (the Saltwright mend, as on their camp tents); paler toward `gauze_white` `#EBE7DF` mid-panel, where the light shows through the cloth, and a little darker toward `timber_weathered` at the hems | a low inner light, `glimmer_bound` at 1.2 on a mask of 0.05 mid-panel rising to 0.35 at the seams: the cloth lit through from its burning seams |
+| The head's mask band | `faded_teal_cloth` with `deep_teal_shadow` (0.25) | as the sailcloth |
+| **The seams** (both hems, every cross-seam, the eye rings) | `gauze_white` | **`glimmer_bound` `#4FB3B0`, energy 1.2, steady**: emission mask 1 |
+| Frame (spine spar, battens, crest-spar) | `timber_weathered` `#7E6A55` | none |
+| Bridle and the key's cord | `sand_cloth` | none |
+| **The key** | `brass` `#B08D57`, metallic 0.9 | **none**: it is brass, not light, and only catches the light around it |
+
+**Fire on a Vowbound: the palette rule, and the choice.** palette.json gives `glimmer_bound` to "the Vowbound
+(temple and summoned forms) until their release" ("emissive inserts and Vowbound forms only; steady: no flicker, no
+drift, no shed motes"), and `ember_orange` is "flame and horizon only; never a surface albedo" and the "Fire VFX base".
+color_script.md rule 2 says the Vowbound are bound light, and act1_ch08.md says it of Virel by name: at rest "the seams
+read as steady `glimmer_bound`, never flickering. The fire *element* belongs to Virel's battle VFX" (F07), and "Virel
+is bound (`glimmer_bound`, steady) with fire-element VFX on her attacks. The Flare Line ... is fire light, not
+glimmer" (§5, Light). **So her seam fire is `glimmer_bound` at 1.2 on her form, in every clip, and no warm colour is
+on her model at all**: the fire you see when she strikes is battle-vfx's (`ember_orange` and its flame swatches on
+`kite_flare` and `flare_line`), never her own emissive. That keeps bound and fire from ever being confused (act1_ch08.md
+§9, Rendering item 2): her own light is teal and still, and the fire comes off her only when she acts. The warmth in
+her read comes from the sand-coloured cloth and the brass, not from light.
+
+**The bound light (color_script.md rule 2).** Every emissive slot is `glimmer_bound` at 1.2 with
+`emission_pulse_hz` 0. The seams are **geometry** (flattened bands round the cloth's edges, skinned with the cloth
+under them), not particles: no flicker, no drift, no shed motes, no trails. Her light moves only because her body
+moves. No `glimmer_held`, no `glimmer_lift` (she is bound until her Act III release, Ch20; not built here), and **no
+`spawn_wound` anywhere: she has no weak point.** ADR 0151's one answer to where to strike is for foes.
+
+## The kite
+
+- **Panels and seams.** The ribbon is one closed cloth slab (two faces 1 cm apart and a rim) cut into panels by
+  cross-seams every 0.4 m. Each hem is a flattened band of seam-light (2.8 cm wide), and each cross-seam a band of
+  3.2 cm. The hems draw in 6% between seams, so the outline is a run of kite cells, and the cloth bellies 5% of its
+  width behind the frame.
+- **The frame** is lashed on the cloth's outer face, the side both battle cameras see: a spine spar (2.4 cm) down the
+  middle from the snout to the tail end, a batten (1.8 cm) across the middle of every panel standing 5 cm past both
+  hems, a batten across the cheek, and the bowed crest-spar (three rods) from the snout up over the crown and swept
+  back past the head.
+- **The bridle**: three lines from the head's lower hem (the throat, the cheek and the back of the head) meet in a knot
+  0.38 m under the throat, and the key hangs from the knot on a short cord. The key counter-turns 0.9 of the head's
+  turn, 0.12 s behind it, so it hangs and swings as she moves.
+- **The streamers**: two ribbons from the tail end, splayed a little, lit faintly along their middles.
+
+## Clips (contact seconds go in creatures.json `contact`)
+
+All in place: the stage moves her (the entry's rise from 2.6 m under the water, the dismissal's sink, the fall's tip
+back and draw under; choreo.json `vowbound`), and the clips play on top. Every frame of every clip stays above the
+water (GroundedClipsTest), so she needs no allow-list entry.
+
+| Clip | Length | What it shows |
+|---|---|---|
+| `idle` | 4.0 s, loop | a slow undulation runs down her from the nose to the tail (each spine bone bending 0.9° and luffing 4° about its own length, a little behind the one before), so the panels luff in turn; she bobs 4 cm; the streamers flutter twice a cycle |
+| `ready` | 1.4 s | she gathers: the coil draws in, the head rears and she lifts 10 cm (0.5 s), then snaps taut (0.95 s) and settles. The stage plays it on the entry and the dismissal until `rise` and `dismiss` are wired (below). |
+| `attack` | 1.2 s, contact **0.5 s** | the whipping strike: the neck draws back and the head rears (0.3 s), then the whip runs up the neck and the head lashes forward and down (the contact), the body thrown 16 cm after it, the tail whipped the other way |
+| `cast` | 1.6 s, contact **0.6 s** | Kite Flare: a gust through the whole kite (the panels turn and flare), the head rears, then **three quick jabs** of the head at 0.6, 0.88 and 1.15 s (the fast multi-hit fire; the first is the contact) |
+| `hit` | 0.5 s, peak **0.1 s** | struck: the body jolts back, the head snaps up and back, the panels twist, the streamers whipped; most displaced at 0.10 s (numpy and GLB) |
+| `defend` | 1.2 s | the coil draws in tight round her middle and the head tucks down before the loop, held 0.3–0.85 s, then opens |
+| `ko` | 1.8 s | the kite loses its wind: a flinch, then the string goes slack, the head droops 0.5 m, the panels luff loose, and she settles 0.2 m and holds (from 1.45 s); the key still hangs. The stage tips her back a further 38° and draws her under (`vowbound.fall`, 1.5 s). |
+| `victory` | 2.2 s | she climbs 18 cm as a kite climbs in a gust, head high, one long wave down her length, and settles |
+| `rise` | 2.6 s | the unfurling: from furled (the coil wound tight, the head tucked 0.8 m below its rest), the coil opens and the head lifts by 1.5 s, one wave runs down her, rest at 2.6 s. In place, built for the stage's rise (C10's 2.6 s) |
+| `dismiss` | 1.0 s | the furling: the head lifts once (0.35 s), then the coil winds tight and the head bows and tucks; it ends furled (the stage sinks her) |
+| `special` | 2.4 s, contact **1.4 s** | **Flare Line**: the coil winds in (a held breath, to 1.05 s), then the whole kite-string is pulled taut in **one straight line** rising 17° toward the foes, from her tail low behind her mark (1.05 m up) to her head 4.8 m ahead over the field (2.65 m up), 5.4 m end to end: the contact, the whole length burning at once. It holds, trembling, to 1.85 s and is let go back into the coil. The pull and the release turn each bone's direction (not its Euler angles), so the line unrolls and rolls up cleanly. |
+
+The kit adds `hit_b` (the hit mirrored and 1.35× heavier; mirroring only rolls the panels the other way, so it needs
+no authored copy) and `idle_b` (the cast at 0.3×, 1.4× speed: the fidget). creatures.json maps `kite_flare` → `cast`
+and `flare_line` → `special`; `attack` is the physical default.
+
+**Lowest vertex per clip** (skinned from the GLB, GroundedClipsTest's measure): idle 0.72 m, ready 0.76, attack 0.73,
+cast 0.76, hit 0.76, hit_b 0.76, defend 0.76, ko 0.56, victory 0.76, rise 0.76, dismiss 0.76, special 0.35 (the line's
+tail end as the release swings), idle_b 0.76. Highest: Flare Line's release, 3.48 m.
+
+**What the stage plays today.** choreo.json `vowbound` names `ready` for the entry and the dismissal and `ko` for the
+fall; `rise` and `dismiss` wait on battle-presentation, the same request as Ilun's (M3-CRE-639). Also for
+battle-presentation: choreo.json `summon_cinematic.first_call_flags` lists only Ilun, so Virel's first call (B16's
+full cinematic) needs a `virel` flag there (`ch08_virel_first_call_seen`, declared in flags.tres).
+
+## Rig (16 bones)
+
+`root` (the water point), `body` (the loop's lowest station, 1.06 m up), `fore_0..4` (from the body up the loop's
+front and over its top to the back of the head), `head` (the back of the head to the nose), `aft_0..5` (from the body
+round the loop's back and out to the tail end), `streamer`, `key` (at the bridle knot, a child of the head). Every
+spine bone is 0.5 m of arc. The cloth, seams and spars are weighted **by arc length**, not by distance, because the
+coil passes close to itself: each span's bone, blended 50/50 with its neighbour across 0.3 of a span at each joint.
+
+## Budget
+
+≤ 16k triangles (a Vowbound; the creature range is 5k–16k), GLB ≤ 2 MB. Five slots: `sail`, `seam`, `spar`, `cord`,
+`key`.
+
+**As built (M3-CRE-641):** **12,158 triangles** (seams 4,620, sail 3,888, spars 2,538, eyes 448, key 352, cord 168,
+streamers 144), 6,279 vertices, 16 bones, 13 clips, GLB 1.05 MB.
+
+## Review
+
+The shot `creature_virel` (tests/screenshots/shots.json) shows her idle on the creature stage from `flank_high` (yaw
+68°, pitch 24°), with the heroes' scale bars: close to the default battle camera's angle on her and square to her
+sails (the stage's `three_quarter`, yaw 35°, would see the coil nearly on edge). Her bestiary portrait
+(tools/portraits/portraits.json `virel`, as the Lead asked for Ilun) turns her 72° for the same reason (creatures.json
+`portrait`). **Neither is rendered yet: both need the PC.** On the first render, check: the seams' brightness against
+the cloth (1.2 is the colour script's value; a set-piece allows 35% glimmer by area, and her seams are a few
+percent), whether the cloth reads as lit through from the seams or just pale, the frame's read on the cloth, the key on
+the summon frame, and whether the teal seams read as fire held still (the point) or simply as teal.

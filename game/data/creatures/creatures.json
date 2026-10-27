@@ -213,6 +213,14 @@
       "clip_by_skill": {"forge_bolt": "cast", "last_strike": "special"},
       "contact": {"attack": 0.55, "cast": 0.8, "special": 1.55},
       "stand_in": {"yaw_deg": -90.0, "height": 3.3, "radius": 0.75}
+    },
+    "virel": {
+      "scene": "res://game/creatures/virel/virel_battle.tscn",
+      "vowbound": true,
+      "clip_by_skill": {"kite_flare": "cast", "flare_line": "special"},
+      "contact": {"attack": 0.5, "cast": 0.6, "special": 1.4},
+      "stand_in": {"yaw_deg": -90.0},
+      "portrait": {"yaw_deg": 72.0, "pitch_deg": 14.0}
     }
   }
 }

@@ -869,6 +869,16 @@
         ["{blender}", "--python", "assets_src/creatures/kahre/build_kahre.py", "--", "--out", "assets/creatures/kahre/kahre.glb"],
         ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "kahre"]
       ]
+    },
+    {
+      "id": "creature_virel",
+      "owner": "character",
+      "sources": ["assets_src/creatures/virel/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/virel/*.glb", "assets/creatures/virel/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/virel/build_virel.py", "--", "--out", "assets/creatures/virel/virel.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "virel"]
+      ]
     }
 ]
 }

@@ -4070,6 +4070,14 @@
         960,
         720
       ]
+    },
+    {
+      "id": "creature_virel",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_virel.tscn",
+      "resolution": [
+        960,
+        720
+      ]
     }
   ]
 }
