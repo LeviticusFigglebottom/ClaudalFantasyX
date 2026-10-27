@@ -1,0 +1,5 @@
+FAIL creature_mangrove_drowner: rmse 0.16385 (limit 0.00800)
+FAIL creature_mangrove_drowner_risen: rmse 0.17064 (limit 0.00800)
+FAIL creature_flat_engine: no baseline (inspect out/, then compare.py --update-baselines creature_flat_engine)
+Screenshots: 3 compared, 3 failed (diffs in /home/user/wt/render/tests/screenshots/out/diff)
+compare exit 1
