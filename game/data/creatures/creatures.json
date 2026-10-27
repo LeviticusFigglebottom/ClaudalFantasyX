@@ -192,6 +192,13 @@
     "rim_crawler": {
       "scene": "res://game/creatures/rim_crawler/rim_crawler_battle.tscn",
       "contact": {"attack": 0.55}
+    },
+    "flat_engine": {
+      "scene": "res://game/creatures/flat_engine/flat_engine_battle.tscn",
+      "contact": {"attack": 0.8, "cast": 0.8},
+      "ko_fade_sec": 1.2,
+      "stand_in": {"yaw_deg": 90.0},
+      "portrait": {"yaw_deg": 30.0, "pitch_deg": 24.0}
     }
   }
 }

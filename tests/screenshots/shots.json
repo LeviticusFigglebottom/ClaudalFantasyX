@@ -3344,6 +3344,14 @@
       ]
     },
     {
+      "id": "creature_flat_engine",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_flat_engine.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
       "id": "ch06_brine_road",
       "scene": "res://game/levels/_tests/act1_zones/ch06_brine_shoals_shots.tscn",
       "camera": "Cameras/Road",

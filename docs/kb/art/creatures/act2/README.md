@@ -23,7 +23,7 @@ alone. Hits peak near 0.1 s (M3-CRE-617).
 | The fen leech | [variants.md](variants.md) | variant of the sail leech | 2.74 m long, hovering (1.38 m) | Ossa Fen (Ch10) | built (M3-CRE-628), first PC render pending |
 | The scree crawler | [variants.md](variants.md) | variant of the slag tortoise | 0.82 m | the Cloudloom approach (Ch12) | built (M3-CRE-628), first PC render pending |
 | The rim crawler | [variants.md](variants.md) | variant of the tide crawler | 0.75 m | the Pale Rim (Ch16) | built (M3-CRE-628), first PC render pending |
-| The flat-engine | [flat_engine.md](flat_engine.md) | construct, boss part | 1.8 m drum, 3 m paddles on the water | Malcor Venn's barge, the lagoon (Ch14) | sheet only |
+| The flat-engine | [flat_engine.md](flat_engine.md) | construct, boss part | 1.8 m drum, 3 m paddles on the water | Malcor Venn's barge, the lagoon (Ch14) | built (M3-CRE-637), first PC render pending |
 
 **Built models.** The Mangrove Drowner (M3-CRE-621): `assets_src/creatures/mangrove_drowner/`, 16,370 triangles
 (budget 18k), root arches to 3.1 m (3.6 m risen) with the trunk stump's splinters to 3.8 m above them, 48 bones (the sheet's core chain of 4, twelve 3-bone roots and the stump, plus six splinter bones
