@@ -65,6 +65,15 @@
 
 **Recommended setup for the new account:** Lead (cloud) + pc-gpu (the empty Remote Control session) + slice-polish + act1-chapters + ui-menus + battle-presentation + characters + hero-integration + creatures + env-art + audio. That's 10 sessions plus the Lead. The usage limits were hit several times at this scale; if limits bite, pause creatures and audio first, then act1-chapters.
 
+## 2a. Merge state (new account)
+- **10-27: big9 MERGED** (integration 3b7cbf5e). PC gate: Godot 2561/0, coverage and boot OK, Blender 40 identical + 11 M2-CHR-11 DIFFs (rhen, toma, 9 villagers), 281 shots with 48 re-approved after the Lead viewed them. The results are on `gpu/gate-big9-shots`.
+- **big10** (`lead/gate-big10` @ 181708a7: big9 plus every track head from 10-25 ~00:15) is gating on the PC. The 48 big9 drifts will reappear there; the big10 merge must keep the integration branch's re-approved PNGs.
+- **Open from viewing big9:**
+  - Ysolde is still a capsule in battle → hero-integration (FAST-TRACK).
+  - A capsule foe in battle_arena_camp → creatures.
+  - Hullgnaw's intro is framed close → battle-presentation M3-BPR-404 (FAST-TRACK).
+  - No manifest shot covers the prologue's "everyone is still here" colour → slice-polish.
+
 ## 3a. Live roster (new account, from 2026-10-25)
 | Track | Session | Branch | Live log | Ids |
 |---|---|---|---|---|
