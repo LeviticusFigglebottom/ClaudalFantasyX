@@ -849,6 +849,16 @@
         ["{blender}", "--python", "assets_src/creatures/flat_engine/build_flat_engine.py", "--", "--out", "assets/creatures/flat_engine/flat_engine.glb"],
         ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "flat_engine"]
       ]
+    },
+    {
+      "id": "creature_ilun",
+      "owner": "character",
+      "sources": ["assets_src/creatures/ilun/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/ilun/*.glb", "assets/creatures/ilun/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/ilun/build_ilun.py", "--", "--out", "assets/creatures/ilun/ilun.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "ilun"]
+      ]
     }
 ]
 }
