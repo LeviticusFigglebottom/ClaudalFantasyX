@@ -43,12 +43,21 @@ var zoom := 1.0:
 ## M3-MNU-04: the whole board is framed (set_overview).
 var overview := false
 
+## The node waking (the bloom after Confirm wakes it or opens its gate; &"" when none) and how far
+## the bloom has gone (0..1). Reduced motion plays none.
+var waking: StringName = &""
+var wake_t := 0.0:
+	set(value):
+		wake_t = value
+		queue_redraw()
+
 var _m: Dictionary = {}
 ## lattice_menu.json "overview".
 var _o: Dictionary = {}
 ## The zoom to return to when the overview ends.
 var _return_zoom := 1.0
 var _pan_tween: Tween
+var _wake_tween: Tween
 ## A left press on the board: where it went down, and whether it has moved far enough to pan.
 var _pressing := false
 var _dragging := false
@@ -253,6 +262,8 @@ func _draw() -> void:
 	for nid: StringName in b.nodes:
 		_draw_node(b.lattice_node(nid))
 	_draw_markers()
+	if waking != &"":
+		_draw_wake()
 	_draw_cursor()
 	if not overview:
 		_draw_tag(_draw_point(cursor))
@@ -324,6 +335,54 @@ func _draw_path() -> void:
 	var c := _role(&"focus") if path_ok else _role(&"danger")
 	for i in range(1, path.size()):
 		draw_line(_draw_point(path[i - 1]), _draw_point(path[i]), c, _num("path_px"), true)
+	# Each step's marker: filled where the step costs movement (a node nobody has woken), a ring where
+	# it is free (the way already woken), so the walk's cost reads along the line, not only in the tag.
+	for i in range(1, path.size() - 1):
+		var at := _draw_point(path[i])
+		if is_paid_step(path[i]):
+			draw_circle(at, _num("step_px"), c)
+		else:
+			draw_arc(at, _num("step_px"), 0.0, TAU, 16, c, _num("outline_px"), true)
+
+
+## True when stepping onto `nid` costs movement (nobody has woken it; LatticeProgress.entry_cost).
+func is_paid_step(nid: StringName) -> bool:
+	return model.progress().entry_cost(nid) > model.rules().move_cost_activated
+
+
+## The wake bloom on `nid` (LatticeMenu, after Confirm wakes a node or opens a gate): a ring grows
+## from the node and fades over wake_sec. Nothing under reduced motion.
+func play_wake(nid: StringName) -> void:
+	if _wake_tween != null and _wake_tween.is_valid():
+		_wake_tween.kill()
+	waking = &""
+	if reduced_motion or not is_inside_tree():
+		return
+	waking = nid
+	wake_t = 0.0
+	_wake_tween = create_tween().set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
+	_wake_tween.tween_property(self, ^"wake_t", 1.0, _num("wake_sec"))
+	_wake_tween.tween_callback(func() -> void: waking = &"")
+
+
+func is_waking() -> bool:
+	return waking != &""
+
+
+## Ends the bloom now (tests).
+func finish_wake() -> void:
+	if _wake_tween != null and _wake_tween.is_valid() and _wake_tween.is_running():
+		_wake_tween.custom_step(_num("wake_sec") + 1.0)
+
+
+func _draw_wake() -> void:
+	var n := model.board().lattice_node(waking)
+	if n == null:
+		return
+	var half := _half_size(n)
+	var r := maxf(half.x, half.y) * (1.0 + _num("wake_grow") * wake_t)
+	var c := _role(&"focus_gold", 1.0 - wake_t)
+	draw_arc(_draw_point(waking), r, 0.0, TAU, 32, c, _num("wake_px"), true)
 
 
 func _draw_node(n: LatticeNode) -> void:
