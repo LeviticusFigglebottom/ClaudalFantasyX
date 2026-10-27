@@ -5,7 +5,7 @@ extends Node3D
 ## (battle_sandbox.json "scene") and BattleClips plays the clip contract on its AnimationPlayer as before; this
 ## node only tunes that player, so the existing path picks the tuning up with no code change:
 ## - per-pair crossfades (AnimationPlayer blend times, game/data/hero_motion/battle_hero.json "blend"), which
-##   p.play(clip) and the queued return to idle both use;
+##   p.play(clip) and the queued return to idle both use, placeholder clips included (retune());
 ## - the hero's idle phase, so the party does not breathe in step;
 ## - the idle micro-motion (HeroMotion.add_micro_motion, M2-HER-1104: breathing, weight shift, the head leading a
 ##   turn), under the model's Skeleton3D, layered after whatever clip plays.
@@ -24,6 +24,10 @@ const META_ACTOR := &"hymn_battle_actor"
 
 var player: AnimationPlayer
 
+var _blend: Dictionary = {}
+## How many clips the player had when its blends were last set.
+var _tuned_clips := 0
+
 
 func _ready() -> void:
 	set_meta(META_ACTOR, hero_id)
@@ -33,10 +37,31 @@ func _ready() -> void:
 		return
 	player = found[0] as AnimationPlayer
 	var data := load_data()
-	configure(player, data.get("blend", {}) as Dictionary)
+	_blend = data.get("blend", {}) as Dictionary
+	# The placeholder clips for whatever the model lacks go in now, on a stopped player (BattlePlaceholderClips
+	# swaps the library; under a playing player that crashes, M2-HER-1114), so BattleClips' later lookup finds them
+	# installed and the blends below cover them.
+	player.stop()
+	BattlePlaceholderClips.ensure(self, player)
+	retune()
 	start_idle(player, idle_phase(data, hero_id))
 	if micro_motion:
 		HeroMotion.add_micro_motion(self, hero_id)
+
+
+## A model missing part of the contract gets placeholder clips on BattleClips' first lookup (BattlePlaceholderClips),
+## after _ready; the next frame tunes their pairs too, or a placeholder KO would stand up in a single frame.
+func _process(_delta: float) -> void:
+	retune()
+
+
+## Sets the blends again when the player has gained clips since they were last set. Returns true when it did.
+func retune() -> bool:
+	if player == null or player.get_animation_list().size() == _tuned_clips:
+		return false
+	configure(player, _blend)
+	_tuned_clips = player.get_animation_list().size()
+	return true
 
 
 ## The model's skeleton (where an idle micro-motion modifier goes), or null.
