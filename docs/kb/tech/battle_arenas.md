@@ -136,8 +136,8 @@ at arc length s −30 (`wallhead_from_world`). The preview is unbent at that seg
 - the walk is at y 0 with its centre line at z 0.7. Parapet from z −2.3 and kerb from +3.1 keep every slot's
   1 m clear floor; that segment is the `Ground`, turned by `ground_yaw`.
 
-Pieces beyond 170 m are left out, except the far land and the headland. The sea is the kit's own `storm_grey`
-material (`material_res`) at y −12. Dressing: the stair-watch's red shields by the stair head, coils, salvage and
+Pieces beyond 170 m are left out, except the far land and the headland. The sea is the colour script's `storm_grey`
+(`CORROW_SEA`, the kit preview's water values) at y −12. Dressing: the stair-watch's red shields by the stair head, coils, salvage and
 sacks; in the afternoon states the kites along the parapet (they come down on the run back, so the surge has
 none). Hints `along_the_walk` and `the_storm_wall`.
 

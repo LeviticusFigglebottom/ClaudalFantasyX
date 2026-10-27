@@ -988,7 +988,12 @@ CORROW_SKY = {  # game/levels/_tests/corrow_kit/corrow_ch08_environment.tres (th
     "col_cloud_shadow": "#34404C", "cloud_coverage": 0.72, "cloud_softness": 0.22, "cloud_opacity": 0.96,
     "cloud_height_m": 1800.0, "cloud_scale_m": 5000.0, "cloud_stretch": "Vector2(1, 2.5)", "cloud_wind_deg": 135.0,
     "cloud_sun_energy": 2.6, "cloud_ambient_energy": 1.35, "cloud_horizon_fade": 0.08}
-CORROW_SEA = "res://game/levels/_tests/corrow_kit/corrow_water_material.tres"  # storm_grey (colour script ch08)
+CORROW_SEA = {  # the colour script's `storm_grey` look (ch08), the Corrow kit preview's corrow_water_material.tres values
+    "name": "arena_storm_grey", "shader": "res://game/shaders/water/water_ocean.gdshader",
+    "params": [("col_deep", "#0E4A55"), ("col_scatter_shallow", "#1F7F86"), ("absorption_per_m", "Vector3(2, 0.5, 0.42)"),
+               ("absorption_scale", 2.25), ("scatter_energy", 0.14), ("caustic_strength", 0.0), ("col_foam", "#EEF6F4"),
+               ("col_sss", "#1F7F86"), ("foam_crest_threshold", 0.5), ("roughness_far", 0.18), ("use_caustics", "false"),
+               ("use_ssr", "false"), ("use_sss", "false")]}
 
 
 def wallhead_pose() -> tuple[float, float, float]:
@@ -1078,7 +1083,7 @@ def _wallhead_arena(arena_id: str, *, hoist: bool, surge: bool) -> dict:
         **light,
         "sky_shader": LOW_SUN_SKY,
         "sea": {"y": -CW_WALK_Y, "tide_line_y": -CW_WALK_Y, "sea_glow": 0.06 if surge else 0.0,
-                "material_res": CORROW_SEA},
+                "material": CORROW_SEA},
         "pieces": pieces + _wallhead_pieces(hoist),
         "scatters": [],
         "hints": {
@@ -1194,7 +1199,7 @@ def _headland_arena() -> dict:
                 "height_density": 0.0},
         "sky_shader": LOW_SUN_SKY,
         "sky": dict(CORROW_SKY, cloud_coverage=0.6),
-        "sea": {"y": round(-_y0, 3), "tide_line_y": round(-_y0, 3), "sea_glow": 0.0, "material_res": CORROW_SEA},
+        "sea": {"y": round(-_y0, 3), "tide_line_y": round(-_y0, 3), "sea_glow": 0.0, "material": CORROW_SEA},
         "pieces": _headland_pieces(),
         "scatters": [],
         "hints": {
@@ -1237,7 +1242,7 @@ def _tier_hall_arena() -> dict:
                 "height_density": 0.0},
         "sky_shader": LOW_SUN_SKY,
         "sky": dict(CORROW_SKY, sky_energy=0.85),
-        "sea": {"y": TIER_HALL_SEA_Y, "tide_line_y": TIER_HALL_SEA_Y, "sea_glow": 0.0, "material_res": CORROW_SEA},
+        "sea": {"y": TIER_HALL_SEA_Y, "tide_line_y": TIER_HALL_SEA_Y, "sea_glow": 0.0, "material": CORROW_SEA},
         "pieces": [{"glb": CS + name + ".glb", "at": at, "yaw": yaw, "structure": True} for name, at, yaw in fittings],
         "scatters": [],
         "lamp_spec": {"color": COILSPIRE_FIRE, "energy": 2.0, "range_m": 8.0, "attenuation": 1.2,
@@ -1364,8 +1369,6 @@ def write_arena(a: dict) -> Path:
         sc.sub.append(f'[sub_resource type="ShaderMaterial" id="SeaMat"]\nresource_name = "{m["name"]}"\n'
                       f'render_priority = 0\nshader = ExtResource("{sc.res("Shader", m["shader"])}")\n' + params)
         sea_props["material"] = 'SubResource("SeaMat")'
-    elif "material_res" in sea:  # a zone's own water material, shared as it is (the Corrow storm_grey)
-        sea_props["material"] = f'ExtResource("{sc.res("Material", sea["material_res"])}")'
     else:
         sea_props["material"] = f'ExtResource("{sc.res("Material", WATER_MAT)}")'
     sea_props.update({"sea_glow_energy": sea["sea_glow"], "tide_line_y": sea["tide_line_y"]})
