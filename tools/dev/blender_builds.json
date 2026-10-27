@@ -662,6 +662,16 @@
       ]
     },
     {
+      "id": "creature_rime_urchin",
+      "owner": "character",
+      "sources": ["assets_src/creatures/rime_urchin/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/rime_urchin/*.glb", "assets/creatures/rime_urchin/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/rime_urchin/build_rime_urchin.py", "--", "--out", "assets/creatures/rime_urchin/rime_urchin.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "rime_urchin"]
+      ]
+    },
+    {
       "id": "wildlife_gull",
       "owner": "character",
       "sources": ["assets_src/wildlife/gull/**", "assets_src/wildlife/common/**", "assets_src/creatures/common/creature_kit.py"],

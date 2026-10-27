@@ -3262,6 +3262,14 @@
         960,
         720
       ]
+    },
+    {
+      "id": "creature_rime_urchin",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_rime_urchin.tscn",
+      "resolution": [
+        960,
+        720
+      ]
     }
   ]
 }

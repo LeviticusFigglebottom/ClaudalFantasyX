@@ -39,6 +39,12 @@ const RAY_HOVER := 1.4
 const RAY_POOL_DROP_M := 1.2
 const RAY_FLOOR_TOL_M := 0.05
 const RAY_STROKE_M := 0.03
+## The rime urchin: on the hit every spine sector clenches at least this far (radians), on the cast every sector
+## turns at least this far toward the target, and the KO settles the test at least this far onto its ice.
+const URCHIN := "res://game/creatures/rime_urchin/rime_urchin_battle.tscn"
+const URCHIN_CLENCH_RAD := 0.15
+const URCHIN_AIM_RAD := 0.3
+const URCHIN_SETTLE_M := 0.03
 const RING := {"radius_factor": 1.4, "inner_soft_m": 0.25, "notches": 6}
 const SANDBOX := "res://game/battle/scene/battle_sandbox.tscn"
 const SEED := 20261024
@@ -618,3 +624,22 @@ func test_the_gallery_ray_glides_settles_into_its_pool_and_falls_flat() -> void:
 	assert_true(_bone_at(skel, "root").y < -RAY_POOL_DROP_M, "the cast settles it into the pool")
 	skel = _pose(a, &"ko", INF)
 	assert_true(absf(_bone_at(skel, "root").y + RAY_HOVER) < RAY_FLOOR_TOL_M, "the KO lays it flat on the floor")
+
+
+func test_the_rime_urchin_clenches_aims_its_spines_and_settles_on_its_ice() -> void:
+	var bones: Array[String] = ["root", "body"]
+	for k in 8:
+		bones.append("sector_%d" % k)
+	var a := _act2_regular(URCHIN, [0.5, 0.8], bones)
+	var skel := _pose(a, &"idle", 0.0)
+	var body_rest := _bone_at(skel, "body")
+	var plinth := _bone_at(skel, "root")
+	for clip_at: Array in [[&"hit", 0.1, URCHIN_CLENCH_RAD], [&"cast", 0.8, URCHIN_AIM_RAD]]:
+		skel = _pose(a, clip_at[0], clip_at[1])
+		for k in 8:
+			var b := skel.find_bone("sector_%d" % k)
+			var turned := skel.get_bone_rest(b).basis.get_rotation_quaternion().angle_to(skel.get_bone_pose_rotation(b))
+			assert_true(turned > float(clip_at[2]), "%s: sector %d's spines move (%.2f rad)" % [clip_at[0], k, turned])
+	skel = _pose(a, &"ko", INF)
+	assert_true(_bone_at(skel, "body").y < body_rest.y - URCHIN_SETTLE_M, "the KO settles the test")
+	assert_true(_bone_at(skel, "root").is_equal_approx(plinth), "on the ice plinth, which stays")

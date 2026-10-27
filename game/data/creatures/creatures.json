@@ -143,6 +143,11 @@
       "contact": {"attack": 0.6, "cast": 0.9},
       "stand_in": {"yaw_deg": 60.0, "hover": 1.4},
       "portrait": {"yaw_deg": 30.0, "pitch_deg": 35.0}
+    },
+    "rime_urchin": {
+      "scene": "res://game/creatures/rime_urchin/rime_urchin_battle.tscn",
+      "contact": {"attack": 0.5, "cast": 0.8},
+      "portrait": {"pitch_deg": 10.0}
     }
   }
 }
