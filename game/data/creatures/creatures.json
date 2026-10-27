@@ -151,6 +151,11 @@
       "scene": "res://game/creatures/glass_skate/glass_skate_battle.tscn",
       "contact": {"attack": 0.5, "cast": 0.8},
       "portrait": {"pitch_deg": 35.0}
+    },
+    "root_crab": {
+      "scene": "res://game/creatures/root_crab/root_crab_battle.tscn",
+      "contact": {"attack": 0.5, "cast": 0.7},
+      "portrait": {"rim_energy": 2.8, "kick_energy": 1.8}
     }
   }
 }

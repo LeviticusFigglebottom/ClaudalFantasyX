@@ -672,6 +672,16 @@
       ]
     },
     {
+      "id": "creature_root_crab",
+      "owner": "character",
+      "sources": ["assets_src/creatures/root_crab/**", "assets_src/creatures/reef_crab/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/root_crab/*.glb", "assets/creatures/root_crab/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/root_crab/build_root_crab.py", "--", "--out", "assets/creatures/root_crab/root_crab.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "root_crab"]
+      ]
+    },
+    {
       "id": "wildlife_gull",
       "owner": "character",
       "sources": ["assets_src/wildlife/gull/**", "assets_src/wildlife/common/**", "assets_src/creatures/common/creature_kit.py"],
