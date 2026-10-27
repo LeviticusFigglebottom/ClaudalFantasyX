@@ -28,3 +28,5 @@ human's #1 playtest complaint (rigid, snapping motion).
 Applied under M2-FP-102 (2026-10-26, see its task file and the slice-polish live log): walk_mps 1.0, clip plays through HeroMotion, and a run sets off as a run. The prologue and beach shots were viewed in the 8b25b3b render.
 
 ## Review log
+- 2026-10-27 combat (requester): seen applied on claude/m2-slice (HeroMotion in cutscene_sequencer.gd, walk_mps 1.0).
+  Its owner closes it.

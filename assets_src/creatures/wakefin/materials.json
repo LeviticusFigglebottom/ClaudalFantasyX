@@ -1,0 +1,15 @@
+{
+  "_doc": "The Wakefin's surfaces (docs/kb/art/creatures/act2/wakefin.md). Slots are the glTF material names; write_materials.py writes assets/creatures/wakefin/materials/<slot>.tres on game/shaders/creature/creature.gdshader. body is the wet lacquer_black body and bill (lifted toward abyss_navy and deep_teal_shadow on the flanks and belly, faint sailfish bars), clearcoat-wet, whose emission mask is the eight spawn_wound wounds along the spine (the weak points, the weak-point pulse); seam is the band along each flank lit in the sea's own light, sea_glow (not glimmer), a slow swell; fin is the dorsal blade (its membrane deep_teal_shadow low down where the sea-glow lights it from below, black rays), the tail lobes, the pectorals and the small fins, with a rim sheen; eye is wet lacquer_black. Colours are palette.json swatches.",
+  "slots": {
+    "body": {"roughness_dry": 0.35, "roughness_wet": 0.12, "specular": 0.6, "wet_darken": 0.6, "clearcoat_wet": 0.9,
+             "detail_scale": 30.0, "detail_albedo": 0.06, "detail_bump": 0.12, "cavity_albedo": 0.5,
+             "emission_color": "#3FE0C8", "emission_energy": 2.2, "emission_pulse_hz": 0.3, "emission_pulse_depth": 0.4},
+    "seam": {"roughness_dry": 0.3, "roughness_wet": 0.12, "specular": 0.6, "wet_darken": 0.5, "clearcoat_wet": 0.8,
+             "detail_albedo": 0.0, "detail_bump": 0.0,
+             "emission_color": "#1C6B78", "emission_energy": 2.0, "emission_pulse_hz": 0.15, "emission_pulse_depth": 0.3},
+    "fin": {"roughness_dry": 0.4, "roughness_wet": 0.18, "specular": 0.55, "wet_darken": 0.7, "clearcoat_wet": 0.6,
+            "detail_scale": 44.0, "detail_albedo": 0.08, "detail_bump": 0.08, "cavity_albedo": 0.4, "rim_sheen": 0.6},
+    "eye": {"roughness_dry": 0.12, "roughness_wet": 0.06, "specular": 0.7, "clearcoat_wet": 1.0, "detail_albedo": 0.0,
+            "detail_bump": 0.0}
+  }
+}

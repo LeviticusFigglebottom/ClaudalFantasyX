@@ -103,9 +103,16 @@
       "bus": "Ambience",
       "volume_db": 0.0,
       "_note": "M3-AUD-16 (assets_src/sfx/act1_ambience.py)"
+    },
+    "iskarra_dusk": {
+      "file": "res://assets/audio/ambience/iskarra_dusk.ogg",
+      "bus": "Ambience",
+      "volume_db": 0.0,
+      "_note": "M3-AUD-817: the prologue's room tone (assets_src/sfx/prologue_ambience.py)"
     }
   },
   "zones": {
+    "res://game/levels/prologue/prologue.tscn": {"day": ["iskarra_dusk"], "_note": "M3-AUD-817: Iskarra's drowned plaza at dusk, the room tone under the prologue cutscene"},
     "res://game/levels/ch02/haluna/haluna.tscn": {
       "day": [
         "haluna_day",
@@ -130,47 +137,41 @@
         "tamsule_port"
       ],
       "wind": true,
-      "pending": true,
-      "_note": "M3-AUD-16: the scene is on claude/m2-slice; the beds go live when it merges"
+      "_note": "M3-AUD-16: live since the scene landed (M3-AUD-827)"
     },
     "res://game/levels/ch07/tamsule_bell_galleries/tamsule_bell_galleries.tscn": {
       "day": [
         "tamsule_bell"
       ],
       "wind": true,
-      "pending": true,
-      "_note": "M3-AUD-16: the scene is on claude/m2-slice; the beds go live when it merges"
+      "_note": "M3-AUD-16: live since the scene landed (M3-AUD-827)"
     },
     "res://game/levels/ch05/pemakar/pemakar.tscn": {
       "day": [
         "pemakar_terraces"
       ],
       "wind": true,
-      "pending": true,
-      "_note": "M3-AUD-16: the scene is on claude/m2-slice; the beds go live when it merges"
+      "_note": "M3-AUD-16: live since the scene landed (M3-AUD-827)"
     },
     "res://game/levels/ch05/ashcrown/ashcrown.tscn": {
       "day": [
         "ashcrown"
       ],
       "wind": true,
-      "pending": true,
-      "_note": "M3-AUD-16: the scene is on claude/m2-slice; the beds go live when it merges"
+      "_note": "M3-AUD-16: live since the scene landed (M3-AUD-827)"
     },
     "res://game/levels/ch06/brine_shoals/brine_shoals.tscn": {
       "day": [
         "brine_shoals"
       ],
       "wind": true,
-      "pending": true,
-      "_note": "M3-AUD-16: the scene is on claude/m2-slice; the beds go live when it merges"
+      "_note": "M3-AUD-16: live since the scene landed (M3-AUD-827)"
     },
     "res://game/levels/ch09/corrow_night/corrow_night.tscn": {
       "day": [
         "corrow_seawall"
       ],
       "wind": true,
-      "pending": true,
       "_note": "M3-AUD-16: Corrow's shoreline on the night of the Ebbing (claude/m2-slice); the seawall bed under the_ebbing"
     },
     "res://game/levels/ch03/saltgrass_causeway/saltgrass_causeway.tscn": {"day": ["causeway_wind", "tidepools", "surf"], "wind": true, "_note": "B06 (M2-AUD-12)"}

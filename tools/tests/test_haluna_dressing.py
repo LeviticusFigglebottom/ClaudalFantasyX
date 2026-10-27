@@ -42,6 +42,8 @@ import dressing  # noqa: E402
 
 # Pieces built only of closed solids (no double-sided cards), so every face must agree with its normals.
 SOLID = ("crate_stack", "rope_coil", "cargo_sacks", "woodpile")
+# Pieces meant to read from the zone's long views (H01 from 120 m off the beach) cull farther than the small props.
+LANDMARK_END_M = {"fish_weir": 400.0}
 # The yard sets' lane clearance: a prop's centre stays this far from a lane's centre line (lanes are 3 m wide).
 LANE_CLEAR_M = 1.6
 
@@ -132,6 +134,8 @@ class DressingLayoutTests(unittest.TestCase):
     def test_layout_names_only_kit_pieces(self) -> None:
         names = {p["piece"] for p in self.layout["pieces"]}
         names |= {e["piece"] for v in self.layout["yard_sets"]["variants"] for e in v}
+        names |= {e["piece"] for k, v in self.layout.get("story_sets", {}).items() if not k.startswith("_")
+                  for e in v.get("pieces", [])}
         for name in sorted(names):
             with self.subTest(piece=name):
                 self.assertIn(name, self.targets)
@@ -170,7 +174,7 @@ class DressingLayoutTests(unittest.TestCase):
                 self.assertIn(name, lods)
                 start, end = lods[name]
                 self.assertLess(start, end)
-                self.assertLessEqual(end, 200.0)
+                self.assertLessEqual(end, LANDMARK_END_M.get(name, 200.0))
 
     def test_route_to_the_causeway_is_in_the_zone(self) -> None:
         zone = {(p["piece"], tuple(p["at"])) for p in self.layout["pieces"]}

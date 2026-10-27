@@ -197,3 +197,21 @@ here braces). `python3 tools/validate_data.py` (via `tools/validate_npc.py`) che
 Review: `game/levels/_tests/npc/haluna_villagers.tscn` (the real zone with a layer), shots `npc_haluna_dock`,
 `npc_haluna_market`, `npc_haluna_chapel`, `npc_haluna_lane`. Tests: `tests/unit/test_villager_routines.gd`,
 `tools/tests/test_npc.py`.
+
+## Who owns what (decided 2026-10-27, creatures with slice-polish's M2-FP-102)
+
+- **Runtime: creatures.** FieldNpc, NpcLook, the routines, `npc.json` (per-villager tuning: work, glance,
+  look-around, chat, storm), the zone routine files (`game/data/world/npc/zones/`), VillagerLayer and validate_npc.
+- **Placement in a zone: that zone's owner.** Haluna's villagers are placed by slice-polish's HalunaVillagers
+  (`game/levels/ch02/haluna/haluna_villagers.gd`, `game/data/flow/haluna_villagers.json`) in
+  `HalunaZone.prebuild()`, under the router's fade: a FieldNpc inside each body, the capsules hidden, the talk wired.
+  Zones without their own wiring (greybox and Act I zones) let VillagerLayer place them (`attach: beside` or
+  `child`).
+- **The join:** after placing its villagers, a zone with its own wiring calls
+  `VillagerLayer.wire(self, location_id)`. The layer **adopts** every villager it finds on a row's stand-in
+  (`VillagerLayer.placed_on`) and wires only what needs the zone: the chat partner, the work and shelter points,
+  the storm flag. It never adds a second villager. Glances, look-arounds and work already come with FieldNpc from
+  `npc.json`, so they work under either wiring.
+- **Routes** need a villager beside its stand-in (it carries the body). An adopted villager rides inside its body,
+  so its row's `route` and `follow` do not apply; Haluna's routes (Reed's sweep, the child's lane) wait until the
+  zone owner places those two beside their bodies (or lets the layer place them).

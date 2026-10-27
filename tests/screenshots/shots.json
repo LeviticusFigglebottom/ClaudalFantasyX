@@ -3741,6 +3741,419 @@
         },
         "time_scale": 4.0
       }
+    },
+    {
+      "id": "ch08_corrow_arrival",
+      "scene": "res://game/levels/_tests/act1_zones/ch08_corrow_shots.tscn",
+      "camera": "Cameras/Arrival",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "ch08_corrow_stair",
+      "scene": "res://game/levels/_tests/act1_zones/ch08_corrow_shots.tscn",
+      "camera": "Cameras/Stair",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "ch04_ferry_deck",
+      "scene": "res://game/levels/_tests/act1_zones/ch04_ferry_shots.tscn",
+      "camera": "Cameras/Deck",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "ch04_ferry_derelict",
+      "scene": "res://game/levels/_tests/act1_zones/ch04_ferry_shots.tscn",
+      "camera": "Cameras/Derelict",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "ch09_corrow_strand",
+      "scene": "res://game/levels/_tests/act1_zones/ch09_corrow_night_shots.tscn",
+      "camera": "Cameras/Strand",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "ch09_corrow_road",
+      "scene": "res://game/levels/_tests/act1_zones/ch09_corrow_dawn_shots.tscn",
+      "camera": "Cameras/Road",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "ch08_coilspire_path",
+      "scene": "res://game/levels/_tests/act1_zones/ch08_coilspire_shots.tscn",
+      "camera": "Cameras/Path",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "ch08_coilspire_hall",
+      "scene": "res://game/levels/_tests/act1_zones/ch08_coilspire_shots.tscn",
+      "camera": "Cameras/Hall",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "ch07_bell_galleries",
+      "scene": "res://game/levels/_tests/act1_zones/ch07_bell_shots.tscn",
+      "camera": "Cameras/Galleries",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "ch07_bell_moorings",
+      "scene": "res://game/levels/_tests/act1_zones/ch07_bell_shots.tscn",
+      "camera": "Cameras/Moorings",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "asha_battle_ko",
+      "scene": "res://game/levels/_tests/characters/asha/asha_battle_ko.tscn",
+      "camera": "Cameras/ThreeQuarter",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "asha_battle_victory",
+      "scene": "res://game/levels/_tests/characters/asha/asha_battle_victory.tscn",
+      "camera": "Cameras/ThreeQuarter",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "rhen_battle_ko",
+      "scene": "res://game/levels/_tests/characters/rhen/rhen_battle_ko.tscn",
+      "camera": "Cameras/ThreeQuarterLeft",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "rhen_battle_victory",
+      "scene": "res://game/levels/_tests/characters/rhen/rhen_battle_victory.tscn",
+      "camera": "Cameras/ThreeQuarterLeft",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "rhen_battle_finisher",
+      "scene": "res://game/levels/_tests/characters/rhen/rhen_battle_finisher.tscn",
+      "camera": "Cameras/ThreeQuarterLeft",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "toma_battle_ko",
+      "scene": "res://game/levels/_tests/characters/toma/toma_battle_ko.tscn",
+      "camera": "Cameras/ThreeQuarter",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "toma_battle_victory",
+      "scene": "res://game/levels/_tests/characters/toma/toma_battle_victory.tscn",
+      "camera": "Cameras/ThreeQuarter",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "battle_boss_intro_reach",
+      "scene": "res://game/battle/scene/shots/battle_boss_intro_reach.tscn"
+    },
+    {
+      "id": "battle_arena_wall_head",
+      "scene": "res://game/levels/_tests/battle_arenas/arena_wall_head.tscn",
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 12.0
+        }
+      }
+    },
+    {
+      "id": "dialogue_voice_over",
+      "scene": "res://game/levels/_tests/ui_shots/dialogue_voice_over.tscn",
+      "camera": "Haluna/Cameras/H02",
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "battle_ch08_stair_hold",
+      "scene": "res://game/battle/scene/shots/battle_ch08_stair_hold.tscn"
+    },
+    {
+      "id": "creature_mangrove_drowner",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_mangrove_drowner.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
+      "id": "creature_mangrove_drowner_risen",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_mangrove_drowner_risen.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
+      "id": "creature_lamp_engine",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_lamp_engine.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
+      "id": "creature_lamp_engine_opened",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_lamp_engine_opened.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
+      "id": "npc_wake_feast",
+      "scene": "res://game/levels/_tests/npc/wake_villagers.tscn",
+      "camera": "Cameras/Feast",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 120,
+      "setup": {
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "creature_avalanche_ram",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_avalanche_ram.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
+      "id": "creature_wakefin",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_wakefin.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
+      "id": "iskarra_p01_plaza_dusk",
+      "scene": "res://game/levels/_tests/iskarra_kit/iskarra_preview.tscn",
+      "camera": "Cameras/P01",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "iskarra_i02_gate_from_the_plaza",
+      "scene": "res://game/levels/_tests/iskarra_kit/iskarra_preview.tscn",
+      "camera": "Cameras/I02",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "iskarra_i03_broken_tower",
+      "scene": "res://game/levels/_tests/iskarra_kit/iskarra_preview.tscn",
+      "camera": "Cameras/I03",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
     }
   ]
 }

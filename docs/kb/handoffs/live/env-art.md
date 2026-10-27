@@ -41,6 +41,122 @@ env-art is cloud session `session_01YbaV2c8yquRHqj6afQYg89` on `claude/env-art`;
     `hatch` and the chalk marks are centred and face +X (yaw them onto their hull side). Use `chalk_mark` on the
     route and `chalk_mark_heavy` nearer the camp; `tide_wheel` until B03 and `tide_wheel_burned` after.
 
+- **MERGE-READY @ 39f66d4c (FAST-TRACK, fixes my own red test): take this with 9222913f, never 9222913f alone.**
+  9222913f turned `tools.tests.test_shrine_gi_bake` red (the GI guard hashed every Haluna material, and the new
+  `shrine_offering` prop matched its `shrine_*.glb` glob). `gi_inputs.py` now hashes only the materials the shrine
+  pieces use; the prop is renamed `wayside_offering` (same geometry); the narrowed inputs equal f6af47e1's (the
+  last state the shipped bake matched), so the sidecar is re-recorded without a rebake. Also adds `offering_step`.
+  Checks run: `test_shrine_gi_bake`, `test_haluna_dressing`, `test_haluna_kit` OK; `--filter=haluna` 49/0;
+  `haluna_kit` rebuild (all other pieces identical); validate_data; taskboard. Shots: unchanged (same geometry).
+
+- **MERGE-READY @ a0d2549f: M3-ENV-701 on the B06 causeway and the two slice arenas** (offerings at the marker
+  posts, wrack, nets, coils, shells and pebbles along the bed; tideline_dawn and causeway_disc_sunset dressed).
+  Checks run: `test_haluna_kit`, `test_arenas`, `test_fog_lamps` OK; the full tools suite at 39f66d4c (1027 OK);
+  validate_data. Shots: viewed on lavapipe before the render move, every one inside its limit; the PC re-renders
+  them below. Also **M3-ENV-704** filed: slice-polish places dressing in the Shell Shrine and rebakes its GI.
+
+- **MERGE-READY @ 22a5de11:** the integration branch (ze8rrn @ 7cccb551, big9) merged in. Conflicts: the shared
+  files (union), and the three battle baselines (the PC gate's copies; re-render requested below). Checks run:
+  the full tools suite (1123 OK), `--filter=haluna` 50/0, `--filter=arena` 18/0, `gi_inputs --check`,
+  validate_data, taskboard. Skipped: shots (rendering is the PC's now).
+
+- **MERGE-READY @ 71f19fbc: M3-ENV-706**, Ch6's two arenas at final quality from the Brine Shoals kit
+  (`brine_shoals_afternoon`, `salvage_camp_burning`; arenas.json repointed; the camp's fires keep M3-BPR-03's
+  `FireLight<k>` contract). Also **M3-ENV-705** (Ashcrown grade, 1a422476). Checks run: `--filter=arena` 18/0,
+  `test_arenas`, `test_fog_lamps`, `test_brine_shoals_kit`, `test_ashcrown_kit` OK, `brine_shoals_kit` full rebuild
+  (others identical), every other arena regenerates identically, validate_data, taskboard. Shots: PC (below).
+
+- **MERGE-READY @ ba16d48b:** four fish weirs (stake-and-wattle V traps) in Haluna's lagoon shallows, a new
+  `fish_weir` kit piece, culled at 400 m so they read from H01. Checks run: `test_haluna_dressing`,
+  `test_haluna_kit`, `test_shrine_gi_bake` OK; `--filter=haluna` 50/0; `haluna_kit` rebuild (others identical).
+
+- **MERGE-READY @ 179069de: M3-ENV-705**, the causeway route arena's ground takes the zone's `kit_causeway_ground`
+  (it read as bleached beach). Checks run: `test_arenas`, `test_haluna_kit`, `test_shrine_gi_bake` OK,
+  `--filter=arena` 18/0, `haluna_kit` rebuild (only that ground changed).
+
+- **MERGE-READY @ bbd4b5ad: M3-ENV-707 batch A** for act1-chapters' M3-ENV-1203 (Corrow): `stillguard_barracks`,
+  `wall_gate`, `kite_line`, `kite_line_high`, `marra_step`, `hoist_pins`, `hoist_rope`, `hoist_basket`,
+  `trader_boat`, and the reuse map (net racks, chandler, chapel, shrine from the Haluna and Brine Shoals kits via
+  per-piece `kit_dir`); sizes, origins and facings in the task file. Checks run: `test_corrow_kit` OK, `corrow_kit`
+  full rebuild (older pieces identical), import maps every slot, validate_data, taskboard. No shot reads them yet.
+  - **For act1-chapters:** place them in `tools/act1/ch08_corrow_dressing.py` by block and drop the ids from
+    `greybox.keep`. Batch B (the mole and its sea stair, the Bastion) is next.
+
+- **MERGE-READY @ 643f8a04: M3-ENV-707 batch B** (Corrow): `mole_pier`, `mole_sea_stair`, `bastion_platform` on the
+  collision blocks' footprints (see the task file for origins; give them `lod1_from_m` ≥ 150). Checks run:
+  `test_corrow_kit` OK, `corrow_kit` full rebuild (older pieces identical), import maps every slot, validate_data.
+  M3-ENV-1203 is covered except `Flood` / `Lake` (water surfaces, Rendering's).
+
+- **MERGE-READY @ fc4b4fcd: M3-ENV-708**, Ch9's kit pieces in the Corrow kit (`cw_night.py`): `shroud_a/b/small`
+  (faces covered), `strand_lamp`, `round_shield`, `ebbing_raft`, `flood_debris`, `milestone`. Checks run:
+  `test_corrow_kit` OK, `corrow_kit` full rebuild (older pieces identical), import maps every slot, validate_data,
+  taskboard. **For act1-chapters:** these are the kit half of M3-C09-04; placement is yours.
+
+- **MERGE-READY @ 032b7a64: M3-ENV-709**, Haluna's wake night for Ch4 (M3-C04-03's Haluna half): kit pieces
+  `ground_lamp`, `feast_mat`, `ink_kit`, `wake_shell_single` and the shell-state materials; `HalunaDresser`
+  `story_sets` (hidden `StorySets/StorySet_<name>`, `story_set(name)`), with `ch04_wake`, `ch04_shell_asha`,
+  `ch04_shell_imra_faded`, `ch04_shell_imra_inked` in the layout. Checks run: `--filter=haluna` 52/0 (new
+  `test_haluna_story_sets`), `test_haluna_dressing`, `test_haluna_kit`, `test_shrine_gi_bake` OK, `haluna_kit`
+  rebuild (older pieces identical), gdlint, gdformat, validate_data, taskboard. Shots unchanged (sets hidden).
+  - **For act1-chapters:** Ch4's zone shows the sets by flag; details in the task file.
+
+- **For slice-polish (M2-FP-108):** env-art's a0d2549f added dressing to
+  `assets/environments/zones/saltgrass_causeway/causeway_layout.json` (offering steps at marker posts, wrack,
+  nets, coils, a crate stack, shell/pebble instances). If `tools/causeway/build_causeway_gameplay.py` reads that
+  layout, re-run it after merging; none of the new pieces sits on the bed's walk line (they stand 1–14 m off it).
+- **M3-C01-04** (Ch1 kit swap): noted in its task file that the swap is the Ch1 scene owner's (ZoneKitDressing, as
+  Ch4–Ch9); env-art supplies missing pieces on request.
+
+- **MERGE-READY @ 80bb1e56:** `HalunaDresser.night_lamp_houses()` / `set_night_lamp(house, lit)` for Ch4 C4-01's
+  windows going dark one at a time. Checks run: `--filter=haluna` 53/0, gdlint, gdformat.
+
+- **MERGE-READY @ 31dc710b:** the integration branch (ze8rrn @ 7f187123, big10) merged in; conflicts only in the shared
+  append-only files (union). Checks run: full tools suite OK, `--filter=haluna` 53/0, `--filter=arena` 18/0,
+  `gi_inputs --check`, validate_data, taskboard. The render requests above still stand.
+
+- **Lead's item 3, the `offering_step` PROVENANCE warning:** not a bad row. The row landed in b2fbee29 and the glb in
+  39f66d4c, one commit later. slice-polish merged b2fbee29 but not 39f66d4c, so its branch has the row without the
+  file. Merge env-art at 39f66d4c or later and the warning goes. On env-art's head both exist (validate_data: 0
+  warnings).
+- **Lead's item 4, Act I past Ch9:** Act I is Ch1–Ch9 (act_outline.md), so there are no Act I zones past Ch9.
+  Every Act I zone has its kit, and every Act I encounter arena is at final quality (Ch6's two since M3-ENV-706).
+  The primitive-built scene left in the act's frame is the **Prologue's Iskarra**, so that is the next item (below).
+- **MERGE-READY @ 86155bfc: M3-ENV-710**, Iskarra for the Prologue (reused in Ch19). New pieces in the Haluna kit
+  (`iskarra.py`):
+  - five white Lit Age ceramic towers (spire, stepped, broken, small, small broken), with flutes, galleries, window
+    slits, a waterline band, domes and finials or jagged hollow tops;
+  - a fallen crown, the broken plaza (34 x 18 m) and its rise, a standing and a fallen gate, dead lamp columns;
+  - 3 materials.
+
+  `assets/environments/zones/iskarra/iskarra_city.tscn` places each piece where the Prologue's primitives stand.
+  Checks run:
+  - full tools suite (1156) OK; `test_iskarra`, and the Godot `--filter=iskarra`;
+  - `haluna_kit` rebuild (every older piece byte-identical);
+  - `gi_inputs --check`, validate_data, taskboard.
+
+  Also in this merge: re-approved after viewing the eight shots from `gpu/render-env-art-71f19fb` and
+  `gpu/render-env-art-a0d2549` (0f19d868). The Ch6 arenas replace the greybox; the five UI shots differ only by lane
+  1's new jars.
+  - **For slice-polish:** request **M3-ENV-711** swaps the Prologue's `City` primitives for the instance (you own
+    `game/levels/prologue/**`).
+  - **24bf927a is NOT merge-ready yet.** It adds the preview stage `game/levels/_tests/iskarra_kit/` and three new
+    shots. `test_screenshots` stays red until the PC renders them and env-art approves.
+- **M3-ENV-1000** (Sefir's barge: no wake, a still reflection) is blocked.
+  - The barge exists (`white_barge`, `bs_barge.py`).
+  - The still reflection is M3-RND-03 (Rendering, todo).
+  - No boat in the game draws a wake yet, so "the others leave one" needs a water wake feature first.
+
+### Render requests
+RENDER-REQUEST @ a0d2549f: battle_arena_tideline_dawn,battle_arena_causeway_disc_sunset,battle_arena_causeway,battle_arena_tideline,causeway_c02_profile_against_the_lagoon,causeway_c08_drownbell_disc_approach,drownbell_flood,battle_boss_intro_drownbell,haluna_h01_village_from_sea,haluna_h10_dock_night,field_objective_line,field_interact_prompt,field_area_title,field_tip_card,dialogue_continue; why: M3-ENV-701 set dressing in Haluna, the causeway and the two arenas (the five field/dialogue shots frame Haluna's lane 1)
+RENDER-REQUEST @ 22a5de11: battle_arena_oruvel_raft_morning,battle_arena_causeway,drownbell_flood; why: the merge took the PC gate's copies of these three over env-art's; confirm they still match with the arena dressing
+RENDER-REQUEST @ 1a422476: ashcrown_a01_approach,ashcrown_a04_anvil_hall,ashcrown_a10_plume_from_the_rim; why: M3-ENV-705 Ashcrown grade (saturation x1.0, accents +18%) answering the human's greyscale complaint
+RENDER-REQUEST @ 71f19fbc: battle_arena_shoals,battle_arena_camp,battle_boss_intro_inquisitor; why: M3-ENV-706 Ch6 arenas replace the greybox
+RENDER-REQUEST @ ba16d48b: haluna_h01_village_from_sea,haluna_h04_dock,haluna_h10_dock_night,field_menu_map_haluna; why: the lagoon's fish weirs (M3-ENV-701)
+RENDER-REQUEST @ 179069de: battle_arena_causeway_route_afternoon; why: M3-ENV-705 its ground takes the zone's tidal-mud material
+ANSWERED: 71f19fbc (gpu/render-env-art-71f19fb) and a0d2549f (gpu/render-env-art-a0d2549), all eight non-passing shots viewed and re-approved in 0f19d868.
+RENDER-REQUEST @ 24bf927a: iskarra_p01_plaza_dusk,iskarra_i02_gate_from_the_plaza,iskarra_i03_broken_tower; why: M3-ENV-710 Iskarra kit for the Prologue under its dusk (new shots, no baseline yet)
+RENDER-REQUEST @ fa67bfee: battle_arena_shoals,battle_arena_camp,battle_boss_intro_inquisitor; why: M3-ENV-706 density pass after viewing 71f19fb (the shoals read as bare sand, the camp's hard as one pebble repeat)
+
 ## STATE AT HANDOVER (2026-10-25)
 
 **HANDOVER DONE @ 1fee4436** (`claude/env-art`; the code is merge-ready at d065835e, and only docs changed after it).

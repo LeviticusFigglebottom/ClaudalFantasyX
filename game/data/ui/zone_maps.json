@@ -119,18 +119,18 @@
         "name_key": "LOCATION_CH04_BRIGHTWATER_FERRY",
         "shapes": "res://game/levels/ch04/brightwater_ferry/brightwater_ferry_layout.json",
         "shape_kind": "greybox_layout",
-        "shape_hints": {"sea": ["Sea"], "skip": ["Sheathing", "NameBoardWrapped", "Fenders"]},
-        "bounds": [-21.0, -11.0, 34.0, 51.0],
+        "shape_hints": {"skip": ["NameBoardWrapped", "Fenders"]},
+        "bounds": [-21.0, -11.0, 40.0, 51.0],
         "pois": [
-          {"id": "landing", "name_key": "MAP_POI_F_LANDING", "kind": "path", "at": [0.0, 30.0], "source": "spawn:Landing"},
-          {"id": "ferrymaster", "name_key": "MAP_POI_F_FERRYMASTER", "kind": "talk", "at": [0.9, 20.5], "source": "actor:ferrymaster"},
-          {"id": "shrine", "name_key": "MAP_POI_F_SHRINE", "kind": "shrine", "at": [0.0, 11.4], "source": "trigger:shrine"},
-          {"id": "purser", "name_key": "MAP_POI_F_PURSER", "kind": "shop", "at": [2.6, 11.0], "source": "actor:purser"},
-          {"id": "bow", "name_key": "MAP_POI_F_BOW", "kind": "path", "at": [0.0, -4.6], "source": "trigger:bow"},
-          {"id": "derelict_stern", "name_key": "MAP_POI_F_DERELICT_STERN", "kind": "dock", "at": [-11.2, 13.0], "source": "spawn:DerelictDeck"},
-          {"id": "galley", "name_key": "MAP_POI_F_GALLEY", "kind": "talk", "at": [-11.6, 9.0], "source": "trigger:galley_bowls"},
-          {"id": "hold", "name_key": "MAP_POI_F_HOLD", "kind": "door", "at": [-13.0, 0.8], "source": "trigger:hold_housing"},
-          {"id": "mainmast", "name_key": "MAP_POI_F_MAINMAST", "kind": "path", "at": [-13.0, -5.6], "source": "trigger:wraith"}
+          {"id": "landing", "name_key": "MAP_POI_F_LANDING", "kind": "path", "at": [13.0, 7.9], "source": "spawn:Landing"},
+          {"id": "ferrymaster", "name_key": "MAP_POI_F_FERRYMASTER", "kind": "talk", "at": [0.0, 21.0], "source": "actor:ferrymaster"},
+          {"id": "shrine", "name_key": "MAP_POI_F_SHRINE", "kind": "shrine", "at": [0.0, 16.6], "source": "trigger:shrine"},
+          {"id": "purser", "name_key": "MAP_POI_F_PURSER", "kind": "shop", "at": [2.8, 10.4], "source": "actor:purser"},
+          {"id": "bow", "name_key": "MAP_POI_F_BOW", "kind": "path", "at": [0.0, -1.5], "source": "trigger:bow"},
+          {"id": "derelict_stern", "name_key": "MAP_POI_F_DERELICT_STERN", "kind": "dock", "at": [-7.8, 18.3], "source": "spawn:DerelictDeck"},
+          {"id": "galley", "name_key": "MAP_POI_F_GALLEY", "kind": "talk", "at": [-8.1, 15.1], "source": "trigger:galley_bowls"},
+          {"id": "hold", "name_key": "MAP_POI_F_HOLD", "kind": "door", "at": [-9.2, 8.6], "source": "trigger:hold_housing"},
+          {"id": "mainmast", "name_key": "MAP_POI_F_MAINMAST", "kind": "path", "at": [-9.2, 3.5], "source": "trigger:wraith"}
         ]
       },
       {
@@ -195,13 +195,13 @@
         "name_key": "LOCATION_CH07_TAMSULE_BELL_GALLERIES",
         "shapes": "res://game/levels/ch07/tamsule_bell_galleries/tamsule_bell_galleries_layout.json",
         "shape_kind": "greybox_layout",
-        "shape_hints": {"sea": ["River"], "water": ["CatchPool"], "buildings": ["GalleryThird", "GalleryTierW", "GalleryTierE", "GalleryTierS"]},
-        "bounds": [-18.0, -18.0, 46.0, 36.0],
+        "shape_hints": {"sea": ["River"], "water": ["CatchPool"], "buildings": ["MapGallery0", "MapGallery1", "MapGallery2", "MapGallery3", "MapGallery4", "MapGallery5", "MapGallery6", "MapGallery7", "MapGallery8", "MapGallery9", "MapGallery10", "MapGallery11"]},
+        "bounds": [-44.0, -44.0, 88.0, 88.0],
         "pois": [
-          {"id": "gallery", "name_key": "MAP_POI_G_GALLERY", "kind": "path", "at": [0.0, 10.0], "source": "spawn:Gallery"},
-          {"id": "rim", "name_key": "MAP_POI_G_RIM", "kind": "pool", "at": [0.0, 5.6], "source": "trigger:rim"},
-          {"id": "moorings", "name_key": "MAP_POI_G_MOORINGS", "kind": "dock", "at": [21.5, 3.5], "source": "trigger:moorings"},
-          {"id": "to_port", "name_key": "MAP_POI_G_TO_PORT", "kind": "door", "at": [-6.0, 14.4], "source": "trigger:to_port"}
+          {"id": "gallery", "name_key": "MAP_POI_G_GALLERY", "kind": "path", "at": [-32.5, 4.6], "source": "spawn:Gallery"},
+          {"id": "rim", "name_key": "MAP_POI_G_RIM", "kind": "pool", "at": [-16.2, 0.0], "source": "trigger:rim"},
+          {"id": "moorings", "name_key": "MAP_POI_G_MOORINGS", "kind": "dock", "at": [-11.6, -20.0], "source": "trigger:moorings"},
+          {"id": "to_port", "name_key": "MAP_POI_G_TO_PORT", "kind": "door", "at": [-29.5, 14.4], "source": "trigger:to_port"}
         ]
       },
       {
@@ -210,15 +210,15 @@
         "name_key": "LOCATION_CH09_CORROW_NIGHT",
         "shapes": "res://game/levels/ch09/corrow_night/corrow_night_layout.json",
         "shape_kind": "greybox_layout",
-        "shape_hints": {"sea": ["Harbour", "LowTownLake"], "structures": ["SeaWallW", "SeaWallE", "BreachRubble"], "buildings": ["RoofA", "RoofB", "RoofC", "RoofD"]},
-        "bounds": [-52.0, -34.0, 140.0, 58.0],
+        "shape_hints": {"sea": ["LowTownLake"]},
+        "bounds": [-62.0, -34.0, 150.0, 72.0],
         "pois": [
-          {"id": "strand", "name_key": "MAP_POI_C_STRAND", "kind": "path", "at": [-28.0, -5.0], "source": "spawn:Strand"},
-          {"id": "wall_head", "name_key": "MAP_POI_C_WALL_HEAD", "kind": "talk", "at": [-41.0, -4.0], "source": "trigger:npc_liss"},
-          {"id": "stillguard_row", "name_key": "MAP_POI_C_STILLGUARD_ROW", "kind": "talk", "at": [21.5, 1.5], "source": "trigger:toma"},
-          {"id": "landing", "name_key": "MAP_POI_C_LANDING", "kind": "dock", "at": [0.0, 9.5], "source": "trigger:landing"},
-          {"id": "gate", "name_key": "MAP_POI_C_GATE", "kind": "door", "at": [52.0, -14.0], "source": "spawn:RoadGate"},
-          {"id": "milestone", "name_key": "MAP_POI_C_MILESTONE", "kind": "path", "at": [76.0, -14.0], "source": "trigger:milestone"}
+          {"id": "strand", "name_key": "MAP_POI_C_STRAND", "kind": "path", "at": [-53.7, 25.7], "source": "spawn:Strand"},
+          {"id": "wall_head", "name_key": "MAP_POI_C_WALL_HEAD", "kind": "talk", "at": [-16.9, -0.0], "source": "trigger:npc_liss"},
+          {"id": "stillguard_row", "name_key": "MAP_POI_C_STILLGUARD_ROW", "kind": "talk", "at": [-7.8, 23.9], "source": "trigger:toma"},
+          {"id": "landing", "name_key": "MAP_POI_C_LANDING", "kind": "dock", "at": [-27.1, 29.9], "source": "trigger:landing"},
+          {"id": "gate", "name_key": "MAP_POI_C_GATE", "kind": "door", "at": [36.9, 2.3], "source": "spawn:RoadGate"},
+          {"id": "milestone", "name_key": "MAP_POI_C_MILESTONE", "kind": "path", "at": [60.6, 6.2], "source": "trigger:milestone"}
         ]
       },
       {"id": "ch03/saltgrass_causeway", "scene": "res://game/levels/ch03/saltgrass_causeway/saltgrass_causeway.tscn", "name_key": "LOCATION_CH03_SALTGRASS_CAUSEWAY", "shapes": "res://game/levels/ch03/saltgrass_causeway/saltgrass_causeway_layout.json", "shape_kind": "greybox_layout", "bounds": [-14.0, -196.0, 264.0, 210.0], "pois": [{"id": "causeway_head", "name_key": "MAP_POI_CAUSEWAY_HEAD", "kind": "path", "at": [1.35, -0.65], "source": "spawn:FromHaluna"}, {"id": "posts", "name_key": "MAP_POI_SC_POSTS", "kind": "talk", "at": [28.59, -14.4], "source": "trigger:banter_posts"}, {"id": "tidepools", "name_key": "MAP_POI_SC_TIDEPOOLS", "kind": "pool", "at": [58.67, -37.73], "source": "trigger:banter_tidepool"}, {"id": "harrier", "name_key": "MAP_POI_SC_HARRIER", "kind": "path", "at": [75.97, -47.42], "source": "trigger:harrier"}, {"id": "ring", "name_key": "MAP_POI_SC_RING", "kind": "talk", "at": [111.04, -70.05], "source": "trigger:banter_ring"}, {"id": "shrine_steps", "name_key": "MAP_POI_SC_SHRINE_STEPS", "kind": "shrine", "at": [233.87, -181.16], "source": "trigger:to_shrine"}]}

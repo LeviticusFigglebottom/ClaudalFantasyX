@@ -122,6 +122,9 @@ func test_a_walk_in_haluna_steps_from_the_hero_bodys_foot_contacts() -> void:
 	# _load turns the controller's physics off, so it never measures its floor: stand it on the sand.
 	player.set(&"_grounded", true)
 	player.global_position = _marker("Village")
+	# The test runs no physics, so the controller never lands; contacts off the ground are rightly ignored. The
+	# floor would set this on the first step in play.
+	player.set(&"_grounded", true)
 	for i in WALK_FRAMES:
 		player.global_position += Vector3(0.0, 0.0, -1.0 * DT)
 		body.call(&"advance", DT)
@@ -131,6 +134,29 @@ func test_a_walk_in_haluna_steps_from_the_hero_bodys_foot_contacts() -> void:
 	assert_eq(f.contact_source, &"signal", "foot_contact is the step source")
 	var steps := played.filter(func(p: Array) -> bool: return String(p[0]).begins_with("hero_step_sand_"))
 	assert_true(steps.size() >= 3, "a 3 s walk on the sand steps (%d)" % steps.size())
+	_done()
+
+
+## Runs only with hero-integration's HeroFieldActor. Its clips have no footfall markers until characters' M2-CHR-12
+## lands, so the body never emits: after stall_m the listener must step by distance, not once per stall_m.
+func test_a_hero_body_without_footfall_markers_still_walks_at_stride() -> void:
+	_load(HALUNA)
+	var player := _player()
+	var body := player.get_node_or_null(^"HeroBody") as Node3D
+	if body == null or not body.has_signal(&"foot_contact") or not body.has_method(&"advance"):
+		assert_true(true, "no hero body on this branch yet")
+		_done()
+		return
+	var f := _listener(HALUNA)
+	body.call(&"snap")
+	player.global_position = _marker("Village")
+	player.set(&"_grounded", true)  # no physics in tests (see above)
+	for i in WALK_FRAMES * 2:  # 6 m at 1 m/s
+		player.global_position += Vector3(0.0, 0.0, -1.0 * DT)
+		body.call(&"advance", DT)
+		f.advance(DT)
+	var steps := played.filter(func(p: Array) -> bool: return String(p[0]).begins_with("hero_step_"))
+	assert_true(steps.size() >= 8, "6 m of walking steps at about walk_step_m (%d)" % steps.size())
 	_done()
 
 

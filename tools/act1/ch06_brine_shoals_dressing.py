@@ -149,11 +149,15 @@ def layout() -> dict:
 def copy_grade() -> None:
     """The preview's ch06 grade and water, repointed at copies next to the zone."""
     shutil.copyfile(PREVIEW / "lut_ch06_smoke.png", ZONE / "lut_ch06_smoke.png")
-    imp = (PREVIEW / "lut_ch06_smoke.png.import").read_text(encoding="utf-8")
-    imp = re.sub(r'^(uid|path)=.*\n', "", imp, flags=re.M)  # Godot writes this copy's own uid and cache path
-    imp = re.sub(r'^dest_files=.*\n', "", imp, flags=re.M)
-    imp = imp.replace("res://game/levels/_tests/brine_shoals_kit/", RES_ZONE)
-    (ZONE / "lut_ch06_smoke.png.import").write_text(imp, encoding="utf-8")
+    if (ZONE / "lut_ch06_smoke.png.import").exists():
+        imp = None  # Godot owns the copy's import file once it has imported it (its uid and cache path)
+    else:
+        imp = (PREVIEW / "lut_ch06_smoke.png.import").read_text(encoding="utf-8")
+    if imp is not None:
+        imp = re.sub(r'^(uid|path)=.*\n', "", imp, flags=re.M)  # Godot writes this copy's own uid and cache path
+        imp = re.sub(r'^dest_files=.*\n', "", imp, flags=re.M)
+        imp = imp.replace("res://game/levels/_tests/brine_shoals_kit/", RES_ZONE)
+        (ZONE / "lut_ch06_smoke.png.import").write_text(imp, encoding="utf-8")
     env = (PREVIEW / "brine_shoals_ch06_environment.tres").read_text(encoding="utf-8")
     env = env.replace("res://game/levels/_tests/brine_shoals_kit/", RES_ZONE)
     (ZONE / "brine_shoals_environment.tres").write_text(env, encoding="utf-8")

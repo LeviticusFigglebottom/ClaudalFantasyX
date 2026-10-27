@@ -78,18 +78,67 @@
       "bottom_clearance_m": 0.1,
       "startle_follow_mult": 2.0,
       "wobble_y_fraction": 0.5
+    },
+    "insect": {
+      "_doc": "M3-CRE-616: one GLB, two meshes, a material each (insect/materials/<slot>.tres); a zone's swarms row picks the table by its type. moth: on an orbit of orbit_fraction x the row's radius round the centre (orbit_hz revolutions a second), bobbing bob_m, with a jitter of up to jitter_m re-drawn every jitter_s and chased at jitter_rate, and every dart_s a dart of dart_m for dart_time_s chased dart_rate_mult times faster; moths ignore the player. dragonfly: hovers hover_s (drifting drift_m), then darts dart_m to a new spot (or, with perch_chance, to a free perch for perch_s) at dart_speed_mps; a player within flee_radius_m sends it flee_m away at flee_speed_mps. Both stay within the row's radius_m and height_m of its centre's y. flutter_hz is the wing beat; flutter_amp / hover_amp / dart_amp scale the material's flutter_angle.",
+      "scene": "res://assets/wildlife/insect/insect.glb",
+      "meshes": {"moth": "insect_moth", "dragonfly": "insect_dragonfly"},
+      "material": {
+        "moth": "res://assets/wildlife/insect/materials/moth.tres",
+        "dragonfly": "res://assets/wildlife/insect/materials/dragonfly.tres"
+      },
+      "cast_shadow": {"moth": false, "dragonfly": false},
+      "moth": {
+        "scale": [0.85, 1.15],
+        "orbit_fraction": [0.3, 0.75],
+        "orbit_hz": [0.3, 0.7],
+        "counter_orbit_chance": 0.4,
+        "height_m": 0.45,
+        "bob_m": 0.15,
+        "bob_hz": [0.5, 1.1],
+        "jitter_m": 0.12,
+        "jitter_s": [0.08, 0.3],
+        "jitter_rate": 12.0,
+        "dart_m": 0.3,
+        "dart_s": [1.2, 3.5],
+        "dart_time_s": 0.3,
+        "dart_rate_mult": 2.5,
+        "turn_rate": 14.0,
+        "flutter_hz": [13.0, 17.0],
+        "flutter_amp": 1.0
+      },
+      "dragonfly": {
+        "scale": [0.9, 1.1],
+        "height_m": 0.5,
+        "hover_s": [0.8, 2.8],
+        "hover_amp": 0.7,
+        "drift_m": 0.05,
+        "drift_hz": [0.3, 0.7],
+        "dart_m": [1.0, 3.0],
+        "dart_speed_mps": [3.0, 5.0],
+        "dart_amp": 1.0,
+        "perch_chance": 0.25,
+        "perch_s": [3.0, 8.0],
+        "flee_radius_m": 1.5,
+        "flee_m": 2.5,
+        "flee_speed_mps": 6.0,
+        "turn_rate": 12.0,
+        "amp_rate": 6.0,
+        "flutter_hz": [22.0, 28.0]
+      }
     }
   },
   "budgets": {
-    "_doc": "Per layer (one zone). The layer clamps counts to these and warns; the validator fails a zone file over them. draw_calls: the layer's MultiMeshes (gulls flying, gulls perched, crabs, fish), before shadow passes. ms_per_frame: the CPU budget WildlifeLayer._process is measured against (docs/kb/art/wildlife.md).",
+    "_doc": "Per layer (one zone). The layer clamps counts to these and warns; the validator fails a zone file over them. draw_calls: the layer's MultiMeshes (gulls flying, gulls perched, crabs, fish, moths, dragonflies), before shadow passes. insects: moths and dragonflies together (M3-CRE-616). ms_per_frame: the CPU budget WildlifeLayer._process is measured against (docs/kb/art/wildlife.md).",
     "gulls": 12,
     "crabs": 24,
     "fish": 80,
-    "draw_calls": 4,
+    "insects": 24,
+    "draw_calls": 6,
     "ms_per_frame": 1.0
   },
   "cull": {
-    "_doc": "A group (a flock, a beach, a shoal) pauses when its bounds are outside the camera's frustum, and hides past distance_m from the camera.",
+    "_doc": "A group (a flock, a beach, a shoal, a swarm) pauses when its bounds are outside the camera's frustum, and hides past distance_m from the camera.",
     "distance_m": 120.0,
     "frustum": true
   }

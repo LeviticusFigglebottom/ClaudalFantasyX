@@ -295,6 +295,7 @@ def build_layout(seed: int = SEED) -> dict:
     instances = [{"name": f"Saltgrass_{k.upper()}", "glb": veg + "saltgrass_clumps.glb", "mesh_node": f"saltgrass_{k}",
                   "material": veg + "materials/saltgrass.tres", "visibility_end_m": 220.0, "xforms": v}
                  for k, v in grass.items()]
+    instances += _dress(field, seed, put, posts)
     tide_pools = [[round(float(c[0]), 2), round(float(c[1]), 2), r] for c, r in field.pool_xy]
     return {
         "schema": "hymn-zone-layout/1",
@@ -303,6 +304,7 @@ def build_layout(seed: int = SEED) -> dict:
         "kit_dir": "res://assets/environments/kits/haluna/",
         "materials_dir": "res://assets/environments/kits/haluna/materials/",
         "lod1_from_m": 75.0, "lod_end_m": 2500.0, "lod_margin_m": 2.0,
+        "prop_lods": PROP_LODS,
         "pieces": [{"piece": "causeway_flats", "at": [0.0, 0.0], "y": 0.0, "yaw_deg": 0.0, "lod1_from_m": 160.0}]
         + pieces,
         "instances": instances,
@@ -317,6 +319,70 @@ def build_layout(seed: int = SEED) -> dict:
     }
 
 
+# ---- M3-ENV-701: set dressing (the human's playtest: "parts look primitive") ----------------------------
+# Pilgrims' offerings at the marker posts, the tide's wrack and lost gear out on the flats, and shells and
+# pebbles along the bed's edges. A separate rng, so the M2-ENV-10 placements above are unchanged.
+PROP_LODS = {"offering_step": [22.0, 90.0], "tide_debris": [30.0, 140.0], "net_heap": [30.0, 120.0],
+             "rope_coil": [18.0, 55.0], "crate_stack": [30.0, 120.0]}
+LITTER = "res://assets/environments/kits/haluna/village_litter.glb"
+LITTER_MATS = {"shell_scatter": "kit_nacre", "pebble_cluster": "kit_coral_stone"}
+
+
+def _dress(field: Field, seed: int, put, posts: list) -> list[dict]:
+    rng = kc.rng_for("causeway_dressing", seed)
+    total = float(PATH_S[-1])
+    # Offerings at every second marker post, a metre in from the post, facing the path (not the broken one in
+    # C04's foreground).
+    for i, (px, pz) in enumerate(posts):
+        if i % 2 or i == 2:
+            continue
+        s = float(PATH_S[int(np.argmin(np.hypot(PATH[:, 0] - px, PATH[:, 1] - pz)))])
+        p, _t = point_at(s)
+        n = np.array([px - p[0], pz - p[1]])
+        n = n / max(float(np.linalg.norm(n)), 1e-6)
+        q = np.array([px, pz]) - n * 1.0
+        put("offering_step", q[0], q[1], math.degrees(math.atan2(-n[0], -n[1])), -0.05)
+    # The wrack: driftwood and kelp left along the flats either side of the bed, lost nets and coils, and a
+    # broken crate stack near the wreck rib.
+    for _ in range(16):
+        s = float(rng.uniform(10.0, total - 12.0))
+        p, t = point_at(s)
+        n = np.array([t[1], -t[0]]) * (1.0 if rng.random() < 0.5 else -1.0)
+        q = p + n * float(rng.uniform(BED_HALF_W_M + 1.5, BED_HALF_W_M + 14.0))
+        put("tide_debris", q[0], q[1], float(rng.uniform(0, 360)), -0.06)
+    for _ in range(4):
+        s = float(rng.uniform(20.0, total - 20.0))
+        p, t = point_at(s)
+        n = np.array([t[1], -t[0]]) * (1.0 if rng.random() < 0.5 else -1.0)
+        q = p + n * float(rng.uniform(BED_HALF_W_M + 2.0, BED_HALF_W_M + 10.0))
+        put("net_heap", q[0], q[1], float(rng.uniform(0, 360)), -0.12)
+        r = q + rng.normal(0, 1.2, 2)
+        put("rope_coil", r[0], r[1], float(rng.uniform(0, 360)), -0.03)
+    put("crate_stack", 87.5, -9.0, 25.0, -0.25, tilt_deg=[6.0, -9.0])
+    put("tide_debris", 80.5, -15.5, 210.0, -0.06)
+    # Shells and pebbles along the bed's edges (baked instances, as the saltgrass).
+    out = []
+    for node, count in (("shell_scatter", 700), ("pebble_cluster", 450)):
+        lrng = kc.rng_for("causeway_litter_" + node, seed)
+        rows = []
+        tries = 0
+        while len(rows) < count and tries < count * 6:
+            tries += 1
+            s = float(lrng.uniform(2.0, total - 2.0))
+            p, t = point_at(s)
+            n = np.array([t[1], -t[0]]) * (1.0 if lrng.random() < 0.5 else -1.0)
+            q = p + n * float(lrng.uniform(BED_HALF_W_M - 0.4, BED_HALF_W_M + 6.0))
+            if math.hypot(q[0] - field.disc[0], q[1] - field.disc[1]) < DISC_WALL_R_M + 1.0:
+                continue
+            h = float(field.height(np.array(q[0]), np.array(q[1])))
+            rows.append([round(float(q[0]), 2), round(h, 3), round(float(q[1]), 2),
+                         round(float(lrng.uniform(0, 360)), 1), round(float(lrng.uniform(0.8, 1.4)), 2)])
+        out.append({"name": "Litter_" + node, "glb": LITTER, "mesh_node": node,
+                    "material": f"res://assets/environments/kits/haluna/materials/{LITTER_MATS[node]}.tres",
+                    "visibility_end_m": 50.0, "xforms": rows})
+    return out
+
+
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     ap.add_argument("--layout", required=True, help="write the zone layout JSON here")
@@ -325,7 +391,7 @@ def main(argv: list[str] | None = None) -> int:
     out = Path(args.layout)
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps(lay, indent=1) + "\n", encoding="utf-8")
-    n_grass = sum(len(i["xforms"]) for i in lay["instances"])
+    n_grass = sum(len(i["xforms"]) for i in lay["instances"] if i["name"].startswith("Saltgrass"))
     print(f"CAUSEWAY layout: {len(lay['pieces'])} pieces, {n_grass} saltgrass, path {PATH_S[-1]:.0f} m -> {out}")
     return 0
 

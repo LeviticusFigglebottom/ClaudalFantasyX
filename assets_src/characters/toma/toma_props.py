@@ -30,7 +30,8 @@ SCUTE_GROOVE_W = 0.012  # m, half-width of the groove along a scute border
 BOSS_RINGS = 7
 SPEAR_SHAFT_R = 0.016
 SPEAR_SPLAY_DEG = 1.5  # the shaft's foot out from his side, its head in (M1-CHR-14)
-SPEAR_OUT = 0.012  # m: the shaft's offset out from his right side of the grip point (M1-CHR-14)
+SPEAR_RAKE_DEG = -1.2  # M1-CHR-15: the shaft's foot forward, its head back (the foot stood in his right toes)
+SPEAR_OUT = 0.034  # m: the shaft's offset out from his right side of the grip point (M1-CHR-14; M1-CHR-15: 1.2 -> 3.4 cm, clear of the wrist and of his right toes)
 SPEAR_HEAD_L = 0.26  # blade, socket included
 SHIELD_ATLAS_DISC = (0.0, 0.0, 1.0, 1.0)  # the disc fills the square; the back uses the free corner
 SHIELD_ATLAS_BACK = (0.0, 0.0, 0.12, 0.12)
@@ -197,8 +198,9 @@ def spear(lm, params: dict, cord_rect) -> Part:
     grip = spear_grip(lm) + np.array([-SPEAR_OUT, 0.0, 0.0])
     L = float(params["spear_length_m"])
     # the foot of the shaft splays out from his right foot (wide stance: upright, it stood in his toes)
-    lean = math.radians(SPEAR_SPLAY_DEG)
-    upv = np.array([math.sin(lean), 0.0, math.cos(lean)])
+    lean, rake = math.radians(SPEAR_SPLAY_DEG), math.radians(SPEAR_RAKE_DEG)
+    upv = np.array([math.sin(lean), -math.sin(rake), math.cos(lean) * math.cos(rake)])
+    upv /= np.linalg.norm(upv)
     base = grip - upv * ((grip[2] - 0.006) / upv[2])
     fwd = np.array([0.0, -1.0, 0.0])
     side = np.array([-1.0, 0.0, 0.0])  # the hook and the blade's flats face out from his right side

@@ -7,6 +7,7 @@ const WRAPPERS := {
 	&"rhen": "res://game/hero_motion/battle/rhen_battle_actor.tscn",
 	&"asha": "res://game/hero_motion/battle/asha_battle_actor.tscn",
 	&"toma": "res://game/hero_motion/battle/toma_battle_actor.tscn",
+	&"ysolde": "res://game/hero_motion/battle/ysolde_battle_actor.tscn",
 }
 const RING := {"radius_factor": 1.4, "inner_soft_m": 0.25, "notches": 6}
 ## A clip in the fake player holds the body at this x for its whole length.
@@ -98,6 +99,7 @@ func test_each_wrapper_tunes_its_hero_and_keeps_the_bc_path() -> void:
 		assert_eq(f.actor().get_meta(HeroBattleActor.META_ACTOR), hero)
 		var p := BattleClips.player_of(f)
 		assert_true(p != null, "%s has a player" % hero)
+		(f.actor() as HeroBattleActor).retune()  # its next frame does this in play (placeholder clips)
 		assert_eq(StringName(p.current_animation), HeroBattleActor.IDLE, "%s idles" % hero)
 		var phase := fposmod(HeroBattleActor.idle_phase(data, hero), p.get_animation(HeroBattleActor.IDLE).length)
 		assert_between(p.current_animation_position, phase - EPS, phase + EPS, "%s keeps its idle phase" % hero)

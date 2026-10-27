@@ -7,11 +7,18 @@ extends HalunaDresser
 ##                  "block": <id>  the piece shows and hides with Greybox/<id> (it follows the block's
 ##                    visibility_changed), so `hide_block`, `show_block` and the layout's "states" rows
 ##                    drive it with the story's block;
-##                  "collide": true  a box collider from the piece's LOD0 bounds (decor off the route).
+##                  "spin_with": <id>  the piece turns about its own Z as Greybox/<id> turns about Y (a flue-key's
+##                    wheel with the trial's Key block);
+##                  "collide": true  a box collider from the piece's LOD0 bounds (decor off the route);
+##                    "trimesh": the piece's LOD1 (else LOD0) mesh as a static trimesh, for a kit's walk
+##                    surfaces (treads, walls) whose shape is the gameplay. Never for stepped flights: the
+##                    controller has no step-up, so stairs are ramps in the zone's collision.
+##                  "kit_dir" (+ "materials_dir", default <kit_dir>materials/)  a piece from another kit
+##                    (Corrow's trader is the ferry kit's hull); each kit keeps its own material cache.
 ##   greybox      {"hide_all": bool, "keep": [ids]}: hides the greybox meshes (collision stays), except
 ##                  the kept ones (story pieces no kit has yet).
-##   fire_lights  [{"at": [x, y, z], "energy", "range", "block"?}] shadowless omnis in
-##                  "fire_light_color"; a "block" light follows its block, like a piece.
+##   fire_lights  [{"at": [x, y, z], "energy", "range", "block"?, "shadow"?, "attenuation"?}] omnis in
+##                  "fire_light_color" (shadowless unless "shadow"); a "block" light follows its block.
 ##   environment  a res:// Environment: the zone's WorldEnvironment takes a copy (sky, grade, fog).
 ##   time_of_day_h  the hymn_time_of_day the sky reads.
 ## It writes hymn_sun_direction from the zone's sun every frame, so the sky's sun follows the story's
@@ -19,6 +26,10 @@ extends HalunaDresser
 
 const KEY_BLOCK := "block"
 const KEY_COLLIDE := "collide"
+const KEY_SPIN := "spin_with"
+const KEY_KIT_DIR := "kit_dir"
+const KEY_MATERIALS_DIR := "materials_dir"
+const COLLIDE_TRIMESH := "trimesh"
 const KEY_GREYBOX := "greybox"
 const KEY_FIRE := "fire_lights"
 const KEY_ENVIRONMENT := "environment"
@@ -33,6 +44,8 @@ var zone: GreyboxZone
 
 var _sun_written := Vector3.ZERO
 var _followers: Dictionary = {}  ## block id -> Array of kit nodes
+var _kit_caches: Dictionary = {}  ## materials dir -> that kit's material cache
+var _spinners: Array[Array] = []  ## [piece, block, the piece's own basis]
 
 
 func dress() -> void:
@@ -43,12 +56,18 @@ func dress() -> void:
 	zone = get_parent() as GreyboxZone
 	_rng.seed = int(layout.get("seed", 1))
 	for spec: Dictionary in layout.get("pieces", []):
-		var piece := _place_piece(spec)
+		var piece := _place_from_kit(spec)
 		if piece == null:
 			continue
-		if bool(spec.get(KEY_COLLIDE, false)):
+		var collide: Variant = spec.get(KEY_COLLIDE, false)
+		if collide is String and collide == COLLIDE_TRIMESH:
+			piece.add_child(trimesh_collider(piece))
+		elif collide is bool and collide:
 			piece.add_child(box_collider(piece))
 		_attach(piece, str(spec.get(KEY_BLOCK, "")))
+		var spin := block(str(spec.get(KEY_SPIN, "")))
+		if spin != null:
+			_spinners.append([piece, spin, piece.basis])
 	_place_fire_lights()
 	_hide_greybox()
 	_apply_environment()
@@ -58,12 +77,34 @@ func dress() -> void:
 
 
 func _process(_delta: float) -> void:
+	for sp: Array in _spinners:
+		var turn := deg_to_rad((sp[1] as Node3D).rotation_degrees.y)
+		(sp[0] as Node3D).basis = (sp[2] as Basis) * Basis(Vector3.BACK, turn)
 	if zone == null or zone.sun == null or not zone.sun.is_inside_tree():
 		return
 	var toward := zone.sun.global_basis.z.normalized()  # a light shines down its -Z
 	if not toward.is_equal_approx(_sun_written):
 		_sun_written = toward
 		ShaderGlobals.set_value(GLOBAL_SUN, toward)
+
+
+## HalunaDresser's placement, from the piece's own kit when it names one.
+func _place_from_kit(spec: Dictionary) -> Node3D:
+	if not spec.has(KEY_KIT_DIR):
+		return _place_piece(spec)
+	var saved := [layout.get(KEY_KIT_DIR, ""), layout.get(KEY_MATERIALS_DIR, ""), _material_cache]
+	var kit := str(spec[KEY_KIT_DIR])
+	var mats := str(spec.get(KEY_MATERIALS_DIR, kit + "materials/"))
+	_kit_caches[saved[1]] = _material_cache
+	layout[KEY_KIT_DIR] = kit
+	layout[KEY_MATERIALS_DIR] = mats
+	_material_cache = _kit_caches.get(mats, {})
+	var piece := _place_piece(spec)
+	_kit_caches[mats] = _material_cache
+	layout[KEY_KIT_DIR] = saved[0]
+	layout[KEY_MATERIALS_DIR] = saved[1]
+	_material_cache = saved[2]
+	return piece
 
 
 ## The zone's Greybox/<id> (a block), or null.
@@ -92,6 +133,27 @@ static func box_collider(piece: Node3D) -> StaticBody3D:
 	cs.shape = shape
 	cs.position = box.get_center()
 	body.add_child(cs)
+	return body
+
+
+## A static trimesh of the piece's LOD1 meshes (LOD0 where a mesh has no LOD1), in the piece's frame.
+static func trimesh_collider(piece: Node3D) -> StaticBody3D:
+	var body := StaticBody3D.new()
+	body.name = COLLIDER
+	var meshes := piece.find_children("*", "MeshInstance3D", true, false)
+	var lod1: Dictionary = {}
+	for child: Node in meshes:
+		if String(child.name).ends_with(LOD_SUFFIX):
+			lod1[String(child.name).trim_suffix(LOD_SUFFIX)] = true
+	for child: Node in meshes:
+		var mi := child as MeshInstance3D
+		var n := String(mi.name)
+		if mi.mesh == null or (not n.ends_with(LOD_SUFFIX) and lod1.has(n)):
+			continue
+		var cs := CollisionShape3D.new()
+		cs.shape = mi.mesh.create_trimesh_shape()
+		cs.transform = _relative(piece, mi)
+		body.add_child(cs)
 	return body
 
 
@@ -147,7 +209,8 @@ func _place_fire_lights() -> void:
 		light.light_color = color
 		light.light_energy = float(row.get("energy", 1.0))
 		light.omni_range = float(row.get("range", 5.0))
-		light.shadow_enabled = false
+		light.shadow_enabled = bool(row.get("shadow", false))
+		light.omni_attenuation = float(row.get("attenuation", light.omni_attenuation))
 		light.light_volumetric_fog_energy = 0.0  # the fog-lamp rule (test_fog_lamps)
 		light.position = Vector3(float(at[0]), float(at[1]), float(at[2]))
 		root.add_child(light)
