@@ -14,6 +14,10 @@ static func style_id_for(data: Dictionary, engine: BattleEngine, result: ActionR
 	if by_skill.has(sid):
 		return str(by_skill[sid])
 	var row: Dictionary = engine.db.skill(result.skill_id) if engine != null else {}
+	var actors := data.get("style_by_actor", {}) as Dictionary
+	var by_actor := actors.get(String(result.actor_id).get_slice("#", 0), {}) as Dictionary
+	if by_actor.has(str(row.get("kind", ""))):  # M3-BPR-408: the Avalanche Ram's charge
+		return str(by_actor[str(row["kind"])])
 	var by_target := data.get("style_by_target", {}) as Dictionary
 	if by_target.has(str(row.get("target", ""))):
 		return str(by_target[str(row["target"])])

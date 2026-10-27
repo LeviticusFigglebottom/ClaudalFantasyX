@@ -47,8 +47,14 @@
                "travel": "none", "approach_sec": 0.2, "strike_sec": 0.7, "contact_at": 0.6, "recover_sec": 0.4,
                "return_sec": 0.0, "clip": "attack", "lunge_m": 0.25, "lift_m": 0.0, "crouch_m": 0.14,
                "lean_deg": 12.0, "windup_m": 0.35, "windup_at": 0.55, "wave_m_s": 7.7, "react_scale": 1.9,
-               "shot": "toll"}
+               "shot": "toll"},
+      "charge": {"doc": "M3-BPR-408 the Avalanche Ram's charge (style_by_actor): a long, low run with a heavy lean and a big lunge; the camera rides low and side-on (enemy_by_style charge_side); the struck recoil harder (react_scale).",
+                 "travel": "target", "stop_short_m": 1.0, "approach_sec": 0.55, "strike_sec": 0.3, "contact_at": 0.5,
+                 "recover_sec": 0.2, "return_sec": 0.6, "clip": "attack", "lunge_m": 0.6, "lift_m": 0.0,
+                 "crouch_m": 0.12, "lean_deg": 22.0, "react_scale": 1.5}
     },
+    "style_by_actor": {"doc": "M3-BPR-408: a style by the actor's enemy id and the skill's kind, after style_by_skill (a signature move whose skill ids are not written yet).",
+                       "avalanche_ram": {"physical": "charge"}},
     "style_by_kind": {"physical": "melee", "magical": "cast", "heal": "support", "support": "support"},
     "style_by_target": {"self": "guard"},
     "style_by_skill": {"read": "read", "lamp_dive": "dive", "return_tide": "brace", "brine_lash": "finisher",
@@ -91,6 +97,15 @@
     "accent_doc": "M2-BPR-04 accents (BattleChoreo.accent): a short overlay on a fighter's root, out and back over sec. lift_m/crouch_m up/down; recoil_m and tilt_deg back, away from the other side (negative leans in); sway_deg side to side, sways times; clip (optional) a contract clip.",
     "bosses": {
       "doc": "M2-BPR-04 BattleBossChoreo, by enemy row id. charge_skill: the charge whose gather sways the boss (on the gathering action's contact, then each turn of the charge); break: the boss's stagger on the rim-breaking blow's contact; flood: on phase_changed to phase, the party braces in slot order (stagger_sec apart) once the action playing is done. The toll's own motion is the 'toll' style.",
+      "lamp_engine": {"phases": {"opened": {"doc": "M3-BPR-408: the Lamp Engine opens (Ch11): its core rises a little as the housing parts (never gold mote-light); the party steadies in turn.",
+                                            "boss": {"sec": 1.2, "lift_m": 0.12, "crouch_m": 0.0, "recoil_m": 0.0, "tilt_deg": -4.0,
+                                                     "sway_deg": 2.0, "sways": 1.0},
+                                            "party": {"sec": 0.6, "lift_m": 0.0, "crouch_m": 0.08, "recoil_m": 0.06, "tilt_deg": -5.0,
+                                                      "sway_deg": 0.0, "sways": 0.0, "clip": "defend"},
+                                            "party_delay_sec": 0.5, "stagger_sec": 0.1}}},
+      "avalanche_ram": {"charge_skill": "*",
+                        "gather": {"sec": 0.9, "lift_m": 0.0, "crouch_m": 0.1, "recoil_m": 0.0, "tilt_deg": 6.0,
+                                   "sway_deg": 4.0, "sways": 2.0}},
       "drownbell": {
         "charge_skill": "toll",
         "gather": {"sec": 1.4, "lift_m": 0.08, "crouch_m": 0.0, "recoil_m": 0.0, "tilt_deg": 0.0, "sway_deg": 7.0,
@@ -128,7 +143,8 @@
       "doc": "M2-BPR-03: the battle camera director (docs/kb/tech/battle_presentation.md, Camera director). Every shot is framed off the battle axis (party to foes, from the camera's authored default) so the party stays screen-right and the foes screen-left: the line is never crossed and the camera never rolls. anchor 'actor' is the actor's mark, 'strike' its strike point, 'target' the targets' middle, 'default' the authored default. A placed shot sits back_m behind the anchor along the axis, side_m toward the default camera's side and up_m above it, and looks at the point look_at of the way from the actor's mark to the targets, raised look_up_m. A 'default' shot moves push of the way from the default toward the raised targets and turns look_at of the way to them. fov (degrees) is optional: none keeps the default's. Blends: in over blend_in_sec from the sequence start, to the contact shot over to_contact_sec ending on the contact, out over blend_out_sec ending exactly on the sequence end (held at least hold_contact_sec after the contact). A shot that would put a target outside safe_frame (fractions of the screen kept clear for the HUD, at the design aspect) or the actor's head at its strike point off screen falls back to the default. by_style: a party action's lead and contact shots per style ('' holds the lead); enemy: every enemy action.",
       "blend_in_sec": 0.24,
       "pressure": {"doc": "M3-BPR-406: while a foe gathers one of these telegraphed skills the resting frame narrows by up to max_fov_deg, a step each turn its charge counts down (turns: the charge's length). None under reduced motion.",
-                   "breach": {"turns": 4, "max_fov_deg": 5.0}, "hand_closes": {"turns": 2, "max_fov_deg": 2.5}},
+                   "breach": {"turns": 4, "max_fov_deg": 5.0}, "hand_closes": {"turns": 2, "max_fov_deg": 2.5},
+                   "by_enemy": {"avalanche_ram": {"turns": 2, "max_fov_deg": 3.0}}},
       "to_contact_sec": 0.2,
       "hold_contact_sec": 0.18,
       "blend_out_sec": 0.36,
@@ -153,8 +169,12 @@
         "boss_tall": {"anchor": "target", "back_m": 5.6, "side_m": 5.4, "up_m": 0.5, "look_at": 1.0, "look_up_m": 0.2,
                       "fov": 46.0},
         "boss_skyward": {"anchor": "target", "back_m": 2.6, "side_m": 6.4, "up_m": 0.3, "look_at": 1.0, "look_up_m": -0.6,
-                         "fov": 58.0}
+                         "fov": 58.0},
+        "charge_side": {"anchor": "target", "back_m": 1.8, "side_m": 5.2, "up_m": 0.25, "look_at": 0.5, "look_up_m": 0.4,
+                        "fov": 50.0}
       },
+      "enemy_by_style": {"doc": "M3-BPR-408: a foe's style that gets its own framing (otherwise enemy). The Ram's charge rides low and side-on.",
+                         "charge": {"lead": "charge_side", "contact": ""}},
       "by_style": {
         "melee": {"lead": "actor", "contact": "target"},
         "cast": {"lead": "cast", "contact": "target"},
@@ -168,7 +188,8 @@
         "verse": {"lead": "cast", "contact": ""},
         "brace": {"lead": "finisher", "contact": "target"},
         "glyph": {"lead": "cast", "contact": "target"},
-        "toll": {"lead": "push", "contact": ""}
+        "toll": {"lead": "push", "contact": ""},
+        "charge": {"lead": "actor", "contact": "target"}
       },
       "enemy": {"lead": "push", "contact": ""}
     },
