@@ -355,6 +355,27 @@ Ch4–Ch9 onward. `m2-slice.md` beside this file is the history up to the 2026-1
   rail. Those cues are out. B11 keeps Rhen's walk out to Asha and the turns between them. Lead: take ec3ba50a with
   4f616566, or skip both.
 
+- **Primitives re-audit (queue item 6), MERGE-READY @ b2659dd0.**
+  - **The Prologue's sea is a WaterSurface:** Haluna's ocean (lagoon_waves, haluna_water_material, the same deep
+    colour), and the prologue joins the four ocean prewarm entries. `City/Water` is off the allowlist.
+  - **The arenas:** `test_slice_primitives` also loads the five Ch1–Ch3 arenas from arenas.json (env-art's kits).
+    All five are clean; the greybox scenes under `game/battle/arenas/` only feed preview shots.
+  - **A broken reference:** env-art's rename (shrine_offering → wayside_offering, 39f66d4c) had left the First
+    Verse's two offerings loading as nothing. They are fixed, and the new `tools/tests/test_scene_refs.py` fails on
+    any .tscn/.tres that loads a missing res:// path. It takes 0.1 s.
+  - **Two tools reds from my own staging, fixed:** Kerrid stood over a gap in Iskarra's plaza (moved 1.5 m onto a
+    slab); the First Verse's `stand_at_pool` wasn't a real Asha clip (now `walk_to_chamber` with the same stand-in
+    mark).
+  - **For env-art (Lead, please relay):** `test_iskarra::test_the_vigils_stand_on_the_paving` asserts 7 or more
+    vigils. The prologue has had 3 (Kerrid, Pell, Liss) since M2-FP-103 put the real cast in, so it is red on the
+    integration branch too. All three stand on paving now, so `>= 3` passes.
+  - **Still allowed, each with its reason:** the Vigils (hero models), the save shrine (M3-ENV-101), Neme's bag,
+    env-art's ChamberPassage, the inner pool's water, Ch1's LowHull, and the UnderwaterRig's post quads.
+  - **Checks run:** validate_data, taskboard --check, dlgc --check, gdlint/gdformat on the touched tests, and Godot
+    filters slice_primitives, prologue, first_verse, slice_, prewarm and water (all 0 failed).
+  - **Tools suite** (`run_tool_tests -j 4`): failing are test_screenshots (baselines pending render),
+    test_shrine_gi_bake (rebake pending) and test_iskarra (above). test_hero_clips now passes.
+
 ### Render requests
 RENDER-REQUEST @ fdec3cc6: slice_prologue_vigil_line, slice_beach_h05_asha, slice_beach_h06_toma, slice_haluna_villagers_village, slice_causeway_head, slice_causeway_harrier_view, haluna_h01_village_from_sea, haluna_h02_tidewall_lane, haluna_h04_dock, haluna_h07_chapel_court, haluna_h10_dock_night, shrine_s01_approach, shrine_s02_threshold, shrine_s03_overview, shrine_s04_lip, shrine_s05_side_pool, drownbell_flood, battle_boss_intro_drownbell, battle_arena_causeway, field_causeway_dolly, boot_title; why: M2-FP-102..109, the human's playtest round (real cast and held poses in the prologue and Cutscene A, live villagers and wildlife, the final causeway), plus the greyscale audit of every slice beat. The six slice_* shots are new (no baseline yet).
 - **Known red until the render lands:** the six new `slice_*` shots have no baseline yet, so the tools test
@@ -380,3 +401,4 @@ RENDER-REQUEST @ 68e110ff: gi_bake:shell_shrine; why: M2-FP-24's curb collision 
 RENDER-REQUEST @ ead04bab: slice_beach_h05_asha, slice_beach_h06_toma, slice_causeway_harrier_view, slice_prologue_p01, slice_prologue_vigil_line, slice_dock_night_yes, slice_verse_hall, slice_verse_steps, ch01_oruvel_dressed, ch01_o07_name_board, ch01_o10_gull, ch01_underway_crown, ch01_underway_gallery, gi_bake:shell_shrine; why: the Lead's big12 framing review (H05/H06 above the box, C07 levelled), the prologue on env-art's Iskarra (M3-ENV-711; env-art views it), and every earlier open request from this track (the shrine GI rebake for M2-FP-24's hook included). Supersedes ca7c8ede and 68e110ff.
 RENDER-REQUEST @ 8b5c92fc: slice_verse_steps, ch01_underway_gallery, ch01_o07_name_board, slice_beach_h05_asha, slice_beach_h06_toma, slice_causeway_harrier_view, slice_prologue_p01, slice_prologue_vigil_line, slice_dock_night_yes, gi_bake:shell_shrine; why: the fixes after viewing 17b0601, plus the ead04bab set (beach framing, C07, Iskarra, B11 without the letterbox, the shrine rebake). Supersedes ead04bab.
 - Note for the cloud renderer (the PC is paused): the 8b5c92fc request lists only changed, unviewed shots. If it must be split, the priority is: 1) slice_beach_h05_asha, slice_beach_h06_toma, slice_verse_steps (the slice's cutscene framing, the human's notes); 2) slice_prologue_p01, slice_prologue_vigil_line (Iskarra); 3) slice_causeway_harrier_view, slice_dock_night_yes; 4) the Ch1 shots and gi_bake:shell_shrine.
+RENDER-REQUEST @ b2659dd0: slice_beach_h05_asha, slice_beach_h06_toma, slice_verse_steps, slice_verse_hall, slice_prologue_p01, slice_prologue_vigil_line, slice_causeway_harrier_view, slice_dock_night_yes, ch01_underway_gallery, ch01_o07_name_board, gi_bake:shell_shrine; why: the 8b5c92fc set, plus the Prologue's real ocean and Kerrid on the paving, and the First Verse's restored offerings (verse_hall added). Same priority order as the note above, with slice_verse_hall in group 1. Supersedes 8b5c92fc.
