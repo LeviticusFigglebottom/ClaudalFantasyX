@@ -162,6 +162,24 @@ GRADES = {
                    "black_floor": 0.55, "highlight_hex": "#FFE2B4", "highlight_start": 0.6, "highlight_strength": 0.5,
                    "warm_deg": (-20.0, 60.0), "warm_sat": 1.15, "cool_sat": 0.9, "cool_hex": "#A8C4D4",
                    "cool_strength": 0.2},
+    # M3-ENV-729: the Ending's three grades (colour script `ending_unbinding`, `ending_dock`, `post_credits`).
+    # lut_ending_lift: warm motes over a navy world; the navy toe, a warm gold gain only in the highlights (the motes),
+    # S-curve 0.5, saturation x0.95.
+    "ending_lift": {"saturation": 0.95, "s_curve": 0.5, "toe_hex": "#0B1630", "toe_strength": 0.5, "toe_end": 0.34,
+                    "black_floor": 0.55, "highlight_hex": "#FFE2B8", "highlight_start": 0.64, "highlight_strength": 0.45,
+                    "warm_deg": (-20.0, 60.0), "warm_sat": 1.1, "cool_sat": 0.9, "cool_hex": "#A8B8D4",
+                    "cool_strength": 0.25},
+    # lut_ending_dock: starlight only. Cool and quiet, saturation x0.8, S-curve 0.55; skin kept just warm of grey.
+    "ending_dock": {"saturation": 0.8, "s_curve": 0.55, "toe_hex": "#050A14", "toe_strength": 0.55, "toe_end": 0.34,
+                    "black_floor": 0.6, "highlight_hex": "#E4ECFF", "highlight_start": 0.66, "highlight_strength": 0.4,
+                    "warm_deg": (-20.0, 55.0), "warm_sat": 0.95, "cool_sat": 0.85, "cool_hex": "#C0CCE6",
+                    "cool_strength": 0.3},
+    # lut_post_credits: blue hour cool everywhere but the one oil lamp's pool (the warm band's saturation held up),
+    # S-curve 0.45, saturation x0.9.
+    "post_credits": {"saturation": 0.9, "s_curve": 0.45, "toe_hex": "#1A2E58", "toe_strength": 0.45, "toe_end": 0.32,
+                     "black_floor": 0.45, "highlight_hex": "#FFD6A8", "highlight_start": 0.7, "highlight_strength": 0.35,
+                     "warm_deg": (-20.0, 55.0), "warm_sat": 1.15, "cool_sat": 0.9, "cool_hex": "#9DB4D9",
+                     "cool_strength": 0.3},
     "ch16_choir": {"saturation": 0.7, "s_curve": 0.3, "toe_hex": "#1E2A3A", "toe_strength": 0.45, "toe_end": 0.32,
                    "black_floor": 0.5, "highlight_hex": "#E6EEFA", "highlight_start": 0.68, "highlight_strength": 0.4,
                    "warm_deg": (-20.0, 60.0), "warm_sat": 0.7, "cool_sat": 0.9, "cool_hex": "#C8DCEE",
