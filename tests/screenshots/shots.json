@@ -4340,6 +4340,63 @@
           "screen_space_aa": 1
         }
       }
+    },
+    {
+      "id": "hollowmere_m01_dace_hull",
+      "scene": "res://game/levels/_tests/hollowmere_kit/hollowmere_preview.tscn",
+      "camera": "Cameras/M01",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "hollowmere_m02_raft_city_dusk",
+      "scene": "res://game/levels/_tests/hollowmere_kit/hollowmere_preview.tscn",
+      "camera": "Cameras/M02",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "kite_k01_moored",
+      "scene": "res://game/levels/_tests/hollowmere_kit/hollowmere_preview.tscn",
+      "camera": "Cameras/K01",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
     }
   ]
 }
