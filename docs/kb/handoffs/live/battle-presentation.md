@@ -72,6 +72,12 @@ RENDER-REQUEST @ 60b62678: battle_arena_wall_head,battle_boss_intro_reach; why: 
   would regress them, the shoals arena included. The 25dcea24 consolidated request is closed by them.
 - **Still open:** the ed3a458e request (M3-BPR-416 moves the choreo shots and drownbell_flood) and the 60cbb212
   Hullgnaw request.
+- **The staging audit, re-checked against the other tracks' heads (21:3x):**
+  - claude/creatures aa762dee has no `ilun` creatures.json row or scene yet, so Ilun's summon stays on the M3-BPR-417
+    hook until it lands.
+  - Sefir has character assets (claude/characters 2ec366e9) but no characters.json battle row on any branch, so the
+    kit is still blocked on design data.
+  - Every other entry is unchanged: see the 20:50 table.
 
 ### 2026-10-27 21:xx: big12 merged in; the FAST-TRACK render viewed; Ilun's model ready
 - **Merged big12** (integration e930595c) at 6d57bdff:
