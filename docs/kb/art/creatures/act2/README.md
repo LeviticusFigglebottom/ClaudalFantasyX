@@ -12,6 +12,13 @@ alone. Hits peak near 0.1 s (M3-CRE-617).
 | The Lamp Engine | [lamp_engine.md](lamp_engine.md) | construct, boss | 3.4 m | Lowlight, the engine hall (Ch11) | built (M3-CRE-623), first PC render pending |
 | The Avalanche Ram | [avalanche_ram.md](avalanche_ram.md) | spawn-touched beast, boss | 3.0 m at the head | the terrace wall above Keth Pass (Ch12) | built (M3-CRE-624) |
 | The Wakefin | [wakefin.md](wakefin.md) | spawn, boss | 2.2 m of fin above the water | the open sea at night, the bridal barge (Ch15) | built (M3-CRE-626), first PC render pending |
+| The ridge lynx | [ridge_lynx.md](ridge_lynx.md) | beast | 0.77 m at the withers (coat included) | Keth Pass (Ch12) | built (M3-CRE-628), first PC render pending |
+| The cord moth | [cord_moth.md](cord_moth.md) | beast | 1.4 m span, hovering at chest height (1.31 m) | Keth Pass, along the pass-cords (Ch12) | built (M3-CRE-628), first PC render pending |
+| The glass skate | [glass_skate.md](glass_skate.md) | reef beast | a disc 1.4 m across, 0.16 m tall | the Pale Rim, the white shallows (Ch16) | built (M3-CRE-628), first PC render pending |
+| The root crab | [variants.md](variants.md) | variant of the reef crab | 0.72 m, 1.94 m across the legs | Ossa Fen (Ch10) | built (M3-CRE-628), first PC render pending |
+| The fen leech | [variants.md](variants.md) | variant of the sail leech | 2.74 m long, hovering (1.38 m) | Ossa Fen (Ch10) | built (M3-CRE-628), first PC render pending |
+| The scree crawler | [variants.md](variants.md) | variant of the slag tortoise | 0.82 m | the Cloudloom approach (Ch12) | built (M3-CRE-628), first PC render pending |
+| The rim crawler | [variants.md](variants.md) | variant of the tide crawler | 0.75 m | the Pale Rim (Ch16) | built (M3-CRE-628), first PC render pending |
 
 **Built models.** The Mangrove Drowner (M3-CRE-621): `assets_src/creatures/mangrove_drowner/`, 16,370 triangles
 (budget 18k), root arches to 3.1 m (3.6 m risen) with the trunk stump's splinters to 3.8 m above them, 48 bones (the sheet's core chain of 4, twelve 3-bone roots and the stump, plus six splinter bones
@@ -66,3 +73,36 @@ body slot's emission mask, the weak points). It was checked without a render (nu
 shot `creature_wakefin` (three-quarter, idle) waits for its first PC render. No enemies.json row yet. Not modelled, by
 the sheet: the sea-glow wake, the dark water and the surfacing ring of the dive, and the `glimmer_held` the wounds
 shed (VFX).
+
+**The regulars and the variants (M3-CRE-628).** Each was checked without a render (numbers in
+docs/kb/tasks/M3/M3-CRE-628-act2-regulars-ch12-16-and-variants.md). Their review shots `creature_<id>` (three-quarter,
+idle) wait for the first PC render. None has an enemies.json row or phases yet.
+
+- **The ridge lynx** (`assets_src/creatures/ridge_lynx/`): 6,988 triangles (budget 8k), 27 bones (the sheet's
+  quadruped on a `body` carrier, plus two ear bones).
+  - The legs are posed by a planar two-bone solve, so its paws stay planted through the crouch and the landing.
+  - The pounce is the crouch (the telegraph), a 0.64 m leap and the strike on the back row (contact 0.7 s). The yowl,
+    a twist aside on the hit (peak 0.1 s), and a KO that limps two steps and lies down on its side.
+  - Its weak point is the old sling wound, a small glowing slit on its camera-side flank.
+- **The cord moth** (`cord_moth/`): 4,144 triangles (budget 5k), 12 bones. It hovers at 1.25 m (`stand_in.hover`).
+  - The knot rows are raised strips of cord in the cords' faded dyes, with knots in counted, seeded groups: an
+    abstract, original pattern.
+  - The cast tips it up toward the party with its wings open full, so the rows catch the light. The KO drifts down
+    the hover height like a dropped scarf.
+  - Its weak point is a thorax crack.
+- **The glass skate** (`glass_skate/`): 2,624 triangles (budget 4k), 14 bones (disc chains of 3 a side, a tail of 4,
+  two eye bones).
+  - A flat disc on the sand with eyes on turrets. Its nearly clear back is pale and glassy on a glossy, rim-lit
+    material.
+  - It erupts and slaps (contact 0.5 s), hides by rippling its edges, buckles on a hit (its own `hit_b`), and
+    flattens on the KO.
+  - Its weak point is a split at the tail root.
+- **The variants** import their base's build module and play its clips:
+  - the root crab, on the reef crab's new `LEG_KNEE` and `LEG_FOOT` parameters (longer climbing legs), in bark and
+    lichen, with a knot of roots on its back;
+  - the fen leech, on new sail leech parameters (ribbon-flat and 2.74 m long), lacquer black over a tannin-amber
+    underside;
+  - the scree crawler, on new slag tortoise parameters (40 faceted plates, a tufted skin), in slate scree and rime;
+  - the rim crawler, a palette variant of the tide crawler: chalk with black joints and dimmer wounds.
+
+  The base jobs (reef crab, wallcrab, wreck crab, sail leech and slag tortoise) still verify identical.
