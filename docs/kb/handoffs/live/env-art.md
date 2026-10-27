@@ -452,6 +452,7 @@ ANSWERED (the Lead's item 3): gpu/m3-rnd-03-sefir-tells @ c3fd1eb4. All four `re
 RENDER-REQUEST @ 46955a37: battle_arena_undertow_cage; why: M3-ENV-727, Ch20's Cage arena (new shot; after the FAST-TRACK and Ch8 requests).
 NOT APPROVED: 95be611 (battle_arena_keth_seep_terrace). The backdrop reads as a wall of stretched white blocks and the seep strips as pale-blue ribbons, not a mountain pass. Rework is queued after the Iskarra fast-track (M3-ENV-717).
 RENDER-REQUEST @ 7f1a0fc7: battle_arena_keth_seep_terrace; why: M3-ENV-717 rework after 95be611 (crisp weathered wall, threads of seep). Supersedes 95be6118.
+RENDER-REQUEST @ 9c2aaa39: battle_arena_undertow_heart,battle_arena_undertow_heart_letting; why: M3-ENV-728, Ch21's Heart, Sefir's two arena states (held; the Letting), two new shots. After the FAST-TRACK, Ch8 and Cage requests.
 
 ## STATE AT HANDOVER (2026-10-25)
 
@@ -567,6 +568,7 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
+- **2026-10-27 ~23:15: M3-ENV-728, the Heart (Ch21), pushed @ 9c2aaa39 (review, reviewer rendering).** Kit `undertow_heart.py` (heart_floor, heart_column, heart_eyewall), `lut_ch21_heart`, arenas `undertow_heart` (held) and `undertow_heart_letting` (the Letting). Checks: haluna_kit full rebuild (every existing glb byte-identical, 3 new), arena_scenes (every other arena byte-identical), test_undertow_heart + test_undertow_layers (7 OK), test_arenas (21 OK), validate_data, taskboard --check, godot --import, gdlint/gdformat on the test list. Skipped: Godot tests (only the arena list changed; test_battle_arenas runs at the gate) and the shots (render request posted). M3-ENV-727 (Ch20, the Cage) is at 46955a37. **Next:** view renders as they land; then the Ending's open-sea frame (`ending_unbinding`) and the M3-ENV-705 audit continued.
 - **ISKARRA: both passes pushed; FAST-TRACK render requested @ f39cdde3. Was: in progress (the Lead's direct instruction, 22:29). Act II/III is paused until the Iskarra render is
   approved.**
   - **Already pushed** (FAST-TRACK request @ 0958af1a, not yet rendered):
