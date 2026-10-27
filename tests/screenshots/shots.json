@@ -3414,6 +3414,25 @@
           "hymn_wind_time": 12.0
         }
       }
+    },
+    {
+      "id": "dialogue_voice_over",
+      "scene": "res://game/levels/_tests/ui_shots/dialogue_voice_over.tscn",
+      "camera": "Haluna/Cameras/H02",
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "battle_ch08_stair_hold",
+      "scene": "res://game/battle/scene/shots/battle_ch08_stair_hold.tscn"
     }
   ]
 }

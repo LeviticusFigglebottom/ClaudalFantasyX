@@ -44,6 +44,9 @@ func show_hits(result: ActionResult, flinch: bool) -> void:
 	var kind := str(ctl.engine.db.skill(result.skill_id).get("kind", ""))
 	var stacks: Dictionary = {}
 	var heavy := false
+	if ctl.show_damage_numbers and result.intercepted_by != &"":
+		# M3-UI-100: a guard stepped in front of the ward (Hold the Stair); the hits already name the guard.
+		ctl.hud.pop_info(tr("HUD_FLOAT_INTERCEPTED"), ctl.head_pos(result.intercepted_by, &"damage"), &"focus_gold")
 	for hit in result.hits:
 		var tid: StringName = hit["target_id"]
 		var target := ctl.engine.find(tid)
@@ -59,6 +62,7 @@ func show_hits(result: ActionResult, flinch: bool) -> void:
 		stacks[tid] = n + 1
 		var at := ctl.head_pos(tid, &"damage")
 		var ally := target.team == BattleCombatant.TEAM_PARTY
+		_set_piece_words(hit, at)
 		if hit.has("reflected_from"):
 			var from := StringName(str(hit["reflected_from"]))
 			ctl.hud.pop_info(tr("HUD_FLOAT_REFLECTED"), ctl.head_pos(from, &"damage"), &"focus_gold")
@@ -73,6 +77,16 @@ func show_hits(result: ActionResult, flinch: bool) -> void:
 			ctl.hud.pop_number(str(-amount), at, DamageNumber.KIND_HEAL, ally, false, n)
 	if heavy and flinch and ctl.show_damage_numbers and ctl.hud.animations_enabled():  # BattleImpact shakes a sequence
 		ctl.stage.shake(ctl.stage.battle_speed(ctl.hud.battle_speed()))
+
+
+## M3-UI-100: a set piece's float words on a hit: a counter (Stand Firm) over the one who struck back, a foe
+## drawn off by the Kirru's Storm-Call.
+func _set_piece_words(hit: Dictionary, at: Vector2) -> void:
+	if hit.has("counter_by"):
+		var by := StringName(str(hit["counter_by"]))
+		ctl.hud.pop_info(tr("HUD_FLOAT_COUNTER"), ctl.head_pos(by, &"damage"), &"focus_gold")
+	if bool(hit.get("withdrawn", false)):
+		ctl.hud.pop_info(tr("HUD_FLOAT_WITHDRAWN"), at, &"text_dim")
 
 
 ## End-of-turn HP changes the ActionResult cannot carry (Poison, Regen, Regen turned to harm by
