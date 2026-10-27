@@ -15,9 +15,13 @@ The Lead's new mission for this track (2026-10-27): the human's next playtest fi
 - [x] **Playthrough guards** (tests/integration/test_qa_threads.gd). Every story-thread test (the slice's first-playable
       thread, and Ch1 and Ch4–Ch9) is driven again under a QaLogger. Engine errors, script errors, unexplained warnings
       and the thread's own failures all fail it; known kinds match qa_known.json rows tied to request tasks.
-- [ ] Capsule stand-ins in real zones: an inventory and a guard.
-- [ ] Softlocks: every `when` flag in the chapter data is set somewhere.
-- [ ] A save and load round trip at every save shrine in the slice and Act I (state, flags, party, position).
+- [x] Capsule stand-ins in real zones: an inventory and a guard (tests/integration/test_qa_capsules.gd; the known
+      ones are in qa_known.json "capsules", under M3-HER-1125).
+- [x] Softlocks: every flag a beat, prompt or objective waits on is set somewhere
+      (tools/tests/test_qa_flag_reach.py).
+- [x] A save and load round trip at every save shrine in the slice and Act I (state, flags, party, position):
+      tests/integration/test_qa_save_shrines.gd. It covers Haluna's SaveShrine and Act I's 8 rest beats; the Ch6 and Ch8
+      checkpoints' spawns exist and resolve to their zones.
 - [ ] The guards run against the integration branch and each track head; failures filed to their owners.
 
 ## Notes
