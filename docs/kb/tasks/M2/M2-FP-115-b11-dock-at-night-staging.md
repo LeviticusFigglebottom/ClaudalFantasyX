@@ -27,7 +27,6 @@ behind Rhen, standing at his spawn eight metres from Asha.
   The lines are unchanged.
 - [x] Tests: test_haluna_night (Rhen beside Asha) and test_haluna_zone (the stage's shots; the night setups are
   unkeyed); haluna 57, 0 failed.
-- [ ] A PC shot of B11 needs SliceCutsceneShot to replay HalunaStory's night setup (set_night, place_cast) first.
-  Next on slice-polish's list.
+- [x] A PC shot of B11: `slice_dock_night_yes` (the rig's new `story_call` runs HalunaStory._night).
 
 ## Review log

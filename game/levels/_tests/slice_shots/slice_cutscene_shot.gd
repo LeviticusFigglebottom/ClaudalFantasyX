@@ -19,6 +19,9 @@ extends Node3D
 @export var flags: Array = []
 ## The option every choice takes.
 @export var choice: int = 0
+## A story method to run instead of `scene_id` (e.g. HalunaStory's `_night`: B11's night mood, cast and scene),
+## on the level's `Story` node with its dialogue advancing by itself; its hand-off is recorded, never travelled.
+@export var story_call: StringName = &""
 
 var level: Node3D
 var sequencer: CutsceneSequencer
@@ -44,6 +47,15 @@ func _start() -> void:
 	add_child(level)
 	if spawn != &"" and level.has_method(&"place_at"):
 		level.call(&"place_at", spawn)
+	if story_call != &"":
+		var story := level.get_node_or_null(^"Story")
+		if story != null and story.has_method(story_call):
+			story.set(&"hand_off", func(_kind: StringName, _target: String) -> void: pass)
+			sequencer = story.get(&"sequencer") as CutsceneSequencer
+			sequencer.auto_advance = true
+			sequencer.auto_choice = choice
+			story.call(story_call)
+		return
 	if scene_id == &"":
 		return
 	var stage := level.get(&"stage") as CutsceneStage

@@ -3537,6 +3537,39 @@
         },
         "time_scale": 4.0
       }
+    },
+    {
+      "id": "slice_dock_night_yes",
+      "scene": "res://game/levels/_tests/slice_shots/slice_cutscene_shot.tscn",
+      "camera": "default",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 360,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        },
+        "time_scale": 4.0,
+        "nodes": {
+          ".": {
+            "level_path": "res://game/levels/ch02/haluna/haluna.tscn",
+            "story_call": "_night",
+            "flags": [
+              "prologue_seen",
+              "ch02_met_asha",
+              "ch02_tideline_won",
+              "ch02_ate_at_nemes",
+              "ch03_drownbell_defeated"
+            ]
+          }
+        }
+      }
     }
   ]
 }

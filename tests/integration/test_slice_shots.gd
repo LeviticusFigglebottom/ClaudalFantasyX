@@ -35,7 +35,7 @@ func test_every_slice_shot_boots_its_rig() -> void:
 		assert_true(rig.level != null and rig.level.is_inside_tree(), "%s staged its level" % id)
 		var cam := rig.get_viewport().get_camera_3d()
 		assert_true(cam != null and rig.level.is_ancestor_of(cam), "%s looks through the level's camera" % id)
-		if StringName(str(props.get("scene_id", ""))) != &"":
+		if StringName(str(props.get("scene_id", ""))) != &"" or StringName(str(props.get("story_call", ""))) != &"":
 			assert_true(rig.sequencer != null and rig.sequencer.is_playing(), "%s is playing its scene" % id)
 		setup.end()
 		tree.root.remove_child(rig)
