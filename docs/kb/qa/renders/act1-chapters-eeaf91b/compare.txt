@@ -1,0 +1,4 @@
+FAIL ch04_ferry_deck: no baseline (inspect out/, then compare.py --update-baselines ch04_ferry_deck)
+FAIL ch09_corrow_strand: no baseline (inspect out/, then compare.py --update-baselines ch09_corrow_strand)
+Screenshots: 2 compared, 2 failed (diffs in /root/hymn/tests/screenshots/out/diff)
+compare exit 1
