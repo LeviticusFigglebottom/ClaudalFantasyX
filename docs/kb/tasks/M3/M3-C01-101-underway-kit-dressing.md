@@ -56,9 +56,16 @@ Moving the rooms to the tower frame would break the map, so the rooms stay where
 - [ ] PC shots `ch01_underway_crown` and `ch01_underway_gallery` (RENDER-REQUEST in the slice-polish live log), then
   a placement pass on what they show.
 
+- [x] **Second pass: the podium the galleries stand on.**
+  - 12 m seafloor cells at the silt datum under the gallery and gauge-room floors, lipped all round by the podium's
+    broken edge, with seagrass on it.
+  - The stairwell's two cells stay open, so the flight and the low lights go down into the dark.
+  - The east wall's breach (a broken bay) lets a sand drift into the gallery.
+  - The dead ship's ribs lie out east.
+  - Each room's floor stays at y 0, so the crown and the bell-room hang over the murk with no seafloor under them,
+    as they would 13–16 m up in the tower.
+
 ## Not yet (next passes)
-- **The seafloor terrace and the canyon lip** around the galleries (`seafloor_*`, `sand_drift`, the dead ship) and
-  the breach. These wait for the first render.
 - **The bell-room's air pocket**, a second WaterSurface (U03). It needs Rendering.
 - **The hull keels over the crown (U01).** The water had to go up to y 10 for the camera, so the keels would hang
   in the camera's path.

@@ -15,6 +15,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import random
 import shutil
 import sys
 from pathlib import Path
@@ -29,6 +30,17 @@ CELL = 6.0
 # Story blocks the kit has no piece for stay greybox: none yet (the tin is a trigger, the low lights a GlimmerField).
 KEEP: list[str] = []
 BAYS = ("tower_bay", "tower_bay_broken", "tower_bay_solid")
+# The terrace the galleries stand on (F9's podium, oruvel_underway.md): 12 m seafloor cells at the silt datum just
+# under the gallery floor, lipped on every side by the podium's broken edge (its lip at local +Z, the drop beyond;
+# the piece 6 m out from the last cell, as the kit preview rows it). The stairwell's cells stay open, so the flight
+# and the low lights go down into the dark.
+TERRACE = (56.0, -64.0, 128.0, 44.0)
+SEAFLOOR_CELL = 12.0
+SILT_Y = -0.25
+EDGE_OUT = 6.0
+STAIRWELL_CELLS = ((86.0, -34.0), (86.0, -46.0))
+ROOMS = ((74.0, -40.0, 86.0, 20.0), (86.0, -40.0, 104.0, -22.0), (68.0, -4.0, 74.0, 2.0))
+SEAGRASS = 22
 
 
 def piece(name: str, x: float, z: float, yaw: float = 0.0, y: float = 0.0, **extra: object) -> dict:
@@ -104,7 +116,8 @@ def galleries() -> list[dict]:
     """F9, the galleries: the colonnade of dead lamp-columns, the tin alcove west, the stair lip north-east with the
     divers' cord across the flight, and the gauge room east with its wheel and the current shaft."""
     r = floor(74, -40, 86, 20, skip=((83.0, -37.0),))
-    r += wall("w", 74, -40, 86, 20, "b", skip=(6,)) + wall("e", 74, -22, 86, 20, "bbs")
+    r += wall("w", 74, -40, 86, 20, "b", skip=(6,)) + wall("e", 74, -22, 86, 20, "bbs", skip=(5,))
+    r.append(piece("tower_bay_broken", 86.0, 11.0, 90.0))  # the breach: the sand drift comes in through it
     r += wall("s", 74, -40, 86, 20, "b") + wall("n", 74, -40, 86, 20, "s")
     r += [piece("tower_pier", 74.0, 20.0), piece("tower_pier", 86.0, 20.0), piece("tower_pier", 74.0, -40.0),
           piece("tower_pier", 74.0, -4.0), piece("tower_pier", 74.0, 2.0), piece("tower_pier", 86.0, -22.0)]
@@ -132,6 +145,35 @@ def galleries() -> list[dict]:
     return r
 
 
+def terrace() -> list[dict]:
+    """The podium's seafloor, its lip all round, the seagrass on it, the drift through the breach, the dead ship."""
+    x0, z0, x1, z1 = TERRACE
+    n = SEAFLOOR_CELL
+    r = []
+    for i in range(round((x1 - x0) / n)):
+        for k in range(round((z1 - z0) / n)):
+            c = (x0 + n * (i + 0.5), z0 + n * (k + 0.5))
+            if c not in STAIRWELL_CELLS:
+                r.append(piece("seafloor_patch_a" if (i + k) % 2 else "seafloor_patch_b", *c, 90.0 * ((i * 3 + k) % 4),
+                               y=SILT_Y))
+    for i in range(round((x1 - x0) / n)):
+        x = x0 + n * (i + 0.5)
+        r += [piece("seafloor_edge", x, z0 - EDGE_OUT, 180.0, y=SILT_Y), piece("seafloor_edge", x, z1 + EDGE_OUT, 0.0, y=SILT_Y)]
+    for k in range(round((z1 - z0) / n)):
+        z = z0 + n * (k + 0.5)
+        r += [piece("seafloor_edge", x0 - EDGE_OUT, z, 270.0, y=SILT_Y), piece("seafloor_edge", x1 + EDGE_OUT, z, 90.0, y=SILT_Y)]
+    rng = random.Random(5)
+    placed = 0
+    while placed < SEAGRASS:
+        x, z = rng.uniform(x0 + 2.0, x1 - 2.0), rng.uniform(z0 + 2.0, z1 - 2.0)
+        if any(a - 1.5 <= x <= c + 1.5 and b - 1.5 <= z <= d + 1.5 for a, b, c, d in ROOMS):
+            continue
+        r.append(piece("seagrass_patch", x, z, rng.uniform(0.0, 360.0), y=SILT_Y))
+        placed += 1
+    r += [piece("sand_drift", 95.0, 11.0, 180.0, y=SILT_Y), piece("wreck_ribs", 113.0, 2.0, -24.4, y=SILT_Y)]
+    return r
+
+
 def dressing() -> dict:
     return {
         "schema": "ZoneKitDressing (game/levels/act1/zone_kit_dressing.gd; ADR 0200)",
@@ -146,7 +188,7 @@ def dressing() -> dict:
         "environment": RES_ZONE + "oruvel_underway_ch01_environment.tres",
         "time_of_day_h": 11.0,
         "greybox": {"hide_all": True, "keep": KEEP},
-        "pieces": crown() + bell_room() + galleries(),
+        "pieces": crown() + bell_room() + galleries() + terrace(),
     }
 
 

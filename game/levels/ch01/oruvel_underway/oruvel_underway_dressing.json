@@ -819,19 +819,19 @@
    "yaw_deg": 90.0
   },
   {
-   "piece": "tower_bay_solid",
+   "piece": "tower_bay",
    "at": [
     86,
-    11.0
+    17.0
    ],
    "y": 0.0,
    "yaw_deg": 90.0
   },
   {
-   "piece": "tower_bay",
+   "piece": "tower_bay_broken",
    "at": [
-    86,
-    17.0
+    86.0,
+    11.0
    ],
    "y": 0.0,
    "yaw_deg": 90.0
@@ -1377,6 +1377,960 @@
    ],
    "y": 0.0,
    "yaw_deg": 140.0
+  },
+  {
+   "piece": "seafloor_patch_b",
+   "at": [
+    62.0,
+    -58.0
+   ],
+   "y": -0.25,
+   "yaw_deg": 0.0
+  },
+  {
+   "piece": "seafloor_patch_a",
+   "at": [
+    62.0,
+    -46.0
+   ],
+   "y": -0.25,
+   "yaw_deg": 90.0
+  },
+  {
+   "piece": "seafloor_patch_b",
+   "at": [
+    62.0,
+    -34.0
+   ],
+   "y": -0.25,
+   "yaw_deg": 180.0
+  },
+  {
+   "piece": "seafloor_patch_a",
+   "at": [
+    62.0,
+    -22.0
+   ],
+   "y": -0.25,
+   "yaw_deg": 270.0
+  },
+  {
+   "piece": "seafloor_patch_b",
+   "at": [
+    62.0,
+    -10.0
+   ],
+   "y": -0.25,
+   "yaw_deg": 0.0
+  },
+  {
+   "piece": "seafloor_patch_a",
+   "at": [
+    62.0,
+    2.0
+   ],
+   "y": -0.25,
+   "yaw_deg": 90.0
+  },
+  {
+   "piece": "seafloor_patch_b",
+   "at": [
+    62.0,
+    14.0
+   ],
+   "y": -0.25,
+   "yaw_deg": 180.0
+  },
+  {
+   "piece": "seafloor_patch_a",
+   "at": [
+    62.0,
+    26.0
+   ],
+   "y": -0.25,
+   "yaw_deg": 270.0
+  },
+  {
+   "piece": "seafloor_patch_b",
+   "at": [
+    62.0,
+    38.0
+   ],
+   "y": -0.25,
+   "yaw_deg": 0.0
+  },
+  {
+   "piece": "seafloor_patch_a",
+   "at": [
+    74.0,
+    -58.0
+   ],
+   "y": -0.25,
+   "yaw_deg": 270.0
+  },
+  {
+   "piece": "seafloor_patch_b",
+   "at": [
+    74.0,
+    -46.0
+   ],
+   "y": -0.25,
+   "yaw_deg": 0.0
+  },
+  {
+   "piece": "seafloor_patch_a",
+   "at": [
+    74.0,
+    -34.0
+   ],
+   "y": -0.25,
+   "yaw_deg": 90.0
+  },
+  {
+   "piece": "seafloor_patch_b",
+   "at": [
+    74.0,
+    -22.0
+   ],
+   "y": -0.25,
+   "yaw_deg": 180.0
+  },
+  {
+   "piece": "seafloor_patch_a",
+   "at": [
+    74.0,
+    -10.0
+   ],
+   "y": -0.25,
+   "yaw_deg": 270.0
+  },
+  {
+   "piece": "seafloor_patch_b",
+   "at": [
+    74.0,
+    2.0
+   ],
+   "y": -0.25,
+   "yaw_deg": 0.0
+  },
+  {
+   "piece": "seafloor_patch_a",
+   "at": [
+    74.0,
+    14.0
+   ],
+   "y": -0.25,
+   "yaw_deg": 90.0
+  },
+  {
+   "piece": "seafloor_patch_b",
+   "at": [
+    74.0,
+    26.0
+   ],
+   "y": -0.25,
+   "yaw_deg": 180.0
+  },
+  {
+   "piece": "seafloor_patch_a",
+   "at": [
+    74.0,
+    38.0
+   ],
+   "y": -0.25,
+   "yaw_deg": 270.0
+  },
+  {
+   "piece": "seafloor_patch_b",
+   "at": [
+    86.0,
+    -58.0
+   ],
+   "y": -0.25,
+   "yaw_deg": 180.0
+  },
+  {
+   "piece": "seafloor_patch_a",
+   "at": [
+    86.0,
+    -22.0
+   ],
+   "y": -0.25,
+   "yaw_deg": 90.0
+  },
+  {
+   "piece": "seafloor_patch_b",
+   "at": [
+    86.0,
+    -10.0
+   ],
+   "y": -0.25,
+   "yaw_deg": 180.0
+  },
+  {
+   "piece": "seafloor_patch_a",
+   "at": [
+    86.0,
+    2.0
+   ],
+   "y": -0.25,
+   "yaw_deg": 270.0
+  },
+  {
+   "piece": "seafloor_patch_b",
+   "at": [
+    86.0,
+    14.0
+   ],
+   "y": -0.25,
+   "yaw_deg": 0.0
+  },
+  {
+   "piece": "seafloor_patch_a",
+   "at": [
+    86.0,
+    26.0
+   ],
+   "y": -0.25,
+   "yaw_deg": 90.0
+  },
+  {
+   "piece": "seafloor_patch_b",
+   "at": [
+    86.0,
+    38.0
+   ],
+   "y": -0.25,
+   "yaw_deg": 180.0
+  },
+  {
+   "piece": "seafloor_patch_a",
+   "at": [
+    98.0,
+    -58.0
+   ],
+   "y": -0.25,
+   "yaw_deg": 90.0
+  },
+  {
+   "piece": "seafloor_patch_b",
+   "at": [
+    98.0,
+    -46.0
+   ],
+   "y": -0.25,
+   "yaw_deg": 180.0
+  },
+  {
+   "piece": "seafloor_patch_a",
+   "at": [
+    98.0,
+    -34.0
+   ],
+   "y": -0.25,
+   "yaw_deg": 270.0
+  },
+  {
+   "piece": "seafloor_patch_b",
+   "at": [
+    98.0,
+    -22.0
+   ],
+   "y": -0.25,
+   "yaw_deg": 0.0
+  },
+  {
+   "piece": "seafloor_patch_a",
+   "at": [
+    98.0,
+    -10.0
+   ],
+   "y": -0.25,
+   "yaw_deg": 90.0
+  },
+  {
+   "piece": "seafloor_patch_b",
+   "at": [
+    98.0,
+    2.0
+   ],
+   "y": -0.25,
+   "yaw_deg": 180.0
+  },
+  {
+   "piece": "seafloor_patch_a",
+   "at": [
+    98.0,
+    14.0
+   ],
+   "y": -0.25,
+   "yaw_deg": 270.0
+  },
+  {
+   "piece": "seafloor_patch_b",
+   "at": [
+    98.0,
+    26.0
+   ],
+   "y": -0.25,
+   "yaw_deg": 0.0
+  },
+  {
+   "piece": "seafloor_patch_a",
+   "at": [
+    98.0,
+    38.0
+   ],
+   "y": -0.25,
+   "yaw_deg": 90.0
+  },
+  {
+   "piece": "seafloor_patch_b",
+   "at": [
+    110.0,
+    -58.0
+   ],
+   "y": -0.25,
+   "yaw_deg": 0.0
+  },
+  {
+   "piece": "seafloor_patch_a",
+   "at": [
+    110.0,
+    -46.0
+   ],
+   "y": -0.25,
+   "yaw_deg": 90.0
+  },
+  {
+   "piece": "seafloor_patch_b",
+   "at": [
+    110.0,
+    -34.0
+   ],
+   "y": -0.25,
+   "yaw_deg": 180.0
+  },
+  {
+   "piece": "seafloor_patch_a",
+   "at": [
+    110.0,
+    -22.0
+   ],
+   "y": -0.25,
+   "yaw_deg": 270.0
+  },
+  {
+   "piece": "seafloor_patch_b",
+   "at": [
+    110.0,
+    -10.0
+   ],
+   "y": -0.25,
+   "yaw_deg": 0.0
+  },
+  {
+   "piece": "seafloor_patch_a",
+   "at": [
+    110.0,
+    2.0
+   ],
+   "y": -0.25,
+   "yaw_deg": 90.0
+  },
+  {
+   "piece": "seafloor_patch_b",
+   "at": [
+    110.0,
+    14.0
+   ],
+   "y": -0.25,
+   "yaw_deg": 180.0
+  },
+  {
+   "piece": "seafloor_patch_a",
+   "at": [
+    110.0,
+    26.0
+   ],
+   "y": -0.25,
+   "yaw_deg": 270.0
+  },
+  {
+   "piece": "seafloor_patch_b",
+   "at": [
+    110.0,
+    38.0
+   ],
+   "y": -0.25,
+   "yaw_deg": 0.0
+  },
+  {
+   "piece": "seafloor_patch_a",
+   "at": [
+    122.0,
+    -58.0
+   ],
+   "y": -0.25,
+   "yaw_deg": 270.0
+  },
+  {
+   "piece": "seafloor_patch_b",
+   "at": [
+    122.0,
+    -46.0
+   ],
+   "y": -0.25,
+   "yaw_deg": 0.0
+  },
+  {
+   "piece": "seafloor_patch_a",
+   "at": [
+    122.0,
+    -34.0
+   ],
+   "y": -0.25,
+   "yaw_deg": 90.0
+  },
+  {
+   "piece": "seafloor_patch_b",
+   "at": [
+    122.0,
+    -22.0
+   ],
+   "y": -0.25,
+   "yaw_deg": 180.0
+  },
+  {
+   "piece": "seafloor_patch_a",
+   "at": [
+    122.0,
+    -10.0
+   ],
+   "y": -0.25,
+   "yaw_deg": 270.0
+  },
+  {
+   "piece": "seafloor_patch_b",
+   "at": [
+    122.0,
+    2.0
+   ],
+   "y": -0.25,
+   "yaw_deg": 0.0
+  },
+  {
+   "piece": "seafloor_patch_a",
+   "at": [
+    122.0,
+    14.0
+   ],
+   "y": -0.25,
+   "yaw_deg": 90.0
+  },
+  {
+   "piece": "seafloor_patch_b",
+   "at": [
+    122.0,
+    26.0
+   ],
+   "y": -0.25,
+   "yaw_deg": 180.0
+  },
+  {
+   "piece": "seafloor_patch_a",
+   "at": [
+    122.0,
+    38.0
+   ],
+   "y": -0.25,
+   "yaw_deg": 270.0
+  },
+  {
+   "piece": "seafloor_edge",
+   "at": [
+    62.0,
+    -70.0
+   ],
+   "y": -0.25,
+   "yaw_deg": 180.0
+  },
+  {
+   "piece": "seafloor_edge",
+   "at": [
+    62.0,
+    50.0
+   ],
+   "y": -0.25,
+   "yaw_deg": 0.0
+  },
+  {
+   "piece": "seafloor_edge",
+   "at": [
+    74.0,
+    -70.0
+   ],
+   "y": -0.25,
+   "yaw_deg": 180.0
+  },
+  {
+   "piece": "seafloor_edge",
+   "at": [
+    74.0,
+    50.0
+   ],
+   "y": -0.25,
+   "yaw_deg": 0.0
+  },
+  {
+   "piece": "seafloor_edge",
+   "at": [
+    86.0,
+    -70.0
+   ],
+   "y": -0.25,
+   "yaw_deg": 180.0
+  },
+  {
+   "piece": "seafloor_edge",
+   "at": [
+    86.0,
+    50.0
+   ],
+   "y": -0.25,
+   "yaw_deg": 0.0
+  },
+  {
+   "piece": "seafloor_edge",
+   "at": [
+    98.0,
+    -70.0
+   ],
+   "y": -0.25,
+   "yaw_deg": 180.0
+  },
+  {
+   "piece": "seafloor_edge",
+   "at": [
+    98.0,
+    50.0
+   ],
+   "y": -0.25,
+   "yaw_deg": 0.0
+  },
+  {
+   "piece": "seafloor_edge",
+   "at": [
+    110.0,
+    -70.0
+   ],
+   "y": -0.25,
+   "yaw_deg": 180.0
+  },
+  {
+   "piece": "seafloor_edge",
+   "at": [
+    110.0,
+    50.0
+   ],
+   "y": -0.25,
+   "yaw_deg": 0.0
+  },
+  {
+   "piece": "seafloor_edge",
+   "at": [
+    122.0,
+    -70.0
+   ],
+   "y": -0.25,
+   "yaw_deg": 180.0
+  },
+  {
+   "piece": "seafloor_edge",
+   "at": [
+    122.0,
+    50.0
+   ],
+   "y": -0.25,
+   "yaw_deg": 0.0
+  },
+  {
+   "piece": "seafloor_edge",
+   "at": [
+    50.0,
+    -58.0
+   ],
+   "y": -0.25,
+   "yaw_deg": 270.0
+  },
+  {
+   "piece": "seafloor_edge",
+   "at": [
+    134.0,
+    -58.0
+   ],
+   "y": -0.25,
+   "yaw_deg": 90.0
+  },
+  {
+   "piece": "seafloor_edge",
+   "at": [
+    50.0,
+    -46.0
+   ],
+   "y": -0.25,
+   "yaw_deg": 270.0
+  },
+  {
+   "piece": "seafloor_edge",
+   "at": [
+    134.0,
+    -46.0
+   ],
+   "y": -0.25,
+   "yaw_deg": 90.0
+  },
+  {
+   "piece": "seafloor_edge",
+   "at": [
+    50.0,
+    -34.0
+   ],
+   "y": -0.25,
+   "yaw_deg": 270.0
+  },
+  {
+   "piece": "seafloor_edge",
+   "at": [
+    134.0,
+    -34.0
+   ],
+   "y": -0.25,
+   "yaw_deg": 90.0
+  },
+  {
+   "piece": "seafloor_edge",
+   "at": [
+    50.0,
+    -22.0
+   ],
+   "y": -0.25,
+   "yaw_deg": 270.0
+  },
+  {
+   "piece": "seafloor_edge",
+   "at": [
+    134.0,
+    -22.0
+   ],
+   "y": -0.25,
+   "yaw_deg": 90.0
+  },
+  {
+   "piece": "seafloor_edge",
+   "at": [
+    50.0,
+    -10.0
+   ],
+   "y": -0.25,
+   "yaw_deg": 270.0
+  },
+  {
+   "piece": "seafloor_edge",
+   "at": [
+    134.0,
+    -10.0
+   ],
+   "y": -0.25,
+   "yaw_deg": 90.0
+  },
+  {
+   "piece": "seafloor_edge",
+   "at": [
+    50.0,
+    2.0
+   ],
+   "y": -0.25,
+   "yaw_deg": 270.0
+  },
+  {
+   "piece": "seafloor_edge",
+   "at": [
+    134.0,
+    2.0
+   ],
+   "y": -0.25,
+   "yaw_deg": 90.0
+  },
+  {
+   "piece": "seafloor_edge",
+   "at": [
+    50.0,
+    14.0
+   ],
+   "y": -0.25,
+   "yaw_deg": 270.0
+  },
+  {
+   "piece": "seafloor_edge",
+   "at": [
+    134.0,
+    14.0
+   ],
+   "y": -0.25,
+   "yaw_deg": 90.0
+  },
+  {
+   "piece": "seafloor_edge",
+   "at": [
+    50.0,
+    26.0
+   ],
+   "y": -0.25,
+   "yaw_deg": 270.0
+  },
+  {
+   "piece": "seafloor_edge",
+   "at": [
+    134.0,
+    26.0
+   ],
+   "y": -0.25,
+   "yaw_deg": 90.0
+  },
+  {
+   "piece": "seafloor_edge",
+   "at": [
+    50.0,
+    38.0
+   ],
+   "y": -0.25,
+   "yaw_deg": 270.0
+  },
+  {
+   "piece": "seafloor_edge",
+   "at": [
+    134.0,
+    38.0
+   ],
+   "y": -0.25,
+   "yaw_deg": 90.0
+  },
+  {
+   "piece": "seagrass_patch",
+   "at": [
+    100.357,
+    15.146
+   ],
+   "y": -0.25,
+   "yaw_deg": 286.27
+  },
+  {
+   "piece": "seagrass_patch",
+   "at": [
+    122.087,
+    14.949
+   ],
+   "y": -0.25,
+   "yaw_deg": 332.04
+  },
+  {
+   "piece": "seagrass_patch",
+   "at": [
+    59.972,
+    -13.575
+   ],
+   "y": -0.25,
+   "yaw_deg": 339.61
+  },
+  {
+   "piece": "seagrass_patch",
+   "at": [
+    102.13,
+    31.694
+   ],
+   "y": -0.25,
+   "yaw_deg": 40.75
+  },
+  {
+   "piece": "seagrass_patch",
+   "at": [
+    94.976,
+    -2.31
+   ],
+   "y": -0.25,
+   "yaw_deg": 4.72
+  },
+  {
+   "piece": "seagrass_patch",
+   "at": [
+    120.311,
+    17.635
+   ],
+   "y": -0.25,
+   "yaw_deg": 57.46
+  },
+  {
+   "piece": "seagrass_patch",
+   "at": [
+    112.206,
+    -47.568
+   ],
+   "y": -0.25,
+   "yaw_deg": 222.28
+  },
+  {
+   "piece": "seagrass_patch",
+   "at": [
+    66.616,
+    -61.815
+   ],
+   "y": -0.25,
+   "yaw_deg": 313.71
+  },
+  {
+   "piece": "seagrass_patch",
+   "at": [
+    72.243,
+    -39.59
+   ],
+   "y": -0.25,
+   "yaw_deg": 353.67
+  },
+  {
+   "piece": "seagrass_patch",
+   "at": [
+    117.324,
+    -31.912
+   ],
+   "y": -0.25,
+   "yaw_deg": 346.13
+  },
+  {
+   "piece": "seagrass_patch",
+   "at": [
+    94.667,
+    8.494
+   ],
+   "y": -0.25,
+   "yaw_deg": 73.72
+  },
+  {
+   "piece": "seagrass_patch",
+   "at": [
+    121.986,
+    9.827
+   ],
+   "y": -0.25,
+   "yaw_deg": 347.96
+  },
+  {
+   "piece": "seagrass_patch",
+   "at": [
+    118.774,
+    -30.926
+   ],
+   "y": -0.25,
+   "yaw_deg": 130.03
+  },
+  {
+   "piece": "seagrass_patch",
+   "at": [
+    69.285,
+    -46.847
+   ],
+   "y": -0.25,
+   "yaw_deg": 23.45
+  },
+  {
+   "piece": "seagrass_patch",
+   "at": [
+    58.23,
+    8.505
+   ],
+   "y": -0.25,
+   "yaw_deg": 121.64
+  },
+  {
+   "piece": "seagrass_patch",
+   "at": [
+    79.077,
+    23.126
+   ],
+   "y": -0.25,
+   "yaw_deg": 173.07
+  },
+  {
+   "piece": "seagrass_patch",
+   "at": [
+    105.918,
+    -56.072
+   ],
+   "y": -0.25,
+   "yaw_deg": 351.04
+  },
+  {
+   "piece": "seagrass_patch",
+   "at": [
+    59.555,
+    15.979
+   ],
+   "y": -0.25,
+   "yaw_deg": 304.16
+  },
+  {
+   "piece": "seagrass_patch",
+   "at": [
+    59.229,
+    19.925
+   ],
+   "y": -0.25,
+   "yaw_deg": 131.83
+  },
+  {
+   "piece": "seagrass_patch",
+   "at": [
+    97.339,
+    -61.056
+   ],
+   "y": -0.25,
+   "yaw_deg": 16.82
+  },
+  {
+   "piece": "seagrass_patch",
+   "at": [
+    70.303,
+    37.339
+   ],
+   "y": -0.25,
+   "yaw_deg": 70.75
+  },
+  {
+   "piece": "seagrass_patch",
+   "at": [
+    109.39,
+    34.684
+   ],
+   "y": -0.25,
+   "yaw_deg": 339.14
+  },
+  {
+   "piece": "sand_drift",
+   "at": [
+    95.0,
+    11.0
+   ],
+   "y": -0.25,
+   "yaw_deg": 180.0
+  },
+  {
+   "piece": "wreck_ribs",
+   "at": [
+    113.0,
+    2.0
+   ],
+   "y": -0.25,
+   "yaw_deg": -24.4
   }
  ]
 }
