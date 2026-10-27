@@ -161,6 +161,25 @@ read-only) on the landing's centre:
 Light `ch08` (16:00) turned with the arena, `lut_ch08_storm` (the beat sheet's `ch08_day` has no colour-script
 row yet), and Corrow's `storm_grey` sea 27.3 m below. Hint `to_the_spire`.
 
+### Coilspire's tier landing (`coilspire_tier_landing`, M3-ENV-713, the Coilspire kit)
+
+`ch08_flue_moths`: the trial's two placed fights on tiers 2 and 4 (act1_ch08.md B05). The spire's well is 7–9 m
+across, and the battle camera stands 8 m off the slots, so no true tier fits a fight.
+
+`arena_tier_hall` (`cs_arena.build_tier_hall`, arena frame) is the tier as a stage set:
+- the well is widened to r 7 m;
+- the near 80° on the camera's side is open, and the far 280° of the inner face stands 13.5 m high in courses,
+  sooted from 5.5 m up, with four slits through it (reveals);
+- floor: the flagged floor round the well's iron grate;
+- the tier's landing on corbels at 4.8 m and the next at 9.6 m, with flights hugging the wall up to each;
+- copper risers from the three flue-keys.
+
+`hall_fittings()` places the kit's `flue_key`, `flue_key_wheel` and `tier_brazier` pieces; each brazier carries an
+`#FFB16E` light (2.0, 8 m).
+
+Light `ch08_coilspire_int` (coilspire.md): ambient `#5A7E78` 2.0, fog `#24443F`, exposure 1.5,
+`lut_ch08_coilspire_int`, and the sun steep down the shaft (64°, 0.9). Hint `up_the_well`.
+
 ### The underwater arena (`underway_tower`)
 
 An arena under the sea carries its own look, because the battle scene has none:

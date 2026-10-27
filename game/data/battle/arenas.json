@@ -14,7 +14,8 @@
       "seawall_stairhead_storm": "res://assets/environments/arenas/seawall_stairhead_storm/seawall_stairhead_storm.tscn",
       "seawall_stairhead_hoist": "res://assets/environments/arenas/seawall_stairhead_hoist/seawall_stairhead_hoist.tscn",
       "seawall_stairhead_surge": "res://assets/environments/arenas/seawall_stairhead_surge/seawall_stairhead_surge.tscn",
-      "coilspire_headland_path": "res://assets/environments/arenas/coilspire_headland_path/coilspire_headland_path.tscn"
+      "coilspire_headland_path": "res://assets/environments/arenas/coilspire_headland_path/coilspire_headland_path.tscn",
+      "coilspire_tier_landing": "res://assets/environments/arenas/coilspire_tier_landing/coilspire_tier_landing.tscn"
     },
     "staging": {
       "doc": "M3-BPR-01: per-arena choreography (BattleChoreo): travel_scale scales every run, step, walk-in and exit (with reduced motion's on top); tempo scales the battle speed (under 1 = slower). Arenas with no row stage as the sandbox.",

@@ -1208,8 +1208,54 @@ def _headland_arena() -> dict:
 
 HEADLAND = _headland_arena()
 
+
+# ---------------------------------------------------------------------------------------------
+# M3-ENV-713: a tier of the Coilspire's well (the Coilspire kit's arena_tier_hall; act1_ch08.md B05's placed fights)
+# ---------------------------------------------------------------------------------------------
+COILSPIRE_FIRE = "#FFB16E"  # coilspire.md `ch08_coilspire_int`: the braziers' oil fire (~2,900 K)
+TIER_HALL_SEA_Y = -48.3  # tier 2 stands 9 m over the spire's base, 39.3 m over the sea
+
+
+def _tier_hall_arena() -> dict:
+    ca, _cs = _coilspire()
+    fittings, fires = ca.hall_fittings()
+    return {
+        "id": "coilspire_tier_landing",
+        "sub_frame": "ch08_coilspire_int",
+        "ground": "deck",
+        "ground_glb": CS + "arena_tier_hall.glb",
+        "lut": "res://assets/environments/arenas/coilspire_tier_landing/lut_ch08_coilspire_int.png",
+        # coilspire.md `ch08_coilspire_int`: the braziers #FFB16E 2.0, range 8 m; ambient #5A7E78 (bronze_patina,
+        # lifted) 2.0, the copper green-cyan; fog #24443F 0.006; exposure 1.5; the sky through the openings at 0.45.
+        # The one directional is the afternoon sun down the shaft (ch08: 30 deg is too low to reach the floor; the
+        # shaft's light is the crown opening's, steep).
+        "sun": {"elev": 64.0, "az": 200.0, "color": "#FFE4CE", "energy": 0.9, "max_distance": 60.0},
+        "fill": {"color": "#5A7E78", "energy": 2.0},
+        "exposure": 1.5,
+        "glow": (0.6, 0.04, 1.0),
+        "fog": {"color": "#24443F", "aerial": 0.3, "density": 0.006, "sky_affect": 0.0, "height": 0.0,
+                "height_density": 0.0},
+        "sky_shader": LOW_SUN_SKY,
+        "sky": dict(CORROW_SKY, sky_energy=0.85),
+        "sea": {"y": TIER_HALL_SEA_Y, "tide_line_y": TIER_HALL_SEA_Y, "sea_glow": 0.0, "material_res": CORROW_SEA},
+        "pieces": [{"glb": CS + name + ".glb", "at": at, "yaw": yaw, "structure": True} for name, at, yaw in fittings],
+        "scatters": [],
+        "lamp_spec": {"color": COILSPIRE_FIRE, "energy": 2.0, "range_m": 8.0, "attenuation": 1.2,
+                      "flame_radius_m": 0.06, "flame_energy": 6.0},
+        "lamps": [{"at": f, "flame": False, "shadow": k == 0} for k, f in enumerate(fires)],
+        "hints": {
+            "wide_high": ((-1.5, 7.5, 13.5), (0.0, 0.8, -3.0)),
+            "party_side": ((5.6, 1.7, 4.5), (-1.5, 1.0, -0.5)),
+            "foe_side": ((-5.6, 1.7, 4.0), (1.5, 1.0, 0.0)),
+            "up_the_well": ((1.0, 0.8, 4.5), (-1.0, 9.0, -5.0)),
+        },
+    }
+
+
+TIER_HALL = _tier_hall_arena()
+
 ARENAS = {a["id"]: a for a in (TIDELINE, CAUSEWAY, CAUSEWAY_ROUTE, DERELICT_DECK, ASH_TERRACE, UNDERWAY_TOWER,
-                               RAFT_MORNING, SHOALS, CAMP, WALLHEAD_STORM, WALLHEAD_HOIST, WALLHEAD_SURGE, HEADLAND)}
+                               RAFT_MORNING, SHOALS, CAMP, WALLHEAD_STORM, WALLHEAD_HOIST, WALLHEAD_SURGE, HEADLAND, TIER_HALL)}
 
 
 # ---------------------------------------------------------------------------------------------

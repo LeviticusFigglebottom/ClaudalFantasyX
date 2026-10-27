@@ -24,6 +24,17 @@
         "arena_headland_path-lod1": 104
       }
     },
+    "arena_tier_hall": {
+      "budget": [
+        36000,
+        2500
+      ],
+      "bytes": 1107244,
+      "lods": {
+        "arena_tier_hall": 18056,
+        "arena_tier_hall-lod1": 1844
+      }
+    },
     "beacon_basket": {
       "budget": [
         5000,
