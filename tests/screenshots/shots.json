@@ -4062,6 +4062,14 @@
         960,
         720
       ]
+    },
+    {
+      "id": "creature_kahre",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_kahre.tscn",
+      "resolution": [
+        960,
+        720
+      ]
     }
   ]
 }
