@@ -5544,5 +5544,55 @@
     }
    ]
   }
+ },
+ "footstep_surfaces": {
+  "_doc": "M3-AUD-811: FootstepAudio's surface areas (game/data/audio/footsteps.json surface_areas). Each row: a box `size` centred at `center` in the frame of `at` (x, y, z) turned by `yaw_deg`; `surface` a footsteps.json surface, `priority` wins overlaps. The dock reads in dock_haluna's own frame (its row's at/yaw are the dock piece's): deck 1.4 m over its origin, 38 m along +X, 4 m wide at the end platform. The lagoon: everything below mean sea level (y 0) is shallow water.",
+  "group": "footstep_surface",
+  "meta": "surface",
+  "priority_meta": "surface_priority",
+  "areas": [
+   {
+    "name": "dock",
+    "surface": "wood",
+    "priority": 2,
+    "at": [
+     -6.0,
+     0.0,
+     60.0
+    ],
+    "yaw_deg": 35.0,
+    "center": [
+     19.1,
+     1.6,
+     0.0
+    ],
+    "size": [
+     38.6,
+     1.0,
+     4.4
+    ]
+   },
+   {
+    "name": "lagoon_shallows",
+    "surface": "water",
+    "priority": 1,
+    "at": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "yaw_deg": 0.0,
+    "center": [
+     0.0,
+     -0.75,
+     0.0
+    ],
+    "size": [
+     600.0,
+     1.5,
+     600.0
+    ]
+   }
+  ]
  }
 }
