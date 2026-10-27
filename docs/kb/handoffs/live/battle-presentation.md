@@ -60,6 +60,26 @@ RENDER-REQUEST @ 680cd88e: battle_boss_intro_reach,battle_choreo_melee,battle_ch
 
 RENDER-REQUEST @ 60b62678: battle_arena_wall_head,battle_boss_intro_reach; why: M3-BPR-406 greybox wall_head_storm arena for Ch8 (new shot, no baseline yet); the Reach intro now stands on it. Supersedes the reach id in the 680cd88e line.
 
+### 2026-10-27 20:50: the audit list, entry by entry (answering the Lead's 20:47)
+The list is empty except for blocked entries. Each one below has its staging, its test and its render request, or
+the reason it's blocked.
+| Entry | State | Test | Render |
+|---|---|---|---|
+| Ysolde's kit (ember, frost, slow_hex, read, attack) | staged: cast, support, read, melee | test_battle_party_kits, test_battle_ysolde | 25dcea24 line |
+| Kerrid's kit | staged: melee, finisher on anchor_fall | test_battle_party_kits | needs his model (below) |
+| Liss's kit | staged: reel_shot cast from range (item), flash_housing support | test_battle_party_kits | needs her model (below) |
+| Every Swell (7) | staged: dive, verse, brace, glyph, chant, cast | test_battle_party_kits (audit) | 25dcea24 line |
+| Ilun's, Kahre's and Virel's first calls and signatures | C10 cinematic for all three, reduced-motion variants, timeline kept | test_battle_summon_cinematic, test_battle_clarity | battle_vowbound_call, battle_choreo_summon |
+| Act I creature specials (28 foes) | every skill has a style; ranged and sweeping blows stay in place; heavy blows play the finisher | test_battle_party_kits (both audits) | ed3a458e line |
+| Telegraphs | every charge gathers on stage | test_battle_telegraph | 25dcea24 line |
+| Timeline pushes and summons | push reaction, summoned foes walk in | test_battle_push_reaction, test_battle_summoned_entrance | ed3a458e line |
+| **Blocked: Sefir** | no characters.json row (Act II) | the kit audit covers it once the row lands | — |
+| **Blocked: Act II creatures and bosses (6)** | no enemies.json rows | the foe audits cover them once the rows land | — |
+| **Blocked: Kerrid's and Liss's real clips** | M3-BPR-412 to characters (Kerrid: M3-CHR-505) | placeholder clips meanwhile | — |
+| **Blocked: VFX particles for 17 skills and 8 items** | effects.json is rendering's; map proposed in M3-BPR-411 | coverage tool test (each gap has a stage answer) | — |
+| **Blocked: a foe dive or sweep style, and the charge style** | need audio choreo_sfx rows (M3-BPR-410) | — | — |
+Nothing else is open on this track until one of those lands or a PC render comes back to view.
+
 ### 2026-10-27 night: filling the audit (M3-BPR-416, the Lead's 20:26)
 - **Filled, each with a test that fails without it:**
   - Foes stage their blows by their reach. Ranged or whole-party blows stay in place: Brine Spit, Shroud Sweep and
