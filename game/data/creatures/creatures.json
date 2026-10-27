@@ -156,6 +156,12 @@
       "scene": "res://game/creatures/root_crab/root_crab_battle.tscn",
       "contact": {"attack": 0.5, "cast": 0.7},
       "portrait": {"rim_energy": 2.8, "kick_energy": 1.8}
+    },
+    "fen_leech": {
+      "scene": "res://game/creatures/fen_leech/fen_leech_battle.tscn",
+      "stand_in": {"hover": 1.38},
+      "contact": {"attack": 0.7},
+      "portrait": {"rim_energy": 2.8, "kick_energy": 1.8}
     }
   }
 }

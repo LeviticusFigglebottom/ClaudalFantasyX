@@ -682,6 +682,16 @@
       ]
     },
     {
+      "id": "creature_fen_leech",
+      "owner": "character",
+      "sources": ["assets_src/creatures/fen_leech/**", "assets_src/creatures/sail_leech/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/fen_leech/*.glb", "assets/creatures/fen_leech/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/fen_leech/build_fen_leech.py", "--", "--out", "assets/creatures/fen_leech/fen_leech.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "fen_leech"]
+      ]
+    },
+    {
       "id": "wildlife_gull",
       "owner": "character",
       "sources": ["assets_src/wildlife/gull/**", "assets_src/wildlife/common/**", "assets_src/creatures/common/creature_kit.py"],
