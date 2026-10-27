@@ -3040,34 +3040,6 @@
           }
         }
       }
-    },
-    {
-      "id": "battle_heroes_idle",
-      "scene": "res://game/levels/_tests/hero_motion/battle_heroes_idle.tscn"
-    },
-    {
-      "id": "battle_heroes_attack",
-      "scene": "res://game/levels/_tests/hero_motion/battle_heroes_attack.tscn"
-    },
-    {
-      "id": "battle_heroes_hit",
-      "scene": "res://game/levels/_tests/hero_motion/battle_heroes_hit.tscn"
-    },
-    {
-      "id": "battle_heroes_ko",
-      "scene": "res://game/levels/_tests/hero_motion/battle_heroes_ko.tscn"
-    },
-    {
-      "id": "battle_heroes_victory",
-      "scene": "res://game/levels/_tests/hero_motion/battle_heroes_victory.tscn"
-    },
-    {
-      "id": "battle_heroes_cast",
-      "scene": "res://game/levels/_tests/hero_motion/battle_heroes_cast.tscn"
-    },
-    {
-      "id": "battle_heroes_finisher",
-      "scene": "res://game/levels/_tests/hero_motion/battle_heroes_finisher.tscn"
     }
   ]
 }
