@@ -107,6 +107,9 @@ env-art is cloud session `session_01YbaV2c8yquRHqj6afQYg89` on `claude/env-art`;
 - **M3-C01-04** (Ch1 kit swap): noted in its task file that the swap is the Ch1 scene owner's (ZoneKitDressing, as
   Ch4–Ch9); env-art supplies missing pieces on request.
 
+- **MERGE-READY @ 80bb1e56:** `HalunaDresser.night_lamp_houses()` / `set_night_lamp(house, lit)` for Ch4 C4-01's
+  windows going dark one at a time. Checks run: `--filter=haluna` 53/0, gdlint, gdformat.
+
 ### Render requests
 RENDER-REQUEST @ a0d2549f: battle_arena_tideline_dawn,battle_arena_causeway_disc_sunset,battle_arena_causeway,battle_arena_tideline,causeway_c02_profile_against_the_lagoon,causeway_c08_drownbell_disc_approach,drownbell_flood,battle_boss_intro_drownbell,haluna_h01_village_from_sea,haluna_h10_dock_night,field_objective_line,field_interact_prompt,field_area_title,field_tip_card,dialogue_continue; why: M3-ENV-701 set dressing in Haluna, the causeway and the two arenas (the five field/dialogue shots frame Haluna's lane 1)
 RENDER-REQUEST @ 22a5de11: battle_arena_oruvel_raft_morning,battle_arena_causeway,drownbell_flood; why: the merge took the PC gate's copies of these three over env-art's; confirm they still match with the arena dressing
