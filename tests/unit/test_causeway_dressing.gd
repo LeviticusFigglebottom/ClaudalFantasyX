@@ -31,9 +31,12 @@ func test_the_dressing_places_the_terrain_and_the_layout_pieces() -> void:
 	if dresser != null:
 		assert_true(dresser.find_child("causeway_flats", true, false) != null, "the flats terrain is placed")
 		var expected := (dresser.layout.get("pieces", []) as Array).size()
+		var baked := {}  # the baked MultiMesh scatters (saltgrass, M3-ENV-701's shell and pebble litter)
+		for spec: Dictionary in dresser.layout.get("instances", []) as Array:
+			baked[String(spec.get("name", ""))] = true
 		var placed := 0
 		for k: String in dresser.placed.keys():
-			if not k.begins_with("Saltgrass"):
+			if not baked.has(k):
 				placed += int(dresser.placed[k])
 		assert_eq(placed, expected, "every layout piece is instanced")
 	_drop(zone)

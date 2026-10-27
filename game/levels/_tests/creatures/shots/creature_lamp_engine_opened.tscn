@@ -1,0 +1,10 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="PackedScene" path="res://game/levels/_tests/creatures/creature_stage.tscn" id="1_stage"]
+[ext_resource type="PackedScene" path="res://game/creatures/lamp_engine/lamp_engine_battle.tscn" id="c1"]
+
+[node name="CreatureLampEngineOpened" instance=ExtResource("1_stage")]
+creatures = Array[PackedScene]([ExtResource("c1")])
+clip = &"idle_opened"
+view = &"three_quarter"
+phase = &"opened"

@@ -1089,3 +1089,5 @@ ITEM_SAILMAKERS_NEEDLE,Sailmaker's Needle
 ITEM_SAILMAKERS_NEEDLE_DESC,"A sailmaker's steel needle, left sealed in a niche of Coilspire's flues. With two Tide Pearls it stitches Sea Legs into armour (Customize); the needle is spent in the stitching."
 ABILITY_SEA_LEGS,Sea Legs
 ABILITY_SEA_LEGS_DESC,Prevents Slow.
+BOSS_TITLE_UNDERTOWS_REACH,The Undertow's Reach
+BOSS_EPITHET_UNDERTOWS_REACH,The storm puts a hand on the wall

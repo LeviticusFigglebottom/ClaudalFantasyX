@@ -1,0 +1,46 @@
+{
+  "_doc": "M1-CHR-15: how the heroes' helper bones follow a pose. assets_src/characters/asha/hero_clips.py bakes them into every clip from these values; game/characters/hero_helper_bones.gd solves the same for poses set outside a clip (the character stages' world_pose, cutscene placeholder poses). The builds add the bones (assets_src/characters/asha/helper_bones.py); a skeleton without them is left alone.",
+  "key_tolerance_deg": 0.1,
+  "_key_tolerance_doc": "hero_clips.py drops a baked helper-bone key that the slerp between its neighbouring kept keys reproduces within this many degrees (the runtime solve itself matches the bake within 1 degree).",
+  "armpit": {
+    "_doc": "DEF-armpit.L/.R sit on the shoulder with the upper arm's head, tail and roll, and turn `share` of the upper arm's own turn (relative to the shoulder) while the arm comes down, rising to all of it as the arm lifts above its rest elevation by raise_full_deg (the arm's own lift, in the skeleton's frame): the underarm skin rides them, so a lowered arm does not sink into the torso cloth, and a raised one carries it as before.",
+    "bone_prefix": "DEF-armpit.",
+    "driver_prefix": "DEF-upper_arm.",
+    "share": 0.35,
+    "raise_full_deg": 30.0
+  },
+  "skirt": {
+    "_doc": "DEF-skirt_<k> (pivot on the outer skirt above the hip joints, down to the panels' joint) and DEF-skirt_<k>.001 (on to the hem), one chain per sector of the floor-length skirts, parented to the hips. Each bone swings out in the vertical plane through its sector by the least angle (coarse steps of grid_deg, then `bisect` halvings, up to max_swing_deg) that keeps every vertex of `cloth_mesh` with at least cloth_min_weight on it within slack_m of its rest distance (capped at clear_m) from the axis of every leg segment (both legs). The upper bone is solved first, the lower one about its moved tip; neighbouring panels may not lag each other by more than lag_deg_per_45 per 45 degrees between them. Floor-length cloth that cannot hang its full length (kneeling, crouching) pools: where the lower panel's cloth would pass floor_clear_m above the floor (the skeleton's y = 0), the lower bone takes a scale along its length (the gather, down to gather_min, found by `bisect` halvings) and 1 + gather_flare * (1 - gather) across it, baked as scale_3d keys. A lower panel swung out past overhang_from_deg lies over the legs, and the cloth that would run on past them falls: it gathers to end overhang_margin_m past the farthest leg point (sampled at support_samples + 1 points per segment) within support_lateral_m of the panel's plane, eased in over overhang_ease_deg of swing.",
+    "bone_prefix": "DEF-skirt_",
+    "cloth_mesh": "Costume",
+    "cloth_min_weight": 0.3,
+    "clear_m": 0.085,
+    "slack_m": 0.004,
+    "max_swing_deg": 95.0,
+    "lag_deg_per_45": 40.0,
+    "grid_deg": 2.5,
+    "bisect": 12,
+    "floor_clear_m": 0.012,
+    "gather_min": 0.2,
+    "gather_flare": 0.35,
+    "overhang_from_deg": 55.0,
+    "overhang_ease_deg": 20.0,
+    "overhang_margin_m": 0.08,
+    "support_lateral_m": 0.2,
+    "support_samples": 4,
+    "leg_segments": [
+      [
+        "DEF-thigh",
+        "DEF-shin"
+      ],
+      [
+        "DEF-shin",
+        "DEF-foot"
+      ],
+      [
+        "DEF-foot",
+        "DEF-toe"
+      ]
+    ]
+  }
+}

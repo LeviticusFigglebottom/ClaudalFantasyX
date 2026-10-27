@@ -1,0 +1,27 @@
+{
+  "version": 1,
+  "doc": "What the Ashcrown strike trial sounds like (M3-AUD-825; game/audio/ashcrown_audio.gd; act1_ch05.md B08). AshcrownAudio listens to the Ch05AshcrownZone's AshcrownTrial and never touches the rules. events: a trial signal -> the sfx row it plays. ran: a release's outcome (AshcrownTrial.OUT_*) -> the row the run plays. at: where an event sounds, a node under the zone (%s is the signal's first argument: the tier or the gate), else at the zone's camera; height_m lifts it off the floor.",
+  "events": {
+    "caught": "ash_catch",
+    "stud_dark": "ash_stud",
+    "faded": "ash_fade",
+    "landed": "ash_landed",
+    "rotated": "ash_gate",
+    "plate_moved": "ash_plate",
+    "alcove_opened": "ash_alcove"
+  },
+  "ran": {
+    "next": "ash_vein_run",
+    "landed": "ash_vein_run",
+    "open": "ash_vein_run",
+    "ground": "ash_vein_ground",
+    "seal": "ash_vein_seal"
+  },
+  "at": {
+    "caught": "Greybox/Bowl_%s",
+    "faded": "Greybox/Bowl_%s",
+    "rotated": "Greybox/%s",
+    "ran": "Greybox/Bowl_%s"
+  },
+  "height_m": 1.0
+}

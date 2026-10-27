@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "doc": "Foot IK on uneven ground (M2-HER-1116, ADR 0190): HeroFootIK (game/hero_motion/hero_foot_ik.gd), a SkeletonModifier3D after the clips and the idle micro-motion. A ray under each foot finds the floor; the foot's target moves by the floor's height there relative to the body's root plane (the clips are authored on flat ground at the root), never more than max_adjust_m, eased toward it at adjust_rate_mps so a step edge never pops. The hips drop by the lower foot's (negative) offset so the leg can reach; the other leg bends to its own. Two-bone solve on thigh (hip to knee) and shin (knee to ankle), in the knee's own plane, the foot keeping its animated orientation. On flat ground every offset is 0 and the pose is left exactly as the clips made it. Metres and metres per second. legs: the bone names per leg (Rigify DEF chain; a rig without them gets nothing). ray_up_m / ray_down_m: the ray's reach above and below the root plane at the foot. dead_zone_m: taken off every floor offset (continuously, so leaving it never pops): terrain noise under a centimetre moves nothing, and a floor 3 cm up lifts the foot 2 cm. reach_slack_m: the leg is never solved straighter than its length minus this (no knee snap at full extension).",
+  "legs": [
+    {"thigh": "DEF-thigh.L", "shin": "DEF-shin.L", "foot": "DEF-foot.L"},
+    {"thigh": "DEF-thigh.R", "shin": "DEF-shin.R", "foot": "DEF-foot.R"}
+  ],
+  "hips": "DEF-spine",
+  "ray_up_m": 0.45,
+  "ray_down_m": 0.5,
+  "max_adjust_m": 0.3,
+  "adjust_rate_mps": 1.5,
+  "dead_zone_m": 0.01,
+  "reach_slack_m": 0.005
+}

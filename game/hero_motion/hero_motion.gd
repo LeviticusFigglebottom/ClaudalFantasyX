@@ -18,6 +18,7 @@ extends RefCounted
 const BODY_PLAY := &"play_clip"
 const BODY_SPEED := &"set_locomotion_speed"
 const MICRO_NAME := &"HeroIdleMicro"
+const FOOT_IK_NAME := &"HeroFootIK"
 const PLAYER_NAME := &"AnimationPlayer"
 ## How deep under the actor a body node is looked for (actor -> body -> its own children).
 const BODY_SEARCH_DEPTH := 2
@@ -118,3 +119,24 @@ static func add_micro_motion(actor: Node3D, actor_id: StringName = &"") -> HeroI
 	micro.name = MICRO_NAME
 	skel.add_child(micro)
 	return micro
+
+
+## The actor's foot IK modifier, or null.
+static func foot_ik_of(actor: Node) -> HeroFootIK:
+	var skel := skeleton_of(actor)
+	return null if skel == null else skel.get_node_or_null(NodePath(String(FOOT_IK_NAME))) as HeroFootIK
+
+
+## Adds foot IK on uneven ground (HeroFootIK, M2-HER-1116) to the actor's skeleton, after any modifier already there
+## (once; a second call returns the same one). Null, changing nothing, without a Skeleton3D.
+static func add_foot_ik(actor: Node3D) -> HeroFootIK:
+	var skel := skeleton_of(actor)
+	if skel == null:
+		return null
+	var existing := foot_ik_of(actor)
+	if existing != null:
+		return existing
+	var ik := HeroFootIK.new()
+	ik.name = FOOT_IK_NAME
+	skel.add_child(ik)
+	return ik

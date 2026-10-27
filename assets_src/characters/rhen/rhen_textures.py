@@ -239,6 +239,7 @@ def cloth_atlas(cparams: dict, size: int = 2048) -> None:
 
 
 def main() -> int:
+    at.PRE_ROUND = at.PRE_ROUND_DECIMALS  # M1-CHR-15: host-independent PNGs (as Asha's run)
     ap = argparse.ArgumentParser()
     ap.add_argument("--bake-dir")
     ap.add_argument("--only", default="skin,cloth")

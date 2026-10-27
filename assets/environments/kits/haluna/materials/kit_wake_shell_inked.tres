@@ -1,0 +1,11 @@
+[gd_resource type="ShaderMaterial" load_steps=3 format=3]
+
+[ext_resource type="Shader" path="res://game/shaders/environment/env_wake_shell.gdshader" id="1_shader"]
+[ext_resource type="Texture2D" path="res://assets/environments/kits/haluna/textures/shell_glyph.png" id="2_tex"]
+
+[resource]
+resource_name = "kit_wake_shell_inked"
+shader = ExtResource("1_shader")
+shader_parameter/col_glyph = Color(0.1216, 0.102, 0.08627, 1)
+shader_parameter/glyph_depth = 1
+shader_parameter/tex_glyph = ExtResource("2_tex")

@@ -13,6 +13,7 @@
     "speaker_prop": "_chat_speaker",
     "_note_speaking": "chat_speaking() is requested from creatures (M3-AUD-815); until it lands, the private _chat_speaker is read (never written) and compared with npc_id while chatting() is true",
     "chatting_method": "chatting",
+    "steps": {"_note": "M3-AUD-826: each villager walks on its own FootstepAudio (footsteps.json, with these keys over it): quieter, a shorter stride, cloth but no hero gear.", "walk_db": -9.0, "run_db": -6.0, "walk_step_m": 0.45, "gear": false},
     "head_m": 1.5,
     "murmur": {"low": "villager_murmur_low", "high": "villager_murmur_high"},
     "voices": {"child": "high", "osu": "high", "vendor": "high", "netmender": "low", "fisher": "low", "reed": "low"},

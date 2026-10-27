@@ -1,7 +1,7 @@
 extends TestCase
-## M3-CRE-611: the ambient wildlife (game/world/wildlife/, docs/kb/art/wildlife.md). The simulations are
-## headless RefCounted classes stepped with fixed deltas; the layer is built off the tree (no camera, so every
-## group is active) from the review stage's data and from each zone file.
+## M3-CRE-611 (and M3-CRE-616, the insects): the ambient wildlife (game/world/wildlife/,
+## docs/kb/art/wildlife.md). The simulations are headless RefCounted classes stepped with fixed deltas; the layer
+## is built off the tree (no camera, so every group is active) from the review stage's data and from each zone file.
 
 const DT := 1.0 / 60.0
 const STAGE_DATA := "res://game/levels/_tests/wildlife/wildlife_stage.json"
@@ -29,7 +29,12 @@ func _layer(path: String, zone_id: StringName = &"") -> WildlifeLayer:
 func _snapshot(layer: WildlifeLayer) -> Array[PackedFloat32Array]:
 	var out: Array[PackedFloat32Array] = []
 	for key: StringName in [
-		WildlifeLayer.GULLS_FLYING, WildlifeLayer.GULLS_PERCHED, WildlifeLayer.CRABS, WildlifeLayer.FISH
+		WildlifeLayer.GULLS_FLYING,
+		WildlifeLayer.GULLS_PERCHED,
+		WildlifeLayer.CRABS,
+		WildlifeLayer.FISH,
+		WildlifeLayer.MOTHS,
+		WildlifeLayer.DRAGONFLIES
 	]:
 		out.append((layer.buffers[key] as WildlifeBuffer).data.duplicate())
 	return out
@@ -55,6 +60,8 @@ func test_same_seed_same_positions_after_n_frames() -> void:
 	for f in 900:
 		c.step(DT, _player_at(f), true)
 	assert_ne(_snapshot(c)[3], sa[3], "another zone id seeds other choices")
+	assert_ne(_snapshot(c)[4], sa[4], "the moths too")
+	assert_true(a.insect_count() > 0, "the stage has insects")
 	a.free()
 	b.free()
 	c.free()
@@ -198,20 +205,22 @@ func _zone_files() -> PackedStringArray:
 
 func test_the_layer_reads_each_zone_file_within_budget() -> void:
 	var files := _zone_files()
-	assert_true(files.size() >= 2, "Haluna and the causeway have wildlife files")
+	assert_true(files.size() >= 3, "Haluna, the causeway and Pemakar have wildlife files")
 	var budgets: Dictionary = _kinds["budgets"]
 	for f in files:
 		var data := WildlifeConfig.load_json(ZONE_DIR + f)
 		var zone_id := StringName(str(data["zone"]))
 		assert_eq(WildlifeConfig.zone_path(zone_id), ZONE_DIR + f, "%s is named after its zone id" % f)
 		var layer := _layer("", zone_id)
-		var want := {"flocks": 0, "beaches": 0, "shoals": 0}
+		var want := {"flocks": 0, "beaches": 0, "shoals": 0, "swarms": 0}
 		for key: String in want:
 			for row: Dictionary in data.get(key, []):
 				want[key] += int(row["count"])
 		assert_eq(layer.gull_count(), want["flocks"], "%s gulls" % f)
 		assert_eq(layer.crab_count(), want["beaches"], "%s crabs" % f)
 		assert_eq(layer.fish_count(), want["shoals"], "%s fish" % f)
+		assert_eq(layer.insect_count(), want["swarms"], "%s insects" % f)
+		assert_true(layer.insect_count() <= int(budgets["insects"]), "%s insect budget" % f)
 		assert_true(layer.gull_count() <= int(budgets["gulls"]), "%s gull budget" % f)
 		assert_true(layer.crab_count() <= int(budgets["crabs"]), "%s crab budget" % f)
 		assert_true(layer.fish_count() <= int(budgets["fish"]), "%s fish budget" % f)
@@ -281,3 +290,125 @@ func test_zone_seed_is_stable() -> void:
 		WildlifeConfig.seed_for(&"ch02/haluna"), WildlifeConfig.seed_for(&"ch03/saltgrass_causeway"), "ids differ"
 	)
 	assert_eq(WildlifeConfig.seed_for(&""), WildlifeConfig.FNV_OFFSET, "FNV-1a offset basis for the empty id")
+
+
+func _swarm_row(swarm_type: String, perches: Array = []) -> Dictionary:
+	return {"id": "t", "type": swarm_type, "center": [4.0, 2.2, -3.0], "radius_m": 1.5, "count": 5, "perches": perches}
+
+
+func test_moths_loop_round_their_lamp_and_ignore_the_player() -> void:
+	var kind: Dictionary = _kinds["kinds"]["insect"]
+	var a := WildlifeSwarm.new(_swarm_row("moth"), kind, 616, 5)
+	var b := WildlifeSwarm.new(_swarm_row("moth"), kind, 616, 5)
+	var h := float(kind["moth"]["height_m"])
+	var lo := INF
+	var hi := -INF
+	var travelled := 0.0
+	for f in 60 * 60:
+		var before := a.insects[0].pos
+		a.step(DT, Vector3(4.0, 0.0, -3.0), true)  # right under the lamp
+		b.step(DT, Vector3.ZERO, false)
+		travelled += before.distance_to(a.insects[0].pos)
+		for m in a.insects:
+			var r := Vector2(m.pos.x - a.center.x, m.pos.z - a.center.z).length()
+			assert_true(r <= a.radius + EPS, "a moth stays within the swarm's radius (%.3f)" % r)
+			assert_true(absf(m.pos.y - a.center.y) <= h + EPS, "and its height band")
+			lo = minf(lo, r)
+			hi = maxf(hi, r)
+	for i in a.count():
+		assert_eq(a.insects[i].pos, b.insects[i].pos, "moths ignore the player")
+	assert_true(hi - lo > 0.1, "the orbits jitter in and out (%.2f .. %.2f m)" % [lo, hi])
+	assert_true(travelled > 10.0, "and keep flying (%.1f m in a minute)" % travelled)
+	var buf := WildlifeBuffer.new(5)
+	a.write(buf, 0)
+	assert_true(buf.visible(4), "every moth is drawn")
+	assert_eq(buf.data[14], WildlifeBuffer.MODE_FLUTTER, "with the wing flutter")
+
+
+func test_dragonflies_hover_dart_and_perch_within_their_area() -> void:
+	var kind: Dictionary = _kinds["kinds"]["insect"]
+	var row := _swarm_row("dragonfly", [[4.5, 1.6, -2.5, 90.0], [3.2, 1.7, -3.4, 200.0]])
+	var patrol := WildlifeSwarm.new(row, kind, 77, 4)
+	var t: Dictionary = kind["dragonfly"]
+	var slack := float(t["drift_m"]) * WildlifeSwarm.DRIFT_REACH + EPS
+	var darts := 0
+	var perched := 0
+	var was: Array[int] = []
+	was.resize(patrol.count())
+	for f in 60 * 120:
+		patrol.step(DT, Vector3(50.0, 0.0, 50.0), true)
+		var used := {}
+		for i in patrol.count():
+			var d := patrol.insects[i]
+			if d.state == WildlifeSwarm.State.PERCHED:
+				var p := patrol.perches[d.perch]
+				assert_true(d.pos.distance_to(Vector3(p.x, p.y, p.z)) < EPS, "a perched dragonfly sits on its perch")
+				assert_false(used.has(d.perch), "one per perch")
+				used[d.perch] = true
+				if was[i] != WildlifeSwarm.State.PERCHED:
+					perched += 1
+			else:
+				var r := Vector2(d.pos.x - patrol.center.x, d.pos.z - patrol.center.z).length()
+				var near_perch := false
+				for p in patrol.perches:
+					near_perch = near_perch or d.pos.distance_to(Vector3(p.x, p.y, p.z)) < slack
+				assert_true(r <= patrol.radius + slack, "within the radius (%.3f)" % r)
+				assert_true(
+					absf(d.pos.y - patrol.center.y) <= patrol.height + slack or d.state == WildlifeSwarm.State.DART,
+					"within the height band while hovering"
+				)
+				if d.state == WildlifeSwarm.State.DART and was[i] != WildlifeSwarm.State.DART:
+					darts += 1
+			assert_true(patrol.bounds.grow(EPS).has_point(d.pos), "inside the swarm's bounds")
+			was[i] = d.state
+	assert_true(darts > 20, "they dart from hover to hover (%d darts in 2 min)" % darts)
+	assert_true(perched > 0, "and settle on the perches (%d)" % perched)
+
+
+func test_a_dragonfly_darts_away_from_the_player() -> void:
+	var kind: Dictionary = _kinds["kinds"]["insect"]
+	var patrol := WildlifeSwarm.new(_swarm_row("dragonfly"), kind, 5, 4)
+	var d := patrol.insects[0]
+	var flee_r := float(kind["dragonfly"]["flee_radius_m"])
+	var player := Vector3(d.pos.x + flee_r * 0.4, 0.0, d.pos.z)
+	var pp := Vector2(player.x, player.z)
+	var d0 := Vector2(d.pos.x, d.pos.z).distance_to(pp)
+	patrol.step(DT, player, true)
+	assert_eq(d.state, WildlifeSwarm.State.DART, "a player inside flee_radius_m sends it off")
+	for f in 60:
+		patrol.step(DT, player, true)
+	var d1 := Vector2(d.pos.x, d.pos.z).distance_to(pp)
+	assert_true(d1 > d0 + 0.5, "it darted away (%.2f -> %.2f m)" % [d0, d1])
+	var far := WildlifeSwarm.new(_swarm_row("dragonfly"), kind, 5, 4)
+	far.step(DT, Vector3(50.0, 0.0, 50.0), true)
+	assert_ne(far.insects[0].state, WildlifeSwarm.State.DART, "a far player changes nothing on the first frame")
+
+
+func test_insects_are_clamped_to_their_budget_and_draw_in_two_multimeshes() -> void:
+	var path := "user://wildlife_insects_over_budget.json"
+	var budget := int(_kinds["budgets"]["insects"])
+	var data := {
+		"zone": "_tests/insects_over_budget",
+		"swarms":
+		[
+			{"id": "a", "type": "moth", "center": [0, 2, 0], "radius_m": 1, "count": budget - 4},
+			{"id": "b", "type": "dragonfly", "center": [6, 1, 0], "radius_m": 3, "count": 10}
+		]
+	}
+	var fa := FileAccess.open(path, FileAccess.WRITE)
+	fa.store_string(JSON.stringify(data))
+	fa.close()
+	var layer := _layer(path)
+	assert_eq(layer.insect_count(), budget, "insects clamped to the budget")
+	assert_eq(layer.insect_count(WildlifeSwarm.TYPE_DRAGONFLY), 4, "the later swarm gets what is left")
+	assert_eq(layer.draw_calls(), 2, "moths and dragonflies: two MultiMeshes")
+	assert_true(layer.draw_calls() <= int(_kinds["budgets"]["draw_calls"]), "within the draw-call budget")
+	for key: StringName in [WildlifeLayer.MOTHS, WildlifeLayer.DRAGONFLIES]:
+		var mmi := layer.multimeshes[key] as MultiMeshInstance3D
+		assert_eq(mmi.cast_shadow, GeometryInstance3D.SHADOW_CASTING_SETTING_OFF, "%s cast no shadow" % key)
+		var mat := mmi.material_override as ShaderMaterial
+		assert_true(mat != null and mat.resource_path.ends_with("/%s.tres" % key), "%s material" % key)
+	for f in 30:
+		layer.step(DT, Vector3.ZERO, false)
+	layer.free()
+	DirAccess.remove_absolute(path)

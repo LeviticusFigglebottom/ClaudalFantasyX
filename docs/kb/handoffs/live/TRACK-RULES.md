@@ -57,3 +57,10 @@ The protocol:
 Batch requests: one line per push, covering every shot your recent items can affect.
 - **Portrait renders:** post `RENDER-REQUEST @ <sha>: portraits:<id>[,portraits:<id>...]; tool: tools/portraits/render.sh --only <id>`. The PC runs render.sh and pushes the PNGs on the same kind of branch. Shot ids must exist in `tests/screenshots/shots.json` at the requested sha; anything else is skipped.
 - **PC import crashes:** if Godot's import aborts, the PC retries it up to 3 times on a fresh `.godot` and never publishes black captures.
+
+## WHILE THE PC IS PAUSED (from 2026-10-27 ~21:30, the human's instruction)
+- The PC (`pc-gpu`) is paused until the human says to resume.
+- **The Lead's cloud container serves render requests instead.** The protocol is unchanged: post the same `RENDER-REQUEST @ <sha>: <ids>` lines in your live log.
+- Results go to `lead/gate-render-<track>-<sha7>` (not `gpu/...`), and their RENDERED lines go in `lead-cloud.md`.
+- Cloud lavapipe matches the baselines; it is just slower (4 CPUs, one job at a time). **Keep requests small:** list only the shots you changed.
+- **Still never capture in your own session.**

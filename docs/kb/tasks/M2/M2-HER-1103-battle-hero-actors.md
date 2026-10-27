@@ -64,4 +64,15 @@ battle-presentation owns the choreography; this track only adds the hero-actor s
   (hero_battle_shots.patch, after ui, characters and battle-presentation are on the integration branch); re-check KO,
   victory and revive when M2-CHR-513 lands (the pop test picks the new clips up by itself).
 
+### 2026-10-27: Ysolde, placeholders
+- `game/hero_motion/battle/ysolde_battle_actor.tscn`: the fourth wrapper. Her contract clips are all placeholders
+  (request M2-HER-1115 to characters for the real ones). Ysolde also gets a field body (hero_motion.json; walk
+  1.02 m/s and run 2.11 m/s measured by HeroClipGait), so her stage actors in cutscenes stop whip-turning.
+- **Fixed:** placeholder clips were installed after HeroBattleActor set its blends, so they were untuned. Ysolde's
+  ko -> idle was 0 s, not 0.9: a revive in one frame. The wrapper now installs them itself before tuning (on a
+  stopped player: installing under a playing one crashes, see M2-HER-1114), and `retune()` (per frame) covers any
+  clips added later.
+- The pop guard on Ysolde: 25 of 26 changes inside the limit. ready -> finisher is the placeholder's arm flip
+  (KNOWN, M2-HER-1114).
+
 ## Review log

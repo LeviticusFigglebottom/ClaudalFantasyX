@@ -80,8 +80,12 @@ class ZoneMistakes(unittest.TestCase):
         d["villagers"][1]["route"] = [{"at": [0, 0, 0], "activity": "dance"}, [1, 0, 0]]
         d["villagers"][2]["shelter"] = [1, 2]
         d["storm_flag"] = "no_such_flag"
+        d["villagers"][3]["attach"] = "child"
+        d["villagers"][3]["route"] = [[0, 0, 0], [1, 0, 0]]
+        d["villagers"][5]["attach"] = "inside"
         errs = " | ".join(self._errors(d))
-        for needle in ("two or more points", "unknown activity", "shelter is not", "not declared"):
+        for needle in ("two or more points", "unknown activity", "shelter is not", "not declared", "has no route",
+                       "is not one of"):
             self.assertIn(needle, errs)
 
 

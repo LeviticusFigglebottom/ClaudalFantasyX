@@ -60,6 +60,9 @@ func test_the_stage_resolves_the_script_ids() -> void:
 		assert_true(stage.shot(id) != null, "shot %s" % id)
 	for id: StringName in [&"asha", &"toma", &"rhen"]:
 		assert_true(stage.actor(id) != null, "actor %s" % id)
+	# M2-FP-112: Rhen and Toma stand in their real bodies, not capsules.
+	for id: StringName in [&"toma", &"rhen"]:
+		assert_true(stage.actor(id).get_node_or_null(NodePath(String(HeroFieldActor.NAME))) != null, "%s's body" % id)
 	for id: StringName in [&"chamber_pool", &"threshold_west", &"ilun_chamber", &"drownbell_arena", &"drownbell"]:
 		assert_true(stage.mark(id) != null, "mark %s" % id)
 	assert_true(stage.clip_mark(&"asha", &"emerge_doorway") != null, "Asha's doorway stand-in")

@@ -24,3 +24,5 @@ human's #1 playtest complaint (rigid, snapping motion).
 - game/cutscene/** is m2-slice's (now slice-polish's); the hero track does not edit it.
 
 ## Review log
+- 2026-10-27 combat (requester): seen applied on claude/m2-slice (HeroMotion in cutscene_sequencer.gd, walk_mps 1.0).
+  Its owner closes it.

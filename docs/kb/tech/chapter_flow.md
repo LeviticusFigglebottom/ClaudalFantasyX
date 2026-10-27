@@ -117,16 +117,12 @@ Ch7 "The Tidecup" is built the same way: `game/data/flow/chapters/ch07.json`, tw
 - `checkpoint(spawn)`: B04's autosave before the naming. It moves the respawn point and calls `SaveSystem.request_autosave`.
 - `stand(actor, mark)`: puts an actor on a mark with no walk, so Tavi is at his boat when the Bell is entered after B07.
 
-**The Reefball seam.** B05 (`ch07_naming.dlg`) ends on `<<event start_reefball tidecup_opening>>`, declared in `events.json`. The zone's `naming` beat reads it with `{"if_event": "start_reefball", "steps": [{"beat": "reefball_match"}]}`. **`reefball_match` is the only beat the Reefball agent replaces.** Today its steps are a stand-in:
-- set `ch07_tidecup_played` (never `ch07_tidecup_won`);
-- `go` back to `ch07/tamsule_bell_galleries` at `CatchPool`.
+**The Reefball seam.** B05 (`ch07_naming.dlg`) ends on `<<event start_reefball tidecup_opening>>`, declared in `events.json`. The zone's `naming` beat reads it with `{"if_event": "start_reefball", "steps": [{"beat": "reefball_match"}]}`, and `reefball_match` is one `scene` step to `game/levels/ch07/tidecup_match/tidecup_match.tscn` (M3-C07-1206). `TidecupMatch` frames the Reefball engine's story match (data `game/data/flow/ch07_tidecup.json`):
+- it plays the match through the Reefball HUD and its controller (M3-UI-01) when they are in the build, loaded by path until the UI track's branch lands; otherwise the engine's AI plays both sides at once (a headless fallback);
+- at the end it sets `ch07_tidecup_played` always, and `ch07_tidecup_won` plus the win reward on a win only (a draw counts as a loss for rewards);
+- it returns to `ch07/tamsule_bell_galleries` at `CatchPool`.
 
-The real steps hand off to the match scene. The match must:
-- set `ch07_tidecup_played` always, and `ch07_tidecup_won` on a win only (a reward);
-- give its own rewards;
-- return to `ch07/tamsule_bell_galleries` at `CatchPool`.
-
-The zone's first arrival row then plays B07 the same either way. No story `.dlg` and no chapter flow may read `ch07_tidecup_won`. The test enforces it, and its `REWARD_SCRIPTS` lists any script that gives the reward.
+The zone's first arrival row then plays B07 the same either way. No story `.dlg` and no chapter flow may read `ch07_tidecup_won`. The test enforces it, and its `REWARD_SCRIPTS` lists any script that gives the reward. `test_ch07_tidecup_match` covers the win, loss and draw paths.
 
 **Seams to other chapters.**
 - **Entry:** Ch6's dawn (B10) hands off to `ch07/tamsule` at `RiverMouth`; the location row and the F5 teleport reach it directly too.
@@ -242,4 +238,10 @@ An Act I zone swaps its greybox look for env-art's kit with a `ZoneKitDressing` 
 - **Keys:** a piece's `"block": <id>` follows `Greybox/<id>`'s visibility (so `hide_block`/`show_block` and `states` drive it); `"collide": true` gives decor off the route a box collider; `greybox: {hide_all, keep}` hides the block meshes except the story blocks no kit has yet; `fire_lights` (shadowless, fog energy 0, optionally following a block); `environment` (a copied grade, `.tres` next to the zone); `time_of_day_h`.
 - **Heights:** the floor is still the flat greybox, so pieces sit near y = 0 (a raised hard is sunk). Water the player must not walk on is a new solid block in the zone's layout.
 - **Shots:** `game/levels/_tests/act1_zones/<chNN_zone>_shots.tscn` (`Act1ZoneRig`: the zone with its story held, plus `views` built as `Cameras/<name>`).
+- **On a kit's heights** (Corrow): the zone takes the kit's own frame, its story points moved once by a relayout script, and `KitCollision` (`game/levels/act1/kit_collision.gd`, used by Ch04Zone and Ch05Zone) adds the layout's `collision_path` file (generated blocks) and its `ramps` (stairs as slabs under 45°, built under `Greybox` so `hide_block` works on them). `tests/integration/kit_walk_probe.gd` (`KitWalkProbe`) walks a zone's routes on its built collision analytically.
+- **Grades by state:** a Ch06Zone `lights` row or a Ch05Zone `variants` row may carry `environment_res` (a copied kit grade) to swap the zone's Environment (Corrow's fallen wall, Ch9's dawn).
 - **Ch6 (M3-C06-1200):** the Brine Shoals kit; `tools/act1/ch06_brine_shoals_dressing.py`. The channel runs north up x = −24 from its silted head at z = −24 (`ChannelWater` keeps Rhen on the banks; the `Channel` spawn is on the east bank). The sun is the colour script's `ch06` frame.
+- **Ch8 (M3-C08-1202):** Corrow on the seawall kit's heights (`tools/act1/corrow_frame.py`, `ch08_corrow_relayout.py`, `ch08_corrow_dressing.py`): the walk at y 12, the Fisher Stair on the wall's inner face, the low town at y 1, the Bastion a platform at walk height, the mole's ramp over the parapet; the fall hides the breach segment and the stair's upper flights.
+- **Ch9 (M3-C09-1209):** Corrow's night in the same frame, the wall fallen (`tools/act1/ch09_corrow_night.py`, derived from Ch8's files: re-run Ch8's generator first).
+- **Ch4 (M3-C04-1204):** the ferry and the Seventh Terrace (`tools/act1/ch04_ferry_dressing.py`): the ship's own frame at (0, 0, 10), the derelict at `bf_terrace.DERELICT_IN_FERRY`, the islet off the starboard gangway.
+- **Ch7 (M3-C07-1211):** the Bell's galleries on the Tamsule Bell kit (`tools/act1/ch07_tamsule_bell_dressing.py`), the kit's arena frame: the party's gallery is the west (Oruvel's), the rim trigger is on Oruvel's platform before the prow step where Tavi stands, Ione on Sorrin's prow east; Oruvel's moorings sit at azimuth 325 on the party's run of galleries (the two runs are parted by the boat lanes), a staging behind the posts and a bridge up to the walkway. Ch07Zone adds `KitCollision`. The area map (`zone_maps.json`) follows the moved POIs; it draws kit zones thinly until M3-UI-1212.

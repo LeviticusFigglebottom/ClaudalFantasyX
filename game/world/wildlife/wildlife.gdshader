@@ -1,5 +1,5 @@
 shader_type spatial;
-// Ambient wildlife (M3-CRE-611, docs/kb/art/wildlife.md). One surface for the gulls, crabs and fish, drawn through
+// Ambient wildlife (M3-CRE-611, docs/kb/art/wildlife.md). One surface for the gulls, crabs, fish and insects, drawn through
 // MultiMesh. The meshes carry the creature kit's vertex data (assets_src/wildlife/common/wildlife_kit.py):
 //   COLOR.rgb  albedo (sRGB palette colour)     COLOR.a  wetness (0 dry .. 1 wet)
 //   UV         a rest-pose detail coordinate (metres)
@@ -8,7 +8,8 @@ shader_type spatial;
 //   r phase (radians, wrapped)  g amplitude (0 .. 1)  b mode  a mode parameter
 // Modes: 0 still; 1 flap (UV2.y = wing span 0 .. 1; a = the wings' dihedral, radians); 2 head turn (UV2.y = 1 on
 // the head; a = yaw, radians; g = a nod); 3 legs (|UV2.y| = hip 0 .. tip 1, its sign the gait group); 4 swim (no
-// mask: the body bends by its distance behind the snout).
+// mask: the body bends by its distance behind the snout); 5 wing flutter (M3-CRE-616: |UV2.y| = wing span root 0 ..
+// tip 1, its sign the side; the wings beat about the body's long axis; a = the wings' rest angle, radians).
 render_mode blend_mix, depth_draw_opaque, cull_disabled, diffuse_burley, specular_schlick_ggx;
 
 uniform float roughness_dry : hint_range(0.0, 1.0) = 0.8;
@@ -41,6 +42,13 @@ uniform float swim_head_z = 0.075;
 uniform float swim_length = 0.14;
 uniform float swim_sweep = 0.018;
 uniform float swim_wave = 32.0;
+// Flutter (mode 5): the wing root (x = its distance from the body's axis), the beat (radians at amplitude 1), the z
+// behind which the hind pair lies and the hind pair's lag (radians), and the body's bob (metres at amplitude 1).
+uniform vec3 flutter_pivot = vec3(0.0012, 0.0015, 0.0);
+uniform float flutter_angle = 0.5;
+uniform float flutter_split_z = -1.0;
+uniform float flutter_hind_lag = 0.0;
+uniform float flutter_bob = 0.001;
 
 vec2 rot2(vec2 p, float a) {
 	float c = cos(a);
@@ -89,6 +97,21 @@ void vertex() {
 		VERTEX.x += amp * swim_sweep * k * sin(phase - d * swim_wave);
 		NORMAL.x -= amp * swim_sweep * k * swim_wave * cos(phase - d * swim_wave) * NORMAL.z;
 		NORMAL = normalize(NORMAL);
+	} else if (mode == 5) {
+		float w = abs(m);
+		if (w > 0.0) {
+			float side = m < 0.0 ? -1.0 : 1.0;
+			float lag = VERTEX.z < flutter_split_z ? flutter_hind_lag : 0.0;
+			// the beat flexes a little toward the tip
+			float a = (amp * flutter_angle * sin(phase - lag) + aux) * (0.85 + 0.15 * w);
+			vec2 p = rot2(vec2(side * VERTEX.x - flutter_pivot.x, VERTEX.y - flutter_pivot.y), a);
+			VERTEX.x = side * (p.x + flutter_pivot.x);
+			VERTEX.y = p.y + flutter_pivot.y;
+			vec2 n = rot2(vec2(NORMAL.x * side, NORMAL.y), a);
+			NORMAL.x = n.x * side;
+			NORMAL.y = n.y;
+		}
+		VERTEX.y -= amp * flutter_bob * sin(phase);
 	}
 }
 
