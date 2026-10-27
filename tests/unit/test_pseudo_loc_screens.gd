@@ -406,6 +406,25 @@ func test_shrine_travel_fits() -> void:
 	_done("shrine travel")
 
 
+## M3-UI-205: the Kite's world map: the list (a long place name), the question, then a square's search.
+func test_kite_map_fits() -> void:
+	for scale in _scales():
+		_settings_at(scale)
+		var host := Node.new()
+		_host(host)
+		var menu := KiteMapMenu.open_in(host, KiteMapShot.fixed_model())
+		menu.rows_page().set_cursor(menu.model.ids().find(KiteMapShot.CURSOR), false)
+		_probe(menu, "kite map list")
+		menu.accept()
+		_probe(menu, "kite map question")
+		menu.back()
+		menu.rows_page().set_cursor(menu.rows_page().rows.size() - 2, false)
+		menu.accept()
+		_probe(menu, "kite map search")
+		_clear()
+	_done("kite map")
+
+
 ## M3-UI-01: the Reefball HUD on a pass choice (menu, preview, the read's marks) and just after a
 ## goal (the banner), then on every option of that choice, then at the final banner.
 func test_reefball_hud_fits() -> void:

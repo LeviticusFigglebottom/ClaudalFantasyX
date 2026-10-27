@@ -748,6 +748,23 @@ It shows even with damage numbers off, because it is speech. `said` keeps the ba
 
 Tests: `test_reefball_outfitter.gd`. The shot is `reefball_outfitter`; it is in the pseudo-loc walk and the aspect audit.
 
+## The Kite's world map (M3-UI-205)
+
+SPEC §6.6's late-game airship-equivalent (act_outline.md Ch18) gets its menu ahead of Act III, as the Lead allowed on 2026-10-27. KiteMapMenu (`game/ui/kite/`, a `FieldSubmenu`; layout `game/data/ui/kite_map.json`, strings `game/data/loc/kite.csv`) sits over KiteMapModel, which is node-free. Its data is `game/data/world/kite.json`:
+- `open_flag` (`kite_flying`): with it unset, the Kite flies nowhere.
+- `columns` and `rows`: the chart's grid.
+- `regions`: names drawn on the chart where their people live.
+- `destinations`: each shows once its `requires_flag` is set. A row names its `location_id` and `spawn` in `locations.json` and its `at` (fractions of the chart). Its name is its location's.
+- `secrets`: each is found by searching its `cell`, which sets its `found_flag`. It then joins the destinations under its own `name_key`. The list is empty until Design places Act III's hidden places.
+
+**The page.** The list shows the places by name, then "Search the chart", then Leave. The place the party stands in is marked Here and is skipped by the cursor. The line names the place, its region and its chart square. KiteChart draws the grid, the regions and a gem per place, with a ring on the one under the cursor.
+- **Choosing a place** asks first (Stay under the cursor). Fly closes the page and goes through `ShrineNetwork.travel_to` (the SceneRouter, through the location registry). A refused trip says so and keeps the list.
+- **Search** names a square. Left and Right change the column, Up and Down the row; with the mouse, the pointer over the chart names it and a click searches. Confirm searches it.
+
+**Not mounted yet.** Nothing in the game opens the page, because the Kite itself (Act III) doesn't exist. Its owner calls `KiteMapMenu.open_in(host, KiteMapModel.from_game())`.
+
+Tests: `test_kite_map.gd`, `test_input_parity_kite_map.gd`; validator `check_kite` (`tools/tests/test_kite_validate.py`). The shot is `kite_map` (KiteMapShot's fixed flags, the party in Haluna, the cursor on Tamsule). It is in the pseudo-loc walk and the aspect audit.
+
 ## "Parts look primitive": the pass of 2026-10-27
 
 The human's playtest note, the Lead's item 5. Everything below honours Reduced motion and ends inside its shot's settle frames.

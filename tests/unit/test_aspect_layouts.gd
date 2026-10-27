@@ -144,6 +144,17 @@ func _shrine_travel() -> Node:
 	return here.open_travel()
 
 
+## M3-UI-205: the Kite's world map (list, chart and line in one centred frame).
+func test_kite_map() -> void:
+	_sweep("kite map", _kite_map, _framed)
+
+
+func _kite_map() -> Node:
+	var host := Node.new()
+	ParityHost.scene_root().add_child(host)
+	return KiteMapMenu.open_in(host, KiteMapShot.fixed_model())
+
+
 ## M3-UI-01: the Reefball HUD on a pass choice (menu and preview open) and just after a goal (banner).
 func test_reefball_hud() -> void:
 	for driver: String in [REEFBALL_CHOICE, REEFBALL_GOAL]:

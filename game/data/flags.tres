@@ -106,6 +106,7 @@ flags = {
 "rbl_gear_weighted_float_owned": "Reefball gear (ADR 0040, game/data/reefball/gear.json): the party owns 'weighted_float' (bought at the Tamsule outfitter).",
 "rbl_worn_band": "Reefball gear (ADR 0040): the band piece the side wears in its matches (a gear.json id; empty for none).",
 "rbl_worn_float": "Reefball gear (ADR 0040): the float piece the side wears in its matches (a gear.json id; empty for none).",
+"kite_flying": "The Kite flies (SPEC §6.6, Act III Ch18 'The Kite'): its world map opens (KiteMapMenu, M3-UI-205).",
 "ch07_arrived": "Ch7 B01: the party has come in to Tamsule at the river mouth (the chapter becomes 7).",
 "ch07_met_tavi": "Ch7 B03 (end): Tavi Orse found Rhen at the market boats and gave him Pio's side-band; opens the walk to the Bell.",
 "ch07_told_tavi": "Ch7 B03 choice point: Rhen told Tavi that Mother Kell couldn't swim (Ch18 offered: Tavi at rebuilt Oruvel).",

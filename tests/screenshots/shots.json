@@ -3352,6 +3352,10 @@
       "scene": "res://game/ui/reefball/shots/reefball_outfitter.tscn"
     },
     {
+      "id": "kite_map",
+      "scene": "res://game/ui/kite/shots/kite_map.tscn"
+    },
+    {
       "id": "ch08_corrow_arrival",
       "scene": "res://game/levels/_tests/act1_zones/ch08_corrow_shots.tscn",
       "camera": "Cameras/Arrival",
