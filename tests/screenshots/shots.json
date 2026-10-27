@@ -4102,6 +4102,110 @@
     {
       "id": "reefball_outfitter",
       "scene": "res://game/ui/reefball/shots/reefball_outfitter.tscn"
+    },
+    {
+      "id": "creature_wakefin_body",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_wakefin_body.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
+      "id": "creature_tannin_archer",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_tannin_archer.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
+      "id": "creature_gallery_ray",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_gallery_ray.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
+      "id": "creature_rime_urchin",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_rime_urchin.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
+      "id": "creature_conduit_crawler",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_conduit_crawler.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
+      "id": "creature_ridge_lynx",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_ridge_lynx.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
+      "id": "creature_cord_moth",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_cord_moth.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
+      "id": "creature_glass_skate",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_glass_skate.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
+      "id": "creature_root_crab",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_root_crab.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
+      "id": "creature_fen_leech",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_fen_leech.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
+      "id": "creature_scree_crawler",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_scree_crawler.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
+      "id": "creature_rim_crawler",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_rim_crawler.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
+      "id": "creature_flat_engine",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_flat_engine.tscn",
+      "resolution": [
+        960,
+        720
+      ]
     }
   ]
 }

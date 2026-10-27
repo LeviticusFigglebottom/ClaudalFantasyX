@@ -571,12 +571,14 @@ def export_creature(mesh: Mesh, rig: Rig, clips: list[Clip], out_path: str, extr
                 pb.rotation_quaternion = q
                 pb.location = tuple(R.T @ _g2b(loc))
                 pb.scale = (1.0, 1.0, 1.0)
-                pb.keyframe_insert("rotation_quaternion", frame=f + 1)
-                pb.keyframe_insert("location", frame=f + 1)
-                pb.keyframe_insert("scale", frame=f + 1)
+                # M3-CRE-630: key frame f is clip time f / FPS (the glTF exporter counts from frame 0; keys from frame 1
+                # put every clip one frame late).
+                pb.keyframe_insert("rotation_quaternion", frame=f)
+                pb.keyframe_insert("location", frame=f)
+                pb.keyframe_insert("scale", frame=f)
         track = arm.animation_data.nla_tracks.new()
         track.name = clip.name
-        strip = track.strips.new(clip.name, 1, act)
+        strip = track.strips.new(clip.name, 0, act)
         strip.name = clip.name
         arm.animation_data.action = None
         names.append(clip.name)

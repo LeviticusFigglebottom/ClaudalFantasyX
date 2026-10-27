@@ -18,6 +18,7 @@ import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "common"))
 import creature_kit as ck  # noqa: E402
+import grounding as gr  # noqa: E402
 
 SEED = 4127
 PAL = {k: ck.hexrgb(v) for k, v in {
@@ -30,6 +31,11 @@ BODY_Y = 0.40  # carapace centre height
 SHELL_R = (0.52, 0.21, 0.42)  # dome radii (x, y up, z forward)
 SIDE_R = -1.0
 LEG_Z = (0.19, 0.06, -0.08, -0.21)  # hip z of the four walking legs, front to back  # the crusher's side: its right, -x, faces the battle camera once the stage turns it to the party
+# The walking legs' proportions, a variant's parameter (the root crab climbs on longer legs, M3-CRE-628): the knee's
+# x, its height and its z as a factor of the hip's, then the foot's x and z factor (the foot is on the ground).
+LEG_KNEE = (0.62, 0.47, 1.7)
+LEG_FOOT = (0.80, 2.3)
+PLASTRON_RINGS, PLASTRON_SEGS = 6, 36  # the underside's lathe (the dome's is 26 x 72)
 
 
 def build_rig() -> ck.Rig:
@@ -41,9 +47,9 @@ def build_rig() -> ck.Rig:
         for i in range(4):
             z = LEG_Z[i]
             hip = (side * 0.36, 0.33, z)
-            knee = (side * 0.62, 0.47, z * 1.7)
+            knee = (side * LEG_KNEE[0], LEG_KNEE[1], z * LEG_KNEE[2])
             rig.add(f"leg_{tag}{i}_a", hip, knee, "body")
-            rig.add(f"leg_{tag}{i}_b", knee, (side * 0.80, 0.0, z * 2.3), f"leg_{tag}{i}_a")
+            rig.add(f"leg_{tag}{i}_b", knee, (side * LEG_FOOT[0], 0.0, z * LEG_FOOT[1]), f"leg_{tag}{i}_a")
     for side, tag, s in ((SIDE_R, "crusher", 1.0), (-SIDE_R, "cutter", 0.6)):
         sh = (side * 0.26, 0.36, 0.30)
         wr = (side * (0.36 + 0.14 * s), 0.40, 0.50 + 0.04 * s)
@@ -116,9 +122,11 @@ def shell(mesh: ck.Mesh, rig: ck.Rig, rng: np.random.Generator) -> None:
     col = np.where(is_tile[:, None], tile, plate)
     col = ck.mix(col, PAL["mortar_white"], mortar[:, None])
     wet = ck.smoothstep(0.7, 1.0, polar)
-    # the weak point: a crack across the back plate where the shell meets the abdomen
-    back = np.exp(-((unit[:, 0] / 0.22) ** 2) - ((unit[:, 2] + 0.85) / 0.12) ** 2)
-    crack = ck.smoothstep(0.35, 0.8, back) * ck.smoothstep(0.6, 0.95, polar) * (0.5 + 0.5 * np.abs(np.sin(unit[:, 0] * 40.0)))
+    # the weak point: a crack across the back plate where the shell meets the abdomen, one small closed mark (ADR
+    # 0151) low on the back. M3-CRE-631: centred on the back rim's band, so its mask peaks at 1 and reads 0.6..1 on
+    # the crack (it was centred higher, where the rim term cut it to 0.16); it stays clear of the rim
+    back = np.exp(-((unit[:, 0] / 0.2) ** 2) - ((unit[:, 2] + 0.92) / 0.06) ** 2)
+    crack = ck.smoothstep(0.3, 0.75, back) * (0.8 + 0.2 * np.abs(np.cos(unit[:, 0] * 40.0)))
     col = ck.mix(col, PAL["spawn_wound"] * 0.5, (crack * 0.8)[:, None])
     # each plate shades as a flat slab (its own normal); only the bevels into the seams stay smooth
     smooth = ck.weld_normals(P, ck.vertex_normals(P, T))
@@ -130,12 +138,13 @@ def shell(mesh: ck.Mesh, rig: ck.Rig, rng: np.random.Generator) -> None:
     ck.finish(mesh, P, T, "shell", col, rig.rigid("body"), wet=wet * 0.6, cavity=groove * 0.9 + crack * 0.3,
               emission=crack, N=N)
 
-    # underside: a shallow wet plastron
+    # underside: a shallow wet plastron (M3-CRE-631: coarser than the dome, since only its edge is ever seen, which
+    # keeps the crab in its 8k budget)
     prof = [(0.0, -1.0)]
-    for i in range(1, 9):
-        th = (math.pi / 2) * i / 8
+    for i in range(1, PLASTRON_RINGS + 1):
+        th = (math.pi / 2) * i / PLASTRON_RINGS
         prof.append((math.sin(th), -math.cos(th)))
-    Pu, Tu = ck.lathe(prof, segs)
+    Pu, Tu = ck.lathe(prof, PLASTRON_SEGS)
     Pu = Pu * np.array([0.47, 0.11, 0.37]) + np.array([0.0, BODY_Y - 0.035, 0.0])
     cu = ck.mix(PAL["sand_wet"], PAL["laterite"], 0.5 + 0.5 * ck.fbm(Pu * 7.0, SEED + 3)[:, None])
     ck.finish(mesh, Pu, ck.flip(Tu), "chitin", cu * 1.1, rig.rigid("body"), wet=0.9, cavity=0.3)
@@ -224,6 +233,15 @@ def build_mesh(rig: ck.Rig) -> ck.Mesh:
 
 
 LEG_TAGS = [f"{t}{i}" for t in "lr" for i in range(4)]
+# The KO (M3-CRE-631): the body's (time, drop, roll) keys, and each walking leg's hip and knee turns (degrees, the
+# left side's sign; mid-fall, then the end) that fold it in beside the settled body.
+KO_BODY = ((0.0, 0.0, 0.0), (0.35, 0.08, 1.0), (0.7, 0.15, 2.0), (1.0, 0.21, 2.8), (1.4, 0.22, 3.0))
+KO_LEG_A = (18.0, 45.0)
+KO_LEG_B = (-12.0, -28.0)
+# The limbs kept on the floor: (bone, rest axis, the side's sign, the most it may turn). A walking leg turns up
+# about z at its hip (its tip rises), a claw up about x at the shoulder.
+GROUNDED_LIMBS = [(f"leg_{leg}_a", 2, 1.0 if leg[0] == "l" else -1.0, 75.0) for leg in LEG_TAGS] + [
+    ("crusher_arm", 0, -1.0, 60.0), ("cutter_arm", 0, -1.0, 60.0)]
 
 
 def build_clips() -> list[ck.Clip]:
@@ -234,8 +252,9 @@ def build_clips() -> list[ck.Clip]:
     idle.wave("crusher_finger", amp_rot=(-9.0, 0.0, 0.0), base_rot=(-9.0, 0.0, 0.0), cycles=1, phase=-math.pi / 2)
     idle.wave("cutter_finger", amp_rot=(-6.0, 0.0, 0.0), base_rot=(-6.0, 0.0, 0.0), cycles=2, phase=-math.pi / 2)
     idle.wave("crusher_arm", amp_rot=(-3.0, 2.0, 0.0), cycles=1)
-    # a one-leg shuffle: the left second leg lifts and sets down
-    for t, r in ((0.0, 0.0), (0.9, 0.0), (1.15, -14.0), (1.4, 0.0), (2.4, 0.0)):
+    # a one-leg shuffle: the left second leg lifts and sets down (a left leg rises with +z; M3-CRE-631: it was keyed
+    # -14, which pushed it into the floor)
+    for t, r in ((0.0, 0.0), (0.9, 0.0), (1.15, 14.0), (1.4, 0.0), (2.4, 0.0)):
         idle.key("leg_l1_a", t, (0.0, 0.0, r))
     for leg in LEG_TAGS:
         idle.wave(f"leg_{leg}_a", amp_rot=(0.0, 0.0, 1.5 if leg[0] == "l" else -1.5), cycles=2)
@@ -278,18 +297,20 @@ def build_clips() -> list[ck.Clip]:
         hit.key("eye_l", t, (25 * pull, 0, 0))
         hit.key("eye_r", t, (25 * pull, 0, 0))
 
+    # M3-CRE-631: it settles onto its plastron and the legs fold in beside the body, knees up and the tips drawn in
+    # under them, so nothing goes under the floor (it used to sink its legs 0.3 m through it)
     ko = ck.Clip("ko", 1.4)
-    for t, drop, roll in ((0.0, 0.0, 0.0), (0.35, 0.10, 2.0), (0.7, 0.18, 4.0), (1.0, 0.25, 7.0), (1.4, 0.26, 8.0)):
-        ko.key("body", t, (3.0 * drop / 0.26, 0, roll), (0, -drop, 0))
+    for t, drop, roll in KO_BODY:
+        ko.key("body", t, (3.0 * drop / KO_BODY[-1][1], 0, roll), (0, -drop, 0))
     for leg in LEG_TAGS:
         s = 1.0 if leg[0] == "l" else -1.0
         delay = 0.15 * int(leg[1])
         ko.key(f"leg_{leg}_a", 0.0, (0, 0, 0))
-        ko.key(f"leg_{leg}_a", 0.4 + delay, (0, 0, -8 * s))
-        ko.key(f"leg_{leg}_a", 1.4, (0, 0, -14 * s))
+        ko.key(f"leg_{leg}_a", 0.4 + delay, (0, 0, KO_LEG_A[0] * s))
+        ko.key(f"leg_{leg}_a", 1.4, (0, 0, KO_LEG_A[1] * s))
         ko.key(f"leg_{leg}_b", 0.0, (0, 0, 0))
-        ko.key(f"leg_{leg}_b", 0.6 + delay, (0, 0, -35 * s))
-        ko.key(f"leg_{leg}_b", 1.4, (0, 0, -58 * s))
+        ko.key(f"leg_{leg}_b", 0.6 + delay, (0, 0, KO_LEG_B[0] * s))
+        ko.key(f"leg_{leg}_b", 1.4, (0, 0, KO_LEG_B[1] * s))
     for tag in ("crusher", "cutter"):
         ko.key(f"{tag}_arm", 0.0, (0, 0, 0))
         ko.key(f"{tag}_arm", 1.0, (14, 0, 0))
@@ -301,6 +322,12 @@ def build_clips() -> list[ck.Clip]:
     return [idle, attack, cast, hit, ko]
 
 
+def export_clips(rig: ck.Rig, mesh: ck.Mesh) -> list[ck.Clip]:
+    """The clips kept off the floor (M3-CRE-631, common/grounding.py): a planted foot stays on the ground while the
+    body bobs or leans over it (each walking leg turns up about its hip), and the claws ride up over the floor."""
+    return gr.grounded(rig, mesh, build_clips(), GROUNDED_LIMBS)
+
+
 def main() -> None:
     argv = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else []
     ap = argparse.ArgumentParser()
@@ -308,7 +335,7 @@ def main() -> None:
     args = ap.parse_args(argv)
     rig = build_rig()
     mesh = build_mesh(rig)
-    info = ck.export_creature(mesh, rig, build_clips(), args.out, extras={"hymn_creature": "reef_crab"})
+    info = ck.export_creature(mesh, rig, export_clips(rig, mesh), args.out, extras={"hymn_creature": "reef_crab"})
     print(f"reef_crab: {info}")
 
 

@@ -40,7 +40,8 @@ const WORK_SUFFIX := "Work"
 var data: Dictionary = {}
 var villagers: Array[FieldNpc] = []
 var storm := false
-## FieldNpc -> [[Node3D, Transform3D relative to the villager], ...]
+## FieldNpc -> [[Node3D, Transform3D relative to the villager], ...] (keys are checked with is_instance_valid as
+## Variants before any cast: see live_villagers)
 var _followers: Dictionary = {}
 var _storm_flag: StringName = &""
 var _built := false
@@ -209,16 +210,26 @@ static func _vec3(v: Variant) -> Vector3:
 
 ## The villager made for `id`, or null.
 func villager(id: StringName) -> FieldNpc:
-	for n in villagers:
+	for n in live_villagers():
 		if n.npc_id == id:
 			return n
 	return null
 
 
+## The villagers still alive. A zone's teardown can free them before this layer: an object is checked with
+## is_instance_valid while it is still a Variant, because casting a freed object to a type is a script error.
+func live_villagers() -> Array[FieldNpc]:
+	var out: Array[FieldNpc] = []
+	for v: Variant in villagers:
+		if is_instance_valid(v):
+			out.append(v as FieldNpc)
+	return out
+
+
 ## Every villager here braces for (or comes out of) the storm.
 func set_storm(on: bool) -> void:
 	storm = on
-	for n in villagers:
+	for n in live_villagers():
 		n.set_storm(on)
 
 
@@ -233,16 +244,19 @@ func _check_storm() -> void:
 ## One frame: the villagers (when the owner drives them), the storm flag and the riders.
 func tick(delta: float) -> void:
 	if not auto_build:
-		for n in villagers:
+		for n in live_villagers():
 			n.tick(delta)
 	_check_storm()
-	for npc: FieldNpc in _followers:
-		if not is_instance_valid(npc):
+	for key: Variant in _followers.keys():
+		if not is_instance_valid(key):
+			_followers.erase(key)
 			continue
-		var t := npc.global_transform
-		for pair: Array in _followers[npc]:
-			var node := pair[0] as Node3D
-			if is_instance_valid(node):
-				var want := t * (pair[1] as Transform3D)
-				if not node.global_transform.is_equal_approx(want):
-					node.global_transform = want
+		var t := (key as Node3D).global_transform
+		for pair: Array in _followers[key]:
+			var rider: Variant = pair[0]
+			if not is_instance_valid(rider):
+				continue
+			var node := rider as Node3D
+			var want := t * (pair[1] as Transform3D)
+			if not node.global_transform.is_equal_approx(want):
+				node.global_transform = want
