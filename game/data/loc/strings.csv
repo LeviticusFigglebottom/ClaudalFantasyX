@@ -1064,3 +1064,18 @@ MAP_POI_S_CAMP_SHRINE,The camp shrine
 MAP_POI_S_VENDOR_BOAT,The vendor's boat
 MAP_POI_S_TIDELINE,The tideline
 MAP_POI_S_CHANNEL,The channel out
+MAP_ROUTE_SEAWALL,The Seawall
+MAP_ROUTE_COILSPIRE,Coilspire
+MAP_POI_K_MOLE,The harbour mole
+MAP_POI_K_WALL_HEAD,The wall-head
+MAP_POI_K_FISHER_STAIR,The Fisher Stair
+MAP_POI_K_LOW_TOWN,The low town
+MAP_POI_K_SHRINE,The Bastion shrine
+MAP_POI_K_CHANDLER,The chandler
+MAP_POI_K_WALL_GATE,The wall-gate
+MAP_POI_Q_PATH_FOOT,The headland path
+MAP_POI_Q_KEEPERS_HUT,The keeper's hut
+MAP_POI_Q_SPIRE_DOOR,The spire door
+MAP_POI_Q_SECOND_TIER,The second tier
+MAP_POI_Q_FOURTH_TIER,The fourth tier
+MAP_POI_Q_CROWN,The crown chamber

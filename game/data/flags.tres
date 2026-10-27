@@ -96,6 +96,8 @@ flags = {
 "codex_sefir_read": "Codex (ui-menus Act I set, game/data/lore/codex.json): the entry 'sefir' has been opened in the Codex (clears its New marker).",
 "codex_tavi_read": "Codex (ui-menus Act I set, game/data/lore/codex.json): the entry 'tavi' has been opened in the Codex (clears its New marker).",
 "codex_pell_read": "Codex (ui-menus Act I set, game/data/lore/codex.json): the entry 'pell' has been opened in the Codex (clears its New marker).",
+"codex_coilspire_read": "Codex (ui-menus Act I set, game/data/lore/codex.json): the entry 'coilspire' has been opened in the Codex (clears its New marker).",
+"codex_ivo_read": "Codex (ui-menus Act I set, game/data/lore/codex.json): the entry 'ivo' has been opened in the Codex (clears its New marker).",
 "ch07_arrived": "Ch7 B01: the party has come in to Tamsule at the river mouth (the chapter becomes 7).",
 "ch07_met_tavi": "Ch7 B03 (end): Tavi Orse found Rhen at the market boats and gave him Pio's side-band; opens the walk to the Bell.",
 "ch07_told_tavi": "Ch7 B03 choice point: Rhen told Tavi that Mother Kell couldn't swim (Ch18 offered: Tavi at rebuilt Oruvel).",
