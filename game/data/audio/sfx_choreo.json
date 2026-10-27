@@ -285,6 +285,29 @@
       "bus": "Combat",
       "voices": 1,
       "volume_db": 0.0
+    },
+    "choreo_hoof": {
+      "files": [
+        "res://assets/audio/sfx/choreo/step_hoof_1.ogg",
+        "res://assets/audio/sfx/choreo/step_hoof_2.ogg",
+        "res://assets/audio/sfx/choreo/step_hoof_3.ogg"
+      ],
+      "bus": "Combat",
+      "pitch_jitter": 0.05,
+      "voices": 4,
+      "volume_db": 0.0,
+      "_note": "M3-AUD-838: the charge style's approach (assets_src/sfx/charge_sfx.py)"
+    },
+    "whoosh_charge": {
+      "files": [
+        "res://assets/audio/sfx/choreo/whoosh_charge_1.ogg",
+        "res://assets/audio/sfx/choreo/whoosh_charge_2.ogg"
+      ],
+      "bus": "Combat",
+      "pitch_jitter": 0.04,
+      "voices": 2,
+      "volume_db": 0.0,
+      "_note": "M3-AUD-838: the charge style's strike"
     }
   }
 }

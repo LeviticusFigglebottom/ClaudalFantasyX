@@ -904,7 +904,8 @@ def choreo_errors(doc: object, rows: dict, classes: dict[str, list[str]] | None,
         known_styles = set(((choreo.get("choreo") or {}).get("styles") or {}).keys())
     for sid, st in (doc.get("styles") or {}).items():
         w = f"{w0} styles.{sid}"
-        if known_styles is not None and sid not in known_styles:
+        pending = isinstance(st, dict) and st.get("pending", False)  # M3-AUD-838: a row made ahead of its style
+        if known_styles is not None and sid not in known_styles and not pending:
             errs.append(f"{w}: not a style in {CHOREO}")
         if not isinstance(st, dict):
             errs.append(f"{w}: must be an object")
