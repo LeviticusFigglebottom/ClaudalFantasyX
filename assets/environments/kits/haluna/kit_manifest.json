@@ -849,6 +849,28 @@
         "sandals-lod1": 20
       }
     },
+    "save_shrine": {
+      "budget": [
+        9000,
+        700
+      ],
+      "bytes": 188392,
+      "lods": {
+        "save_shrine": 3804,
+        "save_shrine-lod1": 510
+      }
+    },
+    "save_shrine_core": {
+      "budget": [
+        600,
+        80
+      ],
+      "bytes": 15008,
+      "lods": {
+        "save_shrine_core": 196,
+        "save_shrine_core-lod1": 72
+      }
+    },
     "seep_pool": {
       "budget": [
         5000,

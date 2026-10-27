@@ -449,5 +449,10 @@ STANDARD["kit_fen_reed"] = {"albedo_color": hexc("#8C8A5E"), "roughness": 0.85, 
                             "backlight_enabled": "true", "backlight": "Color(0.35, 0.33, 0.2, 1)"}
 STANDARD["kit_fen_canopy_far"] = {"albedo_color": hexc("#4E5C52"), "roughness": 0.95}
 
+# ---- M3-ENV-101 (appended by env-art): the save shrine (save_shrine.py) -----------------------------------------
+# The core's bound light (palette glimmer_bound #4FB3B0, the color script's rule 2: steady), at the primitive's 4.0.
+STANDARD["kit_bound_core"] = {"albedo_color": hexc("#4FB3B0"), "roughness": 0.2, "emission_enabled": "true",
+                              "emission": hexc("#4FB3B0"), "emission_energy_multiplier": 4.0}
+
 if __name__ == "__main__":
     sys.exit(main())

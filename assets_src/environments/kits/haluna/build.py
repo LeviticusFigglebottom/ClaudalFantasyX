@@ -31,6 +31,7 @@ import iskarra  # noqa: E402
 import keth  # noqa: E402
 import lowlight  # noqa: E402
 import ossa_fen  # noqa: E402
+import save_shrine  # noqa: E402
 import kit_common as kc  # noqa: E402
 import props  # noqa: E402
 import ruins  # noqa: E402
@@ -92,6 +93,8 @@ def targets() -> dict:
         out[name] = (name, lowlight, fn)
     for name, fn in sorted(ossa_fen.TARGETS.items()):  # M3-ENV-718 Ossa Fen (Ch10)
         out[name] = (name, ossa_fen, fn)
+    for name, fn in sorted(save_shrine.TARGETS.items()):  # M3-ENV-101 the save shrine
+        out[name] = (name, save_shrine, fn)
     return out
 
 
