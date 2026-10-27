@@ -47,3 +47,8 @@ grade and lift the frames that read grey, without breaking each zone's colour-sc
 - **2026-10-27 (env-art): the Ossa Fen bank's litter.** c990e2c read the battle floor as bare mud.
   - **Added:** fallen leaves lying flat, twigs, crab holes and mud puddles, all under 4 cm and 1.3 m clear of every
     slot (`_bank_litter`).
+- **2026-10-27 (env-art): the Underway gallery's walls.** `battle_arena_underway_tower` read its walls as bare slabs:
+  the bays were clad only on the outer face, and the fight sees the inner one.
+  - **Added to the inner face** of `tower_bay`, `tower_bay_solid` and `tower_bay_broken`: a cast skirting, a stepped
+    cornice (gone on the broken bay), a fillet down each pier's edge, the window's sill and head framed, and sponge and
+    coral crust low on the wall. LOD0 is 1.9–2.3k tris against 3.5–4.5k.
