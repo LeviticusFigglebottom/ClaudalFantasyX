@@ -3950,6 +3950,126 @@
           "screen_space_aa": 1
         }
       }
+    },
+    {
+      "id": "asha_clip_bow_palms_flat",
+      "scene": "res://game/levels/_tests/characters/asha/asha_clip_bow_palms_flat.tscn",
+      "camera": "Cameras/Profile",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "rhen_clip_lift_housing",
+      "scene": "res://game/levels/_tests/characters/rhen/rhen_clip_lift_housing.tscn",
+      "camera": "Cameras/ThreeQuarterLeft",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "toma_clip_stack_bowls",
+      "scene": "res://game/levels/_tests/characters/toma/toma_clip_stack_bowls.tscn",
+      "camera": "Cameras/ThreeQuarterLeft",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "ysolde_clip_read_letter",
+      "scene": "res://game/levels/_tests/characters/ysolde/ysolde_clip_read_letter.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "rhen_clip_talk_explain",
+      "scene": "res://game/levels/_tests/characters/rhen/rhen_clip_talk_explain.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "liss_front",
+      "scene": "res://game/levels/_tests/characters/liss/liss_stage.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "liss_back",
+      "scene": "res://game/levels/_tests/characters/liss/liss_stage.tscn",
+      "camera": "Cameras/Back",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "liss_three_quarter",
+      "scene": "res://game/levels/_tests/characters/liss/liss_stage.tscn",
+      "camera": "Cameras/ThreeQuarterLeft",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "liss_face",
+      "scene": "res://game/levels/_tests/characters/liss/liss_stage.tscn",
+      "camera": "Cameras/Face",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "liss_face_stylized",
+      "scene": "res://game/levels/_tests/characters/liss/liss_face_stylized.tscn",
+      "camera": "Cameras/Compare",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "liss_silhouette_vs_rhen",
+      "scene": "res://game/levels/_tests/characters/liss/liss_silhouette_vs_rhen.tscn",
+      "camera": "Cameras/Lineup",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "liss_clip_haul_rope",
+      "scene": "res://game/levels/_tests/characters/liss/liss_clip_haul_rope.tscn",
+      "camera": "Cameras/ThreeQuarterLeft",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
     }
   ]
 }
