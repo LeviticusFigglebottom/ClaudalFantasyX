@@ -1,0 +1,46 @@
+BLENDER FAIL rhen  172.5 s  3 DIFF, 28 identical
+    DIFF      assets/characters/rhen/rhen.glb  sha256 c5870b2298d6 committed vs df59fe4fe810 rebuilt; data differs: HairHead.POSITION, HairHead.NORMAL, Head.POSITION, bufferView 69, bufferView 71, bufferView 97  [HairHead.NORMAL, HairHead.POSITION, Head.POSITION, accessor 139, accessor 142, accessor 143, accessor 144, accessor 145, accessor 148, accessor 149]
+    DIFF      assets/characters/rhen/rhen_lod1.glb  sha256 e023d4d7efbe committed vs 20adefc05f69 rebuilt; glTF structure differs (keys: accessors, bufferViews, buffers)  [HairHead.001.COLOR_0, HairHead.001.JOINTS_0, HairHead.001.NORMAL, HairHead.001.POSITION, HairHead.001.TEXCOORD_0, HairHead.001.WEIGHTS_0, HairHead.001.indices, Head.001.POSITION]
+    DIFF      assets/characters/rhen/textures/rhen_head_normal.png  sha256 a8ff96d8d3c2 committed vs 67f5a9d98450 rebuilt  [<bytes>]
+BLENDER FAIL toma  249.6 s  3 DIFF, 35 identical
+    DIFF      assets/characters/toma/textures/toma_head_normal.png  sha256 394d429800bc committed vs bf07d7268683 rebuilt  [<bytes>]
+    DIFF      assets/characters/toma/toma.glb  sha256 4865473cd577 committed vs 8cebc01c104c rebuilt; data differs: Head.POSITION, bufferView 69, bufferView 71, bufferView 97, bufferView 99, bufferView 101  [Head.POSITION, accessor 139, accessor 142, accessor 143, accessor 144, accessor 145, accessor 148, accessor 149]
+    DIFF      assets/characters/toma/toma_lod1.glb  sha256 1bad1768380f committed vs 871db8da7b42 rebuilt; data differs: Head.001.POSITION, Head.001.POSITION  [Head.001.POSITION]
+BLENDER FAIL villager_neme  65.6 s  5 DIFF, 29 identical
+    DIFF      assets/characters/villagers/neme/neme.glb  sha256 7d71782e8780 committed vs 48597f61f080 rebuilt; data differs: HairHead.POSITION, HairHead.POSITION, Head.POSITION, bufferView 118, bufferView 120, bufferView 122  [HairHead.POSITION, Head.POSITION, accessor 165]
+    DIFF      assets/characters/villagers/neme/neme_lod1.glb  sha256 d8f44aa41a71 committed vs 0b3aa38aaf65 rebuilt; data differs: HairHead.001.POSITION, HairHead.001.POSITION, Head.001.POSITION, Head.001.POSITION  [HairHead.001.POSITION, Head.001.POSITION]
+    DIFF      assets/characters/villagers/neme/textures/neme_head_albedo.png  sha256 3e7529c0d269 committed vs 14fe0f7e8670 rebuilt  [<bytes>]
+    DIFF      assets/characters/villagers/neme/textures/neme_head_normal.png  sha256 e361e79bd9f5 committed vs b4375031be02 rebuilt  [<bytes>]
+    DIFF      assets/characters/villagers/neme/textures/neme_head_skinmask.png  sha256 c43c811166e6 committed vs 34e1e7b750c6 rebuilt  [<bytes>]
+BLENDER FAIL villager_osu  48.1 s  3 DIFF, 27 identical
+    DIFF      assets/characters/villagers/osu/osu.glb  sha256 29d16ba72a96 committed vs d79220a11713 rebuilt; data differs: Head.POSITION, bufferView 125, bufferView 127, bufferView 129, bufferView 131, bufferView 133  [Head.POSITION, accessor 172]
+    DIFF      assets/characters/villagers/osu/osu_lod1.glb  sha256 bc435eb7e20e committed vs a7e6ce0f5d82 rebuilt; data differs: Head.001.POSITION, Head.001.POSITION  [Head.001.POSITION]
+    DIFF      assets/characters/villagers/osu/textures/osu_head_normal.png  sha256 35cc5e85d40c committed vs fd629fa6641b rebuilt  [<bytes>]
+BLENDER FAIL villager_child  42.0 s  3 DIFF, 27 identical
+    DIFF      assets/characters/villagers/child/child.glb  sha256 505fadafc9ef committed vs 16d6fd2a9f87 rebuilt; data differs: HairHead.POSITION, HairHead.NORMAL, Head.POSITION, bufferView 104, bufferView 106, bufferView 108  [HairHead.NORMAL, HairHead.POSITION, Head.POSITION]
+    DIFF      assets/characters/villagers/child/child_lod1.glb  sha256 7b01f23290ba committed vs c44ae71f24cd rebuilt; data differs: HairHead.001.POSITION, HairHead.001.NORMAL, HairHead.001.TEXCOORD_0, Head.001.POSITION, Head.001.POSITION  [HairHead.001.NORMAL, HairHead.001.POSITION, HairHead.001.TEXCOORD_0, Head.001.POSITION]
+    DIFF      assets/characters/villagers/child/textures/child_head_normal.png  sha256 72ee25428e63 committed vs 3a2683bbc014 rebuilt  [<bytes>]
+BLENDER FAIL villager_vendor  42.4 s  3 DIFF, 27 identical
+    DIFF      assets/characters/villagers/vendor/textures/vendor_head_normal.png  sha256 062192f231a9 committed vs 4749696bd0b8 rebuilt  [<bytes>]
+    DIFF      assets/characters/villagers/vendor/vendor.glb  sha256 3d64243a1074 committed vs cc1cb6397770 rebuilt; data differs: bufferView 144, Head.POSITION, bufferView 230  [Head.POSITION]
+    DIFF      assets/characters/villagers/vendor/vendor_lod1.glb  sha256 ab0a84b1f73c committed vs ae68808e525b rebuilt; data differs: Head.001.POSITION  [Head.001.POSITION]
+BLENDER FAIL villager_reed  45.4 s  4 DIFF, 26 identical
+    DIFF      assets/characters/villagers/reed/reed.glb  sha256 54fcc126d419 committed vs 0e63321684ac rebuilt; data differs: Body.POSITION, HairHead.POSITION, HairHead.NORMAL, Head.POSITION, bufferView 104, bufferView 106  [Body.POSITION, HairHead.NORMAL, HairHead.POSITION, Head.POSITION]
+    DIFF      assets/characters/villagers/reed/reed_lod1.glb  sha256 afe12c67f92c committed vs 2f91f4d0c9c6 rebuilt; data differs: Head.001.POSITION, Head.001.POSITION  [Head.001.POSITION]
+    DIFF      assets/characters/villagers/reed/textures/reed_body_normal.png  sha256 26351b0e2cfc committed vs 44994bd23aaf rebuilt  [<bytes>]
+    DIFF      assets/characters/villagers/reed/textures/reed_head_normal.png  sha256 3e19cf5738f8 committed vs 23ea3fc69a8c rebuilt  [<bytes>]
+BLENDER FAIL villager_netmender  45.1 s  3 DIFF, 27 identical
+    DIFF      assets/characters/villagers/netmender/netmender.glb  sha256 28acaa7d5a8b committed vs d4c5dd338dfb rebuilt; data differs: HairHead.POSITION, HairHead.NORMAL, HairHead.POSITION, HairHead.NORMAL, Head.POSITION, bufferView 118  [HairHead.NORMAL, HairHead.POSITION, Head.POSITION]
+    DIFF      assets/characters/villagers/netmender/netmender_lod1.glb  sha256 80dc8b662af1 committed vs 5e83b706837e rebuilt; data differs: HairHead.001.POSITION, Head.001.POSITION, Head.001.POSITION  [HairHead.001.POSITION, Head.001.POSITION]
+    DIFF      assets/characters/villagers/netmender/textures/netmender_head_normal.png  sha256 45811e12f2d4 committed vs a0a1ea391aab rebuilt  [<bytes>]
+BLENDER FAIL villager_fisher  44.1 s  3 DIFF, 27 identical
+    DIFF      assets/characters/villagers/fisher/fisher.glb  sha256 7ef433cd9435 committed vs a84c296085a8 rebuilt; data differs: HairHead.POSITION, HairHead.NORMAL, Head.POSITION, bufferView 111, bufferView 113, bufferView 115  [HairHead.NORMAL, HairHead.POSITION, Head.POSITION]
+    DIFF      assets/characters/villagers/fisher/fisher_lod1.glb  sha256 560cc0efb399 committed vs ac2b49bff0c6 rebuilt; data differs: HairHead.001.POSITION, HairHead.001.NORMAL, HairHead.001.TEXCOORD_0, HairHead.001.indices, Head.001.POSITION, Head.001.POSITION  [HairHead.001.NORMAL, HairHead.001.POSITION, HairHead.001.TEXCOORD_0, HairHead.001.indices, Head.001.POSITION]
+    DIFF      assets/characters/villagers/fisher/textures/fisher_head_normal.png  sha256 489170aa6ffc committed vs 95281cb90cef rebuilt  [<bytes>]
+BLENDER FAIL villager_tavi  42.4 s  2 DIFF, 28 identical
+    DIFF      assets/characters/villagers/tavi/tavi.glb  sha256 d7ed987ba9e6 committed vs a78e3a10f522 rebuilt; data differs: HairHead.POSITION, HairHead.NORMAL, HairHead.indices, Head.POSITION  [HairHead.NORMAL, HairHead.POSITION, HairHead.indices, Head.POSITION]
+    DIFF      assets/characters/villagers/tavi/tavi_lod1.glb  sha256 8212c813e7ee committed vs 20681935537d rebuilt; glTF structure differs (keys: accessors, bufferViews, buffers)  [HairHead.001.COLOR_0, HairHead.001.JOINTS_0, HairHead.001.NORMAL, HairHead.001.POSITION, HairHead.001.TEXCOORD_0, HairHead.001.WEIGHTS_0, HairHead.001.indices]
+BLENDER FAIL villager_kell  48.9 s  2 DIFF, 28 identical
+    DIFF      assets/characters/villagers/kell/kell.glb  sha256 4df4ab076322 committed vs 4260af0208fd rebuilt; data differs: HairHead.POSITION, HairHead.NORMAL, HairHead.POSITION, HairHead.NORMAL, HairHead.indices, Head.POSITION  [HairHead.NORMAL, HairHead.POSITION, HairHead.indices, Head.POSITION]
+    DIFF      assets/characters/villagers/kell/kell_lod1.glb  sha256 69bd4658bbb6 committed vs b5bb3480fef7 rebuilt; accessor metadata differs: HairHead.001.POSITION  [HairHead.001.NORMAL, HairHead.001.POSITION, HairHead.001.TEXCOORD_0]
+Blender builds: 51 job(s), 11 failed, 0 uncovered, 1533 s
