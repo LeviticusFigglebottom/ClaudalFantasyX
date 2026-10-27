@@ -1,7 +1,7 @@
 extends TestCase
 ## M3-BPR-408: the Act II bosses' camera language, keyed by enemy id because their skills are not written yet. The
-## Avalanche Ram's physical moves play the low `charge` style (style_by_actor), framed side-on (enemy_by_style), and
-## any charge it gathers closes the camera in (camera.pressure.by_enemy) and paws the ground (bosses, charge "*").
+## Avalanche Ram is framed low and side-on (camera.enemy_by_actor; its own style via style_by_actor once audio has
+## it), and any charge it gathers closes the camera in (camera.pressure.by_enemy) and paws the ground (charge "*").
 ## The Lamp Engine's phase change to `opened` plays its moment: the core rises, then the party steadies in turn.
 ## Sandbox foes stand in for the bosses (renamed), so the data is exercised before the bosses' rows exist.
 
@@ -24,21 +24,20 @@ func before_each() -> void:
 	ctl.start_battle(active, none, &"sandbox_reef", SEED)
 
 
-func test_the_ram_charges_low_and_side_on() -> void:
+func test_the_ram_is_framed_low_and_side_on() -> void:
 	var data := ctl.stage.choreo.data
+	var pair := (data["camera"]["enemy_by_actor"] as Dictionary)["avalanche_ram"] as Dictionary
+	assert_true((data["camera"]["shots"] as Dictionary).has(str(pair["lead"])), "framed on a real shot")
+	# style_by_actor: an actor's own style by skill kind (the Ram's charge style waits on its sound row, M3-BPR-410).
+	var tuned := data.duplicate(true)
+	tuned["style_by_actor"] = {"avalanche_ram": {"physical": "toll"}}
 	var r := ActionResult.new()
 	r.actor_id = &"avalanche_ram#1"
 	r.skill_id = &"attack"
 	r.hits = [{"target_id": &"rhen", "hit": true, "crit": false, "amount": 30, "statuses_added": []}]
-	assert_eq(BattleChoreoPlan.style_id_for(data, ctl.engine, r), "charge", "its physical blows are the charge")
+	assert_eq(BattleChoreoPlan.style_id_for(tuned, ctl.engine, r), "toll", "its physical blows take its own style")
 	r.actor_id = &"reef_crab#1"
-	assert_eq(BattleChoreoPlan.style_id_for(data, ctl.engine, r), "melee", "a regular foe keeps the melee")
-	var charge := BattleChoreoPlan.style(data, "charge")
-	var melee := BattleChoreoPlan.style(data, "melee")
-	assert_true(float(charge["approach_sec"]) > float(melee["approach_sec"]), "a longer run")
-	assert_true(float(charge["lean_deg"]) > float(melee["lean_deg"]), "leaning in harder")
-	var pair := (data["camera"]["enemy_by_style"] as Dictionary)["charge"] as Dictionary
-	assert_true((data["camera"]["shots"] as Dictionary).has(str(pair["lead"])), "framed on a real shot")
+	assert_eq(BattleChoreoPlan.style_id_for(tuned, ctl.engine, r), "melee", "a regular foe keeps the melee")
 	_free()
 
 

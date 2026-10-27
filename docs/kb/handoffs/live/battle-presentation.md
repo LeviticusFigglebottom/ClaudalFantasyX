@@ -121,6 +121,18 @@ RENDER-REQUEST @ dcc68922: battle_hud_preview,battle_choreo_toll,drownbell_flood
 - **7, the board:** the combat `todo` tasks are engine and design rulings (M3-C01-03 … M3-C09-07), not presentation.
   I took M3-C08-100's barks; the needle is an item, so not mine.
 
+**FAST-TRACK MERGE-READY @ 89ffba3c: M3-BPR-404, viewed on the PC render.**
+- Render: gpu/render-battle-presentation-25dcea2. Four drifts, all viewed and re-approved:
+  - Hullgnaw: the whole serpent and its ribs above the card, with the real Rhen beside it;
+  - the Matron and the Drownbell: clear of the card;
+  - the Wraith: a little wider.
+- Inquisitor and Hermit pass unchanged.
+- **To pick onto the integration branch:**
+  1. `git am docs/kb/tasks/M3/M3-BPR-404-boss-intro-fit.patch` (the code).
+  2. Then copy these four PNGs from `89ffba3c`: `git checkout 89ffba3c -- tests/screenshots/baselines/battle_boss_intro_{hullgnaw,matron,drownbell,wraith}.png`.
+- Note: in the Drownbell's frame the real Toma stands large in the right foreground, near the timeline. The boss and
+  the card are clear. I'll look at moving the boss_tall shot's side later.
+
 ### FAST-TRACK M3-BPR-404 on the post-big9 integration branch (updated 2026-10-27)
 - **Cherry-picking 269054a3 and 4e89c967 now conflicts on the six baseline PNGs.** big9 re-approved them with the
   real heroes, and the PNGs in my commits were rendered with primitive heroes.

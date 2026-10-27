@@ -33,7 +33,9 @@ much bigger. FAST-TRACK playtest fix.
 - [x] The distance follows the model size and keeps the shot's angle and fov; a row's fit_margin overrides the
       margin; every boss's feet clear the title card (new tests).
 - [x] All six battle_boss_intro_* shots captured and viewed; the boss reads whole above the card.
-- [ ] The Lead views the moved baselines on the PC gate and merges.
+- [x] PC render gpu/render-battle-presentation-25dcea2 viewed (2026-10-27). hullgnaw, matron, drownbell and wraith
+      were re-approved at 89ffba3c; inquisitor and hermit pass unchanged.
+- [ ] The Lead merges.
 
 ## Moved shots
 All six, re-approved after viewing (captured on the integration branch + 404 only):

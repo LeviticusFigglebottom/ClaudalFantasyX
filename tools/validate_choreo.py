@@ -211,13 +211,10 @@ def camera_errors(cam: object, styles: dict) -> list[str]:
     for sid in sorted(set(by_style) - set(styles)):
         errs.append(f"{w}.by_style: '{sid}' is not a style")
     pairs = [(f"by_style.{k}", v) for k, v in by_style.items()] + [("enemy", cam.get("enemy"))]
-    enemy_by_style = cam.get("enemy_by_style", {}) if isinstance(cam.get("enemy_by_style", {}), dict) else {}
-    for sid, pair in enemy_by_style.items():
-        if sid == "doc":
-            continue
-        if sid not in styles:
-            errs.append(f"{w}.enemy_by_style: '{sid}' is not a style")
-        pairs.append((f"enemy_by_style.{sid}", pair))
+    enemy_by_actor = cam.get("enemy_by_actor", {}) if isinstance(cam.get("enemy_by_actor", {}), dict) else {}
+    for eid, pair in enemy_by_actor.items():
+        if eid != "doc":
+            pairs.append((f"enemy_by_actor.{eid}", pair))
     for where, pair in pairs:
         if not isinstance(pair, dict):
             errs.append(f"{w}.{where}: must be an object with lead and contact")

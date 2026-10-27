@@ -25,15 +25,15 @@ Avalanche Ram (Ch12). Each needs a boss intro and framing for its signature move
       lifting as the housing parts) and the party steadies in turn (defend, 0.1 s apart). The creature plays its own
       `phase_change` clip under it. Never gold mote-light.
 - [x] **The Avalanche Ram's charge:**
-  - `style_by_actor.avalanche_ram.physical` = `charge`: a long, low run (approach 0.55 s, lean 22°, lunge 0.6 m),
-    and the struck recoil harder (react_scale 1.5);
-  - the camera rides low and side-on (`camera.enemy_by_style.charge` = `charge_side`), falling back to the
-    default if that shot fails the safe frame;
+  - the camera rides low and side-on on the Ram's actions (`camera.enemy_by_actor.avalanche_ram` = `charge_side`),
+    falling back to the default if that shot fails the safe frame;
   - any charge it gathers (`bosses.avalanche_ram.charge_skill: "*"`) paws the ground each turn, and the camera
     closes in a step a turn (`camera.pressure.by_enemy`).
+  - Its own long, low `charge` run style is ready, but waits on a sound row in audio's choreo_sfx.json (request
+    **M3-BPR-410**). `style_by_actor` is in place to turn it on. Until then it plays the melee.
 - [x] **The Ch10–11 regulars:** no bespoke framing. The model fit, the footprint spacing (402) and the line-up
       spread (403) all work from their real models.
-- [x] Validator (tools/validate_choreo.py: `"*"` charges, `phases`, `style_by_actor`, `enemy_by_style`) and tests
+- [x] Validator (tools/validate_choreo.py: `"*"` charges, `phases`, `style_by_actor`, `enemy_by_actor`) and tests
       (tests/unit/test_battle_act2_bosses.gd 3/0, tools test_choreo_validate 21/0).
 - [ ] Shots once their encounters exist: battle_boss_intro_lamp_engine, battle_boss_intro_ram, a charge
       freeze-frame. Then render requests.
