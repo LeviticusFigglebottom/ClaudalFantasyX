@@ -180,4 +180,21 @@ RENDER-REQUEST @ da7891cf: reefball_outfitter, reefball_hud_choice, reefball_hud
 **Known, pre-existing:** the aspect and pseudo runs print an ObjectDB leak warning at exit. It is present at 213a822f~1 as well, so it is not from this queue, and it fails no test.
 
 RENDER-REQUEST @ 34d6e51d: battle_victory, lattice_menu, lattice_menu_activate, lattice_overview, settings_accessibility; why: the result count-up (battle_victory settles 90 frames; it must come to rest at the final numbers), the Lattice step markers and "N movement" tag, and the accessibility page with its (hidden-by-default) speed preview, which should be unchanged.
+- 2026-10-27: **The coverage gate on the 20:25 queue caught test_swell_save:** it pressed Confirm while the new result count was running. The test now ends the count first (05a903d6). Coverage then passed: OK, all 2799 tests; battle 99.89 %, progression 96.98 %, reefball 100 %. Pushed.
+- 2026-10-27: **big12 merged (0e7c26a5).**
+  - **Merge notes:**
+    - encounters.json takes the integration's rows (their wall_head_storm arenas) and keeps this branch's carry_flag on the Reach;
+    - ownership.md keeps both rows;
+    - five baseline PNGs take the integration's;
+    - no flag or loc key was lost.
+  - **Ch8's zones moved onto env-art's kits** (M3-C08-1202, ADR 0200), which broke the Ch8 maps. Fixed generically (50182f0e):
+    - ZoneMapShapes reads the layout's `collision_path`: its blocks, and its ramps as pads;
+    - a shape hint ending in `*` names a kit's numbered pieces;
+    - the POIs and bounds move to the kit frame;
+    - Coilspire's tiers now stack vertically, so its map keeps the path, the hut and the door.
+    - Checks: zone_map 21/0, objective 15/0, map 23/0, test_zone_map_pois OK. **Every map of a future kit-dressed zone will read its collision file the same way.**
+- 2026-10-27: **Viewed renders.**
+  - **`gpu/render-ui-a195cd3`: approved** field_menu_codex (the counts only, 9 of 34).
+  - **`gpu/render-ui-121362b`: not approved.** Its battle_ch08_stair_hold has the meter fix but the old sandbox arena. big12's approved baseline (6e15d8d8) has the new wall arena, but **the meter is back over the tutorial**, because it was rendered from a tree without 121362b's fix. Neither image matches the merged tree, so the shot needs a fresh render:
+RENDER-REQUEST @ 50182f0e: battle_ch08_stair_hold; why: big12's baseline shows the stair meter over the two-line tutorial (rendered without 121362b's fix); at this head the meter sits below the help line over the wall_head_storm arena. A small request for the Lead's cloud render server.
 
