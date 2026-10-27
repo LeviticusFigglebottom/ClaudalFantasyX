@@ -161,3 +161,23 @@ RENDER-REQUEST @ da7891cf: reefball_outfitter, reefball_hud_choice, reefball_hud
     - test_loc_key_names passes on the new rows.
   - **M3-UI-204** waits on this branch's merge, then on act1-chapters.
   - **Nothing else is queued for ui-menus. Lead: route the next item here.**
+
+### Queue from the Lead (2026-10-27 20:25)
+| # | Item | State |
+|---|---|---|
+| 1 | M3-HER-1120 Liss's battle stand-in row | **done** (eb2ca60f): her row names hero-integration's wrapper (`liss_battle_actor.tscn`, on claude/hero-integration @ 7a8bff79). Until it merges she shows her capsule, since a missing scene falls back to the primitive. New test_battle_party_stand_ins: every Act I party member but Kerrid (no model) has a row. **The task file lives on claude/hero-integration; review there.** |
+| 2 | Battle result pacing (M3-BPR-415's panel) | **done** (e80a6e6a, 06447718): EXP, movement, lume and drops count up from 0 as their row arrives (eased, `panel_open.count_sec`). The first Confirm while counting shows every number, and the next one chooses; a defeat or escape chooses at once. Reduced motion shows the final numbers. battle_victory settles 90 frames. test_battle_vitals now ends the count before its Retry. |
+| 3 | Lattice polish (pillar 5) | **done** (75982b75): a woken node or opened gate blooms (none under reduced motion). Path steps are marked filled where they cost movement and hollow where they're free. Walk tags read "N movement", and a wake shows its Facet cost before Confirm. lattice 66/0. |
+| 4 | Options QoL | **done** (aa35ead0): SpeedPreview on the Accessibility page. The text speed row reveals a sample line at the dialogue speed, and the battle speed row moves a pip across in one action's hold, with the time in words. **Remappable controls already exist** (Controls page, M2-UI-13: keyboard and pad columns, listen, reset). |
+| 5 | Loc readiness | **done** (34d6e51d): tools/tests/test_loc_readiness.py guards against literal player-facing text in game code and scenes, and against tr() keys or key constants with no loc row. It finds none today; I removed one dead key constant. The speed previews are in the pseudo-loc walk (they now fit at 130 %); every other screen added since big9 was already in it. |
+
+**Checks:**
+- Godot: battle 720/0, lattice 66/0, speed_preview 3/0, settings 48/0, accessibility 9/0, battle_result 4/0, reward 10/0, field_battle 12/0, battle_party_stand_ins 2/0, pseudo 24/0, aspect 15/0, shop 27/0.
+- Tools: test_loc_readiness 3/0.
+- validate_data: 0 errors.
+- Coverage: running (game/battle/scene changed).
+
+**Known, pre-existing:** the aspect and pseudo runs print an ObjectDB leak warning at exit. It is present at 213a822f~1 as well, so it is not from this queue, and it fails no test.
+
+RENDER-REQUEST @ 34d6e51d: battle_victory, lattice_menu, lattice_menu_activate, lattice_overview, settings_accessibility; why: the result count-up (battle_victory settles 90 frames; it must come to rest at the final numbers), the Lattice step markers and "N movement" tag, and the accessibility page with its (hidden-by-default) speed preview, which should be unchanged.
+
