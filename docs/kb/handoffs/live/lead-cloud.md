@@ -67,3 +67,4 @@
 - RENDERED @ 5a5b4fed21aa09992244352679a50aa125695273: lead/gate-render-battle-presentation-5a5b4fe; 0 pass, 2 drift; 2 new without baseline (cloud)
 - RENDERED @ ed3a458ef8ee2ab08c0626b6e70b42fb0fadf117: lead/gate-render-battle-presentation-ed3a458; 0 pass, 4 drift (cloud)
 - RENDERED @ 60eee2f73a37fad79613876a42696da58d8f4962: lead/gate-render-env-art-60eee2f; 0 pass, 5 drift; 3 new without baseline (cloud)
+- RENDERED @ c990e2c2c300cf38cb05106e5ea98b8cfb36e20e: lead/gate-render-env-art-c990e2c; 0 pass, 1 drift; 1 new without baseline (cloud)
