@@ -532,3 +532,15 @@ RENDER-REQUEST @ a785a613: portraits:glass_skate,root_crab,fen_leech,scree_crawl
     - Hesk's "white light" is drawn as glimmer_bound on gauze-white cords; a true white-gold holy light would need a palette ADR.
     - Ethren is lacquer with gold only on the edges, to hold gold_leaf's 5%-of-frame budget; a fully gold figure would need a Sanctum exception.
   - **For rendering:** Nhoa's Farewell-Tide rising column is the one bound-light exception vowbound.md names. color_script.md should say so; it's your file.
+- **MERGE-READY @ e1229633: M3-CRE-640, Kahre, the Forge-Crowned, the Ch5 Lightning Vowbound, in place of the placeholder.**
+  - **The model:** a 3.37 m hornbill-headed smith-beast: an anvil-plate chest, a spark mane of 25 skinned bolt blades (not particles), and the smith's hammer fused into his brass casque (never lit). Every glow is steady glimmer_bound.
+    - 14,080 triangles, 22 bones.
+    - Feet planted at 0.000 m in every clip.
+  - **Clips:** the stand-in set, plus rise, dismiss and special (Last Strike, contact 1.55 s).
+  - **Framing:** projected through the camera director's own math, every frame stays inside the default camera's right safe edge. The cast and the Last Strike's rear-up cross the top margin, but the action's own lead shot plays then.
+  - **The attach:** the same CreatureModels vowbound path as Ilun. His creatures.json stand_in carries height 3.3 and radius 0.75, because ui's battle_sandbox.json has no kahre row and the effect anchors need a height.
+  - **For battle-presentation:** M3-CRE-639's rise and dismiss request covers Kahre too. choreo.json has no first-call flag for kahre, so his first call never plays the summon cinematic; that's for story/your call.
+  - **For ui:** optionally, a battle fixture binding Kahre, so a Vowbound shot can show him.
+  - **Checks run:** Blender verify identical; tools test_creatures and test_blender_builds; Godot creature 50/1 (the known portrait red, now including kahre.png), vowbound 58/0, kahre 6/0, ilun 6/0, battle 720/0 (run by the agent); validate_data, taskboard, lint, format.
+RENDER-REQUEST @ e1229633: creature_kahre; why: M3-CRE-640 first render (no baseline). Check that the hide reads as dark stone, not teal, and that the anvil reads as iron.
+RENDER-REQUEST @ e1229633: portraits:kahre; tool: tools/portraits/render.sh --only kahre
