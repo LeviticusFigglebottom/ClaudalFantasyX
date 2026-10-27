@@ -1,0 +1,8 @@
+RENDER-REQUEST @ 99623a0c: portraits:hullgnaw,scuttler,squall_wing,tide_crawler,undertows_reach
+PC: tools/portraits/render.sh --only hullgnaw,scuttler,squall_wing,tide_crawler,undertows_reach on WSL2 lavapipe
+(HYMN_GODOT_RENDER = the pinned godot-render, fresh .godot, clean import), 5 written, 0 failed, 16 s.
+PASS hullgnaw: byte-identical to the committed (cloud) PNG
+PASS scuttler: byte-identical
+PASS tide_crawler: byte-identical
+PASS undertows_reach: byte-identical
+FAIL squall_wing: rmse 0.00835 (limit 0.00800) against the committed PNG: specular glints on the wing edge only, the same image to the eye. The PC render is squall_wing_pc.png (the asset is left as committed: the track decides).
