@@ -190,6 +190,36 @@ class BargeTests(unittest.TestCase):
         self.assertLess(by_slot["bs_lacquer_red"], 0.08 * by_slot["bs_barge_white"], "red is a sheer line")
 
 
+class WakeTests(unittest.TestCase):
+    """M3-ENV-1000: moving boats leave a Kelvin wake; Sefir's barge never carries one (ADR 0017 (a))."""
+
+    def test_wake_lies_flat_just_over_the_water_behind_the_stern(self) -> None:
+        for mb in built("boat_wake"):
+            lo, hi = mb.bounds()
+            self.assertEqual(mb.materials, ["bs_wake"])
+            self.assertGreater(float(lo[1]), 0.0, "over the surface, never z-fighting it")
+            self.assertLess(float(hi[1]), 0.05)
+            self.assertLess(float(hi[0]), 0.1, "trails aft (-X) of the stern origin")
+            self.assertAlmostEqual(float(-lo[0]), 16.0, delta=1.0)
+
+    def test_arms_open_at_the_kelvin_angle(self) -> None:
+        mb = built("boat_wake")[0]
+        lo, hi = mb.bounds()
+        half_angle = np.degrees(np.arctan2(float(hi[2]), float(-lo[0])))
+        self.assertAlmostEqual(half_angle, 19.5 + 2.0, delta=3.0, msg="the arms' centre at 19.5 deg plus their width")
+
+    def test_uv_runs_along_the_wake(self) -> None:
+        for mb in built("boat_wake"):
+            uv = np.asarray(mb.uv)
+            self.assertAlmostEqual(float(uv[:, 1].min()), 0.0, delta=1e-6)
+            self.assertAlmostEqual(float(uv[:, 1].max()), 1.0, delta=1e-6)
+            self.assertEqual(sorted(set(np.asarray(mb.uv2)[:, 0].round(3))), [0.0, 1.0], "arms 0, centre track 1")
+
+    def test_the_barge_has_no_wake(self) -> None:
+        for mb in built("white_barge"):
+            self.assertNotIn("bs_wake", mb.materials)
+
+
 class CommittedAssetTests(unittest.TestCase):
     def test_one_glb_per_target_inside_its_budget(self) -> None:
         glbs = sorted(ASSETS.glob("*.glb"))

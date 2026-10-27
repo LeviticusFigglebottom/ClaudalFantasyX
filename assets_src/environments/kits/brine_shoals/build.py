@@ -27,12 +27,13 @@ import bs_common as bc  # noqa: E402
 import bs_derelict  # noqa: E402
 import bs_ground  # noqa: E402
 import bs_story  # noqa: E402
+import bs_wake  # noqa: E402
 import bs_wrecks  # noqa: E402
 
 kc = bc.kc
 MAX_GLB_BYTES = 5 * 1024 * 1024  # ADR 0005
-# bs_derelict: M3-ENV-06's arena deck; bs_story: M3-ENV-703; bs_arenas: M3-ENV-706
-MODULES = (bs_ground, bs_wrecks, bs_camp, bs_barge, bs_derelict, bs_story, bs_arenas)
+# bs_derelict: M3-ENV-06's arena deck; bs_story: M3-ENV-703; bs_arenas: M3-ENV-706; bs_wake: M3-ENV-1000
+MODULES = (bs_ground, bs_wrecks, bs_camp, bs_barge, bs_derelict, bs_story, bs_arenas, bs_wake)
 
 
 def targets() -> dict:

@@ -35,6 +35,17 @@
         "arena_shoals_ground-lod1": 2592
       }
     },
+    "boat_wake": {
+      "budget": [
+        600,
+        80
+      ],
+      "bytes": 14080,
+      "lods": {
+        "boat_wake": 192,
+        "boat_wake-lod1": 60
+      }
+    },
     "branding_brazier": {
       "budget": [
         3500,
