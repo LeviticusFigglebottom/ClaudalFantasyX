@@ -3,6 +3,9 @@
 ## NEW ACCOUNT (from 2026-10-25)
 Session `session_01Wmj8xaLtwcqiS3qwC6PciW`. Integration branch `claude/undertow-lead-handoff-ze8rrn`. Newest first.
 
+- **MERGE-READY @ 64e724a2 (big9 merged; full gate):** everything through M3-AUD-828. **Full Godot suite: 2676
+  run, 0 failed** (with the Act I zone rows and hero-integration's body in); the loudness, data and cutscene-file
+  tools tests OK. Skipped: screenshots (the PC's), Blender (none), coverage (no battle/progression code).
 - **Merged big9 (integration @ 3b7cbf5e+) at 64e724a2.** Conflicts: two audio tests (I took the Lead's matching
   fixes) and voices.json (I took the new speakers; every one exists, so none is pending). With hero-integration in,
   the real hero body's footsteps now run here: `--filter=foot` 26/0 (including the stall fix), `--filter=audio`
