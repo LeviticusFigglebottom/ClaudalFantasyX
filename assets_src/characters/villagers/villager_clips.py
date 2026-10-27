@@ -15,6 +15,7 @@ every library and compares it byte for byte, so rerun this after any rebuild tha
 from __future__ import annotations
 
 import json
+import math
 import sys
 from pathlib import Path
 
@@ -29,6 +30,121 @@ import hero_clips as hc  # noqa: E402
 PARAMS_DIR = HERE / "params"
 CLIPS = ["idle", "talk", "walk"]
 DEFAULT_PERSONA = {"sway": 1.0, "lean": 0.0, "staff": False, "arms_down": 41.0}
+# M3-CHR-03: per-villager scene clips after the shared three (act1_npcs.md §3.5, §4.6). A villager without an entry
+# writes exactly the M2-CHR-03 library.
+EXTRA_CLIPS = {
+    "tavi": ["hand_on_shoulder", "hear_news", "name_rite"],
+    "kell": ["press_wick", "trim_wick", "haggle_laugh"],
+}
+EXTRA_LENGTHS = {"hand_on_shoulder": 2.4, "hear_news": 3.6, "name_rite": 2.0, "press_wick": 3.0, "trim_wick": 4.0,
+                 "haggle_laugh": 2.4}
+EXTRA_LOOPS = {"trim_wick"}
+SNIP_EVERY_S = 2.0  # trim_wick: one snip of the shears every 2 s (§4.6)
+
+
+def clips_for(npc: str) -> list[str]:
+    return CLIPS + EXTRA_CLIPS.get(npc, [])
+
+
+def length_of(clip: str) -> float:
+    return EXTRA_LENGTHS.get(clip, hc.LENGTHS.get(clip, 0.0))
+
+
+def is_loop(clip: str) -> bool:
+    return clip in hc.LOOPS or clip in EXTRA_LOOPS
+
+
+# ---------------------------------------------------------------------------------------------
+# the scene clips: world-axis degrees per bone on hero_clips' standing base (x < 0 swings a limb forward; for the
+# left arm z > 0 raises it to the side, for the right arm z < 0; y < 0 turns a left forearm in across the body)
+# ---------------------------------------------------------------------------------------------
+def _shoulder_reach(sk, pers: dict) -> dict:
+    """Tavi's right hand on a facing partner's left shoulder at about his own shoulder height (1.45 m)."""
+    a = pers["arms_down"]
+    return hc.add(hc.planted(sk, pers), {
+        "DEF-spine.002": (4.0, -4.0, 0.0), "DEF-spine.006": (-2.0, 4.0, 0.0),
+        "DEF-shoulder.R": (0.0, 0.0, -3.0),
+        "DEF-upper_arm.R": (-78.0, 6.0, -4.0), "DEF-forearm.R": (-16.0, 0.0, 0.0), "DEF-hand.R": (22.0, 0.0, -40.0),
+        "DEF-upper_arm.L": (0.0, 0.0, a * 0.06)})
+
+
+def _float_hold(sk, pers: dict, e: float) -> dict:
+    """Both hands holding the woven float to the chest, the chin lifted (the naming rite)."""
+    return hc.add(hc.planted(sk, pers), {
+        "DEF-spine.003": (-3.0 * e, 0.0, 0.0), "DEF-spine.006": (-8.0 * e, 0.0, 0.0),
+        "DEF-upper_arm.L": (-22.0 * e, -8.0 * e, 12.0 * e), "DEF-forearm.L": (-72.0 * e, -36.0 * e, 0.0),
+        "DEF-hand.L": (0.0, -4.0 * e, -10.0 * e),
+        "DEF-upper_arm.R": (-22.0 * e, 8.0 * e, -12.0 * e), "DEF-forearm.R": (-72.0 * e, 36.0 * e, 0.0),
+        "DEF-hand.R": (0.0, 4.0 * e, 10.0 * e)})
+
+
+def _hands_at_chest(sk, pers: dict) -> dict:
+    """Kell's two hands together in front of the chest (a wick in the left, the shears in the right)."""
+    return hc.add(hc.planted(sk, pers), {
+        "DEF-spine.006": (12.0, 0.0, 0.0),
+        "DEF-upper_arm.L": (-20.0, -6.0, 14.0), "DEF-forearm.L": (-74.0, -52.0, 0.0), "DEF-hand.L": (0.0, -10.0, -8.0),
+        "DEF-upper_arm.R": (-20.0, 6.0, -14.0), "DEF-forearm.R": (-70.0, 48.0, 0.0), "DEF-hand.R": (0.0, 10.0, 8.0)})
+
+
+def pose_at(clip: str, t: float, length: float, sk, pers: dict) -> dict:
+    u = t / length
+    smooth = hc.smooth
+    a = pers["arms_down"]
+    if clip == "hand_on_shoulder":
+        # two steps in place (one walk cycle), a stop, the right hand rises onto the partner's shoulder and holds
+        cyc = 0.42
+        if u < cyc:
+            w = hc.walk_pose(u / cyc, pers, 18.0, 30.0, 12.0, 0.014, 2.0)
+            return hc.blend(w, hc.planted(sk, pers), smooth((u - 0.3) / (cyc - 0.3)))
+        return hc.blend(hc.planted(sk, pers), _shoulder_reach(sk, pers), smooth((u - cyc) / 0.3))
+    if clip == "hear_news":
+        # from the reach: the hand slides off, the head drops 18 degrees, the shoulders fall; a long hold
+        slide = smooth(u / 0.3)
+        drop = smooth((u - 0.12) / 0.35)
+        p = hc.blend(_shoulder_reach(sk, pers), hc.planted(sk, pers), slide)
+        return hc.add(p, {"DEF-spine.002": (6.0 * drop, 0.0, 0.0), "DEF-spine.005": (4.0 * drop, 0.0, 0.0),
+                          "DEF-spine.006": (14.0 * drop, 0.0, 0.0),
+                          "DEF-shoulder.L": (0.0, 0.0, -5.0 * drop), "DEF-shoulder.R": (0.0, 0.0, 5.0 * drop),
+                          "hips": (0.0, -0.008 * drop, 0.0)})
+    if clip == "name_rite":
+        return _float_hold(sk, pers, smooth(u / 0.6))
+    if clip == "press_wick":
+        # the left hand takes the partner's right hand at 1.0 m; the right presses the wick into the palm with the
+        # thumb; both close his fingers over it; two pats; release (about 3 s)
+        take = smooth(u / 0.22)
+        press = smooth((u - 0.15) / 0.25)
+        close = smooth((u - 0.42) / 0.12)
+        pats = math.sin(math.pi * min(max((u - 0.56) / 0.12, 0.0), 2.0)) ** 2 if 0.56 <= u <= 0.80 else 0.0
+        rel = smooth((u - 0.82) / 0.18)
+        p = hc.add(hc.planted(sk, pers), {
+            "DEF-spine.002": (6.0 * take, 0.0, 0.0), "DEF-spine.006": (10.0 * take, 0.0, 0.0),
+            "DEF-upper_arm.L": (-40.0 * take, -6.0 * take, a * 0.25 * take), "DEF-forearm.L": (-40.0 * take, -18.0 * take, 0.0),
+            "DEF-hand.L": (0.0, -30.0 * take, -90.0 * take),  # palm up under the partner's hand
+            "DEF-upper_arm.R": (-38.0 * press, 8.0 * press, -a * 0.25 * press),
+            "DEF-forearm.R": (-(52.0 + 8.0 * close) * press - 10.0 * pats, 26.0 * press, 0.0),
+            "DEF-hand.R": (10.0 * close, 20.0 * press, -50.0 * press)})  # palm down over it
+        return hc.blend(p, hc.planted(sk, pers), rel)
+    if clip == "trim_wick":
+        # both hands at the chest; the shears snip every 2 s; a glance up between snips (a loop)
+        ph = (t % SNIP_EVERY_S) / SNIP_EVERY_S
+        snip = math.exp(-((ph - 0.25) / 0.05) ** 2)
+        glance = math.exp(-((ph - 0.7) / 0.12) ** 2)
+        return hc.add(_hands_at_chest(sk, pers), {
+            "DEF-hand.R": (0.0, 0.0, -10.0 * snip), "DEF-forearm.R": (-3.0 * snip, 0.0, 0.0),
+            "DEF-spine.006": (-12.0 * glance, 3.0 * glance, 0.0), "DEF-spine.005": (-2.0 * glance, 0.0, 0.0)})
+    if clip == "haggle_laugh":
+        # one hand slaps the counter (0.95 m), the head goes back 5 degrees on the laugh, then settles
+        up = smooth(u / 0.12) * (1.0 - smooth((u - 0.12) / 0.08))
+        down = smooth((u - 0.12) / 0.08) * (1.0 - smooth((u - 0.55) / 0.35))
+        env = math.sin(math.pi * min(max((u - 0.15) / 0.75, 0.0), 1.0))
+        shake = math.sin(2 * math.pi * 3.0 * t) * env
+        return hc.add(hc.planted(sk, pers), {
+            "DEF-upper_arm.R": (-50.0 * up - 40.0 * down, 0.0, -a * 0.15 * (up + down)),
+            "DEF-forearm.R": (-60.0 * up - 32.0 * down, 0.0, 0.0), "DEF-hand.R": (-4.0 * down, 0.0, -60.0 * down),
+            "DEF-spine.002": (8.0 * down - 4.0 * env + 1.0 * shake, 0.0, 0.0), "DEF-spine.003": (1.2 * shake, 0.0, 0.0),
+            "DEF-spine.006": (-5.0 * env, 0.0, 1.5 * env),
+            "DEF-shoulder.L": (0.0, 0.0, -1.5 * shake), "DEF-shoulder.R": (0.0, 0.0, 1.5 * shake)})
+    return hc.pose_at(clip, t, length, sk, pers)
 
 
 def persona(npc: str) -> dict:
@@ -50,16 +166,17 @@ def build(npc: str) -> str:
     sk = hc.Skeleton(glb_path(npc))
     base = f"{sk.root_name}/Skeleton3D:"
     subs = []
-    for ci, clip in enumerate(CLIPS):
-        length = hc.LENGTHS[clip]
-        loop = clip in hc.LOOPS
+    clips = clips_for(npc)
+    for ci, clip in enumerate(clips):
+        length = length_of(clip)
+        loop = is_loop(clip)
         n = int(round(length * hc.FPS))
         times = [i / hc.FPS for i in range(n + 1)]
         keys_q = {b: [] for b in hc.BONES}
         keys_p = []
         for t in times:
             tt = (t % length) if loop else t
-            pose = hc.pose_at(clip, tt, length, sk, pers)
+            pose = pose_at(clip, tt, length, sk, pers)
             turns = {b: hc.qeuler(v) for b, v in pose.items() if b != "hips"}
             local = sk.local_pose(turns)
             for b in hc.BONES:
@@ -77,8 +194,8 @@ def build(npc: str) -> str:
                       f'tracks/{ti}/path = NodePath("{base}{bone}")', f"tracks/{ti}/interp = 1",
                       f"tracks/{ti}/loop_wrap = true", f"tracks/{ti}/keys = PackedFloat32Array({', '.join(vals)})"]
         subs.append("\n".join(lines))
-    data = ",\n".join(f'&"{c}": SubResource("clip_{i}")' for i, c in enumerate(CLIPS))
-    head = f'[gd_resource type="AnimationLibrary" load_steps={len(CLIPS) + 1} format=3]\n\n'
+    data = ",\n".join(f'&"{c}": SubResource("clip_{i}")' for i, c in enumerate(clips))
+    head = f'[gd_resource type="AnimationLibrary" load_steps={len(clips) + 1} format=3]\n\n'
     return head + "\n\n".join(subs) + f"\n\n[resource]\n_data = {{\n{data}\n}}\n"
 
 
@@ -89,7 +206,7 @@ def main(argv: list[str]) -> int:
         p.parent.mkdir(parents=True, exist_ok=True)
         text = build(npc)
         p.write_text(text, encoding="utf-8")
-        print(f"wrote {p.relative_to(ROOT)} ({len(text) / 1e6:.2f} MB, {len(CLIPS)} clips)")
+        print(f"wrote {p.relative_to(ROOT)} ({len(text) / 1e6:.2f} MB, {len(clips_for(npc))} clips)")
     return 0
 
 

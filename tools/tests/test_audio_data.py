@@ -409,6 +409,18 @@ class ChoreoSfxTest(unittest.TestCase):
                      "staff has no accent", "nope is not an sfx.json row", "music is not one of"):
             self.assertIn(want, errs)
 
+    def test_the_flood_timing_comes_from_choreo_json(self) -> None:
+        """M3-AUD-800: phase and stagger_sec may be left to choreo.json's bosses.<boss>.flood (one number for the
+        brace's motion and sound); with neither, it fails."""
+        doc = copy.deepcopy(self.DOC)
+        doc["flood"] = {"sfx": "hit"}
+        self.assertTrue(any("flood: no phase id" in e for e in self._errs(doc)))
+        styles = {"melee": {}}
+        choreo = {"choreo": {"styles": styles, "bosses": {"bell": {"flood": {"phase": "flood", "stagger_sec": 0.1}}}}}
+        self.assertEqual(self._errs(doc, choreo=choreo), [])
+        doc["flood"]["stagger_sec"] = -1
+        self.assertTrue(any("flood.stagger_sec" in e for e in self._errs(doc, choreo=choreo)))
+
     def test_styles_follow_choreo_json_when_present(self) -> None:
         choreo = {"choreo": {"styles": {"cast": {}}}}
         self.assertTrue(any("not a style in" in e for e in self._errs(self.DOC, choreo=choreo)))

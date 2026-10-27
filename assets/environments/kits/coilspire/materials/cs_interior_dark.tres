@@ -1,0 +1,6 @@
+[gd_resource type="StandardMaterial3D" load_steps=1 format=3]
+
+[resource]
+resource_name = "cs_interior_dark"
+albedo_color = Color(0.1647, 0.149, 0.1333, 1)
+roughness = 0.95

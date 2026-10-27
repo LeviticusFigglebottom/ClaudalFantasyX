@@ -19,6 +19,8 @@ const KO := &"ko"
 const VICTORY := &"victory"
 ## Every name in the contract, in the order the doc lists them.
 const ALL: Array[StringName] = [IDLE, READY, ATTACK, CAST, ITEM, READ, DEFEND, FINISHER, HIT, DODGE, KO, VICTORY]
+## Optional, outside the contract list: a hero stands up from its KO through it (characters' clip, ~0.8 s).
+const REVIVE := &"revive"
 ## A creature actor plays clips through this method, so it idles again afterwards.
 const ACTOR_PLAY_METHOD := &"play_clip"
 ## The creature track's API (M2-CRE-03, claude/creatures): FighterStandIn.creature() -> CreatureActor, with
@@ -81,12 +83,17 @@ static func play_ko(f: Node, speed: float = 1.0) -> bool:
 	return true
 
 
-## The stage's KO state for a fighter: on a revive, a hero actor still holding its KO clip stands into idle.
+## The stage's KO state for a fighter: on a revive, a hero actor still holding its KO clip stands up (its `revive`
+## clip, then idle) or straight into idle.
 static func ko_changed(f: Node, ko: bool) -> void:
 	if ko or creature_of(f) != null:
 		return
 	var p := player_of(f)
-	if p != null and p.assigned_animation == KO and p.has_animation(IDLE):
+	if p == null or p.assigned_animation != KO:
+		return
+	if p.has_animation(REVIVE):
+		play(f, REVIVE, p.speed_scale)
+	elif p.has_animation(IDLE):
 		p.play(IDLE)
 
 

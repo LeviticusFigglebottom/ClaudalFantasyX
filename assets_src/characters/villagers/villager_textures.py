@@ -55,6 +55,8 @@ BODY_SIZE = (512, 512)
 AGE_FOLD_DARKEN = 0.10  # albedo darkening in a full-depth fold at age 1
 AGE_DESAT = 0.10  # saturation lost at age 1
 STUBBLE_DENSITY = 0.42
+OIL_WARM = (1.04, 0.94, 0.80)  # fingertip_oil: lamp oil darkens the pads toward a warm brown (M3-CHR-03, Kell)
+OIL_PAD_R = 1.7  # x the finger's tip radius: how far round the last phalanx the stain reaches
 
 
 def load(npc: str) -> dict:
@@ -131,6 +133,20 @@ def _detail_with_age(orig, age: float):
     return detail_height
 
 
+def fingertip_weight(lm, P: np.ndarray) -> np.ndarray:
+    """0..1 over the last phalanx of every finger and thumb (strongest at the tip), from the landmark hands."""
+    w = np.zeros(len(P))
+    for hand in lm.hands.values():
+        for fg in hand.fingers:
+            a, b = np.asarray(fg.joints[2], float), np.asarray(fg.joints[3], float)
+            r = float(fg.radius[3]) if len(fg.radius) > 3 else float(fg.radius[-1])
+            ab = b - a
+            t = np.clip((P - a) @ ab / max(float(ab @ ab), 1e-12), 0.0, 1.2)
+            d = np.linalg.norm(P - (a + np.outer(np.minimum(t, 1.0), ab)), axis=1)
+            w = np.maximum(w, smoothstep(OIL_PAD_R * r, 0.8 * r, d) * smoothstep(0.1, 0.75, t))
+    return w
+
+
 # ---------------------------------------------------------------------------------------------
 # Albedo
 # ---------------------------------------------------------------------------------------------
@@ -145,6 +161,7 @@ def _albedo_villager(orig, sk: dict, hstyle, hair_hex: str):
     density = float(sk.get("scalp_density", 0.95))
     seed = int(sk.get("seed", 1))
     lip = sk.get("lip")
+    oil = float(sk.get("fingertip_oil", 0.0))  # a chandler's oil-dark fingertips (act1_npcs.md §4.2)
 
     def desat(col, k):
         g = col.mean(axis=1, keepdims=True)
@@ -177,6 +194,9 @@ def _albedo_villager(orig, sk: dict, hstyle, hair_hex: str):
                 col = col * (1 - ink[:, None]) + hexc(TATTOO_INK) * ink[:, None]
             if age > 0.0:
                 col = desat(col, AGE_DESAT * age)
+            if oil > 0.0:
+                wt = fingertip_weight(lm, Ph)[:, None]
+                col = col + (col * (1.0 - oil) * np.array(OIL_WARM) - col) * wt
             return np.clip(col, at.FLOOR, at.CEIL)
         haired = orig(Ph, Nh, key, face, lm, hair_mod, r, npz)
         if density < 0.95:
@@ -228,6 +248,9 @@ def skin(npc: str, bake_dir: Path) -> None:
     orig_albedo, orig_detail = at.albedo, at.detail_height
     at.albedo = _albedo_villager(orig_albedo, sk, hstyle, hp.get("colour", "#201A16"))
     at.detail_height = _detail_with_age(orig_detail, float(sk.get("age", 0.0)))
+    pre_round = at.PRE_ROUND
+    if extra.get("_build", {}).get("host_snaps", False):  # M1-CHR-14's x.5-texel rounding guard (M3-CHR-03 opt-in)
+        at.PRE_ROUND = at.PRE_ROUND_DECIMALS
     try:
         params = bb_params.load_params(path=str(PARAMS_DIR / f"{npc}.json"))
         lm = bb_donor.fit(params).lm
@@ -237,6 +260,7 @@ def skin(npc: str, bake_dir: Path) -> None:
             at.skin_maps(key, npz, size, small, body, body.face, lm, hstyle)
     finally:
         at.albedo, at.detail_height = orig_albedo, orig_detail
+        at.PRE_ROUND = pre_round
 
 
 # ---------------------------------------------------------------------------------------------

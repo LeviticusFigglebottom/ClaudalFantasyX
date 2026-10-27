@@ -1,6 +1,6 @@
 class_name BestiaryPortraitSlot
 extends Control
-## The portrait on the bestiary page (M2-UI-201): the chosen foe's baked picture (CreaturePortraits, ADR 0120;
+## The portrait on the bestiary page (M2-UI-1000): the chosen foe's baked picture (CreaturePortraits, ADR 0120;
 ## tools/portraits/render.sh renders each creature from its own battle model, so the page loads a small
 ## texture instead of a model in a live viewport; ADR 0110). The slot takes the page's leftover height under the
 ## EnemyPageView and holds the picture square in its bottom-right corner, at most max_px and never past the

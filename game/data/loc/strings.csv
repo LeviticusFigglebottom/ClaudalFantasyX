@@ -1052,3 +1052,5 @@ RBL_DIVER_PEM_RINGWARD,Pemakar ringward
 RBL_MATCH_TIDECUP_OPENING,"The Tidecup, opening round"
 BOSS_TITLE_INQUISITOR,Inquisitor Hadric Moll
 BOSS_EPITHET_INQUISITOR,A tired officer who still believes the Edict
+HUD_SCRIPTED_ESCAPE,You held.
+HUD_SCRIPTED_ESCAPE_SUB,There was no winning it. Only getting them out.

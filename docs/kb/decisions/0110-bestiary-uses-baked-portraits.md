@@ -6,7 +6,7 @@
 - **Author role:** ui (ui-menus track)
 
 ## Context
-Two tracks built a bestiary portrait on the same day (2026-10-24). The UI track's `BestiaryPortraitSlot` (M2-UI-201, then numbered M2-UI-26) showed the creatures track's live `CreaturePortrait`: a SubViewport rendering the creature's battle model. The menus track's M2-MNU-302 baked one PNG per creature with `tools/portraits/render.sh` under ADR 0120, which chose baked portraits for every menu. The merge kept the live one in use and the PNGs unused, and the menus track's handover asked the Lead which to keep.
+Two tracks built a bestiary portrait on the same day (2026-10-24). The UI track's `BestiaryPortraitSlot` (M2-UI-1000, then numbered M2-UI-26) showed the creatures track's live `CreaturePortrait`: a SubViewport rendering the creature's battle model. The menus track's M2-MNU-302 baked one PNG per creature with `tools/portraits/render.sh` under ADR 0120, which chose baked portraits for every menu. The merge kept the live one in use and the PNGs unused, and the menus track's handover asked the Lead which to keep.
 
 ## Options
 1. **Keep the live viewport.** Model changes show at once, but every step through the book loads a creature model (meshes, skeletons, shaders) and renders it in a second world. On a weak machine that is a hitch per step (ADR 0029's 50 ms visible-frame budget) and a constant render cost while the page is open.

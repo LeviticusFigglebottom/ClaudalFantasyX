@@ -373,7 +373,7 @@ The human's top priority for the slice: the player always knows the next step. A
 - **Rows.** `game/data/flow/objectives.json` lists the rows in story order: `{id, line_key, requires: [flags], until: flag, zone?, target?: {zone, poi}, side?}`.
   - A row applies when every `requires` flag is set and its `until` flag is not. A row with a `zone` applies only in that zone, and never in a scene with no map, so test zones and shot scenes show nothing.
   - The main objective is the first main row that applies; `side` rows are optional errands.
-  - First pass by UI for B01–B11. m2-slice keeps the rows current (M2-FP-29).
+  - First pass by UI for B01–B11. m2-slice keeps the rows current (M2-FP-1000).
   - **Act I (M3-UI-04):** 39 rows walk the main beats of Ch1, Ch4, Ch5, Ch7 and Ch9 on each chapter's own flags. Each row is zoned to its greybox zone and targets a POI there. Gaps (no flag between some beats, per-tier trial flags, Ch6 and Ch8) are listed in `docs/kb/tasks/M3/M3-UI-04-act1-area-maps.md`.
   - `validate_data.py` (`check_objectives`) checks that flags are declared, loc keys exist, and zones and targets resolve.
 - **Places.** `game/data/ui/zone_maps.json` (`ZoneMaps`) lists the zones (scene, name, map bounds, shape source) and the pilgrimage route. Each point of interest has a world `at` and a `source` (a node in the zone scene, or a point in the trial layout). `tools/tests/test_zone_map_pois.py` fails when a point drifts from its source.
@@ -432,7 +432,7 @@ Two Accessibility rows, added the same way as text speed (M2-UI-12): data rows i
   - **What it never touches:** the engine and its seeded rng, so outcomes stay the same at every speed (`test_the_speed_never_changes_the_battle`). Also the Swell input windows: `SwellRingClock` and `SwellInput` run on real time in `tick()`, never on the paced wait. HUD panels, the opening banner, menu cursors and timeline chips keep their own pace, because they answer input or carry text to read. Instant pacing (`pacing_scale` 0, used by tests and captures) stays instant, and Normal changes no battle shot.
 - **`summon_cinematic`** (Full, Short, Off; default Short) sets the cut of a Vowbound's call cinematic (SPEC §6.3: full on first use, then shortened, with a skip toggle). `UiSettings.summon_cinematic_cut(first_call)` returns `CUT_FULL`, `CUT_SHORT` (skip the middle beats) or `CUT_NONE` (straight to the effect), from `accessibility.json` `summon_cinematics`. Short plays the first call of each Vowbound in full and later calls short. Full is always full, and Off always skips.
   - **The call cinematic is M2-BPR-08 (C10, on claude/battle-presentation),** which reads `summon_cinematic` with the same row and loc text: Short plays it in full on the first call (per-save flag `ch03_ilun_first_call_seen`) and shortened after, Full plays it every time, and Off goes straight to the arrival. **At merge,** keep one copy of the `summon_cinematic` row and keys and of the six `SET_BATTLE_SPEED*` rows, and keep their `battle_animations` row.
-  - **Wired at the big7 Lead merge** under request task **M2-BPR-11** (filed as M2-BPR-07, renumbered): `BattleSummonCinematic.wants_full` asks `summon_cinematic_cut`.
+  - **Wired at the big7 Lead merge** under request task **M2-BPR-1000** (M2-BPR-11 until big9) (filed as M2-BPR-07, renumbered): `BattleSummonCinematic.wants_full` asks `summon_cinematic_cut`.
 - **Tests:** `test_accessibility_battle_speed.gd`. **Shot:** `settings_accessibility` (the page grows by two rows).
 
 ## Dialogue assist: continue glyph, backlog, auto-advance (M2-UI-25)

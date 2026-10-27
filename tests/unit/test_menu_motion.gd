@@ -215,7 +215,8 @@ func test_menus_track_hooks_read_on_every_real_page() -> void:
 	var status := pages[5] as StatusMenu
 	status.handle_input(_ev(&"ui_down"))
 	ui.step()
-	assert_eq(played, [&"ui_cursor"], "the Status page's cursor ticks")
+	# claude/audio's Status hook (M2-AUD-17, kept at big9): moving the list shows another hero's sheet, a page turn.
+	assert_eq(played, [&"ui_page"], "the Status page turns to the next hero")
 	played.clear()
 	var pause := pages[7] as BattlePauseMenu
 	pause.handle_input(_ev(&"ui_down"))

@@ -382,6 +382,42 @@ func test_the_party_holds_a_victory_pose_before_the_result() -> void:
 	_free()
 
 
+## hero-integration's review (M2-HER-1103): hero models' victory clips start on the same stagger as the hops.
+func test_victory_clips_start_one_after_another() -> void:
+	var players: Array[AnimationPlayer] = []
+	for cid: StringName in [&"rhen", &"asha"]:
+		# A real hero model (hero-integration) brings its own player, which the outro drives; a stand-in gets one.
+		var player := BattleClips.player_of(ctl.stage.stand_in(cid))
+		if player == null:
+			player = AnimationPlayer.new()
+			var lib := AnimationLibrary.new()
+			for clip in [BattleClips.IDLE, BattleClips.VICTORY]:
+				var a := Animation.new()
+				a.length = 2.0
+				lib.add_animation(clip, a)
+			player.add_animation_library(&"", lib)
+			ctl.stage.stand_in(cid).add_child(player)
+		assert_true(player.has_animation(BattleClips.VICTORY), "%s has a victory clip" % cid)
+		players.append(player)
+	_to_turn_of(&"rhen")
+	for e in ctl.engine.enemies:
+		e.hp = 1 if e.id == _foe() else 0
+	ctl.pacing_scale = 1.0
+	var outro := choreo.outro
+	outro.live = false
+	ctl.act(&"attack", [_foe()])
+	choreo.finish()
+	var cfg := outro.cfg(BattleOutro.VICTORY)
+	var stagger := float(cfg["stagger_sec"])
+	assert_true(stagger > 0.0, "the data staggers the party")
+	outro.advance(float(cfg["delay_sec"]) + stagger * 0.5)
+	assert_eq(str(players[0].current_animation), str(BattleClips.VICTORY), "Rhen first")
+	assert_ne(str(players[1].current_animation), str(BattleClips.VICTORY), "Asha not yet")
+	outro.advance(stagger)
+	assert_eq(str(players[1].current_animation), str(BattleClips.VICTORY), "then Asha")
+	_free()
+
+
 func test_an_escape_walks_the_party_off() -> void:
 	_to_turn_of(&"rhen")
 	ctl.pacing_scale = 1.0

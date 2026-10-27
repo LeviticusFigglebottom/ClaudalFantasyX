@@ -104,11 +104,15 @@ func root_rows(engine: BattleEngine, items: BattleItemSource = null, swell: Batt
 	return rows
 
 
+## The Attack row plays the actor's attack_skill: Attack, or an encounter's override (M3-CMB-01:
+## Toma's Stand Firm at the stair-head), which the row then names.
 func _attack_row(engine: BattleEngine) -> Dictionary:
-	var rank := int(engine.db.skill(ATTACK_SKILL).get("rank", Formulas.DEFAULT_RANK))
-	var known := engine.current.skills.has(ATTACK_SKILL)
-	known = known and not BossMechanics.forbidden_now(engine, engine.current, engine.db.skill(ATTACK_SKILL))
-	return _row(ROW_ATTACK, tr("HUD_CMD_ATTACK"), _rank_text(rank), _rank_role(rank), known, ATTACK_SKILL)
+	var sid := engine.current.attack_skill
+	var rank := int(engine.db.skill(sid).get("rank", Formulas.DEFAULT_RANK))
+	var known := engine.current.skills.has(sid)
+	known = known and not BossMechanics.forbidden_now(engine, engine.current, engine.db.skill(sid))
+	var label := tr("HUD_CMD_ATTACK") if sid == ATTACK_SKILL else skill_name(engine, sid)
+	return _row(ROW_ATTACK, label, _rank_text(rank), _rank_role(rank), known, sid)
 
 
 ## The acting caller's Call rows (M2-UI-05, ADR 0027): one per Vowbound it has bound, in data
@@ -181,7 +185,7 @@ func vowbound_root_rows(engine: BattleEngine) -> Array[Dictionary]:
 func root_skill(engine: BattleEngine, rid: StringName) -> StringName:
 	if rid == ROW_UNLEASH and engine.vowbound.is_out():
 		return engine.vowbound.finisher(engine.vowbound.summon)
-	return ATTACK_SKILL
+	return engine.current.attack_skill if engine.current != null else ATTACK_SKILL
 
 
 func vowbound_name(vb: BattleVowbound, vid: StringName) -> String:
@@ -227,11 +231,11 @@ func stood_down_text(engine: BattleEngine) -> String:
 	return tr("HUD_VOWBOUND_STOOD_DOWN_FMT").format({"names": ", ".join(names)})
 
 
-## The actor's skills other than Attack, in their learned order.
+## The actor's skills other than Attack (or the skill its Attack plays), in their learned order.
 func skill_ids(actor: BattleCombatant) -> Array[StringName]:
 	var out: Array[StringName] = []
 	for s in actor.skills:
-		if s != ATTACK_SKILL:
+		if s != ATTACK_SKILL and s != actor.attack_skill:
 			out.append(s)
 	return out
 
@@ -389,6 +393,11 @@ func skill_candidates(engine: BattleEngine, skill_id: StringName) -> Array[Battl
 		return engine.living_foes_of(engine.current)
 	if kind == "all_other_allies":
 		return engine.living_other_allies_of(engine.current)
+	if kind == BattleSetPiece.TARGET_WARD:  # the Climb (M3-CMB-01)
+		var ward: Array[BattleCombatant] = []
+		if engine.ward() != null:
+			ward.append(engine.ward())
+		return ward
 	return engine.living_allies_of(engine.current)
 
 
@@ -403,7 +412,7 @@ func default_targets(engine: BattleEngine, skill_id: StringName, last_foe: Strin
 		return out
 	if kind == "self":
 		out.append(engine.current)
-	elif kind.begins_with("all_"):
+	elif kind.begins_with("all_") or kind == BattleSetPiece.TARGET_WARD:
 		out = pool
 	elif kind == "single_foe":
 		var last := engine.find(last_foe)

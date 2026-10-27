@@ -1,0 +1,57 @@
+{
+  "_about": "Ysolde's gold script as stroke data (docs/kb/art/characters/ysolde.md §3), authored here, never painted. Each glyph is a list of brush strokes; a stroke is a list of points [x, y, p] in the glyph's unit box (x right, y DOWN, as a page is written; p = brush pressure 0..1, which sets the stroke weight between weight_mm[0] and weight_mm[1]). ysolde_motifs.py rasterises them into the clothmask and albedo (the robe border, the collar's inner face, the book panels) as calligraphy: a tapered entry, ink pooled where a stroke turns, the weight following the pressure, and the dry-brush breaks listed per stroke (a run of the stroke's arc length, 0..1, where the bristles part). 'trace' is Glyph Trace, Ysolde's Swell input (formulas.md: down, right, up, right, down): her costume motif, a stepped wave that rises and falls once. The twelve under 'panels' are original Lamptongue letterforms: panels 1-11 carry the first eleven on their faces, and the twelfth sits on the back of panel 12, whose face (out when the book is shut) carries 'trace'. Nothing here is traced from the M2-UI-03 panel art: the UI draws its own diagram of the same five directions, and reads this file if it wants the brush look.",
+  "weight_mm": [0.8, 2.4],
+  "trace": {
+    "directions": ["down", "right", "up", "right", "down"],
+    "strokes": [
+      {"points": [[0.06, 0.18, 0.25], [0.07, 0.40, 0.75], [0.07, 0.66, 0.95], [0.08, 0.82, 1.0]]},
+      {"points": [[0.08, 0.82, 0.9], [0.20, 0.83, 0.7], [0.32, 0.82, 0.6], [0.40, 0.81, 0.85]]},
+      {"points": [[0.40, 0.81, 0.9], [0.41, 0.58, 0.65], [0.41, 0.34, 0.6], [0.42, 0.16, 0.9]]},
+      {"points": [[0.42, 0.16, 0.95], [0.55, 0.17, 0.6], [0.66, 0.16, 0.5], [0.74, 0.17, 0.8]], "dry": [[0.35, 0.80]]},
+      {"points": [[0.74, 0.17, 0.85], [0.75, 0.40, 0.8], [0.75, 0.62, 0.55], [0.74, 0.84, 0.12]]}
+    ]
+  },
+  "panels": [
+    {"id": "lamp", "strokes": [
+      {"points": [[0.30, 0.10, 0.3], [0.32, 0.45, 0.9], [0.30, 0.88, 0.5]]},
+      {"points": [[0.12, 0.42, 0.4], [0.50, 0.38, 0.8], [0.84, 0.30, 0.3]]},
+      {"points": [[0.62, 0.55, 0.6], [0.70, 0.72, 0.9], [0.58, 0.90, 0.2]]}]},
+    {"id": "tide", "strokes": [
+      {"points": [[0.10, 0.30, 0.3], [0.30, 0.18, 0.8], [0.52, 0.32, 0.9], [0.74, 0.20, 0.7], [0.90, 0.30, 0.2]]},
+      {"points": [[0.20, 0.62, 0.5], [0.48, 0.70, 0.9], [0.80, 0.62, 0.3]]}]},
+    {"id": "vow", "strokes": [
+      {"points": [[0.20, 0.12, 0.4], [0.48, 0.80, 1.0], [0.52, 0.86, 0.6]]},
+      {"points": [[0.52, 0.86, 0.6], [0.70, 0.40, 0.8], [0.84, 0.12, 0.2]]},
+      {"points": [[0.36, 0.48, 0.3], [0.64, 0.46, 0.6]]}]},
+    {"id": "shell", "strokes": [
+      {"points": [[0.50, 0.12, 0.3], [0.22, 0.38, 0.8], [0.28, 0.76, 0.9], [0.62, 0.84, 0.7], [0.78, 0.56, 0.5], [0.56, 0.42, 0.2]]},
+      {"points": [[0.50, 0.12, 0.6], [0.52, 0.52, 0.3]]}]},
+    {"id": "cord", "strokes": [
+      {"points": [[0.14, 0.20, 0.5], [0.86, 0.22, 0.7]]},
+      {"points": [[0.24, 0.20, 0.6], [0.30, 0.58, 0.9], [0.18, 0.86, 0.3]]},
+      {"points": [[0.70, 0.22, 0.6], [0.66, 0.60, 0.9], [0.82, 0.88, 0.3]]}]},
+    {"id": "reach", "strokes": [
+      {"points": [[0.16, 0.86, 0.3], [0.40, 0.50, 0.8], [0.58, 0.16, 1.0]]},
+      {"points": [[0.58, 0.16, 0.8], [0.72, 0.48, 0.6], [0.86, 0.80, 0.3]]},
+      {"points": [[0.32, 0.64, 0.4], [0.76, 0.64, 0.5]]}]},
+    {"id": "hymn", "strokes": [
+      {"points": [[0.18, 0.18, 0.4], [0.20, 0.82, 0.9]]},
+      {"points": [[0.20, 0.50, 0.6], [0.46, 0.36, 0.7], [0.72, 0.50, 0.8], [0.76, 0.84, 0.3]]},
+      {"points": [[0.56, 0.12, 0.3], [0.64, 0.20, 0.5]]}]},
+    {"id": "ebb", "strokes": [
+      {"points": [[0.82, 0.16, 0.3], [0.50, 0.30, 0.9], [0.22, 0.52, 0.8], [0.50, 0.70, 0.7], [0.84, 0.86, 0.2]]}]},
+    {"id": "wake", "strokes": [
+      {"points": [[0.12, 0.40, 0.4], [0.30, 0.66, 0.9], [0.50, 0.40, 0.7], [0.70, 0.66, 0.9], [0.88, 0.40, 0.3]]},
+      {"points": [[0.50, 0.14, 0.3], [0.50, 0.28, 0.6]]}]},
+    {"id": "salt", "strokes": [
+      {"points": [[0.28, 0.14, 0.5], [0.26, 0.86, 0.8]]},
+      {"points": [[0.72, 0.14, 0.5], [0.74, 0.86, 0.8]]},
+      {"points": [[0.14, 0.50, 0.3], [0.50, 0.44, 0.9], [0.86, 0.50, 0.3]]}]},
+    {"id": "deep", "strokes": [
+      {"points": [[0.22, 0.14, 0.4], [0.78, 0.14, 0.6], [0.50, 0.48, 0.9], [0.22, 0.84, 0.5], [0.80, 0.84, 0.3]]}]},
+    {"id": "name", "strokes": [
+      {"points": [[0.50, 0.10, 0.4], [0.50, 0.90, 0.9]]},
+      {"points": [[0.16, 0.30, 0.3], [0.50, 0.46, 0.8], [0.84, 0.30, 0.3]]},
+      {"points": [[0.24, 0.72, 0.4], [0.76, 0.72, 0.5]]}]}
+  ]
+}

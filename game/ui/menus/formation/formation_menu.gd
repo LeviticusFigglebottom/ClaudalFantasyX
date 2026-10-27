@@ -272,8 +272,8 @@ func _layout_detail() -> void:
 	_portrait.position = Vector2(r.position.x, y)
 	_portrait.size = Vector2(side, side)
 	var indent := side + HudLayout.num(pm, "gap")
-	var full := r  # lines that start below the portrait take the whole width (130 % text)
-	var portrait_end := y + side
+	var full := r  # below the portrait a line takes the detail's whole width (130% text in a long language, M2-UI-28)
+	var portrait_bottom := y + side
 	r = Rect2(r.position.x + indent, r.position.y, r.size.x - indent, r.size.y)
 	var line_gap := HudLayout.num(dm, "line_gap")
 	_name.position = Vector2(r.position.x, y)
@@ -283,16 +283,15 @@ func _layout_detail() -> void:
 	_place.size = Vector2(r.size.x, HudLayout.num(dm, "line_height"))
 	y += _place.size.y + line_gap
 	for l: Label in [_chosen_line, _plan, _warn]:
-		if y >= portrait_end:
-			r = full
-		l.position = Vector2(r.position.x, y)
-		l.size = Vector2(r.size.x, 0.0)
+		var col := full if y >= portrait_bottom else r
+		l.position = Vector2(col.position.x, y)
+		l.size = Vector2(col.size.x, 0.0)
 		l.visible = l.text != "" and y < bottom
 		if not l.visible:
 			continue
 		var h := _text_height(l)
 		l.update_minimum_size()  # its wrapped height at the new width, not at the last one (M2-UI-29)
-		l.size = Vector2(r.size.x, minf(h, maxf(bottom - y, 0.0)))
+		l.size = Vector2(col.size.x, minf(h, maxf(bottom - y, 0.0)))
 		y += h + line_gap
 
 

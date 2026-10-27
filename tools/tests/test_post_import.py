@@ -19,8 +19,9 @@ ROOT = Path(__file__).resolve().parents[2]
 FIXTURE_DIR = ROOT / "tests" / "fixtures" / "import"
 RULES_DIR = ROOT / "game" / "data" / "import"
 KINDS = {
-    "base_body", "brine_shoals_kit", "characters", "corrow_kit", "creatures", "haluna_kit", "oruvel_underway_kit",
-    "pemakar_kit", "shader_test", "tamsule_bell_kit", "vegetation",
+    "ashcrown_kit", "base_body", "brightwater_ferry_kit", "brine_shoals_kit", "characters", "coilspire_kit",
+    "corrow_kit", "creatures", "haluna_kit", "oruvel_kit", "oruvel_underway_kit", "pemakar_kit", "shader_test",
+    "tamsule_bell_kit", "vegetation",
 }
 
 

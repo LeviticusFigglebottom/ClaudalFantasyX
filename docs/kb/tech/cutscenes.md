@@ -137,3 +137,18 @@ A no-fail held input inside a cutscene, for the Ebbing's three movements (act1_c
 - **Nothing can fail.** There is no timer, no score and no reset: `held_sec` only grows within a gate, and the only way out is the scene reaching `hold_input_end` or ending. The prompt (UI's `HoldPrompt`, `game/ui/prompts/`, M3-C09-05: the key for the device used last and the verb; holding lights the key, letting go lets it breathe; no meter) shows for the whole gate.
 - **Tests.** In `instant` mode the waits are zero, so a gate passes at once. `tests/integration/test_ch09_thread.gd` `test_the_ebbing_cannot_fail` drives a real-time play with `tick()`.
 - **Two notes.** A skip (holding `ui_cancel`) counts its hold in `advance`, so it fills only while the action is held too. The gate gives the sequencer its processing state back when it closes.
+
+## Motion (M2-FP-29)
+The human's playtest said cutscene turns snapped and walks started and stopped at full speed. `CutsceneMotion` (game/cutscene/cutscene_motion.gd) shapes both, using the tunings in `sequencer.json`:
+- **Turns** (`@anim <actor> look_at`, the turn into a walk, the turn onto a stand-in mark): eased in and out on Godot's `ease()` curve `turn_ease` (negative means in-out). They take from `turn_min_sec` for a small angle up to `turn_sec` for a half turn. Nothing snaps any more.
+- **Walks** (`@mark`):
+  1. the actor turns toward the mark;
+  2. after `walk_anticipation_sec` it sets off, accelerating over `walk_accel_sec`;
+  3. it cruises at `walk_mps` / `run_mps`;
+  4. it decelerates over `walk_decel_sec` onto the mark.
+
+  A short walk shortens both ramps together. The walk clip cross-fades in as the actor sets off, and back to idle as it settles.
+- **Clips:** every clip change cross-fades over `clip_blend_sec`, with none when instant or skipping. A clip already playing isn't restarted.
+- **Stand-in clip marks:** the actor glides onto the mark over `standin_glide_sec`, eased, instead of appearing there.
+
+Skipping and `instant` still land every motion at once. The hero integration track's clip blending (its AnimationTree) replaces `clip_blend_sec` for the heroes once it lands.

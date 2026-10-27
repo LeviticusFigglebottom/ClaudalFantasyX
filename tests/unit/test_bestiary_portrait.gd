@@ -1,5 +1,5 @@
 extends TestCase
-## M2-UI-201: the bestiary page's portrait (BestiaryPortraitSlot over the baked CreaturePortraits PNGs, ADR 0110):
+## M2-UI-1000: the bestiary page's portrait (BestiaryPortraitSlot over the baked CreaturePortraits PNGs, ADR 0110):
 ## a Read foe in colour, a never-Read one as a silhouette, a foe with no picture as nothing; it follows the cursor,
 ## sits square in the page's leftover corner between min_px and max_px, and empties when the page closes.
 
