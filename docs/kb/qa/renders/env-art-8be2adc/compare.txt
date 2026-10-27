@@ -1,0 +1,8 @@
+FAIL battle_boss_intro_reach: rmse 0.17688 (limit 0.00800)
+FAIL battle_arena_wall_head: rmse 0.16807 (limit 0.00800)
+FAIL battle_ch08_stair_hold: rmse 0.16803 (limit 0.00800)
+FAIL battle_arena_seawall_stairhead_storm: no baseline (inspect out/, then compare.py --update-baselines battle_arena_seawall_stairhead_storm)
+FAIL battle_arena_seawall_stairhead_hoist: no baseline (inspect out/, then compare.py --update-baselines battle_arena_seawall_stairhead_hoist)
+FAIL battle_arena_seawall_stairhead_surge: no baseline (inspect out/, then compare.py --update-baselines battle_arena_seawall_stairhead_surge)
+Screenshots: 6 compared, 6 failed (diffs in /home/user/wt/render/tests/screenshots/out/diff)
+compare exit 1
