@@ -12,13 +12,8 @@
  "greybox": {
   "hide_all": true,
   "keep": [
-   "SeventhTerrace",
-   "NameBoard",
-   "KeelGull",
-   "KellBeacon",
    "LowHull",
-   "StormWall",
-   "DiveGull"
+   "StormWall"
   ]
  },
  "pieces": [
@@ -363,6 +358,43 @@
    ],
    "y": -0.45,
    "yaw_deg": -15.0
+  },
+  {
+   "piece": "lintel_gull_open",
+   "at": [
+    -14.9,
+    -19.0
+   ],
+   "y": 3.279,
+   "yaw_deg": -75.85
+  },
+  {
+   "piece": "lintel_gull_open",
+   "at": [
+    5.15,
+    -20.5
+   ],
+   "y": 3.12,
+   "yaw_deg": -64.44
+  },
+  {
+   "piece": "lintel_gull_open",
+   "at": [
+    6.7,
+    -34.0
+   ],
+   "y": 5.69,
+   "yaw_deg": -65.78,
+   "scale": 1.35
+  },
+  {
+   "piece": "lintel_gull_open",
+   "at": [
+    33.4,
+    -8.6
+   ],
+   "y": 3.25,
+   "yaw_deg": -73.92
   }
  ]
 }

@@ -32,6 +32,18 @@ spawns, triggers, marks, the story) stays on the greybox.
   the ch01 suite and test_zone_kit_dressing still pass.
 - [ ] A PC shot of the dressed town: `ch01_oruvel_dressed` (RENDER-REQUEST in the slice-polish live log).
 
+- [x] **Second pass (no greybox story blocks left but the LowHull and the storm wall).**
+  - **The *Seventh Terrace*.** She is now the Brightwater ferry kit's own ship, from env-art's composition at
+    Oruvel (`oruvel_seventh_terrace_layout.json`). She is Ch4's derelict, and O07's name board "must match D06
+    exactly", so she uses the same pieces. A second ZoneKitDressing (`TerraceDressing`, generated
+    `oruvel_terrace_dressing.json`) places her clear of the outer mooring. Her pieces follow the SeventhTerrace and
+    NameBoard blocks, so the storm takes her. O07 looks at the board where it now hangs.
+  - **The lintel-gulls (C1-11: every carved gull on every roof cries).** Every cabin ridge, the chandlery's and
+    the keel-hull's carry an open-throat gull facing the sea. Positions and heights come from env-art's ov_* rules,
+    imported read-only. O10 now frames Kell's chandlery gull, the nearest one to the dive mooring.
+  - **Kell's beacon** is the ferry kit's lantern with a shadowless lamp.
+  - Shots `ch01_o07_name_board` and `ch01_o10_gull` are added for the PC.
+
 ## Notes
 - The kit frame's grade is the env-art stand-in until `lut_ch01_storm` and the Undertow preset `ch01_landfall` land.
 - The story blocks on the KEEP list are left for env-art (a terrace, the name board, gull perches, Kell's beacon, the
