@@ -221,6 +221,13 @@
       "contact": {"attack": 0.5, "cast": 0.6, "special": 1.4},
       "stand_in": {"yaw_deg": -90.0},
       "portrait": {"yaw_deg": 72.0, "pitch_deg": 14.0}
+    },
+    "hesk": {
+      "scene": "res://game/creatures/hesk/hesk_battle.tscn",
+      "vowbound": true,
+      "vowbound_pending": "M3-CRE-643",
+      "contact": {"attack": 0.55, "cast": 0.8, "special": 1.45},
+      "stand_in": {"yaw_deg": -90.0, "height": 2.4, "radius": 0.6}
     }
   }
 }
