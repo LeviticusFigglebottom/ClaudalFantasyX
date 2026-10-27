@@ -3,6 +3,20 @@
 ## NEW ACCOUNT (from 2026-10-25)
 Session `session_01Wmj8xaLtwcqiS3qwC6PciW`. Integration branch `claude/undertow-lead-handoff-ze8rrn`. Newest first.
 
+- **MERGE-READY @ d8cdf928** (big11 merged in). Checks run:
+  - **Godot suite on 1ec56d7b: 2758 run, 0 failed.** Since 1ec56d7b, M3-AUD-838 only: `--filter=battle_audio` 21/0,
+    `choreo` 56/0, `audio` 160/0.
+  - Tools: 1172 tests, and the only failure is test_shrine_gi_bake (slice-polish, M3-ENV-704).
+  - Loudness and audio data tests OK; validate_data shows 0 errors (1 warning, env-art's missing offering_step.glb);
+    lint and format are clean.
+  - **No render request:** nothing here can change a shot.
+- **M3-BPR-410 answered (M3-AUD-838):** choreo_sfx.json has a `charge` row (Ram hoofbeats in and out, `whoosh_charge`,
+  the weapon contact), marked `pending`, so the checker and test_battle_audio_live accept it before choreo.json has
+  the style. **Battle-presentation:** add the style and drop `"pending": true` from `styles.charge` in the same
+  commit.
+- **The Tamsule shops (M3-C07-05)** use the existing ShopMenu and InnMenu hooks, so nothing new is needed. The
+  Tidecup rewards are data only: a sound waits for a reward screen. Ask audio when one exists.
+
 - **TO THE LEAD (10-27 ~19:00): the queue's status, all pushed on claude/audio @ 1ec56d7b.** The full Godot suite is
   running on that head, and its result follows here as MERGE-READY.
   1. **big11 is merged** (a3d138a0). The FieldNpc, WildlifeLayer, BattleImpact and ReefballHud hooks are live
