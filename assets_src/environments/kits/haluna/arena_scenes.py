@@ -168,6 +168,16 @@ TIDELINE = {
         (KIT + "coral_boulder_c.glb", 16.0, -96.0, 10.0, 1.2, 0.4),
         (KIT + "coral_boulder_c.glb", 20.0, -100.0, 200.0, 1.0, 0.4),
         (KIT + "coral_boulder_b.glb", 12.0, -90.0, 90.0, 1.1, 0.3),
+        # M3-ENV-701 set dressing: the tide's wrack along the beach, gear by the outrigger, an offering at the
+        # first pilgrim post.
+        (KIT + "tide_debris.glb", 3.5, -9.0, 100.0, 1.0, 0.04),
+        (KIT + "tide_debris.glb", 9.0, -30.0, 70.0, 1.0, 0.04),
+        (KIT + "tide_debris.glb", 13.0, -62.0, 115.0, 1.1, 0.04),
+        (KIT + "net_heap.glb", -11.5, -13.5, 30.0, 1.0, 0.04),
+        (KIT + "rope_coil.glb", -6.0, -13.0, 0.0, 1.0, 0.0),
+        (KIT + "crate_stack.glb", -13.0, -5.5, 80.0, 1.0, 0.05),
+        (KIT + "basket_set.glb", -11.8, -7.6, 20.0, 1.0, 0.02),
+        (KIT + "offering_step.glb", 5.2, -21.0, 190.0, 1.0, 0.03),
     ],
     # (name, mesh_node, center (x, z), half extents, count, seed, height range, keep_clear [(x, z, r)])
     "scatters": [
@@ -182,6 +192,10 @@ TIDELINE = {
         "dawn_reverse": ((-2.0, 1.4, -9.0), (1.5, 1.0, 1.0)),
     },
 }
+
+# M3-ENV-701: rows set ON the disc's paving (top y 0) sink by the ground below it (the flats under the disc,
+# -1.2 m), i.e. are raised to the slab tops.
+DISC_TOP_SINK = -1.2
 
 CAUSEWAY = {
     "id": "causeway_disc_sunset",
@@ -220,6 +234,18 @@ CAUSEWAY = {
         (KIT + "coral_boulder_c.glb", -34.0, -48.0, 160.0, 1.3, 0.4),
         (KIT + "coral_boulder_c.glb", 30.0, -60.0, 15.0, 1.1, 0.4),
         (KIT + "wreck_rib.glb", -27.0, -33.0, 65.0, 1.0, 0.12),
+        # M3-ENV-701 set dressing: offerings left at the rim posts (the last pilgrims came this far), a lost
+        # net and coils on the paving's edge, the wrack and a stove-in crate stack on the flats.
+        (KIT + "offering_step.glb", *arenas.disc_xz(13.3, math.radians(84.0)), 0.0, 1.0, DISC_TOP_SINK),
+        (KIT + "offering_step.glb", *arenas.disc_xz(13.4, math.radians(60.0)), -30.0, 1.0, DISC_TOP_SINK),
+        (KIT + "net_heap.glb", *arenas.disc_xz(12.8, math.radians(112.0)), 40.0, 0.9, DISC_TOP_SINK),
+        (KIT + "rope_coil.glb", *arenas.disc_xz(13.4, math.radians(99.0)), 0.0, 1.0, DISC_TOP_SINK),
+        (KIT + "rope_coil.glb", *arenas.disc_xz(12.9, math.radians(40.0)), 0.0, 0.9, DISC_TOP_SINK),
+        (KIT + "tide_debris.glb", *arenas.disc_xz(11.5, math.radians(150.0)), 100.0, 0.9, DISC_TOP_SINK - 0.02),
+        (KIT + "tide_debris.glb", -7.0, -26.0, 10.0, 1.1, 0.1),
+        (KIT + "tide_debris.glb", 9.0, -28.0, 165.0, 1.0, 0.1),
+        (KIT + "tide_debris.glb", -20.0, -12.0, 60.0, 1.0, 0.1),
+        (KIT + "crate_stack.glb", -15.0, -27.0, 35.0, 1.0, 0.35),
         (KIT + "shell_shrine_massing.glb", 97.0, -241.0, 90.0, 1.0, 0.3),
         (VEG + "palm_coconut_c.glb", 84.0, -236.0, 160.0, 1.0, 0.2),
         (VEG + "palm_coconut_a.glb", 106.0, -254.0, 200.0, 0.9, 0.2),
