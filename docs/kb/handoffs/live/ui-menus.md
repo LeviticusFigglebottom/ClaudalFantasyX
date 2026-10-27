@@ -78,3 +78,4 @@ RENDER-REQUEST @ 99623a0c: portraits:hullgnaw,scuttler,squall_wing,tide_crawler,
 | 6 | Accessibility sweep (100/130 %, colour vision, reduced motion; aspect + pseudo-loc for every new screen) | queued |
 | 7 | Controller and keyboard prompt audit | queued |
 | 8 | Act I UI: area maps Ch4–Ch9, codex and bestiary for the 27 Act I creatures and NPCs | queued |
+RENDER-REQUEST @ 17325e00: boot_title, save_menu, save_menu_overwrite, battle_victory, battle_read_panel, shop_menu_buy, shop_menu_sell, inn_menu, reefball_hud_choice, reefball_hud_goal, formation_menu, battle_ch08_stair_hold; why: the 'parts look primitive' batch (title reveal: boot_title settles 72 frames now; save rows' party faces; result row stagger; shop/inn motion), M3-RBL-201 (Reefball Contests tags, greyed refused rows, stakes from matches.json), M2-MNU-306 (Formation role word on the place line), M3-UI-100's meter with the running total (battle_ch08_stair_hold is new, no baseline).
