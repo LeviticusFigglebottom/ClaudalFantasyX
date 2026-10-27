@@ -476,3 +476,4 @@ RENDER-REQUEST @ db3c9507: portraits:flat_engine; tool: tools/portraits/render.s
   - The order: a design sheet (docs/kb/art/creatures/vowbound/ilun.md), the model and clips (idle … victory, plus rise, dismiss and special), then the attach.
   - The attach goes through CreatureModels (a creatures.json row with `"vowbound": true`), so ui's battle_sandbox.json capsule row stays only as the fallback.
   - **For battle-presentation:** M3-CRE-639 (role combat) asks you to play `rise`, `dismiss` and `special` from choreo.json once the model lands. The existing `ready` and `ko` keep working until then.
+  - **Checks run on the big12 merge:** Godot full 2830/2 (the Lead's known two: creature portraits, ours, waits on the PC bake; the footsteps causeway test, audio's); tools test_creatures, test_blender_builds, test_npc; validate_data, taskboard, lint, format.
