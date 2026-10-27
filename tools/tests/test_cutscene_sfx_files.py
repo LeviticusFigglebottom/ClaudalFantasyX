@@ -17,8 +17,6 @@ MUSIC_TODO = {
     "corrow_night", "dawn_road", "going_under", "hush_second_verse", "kerrid_stair", "lanternfall",
     "liss_theme", "raid", "rhen_current_hum", "shoals_dusk",
     "undertow_rising",
-    # Ch8's, once its scripts are on this branch (claude/act1-chapters)
-    "seawall_hold",
 }
 
 
