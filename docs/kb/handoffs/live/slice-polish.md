@@ -344,6 +344,12 @@ Ch4–Ch9 onward. `m2-slice.md` beside this file is the history up to the 2026-1
     - **ch01_o07_name_board:** the frame came before the insert; the shot now lands at frame 96.
   - **Checks:** first_verse 3, ch01 21, zone_map 20, slice_ 16, all 0 failed; zone_map_pois OK.
 
+- **First-battle clarity (the Lead's repeated item): verified, no change.** The tideline opens on
+  `TUT_TIDELINE_TIMELINE`, which checks against the real UI: the timeline is pinned top-right with slot 0 at the top,
+  and a hovered command ghosts the actor's next turn and marks shifted chips ▲/▼. Rhen's first turn then shows the
+  command tip. An *in-character* version (Asha or Toma saying it) would need a speaker on the battle HUD's prompt
+  (`battle_boss_hud.gd`, battle-presentation's). Lead: say if you want it, and I'll file the request with the lines.
+
 - **Correction (ec3ba50a):** my first B11 pass (4f616566) added a letterbox and three scripted camera setups.
   vertical_slice.md defines B11 (and B02) as **E** scenes: in-engine, no letterbox, and the player keeps the camera
   rail. Those cues are out. B11 keeps Rhen's walk out to Asha and the turns between them. Lead: take ec3ba50a with
