@@ -444,3 +444,14 @@ PERF-REQUEST @ bccce923: foot IK frame cost on hardware. Haluna, the party runni
     something at about waist height.
   - Once the combined patch is on the integration branch and act1-chapters has written its via= paths, I turn this
     into a failure, with a KNOWN list for whatever is left.
+- **MERGE-READY @ 97fbd608: big11 merged in (0a10af32).**
+  - battle_sandbox.json resolved: UI's three repointed rows plus Ysolde's wrapper row.
+  - **Pop guard on the merged tree (UI's repoint in):** hero_battle 8/0, battle 710/0, fighter 5/0, clips 7/0. The
+    only report is Ysolde's placeholder finisher (KNOWN, M2-HER-1114). M2-HER-1108 is done.
+  - **Villager guard now runs for real** (creatures' VillagerLayer came with big11): all 7 Haluna villagers clean
+    through their routines and visits. Haluna itself still doesn't place the layer: M2-HER-1112, slice-polish's top
+    item.
+  - New from big11: ch08_keeping_flame's Asha jumps 0.34 m on the scene's last frame. That's the end-of-scene
+    completion the combined patch fixes, so it's KNOWN under M2-HER-1113 (31 pairs).
+  - Checks run: hero_ 107/0 (with that entry), field 147/0, zone 60/0, haluna 56/0, villager 19/0, tools
+    test_screenshots, gdlint.
