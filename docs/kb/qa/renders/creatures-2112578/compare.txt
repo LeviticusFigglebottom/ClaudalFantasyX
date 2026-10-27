@@ -1,0 +1,3 @@
+FAIL creature_avalanche_ram: no baseline (inspect out/, then compare.py --update-baselines creature_avalanche_ram)
+Screenshots: 1 compared, 1 failed (diffs in /root/hymn/tests/screenshots/out/diff)
+compare exit 1
