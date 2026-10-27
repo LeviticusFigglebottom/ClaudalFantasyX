@@ -48,8 +48,8 @@ Venn and Sefir's guard are people: the characters track. The storm's waking at t
 - Ch15 has only the Wakefin: the drifting barge has no random fights.
 - Ch16's boss is Sefir's Abiding guard (people), then the storm.
 
-**Counts:** 9 new regular foes and 5 variants, 5 bosses (the Drowner, the Engine, the Ram, the Wakefin, and the
-flat-engine as a boss part). With Act I's 17, that is about a quarter of SPEC §5's ~120 types by the end of Act II.
+**Counts:** 7 new regular foes and 4 variants, 4 bosses (the Drowner, the Engine, the Ram, the Wakefin) and one
+boss part (the flat-engine). With Act I's 27, that is about a third of SPEC §5's ~120 types by the end of Act II.
 
 ## Order of work (art)
 
