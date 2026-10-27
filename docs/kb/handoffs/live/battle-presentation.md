@@ -130,8 +130,8 @@ the reason it's blocked.
 | Act I creature specials (28 foes) | every skill has a style; ranged and sweeping blows stay in place; heavy blows play the finisher | test_battle_party_kits (both audits) | ed3a458e line |
 | Telegraphs | every charge gathers on stage | test_battle_telegraph | 25dcea24 line |
 | Timeline pushes and summons | push reaction, summoned foes walk in | test_battle_push_reaction, test_battle_summoned_entrance | ed3a458e line |
-| **Blocked: Sefir** | no characters.json row (Act II) | the kit audit covers it once the row lands | — |
-| **Blocked: Act II creatures and bosses (6)** | no enemies.json rows | the foe audits cover them once the rows land | — |
+| **Not an Act I kit: Sefir** | Sefir is High Warden Sefir Aurane, the antagonist, not a party member. M3-CHR-02: "the final boss's battle actor is Act III work." There's no hero kit to stage; his boss intro and specials come with Act III | — | — |
+| **Blocked: Act II creatures and bosses (6)** | no enemies.json rows yet; tracked by creatures' M3-CRE-620 (roster, then design sheets, then builds) and M3-CRE-623/624 (Lamp Engine, Avalanche Ram, whose boss intro and charge rows are already keyed by id, M3-BPR-408) | the foe audits cover them once the rows land | — |
 | **Blocked: Kerrid's and Liss's real clips** | M3-BPR-412 to characters (Kerrid: M3-CHR-505) | placeholder clips meanwhile | — |
 | **Blocked: VFX particles for 17 skills and 8 items** | effects.json is rendering's; map proposed in M3-BPR-411 | coverage tool test (each gap has a stage answer) | — |
 | **Blocked: a foe dive or sweep style, and the charge style** | need audio choreo_sfx rows (M3-BPR-410) | — | — |
