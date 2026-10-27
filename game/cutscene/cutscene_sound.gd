@@ -2,6 +2,9 @@ class_name CutsceneSound
 extends RefCounted
 ## `@sfx <id> [vol=] [at=]` (M2-FP-118): Audio's sfx row (sfx*.json: its files, bus, variation and cooldown) when
 ## audio has one, from the `at` place when the cue names one; else the cutscene's own `<sfx_dir>/<id>.ogg`.
+## `@music <cue>` (M2-AUD-07): Audio plays a music.json cue on its deck (crossfaded, and carried past the scene's
+## end into the zone, as Cutscene A's dawn runs into the village); any other cue is the sequencer's own player's,
+## from `<music_dir>/<cue>.ogg` or its sequencer.json music_stand_ins file.
 
 
 ## Plays the cue from `host`; false when no such sound exists.
@@ -22,3 +25,21 @@ static func play(host: Node, sfx_dir: String, id: StringName, vol: float, at: No
 	host.add_child(p)
 	p.play()
 	return true
+
+
+## Hands music cue `cue` (or AudioData.SILENCE) to Audio; false when music.json has no such cue.
+static func music(cue: StringName, fade: float) -> bool:
+	if cue != AudioData.SILENCE and AudioData.cue(Audio.music_data, cue).is_empty():
+		return false
+	return Audio.play_music(cue, fade)
+
+
+## The sequencer's own stream for cue `track`: its file under music_dir, else its stand-in's (null if neither).
+static func music_stream(config: Dictionary, track: StringName) -> AudioStream:
+	var dir := str(config.get("music_dir", ""))
+	var stand_ins: Dictionary = config.get("music_stand_ins", {})
+	for name_id: String in [String(track), str(stand_ins.get(String(track), ""))]:
+		var path := "%s%s.ogg" % [dir, name_id]
+		if name_id != "" and ResourceLoader.exists(path):
+			return load(path) as AudioStream
+	return null

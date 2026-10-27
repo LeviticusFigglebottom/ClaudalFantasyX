@@ -84,6 +84,8 @@ var overlay: CutsceneOverlay
 var runner: DialogueRunner
 var music: AudioStreamPlayer
 var music_track: StringName = &""
+## True while this scene's music is Audio's (a music.json cue, M2-AUD-07): music_track is then "".
+var music_by_audio := false
 
 var _playing := false
 var _aborted := false
@@ -616,10 +618,18 @@ func _cue_music(step: DialogueStep) -> void:
 	var silent := float(config.get("silent_db", 0.0))
 	if step.is_music_silence():
 		music_track = &""
+		if music_by_audio:
+			CutsceneSound.music(AudioData.SILENCE, fade)
+		music_by_audio = false
 		_fade_music(silent, fade, true)
 		return
 	var track := StringName(str(step.args[0]))
-	var stream := _music_stream(track)
+	music_by_audio = CutsceneSound.music(track, fade)  # M2-AUD-07; music_track stays "" (Audio holds its bed for it)
+	if music_by_audio:
+		music_track = &""
+		_fade_music(silent, fade, true)
+		return
+	var stream := CutsceneSound.music_stream(config, track)
 	music_track = track
 	if stream == null:
 		_warn("no music for '%s' (and no stand-in)" % track)
@@ -920,16 +930,6 @@ func _fade_music(to_db: float, sec: float, stop_after: bool) -> void:
 			if t >= 1.0 and stop_after:
 				player.stop()
 	)
-
-
-func _music_stream(track: StringName) -> AudioStream:
-	var dir := str(config.get("music_dir", ""))
-	var stand_ins: Dictionary = config.get("music_stand_ins", {})
-	for name_id: String in [String(track), str(stand_ins.get(String(track), ""))]:
-		var path := "%s%s.ogg" % [dir, name_id]
-		if name_id != "" and ResourceLoader.exists(path):
-			return load(path) as AudioStream
-	return null
 
 
 func _face(actor: Node3D, dir: Vector3) -> void:

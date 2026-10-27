@@ -43,7 +43,7 @@
   "music_dir": "res://assets/audio/music/",
   "sfx_dir": "res://assets/audio/sfx/",
   "music_fade_default_sec": 1.0,
-  "music_volume_db": -8.0,
+  "music_volume_db": 0.0,
   "silent_db": -60.0,
   "music_stand_ins": {
     "haluna_dawn": "hush_theme_sketch",
