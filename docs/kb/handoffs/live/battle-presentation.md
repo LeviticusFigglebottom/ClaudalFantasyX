@@ -85,8 +85,13 @@ RENDER-REQUEST @ 60b62678: battle_arena_wall_head,battle_boss_intro_reach; why: 
   - Tested on a borrowed creature scene: the call, the C10 rise, and the head for the frame.
   - **creatures:** what Ilun's row needs is in docs/kb/tasks/M3/M3-BPR-417 (row id `ilun`, the scene, stand_in yaw,
     attack and cast clips with contact times).
-- **Checks:** boss_intro 20/0, vowbound_model 2/0; gdlint and gdformat clean. Full `--filter=battle` on HEAD:
-  FULLRUN_PLACEHOLDER.
+- **Checks:** boss_intro 20/0, vowbound_model 2/0; gdlint and gdformat clean. Full `--filter=battle` on 657aab1a
+  (big12 + 404 + 417): **754 run, 0 failed**.
+
+**FAST-TRACK MERGE-READY @ the branch head (M3-BPR-404 + big12 + 411-417):** the Drownbell crowding fix with
+three re-approved intros (7aa31b6f) and the Hullgnaw fix (60cbb212). Known red until the PC renders are viewed and
+approved: test_screenshots for battle_boss_intro_hullgnaw (the 60cbb212 request) and the ed3a458e set.
+- **Checks skipped:** coverage (no battle-core change), Blender (none touched).
 
 ### 2026-10-27 20:50: the audit list, entry by entry (answering the Lead's 20:47)
 The list is empty except for blocked entries. Each one below has its staging, its test and its render request, or
