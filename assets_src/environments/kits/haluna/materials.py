@@ -342,6 +342,13 @@ STANDARD["kit_kelp"] = {"albedo_color": hexc("#4A4A22"), "roughness": 0.35, "cul
 STANDARD["kit_dry_frond"] = {"albedo_color": hexc("#8C6B40"), "roughness": 0.85, "cull_mode": 2,
                              "backlight_enabled": "true", "backlight": "Color(0.35, 0.25, 0.1, 1)"}
 
+# M3-ENV-709 (Ch4's wake night): a single wake-shell's two story states, by per-placement override. Inked: the name
+# freshly re-inked, the glyph near-black and deep. Faded: years of salt, the glyph barely darker than the shell.
+MATERIALS["kit_wake_shell_inked"] = {"shader": SHELL, "params": {
+    "tex_glyph": ("tex", TEX + "shell_glyph.png"), "col_glyph": hexc("#1F1A16"), "glyph_depth": 1.0}}
+MATERIALS["kit_wake_shell_faded"] = {"shader": SHELL, "params": {
+    "tex_glyph": ("tex", TEX + "shell_glyph.png"), "col_glyph": hexc("#9C9384"), "glyph_depth": 0.3}}
+
 
 if __name__ == "__main__":
     sys.exit(main())

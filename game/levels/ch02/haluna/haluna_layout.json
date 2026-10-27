@@ -4555,11 +4555,994 @@
   "market_stall": [
    45.0,
    200.0
+  ],
+  "ground_lamp": [
+   12.0,
+   60.0
+  ],
+  "feast_mat": [
+   20.0,
+   80.0
+  ],
+  "ink_kit": [
+   8.0,
+   25.0
+  ],
+  "wake_shell_single": [
+   15.0,
+   70.0
   ]
  },
  "prop_no_shadow": [
   "sandals",
   "rope_coil",
   "net_float_cluster"
- ]
+ ],
+ "story_sets": {
+  "_doc": "M3-ENV-709 (M3-C04-03): Ch4's wake night at the causeway head. HalunaDresser builds each set hidden as StorySet_<name>; Ch4's zone shows it by flag. ch04_wake: about 100 oil lamps lining the path to the Pilgrim's Wake and ringing it, the feast on the sand, Ysolde's ink kit at the gap, ten warm lights. The shells: Asha's (ch04_shell_set, freshly inked) beside Imra's, faded until it is re-inked.",
+  "ch04_wake": {
+   "pieces": [
+    {
+     "piece": "ground_lamp",
+     "at": [
+      -9.57,
+      -87.7
+     ],
+     "yaw_deg": 0.0
+    },
+    {
+     "piece": "ground_lamp",
+     "at": [
+      -6.43,
+      -88.3
+     ],
+     "yaw_deg": 0.0
+    },
+    {
+     "piece": "ground_lamp",
+     "at": [
+      -9.74,
+      -88.59
+     ],
+     "yaw_deg": 37.0
+    },
+    {
+     "piece": "ground_lamp",
+     "at": [
+      -6.61,
+      -89.2
+     ],
+     "yaw_deg": 37.0
+    },
+    {
+     "piece": "ground_lamp",
+     "at": [
+      -9.92,
+      -89.49
+     ],
+     "yaw_deg": 74.0
+    },
+    {
+     "piece": "ground_lamp",
+     "at": [
+      -6.78,
+      -90.1
+     ],
+     "yaw_deg": 74.0
+    },
+    {
+     "piece": "ground_lamp",
+     "at": [
+      -10.1,
+      -90.39
+     ],
+     "yaw_deg": 111.0
+    },
+    {
+     "piece": "ground_lamp",
+     "at": [
+      -6.96,
+      -91.0
+     ],
+     "yaw_deg": 111.0
+    },
+    {
+     "piece": "ground_lamp",
+     "at": [
+      -10.27,
+      -91.28
+     ],
+     "yaw_deg": 148.0
+    },
+    {
+     "piece": "ground_lamp",
+     "at": [
+      -7.14,
+      -91.89
+     ],
+     "yaw_deg": 148.0
+    },
+    {
+     "piece": "ground_lamp",
+     "at": [
+      -10.45,
+      -92.18
+     ],
+     "yaw_deg": 185.0
+    },
+    {
+     "piece": "ground_lamp",
+     "at": [
+      -7.31,
+      -92.79
+     ],
+     "yaw_deg": 185.0
+    },
+    {
+     "piece": "ground_lamp",
+     "at": [
+      -10.63,
+      -93.08
+     ],
+     "yaw_deg": 222.0
+    },
+    {
+     "piece": "ground_lamp",
+     "at": [
+      -7.49,
+      -93.69
+     ],
+     "yaw_deg": 222.0
+    },
+    {
+     "piece": "ground_lamp",
+     "at": [
+      -10.8,
+      -93.98
+     ],
+     "yaw_deg": 259.0
+    },
+    {
+     "piece": "ground_lamp",
+     "at": [
+      -7.67,
+      -94.58
+     ],
+     "yaw_deg": 259.0
+    },
+    {
+     "piece": "ground_lamp",
+     "at": [
+      -10.98,
+      -94.87
+     ],
+     "yaw_deg": 296.0
+    },
+    {
+     "piece": "ground_lamp",
+     "at": [
+      -7.84,
+      -95.48
+     ],
+     "yaw_deg": 296.0
+    },
+    {
+     "piece": "ground_lamp",
+     "at": [
+      -11.16,
+      -95.77
+     ],
+     "yaw_deg": 333.0
+    },
+    {
+     "piece": "ground_lamp",
+     "at": [
+      -8.02,
+      -96.38
+     ],
+     "yaw_deg": 333.0
+    },
+    {
+     "piece": "ground_lamp",
+     "at": [
+      -11.33,
+      -96.67
+     ],
+     "yaw_deg": 10.0
+    },
+    {
+     "piece": "ground_lamp",
+     "at": [
+      -8.2,
+      -97.27
+     ],
+     "yaw_deg": 10.0
+    },
+    {
+     "piece": "ground_lamp",
+     "at": [
+      -11.51,
+      -97.56
+     ],
+     "yaw_deg": 47.0
+    },
+    {
+     "piece": "ground_lamp",
+     "at": [
+      -8.37,
+      -98.17
+     ],
+     "yaw_deg": 47.0
+    },
+    {
+     "piece": "ground_lamp",
+     "at": [
+      -11.69,
+      -98.46
+     ],
+     "yaw_deg": 84.0
+    },
+    {
+     "piece": "ground_lamp",
+     "at": [
+      -8.55,
+      -99.07
+     ],
+     "yaw_deg": 84.0
+    },
+    {
+     "piece": "ground_lamp",
+     "at": [
+      -11.86,
+      -99.36
+     ],
+     "yaw_deg": 121.0
+    },
+    {
+     "piece": "ground_lamp",
+     "at": [
+      -8.73,
+      -99.97
+     ],
+     "yaw_deg": 121.0
+    },
+    {
+     "piece": "ground_lamp",
+     "at": [
+      -12.04,
+      -100.25
+     ],
+     "yaw_deg": 158.0
+    },
+    {
+     "piece": "ground_lamp",
+     "at": [
+      -8.9,
+      -100.86
+     ],
+     "yaw_deg": 158.0
+    },
+    {
+     "piece": "ground_lamp",
+     "at": [
+      -12.22,
+      -101.15
+     ],
+     "yaw_deg": 195.0
+    },
+    {
+     "piece": "ground_lamp",
+     "at": [
+      -9.08,
+      -101.76
+     ],
+     "yaw_deg": 195.0
+    },
+    {
+     "piece": "ground_lamp",
+     "at": [
+      -12.39,
+      -102.05
+     ],
+     "yaw_deg": 232.0
+    },
+    {
+     "piece": "ground_lamp",
+     "at": [
+      -9.26,
+      -102.66
+     ],
+     "yaw_deg": 232.0
+    },
+    {
+     "piece": "ground_lamp",
+     "at": [
+      -12.57,
+      -102.95
+     ],
+     "yaw_deg": 269.0
+    },
+    {
+     "piece": "ground_lamp",
+     "at": [
+      -9.43,
+      -103.55
+     ],
+     "yaw_deg": 269.0
+    },
+    {
+     "piece": "ground_lamp",
+     "at": [
+      -12.74,
+      -103.84
+     ],
+     "yaw_deg": 306.0
+    },
+    {
+     "piece": "ground_lamp",
+     "at": [
+      -9.61,
+      -104.45
+     ],
+     "yaw_deg": 306.0
+    },
+    {
+     "piece": "ground_lamp",
+     "at": [
+      -12.92,
+      -104.74
+     ],
+     "yaw_deg": 343.0
+    },
+    {
+     "piece": "ground_lamp",
+     "at": [
+      -9.78,
+      -105.35
+     ],
+     "yaw_deg": 343.0
+    },
+    {
+     "piece": "ground_lamp",
+     "at": [
+      -13.1,
+      -105.64
+     ],
+     "yaw_deg": 20.0
+    },
+    {
+     "piece": "ground_lamp",
+     "at": [
+      -9.96,
+      -106.25
+     ],
+     "yaw_deg": 20.0
+    },
+    {
+     "piece": "ground_lamp",
+     "at": [
+      -13.27,
+      -106.53
+     ],
+     "yaw_deg": 57.0
+    },
+    {
+     "piece": "ground_lamp",
+     "at": [
+      -10.14,
+      -107.14
+     ],
+     "yaw_deg": 57.0
+    },
+    {
+     "piece": "ground_lamp",
+     "at": [
+      -13.45,
+      -107.43
+     ],
+     "yaw_deg": 94.0
+    },
+    {
+     "piece": "ground_lamp",
+     "at": [
+      -10.31,
+      -108.04
+     ],
+     "yaw_deg": 94.0
+    },
+    {
+     "piece": "ground_lamp",
+     "at": [
+      -13.63,
+      -108.33
+     ],
+     "yaw_deg": 131.0
+    },
+    {
+     "piece": "ground_lamp",
+     "at": [
+      -10.49,
+      -108.94
+     ],
+     "yaw_deg": 131.0
+    },
+    {
+     "piece": "ground_lamp",
+     "at": [
+      -13.8,
+      -109.23
+     ],
+     "yaw_deg": 168.0
+    },
+    {
+     "piece": "ground_lamp",
+     "at": [
+      -10.67,
+      -109.83
+     ],
+     "yaw_deg": 168.0
+    },
+    {
+     "piece": "ground_lamp",
+     "at": [
+      -13.98,
+      -110.12
+     ],
+     "yaw_deg": 205.0
+    },
+    {
+     "piece": "ground_lamp",
+     "at": [
+      -10.84,
+      -110.73
+     ],
+     "yaw_deg": 205.0
+    },
+    {
+     "piece": "ground_lamp",
+     "at": [
+      -14.16,
+      -111.02
+     ],
+     "yaw_deg": 242.0
+    },
+    {
+     "piece": "ground_lamp",
+     "at": [
+      -11.02,
+      -111.63
+     ],
+     "yaw_deg": 242.0
+    },
+    {
+     "piece": "ground_lamp",
+     "at": [
+      -14.33,
+      -111.92
+     ],
+     "yaw_deg": 279.0
+    },
+    {
+     "piece": "ground_lamp",
+     "at": [
+      -11.2,
+      -112.52
+     ],
+     "yaw_deg": 279.0
+    },
+    {
+     "piece": "ground_lamp",
+     "at": [
+      -14.51,
+      -112.81
+     ],
+     "yaw_deg": 316.0
+    },
+    {
+     "piece": "ground_lamp",
+     "at": [
+      -11.37,
+      -113.42
+     ],
+     "yaw_deg": 316.0
+    },
+    {
+     "piece": "ground_lamp",
+     "at": [
+      -14.69,
+      -113.71
+     ],
+     "yaw_deg": 353.0
+    },
+    {
+     "piece": "ground_lamp",
+     "at": [
+      -11.55,
+      -114.32
+     ],
+     "yaw_deg": 353.0
+    },
+    {
+     "piece": "ground_lamp",
+     "at": [
+      -14.86,
+      -114.61
+     ],
+     "yaw_deg": 30.0
+    },
+    {
+     "piece": "ground_lamp",
+     "at": [
+      -11.73,
+      -115.22
+     ],
+     "yaw_deg": 30.0
+    },
+    {
+     "piece": "ground_lamp",
+     "at": [
+      -15.04,
+      -115.5
+     ],
+     "yaw_deg": 67.0
+    },
+    {
+     "piece": "ground_lamp",
+     "at": [
+      -11.9,
+      -116.11
+     ],
+     "yaw_deg": 67.0
+    },
+    {
+     "piece": "ground_lamp",
+     "at": [
+      -15.22,
+      -116.4
+     ],
+     "yaw_deg": 104.0
+    },
+    {
+     "piece": "ground_lamp",
+     "at": [
+      -12.08,
+      -117.01
+     ],
+     "yaw_deg": 104.0
+    },
+    {
+     "piece": "ground_lamp",
+     "at": [
+      -15.39,
+      -117.3
+     ],
+     "yaw_deg": 141.0
+    },
+    {
+     "piece": "ground_lamp",
+     "at": [
+      -12.26,
+      -117.91
+     ],
+     "yaw_deg": 141.0
+    },
+    {
+     "piece": "ground_lamp",
+     "at": [
+      -15.57,
+      -118.2
+     ],
+     "yaw_deg": 178.0
+    },
+    {
+     "piece": "ground_lamp",
+     "at": [
+      -12.43,
+      -118.8
+     ],
+     "yaw_deg": 178.0
+    },
+    {
+     "piece": "ground_lamp",
+     "at": [
+      -9.62,
+      -119.14
+     ],
+     "yaw_deg": 0.0
+    },
+    {
+     "piece": "ground_lamp",
+     "at": [
+      -9.74,
+      -118.93
+     ],
+     "yaw_deg": 53.0
+    },
+    {
+     "piece": "ground_lamp",
+     "at": [
+      -9.9,
+      -118.72
+     ],
+     "yaw_deg": 106.0
+    },
+    {
+     "piece": "ground_lamp",
+     "at": [
+      -10.08,
+      -118.53
+     ],
+     "yaw_deg": 159.0
+    },
+    {
+     "piece": "ground_lamp",
+     "at": [
+      -10.29,
+      -118.34
+     ],
+     "yaw_deg": 212.0
+    },
+    {
+     "piece": "ground_lamp",
+     "at": [
+      -10.53,
+      -118.17
+     ],
+     "yaw_deg": 265.0
+    },
+    {
+     "piece": "ground_lamp",
+     "at": [
+      -10.79,
+      -118.01
+     ],
+     "yaw_deg": 318.0
+    },
+    {
+     "piece": "ground_lamp",
+     "at": [
+      -11.07,
+      -117.87
+     ],
+     "yaw_deg": 11.0
+    },
+    {
+     "piece": "ground_lamp",
+     "at": [
+      -11.37,
+      -117.74
+     ],
+     "yaw_deg": 64.0
+    },
+    {
+     "piece": "ground_lamp",
+     "at": [
+      -11.68,
+      -117.63
+     ],
+     "yaw_deg": 117.0
+    },
+    {
+     "piece": "ground_lamp",
+     "at": [
+      -12.01,
+      -117.54
+     ],
+     "yaw_deg": 170.0
+    },
+    {
+     "piece": "ground_lamp",
+     "at": [
+      -12.36,
+      -117.46
+     ],
+     "yaw_deg": 223.0
+    },
+    {
+     "piece": "ground_lamp",
+     "at": [
+      -12.71,
+      -117.4
+     ],
+     "yaw_deg": 276.0
+    },
+    {
+     "piece": "ground_lamp",
+     "at": [
+      -13.07,
+      -117.36
+     ],
+     "yaw_deg": 329.0
+    },
+    {
+     "piece": "ground_lamp",
+     "at": [
+      -13.43,
+      -117.34
+     ],
+     "yaw_deg": 22.0
+    },
+    {
+     "piece": "ground_lamp",
+     "at": [
+      -13.79,
+      -117.34
+     ],
+     "yaw_deg": 75.0
+    },
+    {
+     "piece": "ground_lamp",
+     "at": [
+      -14.15,
+      -117.36
+     ],
+     "yaw_deg": 128.0
+    },
+    {
+     "piece": "ground_lamp",
+     "at": [
+      -14.51,
+      -117.4
+     ],
+     "yaw_deg": 181.0
+    },
+    {
+     "piece": "ground_lamp",
+     "at": [
+      -14.86,
+      -117.46
+     ],
+     "yaw_deg": 234.0
+    },
+    {
+     "piece": "ground_lamp",
+     "at": [
+      -15.21,
+      -117.54
+     ],
+     "yaw_deg": 287.0
+    },
+    {
+     "piece": "ground_lamp",
+     "at": [
+      -15.54,
+      -117.63
+     ],
+     "yaw_deg": 340.0
+    },
+    {
+     "piece": "ground_lamp",
+     "at": [
+      -15.85,
+      -117.74
+     ],
+     "yaw_deg": 33.0
+    },
+    {
+     "piece": "ground_lamp",
+     "at": [
+      -16.15,
+      -117.87
+     ],
+     "yaw_deg": 86.0
+    },
+    {
+     "piece": "ground_lamp",
+     "at": [
+      -16.43,
+      -118.01
+     ],
+     "yaw_deg": 139.0
+    },
+    {
+     "piece": "ground_lamp",
+     "at": [
+      -16.69,
+      -118.17
+     ],
+     "yaw_deg": 192.0
+    },
+    {
+     "piece": "ground_lamp",
+     "at": [
+      -16.93,
+      -118.34
+     ],
+     "yaw_deg": 245.0
+    },
+    {
+     "piece": "ground_lamp",
+     "at": [
+      -17.14,
+      -118.53
+     ],
+     "yaw_deg": 298.0
+    },
+    {
+     "piece": "ground_lamp",
+     "at": [
+      -17.32,
+      -118.72
+     ],
+     "yaw_deg": 351.0
+    },
+    {
+     "piece": "ground_lamp",
+     "at": [
+      -17.48,
+      -118.93
+     ],
+     "yaw_deg": 44.0
+    },
+    {
+     "piece": "ground_lamp",
+     "at": [
+      -17.6,
+      -119.14
+     ],
+     "yaw_deg": 97.0
+    },
+    {
+     "piece": "feast_mat",
+     "at": [
+      2.5,
+      -106.5
+     ],
+     "yaw_deg": 10
+    },
+    {
+     "piece": "feast_mat",
+     "at": [
+      3.5,
+      -110.0
+     ],
+     "yaw_deg": -5
+    },
+    {
+     "piece": "feast_mat",
+     "at": [
+      6.0,
+      -104.5
+     ],
+     "yaw_deg": 30
+    },
+    {
+     "piece": "feast_mat",
+     "at": [
+      7.3,
+      -108.5
+     ],
+     "yaw_deg": 15
+    },
+    {
+     "piece": "feast_mat",
+     "at": [
+      1.5,
+      -113.0
+     ],
+     "yaw_deg": 60
+    },
+    {
+     "piece": "feast_mat",
+     "at": [
+      5.0,
+      -112.5
+     ],
+     "yaw_deg": 40
+    },
+    {
+     "piece": "ink_kit",
+     "at": [
+      -13.3,
+      -120.0
+     ],
+     "yaw_deg": -34.0,
+     "dy": 0.02
+    }
+   ],
+   "lights": {
+    "color": "#FFB16E",
+    "energy": 1.1,
+    "range_m": 7.0,
+    "attenuation": 1.3,
+    "at": [
+     [
+      -8.5,
+      0.6,
+      -90
+     ],
+     [
+      -10.0,
+      0.6,
+      -98
+     ],
+     [
+      -11.5,
+      0.6,
+      -106
+     ],
+     [
+      -13.0,
+      0.6,
+      -114
+     ],
+     [
+      3.0,
+      0.6,
+      -108
+     ],
+     [
+      6.5,
+      0.6,
+      -106
+     ],
+     [
+      -10.5,
+      0.6,
+      -119.0
+     ],
+     [
+      -16.5,
+      0.6,
+      -118.5
+     ],
+     [
+      -12.0,
+      0.6,
+      -121.5
+     ],
+     [
+      4.0,
+      0.6,
+      -112.0
+     ]
+    ]
+   }
+  },
+  "ch04_shell_asha": {
+   "pieces": [
+    {
+     "piece": "wake_shell_single",
+     "at": [
+      -14.2,
+      -120.7
+     ],
+     "yaw_deg": -34.0,
+     "materials": {
+      "kit_wake_shell": "kit_wake_shell_inked"
+     }
+    }
+   ]
+  },
+  "ch04_shell_imra_faded": {
+   "pieces": [
+    {
+     "piece": "wake_shell_single",
+     "at": [
+      -14.95,
+      -120.25
+     ],
+     "yaw_deg": -30.0,
+     "materials": {
+      "kit_wake_shell": "kit_wake_shell_faded"
+     }
+    }
+   ]
+  },
+  "ch04_shell_imra_inked": {
+   "pieces": [
+    {
+     "piece": "wake_shell_single",
+     "at": [
+      -14.95,
+      -120.25
+     ],
+     "yaw_deg": -30.0,
+     "materials": {
+      "kit_wake_shell": "kit_wake_shell_inked"
+     }
+    }
+   ]
+  }
+ }
 }

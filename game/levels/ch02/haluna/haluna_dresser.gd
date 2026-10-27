@@ -17,6 +17,8 @@ const GROUND_KEY := "ground"
 const NIGHT_LAMPS := &"NightLamps"
 const LAMP_FLAME := &"night_lamp_flame"
 const SEA_NORMAL := Vector2(1.0, 0.0)
+const STORY_SETS := "StorySets"
+const STORY_SET_PREFIX := "StorySet_"
 
 @export_file("*.json") var layout_path: String = "res://game/levels/ch02/haluna/haluna_layout.json"
 @export var terrain: HalunaTerrain
@@ -57,7 +59,52 @@ func dress() -> void:
 		_scatter(spec)
 	_place_night_lamps(pieces, kinds, layout.get("night_lamps", {}))
 	_place_yard_sets(pieces, kinds, layout.get("yard_sets", {}))
+	_place_story_sets(layout.get("story_sets", {}))
 	dressed.emit()
+
+
+## M3-ENV-709: dressing a chapter shows only in its own state (Ch4's wake night at the causeway head, the wake
+## shells' states). Each "story_sets" entry becomes a hidden `StorySet_<name>` holding its pieces (placed as the
+## layout's pieces are) and its lights (an OmniLight3D at each "lights" "at", fog energy 0). The chapter's zone
+## shows a set with `story_set(name).visible = true`. Sets draw nothing from the scatter rng and have no
+## collision: they live under a plain Node (`StorySets`), which HalunaCollision skips (it reads the dresser's
+## Node3D children as pieces). The dresser sits at the zone's origin, so the sets' world frame is the layout's.
+func _place_story_sets(cfg: Dictionary) -> void:
+	var holder: Node = null
+	for key: Variant in cfg:
+		var set_id := String(key)
+		if set_id.begins_with("_"):
+			continue
+		var spec: Dictionary = cfg[key]
+		if holder == null:
+			holder = Node.new()
+			holder.name = STORY_SETS
+			add_child(holder)
+		var root := Node3D.new()
+		root.name = STORY_SET_PREFIX + set_id
+		root.visible = false
+		holder.add_child(root)
+		for piece_spec: Dictionary in spec.get("pieces", []):
+			var node := _place_piece(piece_spec)
+			if node != null:
+				node.reparent(root, false)
+		var lights: Dictionary = spec.get("lights", {})
+		var color := Color.html(str(lights.get("color", "#FFFFFF")))
+		for at: Array in lights.get("at", []):
+			var light := OmniLight3D.new()
+			light.light_color = color
+			light.light_energy = float(lights.get("energy", 1.0))
+			light.omni_range = float(lights.get("range_m", 5.0))
+			light.omni_attenuation = float(lights.get("attenuation", 1.0))
+			light.light_volumetric_fog_energy = 0.0
+			light.shadow_enabled = false
+			light.position = Vector3(float(at[0]), float(at[1]), float(at[2]))
+			root.add_child(light)
+
+
+## A story set's node (hidden until the chapter shows it), or null when the layout has none of that name.
+func story_set(set_name: StringName) -> Node3D:
+	return get_node_or_null(NodePath(STORY_SETS + "/" + STORY_SET_PREFIX + String(set_name))) as Node3D
 
 
 ## M3-ENV-701: the lived-in clutter round each house (crates, laundry, rope, jars), from the layout's

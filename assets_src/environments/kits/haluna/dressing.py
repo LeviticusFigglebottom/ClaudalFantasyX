@@ -65,6 +65,10 @@ TRI_BUDGET = {
     "yard_fence": (1400, 120),
     "village_litter": (900, 60),
     "fish_weir": (5000, 600),
+    "ground_lamp": (300, 60),
+    "feast_mat": (4000, 120),
+    "ink_kit": (1200, 60),
+    "wake_shell_single": (600, 120),
 }
 
 
@@ -648,6 +652,102 @@ def build_fish_weir(seed: int = 712, *, arm: float = 7.0, h: float = 2.6) -> lis
     return out
 
 
+# ---- Ch4's wake night at the causeway head (M3-ENV-709, for M3-C04-03) ----------------------------------
+M_SHELL = "kit_wake_shell"
+M_FLAME = "kit_lamp_flame"
+
+
+def build_ground_lamp(seed: int = 713) -> list[kc.MeshBuilder]:
+    """A clay oil lamp set on the sand (the wake's hundred lamps), its wick lit; a pebble ring keeps it level."""
+    out = []
+    for lod in (False, True):
+        rng = kc.rng_for("ground_lamp", seed)
+        mb = kc.MeshBuilder("ground_lamp" + ("-lod1" if lod else ""))
+        props.lathe(mb, [(0.04, 0.0), (0.075, 0.03), (0.08, 0.055), (0.05, 0.07)], props.M_CLAY, rng,
+                    sides=12 if not lod else 5)
+        kc.rounded_block(mb, (0.0, 0.085, 0.045), (0.012, 0.022, 0.012), mb.material(M_FLAME), radius=0.008, seg=1)
+        out.append(mb)
+    return out
+
+
+def build_feast_mat(seed: int = 714) -> list[kc.MeshBuilder]:
+    """The wake's feast laid on the sand: a woven mat with leaf plates, clay bowls, a water jar and two lamps."""
+    out = []
+    for lod in (False, True):
+        rng = kc.rng_for("feast_mat", seed)
+        noise = kc.Noise3(rng)
+        mb = kc.MeshBuilder("feast_mat" + ("-lod1" if lod else ""))
+        U, V = np.meshgrid(np.linspace(-1.0, 1.0, 9 if not lod else 2), np.linspace(-0.6, 0.6, 6 if not lod else 2))
+        y = 0.01 + (0.0 if lod else (noise.fbm(np.stack([U, U * 0, V], -1) / 0.4, 2) - 0.5) * 0.01)
+        P = np.stack([U, np.zeros_like(U) + y, V], axis=-1)
+        kc.quad_strip(mb, P, mb.material(M_WOVEN), uv=np.stack([U, V], -1) * 1.5, col=np.array([0.0, 0.1, 0.0, 0.2]),
+                      uv2=np.array([0.9, float(rng.random())]), flip=True)
+        if lod:
+            out.append(mb)
+            continue
+        for k in range(6):
+            c = np.array([-0.75 + k * 0.3, 0.02, (-0.3 if k % 2 else 0.3)])
+            # A leaf plate (a flat oval of leaf) with a heap of rice and fish on it.
+            a = np.linspace(0.0, 2 * math.pi, 11)
+            ring = np.stack([np.cos(a) * 0.14, np.zeros_like(a), np.sin(a) * 0.1], axis=-1) + c
+            base = mb.add_vertices(np.vstack([c, ring]), np.tile([0, 1, 0], (12, 1)), np.zeros((12, 2)),
+                                   np.tile([0.9, 0.5], (12, 1)), np.tile([0, 0, 0, 0], (12, 1)))
+            for i in range(10):
+                mb.add_tri(base, base + 2 + i, base + 1 + i, mb.material(M_LEAF))
+            props.lathe(mb, [(0.07, 0.0), (0.05, 0.03), (0.0, 0.045)], "kit_garland", rng, sides=8, at=c)
+        for x in (-0.3, 0.4):
+            props.lathe(mb, [(0.05, 0.0), (0.09, 0.03), (0.1, 0.07), (0.095, 0.075)], props.M_CLAY, rng, sides=12,
+                        at=(x, 0.02, 0.0))
+        props._jar(mb, (0.85, 0.02, 0.35), 0.45, rng, noise, False)
+        for x in (-0.95, 0.95):
+            lamp = build_ground_lamp()[0]
+            mb.merge(lamp, None, (x, 0.02, -0.5))
+        out.append(mb)
+    return out
+
+
+def build_ink_kit(seed: int = 715) -> list[kc.MeshBuilder]:
+    """Ysolde's ink kit for the shells: a lacquered box open on a cloth, an ink pot, a brush on its rest, a
+    folded cloth to blot with."""
+    out = []
+    for lod in (False, True):
+        rng = kc.rng_for("ink_kit", seed)
+        mb = kc.MeshBuilder("ink_kit" + ("-lod1" if lod else ""))
+        tm = mb.material("kit_carved_wood")
+        kc.rounded_block(mb, (0.0, 0.04, 0.0), (0.18, 0.04, 0.11), tm, radius=0.01, seg=1)
+        if not lod:
+            kc.rounded_block(mb, (0.0, 0.12, -0.13), (0.18, 0.008, 0.11), tm, rot=kc.rot_x(1.2), radius=0.004, seg=1)
+            props.lathe(mb, [(0.03, 0.08), (0.035, 0.1), (0.02, 0.12), (0.022, 0.125)], props.M_CLAY, rng, sides=10,
+                        at=(-0.08, 0.0, 0.03))
+            kc.rounded_block(mb, (-0.08, 0.127, 0.03), (0.016, 0.002, 0.016), mb.material("kit_interior_dark"),
+                             radius=0.001, seg=1)
+            kc.tube(mb, np.array([[0.02, 0.09, 0.04], [0.16, 0.095, 0.0]]), 0.005, 5, tm, cap_start=True)
+            kc.tube(mb, np.array([[0.0, 0.09, 0.04], [0.02, 0.09, 0.04]]), np.array([0.002, 0.008]), 6,
+                    mb.material("kit_interior_dark"), cap_start=True)
+            kc.rounded_block(mb, (0.24, 0.015, 0.06), (0.08, 0.015, 0.06), mb.material("kit_cloth_indigo"),
+                             radius=0.01, seg=2)
+        out.append(mb)
+    return out
+
+
+def build_wake_shell_single(seed: int = 716) -> list[kc.MeshBuilder]:
+    """One wake-shell on a carved driftwood stand, for a name set in the wall's gap (Asha's beside Imra's): its
+    glyph state is the material, `kit_wake_shell` (as the wall), `kit_wake_shell_inked` (fresh ink) or
+    `kit_wake_shell_faded` (weathered), by per-placement override. The shell faces +Z."""
+    import walls  # noqa: PLC0415
+
+    out = []
+    for lod in (False, True):
+        rng = kc.rng_for("wake_shell_single", seed)
+        mb = kc.MeshBuilder("wake_shell_single" + ("-lod1" if lod else ""))
+        kc.tube(mb, np.array([[0.0, -0.2, -0.05], [0.0, 0.9, -0.05], [0.0, 1.05, -0.02]]),
+                np.array([0.07, 0.06, 0.05]), 7 if not lod else 4, mb.material("kit_carved_wood"), cap_end=True,
+                variation=0.4)
+        walls._shell(mb, (0.0, 1.12, 0.03), (0.0, 0.0, 1.0), (0.0, 1.0, 0.0), 0.36, 5, 0.0, rng, mb.material(M_SHELL))
+        out.append(mb)
+    return out
+
+
 TARGETS = {
     "crate_stack": build_crate_stack,
     "rope_coil": build_rope_coil,
@@ -662,4 +762,8 @@ TARGETS = {
     "yard_fence": build_yard_fence,
     "village_litter": build_village_litter,
     "fish_weir": build_fish_weir,
+    "ground_lamp": build_ground_lamp,
+    "feast_mat": build_feast_mat,
+    "ink_kit": build_ink_kit,
+    "wake_shell_single": build_wake_shell_single,
 }

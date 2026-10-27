@@ -211,6 +211,17 @@
         "dock_haluna-lod1": 152
       }
     },
+    "feast_mat": {
+      "budget": [
+        4000,
+        120
+      ],
+      "bytes": 54264,
+      "lods": {
+        "feast_mat": 1046,
+        "feast_mat-lod1": 2
+      }
+    },
     "fish_drying_rack": {
       "budget": [
         5000,
@@ -244,6 +255,17 @@
         "garland_string-lod1": 476
       }
     },
+    "ground_lamp": {
+      "budget": [
+        300,
+        60
+      ],
+      "bytes": 12376,
+      "lods": {
+        "ground_lamp": 96,
+        "ground_lamp-lod1": 47
+      }
+    },
     "house_tile_a": {
       "budget": [
         22000,
@@ -275,6 +297,17 @@
       "lods": {
         "house_tile_c": 18547,
         "house_tile_c-lod1": 400
+      }
+    },
+    "ink_kit": {
+      "budget": [
+        1200,
+        60
+      ],
+      "bytes": 19156,
+      "lods": {
+        "ink_kit": 187,
+        "ink_kit-lod1": 12
       }
     },
     "laundry_line": {
@@ -887,6 +920,17 @@
         "frond_dry-lod1": 24,
         "pebble_cluster": 288,
         "shell_scatter": 540
+      }
+    },
+    "wake_shell_single": {
+      "budget": [
+        600,
+        120
+      ],
+      "bytes": 10932,
+      "lods": {
+        "wake_shell_single": 77,
+        "wake_shell_single-lod1": 62
       }
     },
     "wakeshell_wall": {

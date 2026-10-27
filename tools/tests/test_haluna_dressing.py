@@ -134,6 +134,8 @@ class DressingLayoutTests(unittest.TestCase):
     def test_layout_names_only_kit_pieces(self) -> None:
         names = {p["piece"] for p in self.layout["pieces"]}
         names |= {e["piece"] for v in self.layout["yard_sets"]["variants"] for e in v}
+        names |= {e["piece"] for k, v in self.layout.get("story_sets", {}).items() if not k.startswith("_")
+                  for e in v.get("pieces", [])}
         for name in sorted(names):
             with self.subTest(piece=name):
                 self.assertIn(name, self.targets)
