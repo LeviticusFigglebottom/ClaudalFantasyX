@@ -106,7 +106,7 @@ BURN_ZONE_T = 0.46  # along the arm (0.5 = the elbow): the glow shell covers the
 BURN_PALM = 0.62  # of the hand's length from the wrist: the shell's palm (the fingers carry no burn; M3-CHR-505 budget)
 CLEAVER_FOOT = 0.03  # m: points within this of a cleaver vertex across the back's plane are "behind" it
 EDGE_HINT = np.array([0.2, 0.0, -1.0])  # the edge faces down and in, toward the small of the back
-CLEAVER_FIN_BAND = 0.08  # m (in the back's plane): strips rooted this near the cleaver's footprint lie flat
+CLEAVER_FIN_BAND = 0.02  # m (in the back's plane): strips rooted this far outside the cleaver's outline lie flat
 
 # preview colours of the materials the shared table lacks (Godot replaces them by name)
 hb.MATERIALS.update({
@@ -490,7 +490,11 @@ def main() -> int:
             return False
         ab = seg_b - seg_a
         u = float(np.clip((p[[0, 2]] - seg_a) @ ab / (ab @ ab), 0.0, 1.0))
-        return float(np.linalg.norm(p[[0, 2]] - (seg_a + ab * u))) < CLEAVER_FIN_BAND * S + 0.13 * S * u
+        # the outline: the haft's ring, then the blade widening from its haft end to the fluke (kerrid.md §4.1 #11)
+        u_blade = float(clp["haft_m"]) / float(clp["overall_m"])
+        half = np.interp(u, [0.0, u_blade, 1.0], [float(clp["ring_outer_m"]), float(clp["blade_width_haft_m"]),
+                                                  float(clp["fluke_width_m"])]) * 0.5
+        return float(np.linalg.norm(p[[0, 2]] - (seg_a + ab * u))) < (half + CLEAVER_FIN_BAND) * S
 
     smock_outer = np.concatenate([costume["SmockSkirt"].varr(), costume["TrouserTop"].varr(),
                                   costume["Belt"].varr()])
