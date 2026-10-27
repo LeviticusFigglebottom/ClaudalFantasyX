@@ -54,7 +54,8 @@
     "style_by_target": {"self": "guard"},
     "style_by_skill": {"read": "read", "lamp_dive": "dive", "return_tide": "brace", "brine_lash": "finisher",
                        "shallows_verse": "verse", "written_light": "glyph", "tidal_ward": "chant",
-                       "floodnet": "chant", "breakwater": "finisher", "toll": "toll"},
+                       "floodnet": "chant", "breakwater": "finisher", "toll": "toll",
+                       "reel_shot": "item", "anchor_fall": "finisher"},
     "item_style": "item",
     "reaction": {
       "doc": "The target's reaction on the contact beat. damage: recoil_m away from the actor and tilt_deg back, out and back over sec; heal: a lift_m rise; miss: a sidestep of dodge_m. clip names the model clip tried first (the clip contract).",
