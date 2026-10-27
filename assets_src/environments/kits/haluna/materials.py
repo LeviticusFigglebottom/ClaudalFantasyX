@@ -491,5 +491,11 @@ MATERIALS["kit_iskarra_paving"] = stone("iskarra_flag_albedo.png", "iskarra_flag
                                         variation_value=0.16, salt_coverage="Vector2(0.05, 0.2)", use_algae=False,
                                         use_moss=False)
 
+# ---- M3-ENV-727 (appended by env-art): the Undertow's layers (undertow_layers.py; undertow_layers.md) -----------
+# Held glimmer (palette glimmer_held #7FC6D9): the dead the storm keeps, cold cyan, steady; brighter than the bound
+# teal's glint and never warm (that is glimmer_lift's, at the Letting).
+STANDARD["kit_glimmer_held"] = {"albedo_color": hexc("#7FC6D9"), "emission_enabled": "true",
+                                "emission": hexc("#7FC6D9"), "emission_energy_multiplier": 2.2, "roughness": 0.4}
+
 if __name__ == "__main__":
     sys.exit(main())

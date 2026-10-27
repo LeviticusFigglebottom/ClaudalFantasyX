@@ -423,3 +423,17 @@ balustrade runs round its edge, and an arcade of twelve columns carries round ar
 - **Light** (iskarra.md §3): the afterglow low in the west `#FF9F46` 0.7, fill `#5A7FA8` 0.4, exposure 1.0,
   `lut_ch19_spire`.
 - **Hints:** `the_engine`, `the_city_below`.
+
+### The Cage in the last remembered room (`undertow_cage`, M3-ENV-727, the Haluna kit's undertow_layers.py)
+
+For the Cage (Ch20; the four bound founders, a multi-part boss). The floor is `memory_island`: the founders' Iskarra
+flags on a floating fragment (r 9), level at y 0, with the Lit Age sunburst behind the enemy line.
+
+| Where | What |
+|---|---|
+| Behind the enemy line | Four `held_pillar`s, broken lamp columns threaded with held glimmer, each with a cyan `Lamp` |
+| Round the floor, 25–65 m | The other remembered rooms hanging in the dark (`memory_kitchen`, `memory_market`, `memory_stands`, a bare island) |
+
+- **Light** (undertow_layers.md §0): `#C4D6FF` 0.8 from above, fill `#061A2B`, dense fog `#0E3A48`, exposure 1.1,
+  `lut_ch20_abyss`.
+- **Hints:** `the_rooms`, `the_cage`.

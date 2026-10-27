@@ -1635,10 +1635,51 @@ SPIRE_CROWN = {
 }
 
 
+# ---------------------------------------------------------------------------------------------
+# M3-ENV-727: the Cage in the Undertow's last remembered room (undertow_layers.py; undertow_layers.md §2)
+# ---------------------------------------------------------------------------------------------
+HELD_PILLARS = ((-6.5, -4.5), (-4.0, -6.8), (-7.6, -1.0), (-1.3, -7.4))  # round the Cage, behind the enemy line
+UNDERTOW_CAGE = {
+    "id": "undertow_cage",
+    "sub_frame": "ch20",
+    "ground": "deck",
+    "ground_glb": KIT + "memory_island.glb",
+    "lut": "res://assets/environments/arenas/undertow_cage/lut_ch20_abyss.png",
+    # Colour script ch20: no sun; key #C4D6FF 0.8 (the motes' cold light from above), fill #061A2B 0.2, fog #0E3A48
+    # dense, sky #020610 / #0E2A3A, exposure 1.1, lut_ch20_abyss; the held pillars' cyan the practical light.
+    "sun": {"elev": 70.0, "az": 200.0, "color": "#C4D6FF", "energy": 0.8, "max_distance": 60.0, "moon": True},
+    "fill": {"color": "#061A2B", "energy": 0.2},
+    "exposure": 1.1,
+    "glow": (0.7, 0.1, 0.9),
+    "fog": {"color": "#0E3A48", "density": 0.02, "sky_affect": 0.6, "height": 0.0, "height_density": 0.0},
+    "sky_shader": "res://game/shaders/environment/env_sky_night.gdshader",
+    "sky": {"col_zenith": "#020610", "col_horizon": "#0E2A3A", "col_ground": "#020610"},
+    "sea": {"y": -60.0, "tide_line_y": -60.0, "sea_glow": 0.15},
+    "pieces": [{"glb": KIT + "held_pillar.glb", "at": (x, 0.0, z), "yaw": round(37.0 * k, 1), "structure": True}
+               for k, (x, z) in enumerate(HELD_PILLARS)] + [
+        {"glb": KIT + "memory_kitchen.glb", "at": (-17.0, -5.0, -22.0), "yaw": 25.0},
+        {"glb": KIT + "memory_market.glb", "at": (19.0, 3.5, -27.0), "yaw": -30.0},
+        {"glb": KIT + "memory_stands.glb", "at": (-30.0, 7.0, -44.0), "yaw": 40.0},
+        {"glb": KIT + "memory_island.glb", "at": (34.0, -12.0, -55.0), "yaw": 10.0, "scale": 0.7},
+        {"glb": KIT + "memory_kitchen.glb", "at": (8.0, 12.0, -60.0), "yaw": 160.0, "scale": 0.9},
+    ],
+    "scatters": [],
+    "lamp_spec": {"color": "#7FC6D9", "energy": 1.8, "range_m": 8.0, "attenuation": 1.3},
+    "lamps": [{"at": (x, 4.0, z), "flame": False, "shadow": k == 0} for k, (x, z) in enumerate(HELD_PILLARS)],
+    "hints": {
+        "wide_high": ((-1.5, 7.5, 13.5), (0.0, 0.8, -3.0)),
+        "party_side": ((5.6, 1.7, 4.5), (-1.5, 1.0, -0.5)),
+        "foe_side": ((-5.6, 1.7, 4.0), (1.5, 1.0, 0.0)),
+        "the_rooms": ((4.0, 1.5, 6.0), (-17.0, -3.0, -22.0)),
+        "the_cage": ((0.5, 1.6, 3.0), (-5.0, 3.0, -5.0)),
+    },
+}
+
+
 ARENAS = {a["id"]: a for a in (TIDELINE, CAUSEWAY, CAUSEWAY_ROUTE, DERELICT_DECK, ASH_TERRACE, UNDERWAY_TOWER,
                                RAFT_MORNING, SHOALS, CAMP, WALLHEAD_STORM, WALLHEAD_HOIST, WALLHEAD_SURGE, HEADLAND, TIER_HALL, KETH_ARENA,
                                LOWLIGHT_ARENA, FEN_ARENA, BRIDAL_ARENA, ANSEDRA_ESCAPE, CHOIR_ARENA,
-                               SPIRE_CROWN)}
+                               SPIRE_CROWN, UNDERTOW_CAGE)}
 
 
 # ---------------------------------------------------------------------------------------------

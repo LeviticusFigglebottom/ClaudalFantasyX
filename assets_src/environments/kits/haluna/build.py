@@ -38,6 +38,7 @@ import drowned_choir  # noqa: E402
 import hollowmere  # noqa: E402
 import kite  # noqa: E402
 import iskarra_spire  # noqa: E402
+import undertow_layers  # noqa: E402
 import kit_common as kc  # noqa: E402
 import props  # noqa: E402
 import ruins  # noqa: E402
@@ -113,6 +114,8 @@ def targets() -> dict:
         out[name] = (name, kite, fn)
     for name, fn in sorted(iskarra_spire.TARGETS.items()):  # M3-ENV-726 the Iskarra Lamp Spire's crown (Ch19)
         out[name] = (name, iskarra_spire, fn)
+    for name, fn in sorted(undertow_layers.TARGETS.items()):  # M3-ENV-727 the Undertow's layers (Ch20)
+        out[name] = (name, undertow_layers, fn)
     return out
 
 

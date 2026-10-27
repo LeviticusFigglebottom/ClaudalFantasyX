@@ -442,6 +442,17 @@
         "ground_lamp-lod1": 47
       }
     },
+    "held_pillar": {
+      "budget": [
+        3000,
+        200
+      ],
+      "bytes": 65716,
+      "lods": {
+        "held_pillar": 1084,
+        "held_pillar-lod1": 172
+      }
+    },
     "hm_far_flotilla": {
       "budget": [
         9000,
@@ -979,6 +990,50 @@
       "lods": {
         "market_stall": 1884,
         "market_stall-lod1": 192
+      }
+    },
+    "memory_island": {
+      "budget": [
+        12000,
+        900
+      ],
+      "bytes": 234288,
+      "lods": {
+        "memory_island": 3948,
+        "memory_island-lod1": 160
+      }
+    },
+    "memory_kitchen": {
+      "budget": [
+        7000,
+        500
+      ],
+      "bytes": 97020,
+      "lods": {
+        "memory_kitchen": 1820,
+        "memory_kitchen-lod1": 208
+      }
+    },
+    "memory_market": {
+      "budget": [
+        7000,
+        500
+      ],
+      "bytes": 109616,
+      "lods": {
+        "memory_market": 1800,
+        "memory_market-lod1": 276
+      }
+    },
+    "memory_stands": {
+      "budget": [
+        7000,
+        500
+      ],
+      "bytes": 91600,
+      "lods": {
+        "memory_stands": 1648,
+        "memory_stands-lod1": 268
       }
     },
     "name_shell_cord": {

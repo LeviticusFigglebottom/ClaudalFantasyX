@@ -150,6 +150,12 @@ GRADES = {
                    "black_floor": 0.45, "highlight_hex": "#FFD2A0", "highlight_start": 0.66, "highlight_strength": 0.4,
                    "warm_deg": (-20.0, 55.0), "warm_sat": 1.12, "cool_sat": 1.0, "cool_hex": "#B0C8DC",
                    "cool_strength": 0.25},
+    # M3-ENV-727: lut_ch20_abyss (colour script ch20): navy-black base, the held cyan the light source; saturation
+    # x0.9, S-curve 0.6, the toe deep navy, highlights a cold cyan-white.
+    "ch20_abyss": {"saturation": 0.9, "s_curve": 0.6, "toe_hex": "#061A2B", "toe_strength": 0.55, "toe_end": 0.36,
+                   "black_floor": 0.6, "highlight_hex": "#D8F0F6", "highlight_start": 0.62, "highlight_strength": 0.4,
+                   "warm_deg": (-20.0, 60.0), "warm_sat": 0.85, "cool_sat": 1.05, "cool_hex": "#9CC8DA",
+                   "cool_strength": 0.3},
     "ch16_choir": {"saturation": 0.7, "s_curve": 0.3, "toe_hex": "#1E2A3A", "toe_strength": 0.45, "toe_end": 0.32,
                    "black_floor": 0.5, "highlight_hex": "#E6EEFA", "highlight_start": 0.68, "highlight_strength": 0.4,
                    "warm_deg": (-20.0, 60.0), "warm_sat": 0.7, "cool_sat": 0.9, "cool_hex": "#C8DCEE",
