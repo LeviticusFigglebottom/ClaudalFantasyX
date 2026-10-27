@@ -624,7 +624,7 @@ func _cue_music(step: DialogueStep) -> void:
 		_fade_music(silent, fade, true)
 		return
 	var track := StringName(str(step.args[0]))
-	music_by_audio = CutsceneSound.music(track, fade)  # M2-AUD-07; music_track stays "" (Audio holds its bed for it)
+	music_by_audio = CutsceneSound.music(track, fade, int(step.kwargs.get("stem", -1)))  # M2-AUD-07, M3-AUD-829
 	if music_by_audio:
 		music_track = &""
 		_fade_music(silent, fade, true)
