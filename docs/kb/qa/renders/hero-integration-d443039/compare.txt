@@ -1,0 +1,8 @@
+FAIL battle_statuses: rmse 0.03791 (limit 0.00800)
+FAIL battle_read_panel: rmse 0.02180 (limit 0.00800)
+FAIL battle_choreo_cast: rmse 0.03586 (limit 0.00800)
+FAIL battle_choreo_read: rmse 0.04784 (limit 0.00800)
+FAIL battle_choreo_toll: rmse 0.06854 (limit 0.00800)
+FAIL battle_swell_glyph: rmse 0.03578 (limit 0.00800)
+Screenshots: 6 compared, 6 failed (diffs in /root/hymn/tests/screenshots/out/diff)
+compare exit 1
