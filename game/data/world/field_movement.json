@@ -1,8 +1,8 @@
 {
   "version": 1,
   "doc": "Field movement tuning (M1-ARC-01). Metres, seconds, degrees. Read by FieldMotor/FieldController.",
-  "walk_speed_mps": 1.5,
-  "run_speed_mps": 4.6,
+  "walk_speed_mps": 1.0,
+  "run_speed_mps": 3.6,
   "acceleration_mps2": 9.0,
   "deceleration_mps2": 12.0,
   "turn_speed_deg_per_sec": 720.0,

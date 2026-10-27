@@ -1,0 +1,21 @@
+{
+  "_doc": "Ambient shoal fish surface (docs/kb/art/wildlife.md); write_materials.py writes assets/wildlife/shoal_fish/materials/scales.tres on game/world/wildlife/wildlife.gdshader. A wet, slightly metallic silver with a rim sheen; swim_head_z and swim_length are build_shoal_fish.py's snout and body length.",
+  "slots": {
+    "scales": {
+      "roughness_dry": 0.3,
+      "roughness_wet": 0.22,
+      "metallic": 0.35,
+      "specular": 0.7,
+      "wet_darken": 0.9,
+      "clearcoat_wet": 0.5,
+      "detail_scale": 300.0,
+      "detail_albedo": 0.05,
+      "cavity_albedo": 0.4,
+      "rim_sheen": 0.35,
+      "swim_head_z": 0.075,
+      "swim_length": 0.14,
+      "swim_sweep": 0.018,
+      "swim_wave": 32.0
+    }
+  }
+}

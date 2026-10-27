@@ -93,13 +93,13 @@ class TestParams(unittest.TestCase):
                 self.assertIn(st.table, villager_hair.HAIRLINES.values())
 
     def test_m3_opt_ins_only_on_the_new_villagers(self):
-        # M3-CHR-03: host_snaps / garment_fit change the build, so the M2 seven never carry them (byte-identical)
+        # M3-CHR-03: garment_fit changes the build, so the M2 seven never carry it; host_snaps (M1-CHR-14's
+        # host-determinism snaps) is on every villager since M2-CHR-11
         for npc in NPCS:
             with self.subTest(npc=npc):
                 b = params(npc)["_build"]
-                on = npc not in M2_SEVEN
-                self.assertEqual(bool(b.get("host_snaps")), on)
-                self.assertEqual(bool(b.get("garment_fit")), on)
+                self.assertTrue(b.get("host_snaps"))
+                self.assertEqual(bool(b.get("garment_fit")), npc not in M2_SEVEN)
 
     def test_kell_and_tavi_follow_the_sheet(self):
         # act1_npcs.md §3-§4: Kell is short with a female short crop and nearly bare arms; Tavi has her nose and iris;

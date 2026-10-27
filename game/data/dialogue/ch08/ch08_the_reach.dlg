@@ -1,0 +1,19 @@
+// Ch8 B16, the boss intro (act1_ch08.md §5; W18, 18 mm, low, looking up). Letterboxed, 0.5 min. A limb
+// of the Undertow itself, not a spawn: a column of black water and cloud as thick as a tower comes over
+// the parapet from the sea side and splays into a "hand" of spawn-crust that grips the wall-head beside
+// the hoist. Its wounds bleed spawn_wound cyan. We only ever see the forearm and hand. The chapter flow
+// opens the battle (undertows_reach) when this scene ends. It can't be won: the party can only hold,
+// see, and leave (ADR 0017 (c)).
+title: ch08_the_reach
+location: ch08/corrow
+---
+@letterbox on
+@camera W18
+@music undertow_reach fade=0.5
+@sfx reach_rises
+@wait 2.5
+@sfx reach_grips
+@anim toma shield_up
+Toma [determined]: Hold. #line:ch08_the_reach_001
+@letterbox off
+===

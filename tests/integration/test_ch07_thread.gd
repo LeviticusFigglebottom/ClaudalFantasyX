@@ -6,13 +6,13 @@ extends TestCase
 ## naming at the rim (B05), which hands off to the Reefball match through `start_reefball
 ## tidecup_opening` → the STAND-IN match (ch07_tidecup_played, no win) and its return to CatchPool →
 ## B07 (Tavi withdraws) → the moorings side scene (B09) → the port's afternoon barks (B08) → B10 →
-## the end card (the stand-in for ch08/corrow). Instant sequencers; every hand-off is recorded
+## Ch8's ch08/corrow at Mole (M3-C08-02). Instant sequencers; every hand-off is recorded
 ## through ZoneStory.hand_off. Also: B07 is identical win or lose, and no story script reads the
 ## match's win flag.
 
 const PORT := "res://game/levels/ch07/tamsule/tamsule.tscn"
 const BELL := "res://game/levels/ch07/tamsule_bell_galleries/tamsule_bell_galleries.tscn"
-const END_CARD := "res://game/flow/end_card.tscn"
+const CH08_ENTRY := {"location": "ch08/corrow", "spawn": "Mole"}
 const PORT_ID := &"ch07/tamsule"
 const BELL_ID := &"ch07/tamsule_bell_galleries"
 const SAVE_DIR := "user://test_ch07_thread_saves"
@@ -51,7 +51,7 @@ func before_each() -> void:
 	warnings.clear()
 
 
-func test_ch7_plays_from_the_port_to_the_end_card() -> void:
+func test_ch7_plays_from_the_port_to_corrow() -> void:
 	var reg := LocationRegistry.load_default()
 	assert_true(reg.is_playable(PORT_ID), "the port is reachable from its own location (Ch6 isn't built)")
 	assert_eq(reg.spawn_of(PORT_ID), &"RiverMouth", "where Ch6 will hand off")
@@ -238,7 +238,7 @@ func _afternoon_and_leaving() -> void:
 		assert_true(pair[1] in lines, "B08: %s" % pair[1])
 	assert_true(_trigger(&"harbour").on_touched())
 	assert_true(&"ch07_leave_001" in lines, "'That'll be Tamsule's cup, then.'")
-	assert_eq(hand_offs.back(), [ZoneStory.KIND_SCENE, END_CARD], "the end card stands in for ch08/corrow")
+	assert_eq(hand_offs.back(), [ZoneStory.KIND_GO, CH08_ENTRY], "on to Ch8 at Corrow's mole")
 	assert_false(restore_at_line.get(&"ch07_leave_001", true), "it hands off on black")
 	var cup := 0
 	for id in lines:

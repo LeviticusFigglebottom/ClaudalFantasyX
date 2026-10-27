@@ -649,6 +649,36 @@
         ["{python}", "assets_src/environments/kits/ashcrown/ac_textures.py"],
         ["{python}", "assets_src/environments/kits/ashcrown/ac_materials.py"]
       ]
+    },
+    {
+      "id": "wildlife_gull",
+      "owner": "character",
+      "sources": ["assets_src/wildlife/gull/**", "assets_src/wildlife/common/**", "assets_src/creatures/common/creature_kit.py"],
+      "outputs": ["assets/wildlife/gull/*.glb", "assets/wildlife/gull/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/wildlife/gull/build_gull.py", "--", "--out", "assets/wildlife/gull/gull.glb"],
+        ["{python}", "assets_src/wildlife/common/write_materials.py", "--wildlife", "gull"]
+      ]
+    },
+    {
+      "id": "wildlife_shore_crab",
+      "owner": "character",
+      "sources": ["assets_src/wildlife/shore_crab/**", "assets_src/wildlife/common/**", "assets_src/creatures/common/creature_kit.py"],
+      "outputs": ["assets/wildlife/shore_crab/*.glb", "assets/wildlife/shore_crab/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/wildlife/shore_crab/build_shore_crab.py", "--", "--out", "assets/wildlife/shore_crab/shore_crab.glb"],
+        ["{python}", "assets_src/wildlife/common/write_materials.py", "--wildlife", "shore_crab"]
+      ]
+    },
+    {
+      "id": "wildlife_shoal_fish",
+      "owner": "character",
+      "sources": ["assets_src/wildlife/shoal_fish/**", "assets_src/wildlife/common/**", "assets_src/creatures/common/creature_kit.py"],
+      "outputs": ["assets/wildlife/shoal_fish/*.glb", "assets/wildlife/shoal_fish/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/wildlife/shoal_fish/build_shoal_fish.py", "--", "--out", "assets/wildlife/shoal_fish/shoal_fish.glb"],
+        ["{python}", "assets_src/wildlife/common/write_materials.py", "--wildlife", "shoal_fish"]
+      ]
     }
   ]
 }

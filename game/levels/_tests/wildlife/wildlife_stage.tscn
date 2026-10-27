@@ -1,0 +1,112 @@
+[gd_scene load_steps=14 format=3]
+
+[ext_resource type="Script" path="res://game/world/wildlife/wildlife_layer.gd" id="1_layer"]
+
+[sub_resource type="ProceduralSkyMaterial" id="Sky_mat"]
+sky_top_color = Color(0.18, 0.498, 0.839, 1)
+sky_horizon_color = Color(0.663, 0.863, 0.949, 1)
+sky_curve = 0.12
+ground_bottom_color = Color(0.055, 0.29, 0.333, 1)
+ground_horizon_color = Color(0.663, 0.863, 0.949, 1)
+sun_angle_max = 20.0
+
+[sub_resource type="Sky" id="Sky_main"]
+sky_material = SubResource("Sky_mat")
+
+[sub_resource type="Environment" id="Env_main"]
+background_mode = 2
+sky = SubResource("Sky_main")
+ambient_light_source = 3
+ambient_light_color = Color(0.055, 0.29, 0.333, 1)
+ambient_light_sky_contribution = 0.7
+tonemap_mode = 4
+tonemap_exposure = 1.0
+
+[sub_resource type="StandardMaterial3D" id="Mat_sand"]
+albedo_color = Color(0.937, 0.867, 0.706, 1)
+roughness = 0.95
+
+[sub_resource type="BoxMesh" id="Mesh_sand"]
+material = SubResource("Mat_sand")
+size = Vector3(12, 0.4, 14)
+
+[sub_resource type="StandardMaterial3D" id="Mat_seabed"]
+albedo_color = Color(0.71, 0.616, 0.455, 1)
+roughness = 0.9
+
+[sub_resource type="BoxMesh" id="Mesh_seabed"]
+material = SubResource("Mat_seabed")
+size = Vector3(10, 0.4, 14)
+
+[sub_resource type="StandardMaterial3D" id="Mat_water"]
+transparency = 1
+albedo_color = Color(0.247, 0.816, 0.788, 0.32)
+roughness = 0.08
+metallic_specular = 0.6
+
+[sub_resource type="PlaneMesh" id="Mesh_water"]
+material = SubResource("Mat_water")
+size = Vector2(10, 14)
+
+[sub_resource type="StandardMaterial3D" id="Mat_post"]
+albedo_color = Color(0.494, 0.416, 0.333, 1)
+roughness = 0.9
+
+[sub_resource type="CylinderMesh" id="Mesh_post_low"]
+material = SubResource("Mat_post")
+top_radius = 0.07
+bottom_radius = 0.08
+height = 1.2
+radial_segments = 12
+
+[sub_resource type="CylinderMesh" id="Mesh_post_high"]
+material = SubResource("Mat_post")
+top_radius = 0.07
+bottom_radius = 0.08
+height = 1.5
+radial_segments = 12
+
+[node name="WildlifeStage" type="Node3D"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Env_main")
+
+[node name="Sun" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.5547, -0.649331, 0.520266, 0, 0.625282, 0.780399, -0.83205, -0.432887, 0.346844, 6, 9, 4)
+light_color = Color(1, 0.957, 0.878, 1)
+light_energy = 1.25
+shadow_enabled = true
+directional_shadow_max_distance = 30.0
+
+[node name="Sand" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, -0.2, 0)
+mesh = SubResource("Mesh_sand")
+
+[node name="Seabed" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, -0.75, 0)
+mesh = SubResource("Mesh_seabed")
+
+[node name="Water" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, -0.04, 0)
+mesh = SubResource("Mesh_water")
+
+[node name="PostLow" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.6, 0.6, -1.2)
+mesh = SubResource("Mesh_post_low")
+
+[node name="PostHigh" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.6, 0.75, -2.0)
+mesh = SubResource("Mesh_post_high")
+
+[node name="Player" type="Marker3D" parent="." groups=["player"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.1, 0, 1.75)
+
+[node name="WildlifeLayer" type="Node3D" parent="."]
+script = ExtResource("1_layer")
+zone_id = &"_tests/wildlife_stage"
+data_path = "res://game/levels/_tests/wildlife/wildlife_stage.json"
+
+[node name="Camera" type="Camera3D" parent="."]
+transform = Transform3D(0.995701, -0.0208949, 0.0902358, 0, 0.974222, 0.225589, -0.0926234, -0.22462, 0.970034, 0.5, 1.55, 4.3)
+current = true
+fov = 45.0

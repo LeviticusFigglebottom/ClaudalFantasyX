@@ -1,0 +1,36 @@
+// Ch8 B05, tier 3's seized flue-key and the mark behind it (act1_ch08.md §2 B05; F05 → F04, in place,
+// no letterbox). The party can't turn the key; Liss can (Ch08CoilspireZone plays this the first time
+// anyone tries it, then the key turns). Then the mark (F04, macro): behind the freed key, scratched
+// into the stone where nobody would look, fine parallel lines and node-dots, the same grammar as the
+// marks on Liss's arm, in an old style no living wright uses, closed by a small key-shaped glyph. Liss
+// goes still and takes a charcoal rubbing onto her wrist. Rhen is the only one who sees.
+// Rhen keeps Liss's secret while keeping his own (his stopped "My—" pays off in Ch11). She doesn't know
+// whose mark it is (Wenna's; vowbound.md §3). Sets ch08_liss_found_marks (critical path).
+title: ch08_stuck_key
+location: ch08/coilspire
+---
+@camera F05_t3
+@anim toma strain_key seized_key
+@wait 1.0
+@mark liss seized_key_liss walk
+Liss [determined]: Don't. Don't force her. #line:ch08_stuck_key_001
+@anim liss ease_key seized_key
+@sfx flue_key_free
+@wait 1.2
+Liss [soft_smile]: ...There. She wants oil, not muscle. #line:ch08_stuck_key_002
+@camera F04
+@face liss neutral 0.2
+@wait 1.5
+@mark rhen seized_key_rhen walk
+Liss [neutral]: Somebody seated this. A wright. In a temple. #line:ch08_stuck_key_003 #whisper
+Rhen [neutral]: I've seen marks like that on salvage. My— #line:ch08_stuck_key_004 #whisper
+@wait 0.8
+Liss [neutral]: Your what? #line:ch08_stuck_key_005 #whisper
+Rhen [neutral]: Nothing. Salvage. #line:ch08_stuck_key_006 #whisper
+@anim liss charcoal_rubbing
+@wait 1.5
+Liss [cold]: Don't tell them. #line:ch08_stuck_key_007 #whisper
+Rhen [neutral]: Wasn't going to. #line:ch08_stuck_key_008 #whisper
+<<set $ch08_liss_found_marks = true>>
+@camera F05_t3
+===

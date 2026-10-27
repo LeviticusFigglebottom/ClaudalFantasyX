@@ -1,0 +1,50 @@
+// Ch8 B18 "The cut rope" (act1_ch08.md §2 B18; W26 → W27). In-engine, 18:30, `ch08_aftermath`: the
+// storm has gone on along the coast, moving against the wind; the rain is easing and the low town is a
+// black lake to the eaves. On the surviving wall-head the Stillguard are counting.
+// A Stillguard officer comes to Liss's hoist with a hatchet: two blows, and the rope goes slack and
+// slides down the wall face. NOBODY THANKS ANYONE (ADR 0017 (c)). Toma opens his mouth and shuts it: it
+// is his order's law, and his faith is intact (Act I). Liss coils what's left, narrating the work
+// instead of the grief (her tell). W27: Toma goes along the shield-line asking after a name; a
+// Stillguard shakes his head; Toma keeps walking (Ch9's side scene pays it). Kerrid stands at the head
+// of the drowned stair looking down; when Rhen looks back he is gone (down into the low town to bring up
+// the drowned at slack water: Ch9's cutaway). The chapter ends on the black water and corrow_aftermath.
+// Sets ch08_hoist_cut_down (Ch9 reads it for Liss's bark).
+title: ch08_cut_rope
+location: ch08/corrow
+---
+@camera W26
+@music corrow_aftermath fade=3.0
+@sfx rain_easing
+@wait 3.0
+@mark officer hoist_officer walk
+Stillguard [cold]: Cut it down. It is bolted into the Watchers. #line:ch08_cut_rope_001
+@anim officer hatchet_blow
+@sfx hatchet_rope
+@wait 0.8
+@anim officer hatchet_blow
+@wait 0.6
+<<set $ch08_hoist_cut_down = true>>
+@anim toma look_at officer
+@wait 1.2
+@anim toma look_away
+@wait 1.0
+@mark liss liss_coil walk
+@anim liss coil_rope
+Liss [neutral]: Good rope. Seated true. She held. #line:ch08_cut_rope_002
+Rhen [sad]: Liss— #line:ch08_cut_rope_003
+Liss [cold]: Don't. #line:ch08_cut_rope_004
+@camera W27
+@mark toma shield_line_walk walk
+Toma [worried]: Brannick? Has anyone seen Ivo Brannick? #line:ch08_cut_rope_005
+@anim stillguard_a shake_head
+@wait 1.0
+@mark toma shield_line_end walk
+@mark kerrid kerrid_gone walk
+@wait 2.0
+@anim rhen look_at drowned_stair
+@camera W25_empty
+@wait 2.0
+@camera W26
+@wait 3.0
+@fade out 2.0
+===

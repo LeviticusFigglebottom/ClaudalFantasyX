@@ -1,0 +1,279 @@
+{
+  "version": 1,
+  "doc": "Hero footsteps and movement foley (M3-AUD-802; docs/kb/tech/audio_runtime.md \"Footsteps\"): steps by surface and gait, the halt and turn scuffs, and the cloth and gear layers, all on World at the hero's feet. footsteps.json says which row plays when; FootstepAudio plays them. The files come from assets_src/sfx/hero_foley.py (assets/audio/sfx/foley/). Same row format as sfx.json; AudioData.sfx_rows merges this file in.",
+  "sfx": {
+    "hero_step_sand_walk": {
+      "files": [
+        "res://assets/audio/sfx/foley/step_sand_walk_01.ogg",
+        "res://assets/audio/sfx/foley/step_sand_walk_02.ogg",
+        "res://assets/audio/sfx/foley/step_sand_walk_03.ogg",
+        "res://assets/audio/sfx/foley/step_sand_walk_04.ogg",
+        "res://assets/audio/sfx/foley/step_sand_walk_05.ogg",
+        "res://assets/audio/sfx/foley/step_sand_walk_06.ogg"
+      ],
+      "bus": "World",
+      "pitch_jitter": 0.04,
+      "cooldown_ms": 120,
+      "voices": 3,
+      "unit_size_m": 10.0
+    },
+    "hero_step_sand_run": {
+      "files": [
+        "res://assets/audio/sfx/foley/step_sand_run_01.ogg",
+        "res://assets/audio/sfx/foley/step_sand_run_02.ogg",
+        "res://assets/audio/sfx/foley/step_sand_run_03.ogg",
+        "res://assets/audio/sfx/foley/step_sand_run_04.ogg",
+        "res://assets/audio/sfx/foley/step_sand_run_05.ogg",
+        "res://assets/audio/sfx/foley/step_sand_run_06.ogg"
+      ],
+      "bus": "World",
+      "pitch_jitter": 0.04,
+      "cooldown_ms": 120,
+      "voices": 3,
+      "unit_size_m": 10.0
+    },
+    "hero_step_stone_walk": {
+      "files": [
+        "res://assets/audio/sfx/foley/step_stone_walk_01.ogg",
+        "res://assets/audio/sfx/foley/step_stone_walk_02.ogg",
+        "res://assets/audio/sfx/foley/step_stone_walk_03.ogg",
+        "res://assets/audio/sfx/foley/step_stone_walk_04.ogg",
+        "res://assets/audio/sfx/foley/step_stone_walk_05.ogg",
+        "res://assets/audio/sfx/foley/step_stone_walk_06.ogg"
+      ],
+      "bus": "World",
+      "pitch_jitter": 0.04,
+      "cooldown_ms": 120,
+      "voices": 3,
+      "unit_size_m": 10.0
+    },
+    "hero_step_stone_run": {
+      "files": [
+        "res://assets/audio/sfx/foley/step_stone_run_01.ogg",
+        "res://assets/audio/sfx/foley/step_stone_run_02.ogg",
+        "res://assets/audio/sfx/foley/step_stone_run_03.ogg",
+        "res://assets/audio/sfx/foley/step_stone_run_04.ogg",
+        "res://assets/audio/sfx/foley/step_stone_run_05.ogg",
+        "res://assets/audio/sfx/foley/step_stone_run_06.ogg"
+      ],
+      "bus": "World",
+      "pitch_jitter": 0.04,
+      "cooldown_ms": 120,
+      "voices": 3,
+      "unit_size_m": 10.0
+    },
+    "hero_step_wood_walk": {
+      "files": [
+        "res://assets/audio/sfx/foley/step_wood_walk_01.ogg",
+        "res://assets/audio/sfx/foley/step_wood_walk_02.ogg",
+        "res://assets/audio/sfx/foley/step_wood_walk_03.ogg",
+        "res://assets/audio/sfx/foley/step_wood_walk_04.ogg",
+        "res://assets/audio/sfx/foley/step_wood_walk_05.ogg",
+        "res://assets/audio/sfx/foley/step_wood_walk_06.ogg"
+      ],
+      "bus": "World",
+      "pitch_jitter": 0.04,
+      "cooldown_ms": 120,
+      "voices": 3,
+      "unit_size_m": 10.0
+    },
+    "hero_step_wood_run": {
+      "files": [
+        "res://assets/audio/sfx/foley/step_wood_run_01.ogg",
+        "res://assets/audio/sfx/foley/step_wood_run_02.ogg",
+        "res://assets/audio/sfx/foley/step_wood_run_03.ogg",
+        "res://assets/audio/sfx/foley/step_wood_run_04.ogg",
+        "res://assets/audio/sfx/foley/step_wood_run_05.ogg",
+        "res://assets/audio/sfx/foley/step_wood_run_06.ogg"
+      ],
+      "bus": "World",
+      "pitch_jitter": 0.04,
+      "cooldown_ms": 120,
+      "voices": 3,
+      "unit_size_m": 10.0
+    },
+    "hero_step_water_walk": {
+      "files": [
+        "res://assets/audio/sfx/foley/step_water_walk_01.ogg",
+        "res://assets/audio/sfx/foley/step_water_walk_02.ogg",
+        "res://assets/audio/sfx/foley/step_water_walk_03.ogg",
+        "res://assets/audio/sfx/foley/step_water_walk_04.ogg",
+        "res://assets/audio/sfx/foley/step_water_walk_05.ogg",
+        "res://assets/audio/sfx/foley/step_water_walk_06.ogg"
+      ],
+      "bus": "World",
+      "pitch_jitter": 0.04,
+      "cooldown_ms": 120,
+      "voices": 3,
+      "unit_size_m": 10.0
+    },
+    "hero_step_water_run": {
+      "files": [
+        "res://assets/audio/sfx/foley/step_water_run_01.ogg",
+        "res://assets/audio/sfx/foley/step_water_run_02.ogg",
+        "res://assets/audio/sfx/foley/step_water_run_03.ogg",
+        "res://assets/audio/sfx/foley/step_water_run_04.ogg",
+        "res://assets/audio/sfx/foley/step_water_run_05.ogg",
+        "res://assets/audio/sfx/foley/step_water_run_06.ogg"
+      ],
+      "bus": "World",
+      "pitch_jitter": 0.04,
+      "cooldown_ms": 120,
+      "voices": 3,
+      "unit_size_m": 10.0
+    },
+    "hero_stop_sand": {
+      "files": [
+        "res://assets/audio/sfx/foley/stop_sand_1.ogg",
+        "res://assets/audio/sfx/foley/stop_sand_2.ogg"
+      ],
+      "bus": "World",
+      "pitch_jitter": 0.03,
+      "cooldown_ms": 300,
+      "voices": 1,
+      "unit_size_m": 10.0
+    },
+    "hero_turn_sand": {
+      "files": [
+        "res://assets/audio/sfx/foley/turn_sand_1.ogg",
+        "res://assets/audio/sfx/foley/turn_sand_2.ogg"
+      ],
+      "bus": "World",
+      "pitch_jitter": 0.04,
+      "cooldown_ms": 300,
+      "voices": 1,
+      "unit_size_m": 10.0
+    },
+    "hero_stop_stone": {
+      "files": [
+        "res://assets/audio/sfx/foley/stop_stone_1.ogg",
+        "res://assets/audio/sfx/foley/stop_stone_2.ogg"
+      ],
+      "bus": "World",
+      "pitch_jitter": 0.03,
+      "cooldown_ms": 300,
+      "voices": 1,
+      "unit_size_m": 10.0
+    },
+    "hero_turn_stone": {
+      "files": [
+        "res://assets/audio/sfx/foley/turn_stone_1.ogg",
+        "res://assets/audio/sfx/foley/turn_stone_2.ogg"
+      ],
+      "bus": "World",
+      "pitch_jitter": 0.04,
+      "cooldown_ms": 300,
+      "voices": 1,
+      "unit_size_m": 10.0
+    },
+    "hero_stop_wood": {
+      "files": [
+        "res://assets/audio/sfx/foley/stop_wood_1.ogg",
+        "res://assets/audio/sfx/foley/stop_wood_2.ogg"
+      ],
+      "bus": "World",
+      "pitch_jitter": 0.03,
+      "cooldown_ms": 300,
+      "voices": 1,
+      "unit_size_m": 10.0
+    },
+    "hero_turn_wood": {
+      "files": [
+        "res://assets/audio/sfx/foley/turn_wood_1.ogg",
+        "res://assets/audio/sfx/foley/turn_wood_2.ogg"
+      ],
+      "bus": "World",
+      "pitch_jitter": 0.04,
+      "cooldown_ms": 300,
+      "voices": 1,
+      "unit_size_m": 10.0
+    },
+    "hero_stop_water": {
+      "files": [
+        "res://assets/audio/sfx/foley/stop_water_1.ogg",
+        "res://assets/audio/sfx/foley/stop_water_2.ogg"
+      ],
+      "bus": "World",
+      "pitch_jitter": 0.03,
+      "cooldown_ms": 300,
+      "voices": 1,
+      "unit_size_m": 10.0
+    },
+    "hero_turn_water": {
+      "files": [
+        "res://assets/audio/sfx/foley/turn_water_1.ogg",
+        "res://assets/audio/sfx/foley/turn_water_2.ogg"
+      ],
+      "bus": "World",
+      "pitch_jitter": 0.04,
+      "cooldown_ms": 300,
+      "voices": 1,
+      "unit_size_m": 10.0
+    },
+    "hero_cloth_walk": {
+      "files": [
+        "res://assets/audio/sfx/foley/cloth_walk_1.ogg",
+        "res://assets/audio/sfx/foley/cloth_walk_2.ogg",
+        "res://assets/audio/sfx/foley/cloth_walk_3.ogg",
+        "res://assets/audio/sfx/foley/cloth_walk_4.ogg"
+      ],
+      "bus": "World",
+      "pitch_jitter": 0.06,
+      "cooldown_ms": 120,
+      "voices": 2,
+      "unit_size_m": 6.0
+    },
+    "hero_cloth_run": {
+      "files": [
+        "res://assets/audio/sfx/foley/cloth_run_1.ogg",
+        "res://assets/audio/sfx/foley/cloth_run_2.ogg",
+        "res://assets/audio/sfx/foley/cloth_run_3.ogg",
+        "res://assets/audio/sfx/foley/cloth_run_4.ogg"
+      ],
+      "bus": "World",
+      "pitch_jitter": 0.06,
+      "cooldown_ms": 120,
+      "voices": 2,
+      "unit_size_m": 6.0
+    },
+    "hero_gear_lantern": {
+      "files": [
+        "res://assets/audio/sfx/foley/gear_lantern_1.ogg",
+        "res://assets/audio/sfx/foley/gear_lantern_2.ogg",
+        "res://assets/audio/sfx/foley/gear_lantern_3.ogg",
+        "res://assets/audio/sfx/foley/gear_lantern_4.ogg"
+      ],
+      "bus": "World",
+      "pitch_jitter": 0.03,
+      "cooldown_ms": 200,
+      "voices": 2,
+      "unit_size_m": 6.0
+    },
+    "hero_gear_shells": {
+      "files": [
+        "res://assets/audio/sfx/foley/gear_shells_1.ogg",
+        "res://assets/audio/sfx/foley/gear_shells_2.ogg",
+        "res://assets/audio/sfx/foley/gear_shells_3.ogg",
+        "res://assets/audio/sfx/foley/gear_shells_4.ogg"
+      ],
+      "bus": "World",
+      "pitch_jitter": 0.03,
+      "cooldown_ms": 200,
+      "voices": 2,
+      "unit_size_m": 6.0
+    },
+    "hero_gear_leather": {
+      "files": [
+        "res://assets/audio/sfx/foley/gear_leather_1.ogg",
+        "res://assets/audio/sfx/foley/gear_leather_2.ogg",
+        "res://assets/audio/sfx/foley/gear_leather_3.ogg",
+        "res://assets/audio/sfx/foley/gear_leather_4.ogg"
+      ],
+      "bus": "World",
+      "pitch_jitter": 0.03,
+      "cooldown_ms": 200,
+      "voices": 2,
+      "unit_size_m": 6.0
+    }
+  }
+}

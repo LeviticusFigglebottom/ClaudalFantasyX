@@ -190,3 +190,27 @@ class ArenaValidateTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class ImpactValidateTest(unittest.TestCase):
+    """M3-BPR-401/402: choreo.json impact and spacing."""
+
+    def test_the_real_data_passes(self):
+        self.assertEqual(vc.impact_errors(DOC["choreo"]["impact"]), [])
+
+    def test_bad_rows_are_caught(self):
+        good = copy.deepcopy(DOC["choreo"]["impact"])
+        for key, bad in (("hit_stop_frames", [2, 9]), ("full_frac", 0), ("shake_scale", [2, 1]),
+                         ("heavy_strength", 1.5)):
+            imp = copy.deepcopy(good)
+            imp[key] = bad
+            self.assertTrue(vc.impact_errors(imp), key)
+        imp = copy.deepcopy(good)
+        imp["flash"]["energy"] = [1.0, imp["flash"]["energy_cap"] + 1]
+        self.assertTrue(vc.impact_errors(imp), "the flash over its cap")
+        imp = copy.deepcopy(good)
+        imp["reduced_motion"]["slowmo_factor"] = 0
+        self.assertTrue(vc.impact_errors(imp))
+        doc = copy.deepcopy(DOC)
+        doc["choreo"]["spacing"] = {"clearance_m": -1}
+        self.assertTrue(any("spacing" in e for e in vc.choreo_errors(doc, SKILLS)))

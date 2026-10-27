@@ -3068,6 +3068,94 @@
     {
       "id": "cutscene_act_card",
       "scene": "res://game/ui/cards/shots/cutscene_act_card.tscn"
+    },
+    {
+      "id": "wildlife_stage",
+      "scene": "res://game/levels/_tests/wildlife/wildlife_stage.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
+      "id": "field_hero_gait_strip",
+      "scene": "res://game/levels/_tests/hero_motion/field_hero_gait_strip.tscn",
+      "camera": "ShotCamera",
+      "settle_frames": 30,
+      "resolution": [
+        1280,
+        720
+      ]
+    },
+    {
+      "id": "npc_stage_field",
+      "scene": "res://game/levels/_tests/npc/npc_stage.tscn",
+      "camera": "Camera",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 150
+    },
+    {
+      "id": "asha_clip_walk_cycle",
+      "scene": "res://game/levels/_tests/characters/asha/asha_clip_walk_cycle.tscn",
+      "camera": "Cameras/Profile",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "asha_clip_turn",
+      "scene": "res://game/levels/_tests/characters/asha/asha_clip_turn.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "rhen_clip_walk_cycle",
+      "scene": "res://game/levels/_tests/characters/rhen/rhen_clip_walk_cycle.tscn",
+      "camera": "Cameras/Profile",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "rhen_clip_turn",
+      "scene": "res://game/levels/_tests/characters/rhen/rhen_clip_turn.tscn",
+      "camera": "Cameras/ThreeQuarter",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "toma_clip_walk_cycle",
+      "scene": "res://game/levels/_tests/characters/toma/toma_clip_walk_cycle.tscn",
+      "camera": "Cameras/Profile",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "toma_clip_turn",
+      "scene": "res://game/levels/_tests/characters/toma/toma_clip_turn.tscn",
+      "camera": "Cameras/ThreeQuarter",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
     }
   ]
 }
