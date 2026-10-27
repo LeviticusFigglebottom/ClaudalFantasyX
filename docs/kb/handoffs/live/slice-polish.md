@@ -334,6 +334,16 @@ Ch4–Ch9 onward. `m2-slice.md` beside this file is the history up to the 2026-1
     20, objective 15, prologue 7, _thread 34, all 0 failed; validate_data, dlgc, lint and taskboard clean.
   - **Red:** test_shrine_gi_bake, stale on M2-FP-24's hook; the 68e110ff rebake request stands.
 
+- **MERGE-READY @ 8b5c92fc** (viewed gpu/render-m2-slice-17b0601).
+  - **Approved and baselined:** slice_verse_hall (S07 in the real shrine), ch01_oruvel_dressed, ch01_o10_gull,
+    ch01_underway_crown.
+  - **Fixed, not approved:**
+    - **slice_verse_steps:** Toma's back filled S06, so Toma sits a step lower and further along and the camera
+      moved;
+    - **ch01_underway_gallery:** the orbit camera sat outside the south wall, so the Gallery spawn moved 6 m in;
+    - **ch01_o07_name_board:** the frame came before the insert; the shot now lands at frame 96.
+  - **Checks:** first_verse 3, ch01 21, zone_map 20, slice_ 16, all 0 failed; zone_map_pois OK.
+
 - **Correction (ec3ba50a):** my first B11 pass (4f616566) added a letterbox and three scripted camera setups.
   vertical_slice.md defines B11 (and B02) as **E** scenes: in-engine, no letterbox, and the player keeps the camera
   rail. Those cues are out. B11 keeps Rhen's walk out to Asha and the turns between them. Lead: take ec3ba50a with
@@ -362,3 +372,4 @@ RENDER-REQUEST @ 17b0601f: ch01_underway_crown, ch01_underway_gallery, ch01_oruv
 RENDER-REQUEST @ ca7c8ede: slice_beach_h05_asha, slice_beach_h06_toma, slice_dock_night_yes, slice_verse_hall, slice_verse_steps, ch01_oruvel_dressed, ch01_o07_name_board, ch01_o10_gull, ch01_underway_crown, ch01_underway_gallery; why: Asha's H06 facing; dock-night without the letterbox (ec3ba50a); the First Verse in the real shrine (M2-FP-116); the Ch1 kit zones (M3-C01-100/101). The cutscene turns are now 0.9 s (M2-HER-1113), so cutscene frames may land differently. Supersedes every earlier open request from this track. Push every out PNG.
 RENDER-REQUEST @ 68e110ff: gi_bake:shell_shrine; why: M2-FP-24's curb collision hook is in shell_shrine_level.gd, a GI input (collision only, so the light should come out identical). Bake both states with tools/shrine/bake_shrine_gi.tscn under godot-render, then python3 tools/shrine/gi_inputs.py --write, and push the .res pair and the sidecar. The ca7c8ede shot request still stands.
 RENDER-REQUEST @ ead04bab: slice_beach_h05_asha, slice_beach_h06_toma, slice_causeway_harrier_view, slice_prologue_p01, slice_prologue_vigil_line, slice_dock_night_yes, slice_verse_hall, slice_verse_steps, ch01_oruvel_dressed, ch01_o07_name_board, ch01_o10_gull, ch01_underway_crown, ch01_underway_gallery, gi_bake:shell_shrine; why: the Lead's big12 framing review (H05/H06 above the box, C07 levelled), the prologue on env-art's Iskarra (M3-ENV-711; env-art views it), and every earlier open request from this track (the shrine GI rebake for M2-FP-24's hook included). Supersedes ca7c8ede and 68e110ff.
+RENDER-REQUEST @ 8b5c92fc: slice_verse_steps, ch01_underway_gallery, ch01_o07_name_board, slice_beach_h05_asha, slice_beach_h06_toma, slice_causeway_harrier_view, slice_prologue_p01, slice_prologue_vigil_line, slice_dock_night_yes, gi_bake:shell_shrine; why: the fixes after viewing 17b0601, plus the ead04bab set (beach framing, C07, Iskarra, B11 without the letterbox, the shrine rebake). Supersedes ead04bab.
