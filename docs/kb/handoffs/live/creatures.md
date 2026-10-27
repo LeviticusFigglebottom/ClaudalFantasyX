@@ -357,4 +357,12 @@ RENDER-REQUEST @ 10f21a17: creature_lamp_engine, creature_lamp_engine_opened; wh
   - Measured from the GLB: the head at 2.86 m; hooves solved to y 0 in every clip; the KO lies down without going below the floor.
   - **Checks run:** Godot creature 28/0, post_import 21/0, Blender verify identical (and the Lamp Engine's again on the merged tree), validate_data, taskboard, manifest, lint, format.
 RENDER-REQUEST @ 21125780: creature_avalanche_ram; why: M3-CRE-624 new Act II boss, never rendered (no baseline); check the chest's front, the charge's raised foreleg, and the muzzle length at portrait distance.
+- **DECISION: one villager runtime, two placements (the Lead's big11 note on the duplicate systems).**
+  - **Creatures owns the runtime:** FieldNpc, NpcLook, the routines, npc.json, the zone routine files and VillagerLayer.
+  - **Zone owners own placement.** Haluna keeps slice-polish's HalunaVillagers (M2-FP-102: it places a FieldNpc inside each body in HalunaZone.prebuild(), under the fade). That is the right place for it.
+  - **The join, new here:** VillagerLayer now **adopts** villagers a zone placed itself, wiring only the chat partner, the work and shelter points and the storm flag. It never doubles them (tested: test_the_layer_adopts_villagers_a_zone_placed_itself).
+  - **slice-polish (relay, please):** after `HalunaVillagers.populate(self)`, add **`VillagerLayer.wire(self, &"ch02/haluna")`**. That gives the netmender and the fisher their chat on the dock, and the work and shelter points. Glances, look-arounds and work already run on your FieldNpcs from npc.json.
+    - Reed's sweep route and the child's lane walk need those two placed beside their bodies (a FieldNpc carries its body when it walks). Optional; tell me if you want it.
+  - My review stage's Haluna placement is only for my shots; the game uses yours. Written into docs/kb/tech/field_npc.md, "Who owns what".
+  - **Lead:** I'll take big11's test_villager_routines storm-flag fix when big11 reaches the integration branch.
 

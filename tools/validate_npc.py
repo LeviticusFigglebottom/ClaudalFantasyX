@@ -19,7 +19,7 @@ from pathlib import Path
 
 NPC_FILE = "game/data/world/npc/npc.json"
 ZONES_DIR = "game/data/world/npc/zones"
-STAGE_FILE = "game/levels/_tests/npc/villager_layer_stage.json"
+STAGE_FILES = ("game/levels/_tests/npc/villager_layer_stage.json", "game/levels/_tests/npc/villager_layer_adopt.json")
 LOCATIONS_FILE = "game/data/world/locations.json"
 FLAGS_FILE = "game/data/flags.tres"
 ACTOR = "assets/characters/villagers/{id}/{id}_actor.tscn"
@@ -161,8 +161,9 @@ def npc_errors(root: Path) -> list[str]:
     zone_files = sorted((root / ZONES_DIR).glob("*.json")) if (root / ZONES_DIR).is_dir() else []
     for f in zone_files:
         errs += zone_errors(root, str(f.relative_to(root)), locations, flags)
-    if (root / STAGE_FILE).exists():
-        errs += zone_errors(root, STAGE_FILE, locations, flags)
+    for stage in STAGE_FILES:
+        if (root / stage).exists():
+            errs += zone_errors(root, stage, locations, flags)
     return errs
 
 

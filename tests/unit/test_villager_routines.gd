@@ -10,6 +10,7 @@ extends TestCase
 const FISHER := "res://assets/characters/villagers/fisher/fisher_actor.tscn"
 const NETMENDER := "res://assets/characters/villagers/netmender/netmender_actor.tscn"
 const STAGE_DATA := "res://game/levels/_tests/npc/villager_layer_stage.json"
+const ADOPT_DATA := "res://game/levels/_tests/npc/villager_layer_adopt.json"
 const HALUNA := "res://game/levels/ch02/haluna/haluna.tscn"
 const DT := 1.0 / 60.0
 const STORM_FLAG := &"ch01_gulls_cried"
@@ -341,4 +342,27 @@ func test_wake_villagers_ride_inside_their_cutscene_actors() -> void:
 	actor.visible = false  # a zone state hides the actor
 	assert_false(osu.is_visible_in_tree(), "and its villager")
 	assert_eq(osu.partner, layer.villager(&"vendor"), "Osu and the vendor talk at the feast tables")
+	_done()
+
+
+func test_the_layer_adopts_villagers_a_zone_placed_itself() -> void:
+	var zone := _stage()
+	# What a zone's own wiring does (Haluna's HalunaVillagers): a FieldNpc inside each body.
+	for body_name: String in ["Walker", "Sitter"]:
+		var placed := FieldNpc.new()
+		placed.name = &"Villager"
+		placed.npc_id = &"child" if body_name == "Walker" else &"neme"
+		placed.auto_process = false
+		placed.actor_scene = load(FISHER) as PackedScene
+		zone.get_node("NPCs/" + body_name).add_child(placed)
+	var layer := VillagerLayer.new()
+	layer.data_path = ADOPT_DATA
+	layer.auto_build = false
+	zone.add_child(layer)
+	assert_eq(layer.build(), 2, "both rows found their villager")
+	var walker := zone.get_node("NPCs/Walker")
+	assert_eq(walker.find_children("*", "FieldNpc", false, false).size(), 1, "adopted, not doubled")
+	assert_eq(walker.get_parent().find_children("*Villager", "FieldNpc", false, false).size(), 0, "none beside it")
+	assert_eq(layer.villager(&"child"), walker.get_node("Villager"), "the zone's own villager")
+	assert_eq(layer.villager(&"child").partner, layer.villager(&"neme"), "the layer wires the chat pair")
 	_done()
