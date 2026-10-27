@@ -35,4 +35,7 @@ clean everywhere (their HeroBody caps the visible turn at 400 deg/s). Every acto
 - A 0.9 s half turn may lengthen a few staged beats by up to 0.45 s. Scenes with a timed `@wait` after a turn still
   read; none of the filters above changed.
 
+- 2026-10-27, re-checked on claude/m2-slice 7d981830 + the patch with the prologue added to the guard: the real
+  prologue cast (Rhen, Asha, Toma, Ysolde) and all 27 scenes are clean, and none of the 11 KNOWN pairs fires.
+
 ## Review log

@@ -1,11 +1,12 @@
 extends TestCase
-## M2-HER-1110: no snapping in cutscenes. Every in-engine cutscene the slice and Act I zones play (the chapter
-## files' "play" steps and the slice's HalunaStory scenes) is played in driven time on its zone's CutsceneStage,
+## M2-HER-1110: no snapping in cutscenes. Every in-engine cutscene the slice and Act I zones play (the prologue,
+## the chapter files' "play" steps and the slice's HalunaStory scenes) is played in driven time on its zone's stage,
 ## and each stage actor's visible body (its HeroBody when it has one) is sampled every frame. A step or a turn
 ## faster than motion_guard.json's limits is a snap, unless the camera cut on that frame (a reposition hidden by
 ## a cut is staging, not a snap) or it is a deliberate jump of cut_m or more.
 
 const SCENES := {
+	"res://game/levels/prologue/prologue.tscn": ["prologue_dead_city"],
 	"res://game/levels/ch02/haluna/haluna.tscn": ["ch02_girl_on_the_beach", "ch02_nemes_table", "ch03_dock_at_night"],
 	"res://game/levels/ch01/oruvel/oruvel.tscn": ["ch01_the_rising", "ch01_kell_stall", "ch01_hullgnaw_rises"],
 	"res://game/levels/ch01/oruvel_underway/oruvel_underway.tscn": ["ch01_bell_room", "ch01_the_drop"],
@@ -32,7 +33,6 @@ const KNOWN: Array[String] = [
 	"ch07_tavi:tavi",
 	"ch09_the_road_out:liss",
 	"ch09_the_road_out:pell",
-	"ch09_the_road_out:ysolde",
 ]
 ## A scene that has not ended by then is stopped (driven time; seconds).
 const MAX_SEC := 240.0
@@ -60,6 +60,8 @@ func test_no_actor_snaps_in_any_cutscene() -> void:
 			continue
 		for scene_id: String in SCENES[path]:
 			var zone := (load(path) as PackedScene).instantiate() as Node3D
+			if "autoplay" in zone:
+				zone.set(&"autoplay", false)  # the prologue set plays itself when it is the current scene
 			_host().add_child(zone)
 			var result := _play(zone, StringName(scene_id), dt)
 			zone.free()
@@ -110,6 +112,12 @@ func _play(zone: Node3D, scene_id: StringName, dt: float) -> Dictionary:
 	seq.auto_advance_hold_sec = LINE_HOLD_SEC
 	zone.add_child(seq)
 	seq.set_process(false)
+	var named := {}  # actors a cue names, resolved as the sequencer does (rhen falls back to the field player)
+	seq.cue_played.connect(
+		func(_cue: StringName, args: Array, _kw: Dictionary) -> void:
+			if not args.is_empty() and stage.actor(StringName(str(args[0]))) != null:
+				named[str(args[0])] = stage.actor(StringName(str(args[0])))
+	)
 	seq.play(scene_id, stage)
 	if not seq.is_playing():
 		print("  %s: did not start, skipped" % scene_id)
@@ -132,7 +140,11 @@ func _play(zone: Node3D, scene_id: StringName, dt: float) -> Dictionary:
 				cuts[frame] = true
 			cam_was = ct
 			has_cam = true
-		for actor in _actors(stage):
+		var cast := _actors(stage)
+		for n: Node3D in named.values():
+			if is_instance_valid(n) and n.is_visible_in_tree() and not cast.has(n):
+				cast.append(n)
+		for actor in cast:
 			var body := actor.get_node_or_null(NodePath(String(HeroFieldActor.NAME))) as HeroFieldActor
 			if body != null:
 				body.set_process(false)
@@ -145,6 +157,7 @@ func _play(zone: Node3D, scene_id: StringName, dt: float) -> Dictionary:
 		frame += 1
 	if seq.is_playing():
 		print("  %s: still playing after %.0f s, stopped" % [scene_id, MAX_SEC])
+	print("  %s: %d frames, %d actors sampled" % [scene_id, frame, tracks.size()])
 	return {"tracks": tracks, "cuts": cuts}
 
 
