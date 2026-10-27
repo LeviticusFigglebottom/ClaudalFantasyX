@@ -137,7 +137,7 @@ JOBS = [
      [f"ball_{k}_{v}.ogg" for k, n in (("kick", 3), ("push", 2), ("catch", 2), ("shot", 2)) for v in range(1, n + 1)]
      + ["ball_score.ogg", "sphere_enter.ogg", "sphere_exit.ogg", "sphere_swim_1.ogg", "sphere_swim_2.ogg",
         "sphere_swim_3.ogg", "crowd_cheer_1.ogg", "crowd_cheer_2.ogg", "crowd_groan.ogg", "crowd_gasp.ogg",
-        "whistle_start.ogg", "whistle_short.ogg", "whistle_end.ogg", "naming_rite.ogg"]
+        "whistle_start.ogg", "whistle_short.ogg", "whistle_end.ogg", "naming_rite.ogg", "float_ring_bell.ogg"]
      + [f"crowd_{b}{ext}" for b in ("murmur", "excited") for ext in (".ogg", ".loop.json")], "sfx_set"),
     ("assets_src/music/tidecup_match.py", "assets/audio/music",
      ["tidecup_match.ogg", "tidecup_match.loop.json"], "music_loop"),

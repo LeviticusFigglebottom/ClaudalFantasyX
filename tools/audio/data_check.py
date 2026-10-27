@@ -625,8 +625,16 @@ def reefball_hook_errors(doc: object, ids: set[str], beds: set[str], classes: di
                 errs.append(f"{w}.{k}: {a[k]} is not murmur, excited or silence")
         if "restore" in a and (not _num(a.get("restore_after_sec")) or a["restore_after_sec"] <= 0):
             errs.append(f"{w}.restore_after_sec: a restore needs a time > 0")
-        if not any(k in a for k in ("sfx", "sfx_at", "crowd")):
-            errs.append(f"{w}: does nothing (needs sfx, sfx_at or crowd)")
+        picks = a.get("by")  # M3-AUD-824: sub-actions picked from a signal argument
+        picks = picks if isinstance(picks, list) else [picks] if picks is not None else []
+        for j, p in enumerate(picks):
+            if not isinstance(p, dict) or not isinstance(p.get("arg", 0), int) or not isinstance(p.get("values"), dict):
+                errs.append(f"{w}.by[{j}]: needs an int arg and a values object")
+                continue
+            for val, sub in p["values"].items():
+                action(sub, f"{w}.by[{j}].values.{val}")
+        if not any(k in a for k in ("sfx", "sfx_at", "crowd")) and not picks:
+            errs.append(f"{w}: does nothing (needs sfx, sfx_at, crowd or by)")
 
     crowd = doc.get("crowd") or {}
     for k in ("murmur", "excited"):
