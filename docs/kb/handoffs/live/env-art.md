@@ -60,10 +60,17 @@ env-art is cloud session `session_01YbaV2c8yquRHqj6afQYg89` on `claude/env-art`;
   the full tools suite (1123 OK), `--filter=haluna` 50/0, `--filter=arena` 18/0, `gi_inputs --check`,
   validate_data, taskboard. Skipped: shots (rendering is the PC's now).
 
+- **MERGE-READY @ 71f19fbc: M3-ENV-706**, Ch6's two arenas at final quality from the Brine Shoals kit
+  (`brine_shoals_afternoon`, `salvage_camp_burning`; arenas.json repointed; the camp's fires keep M3-BPR-03's
+  `FireLight<k>` contract). Also **M3-ENV-705** (Ashcrown grade, 1a422476). Checks run: `--filter=arena` 18/0,
+  `test_arenas`, `test_fog_lamps`, `test_brine_shoals_kit`, `test_ashcrown_kit` OK, `brine_shoals_kit` full rebuild
+  (others identical), every other arena regenerates identically, validate_data, taskboard. Shots: PC (below).
+
 ### Render requests
 RENDER-REQUEST @ a0d2549f: battle_arena_tideline_dawn,battle_arena_causeway_disc_sunset,battle_arena_causeway,battle_arena_tideline,causeway_c02_profile_against_the_lagoon,causeway_c08_drownbell_disc_approach,drownbell_flood,battle_boss_intro_drownbell,haluna_h01_village_from_sea,haluna_h10_dock_night,field_objective_line,field_interact_prompt,field_area_title,field_tip_card,dialogue_continue; why: M3-ENV-701 set dressing in Haluna, the causeway and the two arenas (the five field/dialogue shots frame Haluna's lane 1)
 RENDER-REQUEST @ 22a5de11: battle_arena_oruvel_raft_morning,battle_arena_causeway,drownbell_flood; why: the merge took the PC gate's copies of these three over env-art's; confirm they still match with the arena dressing
 RENDER-REQUEST @ 1a422476: ashcrown_a01_approach,ashcrown_a04_anvil_hall,ashcrown_a10_plume_from_the_rim; why: M3-ENV-705 Ashcrown grade (saturation x1.0, accents +18%) answering the human's greyscale complaint
+RENDER-REQUEST @ 71f19fbc: battle_arena_shoals,battle_arena_camp,battle_boss_intro_inquisitor; why: M3-ENV-706 Ch6 arenas replace the greybox
 
 ## STATE AT HANDOVER (2026-10-25)
 
