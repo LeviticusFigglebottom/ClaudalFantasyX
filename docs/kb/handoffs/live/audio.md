@@ -3,6 +3,21 @@
 ## NEW ACCOUNT (from 2026-10-25)
 Session `session_01Wmj8xaLtwcqiS3qwC6PciW`. Integration branch `claude/undertow-lead-handoff-ze8rrn`. Newest first.
 
+- **MERGE-READY @ 2bb610de:**
+  - **M3-AUD-823:** eight Act I `@music` ids now play the cues composed for their scenes (aliases: oruvel_raft,
+    oruvel_underway, haluna_wake, brightwater_crossing, pemakar_terraces, ashcrown_trial, tamsule_port,
+    coilspire_flues). A test tracks the rest; their MUSIC_TODO list may only shrink.
+  - **M3-AUD-824:** Reefball's sounds bound to the real ReefballMatch (the guessed Ball and Goal hooks are gone).
+    A node holding a match in `match` is heard; there is a new `float_ring_bell`.
+  - **M3-AUD-825:** the Ashcrown strike trial heard (AshcrownAudio on Ch05AshcrownZone's AshcrownTrial).
+  - **ADR 0171:** audio budget 72 MiB to finish Act I. **The Lead's call:** a storage plan (LFS or an audio pack)
+    is needed before Act II's finals.
+  - Checks run: `--filter=audio` 150/0, `reefball` 55/0, `ashcrown` 11/0; the loudness, data and cutscene-file
+    tests OK; validate_data 0/0; determinism identical; gdlint and gdformat.
+  - Checks skipped: the full suite (the last was clean at d1fa5c0f; since then only audio scripts, data and the
+    reefball audio test changed), screenshots, Blender, coverage.
+- **In flight:** four composer agents (M3-AUD-819 Ch1+Ch9, 820 Ch4+Oruvel, 821 Ch5+Ch6, 822 Ch7+Ch8) writing the
+  remaining Act I music cues in worktrees. I integrate and gate them when they report.
 - **MERGE-READY @ d71abea1 (FAST-TRACK: M3-AUD-816, 817, 818):**
   - **M3-AUD-816, battle impact tiers** on battle-presentation's BattleImpact: weight layers under the element hit,
     a music duck under the hit-stop, and the KO slow-mo swell. The hook is `pending` until claude/battle-presentation
@@ -22,8 +37,6 @@ Session `session_01Wmj8xaLtwcqiS3qwC6PciW`. Integration branch `claude/undertow-
     146/0, `cutscene` 43/0, `prologue` 5/0; the loudness test OK; the **full tools suite** (911 tests) OK;
     `render_all --determinism` identical for every new job; validate_data 0/0, taskboard --check, gdlint, gdformat.
   - Checks skipped: screenshots (no scene or shader), Blender (none), coverage (no battle/progression code).
-- **Next:** item 6 continued: Act I's missing `@music` cues per chapter (act1-chapters' M3-C04-05 … M3-C09-06),
-  starting with Ch1's `rhen_current_hum` and `going_under` on CURRENT_SONG. Then `vein_run`, `float_ring_bell`.
 - **MERGE-READY @ 4587af3e (FAST-TRACK: M3-AUD-814):** villagers' chat turns and work, gulls, crabs and fish
   (LifeAudio, 44 synthesized one-shots, 0.6 MiB). The hooks are `pending` until claude/creatures merges (FieldNpc,
   WildlifeLayer); when it does, drop the two `pending` flags in life.json. M3-AUD-815 asks creatures for
