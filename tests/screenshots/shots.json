@@ -3637,6 +3637,22 @@
       "scene": "res://game/battle/scene/shots/battle_ch08_withdraw.tscn"
     },
     {
+      "id": "battle_arena_fen_roots_dusk",
+      "scene": "res://game/battle/scene/shots/battle_arena_fen_roots_dusk.tscn"
+    },
+    {
+      "id": "battle_arena_lowlight_engine_hall",
+      "scene": "res://game/battle/scene/shots/battle_arena_lowlight_engine_hall.tscn"
+    },
+    {
+      "id": "battle_arena_keth_terrace_wall",
+      "scene": "res://game/battle/scene/shots/battle_arena_keth_terrace_wall.tscn"
+    },
+    {
+      "id": "battle_arena_night_sea_barge",
+      "scene": "res://game/battle/scene/shots/battle_arena_night_sea_barge.tscn"
+    },
+    {
       "id": "creature_mangrove_drowner",
       "scene": "res://game/levels/_tests/creatures/shots/creature_mangrove_drowner.tscn",
       "resolution": [

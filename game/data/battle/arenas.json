@@ -11,7 +11,11 @@
       "ash_terrace_lanternfall": "res://assets/environments/arenas/ash_terrace_lanternfall/ash_terrace_lanternfall.tscn",
       "brine_shoals_afternoon": "res://assets/environments/arenas/brine_shoals_afternoon/brine_shoals_afternoon.tscn",
       "salvage_camp_burning": "res://assets/environments/arenas/salvage_camp_burning/salvage_camp_burning.tscn",
-      "wall_head_storm": "res://game/battle/arenas/wall_head_storm.tscn"
+      "wall_head_storm": "res://game/battle/arenas/wall_head_storm.tscn",
+      "fen_roots_dusk": "res://game/battle/arenas/fen_roots_dusk.tscn",
+      "lowlight_engine_hall": "res://game/battle/arenas/lowlight_engine_hall.tscn",
+      "keth_terrace_wall": "res://game/battle/arenas/keth_terrace_wall.tscn",
+      "night_sea_barge": "res://game/battle/arenas/night_sea_barge.tscn"
     },
     "staging": {
       "doc": "M3-BPR-01: per-arena choreography (BattleChoreo): travel_scale scales every run, step, walk-in and exit (with reduced motion's on top); tempo scales the battle speed (under 1 = slower). Arenas with no row stage as the sandbox.",
@@ -26,6 +30,14 @@
       "wall_head_storm": {
         "travel_scale": 0.85,
         "tempo": 1.0
+      },
+      "fen_roots_dusk": {
+        "travel_scale": 0.9,
+        "tempo": 1.0
+      },
+      "night_sea_barge": {
+        "travel_scale": 0.6,
+        "tempo": 0.9
       }
     }
   }

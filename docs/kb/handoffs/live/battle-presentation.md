@@ -52,6 +52,7 @@ pass (lineup 4/0; it fails with the spread off), and the battle filter gives 638
 so a full battle-shot capture comes next.
 
 ### Render requests
+RENDER-REQUEST @ HEAD (see `git log -1 origin/claude/battle-presentation`): battle_arena_fen_roots_dusk,battle_arena_lowlight_engine_hall,battle_arena_keth_terrace_wall,battle_arena_night_sea_barge; why: M3-BPR-418's greybox Act II boss arenas (new, no baselines), each in its chapter's colour-script grade, with the sandbox fight standing in.
 RENDER-REQUEST @ HEAD (see `git log -1 origin/claude/battle-presentation`): battle_ch08_intercept,battle_ch08_counter,battle_ch08_withdraw,battle_ch08_stair_hold; why: M3-BPR-406's set-piece freeze-frames (new, no baselines yet): Toma taking the crawler's grip for the stair, Rhen's riposte landing, a crawler withdrawing half-way. Also stair_hold: Kerrid (in the reserve) and Liss now have their own stand-ins and timeline tints. Batch it with the 3-shot HEAD request below if that one hasn't run yet.
 RENDER-REQUEST @ HEAD (see `git log -1 origin/claude/battle-presentation`): battle_boss_intro_reach,battle_arena_wall_head,drownbell_flood; why: (1) reach and wall_head: big12's baselines were rendered without this branch's arena rework (5a5b4fe isn't in the integration branch), and the 5a5b4fe render predates big12's stair HUD. Only a render of this branch's HEAD shows both. (2) drownbell_flood: settle_actors now ends the summoned polyps' entrance (1284fdec); the ed3a458 render caught them mid-rise.
 (21:2x: the PC is paused. The Lead's cloud container serves these requests, and results land on `lead/gate-render-battle-presentation-<sha7>`. Requests are kept small.)
@@ -68,6 +69,8 @@ RENDER-REQUEST @ 60b62678: battle_arena_wall_head,battle_boss_intro_reach; why: 
 5. **The next act (M3-BPR-418):** the Mangrove Drowner (Ch10) and the Wakefin (Ch15) get intro rows by enemy id. The
    Drowner's `uprooted` phase (its creature's phase id) gets its own moment, like the Lamp Engine's `opened`. Tested;
    the shots wait for their encounters.
+   - Greybox arenas for the four Act II boss fights (fen roots, Lowlight's engine hall, the Keth terrace wall, the
+     night-sea barge) in their chapters' grades. Tested; render requested.
 1. **Render branches:** all viewed (none open).
 2. **Task board (combat):**
    - **M3-BPR-406 (Ch8 set pieces), every acceptance box now done:**

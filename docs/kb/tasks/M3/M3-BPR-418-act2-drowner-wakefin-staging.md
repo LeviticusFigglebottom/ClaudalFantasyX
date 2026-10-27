@@ -32,8 +32,20 @@ everything is keyed by enemy id, as 408 was.
 ## Next (when their rows exist)
 - [ ] Shots: battle_boss_intro_drowner, battle_boss_intro_wakefin, and a freeze-frame of the Drowner tearing free.
       Then render requests.
-- [ ] The Wakefin's night-sea arena and the fen roots arena: greybox until env-art's kits exist (act2_roster.md
-      zones).
+- [x] Greybox Act II boss arenas (tools/arenas/gen_act2_arenas.py → game/battle/arenas/, arenas.json), each in its
+      chapter's grade from color_script.md:
+  - `fen_roots_dusk` (Ch10, the Drowner): a mud bar in tannin water under the prop-root cage, overcast dusk;
+  - `lowlight_engine_hall` (Ch11, the Lamp Engine): the flooded hall, pillars, conduits in steady bound teal, the
+    engine's brass-framed recess;
+  - `keth_terrace_wall` (Ch12, the Ram): snow under the Lit Age terrace wall and its cold seep, the pass-cord's red
+    knots the only warm note;
+  - `night_sea_barge` (Ch15, the Wakefin): the wedding barge at night, no lamp struck, the sea-glow only.
+  - Staging rows: the barge 0.6 travel and 0.9 tempo (short runs on a deck); the fen 0.9 (mud).
+  - Tests: test_battle_act2_arenas (load, grade, quiet lights, drop into a battle by id), plus test_battle_arena's
+    contract (every greybox keeps a Sea).
+  - Shots: battle_arena_<id> through `shots/arena_by_id_shot.gd` (`BattleArena.apply_scene`, since there's no
+    encounter yet). Render requested. Encounters name them in `arena` once they're written; env-art's kits replace
+    them through arenas.json.
 - Ask: whoever writes the Act II enemies, keep the ids `mangrove_drowner` and `wakefin`, and the phase id `uprooted`.
 
 ## Review log
