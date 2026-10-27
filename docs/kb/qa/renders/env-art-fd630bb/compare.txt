@@ -1,0 +1,5 @@
+PASS battle_arena_ash_terrace_lanternfall: rmse 0.00104 (limit 0.00800)
+FAIL pemakar_p04_harbour_day: no baseline (inspect out/, then compare.py --update-baselines pemakar_p04_harbour_day)
+FAIL pemakar_p11_sea_cut_weir_day: no baseline (inspect out/, then compare.py --update-baselines pemakar_p11_sea_cut_weir_day)
+Screenshots: 3 compared, 2 failed (diffs in /root/hymn/tests/screenshots/out/diff)
+compare exit 1
