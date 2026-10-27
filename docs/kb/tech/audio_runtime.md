@@ -565,3 +565,16 @@ data_check `muffle_errors` checks both blocks.
 Test note: the reefball tests name their stand-ins (the `audio_class` meta) after `add_child`, so the game's own
 Audio autoload, which tests never advance, does not hook them. The director test records its beds instead of playing
 them. A real playback started in a headless test is still held when the run quits ("resources still in use").
+
+## Life (M3-AUD-814)
+`LifeAudio` (`life_audio.gd`, owned by the director) gives creatures' villagers and wildlife near, positional sound,
+by listening. `game/data/audio/life.json` names every hook class and every member it reads, and the rows are in
+`sfx_life.json` (`assets_src/sfx/life_sfx.py`). The hooks stay `pending` until claude/creatures merges.
+- **Villagers (`FieldNpc`):** a chat turn that starts plays one murmur turn (wordless, low or high voice per
+  `voices`) at the head. Work (`working()`) plays the villager's `work.rows` row at `work_point()` every
+  `work.every_sec`. The player's own talk with a villager is the dialogue box's blips, not this.
+- **Wildlife (`WildlifeLayer`, layer space):** each flock calls from one of its gulls every `call_every_sec`; a gull
+  entering TAKEOFF claps off; a crab entering FLEE scuttles (`cooldown_sec` per beach); a shoal's startle darts.
+- Only nodes within `hear_m` of the camera are read. Randomness is a RandomNumberGenerator on `seed`.
+- Two reads are private fields until creatures adds public ones (M3-AUD-815): `_chat_speaker` and `_startle`.
+  `chat_speaking()` and `startled()` win the moment they exist.

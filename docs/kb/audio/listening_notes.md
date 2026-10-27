@@ -894,3 +894,13 @@ you can only hear them on their own. The scenes are in act_outline.md (Ch13 to C
 **For all six:** can you hear the loop wrap? Each file starts a sixteenth before its first downbeat, so the wrap
 falls between notes. And **do they sound like the same game as Act I** (the same flute, bars, hum and pad), while
 each sounds like its own place?
+
+## M3: village and wildlife life (M3-AUD-814)
+Heard in Haluna once claude/creatures merges (or on creatures' `_tests/npc` and `_tests/wildlife` stages). Listen for:
+- **Murmur turns:** two villagers chatting should read as people talking out of earshot, never as words, and never as
+  a loop: a turn starts with its speaker's turn and two voices alternate. Is −26 LUFS (momentary max) too present
+  next to the dialogue blips?
+- **Work:** the net-mender's twine and knot, the sweeper's broom on the chapel stones, the stall's bowls and jars,
+  the bowl's pestle. Every 2.5–5.5 s: does it feel like steady work or like a metronome?
+- **Gulls near:** brighter than the bed's far gulls; do the two layers sit together? Takeoff claps should be soft.
+- **Crabs and fish:** very quiet ticks and plips, heard only up close. Too faint to notice is better than too loud.
