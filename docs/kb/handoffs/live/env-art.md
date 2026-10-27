@@ -30,6 +30,17 @@ env-art is cloud session `session_01YbaV2c8yquRHqj6afQYg89` on `claude/env-art`;
   - **PC perf check requested:** Haluna entry hitch (ADR 0029, 3 s) and GPU frame time at H02 and the dock with
     the dressing (about 250 more instances; small props cull at 30–140 m).
 
+- **MERGE-READY @ b2fbee29: M3-ENV-703**, the six Ch6 story pieces act1-chapters asked for (M3-ENV-1201), in the
+  Brine Shoals kit (`bs_story.py`): `tide_wheel`, `tide_wheel_burned`, `ridge_fire`, `level_stone_shrine`,
+  `vendor_boat`, `hatch`, `chalk_mark`, `chalk_mark_heavy`. Sizes, origins and facings per block are in the task
+  file. Checks run: `brine_shoals_kit` full rebuild (every existing piece byte-identical), `test_brine_shoals_kit`
+  OK, validate_data, taskboard, lavapipe views of every piece (on a temporary preview; no baseline changes).
+  Checks skipped: Godot tests and shots (no scene or code reads these files yet).
+  - **For act1-chapters:** add them to `tools/act1/ch06_brine_shoals_dressing.py` with their `block` ids and drop
+    those ids from `greybox.keep`. Greybox block centres are mid-height, so set each piece at `pos.y - size.y / 2`;
+    `hatch` and the chalk marks are centred and face +X (yaw them onto their hull side). Use `chalk_mark` on the
+    route and `chalk_mark_heavy` nearer the camp; `tide_wheel` until B03 and `tide_wheel_burned` after.
+
 ## STATE AT HANDOVER (2026-10-25)
 
 **HANDOVER DONE @ 1fee4436** (`claude/env-art`; the code is merge-ready at d065835e, and only docs changed after it).
