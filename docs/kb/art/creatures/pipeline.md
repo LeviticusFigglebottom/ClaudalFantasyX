@@ -131,6 +131,11 @@ table, asset_import.md §3) would add a distance cutoff, which battles, held at 
   creatures.json's `stand_in` overrides (`yaw_deg` 90 turns a +Z-facing model toward the party). The spec's
   `height` (battle_sandbox.json) still places the damage numbers and the VFX anchors (effects.json
   `anchor_heights`), so **build the model to that height**. An enemy without `model` keeps its primitive.
+- **A Vowbound (M3-CRE-638)** has no enemies.json row. Its creatures.json row has the Vowbound's id (a
+  game/data/battle/vowbound.json row) and `"vowbound": true`, and `CreatureModels.stand_in_overrides` gives that id's
+  stand-in the row's `scene` and `stand_in` the same way (Ilun: `yaw_deg` −90, facing the foes as the heroes do).
+  validate_creatures.py checks the id and that no enemy uses the scene. The VFX anchors are fractions of the height
+  from the ground and ignore `hover`, so a hovering Vowbound is built hovering (origin at the water) instead.
 - **`game/creatures/<id>/<id>_battle.tscn`**: a `Node3D` root with `creature_actor.gd` (`creature_id = &"<id>"`,
   `metadata/hymn_battle_actor = true`) and the GLB instanced as its first child, `Model`.
 - **`CreatureActor`** (`game/creatures/creature_actor.gd`) plays what creatures.json says: an action's clip
