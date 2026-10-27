@@ -60,9 +60,9 @@ glow_bloom = 0.08
 fog_enabled = true
 fog_mode = 1
 fog_light_color = Color(0.788, 0.541, 0.353, 1)
-fog_density = 0.3
+fog_density = 0.2
 fog_sky_affect = 0.2
-fog_depth_begin = 30.0
+fog_depth_begin = 70.0
 fog_depth_end = 220.0
 adjustment_enabled = true
 adjustment_saturation = 1.05
@@ -126,7 +126,7 @@ material = ExtResource("9_water_mat")
 [node name="Vigils" type="Node3D" parent="City"]
 
 [node name="Kerrid" type="MeshInstance3D" parent="City/Vigils"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.5, 1.25, -4.0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.5, 1.25, -5.5)
 mesh = SubResource("Mesh_25")
 
 [node name="Pell" type="MeshInstance3D" parent="City/Vigils"]

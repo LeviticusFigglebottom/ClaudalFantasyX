@@ -25,7 +25,7 @@ const ARENAS: Array[StringName] = [
 const ARENAS_JSON := "res://game/data/battle/arenas.json"
 ## Path prefixes (from the scene root) still allowed, and why.
 const KNOWN: Dictionary = {
-	"City/Vigils/": "Kerrid, Pell and Liss as dusk silhouettes until their hero models exist",
+	"City/Vigils/": "Kerrid, Pell and Liss: each takes its hero body when it lands (M3-CHR-505/506, Liss)",
 	"HalunaMood/SaveShrine/Visual/": "the save shrine's model (M3-ENV-101)",
 	"NPCs/Neme/Bag": "Neme's bag, a creatures prop",
 	"Set/ChamberPassage": "env-art's passage behind the shrine's east door (part of its dressing)",
