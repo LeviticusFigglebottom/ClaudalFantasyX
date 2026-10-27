@@ -485,3 +485,9 @@ RENDER-REQUEST @ db3c9507: portraits:flat_engine; tool: tools/portraits/render.s
   - **Checks run:** Blender verify identical ×3; tools test_creatures (the grounding test passes) and test_blender_builds; Godot creature 42/1 (the known portrait red); validate_data, taskboard.
 RENDER-REQUEST @ 3b0e44b0: creature_mangrove_drowner, creature_mangrove_drowner_risen, creature_flat_engine; why: M3-CRE-622 redesign (supersedes the db3c9507 Drowner ids; is the risen front still spider-like?) and M3-CRE-637's first flat-engine render (carried over from db3c9507).
 RENDER-REQUEST @ 3b0e44b0: portraits:mangrove_drowner,flat_engine; tool: tools/portraits/render.sh --only mangrove_drowner,flat_engine
+- **The PC is paused (Lead, 21:27), so here are my open render requests in priority order, kept small.** Serve them one line at a time; each line stands alone.
+  1. The `aa762dee` portraits line (mangrove_drowner, flat_engine) and the 13 other Act II portraits from `95b6daf8`. These turn test_creature_portraits green, the one red owned by creatures in big12. Split them into batches of five if needed.
+  2. The `aa762dee` shots line: creature_mangrove_drowner, creature_mangrove_drowner_risen, creature_flat_engine.
+  3. A small sample to check the clip-timing and grounding batch: battle_choreo_hit, battle_choreo_ko, creature_reef_crab, creature_ashwing, creature_avalanche_ram, creature_wakefin, creature_wakefin_body.
+  4. The rest of the 101-shot `fce2e82b` request is **deferred, not cancelled.** It waits for the PC to return. Until then those baselines stay as they are; they drift by a frame, not by design.
+RENDER-REQUEST @ aa762dee: battle_choreo_hit, battle_choreo_ko, creature_reef_crab, creature_ashwing, creature_avalanche_ram, creature_wakefin, creature_wakefin_body; why: priority 3 above (sample of M3-CRE-630/631/632/635 while the PC is paused).
