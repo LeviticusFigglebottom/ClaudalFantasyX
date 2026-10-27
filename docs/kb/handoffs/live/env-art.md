@@ -432,6 +432,8 @@ RENDER-REQUEST @ 0958af1a FAST-TRACK: iskarra_p01_plaza_dusk,iskarra_i02_gate_fr
 RENDER-REQUEST @ 4c0e9732: battle_arena_seawall_stairhead_storm,battle_arena_seawall_stairhead_hoist,battle_arena_seawall_stairhead_surge,battle_arena_coilspire_headland_path,battle_arena_coilspire_tier_landing; why: 599b241's outs predate big12's hero stances. The arenas are unchanged, so these are first baselines on the current actors. Supersedes 599b2418.
 ANSWERED: 94fe8f7 (Tamsule TP01/TP03/TP05) and fd630bb (Pemakar P04/P11) were viewed and approved in f2a85a46. In fd630bb, Lanternfall passed.
 ANSWERED: 179069d (causeway_route_afternoon): superseded by big12's viewed baseline (6e15d8d8) at a later head; nothing to approve.
+ANSWERED: 43492e8 (battle_arena_lowlight_engine_hall): viewed and approved as its first baseline. The enemy is a stand-in capsule at that sha; the Lamp Engine model from big12 will drift it.
+ANSWERED: 854e6a9: field_tip_card passed. Camp, shoals and the inquisitor intro all fall within the gull wing-phase, smoke and hound-pose differences of big12's viewed baselines (rmse to big12's 0.012, 0.034 and 0.0), so big12's copies stay. Its Keth out is the version superseded by the rework above.
 NOT APPROVED: 95be611 (battle_arena_keth_seep_terrace). The backdrop reads as a wall of stretched white blocks and the seep strips as pale-blue ribbons, not a mountain pass. Rework is queued after the Iskarra fast-track (M3-ENV-717).
 RENDER-REQUEST @ 7f1a0fc7: battle_arena_keth_seep_terrace; why: M3-ENV-717 rework after 95be611 (crisp weathered wall, threads of seep). Supersedes 95be6118.
 
