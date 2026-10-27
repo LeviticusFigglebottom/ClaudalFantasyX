@@ -94,6 +94,18 @@
       "scene": "res://game/creatures/gull_harrier/gull_harrier_battle.tscn", "contact": {"attack": 0.75},
       "stand_in": {"yaw_deg": 60.0, "hover": 1.05},
       "portrait": {"yaw_deg": 60.0, "pitch_deg": 20.0}
+    },
+    "mangrove_drowner": {
+      "scene": "res://game/creatures/mangrove_drowner/mangrove_drowner_battle.tscn",
+      "contact": {"attack": 0.7, "cast": 1.0, "attack_risen": 0.7, "cast_risen": 1.0},
+      "loop": ["idle", "idle_risen"],
+      "ko_fade_sec": 1.2,
+      "stand_in": {"yaw_deg": 90.0},
+      "phases": {
+        "uprooted": {"clip": "phase_change", "idle": "idle_risen", "hide_after": ["Stump"], "sec": 0,
+                     "clips": {"attack": "attack_risen", "cast": "cast_risen", "hit": "hit_risen"}}
+      },
+      "portrait": {"rim_energy": 2.8, "kick_energy": 1.8}
     }
   }
 }
