@@ -93,7 +93,7 @@ RENDER-REQUEST @ 60b62678: battle_arena_wall_head,battle_boss_intro_reach; why: 
   next stays on screen. Every new impact or motion respects reduced motion and the shake setting (tested): no
   shake, no withdrawal motion, no Breach push-in, and a dimmer flash.
 
-RENDER-REQUEST @ dcc68922: battle_hud_preview,battle_player_preview,battle_choreo_toll,drownbell_flood,battle_swell_ring,battle_read_panel; why: M3-BPR-409. The target ring now draws over ground VFX (render_priority 10); view the ring over the toll's wave and the flood.
+RENDER-REQUEST @ dcc68922: battle_hud_preview,battle_choreo_toll,drownbell_flood,battle_swell_ring,battle_read_panel; why: M3-BPR-409. The target ring now draws over ground VFX (render_priority 10); view the ring over the toll's wave and the flood.
 
 ### 2026-10-27 late: the Lead's queue items 3–7
 - **3, M3-BPR-408 (a433b3b3): the Act II bosses' camera language, by enemy id.**
