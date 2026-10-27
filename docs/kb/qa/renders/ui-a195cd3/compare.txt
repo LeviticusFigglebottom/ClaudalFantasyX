@@ -1,0 +1,3 @@
+FAIL field_menu_codex: rmse 0.01121 (limit 0.00800)
+Screenshots: 1 compared, 1 failed (diffs in /root/hymn/tests/screenshots/out/diff)
+compare exit 1
