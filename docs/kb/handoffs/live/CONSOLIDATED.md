@@ -68,7 +68,15 @@
 ## 2a. Merge state (new account)
 - **10-27: big9 MERGED** (integration 3b7cbf5e). PC gate: Godot 2561/0, coverage and boot OK, Blender 40 identical + 11 M2-CHR-11 DIFFs (rhen, toma, 9 villagers), 281 shots with 48 re-approved after the Lead viewed them. The results are on `gpu/gate-big9-shots`.
 - **10-27: big10 MERGED** (integration f5ec3bda). PC gate: Godot 2637/0, coverage and boot OK, Blender 20 identical + rhen/toma, 292 shots with 51 re-approved (37 identical to big9's; 14 viewed). It includes M3-BPR-404: the Hullgnaw, Drownbell and Matron intros now fit the boss.
-- **big12** `lead/gate-big12` @ 8a28be17 (big11 + every track head as of 10-27 ~18:00) is gating on the PC, full manifest, 341 shots. Cloud: Godot 2820/2, both owned by tracks: creature portraits (creatures) and the footsteps causeway test (audio). Tools: 41 new shots without baselines, the shrine GI bake (PC), test_iskarra (env-art).
+- **10-27 ~21:15: big12 MERGED** (integration e930595c): 111 shots approved after viewing; Blender 28/28 identical; the PC's shrine GI rebake folded in. Open from viewing:
+  - Iskarra (the prologue) reads greybox → env-art, FAST-TRACK;
+  - Ilun (the Vowbound) is a teal capsule → creatures;
+  - Asha's staff is missing in static views and her skirt holds a stiff bell → characters;
+  - Ch9 road capsule and the dark strand → act1-chapters;
+  - the dialogue box covers speakers on the beach, and the harrier view is mostly sky → slice-polish;
+  - the Ch8 wall arena and Reach backdrop are plain → env-art;
+  - the life_audio freed-object error → audio.
+- (was) **big12** `lead/gate-big12` @ 8a28be17 (big11 + every track head as of 10-27 ~18:00) is gating on the PC, full manifest, 341 shots. Cloud: Godot 2820/2, both owned by tracks: creature portraits (creatures) and the footsteps causeway test (audio). Tools: 41 new shots without baselines, the shrine GI bake (PC), test_iskarra (env-art).
 - **To fold into the big12 merge:** `gpu/shrine-gi-big12` @ a748e599 (the Shell Shrine GI rebaked on big12's tree; fixes test_shrine_gi_bake).
 - **Unmerged PC branches to merge with a later batch:**
   - `gpu/m2-nit-903-runner-renders`;
