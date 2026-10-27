@@ -16,6 +16,7 @@ const GROUND_KEY := "ground"
 ## keys pieces by their first mesh name, and the zone's piece_rules give this one no shape.
 const NIGHT_LAMPS := &"NightLamps"
 const LAMP_FLAME := &"night_lamp_flame"
+const LAMP_HOUSE_META := &"night_lamp_house"  ## the index (in the layout's pieces) of the house a lamp hangs on
 const SEA_NORMAL := Vector2(1.0, 0.0)
 const STORY_SETS := "StorySets"
 const STORY_SET_PREFIX := "StorySet_"
@@ -171,6 +172,7 @@ func _place_night_lamps(pieces: Array[Node3D], kinds: Array[String], cfg: Dictio
 			var p := pieces[i].transform * Vector3(float(at[0]), float(at[1]), float(at[2]))
 			var flame := MeshInstance3D.new()
 			flame.name = LAMP_FLAME
+			flame.set_meta(LAMP_HOUSE_META, i)
 			flame.mesh = flame_mesh
 			flame.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 			flame.position = p
@@ -182,6 +184,7 @@ func _place_night_lamps(pieces: Array[Node3D], kinds: Array[String], cfg: Dictio
 			light.omni_attenuation = float(cfg.get("attenuation", 1.0))
 			light.shadow_enabled = false
 			light.position = p
+			light.set_meta(LAMP_HOUSE_META, i)
 			lamps.add_child(light)
 
 
@@ -195,6 +198,30 @@ func lane_distance(x: float, z: float) -> float:
 			var b := Vector2(float(lane[k + 1][0]), float(lane[k + 1][1]))
 			best = minf(best, p.distance_to(Geometry2D.get_closest_point_to_segment(p, a, b)))
 	return best
+
+
+## M3-ENV-709 (Ch4 C4-01, the windows going dark one at a time): the houses that hang night lamps, in placement
+## order, and a switch for one house's lamps (its flame and light). Every lamp starts lit inside the hidden
+## NightLamps; the zone shows NightLamps and turns houses off as their people leave with their lamps.
+func night_lamp_houses() -> PackedInt32Array:
+	var out := PackedInt32Array()
+	var lamps := night_lamps()
+	if lamps == null:
+		return out
+	for child in lamps.get_children():
+		var house := int(child.get_meta(LAMP_HOUSE_META, -1))
+		if house >= 0 and not out.has(house):
+			out.append(house)
+	return out
+
+
+func set_night_lamp(house: int, lit: bool) -> void:
+	var lamps := night_lamps()
+	if lamps == null:
+		return
+	for child in lamps.get_children():
+		if int(child.get_meta(LAMP_HOUSE_META, -1)) == house:
+			(child as Node3D).visible = lit
 
 
 ## The night lamps' container, or null when the layout has none.
