@@ -265,13 +265,22 @@
       "scene": "res://game/flow/end_card.tscn",
       "music": "hush_coda",
       "_note": "B12"
-    }
+    },
+    {"scene": "res://game/levels/ch01/oruvel/oruvel.tscn", "music": "oruvel", "_note": "M3-AUD-828: Ch1, the raft-town; the scene has landed"},
+    {"scene": "res://game/levels/ch01/oruvel_underway/oruvel_underway.tscn", "music": "lamp_diver", "_note": "M3-AUD-828: Ch1, the drowned tower; the scene has landed"},
+    {"scene": "res://game/levels/ch04/haluna_wake/haluna_wake.tscn", "music": "haluna_night", "_note": "M3-AUD-828: Ch4, Haluna's wake by night (act1_ch04.md §6: the zone plays haluna_night); the scene has landed"},
+    {"scene": "res://game/levels/ch04/brightwater_ferry/brightwater_ferry.tscn", "music": "brightwater_ferry", "_note": "M3-AUD-828: Ch4, the ferry; the scene has landed"},
+    {"scene": "res://game/levels/ch05/pemakar/pemakar.tscn", "music": "terraces_of_ash", "_note": "M3-AUD-828: Ch5, Pemakar; the scene has landed"},
+    {"scene": "res://game/levels/ch05/ashcrown/ashcrown.tscn", "music": "ashcrown", "_note": "M3-AUD-828: Ch5, the Ashcrown temple; the scene has landed"},
+    {"scene": "res://game/levels/ch06/brine_shoals/brine_shoals.tscn", "music": "brine_shoals", "_note": "M3-AUD-828: Ch6, the Shoals; the scene has landed"},
+    {"scene": "res://game/levels/ch07/tamsule/tamsule.tscn", "music": "tamsule", "_note": "M3-AUD-828: Ch7, the port; the scene has landed"},
+    {"scene": "res://game/levels/ch07/tamsule_bell_galleries/tamsule_bell_galleries.tscn", "music": "tamsule_bell_galleries", "_note": "M3-AUD-828: Ch7, the Bell's galleries; the scene has landed"}
   ],
   "battle": {
     "default": "battle_standard_v2",
     "encounters": {
       "drownbell": "drownbell",
-      "ch01_hullgnaw": "hullgnaw"
+      "ch01_hullgnaw": "hullgnaw", "ch04_spar_wraith": "spar_wraith", "ch05_cinder_matron": "cinder_matron", "ch06_inquisitor": "stillguard_inquisitor"
     },
     "phases": {
       "flood": {
@@ -280,7 +289,7 @@
         ],
         "sec": 4.0,
         "_note": "the Flood (phase 2): low strings and the rising water come in over 4 s"
-      }
+      }, "pour": {"stems_on": [1], "sec": 3.0, "_note": "M3-AUD-828: the Cinder Matron's Pour (phase 2): its second stem over 3 s"}
     }
   }
 }
