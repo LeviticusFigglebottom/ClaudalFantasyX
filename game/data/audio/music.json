@@ -223,6 +223,33 @@
       "file": "res://assets/audio/music/drowned_choir.ogg",
       "resume": true,
       "_note": "Ch16, the Drowned Choir. Act II sketch (M3-AUD-805); no zone row until ch16/drowned_choir/drowned_choir.tscn exists"
+    },
+    "rhen_current_hum": {
+      "file": "res://assets/audio/music/rhen_current_hum.ogg",
+      "_note": "Ch1 C1-06, ch01_current_shaft.dlg (M3-AUD-819): Rhen hums phrase 1 of Dace's current-song (motifs.py) riding the shaft; one pass, not a loop"
+    },
+    "going_under": {
+      "file": "res://assets/audio/music/going_under.ogg",
+      "_note": "Ch1 C1-15, ch01_going_under.dlg (M3-AUD-819): the roar falling away, then the whole current-song far below; ends in silence (the last note at 22.9 s)"
+    },
+    "undertow_rising": {
+      "stems": [
+        "res://assets/audio/music/undertow_rising_p1.ogg",
+        "res://assets/audio/music/undertow_rising_p2.ogg"
+      ],
+      "start_stems": [
+        0
+      ],
+      "_note": "Ch1 C1-12 ch01_the_rising.dlg, C1-13 the run; Ch8 B07-B09 ch08_beacon_opened.dlg, ch08_run_back.dlg (M3-AUD-819). Loops after its intro. Intended: C1-13's run brings stem 1 (the pulse) in over 2 s; Ch8 plays stem 0 only"
+    },
+    "corrow_night": {
+      "file": "res://assets/audio/music/corrow_night.ogg",
+      "resume": true,
+      "_note": "Ch9 B01 ch09_strand.dlg, B03 and B08 ch09_the_ebbing.dlg (M3-AUD-819); no zone row until the ch08/corrow night variant exists"
+    },
+    "dawn_road": {
+      "file": "res://assets/audio/music/dawn_road.ogg",
+      "_note": "Ch9 B09 ch09_the_road_out.dlg (M3-AUD-819)"
     }
   },
   "zones": [
