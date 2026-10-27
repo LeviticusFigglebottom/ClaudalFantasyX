@@ -30,7 +30,8 @@ vigil gap in test_iskarra.
 - [x] **Dressing.**
   - The plaza's inlaid channels are glazed, and a Lit Age sunburst is inlaid at its middle.
   - Fallen glazed tiles lie on the paving.
-  - A drowned midground: `iskarra_drowned_block` x2, `iskarra_drowned_dome` x2 and `iskarra_arcade_sunk`, placed in
+  - A drowned midground (`iskarra_drowned_block` x2, `iskarra_drowned_dome` x2, `iskarra_arcade_sunk`) and the far
+    skyline (`iskarra_far_towers`: 44 towers at 180-520 m), placed in
     `iskarra_city.py`.
 - [x] **Figures.** The preview's capsules are replaced by the four modelled heroes, as battle stand-ins at the
   Prologue cast's marks (`iskarra_preview_figures.gd`).

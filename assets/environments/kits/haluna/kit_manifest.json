@@ -530,6 +530,17 @@
         "iskarra_drowned_dome-lod1": 172
       }
     },
+    "iskarra_far_towers": {
+      "budget": [
+        14000,
+        1300
+      ],
+      "bytes": 692348,
+      "lods": {
+        "iskarra_far_towers": 10830,
+        "iskarra_far_towers-lod1": 876
+      }
+    },
     "iskarra_lamp_column": {
       "budget": [
         1500,

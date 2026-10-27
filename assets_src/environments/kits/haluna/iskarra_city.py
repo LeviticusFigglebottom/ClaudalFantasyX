@@ -47,6 +47,7 @@ PIECES = (
     ("DrownedDomeA", "iskarra_drowned_dome", -58.0, 0.0, -52.0, 30.0, 1.0, 1.0),
     ("DrownedDomeB", "iskarra_drowned_dome", 38.0, 0.0, -24.0, 8.0, 0.9, 0.9),
     ("ArcadeSunk", "iskarra_arcade_sunk", -40.0, 0.0, -20.0, 75.0, 1.0, 1.0),
+    ("FarTowers", "iskarra_far_towers", 0.0, 0.0, 0.0, 0.0, 1.0, 1.0),
 )
 
 

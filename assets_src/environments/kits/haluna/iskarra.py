@@ -22,6 +22,9 @@ city one piece for one primitive (iskarra_city.tscn), so its shots keep their co
                          water): tiled walls with arched windows, a blue-glazed band under the cornice, a parapet,
                          its roof terrace fallen in at one end
   iskarra_drowned_dome   (M3-ENV-724) a smaller drowned block (9 x 9 m, 3.6 m over the water) carrying a blue dome
+  iskarra_far_towers     (M3-ENV-724) the drowned city to the horizon: low-poly towers (domed, stepped, broken) with
+                         galleries and a glazed band, out of the sea at 180-520 m behind the plaza (the -Z half and
+                         the flanks), so the skyline is a city, not an empty sea
   iskarra_arcade_sunk    (M3-ENV-724) five bays of a drowned arcade along X (23 m): square piers, round arches,
                          the entablature with its glazed band; the fourth bay's arch and lintel fallen
 
@@ -61,6 +64,7 @@ TRI_BUDGET = {
     "iskarra_tower": (36000, 2400),
     "iskarra_drowned": (9000, 400),
     "iskarra_arcade_sunk": (5000, 300),
+    "iskarra_far_towers": (14000, 1300),
     "iskarra_crown_fallen": (4000, 300),
     "iskarra_plaza": (14000, 600),
     "iskarra_plaza_rise": (3000, 120),
@@ -558,6 +562,46 @@ def build_arcade_sunk(seed: int = 727) -> list[kc.MeshBuilder]:
     return out
 
 
+FAR_RANGE_M = (180.0, 520.0)
+
+
+def build_far_towers(seed: int = 729) -> list[kc.MeshBuilder]:
+    out = []
+    for lod in (False, True):
+        rng = kc.rng_for("iskarra_far_towers", seed)
+        mb = kc.MeshBuilder("iskarra_far_towers" + ("-lod1" if lod else ""))
+        clad, cer, glaze, dark = (mb.material(M_CLAD), mb.material(M_CERAMIC), mb.material(M_GLAZE),
+                                  mb.material(M_DARK))
+        n = 44
+        sides = 4 if lod else 10
+        for k in range(n):
+            # Behind the plaza (-Z) and round the flanks: bearings from -110 to +110 degrees off -Z.
+            bearing = math.radians(-110.0 + 220.0 * (k + rng.uniform(0.1, 0.9)) / n)
+            r = rng.uniform(*FAR_RANGE_M)
+            x, z = math.sin(bearing) * r, -math.cos(bearing) * r
+            rad = rng.uniform(3.0, 7.5)
+            h = rng.uniform(18.0, 70.0) * (0.7 if r < 260.0 else 1.0)
+            kind = rng.integers(0, 3)  # 0 domed, 1 stepped, 2 broken
+            top = h * (0.6 if kind == 2 else 1.0)
+            kc.tube(mb, np.array([[x, -WATERLINE_M, z], [x, top, z]]), np.array([rad, rad * 0.88]), sides, clad,
+                    cap_end=kind != 0)
+            for g in () if lod else np.arange(12.0, top - 3.0, 10.0):  # the galleries and their glazed band
+                rr = rad - 0.12 * rad * g / h
+                ring = np.array([[x, g, z], [x, g + 0.5, z]])
+                kc.tube(mb, ring, rr + 0.6, sides, cer, cap_start=True, cap_end=True)
+                kc.tube(mb, np.array([[x, g - 1.4, z], [x, g - 0.4, z]]), rr * 1.02 + 0.03, sides, glaze)
+                kc.tube(mb, np.array([[x, g - 4.2, z], [x, g - 2.4, z]]), rr * 1.01 + 0.02, sides, dark)
+            if kind == 0:
+                dome = np.array([[x, top, z], [x, top + rad * 0.6, z], [x, top + rad * 0.95, z]])
+                kc.tube(mb, dome, np.array([rad * 0.9, rad * 0.62, 0.05]), sides,
+                        glaze if rng.random() < 0.3 else cer)
+            elif kind == 1:
+                kc.tube(mb, np.array([[x, top, z], [x, top + h * 0.25, z]]), np.array([rad * 0.6, rad * 0.5]), sides,
+                        clad, cap_end=True)
+        out.append(mb)
+    return out
+
+
 TARGETS = {
     "iskarra_tower_spire": lambda: build_tower("spire", 731),
     "iskarra_tower_stepped": lambda: build_tower("stepped", 732),
@@ -575,4 +619,5 @@ TARGETS = {
     "iskarra_drowned_dome": lambda: build_drowned_block("iskarra_drowned_dome", 728, w=9.0, d=9.0, h=3.6,
                                                         dome=True),
     "iskarra_arcade_sunk": build_arcade_sunk,
+    "iskarra_far_towers": build_far_towers,
 }
