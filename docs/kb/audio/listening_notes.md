@@ -923,3 +923,14 @@ Play the prologue and Cutscene A in Haluna. Listen for:
 - **Steps in cutscenes:** Rhen crossing the plaza. Wet stone in the prologue is `stone`; Haluna's beach is sand,
   its shallows water.
 - **Cloth on `look_at`:** very quiet (−27). Too much over 63 uses?
+
+## M3: Act I cutscene cues (M3-AUD-818)
+Sixty-eight `@sfx` cues, heard in their cutscenes (the F8 chapter select reaches them). The ones to hear first:
+- **Ch1 undertow_wall_roar:** the sea coming in, under "Go! Don't look back, go!". Big enough?
+- **Ch7 crowd_up:** ten thousand people saying "Up." low and together. Does it read as one word from a crowd, or as
+  a wash? The second use is louder, and should sound ragged.
+- **The hums and songs:** Neme's hum at the wake, Asha's lullaby on the wall, Pell's storm call, and the figure's
+  song in the current. These are synth voices, so their timbre is the risk.
+- **Ch8's set piece** (the Reach, the breach, the stone falling): the loudest cues in Act I (−15 to −17). Are they
+  too much against the music cues there?
+- **Ch9 staff_bell_shells and harbour_lap:** the Ebbing's quiet; nothing should crowd the dance.

@@ -1,0 +1,46 @@
+"""Every `@sfx <id>` a cutscene names has its file (M3-AUD-818). The CutsceneSequencer plays
+`<sequencer.json sfx_dir><id>.ogg` and only warns "no sound" when it is missing, so a cue with no file is silent and
+nothing fails. This test fails instead, naming the cue and its .dlg. Audio's sources are assets_src/sfx/act1_cutscene_sfx.py
+and the older battle_sfx.py (drownbell_toll). Run: python3 -m unittest discover -s tools/tests"""
+import json
+import re
+import unittest
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[2]
+SFX_CUE = re.compile(r"^\s*@sfx\s+(\S+)", re.M)
+
+
+def sfx_dir() -> Path:
+    cfg = json.loads((ROOT / "game/data/cutscene/sequencer.json").read_text(encoding="utf-8"))
+    return ROOT / str(cfg["sfx_dir"]).removeprefix("res://")
+
+
+def missing() -> list[str]:
+    out = []
+    base = sfx_dir()
+    for dlg in sorted((ROOT / "game/data/dialogue").rglob("*.dlg")):
+        if dlg.name.startswith("test_"):
+            continue  # the parser's fixtures name made-up cues on purpose
+        for m in SFX_CUE.finditer(dlg.read_text(encoding="utf-8")):
+            if not (base / f"{m.group(1)}.ogg").is_file():
+                out.append(f"{dlg.relative_to(ROOT)}: @sfx {m.group(1)}")
+    return out
+
+
+class CutsceneSfxFilesTest(unittest.TestCase):
+    def test_every_sfx_cue_has_a_file(self) -> None:
+        self.assertEqual(missing(), [], "render it (tools/audio/render_all.py) or ask audio for it")
+
+    def test_the_act1_source_renders_into_the_sequencers_folder(self) -> None:
+        import importlib.util
+        spec = importlib.util.spec_from_file_location("act1_cutscene_sfx", ROOT / "assets_src/sfx/act1_cutscene_sfx.py")
+        mod = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(mod)
+        self.assertEqual(Path(mod.OUT_DIR).resolve(), sfx_dir().resolve())
+        names = [n for n, _, _ in mod.CUES]
+        self.assertEqual(len(names), len(set(names)), "each cue once")
+
+
+if __name__ == "__main__":
+    unittest.main()

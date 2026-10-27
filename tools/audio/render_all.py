@@ -214,6 +214,9 @@ JOBS = [
      "sfx"),
     ("assets_src/sfx/prologue_ambience.py", "assets/audio/ambience", ["iskarra_dusk.ogg", "iskarra_dusk.loop.json"],
      "ambience_loop"),
+    # M3-AUD-818: Act I's cutscene `@sfx` cues (the sequencer plays assets/audio/sfx/<id>.ogg)
+    ("assets_src/sfx/act1_cutscene_sfx.py", "assets/audio/sfx", _source_files("assets_src/sfx/act1_cutscene_sfx.py"),
+     "sfx"),
     # M3-AUD-804: Act II sketches (Ch10 Ossa Fen and Reedhollow, Ch11 Sunken Vey and Lowlight, Ch12 Keth Pass and Quellan)
     ("assets_src/music/ossa_fen.py", "assets/audio/music", ["ossa_fen.ogg", "ossa_fen.loop.json"], "music_loop"),
     ("assets_src/music/reedhollow.py", "assets/audio/music", ["reedhollow.ogg", "reedhollow.loop.json"], "music_loop"),
