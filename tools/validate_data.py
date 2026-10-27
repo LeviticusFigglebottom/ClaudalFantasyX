@@ -2597,6 +2597,8 @@ def _set_piece_objective_errors(obj: object, w: str, wards: set[str], phases: se
         errs.append(f"{w}: objective.outcome must be one of {sorted(SET_PIECE_OUTCOMES)}")
     if "from_phase" in obj and obj["from_phase"] not in phases:
         errs.append(f"{w}: objective.from_phase '{obj['from_phase']}' is no phase of this encounter's foes")
+    if "carry_flag" in obj and (not isinstance(obj["carry_flag"], str) or not re.fullmatch(r"[a-z0-9_]+", obj["carry_flag"])):
+        errs.append(f"{w}: objective.carry_flag must be a flag name (M3-UI-100's running total)")
     return errs
 
 

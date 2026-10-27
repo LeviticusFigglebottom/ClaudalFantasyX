@@ -141,5 +141,6 @@ flags = {
 "ch06_dug_without_asking": "Ch6 B09 choice: Rhen knelt and dug beside Liss without asking whose lamp it was. Ch11: 'You dug. You didn't ask.'",
 "ch06_done": "Ch6 B10: the party waded the shoal channel at dawn toward Tamsule (the chapter's end).",
 "ch08_hoist_rigged": "Ch8 B11: Liss has rigged the hoist on the Fisher Stair (unlocks her Haul in the set-piece battles: skills.json hoist_haul requires_flag; M3-CMB-01).",
-"ch08_virel_bound": "Ch8 B06: Asha has bound Virel, the Fire Vowbound (vowbound.json bound_flag; Virel is callable from B16 on; M3-CMB-01)."
+"ch08_virel_bound": "Ch8 B06: Asha has bound Virel, the Fire Vowbound (vowbound.json bound_flag; Virel is callable from B16 on; M3-CMB-01).",
+"ch08_stair_groups_up": "Ch8 set piece (numeric): groups up the Fisher Stair across the stair waves. The flow (M3-C08-02) adds each wave's objective_count after the wave and restores the wave-start value on Fight again (set_piece_battles.md 5); the battle HUD's stair meter shows it as the running total (M3-UI-100). Named by encounters.json objective.carry_flag."
 }
