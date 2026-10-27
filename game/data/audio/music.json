@@ -223,6 +223,30 @@
       "file": "res://assets/audio/music/drowned_choir.ogg",
       "resume": true,
       "_note": "Ch16, the Drowned Choir. Act II sketch (M3-AUD-805); no zone row until ch16/drowned_choir/drowned_choir.tscn exists"
+    },
+    "lanternfall": {
+      "file": "res://assets/audio/music/lanternfall.ogg",
+      "_note": "Ch5 B04-B06, Lanternfall in Pemakar (ch05_lanternfall_boats.dlg, ch05_lanternfall_weir.dlg, ch05_inn_gate.dlg; M3-AUD-821): the town's festival music, thinning to one drum that loops at the weir"
+    },
+    "hush_second_verse": {
+      "file": "res://assets/audio/music/hush_second_verse.ogg",
+      "_note": "Ch5 B10, the second verse in Ashcrown's anvil court (ch05_kahre.dlg; M3-AUD-821); not looped; mir at 31.54 s, the thunder at 32.59 s"
+    },
+    "kerrid_stair": {
+      "file": "res://assets/audio/music/kerrid_stair.ogg",
+      "_note": "Ch5 B05 close, Kerrid falls in at the weir (ch05_lanternfall_weir.dlg; M3-AUD-821); his motif's first statement, not looped (motifs.py KERRID_STAIR)"
+    },
+    "liss_theme": {
+      "file": "res://assets/audio/music/liss_theme.ogg",
+      "_note": "Ch6 B06-B07 in the burned camp, the Brine Shoals (ch06_after_barge.dlg, ch06_liss_lantern.dlg; M3-AUD-821): Liss's theme"
+    },
+    "raid": {
+      "file": "res://assets/audio/music/raid.ogg",
+      "_note": "Ch6 B03, the raid on the salvage camp (ch06_raid.dlg; M3-AUD-821): fire, a drum and the Order's hum; it leaves its first 23 s to the stillguard_hum SFX"
+    },
+    "shoals_dusk": {
+      "file": "res://assets/audio/music/shoals_dusk.ogg",
+      "_note": "Ch6 B08, the camp on the wreck-ridge at night (ch06_ridge_camp.dlg; M3-AUD-821): the shoals' tune on one reed and the tide"
     }
   },
   "zones": [

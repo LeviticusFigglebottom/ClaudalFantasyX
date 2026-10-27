@@ -934,3 +934,86 @@ Sixty-eight `@sfx` cues, heard in their cutscenes (the F8 chapter select reaches
 - **Ch8's set piece** (the Reach, the breach, the stone falling): the loudest cues in Act I (−15 to −17). Are they
   too much against the music cues there?
 - **Ch9 staff_bell_shells and harbour_lap:** the Ebbing's quiet; nothing should crowd the dance.
+
+## M3: Act I's Ch5 and Ch6 scripted cues (M3-AUD-821)
+
+Seven cues that Act I's scripts already call with `@music` (and the Kahre sting). Each is heard in its scene on
+claude/act1-chapters (the F8 chapter select reaches Ch5 and Ch6), or on its own.
+
+| # | File | Length | Plays |
+|---|---|---|---|
+| 1 | `music/lanternfall.ogg` | 60.0 s intro + 32.0 s loop | Ch5 B04-B06: Lanternfall, the boats, the weir, the inn gate |
+| 2 | `music/hush_second_verse.ogg` | 46.6 s, once | Ch5 B10: the second verse in Ashcrown's anvil court |
+| 3 | `music/kerrid_stair.ogg` | 20.0 s, once | Ch5 B05's close: Kerrid falls in at the back of the line |
+| 4 | `sfx/kahre_summon.ogg` | 6.0 s sting | Any battle: Asha calls Kahre |
+| 5 | `music/liss_theme.ogg` | 61.1 s loop | Ch6 B06-B07: after the barge, Liss and the lantern |
+| 6 | `music/raid.ogg` | 92.3 s loop | Ch6 B03: the raid on the salvage camp |
+| 7 | `music/shoals_dusk.ogg` | 63.6 s loop | Ch6 B08: the camp on the wreck-ridge at night |
+
+### (1) Lanternfall: the town's own music, thinning
+
+- **The idea:** diegetic. Six flutes play one procession tune in Pemakar's five-note scale on F, each a little out of
+  tune with the others (28 cents flat to 33 sharp), a little early or late, two an octave up. Kettle gongs on the
+  downbeats, a large gong every four bars, a big drum on 1 and a frame drum on 3. From bar 9 one flute stops each
+  bar; the second statement starts with three and the last flute stops mid-tune. Then only the big drum is left, and
+  that is the loop (32 s), so the weir scene can run as long as it likes.
+- **Is the out-of-tune heterophony a town playing together, or just sour?** If sour, I'd halve the detune spread
+  before touching the tune.
+- Does the thinning land near the weir? The festival is gone by about 52 s; the boats scene may run longer than
+  that on a slow read.
+- The inn gate (B06) calls `@music lanternfall` again and so restarts the whole festival, not a distant one. A
+  distant mix would be a volume or filter on that call, or a variant cue (a question for Story and Tech).
+
+### (2) The second verse: the Hush to the mountain
+
+- **The idea:** the first verse's voice (a breath flute shaped by an open "ah") over the same A drone, singing the
+  Hush theme's second phrase (MEL_B) note for note, one line per sung line, ending on the phrase's own G#, held. The
+  plume flashes as *mir* starts (31.54 s) and the thunder comes a beat later (32.59 s), rolling down the mountain for
+  about 7 s with the voice still holding under it. Then the voice answers once, far back, G# rising to A.
+- **The thunder:** does it feel like the mountain answering (a hammer), or like a storm? Is it too loud under Rhen's
+  line? It is level with the voice over its first 3 s.
+- **Does the held G# over the A drone sound like a question, or like a wrong note?**
+- ch05_kahre.dlg still fires `@sfx plume_thunder` after line 017; with the cue's own thunder that doubles it.
+
+### (3) Kerrid's stair: the tread
+
+- **The idea:** his motif (motifs.py KERRID_STAIR): a low bowed string, D falling to A, one note a stride, over a
+  big frame drum on every beat at 48 BPM, the first of each pair heavier. A second string an octave down joins from
+  the second statement. No chord is stated, so `goodbye_kerrid` can harmonize the same two notes and slow them.
+- **The bowed string is a new synth voice** (a sawtooth with bow noise through a cello body). Does it sound bowed, or
+  like an organ? If it's an organ, I'd add more bow noise at the start of each stroke.
+- Heavy and patient, or dirge-like?
+
+### (4) Kahre's sting
+
+- **The idea:** a hammer on an anvil, then a white crack of lightning a fifth of a second later, then the Hush's
+  second phrase (A G F | G D) on low brass two octaves down, the last D held under the anvil's ring.
+- **The brass is a new synth voice** (additive, it brightens as it gets louder). Brass, or a reed organ?
+- Does the crack read as lightning (white) or as a gunshot?
+
+### (5) Liss: bright and guarded
+
+- **The idea:** a small, bright wright-built cittern plays the tune in D major over a tide-wheel of seven wooden
+  paddles knocking on a seven-eighth cycle, so the wheel's accent walks across the bar and lands a little late. The
+  tune never closes on D: E, A, a C major bar, a step aside to B.
+- **Is the wheel "a little off the beat", or just wrong?** If it's wrong, I'd remove its lag (32 ms) first and keep
+  the seven-cycle.
+- Bright and guarded, or just cheerful?
+
+### (6) The raid
+
+- **The idea:** almost no score. Fire (a roar and crackle), a big low frame drum on 1 and 3 at the Order's tempo
+  (52 BPM), and men humming the Order's tune (motifs.py ORDER_HUM) in G. The loop leaves its first 23 s to the
+  scene's own `stillguard_hum` SFX (the near men), then the cue's men hum it further off, then fire alone, then
+  fewer men further still.
+- **With the SFX:** does the first hum (the SFX) sit over the fire and drum, and does the cue's own hum sound like
+  more men across the camp, not a second recording of the same ones?
+- **Calm and frightening, or merely sleepy?** If sleepy, I'd raise the drum before the hum.
+
+### (7) The shoals at night
+
+- **The idea:** the Brine Shoals' field bed thinned to one low reed playing its tune (brine_shoals.py TUNE_A, an
+  octave down) with long rests, and the tide coming in over the flats, swelling and drawing back seven times a loop.
+  B09 (the burned lamp) cuts it to silence and the `tide_ambience` SFX.
+- **The reed** is act2_voices.py's fen pipe with its nasal edge softened. Lonely, or thin?
+- Is the tide too loud for a night bed? It carries the bed where the reed rests (about 8 LU under the reed).

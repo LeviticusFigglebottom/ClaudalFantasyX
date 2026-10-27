@@ -17,6 +17,7 @@ RULES = [
     ("music/*.ogg", "integrated", -16.0, 0.5, -1.0, "music beds, themes and cutscene cues"),
     ("ambience/*.ogg", "integrated", -26.0, 0.5, -5.0, "ambience beds (mix.md: -26, peaks well down)"),
     ("sfx/ilun_summon.ogg", "integrated", -16.0, 0.5, -1.0, "a music sting (Music bus)"),
+    ("sfx/kahre_summon.ogg", "integrated", -16.0, 0.5, -1.0, "a music sting (Music bus; M3-AUD-821)"),
     ("sfx/battle/stinger_*_soft.ogg", "momentary", -17.0, 1.0, -1.0, "reduced-audio stingers"),
     ("sfx/battle/stinger_*.ogg", "momentary", -16.0, 1.0, -1.0, "opening stingers"),
     ("sfx/battle/drownbell_toll_soft.ogg", "momentary", -17.0, 1.0, -1.0, "the reduced-audio toll"),
