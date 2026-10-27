@@ -2,7 +2,7 @@
 id: M3-BPR-406
 title: "Ch8 set pieces on stage: entries, intercepts, counters, withdrawals, the Reach's phases (ADR 0100)"
 role: combat
-status: todo
+status: doing
 owner_session: claude/battle-presentation
 depends_on: [M3-CMB-01]
 milestone: M3
@@ -40,8 +40,16 @@ evacuation, and nobody's death is a joke.
   - `breach` itself plays the toll-wave language of the Drownbell (BattleBossVfx), which pushes the stair entry.
 - **Audio hooks:** reuse BattleImpact.landed; new `intercepted` and `withdrew` events for audio (request later).
 
+## Progress (2026-10-27)
+- [x] Every Ch8 encounter plays to its result panel at full pacing through the controller and the choreography
+      (test_battle_set_piece_stage).
+- [x] Withdrawals: the foe backs away and is hidden (it used to stay standing); reduced motion hides it in place.
+- [x] Counters: the hero's riposte clip, then the attacker's clip-only reaction; a riposte KO falls once home.
+- [ ] Intercept step-in (needs a stair position on the arena: env-art/act1-chapters' Ch8 arena, not built yet).
+- [ ] The Reach's intro row, the breach_gather push-in, and the phase looks: these need PC renders to tune.
+
 ## Acceptance criteria
-- [ ] Every Ch8 encounter plays to its end at full pacing with no script error (a test drives each by policy).
+- [x] Every Ch8 encounter plays to its end at full pacing with no script error (a test drives each by policy).
 - [ ] Freeze-frame shots: an intercept at contact, a counter at contact, a withdrawal mid-way, the Reach's intro.
 - [ ] Reduced motion: no camera push-in; withdrawals fade in place.
 

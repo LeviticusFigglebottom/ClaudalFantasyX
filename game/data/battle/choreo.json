@@ -62,6 +62,7 @@
       "miss": {"sec": 0.3, "dodge_m": 0.32, "clip": "dodge"}
     },
     "ko": {"delay_sec": 0.12, "collapse_sec": 0.5, "tilt_deg": 62.0, "drop_m": 0.18, "clip": "ko"},
+    "counter": {"doc": "M3-BPR-406 (ADR 0100): a counter stance answers a landed physical hit at once: the hero's attack clip starts delay_sec after the blow's strike ends, and the attacker's reaction lands on that clip's contact frame (clip only: the attacker keeps its run). Felled by it, the attacker collapses once it is home.", "delay_sec": 0.08},
     "withdraw": {"doc": "M3-BPR-406 (ADR 0100): a withdrawn foe is not felled: it backs away from the party by back_m over sec (eased in, at the battle speed) and is hidden; reduced motion hides it in place.", "back_m": 1.4, "sec": 0.7},
     "spacing": {
       "doc": "M3-BPR-402: a melee run stops so the actor, at the end of its lunge, keeps its radius + each body's radius + clearance_m from everyone in its path: heroes and creatures never interpenetrate. A radius is the model's footprint (the mean of its meshes' half-width and half-depth about the stand-in's origin, times footprint_k), else battle_sandbox.json stand_ins radius for a primitive.",

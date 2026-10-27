@@ -87,3 +87,33 @@ func test_a_withdrawn_foe_leaves_the_stage_without_a_collapse() -> void:
 		assert_true(f.has_meta(BattleStage.WITHDRAWN_META))
 		assert_true(foe.hp > 0, "not felled")
 		_free()
+
+
+func test_a_counter_is_answered_after_the_blow_by_the_hero_it_struck() -> void:
+	_make()
+	var active: Array[StringName] = [&"rhen", &"asha"]
+	var none: Array[StringName] = []
+	ctl.start_battle(active, none, &"sandbox_reef", SEED)
+	var foe := ctl.engine.enemies[0]
+	var r := ActionResult.new()
+	r.actor_id = foe.id
+	r.skill_id = &"attack"
+	r.hits = [
+		{"target_id": &"rhen", "hit": true, "crit": false, "amount": 20, "statuses_added": []},
+		{"target_id": foe.id, "hit": true, "crit": false, "amount": 15, "statuses_added": [], "counter_by": &"rhen"},
+	]
+	var data := ctl.stage.choreo.data
+	var plan := BattleChoreoPlan.plan_for(data, ctl.engine, r)
+	assert_eq(plan["targets"], [&"rhen"] as Array[StringName], "the riposte does not make the foe its own target")
+	var answer: Dictionary = {}
+	for re: Dictionary in plan["reactions"]:
+		if re["target"] == foe.id:
+			answer = re
+	assert_false(answer.is_empty(), "the struck foe reacts to the riposte")
+	assert_eq(answer["counter_by"], &"rhen")
+	assert_true(float(answer["at"]) > float(plan["strike_end"]), "after its own blow")
+	foe.hp = 0
+	plan = BattleChoreoPlan.plan_for(data, ctl.engine, r)
+	assert_true((plan["kos"] as Array).has(foe.id), "a riposte can fell it")
+	assert_true(float(plan["ko_at"]) >= float(plan["return_end"]), "and it falls once it is home")
+	_free()

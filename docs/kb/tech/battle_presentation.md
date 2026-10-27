@@ -620,3 +620,22 @@ reef crab toward the camera and behind the command menu. Each fighter moves at
 most `lineup_max_shift_m` (0.6) off its mark, which keeps the camera's safe frames valid. It runs only at spawn,
 before BattleChoreo caches each fighter's home; fighters who join mid-battle keep their marks.
 Test: `tests/unit/test_battle_lineup.gd` (every encounter's opening line-up; it fails with the spread off).
+
+## Set pieces on stage (M3-BPR-406, ADR 0100)
+Ch8's evacuation battles (docs/kb/design/set_piece_battles.md) add things the stage had never seen.
+- **Entries** (the Climb, the Surge, the Kirru) have no fighter. Their turns plan and play with no actor body
+  (tested: all four Ch8 encounters play to their result panel through the controller at full pacing,
+  `tests/unit/test_battle_set_piece_stage.gd`). UI draws their timeline glyphs (set_piece_battles.md §8 request 1).
+- **Withdrawals** (`BattleCombatant.withdrawn`: Pell's Storm-Call, the foes left when an objective ends) used to
+  leave the foe standing. BattleStage.refresh_ko knew only HP 0 and yielded. The foe now backs away from the party by
+  choreo.json `withdraw.back_m` over `sec` and is hidden, with no KO collapse; it is not a death. Reduced motion or
+  instant pacing hide it at once.
+- **Counters** (`counter_by` on an appended hit). The planner used to skip any hit on the actor, so the riposte
+  showed nothing. Now:
+  - the countering hero plays its attack clip `counter.delay_sec` after the blow's strike;
+  - the attacker's reaction (clip only, so it keeps its run) lands on that clip's contact frame;
+  - an attacker felled by the riposte collapses once it is home.
+- **Intercepts** (`ActionResult.intercepted_by`). The engine already aims the ward skill at the guard, so the foe
+  runs at Toma and strikes him. Showing the intercept in words is UI's (§8 request 3).
+- **Still to do** (task M3-BPR-406): the Reach's boss intro row and its `breach_gather` push-in, and a look for
+  untargetable or damage-immune phases. Both need PC renders to tune.
