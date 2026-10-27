@@ -79,6 +79,20 @@ RENDER-REQUEST @ 60b62678: battle_arena_wall_head,battle_boss_intro_reach; why: 
 - Refactor a03c6cd3: the reaction pose moved to BattleChoreoPlan; battle_choreo.gd is now 969 lines.
 - M3-BPR-405 is fulfilled by audio's M3-AUD-816. Audio drops `pending` when this branch merges.
 
+**MERGE-READY @ 2d988e27:** M3-BPR-401 (incl. the hit-stop hold fix f8cd9269), 402, 403, M2-HER-1114, M3-BPR-406
+(Ch8 so far), M3-BPR-408 (Act II intros by enemy id), and M3-C08-100's barks.
+- Merge the branch head; it carries big10.
+- **Checks run:** gdlint, gdformat, validate_data 0/0, taskboard --check, and Godot `--filter=battle` 716/0 at 19172f4c
+  plus the scoped filters after (boss 58/0, set_piece_stage 5/0, placeholder 8/0).
+- **Checks skipped:** coverage (no battle-core change), Blender (none touched).
+- **Known red until the PC render is approved:** tools test_screenshots, which has no baseline yet for
+  battle_boss_intro_reach and battle_arena_wall_head.
+- **Shots:** every one that can move is in the render requests above. None is approved yet: approval needs the PC
+  renders.
+- **Pillar 4 check:** the boss intro and the C10 summon both keep the timeline and party panel visible, so who acts
+  next stays on screen. Every new impact or motion respects reduced motion and the shake setting (tested): no
+  shake, no withdrawal motion, no Breach push-in, and a dimmer flash.
+
 ### FAST-TRACK M3-BPR-404 on the post-big9 integration branch (updated 2026-10-27)
 - **Cherry-picking 269054a3 and 4e89c967 now conflicts on the six baseline PNGs.** big9 re-approved them with the
   real heroes, and the PNGs in my commits were rendered with primitive heroes.
