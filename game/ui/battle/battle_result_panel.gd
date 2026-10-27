@@ -224,9 +224,14 @@ func open_duration() -> float:
 	return maxf(HudLayout.num(_open_m, "sec"), stagger + tail)
 
 
-## True while the open (and its counting) is still playing.
+## True while numbers are still counting up (a defeat or escape has none to count).
 func is_counting() -> bool:
-	return _open_tween != null and _open_tween.is_valid() and _open_tween.is_running()
+	if _counters.is_empty() or _open_tween == null or not _open_tween.is_valid() or not _open_tween.is_running():
+		return false
+	for c in _counters:
+		if (c["label"] as Label).text != _count_text(c, int(c["n"])):
+			return true
+	return false
 
 
 func _set_count(value: float, c: Dictionary) -> void:
