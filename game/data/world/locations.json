@@ -129,6 +129,27 @@
       "_note": "M4-C11-02: Lowlight, the temple half underwater (act_outline Ch11), a greybox zone (Ch11Zone): the atrium (the lamp bench), the Lamp Engine's hall, the well-shaft's flights down to the drowned sanctum (Nhoa)."
     },
     {
+      "id": "ch12/keth_pass",
+      "scene": "res://game/levels/ch12/keth_pass/keth_pass.tscn",
+      "spawn": "PassFoot",
+      "name_key": "LOCATION_CH12_KETH_PASS",
+      "_note": "M4-C12-02: Keth Pass, the mountain route (act_outline Ch12), a greybox zone (Ch12Zone) from tools/act1/ch12_greybox.py: the switchback flights, the pass-cords, the knotted cord post, the Ram's terrace shelf, the saddle."
+    },
+    {
+      "id": "ch12/quellan",
+      "scene": "res://game/levels/ch12/quellan/quellan.tscn",
+      "spawn": "FromPass",
+      "name_key": "LOCATION_CH12_QUELLAN",
+      "_note": "M4-C12-02: Quellan, the highland town (act_outline Ch12), a greybox zone (Ch12Zone): the street, the inn, the well, the road up to Cloudloom."
+    },
+    {
+      "id": "ch12/cloudloom",
+      "scene": "res://game/levels/ch12/cloudloom/cloudloom.tscn",
+      "spawn": "Approach",
+      "name_key": "LOCATION_CH12_CLOUDLOOM",
+      "_note": "M4-C12-02: Cloudloom, the summit temple (act_outline Ch12), a greybox zone (Ch12Zone): the stair up, the open-roofed weaving-hall and its keth, Hesk's dais."
+    },
+    {
       "id": "ch06/brine_shoals",
       "scene": "res://game/levels/ch06/brine_shoals/brine_shoals.tscn",
       "spawn": "Entry",
