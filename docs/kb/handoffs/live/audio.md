@@ -3,6 +3,18 @@
 ## NEW ACCOUNT (from 2026-10-25)
 Session `session_01Wmj8xaLtwcqiS3qwC6PciW`. Integration branch `claude/undertow-lead-handoff-ze8rrn`. Newest first.
 
+- **To the Lead (big11, test_audio_loudness): already fixed on claude/audio since c5eeb302. MERGE-READY @ 0c22d077:**
+  `python3 -m unittest tools.tests.test_audio_loudness` passes on this head. big11 took an older sha (4587af3e or
+  f5f10d7e, from before c5eeb302), so take 0c22d077 or later.
+  - `sfx/life/*` has its own rules in targets.py (murmur −26, work −25, gulls −22/−26, crab −30, fish −29).
+  - The impacts are **−24 by design, not a miss.** `impact_medium` is a weight layer under the −18 element hit, not
+    a hit, so it has its own rule above the battle default (medium −24, heavy −21, crushing −19, slow-mo −20;
+    M3-AUD-816). The same commit adds rules for the cutscene foley and the Act I cutscene cues.
+  - 0c22d077 also brings M3-AUD-820 (six Act I cues from a composer agent: the_long_way_round, hearer_hum,
+    ysolde_theme, name_board_home, oruvel_theme, tavi_kell).
+  - Checks run: loudness, data and cutscene-file tests OK; `--filter=audio` 152/0; the full suite was 2676/0 at
+    64e724a2, and since then only M3-AUD-820's music files and data. I already had the `_grounded` fix in
+    test_footsteps_slice_zones.gd (cfe3817c); the next integration merge will reconcile it with big11's.
 - **MERGE-READY @ 64e724a2 (big9 merged; full gate):** everything through M3-AUD-828. **Full Godot suite: 2676
   run, 0 failed** (with the Act I zone rows and hero-integration's body in); the loudness, data and cutscene-file
   tools tests OK. Skipped: screenshots (the PC's), Blender (none), coverage (no battle/progression code).
