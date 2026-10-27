@@ -175,3 +175,30 @@ static func footprint(f: Node3D, data: Dictionary) -> float:
 	var half_x := maxf(-lo.x, hi.x)
 	var half_z := maxf(-lo.z, hi.z)
 	return (half_x + half_z) * 0.5 * float((data.get("spacing", {}) as Dictionary).get("footprint_k", 1.0))
+
+
+## [offset, toward, lean_deg] for a target's reaction `r` at plan time `t` (home when its own clip plays it, except
+## clip_recoil_k of the root push). `react_k` is the style's react_scale (a heavy blow, the toll, recoils harder);
+## `tilt_k` scales the tilt (reduced motion). Moved from BattleChoreo (its line cap).
+static func reaction_pose(
+	data: Dictionary, r: Dictionary, t: float, contact: float, react_k: float, tilt_k: float
+) -> Array:
+	var away: Vector3 = r["dir"]
+	var def := (data.get("reaction", {}) as Dictionary).get(r["kind"], {}) as Dictionary
+	var sec := float(def.get("sec", 0.0))
+	var c := float(r.get("at", contact))
+	var clip_k := float(def.get("clip_recoil_k", 0.0)) if str(r["kind"]) == BattleChoreo.REACT_DAMAGE else 0.0
+	if (bool(r["clip"]) and clip_k <= 0.0) or t < c or sec <= 0.0:
+		return [Vector3.ZERO, away, 0.0]
+	var w := sin(PI * clampf((t - c) / sec, 0.0, 1.0)) * float(r.get("weight", 1.0))  # M3-BPR-401
+	if bool(r["clip"]):
+		w *= clip_k  # its own hit clip plays in place: a smaller root push under it
+	match str(r["kind"]):
+		BattleChoreo.REACT_DAMAGE:
+			w *= react_k
+			return [away * float(def.get("recoil_m", 0.0)) * w, away, float(def.get("tilt_deg", 0.0)) * w * tilt_k]
+		BattleChoreo.REACT_HEAL:
+			return [Vector3.UP * float(def.get("lift_m", 0.0)) * w, away, 0.0]
+		BattleChoreo.REACT_MISS:
+			return [Vector3.UP.cross(away).normalized() * float(def.get("dodge_m", 0.0)) * w, away, 0.0]
+	return [Vector3.ZERO, away, 0.0]
