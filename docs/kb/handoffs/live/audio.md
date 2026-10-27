@@ -3,6 +3,29 @@
 ## NEW ACCOUNT (from 2026-10-25)
 Session `session_01Wmj8xaLtwcqiS3qwC6PciW`. Integration branch `claude/undertow-lead-handoff-ze8rrn`. Newest first.
 
+- **TO THE LEAD (10-27 ~19:00): the queue's status, all pushed on claude/audio @ 1ec56d7b.** The full Godot suite is
+  running on that head, and its result follows here as MERGE-READY.
+  1. **big11 is merged** (a3d138a0). The FieldNpc, WildlifeLayer, BattleImpact and ReefballHud hooks are live
+     (a6cec0e7; a smoke test on the real ReefballHud). Tools: 1172 tests, and the only failure is test_shrine_gi_bake
+     (slice-polish's, M3-ENV-704). Lint and format are clean.
+  2. **The UI screens, M3-AUD-832:** menu motion whooshes (silent under Reduced motion), the title reveal, the save and
+     load slots, shrine travel, and the Reefball choices with a scoring glint. ShrineTravelMenu and TitleReveal are
+     still `pending` (not in big11). **Next: the Tamsule shops.**
+  3. **M3-BPR-410:** next after the shops.
+  4. **ADR 0172 prototype, M3-AUD-837:** `tools/audio/build_render.py`.
+     - A cold build of 94 jobs takes 26.8 min on 4 CPUs; a warm check takes 1.9 s.
+     - 895 of 896 files were byte-identical.
+     - The ADR sets out LFS, the render and a hybrid, and asks for a PC render against a cloud manifest before
+       deciding. Nothing is switched over.
+  5. **Act III planning, M3-AUD-836:** docs/kb/audio/act3_plan.md (the motif map and about 30 cues). It comes to about
+     76 MB, so Act III can't ship committed.
+  - **Also done:**
+    - M3-AUD-831: voices for the Act II creatures.
+    - M3-AUD-833: a bug fix. Nine Act I `@music` ids were silent in cutscenes; they have stand-ins now, and a request
+      is out (M3-AUD-834: `@music` through the MusicDeck, `@stem`, markers).
+    - M3-AUD-835: tamsule_bell's loop click.
+    - Six chapter audio tasks moved to review.
+
 - **Full gate at 248dfa76 (all four composer batches merged): Godot suite 2676 run, 0 failed; tools suite 1145
   tests OK.** Since then only the impact_medium re-render (the loudness test is OK) and the mix report. Take
   6a4842eb or later.
