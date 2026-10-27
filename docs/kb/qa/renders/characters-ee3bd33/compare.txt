@@ -1,0 +1,10 @@
+PASS toma_clip_walk_cycle: rmse 0.00643 (limit 0.00800)
+FAIL liss_front: no baseline (inspect out/, then compare.py --update-baselines liss_front)
+FAIL liss_back: no baseline (inspect out/, then compare.py --update-baselines liss_back)
+FAIL liss_three_quarter: no baseline (inspect out/, then compare.py --update-baselines liss_three_quarter)
+FAIL liss_face: no baseline (inspect out/, then compare.py --update-baselines liss_face)
+FAIL liss_face_stylized: no baseline (inspect out/, then compare.py --update-baselines liss_face_stylized)
+FAIL liss_silhouette_vs_rhen: no baseline (inspect out/, then compare.py --update-baselines liss_silhouette_vs_rhen)
+FAIL liss_clip_haul_rope: no baseline (inspect out/, then compare.py --update-baselines liss_clip_haul_rope)
+Screenshots: 8 compared, 7 failed (diffs in /home/user/wt/render/tests/screenshots/out/diff)
+compare exit 1
