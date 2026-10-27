@@ -70,7 +70,7 @@ func bind(skel: Skeleton3D) -> int:
 ## One frame: measures the floor under each foot, eases the offsets and bends the legs. `delta` <= 0 puts the
 ## offsets straight on the floor (the first frame always does). Returns how many legs it bent.
 func apply(skel: Skeleton3D, delta: float) -> int:
-	if bind(skel) == 0 or not skel.is_inside_tree():
+	if not bool(tuning.get("enabled", true)) or bind(skel) == 0 or not skel.is_inside_tree():
 		return 0
 	var xf := skel.global_transform
 	var root_y := xf.origin.y

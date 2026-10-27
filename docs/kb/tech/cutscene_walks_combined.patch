@@ -1,0 +1,231 @@
+diff --git a/game/cutscene/cutscene_motion.gd b/game/cutscene/cutscene_motion.gd
+index 3e0f0080..7c0a6d3e 100644
+--- a/game/cutscene/cutscene_motion.gd
++++ b/game/cutscene/cutscene_motion.gd
+@@ -66,3 +66,52 @@ static func _top_speed(dist: float, speed: float, r: Vector2) -> float:
+ 	if ramp_m <= dist or r.x + r.y <= 0.0:
+ 		return speed
+ 	return 2.0 * dist / (r.x + r.y)
++
++
++## The length of a polyline (the sum of its legs).
++static func path_length(path: PackedVector3Array) -> float:
++	var total := 0.0
++	for i in range(1, path.size()):
++		total += path[i - 1].distance_to(path[i])
++	return total
++
++
++## The index of the leg `s` metres along `path` lies on (0 for the first; the last leg past the end).
++static func path_leg(path: PackedVector3Array, s: float) -> int:
++	var run := 0.0
++	for i in range(1, path.size()):
++		run += path[i - 1].distance_to(path[i])
++		if s < run:
++			return i - 1
++	return maxi(path.size() - 2, 0)
++
++
++## The level direction of leg `i` of `path` (from point i to point i + 1), or zero.
++static func flat_dir(path: PackedVector3Array, i: int) -> Vector3:
++	if i + 1 >= path.size():
++		return Vector3.ZERO
++	return Vector3(path[i + 1].x - path[i].x, 0.0, path[i + 1].z - path[i].z)
++
++
++## The point `s` metres along `path` (clamped to its ends).
++static func path_point(path: PackedVector3Array, s: float) -> Vector3:
++	if path.is_empty():
++		return Vector3.ZERO
++	var left := maxf(s, 0.0)
++	for i in range(1, path.size()):
++		var leg := path[i - 1].distance_to(path[i])
++		if left <= leg and leg > 0.0:
++			return path[i - 1].lerp(path[i], left / leg)
++		left -= leg
++	return path[path.size() - 1]
++
++
++## Seconds until every actor walk and turn among a sequencer's running `motions` ("move:<id>" and "turn:<id>"
++## keys, each {elapsed, duration}) has ended (M2-HER-1113: a scene's end waits for them instead of jumping them).
++static func actor_motion_left(motions: Dictionary) -> float:
++	var left := 0.0
++	for key: StringName in motions.keys():
++		if String(key).begins_with("move:") or String(key).begins_with("turn:"):
++			var m: Dictionary = motions[key]
++			left = maxf(left, float(m["duration"]) - float(m["elapsed"]))
++	return left
+diff --git a/game/cutscene/cutscene_sequencer.gd b/game/cutscene/cutscene_sequencer.gd
+index 68e7d620..55b62cdb 100644
+--- a/game/cutscene/cutscene_sequencer.gd
++++ b/game/cutscene/cutscene_sequencer.gd
+@@ -320,9 +320,12 @@ func _begin(scene_id: StringName, stage: CutsceneStage) -> void:
+ 
+ 
+ func _finish() -> void:
++	var skipped := _skipping
+ 	_skipping = false
+ 	_awaiting = &""
+ 	set_skip_held(false)
++	if not skipped and not _aborted:  # M2-HER-1113: a running walk or turn plays out rather than jump to its end
++		await _wait_for(CutsceneMotion.actor_motion_left(_motions))
+ 	_complete_motions()
+ 	_key_off()
+ 	if overlay != null:
+@@ -503,7 +506,8 @@ func _cue_fade(step: DialogueStep) -> void:
+ 
+ 
+ func _cue_mark(step: DialogueStep) -> void:
+-	var actor := _actor(StringName(str(step.args[0])))
++	var id := StringName(str(step.args[0]))
++	var actor := _actor(id)
+ 	var target_id := StringName(str(step.args[1]))
+ 	var target := _stage.mark(target_id) if _stage != null else null
+ 	if actor == null:
+@@ -514,20 +518,28 @@ func _cue_mark(step: DialogueStep) -> void:
+ 	_held.erase(actor)  # a walk ends any held pose
+ 	var gait := StringName(str(step.args[2])) if step.args.size() > 2 else &"walk"
+ 	var speed := maxf(float(config.get("run_mps" if gait == GAIT_RUN else "walk_mps", 1.0)), 0.01)
+-	var from := actor.global_position
+-	var to := target.global_position
+-	var flat := Vector3(to.x - from.x, 0.0, to.z - from.z)
++	# The way: from where the actor stands, through the `via` marks in order, to the mark (a path round a
++	# rail, down a stair, along a deck); one walk over the whole way, its turns eased at each corner.
++	var path := PackedVector3Array([actor.global_position])
++	for via_id in str(step.kwargs.get("via", "")).split(",", false):
++		var via := _stage.mark(StringName(via_id.strip_edges())) if _stage != null else null
++		if via == null:
++			_warn("no via mark '%s' on the stage" % via_id.strip_edges())
++			continue
++		path.append(via.global_position)
++	path.append(target.global_position)
++	var flat := CutsceneMotion.flat_dir(path, 0)
+ 	if flat.length() > 0.01:
+-		_turn_to(StringName(str(step.args[0])), actor, flat)  # turns into the walk, never snaps
++		_turn_to(id, actor, flat)  # turns into the walk, never snaps
+ 	# M2-FP-29: a beat of anticipation, then the walk speeds up, cruises and slows to a stop; the
+ 	# walk clip cross-fades in as it sets off and back to idle as it settles.
+-	var dist := from.distance_to(to)
++	var dist := CutsceneMotion.path_length(path)
+ 	var accel := float(config.get("walk_accel_sec", 0.0))
+ 	var decel := float(config.get("walk_decel_sec", 0.0))
+ 	var lead := float(config.get("walk_anticipation_sec", 0.0))
+ 	var walk := CutsceneMotion.walk_duration(dist, speed, accel, decel)
+ 	var dur := lead + walk
+-	var state := {"walking": false, "m": 0.0, "sec": 0.0}
++	var state := {"walking": false, "m": 0.0, "sec": 0.0, "leg": 0}
+ 	_start_motion(
+ 		&"move:%s" % step.args[0],
+ 		dur,
+@@ -540,9 +552,15 @@ func _cue_mark(step: DialogueStep) -> void:
+ 				_play_clip(actor, gait)
+ 				if gait == GAIT_RUN:
+ 					HeroMotion.set_locomotion_speed(actor, speed)  # M2-HER-1104: a run sets off as a run
+-			var frac := CutsceneMotion.walk_fraction(sec, dist, speed, accel, decel)
+-			_place(actor, from.lerp(to, frac))
+-			_locomotion(actor, state, frac * dist, t * dur)
++			var s := CutsceneMotion.walk_fraction(sec, dist, speed, accel, decel) * dist
++			var leg := CutsceneMotion.path_leg(path, s)
++			if leg > int(state["leg"]) and t < 1.0:
++				state["leg"] = leg
++				var turn := CutsceneMotion.flat_dir(path, leg)
++				if turn.length() > 0.01:
++					_turn_to(id, actor, turn)  # the corner, eased like the first turn
++			_place(actor, CutsceneMotion.path_point(path, s))
++			_locomotion(actor, state, s, t * dur)
+ 			if t >= 1.0:
+ 				if not state["walking"]:
+ 					_play_clip(actor, gait)  # instant or skipped: the walk still happened
+@@ -563,7 +581,13 @@ func _cue_anim(step: DialogueStep) -> void:
+ 		_motions.erase(&"move:%s" % step.args[0])
+ 		var start := actor.global_position
+ 		var end := standin.global_position
+-		var glide := float(config.get("standin_glide_sec", 0.0)) if start.distance_to(end) > 0.01 else 0.0
++		# M2-HER-1113: a mark farther than standin_cut_m is a cut (the shot changes with it), not a glide across it.
++		var far := start.distance_to(end)
++		var glide := (
++			float(config.get("standin_glide_sec", 0.0))
++			if far > 0.01 and far <= float(config.get("standin_cut_m", INF))
++			else 0.0
++		)
+ 		var curve := float(config.get("turn_ease", 1.0))
+ 		_start_motion(
+ 			&"move:%s" % step.args[0],
+diff --git a/game/data/cutscene/sequencer.json b/game/data/cutscene/sequencer.json
+index f22a341c..369175d5 100644
+--- a/game/data/cutscene/sequencer.json
++++ b/game/data/cutscene/sequencer.json
+@@ -5,8 +5,8 @@
+   "letterbox_sec": 0.6,
+   "walk_mps": 1.0,
+   "run_mps": 3.2,
+-  "turn_sec": 0.45,
+-  "_motion_note": "M2-FP-29 (the human's playtest: turns snapped, walks started and stopped at once; game/cutscene/cutscene_motion.gd): a turn eases in and out on Godot's ease() curve turn_ease (negative = in-out) over turn_min_sec (no angle) up to turn_sec (a half turn); a walk waits walk_anticipation_sec, speeds up over walk_accel_sec and slows over walk_decel_sec (both shortened together on a short walk); every clip change cross-fades over clip_blend_sec; a stand-in clip mark is glided onto over standin_glide_sec.",
++  "turn_sec": 0.9,
++  "_motion_note": "M2-FP-29 (the human's playtest: turns snapped, walks started and stopped at once; game/cutscene/cutscene_motion.gd): a turn eases in and out on Godot's ease() curve turn_ease (negative = in-out) over turn_min_sec (no angle) up to turn_sec (a half turn; M2-HER-1113: 0.9, so the in-out ease peaks near 400 deg/s like a hero's field turn, where 0.45 peaked near 800 and read as a whip); a walk waits walk_anticipation_sec, speeds up over walk_accel_sec and slows over walk_decel_sec (both shortened together on a short walk); every clip change cross-fades over clip_blend_sec; a stand-in clip mark is glided onto over standin_glide_sec, unless it is farther than standin_cut_m: then it is a cut (M2-HER-1113: Ch9's pole_out mark is 30 m out on the harbour, and a glide there crossed it at 120 m/s).",
+   "turn_min_sec": 0.25,
+   "turn_ease": -2.0,
+   "walk_anticipation_sec": 0.15,
+@@ -14,6 +14,7 @@
+   "walk_decel_sec": 0.5,
+   "clip_blend_sec": 0.25,
+   "standin_glide_sec": 0.5,
++  "standin_cut_m": 2.5,
+   "_ease_note": "M2-FP-102 (the human's playtest: abrupt fades): @fade and the letterbox ease in and out on Godot's ease() curve (negative = in-out) instead of a linear ramp.",
+   "fade_ease": -1.8,
+   "letterbox_ease": -2.0,
+diff --git a/game/data/dialogue/cues.json b/game/data/dialogue/cues.json
+index 22df162e..95ab4b2a 100644
+--- a/game/data/dialogue/cues.json
++++ b/game/data/dialogue/cues.json
+@@ -28,9 +28,9 @@
+    "kwargs": {"loop": {"type": "bool"}}
+   },
+   "mark": {
+-   "doc": "Move an actor to a scene mark.",
++   "doc": "Move an actor to a scene mark: in a straight line, or along the via marks (comma-separated, in order) as one eased walk turning at each corner.",
+    "args": [{"name": "actor", "type": "id"}, {"name": "mark", "type": "id"}, {"name": "gait", "type": "enum", "values": ["walk", "run"], "optional": true}],
+-   "kwargs": {}
++   "kwargs": {"via": {"type": "string"}}
+   },
+   "face": {
+    "doc": "Override the facial expression over sec seconds (otherwise lines' [emotion] drives it).",
+diff --git a/tests/unit/test_cutscene_mark_via.gd b/tests/unit/test_cutscene_mark_via.gd
+new file mode 100644
+index 00000000..63d67591
+--- /dev/null
++++ b/tests/unit/test_cutscene_mark_via.gd
+@@ -0,0 +1,33 @@
++extends TestCase
++## M3-CIN-1220 (a patch for m2-slice's sequencer, docs/kb/tech/cutscene_mark_via.patch): `@mark <actor> <mark>
++## via=<mark>,<mark>` walks the polyline through the via marks as one eased walk. CutsceneMotion's path helpers: the
++## length, the leg a distance lies on, and the point there.
++
++const PATH := [Vector3(0, 0, 0), Vector3(3, 0, 0), Vector3(3, 2.4, -4)]
++
++
++func _path() -> PackedVector3Array:
++	return PackedVector3Array(PATH)
++
++
++func test_a_path_is_as_long_as_its_legs() -> void:
++	assert_true(is_equal_approx(CutsceneMotion.path_length(_path()), 3.0 + Vector3(0, 2.4, -4).length()))
++	assert_eq(CutsceneMotion.path_length(PackedVector3Array([Vector3.ONE])), 0.0, "one point: no length")
++
++
++func test_a_distance_lies_on_its_leg() -> void:
++	assert_eq(CutsceneMotion.path_leg(_path(), 0.0), 0)
++	assert_eq(CutsceneMotion.path_leg(_path(), 2.9), 0)
++	assert_eq(CutsceneMotion.path_leg(_path(), 3.1), 1, "past the corner")
++	assert_eq(CutsceneMotion.path_leg(_path(), 99.0), 1, "past the end: the last leg")
++
++
++func test_the_point_along_a_path_turns_the_corner_and_lands() -> void:
++	assert_eq(CutsceneMotion.path_point(_path(), 0.0), Vector3.ZERO)
++	assert_true(CutsceneMotion.path_point(_path(), 1.5).is_equal_approx(Vector3(1.5, 0, 0)), "on the first leg")
++	assert_true(CutsceneMotion.path_point(_path(), 3.0).is_equal_approx(Vector3(3, 0, 0)), "at the corner")
++	var second := Vector3(0, 2.4, -4).length()
++	var half := CutsceneMotion.path_point(_path(), 3.0 + second * 0.5)
++	assert_true(half.is_equal_approx(Vector3(3, 1.2, -2)), "half up the second leg (a stair's line)")
++	assert_eq(CutsceneMotion.path_point(_path(), 99.0), Vector3(3, 2.4, -4), "clamped to the end")
++	assert_eq(CutsceneMotion.path_point(_path(), -1.0), Vector3.ZERO, "clamped to the start")

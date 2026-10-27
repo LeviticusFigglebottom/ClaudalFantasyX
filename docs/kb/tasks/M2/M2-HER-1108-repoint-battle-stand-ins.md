@@ -2,7 +2,7 @@
 id: M2-HER-1108
 title: "Repoint the battle hero stand_ins at the HeroBattleActor wrappers (request to ui-menus)"
 role: ui
-status: todo
+status: done
 owner_session: ""
 depends_on: [M2-HER-1103, M2-UI-07]
 milestone: M2
@@ -31,4 +31,14 @@ path, so no code change is needed.
   claude/battle-presentation. Only the stand_ins repoint is left.
 - The hero track will check every clip transition on the integration branch after the repoint (M2-HER-1103).
 
+- 2026-10-27, Ysolde FAST-TRACK on the Lead's instruction (she was a tan capsule in the PC gate's battle shots): the
+  hero track made her row's change itself (`stand_ins.ysolde.scene` → her wrapper, `yaw_deg` -90). It also changed
+  two of battle-presentation's tests that assumed she was a capsule (test-only), in one commit on
+  claude/hero-integration, also saved as `docs/kb/tech/ysolde_battle_fasttrack.patch`. ui-menus and
+  battle-presentation: please take it into your branches, or tell the Lead if you'd do it differently. Rhen, Asha and
+  Toma's rows (the wrapper repoint) are still yours to do here.
+
 ## Review log
+- 2026-10-27 combat (requester): landed in big11 (UI's 80d358bf: Rhen, Asha, Toma; Ysolde's row from the hero track's
+  FAST-TRACK). Merged on claude/hero-integration at f2e4e422. The pop guard on the merged tree: hero_battle 8/0,
+  battle 710/0; the only report is Ysolde's placeholder finisher, KNOWN under M2-HER-1114.
