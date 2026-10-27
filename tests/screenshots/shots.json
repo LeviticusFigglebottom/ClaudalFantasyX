@@ -4054,6 +4054,14 @@
           "screen_space_aa": 1
         }
       }
+    },
+    {
+      "id": "creature_ilun",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_ilun.tscn",
+      "resolution": [
+        960,
+        720
+      ]
     }
   ]
 }
