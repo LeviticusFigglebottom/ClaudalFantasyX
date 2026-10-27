@@ -1,0 +1,9 @@
+FAIL slice_verse_steps: no baseline (inspect out/, then compare.py --update-baselines slice_verse_steps)
+FAIL ch01_oruvel_dressed: no baseline (inspect out/, then compare.py --update-baselines ch01_oruvel_dressed)
+FAIL ch01_underway_crown: no baseline (inspect out/, then compare.py --update-baselines ch01_underway_crown)
+FAIL ch01_underway_gallery: no baseline (inspect out/, then compare.py --update-baselines ch01_underway_gallery)
+FAIL slice_verse_hall: no baseline (inspect out/, then compare.py --update-baselines slice_verse_hall)
+FAIL ch01_o07_name_board: no baseline (inspect out/, then compare.py --update-baselines ch01_o07_name_board)
+FAIL ch01_o10_gull: no baseline (inspect out/, then compare.py --update-baselines ch01_o10_gull)
+Screenshots: 7 compared, 7 failed (diffs in /root/hymn/tests/screenshots/out/diff)
+compare exit 1
