@@ -2,8 +2,8 @@
 id: M2-CHR-11
 title: "Heroes and villagers opt into M1-CHR-14's host snaps (their Blender builds differ on an AVX2 host)"
 role: character
-status: todo
-owner_session: ""
+status: doing
+owner_session: "characters (cloud session_01JqzzxgJU9Dmu7fRhmCG9aQ, branch claude/characters)"
 reviewer: qa
 depends_on: [M1-CHR-14]
 milestone: M2
@@ -35,6 +35,7 @@ AVX-512) they rebuild differently from their committed assets, which were built 
 - [ ] blender_builds.md says new character builds opt in from the start.
 
 ## Notes
+- 2026-10-24 (characters): claimed. rhen and toma are folded into M1-CHR-15, which rebuilds them anyway. base_body and the seven M2 villagers are with a worktree subagent. Both were sent this evidence: hair positions and the LOD1 decimate inputs need a position grid too, beyond Asha's four snaps. Verify is native vs `NPY_DISABLE_CPU_FEATURES="X86_V3 X86_V4"` (the AVX2-only numpy paths). (A duplicate M2-CHR-11 file filed on claude/characters was removed in favour of this one.)
 The PC can run the cross-host check on request: push the branch, and the Lead or the PC runs
 `verify_blender_builds.py --all` on it in WSL.
 

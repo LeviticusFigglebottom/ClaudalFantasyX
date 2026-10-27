@@ -30,6 +30,9 @@ signal field_cleared(field_id: StringName, fallen: Array[BattleCombatant])
 const OUTCOME_VICTORY := &"victory"
 const OUTCOME_DEFEAT := &"defeat"
 const OUTCOME_ESCAPED := &"escaped"
+## A set piece's objective ends it as a scripted way out (the Reach's last phase, M3-CMB-01): never
+## the Escape command, and it counts as surviving the fight (BattleSetPiece; set_piece_battles.md).
+const OUTCOME_SCRIPTED_ESCAPE := &"scripted_escape"
 const MAX_ACTIVE := 3
 ## Consecutive turns lost to Stop/Sleep with nobody able to act before the battle is ruled a
 ## stalemate (only reachable with "until cured" durations on everyone; ends as defeat).
@@ -64,6 +67,18 @@ var opening: StringName = BattleOpening.NORMAL
 ## Vowbound summons (SPEC §6.3): the rows and bound ids, and who is on the field. Set it before
 ## begin(); the default has no Vowbound. See summon() and BattleVowbound.
 var vowbound := BattleVowbound.new()
+## Set pieces (M3-CMB-01, BattleSetPiece): the scripted timeline entries on the field (no HP; the
+## Climb, the Surge, Pell), the ones waiting for a phase ({phase, entry}), each field's turn-start
+## rules, the objective and its count, and the encounter's party rules.
+var entries: Array[BattleCombatant] = []
+var pending_entries: Array[Dictionary] = []
+var field_rules: Dictionary = {}
+var objective: Dictionary = {}
+var objective_count := 0
+var locked_active: Array[StringName] = []
+var locked_key := ""
+var unavailable: Array[StringName] = []
+var unavailable_key := ""
 
 ## Item drops rolled once at victory (item id -> count). See drop_awards().
 var _drops: Dictionary = {}
@@ -85,12 +100,12 @@ func setup(
 	party_reserve.clear()
 	enemies.clear()
 	fields.clear()
-	for cid in active_ids:
+	var enc: Dictionary = db.encounters.get(encounter, {})
+	for cid in BattleSetPiece.available_ids(active_ids, enc):
 		party_active.append(_make_party_member(cid))
-	for cid in reserve_ids:
+	for cid in BattleSetPiece.available_ids(reserve_ids, enc):
 		party_reserve.append(_make_party_member(cid))
 	assert(party_active.size() <= MAX_ACTIVE, "BattleEngine: too many active party members")
-	var enc: Dictionary = db.encounters.get(encounter, {})
 	scripted = bool(enc.get("scripted", false))
 	BossMechanics.lend_skills(self, enc)
 	BossMechanics.forbid_skills(self, enc)
@@ -99,6 +114,7 @@ func setup(
 		n += 1
 		var row: Dictionary = db.enemies[StringName(str(eid))]
 		enemies.append(BattleCombatant.from_dict(StringName("%s#%d" % [eid, n]), BattleCombatant.TEAM_ENEMY, row))
+	BattleSetPiece.setup(self, enc)
 	rebuild_roster()
 
 
@@ -108,7 +124,7 @@ func setup(
 ## swell?: int (clamped to 0..SWELL_MAX)}.
 ## Statuses go through add_status, so wards and Petrify rules hold.
 func apply_fixture(state: Dictionary) -> void:
-	for c in party_active + party_reserve + enemies:
+	for c in party_active + party_reserve + enemies + entries:
 		var row: Dictionary = state.get(String(c.id), state.get(String(c.id).get_slice("#", 0), {}))
 		if row.has("hp"):
 			c.hp = clampi(int(row["hp"]), 1, c.max_hp)
@@ -134,9 +150,12 @@ func is_party_turn() -> bool:
 	return is_player_side_turn() and auto_reason(current) == &""
 
 
-## The current actor is on the party side, whether or not the player controls it.
+## The current actor is on the party side, whether or not the player controls it (never a scripted
+## entry: the Climb and Pell act on their own, through run_enemy_turn()).
 func is_player_side_turn() -> bool:
-	return outcome == &"" and current != null and current.team == BattleCombatant.TEAM_PARTY
+	if outcome != &"" or current == null:
+		return false
+	return current.team == BattleCombatant.TEAM_PARTY and not current.is_entry()
 
 
 ## The current actor acts on its own this turn (Berserk or Confuse); run_enemy_turn() plays it.
@@ -281,16 +300,18 @@ func preview_item(
 	return BattleItemUse.preview(self, item_id, target, items, count)
 
 
-## Runs the current enemy's AI turn, or the current Berserk/Confused combatant's automatic
-## turn on either side. Returns null if the player is in control of the current turn.
+## Runs the current enemy's AI turn, a scripted entry's turn (either side), or the current
+## Berserk/Confused combatant's automatic turn on either side. Returns null if the player is in
+## control of the current turn.
 func run_enemy_turn() -> ActionResult:
 	if outcome != &"" or current == null:
 		return null
+	var scripted_actor := current.team == BattleCombatant.TEAM_ENEMY or current.is_entry()
 	# A telegraphed skill counts down (or fires) on every acted enemy turn, as the timeline shows.
-	var charged := BossMechanics.charged_choice(self, current) if current.team == BattleCombatant.TEAM_ENEMY else {}
+	var charged := BossMechanics.charged_choice(self, current) if scripted_actor else {}
 	if is_auto_turn() and charged.is_empty():
 		return _run_auto_turn()
-	if current.team != BattleCombatant.TEAM_ENEMY:
+	if not scripted_actor:
 		return null
 	var choice := charged if not charged.is_empty() else EnemyAI.choose(self, current)
 	if choice.is_empty():
@@ -361,25 +382,47 @@ func _checked(
 	var forced := forced_target(actor, skill_id)
 	if forced != null and valid[0] != forced:
 		return ActionResult.failed(actor.id, skill_id, &"provoked")
-	return _execute(actor, skill_id, sk, valid, &"")
+	return _execute_guarded(actor, skill_id, sk, valid)
+
+
+## M3-CMB-01: a foe's ward skill lands on its provoker or the ward's coverer instead
+## (BattleSetPiece.interceptor), resolved as its "on_cover" row on them; a cover is spent.
+func _execute_guarded(
+	actor: BattleCombatant, skill_id: StringName, sk: Dictionary, valid: Array[BattleCombatant]
+) -> ActionResult:
+	var guard := BattleSetPiece.interceptor(self, actor, sk)
+	if guard == null:
+		return _execute(actor, skill_id, sk, valid, &"")
+	var w := ward()
+	if w.covered_by == guard.id:
+		w.covered_by = &""
+	var row := BattleSetPiece.cover_row(self, sk)
+	return _execute(actor, skill_id, row, [guard] as Array[BattleCombatant], &"", guard.id)
 
 
 ## Spends the cost, resolves `sk` on already-validated targets (bouncing off Reflect), and
-## ends the actor's turn.
+## ends the actor's turn. `intercepted` names who took a ward skill in the ward's place.
 func _execute(
-	actor: BattleCombatant, skill_id: StringName, sk: Dictionary, targets: Array[BattleCombatant], auto: StringName
+	actor: BattleCombatant,
+	skill_id: StringName,
+	sk: Dictionary,
+	targets: Array[BattleCombatant],
+	auto: StringName,
+	intercepted: StringName = &""
 ) -> ActionResult:
 	actor.mp -= int(sk.get("mp_cost", 0))
 	var result := ActionResult.new()
 	result.actor_id = actor.id
 	result.skill_id = skill_id
 	result.auto_reason = auto
+	result.intercepted_by = intercepted
 	for t in targets:
 		var lands := reflect_recipient(actor, t, sk)
 		var hit := BattleHits.resolve(self, actor, lands, sk)
 		if lands != t:
 			hit["reflected_from"] = t.id
 		result.hits.append(hit)
+	BattleSetPiece.counters(self, actor, sk, result)
 	BossMechanics.after_action(self, actor, sk, result)
 	action_resolved.emit(result)
 	result.end_of_turn = _end_turn(actor, int(sk.get("rank", Formulas.DEFAULT_RANK)))
@@ -524,9 +567,10 @@ func currency_award() -> int:
 	return BattleSpoils.currency_award(self)
 
 
-## Items dropped this battle (item id -> count), rolled once at victory. {} otherwise.
+## Items dropped this battle (item id -> count), rolled once at victory (or a scripted escape). {}
+## otherwise.
 func drop_awards() -> Dictionary:
-	return _drops.duplicate() if outcome == OUTCOME_VICTORY else {}
+	return _drops.duplicate() if outcome in BattleSpoils.SPOILS_OUTCOMES else {}
 
 
 ## The element a skill really hits `target` with. The basic Attack ("attack", element "none")
@@ -544,8 +588,13 @@ func attack_element(actor: BattleCombatant, target: BattleCombatant, sk: Diction
 	return best
 
 
+## The living foes `c` may target (an untargetable phase leaves a foe off this list; M3-CMB-01).
 func living_foes_of(c: BattleCombatant) -> Array[BattleCombatant]:
-	return _living(enemies if c.team == BattleCombatant.TEAM_PARTY else party_active)
+	var out: Array[BattleCombatant] = []
+	for f in _living(enemies if c.team == BattleCombatant.TEAM_PARTY else party_active):
+		if not f.untargetable:
+			out.append(f)
+	return out
 
 
 func living_allies_of(c: BattleCombatant) -> Array[BattleCombatant]:
@@ -560,10 +609,21 @@ func living_other_allies_of(c: BattleCombatant) -> Array[BattleCombatant]:
 
 
 func find(cid: StringName) -> BattleCombatant:
-	for c in party_active + party_reserve + enemies + vowbound.stood_down:
+	for c in party_active + party_reserve + enemies + vowbound.stood_down + entries:
 		if c.id == cid:
 			return c
 	return null
+
+
+## The battle's ward entry (the Climb), or null (BattleSetPiece.ward).
+func ward() -> BattleCombatant:
+	return BattleSetPiece.ward(self)
+
+
+## Why the current turn's swap would refuse to take `out_id` off the field for a reason the menu
+## names: BattleSetPiece.FAIL_LOCKED (Toma holds the stair; locked_key says it), else &"".
+func swap_refusal(out_id: StringName) -> StringName:
+	return BattleSetPiece.swap_refusal(self, out_id)
 
 
 # --- internals ---------------------------------------------------------------------------
@@ -585,6 +645,7 @@ func _end_turn(actor: BattleCombatant, rank: int) -> Array[Dictionary]:
 	actor.next_time = now + Formulas.action_delay(actor.agility, rank, actor.speed_mult())
 	actor.delays_taken = 0
 	var changes := _turn_ticks(actor)
+	BattleSetPiece.on_turn_end(self, actor)
 	BossMechanics.check_phases(self)
 	if not _check_outcome():
 		_advance()
@@ -653,6 +714,7 @@ func _advance() -> void:
 				_finish(OUTCOME_DEFEAT)
 			continue
 		current = actor
+		BattleSetPiece.on_turn_start(self, actor)
 		turn_started.emit(actor)
 		return
 
@@ -666,8 +728,13 @@ func tempo_rank(c: BattleCombatant, ahead: int) -> Dictionary:
 
 
 ## Petrified combatants count as KO here: is_alive() is false for stone.
+## An objective encounter ends only on its objective (BattleSetPiece), or in defeat.
 func _check_outcome() -> bool:
-	if _living(enemies).is_empty():
+	var goal := BattleSetPiece.objective_outcome(self)
+	if goal != &"":
+		BattleSetPiece.withdraw_standing(self)
+		_finish(goal)
+	elif _living(enemies).is_empty() and objective.is_empty():
 		_finish(OUTCOME_VICTORY)
 	elif _living(party_active).is_empty():
 		_recall()  # a fallen Vowbound is no defeat, unless the party it hands back has fallen too
@@ -680,7 +747,7 @@ func _finish(result: StringName) -> void:
 	_recall()  # the party, not a Vowbound, is on the field when a battle ends
 	outcome = result
 	current = null
-	if result == OUTCOME_VICTORY:
+	if result in BattleSpoils.SPOILS_OUTCOMES:
 		_drops = BattleSpoils.roll_drops(self)
 	battle_finished.emit(result)
 
@@ -696,6 +763,7 @@ func _field() -> Array[BattleCombatant]:
 	var out: Array[BattleCombatant] = []
 	out.append_array(party_active)
 	out.append_array(enemies)
+	out.append_array(entries)
 	return out
 
 
@@ -706,9 +774,16 @@ func _valid_targets(actor: BattleCombatant, sk: Dictionary, targets: Array[Battl
 	var kind := String(sk.get("target", "single_foe"))
 	var out: Array[BattleCombatant] = []
 	for t in targets:
-		if t == null or not t.is_alive() or out.has(t):
+		if t == null or not t.is_alive() or out.has(t) or BattleSetPiece.spares(sk, t):
 			continue
 		var is_foe := t.team != actor.team
+		# M3-CMB-01: a ward skill takes only the ward; an entry is no other skill's target (but its own
+		# self skills), and nothing targets the untargetable.
+		if kind == BattleSetPiece.TARGET_WARD:
+			if t.entry_role != BattleSetPiece.ROLE_WARD:
+				continue
+		elif t.is_entry() and t != actor or is_foe and t.untargetable:
+			continue
 		match kind:
 			"single_foe", "all_foes":
 				if not is_foe:
@@ -722,7 +797,7 @@ func _valid_targets(actor: BattleCombatant, sk: Dictionary, targets: Array[Battl
 				if t != actor:
 					continue
 		out.append(t)
-	if kind in ["single_foe", "single_ally", "self"] and out.size() > 1:
+	if kind in ["single_foe", "single_ally", "self", BattleSetPiece.TARGET_WARD] and out.size() > 1:
 		out.resize(1)
 	return out
 
@@ -747,7 +822,7 @@ func _valid_provoker(c: BattleCombatant) -> BattleCombatant:
 		return null
 	for p in _field():
 		if p.id == c.provoker_id:
-			return p if p.is_alive() else null
+			return p if p.is_alive() and not p.untargetable else null
 	return null
 
 
@@ -757,7 +832,7 @@ func _swap_indices(out_id: StringName, in_id: StringName) -> Vector2i:
 		return Vector2i(-1, -1)
 	var out_idx := _index_of(party_active, out_id)
 	var in_idx := _index_of(party_reserve, in_id)
-	if out_idx < 0 or in_idx < 0 or not party_reserve[in_idx].is_alive():
+	if out_idx < 0 or in_idx < 0 or not party_reserve[in_idx].is_alive() or swap_refusal(out_id) != &"":
 		return Vector2i(-1, -1)
 	return Vector2i(out_idx, in_idx)
 

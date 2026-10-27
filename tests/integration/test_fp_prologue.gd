@@ -21,6 +21,16 @@ const WARM_HUE_MAX := 0.15
 const TEAL_HUE_MIN := 0.45
 const TEAL_HUE_MAX := 0.55
 const MAX_SKY_CONTRIBUTION := 0.4
+## M2-FP-28, second playtest: the figures of the line ("everyone ... is still here") read near-black.
+## Their cloth (palette.json cloth family) must have colour and enough value to read in the rim light.
+const MIN_FIGURE_SAT := 0.25
+const MIN_FIGURE_VALUE := 0.4
+const FIGURE_COUNT := 7
+## Colour script prologue_iskarra_dusk: saturation x1.05; the grade stand-in's points (lut_prologue_dusk).
+const SCRIPT_SATURATION := 1.05
+const GRADE_MID := 0.5
+const GRADE_TOE := 0.0
+const LANTERN_REACH_M := 1.0
 
 var travels: Array[Array] = []
 var scene: PrologueScene
@@ -148,4 +158,39 @@ func test_the_dusk_frame_carries_colour() -> void:
 	assert_true(amb.h >= TEAL_HUE_MIN and amb.h <= TEAL_HUE_MAX, "the shadows lean teal (deep_teal_shadow)")
 	assert_true(env.ambient_light_sky_contribution <= MAX_SKY_CONTRIBUTION, "the sky does not average the tint away")
 	assert_true(env.adjustment_enabled and env.adjustment_saturation >= 1.0, "no desaturating grade")
+	_done()
+
+
+## M2-FP-28 (second playtest: still grey while the line is up). The line's subject is the seven vigils:
+## each wears a cloth colour, Rhen carries his lit oil lantern, and the environment holds the colour
+## script's saturation and a stand-in of its grade (gold mids, teal toe) until Rendering's LUT lands.
+func test_the_figures_and_the_grade_carry_colour_while_the_line_is_up() -> void:
+	_make_scene()
+	var figures := scene.get_node(^"City/Vigils").find_children("*", "MeshInstance3D", false, false)
+	assert_eq(figures.size(), FIGURE_COUNT, "seven vigils")
+	for n in figures:
+		var mi := n as MeshInstance3D
+		var mat := mi.material_override if mi.material_override != null else mi.mesh.surface_get_material(0)
+		var std := mat as StandardMaterial3D
+		assert_true(std != null, "%s has a plain material" % mi.name)
+		if std != null:
+			var c := std.albedo_color
+			assert_true(c.s >= MIN_FIGURE_SAT, "%s wears a colour, not grey (s %.2f)" % [mi.name, c.s])
+			assert_true(c.v >= MIN_FIGURE_VALUE, "%s is not a black silhouette (v %.2f)" % [mi.name, c.v])
+	var lantern := scene.get_node_or_null(^"City/Vigils/RhenLantern") as OmniLight3D
+	assert_true(lantern != null, "Rhen's oil lantern (colour script: the one practical)")
+	if lantern != null:
+		assert_true(lantern.light_color.s >= MIN_LIGHT_SAT and lantern.light_color.h <= WARM_HUE_MAX, "warm oil light")
+		var rhen := scene.get_node(^"City/Vigils/Rhen") as Node3D
+		var reach := lantern.global_position.distance_to(rhen.global_position)
+		assert_true(reach <= LANTERN_REACH_M, "the lantern is at Rhen's hand")
+	var env := (scene.get_node(^"WorldEnvironment") as WorldEnvironment).environment
+	assert_true(env.adjustment_saturation >= SCRIPT_SATURATION - ENERGY_TOLERANCE, "colour script saturation x1.05")
+	var grade := env.adjustment_color_correction as GradientTexture1D
+	assert_true(grade != null and grade.gradient != null, "the dusk grade stand-in is on")
+	if grade != null and grade.gradient != null:
+		var mid := grade.gradient.sample(GRADE_MID)
+		assert_true(mid.r > GRADE_MID and mid.r > mid.b, "gold gain in the mids")
+		var toe := grade.gradient.sample(GRADE_TOE)
+		assert_true(toe.b > toe.r and toe.g > toe.r, "teal lift in the toe")
 	_done()

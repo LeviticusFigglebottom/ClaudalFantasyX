@@ -2,8 +2,8 @@
 id: M3-UI-01
 title: The Reefball match HUD (Ch7 story match)
 role: ui
-status: todo
-owner_session: ""
+status: doing
+owner_session: "claude/ui"
 depends_on: []
 milestone: M3
 request-from: lead

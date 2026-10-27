@@ -9,8 +9,12 @@ extends Control
 ## _build_page() and reads input in handle_input(), calling super for Cancel (which closes).
 ## Open one with FieldSubmenu.mount(MyPage.new(...), host); the layer frees itself on close.
 ## Layouts are at the 1920 x 1080 reference, every rect a multiple of 3 (as field_menu.json).
+## M2-MNU-303: the page fades and rises in when it opens and fades and sinks out when it closes
+## (MenuMotion, menu_motion.json); `closed` is still emitted at once, and `gone` once it has faded.
 
 signal closed
+## The close transition has finished (at once under Reduced motion): mount()'s layer frees itself.
+signal gone
 
 const SCRIM_SHADER := preload("res://game/ui/shaders/scrim.gdshader")
 ## Over the field menu (60), under the Settings hub (66), like the bestiary.
@@ -18,11 +22,17 @@ const DEFAULT_CANVAS_LAYER := 64
 
 ## Pause the tree while open (the field must not move under a menu). Captures turn it off.
 @export var pause_tree := true
+## Opened over another menu with the same backdrop (the field menu's pages): the scrim and caustics
+## stand still through the transitions and only the content fades. Set it before mount().
+var over_menu := false
 
 ## This page's layout block (data_section of data_path).
 var _d: Dictionary = {}
+## The banner title _framed_panel made (null before it runs); a page with something in its title bar narrows it.
+var _title_label: Label
 var _owns_pause := false
 var _is_closed := false
+var _motion: MenuMotion
 
 
 ## Puts `menu` on its own CanvasLayer under `host` and opens it; the layer frees itself when the
@@ -32,7 +42,7 @@ static func mount(menu: FieldSubmenu, host: Node) -> FieldSubmenu:
 	layer.layer = int(menu.load_layout().get("canvas_layer", DEFAULT_CANVAS_LAYER))
 	layer.process_mode = Node.PROCESS_MODE_ALWAYS
 	layer.add_child(menu)
-	menu.closed.connect(layer.queue_free)
+	menu.gone.connect(layer.queue_free)
 	host.add_child(layer)
 	return menu
 
@@ -67,9 +77,14 @@ func _ready() -> void:
 	UiSettings.shared().follow(self)
 	_build_backdrop()
 	_build_page()
+	UiFrame.centre(self)  # the page centred at 16:10 and 21:9, its scrims full screen (M2-UI-29)
 	if pause_tree and not get_tree().paused:
 		get_tree().paused = true
 		_owns_pause = true
+	MenuMotion.follow_reduced_motion(self)
+	_motion = MenuMotion.new(self)
+	_motion.gone.connect(_on_motion_gone)
+	_motion.play_in(over_menu)
 
 
 func _exit_tree() -> void:
@@ -80,13 +95,24 @@ func is_open() -> bool:
 	return not _is_closed
 
 
+## Refuses input at once, lifts the pause and emits `closed`; the page fades out and then emits
+## `gone`. Until it is freed it never takes the pointer (M2-UI-26).
 func close() -> void:
 	if _is_closed:
 		return
 	_is_closed = true
-	visible = false  # freed at the frame's end: until then it must not take the pointer (M2-UI-26)
 	_restore_pause()
+	if _motion != null:
+		_motion.play_out(over_menu)
+	else:
+		visible = false
+		gone.emit()
 	closed.emit()
+
+
+## The open and close transitions (null before _ready). Tests drive them with motion().finish().
+func motion() -> MenuMotion:
+	return _motion
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -125,10 +151,11 @@ func _framed_panel(metrics: Dictionary, title_text: String) -> Label:
 	var title := _label(&"BannerLabel", Rect2(pr.position + Vector2(pad, pad), Vector2(pr.size.x - pad * 2.0, 0.0)))
 	title.size.y = HudLayout.num(metrics, "title_height")
 	title.text = title_text
+	_title_label = title
 	_title_rule(Rect2(title.position, Vector2(pr.size.x * 0.5, title.size.y)))
 	var help_h := HudLayout.num(metrics, "help_height")
 	var help_at := Vector2(pr.position.x + pad, pr.end.y - pad - help_h)
-	return _label(&"HelpDimLabel", Rect2(help_at, Vector2(pr.size.x - pad * 2.0, help_h)))
+	return HudLayout.wrap_upward(_label(&"HelpDimLabel", Rect2(help_at, Vector2(pr.size.x - pad * 2.0, help_h))))
 
 
 ## A MenuPage at its block's rect, as tall as `rows` rows (titled when `title` is not "").
@@ -177,6 +204,10 @@ func _title_rule(title: Rect2) -> void:
 	rule.position = Vector2(title.position.x, title.end.y - node)
 	rule.size = Vector2(title.size.x, node * 2.0)
 	add_child(rule)
+
+
+func _on_motion_gone() -> void:
+	gone.emit()
 
 
 func _restore_pause() -> void:

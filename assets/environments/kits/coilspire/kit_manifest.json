@@ -1,0 +1,139 @@
+{
+  "generator": "assets_src/environments/kits/coilspire/build.py",
+  "kit": "coilspire",
+  "pieces": {
+    "beacon_basket": {
+      "budget": [
+        5000,
+        400
+      ],
+      "bytes": 110180,
+      "lods": {
+        "beacon_basket": 1936,
+        "beacon_basket-lod1": 392
+      }
+    },
+    "coilspire_flues": {
+      "budget": [
+        14000,
+        900
+      ],
+      "bytes": 517116,
+      "lods": {
+        "coilspire_flues": 12228,
+        "coilspire_flues-lod1": 840
+      }
+    },
+    "coilspire_ground": {
+      "budget": [
+        18000,
+        2000
+      ],
+      "bytes": 596908,
+      "lods": {
+        "coilspire_ground": 13216,
+        "coilspire_ground-lod1": 1536
+      }
+    },
+    "coilspire_shell": {
+      "budget": [
+        40000,
+        2000
+      ],
+      "bytes": 1228360,
+      "lods": {
+        "coilspire_shell": 35930,
+        "coilspire_shell-lod1": 712
+      }
+    },
+    "coilspire_tiers": {
+      "budget": [
+        30000,
+        1600
+      ],
+      "bytes": 947492,
+      "lods": {
+        "coilspire_tiers": 14374,
+        "coilspire_tiers-lod1": 632
+      }
+    },
+    "flue_key": {
+      "budget": [
+        2500,
+        200
+      ],
+      "bytes": 28628,
+      "lods": {
+        "flue_key": 260,
+        "flue_key-lod1": 72
+      }
+    },
+    "flue_key_wheel": {
+      "budget": [
+        2500,
+        160
+      ],
+      "bytes": 48548,
+      "lods": {
+        "flue_key_wheel": 936,
+        "flue_key_wheel-lod1": 156
+      }
+    },
+    "headland_path": {
+      "budget": [
+        16000,
+        900
+      ],
+      "bytes": 688116,
+      "lods": {
+        "headland_path": 6684,
+        "headland_path-lod1": 66
+      }
+    },
+    "keepers_hut": {
+      "budget": [
+        12000,
+        700
+      ],
+      "bytes": 128136,
+      "lods": {
+        "keepers_hut": 1594,
+        "keepers_hut-lod1": 36
+      }
+    },
+    "scrub_clump_a": {
+      "budget": [
+        2000,
+        160
+      ],
+      "bytes": 43664,
+      "lods": {
+        "scrub_clump_a": 848,
+        "scrub_clump_a-lod1": 24
+      }
+    },
+    "scrub_clump_b": {
+      "budget": [
+        2000,
+        160
+      ],
+      "bytes": 43664,
+      "lods": {
+        "scrub_clump_b": 848,
+        "scrub_clump_b-lod1": 24
+      }
+    },
+    "tier_brazier": {
+      "budget": [
+        3000,
+        200
+      ],
+      "bytes": 54156,
+      "lods": {
+        "tier_brazier": 820,
+        "tier_brazier-lod1": 168
+      }
+    }
+  },
+  "schema": "hymn-kit/1"
+}

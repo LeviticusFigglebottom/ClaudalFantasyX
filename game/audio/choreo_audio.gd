@@ -17,7 +17,10 @@ extends Node
 ## - **Moves without a signal**: a fighter walking on or off its mark and the Vowbound's rise, sink and fall are read
 ##   from entering() / leaving() once a frame, as each one starts (its clock reaching 0).
 ## - **The engine** (found as the `engine` of the node's nearest ancestor that has one): the Vowbound's call, which
-##   way it left (departed: fell or dismissed), and the Flood phase (the party's brace, after the action playing).
+##   way it left (departed: fell or dismissed), and the Flood phase (the party's brace, after the action playing; its
+##   phase and stagger are the choreography's own, from the node's `data` bosses row: flood_for()).
+## - **A retry** replaces the choreography node: attach_to frees any listener whose node has left the tree, so one
+##   ChoreoAudio hears the battle.
 ## - **Reduced audio** (UiSettings `reduced_audio`, followed live): `reduced_skip` drops the contact accents and the
 ##   footfalls, so BattleAudio's one layer per action stays the only one.
 ## Time passes only through advance(delta): _process calls it; tests call it directly.
@@ -33,6 +36,8 @@ const BEAT_APPROACH := &"approach"
 const BEAT_STRIKE := &"strike"
 const BEAT_RETURN := &"return"
 const BEAT_KO := &"ko"
+const FLOOD_PHASE := "phase"
+const FLOOD_STAGGER := "stagger_sec"
 
 ## Overrides the class match (tests: stand-ins built at runtime have no global class name): (node) -> class name.
 static var matcher: Callable = Callable()
@@ -96,6 +101,7 @@ static func wants(n: Node) -> bool:
 static func attach_to(n: Node, dir: AudioDirector) -> ChoreoAudio:
 	if not is_instance_valid(n) or not n.is_inside_tree() or dir.listeners.has(n):
 		return null
+	drop_stale(dir)
 	var l := ChoreoAudio.new(AudioData.table(TABLE))
 	l.name = "ChoreoAudio"
 	l.player = func(id: StringName, opts: Dictionary) -> void: dir.play_sfx(id, opts)
@@ -103,6 +109,18 @@ static func attach_to(n: Node, dir: AudioDirector) -> ChoreoAudio:
 	l.attach(n, engine_of(n))
 	dir.listeners[n] = l
 	return l
+
+
+## Frees `dir`'s ChoreoAudio listeners whose choreography has left the tree (a retry's old one), before the director's
+## own once-a-frame sweep gets to them.
+static func drop_stale(dir: AudioDirector) -> void:
+	for key: Variant in dir.listeners.keys():
+		var l: Variant = dir.listeners[key]
+		if not (is_instance_valid(l) and l is ChoreoAudio):
+			continue
+		if not is_instance_valid(key) or not (key as Node).is_inside_tree():
+			dir.listeners.erase(key)
+			(l as Node).queue_free()
 
 
 ## The `engine` of `n`'s nearest ancestor (itself first) that has a BattleEngine there; null when none.
@@ -269,24 +287,41 @@ func _on_departed(v: BattleCombatant, fell: bool) -> void:
 		_fell[v.id] = fell
 
 
-func _on_phase_changed(_enemy: BattleCombatant, phase_id: StringName) -> void:
-	var flood := data.get("flood", {}) as Dictionary
-	if String(phase_id) != str(flood.get("phase", "")) or not _animating():
+func _on_phase_changed(enemy: BattleCombatant, phase_id: StringName) -> void:
+	var flood := flood_for(enemy)
+	if String(phase_id) != str(flood.get(FLOOD_PHASE, "")) or not _animating():
 		return
-	if node != null and node.has_method(&"after_sequence"):
-		node.call(&"after_sequence", _brace)
+	var brace := _brace.bind(float(flood.get(FLOOD_STAGGER, 0.0)))
+	if is_instance_valid(node) and node.has_method(&"after_sequence"):
+		node.call(&"after_sequence", brace)
 	else:
-		_brace()
+		brace.call()
 
 
-## The party braces against the water in slot order (BattleBossChoreo's brace).
-func _brace() -> void:
+## choreo_sfx.json `flood`, with the phase and stagger the choreography plays for `enemy`: its node's `data`
+## (choreo.json) `bosses[<enemy base id>].flood` (BattleBossChoreo's brace), so the sound keeps the motion's timing.
+func flood_for(enemy: BattleCombatant) -> Dictionary:
+	var out := (data.get("flood", {}) as Dictionary).duplicate()
+	var table: Variant = node.get(&"data") if is_instance_valid(node) and enemy != null else null
+	if table is Dictionary:
+		var bosses := (table as Dictionary).get("bosses", {}) as Dictionary
+		var row: Variant = bosses.get(String(enemy.id).get_slice("#", 0), {})
+		var f: Variant = (row as Dictionary).get("flood", {}) if row is Dictionary else {}
+		for k: String in [FLOOD_PHASE, FLOOD_STAGGER]:
+			if f is Dictionary and (f as Dictionary).has(k):
+				out[k] = (f as Dictionary)[k]
+	return out
+
+
+## The party braces against the water in slot order, `stagger` plan seconds apart (BattleBossChoreo's brace; a
+## fallen member takes no accent there, so it makes no sound here).
+func _brace(stagger: float) -> void:
 	if engine == null:
 		return
-	var flood := data.get("flood", {}) as Dictionary
-	var id := StringName(str(flood.get("sfx", "")))
+	var id := StringName(str((data.get("flood", {}) as Dictionary).get("sfx", "")))
 	for i in engine.party_active.size():
-		_at(float(flood.get("stagger_sec", 0.0)) * i / _speed(), id)
+		if engine.party_active[i].hp > 0:
+			_at(stagger * i / _speed(), id)
 
 
 # --------------------------------------------------------------------------- time, entrances and exits

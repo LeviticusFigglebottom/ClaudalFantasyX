@@ -149,7 +149,7 @@ func _apply() -> void:
 
 
 func _draw() -> void:
-	var band := HudLayout.rect_of(_d.get("band", {}))
+	var band := HudLayout.pinned_rect(_d.get("band", {}), size)  # centred at any aspect (M2-UI-29)
 	var deep := get_theme_color(&"panel_deep", HymnThemeBuilder.PALETTE_TYPE)
 	var mid := Color(deep, _num("band_alpha"))
 	var clear := Color(deep, 0.0)
@@ -165,7 +165,7 @@ func _draw() -> void:
 				[Vector2(side, ys[i]), Vector2(cx, ys[i]), Vector2(cx, ys[i + 1]), Vector2(side, ys[i + 1])]
 			)
 			draw_polygon(pts, PackedColorArray([clear, tops[i], bottoms[i], clear]))
-	_draw_rule(HudLayout.rect_of(_d.get("rule", {})))
+	_draw_rule(HudLayout.pinned_rect(_d.get("rule", {}), size))
 
 
 ## A centred gold rule (the OrnamentRule shape, heavier so it reads over the field): a diamond in

@@ -38,7 +38,7 @@ Battle (from M2-HER-1103's trial merge of M2-UI-07, M2-CHR-07 and M2-BPR-10, vie
 | `attack`, `finisher` (Rhen) | he strikes empty-handed while his hooks stay on his belt; the weapon belongs in his hand for strikes |
 | `revive` | optional, ~0.8 s from the KO pose to idle (`rise_to_stand` is 2 s) |
 
-Story clips for the M2 beach scene that are still missing are in M3-CHR-01's `requested_clips.json` (Rhen
+Story clips for the M2 beach scene that are still missing are in M3-CHR-1000's `requested_clips.json` (Rhen
 `sit_up`, `sit_in_shallows`, `turn_from_sea`, `stand_unsteady`); not repeated here.
 
 ## Review log

@@ -411,7 +411,9 @@ PEM_TOWN_Y_MIN_M = 2.0  # town pieces kept: the tiers above the arena's floor (a
 PEM_LIGHT_RADIUS_M = 30.0
 PEM_FAR_MIN_Y_M = 4.0
 PEM_FAR_SIZE_RANGE_M = 700.0  # pemakar_kit_preview.gd FAR_SIZE_RANGE_M: far-light radius grows to this distance
-PEM_SKYLINE = ("mountain_massif", "ashcrown_silhouette", "ash_plume")
+# The skyline pieces kept whatever their height. Ashcrown on the rim (300 m up) is the Ashcrown kit's own pieces in
+# the town layout (M3-ENV-09B; each names its kit_dir), and at the arena's 650 m their import chain draws LOD1.
+PEM_SKYLINE = ("mountain_massif", "ash_plume")
 
 
 def _terrace_town() -> tuple[list, list, list]:
@@ -428,8 +430,8 @@ def _terrace_town() -> tuple[list, list, list]:
         at = pa.town_to_arena(p["at"])
         if at[1] < PEM_TOWN_Y_MIN_M and p["piece"] not in PEM_SKYLINE:
             continue
-        pieces.append({"glb": PEM + p["piece"] + ".glb", "at": tuple(round(float(v), 3) for v in at),
-                       "yaw": round(p["yaw_deg"] - turn, 3)})
+        pieces.append({"glb": p.get("kit_dir", PEM) + p["piece"] + ".glb",
+                       "at": tuple(round(float(v), 3) for v in at), "yaw": round(p["yaw_deg"] - turn, 3)})
     for p in town["plants"]:
         at = pa.town_to_arena(p["at"])
         if at[1] >= PEM_TOWN_Y_MIN_M:
@@ -684,29 +686,47 @@ UNDERWAY_TOWER = {
 }
 
 
-RAFT_HOUSE_RIDGE = (0.0, 6.05, 1.1)  # stilt_house: the middle of its hip roof's ridge (local, measured)
-RAFT_HOUSE_DECK = (2.12, 1.1)  # stilt_house: its deck's height and the deck's middle (local z), measured
+OV = "res://assets/environments/kits/oruvel/"
 RAFT_CABIN_Y = arenas.RAFT_CABIN[4]
-RAFT_SHED = (2.0, 2.5, 2.3, 2.05)  # the net shed: post half-spacing x, z; the roof's eave height; its ridge above it
+RAFT_GULL_YAW = -70.0  # the Oruvel kit's rule (oruvel.md §0): every carved gull faces the sea, south-south-east
 
 
-def _raft_house(x: float, z: float, deck_y: float, yaw: float, gull: str) -> list:
-    """A cabin house (the Haluna kit's stilt_house) with its deck at `deck_y`: on a raft its stilts drop through the
-    raft into the hulls, out in the lagoon (deck_y high) it stands on them; and a carved gull on its ridge."""
+def _ov():
+    """The Oruvel raft-town kit's cabin constants (M3-ENV-07), read-only."""
+    sys.path.append(str(HERE.parent / "oruvel"))
+    import ov_cabins  # noqa: PLC0415
+    import ov_common  # noqa: PLC0415
+
+    return ov_cabins, ov_common
+
+
+def _rot(x: float, z: float, yaw: float, lx: float, lz: float) -> tuple[float, float]:
     a = math.radians(yaw)
-    h, mid = RAFT_HOUSE_DECK
-    ox, oz = x - mid * math.sin(a), z - mid * math.cos(a)  # the house's origin, so its deck is centred on (x, z)
-    y = round(deck_y - h, 3)
-    lx, ly, lz = RAFT_HOUSE_RIDGE
-    gx, gz = ox + lx * math.cos(a) + lz * math.sin(a), oz - lx * math.sin(a) + lz * math.cos(a)
-    return [{"glb": KIT + "stilt_house.glb", "at": (round(ox, 3), y, round(oz, 3)), "yaw": yaw},
-            {"glb": KIT + gull + ".glb", "at": (round(gx, 3), round(y + ly, 3), round(gz, 3)), "yaw": yaw + 90.0}]
+    return round(x + lx * math.cos(a) + lz * math.sin(a), 3), round(z - lx * math.sin(a) + lz * math.cos(a), 3)
+
+
+def _ov_cabin(kind: str, x: float, z: float, deck_y: float, yaw: float, jitter: float) -> list:
+    """An Oruvel cabin standing on a town raft's deck and the open-throat gull on its ridge: a keel-roof's at the
+    keel's south end, a patched cabin's on its high back edge."""
+    ocab, ocom = _ov()
+    rows = [{"glb": OV + kind + ".glb", "at": (x, round(deck_y, 3), z), "yaw": yaw}]
+    if kind == "cabin_keelroof":
+        length, _beam, depth, eave, sheer = ocab.KEELROOF
+        gz = ocab.KEELROOF_GULL_Z if math.cos(math.radians(yaw)) >= 0.0 else -ocab.KEELROOF_GULL_Z
+        gx, gzw = _rot(x, z, yaw, 0.0, gz)
+        gy = deck_y + ocom.keel_roof_ridge(gz, length, depth, eave, sheer)
+    else:
+        gx, gzw = _rot(x, z, yaw, -1.85, 0.0)
+        gy = deck_y + 3.12
+    rows.append({"glb": OV + "lintel_gull_open.glb", "at": (gx, round(gy, 3), gzw), "yaw": RAFT_GULL_YAW + jitter})
+    return rows
 
 
 def _raft_town() -> list:
-    """The town beyond the deck (the Haluna kit's pieces, read-only): cabin houses on the town's rafts (arenas.RAFT_TOWN),
-    two fishing huts out on their stilts, each roof with its carved gull (act1_ch01: carved gulls on every roof); nets,
-    racks, awnings, salvage and lamps on the rafts; outriggers moored alongside; the chandler's cabin raft."""
+    """The town beyond the deck, from the Oruvel raft-town kit (M3-ENV-07, read-only): keel-roof and patched cabins
+    on the town's rafts (arenas.RAFT_TOWN), each with its open-throat gull facing the sea; net frames, stalls and
+    salvage on the rafts; outriggers and cabin hulls moored round; the chandler's cabin raft with its stall; the far
+    town past the lagoon."""
     t = arenas.RAFT_TOWN
     sea = arenas.RAFT_SEA_Y
 
@@ -714,44 +734,36 @@ def _raft_town() -> list:
         return (t[k][0] + t[k][1]) * 0.5, t[k][4], (t[k][2] + t[k][3]) * 0.5
 
     rows = []
-    for k, dx, yaw, gull in ((0, 0.6, 12.0, "lintel_gull_a"), (2, 0.0, 95.0, "lintel_gull_c"),
-                             (3, 0.0, 40.0, "lintel_gull_b")):
+    for k, kind, dx, yaw, jit in ((0, "cabin_keelroof", 0.4, 12.0, 4.0), (2, "cabin_keelroof", 0.0, 95.0, -5.0),
+                                  (3, "cabin_patched", 0.0, 40.0, 6.0), (1, "cabin_patched", -0.8, -15.0, -3.0)):
         x, y, z = mid(k)
-        rows += _raft_house(x + dx, z, y + 0.05, yaw, gull)
-    # A net shed on the fifth raft: four lashed posts under a thatch roof, a gull on its ridge.
+        rows += _ov_cabin(kind, x + dx, z, y, yaw, jit)
     ex, ey, ez = mid(4)
-    for px, pz in ((-RAFT_SHED[0], -RAFT_SHED[1]), (RAFT_SHED[0], -RAFT_SHED[1]), (-RAFT_SHED[0], RAFT_SHED[1]),
-                   (RAFT_SHED[0], RAFT_SHED[1])):
-        rows.append({"glb": KIT + "timber_stilt_post.glb", "at": (ex + px, ey, ez + pz), "yaw": 0.0})
-    rows.append({"glb": KIT + "roof_thatch_hip.glb", "at": (ex, ey + RAFT_SHED[2], ez), "yaw": 0.0})
-    rows.append({"glb": KIT + "lintel_gull_c.glb", "at": (ex, ey + RAFT_SHED[2] + RAFT_SHED[3], ez), "yaw": 90.0})
-    for x, z, yaw, gull in ((-46.0, -27.0, 70.0, "lintel_gull_c"), (30.0, -62.0, -40.0, "lintel_gull_b")):
-        rows += _raft_house(x, z, sea + 2.3, yaw, gull)  # out in the lagoon, on their stilts
-    yc = t[2][4]
-    ya, yb, yd, ye = t[0][4], t[1][4], t[3][4], t[4][4]
+    ya, yb, yc, yd = t[0][4], t[1][4], t[2][4], t[3][4]
     rows += [
-        {"glb": KIT + "storehouse_stilt.glb", "at": (mid(1)[0] - 0.8, yb, mid(1)[2] - 1.2), "yaw": -15.0},
-        {"glb": KIT + "net_rack.glb", "at": (-16.6, yc, -12.0), "yaw": 0.0},
-        {"glb": BS + "crate_stack.glb", "at": (-23.0, yc, -6.0), "yaw": 25.0},
-        {"glb": KIT + "net_rack.glb", "at": (-15.4, ya, -22.8), "yaw": 90.0},
-        {"glb": KIT + "oil_lamp_post.glb", "at": (-15.0, ya, -19.0), "yaw": 180.0},
-        {"glb": KIT + "awning_cloth.glb", "at": (-4.6, yb, -25.0), "yaw": -10.0},
-        {"glb": KIT + "fish_drying_rack.glb", "at": (-10.6, yb, -24.6), "yaw": 0.0},
-        {"glb": KIT + "basket_set.glb", "at": (-22.0, yd, -32.0), "yaw": 15.0},
-        {"glb": BS + "salvage_pile.glb", "at": (3.4, ye, -29.6), "yaw": 30.0},
-        {"glb": KIT + "outrigger_7m.glb", "at": (9.3, sea, 2.5), "yaw": 91.0},
-        {"glb": KIT + "outrigger_7m.glb", "at": (-9.6, sea, -6.5), "yaw": 96.0},
-        {"glb": KIT + "outrigger_7m.glb", "at": (-1.0, sea, -28.0), "yaw": 170.0},
-        {"glb": KIT + "outrigger_7m.glb", "at": (9.3, arenas.RAFT_SEA_Y, 2.5), "yaw": 91.0},
-        {"glb": KIT + "outrigger_7m.glb", "at": (-9.6, arenas.RAFT_SEA_Y, -6.5), "yaw": 96.0},
-        # The chandler's cabin raft: a stall under an awning, a lamp post, jars, baskets and a drying rack.
-        {"glb": KIT + "market_stall.glb", "at": (-8.2, RAFT_CABIN_Y, -16.4), "yaw": 0.0},
-        {"glb": KIT + "awning_cloth.glb", "at": (-8.2, RAFT_CABIN_Y, -14.3), "yaw": 0.0},
-        {"glb": KIT + "oil_lamp_post.glb", "at": (-4.3, RAFT_CABIN_Y, -13.3), "yaw": 180.0},
-        {"glb": KIT + "water_jar.glb", "at": (-5.2, RAFT_CABIN_Y, -17.9), "yaw": 30.0},
-        {"glb": KIT + "basket_set.glb", "at": (-11.2, RAFT_CABIN_Y, -13.8), "yaw": 70.0},
-        {"glb": KIT + "fish_drying_rack.glb", "at": (-11.4, RAFT_CABIN_Y, -17.2), "yaw": 90.0},
+        {"glb": OV + "net_frame.glb", "at": (ex - 2.0, ey, ez), "yaw": 0.0},
+        {"glb": OV + "net_frame.glb", "at": (ex + 1.6, ey, ez + 0.5), "yaw": 0.0},
+        {"glb": OV + "stall_awning.glb", "at": (ex + 2.4, ey, ez - 2.6), "yaw": 180.0},
+        {"glb": OV + "net_frame.glb", "at": (-16.8, yc, -11.4), "yaw": 90.0},
+        {"glb": OV + "salvage_heap.glb", "at": (-22.6, yc, -6.4), "yaw": 25.0},
+        {"glb": OV + "net_frame.glb", "at": (-15.6, ya, -22.4), "yaw": 0.0},
+        {"glb": OV + "stall_awning.glb", "at": (-4.4, yb, -25.6), "yaw": 170.0},
+        {"glb": OV + "salvage_heap.glb", "at": (-22.4, yd, -33.0), "yaw": 15.0},
+        {"glb": OV + "salvage_heap.glb", "at": (3.6, t[4][4], -30.0), "yaw": 30.0},
+        # Moored round the deck and the town (the kit's hulls run along their local Z: the Haluna outrigger's yaw
+        # less 90).
+        {"glb": OV + "hull_outrigger.glb", "at": (9.3, sea, 2.5), "yaw": 1.0},
+        {"glb": OV + "hull_outrigger.glb", "at": (-9.6, sea, -6.5), "yaw": 6.0},
+        {"glb": OV + "hull_outrigger.glb", "at": (-1.0, sea, -28.0), "yaw": 80.0},
+        {"glb": OV + "hull_cabin.glb", "at": (-46.0, sea, -27.0), "yaw": 20.0},
+        {"glb": OV + "hull_cabin.glb", "at": (30.0, sea, -62.0), "yaw": -40.0},
+        {"glb": OV + "town_far.glb", "at": (-34.0, sea, -76.0), "yaw": 8.0},
+        {"glb": OV + "town_far.glb", "at": (36.0, sea, -86.0), "yaw": -18.0},
     ]
+    # The chandler's cabin raft: a keel-roof cabin along it, its stall facing the bridge from the deck.
+    rows += _ov_cabin("cabin_keelroof", -8.4, -16.4, RAFT_CABIN_Y, 90.0, 2.0)
+    rows += [{"glb": OV + "stall_awning.glb", "at": (-6.6, RAFT_CABIN_Y, -13.9), "yaw": 100.0},
+             {"glb": OV + "salvage_heap.glb", "at": (-11.4, RAFT_CABIN_Y, -13.8), "yaw": 70.0}]
     return rows
 
 

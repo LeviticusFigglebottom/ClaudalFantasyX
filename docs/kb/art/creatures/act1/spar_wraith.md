@@ -15,3 +15,14 @@ web (the art is the knots; the colour per element comes from the VFX).
 **Clips.** `idle`: it sways in the web, lines tightening and slackening. `attack`: a spar stabs down. `cast`: the web
 draws taut and the body rises into it. `hit`: it jerks in the lines. `ko`: the lines part one by one and it drops to
 the deck. Rig: a body chain, two spar arms, a dozen line bones. Budget ≤ 16k.
+
+## The two phases (m2-slice act1_ch04 §5, built 2026-10-24)
+
+- **Shrouded** (phase 1): its own sail-membranes, a torn and tarred canvas, wrap the body (`Shroud`, its own mesh,
+  two-sided, rotted through in rents, with a ragged hem short of the head). Fire is the weak point there; the burn
+  is VFX.
+- **Hauled Down** (`hauled_down`): the shroud goes at once (`hide`), `phase_drop` (1.6 s) drops the body out of the web
+  onto the deck while the spars stay planted, and the sea it hauled up its lines then sheathes it (`Sheath`, a
+  streaked water skin, `show_after`). The head stays bare. On the deck it idles on `idle_deck` and strikes with
+  `attack_deck`, `cast_deck` and `hit_deck` (the base clips played from the deck pose, mapped by the phase's
+  `clips`). 8.0k triangles in all.

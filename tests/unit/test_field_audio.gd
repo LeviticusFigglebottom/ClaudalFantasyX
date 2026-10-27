@@ -1,8 +1,10 @@
 extends TestCase
 ## M2-AUD-05: field audio. The ambience beds loop and ambience.json's beds reach a zone where music.json names none
 ## (day, night, the wind bed scaled by the zone's wind); FootstepAudio's strides on a walker; the director hangs a
-## FootstepAudio on a real FieldController; and UiAudio plays ui_sfx.json's rows from a real CommandMenu and
-## FieldMenu, one row a frame by priority.
+## FootstepAudio on a real FieldController; and UiAudio plays ui_sfx.json's rows from the real menus (CommandMenu,
+## FieldMenu and, M2-AUD-17, the pages claude/menus brought: Lattice, Equip, Items, Status, the battle pause, the
+## shop, the inn, the zone map and the tip card), one row a frame by priority. Stand-ins only where a class is absent
+## or cannot do the thing yet.
 
 const HALUNA := "res://game/levels/ch02/haluna/haluna.tscn"
 const SHRINE := "res://game/levels/ch03/shell_shrine/shell_shrine.tscn"
@@ -31,6 +33,7 @@ const STEPS := {
 	"scenes": {HALUNA: "sand"},
 }
 const NAMES := {&"rhen": "CHAR_RHEN", &"asha": "CHAR_ASHA", &"toma": "CHAR_TOMA"}
+const PARTY: Array[StringName] = [&"rhen", &"asha", &"toma"]
 
 
 class Walker:
@@ -41,105 +44,12 @@ class Walker:
 		return on_ground
 
 
-# M3-AUD-15: stand-ins for claude/ui's menus (not on this branch). They carry only the names ui_sfx.json's hooks
-# read, and name their hook with the `audio_class` meta (no class_name stubs: they would collide on merge).
-class TravelerStandIn:
-	extends RefCounted
-	var activated: Dictionary = {}
-	var position: StringName = &"start"
-
-
-class ProgressStandIn:
-	extends RefCounted
-	var travelers: Dictionary = {}
-	var opened_gates: Dictionary = {}
-
-
-class LatticeModelStandIn:
-	extends RefCounted
-	var hero_index := 0
-	var prog := ProgressStandIn.new()
-
-	func progress() -> ProgressStandIn:
-		return prog
-
-
-class LatticeStandIn:
-	extends Control
-	signal closed
-	var cursor: StringName = &"start"
-	var model := LatticeModelStandIn.new()
-	var confirming := false
-	var status := ""
-	var plan := ""
-
-	func is_confirming() -> bool:
-		return confirming
-
-	func status_text() -> String:
-		return status
-
-	func plan_text() -> String:
-		return plan
-
-
+# M2-AUD-14: stand-ins for the classes not on this branch yet (Formation) and for what the real ones cannot do yet
+# (a pan: ZoneMapView fits the zone; the title's launch changes the scene). They carry only the names ui_sfx.json's
+# hooks read, and name their hook with the `audio_class` meta (no class_name stubs: they would collide on merge).
 class PageStandIn:
 	extends RefCounted
 	var cursor := 0
-
-
-class BagStandIn:
-	extends RefCounted
-	var wearers: Dictionary = {1: &"rhen", 2: &"", 3: &""}
-	var abilities: Dictionary = {1: [], 2: [], 3: []}
-
-	func uids() -> Array[int]:
-		var out: Array[int] = []
-		out.assign(wearers.keys())
-		return out
-
-	func wearer_of(uid: int) -> StringName:
-		return wearers.get(uid, &"")
-
-	func abilities_of(uid: int) -> Array:
-		return abilities.get(uid, [])
-
-
-class EquipModelStandIn:
-	extends RefCounted
-	var bag := BagStandIn.new()
-
-
-class EquipStandIn:
-	extends Control
-	signal closed
-	var level := 0
-	var model := EquipModelStandIn.new()
-	var refused := false
-	var heroes := PageStandIn.new()
-	var gear := PageStandIn.new()
-	var choice := PageStandIn.new()
-
-	func hero_page() -> PageStandIn:
-		return heroes
-
-	func gear_page() -> PageStandIn:
-		return gear
-
-	func choice_page() -> PageStandIn:
-		return choice
-
-	func status_is_refusal() -> bool:
-		return refused
-
-
-class MapStandIn:
-	extends Control
-	signal closed
-	var poi: StringName = &"dock"
-
-	func current_poi() -> StringName:
-		return poi
 
 
 class MapViewStandIn:
@@ -153,11 +63,6 @@ class MapViewStandIn:
 
 	func map_scale() -> float:
 		return px_per_m
-
-
-class TipStandIn:
-	extends Control
-	var phase := 0
 
 
 class TitleModelStandIn:
@@ -175,36 +80,6 @@ class TitleStandIn:
 
 	func is_launched() -> bool:
 		return launched
-
-
-# M2-AUD-14: stand-ins for claude/menus' Items and Formation pages (same rule: no class_name stubs).
-class InventoryStandIn:
-	extends RefCounted
-	var counts: Dictionary = {"tonic": 2, "ether": 1}
-
-
-class ItemsModelStandIn:
-	extends RefCounted
-	var sort: StringName = &"kind"
-	var bag := InventoryStandIn.new()
-
-	func inventory() -> InventoryStandIn:
-		return bag
-
-
-class ItemsStandIn:
-	extends Control
-	signal closed
-	var level := 0
-	var model := ItemsModelStandIn.new()
-	var list := PageStandIn.new()
-	var picker := PageStandIn.new()
-
-	func list_page() -> PageStandIn:
-		return list
-
-	func picker_page() -> PageStandIn:
-		return picker
 
 
 class FormationModelStandIn:
@@ -440,120 +315,33 @@ func test_ui_hooks_play_the_field_menu() -> void:
 	_done()
 
 
-func test_change_rows_and_pending_hooks() -> void:
+func test_change_rows_and_live_hooks() -> void:
 	assert_eq(UiAudio.change_row({"rise": "a", "fall": "b"}, 0, 1), &"a")
 	assert_eq(UiAudio.change_row({"rise": "a", "fall": "b"}, 2, 1), &"b")
 	assert_eq(UiAudio.change_row({"values": {"2": "e"}, "sfx": "s"}, 0, 2), &"e")
 	assert_eq(UiAudio.change_row({"values": {"2": "e"}, "sfx": "s"}, 0, 3), &"s")
 	assert_eq(UiAudio.change_row({"sfx": "s", "on_true": true}, 5, 0), &"")
 	var hooks := _ui()
-	assert_true(hooks.hooks.has("ShopMenu") and hooks.hooks.has("InnMenu"), "the shop and inn rows wait for M2-UI-06")
 	var rows := AudioData.sfx_rows()
 	for id: StringName in hooks.priority:
 		assert_true(rows.has(String(id)), "priority row %s exists" % id)
+	# M2-AUD-17: a hook is pending exactly while its class is missing from this branch.
+	var classes: Array[String] = []
+	for c: Dictionary in ProjectSettings.get_global_class_list():
+		classes.append(str(c["class"]))
+	for cls: String in hooks.hooks:
+		var pending := bool((hooks.hooks[cls] as Dictionary).get("pending", false))
+		assert_eq(pending, not classes.has(cls), "%s: pending only while its class is absent" % cls)
 	hooks.free()
 	_done()
 
 
-func test_ui_hooks_play_the_lattice_page() -> void:
-	var ui := _ui()
-	var menu := LatticeStandIn.new()
-	var rhen := TravelerStandIn.new()
-	var asha := TravelerStandIn.new()
-	menu.model.prog.travelers = {&"rhen": rhen, &"asha": asha}
-	_watch(ui, menu, "LatticeMenu")
-	assert_eq(played, [&"ui_menu_open"], "opening")
-	for step: Array in [
-		[func() -> void: menu.cursor = &"n1", &"ui_cursor", "the cursor moves"],
-		[func() -> void: menu.confirming = true, &"ui_confirm", "Confirm opens the question"],
-		[func() -> void: menu.confirming = false, &"ui_cancel", "Not now"],
-		[func() -> void: _refuse(menu), &"ui_error", "a refused plan"],
-		[func() -> void: menu.status = "", &"", "the cursor's move clears the status line quietly"],
-		[func() -> void: menu.confirming = true, &"ui_confirm", "Confirm on a reachable node"],
-		[func() -> void: _walk_board(menu, rhen, &"n1"), &"ui_lattice_step", "a walk, not the question closing"],
-		[func() -> void: _wake(menu, rhen, &"n1"), &"ui_lattice_node", "a node woken: the bell"],
-		[func() -> void: _open_gate(menu, &"g1"), &"ui_lattice_unlock", "a gate opened"],
-		[func() -> void: _show_hero(menu, 1, &"start"), &"ui_page", "another hero: a page, no wake or walk"],
-		[func() -> void: menu.closed.emit(), &"ui_menu_close", "closing"],
-	]:
-		played.clear()
-		(step[0] as Callable).call()
-		ui.step()
-		assert_eq(played.back() if not played.is_empty() else &"", step[1], step[2])
-	assert_eq(ui.lattice_woken(null), -1, "an unreadable board reads -1")
-	menu.free()
-	ui.free()
-	_done()
-
-
-func test_ui_hooks_play_equip_map_tip_and_title() -> void:
-	var ui := _ui()
-	var eq := EquipStandIn.new()
-	_watch(ui, eq, "EquipMenu")
-	assert_eq(played, [&"ui_menu_open"], "Equip opens")
-	for step: Array in [
-		[func() -> void: eq.heroes.cursor = 1, &"ui_cursor", "a hero"],
-		[func() -> void: eq.level = 1, &"ui_confirm", "into the gear"],
-		[func() -> void: eq.level = 2, &"ui_confirm", "into the pieces"],
-		[func() -> void: _wear(eq, 2, &"rhen", 1), &"ui_equip", "a piece worn: the clasp, not the level's cancel"],
-		[func() -> void: _wear(eq, 2, &"", 2), &"ui_unequip", "taken off"],
-		[func() -> void: _wear(eq, 1, &"asha", 1), &"ui_equip", "a swap between heroes"],
-		[func() -> void: eq.model.bag.abilities[1] = [&"undertow"], &"ui_craft", "a craft (M2-AUD-14: its own row)"],
-		[func() -> void: eq.refused = true, &"ui_error", "a refusal"],
-		[func() -> void: eq.closed.emit(), &"ui_menu_close", "Equip closes"],
-	]:
-		played.clear()
-		(step[0] as Callable).call()
-		ui.step()
-		assert_eq(played.back() if not played.is_empty() else &"", step[1], step[2])
-	played.clear()
-	var map := MapStandIn.new()
-	var view := MapViewStandIn.new()
-	map.add_child(view)
-	_watch(ui, map, "ZoneMapMenu")
-	_watch(ui, view, "ZoneMapView")
-	assert_eq(played, [&"ui_map_open"], "the map unrolls")
-	played.clear()
-	map.poi = &"shrine"
-	ui.step()
-	assert_eq(played, [&"ui_map_tick"], "a place in the legend ticks")
-	played.clear()
-	map.poi = &"inn"
-	view.poi_clicked.emit(&"inn")
-	ui.step()
-	assert_eq(played, [&"ui_map_marker"], "a place clicked on the map: the pin, not the tick as well")
-	played.clear()
-	map.closed.emit()
-	ui.step()
-	assert_eq(played, [&"ui_map_close"], "the map rolls up")
-	played.clear()
-	var tip := TipStandIn.new()
-	_watch(ui, tip, "TipCard")
-	for phase: int in [1, 2, 3, 0, 1]:
-		tip.phase = phase
-		ui.step()
-	assert_eq(played, [&"ui_tip", &"ui_tip"], "a tip pops in each time one fades in, and only then")
-	played.clear()
-	var title := TitleStandIn.new()
-	_watch(ui, title, "TitleMenu")
-	assert_eq(played, [&"ui_title_swell"], "the title's first swell")
-	played.clear()
-	title.model.cursor = 1
-	ui.step()
-	title.launched = true
-	title.chosen.emit(&"new_game", OK)
-	ui.step()
-	assert_eq(played, [&"ui_cursor", &"ui_title_confirm"], "Begin: the title's own confirm over chosen's")
-	for n: Node in [eq, map, tip, title]:
-		n.free()
-	ui.free()
-	_done()
-
-
-func test_new_menu_rows_exist_and_hooks_wait_for_their_classes() -> void:
+func test_new_menu_rows_exist_and_the_pages_are_live() -> void:
 	var ui := _ui()
 	var rows := AudioData.sfx_rows()
 	for cls: String in [
+		"ShopMenu",
+		"InnMenu",
 		"FieldSubmenu",
 		"LatticeMenu",
 		"EquipMenu",
@@ -561,10 +349,15 @@ func test_new_menu_rows_exist_and_hooks_wait_for_their_classes() -> void:
 		"ZoneMapView",
 		"TipCard",
 		"ItemsMenu",
-		"FormationMenu"
+		"StatusMenu",
+		"BattlePauseMenu",
+		"FormationMenu",
+		"MemoriesMenu"
 	]:
 		assert_true(ui.hooks.has(cls), "%s has a hook" % cls)
-		assert_true(bool((ui.hooks[cls] as Dictionary).get("pending", false)), "%s waits for claude/ui" % cls)
+		assert_false(
+			bool((ui.hooks[cls] as Dictionary).get("pending", false)), "%s is live (M2-AUD-17, M2-MNU-303)" % cls
+		)
 	for id: String in [
 		"ui_lattice_node",
 		"ui_lattice_unlock",
@@ -594,29 +387,346 @@ func test_new_menu_rows_exist_and_hooks_wait_for_their_classes() -> void:
 	_done()
 
 
-func test_ui_hooks_play_items_formation_customize_and_map_pan() -> void:
+func test_ui_hooks_play_the_real_lattice_page() -> void:
 	var ui := _ui()
-	var items := ItemsStandIn.new()
-	_watch(ui, items, "ItemsMenu")
-	assert_eq(played, [&"ui_menu_open"], "Items opens")
-	_play_steps(
+	var state := GameStateData.new()
+	state.inventory = {"facet_speed": 1}
+	var menu := LatticeMenu.create(PartySheet.new(state, PARTY))
+	menu.pause_tree = false
+	_watch_real(ui, menu)
+	assert_eq(played, [&"ui_menu_open"], "the Lattice opens")
+	menu.model.traveler().movement_points = 1
+	_keys(
 		ui,
+		menu,
 		[
-			[func() -> void: items.list.cursor = 1, &"ui_cursor", "the bag's cursor"],
-			[func() -> void: _sort(items, &"name"), &"ui_item_sort", "a sort, not the cursor it moves"],
-			[func() -> void: items.level = 1, &"ui_confirm", "the picker opens"],
-			[func() -> void: items.picker.cursor = 2, &"ui_cursor", "a hero"],
-			[func() -> void: items.model.bag.counts["tonic"] = 1, &"ui_item_use", "a tonic used"],
-			[
-				func() -> void: _use_last(items, "tonic"),
-				&"ui_item_use",
-				"the last one: the use, not the picker's close"
-			],
-			[func() -> void: items.closed.emit(), &"ui_menu_close", "Items closes"],
+			[&"ui_right", &"ui_cursor", "the cursor to the next node"],
+			[&"ui_accept", &"ui_confirm", "Confirm asks before walking"],
+			[&"ui_down", &"ui_cursor", "the question's rows"],
+			[&"ui_cancel", &"ui_cancel", "Cancel steps back from the question"],
+			[&"ui_accept", &"ui_confirm", "asked again"],
+			[&"ui_accept", &"ui_lattice_step", "walked: the step, not the question closing"],
+			[&"ui_accept", &"ui_confirm", "standing on it: wake it?"],
+			[&"ui_accept", &"ui_lattice_node", "woken with its Facet: the bell"],
+			[&"ui_right", &"ui_cursor", "on to the next node"],
+			[&"ui_accept", &"ui_error", "no movement left: refused in words"],
+			[&"ui_left", &"ui_cursor", "a move clears the refusal quietly"],
 		]
 	)
-	assert_eq(ui.item_total(null), -1, "an unreadable bag reads -1")
+	assert_eq(menu.model.position(), &"rh_01", "the walk was real")
+	assert_true(menu.model.progress().is_activated_by(&"rhen", &"rh_01"), "and so was the wake")
+	menu.model.traveler().movement_points = 6
+	menu.set_cursor(&"rh_06", false)
+	menu.request_act()
+	menu.choose(0)
+	ui.step()
+	assert_eq(menu.model.position(), &"rh_06", "beside the gate")
+	menu.model.facets().add(&"facet_key_1", 1)
+	menu.set_cursor(&"rh_07", false)
+	menu.request_act()
+	ui.step()
 	played.clear()
+	menu.choose(0)
+	ui.step()
+	assert_eq(played, [&"ui_lattice_unlock"], "the gate opens with its Key")
+	_keys(
+		ui,
+		menu,
+		[
+			[&"ui_page_down", &"ui_page", "another hero: a page, no wake or walk"],
+			[&"ui_cancel", &"ui_menu_close", "the Lattice closes"],
+		]
+	)
+	_free_real(menu)
+	ui.free()
+	_done()
+
+
+func test_ui_hooks_play_the_real_equip_and_customize_page() -> void:
+	var ui := _ui()
+	var sheet := PartySheet.new(GameStateData.new(), PARTY)
+	var bag := sheet.goods.equipment
+	bag.grant_starting(&"rhen")  # the starting weapon and armor first, as opening the page would
+	var hooks := bag.add_piece(&"rhen_coral_hooks")
+	bag.equip(&"rhen", hooks)
+	var spare := bag.add_piece(&"rhen_coral_hooks")
+	sheet.goods.inventory.add(&"tide_pearl", 4)
+	var menu := EquipMenu.create(sheet)
+	menu.pause_tree = false
+	_watch_real(ui, menu)
+	assert_eq(played, [&"ui_menu_open"], "Equip opens")
+	_keys(
+		ui,
+		menu,
+		[
+			[&"ui_down", &"ui_cursor", "the next hero"],
+			[&"ui_up", &"ui_cursor", "back to Rhen"],
+			[&"ui_accept", &"ui_confirm", "into Rhen's gear"],
+			[&"ui_right", &"ui_cursor", "Right: the next hero's gear"],
+			[&"ui_left", &"ui_cursor", "and back"],
+			[&"ui_down", &"ui_cursor", "the weapon's first ability slot (Ember Edge)"],
+			[&"ui_accept", &"ui_error", "a filled slot is refused"],
+			[&"ui_down", &"ui_cursor", "the empty slot (the refusal clears)"],
+			[&"ui_accept", &"ui_customize_open", "Customize's recipes"],
+			[&"ui_accept", &"", "the first Confirm only asks (Customize arms it in private)"],
+			[&"ui_accept", &"ui_craft", "the second crafts, back to the gear: the hammer, not the cancel"],
+			[&"ui_up", &"ui_cursor", "up the gear"],
+			[&"ui_up", &"ui_cursor", "to the weapon"],
+			[&"ui_accept", &"ui_confirm", "the pieces Rhen can wield"],
+		]
+	)
+	assert_eq(bag.slots_of(hooks)[1], &"tide_edge", "the craft was real")
+	_seek(ui, menu, func(r: Dictionary) -> bool: return int(r.get("uid", -1)) == spare, menu.choice_page())
+	_keys(ui, menu, [[&"ui_accept", &"ui_equip", "the spare worn: the clasp, not the level's cancel"]])
+	assert_eq(bag.equipped(&"rhen", ItemDB.SLOT_WEAPON), spare, "worn")
+	_seek(ui, menu, func(r: Dictionary) -> bool: return str(r.get("id", "")) == "slot:armor", menu.gear_page())
+	_keys(ui, menu, [[&"ui_accept", &"ui_confirm", "the armor"]])
+	var remove := func(r: Dictionary) -> bool: return r.get("kind", &"") == EquipMenuModel.KIND_REMOVE
+	_seek(ui, menu, remove, menu.choice_page())
+	_keys(
+		ui,
+		menu,
+		[
+			[&"ui_accept", &"ui_unequip", "taken off"],
+			[&"ui_cancel", &"ui_cancel", "back to the party"],
+			[&"ui_cancel", &"ui_menu_close", "Equip closes"],
+		]
+	)
+	_free_real(menu)
+	ui.free()
+	_done()
+
+
+func test_ui_hooks_play_the_real_items_page() -> void:
+	var ui := _ui()
+	var state := GameStateData.new()
+	state.party_ids = PARTY.duplicate()
+	state.inventory = {"salt_tonic": 2, "quiet_tea": 1, "brass_lantern": 1}
+	state.party_vitals = {"rhen": {"hp": 100}, "toma": {"hp": 10}}
+	ItemsMenu.session_sort = ItemsMenuModel.SORT_KIND
+	var menu := ItemsMenu.create(PartySheet.new(state, PARTY))
+	menu.pause_tree = false
+	_watch_real(ui, menu)
+	assert_eq(played, [&"ui_menu_open"], "Items opens")
+	_keys(
+		ui,
+		menu,
+		[
+			[&"ui_down", &"ui_cursor", "down the bag"],
+			[&"ui_right", &"ui_item_sort", "a sort, not the cursor it moves"],
+			[&"ui_left", &"ui_item_sort", "and back"],
+		]
+	)
+	# M3-MNU-03: key items have their own tab.
+	_keys(ui, menu, [[&"ui_page_down", &"ui_page", "the Key Items tab"]])
+	_seek(ui, menu, func(r: Dictionary) -> bool: return r.get("id", &"") == &"brass_lantern", menu.list_page())
+	_keys(ui, menu, [[&"ui_accept", &"", "a key item opens nothing (a refusal its line already said)"]])
+	_keys(ui, menu, [[&"ui_page_up", &"ui_page", "back to the Bag tab"]])
+	_seek(ui, menu, func(r: Dictionary) -> bool: return r.get("id", &"") == &"salt_tonic", menu.list_page())
+	_keys(
+		ui,
+		menu,
+		[
+			[&"ui_accept", &"ui_confirm", "the picker opens"],
+			[&"ui_accept", &"ui_item_use", "a tonic on Rhen"],
+			[&"ui_down", &"ui_cursor", "Asha"],
+			[&"ui_down", &"ui_cursor", "Toma"],
+			[&"ui_accept", &"ui_item_use", "the last one: the use, not the picker's close"],
+		]
+	)
+	assert_eq(menu.level, ItemsMenu.Level.LIST, "back to the bag")
+	assert_eq(int(state.inventory.get("salt_tonic", 0)), 0, "both tonics spent")
+	_keys(ui, menu, [[&"ui_cancel", &"ui_menu_close", "Items closes"]])
+	_free_real(menu)
+	ItemsMenu.session_sort = ItemsMenuModel.SORT_KIND
+	ui.free()
+	_done()
+
+
+func test_ui_hooks_play_the_real_status_page() -> void:
+	var ui := _ui()
+	var menu := StatusMenu.create(PartySheet.new(GameStateData.new(), PARTY))
+	menu.pause_tree = false
+	_watch_real(ui, menu)
+	assert_eq(played, [&"ui_menu_open"], "Status opens")
+	_keys(
+		ui,
+		menu,
+		[
+			[&"ui_down", &"ui_page", "the next hero's sheet, not the list's tick as well"],
+			[&"ui_right", &"ui_page", "Right does the same"],
+			[&"ui_up", &"ui_page", "and back"],
+			[&"ui_accept", &"", "nothing to confirm"],
+			[&"ui_cancel", &"ui_menu_close", "Status closes"],
+		]
+	)
+	_free_real(menu)
+	ui.free()
+	_done()
+
+
+func test_ui_hooks_play_the_real_battle_pause() -> void:
+	var ui := _ui()
+	var menu := BattlePauseMenu.create()
+	menu.pause_tree = false
+	_watch_real(ui, menu)
+	assert_eq(played, [&"ui_menu_open"], "the pause opens")
+	_keys(
+		ui,
+		menu,
+		[
+			[&"ui_down", &"ui_cursor", "Settings"],
+			[&"ui_accept", &"ui_confirm", "the Settings hub over the pause"],
+		]
+	)
+	assert_true(menu.settings_menu != null, "the hub is open")
+	played.clear()
+	if menu.settings_menu != null:
+		menu.settings_menu.close()
+	ui.step()
+	assert_eq(played, [&"ui_cancel"], "and hands back")
+	_keys(
+		ui,
+		menu,
+		[
+			[&"ui_down", &"ui_cursor", "Quit"],
+			[&"ui_accept", &"ui_confirm", "Quit asks first (Stay under the cursor)"],
+			[&"ui_down", &"ui_cursor", "Quit to the title"],
+			[&"ui_cancel", &"ui_cancel", "Cancel backs out of the question"],
+			[&"ui_up", &"ui_cursor", "up"],
+			[&"ui_up", &"ui_cursor", "to Resume"],
+			[&"ui_accept", &"ui_menu_close", "Resume lifts the pause"],
+		]
+	)
+	_free_real(menu)
+	ui.free()
+	_done()
+
+
+func test_ui_hooks_play_the_real_shop_and_inn() -> void:
+	var ui := _ui()
+	var db := ItemDB.load_default()
+	var state := GameStateData.new()
+	state.currency = 100
+	var flags := FlagReader.new()
+	flags.values["ch02_met_asha"] = true
+	var goods := PartyGoods.from_state(db, state)
+	var shop := (load(ShopMenu.SCENE_PATH) as PackedScene).instantiate() as ShopMenu
+	shop.pause_tree = false
+	shop.configure(ShopMenuModel.new(db, Shop.new(db, &"haluna_market"), goods, flags, NAMES))
+	_watch_real(ui, shop)
+	assert_eq(played, [&"ui_menu_open"], "the shop opens")
+	_keys(
+		ui,
+		shop,
+		[
+			[&"ui_down", &"ui_cursor", "Sell"],
+			[&"ui_up", &"ui_cursor", "Buy"],
+			[&"ui_accept", &"ui_confirm", "the stock"],
+			[&"ui_right", &"ui_cursor", "two of them"],
+			[&"ui_left", &"ui_cursor", "one"],
+			[&"ui_accept", &"ui_buy", "a Salt Tonic bought"],
+			[&"ui_cancel", &"ui_cancel", "back to the counter"],
+			[&"ui_down", &"ui_cursor", "Sell"],
+			[&"ui_accept", &"ui_confirm", "the bag"],
+			[&"ui_accept", &"ui_buy", "the tonic sold back"],
+			[&"ui_cancel", &"ui_cancel", "back to the counter"],
+			[&"ui_cancel", &"ui_menu_close", "the shop closes"],
+		]
+	)
+	assert_eq(goods.inventory.count(&"salt_tonic"), 0, "bought and sold for real")
+	_free_real(shop)
+	var healed: Array[StringName] = []
+	var heal := func(source: StringName) -> void: healed.append(source)
+	var inn := (load(InnMenu.SCENE_PATH) as PackedScene).instantiate() as InnMenu
+	inn.pause_tree = false
+	inn.configure(InnMenuModel.new(Inn.new(db, &"haluna_inn"), goods, flags, heal))
+	_watch_real(ui, inn)
+	assert_eq(played, [&"ui_menu_open"], "the inn opens")
+	_keys(
+		ui,
+		inn,
+		[
+			[&"ui_down", &"ui_cursor", "Leave"],
+			[&"ui_up", &"ui_cursor", "Rest"],
+			[&"ui_accept", &"ui_inn_rest", "a night paid for, not the cursor's move to Leave"],
+			[&"ui_cancel", &"ui_menu_close", "the inn closes"],
+		]
+	)
+	assert_eq(healed.size(), 1, "the rest was real")
+	_free_real(inn)
+	ui.free()
+	_done()
+
+
+func test_ui_hooks_play_the_real_zone_map_and_tip_card() -> void:
+	var ui := _ui()
+	var page := (load(ZoneMapMenu.SCENE_PATH) as PackedScene).instantiate() as ZoneMapMenu
+	page.pause_tree = false
+	var on: Array[StringName] = [&"ch02_met_asha", &"ch02_tideline_won", &"ch02_ate_at_nemes"]
+	var flag := func(f: StringName) -> bool: return on.has(f)
+	page.configure(MapModel.new(&"ch02/haluna", Vector3(-8.0, 0.0, 6.0), PI * 0.5, flag))
+	_watch_real(ui, page)
+	ui.watch(page.view())
+	ui.step()
+	assert_eq(played, [&"ui_map_open"], "the map unrolls (the view alone plays nothing)")
+	_keys(ui, page, [[&"ui_down", &"ui_map_tick", "a place in the legend ticks"]])
+	played.clear()
+	page.view().poi_clicked.emit(&"dock")
+	ui.step()
+	assert_eq(page.current_poi(), &"dock", "the click chose the dock")
+	assert_eq(played, [&"ui_map_marker"], "a place clicked on the map: the pin, not the tick as well")
+	_keys(ui, page, [[&"ui_cancel", &"ui_map_close", "the map rolls up"]])
+	_free_real(page)
+	played.clear()
+	UiSettings.set_shared(UiSettings.new())
+	FieldInput.ensure_actions()
+	ObjectiveHud.ensure_action()
+	var seen: Dictionary = {&"ch02_met_asha": true}
+	var card := TipCard.new()
+	card.tips = TutorialTips.new(
+		func(f: StringName) -> bool: return bool(seen.get(f, false)),
+		func(f: StringName) -> void: seen[f] = true,
+		func() -> bool: return true
+	)
+	_host().add_child(card)
+	ui.watch(card)
+	ui.step()
+	var fade := float(TutorialTips.load_data()["fade_sec"]) + 0.01
+	card.advance(0.0)
+	ui.step()
+	assert_eq(played, [&"ui_tip"], "the objective tip fades in")
+	card.tips.raise_flag(&"ch02_tideline_won", true)
+	for dt: float in [fade, card.hold_for(card.body_text()) + 0.01, fade, 0.0]:
+		card.advance(dt)
+		ui.step()
+	assert_eq(played, [&"ui_tip", &"ui_tip"], "the next tip pops in once it fades in, and only then")
+	_free_real(card)
+	UiSettings.set_shared(null)
+	InputNames.using_pad = false
+	ui.free()
+	_done()
+
+
+func test_ui_hooks_play_the_title() -> void:
+	var ui := _ui()
+	var title := TitleStandIn.new()
+	_watch(ui, title, "TitleMenu")
+	assert_eq(played, [&"ui_title_swell"], "the title's first swell")
+	played.clear()
+	title.model.cursor = 1
+	ui.step()
+	title.launched = true
+	title.chosen.emit(&"new_game", OK)
+	ui.step()
+	assert_eq(played, [&"ui_cursor", &"ui_title_confirm"], "Begin: the title's own confirm over chosen's")
+	title.free()
+	ui.free()
+	_done()
+
+
+func test_ui_hooks_play_formation_and_map_pan_stand_ins() -> void:
+	var ui := _ui()
 	var form := FormationStandIn.new()
 	_watch(ui, form, "FormationMenu")
 	assert_eq(played, [&"ui_menu_open"], "Formation opens")
@@ -632,21 +742,9 @@ func test_ui_hooks_play_items_formation_customize_and_map_pan() -> void:
 			[func() -> void: form.closed.emit(), &"ui_menu_close", "Formation closes"],
 		]
 	)
-	played.clear()
-	var eq := EquipStandIn.new()
-	_watch(ui, eq, "EquipMenu")
-	_play_steps(
-		ui,
-		[
-			[func() -> void: eq.level = 1, &"ui_confirm", "into the gear"],
-			[func() -> void: eq.level = 3, &"ui_customize_open", "an empty slot: Customize's recipes"],
-			[func() -> void: _craft(eq, 1, &"undertow", 1), &"ui_craft", "a craft back to the gear, not its cancel"],
-			[func() -> void: eq.level = 2, &"ui_confirm", "into the pieces"],
-			[func() -> void: eq.level = 3, &"ui_customize_open", "a spare's Customize row"],
-			[func() -> void: eq.level = 2, &"ui_cancel", "Cancel back to the pieces"],
-		]
-	)
+	assert_eq(ui.item_total(null), -1, "an unreadable bag reads -1")
 	assert_eq(ui.crafted_count(null), -1, "an unreadable bag reads -1")
+	assert_eq(ui.lattice_woken(null), -1, "an unreadable board reads -1")
 	played.clear()
 	var view := MapViewStandIn.new()
 	_watch(ui, view, "ZoneMapView")
@@ -662,7 +760,7 @@ func test_ui_hooks_play_items_formation_customize_and_map_pan() -> void:
 		]
 	)
 	assert_eq(ui.pans(null, Vector2.ZERO, 1.0, 1.0), -1, "no view reads -1")
-	for n: Node in [items, form, eq, view]:
+	for n: Node in [form, view]:
 		n.free()
 	ui.step()
 	assert_true(ui._pans.is_empty(), "a freed view's pans are forgotten")
@@ -678,25 +776,29 @@ func _play_steps(ui: UiAudio, steps: Array) -> void:
 		assert_eq(played.back() if not played.is_empty() else &"", step[1], step[2])
 
 
-func _sort(items: ItemsStandIn, by: StringName) -> void:
-	items.model.sort = by
-	items.list.cursor = 0
+## Presses each [action, row, note] on a real menu and hears exactly that row (&"" for silence) that frame.
+func _keys(ui: UiAudio, menu: Node, steps: Array) -> void:
+	for step: Array in steps:
+		played.clear()
+		menu.call(&"handle_input", _ev(step[0]))
+		ui.step()
+		var want: Array = [] if step[1] == &"" else [step[1]]
+		assert_eq(played, want, "%s: %s" % [step[0], step[2]])
 
 
-func _use_last(items: ItemsStandIn, iid: String) -> void:
-	items.model.bag.counts.erase(iid)
-	items.level = 0
+## Presses ui_down on `menu` until `page`'s current row matches `pred`; every step is a cursor tick.
+func _seek(ui: UiAudio, menu: Node, pred: Callable, page: MenuPage) -> void:
+	for i in page.row_count():
+		if pred.call(page.current_row()):
+			return
+		_keys(ui, menu, [[&"ui_down", &"ui_cursor", "seeking a row"]])
+	assert_true(pred.call(page.current_row()), "the row was found")
 
 
 func _swap(form: FormationStandIn) -> void:
 	form.model.active[1] = &"ysolde"
 	form.model.reserve[0] = &"asha"
 	form.chosen = {}
-
-
-func _craft(eq: EquipStandIn, uid: int, aid: StringName, level: int) -> void:
-	eq.model.bag.abilities[uid] = [aid]
-	eq.level = level
 
 
 func _zoom(view: MapViewStandIn, px_per_m: float, origin: Vector2) -> void:
@@ -712,34 +814,22 @@ func _watch(ui: UiAudio, node: Node, cls: String) -> void:
 	ui.step()
 
 
-func _refuse(menu: LatticeStandIn) -> void:
-	menu.plan = "Not enough movement."
-	menu.status = menu.plan
+## A real menu: into the tree (its _ready builds it), watched by its own class name, its open heard.
+func _watch_real(ui: UiAudio, node: Node) -> void:
+	played.clear()
+	_host().add_child(node)
+	assert_true(ui.wants(node), "%s has a hook" % node.get_script().get_global_name())
+	ui.watch(node)
+	ui.step()
 
 
-func _walk_board(menu: LatticeStandIn, t: TravelerStandIn, to: StringName) -> void:
-	t.position = to
-	menu.confirming = false
-
-
-func _wake(menu: LatticeStandIn, t: TravelerStandIn, nid: StringName) -> void:
-	t.activated[nid] = true
-	menu.status = "Rhen wakes the node."
-	menu.plan = "Already woken."
-
-
-func _open_gate(menu: LatticeStandIn, gid: StringName) -> void:
-	menu.model.prog.opened_gates[gid] = true
-
-
-func _show_hero(menu: LatticeStandIn, index: int, at: StringName) -> void:
-	menu.model.hero_index = index
-	menu.cursor = at
-
-
-func _wear(eq: EquipStandIn, uid: int, who: StringName, level: int) -> void:
-	eq.model.bag.wearers[uid] = who
-	eq.level = level
+func _free_real(node: Node) -> void:
+	if node.has_method(&"close"):
+		node.call(&"close")
+	if node.get_parent() != null:
+		node.get_parent().remove_child(node)
+	node.free()
+	(Engine.get_main_loop() as SceneTree).paused = false
 
 
 # --------------------------------------------------------------------------- helpers
