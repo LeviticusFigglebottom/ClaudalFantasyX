@@ -380,6 +380,24 @@ Ch4–Ch9 onward. `m2-slice.md` beside this file is the history up to the 2026-1
   islet's west steps, four between the hall's whorl pairs, each with a box collider. They are mirrored on the First
   Verse's set. `shrine` 38 and `first_verse` 3 pass, both 0 failed (reachability included); test_scene_refs OK.
 
+- **The Lead's answers, done. MERGE-READY @ b04c62cc.**
+  - **Merged env-art's 0958af1a (M3-ENV-724).** shots.json and baselines.json were merged as JSON by id; in the
+    M3-ENV-711 task, my ticks were kept and env-art's notes added. test_iskarra passes.
+  - **Kerrid is back at (9.5, -5.5).** Env-art pulled the plaza's corner clear of it, so my earlier 1.5 m move is
+    reverted.
+  - **The Prologue's fog matches the Iskarra preview:** from 70 m, density 0.2.
+  - **The vigils:** the water swap was already in (2ab7a66e). `PrologueScene.dress_vigils()` gives a City/Vigils
+    figure its hero's field body as soon as `hero_motion.json` field.heroes lists that hero, and drops its
+    capsule. Kerrid is M3-CHR-505; Pell is M3-CHR-506; Liss is on claude/characters.
+    - **For characters:** add `field.heroes.liss` (and later kerrid and pell), and the Prologue picks them up
+      with no change on my side.
+    - No villager stand-ins: Pell is a 2.3 m Kirru, and a human mesh would misstate him.
+  - **The first battle (M2-FP-105):** the tideline opens on Toma's line, "Be level, Rhen. Watch who moves next.
+    Every blow costs you time." Rhen's first turn still names the command flow. `TUT_TIDELINE_TIMELINE` stays in
+    strings.csv (append-only) but is unused.
+  - **Checks:** prologue 8, slice_primitives 1, slice_first_battle 1, battle_boss_prompts 1, all 0 failed;
+    test_iskarra, test_scene_refs and test_banned_scan OK; validate_data 0/0; lint and format clean.
+
 ### Render requests
 RENDER-REQUEST @ fdec3cc6: slice_prologue_vigil_line, slice_beach_h05_asha, slice_beach_h06_toma, slice_haluna_villagers_village, slice_causeway_head, slice_causeway_harrier_view, haluna_h01_village_from_sea, haluna_h02_tidewall_lane, haluna_h04_dock, haluna_h07_chapel_court, haluna_h10_dock_night, shrine_s01_approach, shrine_s02_threshold, shrine_s03_overview, shrine_s04_lip, shrine_s05_side_pool, drownbell_flood, battle_boss_intro_drownbell, battle_arena_causeway, field_causeway_dolly, boot_title; why: M2-FP-102..109, the human's playtest round (real cast and held poses in the prologue and Cutscene A, live villagers and wildlife, the final causeway), plus the greyscale audit of every slice beat. The six slice_* shots are new (no baseline yet).
 - **Known red until the render lands:** the six new `slice_*` shots have no baseline yet, so the tools test
@@ -407,3 +425,4 @@ RENDER-REQUEST @ 8b5c92fc: slice_verse_steps, ch01_underway_gallery, ch01_o07_na
 - Note for the cloud renderer (the PC is paused): the 8b5c92fc request lists only changed, unviewed shots. If it must be split, the priority is: 1) slice_beach_h05_asha, slice_beach_h06_toma, slice_verse_steps (the slice's cutscene framing, the human's notes); 2) slice_prologue_p01, slice_prologue_vigil_line (Iskarra); 3) slice_causeway_harrier_view, slice_dock_night_yes; 4) the Ch1 shots and gi_bake:shell_shrine.
 RENDER-REQUEST @ b2659dd0: slice_beach_h05_asha, slice_beach_h06_toma, slice_verse_steps, slice_verse_hall, slice_prologue_p01, slice_prologue_vigil_line, slice_causeway_harrier_view, slice_dock_night_yes, ch01_underway_gallery, ch01_o07_name_board, gi_bake:shell_shrine; why: the 8b5c92fc set, plus the Prologue's real ocean and Kerrid on the paving, and the First Verse's restored offerings (verse_hall added). Same priority order as the note above, with slice_verse_hall in group 1. Supersedes 8b5c92fc.
 RENDER-REQUEST @ 416fcf64: slice_beach_h05_asha, slice_beach_h06_toma, slice_verse_steps, slice_verse_hall, slice_prologue_p01, slice_prologue_vigil_line, shrine_s01_approach, shrine_s02_threshold, shrine_s03_overview, slice_causeway_harrier_view, slice_dock_night_yes, ch01_underway_gallery, ch01_o07_name_board, gi_bake:shell_shrine; why: the b2659dd0 set, plus M3-ENV-704's offering steps (S01-S03). The shrine scene is a GI input, so bake before the shrine shots. Supersedes b2659dd0.
+RENDER-REQUEST @ b04c62cc: slice_beach_h05_asha, slice_beach_h06_toma, slice_verse_steps, slice_verse_hall, slice_prologue_p01, slice_prologue_vigil_line, shrine_s01_approach, shrine_s02_threshold, shrine_s03_overview, slice_causeway_harrier_view, slice_dock_night_yes, ch01_underway_gallery, ch01_o07_name_board, gi_bake:shell_shrine; why: the 416fcf64 set, plus the Prologue on env-art's newest Iskarra (M3-ENV-724: the far skyline, textures, the fog from 70 m). Bake before the shrine shots. Supersedes 416fcf64.
