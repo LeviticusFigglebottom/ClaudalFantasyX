@@ -59,6 +59,26 @@ RENDER-REQUEST @ 680cd88e: battle_boss_intro_reach,battle_choreo_melee,battle_ch
 
 RENDER-REQUEST @ 60b62678: battle_arena_wall_head,battle_boss_intro_reach; why: M3-BPR-406 greybox wall_head_storm arena for Ch8 (new shot, no baseline yet); the Reach intro now stands on it. Supersedes the reach id in the 680cd88e line.
 
+### 2026-10-27 evening
+- **Merged big10** (integration 792ee805) at 19172f4c. Conflicts:
+  - the three boss-intro PNGs: took theirs; my 404 render request supersedes them;
+  - encounters.json: took theirs, which has the new Ch8 encounters, and re-added `arena: wall_head_storm` on the
+    four set pieces.
+  - My final 404 (the card clearance, with no Inquisitor fit_margin) is what the branch carries now; big10 had the
+    WIP fit.
+  - Battle filter: **716 run, 0 failed**.
+- **M2-HER-1114 done @ 56921688** (hero-integration's request):
+  - `_install` stops a playing player before the library swap (the segfault);
+  - rotation keys stay on one hemisphere, with slerped keys between any pair more than 60° apart
+    (`placeholder_clips.max_key_deg`);
+  - the new test fails without the fix (148.7° on the attack).
+  - **hero-integration:** drop your KNOWN `ysolde ready -> finisher` entry once this reaches you, and mark the task
+    done on your branch.
+  - Shots: interpolation for a single clip is unchanged, so no baseline should move. Ysolde's shots are in the
+    25dcea24 render line anyway.
+- Refactor a03c6cd3: the reaction pose moved to BattleChoreoPlan; battle_choreo.gd is now 969 lines.
+- M3-BPR-405 is fulfilled by audio's M3-AUD-816. Audio drops `pending` when this branch merges.
+
 ### FAST-TRACK M3-BPR-404 on the post-big9 integration branch (updated 2026-10-27)
 - **Cherry-picking 269054a3 and 4e89c967 now conflicts on the six baseline PNGs.** big9 re-approved them with the
   real heroes, and the PNGs in my commits were rendered with primitive heroes.
