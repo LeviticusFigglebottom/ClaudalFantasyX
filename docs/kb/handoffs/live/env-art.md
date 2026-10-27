@@ -458,6 +458,8 @@ RENDER-REQUEST @ 46955a37: battle_arena_undertow_cage; why: M3-ENV-727, Ch20's C
 NOT APPROVED: 95be611 (battle_arena_keth_seep_terrace). The backdrop reads as a wall of stretched white blocks and the seep strips as pale-blue ribbons, not a mountain pass. Rework is queued after the Iskarra fast-track (M3-ENV-717).
 RENDER-REQUEST @ 7f1a0fc7: battle_arena_keth_seep_terrace; why: M3-ENV-717 rework after 95be611 (crisp weathered wall, threads of seep). Supersedes 95be6118.
 RENDER-REQUEST @ 9c2aaa39: battle_arena_undertow_heart,battle_arena_undertow_heart_letting; why: M3-ENV-728, Ch21's Heart, Sefir's two arena states (held; the Letting), two new shots. After the FAST-TRACK, Ch8 and Cage requests.
+RENDER-REQUEST @ 5d3202d3: battle_arena_drowned_choir_ring; why: M3-ENV-705 after fca9987 (not approved): the moon between two singers, so the party isn't in a singer's shadow.
+NOT APPROVED: lead/gate-render-env-art-fca9987 (battle_arena_drowned_choir_ring). The whole party stood in a singer's 150 m moon-shadow and read black. Fixed in the request above. The two pale capsules are the enemy stand-ins.
 RENDER-REQUEST @ 86fb7e4c: ashcrown_a01_approach,ashcrown_a04_anvil_hall,ashcrown_a10_plume_from_the_rim; why: M3-ENV-705 audit, the shapes (A04 plain square pillars, A01 flat tier faces): pillar dressing and buttresses. Supersedes 1a422476 (it includes that grade).
 RENDER-REQUEST @ d95ef28b: hollowmere_m01_dace_hull,hollowmere_m02_raft_city_dusk,kite_k01_moored; why: M3-ENV-731, the Ch17-18 kits had never been rendered (new preview, three new shots).
 RENDER-REQUEST @ 31eee89b: battle_arena_ansedra_lagoon_escape; why: M3-ENV-705 after c770380 (not approved): the sun at 5° so the deck reads, the bowl-domes articulated.
