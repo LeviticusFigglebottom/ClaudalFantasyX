@@ -3070,6 +3070,196 @@
       }
     },
     {
+      "id": "ch08_corrow_arrival",
+      "scene": "res://game/levels/_tests/act1_zones/ch08_corrow_shots.tscn",
+      "camera": "Cameras/Arrival",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "ch08_corrow_stair",
+      "scene": "res://game/levels/_tests/act1_zones/ch08_corrow_shots.tscn",
+      "camera": "Cameras/Stair",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "ch04_ferry_deck",
+      "scene": "res://game/levels/_tests/act1_zones/ch04_ferry_shots.tscn",
+      "camera": "Cameras/Deck",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "ch04_ferry_derelict",
+      "scene": "res://game/levels/_tests/act1_zones/ch04_ferry_shots.tscn",
+      "camera": "Cameras/Derelict",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "ch09_corrow_strand",
+      "scene": "res://game/levels/_tests/act1_zones/ch09_corrow_night_shots.tscn",
+      "camera": "Cameras/Strand",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "ch09_corrow_road",
+      "scene": "res://game/levels/_tests/act1_zones/ch09_corrow_dawn_shots.tscn",
+      "camera": "Cameras/Road",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "ch08_coilspire_path",
+      "scene": "res://game/levels/_tests/act1_zones/ch08_coilspire_shots.tscn",
+      "camera": "Cameras/Path",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "ch08_coilspire_hall",
+      "scene": "res://game/levels/_tests/act1_zones/ch08_coilspire_shots.tscn",
+      "camera": "Cameras/Hall",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "ch07_bell_galleries",
+      "scene": "res://game/levels/_tests/act1_zones/ch07_bell_shots.tscn",
+      "camera": "Cameras/Galleries",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "ch07_bell_moorings",
+      "scene": "res://game/levels/_tests/act1_zones/ch07_bell_shots.tscn",
+      "camera": "Cameras/Moorings",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
       "id": "wildlife_stage",
       "scene": "res://game/levels/_tests/wildlife/wildlife_stage.tscn",
       "resolution": [

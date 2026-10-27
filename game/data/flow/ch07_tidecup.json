@@ -1,0 +1,11 @@
+{
+  "doc": "Ch7's Reefball match, the story's side of the seam (M3-C07-1206; act1_ch07.md section 5; docs/kb/tech/chapter_flow.md 'Ch7'). TidecupMatch (game/levels/ch07/tidecup_match/) plays `match` (game/data/reefball/matches.json) seeded with `seed` through the Reefball HUD when the HUD is in the build (M3-UI-01), else the engine's AI plays both sides at once (a headless fallback). On the end: ch07_tidecup_played always, ch07_tidecup_won on a win only (a draw counts as a loss for rewards, section 5.4), `win_reward` on a win, then back to `return`. The result never branches the story. win_reward.items waits for the Oruvel Float accessory (M3-PRG-1207: there is no accessory slot yet); the lume is given now. `autoplay_profile`: the AI profile that plays the player's side in the fallback.",
+  "match": "tidecup_opening",
+  "seed": 707,
+  "autoplay_profile": "smart",
+  "max_contacts": 600,
+  "played_flag": "ch07_tidecup_played",
+  "won_flag": "ch07_tidecup_won",
+  "win_reward": {"items": {}, "lume": 150},
+  "return": {"location": "ch07/tamsule_bell_galleries", "spawn": "CatchPool"}
+}

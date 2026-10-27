@@ -12,19 +12,10 @@ extends Ch01Zone
 ## Haluna's wake-night uses it for the windows going dark, Asha's shell in the wall, the village going
 ## home and the stranger at the wall; the ferry for the party crossing to the derelict and back, its
 ## sails, the wraith and the board. A battle reloads the zone, so this is what keeps it right.
-## Kit collision (ADR 0200), for a zone dressed with env-art's kit on heights the flat greybox can't hold:
-##   layout "collision_path": a JSON file whose "blocks" and "ramps" join the layout's own (generated
-##     from the kit by tools/act1/, so the hand-written layout keeps only the story).
-##   "ramps": [{"id", "from": [x, y, z], "to": [x, y, z], "width", "thick"?, "color"?}] a solid slab
-##     whose top runs from `from` to `to` (a stair's flight: the controller has no step-up, so stairs
-##     are ramps under 45 deg). Built under Greybox/<id> like a block, so hide_block works on it.
+## Kit collision (ADR 0200): the layout's "collision_path" and "ramps" (KitCollision).
 
 const KEY_STATES := "states"
 const KEY_PLACE := "place"
-const KEY_COLLISION := "collision_path"
-const KEY_RAMPS := "ramps"
-const KEY_BLOCKS := "blocks"
-const RAMP_THICK_M := 0.4
 
 
 func _ready() -> void:
@@ -32,46 +23,11 @@ func _ready() -> void:
 	refresh_states()
 
 
-## The layout's blocks plus its collision file's; then the ramps.
+## The layout's blocks plus its collision file's; then the ramps (KitCollision).
 func _build_blocks() -> void:
-	var extra: Dictionary = read_json(str(layout[KEY_COLLISION])) if layout.has(KEY_COLLISION) else {}
-	for key: String in [KEY_BLOCKS, KEY_RAMPS]:
-		if extra.has(key):
-			var rows: Array = (layout.get(key, []) as Array).duplicate()
-			rows.append_array(extra[key])
-			layout[key] = rows
+	KitCollision.merge(self)
 	super()
-	var root := get_node(NodePath(String(GREYBOX)))
-	for r: Dictionary in layout.get(KEY_RAMPS, []):
-		root.add_child(ramp(r, str(r.get("color", setting("block_color")))))
-
-
-## A ramp row as a solid slab (not added to the tree): a StaticBody3D named by its id, with a Mesh and
-## a Shape like a block's, its top face running from "from" to "to".
-static func ramp(r: Dictionary, color: String) -> StaticBody3D:
-	var a := _vec3(r.get("from", [0, 0, 0]))
-	var b := _vec3(r.get("to", [0, 0, 1]))
-	var size := Vector3(float(r.get("width", 2.0)), float(r.get("thick", RAMP_THICK_M)), a.distance_to(b))
-	var basis := Basis.looking_at(b - a, Vector3.UP)
-	var body := StaticBody3D.new()
-	body.name = str(r.get("id", "Ramp"))
-	body.transform = Transform3D(basis, (a + b) * 0.5 - basis.y * size.y * 0.5)
-	var mesh := BoxMesh.new()
-	mesh.size = size
-	var mat := StandardMaterial3D.new()
-	mat.albedo_color = Color.html(color)
-	mesh.material = mat
-	var mi := MeshInstance3D.new()
-	mi.name = "Mesh"
-	mi.mesh = mesh
-	body.add_child(mi)
-	var shape := BoxShape3D.new()
-	shape.size = size
-	var cs := CollisionShape3D.new()
-	cs.name = "Shape"
-	cs.shape = shape
-	body.add_child(cs)
-	return body
+	KitCollision.build_ramps(self)
 
 
 ## Applies every "states" row whose flag is set (see the class comment).
