@@ -2582,6 +2582,82 @@
         540
       ],
       "settle_frames": 150
+    },
+    {
+      "id": "npc_haluna_dock",
+      "scene": "res://game/levels/_tests/npc/haluna_villagers.tscn",
+      "camera": "Cameras/Dock",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 240,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "npc_haluna_market",
+      "scene": "res://game/levels/_tests/npc/haluna_villagers.tscn",
+      "camera": "Cameras/Market",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 240,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "npc_haluna_chapel",
+      "scene": "res://game/levels/_tests/npc/haluna_villagers.tscn",
+      "camera": "Cameras/Chapel",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 240,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "npc_haluna_lane",
+      "scene": "res://game/levels/_tests/npc/haluna_villagers.tscn",
+      "camera": "Cameras/Lane",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 240,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
     }
   ]
 }
