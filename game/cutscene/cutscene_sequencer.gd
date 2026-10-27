@@ -320,13 +320,16 @@ func _begin(scene_id: StringName, stage: CutsceneStage) -> void:
 
 
 func _finish() -> void:
+	var skipped := _skipping
 	_skipping = false
 	_awaiting = &""
 	set_skip_held(false)
+	if not skipped and not _aborted:  # M2-HER-1113: a running walk or turn plays out rather than jump to its end
+		await _wait_for(CutsceneMotion.actor_motion_left(_motions))
 	_complete_motions()
 	_key_off()
 	if overlay != null:
-		overlay.box.visible = false
+		overlay.box.dismiss()  # M2-UI-202: the box fades out at the end of a scene
 		overlay.choices.clear()
 	if not _aborted and _director_alive() and _director.is_scripted():
 		_director.release()
@@ -503,7 +506,8 @@ func _cue_fade(step: DialogueStep) -> void:
 
 
 func _cue_mark(step: DialogueStep) -> void:
-	var actor := _actor(StringName(str(step.args[0])))
+	var id := StringName(str(step.args[0]))
+	var actor := _actor(id)
 	var target_id := StringName(str(step.args[1]))
 	var target := _stage.mark(target_id) if _stage != null else null
 	if actor == null:
@@ -514,22 +518,30 @@ func _cue_mark(step: DialogueStep) -> void:
 	_held.erase(actor)  # a walk ends any held pose
 	var gait := StringName(str(step.args[2])) if step.args.size() > 2 else &"walk"
 	var speed := maxf(float(config.get("run_mps" if gait == GAIT_RUN else "walk_mps", 1.0)), 0.01)
-	var from := actor.global_position
-	var to := target.global_position
-	var flat := Vector3(to.x - from.x, 0.0, to.z - from.z)
+	# M3-CIN-1221: the way runs from where the actor stands through the `via` marks in order to the mark (round a
+	# rail, down a stair, along a deck): one walk over the whole way, its turns eased at each corner.
+	var path := PackedVector3Array([actor.global_position])
+	for via_id in str(step.kwargs.get("via", "")).split(",", false):
+		var via := _stage.mark(StringName(via_id.strip_edges())) if _stage != null else null
+		if via == null:
+			_warn("no via mark '%s' on the stage" % via_id.strip_edges())
+			continue
+		path.append(via.global_position)
+	path.append(target.global_position)
+	var flat := CutsceneMotion.flat_dir(path, 0)
 	if flat.length() > 0.01:
-		_turn_to(StringName(str(step.args[0])), actor, flat)  # turns into the walk, never snaps
+		_turn_to(id, actor, flat)  # turns into the walk, never snaps
 	# M2-FP-29: a beat of anticipation, then the walk speeds up, cruises and slows to a stop; the
 	# walk clip cross-fades in as it sets off and back to idle as it settles.
-	var dist := from.distance_to(to)
+	var dist := CutsceneMotion.path_length(path)
 	var accel := float(config.get("walk_accel_sec", 0.0))
 	var decel := float(config.get("walk_decel_sec", 0.0))
 	var lead := float(config.get("walk_anticipation_sec", 0.0))
 	var walk := CutsceneMotion.walk_duration(dist, speed, accel, decel)
 	var dur := lead + walk
-	var state := {"walking": false, "m": 0.0, "sec": 0.0}
+	var state := {"walking": false, "m": 0.0, "sec": 0.0, "leg": 0}
 	_start_motion(
-		&"move:%s" % step.args[0],
+		&"move:%s" % id,
 		dur,
 		func(t: float) -> void:
 			if not is_instance_valid(actor):
@@ -540,9 +552,15 @@ func _cue_mark(step: DialogueStep) -> void:
 				_play_clip(actor, gait)
 				if gait == GAIT_RUN:
 					HeroMotion.set_locomotion_speed(actor, speed)  # M2-HER-1104: a run sets off as a run
-			var frac := CutsceneMotion.walk_fraction(sec, dist, speed, accel, decel)
-			_place(actor, from.lerp(to, frac))
-			_locomotion(actor, state, frac * dist, t * dur)
+			var s := CutsceneMotion.walk_fraction(sec, dist, speed, accel, decel) * dist
+			var leg := CutsceneMotion.path_leg(path, s)
+			if leg > int(state["leg"]) and t < 1.0:
+				state["leg"] = leg
+				var turn := CutsceneMotion.flat_dir(path, leg)
+				if turn.length() > 0.01:
+					_turn_to(id, actor, turn)  # the corner, eased like the first turn
+			_place(actor, CutsceneMotion.path_point(path, s))
+			_locomotion(actor, state, s, t * dur)
 			if t >= 1.0:
 				if not state["walking"]:
 					_play_clip(actor, gait)  # instant or skipped: the walk still happened
@@ -563,7 +581,9 @@ func _cue_anim(step: DialogueStep) -> void:
 		_motions.erase(&"move:%s" % step.args[0])
 		var start := actor.global_position
 		var end := standin.global_position
-		var glide := float(config.get("standin_glide_sec", 0.0)) if start.distance_to(end) > 0.01 else 0.0
+		# M2-HER-1113: a mark farther than standin_cut_m is a cut (the shot changes with it), not a glide across it.
+		var far := start.distance_to(end)
+		var glide := float(config.get("standin_glide_sec", 0.0)) if far > 0.01 and far <= _standin_cut_m() else 0.0
 		var curve := float(config.get("turn_ease", 1.0))
 		_start_motion(
 			&"move:%s" % step.args[0],
@@ -862,6 +882,10 @@ func _start_motion(key: StringName, duration: float, apply: Callable) -> void:
 		apply.call(1.0)
 		return
 	_motions[key] = {"elapsed": 0.0, "duration": duration, "apply": apply}
+
+
+func _standin_cut_m() -> float:
+	return float(config.get("standin_cut_m", INF))
 
 
 func _complete_motions() -> void:

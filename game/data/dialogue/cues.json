@@ -28,9 +28,9 @@
    "kwargs": {"loop": {"type": "bool"}}
   },
   "mark": {
-   "doc": "Move an actor to a scene mark.",
+   "doc": "Move an actor to a scene mark: in a straight line, or along the via marks (comma-separated, in order) as one eased walk turning at each corner.",
    "args": [{"name": "actor", "type": "id"}, {"name": "mark", "type": "id"}, {"name": "gait", "type": "enum", "values": ["walk", "run"], "optional": true}],
-   "kwargs": {}
+   "kwargs": {"via": {"type": "string"}}
   },
   "face": {
    "doc": "Override the facial expression over sec seconds (otherwise lines' [emotion] drives it).",
