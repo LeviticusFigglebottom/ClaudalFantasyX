@@ -139,9 +139,9 @@
         6000,
         400
       ],
-      "bytes": 55320,
+      "bytes": 229784,
       "lods": {
-        "bowl_dome": 838,
+        "bowl_dome": 3242,
         "bowl_dome-lod1": 150
       }
     },

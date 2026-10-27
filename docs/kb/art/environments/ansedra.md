@@ -45,7 +45,7 @@ cold: wealth, not warmth.
 
 | Piece | What it is | Size | Budget |
 |---|---|---|---|
-| `bowl_dome` | A bowl-dome on its island: a white stone plinth at the water, three tiered red-lacquer drums with gilt bands, the inverted gilded bowl, and a thin spire with rings; scaled per placement | 14 × 30 | 6k / 400 |
+| `bowl_dome` | A bowl-dome on its island: a white stone plinth at the water, three tiered red-lacquer drums with gilt bands (each drum ringed with black lacquer pilasters, dark windows under gilt heads between them, a black eave on its brackets), the inverted gilded bowl ribbed in gilt, and a thin spire with rings; the plinth steps down into the water; scaled per placement | 14 × 30 | 6k / 400 |
 | `ansedra_far_domes` | The skyline ring: low-poly domes and their islands round the lagoon at 300–700 m | r 700 | 4k / 800 |
 | `pursuit_barge` | The Conclave's pursuit barge: long, black lacquer with gilt, a raised poop for the Warden, and at its stern the **bound flat-engine** (a bronze disc on a gimbal, its bound core in `glimmer_bound`) that pulls the water level and still | 14 × 5 | 10k / 700 |
 | `lacquer_hall` | One hall of the Lacquer Court: a white plinth, red-lacquer columns with gilt capitals, a lacquered back wall, and a three-tier hip roof of red tile with gilt eaves whose tips sweep up; open on +Z | 15 × 10 × 10 | 8k / 500 |

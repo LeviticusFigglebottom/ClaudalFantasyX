@@ -1498,7 +1498,9 @@ ANSEDRA_ESCAPE = {
     "lut": "res://assets/environments/arenas/ansedra_lagoon_escape/lut_ch14_wedding.png",
     # Colour script ch14 (18:30): sun 1 deg / 270 deg, key #FFAA5F 1.4, fill #4A5A78 0.4, sky #2E3448 / #B85A3A, fog
     # #4A3A3A, exposure 0.90, lut_ch14_wedding. The city's windows lit far off; no lamp on the barges.
-    "sun": {"elev": 1.0, "az": 270.0, "color": "#FFAA5F", "energy": 1.4, "max_distance": 80.0},
+    # The sun stands at 5 deg here, not the script's 1 deg: at 1 deg the bow rail's shadow (20 m) covered the whole
+    # deck and the fighting floor read black (c770380's render).
+    "sun": {"elev": 5.0, "az": 270.0, "color": "#FFAA5F", "energy": 1.4, "max_distance": 80.0},
     "fill": {"color": "#4A5A78", "energy": 0.4},
     "exposure": 0.9,
     "glow": (0.5, 0.06, 1.0),

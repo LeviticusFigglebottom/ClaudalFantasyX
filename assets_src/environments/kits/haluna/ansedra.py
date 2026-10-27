@@ -120,8 +120,51 @@ def build_bowl_dome(seed: int = 2101) -> list[kc.MeshBuilder]:
         rng = kc.rng_for("bowl_dome", seed)
         mb = kc.MeshBuilder("bowl_dome" + ("-lod1" if lod else ""))
         _dome(mb, 0.0, 0.0, 1.0, lod, rng, sides=8 if lod else 24, windows=False)
+        if not lod:
+            _dome_detail(mb, rng)
         out.append(mb)
     return out
+
+
+def _dome_detail(mb, rng) -> None:
+    """The near bowl-dome's articulation (M3-ENV-705: c770380's render read the drums as plain stacked cylinders; the
+    far skyline keeps _dome alone). Per drum: black lacquer pilasters round it, a dark window between each pair, and
+    a black eave on brackets under its gilt band; gilt ribs down the bowl; the plinth's two steps into the water and
+    its tide-wet foot."""
+    black, gilt, dark, stone = (mb.material(M_BLACK), mb.material(M_GILT), mb.material("kit_interior_dark"),
+                                mb.material(M_STONE))
+    y = PLINTH_TOP
+    for k, (r, h) in enumerate(DRUMS):
+        n = 12 if k == 0 else (10 if k == 1 else 8)
+        off = float(rng.uniform(0, 1))
+        for j in range(n):
+            th = 2 * math.pi * (j + off) / n
+            d = np.array([math.cos(th), 0.0, math.sin(th)])
+            kc.rounded_block(mb, d * (r * 0.985 + 0.06) + [0.0, y + h * 0.45, 0.0], (0.12, h * 0.45, 0.07), black,
+                             rot=kc.rot_y(-th), radius=0.02, seg=1)
+            tw = 2 * math.pi * (j + off + 0.5) / n  # the window between this pilaster and the next
+            dw = np.array([math.cos(tw), 0.0, math.sin(tw)])
+            hw = min(0.45, r * math.pi / n * 0.35)
+            kc.rounded_block(mb, dw * (r * 0.985 + 0.01) + [0.0, y + h * 0.5, 0.0], (0.04, h * 0.28, hw), dark,
+                             rot=kc.rot_y(-tw), radius=0.01, seg=1)
+            kc.rounded_block(mb, dw * (r * 0.985 + 0.04) + [0.0, y + h * 0.5 + h * 0.3, 0.0], (0.05, 0.05, hw + 0.08),
+                             gilt, rot=kc.rot_y(-tw), radius=0.01, seg=1)  # the window's gilt head
+        # The eave under the gilt band, on brackets.
+        _revolve(mb, np.array([y + h - 0.32, y + h - 0.25]), np.array([r + 0.42, r + 0.42]), 32, M_BLACK, cap=False)
+        _revolve(mb, np.array([y + h - 0.45, y + h - 0.32]), np.array([r + 0.05, r + 0.42]), 32, M_BLACK)
+        y += h
+    # Gilt ribs down the bowl.
+    t = np.linspace(0.0, 1.0, 9)
+    for j in range(16):
+        th = 2 * math.pi * j / 16
+        rr = BOWL[0] * np.sqrt(np.clip(1.0 - t ** 2, 0.0, 1.0)) + 0.05
+        pts = np.stack([np.cos(th) * rr, y + BOWL[1] * t, np.sin(th) * rr], -1)
+        kc.tube(mb, pts[:-1], 0.06, 4, gilt)
+    # The plinth's steps down into the water, and the tide line on its face.
+    a = np.linspace(0.0, 2 * math.pi, 8, endpoint=False) + math.pi / 8  # the plinth's own octagon
+    for rad, top in ((6.9, PLINTH_TOP - 0.25), (7.4, PLINTH_TOP - 0.5)):
+        kc.polygon_prism(mb, np.stack([np.cos(a) * rad, np.sin(a) * rad], -1), -1.0, top, stone,
+                         col=(0, 0.2, 0.4, 0.5), uv2=(0.9, 0.5), uv_scale=0.5)
 
 
 def build_far_domes(seed: int = 2102, *, lit: bool = False) -> list[kc.MeshBuilder]:

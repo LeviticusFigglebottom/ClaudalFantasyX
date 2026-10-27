@@ -275,7 +275,7 @@ the lagoon (water at −0.6, still and then rippling on its own short wave set).
 | Alongside, behind the enemy line | `pursuit_barge` at (−2, −7.6), black lacquer and gilt, the bound flat-engine on its poop; the `BossAnchor` on its deck at the near rail (−4.5, −0.2, −7.0) |
 | Behind it | Four `bowl_dome`s on their islands at 70–140 m, and the skyline ring `ansedra_far_domes_lit` (the windows lit: the city watching the water move) |
 
-Light `ch14`: sun 1° / 270°, key `#FFAA5F` 1.4, fill `#4A5A78` 0.4, exposure 0.90, `lut_ch14_wedding` (`zone_lut.py`:
+Light `ch14`: sun 5° / 270° (the script's 1° let the bow rail's shadow cover the whole deck, so the floor read black in c770380's render), key `#FFAA5F` 1.4, fill `#4A5A78` 0.4, exposure 0.90, `lut_ch14_wedding` (`zone_lut.py`:
 the reds pushed, the rest cooled, S-curve 0.7, the toe navy). No lamp on either barge. Hints: `the_engine`,
 `the_city_watching`.
 
