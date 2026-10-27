@@ -178,6 +178,15 @@ RENDER-REQUEST @ 5a5b4fed: battle_arena_wall_head,battle_boss_intro_reach; why: 
 The arena is reworked (60 m walk, a sea plane, the low town, far storm banks), and the generator is committed
 (tools/arenas/gen_wall_head_storm.py).
 
+**2026-10-27 night (the Lead's items a–e):**
+- (a) test_battle_ysolde covers her whole kit, on hero-integration's wrapper once it lands.
+- (b) Ch8 staging: wall_head_storm travel 0.85; the timeline names the entries. The per-wave beats are asked of
+  act1-chapters (M3-BPR-406).
+- (c) test_battle_reduced_motion_audit.
+- (d) test_battle_clarity: the order stays on screen mid-toll, mid-C10, at a hero's contact and through boss intros.
+- (e) No presentation todo is on the board.
+- Battle filter at the head: **738 run, 0 failed**.
+
 **Renders viewed, 2026-10-27 evening:**
 - gpu/render-battle-presentation-25dcea2: four re-approved at 89ffba3c (above).
 - **gpu/render-battle-presentation-680cd88: viewed, NOT approved.** The renders are fine (Rhen meets the crab with the
