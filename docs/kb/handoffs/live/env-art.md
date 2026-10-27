@@ -92,6 +92,14 @@ env-art is cloud session `session_01YbaV2c8yquRHqj6afQYg89` on `claude/env-art`;
   `test_corrow_kit` OK, `corrow_kit` full rebuild (older pieces identical), import maps every slot, validate_data,
   taskboard. **For act1-chapters:** these are the kit half of M3-C09-04; placement is yours.
 
+- **MERGE-READY @ 032b7a64: M3-ENV-709**, Haluna's wake night for Ch4 (M3-C04-03's Haluna half): kit pieces
+  `ground_lamp`, `feast_mat`, `ink_kit`, `wake_shell_single` and the shell-state materials; `HalunaDresser`
+  `story_sets` (hidden `StorySets/StorySet_<name>`, `story_set(name)`), with `ch04_wake`, `ch04_shell_asha`,
+  `ch04_shell_imra_faded`, `ch04_shell_imra_inked` in the layout. Checks run: `--filter=haluna` 52/0 (new
+  `test_haluna_story_sets`), `test_haluna_dressing`, `test_haluna_kit`, `test_shrine_gi_bake` OK, `haluna_kit`
+  rebuild (older pieces identical), gdlint, gdformat, validate_data, taskboard. Shots unchanged (sets hidden).
+  - **For act1-chapters:** Ch4's zone shows the sets by flag; details in the task file.
+
 ### Render requests
 RENDER-REQUEST @ a0d2549f: battle_arena_tideline_dawn,battle_arena_causeway_disc_sunset,battle_arena_causeway,battle_arena_tideline,causeway_c02_profile_against_the_lagoon,causeway_c08_drownbell_disc_approach,drownbell_flood,battle_boss_intro_drownbell,haluna_h01_village_from_sea,haluna_h10_dock_night,field_objective_line,field_interact_prompt,field_area_title,field_tip_card,dialogue_continue; why: M3-ENV-701 set dressing in Haluna, the causeway and the two arenas (the five field/dialogue shots frame Haluna's lane 1)
 RENDER-REQUEST @ 22a5de11: battle_arena_oruvel_raft_morning,battle_arena_causeway,drownbell_flood; why: the merge took the PC gate's copies of these three over env-art's; confirm they still match with the arena dressing
