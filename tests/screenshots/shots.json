@@ -3707,7 +3707,8 @@
             "scene_id": "ch01_bark_outer_mooring",
             "flags": [
               "ch01_started"
-            ]
+            ],
+            "hold_line": "ch01_bark_sadi_003"
           }
         },
         "time_scale": 4.0
