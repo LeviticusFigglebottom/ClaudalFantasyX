@@ -1,4 +1,4 @@
-"""Ambient wildlife (M3-CRE-611). Run: python3 -m unittest discover -s tools/tests
+"""Ambient wildlife (M3-CRE-611; the insects M3-CRE-616). Run: python3 -m unittest discover -s tools/tests
 
 * tools/validate_wildlife.py: the committed kinds, zone files and review stage pass; each kind of mistake is caught.
 * assets_src/wildlife/common/write_materials.py rewrites the committed material resources byte for byte.
@@ -24,9 +24,11 @@ sys.path.insert(0, str(ROOT / "tools" / "tests"))
 import validate_wildlife as vw  # noqa: E402
 from test_post_import import read_glb  # noqa: E402
 
-ANIMALS = ("gull", "shore_crab", "shoal_fish")
+ANIMALS = ("gull", "shore_crab", "shoal_fish", "insect")
 # Per mesh: small enough to draw dozens through MultiMesh (docs/kb/art/wildlife.md, Budgets).
 MAX_TRIANGLES = 1500
+# An insect is a few pixels on screen (M3-CRE-616): about 300 triangles at most.
+MAX_INSECT_TRIANGLES = 300
 MAX_GLB_BYTES = 256 * 1024
 
 
@@ -103,6 +105,82 @@ class ValidatorTest(unittest.TestCase):
         self.assertTrue(any("over the budget" in e for e in self.zone_errs(z)))
 
 
+class InsectValidatorTest(unittest.TestCase):
+    """M3-CRE-616: the insect kind's two tables, its per-mesh materials, and the zones' swarms."""
+
+    def setUp(self) -> None:
+        self.kinds = _load(vw.KINDS_FILE)
+        self.zone = _load(f"{vw.WILDLIFE_DIR}/ch05_pemakar.json")
+        self.budgets = self.kinds["budgets"]
+        self.locations = {r["id"] for r in _load(vw.LOCATIONS_FILE)["locations"]}
+        self.exists = lambda res: (ROOT / res[len("res://"):]).is_file()  # noqa: E731
+
+    def zone_errs(self, doc) -> list[str]:
+        return vw.zone_errors(doc, f"{vw.WILDLIFE_DIR}/ch05_pemakar.json", self.budgets, self.locations)
+
+    def test_insect_tables_are_checked(self) -> None:
+        k = copy.deepcopy(self.kinds)
+        del k["kinds"]["insect"]["dragonfly"]["flee_radius_m"]
+        self.assertTrue(any("dragonfly: missing" in e and "flee_radius_m" in e for e in vw.kinds_errors(k, self.exists)))
+        k = copy.deepcopy(self.kinds)
+        k["kinds"]["insect"]["moth"]["jitter_rate"] = [1.0, 2.0]  # read as a plain number
+        self.assertTrue(any("moth.jitter_rate" in e for e in vw.kinds_errors(k, self.exists)))
+        k = copy.deepcopy(self.kinds)
+        k["kinds"]["insect"]["dragonfly"]["dart_m"] = [3.0, 1.0]
+        self.assertTrue(any("dragonfly.dart_m" in e for e in vw.kinds_errors(k, self.exists)))
+        k = copy.deepcopy(self.kinds)
+        k["kinds"]["insect"]["moth"]["wingspan"] = 1.0
+        self.assertTrue(any("unknown keys ['wingspan']" in e for e in vw.kinds_errors(k, self.exists)))
+        k = copy.deepcopy(self.kinds)
+        del k["kinds"]["insect"]["moth"]
+        self.assertTrue(any("insect.moth: must be an object" in e for e in vw.kinds_errors(k, self.exists)))
+
+    def test_insect_materials_are_one_per_mesh_and_exist(self) -> None:
+        k = copy.deepcopy(self.kinds)
+        del k["kinds"]["insect"]["material"]["dragonfly"]
+        self.assertTrue(any("one per mesh" in e for e in vw.kinds_errors(k, self.exists)))
+        k = copy.deepcopy(self.kinds)
+        k["kinds"]["insect"]["material"]["moth"] = "res://assets/wildlife/insect/materials/nope.tres"
+        self.assertTrue(any("material.moth" in e for e in vw.kinds_errors(k, self.exists)))
+
+    def test_swarm_rows_are_checked(self) -> None:
+        z = copy.deepcopy(self.zone)
+        z["swarms"][0]["type"] = "firefly"
+        z["swarms"][1]["center"] = [0.0, -24.0]
+        z["swarms"][2]["radius_m"] = 0.0
+        errs = self.zone_errs(z)
+        self.assertTrue(any("swarms[0].type" in e for e in errs))
+        self.assertTrue(any("swarms[1].center" in e for e in errs))
+        self.assertTrue(any("swarms[2].radius_m" in e for e in errs))
+        z = copy.deepcopy(self.zone)
+        del z["swarms"][0]["type"]
+        self.assertTrue(any("missing ['type']" in e for e in self.zone_errs(z)))
+
+    def test_only_dragonflies_perch_and_inside_their_radius(self) -> None:
+        z = copy.deepcopy(self.zone)
+        z["swarms"][0]["perches"] = [[0.0, 2.2, -36.0, 0.0]]
+        self.assertTrue(any("only a dragonfly patrol perches" in e for e in self.zone_errs(z)))
+        z = copy.deepcopy(self.zone)
+        z["swarms"][2]["perches"] = [[22.0, 0.5, -31.0, 90.0], [40.0, 0.5, -31.0, 0.0]]
+        errs = self.zone_errs(z)
+        self.assertTrue(any("perches[1]: outside the swarm's radius_m" in e for e in errs))
+        self.assertFalse(any("perches[0]" in e for e in errs))
+
+    def test_the_insect_budget_is_enforced(self) -> None:
+        z = copy.deepcopy(self.zone)
+        z["swarms"][2]["count"] = self.budgets["insects"]
+        self.assertTrue(any("swarms" in e and "over the budget" in e for e in self.zone_errs(z)))
+        self.assertEqual(self.budgets["draw_calls"], 6, "six MultiMeshes: gulls x2, crabs, fish, moths, dragonflies")
+
+    def test_zone_swarms_as_placed(self) -> None:
+        haluna = _load(f"{vw.WILDLIFE_DIR}/ch02_haluna.json")
+        self.assertEqual([(s["type"], s["count"]) for s in haluna["swarms"]], [("dragonfly", 4)])
+        self.assertEqual(sorted((s["type"], tuple(s["center"]), s["count"]) for s in self.zone["swarms"]), [
+            ("dragonfly", (22.0, 1.2, -31.0), 4), ("moth", (0.0, 2.2, -36.0), 5), ("moth", (0.0, 2.2, -24.0), 5)])
+        stage = _load(vw.STAGE_FILE)
+        self.assertIn("moth", {s["type"] for s in stage["swarms"]}, "the review stage shows the moths")
+
+
 class PipelineTest(unittest.TestCase):
     def setUp(self) -> None:
         self.jobs = {j["id"]: j for j in _load("tools/dev/blender_builds.json")["jobs"]}
@@ -153,7 +231,8 @@ class PipelineTest(unittest.TestCase):
                     self.assertTrue({"COLOR_0", "TEXCOORD_0", "TEXCOORD_1", "NORMAL"} <= set(p["attributes"]))
                     self.assertNotIn("JOINTS_0", p["attributes"])
                     tris += js["accessors"][p["indices"]]["count"] // 3
-                self.assertLessEqual(tris, MAX_TRIANGLES, (animal, m["name"], tris))
+                self.assertLessEqual(tris, MAX_INSECT_TRIANGLES if animal == "insect" else MAX_TRIANGLES,
+                                     (animal, m["name"], tris))
             for mat in js["materials"]:
                 self.assertTrue((ROOT / "assets/wildlife" / animal / "materials" / f"{mat['name']}.tres").is_file())
         for kind in self.kinds.values():
