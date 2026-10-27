@@ -207,8 +207,7 @@
       "pitch": 1.0,
       "rate_ms": 55,
       "jitter": 0.08,
-      "volume_db": 0.0,
-      "pending": true
+      "volume_db": 0.0
     },
     "ione": {
       "blips": [
@@ -217,8 +216,7 @@
       "pitch": 1.05,
       "rate_ms": 80,
       "jitter": 0.03,
-      "volume_db": 0.0,
-      "pending": true
+      "volume_db": 0.0
     },
     "poolkeeper": {
       "blips": [
@@ -227,8 +225,7 @@
       "pitch": 0.86,
       "rate_ms": 75,
       "jitter": 0.04,
-      "volume_db": 0.0,
-      "pending": true
+      "volume_db": 0.0
     },
     "boatman": {
       "blips": [
@@ -237,8 +234,7 @@
       "pitch": 1.0,
       "rate_ms": 65,
       "jitter": 0.05,
-      "volume_db": 0.0,
-      "pending": true
+      "volume_db": 0.0
     },
     "crowd": {
       "blips": [
@@ -247,8 +243,7 @@
       "pitch": 0.9,
       "rate_ms": 50,
       "jitter": 0.12,
-      "volume_db": 0.0,
-      "pending": true
+      "volume_db": 0.0
     },
     "garo": {
       "blips": [
@@ -257,8 +252,7 @@
       "pitch": 0.85,
       "rate_ms": 75,
       "jitter": 0.04,
-      "volume_db": 0.0,
-      "pending": true
+      "volume_db": 0.0
     },
     "tender": {
       "blips": [
@@ -267,8 +261,7 @@
       "pitch": 0.95,
       "rate_ms": 70,
       "jitter": 0.03,
-      "volume_db": 0.0,
-      "pending": true
+      "volume_db": 0.0
     },
     "ferryman": {
       "blips": [
@@ -277,8 +270,7 @@
       "pitch": 0.95,
       "rate_ms": 70,
       "jitter": 0.05,
-      "volume_db": 0.0,
-      "pending": true
+      "volume_db": 0.0
     },
     "townsfolk": {
       "blips": [
@@ -287,8 +279,7 @@
       "pitch": 1.0,
       "rate_ms": 55,
       "jitter": 0.1,
-      "volume_db": 0.0,
-      "pending": true
+      "volume_db": 0.0
     },
     "ferrymaster": {
       "blips": [
@@ -297,8 +288,7 @@
       "pitch": 0.9,
       "rate_ms": 65,
       "jitter": 0.05,
-      "volume_db": 0.0,
-      "pending": true
+      "volume_db": 0.0
     },
     "marra": {
       "blips": [
@@ -307,8 +297,7 @@
       "pitch": 1.04,
       "rate_ms": 55,
       "jitter": 0.06,
-      "volume_db": 0.0,
-      "pending": true
+      "volume_db": 0.0
     },
     "hobb": {
       "blips": [
@@ -317,8 +306,7 @@
       "pitch": 0.92,
       "rate_ms": 70,
       "jitter": 0.04,
-      "volume_db": 0.0,
-      "pending": true
+      "volume_db": 0.0
     },
     "fenn": {
       "blips": [
@@ -327,8 +315,7 @@
       "pitch": 0.8,
       "rate_ms": 85,
       "jitter": 0.05,
-      "volume_db": 0.0,
-      "pending": true
+      "volume_db": 0.0
     },
     "stillguard": {
       "blips": [
@@ -337,8 +324,7 @@
       "pitch": 0.85,
       "rate_ms": 75,
       "jitter": 0.02,
-      "volume_db": 0.0,
-      "pending": true
+      "volume_db": 0.0
     },
     "inquisitor": {
       "blips": [
@@ -347,8 +333,7 @@
       "pitch": 0.78,
       "rate_ms": 85,
       "jitter": 0.02,
-      "volume_db": 0.0,
-      "pending": true
+      "volume_db": 0.0
     },
     "clerk": {
       "blips": [
@@ -357,8 +342,7 @@
       "pitch": 0.92,
       "rate_ms": 60,
       "jitter": 0.03,
-      "volume_db": 0.0,
-      "pending": true
+      "volume_db": 0.0
     },
     "wright": {
       "blips": [
@@ -367,8 +351,7 @@
       "pitch": 1.02,
       "rate_ms": 55,
       "jitter": 0.06,
-      "volume_db": 0.0,
-      "pending": true
+      "volume_db": 0.0
     }
   }
 }
