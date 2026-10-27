@@ -1,0 +1,32 @@
+base ref: origin/claude/undertow-lead-handoff-ze8rrn (3cbcff9e); 991 changed path(s)
+Blender 5.0.1: asha, rhen, toma, villager_neme, villager_osu, villager_child, villager_vendor, villager_reed, villager_netmender, villager_fisher, villager_tavi, villager_kell, haluna_kit, brine_shoals_kit, pemakar_kit, corrow_kit, coilspire_kit, oruvel_underway_kit, sefir, ysolde, brightwater_ferry_kit, oruvel_kit, ashcrown_kit, creature_mangrove_drowner, creature_lamp_engine, creature_avalanche_ram, creature_wakefin, wildlife_insect
+BLENDER ok   asha  142.5 s  44 identical
+BLENDER ok   rhen  97.0 s  31 identical
+BLENDER ok   toma  144.0 s  38 identical
+BLENDER ok   villager_neme  41.6 s  34 identical
+BLENDER ok   villager_osu  33.3 s  30 identical
+BLENDER ok   villager_child  29.0 s  30 identical
+BLENDER ok   villager_vendor  30.1 s  30 identical
+BLENDER ok   villager_reed  29.3 s  30 identical
+BLENDER ok   villager_netmender  32.6 s  30 identical
+BLENDER ok   villager_fisher  29.7 s  30 identical
+BLENDER ok   villager_tavi  29.8 s  30 identical
+BLENDER ok   villager_kell  30.3 s  30 identical
+BLENDER ok   haluna_kit  15.8 s  103 identical
+BLENDER ok   brine_shoals_kit  7.3 s  75 identical
+BLENDER ok   pemakar_kit  8.4 s  63 identical
+BLENDER ok   corrow_kit  6.4 s  77 identical
+BLENDER ok   coilspire_kit  3.6 s  29 identical
+BLENDER ok   oruvel_underway_kit  5.1 s  60 identical
+BLENDER ok   sefir  110.8 s  32 identical
+BLENDER ok   ysolde  143.1 s  37 identical
+BLENDER ok   brightwater_ferry_kit  3.9 s  62 identical
+BLENDER ok   oruvel_kit  4.1 s  53 identical
+BLENDER ok   ashcrown_kit  8.7 s  40 identical
+BLENDER ok   creature_mangrove_drowner  5.2 s  3 identical
+BLENDER ok   creature_lamp_engine  5.8 s  5 identical
+BLENDER ok   creature_avalanche_ram  6.1 s  5 identical
+BLENDER ok   creature_wakefin  1.3 s  5 identical
+BLENDER ok   wildlife_insect  0.6 s  3 identical
+Blender builds: 28 job(s), 0 failed, 0 uncovered, 1005 s
+blender exit 0 in 1007 s
