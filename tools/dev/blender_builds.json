@@ -551,6 +551,16 @@
         ["{blender}", "--python", "assets_src/wildlife/shoal_fish/build_shoal_fish.py", "--", "--out", "assets/wildlife/shoal_fish/shoal_fish.glb"],
         ["{python}", "assets_src/wildlife/common/write_materials.py", "--wildlife", "shoal_fish"]
       ]
+    },
+    {
+      "id": "wildlife_insect",
+      "owner": "character",
+      "sources": ["assets_src/wildlife/insect/**", "assets_src/wildlife/common/**", "assets_src/creatures/common/creature_kit.py"],
+      "outputs": ["assets/wildlife/insect/*.glb", "assets/wildlife/insect/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/wildlife/insect/build_insect.py", "--", "--out", "assets/wildlife/insect/insect.glb"],
+        ["{python}", "assets_src/wildlife/common/write_materials.py", "--wildlife", "insect"]
+      ]
     }
   ]
 }
