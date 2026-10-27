@@ -1,36 +1,36 @@
 {
   "characters": [
     {
-      "id": "rhen", "name_key": "CHAR_RHEN",
+      "id": "rhen", "name_key": "CHAR_RHEN", "role_key": "ROLE_RHEN",
       "stats": {"level": 5, "hp": 420, "mp": 24, "strength": 16, "magic": 6, "defense": 10,
                 "magic_defense": 6, "agility": 22, "accuracy": 14, "evasion": 14, "luck": 18},
       "skills": ["attack", "quick_hit", "undertow_cut", "read"]
     },
     {
-      "id": "asha", "name_key": "CHAR_ASHA",
+      "id": "asha", "name_key": "CHAR_ASHA", "role_key": "ROLE_ASHA",
       "stats": {"level": 5, "hp": 300, "mp": 60, "strength": 6, "magic": 18, "defense": 6,
                 "magic_defense": 14, "agility": 14, "accuracy": 8, "evasion": 10, "luck": 12},
       "skills": ["attack", "mend", "hasten", "ward"]
     },
     {
-      "id": "toma", "name_key": "CHAR_TOMA",
+      "id": "toma", "name_key": "CHAR_TOMA", "role_key": "ROLE_TOMA",
       "stats": {"level": 5, "hp": 560, "mp": 12, "strength": 18, "magic": 4, "defense": 18,
                 "magic_defense": 8, "agility": 10, "accuracy": 10, "evasion": 6, "luck": 10},
       "skills": ["attack", "shell_breaker"]
     },
     {
-      "id": "ysolde", "name_key": "CHAR_YSOLDE",
+      "id": "ysolde", "name_key": "CHAR_YSOLDE", "role_key": "ROLE_YSOLDE",
       "stats": {"level": 5, "hp": 280, "mp": 70, "strength": 5, "magic": 20, "defense": 5,
                 "magic_defense": 16, "agility": 13, "accuracy": 8, "evasion": 9, "luck": 10},
       "skills": ["attack", "ember", "frost", "slow_hex", "read"]
     },
     {
-      "id": "kerrid", "name_key": "CHAR_KERRID",
+      "id": "kerrid", "name_key": "CHAR_KERRID", "role_key": "ROLE_KERRID",
       "stats": {"level": 5, "hp": 640, "mp": 24, "strength": 22, "magic": 4, "defense": 16,
                 "magic_defense": 8, "agility": 9, "accuracy": 10, "evasion": 4, "luck": 8},
       "skills": ["attack", "fluke_cleave", "snub_line", "anchor_fall"],
       "_note": "M3-C05-02 PROVISIONAL: joins at the end of Ch5 B05 (act1_ch05.md; kerrid.md: a heavy hitter who breaks armour). No Swell row or Lattice start yet; his real kit is the combat request M3-C05-06. In no pre-Ch5 sim suite."
     },
-    {"id": "liss", "name_key": "CHAR_LISS", "stats": {"level": 5, "hp": 340, "mp": 40, "strength": 12, "magic": 10, "defense": 8, "magic_defense": 10, "agility": 20, "accuracy": 12, "evasion": 14, "luck": 20}, "skills": ["attack", "reel_shot", "flash_housing"], "_note": "M3-C06-02 PROVISIONAL: joins at Ch6 B06 on Toma's papers (act1_ch06.md; liss_varrow.md: the Saltwright technical, an item specialist who steals, combines and deploys gadgets that apply statuses or alter turn order). A stand-in kit: Reel Shot (a launcher bolt that pushes its target down the timeline) and Flash Housing (a salt-glass flash: Darkness). No steal, combine, Swell (the reel-stop), gear or Lattice start yet; her real kit is the combat request M3-C06-05. Her first fight is Ch8 (Ch7 has no foes). In no sim suite."}
+    {"id": "liss", "name_key": "CHAR_LISS", "role_key": "ROLE_LISS", "stats": {"level": 5, "hp": 340, "mp": 40, "strength": 12, "magic": 10, "defense": 8, "magic_defense": 10, "agility": 20, "accuracy": 12, "evasion": 14, "luck": 20}, "skills": ["attack", "reel_shot", "flash_housing"], "_note": "M3-C06-02 PROVISIONAL: joins at Ch6 B06 on Toma's papers (act1_ch06.md; liss_varrow.md: the Saltwright technical, an item specialist who steals, combines and deploys gadgets that apply statuses or alter turn order). A stand-in kit: Reel Shot (a launcher bolt that pushes its target down the timeline) and Flash Housing (a salt-glass flash: Darkness). No steal, combine, Swell (the reel-stop), gear or Lattice start yet; her real kit is the combat request M3-C06-05. Her first fight is Ch8 (Ch7 has no foes). In no sim suite."}
   ]
 }
