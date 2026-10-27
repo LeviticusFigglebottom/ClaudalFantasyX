@@ -2,8 +2,8 @@
 id: M3-CHR-507
 title: "Inquisitor Hadric Moll, the Ch6 boss (stillguard_inquisitor): design sheet, model and battle clips"
 role: character
-status: todo
-owner_session: ""
+status: doing
+owner_session: "characters (branch claude/characters)"
 depends_on: [M2-CHR-01, M1-CHR-14]
 milestone: M3
 request-from: lead
