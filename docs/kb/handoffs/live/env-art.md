@@ -449,6 +449,7 @@ ANSWERED (the Lead's item 3): gpu/m3-rnd-03-sefir-tells @ c3fd1eb4. All four `re
 - **Shadow:** Sefir's shadow and hand shadows are crisper, with the tighter hem line, while Asha's stay soft.
 - **Reflection:** his outline holds where the ripples would break it; the difference is subtle at this framing.
 - Their shots and baselines live only on that branch, so the Lead's merge carries them with its `--update-baselines`. M3-ENV-1000's hookup follows once RevenantTells is on the integration branch.
+RENDER-REQUEST @ 46955a37: battle_arena_undertow_cage; why: M3-ENV-727, Ch20's Cage arena (new shot; after the FAST-TRACK and Ch8 requests).
 NOT APPROVED: 95be611 (battle_arena_keth_seep_terrace). The backdrop reads as a wall of stretched white blocks and the seep strips as pale-blue ribbons, not a mountain pass. Rework is queued after the Iskarra fast-track (M3-ENV-717).
 RENDER-REQUEST @ 7f1a0fc7: battle_arena_keth_seep_terrace; why: M3-ENV-717 rework after 95be611 (crisp weathered wall, threads of seep). Supersedes 95be6118.
 
