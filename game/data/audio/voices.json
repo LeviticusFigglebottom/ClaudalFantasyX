@@ -351,7 +351,8 @@
       "pitch": 1.02,
       "rate_ms": 55,
       "jitter": 0.06,
-      "volume_db": 0.0
+      "volume_db": 0.0,
+      "pending": true
     },
     "ivo": {
       "blips": [

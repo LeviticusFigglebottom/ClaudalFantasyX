@@ -29,15 +29,22 @@ func test_borrowed_pieces_are_pemakars_with_the_noon_plume() -> void:
 	var layout := HalunaDresser._load_json(LAYOUT)
 	var root := AshcrownPreview.build_borrowed(layout)
 	assert_eq(root.get_child_count(), (layout["borrowed"] as Array).size(), "every borrowed piece loads")
-	var plume := root.get_node_or_null("ash_plume") as Node3D
-	assert_true(plume != null, "the plume")
+	# M3-ENV-11: the near plume (ash_plume's surface, dense), its LOD0 drawn past O2's 660 m.
+	var plume := root.get_node_or_null("ash_plume_near") as Node3D
+	assert_true(plume != null, "the near plume")
 	var found_day := false
+	var lod0_seen := false
 	for child: Node in plume.find_children("*", "MeshInstance3D", true, false):
 		var mi := child as MeshInstance3D
 		var mat := mi.get_surface_override_material(0)
 		if mat != null and mat.resource_path == PLUME_DAY:
 			found_day = true
-		assert_true(mi.visibility_range_end > 2000.0 or mi.visibility_range_begin > 2000.0, "LOD0 drawn up close")
+		if not String(mi.name).ends_with("-lod1"):
+			lod0_seen = true
+			assert_true(mi.visibility_range_end > 800.0, "the dense LOD0 drawn out past 800 m")
+		else:
+			assert_true(mi.visibility_range_end > 2000.0, "the far plume beyond it")
+	assert_true(lod0_seen, "the near plume's LOD0")
 	assert_true(found_day, "the plume wears ac_plume_day")
 	assert_true(plume.position.z < -70.0, "in the crater, north of the temple")
 	var gate := root.get_node_or_null("open_hand_gate") as Node3D
@@ -91,8 +98,22 @@ func test_preview_cameras_are_camera_shots() -> void:
 	var scene := (load(SCENE) as PackedScene).instantiate()
 	var cams := scene.get_node("Cameras").get_children()
 	assert_true(cams.size() >= 7, "the design notes' preview shots (ashcrown.md §5 ◆)")
+	assert_true(scene.get_node_or_null("Cameras/A08") is HalunaShotCamera, "the crater loggia (M3-ENV-11)")
 	for c: Node in cams:
 		var sc := c as HalunaShotCamera
 		assert_true(sc != null and sc.shot != null, "%s is driven by a CameraShot" % c.name)
 	assert_true(scene.get_node_or_null("HallProbe") is ReflectionProbe, "the hall's interior ambient")
 	scene.free()
+
+
+## M3-ENV-11: the plume's near treatment is off in Pemakar's own material (the town sees the plume at 900 m)
+## and fades out inside 900 m in this kit's noon material.
+func test_near_plume_treatment_stays_near() -> void:
+	var kit := load("res://assets/environments/kits/pemakar/materials/kit_plume.tres") as ShaderMaterial
+	for p: String in ["shade_lift", "back_scatter", "vent_glow", "billow_shade", "near_detail", "sky_up"]:
+		var v: Variant = kit.get_shader_parameter(p)
+		assert_true(v == null or float(v) == 0.0, "kit_plume leaves %s off" % p)
+	var day := load(PLUME_DAY) as ShaderMaterial
+	assert_true(float(day.get_shader_parameter("shade_lift")) > 0.0, "the noon plume lifts its shaded side")
+	var fade: Vector2 = day.get_shader_parameter("near_fade_m")
+	assert_true(fade.x < fade.y and fade.y < 900.0, "the near treatment is gone before 900 m")

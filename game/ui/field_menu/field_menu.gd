@@ -80,6 +80,7 @@ var _objective: Label
 var _save_head: Label
 var _save_line: Label
 var _save_hint: Label
+var _party_cards: Array[PartyCard] = []
 var _owns_pause := false
 var _is_closed := false
 var _motion: MenuMotion
@@ -252,6 +253,11 @@ func objective_text() -> String:
 	return _objective.text if _objective.visible else ""
 
 
+## The party cards on the root (M2-MNU-304), one per place of the active line.
+func party_cards() -> Array[PartyCard]:
+	return _party_cards
+
+
 ## The root's Last saved line as shown ("" while hidden; M2-MNU-300).
 func last_save_text() -> String:
 	return _save_line.text if _save_line.visible else ""
@@ -322,6 +328,7 @@ func _on_child_closed() -> void:
 		_follow_formation()
 	child = null
 	_come_back()
+	_refresh_party()  # an item, gear or the line may have changed
 	_root.replace_rows(model.root_rows())
 	_render()
 
@@ -430,6 +437,8 @@ func _render() -> void:
 	_save_line.text = model.last_save_line()
 	for l: Label in [_save_head, _save_line, _save_hint]:
 		l.visible = at_root and _save_line.text != ""
+	for card: PartyCard in _party_cards:
+		card.visible = at_root and card.hero() != &""
 	var id := StringName(str((_root if at_root else _detail).current_row().get("id", "")))
 	match level:
 		Level.ROOT:
@@ -520,6 +529,32 @@ func _build() -> void:
 	_objective.vertical_alignment = VERTICAL_ALIGNMENT_TOP
 	_objective.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_build_last_save(_d.get("last_save", {}))
+	_build_party(_d.get("party", {}))
+
+
+## M2-MNU-304: the active line as cards across the right column on the root, under the line about the
+## highlighted row: portrait, name, HP and MP (the playtest's "parts look primitive").
+func _build_party(pm: Dictionary) -> void:
+	var at := HudLayout.rect_of(pm).position
+	var step := HudLayout.num(pm, "card_w") + HudLayout.num(pm, "spacing")
+	for i in FormationMenuModel.places():
+		var card := PartyCard.new()
+		card.setup(pm)
+		card.position = at + Vector2(step * i, 0.0)
+		add_child(card)
+		_party_cards.append(card)
+	_refresh_party()
+
+
+## Fills the cards from the active line as the next fight has it (FormationMenuModel over a PartySheet).
+func _refresh_party() -> void:
+	var line := FormationMenuModel.new(PartySheet.new(model.state, model.heroes))
+	for i in _party_cards.size():
+		var cid := line.active[i] if i < line.active.size() else &""
+		if cid == &"":
+			_party_cards[i].show_hero(&"", "", {})
+			continue
+		_party_cards[i].show_hero(cid, line.sheet.hero_name(cid), line.vitals(cid))
 
 
 ## M2-MNU-300: the root's Last saved block above the objective: a dim head, the place and time, and the

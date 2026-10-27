@@ -57,11 +57,24 @@
     "item_style": "item",
     "reaction": {
       "doc": "The target's reaction on the contact beat. damage: recoil_m away from the actor and tilt_deg back, out and back over sec; heal: a lift_m rise; miss: a sidestep of dodge_m. clip names the model clip tried first (the clip contract).",
-      "damage": {"sec": 0.32, "recoil_m": 0.28, "tilt_deg": 9.0, "clip": "hit"},
+      "damage": {"sec": 0.32, "recoil_m": 0.28, "tilt_deg": 9.0, "clip": "hit", "clip_recoil_k": 0.5},
       "heal": {"sec": 0.4, "lift_m": 0.08, "clip": "ready"},
       "miss": {"sec": 0.3, "dodge_m": 0.32, "clip": "dodge"}
     },
     "ko": {"delay_sec": 0.12, "collapse_sec": 0.5, "tilt_deg": 62.0, "drop_m": 0.18, "clip": "ko"},
+    "spacing": {
+      "doc": "M3-BPR-402: a melee run stops so the actor, at the end of its lunge, keeps its radius + each body's radius + clearance_m from everyone in its path: heroes and creatures never interpenetrate. A radius is the model's footprint (the mean of its meshes' half-width and half-depth about the stand-in's origin, times footprint_k), else battle_sandbox.json stand_ins radius for a primitive.",
+      "clearance_m": 0.12, "footprint_k": 1.0
+    },
+    "impact": {
+      "doc": "M3-BPR-401 BattleImpact, the battle feel on the contact beat. A hit's strength (0..1) is its damage over the target's max HP, 1 at full_frac; a crit adds crit_bonus. Hit-stop: from heavy_strength, the choreography clock and the actor's and targets' clips hold for hit_stop_frames [lo, hi] (lerped by strength) at stop_fps. Shake: from shake_min_strength, BattleStage.shake at shake_scale [lo, hi]. Flash: a warm light pulse at the hardest-hit target, energy [lo, hi] capped at energy_cap, range_m, at height_frac of its height, back to dark over sec. recoil_scale [lo, hi] scales each damage reaction (and reaction.damage.clip_recoil_k a model with its own hit clip). ko_slowmo: the blow that fells the last foe slows the clock to factor for sec from lead_sec before the collapse. reduced_motion: shake_scale (0 = none), flash_scale, slowmo_factor.",
+      "full_frac": 0.35, "crit_bonus": 0.3, "heavy_strength": 0.45, "hit_stop_frames": [2, 4], "stop_fps": 60.0,
+      "shake_min_strength": 0.3, "shake_scale": [0.6, 1.6], "recoil_scale": [0.75, 1.45],
+      "flash": {"color": "#FFE4BE", "energy": [0.8, 2.4], "energy_cap": 2.4, "range_m": 3.2, "height_frac": 0.55,
+                "sec": 0.18},
+      "ko_slowmo": {"factor": 0.35, "lead_sec": 0.08, "sec": 0.5},
+      "reduced_motion": {"shake_scale": 0.0, "flash_scale": 0.5, "slowmo_factor": 0.6}
+    },
     "enter": {"doc": "A fighter swapped or called in walks onto its mark from back_m behind it.", "back_m": 1.4,
               "sec": 0.34, "clip": "ready"},
     "accent_doc": "M2-BPR-04 accents (BattleChoreo.accent): a short overlay on a fighter's root, out and back over sec. lift_m/crouch_m up/down; recoil_m and tilt_deg back, away from the other side (negative leans in); sway_deg side to side, sways times; clip (optional) a contract clip.",
@@ -306,6 +319,8 @@
       "doc": "M3-BPR-02 BattleBossIntro (docs/kb/tech/battle_presentation.md, Boss intros): at a boss encounter's first turn, once the screen is uncovered and any opening banner is done (at most reveal_wait_max_sec), the camera eases from the default to the row's shot (camera.shots, framed on the row's enemy; a shot that fails the safe frame keeps the default) over camera_in_sec, holds hold_sec, and eases home over camera_out_sec. The title card (title_key over epithet_key, the UI theme) fades in over card_in_sec from card_at_sec and out over card_out_sec, ending as the camera turns home; it rises rise_px as it fades in (none under reduced motion, which also keeps the camera on the default). card: its CanvasLayer layer, its rect at the 1920x1080 reference (clear of the timeline), the label variations, the title's height, the gold rule under the name (rule_y, rule_length, rule_px) and the dark band behind it (band_alpha, band_fade). The first turn waits for it (BattleHud.holds_battle). Confirm or cancel skips it. on_retry: whether Fight again plays it again (default false). Instant pacing and skip animations play none.",
       "camera_in_sec": 1.1,
       "camera_out_sec": 0.8,
+      "fit": {"doc": "M3-BPR-404: the shot keeps its angle and fov but its distance fits the boss model's bounds (a sphere around its visible meshes) in the narrower field of view at margin; look_drop (of the radius) aims below the centre so the boss sits above the card; min_m and max_m clamp the distance; it widens (x1.1 steps, up to widen_max) until the boss's top and bottom are inside the safe frame. A row's fit_margin overrides margin; fit false keeps the shot's own offsets.",
+              "margin": 1.05, "look_drop": 0.3, "min_m": 2.2, "max_m": 18.0, "widen_max": 2.5},
       "card_at_sec": 0.7,
       "card_in_sec": 0.5,
       "card_out_sec": 0.45,
@@ -324,7 +339,7 @@
         "ch05_cinder_matron": {"enemy": "cinder_matron", "shot": "boss_skyward", "hold_sec": 2.2,
                                "title_key": "BOSS_TITLE_CINDER_MATRON", "epithet_key": "BOSS_EPITHET_CINDER_MATRON",
                                "on_retry": false},
-        "ch06_inquisitor": {"enemy": "stillguard_inquisitor", "shot": "boss", "hold_sec": 2.0,
+        "ch06_inquisitor": {"enemy": "stillguard_inquisitor", "shot": "boss", "fit_margin": 1.6, "hold_sec": 2.0,
                             "title_key": "BOSS_TITLE_INQUISITOR", "epithet_key": "BOSS_EPITHET_INQUISITOR",
                             "on_retry": false},
         "drownbell": {"enemy": "drownbell", "shot": "boss_tall", "hold_sec": 2.2, "title_key": "BOSS_TITLE_DROWNBELL",
