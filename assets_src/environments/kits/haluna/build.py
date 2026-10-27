@@ -25,6 +25,7 @@ sys.path.insert(0, str(HERE))
 import arenas  # noqa: E402
 import causeway  # noqa: E402
 import causeway_zone  # noqa: E402
+import dressing  # noqa: E402
 import festival  # noqa: E402
 import kit_common as kc  # noqa: E402
 import props  # noqa: E402
@@ -77,6 +78,8 @@ def targets() -> dict:
         out[name] = (name, causeway_zone, fn)
     for name, fn in sorted(arenas.TARGETS.items()):  # M2-ENV-11 battle arenas
         out[name] = (name, arenas, fn)
+    for name, fn in sorted(dressing.TARGETS.items()):  # M3-ENV-701 set dressing
+        out[name] = (name, dressing, fn)
     return out
 
 
