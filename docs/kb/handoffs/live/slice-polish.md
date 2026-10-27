@@ -398,6 +398,22 @@ Ch4–Ch9 onward. `m2-slice.md` beside this file is the history up to the 2026-1
   - **Checks:** prologue 8, slice_primitives 1, slice_first_battle 1, battle_boss_prompts 1, all 0 failed;
     test_iskarra, test_scene_refs and test_banned_scan OK; validate_data 0/0; lint and format clean.
 
+- **Self-directed backlog (TRACK-RULES), MERGE-READY @ 723ca6fd.** Four board tasks are done and in review:
+  - **M2-HER-1113 (to the hero track):** the no-snap patch was already in; the task file was stale. The snap guard
+    `hero_cutscene_snaps` passes 1/0.
+  - **M3-ENV-702 (to environment):** Haluna's ten no-collision rules, plus `test_haluna_walk_paths`. Every lane keeps
+    a 3 m corridor past the clutter, every door path keeps a 1.8 m gap through the fences, and the dock keeps a 0.8 m
+    walkway out to the end platform. All three are mutation-checked.
+  - **M3-AUD-829 (to audio):**
+    - `@music` takes `stem=N`, so `ch01_the_rising` brings undertow_rising's pulse in for the run.
+    - `ch01_going_under` holds U11 for 17.4 s.
+    - Ch8 should skip the cue's intro. Audio adds the offset; act1-chapters uses it.
+  - **M3-ARC-03 (to audio):** DialogueBox gains `blip(voice)`, `line_started(step)` and `external_voice`. It is
+    additive, and the UI track's code is untouched.
+  - **Checks:** cutscene 77, dialogue_box 24, voice_audio 12, audio 152, haluna 65 and ch01 21, all 0 failed;
+    dlgc and validate_data clean; lint and format clean. No new render: none of this changes a frame.
+  - **Not mine, left:** M3-AUD-830 (Ch5) and M3-ENV-714 (Ch8) belong to act1-chapters; M3-C09-201 is still blocked.
+
 ### Render requests
 RENDER-REQUEST @ fdec3cc6: slice_prologue_vigil_line, slice_beach_h05_asha, slice_beach_h06_toma, slice_haluna_villagers_village, slice_causeway_head, slice_causeway_harrier_view, haluna_h01_village_from_sea, haluna_h02_tidewall_lane, haluna_h04_dock, haluna_h07_chapel_court, haluna_h10_dock_night, shrine_s01_approach, shrine_s02_threshold, shrine_s03_overview, shrine_s04_lip, shrine_s05_side_pool, drownbell_flood, battle_boss_intro_drownbell, battle_arena_causeway, field_causeway_dolly, boot_title; why: M2-FP-102..109, the human's playtest round (real cast and held poses in the prologue and Cutscene A, live villagers and wildlife, the final causeway), plus the greyscale audit of every slice beat. The six slice_* shots are new (no baseline yet).
 - **Known red until the render lands:** the six new `slice_*` shots have no baseline yet, so the tools test
