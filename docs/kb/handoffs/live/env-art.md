@@ -422,7 +422,7 @@ RENDER-REQUEST @ 60eee2f7: iskarra_p01_plaza_dusk,iskarra_i02_gate_from_the_plaz
 ANSWERED: 8770a06 (gpu/render-env-art-8770a06): corrow_c01_wall_head and corrow_c08_watcher_profile viewed and re-approved in 895ff7ec; the Ch6 arenas, Iskarra and B01/B05 re-requested (big11's actors, the plaza and the wake changed since). ba16d48 and 179069d predate big11's NPCs and actor stances: re-requested below.
 ANSWERED: 22a5de1 and 1a42247 (3 pass each after the import-crash re-render): nothing to approve.
 SUPERSEDED by the request below for the Haluna ids: RENDER-REQUEST @ 29ddd021: haluna_h01_village_from_sea,haluna_h04_dock,battle_arena_causeway_route_afternoon; why: the fish weirs (ba16d48) and the route arena's tidal mud (179069d), not on the integration branch, now with big11's villagers and stances
-RENDER-REQUEST @ ab58f891: haluna_h01_village_from_sea,haluna_h02_tidewall_lane,haluna_h04_dock,haluna_h10_dock_night,battle_arena_causeway_route_afternoon; why: the beach palms clustered (no longer one even row from the sea) on top of the fish weirs and big11's villagers; the route arena's tidal mud
+SUPERSEDED by the H07 request: RENDER-REQUEST @ ab58f891: haluna_h01_village_from_sea,haluna_h02_tidewall_lane,haluna_h04_dock,haluna_h10_dock_night,battle_arena_causeway_route_afternoon; why: the beach palms clustered (no longer one even row from the sea) on top of the fish weirs and big11's villagers; the route arena's tidal mud
 RENDER-REQUEST @ c990e2c2: battle_arena_ossa_fen_roots; why: M3-ENV-718 the Mangrove Drowner's fen arena (new shot)
 RENDER-REQUEST @ 191e5e89: battle_arena_bridal_barge_night; why: M3-ENV-720 the Wakefin's unlamped bridal barge (new shot)
 RENDER-REQUEST @ c7703809: battle_arena_ansedra_lagoon_escape; why: M3-ENV-721 Warden Venn's escape on Ansedra's lagoon at dusk (new shot)
@@ -436,6 +436,7 @@ ANSWERED: 43492e8 (battle_arena_lowlight_engine_hall): viewed and approved as it
 ANSWERED: 854e6a9: field_tip_card passed. Camp, shoals and the inquisitor intro all fall within the gull wing-phase, smoke and hound-pose differences of big12's viewed baselines (rmse to big12's 0.012, 0.034 and 0.0), so big12's copies stay. Its Keth out is the version superseded by the rework above.
 ANSWERED: lead/gate-render-env-art-60eee2f (cloud): brine_b01_arrival and brine_b05_barge_channel were viewed and re-approved (the blue zenith; the vendor boat). The Iskarra outs are superseded by the FAST-TRACK request.
 RENDER-REQUEST @ b7182ba1: brine_b05_barge_channel,brine_b01_arrival; why: M3-ENV-705, the white barge's Order trim (B05 read it flat white).
+RENDER-REQUEST @ 9c26b66e: haluna_h07_chapel_court,haluna_h01_village_from_sea,haluna_h02_tidewall_lane,haluna_h04_dock,haluna_h10_dock_night; why: M3-ENV-705, the chapel's articulation (H07 read a plain box), plus the palms request (ab58f891) folded in. Supersedes ab58f891.
 NOT APPROVED: 95be611 (battle_arena_keth_seep_terrace). The backdrop reads as a wall of stretched white blocks and the seep strips as pale-blue ribbons, not a mountain pass. Rework is queued after the Iskarra fast-track (M3-ENV-717).
 RENDER-REQUEST @ 7f1a0fc7: battle_arena_keth_seep_terrace; why: M3-ENV-717 rework after 95be611 (crisp weathered wall, threads of seep). Supersedes 95be6118.
 
