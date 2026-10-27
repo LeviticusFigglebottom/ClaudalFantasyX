@@ -16,8 +16,8 @@ every branch has a model except stillguard_inquisitor, a person: characters).
 
 ## Acceptance criteria
 - [x] Roster proposal: docs/kb/art/creatures/act2_roster.md (Ch10–Ch16, 9 regulars, 5 variants, 5 bosses)
-- [ ] Design sheets (docs/kb/art/creatures/act2/), bosses first: mangrove_drowner, lamp_engine, avalanche_ram,
-      wakefin
+- [x] Boss design sheets (docs/kb/art/creatures/act2/): mangrove_drowner, lamp_engine, avalanche_ram, wakefin
+- [ ] Regular and variant sheets
 - [ ] Builds in the same order (Blender jobs, creatures.json rows, shots)
 
 ## Review log
