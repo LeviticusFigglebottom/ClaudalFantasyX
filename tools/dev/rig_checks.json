@@ -322,6 +322,30 @@
           "Body": 32
         }
       }
+    },
+    "moll": {
+      "garments": [
+        "Costume",
+        "Sleeves"
+      ],
+      "props": [
+        "Iron",
+        "Shield"
+      ],
+      "seams": {
+        "groups": [
+          [
+            "Body",
+            "Head:skin_head"
+          ],
+          [
+            "Costume"
+          ],
+          [
+            "Sleeves"
+          ]
+        ]
+      }
     }
   }
 }

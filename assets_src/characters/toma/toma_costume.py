@@ -262,8 +262,12 @@ def _grid_normals(P: np.ndarray, centre: np.ndarray) -> np.ndarray:
     return n * s
 
 
-def pauldron(fields: Fields, params: dict) -> tuple[Part, dict]:
-    """The five lames on the left shoulder; returns (part, info) where info holds the shell centre."""
+def pauldron(fields: Fields, params: dict, relief=None, top_grid: tuple = TOP_GRID,
+             lame_grid: tuple = LAME_GRID) -> tuple[Part, dict]:
+    """The five lames on the left shoulder; returns (part, info) where info holds the shell centre.
+    M3-CHR-507 (Moll's two whole pauldrons): `relief(params, x, y)` replaces the chisel's `scar_depth` on the top
+    lame (same chart and sign: + cuts in, - stands out), and `top_grid` / `lame_grid` set the plates' resolution;
+    the defaults are Toma's, so his pauldron is unchanged."""
     lm = fields.lm
     part = Part("Pauldron")
     thick = float(params["pauldron_thickness_m"])
@@ -274,7 +278,7 @@ def pauldron(fields: Fields, params: dict) -> tuple[Part, dict]:
     grids = []
     for k in range(n_lames - 1):
         ec, wh = LAME_E_CENTRES[k], LAME_W_HALF[k]
-        ni, nj = LAME_GRID
+        ni, nj = lame_grid
         s = np.linspace(0.0, 1.0, ni)
         t = np.linspace(0.0, 1.0, nj)
         S, T = np.meshgrid(s, t)
@@ -285,13 +289,13 @@ def pauldron(fields: Fields, params: dict) -> tuple[Part, dict]:
         hv = (v1 - v0) / (n_lames - 1)
         grids.append((P, (u0, v0 + hv * k, u1, v0 + hv * (k + 1))))
     s0, t0 = SCAR_ST
-    ni, nj = TOP_GRID
+    ni, nj = top_grid
     S, T = np.meshgrid(np.linspace(0.0, 1.0, ni), np.linspace(0.0, 1.0, nj))
     P_top = top_lame_point(params, S, T)
     N_top = _grid_normals(P_top, np.zeros(3))
     # the chisel pass: displace the top lame inward by the cut's depth
     _c, Ls, Lt = scar_frame(params)
-    depth = scar_depth(params, (S - s0) * Ls, (T - t0) * Lt)
+    depth = (relief or scar_depth)(params, (S - s0) * Ls, (T - t0) * Lt)
     P_top = P_top - N_top * depth[..., None]
     # clear the body: where a plate comes within CLEARANCE of the skin field (the trapezius under the
     # top lame's medial edge), lift it out along the shell normal by a smoothed deficit, so the

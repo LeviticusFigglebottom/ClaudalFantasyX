@@ -416,6 +416,8 @@ def pose_at(clip: str, t: float, length: float, sk: Skeleton, persona: dict) -> 
         return loco_pose_at(clip, t, length, sk, persona)
     if persona.get("launcher"):  # M3-CHR-03: Liss's clips (liss_pose_at, below)
         return liss_pose_at(clip, t, length, sk, persona)
+    if persona.get("inquisitor"):  # M3-CHR-507: Moll's clips (moll_pose_at, below)
+        return moll_pose_at(clip, t, length, sk, persona)
     sway = persona["sway"]
     u = t / length
     if clip == "idle":
@@ -1040,6 +1042,8 @@ def _victory(hero: str, u: float, sk: Skeleton, persona: dict) -> dict:
     degrees."""
     ph = 2 * math.pi * u
     s1, c1 = math.sin(ph), math.cos(ph)
+    if hero == "moll":  # M3-CHR-507: the iron grounded, the long look over the field (his block)
+        return moll_victory(u, sk, persona)
     if hero == "liss":  # M3-CHR-03: weight on one hip, the gloved hand flexing, the head up and turned off (her block)
         return add(_sway(sk, persona, 0.018 * s1, 0.01), add(liss_victory(u), {
             "DEF-spine.003": (-1.5 * math.sin(2 * ph), 4.0 * math.sin(ph + 0.5), 0.0),
@@ -1113,6 +1117,7 @@ KO_ARMS_OUT = {"asha": 0.0, "rhen": 8.0, "toma": 8.0}  # degrees the hanging arm
 # revive opens Rhen's knee fold past its ratchet as he gets his feet under him)
 KO_SWING = (0.07, 0.06)
 KO_SWING_MIN = 0.15
+KO_OWN: set = set()  # M3-CHR-507: heroes whose `ko` is their own keys (_BATTLE_KEYS), not this fall (Moll's yield)
 
 
 def _pitched(pose: dict, pitch: float) -> dict:
@@ -1304,7 +1309,7 @@ STAFF_ARM_M2 = (-6.0, -14.0, -28.0)  # the stand's staff arm the battle keys wer
 def _staff_arm_comp(persona: dict) -> dict:
     """M2-CHR-515: the battle keys are deltas on the stand they were authored on; its staff arm has since bent to hold
     the staff in the fist, so the keys (not the rest frames) add back the difference and strike as authored."""
-    if not persona["staff"]:
+    if not persona["staff"] or persona.get("inquisitor"):  # M3-CHR-507: Moll's keys are authored on today's stand
         return {}
     return {"DEF-upper_arm.R": (STAFF_ARM_M2[0] - STAFF_ARM[0], 0.0, STAFF_ARM_M2[1] - STAFF_ARM[1]),
             "DEF-forearm.R": (STAFF_ARM_M2[2] - STAFF_ARM[2], 0.0, 0.0)}
@@ -1317,7 +1322,7 @@ def battle_pose_at(clip: str, u: float, sk: Skeleton, persona: dict) -> dict:
     comp = _staff_arm_comp(persona)
     if clip == "victory":
         return _exact_hold(add(add(base, comp), _victory(hero, u, sk, persona)), persona, 1.0)
-    if clip in ("ko", "revive"):  # M2-CHR-513: absolute poses, the body pitched down onto the floor
+    if clip in ("ko", "revive") and hero not in KO_OWN:  # M2-CHR-513: absolute poses, pitched down onto the floor
         pose = (_ko if clip == "ko" else _revive)(hero, u, sk, persona, base)
         w = smooth(u / 0.2) if clip == "ko" else 1.0 - smooth((u - 0.8) / 0.2)
         return _exact_hold(pose, persona, w)
@@ -2770,12 +2775,16 @@ def _ramp(u: float, lo: float, hi: float) -> float:
     return 0.0 if u <= lo else 1.0 if u >= hi else smooth((u - lo) / (hi - lo))
 
 
+IDLE_GROUNDED: set = set()  # M3-CHR-507: heroes whose idle grounds the held prop (no locomotion set to start from it)
+
+
 def hook_hold(hero: str, clip: str, u: float) -> dict:
     """{side: 0..1}: how far each hook is drawn at fraction u of the clip (HOOK_HOLD); plus "_carry" in the field's
     locomotion clips and the idle they start from (M2-CHR-515: a staff or spear is carried, not slid along the floor
     under the feet; the idle carries it too so every transition and variant starts on the idle's first frame)."""
     base = STORY.get(hero, {}).get(clip, {}).get("alias", clip)  # a story alias of walk (Toma's follow) carries too
-    out = {"_carry": True} if base in LOCO_CLIPS or base == "idle" else {}
+    idle = base == "idle" and hero not in IDLE_GROUNDED
+    out = {"_carry": True} if base in LOCO_CLIPS or idle else {}
     down = prop_down(hero, clip, u)
     if down > 0.0:
         out["_down"] = down
@@ -3486,6 +3495,205 @@ def write_grip_data() -> None:
             "hold": rnd(sk.prop["hold"]),
             "fingers": {n: rnd(q) for side in sorted(sk.grips) for n, q in sk.grips[side].items()}}
     GRIP_DATA.write_text(json.dumps(data, indent=1) + "\n", encoding="utf-8")
+
+
+# ---------------------------------------------------------------------------------------------
+# Moll (M3-CHR-507, hadric_moll.md §1, §9): the Ch6 boss, a tired officer who stands very straight. Upright, the chin a
+# little down, idle sway 0.4; the brine-iron held upright at his right like a standard (`staff`: Asha's staff hold and
+# the M2-CHR-515 grip, below), the round shield low on his left forearm. A persona with `inquisitor` takes these clips
+# (pose_at dispatches): the shared idle, a measured walk with the iron carried, `look_at`, `kneel` (the iron set down,
+# M2-CHR-520) and the battle contract in his idiom; his `ko` is **the yield** (KO_OWN: his own keys, not the shared
+# fall): down onto the right knee, the iron's foot grounded and both hands on the haft, the head bowed, held. `yield`
+# is the same clip under the name the scripted end calls. He is a foe: no locomotion set, no revive. The other
+# libraries do not change.
+# ---------------------------------------------------------------------------------------------
+PERSONA["moll"] = {"sway": 0.4, "lean": 0.0, "staff": True, "arms_down": 38.0, "inquisitor": True}
+MOLL_HEAD_DOWN = 3.0  # degrees: the chin a little down
+MOLL_SHIELD_ARM = 12.0  # degrees the shield arm hangs further out than the stand's: the shield's back clears the thigh
+MOLL_WALK = (17.0, 30.0, 9.0, 0.012, 1.0)  # stride, knee, arm swing (degrees), bob (m), lean: measured, not quick
+MOLL_LOOK = (30.0, 14.0)  # look_at: the turn to his left and the drop of the head (degrees)
+MOLL_YIELD_AT = 0.85  # ko: the yield is reached here and held to the end (the last keys hold)
+# arm turns (upper arm, forearm[, hand]; world axes) searched numerically on his skeleton: the yield's iron upright
+# before the right knee (inside the raised left one), the left hand on the haft 12 cm over the right fist with the
+# shield on that forearm clear of his body; the kneel's left wrist resting on the raised knee; the thrust's
+# right arm, which carries the iron's head to chest height (1.3 m) as far forward as the fist's grip allows
+MOLL_YIELD_ARM_R = ((-29.1, 13.8, 53.2), (-90.9, -31.4, 0.0))  # the iron planted before the right knee, inside it
+MOLL_YIELD_ARM_L = ((-62.0, -26.6, -49.5), (-67.6, 3.9, 0.0), (11.3, 14.5, 0.0))  # the shield clear of the body
+MOLL_KNEEL_ARM_L = ((-54.1, 0.0, -48.3), (-11.2, -24.5, 0.0))
+MOLL_THRUST_ARM_R = ((-23.6, 0.0, 12.9), (45.2, -1.3, 0.0), (90.0, 10.0, 0.0))
+LENGTHS.update({"look_at": 1.6, "kneel": 2.0})
+CLIPS["moll"] = ["idle", "walk", "look_at", "kneel"]
+
+
+def _moll_shared(persona: dict) -> dict:
+    """The persona without its dispatch key, for the shared clips' builders."""
+    return {k: v for k, v in persona.items() if k != "inquisitor"}
+
+
+def moll_carry(persona: dict) -> dict:
+    """On every standing pose: the chin down, the shield arm a little out from the thigh."""
+    return {"DEF-spine.006": (MOLL_HEAD_DOWN, 0.0, 0.0), "DEF-upper_arm.L": (0.0, 0.0, MOLL_SHIELD_ARM)}
+
+
+def moll_kneel(sk: Skeleton, persona: dict) -> dict:
+    """On the right knee, the left foot planted (the shared kneel's legs), upright: the left forearm across the raised
+    knee, the shield standing on the ground beside it; the right arm hangs (the iron is set down, PROP_DOWN)."""
+    a = persona["arms_down"]
+    k = kneel(sk, persona)
+    return dict(k, **{"DEF-spine.006": (12.0, 0.0, 0.0),
+                      "DEF-upper_arm.L": MOLL_KNEEL_ARM_L[0], "DEF-forearm.L": MOLL_KNEEL_ARM_L[1],
+                      "DEF-upper_arm.R": (-6.0, 0.0, a - 8.0), "DEF-forearm.R": (-20.0, 0.0, 0.0)})
+
+
+def moll_yield(sk: Skeleton, persona: dict) -> dict:
+    """The yield (act1_ch06 §5: "goes to one knee and yields"): the kneel's legs, the iron grounded upright before his
+    right knee in the right fist, the left hand over the right on the haft, the shoulders dropped, the head bowed."""
+    k = kneel(sk, persona)
+    p = {b: v for b, v in k.items() if b == "hips" or "thigh" in b or "shin" in b or "foot" in b or "toe" in b}
+    return add(p, {"DEF-spine.001": (8.0, 0.0, 0.0), "DEF-spine.002": (6.0, 0.0, 0.0), "DEF-spine.003": (4.0, 0.0, 0.0),
+                   "DEF-spine.005": (8.0, 0.0, 0.0), "DEF-spine.006": (24.0, 0.0, 0.0),
+                   "DEF-shoulder.L": (0.0, 0.0, -3.0), "DEF-shoulder.R": (0.0, 0.0, 3.0),
+                   "DEF-upper_arm.R": MOLL_YIELD_ARM_R[0], "DEF-forearm.R": MOLL_YIELD_ARM_R[1],
+                   "DEF-hand.R": (-4.0, 0.0, 0.0),
+                   "DEF-upper_arm.L": MOLL_YIELD_ARM_L[0], "DEF-forearm.L": MOLL_YIELD_ARM_L[1],
+                   "DEF-hand.L": MOLL_YIELD_ARM_L[2]})
+
+
+def moll_pose_at(clip: str, t: float, length: float, sk: Skeleton, persona: dict) -> dict:
+    shared = _moll_shared(persona)
+    u = t / length
+    if clip == "idle":  # upright, the iron grounded at his right foot, the shield low; breath; sway 0.4
+        return add(pose_at("idle", t, length, sk, shared), moll_carry(persona))
+    if clip == "walk":  # measured; the iron carried upright and lifted clear (hook_hold's carry)
+        return add(walk_pose(u, shared, *MOLL_WALK), moll_carry(persona))
+    if clip == "look_at":  # the head and chest turn to his left and down, about 30 degrees; holds
+        turn, drop = MOLL_LOOK
+        e = smooth(u / 0.6)
+        head = smooth((u - 0.1) / 0.6)
+        return add(add(planted(sk, shared), moll_carry(persona)), {
+            "DEF-spine.002": (0.0, 0.2 * turn * e, 0.0), "DEF-spine.003": (2.0 * e, 0.2 * turn * e, 0.0),
+            "DEF-spine.005": (0.3 * drop * head, 0.25 * turn * head, 0.0),
+            "DEF-spine.006": (0.7 * drop * head, 0.35 * turn * head, 0.0)})
+    if clip == "kneel":  # B05 W10: on one knee in the mud, the iron set down beside him (PROP_DOWN below)
+        return blend(add(stand(shared), moll_carry(persona)), moll_kneel(sk, shared), smooth(u / 0.8))
+    if clip == "yield":  # the scripted end: the battle's ko under its own name
+        return battle_pose_at("ko", u, sk, persona)
+    if clip in BATTLE_FRAMES:
+        return battle_pose_at(clip, u, sk, persona)
+    raise KeyError(clip)
+
+
+def _moll_keys(clip: str, sk: Skeleton, persona: dict, base: dict) -> list:
+    """Moll (hadric_moll.md §9): an officer's economy, nothing ornamented; the iron kept upright by staff_hold except
+    where his hand turns it (DEF-hand.R is then the iron's own tilt, as Toma's spear), the shield on the left forearm.
+    Deltas on the idle's first frame (base)."""
+    a = persona["arms_down"]
+    if clip == "ready":
+        k = add(_legs(sk, persona, 0.03), {
+            "DEF-spine.006": (-2.0, 0.0, 0.0), "DEF-upper_arm.R": (-6.0, 0.0, 0.0),
+            "DEF-upper_arm.L": (-30.0, 0.0, 12.0), "DEF-forearm.L": (-50.0, -40.0, 0.0)})
+        return [(0.0, {}), (0.45, k), (1.0, {})]
+    if clip == "attack":
+        # a two-handed thrust of the iron's head, the bar leading, at chest height: the iron is levelled and drawn
+        # back, then driven forward with a step of the left foot; the shield arm swings back
+        up, fo, ha = MOLL_THRUST_ARM_R
+        lift = {"DEF-upper_arm.R": (-20.0, 0.0, 6.0), "DEF-forearm.R": (10.0, 0.0, 0.0)}
+        wind = add(_legs(sk, persona, 0.04), {
+            "DEF-spine.001": (0.0, -12.0, 0.0), "DEF-spine.002": (0.0, -6.0, 0.0), "DEF-spine.006": (0.0, 12.0, 0.0),
+            "DEF-upper_arm.R": (up[0] + 22.0, 0.0, up[2] - 16.0), "DEF-forearm.R": (fo[0] - 10.0, fo[1], 0.0),
+            "DEF-hand.R": (ha[0] - 4.0, -8.0, 0.0),
+            "DEF-upper_arm.L": (-40.0, 0.0, 20.0), "DEF-forearm.L": (-60.0, -30.0, 0.0)})
+        hit = add(_legs(sk, persona, 0.07, 0.15, -0.07), {
+            "DEF-spine.001": (6.0, 12.0, 0.0), "DEF-spine.002": (3.0, 6.0, 0.0), "DEF-spine.006": (-4.0, -12.0, 0.0),
+            "DEF-upper_arm.R": up, "DEF-forearm.R": fo, "DEF-hand.R": ha,
+            "DEF-upper_arm.L": (24.0, 0.0, 10.0), "DEF-forearm.L": (-20.0, 0.0, 0.0)})
+        follow = _scale(hit, 0.55)
+        return [(0.0, {}), (0.12, lift), (0.3, wind), (0.55, hit), (0.78, follow), (1.0, {})]
+    if clip == "cast":
+        # phase 2, "Torch the Hulk": the left hand raised, palm out toward the hulk, the order given
+        draw = add(_legs(sk, persona, 0.02), {
+            "DEF-spine.006": (-2.0, 0.0, 0.0), "DEF-upper_arm.L": (-40.0, 0.0, 16.0), "DEF-forearm.L": (-70.0, 0.0, 0.0)})
+        order = add(_legs(sk, persona, 0.03), {
+            "DEF-spine.001": (0.0, 8.0, 0.0), "DEF-spine.003": (-3.0, 0.0, 0.0), "DEF-spine.006": (-8.0, 8.0, 0.0),
+            "DEF-upper_arm.L": (-118.0, 0.0, 20.0), "DEF-forearm.L": (-14.0, 0.0, 0.0), "DEF-hand.L": (-50.0, 0.0, 0.0)})
+        return [(0.0, {}), (0.4, draw), (0.8, order), (1.0, {})]
+    if clip == "item":
+        # a hand to the belt pouch at the left hip, then held out low
+        reach = add(_legs(sk, persona, 0.02), {"DEF-upper_arm.L": (-6.0, 0.0, 8.0), "DEF-forearm.L": (-60.0, 0.0, 0.0)})
+        offer = add(_legs(sk, persona, 0.03), {
+            "DEF-spine.001": (4.0, 6.0, 0.0), "DEF-upper_arm.L": (-50.0, 0.0, 16.0), "DEF-forearm.L": (-14.0, 0.0, 0.0),
+            "DEF-hand.L": (0.0, -40.0, 0.0)})
+        return [(0.0, {}), (0.35, reach), (0.7, offer), (1.0, {})]
+    if clip == "read":
+        # weighing the foe: the head forward and a little turned, the shield arm settles
+        look = add(_legs(sk, persona, 0.02), {
+            "DEF-spine.002": (3.0, 0.0, 0.0), "DEF-spine.006": (6.0, -8.0, 0.0),
+            "DEF-upper_arm.L": (-10.0, 0.0, 6.0), "DEF-forearm.L": (-24.0, 0.0, 0.0)})
+        return [(0.0, {}), (0.6, look), (0.78, look), (1.0, {})]
+    if clip == "defend":
+        # the shield up across the chest, the left shoulder into it, the iron grounded
+        guard = add(_legs(sk, persona, 0.08), {
+            "DEF-spine.001": (6.0, -16.0, 0.0), "DEF-spine.002": (3.0, -6.0, 0.0), "DEF-spine.006": (-4.0, 16.0, 0.0),
+            "DEF-upper_arm.R": (-6.0, 0.0, -8.0),
+            "DEF-upper_arm.L": (-70.0, 0.0, 22.0), "DEF-forearm.L": (-50.0, -70.0, -30.0)})
+        return [(0.0, {}), (0.6, guard), (0.8, _scale(guard, 0.85)), (1.0, {})]
+    if clip == "finisher":
+        # the brand: the iron raised overhead, the head forward, then driven down and forward with a long step
+        early = {"DEF-upper_arm.R": (-50.0, 0.0, -24.0), "DEF-forearm.R": (-40.0, 0.0, 0.0)}
+        lift = add(_legs(sk, persona, 0.0), {
+            "DEF-spine.001": (-6.0, -6.0, 0.0), "DEF-spine.006": (-6.0, 0.0, 0.0),
+            "DEF-upper_arm.R": (-140.0, 0.0, -16.0), "DEF-forearm.R": (-24.0, 0.0, 0.0), "DEF-hand.R": (96.0, 14.0, 0.0),
+            "DEF-upper_arm.L": (-60.0, 0.0, 26.0), "DEF-forearm.L": (-50.0, -30.0, 0.0)})
+        drive = add(_legs(sk, persona, 0.1, 0.2, -0.1), {
+            "DEF-spine.001": (16.0, 8.0, 0.0), "DEF-spine.002": (6.0, 4.0, 0.0), "DEF-spine.006": (-10.0, -8.0, 0.0),
+            "DEF-upper_arm.R": (-58.0, 0.0, -28.0), "DEF-forearm.R": (-10.0, 0.0, 0.0), "DEF-hand.R": (110.0, 16.0, 0.0),
+            "DEF-upper_arm.L": (20.0, 0.0, 14.0), "DEF-forearm.L": (-40.0, 0.0, 0.0)})
+        return [(0.0, {}), (0.16, early), (0.42, lift), (0.62, drive), (0.84, _scale(drive, 0.5)), (1.0, {})]
+    if clip == "hit":
+        # a step back on the left foot, the shield coming up late
+        jolt = add(_legs(sk, persona, 0.03, -0.08, 0.0), {
+            "hips": (0.0, 0.0, -0.03), "DEF-spine.001": (-5.0, 0.0, 0.0), "DEF-spine.006": (-8.0, 0.0, 0.0)})
+        late = add(_scale(jolt, 0.6), {"DEF-upper_arm.L": (-40.0, 0.0, 16.0), "DEF-forearm.L": (-40.0, -40.0, 0.0)})
+        return [(0.0, {}), (0.2, jolt), (0.5, late), (1.0, {})]
+    if clip == "dodge":
+        lean = add(_sway(sk, persona, 0.05, 0.03), {"DEF-spine.001": (0.0, 6.0, -5.0),
+                                                     "DEF-upper_arm.L": (-10.0, 0.0, 8.0)})
+        return [(0.0, {}), (0.35, lean), (1.0, {})]
+    if clip == "ko":
+        # the yield: the knees go, then down onto the right knee, both hands on the grounded haft, the head bowed;
+        # he holds it
+        buckle = add(_legs(sk, persona, 0.08), {"DEF-spine.001": (6.0, 0.0, 0.0), "DEF-spine.006": (10.0, 0.0, 0.0)})
+        down = _minus(moll_yield(sk, persona), base)
+        return [(0.0, {}), (0.3, buckle), (MOLL_YIELD_AT, down), (1.0, down)]
+    raise KeyError(clip)
+
+
+def moll_victory(u: float, sk: Skeleton, persona: dict) -> dict:
+    """The battle's end (he is the foe: rarely seen): the iron grounded upright at his side, the shield low; the slow
+    look out over the field and back, the chest following, a breath."""
+    ph = 2 * math.pi * u
+    s1 = math.sin(ph)
+    return add(_sway(sk, persona, 0.012 * s1, 0.01), {
+        "DEF-spine.001": (1.0, 0.0, -1.5 * s1), "DEF-spine.003": (-1.0 * math.sin(2 * ph), 5.0 * s1, 0.0),
+        "DEF-spine.006": (1.5 * math.sin(2 * ph), 8.0 * math.sin(ph + 0.6), 2.0 * s1)})
+
+
+# the battle contract (the M2-CHR-07 block) and his yield in place of the fall
+BATTLE_HEROES = BATTLE_HEROES + ("moll",)
+CLIPS["moll"] = CLIPS["moll"] + [c for c in BATTLE_CLIPS if c not in CLIPS["moll"]] + ["yield"]
+LENGTHS["yield"] = LENGTHS["ko"]
+FOOT_FLAT["moll"] = 0.5  # the trousers gathered into the shin wraps: the ankle flexes little (as Toma's hem)
+STANCE_DORSI["moll"] = 10.0
+BATTLE_STRIKER["moll"] = {"attack": ("DEF-hand.R", (0.0, 0.0, 1.0)), "cast": ("DEF-hand.L", (0.0, 1.0, 0.0)),
+                          "finisher": ("DEF-hand.R", (0.0, 0.0, 1.0)), "item": ("DEF-hand.L", (0.0, 0.0, 1.0)),
+                          "read": ("DEF-spine.006", (0.0, 0.0, 1.0)), "defend": ("DEF-spine", (0.0, -1.0, 0.0))}
+_BATTLE_KEYS["moll"] = _moll_keys
+KO_OWN.add("moll")
+# M2-CHR-515: the brine-iron is held like Asha's staff (it never leaves the hand); M2-CHR-520: he sets it down to kneel
+GRIP["moll"] = {"R": ("mesh", "Iron", "DEF-iron")}
+GRIP_ALWAYS.add("moll")
+IDLE_GROUNDED.add("moll")  # hadric_moll.md §9: the idle stands the iron on the ground at his right foot
+PROP_DOWN["moll"] = {"kneel": (0.0, 0.45, 2.0, 2.0)}
 
 
 # M3-CHR-05: the story clips go after each hero's own (every hero's block above has set its list by now)
