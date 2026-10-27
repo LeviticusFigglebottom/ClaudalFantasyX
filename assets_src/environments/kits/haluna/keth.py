@@ -12,6 +12,10 @@ Built in the Haluna kit (its import kind and materials directory, as iskarra.py)
                        centre, the face toward +Z.
   seep_pool            the pale pool at the wall's foot where the herd drank: a rim of set stones, the seep's surface,
                        pale grass grown too long round it. Origin at its centre on the ground.
+  keth_road_switchback a 10 m module of the Cold Road climbing 1 m along +X: laid stones on a 3 m bed, a dry-stone
+                       parapet on the drop side (+Z), the cut bank's scree on the uphill side; modules chain end to end.
+  keth_scree_slope     a 40 x 40 m scree-and-crag panel rising 18 m toward -Z, its front edge level at y 0.
+  woolback_trough      the herders' stone trough, 3 x 0.8 m, and a broken herd-gate, one rail tied with red.
   pass_cord            a cord from post to post across a saddle, 18 m, sagging, hung with knotted keth (undyed wool
                        and red: a knot is a name). Origin at the span's centre on the ground, the cord along X.
   cairn                a road cairn of stacked stones with cords tied round it.
@@ -37,7 +41,8 @@ M_RED = "kit_keth_red"
 M_DARK = "kit_interior_dark"
 M_TIMBER = "kit_timber"
 
-TRI_BUDGET = {"keth_terrace_ground": (26000, 2400), "lit_terrace_wall": (16000, 1200), "seep_pool": (5000, 300),
+TRI_BUDGET = {"keth_road_switchback": (8000, 500), "keth_scree_slope": (12000, 1000), "woolback_trough": (2000, 150),
+              "keth_terrace_ground": (26000, 2400), "lit_terrace_wall": (16000, 1200), "seep_pool": (5000, 300),
               "pass_cord": (7000, 400), "cairn": (2500, 150), "keth_far_ridges": (4000, 1500)}
 
 FLOOR_HALF_X = 9.5  # the old road's level top, the battle floor
@@ -316,6 +321,125 @@ def build_far(seed: int = 1506) -> list[kc.MeshBuilder]:
     return out
 
 
+# ---------------------------------------------------------------------------------------------
+# The Cold Road's zone pieces (keth_pass.md §1)
+# ---------------------------------------------------------------------------------------------
+ROAD_RUN = 10.0
+ROAD_W = 3.0
+ROAD_RISE = 1.0  # the module climbs 1 m over its 10 m run (a mule-road's 1 in 10)
+
+
+def build_switchback(seed: int = 1507) -> list[kc.MeshBuilder]:
+    """A 10 m laid-stone road module along +X, 3 m wide (z -1.5..1.5), climbing 1 m; the cut bank's foot on -Z, a
+    dry-stone parapet on the drop side (+Z). Origin at its start, on the road's centre line; modules chain end to end
+    (each starts where the last ended, 1 m up)."""
+    out = []
+    for lod in (False, True):
+        rng = kc.rng_for("keth_road_switchback", seed)
+        noise = kc.Noise3(rng)
+        mb = kc.MeshBuilder("keth_road_switchback" + ("-lod1" if lod else ""))
+        road = mb.material(M_ROAD)
+        hw = ROAD_W * 0.5
+        # The road bed (a sloped slab) and, at LOD0, its laid stones.
+        n = 3 if lod else 11
+        xs = np.linspace(0.0, ROAD_RUN, n)
+        bed = np.stack([np.stack([xs, xs * ROAD_RISE / ROAD_RUN - 0.2, np.full(n, z)], -1) for z in (-hw, hw)], 1)
+        kc.quad_strip(mb, bed, road, uv=bed[..., [0, 2]] / 1.2, col=(0, 0, 0, 0.5), uv2=(0.9, 0.5))
+        if not lod:
+            x = 0.0
+            while x < ROAD_RUN - 0.1:
+                ln = min(rng.uniform(0.6, 1.1), ROAD_RUN - x)
+                z = -hw + rng.uniform(0.0, 0.3)
+                while z < hw - 0.1:
+                    w = min(rng.uniform(0.5, 0.8), hw - z)
+                    y = (x + ln * 0.5) * ROAD_RISE / ROAD_RUN
+                    kc.rounded_block(mb, (x + ln * 0.5, y - 0.09 + rng.uniform(-0.01, 0.006), z + w * 0.5),
+                                     (ln * 0.5 - 0.016, 0.09, w * 0.5 - 0.016), road,
+                                     rot=kc.rot_z(math.atan(ROAD_RISE / ROAD_RUN)) @ kc.rot_y(rng.normal(0.0, 0.015)),
+                                     radius=0.02, seg=1, noise=noise, disp_m=0.008, weather=ROCK,
+                                     variation=float(rng.random()))
+                    z += w
+                x += ln
+        # The parapet on the drop side: dry-laid blocks in two courses, 0.7 m, with gaps where it has slumped.
+        x = 0.0
+        while x < ROAD_RUN:
+            ln = rng.uniform(0.45, 0.8)
+            y0 = x * ROAD_RISE / ROAD_RUN
+            gap = rng.random() < 0.08
+            for c, h in enumerate((0.36, 0.3)):
+                if gap and c == 1:
+                    continue
+                if lod and c == 1:
+                    break
+                hh = h if not lod else 0.66
+                kc.rounded_block(mb, (x + ln * 0.5, y0 + c * 0.36 + hh * 0.5 - 0.05, hw + 0.25),
+                                 (ln * 0.5 - 0.02, hh * 0.5, 0.25 - c * 0.04), mb.material(M_CRAG),
+                                 rot=kc.rot_y(rng.normal(0.0, 0.05)), radius=0.05, seg=1, noise=None if lod else noise,
+                                 disp_m=0.02, weather=ROCK, variation=float(rng.random()))
+            x += ln
+        # The cut bank's foot on the uphill side: a scree skirt.
+        n = 3 if lod else 11
+        skirt = np.stack([np.stack([xs, xs * ROAD_RISE / ROAD_RUN - 0.1 + h, np.full(n, -hw - d)], -1)
+                          for d, h in ((0.0, 0.0), (0.8, 0.45), (2.0, 1.6))], 1)
+        kc.quad_strip(mb, skirt, mb.material(M_SCREE), uv=skirt[..., [0, 2]] / 1.6, col=(0, 0, 0, 0.5), uv2=(0.9, 0.5),
+                      flip=True)
+        out.append(mb)
+    return out
+
+
+def build_scree_slope(seed: int = 1508) -> list[kc.MeshBuilder]:
+    """A 40 x 40 m scree-and-crag panel rising 18 m toward -Z, its +Z edge level at y 0 (where a road module's
+    cut bank meets it); crag where it is steep (as keth_terrace_ground). Origin at its front edge's centre."""
+    out = []
+    for lod in (False, True):
+        rng = kc.rng_for("keth_scree_slope", seed)
+        noise = kc.Noise3(rng)
+        mb = kc.MeshBuilder("keth_scree_slope" + ("-lod1" if lod else ""))
+        xs = np.linspace(-20.0, 20.0, 9 if lod else 41)
+        zs = np.linspace(-40.0, 0.0, 9 if lod else 41)
+        X, Z = np.meshgrid(xs, zs)
+        n = noise.fbm(np.stack([X / 8.0, np.zeros_like(X), Z / 8.0], -1), 4) - 0.5
+        ridge = noise.fbm(np.stack([X / 3.0, np.ones_like(X), Z / 3.0], -1), 3) - 0.5
+        Y = 18.0 * kc.smoothstep(0.0, 40.0, -Z) ** 1.2 + n * 4.0 * kc.smoothstep(0.0, 8.0, -Z) \
+            + np.clip(ridge, 0.0, None) * 5.0 * kc.smoothstep(6.0, 20.0, -Z)
+        P = np.stack([X, Y, Z], -1)
+        start_t = mb.triangle_count
+        kc.quad_strip(mb, P, mb.material(M_SCREE), uv=np.stack([X, Z], -1) / 3.0, col=(0, 0, 0, 0.5),
+                      uv2=np.array([0.9, 0.5]), flip=True)
+        pos, tris = np.asarray(mb.pos), np.asarray(mb.tris)[start_t:]
+        a, b, c = pos[tris[:, 0]], pos[tris[:, 1]], pos[tris[:, 2]]
+        ny = np.abs(kc.normalize(np.cross(b - a, c - a))[:, 1])
+        i_crag, i_scree = mb.material(M_CRAG), mb.material(M_SCREE)
+        mb.tri_mat = mb.tri_mat[:start_t] + [int(i_crag if v < 0.72 else i_scree) for v in ny]
+        out.append(mb)
+    return out
+
+
+def build_trough(seed: int = 1509) -> list[kc.MeshBuilder]:
+    """The herders' stone trough (3 x 0.8 m, along X) and a broken herd-gate of lashed poles leaning off its end.
+    Origin at the trough's foot centre."""
+    out = []
+    for lod in (False, True):
+        rng = kc.rng_for("woolback_trough", seed)
+        noise = kc.Noise3(rng)
+        mb = kc.MeshBuilder("woolback_trough" + ("-lod1" if lod else ""))
+        crag = mb.material(M_CRAG)
+        for (cx, cy, cz, hx, hy, hz) in ((0.0, 0.08, 0.0, 1.5, 0.08, 0.4),  # base slab
+                                         (0.0, 0.36, -0.33, 1.5, 0.22, 0.07), (0.0, 0.36, 0.33, 1.5, 0.22, 0.07),
+                                         (-1.43, 0.36, 0.0, 0.07, 0.22, 0.26), (1.43, 0.36, 0.0, 0.07, 0.22, 0.26)):
+            kc.rounded_block(mb, (cx, cy, cz), (hx, hy, hz), crag, radius=0.04, seg=1, noise=None if lod else noise,
+                             disp_m=0.01, weather=ROCK, variation=float(rng.random()))
+        if not lod:  # the gate: two posts, one fallen rail, the other tied on
+            t = mb.material(M_TIMBER)
+            for p in ((1.9, 0.0, -0.5), (1.9, 0.0, 0.9)):
+                kc.tube(mb, np.array([p, [p[0] + rng.normal(0, 0.04), 1.3, p[2]]]), 0.05, 5, t, cap_end=True)
+            kc.tube(mb, np.array([[1.9, 1.0, -0.5], [1.9, 1.05, 0.9]]), 0.035, 5, t)
+            kc.tube(mb, np.array([[1.9, 0.6, -0.5], [2.6, 0.05, 1.2]]), 0.035, 5, t)  # the broken rail, down
+            kc.tube(mb, np.array([[1.86, 1.0, 0.9], [1.94, 0.94, 0.9]]), 0.045, 4, mb.material(M_RED))
+        out.append(mb)
+    return out
+
+
 TARGETS = {
     "keth_terrace_ground": build_ground,
     "lit_terrace_wall": build_wall,
@@ -323,4 +447,7 @@ TARGETS = {
     "pass_cord": build_cord,
     "cairn": build_cairn,
     "keth_far_ridges": build_far,
+    "keth_road_switchback": build_switchback,
+    "keth_scree_slope": build_scree_slope,
+    "woolback_trough": build_trough,
 }

@@ -101,3 +101,7 @@ live log for the creatures track.
   `keth_seep_terrace` puts the pool at (−9, −4.2), clear of the slots' floor, the Ram's `BossAnchor` beside it, and
   a pass-cord across the terrace behind the enemy line. The switchback, scree-slope module and the Quellan and
   Cloudloom pieces follow with the zone.
+- 2026-10-27 (env-art, M3-ENV-717): the Cold Road's zone pieces. `keth_road_switchback` is a 10 m module climbing
+  1 m, with a laid-stone bed, a dry-stone parapet on the drop side and the cut bank's scree; modules chain end to
+  end. `keth_scree_slope` is a 40 × 40 m panel. `woolback_trough` is the trough with its broken herd-gate. Quellan's
+  and Cloudloom's pieces follow with those zones.

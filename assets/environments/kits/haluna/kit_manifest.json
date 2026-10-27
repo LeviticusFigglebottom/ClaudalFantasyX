@@ -497,6 +497,28 @@
         "keth_far_ridges-lod1": 240
       }
     },
+    "keth_road_switchback": {
+      "budget": [
+        8000,
+        500
+      ],
+      "bytes": 144168,
+      "lods": {
+        "keth_road_switchback": 1152,
+        "keth_road_switchback-lod1": 228
+      }
+    },
+    "keth_scree_slope": {
+      "budget": [
+        12000,
+        1000
+      ],
+      "bytes": 133036,
+      "lods": {
+        "keth_scree_slope": 3200,
+        "keth_scree_slope-lod1": 128
+      }
+    },
     "keth_terrace_ground": {
       "budget": [
         26000,
@@ -1305,6 +1327,17 @@
       "lods": {
         "woodpile": 1412,
         "woodpile-lod1": 92
+      }
+    },
+    "woolback_trough": {
+      "budget": [
+        2000,
+        150
+      ],
+      "bytes": 20540,
+      "lods": {
+        "woolback_trough": 118,
+        "woolback_trough-lod1": 60
       }
     },
     "wreck_rib": {
