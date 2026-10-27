@@ -52,6 +52,7 @@ pass (lineup 4/0; it fails with the spread off), and the battle filter gives 638
 so a full battle-shot capture comes next.
 
 ### Render requests
+RENDER-REQUEST @ ed3a458e: battle_choreo_melee,battle_choreo_hit,battle_choreo_ko,battle_choreo_toll,battle_choreo_summon,drownbell_flood,battle_boss_intro_reach,battle_arena_wall_head; why: M3-BPR-416. The reef crab's Brine Spit now stays in place, a timeline push staggers its target, and summoned foes (the flood's polyps) walk onto their marks. The sandbox_reef choreo shots and drownbell_flood may move. The reach and wall_head shots are still unbaselined (repeated from 60b62678).
 RENDER-REQUEST @ 25dcea24: battle_boss_intro_hullgnaw,battle_boss_intro_inquisitor,battle_boss_intro_matron,battle_boss_intro_hermit,battle_boss_intro_wraith,battle_boss_intro_drownbell; why: FAST-TRACK M3-BPR-404, the Hullgnaw boss intro framed too close (the human's playtest). The camera fits the boss model and clears the title card. All six move.
 RENDER-REQUEST @ 25dcea24: battle_hud_preview,battle_swap_menu,battle_victory,battle_statuses,battle_swell_ring,battle_read_panel,battle_opening_banner,battle_swell_modes,battle_vowbound_call,battle_vowbound_out,battle_choreo_melee,battle_choreo_hit,battle_choreo_cast,battle_choreo_support,battle_choreo_read,battle_choreo_ko,battle_choreo_swap,battle_arena_tideline,battle_arena_causeway,battle_choreo_lamp_dive,battle_choreo_toll,battle_choreo_vowbound_rise,battle_choreo_summon,drownbell_flood,battle_swell_chant,battle_swell_brace,battle_swell_glyph,battle_statuses_colorblind,battle_pause,battle_arena_raft,battle_arena_underway,battle_arena_route,battle_arena_derelict,battle_arena_terrace,battle_arena_tideline_dawn,battle_arena_causeway_disc_sunset,battle_arena_causeway_route_afternoon,battle_arena_derelict_deck_night,battle_arena_ash_terrace_lanternfall,battle_arena_oruvel_raft_morning,battle_arena_underway_tower,battle_arena_shoals,battle_arena_camp,battle_hud_21x9,battle_hud_16x10; why: M3-BPR-401 battle feel (flash, recoil, shake by damage, KO slow-mo, the hit-stop hold fix) + M3-BPR-402 melee spacing and detour + M3-BPR-403 opening line-up spread sideways by footprint, now on the big9 real heroes. Expect the choreo_* and every sandbox_reef shot to move; arenas may move where 403 spreads a line-up.
 
@@ -74,7 +75,7 @@ RENDER-REQUEST @ 60b62678: battle_arena_wall_head,battle_boss_intro_reach; why: 
   - **Kerrid's and Liss's real clips:** request M3-BPR-412 to characters.
   - **A dedicated foe dive or sweep style:** it needs an audio choreo_sfx row (the `dive` row plays Rhen's Swell
     accent), as with M3-BPR-410.
-- **Checks:** the new tests (party_kits 3/0, push_reaction 2/0, summoned_entrance 2/0); audio_live 12/0, creature 29/0, choreo_audio 15/0; tools coverage and choreo_validate OK; gdlint and gdformat clean. The full `--filter=battle` result follows in the next line once it finishes.
+- **Checks:** the new tests (party_kits 3/0, push_reaction 2/0, summoned_entrance 2/0); audio_live 12/0, creature 29/0, choreo_audio 15/0; tools coverage and choreo_validate OK; gdlint and gdformat clean. Full `--filter=battle` on ed3a458e: **751 run, 0 failed**.
 - **Checks skipped:** coverage (no battle-core change), Blender (none touched), and cloud shots (rendering is on the PC).
 
 ### 2026-10-27 night: the Lead's 19:35 queue (items 1-5)
