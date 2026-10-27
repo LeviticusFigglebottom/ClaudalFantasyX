@@ -471,3 +471,47 @@ PERF-REQUEST @ bccce923: foot IK frame cost on hardware. Haluna, the party runni
 
 ### Render requests
 RENDER-REQUEST @ 7a8bff79: battle_choreo_cast, battle_choreo_read, battle_choreo_toll, battle_statuses, battle_swell_glyph, battle_read_panel, battle_heroes_idle; why: Ysolde's real model replaces her capsule (FAST-TRACK, same as the request @ d4430397 if it's still unanswered), and her placeholder clips' new fades; for the Lead to view and approve
+
+## INTEGRATION-QA (from 2026-10-27 20:20; the same track and branch, repurposed by the Lead)
+The aim: the human's next playtest finds nothing broken between tracks. Task M3-HER-1121 (status doing).
+
+### The guards (all on this branch; run `--filter=qa_` plus `python3 -m unittest tools.tests.test_qa_flag_reach`)
+| Guard | What fails it |
+|---|---|
+| `tests/integration/test_qa_threads.gd` | Every story-thread test (the slice's first-playable thread, Ch1 and Ch4–Ch9) is re-driven under a QaLogger. It fails on an engine error, a script error, an unexplained warning (a freed object, a missing clip or cue) or the thread's own failure. Known kinds: qa_known.json "known" (missing audio M3-HER-1122, placeholder cue features M3-HER-1123). |
+| `tests/integration/test_qa_capsules.gd` | A visible StandIn capsule in a real zone (the prologue and every chapter location, each layout variant too: Ch9's dawn road); a party member with no battle actor; an encounter enemy, spawn, summon or Vowbound with no actor scene. Known: qa_known.json "capsules" (zone actors M3-HER-1125; battle_foes with owners). |
+| `tools/tests/test_qa_flag_reach.py` | A softlock: a beat's `when`, a prompt's `requires_flag` or an objective's `requires` waits on a flag that nothing sets. |
+| `tests/integration/test_qa_save_shrines.gd` | At every SaveShrine (Haluna) and every Act I rest beat (8: Ch1 bell rests, Ch4 ferry, Ch6 and Ch8 shrines with checkpoints): the flag, the respawn spawn exists and lies in this zone, and a save and load round trip keeps every GameStateData field. A zone step that names a method the zone lacks fails (ZoneStory skips it silently). |
+
+### Runs, 2026-10-27
+- **Integration big12** (e930595c, merged here at 0d19142a): qa_ 5/0 (now 6/0 with the foe check), flag reach 3/0.
+- **Big12 plus each track head** (trial merges, nothing pushed): act1-chapters, audio, battle-presentation, characters,
+  creatures, env-art and ui are clean (qa_ 5/0 and the new capsule guard 3/0). **m2-slice @ 2103aeca fails the
+  first-playable thread:** its First Verse instances `kits/haluna/shrine_offering.glb`, which env-art renamed to
+  `wayside_offering.glb` (39f66d4c, on the integration branch). Filed **M2-HER-1127** (slice-polish).
+- **Capsules the Lead listed, now KNOWN with owners:**
+  - Ilun, Kahre and Virel (the Vowbound): **M3-HER-1126** (creatures, filed);
+  - Inquisitor Moll: M3-CRE-625 (characters);
+  - the Ch9 road capsule: Kerrid at the milestone in corrow_night's dawn variant (M3-CHR-505; act1-chapters stages
+    it), plus Pemakar's boat_fisher (variant). Any new capsule now fails.
+- **Ysolde in battle:** big12 merged this branch at 91b92dda, before her FAST-TRACK row (d4430397). The integration
+  branch still draws her as a capsule, and its baselines are capsule renders. The PC render
+  gpu/render-hero-integration-d443039 shows her real model, and I viewed all six shots: no breakage. In Toll, at
+  13 HP, she leans back hard in the placeholder weak pose (M2-HER-1115, characters). **Not approved,** because that
+  render predates big12, and copying it would undo big12's approved changes in the same shots (the gripped spear,
+  stances). I've asked for a re-render at this head below and will approve that one.
+
+MERGE-READY @ 1c9bf8bd: big12 merged in; M3-HER-1121's save round-trip guard (shrines and Act I rest beats); the capsule guard
+covers foes, summons, the Vowbound and layout variants; requests M3-HER-1126 and M2-HER-1127. Checks run: qa_ 6/0,
+test_qa_flag_reach 3/0, gdlint, gdformat, validate_data, taskboard --check, and the guards on big12 plus all 8 track heads.
+Checks skipped: screenshots (PC-only) and the hero_ suite (no hero-layer code changed since 7a8bff79's 107/0).
+
+### Render requests
+RENDER-REQUEST @ 1c9bf8bd: battle_choreo_cast, battle_choreo_read, battle_choreo_toll, battle_statuses, battle_swell_glyph, battle_read_panel, battle_heroes_idle; why: Ysolde's real battle model replaces her capsule (FAST-TRACK), now on big12's tree (d443039's render predates big12); for this track to view and approve
+
+### Exact next step
+- Approve the RENDER-REQUEST above when it lands, after viewing it.
+- Re-run `--filter=qa_` on each new integration batch and track head; file failures as request tasks.
+- Kerrid: when claude/characters exports kerrid_lod1.glb (M3-CHR-505), do the fold-into-characters handoff's §2 steps
+  1–4.
+- M3-ARC-1216 is in review; its last box is act1-chapters'.
