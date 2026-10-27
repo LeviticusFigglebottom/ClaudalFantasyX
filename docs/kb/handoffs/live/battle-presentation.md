@@ -168,6 +168,16 @@ and battle_arena_wall_head (both in the consolidated request above).
 **Baselines:** 404's four are approved at 89ffba3c. The rest wait on the two open requests (c1d1e3e6 FAST-TRACK, and
 the consolidated one).
 
+RENDER-REQUEST @ 5a5b4fed: battle_arena_wall_head,battle_boss_intro_reach; why: M3-BPR-406, the Ch8 arena reworked after viewing 60b6267 (the Reach's wide intro showed the greybox's edges; the storm read as grey pillars) and the timeline naming the entries. Both are new shots with no baseline yet. This supersedes those two ids in the consolidated line.
+
+**gpu/render-battle-presentation-60b6267 viewed, NOT approved** (the two new shots):
+- the Reach intro pulled back far enough to show the greybox wall-walk as a small slab floating over grey;
+- the arena's "storm" read as near grey pillars;
+- the timeline showed `the_climb` and `the_surge` (BattleController._build_hud skipped entries; fixed).
+
+The arena is reworked (60 m walk, a sea plane, the low town, far storm banks), and the generator is committed
+(tools/arenas/gen_wall_head_storm.py).
+
 **Renders viewed, 2026-10-27 evening:**
 - gpu/render-battle-presentation-25dcea2: four re-approved at 89ffba3c (above).
 - **gpu/render-battle-presentation-680cd88: viewed, NOT approved.** The renders are fine (Rhen meets the crab with the
