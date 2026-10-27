@@ -13,7 +13,8 @@ extends Node
 ##   the body's AnimationTree (each clip node's parameters/<path>/current_position; inside a 1D blend space only the
 ##   dominant clip counts) or of its playing AnimationPlayer. A clip in `contacts.run_clips` is a run.
 ##   Contacts closer than `contacts.min_interval_sec` are one step (a cross-fade plays two clips at once). If the
-##   walker covers `contacts.stall_m` with no contact (a body that is not animating), a distance step plays.
+##   walker covers `contacts.stall_m` with no contact (a body that is not animating, or clips with no footfall
+##   markers yet), it steps by distance from then on, until a contact comes again.
 ## - Otherwise, distance: the horizontal distance fills a stride; a walk takes `walk_step_m` strides and a run
 ##   (at or above run_above_m_s) `run_step_m`. A jump longer than `teleport_m` (a spawn or a warp) is not walked.
 ## Each step plays the surface's row for the gait at the feet, plus the foley layers (`foley`: cloth on every step,
@@ -50,6 +51,8 @@ var turns := 0
 var speed := 0.0
 ## Where steps come from: &"signal", &"tree", &"player", or &"" (distance).
 var contact_source: StringName = &""
+## True after the walker covered contacts.stall_m with no contact: it steps by distance until a contact comes.
+var stalled := false
 ## The node whose contacts are read (the hero body, else the walker), once found.
 var body: Node3D
 var _tree: AnimationTree
@@ -222,8 +225,11 @@ func advance(delta: float) -> void:
 	stride += moved
 	_check_turn(at, dx, delta)
 	_check_stop(at)
-	if contact_source != &"":
+	if contact_source != &"" and not stalled:
 		if stride >= float((data.get("contacts", {}) as Dictionary).get("stall_m", INF)):
+			# The body walks but its clips mark no footfalls (clips without markers yet): step by distance from here
+			# on, until a contact arrives again, rather than once per stall_m.
+			stalled = true
 			stride = 0.0
 			_step(at, is_run(data, speed))
 		return
@@ -324,6 +330,7 @@ func _on_foot_contact_gait(args: Array, at: int) -> void:
 
 
 func _contact(run: bool) -> void:
+	stalled = false
 	if _since_contact < float(_cfg().get("min_interval_sec", 0.0)):
 		return
 	_since_contact = 0.0

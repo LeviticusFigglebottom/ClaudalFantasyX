@@ -10,12 +10,22 @@ extends Node3D
 ##
 ## Storms: while the data's `storm_flag` is set (Game.get_flag) every villager here braces; the zone can also
 ## call set_storm(on) (or FieldNpc.set_storm_all). Deterministic, like FieldNpc: no randomness.
+##
+## Adopting (the owner split, creatures live log 2026-10-27): a zone that places its own villagers (Haluna's
+## HalunaVillagers, slice-polish, under the router's fade) keeps doing so. When a row's stand-in already carries a
+## FieldNpc, the layer adopts it instead of adding another: it only wires what needs the zone (the chat partner,
+## the work and shelter points, the storm flag); placement, hiding and talk stay the zone's. An adopted villager
+## rides inside its body, so a row's route and follow do not apply to it. `VillagerLayer.wire(zone, zone_id)` is
+## the one call such a zone makes after placing them.
 
 const DATA_DIR := "res://game/data/world/npc/zones/"
 const ACTOR_PATH := "res://assets/characters/villagers/%s/%s_actor.tscn"
 ## The stand-in children hidden when a row names none.
 const DEFAULT_HIDE: Array[String] = ["StandIn", "Facing"]
 const SHELTER_SUFFIX := "Shelter"
+## Row `attach`: beside the stand-in (it can walk and carries the stand-in) or inside it (a cutscene moves it).
+const ATTACH_BESIDE := "beside"
+const ATTACH_CHILD := "child"
 const WORK_SUFFIX := "Work"
 
 ## The zone (a location id such as ch02/haluna); it names the data file.
@@ -89,10 +99,34 @@ func build() -> int:
 	return villagers.size()
 
 
+## Adds a layer for `zone_id` under `zone` (after the zone has placed any villagers of its own) and builds it.
+static func wire(zone: Node3D, zone_id: StringName) -> VillagerLayer:
+	var layer := VillagerLayer.new()
+	layer.name = "VillagerLayer"
+	layer.zone_id = zone_id
+	zone.add_child(layer)
+	return layer
+
+
+## The FieldNpc a zone already put on `stand_in` (itself, or a child), or null.
+static func placed_on(stand_in: Node) -> FieldNpc:
+	if stand_in is FieldNpc:
+		return stand_in as FieldNpc
+	for c: Node in stand_in.get_children():
+		if c is FieldNpc:
+			return c as FieldNpc
+	return null
+
+
 func _make(row: Dictionary) -> FieldNpc:
 	var root := _root()
 	var id := StringName(str(row.get("npc_id", "")))
 	var stand_in := root.get_node_or_null(NodePath(str(row.get("stand_in", "")))) as Node3D
+	var adopted := placed_on(stand_in) if stand_in != null else null
+	if adopted != null:
+		adopted.shelter = _marker(row.get("shelter", null), String(stand_in.name) + "Villager" + SHELTER_SUFFIX)
+		adopted.work_target = _marker(row.get("work_at", null), String(stand_in.name) + "Villager" + WORK_SUFFIX)
+		return adopted
 	var scene := load(ACTOR_PATH % [id, id]) as PackedScene if id != &"" else null
 	if stand_in == null or scene == null:
 		push_warning("VillagerLayer %s: cannot place %s (stand-in %s)" % [zone_id, id, row.get("stand_in", "")])
@@ -102,9 +136,15 @@ func _make(row: Dictionary) -> FieldNpc:
 	npc.npc_id = id
 	npc.actor_scene = scene
 	npc.auto_process = auto_build
-	var holder := stand_in.get_parent_node_3d()
-	npc.transform = Transform3D(Basis(Vector3.UP, stand_in.rotation.y), stand_in.position)
-	_set_route(npc, row, holder)
+	# `attach: child` (a cutscene-staged actor, which a cutscene moves): the villager rides inside the stand-in and
+	# keeps no route; otherwise it stands beside the stand-in and carries the stand-in along when it walks.
+	var inside := str(row.get("attach", ATTACH_BESIDE)) == ATTACH_CHILD
+	var holder := stand_in if inside else stand_in.get_parent_node_3d()
+	if inside:
+		npc.transform = Transform3D.IDENTITY
+	else:
+		npc.transform = Transform3D(Basis(Vector3.UP, stand_in.rotation.y), stand_in.position)
+		_set_route(npc, row, holder)
 	holder.add_child(npc)
 	for child_name: Variant in row.get("hide", DEFAULT_HIDE):
 		var hidden := stand_in.get_node_or_null(NodePath(str(child_name))) as Node3D
@@ -112,8 +152,8 @@ func _make(row: Dictionary) -> FieldNpc:
 			hidden.visible = false
 	var talk := root.get_node_or_null(NodePath(str(row.get("talk", "")))) as Interactable
 	npc.listen_to(talk)
-	var follow: Array = [stand_in]
-	for p: Variant in row.get("follow", []):
+	var follow: Array = [] if inside else [stand_in]
+	for p: Variant in row.get("follow", []) if not inside else []:
 		var n := root.get_node_or_null(NodePath(str(p))) as Node3D
 		if n != null and not n in follow:
 			follow.append(n)

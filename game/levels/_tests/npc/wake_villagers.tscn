@@ -1,0 +1,14 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://game/levels/_tests/npc/haluna_villagers.gd" id="stage"]
+
+[node name="WakeVillagers" type="Node3D"]
+script = ExtResource("stage")
+zone_scene = "res://game/levels/ch04/haluna_wake/haluna_wake.tscn"
+zone_id = &"ch04/haluna_wake"
+
+[node name="Cameras" type="Node3D" parent="."]
+
+[node name="Feast" type="Camera3D" parent="Cameras"]
+transform = Transform3D(-0.897921, -0.0538394, 0.436852, 0, 0.992491, 0.122319, -0.440157, 0.109832, -0.891178, -0.5, 1.8, -36.6)
+fov = 40.0

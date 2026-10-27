@@ -21,5 +21,9 @@ Keep every spawn, trigger and shot id. For the Underway's look, put in an `Under
 - [ ] The shots U01–U11 and O01–O18 are composed on the kit (`oruvel.md`, §9 Art 3).
 
 ## Notes
+- 2026-10-27 (env-art): the swap is a zone-scene change in `game/levels/ch01/**` (slice-polish's), done the way
+  act1-chapters swaps Ch4–Ch9: `ZoneKitDressing` (ADR 0200, on `claude/act1-chapters`) with a generated layout from
+  the Oruvel and Underway kits' preview layouts. Env-art builds any piece the swap finds missing: file a
+  `role: environment` task, as M3-ENV-1201 and M3-ENV-1203 did.
 
 ## Review log

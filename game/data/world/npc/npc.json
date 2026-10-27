@@ -79,7 +79,7 @@
     },
     "chat": {
       "doc": "Two villagers with chat_with, both resting within max_distance_m, face each other and take turns of turn_sec; pause_share of the turns are a shared silence. The pair's lead (its id sorts first) runs the schedule. bout_sec and quiet_sec: they chat in bouts and go back to their own business (work, looking about) in between.",
-      "max_distance_m": 4.0,
+      "max_distance_m": 4.5,
       "turn_sec": [
         2.2,
         4.6

@@ -1,5 +1,5 @@
 {
-  "_doc": "M3-CRE-611 review stage (wildlife_stage.tscn): the three kinds at close range in the creature stage's noon light. A low flock over two posts (two birds start perched), a beach of crabs beside the stand-in player (the crabs at its feet are already scuttling off in the shot), a shoal under the water plane to the right. Same keys as a zone file; not a zone (zone ids it as wildlife_stage for the seed).",
+  "_doc": "M3-CRE-611 review stage (wildlife_stage.tscn): the three kinds at close range in the creature stage's noon light. A low flock over two posts (two birds start perched), a beach of crabs beside the stand-in player (the crabs at its feet are already scuttling off in the shot), a shoal under the water plane to the right; (M3-CRE-616) five moths round a lamp on a low post close to the camera (lower right), and two dragonflies over the water's edge above the shoal (the near side of their patrol is inside flee_radius_m of the stand-in player, so one darts off to the far side). Same keys as a zone file; not a zone (zone ids it as wildlife_stage for the seed).",
   "zone": "_tests/wildlife_stage",
   "flocks": [
     {
@@ -58,6 +58,30 @@
       "radius_m": 1.0,
       "count": 16,
       "scale": 1.0
+    }
+  ],
+  "swarms": [
+    {
+      "id": "lamp",
+      "type": "moth",
+      "center": [
+        0.7,
+        1.05,
+        3.2
+      ],
+      "radius_m": 0.3,
+      "count": 5
+    },
+    {
+      "id": "water",
+      "type": "dragonfly",
+      "center": [
+        1.0,
+        1.15,
+        2.9
+      ],
+      "radius_m": 0.3,
+      "count": 2
     }
   ]
 }

@@ -7,14 +7,16 @@ The lived-in clutter between the houses, along the tide-walls, on the dock and a
   laundry_line      two forked poles 4 m apart, a sagging line, five cloths pegged on it (each cloth its
                     own dye slot, so a placement can re-dye them: kit_cloth / _indigo / _sea_blue)
   net_heap          a heaped fishing net drying on the sand, two floats caught in it
-  shrine_offering   a low coral-stone step with frangipani heads, shells, two clay bowls and leaf-boats,
+  wayside_offering   a low coral-stone step with frangipani heads, shells, two clay bowls and leaf-boats,
                     under a carved tide-post with a fan-shell disc and two swags of blooms
+  offering_step     the same step without the tide-post, for the foot of a marker post already there
   tide_debris       a bleached driftwood log, a split plank, a kelp wrack line and shells, as the tide
                     leaves them at the strand line
   cargo_sacks       four woven sacks slumped against each other on a pallet of planks
   woodpile          split firewood stacked between stakes under a lean-to of planks
   pot_plants        three clay pots with fans of strap leaves, by a doorstep
   yard_fence        a 2 m run of low fence: two lashed posts, rails and a woven reed panel (front +Z)
+  fish_weir         a tidal fish weir in the lagoon: two wattle fences of stakes in a V and a round pen
   village_litter    the ground scatter's meshes, one material each, no LODs (the dresser's `scatter`
                     MultiMeshes): frond_dry, coconut_husk, shell_scatter, pebble_cluster
 
@@ -54,13 +56,19 @@ TRI_BUDGET = {
     "rope_coil": (2200, 120),
     "laundry_line": (3600, 300),
     "net_heap": (2400, 200),
-    "shrine_offering": (4200, 300),
+    "wayside_offering": (4200, 300),
+    "offering_step": (2400, 200),
     "tide_debris": (3200, 240),
     "cargo_sacks": (3200, 300),
     "woodpile": (4000, 200),
     "pot_plants": (3000, 250),
     "yard_fence": (1400, 120),
     "village_litter": (900, 60),
+    "fish_weir": (5000, 600),
+    "ground_lamp": (300, 60),
+    "feast_mat": (4000, 120),
+    "ink_kit": (1200, 60),
+    "wake_shell_single": (600, 120),
 }
 
 
@@ -271,12 +279,14 @@ def _shell(mb: kc.MeshBuilder, c, r: float, yaw: float, rng, lod: bool) -> None:
     mb.merge(tmp, kc.rot_y(yaw) @ np.diag([1.0, 1.0, 0.62]), offset=c)
 
 
-def build_shrine_offering(seed: int = 705) -> list[kc.MeshBuilder]:
+def build_wayside_offering(seed: int = 705, *, post: bool = True) -> list[kc.MeshBuilder]:
+    """`post` False: the step alone (`offering_step`), for setting at the foot of a marker post that is already there."""
+    name = "wayside_offering" if post else "offering_step"
     out = []
     for lod in (False, True):
         rng = kc.rng_for("shrine_offering", seed)
         noise = kc.Noise3(rng)
-        mb = kc.MeshBuilder("shrine_offering" + ("-lod1" if lod else ""))
+        mb = kc.MeshBuilder(name + ("-lod1" if lod else ""))
         sm = mb.material(M_STONE)
         # The step: two dressed coral blocks, the upper set back.
         kc.rounded_block(mb, (0.0, 0.11, 0.0), (0.6, 0.11, 0.32), sm, seg=1 if lod else 3, radius=0.03,
@@ -312,6 +322,9 @@ def build_shrine_offering(seed: int = 705) -> list[kc.MeshBuilder]:
                    rng.uniform(0, 6.28), rng, lod)
         # The tide-post behind it (the silhouette that reads from the lane): a carved post with a fan-shell
         # disc at its head facing the step, and two strings of blooms swagged from it to the step's ends.
+        if not post:
+            out.append(mb)
+            continue
         post_top = np.array([0.0, 1.75, -0.24])
         kc.tube(mb, np.array([[0.0, 0.3, -0.24], [0.0, 1.0, -0.24], post_top]), np.array([0.075, 0.065, 0.055]),
                 8 if not lod else 5, mb.material(M_CARVED), noise=None if lod else noise, disp_m=0.006,
@@ -586,16 +599,171 @@ def build_village_litter(seed: int = 711) -> list[kc.MeshBuilder]:
     return [frond, husk, shells, pebbles, frond_lod]
 
 
+def build_fish_weir(seed: int = 712, *, arm: float = 7.0, h: float = 2.6) -> list[kc.MeshBuilder]:
+    """A tidal fish weir in the lagoon's shallows: two wattle fences of stakes meeting in a V (front +Z is the
+    open mouth, toward the shore), a round pen of stakes at the point. Origin on the lagoon floor."""
+    out = []
+    for lod in (False, True):
+        rng = kc.rng_for("fish_weir", seed)
+        noise = kc.Noise3(rng)
+        mb = kc.MeshBuilder("fish_weir" + ("-lod1" if lod else ""))
+        tm = mb.material(M_DRIFT)
+        wm = mb.material(M_WOVEN)
+        pen_c = np.array([0.0, 0.0, -arm * 0.94])
+        pen_r = 1.3
+        for side in (-1.0, 1.0):
+            mouth = np.array([side * arm * 0.55, 0.0, arm * 0.1])
+            throat = pen_c + np.array([side * 0.45, 0.0, pen_r * 0.9])
+            n = int(np.linalg.norm(mouth - throat) / 0.55) + 1
+            pts = np.linspace(mouth, throat, n)
+            step = 1 if not lod else 3
+            for k, p in enumerate(pts[::step]):
+                top = h * (0.85 + 0.15 * rng.random()) - 0.3 * (k * step / n)
+                lean = rng.normal(0, 0.04, 3) * np.array([1.0, 0.0, 1.0])
+                kc.tube(mb, np.array([p - [0, 0.3, 0], p + [0, top, 0] + lean]), 0.035 if not lod else 0.05,
+                        5 if not lod else 3, tm, cap_end=True, variation=float(rng.random()), weather=kc.DROWNED)
+            # The wattle between the stakes, from the floor to a ragged line about 1 m up.
+            t = np.linspace(0.0, 1.0, 9 if not lod else 2)
+            base = mouth[None, :] * (1 - t[:, None]) + throat[None, :] * t[:, None]
+            top_y = 1.1 + (0.12 * np.sin(t * 17.0 + side) if not lod else 0.0)
+            grid = np.stack([base, base + np.stack([np.zeros_like(t), top_y * np.ones_like(t), np.zeros_like(t)], -1)],
+                            axis=0)
+            ln = float(np.linalg.norm(throat - mouth))
+            uv = np.stack([np.tile(t * ln * 2.0, (2, 1)), np.array([[0.0] * len(t), [2.0] * len(t)])], axis=-1)
+            for flip in (False, True):
+                kc.quad_strip(mb, grid, wm, uv=uv, col=np.array([0.0, 0.3, 0.8, 0.3]),
+                              uv2=np.array([0.8, float(rng.random())]), flip=flip)
+        # The pen: a ring of stakes open to the throat, wattled the same.
+        a = np.linspace(math.pi * 0.62, math.pi * 2.38, 15 if not lod else 6)
+        ring = np.stack([np.cos(a) * pen_r, np.zeros_like(a), -np.sin(a) * pen_r], axis=-1) + pen_c
+        for p in ring:
+            kc.tube(mb, np.array([p - [0, 0.3, 0], p + [0, h * (0.9 + 0.1 * rng.random()), 0]]),
+                    0.04 if not lod else 0.05, 5 if not lod else 3, tm, cap_end=True, variation=float(rng.random()),
+                    weather=kc.DROWNED)
+        grid = np.stack([ring, ring + np.array([0.0, 1.2, 0.0])], axis=0)
+        uv = np.stack([np.tile(np.linspace(0, 6, len(a)), (2, 1)), np.array([[0.0] * len(a), [2.0] * len(a)])], axis=-1)
+        for flip in (False, True):
+            kc.quad_strip(mb, grid, wm, uv=uv, col=np.array([0.0, 0.3, 0.8, 0.3]), uv2=np.array([0.8, 0.4]), flip=flip)
+        if not lod:
+            # A float-net hung on the pen, and a drying net over two stakes.
+            kc.tube(mb, ring[:6] + np.array([0.0, h * 0.8, 0.0]), 0.01, 3, mb.material(M_LASHING), variation=0.4)
+            del noise
+        out.append(mb)
+    return out
+
+
+# ---- Ch4's wake night at the causeway head (M3-ENV-709, for M3-C04-03) ----------------------------------
+M_SHELL = "kit_wake_shell"
+M_FLAME = "kit_lamp_flame"
+
+
+def build_ground_lamp(seed: int = 713) -> list[kc.MeshBuilder]:
+    """A clay oil lamp set on the sand (the wake's hundred lamps), its wick lit; a pebble ring keeps it level."""
+    out = []
+    for lod in (False, True):
+        rng = kc.rng_for("ground_lamp", seed)
+        mb = kc.MeshBuilder("ground_lamp" + ("-lod1" if lod else ""))
+        props.lathe(mb, [(0.04, 0.0), (0.075, 0.03), (0.08, 0.055), (0.05, 0.07)], props.M_CLAY, rng,
+                    sides=12 if not lod else 5)
+        kc.rounded_block(mb, (0.0, 0.085, 0.045), (0.012, 0.022, 0.012), mb.material(M_FLAME), radius=0.008, seg=1)
+        out.append(mb)
+    return out
+
+
+def build_feast_mat(seed: int = 714) -> list[kc.MeshBuilder]:
+    """The wake's feast laid on the sand: a woven mat with leaf plates, clay bowls, a water jar and two lamps."""
+    out = []
+    for lod in (False, True):
+        rng = kc.rng_for("feast_mat", seed)
+        noise = kc.Noise3(rng)
+        mb = kc.MeshBuilder("feast_mat" + ("-lod1" if lod else ""))
+        U, V = np.meshgrid(np.linspace(-1.0, 1.0, 9 if not lod else 2), np.linspace(-0.6, 0.6, 6 if not lod else 2))
+        y = 0.01 + (0.0 if lod else (noise.fbm(np.stack([U, U * 0, V], -1) / 0.4, 2) - 0.5) * 0.01)
+        P = np.stack([U, np.zeros_like(U) + y, V], axis=-1)
+        kc.quad_strip(mb, P, mb.material(M_WOVEN), uv=np.stack([U, V], -1) * 1.5, col=np.array([0.0, 0.1, 0.0, 0.2]),
+                      uv2=np.array([0.9, float(rng.random())]), flip=True)
+        if lod:
+            out.append(mb)
+            continue
+        for k in range(6):
+            c = np.array([-0.75 + k * 0.3, 0.02, (-0.3 if k % 2 else 0.3)])
+            # A leaf plate (a flat oval of leaf) with a heap of rice and fish on it.
+            a = np.linspace(0.0, 2 * math.pi, 11)
+            ring = np.stack([np.cos(a) * 0.14, np.zeros_like(a), np.sin(a) * 0.1], axis=-1) + c
+            base = mb.add_vertices(np.vstack([c, ring]), np.tile([0, 1, 0], (12, 1)), np.zeros((12, 2)),
+                                   np.tile([0.9, 0.5], (12, 1)), np.tile([0, 0, 0, 0], (12, 1)))
+            for i in range(10):
+                mb.add_tri(base, base + 2 + i, base + 1 + i, mb.material(M_LEAF))
+            props.lathe(mb, [(0.07, 0.0), (0.05, 0.03), (0.0, 0.045)], "kit_garland", rng, sides=8, at=c)
+        for x in (-0.3, 0.4):
+            props.lathe(mb, [(0.05, 0.0), (0.09, 0.03), (0.1, 0.07), (0.095, 0.075)], props.M_CLAY, rng, sides=12,
+                        at=(x, 0.02, 0.0))
+        props._jar(mb, (0.85, 0.02, 0.35), 0.45, rng, noise, False)
+        for x in (-0.95, 0.95):
+            lamp = build_ground_lamp()[0]
+            mb.merge(lamp, None, (x, 0.02, -0.5))
+        out.append(mb)
+    return out
+
+
+def build_ink_kit(seed: int = 715) -> list[kc.MeshBuilder]:
+    """Ysolde's ink kit for the shells: a lacquered box open on a cloth, an ink pot, a brush on its rest, a
+    folded cloth to blot with."""
+    out = []
+    for lod in (False, True):
+        rng = kc.rng_for("ink_kit", seed)
+        mb = kc.MeshBuilder("ink_kit" + ("-lod1" if lod else ""))
+        tm = mb.material("kit_carved_wood")
+        kc.rounded_block(mb, (0.0, 0.04, 0.0), (0.18, 0.04, 0.11), tm, radius=0.01, seg=1)
+        if not lod:
+            kc.rounded_block(mb, (0.0, 0.12, -0.13), (0.18, 0.008, 0.11), tm, rot=kc.rot_x(1.2), radius=0.004, seg=1)
+            props.lathe(mb, [(0.03, 0.08), (0.035, 0.1), (0.02, 0.12), (0.022, 0.125)], props.M_CLAY, rng, sides=10,
+                        at=(-0.08, 0.0, 0.03))
+            kc.rounded_block(mb, (-0.08, 0.127, 0.03), (0.016, 0.002, 0.016), mb.material("kit_interior_dark"),
+                             radius=0.001, seg=1)
+            kc.tube(mb, np.array([[0.02, 0.09, 0.04], [0.16, 0.095, 0.0]]), 0.005, 5, tm, cap_start=True)
+            kc.tube(mb, np.array([[0.0, 0.09, 0.04], [0.02, 0.09, 0.04]]), np.array([0.002, 0.008]), 6,
+                    mb.material("kit_interior_dark"), cap_start=True)
+            kc.rounded_block(mb, (0.24, 0.015, 0.06), (0.08, 0.015, 0.06), mb.material("kit_cloth_indigo"),
+                             radius=0.01, seg=2)
+        out.append(mb)
+    return out
+
+
+def build_wake_shell_single(seed: int = 716) -> list[kc.MeshBuilder]:
+    """One wake-shell on a carved driftwood stand, for a name set in the wall's gap (Asha's beside Imra's): its
+    glyph state is the material, `kit_wake_shell` (as the wall), `kit_wake_shell_inked` (fresh ink) or
+    `kit_wake_shell_faded` (weathered), by per-placement override. The shell faces +Z."""
+    import walls  # noqa: PLC0415
+
+    out = []
+    for lod in (False, True):
+        rng = kc.rng_for("wake_shell_single", seed)
+        mb = kc.MeshBuilder("wake_shell_single" + ("-lod1" if lod else ""))
+        kc.tube(mb, np.array([[0.0, -0.2, -0.05], [0.0, 0.9, -0.05], [0.0, 1.05, -0.02]]),
+                np.array([0.07, 0.06, 0.05]), 7 if not lod else 4, mb.material("kit_carved_wood"), cap_end=True,
+                variation=0.4)
+        walls._shell(mb, (0.0, 1.12, 0.03), (0.0, 0.0, 1.0), (0.0, 1.0, 0.0), 0.36, 5, 0.0, rng, mb.material(M_SHELL))
+        out.append(mb)
+    return out
+
+
 TARGETS = {
     "crate_stack": build_crate_stack,
     "rope_coil": build_rope_coil,
     "laundry_line": build_laundry_line,
     "net_heap": build_net_heap,
-    "shrine_offering": build_shrine_offering,
+    "wayside_offering": build_wayside_offering,
+    "offering_step": lambda: build_wayside_offering(post=False),
     "tide_debris": build_tide_debris,
     "cargo_sacks": build_cargo_sacks,
     "woodpile": build_woodpile,
     "pot_plants": build_pot_plants,
     "yard_fence": build_yard_fence,
     "village_litter": build_village_litter,
+    "fish_weir": build_fish_weir,
+    "ground_lamp": build_ground_lamp,
+    "feast_mat": build_feast_mat,
+    "ink_kit": build_ink_kit,
+    "wake_shell_single": build_wake_shell_single,
 }

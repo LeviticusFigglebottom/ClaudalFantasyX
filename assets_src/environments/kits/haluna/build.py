@@ -27,6 +27,7 @@ import causeway  # noqa: E402
 import causeway_zone  # noqa: E402
 import dressing  # noqa: E402
 import festival  # noqa: E402
+import iskarra  # noqa: E402
 import kit_common as kc  # noqa: E402
 import props  # noqa: E402
 import ruins  # noqa: E402
@@ -80,6 +81,8 @@ def targets() -> dict:
         out[name] = (name, arenas, fn)
     for name, fn in sorted(dressing.TARGETS.items()):  # M3-ENV-701 set dressing
         out[name] = (name, dressing, fn)
+    for name, fn in sorted(iskarra.TARGETS.items()):  # M3-ENV-710 the Prologue's Iskarra
+        out[name] = (iskarra.BUDGET_KEY.get(name, name), iskarra, fn)
     return out
 
 

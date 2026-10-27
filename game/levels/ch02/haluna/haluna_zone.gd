@@ -65,8 +65,7 @@ func prebuild() -> void:
 	var dresser := get_node(^"HalunaMood/Dresser") as HalunaDresser
 	HalunaZoneDresser.adopt(dresser).dress()
 	(get_node(^"Collision") as HalunaCollision).build()
-	HalunaVillagers.populate(self)  # M2-FP-102: the villagers' actors replace the capsules
-	_add_wildlife()
+	_add_life()
 	for actor in cast:
 		actor.assign_materials()
 	# The sea builds its ocean grid in _ready (~40 ms) unless handed one: hand it the same grid.
@@ -79,22 +78,28 @@ func prebuild() -> void:
 	prebuilt = true
 
 
-## M2-FP-102: gulls over the tide wall and the dock, crabs on the sand, fish in the shallows (M3-CRE-611).
-func _add_wildlife() -> void:
-	if get_node_or_null(^"WildlifeLayer") != null:
-		return
-	var w := WildlifeLayer.new()
-	w.name = "WildlifeLayer"
-	w.zone_id = &"ch02/haluna"
-	add_child(w)
+## The village alive: creatures' VillagerLayer owns the villagers (M3-CRE-613, ch02_haluna.json: routes, chats,
+## work, storms), HalunaVillagers dresses the three shop bodies it doesn't cover yet (M2-FP-113), and the
+## WildlifeLayer brings the gulls, crabs and fish (M3-CRE-611).
+func _add_life() -> void:
+	if get_node_or_null(^"VillagerLayer") == null:
+		var villagers := VillagerLayer.new()
+		villagers.name = "VillagerLayer"
+		villagers.zone_id = &"ch02/haluna"
+		add_child(villagers)
+	HalunaVillagers.populate(self)
+	if get_node_or_null(^"WildlifeLayer") == null:
+		var w := WildlifeLayer.new()
+		w.name = "WildlifeLayer"
+		w.zone_id = &"ch02/haluna"
+		add_child(w)
 
 
 func _ready() -> void:
 	if not prebuilt:
 		# Not prebuilt (instanced on the main thread): the mood dressed itself in its own _ready.
 		collision.build()
-		HalunaVillagers.populate(self)
-		_add_wildlife()
+		_add_life()
 	field_camera.make_current()
 	# After Cutscene A the girl and the guardian have walked up to the village.
 	_apply_face_key_bias()

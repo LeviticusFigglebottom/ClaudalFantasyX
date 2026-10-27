@@ -18,7 +18,7 @@ ground breakup within the hitch and GPU budgets (ADR 0029/0037), with every view
 
 ## Acceptance criteria
 - [x] New kit pieces from source (`assets_src/environments/kits/haluna/dressing.py`, Blender job `haluna_kit`):
-      `crate_stack`, `rope_coil`, `laundry_line` (five dye slots), `net_heap`, `shrine_offering` (step, bowls,
+      `crate_stack`, `rope_coil`, `laundry_line` (five dye slots), `net_heap`, `wayside_offering` (step, bowls,
       blooms, shells, leaf-boats, a carved tide-post with a fan-shell disc and two swags), `tide_debris`
       (driftwood, plank, kelp wrack, shells), `cargo_sacks`, `woodpile`, `pot_plants`, `yard_fence`, and
       `village_litter` (scatter meshes: fallen fronds, coconut husks, shells, pebbles). Materials

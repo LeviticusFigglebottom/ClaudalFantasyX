@@ -1,0 +1,21 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3]
+
+[ext_resource type="Shader" path="res://game/world/wildlife/wildlife.gdshader" id="1_shader"]
+
+[resource]
+resource_name = "moth"
+shader = ExtResource("1_shader")
+shader_parameter/cavity_albedo = 0.3
+shader_parameter/cavity_ao = 0.4
+shader_parameter/clearcoat_wet = 0
+shader_parameter/detail_albedo = 0.12
+shader_parameter/detail_scale = 2400
+shader_parameter/flutter_angle = 0.5
+shader_parameter/flutter_bob = 0.0012
+shader_parameter/flutter_hind_lag = 0
+shader_parameter/flutter_pivot = Vector3(0.0012, 0.0015, 0)
+shader_parameter/flutter_split_z = -1
+shader_parameter/roughness_dry = 0.95
+shader_parameter/roughness_wet = 0.9
+shader_parameter/specular = 0.25
+shader_parameter/wet_darken = 1
