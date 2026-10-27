@@ -291,6 +291,21 @@ env-art is cloud session `session_01YbaV2c8yquRHqj6afQYg89` on `claude/env-art`;
   Checks run: haluna_kit full rebuild (older pieces identical), `test_lowlight` 7, `test_arenas`, `test_haluna_kit`,
   `test_fog_lamps`, `test_release_excludes_tests`, Godot `--filter=arena` 18/0, and the full tools suite (red only on
   screenshots and the integration's audio).
+- **MERGE-READY @ c990e2c2: M3-ENV-718**, the Mangrove Drowner's arena `ossa_fen_roots` (Ch10), with the sheet
+  `ossa_fen.md`.
+  - **The fen.** The Haluna kit's `ossa_fen.py` makes:
+    - `fen_bank_ground`: the mudbank, level at y 0, shelving into tannin water at −0.15;
+    - `mangrove_tree` and `mangrove_dead`: prop-root cages, with crowns of leaf cards from the coastal atlas (the
+      vegetation wind contract) or bare and bleached;
+    - `reed_bed` and `fen_far_mangroves`.
+  - **Grade and anchor.** `lut_ch10_fen` comes from `fen_zone_lut.py`. The `BossAnchor` is at (−8.2, −0.15, −3.8),
+    in the water at the dead tree's foot.
+  - **For act1/creatures:** set the Ch10 Drowner encounter's arena to `ossa_fen_roots`.
+  - **Also:** the wake shader's `.uid`, which Godot generated on import.
+
+  Checks run: haluna_kit full rebuild (older pieces identical; every other arena byte-identical), `test_ossa_fen` 9,
+  `test_arenas`, `test_haluna_kit`, Godot `--filter=arena` 18/0, and the full tools suite (red only on screenshots and
+  the integration's audio).
 
 ### Render requests
 RENDER-REQUEST @ a0d2549f: battle_arena_tideline_dawn,battle_arena_causeway_disc_sunset,battle_arena_causeway,battle_arena_tideline,causeway_c02_profile_against_the_lagoon,causeway_c08_drownbell_disc_approach,drownbell_flood,battle_boss_intro_drownbell,haluna_h01_village_from_sea,haluna_h10_dock_night,field_objective_line,field_interact_prompt,field_area_title,field_tip_card,dialogue_continue; why: M3-ENV-701 set dressing in Haluna, the causeway and the two arenas (the five field/dialogue shots frame Haluna's lane 1)
@@ -312,6 +327,7 @@ RENDER-REQUEST @ 43492e80: battle_arena_lowlight_engine_hall; why: M3-ENV-716 th
 RENDER-REQUEST @ 60eee2f7: iskarra_p01_plaza_dusk,iskarra_i02_gate_from_the_plaza,iskarra_i03_broken_tower,brine_b01_arrival,brine_b05_barge_channel; why: after viewing 8770a06: Iskarra gets real water (reflections) and the paving inlay as channel lines; B01/B05 show the boat wake (supersedes these ids in 854e6a95)
 ANSWERED: 8770a06 (gpu/render-env-art-8770a06): corrow_c01_wall_head and corrow_c08_watcher_profile viewed and re-approved in 895ff7ec; the Ch6 arenas, Iskarra and B01/B05 re-requested (big11's actors, the plaza and the wake changed since). ba16d48 and 179069d predate big11's NPCs and actor stances: re-requested below.
 RENDER-REQUEST @ 29ddd021: haluna_h01_village_from_sea,haluna_h04_dock,battle_arena_causeway_route_afternoon; why: the fish weirs (ba16d48) and the route arena's tidal mud (179069d), not on the integration branch, now with big11's villagers and stances
+RENDER-REQUEST @ c990e2c2: battle_arena_ossa_fen_roots; why: M3-ENV-718 the Mangrove Drowner's fen arena (new shot)
 
 ## STATE AT HANDOVER (2026-10-25)
 
