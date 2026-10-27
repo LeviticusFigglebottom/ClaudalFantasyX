@@ -3977,6 +3977,259 @@
    ],
    "yaw_deg": 26.3,
    "scale": 1.26
+  },
+  {
+   "plant": "palm_coconut_a",
+   "at": [
+    1.31,
+    -129.32
+   ],
+   "lean_to_sea": true,
+   "yaw_deg": -104.6,
+   "scale": 0.92,
+   "_m721": true
+  },
+  {
+   "plant": "palm_coconut_c",
+   "at": [
+    3.48,
+    -131.97
+   ],
+   "lean_to_sea": true,
+   "yaw_deg": 63.3,
+   "scale": 1.17,
+   "_m721": true
+  },
+  {
+   "plant": "palm_coconut_c",
+   "at": [
+    -7.01,
+    -97.57
+   ],
+   "lean_to_sea": true,
+   "yaw_deg": 63.1,
+   "scale": 1.21,
+   "_m721": true
+  },
+  {
+   "plant": "palm_coconut_b",
+   "at": [
+    -3.68,
+    -97.73
+   ],
+   "lean_to_sea": true,
+   "yaw_deg": -56.7,
+   "scale": 0.89,
+   "_m721": true
+  },
+  {
+   "plant": "palm_coconut_a",
+   "at": [
+    -12.57,
+    -74.64
+   ],
+   "lean_to_sea": true,
+   "yaw_deg": -119.2,
+   "scale": 1.02,
+   "_m721": true
+  },
+  {
+   "plant": "palm_coconut_a",
+   "at": [
+    -17.21,
+    -51.82
+   ],
+   "lean_to_sea": true,
+   "yaw_deg": -83.0,
+   "scale": 0.87,
+   "_m721": true
+  },
+  {
+   "plant": "palm_coconut_c",
+   "at": [
+    -13.74,
+    -53.83
+   ],
+   "lean_to_sea": true,
+   "yaw_deg": 179.2,
+   "scale": 1.0,
+   "_m721": true
+  },
+  {
+   "plant": "palm_coconut_b",
+   "at": [
+    -16.44,
+    -30.69
+   ],
+   "lean_to_sea": true,
+   "yaw_deg": -75.1,
+   "scale": 1.18,
+   "_m721": true
+  },
+  {
+   "plant": "palm_coconut_b",
+   "at": [
+    -15.17,
+    -7.02
+   ],
+   "lean_to_sea": true,
+   "yaw_deg": -124.1,
+   "scale": 0.98,
+   "_m721": true
+  },
+  {
+   "plant": "palm_coconut_c",
+   "at": [
+    -16.45,
+    -3.43
+   ],
+   "lean_to_sea": true,
+   "yaw_deg": 167.2,
+   "scale": 1.18,
+   "_m721": true
+  },
+  {
+   "plant": "palm_coconut_b",
+   "at": [
+    -19.64,
+    17.29
+   ],
+   "lean_to_sea": true,
+   "yaw_deg": 99.5,
+   "scale": 0.98,
+   "_m721": true
+  },
+  {
+   "plant": "palm_coconut_c",
+   "at": [
+    -17.91,
+    37.78
+   ],
+   "lean_to_sea": true,
+   "yaw_deg": -62.4,
+   "scale": 1.12,
+   "_m721": true
+  },
+  {
+   "plant": "palm_coconut_c",
+   "at": [
+    -19.2,
+    35.02
+   ],
+   "lean_to_sea": true,
+   "yaw_deg": 51.1,
+   "scale": 1.39,
+   "_m721": true
+  },
+  {
+   "plant": "palm_coconut_a",
+   "at": [
+    -15.46,
+    52.59
+   ],
+   "lean_to_sea": true,
+   "yaw_deg": 52.3,
+   "scale": 1.42,
+   "_m721": true
+  },
+  {
+   "plant": "palm_coconut_c",
+   "at": [
+    -16.53,
+    56.61
+   ],
+   "lean_to_sea": true,
+   "yaw_deg": -70.4,
+   "scale": 1.06,
+   "_m721": true
+  },
+  {
+   "plant": "palm_coconut_c",
+   "at": [
+    -12.59,
+    54.09
+   ],
+   "lean_to_sea": true,
+   "yaw_deg": 170.8,
+   "scale": 0.84,
+   "_m721": true
+  },
+  {
+   "plant": "palm_coconut_a",
+   "at": [
+    -9.87,
+    74.74
+   ],
+   "lean_to_sea": true,
+   "yaw_deg": 54.2,
+   "scale": 0.84,
+   "_m721": true
+  },
+  {
+   "plant": "palm_coconut_b",
+   "at": [
+    -8.01,
+    73.56
+   ],
+   "lean_to_sea": true,
+   "yaw_deg": 99.7,
+   "scale": 1.22,
+   "_m721": true
+  },
+  {
+   "plant": "palm_coconut_b",
+   "at": [
+    -7.44,
+    101.56
+   ],
+   "lean_to_sea": true,
+   "yaw_deg": -66.9,
+   "scale": 1.21,
+   "_m721": true
+  },
+  {
+   "plant": "palm_coconut_a",
+   "at": [
+    -10.02,
+    101.35
+   ],
+   "lean_to_sea": true,
+   "yaw_deg": 98.0,
+   "scale": 1.23,
+   "_m721": true
+  },
+  {
+   "plant": "palm_coconut_c",
+   "at": [
+    0.91,
+    124.81
+   ],
+   "lean_to_sea": true,
+   "yaw_deg": 88.5,
+   "scale": 1.02,
+   "_m721": true
+  },
+  {
+   "plant": "palm_coconut_b",
+   "at": [
+    5.51,
+    143.13
+   ],
+   "lean_to_sea": true,
+   "yaw_deg": -82.3,
+   "scale": 0.95,
+   "_m721": true
+  },
+  {
+   "plant": "palm_coconut_b",
+   "at": [
+    14.73,
+    178.43
+   ],
+   "lean_to_sea": true,
+   "yaw_deg": 158.8,
+   "scale": 1.07,
+   "_m721": true
   }
  ],
  "plant_kinds": {
