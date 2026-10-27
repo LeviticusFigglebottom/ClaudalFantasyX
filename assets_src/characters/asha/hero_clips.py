@@ -238,6 +238,8 @@ def stand(persona: dict) -> dict:
         p["DEF-hand.R"] = (BOOK_HAND, 0.0, 0.0)  # the wrist drops, so the book hangs along the hip, not out like a tray
         p["DEF-hand.L"] = (0.0, 0.0, -GUARD_HAND)  # the guarded hand turns a little out: the points clear the thigh
         p["DEF-upper_arm.L"] = (4.0, 0.0, -a + GUARD_ARM)
+    if persona.get("hunch"):  # M3-CHR-505, kerrid.md §10.1: the bend is all above the waist (the Kerrid block below)
+        p.update(hunch_pose(persona["hunch"], p))
     return p
 
 
@@ -360,6 +362,8 @@ def pose_at(clip: str, t: float, length: float, sk: Skeleton, persona: dict) -> 
         return loco_pose_at(clip, t, length, sk, persona)
     if persona.get("launcher"):  # M3-CHR-03: Liss's clips (liss_pose_at, below)
         return liss_pose_at(clip, t, length, sk, persona)
+    if persona.get("hunch") and clip in KERRID_OWN:  # M3-CHR-505: Kerrid's own clips (kerrid_pose_at, below)
+        return kerrid_pose_at(clip, t, length, sk, persona)
     sway = persona["sway"]
     u = t / length
     if clip == "idle":
@@ -983,6 +987,8 @@ def _victory(hero: str, u: float, sk: Skeleton, persona: dict) -> dict:
     degrees."""
     ph = 2 * math.pi * u
     s1, c1 = math.sin(ph), math.cos(ph)
+    if hero == "kerrid":  # M3-CHR-505: the look back down the line (his block)
+        return kerrid_victory(u, sk, persona)
     if hero == "liss":  # M3-CHR-03: weight on one hip, the gloved hand flexing, the head up and turned off (her block)
         return add(_sway(sk, persona, 0.018 * s1, 0.01), add(liss_victory(u), {
             "DEF-spine.003": (-1.5 * math.sin(2 * ph), 4.0 * math.sin(ph + 0.5), 0.0),
@@ -2984,6 +2990,348 @@ for _h, _clips in STORY.items():
     for _c, _spec in _clips.items():
         if _spec.get("alias") in LOOPS or _spec.get("loop"):  # an alias of a cycle is a cycle
             LOOPS.add(_c)
+
+
+# ---------------------------------------------------------------------------------------------
+# Kerrid (M3-CHR-505, kerrid.md §1, §10): a heavy man hunched forward as if walking into wind; idle sway 0.5, **no
+# breath** (the unrisen don't breathe: the review must not "fix" it), planted (stance 1.2, knees soft 4 degrees). The
+# new persona key `hunch` (default 0: absent, so the other libraries do not change) is the degrees of flexion added at
+# DEF-spine.003/.004 (50/50), the head counter-pitched up 0.75 x it so the gaze stays level, the shoulders rolled
+# forward 0.4 x it; `stand` adds it the way it adds `lean`, so every standing and walking clip carries it. A persona
+# with `hunch` takes his own walk, run and talk and his story clips here (pose_at dispatches KERRID_OWN), and the
+# shared idle and the battle contract otherwise. His battle clips (the M2-CHR-07 contract) hold the anchor-cleaver
+# low in both hands, the wrapped left above the right on the haft (the battle actor's hand instance rides
+# DEF-hand.R); it is never shouldered or twirled.
+# ---------------------------------------------------------------------------------------------
+HUNCH_HEAD = 0.75  # of the hunch: the head's counter-pitch (the gaze stays level)
+HUNCH_SHOULDER = 0.4  # of the hunch: the shoulders' forward roll
+KERRID_SWING_L = 0.6  # the wrapped left arm swings at this share of the right's in the walk
+KERRID_CURL = 12.0  # degrees: the left hand's loose curl in the walk (the hand bone's flexion)
+STEP_RISE_K = 0.18  # m: one step of the stair (push_climber, down_a_step, carry_child)
+PERSONA["kerrid"] = {"sway": 0.5, "lean": 0.0, "staff": False, "arms_down": 34.0, "stance": 1.2, "knee": 4.0,
+                     "breath": 0.0, "hunch": 8.0}
+KERRID_STORY = ["collar_catch", "go_still", "turn_at_name", "set_bowl_on_post", "stand_watch", "wade",
+                "push_climber", "down_a_step", "collar_haul", "look_down_stair", "carry_child"]
+KERRID_OWN = {"walk", "run", "talk", *KERRID_STORY}
+CLIPS["kerrid"] = ["idle", "walk", "run", "talk", *KERRID_STORY] + BATTLE_CLIPS
+LOOPS |= {"stand_watch", "wade", "push_climber", "carry_child"}
+LENGTHS.update({"collar_catch": 2.4, "go_still": 1.6, "turn_at_name": 2.8, "set_bowl_on_post": 4.0,
+                "stand_watch": 7.0, "wade": 1.6, "push_climber": 2.2, "down_a_step": 1.6, "collar_haul": 1.4,
+                "look_down_stair": 2.0, "carry_child": 3.2})
+# the battle contract (the M2-CHR-07 block): his strikers, his trouser hem's foot flattening, his keys
+BATTLE_HEROES = BATTLE_HEROES + ("kerrid",)
+BATTLE_STRIKER["kerrid"] = {"attack": ("DEF-hand.R", (0.0, -0.6, 0.8)), "cast": ("DEF-hand.L", (0.0, 0.3, 0.95)),
+                            "finisher": ("DEF-hand.R", (0.0, 0.0, 1.0)), "item": ("DEF-hand.L", (0.0, -0.4, 0.92)),
+                            "read": ("DEF-spine.006", (0.0, 0.0, 1.0)), "defend": ("DEF-spine", (0.0, -1.0, 0.0))}
+FOOT_FLAT["kerrid"] = 0.5
+# both hands on the haft, the cleaver low across the body, the fluke near the right foot (the battle idle's hands);
+# the strike poses build on it
+K_GRIP = {"DEF-upper_arm.R": (-14.0, 0.0, 6.0), "DEF-forearm.R": (-34.0, 0.0, 0.0),
+          "DEF-upper_arm.L": (-30.0, -10.0, 28.0), "DEF-forearm.L": (-58.0, -30.0, 0.0), "DEF-hand.L": (0.0, -20.0, 0.0)}
+
+
+def hunch_pose(h: float, p: dict) -> dict:
+    """The hunch's bones (added to `stand`'s pose p): kerrid.md §1 and §10.1."""
+    head = np.asarray(p.get("DEF-spine.006", (0.0, 0.0, 0.0)), dtype=float)
+    return {"DEF-spine.003": (0.5 * h, 0.0, 0.0), "DEF-spine.004": (0.5 * h, 0.0, 0.0),
+            "DEF-spine.006": (float(head[0]) - HUNCH_HEAD * h, float(head[1]), float(head[2])),
+            "DEF-shoulder.L": (0.0, -HUNCH_SHOULDER * h, 0.0), "DEF-shoulder.R": (0.0, HUNCH_SHOULDER * h, 0.0)}
+
+
+def _kerrid_idle_terms(u: float, sway: float) -> dict:
+    """The idle's sway and slow weight shift without a breath term (the shared idle's, breath 0)."""
+    ph = 2 * math.pi * u
+    return {"hips": (0.010 * sway * math.sin(ph), -0.002 * sway * (1 - math.cos(2 * ph)), 0.0),
+            "DEF-spine.001": (0.0, 0.0, -1.6 * sway * math.sin(ph)),
+            "DEF-spine.006": (0.0, 1.5 * sway * math.sin(ph + 0.6), 0.6 * sway * math.sin(ph)),
+            "DEF-thigh.L": (0.0, 0.0, 1.2 * sway * math.sin(ph)), "DEF-thigh.R": (0.0, 0.0, 1.2 * sway * math.sin(ph))}
+
+
+def _win(t: float, a: float, b: float) -> float:
+    return smooth((t - a) / max(b - a, 1e-6))
+
+
+def kerrid_walk(u: float, persona: dict, stride: float, knee: float, arm: float, bob: float, lean: float,
+                deepen: float) -> dict:
+    """The shared walk with his short heavy step: the left (wrapped) arm swings at KERRID_SWING_L of the right, its
+    hand loosely curled; the hunch deepens `deepen` degrees on each footfall, the head staying level."""
+    ph = 2 * math.pi * u
+    p = walk_pose(u, persona, stride, knee, arm, bob, lean)
+    fall = 0.5 + 0.5 * math.cos(2 * ph)
+    return add(p, {"DEF-upper_arm.L": (-(1.0 - KERRID_SWING_L) * arm * math.cos(ph), 0.0, 0.0),
+                   "DEF-hand.L": (0.0, 0.0, -KERRID_CURL),
+                   "DEF-spine.003": (0.5 * deepen * fall, 0.0, 0.0), "DEF-spine.004": (0.5 * deepen * fall, 0.0, 0.0),
+                   "DEF-spine.006": (-deepen * fall, 0.0, 0.0)})
+
+
+def kerrid_watch(persona: dict) -> dict:
+    """stand_watch's hold: the right hand round the left (wrapped) wrist in front at the belt, the head lifted 3
+    degrees toward the horizon."""
+    return add(stand(persona), {"DEF-spine.006": (-3.0, 0.0, 0.0),
+                                "DEF-upper_arm.L": (-16.0, 8.0, 18.0), "DEF-forearm.L": (-62.0, -52.0, 0.0),
+                                "DEF-hand.L": (0.0, -10.0, 0.0),
+                                "DEF-upper_arm.R": (-14.0, -6.0, -14.0), "DEF-forearm.R": (-52.0, 50.0, 0.0),
+                                "DEF-hand.R": (0.0, 10.0, 0.0)})
+
+
+def kerrid_pose_at(clip: str, t: float, length: float, sk: Skeleton, persona: dict) -> dict:
+    u = t / length
+    sway = persona["sway"]
+    base = planted(sk, persona)
+    a = persona["arms_down"]
+    if clip == "walk":
+        # never fast: a short step into wind (the shared walk's 22 degree stride is 16 here)
+        return kerrid_walk(u, persona, 16.0, 32.0, 12.0, 0.014, 2.0, 2.0)
+    if clip == "run":
+        # a heavy jog: he runs badly and rarely (24 degrees, not the shared run's 38); the cape's panel bones bounce
+        p = kerrid_walk(u, persona, 24.0, 62.0, 20.0, 0.030, 6.0, 3.0)
+        return add(p, {"DEF-forearm.L": (-50.0, 0.0, 0.0), "DEF-forearm.R": (-50.0, 0.0, 0.0),
+                       "DEF-upper_arm.L": (0.0, 0.0, 8.0), "DEF-upper_arm.R": (0.0, 0.0, -8.0)})
+    if clip == "talk":
+        # almost nothing: one small chin lift, then a 4 degree turn of the head; the hands stay down
+        lift = math.sin(math.pi * min(max(u / 0.45, 0.0), 1.0))
+        turn = math.sin(math.pi * min(max((u - 0.5) / 0.45, 0.0), 1.0))
+        p = add(base, _kerrid_idle_terms(u, sway))
+        return add(p, {"DEF-spine.006": (-3.0 * lift, 4.0 * turn, 0.0)})
+    if clip == "collar_catch":
+        # Ch5 B05 P11: the left hand reaches down and forward to hip height (0.4 s), closes, lifts 20 cm and draws
+        # back, sets the child down 0.5 s later, comes back; then the head turns 30 degrees away, out to sea, and holds
+        reach = {"DEF-spine.002": (10.0, 4.0, 0.0), "DEF-spine.006": (8.0, 0.0, 0.0),
+                 "DEF-upper_arm.L": (-38.0, -6.0, 12.0), "DEF-forearm.L": (-8.0, 0.0, 0.0),
+                 "DEF-hand.L": (0.0, 0.0, -10.0)}
+        lift = {"DEF-spine.002": (6.0, 4.0, 0.0), "DEF-spine.006": (6.0, 0.0, 0.0),
+                "DEF-upper_arm.L": (-34.0, -6.0, 14.0), "DEF-forearm.L": (-48.0, 0.0, 0.0),
+                "DEF-hand.L": (0.0, 0.0, -10.0)}
+        e_r = _win(t, 0.0, 0.4)
+        e_l = _win(t, 0.45, 0.85) * (1.0 - _win(t, 0.95, 1.35))
+        e_b = _win(t, 1.4, 1.85)
+        p = blend(blend({}, reach, e_r), lift, e_l)
+        p = blend(p, {}, e_b)
+        head = _win(t, 1.6, 2.2)
+        return add(add(base, p), {"DEF-spine.005": (0.0, -8.0 * head, 0.0), "DEF-spine.006": (0.0, -22.0 * head, 0.0)})
+    if clip == "go_still":
+        # Ch5 B05 P12: the sway and the weight shift ease to nothing over 0.4 s and hold; with no breath, a statue
+        k = 1.0 - _win(t, 0.0, 0.4)
+        return add(base, _scale(_kerrid_idle_terms(0.25, sway), k))
+    if clip == "turn_at_name":
+        # Ch5 B05: the head and eyes turn 35 degrees (the shoulders follow 8), hold 1.0 s, back over 0.6 s
+        w = _win(t, 0.0, 0.4) * (1.0 - _win(t, 1.4, 2.0))
+        return add(base, {"DEF-spine.003": (0.0, 4.0 * w, 0.0), "DEF-spine.004": (0.0, 4.0 * w, 0.0),
+                          "DEF-spine.005": (0.0, 9.0 * w, 0.0), "DEF-spine.006": (0.0, 18.0 * w, 0.0)})
+    if clip == "set_bowl_on_post":
+        # Ch5 B06: both hands take the bowl at chest height, a half-turn of 40 degrees to his right, the right hand
+        # sets it on a post at 1.1 m, and he turns back to the sea
+        take = {"DEF-upper_arm.L": (-36.0, -14.0, a * 0.55), "DEF-forearm.L": (-70.0, -40.0, 0.0),
+                "DEF-upper_arm.R": (-36.0, 14.0, -a * 0.55), "DEF-forearm.R": (-70.0, 40.0, 0.0),
+                "DEF-spine.006": (8.0, 0.0, 0.0)}
+        sett = {"DEF-upper_arm.R": (-48.0, 0.0, -a * 0.2), "DEF-forearm.R": (-30.0, 20.0, 0.0),
+                "DEF-hand.R": (0.0, 0.0, 20.0), "DEF-spine.002": (6.0, 0.0, 0.0), "DEF-spine.006": (10.0, 0.0, 0.0)}
+        turn = _win(t, 0.8, 1.6) * (1.0 - _win(t, 2.6, 3.4))
+        p = blend(blend({}, take, _win(t, 0.0, 0.8)), sett, _win(t, 1.6, 2.2))
+        p = blend(p, {}, _win(t, 2.4, 3.0))
+        return add(add(base, p), {"DEF-spine": (0.0, -14.0 * turn, 0.0), "DEF-spine.002": (0.0, -12.0 * turn, 0.0),
+                                  "DEF-spine.003": (0.0, -8.0 * turn, 0.0), "DEF-spine.006": (0.0, -6.0 * turn, 0.0)})
+    if clip == "stand_watch":
+        # the idle with the wrist held (no seated clip in Act I), sway 0.35 of the party default
+        p = kerrid_watch(persona)
+        k = planted(sk, persona)
+        p = add(p, _minus(k, stand(persona)))
+        return add(p, _kerrid_idle_terms(u, 0.35))
+    if clip == "wade":
+        # Ch8 B15: a walk at waist depth: a slower stride, the arms carried higher (forearms 30 degrees above the
+        # water line), the hunch deeper (+4)
+        p = kerrid_walk(u, persona, 13.0, 24.0, 6.0, 0.008, 6.0, 1.0)
+        return add(p, {"DEF-spine.003": (2.0, 0.0, 0.0), "DEF-spine.004": (2.0, 0.0, 0.0),
+                       "DEF-spine.006": (-3.0, 0.0, 0.0),
+                       "DEF-upper_arm.L": (-24.0, 0.0, a * 0.55), "DEF-forearm.L": (-60.0, 0.0, 0.0),
+                       "DEF-upper_arm.R": (-24.0, 0.0, -a * 0.55), "DEF-forearm.R": (-60.0, 0.0, 0.0)})
+    if clip == "push_climber":
+        # Ch8 B15: waist-deep at the stair foot, the right foot up one step, both hands pushing a climber up and
+        # forward from chest to head height, the body leaning into the stair 12 degrees; one push per 2.2 s loop
+        ph = (t % length) / length
+        push = math.sin(math.pi * min(max((ph - 0.1) / 0.55, 0.0), 1.0))
+        brace = add(base, {"hips": (0.0, -0.02, 0.0),
+                           "DEF-thigh.R": (-38.0, 0.0, 0.0), "DEF-shin.R": (44.0, 0.0, 0.0), "DEF-foot.R": (-6.0, 0.0, 0.0),
+                           "DEF-thigh.L": (8.0, 0.0, 0.0), "DEF-shin.L": (6.0, 0.0, 0.0), "DEF-foot.L": (-14.0, 0.0, 0.0),
+                           "DEF-spine.001": (8.0, 0.0, 0.0), "DEF-spine.002": (4.0, 0.0, 0.0),
+                           "DEF-spine.006": (-10.0, 0.0, 0.0)})
+        low = {"DEF-upper_arm.L": (-50.0, 0.0, a * 0.7), "DEF-forearm.L": (-70.0, -10.0, 0.0),
+               "DEF-hand.L": (-40.0, 0.0, 0.0),
+               "DEF-upper_arm.R": (-50.0, 0.0, -a * 0.7), "DEF-forearm.R": (-70.0, 10.0, 0.0),
+               "DEF-hand.R": (-40.0, 0.0, 0.0)}
+        high = {"DEF-upper_arm.L": (-112.0, 0.0, a * 0.6), "DEF-forearm.L": (-20.0, -10.0, 0.0),
+                "DEF-hand.L": (-60.0, 0.0, 0.0),
+                "DEF-upper_arm.R": (-112.0, 0.0, -a * 0.6), "DEF-forearm.R": (-20.0, 10.0, 0.0),
+                "DEF-hand.R": (-60.0, 0.0, 0.0), "DEF-spine.001": (-4.0, 0.0, 0.0)}
+        return add(brace, blend(low, high, push))
+    if clip == "down_a_step":
+        # Ch8: "Captain?" He says nothing and goes down a step (backward, 18 cm), the eyes dropping 10 degrees, then
+        # the head turns back to the climbers
+        e = _win(t, 0.0, 0.7)
+        swing = math.sin(math.pi * e)
+        p = add(base, {"hips": (0.0, -STEP_RISE_K * e, -0.20 * e),
+                       "DEF-thigh.L": (14.0 * swing, 0.0, 0.0), "DEF-shin.L": (30.0 * swing, 0.0, 0.0),
+                       "DEF-thigh.R": (-10.0 * swing, 0.0, 0.0), "DEF-shin.R": (16.0 * swing, 0.0, 0.0),
+                       "DEF-spine.006": (10.0 * _win(t, 0.2, 0.7), 0.0, 0.0)})
+        return add(p, {"DEF-spine.005": (0.0, 6.0 * _win(t, 0.9, 1.5), 0.0),
+                       "DEF-spine.006": (-6.0 * _win(t, 0.9, 1.5), 14.0 * _win(t, 0.9, 1.5), 0.0)})
+    if clip == "collar_haul":
+        # Ch8 W24: from behind Rhen, the left (wrapped) hand grips his collar at 1.4 m, the body leans back 15 degrees
+        # and steps back 40 cm in 0.5 s, the right arm out for balance; holds
+        e = _win(t, 0.0, 0.25)
+        haul = _win(t, 0.2, 0.7)
+        step = math.sin(math.pi * haul)
+        grip = {"DEF-upper_arm.L": (-88.0, -10.0, a * 0.6), "DEF-forearm.L": (-22.0, 0.0, 0.0),
+                "DEF-hand.L": (0.0, 0.0, -20.0), "DEF-spine.002": (4.0, 0.0, 0.0)}
+        back = {"hips": (0.0, -0.03 * haul, -0.12 * haul), "DEF-spine": (-6.0 * haul, 0.0, 0.0),
+                "DEF-spine.001": (-6.0 * haul, 0.0, 0.0), "DEF-spine.002": (-3.0 * haul, 0.0, 0.0),
+                "DEF-spine.006": (8.0 * haul, 0.0, 0.0),
+                "DEF-upper_arm.L": (-36.0 * haul, 0.0, 0.0), "DEF-forearm.L": (-30.0 * haul, 0.0, 0.0),
+                "DEF-upper_arm.R": (-20.0 * haul, 0.0, 30.0 * haul), "DEF-forearm.R": (-20.0 * haul, 0.0, 0.0),
+                "DEF-thigh.R": (16.0 * haul - 18.0 * step, 0.0, 0.0), "DEF-shin.R": (8.0 * haul + 30.0 * step, 0.0, 0.0),
+                "DEF-foot.R": (-24.0 * haul, 0.0, 0.0),
+                "DEF-thigh.L": (-10.0 * haul, 0.0, 0.0), "DEF-shin.L": (14.0 * haul, 0.0, 0.0),
+                "DEF-foot.L": (-4.0 * haul, 0.0, 0.0)}
+        return add(add(base, _scale(grip, e)), back)
+    if clip == "look_down_stair":
+        # Ch8 W25, B17: a 60 degree turn away, the head pitched down 25 (inside the yoke's clearance), arms hanging
+        e = _win(t, 0.0, 1.2)
+        head = _win(t, 0.6, 1.6)
+        return add(base, {"DEF-spine": (0.0, 22.0 * e, 0.0), "DEF-spine.002": (0.0, 14.0 * e, 0.0),
+                          "DEF-spine.003": (0.0, 10.0 * e, 0.0), "DEF-spine.005": (6.0 * head, 6.0 * e, 0.0),
+                          "DEF-spine.006": (19.0 * head, 8.0 * e, 0.0)})
+    if clip == "carry_child":
+        # the Ch9 cutaway: a child's body across both forearms at chest height (a scene prop on DEF-forearm.L),
+        # climbing steps in place, 18 cm rise and 1.6 s per step; the elbows at 110 degrees (the cuffs stay above)
+        ph = (t % 1.6) / 1.6
+        side = 1.0 if t % 3.2 < 1.6 else -1.0  # left foot, then right
+        lift = math.sin(math.pi * min(ph / 0.55, 1.0))
+        rise = smooth((ph - 0.3) / 0.6)
+        arms = {"DEF-upper_arm.L": (-34.0, -8.0, a * 0.72), "DEF-forearm.L": (-84.0, -24.0, 0.0),
+                "DEF-hand.L": (0.0, 0.0, 10.0),
+                "DEF-upper_arm.R": (-34.0, 8.0, -a * 0.72), "DEF-forearm.R": (-84.0, 24.0, 0.0),
+                "DEF-hand.R": (0.0, 0.0, -10.0), "DEF-spine.002": (4.0, 0.0, 0.0), "DEF-spine.006": (6.0, 0.0, 0.0)}
+        lead, trail = ("L", "R") if side > 0 else ("R", "L")
+        legs = {f"DEF-thigh.{lead}": (-52.0 * lift * (1.0 - rise) - 10.0 * rise, 0.0, 0.0),
+                f"DEF-shin.{lead}": (60.0 * lift * (1.0 - rise) + 10.0 * rise, 0.0, 0.0),
+                f"DEF-thigh.{trail}": (10.0 * rise, 0.0, 0.0), f"DEF-shin.{trail}": (12.0 * rise, 0.0, 0.0),
+                "hips": (0.0, 0.03 * math.sin(math.pi * ph), 0.0), "DEF-spine.001": (6.0 * lift, 0.0, 0.0)}
+        return add(add(base, arms), legs)
+    raise KeyError(clip)
+
+
+def _kerrid_keys(clip: str, sk: Skeleton, persona: dict, base: dict) -> list:
+    """Kerrid (kerrid.md §10.3: weight and hauling): the cleaver held low in both hands like a hauling tool, every
+    blow slow to start; never shouldered or twirled. Deltas on the idle's first frame (base)."""
+    grip = _minus(add(base, K_GRIP), base)
+    if clip == "ready":
+        k = add(add(grip, _legs(sk, persona, 0.03)), {
+            "DEF-spine.003": (1.5, 0.0, 0.0), "DEF-spine.004": (1.5, 0.0, 0.0),
+            "DEF-upper_arm.R": (-8.0, 0.0, 0.0), "DEF-upper_arm.L": (-8.0, 0.0, 0.0)})
+        return [(0.0, {}), (0.45, k), (1.0, {})]
+    if clip == "attack":
+        # the haul-chop: the arms lift the cleaver back over the right shoulder first, then the blade turns (Toma's
+        # spear order), held a beat, then chopped down and forward to knee height with a short step of the left foot
+        lift = add(grip, {"DEF-upper_arm.R": (-60.0, -10.0, -20.0), "DEF-forearm.R": (-70.0, 0.0, 0.0),
+                          "DEF-upper_arm.L": (-50.0, -20.0, 0.0), "DEF-spine.001": (0.0, -10.0, 0.0)})
+        held = add(add(grip, _legs(sk, persona, 0.02)), {
+            "DEF-upper_arm.R": (-130.0, -10.0, -24.0), "DEF-forearm.R": (-80.0, 0.0, 0.0), "DEF-hand.R": (30.0, 0.0, 0.0),
+            "DEF-upper_arm.L": (-110.0, -24.0, -6.0), "DEF-forearm.L": (-60.0, 0.0, 0.0),
+            "DEF-spine.001": (-4.0, -16.0, 0.0), "DEF-spine.006": (0.0, 10.0, 0.0)})
+        hit = add(add(grip, _legs(sk, persona, 0.10, 0.14, -0.06)), {
+            "DEF-spine.001": (18.0, 6.0, 0.0), "DEF-spine.002": (8.0, 0.0, 0.0), "DEF-spine.006": (-14.0, -4.0, 0.0),
+            "DEF-upper_arm.R": (-34.0, 0.0, 4.0), "DEF-forearm.R": (-6.0, 0.0, 0.0), "DEF-hand.R": (-20.0, 0.0, 0.0),
+            "DEF-upper_arm.L": (-44.0, -10.0, 16.0), "DEF-forearm.L": (-20.0, 0.0, 0.0)})
+        follow = _scale(hit, 0.6)
+        return [(0.0, {}), (0.18, lift), (0.36, held), (0.42, held), (0.55, hit), (0.78, follow), (1.0, {})]
+    if clip == "cast":
+        # throwing a line: the left fist closes hard at the chest, then the arm throws forward and up and opens, palm
+        # up, as a captain throws a line to someone below; the cleaver rests head-down in the right hand
+        fist = add(_legs(sk, persona, 0.02), {"DEF-upper_arm.L": (-30.0, 0.0, a * 0.7), "DEF-forearm.L": (-110.0, -30.0, 0.0),
+                                              "DEF-hand.L": (0.0, 0.0, -20.0), "DEF-spine.001": (0.0, 8.0, 0.0)})
+        throw = add(_legs(sk, persona, 0.04, 0.08, -0.04), {
+            "DEF-upper_arm.L": (-92.0, 0.0, a * 0.55), "DEF-forearm.L": (-6.0, 0.0, 0.0), "DEF-hand.L": (0.0, 70.0, 0.0),
+            "DEF-spine.001": (6.0, -8.0, 0.0), "DEF-spine.006": (-4.0, 0.0, 0.0)})
+        return [(0.0, {}), (0.4, fist), (0.55, fist), (0.8, throw), (1.0, {})]
+    if clip == "item":
+        # the left hand reaches forward and down, low, as if handing something to someone a step below
+        reach = add(_legs(sk, persona, 0.03), {"DEF-upper_arm.L": (-20.0, 0.0, a * 0.4), "DEF-forearm.L": (-40.0, 0.0, 0.0),
+                                               "DEF-spine.001": (4.0, 0.0, 0.0)})
+        offer = add(_legs(sk, persona, 0.06), {
+            "DEF-spine.001": (14.0, 6.0, 0.0), "DEF-spine.002": (6.0, 0.0, 0.0), "DEF-spine.006": (-8.0, 0.0, 0.0),
+            "DEF-upper_arm.L": (-50.0, 0.0, a * 0.5), "DEF-forearm.L": (-6.0, 0.0, 0.0), "DEF-hand.L": (0.0, -40.0, 0.0)})
+        return [(0.0, {}), (0.35, reach), (0.7, offer), (1.0, {})]
+    if clip == "read":
+        # the hunch deepens 5 degrees, the head pushes forward (the squint is the face's `determined`)
+        look = add(add(grip, _legs(sk, persona, 0.02)), {
+            "DEF-spine.003": (2.5, 0.0, 0.0), "DEF-spine.004": (2.5, 0.0, 0.0), "DEF-spine.005": (6.0, 0.0, 0.0),
+            "DEF-spine.006": (-2.0, 0.0, 0.0), "DEF-spine.001": (4.0, 0.0, 0.0)})
+        return [(0.0, {}), (0.6, look), (0.78, look), (1.0, {})]
+    if clip == "defend":
+        # holding the stair: the cleaver planted head-down in front of him as a wall, both hands on the haft below the
+        # ring, knees bent, the left shoulder into it
+        wall = add(_legs(sk, persona, 0.10), {
+            "DEF-spine.001": (10.0, -14.0, 0.0), "DEF-spine.002": (4.0, -6.0, 0.0), "DEF-spine.006": (-8.0, 14.0, 0.0),
+            "DEF-upper_arm.R": (-46.0, 10.0, -a * 0.5), "DEF-forearm.R": (-50.0, 20.0, 0.0),
+            "DEF-upper_arm.L": (-52.0, -12.0, a * 0.6), "DEF-forearm.L": (-60.0, -30.0, 0.0)})
+        return [(0.0, {}), (0.6, wall), (0.8, _scale(wall, 0.9)), (1.0, {})]
+    if clip == "finisher":
+        # the weighted swing: the cleaver swung back past the right hip and held there coiled (the charge, with a slow
+        # 2 degree settle), then released in a long low hauling sweep from right-back to left-front at knee height,
+        # the hook leading, the body turning 100 degrees; flat and low, never overhead
+        coil = add(add(grip, _legs(sk, persona, 0.08, 0.04, -0.06)), {
+            "DEF-spine": (0.0, -20.0, 0.0), "DEF-spine.001": (8.0, -18.0, 0.0), "DEF-spine.002": (4.0, -10.0, 0.0),
+            "DEF-spine.006": (0.0, 30.0, 0.0),
+            "DEF-upper_arm.R": (40.0, -10.0, -10.0), "DEF-forearm.R": (-10.0, 0.0, 0.0),
+            "DEF-upper_arm.L": (10.0, -30.0, 30.0), "DEF-forearm.L": (-50.0, 0.0, 0.0)})
+        settle = add(coil, {"DEF-spine.001": (2.0, -2.0, 0.0)})
+        sweep = add(add(grip, _legs(sk, persona, 0.10, 0.16, -0.08)), {
+            "DEF-spine": (0.0, 24.0, 0.0), "DEF-spine.001": (14.0, 22.0, 0.0), "DEF-spine.002": (6.0, 14.0, 0.0),
+            "DEF-spine.006": (-12.0, -20.0, 0.0),
+            "DEF-upper_arm.R": (-62.0, 20.0, 12.0), "DEF-forearm.R": (-4.0, 0.0, 0.0),
+            "DEF-upper_arm.L": (-50.0, 10.0, 30.0), "DEF-forearm.L": (-10.0, 0.0, 0.0)})
+        follow = _scale(sweep, 0.55)
+        return [(0.0, {}), (0.15, coil), (0.45, settle), (0.62, sweep), (0.82, follow), (1.0, {})]
+    if clip == "hit":
+        # he takes it: a 2 cm settle at the hips, the shoulders sink, the head barely moves (5 degrees)
+        sink = add(_legs(sk, persona, 0.02), {"DEF-spine.003": (2.0, 0.0, 0.0), "DEF-spine.006": (-5.0, 0.0, 0.0),
+                                              "DEF-shoulder.L": (0.0, 0.0, 3.0), "DEF-shoulder.R": (0.0, 0.0, -3.0)})
+        return [(0.0, {}), (0.25, sink), (1.0, {})]
+    if clip == "dodge":
+        # a quarter turn of the chest, the shoulder in, 35 degrees, the feet planted: letting the blow pass
+        turn = add(_legs(sk, persona, 0.02), {"DEF-spine": (0.0, 10.0, 0.0), "DEF-spine.001": (0.0, 13.0, 0.0),
+                                              "DEF-spine.002": (0.0, 8.0, 0.0), "DEF-spine.003": (0.0, 4.0, 0.0),
+                                              "DEF-spine.006": (0.0, -20.0, 0.0)})
+        return [(0.0, {}), (0.35, turn), (1.0, {})]
+    if clip == "ko":
+        # down onto both knees, then forward onto the left (wrapped) hand, the cleaver laid flat beside him, the head
+        # bowed; holds (a man on the bottom step)
+        drop = sk.hip_h - (sk.leg_shin + sk.ankle_h) - 0.01
+        knees = {"hips": (0.0, -drop, -0.06),
+                 "DEF-thigh.L": (-6.0, 0.0, 4.0), "DEF-shin.L": (96.0, 0.0, 0.0), "DEF-foot.L": (-30.0, 0.0, 0.0),
+                 "DEF-toe.L": (-40.0, 0.0, 0.0), "DEF-thigh.R": (-6.0, 0.0, -4.0), "DEF-shin.R": (96.0, 0.0, 0.0),
+                 "DEF-foot.R": (-30.0, 0.0, 0.0), "DEF-toe.R": (-40.0, 0.0, 0.0)}
+        down = add(knees, {"DEF-spine.001": (30.0, 0.0, 0.0), "DEF-spine.002": (14.0, 0.0, 0.0),
+                           "DEF-spine.006": (16.0, 0.0, 0.0),
+                           "DEF-upper_arm.L": (-44.0, 0.0, a * 0.8), "DEF-forearm.L": (-8.0, 0.0, 0.0),
+                           "DEF-hand.L": (-60.0, 0.0, 0.0),
+                           "DEF-upper_arm.R": (-12.0, 0.0, -a * 0.6), "DEF-forearm.R": (-20.0, 0.0, 0.0)})
+        felled = _minus(add(stand(persona), down), base)
+        buckle = add(_legs(sk, persona, 0.12), {"DEF-spine.001": (10.0, 0.0, 0.0), "DEF-spine.006": (8.0, 0.0, 0.0)})
+        return [(0.0, {}), (0.35, buckle), (0.85, felled), (1.0, felled)]
+    raise KeyError(clip)
+
+
+def kerrid_victory(u: float, sk: Skeleton, persona: dict) -> dict:
+    """The battle's end: the cleaver's head grounded at his right foot, the right hand on the haft; once per loop the
+    head turns 25 degrees over the right shoulder to look back down the line (is everyone up?) and back. No breath."""
+    turn = math.sin(math.pi * min(max((u - 0.2) / 0.6, 0.0), 1.0)) ** 2
+    held = {"DEF-upper_arm.R": (-10.0, 0.0, 4.0), "DEF-forearm.R": (-20.0, 0.0, 0.0),
+            "DEF-spine.005": (0.0, -7.0 * turn, 0.0), "DEF-spine.006": (0.0, -18.0 * turn, 0.0)}
+    return add(held, _kerrid_idle_terms(u, persona["sway"]))
+
+
+_BATTLE_KEYS["kerrid"] = _kerrid_keys
 
 
 # ---------------------------------------------------------------------------------------------
