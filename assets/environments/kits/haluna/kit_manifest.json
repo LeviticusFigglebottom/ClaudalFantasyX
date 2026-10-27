@@ -370,9 +370,9 @@
         14000,
         600
       ],
-      "bytes": 329688,
+      "bytes": 336780,
       "lods": {
-        "iskarra_plaza": 3384,
+        "iskarra_plaza": 3390,
         "iskarra_plaza-lod1": 144
       }
     },
@@ -458,7 +458,7 @@
         26000,
         2400
       ],
-      "bytes": 954300,
+      "bytes": 954248,
       "lods": {
         "keth_terrace_ground": 14832,
         "keth_terrace_ground-lod1": 2048

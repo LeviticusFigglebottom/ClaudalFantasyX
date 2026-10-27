@@ -214,8 +214,8 @@ def build_plaza(seed: int = 722, *, w: float = 34.0, d: float = 18.0) -> list[kc
         noise = kc.Noise3(rng)
         mb = kc.MeshBuilder("iskarra_plaza" + ("-lod1" if lod else ""))
 
-        def keep(x, z):  # the back-right corner has fallen into the sea along a ragged line
-            return (x - hx * 0.25) * 0.55 + (-z - hz * 0.2) < 6.0 + 1.5 * math.sin(x * 0.9)
+        def keep(x, z):  # the back-right corner has fallen into the sea along a ragged line (clear of Kerrid's vigil)
+            return (x - hx * 0.25) * 0.55 + (-z - hz * 0.2) < 7.5 + 1.5 * math.sin(x * 0.9)
 
         _paving(mb, -hx, hx, -hz, hz - 2.4, 0.0, rng, noise, lod, keep=keep)
         # The plaza's body: a massive ceramic-faced podium down into the water, in 3 m bays whose back ends follow
