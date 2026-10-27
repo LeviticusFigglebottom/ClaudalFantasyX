@@ -173,5 +173,111 @@ class PipelineTest(unittest.TestCase):
                 self.assertGreater(dy, -0.5, f"{cid}: a grounded creature's KO doesn't sink through the floor")
 
 
+def skinned_lowest(glb: Path) -> dict[str, float]:
+    """The lowest vertex y (metres) over every baked frame of each clip of a creature GLB, skinned as Godot plays it:
+    each clip's channels are sampled at every frame (the kit force-samples them), nodes not keyed keep their rest TRS,
+    and a vertex is the weighted sum of its joints' global matrices times their inverse bind matrices."""
+    import struct  # noqa: PLC0415
+
+    import numpy as np  # noqa: PLC0415
+
+    raw = glb.read_bytes()
+    jl = struct.unpack_from("<I", raw, 12)[0]
+    js, bin_ = json.loads(raw[20:20 + jl]), raw[20 + jl + 8:]
+    width = {"SCALAR": 1, "VEC2": 2, "VEC3": 3, "VEC4": 4, "MAT4": 16}
+    kinds = {5126: np.float32, 5125: np.uint32, 5123: np.uint16, 5121: np.uint8}
+
+    def acc(i: int) -> np.ndarray:
+        a = js["accessors"][i]
+        bv = js["bufferViews"][a["bufferView"]]
+        n = width[a["type"]]
+        off = bv.get("byteOffset", 0) + a.get("byteOffset", 0)
+        out = np.frombuffer(bin_, dtype=kinds[a["componentType"]], count=a["count"] * n, offset=off).reshape(-1, n)
+        if a.get("normalized"):
+            return out.astype(np.float64) / np.iinfo(out.dtype).max
+        return out.astype(np.float64) if out.dtype == np.float32 else out.astype(np.int64)
+
+    def trs(t, r, s) -> np.ndarray:
+        x, y, z, w = r
+        M = np.eye(4)
+        M[:3, :3] = np.array([[1 - 2 * (y * y + z * z), 2 * (x * y - z * w), 2 * (x * z + y * w)],
+                              [2 * (x * y + z * w), 1 - 2 * (x * x + z * z), 2 * (y * z - x * w)],
+                              [2 * (x * z - y * w), 2 * (y * z + x * w), 1 - 2 * (x * x + y * y)]]) * np.asarray(s)
+        M[:3, 3] = t
+        return M
+
+    nodes = js["nodes"]
+    parent = {c: i for i, n in enumerate(nodes) for c in n.get("children", [])}
+    order = []  # parents before children
+    seen: set[int] = set()
+
+    def visit(i: int) -> None:
+        if i not in seen:
+            if i in parent:
+                visit(parent[i])
+            seen.add(i)
+            order.append(i)
+
+    for i in range(len(nodes)):
+        visit(i)
+    rest = [[np.array(n.get("translation", [0.0, 0.0, 0.0])), np.array(n.get("rotation", [0.0, 0.0, 0.0, 1.0])),
+             np.array(n.get("scale", [1.0, 1.0, 1.0]))] for n in nodes]
+    skin = js["skins"][0]
+    joints = skin["joints"]
+    ibm = acc(skin["inverseBindMatrices"]).reshape(-1, 4, 4).transpose(0, 2, 1)
+    prims = [p for m in js["meshes"] for p in m["primitives"]]
+    P = np.vstack([acc(p["attributes"]["POSITION"]) for p in prims])
+    P = np.c_[P, np.ones(len(P))]
+    J = np.vstack([acc(p["attributes"]["JOINTS_0"]) for p in prims])
+    W = np.vstack([acc(p["attributes"]["WEIGHTS_0"]) for p in prims])
+    slot = {"translation": 0, "rotation": 1, "scale": 2}
+    out = {}
+    for anim in js["animations"]:
+        chans = [(c["target"]["node"], slot[c["target"]["path"]], acc(anim["samplers"][c["sampler"]]["output"]))
+                 for c in anim["channels"] if c["target"]["path"] in slot]
+        frames = max(len(v) for _, _, v in chans)
+        low = np.inf
+        for f in range(frames):
+            local = [list(r) for r in rest]
+            for node, k, v in chans:
+                local[node][k] = v[min(f, len(v) - 1)]
+            G: dict[int, np.ndarray] = {}
+            for i in order:
+                G[i] = trs(*local[i]) if i not in parent else G[parent[i]] @ trs(*local[i])
+            S = np.array([G[j] for j in joints]) @ ibm
+            y = sum(W[:, k] * np.einsum("nj,nj->n", S[J[:, k], 1, :], P) for k in range(J.shape[1]))
+            low = min(low, float(y.min()))
+        out[anim["name"]] = low
+    return out
+
+
+class GroundedClipsTest(unittest.TestCase):
+    """M3-CRE-631: every vertex of every baked frame of every clip stays at or above the floor (y 0, 5 mm tolerance),
+    measured from the GLB, not the root bone.
+
+    It covers the creatures fixed or measured clean so far, not every creature yet: skinning all of them takes over 20
+    s, and many shipped creatures still dip under the floor (listed in docs/kb/tasks/M3/M3-CRE-631). Creatures that go
+    below y 0 by design must never be added: the Wakefin swims below the waterline, and a flier's clips sit under its
+    creatures.json `stand_in.hover`, which lifts it (its KO comes down by that hover, test_a_ko_ends_on_the_ground)."""
+
+    TOLERANCE = 0.005
+    GROUNDED = (
+        # M3-CRE-631: the reef crab and its variants, the tide crawler and its variant, the slag tortoise and its variant
+        "reef_crab", "wallcrab", "wreck_crab", "root_crab", "tide_crawler", "rim_crawler", "slag_tortoise", "scree_crawler",
+        # already clean when this test was added (M3-CRE-624, M3-CRE-628 and earlier)
+        "avalanche_ram", "ridge_lynx", "glass_skate", "conduit_crawler", "rime_urchin",
+    )
+
+    def test_clips_stay_above_the_floor(self) -> None:
+        rows = _load(vc.CREATURES_FILE)["creatures"]
+        defaults = _load(vc.CREATURES_FILE)["defaults"]
+        for cid in self.GROUNDED:
+            hover = float({**defaults["stand_in"], **rows[cid].get("stand_in", {})}.get("hover", 0.0))
+            self.assertEqual(hover, 0.0, f"{cid} hovers: its clips sit below y 0 by design, so it can't be listed")
+            for clip, low in skinned_lowest(ROOT / "assets/creatures" / cid / f"{cid}.glb").items():
+                with self.subTest(creature=cid, clip=clip):
+                    self.assertGreaterEqual(low, -self.TOLERANCE, f"{cid} {clip}: a vertex goes {-low:.3f} m under the floor")
+
+
 if __name__ == "__main__":
     unittest.main()
