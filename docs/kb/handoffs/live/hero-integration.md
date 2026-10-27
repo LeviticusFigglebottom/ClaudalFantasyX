@@ -357,3 +357,13 @@ RENDER-REQUEST @ b2453cfd: battle_heroes_idle, battle_heroes_attack, battle_hero
 ### Render requests
 RENDER-REQUEST @ 1b84b89c: field_hero_rhen_walk, field_hero_party, field_hero_gait_strip, hero_cutscene_turn_strip, field_lane_fixed, field_court_pan, field_causeway_dolly, haluna_h02_tidewall_lane, haluna_h04_dock, haluna_h07_chapel_court, haluna_h10_dock_night; why: foot IK on uneven ground and the followers' floor and facing changes (M2-HER-1116), and characters' M2-CHR-12 gait clips now in via big10 (the earlier battle_heroes_* request @ b2453cfd stands)
 - @ bc444574: docs only. M3-AUD-810: confirmed the HeroBody half of audio's footstep request (foot_contact(foot, run) and the tree names); M2-HER-1116: foot IK costs 18 us per body-frame on the cloud CPU (Haluna run, legs bent on 13% of frames).
+- **Blockers, all on other tracks.** Each is a request task; the next step is mine once it lands.
+  1. **Haluna's villagers are still frozen in the game** (top blocker). big10 brought FieldNpc but not creatures'
+     VillagerLayer (M3-CRE-613), and no zone places one (M2-HER-1112, slice-polish). The villager guard's clip half
+     now runs on this branch and passes; its routine half runs once the layer is here.
+  2. Battle wrappers: UI's stand_ins repoint (M2-HER-1108). Then I re-run the pop guard on the integration branch.
+  3. PC renders: battle_heroes_* @ b2453cfd and the field/hero set @ 1b84b89c. I view and approve them.
+  4. Owners' fixes:
+     - M2-HER-1113 cutscene patch → I empty the cutscene guard's KNOWN list;
+     - M2-HER-1114 placeholder crash and arm flip → I empty the battle guard's KNOWN entry;
+     - M2-CHR-513 → I re-check KO, victory and revive (the pop test picks them up by itself).
