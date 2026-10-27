@@ -170,7 +170,8 @@ class Skeleton:
         """World-axis turns (bone -> quaternion) -> local rotations, parents first. `hips` is the pose's hips offset
         (m, from rest): the skirt panels gather on the floor (M1-CHR-15); their scales go under the "_scale" key.
         `hold` is {side: 0..1}, how far each reef-hook is drawn into its hand (M2-CHR-513, hook_hold); the hooks'
-        positions go under the "_pos" key."""
+        positions go under the "_pos" key. A held prop that would pass through the skirt or a leg pivots in the fist
+        until it clears (M2-CHR-515, prop_pivot)."""
         g = {}
         out = {}
         for name in BONES:
@@ -184,7 +185,9 @@ class Skeleton:
             out[name] = lq / np.linalg.norm(lq)
         helper_pose(self, g, out, hips)  # M1-CHR-15
         hook_pose(self, g, out, hips, hold or {})  # M2-CHR-513
-        prop_pose(self, g, out, hips, bool((hold or {}).get("_carry")))  # M2-CHR-515: the prop slides to the floor
+        carry = bool((hold or {}).get("_carry"))
+        # M2-CHR-515: the prop pivots in the fist clear of the skirt and legs, and slides to the floor
+        prop_pose(self, g, out, hips, carry, prop_pivot(self, g, hips, carry))
         grip_pose(self, out, hold or {})
         return out
 
@@ -2656,7 +2659,8 @@ def helper_pose(sk: "Skeleton", g: dict, out: dict, hips=None) -> None:
         return
     rq_h = sk.rest_q[HIPS]
     scales = out.setdefault(SCALE_KEY, {})
-    for h, (axis, a1, a2, sc) in skirt_solve(sk, g, hips).items():
+    sk.last_skirt = skirt_solve(sk, g, hips)  # prop_pivot poses the cloth from the same solve
+    for h, (axis, a1, a2, sc) in sk.last_skirt.items():
         lo = h + ".001"
         flare = 1.0 + SKIRT_FLARE * (1.0 - sc)  # pooled cloth spreads a little sideways
         scales[lo] = (round(flare, 6), round(sc, 6), round(flare, 6))
@@ -2723,7 +2727,8 @@ def hook_hold(hero: str, clip: str, u: float) -> dict:
     """{side: 0..1}: how far each hook is drawn at fraction u of the clip (HOOK_HOLD); plus "_carry" in the field's
     locomotion clips and the idle they start from (M2-CHR-515: a staff or spear is carried, not slid along the floor
     under the feet; the idle carries it too so every transition and variant starts on the idle's first frame)."""
-    out = {"_carry": True} if clip in LOCO_CLIPS or clip == "idle" else {}
+    base = STORY.get(hero, {}).get(clip, {}).get("alias", clip)  # a story alias of walk (Toma's follow) carries too
+    out = {"_carry": True} if base in LOCO_CLIPS or base == "idle" else {}
     for side, (a, b, c, d) in HOOK_HOLD.get(hero, {}).get(clip, {}).items():
         out[side] = smooth((u - a) / (b - a)) * (1.0 - smooth((u - c) / (d - c)))
     return out
@@ -3068,6 +3073,14 @@ GRIP_DATA = ROOT / "game" / "data" / "characters" / "grips.json"
 PROP_FLOOR = 0.006  # m: the held prop's foot rests this far above the floor when it stands near upright
 PROP_UPRIGHT = (20.0, 40.0)  # degrees from vertical: resting on the floor fully below the first, not past the second
 PROP_SLIDE_MAX = 0.6  # m: the most the prop slides through the fist either way (the kneel takes about half a metre)
+PROP_SKIRT_CLEAR = 0.035  # m: the shaft's centre line from the nearest skirt cloth point (its radius, the cloth spacing)
+PROP_SKIRT_FLOOR = 0.03  # m: cloth this near the floor is pooled round the prop's foot, not crossed
+PROP_LEG_CLEAR = 0.095  # m: the shaft's centre line from a leg bone (the thigh's flesh and the cloth over it)
+PROP_GRIP_CLEAR = 0.06  # m: the shaft within this of the fist is the hand's (rig_probe's grip_clear_mm)
+PROP_SHAFT_SAMPLES = 12  # points along the shaft tested against the legs
+PROP_PIVOT_DIRS = ("out", "fwd", "back", "in")  # the foot tips out from the body first
+PROP_PIVOT_MAX = math.radians(30.0)  # the most the prop pivots in the fist
+PROP_PIVOT_GRID = math.radians(2.0)  # the coarse step of that search
 _HOLD: dict = {}  # hero -> the hand's turn (from rest) that stands the held prop upright, read from the GLB
 _FORE: dict = {}  # hero -> the staff forearm's line at rest (elbow to wrist), read from the GLB
 
@@ -3090,18 +3103,37 @@ def prop_hold(persona: dict) -> np.ndarray:
     return _HOLD.get(hero, np.array([0.0, 0.0, 0.0, 1.0]))
 
 
-def prop_pose(sk: "Skeleton", g: dict, out: dict, hips, carry: bool = False) -> None:
+def prop_pose(sk: "Skeleton", g: dict, out: dict, hips, carry: bool = False, pivot=None) -> None:
     """The held prop's bone (into out, and its position into out[POS_KEY]): slid along its own axis through the fist
     so that, standing near upright, its foot rests PROP_FLOOR above the floor (and in any pose never goes under it);
-    `carry` (walking, running) only lifts it clear."""
+    `carry` (walking, running) only lifts it clear. `pivot`: a world turn of the prop about the fist (prop_pivot)."""
     pr = getattr(sk, "prop", None)
     if not pr:
         return
     b, hand = pr["bone"], pr["hand"]
+    _, _, slide = _prop_shaft(sk, g, _positions(sk, g, hips), carry, pivot)
+    lq = sk.rest_q[b] if pivot is None else qmul(qinv(g[hand]), qmul(pivot, qmul(g[hand], sk.rest_q[b])))
+    out[b] = lq / np.linalg.norm(lq)
+    t = sk.rest_t[b] + qrot(out[b], np.array([0.0, slide, 0.0]))
+    out.setdefault(POS_KEY, {})[b] = tuple(float(x) for x in t)
+
+
+def _positions(sk: "Skeleton", g: dict, hips) -> dict:
+    """Joint positions (skeleton frame) for global rotations g and the hips offset."""
     pos = {HIPS: sk.rest_t[HIPS] + (np.zeros(3) if hips is None else np.asarray(hips, dtype=float))}
     for name in BONES[1:]:
         pos[name] = pos[sk.parent[name]] + qrot(g[sk.parent[name]], sk.rest_t[name])
+    return pos
+
+
+def _prop_shaft(sk: "Skeleton", g: dict, pos: dict, carry: bool, pivot=None) -> tuple:
+    """(head, axis, slide): the held prop bone's head (the fist's grip point), its shaft's unit axis (turned by the
+    world `pivot` about the fist), and how far prop_pose slides it along that axis."""
+    pr = sk.prop
+    b, hand = pr["bone"], pr["hand"]
     gp = qmul(g[hand], sk.rest_q[b])
+    if pivot is not None:
+        gp = qmul(pivot, gp)
     head = pos[hand] + qrot(g[hand], sk.rest_t[b])
     axis = qrot(gp, np.array([0.0, 1.0, 0.0]))
     slide = 0.0
@@ -3114,9 +3146,81 @@ def prop_pose(sk: "Skeleton", g: dict, out: dict, hips, carry: bool = False) -> 
         if foot_y + slide * float(axis[1]) < PROP_FLOOR:
             slide = to_floor
         slide = max(-PROP_SLIDE_MAX, min(PROP_SLIDE_MAX, slide))
-    out[b] = sk.rest_q[b]
-    t = sk.rest_t[b] + qrot(sk.rest_q[b], np.array([0.0, slide, 0.0]))
-    out.setdefault(POS_KEY, {})[b] = tuple(float(x) for x in t)
+    return head, axis, slide
+
+
+def _skirt_cloth_posed(sk: "Skeleton", g: dict, hips) -> np.ndarray:
+    """The skirt panels' cloth points (skeleton frame) as helper_pose posed them (sk.last_skirt), less those within
+    PROP_SKIRT_FLOOR of the floor (cloth pooled round the prop's foot is not crossed by it)."""
+    rq_h = sk.rest_q[HIPS]
+    dp = qmul(g[HIPS], qinv(rq_h))
+    base = sk.rest_t[HIPS] + (np.zeros(3) if hips is None else np.asarray(hips, dtype=float))
+    pts = []
+    for h, (ax, a1, a2, _) in sk.last_skirt.items():
+        t = qrot(rq_h, sk.rest_t[h])
+        k = t + qrot(qmul(rq_h, sk.rest_q[h]), sk.rest_t[h + ".001"])
+        tip = _rot_about(k[None], t, ax, a1)[0]
+        pts += [_rot_about(sk.skirt_cloth[h], t, ax, a1), _rot_about(sk.skirt_cloth[h + ".001"], k, ax, a2) + (tip - k)]
+    P = np.concatenate(pts)
+    x, y, z, w = (float(c) for c in dp)  # the pelvis's turn as a matrix, applied elementwise (same bits on any SIMD)
+    R = ((1 - 2 * (y * y + z * z), 2 * (x * y - z * w), 2 * (x * z + y * w)),
+         (2 * (x * y + z * w), 1 - 2 * (x * x + z * z), 2 * (y * z - x * w)),
+         (2 * (x * z - y * w), 2 * (y * z + x * w), 1 - 2 * (x * x + y * y)))
+    P = np.stack([P[:, 0] * r[0] + P[:, 1] * r[1] + P[:, 2] * r[2] for r in R], axis=1) + base
+    return P[P[:, 1] > PROP_SKIRT_FLOOR]
+
+
+def prop_pivot(sk: "Skeleton", g: dict, hips, carry: bool):
+    """M2-CHR-515 (M1-QA-09: the staff passed through the skirt in the kneels and the sits): the least pivot of the
+    held prop in the fist, about its grip point, that keeps its shaft below the fist PROP_SKIRT_CLEAR from the
+    skirt's cloth and PROP_LEG_CLEAR from the legs' bones (the cloth over them); None when it already clears. It
+    tips the shaft's foot out (or forward, or back: the first of PROP_PIVOT_DIRS that clears within PROP_PIVOT_MAX),
+    coarse steps then bisection, as the skirt's own swing, so it eases on and off between keys. The arm is not moved
+    and the shaft still runs through the fist (rig_probe's grip offset)."""
+    pr = getattr(sk, "prop", None)
+    if not pr:
+        return None
+    pos = _positions(sk, g, hips)
+    cloth = _skirt_cloth_posed(sk, g, hips) if getattr(sk, "skirt", None) else np.zeros((0, 3))
+    A, B = _leg_segments(sk, g)
+    A, B = A + pos[HIPS], B + pos[HIPS]
+    fwd = qrot(qmul(g[HIPS], qinv(sk.rest_q[HIPS])), sk.forward)
+    side = np.cross(np.array([0.0, 1.0, 0.0]), fwd)
+    side /= np.linalg.norm(side)
+    k = np.linspace(0.0, 1.0, PROP_SHAFT_SAMPLES)[:, None]
+
+    def margin(axis_w: np.ndarray, ang: float) -> float:
+        dq = qaxis(axis_w, math.degrees(ang))
+        head, axis, slide = _prop_shaft(sk, g, pos, carry, dq)
+        foot = head + axis * (slide + pr["foot"])
+        low = head - axis * PROP_GRIP_CLEAR  # the shaft from just below the fist to its foot
+        m = float(_seg_dist(foot + (low - foot) * k, A, B).min()) - PROP_LEG_CLEAR
+        if len(cloth):
+            m = min(m, float(_seg_dist(cloth, foot[None], low[None]).min()) - PROP_SKIRT_CLEAR)
+        return m
+
+    if margin(fwd, 0.0) >= 0.0:
+        return None
+    best = (margin(fwd, 0.0), fwd, 0.0)
+    for name in PROP_PIVOT_DIRS:
+        axis_w = {"out": fwd, "in": -fwd, "fwd": side, "back": -side}[name]
+        lo, ang = 0.0, PROP_PIVOT_GRID
+        while ang <= PROP_PIVOT_MAX + 1e-9:
+            m = margin(axis_w, ang)
+            if m >= 0.0:
+                hi = ang
+                for _ in range(SKIRT_BISECT):
+                    mid = 0.5 * (lo + hi)
+                    if margin(axis_w, mid) >= 0.0:
+                        hi = mid
+                    else:
+                        lo = mid
+                return qaxis(axis_w, math.degrees(hi))
+            if m > best[0]:
+                best = (m, axis_w, ang)
+            lo = ang
+            ang += PROP_PIVOT_GRID
+    return qaxis(best[1], math.degrees(best[2])) if best[2] > 0.0 else None
 
 
 def _node_globals(nodes: list, parent: dict) -> tuple:
@@ -3193,6 +3297,9 @@ def grips_init(sk: "Skeleton", glb: Path, js: dict, nodes: list, parent: dict) -
             sk.rest_q[b] = np.array(nodes[bi].get("rotation", [0.0, 0.0, 0.0, 1.0]), dtype=float)
             sk.rest_t[b] = np.array(nodes[bi].get("translation", [0.0, 0.0, 0.0]), dtype=float)
             _HOLD[hero] = sk.prop["hold"]
+            # prop_pivot: the body's forward axis at rest
+            toe = sk.g_t["DEF-toe.L"] - sk.g_t["DEF-foot.L"]
+            sk.forward = np.array([toe[0], 0.0, toe[2]]) / float(np.hypot(toe[0], toe[2]))
             fd = gt[idx[f"DEF-hand.{side}"]] - gt[idx[f"DEF-forearm.{side}"]]
             _FORE[hero] = fd / np.linalg.norm(fd)
         palm = gt[idx[f"DEF-f_middle.01.{side}"]]
@@ -3330,6 +3437,7 @@ def build(hero: str) -> str:
         keys_s: dict = {}  # M1-CHR-15: the lower skirt panels' gathers
         keys_h: dict = {}  # M2-CHR-513: the hooks' positions and rotations
         keys_pr: list = []  # M2-CHR-515: the held prop's slide
+        keys_pq: list = []  # and its pivot in the fist (prop_pivot)
         keys_g: dict = {}  # and the grip
         for t in times:
             tt = (t % length) if loop else t
@@ -3342,6 +3450,7 @@ def build(hero: str) -> str:
                 keys_s.setdefault(b, []).append((t, v))
             if sk.prop:  # M2-CHR-515: the staff or spear sliding through the fist
                 keys_pr.append((t, local[POS_KEY][sk.prop["bone"]]))
+                keys_pq.append((t, local[sk.prop["bone"]]))
             for b in grip_bones(sk):  # and the fingers closed round it
                 keys_g.setdefault(b, []).append((t, local[b]))
             for side in sk.hooks:  # M2-CHR-513
@@ -3364,6 +3473,7 @@ def build(hero: str) -> str:
         tracks += [("scale_3d", b, _flat_keys(keys_s[b])) for b in sorted(keys_s)]
         if keys_pr:
             tracks.append(("position_3d", sk.prop["bone"], [(t, list(p)) for t, p in reduce_positions(keys_pr)]))
+            tracks.append(("rotation_3d", sk.prop["bone"], [(t, list(q)) for t, q in reduce_keys(keys_pq)]))
         tracks += [("rotation_3d", b, [(t, list(q)) for t, q in reduce_keys(keys_g[b])]) for b in grip_bones(sk)]
         for b in sorted(keys_h):
             tracks += [("position_3d", b, _flat_keys(keys_h[b][0])),
