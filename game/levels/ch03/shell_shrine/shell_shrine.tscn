@@ -17,7 +17,7 @@
 [ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/rope_coil.glb" id="sd_rope"]
 [ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/tide_debris.glb" id="sd_debris"]
 [ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/net_heap.glb" id="sd_net"]
-[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/shrine_offering.glb" id="sd_offering"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/wayside_offering.glb" id="sd_offering"]
 [sub_resource type="StandardMaterial3D" id="Mat_rhen"]
 albedo_color = Color(0.368627, 0.603922, 0.588235, 1)
 roughness = 0.7
