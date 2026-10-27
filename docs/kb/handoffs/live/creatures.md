@@ -497,3 +497,16 @@ RENDER-REQUEST @ aa762dee: battle_choreo_hit, battle_choreo_ko, creature_reef_cr
   - **For the art review (no blocker):** at review distance the gallery ray and the glass skate read small and plain (a flat sheet); the ridge lynx's muzzle reads short. They're baselined as built, with possible polish later.
   - **Supersedes my priority 3 above:** the reef crab, the Ram, both Wakefin shots and the ashwing are settled (the ashwing passed). What's left is the battle sample against this head:
 RENDER-REQUEST @ c69a14de: battle_choreo_hit, battle_choreo_ko, battle_choreo_melee, battle_boss_intro_matron; why: M3-CRE-630 clip timing and the hit_snap re-tune, on the big12 tree (small sample while the PC is paused).
+- **MERGE-READY @ 14e26ef6: M3-CRE-638, Ilun, Asha's Vowbound, in place of the battle capsule (the Lead's top item).**
+  - **The model:** a 4.6 m spectral manta with a heron's crest; a net of glimmer_bound light, as geometry on both wing faces; the glass net-float on a drooping tail.
+    - 13,655 triangles; 16 bones; every glow is steady glimmer_bound at 1.2.
+    - Opaque (the creature shader has no alpha). He reads as spectral through a dark core, pale edges and a rim sheen. True alpha is a possible follow-up after the render.
+  - **Clips:**
+    - the stand-in set: idle, ready, attack, cast, hit, defend, ko, victory;
+    - rise (2.6 s), dismiss (1.0 s) and special (Floodnet, contact 1.45 s).
+    - None goes below the water.
+  - **The attach:** CreatureModels.stand_in_overrides now also resolves a creatures.json row with `"vowbound": true`. No ui or battle-presentation file changed; battle_sandbox.json's capsule row is only the fallback.
+  - **For battle-presentation (M3-CRE-639, updated):** a data-only change to play rise and dismiss. Until then ready plays, which works. Framing: in the vertex preview his tail and float cross the right edge of the safe frame, so the render decides.
+  - **For ui (M3-CRE-634, updated):** test_creature_portraits now also flags the ilun row (the bestiary is foes only). The same enemies-only fix covers it.
+  - **Checks run:** Blender verify identical; tools test_creatures and test_blender_builds; Godot creature 46/1 (the known portrait red), vowbound 54/0, battle 720/0; validate_data, taskboard, lint, format.
+RENDER-REQUEST @ 14e26ef6: creature_ilun, battle_vowbound_out, battle_choreo_vowbound_rise, battle_choreo_summon; why: M3-CRE-638, Ilun's first renders (the three Vowbound battle shots move from the capsule to the model; creature_ilun has no baseline). Check his framing in the safe frame.
