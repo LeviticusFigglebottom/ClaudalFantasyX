@@ -453,6 +453,7 @@ RENDER-REQUEST @ 46955a37: battle_arena_undertow_cage; why: M3-ENV-727, Ch20's C
 NOT APPROVED: 95be611 (battle_arena_keth_seep_terrace). The backdrop reads as a wall of stretched white blocks and the seep strips as pale-blue ribbons, not a mountain pass. Rework is queued after the Iskarra fast-track (M3-ENV-717).
 RENDER-REQUEST @ 7f1a0fc7: battle_arena_keth_seep_terrace; why: M3-ENV-717 rework after 95be611 (crisp weathered wall, threads of seep). Supersedes 95be6118.
 RENDER-REQUEST @ 9c2aaa39: battle_arena_undertow_heart,battle_arena_undertow_heart_letting; why: M3-ENV-728, Ch21's Heart, Sefir's two arena states (held; the Letting), two new shots. After the FAST-TRACK, Ch8 and Cage requests.
+RENDER-REQUEST @ 30c9535b: battle_arena_underway_tower,ou_u04_lamp_gallery,ou_u12_terrace,battle_arena_underway,wildlife_zone_underway_crown,oruvel_o01_surfacing,oruvel_o19_dive_mooring; why: M3-ENV-705 audit, the drowned tower's bays get an articulated inner face (the gallery's walls read as bare slabs). The last five frame the tower from outside or far off and may not move.
 
 ## STATE AT HANDOVER (2026-10-25)
 
