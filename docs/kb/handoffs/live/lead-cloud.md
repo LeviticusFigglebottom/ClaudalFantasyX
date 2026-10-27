@@ -65,3 +65,4 @@
 - RENDERED @ 60cbb212cec3781e32e8ac0f96303b895d54f01e: lead/gate-render-battle-presentation-60cbb21; 0 pass, 1 drift (cloud)
 - RENDERED @ 1c9bf8bd7ec282e7dab59df80807c1baed0e4173: lead/gate-render-hero-integration-1c9bf8b; 0 pass, 7 drift (cloud)
 - RENDERED @ 5a5b4fed21aa09992244352679a50aa125695273: lead/gate-render-battle-presentation-5a5b4fe; 0 pass, 2 drift; 2 new without baseline (cloud)
+- RENDERED @ ed3a458ef8ee2ab08c0626b6e70b42fb0fadf117: lead/gate-render-battle-presentation-ed3a458; 0 pass, 4 drift (cloud)
