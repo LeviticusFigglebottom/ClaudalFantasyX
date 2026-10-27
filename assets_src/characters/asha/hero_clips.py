@@ -186,8 +186,10 @@ class Skeleton:
         helper_pose(self, g, out, hips)  # M1-CHR-15
         hook_pose(self, g, out, hips, hold or {})  # M2-CHR-513
         carry = bool((hold or {}).get("_carry"))
+        down = float((hold or {}).get("_down", 0.0))  # M2-CHR-520: how far the prop is set down on the floor
         # M2-CHR-515: the prop pivots in the fist clear of the skirt and legs, and slides to the floor
-        prop_pose(self, g, out, hips, carry, prop_pivot(self, g, hips, carry))
+        pivot = prop_pivot(self, g, hips, carry) if down < 1.0 else None
+        prop_pose(self, g, out, hips, carry, pivot, down)
         grip_pose(self, out, hold or {})
         return out
 
@@ -2725,12 +2727,58 @@ def hooks_init(sk: "Skeleton", nodes: list, parent: dict) -> None:
         assert sk.parent[HOOK_GRIP + side] == f"DEF-hand.{side}", side
 
 
+# M2-CHR-520: Asha sets the staff down on the floor where she kneels, sits or crouches low (held, it crossed her
+# pooled skirt: rig_probe's prop through_garment). (a, b, c, d): set down over u in a..b, taken up again over c..d
+# (past 1: kept down). Story clips going down to a kneel or a seat (or up from one) derive theirs from their posture
+# change; a story spec can give its own as "staff_down".
+PROP_DOWN = {"asha": {"kneel_over_rhen": (0.0, 0.45, 2.0, 2.0), "laugh": (-1.0, 0.0, 2.0, 2.0),
+                      "offer_hand": (-1.0, 0.0, 2.0, 2.0), "take_hand": (-1.0, 0.0, 2.0, 2.0),
+                      "rise_to_stand": (-1.0, 0.0, 0.35, 0.8),
+                      "feed_fire": (0.0, 0.3, 0.8, 1.0), "float_boat": (0.0, 0.25, 0.8, 1.0)}}
+PROP_DOWN_POSTURES = ("kneel", "kneel_both", "sit", "ground")  # a held prop is set down for these
+PROP_DOWN_SHARE = 0.6  # a story clip sets it down over this first share of its posture change (taken up: the last)
+
+
+def prop_down(hero: str, clip: str, u: float) -> float:
+    """0..1: how far the held prop is set down at fraction u of the clip (PROP_DOWN, or the story spec's)."""
+    if hero not in GRIP_ALWAYS or hero not in PROP_DOWN:
+        return 0.0
+    win = PROP_DOWN[hero].get(clip)
+    spec = STORY.get(hero, {}).get(clip)
+    if win is None and spec is not None:
+        if "staff_down" in spec:
+            win = tuple(spec["staff_down"])
+        elif "change" in spec:
+            c0, c1 = spec["change"]
+            to_down = spec.get("to") in PROP_DOWN_POSTURES
+            from_down = spec.get("from") in PROP_DOWN_POSTURES
+            if to_down and not from_down:
+                win = (c0, c0 + PROP_DOWN_SHARE * (c1 - c0), 2.0, 2.0)
+            elif from_down and not to_down:
+                win = (-1.0, 0.0, c1 - PROP_DOWN_SHARE * (c1 - c0), c1)
+            elif from_down and to_down:
+                win = (-1.0, 0.0, 2.0, 2.0)
+        elif spec.get("from") in PROP_DOWN_POSTURES:
+            win = (-1.0, 0.0, 2.0, 2.0)
+    if win is None:
+        return 0.0
+    a, b, c, d = win
+    return _ramp(u, a, b) * (1.0 - _ramp(u, c, d))
+
+
+def _ramp(u: float, lo: float, hi: float) -> float:
+    return 0.0 if u <= lo else 1.0 if u >= hi else smooth((u - lo) / (hi - lo))
+
+
 def hook_hold(hero: str, clip: str, u: float) -> dict:
     """{side: 0..1}: how far each hook is drawn at fraction u of the clip (HOOK_HOLD); plus "_carry" in the field's
     locomotion clips and the idle they start from (M2-CHR-515: a staff or spear is carried, not slid along the floor
     under the feet; the idle carries it too so every transition and variant starts on the idle's first frame)."""
     base = STORY.get(hero, {}).get(clip, {}).get("alias", clip)  # a story alias of walk (Toma's follow) carries too
     out = {"_carry": True} if base in LOCO_CLIPS or base == "idle" else {}
+    down = prop_down(hero, clip, u)
+    if down > 0.0:
+        out["_down"] = down
     for side, (a, b, c, d) in HOOK_HOLD.get(hero, {}).get(clip, {}).items():
         out[side] = smooth((u - a) / (b - a)) * (1.0 - smooth((u - c) / (d - c)))
     return out
@@ -3081,6 +3129,10 @@ PROP_LEG_CLEAR = 0.095  # m: the shaft's centre line from a leg bone (the thigh'
 PROP_GRIP_CLEAR = 0.06  # m: the shaft within this of the fist is the hand's (rig_probe's grip_clear_mm)
 PROP_SHAFT_SAMPLES = 12  # points along the shaft tested against the legs
 PROP_PIVOT_DIRS = ("out", "fwd", "back", "in")  # the foot tips out from the body first
+PROP_DOWN_OUT = 0.75  # m: M2-CHR-520, a set-down prop lies this far to the right of the hips (outside the pooled skirt)
+PROP_DOWN_BACK = 0.5  # m: its foot this far behind the hips, so it lies beside her from the hip forward
+PROP_DOWN_Y = 0.02  # m: its axis above the floor (the shaft's radius and a little)
+PROP_RELEASE = 0.3  # the fingers are open once the prop is this far set down
 PROP_PIVOT_MAX = math.radians(30.0)  # the most the prop pivots in the fist
 PROP_PIVOT_GRID = math.radians(2.0)  # the coarse step of that search
 _HOLD: dict = {}  # hero -> the hand's turn (from rest) that stands the held prop upright, read from the GLB
@@ -3105,19 +3157,46 @@ def prop_hold(persona: dict) -> np.ndarray:
     return _HOLD.get(hero, np.array([0.0, 0.0, 0.0, 1.0]))
 
 
-def prop_pose(sk: "Skeleton", g: dict, out: dict, hips, carry: bool = False, pivot=None) -> None:
+def prop_pose(sk: "Skeleton", g: dict, out: dict, hips, carry: bool = False, pivot=None, down: float = 0.0) -> None:
     """The held prop's bone (into out, and its position into out[POS_KEY]): slid along its own axis through the fist
     so that, standing near upright, its foot rests PROP_FLOOR above the floor (and in any pose never goes under it);
-    `carry` (walking, running) only lifts it clear. `pivot`: a world turn of the prop about the fist (prop_pivot)."""
+    `carry` (walking, running) only lifts it clear. `pivot`: a world turn of the prop about the fist (prop_pivot).
+    `down` (M2-CHR-520, 0..1): how far it is set down, tipping from the fist to lie on the floor (prop_laid)."""
     pr = getattr(sk, "prop", None)
     if not pr:
         return
     b, hand = pr["bone"], pr["hand"]
-    _, _, slide = _prop_shaft(sk, g, _positions(sk, g, hips), carry, pivot)
+    pos = _positions(sk, g, hips)
+    head, axis, slide = _prop_shaft(sk, g, pos, carry, pivot)
     lq = sk.rest_q[b] if pivot is None else qmul(qinv(g[hand]), qmul(pivot, qmul(g[hand], sk.rest_q[b])))
     out[b] = lq / np.linalg.norm(lq)
     t = sk.rest_t[b] + qrot(out[b], np.array([0.0, slide, 0.0]))
+    if down > 0.0:  # tipped about its foot, which slides along the floor to the laid place
+        gp = qmul(g[hand], out[b])
+        foot = head + axis * (slide + pr["foot"])
+        foot_l, axis_l = prop_laid(sk, g, hips)
+        w = smooth(down)
+        turn = qpow(_arc(axis, axis_l), w)
+        gp_w = qmul(turn, gp)
+        foot_w = foot + (foot_l - foot) * w
+        head_w = foot_w - qrot(gp_w, np.array([0.0, 1.0, 0.0])) * pr["foot"]
+        lq = qmul(qinv(g[hand]), gp_w)
+        out[b] = lq / np.linalg.norm(lq)
+        t = qrot(qinv(g[hand]), head_w - pos[hand])
     out.setdefault(POS_KEY, {})[b] = tuple(float(x) for x in t)
+
+
+def prop_laid(sk: "Skeleton", g: dict, hips) -> tuple:
+    """(foot, axis): where a set-down prop lies (M2-CHR-520): on the floor along the body's right side, PROP_DOWN_OUT
+    out from the hips and its foot PROP_DOWN_BACK behind them, pointing forward; in the pelvis's frame, so it stays
+    put while the body only rocks."""
+    pos = _positions(sk, g, hips)
+    fwd = qrot(qmul(g[HIPS], qinv(sk.rest_q[HIPS])), sk.forward)
+    fwd = np.array([fwd[0], 0.0, fwd[2]]) / float(np.hypot(fwd[0], fwd[2]))
+    side = np.cross(fwd, np.array([0.0, 1.0, 0.0]))  # the body's right
+    foot = pos[HIPS] + side * PROP_DOWN_OUT - fwd * PROP_DOWN_BACK
+    foot[1] = PROP_DOWN_Y
+    return foot, fwd
 
 
 def _positions(sk: "Skeleton", g: dict, hips) -> dict:
@@ -3373,7 +3452,9 @@ def _solve_finger(chain: list, thumb: bool, nodes: list, parent: dict, idx: dict
 
 
 def grip_weight(sk: "Skeleton", side: str, hold: dict) -> float:
-    return 1.0 if getattr(sk, "grip_hero", None) in GRIP_ALWAYS else float(hold.get(side, 0.0))
+    if getattr(sk, "grip_hero", None) in GRIP_ALWAYS:  # the hand opens as the prop is set down (M2-CHR-520)
+        return 1.0 - smooth(float(hold.get("_down", 0.0)) / PROP_RELEASE)
+    return float(hold.get(side, 0.0))
 
 
 def grip_pose(sk: "Skeleton", out: dict, hold: dict) -> None:

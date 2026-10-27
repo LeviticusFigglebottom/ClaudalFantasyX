@@ -123,23 +123,12 @@
           "Body": 24
         }
       },
-      "_prop_grip": "M2-CHR-515: Asha's staff still crosses her floor-length skirt in the clips that kneel, sit or bow with the staff hand low (the story clips, the poling pair, and Cutscene A's kneel_over_rhen, laugh, offer_hand and rise_to_stand): no pivot in the fist (prop_pivot, capped at 30 degrees) clears pooled cloth there. The fix is to set the staff down on the floor and pick it up again (keyed per clip, as the hook draw): M2-CHR-520. attack is listed for one line through her own sleeve at the strike's wind-up (the shaft against the forearm, outside grip_clear_mm). Walking, running, battle (but that frame) and every stand are clean; Toma has no allowance.",
+      "_prop_grip": "M2-CHR-515/520: Asha sets the staff down on the floor beside her where she kneels, sits or crouches (hero_clips.prop_down), so it no longer crosses her pooled skirt there. Still allowed: pole_in and pole_out, which pole the raft with the staff in both hands (the shaft passes the skirt's front; re-authoring the arms is a follow-up), and attack (one line through her own sleeve at the strike's wind-up).",
       "prop_grip": {
         "allow_clips": [
           "attack",
-          "bow_palms_flat",
-          "feed_fire",
-          "float_boat",
-          "kneel_hum",
-          "kneel_over_rhen",
-          "kneel_touch_ring",
-          "laugh",
-          "offer_hand",
           "pole_in",
-          "pole_out",
-          "rise_to_stand",
-          "sit",
-          "sit_beside"
+          "pole_out"
         ]
       }
     },

@@ -37,7 +37,8 @@ Three checks (thresholds in `tools/dev/rig_checks.json`, per-hero overrides unde
   in the hand's frame (`turn`, degrees) and its shaft's axis passes through the fist's grip point (`offset`; the
   shaft may slide through the fist, so only the distance across the axis counts), and (b) the shaft does not pass
   through a garment (`through_garment`: rays along the shaft's centre line and four lines on its surface, outside
-  `grip_clear_mm` of the fist, against every garment; the staff through the skirt in a kneel).
+  `grip_clear_mm` of the fist, against every garment; the staff through the skirt in a kneel). A pose with the prop
+  set down (M2-CHR-520, hero_clips.prop_down) skips (a); (b) still holds for the laid prop.
 
 `tools/tests/test_rig_integrity.py` runs all three for every hero; docs/kb/art/characters/pipeline.md ("Rig
 integrity guards") explains how to read the numbers.
@@ -440,6 +441,7 @@ class Pose:
     local_q: dict
     hips_t: object = None
     kind: str = "clip"  # rest | stage | clip
+    down: float = 0.0  # M2-CHR-520: how far a held prop is set down (released: the grip check skips the pose)
 
 
 def parse_world_pose(tscn: Path) -> dict:
@@ -514,7 +516,7 @@ def clip_poses(rig: Rig, every: int, clips: list | None = None, max_samples: int
             hold = {} if is_villager(rig.hero) else hero_clips.hook_hold(rig.hero, clip, tt / length)
             local = sk.local_pose(turns, pose.get("hips"), hold)
             hips = sk.rest_t[hero_clips.HIPS] + np.asarray(pose.get("hips", (0.0, 0.0, 0.0)), dtype=float)
-            out.append(Pose(f"{clip}@{f}", local, hips, "clip"))
+            out.append(Pose(f"{clip}@{f}", local, hips, "clip", float(hold.get("_down", 0.0))))
     return out
 
 
@@ -815,8 +817,8 @@ class Probe:
         o, d = G_b[:3, 3], G_b[:3, 1] / np.linalg.norm(G_b[:3, 1])
         v = grip - o
         offset = float(np.linalg.norm(v - (v @ d) * d))
-        rows = [{"pose": pose.label, "kind": "grip", "group": gr["name"], "turn_deg": round(turn, 3),
-                 "offset_mm": _mm(offset)}]
+        rows = [] if pose.down > 0.0 else [{"pose": pose.label, "kind": "grip", "group": gr["name"],
+                                              "turn_deg": round(turn, 3), "offset_mm": _mm(offset)}]
         if self.cloth is not None:
             if cloth_P is None:
                 cloth_P = rig.skin(self.cloth, mats=rig.skin_matrices(pose.local_q, pose.hips_t))

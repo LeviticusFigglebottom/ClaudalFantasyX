@@ -18,9 +18,9 @@ integration head f580e756) found these on the heroes. The ⚠ ones a player sees
 - [x] ⚠ 1, 2, 7: Asha's staff and Toma's spear are gripped: the fingers close round the shaft in every clip (the
       clips key no finger today, so the hand stays open), and the prop reads as held in run, walk_cycle and turn.
       Rhen's fists close on his hooks while they are drawn (M2-CHR-513).
-- [x] ⚠ 2: in offer_hand the staff no longer stands behind her back through the braid (it still crosses the skirt: M2-CHR-520).
-- [ ] ⚠ 3: in kneel_over_rhen and laugh the staff stays out of the skirt and the floor. **Floor: yes. Skirt: no** (the
-      new guard proves it crosses the pooled skirt; the fix is to set the staff down, M2-CHR-520).
+- [x] ⚠ 2: in offer_hand the staff no longer stands behind her back through the braid (set down beside her as she kneels: M2-CHR-520).
+- [x] ⚠ 3: in kneel_over_rhen and laugh the staff stays out of the skirt and the floor (she sets it down beside her,
+      M2-CHR-520; proved by the rig-probe guard).
 - [ ] ⚠ 4: the white underskirt no longer reads as a rigid tube under the front knee in offer_hand, and the trailing
       shin stays under it.
 - [ ] 5: extreme_pose's raised-knee skirt pocket (a stress stage; the two-bone panels' limit, see M1-CHR-15's notes).
