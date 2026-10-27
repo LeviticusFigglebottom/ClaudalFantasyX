@@ -37,8 +37,9 @@ Write `pemakar.md` and `ashcrown.md` mood briefs with the shot table (P01–P12 
   - **Ashcrown:** the Ashcrown kit (M3-ENV-09), with walkable stair variants for the controller (≤ 45°; the flights
     in `ashcrown_flights.json`, M3-ENV-715) and the leaf-boats.
   - **Sheets:** `pemakar.md` and `ashcrown.md`, with their shot tables.
-  - **Grades:** the `ch05_harbour_dusk` and `ch05_ashcrown_day` sub-frames aren't in the colour script yet. Pemakar's
-    day mood stands in for the latter.
+  - **Grades (done, 2026-10-27):** the colour script now has `ch05_harbour_dusk` and `ch05_ashcrown_day`. Each has an
+    Environment, a LUT and a sun row in `assets/environments/zones/ch05/ch05_grades.json` (`pemakar_grades.py`), for
+    the zones' light rows as Ch6's (`environment_res` and the sun row).
   - **What's left is placement,** which is act1-chapters' (ADR 0200; their Ch5 swap waits on M3-ARC-1216 for the
     steep stair). For the Lead: re-route or close into act1-chapters' swap.
 

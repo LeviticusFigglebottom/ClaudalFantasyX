@@ -115,6 +115,13 @@ GRADES = {
                          "highlight_strength": 0.4, "warm_deg": (-25.0, 50.0), "warm_sat": 1.12, "cool_sat": 1.0,
                          "cool_hex": "#D2DAE8", "cool_strength": 0.25, "green_deg": (70.0, 165.0),
                          "green_target_deg": 178.0, "green_shift": 0.45},
+    # M3-C05-03: Pemakar's harbour at dusk (B01, the sun 3 deg down): the afterglow's orange and the first lanterns
+    # kept, the rest cooled toward the blue hour; the toe a dusk blue, lifted off black (it isn't night yet).
+    "ch05_harbour_dusk": {"saturation": 1.05, "s_curve": 0.5, "toe_hex": "#1E2A48", "toe_strength": 0.45,
+                          "toe_end": 0.32, "black_floor": 0.4, "highlight_hex": "#FFD8B0", "highlight_start": 0.68,
+                          "highlight_strength": 0.4, "warm_deg": (-20.0, 50.0), "warm_sat": 1.1, "cool_sat": 0.95,
+                          "cool_hex": "#B8C4E0", "cool_strength": 0.3, "green_deg": (70.0, 165.0),
+                          "green_target_deg": 178.0, "green_shift": 0.35},
 }
 
 
