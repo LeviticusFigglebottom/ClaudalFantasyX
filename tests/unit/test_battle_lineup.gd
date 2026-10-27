@@ -1,7 +1,8 @@
 extends TestCase
 ## M3-BPR-403: the opening line-up keeps the real models' footprints apart. BattleLineup.spread pushes overlapping
-## neighbours apart on the ground, each at most lineup_max_shift_m off its mark; at spawn no two fighters on one side
-## overlap in any encounter (unless both were pushed their full allowance), and a line-up with room moves nobody.
+## neighbours apart on the ground, sideways on screen, each at most lineup_max_shift_m off its mark; at spawn no two
+## fighters on one side overlap in any encounter (unless both were pushed their full allowance), and a line-up with
+## room moves nobody.
 
 const SANDBOX := "res://game/battle/scene/battle_sandbox.tscn"
 const SEED := 20261025
@@ -26,6 +27,19 @@ func test_a_line_up_with_room_moves_nobody() -> void:
 	var radii: Array[float] = [0.5, 0.5, 0.5]
 	for o: Vector3 in BattleLineup.spread(pts, radii, 0.1, 1.0, 8):
 		assert_eq(o, Vector3.ZERO)
+
+
+func test_the_push_is_sideways_on_screen_never_toward_the_camera() -> void:
+	# Two foes one behind the other in depth (z) but overlapping: they slide apart along the axis (x) only.
+	var pts: Array[Vector3] = [Vector3.ZERO, Vector3(0.2, 0.0, 0.6)]
+	var radii: Array[float] = [0.6, 0.6]
+	var offs := BattleLineup.spread(pts, radii, 0.1, 5.0, 8, Vector3.RIGHT)
+	for o: Vector3 in offs:
+		assert_eq(o.z, 0.0, "no step toward the camera")
+	var a := pts[0] + (offs[0] as Vector3)
+	var b := pts[1] + (offs[1] as Vector3)
+	assert_true(a.distance_to(b) >= 1.3 - EPS, "apart by both footprints and the clearance")
+	assert_true((offs[1] as Vector3).x > 0.0 and (offs[0] as Vector3).x < 0.0, "each away from the other")
 
 
 func test_the_shift_is_capped() -> void:

@@ -83,8 +83,9 @@ func spawn(engine: BattleEngine) -> void:
 		_seat_enemy(engine.enemies[i].id, mini(i, _enemy_slots.size() - 1))
 	if is_inside_tree():  # M3-BPR-403: the opening line-up keeps the real models' footprints apart
 		var data := BattleChoreo.load_data()
-		BattleLineup.apply(_side(engine.party_active), data)
-		BattleLineup.apply(_side(engine.enemies), data)
+		var axis := camera.global_basis.x if camera != null else Vector3.RIGHT  # sideways on screen
+		BattleLineup.apply(_side(engine.party_active), data, axis)
+		BattleLineup.apply(_side(engine.enemies), data, axis)
 
 
 func _side(cs: Array[BattleCombatant]) -> Array:
