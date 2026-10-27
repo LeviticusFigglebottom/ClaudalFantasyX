@@ -1,7 +1,7 @@
 ---
 id: M3-CRE-638
 title: "Ilun, Asha's Vowbound: a creature model in place of the battle capsule (sheet, model, clips, attach)"
-role: art
+role: character
 status: doing
 owner_session: "creatures (worktree agent)"
 depends_on: []
