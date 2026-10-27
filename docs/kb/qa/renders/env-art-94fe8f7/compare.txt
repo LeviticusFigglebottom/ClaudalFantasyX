@@ -1,0 +1,5 @@
+FAIL tamsule_tp01_port_and_bell: no baseline (inspect out/, then compare.py --update-baselines tamsule_tp01_port_and_bell)
+FAIL tamsule_tp03_floating_market: no baseline (inspect out/, then compare.py --update-baselines tamsule_tp03_floating_market)
+FAIL tamsule_tp05_gantry_foot: no baseline (inspect out/, then compare.py --update-baselines tamsule_tp05_gantry_foot)
+Screenshots: 3 compared, 3 failed (diffs in /root/hymn/tests/screenshots/out/diff)
+compare exit 1
