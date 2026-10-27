@@ -367,3 +367,22 @@ func test_no_party_member_crowds_a_boss_intro() -> void:
 		assert_true(intro._party_clear(intro._pose), "%s: the party is off screen or small and clear of the HUD" % enc)
 		intro.skip()
 	_free()
+
+
+func test_the_party_rule_widens_a_shot_only_when_the_party_crowds_it() -> void:
+	# PC render c1d1e3e: at party_max_h 0.3 Rhen (0.35 of the screen, inside the safe frame at Hullgnaw's side) pushed
+	# the camera out past the raft's rope rail, which then cut across the serpent. Hullgnaw keeps the frame it has
+	# with no party rule at all; the Drownbell (Toma over the timeline) still orbits.
+	var intro := _start(&"ch01_hullgnaw", 0.0)
+	intro.force_play = true
+	intro.play()
+	var ruled := intro._pose.duplicate()
+	intro.skip()
+	intro.cfg = intro.cfg.duplicate(true)
+	(intro.cfg["fit"] as Dictionary)["party_max_h"] = 100.0
+	intro.play()
+	assert_true(
+		(ruled["pos"] as Vector3).is_equal_approx(intro._pose["pos"] as Vector3), "Hullgnaw: the same frame as unruled"
+	)
+	intro.skip()
+	_free()
