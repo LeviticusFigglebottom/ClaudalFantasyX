@@ -52,6 +52,8 @@ M2_CUES = ("haluna_village", "haluna_night", "battle_standard_v2", "hush_first_v
            "tamsule_bell_galleries", "stillguard_inquisitor", "ossa_fen", "reedhollow", "sunken_vey", "lowlight",
            "keth_pass", "quellan",
            "ansedra", "lamp_archive", "peace_wedding", "unlamped", "pale_rim", "drowned_choir")
+# M3-AUD-820: the Ch4 and Ch7 scene cues
+M2_CUES += ("hearer_hum", "ysolde_theme", "name_board_home", "the_long_way_round", "oruvel_theme", "tavi_kell")
 AMBIENCE_BUDGET = int(2.5 * 1024 * 1024)  # the M2-AUD-05 field beds together
 # Per-job budgets for later "ambience_loop" jobs (each job's beds together; the M2-AUD-05 job keeps AMBIENCE_BUDGET).
 AMBIENCE_JOB_BUDGETS = {"assets_src/sfx/causeway_ambience.py": int(1.2 * 1024 * 1024),
@@ -231,6 +233,14 @@ JOBS = [
     ("assets_src/music/unlamped.py", "assets/audio/music", ["unlamped.ogg", "unlamped.loop.json"], "music_loop"),
     ("assets_src/music/pale_rim.py", "assets/audio/music", ["pale_rim.ogg", "pale_rim.loop.json"], "music_loop"),
     ("assets_src/music/drowned_choir.py", "assets/audio/music", ["drowned_choir.ogg", "drowned_choir.loop.json"], "music_loop"),
+    # M3-AUD-820: the Ch4 and Ch7 scene and cutscene cues (the scripts' `@music <id>`)
+    ("assets_src/music/hearer_hum.py", "assets/audio/music", ["hearer_hum.ogg", "hearer_hum.loop.json"], "music_loop"),
+    ("assets_src/music/ysolde_theme.py", "assets/audio/music", ["ysolde_theme.ogg", "ysolde_theme.loop.json"],
+     "music_loop"),
+    ("assets_src/music/name_board_home.py", "assets/audio/music", ["name_board_home.ogg"], "music"),
+    ("assets_src/music/the_long_way_round.py", "assets/audio/music", ["the_long_way_round.ogg"], "music"),
+    ("assets_src/music/oruvel_theme.py", "assets/audio/music", ["oruvel_theme.ogg"], "music"),
+    ("assets_src/music/tavi_kell.py", "assets/audio/music", ["tavi_kell.ogg"], "music"),
 ]
 M1_JOBS = 5  # the first JOBS rows are M1's audio (SIZE_BUDGET)
 
