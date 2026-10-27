@@ -368,13 +368,53 @@ func test_the_party_holds_a_victory_pose_before_the_result() -> void:
 	assert_eq(outro.playing, BattleOutro.VICTORY)
 	var cfg := outro.cfg(BattleOutro.VICTORY)
 	outro.advance(float(cfg["delay_sec"]) + float(cfg["sec"]) * 0.25)
-	assert_true(_pos(&"rhen").y > _home_pos(&"rhen").y + EPS, "Rhen hops")
+	var rhen := ctl.stage.stand_in(&"rhen")
+	if BattleClips.has_clip(rhen, BattleClips.VICTORY):  # a hero model plays its victory clip in place of the hop
+		assert_eq(StringName(BattleClips.player_of(rhen).current_animation), BattleClips.VICTORY, "Rhen's victory")
+	else:
+		assert_true(_pos(&"rhen").y > _home_pos(&"rhen").y + EPS, "Rhen hops")
 	var hold := ctl.stage.outro_hold(0.0)
 	assert_between(hold, outro.remaining_sec(), outro.remaining_sec() + 1.0)
 	outro.advance(outro.duration(BattleOutro.VICTORY))
 	assert_eq(outro.playing, &"")
 	_assert_home(&"rhen")
 	assert_eq(ctl.stage.outro_hold(0.6), 0.6, "nothing left to wait for")
+	_free()
+
+
+## hero-integration's review (M2-HER-1103): hero models' victory clips start on the same stagger as the hops.
+func test_victory_clips_start_one_after_another() -> void:
+	var players: Array[AnimationPlayer] = []
+	for cid: StringName in [&"rhen", &"asha"]:
+		# A real hero model (hero-integration) brings its own player, which the outro drives; a stand-in gets one.
+		var player := BattleClips.player_of(ctl.stage.stand_in(cid))
+		if player == null:
+			player = AnimationPlayer.new()
+			var lib := AnimationLibrary.new()
+			for clip in [BattleClips.IDLE, BattleClips.VICTORY]:
+				var a := Animation.new()
+				a.length = 2.0
+				lib.add_animation(clip, a)
+			player.add_animation_library(&"", lib)
+			ctl.stage.stand_in(cid).add_child(player)
+		assert_true(player.has_animation(BattleClips.VICTORY), "%s has a victory clip" % cid)
+		players.append(player)
+	_to_turn_of(&"rhen")
+	for e in ctl.engine.enemies:
+		e.hp = 1 if e.id == _foe() else 0
+	ctl.pacing_scale = 1.0
+	var outro := choreo.outro
+	outro.live = false
+	ctl.act(&"attack", [_foe()])
+	choreo.finish()
+	var cfg := outro.cfg(BattleOutro.VICTORY)
+	var stagger := float(cfg["stagger_sec"])
+	assert_true(stagger > 0.0, "the data staggers the party")
+	outro.advance(float(cfg["delay_sec"]) + stagger * 0.5)
+	assert_eq(str(players[0].current_animation), str(BattleClips.VICTORY), "Rhen first")
+	assert_ne(str(players[1].current_animation), str(BattleClips.VICTORY), "Asha not yet")
+	outro.advance(stagger)
+	assert_eq(str(players[1].current_animation), str(BattleClips.VICTORY), "then Asha")
 	_free()
 
 
@@ -454,7 +494,9 @@ func test_a_creature_actor_strikes_with_its_own_clip_on_its_own_contact_frame() 
 	assert_eq(BattleClips.contact_sec(f, BattleClips.ATTACK), _FakeCreature.CONTACT)
 	assert_true(BattleClips.play_action(f, &"pinch", &"physical", BattleClips.ATTACK))
 	assert_eq(cr.actions, [&"pinch"] as Array[StringName], "the creature plays its own action clip")
-	assert_eq(BattleClips.contact_sec(ctl.stage.stand_in(&"rhen"), BattleClips.ATTACK), -1.0, "a primitive can't say")
+	var bare := Node3D.new()
+	assert_eq(BattleClips.contact_sec(bare, BattleClips.ATTACK), -1.0, "a primitive can't say")
+	bare.free()
 	var plan := choreo.plan_for(_result(&"attack", [_hit(_foe(), 10)]))
 	var strike_end := float(plan["strike_end"])
 	var late := float(plan["approach_end"]) + 1.2
@@ -485,7 +527,9 @@ func test_a_hero_strike_lands_on_its_clips_contact_marker() -> void:
 
 
 func test_a_primitive_stand_in_has_no_clips() -> void:
-	var f := ctl.stage.stand_in(&"rhen")
+	var f := FighterStandIn.new()  # Ysolde is still a capsule; the heroes and foes are actor scenes (M2-UI-07)
+	f.setup(&"ysolde", BattleStage.stand_in_spec(&"ysolde"), {})
+	ctl.add_child(f)
 	assert_eq(BattleClips.player_of(f), null)
 	for clip in BattleClips.ALL:
 		assert_false(BattleClips.play(f, clip))

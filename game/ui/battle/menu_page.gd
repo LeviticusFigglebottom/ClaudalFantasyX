@@ -60,6 +60,7 @@ func setup(metrics: Dictionary, pid: StringName, title: String, page_rows: Array
 	_header.position = Vector2(HudLayout.num(_m, "text_indent"), 0.0)
 	_header.size = Vector2(size.x - HudLayout.num(_m, "text_indent") * 2.0, HudLayout.num(_m, "header_height"))
 	_header.vertical_alignment = VERTICAL_ALIGNMENT_BOTTOM
+	_header.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS  # never past the page (M2-UI-28)
 	_header.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_content.add_child(_header)
 	if title != "":
@@ -241,6 +242,7 @@ func _cell(text: String, variation: StringName, r: Rect2) -> Label:
 	l.size = r.size
 	l.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	l.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	l.grow_vertical = Control.GROW_DIRECTION_BOTH  # a line taller than the row (130 % text) stays centred on it
 	l.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	return l
 
@@ -339,6 +341,20 @@ func _nudge_rows(animate: bool) -> void:
 			_nudge_tweens[i] = tw
 		else:
 			label.position.x = x
+
+
+## The cursor frame's rect now (mid-slide while it eases; M2-MNU-303 tests read its target after settle()).
+func cursor_rect() -> Rect2:
+	return Rect2(_cursor_box.position, _cursor_box.size) if _cursor_box != null else Rect2()
+
+
+## Ends the cursor's slide and the rows' nudges now, at their targets (tests run no frames; M2-MNU-303).
+func settle() -> void:
+	var tweens: Array = _nudge_tweens.values()
+	tweens.append(_cursor_tween)
+	for tw: Variant in tweens:
+		if tw is Tween and (tw as Tween).is_valid() and (tw as Tween).is_running():
+			(tw as Tween).custom_step(HudLayout.num(_m, "cursor_sec") + HudLayout.num(_m, "mote_lag_sec"))
 
 
 ## The x of row `index`'s label (tests: the cursor row is nudged).

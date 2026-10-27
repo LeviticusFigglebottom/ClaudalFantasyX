@@ -758,8 +758,19 @@ def choreo_errors(doc: object, rows: dict, classes: dict[str, list[str]] | None,
         errs.append(f"{w0} vowbound.long_sec: seconds > 0")
     flood = doc.get("flood") or {}
     row(flood.get("sfx"), f"{w0} flood.sfx", blank=False)
-    if not isinstance(flood.get("phase"), str) or not _num(flood.get("stagger_sec")) or flood["stagger_sec"] < 0:
-        errs.append(f"{w0} flood: a phase id and stagger_sec >= 0")
+    # M3-AUD-800: the phase and stagger are the choreography's own (choreo.json bosses.<boss>.flood); this table's
+    # are only a fallback, so one of the two must give them.
+    floods = [flood]
+    if isinstance(choreo, dict):
+        for b in ((choreo.get("choreo") or {}).get("bosses") or {}).values():
+            if isinstance(b, dict) and isinstance(b.get("flood"), dict):
+                floods.append(b["flood"])
+    if "phase" in flood and not isinstance(flood["phase"], str):
+        errs.append(f"{w0} flood.phase: a phase id")
+    if "stagger_sec" in flood and (not _num(flood["stagger_sec"]) or flood["stagger_sec"] < 0):
+        errs.append(f"{w0} flood.stagger_sec: seconds >= 0")
+    if not any(isinstance(f.get("phase"), str) and _num(f.get("stagger_sec")) for f in floods):
+        errs.append(f"{w0} flood: no phase id and stagger_sec here or in {CHOREO} bosses.*.flood")
     for k in doc.get("reduced_skip", []):
         if k not in CHOREO_SKIPS:
             errs.append(f"{w0} reduced_skip: {k} is not one of {sorted(CHOREO_SKIPS)}")

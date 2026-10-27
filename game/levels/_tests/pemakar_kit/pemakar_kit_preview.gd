@@ -8,8 +8,9 @@ extends Node3D
 ##
 ## Kit pieces are assets/environments/kits/pemakar/*.glb (`<piece>` + `<piece>-lod1`, chained so one LOD
 ## draws at every distance, LodChain); every glTF slot maps to `<materials_dir>/<slot>.tres` unless the
-## placement overrides it. The Lanternfall leaf-boats are one MultiMesh, the distant festival lights on
-## the massif another (env_far_lights), and the lamps are OmniLight3Ds whose energy the mood scales.
+## placement overrides it. Ashcrown on the rim is the Ashcrown kit's pieces (each placement names their kit).
+## The Lanternfall leaf-boats are one MultiMesh, the distant festival lights on the massif another
+## (env_far_lights), and the lamps are OmniLight3Ds whose energy the mood scales.
 
 signal dressed
 
@@ -68,7 +69,7 @@ func dress() -> void:
 	root.name = "Pieces"
 	add_child(root)
 	for spec: Dictionary in layout.get("pieces", []):
-		var node := instance_piece(String(spec["piece"]), spec.get("materials", {}))
+		var node := instance_piece(String(spec["piece"]), spec.get("materials", {}), spec)
 		if node != null:
 			node.transform = spec_transform(spec)
 			root.add_child(node)
@@ -94,19 +95,22 @@ func dress() -> void:
 
 
 ## A kit piece with its slot materials and its LOD chain (`<piece>` drawn as the visibility child of
-## `<piece>-lod1`), or null if the kit has no such piece.
-func instance_piece(piece: String, overrides: Dictionary = {}) -> Node3D:
-	var packed := _load_scene(String(layout.get("kit_dir", "")) + piece + ".glb")
+## `<piece>-lod1`), or null if the kit has no such piece. `spec` may name another kit for this piece
+## ("kit_dir", "materials_dir": Ashcrown on the rim is the Ashcrown kit's) and its own "lod1_from_m".
+func instance_piece(piece: String, overrides: Dictionary = {}, spec: Dictionary = {}) -> Node3D:
+	var packed := _load_scene(String(spec.get("kit_dir", layout.get("kit_dir", ""))) + piece + ".glb")
 	if packed == null:
 		push_warning("PemakarKitPreview: no kit piece '%s'" % piece)
 		return null
 	var node := packed.instantiate() as Node3D
 	node.name = piece
-	var ends := PackedFloat32Array([float(layout.get("lod1_from_m", 70.0)), float(layout.get("lod_end_m", 4000.0))])
+	var lod1_from := float(spec.get("lod1_from_m", layout.get("lod1_from_m", 70.0)))
+	var ends := PackedFloat32Array([lod1_from, float(layout.get("lod_end_m", 4000.0))])
 	var margin := float(layout.get("lod_margin_m", 2.0))
+	var mat_dir := String(spec.get("materials_dir", layout.get("materials_dir", "")))
 	for child: Node in node.find_children("*", "MeshInstance3D", true, false):
 		var mi := child as MeshInstance3D
-		_apply_materials(mi, overrides)
+		_apply_materials(mi, overrides, mat_dir)
 		var lod := 1 if String(mi.name).ends_with(LOD_SUFFIX) else 0
 		LodChain.apply(mi, lod, ends, margin, 0.0, LodChain.sibling(mi, lod + 1))
 	placed[piece] = int(placed.get(piece, 0)) + 1
@@ -304,7 +308,7 @@ func _place_plant(spec: Dictionary) -> void:
 	placed[kind_name] = int(placed.get(kind_name, 0)) + 1
 
 
-func _apply_materials(mi: MeshInstance3D, overrides: Dictionary) -> void:
+func _apply_materials(mi: MeshInstance3D, overrides: Dictionary, mat_dir: String = "") -> void:
 	if mi.mesh == null:
 		return
 	for i in mi.mesh.get_surface_count():
@@ -312,19 +316,20 @@ func _apply_materials(mi: MeshInstance3D, overrides: Dictionary) -> void:
 		if src == null:
 			continue
 		var slot := String(src.resource_name)
-		var mat := _kit_material(String(overrides.get(slot, slot)))
+		var mat := _kit_material(String(overrides.get(slot, slot)), mat_dir)
 		if mat != null:
 			mi.set_surface_override_material(i, mat)
 
 
-func _kit_material(mat_name: String) -> Material:
-	if _material_cache.has(mat_name):
-		return _material_cache[mat_name]
-	var path := String(layout.get("materials_dir", "")) + mat_name + ".tres"
+## The slot's material from `mat_dir` (the layout's materials_dir when empty).
+func _kit_material(mat_name: String, mat_dir: String = "") -> Material:
+	var path := (mat_dir if not mat_dir.is_empty() else String(layout.get("materials_dir", ""))) + mat_name + ".tres"
+	if _material_cache.has(path):
+		return _material_cache[path]
 	var mat: Material = load(path) as Material if ResourceLoader.exists(path) else null
 	if mat == null:
 		push_warning("PemakarKitPreview: missing material %s" % path)
-	_material_cache[mat_name] = mat
+	_material_cache[path] = mat
 	return mat
 
 

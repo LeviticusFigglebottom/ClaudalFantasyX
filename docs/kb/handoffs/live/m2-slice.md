@@ -3,6 +3,80 @@
 Feature track for the M2 vertical slice (session_01DQ9tdk8Uatb8Jr6raAkXiC), branch `claude/m2-slice`, started from `claude/first-playable` 67984ce. **This environment owns this file** (CLAUDE.md §7a). The Lead is session_019iimsngAgPLEram1wcbLpE; the integration branch is `claude/undertow-lead-handoff-423ixt`.
 
 ## Now
+- **MERGE-READY @ 74ef8626** (plus this log commit)
+  - **Items since 17853df1:**
+    - the playtest round 2 fixes:
+      - motion easing (716c2db4);
+      - the prologue figures, lantern and grade (583759c0);
+      - Haluna's Asha faces her root's forward (74ed95b4, hero-integration's catch);
+      - the hero hooks doc (d06ba098);
+    - M2-UI-100 and M3-UI-100 (UI requests);
+    - **M3-CMB-01 merged** (74ef8626). Ch8's set-piece battle pieces, ADR 0100, gated on its merge over big7 (f3ef6f8c → 40a55f3d):
+      - full Godot suite 2069 run, 0 failed;
+      - tools OK;
+      - sim exit 0, nothing out of band;
+      - coverage battle 99.96% and progression 96.89%, within baseline.
+  - **Checks after the final merge:** ch08 8, set_piece 28, haluna 47, prologue 6 and cutscene 44, all 0 failed; validate_data, taskboard, lint and format clean.
+  - **Checks skipped:**
+    - a second full run on 74ef8626: the merge was clean, and the gated sides are covered by the scoped runs above;
+    - Blender: no source touched;
+    - the shot manifest: no shot covers the changed areas.
+  - **Next:** M3-C08-02, Ch8 playable (it was blocked on CMB-01).
+- **Playtest round 2 (Lead, ~20:00)**
+  1. **The prologue's "everyone is still here" segment: fixed in-scene** (583759c0).
+     - **Presets are not the cause:** low, medium, high and ultra render the same, and nothing desaturates.
+     - **The grey read came from:**
+       - the 7 vigil figures the line is about, which were near-black `Mat_shadow` (L 0.33, chroma 0.045);
+       - the dialogue panel plus the letterbox, which cover about 42% of the frame in navy and black while the line is up.
+     - **Fix:** the figures wear palette cloth colours (Rhen faded teal, Asha sea blue, Toma indigo, the rest sand). Rhen's lantern is an oil-lamp OmniLight, and there is a dusk grade stand-in (gold mid-tones, teal toe) until Rendering's LUT.
+     - **Measured:** figures L 0.33 → 0.59 and chroma 0.045 → 0.058; the scene above the box 0.061 → 0.070.
+     - **Test:** `test_the_figures_and_the_grade_carry_colour_while_the_line_is_up`. prologue 6 and prewarm 18 runs, 0 failed.
+     - **Still covering the frame: the dialogue panel** (UI's file). Request M2-UI-100 (10ba388e) asks for voice-over and narrator lines as subtitles.
+     - **Follow-up:** the colour script lights Rhen's lantern as the line lands. That needs a `@light` sequencer cue; for now the lantern is lit throughout.
+  2. **Cutscene motion eases: done** (716c2db4, M2-FP-29). New `CutsceneMotion`:
+     - Turns ease in and out, over a time scaled by the angle.
+     - Walks have a beat of anticipation, then accelerate, cruise and decelerate, and turn into their heading instead of snapping.
+     - Every clip change cross-fades (0.25 s).
+     - Stand-in marks glide instead of jumping.
+     - The tunings are in sequencer.json and documented in cutscenes.md "Motion".
+     - **Tests:** test_cutscene_motion (5) and two real-time sequencer tests. Scoped runs, all 0 failed: cutscene 44, haluna 46, ch0* 45, fp_ 26, zone_story 15, face 25, lip 14.
+  3. **Hero swap: hooks handed over** (d06ba098). `docs/kb/tech/field_hero_hooks.md` names every place a hero capsule is built or driven: GreyboxZone `_build_player` / `_build_stage`, the Haluna, shrine and first-verse scenes, and the sequencer's clip and motion contract. The hero integration track has my OK to edit those hook points, or to name an API for me to wire. I'm not duplicating its work.
+- **Pre-existing, not m2-slice's: `test_shrine_audio::test_the_zone_plays_the_shrine_cue` fails when run alone** (`--filter=shrine`).
+  - It fails the same way on HEAD without my changes.
+  - **The cause:** `AudioDirector.apply_zone` → `play_music_async` is a threaded load the test doesn't wait for, so `music.player().stream` is null. In the full suite the stream is already cached, so it passes.
+  - **Audio's test, from big7.** It needs to await the load, or use a sync path in tests.
+- **M3-CMB-01 (Ch8 set-piece pieces) is built** (subagent; ADR 0038; docs/kb/design/set_piece_battles.md).
+  - **Merged over big7** in a scratch worktree (f3ef6f8c, not on the branch yet). The full gate, with suite, tools, sim and coverage, is running there.
+  - **Bands at 1000 seeds (role_answer / naive):**
+    - Waves 1–3: 89.8 / 15.4%, 87.8 / 53.2% and 93.0 / 33.2%;
+    - the Reach: 80.7% / 0.3%.
+  - **Battle coverage:** 99.96%, against a 99.93% baseline.
+  - **ADR renumbered to 0100** (m2-slice's block; hero-integration keeps 0038).
+  - **Lead to confirm:** the waves' naive band is 10–60%, not the beat sheet's 40–60%. Wave 1's masher sits at 15%, and raising it pushed role_answer past 95%.
+  - **UI still to do** (needs a UI task): entries on the timeline, Swap and formation greyed for locked or unavailable heroes, floats for intercepts and withdrawals, and the stair-meter HUD.
+- **MERGE-READY @ a851364c** (plus this log commit)
+  - **Items:**
+    - big7 merged (00bf4b01);
+    - the playtest fixes: the encounter meter and grace (a9b8033b), prologue → Haluna (399651ca), the rim light (9036c019);
+    - the end card switch (M3-C04-04);
+    - the F8 chapter select (M3-ARC-02);
+    - merge_union's keyed loc union;
+    - voices for the Act I speakers;
+    - creature models for 15 Act I enemies (544958b1);
+    - M3-CHR-01, the clip request (ba066d6f, a851364c);
+    - and everything earlier.
+  - **Checks run:**
+    - the full Godot suite on 00bf4b01: 2011 run, 0 failed;
+    - the sim on 00bf4b01: exit 0, nothing out of band;
+    - the tools unittest on 00bf4b01: 709 run, 2 failures, both test_hero_clips (big7's clip-call tests against the Act I dialogue). Fixed by M3-CHR-01; test_hero_clips is now 9 run, OK;
+    - for the model lines: creature 13, choreo 39, field_battle 12 and ch0* 45, all 0 failed;
+    - validate_data, taskboard, dlgc, lint and format: clean.
+  - **Checks skipped:**
+    - a second full Godot run after 00bf4b01: since then only enemies.json model lines, tests and docs changed, all covered above;
+    - coverage: no game/battle or game/progression code change;
+    - Blender: no source touched;
+    - the full shot manifest: no shot covers the changed areas.
+  - **M3-CHR-01:** Act I's staging calls about 100 body clips nobody has built (Rhen 46, Asha 20, Toma 12, Ysolde 9, Kerrid 7, Liss 6). They're skipped at runtime until built. The list is `assets_src/characters/requested_clips.json`; test_hero_clips allows exactly those and still catches typos. **Lead: please route it to the character track.**
 - **big7 is merged into claude/m2-slice** (00bf4b01, pushed): characters, creatures, battle presentation, menus, combat, audio and lip sync. The branch the human plays now has animated heroes, enemy models and battle transitions.
   - **Playtest fixes kept on top:** the encounter meter with its grace, prologue → Haluna, and the prologue's rim light.
   - **Merge decisions** (also in the commit message):

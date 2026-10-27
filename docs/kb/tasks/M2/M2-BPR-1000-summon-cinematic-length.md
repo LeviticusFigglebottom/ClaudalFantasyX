@@ -1,0 +1,41 @@
+---
+id: M2-BPR-1000
+title: The Vowbound call cinematic reads the summon cinematic setting
+role: combat
+status: review
+owner_session: lead/big7
+depends_on: [M2-UI-23]
+milestone: M2
+request-from: ui
+---
+## Goal
+SPEC §6.3: each Vowbound's call cinematic plays in full on first use, then shortened, with a skip toggle in settings. M2-UI-23 added the setting (Accessibility, "Vowbound calls": Full / Short / Off). The call cinematic, when it is built (M2-BPR-04's "Vowbound call", the C10 Ilun cinematic), has to obey it.
+
+## Acceptance criteria
+- [ ] Before a call cinematic plays, ask `UiSettings.shared().summon_cinematic_cut(first_call)`, where `first_call` is true the first time this Vowbound is ever called (keep that record per Vowbound in the save, not per battle).
+- [ ] `UiSettings.CUT_FULL` plays every beat. `CUT_SHORT` skips the middle beats and keeps the arrival and the landing. `CUT_NONE` goes straight to the effect (the stage re-seat that `BattleVowboundHud._reseat` does today).
+- [ ] Battle speed (`battle_speed`) still scales whichever cut plays. Instant pacing (tests, captures) plays none.
+- [ ] Tests for all three cuts.
+
+## Notes
+- Depends on M2-BPR-04 too (it lives on claude/battle-presentation, so it is not listed in depends_on here).
+- Setting data: `game/data/ui/accessibility.json` `summon_cinematics`. Docs: `docs/kb/tech/ui.md` § Battle speed and the Vowbound call cinematic.
+- The default is Short, which plays the first call in full, so the slice's first Ilun call (vertical_slice.md B10) stays unmissable unless the player turns calls Off.
+
+- **Renumbered (Lead merge, big7, 2026-10-24):** filed by claude/ui as M2-BPR-07, which collided with
+  claude/battle-presentation's M2-BPR-07 (per-encounter arenas). Renumbered to M2-BPR-09, the next id free across all
+  branches.
+- **Wired at the big7 merge:** `BattleSummonCinematic.wants_full` asks `UiSettings.summon_cinematic_cut(first_call)`
+  (first_call = the Vowbound's `first_call_flags` seen-flag, a save flag, is unset). CUT_FULL plays BPR-08's C10
+  cinematic; CUT_SHORT plays the short entry (`choreo.json vowbound.entry`, BPR-08's "short"); CUT_NONE (Off) never
+  plays the cinematic and also plays the short entry (the arrival). So Short (the default) = the first call in full,
+  later calls short; Full = every call in full; Off = never. Battle speed scales whichever plays (BattleChoreo.speed);
+  instant pacing plays none. Test: `tests/unit/test_battle_summon_cinematic.gd`
+  `test_call_length_setting_full_short_off`. Open point: CUT_SHORT has no "middle beats skipped" cut of its own; it
+  is the existing short entry. Reviewer: ui.
+
+- **Renumbered again (Lead merge, big8, 2026-10-24):** big7's M2-BPR-09 collided with claude/battle-presentation's M2-BPR-09 (battle mouse targeting). Now M2-BPR-11, the next id free across all branches.
+
+- **Renumbered (Lead merge, big9, 2026-10-24):** filed as M2-BPR-11. M2-BPR-11 is also the KO-plays-once fix the integration branch fast-tracked under that id (the human's playtest bug), which the Lead and the code name. Now M2-BPR-1000, from the Lead's id block (CONSOLIDATED §4).
+
+## Review log

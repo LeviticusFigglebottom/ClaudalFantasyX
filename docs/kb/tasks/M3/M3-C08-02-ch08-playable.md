@@ -2,8 +2,8 @@
 id: M3-C08-02
 title: Ch8 "The Seawall" playable (dialogue, flow, greybox levels, encounters, cutscenes)
 role: cinematics
-status: todo
-owner_session: ""
+status: doing
+owner_session: "m2-slice (session_01DQ9tdk8Uatb8Jr6raAkXiC)"
 depends_on: [M3-C08-01, M3-ARC-01, M3-CMB-01]
 reviewer: narrative
 milestone: M3

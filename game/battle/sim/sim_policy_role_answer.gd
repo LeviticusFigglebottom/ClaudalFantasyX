@@ -16,6 +16,8 @@ func decide(engine: BattleEngine) -> void:
 	var actor := engine.current
 	if call_vowbound(engine):  # the Drownbell's answer: Ilun into the flood (M2-FP-17)
 		return
+	if guard_ward(engine):  # a set piece's answer to a grip: Toma's shield on the stair (M3-CMB-01)
+		return
 	if step_back(engine, actor):
 		actor = engine.current
 	var target := _target_for(engine, actor)

@@ -192,6 +192,7 @@ func test_open_in_brings_its_own_layer_under_the_bestiary_s() -> void:
 	assert_eq(layer.layer, int(FieldMenu.load_data()["canvas_layer"]))
 	assert_true(layer.layer < int(BestiaryMenu.load_data()["canvas_layer"]), "the bestiary draws over it")
 	m.close()
+	m.motion().finish()  # M2-MNU-303: the layer goes once the menu has faded out
 	assert_true(layer.is_queued_for_deletion())
 	host.get_tree().paused = false
 	_root().remove_child(host)

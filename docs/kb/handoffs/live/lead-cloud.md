@@ -9,6 +9,7 @@
 - 02:22: **lead/gate-big10 @ 181708a7 pushed** (big9 + integration de93e79e + bpr a3e489bb, creatures 5b32803d, hero-int 0eff0b34, characters 66529dba, menus 0b5c2bd9, ui 776a24a1, m2-slice 6c50823f, env-art 294577d6, audio 7141fef2). Cloud: validate/taskboard/dlgc/lint/format OK, tool tests 1141 OK, Godot 2637/2 (env-only: scene_router_swap without $GODOT; 15/0 with it). Watch: mixed battle baselines (menus vs big9); voices.json `wright` keeps audio's pending voice. PC gates it after big9.
 - 10-25 ~02:40 → 10-27 ~15:10: usage-limit stop (all sessions). Nothing had been pushed since about 02:40; big9 had not finished its PC gate.
 - 10-27 15:15: limit reset. Nudged all ten sessions (the PC: finish big9 → gpu/gate-big9-shots, then big10).
+- 10-27 15:40: **big9 merged** (3b7cbf5e) after viewing all 48 drifted shots on contact sheets (baseline | out | diff). Routed: the Ysolde capsule → hero-integration; the camp capsule foe → creatures; the Hullgnaw framing → bpr 404; a prologue colour shot → slice-polish. Deleting `lead/gate-big9` failed (the remote hung up); retry later.
 
 ## STATE AT HANDOVER (2026-10-25)
 - **Integration head:** 6c6e5514 plus handover docs. big8 is merged; the fast-tracked playtest fixes (M2-FP-28, M3-CMB-02, M2-BPR-11) are in.

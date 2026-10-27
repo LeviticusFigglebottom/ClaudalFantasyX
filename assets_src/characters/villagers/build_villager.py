@@ -88,6 +88,35 @@ def parse_args() -> argparse.Namespace:
     return ap.parse_args(argv)
 
 
+TORSO_PIECES = ("Top",)  # garment_fit: the torso only (M1-CHR-14: arm weights at the armholes drag the sides out)
+LOWER_PIECES = ("TrouserTop", "TrouserLegL", "TrouserLegR")  # garment_fit: off the arms (a hanging hand is near)
+LEG_FOLLOW_PIECES = ("Skirt", "Apron")  # garment_fit: below the crotch they follow the legs (build_asha.skirt_weights)
+
+
+def fitted_weights(key: str, P: np.ndarray, V: np.ndarray, W: np.ndarray, reg: np.ndarray, lm,
+                   spine_i: int) -> np.ndarray:
+    """`garment_fit` skin weights for one costume piece: M1-CHR-14's lessons on the villager pieces (the top rides
+    the torso, skirts and aprons follow the legs below the crotch, sandals take the feet's weights)."""
+    def src(*regions: str) -> np.ndarray:
+        m = np.isin(reg, regions)
+        return hb.transfer_weights(P, V[m], W[m])
+
+    if key in TORSO_PIECES:
+        return src("torso")
+    if key in LOWER_PIECES:
+        return src("torso", "leg_L", "leg_R")
+    if key == "Sandals":
+        return src("foot_L", "foot_R")
+    if key in LEG_FOLLOW_PIECES:
+        return hb.skirt_weights(P, src("torso", "leg_L", "leg_R"), V, W, reg, lm, spine_i)
+    Wc = src("torso", "leg_L", "leg_R", "arm_L", "arm_R")
+    if key in SKIRT_PIECES:  # the sash, as the M2-CHR-03 build hangs it
+        z_crotch = float(lm.P("crotch")[2])
+        low = np.clip((z_crotch + 0.05 - P[:, 2]) / 0.25, 0.0, 1.0) * 0.5
+        Wc = hb.limit4(Wc * (1.0 - low[:, None]) + np.outer(low, np.eye(W.shape[1])[spine_i]))
+    return Wc
+
+
 def kept_shapes(shapes: dict, build: dict) -> dict:
     """The shapes this villager ships: `_build.shapes` ("all", or a list of API names; a paired base
     name keeps both sides)."""
@@ -112,6 +141,11 @@ def main() -> int:
     params = bb_params.load_params(path=str(path))
     extra = json.loads(path.read_text(encoding="utf-8"))
     build = extra.get("_build", {})
+    # M3-CHR-03 opt-ins (absent on the M2-CHR-03 seven, whose outputs stay byte-identical): `host_snaps` applies
+    # M1-CHR-14's host-determinism snaps (build_asha: MIDLINE_SNAP on the head, quantize_uvs, snap_shape_noise;
+    # villager_textures sets asha_textures.PRE_ROUND); `garment_fit` applies its garment lessons (fitted_weights)
+    snaps = bool(build.get("host_snaps", False))
+    fit = bool(build.get("garment_fit", False))
     res = bb_donor.generate(params, log=log, subdiv_face=bool(build.get("subdiv_face", False)))
     lm, body = res["lm"], res["body"]
     face = body.face
@@ -135,6 +169,8 @@ def main() -> int:
     is_head = np.isin(freg, ["head", "scalp", "mouth"])
     used_h, Fh, remap_h, Sh = hb.submesh(V, F, is_head, res["seams"])
     Vh = V[used_h]
+    if snaps:
+        Vh[np.abs(Vh) < hb.MIDLINE_SNAP] = 0.0
     fh_reg = freg[is_head]
     mats_h = ["mouth" if r == "mouth" else "skin_head" for r in fh_reg]
     head = Part("Head")
@@ -178,6 +214,8 @@ def main() -> int:
                                                        np.where(fh_reg == "mouth", 4, 2)))
     hb.unwrap_faces(ob_head, {"skin_head", "mouth"}, hb.head_seams(Fh, cat, Vh, lm),
                     shrink=(np.nonzero(cat != 1)[0], 0.45))
+    if snaps:
+        hb.quantize_uvs(ob_head)
     pad = np.zeros(len(Vhead) - n_skin)
     masks = {"lower": np.concatenate([res["lower"][used_h], pad]), "lip": np.concatenate([res["lip_w"][used_h], pad])}
     lip_frame = {k: np.concatenate([res[n][used_h], pad]) for k, n in (("contact", "lip_contact"), ("dz", "lip_dz"),
@@ -200,7 +238,7 @@ def main() -> int:
 
     # ---- clothing and the hidden body under it ------------------------------------------------
     cparams = extra["_costume"]
-    covered = villager_costume.coverage(body, cparams, V, reg)
+    covered = villager_costume.coverage(body, cparams, V, reg, keep_legs=fit)
     hidden = np.where(F >= 0, covered[np.maximum(F, 0)], True).all(axis=1) & ~is_head
     costume = villager_costume.build_costume(body, cparams)
     head_i = wnames.index(HEAD_BONE)
@@ -216,6 +254,10 @@ def main() -> int:
         blocks = []
         for key, p in costume.items():
             Pc = p.varr()
+            if fit:
+                blocks.append(fitted_weights(key, Pc, V, W, reg, lm, spine_i))
+                opaque.extend(p)
+                continue
             Wc = hb.transfer_weights(Pc, V[src_mask], W[src_mask])
             if key in SKIRT_PIECES:
                 low = np.clip((z_crotch + 0.05 - Pc[:, 2]) / 0.25, 0.0, 1.0) * 0.5
@@ -253,6 +295,8 @@ def main() -> int:
     ob_body = hb.make_object("Body", V[used_b], Fb_l, UVb, ["skin_body"] * len(Fb), normals=Nw[used_b])
     hb.apply_weights(ob_body, W[used_b], wnames, skel)
     hb.unwrap_faces(ob_body, {"skin_body"}, hb.uv_seams(Fb_l, UVb))
+    if snaps:
+        hb.quantize_uvs(ob_body)
     dense = np.isin(reg[used_b], ["hand_L", "hand_R", "foot_L", "foot_R"])
     t_all = sum(len(f) - 2 for f in Fb_l)
     t_dense = sum(len(f) - 2 for f in Fb_l if dense[list(f)].all())
@@ -283,6 +327,9 @@ def main() -> int:
         "seconds": 0.0,
     }
     report["triangles"]["total_lod0"] = sum(report["triangles"].values())
+    if snaps:
+        for ob in export_objs:
+            hb.snap_shape_noise(ob)
     if args.bake_dir:
         lip_terms = {k: np.concatenate([res[n][used_h], pad]) for k, n in (("CONTACT", "lip_contact"),
                                                                             ("CORNER", "lip_corner"),

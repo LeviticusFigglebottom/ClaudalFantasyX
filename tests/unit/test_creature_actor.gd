@@ -120,7 +120,8 @@ func test_the_model_field_reaches_the_stand_in_spec() -> void:
 	assert_true(
 		is_equal_approx(float(spec["height"]), 0.62), "battle_sandbox.json's height still drives the VFX anchors"
 	)
-	assert_false(BattleStage.stand_in_spec(&"rhen").has("scene"), "heroes are not creatures")
+	var hero := str(BattleStage.stand_in_spec(&"rhen").get("scene", ""))  # a hero actor scene since M2-UI-07
+	assert_false(CreatureModels.models().values().has(hero), "heroes are not creatures")
 	assert_eq(CreatureModels.stand_in_overrides("no_such_enemy"), {})
 
 

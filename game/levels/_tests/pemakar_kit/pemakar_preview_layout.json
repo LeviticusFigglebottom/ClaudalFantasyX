@@ -10081,13 +10081,64 @@
    "yaw_deg": 0.0
   },
   {
-   "piece": "ashcrown_silhouette",
+   "piece": "ashcrown_tiers",
    "at": [
     0.0,
     306.717,
     -682.0
    ],
-   "yaw_deg": 0.0
+   "yaw_deg": 0.0,
+   "kit_dir": "res://assets/environments/kits/ashcrown/",
+   "materials_dir": "res://assets/environments/kits/ashcrown/materials/",
+   "lod1_from_m": 600.0
+  },
+  {
+   "piece": "flying_stair",
+   "at": [
+    0.0,
+    306.717,
+    -682.0
+   ],
+   "yaw_deg": 0.0,
+   "kit_dir": "res://assets/environments/kits/ashcrown/",
+   "materials_dir": "res://assets/environments/kits/ashcrown/materials/",
+   "lod1_from_m": 600.0
+  },
+  {
+   "piece": "crown_pavilion",
+   "at": [
+    0.0,
+    306.717,
+    -682.0
+   ],
+   "yaw_deg": 0.0,
+   "kit_dir": "res://assets/environments/kits/ashcrown/",
+   "materials_dir": "res://assets/environments/kits/ashcrown/materials/",
+   "lod1_from_m": 600.0
+  },
+  {
+   "piece": "forecourt",
+   "at": [
+    0.0,
+    306.717,
+    -682.0
+   ],
+   "yaw_deg": 0.0,
+   "kit_dir": "res://assets/environments/kits/ashcrown/",
+   "materials_dir": "res://assets/environments/kits/ashcrown/materials/",
+   "lod1_from_m": 600.0
+  },
+  {
+   "piece": "pilgrim_causeway",
+   "at": [
+    0.0,
+    306.717,
+    -682.0
+   ],
+   "yaw_deg": 0.0,
+   "kit_dir": "res://assets/environments/kits/ashcrown/",
+   "materials_dir": "res://assets/environments/kits/ashcrown/materials/",
+   "lod1_from_m": 600.0
   },
   {
    "piece": "ash_plume",
