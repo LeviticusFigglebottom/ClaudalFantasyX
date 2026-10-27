@@ -3,10 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
+uid="uid://bpd0lfdamcjkd"
+path="res://.godot/imported/vey_gallery_bridge.glb-e0eb8d3a1a416bd97540b60a5347ff9f.scn"
 
 [deps]
 
 source_file="res://assets/environments/kits/haluna/vey_gallery_bridge.glb"
+dest_files=["res://.godot/imported/vey_gallery_bridge.glb-e0eb8d3a1a416bd97540b60a5347ff9f.scn"]
 
 [params]
 

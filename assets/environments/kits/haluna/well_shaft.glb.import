@@ -3,10 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
+uid="uid://bmohqx6g1wyn"
+path="res://.godot/imported/well_shaft.glb-bfe99fdbeabcead04b6d0dbeca6ecf6c.scn"
 
 [deps]
 
 source_file="res://assets/environments/kits/haluna/well_shaft.glb"
+dest_files=["res://.godot/imported/well_shaft.glb-bfe99fdbeabcead04b6d0dbeca6ecf6c.scn"]
 
 [params]
 

@@ -3,10 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
+uid="uid://dprnqxj4eydon"
+path="res://.godot/imported/stillguard_torch.glb-c8f87178f7e3a862543c1d6b33159605.scn"
 
 [deps]
 
 source_file="res://assets/environments/kits/brine_shoals/stillguard_torch.glb"
+dest_files=["res://.godot/imported/stillguard_torch.glb-c8f87178f7e3a862543c1d6b33159605.scn"]
 
 [params]
 

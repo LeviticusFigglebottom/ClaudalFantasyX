@@ -3,10 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
+uid="uid://d3bpbw0febtwd"
+path="res://.godot/imported/name_shell_cord.glb-e6ce23494565c2ac3b4052c1a1d29d38.scn"
 
 [deps]
 
 source_file="res://assets/environments/kits/haluna/name_shell_cord.glb"
+dest_files=["res://.godot/imported/name_shell_cord.glb-e6ce23494565c2ac3b4052c1a1d29d38.scn"]
 
 [params]
 

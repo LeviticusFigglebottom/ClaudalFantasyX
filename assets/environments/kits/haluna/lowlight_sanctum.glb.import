@@ -3,10 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
+uid="uid://cnrh3jdflkfvl"
+path="res://.godot/imported/lowlight_sanctum.glb-3ce4f0bdf9158990d25f1fa6039c90a7.scn"
 
 [deps]
 
 source_file="res://assets/environments/kits/haluna/lowlight_sanctum.glb"
+dest_files=["res://.godot/imported/lowlight_sanctum.glb-3ce4f0bdf9158990d25f1fa6039c90a7.scn"]
 
 [params]
 

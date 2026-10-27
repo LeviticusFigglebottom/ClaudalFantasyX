@@ -3,10 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
+uid="uid://k5euo4gu6v0o"
+path="res://.godot/imported/conduit_housing.glb-185ef11ae5e0054f625211562e63da69.scn"
 
 [deps]
 
 source_file="res://assets/environments/kits/haluna/conduit_housing.glb"
+dest_files=["res://.godot/imported/conduit_housing.glb-185ef11ae5e0054f625211562e63da69.scn"]
 
 [params]
 

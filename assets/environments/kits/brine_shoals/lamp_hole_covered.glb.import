@@ -3,10 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
+uid="uid://bx2o3dwnfrr6r"
+path="res://.godot/imported/lamp_hole_covered.glb-7f1c381364bf9cec8fb1883ab20a2dfd.scn"
 
 [deps]
 
 source_file="res://assets/environments/kits/brine_shoals/lamp_hole_covered.glb"
+dest_files=["res://.godot/imported/lamp_hole_covered.glb-7f1c381364bf9cec8fb1883ab20a2dfd.scn"]
 
 [params]
 

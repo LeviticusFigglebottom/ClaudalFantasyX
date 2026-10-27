@@ -3,10 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
+uid="uid://cbm4ywmkjghp0"
+path="res://.godot/imported/keth_scree_slope.glb-2a4c7a6cedd544f727a550b5ac10ed95.scn"
 
 [deps]
 
 source_file="res://assets/environments/kits/haluna/keth_scree_slope.glb"
+dest_files=["res://.godot/imported/keth_scree_slope.glb-2a4c7a6cedd544f727a550b5ac10ed95.scn"]
 
 [params]
 

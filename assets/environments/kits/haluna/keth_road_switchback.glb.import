@@ -3,10 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
+uid="uid://cl47oeo4b65gh"
+path="res://.godot/imported/keth_road_switchback.glb-4c35140fcbd76968f3c36b64eaf60fdf.scn"
 
 [deps]
 
 source_file="res://assets/environments/kits/haluna/keth_road_switchback.glb"
+dest_files=["res://.godot/imported/keth_road_switchback.glb-4c35140fcbd76968f3c36b64eaf60fdf.scn"]
 
 [params]
 

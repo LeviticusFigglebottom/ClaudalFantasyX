@@ -3,10 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
+uid="uid://b8i1mfu3ibyau"
+path="res://.godot/imported/woolback_trough.glb-efa2e29ac1fb3827a53611e34f0db4eb.scn"
 
 [deps]
 
 source_file="res://assets/environments/kits/haluna/woolback_trough.glb"
+dest_files=["res://.godot/imported/woolback_trough.glb-efa2e29ac1fb3827a53611e34f0db4eb.scn"]
 
 [params]
 

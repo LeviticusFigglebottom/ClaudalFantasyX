@@ -3,10 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
+uid="uid://1ilgb0bqdc76"
+path="res://.godot/imported/strangler_fig.glb-a7080877f942aa387593b3c7f4a68175.scn"
 
 [deps]
 
 source_file="res://assets/environments/kits/haluna/strangler_fig.glb"
+dest_files=["res://.godot/imported/strangler_fig.glb-a7080877f942aa387593b3c7f4a68175.scn"]
 
 [params]
 

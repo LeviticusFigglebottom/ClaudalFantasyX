@@ -3,10 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
+uid="uid://dg37cwj7horme"
+path="res://.godot/imported/hand_print.glb-19aef41b075cdd3ac224301c7ccbb9f0.scn"
 
 [deps]
 
 source_file="res://assets/environments/kits/brine_shoals/hand_print.glb"
+dest_files=["res://.godot/imported/hand_print.glb-19aef41b075cdd3ac224301c7ccbb9f0.scn"]
 
 [params]
 

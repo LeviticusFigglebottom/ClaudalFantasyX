@@ -3,10 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
+uid="uid://mj30h48hm2r"
+path="res://.godot/imported/kirru_roost.glb-2d9f917e9d963b38ba5320243d61925c.scn"
 
 [deps]
 
 source_file="res://assets/environments/kits/haluna/kirru_roost.glb"
+dest_files=["res://.godot/imported/kirru_roost.glb-2d9f917e9d963b38ba5320243d61925c.scn"]
 
 [params]
 

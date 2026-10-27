@@ -3,10 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
+uid="uid://dyy7mrdgma68o"
+path="res://.godot/imported/lowlight_nave_bay_broken.glb-a9f8ee52bbc6ec2582218b4074644db2.scn"
 
 [deps]
 
 source_file="res://assets/environments/kits/haluna/lowlight_nave_bay_broken.glb"
+dest_files=["res://.godot/imported/lowlight_nave_bay_broken.glb-a9f8ee52bbc6ec2582218b4074644db2.scn"]
 
 [params]
 
