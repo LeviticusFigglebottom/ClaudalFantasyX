@@ -48,6 +48,12 @@ vigil gap in test_iskarra.
   - The three `City/Vigils` capsules (Kerrid, Pell, Liss) are the last greybox in the frame.
 - Budgets: a tower is 36k / 2.4k (it was 16k / 1.2k), because the windows are geometry; the spire is 22k.
 
+- **2026-10-27 (env-art): the FAST-TRACK render @ f39cdde viewed and approved** (P01, I02, I03; slice_prologue_vigil_line
+  passes). Two defects in it, fixed in the next commit:
+  - **The plaza's slabs read as pillows:** a one-segment block's corner normals tilt up to 23° outward. Each slab's
+    top is now shaded flat (`_flat_top`).
+  - **The vigil packs read as capsules** (I02 has one by the lens). The pack now slumps and bellies, and has a lid
+    flap, a front pocket, and two straps to brass buckles.
 ## Review log
 - **2026-10-27 22:40 (env-art): the second pass, per the Lead's direct instruction.**
   - **Breakup on every tower:**

@@ -319,6 +319,15 @@ def build_crown_fallen(seed: int = 721) -> list[kc.MeshBuilder]:
     return out
 
 
+
+def _flat_top(mb: kc.MeshBuilder, v0: int) -> None:
+    """A slab's top shades flat (M3-ENV-724 render: a one-segment block's corner normals tilt up to 23 deg outward, so
+    each 1.5 m slab read as a pillow): its upward vertex normals are set straight up."""
+    n = np.asarray(mb.nrm[v0:])
+    up = n[:, 1] > 0.85
+    n[up] = (0.0, 1.0, 0.0)
+    mb.nrm[v0:] = n.tolist()
+
 def _paving(mb: kc.MeshBuilder, x0: float, x1: float, z0: float, z1: float, y: float, rng, noise, lod: bool,
             keep=None, slab: float = 1.5) -> None:
     """Paving slabs on a grid, each a separate block with a joint around it, a few sunk or lifted; `keep(x, z)`
@@ -332,6 +341,7 @@ def _paving(mb: kc.MeshBuilder, x0: float, x1: float, z0: float, z1: float, y: f
                 continue
             dy = rng.normal(0.0, 0.02) - (0.08 if rng.random() < 0.06 else 0.0)
             yaw = rng.normal(0.0, 0.01)
+            v0 = mb.vertex_count
             if rng.random() < 0.12:  # M3-ENV-724: a slab cracked across, its halves settled apart
                 tilt = rng.normal(0.0, 0.02)
                 for sgn in (-1.0, 1.0):
@@ -343,6 +353,7 @@ def _paving(mb: kc.MeshBuilder, x0: float, x1: float, z0: float, z1: float, y: f
                 kc.rounded_block(mb, (x, y - 0.15 + dy, z), (slab * 0.5 - 0.03, 0.15, slab * 0.5 - 0.03),
                                  mb.material(M_PAVING), rot=kc.rot_y(yaw), radius=0.03, seg=1, noise=noise,
                                  disp_m=0.008, weather=WORN, variation=float(rng.random()))
+            _flat_top(mb, v0)
             if rng.random() < 0.18:  # sea-grass grown in the joint at the slab's corner
                 _tuft(mb, rng, (x + slab * 0.5, y, z + slab * 0.5), float(rng.uniform(0.15, 0.4)))
             if j % 4 == 1:
@@ -690,11 +701,31 @@ def _pack(mb, rng, at, yaw: float) -> None:
     sand, indigo, lash = mb.material("kit_cloth_sand"), mb.material("kit_cloth_indigo"), mb.material("kit_lashing")
     x, y, z = at
     R = kc.rot_y(yaw)
-    kc.rounded_block(mb, (x, y + 0.24, z), (0.2, 0.24, 0.14), sand, rot=R @ kc.rot_z(rng.normal(0, 0.08)),
-                     radius=0.08, seg=2)
-    kc.rounded_block(mb, (x, y + 0.5, z), (0.17, 0.05, 0.12), sand, rot=R, radius=0.04, seg=1)
+    lean = R @ kc.rot_z(rng.normal(0, 0.08))
     d = R @ np.array([0.0, 0.0, 1.0])
     e = R @ np.array([1.0, 0.0, 0.0])
+    base = np.array([x, y, z])
+    # M3-ENV-724 render (I02 has one by the lens): the body slumped and creased, not a smooth capsule.
+    v0, t0 = mb.vertex_count, mb.triangle_count
+    kc.rounded_block(mb, (x, y + 0.24, z), (0.2, 0.24, 0.14), sand, rot=lean, radius=0.08, seg=3,
+                     noise=kc.Noise3(rng), disp_m=0.025, disp_period_m=0.12)
+    p = np.asarray(mb.pos[v0:])
+    h = np.clip((p[:, 1] - y) / 0.48, 0.0, 1.0)
+    p[:, [0, 2]] += (p[:, [0, 2]] - base[[0, 2]]) * (0.12 * np.sin(np.pi * h))[:, None]  # it bellies, full of gear
+    mb.pos[v0:] = p.tolist()
+    kc.recompute_normals(mb, v0, t0)
+    # The lid flap over the drawn top, hanging down the front; two straps over it to buckles; a front pocket.
+    kc.rounded_block(mb, base + [0, 0.5, 0] + d * 0.02, (0.19, 0.035, 0.15), sand, rot=R @ kc.rot_x(0.1), radius=0.03,
+                     seg=2)
+    kc.rounded_block(mb, base + [0, 0.42, 0] + d * 0.16, (0.17, 0.08, 0.02), sand, rot=R @ kc.rot_x(-0.12),
+                     radius=0.015, seg=1)
+    kc.rounded_block(mb, base + [0, 0.2, 0] + d * 0.165, (0.13, 0.09, 0.035), sand, rot=R, radius=0.03, seg=2)
+    for s_ in (-0.09, 0.09):
+        strap = np.array([base + e * s_ + [0, 0.53, 0] - d * 0.12, base + e * s_ + [0, 0.54, 0] + d * 0.06,
+                          base + e * s_ + [0, 0.42, 0] + d * 0.185, base + e * s_ + [0, 0.3, 0] + d * 0.2])
+        kc.tube(mb, strap, 0.012, 4, lash)
+        kc.rounded_block(mb, base + e * s_ + [0, 0.3, 0] + d * 0.205, (0.02, 0.02, 0.006), mb.material("kit_brass"),
+                         rot=R, radius=0.004, seg=1)
     roll = np.array([x, y + 0.1, z]) + d * 0.45
     kc.tube(mb, np.array([roll - e * 0.35, roll + e * 0.35]), 0.1, 10, indigo, cap_start=True, cap_end=True)
     for s_ in (-0.2, 0.2):

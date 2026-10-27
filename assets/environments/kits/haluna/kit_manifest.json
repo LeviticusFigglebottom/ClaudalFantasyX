@@ -755,9 +755,9 @@
         9000,
         500
       ],
-      "bytes": 221092,
+      "bytes": 301552,
       "lods": {
-        "iskarra_vigil_dressing": 3048,
+        "iskarra_vigil_dressing": 4440,
         "iskarra_vigil_dressing-lod1": 60
       }
     },
