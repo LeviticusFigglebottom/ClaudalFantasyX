@@ -106,9 +106,9 @@
         1600,
         220
       ],
-      "bytes": 45852,
+      "bytes": 64224,
       "lods": {
-        "grave_stele_a": 648,
+        "grave_stele_a": 828,
         "grave_stele_a-lod1": 64
       }
     },
@@ -117,9 +117,9 @@
         2000,
         260
       ],
-      "bytes": 54980,
+      "bytes": 74572,
       "lods": {
-        "grave_stele_b": 696,
+        "grave_stele_b": 888,
         "grave_stele_b-lod1": 144
       }
     },
