@@ -1814,6 +1814,14 @@
       ]
     },
     {
+      "id": "creature_avalanche_ram",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_avalanche_ram.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
       "id": "creature_tower_limpet",
       "scene": "res://game/levels/_tests/creatures/shots/creature_tower_limpet.tscn",
       "resolution": [
