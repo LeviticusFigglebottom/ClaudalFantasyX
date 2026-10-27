@@ -355,3 +355,15 @@ func test_an_act_two_boss_gets_its_intro_wherever_it_appears() -> void:
 	var own: Array[StringName] = [&"hullgnaw#1"]
 	assert_eq(BattleBossIntro.row_for(cfg, &"ch01_hullgnaw", own), cfg["rows"]["ch01_hullgnaw"], "its own row wins")
 	_free()
+
+
+func test_no_party_member_crowds_a_boss_intro() -> void:
+	# M3-BPR-404 (big11 playtest): the real Toma stood huge over the timeline in the Drownbell's intro.
+	for enc: StringName in BOSSES:
+		var intro := _start(enc, 0.0)
+		intro.force_play = true
+		intro.play()
+		assert_false(intro._pose.is_empty(), "%s has a fitted shot" % enc)
+		assert_true(intro._party_clear(intro._pose), "%s: the party is off screen or small and clear of the HUD" % enc)
+		intro.skip()
+	_free()
