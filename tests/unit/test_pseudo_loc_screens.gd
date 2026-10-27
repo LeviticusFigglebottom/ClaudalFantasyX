@@ -356,6 +356,42 @@ func test_set_piece_fits() -> void:
 	_done("set piece")
 
 
+## The shrine travel list (the teleport network's menu): the list with a long place name, then the question.
+func test_shrine_travel_fits() -> void:
+	var saved_state := Game.state
+	var saved_registry := ShrineNetwork.registry
+	ShrineNetwork.registry = (
+		LocationRegistry
+		. from_dict(
+			{
+				"default_location": "a",
+				"locations":
+				[
+					{"id": "a", "scene": SANDBOX, "spawn": "S", "name_key": "LOCATION_CH04_BRIGHTWATER_FERRY"},
+					{"id": "b", "scene": SANDBOX, "spawn": "S", "name_key": "LOCATION_CH04_HALUNA_WAKE"},
+				],
+				"shrines": [{"id": "a_shrine", "location_id": "a"}, {"id": "b_shrine", "location_id": "b"}],
+			}
+		)
+	)
+	for scale in _scales():
+		_settings_at(scale)
+		Game.state = GameStateData.new()
+		Game.state.attuned_shrines = [&"a_shrine", &"b_shrine"] as Array[StringName]
+		var here := SaveShrine.new()
+		here.network_id = &"a_shrine"
+		here.opens_menu = false
+		_host(here)
+		var menu := here.open_travel()
+		_probe(menu, "shrine travel list")
+		menu.accept()
+		_probe(menu, "shrine travel question")
+		_clear()
+	Game.state = saved_state
+	ShrineNetwork.registry = saved_registry
+	_done("shrine travel")
+
+
 ## M3-UI-01: the Reefball HUD on a pass choice (menu, preview, the read's marks) and just after a
 ## goal (the banner), then on every option of that choice, then at the final banner.
 func test_reefball_hud_fits() -> void:

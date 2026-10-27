@@ -114,6 +114,23 @@ func test_battle_panels_and_pause() -> void:
 	_sweep("battle pause", func() -> Node: return BattlePauseMenu.open_in(ParityHost.scene_root()), _framed)
 
 
+## The shrine travel list: a framed page, centred, its covers full screen.
+func test_shrine_travel() -> void:
+	var saved_state := Game.state
+	_sweep("shrine travel", _shrine_travel, _framed)
+	Game.state = saved_state
+
+
+func _shrine_travel() -> Node:
+	Game.state = GameStateData.new()
+	Game.state.attuned_shrines = [&"save_shrine_test", &"haluna_shrine"] as Array[StringName]
+	var here := SaveShrine.new()
+	here.network_id = &"save_shrine_test"
+	here.opens_menu = false
+	ParityHost.scene_root().add_child(here)
+	return here.open_travel()
+
+
 ## M3-UI-01: the Reefball HUD on a pass choice (menu and preview open) and just after a goal (banner).
 func test_reefball_hud() -> void:
 	for driver: String in [REEFBALL_CHOICE, REEFBALL_GOAL]:
