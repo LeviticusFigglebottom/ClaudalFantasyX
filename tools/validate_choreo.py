@@ -13,7 +13,7 @@ CLIPS = {"idle", "ready", "attack", "cast", "item", "read", "defend", "finisher"
 TRAVELS = {"target", "step", "none"}
 STYLE_TIMES = ("approach_sec", "recover_sec", "return_sec")
 STYLE_SHAPES = ("lunge_m", "lift_m", "crouch_m", "lean_deg")
-REACTIONS = ("damage", "heal", "miss")
+REACTIONS = ("damage", "heal", "miss", "push")
 ## M2-BPR-03: the battle camera director (game/battle/scene/battle_camera_director.gd).
 CAMERA_SHOTS = ("default", "actor", "target", "cast", "finisher")
 CAMERA_ANCHORS = {"actor", "strike", "target", "default"}

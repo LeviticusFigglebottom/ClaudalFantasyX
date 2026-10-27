@@ -660,3 +660,14 @@ Asha's "Virel." on the call. Flare Line and Virel say nothing. Keep them rare: a
 `boss_intro.by_enemy` gives a boss its intro wherever it first appears, for bosses whose encounters are not written
 yet (the Lamp Engine `boss_tall`, the Avalanche Ram `boss`). An encounter's own `rows` entry wins
 (`BattleBossIntro.row_for`).
+
+## Filling the staging audit (M3-BPR-416)
+- **Foes stage their blows by their reach.** In `style_by_skill`, a ranged or whole-party blow (Brine Spit, Shroud
+  Sweep, Undertow Pull) plays `cast`, so the foe stays in place instead of running at one hero. The heaviest blows
+  (Gnaw, Ladle Swing, Pounce) play `finisher`. A creature plays its own clip by kind either way; the style sets the
+  travel, timing and shot.
+- **`reaction.push`.** A landed hit with no HP change and `delay_ticks > 0` staggers its target back (recoil and a
+  small tilt, the hit clip at `clip_recoil_k`). Damage still wins. The ward now visibly takes Rope Dive.
+- **Summoned foes walk in.** `BattleStage.add_enemy` plays the `enter` walk for every foe that joins mid-battle.
+- **`tools/battle_vfx_coverage.py`** lists, for each skill or item with no effect, its stage answer (`staged`). The
+  particle itself is rendering's (request M3-BPR-411).

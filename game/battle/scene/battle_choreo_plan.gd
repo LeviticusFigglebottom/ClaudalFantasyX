@@ -62,6 +62,8 @@ static func plan_for(data: Dictionary, engine: BattleEngine, result: ActionResul
 		)
 		if kind == "" and amount < 0:
 			kind = BattleChoreo.REACT_HEAL
+		elif kind == "" and int(hit.get("delay_ticks", 0)) > 0:
+			kind = BattleChoreo.REACT_PUSH
 		var blow := BattleImpact.strength(data, engine, hit)  # M3-BPR-401: the blow's weight
 		peak = maxf(peak, blow)
 		if kind != "":
@@ -191,7 +193,8 @@ static func reaction_pose(
 	var def := (data.get("reaction", {}) as Dictionary).get(r["kind"], {}) as Dictionary
 	var sec := float(def.get("sec", 0.0))
 	var c := float(r.get("at", contact))
-	var clip_k := float(def.get("clip_recoil_k", 0.0)) if str(r["kind"]) == BattleChoreo.REACT_DAMAGE else 0.0
+	var shoved := str(r["kind"]) in [BattleChoreo.REACT_DAMAGE, BattleChoreo.REACT_PUSH]
+	var clip_k := float(def.get("clip_recoil_k", 0.0)) if shoved else 0.0
 	if (bool(r["clip"]) and clip_k <= 0.0) or t < c or sec <= 0.0:
 		return [Vector3.ZERO, away, 0.0]
 	var w := sin(PI * clampf((t - c) / sec, 0.0, 1.0)) * float(r.get("weight", 1.0))  # M3-BPR-401
@@ -200,6 +203,8 @@ static func reaction_pose(
 	match str(r["kind"]):
 		BattleChoreo.REACT_DAMAGE:
 			w *= react_k
+			return [away * float(def.get("recoil_m", 0.0)) * w, away, float(def.get("tilt_deg", 0.0)) * w * tilt_k]
+		BattleChoreo.REACT_PUSH:  # shoved back down the timeline: a stagger, no blow's weight
 			return [away * float(def.get("recoil_m", 0.0)) * w, away, float(def.get("tilt_deg", 0.0)) * w * tilt_k]
 		BattleChoreo.REACT_HEAL:
 			return [Vector3.UP * float(def.get("lift_m", 0.0)) * w, away, 0.0]

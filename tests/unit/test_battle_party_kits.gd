@@ -5,6 +5,8 @@ extends TestCase
 
 const RANGED: Array[String] = ["reel_shot"]
 const HEAVY: Array[String] = ["anchor_fall"]
+## The foes' heaviest blows (Hullgnaw's Gnaw, the Matron's Ladle Swing, the hound's Pounce) play the finisher.
+const HEAVY_FOE: Array[String] = ["gnaw", "ladle_swing", "pounce"]
 
 
 func test_every_kit_skill_has_a_real_style() -> void:
@@ -59,6 +61,34 @@ func test_every_swell_vowbound_and_enemy_skill_has_a_real_style() -> void:
 		assert_true(BattleClips.ALL.has(StringName(str(st["clip"]))), "%s %s: a contract clip" % c)
 		assert_true(cam.has(style_id), "%s %s: camera shots for %s" % [c[0], c[1], style_id])
 	assert_true(cases.size() > 60, "the Swells, Vowbound and foes are checked (%d)" % cases.size())
+
+
+## The audit's fill (the Lead, 20:26): a foe never runs at one hero for a blow that is ranged (its creature row plays
+## the cast clip: the crab's Brine Spit) or that strikes the whole party (the Spar-Wraith's Shroud Sweep, the Reach's
+## Undertow Pull); it stays in its place. A foe's heaviest blow plays the finisher.
+func test_foes_stage_ranged_sweeping_and_heavy_blows_by_their_reach() -> void:
+	var data := BattleChoreo.load_data()
+	var engine := BattleEngine.new()
+	engine.db = BattleDB.load_default()
+	var creatures := CreatureActor.data().get("creatures", {}) as Dictionary
+	var checked := 0
+	for eid: StringName in engine.db.enemies:
+		var by_skill := (creatures.get(String(eid), {}) as Dictionary).get("clip_by_skill", {}) as Dictionary
+		for sid: Variant in (engine.db.enemies[eid] as Dictionary).get("skills", []):
+			var row := engine.db.skill(StringName(str(sid)))
+			var r := ActionResult.new()
+			r.actor_id = StringName("%s#1" % eid)
+			r.skill_id = StringName(str(sid))
+			var style_id := BattleChoreoPlan.style_id_for(data, engine, r)
+			var travel := str(BattleChoreoPlan.style(data, style_id).get("travel", ""))
+			var ranged := str(by_skill.get(str(sid), "")) == "cast"
+			var sweep := str(row.get("kind", "")) == "physical" and str(row.get("target", "")) == "all_foes"
+			if ranged or sweep:
+				assert_ne(travel, "target", "%s %s: no run at one hero (%s)" % [eid, sid, style_id])
+				checked += 1
+			if HEAVY_FOE.has(str(sid)):
+				assert_eq(style_id, "finisher", "%s %s: the heavy blow plays the finisher" % [eid, sid])
+	assert_true(checked >= 4, "ranged and sweeping foe skills are checked (%d)" % checked)
 
 
 func _style_for(data: Dictionary, db: BattleDB, r: ActionResult) -> String:

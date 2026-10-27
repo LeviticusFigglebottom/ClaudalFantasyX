@@ -38,6 +38,7 @@ const BEAT_KO := &"ko"
 const REACT_DAMAGE := "damage"
 const REACT_HEAL := "heal"
 const REACT_MISS := "miss"
+const REACT_PUSH := "push"  # M3-BPR-411: a landed push down the timeline with no damage (the ward shoved back)
 const FALLBACK_STYLE := "melee"
 const SETTING_SPEED := &"battle_speed"
 const SETTING_ANIMATIONS := &"battle_animations"

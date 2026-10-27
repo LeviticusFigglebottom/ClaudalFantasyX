@@ -35,6 +35,21 @@ PROPOSAL = {
     "other": "status_apply",
 }
 
+# M3-BPR-411 fill on stage: what the choreography already plays for each gap category (the particle is still
+# rendering's to add). Every gap must have one; tools/tests/test_battle_vfx_coverage.py checks it.
+STAGED = {
+    "telegraph": "BattleTelegraph's gather (or the boss row's own gather)",
+    "summon": "the summoned foe's entrance (BattleChoreo entries)",
+    "withdraw": "BattleStage's withdrawal",
+    "delay": "choreo.json reaction.push (the target staggers back)",
+    "cleanse": "the skill's style (support, or reaction.push when it also pushes)",
+    "stance": "the guard style (the defend clip)",
+    "mp": "the item style",
+    "revive": "the item style",
+    "field": "the skill's style",
+    "other": "the skill's style",
+}
+
 
 def _load(p: Path) -> dict:
     return json.loads(p.read_text())
@@ -105,6 +120,10 @@ def coverage() -> dict:
         "skills": {k: PROPOSAL.get(v, PROPOSAL["other"]) for k, v in out["skills"].items() if v != "element"},
         "items": {k: PROPOSAL[v] for k, v in out["items"].items() if v in PROPOSAL},
     }
+    out["staged"] = {
+        "skills": {k: STAGED.get(v, "") for k, v in out["skills"].items() if v != "element"},
+        "items": {k: STAGED.get(v, "") for k, v in out["items"].items()},
+    }
     missing = [e for e in set(PROPOSAL.values()) if e not in fx["effects"]]
     out["proposal_missing_effects"] = sorted(missing)
     return out
@@ -117,10 +136,10 @@ def main() -> int:
         return 0
     print(f"skills with no effect: {len(c['skills'])}")
     for k, v in sorted(c["skills"].items()):
-        print(f"  {k}: {v}")
+        print(f"  {k}: {v} (staged: {c['staged']['skills'].get(k, '-')})")
     print(f"battle items with no effect: {len(c['items'])}")
     for k, v in sorted(c["items"].items()):
-        print(f"  {k}: {v}")
+        print(f"  {k}: {v} (staged: {c['staged']['items'].get(k, '-')})")
     if c["proposal_missing_effects"]:
         print("PROPOSAL names effects that do not exist:", c["proposal_missing_effects"])
     return 0

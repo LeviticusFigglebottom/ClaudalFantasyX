@@ -30,6 +30,12 @@ class CoverageTests(unittest.TestCase):
                                         elements), "element")
         self.assertEqual(cov._skill_gap({"id": "m", "kind": "support", "power": 0}, {"m"}, elements), "")
 
+    def test_every_gap_has_a_stage_answer(self) -> None:
+        c = cov.coverage()
+        for table in ("skills", "items"):
+            for sid, answer in c["staged"][table].items():
+                self.assertTrue(answer, f"{table}.{sid} ({c[table][sid]}) plays nothing on stage either")
+
 
 if __name__ == "__main__":
     unittest.main()

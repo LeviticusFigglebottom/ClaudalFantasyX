@@ -59,6 +59,24 @@ RENDER-REQUEST @ 680cd88e: battle_boss_intro_reach,battle_choreo_melee,battle_ch
 
 RENDER-REQUEST @ 60b62678: battle_arena_wall_head,battle_boss_intro_reach; why: M3-BPR-406 greybox wall_head_storm arena for Ch8 (new shot, no baseline yet); the Reach intro now stands on it. Supersedes the reach id in the 680cd88e line.
 
+### 2026-10-27 night: filling the audit (M3-BPR-416, the Lead's 20:26)
+- **Filled, each with a test that fails without it:**
+  - Foes stage their blows by their reach. Ranged or whole-party blows stay in place: Brine Spit, Shroud Sweep and
+    Undertow Pull no longer run at one hero. The heaviest blows (Gnaw, Ladle Swing, Pounce) play the finisher.
+  - A new `reaction.push`: a hit that only pushes its target down the timeline (Rope Dive, Grip the Stair and Hand
+    Closes on the ward; the Drag Net) staggers the target back. Before, it played nothing.
+  - Summoned foes (the flood's polyps, Rouse Polyp, the Reach's surges) walk onto their marks instead of appearing.
+  - The VFX audit names each gap's stage answer, and a tool test requires one. All 17 skills and 8 items have one.
+- **The audit list is now empty apart from these blocked entries:**
+  - **The VFX particles:** `game/data/vfx/battle/**` is rendering's. Request M3-BPR-411 carries the proposed map.
+  - **Sefir:** there's no characters.json row (Act II).
+  - **The 6 Act II creatures and bosses:** no enemies.json rows.
+  - **Kerrid's and Liss's real clips:** request M3-BPR-412 to characters.
+  - **A dedicated foe dive or sweep style:** it needs an audio choreo_sfx row (the `dive` row plays Rhen's Swell
+    accent), as with M3-BPR-410.
+- **Checks:** the new tests (party_kits 3/0, push_reaction 2/0, summoned_entrance 2/0); audio_live 12/0, creature 29/0, choreo_audio 15/0; tools coverage and choreo_validate OK; gdlint and gdformat clean. The full `--filter=battle` result follows in the next line once it finishes.
+- **Checks skipped:** coverage (no battle-core change), Blender (none touched), and cloud shots (rendering is on the PC).
+
 ### 2026-10-27 night: the Lead's 19:35 queue (items 1-5)
 Status of each item. "Blocked" names the reason and what unblocks it.
 1. **Act I party kits (M3-BPR-412): done, with one gap blocked.**
