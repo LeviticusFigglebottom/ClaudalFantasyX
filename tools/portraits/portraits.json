@@ -303,6 +303,11 @@
       "id": "nhoa",
       "scene": "res://game/creatures/nhoa/nhoa_battle.tscn",
       "out_dir": "res://assets/ui/portraits/creatures"
+    },
+    {
+      "id": "hesk",
+      "scene": "res://game/creatures/hesk/hesk_battle.tscn",
+      "out_dir": "res://assets/ui/portraits/creatures"
     }
   ],
   "creature_stage": {

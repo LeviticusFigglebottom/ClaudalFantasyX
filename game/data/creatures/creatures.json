@@ -228,6 +228,13 @@
       "vowbound_pending": "M3-CRE-642 asks Combat for the vowbound.json row (docs/kb/art/creatures/vowbound/nhoa.md, open questions)",
       "contact": {"attack": 0.55, "cast": 0.8, "special": 1.45},
       "stand_in": {"yaw_deg": -90.0, "height": 3.2, "radius": 0.5}
+    },
+    "hesk": {
+      "scene": "res://game/creatures/hesk/hesk_battle.tscn",
+      "vowbound": true,
+      "vowbound_pending": "M3-CRE-643",
+      "contact": {"attack": 0.55, "cast": 0.8, "special": 1.45},
+      "stand_in": {"yaw_deg": -90.0, "height": 2.4, "radius": 0.6}
     }
   }
 }

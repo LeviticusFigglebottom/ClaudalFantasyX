@@ -4086,6 +4086,14 @@
         960,
         720
       ]
+    },
+    {
+      "id": "creature_hesk",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_hesk.tscn",
+      "resolution": [
+        960,
+        720
+      ]
     }
   ]
 }
