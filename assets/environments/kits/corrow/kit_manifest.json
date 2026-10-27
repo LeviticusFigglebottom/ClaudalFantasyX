@@ -46,6 +46,61 @@
         "fisher_stair_broken-lod1": 288
       }
     },
+    "hoist_basket": {
+      "budget": [
+        1500,
+        120
+      ],
+      "bytes": 12112,
+      "lods": {
+        "hoist_basket": 136,
+        "hoist_basket-lod1": 42
+      }
+    },
+    "hoist_pins": {
+      "budget": [
+        800,
+        80
+      ],
+      "bytes": 17240,
+      "lods": {
+        "hoist_pins": 144,
+        "hoist_pins-lod1": 64
+      }
+    },
+    "hoist_rope": {
+      "budget": [
+        300,
+        30
+      ],
+      "bytes": 6108,
+      "lods": {
+        "hoist_rope": 80,
+        "hoist_rope-lod1": 6
+      }
+    },
+    "kite_line": {
+      "budget": [
+        6000,
+        600
+      ],
+      "bytes": 103364,
+      "lods": {
+        "kite_line": 1664,
+        "kite_line-lod1": 104
+      }
+    },
+    "kite_line_high": {
+      "budget": [
+        6000,
+        600
+      ],
+      "bytes": 49432,
+      "lods": {
+        "kite_line_high": 704,
+        "kite_line_high-lod1": 40
+      }
+    },
     "liss_hoist": {
       "budget": [
         3000,
@@ -112,6 +167,17 @@
         "lowtown_rubble-lod1": 544
       }
     },
+    "marra_step": {
+      "budget": [
+        2500,
+        200
+      ],
+      "bytes": 69848,
+      "lods": {
+        "marra_step": 1672,
+        "marra_step-lod1": 12
+      }
+    },
     "seawall_breach_a": {
       "budget": [
         14000,
@@ -167,6 +233,28 @@
         "seawall_curve-lod1": 96
       }
     },
+    "stillguard_barracks": {
+      "budget": [
+        14000,
+        1200
+      ],
+      "bytes": 490052,
+      "lods": {
+        "stillguard_barracks": 11800,
+        "stillguard_barracks-lod1": 412
+      }
+    },
+    "trader_boat": {
+      "budget": [
+        12000,
+        1000
+      ],
+      "bytes": 123816,
+      "lods": {
+        "trader_boat": 2781,
+        "trader_boat-lod1": 147
+      }
+    },
     "wall_apron": {
       "budget": [
         6000,
@@ -176,6 +264,17 @@
       "lods": {
         "wall_apron": 3392,
         "wall_apron-lod1": 16
+      }
+    },
+    "wall_gate": {
+      "budget": [
+        5000,
+        400
+      ],
+      "bytes": 38156,
+      "lods": {
+        "wall_gate": 432,
+        "wall_gate-lod1": 60
       }
     },
     "watcher_head": {
