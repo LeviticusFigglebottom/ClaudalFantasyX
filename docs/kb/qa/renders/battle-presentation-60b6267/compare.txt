@@ -1,0 +1,4 @@
+FAIL battle_boss_intro_reach: no baseline (inspect out/, then compare.py --update-baselines battle_boss_intro_reach)
+FAIL battle_arena_wall_head: no baseline (inspect out/, then compare.py --update-baselines battle_arena_wall_head)
+Screenshots: 2 compared, 2 failed (diffs in /root/hymn/tests/screenshots/out/diff)
+compare exit 1
