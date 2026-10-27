@@ -49,6 +49,9 @@ TRI_BUDGET = {
     "hoist_rope": (300, 30),
     "hoist_basket": (1500, 120),
     "trader_boat": (12000, 1000),
+    "mole_pier": (40000, 2000),
+    "mole_sea_stair": (12000, 600),
+    "bastion_platform": (90000, 3000),
 }
 BUDGET_KEY = {"kite_line_high": "kite_line"}
 
@@ -292,6 +295,186 @@ def build_trader_boat(seed: int = 888, *, length: float = 11.6, beam: float = 3.
     return out
 
 
+# ---------------------------------------------------------------------------------------------
+# Batch B: the harbour mole and its sea stair, the Bastion (corrow_collision.json's blocks and ramps)
+# ---------------------------------------------------------------------------------------------
+MOLE_HALF_W = 2.2  # MolePier 4.4 m
+MOLE_LEN = 26.0
+MOLE_FOOT = -3.2  # below its deck (the pier block is 3.2 m deep)
+MOLE_END_H = 2.8  # MoleEnd stands from the foot to 2.8 m over the deck
+STAIR_RUN, STAIR_RISE, STAIR_HALF_W = 21.8, 11.7, 2.0  # MoleRamp: the pier's root to the parapet's top
+STAIR_TOP_RUN, STAIR_DOWN_RUN, STAIR_DOWN_DROP = 1.2, 2.0, 0.9  # MoleOverParapet, MoleDown
+BASTION_HALF = (21.0, 12.25)  # BastionPlatform 42 x 24.5
+BASTION_H = 11.0  # the town (y 1) to the walk's height (y 12)
+RIM = (1.2, 0.9)  # BastionRim*: thick, high
+
+
+def _rows(y0: float, y1: float, coarse: bool) -> np.ndarray:
+    return np.linspace(y0, y1, max(2, int((y1 - y0) / (0.125 if not coarse else 2.0)) + 1))
+
+
+def _cols(x0: float, x1: float, coarse: bool) -> np.ndarray:
+    return np.linspace(x0, x1, max(2, int((x1 - x0) / (0.6 if not coarse else 6.0)) + 1))
+
+
+def _battered_face(mb, x0, x1, y0, y1, z_top, batter_deg, rng, noise, *, sea, lod, rot=None, offset=(0, 0, 0)):
+    """A coursed face along X at z = z_top at y1, leaning back toward -Z by `batter_deg` (its foot further out
+    toward -Z), facing -Z; built in a temp builder and merged with `rot`/`offset` (so it can face any side)."""
+    import cw_wall  # noqa: PLC0415
+
+    tan_b = math.tan(math.radians(batter_deg))
+    tmp = kc.MeshBuilder("face")
+    nrm = kc.normalize(np.array([0.0, tan_b, -1.0]))
+    cw_wall._face(tmp, _cols(x0, x1, lod), _rows(y0, y1, lod), lambda y: z_top - (y1 - np.asarray(y, float)) * tan_b,
+                  (nrm[1], nrm[2]), rng, noise, mat=tmp.material(cw.M_LATERITE), sea=sea, coarse=lod)
+    mb.merge(tmp, rot, offset)
+
+
+def build_mole_pier(seed: int = 891) -> list[kc.MeshBuilder]:
+    """The harbour mole: a coursed laterite pier 4.4 m wide running 26 m out to sea (+Z) from its root at the
+    origin (deck top y 0, foot -3.2), a breakwater wall at its head, timber bollards and iron rings, a ladder."""
+    import cw_wall  # noqa: PLC0415
+
+    out = []
+    for lod in (False, True):
+        rng = kc.rng_for("mole_pier", seed)
+        noise = kc.Noise3(rng)
+        mb = kc.MeshBuilder("mole_pier" + (cw.LOD if lod else ""))
+        w = MOLE_HALF_W
+        # The long sides (facing -X and +X), and the head's sea face (+Z).
+        _battered_face(mb, 0.0, MOLE_LEN, MOLE_FOOT, 0.0, -w, 4.0, rng, noise, sea=True, lod=lod,
+                       rot=kc.rot_y(-math.pi * 0.5))  # x' = -z: a face at z=-w becomes x = +w? see below
+        _battered_face(mb, -MOLE_LEN, 0.0, MOLE_FOOT, 0.0, -w, 4.0, rng, noise, sea=True, lod=lod,
+                       rot=kc.rot_y(math.pi * 0.5))
+        _battered_face(mb, -w, w, MOLE_FOOT, MOLE_END_H, -0.0, 3.0, rng, noise, sea=True, lod=lod,
+                       rot=kc.rot_y(math.pi), offset=(0.0, 0.0, MOLE_LEN + 0.5))
+        # The deck: paving slabs across, the head wall's back face and coping.
+        cw_wall._flat(mb, cw_wall._walk_cols(-w, w) if not lod else np.array([-w, w]),
+                      cw_wall._walk_rows(0.0, MOLE_LEN) if not lod else np.array([0.0, MOLE_LEN]), 0.0,
+                      mb.material(cw.M_PAVING), outward=(0.0, 1.0, 0.0), col=(0.0, 0.5, 0.4, 0.5))
+        _block(mb, (0.0, MOLE_END_H * 0.5, MOLE_LEN + 0.25), (w + 0.5, MOLE_END_H * 0.5, 0.25),
+               mb.material(cw.M_LATERITE), rng, noise, lod=lod, w=cw.WALL_W)
+        _block(mb, (0.0, MOLE_END_H + 0.1, MOLE_LEN + 0.25), (w + 0.6, 0.1, 0.35), mb.material(cw.M_PAVING), rng,
+               noise, lod=lod, w=cw.WALL_W)
+        if not lod:
+            tm, ir = mb.material(cw.M_TIMBER), mb.material(cw.M_IRON)
+            for k, z in enumerate(np.arange(3.0, MOLE_LEN - 1.0, 5.0)):
+                for side in (-1.0, 1.0):
+                    if (k + (side > 0)) % 2:
+                        continue
+                    p = np.array([side * (w - 0.35), 0.0, z])
+                    kc.tube(mb, np.array([p, p + [0, 0.75, 0]]), np.array([0.16, 0.13]), 8, tm, cap_end=True,
+                            variation=float(rng.random()))
+                    a = np.linspace(0.0, 2 * math.pi, 9)
+                    ring = np.stack([np.full_like(a, side * (w + 0.06)), -0.4 + np.sin(a) * 0.09,
+                                     z + 2.4 + np.cos(a) * 0.09], axis=-1)
+                    kc.tube(mb, ring, 0.014, 4, ir)
+            # An iron ladder down the +X side to the water, near the head.
+            for dz in (-0.25, 0.25):
+                kc.tube(mb, np.array([[w + 0.1, 0.4, MOLE_LEN - 4.0 + dz], [w + 0.1, MOLE_FOOT, MOLE_LEN - 4.0 + dz]]),
+                        0.02, 5, ir)
+            for y in np.arange(MOLE_FOOT + 0.3, 0.2, 0.3):
+                kc.tube(mb, np.array([[w + 0.1, y, MOLE_LEN - 4.25], [w + 0.1, y, MOLE_LEN - 3.75]]), 0.015, 4, ir)
+        out.append(mb)
+    return out
+
+
+def build_mole_sea_stair(seed: int = 892) -> list[kc.MeshBuilder]:
+    """The sea stair from the mole's root (origin, y 0) up to the parapet's top (rise 11.7 over 21.8 m toward
+    -Z), across the parapet's gap (1.2 m) and down 0.9 m onto the walk (2 m): a stone stairway built out
+    from the wall's sea face on a solid battered body, with a low parapet each side."""
+    out = []
+    for lod in (False, True):
+        rng = kc.rng_for("mole_sea_stair", seed)
+        noise = kc.Noise3(rng)
+        mb = kc.MeshBuilder("mole_sea_stair" + (cw.LOD if lod else ""))
+        i_lat, i_pave = mb.material(cw.M_LATERITE), mb.material(cw.M_PAVING)
+        hw = STAIR_HALF_W
+        n = 47
+        rise, run = STAIR_RISE / n, STAIR_RUN / n
+        if lod:
+            # The body as two side wedges and a ramp.
+            for sx in (-1.0, 1.0):
+                pts = np.array([[0.0, MOLE_FOOT], [0.0, 0.0], [-STAIR_RUN, STAIR_RISE], [-STAIR_RUN, MOLE_FOOT]])
+                tmp = kc.MeshBuilder("w")
+                kc.polygon_prism(tmp, pts, -0.3, 0.3, tmp.material(cw.M_LATERITE), col=np.array([0.0, 0.5, 0.3, 0.5]),
+                                 uv2=np.array([1.0, 0.5]), top=True, bottom=True)
+                mb.merge(tmp, kc.rot_z(-math.pi * 0.5) @ kc.rot_y(-math.pi * 0.5), (sx * (hw + 0.3), 0.0, 0.0))
+            kc.rounded_block(mb, (0.0, STAIR_RISE * 0.5, -STAIR_RUN * 0.5), (hw, 0.15, STAIR_RUN * 0.5 + 0.2), i_pave,
+                             rot=kc.rot_x(math.atan2(STAIR_RISE, STAIR_RUN)), seg=1, radius=0.02)
+            out.append(mb)
+            continue
+        for k in range(n):
+            y = (k + 1) * rise
+            z = -(k + 0.5) * run
+            _block(mb, (0.0, y - 0.12, z), (hw, 0.12 + (0.02 if k else 0.0), run * 0.5 + 0.03), i_pave, rng, noise,
+                   w=cw.WALL_W)
+        # The body under the flight: a coursed face each side, a sloped soffit fill of rubble masonry.
+        for sx, a in ((-1.0, math.pi * 0.5), (1.0, -math.pi * 0.5)):
+            for k in range(0, n, 4):
+                z0 = -k * run
+                top = (k + 1) * rise - 0.24
+                _block(mb, (sx * (hw + 0.3), (top + MOLE_FOOT) * 0.5, z0 - run * 2.0),
+                       (0.3, (top - MOLE_FOOT) * 0.5, run * 2.0 + 0.02), i_lat, rng, noise, w=cw.WALL_W)
+            # The side parapet: a rail of laterite blocks following the flight, 0.6 m over the treads.
+            for k in range(0, n, 3):
+                y = (k + 1.5) * rise
+                _block(mb, (sx * (hw + 0.3), y + 0.3, -(k + 1.5) * run), (0.3, 0.32, run * 1.5 + 0.02), i_lat, rng,
+                       noise, w=cw.WALL_W)
+            del a
+        # Over the parapet's gap and down onto the walk.
+        top = STAIR_RISE
+        _block(mb, (0.0, top - 0.12, -STAIR_RUN - STAIR_TOP_RUN * 0.5), (hw, 0.12, STAIR_TOP_RUN * 0.5 + 0.02), i_pave,
+               rng, noise, w=cw.WALL_W)
+        for k in range(4):
+            y = top - (k + 1) * STAIR_DOWN_DROP / 4
+            z = -STAIR_RUN - STAIR_TOP_RUN - (k + 0.5) * STAIR_DOWN_RUN / 4
+            _block(mb, (0.0, y - 0.12, z), (hw, 0.12, STAIR_DOWN_RUN / 8 + 0.02), i_pave, rng, noise, w=cw.WALL_W)
+        out.append(mb)
+    return out
+
+
+def build_bastion_platform(seed: int = 893) -> list[kc.MeshBuilder]:
+    """The Bastion's raised ground: battered laterite revetments on the town sides (-Z, -X, +X) from the town
+    (origin, y 0) to the walk's height (y 11), corner quoins, paving on top, and the low rim wall on those three
+    sides; the +Z side meets the wall-head walk."""
+    import cw_wall  # noqa: PLC0415
+
+    out = []
+    hx, hz = BASTION_HALF
+    for lod in (False, True):
+        rng = kc.rng_for("bastion_platform", seed)
+        noise = kc.Noise3(rng)
+        mb = kc.MeshBuilder("bastion_platform" + (cw.LOD if lod else ""))
+        top = BASTION_H
+        _battered_face(mb, -hx, hx, -0.4, top, -hz, cw.INNER_BATTER_DEG, rng, noise, sea=False, lod=lod)
+        _battered_face(mb, -hz, hz, -0.4, top, -hx, cw.INNER_BATTER_DEG, rng, noise, sea=False, lod=lod,
+                       rot=kc.rot_y(math.pi * 0.5))
+        _battered_face(mb, -hz, hz, -0.4, top, -hx, cw.INNER_BATTER_DEG, rng, noise, sea=False, lod=lod,
+                       rot=kc.rot_y(-math.pi * 0.5))
+        tan_b = math.tan(math.radians(cw.INNER_BATTER_DEG))
+        for sx in (-1.0, 1.0):
+            # Quoins: a stepped pier of dressed blocks hides where two battered faces meet.
+            for y0 in np.arange(-0.4, top, 1.0 if not lod else top + 0.4):
+                spread = (top - y0) * tan_b
+                _block(mb, (sx * (hx + spread * 0.6), y0 + 0.5 if not lod else top * 0.5, -hz - spread * 0.6),
+                       (0.8, 0.5 if not lod else (top + 0.4) * 0.5, 0.8), mb.material(cw.M_CARVED), rng, noise,
+                       lod=lod, w=cw.WALL_W)
+        cw_wall._flat(mb, cw_wall._walk_cols(-hx, hx) if not lod else np.array([-hx, hx]),
+                      cw_wall._walk_rows(-hz, hz) if not lod else np.array([-hz, hz]), top, mb.material(cw.M_PAVING),
+                      outward=(0.0, 1.0, 0.0), col=(0.0, 0.35, 0.1, 0.5))
+        th, rh = RIM
+        # Rim segments of 6 m: along the -Z edge, and up each side to 0.5 m short of the walk (+Z) edge.
+        segs = [((x, top + rh * 0.5, -hz + th * 0.5), (3.0, rh * 0.5, th * 0.5)) for x in np.arange(-hx + 3.0, hx, 6.0)]
+        zs = np.linspace(-hz + th, hz - 0.5, 5)
+        segs += [((sx * (hx - th * 0.5), top + rh * 0.5, (a + b) * 0.5), (th * 0.5, rh * 0.5, (b - a) * 0.5))
+                 for sx in (-1.0, 1.0) for a, b in zip(zs[:-1], zs[1:])]
+        for c, half in segs:
+            _block(mb, c, half, mb.material(cw.M_LATERITE), rng, noise, lod=lod, w=cw.WALL_W)
+        out.append(mb)
+    return out
+
+
 TARGETS = {
     "stillguard_barracks": build_barracks,
     "wall_gate": build_wall_gate,
@@ -302,4 +485,7 @@ TARGETS = {
     "hoist_rope": build_hoist_rope,
     "hoist_basket": build_hoist_basket,
     "trader_boat": build_trader_boat,
+    "mole_pier": build_mole_pier,
+    "mole_sea_stair": build_mole_sea_stair,
+    "bastion_platform": build_bastion_platform,
 }

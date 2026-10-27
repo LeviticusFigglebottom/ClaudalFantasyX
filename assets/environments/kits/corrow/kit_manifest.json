@@ -2,6 +2,17 @@
   "generator": "assets_src/environments/kits/corrow/build.py",
   "kit": "corrow",
   "pieces": {
+    "bastion_platform": {
+      "budget": [
+        90000,
+        3000
+      ],
+      "bytes": 2110948,
+      "lods": {
+        "bastion_platform": 64372,
+        "bastion_platform-lod1": 356
+      }
+    },
     "coilspire_headland": {
       "budget": [
         9000,
@@ -176,6 +187,28 @@
       "lods": {
         "marra_step": 1672,
         "marra_step-lod1": 12
+      }
+    },
+    "mole_pier": {
+      "budget": [
+        40000,
+        2000
+      ],
+      "bytes": 313444,
+      "lods": {
+        "mole_pier": 8912,
+        "mole_pier-lod1": 48
+      }
+    },
+    "mole_sea_stair": {
+      "budget": [
+        12000,
+        600
+      ],
+      "bytes": 319656,
+      "lods": {
+        "mole_sea_stair": 5184,
+        "mole_sea_stair-lod1": 36
       }
     },
     "seawall_breach_a": {
