@@ -439,7 +439,17 @@ piece_rules = {
 "palm_coconut_b": {"shape": "cylinder", "radius_m": 0.3, "height_m": 3.0},
 "palm_coconut_c": {"shape": "cylinder", "radius_m": 0.3, "height_m": 3.0},
 "tidewall_gate": {"shape": "none"},
-"windbreak_placeholder": {"shape": "cylinder", "radius_m": 1.0, "height_m": 6.0}
+"windbreak_placeholder": {"shape": "cylinder", "radius_m": 1.0, "height_m": 6.0},
+"rope_coil": {"shape": "none"},
+"sandals": {"shape": "none"},
+"tide_debris": {"shape": "none"},
+"net_heap": {"shape": "none"},
+"net_float_cluster": {"shape": "none"},
+"causeway_slab_flat": {"shape": "none"},
+"causeway_slab_broken": {"shape": "none"},
+"causeway_slab_steps": {"shape": "none"},
+"lit_age_ring": {"shape": "none"},
+"laundry_line": {"shape": "none"}
 }
 
 [node name="Player" type="CharacterBody3D" parent="." groups=["player"]]
