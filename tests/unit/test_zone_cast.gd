@@ -77,4 +77,5 @@ func test_a_creature_or_a_hero_cast_finds_its_body() -> void:
 	assert_true(is_equal_approx(model.rotation.y, PI), "turned to face the actor's -Z")
 	var a := HeroMotion.player_of(model)
 	assert_true(a != null and a.is_playing(), "it idles")
+	assert_eq(HeroMotion.body_of(zone.stage.actor(&"board")), null, "no battle play_clip for the sequencer to call")
 	_close()

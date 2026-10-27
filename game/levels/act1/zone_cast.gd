@@ -59,6 +59,8 @@ func cast_actor(id: StringName, villager: String) -> Node3D:
 	model.name = CAST
 	if villager.begins_with(PREFIX_CREATURE):
 		model.rotation.y = PI  # a creature's model faces +Z; an actor faces its -Z
+		# the battle root (CreatureActor) answers the battle's play_clip; a cutscene drives the AnimationPlayer
+		model.set_script(null)
 	actor.add_child(model)
 	var stand_in := actor.get_node_or_null(NodePath(String(STAND_IN))) as Node3D
 	if stand_in != null:
