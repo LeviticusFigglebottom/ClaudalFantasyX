@@ -3,10 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
+uid="uid://brl33qvk0t2p4"
+path="res://.godot/imported/wayside_offering.glb-3d756db9c2e9431656b388542d79ed4a.scn"
 
 [deps]
 
 source_file="res://assets/environments/kits/haluna/wayside_offering.glb"
+dest_files=["res://.godot/imported/wayside_offering.glb-3d756db9c2e9431656b388542d79ed4a.scn"]
 
 [params]
 

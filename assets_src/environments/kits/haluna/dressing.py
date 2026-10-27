@@ -16,6 +16,7 @@ The lived-in clutter between the houses, along the tide-walls, on the dock and a
   woodpile          split firewood stacked between stakes under a lean-to of planks
   pot_plants        three clay pots with fans of strap leaves, by a doorstep
   yard_fence        a 2 m run of low fence: two lashed posts, rails and a woven reed panel (front +Z)
+  fish_weir         a tidal fish weir in the lagoon: two wattle fences of stakes in a V and a round pen
   village_litter    the ground scatter's meshes, one material each, no LODs (the dresser's `scatter`
                     MultiMeshes): frond_dry, coconut_husk, shell_scatter, pebble_cluster
 
@@ -63,6 +64,7 @@ TRI_BUDGET = {
     "pot_plants": (3000, 250),
     "yard_fence": (1400, 120),
     "village_litter": (900, 60),
+    "fish_weir": (5000, 600),
 }
 
 
@@ -593,6 +595,59 @@ def build_village_litter(seed: int = 711) -> list[kc.MeshBuilder]:
     return [frond, husk, shells, pebbles, frond_lod]
 
 
+def build_fish_weir(seed: int = 712, *, arm: float = 7.0, h: float = 2.6) -> list[kc.MeshBuilder]:
+    """A tidal fish weir in the lagoon's shallows: two wattle fences of stakes meeting in a V (front +Z is the
+    open mouth, toward the shore), a round pen of stakes at the point. Origin on the lagoon floor."""
+    out = []
+    for lod in (False, True):
+        rng = kc.rng_for("fish_weir", seed)
+        noise = kc.Noise3(rng)
+        mb = kc.MeshBuilder("fish_weir" + ("-lod1" if lod else ""))
+        tm = mb.material(M_DRIFT)
+        wm = mb.material(M_WOVEN)
+        pen_c = np.array([0.0, 0.0, -arm * 0.94])
+        pen_r = 1.3
+        for side in (-1.0, 1.0):
+            mouth = np.array([side * arm * 0.55, 0.0, arm * 0.1])
+            throat = pen_c + np.array([side * 0.45, 0.0, pen_r * 0.9])
+            n = int(np.linalg.norm(mouth - throat) / 0.55) + 1
+            pts = np.linspace(mouth, throat, n)
+            step = 1 if not lod else 3
+            for k, p in enumerate(pts[::step]):
+                top = h * (0.85 + 0.15 * rng.random()) - 0.3 * (k * step / n)
+                lean = rng.normal(0, 0.04, 3) * np.array([1.0, 0.0, 1.0])
+                kc.tube(mb, np.array([p - [0, 0.3, 0], p + [0, top, 0] + lean]), 0.035 if not lod else 0.05,
+                        5 if not lod else 3, tm, cap_end=True, variation=float(rng.random()), weather=kc.DROWNED)
+            # The wattle between the stakes, from the floor to a ragged line about 1 m up.
+            t = np.linspace(0.0, 1.0, 9 if not lod else 2)
+            base = mouth[None, :] * (1 - t[:, None]) + throat[None, :] * t[:, None]
+            top_y = 1.1 + (0.12 * np.sin(t * 17.0 + side) if not lod else 0.0)
+            grid = np.stack([base, base + np.stack([np.zeros_like(t), top_y * np.ones_like(t), np.zeros_like(t)], -1)],
+                            axis=0)
+            ln = float(np.linalg.norm(throat - mouth))
+            uv = np.stack([np.tile(t * ln * 2.0, (2, 1)), np.array([[0.0] * len(t), [2.0] * len(t)])], axis=-1)
+            for flip in (False, True):
+                kc.quad_strip(mb, grid, wm, uv=uv, col=np.array([0.0, 0.3, 0.8, 0.3]),
+                              uv2=np.array([0.8, float(rng.random())]), flip=flip)
+        # The pen: a ring of stakes open to the throat, wattled the same.
+        a = np.linspace(math.pi * 0.62, math.pi * 2.38, 15 if not lod else 6)
+        ring = np.stack([np.cos(a) * pen_r, np.zeros_like(a), -np.sin(a) * pen_r], axis=-1) + pen_c
+        for p in ring:
+            kc.tube(mb, np.array([p - [0, 0.3, 0], p + [0, h * (0.9 + 0.1 * rng.random()), 0]]),
+                    0.04 if not lod else 0.05, 5 if not lod else 3, tm, cap_end=True, variation=float(rng.random()),
+                    weather=kc.DROWNED)
+        grid = np.stack([ring, ring + np.array([0.0, 1.2, 0.0])], axis=0)
+        uv = np.stack([np.tile(np.linspace(0, 6, len(a)), (2, 1)), np.array([[0.0] * len(a), [2.0] * len(a)])], axis=-1)
+        for flip in (False, True):
+            kc.quad_strip(mb, grid, wm, uv=uv, col=np.array([0.0, 0.3, 0.8, 0.3]), uv2=np.array([0.8, 0.4]), flip=flip)
+        if not lod:
+            # A float-net hung on the pen, and a drying net over two stakes.
+            kc.tube(mb, ring[:6] + np.array([0.0, h * 0.8, 0.0]), 0.01, 3, mb.material(M_LASHING), variation=0.4)
+            del noise
+        out.append(mb)
+    return out
+
+
 TARGETS = {
     "crate_stack": build_crate_stack,
     "rope_coil": build_rope_coil,
@@ -606,4 +661,5 @@ TARGETS = {
     "pot_plants": build_pot_plants,
     "yard_fence": build_yard_fence,
     "village_litter": build_village_litter,
+    "fish_weir": build_fish_weir,
 }

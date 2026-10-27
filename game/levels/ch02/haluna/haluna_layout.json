@@ -2224,6 +2224,42 @@
    "_m701": true
   },
   {
+   "piece": "fish_weir",
+   "at": [
+    24.0,
+    -40.0
+   ],
+   "yaw_deg": -92.0,
+   "_m701": true
+  },
+  {
+   "piece": "fish_weir",
+   "at": [
+    28.0,
+    -72.0
+   ],
+   "yaw_deg": -84.0,
+   "_m701": true
+  },
+  {
+   "piece": "fish_weir",
+   "at": [
+    21.0,
+    84.0
+   ],
+   "yaw_deg": -98.0,
+   "_m701": true
+  },
+  {
+   "piece": "fish_weir",
+   "at": [
+    24.0,
+    110.0
+   ],
+   "yaw_deg": -88.0,
+   "_m701": true
+  },
+  {
    "piece": "wayside_offering",
    "at": [
     -111.5,
@@ -4511,6 +4547,10 @@
   "oil_lamp_post": [
    35.0,
    160.0
+  ],
+  "fish_weir": [
+   60.0,
+   400.0
   ],
   "market_stall": [
    45.0,

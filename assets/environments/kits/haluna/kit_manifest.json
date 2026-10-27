@@ -222,6 +222,17 @@
         "fish_drying_rack-lod1": 76
       }
     },
+    "fish_weir": {
+      "budget": [
+        5000,
+        600
+      ],
+      "bytes": 65764,
+      "lods": {
+        "fish_weir": 765,
+        "fish_weir-lod1": 172
+      }
+    },
     "garland_string": {
       "budget": [
         3400,
