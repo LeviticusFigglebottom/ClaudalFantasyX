@@ -11,12 +11,9 @@ ROOT = Path(__file__).resolve().parents[2]
 SFX_CUE = re.compile(r"^\s*@sfx\s+(\S+)", re.M)
 MUSIC_CUE = re.compile(r"^\s*@music\s+(\S+)", re.M)
 SILENCE = "silence"
-# Cues the scripts name that audio has not delivered yet (M3-AUD-819..822 are composing them). The list may only
-# shrink: a cue that lands must leave it, and a new script id must get a cue or join it on purpose.
-MUSIC_TODO = {
-    "hush_second_verse", "kerrid_stair", "lanternfall",
-    "liss_theme", "raid", "shoals_dusk",
-}
+# Cues the scripts name that audio has not delivered yet. Empty since M3-AUD-819..822 landed; a new script id must
+# get a cue, or join this set on purpose while one is being made (it may only shrink).
+MUSIC_TODO: set[str] = set()
 
 
 def sfx_dir() -> Path:

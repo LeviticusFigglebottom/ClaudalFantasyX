@@ -56,6 +56,8 @@ M2_CUES = ("haluna_village", "haluna_night", "battle_standard_v2", "hush_first_v
 M2_CUES += ("hearer_hum", "ysolde_theme", "name_board_home", "the_long_way_round", "oruvel_theme", "tavi_kell")
 M2_CUES += ("tidecup_after", "tidecup_crowd", "virel_bound", "virel_summon", "corrow_aftermath")  # M3-AUD-822
 M2_CUES += ("rhen_current_hum", "going_under", "corrow_night", "dawn_road")  # M3-AUD-819
+M2_CUES += ("lanternfall", "hush_second_verse", "kerrid_stair", "kahre_summon", "liss_theme", "raid",
+             "shoals_dusk")  # M3-AUD-821
 AMBIENCE_BUDGET = int(2.5 * 1024 * 1024)  # the M2-AUD-05 field beds together
 # Per-job budgets for later "ambience_loop" jobs (each job's beds together; the M2-AUD-05 job keeps AMBIENCE_BUDGET).
 AMBIENCE_JOB_BUDGETS = {"assets_src/sfx/causeway_ambience.py": int(1.2 * 1024 * 1024),
@@ -263,6 +265,15 @@ JOBS = [
     ("assets_src/music/corrow_night.py", "assets/audio/music", ["corrow_night.ogg", "corrow_night.loop.json"],
      "music_loop"),
     ("assets_src/music/dawn_road.py", "assets/audio/music", ["dawn_road.ogg", "dawn_road.loop.json"], "music_loop"),
+    # M3-AUD-821: Act I's scripted Ch5-Ch6 cues (lanternfall, the second verse, Kerrid's motif, Kahre's sting, Liss's
+    # theme, the raid, the shoals at night)
+    ("assets_src/music/lanternfall.py", "assets/audio/music", ["lanternfall.ogg", "lanternfall.loop.json"], "music_loop"),
+    ("assets_src/music/hush_second_verse.py", "assets/audio/music", ["hush_second_verse.ogg"], "music"),
+    ("assets_src/music/kerrid_stair.py", "assets/audio/music", ["kerrid_stair.ogg"], "music"),
+    ("assets_src/music/kahre_summon.py", "assets/audio/sfx", ["kahre_summon.ogg"], "music"),
+    ("assets_src/music/liss_theme.py", "assets/audio/music", ["liss_theme.ogg", "liss_theme.loop.json"], "music_loop"),
+    ("assets_src/music/raid.py", "assets/audio/music", ["raid.ogg", "raid.loop.json"], "music_loop"),
+    ("assets_src/music/shoals_dusk.py", "assets/audio/music", ["shoals_dusk.ogg", "shoals_dusk.loop.json"], "music_loop"),
 ]
 M1_JOBS = 5  # the first JOBS rows are M1's audio (SIZE_BUDGET)
 

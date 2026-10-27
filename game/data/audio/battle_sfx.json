@@ -59,6 +59,7 @@
   "reduced_level": 0.7,
   "vowbound_stings": {
     "ilun": "ilun_summon",
-    "virel": "virel_summon"
+    "virel": "virel_summon",
+    "kahre": "kahre_summon"
   }
 }
