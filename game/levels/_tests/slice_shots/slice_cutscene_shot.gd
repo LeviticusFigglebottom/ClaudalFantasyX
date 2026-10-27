@@ -28,10 +28,13 @@ var sequencer: CutsceneSequencer
 
 
 func _ready() -> void:
-	_start.call_deferred()
+	start.call_deferred()  # after CaptureSetup has set the exports
 
 
-func _start() -> void:
+## Stages the level and starts its scene (once). Deferred from _ready; tests, which never step a frame, call it.
+func start() -> void:
+	if level != null:
+		return
 	Game.state = GameStateData.new()
 	for f: Variant in flags:
 		Game.set_flag(StringName(str(f)))

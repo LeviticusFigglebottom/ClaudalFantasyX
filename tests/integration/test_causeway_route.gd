@@ -45,18 +45,21 @@ func test_the_route_is_dressed_and_lit_by_its_own_scene() -> void:
 
 func test_every_spawn_stands_on_the_walk_floor() -> void:
 	_load()
-	await (Engine.get_main_loop() as SceneTree).physics_frame
-	var space := zone.get_world_3d().direct_space_state
-	for spawn: Node in zone.get_node(^"Spawns").get_children():
+	var space := zone.get_world_3d().direct_space_state  # queried at once: the runner never steps a frame
+	var spawns := zone.get_node(^"Spawns").get_children()
+	var floored := 0
+	for spawn: Node in spawns:
 		var p := (spawn as Node3D).global_position
 		var q := PhysicsRayQueryParameters3D.create(p + Vector3.UP * RAY_UP_M, p + Vector3.DOWN * RAY_DOWN_M)
 		q.exclude = [zone.player.get_rid()]
 		var hit := space.intersect_ray(q)
 		assert_false(hit.is_empty(), "%s has floor under it" % spawn.name)
 		if not hit.is_empty():
+			floored += 1
 			assert_between(
 				(hit["position"] as Vector3).y - p.y, -STAND_TOLERANCE_M, STAND_TOLERANCE_M, "%s on it" % spawn.name
 			)
+	assert_true(not spawns.is_empty() and floored == spawns.size(), "every spawn was checked against a floor")
 	_done()
 
 
