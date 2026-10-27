@@ -111,7 +111,8 @@
     "font_size": 22
   },
   "face_poses": {
-    "asha": "res://game/data/cutscene/asha_face_poses.json"
+    "asha": "res://game/data/cutscene/asha_face_poses.json",
+    "sefir": "res://game/data/cutscene/sefir_face_poses.json"
   },
   "lip_flap": {
     "vis_aa": 0.55,
@@ -143,6 +144,7 @@
     "close_s": 0.06,
     "hold_s": 0.03,
     "open_s": 0.11,
-    "on_emotion_change": true
+    "on_emotion_change": true,
+    "per_actor": {"sefir": {"interval_s": [10.0, 14.0], "on_emotion_change": false, "_note": "M3-CIN-01: his tell (act1_npcs.md §1.6): a slow blink, one every 10-14 s; a changed expression is no reason for him to blink"}}
   }
 }

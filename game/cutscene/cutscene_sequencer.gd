@@ -780,7 +780,7 @@ func _face_of(actor_id: StringName) -> CutsceneFace:
 		if _lipsync.is_empty():
 			_lipsync = LipSync.load_config()
 		rig = CutsceneFace.new(actor, config.get("lip_flap", {}), _lipsync)
-		rig.configure_blink(config.get("blink", {}), DEFAULT_SEED + hash(actor_id))
+		rig.configure_blink(config.get("blink", {}), DEFAULT_SEED + hash(actor_id), actor_id)
 		if not rig.has_shapes():
 			rig = null
 	_face_rigs[actor_id] = rig
