@@ -221,6 +221,31 @@ env-art is cloud session `session_01YbaV2c8yquRHqj6afQYg89` on `claude/env-art`;
   - Pemakar full rebuild (older pieces identical);
   - validate_data, taskboard.
 
+- **M3-C07-04, the Tamsule port (act1-chapters' blocked Ch7 swap), merge-ready at 94fe8f77.** It has the same
+  `test_screenshots` red as the other new shots.
+  - `docs/kb/art/environments/tamsule.md`. Its shots are TP01–TP09, because the Bell's sheet already uses T01–T09.
+  - The Tamsule Bell kit's new `market.py`: `port_deck_8m(_rail)`, `plank_bridge_4m`, `market_stall`,
+    `market_boat_a/b`, `bunting_12m`.
+  - The preview `game/levels/_tests/tamsule_port_kit/` dresses **every greybox block in your own frame** (decks
+    y 0, river −1.6). `tamsule_port_layout.json` holds the rows, ready to copy into `ch07/tamsule`.
+  - **The Bell's ring stands at (0, −75)**, not your stand-in's z −40: the real galleries reach r 41 and would cover
+    the gantry foot.
+
+  Checks run:
+  - Godot `--filter=tamsule` 7/0;
+  - `test_tamsule_bell_kit`;
+  - full rebuild (older pieces identical);
+  - full tools suite (only that red).
+- **M3-ENV-716/717 (the Lead's item 4), sheets first:**
+  - `lowlight.md`: Ch11, the Lamp Engine's flooded hall, nothing frozen per ADR 0015/0016;
+  - `keth_pass.md`: Ch12, the Avalanche Ram's seeping Lit Age terrace.
+
+  The kits and the two arenas follow.
+  - **For the creatures track:** `avalanche_ram.md` gives the Ram ice-plated fleece, an ice beard, and snow shed by
+    its cast. ADR 0015 bans ice, frost and frozen water in any temple **or set-piece** from Ch12 to Ch15, and the
+    Ch12 boss is a set-piece. keth_pass.md proposes locks matted with seep-crust and silt, and a cast that sheds
+    scree. Please confirm or route to Narrative.
+
 ### Render requests
 RENDER-REQUEST @ a0d2549f: battle_arena_tideline_dawn,battle_arena_causeway_disc_sunset,battle_arena_causeway,battle_arena_tideline,causeway_c02_profile_against_the_lagoon,causeway_c08_drownbell_disc_approach,drownbell_flood,battle_boss_intro_drownbell,haluna_h01_village_from_sea,haluna_h10_dock_night,field_objective_line,field_interact_prompt,field_area_title,field_tip_card,dialogue_continue; why: M3-ENV-701 set dressing in Haluna, the causeway and the two arenas (the five field/dialogue shots frame Haluna's lane 1)
 RENDER-REQUEST @ 22a5de11: battle_arena_oruvel_raft_morning,battle_arena_causeway,drownbell_flood; why: the merge took the PC gate's copies of these three over env-art's; confirm they still match with the arena dressing
@@ -234,6 +259,7 @@ RENDER-REQUEST @ fa67bfee: battle_arena_shoals,battle_arena_camp,battle_boss_int
 RENDER-REQUEST @ 8770a067: corrow_c01_wall_head,corrow_c08_watcher_profile,corrow_c10_breach_fallen,brine_b01_arrival,brine_b05_barge_channel,battle_arena_shoals,battle_arena_camp,battle_boss_intro_inquisitor,iskarra_p01_plaza_dusk,iskarra_i02_gate_from_the_plaza,iskarra_i03_broken_tower; why: M3-ENV-712 carved Watcher backs, M3-ENV-705 Brine Shoals zenith, M3-ENV-706 Ch6 arena density, M3-ENV-710 Iskarra (supersedes the 24bf927a and fa67bfee lines)
 RENDER-REQUEST @ 599b2418: battle_arena_seawall_stairhead_storm,battle_arena_seawall_stairhead_hoist,battle_arena_seawall_stairhead_surge,battle_arena_coilspire_headland_path,battle_arena_coilspire_tier_landing; why: M3-ENV-713 Ch8's five new arenas (new shots, no baseline yet)
 RENDER-REQUEST @ fd630bb8: pemakar_p04_harbour_day,pemakar_p11_sea_cut_weir_day,battle_arena_ash_terrace_lanternfall; why: M3-ENV-1214 Pemakar's harbour pieces and day grade (new shots), the crown bell now in the Lanternfall arena's town
+RENDER-REQUEST @ 94fe8f77: tamsule_tp01_port_and_bell,tamsule_tp03_floating_market,tamsule_tp05_gantry_foot; why: M3-C07-04 the Tamsule port kit preview (new shots)
 
 ## STATE AT HANDOVER (2026-10-25)
 
