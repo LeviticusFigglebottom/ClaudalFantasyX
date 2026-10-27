@@ -24,6 +24,17 @@
         "ansedra_far_domes_lit-lod1": 2720
       }
     },
+    "archive_stacks": {
+      "budget": [
+        9000,
+        500
+      ],
+      "bytes": 869628,
+      "lods": {
+        "archive_stacks": 8200,
+        "archive_stacks-lod1": 288
+      }
+    },
     "arena_causeway_arms": {
       "budget": [
         30000,
@@ -640,6 +651,28 @@
         "kirru_roost-lod1": 492
       }
     },
+    "lacquer_court_ground": {
+      "budget": [
+        12000,
+        800
+      ],
+      "bytes": 282476,
+      "lods": {
+        "lacquer_court_ground": 2556,
+        "lacquer_court_ground-lod1": 192
+      }
+    },
+    "lacquer_hall": {
+      "budget": [
+        8000,
+        500
+      ],
+      "bytes": 87052,
+      "lods": {
+        "lacquer_hall": 900,
+        "lacquer_hall-lod1": 264
+      }
+    },
     "lamp_niche_tier": {
       "budget": [
         3000,
@@ -1045,6 +1078,17 @@
       "lods": {
         "ruin_wall_sunk": 2235,
         "ruin_wall_sunk-lod1": 12
+      }
+    },
+    "sanctum_basin": {
+      "budget": [
+        8000,
+        500
+      ],
+      "bytes": 281372,
+      "lods": {
+        "sanctum_basin": 2540,
+        "sanctum_basin-lod1": 168
       }
     },
     "sandals": {

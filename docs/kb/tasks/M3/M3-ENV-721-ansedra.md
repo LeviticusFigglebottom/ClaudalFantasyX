@@ -16,7 +16,7 @@ Ch14 boss (Warden Malcor Venn on the Conclave's pursuit barge). The sheet comes 
 - [x] The design sheet: `docs/kb/art/environments/ansedra.md`.
 - [x] `bowl_dome`, `ansedra_far_domes`, `pursuit_barge`, `lut_ch14_wedding`, and the arena `ansedra_lagoon_escape`
       built to the battle contract.
-- [ ] The zone pieces: the Lacquer Court, the Sanctum basin, the Lamp Archive.
+- [x] The zone pieces: `lacquer_hall`, `lacquer_court_ground`, `sanctum_basin`, `archive_stacks` (ansedra.md §1, with composition notes; placement is act1-chapters's).
 - [ ] PC renders viewed and approved.
 
 ## Notes
