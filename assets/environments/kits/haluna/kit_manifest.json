@@ -2,6 +2,28 @@
   "generator": "assets_src/environments/kits/haluna/build.py",
   "kit": "haluna",
   "pieces": {
+    "ansedra_far_domes": {
+      "budget": [
+        8000,
+        3000
+      ],
+      "bytes": 494648,
+      "lods": {
+        "ansedra_far_domes": 5400,
+        "ansedra_far_domes-lod1": 2720
+      }
+    },
+    "ansedra_far_domes_lit": {
+      "budget": [
+        8000,
+        3000
+      ],
+      "bytes": 642788,
+      "lods": {
+        "ansedra_far_domes_lit": 6840,
+        "ansedra_far_domes_lit-lod1": 2720
+      }
+    },
     "arena_causeway_arms": {
       "budget": [
         30000,
@@ -88,6 +110,17 @@
       "lods": {
         "basket_set": 564,
         "basket_set-lod1": 153
+      }
+    },
+    "bowl_dome": {
+      "budget": [
+        6000,
+        400
+      ],
+      "bytes": 55320,
+      "lods": {
+        "bowl_dome": 838,
+        "bowl_dome-lod1": 150
       }
     },
     "bridal_barge": {
@@ -869,6 +902,17 @@
       "lods": {
         "pot_plants": 998,
         "pot_plants-lod1": 198
+      }
+    },
+    "pursuit_barge": {
+      "budget": [
+        10000,
+        700
+      ],
+      "bytes": 114820,
+      "lods": {
+        "pursuit_barge": 1956,
+        "pursuit_barge-lod1": 484
       }
     },
     "quellan_house": {

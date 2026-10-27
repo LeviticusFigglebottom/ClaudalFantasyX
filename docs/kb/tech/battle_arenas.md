@@ -265,6 +265,20 @@ Light `ch15` (01:00, unlamped):
 
 Hints: `the_bier`, `the_dark_water`.
 
+### Ansedra's lagoon at the wedding's dusk (`ansedra_lagoon_escape`, M3-ENV-721, the Haluna kit's ansedra.py)
+
+For Warden Malcor Venn (Ch14). The party stands on Merel's bridal barge (`bridal_barge`, its deck at y 0) out on
+the lagoon (water at −0.6, still and then rippling on its own short wave set).
+
+| Where | What |
+|---|---|
+| Alongside, behind the enemy line | `pursuit_barge` at (−2, −7.6), black lacquer and gilt, the bound flat-engine on its poop; the `BossAnchor` on its deck at the near rail (−4.5, −0.2, −7.0) |
+| Behind it | Four `bowl_dome`s on their islands at 70–140 m, and the skyline ring `ansedra_far_domes_lit` (the windows lit: the city watching the water move) |
+
+Light `ch14`: sun 1° / 270°, key `#FFAA5F` 1.4, fill `#4A5A78` 0.4, exposure 0.90, `lut_ch14_wedding` (`zone_lut.py`:
+the reds pushed, the rest cooled, S-curve 0.7, the toe navy). No lamp on either barge. Hints: `the_engine`,
+`the_city_watching`.
+
 ### The underwater arena (`underway_tower`)
 
 An arena under the sea carries its own look, because the battle scene has none:

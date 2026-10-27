@@ -1476,9 +1476,59 @@ BRIDAL_ARENA = {
     "anchors": {"BossAnchor": (-10.0, _bridal().WATERLINE_Y, -1.5)},
 }
 
+# ---------------------------------------------------------------------------------------------
+# M3-ENV-721: Warden Malcor Venn's pursuit on Ansedra's lagoon at the wedding's dusk (ansedra.py; ansedra.md §2)
+# ---------------------------------------------------------------------------------------------
+PURSUIT_AT = (-2.0, -7.6)  # the pursuit barge's waterline centre, alongside behind the enemy line
+LACQUER_LAGOON = {  # the colour script's `overcast_lagoon` look under ch14 (deep #2E3448): the still mirror, breaking
+    "name": "arena_lacquer_lagoon", "shader": "res://game/shaders/water/water_ocean.gdshader",
+    "params": [("col_deep", "#2E3448"), ("col_scatter_shallow", "#3A5A66"), ("absorption_per_m", "Vector3(2, 0.5, 0.42)"),
+               ("absorption_scale", 1.5), ("scatter_energy", 0.06), ("caustic_strength", 0.0), ("col_foam", "#E8E4E0"),
+               ("col_sss", "#3A5A66"), ("foam_crest_threshold", 0.95), ("roughness_far", 0.02), ("use_caustics", "false"),
+               ("use_ssr", "true"), ("use_sss", "false")]}
+
+ANSEDRA_ESCAPE = {
+    "id": "ansedra_lagoon_escape",
+    "sub_frame": "ch14",
+    "ground": "deck",
+    "ground_glb": KIT + "bridal_barge.glb",
+    "lut": "res://assets/environments/arenas/ansedra_lagoon_escape/lut_ch14_wedding.png",
+    # Colour script ch14 (18:30): sun 1 deg / 270 deg, key #FFAA5F 1.4, fill #4A5A78 0.4, sky #2E3448 / #B85A3A, fog
+    # #4A3A3A, exposure 0.90, lut_ch14_wedding. The city's windows lit far off; no lamp on the barges.
+    "sun": {"elev": 1.0, "az": 270.0, "color": "#FFAA5F", "energy": 1.4, "max_distance": 80.0},
+    "fill": {"color": "#4A5A78", "energy": 0.4},
+    "exposure": 0.9,
+    "glow": (0.5, 0.06, 1.0),
+    "fog": {"color": "#4A3A3A", "aerial": 0.5, "density": 0.002, "sky_affect": 0.2, "height": 0.0, "height_density": 0.0},
+    "sky_shader": LOW_SUN_SKY,
+    "sky": dict(CORROW_SKY, col_zenith="#2E3448", col_horizon_sun="#B85A3A", col_horizon_away="#4A4A5E",
+                col_ground="#1E2230", sky_energy=0.9, sun_disc_energy=2.0, halo_energy=0.8, glow_energy=0.6,
+                cloud_coverage=0.85, col_cloud_lit="#C8704A", col_cloud_shadow="#3A3A4C"),
+    # The lagoon: still, then the escape's first ripples round the barges (low, short waves).
+    "sea": {"y": -0.6, "tide_line_y": -0.6, "sea_glow": 0.08, "material": LACQUER_LAGOON,
+            "waves": [(200.0, 2.2, 0.02, 0.15), (250.0, 1.3, 0.012, 0.12)]},
+    "pieces": [
+        {"glb": KIT + "pursuit_barge.glb", "at": (PURSUIT_AT[0], -0.6, PURSUIT_AT[1]), "yaw": 0.0, "structure": True},
+        {"glb": KIT + "bowl_dome.glb", "at": (-38.0, -0.6, -62.0), "yaw": 15.0, "scale": 1.6},
+        {"glb": KIT + "bowl_dome.glb", "at": (12.0, -0.6, -95.0), "yaw": 40.0, "scale": 2.2},
+        {"glb": KIT + "bowl_dome.glb", "at": (-85.0, -0.6, -110.0), "yaw": 70.0, "scale": 1.9},
+        {"glb": KIT + "bowl_dome.glb", "at": (58.0, -0.6, -70.0), "yaw": 5.0, "scale": 1.4},
+    ],
+    "extra_glbs": [KIT + "ansedra_far_domes_lit.glb"],
+    "scatters": [],
+    "hints": {
+        "wide_high": ((-1.5, 7.5, 13.5), (0.0, 0.8, -3.0)),
+        "party_side": ((5.6, 1.7, 4.5), (-1.5, 1.0, -0.5)),
+        "foe_side": ((-5.6, 1.7, 4.0), (1.5, 1.0, 0.0)),
+        "the_engine": ((0.5, 2.0, -2.0), (PURSUIT_AT[0] + 5.0, 1.6, PURSUIT_AT[1])),
+        "the_city_watching": ((2.0, 1.2, 3.0), (-20.0, 8.0, -80.0)),
+    },
+    "anchors": {"BossAnchor": (PURSUIT_AT[0] - 2.5, -0.2, PURSUIT_AT[1] + 0.6)},
+}
+
 ARENAS = {a["id"]: a for a in (TIDELINE, CAUSEWAY, CAUSEWAY_ROUTE, DERELICT_DECK, ASH_TERRACE, UNDERWAY_TOWER,
                                RAFT_MORNING, SHOALS, CAMP, WALLHEAD_STORM, WALLHEAD_HOIST, WALLHEAD_SURGE, HEADLAND, TIER_HALL, KETH_ARENA,
-                               LOWLIGHT_ARENA, FEN_ARENA, BRIDAL_ARENA)}
+                               LOWLIGHT_ARENA, FEN_ARENA, BRIDAL_ARENA, ANSEDRA_ESCAPE)}
 
 
 # ---------------------------------------------------------------------------------------------

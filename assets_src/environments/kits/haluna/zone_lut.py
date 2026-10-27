@@ -128,6 +128,13 @@ GRADES = {
                       "toe_end": 0.3, "black_floor": 1.0, "highlight_hex": "#DCE6FF", "highlight_start": 0.7,
                       "highlight_strength": 0.4, "warm_deg": (-20.0, 60.0), "warm_sat": 0.85, "cool_sat": 0.9,
                       "cool_hex": "#C8D6EE", "cool_strength": 0.35},
+    # M3-ENV-721: lut_ch14_wedding (colour script ch14): the reds pushed hard (the lacquer toward blood), the rest
+    # cooled, high contrast (S 0.7), shadows navy. The script's -4 deg hue turn on the reds is left to Rendering's LUT
+    # tool; here the red band is saturated and the toe pulls everything under it toward navy.
+    "ch14_wedding": {"saturation": 0.9, "s_curve": 0.7, "toe_hex": "#1A2238", "toe_strength": 0.5, "toe_end": 0.34,
+                     "black_floor": 0.6, "highlight_hex": "#FFD0A8", "highlight_start": 0.7, "highlight_strength": 0.35,
+                     "warm_deg": (-20.0, 25.0), "warm_sat": 1.15, "cool_sat": 0.85, "cool_hex": "#B8C4E0",
+                     "cool_strength": 0.3},
 }
 
 

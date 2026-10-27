@@ -454,5 +454,13 @@ STANDARD["kit_fen_canopy_far"] = {"albedo_color": hexc("#4E5C52"), "roughness": 
 STANDARD["kit_bound_core"] = {"albedo_color": hexc("#4FB3B0"), "roughness": 0.2, "emission_enabled": "true",
                               "emission": hexc("#4FB3B0"), "emission_energy_multiplier": 4.0}
 
+# ---- M3-ENV-721 (appended by env-art): Ansedra (ansedra.py; ansedra.md §1) -------------------------------------
+# The Conclave's black lacquer (lacquer_black, clearcoated), and Ansedra's lit windows at the wedding's dusk (an
+# oil-lamp warm, palette oil_lamp #FFB16E, far off).
+STANDARD["kit_lacquer_black"] = {"albedo_color": hexc("#16161A"), "roughness": 0.25, "clearcoat_enabled": "true",
+                                 "clearcoat": 0.8, "clearcoat_roughness": 0.1}
+STANDARD["kit_window_lit"] = {"albedo_color": hexc("#FFB16E"), "emission_enabled": "true", "emission": hexc("#FFB16E"),
+                              "emission_energy_multiplier": 2.5, "roughness": 0.9}
+
 if __name__ == "__main__":
     sys.exit(main())

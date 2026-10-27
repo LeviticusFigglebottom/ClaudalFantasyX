@@ -33,6 +33,7 @@ import lowlight  # noqa: E402
 import ossa_fen  # noqa: E402
 import save_shrine  # noqa: E402
 import bridal_barge  # noqa: E402
+import ansedra  # noqa: E402
 import kit_common as kc  # noqa: E402
 import props  # noqa: E402
 import ruins  # noqa: E402
@@ -98,6 +99,8 @@ def targets() -> dict:
         out[name] = (name, save_shrine, fn)
     for name, fn in sorted(bridal_barge.TARGETS.items()):  # M3-ENV-720 the Ch15 bridal barge
         out[name] = (name, bridal_barge, fn)
+    for name, fn in sorted(ansedra.TARGETS.items()):  # M3-ENV-721 Ansedra (Ch13-14)
+        out[name] = (ansedra.BUDGET_KEY.get(name, name), ansedra, fn)
     return out
 
 
