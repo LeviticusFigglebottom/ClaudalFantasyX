@@ -1,0 +1,5 @@
+PASS ashcrown_a01_approach: rmse 0.00160 (limit 0.00800)
+PASS ashcrown_a04_anvil_hall: rmse 0.00140 (limit 0.00800)
+PASS ashcrown_a10_plume_from_the_rim: rmse 0.00237 (limit 0.00800)
+Screenshots: 3 compared, 0 failed (diffs in /root/hymn/tests/screenshots/out/diff)
+compare exit 0
