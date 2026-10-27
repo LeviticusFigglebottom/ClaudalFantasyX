@@ -3365,7 +3365,7 @@
         960,
         540
       ],
-      "settle_frames": 1080,
+      "settle_frames": 270,
       "setup": {
         "globals": {
           "hymn_wind_time": 40.0
@@ -3383,7 +3383,8 @@
             ],
             "scene_id": "ch02_girl_on_the_beach"
           }
-        }
+        },
+        "time_scale": 4.0
       }
     },
     {
@@ -3394,7 +3395,7 @@
         960,
         540
       ],
-      "settle_frames": 1500,
+      "settle_frames": 375,
       "setup": {
         "globals": {
           "hymn_wind_time": 40.0
@@ -3412,7 +3413,8 @@
             ],
             "scene_id": "ch02_girl_on_the_beach"
           }
-        }
+        },
+        "time_scale": 4.0
       }
     },
     {
@@ -3515,7 +3517,7 @@
         960,
         540
       ],
-      "settle_frames": 2520,
+      "settle_frames": 630,
       "setup": {
         "globals": {
           "hymn_wind_time": 40.0
@@ -3532,7 +3534,8 @@
               "ch02_met_asha"
             ]
           }
-        }
+        },
+        "time_scale": 4.0
       }
     }
   ]
