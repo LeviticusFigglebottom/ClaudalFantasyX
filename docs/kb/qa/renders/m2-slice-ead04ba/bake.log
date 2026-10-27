@@ -1,0 +1,14 @@
+Godot Engine v4.6.3.stable.debian4.6.3+ds-2 - https://godotengine.org
+Vulkan 1.4.354 - Forward+ - Using Device #0: Unknown - llvmpipe (LLVM 22.1.8, 256 bits)
+
+bake_shrine_gi: level built
+bake_shrine_gi: baking open
+bake_shrine_gi: open -> res://assets/levels/ch03/shell_shrine/shrine_gi_open.res (2603 ms, OK)
+bake_shrine_gi: baking closed
+bake_shrine_gi: closed -> res://assets/levels/ch03/shell_shrine/shrine_gi_closed.res (2647 ms, OK)
+bake exit 0
+gi_inputs: wrote assets/levels/ch03/shell_shrine/shrine_gi_inputs.json
+gi_inputs exit 0
+ M assets/levels/ch03/shell_shrine/shrine_gi_closed.res
+ M assets/levels/ch03/shell_shrine/shrine_gi_inputs.json
+ M assets/levels/ch03/shell_shrine/shrine_gi_open.res

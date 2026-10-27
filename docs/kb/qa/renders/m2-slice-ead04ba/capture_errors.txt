@@ -1,0 +1,50 @@
+SCRIPT ERROR: Trying to cast a freed object.
+ERROR: 2 shaders of type SceneForwardClusteredShaderRD were never freed
+ERROR: 1 shaders of type ParticlesShaderRD were never freed
+ERROR: Pages in use exist at exit in PagedAllocator: N7Variant5Pools11BucketLargeE
+ERROR: Pages in use exist at exit in PagedAllocator: N7Variant5Pools12BucketMediumE
+ERROR: Pages in use exist at exit in PagedAllocator: N7Variant5Pools11BucketSmallE
+ERROR: 3 RID allocations of type 'N10RendererRD15MaterialStorage6ShaderE' were leaked at exit.
+SCRIPT ERROR: Trying to cast a freed object.
+ERROR: 2 shaders of type SceneForwardClusteredShaderRD were never freed
+ERROR: 1 shaders of type ParticlesShaderRD were never freed
+ERROR: Pages in use exist at exit in PagedAllocator: N7Variant5Pools11BucketLargeE
+ERROR: Pages in use exist at exit in PagedAllocator: N7Variant5Pools12BucketMediumE
+ERROR: Pages in use exist at exit in PagedAllocator: N7Variant5Pools11BucketSmallE
+ERROR: 3 RID allocations of type 'N10RendererRD15MaterialStorage6ShaderE' were leaked at exit.
+SCRIPT ERROR: Trying to cast a freed object.
+ERROR: Pages in use exist at exit in PagedAllocator: N7Variant5Pools11BucketLargeE
+ERROR: Pages in use exist at exit in PagedAllocator: N7Variant5Pools12BucketMediumE
+ERROR: Pages in use exist at exit in PagedAllocator: N7Variant5Pools11BucketSmallE
+SCRIPT ERROR: Trying to assign invalid previously freed instance.
+SCRIPT ERROR: Trying to assign invalid previously freed instance.
+SCRIPT ERROR: Trying to assign invalid previously freed instance.
+SCRIPT ERROR: Trying to assign invalid previously freed instance.
+SCRIPT ERROR: Trying to assign invalid previously freed instance.
+SCRIPT ERROR: Trying to assign invalid previously freed instance.
+SCRIPT ERROR: Trying to assign invalid previously freed instance.
+SCRIPT ERROR: Trying to assign invalid previously freed instance.
+SCRIPT ERROR: Trying to assign invalid previously freed instance.
+SCRIPT ERROR: Trying to assign invalid previously freed instance.
+SCRIPT ERROR: Trying to assign invalid previously freed instance.
+SCRIPT ERROR: Trying to assign invalid previously freed instance.
+SCRIPT ERROR: Trying to assign invalid previously freed instance.
+SCRIPT ERROR: Trying to assign invalid previously freed instance.
+SCRIPT ERROR: Trying to assign invalid previously freed instance.
+SCRIPT ERROR: Trying to assign invalid previously freed instance.
+SCRIPT ERROR: Trying to assign invalid previously freed instance.
+SCRIPT ERROR: Trying to assign invalid previously freed instance.
+SCRIPT ERROR: Trying to assign invalid previously freed instance.
+SCRIPT ERROR: Trying to assign invalid previously freed instance.
+SCRIPT ERROR: Trying to assign invalid previously freed instance.
+SCRIPT ERROR: Trying to assign invalid previously freed instance.
+SCRIPT ERROR: Trying to assign invalid previously freed instance.
+SCRIPT ERROR: Trying to assign invalid previously freed instance.
+SCRIPT ERROR: Trying to assign invalid previously freed instance.
+SCRIPT ERROR: Trying to assign invalid previously freed instance.
+SCRIPT ERROR: Trying to assign invalid previously freed instance.
+SCRIPT ERROR: Trying to assign invalid previously freed instance.
+SCRIPT ERROR: Trying to assign invalid previously freed instance.
+SCRIPT ERROR: Trying to assign invalid previously freed instance.
+SCRIPT ERROR: Trying to assign invalid previously freed instance.
+SCRIPT ERROR: Trying to assign invalid previously freed instance.
