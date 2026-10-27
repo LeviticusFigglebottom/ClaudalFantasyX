@@ -78,11 +78,17 @@
 ## 2b. Rendering is PC-only (human directive, 10-27)
 No cloud session captures screenshots. Tracks post `RENDER-REQUEST @ sha: ids` lines in their live logs, and the PC renders them and pushes `gpu/render-<track>-<sha7>`. The protocol is in TRACK-RULES.md. Gates stay on the PC as before.
 
+## 2c. Lead decisions (10-27)
+- ADR 0171 (audio 72 MiB for Act I) accepted.
+- Act II audio storage (Git LFS or a build-time render) goes to the human. Audio prototypes the build-time render as ADR 0172 (proposed).
+- M3-CRE-629: one weak-point colour (`spawn_wound`) for every foe (Pillar 4); creatures writes ADR 0151.
+- Villagers: creatures owns the runtime (FieldNpc, VillagerLayer); zone owners own placement; VillagerLayer adopts zone-placed villagers.
+
 ## 3a. Live roster (new account, from 2026-10-25)
 | Track | Session | Branch | Live log | Ids |
 |---|---|---|---|---|
 | Lead | session_018aiGwGLGkxsnMnu8VfCu1m | claude/undertow-lead-handoff-ze8rrn (integration) | lead-cloud.md | 1000–1099 |
-| pc-gpu (Remote Control) | session_01DKdurcvrzq9PEvuSu5L2nA | gpu/* | pc-gpu.md | 900–999, ADR 0180+ |
+| pc-gpu (Remote Control) | **session_01F3vrUMSWVyLnG3asrc8viy** (since 10-27 17:30; the old session_01DKdurcvrzq9PEvuSu5L2nA died when the PC was switched off mid-big11-gate) | gpu/* | pc-gpu.md | 900–999, ADR 0180+ |
 | slice-polish | session_01KZCgTqxhHKjvMCm1dAosvZ | claude/m2-slice | slice-polish.md | 100–199, ADR 0101–0109 |
 | act1-chapters | session_01TbP4NmiuX6qan2V9CWsDNN | claude/act1-chapters (new, cut from m2-slice 6c50823f) | act1-chapters.md | 1200–1299, ADR 0200–0209 |
 | ui-menus | session_01KGBUwbYgXe9JS6D8jXw6ZG | claude/ui (claude/menus merged in, then retired) | ui-menus.md | 200–399, ADR 0110–0129 |
@@ -145,7 +151,7 @@ No cloud session captures screenshots. Tracks post `RENDER-REQUEST @ sha: ids` l
 - The M2 slice review (blocking; play the integration branch).
 - Music: the listening verdict (docs/kb/audio/listening_notes.md), which blocks M1-LEAD-01.
 - The Asha face direction (ADR 0019's stronger stylisation, or keep).
-- Git LFS for files over 5 MB? GitHub Actions never leave "queued"; check the repo settings.
+- Git LFS for files over 5 MB? It's now needed before Act II's final audio (ADR 0171). GitHub Actions never leave "queued"; check the repo settings.
 - M3-RND-02: OK to cap the PC GPU's clocks or power for the min-spec proxy?
 
 ## 7. Toolchain and gotchas
