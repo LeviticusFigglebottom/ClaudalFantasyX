@@ -356,3 +356,4 @@ RENDER-REQUEST @ b2453cfd: battle_heroes_idle, battle_heroes_attack, battle_hero
 
 ### Render requests
 RENDER-REQUEST @ 1b84b89c: field_hero_rhen_walk, field_hero_party, field_hero_gait_strip, hero_cutscene_turn_strip, field_lane_fixed, field_court_pan, field_causeway_dolly, haluna_h02_tidewall_lane, haluna_h04_dock, haluna_h07_chapel_court, haluna_h10_dock_night; why: foot IK on uneven ground and the followers' floor and facing changes (M2-HER-1116), and characters' M2-CHR-12 gait clips now in via big10 (the earlier battle_heroes_* request @ b2453cfd stands)
+- @ bc444574: docs only. M3-AUD-810: confirmed the HeroBody half of audio's footstep request (foot_contact(foot, run) and the tree names); M2-HER-1116: foot IK costs 18 us per body-frame on the cloud CPU (Haluna run, legs bent on 13% of frames).
