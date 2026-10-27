@@ -34,3 +34,7 @@ grade and lift the frames that read grey, without breaking each zone's colour-sc
   - **Added:** a gilt Level line, red panel studs, gilt capitals, a white fringe, white curtains tied back at the
     posts, a red prow post with the Level sign, and a cushion.
   - **Limits held:** red and gold stay within test_order_colours_stay_small (commit b7182ba1).
+- **2026-10-27 (env-art): the Order chapel's articulation.** H07 read the chapel as a plain box.
+  - **Added, keeping it crisp and straight as haluna.md asks:** marble corner and bay pilasters, a dentil course,
+    arched marble window heads, two marble steps to the door, and arched openings in the cupola's drum.
+  - LOD0 is 5.5k tris against a 9k budget.

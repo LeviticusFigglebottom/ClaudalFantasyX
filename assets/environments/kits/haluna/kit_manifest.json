@@ -1030,9 +1030,9 @@
         9000,
         900
       ],
-      "bytes": 199956,
+      "bytes": 401620,
       "lods": {
-        "order_chapel": 3280,
+        "order_chapel": 5528,
         "order_chapel-lod1": 406
       }
     },
