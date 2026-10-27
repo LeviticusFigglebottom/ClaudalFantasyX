@@ -55,6 +55,8 @@ so a full battle-shot capture comes next.
 RENDER-REQUEST @ 25dcea24: battle_boss_intro_hullgnaw,battle_boss_intro_inquisitor,battle_boss_intro_matron,battle_boss_intro_hermit,battle_boss_intro_wraith,battle_boss_intro_drownbell; why: FAST-TRACK M3-BPR-404, the Hullgnaw boss intro framed too close (the human's playtest). The camera fits the boss model and clears the title card. All six move.
 RENDER-REQUEST @ 25dcea24: battle_hud_preview,battle_swap_menu,battle_victory,battle_statuses,battle_swell_ring,battle_read_panel,battle_opening_banner,battle_swell_modes,battle_vowbound_call,battle_vowbound_out,battle_choreo_melee,battle_choreo_hit,battle_choreo_cast,battle_choreo_support,battle_choreo_read,battle_choreo_ko,battle_choreo_swap,battle_arena_tideline,battle_arena_causeway,battle_choreo_lamp_dive,battle_choreo_toll,battle_choreo_vowbound_rise,battle_choreo_summon,drownbell_flood,battle_swell_chant,battle_swell_brace,battle_swell_glyph,battle_statuses_colorblind,battle_pause,battle_arena_raft,battle_arena_underway,battle_arena_route,battle_arena_derelict,battle_arena_terrace,battle_arena_tideline_dawn,battle_arena_causeway_disc_sunset,battle_arena_causeway_route_afternoon,battle_arena_derelict_deck_night,battle_arena_ash_terrace_lanternfall,battle_arena_oruvel_raft_morning,battle_arena_underway_tower,battle_arena_shoals,battle_arena_camp,battle_hud_21x9,battle_hud_16x10; why: M3-BPR-401 battle feel (flash, recoil, shake by damage, KO slow-mo, the hit-stop hold fix) + M3-BPR-402 melee spacing and detour + M3-BPR-403 opening line-up spread sideways by footprint, now on the big9 real heroes. Expect the choreo_* and every sandbox_reef shot to move; arenas may move where 403 spreads a line-up.
 
+RENDER-REQUEST @ 680cd88e: battle_boss_intro_reach,battle_choreo_melee,battle_choreo_hit,battle_choreo_ko,battle_choreo_toll; why: M3-BPR-406 Ch8 set pieces. The new Reach boss intro (no baseline yet: test_screenshots' baselined check is red until it is approved), and the hit-stop hold fix plus the counter planning re-checked on the choreo shots.
+
 ### FAST-TRACK M3-BPR-404 on the post-big9 integration branch (updated 2026-10-27)
 - **Cherry-picking 269054a3 and 4e89c967 now conflicts on the six baseline PNGs.** big9 re-approved them with the
   real heroes, and the PNGs in my commits were rendered with primitive heroes.
@@ -79,8 +81,13 @@ RENDER-REQUEST @ 25dcea24: battle_hud_preview,battle_swap_menu,battle_victory,ba
 - Cloud captures stopped, per the human's directive: only my wt403 PIDs, checked by their cwd.
 - **creatures, please note:** your M3-CRE-617 last box (the target's clip held through the hit-stop) is fixed at
   f8cd9269.
-- New task **M3-BPR-406** (todo): Ch8 set-piece presentation (entries, intercepts, counters, withdrawals, the
-  Reach), built on big10's BattleSetPiece.
+- **M3-BPR-406 (doing), Ch8 set pieces on stage:**
+  - all four Ch8 encounters play to their result panel at full pacing (new test);
+  - **withdrawn foes used to stay standing** on stage; they now back away and are hidden;
+  - counters show the hero's riposte;
+  - the Reach has a boss intro.
+  - Battle filter: 714 run, 0 failed.
+  - Open: the intercept step-in (it needs a stair marker on the Ch8 arena), the breach push-in and the phase looks.
 
 ## STATE AT HANDOVER (2026-10-25)
 
