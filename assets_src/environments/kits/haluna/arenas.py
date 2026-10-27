@@ -95,7 +95,7 @@ def axis(lo: float, hi: float, fine_lo: float, fine_hi: float, fine_m: float, gr
     return np.round(np.array(down[::-1] + core + up), 4)
 
 
-def ground_grid(name: str, xs: np.ndarray, zs: np.ndarray, height, masks) -> kc.MeshBuilder:
+def ground_grid(name: str, xs: np.ndarray, zs: np.ndarray, height, masks, mat: str = M_GROUND) -> kc.MeshBuilder:
     """A height-field mesh over the xs x zs grid. height(X, Z) -> H; masks(X, Z, H) -> (rows, cols, 4)."""
     mb = kc.MeshBuilder(name)
     X, Z = np.meshgrid(xs, zs)
@@ -105,7 +105,7 @@ def ground_grid(name: str, xs: np.ndarray, zs: np.ndarray, height, masks) -> kc.
     uv = np.stack([X, Z], axis=-1) * 0.5
     uv2 = np.stack([np.ones_like(X), np.full_like(X, 0.5)], axis=-1)
     base = mb.add_vertices(pos.reshape(-1, 3), kc.UP, uv.reshape(-1, 2), uv2.reshape(-1, 2), col.reshape(-1, 4))
-    mb.add_grid_indices(base, len(zs), len(xs), mb.material(M_GROUND), flip=True)
+    mb.add_grid_indices(base, len(zs), len(xs), mb.material(mat), flip=True)
     kc.recompute_normals(mb)
     return mb
 
@@ -592,8 +592,10 @@ def build_route_ground(seed: int = 251) -> list[kc.MeshBuilder]:
         else:
             xs = axis(-160.0, 200.0, -16.0, 16.0, 0.5, 1.07, 10.0)
             zs = axis(-300.0, 40.0, -24.0, 10.0, 0.5, 1.07, 10.0)
+        # M3-ENV-705: the B06 zone's own ground (tidal mud, wet-dark with a sheen), so the route's fights stand
+        # on the flats the field walks over, not on bleached beach sand (kit_ground).
         out.append(ground_grid("arena_causeway_route_ground" + ("-lod1" if lod else ""), xs, zs, route_height(noise),
-                               route_masks(noise)))
+                               route_masks(noise), mat="kit_causeway_ground"))
     return out
 
 

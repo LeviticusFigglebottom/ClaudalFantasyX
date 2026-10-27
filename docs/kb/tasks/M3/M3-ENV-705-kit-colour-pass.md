@@ -21,4 +21,7 @@ grade and lift the frames that read grey, without breaking each zone's colour-sc
 - [ ] View the PC renders of A01, A04, A10; re-approve or adjust.
 - [ ] The Shell Shrine interior: proposed to slice-polish with M3-ENV-704 (its grade and GI are theirs; the kit
       stone `kit_shrine_stone` is env-art's and can warm a step if they want it with the rebake).
-- [ ] The next lowest kits after the shrine and Ashcrown: the causeway route arena and Brine Shoals B01/B05.
+- [x] `causeway_route_afternoon` read as bleached beach (luminance 0.75, saturation 0.16): its ground now takes
+      the B06 zone's own `kit_causeway_ground` (wet-dark tidal mud), not the generic `kit_ground`. PC render requested.
+- [ ] Brine Shoals B01/B05: the colour script desaturates ch06 on purpose (×0.9, "brown-grey flats ... so the
+      camp's orange carries the frame"); left as designed unless the human's review names them.
