@@ -14,8 +14,9 @@ extends Node3D
 @export var scene_id: StringName = &""
 ## The spawn to place the party at first (place_at); empty = the level's own.
 @export var spawn: StringName = &""
-## Story flags set before the level is instanced (so its arrival logic sees them).
-@export var flags: PackedStringArray = PackedStringArray()
+## Story flags set before the level is instanced (so its arrival logic sees them). A plain Array: a shot's
+## setup sets it from JSON, and CaptureSetup won't put a JSON array into a PackedStringArray.
+@export var flags: Array = []
 ## The option every choice takes.
 @export var choice: int = 0
 
@@ -29,8 +30,8 @@ func _ready() -> void:
 
 func _start() -> void:
 	Game.state = GameStateData.new()
-	for f: String in flags:
-		Game.set_flag(StringName(f))
+	for f: Variant in flags:
+		Game.set_flag(StringName(str(f)))
 	SaveSystem.hold_autosave(self)
 	var packed := load(level_path) as PackedScene
 	if packed == null:

@@ -26,9 +26,9 @@ func test_every_slice_shot_boots_its_rig() -> void:
 		var rig := (load(str(shot["scene"])) as PackedScene).instantiate() as SliceCutsceneShot
 		tree.root.add_child(rig)
 		var props: Dictionary = ((shot.get("setup", {}) as Dictionary).get("nodes", {}) as Dictionary).get(".", {})
-		for key: String in props:
-			var v: Variant = props[key]
-			rig.set(key, PackedStringArray(v) if v is Array else v)
+		# The capture's own setup path, so a property it can't set fails here, not on the PC.
+		var setup := CaptureSetup.new({"nodes": {".": props}})
+		assert_eq(setup.attach(rig), "", "%s's setup applies" % shot["id"])
 		for i in WARMUP_FRAMES:
 			await tree.process_frame
 		var id := str(shot["id"])
@@ -37,6 +37,7 @@ func test_every_slice_shot_boots_its_rig() -> void:
 		assert_true(cam != null and rig.level.is_ancestor_of(cam), "%s looks through the level's camera" % id)
 		if StringName(str(props.get("scene_id", ""))) != &"":
 			assert_true(rig.sequencer != null and rig.sequencer.is_playing(), "%s is playing its scene" % id)
+		setup.end()
 		tree.root.remove_child(rig)
 		rig.free()
 	Game.state = saved
