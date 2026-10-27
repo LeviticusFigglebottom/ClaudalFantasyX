@@ -523,3 +523,11 @@ RENDER-REQUEST @ 1c9bf8bd: battle_choreo_cast, battle_choreo_read, battle_choreo
   tutorial text in battle_heroes_idle (which has no Ysolde in it). Copying these would revert big12's approvals.
 - **Still needed:** the RENDER-REQUEST above, at a sha with big12 in (4d351143 or later on claude/hero-integration).
   Same 7 ids. Only Ysolde should drift.
+- **`lead/gate-render-hero-integration-1c9bf8b` viewed and APPROVED (7 shots).** It was rendered on big12's tree, so
+  against big12's baselines:
+  - **The six Ysolde shots** (battle_statuses, battle_read_panel, battle_choreo_cast, battle_choreo_read,
+    battle_choreo_toll, battle_swell_glyph) differ only where she stands: her real model replaces the capsule. In Toll
+    she leans back hard at 13 HP (the placeholder weak pose; M2-HER-1115, characters).
+  - **battle_heroes_idle:** big12's first-battle tutorial prompt now shows, and Toma and Asha are at another phase of
+    their idle. Nothing is broken.
+  - 7a8bff7's render is superseded (not approved; it predates big12).
