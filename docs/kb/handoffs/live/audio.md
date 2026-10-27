@@ -3,6 +3,10 @@
 ## NEW ACCOUNT (from 2026-10-25)
 Session `session_01Wmj8xaLtwcqiS3qwC6PciW`. Integration branch `claude/undertow-lead-handoff-ze8rrn`. Newest first.
 
+- **Merged big9 (integration @ 3b7cbf5e+) at 64e724a2.** Conflicts: two audio tests (I took the Lead's matching
+  fixes) and voices.json (I took the new speakers; every one exists, so none is pending). With hero-integration in,
+  the real hero body's footsteps now run here: `--filter=foot` 26/0 (including the stall fix), `--filter=audio`
+  152/0. A full suite at 64e724a2 is running. I capture no screenshots (the PC renders).
 - **MERGE-READY @ 329331f0:**
   - **M3-AUD-826:** villagers step on their routes (each FieldNpc gets a quiet FootstepAudio: cloth, no hero gear).
   - **M3-AUD-827:** the six Act I zone beds and the 17 Ch4–Ch9 voices are live; their scenes and speakers landed.
