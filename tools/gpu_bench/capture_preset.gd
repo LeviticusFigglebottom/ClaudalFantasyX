@@ -18,7 +18,7 @@ extends Node
 ## every UndertowStorm clock while its temporal jitter keeps advancing (deterministic, TAA integrates);
 ## add --freeze-jitter to hold the jitter too (a static pattern, the control).
 ## --node-set=Path:prop=value,... sets a property on a node of the shot's scene (e.g.
-## Storm:half_res_compute=false, M2-RND-01).
+## Storm:half_res_compute=false, M2-RND-01; or a sub-resource path: WorldEnvironment:environment:ssao_enabled=false).
 ## --add-box=x,y,z,sx,sy,sz adds an opaque grey box (world centre and size, metres) to the scene, e.g. a
 ## pillar inside the Undertow's wall foot to check its occlusion (M2-RND-01).
 
@@ -104,7 +104,8 @@ func _tweak(scene: Node) -> void:
 		if node == null or at.size() < 2 or kv.size() < 2:
 			push_error("--node-set: cannot apply '%s'" % pair)
 			continue
-		node.set(at[1], str_to_var(kv[1]))
+		# set_indexed: a plain property, or a sub-resource path such as environment:ssao_enabled (M1-QA-09).
+		node.set_indexed(NodePath(at[1]), str_to_var(kv[1]))
 	for pair in str(_opts.get("light-set", "")).split(",", false):
 		var kv := pair.split("=", true, 1)
 		for n in scene.find_children("*", "DirectionalLight3D", true, false):
