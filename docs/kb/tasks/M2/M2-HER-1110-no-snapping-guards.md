@@ -2,7 +2,7 @@
 id: M2-HER-1110
 title: "No-snapping audit: automated guards for transform snaps and clip pops across field, cutscenes and battle"
 role: combat
-status: doing
+status: review
 owner_session: "hero-integration (session_01PzF7Jc4XVQdTWcaYUyCjPB)"
 reviewer: qa
 depends_on: [M2-HER-1101, M2-HER-1103, M2-HER-1104]
@@ -22,7 +22,9 @@ The human's #1 playtest complaint was rigid, snapping motion. Make "no snapping"
       (tests/unit/test_hero_field_snaps.gd, 13 walkable zones; first_verse has no field player).
 - [x] Cutscenes: 26 in-engine scenes over Haluna and the Act I zones (tests/integration/test_hero_cutscene_snaps.gd).
       The prologue scene is its own set (prologue_scene.gd) and is not in it yet.
-- [ ] Everything the guards find is fixed (or requested from the owner).
+- [x] Everything the guards find is fixed (in this track's files) or requested from its owner: M2-HER-1113 (cutscene
+      turns and end jumps), M2-HER-1114 (the placeholder crash and arm flip). The tests' KNOWN lists name them until
+      they land. ADR 0192.
 
 ## Notes
 ### 2026-10-25: battle
