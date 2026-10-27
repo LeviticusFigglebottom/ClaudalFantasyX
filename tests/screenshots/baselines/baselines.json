@@ -870,28 +870,28 @@
     "rendering_method": "forward_plus"
   },
   "haluna_h02_tidewall_lane": {
-    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
     "godot": "4.6.3-stable (debian4.6.3+ds-2)",
+    "rendering_method": "forward_plus",
     "rendering_driver": "vulkan",
-    "rendering_method": "forward_plus"
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)"
   },
   "haluna_h03_lintel_gull": {
-    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
     "godot": "4.6.3-stable (debian4.6.3+ds-2)",
+    "rendering_method": "forward_plus",
     "rendering_driver": "vulkan",
-    "rendering_method": "forward_plus"
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)"
   },
   "haluna_h04_dock": {
-    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
     "godot": "4.6.3-stable (debian4.6.3+ds-2)",
+    "rendering_method": "forward_plus",
     "rendering_driver": "vulkan",
-    "rendering_method": "forward_plus"
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)"
   },
   "haluna_h07_chapel_court": {
-    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
     "godot": "4.6.3-stable (debian4.6.3+ds-2)",
+    "rendering_method": "forward_plus",
     "rendering_driver": "vulkan",
-    "rendering_method": "forward_plus"
+    "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)"
   },
   "haluna_h10_dock_night": {
     "adapter": "llvmpipe (LLVM 22.1.8, 256 bits)",
