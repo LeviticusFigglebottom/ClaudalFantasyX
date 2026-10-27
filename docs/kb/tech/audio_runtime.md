@@ -578,3 +578,12 @@ by listening. `game/data/audio/life.json` names every hook class and every membe
 - Only nodes within `hear_m` of the camera are read. Randomness is a RandomNumberGenerator on `seed`.
 - Two reads are private fields until creatures adds public ones (M3-AUD-815): `_chat_speaker` and `_startle`.
   `chat_speaking()` and `startled()` win the moment they exist.
+
+## Impact (M3-AUD-816)
+`ImpactAudio` (`impact_audio.gd`) hears battle-presentation's `BattleImpact` (M3-BPR-401) by name, through
+`game/data/audio/impact_audio.json`, pending until that track merges. On `landed(target_id, strength, stop_sec)`
+the highest `tiers` row the blow reaches plays flat on Combat, under BattleVfx's element hit (it never replaces
+it). A hit-stop ducks `impact` (mix.json) for its length plus `hold_sec`. On
+`slowmo_planned(from_sec, sec, factor)`, `ko_slowmo` plays when the slow-mo starts (from_sec of plan time over the
+choreography's `speed`), and the `ko_slowmo` duck holds through the slowed time (sec / factor) plus `hold_sec`.
+Reduced audio skips `reduced_skip`.

@@ -55,6 +55,8 @@ var ui: UiAudio
 var reefball: ReefballAudio
 ## Villagers' talk and work and the wildlife, by listening (M3-AUD-814; life_audio.gd).
 var life: LifeAudio
+## A blow's weight and the KO slow-mo, on battle-presentation's BattleImpact (M3-AUD-816; impact_audio.gd).
+var impact: ImpactAudio
 var stings := StingAudio.new()
 var music: MusicDeck
 var sfx: SfxBank
@@ -93,6 +95,7 @@ func _ready() -> void:
 	ui.configure(AudioData.table(AudioData.UI_SFX))
 	reefball.configure(AudioData.table(AudioData.REEFBALL_HOOKS))
 	life.configure(AudioData.table(AudioData.LIFE))
+	impact.configure(AudioData.table(AudioData.IMPACT))
 	stings.data = AudioData.table(AudioData.BATTLE_STINGS)
 	var bus := get_node_or_null(^"/root/EventBus")
 	if bus != null and bus.has_signal(&"dialogue_event"):
@@ -131,6 +134,11 @@ func setup(mix_table: Dictionary, music_table: Dictionary, sfx_table: Dictionary
 		life.name = "LifeAudio"
 		life.bind_director(self)
 		add_child(life)
+	if impact == null:
+		impact = ImpactAudio.new()
+		impact.name = "ImpactAudio"
+		impact.bind_director(self)
+		add_child(impact)
 	build_buses(mix)
 	verb.configure(mix)
 	muffle.configure(mix)
@@ -178,6 +186,7 @@ func advance(delta: float) -> void:
 	ui.step()
 	reefball.advance(delta)
 	life.advance(delta)
+	impact.advance(delta)
 	stings.advance(delta)
 	for l: Variant in listeners.values():
 		if not is_instance_valid(l):
@@ -446,6 +455,8 @@ func _on_node_added(node: Node) -> void:
 		_later(reefball.watch, node)
 	elif life != null and life.wants(node):
 		_later(life.watch, node)
+	elif impact != null and impact.wants(node):
+		_later(impact.watch, node)
 	elif ChoreoAudio.wants(node):  # M3-AUD-13: the battle choreography's layers (choreo_sfx.json hooks)
 		_later(ChoreoAudio.attach_to.bind(self), node)
 	elif ui != null and ui.wants(node):

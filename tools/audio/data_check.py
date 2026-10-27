@@ -25,6 +25,7 @@ REEFBALL_HOOKS = "game/data/audio/reefball_hooks.json"  # M3-AUD-17
 CHOREO_SFX = "game/data/audio/choreo_sfx.json"  # M3-AUD-13
 BATTLE_STINGS = "game/data/audio/battle_stings.json"  # M3-AUD-18
 LIFE = "game/data/audio/life.json"  # M3-AUD-814
+IMPACT = "game/data/audio/impact_audio.json"  # M3-AUD-816
 CHOREO = "game/data/battle/choreo.json"  # the battle-presentation track's styles (once merged)
 SPEAKERS = "game/data/dialogue/speakers.json"
 CREATURE_VOICES = "game/data/audio/creature_voices.json"  # M3-AUD-14
@@ -433,6 +434,47 @@ def life_errors(doc: object, ids: set[str], classes: dict[str, list[str]] | None
     return errs
 
 
+def impact_errors(doc: object, ids: set[str], classes: dict[str, list[str]] | None, mix: object) -> list[str]:
+    """impact_audio.json (M3-AUD-816): a real hook class (unless pending), sfx rows for every tier and the slow-mo,
+    tiers in rising order, and ducks that mix.json defines."""
+    if not isinstance(doc, dict):
+        return [f"{IMPACT}: must be an object"]
+    errs: list[str] = []
+    for j, h in enumerate(doc.get("hooks", [])):
+        w = f"{IMPACT} hooks[{j}]"
+        if not isinstance(h, dict) or not isinstance(h.get("class"), str) or not h["class"]:
+            errs.append(f"{w}.class: needs a class name")
+            continue
+        if classes is not None and not h.get("pending", False):
+            if h["class"] not in classes:
+                errs.append(f"{w}.class: no script declares class_name {h['class']} (mark the hook pending until it lands)")
+            else:
+                for role, sig in (h.get("signals") or {}).items():
+                    if sig not in classes[h["class"]]:
+                        errs.append(f"{w}.signals.{role}: {h['class']} declares no signal {sig}")
+    last = -1.0
+    for j, tier in enumerate(doc.get("tiers", [])):
+        w = f"{IMPACT} tiers[{j}]"
+        lo = tier.get("min_strength") if isinstance(tier, dict) else None
+        if not _num(lo) or not 0 < lo <= 1 or lo <= last:
+            errs.append(f"{w}.min_strength: rising, in (0, 1]")
+        else:
+            last = lo
+        if not isinstance(tier, dict) or tier.get("sfx") not in ids:
+            errs.append(f"{w}.sfx: not an sfx row")
+    ducks = (mix or {}).get("ducks") or {} if isinstance(mix, dict) else {}
+    for key in ("hitstop", "slowmo"):
+        cfg = doc.get(key) or {}
+        if "sfx" in cfg and cfg["sfx"] not in ids:
+            errs.append(f"{IMPACT} {key}.sfx: {cfg['sfx']} is not an sfx row")
+        if cfg.get("duck") and cfg["duck"] not in ducks:
+            errs.append(f"{IMPACT} {key}.duck: {cfg['duck']} is not a mix.json duck")
+    for rid in doc.get("reduced_skip", []):
+        if rid not in ids:
+            errs.append(f"{IMPACT} reduced_skip: {rid} is not an sfx row")
+    return errs
+
+
 def audio_errors(files: dict[str, object], exists: Callable[[str], bool], flags: set[str]) -> list[str]:
     errs, buses = mix_errors(files.get(MIX))
     acc = ((files.get(ACCESSIBILITY) or {}).get("accessibility") or {}).get("settings", [])
@@ -467,6 +509,8 @@ def audio_errors(files: dict[str, object], exists: Callable[[str], bool], flags:
                               files.get(CHOREO))
     if LIFE in files:
         errs += life_errors(files[LIFE], ids, files.get(CLASSES))
+    if IMPACT in files:
+        errs += impact_errors(files[IMPACT], ids, files.get(CLASSES), files.get(MIX))
     if REEFBALL_HOOKS in files:
         all_beds = set(amb_beds) | set(((files.get(MUSIC) or {}).get("ambience") or {}).keys())
         errs += reefball_hook_errors(files[REEFBALL_HOOKS], ids, all_beds, files.get(CLASSES))
@@ -624,7 +668,7 @@ def load_files(root: Path) -> dict[str, object]:
     out = {}
     extra = [p.relative_to(root).as_posix() for p in sorted((root / SFX_DIR).glob("sfx_*.json"))]
     for rel in [MIX, MUSIC, SFX, BATTLE_SFX, SHRINE_SFX, UI_SFX, AMBIENCE, FOOTSTEPS, ENCOUNTERS, VFX_EFFECTS,
-                ACCESSIBILITY, VOICES, SPEAKERS, REEFBALL_HOOKS, CHOREO_SFX, CHOREO, BATTLE_STINGS, CREATURE_VOICES, ENEMIES, LIFE] + extra:
+                ACCESSIBILITY, VOICES, SPEAKERS, REEFBALL_HOOKS, CHOREO_SFX, CHOREO, BATTLE_STINGS, CREATURE_VOICES, ENEMIES, LIFE, IMPACT] + extra:
         p = root / rel
         if p.is_file():
             out[rel] = json.loads(p.read_text(encoding="utf-8"))

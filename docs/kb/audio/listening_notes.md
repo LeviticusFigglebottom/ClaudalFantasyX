@@ -904,3 +904,11 @@ Heard in Haluna once claude/creatures merges (or on creatures' `_tests/npc` and 
   the bowl's pestle. Every 2.5–5.5 s: does it feel like steady work or like a metronome?
 - **Gulls near:** brighter than the bed's far gulls; do the two layers sit together? Takeoff claps should be soft.
 - **Crabs and fish:** very quiet ticks and plips, heard only up close. Too faint to notice is better than too loud.
+
+## M3: battle impact weight (M3-AUD-816)
+Heard once claude/battle-presentation merges, in any fight. Listen for:
+- **Tiers:** a medium blow should thicken the hit, not double it; a heavy one should land as the hit-stop releases.
+  Is the crushing tier's debris too much on every crit?
+- **The hit-stop duck:** −6 dB of music for about 0.15 s. Is it felt as a held breath or as a dropout?
+- **The KO slow-mo:** the air drawn down and the one heartbeat under the last foe's fall, with the music ducked
+  −9 dB. The victory sting should follow cleanly.

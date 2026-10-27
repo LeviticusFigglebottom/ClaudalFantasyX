@@ -206,6 +206,8 @@ JOBS = [
     ("assets_src/sfx/hero_foley.py", "assets/audio/sfx/foley", _source_files("assets_src/sfx/hero_foley.py"), "sfx"),
     # M3-AUD-814: villagers' chat turns and work, gulls, crabs and fish (LifeAudio)
     ("assets_src/sfx/life_sfx.py", "assets/audio/sfx/life", _source_files("assets_src/sfx/life_sfx.py"), "sfx"),
+    # M3-AUD-816: battle impact tiers and the KO slow-mo swell (ImpactAudio)
+    ("assets_src/sfx/impact_sfx.py", "assets/audio/sfx/battle", _source_files("assets_src/sfx/impact_sfx.py"), "sfx"),
     # M3-AUD-804: Act II sketches (Ch10 Ossa Fen and Reedhollow, Ch11 Sunken Vey and Lowlight, Ch12 Keth Pass and Quellan)
     ("assets_src/music/ossa_fen.py", "assets/audio/music", ["ossa_fen.ogg", "ossa_fen.loop.json"], "music_loop"),
     ("assets_src/music/reedhollow.py", "assets/audio/music", ["reedhollow.ogg", "reedhollow.loop.json"], "music_loop"),
