@@ -2,8 +2,9 @@
 id: M2-UI-100
 title: Voice-over and narrator lines as subtitles, so the dialogue box stops covering the prologue's frame
 role: ui
-status: doing
+status: review
 owner_session: "claude/ui (ui-menus)"
+reviewer: cinematics
 depends_on: []
 milestone: M2
 request-from: cinematics
@@ -17,11 +18,17 @@ The human's playtest (Lead, 2026-10-24) said the prologue's "Everyone I'm going 
 Renders: m2-slice's scratchpad `grey2/after_presets_t10.png`. The cause and numbers are in the m2-slice live log.
 
 ## Acceptance criteria
-- [ ] Narrator and voice-over lines (the narrator speaker and the `vo` tag) show as a subtitle: no panel, or one at about 0.35 alpha, with a text shadow or outline for legibility, set in the lower letterbox band when one is up.
-- [ ] Spoken character lines keep the panel.
-- [ ] The prologue's frame keeps its figures visible while the line is up.
+- [x] Narrator and voice-over lines (the narrator speaker and the `vo` tag) show as a subtitle: no panel, or one at about 0.35 alpha, with a text shadow or outline for legibility, set in the lower letterbox band when one is up.
+- [x] Spoken character lines keep the panel.
+- [x] The prologue's frame keeps its figures visible while the line is up.
 
 ## Notes
 - This is UI's file and style. m2-slice won't edit it. An alternative is a shorter panel (about 160 px).
+
+## Implementation notes (ui-menus, 2026-10-27)
+- `DialogueBox.show_line` marks narration (no speaker) and `#vo` lines (`DialogueBox.TAG_VO`) as voice-over; `is_voice_over()`.
+- `SubtitleStyle` (dialogue_assist.json `subtitles.voice_over`) draws them as a subtitle: the panel rests 136 px tall, 8 px above the screen edge, so in a cutscene it sits on the lower letterbox band (119 px at 1080); the theme's panel is faded to 0.35 (fills, sheen and frame; no lamp nodes); the line is outlined 6 px in `panel_low`. Spoken lines get the scene's panel back. The box's open/close motion (M2-UI-202) lands on whichever rest is current (`DialogueBoxMotion.set_rest`).
+- New shot `dialogue_voice_over` (the prologue's narrated line over Haluna's H02 frame with the letterbox up); baseline added, **new, for the Lead to view**. `dialogue_continue` unchanged (rmse 0).
+- Tests: `tests/unit/test_dialogue_vo_subtitles.gd` (4); subtitles 9/0, dialogue_assist 12/0, dialogue and cutscene green.
 
 ## Review log
