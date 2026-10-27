@@ -214,3 +214,21 @@ RENDER-REQUEST @ 50182f0e: battle_ch08_stair_hold; why: big12's baseline shows t
   - **Checks:** input_parity_shop 3/0, input_parity_shrine 2/0, aspect 16/0.
   - **Queue empty again. Lead: route the next item.**
 
+- 2026-10-27 23:40, **the Lead's 22:50 backlog:**
+  - **M3-UI-1212 and M2-HER-1108 (05429d6d, 109c827e):**
+    - the Bell Galleries' walks and platforms and Corrow-by-night's wall-walk and strand are hinted as floors (their rails as structures), now that the map reads kit collision files;
+    - Ysolde's battle stand-in names `ysolde_battle_actor.tscn` (yaw -90);
+    - the primitive stand-in test uses the default spec.
+    - **Checks:** zone_map, battle_choreo, battle_party_stand_ins pass.
+  - **M3-UI-205, the Kite's world map (469851f6), now in review (design).**
+    - **The model:** KiteMapModel over `game/data/world/kite.json`. Places show by flag. Here is marked and can't be chosen. Fly asks first (Stay under the cursor) and goes through `ShrineNetwork.travel_to`.
+    - **Search:** "Search the chart" names a square (keys, pad, or the pointer over KiteChart) and finds secret places, which then join the list.
+    - **Coverage:** validator `check_kite`; input parity 3/0; pseudo-loc 25/0; aspect 17/0; test_kite_map 5/0.
+    - **Not mounted:** the Kite itself (Act III) doesn't exist. Its owner calls `KiteMapMenu.open_in(host, KiteMapModel.from_game())`.
+    - **`game/data/world/kite.json`** is added to the ui-menus ownership row (a new file under Systems' path).
+  - **Blocked on missing content, not started:**
+    - The Act II codex and bestiary: no Act II enemy or boss exists yet; all 28 enemies are Act I.
+    - The Ansedra and Lowlight maps: no zone exists for either.
+    - Both start the day those rows or layouts land.
+  - **Tools suite:** test_screenshots still fails only on missing baselines (`reefball_outfitter`, now `kite_map` too), which wait on renders.
+RENDER-REQUEST @ 469851f6: kite_map; why: a new screen (the Kite's world map, M3-UI-205: the list with Here, the chart with gems and the cursor ring on Tamsule); no baseline yet, so test_screenshots needs it.
