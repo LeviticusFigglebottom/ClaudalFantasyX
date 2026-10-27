@@ -150,7 +150,7 @@ cutscene sequencer (`game/cutscene/**`), `game/flow/**` and the playtest fixes.
      board-caller as villagers; Ch9's vigil Rhen/Asha/Toma as themselves). Left: heroes without bodies (Kerrid, Liss,
      Pell, Ysolde) and Ch8's storm figure (a cyan silhouette by design, not a person).
   5. **Act I balance at 1000 seeds: all 23 Act I suites, 97/97 bands ok** (`sim.py --seeds 1000 --check`, exit 0).
-  6. Act II (Ch10+): next once 1-3 land; no Ch10 beat sheet exists yet, so the first step is a request to story.
+  6. Act II (Ch10+): next once 2-3 land. Requested the Ch10 beat sheet from narrative now (M4-C10-01), so it's ready.
 - **Blocked swaps:** Ch5 Ashcrown (M3-C05-1215): the kit's flying stair is 48° and its vein stairs 60°, past the controller's 45°, so it needs a steep-stair traversal (request M3-ARC-1216). Ch4 `haluna_wake` belongs on the real Ch2 Haluna once it is ZoneStory (ADR 0035, slice-polish) with env-art's wake dressing (M3-C04-03); I'm not building a second dressed Haluna.
 - **Ch7's port (`ch07/tamsule`) is waiting on a kit:** env-art's "Tamsule stilt" kit (M3-C07-04, role environment) is
   still todo. The galleries part of M3-C07-04 is done by M3-C07-1211. I'll compose the port from the Bell kit's port
