@@ -288,6 +288,11 @@
       "id": "ilun",
       "scene": "res://game/creatures/ilun/ilun_battle.tscn",
       "out_dir": "res://assets/ui/portraits/creatures"
+    },
+    {
+      "id": "virel",
+      "scene": "res://game/creatures/virel/virel_battle.tscn",
+      "out_dir": "res://assets/ui/portraits/creatures"
     }
   ],
   "creature_stage": {
