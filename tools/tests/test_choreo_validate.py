@@ -129,6 +129,7 @@ class ChoreoValidateTest(unittest.TestCase):
         self.assertTrue(self._errs(lambda c: c["bosses"]["lamp_engine"]["phases"].update(opened={})))
         self.assertTrue(self._errs(lambda c: c["style_by_actor"].update(avalanche_ram={"physical": "no_style"})))
         self.assertTrue(self._errs(lambda c: c["camera"]["enemy_by_actor"]["avalanche_ram"].update(lead="no_shot")))
+        self.assertTrue(self._errs(lambda c: c["telegraph"]["gather"].update(sec=0)), "M3-BPR-413: the telegraph")
 
     def test_vowbound_block(self) -> None:
         self.assertTrue(self._errs(lambda c: c["vowbound"]["call"].update(sec=-1)))

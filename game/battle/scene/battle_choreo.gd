@@ -74,6 +74,8 @@ var summon: BattleSummonCinematic
 var boss: BattleBossChoreo
 ## M3-BPR-401: hit-stop, shake, flash and KO slow-mo on the contact (BattleImpact).
 var impact: BattleImpact
+## Every foe's gathering charge on stage (M3-BPR-413).
+var telegraph: BattleTelegraph
 
 var _ctl: BattleController
 var _engine: BattleEngine
@@ -125,6 +127,7 @@ static func attached(controller: BattleController, engine: BattleEngine) -> Batt
 	c.camera = BattleCameraDirector.attached(controller, c)
 	c.vow = BattleVowboundChoreo.new(c, engine)  # M2-BPR-04: listen-only, like the sequencer
 	c.boss = BattleBossChoreo.attached_if_boss(c, engine)
+	c.telegraph = BattleTelegraph.new(c, engine)  # M3-BPR-413: any foe's gathering charge reads on stage
 	c.summon = BattleSummonCinematic.attached(c, controller, engine)  # M2-BPR-08: C10
 	c.impact = BattleImpact.attached(c, controller, engine)  # M3-BPR-401: battle feel
 	BattleBossIntro.attached(c, controller, engine)  # M3-BPR-02: a boss's intro at the first turn

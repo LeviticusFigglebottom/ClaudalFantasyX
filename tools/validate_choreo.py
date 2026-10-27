@@ -275,6 +275,9 @@ def choreo_errors(doc: object, skills: object) -> list[str]:
             errs.append(f"{CHOREO_FILE}: {block}.clip must be a contract clip")
     if "bosses" in c:
         errs += _boss_errors(c["bosses"], skill_ids)
+    if "telegraph" in c:  # M3-BPR-413
+        t = c["telegraph"]
+        errs += _accent_errors(f"{CHOREO_FILE}: telegraph.gather", t.get("gather") if isinstance(t, dict) else None)
     if "vowbound" in c:
         errs += _vowbound_errors(c["vowbound"])
     if not _num(c.get("settle_sec")) or c["settle_sec"] < 0:

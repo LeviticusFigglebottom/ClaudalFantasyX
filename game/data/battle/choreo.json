@@ -64,6 +64,9 @@
       "miss": {"sec": 0.3, "dodge_m": 0.32, "clip": "dodge"}
     },
     "ko": {"delay_sec": 0.12, "collapse_sec": 0.5, "tilt_deg": 62.0, "drop_m": 0.18, "clip": "ko"},
+    "telegraph": {"doc": "M3-BPR-413 BattleTelegraph: a foe gathering a charged skill (a skill row's charge) draws itself in and sways on that action's contact and on each later turn of the charge, so the stage agrees with the timeline's intent (Pillar 4). A boss whose bosses row gathers that charge keeps its own.",
+                  "gather": {"sec": 1.0, "lift_m": 0.04, "crouch_m": 0.08, "recoil_m": 0.0, "tilt_deg": -4.0,
+                             "sway_deg": 4.0, "sways": 2.0}},
     "counter": {"doc": "M3-BPR-406 (ADR 0100): a counter stance answers a landed physical hit at once: the hero's attack clip starts delay_sec after the blow's strike ends, and the attacker's reaction lands on that clip's contact frame (clip only: the attacker keeps its run). Felled by it, the attacker collapses once it is home.", "delay_sec": 0.08},
     "barks": {"doc": "M3-C08-100 (act1_ch08.md B05, \u00a75; BattleBarks): a short line over the speaker's head as it uses a skill (skills: only the speaker's own use) or calls a Vowbound (calls), in palette role `role`. Sparse and sincere: Flare Line and Virel say nothing.",
               "role": "text",
