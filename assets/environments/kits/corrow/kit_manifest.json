@@ -35,6 +35,17 @@
         "corrow_far-lod1": 600
       }
     },
+    "ebbing_raft": {
+      "budget": [
+        5000,
+        300
+      ],
+      "bytes": 59812,
+      "lods": {
+        "ebbing_raft": 798,
+        "ebbing_raft-lod1": 92
+      }
+    },
     "fisher_stair": {
       "budget": [
         12000,
@@ -55,6 +66,17 @@
       "lods": {
         "fisher_stair_broken": 3438,
         "fisher_stair_broken-lod1": 288
+      }
+    },
+    "flood_debris": {
+      "budget": [
+        3000,
+        200
+      ],
+      "bytes": 38008,
+      "lods": {
+        "flood_debris": 472,
+        "flood_debris-lod1": 96
       }
     },
     "hoist_basket": {
@@ -189,6 +211,17 @@
         "marra_step-lod1": 12
       }
     },
+    "milestone": {
+      "budget": [
+        1200,
+        100
+      ],
+      "bytes": 24240,
+      "lods": {
+        "milestone": 252,
+        "milestone-lod1": 12
+      }
+    },
     "mole_pier": {
       "budget": [
         40000,
@@ -209,6 +242,17 @@
       "lods": {
         "mole_sea_stair": 5184,
         "mole_sea_stair-lod1": 36
+      }
+    },
+    "round_shield": {
+      "budget": [
+        900,
+        80
+      ],
+      "bytes": 24020,
+      "lods": {
+        "round_shield": 408,
+        "round_shield-lod1": 64
       }
     },
     "seawall_breach_a": {
@@ -266,6 +310,39 @@
         "seawall_curve-lod1": 96
       }
     },
+    "shroud_a": {
+      "budget": [
+        2400,
+        200
+      ],
+      "bytes": 29964,
+      "lods": {
+        "shroud_a": 704,
+        "shroud_a-lod1": 48
+      }
+    },
+    "shroud_b": {
+      "budget": [
+        2400,
+        200
+      ],
+      "bytes": 29960,
+      "lods": {
+        "shroud_b": 704,
+        "shroud_b-lod1": 48
+      }
+    },
+    "shroud_small": {
+      "budget": [
+        2400,
+        200
+      ],
+      "bytes": 29976,
+      "lods": {
+        "shroud_small": 704,
+        "shroud_small-lod1": 48
+      }
+    },
     "stillguard_barracks": {
       "budget": [
         14000,
@@ -275,6 +352,17 @@
       "lods": {
         "stillguard_barracks": 11800,
         "stillguard_barracks-lod1": 412
+      }
+    },
+    "strand_lamp": {
+      "budget": [
+        900,
+        80
+      ],
+      "bytes": 16848,
+      "lods": {
+        "strand_lamp": 114,
+        "strand_lamp-lod1": 66
       }
     },
     "trader_boat": {

@@ -170,6 +170,15 @@ STANDARD: dict[str, dict] = {
     "cw_net": {"transparency": 3, "cull_mode": 2, "roughness": 0.9, "texture_filter": 5,
                "albedo_texture": ("tex", "res://assets/environments/kits/haluna/textures/net_albedo.png"),
                "uv1_scale": "Vector3(2.5, 2.5, 1)"},
+    # M3-ENV-708 (cw_night.py): the Stillguard's red lacquer (shields), the Ebbing raft's dark lacquer, the strand
+    # lamps' clay and their flame.
+    "cw_lacquer_red": {"albedo_color": hexc("#B3261E"), "roughness": 0.25, "clearcoat_enabled": "true",
+                       "clearcoat": 0.6},
+    "cw_lacquer_dark": {"albedo_color": hexc("#2A1F1A"), "roughness": 0.2, "clearcoat_enabled": "true",
+                        "clearcoat": 0.7},
+    "cw_earthenware": {"albedo_color": hexc("#A8573A"), "roughness": 0.85},
+    "cw_lamp_flame": {"albedo_color": hexc("#FFB16E"), "emission_enabled": "true", "emission": hexc("#FFB16E"),
+                      "emission_energy_multiplier": 4.0, "roughness": 1.0},
     "cw_glass": {"transparency": 1, "albedo_color": hexc("#BFE6E0", 0.55), "roughness": 0.06, "metallic_specular": 0.7},
 }
 
