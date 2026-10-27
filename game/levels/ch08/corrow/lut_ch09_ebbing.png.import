@@ -2,8 +2,6 @@
 
 importer="3d_texture"
 type="CompressedTexture3D"
-uid="uid://3jap1qra4ylw"
-path="res://.godot/imported/lut_ch09_ebbing.png-619eabeff118fdfbd08385e2c491ca84.ctex3d"
 metadata={
 "vram_texture": false
 }
@@ -11,7 +9,6 @@ metadata={
 [deps]
 
 source_file="res://game/levels/ch08/corrow/lut_ch09_ebbing.png"
-dest_files=["res://.godot/imported/lut_ch09_ebbing.png-619eabeff118fdfbd08385e2c491ca84.ctex3d"]
 
 [params]
 

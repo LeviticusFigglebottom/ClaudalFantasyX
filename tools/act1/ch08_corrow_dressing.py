@@ -37,7 +37,7 @@ BREACH_KS = (-4, -3, -2)
 MOLE_GAP_S = (13.0, 17.0)  # no Watchers' heads where the mole's ramp crosses the parapet
 HEAD_GAP_S = (-18.4, -14.2)  # the kerb opens onto the stair's head landing
 BASTION_S = (-100.0, -58.0)
-BASTION_Z = (-2.5, -30.0)  # overlaps the walk: the straight platform leaves no crack at the curve
+BASTION_Z = (-2.5, -27.0)  # inner overlaps the walk (no crack at the curve); outer is its revetment's parapet edge
 WALL_Z = (-3.9, 4.2)  # the body, inner face to the parapet's sea edge (the sea batter is art: the mole climbs it)
 KERB_Z = (cf.cw.KERB[0], cf.cw.KERB[1])
 PARAPET_Z = (cf.cw.PARAPET[0], cf.cw.PARAPET[1])
@@ -114,12 +114,39 @@ def town_collision() -> list[dict]:
 
 
 def bastion_collision() -> list[dict]:
+    """The platform at walk height, and its revetments' parapet courses as rims (on the town side and both ends)."""
     s0, s1 = BASTION_S
     zi, zo = BASTION_Z
-    rows = [arc_box("BastionPlatform", s0, s1, cf.TOWN_Y, cf.WALK_Y, zo, zi, color="#8a7a66")]
-    rows.append(arc_box("BastionRimN", s0, s1, cf.WALK_Y, cf.WALK_Y + 1.0, zo, zo + 0.5, color="#7a6a58"))
-    rows.append(arc_box("BastionRimE", s1 - 0.5, s1, cf.WALK_Y, cf.WALK_Y + 1.0, zo, zi, color="#7a6a58"))
-    return rows
+    par = cf.cw.PARAPET[1] - cf.cw.PARAPET[0]
+    top = cf.WALK_Y + cf.cw.PARAPET[2]
+    return [arc_box("BastionPlatform", s0, s1, cf.TOWN_Y, cf.WALK_Y, zo, zi),
+            arc_box("BastionRimN", s0, s1, cf.WALK_Y, top, zo, zo + par),
+            arc_box("BastionRimE", s1 - par, s1, cf.WALK_Y, top, zo, zi - 1.0),
+            arc_box("BastionRimW", s0, s0 + par, cf.WALK_Y, top, zo, zi - 1.0)]
+
+
+def bastion_pieces() -> list[dict]:
+    """The Bastion dressed from the kit: seawall segments turned outward as its revetments (their parapet course on
+    the platform's edge, their Watcher-faced sea face to the town), and town ground cells on its top."""
+    s0, s1 = BASTION_S
+    zi, zo = BASTION_Z
+    out = []
+
+    def seg(s: float, zl: float, dyaw: float) -> dict:
+        x, _y, z, a = cf.arc(s, 0.0, zl)
+        return {"piece": "seawall_curve", "at": [cf.r3(x), cf.r3(z)], "y": 0.0, "yaw_deg": cf.yaw_norm(a + dyaw)}
+
+    edge = cf.cw.PARAPET[1]  # the parapet's outer edge, local z
+    for sc in (s0 + 6.0, s0 + 18.0, s0 + 30.0, s1 - 6.0):
+        out.append(seg(sc, zo + edge, 180.0))  # the town side: local +z faces inland
+    for zc in (zi - 7.0, zo + 6.0):
+        out.append(seg(s1 - edge, zc, 90.0))  # the east end faces +s
+        out.append(seg(s0 + edge, zc, -90.0))  # the west end faces -s
+    for sc in (s0 + 12.0, s1 - 12.0):
+        x, _y, z, a = cf.arc(sc, 0.0, (zi + zo) * 0.5)
+        out.append({"piece": "lowtown_ground", "at": [cf.r3(x), cf.r3(z)], "y": cf.WALK_Y + 0.02,
+                    "yaw_deg": cf.yaw_norm(a)})
+    return out
 
 
 def stair_ramps() -> list[dict]:
@@ -252,6 +279,15 @@ def breach_pieces() -> list[dict]:
     return out
 
 
+def trader() -> list[dict]:
+    """The trader the party comes in on (B01), on the Trader block: the Brightwater ferry kit's hull, rig and cargo at
+    half scale, no name board (a coaster, not the ferry). A stand-in until a trader is built (M3-ENV-1203)."""
+    b = next(r for r in json.loads(LAYOUT.read_text(encoding="utf-8"))["blocks"] if r["id"] == "Trader")
+    kit = "res://assets/environments/kits/brightwater_ferry/"
+    return [{"piece": piece, "kit_dir": kit, "at": [b["pos"][0], b["pos"][2]], "y": cf.SEA_Y, "yaw_deg": b["yaw"],
+             "scale": 0.5, "block": "Trader"} for piece in ("ferry_hull", "ferry_rig", "ferry_cargo")]
+
+
 def dressing() -> dict:
     head, _beacon = cwl.headland()
     pieces = [{"piece": "corrow_far", "at": [0.0, 0.0], "y": 0.0, "yaw_deg": 0.0, "lod1_from_m": 5000.0}] + head
@@ -261,6 +297,7 @@ def dressing() -> dict:
     pieces.append(dict(cwl.put_arc("liss_hoist_cut", cf.HOIST_S, cwl.HEAD_Y, cwl.HEAD_Z), block="RopeCoil"))
     pieces += breach_pieces()
     pieces += town_pieces()
+    pieces += bastion_pieces()
     for bid, piece, ds, dz in (("Barracks", "lowtown_house_a", -3.4, 0.0), ("Barracks", "lowtown_house_b", 3.2, 0.0),
                                ("Chapel", "lowtown_house_b", 0.0, 0.0)):
         b = next(r for r in json.loads(LAYOUT.read_text(encoding="utf-8"))["blocks"] if r["id"] == bid)
@@ -269,6 +306,7 @@ def dressing() -> dict:
         z = b["pos"][2] - ds * math.sin(yaw) + dz * math.cos(yaw)
         pieces.append({"piece": piece, "at": [cf.r3(x), cf.r3(z)], "y": cf.WALK_Y, "yaw_deg": cf.yaw_norm(b["yaw"] + 90.0),
                        "block": bid})
+    pieces += trader()
     preview = json.loads((PREVIEW / "corrow_layout.json").read_text(encoding="utf-8"))
     return {
         "schema": "ZoneKitDressing (game/levels/act1/zone_kit_dressing.gd; ADR 0200)",
@@ -282,9 +320,9 @@ def dressing() -> dict:
         "lod_margin_m": float(preview.get("lod_margin_m", 2.0)),
         "environment": RES_ZONE + "corrow_ch08_environment.tres",
         "time_of_day_h": 16.0,
-        "greybox": {"hide_all": True, "keep": ["Kites", "KitesHigh", "NetRacks", "MarraStep", "HoistPins", "HoistRope",
-                                               "Basket", "RopeCoil", "Trader", "Flood", "Lake", "Shrine", "Chandler",
-                                               "WallGate", "BastionPlatform", "BastionRimN", "BastionRimE", "MolePier", "MoleRamp",
+        "greybox": {"hide_all": True, "keep": ["NetRacks", "MarraStep", "HoistPins", "HoistRope",
+                                               "Basket", "RopeCoil", "Flood", "Lake", "Shrine", "Chandler",
+                                               "WallGate", "MolePier", "MoleRamp",
                                                "MoleOverParapet", "MoleDown"]},
         "fire_light_color": preview.get("fire_light_color", "#E0702E"),
         "fire_lights": [{"at": f[:3], "energy": f[3], "range": f[4]} for f in preview.get("fire_lights", [])],

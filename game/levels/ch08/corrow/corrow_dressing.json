@@ -12,23 +12,17 @@
  "greybox": {
   "hide_all": true,
   "keep": [
-   "Kites",
-   "KitesHigh",
    "NetRacks",
    "MarraStep",
    "HoistPins",
    "HoistRope",
    "Basket",
    "RopeCoil",
-   "Trader",
    "Flood",
    "Lake",
    "Shrine",
    "Chandler",
    "WallGate",
-   "BastionPlatform",
-   "BastionRimN",
-   "BastionRimE",
    "MolePier",
    "MoleRamp",
    "MoleOverParapet",
@@ -3208,6 +3202,96 @@
    "collide": true
   },
   {
+   "piece": "seawall_curve",
+   "at": [
+    -99.497,
+    -7.083
+   ],
+   "y": 0.0,
+   "yaw_deg": -162.05
+  },
+  {
+   "piece": "seawall_curve",
+   "at": [
+    -87.137,
+    -10.817
+   ],
+   "y": 0.0,
+   "yaw_deg": -164.34
+  },
+  {
+   "piece": "seawall_curve",
+   "at": [
+    -74.638,
+    -14.052
+   ],
+   "y": 0.0,
+   "yaw_deg": -166.63
+  },
+  {
+   "piece": "seawall_curve",
+   "at": [
+    -68.343,
+    -15.482
+   ],
+   "y": 0.0,
+   "yaw_deg": -167.78
+  },
+  {
+   "piece": "seawall_curve",
+   "at": [
+    -63.711,
+    -2.872
+   ],
+   "y": 0.0,
+   "yaw_deg": 101.88
+  },
+  {
+   "piece": "seawall_curve",
+   "at": [
+    -97.162,
+    6.147
+   ],
+   "y": 0.0,
+   "yaw_deg": -71.7
+  },
+  {
+   "piece": "seawall_curve",
+   "at": [
+    -66.078,
+    -14.125
+   ],
+   "y": 0.0,
+   "yaw_deg": 101.88
+  },
+  {
+   "piece": "seawall_curve",
+   "at": [
+    -100.773,
+    -4.772
+   ],
+   "y": 0.0,
+   "yaw_deg": -71.7
+  },
+  {
+   "piece": "lowtown_ground",
+   "at": [
+    -91.008,
+    -1.306
+   ],
+   "y": 12.02,
+   "yaw_deg": 16.81
+  },
+  {
+   "piece": "lowtown_ground",
+   "at": [
+    -72.777,
+    -6.221
+   ],
+   "y": 12.02,
+   "yaw_deg": 13.37
+  },
+  {
    "piece": "lowtown_house_a",
    "at": [
     -95.163,
@@ -3230,12 +3314,48 @@
   {
    "piece": "lowtown_house_b",
    "at": [
-    -78.402,
-    -15.814
+    -77.101,
+    -10.573
    ],
    "y": 12.0,
    "yaw_deg": 103.94,
    "block": "Chapel"
+  },
+  {
+   "piece": "ferry_hull",
+   "kit_dir": "res://assets/environments/kits/brightwater_ferry/",
+   "at": [
+    7.909,
+    36.454
+   ],
+   "y": 0.5,
+   "yaw_deg": -1.72,
+   "scale": 0.5,
+   "block": "Trader"
+  },
+  {
+   "piece": "ferry_rig",
+   "kit_dir": "res://assets/environments/kits/brightwater_ferry/",
+   "at": [
+    7.909,
+    36.454
+   ],
+   "y": 0.5,
+   "yaw_deg": -1.72,
+   "scale": 0.5,
+   "block": "Trader"
+  },
+  {
+   "piece": "ferry_cargo",
+   "kit_dir": "res://assets/environments/kits/brightwater_ferry/",
+   "at": [
+    7.909,
+    36.454
+   ],
+   "y": 0.5,
+   "yaw_deg": -1.72,
+   "scale": 0.5,
+   "block": "Trader"
   }
  ]
 }

@@ -2,8 +2,6 @@
 
 importer="3d_texture"
 type="CompressedTexture3D"
-uid="uid://cxxmkcme3mljb"
-path="res://.godot/imported/lut_ch08_storm.png-2c02d6aae17021ee1eaaffd83d5a33f1.ctex3d"
 metadata={
 "vram_texture": false
 }
@@ -11,7 +9,6 @@ metadata={
 [deps]
 
 source_file="res://game/levels/ch08/corrow/lut_ch08_storm.png"
-dest_files=["res://.godot/imported/lut_ch08_storm.png-2c02d6aae17021ee1eaaffd83d5a33f1.ctex3d"]
 
 [params]
 
