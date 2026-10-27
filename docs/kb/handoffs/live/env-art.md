@@ -110,6 +110,10 @@ env-art is cloud session `session_01YbaV2c8yquRHqj6afQYg89` on `claude/env-art`;
 - **MERGE-READY @ 80bb1e56:** `HalunaDresser.night_lamp_houses()` / `set_night_lamp(house, lit)` for Ch4 C4-01's
   windows going dark one at a time. Checks run: `--filter=haluna` 53/0, gdlint, gdformat.
 
+- **MERGE-READY @ 31dc710b:** the integration branch (ze8rrn @ 7f187123, big10) merged in; conflicts only in the shared
+  append-only files (union). Checks run: full tools suite OK, `--filter=haluna` 53/0, `--filter=arena` 18/0,
+  `gi_inputs --check`, validate_data, taskboard. The render requests above still stand.
+
 ### Render requests
 RENDER-REQUEST @ a0d2549f: battle_arena_tideline_dawn,battle_arena_causeway_disc_sunset,battle_arena_causeway,battle_arena_tideline,causeway_c02_profile_against_the_lagoon,causeway_c08_drownbell_disc_approach,drownbell_flood,battle_boss_intro_drownbell,haluna_h01_village_from_sea,haluna_h10_dock_night,field_objective_line,field_interact_prompt,field_area_title,field_tip_card,dialogue_continue; why: M3-ENV-701 set dressing in Haluna, the causeway and the two arenas (the five field/dialogue shots frame Haluna's lane 1)
 RENDER-REQUEST @ 22a5de11: battle_arena_oruvel_raft_morning,battle_arena_causeway,drownbell_flood; why: the merge took the PC gate's copies of these three over env-art's; confirm they still match with the arena dressing
