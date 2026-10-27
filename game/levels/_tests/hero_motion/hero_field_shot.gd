@@ -23,21 +23,7 @@ func _ready() -> void:
 		Game.state.party_ids = [&"rhen", &"asha", &"toma"] as Array[StringName]
 	else:
 		Game.state.party_ids = [&"rhen"] as Array[StringName]
-	player = FieldController.new()
-	player.name = "Player"
-	var shape := CollisionShape3D.new()
-	var cap := CapsuleShape3D.new()
-	cap.radius = float(common["capsule_radius_m"])
-	cap.height = float(common["capsule_height_m"])
-	shape.shape = cap
-	shape.position.y = cap.height * 0.5
-	player.add_child(shape)
-	player.add_child(_capsule(common, "StandIn"))
-	player.position = _v3(d["start"])
-	player.rotation.y = deg_to_rad(float(d["start_yaw_deg"]))
-	add_child(player)
-	player.set_physics_process(false)
-	player.set_process_unhandled_input(false)
+	player = _make_player(common, "Player", _v3(d["start"]), deg_to_rad(float(d["start_yaw_deg"])))
 	if not party:
 		var ref := _capsule(common, "ScaleCapsule")
 		ref.position += _v3(d["scale_capsule_at"])  # beside where the walk ends
@@ -51,6 +37,27 @@ func _ready() -> void:
 	var at := player.global_position
 	cam.look_at_from_position(at + _v3(d["camera_offset"]), at + _v3(d["look_offset"]))
 	cam.current = true
+
+
+## A FieldController with the greybox capsule (the hook swaps in the leader's body) at `at`, facing
+## `yaw`, added under this node with its own physics and input off (the rig steps it).
+func _make_player(common: Dictionary, node_name: String, at: Vector3, yaw: float) -> FieldController:
+	var c := FieldController.new()
+	c.name = node_name
+	var shape := CollisionShape3D.new()
+	var cap := CapsuleShape3D.new()
+	cap.radius = float(common["capsule_radius_m"])
+	cap.height = float(common["capsule_height_m"])
+	shape.shape = cap
+	shape.position.y = cap.height * 0.5
+	c.add_child(shape)
+	c.add_child(_capsule(common, "StandIn"))
+	c.position = at
+	c.rotation.y = yaw
+	add_child(c)
+	c.set_physics_process(false)
+	c.set_process_unhandled_input(false)
+	return c
 
 
 func _walk(d: Dictionary) -> void:

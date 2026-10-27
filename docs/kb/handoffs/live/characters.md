@@ -3,6 +3,63 @@
 **This environment owns this file** (CLAUDE.md §7a). Cloud session `session_01JqzzxgJU9Dmu7fRhmCG9aQ`, branch
 `claude/characters` (cut from `claude/undertow-lead-handoff-423ixt` at 952ef7c). The Lead reads it hourly.
 
+## STATE AT HANDOVER (2026-10-25)
+
+Branch `claude/characters` (this environment; cloud session_01JqzzxgJU9Dmu7fRhmCG9aQ). Everything below is pushed. Unmerged sub-agent work is saved as **source-only patches** in `docs/kb/handoffs/wip/`. Apply one with `git apply`, then rebuild the outputs with the build.sh named below; binaries are reproducible and left out of the patches.
+
+### Done and merge-ready on claude/characters (merge in this order; each was gated as noted above)
+1. **M1-CHR-14:** Asha's braid seated, clipping fixes, rig guards and host determinism. Already on the integration branch via big7.
+2. **M2-CHR-03:** the Haluna villagers.
+3. **M2-CHR-07:** hero battle clips (Asha, Rhen, Toma; 12 contract clips with `contact` markers). Battle-presentation consumes the markers.
+4. **M3-CHR-02 Sefir** and **M3-CHR-01 Ysolde:** hero builds (review: rendering). Design sheets for Liss, Tavi, Kell (act1_npcs.md), Kerrid (kerrid.md) and Pell (pell.md).
+5. **M3-CHR-03 villager half:** Tavi Orse and Mother Kell, plus the `props_wick` job.
+6. **M2-CHR-12:** field locomotion. Hero-integration has wired it in (M2-HER-1107).
+7. **M2-CHR-11, base_body and villager half:** identical on three numpy paths (@ 5ed6193d).
+- **HANDOVER DONE @ 54f1376e** (plus this note's own commit).
+
+### In progress (exact next steps)
+- **M1-CHR-15, skirt panels, shoulder correctives, spear turn, and Rhen/Toma host snaps:** COMPLETE on its branch and gated there, but NOT merged.
+  - Merging conflicts with M2-CHR-12 in `hero_clips.py` (both add blocks; keep both). The three clip `.tres` files and the asha_clip_walk/run and toma_clip_walk baselines also conflict; regenerate and re-approve them.
+  - Patch: `wip/M1-CHR-15.patch`, base becc8ca3.
+  - Steps: apply it, or merge branch `worktree-agent-a564dfb7f69dc1687` @ 9821853a if it still exists. Resolve hero_clips by keeping both blocks. Run `assets_src/characters/{asha,rhen,toma}/build.sh`, then `python3 assets_src/characters/asha/hero_clips.py --hero <h>` for every hero. Re-capture the asha_*, rhen_* and toma_* shots and view them. Then run `verify_blender_builds.py --job asha --job rhen --job toma`, natively and with `NPY_DISABLE_CPU_FEATURES="X86_V4"` and `"X86_V3 X86_V4"`, and the rig probe.
+  - That also completes M2-CHR-11 (rhen and toma).
+  - Its judgement call: in deep poses (offer_hand, kneel, extreme_pose) Asha's skirts now read as a stiff bell; the rendering reviewer should confirm.
+  - Request task M2-ENV-14: the Haluna kneel needs the helper-bone call.
+- **M2-CHR-513, battle clip fixes for hero-integration:** a livelier victory, a lying-down ko, a ~0.8 s revive, Rhen's run arm lowered, and Rhen's hooks in hand (not started; needs a hook bone).
+  - Patch: `wip/M2-CHR-513.patch`, base ceed1ff9. WIP, unverified, stopped by the usage limit.
+  - Next: apply it on top of M1-CHR-15. Finish the poses, then run the rig probe (Toma's Body count is near its ratchet), test_hero_battle_clips, and the shots `<hero>_battle_ko` and `_victory`.
+- **M3-CHR-05 (the Lead's big8 id: the 32 Asha/Toma clips for the Ch4–Ch9 greybox):** not started. Fold it into the clip work.
+- **Paused M3 heroes** (the Lead paused them after the playtest; resume only after the items above):
+  - Liss: `wip/M3-CHR-03-liss.patch`, base 075838e6. Next steps are in M3-CHR-03's Notes.
+  - Kerrid: `wip/M3-CHR-505-kerrid.patch`, base 358e4794. The GLB is 5.3 MB (cap 5) and LOD1 is 35k; rename the task file M3-CHR-05 → 505 when applying. Next steps are in M3-CHR-505's Notes.
+  - Pell: M3-CHR-506 is blocked on **M3-NAR-01** (Narrative must rule on whether his arc echoes the inspiring series' beast-folk guardian).
+
+### Open questions (none for the human)
+- **Narrative:** M3-NAR-01 (Pell's arc echo; the Kerrid and Pell sheet questions; stale ADR 0020 and glossary rows); Ysolde's ring, streak and re-ink staging (ysolde.md §12).
+- **Art Director:**
+  - Sefir's chest-up close-ups are 8–9% gold (the crown), and Cinematics may frame him waist-up instead;
+  - Sefir's blue swatch;
+  - the proposed swatches in the sheets.
+- **Rendering:** confirm the M1-CHR-15 skirt look.
+- **Cinematics:** M3-CIN-01 (Sefir's slow blink, face poses).
+
+### Known issues
+- Asha's tube skirts can't drape in deep lunges under linear skinning; M1-CHR-15 improves this.
+- Armpit ratchets on every hero.
+- Ysolde's robe reads mauve-brown under warm light.
+- Villager faces are adult donor faces (the child and Kell).
+- The M2 villager baselines are already about 6e-3 off (threshold 8e-3); re-approve them in a render batch.
+
+### Gotchas (read before any character build)
+- **Host determinism:** numpy dispatches SIMD paths at runtime (AVX-512, AVX2, baseline), and the last bits change the Blender outputs.
+  - Every build must snap: donor and part positions to a 1 µm grid; head midline; shape-key deltas on a 1 µm grid (`snap_shape_noise`); UVs on 2^-16 (`quantize_uvs`); `asha_textures.PRE_ROUND` before 8-bit rounding; hair and LOD1-decimate inputs on the grid.
+  - Verify with `NPY_DISABLE_CPU_FEATURES="X86_V4"` (the i9-12900K's AVX2) and `"X86_V3 X86_V4"`, not just natively.
+  - Pin `"threads": 4` per job.
+- **Garments under linear skinning:** no floor-length tubes; armholes at least 11.5 cm below the shoulder joint; torso garments on the torso only; props offset from the grip; keep the shins under skirts.
+- **hero_clips.py is shared:** add self-contained blocks. Every other hero's library must regenerate byte-identical.
+- **Ids:** characters uses the 500–599 block, ADRs 0140–0149, and handoffs named `<date>-character-characters-<n>.md`.
+- **send_message to the Lead's session** is refused ("trusted device"), so this file is the channel. The battle-presentation and hero-integration sessions do accept messages.
+
 ## Now
 - **M3-CHR-02 Sefir → review (rendering), worktree subagent, not pushed.** Hero build on the shared modules: LOD0 58,426,
   LOD1 27,118, sefir.glb 4.42 MB; rig probe all ok with no ratchet; `verify --job sefir` 32 identical (also on the AVX2
@@ -70,6 +127,29 @@
   2. **M2-CHR-12, field locomotion** (new): idle variants, walk and run with starts and stops, turns in place. Worktree sub-agent.
   3. **M2-CHR-11, host snaps** (new): rhen and toma are folded into M1-CHR-15, which is rebuilding them anyway; base_body and the seven villagers go to a worktree sub-agent.
   - The hero-integration track's live log is read each cycle. The branch didn't exist at 2026-10-24 ~20:00.
+- **MERGE-READY @ (this commit): M2-CHR-11, base_body and villager half.** Handoff: 2026-10-24-character-18.md.
+  - **Fix:** a 1 µm position grid on the donor skin right after the fit, so the head, body, scalp and normals follow, plus the hair cards before HairHead and LOD1 decimation, and UVs on 2^-16. All nine villagers now have `host_snaps: true`.
+  - **Verified:** base_body plus the nine villager jobs are identical on THREE numpy paths: native AVX-512, `X86_V4` off (the i9-12900K's AVX2 path) and `X86_V3 X86_V4` off.
+  - **Before the fix:** reproduced here. All 8 in-scope jobs differed under the AVX2 paths, in exactly the PC gate's accessors. Tavi and Kell also failed: a midline coordinate above 1e-9, and up to 80 µm of hair-card drift.
+  - **Shots:** 39 base_body and villager shots pass (max 6.3e-3, mostly drift that predates this; the change alone is ~4e-4).
+  - **Gates:** test_villagers, test_base_body and test_blender_builds OK; test_rig_integrity 71 OK; post_import 19/19.
+  - **For the Lead:** please re-run the PC gate for base_body and `villager_*`. Consider re-approving the M2 villager baselines in a render batch (about 6e-3 of the 8e-3 headroom is already used).
+  - **Still pending:** rhen and toma, in M1-CHR-15.
+- **MERGE-READY @ (this commit): M2-CHR-12, field locomotion for Asha, Rhen and Toma** (review: lead). Handoff: 2026-10-24-character-17.md.
+  - **New clips, in place:** walk_start, walk_stop, run_start, run_stop, turn_in_place_l90/_r90/_180, idle_breathe and idle_shift. walk and run are rebuilt: footprint IK with heel, flat and ball contacts, and per-hero lengths, so the loops close on 15 fps keys.
+  - **Controller data:** `game/data/characters/locomotion.json` holds stride_m and speed_mps (Asha walk 1.00 m, 0.88 m/s; Rhen 1.05 m, 0.98; Toma 1.25 m, 1.04), plus root_travel and yaw for the starts, stops and turns. `foot_l_down`/`foot_r_down` markers.
+  - **Ratchets:** none raised. Toma's Body count sits at its limit of 200.
+  - **Gates:**
+    - hero_stage 9/9, post_import 19/19;
+    - locomotion, clips and battle tests: 32 OK; test_rig_integrity 71 OK;
+    - libraries regenerate identical after the merge;
+    - re-approved after viewing: asha_clip_walk .041, asha_clip_run .048, toma_clip_walk .053;
+    - 6 new shots (walk_cycle and turn), viewed.
+  - **Still stiff:**
+    - 15 fps keys, so feet may slip by millimetres;
+    - Rhen's and Toma's early heel lift;
+    - Toma's walk is wide;
+    - the short transitions are brisk.
 - **hero-integration clip requests (M2-HER-1105 on claude/hero-integration), which I take:**
   - **Locomotion, in M2-CHR-12 (in flight; names aligned):** walk_start, walk_stop, run_stop, turn_in_place_l90, turn_in_place_r90, turn_in_place_180, idle_shift.
   - **Battle fixes, next after M2-CHR-12 lands:**

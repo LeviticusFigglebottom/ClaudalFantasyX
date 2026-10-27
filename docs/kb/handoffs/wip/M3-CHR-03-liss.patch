@@ -1,0 +1,3576 @@
+diff --git a/assets_src/characters/asha/hero_clips.py b/assets_src/characters/asha/hero_clips.py
+index 5fa34f6c..8c9015bc 100644
+--- a/assets_src/characters/asha/hero_clips.py
++++ b/assets_src/characters/asha/hero_clips.py
+@@ -326,6 +326,8 @@ def walk_pose(t: float, persona: dict, stride: float, knee: float, arm: float, b
+ def pose_at(clip: str, t: float, length: float, sk: Skeleton, persona: dict) -> dict:
+     if persona.get("hands_joined"):  # M3-CHR-02: Sefir's own clips (sefir_pose_at, below)
+         return sefir_pose_at(clip, t, length, sk, persona)
++    if persona.get("launcher"):  # M3-CHR-03: Liss's clips (liss_pose_at, below)
++        return liss_pose_at(clip, t, length, sk, persona)
+     sway = persona["sway"]
+     u = t / length
+     if clip == "idle":
+@@ -995,6 +997,8 @@ def _victory(hero: str, u: float, sk: Skeleton, persona: dict) -> dict:
+         held = {"DEF-spine.006": (-6.0, 8.0 + 4.0 * math.sin(ph), 0.0),
+                 "DEF-upper_arm.L": (-36.0, 0.0, 10.0), "DEF-forearm.L": (-50.0, -50.0, -60.0),
+                 "DEF-upper_arm.R": (0.0, 0.0, -4.0 * math.sin(ph))}
++    elif hero == "liss":  # M3-CHR-03 (her block below)
++        held = liss_victory(u)
+     else:  # Toma: the spear grounded, the left palm flat on his chest, the chin up
+         held = {"DEF-spine.006": (-5.0, 0.0, 0.0), "DEF-upper_arm.R": (-6.0, 0.0, 0.0),
+                 "DEF-upper_arm.L": (-40.0, 0.0, 14.0), "DEF-forearm.L": (-50.0, -80.0, -40.0),
+@@ -1147,6 +1151,291 @@ def sefir_pose_at(clip: str, t: float, length: float, sk: Skeleton, persona: dic
+     raise KeyError(clip)
+ 
+ 
++# ---------------------------------------------------------------------------------------------
++# Liss (M3-CHR-03, act1_npcs.md §2.8): a working crouch (a 6 degree lean, soft 9 degree knees, feet 1.1x the
++# shoulder-joint spacing, the head forward and down 4 degrees), idle sway 1.2 with quick small adjustments. A persona
++# with `launcher` takes these clips (pose_at dispatches): the shared idle, walk and run with her head down and her
++# right arm hung out past the launcher at the right hip (LISS_LAUNCHER_ARM), her own talk (the right hand talks, the
++# gloved left stays low) and the Ch6-Ch8 clips. She is a party member, so she carries the battle clip contract too
++# (M2-CHR-07: BATTLE_HEROES, _liss_keys). The other libraries do not change.
++# ---------------------------------------------------------------------------------------------
++PERSONA["liss"] = {"sway": 1.2, "lean": 6.0, "staff": False, "arms_down": 36.0, "stance": 1.1, "knee": 9.0,
++                   "launcher": True}
++CLIPS["liss"] = ["idle", "walk", "run", "talk", "crouch_shelter", "carry_crate", "bury_lamp", "clock_lantern",
++                 "point_up", "haul_rope"]
++LOOPS |= {"crouch_shelter", "carry_crate", "haul_rope"}
++LENGTHS.update({"crouch_shelter": 3.2, "carry_crate": 0.8, "bury_lamp": 6.0, "clock_lantern": 1.6, "point_up": 2.0,
++                "haul_rope": 1.6})
++LISS_HEAD_DOWN = 4.0  # degrees: the head forward and down, as if looking at something in her hands
++LISS_LAUNCHER_ARM = 16.0  # degrees the right upper arm hangs further out than the left: the forearm clears the box
++LISS_SLEEVE_ARM = 5.0  # degrees the left arm (the stiff mesh sleeve) hangs a little out from her side
++LISS_HAUL_STANCE = 1.4  # haul_rope's braced stance (ankles / shoulder-joint spacing)
++LISS_HAUL_LEAN = 12.0  # degrees haul_rope leans back
++LISS_SQUAT = (88.0, 112.0)  # crouch_shelter: thigh flexion and knee bend (degrees; the knees "about 110")
++
++
++def _liss_shared(persona: dict) -> dict:
++    """Her persona for the shared clips (without the dispatch key)."""
++    return {k: v for k, v in persona.items() if k != "launcher"}
++
++
++def liss_carry(persona: dict) -> dict:
++    """What she adds to every shared pose: the head down, the right arm out past the launcher."""
++    return {"DEF-spine.006": (LISS_HEAD_DOWN, 0.0, 0.0), "DEF-upper_arm.R": (0.0, 0.0, -LISS_LAUNCHER_ARM),
++            "DEF-upper_arm.L": (0.0, 0.0, LISS_SLEEVE_ARM)}
++
++
++def liss_base(sk: Skeleton, persona: dict) -> dict:
++    return add(planted(sk, _liss_shared(persona)), liss_carry(persona))
++
++
++def _liss_legs(sk: Skeleton, flex: float, bend: float, splay_l: float = 0.0) -> dict:
++    """Both legs flexed `flex` at the hip and `bend` at the knee with the feet flat and in place: the hips drop and
++    slide back by what that takes (the left knee may splay out; the right stays in line, clear of the launcher)."""
++    th, sh = sk.leg_thigh, sk.leg_shin
++    a, k = math.radians(flex), math.radians(bend - flex)
++    drop = (th + sh) - (th * math.cos(a) + sh * math.cos(k))
++    back = th * math.sin(a) - sh * math.sin(k)
++    return {"hips": (0.0, -drop, -back),
++            "DEF-thigh.L": (-flex, 0.0, splay_l), "DEF-thigh.R": (-flex, 0.0, 0.0),
++            "DEF-shin.L": (bend, 0.0, 0.0), "DEF-shin.R": (bend, 0.0, 0.0),
++            "DEF-foot.L": (flex - bend, 0.0, -splay_l), "DEF-foot.R": (flex - bend, 0.0, 0.0)}
++
++
++def liss_kneel(sk: Skeleton, persona: dict) -> dict:
++    """On both knees, the thighs upright, the shins folded back along the ground, the toes tucked (bury_lamp)."""
++    drop = sk.hip_h - (sk.leg_thigh + 0.05)
++    p = stand(_liss_shared(persona))
++    p.update({"hips": (0.0, -drop, 0.0),
++              "DEF-thigh.L": (0.0, 0.0, 2.0), "DEF-thigh.R": (0.0, 0.0, 0.0),
++              "DEF-shin.L": (92.0, 0.0, 0.0), "DEF-shin.R": (92.0, 0.0, 0.0),
++              "DEF-foot.L": (-30.0, 0.0, 0.0), "DEF-foot.R": (-30.0, 0.0, 0.0),
++              "DEF-toe.L": (-40.0, 0.0, 0.0), "DEF-toe.R": (-40.0, 0.0, 0.0)})
++    return add(p, liss_carry(persona))
++
++
++def liss_talk_hand(g: float, h: float) -> dict:
++    """The right hand talks: up to chest height in front, the forearm quick, the index pointed (`h` the beat)."""
++    return {"DEF-upper_arm.R": (-34.0 * g, 0.0, LISS_LAUNCHER_ARM * smooth((g - 0.3) / 0.7)),
++            "DEF-forearm.R": (-58.0 * g - 10.0 * h, 0.0, 0.0), "DEF-hand.R": (0.0, 18.0 * g, 10.0 * h)}
++
++
++def liss_victory(u: float) -> dict:
++    """The battle's end loop: weight on one hip, the gloved left hand flexing at her side, the right on the launcher's
++    box, the head up and turned off (the battle-clip block's _victory calls this)."""
++    ph = 2 * math.pi * u
++    return {"DEF-spine.001": (0.0, 0.0, 2.0), "DEF-spine.006": (-LISS_HEAD_DOWN - 4.0, 10.0 + 3.0 * math.sin(ph), 0.0),
++            "DEF-upper_arm.R": (2.0, 0.0, 6.0), "DEF-forearm.R": (-34.0, 0.0, 0.0), "DEF-hand.R": (16.0, 0.0, 0.0),
++            "DEF-upper_arm.L": (-8.0, 0.0, 6.0), "DEF-forearm.L": (-30.0, 0.0, 0.0),
++            "DEF-hand.L": (8.0 * math.sin(2 * ph), 0.0, 0.0)}
++
++
++def liss_pose_at(clip: str, t: float, length: float, sk: Skeleton, persona: dict) -> dict:
++    u = t / length
++    shared = _liss_shared(persona)
++    sway = persona["sway"]
++    if clip in BATTLE_FRAMES:
++        return battle_pose_at(clip, u, sk, persona)
++    if clip in ("idle", "walk", "run"):
++        p = add(pose_at(clip, t, length, sk, shared), liss_carry(persona))
++        if clip == "idle":  # quick small adjustments: a glance down and back, the fingers of the right hand working
++            ph = 2 * math.pi * u
++            p = add(p, {"DEF-spine.006": (2.0 * max(0.0, math.sin(3 * ph)) ** 4, 4.0 * math.sin(5 * ph) ** 9, 0.0),
++                        "DEF-hand.R": (6.0 * math.sin(4 * ph + 1.0) ** 3, 0.0, 0.0),
++                        "DEF-forearm.L": (-4.0 * max(0.0, math.sin(2 * ph + 2.0)), 0.0, 0.0)})
++        return p
++    base = liss_base(sk, persona)
++    if clip == "talk":
++        ph = 2 * math.pi * u
++        g = 0.5 - 0.5 * math.cos(ph)
++        beat = math.sin(4 * ph) * g  # two quick points per lift
++        return add(add(base, liss_talk_hand(g, beat)), {
++            "hips": (0.006 * sway * math.sin(ph), 0.0, 0.0),
++            "DEF-spine.002": (0.0, -4.0 * math.sin(ph), 0.0),
++            "DEF-spine.006": (2.5 * math.sin(2 * ph), 3.0 * math.sin(ph), -2.0 * math.sin(ph + 1.0))})
++    if clip == "crouch_shelter":
++        # a deep squat behind cover: the left (gloved) hand on the crate in front, the right forearm across the thigh,
++        # the body low and forward, the head low and turning
++        ph = 2 * math.pi * u
++        flex, bend = LISS_SQUAT
++        p = add(stand(shared), _liss_legs(sk, flex, bend, splay_l=8.0))
++        return add(p, {"DEF-spine.001": (26.0, 0.0, 0.0), "DEF-spine.002": (14.0, 0.0, 0.0),
++                       "DEF-spine.003": (6.0, 0.0, 0.0),
++                       "DEF-spine.005": (-12.0, 0.0, 0.0),
++                       "DEF-spine.006": (-6.0, 22.0 * math.sin(ph), 4.0 * math.sin(ph + 0.8)),
++                       "DEF-upper_arm.L": (-56.0, 0.0, 20.0), "DEF-forearm.L": (-30.0, 0.0, 0.0),
++                       "DEF-hand.L": (-20.0, 0.0, 0.0),
++                       "DEF-upper_arm.R": (-26.0, 0.0, -LISS_LAUNCHER_ARM - 6.0), "DEF-forearm.R": (-50.0, 0.0, 0.0)})
++    if clip == "carry_crate":
++        # a short hurried walk, both forearms under a crate at the hips (the crate is a scene prop on a
++        # BoneAttachment3D under DEF-hand.R)
++        p = walk_pose(u, shared, 16.0, 30.0, 0.0, 0.016, 6.0)
++        return add(p, {"DEF-spine.006": (LISS_HEAD_DOWN, 0.0, 0.0),
++                       "DEF-upper_arm.L": (-26.0, 0.0, 22.0), "DEF-forearm.L": (-78.0, -60.0, 0.0),
++                       "DEF-upper_arm.R": (-26.0, 0.0, -22.0), "DEF-forearm.R": (-78.0, 60.0, 0.0),
++                       "DEF-hand.L": (0.0, 0.0, 10.0), "DEF-hand.R": (0.0, 0.0, -10.0)})
++    if clip == "bury_lamp":
++        # onto both knees, two scoops of sand, the lamp set in, sand pushed over, the hands rest on the mound
++        down = liss_kneel(sk, persona)
++        bend = add(down, {"DEF-spine.001": (24.0, 0.0, 0.0), "DEF-spine.002": (14.0, 0.0, 0.0),
++                          "DEF-spine.003": (6.0, 0.0, 0.0), "DEF-spine.006": (8.0, 0.0, 0.0)})
++        reach = {"DEF-upper_arm.L": (-52.0, 0.0, 26.0), "DEF-forearm.L": (-14.0, 0.0, 0.0),
++                 "DEF-upper_arm.R": (-52.0, 0.0, -26.0 - LISS_LAUNCHER_ARM), "DEF-forearm.R": (-14.0, 0.0, 0.0)}
++        scoop = add(bend, reach)
++        pull = add(bend, {"DEF-upper_arm.L": (-34.0, 0.0, 26.0), "DEF-forearm.L": (-40.0, 0.0, 0.0),
++                          "DEF-upper_arm.R": (-34.0, 0.0, -26.0 - LISS_LAUNCHER_ARM),
++                          "DEF-forearm.R": (-40.0, 0.0, 0.0)})
++        setp = add(bend, {"DEF-upper_arm.L": (-60.0, -10.0, 22.0), "DEF-forearm.L": (-20.0, -20.0, 0.0),
++                          "DEF-upper_arm.R": (-60.0, 10.0, -22.0 - LISS_LAUNCHER_ARM),
++                          "DEF-forearm.R": (-20.0, 20.0, 0.0), "DEF-spine.001": (4.0, 0.0, 0.0)})
++        push = add(bend, {"DEF-upper_arm.L": (-50.0, 14.0, 26.0), "DEF-forearm.L": (-16.0, 30.0, 0.0),
++                          "DEF-upper_arm.R": (-50.0, -14.0, -26.0 - LISS_LAUNCHER_ARM),
++                          "DEF-forearm.R": (-16.0, -30.0, 0.0)})
++        rest = add(bend, {"DEF-upper_arm.L": (-46.0, 8.0, 26.0), "DEF-forearm.L": (-22.0, 16.0, 0.0),
++                          "DEF-hand.L": (0.0, 0.0, 10.0),
++                          "DEF-upper_arm.R": (-46.0, -8.0, -26.0 - LISS_LAUNCHER_ARM),
++                          "DEF-forearm.R": (-22.0, -16.0, 0.0), "DEF-hand.R": (0.0, 0.0, -10.0),
++                          "DEF-spine.006": (6.0, 0.0, 0.0)})
++        keys = [(0.0, base), (0.22, down), (0.32, scoop), (0.40, pull), (0.48, scoop), (0.56, pull), (0.66, setp),
++                (0.76, push), (0.86, rest), (1.0, rest)]
++        return _seq(u, keys)
++    if clip == "clock_lantern":
++        # a 10 degree lean in, the head tilts 8 degrees, the right hand lifts halfway toward the lantern and stops
++        e = smooth(u / 0.45)
++        return add(base, {"DEF-spine.001": (6.0 * e, 0.0, 0.0), "DEF-spine.002": (4.0 * e, 0.0, 0.0),
++                          "DEF-spine.006": (0.0, 0.0, 8.0 * e),
++                          "DEF-upper_arm.R": (-36.0 * e, 0.0, LISS_LAUNCHER_ARM * smooth((e - 0.4) / 0.6)),
++                          "DEF-forearm.R": (-36.0 * e, 0.0, 0.0), "DEF-hand.R": (0.0, 20.0 * e, 0.0)})
++    if clip == "point_up":
++        # the chin up, the right hand points up at the Bell, then drops
++        w = smooth(u / 0.3) * (1.0 - smooth((u - 0.7) / 0.3))
++        return add(base, {"DEF-spine.005": (-6.0 * w, 0.0, 0.0), "DEF-spine.006": (-LISS_HEAD_DOWN - 18.0 * w, 0.0, 0.0),
++                          "DEF-spine.003": (-3.0 * w, 0.0, 0.0),
++                          "DEF-upper_arm.R": (-128.0 * w, 0.0, (LISS_LAUNCHER_ARM - 18.0) * w),
++                          "DEF-forearm.R": (-14.0 * w, 0.0, 0.0), "DEF-hand.R": (-10.0 * w, 0.0, 0.0)})
++    if clip == "haul_rope":
++        # hand over hand: each hand reaches overhead and pulls down to the hip (the left half a cycle behind), a
++        # braced stance, the body leaning back 12 degrees
++        ph = 2 * math.pi * u
++        braced = add(planted(sk, dict(shared, stance=LISS_HAUL_STANCE)), liss_carry(persona))
++        p = add(braced, {"hips": (0.0, -0.02, -0.04), "DEF-spine.001": (-LISS_HAUL_LEAN * 0.6, 0.0, 0.0),
++                         "DEF-spine.002": (-LISS_HAUL_LEAN * 0.4, 0.0, 0.0),
++                         "DEF-spine.006": (-LISS_HEAD_DOWN - 10.0, 0.0, 0.0),
++                         "DEF-thigh.L": (LISS_HAUL_LEAN * 0.5, 0.0, 0.0), "DEF-thigh.R": (LISS_HAUL_LEAN * 0.5, 0.0, 0.0),
++                         "DEF-foot.L": (-LISS_HAUL_LEAN * 0.5, 0.0, 0.0), "DEF-foot.R": (-LISS_HAUL_LEAN * 0.5, 0.0, 0.0)})
++        for side, off, sgn in (("R", 0.0, 1.0), ("L", math.pi, -1.0)):
++            c = 0.5 - 0.5 * math.cos(ph + off)  # 0 overhead .. 1 down at the hip
++            # both hands close in on the rope overhead (the arms turn in toward the midline as they rise)
++            p = add(p, {f"DEF-upper_arm.{side}": (-136.0 + 110.0 * c, 0.0, sgn * (34.0 - 14.0 * c)),
++                        f"DEF-forearm.{side}": (-10.0 - 70.0 * math.sin(math.pi * c), 0.0, 0.0),
++                        f"DEF-hand.{side}": (0.0, 0.0, -sgn * 20.0)})
++        return p
++    raise KeyError(clip)
++
++
++def _liss_keys(clip: str, sk: Skeleton, persona: dict, base: dict) -> list:
++    """Liss (act1_npcs.md §2: small, wiry, quick; the gloved left hand protects, the right does the fine work, the
++    launcher at the right hip stays slung: the battle draw is a later task): low and fast, a flick of the right
++    arm, the gloved forearm up to block."""
++    a = persona["arms_down"]
++    if clip == "ready":
++        k = add(_legs(sk, persona, 0.05, 0.05, -0.04), {
++            "DEF-spine.001": (8.0, 0.0, 0.0), "DEF-spine.006": (-4.0, 0.0, 0.0),
++            "DEF-upper_arm.L": (-34.0, 0.0, 10.0), "DEF-forearm.L": (-90.0, 0.0, -20.0),
++            "DEF-upper_arm.R": (-20.0, 0.0, -10.0), "DEF-forearm.R": (-60.0, 0.0, 0.0)})
++        return [(0.0, {}), (0.45, k), (1.0, {})]
++    if clip == "attack":
++        # a charge flung from the right hand: drawn back past the hip, then the arm snaps forward
++        wind = add(_legs(sk, persona, 0.05, 0.05, -0.05), {
++            "DEF-spine.001": (4.0, -12.0, 0.0), "DEF-spine.006": (-4.0, 10.0, 0.0),
++            "DEF-upper_arm.R": (30.0, 0.0, -14.0), "DEF-forearm.R": (-50.0, 0.0, 0.0),
++            "DEF-upper_arm.L": (-30.0, 0.0, 10.0), "DEF-forearm.L": (-70.0, 0.0, 0.0)})
++        hit = add(_legs(sk, persona, 0.07, 0.16, -0.10), {
++            "DEF-spine.001": (8.0, 14.0, 0.0), "DEF-spine.002": (4.0, 6.0, 0.0), "DEF-spine.006": (-6.0, -14.0, 0.0),
++            "DEF-upper_arm.R": (-76.0, 0.0, -16.0), "DEF-forearm.R": (-6.0, 0.0, 0.0), "DEF-hand.R": (-10.0, 0.0, 0.0),
++            "DEF-upper_arm.L": (10.0, 0.0, 14.0), "DEF-forearm.L": (-50.0, 0.0, 0.0)})
++        return [(0.0, {}), (0.25, wind), (0.55, hit), (0.75, _scale(hit, 0.7)), (1.0, {})]
++    if clip == "cast":
++        # the gloved hand raised with a bound-light device in it, the head lifted: it flares at the top
++        call = add(_legs(sk, persona, 0.03), {
++            "DEF-spine.001": (6.0, 0.0, 0.0), "DEF-upper_arm.L": (-30.0, 0.0, 8.0), "DEF-forearm.L": (-100.0, 0.0, 0.0),
++            "DEF-upper_arm.R": (-10.0, 0.0, -6.0)})
++        lift = add(_legs(sk, persona, -0.01), {
++            "DEF-spine.003": (-4.0, 0.0, 0.0), "DEF-spine.006": (-12.0, 0.0, 0.0),
++            "DEF-upper_arm.L": (-112.0, 0.0, 16.0), "DEF-forearm.L": (-12.0, 0.0, 0.0), "DEF-hand.L": (0.0, 0.0, -20.0),
++            "DEF-upper_arm.R": (-10.0, 0.0, -10.0)})
++        return [(0.0, {}), (0.4, call), (0.8, lift), (1.0, {})]
++    if clip == "item":
++        reach = add(_legs(sk, persona, 0.03), {"DEF-spine.001": (4.0, -6.0, 0.0),
++                                               "DEF-upper_arm.L": (-10.0, 0.0, 10.0), "DEF-forearm.L": (-80.0, 0.0, 0.0)})
++        toss = add(_legs(sk, persona, 0.04, 0.08, -0.04), {
++            "DEF-spine.001": (6.0, 8.0, 0.0), "DEF-upper_arm.R": (-96.0, 0.0, -14.0), "DEF-forearm.R": (-14.0, 0.0, 0.0),
++            "DEF-hand.R": (-20.0, 0.0, 0.0), "DEF-upper_arm.L": (-10.0, 0.0, 10.0), "DEF-forearm.L": (-40.0, 0.0, 0.0)})
++        settle = add(_scale(toss, 0.45), {"DEF-upper_arm.R": (0.0, 0.0, -16.0)})
++        return [(0.0, {}), (0.35, reach), (0.7, toss), (0.85, settle), (1.0, {})]
++    if clip == "read":
++        # sizing the machine up: a lean in, the head forward and tilted, the right hand to the chin
++        look = add(_legs(sk, persona, 0.04), {
++            "DEF-spine.001": (8.0, 0.0, 0.0), "DEF-spine.002": (5.0, 0.0, 0.0), "DEF-spine.006": (6.0, -6.0, 6.0),
++            "DEF-upper_arm.R": (-30.0, 0.0, -2.0), "DEF-forearm.R": (-112.0, 20.0, 0.0),
++            "DEF-upper_arm.L": (-10.0, 0.0, 6.0), "DEF-forearm.L": (-40.0, 0.0, 0.0)})
++        return [(0.0, {}), (0.6, look), (0.78, look), (1.0, {})]
++    if clip == "defend":
++        # low behind the gloved forearm, the mesh sleeve to the blow, the right hand back at the box
++        guard = add(_legs(sk, persona, 0.09, 0.06, -0.06), {
++            "DEF-spine.001": (12.0, -10.0, 0.0), "DEF-spine.006": (-8.0, 8.0, 0.0),
++            "DEF-upper_arm.L": (-80.0, 0.0, 10.0), "DEF-forearm.L": (-10.0, -90.0, -60.0),
++            "DEF-upper_arm.R": (-6.0, 0.0, -14.0), "DEF-forearm.R": (-40.0, 0.0, 0.0)})
++        return [(0.0, {}), (0.6, guard), (0.8, _scale(guard, 0.85)), (1.0, {})]
++    if clip == "finisher":
++        # the reel-stop: both hands wind an unseen reel at the hip, then the gloved hand is thrown down and forward
++        # onto the foe to stop it
++        wind = add(_legs(sk, persona, 0.08, 0.04, -0.04), {
++            "DEF-spine.001": (10.0, -10.0, 0.0), "DEF-spine.006": (-6.0, 8.0, 0.0),
++            "DEF-upper_arm.L": (-20.0, -10.0, 16.0), "DEF-forearm.L": (-90.0, -40.0, 0.0),
++            "DEF-upper_arm.R": (-14.0, 0.0, -14.0), "DEF-forearm.R": (-80.0, 30.0, 0.0)})
++        rise = add(_legs(sk, persona, -0.02), {
++            "DEF-spine.003": (-4.0, 0.0, 0.0), "DEF-spine.006": (-10.0, 0.0, 0.0),
++            "DEF-upper_arm.L": (-140.0, 0.0, 20.0), "DEF-forearm.L": (-20.0, 0.0, 0.0),
++            "DEF-upper_arm.R": (-30.0, 0.0, -24.0), "DEF-forearm.R": (-40.0, 0.0, 0.0)})
++        slam = add(_legs(sk, persona, 0.11, 0.16, -0.12), {
++            "DEF-spine.001": (22.0, 0.0, 0.0), "DEF-spine.002": (10.0, 0.0, 0.0), "DEF-spine.006": (-14.0, 0.0, 0.0),
++            "DEF-upper_arm.L": (-56.0, 0.0, 24.0), "DEF-forearm.L": (-6.0, 0.0, 0.0), "DEF-hand.L": (20.0, 0.0, 0.0),
++            "DEF-upper_arm.R": (10.0, 0.0, -24.0), "DEF-forearm.R": (-30.0, 0.0, 0.0)})
++        return [(0.0, {}), (0.25, wind), (0.45, rise), (0.62, slam), (0.8, _scale(slam, 0.55)), (1.0, {})]
++    if clip == "hit":
++        jolt = add(_legs(sk, persona, 0.03), {
++            "hips": (0.0, 0.0, -0.03), "DEF-spine.001": (-8.0, 0.0, -4.0), "DEF-spine.006": (-12.0, 0.0, 0.0),
++            "DEF-upper_arm.L": (-24.0, 0.0, 12.0), "DEF-forearm.L": (-40.0, 0.0, 0.0)})
++        return [(0.0, {}), (0.18, jolt), (1.0, {})]
++    if clip == "dodge":
++        # to her left, away from the launcher's side (a sway to the right tips the right thigh into the box)
++        lean = add(_sway(sk, persona, 0.07, 0.05), {"DEF-spine.001": (6.0, 10.0, -8.0),
++                                                     "DEF-upper_arm.L": (-30.0, 0.0, 6.0),
++                                                     "DEF-forearm.L": (-60.0, 0.0, 0.0)})
++        return [(0.0, {}), (0.3, lean), (1.0, {})]
++    if clip == "ko":
++        # down on the right knee, the gloved hand on the ground, the head bowed
++        felled = _ko_kneel(sk, persona, base, {
++            "DEF-spine.001": (6.0, 0.0, 0.0), "DEF-spine.002": (6.0, 0.0, 0.0), "DEF-spine.006": (14.0, 0.0, 0.0),
++            "DEF-upper_arm.L": (-30.0, 0.0, -a + 30.0), "DEF-forearm.L": (-10.0, 0.0, 0.0),
++            "DEF-upper_arm.R": (0.0, 0.0, -LISS_LAUNCHER_ARM),
++            "DEF-foot.R": (30.0, 0.0, 0.0), "DEF-toe.R": (40.0, 0.0, 0.0)})
++        buckle = add(_legs(sk, persona, 0.13), {"DEF-spine.001": (12.0, 0.0, 0.0), "DEF-spine.006": (10.0, 0.0, 0.0)})
++        return [(0.0, {}), (0.3, buckle), (0.8, felled), (1.0, felled)]
++    raise KeyError(clip)
++
++
++# M2-CHR-07's contract for Liss (a party member from Ch6): her battle clips after her own, the contact strikers
++BATTLE_HEROES = BATTLE_HEROES + ("liss",)
++CLIPS["liss"] = CLIPS["liss"] + [c for c in BATTLE_CLIPS if c not in CLIPS["liss"]]
++FOOT_FLAT["liss"] = 1.0  # mid-calf trousers: the ankle can stay flat
++BATTLE_STRIKER["liss"] = {"attack": ("DEF-hand.R", (0.0, 0.0, 1.0)), "cast": ("DEF-hand.L", (0.0, 1.0, 0.0)),
++                          "finisher": ("DEF-hand.L", (0.0, -0.6, 0.8)), "item": ("DEF-hand.R", (0.0, 0.5, 0.866)),
++                          "read": ("DEF-spine.006", (0.0, 0.0, 1.0)), "defend": ("DEF-spine", (0.0, -1.0, 0.0))}
++_BATTLE_KEYS["liss"] = _liss_keys
++
++
+ # ---------------------------------------------------------------------------------------------
+ # AnimationLibrary text resource
+ # ---------------------------------------------------------------------------------------------
+diff --git a/assets_src/characters/liss/build.sh b/assets_src/characters/liss/build.sh
+new file mode 100755
+index 00000000..2b720b9f
+--- /dev/null
++++ b/assets_src/characters/liss/build.sh
+@@ -0,0 +1,22 @@
++#!/usr/bin/env bash
++# Rebuild Liss Varrow (M3-CHR-03) from source: meshes, rig and blendshapes (Blender), then the baked and procedural
++# textures (python3 + numpy + Pillow), then the Godot materials and the body clips.
++# Blender: $HYMN_BLENDER, `blender` on PATH, or the tools/dev/fetch_blender.py wrapper.
++# Usage: assets_src/characters/liss/build.sh [--skip-textures]
++set -euo pipefail
++cd "$(dirname "$0")/../../.."
++blender="${HYMN_BLENDER:-}"
++if [ -z "$blender" ]; then blender="$(command -v blender || true)"; fi
++if [ -z "$blender" ]; then blender="$HOME/.cache/hymn/blender-5.0.1+dfsg-5/blender"; fi
++bake="$(mktemp -d)"
++trap 'rm -rf "$bake"' EXIT
++"$blender" --background --factory-startup --threads 4 --python assets_src/characters/liss/build_liss.py -- \
++  --out assets/characters/liss/liss.glb --bake-dir "$bake" --report "$bake/report.json" 2>&1 \
++  | grep -E "^\[liss\]|Error|Traceback" || true
++test -s assets/characters/liss/liss.glb
++if [ "${1:-}" != "--skip-textures" ]; then
++  python3 assets_src/characters/liss/liss_textures.py --bake-dir "$bake"
++fi
++python3 assets_src/characters/liss/write_materials.py
++python3 assets_src/characters/asha/hero_clips.py --hero liss
++cat "$bake/report.json"
+diff --git a/assets_src/characters/liss/build_liss.py b/assets_src/characters/liss/build_liss.py
+new file mode 100644
+index 00000000..08c20217
+--- /dev/null
++++ b/assets_src/characters/liss/build_liss.py
+@@ -0,0 +1,680 @@
++"""Liss Varrow, party member from Ch6, on the hero path (M3-CHR-03, act1_npcs.md §2). Headless Blender 5.0:
++
++    blender --background --factory-startup --python assets_src/characters/liss/build_liss.py -- \\
++        [--out assets/characters/liss/liss.glb] [--report r.json] [--bake-dir DIR] [--blend rig.blend]
++
++Asha's pipeline (build_asha.py, ADR 0021) with Liss's parts, on the hero layout of pipeline.md §12 (as Rhen, Toma,
++Sefir and Ysolde): the MakeHuman CC0 donor body driven by liss_params.json -> head and body split with welded custom
++normals -> Rigify rig and the donor's weights -> eyes, lashes, brows and teeth (asha_eyes, asha_mouth) in the Head
++object -> the shared face blendshapes (asha_face_shapes, asha.md §6.2) -> the crop and the beaded tail (liss_hair)
++-> the work top, the coat and its two tails, the harness, the trousers, the boots and the work-sleeve's strap
++(liss_costume) -> the copper-mesh work-sleeve and glove (here: an offset shell of the shipped left arm and hand skin)
++-> the launcher (liss_props) -> LOD1 -> glTF. build_asha is imported as a library, so a fix there reaches every
++hero, and the M1-CHR-14 host determinism steps are called the same way as Ysolde's: MIDLINE_SNAP on the head and hair
++vertices, quantize_uvs after each unwrap, and snap_shape_noise on every exported object.
++
++M1-CHR-14 rules built in (act1_npcs.md §2.4, §2.10):
++- the top and the coat body ride the torso only, their armholes 12 cm below the shoulder joint (blending toward the
++  arm's weights only where they lie over the shoulder cap: their own gusset, as Ysolde's bodice);
++- the coat's long back is two tails, not a tube: each follows its own leg below the crotch (handed over from the
++  hips as build_asha.skirt_weights does it) plus a chain of three tail bones; the knees and shins under the tails
++  and the trousers are kept;
++- the copper-mesh work-sleeve and its five-finger glove are the shipped left arm and hand skin pushed out along the
++  welded normals (2.5 mm on the arm, 1.8 mm on the glove, 8.5 mm on the cap over the top) with the skin's own
++  weights, so they ride the arm and the finger bones exactly; the skin under them is deleted, one ring short of the
++  cap's edge;
++- the boots take the feet's weights; the harness rides the torso;
++- the launcher sits 2 cm off the thigh on its own prop bone; the tail's root is seated on the shipped head surface
++  and the crop's cards stop 12 mm short of it.
++
++Rig extras, appended after the 75 standard DEF bones of bb_rig.build_game_skeleton (bb_rig unchanged; the pattern of
++build_toma.add_bones): DEF-coat_tail_l / _r (chains of 3 down each tail, parented to that side's thigh), DEF-hair_tail
++(a chain of 6 down the hair tail, parented to the head) and DEF-launcher (the prop bone, under the hips).
++
++Everything is generated from code in this folder, assets_src/characters/{asha,rhen,toma,ysolde,base_body}/ and the
++vendored MPFB2 data; nothing is downloaded. Deterministic.
++"""
++from __future__ import annotations
++
++import argparse
++import json
++import sys
++import time
++from pathlib import Path
++
++import bpy
++import numpy as np
++
++HERE = Path(__file__).resolve().parent
++ROOT = HERE.parents[2]
++ASHA = HERE.parent / "asha"
++sys.path.insert(0, str(HERE))
++sys.path.insert(0, str(HERE.parent / "ysolde"))
++sys.path.insert(0, str(HERE.parent / "toma"))
++sys.path.insert(0, str(HERE.parent / "rhen"))
++sys.path.insert(0, str(ASHA))
++sys.path.insert(0, str(HERE.parent / "base_body"))
++
++import asha_eyes  # noqa: E402
++import asha_face_shapes  # noqa: E402
++import asha_glb  # noqa: E402
++import asha_mouth  # noqa: E402
++import bb_anatomy  # noqa: E402
++import bb_donor  # noqa: E402
++import bb_params  # noqa: E402
++import bb_rig  # noqa: E402
++import build_asha as hb  # noqa: E402
++import build_toma as bt  # noqa: E402
++import liss_costume  # noqa: E402
++import liss_hair  # noqa: E402
++import liss_props  # noqa: E402
++from asha_hair import Scalp  # noqa: E402
++from asha_mesh import Part  # noqa: E402
++
++PARAMS = HERE / "liss_params.json"
++HEAD_BONE = hb.HEAD_BONE
++MIDLINE_SNAP = 1e-6  # m: head and hair coordinates nearer zero than this are midline float noise (as Ysolde's)
++HIPS_BONE = "DEF-spine"
++UPPER_CHEST_BONE = "DEF-spine.004"
++TORSO_PARTS = ("Top", "Coat", "SleeveStrap", "Harness")
++GUSSET_PARTS = ("Top", "Coat", "SleeveStrap")
++TAILS = ("TailL", "TailR")
++# ---- rig extras (act1_npcs.md §2.10) -----------------------------------------------------------------
++TAIL_CHAINS = {"DEF-coat_tail_l": ("TailL", 151.0, "DEF-thigh.L"), "DEF-coat_tail_r": ("TailR", 209.0, "DEF-thigh.R")}
++HAIR_CHAIN = "DEF-hair_tail"
++LAUNCHER_BONE = "DEF-launcher"
++LAUNCHER_BONE_LEN = 0.15  # m, up from the box's centre
++TAIL_BONE_SHARE = 0.2  # of a tail vertex's weight on its chain at the hem (none at the chain's top), as Ysolde's panels
++HAIR_CHEST_SHARE = 0.75  # the hair tail's lower part follows the upper chest this much (it lies on the back)
++SLING_OFF = 0.008  # m: the launcher's sling straps meet her hip this far outside the trousers' waistband
++BOOT_CLEAR = 0.003  # m: the boot's least distance outside the shipped foot and ankle skin
++HEM_CLEAR = 0.004  # m: the trouser hem ring's least distance outside the shin skin
++GUSSET_BLEND = 0.04  # m (at s = 1): torso cloth this near the arm skin blends toward the arm's weights
++GUSSET_ARM_SHARE = 0.6
++GUSSET_FROM_BELOW_SHOULDER = 0.06  # m (at s = 1): the gusset fades in from this far below the shoulder joint
++SLEEVE_KEEP_RINGS = 2  # rings of skin kept under the work-sleeve's cap edge
++SLEEVE_KEEP_NEAR_TORSO = 0.03  # m (at s = 1): arm skin this near the uncovered torso skin is kept under the sleeve
++SLEEVE_TORSO_CLEAR = 0.0025  # m: the shell's least distance outside the torso skin (the armpit's crease)
++CLOTH_CLEAR = 0.003  # m: torso cloth's least distance outside the shipped torso and arm skin
++SLEEVE_PART = "WorkSleeve"
++SLEEVE_MAT = "copper_mesh"
++
++# preview colours of the materials the shared table lacks (Godot replaces them by name)
++hb.MATERIALS.update({
++    "copper_mesh": ((0.18, 0.30, 0.25), 0.4),
++    "copper": ((0.36, 0.13, 0.05), 0.4),
++    "iron": ((0.04, 0.04, 0.045), 0.5),
++    "glimmer": ((0.08, 0.45, 0.43), 0.3),
++    "bead_salt": ((0.75, 0.80, 0.78), 0.1),
++    "bead_green": ((0.08, 0.35, 0.25), 0.1),
++    "bead_amber": ((0.48, 0.19, 0.03), 0.1),
++})
++# LOD1 (act1_npcs.md §2.9: keep the X harness, the coat tails, the hip box, the hair tail and the sleeve's metal read;
++# cut detail, never shape)
++hb.LOD1_RATIO.clear()
++hb.LOD1_RATIO.update({"Head": 0.42, "Body": 0.5, "Costume": 0.5, "WorkSleeve": 0.45, "HairHead": 0.5,
++                      "HairTail": 0.5, "Launcher": 0.7})
++
++
++def log(msg: str) -> None:
++    print(f"[liss] {msg}", flush=True)
++
++
++def parse_args() -> argparse.Namespace:
++    argv = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else []
++    ap = argparse.ArgumentParser(prog="build_liss.py")
++    ap.add_argument("--out", default=str(ROOT / "assets" / "characters" / "liss" / "liss.glb"))
++    ap.add_argument("--report")
++    ap.add_argument("--bake-dir")
++    ap.add_argument("--blend")
++    ap.add_argument("--no-hair", action="store_true")
++    return ap.parse_args(argv)
++
++
++def chain_names(root: str, n: int) -> list[str]:
++    return [root] + [f"{root}.{i:03d}" for i in range(1, n)]
++
++
++def extra_bone_names(n_tail: int, n_hair: int) -> list[str]:
++    out = []
++    for root in TAIL_CHAINS:
++        out += chain_names(root, n_tail)
++    return out + chain_names(HAIR_CHAIN, n_hair) + [LAUNCHER_BONE]
++
++
++def smooth01(x: np.ndarray) -> np.ndarray:
++    x = np.clip(x, 0.0, 1.0)
++    return x * x * (3.0 - 2.0 * x)
++
++
++def leg_weights(P: np.ndarray, W0: np.ndarray, V: np.ndarray, W: np.ndarray, reg: np.ndarray, lm,
++                side: str) -> np.ndarray:
++    """M1-CHR-14 for a coat tail: below the crotch it follows its own leg, handed over from the hips the way
++    build_asha.skirt_weights does it (one leg only: the tails are split at the back seam)."""
++    S = lm.S
++    z_c = float(lm.P("crotch")[2])
++    leg = reg == f"leg_{side}"
++    WL = hb.transfer_weights(P, V[leg], W[leg], k=8)
++    d = smooth01((z_c + hb.SKIRT_LEG_FROM * S - P[:, 2]) / (hb.SKIRT_LEG_RAMP * S))
++    return hb.limit4(W0 * (1.0 - d[:, None]) + WL * d[:, None])
++
++
++def nearest_dist(P: np.ndarray, Q: np.ndarray) -> np.ndarray:
++    """For each point of P, the distance to the nearest point of Q (chunked brute force)."""
++    out = np.empty(len(P))
++    for a in range(0, len(P), 256):
++        p = P[a:a + 256]
++        out[a:a + 256] = np.sqrt(((p[:, None, :] - Q[None, :, :]) ** 2).sum(axis=2)).min(axis=1)
++    return out
++
++
++def min_distance(A: np.ndarray, B: np.ndarray) -> float:
++    if not len(A) or not len(B):
++        return float("inf")
++    return float(nearest_dist(A, B).min())
++
++
++def rigid_object(part: Part, bone: str, wnames: list, skel: bpy.types.Object, name: str) -> bpy.types.Object:
++    ob = hb.part_object(part)
++    ob.name = name
++    ob.data.name = name
++    W = np.zeros((len(part.V), len(wnames)), dtype=np.float32)
++    W[:, wnames.index(bone)] = 1.0
++    hb.apply_weights(ob, W, wnames, skel)
++    return ob
++
++
++TEETH_MARGIN = 0.01  # UV units kept clear round the teeth patch
++
++
++def clear_teeth_corner(ob: bpy.types.Object) -> str:
++    """build_ysolde.clear_teeth_corner (the head atlas paints the teeth into a fixed corner; if the packed skin and
++    mouth islands overlap it, turn them about the atlas centre). Copied: importing build_ysolde would run its
++    module-level material and LOD tables."""
++    me = ob.data
++    names = [m.name for m in me.materials]
++    loops = np.array([li for p in me.polygons if names[p.material_index] in ("skin_head", "mouth")
++                      for li in p.loop_indices], dtype=np.int64)
++    uvl = me.uv_layers.active.data
++    uv = np.zeros(len(uvl) * 2)
++    uvl.foreach_get("uv", uv)
++    uv = uv.reshape(-1, 2)
++    u0, v0, u1, v1 = asha_mouth.TEETH_UV
++    box = (u0 - TEETH_MARGIN, 1.0 - v1 - TEETH_MARGIN, u1 + TEETH_MARGIN, 1.0 - v0 + TEETH_MARGIN)
++
++    def hits(q: np.ndarray) -> int:
++        return int(((q[:, 0] > box[0]) & (q[:, 0] < box[2]) & (q[:, 1] > box[1]) & (q[:, 1] < box[3])).sum())
++
++    before = hits(uv[loops])
++    if not before:
++        return "clear"
++    q = uv[loops]
++    turns = {90: np.stack([q[:, 1], 1.0 - q[:, 0]], axis=1), 180: 1.0 - q,
++             270: np.stack([1.0 - q[:, 1], q[:, 0]], axis=1)}
++    for deg, t in turns.items():
++        if not hits(t):
++            uv[loops] = t
++            uvl.foreach_set("uv", uv.ravel())
++            return f"turned {deg} degrees ({before} loops were on the teeth patch)"
++    return f"overlap {before} loops: left as packed"
++
++
++PUSH_REACH = 0.03  # m: push_out only moves points within this of the skin
++
++
++def push_out(P: np.ndarray, V: np.ndarray, F: np.ndarray, faces: np.ndarray, clear: float,
++             reach: float = PUSH_REACH, along: np.ndarray | None = None) -> np.ndarray:
++    """build_ysolde.push_out: points moved out along the skin's normal until they sit `clear` outside the skin
++    faces `faces` of (V, F); only points within `reach` of those faces are touched. With `along` (a direction per
++    point), each point moves along its own direction by the shortfall instead of snapping onto the skin's offset
++    (two points with the same nearest skin point would land on one spot and weld)."""
++    from mathutils import Vector
++    from mathutils.bvhtree import BVHTree
++
++    T = bb_donor.tris_of(F[faces])
++    bvh = BVHTree.FromPolygons([tuple(map(float, v)) for v in V], [tuple(int(i) for i in t) for t in T])
++    out = P.copy()
++    for i, p in enumerate(P):
++        loc, nrm, _ti, dist = bvh.find_nearest(Vector(tuple(map(float, p))))
++        if loc is None or dist > reach:
++            continue
++        q, n = np.array(loc[:]), np.array(nrm[:])
++        short = clear - (p - q) @ n
++        if short > 0.0:
++            if along is None:
++                out[i] = q + n * clear
++            else:
++                a = along[i] / max(np.linalg.norm(along[i]), 1e-12)
++                a = a if a @ n > 0.5 else n  # a point facing across the skin moves straight out of it
++                out[i] = p + a * short / (a @ n)
++    return out
++
++
++def work_sleeve(V: np.ndarray, F: np.ndarray, Nw: np.ndarray, UVc: np.ndarray, reg: np.ndarray, lm,
++                cparams: dict) -> tuple[Part, np.ndarray, np.ndarray, np.ndarray]:
++    """The copper-mesh work-sleeve and glove (act1_npcs.md §2.3): the shipped left arm and hand skin, plus the
++    torso skin of the shoulder cap, pushed out along the welded normals: 1.8 mm on the hand (the glove), 2.5 mm on the
++    arm, 8.5 mm on the cap (over the top's strap), blended over 4 cm where the arm meets the torso. Returns (part,
++    the donor vertex of each shell vertex, the donor faces it copies, the donor faces under it to delete: all but
++    the ring at the cap's edge)."""
++    S = lm.S
++    sh = lm.side_pt("shoulder", "L")
++    cap_r = float(cparams["sleeve_cap_radius_m"]) * S
++    arm = np.isin(reg, ["arm_L", "hand_L"])
++    cap = (reg == "torso") & (np.linalg.norm(V - sh, axis=1) < cap_r) & (V[:, 0] > 0.55 * sh[0]) & \
++        (V[:, 2] > sh[2] - 0.035 * S)
++    sel = arm | cap
++    Fi = np.where(F >= 0, F, 0)
++    face_in = np.where(F >= 0, sel[Fi], True).all(axis=1)
++    used = np.unique(F[face_in][F[face_in] >= 0])
++    remap = -np.ones(len(V), dtype=int)
++    remap[used] = np.arange(len(used))
++    off = np.full(len(V), float(cparams["sleeve_off_m"]) * S)
++    off[reg == "hand_L"] = float(cparams["glove_off_m"]) * S
++    torso_v = V[cap]
++    a_ids = np.nonzero(arm & (np.arange(len(V)) >= 0))[0]
++    a_ids = a_ids[np.isin(a_ids, used)]
++    d = nearest_dist(V[a_ids], torso_v) if len(torso_v) else np.full(len(a_ids), np.inf)
++    b = smooth01(1.0 - d / (float(cparams["sleeve_cap_blend_m"]) * S))
++    cap_off = float(cparams["sleeve_cap_off_m"]) * S
++    off[a_ids] = off[a_ids] + (cap_off - off[a_ids]) * b
++    off[cap] = cap_off
++    P = V[used] + Nw[used] * off[used][:, None]
++    part = Part(SLEEVE_PART)
++    for p in P:
++        part.add_v(p)
++    fids = np.nonzero(face_in)[0]
++    for fi in fids:
++        f = F[fi]
++        k = 4 if f[3] >= 0 else 3
++        part.add_f([remap[i] for i in f[:k]], [(float(u), 1.0 - float(v)) for u, v in UVc[fi][:k]], SLEEVE_MAT)
++    # the cap's edge: shell boundary vertices; the skin faces touching them stay (the shell overhangs the cut)
++    from collections import Counter
++    edges = Counter()
++    for fi in fids:
++        f = [int(i) for i in F[fi] if i >= 0]
++        for i in range(len(f)):
++            edges[(min(f[i], f[(i + 1) % len(f)]), max(f[i], f[(i + 1) % len(f)]))] += 1
++    bnd = np.zeros(len(V), dtype=bool)
++    for (a, c), n in edges.items():
++        if n == 1:
++            bnd[a] = bnd[c] = True
++    # SLEEVE_KEEP_RINGS rings of skin faces stay under the cap's edge (the shell overhangs the cut, so a ray along
++    # the cut's normal always meets it)
++    for _ in range(SLEEVE_KEEP_RINGS - 1):
++        ring = face_in & np.where(F >= 0, bnd[Fi], False).any(axis=1)
++        bnd[F[ring][F[ring] >= 0]] = True
++    # ... and the arm skin in the armpit's crease (within SLEEVE_KEEP_NEAR_TORSO of the torso skin the shell does not
++    # cover): the shell is pushed off the torso there, so the cut would open beside it as the arm lifts
++    rest = (reg == "torso") & ~sel
++    near = np.zeros(len(V), dtype=bool)
++    if rest.any():
++        ids = np.nonzero(sel)[0]
++        near[ids] = nearest_dist(V[ids], V[rest]) < SLEEVE_KEEP_NEAR_TORSO * S
++    keep = bnd | near
++    delete = face_in & ~np.where(F >= 0, keep[Fi], False).any(axis=1)
++    return part, used, face_in, delete
++
++
++def main() -> int:
++    args = parse_args()
++    t0 = time.time()
++    bpy.ops.wm.read_factory_settings(use_empty=True)
++    params = bb_params.load_params(path=str(PARAMS))
++    extra = json.loads(PARAMS.read_text(encoding="utf-8"))
++    cparams = extra["_costume"]
++    hparams = extra["_hair"]
++    res = bb_donor.generate(params, log=log, subdiv_face=True)
++    lm, body = res["lm"], res["body"]
++    face = body.face
++    V, F = res["V"], np.asarray(res["F"])
++    reg = np.array(res["reg"])
++    freg = np.array(res["freg"])
++    UVc = np.asarray(res["uv"])
++    log(f"body: {len(V)} verts, {len(F)} polygons ({time.time() - t0:.1f}s)")
++
++    # ---- rig on our landmarks; the donor's hand-made skin weights ------------------------------
++    meta = bb_rig.build_metarig(lm)
++    rig = bb_rig.generate_rig(meta)
++    skel = bb_rig.build_game_skeleton(rig, "liss_skeleton")
++    W, wnames, dropped = bb_rig.donor_weight_matrix(skel, res["weights"], len(V))
++    W = W.astype(np.float32)
++    Nw = bb_donor.face_normals_vertex(V, F)
++    log(f"rig: {len(skel.data.bones)} deform bones, donor weights on {len(wnames)} bones, dropped {dropped} "
++        f"({time.time() - t0:.1f}s)")
++    surf = hb.head_surface(V, F, Nw, freg, Scalp(body))  # the shipped head skin (hair roots)
++
++    # ---- head (same construction as Asha's) -------------------------------------------------------
++    is_head = np.isin(freg, ["head", "scalp", "mouth"])
++    used_h, Fh, remap_h, Sh = hb.submesh(V, F, is_head, res["seams"])
++    Vh = V[used_h]
++    Vh[np.abs(Vh) < hb.MIDLINE_SNAP] = 0.0  # M1-CHR-14: host-independent midline (build_asha)
++    Vh[np.abs(Vh) < MIDLINE_SNAP] = 0.0  # Ysolde's wider snap (AVX-512 vs AVX2 last bits near the midline)
++    fh_reg = freg[is_head]
++    inner_v = hb.inner_lip_vertices(Vh, Nw[used_h], res["lip_dz"][used_h], face.mouth_half, lm.h / 0.222)
++    mats_h = hb.head_materials(Fh, fh_reg, inner_v)
++    head = Part("Head")
++    for p in Vh:
++        head.add_v(p, tag=0)
++    for f, q, m in zip(Fh, UVc[is_head], mats_h):
++        k = 4 if f[3] >= 0 else 3
++        head.add_f(f[:k], [(float(u), 1.0 - float(v)) for u, v in q[:k]], m)
++    n_skin = len(Vh)
++    normals_h = list(Nw[used_h])
++    extras: list[Part] = []
++    fr_th = bb_anatomy.LID_THICKNESS * lm.S
++    for sd in ("L", "R"):
++        fr = face.eyes[sd]
++        extras.append(asha_eyes.lashes(fr, fr_th, True))
++        extras.append(asha_eyes.lashes(fr, fr_th, False))
++
++    def surface_fn(xz: np.ndarray) -> np.ndarray:
++        import bb_head
++        y0 = lm.P("head_c")[1] - 0.62 * lm.h
++        O = np.stack([xz[:, 0], np.full(len(xz), y0), xz[:, 1]], axis=1)
++        D = np.repeat(np.array([[0.0, 1.0, 0.0]]), len(xz), axis=0)
++        return bb_head.cast_in(body, "head", O, D, tmax=0.4 * lm.h * 1.6, steps=320)
++
++    for sd in ("L", "R"):
++        extras.append(asha_eyes.brow(face, sd, surface_fn))
++    extras.append(asha_mouth.mouth_interior(lm, res["fit"].lip_line_y + 0.0015 * lm.S))
++    for ex in extras:
++        head.extend(ex)
++    Vhead = head.varr()
++    ob_head = hb.make_object("Head", Vhead, head.F, head.UV, head.M)
++    me = ob_head.data
++    auto = np.zeros((len(me.vertices), 3))
++    me.vertices.foreach_get("normal", auto.ravel())
++    auto[:n_skin] = np.array(normals_h)
++    me.normals_split_custom_set_from_vertices([tuple(map(float, n)) for n in auto])
++    cat = np.where(res["face_mask"][is_head], 1, np.where(res["face_socket"][is_head], 3,
++                                                       np.where(fh_reg == "mouth", 4, 2)))
++    hb.unwrap_faces(ob_head, {"skin_head", "mouth"}, hb.head_seams(Fh, cat, Vh, lm),
++                    shrink=(np.nonzero(cat != 1)[0], 0.45))
++    teeth_clear = clear_teeth_corner(ob_head)
++    hb.quantize_uvs(ob_head)
++    pad = np.zeros(len(Vhead) - n_skin)
++    masks = {"lower": np.concatenate([res["lower"][used_h], pad]), "lip": np.concatenate([res["lip_w"][used_h], pad])}
++    lip_frame = {k: np.concatenate([res[n][used_h], pad]) for k, n in (("contact", "lip_contact"), ("dz", "lip_dz"),
++                                                                        ("front", "lip_front"))}
++    units = asha_face_shapes.donor_unit_shapes(res["unit_delta"], used_h, Vhead, np.array(head.T), masks["lower"],
++                                               lip_frame, lm.h / 0.222)
++    shapes = asha_face_shapes.build_shapes(face, lm, Vhead, np.array(head.T), masks, units)
++    ob_head.shape_key_add(name="Basis", from_mix=False)
++    flat = Vhead.astype(np.float64)
++    for name, d in shapes.items():
++        kb = ob_head.shape_key_add(name=name, from_mix=False)
++        kb.data.foreach_set("co", (flat + d).ravel())
++    ob_head.data.shape_keys.use_relative = True
++    log(f"face shapes: {len(shapes)}; head UVs vs the teeth patch: {teeth_clear} ({time.time() - t0:.1f}s)")
++    Wh = np.zeros((len(Vhead), len(wnames)), dtype=np.float32)
++    Wh[:n_skin] = W[used_h]
++    Wh[n_skin:, wnames.index(HEAD_BONE)] = 1.0
++    hb.apply_weights(ob_head, Wh, wnames, skel)
++    log(f"head: {len(Vhead)} verts, {head.tris()} tris ({time.time() - t0:.1f}s)")
++
++    n_tail, n_hair = int(cparams["coat_tail_bones"]), int(hparams["tail_bones"])
++    wnames_x = wnames + extra_bone_names(n_tail, n_hair)
++    bone_specs: list = []
++
++    # ---- hair: the crop (head-rigid) and the tail (its chain, the lower part on the upper chest) -------
++    head_i = wnames.index(HEAD_BONE)
++    hair_objs = []
++    hair_tris = 0
++    tail_root = np.zeros(3)
++    crop = Part("HairHead")
++    if not args.no_hair:
++        hair = liss_hair.build_hair(lm, body, hparams, surf)
++        crop, tl, spine, tail_root = hair["HairHead"], hair["HairTail"], hair["spine"], hair["root"]
++        for part in (crop, tl):
++            Vr = part.varr()
++            Vr[np.abs(Vr) < MIDLINE_SNAP] = 0.0  # cards and the tail rooted on the midline: the same host noise
++            part.V = list(Vr)
++        spine = np.where(np.abs(spine) < MIDLINE_SNAP, 0.0, spine)
++        ob = hb.part_object(crop)
++        Wr = np.zeros((len(crop.V), len(wnames_x)), dtype=np.float32)
++        Wr[:, head_i] = 1.0
++        hb.apply_weights(ob, Wr, wnames_x, skel)
++        hair_objs.append(ob)
++        # the tail: a chain of n_hair bones down the spine, the first a child of the head; each vertex by its
++        # place along the spine, the lower part blended onto the upper chest (it lies on her back)
++        pts = bt.polyline_points(spine, n_hair)
++        chain = chain_names(HAIR_CHAIN, n_hair)
++        for i, name in enumerate(chain):
++            bone_specs.append((name, pts[i], pts[i + 1], HEAD_BONE if i == 0 else chain[i - 1]))
++        Pt = tl.varr()
++        Ls = np.concatenate([[0.0], np.cumsum(np.linalg.norm(np.diff(spine, axis=0), axis=1))])
++        near = np.array([int(np.argmin(np.linalg.norm(spine - p, axis=1))) for p in Pt])
++        t = Ls[near] / max(Ls[-1], 1e-9)
++        cw = bt.chain_weights(t, n_hair)
++        chest = HAIR_CHEST_SHARE * smooth01((t - 0.12) / 0.5)
++        Wt = np.zeros((len(Pt), len(wnames_x)), dtype=np.float32)
++        for i, name in enumerate(chain):
++            Wt[:, wnames_x.index(name)] = cw[:, i] * (1.0 - chest)
++        Wt[:, wnames_x.index(UPPER_CHEST_BONE)] += chest
++        obt = hb.part_object(tl)
++        hb.apply_weights(obt, hb.limit4(Wt), wnames_x, skel)
++        hair_objs.append(obt)
++        hair_tris = crop.tris() + tl.tris()
++        log(f"hair: crop {crop.tris()} tris, tail {tl.tris()} tris ({time.time() - t0:.1f}s)")
++
++    # ---- costume and the hidden body under it ---------------------------------------------------
++    covered = liss_costume.coverage(body, cparams, V, reg)
++    hidden = np.where(F >= 0, covered[np.maximum(F, 0)], True).all(axis=1) & ~is_head
++    costume, info = liss_costume.build_costume(body, cparams)
++    costume_tris = sum(p.tris() for p in costume.values())
++    log(f"costume: {costume_tris} tris, hidden body quads {int(hidden.sum())} ({time.time() - t0:.1f}s)")
++    for sd in ("L", "R"):  # the boots and the trouser hems: clear of the shipped foot, ankle and shin skin
++        part = costume[f"Boot{sd}"]
++        Q = part.varr()
++        for reg_name in (f"foot_{sd}", f"leg_{sd}", f"foot_{sd}"):  # one surface at a time: the ankle is a crease
++            Q = push_out(Q, V, F, freg == reg_name, BOOT_CLEAR * lm.S)
++        part.V = list(Q)
++        part = costume[f"TrouserLeg{sd}"]
++        Q = part.varr()
++        Q = push_out(Q, V, F, freg == f"leg_{sd}", HEM_CLEAR * lm.S)
++        part.V = list(Q)
++    for name in TORSO_PARTS:  # the field sits up to a few mm inside the shipped skin at the shoulders: clear it
++        part = costume[name]
++        Q = part.varr()
++        for reg_name in ("torso", "arm_L", "arm_R", "torso"):
++            Q = push_out(Q, V, F, freg == reg_name, CLOTH_CLEAR * lm.S)
++        part.V = list(Q)
++    opaque = Part("Costume")
++    offs = {}
++    for name, p in costume.items():
++        offs[name] = len(opaque.V)
++        opaque.extend(p)
++    Pc = opaque.varr()
++    lower_src = np.isin(reg, ["torso", "leg_L", "leg_R"])
++    Wc = hb.transfer_weights(Pc, V[lower_src], W[lower_src])
++
++    def sl(name: str) -> slice:
++        return slice(offs[name], offs[name] + len(costume[name].V))
++
++    torso = reg == "torso"
++    for name in TORSO_PARTS:  # M1-CHR-14: torso only (arm weights at an armhole drag the side out past the arm)
++        Wc[sl(name)] = hb.transfer_weights(Pc[sl(name)], V[torso], W[torso])
++    sh_z = float(lm.side_pt("shoulder", "L")[2])
++    for name in GUSSET_PARTS:  # ... except over the shoulder cap: there the cloth blends toward the arm's weights
++        Pb = Pc[sl(name)]
++        for sd in ("L", "R"):
++            arm = reg == f"arm_{sd}"
++            # over the shoulder's top only: the armhole's rim under the arm stays on the torso (the 12 cm drop is
++            # what keeps a hanging arm clear of it; arm weights there carried the rim out with the arm)
++            top = smooth01((Pb[:, 2] - (sh_z - GUSSET_FROM_BELOW_SHOULDER * lm.S)) / (0.04 * lm.S))
++            b = smooth01(1.0 - nearest_dist(Pb, V[arm]) / (GUSSET_BLEND * lm.S)) * GUSSET_ARM_SHARE * top
++            if b.any():
++                Wa = hb.transfer_weights(Pb, V[arm], W[arm])
++                Wc[sl(name)] = hb.limit4(Wc[sl(name)] * (1.0 - b[:, None]) + Wa * b[:, None])
++    for sd in ("L", "R"):
++        feet = np.isin(reg, [f"foot_{sd}", f"leg_{sd}"])
++        Wc[sl(f"Boot{sd}")] = hb.transfer_weights(Pc[sl(f"Boot{sd}")], V[feet], W[feet])
++        legs = np.isin(reg, [f"leg_{sd}", "torso"])
++        Wc[sl(f"TrouserLeg{sd}")] = hb.transfer_weights(Pc[sl(f"TrouserLeg{sd}")], V[legs], W[legs])
++    for name, sd in zip(TAILS, ("L", "R")):
++        Wc[sl(name)] = leg_weights(Pc[sl(name)], Wc[sl(name)], V, W, reg, lm, sd)
++    Wc = np.concatenate([Wc, np.zeros((len(Pc), len(wnames_x) - len(wnames)), dtype=np.float32)], axis=1)
++    # the tail chains: from the crotch down a column near each tail's middle, parented to that side's thigh
++    z0 = float(lm.P("crotch")[2])
++    z_hem = info["z_hem"]
++    for root, (pname, th_c, parent) in TAIL_CHAINS.items():
++        p = costume[pname]
++        col = int(np.argmin(np.abs(((p.grid_th - th_c + 180.0) % 360.0) - 180.0)))
++        line = p.grid_P[:, col]
++        line = line[line[:, 2] <= z0 + 1e-6]
++        pts = bt.polyline_points(line, n_tail)
++        chain = chain_names(root, n_tail)
++        for i, name in enumerate(chain):
++            bone_specs.append((name, pts[i], pts[i + 1], parent if i == 0 else chain[i - 1]))
++        P = Pc[sl(pname)]
++        tt = np.clip((z0 - P[:, 2]) / max(z0 - z_hem, 1e-6), 0.0, 1.0)
++        share = TAIL_BONE_SHARE * smooth01(tt / 0.6)
++        cw = bt.chain_weights(tt, n_tail)
++        Wp = Wc[sl(pname)] * (1.0 - share[:, None])
++        for i, name in enumerate(chain):
++            Wp[:, wnames_x.index(name)] += cw[:, i] * share
++        Wc[sl(pname)] = hb.limit4(Wp)
++    ob_cost = hb.part_object(opaque)
++    hb.apply_weights(ob_cost, Wc, wnames_x, skel)
++    garment_objs = [ob_cost]
++
++    # ---- the work-sleeve and glove: the left arm's own skin, pushed out ---------------------------
++    sleeve, used_s, sleeve_faces, sleeve_delete = work_sleeve(V, F, Nw, UVc, reg, lm, cparams)
++    Ns = Nw[used_s]
++    Q = push_out(sleeve.varr(), V, F, freg == "torso", SLEEVE_TORSO_CLEAR * lm.S, 0.012 * lm.S,
++                 along=Ns)  # the armpit crease (each point along its own normal: no two snap together)
++    sleeve.V = list(Q)
++    ob_sleeve = hb.make_object(SLEEVE_PART, sleeve.varr(), sleeve.F, sleeve.UV, sleeve.M, normals=Ns)
++    hb.apply_weights(ob_sleeve, np.concatenate([W[used_s], np.zeros((len(used_s), len(wnames_x) - len(wnames)),
++                                                                     dtype=np.float32)], axis=1), wnames_x, skel)
++    hb.unwrap_faces(ob_sleeve, {SLEEVE_MAT}, hb.uv_seams([tuple(int(i) for i in f) for f in sleeve.F], sleeve.UV))
++    hb.quantize_uvs(ob_sleeve)
++    dense_s = reg[used_s] == "hand_L"
++    Fs = sleeve.F
++    t_all = sum(len(f) - 2 for f in Fs)
++    t_dense = sum(len(f) - 2 for f in Fs if dense_s[list(f)].all())
++    hb.decimate_where(ob_sleeve, dense_s, 1.0 - (1.0 - hb.HAND_FOOT_RATIO) * t_dense / t_all, sleeve.varr(), Ns)
++    ob_sleeve.data.calc_loop_triangles()
++    sleeve_tris = len(ob_sleeve.data.loop_triangles)
++    garment_objs.append(ob_sleeve)
++    log(f"work-sleeve: {len(used_s)} verts, {sleeve_tris} tris, skin faces under it deleted "
++        f"{int(sleeve_delete.sum())} ({time.time() - t0:.1f}s)")
++
++    # ---- props ----------------------------------------------------------------------------------------
++    thigh = V[np.isin(reg, ["leg_R", "torso"]) & (V[:, 0] < 0.0)]
++    frame = liss_props.place(lm, thigh, cparams)
++    band = costume["TrouserTop"].varr()
++    z_w = float(lm.P("waist")[2])
++    near = band[(np.abs(band[:, 2] - (z_w - 0.03 * lm.S)) < 0.012 * lm.S) & (band[:, 0] < 0.0)]
++    hip = near[int(np.argmin(near[:, 0]))] + np.array([-SLING_OFF * lm.S, 0.0, 0.0])  # her right is -X
++    launcher = liss_props.launcher(lm, frame, cparams, hip, liss_costume.ATLAS["strap_a"])
++    ob_launcher = rigid_object(launcher, LAUNCHER_BONE, wnames_x, skel, "Launcher")
++    c = frame["centre"]
++    bone_specs.append((LAUNCHER_BONE, c, c + frame["up"] * LAUNCHER_BONE_LEN, HIPS_BONE))
++    prop_objs = [ob_launcher]
++    props_tris = launcher.tris()
++    clearance = {"launcher_to_thigh_mm": round(1000 * liss_props.box_gap(V[reg == "leg_R"], frame), 1),
++                 "tail_root_to_skin_mm": round(1000 * float(surf.sdf(tail_root[None, :])[0]), 1),
++                 "crop_to_tail_root_mm": round(1000 * min_distance(crop.varr(), tail_root[None, :]), 1)}
++    bt.add_bones(skel, bone_specs)
++    log(f"rig extras: {len(bone_specs)} bones, {len(skel.data.bones)} in all; props {props_tris} tris; "
++        f"clearance {clearance} ({time.time() - t0:.1f}s)")
++
++    # ---- body ---------------------------------------------------------------------------------
++    keep_b = ~is_head & ~hidden & ~sleeve_delete
++    used_b, Fb, remap_b, Sb = hb.submesh(V, F, keep_b, res["seams"])
++    Fb_l = [tuple(int(i) for i in f if i >= 0) for f in Fb]
++    UVb = [[(float(u), 1.0 - float(v)) for u, v in q[:len(f)]] for f, q in zip(Fb_l, UVc[keep_b])]
++    ob_body = hb.make_object("Body", V[used_b], Fb_l, UVb, ["skin_body"] * len(Fb), normals=Nw[used_b])
++    hb.apply_weights(ob_body, W[used_b], wnames, skel)
++    hb.unwrap_faces(ob_body, {"skin_body"}, hb.uv_seams(Fb_l, UVb))
++    hb.quantize_uvs(ob_body)
++    dense = np.isin(reg[used_b], ["hand_L", "hand_R", "foot_L", "foot_R"])
++    t_all = sum(len(f) - 2 for f in Fb_l)
++    t_dense = sum(len(f) - 2 for f in Fb_l if dense[list(f)].all())
++    hb.decimate_where(ob_body, dense, 1.0 - (1.0 - hb.HAND_FOOT_RATIO) * t_dense / t_all, V[used_b], Nw[used_b])
++    ob_body.data.calc_loop_triangles()
++    body_tris = len(ob_body.data.loop_triangles)
++    log(f"body skin: {len(used_b)} verts, {body_tris} tris ({time.time() - t0:.1f}s)")
++
++    # ---- eyes -----------------------------------------------------------------------------------
++    eye_objs = []
++    eye_tris = 0
++    for sd in ("L", "R"):
++        fr = face.eyes[sd]
++        for part in (asha_eyes.eyeball(fr), asha_eyes.cornea(fr), asha_eyes.occlusion(fr), asha_eyes.tear_line(fr)):
++            ob = hb.part_object(part)
++            hb.attach_to_bone(ob, skel, f"DEF-eye.{sd}", fr.E)
++            eye_objs.append(ob)
++            eye_tris += part.tris()
++    log(f"eyes: {eye_tris} tris")
++
++    export_objs = [ob_head, ob_body, *eye_objs, *garment_objs, *hair_objs, *prop_objs, skel]
++    report = {
++        "triangles": {"head": head.tris(), "body_skin": body_tris, "eyes": eye_tris, "costume": costume_tris,
++                      "work_sleeve": sleeve_tris, "hair": hair_tris, "props": props_tris},
++        "clearance": clearance,
++        "seconds": 0.0,
++    }
++    report["triangles"]["total_lod0"] = sum(report["triangles"].values())
++    for ob in export_objs:
++        hb.snap_shape_noise(ob)  # M1-CHR-14: host-independent morph targets (build_asha)
++    if args.bake_dir:
++        lip_terms = {k: np.concatenate([res[n][used_h], pad]) for k, n in (("CONTACT", "lip_contact"),
++                                                                            ("CORNER", "lip_corner"),
++                                                                            ("LIPDZ", "lip_dz"), ("LIPU", "lip_u"),
++                                                                            ("LIPFRONT", "lip_front"))}
++        face_v = np.zeros(len(Vhead))
++        face_v[np.unique(Fh[cat == 1][Fh[cat == 1] >= 0])] = 1.0
++        lip_terms["FACE"] = face_v
++        lip_terms["INNERLIP"] = np.concatenate([inner_v.astype(float), pad])
++        hb.dump_bake(Path(args.bake_dir), {"head": ob_head, "body": ob_body, "sleeve": ob_sleeve}, lm,
++                     {"head": np.array(head.T)}, {"head": {"LIP": masks["lip"], **lip_terms}})
++    removed = hb.delete_hidden_socket(ob_head, face)
++    report["triangles"]["head"] -= removed
++    report["triangles"]["total_lod0"] -= removed
++    report["hidden_socket_tris_deleted"] = removed
++    log(f"hidden socket faces deleted: {removed} tris ({time.time() - t0:.1f}s)")
++    if args.blend:
++        bpy.ops.wm.save_as_mainfile(filepath=str(Path(args.blend).resolve()), compress=True)
++    out = Path(args.out).resolve()
++    out.parent.mkdir(parents=True, exist_ok=True)
++    bpy.ops.object.select_all(action="DESELECT")
++    for ob in export_objs:
++        ob.select_set(True)
++    bpy.context.view_layer.objects.active = skel
++    bpy.ops.export_scene.gltf(
++        filepath=str(out), export_format="GLB", use_selection=True, export_yup=True, export_apply=False,
++        export_tangents=False, export_normals=True, export_texcoords=True, export_extras=False,
++        export_skins=True, export_morph=True, export_morph_normal=False, export_animations=False,
++        export_def_bones=False, export_materials="EXPORT", export_vertex_color="ACTIVE",
++        export_all_vertex_colors=False,
++    )
++    report["morph_normals"] = asha_glb.add_morph_normals(out, asha_face_shapes.MORPH_NORMAL_SHAPES)
++    report["morph_normals_mouth"] = asha_glb.add_morph_normals(out, asha_face_shapes.MORPH_NORMAL_SHAPES,
++                                                               material="mouth")
++    report["glb_bytes"] = out.stat().st_size
++    lod_objs, lod_tris = hb.make_lod1([ob_head, ob_body, *garment_objs, *hair_objs, *prop_objs], skel)
++    eye_lod = [ob for ob in eye_objs if ob.name.startswith(("Eye", "Cornea")) and not ob.name.startswith("EyeOcc")]
++    report["triangles_lod1"] = lod_tris + sum(len(o.data.polygons) for o in eye_lod) * 2
++    out1 = out.with_name(out.stem + "_lod1.glb")
++    bpy.ops.object.select_all(action="DESELECT")
++    for ob in [*lod_objs, *eye_lod, skel]:
++        ob.select_set(True)
++    bpy.ops.export_scene.gltf(
++        filepath=str(out1), export_format="GLB", use_selection=True, export_yup=True, export_apply=False,
++        export_tangents=False, export_normals=True, export_texcoords=True, export_extras=False,
++        export_skins=True, export_morph=False, export_animations=False, export_def_bones=False,
++        export_materials="EXPORT", export_vertex_color="ACTIVE", export_all_vertex_colors=False,
++    )
++    report["glb_lod1_bytes"] = out1.stat().st_size
++    report["seconds"] = round(time.time() - t0, 1)
++    log(json.dumps(report))
++    if args.report:
++        Path(args.report).write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
++    return 0
++
++
++if __name__ == "__main__":
++    sys.exit(main())
+diff --git a/assets_src/characters/liss/liss_costume.py b/assets_src/characters/liss/liss_costume.py
+new file mode 100644
+index 00000000..48796b20
+--- /dev/null
++++ b/assets_src/characters/liss/liss_costume.py
+@@ -0,0 +1,365 @@
++"""Liss's costume as procedural cloth panels (no bpy), act1_npcs.md §2.2-§2.4 and §2.10.
++
++Same method as Rhen's, Toma's and Ysolde's (rhen_costume, toma_costume, ysolde_costume): every garment is a pattern
++grid whose rows are ray-cast onto the body field plus a fitting offset, and the grid is also the garment's island in
++the 2K costume atlas (liss_textures paints the same charts). Pieces, inner to outer (§2.4):
++
++1. The work top: light sailcloth, sleeveless, torso only. A wide neckline that drops 5 cm further on her right, so the
++   right collarbone and the line-marks up the right side of the neck are bare; the armholes are dropped 12 cm below
++   the shoulder joint (the M1-CHR-14 11.5 cm rule plus margin).
++2. The copper-mesh work-sleeve and its five-finger glove are built in build_liss from the shipped arm and hand skin
++   (an offset shell that takes the skin's own weights); here only the strap that holds it up, across the chest to
++   the right armpit and round the back.
++3. **The sailcloth coat:** sleeveless, open at the front, short at the front (the lower ribs) and long at the back,
++   where it is **two tails**, not a tube (M1-CHR-14): each tail is an open panel behind one leg, from the waist to
++   the back of the knee, that follows its own leg below the crotch (build_liss) plus three tail bones. The coat body
++   rides the torso only and its armholes are dropped 12 cm too. Five patches are painted (liss_textures).
++4. The tool harness: two leather straps crossed front and back (an X), six pouches rigid on them, a brass ring where
++   the straps cross on the chest, a vial clipped to the left strap (a bound-light point) and the lamp cell glowing in
++   the right chest pouch's slit.
++5. Loose canvas trousers to mid-calf (a pelvis band and two leg tubes, an extra row at each knee: she kneels and
++   squats).
++6. Ankle boots with rope soles: a closed shell over each foot and a short shaft round the ankle, taking the feet's
++   weights (build_liss).
++
++Vertex colour = wind (R primary, G ripple, B phase, A flutter). `coverage()` says which body vertices are hidden
++under clothing (deleted, asha.md §8.1); as on Asha and Ysolde after M1-CHR-14, the knees and shins under the coat's
++tails and the trousers are kept. Deterministic.
++"""
++from __future__ import annotations
++
++import math
++
++import numpy as np
++
++import rhen_costume as RC
++import ysolde_costume as YC
++from asha_costume import TAG_CLOTH, Fields, TorsoChart, _panel, cast_last, dir_theta
++from asha_mesh import Part, tube, uv_sphere
++
++# costume atlas islands (u0, v0, u1, v1), the shader's UV convention (v down); liss_textures paints them
++ATLAS = {
++    "top": (0.0, 0.0, 0.40, 0.22),
++    "coat": (0.40, 0.0, 1.0, 0.30),
++    "tail_L": (0.0, 0.22, 0.20, 0.52),
++    "tail_R": (0.20, 0.22, 0.40, 0.52),
++    "trousers": (0.40, 0.30, 0.70, 0.40),
++    "trouser_leg_L": (0.40, 0.40, 0.55, 0.64),
++    "trouser_leg_R": (0.55, 0.40, 0.70, 0.64),
++    "strap_a": (0.70, 0.30, 1.0, 0.35),
++    "strap_b": (0.70, 0.35, 1.0, 0.40),
++    "sleeve_strap": (0.70, 0.40, 1.0, 0.44),
++    "pouch": (0.70, 0.44, 0.85, 0.56),
++    "brass": (0.85, 0.44, 0.92, 0.50),
++    "vial": (0.92, 0.44, 1.0, 0.50),
++    "boots": (0.0, 0.52, 0.25, 0.66),
++    "boot_shaft": (0.25, 0.52, 0.40, 0.64),
++    "sole": (0.40, 0.64, 0.55, 0.68),
++}
++TOP_OFF = 0.0045  # m at S = 1, over the skin
++COAT_OFF = 0.0135  # over the top and the work-sleeve's cap (build_liss lays the cap at 8.5 mm)
++TAIL_OFF = 0.019  # the tails, over the trousers' seat
++STRAP_OFF = 0.0185  # the harness over the coat
++SLEEVE_STRAP_OFF = 0.0105  # the sleeve's strap: over the top, under the coat
++TROUSER_OFF = 0.010  # loose canvas
++TROUSER_FLARE = 0.010  # m more at the hem
++BOOT_OFF = 0.0035
++TAIL_ROWS = 16
++TAIL_SPAN = (125.0, 178.0)  # degrees from the front: the left tail (the right one mirrors it); the right hip's
++# launcher sits in front of -125 (liss_props)
++TAIL_TOP_ABOVE_WAIST = 0.015  # m: the tails start under the coat body's back hem
++COAT_BACK_HEM_BELOW_WAIST = 0.03
++TOP_HEM_BELOW_WAIST = 0.025
++KEEP_ABOVE_KNEE = 0.16  # m (at s = 1) of thigh kept above the knee joint under the trousers (M1-CHR-14)
++POUCH_M = (0.075, 0.055, 0.030)  # a pouch: along the strap, across it, deep
++BUCKLE_RING_M = 0.022  # the brass ring where the straps cross
++
++
++def _wind_rows(n_rows: int, n_cols: int, amp: float, phase0: float = 0.0):
++    return [[(amp * t * t, amp * t, (phase0 + i / n_cols * 3.0) % 1.0, 0.3 * amp * t) for i in range(n_cols)]
++            for t in np.linspace(0.0, 1.0, n_rows)]
++
++
++def _signed(th_deg: np.ndarray) -> np.ndarray:
++    return ((np.asarray(th_deg, dtype=float) + 180.0) % 360.0) - 180.0
++
++
++# ---------------------------------------------------------------------------------------------
++# Torso lines (azimuth: 0 the front, + her left, - her right)
++# ---------------------------------------------------------------------------------------------
++def top_line(lm, chart: TorsoChart, th_deg: np.ndarray, drop: float, right_drop: float) -> np.ndarray:
++    """The work top's top edge: a wide neckline, `right_drop` lower over her right collarbone (the line-marks run up
++    it), and the armholes `drop` below the shoulder joint on both side lines. The left side holds the strap's height
++    over the front and the back of the shoulder (the work-sleeve's cap lies over it)."""
++    S = lm.S
++    neck = chart.z_sh + math.radians(50) * chart.k
++    front = float(lm.P("notch")[2] - 0.03 * S)
++    arm = float(lm.P("shoulder")[2] - drop)  # m, not scaled: the 11.5 cm rule is a clearance
++    strap = chart.z_sh + math.radians(22) * chart.k
++    rd = right_drop * S
++    xs = [-180, -150, -128, -112, -98, -88, -76, -64, -50, -30, -14, 0, 18, 34, 52, 66, 80, 92, 104, 118, 132, 150,
++          180]
++    vs = [neck, neck, neck - 0.02 * S, strap - 0.01 * S, arm + 0.04 * S, arm, arm + 0.04 * S, strap - 0.035 * S,
++          front - rd * 0.6, front - rd, front - rd * 0.7, front, front + 0.01 * S, neck - 0.03 * S, strap, strap,
++          arm + 0.05 * S, arm, arm + 0.05 * S, strap, neck - 0.02 * S, neck, neck]
++    return np.interp(_signed(th_deg), xs, vs)
++
++
++def coat_line(lm, chart: TorsoChart, th_deg: np.ndarray, drop: float, open_deg: float) -> np.ndarray:
++    """The coat's top edge: the lapel drops toward the open front, a plain back neck, the armholes `drop` below the
++    shoulder joint (deep: the coat is sleeveless)."""
++    S = lm.S
++    neck = chart.z_sh + math.radians(56) * chart.k
++    lapel = float(lm.P("notch")[2] - 0.06 * S)
++    arm = float(lm.P("shoulder")[2] - drop)  # m, not scaled: the 11.5 cm rule is a clearance
++    strap = chart.z_sh + math.radians(28) * chart.k
++    a = np.abs(_signed(th_deg))
++    return np.interp(a, [0, open_deg, open_deg + 14, 50, 66, 80, 92, 104, 118, 134, 150, 180],
++                     [lapel, lapel, lapel + 0.05 * S, strap, strap, arm + 0.05 * S, arm, arm + 0.05 * S, strap,
++                      neck - 0.015 * S, neck, neck])
++
++
++def coat_hem(lm, th_deg: np.ndarray, params: dict) -> np.ndarray:
++    """Short at the front (the lower ribs), falling round the sides to just under the waist at the back, where the
++    tails take over."""
++    S = lm.S
++    z_w = float(lm.P("waist")[2])
++    front = z_w + float(params["coat_front_hem_above_waist_m"]) * S
++    back = z_w - COAT_BACK_HEM_BELOW_WAIST * S
++    a = np.abs(_signed(th_deg))
++    return np.interp(a, [0, 40, 80, 110, 140, 180], [front, front - 0.005 * S, z_w + 0.03 * S, back + 0.01 * S, back,
++                                                     back])
++
++
++def skin_cut_top(lm, chart: TorsoChart, th_deg: np.ndarray, params: dict) -> np.ndarray:
++    """Where the torso skin under the top is cut (coverage): the top's own line (the right collarbone stays)."""
++    return top_line(lm, chart, th_deg, float(params["top_armhole_drop_m"]), float(params["top_right_neck_drop_m"]))
++
++
++# ---------------------------------------------------------------------------------------------
++# Small solids
++# ---------------------------------------------------------------------------------------------
++def box(part: Part, c: np.ndarray, ax: np.ndarray, ay: np.ndarray, az: np.ndarray, half, mat: str, rect,
++        tags=TAG_CLOTH) -> None:
++    """A box at c with unit axes (ax, ay, az) and half extents; each face takes the whole rect."""
++    hx, hy, hz = half
++    corners = {}
++    for sx in (-1, 1):
++        for sy in (-1, 1):
++            for sz in (-1, 1):
++                corners[(sx, sy, sz)] = c + ax * hx * sx + ay * hy * sy + az * hz * sz
++    u0, v0, u1, v1 = rect
++    uv = [(u0, v1), (u1, v1), (u1, v0), (u0, v0)]
++    faces = [((1, -1, -1), (1, 1, -1), (1, 1, 1), (1, -1, 1)), ((-1, 1, -1), (-1, -1, -1), (-1, -1, 1), (-1, 1, 1)),
++             ((1, 1, -1), (-1, 1, -1), (-1, 1, 1), (1, 1, 1)), ((-1, -1, -1), (1, -1, -1), (1, -1, 1), (-1, -1, 1)),
++             ((-1, -1, 1), (1, -1, 1), (1, 1, 1), (-1, 1, 1)), ((-1, 1, -1), (1, 1, -1), (1, -1, -1), (-1, -1, -1))]
++    for f in faces:
++        ids = [part.add_v(corners[k], tag=tags) for k in f]
++        part.add_f(ids, uv, mat)
++
++
++def _frame_on(C: np.ndarray, N: np.ndarray, i: int) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
++    """(along, across, out) at sample i of a strap's centre line."""
++    t = C[(i + 1) % len(C)] - C[i - 1]
++    n = N[i] / np.linalg.norm(N[i])
++    t = t - (t @ n) * n
++    t /= np.linalg.norm(t)
++    return t, np.cross(n, t), n
++
++
++# ---------------------------------------------------------------------------------------------
++# Coat tails
++# ---------------------------------------------------------------------------------------------
++def tail(fields: Fields, name: str, rect, th_deg: np.ndarray, z_rows: np.ndarray, ring: tuple, seed: int) -> Part:
++    """One open tail panel over the azimuths th_deg (in order) and the rows z_rows: ysolde_costume.panel's column
++    (no dents between the legs), heavy sailcloth with one soft fold."""
++    return YC.panel(fields, name, rect, th_deg, z_rows, ring, TAIL_OFF * fields.lm.S, seed, fold_amp=0.003)
++
++
++# ---------------------------------------------------------------------------------------------
++# Boots
++# ---------------------------------------------------------------------------------------------
++def boot(fields: Fields, side: str, params: dict) -> Part:
++    """A closed shell over the foot (ysolde_costume.slipper, a touch thicker) and a shaft round the ankle up to
++    `boot_height_m`; the rope sole is painted on the foot shell's lowest ring band (liss_textures)."""
++    lm = fields.lm
++    S = lm.S
++    foot = YC.slipper(fields, side, ATLAS["boots"])
++    foot.name = f"Boot{side}"
++    an = lm.side_pt("ankle", side)
++    kn = lm.side_pt("knee", side)
++    top = float(params["boot_height_m"]) * S
++    z0 = 0.035 * S
++    path = np.array([an + (kn - an) * ((z - an[2]) / (kn[2] - an[2])) for z in np.linspace(z0, top, 6)])
++    leg = fields.region(f"leg_{side}")
++    ft = fields.region(f"foot_{side}")
++
++    def fld(Q: np.ndarray) -> np.ndarray:
++        return np.minimum(leg(Q), ft(Q))
++
++    shaft = RC.limb_tube(fields, fld, path, lambda t: (BOOT_OFF + 0.0025 * (1.0 - t)) * S, ATLAS["boot_shaft"],
++                         f"BootShaft{side}", n_around=18, rows=6, back_inset=0.002 * S)
++    foot.extend(shaft)
++    return foot
++
++
++# ---------------------------------------------------------------------------------------------
++def build_costume(body, params: dict) -> tuple[dict[str, Part], dict]:
++    """Returns ({name: Part}, info): the opaque costume pieces and the tail and harness data build_liss needs."""
++    lm = body.lm
++    S = lm.S
++    fields = Fields(body)
++    chart = TorsoChart(lm)
++    z_waist = float(lm.P("waist")[2])
++    z_crotch = float(lm.P("crotch")[2])
++    hip_z = float(lm.side_pt("hip", "L")[2])
++    knee_z = float(lm.side_pt("knee", "L")[2])
++    out: dict[str, Part] = {}
++    seed = int(params["seed"])
++    # 1. the work top: a closed ring
++    th_t = np.linspace(0.0, 360.0, 56, endpoint=False)
++    out["Top"] = RC.torso_sheet(fields, chart, "Top", ATLAS["top"], th_t,
++                                skin_cut_top(lm, chart, th_t, params), z_waist - TOP_HEM_BELOW_WAIST * S,
++                                TOP_OFF * S, 12, 0.0015 * S, True)
++    # 3a. the coat body, open at the front
++    od = float(params["coat_front_opening_deg"])
++    th_c = np.linspace(od, 360.0 - od, 54)
++    out["Coat"] = RC.torso_sheet(fields, chart, "Coat", ATLAS["coat"], th_c,
++                                 coat_line(lm, chart, th_c, float(params["coat_armhole_drop_m"]), od),
++                                 coat_hem(lm, th_c, params), COAT_OFF * S, 15, 0.0025 * S, False, wind_amp=0.12)
++    # 3b. the two tails, to the back of the knee
++    z_top = z_waist + TAIL_TOP_ABOVE_WAIST * S
++    z_hem = knee_z + float(params["coat_tail_hem_above_knee_m"]) * S
++    z_rows = YC.panel_rows(z_top, z_hem, TAIL_ROWS)
++    ring = YC.ring_radii(fields, z_rows)
++    gap = 0.5 * float(params["coat_tail_gap_deg"])
++    a0, a1 = TAIL_SPAN
++    out["TailL"] = tail(fields, "TailL", ATLAS["tail_L"], np.linspace(a0, a1 - gap, 14), z_rows, ring, seed)
++    out["TailR"] = tail(fields, "TailR", ATLAS["tail_R"], np.linspace(360.0 - a1 + gap, 360.0 - a0, 14), z_rows, ring,
++                        seed + 1)
++    # 5. trousers: a pelvis band and two loose legs to mid-calf (an extra row at each knee)
++    th_p = np.linspace(0.0, 360.0, 44, endpoint=False)
++    pelvis = Part("TrouserTop")
++    pelvis._mat = "cloth"
++    rows = 8
++    P = np.zeros((rows, len(th_p), 3))
++    D = dir_theta(np.radians(th_p))
++    for j in range(rows):
++        z = z_waist + 0.01 * S + (z_crotch + 0.015 * S - z_waist - 0.01 * S) * j / (rows - 1)
++        O = np.stack([np.zeros(len(th_p)), np.full(len(th_p), 0.01 * S), np.full(len(th_p), z)], axis=-1)
++        r = cast_last(lambda Q: fields.lower(Q) - TROUSER_OFF * S, O, D, 0.5 * S)
++        P[j] = O + D * r[:, None]
++    _panel(pelvis, P, ATLAS["trousers"], None, True, 0.0018 * S, np.array([0.0, 0.01 * S, 0.0]))
++    out["TrouserTop"] = pelvis
++    an_z = float(lm.side_pt("ankle", "L")[2])
++    hem_z = an_z + float(params["trouser_hem_above_ankle_m"]) * S
++    for sd in ("L", "R"):
++        kz = float(lm.side_pt("knee", sd)[2])
++        # rows crowd a little round the knee (the extra loop of §2.4)
++        zs = np.concatenate([np.linspace(z_crotch + 0.06 * S, kz + 0.06 * S, 7), np.linspace(kz + 0.04 * S,
++                                                                                               kz - 0.04 * S, 5),
++                             np.linspace(kz - 0.06 * S, hem_z, 5)])
++        path = RC.leg_path(lm, sd, zs[0], zs[-1], 40)
++        idx = np.clip(np.searchsorted(-path[:, 2], -zs), 0, len(path) - 1)
++        path = path[idx]
++        out[f"TrouserLeg{sd}"] = RC.limb_tube(fields, f"leg_{sd}", path,
++                                              lambda t: (TROUSER_OFF + TROUSER_FLARE * t ** 1.6) * S,
++                                              ATLAS[f"trouser_leg_{sd}"], f"TrouserLeg{sd}", n_around=22,
++                                              rows=len(path), back_inset=0.0018 * S, wind_amp=0.06)
++    # 6. boots
++    for sd in ("L", "R"):
++        out[f"Boot{sd}"] = boot(fields, sd, params)
++    # 2. the work-sleeve's strap: from the left shoulder's cap across the chest to the right armpit, and back
++    zs_ = chart.z_sh
++    k = chart.k
++    nip = float(lm.P("nipple")[2])
++    arm_z = float(lm.P("shoulder")[2]) - 0.10 * S
++    sstrap, _sc, _sn = RC.bandolier(fields, chart, 0.02 * S, ATLAS["sleeve_strap"],
++                                    [(62.0, zs_ + math.radians(30) * k), (28.0, nip + 0.05 * S),
++                                     (-40.0, nip + 0.02 * S), (-84.0, arm_z), (-120.0, arm_z + 0.01 * S),
++                                     (-180.0, nip + 0.05 * S), (-240.0, zs_ + 0.02 * S),
++                                     (-290.0, zs_ + math.radians(34) * k)], "SleeveStrap", SLEEVE_STRAP_OFF * S)
++    out["SleeveStrap"] = sstrap
++    # 4. the harness: two straps crossed front and back
++    w = float(params["harness_strap_m"]) * S
++    path_a = [(-56.0, zs_ + math.radians(44) * k), (-20.0, nip + 0.035 * S), (30.0, z_waist + 0.05 * S),
++              (74.0, z_waist - 0.015 * S), (122.0, z_waist + 0.02 * S), (180.0, nip - 0.01 * S),
++              (234.0, zs_ - 0.04 * S), (264.0, zs_ + math.radians(38) * k)]
++    path_b = [(-a, h) for a, h in path_a]
++    sa, Ca, Na = RC.bandolier(fields, chart, w, ATLAS["strap_a"], path_a, "StrapA", STRAP_OFF * S)
++    sb, Cb, Nb = RC.bandolier(fields, chart, w, ATLAS["strap_b"], path_b, "StrapB", (STRAP_OFF + 0.002) * S)
++    harness = Part("Harness")
++    harness._mat = "cloth"
++    harness.extend(sa)
++    harness.extend(sb)
++    # the brass ring where they cross on the chest (the front sample nearest the other strap)
++    d = np.linalg.norm(Ca[:, None, :] - Cb[None, :, :], axis=2)
++    front = (Ca[:, 1] < 0.0)[:, None] & (Cb[:, 1] < 0.0)[None, :]
++    ia, ib = np.unravel_index(np.argmin(np.where(front, d, np.inf)), d.shape)
++    xc = 0.5 * (Ca[ia] + Cb[ib])
++    n_x = Na[ia] + Nb[ib]
++    n_x /= np.linalg.norm(n_x)
++    ring_c = xc + n_x * (0.004 * S + 0.25 * w)
++    tt = np.linspace(0.0, 2 * math.pi, 25)
++    e1 = np.cross(n_x, np.array([0.0, 0.0, 1.0]))
++    e1 /= np.linalg.norm(e1)
++    e2 = np.cross(n_x, e1)
++    ring_line = ring_c[None, :] + np.outer(np.cos(tt), e1) * BUCKLE_RING_M * S + np.outer(np.sin(tt), e2) * \
++        BUCKLE_RING_M * S
++    tube(harness, ring_line, 0.0032 * S, 8, "cloth", n_x, ATLAS["brass"], tags=TAG_CLOTH)
++    # six pouches: (strap, share of its samples, rotation of the pouch about its out axis)
++    pouch_at = [("a", 0.08, 0.0), ("b", 0.12, 0.0), ("a", 0.30, 0.0), ("b", 0.30, 0.0), ("a", 0.62, 0.0),
++                ("b", 0.62, 0.0)][:int(params["harness_pouches"])]
++    pouches = []
++    for which, share, _rot in pouch_at:
++        C, N = (Ca, Na) if which == "a" else (Cb, Nb)
++        i = int(round(share * (len(C) - 1)))
++        t_, s_, n_ = _frame_on(C, N, i)
++        c = C[i] + n_ * (0.0025 * S + 0.5 * POUCH_M[2] * S)
++        box(harness, c, t_, s_, n_, (0.5 * POUCH_M[0] * S, 0.5 * POUCH_M[1] * S, 0.5 * POUCH_M[2] * S), "cloth",
++            ATLAS["pouch"])
++        # the flap's brass stud
++        uv_sphere(harness, c + n_ * 0.5 * POUCH_M[2] * S + t_ * 0.3 * POUCH_M[0] * S, 0.004 * S, 8, 4, "cloth",
++                  axis_fwd=n_, uv_rect=ATLAS["brass"], tags=TAG_CLOTH)
++        pouches.append({"centre": c, "along": t_, "across": s_, "out": n_, "strap": which})
++    # the lamp cell: the right chest pouch (strap b's first, on her right breast) shows a 6 mm glimmer point through
++    # a slit in its face; the vial: a 6 cm glass phial clipped to strap a under the left collarbone, its 5 mm point
++    bl = params["bound_light_mm"]
++    p0 = pouches[1]
++    uv_sphere(harness, p0["centre"] + p0["out"] * (0.5 * POUCH_M[2] * S - 0.0012) - p0["along"] * 0.012 * S,
++              0.0005 * float(bl["pouch"]), 8, 5, "glimmer", axis_fwd=p0["out"], tags=TAG_CLOTH)
++    i = int(round(0.03 * (len(Ca) - 1)))
++    t_, s_, n_ = _frame_on(Ca, Na, i)
++    base = Ca[i] + n_ * 0.010 * S
++    vial = np.array([base + s_ * 0.0 - np.array([0.0, 0.0, 1.0]) * 0.06 * S * f for f in np.linspace(0.0, 1.0, 6)])
++    tube(harness, vial, 0.0065 * S, 10, "cloth", n_, ATLAS["vial"], tags=TAG_CLOTH, cap_end=True)
++    uv_sphere(harness, vial[-2], 0.0005 * float(bl["vial"]), 8, 5, "glimmer", axis_fwd=n_, tags=TAG_CLOTH)
++    out["Harness"] = harness
++    for p in out.values():
++        if not p.C:
++            p.C = [(0.0, 0.0, 0.0, 0.0)] * len(p.V)
++        elif len(p.C) < len(p.V):
++            p.C = p.C + [(0.0, 0.0, 0.0, 0.0)] * (len(p.V) - len(p.C))
++    info = {"z_rows": z_rows, "hip_z": hip_z, "knee_z": knee_z, "z_waist": z_waist, "z_hem": z_hem,
++            "tail_span": TAIL_SPAN, "pouches": pouches}
++    return out, info
++
++
++def coverage(body, params: dict, V: np.ndarray, reg: np.ndarray) -> np.ndarray:
++    """True for body vertices hidden under opaque clothing (with a margin), asha.md §8.1: the torso under the top
++    (the right collarbone and neck stay), the thighs under the trousers down to KEEP_ABOVE_KNEE above the knee. The
++    knees and shins under the tails and trousers, and the feet in the boots, are kept (M1-CHR-14). The left arm and
++    hand under the work-sleeve are build_liss's (the shell's own faces)."""
++    lm = body.lm
++    S = lm.S
++    chart = TorsoChart(lm)
++    z_waist = float(lm.P("waist")[2])
++    th, H = chart.H_of(V)
++    th_deg = np.degrees(th)
++    m = 0.025 * S
++    torso = reg == "torso"
++    top = torso & (H < skin_cut_top(lm, chart, th_deg, params) - m) & (V[:, 2] > z_waist - 0.06 * S)
++    legs = (reg == "leg_L") | (reg == "leg_R") | torso
++    z_keep = max(float(lm.side_pt("knee", sd)[2]) for sd in ("L", "R")) + KEEP_ABOVE_KNEE * S
++    lower = legs & (V[:, 2] < z_waist - m) & (V[:, 2] > z_keep)
++    return top | lower
+diff --git a/assets_src/characters/liss/liss_hair.py b/assets_src/characters/liss/liss_hair.py
+new file mode 100644
+index 00000000..9a8158cb
+--- /dev/null
++++ b/assets_src/characters/liss/liss_hair.py
+@@ -0,0 +1,328 @@
++"""Liss's hair (no bpy), act1_npcs.md §2.5 and the hair contract in character_shading.md.
++
++* **The crop** (2-4 cm, roughly cut, `hair_brown_dark` #2A1C14 with sun-rust tips over the outer 25%: the hair
++  shader's `col_tip` from `tip_start`, the cards only carry V root 0 -> tip 1): a hairline row on the soft-root atlas
++  columns, three lifted layers of short cards over the shipped head mesh (asha_hair.MeshScalp) and a few ruffled
++  tufts, on Rhen's card machinery (rhen_hair._emit, asha_hair._ribbon and Asha's strand atlas) with her own hairline
++  and flow: a woman's hairline (Asha's), the crop falling forward over the crown and down the sides and the nape from
++  a whorl behind the top of the head.
++* **The tail** (story sheet: one long tail at the nape): a two-strand twist 1.8 cm thick and 45 cm long, two strand
++  tubes wound round a spine that runs from the nape down the upper back (asha_hair.braid's construction, two strands
++  instead of three), a few loose tip cards, and seven salvaged glass beads threaded on it (four salt glass, two
++  copper-green, one amber). M1-CHR-14 from the start: the root is seated on the shipped head surface (4 mm off the
++  skin, inside the crop's lift), the clearance from the body grows from there over 7 cm, and every crop card stops
++  12 mm short of the root.
++
++The module supplies the hairline and flow interface asha_textures reads (`hairline_v`, `in_hair`, `_gather`,
++`_flow_dir`), so the skin maps paint the scalp under the cards. Vertex colour = wind (the crop pinned at the root, its
++tips a little free; the tail's tip cards free). Seeded, deterministic.
++"""
++from __future__ import annotations
++
++import math
++
++import numpy as np
++
++import asha_hair
++import rhen_hair
++from asha_hair import ROOT_CAST_H, SLOTS_FULL, SLOTS_HAIRLINE, SLOTS_SPARSE, Scalp, _ribbon  # noqa: F401
++from asha_mesh import Part, arclen, catmull_rom, frames_along, tube, uv_sphere
++
++TAG_HAIR = asha_hair.TAG_HAIR
++WIND_OUTER = 0.18  # the crop's outer layer: short, it barely moves
++ROOT_SEAT = 0.0015  # m at s = 1: the tail root's centre off the shipped skin (asha_hair.BRAID_ROOT_SEAT 4 mm: hers
++# sits a little deeper, so the nape skin pulling back as the chin lifts still touches the root ring)
++ROOT_RAMP = 0.07  # m along the tail over which the body clearance grows to TAIL_CLEAR
++TAIL_CLEAR = 0.032  # m: the tail's spine off the body field below the root (over the coat and the harness)
++TAIL_ROOT_H = 0.40  # head heights above the chin: the tail's root on the back of the head
++TAIL_RINGS = 140  # rings per strand tube (each strand >= 300 vertices: the probe's braid strand)
++TAIL_AROUND = 6
++FRINGE_SPILL = 0.05  # head heights a front card may run past the hairline
++BEAD_MATS = {"salt": "bead_salt", "green": "bead_green", "amber": "bead_amber"}
++
++
++# ---------------------------------------------------------------------------------------------
++# Hairline and flow (the interface asha_textures reads)
++# ---------------------------------------------------------------------------------------------
++def hairline_v(lm, P: np.ndarray) -> np.ndarray:
++    """Head heights above the chin by azimuth (0 the front, +90 her left). A woman's front (Asha's), but a crop has
++    no long hair falling over the sides: the hairline comes down in front of and over the ears (short sideburns) and
++    low at the nape, so the sides read as cropped hair, not bare temple."""
++    yc = lm.P("head_c")[1]
++    phi = np.degrees(np.arctan2(P[:, 0], -(P[:, 1] - yc)))
++    a = np.abs(phi)
++    xs = [0, 30, 50, 64, 74, 82, 92, 104, 118, 140, 162, 180]
++    vs = [0.734, 0.728, 0.690, 0.630, 0.575, 0.530, 0.545, 0.545, 0.44, 0.30, 0.235, 0.225]
++    t = np.radians(phi)
++    wander = 0.004 * np.sin(7.0 * t + 1.1) + 0.003 * np.sin(13.0 * t + 2.3) + 0.0015 * np.sin(29.0 * t + 0.4)
++    return np.interp(a, xs, vs) + wander
++
++
++def in_hair(lm, P: np.ndarray, margin_h: float = 0.0) -> np.ndarray:
++    zc = lm.P("chin")[2]
++    v = (P[:, 2] - zc) / lm.h
++    return v > hairline_v(lm, P) + margin_h
++
++
++def _gather(lm) -> np.ndarray:
++    """The crown whorl the crop falls away from (named after Asha's braid gather: the same interface)."""
++    yc = lm.P("head_c")[1]
++    zc = lm.P("chin")[2]
++    return np.array([0.04 * lm.head_w, yc + 0.18 * lm.h, zc + 1.0 * lm.h])
++
++
++def _flow_dir(lm, P: np.ndarray, N: np.ndarray, G: np.ndarray) -> np.ndarray:
++    """Away from the whorl: forward over the crown (a rough fringe toward her right), down at the sides and the
++    nape."""
++    yc = lm.P("head_c")[1]
++    zc = lm.P("chin")[2]
++    away = P - G
++    away /= np.maximum(np.linalg.norm(away, axis=1, keepdims=True), 1e-9)
++    v = (P[:, 2] - zc) / lm.h
++    top = np.clip((v - 0.70) / 0.18, 0.0, 1.0)
++    front = np.clip(-(P[:, 1] - yc) / (0.35 * lm.h), 0.0, 1.0)
++    fwd = np.array([-0.25, -1.0, 0.0])
++    down = np.array([0.0, 0.2, -1.0])
++    d = (away * 0.7 + fwd[None, :] * (top * (0.4 + 0.5 * front))[:, None]
++         + down[None, :] * ((1.0 - top) * 0.9)[:, None])
++    d = d - np.sum(d * N, axis=1, keepdims=True) * N
++    return d / np.maximum(np.linalg.norm(d, axis=1, keepdims=True), 1e-9)
++
++
++# ---------------------------------------------------------------------------------------------
++# The crop
++# ---------------------------------------------------------------------------------------------
++def _trace(scalp, lm, roots: np.ndarray, length: np.ndarray, lift: float, G: np.ndarray, seg: int,
++           rise: np.ndarray | None, stop_at: np.ndarray | None, stop_r: float) -> tuple[np.ndarray, np.ndarray]:
++    """Paths of `seg` steps along the flow (rhen_hair._trace with her hairline), each stopped where it would come
++    within `stop_r` of `stop_at` (the tail root). Returns (paths, points kept per path)."""
++    step = length / seg
++    paths = [scalp.project(roots, lift)]
++    keep = np.full(len(roots), seg + 1)
++    if stop_at is not None:
++        keep[np.linalg.norm(paths[0] - stop_at, axis=1) < stop_r] = 0
++    yc = lm.P("head_c")[1]
++    zc = lm.P("chin")[2]
++    for k in range(seg):
++        cur = paths[-1]
++        N = scalp.normal(cur)
++        nxt = scalp.project(cur + _flow_dir(lm, cur, N, G) * step[:, None], lift, iters=3)
++        front = np.clip(-(nxt[:, 1] - yc) / (0.3 * lm.h), 0.0, 1.0) ** 2
++        ok = (nxt[:, 2] - zc) / lm.h > hairline_v(lm, nxt) - FRINGE_SPILL * front - 0.01
++        nxt = np.where(ok[:, None], nxt, cur)
++        if stop_at is not None:
++            near = (np.linalg.norm(nxt - stop_at, axis=1) < stop_r) & (keep > k + 1)
++            keep[near] = k + 1
++        paths.append(nxt)
++    out = np.stack(paths, axis=1)
++    if rise is not None:
++        t = (np.arange(seg + 1) / seg) ** 2
++        Nn = scalp.normal(out.reshape(-1, 3)).reshape(out.shape)
++        out = out + Nn * (rise[:, None] * t[None, :])[..., None]
++    return out, keep
++
++
++def _roots_inside(scalp, lm, rng, n: int, margin: float) -> np.ndarray:
++    yc = lm.P("head_c")[1]
++    zc = lm.P("chin")[2]
++    hc = np.array([0.0, yc, zc + 0.55 * lm.h])
++    d_in = rng.normal(size=(n * 6, 3))
++    d_in[:, 2] = np.abs(d_in[:, 2]) * 1.2 + 0.05
++    d_in /= np.linalg.norm(d_in, axis=1, keepdims=True)
++    p_in = scalp.project(hc + d_in * ROOT_CAST_H * lm.h)
++    return p_in[in_hair(lm, p_in, margin)][:n]
++
++
++def _hairline_roots(scalp, lm, phi: np.ndarray, inside_h) -> np.ndarray:
++    yc = lm.P("head_c")[1]
++    zc = lm.P("chin")[2]
++    hc = np.array([0.0, yc, zc + 0.55 * lm.h])
++    d = np.stack([np.sin(phi), -np.cos(phi), np.zeros(len(phi))], axis=1)
++    p = scalp.project(hc + d * ROOT_CAST_H * lm.h)
++    for _ in range(10):
++        dz = (zc + (hairline_v(lm, p) + inside_h) * lm.h) - p[:, 2]
++        p = scalp.project(p + np.stack([np.zeros(len(p)), np.zeros(len(p)), dz], axis=1))
++    return p
++
++
++def _emit_kept(part: Part, scalp, paths: np.ndarray, keep: np.ndarray, widths, slots, rng, taper: float, v_range,
++               wind: float, twist: float = 0.0) -> None:
++    """rhen_hair._emit for the cards that keep at least two points (a stopped card ends where it stopped)."""
++    for c in range(len(paths)):
++        k = int(keep[c])
++        if k < 2:
++            rng.random()  # keep the stream aligned whether or not a card is emitted
++            continue
++        rhen_hair._emit(part, scalp, paths[c:c + 1, :k], widths[c:c + 1], slots[c:c + 1], rng, taper,
++                        (v_range[0], v_range[0] + (v_range[1] - v_range[0]) * (k - 1) / (paths.shape[1] - 1)), wind,
++                        twist)
++
++
++def crop(lm, params: dict, rng: np.random.Generator, scalp, root: np.ndarray | None) -> Part:
++    part = Part("HairHead")
++    G = _gather(lm)
++    s = lm.h / 0.222
++    lo, hi = params["length_m"]
++    seg = int(params["card_segments"])
++    stop_r = float(params["tail_card_stop_m"]) * s
++    lim = math.pi * 0.97
++    n_hl = 70
++    phi = np.sort(np.linspace(-lim, lim, n_hl) + rng.uniform(-0.4, 0.4, n_hl) * (2 * lim / n_hl))
++    roots = _hairline_roots(scalp, lm, phi, rng.uniform(-0.001, 0.007, n_hl))
++    length = rng.uniform(0.5 * lo, 0.8 * lo, n_hl) * s
++    paths, keep = _trace(scalp, lm, roots, length, 0.0009 * s, G, 3, rng.uniform(0.0, 0.002, n_hl) * s, root, stop_r)
++    _emit_kept(part, scalp, paths, keep, rng.uniform(0.004, 0.007, n_hl) * s, rng.choice(SLOTS_HAIRLINE, n_hl), rng,
++               0.3, (0.0, 0.75), 0.0)
++    wlo, whi = params["card_width_m"]
++    layers = [(0.0012 * s, params["scalp_cards"][0], 1.0, 0.002, 0.0),
++              (0.0026 * s, params["scalp_cards"][1], 0.85, 0.004, 0.5 * WIND_OUTER),
++              (0.0042 * s, params["scalp_cards"][2], 0.7, 0.008, WIND_OUTER)]
++    for li, (lift, count, wk, rise, wind) in enumerate(layers):
++        r = _roots_inside(scalp, lm, rng, int(count), 0.012 + 0.01 * li)
++        n = len(r)
++        length = rng.uniform(lo, hi, n) * s
++        paths, keep = _trace(scalp, lm, r, length, lift, G, seg, rng.uniform(0.3, 1.0, n) * rise * s, root, stop_r)
++        if li == 2:
++            slots = np.where(rng.random(n) < 0.5, rng.choice(SLOTS_SPARSE, n), rng.integers(SLOTS_FULL, size=n))
++        else:
++            slots = rng.integers(SLOTS_FULL, size=n)
++        _emit_kept(part, scalp, paths, keep, rng.uniform(wlo, whi, n) * wk * s, slots, rng, 0.45, (0.0, 0.9), wind,
++                   0.25 * li)
++    # ruffled tufts on the crown and at the front (rough cut: the silhouette breaks)
++    n_t = 40
++    r = _roots_inside(scalp, lm, rng, n_t * 3, 0.03)
++    zc = lm.P("chin")[2]
++    r = r[(r[:, 2] - zc) / lm.h > 0.72][:n_t]
++    m = len(r)
++    yc = lm.P("head_c")[1]
++    front = np.clip(-(r[:, 1] - yc) / (0.3 * lm.h), 0.0, 1.0)
++    paths, keep = _trace(scalp, lm, r, rng.uniform(0.9 * lo, 1.05 * hi, m) * s, 0.0048 * s, G, seg,
++                         (0.004 + 0.006 * front) * rng.uniform(0.6, 1.2, m) * s, root, stop_r)
++    slots = np.where(rng.random(m) < 0.4, rng.choice(SLOTS_SPARSE, m), rng.integers(SLOTS_FULL, size=m))
++    _emit_kept(part, scalp, paths, keep, rng.uniform(0.004, 0.0065, m) * s, slots, rng, 0.6, (0.05, 0.9),
++               WIND_OUTER, 0.4)
++    return part
++
++
++# ---------------------------------------------------------------------------------------------
++# The tail
++# ---------------------------------------------------------------------------------------------
++def tail_root(lm, scalp) -> np.ndarray:
++    """The tail's root: at the nape, inside the hairline, seated ROOT_SEAT off the shipped skin."""
++    s = lm.h / 0.222
++    zc = lm.P("chin")[2]
++    yc = lm.P("head_c")[1]
++    # high enough on the occiput that the skin under it rides the head bone (lower, on the nape proper, the neck's
++    # weights pulled the skin away from the head-rigid root as the chin lifted)
++    guess = np.array([[0.0, yc + 0.5 * lm.h, zc + TAIL_ROOT_H * lm.h]])
++    return scalp.project(guess, ROOT_SEAT * s)[0]
++
++
++def tail_spine(lm, body, params: dict, root: np.ndarray) -> np.ndarray:
++    """From the root down the nape and the upper back, the clearance from the body growing from ROOT_SEAT to
++    TAIL_CLEAR over ROOT_RAMP (asha_hair.braid_spine's M1-CHR-14 construction)."""
++    s = lm.h / 0.222
++    nb = lm.P("neck_base")
++    ctrl = np.array([
++        root,
++        root + np.array([0.0, 0.006, -0.035]) * s,
++        np.array([0.0, nb[1] + 0.07 * s, nb[2] - 0.01 * s]),
++        np.array([0.004 * s, nb[1] + 0.10 * s, nb[2] - 0.12 * s]),
++        np.array([0.008 * s, nb[1] + 0.11 * s, nb[2] - 0.26 * s]),
++        np.array([0.010 * s, nb[1] + 0.11 * s, nb[2] - 0.42 * s]),
++    ])
++    C = catmull_rom(ctrl, 400)
++    L = arclen(C)
++    total = float(params["tail_length_m"]) * s
++    C = C[L <= total]
++    L = L[L <= total]
++    ramp = np.clip(L / (ROOT_RAMP * s), 0.0, 1.0)
++    ramp = ramp * ramp * (3.0 - 2.0 * ramp)
++    clear = (ROOT_SEAT + (TAIL_CLEAR - ROOT_SEAT) * ramp) * s
++    for _ in range(8):
++        d = body.sdf(C)
++        g = body.grad(C)
++        g /= np.maximum(np.linalg.norm(g, axis=1, keepdims=True), 1e-9)
++        push = np.maximum(clear - d, 0.0) * (ramp > 0.0)
++        C = C + g * push[:, None]
++        C[1:-1] = 0.5 * C[1:-1] + 0.25 * (C[:-2] + C[2:])
++        C[0] = root
++    return catmull_rom(C, 200)
++
++
++def tail(lm, body, params: dict, rng: np.random.Generator, root: np.ndarray) -> tuple[Part, np.ndarray]:
++    """The two strand tubes, the loose tip cards and the beads (one mesh, `HairTail`; the beads on their own
++    materials). Returns (part, spine)."""
++    part = Part("HairTail")
++    s = lm.h / 0.222
++    C = tail_spine(lm, body, params, root)
++    L = arclen(C)
++    total = float(L[-1])
++    tip = 0.05 * s  # the loose tip cards take the last 5 cm
++    nb = int(np.searchsorted(L, total - tip))
++    Cb, Lb = C[: nb + 1], L[: nb + 1]
++    T, N, B = frames_along(Cb, np.array([0.0, 1.0, 0.0]))
++    r0 = 0.5 * float(params["tail_thickness_m"]) * s
++    period = float(params["tail_twist_m"]) * s
++    idx = np.linspace(0, len(Cb) - 1, TAIL_RINGS).astype(int)
++    n_str = int(params["tail_strands"])
++    strand_lines = []
++    for k in range(n_str):
++        ph = 2 * math.pi * k / n_str
++        pts, rad = [], []
++        for ii in idx:
++            u = Lb[ii] / max(Lb[-1], 1e-9)
++            w = r0 * (1.0 - 0.30 * u)
++            t = 2 * math.pi * Lb[ii] / period
++            off = N[ii] * (0.48 * w * math.cos(t + ph)) + B[ii] * (0.48 * w * math.sin(t + ph))
++            pts.append(Cb[ii] + off)
++            rad.append(w * 0.56)
++        pts = np.array(pts)
++        strand_lines.append((pts, np.array(rad)))
++        slot = int(rng.integers(SLOTS_FULL))
++        cols = [[(0.10 + 0.6 * (j / (TAIL_RINGS - 1)) ** 2, 0.2 * j / (TAIL_RINGS - 1), k / n_str, 0.0)] * TAIL_AROUND
++                for j in range(TAIL_RINGS)]
++        # capped at the tip: the strand's only open end is its root (the probe's root ring is the open end nearer
++        # the scalp; an open tip on the back read as the "nearer" end, the head skin being open at the neck)
++        tube(part, pts, np.array(rad), TAIL_AROUND, "hair", np.array([0.0, 1.0, 0.0]),
++             uv_rect=((slot + 0.2) / asha_hair.CLUMPS, 0.05, (slot + 0.8) / asha_hair.CLUMPS, 0.72), colors=cols,
++             tags=TAG_HAIR, cap_end=True)
++    # the loose tip: cards fanning from the twist's end
++    end, Tend = Cb[-1], T[-1]
++    for _c in range(14):
++        ang = 2 * math.pi * rng.random()
++        rad_ = rng.uniform(0.2, 1.0) * r0 * 0.5
++        dirn = N[-1] * math.cos(ang) + B[-1] * math.sin(ang)
++        start = end + dirn * rad_
++        length = rng.uniform(0.8, 1.2) * tip
++        spread = dirn * rng.uniform(0.05, 0.2)
++        pts = np.array([start + (Tend + spread * (t ** 1.5)) * length * t for t in np.linspace(0, 1, 6)])
++        nrm = np.tile(dirn, (len(pts), 1))
++        _ribbon(part, pts, nrm, rng.uniform(0.005, 0.009) * s, int(rng.integers(SLOTS_FULL)),
++                lambda t, ph=float(rng.random()): (0.5 + 0.5 * t, 0.4 * t, ph, 0.2 * t), taper=0.6)
++    # the beads, threaded on the strands (alternating), sitting a little out from the strand's centre
++    for i, (kind, dia, at) in enumerate(params["beads"]):
++        pts, rad = strand_lines[i % n_str]
++        j = int(round(float(at) * (len(pts) - 1)))
++        c = pts[j]
++        out = c - Cb[idx[j]]
++        out /= max(np.linalg.norm(out), 1e-9)
++        tdir = pts[min(j + 1, len(pts) - 1)] - pts[max(j - 1, 0)]
++        tdir /= max(np.linalg.norm(tdir), 1e-9)
++        r = 0.5 * float(dia) * s
++        uv_sphere(part, c + out * max(r - rad[j], 0.0) * 0.6, r, 12, 8, BEAD_MATS[kind], axis_fwd=tdir,
++                  tags=TAG_HAIR)
++    part.C = part.C + [(0.0, 0.0, 0.0, 0.0)] * (len(part.V) - len(part.C))
++    return part, C
++
++
++def build_hair(lm, body, params: dict, scalp=None) -> dict:
++    """`scalp`: MeshScalp on the shipped head (build_liss); the anatomy field when omitted. Returns
++    {"HairHead": crop, "HairTail": tail, "spine": tail spine, "root": tail root}."""
++    scalp = scalp or Scalp(body)
++    seed = int(params["seed"])
++    root = tail_root(lm, scalp)
++    head = crop(lm, params, np.random.default_rng([seed, 0]), scalp, root)
++    head.C = head.C + [(0.0, 0.0, 0.0, 0.0)] * (len(head.V) - len(head.C))
++    tl, spine = tail(lm, body, params, np.random.default_rng([seed, 1]), root)
++    return {"HairHead": head, "HairTail": tl, "spine": spine, "root": root}
+diff --git a/assets_src/characters/liss/liss_params.json b/assets_src/characters/liss/liss_params.json
+new file mode 100644
+index 00000000..9992a5a1
+--- /dev/null
++++ b/assets_src/characters/liss/liss_params.json
+@@ -0,0 +1,124 @@
++{
++  "_about": "Liss Varrow, party member from Ch6, built on the hero path (docs/kb/art/characters/act1_npcs.md §2). Every number of the sheet's §2.1 and §2.10 (the bb_params block; face sliders relative to the MakeHuman donor's own form, ADR 0021: 1.0 / 0.0 = unchanged). Keys starting with '_' are read by the liss_* modules, not by bb_params: §2.1's figure notes and §2.6's face notes in _figure, the hair of §2.5 in _hair, the costume and the launcher of §2.3-§2.4 in _costume, the line-marks of §2.3 in _marks.",
++  "name": "liss",
++  "height_m": 1.56,
++  "heads_tall": 7.0,
++  "shoulder_width_heads": 1.60,
++  "chest_width_heads": 1.20,
++  "chest_depth_heads": 0.86,
++  "waist_width_heads": 1.05,
++  "hip_width_heads": 1.32,
++  "crotch_height_heads": 3.4,
++  "arm_span_ratio": 1.01,
++  "hand_length_heads": 0.80,
++  "neck_length_heads": 0.40,
++  "neck_width_ratio": 0.5,
++  "head_width_ratio": 0.67,
++  "femininity": 0.85,
++  "muscle": 0.55,
++  "mass": 0.12,
++  "breast": 0.25,
++  "eye_scale": 1.10,
++  "ipd_m": 0.061,
++  "arm_abduction_deg": 47.0,
++  "skin_hex": "#A2765A",
++  "eye_tilt_deg": 2.0,
++  "jaw_width": 0.92,
++  "cheekbone_height": 0.003,
++  "cheekbone_width": 1.06,
++  "chin_size": 0.90,
++  "nose_bridge_width": 0.96,
++  "nose_tip_projection": 0.98,
++  "lip_fullness": 0.75,
++  "lip_close": 0.6,
++  "lip_seal": 0.96,
++  "lip_lower_fullness": 0.7,
++  "mouth_corner_lift": 0.0,
++  "brow_ridge": 1.0,
++  "donor_mix_african": 0.3,
++  "donor_mix_asian": 0.35,
++  "donor_mix_caucasian": 0.35,
++  "_figure": {
++    "age": 20,
++    "lean_deg": 6.0,
++    "knee_deg": 9.0,
++    "stance": 1.1,
++    "head_down_deg": 4.0,
++    "idle_sway": 1.2,
++    "mouth_width_head": 0.42,
++    "iris_hex": "#4E4A2C",
++    "rest_brow_down": 0.08,
++    "smile_l_over_r": 1.3,
++    "sneer_l_at_smile": [0.3, 0.10],
++    "blend_in_s": 0.10,
++    "overshoot": 0.05,
++    "freckles": [60, 90],
++    "burn_scars": [3, 5],
++    "burn_scar_mm": [3, 8],
++    "burn_scar_lift": 0.10
++  },
++  "_hair": {
++    "colour": "#2A1C14",
++    "tip_hex": "#7A4A2A",
++    "tip_share": 0.25,
++    "length_m": [0.02, 0.04],
++    "card_width_m": [0.007, 0.011],
++    "scalp_cards": [170, 130, 100],
++    "card_segments": 4,
++    "tail_thickness_m": 0.018,
++    "tail_length_m": 0.45,
++    "tail_strands": 2,
++    "tail_twist_m": 0.032,
++    "tail_card_stop_m": 0.012,
++    "tail_bones": 6,
++    "tail_stiffness": 0.4,
++    "tail_gravity": 1.0,
++    "beads": [
++      ["salt", 0.010, 0.10],
++      ["green", 0.009, 0.20],
++      ["salt", 0.012, 0.31],
++      ["amber", 0.011, 0.43],
++      ["salt", 0.008, 0.55],
++      ["green", 0.010, 0.68],
++      ["salt", 0.009, 0.80]
++    ],
++    "seed": 37
++  },
++  "_costume": {
++    "top_armhole_drop_m": 0.12,
++    "top_right_neck_drop_m": 0.05,
++    "coat_armhole_drop_m": 0.12,
++    "coat_front_opening_deg": 24.0,
++    "coat_front_hem_above_waist_m": 0.075,
++    "coat_tail_hem_above_knee_m": 0.0,
++    "coat_tail_gap_deg": 4.0,
++    "coat_tail_bones": 3,
++    "coat_patches": 5,
++    "sleeve_off_m": 0.0025,
++    "glove_off_m": 0.0018,
++    "sleeve_cap_off_m": 0.0085,
++    "sleeve_cap_radius_m": 0.085,
++    "sleeve_cap_blend_m": 0.04,
++    "harness_strap_m": 0.035,
++    "harness_pouches": 6,
++    "trouser_hem_above_ankle_m": 0.17,
++    "boot_height_m": 0.10,
++    "launcher_box_m": [0.22, 0.14, 0.12],
++    "launcher_crank_m": 0.10,
++    "launcher_barrel_m": 0.18,
++    "launcher_thigh_gap_m": 0.02,
++    "launcher_proud_m": 0.10,
++    "bound_light_mm": {"sight": 8, "pouch": 6, "vial": 5},
++    "seed": 41
++  },
++  "_marks": {
++    "count": 11,
++    "placement": {"forearm": 5, "upper_arm": 3, "collar_neck": 2, "cheek": 1},
++    "line_mm": 0.6,
++    "gap_mm": 1.2,
++    "dot_mm": 1.5,
++    "length_m": [0.03, 0.06],
++    "ink_hex": "#24323A",
++    "seed": 11
++  }
++}
+diff --git a/assets_src/characters/liss/liss_props.py b/assets_src/characters/liss/liss_props.py
+new file mode 100644
+index 00000000..6b4a0111
+--- /dev/null
++++ b/assets_src/characters/liss/liss_props.py
+@@ -0,0 +1,136 @@
++"""Liss's launcher (no bpy), act1_npcs.md §2.3-§2.4 #7 and §2.10.
++
++A boxy hand-cranked launcher slung at her right hip (story sheet: "a boxy shape with a crank handle that reads well
++in silhouette"): a copper box 22 cm long (front to back) x 14 cm tall x 12 cm wide with two iron bands, a brass crank
++drum and a 10 cm crank on its outer (right) face whose handle points forward, an 18 cm stubby iron barrel forward
++with a brass muzzle ring, a sling lug on top and the sight: a brass cup on top holding an 8 mm bound-light point
++(`glimmer_bound`, steady). It is a rigid prop on its own bone (`DEF-launcher`, a child of the hips, build_liss),
++**2 cm off the thigh at rest** (M1-CHR-14: the box's inner face is laid that far out from the widest point of the
++shipped right thigh skin over the box's height), so a stride does not drive the thigh into it.
++
++Materials: `copper`, `brass`, `iron` (metals; write_materials) and `glimmer` (emissive). Deterministic.
++"""
++from __future__ import annotations
++
++import math
++
++import numpy as np
++
++from asha_mesh import Part, tube, uv_sphere
++
++TAG_PROP = 62
++BAND_W = 0.012  # m: the iron bands round the box
++BAND_PROUD = 0.0025  # m out of the box's faces
++DRUM_R = 0.032  # m: the crank drum on the outer face
++BARREL_R = (0.026, 0.022)  # m at the box and at the muzzle
++DROP_BELOW_HIP = 0.17  # m (at s = 1): the box's centre below the hip joint, slung on the upper thigh: its top
++# stays under the hanging right hand's wrist, so the forearm passes over it and the hand rests against its outer face
++GAP_MARGIN = 0.0005  # m: placed this much past the gap (the gap is a floor)
++FORWARD = 0.035  # m (at s = 1): the box's centre forward of the thigh's mid-line (the tails hang behind it)
++
++
++def _box(part: Part, c, ax, ay, az, half, mat: str) -> None:
++    hx, hy, hz = half
++    k = {}
++    for sx in (-1, 1):
++        for sy in (-1, 1):
++            for sz in (-1, 1):
++                k[(sx, sy, sz)] = c + ax * hx * sx + ay * hy * sy + az * hz * sz
++    faces = [((1, -1, -1), (1, 1, -1), (1, 1, 1), (1, -1, 1)), ((-1, 1, -1), (-1, -1, -1), (-1, -1, 1), (-1, 1, 1)),
++             ((1, 1, -1), (-1, 1, -1), (-1, 1, 1), (1, 1, 1)), ((-1, -1, -1), (1, -1, -1), (1, -1, 1), (-1, -1, 1)),
++             ((-1, -1, 1), (1, -1, 1), (1, 1, 1), (-1, 1, 1)), ((-1, 1, -1), (1, 1, -1), (1, -1, -1), (-1, -1, -1))]
++    uv = [(0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)]
++    for f in faces:
++        ids = [part.add_v(k[q], tag=TAG_PROP) for q in f]
++        part.add_f(ids, uv, mat)
++
++
++def _cylinder(part: Part, a: np.ndarray, b: np.ndarray, r0: float, r1: float, n: int, mat: str, up) -> None:
++    """A capped cylinder from a to b (radius r0 at a, r1 at b)."""
++    C = np.array([a, a + (b - a) * 1e-3, b - (b - a) * 1e-3, b])
++    R = np.array([1e-4, r0, r1, 1e-4])
++    tube(part, C, R, n, mat, np.asarray(up, dtype=float), tags=TAG_PROP)
++
++
++def place(lm, thigh_skin: np.ndarray, params: dict) -> dict:
++    """The box's frame at rest: centre, axes (fwd = -Y, out = her right = -X, up = +Z) and half extents, its inner
++    face `launcher_thigh_gap_m` outside the widest point of the right thigh skin over the box's height."""
++    S = lm.S
++    L, H, Wd = (float(v) * S for v in params["launcher_box_m"])
++    hip = lm.side_pt("hip", "R")
++    zc = float(hip[2]) - DROP_BELOW_HIP * S
++    band = thigh_skin[np.abs(thigh_skin[:, 2] - zc) < 0.5 * H + 0.01 * S]
++    x_out = float(band[:, 0].min())  # her right is -X
++    y_mid = float(np.median(band[:, 1]))
++    gap = float(params["launcher_thigh_gap_m"])  # m, not scaled: the sheet's 2 cm is a clearance
++    centre = np.array([x_out - gap - 0.5 * Wd, y_mid - FORWARD * S, zc])
++    frame = {"centre": centre, "fwd": np.array([0.0, -1.0, 0.0]), "out": np.array([-1.0, 0.0, 0.0]),
++             "up": np.array([0.0, 0.0, 1.0]), "half": np.array([0.5 * L, 0.5 * Wd, 0.5 * H]), "x_out": x_out}
++    # the band's widest point is not always the nearest skin (the thigh bulges past the band's ends): step out
++    # until the whole box clears every given skin point by the gap
++    for _ in range(8):
++        short = gap + GAP_MARGIN - box_gap(thigh_skin, frame)
++        if short <= 0.0:
++            break
++        frame["centre"] = frame["centre"] + frame["out"] * short
++    return frame
++
++
++def launcher(lm, frame: dict, params: dict, anchor: np.ndarray | None = None, strap_rect=None) -> Part:
++    """The launcher at `frame`; with `anchor` (a point on her right hip, outside the trousers' waistband) its sling:
++    two leather straps from the box's top up to the hip, on the same prop bone (`strap_rect`: the leather island
++    of the costume atlas, material `cloth`)."""
++    S = lm.S
++    part = Part("Launcher")
++    c, fwd, out, up = frame["centre"], frame["fwd"], frame["out"], frame["up"]
++    hl, hw, hh = frame["half"]
++    _box(part, c, fwd, out, up, (hl, hw, hh), "copper")
++    # two iron bands round the box (front-back at a quarter from each end)
++    for f in (-0.55, 0.55):
++        _box(part, c + fwd * f * hl, fwd, out, up, (0.5 * BAND_W * S, hw + BAND_PROUD * S, hh + BAND_PROUD * S), "iron")
++    # the crank drum and the crank on the outer face; the handle points forward
++    face = c + out * hw
++    _cylinder(part, face, face + out * 0.018 * S, DRUM_R * S, DRUM_R * S, 16, "brass", up)
++    hub = face + out * 0.02 * S
++    arm_len = float(params["launcher_crank_m"]) * S
++    elbow = hub + fwd * arm_len * 0.92 + up * arm_len * 0.38
++    tube(part, np.array([hub, hub + (elbow - hub) * 0.5, elbow]), 0.006 * S, 8, "iron", out, tags=TAG_PROP)
++    _cylinder(part, elbow, elbow + out * 0.045 * S, 0.0095 * S, 0.0095 * S, 10, "brass", up)
++    # the barrel forward, from the box's front face at its lower middle, and the muzzle ring
++    b0 = c + fwd * hl - up * 0.15 * hh
++    b1 = b0 + fwd * float(params["launcher_barrel_m"]) * S
++    _cylinder(part, b0 - fwd * 0.01 * S, b1, BARREL_R[0] * S, BARREL_R[1] * S, 16, "iron", up)
++    tt = np.linspace(0.0, 2 * math.pi, 17)
++    e1, e2 = up, np.cross(fwd, up)
++    ring = b1[None, :] - fwd * 0.012 * S + np.outer(np.cos(tt), e1) * (BARREL_R[1] + 0.003) * S + \
++        np.outer(np.sin(tt), e2) * (BARREL_R[1] + 0.003) * S
++    tube(part, ring, 0.004 * S, 8, "brass", fwd, tags=TAG_PROP)
++    # the sling lug on top, at the back
++    lug = c + up * hh - fwd * 0.6 * hl
++    tt = np.linspace(0.0, math.pi, 9)
++    arc = lug[None, :] + np.outer(np.cos(tt), fwd) * 0.018 * S + np.outer(np.sin(tt), up) * 0.016 * S
++    tube(part, arc, 0.0035 * S, 6, "iron", out, tags=TAG_PROP)
++    # the sight: a brass cup on top at the front, the glimmer point in it
++    cup = c + up * hh + fwd * 0.55 * hl
++    _cylinder(part, cup, cup + up * 0.012 * S, 0.010 * S, 0.012 * S, 12, "brass", fwd)
++    r = 0.0005 * float(params["bound_light_mm"]["sight"])
++    uv_sphere(part, cup + up * (0.012 * S + 0.5 * r), r, 10, 6, "glimmer", axis_fwd=up, tags=TAG_PROP)
++    if anchor is not None:
++        for f in (-0.45, 0.45):
++            a = c + up * hh + fwd * f * hl + out * 0.25 * hw
++            b = anchor + fwd * f * 0.6 * hl
++            mid = 0.5 * (a + b) + out * 0.012 * S
++            line = np.array([a, 0.5 * (a + mid), mid, 0.5 * (mid + b), b])
++            sx = [(1.0, 0.22)] * len(line)  # a flat band: 2.6 cm wide, 5 mm thick
++            tube(part, line, 0.013 * S, 6, "cloth", fwd, uv_rect=strap_rect or (0, 0, 1, 1), tags=TAG_PROP,
++                 scale_xy=[(s0, s1) for s0, s1 in sx])
++    part.C = [(0.0, 0.0, 0.0, 0.0)] * len(part.V)
++    return part
++
++
++def box_gap(P: np.ndarray, frame: dict) -> float:
++    """The least distance from points P (the thigh skin) to the launcher's box."""
++    q = P - frame["centre"]
++    local = np.stack([q @ frame["fwd"], q @ frame["out"], q @ frame["up"]], axis=1)
++    d = np.linalg.norm(np.maximum(np.abs(local) - frame["half"], 0.0), axis=1)
++    return float(d.min()) if len(d) else float("inf")
+diff --git a/assets_src/characters/liss/liss_textures.py b/assets_src/characters/liss/liss_textures.py
+new file mode 100644
+index 00000000..614574d4
+--- /dev/null
++++ b/assets_src/characters/liss/liss_textures.py
+@@ -0,0 +1,578 @@
++#!/usr/bin/env python3
++"""Liss's procedural textures (numpy + Pillow, deterministic). act1_npcs.md §2.3-§2.7 and §2.9, the shared mask
++packing of asha.md §4.2 and the map contract in docs/kb/tech/character_shading.md.
++
++    python3 assets_src/characters/liss/liss_textures.py --bake-dir DIR [--only skin,cloth,sleeve]
++
++DIR holds the mesh dumps from `build_liss.py --bake-dir DIR`. Writes PNGs to assets/characters/liss/textures/:
++
++* Skin (head 2K, body **2K** albedo and normal, 1K ORM and mask: the arm's line-marks need >= 14 px/cm, §2.9): Asha's
++  skin generator (asha_textures.skin_maps) with Liss's knobs: `skin_liss` #A2765A, a `hair_brown_dark` scalp
++  underpaint along her hairline (liss_hair), plus her own terms: **dense freckles** across the nose and the cheeks
++  (60-90), three to five pale glass-burn scars on the right hand and forearm, and **the line-marks**.
++* **The line-mark generator** (`line_marks`, `paint_marks`; §2.3, ADR 0022 (k)): seeded Saltwright marks, fine
++  parallel traces and node dots like circuitry, each recording a device restored, laid out in metres on a chart of the
++  body region (a limb's length and girth, the line of the collarbone, the side of the neck, the cheek). Liss carries
++  eleven, right side only: five on the forearm, three on the upper arm, two along the collarbone and up the neck, and
++  the eleventh (the newest, the crispest) on the right cheek below the cheekbone; lines 0.6 mm with 1.2 mm gaps, dots
++  1.5 mm, each mark 3-6 cm, `tattoo_ink` #24323A, older marks softer and fainter. Other Saltwright builds (Tobin, Dace,
++  the Hollowmere NPCs) import `line_marks` / `paint_marks` with their own count, placement and seed.
++* Costume (2K atlas for the liss_costume charts): albedo, normal, ORM (1K, B = metallic), clothmask (R embroidery,
++  G gold, B lacquer, A sheen). `sailcloth` for the top and the coat with five patches in other sailcloths (two greys,
++  `rust_cloth`, `bronze_patina`) and their stitching, `rust_cloth` canvas trousers with patched knees, the harness
++  and pouches in oiled leather, `brass` (metal), the vial's glass, the hide boots on rope (`thatch`) soles.
++* The work-sleeve (its own 2K albedo / normal, 1K ORM / mask, painted on the shell's rasterised positions): a fine
++  copper-wire weave in the normal map, `bronze_patina` over a `copper` base that shows through on the worn high
++  points (the knuckles, the elbow, the shoulder cap), the cuff and the cap's edge a darker open-weave band.
++
++`asha_textures.PRE_ROUND = PRE_ROUND_DECIMALS` (M1-CHR-15): every map is rounded before quantisation, so the PNGs are
++host-independent. The eye, hair, lash and brow atlases and the detail normals are generic, so Liss's materials use
++Asha's (write_materials.py), with her colours as shader parameters. No yellow anywhere (the echo watch, §2.2).
++"""
++from __future__ import annotations
++
++import argparse
++import json
++import math
++import sys
++from pathlib import Path
++
++import numpy as np
++from PIL import Image
++
++HERE = Path(__file__).resolve().parent
++ROOT = HERE.parents[2]
++sys.path.insert(0, str(HERE))
++sys.path.insert(0, str(HERE.parent / "ysolde"))
++sys.path.insert(0, str(HERE.parent / "toma"))
++sys.path.insert(0, str(HERE.parent / "rhen"))
++sys.path.insert(0, str(HERE.parent / "asha"))
++sys.path.insert(0, str(HERE.parent / "base_body"))
++
++import asha_textures as at  # noqa: E402
++from asha_textures import blur, height_to_normal, hexc, periodic_noise, smoothstep, weave  # noqa: E402
++
++OUT = ROOT / "assets" / "characters" / "liss" / "textures"
++PARAMS = HERE / "liss_params.json"
++SKIN = "#A2765A"  # skin_liss (proposed)
++HAIR_UNDER = "#24180F"  # hair_brown_dark #2A1C14, the scalp underpaint a touch deeper
++LIP = "#8A5A48"
++LIP_MIX = 0.55
++FRECKLE_DARK = 0.22
++INK = "#24323A"  # tattoo_ink
++SAILCLOTH = "#D8CFBC"
++TOP_CLOTH = "#E2DCCD"  # the work top: a lighter, finer sailcloth (art decision: the coat over it reads)
++COAT_WEATHER = 0.88  # the coat's heavy sailcloth, salt- and sun-worn a shade under sailcloth
++BINDING = "#6E3E26"  # the coat's edges bound in rust tape (art decision: the short front and the tails read)
++PATCHES = ("#C9BCA2", "#B7A98E", "#8A4A2A", "#5F8A78")
++RUST = "#8A4A2A"  # rust_cloth
++LEATHER = "#5A3A26"
++HIDE = "#4A3020"
++THATCH = "#B08A52"
++BRASS = "#B08D57"
++GLASS = "#BFE6E0"  # salt_glass
++COPPER = "#A0603A"
++PATINA = "#5F8A78"  # bronze_patina
++
++
++# ---------------------------------------------------------------------------------------------
++# The line-mark generator (shared with every Saltwright build)
++# ---------------------------------------------------------------------------------------------
++REGION_ORDER = ("forearm", "upper_arm", "collar_neck", "cheek")
++
++
++def line_marks(seed: int, placement: dict, length_m=(0.03, 0.06), line_mm: float = 0.6, gap_mm: float = 1.2,
++               dot_mm: float = 1.5) -> list[dict]:
++    """Seeded Saltwright line-marks, in the order they were earned (the last is the newest). `placement`: region ->
++    count, laid out in REGION_ORDER (Liss: forearm 5, upper_arm 3, collar_neck 2, cheek 1). Each mark is drawn in
++    its region's chart (`a` along the region, `b` across it, both in metres): two to four parallel traces with one
++    right-angle jog each, node dots at their ends. Returns dicts with region, slot (its index in the region), age
++    (1 the oldest .. 0 the newest), the chart anchor (a0, b0), the length, `traces` (polylines of (a, b) points) and
++    `dots` ((a, b) centres), plus the stroke sizes in metres."""
++    rng = np.random.default_rng(seed)
++    pitch = (line_mm + gap_mm) * 1e-3
++    seq = [(r, k) for r in REGION_ORDER for k in range(int(placement.get(r, 0)))]
++    n = len(seq)
++    marks = []
++    for i, (region, k) in enumerate(seq):
++        count = int(placement[region])
++        L = float(rng.uniform(*length_m))
++        n_tr = int(rng.integers(2, 5))
++        jog_at = float(rng.uniform(0.3, 0.7)) * L
++        jog = float(rng.choice([-1, 1])) * pitch * int(rng.integers(1, 3))
++        traces, dots = [], []
++        for tr in range(n_tr):
++            b = tr * pitch
++            end = L * float(rng.uniform(0.55, 1.0)) if tr else L
++            if end > jog_at:
++                pts = [(0.0, b), (jog_at, b), (jog_at + abs(jog), b + jog), (end, b + jog)]
++            else:
++                pts = [(0.0, b), (end, b)]
++            traces.append(pts)
++            dots += [pts[0], pts[-1]]
++        # spread the marks along the region (a) and stagger them across it (b)
++        a0 = (k + 0.5) / count
++        b0 = float(rng.uniform(-0.5, 0.5))
++        marks.append({"region": region, "slot": k, "age": 1.0 - i / max(n - 1, 1), "a0": a0, "b0": b0, "length": L,
++                      "traces": traces, "dots": dots, "line_m": line_mm * 1e-3, "dot_m": dot_mm * 1e-3})
++    return marks
++
++
++class Chart:
++    """A region of skin as (a, b) metres: `a` along an axis from `origin` in `axis`, `b` the arc length round it
++    (limbs) or the offset along `across` (flat regions), plus the mask of points that belong to it."""
++
++    def __init__(self, origin, axis, length: float, span: float, ref, radius: float | None, reach: float,
++                 front_only: bool = False, head_c=None) -> None:
++        self.o = np.asarray(origin, dtype=float)
++        ax = np.asarray(axis, dtype=float)
++        self.ax = ax / np.linalg.norm(ax)
++        r = np.asarray(ref, dtype=float)
++        r = r - (r @ self.ax) * self.ax
++        self.ref = r / np.linalg.norm(r)
++        self.side = np.cross(self.ax, self.ref)
++        self.length, self.span, self.radius, self.reach = length, span, radius, reach
++        self.front_only, self.head_c = front_only, head_c
++
++    def ab(self, P: np.ndarray) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
++        q = P - self.o
++        a = q @ self.ax
++        radial = q - np.outer(a, self.ax)
++        if self.radius is not None:  # a limb: b is the arc round it from `ref`
++            ang = np.arctan2(radial @ self.side, radial @ self.ref)
++            b = ang * self.radius
++            near = np.linalg.norm(radial, axis=1) < self.reach
++        else:  # flat: b along `side`, within `reach` of the plane through the axis and `side`
++            b = radial @ self.side
++            near = np.abs(radial @ self.ref) < self.reach
++        ok = near & (a > -0.01) & (a < self.length + 0.01) & (np.abs(b) < self.span + 0.01)
++        if self.front_only:
++            ok &= P[:, 1] < self.head_c[1]
++        return a, b, ok
++
++    def world(self, a: float, b: float) -> np.ndarray:
++        """An (a, b) point back in 3D at the chart's surface radius (for tests and placement checks)."""
++        if self.radius is not None:
++            ang = b / self.radius
++            return self.o + self.ax * a + (self.ref * math.cos(ang) + self.side * math.sin(ang)) * self.radius
++        return self.o + self.ax * a + self.side * b
++
++
++def liss_charts(lm) -> dict:
++    """Her right side only (her right is -X): the forearm and the upper arm (`b` round from the outer, upper side),
++    the collarbone and the side of the neck, the cheek below the cheekbone."""
++    S = lm.S
++    up = np.array([0.0, 0.0, 1.0])
++    sh, el, wr = lm.side_pt("shoulder", "R"), lm.side_pt("elbow", "R"), lm.side_pt("wrist", "R")
++    fwd = np.array([0.0, -1.0, 0.0])
++    fore = Chart(wr + (el - wr) * 0.12, el - wr, np.linalg.norm(el - wr) * 0.72, 0.035 * S, up + 0.6 * fwd,
++                 0.028 * S, 0.07 * S)
++    upper = Chart(el + (sh - el) * 0.18, sh - el, np.linalg.norm(sh - el) * 0.55, 0.035 * S, up + 0.5 * fwd,
++                  0.036 * S, 0.08 * S)
++    notch, acro = lm.P("notch"), lm.side_pt("acromion", "R")
++    c0 = notch + (acro - notch) * 0.22 + np.array([0.0, -0.004, 0.012]) * S
++    collar = Chart(c0, acro - notch, np.linalg.norm(acro - notch) * 0.55, 0.05 * S, np.array([0.0, -1.0, 0.35]),
++                   None, 0.03 * S)
++    nb = lm.P("neck_base")
++    n0 = nb + np.array([-0.036, -0.012, 0.02]) * S
++    collar.neck = Chart(n0, np.array([-0.15, 0.10, 1.0]), 0.075 * S, 0.02 * S, np.array([-1.0, -0.3, 0.0]),
++                        0.042 * S, 0.06 * S)
++    eye = lm.P("eye") * np.array([-1.0, 1.0, 1.0])  # her right eye
++    ck = eye + np.array([0.004, -0.004, -0.036]) * S
++    cheek = Chart(ck, np.array([-1.0, 0.45, -0.55]), 0.045 * S, 0.012 * S, np.array([0.0, -1.0, 0.0]), None,
++                  0.025 * S, front_only=False, head_c=lm.P("head_c"))
++    return {"forearm": fore, "upper_arm": upper, "collar_neck": collar, "cheek": cheek}
++
++
++def mark_chart(charts: dict, mark: dict):
++    """The chart a mark is drawn in (the second collar_neck mark runs up the neck)."""
++    ch = charts[mark["region"]]
++    if mark["region"] == "collar_neck" and mark["slot"] == 1:
++        return ch.neck
++    return ch
++
++
++def mark_origin(charts: dict, mark: dict) -> tuple[float, float]:
++    """The mark's start in its chart: spread along the region and staggered across it."""
++    ch = mark_chart(charts, mark)
++    if mark["region"] == "collar_neck":
++        return 0.12 * ch.length, -0.006 + 0.004 * mark["b0"]
++    if mark["region"] == "cheek":
++        return 0.0, -0.002
++    usable = max(ch.length - mark["length"], 0.0)
++    return usable * mark["a0"], ch.span * 0.8 * mark["b0"]
++
++
++def mark_centres(lm, marks: list[dict]) -> np.ndarray:
++    charts = liss_charts(lm)
++    out = []
++    for m in marks:
++        a0, b0 = mark_origin(charts, m)
++        out.append(mark_chart(charts, m).world(a0 + 0.5 * m["length"], b0))
++    return np.array(out)
++
++
++def mark_starts(lm, marks: list[dict]) -> np.ndarray:
++    """Each mark's first node dot (the start of its first trace) in 3D."""
++    charts = liss_charts(lm)
++    out = []
++    for m in marks:
++        a0, b0 = mark_origin(charts, m)
++        a, b = m["traces"][0][0]
++        out.append(mark_chart(charts, m).world(a0 + a, b0 + b))
++    return np.array(out)
++
++
++def _seg_dist(A: np.ndarray, B: np.ndarray, p0, p1) -> np.ndarray:
++    p0, p1 = np.asarray(p0), np.asarray(p1)
++    d = p1 - p0
++    t = np.clip(((A - p0[0]) * d[0] + (B - p0[1]) * d[1]) / max(d @ d, 1e-18), 0.0, 1.0)
++    return np.hypot(A - (p0[0] + t * d[0]), B - (p0[1] + t * d[1]))
++
++
++def paint_marks(P: np.ndarray, lm, marks: list[dict], charts: dict, seed: int) -> np.ndarray:
++    """Ink coverage (0..1) at the points P: crisp new marks, older ones softer (wider falloff) and fainter."""
++    ink = np.zeros(len(P))
++    for m in marks:
++        ch = mark_chart(charts, m)
++        a, b, ok = ch.ab(P)
++        if not ok.any():
++            continue
++        a0, b0 = mark_origin(charts, m)
++        A, B = a[ok] - a0, b[ok] - b0
++        soft = 0.00015 + 0.00035 * m["age"]  # m of falloff past the stroke's edge
++        cov = np.zeros(len(A))
++        half = 0.5 * m["line_m"]
++        for tr in m["traces"]:
++            for p0, p1 in zip(tr, tr[1:]):
++                d = _seg_dist(A, B, p0, p1)
++                cov = np.maximum(cov, smoothstep(half + soft, half - soft * 0.3, d))
++        for c in m["dots"]:
++            d = np.hypot(A - c[0], B - c[1])
++            r = 0.5 * m["dot_m"]
++            cov = np.maximum(cov, smoothstep(r + soft, r - soft * 0.3, d))
++        opacity = 0.85 - 0.30 * m["age"]
++        wob = 0.9 + 0.2 * at.noise3(P[ok], 0.002, seed + 7)
++        ink[ok] = np.maximum(ink[ok], np.clip(cov * opacity * wob, 0.0, 1.0))
++    # never on the left (her left is +X): the marks are a right-side record
++    return np.where(P[:, 0] < 0.004, ink, 0.0)
++
++
++# ---------------------------------------------------------------------------------------------
++# Skin
++# ---------------------------------------------------------------------------------------------
++def freckles(rng, lm, n: int) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
++    """(x, z, radius) of `n` freckles across the nose and both cheeks (denser on the nose and the cheek tops)."""
++    S = lm.S
++    eye_z = float(lm.P("eye")[2])
++    x = np.concatenate([rng.normal(0.0, 0.010, n // 3), rng.normal(0.0, 0.034, n - n // 3)]) * S
++    z = eye_z - (0.010 + np.abs(rng.normal(0.0, 0.013, n))) * S
++    r = rng.uniform(0.0005, 0.001, n) * S
++    return x, z, r
++
++
++def burn_scars(rng, lm, n: int, mm) -> list[tuple[np.ndarray, float]]:
++    """Small pale glass-burn scars on the right hand's back and the right forearm (3-8 mm)."""
++    el, wr = lm.side_pt("elbow", "R"), lm.side_pt("wrist", "R")
++    hand = lm.hands["R"]
++    out = []
++    for i in range(n):
++        if i % 2 == 0:
++            t = float(rng.uniform(0.1, 0.6))
++            c = hand.wrist + hand.axis * hand.length * t + hand.dorsal * hand.thickness * 0.5
++        else:
++            t = float(rng.uniform(0.05, 0.45))
++            c = wr + (el - wr) * t + np.array([0.0, 0.0, 0.03]) * lm.S
++        out.append((c, 0.5e-3 * float(rng.uniform(*mm))))
++    return out
++
++
++def _albedo_liss(orig, extra: dict):
++    fig, mk = extra["_figure"], extra["_marks"]
++    marks = line_marks(int(mk["seed"]), mk["placement"], tuple(mk["length_m"]), float(mk["line_mm"]),
++                       float(mk["gap_mm"]), float(mk["dot_mm"]))
++    state = {}
++
++    def albedo(Ph, Nh, key, face, lm, hair_mod, r, npz):
++        s = lm.h / 0.222
++        col = orig(Ph, Nh, key, face, lm, hair_mod, r, npz)
++        if "charts" not in state:
++            state["charts"] = liss_charts(lm)
++            rng = np.random.default_rng([int(mk["seed"]), 3])
++            lo, hi = fig["freckles"]
++            state["freckles"] = freckles(rng, lm, int(rng.integers(lo, hi + 1)))
++            lo, hi = fig["burn_scars"]
++            state["scars"] = burn_scars(rng, lm, int(rng.integers(lo, hi + 1)), fig["burn_scar_mm"])
++        if key == "head":
++            front = smoothstep(0.0, -0.3, (Ph[:, 1] - lm.P("head_c")[1]) / lm.h)
++            fx, fz, fr = state["freckles"]
++            fre = np.zeros(len(Ph))
++            for k in range(len(fx)):
++                d2 = ((Ph[:, 0] - fx[k]) ** 2 + (Ph[:, 2] - fz[k]) ** 2) / fr[k] ** 2
++                fre = np.maximum(fre, np.exp(-d2 * 1.5))
++            col = col * (1 - FRECKLE_DARK * (fre * front)[:, None] * np.array([0.9, 1.0, 1.1]))
++            lips = at.lip_weight(Ph, face, lm, r)
++            col = col * (1 - LIP_MIX * lips[:, None]) + hexc(LIP) * LIP_MIX * lips[:, None]
++        else:
++            for c, rad in state["scars"]:
++                d = np.linalg.norm(Ph - c, axis=1)
++                m = smoothstep(rad * 1.2, rad * 0.7, d)
++                col = col * (1 + float(fig["burn_scar_lift"]) * m[:, None] * np.array([1.0, 0.92, 0.9]))
++        ink = paint_marks(Ph, lm, marks, state["charts"], int(mk["seed"]))
++        col = col * (1 - ink[:, None]) + hexc(mk["ink_hex"]) * ink[:, None]
++        _ = s
++        return np.clip(col, at.FLOOR, at.CEIL)
++
++    return albedo
++
++
++def skin(bake_dir: Path, extra: dict) -> None:
++    import bb_anatomy
++    import bb_donor
++    import bb_params
++    import liss_hair
++
++    at.OUT = OUT
++    at.PREFIX = "liss"
++    at.SKIN_HEX = SKIN
++    at.FRECKLES = 0  # her own, denser field (_albedo_liss)
++    at.HAIR_UNDERPAINT = HAIR_UNDER
++    orig = at.albedo
++    at.albedo = _albedo_liss(orig, extra)
++    try:
++        params = bb_params.load_params(path=str(PARAMS))
++        lm = bb_donor.fit(params).lm
++        body = bb_anatomy.Body(lm)
++        for key, size, small in (("head", 2048, 2048), ("body", 2048, 1024)):
++            npz = dict(np.load(bake_dir / f"{key}.npz"))
++            at.skin_maps(key, npz, size, small, body, body.face, lm, liss_hair)
++    finally:
++        at.albedo = orig
++
++
++# ---------------------------------------------------------------------------------------------
++# Costume atlas
++# ---------------------------------------------------------------------------------------------
++def cloth_atlas(extra: dict, size: int = 2048) -> None:
++    import liss_costume as C
++
++    at.OUT = OUT
++    rng = np.random.default_rng(97)
++    alb = np.zeros((size, size, 3))
++    mask = np.zeros((size, size, 4))
++    hgt = np.zeros((size, size))
++    orm = np.zeros((size, size, 3))
++    orm[..., 0] = 1.0
++    orm[..., 1] = 0.85
++    yy, xx = np.mgrid[0:size, 0:size]
++    U = (xx + 0.5) / size
++    V = (yy + 0.5) / size
++
++    def island(name):
++        u0, v0, u1, v1 = C.ATLAS[name]
++        m = (U >= u0) & (U < u1) & (V >= v0) & (V < v1)
++        return m, np.clip((U - u0) / (u1 - u0), 0.0, 1.0), np.clip((V - v0) / (v1 - v0), 0.0, 1.0)
++
++    mottle = periodic_noise(size, size, 24, 24, rng)
++    fine = periodic_noise(size, size, 200, 200, rng)
++    sail = weave(size, size, 300)
++    heavy = weave(size, size, 210)
++    canvas = weave(size, size, 260)
++    grain = periodic_noise(size, size, 320, 320, rng)
++
++    def cloth(m, hexv, w, a_sheen, rough, var=0.08):
++        col = hexc(hexv) * (0.94 + var * mottle[..., None]) * (0.96 + 0.06 * w[..., None])
++        alb[m] = col[m]
++        mask[m] = (0, 0, 0, a_sheen)
++        hgt[m] = (w * 0.35 + fine * 0.1)[m]
++        orm[m, 1] = rough
++
++    def stitch_band(m, d, width=0.004, dark=0.25):
++        """A stitched seam line along d == 0 (d in island units)."""
++        line = np.exp(-(d / width) ** 2)
++        dash = (np.sin(d * 0 + (U + V) * size * 0.9) > 0.0).astype(float)
++        alb[m] = (alb * (1 - dark * (line * (0.6 + 0.4 * dash))[..., None]))[m]
++        hgt[m] = (hgt + 0.4 * line)[m]
++
++    # 1. the work top: light sailcloth, the edges turned
++    m, iu, iv = island("top")
++    cloth(m, TOP_CLOTH, sail, 0.3, 0.86)
++    edge = smoothstep(0.04, 0.0, iv) + smoothstep(0.96, 1.0, iv)
++    alb[m] = (alb * (1 - 0.12 * edge[..., None]))[m]
++    # 3. the coat and its tails: heavy sailcloth, salt-stained low, five patches (two on the body, one on each tail,
++    # one more on the body's back) with their stitching
++    for name in ("coat", "tail_L", "tail_R"):
++        m, iu, iv = island(name)
++        cloth(m, SAILCLOTH, heavy, 0.3, 0.88, var=0.12)
++        alb[m] = (alb * COAT_WEATHER * np.array([1.0, 0.98, 0.94]))[m]
++        stain = smoothstep(0.55, 1.0, iv) * (0.5 + 0.5 * mottle)
++        alb[m] = (alb * (1 - 0.10 * stain[..., None]))[m]
++        # the binding along the open front edges and the hems (and the tails' long edges)
++        bu, bv = 0.012 if name == "coat" else 0.035, 0.022
++        bind = (iu < bu) | (iu > 1.0 - bu) | (iv > 1.0 - bv) | ((iv < 0.012) if name == "coat" else False)
++        bm = m & bind
++        alb[bm] = (hexc(BINDING) * (0.9 + 0.15 * mottle[..., None]))[bm]
++        hgt[bm] = (hgt + 0.3)[bm]
++    patches = [("coat", (0.18, 0.58, 0.12, 0.22), PATCHES[0]), ("coat", (0.66, 0.40, 0.10, 0.18), PATCHES[3]),
++               ("coat", (0.44, 0.30, 0.11, 0.16), PATCHES[1]), ("tail_L", (0.45, 0.55, 0.40, 0.14), PATCHES[2]),
++               ("tail_R", (0.40, 0.30, 0.42, 0.12), PATCHES[1])][:int(extra["_costume"]["coat_patches"])]
++    for name, (cu, cv, hw, hh), hexv in patches:
++        m, iu, iv = island(name)
++        du, dv = np.abs(iu - cu) - hw / 2, np.abs(iv - cv) - hh / 2
++        inside = m & (du < 0) & (dv < 0)
++        col = hexc(hexv) * (0.93 + 0.12 * mottle[..., None]) * (0.96 + 0.06 * sail[..., None])
++        alb[inside] = col[inside]
++        border = m & (np.maximum(du, dv) > -0.012) & (np.maximum(du, dv) < 0.004)
++        stitch_band(border, np.maximum(du, dv) + 0.004, width=0.003, dark=0.35)
++        hgt[inside] = (hgt + 0.15)[inside]
++    # 5. trousers: rust canvas, patched knees (the knee rows of each leg tube) in a faded rust
++    for name in ("trousers", "trouser_leg_L", "trouser_leg_R"):
++        m, iu, iv = island(name)
++        cloth(m, RUST, canvas, 0.3, 0.84, var=0.12)
++        if name != "trousers":
++            knee = m & (iv > 0.36) & (iv < 0.68) & (np.abs(iu - 0.5) < 0.22)
++            col = hexc(RUST) * 1.18 * (0.92 + 0.12 * mottle[..., None]) * (0.95 + 0.07 * canvas[..., None])
++            alb[knee] = col[knee]
++            d = np.maximum(np.abs(iv - 0.52) - 0.16, np.abs(iu - 0.5) - 0.22)
++            stitch_band(m & (np.abs(d) < 0.02), d, width=0.003, dark=0.35)
++            hem = smoothstep(0.96, 1.0, iv)
++            alb[m] = (alb * (1 - 0.15 * hem[..., None]))[m]
++    # 4. the harness straps, the sleeve strap and the pouches: oiled leather, stitched edges
++    for name in ("strap_a", "strap_b", "sleeve_strap", "pouch"):
++        m, iu, iv = island(name)
++        col = hexc(LEATHER) * (0.88 + 0.2 * grain[..., None]) * (0.95 + 0.1 * mottle[..., None])
++        alb[m] = col[m]
++        mask[m] = (0, 0, 0, 0.0)
++        hgt[m] = (grain * 0.2)[m]
++        orm[m, 1] = 0.55
++        across = iv if name != "pouch" else iu
++        for e in (0.12, 0.88):
++            stitch_band(m, across - e, width=0.012 if name != "pouch" else 0.006, dark=0.3)
++        if name == "pouch":
++            flap = m & (iv < 0.35)
++            alb[flap] = (alb * 0.85)[flap]
++            stitch_band(m, iv - 0.35, width=0.008, dark=0.45)
++    # brass: metal (ORM B)
++    m, iu, iv = island("brass")
++    alb[m] = (hexc(BRASS) * (0.9 + 0.15 * mottle[..., None]))[m]
++    orm[m, 1] = 0.35
++    orm[m, 2] = 1.0
++    # the vial: salt glass, glossy
++    m, iu, iv = island("vial")
++    alb[m] = (hexc(GLASS) * (0.85 + 0.1 * mottle[..., None]))[m]
++    orm[m, 1] = 0.12
++    # 6. boots: hide, creased at the instep; the rope sole on the ring band round the bottom
++    for name in ("boots", "boot_shaft"):
++        m, iu, iv = island(name)
++        col = hexc(HIDE) * (0.88 + 0.22 * grain[..., None]) * (0.94 + 0.12 * mottle[..., None])
++        alb[m] = col[m]
++        hgt[m] = (grain * 0.25)[m]
++        orm[m, 1] = 0.62
++        if name == "boots":
++            sole = np.exp(-((iu - 0.5) / 0.10) ** 2)  # round the foot: the sole at the bottom of the ring
++            rope = 0.5 + 0.5 * np.sin((iv * 90.0 + iu * 30.0) * np.pi)
++            scol = hexc(THATCH) * (0.75 + 0.3 * rope[..., None])
++            alb[m] = (alb * (1 - sole[..., None]) + scol * sole[..., None])[m]
++            hgt[m] = (hgt + 0.5 * rope * sole)[m]
++            orm[m, 1] = (orm[..., 1] * (1 - sole) + 0.9 * sole)[m]
++        else:
++            top = smoothstep(0.9, 1.0, iv) + smoothstep(0.1, 0.0, iv)
++            alb[m] = (alb * (1 - 0.2 * top[..., None]))[m]
++    m, iu, iv = island("sole")
++    alb[m] = hexc(THATCH) * 0.85
++    alb = np.clip(alb, at.FLOOR, at.CEIL)
++    at.write("liss_cloth_albedo.png", alb)
++    at.write("liss_cloth_clothmask.png", blur(mask, 1))
++    at.write("liss_cloth_normal.png", height_to_normal(blur(hgt, 1), 2.0, wrap=False))
++    o = np.asarray(Image.fromarray((np.clip(orm, 0, 1) * 255).astype(np.uint8)).resize((size // 2, size // 2),
++                                                                                    Image.BOX))
++    at.write("liss_cloth_orm.png", o / 255.0)
++
++
++# ---------------------------------------------------------------------------------------------
++# The work-sleeve
++# ---------------------------------------------------------------------------------------------
++WEAVE_PERIOD_PX = 7.0  # texels per wire crossing at 2K (about 1.6 mm on the arm)
++
++
++def sleeve_maps(bake_dir: Path, extra: dict, size: int = 2048) -> None:
++    import bb_donor
++    import bb_params
++
++    at.OUT = OUT
++    cp = extra["_costume"]
++    lm = bb_donor.fit(bb_params.load_params(path=str(PARAMS))).lm
++    S = lm.S
++    npz = dict(np.load(bake_dir / "sleeve.npz"))
++    r = at.rasterise(npz, size, {"copper_mesh"})
++    P = r["P"]
++    rows, cols = np.nonzero(r["cov"])
++    u, v = (cols + 0.5) / size, (rows + 0.5) / size
++    # the weave: wires along the two UV axes, over and under (a plain weave), in texel units
++    f = size / WEAVE_PERIOD_PX * 2 * np.pi
++    wx = np.sin(u * f)
++    wy = np.sin(v * f)
++    h = 0.5 + 0.25 * wx * np.sign(np.sin(v * f * 0.5)) + 0.25 * wy * np.sign(np.sin(u * f * 0.5))
++    holes = smoothstep(0.30, 0.18, np.minimum(np.abs(np.cos(u * f * 0.5)), np.abs(np.cos(v * f * 0.5))) *
++                       0 + h)
++    # the worn high points: the knuckles, the elbow's point, the shoulder cap
++    hand = lm.hands["L"]
++    el = lm.side_pt("elbow", "L")
++    sh, wr = lm.side_pt("shoulder", "L"), lm.side_pt("wrist", "L")
++    back_el = el + np.array([0.0, 0.03, 0.0]) * S
++    wear = np.zeros(len(P))
++    for c, rad in ((hand.knuckle, 0.028), (back_el, 0.04), (lm.side_pt("acromion", "L"), 0.05)):
++        wear = np.maximum(wear, np.exp(-(np.linalg.norm(P - c, axis=1) / (rad * S)) ** 2))
++    wear = np.clip(wear * (0.6 + 0.8 * at.fbm3(P, 0.01 * S, 113, octaves=3)) + 0.25 * (h - 0.5), 0.0, 1.0)
++    wear = smoothstep(0.35, 0.75, wear)
++    patina = hexc(PATINA) * (0.85 + 0.3 * at.fbm3(P, 0.006 * S, 117, octaves=3))[:, None]
++    copper = hexc(COPPER) * (0.9 + 0.2 * at.noise3(P, 0.003 * S, 119))[:, None]
++    col = patina * (1 - wear[:, None]) + copper * wear[:, None]
++    # the wires catch the light, the gaps between them are dark (the open weave reads as texture, not alpha)
++    col = col * (0.62 + 0.55 * h)[:, None]
++    # the cuff at the wrist and the cap's edge: a darker, more open band
++    ax = (wr - sh) / np.linalg.norm(wr - sh)
++    tw = (P - sh) @ ax
++    cuff = smoothstep(0.012 * S, 0.0, np.abs(tw - (np.linalg.norm(wr - sh) - 0.01 * S)))
++    cap_r = float(cp["sleeve_cap_radius_m"]) * S
++    cap_edge = smoothstep(cap_r - 0.02 * S, cap_r - 0.005 * S, np.linalg.norm(P - sh, axis=1)) * (tw < 0.02 * S)
++    band = np.maximum(cuff, cap_edge)
++    col = col * (1 - 0.35 * band[:, None])
++    hgt = h * (1 - 0.5 * band) + 0.3 * band * wx * wy
++    rough = 0.42 * wear + 0.62 * (1 - wear) + 0.1 * (1 - h)
++    metal = 0.55 + 0.45 * wear
++    ao = 0.75 + 0.25 * h
++    _ = holes
++    alb = at.dilate(at.scatter(r, np.clip(col, at.FLOOR, at.CEIL), hexc(PATINA)), r["cov"], 6)
++    # normal from the height in texel space (tangent frame = the UV axes)
++    himg = at.dilate(at.scatter(r, hgt[:, None], np.array([0.5]))[..., 0][..., None], r["cov"], 6)[..., 0]
++    nrm = height_to_normal(himg, 3.0, wrap=False)
++    ormv = at.dilate(at.scatter(r, np.stack([ao, rough, metal], axis=1), np.array([1.0, 0.6, 0.6])), r["cov"], 6)
++    maskv = np.zeros((size, size, 4))
++    at.write("liss_sleeve_albedo.png", alb)
++    at.write("liss_sleeve_normal.png", nrm)
++    small = size // 2
++    o = np.asarray(Image.fromarray((np.clip(ormv, 0, 1) * 255).astype(np.uint8)).resize((small, small), Image.BOX))
++    at.write("liss_sleeve_orm.png", o / 255.0)
++    at.write("liss_sleeve_clothmask.png", maskv[:small, :small])
++
++
++def main() -> int:
++    ap = argparse.ArgumentParser()
++    ap.add_argument("--bake-dir")
++    ap.add_argument("--only", default="skin,cloth,sleeve")
++    args = ap.parse_args()
++    only = set(args.only.split(","))
++    at.PRE_ROUND = at.PRE_ROUND_DECIMALS  # M1-CHR-15: host-independent PNGs
++    extra = json.loads(PARAMS.read_text(encoding="utf-8"))
++    if "skin" in only:
++        skin(Path(args.bake_dir), extra)
++    if "cloth" in only:
++        cloth_atlas(extra)
++    if "sleeve" in only:
++        sleeve_maps(Path(args.bake_dir), extra)
++    return 0
++
++
++if __name__ == "__main__":
++    raise SystemExit(main())
+diff --git a/assets_src/characters/liss/write_materials.py b/assets_src/characters/liss/write_materials.py
+new file mode 100644
+index 00000000..09a9b125
+--- /dev/null
++++ b/assets_src/characters/liss/write_materials.py
+@@ -0,0 +1,139 @@
++#!/usr/bin/env python3
++"""Writes Liss's hero materials (assets/characters/liss/materials/*.tres) from one table.
++
++    python3 assets_src/characters/liss/write_materials.py
++
++Same writer and conventions as the other heroes' (assets_src/characters/asha/write_materials.py): each material's
++resource_name equals the glTF material name it replaces at load time (the hero stage), text resources,
++deterministic. Liss's own maps come from liss_textures.py; the generic eye, hair, lash, brow and detail atlases are
++Asha's (asha_textures.py), tinted here. Values follow act1_npcs.md §2.3-§2.7 and character_shading.md. Her metals
++are copper, brass and iron (no gold, no lacquer: §2.7); the bound-light points are `glimmer_bound`, steady.
++"""
++from __future__ import annotations
++
++import importlib.util
++from pathlib import Path
++
++HERE = Path(__file__).resolve().parent
++# Asha's writer, loaded by path (this file has the same name, so a plain import would find itself)
++_spec = importlib.util.spec_from_file_location("asha_write_materials", HERE.parent / "asha" / "write_materials.py")
++wm = importlib.util.module_from_spec(_spec)
++_spec.loader.exec_module(wm)
++
++ROOT = HERE.parents[2]
++OUT = ROOT / "assets" / "characters" / "liss" / "materials"
++T = "liss/textures/"
++A = "asha/textures/"
++
++# §2.5: hair_brown_dark #2A1C14 with sun-rust tips #7A4A2A over the outer 25% (the shader's tip_start); the lashes
++# and brows take the root colour. Under the stage's warm key a brown reads warmer than it is (Rhen's lesson): the
++# card root is a touch deeper and cooler.
++HAIR = "Color(0.165, 0.11, 0.078, 1)"  # #2A1C14
++HAIR_CARD = "Color(0.13, 0.09, 0.07, 1)"
++HAIR_TIP = "Color(0.478, 0.29, 0.165, 1)"  # #7A4A2A
++HAIR_SPEC = "Color(0.90, 0.82, 0.72, 1)"
++HAIR_SPEC2 = "Color(0.62, 0.38, 0.22, 1)"
++SKIN = {"tex_albedo": T + "liss_head_albedo.png", "tex_normal": T + "liss_head_normal.png",
++        "tex_orm": T + "liss_head_orm.png", "tex_skin_mask": T + "liss_head_skinmask.png",
++        "tex_detail_normal": A + "asha_skin_detail_normal.png"}
++CLOTH = {"tex_albedo": T + "liss_cloth_albedo.png", "tex_normal": T + "liss_cloth_normal.png",
++         "tex_orm": T + "liss_cloth_orm.png", "tex_cloth_mask": T + "liss_cloth_clothmask.png",
++         "tex_detail_normal": A + "asha_thread_detail_normal.png"}
++SLEEVE = {"tex_albedo": T + "liss_sleeve_albedo.png", "tex_normal": T + "liss_sleeve_normal.png",
++          "tex_orm": T + "liss_sleeve_orm.png", "tex_cloth_mask": T + "liss_sleeve_clothmask.png",
++          "tex_detail_normal": A + "asha_thread_detail_normal.png"}
++
++SHADER_MATERIALS: dict[str, tuple[str, int, dict, dict]] = {
++    # Asha's tuned skin response (M1-CHR-10); §2.6: sea-weathered, a touch rougher than Rhen's
++    "skin_head": ("character_skin", 0, {
++        "painterly": "0.2", "detail_tiling": "64.0", "detail_strength": "0.85", "normal_strength": "1.0",
++        "specular_scale": "0.75", "curvature_scale": "1.3", "roughness_min": "0.45", "roughness_max": "0.66",
++        "cavity_albedo": "0.45", "micro_roughness": "0.1",
++    }, SKIN),
++    "skin_head_dialogue": ("character_skin", 0, {
++        "painterly": "0.6", "painterly_form": "0.3", "detail_tiling": "64.0", "detail_strength": "0.35",
++        "normal_strength": "0.8", "specular_scale": "0.75", "roughness_min": "0.45", "roughness_max": "0.66",
++        "cavity_albedo": "0.45",
++    }, SKIN),
++    "skin_body": ("character_skin", 0, {"painterly": "0.2", "detail_tiling": "40.0", "detail_strength": "0.7"},
++                  {"tex_albedo": T + "liss_body_albedo.png", "tex_normal": T + "liss_body_normal.png",
++                   "tex_orm": T + "liss_body_orm.png", "tex_skin_mask": T + "liss_body_skinmask.png",
++                   "tex_detail_normal": A + "asha_skin_detail_normal.png"}),
++    # §2.6: green-brown irises #4E4A2C (the only green-brown eyes in the party)
++    "eye": ("character_eye", 0, {"col_sclera": "Color(0.80, 0.745, 0.69, 1)", "limbus_softness": "0.09",
++                                 "col_iris": "Color(0.306, 0.29, 0.173, 1)",
++                                 "col_limbal": "Color(0.20, 0.19, 0.11, 1)"},
++            {"tex_iris": A + "asha_iris.png", "tex_sclera": A + "asha_sclera.png"}),
++    "cornea": ("character_cornea", 1, {}, {}),
++    "eye_occlusion": ("character_eye_occlusion", 2, {"upper_strength": "0.9", "corner_strength": "0.7"}, {}),
++    "tear_line": ("character_tear_line", 3, {}, {}),
++    "lash": ("character_hair", 0, {"flow_strength": "0.0", "spec_primary_intensity": "0.06",
++                                   "spec_secondary_intensity": "0.0", "transmission_strength": "0.1",
++                                   "indirect_specular": "0.03", "col_root": HAIR, "col_tip": HAIR},
++             {"tex_hair": A + "asha_facehair.png"}),
++    # §2.6: straight, thick brows
++    "brow": ("character_hair", 0, {"flow_strength": "0.0", "spec_primary_intensity": "0.08", "alpha_boost": "1.8",
++                                   "spec_secondary_intensity": "0.05", "transmission_strength": "0.2",
++                                   "root_occlusion": "0.2", "indirect_specular": "0.05",
++                                   "col_root": HAIR, "col_tip": HAIR},
++             {"tex_hair": A + "asha_facehair.png"}),
++    "hair": ("character_hair", 0, {"col_root": HAIR_CARD, "col_tip": HAIR_TIP, "tip_start": "0.75",
++                                   "col_spec_primary": HAIR_SPEC, "spec_primary_intensity": "0.35",
++                                   "spec_primary_exponent": "260.0", "spec_shift_jitter": "0.3",
++                                   "col_spec_secondary": HAIR_SPEC2, "spec_secondary_intensity": "0.4",
++                                   "col_transmission": HAIR_SPEC2, "transmission_strength": "0.6",
++                                   "indirect_specular": "0.08", "root_occlusion": "0.6", "depth_occlusion": "0.7",
++                                   "kajiya_diffuse_mix": "0.15"},
++             {"tex_hair": A + "asha_hair.png", "tex_hairflow": A + "asha_hairflow.png"}),
++    # sailcloth, canvas and leather (no lacquer, no gold); brass in the atlas is metal (ORM B)
++    "cloth": ("character_cloth", 0, {"detail_tiling": "150.0", "sheen_tint": "0.8", "sheen_intensity": "0.4"},
++              CLOTH),
++    # §2.3: the copper-wire mesh: bronze_patina over copper, metallic from the ORM's B
++    "copper_mesh": ("character_cloth", 0, {"detail_tiling": "220.0", "detail_strength": "0.5",
++                                           "sheen_intensity": "0.0", "roughness_scale": "1.0",
++                                           "normal_strength": "1.2"}, SLEEVE),
++    # M1-RND-21: Asha's mouth family, same values, reading Liss's head atlas
++    "teeth": ("character_mouth", 0, {
++        "col_albedo": "Color(1, 1, 1, 1)", "roughness": "1.0", "specular": "0.06", "ao_light_affect": "0.35",
++    }, {"tex_albedo": T + "liss_head_albedo.png", "tex_orm": T + "liss_head_orm.png"}),
++    "tongue": ("character_mouth", 0, {
++        "col_albedo": "Color(0.55, 0.26, 0.25, 1)", "roughness": "0.6", "specular": "0.25",
++    }, {}),
++    "mouth": ("character_mouth", 0, {
++        "col_albedo": "Color(1, 1, 1, 1)", "roughness": "0.5", "roughness_from_orm": "0.0",
++        "ao_light_affect": "0.5",
++    }, {"tex_albedo": T + "liss_head_albedo.png", "tex_orm": T + "liss_head_orm.png"}),
++}
++STANDARD_MATERIALS = {
++    # §2.4 #7 the launcher: copper #A0603A (proposed), brass #B08D57, iron fittings #3A3A3F
++    "copper": "albedo_color = Color(0.627, 0.376, 0.227, 1)\nmetallic = 1.0\nroughness = 0.42\n",
++    "brass": "albedo_color = Color(0.69, 0.553, 0.341, 1)\nmetallic = 1.0\nroughness = 0.4\n",
++    "iron": "albedo_color = Color(0.227, 0.227, 0.247, 1)\nmetallic = 1.0\nroughness = 0.55\n",
++    # §2.3 the bound-light points: glimmer_bound #4FB3B0, steady emission (no flicker)
++    "glimmer": "albedo_color = Color(0.31, 0.702, 0.69, 1)\nemission_enabled = true\n"
++               "emission = Color(0.31, 0.702, 0.69, 1)\nemission_energy_multiplier = 2.5\nroughness = 0.3\n",
++    # §2.5 the salvaged glass beads (transmissive): salt glass #BFE6E0, copper-green glass #4FA08A, amber #B8782E
++    "bead_salt": "albedo_color = Color(0.749, 0.902, 0.878, 1)\nroughness = 0.12\nmetallic_specular = 0.7\n"
++                 "rim_enabled = true\nrim = 0.3\nrim_tint = 0.8\n",
++    "bead_green": "albedo_color = Color(0.31, 0.627, 0.541, 1)\nroughness = 0.12\nmetallic_specular = 0.7\n"
++                  "rim_enabled = true\nrim = 0.3\nrim_tint = 0.8\n",
++    "bead_amber": "albedo_color = Color(0.722, 0.471, 0.18, 1)\nroughness = 0.12\nmetallic_specular = 0.7\n"
++                  "rim_enabled = true\nrim = 0.3\nrim_tint = 0.8\n",
++}
++STANDARD_TEXTURES: dict[str, dict] = {}
++
++
++def main() -> int:
++    wm.OUT = OUT
++    wm.TEX = "res://assets/characters"
++    OUT.mkdir(parents=True, exist_ok=True)
++    for name, (shader, prio, params, textures) in SHADER_MATERIALS.items():
++        wm.write_shader_material(name, shader, prio, params, textures)
++    for name, body in STANDARD_MATERIALS.items():
++        wm.write_standard_material(name, body, STANDARD_TEXTURES.get(name, {}))
++    print(f"wrote {len(SHADER_MATERIALS) + len(STANDARD_MATERIALS)} materials to {OUT}")
++    return 0
++
++
++if __name__ == "__main__":
++    raise SystemExit(main())
+diff --git a/docs/kb/tasks/M3/M3-CHR-03-act1-named-npcs.md b/docs/kb/tasks/M3/M3-CHR-03-act1-named-npcs.md
+index 0f6010b0..b5789449 100644
+--- a/docs/kb/tasks/M3/M3-CHR-03-act1-named-npcs.md
++++ b/docs/kb/tasks/M3/M3-CHR-03-act1-named-npcs.md
+@@ -88,5 +88,33 @@ criteria below are already separate.
+     fisher's). Kell's short grey crop is still card-flaky up close (villagers_review.md §4). Kell's face reads broad and
+     a little masculine (the donor's adult face, age in the textures). No props sit in the GLBs; the wick, bundle and
+     shears are scene props for BoneAttachment3Ds.
++- **2026-10-24, Liss WIP (character-15, worktree subagent; paused by the Lead for the playtest).** Committed as a
++  WIP, task stays `doing`. **In:** `assets_src/characters/liss/` (build_liss, liss_params with every §2.1/§2.10
++  number, liss_costume: top + coat with two leg-following tails on 2x3 bones + harness X with 6 pouches + trousers +
++  boots + sleeve strap; liss_hair: crop + two-strand beaded tail on a 6-bone chain, root seated, cards stop 12 mm;
++  liss_props: launcher on DEF-launcher 20.5 mm off the thigh with a sling; liss_textures with the shared
++  `line_marks`/`paint_marks` generator, 11 marks right side only, PRE_ROUND; write_materials; build.sh). The
++  work-sleeve and glove are an offset shell of the shipped left arm/hand skin with the skin's weights. Outputs in
++  `assets/characters/liss/` (LOD0 55,820, LOD1 ~25.6k, GLB ~4.1 MB), job `liss` (threads 4), import rule,
++  `liss` in rig_checks.json (garments Costume+WorkSleeve, props Launcher, braid HairTail:hair; **no ratchets yet**),
++  the hero_clips Liss block (persona + `launcher` dispatch key, 10 clips + the 11 battle-contract clips; one
++  `elif hero == "liss"` line in `_victory`); other heroes' libraries regenerate byte-identical. Stage scenes, face
++  poses (15 tags), battle actor, `tools/tests/test_liss.py`.
++  - **Not in sync:** the last two source edits (tail root raised to 0.40 h: `TAIL_ROOT_H`; armpit-crease arm skin
++    kept under the sleeve: `SLEEVE_KEEP_NEAR_TORSO`) are **not yet built** into the committed GLB/textures.
++  - **Probe at the committed GLB (p5):** launcher 0, drift 0, seams 0, weights clean. Open: braid gap 4.1 mm
++    (point_up; the root-height edit targets it), boundary_exposed 5 verts ~5 mm at the left armpit (the keep edit
++    targets it), garment_in_body WorkSleeve ~25 mm and Body-through-cloth ~35-46 mm at both armpits (LBS armpit:
++    to pin as ratchets after viewing), trouser knee fold 26 mm (run) / 39 mm (crouch_shelter, 112-degree squat).
++  - **Exact next step:** run `assets_src/characters/liss/build.sh` (Blender ~45 s + textures ~6 min), then
++    `python3 tools/dev/rig_probe.py --hero liss --report`; view the armpit/knee poses, pin the ratchets with
++    reasons in rig_checks.json; add `TestRigIntegrityLiss` to test_rig_integrity.py, `TestLissClips` to
++    test_hero_clips.py, liss to test_hero_battle_clips.py HEROES/EXISTING; add the 7 `liss_*` shots to shots.json
++    (front, back, three_quarter, face, face_stylized, silhouette_vs_rhen, clip_haul_rope: removed from this WIP
++    because they have no baselines yet), capture, view, approve; PROVENANCE rows; verify_blender_builds `--job liss`
++    twice (plain and NPY_DISABLE_CPU_FEATURES="X86_V3 X86_V4"); liss_review.md and the handoff. Visual notes from
++    the first renders: the coat now carries a rust binding so it separates from the top; launcher sling added; side
++    hairline lowered for the crop; freckles strengthened (all built into the committed files except the two edits
++    above).
+ 
+ ## Review log
+diff --git a/game/characters/heroes/liss_battle.tscn b/game/characters/heroes/liss_battle.tscn
+new file mode 100644
+index 00000000..34c68593
+--- /dev/null
++++ b/game/characters/heroes/liss_battle.tscn
+@@ -0,0 +1,8 @@
++[gd_scene load_steps=2 format=3]
++
++[ext_resource type="PackedScene" path="res://assets/characters/liss/liss_lod1.glb" id="model"]
++
++[node name="LissBattle" type="Node3D"]
++metadata/hymn_battle_actor = &"liss"
++
++[node name="Model" parent="." instance=ExtResource("model")]
+diff --git a/game/data/import/characters.json b/game/data/import/characters.json
+index 531408a1..059665bc 100644
+--- a/game/data/import/characters.json
++++ b/game/data/import/characters.json
+@@ -8,7 +8,8 @@
+              "res://assets/characters/villagers/reed/", "res://assets/characters/villagers/netmender/",
+              "res://assets/characters/villagers/fisher/", "res://assets/characters/sefir/",
+              "res://assets/characters/ysolde/", "res://assets/characters/villagers/tavi/",
+-             "res://assets/characters/villagers/kell/", "res://assets/characters/props/wick/"],
++             "res://assets/characters/villagers/kell/", "res://assets/characters/props/wick/",
++             "res://assets/characters/liss/"],
+   "adoption_pending": {},
+   "generate_lods": true,
+   "materials": {
+diff --git a/game/levels/_tests/characters/liss/liss_clip_haul_rope.tscn b/game/levels/_tests/characters/liss/liss_clip_haul_rope.tscn
+new file mode 100644
+index 00000000..17be1b7e
+--- /dev/null
++++ b/game/levels/_tests/characters/liss/liss_clip_haul_rope.tscn
+@@ -0,0 +1,10 @@
++[gd_scene load_steps=3 format=3]
++
++[ext_resource type="PackedScene" path="res://game/levels/_tests/characters/liss/liss_stage.tscn" id="stage"]
++[ext_resource type="AnimationLibrary" path="res://assets/characters/liss/anim/liss_clips.tres" id="clips"]
++
++[node name="LissStage" instance=ExtResource("stage")]
++emotion = "determined"
++clip = &"haul_rope"
++clip_time = 0.4
++clip_library = ExtResource("clips")
+diff --git a/game/levels/_tests/characters/liss/liss_face_poses.json b/game/levels/_tests/characters/liss/liss_face_poses.json
+new file mode 100644
+index 00000000..72a8e7f4
+--- /dev/null
++++ b/game/levels/_tests/characters/liss/liss_face_poses.json
+@@ -0,0 +1,24 @@
++{
++  "_about": "Liss's emotion tags -> face blendshape weights (docs/kb/art/characters/act1_npcs.md §2.6). A pair is [L, R]; a scalar sets both sides of a paired shape. Her rest brow_down 0.08 (a resting scowl: the straight brows slant down toward the nose) is added to every row. Her asymmetry is a wry, left-sided smile: mouth_smile L = R x 1.3, with nose_sneer_L 0.10 added once the smile passes 0.3 (Rhen's crooked smile is on the right; theirs mirror each other). Blend 0.10 s, the fastest in the party, with 5% overshoot. Tags: game/data/dialogue/emotions.json. Read by the hero stage for the M3-CHR-03 review shots; the sequencer.json face_poses entry is Cinematics'.",
++  "blend_in_s": 0.10,
++  "rest": {"brow_down": 0.08},
++  "overshoot": {"soft_smile": 0.05, "smile": 0.05, "laugh": 0.05, "worried": 0.05, "sad": 0.05, "grief": 0.05, "angry": 0.05, "cold": 0.05, "surprised": 0.05, "afraid": 0.05, "determined": 0.05, "tender": 0.05, "guilty": 0.05, "exhausted": 0.05},
++  "head_notes": {"neutral": "the head forward and down 4 degrees, as if looking at something in her hands", "laugh": "loud: the head forward, not back", "grief": "Ch15, telling her father about Tobin: the widest stretch of any table; tear layer", "angry": "Ch11, at Rhen", "cold": "Ch6: 'He put the fire out once it had finished'", "afraid": "Ch6, sheltering from the raid", "guilty": "gaze away"},
++  "emotions": {
++    "neutral": {"brow_down": 0.08},
++    "soft_smile": {"mouth_smile": [0.30, 0.23], "brow_down": 0.08},
++    "smile": {"mouth_smile": [0.65, 0.50], "cheek_raise": 0.40, "lid_squint": 0.25, "nose_sneer": [0.10, 0.0], "brow_down": 0.08},
++    "laugh": {"mouth_smile": [0.90, 0.70], "cheek_raise": 0.65, "jaw_open": 0.40, "lid_squint": 0.55, "nose_sneer": [0.10, 0.0], "brow_down": 0.08},
++    "worried": {"brow_inner_up": 0.45, "brow_down": 0.28, "mouth_press": 0.20},
++    "sad": {"brow_inner_up": 0.55, "lid_close": 0.25, "mouth_frown": 0.35, "brow_down": 0.08},
++    "grief": {"brow_inner_up": 1.00, "brow_down": 0.48, "lid_squint": 0.50, "mouth_frown": 0.65, "mouth_stretch": 0.45, "jaw_open": 0.20},
++    "angry": {"brow_down": 0.93, "lid_squint": 0.35, "nose_sneer": 0.35, "lip_upper_up": 0.25, "jaw_clench": 0.35},
++    "cold": {"brow_down": 0.38, "mouth_press": 0.45, "mouth_smile": 0.0},
++    "surprised": {"brow_outer_up": 0.80, "brow_inner_up": 0.45, "lid_wide": 0.55, "jaw_open": 0.30, "brow_down": 0.08},
++    "afraid": {"brow_inner_up": 0.85, "lid_wide": 0.65, "mouth_stretch": 0.45, "jaw_open": 0.15, "brow_down": 0.08},
++    "determined": {"brow_down": 0.63, "jaw_clench": 0.35, "mouth_press": 0.35},
++    "tender": {"brow_inner_up": 0.25, "mouth_smile": [0.18, 0.12], "lid_close": 0.15, "brow_down": 0.08},
++    "guilty": {"brow_inner_up": 0.40, "mouth_press": 0.30, "lid_close": 0.25, "brow_down": 0.08},
++    "exhausted": {"lid_close": 0.40, "jaw_open": 0.10, "brow_inner_up": 0.15, "brow_down": 0.08}
++  }
++}
+diff --git a/game/levels/_tests/characters/liss/liss_face_stylized.tscn b/game/levels/_tests/characters/liss/liss_face_stylized.tscn
+new file mode 100644
+index 00000000..41742b42
+--- /dev/null
++++ b/game/levels/_tests/characters/liss/liss_face_stylized.tscn
+@@ -0,0 +1,18 @@
++[gd_scene load_steps=2 format=3]
++
++[ext_resource type="PackedScene" path="res://game/levels/_tests/characters/liss/liss_stage.tscn" id="stage"]
++
++[node name="LissStage" instance=ExtResource("stage")]
++emotion = "smile"
++compare_offset = Vector3(0.42, 0, 0)
++compare_skin = {
++"painterly": 0.6,
++"painterly_form": 0.3,
++"detail_strength": 0.35,
++"normal_strength": 0.8
++}
++
++[node name="Compare" type="Camera3D" parent="Cameras"]
++transform = Transform3D(1, 0, 0, 0, 0.9986, 0.0523, 0, -0.0523, 0.9986, 0.21, 1.42, 1.0)
++fov = 25.0
++near = 0.02
+diff --git a/game/levels/_tests/characters/liss/liss_silhouette_vs_rhen.tscn b/game/levels/_tests/characters/liss/liss_silhouette_vs_rhen.tscn
+new file mode 100644
+index 00000000..bdf16c60
+--- /dev/null
++++ b/game/levels/_tests/characters/liss/liss_silhouette_vs_rhen.tscn
+@@ -0,0 +1,41 @@
++[gd_scene load_steps=5 format=3]
++
++[ext_resource type="PackedScene" path="res://assets/characters/rhen/rhen.glb" id="rhen"]
++[ext_resource type="PackedScene" path="res://assets/characters/liss/liss.glb" id="liss"]
++
++[sub_resource type="Environment" id="Flat"]
++background_mode = 1
++background_color = Color(0.93, 0.93, 0.93, 1)
++ambient_light_source = 2
++ambient_light_color = Color(0, 0, 0, 1)
++ambient_light_energy = 0.0
++reflected_light_source = 1
++tonemap_mode = 0
++
++[sub_resource type="CameraAttributesPractical" id="Cam"]
++
++[node name="LissSilhouetteVsRhen" type="Node3D"]
++
++[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
++environment = SubResource("Flat")
++camera_attributes = SubResource("Cam")
++
++[node name="Rhen" parent="." instance=ExtResource("rhen")]
++transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.35, 0, 0)
++
++[node name="RhenThreeQuarter" parent="." instance=ExtResource("rhen")]
++transform = Transform3D(0.707107, 0, -0.707107, 0, 1, 0, 0.707107, 0, 0.707107, -0.45, 0, 0)
++
++[node name="Liss" parent="." instance=ExtResource("liss")]
++transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.45, 0, 0)
++
++[node name="LissThreeQuarter" parent="." instance=ExtResource("liss")]
++transform = Transform3D(0.707107, 0, -0.707107, 0, 1, 0, 0.707107, 0, 0.707107, 1.35, 0, 0)
++
++[node name="Cameras" type="Node3D" parent="."]
++
++[node name="Lineup" type="Camera3D" parent="Cameras"]
++transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.95, 6.2)
++fov = 34.0
++near = 0.05
++current = true
+diff --git a/game/levels/_tests/characters/liss/liss_stage.tscn b/game/levels/_tests/characters/liss/liss_stage.tscn
+new file mode 100644
+index 00000000..baab1c07
+--- /dev/null
++++ b/game/levels/_tests/characters/liss/liss_stage.tscn
+@@ -0,0 +1,171 @@
++[gd_scene load_steps=30 format=3]
++
++[ext_resource type="Script" path="res://game/levels/_tests/characters/asha/asha_stage.gd" id="stage"]
++[ext_resource type="PackedScene" path="res://assets/characters/liss/liss.glb" id="liss"]
++[ext_resource type="Material" path="res://assets/characters/liss/materials/skin_head.tres" id="m_skin_head"]
++[ext_resource type="Material" path="res://assets/characters/liss/materials/skin_body.tres" id="m_skin_body"]
++[ext_resource type="Material" path="res://assets/characters/liss/materials/mouth.tres" id="m_mouth"]
++[ext_resource type="Material" path="res://assets/characters/liss/materials/teeth.tres" id="m_teeth"]
++[ext_resource type="Material" path="res://assets/characters/liss/materials/tongue.tres" id="m_tongue"]
++[ext_resource type="Material" path="res://assets/characters/liss/materials/lash.tres" id="m_lash"]
++[ext_resource type="Material" path="res://assets/characters/liss/materials/brow.tres" id="m_brow"]
++[ext_resource type="Material" path="res://assets/characters/liss/materials/eye.tres" id="m_eye"]
++[ext_resource type="Material" path="res://assets/characters/liss/materials/cornea.tres" id="m_cornea"]
++[ext_resource type="Material" path="res://assets/characters/liss/materials/eye_occlusion.tres" id="m_eye_occlusion"]
++[ext_resource type="Material" path="res://assets/characters/liss/materials/tear_line.tres" id="m_tear_line"]
++[ext_resource type="Material" path="res://assets/characters/liss/materials/hair.tres" id="m_hair"]
++[ext_resource type="Material" path="res://assets/characters/liss/materials/cloth.tres" id="m_cloth"]
++[ext_resource type="Material" path="res://assets/characters/liss/materials/copper_mesh.tres" id="m_copper_mesh"]
++[ext_resource type="Material" path="res://assets/characters/liss/materials/copper.tres" id="m_copper"]
++[ext_resource type="Material" path="res://assets/characters/liss/materials/brass.tres" id="m_brass"]
++[ext_resource type="Material" path="res://assets/characters/liss/materials/iron.tres" id="m_iron"]
++[ext_resource type="Material" path="res://assets/characters/liss/materials/glimmer.tres" id="m_glimmer"]
++[ext_resource type="Material" path="res://assets/characters/liss/materials/bead_salt.tres" id="m_bead_salt"]
++[ext_resource type="Material" path="res://assets/characters/liss/materials/bead_green.tres" id="m_bead_green"]
++[ext_resource type="Material" path="res://assets/characters/liss/materials/bead_amber.tres" id="m_bead_amber"]
++
++[sub_resource type="ProceduralSkyMaterial" id="Sky_mat"]
++sky_top_color = Color(0.46, 0.53, 0.63, 1)
++sky_horizon_color = Color(0.86, 0.79, 0.71, 1)
++sky_curve = 0.12
++ground_bottom_color = Color(0.36, 0.33, 0.31, 1)
++ground_horizon_color = Color(0.478, 0.431, 0.392, 1)
++ground_curve = 0.06
++sun_angle_max = 1.0
++sun_curve = 0.01
++
++[sub_resource type="Sky" id="Sky"]
++sky_material = SubResource("Sky_mat")
++
++[sub_resource type="Environment" id="Env"]
++background_mode = 2
++sky = SubResource("Sky")
++ambient_light_source = 3
++ambient_light_energy = 0.5
++reflected_light_source = 2
++tonemap_mode = 4
++tonemap_exposure = 1.0
++tonemap_white = 12.0
++ssao_enabled = true
++ssao_radius = 0.04
++ssao_intensity = 1.0
++glow_enabled = true
++glow_intensity = 0.35
++glow_bloom = 0.02
++glow_hdr_threshold = 1.2
++
++[sub_resource type="StandardMaterial3D" id="Studio_mat"]
++albedo_color = Color(0.26, 0.255, 0.25, 1)
++roughness = 0.95
++
++[sub_resource type="PlaneMesh" id="Floor_mesh"]
++material = SubResource("Studio_mat")
++size = Vector2(16, 16)
++
++[sub_resource type="CylinderMesh" id="Cyc_mesh"]
++material = SubResource("Studio_mat")
++flip_faces = true
++top_radius = 5.5
++bottom_radius = 5.5
++height = 7.0
++radial_segments = 48
++rings = 1
++cap_top = false
++cap_bottom = false
++
++[node name="LissStage" type="Node3D"]
++script = ExtResource("stage")
++character_scene = ExtResource("liss")
++character_name = &"Liss"
++materials = {
++"skin_head": ExtResource("m_skin_head"),
++"skin_body": ExtResource("m_skin_body"),
++"mouth": ExtResource("m_mouth"),
++"teeth": ExtResource("m_teeth"),
++"tongue": ExtResource("m_tongue"),
++"lash": ExtResource("m_lash"),
++"brow": ExtResource("m_brow"),
++"eye": ExtResource("m_eye"),
++"cornea": ExtResource("m_cornea"),
++"eye_occlusion": ExtResource("m_eye_occlusion"),
++"tear_line": ExtResource("m_tear_line"),
++"hair": ExtResource("m_hair"),
++"cloth": ExtResource("m_cloth"),
++"copper_mesh": ExtResource("m_copper_mesh"),
++"copper": ExtResource("m_copper"),
++"brass": ExtResource("m_brass"),
++"iron": ExtResource("m_iron"),
++"glimmer": ExtResource("m_glimmer"),
++"bead_salt": ExtResource("m_bead_salt"),
++"bead_green": ExtResource("m_bead_green"),
++"bead_amber": ExtResource("m_bead_amber")
++}
++face_poses_path = "res://game/levels/_tests/characters/liss/liss_face_poses.json"
++wind = Vector4(2.4, 0, 1.2, 0.3)
++wind_time = 1.7
++face_distance = 0.62
++face_yaw_degrees = -30.0
++
++[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
++environment = SubResource("Env")
++
++[node name="KeyLight" type="DirectionalLight3D" parent="."]
++transform = Transform3D(0.683157, 0.381423, -0.622746, -0, 0.85276, 0.522303, 0.730271, -0.356815, 0.582569, 0, 4, 0)
++light_color = Color(1, 0.722, 0.482, 1)
++light_energy = 2.4
++shadow_enabled = true
++shadow_bias = 0.02
++shadow_normal_bias = 4.5
++shadow_blur = 0.6
++directional_shadow_max_distance = 8.0
++
++[node name="RimLight" type="DirectionalLight3D" parent="."]
++transform = Transform3D(-0.738956, -0.25716, 0.622746, 0, 0.924293, 0.381683, -0.673754, 0.282047, -0.683012, 0, 4, 0)
++light_color = Color(0.949, 0.651, 0.29, 1)
++light_energy = 1.8
++shadow_enabled = true
++shadow_bias = 0.02
++shadow_normal_bias = 4.5
++directional_shadow_max_distance = 8.0
++
++[node name="Floor" type="MeshInstance3D" parent="."]
++mesh = SubResource("Floor_mesh")
++
++[node name="Cyclorama" type="MeshInstance3D" parent="."]
++transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.5, 0)
++mesh = SubResource("Cyc_mesh")
++cast_shadow = 0
++
++[node name="Turntable" type="Node3D" parent="."]
++
++[node name="Cameras" type="Node3D" parent="."]
++
++[node name="Front" type="Camera3D" parent="Cameras"]
++transform = Transform3D(1, 0, 0, 0, 0.996195, 0.0871557, 0, -0.0871557, 0.996195, 0, 1.2, 3.75)
++fov = 34.0
++near = 0.05
++current = true
++
++[node name="ThreeQuarter" type="Camera3D" parent="Cameras"]
++transform = Transform3D(0.707107, 0.0616284, -0.704416, 0, 0.996195, 0.0871557, 0.707107, -0.0616284, 0.704416, -2.652, 1.2, 2.652)
++fov = 34.0
++near = 0.05
++
++[node name="Profile" type="Camera3D" parent="Cameras"]
++transform = Transform3D(0, -0.0871557, 0.996195, 0, 0.996195, 0.0871557, -1, 0, 0, 3.75, 1.2, 0)
++fov = 34.0
++near = 0.05
++
++[node name="ThreeQuarterLeft" type="Camera3D" parent="Cameras"]
++transform = Transform3D(0.707107, -0.0616284, 0.704416, 0, 0.996195, 0.0871557, -0.707107, -0.0616284, 0.704416, 2.652, 1.2, 2.652)
++fov = 34.0
++near = 0.05
++
++[node name="Back" type="Camera3D" parent="Cameras"]
++transform = Transform3D(-1, 0, 0, 0, 0.996195, 0.0871557, 0, 0.0871557, -0.996195, 0, 1.2, -3.75)
++fov = 34.0
++near = 0.05
++
++[node name="Face" type="Camera3D" parent="Cameras"]
++fov = 24.0
++near = 0.02
+diff --git a/tools/dev/blender_builds.json b/tools/dev/blender_builds.json
+index faed6a43..0ff5671f 100644
+--- a/tools/dev/blender_builds.json
++++ b/tools/dev/blender_builds.json
+@@ -241,6 +241,19 @@
+         ["{python}", "assets_src/characters/ysolde/ysolde_textures.py", "--bake-dir", "{scratch}/ysolde_bake"],
+         ["{python}", "assets_src/characters/ysolde/write_materials.py"]
+       ]
++    },
++    {
++      "id": "liss",
++      "threads": 4,
++      "owner": "character",
++      "_note": "M3-CHR-03: Liss reuses Asha's modules (build_asha as a helper library, asha_textures with per-hero knobs, PRE_ROUND set) and Rhen's, Toma's and Ysolde's costume helpers (rhen_costume, toma_costume, ysolde_costume, build_toma's rig-extra helpers), so all their sources are hers too. Her texture run holds the Saltwright line-mark generator other builds import (liss_textures.line_marks).",
++      "sources": ["assets_src/characters/liss/**", "assets_src/characters/ysolde/**", "assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**"],
++      "outputs": ["assets/characters/liss/*.glb", "assets/characters/liss/textures/*.png", "assets/characters/liss/materials/*.tres"],
++      "runs": [
++        ["{blender}", "--python", "assets_src/characters/liss/build_liss.py", "--", "--out", "assets/characters/liss/liss.glb", "--bake-dir", "{scratch}/liss_bake"],
++        ["{python}", "assets_src/characters/liss/liss_textures.py", "--bake-dir", "{scratch}/liss_bake"],
++        ["{python}", "assets_src/characters/liss/write_materials.py"]
++      ]
+     }
+   ]
+ }
+diff --git a/tools/dev/rig_checks.json b/tools/dev/rig_checks.json
+index 39645ca3..8b9f86a3 100644
+--- a/tools/dev/rig_checks.json
++++ b/tools/dev/rig_checks.json
+@@ -255,6 +255,45 @@
+       "seams": {
+         "max_exposed": 6
+       }
++    },
++    "liss": {
++      "garments": [
++        "Costume",
++        "WorkSleeve"
++      ],
++      "props": [
++        "Launcher"
++      ],
++      "braid": {
++        "mesh": "HairTail:hair",
++        "scalp": [
++          "HairHead:hair",
++          "Head:skin_head"
++        ],
++        "head_bone": "DEF-spine.006",
++        "_min_strand_verts": "connected pieces of the braid mesh at least this big are the woven strands (the rest are flyaways and tail cards)",
++        "min_strand_verts": 300,
++        "_root_ring_mm": "a strand's root ring: its open-end vertices within this of the end vertex nearest the scalp at rest",
++        "root_ring_mm": 30.0,
++        "_max_gap_mm": "the root ring must touch the hair cap or scalp (closest ring vertex, signed: inside counts as 0)",
++        "max_gap_mm": 2.0,
++        "_max_drift_mm": "how far a root vertex may move in the head bone's frame (0 when skinned to the head)",
++        "max_drift_mm": 2.0
++      },
++      "seams": {
++        "groups": [
++          [
++            "Body",
++            "Head:skin_head"
++          ],
++          [
++            "Costume"
++          ],
++          [
++            "WorkSleeve"
++          ]
++        ]
++      }
+     }
+   }
+ }
+diff --git a/tools/tests/test_liss.py b/tools/tests/test_liss.py
+new file mode 100644
+index 00000000..25a58cc9
+--- /dev/null
++++ b/tools/tests/test_liss.py
+@@ -0,0 +1,402 @@
++"""Tests for the Liss Varrow hero build (M3-CHR-03, assets_src/characters/liss/).
++
++Run: python3 -m unittest tools.tests.test_liss
++
++* Pure-Python checks: every number of act1_npcs.md §2.1 and §2.10 in liss_params.json; the face-pose table against
++  the shared shape API and the sheet's §2.6 table (her rest brow_down on every row, the left-sided smile, the sneer
++  past 0.3, the fastest blend in the party, the widest grief stretch of any table); the line-mark generator (eleven
++  marks, right side only, the eleventh and newest on the cheek, the stroke sizes); the echo watch (no goggles, no
++  skirt, no yellow in her cloth atlas).
++* The committed GLBs: budgets and sizes, the mesh names the rig guards use, the Head's 40 shapes, the rig extras and
++  their parents, textures (size cap, power of two, the 2K body albedo for the arm's marks) and materials.
++* The M1-CHR-14 rules on the shipped mesh (rig_probe reads the GLB, no Blender): the coat's back is two tails that
++  each follow one leg plus their own bone chain; the torso cloth's armholes are dropped at least 11.5 cm; the
++  copper-mesh sleeve and glove ride the left arm's chain and fingers; the launcher sits 2 cm off the thigh on its own
++  prop bone; the boots take the feet's weights; the knees and shins under the tails and trousers are kept; the
++  beaded tail is a two-strand braid seated on the scalp, checked as a braid by the rig guards.
++"""
++import colorsys
++import json
++import struct
++import sys
++import unittest
++from pathlib import Path
++
++import numpy as np
++
++ROOT = Path(__file__).resolve().parents[2]
++SRC = ROOT / "assets_src" / "characters" / "liss"
++OUT = ROOT / "assets" / "characters" / "liss"
++STAGE = ROOT / "game" / "levels" / "_tests" / "characters" / "liss"
++for sub in ("liss", "ysolde", "toma", "rhen", "asha", "base_body"):
++    sys.path.insert(0, str(ROOT / "assets_src" / "characters" / sub))
++sys.path.insert(0, str(ROOT / "tools" / "dev"))
++
++MAX_BYTES = 5 * 1024 * 1024  # ADR 0005 plain-blob cap
++LOD1_MAX_BYTES = int(1.5 * 1024 * 1024)  # pipeline.md §14
++LOD0_MAX = 60_000  # act1_npcs.md §2.9 target (ceiling 70k)
++LOD1_MAX = 30_000  # about 28k
++PAIRED = ["brow_inner_up", "brow_down", "brow_outer_up", "lid_close", "lid_wide", "lid_squint", "cheek_raise",
++          "nose_sneer", "mouth_smile", "mouth_frown", "mouth_stretch", "mouth_dimple"]
++SINGLE = ["mouth_press", "mouth_pucker", "lip_upper_up", "lip_lower_down", "jaw_open", "jaw_clench"]
++VISEMES = ["vis_rest", "vis_aa", "vis_e", "vis_i", "vis_o", "vis_u", "vis_mbp", "vis_fv", "vis_l", "vis_st"]
++API = [f"{b}_{s}" for b in PAIRED for s in ("L", "R")] + SINGLE
++# act1_npcs.md §2.10: the bb_params block
++SHEET_PARAMS = {
++    "height_m": 1.56, "heads_tall": 7.0, "shoulder_width_heads": 1.60, "chest_width_heads": 1.20,
++    "chest_depth_heads": 0.86, "waist_width_heads": 1.05, "hip_width_heads": 1.32, "crotch_height_heads": 3.4,
++    "arm_span_ratio": 1.01, "hand_length_heads": 0.80, "neck_length_heads": 0.40, "neck_width_ratio": 0.5,
++    "head_width_ratio": 0.67, "femininity": 0.85, "muscle": 0.55, "mass": 0.12, "breast": 0.25, "eye_scale": 1.10,
++    "ipd_m": 0.061, "eye_tilt_deg": 2.0, "jaw_width": 0.92, "cheekbone_height": 0.003, "cheekbone_width": 1.06,
++    "chin_size": 0.90, "nose_bridge_width": 0.96, "nose_tip_projection": 0.98, "lip_fullness": 0.75,
++    "lip_close": 0.6, "lip_seal": 0.96, "lip_lower_fullness": 0.7, "mouth_corner_lift": 0.0, "brow_ridge": 1.0,
++    "donor_mix_african": 0.3, "donor_mix_asian": 0.35, "donor_mix_caucasian": 0.35, "skin_hex": "#A2765A",
++}
++MESHES = ("Head", "Body", "Costume", "WorkSleeve", "HairHead", "HairTail", "Launcher")
++EXTRA_BONES = {"DEF-launcher": "DEF-spine"}
++for _root, _par, _n in (("DEF-coat_tail_l", "DEF-thigh.L", 3), ("DEF-coat_tail_r", "DEF-thigh.R", 3),
++                        ("DEF-hair_tail", "DEF-spine.006", 6)):
++    _chain = [_root] + [f"{_root}.{i:03d}" for i in range(1, _n)]
++    EXTRA_BONES[_chain[0]] = _par
++    for _a, _b in zip(_chain, _chain[1:]):
++        EXTRA_BONES[_b] = _a
++
++
++def params() -> dict:
++    return json.loads((SRC / "liss_params.json").read_text(encoding="utf-8"))
++
++
++def glb_json(path: Path) -> dict:
++    data = path.read_bytes()
++    magic, _version, _total = struct.unpack("<III", data[:12])
++    assert magic == 0x46546C67, "not a GLB"
++    length, _kind = struct.unpack("<II", data[12:20])
++    return json.loads(data[20:20 + length])
++
++
++def tris(js: dict) -> int:
++    return sum(js["accessors"][p["indices"]]["count"] // 3 for m in js["meshes"] for p in m["primitives"])
++
++
++def landmarks():
++    import bb_donor
++    import bb_params
++
++    return bb_donor.fit(bb_params.load_params(path=str(SRC / "liss_params.json"))).lm
++
++
++class TestParams(unittest.TestCase):
++    def test_every_sheet_number_is_in_the_params(self):
++        p = params()
++        for key, want in SHEET_PARAMS.items():
++            self.assertIn(key, p, key)
++            self.assertEqual(p[key], want, key)
++        import bb_params
++
++        bb = bb_params.load_params(path=str(SRC / "liss_params.json"))
++        lm = bb_params.Landmarks(bb)
++        self.assertAlmostEqual(bb["height_m"] / lm.h, 7.0, places=2)
++        fig = p["_figure"]
++        self.assertEqual((fig["lean_deg"], fig["knee_deg"], fig["stance"], fig["head_down_deg"]), (6.0, 9.0, 1.1, 4.0))
++        self.assertAlmostEqual(fig["idle_sway"], 1.2)
++        self.assertEqual(fig["iris_hex"], "#4E4A2C")
++        self.assertAlmostEqual(fig["rest_brow_down"], 0.08)
++        self.assertAlmostEqual(fig["blend_in_s"], 0.10)
++
++    def test_m1_chr_14_rules_in_the_parameters(self):
++        p = params()
++        c, h = p["_costume"], p["_hair"]
++        self.assertGreaterEqual(c["top_armhole_drop_m"], 0.115)
++        self.assertGreaterEqual(c["coat_armhole_drop_m"], 0.115)
++        self.assertAlmostEqual(c["launcher_thigh_gap_m"], 0.02)
++        self.assertEqual(c["coat_tail_bones"], 3)
++        self.assertEqual(h["tail_bones"], 6)
++        self.assertAlmostEqual(h["tail_card_stop_m"], 0.012)
++        self.assertEqual(c["launcher_box_m"], [0.22, 0.14, 0.12])
++        self.assertEqual(len(h["beads"]), 7)
++        kinds = [b[0] for b in h["beads"]]
++        self.assertEqual((kinds.count("salt"), kinds.count("green"), kinds.count("amber")), (4, 2, 1))
++        self.assertTrue(all(0.008 <= b[1] <= 0.012 for b in h["beads"]))
++
++    def test_armholes_are_dropped_on_the_charts(self):
++        """The top's and the coat's armholes sit at least 11.5 cm below the shoulder joint on both side lines."""
++        import liss_costume as C
++        from asha_costume import TorsoChart
++
++        lm = landmarks()
++        chart = TorsoChart(lm)
++        c = params()["_costume"]
++        sh = float(lm.side_pt("shoulder", "L")[2])
++        # the armholes' lowest points: the top's at +92 (her left) and -88 (her right), the coat's at +-92
++        top = C.top_line(lm, chart, np.array([92.0, -88.0]), c["top_armhole_drop_m"], c["top_right_neck_drop_m"])
++        coat = C.coat_line(lm, chart, np.array([92.0, -92.0]), c["coat_armhole_drop_m"], c["coat_front_opening_deg"])
++        for z in np.concatenate([top, coat]):
++            self.assertLessEqual(float(z), sh - 0.115 + 1e-6)  # m: the rule is a clearance, not scaled
++
++
++class TestLineMarks(unittest.TestCase):
++    def setUp(self):
++        import liss_textures as T
++
++        self.T = T
++        m = params()["_marks"]
++        self.cfg = m
++        self.marks = T.line_marks(m["seed"], m["placement"], tuple(m["length_m"]), m["line_mm"], m["gap_mm"],
++                                  m["dot_mm"])
++
++    def test_eleven_marks_placed_as_the_sheet(self):
++        self.assertEqual(len(self.marks), 11)
++        regions = [m["region"] for m in self.marks]
++        self.assertEqual(regions, ["forearm"] * 5 + ["upper_arm"] * 3 + ["collar_neck"] * 2 + ["cheek"])
++        self.assertEqual(self.marks[-1]["age"], 0.0)  # the eleventh is the newest, the crispest
++        self.assertEqual(self.marks[0]["age"], 1.0)
++        for m in self.marks:
++            self.assertTrue(0.03 <= m["length"] <= 0.06)
++            self.assertAlmostEqual(m["line_m"], 0.0006)
++            self.assertAlmostEqual(m["dot_m"], 0.0015)
++            bs = sorted({round(p[1], 6) for tr in m["traces"] for p in tr[:1]})
++            self.assertTrue(np.allclose(np.diff(bs), 0.0018), bs)  # 0.6 mm lines, 1.2 mm gaps
++            self.assertGreaterEqual(len(m["traces"]), 2)
++
++    def test_deterministic_and_importable_by_other_saltwrights(self):
++        m = self.cfg
++        again = self.T.line_marks(m["seed"], m["placement"], tuple(m["length_m"]))
++        self.assertEqual([x["traces"] for x in again], [x["traces"] for x in self.marks])
++        other = self.T.line_marks(5, {"forearm": 2, "cheek": 0})
++        self.assertEqual(len(other), 2)
++
++    def test_right_side_only(self):
++        """Every mark's centre is on her right (-X), and the painter never inks the left."""
++        lm = landmarks()
++        c = self.T.mark_centres(lm, self.marks)
++        starts = self.T.mark_starts(lm, self.marks)
++        self.assertTrue((c[:, 0] < -0.01).all(), c[:, 0])
++        cheek = c[-1]
++        self.assertGreater(float(cheek[2]), float(lm.P("chin")[2]))  # on the face, above the chin
++        charts = self.T.liss_charts(lm)
++        mirrored = c * np.array([-1.0, 1.0, 1.0])
++        self.assertTrue((self.T.paint_marks(starts, lm, self.marks, charts, 11) > 0.2).all())  # each start's dot
++        self.assertEqual(float(self.T.paint_marks(mirrored, lm, self.marks, charts, 11).max()), 0.0)
++        self.assertEqual(float(self.T.paint_marks(starts * np.array([-1.0, 1.0, 1.0]), lm, self.marks, charts,
++                                                  11).max()), 0.0)
++
++
++class TestFacePoses(unittest.TestCase):
++    def setUp(self):
++        self.poses = json.loads((STAGE / "liss_face_poses.json").read_text(encoding="utf-8"))
++
++    def test_every_emotion_with_api_shapes(self):
++        tags = {e["id"] for e in json.loads((ROOT / "game/data/dialogue/emotions.json").read_text())["emotions"]}
++        self.assertEqual(set(self.poses["emotions"]), tags)
++        names = set(PAIRED) | set(SINGLE) | set(API)
++        for tag, pose in self.poses["emotions"].items():
++            for shape, w in pose.items():
++                self.assertIn(shape, names, f"{tag}: {shape}")
++                for x in (w if isinstance(w, list) else [w]):
++                    self.assertTrue(0.0 <= x <= 1.0, f"{tag}: {shape}")
++
++    def test_follows_the_sheet(self):
++        """§2.6: the rest brow_down 0.08 on every row; mouth_smile L = R x 1.3; nose_sneer_L 0.10 once the smile passes
++        0.3; 0.10 s with 5% overshoot."""
++        self.assertAlmostEqual(self.poses["blend_in_s"], 0.10)
++        self.assertEqual(self.poses["rest"], {"brow_down": 0.08})
++        self.assertTrue(all(v == 0.05 for v in self.poses["overshoot"].values()))
++        em = self.poses["emotions"]
++        sheet_brow = {"worried": 0.20, "grief": 0.40, "angry": 0.85, "cold": 0.30, "determined": 0.55}
++        for tag, pose in em.items():
++            self.assertAlmostEqual(pose["brow_down"], 0.08 + sheet_brow.get(tag, 0.0), places=6, msg=tag)
++        for tag in ("soft_smile", "smile", "laugh"):
++            l, r = em[tag]["mouth_smile"]
++            self.assertAlmostEqual(l / r, 1.3, delta=0.02, msg=tag)
++            sneer = em[tag].get("nose_sneer", [0.0, 0.0])
++            self.assertEqual(sneer, [0.10, 0.0] if l > 0.3 else [0.0, 0.0], tag)
++        self.assertEqual(em["neutral"], {"brow_down": 0.08})
++        self.assertEqual(em["cold"]["mouth_smile"], 0.0)
++        self.assertEqual(em["grief"]["brow_inner_up"], 1.0)
++
++    def test_grief_is_the_widest_stretch_of_any_table(self):
++        mine = self.poses["emotions"]["grief"]["mouth_stretch"]
++        for path in (ROOT / "game/levels/_tests/characters").rglob("*_face_poses.json"):
++            if path.parent.name == "liss":
++                continue
++            grief = json.loads(path.read_text(encoding="utf-8")).get("emotions", {}).get("grief", {})
++            w = grief.get("mouth_stretch", 0.0)
++            w = max(w) if isinstance(w, list) else w
++            self.assertGreaterEqual(mine, w, path.name)
++
++
++class TestEchoWatch(unittest.TestCase):
++    """§2.2: no goggles, no yellow, no swirl patterns, trousers not a skirt, one crossed harness."""
++
++    def test_no_goggles_or_skirt_pieces(self):
++        import liss_costume as C
++
++        names = " ".join(C.ATLAS).lower()
++        for banned in ("goggle", "skirt", "swirl", "belt"):
++            self.assertNotIn(banned, names)
++        self.assertIn("trouser_leg_L", C.ATLAS)
++        self.assertEqual(sum(k.startswith("strap_") for k in C.ATLAS), 2)  # the X: two straps
++        js = glb_json(OUT / "liss.glb")
++        meshes = " ".join(m.get("name", "") for m in js["meshes"]).lower()
++        self.assertNotIn("goggle", meshes)
++        self.assertNotIn("skirt", meshes)
++
++    def test_no_yellow_in_the_cloth(self):
++        """Saturated yellow (hue 45-65 degrees, saturation over 0.45, value over 0.45) stays under 0.5% of her cloth
++        atlas (the brass buckles and the rope soles are dull, not yellow)."""
++        from PIL import Image
++
++        im = np.asarray(Image.open(OUT / "textures" / "liss_cloth_albedo.png").convert("RGB").resize((256, 256)))
++        hsv = np.array([colorsys.rgb_to_hsv(*(px / 255.0)) for px in im.reshape(-1, 3)])
++        yellow = (hsv[:, 0] * 360 > 45) & (hsv[:, 0] * 360 < 65) & (hsv[:, 1] > 0.45) & (hsv[:, 2] > 0.45)
++        self.assertLess(float(yellow.mean()), 0.005)
++
++
++class TestCommitted(unittest.TestCase):
++    def test_glbs(self):
++        js = glb_json(OUT / "liss.glb")
++        self.assertLessEqual(tris(js), LOD0_MAX)
++        lod = glb_json(OUT / "liss_lod1.glb")
++        self.assertLessEqual(tris(lod), LOD1_MAX)
++        self.assertLess((OUT / "liss.glb").stat().st_size, MAX_BYTES)
++        self.assertLess((OUT / "liss_lod1.glb").stat().st_size, LOD1_MAX_BYTES)
++        meshes = {m.get("name") for m in js["meshes"]}
++        for n in MESHES:
++            self.assertIn(n, meshes)
++        head = next(m for m in js["meshes"] if m.get("name") == "Head")
++        self.assertEqual(head.get("extras", {}).get("targetNames", []), API + VISEMES)
++
++    def test_rig_extras(self):
++        """§2.10: the coat tails (2 x 3), the hair tail (6) and the launcher's prop bone, after the 75 standard bones
++        in their own order."""
++        js = glb_json(OUT / "liss.glb")
++        nodes = js["nodes"]
++        joints = [nodes[i]["name"] for i in js["skins"][0]["joints"]]
++        parent = {c: i for i, n in enumerate(nodes) for c in n.get("children", [])}
++        idx = {n.get("name"): i for i, n in enumerate(nodes)}
++        for name, par in EXTRA_BONES.items():
++            self.assertIn(name, joints)
++            self.assertEqual(nodes[parent[idx[name]]]["name"], par, name)
++        standard = [j for j in joints if j not in EXTRA_BONES]
++        self.assertEqual(len(standard), 75)
++        lod = glb_json(OUT / "liss_lod1.glb")
++        lod_std = [lod["nodes"][i]["name"] for i in lod["skins"][0]["joints"]
++                   if lod["nodes"][i]["name"] not in EXTRA_BONES]
++        self.assertEqual(standard, lod_std)
++
++    def test_materials_and_textures(self):
++        from PIL import Image
++
++        js = glb_json(OUT / "liss.glb")
++        mats = {m["name"] for m in js["materials"]}
++        have = {p.stem for p in (OUT / "materials").glob("*.tres")}
++        self.assertEqual(mats - have, set(), "every glTF material has a hero material")
++        for want in ("hair", "cloth", "copper_mesh", "copper", "brass", "iron", "glimmer", "bead_salt", "bead_green",
++                     "bead_amber"):
++            self.assertIn(want, mats)
++        for png in (OUT / "textures").glob("*.png"):
++            self.assertLess(png.stat().st_size, MAX_BYTES, png.name)
++            with Image.open(png) as im:
++                w, h = im.size
++            self.assertEqual(w & (w - 1), 0, png.name)
++            self.assertEqual(h & (h - 1), 0, png.name)
++        with Image.open(OUT / "textures" / "liss_body_albedo.png") as im:
++            self.assertEqual(im.size, (2048, 2048))  # §2.9: the arm's line-marks need >= 14 px/cm
++        import re
++
++        for tres in (OUT / "materials").glob("*.tres"):
++            for path in re.findall(r'path="res://([^"]+)"', tres.read_text(encoding="utf-8")):
++                self.assertTrue((ROOT / path).exists(), f"{tres.name}: {path}")
++        glim = (OUT / "materials" / "glimmer.tres").read_text(encoding="utf-8")
++        self.assertIn("emission_enabled = true", glim)  # steady bound light
++
++
++class TestRigRules(unittest.TestCase):
++    """The M1-CHR-14 rules on the shipped GLB (no Blender)."""
++
++    @classmethod
++    def setUpClass(cls):
++        import rig_probe
++
++        cls.rp = rig_probe
++        cls.rig = rig_probe.Rig("liss")
++        cls.names = cls.rig.joint_names
++
++    def dominant(self, part) -> np.ndarray:
++        return np.array([self.names[part.J[i][int(np.argmax(part.W[i]))]] for i in range(len(part.P))])
++
++    def bones_of(self, part) -> set:
++        return {self.names[j] for j, w in zip(part.J.ravel(), part.W.ravel()) if w > 1e-4}
++
++    def test_coat_tails_follow_one_leg_each_with_their_own_chain(self):
++        cost = self.rig.part("Costume")
++        J, Wt = cost.J, cost.W
++        for side, other in (("l", "R"), ("r", "L")):
++            chain = {f"DEF-coat_tail_{side}", f"DEF-coat_tail_{side}.001", f"DEF-coat_tail_{side}.002"}
++            on = np.array([any(self.names[J[i, k]] in chain and Wt[i, k] > 1e-4 for k in range(4))
++                           for i in range(len(cost.P))])
++            self.assertGreater(int(on.sum()), 100, side)
++            # a tail never takes the other leg (two tails, not a tube)
++            leg = {f"DEF-thigh.{other}", f"DEF-thigh.{other}.001", f"DEF-shin.{other}", f"DEF-shin.{other}.001"}
++            for i in np.nonzero(on)[0]:
++                for k in range(4):
++                    if Wt[i, k] > 1e-4:
++                        self.assertNotIn(self.names[J[i, k]], leg, f"tail {side} on {self.names[J[i, k]]}")
++
++    def test_sleeve_and_glove_ride_the_left_arm(self):
++        sl = self.rig.part("WorkSleeve")
++        dom = self.dominant(sl)
++        parts = [d.split("-", 1)[1].split(".") for d in dom]
++        arm = np.array(["L" in p and (p[0] in ("upper_arm", "forearm", "hand", "palm", "thumb") or p[0].startswith("f_"))
++                        for p in parts])
++        self.assertGreater(float(arm.mean()), 0.85)
++        fingers = {d for d in dom if d.startswith(("DEF-f_", "DEF-thumb"))}
++        self.assertTrue(all(".L" in f for f in fingers))
++        self.assertGreaterEqual(len(fingers), 10)  # the five-finger glove takes the finger bones
++        self.assertFalse(any(".R" in b and "arm" in b for b in self.bones_of(sl)))
++
++    def test_launcher_two_centimetres_off_the_thigh_on_its_bone(self):
++        launcher = self.rig.part("Launcher")
++        self.assertEqual(self.bones_of(launcher), {"DEF-launcher"})
++        box = self.rig.part("Launcher:copper").P
++        lo, hi = box.min(axis=0), box.max(axis=0)
++        body = self.rig.part("Body")
++        dom = self.dominant(body)
++        thigh = body.P[np.array([d.startswith("DEF-thigh.R") for d in dom])]
++        d = np.linalg.norm(np.maximum(np.maximum(lo - thigh, thigh - hi), 0.0), axis=1)
++        self.assertGreaterEqual(float(d.min()), 0.0195)
++
++    def test_boots_take_the_feet_weights(self):
++        cost = self.rig.part("Costume")
++        low = cost.P[:, 1] < 0.05  # glTF: +Y up; the boot shells
++        dom = self.dominant(cost)[low]
++        self.assertGreater(int(low.sum()), 200)
++        self.assertTrue(all(d.startswith(("DEF-foot", "DEF-toe", "DEF-shin")) for d in dom), set(dom))
++
++    def test_knees_and_shins_are_kept_under_the_long_garments(self):
++        body = self.rig.part("Body")
++        dom = self.dominant(body)
++        knee = float(self.rig.skeleton.g_t["DEF-shin.L"][1])
++        for side in ("L", "R"):
++            near = (np.abs(body.P[:, 1] - knee) < 0.04) & np.array([d.startswith(f"DEF-shin.{side}") or
++                                                                    d.startswith(f"DEF-thigh.{side}") for d in dom])
++            self.assertGreater(int(near.sum()), 30, side)
++
++    def test_the_tail_is_a_seated_braid_in_the_guards(self):
++        cfg = json.loads((ROOT / "tools/dev/rig_checks.json").read_text())["heroes"]["liss"]
++        self.assertEqual(cfg["braid"]["mesh"], "HairTail:hair")
++        self.assertEqual(cfg["braid"]["scalp"], ["HairHead:hair", "Head:skin_head"])
++        self.assertEqual(cfg["garments"], ["Costume", "WorkSleeve"])
++        self.assertEqual(cfg["props"], ["Launcher"])
++        tail = self.rig.part("HairTail:hair")
++        lab = self.rp.components(tail.F, self.rp.Topology(tail.F, tail.P).weld_id, len(tail.P))
++        self.assertEqual(int((np.bincount(lab) >= 300).sum()), 2)  # a two-strand twist
++        beads = [pr for pr in self.rig.prims["HairTail"] if pr.material.startswith("bead_")]
++        self.assertEqual(sum(len(self.rp.Topology(b.F, b.P).boundary) == 0 for b in beads), len(beads))
++        n_beads = sum(int(np.bincount(self.rp.components(b.F, self.rp.Topology(b.F, b.P).weld_id,
++                                                         len(b.P))).size) for b in beads)
++        self.assertEqual(n_beads, 7)
++
++
++if __name__ == "__main__":
++    unittest.main()

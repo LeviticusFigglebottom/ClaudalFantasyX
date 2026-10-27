@@ -276,7 +276,7 @@ def transom(mb: kc.MeshBuilder, form: HullForm, mat: str, *, lod: bool) -> None:
                            np.asarray([[p[0], p[1]] for p in pts] + [[c[0], c[1]]]), (0.8, 0.5), (0.0, 0.4, 0.1, 0.5))
     n = len(pts)
     for k in range(n - 1):
-        mb.add_tri(base + k, base + n, base + k + 1, i)
+        mb.add_tri(base + k, base + k + 1, base + n, i)  # wound to face +z (astern), with its normals
 
 
 def deck_planks(mb: kc.MeshBuilder, form: HullForm, rng, noise, z_from: float, z_to: float, y_top: float, *, mat: str,

@@ -4,6 +4,112 @@ Environment-art track, cloud session `session_01QmWUfYxd8DMg7XM3MyR6ps`, branch 
 
 Scope: assets and kit pieces (Blender jobs, materials, import rules), handed to `claude/m2-slice` with a swap-in note here. Art Director sign-offs. I don't edit m2-slice's scenes (`game/levels/ch02/**`, `ch03/**`) except through a request task.
 
+## STATE AT HANDOVER (2026-10-25)
+
+**HANDOVER DONE @ 1fee4436** (`claude/env-art`; the code is merge-ready at d065835e, and only docs changed after it).
+
+Read this section first; everything below it is history. The branch is `claude/env-art`. The env-art session
+(cloud) stopped for the account move with no subagents running.
+
+### Done and merge-ready
+- **MERGE-READY @ d065835e.** Full Godot suite 2016 run, 0 failed. Full tools unittests at 5ab6029c: 947 OK. Every
+  Blender job touched is byte-identical, and every env-art baseline passes on isolated captures. It includes the
+  integration branch at 7fa22c77.
+- **Everything is in `status: review` (reviewer rendering) unless marked:**
+  - M2-ENV-10, the B06 Saltgrass Causeway route.
+  - M2-ENV-11, the arenas `tideline_dawn` and `causeway_disc_sunset`.
+  - M3-ENV-06, the five Act I arenas: `oruvel_raft_morning`, `underway_tower`, `causeway_route_afternoon`,
+    `derelict_deck_night`, `ash_terrace_lanternfall`.
+  - Act I zone kits:
+
+    | Task | Zone | Kit |
+    |---|---|---|
+    | M3-ENV-01 | Tidecup | `tamsule_bell` |
+    | M3-ENV-02 | Brine Shoals | `brine_shoals` |
+    | M3-ENV-03 | Terraces of Ash | `pemakar` |
+    | M3-ENV-04 | the Seawall | `corrow` |
+    | M3-ENV-04B | the Seawall breach and Ch9 night | `corrow` |
+    | M3-ENV-05 | the sea floor | `oruvel_underway` |
+    | M3-ENV-07 | Oruvel raft-town | `oruvel` |
+    | M3-ENV-07B | Oruvel storm and Hullgnaw's split | `oruvel` |
+    | M3-ENV-08 | Brightwater ferry | `brightwater_ferry` |
+    | M3-ENV-08B | the Seventh Terrace | `brightwater_ferry` |
+    | M3-ENV-09 | Ashcrown | `ashcrown` |
+    | M3-ENV-09B | Pemakar's far Ashcrown | `pemakar` |
+    | M3-ENV-10 | Coilspire | `coilspire` |
+    | M3-ENV-11 | close-range plume | `pemakar` |
+
+  - Fixes: M2-ENV-12 (Haluna gull normals), M3-ENV-700 (ferry transom).
+- **Arenas are swapped in:** `game/data/battle/arenas.json` points all seven arena ids at
+  `assets/environments/arenas/<id>/<id>.tscn`.
+
+### In progress
+- Nothing.
+- **Not preserved:** env-art's superseded Shell Shrine kit WIP (local worktree branch `worktree-agent-a79dd51292ba3250f`
+  @ d0749489; m2-slice's kit was adopted under M2-ENV-03). Pushing it to a separate branch was refused in this
+  environment, so it goes with the container. It was for parts only; nothing depends on it.
+
+### Exact next steps
+1. The Lead merges `claude/env-art` @ d065835e (or later) into the integration branch. Delete
+   `.godot/imported/*.glb-*` before `--import` in the gate worktree.
+2. A review sweep of the `status: review` tasks listed above (reviewer rendering).
+3. Every Act I zone in the act outline now has a kit. The next env-art queue is the Lead's call. Candidates:
+   - the weaker preview views each task file lists (for example Corrow C03's sea face, Oruvel O10's gull, Ashcrown
+     A08's loggia, Brightwater B07's stem-gull);
+   - Act II zones (Ch10 Ossa Fen and onward);
+   - night and storm variants once Art adds the colour-script rows.
+4. New env-art ids come from the id block: tasks M3-ENV-701+, ADRs 0160–0169, handoffs `<date>-<role>-env-art-<n>.md`.
+
+### Open questions (owed by others; none blocks env-art)
+- **Art:** colour-script rows `ch01_storm`, `ch04_derelict`, `ch05_temple` and `ch08_day`; `ch08_after` (proposed in
+  corrow.md §7); the `ash_fall` swatch.
+- **Character + Tools:** sign-off on the import kinds `brine_shoals_kit`, `pemakar_kit`, `corrow_kit`,
+  `oruvel_underway_kit`, `oruvel_kit`, `brightwater_ferry_kit`, `ashcrown_kit` and `coilspire_kit`.
+- **Rendering:**
+  - M3-RND-24: underwater downwelling and in-scatter vs walls.
+  - M3-RND-25: the underway arena's look.
+  - M3-RND-26: the Tidecup drop.
+  - The Ch9 ambient 0.7 vs the colour script's 0.3.
+- **m2-slice:** M3-ARC-04 (the shrine's `Shaft_*` lights inside `ShaftFog`).
+- **Narrative:** the Ch9 Fisher Stair (the breach cuts it after 12 steps); the sea floor's floor count (F9 is the
+  gallery) and its dead ship's ribs (Hullgnaw).
+
+### Known bugs and loose ends
+- Five UI and dialogue baselines drift from the wetter Haluna tidewalls (not env-art's to re-approve):
+  `field_objective_line`, `field_interact_prompt`, `field_area_title`, `field_tip_card`, `dialogue_continue`.
+- Battle-presentation (both happen on the greybox too):
+  - In multi-shot captures, `AudioDirector.attach_battle` logs a freed-instance error.
+  - The arena loader logs an owner warning when it reparents the WorldEnvironment.
+- Big kit pieces placed by hand need a larger per-placement LOD1 start: the import ends LOD0 at 70 m from the
+  piece's middle.
+- `haluna_h10_dock_night` sits at rmse 0.00545, within the limit, from older drift.
+
+### Gotchas (read before touching env-art files)
+- **Fog-lamp rule (the Lead):** every OmniLight3D and SpotLight3D in an arena, or near a dense FogVolume, sets
+  `light_volumetric_fog_energy = 0`, because Godot's default of 1.0 bands the volume bright. `arena_scenes.py`
+  writes it. `tools/tests/test_fog_lamps.py` enforces it, with `KNOWN_EXCEPTIONS` tied to request tasks.
+- **Baselines only from isolated captures:** use `tools/screenshots/capture.sh --shots <ids> --out <dir>` (one Godot
+  process per shot, as ci_local does). A single shared `capture.tscn` run is order-dependent once creature models
+  are in frame (rmse 0.03 from shot position alone).
+  - Before `compare.py --update-baselines`, copy the PNGs and `capture_report.json` into `tests/screenshots/out/`.
+  - If only `baselines.json`'s key order moved, restore it with `git checkout`.
+- **Haluna material writers:** kits must load them by path under the name `haluna_materials` (importlib), never
+  `import materials`, because tamsule_bell has its own `materials.py`.
+- **New kit `.glb.import` files** need `import_script/path` set to the kit's post-import script, or the materials
+  don't map.
+- **LUT `.png.import`** files are hand-written 3D-texture imports; the kits' import-settings scripts must skip them.
+- **Tests:**
+  - TestCase is a RefCounted, so reach the tree via `(Engine.get_main_loop() as SceneTree)`.
+  - The runner does not await coroutines.
+  - `free()` (not `queue_free()`) any zone with a publishing WaterSurface before a test returns.
+- **Append-only shared files** (shots.json, baselines.json, blender_builds.json, PROVENANCE.md, the KINDS lists)
+  conflict on every agent merge. Union them; check `blender_builds.json` for empty `{}` jobs, and run
+  `tools.tests.test_blender_builds`.
+- **Gates:** run only fast scoped checks per item, long runs niced in the background, and Blender verify only for
+  the jobs touched. `godot` and `godot-render` must be on PATH (`~/.local/bin` symlinks; `tools/dev/fetch_godot.py`).
+  The Blender wrapper is `~/.cache/hymn/blender-*/blender`.
+- **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
+
 ## Now
 - **Id blocks (the Lead, CONSOLIDATED §4):** env-art's new task ids are 700–799 (e.g. M3-ENV-710), its ADRs
   0160–0169, and its handoffs are named `<date>-<role>-env-art-<n>.md`. Existing ids stay. The big8 renumbering
@@ -131,9 +237,22 @@ Scope: assets and kit pieces (Blender jobs, materials, import rules), handed to 
         0.03 from its position in the run alone. Isolated captures are byte-identical run to run.
       - The ten arena and flood baselines I had approved from shared runs are re-approved from isolated captures,
         each viewed.
-    - **Running (worktree agents):** M3-ENV-10 Coilspire, M3-ENV-07B the Oruvel storm and Hullgnaw's split,
-      M3-ENV-11 the close-range plume.
-    - **Next:** M3-ENV-700 (the ferry's transom).
+    - **M3-ENV-10 Coilspire temple: in review, merged here** (44c3bac5).
+      - Kit: 12 pieces, 16 materials, Blender job `coilspire_kit` (29 identical). Its import kind `coilspire_kit`
+        needs Character + Tools sign-off.
+      - It is the same building as Corrow's far spire (reads `cw_far`, checked by tests). Its K08 view is shot
+        from Corrow's C01 camera.
+      - Baselines: `coilspire_k01_headland_path` and `coilspire_k03_well`; isolated re-capture gives rmse 0.
+      - Checks: coilspire 5/5, post_import 21/21.
+      - For m2-slice: the 10 flue-key wheels are tagged in the layout for the trial. Liss's wright's mark is a decal
+        for m2-slice or VFX.
+      - For Art: a `ch08_day` colour-script row.
+    - **All four Act I zones filed as M3-ENV-07..10 are in review.**
+    - **Merged here, in review:** M3-ENV-07B the Oruvel storm (baseline `oruvel_o17_pen_split`; Art owes the
+      `ch01_storm` row) and M3-ENV-700 the ferry's transom (`ferry_hull` and `derelict_hulk_a`; b03 moved by
+      0.0007, under the limit). **M3-ENV-11, the close-range plume, is still running.**
+    - **M3-ENV-11 the close-range plume: in review, merged here** (d065835e). **No agents are running and the queue is
+      empty.** Next: the Lead's queue, or the weaker views each task file lists.
 - **Done (merge-ready):**
   - **M2-ART-01/02/03, Art sign-offs:** all three approve-with-fixes, status done. Fixes filed: **M2-UI-08** (Swell lamp at rest, bestiary defeat counts white not focus cyan), **M2-RND-09** (underwater: scatter/transmit to `lagoon_teal`, TIR to `deep_teal_shadow`, lantern halo warm, motes boosted only below the surface, recapture `waterline_high`), **M2-RND-10** (storm: narrower rents with darker lips, softer curtains, per-chapter flash table, landfall darker and slate-teal, rain ≤12% bright streaks, the Letting's wound_intensity 1.8 and rise_ratio 2.0). palette.json 0.2.1 extends the `spawn_wound`, `glimmer_held` and `glimmer_lift` usage notes to the storm. art/ui.md §10 records the accepted UI.
   - **M2-ENV-06 pass 1 (still `doing`):** Haluna kit textures, materials and tide-wall geometry to final quality; the five haluna baselines **re-approved after viewing** (h01 0.01584, h02 0.06091, h03 0.01360, h04 0.01108, h07 0.01049; palette checks 19/19). Details in the task file. **Only haluna_mood shots use these files.**
@@ -148,6 +267,36 @@ Scope: assets and kit pieces (Blender jobs, materials, import rules), handed to 
 - **Un-pushed state:** none (worktree agents' branches are local until merged here).
 
 ## For the Lead
+- **MERGE-READY @ d065835e (supersedes 5ab6029c below).** It adds M3-ENV-11, the close-range Pemakar plume (review):
+  `ash_plume_near` and the shader's near group, which fades out by 400 to 800 m, so the 900 m read is unchanged.
+  - `ashcrown_a01` and `a04` were re-approved after viewing, and `ashcrown_a10_plume_from_the_rim` is new.
+  - Checks run: full Godot suite 2016 run, 0 failed; pemakar_kit 63 and ashcrown_kit 40 identical; P01, P03,
+    Lanternfall, A01, A04 and A10 all rmse 0 on isolated captures; the kit, arena and fog-lamp unittests OK.
+  - The full tools suite last ran at 5ab6029c (947 OK); this item touched only the tests that were re-run.
+- **MERGE-READY @ 5ab6029c** (claude/env-art; it includes the integration branch at 7fa22c77).
+  - **Items since 74c6dc0e, all in review:**
+    - M3-ENV-07 Oruvel raft-town (and the raft arena's town); 07B its storm state and Hullgnaw's split.
+    - M3-ENV-08 Brightwater ferry; 08B the Seventh Terrace; 700 the ferry's transom.
+    - M3-ENV-09 Ashcrown; 09B Pemakar's far Ashcrown from that kit.
+    - M3-ENV-10 Coilspire.
+    - M2-ENV-12 the Haluna gull normals.
+    - The ten arena and flood baselines re-approved from isolated captures.
+    - The big8 renumbering applied (M3-ARC-04, M3-RND-26).
+  - **Checks run:**
+    - full Godot suite: 2015 run, 0 failed;
+    - full tools unittests: 947 OK (4 skipped);
+    - Blender jobs: every job touched is byte-identical (oruvel, brightwater_ferry, ashcrown, coilspire, haluna,
+      pemakar, corrow);
+    - every new or changed env-art baseline, re-captured with `capture.sh` (one process per shot), passes;
+    - lint, format, validate_data and taskboard are clean.
+  - **Checks skipped:** the full screenshot manifest (the Lead's) and coverage (no changes to game/battle or
+    game/progression).
+  - **Not env-art's baselines, flagged:** five UI and dialogue shots drift from the wetter Haluna tidewalls (listed
+    above).
+  - **Waiting on people:**
+    - Character + Tools: sign-off on the import kinds `oruvel_kit`, `brightwater_ferry_kit`, `ashcrown_kit` and
+      `coilspire_kit`.
+    - Art: colour-script rows `ch01_storm`, `ch04_derelict`, `ch05_temple` and `ch08_day`.
 - **MERGE-READY @ 74c6dc0e, for big8.** It includes the integration branch at 8f808cc6 (big7).
   - **Items:**
     - All seven final arenas swap in through `game/data/battle/arenas.json`.

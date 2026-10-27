@@ -284,7 +284,7 @@ class CommittedAssetTests(unittest.TestCase):
             self.assertTrue((ROOT / spec["glb"].removeprefix("res://")).is_file(), spec["glb"])
             for mat in spec.get("materials", {}).values():
                 self.assertTrue((ROOT / mat.removeprefix("res://")).is_file(), mat)
-        self.assertEqual(sum(s["glb"].endswith("ash_plume.glb") for s in layout["borrowed"]), 1)
+        self.assertEqual(sum(s["glb"].endswith("ash_plume_near.glb") for s in layout["borrowed"]), 1)
         self.assertEqual(len([lt for lt in layout["lights"] if lt["color"] == "#FFB16E"]), len(ac_hall.lamp_points()))
 
 

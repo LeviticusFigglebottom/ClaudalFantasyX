@@ -120,6 +120,39 @@ class KitGeometryTests(unittest.TestCase):
                     self.assertFalse(np.isnan(np.asarray(mb.pos)).any(), "positions are finite")
 
 
+def _winding_agreement(mb) -> tuple[float, float]:
+    """(fraction of faces, fraction of face area) whose geometric winding (b - a) x (c - a) agrees with the sum of
+    their vertex normals. Back-face culling keys on the winding, so a face wound against its normals vanishes from
+    the side it is lit for."""
+    pos, nrm, t = np.asarray(mb.pos), np.asarray(mb.nrm), np.asarray(mb.tris)
+    g = np.cross(pos[t[:, 1]] - pos[t[:, 0]], pos[t[:, 2]] - pos[t[:, 0]])
+    area = np.linalg.norm(g, axis=1)
+    keep = area > 1e-12
+    agree = ((g * nrm[t].sum(axis=1)).sum(axis=1) > 0.0)[keep]
+    return float(agree.mean()), float(area[keep][agree].sum() / area[keep].sum())
+
+
+class WindingTests(unittest.TestCase):
+    """M3-ENV-700: bf_common.transom was wound inward, so the ferry's and the drowned hulls' transoms vanished from
+    astern."""
+
+    def test_the_transom_faces_astern_with_its_normals(self) -> None:
+        for form in (bf.FERRY, bf_drowned.FORM_A, bf_drowned.FORM_B):
+            for lod in (False, True):
+                with self.subTest(form=form.transom_z, lod=lod):
+                    mb = bf.kc.MeshBuilder("transom")
+                    bf.transom(mb, form, bf.M_BLUE, lod=lod)
+                    self.assertEqual((1.0, 1.0), _winding_agreement(mb))
+
+    def test_every_piece_is_wound_with_its_normals(self) -> None:
+        for name in TARGETS:
+            for mb in built(name):
+                with self.subTest(mesh=mb.name):
+                    by_count, by_area = _winding_agreement(mb)
+                    self.assertGreater(by_count, 0.85)
+                    self.assertGreater(by_area, 0.8)
+
+
 class WalkableShipTests(unittest.TestCase):
     def test_main_deck_and_poop_are_flat(self) -> None:
         mb = built("ferry_hull")[0]
