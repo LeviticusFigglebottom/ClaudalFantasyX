@@ -71,6 +71,9 @@ RENDER-REQUEST @ 60b62678: battle_arena_wall_head,battle_boss_intro_reach; why: 
    the shots wait for their encounters.
    - Greybox arenas for the four Act II boss fights (fen roots, Lowlight's engine hall, the Keth terrace wall, the
      night-sea barge) in their chapters' grades. Tested; render requested.
+- **Checks:** full `--filter=battle` at 1bf51636: **764 run, 0 failed**. Then, after the arena commit, `--filter=arena`
+  20/0 and act2_arenas 2/0; gdlint, gdformat, validate_data and taskboard clean. **MERGE-READY @ f1162b31** (plus
+  docs). Known red: test_screenshots, only for the new unbaselined shots in the render requests above.
 1. **Render branches:** all viewed (none open).
 2. **Task board (combat):**
    - **M3-BPR-406 (Ch8 set pieces), every acceptance box now done:**
