@@ -2,8 +2,8 @@
 id: M3-ENV-704
 title: "Shell Shrine set dressing: place the M3-ENV-701 pieces at the islet and in the hall, then rebake the GI"
 role: architect
-status: todo
-owner_session: ""
+status: doing
+owner_session: "slice-polish (claude/m2-slice, session_01KZCgTqxhHKjvMCm1dAosvZ)"
 depends_on: [M3-ENV-701]
 milestone: M3
 request-from: environment
