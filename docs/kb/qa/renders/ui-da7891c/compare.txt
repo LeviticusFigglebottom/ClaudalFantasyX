@@ -1,0 +1,5 @@
+FAIL reefball_hud_choice: rmse 0.03903 (limit 0.00800)
+PASS reefball_hud_goal: rmse 0.00000 (limit 0.00800)
+FAIL reefball_outfitter: no baseline (inspect out/, then compare.py --update-baselines reefball_outfitter)
+Screenshots: 3 compared, 2 failed (diffs in /home/user/wt/render/tests/screenshots/out/diff)
+compare exit 1
