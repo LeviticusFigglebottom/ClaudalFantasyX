@@ -275,7 +275,7 @@ def _bundle(mb: kc.MeshBuilder, rng, noise, c, r: float, mat: str, *, lod: bool)
                       for tt in tts])
     widths = np.linspace(0.03, 0.09, 5) * k
     grid = np.stack([spine - side * widths[:, None], spine + side * widths[:, None]], axis=1) + out_d * 0.012 * k
-    for flip, off in ((False, 0.0), (True, -0.003)):  # both faces of the cloth
+    for flip, off in ((False, -0.003), (True, 0.0)):  # both faces of the cloth, the outer one facing out
         g = grid + out_d * off
         kc.quad_strip(mb, g, mb.material(mat), uv=g[..., [0, 1]], col=np.array([0.0, 0.0, 0.2, 0.4]), uv2=(0.8, 0.5),
                       flip=flip)
