@@ -134,7 +134,8 @@
                "min": 0.5, "max": 3.0},
     "outro": {
       "doc": "M2-BPR-05: after the last action's choreography. victory: the standing party plays the victory clip, or a stand-in hops `hops` times hop_m high over sec, each fighter stagger_sec after the last, after delay_sec. escape: the party walks back_m back off the field over sec. The result panel waits for it plus settle_sec.",
-      "victory": {"delay_sec": 0.15, "sec": 0.9, "hops": 2, "hop_m": 0.16, "stagger_sec": 0.1, "clip": "victory"},
+      "victory": {"delay_sec": 0.15, "sec": 0.9, "hops": 2, "hop_m": 0.16, "stagger_sec": 0.1, "clip": "victory",
+                  "clip_max_sec": 2.4},
       "escape": {"delay_sec": 0.0, "sec": 0.55, "back_m": 2.2, "stagger_sec": 0.05, "clip": "ready"},
       "settle_sec": 0.25
     },
