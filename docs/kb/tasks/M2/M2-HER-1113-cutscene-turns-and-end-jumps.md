@@ -47,7 +47,9 @@ clean everywhere (their HeroBody caps the visible turn at 400 deg/s). Every acto
 
 - 2026-10-27, re-verified on claude/m2-slice d4921946 + the re-cut patch: the cutscene guard over **all 79 scenes** in
   the chapter data is clean (on hero-integration without the patch: 30 actor/scene pairs, now the test's KNOWN list).
-  Their filters with it: cutscene 61/0, fp_ 28/0, haluna 57/0, prologue 7/0 (_thread, ch09 and ch0 still running; see the
-  hero-integration live log).
+  Their filters with it: cutscene 61/0, fp_ 28/0, haluna 57/0, prologue 7/0, _thread 34/0, ch09 7/0, ch0 62/1. The one
+  failure, test_ch01_oruvel_kit's storm environment swap, passes alone with the patch (twice) and without it. It
+  fails only in the broad ch0 sweep, so it depends on what ran before it, not on cutscene motion. Worth a look by its
+  owner.
 
 ## Review log
