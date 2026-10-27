@@ -139,6 +139,13 @@
       "ko_fade_sec": 1.2,
       "stand_in": {"yaw_deg": 60.0},
       "portrait": {"yaw_deg": 40.0, "pitch_deg": 10.0}
+    },
+    "cord_moth": {
+      "scene": "res://game/creatures/cord_moth/cord_moth_battle.tscn",
+      "contact": {"attack": 0.5, "cast": 0.55},
+      "ko_fade_sec": 1.0,
+      "stand_in": {"yaw_deg": 60.0, "hover": 1.25},
+      "portrait": {"yaw_deg": 60.0, "pitch_deg": 30.0}
     }
   }
 }

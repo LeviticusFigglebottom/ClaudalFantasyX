@@ -652,6 +652,16 @@
       ]
     },
     {
+      "id": "creature_cord_moth",
+      "owner": "character",
+      "sources": ["assets_src/creatures/cord_moth/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/cord_moth/*.glb", "assets/creatures/cord_moth/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/cord_moth/build_cord_moth.py", "--", "--out", "assets/creatures/cord_moth/cord_moth.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "cord_moth"]
+      ]
+    },
+    {
       "id": "wildlife_gull",
       "owner": "character",
       "sources": ["assets_src/wildlife/gull/**", "assets_src/wildlife/common/**", "assets_src/creatures/common/creature_kit.py"],

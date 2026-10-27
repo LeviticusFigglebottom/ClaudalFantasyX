@@ -33,6 +33,10 @@ const LYNX_CROUCH_MIN_M := 0.1
 const LYNX_APEX_SEC := 0.6
 const LYNX_LEAP_MIN_M := 0.5
 const LYNX_KO_HEAD_MAX_Y := 0.4
+const MOTH := "res://game/creatures/cord_moth/cord_moth_battle.tscn"
+## The cord moth hovers this high (its stand-in lifts it) and its KO comes down by exactly that, within the band.
+const MOTH_HOVER_M := 1.25
+const MOTH_BAND_M := 0.02
 const RING := {"radius_factor": 1.4, "inner_soft_m": 0.25, "notches": 6}
 const SANDBOX := "res://game/battle/scene/battle_sandbox.tscn"
 const SEED := 20261024
@@ -471,6 +475,32 @@ func test_the_ridge_lynx_crouches_pounces_and_lies_down() -> void:
 	assert_true(_bone_y(skel, skel.find_bone("head")) < LYNX_KO_HEAD_MAX_Y, "it lies down with its head low")
 	for b in skel.get_bone_count():
 		assert_true(_bone_y(skel, b) > -RAM_FOOT_TOL_M, "%s stays above the snow in the KO" % skel.get_bone_name(b))
+
+
+func test_the_cord_moth_hovers_opens_its_knots_and_drifts_down() -> void:
+	var m := _actor(MOTH)
+	assert_true(is_equal_approx(float(CreatureActor.row_for(&"cord_moth")["stand_in"]["hover"]), MOTH_HOVER_M))
+	assert_true(m.play_action(&"", &"physical"))
+	assert_true(is_equal_approx(m.contact_time(&"attack"), 0.5), "the wing-strike lands at 0.5 s")
+	assert_true(m.play_action(&"", &"magical"))
+	assert_eq(m.current_clip, &"cast", "the unravel")
+	var skel := _skeleton(m)
+	var bones: Array[String] = ["root", "body", "antenna_l", "antenna_r"]
+	for tag in ["l", "r"]:
+		for wing in ["fore", "hind"]:
+			bones.append_array(["%s_%s0" % [wing, tag], "%s_%s1" % [wing, tag]])
+	for b in bones:
+		assert_true(skel.find_bone(b) >= 0, "the rig has %s" % b)
+	assert_eq(skel.get_bone_count(), bones.size(), "body, four wing bones a side, antennae")
+	var player := _player(m)
+	_seek(player, &"ko", player.get_animation(&"ko").length - RAM_END_SEC)
+	var root_y := _bone_y(skel, skel.find_bone("root"))
+	assert_true(absf(root_y + MOTH_HOVER_M) < MOTH_BAND_M, "it comes down by its hover height (%.3f)" % root_y)
+	for b in skel.get_bone_count():
+		var y := _bone_y(skel, b) + MOTH_HOVER_M
+		assert_true(
+			y > -MOTH_BAND_M and y < MOTH_BAND_M * 10.0, "%s lies on the floor (y %.3f)" % [skel.get_bone_name(b), y]
+		)
 
 
 func test_hits_rotate_their_variants_and_a_phase_keeps_its_own() -> void:
