@@ -27,6 +27,8 @@ var start_battle := Callable()
 
 
 func _ready() -> void:
+	# M2-FP-112: Rhen and Toma wear their real bodies (HeroFieldActor), not capsules; Asha is her model.
+	HeroFieldActor.attach_stage(stage)
 	sequencer = CutsceneSequencer.new()
 	sequencer.name = "Sequencer"
 	add_child(sequencer)
