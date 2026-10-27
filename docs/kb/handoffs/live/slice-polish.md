@@ -295,6 +295,30 @@ Ch4–Ch9 onward. `m2-slice.md` beside this file is the history up to the 2026-1
     15, all 0 failed; lint, format, validate_data and taskboard clean.
   - **Checks skipped:** coverage and Blender.
 
+- **MERGE-READY @ 68e110ff** (the Lead's queue item 5: the cinematics `todo` tasks).
+  - **M2-AUD-07:** a music.json cue plays on Audio's deck, crossfaded and carried past the scene. `music_track`
+    stays empty for it, so Audio never holds its own bed; the other cues stay on the sequencer's player.
+  - **M2-AUD-12:** the causeway's music and ambience rows. B05's "Go now" raises `saltgrass_causeway` as they set
+    off.
+  - **M2-FP-1000:** the final causeway on the map (its walk floor and six stops) and an objective on to the shrine
+    steps. The route stop's id is now `ch03/saltgrass_causeway`.
+  - **M2-FP-1001:** cutscene choices follow the text size.
+  - **M2-FP-30:** Ch1's tutorial lines name their bindings by action.
+  - **M3-CIN-01:** Sefir's per-actor slow blink, and his face poses, shipped as a copy of Character's table.
+  - **M2-FP-24:** the shrine's curbs collide, and a headless reachability flood proves nothing is walled off.
+  - **To review, not redone:** M2-HER-1109 (applied under M2-FP-102) and M2-AUD-09 (superseded by audio's mesh
+    surfaces).
+  - **Lead, GI:** M2-FP-24's three-line hook is in `shell_shrine_level.gd`, a GI input, so test_shrine_gi_bake
+    reads stale on this branch until the PC rebakes. The light can't change (collision only). The RENDER-REQUEST
+    below asks for the rebake. If big12's own rebake (gpu/shrine-gi-big12) merges first, this one supersedes it.
+  - **Checks:**
+    - cutscene 70, face 28, audio 141, fp_ 29, haluna 57, prologue 7, _thread 34, memory 6, dialogue 76, ch0 67,
+      ch01 21, causeway 13, causeway_route 5, zone_map 20, objective 15, map 22;
+    - pseudo_loc 21, input_parity 55, shrine 38, first_verse 3, all 0 failed;
+    - validate_data, dlgc, lint, format and taskboard clean.
+  - **Checks red:** test_shrine_gi_bake (stale, above) and test_audio_loudness (audio's, known).
+  - **Checks skipped:** coverage and Blender.
+
 - **Correction (ec3ba50a):** my first B11 pass (4f616566) added a letterbox and three scripted camera setups.
   vertical_slice.md defines B11 (and B02) as **E** scenes: in-engine, no letterbox, and the player keeps the camera
   rail. Those cues are out. B11 keeps Rhen's walk out to Asha and the turns between them. Lead: take ec3ba50a with
@@ -321,3 +345,4 @@ RENDER-REQUEST @ 9ba01356: slice_verse_hall, slice_verse_steps, ch01_underway_cr
 RENDER-REQUEST @ b35e17c1: ch01_oruvel_dressed, ch01_o07_name_board, ch01_o10_gull, ch01_underway_crown, ch01_underway_gallery, slice_verse_hall, slice_verse_steps; why: M3-C01-100's second pass (the Seventh Terrace, the lintel-gulls; the two inserts are new shots), plus everything from the 9ba01356 request, which this supersedes. Push every out PNG, even a bad frame.
 RENDER-REQUEST @ 17b0601f: ch01_underway_crown, ch01_underway_gallery, ch01_oruvel_dressed, ch01_o07_name_board, ch01_o10_gull, slice_verse_hall, slice_verse_steps; why: the same set as b35e17c1 plus the Underway's podium (the gallery shot looks out over it). Supersedes b35e17c1. Push every out PNG, even a bad frame.
 RENDER-REQUEST @ ca7c8ede: slice_beach_h05_asha, slice_beach_h06_toma, slice_dock_night_yes, slice_verse_hall, slice_verse_steps, ch01_oruvel_dressed, ch01_o07_name_board, ch01_o10_gull, ch01_underway_crown, ch01_underway_gallery; why: Asha's H06 facing; dock-night without the letterbox (ec3ba50a); the First Verse in the real shrine (M2-FP-116); the Ch1 kit zones (M3-C01-100/101). The cutscene turns are now 0.9 s (M2-HER-1113), so cutscene frames may land differently. Supersedes every earlier open request from this track. Push every out PNG.
+RENDER-REQUEST @ 68e110ff: gi_bake:shell_shrine; why: M2-FP-24's curb collision hook is in shell_shrine_level.gd, a GI input (collision only, so the light should come out identical). Bake both states with tools/shrine/bake_shrine_gi.tscn under godot-render, then python3 tools/shrine/gi_inputs.py --write, and push the .res pair and the sidecar. The ca7c8ede shot request still stands.
