@@ -46,6 +46,11 @@ const LOOPING_CUES: Array[String] = [
 	"res://assets/audio/music/unlamped.ogg",
 	"res://assets/audio/music/pale_rim.ogg",
 	"res://assets/audio/music/drowned_choir.ogg",
+	"res://assets/audio/music/tidecup_crowd.ogg",
+	"res://assets/audio/music/corrow_aftermath.ogg",
+	"res://assets/audio/music/seawall_hold_p1.ogg",
+	"res://assets/audio/music/seawall_hold_p2.ogg",
+	"res://assets/audio/music/seawall_hold_p3.ogg",
 ]
 const SAMPLE_RATE := 44100
 const MIN_LENGTH_S := 60.0

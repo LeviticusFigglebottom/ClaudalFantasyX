@@ -934,3 +934,28 @@ Sixty-eight `@sfx` cues, heard in their cutscenes (the F8 chapter select reaches
 - **Ch8's set piece** (the Reach, the breach, the stone falling): the loudest cues in Act I (−15 to −17). Are they
   too much against the music cues there?
 - **Ch9 staff_bell_shells and harbour_lap:** the Ebbing's quiet; nothing should crowd the dance.
+
+## M3: Ch7 and Ch8's scripted music cues (M3-AUD-822)
+Six cues that Act I's scripts already call with `@music` (or, for Virel's sting, from battle). The F8 chapter select
+reaches the scenes.
+- **`tidecup_after`** (Ch7 B07 and the B10 reprise, 57 s): warm strings in A minor. The cellos, then the violas, then
+  the violins carry one slow line. It opens on F major, never rests on A, and ends with the violins alone on a held
+  E, with a far crowd thinning out under the first half. **Warm, or saccharine?** The strings are the saw-ensemble
+  pad, so the risk is a synth-string sound. If it reads that way, drop the inner voices before you touch the line.
+- **`tidecup_crowd`** (Ch7 B04, a 62 s loop): the bowl before the match. About sixty talkers (the Reefball crowd's
+  voices), a faint ring of the Bell's partials in the roof, the column's weep and an idle frame drum high up. It sits
+  at the music level (−16), under `bell_hum`. **Does Liss's line come through it?** If it's too dense under dialogue,
+  thin the near talkers.
+- **`virel_bound`** (Ch8 B06, a 7.9 s sting): the Hush's first phrase (MEL_A, two bars) on the new spire reed, in
+  F-sharp minor over a still F#/C# flue drone. This is the first time a wind plays the theme. **Is the reed a reed?**
+  It's additive, so if it buzzes like a synth, lower `spire_reed`'s buzz term or move the 1.5 kHz formant.
+- **`virel_summon`** (Ch8 B16, a 5.8 s sting): four sail snaps, the seams catching fire, then the same phrase quicker
+  on the reed, and the fire flaring once. **Do the snaps read as cloth, or as gunshots?**
+- **`corrow_aftermath`** (Ch8 B18, a 62.4 s loop): rain and one plucked string counting B in groups of 3, 4, 5, 6 and
+  3, with each group's last note a step lower, plus one far thunder roll. **Is it counting, or a ticking clock?**
+  If it's too regular, the plucks have only 12 ms of jitter; widen it.
+- **`seawall_hold`** (Ch8 B10–B14, three 72 s stems): (1) big drums and taiko-like mid drums, the held low strings
+  and a cello line that strains a little higher each time round; (2) adds the hoist: the rope creaking on 1 and 3,
+  the block knocking on 2 and 4, the pawl, plucks and bass; (3) adds the storm's G as a sub drone under the B minor.
+  The steps are about +1.7 and +1.5 LU. **Effort, not triumph?** Listen on speakers that reach 50 Hz: stem 3 is
+  mostly below 150 Hz. The limiter takes up to about 4–5 dB off the biggest drum hits.

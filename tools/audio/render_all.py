@@ -52,6 +52,7 @@ M2_CUES = ("haluna_village", "haluna_night", "battle_standard_v2", "hush_first_v
            "tamsule_bell_galleries", "stillguard_inquisitor", "ossa_fen", "reedhollow", "sunken_vey", "lowlight",
            "keth_pass", "quellan",
            "ansedra", "lamp_archive", "peace_wedding", "unlamped", "pale_rim", "drowned_choir")
+M2_CUES += ("tidecup_after", "tidecup_crowd", "virel_bound", "virel_summon", "corrow_aftermath")  # M3-AUD-822
 AMBIENCE_BUDGET = int(2.5 * 1024 * 1024)  # the M2-AUD-05 field beds together
 # Per-job budgets for later "ambience_loop" jobs (each job's beds together; the M2-AUD-05 job keeps AMBIENCE_BUDGET).
 AMBIENCE_JOB_BUDGETS = {"assets_src/sfx/causeway_ambience.py": int(1.2 * 1024 * 1024),
@@ -231,6 +232,15 @@ JOBS = [
     ("assets_src/music/unlamped.py", "assets/audio/music", ["unlamped.ogg", "unlamped.loop.json"], "music_loop"),
     ("assets_src/music/pale_rim.py", "assets/audio/music", ["pale_rim.ogg", "pale_rim.loop.json"], "music_loop"),
     ("assets_src/music/drowned_choir.py", "assets/audio/music", ["drowned_choir.ogg", "drowned_choir.loop.json"], "music_loop"),
+    # M3-AUD-822: Ch7 and Ch8's scripted `@music` cues (the Tidecup's aftermath and crowd, Virel, the seawall waves)
+    ("assets_src/music/tidecup_after.py", "assets/audio/music", ["tidecup_after.ogg"], "music"),
+    ("assets_src/music/tidecup_crowd.py", "assets/audio/music", ["tidecup_crowd.ogg", "tidecup_crowd.loop.json"], "music_loop"),
+    ("assets_src/music/virel_bound.py", "assets/audio/music", ["virel_bound.ogg"], "music"),
+    ("assets_src/music/virel_summon.py", "assets/audio/sfx", ["virel_summon.ogg"], "music"),
+    ("assets_src/music/corrow_aftermath.py", "assets/audio/music",
+     ["corrow_aftermath.ogg", "corrow_aftermath.loop.json"], "music_loop"),
+    ("assets_src/music/seawall_hold.py", "assets/audio/music",
+     [f"seawall_hold_p{i}{ext}" for i in (1, 2, 3) for ext in (".ogg", ".loop.json")], "music_loop"),
 ]
 M1_JOBS = 5  # the first JOBS rows are M1's audio (SIZE_BUDGET)
 
