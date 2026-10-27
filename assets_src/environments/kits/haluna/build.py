@@ -90,7 +90,7 @@ def targets() -> dict:
     for name, fn in sorted(keth.TARGETS.items()):  # M3-ENV-717 Keth Pass (Ch12)
         out[name] = (name, keth, fn)
     for name, fn in sorted(lowlight.TARGETS.items()):  # M3-ENV-716 Lowlight's engine hall (Ch11)
-        out[name] = (name, lowlight, fn)
+        out[name] = (lowlight.BUDGET_KEY.get(name, name), lowlight, fn)
     for name, fn in sorted(ossa_fen.TARGETS.items()):  # M3-ENV-718 Ossa Fen (Ch10)
         out[name] = (name, ossa_fen, fn)
     for name, fn in sorted(save_shrine.TARGETS.items()):  # M3-ENV-101 the save shrine

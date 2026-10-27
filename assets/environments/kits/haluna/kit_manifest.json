@@ -629,6 +629,28 @@
         "lit_terrace_wall-lod1": 44
       }
     },
+    "lowlight_nave_bay": {
+      "budget": [
+        24000,
+        1500
+      ],
+      "bytes": 321616,
+      "lods": {
+        "lowlight_nave_bay": 4380,
+        "lowlight_nave_bay-lod1": 412
+      }
+    },
+    "lowlight_nave_bay_broken": {
+      "budget": [
+        24000,
+        1500
+      ],
+      "bytes": 332552,
+      "lods": {
+        "lowlight_nave_bay_broken": 4420,
+        "lowlight_nave_bay_broken-lod1": 406
+      }
+    },
     "mangrove_dead": {
       "budget": [
         12000,
@@ -1260,6 +1282,28 @@
         "timber_stilt_post-lod1": 15
       }
     },
+    "vey_arcade_bay": {
+      "budget": [
+        12000,
+        900
+      ],
+      "bytes": 82148,
+      "lods": {
+        "vey_arcade_bay": 1040,
+        "vey_arcade_bay-lod1": 324
+      }
+    },
+    "vey_gallery_bridge": {
+      "budget": [
+        4000,
+        300
+      ],
+      "bytes": 72488,
+      "lods": {
+        "vey_gallery_bridge": 1032,
+        "vey_gallery_bridge-lod1": 136
+      }
+    },
     "village_litter": {
       "budget": [
         900,
@@ -1316,6 +1360,17 @@
       "lods": {
         "wayside_offering": 1740,
         "wayside_offering-lod1": 173
+      }
+    },
+    "well_shaft": {
+      "budget": [
+        14000,
+        900
+      ],
+      "bytes": 362140,
+      "lods": {
+        "well_shaft": 5702,
+        "well_shaft-lod1": 760
       }
     },
     "windbreak_placeholder": {

@@ -78,9 +78,10 @@ class EngineHallTests(unittest.TestCase):
     def test_every_piece_is_inside_its_budget(self) -> None:
         for name, fn in lowlight.TARGETS.items():
             lod0, lod1 = fn()
+            budget = lowlight.TRI_BUDGET[lowlight.BUDGET_KEY.get(name, name)]
             with self.subTest(piece=name):
-                self.assertLessEqual(lod0.triangle_count, lowlight.TRI_BUDGET[name][0])
-                self.assertLessEqual(lod1.triangle_count, lowlight.TRI_BUDGET[name][1])
+                self.assertLessEqual(lod0.triangle_count, budget[0])
+                self.assertLessEqual(lod1.triangle_count, budget[1])
                 self.assertLess(lod1.triangle_count, lod0.triangle_count)
 
     def test_nothing_is_frozen(self) -> None:

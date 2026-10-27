@@ -17,6 +17,20 @@ Built in the Haluna kit (its import kind and materials directory, as iskarra.py 
                    camp-sign, bs_story's chalk_mark) over two small round seats side by side, "pair-built". Rhen's
                    lantern carries the same mark (Character's request). Origin at the back plate's centre, face +Z.
 
+  lowlight_nave_bay         one 8 m bay of the temple's nave (lowlight.md §1), the nave axis along Z: the floor 0.45 m
+                            under the lagoon's datum (knee-deep), ceramic piers at x +-6.5, the aisle walls at x +-9
+                            with three lamp-niche tiers each, the dry gallery walks at +5.6 and +11.2, the conduit along
+                            the cornice, a pointed ribbed vault to 16 m; origin at the bay's centre on the datum (y 0)
+  lowlight_nave_bay_broken  the same bay with its vault broken open (the grey sky through it) and the rubble fallen
+  well_shaft                the Lit Age well-shaft: a ribbed ceramic drum r 3.5 m dropping 24 m from the sanctum's
+                            floor, a spiral stair round its wall, the bronze rim at the mouth; origin at the mouth's
+                            centre (y 0 = the sanctum's floor)
+  vey_arcade_bay            one bay of a two-storey Lit Age arcade in the Sunken Vey, 6 m along X: grey stone to the
+                            first storey's springing (drowned to it), white ceramic above, the arch open on +Z and -Z,
+                            a lamp gallery's corbels at +5.6; origin at the bay's centre on the lagoon's datum
+  vey_gallery_bridge        a lamp-gallery walk spanning 6 m between two arcades at +5.6: an iron frame, ceramic
+                            treads, a rail with a conduit along it; origin at its centre, deck at y 0
+
 Nothing here is frozen (ADR 0015/0016).
 """
 
@@ -36,7 +50,9 @@ M_GLASS = "kit_salt_glass"
 M_DARK = "kit_interior_dark"
 
 TRI_BUDGET = {"engine_hall": (34000, 2400), "conduit_run": (1500, 120), "lamp_niche_tier": (3000, 200),
-              "conduit_housing": (3000, 120)}
+              "conduit_housing": (3000, 120), "lowlight_nave_bay": (24000, 1500), "well_shaft": (14000, 900),
+              "vey_arcade_bay": (12000, 900), "vey_gallery_bridge": (4000, 300)}
+BUDGET_KEY = {"lowlight_nave_bay_broken": "lowlight_nave_bay"}
 
 HALL_HALF = 12.0
 HALL_H = 9.0
@@ -279,5 +295,240 @@ def build_housing(seed: int = 1604) -> list[kc.MeshBuilder]:
     return out
 
 
+# ---------------------------------------------------------------------------------------------
+# The temple and the Vey (lowlight.md §1)
+# ---------------------------------------------------------------------------------------------
+NAVE_FLOOR_Y = -0.45
+GALLERY_Y = (5.6, 11.2)
+NAVE_BAY = 8.0
+NAVE_HALF_W = 9.0
+NAVE_PIER_X = 6.5
+NAVE_VAULT_Y = (11.8, 16.0)  # springing, crown
+
+
+def _pointed_arch(half_w: float, y0: float, y1: float, n: int) -> np.ndarray:
+    """(x, y) points of a pointed (two-centred) arch from -half_w to +half_w, springing at y0, crown at y1."""
+    t = np.linspace(-1.0, 1.0, n)
+    return np.stack([t * half_w, y0 + (y1 - y0) * (1.0 - np.abs(t) ** 1.6) ** 0.62], -1)
+
+
+def build_nave_bay(seed: int = 1605, *, broken: bool = False) -> list[kc.MeshBuilder]:
+    out = []
+    hz = NAVE_BAY * 0.5
+    for lod in (False, True):
+        rng = kc.rng_for("lowlight_nave_bay", seed)
+        noise = kc.Noise3(rng)
+        mb = kc.MeshBuilder(("lowlight_nave_bay_broken" if broken else "lowlight_nave_bay") + ("-lod1" if lod else ""))
+        stone, ceramic = mb.material(M_STONE), mb.material(M_CERAMIC)
+        # The floor (under the water) and the aisle walls.
+        _slab(mb, -NAVE_HALF_W, NAVE_HALF_W, -hz, hz, NAVE_FLOOR_Y, 0.4, M_STONE, rng, noise, lod=True)
+        for sx in (-1.0, 1.0):
+            x = sx * (NAVE_HALF_W + 0.4)
+            kc.rounded_block(mb, (x, (NAVE_FLOOR_Y + 1.0) * 0.5, 0.0), (0.4, (1.0 - NAVE_FLOOR_Y) * 0.5, hz), stone,
+                             radius=0.04, seg=1, weather=STONE, variation=float(rng.random()))
+            kc.rounded_block(mb, (x, (1.0 + NAVE_VAULT_Y[0]) * 0.5, 0.0), (0.4, (NAVE_VAULT_Y[0] - 1.0) * 0.5, hz),
+                             ceramic, radius=0.04, seg=1, noise=None if lod else noise, disp_m=0.01, weather=CERAMIC,
+                             variation=float(rng.random()))
+            # The two gallery walks (ledges on corbels) and the niche tiers between them.
+            for gy in GALLERY_Y:
+                kc.rounded_block(mb, (sx * (NAVE_HALF_W - 0.75), gy - 0.12, 0.0), (0.75, 0.12, hz), stone, radius=0.03,
+                                 seg=1, weather=STONE)
+                if not lod:
+                    for z in np.linspace(-hz + 0.6, hz - 0.6, 5):
+                        kc.rounded_block(mb, (sx * (NAVE_HALF_W - 0.3), gy - 0.45, z), (0.3, 0.2, 0.18), stone,
+                                         radius=0.04, seg=1, weather=STONE)
+                    kc.tube(mb, np.array([[sx * (NAVE_HALF_W - 1.45), gy + 0.9, -hz], [sx * (NAVE_HALF_W - 1.45),
+                                                                                      gy + 0.9, hz]]),
+                            0.03, 5, mb.material(M_COPPER))  # the gallery's rail
+            if not lod:
+                for gy in (2.2, 3.8, 7.4, 9.0):
+                    for z in np.arange(-hz + 0.8, hz, 1.6):
+                        face = sx * NAVE_HALF_W
+                        kc.rounded_block(mb, (face, gy, z), (0.05, 0.42, 0.32), mb.material(M_DARK), radius=0.02,
+                                         seg=1)
+                        kc.rounded_block(mb, (face - sx * 0.1, gy - 0.12, z), (0.13, 0.15, 0.13), mb.material(M_GLASS),
+                                         radius=0.12, seg=2)
+                        kc.tube(mb, np.array([[face, gy + 0.38, z - 0.3], [face - sx * 0.32, gy + 0.32, z]]), 0.02, 4,
+                                mb.material(M_COPPER))
+                kc.tube(mb, np.array([[sx * (NAVE_HALF_W - 0.1), NAVE_VAULT_Y[0] - 0.3, -hz],
+                                      [sx * (NAVE_HALF_W - 0.1), NAVE_VAULT_Y[0] - 0.3, hz]]), 0.06, 6,
+                        mb.material(M_CONDUIT))
+        # The piers (ceramic over a stone base, standing in the water).
+        for sx in (-1.0, 1.0):
+            for z in (-hz, hz):
+                _pier_at(mb, sx * NAVE_PIER_X, z, rng, noise, lod)
+        # The vault: transverse ribs at the bay's ends, the pointed barrel between them (broken open on variant b).
+        n = 9 if lod else 25
+        prof = _pointed_arch(NAVE_HALF_W + 0.4, NAVE_VAULT_Y[0], NAVE_VAULT_Y[1], n)
+        zs = np.linspace(-hz, hz, 3 if lod else 9)
+        hole = (lambda x, z: (abs(x) < 3.2) & (abs(z) < 2.6)) if broken else (lambda x, z: False)
+        grid = np.stack([np.stack([prof[:, 0], prof[:, 1] + 0.3, np.full(n, z)], -1) for z in zs], 1)
+        keep_tris_from = mb.triangle_count
+        kc.quad_strip(mb, grid, ceramic, uv=grid[..., [0, 2]] / 2.0, col=(0, 0, 0, 0.6), uv2=(0.7, 0.5), flip=True)
+        if broken:
+            pos = np.asarray(mb.pos)
+            tris = np.asarray(mb.tris[keep_tris_from:])
+            cen = pos[tris].mean(axis=1)
+            keep = ~hole(cen[:, 0], cen[:, 2]) | (cen[:, 1] < NAVE_VAULT_Y[1] - 1.6)
+            mb.tris = mb.tris[:keep_tris_from] + [t for t, k in zip(mb.tris[keep_tris_from:], keep) if k]
+            mb.tri_mat = mb.tri_mat[:keep_tris_from] + [m for m, k in zip(mb.tri_mat[keep_tris_from:], keep) if k]
+        for z in (-hz, hz):
+            pts = np.stack([prof[:, 0] * 0.98, prof[:, 1], np.full(n, z)], -1)
+            kc.tube(mb, pts, 0.28, 4 if lod else 6, stone)
+        if broken and not lod:
+            for _k in range(10):
+                sc = rng.uniform(0.3, 0.8)
+                kc.rounded_block(mb, (rng.uniform(-3.0, 3.0), NAVE_FLOOR_Y + sc * 0.4, rng.uniform(-2.5, 2.5)),
+                                 (sc, sc * 0.4, sc * 0.7), ceramic,
+                                 rot=kc.rot_y(rng.uniform(0, 3)) @ kc.rot_x(rng.normal(0, 0.3)), radius=sc * 0.15, seg=1,
+                                 noise=noise, disp_m=0.03, weather=CERAMIC, variation=float(rng.random()))
+        out.append(mb)
+    return out
+
+
+def _pier_at(mb, x, z, rng, noise, lod) -> None:
+    kc.rounded_block(mb, (x, NAVE_FLOOR_Y + 0.55, z), (0.8, 0.55, 0.8), mb.material(M_STONE), radius=0.06, seg=1,
+                     weather=STONE, variation=float(rng.random()))
+    top = NAVE_VAULT_Y[0]
+    kc.rounded_block(mb, (x, (NAVE_FLOOR_Y + 1.1 + top) * 0.5, z), (0.58, (top - NAVE_FLOOR_Y - 1.1) * 0.5, 0.58),
+                     mb.material(M_CERAMIC), radius=0.08, seg=1 if lod else 2, noise=None if lod else noise,
+                     disp_m=0.02, weather=CERAMIC, variation=float(rng.random()))
+    kc.rounded_block(mb, (x, top + 0.18, z), (0.8, 0.18, 0.8), mb.material(M_STONE), radius=0.05, seg=1, weather=STONE)
+
+
+WELL_R = 3.5
+WELL_DEPTH = 24.0
+
+
+def build_well_shaft(seed: int = 1606) -> list[kc.MeshBuilder]:
+    out = []
+    for lod in (False, True):
+        rng = kc.rng_for("well_shaft", seed)
+        noise = kc.Noise3(rng)
+        mb = kc.MeshBuilder("well_shaft" + ("-lod1" if lod else ""))
+        ceramic, stone, copper = mb.material(M_CERAMIC), mb.material(M_STONE), mb.material(M_COPPER)
+        # The drum (inside faces), ribbed every 30 degrees.
+        sides = 16 if lod else 48
+        a = np.linspace(0.0, 2 * math.pi, sides + 1)
+        ys = np.linspace(-WELL_DEPTH, 0.0, 5 if lod else 25)
+        A, Y = np.meshgrid(a, ys)
+        R = WELL_R + 0.05 * np.sin(A * 12.0) * (0.0 if lod else 1.0)
+        grid = np.stack([np.cos(A) * R, Y, np.sin(A) * R], -1)
+        kc.quad_strip(mb, grid, ceramic, uv=np.stack([A * WELL_R, Y], -1) / 2.0, col=(0, 0, 0, 0.6), uv2=(0.6, 0.5))
+        if not lod:
+            for k in range(12):
+                th = 2 * math.pi * k / 12
+                kc.tube(mb, np.array([[math.cos(th) * (WELL_R - 0.1), y, math.sin(th) * (WELL_R - 0.1)]
+                                      for y in (-WELL_DEPTH, 0.0)]), 0.12, 5, stone)
+        # The spiral stair: treads cantilevered from the wall, 4 turns over the depth, a copper rail on the open side.
+        n_steps = 40 if lod else 120
+        rail = []
+        for k in range(n_steps):
+            t = k / n_steps
+            th = t * 4.0 * 2 * math.pi
+            y = -t * WELL_DEPTH
+            d = np.array([math.cos(th), 0.0, math.sin(th)])
+            side = np.array([-d[2], 0.0, d[0]])
+            c = d * (WELL_R - 0.7) + np.array([0.0, y, 0.0])
+            kc.rounded_block(mb, c, (0.6, 0.06, 0.3), stone, rot=kc.rot_y(-th), radius=0.02, seg=1,
+                             weather=STONE, variation=float(rng.random()))
+            rail.append(d * (WELL_R - 1.35) + np.array([0.0, y + 0.95, 0.0]))
+            del side
+        if not lod:
+            kc.tube(mb, np.array(rail), 0.025, 5, copper)
+        # The bronze rim at the mouth, and the deep's upwelling at the foot (the bound light sifting down is VFX).
+        a = np.linspace(0.0, 2 * math.pi, 49 if not lod else 17)
+        kc.tube(mb, np.stack([np.cos(a) * (WELL_R + 0.15), np.full_like(a, 0.06), np.sin(a) * (WELL_R + 0.15)], -1), 0.12,
+                6 if not lod else 4, copper)
+        kc.tube(mb, np.array([[0.0, -WELL_DEPTH - 0.2, 0.0], [0.0, -WELL_DEPTH, 0.0]]), WELL_R, 24 if not lod else 8,
+                mb.material(M_DARK), cap_end=True)
+        del noise
+        out.append(mb)
+    return out
+
+
+ARCADE_BAY = 6.0
+ARCADE_SPRING_Y = 3.4  # the first storey's springing: the lagoon drowns the bay to here
+ARCADE_TOP_Y = 12.0
+
+
+def build_arcade_bay(seed: int = 1607) -> list[kc.MeshBuilder]:
+    out = []
+    hx, hz = ARCADE_BAY * 0.5, 2.0
+    for lod in (False, True):
+        rng = kc.rng_for("vey_arcade_bay", seed)
+        noise = kc.Noise3(rng)
+        mb = kc.MeshBuilder("vey_arcade_bay" + ("-lod1" if lod else ""))
+        stone, ceramic = mb.material(M_STONE), mb.material(M_CERAMIC)
+        # Two piers (one per bay end), grey stone under the water and to the first springing, ceramic above.
+        for sx in (-1.0, 1.0):
+            x = sx * (hx - 0.55)
+            kc.rounded_block(mb, (x, (-4.0 + ARCADE_SPRING_Y) * 0.5, 0.0), (0.55, (ARCADE_SPRING_Y + 4.0) * 0.5, hz),
+                             stone, radius=0.05, seg=1, noise=None if lod else noise, disp_m=0.02, weather=STONE,
+                             variation=float(rng.random()))
+            kc.rounded_block(mb, (x, (ARCADE_SPRING_Y + ARCADE_TOP_Y) * 0.5, 0.0),
+                             (0.55, (ARCADE_TOP_Y - ARCADE_SPRING_Y) * 0.5, hz), ceramic, radius=0.05, seg=1,
+                             noise=None if lod else noise, disp_m=0.015, weather=CERAMIC, variation=float(rng.random()))
+        # The two storeys' arches, open through the bay (+Z and -Z faces), and the spandrel walls over them.
+        for y0, y1, w in ((ARCADE_SPRING_Y, 5.4, hx - 1.1), (7.2, 10.2, hx - 1.1)):
+            prof = _pointed_arch(w, y0, y1, 7 if lod else 17)
+            for z in (-hz, hz):
+                kc.tube(mb, np.stack([prof[:, 0], prof[:, 1], np.full(len(prof), z)], -1), 0.18, 4 if lod else 6,
+                        ceramic)
+                # the spandrel: a slab from the arch's line up to the next storey's floor
+                top = y1 + 0.3 if y1 < 6 else ARCADE_TOP_Y
+                for k in range(len(prof) - 1):
+                    a, b = prof[k], prof[k + 1]
+                    grid = np.array([[[a[0], a[1], z], [b[0], b[1], z]], [[a[0], top, z], [b[0], top, z]]])
+                    kc.quad_strip(mb, grid, ceramic, uv=grid[..., [0, 1]] / 2.0, col=(0, 0, 0, 0.6), uv2=(0.8, 0.5),
+                                  flip=z > 0, smooth=False)
+            # the storey's floor (the vault over the arch, flat-topped)
+            kc.rounded_block(mb, (0.0, y1 + 0.5, 0.0), (hx - 1.1, 0.2, hz), stone, radius=0.03, seg=1, weather=STONE)
+        # The lamp gallery's corbels at +5.6 on the +Z face, and the cornice with its conduit.
+        if not lod:
+            for x in np.linspace(-hx + 1.4, hx - 1.4, 4):
+                kc.rounded_block(mb, (x, GALLERY_Y[0] - 0.3, hz + 0.3), (0.18, 0.25, 0.3), stone, radius=0.04, seg=1,
+                                 weather=STONE)
+            kc.tube(mb, np.array([[-hx, ARCADE_TOP_Y - 0.35, hz + 0.12], [hx, ARCADE_TOP_Y - 0.35, hz + 0.12]]), 0.06, 6,
+                    mb.material(M_CONDUIT))
+        kc.rounded_block(mb, (0.0, ARCADE_TOP_Y + 0.2, 0.0), (hx, 0.2, hz + 0.2), stone, radius=0.04, seg=1,
+                         weather=STONE)
+        out.append(mb)
+    return out
+
+
+def build_gallery_bridge(seed: int = 1608) -> list[kc.MeshBuilder]:
+    out = []
+    for lod in (False, True):
+        rng = kc.rng_for("vey_gallery_bridge", seed)
+        mb = kc.MeshBuilder("vey_gallery_bridge" + ("-lod1" if lod else ""))
+        iron, ceramic = mb.material(M_COPPER), mb.material(M_CERAMIC)
+        hw = 0.9
+        for sz in (-1.0, 1.0):  # the two stringers, a shallow arch
+            t = np.linspace(-1.0, 1.0, 5 if lod else 13)
+            kc.tube(mb, np.stack([t * 3.0, -0.12 + 0.18 * (1.0 - t ** 2), np.full_like(t, sz * hw)], -1), 0.06,
+                    4 if lod else 6, iron)
+            if not lod:
+                kc.tube(mb, np.stack([t * 3.0, 1.0 + 0.18 * (1.0 - t ** 2), np.full_like(t, sz * hw)], -1), 0.025, 5,
+                        iron)
+                for x in np.linspace(-3.0, 3.0, 9):
+                    y = 0.18 * (1.0 - (x / 3.0) ** 2)
+                    kc.tube(mb, np.array([[x, y - 0.1, sz * hw], [x, y + 1.0, sz * hw]]), 0.02, 4, iron)
+        n = 6 if lod else 18
+        for k in range(n):  # the treads
+            x = -3.0 + 6.0 * (k + 0.5) / n
+            y = 0.18 * (1.0 - (x / 3.0) ** 2)
+            kc.rounded_block(mb, (x, y - 0.03, 0.0), (3.0 / n - 0.015, 0.03, hw - 0.05), ceramic, radius=0.01, seg=1,
+                             weather=CERAMIC, variation=float(rng.random()))
+        if not lod:
+            t = np.linspace(-1.0, 1.0, 13)
+            kc.tube(mb, np.stack([t * 3.0, 1.06 + 0.18 * (1.0 - t ** 2), np.full_like(t, hw)], -1), 0.03, 6,
+                    mb.material(M_CONDUIT))
+        out.append(mb)
+    return out
+
+
 TARGETS = {"engine_hall": build_hall, "conduit_run": build_conduit, "lamp_niche_tier": build_niche_tier,
-           "conduit_housing": build_housing}
+           "conduit_housing": build_housing, "lowlight_nave_bay": build_nave_bay,
+           "lowlight_nave_bay_broken": lambda: build_nave_bay(broken=True), "well_shaft": build_well_shaft,
+           "vey_arcade_bay": build_arcade_bay, "vey_gallery_bridge": build_gallery_bridge}

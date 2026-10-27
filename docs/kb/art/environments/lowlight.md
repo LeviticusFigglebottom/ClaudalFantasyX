@@ -110,3 +110,10 @@ The hall is built to the battle contract (battle_arenas.md):
   3 mm proud: a circle (15 cm on the housing) crossed by three fine parallel lines slanted 30°, which is the
   Saltwrights' camp-sign as on Ch6's chalk marks, over two small round seats side by side ("pair-built", Liss's word
   in Ch6). Rhen's lantern takes the same mark (M3-ENV-719, Character).
+- 2026-10-27 (env-art, M3-ENV-716): the zone's architecture:
+  - `lowlight_nave_bay`, and `lowlight_nave_bay_broken` with its vault open and the rubble fallen;
+  - `well_shaft`, the ribbed drum with its spiral stair 24 m down and the bronze rim;
+  - `vey_arcade_bay`, two storeys of pointed arches with the lamp gallery's corbels;
+  - `vey_gallery_bridge`.
+
+  Still to build: `lowlight_sanctum` and `strangler_fig`.
