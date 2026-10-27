@@ -232,3 +232,14 @@ RENDER-REQUEST @ 50182f0e: battle_ch08_stair_hold; why: big12's baseline shows t
     - Both start the day those rows or layouts land.
   - **Tools suite:** test_screenshots still fails only on missing baselines (`reefball_outfitter`, now `kite_map` too), which wait on renders.
 RENDER-REQUEST @ 469851f6: kite_map; why: a new screen (the Kite's world map, M3-UI-205: the list with Here, the chart with gems and the cursor ring on Tamsule); no baseline yet, so test_screenshots needs it.
+- 2026-10-27 23:55, **BACKLOG EMPTY:**
+  1. **Renders:** no unviewed ui render branch. The latest, 121362b, a195cd3, 99623a0, 26755f9 and 17325e0, are all handled. Four requests are open: `kite_map`, stair_hold, the 34d6e51d batch, and the outfitter.
+  2. **Tasks:** no `todo` ui task.
+  3. **Requests:** none addressed to ui.
+  4. **Parts-look-primitive audit:** done today (see "Parts look primitive", ui.md). The only new screen since, the Kite, has no render to view yet.
+  5. **Next act:**
+     - The Kite's world map is done (M3-UI-205).
+     - The Act II bestiary and codex wait on Act II enemy rows. Only art briefs exist (`docs/kb/art/creatures/act2/`); `enemies.json` is still the 28 Act I rows.
+     - The Ansedra and Lowlight maps wait on their zone layouts.
+
+  Merged the integration branch (5720fa26). Handoff: `2026-10-27-ui-ui-menus-2.md`. **Lead: route the next item, or ping when Act II enemies or zones land.**
