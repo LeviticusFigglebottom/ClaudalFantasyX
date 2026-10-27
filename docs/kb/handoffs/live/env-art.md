@@ -55,8 +55,14 @@ env-art is cloud session `session_01YbaV2c8yquRHqj6afQYg89` on `claude/env-art`;
   validate_data. Shots: viewed on lavapipe before the render move, every one inside its limit; the PC re-renders
   them below. Also **M3-ENV-704** filed: slice-polish places dressing in the Shell Shrine and rebakes its GI.
 
+- **MERGE-READY @ 22a5de11:** the integration branch (ze8rrn @ 7cccb551, big9) merged in. Conflicts: the shared
+  files (union), and the three battle baselines (the PC gate's copies; re-render requested below). Checks run:
+  the full tools suite (1123 OK), `--filter=haluna` 50/0, `--filter=arena` 18/0, `gi_inputs --check`,
+  validate_data, taskboard. Skipped: shots (rendering is the PC's now).
+
 ### Render requests
 RENDER-REQUEST @ a0d2549f: battle_arena_tideline_dawn,battle_arena_causeway_disc_sunset,battle_arena_causeway,battle_arena_tideline,causeway_c02_profile_against_the_lagoon,causeway_c08_drownbell_disc_approach,drownbell_flood,battle_boss_intro_drownbell,haluna_h01_village_from_sea,haluna_h10_dock_night,field_objective_line,field_interact_prompt,field_area_title,field_tip_card,dialogue_continue; why: M3-ENV-701 set dressing in Haluna, the causeway and the two arenas (the five field/dialogue shots frame Haluna's lane 1)
+RENDER-REQUEST @ 22a5de11: battle_arena_oruvel_raft_morning,battle_arena_causeway,drownbell_flood; why: the merge took the PC gate's copies of these three over env-art's; confirm they still match with the arena dressing
 
 ## STATE AT HANDOVER (2026-10-25)
 
