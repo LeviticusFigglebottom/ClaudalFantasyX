@@ -306,6 +306,11 @@ env-art is cloud session `session_01YbaV2c8yquRHqj6afQYg89` on `claude/env-art`;
   Checks run: haluna_kit full rebuild (older pieces identical; every other arena byte-identical), `test_ossa_fen` 9,
   `test_arenas`, `test_haluna_kit`, Godot `--filter=arena` 18/0, and the full tools suite (red only on screenshots and
   the integration's audio).
+- **MERGE-READY @ eeecf13d: M3-ENV-101**, the save shrine's kit pieces (swap note under "Swap-in notes"), and the
+  answers to the Lead's 19:21 note on `test_iskarra`. Both were already fixed in 854e6a95: the plaza's fallen corner
+  is pulled back so Kerrid at (9.5, −5.5) stands on paving, and the test checks the stand-in vigils that remain, with
+  the reason in the assert (M2-FP-103's real cast replaced the rest). Checks run: haluna_kit full rebuild (older
+  pieces identical), `test_save_shrine_kit` 5, `test_haluna_kit`, validate_data.
 
 ### Render requests
 RENDER-REQUEST @ a0d2549f: battle_arena_tideline_dawn,battle_arena_causeway_disc_sunset,battle_arena_causeway,battle_arena_tideline,causeway_c02_profile_against_the_lagoon,causeway_c08_drownbell_disc_approach,drownbell_flood,battle_boss_intro_drownbell,haluna_h01_village_from_sea,haluna_h10_dock_night,field_objective_line,field_interact_prompt,field_area_title,field_tip_card,dialogue_continue; why: M3-ENV-701 set dressing in Haluna, the causeway and the two arenas (the five field/dialogue shots frame Haluna's lane 1)
@@ -326,6 +331,7 @@ RENDER-REQUEST @ 854e6a95: battle_arena_shoals,battle_arena_camp,battle_boss_int
 RENDER-REQUEST @ 43492e80: battle_arena_lowlight_engine_hall; why: M3-ENV-716 the Lamp Engine's flooded hall (new shot)
 RENDER-REQUEST @ 60eee2f7: iskarra_p01_plaza_dusk,iskarra_i02_gate_from_the_plaza,iskarra_i03_broken_tower,brine_b01_arrival,brine_b05_barge_channel; why: after viewing 8770a06: Iskarra gets real water (reflections) and the paving inlay as channel lines; B01/B05 show the boat wake (supersedes these ids in 854e6a95)
 ANSWERED: 8770a06 (gpu/render-env-art-8770a06): corrow_c01_wall_head and corrow_c08_watcher_profile viewed and re-approved in 895ff7ec; the Ch6 arenas, Iskarra and B01/B05 re-requested (big11's actors, the plaza and the wake changed since). ba16d48 and 179069d predate big11's NPCs and actor stances: re-requested below.
+ANSWERED: 22a5de1 and 1a42247 (3 pass each after the import-crash re-render): nothing to approve.
 RENDER-REQUEST @ 29ddd021: haluna_h01_village_from_sea,haluna_h04_dock,battle_arena_causeway_route_afternoon; why: the fish weirs (ba16d48) and the route arena's tidal mud (179069d), not on the integration branch, now with big11's villagers and stances
 RENDER-REQUEST @ c990e2c2: battle_arena_ossa_fen_roots; why: M3-ENV-718 the Mangrove Drowner's fen arena (new shot)
 
@@ -680,6 +686,24 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **New standing queue started** (your message): M3-ENV-01 Tidecup, M3-ENV-02 Brine Shoals, M3-ENV-03 Terraces of Ash with worktree agents now; M3-ENV-04 Seawall and M3-ENV-05 the lamp-diver sea floor next.
 
 ## Swap-in notes for m2-slice
+- **M3-ENV-101, the save shrine (for Systems/ui-menus, or cinematics if the Lead prefers; @ eeecf13d):** the Haluna
+  kit's `save_shrine.glb` and `save_shrine_core.glb` replace `game/world/save_shrine/save_shrine.tscn`'s `Visual/*`
+  primitives.
+  - **Body.** Replace `Visual/Base`, `Step`, `Pillar`, `Cradle`, `Conduit`, `PostW`, `PostE`, `Canopy` and
+    `CanopyLip` with one instance of `save_shrine.glb` at `Visual`'s origin. Its niche opens toward +Z, so turn
+    `Visual` if a zone wants the front elsewhere.
+  - **Core.** Swap `Visual/Core`'s mesh for an instance of `save_shrine_core.glb` at the same transform
+    (0, 1.92, 0). It is centred on its origin, so the GlimmerField (`Visual/BoundGlimmer`) still holds on it.
+  - **Unchanged.** The `Shape` (use sphere r 1.6) and the `Body` collider (cylinder r 0.62, 2.2 m) still fit: the
+    body stays within r 1.05 and 2.79 m. Import kind: the Haluna kit's (as every Haluna piece).
+  - **Tests.** `tools/tests/test_save_shrine_kit.py` pins the footprint, the core's seat and the open niche.
+- **M3-ENV-100, the Prologue's Iskarra (cinematics/slice-polish):** this is M3-ENV-710's kit, already built.
+  - **Drop-in.** `assets/environments/zones/iskarra/iskarra_city.tscn` keeps the reviewed staging: the plaza top
+    at 0.4 (the terrace), the rise's top at 1.0, the nine towers at the primitives' feet and heights, the arch at
+    (−18, −18), the fallen pillar, and four unlit lamp columns.
+  - **Swap.** The swap note is M3-ENV-711, and it now adds replacing `City/Water` with the project's `WaterSurface`.
+  - The task files for 100 and 101 are only on `claude/m2-slice`. I'll set them to review when they reach the
+    integration branch.
 - **Fog-lamp rule (the Lead, 2026-10-24):** a light near a dense FogVolume keeps `light_volumetric_fog_energy = 0`.
   In `ch03/shell_shrine/shell_shrine.tscn` I set it on my own `Bounce/Skylight` (the light added under M2-ENV-09;
   no registered baseline shows the shrine). Your three `Bounce/Shaft_*` lights and `_pool_bounce()` in
