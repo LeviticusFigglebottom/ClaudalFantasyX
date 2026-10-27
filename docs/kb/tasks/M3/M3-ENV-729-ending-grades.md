@@ -21,7 +21,6 @@ E1–E7); each needs its grade before Cinematics can stage it.
   Haluna's dock and Oruvel).
 
 ## Notes
-- **2026-10-27 (env-art):** built. Follow-up: Oruvel's rebuilt variant for E7 (new lamp posts, fresh planks among
-  the old) isn't in the Oruvel kit yet.
+- **2026-10-27 (env-art):** built. E7's set, Oruvel rebuilt, is M3-ENV-730.
 
 ## Review log

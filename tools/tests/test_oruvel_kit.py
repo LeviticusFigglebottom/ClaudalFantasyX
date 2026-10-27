@@ -160,6 +160,7 @@ class PreviewTests(unittest.TestCase):
         self.assertEqual(self.LAYOUT["kit_dir"], "res://assets/environments/kits/oruvel/")
         names = {p["piece"] for p in self.LAYOUT["pieces"]}
         storm = {p["piece"] for p in self.LAYOUT["states"]["storm"]["pieces"]}
+        storm |= {p["piece"] for p in self.LAYOUT["states"]["rebuilt"]["pieces"]}  # M3-ENV-730, E7's rebuilt state
         self.assertTrue(names | storm <= set(TARGETS), (names | storm) - set(TARGETS))
         self.assertEqual(names | storm, set(TARGETS), "every piece is in the preview (the kit rows at least)")
         self.assertFalse(names & set(STORM.TARGETS), "the storm pieces show only in the storm state")

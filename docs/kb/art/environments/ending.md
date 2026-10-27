@@ -29,8 +29,8 @@ Owner: Environment Artist (M3-ENV-729). Lighting review: Rendering. Staging: Cin
   cool `#9DB4D9` 0.4 sky light; fill `#3A5A8A` 0.35; fog `#3A4A6A` 0.006; exposure 1.05; `lut_post_credits`.
 - **The only warm source** is the one oil lamp lit with Mother Kell's wick: the `lamp` row, `#FFAE67` 1.4, an
   OmniLight the stager places at the wick. No glimmer anywhere.
-- **The set** is Oruvel's raft-town (the Oruvel kit, M3-ENV-07) rebuilt: the rebuilt variant isn't in the kit yet
-  (follow-up).
+- **The set** is Oruvel's raft-town rebuilt (M3-ENV-730; oruvel.md §7): the Oruvel layout's `states.rebuilt`, with
+  `first_lamp` where the OmniLight goes.
 
 ## Revisions
 - 2026-10-27 (env-art, M3-ENV-729): first issue, the three grades.
