@@ -2,8 +2,8 @@
 id: M2-UI-100
 title: Voice-over and narrator lines as subtitles, so the dialogue box stops covering the prologue's frame
 role: ui
-status: todo
-owner_session: ""
+status: doing
+owner_session: "claude/ui (ui-menus)"
 depends_on: []
 milestone: M2
 request-from: cinematics
