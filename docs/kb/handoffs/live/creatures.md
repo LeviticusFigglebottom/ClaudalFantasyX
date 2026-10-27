@@ -306,4 +306,11 @@ Merge the three creature worktrees as they finish (they append to creatures.json
   - Then the react beat calls `BattleClips.play`, which sets `p.speed_scale = speed` again. So the target's hit clip runs through the hold while the attacker and the procedural recoil stay frozen.
   - Suggested fix: BattleImpact holds the targets again after their reactions start (or BattleClips.play leaves a held player at 0 and BattleImpact restores `speed` on release).
   - My side is done: creature hits now start on a struck pose (M3-CRE-617), so once the hold works the frozen frame shows the blow.
+- Re-checked after M3-CRE-617: creature_drownbell, _toll, _cinder_matron, _tower_limpet and _undertows_reach have rmse 0 (the rebuilt hits don't touch them).
+- **MERGE-READY @ 15c8c997: M3-CRE-618, portrait rim for the dark creatures (queue item 5).**
+  - CreaturePortrait's key and rim now come from the camera, not the world, so every portrait yaw is lit alike.
+  - The 9 darkest creatures by measured albedo get rim 2.8 plus a low kick light.
+  - The review sheet fits all 20 (it cropped its top and bottom rows); viewed and re-approved.
+  - **Checks run:** validate_data, lint, format, Godot creature 25/0, tools test_creatures. **Checks skipped:** other shots (nothing else uses CreaturePortrait on this branch).
+- **For ui-menus (relay):** your bestiary bake (tools/portraits) uses the same camera-relative rims, with `light_scale` for hullgnaw, scuttler, squall_wing, tide_crawler and undertows_reach. By measured albedo, add `spawn_polyp` and `wall_polyp` (black bases), `flue_moth` and `oil_slug` (glossy near-black). creatures.json `portrait.rim_energy` > 1.1 marks the dark ones if you'd rather read it than keep a list.
 
