@@ -3,10 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
+uid="uid://ceqpqbe4g64gs"
+path="res://.godot/imported/save_shrine_core.glb-43d2f6364fbe3be10bfe704813bb66af.scn"
 
 [deps]
 
 source_file="res://assets/environments/kits/haluna/save_shrine_core.glb"
+dest_files=["res://.godot/imported/save_shrine_core.glb-43d2f6364fbe3be10bfe704813bb66af.scn"]
 
 [params]
 

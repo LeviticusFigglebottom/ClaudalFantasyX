@@ -18,7 +18,8 @@ backs to the water; motes rising straight up into a gap in the cloud. The only w
   roots, barnacled at the tide line, grey-green crowns above.
 - Mudbanks and root-mats show at low water. Reed beds fill the slack water.
 - Reedhollow is the Kirru roost-village: woven reed-and-pole roosts raised on the mangroves' own roots, with the
-  clutch's name-shells hung on cords at the water's edge.
+  clutch's name-shells hung on cords at the water's edge. They are the living's own tokens: the Kirru keep nothing
+  of their dead (bible §8). A blank one is an exile's.
 
 **The Drowner's tree.** Where the Drowner took root, a great old mangrove has died:
 - its crown is bare and bleached (`bone`);
@@ -82,7 +83,7 @@ slots' metre:
 | F01 ◆★ | 28 mm | On the water in a channel, 1 m up | The mangroves closing over the tea-dark water, root cages reflected, an egret on a root. |
 | F02 ◆★ | 35 mm | Reedhollow's edge at dusk | The clutch with their backs to the water; the name-shell cords; the motes rising into the cloud gap. |
 | F03 ◆ | 24 mm | Under the dead tree | The Drowner's mangrove: bare bleached crown, black roots, nothing green. |
-| F04 | 50 mm | Close on a name-shell cord | Carved shells, one scraped blank. |
+| F04 | 50 mm | Close on a name-shell cord | The clutch's carved shells, one scraped blank (an exile's, not the dead's). |
 
 ## 4. Review checklist
 

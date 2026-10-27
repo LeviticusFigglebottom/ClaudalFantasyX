@@ -508,6 +508,17 @@
         "keth_terrace_ground-lod1": 2048
       }
     },
+    "kirru_roost": {
+      "budget": [
+        9000,
+        700
+      ],
+      "bytes": 173332,
+      "lods": {
+        "kirru_roost": 3060,
+        "kirru_roost-lod1": 492
+      }
+    },
     "lamp_niche_tier": {
       "budget": [
         3000,
@@ -616,6 +627,17 @@
       "lods": {
         "market_stall": 1884,
         "market_stall-lod1": 192
+      }
+    },
+    "name_shell_cord": {
+      "budget": [
+        3000,
+        250
+      ],
+      "bytes": 105876,
+      "lods": {
+        "name_shell_cord": 1960,
+        "name_shell_cord-lod1": 240
       }
     },
     "net_float_cluster": {

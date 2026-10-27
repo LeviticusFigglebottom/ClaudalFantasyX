@@ -15,6 +15,12 @@ coastal leaf atlas (veg_common.COASTAL_ATLAS's banyan sprays), tinted grey-green
                       prop-roots only on the far side (the creature is the cage on the near side); 14 m.
   reed_bed            slack-water reeds, crossed two-sided blade cards, 1.2-2.1 m, about 6 x 4 m.
   fen_far_mangroves   the far tree-line round the channels: a low canopy band, r 70-110 m.
+  kirru_roost         a Kirru roost-lodge (bible §5.5): a barrel of bundled-reed arches and woven reed panels, 5 m long,
+                      2.8 m inside (the Kirru stand 2.1-2.4 m), open at its +Z end, on a lashed pole deck 1.2 m over
+                      the water on four mangrove-pole legs; origin at the legs' foot centre.
+  name_shell_cord     the clutch's name-shells on a cord between two poles at the water's edge, 6 m: each a carved
+                      shell token, one scraped blank (an exile's). The living's own: the Kirru keep nothing of their
+                      dead (bible §8).
 
 Nothing green grows on the dead tree (mangrove_drowner.md).
 """
@@ -33,9 +39,13 @@ M_BARK_DEAD = "kit_fen_bark_dead"
 M_LEAF = "kit_fen_leaf"
 M_REED = "kit_fen_reed"
 M_FAR = "kit_fen_canopy_far"
+M_WEAVE = "kit_woven_panel"
+M_LASH = "kit_lashing"
+M_SHELL = "kit_nacre"
 
 TRI_BUDGET = {"fen_bank_ground": (30000, 2400), "mangrove_tree": (10000, 900), "mangrove_dead": (12000, 900),
-              "reed_bed": (3000, 300), "fen_far_mangroves": (4000, 800)}
+              "reed_bed": (3000, 300), "fen_far_mangroves": (4000, 800), "kirru_roost": (9000, 700),
+              "name_shell_cord": (3000, 250)}
 
 WATER_Y = -0.15
 BANK = (-5.4, 6.8, -4.0, 5.0)  # x0, x1, z0, z1 of the bank's level top: the slots' metre and more
@@ -308,10 +318,120 @@ def build_far(seed: int = 1805) -> list[kc.MeshBuilder]:
     return out
 
 
+# ---------------------------------------------------------------------------------------------
+# Reedhollow: the roost and the name-shells
+# ---------------------------------------------------------------------------------------------
+ROOST_DECK_Y = 1.2
+ROOST_LEN = 5.0
+ROOST_W = 3.0
+ROOST_H = 2.8  # inside, over the deck
+
+
+def build_roost(seed: int = 1806) -> list[kc.MeshBuilder]:
+    out = []
+    for lod in (False, True):
+        rng = kc.rng_for("kirru_roost", seed)
+        noise = kc.Noise3(rng)
+        mb = kc.MeshBuilder("kirru_roost" + ("-lod1" if lod else ""))
+        bark, weave, lash = mb.material(M_BARK), mb.material(M_WEAVE), mb.material(M_LASH)
+        hw, hl = ROOST_W * 0.5, ROOST_LEN * 0.5
+        # Four mangrove-pole legs into the water, braced, and the deck of lashed poles across two bearers.
+        for sx in (-1.0, 1.0):
+            for sz in (-1.0, 1.0):
+                foot = np.array([sx * (hw - 0.2), -0.6, sz * (hl - 0.3)])
+                kc.tube(mb, np.stack([foot, foot + [rng.normal(0, 0.03), ROOST_DECK_Y + 0.6, rng.normal(0, 0.03)]]),
+                        np.array([0.09, 0.07]), 4 if lod else 7, bark)
+            kc.tube(mb, np.array([[sx * (hw - 0.2), ROOST_DECK_Y - 0.08, -hl], [sx * (hw - 0.2), ROOST_DECK_Y - 0.08, hl]]),
+                    0.07, 4 if lod else 6, bark)
+        if lod:
+            kc.rounded_block(mb, (0.0, ROOST_DECK_Y, 0.0), (hw, 0.04, hl), bark, radius=0.02, seg=1)
+        else:
+            for z in np.arange(-hl + 0.06, hl, 0.12):
+                kc.tube(mb, np.array([[-hw - 0.1, ROOST_DECK_Y, z], [hw + 0.1, ROOST_DECK_Y + rng.normal(0, 0.008), z]]),
+                        0.055, 5, bark, noise=noise, disp_m=0.004)
+            for sx in (-1.0, 1.0):  # lashings where the deck crosses the bearers
+                for z in np.arange(-hl + 0.4, hl, 0.9):
+                    kc.tube(mb, np.array([[sx * (hw - 0.2), ROOST_DECK_Y - 0.14, z - 0.06],
+                                          [sx * (hw - 0.2), ROOST_DECK_Y + 0.06, z + 0.06]]), 0.02, 4, lash)
+        # The lodge: bundled-reed arches (a pointed barrel, heron-tall), woven panels between them, open at +Z.
+        n_arch = 6 if lod else 11
+        zs = np.linspace(-hl + 0.1, hl - 0.25, n_arch)
+        t = np.linspace(0.0, 1.0, 7 if lod else 15)
+        prof = np.stack([np.cos(t * math.pi) * hw * (1.0 - 0.12 * np.sin(t * math.pi)),
+                         ROOST_DECK_Y + ROOST_H * np.sin(t * math.pi) ** 0.8 + 0.25 * np.sin(t * math.pi) ** 6], -1)
+        for k, z in enumerate(zs):
+            back = 1.0 - 0.18 * kc.smoothstep(-hl + 1.2, -hl, z)  # the back end rounds in
+            arch = np.stack([prof[:, 0] * back, ROOST_DECK_Y + (prof[:, 1] - ROOST_DECK_Y) * back,
+                             np.full(len(t), z)], -1)
+            kc.tube(mb, arch, 0.06, 4 if lod else 6, mb.material(M_REED))
+            if k + 1 < len(zs):
+                z1 = zs[k + 1]
+                back1 = 1.0 - 0.18 * kc.smoothstep(-hl + 1.2, -hl, z1)
+                a1 = np.stack([prof[:, 0] * back1, ROOST_DECK_Y + (prof[:, 1] - ROOST_DECK_Y) * back1,
+                               np.full(len(t), z1)], -1)
+                grid = np.stack([arch, a1], 1) * np.array([0.97, 1.0, 1.0])  # the panel sits just inside the arches
+                uv = np.stack(np.broadcast_arrays(t[:, None] * 6.0, np.array([0.0, 1.0])[None, :] * (z1 - z) * 2.0), -1)
+                kc.quad_strip(mb, grid, weave, uv=uv, col=(0, 0, 0, 0.3), uv2=(0.9, 0.5))
+                kc.quad_strip(mb, grid, weave, uv=uv, col=(0, 0, 0, 0.3), uv2=(0.6, 0.5), flip=True)
+        # The closed back: a woven cap.
+        back = np.stack([prof[:, 0] * 0.82, ROOST_DECK_Y + (prof[:, 1] - ROOST_DECK_Y) * 0.82, np.full(len(t), -hl + 0.05)], -1)
+        mid = np.stack([np.zeros(len(t)), np.full(len(t), ROOST_DECK_Y + 0.05), np.full(len(t), -hl + 0.05)], -1)
+        grid = np.stack([back, mid], 1)
+        uv = np.stack(np.broadcast_arrays(t[:, None] * 6.0, np.array([0.0, 1.0])[None, :]), -1)
+        kc.quad_strip(mb, grid, weave, uv=uv, col=(0, 0, 0, 0.3), uv2=(0.8, 0.5))
+        kc.quad_strip(mb, grid, weave, uv=uv, col=(0, 0, 0, 0.3), uv2=(0.8, 0.5), flip=True)
+        out.append(mb)
+    return out
+
+
+def build_name_cord(seed: int = 1807) -> list[kc.MeshBuilder]:
+    out = []
+    for lod in (False, True):
+        rng = kc.rng_for("name_shell_cord", seed)
+        mb = kc.MeshBuilder("name_shell_cord" + ("-lod1" if lod else ""))
+        bark, lash, shell = mb.material(M_BARK), mb.material(M_LASH), mb.material(M_SHELL)
+        top = 2.2  # Kirru height: the shells hang at a Kirru's eye
+        for x in (-3.0, 3.0):
+            kc.tube(mb, np.array([[x, -0.5, 0.0], [x + rng.normal(0, 0.04), top + 0.25, 0.0]]), np.array([0.06, 0.045]),
+                    4 if lod else 6, bark, cap_end=True)
+        t = np.linspace(0.0, 1.0, 9 if lod else 21)
+        kc.tube(mb, np.stack([-3.0 + 6.0 * t, top - 0.35 * 4.0 * t * (1.0 - t), np.zeros_like(t)], -1), 0.012,
+                3 if lod else 4, lash)
+        n = 14
+        blank = int(rng.integers(3, n - 3))
+        for k in range(n):
+            s_ = (k + 0.5 + rng.uniform(-0.2, 0.2)) / n
+            x = -3.0 + 6.0 * s_
+            y = top - 0.35 * 4.0 * s_ * (1.0 - s_)
+            ln = rng.uniform(0.25, 0.45)
+            kc.tube(mb, np.array([[x, y, 0.0], [x, y - ln, 0.0]]), 0.005, 3, lash)
+            # The shell: a carved scallop token, 9 cm, its face turned to the water (+Z); the scraped one is
+            # flat and blank, the others carry their name's ribs.
+            c = np.array([x, y - ln - 0.045, 0.0])
+            ribs = 0 if (k == blank or lod) else 7
+            a = np.linspace(-1.1, 1.1, 4 if lod else 11)
+            r = np.linspace(0.0, 1.0, 2 if lod else 4)
+            A, R = np.meshgrid(a, r, indexing="ij")
+            bump = 0.004 * np.abs(np.sin(A * ribs)) * R if ribs else 0.0 * A
+            Xs = c[0] + np.sin(A) * R * 0.05
+            Ys = c[1] + 0.04 - np.cos(A) * R * 0.05
+            Zs = c[2] + 0.006 * (1.0 - R ** 2) + bump
+            grid = np.stack([Xs, Ys, Zs], -1)
+            uv = np.stack([A / 2.2 + 0.5, R], -1)
+            kc.quad_strip(mb, grid, shell, uv=uv, col=(0, 0, 0, 0.2), uv2=(0.9, 0.5 if k != blank else 0.9))
+            if not lod:  # the back (LOD1 draws the face only)
+                kc.quad_strip(mb, grid - np.array([0.0, 0.0, 0.004]), shell, uv=uv, col=(0, 0, 0, 0.2), uv2=(0.9, 0.5),
+                              flip=True)
+        out.append(mb)
+    return out
+
+
 TARGETS = {
     "fen_bank_ground": build_ground,
     "mangrove_tree": build_tree,
     "mangrove_dead": build_dead,
     "reed_bed": build_reeds,
     "fen_far_mangroves": build_far,
+    "kirru_roost": build_roost,
+    "name_shell_cord": build_name_cord,
 }

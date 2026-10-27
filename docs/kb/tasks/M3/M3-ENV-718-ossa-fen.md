@@ -14,7 +14,7 @@ The Lead's queue item 4 (the Act II places the Ch10–12 bosses need), for Ch10'
 ## Acceptance criteria
 - [x] The design sheet: `docs/kb/art/environments/ossa_fen.md`.
 - [x] The kit's arena pieces and the arena `ossa_fen_roots` for the Mangrove Drowner, to the battle contract (battle_arenas.md).
-- [ ] The zone kit's remaining pieces (the sheet's §1).
+- [x] The zone kit's remaining pieces (the sheet's §1): `kirru_roost`, `name_shell_cord` (2026-10-27).
 - [ ] PC renders viewed and approved.
 
 ## Notes
@@ -27,6 +27,7 @@ The Lead's queue item 4 (the Act II places the Ch10–12 bosses need), for Ch10'
     track's model merges). Shot `battle_arena_ossa_fen_roots`.
   - **Tests.** `tools/tests/test_ossa_fen.py` (9).
   - **For act1/creatures:** set the Ch10 Drowner encounter's arena to `ossa_fen_roots`.
-  - **Next:** `kirru_roost` and `name_shell_cord` for the zone.
+  - **Zone pieces:** `kirru_roost` (the Kirru-tall lodge on its pole deck) and `name_shell_cord` (the living clutch's
+    shells, one scraped blank) are built too.
 
 ## Review log
