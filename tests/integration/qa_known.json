@@ -1,0 +1,9 @@
+{
+  "version": 1,
+  "doc": "Integration QA (M3-HER-1121, test_qa_threads.gd): warnings and errors the playthrough guards already know about, each handed to its owner as a request task. A message matching `pattern` (a regex) is counted and reported under its task, not failed; anything else fails the guard. Remove a row when its task lands; the guard then holds that kind of message out for good.",
+  "known": [
+    {"pattern": "^CutsceneSequencer\\(([a-z0-9_]+)\\): no sound '", "task": "M3-HER-1122", "owner": "audio"},
+    {"pattern": "^CutsceneSequencer\\(([a-z0-9_]+)\\): no music for '", "task": "M3-HER-1122", "owner": "audio"},
+    {"pattern": "is not performed yet \\(placeholder\\)$", "task": "M3-HER-1123", "owner": "slice-polish"}
+  ]
+}
