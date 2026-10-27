@@ -117,16 +117,12 @@ Ch7 "The Tidecup" is built the same way: `game/data/flow/chapters/ch07.json`, tw
 - `checkpoint(spawn)`: B04's autosave before the naming. It moves the respawn point and calls `SaveSystem.request_autosave`.
 - `stand(actor, mark)`: puts an actor on a mark with no walk, so Tavi is at his boat when the Bell is entered after B07.
 
-**The Reefball seam.** B05 (`ch07_naming.dlg`) ends on `<<event start_reefball tidecup_opening>>`, declared in `events.json`. The zone's `naming` beat reads it with `{"if_event": "start_reefball", "steps": [{"beat": "reefball_match"}]}`. **`reefball_match` is the only beat the Reefball agent replaces.** Today its steps are a stand-in:
-- set `ch07_tidecup_played` (never `ch07_tidecup_won`);
-- `go` back to `ch07/tamsule_bell_galleries` at `CatchPool`.
+**The Reefball seam.** B05 (`ch07_naming.dlg`) ends on `<<event start_reefball tidecup_opening>>`, declared in `events.json`. The zone's `naming` beat reads it with `{"if_event": "start_reefball", "steps": [{"beat": "reefball_match"}]}`, and `reefball_match` is one `scene` step to `game/levels/ch07/tidecup_match/tidecup_match.tscn` (M3-C07-1206). `TidecupMatch` frames the Reefball engine's story match (data `game/data/flow/ch07_tidecup.json`):
+- it plays the match through the Reefball HUD and its controller (M3-UI-01) when they are in the build, loaded by path until the UI track's branch lands; otherwise the engine's AI plays both sides at once (a headless fallback);
+- at the end it sets `ch07_tidecup_played` always, and `ch07_tidecup_won` plus the win reward on a win only (a draw counts as a loss for rewards);
+- it returns to `ch07/tamsule_bell_galleries` at `CatchPool`.
 
-The real steps hand off to the match scene. The match must:
-- set `ch07_tidecup_played` always, and `ch07_tidecup_won` on a win only (a reward);
-- give its own rewards;
-- return to `ch07/tamsule_bell_galleries` at `CatchPool`.
-
-The zone's first arrival row then plays B07 the same either way. No story `.dlg` and no chapter flow may read `ch07_tidecup_won`. The test enforces it, and its `REWARD_SCRIPTS` lists any script that gives the reward.
+The zone's first arrival row then plays B07 the same either way. No story `.dlg` and no chapter flow may read `ch07_tidecup_won`. The test enforces it, and its `REWARD_SCRIPTS` lists any script that gives the reward. `test_ch07_tidecup_match` covers the win, loss and draw paths.
 
 **Seams to other chapters.**
 - **Entry:** Ch6's dawn (B10) hands off to `ch07/tamsule` at `RiverMouth`; the location row and the F5 teleport reach it directly too.

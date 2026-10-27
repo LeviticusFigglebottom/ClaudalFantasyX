@@ -67,6 +67,15 @@ cutscene sequencer (`game/cutscene/**`), `game/flow/**` and the playtest fixes.
   the ferry kit and the Seventh Terrace; collision from the kit's hull constants; `test_ch04_thread` 11/0. The two new
   shots fail `test_screenshots` (no baseline) until the PC render comes back.
 
+- **MERGE-READY @ 69c8a5e6 for M3-C07-1206 only** (cherry-pickable: `ch07.json`, `game/levels/ch07/tidecup_match/`,
+  `ch07_tidecup.json`, the two Ch7 tests, the task files): Ch7's real Reefball match replaces the stand-in. TidecupMatch
+  plays `tidecup_opening` through the HUD by path (M3-UI-01, on claude/ui, not yet integrated), else the engine's AI
+  plays both sides; flags and reward per act1_ch07.md §5.4; back to CatchPool. Requests M3-PRG-1207 (Oruvel Float:
+  no accessory slot exists), M3-RBL-1208 (the opponent is Sorrin in the story, Pemakar in the data; the §5.3 barks).
+  - **Checks run:** `--filter=ch07` 8/0; validate_data, taskboard, gdlint, gdformat. **Skipped:** shots (no scene with
+    a camera changed), coverage (no battle/progression code), the full suite.
+  - **Ch4 (180510e1) is still WIP in this branch's head** until its render request is answered.
+
 ### Render requests
 RENDER-REQUEST @ 180510e1: ch04_ferry_deck, ch04_ferry_derelict; why: M3-C04-1204 dresses the Ch4 ferry and derelict with the ferry kit (new shots, no baseline yet)
 
