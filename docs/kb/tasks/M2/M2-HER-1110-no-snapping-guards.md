@@ -40,4 +40,12 @@ static, so any blend between them has to move the arms. That's a gesture, not a 
   data cap; inside the guard's 6.0). Rhen peaks at 5.85 m/s on Pemakar and 5.49 on Ashcrown: slope or step
   push-ups from the CharacterBody, under the limit. Worth a look in play (FieldController is m2-slice's).
 
+### 2026-10-27: villagers
+- tests/unit/test_villager_snaps.gd: Haluna's villagers (creatures' VillagerLayer, loaded by path so the test skips
+  until it lands) run their routines for 6 s, then the player visits each one (from 120 deg round its facing), talks
+  and leaves. Every actor root is checked for snaps, and every clip change at FieldNpc's own blends for pops. On a local
+  trial merge with claude/creatures: all 7 pass (turns 110–200 deg/s eased; clip peaks at about half the allowed
+  step). Nothing to fix in FieldNpc. The gap is placement: request M2-HER-1112 (slice-polish) to put the layer in
+  Haluna.
+
 ## Review log
