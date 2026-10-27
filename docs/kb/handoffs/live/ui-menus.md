@@ -82,3 +82,26 @@ RENDER-REQUEST @ 26755f97: field_menu_codex, field_menu_map_haluna, field_menu_m
 
 **MERGE-READY @ 26755f97** (claude/ui = integration @ 7cccb551 + this track): the Lead's 17:19 queue items 1–8, all done (see the table): M3-RBL-201, M2-MNU-306, shrine travel, M3-UI-100's running total, the 'parts look primitive' pass, the accessibility sweep, the prompt audit (test_loc_key_names), and Act I UI (the Ch6 map, 22 codex entries). Merge notes (ff024dba): encounters.json keeps carry_flag on the stair waves and adds the integration branch's three Ch8 field encounters; each conflicted baseline PNG takes the side approved last (11 ours, 1 theirs: battle_choreo_hit); balance_report.md is the integration branch's; shots/baselines/flags/PROVENANCE by merge_union.py. Checks run: import clean, gdlint + gdformat clean (765 files), validate_data 0/0, taskboard OK, no duplicate loc keys, test_zone_map_pois + test_loc_key_names OK; Godot: set_piece 35/0, bestiary 37/0, codex 14/0, zone_map 20/0, objective 15/0, shrine 43/0, pseudo 23/0, aspect 15/0, screen_motion 7/0, field_menu 32/0. Skipped: coverage (no game/battle or game/progression code since the coverage run at 6454c06c+; this batch is data, UI and tests), Blender (no Blender source), the full suite (the Lead's, after the merge batch). Shots: none in the cloud; three RENDER-REQUEST lines are pending (17325e00, 99623a0c portraits, 26755f97).
 RENDER-REQUEST @ 17325e00: boot_title, save_menu, save_menu_overwrite, battle_victory, battle_read_panel, shop_menu_buy, shop_menu_sell, inn_menu, reefball_hud_choice, reefball_hud_goal, formation_menu, battle_ch08_stair_hold; why: the 'parts look primitive' batch (title reveal: boot_title settles 72 frames now; save rows' party faces; result row stagger; shop/inn motion), M3-RBL-201 (Reefball Contests tags, greyed refused rows, stakes from matches.json), M2-MNU-306 (Formation role word on the place line), M3-UI-100's meter with the running total (battle_ch08_stair_hold is new, no baseline).
+
+- 2026-10-27: **Item 8 follow-up and the next item taken (M3-C07-05).**
+  - **Correction to item 8:** the integration merge brought Ch8's field zones, so "Ch8 has no field zone" no longer holds. `ch08/corrow` and `ch08/coilspire` now have maps and route stops (a195cd39). The codex adds Coilspire and Ivo Brannick, and Corrow now unlocks on `ch08_arrived_corrow`. That makes 24 Act I entries.
+  - **The tools codex test** still capped the set at 10. It is fixed (843448c2).
+  - **M3-C07-05**, progression's, UI-adjacent, now in review (f0accc4c):
+    - Tamsule's trader and inn;
+    - the Tidecup rewards on the match row (validated);
+    - the Oruvel Float, as a key item.
+  - **ShrineServices**, so greybox shrines save, attune and offer travel. The Brine Shoals camp is in the network. The layout payloads go to act1-chapters as request **M3-UI-204**.
+  - **Lead decision needed:** an accessory slot. The game has none (`equip_slots` is weapon and armor), so the Float can't be equipped and the Reefball outfitter has nothing to sell.
+  - **Checks:**
+    - shrine 47/0, reefball 70/0, shop 27/0, inn 10/0, item 82/0, save_menu 21/0;
+    - zone_map 20/0, objective 15/0, map 22/0, codex 14/0, pseudo 23/0, aspect 15/0;
+    - validate_data 0/0; gdlint and gdformat clean.
+    - Tools suite: 1147 tests. The one failure is the expected `test_screenshots` gap: `battle_ch08_stair_hold` has no baseline until the PC renders it (RENDER-REQUEST @ 17325e00).
+RENDER-REQUEST @ a195cd39: field_menu_codex; why: the codex set grew (Ch8 entries; the shot's flags unlock the Order entry as well). The map shots near Haluna and the Underway don't show the new Ch6 and Ch8 stops (the strip shows near stops only), so only the codex shot is asked again; it supersedes the 26755f97 line's field_menu_codex.
+
+**MERGE-READY @ a195cd39** (claude/ui = integration @ 7cccb551 + this track): everything in the MERGE-READY @ 26755f97 line, plus:
+- the Ch8 maps and codex entries;
+- M3-C07-05 (Tamsule's data, the Tidecup rewards, ShrineServices);
+- the tools codex test fix.
+
+Checks are as listed in the line above. Skipped: coverage (no change in game/battle or game/progression), Blender (no Blender source), and the full Godot suite (the Lead's).
