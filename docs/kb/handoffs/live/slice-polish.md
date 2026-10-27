@@ -165,6 +165,23 @@ Ch4–Ch9 onward. `m2-slice.md` beside this file is the history up to the 2026-1
     validate_data (0 errors), taskboard, lint, format, ruff and the new tools test all clean.
   - **Checks skipped:** coverage and Blender (nothing they cover).
 
+- **MERGE-READY @ 05f6abc9** (M3-C01-101, Ch1 polish). Ch1's Underway now wears env-art's drowned-tower kit, under
+  a sea at y 10 with the UnderwaterRig. This is the first shipped zone with the rig, so the zone is in
+  prewarm_materials' five underwater entries.
+  - **Rooms stay put.** The rooms stay side by side at y 0, because ui-menus' zone map draws them top-down and
+    reads floors by height. Their walls moved onto the kit's 6 m grid. No trigger, spawn or POI moved; the old tin
+    moved 3 m into the squared alcove.
+  - **Depth by lighting.** Each room is lit as at its real tower depth (the crown at 6.4 m, the bell-room at
+    9.6 m, the galleries at 22.4 m), using the kit preview's arithmetic.
+  - **The cut gauge wheel** swaps in on its flag.
+  - **Checks:** ch01 20, zone_map 20, objective 15, debug_overlay 14, kit_dressing 5, underway 10,
+    undertow_shaders 9, character_shading 17, hero_field_snaps 2, slice_shots 1, all 0 failed. validate_data,
+    taskboard, lint and format are clean. The tools tests are fine: the new dressing test, fog_lamps and
+    release_excludes_tests.
+  - **Checks skipped:** coverage and Blender (nothing they cover).
+  - **Also in it:** test_ch01_oruvel_kit now clears `ch01_gulls_cried` first. An earlier suite left the storm up,
+    which broke the storm-swap test in the full ch01 run.
+
 - **Correction (ec3ba50a):** my first B11 pass (4f616566) added a letterbox and three scripted camera setups.
   vertical_slice.md defines B11 (and B02) as **E** scenes: in-engine, no letterbox, and the player keeps the camera
   rail. Those cues are out. B11 keeps Rhen's walk out to Asha and the turns between them. Lead: take ec3ba50a with
@@ -186,3 +203,4 @@ RENDER-REQUEST @ faa61872: slice_beach_h05_asha, slice_beach_h06_toma, slice_hal
 RENDER-REQUEST @ 3fddb67b: slice_beach_h05_asha, slice_beach_h06_toma, slice_haluna_villagers_village, slice_causeway_head, slice_causeway_harrier_view, slice_verse_steps; why: found the cause of "no capture". These shots set `flags`, which CaptureSetup refused as a PackedStringArray; it is a plain Array now, and test_slice_shots goes through CaptureSetup. Render this sha instead of 87d04cea's.
 RENDER-REQUEST @ 8b25b3b4: slice_beach_h05_asha, slice_beach_h06_toma, slice_haluna_villagers_village, slice_causeway_head, slice_causeway_harrier_view, slice_verse_steps, slice_dock_night_yes, haluna_h10_dock_night; why: the rig fix (3fddb67b), B11 staged (M2-FP-115), and the causeway pacing (M2-FP-114). This supersedes the 87d04cea and a2eb22c4 requests.
 RENDER-REQUEST @ ba49617a: ch01_oruvel_dressed; why: M3-C01-100 dresses Ch1's Oruvel with the raft-town kit (a new shot from the ScaleHull spawn looking north over the town; no baseline yet). If the dressed town reads wrong (decks floating or sunk, grey blocks showing through), push the out PNG anyway so I can fix the placement.
+RENDER-REQUEST @ 05f6abc9: ch01_underway_crown, ch01_underway_gallery, ch01_oruvel_dressed; why: M3-C01-101 dresses Ch1's Underway with the drowned-tower kit, the sea and the UnderwaterRig (the first zone with the rig; new shots, no baselines). Also renders the Oruvel shot from the ba49617a request, so render this one instead. Please push the out PNGs even if a frame reads wrong (black, a grey box, the camera above the water), so I can fix the placement or the lighting.
