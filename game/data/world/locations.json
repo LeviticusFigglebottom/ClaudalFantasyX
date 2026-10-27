@@ -150,6 +150,27 @@
       "_note": "M4-C12-02: Cloudloom, the summit temple (act_outline Ch12), a greybox zone (Ch12Zone): the stair up, the open-roofed weaving-hall and its keth, Hesk's dais."
     },
     {
+      "id": "ch13/ansedra",
+      "scene": "res://game/levels/ch13/ansedra/ansedra.tscn",
+      "spawn": "Moorings",
+      "name_key": "LOCATION_CH13_ANSEDRA",
+      "_note": "M4-C13-02: Ansedra, the holy city on its mirror lagoon (act_outline Ch13), a greybox zone (Ch13Zone) from tools/act1/ch13_greybox.py: the outer moorings (Kerrid's nights), Sefir's house, Corran's old house, the causeways to the Sanctum and the Lamp Archive."
+    },
+    {
+      "id": "ch13/sanctum",
+      "scene": "res://game/levels/ch13/sanctum/sanctum.tscn",
+      "spawn": "Gate",
+      "name_key": "LOCATION_CH13_SANCTUM",
+      "_note": "M4-C13-02: the Sanctum of the Level, the Glimmer temple (act_outline Ch13), a greybox zone (Ch13Zone): the vestibule, the nave round the still basin, Ethren's and Corran's places. Kerrid never comes in."
+    },
+    {
+      "id": "ch13/lamp_archive",
+      "scene": "res://game/levels/ch13/lamp_archive/lamp_archive.tscn",
+      "spawn": "Door",
+      "name_key": "LOCATION_CH13_LAMP_ARCHIVE",
+      "_note": "M4-C13-02: the Lamp Archive, the Order's library of Lit Age records (ADR 0016), a greybox zone (Ch13Zone): the reading room, the ledgers' table and the Cantor roll's."
+    },
+    {
       "id": "ch06/brine_shoals",
       "scene": "res://game/levels/ch06/brine_shoals/brine_shoals.tscn",
       "spawn": "Entry",

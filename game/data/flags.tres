@@ -170,5 +170,8 @@ flags = {
 "ch11_reached_lowlight": "Ch11: the party has walked the drowned galleries to Lowlight, the temple half underwater (M4-C11-02).",
 "ch12_started": "Ch12 (Act II): the party has come to the foot of Keth Pass (the chapter becomes 12; M4-C12-02).",
 "ch12_reached_quellan": "Ch12: the party has crossed Keth Pass into Quellan, the highland town (M4-C12-02).",
-"ch12_reached_cloudloom": "Ch12: the party has climbed from Quellan to Cloudloom, the summit temple (M4-C12-02)."
+"ch12_reached_cloudloom": "Ch12: the party has climbed from Quellan to Cloudloom, the summit temple (M4-C12-02).",
+"ch13_started": "Ch13 (Act II): the party has come to Ansedra's outer moorings, the holy city (the chapter becomes 13; M4-C13-02).",
+"ch13_entered_sanctum": "Ch13: the party has entered the Sanctum of the Level, the Glimmer temple (without Kerrid; M4-C13-02).",
+"ch13_entered_archive": "Ch13: the party has entered the Lamp Archive, the Order's library (M4-C13-02)."
 }

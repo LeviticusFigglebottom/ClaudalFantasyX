@@ -29,6 +29,8 @@ water), so the story slots in when the beat sheet (M4-C10-01, narrative) lands.
 - The beat sheet's story (M4-C10-01): scripts, the farewell-tide, the Drowner (creatures' M3-CRE-621 and an
   encounter with sim bands), the side scene, barks; Pell in the formation when his kit lands (M3-C09-07).
 - Ch9's act break hands off here instead of the end card, once the Lead switches Act II on.
+- When Pell is a party hero: Reedhollow keeps him out with a `party` step on arrival and one putting him back on the
+  way out (a zone's own `party` only fills an empty party), as ch13.json does for Kerrid and the Sanctum.
 - Env-art's fen and village kits (a request once the beat sheet names the shots).
 
 ## Review log
