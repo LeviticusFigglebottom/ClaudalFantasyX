@@ -1,0 +1,3 @@
+FAIL battle_arena_causeway_route_afternoon: rmse 0.03163 (limit 0.00800)
+Screenshots: 1 compared, 1 failed (diffs in /root/hymn/tests/screenshots/out/diff)
+compare exit 1
