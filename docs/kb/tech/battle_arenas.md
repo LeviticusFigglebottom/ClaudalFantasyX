@@ -198,6 +198,31 @@ Light `ch12` (09:00): sun 30° / 140°, key `#FAF6FF` 2.8, ambient `#7FA6DC` 0.8
 frame: the contract's `Sea` lies 160 m down the valley. Hints `under_the_wall`, `the_pass_below` (Kerrid's breath
 frame).
 
+### Lowlight's engine hall (`lowlight_engine_hall`, M3-ENV-716, the Haluna kit's lowlight.py)
+
+For the Lamp Engine (Ch11; the encounter id belongs to the creatures and combat tracks). The hall below the sanctum
+is flooded:
+- The floor is −0.6 and the arena's water lies at −0.15, still, on its own wave set (sea `waves`: 4 mm and 2 mm).
+- The battle floor is a dry dais, 10.8 × 8.2 m, of laid flags on a bedding slab with their tops at y 0. It runs from
+  x −4.6 to 6.2 and z −3.4 to 4.8: the slots' metre clear, off-centre toward the party. Two steps go down into the
+  water on every side.
+
+| Where | What |
+|---|---|
+| Behind the enemy line | The back wall: three tiers of empty lamp niches, the Engine's copper trimming rail at 3.5 m with its bound-teal lamps, two `conduit_run`s low on the wall |
+| Behind the foes, left | The fallen vault bay (x −6 to 0, z −10.5 to −4.5): the grey daylight shaft, its rubble in the water |
+| Off the dais, enemy side | The `BossAnchor` (−6.4, −0.6, −2.6): the Engine stands knee-deep in the water |
+| Round the hall | Eight ceramic piers carrying the ribbed vault (9 m; over 6 m clear above the slots), the conduit along the cornice |
+| Behind the camera | The stair down from the sanctum |
+
+Light `ch11` (12:30 overcast):
+- sun 65° / 200°, key `#F3F2FF` 1.4 through the broken bay, ambient `#7FA3A8` 0.7, exposure 0.75;
+- twelve rail lamps in `glimmer_bound` `#4FB3B0`, 1.6 and 9 m each, steady: an emissive globe, no flicker;
+- `lut_ch11_vey` (`lowlight_zone_lut.py`: ×0.85, greens ×0.6, the bound teal spared, the toe toward a teal slate).
+
+The water is the colour script's `overcast_lagoon`, with SSR on (the conduits' long reflections). Hints:
+`under_the_shaft`, `the_lamps`. Nothing is frozen (ADR 0015/0016).
+
 ### The underwater arena (`underway_tower`)
 
 An arena under the sea carries its own look, because the battle scene has none:

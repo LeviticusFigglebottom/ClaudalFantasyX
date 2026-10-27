@@ -73,9 +73,9 @@ Materials (proposed new slots, the kit's own): `ll_ceramic` (lit_ceramic, gone g
 ## 2. The Lamp Engine arena (`lowlight_engine_hall`)
 
 The hall is built to the battle contract (battle_arenas.md):
-- **Floor:** the battle floor at y 0 is a dry stone dais in the middle of the flooded hall, 12 × 9 m, with the
-  water round it at −0.15 and lapping the dais steps. The Engine stands in the water at its knees, so the boss
-  anchor is at (−5, −0.45, −2.5), off the dais on the enemy side.
+- **Floor:** the battle floor at y 0 is a dry stone dais in the flooded hall, 10.8 × 8.2 m (off-centre toward the
+  party), with the water round it at −0.15 and lapping the dais steps. The Engine stands in the water at its
+  knees, so the boss anchor is at (−6.4, −0.6, −2.6) on the flooded floor, off the dais on the enemy side.
 - **Behind the enemy line:** the trimming rail and the hall's back wall, lit by the Engine's lamps.
 - **Behind the camera:** the stair down from the sanctum.
 - **Above:** the collapsed vault bay throws one grey shaft onto the water behind the foes. Six metres clear above
@@ -101,3 +101,8 @@ The hall is built to the battle contract (battle_arenas.md):
 ## Revisions
 
 - 2026-10-27 (env-art, M3-ENV-716): first issue, the sheet before the kit (the Lead's queue item 4).
+- 2026-10-27 (env-art, M3-ENV-716): the arena is built. In the Haluna kit's `lowlight.py` (`kit_lowlight_*`
+  materials) are `engine_hall`, `conduit_run` and `lamp_niche_tier`, with `lut_ch11_vey` from `lowlight_zone_lut.py`.
+  The arena is `lowlight_engine_hall` (battle_arenas.md). The dais moved off-centre and the boss anchor to
+  (−6.4, −0.6, −2.6), so the Engine stands in the water past the steps, as §2 meant. The Vey's and the temple's zone
+  pieces follow.

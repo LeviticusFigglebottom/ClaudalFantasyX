@@ -167,6 +167,17 @@
         "causeway_slab_steps-lod1": 36
       }
     },
+    "conduit_run": {
+      "budget": [
+        1500,
+        120
+      ],
+      "bytes": 12208,
+      "lods": {
+        "conduit_run": 68,
+        "conduit_run-lod1": 16
+      }
+    },
     "coral_boulder_a": {
       "budget": [
         3600,
@@ -220,6 +231,17 @@
       "lods": {
         "dock_haluna": 12630,
         "dock_haluna-lod1": 152
+      }
+    },
+    "engine_hall": {
+      "budget": [
+        34000,
+        2400
+      ],
+      "bytes": 679460,
+      "lods": {
+        "engine_hall": 7140,
+        "engine_hall-lod1": 480
       }
     },
     "feast_mat": {
@@ -462,6 +484,17 @@
       "lods": {
         "keth_terrace_ground": 14832,
         "keth_terrace_ground-lod1": 2048
+      }
+    },
+    "lamp_niche_tier": {
+      "budget": [
+        3000,
+        200
+      ],
+      "bytes": 44212,
+      "lods": {
+        "lamp_niche_tier": 420,
+        "lamp_niche_tier-lod1": 84
       }
     },
     "laundry_line": {

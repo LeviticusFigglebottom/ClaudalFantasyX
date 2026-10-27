@@ -3607,6 +3607,25 @@
           "screen_space_aa": 1
         }
       }
+    },
+    {
+      "id": "battle_arena_lowlight_engine_hall",
+      "scene": "res://game/levels/_tests/battle_arenas/preview_lowlight_engine_hall.tscn",
+      "camera": "BattleCamera",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
     }
   ]
 }

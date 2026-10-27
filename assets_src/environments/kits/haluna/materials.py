@@ -412,5 +412,24 @@ STANDARD["kit_keth_grass"] = {"albedo_color": hexc("#C6CBA4"), "roughness": 0.9,
                               "backlight_enabled": "true", "backlight": "Color(0.4, 0.42, 0.3, 1)"}
 
 
+# ---- M3-ENV-716 (appended by env-art): Lowlight's engine hall (lowlight.py; lowlight.md §1) ---------------------
+# The Lit Age white ceramic (lit_ceramic #DCE3E0) gone green with algae at the tide line, duller than Iskarra's
+# (overcast, four hundred years drowned); grey dressed stone under it; the Engine's copper gone to verdigris
+# (bronze_patina #5F8A78), warmed a step (the hall's only warm-coloured surfaces); the conduits' bound light
+# (glimmer_bound #4FB3B0), steady.
+MATERIALS["kit_lowlight_ceramic"] = stone("coral_concrete_albedo.png", "coral_concrete_normal.png", (2.0, 2.0),
+                                          base_triplanar=True, col_paint=hexc("#D3DBD7"), paint_cover=0.85,
+                                          normal_strength=0.5, roughness_base=0.55, specular_base=0.5,
+                                          cavity_darken=0.4, variation_value=0.1, algae_coverage="Vector2(0.3, 0.8)",
+                                          salt_coverage="Vector2(0.1, 0.3)", barnacle_coverage=0.2, use_moss=True)
+MATERIALS["kit_lowlight_stone"] = stone("coral_dressed_albedo.png", "coral_dressed_normal.png", (1.0, 1.0),
+                                        base_triplanar=True, col_tint=hexc("#A9AEAC"), normal_strength=1.0,
+                                        roughness_base=0.75, cavity_darken=0.4, ao_strength=0.7, variation_value=0.14,
+                                        algae_coverage="Vector2(0.4, 0.9)", salt_coverage="Vector2(0.1, 0.3)",
+                                        use_moss=False)
+STANDARD["kit_lowlight_copper"] = {"albedo_color": hexc("#6E8E74"), "metallic": 0.6, "roughness": 0.5}
+STANDARD["kit_lowlight_conduit"] = {"albedo_color": hexc("#4FB3B0"), "roughness": 0.2, "emission_enabled": "true",
+                                    "emission": hexc("#4FB3B0"), "emission_energy_multiplier": 2.0}
+
 if __name__ == "__main__":
     sys.exit(main())

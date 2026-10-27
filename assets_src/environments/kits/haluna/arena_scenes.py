@@ -1313,8 +1313,73 @@ KETH_ARENA = {
     "anchors": {"BossAnchor": (-7.5, 0.0, -3.0)},
 }
 
+# ---------------------------------------------------------------------------------------------
+# M3-ENV-716: the Lamp Engine's flooded hall under Lowlight's sanctum (lowlight.py; lowlight.md §2)
+# ---------------------------------------------------------------------------------------------
+def _lowlight():
+    import lowlight  # noqa: PLC0415
+
+    return lowlight
+
+
+BOUND_TEAL = "#4FB3B0"  # palette glimmer_bound: the Engine's trimmed lamps and the conduits, steady
+OVERCAST_LAGOON = {  # the colour script's `overcast_lagoon` look (ch11): the Act I water under a grey sky, muted
+    "name": "arena_overcast_lagoon", "shader": "res://game/shaders/water/water_ocean.gdshader",
+    "params": [("col_deep", "#0E4A55"), ("col_scatter_shallow", "#1FA3A6"), ("absorption_per_m", "Vector3(2, 0.5, 0.42)"),
+               ("absorption_scale", 1.5), ("scatter_energy", 0.1), ("caustic_strength", 0.0), ("col_foam", "#EEF6F4"),
+               ("col_sss", "#3FD0C9"), ("foam_crest_threshold", 0.9), ("roughness_far", 0.04), ("use_caustics", "false"),
+               ("use_ssr", "true"), ("use_sss", "false")]}
+
+
+def _lowlight_arena() -> dict:
+    ll = _lowlight()
+    h = ll.HALL_HALF - 0.6
+    lamps = [(x, ll.RAIL_Y + 0.45, -h) for x in (-9.0, -5.4, -1.8, 1.8, 5.4, 9.0)]
+    lamps += [(sx * h, ll.RAIL_Y + 0.45, z) for sx in (-1.0, 1.0) for z in (-7.0, -1.0, 5.0)]
+    return {
+        "id": "lowlight_engine_hall",
+        "sub_frame": "ch11",
+        "ground": "deck",
+        "ground_glb": KIT + "engine_hall.glb",
+        "lut": "res://assets/environments/arenas/lowlight_engine_hall/lut_ch11_vey.png",
+        # Colour script ch11 (12:30 overcast): key #F3F2FF 1.4 from 65 deg / 200 deg, through the fallen vault bay (the
+        # grey shaft); fill #7FA3A8 0.7; fog #8A9A98; exposure 0.75; lut_ch11_vey. Inside, the Engine's twelve trimmed
+        # lamps on the rail are the key (lowlight.md §0): bound teal, steady, no flame flicker.
+        "sun": {"elev": 65.0, "az": 200.0, "color": "#F3F2FF", "energy": 1.4, "max_distance": 60.0},
+        "fill": {"color": "#7FA3A8", "energy": 0.7},
+        "exposure": 0.75,
+        "fog": {"color": "#8A9A98", "aerial": 0.3, "density": 0.008, "sky_affect": 0.0, "height": 0.0,
+                "height_density": 0.0},
+        "sky_shader": LOW_SUN_SKY,
+        "sky": dict(CORROW_SKY, col_zenith="#7A8896", col_horizon_sun="#A8B4B8", col_horizon_away="#A8B4B8",
+                    sky_energy=0.9, sun_disc_energy=0.0, halo_energy=0.0, glow_energy=0.0, cloud_coverage=0.95),
+        # The hall's still water over the flooded floor: no wind reaches it (lowlight.md §0).
+        "sea": {"y": ll.WATER_Y, "tide_line_y": ll.WATER_Y, "sea_glow": 0.0, "material": OVERCAST_LAGOON,
+                "waves": [(20.0, 3.0, 0.004, 0.05), (140.0, 1.7, 0.002, 0.05)]},
+        "pieces": [
+            {"glb": KIT + "conduit_run.glb", "at": (x, 1.6, -ll.HALL_HALF + 0.05), "yaw": 0.0, "structure": True}
+            for x in (-8.0, 8.0)
+        ],
+        "scatters": [],
+        "lamp_spec": {"color": BOUND_TEAL, "energy": 1.6, "range_m": 9.0, "attenuation": 1.0,
+                      "flame_radius_m": 0.08, "flame_energy": 3.0},
+        "lamps": [{"at": p, "flame": True, "shadow": k == 2} for k, p in enumerate(lamps)],
+        "hints": {
+            "wide_high": ((-1.5, 7.5, 13.5), (0.0, 0.8, -3.0)),
+            "party_side": ((5.6, 1.7, 4.5), (-1.5, 1.0, -0.5)),
+            "foe_side": ((-5.6, 1.7, 4.0), (1.5, 1.0, 0.0)),
+            "under_the_shaft": ((2.5, 1.2, 4.0), (-3.0, 3.5, -8.0)),
+            "the_lamps": ((4.0, 2.4, 2.0), (-6.0, 4.0, -11.0)),
+        },
+        "anchors": {"BossAnchor": ll.ENGINE_AT},
+    }
+
+
+LOWLIGHT_ARENA = _lowlight_arena()
+
 ARENAS = {a["id"]: a for a in (TIDELINE, CAUSEWAY, CAUSEWAY_ROUTE, DERELICT_DECK, ASH_TERRACE, UNDERWAY_TOWER,
-                               RAFT_MORNING, SHOALS, CAMP, WALLHEAD_STORM, WALLHEAD_HOIST, WALLHEAD_SURGE, HEADLAND, TIER_HALL, KETH_ARENA)}
+                               RAFT_MORNING, SHOALS, CAMP, WALLHEAD_STORM, WALLHEAD_HOIST, WALLHEAD_SURGE, HEADLAND, TIER_HALL, KETH_ARENA,
+                               LOWLIGHT_ARENA)}
 
 
 # ---------------------------------------------------------------------------------------------
@@ -1415,8 +1480,20 @@ def write_arena(a: dict) -> Path:
     sea = a["sea"]
     sea_props = {
         "transform": f"Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, {sea['y']}, 0)",
-        "script": f'ExtResource("{sc.res("Script", "res://game/world/arenas/arena_sea.gd")}")',
-        "wave_set": f'ExtResource("{sc.res("Resource", WAVES)}")'}
+        "script": f'ExtResource("{sc.res("Script", "res://game/world/arenas/arena_sea.gd")}")'}
+    if "waves" not in sea:
+        sea_props["wave_set"] = f'ExtResource("{sc.res("Resource", WAVES)}")'
+    else:  # M3-ENV-716: an arena's own still water (an interior), [(direction_deg, wavelength_m, amplitude_m, steepness)]
+        comp = sc.res("Script", "res://game/world/water/wave_component.gd")
+        ids = []
+        for k, (d, wl, amp, st) in enumerate(sea["waves"]):
+            sc.sub.append(f'[sub_resource type="Resource" id="SeaWave{k}"]\nscript = ExtResource("{comp}")\n'
+                          f"direction_deg = {d}\nwavelength_m = {wl}\namplitude_m = {amp}\nsteepness = {st}")
+            ids.append(f'SubResource("SeaWave{k}")')
+        sc.sub.append(f'[sub_resource type="Resource" id="SeaWaves"]\n'
+                      f'script = ExtResource("{sc.res("Script", "res://game/world/water/wave_set.gd")}")\n'
+                      f'components = Array[ExtResource("{comp}")]([{", ".join(ids)}])\namplitude_scale = 1.0')
+        sea_props["wave_set"] = 'SubResource("SeaWaves")'
     if "material" in sea:  # the arena's own water look: the shared ocean shader with this table's values
         m = sea["material"]
         params = "\n".join(f"shader_parameter/{k} = {_value(sc, v)}" for k, v in m["params"])

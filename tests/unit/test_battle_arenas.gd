@@ -18,6 +18,7 @@ const ARENAS: Array[StringName] = [
 	&"coilspire_headland_path",
 	&"coilspire_tier_landing",
 	&"keth_seep_terrace",
+	&"lowlight_engine_hall",
 ]
 ## The clear floor (arenas.py FLOOR_Y / FLOOR_TOLERANCE_M / FLOOR_CLEAR_M): within this radius of a slot,
 ## nothing rises above the floor by more than the tolerance, and most of the ground is the floor itself

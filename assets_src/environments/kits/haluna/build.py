@@ -29,6 +29,7 @@ import dressing  # noqa: E402
 import festival  # noqa: E402
 import iskarra  # noqa: E402
 import keth  # noqa: E402
+import lowlight  # noqa: E402
 import kit_common as kc  # noqa: E402
 import props  # noqa: E402
 import ruins  # noqa: E402
@@ -86,6 +87,8 @@ def targets() -> dict:
         out[name] = (iskarra.BUDGET_KEY.get(name, name), iskarra, fn)
     for name, fn in sorted(keth.TARGETS.items()):  # M3-ENV-717 Keth Pass (Ch12)
         out[name] = (name, keth, fn)
+    for name, fn in sorted(lowlight.TARGETS.items()):  # M3-ENV-716 Lowlight's engine hall (Ch11)
+        out[name] = (name, lowlight, fn)
     return out
 
 
