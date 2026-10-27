@@ -1,12 +1,13 @@
-# Nhoa, the Rootlight (`nhoa`), Asha's Vowbound: design sheet (proposed, M3-CRE-642)
+# Nhoa, the Rootlight (`nhoa`), Asha's Vowbound: design sheet (built, M3-CRE-642)
 
 **Who:** the fifth Vowbound (docs/kb/story/vowbound.md §5): the glimmer of **Ressa**, the 56th Cantor, about 70
 years ago. She was the only Kirru Cantor and Pell's clutch-sister, a hearer who believed she could end the storm
 from inside. She is bound in Lowlight's drowned sanctum (Ch11), at the foot of the Lit Age well-shaft where the
 deep's cold wells up. **Kind:** a Vowbound: bound light. **Role:** an ally, Ice. Her battle identity is ice carried
 on sifting mote-swarms, and copying the last enemy action (an echo of Pell). Her Swell is *Farewell-Tide*.
-**Status:** a sheet ahead of the build. She is not yet in game/data/battle/vowbound.json; Combat adds the row, and
-the build follows Ilun's pipeline (ilun.md, M3-CRE-638).
+**Status:** built (M3-CRE-642, in review; "As built" at the end). She is not yet in game/data/battle/vowbound.json;
+Combat adds the row. Until then her creatures.json row carries `vowbound_pending`. The build follows Ilun's pipeline
+(ilun.md, M3-CRE-638).
 
 **The idea:** a tall Kirru-like figure made entirely of motes held in her shape, like silt hanging in deep still
 water. She has antlers of mangrove root, a long heron neck, and **a carved name-shell at her throat**, the keepsake
@@ -90,3 +91,37 @@ beads at 4–6 triangles each), so the body under them is cheap. Five slots: `bo
   start from this sheet.
 - Farewell-Tide's rising column needs the rendering track's sanction as the one bound-light exception. vowbound.md
   already calls it out; color_script.md should say so too.
+
+## As built (M3-CRE-642, 2026-10-27)
+
+`assets_src/creatures/nhoa/build_nhoa.py` (`--report` prints the numbers) → `assets/creatures/nhoa/nhoa.glb` (1.77 MB).
+The changes from the proposal above are recorded here.
+
+- **14,820 triangles** (budget 16k), 10,861 vertices. The motes are 9,738 of them: **1,623 beads** (not about 1,800),
+  each a flattened triangular bipyramid of 6 triangles, 1.4–4 cm across. They sit 0 to 6 cm out from the surface,
+  most near it. The rest is the inner body (2,980), the antlers (1,272), the shell (420), its cord (250) and the eyes
+  (160). Five slots, as proposed.
+- **28 bones** (not about 22): `root`, `spine_0..2`, `neck_0..3`, `head`, two per antler, three per arm (`upper`,
+  `fore`, `hand`), and three strand chains of three (`strand_l`, `strand_r` and `strand_b`, at 60°, −60° and 180°
+  round her). The proposal's count left out the hands and the third segment. Strand beads are skinned to the two
+  chains either side of them, blended by bearing. The hem blends into the chains' first bones.
+- **Rest:** x ±0.47, y 0.15 to 3.19, z −0.25 to +0.30. The head bone sits at 2.45 m and the antler tips at 3.19 m. The
+  strands' lowest ends are at 0.15 m (built hovering, no stand-in `hover`). Across every clip the lowest vertex is
+  0.05 m (the KO's lowered strands), so nothing goes under the water.
+- **The bow is softened.** The first fold (ko, rise's start, dismiss's end) bowed about 130° through the spine, neck
+  and head, so the antlers pointed straight at the foes like a charge. That reads as a threat, not as grave and kind.
+  The head now counter-turns, so in the folded pose the crowns lean forward and stay up. Only the KO lowers them
+  toward level.
+- **Clips** as the table above, plus the kit's `idle_b` and an authored `hit_b` (rolled to the other side). The hit
+  peaks at 0.10 s. Contacts: attack 0.55 s, cast 0.8 s, special 1.45 s. With no skill ids yet, `clip_by_skill` is
+  empty, and magical skills play `cast` by kind. `echo` is not built (see the open questions).
+- **Framing correction.** The summon shot's ±2.1 m does *not* hold her whole height inside the HUD safe frame. From
+  that low camera the bottom safe line on her mark is at about 0.6 m, so the lower 0.45 m of her strands sit under the
+  HUD's bottom band in every clip, as Kahre's feet do. At rest the summon margins are left 0.40, right 0.30, top 0.04
+  and bottom −0.11. The top stays inside in `idle`, `ready` and `rise` (what the shot plays); only hit_b's peak (−0.003)
+  and Farewell-Tide's raised arms (−0.006) pass it. **Default battle camera** (Vowbound slot, yaw −90): inside in every
+  frame of every clip. At rest the margins are left 0.70, right 0.05, top 0.05 and bottom 0.14; the tightest are
+  hit_b's right edge (0.008) and cast's (0.010).
+- **The name-shell never glows:** the `shell` slot's emission energy is 0, and the shell and cord carry no emission
+  mask. No mote is placed within 7.5 cm of the shell or within 4 cm of an eye.
+
