@@ -163,5 +163,7 @@ flags = {
 "codex_basin_steps_read": "Codex (M3-UI-03, game/data/lore/codex.json): the entry 'basin_steps' has been opened in the Codex (clears its New marker).",
 "codex_causeway_notice_found": "Codex record (M3-UI-03): the tide-readers' notice on the Saltgrass Causeway has been read in the field (an Interactable with payload {record: causeway_notice}).",
 "codex_basin_steps_found": "Codex record (M3-UI-03): the words cut into the Shell Shrine's basin steps have been read in the field (an Interactable with payload {record: basin_steps}).",
-"tut_menu_save_seen": "Tutorial seen-flag (M2-MNU-300): the tip that saving happens at shrines, not in the menu, has been shown."
+"tut_menu_save_seen": "Tutorial seen-flag (M2-MNU-300): the tip that saving happens at shrines, not in the menu, has been shown.",
+"ch05_kahre_first_call_seen": "Kahre's first call in battle (C10) has played in full; later calls play the short entry (M3-BPR-414).",
+"ch08_virel_first_call_seen": "Virel's first call in battle (C10) has played in full; later calls play the short entry (M3-BPR-414)."
 }

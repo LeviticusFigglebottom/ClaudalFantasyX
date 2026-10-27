@@ -247,7 +247,7 @@ func _build_engine(
 
 ## Step 2: timeline identities and the party panel.
 func _build_hud() -> void:
-	for c in engine.party_active + engine.party_reserve + engine.enemies:
+	for c in engine.party_active + engine.party_reserve + engine.enemies + engine.entries:  # entries: ADR 0100
 		hud.timeline.set_identity(c.id, menus.display_name(c), _tint(c.id))
 	hud.result.visible = false
 	hud.set_combat_ui_visible(true)
