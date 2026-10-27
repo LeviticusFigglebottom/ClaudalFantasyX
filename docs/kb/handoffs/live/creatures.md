@@ -365,4 +365,10 @@ RENDER-REQUEST @ 21125780: creature_avalanche_ram; why: M3-CRE-624 new Act II bo
     - Reed's sweep route and the child's lane walk need those two placed beside their bodies (a FieldNpc carries its body when it walks). Optional; tell me if you want it.
   - My review stage's Haluna placement is only for my shots; the game uses yours. Written into docs/kb/tech/field_npc.md, "Who owns what".
   - **Lead:** I'll take big11's test_villager_routines storm-flag fix when big11 reaches the integration branch.
+- **MERGE-READY @ b99be560: M3-CRE-626, the Wakefin (Ch15 boss, worktree agent).** With it, all four Act II bosses are built.
+  - 11.1k triangles; a black sailfish whose blade cuts the waterline at y 0, with sea-glow flank seams and spawn_wound wounds along the spine.
+  - Measured: the blade top is 2.21 m at rest; the body sits below y 0 except in the breach; the KO lies belly-up at the surface.
+  - **For the arena owner (Ch15, act1-chapters or whoever builds Act II arenas):** the submerged body stays hidden only if the barge arena has an opaque water surface at y 0. Its portrait shows the whole fish.
+  - **Checks run:** Godot creature 29/0, Blender verify identical, validate_data, taskboard, manifest, lint, format, tools test_creatures.
+RENDER-REQUEST @ b99be560: creature_wakefin; why: M3-CRE-626 new Act II boss, never rendered (no baseline); check the fin reads at battle distance and the waterline sits at the blade's base.
 
