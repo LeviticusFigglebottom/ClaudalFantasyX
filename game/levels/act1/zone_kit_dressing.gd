@@ -14,6 +14,8 @@ extends HalunaDresser
 ##                    surfaces (treads, walls) whose shape is the gameplay. Never for stepped flights: the
 ##                    controller has no step-up, so stairs are ramps in the zone's collision.
 ##                    "trimesh_lod0": the same from LOD0 (a terrain whose LOD1 is too coarse to walk on).
+##                  "collide_lod0_in": [{"pos", "size", "yaw"?}]  boxes in the layout's frame where a "trimesh"
+##                    collides from LOD0 (a doorway a closed LOD1 shell would seal).
 ##                  "kit_dir" (+ "materials_dir", default <kit_dir>materials/)  a piece from another kit
 ##                    (Corrow's trader is the ferry kit's hull); each kit keeps its own material cache.
 ##   greybox      {"hide_all": bool, "keep": [ids]}: hides the greybox meshes (collision stays), except
@@ -33,6 +35,7 @@ extends HalunaDresser
 
 const KEY_BLOCK := "block"
 const KEY_COLLIDE := "collide"
+const KEY_COLLIDE_LOD0_IN := "collide_lod0_in"
 const KEY_SPIN := "spin_with"
 const KEY_KIT_DIR := "kit_dir"
 const KEY_MATERIALS_DIR := "materials_dir"
@@ -73,7 +76,7 @@ func dress() -> void:
 			continue
 		var collide: Variant = spec.get(KEY_COLLIDE, false)
 		if collide is String and collide == COLLIDE_TRIMESH:
-			piece.add_child(trimesh_collider(piece))
+			piece.add_child(trimesh_collider(piece, true, lod0_boxes(spec.get(KEY_COLLIDE_LOD0_IN, []))))
 		elif collide is String and collide == COLLIDE_TRIMESH_LOD0:
 			piece.add_child(trimesh_collider(piece, false))
 		elif collide is bool and collide:
@@ -152,9 +155,20 @@ static func box_collider(piece: Node3D) -> StaticBody3D:
 	return body
 
 
+## A "collide_lod0_in" list as [box's transform, half size] pairs.
+static func lod0_boxes(rows: Array) -> Array[Array]:
+	var out: Array[Array] = []
+	for row: Dictionary in rows:
+		var basis := Basis(Vector3.UP, deg_to_rad(float(row.get("yaw", 0.0))))
+		out.append([Transform3D(basis, GreyboxZone._vec3(row["pos"])), GreyboxZone._vec3(row["size"]) * 0.5])
+	return out
+
+
 ## A static trimesh of the piece's LOD1 meshes (LOD0 where a mesh has no LOD1; only LOD0 when not
-## `prefer_lod1`), in the piece's frame.
-static func trimesh_collider(piece: Node3D, prefer_lod1: bool = true) -> StaticBody3D:
+## `prefer_lod1`), in the piece's frame. Inside the `lod0_in` boxes (lod0_boxes, in the frame of the piece's parent)
+## it collides from LOD0 instead: the LOD1 triangles are clipped to outside the boxes, LOD0's to inside (a doorway a
+## closed LOD1 shell would seal).
+static func trimesh_collider(piece: Node3D, prefer_lod1: bool = true, lod0_in: Array[Array] = []) -> StaticBody3D:
 	var body := StaticBody3D.new()
 	body.name = COLLIDER
 	var meshes := piece.find_children("*", "MeshInstance3D", true, false)
@@ -162,17 +176,88 @@ static func trimesh_collider(piece: Node3D, prefer_lod1: bool = true) -> StaticB
 	for child: Node in meshes:
 		if String(child.name).ends_with(LOD_SUFFIX):
 			lod1[String(child.name).trim_suffix(LOD_SUFFIX)] = true
+	var patching := prefer_lod1 and not lod0_in.is_empty()
 	for child: Node in meshes:
 		var mi := child as MeshInstance3D
 		var n := String(mi.name)
 		var skip := n.ends_with(LOD_SUFFIX) if not prefer_lod1 else (not n.ends_with(LOD_SUFFIX) and lod1.has(n))
-		if mi.mesh == null or skip:
+		if mi.mesh == null or (skip and not patching):
 			continue
 		var cs := CollisionShape3D.new()
-		cs.shape = mi.mesh.create_trimesh_shape()
 		cs.transform = _relative(piece, mi)
+		if not patching:
+			cs.shape = mi.mesh.create_trimesh_shape()
+		else:
+			var shape := ConcavePolygonShape3D.new()
+			shape.set_faces(_clip_faces(mi.mesh.get_faces(), piece.transform * cs.transform, lod0_in, skip))
+			cs.shape = shape
 		body.add_child(cs)
 	return body
+
+
+## The parts of `faces` (in a mesh's frame, `to_parent` taking it to the boxes' frame) outside every box, or inside
+## one when `inside`, as triangles in the mesh's frame.
+static func _clip_faces(
+	faces: PackedVector3Array, to_parent: Transform3D, boxes: Array[Array], inside: bool
+) -> PackedVector3Array:
+	var out := PackedVector3Array()
+	var back := to_parent.affine_inverse()
+	for i in range(0, faces.size(), 3):
+		var outside: Array[PackedVector3Array] = [
+			PackedVector3Array([to_parent * faces[i], to_parent * faces[i + 1], to_parent * faces[i + 2]])
+		]
+		var kept: Array[PackedVector3Array] = []
+		for box: Array in boxes:
+			var frame: Transform3D = box[0]
+			var to_box := frame.affine_inverse()
+			var rest: Array[PackedVector3Array] = []
+			for poly in outside:
+				var pieces := _cut_by_box(to_box * poly, box[1])
+				for k in pieces.size():
+					var world := frame * pieces[k]
+					if k == 0:
+						if inside and world.size() >= 3:
+							kept.append(world)
+					elif world.size() >= 3:
+						rest.append(world)
+			outside = rest
+		if not inside:
+			kept = outside
+		for poly in kept:
+			for k in range(1, poly.size() - 1):
+				out.append_array([back * poly[0], back * poly[k], back * poly[k + 1]])
+	return out
+
+
+## A convex polygon (in a box's frame) cut by the box of half size `h`: [the part inside, the parts outside...].
+static func _cut_by_box(poly: PackedVector3Array, h: Vector3) -> Array[PackedVector3Array]:
+	var pieces: Array[PackedVector3Array] = [PackedVector3Array()]
+	var rest := poly
+	for axis in 3:
+		for side: float in [-1.0, 1.0]:
+			pieces.append(_clip(rest, axis, side * h[axis], side, false))
+			rest = _clip(rest, axis, side * h[axis], side, true)
+	pieces[0] = rest
+	return pieces
+
+
+## Sutherland-Hodgman: the part of `poly` with side * (p[axis] - limit) <= 0 (inward of the plane), or > 0 when not
+## `inward`.
+static func _clip(poly: PackedVector3Array, axis: int, limit: float, side: float, inward: bool) -> PackedVector3Array:
+	var out := PackedVector3Array()
+	var n := poly.size()
+	for i in n:
+		var a := poly[i]
+		var b := poly[(i + 1) % n]
+		var da := side * (a[axis] - limit)
+		var db := side * (b[axis] - limit)
+		var a_in := da <= 0.0 if inward else da > 0.0
+		var b_in := db <= 0.0 if inward else db > 0.0
+		if a_in:
+			out.append(a)
+		if a_in != b_in:
+			out.append(a.lerp(b, da / (da - db)))
+	return out
 
 
 static func _relative(root: Node3D, node: Node3D) -> Transform3D:

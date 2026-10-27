@@ -63,7 +63,12 @@
     "wall_away": [14, 0, -36, 90],
     "causeway_toma": [0, -1.1, -60, 0],
     "causeway_asha": [0, -1.1, -58, 0],
-    "causeway_rhen": [0, -1.1, -56, 0]
+    "causeway_rhen": [0, -1.1, -56, 0],
+    "way_feast_s": [8.5, 0, -34, 90],
+    "way_lane_n": [1, 0, -22, 0],
+    "way_wall_east": [9, 0, -40.3, 270],
+    "way_rail_gap": [4, 0, -40.3, 0],
+    "way_flats": [4, -1.2, -46, 0]
   },
   "actors": {
     "asha": {"at": [-1, 0, -34, 180], "color": "#d9c3a0"},
@@ -112,5 +117,8 @@
     {"flag": "ch04_shell_set", "show": ["AshaShell"], "hide": ["ysolde_edge"]},
     {"flag": "ch04_dock_comforted", "hide": ["vendor", "fisher", "osu", "child", "netmender", "reed", "WallLamps", "GrassLamps"], "show": ["WallLampsLow", "InkLamp", "ysolde"]},
     {"flag": "ch04_saw_ysolde_ink", "hide": ["ysolde", "InkLamp"]}
+  ],
+  "ramps": [
+    {"id": "CausewayDown", "from": [4.0, 0.0, -41.3], "to": [4.0, -1.2, -45.5], "width": 6.0, "color": "#3e4048"}
   ]
 }

@@ -13,7 +13,8 @@
   "hide_all": true,
   "keep": [
    "ChalkMark",
-   "Hatch"
+   "Hatch",
+   "Shrine"
   ]
  },
  "fire_light_color": "#E0702E",

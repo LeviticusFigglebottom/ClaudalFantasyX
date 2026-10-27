@@ -120,3 +120,32 @@ func test_a_trimesh_lod0_collider_takes_the_lod0_mesh() -> void:
 	lod1.free()
 	piece.free()
 	_close()
+
+
+func test_a_lod0_box_clips_lod1_out_and_lod0_in() -> void:
+	# a 2 x 2 m triangle pair (a quad in y = 0) and a box over its middle: the outside and the inside add up to it
+	var quad := PackedVector3Array(
+		[
+			Vector3(-1, 0, -1),
+			Vector3(1, 0, -1),
+			Vector3(1, 0, 1),
+			Vector3(-1, 0, -1),
+			Vector3(1, 0, 1),
+			Vector3(-1, 0, 1)
+		]
+	)
+	var boxes := ZoneKitDressing.lod0_boxes([{"pos": [0.0, 0.0, 0.0], "size": [1.0, 1.0, 1.0], "yaw": 45.0}])
+	var outside := ZoneKitDressing._clip_faces(quad, Transform3D.IDENTITY, boxes, false)
+	var inside := ZoneKitDressing._clip_faces(quad, Transform3D.IDENTITY, boxes, true)
+	assert_true(absf(_area(inside) - 1.0) < 1e-4, "the box's 1 m^2 inside (%.4f)" % _area(inside))
+	assert_true(absf(_area(outside) - 3.0) < 1e-4, "the rest outside (%.4f)" % _area(outside))
+	for p in inside:
+		assert_true(absf(p.rotated(Vector3.UP, deg_to_rad(-45.0)).x) <= 0.5001, "inside stays in the turned box")
+	_close()
+
+
+static func _area(faces: PackedVector3Array) -> float:
+	var total := 0.0
+	for i in range(0, faces.size(), 3):
+		total += (faces[i + 1] - faces[i]).cross(faces[i + 2] - faces[i]).length() * 0.5
+	return total

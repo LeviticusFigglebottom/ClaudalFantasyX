@@ -14,6 +14,7 @@ const STEP_M := 0.25
 const MAX_RISE := 0.21
 const BODY_R := 0.3
 const BODY_H := 1.6
+const RAY_DEPTH_M := 6.0
 
 ## walk() checks every KIT_EVERY-th sample against the kit's trimesh pieces when check_kit is set (inside_kit).
 const KIT_EVERY := 4
@@ -23,6 +24,8 @@ var boxes: Array[Array] = []  # [Transform3D global, Vector3 half size, String i
 ## When set, walk() also checks the kit's trimesh pieces, leaving out these terrain scene files.
 var kit_terrain: Array[String] = []
 var check_kit := false
+## When set, the floor is also the first surface a ray down through the physics space meets (the kit's trimesh floors).
+var physics_floor := false
 
 
 ## Instances `scene` with its story held, and reads its collision boxes.
@@ -111,6 +114,8 @@ func walk(route: String, pts: Array[Vector3], start_y: float) -> float:
 		for k in range(1, n + 1):
 			var p := a.lerp(b, float(k) / n)
 			var f := floor_y(p.x, p.z, y + MAX_RISE)
+			if physics_floor:
+				f = maxf(f, ray_floor_y(Vector3(p.x, y, p.z), MAX_RISE))
 			if f == -INF:
 				fail("%s: no floor at (%.1f, %.1f) from y %.2f" % [route, p.x, p.z, y])
 				return y
@@ -148,3 +153,11 @@ func inside_kit(feet: Vector3, skip: Array[String] = []) -> String:
 		if not skip.has(kind):
 			return "%s@%s" % [kind, piece.position]
 	return ""
+
+
+## The height of the first surface below `p` + `above` in the zone's physics space (within RAY_DEPTH_M), or -INF.
+func ray_floor_y(p: Vector3, above: float) -> float:
+	var from := zone.global_transform * (p + Vector3.UP * above)
+	var q := PhysicsRayQueryParameters3D.create(from, from + Vector3.DOWN * (above + RAY_DEPTH_M))
+	var hit := zone.get_world_3d().direct_space_state.intersect_ray(q)
+	return (zone.global_transform.affine_inverse() * (hit["position"] as Vector3)).y if not hit.is_empty() else -INF

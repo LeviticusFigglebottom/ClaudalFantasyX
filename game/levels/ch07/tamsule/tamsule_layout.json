@@ -43,7 +43,11 @@
     "asha_step_back": [7.6, 0, -13.4, 90],
     "rhen_stern": [30, 0, 13, 0],
     "bell_moorings": [10, 0, -36, 0],
-    "east_water": [60, 0, -10, 90]
+    "east_water": [60, 0, -10, 90],
+    "way_quay_bridge_s": [0, 0, 16.4, 180],
+    "way_quay_bridge_n": [0, 0, 11.6, 180],
+    "way_gantry_bridge_s": [0, 0, -3.6, 180],
+    "way_gantry_bridge_n": [0, 0, -8.4, 180]
   },
   "actors": {
     "liss": {"at": [-1.5, 0, 21.5, 180], "color": "#7a8c5a"},

@@ -20,7 +20,6 @@ const KNOWN_PATH := "res://tests/integration/act1_cutscene_walks_known.json"
 const STEP_M := 0.25
 const FLOOR_TOL_M := 0.45
 const UNSEEN_FADE := 0.99
-const RAY_DEPTH_M := 6.0
 const KIT_EVERY := 4
 const TERRAIN: Array[String] = ["mountain_massif.glb", "coilspire_ground.glb"]
 
@@ -46,6 +45,7 @@ func test_every_act1_cutscene_walk_stays_on_the_floor() -> void:
 	tree.node_added.disconnect(_on_node_added)
 	assert_true(walks > 20, "the threads walk people about (%d walks)" % walks)
 	var known: Array = GreyboxZone.read_json(KNOWN_PATH).get("known", [])
+	var exempt: Dictionary = GreyboxZone.read_json(KNOWN_PATH).get("exempt", {})  # off the floor by design, with why
 	var seen: Dictionary = {}
 	var lines: Array = problems.keys()
 	lines.sort()
@@ -54,7 +54,7 @@ func test_every_act1_cutscene_walk_stays_on_the_floor() -> void:
 			print("WALK: %s" % line)  # the whole list, for fixing them
 		var key := line.get_slice(": ", 0) + ": " + line.get_slice(": ", 1)
 		seen[key] = true
-		if not known.has(key):
+		if not known.has(key) and not exempt.has(key):
 			fail("a cutscene walk leaves the floor or passes through a box: %s" % line)
 	for key: String in known:
 		assert_true(seen.has(key), "%s is clean now: take it off %s" % [key, KNOWN_PATH])
@@ -124,7 +124,7 @@ func _check(probe: KitWalkProbe, a: Vector3, b: Vector3) -> String:
 	var n := maxi(1, ceili(Vector2(b.x - a.x, b.z - a.z).length() / STEP_M))
 	for k in n + 1:
 		var p := a.lerp(b, float(k) / n)
-		var f := maxf(probe.floor_y(p.x, p.z, p.y + FLOOR_TOL_M), _ray_floor(probe.zone, p))
+		var f := maxf(probe.floor_y(p.x, p.z, p.y + FLOOR_TOL_M), probe.ray_floor_y(p, FLOOR_TOL_M))
 		if f == -INF or p.y - f > FLOOR_TOL_M:
 			return "off the floor at (%.1f, %.2f, %.1f), floor %.2f" % [p.x, p.y, p.z, f]
 		var feet := Vector3(p.x, f, p.z)
@@ -134,11 +134,3 @@ func _check(probe: KitWalkProbe, a: Vector3, b: Vector3) -> String:
 		if hit != "":
 			return "through %s at (%.1f, %.2f, %.1f)" % [hit, p.x, f, p.z]
 	return ""
-
-
-## The height of the first surface below `p` + FLOOR_TOL_M in the zone's physics space, or -INF.
-func _ray_floor(zone: GreyboxZone, p: Vector3) -> float:
-	var from := zone.global_transform * (p + Vector3.UP * FLOOR_TOL_M)
-	var q := PhysicsRayQueryParameters3D.create(from, from + Vector3.DOWN * (FLOOR_TOL_M + RAY_DEPTH_M))
-	var hit := zone.get_world_3d().direct_space_state.intersect_ray(q)
-	return (zone.global_transform.affine_inverse() * (hit["position"] as Vector3)).y if not hit.is_empty() else -INF
