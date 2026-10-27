@@ -96,6 +96,14 @@
 ## 2b. Rendering is PC-only (human directive, 10-27)
 No cloud session captures screenshots. Tracks post `RENDER-REQUEST @ sha: ids` lines in their live logs, and the PC renders them and pushes `gpu/render-<track>-<sha7>`. The protocol is in TRACK-RULES.md. Gates stay on the PC as before.
 
+## 2b'. The PC is PAUSED (10-27 ~21:30, the human's instruction)
+- pc-gpu is wrapping up, pushing everything and stopping until the human says proceed. Its exact resume point is in its pc-gpu.md "PAUSED" section.
+- **Meanwhile the Lead's container takes over** the render requests (`lead/gate-render-*` branches) and the batch gates (big13 and on): the full Godot suite plus the full manifest on cloud lavapipe, about 2–3 h per full gate.
+- Deferred until the PC resumes:
+  - GPU benchmarks and hardware QA (M1-QA-09 follow-up, the --budget re-sweep, the Act I playthrough);
+  - M3-RND-02;
+  - Blender verify on AVX2.
+
 ## 2c. Lead decisions (10-27)
 - ADR 0171 (audio 72 MiB for Act I) accepted.
 - Act II audio storage (Git LFS or a build-time render) goes to the human. Audio prototypes the build-time render as ADR 0172 (proposed).
