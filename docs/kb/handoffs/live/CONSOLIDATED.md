@@ -104,7 +104,7 @@ No cloud session captures screenshots. Tracks post `RENDER-REQUEST @ sha: ids` l
 | ui-menus | session_01KGBUwbYgXe9JS6D8jXw6ZG | claude/ui (claude/menus merged in, then retired) | ui-menus.md | 200–399, ADR 0110–0129 |
 | battle-presentation | session_015hKkhtpX67kS4yZeA8AAhv | claude/battle-presentation | battle-presentation.md | 400–499, ADR 0130–0139 |
 | characters | session_014AiZf1ZSvb9MAjxtUka4pd | claude/characters | characters.md | 500–599, ADR 0140–0149 |
-| hero-integration | session_01PzF7Jc4XVQdTWcaYUyCjPB | claude/hero-integration | hero-integration.md | 1100–1199, ADR 0190–0199 |
+| **integration-qa** (was hero-integration, repurposed 10-27 20:20: headless full-thread playthrough guards, save/load guards, cross-track seams, hero-layer maintenance) | session_01PzF7Jc4XVQdTWcaYUyCjPB | claude/hero-integration | hero-integration.md | 1100–1199, ADR 0190–0199 |
 | creatures | session_01EbDaRQ5n7hpvwuRG6jEDQY | claude/creatures | creatures.md | 600–699, ADR 0150–0159 |
 | env-art | session_01YbaV2c8yquRHqj6afQYg89 | claude/env-art | env-art.md | 700–799, ADR 0160–0169 |
 | audio | session_01Wmj8xaLtwcqiS3qwC6PciW | claude/audio | audio.md | 800–899, ADR 0170–0179 |
