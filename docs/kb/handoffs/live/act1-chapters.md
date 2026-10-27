@@ -31,7 +31,15 @@ cutscene sequencer (`game/cutscene/**`), `game/flow/**` and the playtest fixes.
     integration merge); coverage (no game/battle or progression change of mine); Blender (no source); shots (no
     scene of mine changed).
 
+- **PROGRESS @ e2fed1fc (2026-10-27): M3-C06-1200, Ch6 greybox → final (pushed, not yet MERGE-READY).**
+  `ZoneKitDressing` (ADR 0200, `game/levels/act1/`) dresses a greybox zone with env-art's kit from a generated layout
+  (`tools/act1/ch06_brine_shoals_dressing.py`), keeping the greybox's collision, triggers and states; story pieces
+  follow their blocks. Ch6 takes the ch06 sun and grade. Request M3-ENV-1201 (six story pieces the kit lacks).
+  - **Checks run:** `--filter=zone_kit` 5/0, `--filter=ch06` 5/0, `tools.tests.test_fog_lamps` OK, validate_data,
+    taskboard, gdlint, gdformat clean. First lavapipe views made and viewed; fixes in (greybox stand-ins hidden, plank
+    walk smoothed); the re-render is being viewed now, then two baselines are registered and a MERGE-READY line follows.
+
 ## Exact next step
-Queue item 2, greybox → final, starting with the kits already on the integration branch: Ch6 `brine_shoals`
-(M3-ENV-02), then Ch8 `corrow` (M3-ENV-04/04B), Ch5 `pemakar` (M3-ENV-03), Ch7 `tamsule_bell` (M3-ENV-01). The
+Queue item 2, greybox → final: finish Ch6 (view the re-render, register `ch06_brine_road` and `ch06_brine_camp`),
+then Ch8 `corrow` (M3-ENV-04/04B), Ch5 `pemakar` (M3-ENV-03), Ch7 `tamsule_bell` (M3-ENV-01). The
 ferry (Ch4), oruvel, ashcrown and coilspire kits are only on `claude/env-art` until the Lead merges it.
