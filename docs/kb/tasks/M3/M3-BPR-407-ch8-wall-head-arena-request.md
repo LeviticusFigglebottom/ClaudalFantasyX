@@ -1,7 +1,7 @@
 ---
 id: M3-BPR-407
 title: "Ch8 battle arena: the wall-head and the Fisher Stair in the storm, with a stair entry marker"
-role: env-art
+role: environment
 status: todo
 owner_session: ""
 depends_on: [M3-BPR-406]
