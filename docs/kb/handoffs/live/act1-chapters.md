@@ -49,7 +49,28 @@ cutscene sequencer (`game/cutscene/**`), `game/flow/**` and the playtest fixes.
     inherit Ch04Zone's new `_build_blocks`: `--filter=ch0` 59 run, 0 failed); coverage (no battle
     or progression code); Blender (no source); other shots (no other scene touched).
 
+- **Merged the integration branch (big9) @ 1b1caea0**: requested_clips union, encounters (theirs + Ch8's headland
+  rows), the Lead's combat-20 renumber (my -cmb01 copy dropped). `--filter=ch0` 59/0, zone_kit 5/0.
+- **MERGE-READY @ bf9267fa: M3-C08-1202 Ch8 Corrow greybox → final, done (status review, reviewer environment).**
+  Corrow now stands on the seawall kit's heights in the kit's own frame (`tools/act1/corrow_frame.py`; the layout
+  migrated once by `ch08_corrow_relayout.py`): the walk at y 12 among the Watchers, the Fisher Stair on the wall's
+  inner face (ramps under 45°), the low town at y 1, the Bastion a platform at walk height dressed with outward
+  seawall revetments, the mole's pier and ramp over the parapet, the stair breach from M3-ENV-04B on the fall.
+  Ch06Zone light rows can swap the Environment (`environment_res`: the fallen grade). ZoneKitDressing gained per-piece
+  `kit_dir` and trimesh colliders. Request M3-ENV-1203 (the mole, the Bastion's own pieces, kites, gate, nets).
+  - **Checks run:** `--filter=ch08` 19/0 (with the new `test_ch08_corrow_walkable`: the mole, the walk, the stair
+    both ways, the town lane, every mark on a floor); zone_kit 6/0; validate_data, taskboard, gdlint, gdformat;
+    tools test_screenshots, test_fog_lamps OK. Baselines `ch08_corrow_arrival`, `ch08_corrow_stair` viewed and
+    approved (captured before the PC-rendering directive reached me; none since).
+  - **Checks skipped:** the full suite and coverage (no battle or progression code); Blender (no source).
+- **PROGRESS @ 180510e1: M3-C04-1204 Ch4 ferry (WIP, not merge-ready until its shots are approved).** Dressed with
+  the ferry kit and the Seventh Terrace; collision from the kit's hull constants; `test_ch04_thread` 11/0. The two new
+  shots fail `test_screenshots` (no baseline) until the PC render comes back.
+
+### Render requests
+RENDER-REQUEST @ 180510e1: ch04_ferry_deck, ch04_ferry_derelict; why: M3-C04-1204 dresses the Ch4 ferry and derelict with the ferry kit (new shots, no baseline yet)
+
 ## Exact next step
-Queue item 2, greybox → final: finish Ch6 (view the re-render, register `ch06_brine_road` and `ch06_brine_camp`),
-then Ch8 `corrow` (M3-ENV-04/04B), Ch5 `pemakar` (M3-ENV-03), Ch7 `tamsule_bell` (M3-ENV-01). The
-ferry (Ch4), oruvel, ashcrown and coilspire kits are only on `claude/env-art` until the Lead merges it.
+Ch9 `ch09/corrow_night` onto the Corrow frame (it reuses Corrow's kit and grade, ch09 night), then Ch4 `haluna_wake`,
+Ch5 Pemakar (terraces: trimesh treads + ramps for flights) and Ashcrown, Ch7 Tamsule Bell, Ch1 is slice-polish's.
+When the PC answers the render request above: view the out/diff PNGs, approve, and write the Ch4 MERGE-READY line.
