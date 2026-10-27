@@ -1,0 +1,36 @@
+{
+  "_doc": "The Coilspire headland: a few gulls ride the wind over the scrub on the headland path and stand on the keeper's hut (top 3.0 m). Nothing inside the spire (a sealed Lit Age tower). Placed on the greybox layout (M3-CRE-636); move the coordinates when env-art's kit replaces the blocks (same keys as ch02_haluna.json).",
+  "zone": "ch08/coilspire",
+  "flocks": [
+    {
+      "id": "headland",
+      "center": [
+        -4.0,
+        12.0
+      ],
+      "radius_m": 32.0,
+      "altitude_m": [
+        6.0,
+        13.0
+      ],
+      "count": 3,
+      "perched_at_start": 1,
+      "perches": [
+        [
+          -17.0,
+          3.0,
+          -3.0,
+          90.0
+        ],
+        [
+          -15.5,
+          3.0,
+          -3.0,
+          -90.0
+        ]
+      ]
+    }
+  ],
+  "beaches": [],
+  "shoals": []
+}
