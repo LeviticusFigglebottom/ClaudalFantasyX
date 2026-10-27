@@ -1,0 +1,13 @@
+FAIL brine_b01_arrival: rmse 0.02650 (limit 0.00800)
+FAIL brine_b05_barge_channel: rmse 0.01741 (limit 0.00800)
+FAIL corrow_c01_wall_head: rmse 0.01074 (limit 0.00800)
+FAIL corrow_c08_watcher_profile: rmse 0.02622 (limit 0.00800)
+PASS corrow_c10_breach_fallen: rmse 0.00349 (limit 0.00800)
+FAIL battle_arena_shoals: rmse 0.02121 (limit 0.00800)
+FAIL battle_arena_camp: rmse 0.01558 (limit 0.00800)
+FAIL battle_boss_intro_inquisitor: rmse 0.07611 (limit 0.00800)
+FAIL iskarra_p01_plaza_dusk: no baseline (inspect out/, then compare.py --update-baselines iskarra_p01_plaza_dusk)
+FAIL iskarra_i02_gate_from_the_plaza: no baseline (inspect out/, then compare.py --update-baselines iskarra_i02_gate_from_the_plaza)
+FAIL iskarra_i03_broken_tower: no baseline (inspect out/, then compare.py --update-baselines iskarra_i03_broken_tower)
+Screenshots: 11 compared, 10 failed (diffs in /root/hymn/tests/screenshots/out/diff)
+compare exit 1
