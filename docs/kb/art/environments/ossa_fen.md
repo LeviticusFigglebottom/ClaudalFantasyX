@@ -1,0 +1,95 @@
+# Ossa Fen and Reedhollow: Design Notes
+
+Owner: Environment Artist (M3-ENV-718; the sheet first, then the kit). Lighting review: Rendering.
+- **Story:** [act_outline Ch10](../../story/beats/act_outline.md); the glossary's Kirru terms (clutch, farewell-tide,
+  name-shell).
+- **Boss:** the creatures track's [mangrove_drowner.md](../creatures/act2/mangrove_drowner.md) (on `claude/creatures`).
+- **Grade target:** [color script](../color_script.md) `ch10`. Colours: [palette.json](../palette.json). Format:
+  [haluna.md](haluna.md).
+- **Zones:** `ch10/ossa_fen` (the mangrove estuary) and `ch10/reedhollow` (the Kirru roost-village).
+- **Kit:** in the Haluna kit as `ossa_fen.py`, with its import kind and materials (as Iskarra, Keth and Lowlight).
+- **Arena:** `ossa_fen_roots` (the Mangrove Drowner).
+
+**The feeling in one line:** the answer the game is built around. A grey fen and white egrets; a clutch with their
+backs to the water; motes rising straight up into a gap in the cloud. The only warm thing in the frame is release.
+
+**What the place is.** Ossa Fen is the Kirru's mangrove estuary:
+- Brown-black tannin channels wind between islands of prop-rooted mangroves. Each tree stands on a cage of arched
+  roots, barnacled at the tide line, grey-green crowns above.
+- Mudbanks and root-mats show at low water. Reed beds fill the slack water.
+- Reedhollow is the Kirru roost-village: woven reed-and-pole roosts raised on the mangroves' own roots, with the
+  clutch's name-shells hung on cords at the water's edge.
+
+**The Drowner's tree.** Where the Drowner took root, a great old mangrove has died:
+- its crown is bare and bleached (`bone`);
+- its roots are black and wet below the water;
+- nothing green grows over it.
+
+The creature *is* the root cage. The arena gives it the dead tree's trunk and bare crown above, and room in the
+water below.
+
+**Influences** (transformed):
+- **Tropical mangrove estuaries** (prop roots, tannin water, egrets, mudskippers) → the trees and water read as they
+  are, under our grey dusk. The root arches are exaggerated a step for silhouette.
+- **Stilt and raised-platform villages in tidal forests** → Reedhollow's roosts are woven reed shells on poles, sized
+  for the Kirru (tall, heron-like). No human doorways, no shrines.
+- **Our original:** the **name-shells** on cords at the water's edge. The farewell-tide is sung there.
+
+**IP check (SPEC §2).** No ice or frost (ADR 0015 does not apply here, but the fen is warm anyway). No human ritual
+forms are borrowed for the Kirru.
+
+## 0. Layout and lighting
+
+- **Datum:** the channels' water at −0.15. Mudbanks and root-mats stand to y 0.
+- **Light** (colour script `ch10`, 18:20 overcast dusk; the cloud breaks for the farewell-tide):
+  - sun 2° / 275°, key `#FFFEFA` 0.9;
+  - fill `#6F7E8E` 0.5; rim `#FFE9B8` 0.6;
+  - sky `#4A5868` / `#9A9488`; fog `#5A6A62`, dense;
+  - exposure 0.9, saturation ×0.85, `lut_ch10_fen` (greens to grey-teal; only the lifting motes keep full saturation).
+- **Water:** `tannin_fen`: σ 0.6 / 1.4 / 4.0 (red absorbed least), deep `#3A2A18`. Still and mirror-dark in the
+  slack, caustics off.
+
+## 1. Kit pieces (proposed; metres; LOD0 / LOD1 triangle budgets)
+
+| Piece | What it is | Size | Budget |
+|---|---|---|---|
+| `fen_bank_ground` | A mudbank and root-mat island, heightfield, flat at y 0 in its middle, shelving into the water | 40 × 30 | 14k / 1k |
+| `mangrove_tree` | A living mangrove: a cage of 10–16 arched prop-roots, a leaning trunk, a crown of leaf clusters | 8 × 10 | 10k / 700 |
+| `mangrove_dead` | The Drowner's tree: a great dead mangrove, its bare bleached crown and trunk; its roots open on one side, where the creature sits | 12 × 16 | 12k / 800 |
+| `reed_bed` | A slack-water reed bed (two-sided blade cards) | 6 × 4 | 3k / 200 |
+| `kirru_roost` | A woven reed roost-shell on four poles, Kirru-sized | 3 × 5 | 5k / 400 |
+| `name_shell_cord` | A cord between two poles at the water's edge, hung with carved name-shells | 6 m | 2k / 150 |
+| `fen_far_mangroves` | The far tree-line round the channels (low-poly silhouette ring) | r 120 | 4k / 600 |
+
+Materials (the kit's own): `kit_fen_mud`, `kit_fen_bark` (timber_weathered grey-brown, black and wet below the tide
+line), `kit_fen_bark_dead` (bone), `kit_fen_leaf` (grey-green clusters), `kit_fen_reed`, `kit_fen_reed_weave`,
+`kit_fen_shell`.
+
+## 2. The Mangrove Drowner arena (`ossa_fen_roots`)
+
+The battle floor at y 0 is a mudbank's level top, 12 × 9 m, with a mat of small surface roots that stays under the
+slots' metre:
+- **Behind the enemy line:** the dead mangrove. Its bare crown fills the upper frame. The `BossAnchor` stands in the
+  water at its foot, among its roots: (−6.5, −0.15, −3.5), at the water line, so the creature's own roots stand in it.
+- **Round it:** living mangroves on their roots, reed beds in the slack, the far tree-line in the fog.
+- **Behind the camera:** the channel the party came up.
+- **Hints:** `the_dead_crown` (looking up into the bare branches) and `the_channel` (back down the water).
+
+## 3. Composed shots (`ch10`)
+
+| Shot | Lens | Camera | Frame |
+|---|---|---|---|
+| F01 ◆★ | 28 mm | On the water in a channel, 1 m up | The mangroves closing over the tea-dark water, root cages reflected, an egret on a root. |
+| F02 ◆★ | 35 mm | Reedhollow's edge at dusk | The clutch with their backs to the water; the name-shell cords; the motes rising into the cloud gap. |
+| F03 ◆ | 24 mm | Under the dead tree | The Drowner's mangrove: bare bleached crown, black roots, nothing green. |
+| F04 | 50 mm | Close on a name-shell cord | Carved shells, one scraped blank. |
+
+## 4. Review checklist
+
+- Greens are grey-teal under the grade; nothing in the fen is saturated except the rising motes.
+- The water is brown-black tea, never green or blue.
+- The dead tree has no green on it.
+
+## Revisions
+
+- 2026-10-27 (env-art, M3-ENV-718): first issue, the sheet before the kit (the Lead's queue item 4: the Ch10 boss).
