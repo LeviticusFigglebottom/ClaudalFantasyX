@@ -229,6 +229,36 @@ func test_the_shrine_travel_list() -> void:
 	_done()
 
 
+func test_the_hud_hook_reads_on_the_real_reefball_hud() -> void:
+	var ui := _ui()
+	var m := ReefballMatch.new()
+	m.setup(ReefballDB.load_default(), &"tidecup_opening", 7)
+	var hud := ReefballHud.new()
+	_host.add_child(hud)
+	var ctl := ReefballHudController.new()
+	ctl.pacing_scale = 0.0
+	ctl.manual = true
+	_host.add_child(ctl)
+	ctl.start(m, hud)
+	for _i in 600:
+		if hud.is_choosing() or not ctl.flush():
+			break
+	assert_true(hud.is_choosing(), "the player's contact")
+	var hook := ui.hook_for(hud)
+	assert_eq(str(hook.get("class", "")), "ReefballHud")
+	assert_false(bool(hook.get("pending", false)), "live since big11")
+	ui.watch(hud)
+	for x: Dictionary in (ui.watched[-1] as Dictionary)["watch"]:
+		(x["expr"] as Expression).execute([hud], ui, false)
+		assert_false((x["expr"] as Expression).has_execute_failed(), "%s reads" % (x["row"] as Dictionary)["expr"])
+	ui.step()
+	played.clear()
+	hud.set_cursor(1)
+	ui.step()
+	assert_true(played.has(&"ui_cursor"), "a move under the real cursor")
+	_done()
+
+
 # --------------------------------------------------------------------------- helpers
 
 

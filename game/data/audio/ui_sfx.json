@@ -323,7 +323,6 @@
     },
     {
       "class": "ReefballHud",
-      "pending": true,
       "signals": {"action_chosen": "ui_confirm"},
       "watch": [
         {"expr": "node.is_choosing()", "on_true": true, "sfx": "ui_reefball_choices"},

@@ -28,7 +28,7 @@ Reefball preview (ReefballHud), and menu motion whooshes (subtle, aware of reduc
       docs/kb/tech/audio_runtime.md are done.
 - [x] tests/unit/test_screen_audio.gd (7 tests: a real StatusMenu's whooshes, Reduced motion, and stand-ins for the
       claude/ui classes); `--filter=audio`, `menu_motion`, `title` and `save` pass; validate_data 0/0.
-- [ ] When claude/ui merges: drop `pending` on ShrineTravelMenu and ReefballHud, and run test_screen_audio against
+- [ ] ReefballHud is live since big11 (a smoke test on the real HUD). When ShrineTravelMenu lands: drop its `pending`, and run test_screen_audio against
       the real classes (a smoke test like test_menu_motion's hooks test).
 
 ## Review log
