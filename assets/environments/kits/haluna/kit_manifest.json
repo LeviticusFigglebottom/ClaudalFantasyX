@@ -365,6 +365,17 @@
         "net_rack-lod1": 112
       }
     },
+    "offering_step": {
+      "budget": [
+        2400,
+        200
+      ],
+      "bytes": 72192,
+      "lods": {
+        "offering_step": 1036,
+        "offering_step-lod1": 124
+      }
+    },
     "oil_lamp_post": {
       "budget": [
         2600,
@@ -666,17 +677,6 @@
         "shrine_islet-lod1": 1710
       }
     },
-    "shrine_offering": {
-      "budget": [
-        4200,
-        300
-      ],
-      "bytes": 127524,
-      "lods": {
-        "shrine_offering": 1740,
-        "shrine_offering-lod1": 173
-      }
-    },
     "shrine_roof_fan": {
       "budget": [
         60000,
@@ -898,6 +898,17 @@
       "lods": {
         "water_jar": 524,
         "water_jar-lod1": 72
+      }
+    },
+    "wayside_offering": {
+      "budget": [
+        4200,
+        300
+      ],
+      "bytes": 127528,
+      "lods": {
+        "wayside_offering": 1740,
+        "wayside_offering-lod1": 173
       }
     },
     "windbreak_placeholder": {

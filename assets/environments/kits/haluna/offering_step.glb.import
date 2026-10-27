@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://dnhgbtp5dhp64"
-path="res://.godot/imported/shrine_offering.glb-cf38ead9ce2d9353e48fc780b5ef50ff.scn"
+uid="uid://cev4shb3knxp3"
+path="res://.godot/imported/offering_step.glb-8ccb153b0a920ba76df4bdaafc5b880a.scn"
 
 [deps]
 
-source_file="res://assets/environments/kits/haluna/shrine_offering.glb"
-dest_files=["res://.godot/imported/shrine_offering.glb-cf38ead9ce2d9353e48fc780b5ef50ff.scn"]
+source_file="res://assets/environments/kits/haluna/offering_step.glb"
+dest_files=["res://.godot/imported/offering_step.glb-8ccb153b0a920ba76df4bdaafc5b880a.scn"]
 
 [params]
 

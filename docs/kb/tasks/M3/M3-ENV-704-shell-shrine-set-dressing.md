@@ -22,7 +22,7 @@ kit now has the pieces (M3-ENV-701, all in `assets/environments/kits/haluna/`, o
       steps. Keep the S01 frame's read of the door and the steps.
 - [ ] **The hall (S02, S03):** an `offering_step` against the wall between each pair of whorl columns on the two
       10 m runs (four in all, on `z = ±8.3`, set back to the wall foot, facing into the hall), clear of the
-      channels, basins, pools and grates. Optionally a `shrine_offering` (with its tide-post) either side of the
+      channels, basins, pools and grates. Optionally a `wayside_offering` (with its tide-post) either side of the
       entrance inside, if S02's threshold frame takes it.
 - [ ] Collision: `none` for `rope_coil`, `tide_debris`, `net_heap`; boxes for the offerings are fine.
 - [ ] Rebake the two GI states (`tools/shrine/bake_shrine_gi.tscn`, `tools/shrine/gi_inputs.py --write`) and

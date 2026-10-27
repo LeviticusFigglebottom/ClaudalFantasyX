@@ -7,8 +7,9 @@ The lived-in clutter between the houses, along the tide-walls, on the dock and a
   laundry_line      two forked poles 4 m apart, a sagging line, five cloths pegged on it (each cloth its
                     own dye slot, so a placement can re-dye them: kit_cloth / _indigo / _sea_blue)
   net_heap          a heaped fishing net drying on the sand, two floats caught in it
-  shrine_offering   a low coral-stone step with frangipani heads, shells, two clay bowls and leaf-boats,
+  wayside_offering   a low coral-stone step with frangipani heads, shells, two clay bowls and leaf-boats,
                     under a carved tide-post with a fan-shell disc and two swags of blooms
+  offering_step     the same step without the tide-post, for the foot of a marker post already there
   tide_debris       a bleached driftwood log, a split plank, a kelp wrack line and shells, as the tide
                     leaves them at the strand line
   cargo_sacks       four woven sacks slumped against each other on a pallet of planks
@@ -54,7 +55,8 @@ TRI_BUDGET = {
     "rope_coil": (2200, 120),
     "laundry_line": (3600, 300),
     "net_heap": (2400, 200),
-    "shrine_offering": (4200, 300),
+    "wayside_offering": (4200, 300),
+    "offering_step": (2400, 200),
     "tide_debris": (3200, 240),
     "cargo_sacks": (3200, 300),
     "woodpile": (4000, 200),
@@ -271,12 +273,14 @@ def _shell(mb: kc.MeshBuilder, c, r: float, yaw: float, rng, lod: bool) -> None:
     mb.merge(tmp, kc.rot_y(yaw) @ np.diag([1.0, 1.0, 0.62]), offset=c)
 
 
-def build_shrine_offering(seed: int = 705) -> list[kc.MeshBuilder]:
+def build_wayside_offering(seed: int = 705, *, post: bool = True) -> list[kc.MeshBuilder]:
+    """`post` False: the step alone (`offering_step`), for setting at the foot of a marker post that is already there."""
+    name = "wayside_offering" if post else "offering_step"
     out = []
     for lod in (False, True):
         rng = kc.rng_for("shrine_offering", seed)
         noise = kc.Noise3(rng)
-        mb = kc.MeshBuilder("shrine_offering" + ("-lod1" if lod else ""))
+        mb = kc.MeshBuilder(name + ("-lod1" if lod else ""))
         sm = mb.material(M_STONE)
         # The step: two dressed coral blocks, the upper set back.
         kc.rounded_block(mb, (0.0, 0.11, 0.0), (0.6, 0.11, 0.32), sm, seg=1 if lod else 3, radius=0.03,
@@ -312,6 +316,9 @@ def build_shrine_offering(seed: int = 705) -> list[kc.MeshBuilder]:
                    rng.uniform(0, 6.28), rng, lod)
         # The tide-post behind it (the silhouette that reads from the lane): a carved post with a fan-shell
         # disc at its head facing the step, and two strings of blooms swagged from it to the step's ends.
+        if not post:
+            out.append(mb)
+            continue
         post_top = np.array([0.0, 1.75, -0.24])
         kc.tube(mb, np.array([[0.0, 0.3, -0.24], [0.0, 1.0, -0.24], post_top]), np.array([0.075, 0.065, 0.055]),
                 8 if not lod else 5, mb.material(M_CARVED), noise=None if lod else noise, disp_m=0.006,
@@ -591,7 +598,8 @@ TARGETS = {
     "rope_coil": build_rope_coil,
     "laundry_line": build_laundry_line,
     "net_heap": build_net_heap,
-    "shrine_offering": build_shrine_offering,
+    "wayside_offering": build_wayside_offering,
+    "offering_step": lambda: build_wayside_offering(post=False),
     "tide_debris": build_tide_debris,
     "cargo_sacks": build_cargo_sacks,
     "woodpile": build_woodpile,

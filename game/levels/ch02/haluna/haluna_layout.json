@@ -2224,7 +2224,7 @@
    "_m701": true
   },
   {
-   "piece": "shrine_offering",
+   "piece": "wayside_offering",
    "at": [
     -111.5,
     33.5
@@ -2233,7 +2233,7 @@
    "_m701": true
   },
   {
-   "piece": "shrine_offering",
+   "piece": "wayside_offering",
    "at": [
     -120.6,
     33.2
@@ -2251,7 +2251,7 @@
    "_m701": true
   },
   {
-   "piece": "shrine_offering",
+   "piece": "wayside_offering",
    "at": [
     -16.6,
     -120.0
@@ -4464,7 +4464,11 @@
    22.0,
    70.0
   ],
-  "shrine_offering": [
+  "wayside_offering": [
+   22.0,
+   80.0
+  ],
+  "offering_step": [
    22.0,
    80.0
   ],
