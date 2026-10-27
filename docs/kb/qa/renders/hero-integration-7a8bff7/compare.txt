@@ -1,0 +1,9 @@
+FAIL battle_statuses: rmse 0.03830 (limit 0.00800)
+FAIL battle_read_panel: rmse 0.02280 (limit 0.00800)
+FAIL battle_choreo_cast: rmse 0.03648 (limit 0.00800)
+FAIL battle_choreo_read: rmse 0.04784 (limit 0.00800)
+FAIL battle_choreo_toll: rmse 0.06825 (limit 0.00800)
+FAIL battle_swell_glyph: rmse 0.03583 (limit 0.00800)
+FAIL battle_heroes_idle: rmse 0.04748 (limit 0.00800)
+Screenshots: 7 compared, 7 failed (diffs in /home/user/wt/render/tests/screenshots/out/diff)
+compare exit 1
