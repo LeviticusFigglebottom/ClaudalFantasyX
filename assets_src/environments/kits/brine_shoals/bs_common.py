@@ -55,6 +55,7 @@ M_RED = "bs_lacquer_red"
 M_GOLD = "bs_gold"
 M_SMOKE = "bs_smoke"
 M_SOOT = "bs_soot"
+M_WAKE = "bs_wake"  # M3-ENV-1000 (bs_wake.py): env_boat_wake.gdshader
 
 # Haluna generator slots reused by import -> this kit's slots.
 RENAME = {

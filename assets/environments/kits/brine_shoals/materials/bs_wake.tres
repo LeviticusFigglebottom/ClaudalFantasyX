@@ -1,0 +1,13 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3]
+
+[ext_resource type="Shader" path="res://game/shaders/environment/env_boat_wake.gdshader" id="1_shader"]
+
+[resource]
+resource_name = "bs_wake"
+shader = ExtResource("1_shader")
+shader_parameter/col_churn = Color(0.6157, 0.7216, 0.6824, 1)
+shader_parameter/col_foam = Color(0.9176, 0.9373, 0.9176, 1)
+shader_parameter/full_speed_m_s = 1.6
+shader_parameter/opacity = 0.7
+shader_parameter/speed_m_s = 1.6
+shader_parameter/wake_length_m = 16

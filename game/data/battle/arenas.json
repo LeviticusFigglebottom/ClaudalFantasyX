@@ -11,7 +11,18 @@
       "ash_terrace_lanternfall": "res://assets/environments/arenas/ash_terrace_lanternfall/ash_terrace_lanternfall.tscn",
       "brine_shoals_afternoon": "res://assets/environments/arenas/brine_shoals_afternoon/brine_shoals_afternoon.tscn",
       "salvage_camp_burning": "res://assets/environments/arenas/salvage_camp_burning/salvage_camp_burning.tscn",
-      "wall_head_storm": "res://game/battle/arenas/wall_head_storm.tscn"
+      "wall_head_storm": "res://game/battle/arenas/wall_head_storm.tscn",
+      "seawall_stairhead_storm": "res://assets/environments/arenas/seawall_stairhead_storm/seawall_stairhead_storm.tscn",
+      "seawall_stairhead_hoist": "res://assets/environments/arenas/seawall_stairhead_hoist/seawall_stairhead_hoist.tscn",
+      "seawall_stairhead_surge": "res://assets/environments/arenas/seawall_stairhead_surge/seawall_stairhead_surge.tscn",
+      "coilspire_headland_path": "res://assets/environments/arenas/coilspire_headland_path/coilspire_headland_path.tscn",
+      "coilspire_tier_landing": "res://assets/environments/arenas/coilspire_tier_landing/coilspire_tier_landing.tscn",
+      "keth_seep_terrace": "res://assets/environments/arenas/keth_seep_terrace/keth_seep_terrace.tscn",
+      "lowlight_engine_hall": "res://assets/environments/arenas/lowlight_engine_hall/lowlight_engine_hall.tscn",
+      "ossa_fen_roots": "res://assets/environments/arenas/ossa_fen_roots/ossa_fen_roots.tscn",
+      "bridal_barge_night": "res://assets/environments/arenas/bridal_barge_night/bridal_barge_night.tscn",
+      "ansedra_lagoon_escape": "res://assets/environments/arenas/ansedra_lagoon_escape/ansedra_lagoon_escape.tscn",
+      "drowned_choir_ring": "res://assets/environments/arenas/drowned_choir_ring/drowned_choir_ring.tscn"
     },
     "staging": {
       "doc": "M3-BPR-01: per-arena choreography (BattleChoreo): travel_scale scales every run, step, walk-in and exit (with reduced motion's on top); tempo scales the battle speed (under 1 = slower). Arenas with no row stage as the sandbox.",

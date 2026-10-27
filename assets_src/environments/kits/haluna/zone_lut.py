@@ -115,6 +115,32 @@ GRADES = {
                          "highlight_strength": 0.4, "warm_deg": (-25.0, 50.0), "warm_sat": 1.12, "cool_sat": 1.0,
                          "cool_hex": "#D2DAE8", "cool_strength": 0.25, "green_deg": (70.0, 165.0),
                          "green_target_deg": 178.0, "green_shift": 0.45},
+    # M3-C05-03: Pemakar's harbour at dusk (B01, the sun 3 deg down): the afterglow's orange and the first lanterns
+    # kept, the rest cooled toward the blue hour; the toe a dusk blue, lifted off black (it isn't night yet).
+    "ch05_harbour_dusk": {"saturation": 1.05, "s_curve": 0.5, "toe_hex": "#1E2A48", "toe_strength": 0.45,
+                          "toe_end": 0.32, "black_floor": 0.4, "highlight_hex": "#FFD8B0", "highlight_start": 0.68,
+                          "highlight_strength": 0.4, "warm_deg": (-20.0, 50.0), "warm_sat": 1.1, "cool_sat": 0.95,
+                          "cool_hex": "#B8C4E0", "cool_strength": 0.3, "green_deg": (70.0, 165.0),
+                          "green_target_deg": 178.0, "green_shift": 0.35},
+    # M3-ENV-720: lut_ch15_unlamped (colour script ch15): no warm source anywhere at night, so the warm hues are cut
+    # (never boosted) and the highlights cooled toward the moon; saturation x0.85; the toe and black point night_sky.
+    "ch15_unlamped": {"saturation": 0.85, "s_curve": 0.5, "toe_hex": NIGHT_SKY_HEX, "toe_strength": 0.5,
+                      "toe_end": 0.3, "black_floor": 1.0, "highlight_hex": "#DCE6FF", "highlight_start": 0.7,
+                      "highlight_strength": 0.4, "warm_deg": (-20.0, 60.0), "warm_sat": 0.85, "cool_sat": 0.9,
+                      "cool_hex": "#C8D6EE", "cool_strength": 0.35},
+    # M3-ENV-721: lut_ch14_wedding (colour script ch14): the reds pushed hard (the lacquer toward blood), the rest
+    # cooled, high contrast (S 0.7), shadows navy. The script's -4 deg hue turn on the reds is left to Rendering's LUT
+    # tool; here the red band is saturated and the toe pulls everything under it toward navy.
+    "ch14_wedding": {"saturation": 0.9, "s_curve": 0.7, "toe_hex": "#1A2238", "toe_strength": 0.5, "toe_end": 0.34,
+                     "black_floor": 0.6, "highlight_hex": "#FFD0A8", "highlight_start": 0.7, "highlight_strength": 0.35,
+                     "warm_deg": (-20.0, 25.0), "warm_sat": 1.15, "cool_sat": 0.85, "cool_hex": "#B8C4E0",
+                     "cool_strength": 0.3},
+    # M3-ENV-722: lut_ch16_choir (colour script ch16, the Choir variant): moonlit, the stone faces cold, Kesh's held
+    # light a pale cyan; low contrast (the Rim's), saturation x0.7, the toe a cold slate.
+    "ch16_choir": {"saturation": 0.7, "s_curve": 0.3, "toe_hex": "#1E2A3A", "toe_strength": 0.45, "toe_end": 0.32,
+                   "black_floor": 0.5, "highlight_hex": "#E6EEFA", "highlight_start": 0.68, "highlight_strength": 0.4,
+                   "warm_deg": (-20.0, 60.0), "warm_sat": 0.7, "cool_sat": 0.9, "cool_hex": "#C8DCEE",
+                   "cool_strength": 0.35},
 }
 
 

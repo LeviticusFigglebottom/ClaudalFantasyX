@@ -1,0 +1,6 @@
+[gd_resource type="StandardMaterial3D" load_steps=1 format=3]
+
+[resource]
+resource_name = "kit_fen_canopy_far"
+albedo_color = Color(0.3059, 0.3608, 0.3216, 1)
+roughness = 0.95

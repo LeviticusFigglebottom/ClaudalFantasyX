@@ -18,9 +18,25 @@ city one piece for one primitive (iskarra_city.tscn), so its shots keep their co
   iskarra_arch           a standing gate: two fluted pillars and a carved lintel (9 m wide, 10.9 m)
   iskarra_arch_fallen    the same gate fallen: one pillar standing, a stump, the lintel broken across the ground
   iskarra_lamp_column    a dead Lit Age lamp column (5.5 m): a fluted ceramic shaft and a cold glass head in bronze
+  iskarra_drowned_block  (M3-ENV-724) a drowned building's top storeys out of the sea (14 x 10 m, 4.5 m over the
+                         water): tiled walls with arched windows, a blue-glazed band under the cornice, a parapet,
+                         its roof terrace fallen in at one end
+  iskarra_drowned_dome   (M3-ENV-724) a smaller drowned block (9 x 9 m, 3.6 m over the water) carrying a blue dome
+  iskarra_far_towers     (M3-ENV-724) the drowned city to the horizon: low-poly towers (domed, stepped, broken) with
+                         galleries and a glazed band, out of the sea at 180-520 m behind the plaza (the -Z half and
+                         the flanks), so the skyline is a city, not an empty sea
+  iskarra_arcade_sunk    (M3-ENV-724) five bays of a drowned arcade along X (23 m): square piers, round arches,
+                         the entablature with its glazed band; the fourth bay's arch and lintel fallen
+
+M3-ENV-724 (the fast-track pass for the Prologue's first frames): the shafts are clad in Iskarra's glazed tile
+(kit_iskarra_cladding, mesh UV in metres), every storey has its row of arched windows (dark openings in cast
+frames, a sill), the galleries are real ledges (a slab, its edge and soffit, a parapet rail on posts) with a band of
+reef-blue glazed tile under each (kit_iskarra_glaze, the city's one colour); the stepped towers' domes are glazed.
+The plaza's inlaid channels are the blue glaze, and a Lit Age sunburst is inlaid in its middle.
 
 Origins: towers at their foot centre on the sea bed datum (the sea is at y 3 above it: their waterline band sits
-there), the plaza pieces at their top's centre (y 0 = the paving), the rest at their foot. Front +Z.
+there), the plaza pieces at their top's centre (y 0 = the paving), the drowned pieces at the sea level (y 0) over
+their centre, the rest at their foot. Front +Z.
 """
 
 from __future__ import annotations
@@ -32,6 +48,8 @@ import numpy as np
 import kit_common as kc
 
 M_CERAMIC = "kit_iskarra_ceramic"
+M_CLAD = "kit_iskarra_cladding"
+M_GLAZE = "kit_iskarra_glaze"
 M_PAVING = "kit_iskarra_paving"
 M_BRONZE = "kit_iskarra_bronze"
 M_GLASS = "kit_salt_glass"
@@ -40,8 +58,13 @@ M_DARK = "kit_interior_dark"
 WATERLINE_M = 3.0  # the tower's foot is this far under the sea (the Prologue's water is at y 0, feet at -3)
 FLUTES = 18
 
+CHANNEL_HALF_W = 0.11  # the paving's inlaid ceramic channel strips
+
 TRI_BUDGET = {
-    "iskarra_tower": (16000, 1200),
+    "iskarra_tower": (36000, 2400),
+    "iskarra_drowned": (9000, 400),
+    "iskarra_arcade_sunk": (5000, 300),
+    "iskarra_far_towers": (14000, 1300),
     "iskarra_crown_fallen": (4000, 300),
     "iskarra_plaza": (14000, 600),
     "iskarra_plaza_rise": (3000, 120),
@@ -51,6 +74,10 @@ TRI_BUDGET = {
 BUDGET_KEY = {name: "iskarra_tower" for name in ("iskarra_tower_spire", "iskarra_tower_stepped", "iskarra_tower_broken",
                                                  "iskarra_tower_small", "iskarra_tower_small_broken")}
 BUDGET_KEY["iskarra_arch_fallen"] = "iskarra_arch"
+BUDGET_KEY["iskarra_drowned_block"] = "iskarra_drowned"
+BUDGET_KEY["iskarra_drowned_dome"] = "iskarra_drowned"
+WINDOW_PITCH_M = 2.6  # arc length between a storey's windows
+STOREY_ROWS = (3.4, 6.6)  # window-row centres below each gallery
 
 WORN = kc.Weathering(moss=0.0, salt=0.6, wet=0.0, erosion=0.6)  # dry above the tide: the shaft paints its own band
 
@@ -60,14 +87,14 @@ def _shaft(mb: kc.MeshBuilder, y0: float, y1: float, r0: float, r1: float, rng, 
     """A fluted ceramic shaft from y0 (radius r0) to y1 (r1), its vertex colours carrying the waterline band
     (salt and wet below `waterline`+1 m) and wear; `top_jagged` > 0 breaks the top rim into a ragged edge."""
     na = (FLUTES * 4 if not lod else 12) + 1
-    ny = max(2, int((y1 - y0) / (1.5 if not lod else 8.0)) + 1)
+    ny = max(2, int((y1 - y0) / (2.0 if not lod else 8.0)) + 1)
     a = np.linspace(0.0, 2 * math.pi, na)
     t = np.linspace(0.0, 1.0, ny)
     A, T = np.meshgrid(a, t)
     Y = y0 + T * (y1 - y0)
     R = r0 + (r1 - r0) * T
     if not lod:
-        R = R * (1.0 + 0.018 * np.cos(A * FLUTES))  # flutes
+        R = R * (1.0 + 0.03 * np.cos(A * FLUTES))  # flutes
     if top_jagged > 0.0:
         jag = (noise.fbm(np.stack([np.cos(a) * 3.0, np.zeros_like(a), np.sin(a) * 3.0], -1), 3) - 0.5) * 2.0
         Y[-1] = y1 - top_jagged * (0.5 + 0.5 * np.abs(jag)) - top_jagged * 0.6 * (np.sin(a * 2.0 + 1.0) > 0.4)
@@ -82,38 +109,98 @@ def _shaft(mb: kc.MeshBuilder, y0: float, y1: float, r0: float, r1: float, rng, 
         salt = np.zeros_like(Y)
     breakup = noise.fbm(P / 4.0, 2) if not lod else np.full(Y.shape, 0.5)
     col = np.stack([np.zeros_like(Y), np.clip(salt + 0.15 * breakup, 0, 1), wet, 0.35 + 0.4 * breakup], axis=-1)
-    uv = np.stack([A / (2 * math.pi) * (2 * math.pi * r0) / 2.0, Y / 2.0], axis=-1)
+    uv = np.stack([A * (r0 + r1) * 0.5, Y], axis=-1)  # metres: the cladding's tile runs level round the shaft
     uv2 = np.stack([np.full(Y.shape, 0.9), np.full(Y.shape, float(rng.random()))], axis=-1)
-    kc.quad_strip(mb, P, mb.material(M_CERAMIC), uv=uv, col=col, uv2=uv2)
+    kc.quad_strip(mb, P, mb.material(M_CLAD), uv=uv, col=col, uv2=uv2, flip=True)  # faces out (M3-ENV-724 fix)
     if top_jagged > 0.0:
         # The broken wall's inside, so the open top reads as a hollow shell from above and through the breaks.
         inner = P[-2:].copy()
         inner[..., 0] *= 0.9
         inner[..., 2] *= 0.9
-        kc.quad_strip(mb, np.stack([P[-1], inner[-1]]), mb.material(M_CERAMIC), uv=uv[-2:], col=col[-2:],
-                      uv2=uv2[-2:])
+        kc.quad_strip(mb, np.stack([P[-1], inner[-1]]), mb.material(M_CLAD), uv=uv[-2:], col=col[-2:],
+                      uv2=uv2[-2:], flip=True)
         down = inner[-1:].copy()
         down[..., 1] -= min(6.0, (y1 - y0) * 0.6)
         kc.quad_strip(mb, np.concatenate([inner[-1:], down]), mb.material(M_DARK), uv=uv[-2:], col=col[-2:],
                       uv2=uv2[-2:], flip=True)
 
 
+def _strip(mb: kc.MeshBuilder, grid: np.ndarray, mat: int, want, **kw) -> None:
+    """quad_strip with its faces turned toward `want` (a vector, or a callable of the first quad's centre)."""
+    n = np.cross(grid[0, 1] - grid[0, 0], grid[1, 0] - grid[0, 0])
+    c = (grid[0, 0] + grid[1, 1]) * 0.5
+    w = want(c) if callable(want) else np.asarray(want, float)
+    kc.quad_strip(mb, grid, mat, flip=bool(np.dot(n, w) < 0.0), **kw)
+
+
+def _ring(rad: float, y: float, a: np.ndarray) -> np.ndarray:
+    return np.stack([np.cos(a) * rad, np.full_like(a, y), np.sin(a) * rad], axis=-1)
+
+
 def _gallery(mb: kc.MeshBuilder, y: float, r: float, rng, lod: bool) -> None:
-    """A gallery ring: a projecting ledge with its coping, and a band of dark window slits just below it."""
+    """A gallery: a ledge projecting 0.9 m (its top, edge and soffit), a parapet rail on posts, and under it a band
+    of reef-blue glazed tile."""
     a = np.linspace(0.0, 2 * math.pi, (48 if not lod else 12) + 1)
-    ring = np.stack([np.cos(a) * (r + 0.35), np.full_like(a, y), np.sin(a) * (r + 0.35)], axis=-1)
-    kc.tube(mb, ring, 0.32, 6 if not lod else 3, mb.material(M_CERAMIC), weather=WORN,
-            variation=float(rng.random()))
+    ro = r + 0.9
+    cer, glaze = mb.material(M_CERAMIC), mb.material(M_GLAZE)
+    out = lambda c: np.array([c[0], 0.0, c[2]])  # noqa: E731
+    kw = dict(col=np.array([0.0, 0.3, 0.0, 0.5]), uv2=np.array([0.9, float(rng.random())]))
+    for grid, want in ((np.stack([_ring(r, y, a), _ring(ro, y, a)]), (0.0, 1.0, 0.0)),
+                       (np.stack([_ring(ro, y, a), _ring(ro, y - 0.35, a)]), out),
+                       (np.stack([_ring(ro, y - 0.35, a), _ring(r, y - 0.35, a)]), (0.0, -1.0, 0.0))):
+        _strip(mb, grid, cer, want, uv=grid[..., [0, 2]] + grid[..., [1, 1]], smooth=False, **kw)
+    band = np.stack([_ring(r * 1.03 + 0.01, y - 0.45, a), _ring(r * 1.03 + 0.01, y - 1.55, a)])
+    _strip(mb, band, glaze, out, uv=np.stack([np.broadcast_to(a * r, band.shape[:2]), band[..., 1]], -1), **kw)
     if lod:
         return
-    n = max(8, int(2 * math.pi * r / 2.2))
+    kc.tube(mb, _ring(ro - 0.12, y + 0.95, a), 0.06, 4, cer)
+    n = max(12, int(2 * math.pi * ro / 1.6))
     for k in range(n):
-        th = 2 * math.pi * (k + 0.5) / n
-        c = np.array([math.cos(th) * (r + 0.02), y - 1.6, math.sin(th) * (r + 0.02)])
-        kc.rounded_block(mb, c, (0.03, 0.9, 0.22), mb.material(M_DARK), rot=kc.rot_y(-th), radius=0.01, seg=1)
+        th = 2 * math.pi * k / n
+        p = np.array([math.cos(th) * (ro - 0.12), 0.0, math.sin(th) * (ro - 0.12)])
+        kc.tube(mb, np.array([p + [0.0, y, 0.0], p + [0.0, y + 0.92, 0.0]]), 0.05, 4, cer)
 
 
-def _dome(mb: kc.MeshBuilder, y: float, r: float, h: float, rng, noise, lod: bool, finial: bool = True) -> None:
+def _window(mb: kc.MeshBuilder, th: float, y: float, r: float, *, w: float = 0.9, h: float = 2.0) -> None:
+    """An arched window on a wall whose outward normal is (cos th, 0, sin th) at radius r: the dark opening, a cast
+    frame (jambs and arch) standing proud of the wall, and a sill. y is the window's centre."""
+    dark, cer = mb.material(M_DARK), mb.material(M_CERAMIC)
+    n = np.array([math.cos(th), 0.0, math.sin(th)])
+    t = np.array([-math.sin(th), 0.0, math.cos(th)])
+    spring = y + h * 0.5 - w * 0.5
+    base = n * r
+    kc.rounded_block(mb, base + n * 0.02 + [0.0, (y - h * 0.5 + spring) * 0.5, 0.0],
+                     (0.04, (spring - (y - h * 0.5)) * 0.5, w * 0.5), dark, rot=kc.rot_y(-th), radius=0.0, seg=1)
+    kc.rounded_block(mb, base + n * 0.02 + [0.0, spring + w * 0.22, 0.0], (0.04, w * 0.22, w * 0.32), dark,
+                     rot=kc.rot_y(-th), radius=0.0, seg=1)
+    arc = np.linspace(0.0, math.pi, 7)
+    fr = w * 0.5 + 0.08
+    pts = [base + n * 0.1 + t * fr + [0.0, y - h * 0.5, 0.0]]
+    pts += [base + n * 0.1 + t * (math.cos(ang) * fr) + [0.0, spring + math.sin(ang) * fr, 0.0] for ang in arc]
+    pts += [base + n * 0.1 - t * fr + [0.0, y - h * 0.5, 0.0]]
+    kc.tube(mb, np.array(pts), 0.08, 3, cer)
+    kc.rounded_block(mb, base + n * 0.12 + [0.0, y - h * 0.5 - 0.06, 0.0], (0.14, 0.06, w * 0.5 + 0.18), cer,
+                     rot=kc.rot_y(-th), radius=0.0, seg=1)
+
+
+def _storeys(mb: kc.MeshBuilder, galleries, r_at, lod: bool, *, y_top: float = 1e9, y_min: float = 4.0) -> None:
+    """Rows of windows round a shaft: two storeys under each gallery, none in the sea or above a broken top."""
+    if lod:
+        return
+    for gy in galleries:
+        for dy in STOREY_ROWS:
+            y = gy - dy
+            if y - 1.0 < y_min or y + 1.0 > y_top:
+                continue
+            r = r_at(y)
+            n = max(6, int(2 * math.pi * r / WINDOW_PITCH_M))
+            off = 0.5 if dy == STOREY_ROWS[1] else 0.0
+            for k in range(n):
+                _window(mb, 2 * math.pi * (k + off) / n, y, r * 1.03)
+
+
+def _dome(mb: kc.MeshBuilder, y: float, r: float, h: float, rng, noise, lod: bool, finial: bool = True,
+          mat: str = M_CERAMIC) -> None:
     """A domed cap from radius r at y, rising h, with a ribbed surface and a bronze finial."""
     n = 9 if not lod else 3
     t = np.linspace(0.0, 1.0, n)
@@ -121,7 +208,7 @@ def _dome(mb: kc.MeshBuilder, y: float, r: float, h: float, rng, noise, lod: boo
     tmp = kc.MeshBuilder("dome")
     import props  # noqa: PLC0415
 
-    props.lathe(tmp, prof, M_CERAMIC, rng, sides=36 if not lod else 10, noise=None if lod else noise, disp_m=0.04,
+    props.lathe(tmp, prof, mat, rng, sides=36 if not lod else 10, noise=None if lod else noise, disp_m=0.04,
                 cap_start=False, weather=WORN)
     mb.merge(tmp)
     if finial and not lod:
@@ -141,8 +228,10 @@ def build_tower(kind: str, seed: int) -> list[kc.MeshBuilder]:
         mb = kc.MeshBuilder(name + ("-lod1" if lod else ""))
         if kind == "spire":
             _shaft(mb, 0.0, 52.0, 6.0, 5.16, rng, noise, lod=lod, waterline=WATERLINE_M)
-            for y in np.arange(12.0, 52.0, 9.0):
+            gal = list(np.arange(12.0, 52.0, 9.0)) + [52.0]
+            for y in gal[:-1]:
                 _gallery(mb, y, 6.0 - 0.84 * y / 52.0, rng, lod)
+            _storeys(mb, gal, lambda y: 6.0 - 0.84 * y / 52.0, lod)
             _dome(mb, 52.0, 5.3, 7.0, rng, noise, lod)
         elif kind == "stepped":
             tiers = ((0.0, 20.0, 5.5, 5.2), (20.0, 33.0, 4.4, 4.1), (33.0, 42.0, 3.3, 3.0))
@@ -156,19 +245,25 @@ def build_tower(kind: str, seed: int) -> list[kc.MeshBuilder]:
                                      np.stack([np.cos(a) * (r1 - 1.1), np.full_like(a, y1), np.sin(a) * (r1 - 1.1)], -1)])
                     kc.quad_strip(mb, grid, mb.material(M_CERAMIC), uv=grid[..., [0, 2]], col=np.array([0, 0.3, 0, 0.5]),
                                   uv2=np.array([0.9, 0.5]))
-            _dome(mb, 42.0, 3.1, 4.0, rng, noise, lod)
+            _storeys(mb, (20.0,), lambda y: 5.5 - 0.3 * y / 20.0, lod)
+            _storeys(mb, (33.0,), lambda y: 4.4 - 0.3 * (y - 20.0) / 13.0, lod)
+            _storeys(mb, (42.0,), lambda y: 3.3 - 0.3 * (y - 33.0) / 9.0, lod, y_min=33.5)
+            _dome(mb, 42.0, 3.1, 4.0, rng, noise, lod, mat=M_GLAZE)
         elif kind == "broken":
             _shaft(mb, 0.0, 40.0, 5.0, 4.3, rng, noise, lod=lod, top_jagged=3.5, waterline=WATERLINE_M)
             for y in (13.0, 24.0):
                 _gallery(mb, y, 5.0 - 0.7 * y / 40.0, rng, lod)
+            _storeys(mb, (13.0, 24.0, 33.0), lambda y: 5.0 - 0.7 * y / 40.0, lod, y_top=34.5)
         elif kind == "small":
             _shaft(mb, 0.0, 17.0, 3.5, 3.1, rng, noise, lod=lod, waterline=WATERLINE_M)
             _gallery(mb, 10.0, 3.26, rng, lod)
             _gallery(mb, 17.0, 3.1, rng, lod)
+            _storeys(mb, (10.0, 17.0), lambda y: 3.5 - 0.4 * y / 17.0, lod)
             _dome(mb, 17.0, 3.2, 3.6, rng, noise, lod)
         else:  # small_broken
             _shaft(mb, 0.0, 14.0, 3.0, 2.7, rng, noise, lod=lod, top_jagged=1.8, waterline=WATERLINE_M)
             _gallery(mb, 8.5, 2.82, rng, lod)
+            _storeys(mb, (13.0,), lambda y: 3.0 - 0.3 * y / 14.0, lod, y_top=11.5)
         out.append(mb)
     return out
 
@@ -192,7 +287,8 @@ def build_crown_fallen(seed: int = 721) -> list[kc.MeshBuilder]:
 def _paving(mb: kc.MeshBuilder, x0: float, x1: float, z0: float, z1: float, y: float, rng, noise, lod: bool,
             keep=None, slab: float = 1.5) -> None:
     """Paving slabs on a grid, each a separate block with a joint around it, a few sunk or lifted; `keep(x, z)`
-    drops slabs (the broken corner). Every fourth row an inlaid ceramic channel."""
+    drops slabs (the broken corner). Every fourth row carries an inlaid ceramic channel: a narrow strip along the
+    middle of each slab, flush with it, so the rows read as lines across the plaza (not a checkerboard)."""
     if lod:
         return  # the podium's top stands in for the slabs
     for i, x in enumerate(np.arange(x0 + slab * 0.5, x1, slab)):
@@ -200,10 +296,33 @@ def _paving(mb: kc.MeshBuilder, x0: float, x1: float, z0: float, z1: float, y: f
             if keep is not None and not keep(x, z):
                 continue
             dy = rng.normal(0.0, 0.02) - (0.08 if rng.random() < 0.06 else 0.0)
-            mat = mb.material(M_CERAMIC) if j % 4 == 1 and i % 2 == 0 else mb.material(M_PAVING)
-            kc.rounded_block(mb, (x, y - 0.15 + dy, z), (slab * 0.5 - 0.03, 0.15, slab * 0.5 - 0.03), mat,
-                             rot=kc.rot_y(rng.normal(0.0, 0.01)), radius=0.03, seg=1, noise=noise, disp_m=0.008,
-                             weather=WORN, variation=float(rng.random()))
+            yaw = rng.normal(0.0, 0.01)
+            kc.rounded_block(mb, (x, y - 0.15 + dy, z), (slab * 0.5 - 0.03, 0.15, slab * 0.5 - 0.03),
+                             mb.material(M_PAVING), rot=kc.rot_y(yaw), radius=0.03, seg=1, noise=noise,
+                             disp_m=0.008, weather=WORN, variation=float(rng.random()))
+            if j % 4 == 1:
+                kc.rounded_block(mb, (x, y - 0.02 + dy + 0.003, z), (slab * 0.5 - 0.03, 0.02, CHANNEL_HALF_W),
+                                 mb.material(M_GLAZE), rot=kc.rot_y(yaw), radius=0.01, seg=1,
+                                 weather=WORN, variation=float(rng.random()))
+
+
+MEDALLION_AT = (3.5, 2.5)  # plaza-local x, z: clear of the dais, the steps and the vigils
+
+
+def _sunburst(mb: kc.MeshBuilder, at, rng) -> None:
+    """The Lit Age sunburst inlaid flush in the paving: a glazed ring, a white ring inside it, sixteen rays."""
+    cx, cz = at
+    glaze, cer = mb.material(M_GLAZE), mb.material(M_CERAMIC)
+    a = np.linspace(0.0, 2 * math.pi, 49)
+    for rad, mat, w in ((2.2, glaze, 0.09), (1.0, cer, 0.06), (0.35, glaze, 0.05)):
+        ring = np.stack([cx + np.cos(a) * rad, np.full_like(a, 0.004), cz + np.sin(a) * rad], -1)
+        kc.tube(mb, ring, w, 4, mat)
+    for k in range(16):
+        th = 2 * math.pi * k / 16
+        ln = 0.55 if k % 2 else 0.95
+        mid = 1.0 + 0.1 + ln * 0.5
+        kc.rounded_block(mb, (cx + math.cos(th) * mid, 0.002, cz + math.sin(th) * mid), (ln * 0.5, 0.012, 0.05),
+                         glaze if k % 2 == 0 else cer, rot=kc.rot_y(-th), radius=0.0, seg=1)
 
 
 def build_plaza(seed: int = 722, *, w: float = 34.0, d: float = 18.0) -> list[kc.MeshBuilder]:
@@ -214,10 +333,12 @@ def build_plaza(seed: int = 722, *, w: float = 34.0, d: float = 18.0) -> list[kc
         noise = kc.Noise3(rng)
         mb = kc.MeshBuilder("iskarra_plaza" + ("-lod1" if lod else ""))
 
-        def keep(x, z):  # the back-right corner has fallen into the sea along a ragged line
-            return (x - hx * 0.25) * 0.55 + (-z - hz * 0.2) < 6.0 + 1.5 * math.sin(x * 0.9)
+        def keep(x, z):  # the back-right corner has fallen into the sea along a ragged line (clear of Kerrid's vigil)
+            return (x - hx * 0.25) * 0.55 + (-z - hz * 0.2) < 7.5 + 1.5 * math.sin(x * 0.9)
 
         _paving(mb, -hx, hx, -hz, hz - 2.4, 0.0, rng, noise, lod, keep=keep)
+        if not lod:
+            _sunburst(mb, MEDALLION_AT, rng)
         # The plaza's body: a massive ceramic-faced podium down into the water, in 3 m bays whose back ends follow
         # the fallen corner's ragged line (so the break goes right down into the sea). At LOD1 its top is the paving.
         top = 0.0 if lod else -0.2
@@ -253,6 +374,13 @@ def build_plaza(seed: int = 722, *, w: float = 34.0, d: float = 18.0) -> list[kc
                     kc.rounded_block(mb, (x, s * 0.4, z), (s, s * 0.5, s * 0.8), mb.material(M_PAVING),
                                      rot=kc.rot_y(rng.uniform(0, 3)), radius=s * 0.2, seg=1, noise=noise, disp_m=0.02,
                                      variation=float(rng.random()))
+            # Glazed tiles fallen from the towers' bands, lying where the sea left them.
+            for k in range(40):
+                x, z = rng.uniform(-hx + 1.0, hx - 1.0), rng.uniform(-hz + 1.0, hz - 3.0)
+                if not keep(x, z) or math.hypot(x - MEDALLION_AT[0], z - MEDALLION_AT[1]) < 2.6:
+                    continue
+                kc.rounded_block(mb, (x, 0.012, z), (0.2, 0.012, 0.1), mb.material(M_GLAZE if k % 3 else M_CLAD),
+                                 rot=kc.rot_y(rng.uniform(0, 3.2)) @ kc.rot_x(rng.normal(0, 0.05)), radius=0.0, seg=1)
         out.append(mb)
     return out
 
@@ -344,6 +472,136 @@ def build_lamp_column(seed: int = 725) -> list[kc.MeshBuilder]:
     return out
 
 
+def build_drowned_block(name: str, seed: int, *, w: float, d: float, h: float, dome: bool) -> list[kc.MeshBuilder]:
+    """A drowned building's top storeys: tiled walls from under the sea to h, arched windows on every face, the glazed
+    band under a cast cornice, a parapet, the roof terrace (fallen in at its +X end unless it carries a dome)."""
+    out = []
+    for lod in (False, True):
+        rng = kc.rng_for(name, seed)
+        noise = kc.Noise3(rng)
+        mb = kc.MeshBuilder(name + ("-lod1" if lod else ""))
+        clad, cer, glaze = mb.material(M_CLAD), mb.material(M_CERAMIC), mb.material(M_GLAZE)
+        hx, hz, t = w * 0.5, d * 0.5, 0.35
+        y0 = -WATERLINE_M
+        for (cx, cz, sx, sz) in ((0.0, hz - t, hx, t), (0.0, -hz + t, hx, t), (hx - t, 0.0, t, hz - 2 * t),
+                                 (-hx + t, 0.0, t, hz - 2 * t)):
+            kc.rounded_block(mb, (cx, (y0 + h) * 0.5, cz), (sx, (h - y0) * 0.5, sz), clad, radius=0.04, seg=1,
+                             weather=WORN, variation=float(rng.random()))
+        # The cornice, the glazed band under it, and the parapet's coping.
+        kc.rounded_block(mb, (0.0, h + 0.15, 0.0), (hx + 0.3, 0.15, hz + 0.3), cer, radius=0.05, seg=1, weather=WORN)
+        kc.rounded_block(mb, (0.0, h - 0.55, 0.0), (hx + 0.04, 0.45, hz + 0.04), glaze, radius=0.02, seg=1)
+        for (cx, cz, sx, sz) in ((0.0, hz, hx + 0.3, 0.15), (0.0, -hz, hx + 0.3, 0.15), (hx, 0.0, 0.15, hz),
+                                 (-hx, 0.0, 0.15, hz)):
+            kc.rounded_block(mb, (cx, h + 0.75, cz), (sx, 0.45, sz), cer, radius=0.04, seg=1, weather=WORN)
+        # The roof terrace, its +X end fallen in (rubble on the slab's broken edge) unless a dome stands on it.
+        if dome:
+            kc.rounded_block(mb, (0.0, h - 0.1, 0.0), (hx - t, 0.1, hz - t), cer, radius=0.02, seg=1)
+            _dome(mb, h, min(hx, hz) * 0.62, min(hx, hz) * 0.5, rng, noise, lod, mat=M_GLAZE)
+        else:
+            kc.rounded_block(mb, (-hx * 0.3, h - 0.1, 0.0), (hx * 0.7 - t, 0.1, hz - t), cer, radius=0.02, seg=1)
+            if not lod:
+                for k in range(8):
+                    s_ = rng.uniform(0.25, 0.6)
+                    kc.rounded_block(mb, (hx * 0.4 + rng.uniform(-0.3, 0.6), h - 0.1 + s_ * 0.3,
+                                          rng.uniform(-hz + 1.0, hz - 1.0)), (s_, s_ * 0.4, s_ * 0.7), cer,
+                                     rot=kc.rot_y(rng.uniform(0, 3)) @ kc.rot_z(rng.normal(0, 0.3)), radius=0.05,
+                                     seg=1, weather=WORN)
+        if not lod:  # windows: one row just over the water, one under the band
+            for y in (1.3, 4.6):  # a second storey of windows only where the walls rise high enough under the band
+                if y + 1.0 > h - 1.1:
+                    continue
+                for th, half, fx in ((0.0, hz, hx), (math.pi, hz, -hx), (math.pi * 0.5, hx, hz), (-math.pi * 0.5, hx, -hz)):
+                    n = max(2, int(half * 2 / WINDOW_PITCH_M))
+                    for k in range(n):
+                        along = -half + (k + 0.5) * 2 * half / n
+                        tmp = kc.MeshBuilder("w")
+                        _window(tmp, 0.0, y, 0.0)  # built facing +X, then turned to the face's outward normal
+                        R = kc.rot_y(-th)
+                        mb.merge(tmp, R, tuple(R @ np.array([abs(fx), 0.0, along])))
+        out.append(mb)
+    return out
+
+
+def build_arcade_sunk(seed: int = 727) -> list[kc.MeshBuilder]:
+    out = []
+    bays, pitch = 5, 4.6
+    for lod in (False, True):
+        rng = kc.rng_for("iskarra_arcade_sunk", seed)
+        mb = kc.MeshBuilder("iskarra_arcade_sunk" + ("-lod1" if lod else ""))
+        clad, cer, glaze = mb.material(M_CLAD), mb.material(M_CERAMIC), mb.material(M_GLAZE)
+        x0 = -bays * pitch * 0.5
+        spring, top = 2.2, 4.4
+        fallen = 3
+        for k in range(bays + 1):
+            x = x0 + k * pitch
+            h = spring if k != fallen + 1 else 1.1  # the pier beyond the fallen bay broke
+            kc.rounded_block(mb, (x, (h - WATERLINE_M) * 0.5, 0.0), (0.38, (h + WATERLINE_M) * 0.5, 0.38), clad,
+                             radius=0.03, seg=1, weather=WORN, variation=float(rng.random()))
+            if k != fallen + 1:
+                kc.rounded_block(mb, (x, h + 0.1, 0.0), (0.48, 0.1, 0.48), cer, radius=0.02, seg=1)
+        a = np.linspace(0.0, math.pi, 5 if lod else 13)
+        rad = pitch * 0.5 - 0.38
+        for k in range(bays):
+            if k in (fallen, fallen + 1):  # the two bays either side of the broken pier are down
+                continue
+            cx = x0 + (k + 0.5) * pitch
+            arc = np.stack([cx + np.cos(a) * rad, spring + 0.2 + np.sin(a) * rad, np.zeros_like(a)], -1)
+            kc.tube(mb, arc, 0.3, 3 if lod else 6, cer)
+            kc.rounded_block(mb, (cx, (top + spring + rad * 0.5) * 0.5 + 0.2, 0.0), (pitch * 0.5,
+                             (top - spring - rad * 0.5) * 0.5, 0.36), clad, radius=0.02, seg=1)
+            kc.rounded_block(mb, (cx, top + 0.35, 0.0), (pitch * 0.5 + 0.02, 0.25, 0.44), glaze, radius=0.02, seg=1)
+            if not lod:
+                kc.rounded_block(mb, (cx, top + 0.75, 0.0), (pitch * 0.5 + 0.05, 0.15, 0.5), cer, radius=0.03, seg=1)
+        if not lod:  # the fallen arch's voussoirs and lintel in the water by the broken pier
+            for j in range(5):
+                kc.rounded_block(mb, (x0 + (fallen + 0.5) * pitch + rng.uniform(-1.5, 1.5), rng.uniform(-0.4, 0.2),
+                                      rng.uniform(-1.2, 1.4)), (rng.uniform(0.4, 0.9), 0.3, 0.35), cer,
+                                 rot=kc.rot_y(rng.uniform(0, 3)) @ kc.rot_z(rng.normal(0, 0.4)), radius=0.04, seg=1,
+                                 weather=WORN)
+        out.append(mb)
+    return out
+
+
+FAR_RANGE_M = (180.0, 520.0)
+
+
+def build_far_towers(seed: int = 729) -> list[kc.MeshBuilder]:
+    out = []
+    for lod in (False, True):
+        rng = kc.rng_for("iskarra_far_towers", seed)
+        mb = kc.MeshBuilder("iskarra_far_towers" + ("-lod1" if lod else ""))
+        clad, cer, glaze, dark = (mb.material(M_CLAD), mb.material(M_CERAMIC), mb.material(M_GLAZE),
+                                  mb.material(M_DARK))
+        n = 44
+        sides = 4 if lod else 10
+        for k in range(n):
+            # Behind the plaza (-Z) and round the flanks: bearings from -110 to +110 degrees off -Z.
+            bearing = math.radians(-110.0 + 220.0 * (k + rng.uniform(0.1, 0.9)) / n)
+            r = rng.uniform(*FAR_RANGE_M)
+            x, z = math.sin(bearing) * r, -math.cos(bearing) * r
+            rad = rng.uniform(3.0, 7.5)
+            h = rng.uniform(18.0, 70.0) * (0.7 if r < 260.0 else 1.0)
+            kind = rng.integers(0, 3)  # 0 domed, 1 stepped, 2 broken
+            top = h * (0.6 if kind == 2 else 1.0)
+            kc.tube(mb, np.array([[x, -WATERLINE_M, z], [x, top, z]]), np.array([rad, rad * 0.88]), sides, clad,
+                    cap_end=kind != 0)
+            for g in () if lod else np.arange(12.0, top - 3.0, 10.0):  # the galleries and their glazed band
+                rr = rad - 0.12 * rad * g / h
+                ring = np.array([[x, g, z], [x, g + 0.5, z]])
+                kc.tube(mb, ring, rr + 0.6, sides, cer, cap_start=True, cap_end=True)
+                kc.tube(mb, np.array([[x, g - 1.4, z], [x, g - 0.4, z]]), rr * 1.02 + 0.03, sides, glaze)
+                kc.tube(mb, np.array([[x, g - 4.2, z], [x, g - 2.4, z]]), rr * 1.01 + 0.02, sides, dark)
+            if kind == 0:
+                dome = np.array([[x, top, z], [x, top + rad * 0.6, z], [x, top + rad * 0.95, z]])
+                kc.tube(mb, dome, np.array([rad * 0.9, rad * 0.62, 0.05]), sides,
+                        glaze if rng.random() < 0.3 else cer)
+            elif kind == 1:
+                kc.tube(mb, np.array([[x, top, z], [x, top + h * 0.25, z]]), np.array([rad * 0.6, rad * 0.5]), sides,
+                        clad, cap_end=True)
+        out.append(mb)
+    return out
+
+
 TARGETS = {
     "iskarra_tower_spire": lambda: build_tower("spire", 731),
     "iskarra_tower_stepped": lambda: build_tower("stepped", 732),
@@ -356,4 +614,10 @@ TARGETS = {
     "iskarra_arch": build_arch,
     "iskarra_arch_fallen": lambda: build_arch(fallen=True),
     "iskarra_lamp_column": build_lamp_column,
+    "iskarra_drowned_block": lambda: build_drowned_block("iskarra_drowned_block", 726, w=14.0, d=10.0, h=4.5,
+                                                         dome=False),
+    "iskarra_drowned_dome": lambda: build_drowned_block("iskarra_drowned_dome", 728, w=9.0, d=9.0, h=3.6,
+                                                        dome=True),
+    "iskarra_arcade_sunk": build_arcade_sunk,
+    "iskarra_far_towers": build_far_towers,
 }

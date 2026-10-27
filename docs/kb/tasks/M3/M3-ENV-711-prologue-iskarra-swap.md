@@ -19,3 +19,11 @@ For slice-polish, which owns `game/levels/prologue/**`. M3-ENV-710 built Iskarra
       `City/Vigils` and `RhenLantern` as they are.
 - [x] Vigils still stand on the paving: the paving top is y 0.4 as before; the rise top is y 1.0 as before.
 - [x] Add a shot for P01 to `shots.json` (none exists yet) and post a render request; env-art views it.
+
+- **env-art, 2026-10-27:** after viewing the PC's first Iskarra renders (gpu/render-env-art-8770a06):
+  - **Water.** The towers read as floating over the dusk haze, because a flat StandardMaterial plane can't reflect
+    them. The preview now uses the project's `WaterSurface`, with `haluna_water_material.tres` and `lagoon_waves.tres`
+    as Haluna does, and fog from 70 m at 0.2. When you swap the city into `prologue.tscn`, replace its `City/Water`
+    plane the same way.
+  - **Paving.** The inlay is now a narrow channel along every fourth row instead of a checkerboard.
+  - **The corner.** The plaza's fallen corner is pulled back, clear of Kerrid's vigil at (9.5, −5.5) (M2-FP-103).
