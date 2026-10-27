@@ -288,6 +288,9 @@ M1_JOBS = 5  # the first JOBS rows are M1's audio (SIZE_BUDGET)
 # 0039), and LFS isn't live in the cloud yet, so these render only with --act2 and are never committed until the Lead
 # announces it: the default run, the size budget and the tests don't expect them. Composers append rows here.
 ACT2_FINALS: list[tuple] = [
+    ("assets_src/music/act2/ansedra.py", "assets/audio/music/act2", ["ansedra.ogg", "ansedra.loop.json"], "music_loop"),
+    ("assets_src/music/act2/lamp_archive.py", "assets/audio/music/act2", ["lamp_archive.ogg", "lamp_archive.loop.json"], "music_loop"),
+    ("assets_src/music/act2/peace_wedding.py", "assets/audio/music/act2", ["peace_wedding.ogg", "peace_wedding.loop.json"], "music_loop"),
 ]
 ACT2_DIR = "assets/audio/music/act2"
 
