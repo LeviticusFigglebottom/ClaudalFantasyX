@@ -117,3 +117,29 @@ func test_a_counter_is_answered_after_the_blow_by_the_hero_it_struck() -> void:
 	assert_true((plan["kos"] as Array).has(foe.id), "a riposte can fell it")
 	assert_true(float(plan["ko_at"]) >= float(plan["return_end"]), "and it falls once it is home")
 	_free()
+
+
+func test_the_breach_closes_in_turn_by_turn() -> void:
+	_make()
+	var active: Array[StringName] = [&"rhen", &"asha", &"liss"]
+	var reserve: Array[StringName] = [&"toma"]
+	ctl.start_battle(active, reserve, &"undertows_reach", SEED)
+	var cam := ctl.stage.choreo.camera
+	var reach := ctl.engine.find(&"undertows_reach")
+	if reach == null:
+		reach = ctl.engine.enemies[0]
+	assert_eq(cam.rest_fov(), cam.default_fov, "no telegraph: the default frame")
+	reach.charge_skill = &"breach"
+	var fovs: Array[float] = []
+	for left in [4, 3, 2, 1]:
+		reach.charge_left = left
+		fovs.append(cam.rest_fov())
+	for i in range(1, fovs.size()):
+		assert_true(fovs[i] < fovs[i - 1], "it closes in a step each turn (%s)" % [fovs])
+	var row := (cam.data["pressure"] as Dictionary)["breach"] as Dictionary
+	assert_between(cam.default_fov - fovs[3], float(row["max_fov_deg"]) - 0.001, float(row["max_fov_deg"]) + 0.001)
+	cam.rest()
+	assert_true(cam.at_default(), "the resting frame is the narrowed one")
+	ctl.stage.choreo.reduced_motion = true
+	assert_eq(cam.rest_fov(), cam.default_fov, "reduced motion: no push-in")
+	_free()

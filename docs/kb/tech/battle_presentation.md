@@ -637,5 +637,10 @@ Ch8's evacuation battles (docs/kb/design/set_piece_battles.md) add things the st
   - an attacker felled by the riposte collapses once it is home.
 - **Intercepts** (`ActionResult.intercepted_by`). The engine already aims the ward skill at the guard, so the foe
   runs at Toma and strikes him. Showing the intercept in words is UI's (§8 request 3).
-- **Still to do** (task M3-BPR-406): the Reach's boss intro row and its `breach_gather` push-in, and a look for
-  untargetable or damage-immune phases. Both need PC renders to tune.
+- **The Reach** has a boss intro row (W18: `boss_skyward`, low and looking up; shot battle_boss_intro_reach).
+- **The Breach closes in.** While a foe gathers a skill named in `camera.pressure` (`breach` over 4 turns,
+  `hand_closes` over 2), the camera's resting frame narrows by up to `max_fov_deg`, a step each turn as the charge
+  counts down (BattleCameraDirector.rest_fov). It reads as a closing clock (Pillar 4). Reduced motion keeps the
+  plain default.
+- **Still to do** (task M3-BPR-406): the intercept step-in, which needs EntryMarker_ward on the Ch8 arena
+  (request M3-BPR-407 to env-art); a look for untargetable or damage-immune phases; freeze-frame shots.
