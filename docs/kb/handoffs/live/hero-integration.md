@@ -435,3 +435,12 @@ RENDER-REQUEST @ d4430397: battle_choreo_cast, battle_choreo_read, battle_choreo
 
 ### Perf requests
 PERF-REQUEST @ bccce923: foot IK frame cost on hardware. Haluna, the party running the beach-to-court loop, 60 s each with game/data/hero_motion/foot_ik.json "enabled": true and then false; report the mean and p99 frame times and the delta. Cloud CPU estimate: 18 us per hero per frame.
+- **Queue item 2 (M3-CIN-1220 support), prepared:**
+  - The cutscene guard now measures every walking actor's floor gap with `HeroMotionGuard.floor_gap`: a ray under
+    the feet, the cast's own colliders ignored, a tolerance of 0.15 m. It prints `OFF-FLOOR <scene> <actor>: <worst
+    gap>` and doesn't fail yet.
+  - Today: 17 actor/scene pairs, in ch04_long_way_round, ch06_liss_lantern, ch07_leaving_tamsule,
+    ch07_after_the_bell, ch07_empty_moorings and ch09_the_ebbing. The 0.60 m gaps are walks passing under or through
+    something at about waist height.
+  - Once the combined patch is on the integration branch and act1-chapters has written its via= paths, I turn this
+    into a failure, with a KNOWN list for whatever is left.
