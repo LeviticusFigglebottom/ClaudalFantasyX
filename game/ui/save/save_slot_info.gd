@@ -18,6 +18,8 @@ var location_key := ""
 ## Unix seconds (UTC).
 var saved_at := 0
 var reason := ""
+## The active line when it was saved (party_ids; the row shows their faces).
+var party: Array[StringName] = []
 
 
 static func from_dict(d: Dictionary) -> SaveSlotInfo:
@@ -31,6 +33,8 @@ static func from_dict(d: Dictionary) -> SaveSlotInfo:
 	info.location_key = str(d.get("location_key", ""))
 	info.saved_at = int(d.get("saved_at", 0))
 	info.reason = str(d.get("reason", ""))
+	for v: Variant in d.get("party", []) as Array:
+		info.party.append(StringName(str(v)))
 	return info
 
 
