@@ -8,7 +8,8 @@ extends Interactable
 ##      and MP and cures party_rest.json "shrine_cures" (M1-ARC-06),
 ##   4. emits EventBus.save_shrine_used(id, location_id),
 ##   5. attunes the shrine in the teleport network (ShrineNetwork; saved in Game.state),
-##   6. opens the save menu (SaveMenu, SAVE mode) with {"shrine_id": id} in the save's meta.
+##   6. opens the save menu (SaveMenu, SAVE mode) with {"shrine_id": id} in the save's meta,
+##   7. after it closes (not on a load), offers the other attuned shrines (ShrineTravelMenu).
 ## Steps 2, 3 and 5 all happen before the menu opens, so the save records the healed party,
 ## the attunement and the respawn point.
 ## Its look is bound light (art color script rule 2): a salt-glass core in `glimmer_bound`, and a
@@ -16,6 +17,8 @@ extends Interactable
 
 signal menu_opened(menu: SaveMenu)
 signal menu_closed(outcome: SaveMenuModel.Outcome)
+## The travel list opened after the save menu (other attuned shrines to go to; ShrineTravelMenu).
+signal travel_opened(menu: ShrineTravelMenu)
 
 const DEFAULT_PROMPT_KEY := "SAVE_SHRINE_PROMPT"
 ## Shown under the menu title after the party is restored.
@@ -32,6 +35,8 @@ const RESTORED_KEY := "SAVE_SHRINE_RESTORED"
 @export var respawn_spawn: StringName = &""
 
 var menu: SaveMenu
+## The travel list, while open (null otherwise).
+var travel_menu: ShrineTravelMenu
 
 
 func _ready() -> void:
@@ -102,3 +107,16 @@ func request_teleport(destination_id: StringName) -> bool:
 func _on_menu_closed(outcome: SaveMenuModel.Outcome) -> void:
 	menu = null
 	menu_closed.emit(outcome)
+	if outcome != SaveMenuModel.Outcome.LOADED:  # a load leaves this place; otherwise the road is offered
+		open_travel()
+
+
+## Offers the other attuned shrines (ShrineTravelMenu). Null when there is nowhere to go.
+func open_travel() -> ShrineTravelMenu:
+	var offer := teleport_destinations()
+	if offer.is_empty() or not is_inside_tree():
+		return null
+	travel_menu = ShrineTravelMenu.open_in(self, self, offer)
+	travel_menu.closed.connect(func() -> void: travel_menu = null)
+	travel_opened.emit(travel_menu)
+	return travel_menu

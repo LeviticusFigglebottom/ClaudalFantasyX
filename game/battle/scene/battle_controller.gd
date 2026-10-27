@@ -240,6 +240,7 @@ func _build_engine(
 	BattleChoreo.attached(self, engine)  # M2-BPR-01: listen-only choreography; it lands the floats
 	boss = BattleBossHud.attached(self, engine)
 	set_piece = BattleSetPieceHud.attached(self, engine)
+	BattleBarks.attached(self, engine)  # M3-C08-100: listen-only battle barks (skills/vowbound bark keys)
 	BattleVfx.attached(self, engine)  # M2-RND-03: listen-only battle VFX (docs/kb/tech/battle_vfx.md)
 	stage.spawn(engine)
 	stage.refresh_ko(engine)

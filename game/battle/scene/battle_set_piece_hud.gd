@@ -49,8 +49,18 @@ func refresh() -> void:
 	if meter == null:
 		return
 	var running := BattleSetPiece.objective_running(_engine)
-	meter.show_progress(objective_title(), _engine.objective_count, BattleSetPiece.objective_quota(_engine))
+	var quota := BattleSetPiece.objective_quota(_engine)
+	meter.show_progress(objective_title(), _engine.objective_count, quota, carried_total())
 	meter.visible = running and meter.quota > 0
+
+
+## Groups up across the waves: the objective's carry_flag (raised by the flow after each wave, M3-C08-02) plus
+## this wave's count; -1 when the objective carries nothing. Read only: the flow owns the flag.
+func carried_total() -> int:
+	var flag := StringName(str(_engine.objective.get("carry_flag", "")))
+	if flag == &"":
+		return -1
+	return int(Game.get_flag(flag, 0)) + _engine.objective_count
 
 
 ## The meter's words: the objective's label_key, else the ward entry's name.

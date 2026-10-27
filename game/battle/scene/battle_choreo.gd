@@ -132,7 +132,6 @@ static func attached(controller: BattleController, engine: BattleEngine) -> Batt
 	c.summon = BattleSummonCinematic.attached(c, controller, engine)  # M2-BPR-08: C10
 	c.impact = BattleImpact.attached(c, controller, engine)  # M3-BPR-401: battle feel
 	BattleBossIntro.attached(c, controller, engine)  # M3-BPR-02: a boss's intro at the first turn
-	BattleBarks.attached(c, controller, engine)  # M3-C08-100: a spoken line on a few skills and calls
 	return c
 
 

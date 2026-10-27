@@ -1,7 +1,8 @@
 class_name SaveSlotRow
 extends Control
-## One row of the save menu (M1-ARC-03): slot name; chapter and location; play time and save
-## time on the right. Slots without a readable record show their status line instead.
+## One row of the save menu (M1-ARC-03): slot name, and under it the saved party's faces (the baked hero
+## portraits' head crops, HeroPortraits.face); chapter and location; play time and save time on the right.
+## Slots without a readable record show their status line instead.
 ## A view only: it reads a SaveSlotInfo and never writes anything.
 
 signal clicked
@@ -9,6 +10,9 @@ signal clicked
 signal hovered
 ## The wheel turned over the row: -1 up, 1 down (M2-UI-26).
 signal wheeled(step: int)
+
+## The hero_portraits.json page whose emotion the faces wear.
+const PORTRAIT_PAGE := &"save"
 
 var info: SaveSlotInfo
 var usable := true
@@ -21,6 +25,7 @@ var _status: Label
 var _play_time: Label
 var _stamp: Label
 var _sep: ColorRect
+var _faces: Array[TextureRect] = []
 
 
 func setup(metrics: Dictionary, row_size: Vector2) -> void:
@@ -43,6 +48,17 @@ func setup(metrics: Dictionary, row_size: Vector2) -> void:
 	)
 	_play_time = _label(&"HudNumber", Rect2(right_x, y1, right_w, lh), HORIZONTAL_ALIGNMENT_RIGHT)
 	_stamp = _label(&"DimLabel", Rect2(right_x, y2, right_w, lh), HORIZONTAL_ALIGNMENT_RIGHT)
+	var face := _n("face_px")
+	for i in int(_n("faces_max")):
+		var t := TextureRect.new()
+		t.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		t.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+		t.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		t.position = Vector2(_n("name_x") + i * (face + _n("face_gap")), y2 + (lh - face) * 0.5)
+		t.size = Vector2(face, face)
+		t.visible = false
+		add_child(t)
+		_faces.append(t)
 	_sep = ColorRect.new()
 	_sep.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_sep.color = _c(&"separator_white")
@@ -70,7 +86,12 @@ func show_info(slot_info: SaveSlotInfo, is_usable: bool, bias_min: int, last_row
 		_location.text = info.location_name()
 		_play_time.text = info.play_time_text()
 		_stamp.text = info.timestamp_text(bias_min)
-	else:
+	for i in _faces.size():
+		var hero := info.party[i] if readable and i < info.party.size() else &""
+		var tex := HeroPortraits.face(hero, HeroPortraits.page_emotion(PORTRAIT_PAGE)) if hero != &"" else null
+		_faces[i].texture = tex
+		_faces[i].visible = tex != null
+	if not readable:
 		_status.text = info.status_text()
 		_status.position.y = (size.y - _status.size.y) * 0.5
 		var role := &"danger" if info.status == SaveSystem.STATUS_CORRUPT else &"text_dim"
@@ -78,6 +99,15 @@ func show_info(slot_info: SaveSlotInfo, is_usable: bool, bias_min: int, last_row
 	var name_role := &"text" if usable else &"text_disabled"
 	_name.add_theme_color_override(&"font_color", _c(name_role))
 	_name.position.y = _n("line1_y") if readable else (size.y - _name.size.y) * 0.5
+
+
+## The heroes whose faces the row shows, in order.
+func faces_shown() -> Array[StringName]:
+	var out: Array[StringName] = []
+	for i in _faces.size():
+		if _faces[i].visible:
+			out.append(info.party[i])
+	return out
 
 
 func text_of(part: StringName) -> String:

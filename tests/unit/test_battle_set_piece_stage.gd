@@ -152,7 +152,7 @@ func test_the_stair_has_its_few_barks() -> void:
 	var reserve: Array[StringName] = [&"toma"]
 	ctl.start_battle(active, reserve, &"ch08_stair_hold_1", SEED)
 	ctl.stage.choreo.live = false
-	var barks := BattleBarks.of(ctl.stage)
+	var barks := ctl.hud.get_node(NodePath(BattleBarks.NODE_NAME)) as BattleBarks
 	assert_true(barks != null, "the barks listen")
 	var heard: Array = []
 	barks.barked.connect(func(who: StringName, key: String) -> void: heard.append([who, key]))
@@ -172,11 +172,8 @@ func test_the_stair_has_its_few_barks() -> void:
 	assert_eq(heard.size(), 1, "one bark")
 	if heard.size() == 1:
 		assert_eq(heard[0][0], &"toma")
-		assert_eq(heard[0][1], "BARK_CH08_TOMA_HOLD")
-	var virel := BattleCombatant.new()
-	virel.id = &"virel"
-	barks._on_called(virel)
-	assert_eq(heard.back(), [&"asha", "BARK_CH08_ASHA_VIREL"], "Asha calls her by name")
+		assert_eq(heard[0][1], "BARK_SKILL_HOLD_THE_STAIR")
+	# Asha's "Virel." on the call: test_battle_barks.gd (test_asha_names_virel_as_she_calls_him_and_ilun_comes_unnamed).
 	_free()
 
 

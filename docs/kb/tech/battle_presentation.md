@@ -648,13 +648,15 @@ Ch8's evacuation battles (docs/kb/design/set_piece_battles.md) add things the st
 
 ## Barks (M3-C08-100)
 A few skills and calls say one short line over the speaker's head. `BattleBarks` (`game/battle/scene/battle_barks.gd`,
-listen-only under BattleChoreo) reads choreo.json `barks`:
-- `skills`: {skill id: {speaker, key}}. Only the speaker's own use speaks.
-- `calls`: {vowbound id: {speaker, key}}. The caller says the name as it calls.
+listen-only, a node under the battle HUD that the controller attaches; see ui.md "Battle barks") reads the rows:
+- skills.json `bark_key`: the skill's user says it as the skill resolves.
+- vowbound.json `call_bark_key`: the caller says it as the Vowbound is called.
 
-The line pops as a float (BattleHud.pop_info, palette role `role`) at the speaker's head, and `barked(speaker, key)`
-fires for audio's voice blips. Ch8's (act1_ch08.md B05): Toma's "Hold." on Hold the Stair, Liss's "Pull!" on Haul,
-Asha's "Virel." on the call. Flare Line and Virel say nothing. Keep them rare: a bark marks a moment, not every swing.
+The line pops as a float (BattleHud.pop_info) at the speaker's head, and `barked(speaker, key)` fires for audio's
+voice blips. Ch8's (act1_ch08.md B05): Toma's "Hold." on Hold the Stair, Liss's "Pull!" on Haul, Asha's "Virel." on
+the call. Flare Line and Virel say nothing. Keep them rare: a bark marks a moment, not every swing. (big13: the
+battle-presentation and ui-menus tracks both built this; the merge kept ui-menus' data-on-the-rows version and
+battle-presentation's `barked` signal, and dropped choreo.json `barks` and its BARK_CH08_* keys.)
 
 ## Act II boss intros by enemy id (M3-BPR-408)
 `boss_intro.by_enemy` gives a boss its intro wherever it first appears, for bosses whose encounters are not written

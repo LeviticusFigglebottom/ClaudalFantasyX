@@ -1,0 +1,9 @@
+{
+  "_comment": "Reefball-only gear (ADR 0040, M3-C07-05): what the Tamsule outfitter sells. It never touches battle equipment. Each piece is of one kind (band: the side-band every diver of the side wears; float: the side's own practice float), and the side wears at most one piece of each kind. A worn piece adds its bonus to every diver on the player's side, capped at rules.stat_max. Owning a piece is the flag rbl_gear_<id>_owned; the worn piece of each kind is the flag rbl_worn_<kind> (its id, or empty). Prices are placeholders for Combat's balance check.",
+  "gear": [
+    {"id": "brass_thread_band", "kind": "band", "name_key": "RBL_GEAR_BRASS_THREAD_BAND", "desc_key": "RBL_GEAR_BRASS_THREAD_BAND_DESC", "price": 240, "bonus": {"grip": 1, "strip": 1}},
+    {"id": "kelp_dyed_band", "kind": "band", "name_key": "RBL_GEAR_KELP_DYED_BAND", "desc_key": "RBL_GEAR_KELP_DYED_BAND_DESC", "price": 240, "bonus": {"breath": 1, "ward": 1}},
+    {"id": "cork_practice_float", "kind": "float", "name_key": "RBL_GEAR_CORK_PRACTICE_FLOAT", "desc_key": "RBL_GEAR_CORK_PRACTICE_FLOAT_DESC", "price": 320, "bonus": {"loft": 1, "reach": 1}},
+    {"id": "weighted_float", "kind": "float", "name_key": "RBL_GEAR_WEIGHTED_FLOAT", "desc_key": "RBL_GEAR_WEIGHTED_FLOAT_DESC", "price": 320, "bonus": {"stroke": 1, "breath": 1}}
+  ]
+}

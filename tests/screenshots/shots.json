@@ -4098,6 +4098,10 @@
     {
       "id": "battle_heroes_finisher",
       "scene": "res://game/levels/_tests/hero_motion/battle_heroes_finisher.tscn"
+    },
+    {
+      "id": "reefball_outfitter",
+      "scene": "res://game/ui/reefball/shots/reefball_outfitter.tscn"
     }
   ]
 }

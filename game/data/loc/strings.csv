@@ -1063,6 +1063,32 @@ BOSS_TITLE_LAMP_ENGINE,The Lamp Engine
 BOSS_EPITHET_LAMP_ENGINE,It still burns with the bound dead
 BOSS_TITLE_AVALANCHE_RAM,Avalanche Ram
 BOSS_EPITHET_AVALANCHE_RAM,Grown monstrous on the drowned light
-BARK_CH08_TOMA_HOLD,Hold.
-BARK_CH08_LISS_PULL,Pull!
-BARK_CH08_ASHA_VIREL,Virel.
+MAP_ROUTE_BRINE_SHOALS,Brine Shoals
+MAP_POI_S_ROAD_END,The end of the Pemakar road
+MAP_POI_S_BRASS_WRECK,The brass wreck
+MAP_POI_S_MIDDAY_HULL,The midday hull
+MAP_POI_S_CHALK_HULL,The chalk-marked hull
+MAP_POI_S_LAST_RIDGE,The last ridge
+MAP_POI_S_CAMP_SHRINE,The camp shrine
+MAP_POI_S_VENDOR_BOAT,The vendor's boat
+MAP_POI_S_TIDELINE,The tideline
+MAP_POI_S_CHANNEL,The channel out
+MAP_ROUTE_SEAWALL,The Seawall
+MAP_ROUTE_COILSPIRE,Coilspire
+MAP_POI_K_MOLE,The harbour mole
+MAP_POI_K_WALL_HEAD,The wall-head
+MAP_POI_K_FISHER_STAIR,The Fisher Stair
+MAP_POI_K_LOW_TOWN,The low town
+MAP_POI_K_SHRINE,The Bastion shrine
+MAP_POI_K_CHANDLER,The chandler
+MAP_POI_K_WALL_GATE,The wall-gate
+MAP_POI_Q_PATH_FOOT,The headland path
+MAP_POI_Q_KEEPERS_HUT,The keeper's hut
+MAP_POI_Q_SPIRE_DOOR,The spire door
+MAP_POI_Q_SECOND_TIER,The second tier
+MAP_POI_Q_FOURTH_TIER,The fourth tier
+MAP_POI_Q_CROWN,The crown chamber
+ITEM_SAILMAKERS_NEEDLE,Sailmaker's Needle
+ITEM_SAILMAKERS_NEEDLE_DESC,"A sailmaker's steel needle, left sealed in a niche of Coilspire's flues. With two Tide Pearls it stitches Sea Legs into armour (Customize); the needle is spent in the stitching."
+ABILITY_SEA_LEGS,Sea Legs
+ABILITY_SEA_LEGS_DESC,Prevents Slow.

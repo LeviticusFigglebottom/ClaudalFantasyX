@@ -71,11 +71,6 @@
                   "gather": {"sec": 1.0, "lift_m": 0.04, "crouch_m": 0.08, "recoil_m": 0.0, "tilt_deg": -4.0,
                              "sway_deg": 4.0, "sways": 2.0}},
     "counter": {"doc": "M3-BPR-406 (ADR 0100): a counter stance answers a landed physical hit at once: the hero's attack clip starts delay_sec after the blow's strike ends, and the attacker's reaction lands on that clip's contact frame (clip only: the attacker keeps its run). Felled by it, the attacker collapses once it is home.", "delay_sec": 0.08},
-    "barks": {"doc": "M3-C08-100 (act1_ch08.md B05, \u00a75; BattleBarks): a short line over the speaker's head as it uses a skill (skills: only the speaker's own use) or calls a Vowbound (calls), in palette role `role`. Sparse and sincere: Flare Line and Virel say nothing.",
-              "role": "text",
-              "skills": {"hold_the_stair": {"speaker": "toma", "key": "BARK_CH08_TOMA_HOLD"},
-                         "hoist_haul": {"speaker": "liss", "key": "BARK_CH08_LISS_PULL"}},
-              "calls": {"virel": {"speaker": "asha", "key": "BARK_CH08_ASHA_VIREL"}}},
     "withdraw": {"doc": "M3-BPR-406 (ADR 0100): a withdrawn foe is not felled: it backs away from the party by back_m over sec (eased in, at the battle speed) and is hidden; reduced motion hides it in place.", "back_m": 1.4, "sec": 0.7},
     "spacing": {
       "doc": "M3-BPR-402: a melee run stops so the actor, at the end of its lunge, keeps its radius + each body's radius + clearance_m from everyone in its path: heroes and creatures never interpenetrate. A radius is the model's footprint (the mean of its meshes' half-width and half-depth about the stand-in's origin, times footprint_k), else battle_sandbox.json stand_ins radius for a primitive.",

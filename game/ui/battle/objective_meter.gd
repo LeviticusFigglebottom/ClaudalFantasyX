@@ -8,6 +8,8 @@ extends Control
 
 var count := 0
 var quota := 0
+## Groups up across a set piece's waves (the carry flag plus this wave's count), or -1 when not carried.
+var total := -1
 
 var _m: Dictionary = {}
 var _panel: Panel
@@ -32,14 +34,19 @@ func _ready() -> void:
 	visible = false
 
 
-## Shows `title` with `now` of `of` groups up (of = 0 hides the meter).
-func show_progress(title: String, now: int, of: int) -> void:
+## Shows `title` with `now` of `of` groups up (of = 0 hides the meter); `in_all` >= 0 adds the running total
+## across the waves ("2 / 3 · 7 in all").
+func show_progress(title: String, now: int, of: int, in_all: int = -1) -> void:
 	count = clampi(now, 0, maxi(of, 0))
 	quota = of
+	total = in_all
 	visible = of > 0
 	_title.text = title
 	UiFrame.fit_line(_title, _title.size.x)  # 130 % text stays on its line (shrinks, then trims)
 	_count.text = tr("HUD_OBJECTIVE_COUNT_FMT").format({"count": count, "quota": quota})
+	if total >= 0:
+		_count.text = tr("HUD_OBJECTIVE_TOTAL_FMT").format({"line": _count.text, "total": total})
+	UiFrame.fit_line(_count, _count.size.x)
 	queue_redraw()
 
 

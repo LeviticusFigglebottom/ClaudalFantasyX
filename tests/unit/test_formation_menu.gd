@@ -179,6 +179,20 @@ func test_a_broken_save_line_is_read_each_hero_once() -> void:
 # --- the view ------------------------------------------------------------------------------------
 
 
+## M2-MNU-306: the hero under the cursor shows their role word under the name; an open place shows none.
+func test_the_role_word_shows_under_the_name() -> void:
+	_open()
+	assert_eq(menu.role_text(), tr("ROLE_RHEN"), "Rhen first")
+	assert_true(menu.place_line().begins_with(tr("ROLE_RHEN")), "it leads the place line")
+	for hid: StringName in ACTIVE + RESERVE:
+		assert_ne(menu.sheet.hero_role(hid), "", "%s has a role word" % hid)
+	menu.handle_input(_ev(&"ui_right"))
+	assert_eq(menu.role_text(), tr("ROLE_YSOLDE"), "the reserve's first")
+	menu.handle_input(_ev(&"ui_down"))
+	assert_eq(menu.role_text(), "", "an open place has no role")
+	_teardown()
+
+
 func test_keys_pick_then_swap_and_cancel_puts_back() -> void:
 	_open()
 	assert_eq(menu.focus, A)

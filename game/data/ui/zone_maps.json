@@ -1,6 +1,6 @@
 {
   "zone_maps": {
-    "doc": "M2-UI-16/18: the zones the objective system and the field menu's map know. Each zone: its scene (the field's current scene is matched against it), its name_key, its route_index on the pilgrimage strip (Haluna -> the Saltgrass Causeway -> the Shell Shrine), the world rectangle the map shows ([x, z, width, depth] in metres), its shape source (Haluna: its layout JSON; the Shell Shrine: its trial JSON), and its points of interest. A POI is {id, name_key, kind, at: [x, z], source}: `at` is a world position (x east, z south), `source` names where it comes from ('node:<path in the zone scene>' or 'layout:<key in the shape source>'), and tools/tests/test_zone_map_pois.py checks the two agree. Kinds draw as glyphs: shrine, shop, inn, talk, path, door, pool, dock, home. route lists the pilgrimage strip in order; a route stop with no zone is a place the party passes through without a map of its own yet. M3-UI-04: the Act I greybox zones (Ch1, Ch4, Ch5, Ch7, Ch9) are shape_kind greybox_layout: their shapes are the layout's blocks (ZoneMapShapes.greybox_layer), with shape_hints naming blocks by layer where height alone reads them wrong (sea: open water under everything; water, floors, pads, buildings, structures, skip). A greybox zone's scene is only its root, so its POI sources name layout points instead of nodes: 'spawn:<id>', 'trigger:<id>' (the trigger's at), 'actor:<id>' (the actor's at) and 'mark:<id>'. The route runs the whole of Act I; the strip shows only the stops near the current one (zone_map_menu.json route before/after).",
+    "doc": "M2-UI-16/18: the zones the objective system and the field menu's map know. Each zone: its scene (the field's current scene is matched against it), its name_key, its route_index on the pilgrimage strip (Haluna -> the Saltgrass Causeway -> the Shell Shrine), the world rectangle the map shows ([x, z, width, depth] in metres), its shape source (Haluna: its layout JSON; the Shell Shrine: its trial JSON), and its points of interest. A POI is {id, name_key, kind, at: [x, z], source}: `at` is a world position (x east, z south), `source` names where it comes from ('node:<path in the zone scene>' or 'layout:<key in the shape source>'), and tools/tests/test_zone_map_pois.py checks the two agree. Kinds draw as glyphs: shrine, shop, inn, talk, path, door, pool, dock, home. route lists the pilgrimage strip in order; a route stop with no zone is a place the party passes through without a map of its own yet. M3-UI-04: the Act I greybox zones (Ch1, Ch4 to Ch9) are shape_kind greybox_layout: their shapes are the layout's blocks (ZoneMapShapes.greybox_layer), with shape_hints naming blocks by layer where height alone reads them wrong (sea: open water under everything; water, floors, pads, buildings, structures, skip). A greybox zone's scene is only its root, so its POI sources name layout points instead of nodes: 'spawn:<id>', 'trigger:<id>' (the trigger's at), 'actor:<id>' (the actor's at) and 'mark:<id>'. The route runs the whole of Act I; the strip shows only the stops near the current one (zone_map_menu.json route before/after).",
     "route": [
       {"id": "ch01/oruvel_underway", "name_key": "MAP_ROUTE_UNDERWAY"},
       {"id": "ch01/oruvel", "name_key": "MAP_ROUTE_ORUVEL"},
@@ -11,8 +11,11 @@
       {"id": "ch04/brightwater_ferry", "name_key": "MAP_ROUTE_BRIGHTWATER"},
       {"id": "ch05/pemakar", "name_key": "MAP_ROUTE_PEMAKAR"},
       {"id": "ch05/ashcrown", "name_key": "MAP_ROUTE_ASHCROWN"},
+      {"id": "ch06/brine_shoals", "name_key": "MAP_ROUTE_BRINE_SHOALS"},
       {"id": "ch07/tamsule", "name_key": "MAP_ROUTE_TAMSULE"},
       {"id": "ch07/tamsule_bell_galleries", "name_key": "MAP_ROUTE_BELL_GALLERIES"},
+      {"id": "ch08/corrow", "name_key": "MAP_ROUTE_SEAWALL"},
+      {"id": "ch08/coilspire", "name_key": "MAP_ROUTE_COILSPIRE"},
       {"id": "ch09/corrow_night", "name_key": "MAP_ROUTE_CORROW"}
     ],
     "zones": [
@@ -173,6 +176,26 @@
         ]
       },
       {
+        "id": "ch06/brine_shoals",
+        "scene": "res://game/levels/ch06/brine_shoals/brine_shoals.tscn",
+        "name_key": "LOCATION_CH06_BRINE_SHOALS",
+        "shapes": "res://game/levels/ch06/brine_shoals/brine_shoals_layout.json",
+        "shape_kind": "greybox_layout",
+        "shape_hints": {"water": ["Channel"], "buildings": ["Tents", "HoldHull"], "skip": ["Smoke"]},
+        "bounds": [-60.0, -90.0, 120.0, 170.0],
+        "pois": [
+          {"id": "road_end", "name_key": "MAP_POI_S_ROAD_END", "kind": "path", "at": [0.0, 72.0], "source": "spawn:Entry"},
+          {"id": "brass_wreck", "name_key": "MAP_POI_S_BRASS_WRECK", "kind": "path", "at": [0.0, 56.0], "source": "trigger:banter_brass"},
+          {"id": "midday_hull", "name_key": "MAP_POI_S_MIDDAY_HULL", "kind": "path", "at": [0.0, 24.0], "source": "trigger:midday"},
+          {"id": "chalk_hull", "name_key": "MAP_POI_S_CHALK_HULL", "kind": "path", "at": [0.0, 0.0], "source": "trigger:banter_marks"},
+          {"id": "last_ridge", "name_key": "MAP_POI_S_LAST_RIDGE", "kind": "path", "at": [0.0, -12.0], "source": "spawn:LastRidge"},
+          {"id": "camp_shrine", "name_key": "MAP_POI_S_CAMP_SHRINE", "kind": "shrine", "at": [27.0, -43.5], "source": "trigger:shrine"},
+          {"id": "vendor_boat", "name_key": "MAP_POI_S_VENDOR_BOAT", "kind": "shop", "at": [28.0, -37.0], "source": "trigger:vendor"},
+          {"id": "tideline", "name_key": "MAP_POI_S_TIDELINE", "kind": "path", "at": [21.0, -55.0], "source": "trigger:tideline"},
+          {"id": "channel", "name_key": "MAP_POI_S_CHANNEL", "kind": "dock", "at": [-17.0, -70.0], "source": "spawn:Channel"}
+        ]
+      },
+      {
         "id": "ch07/tamsule",
         "scene": "res://game/levels/ch07/tamsule/tamsule.tscn",
         "name_key": "LOCATION_CH07_TAMSULE",
@@ -202,6 +225,45 @@
           {"id": "rim", "name_key": "MAP_POI_G_RIM", "kind": "pool", "at": [-16.2, 0.0], "source": "trigger:rim"},
           {"id": "moorings", "name_key": "MAP_POI_G_MOORINGS", "kind": "dock", "at": [-11.6, -20.0], "source": "trigger:moorings"},
           {"id": "to_port", "name_key": "MAP_POI_G_TO_PORT", "kind": "door", "at": [-29.5, 14.4], "source": "trigger:to_port"}
+        ]
+      },
+      {
+        "id": "ch08/corrow",
+        "scene": "res://game/levels/ch08/corrow/corrow.tscn",
+        "name_key": "LOCATION_CH08_CORROW",
+        "shapes": "res://game/levels/ch08/corrow/corrow_layout.json",
+        "shape_kind": "greybox_layout",
+        "shape_hints": {
+          "sea": ["SeaW", "SeaE"],
+          "structures": ["SeaWallW", "WallSection", "SeaWallE1", "SeaWallE2"],
+          "skip": ["Flood", "Lake", "Breach", "Kites", "KitesHigh", "WatchersW", "WatchersSection", "WatchersE"]
+        },
+        "bounds": [-70.0, -85.0, 140.0, 170.0],
+        "pois": [
+          {"id": "mole", "name_key": "MAP_POI_K_MOLE", "kind": "dock", "at": [30.0, 74.0], "source": "spawn:Mole"},
+          {"id": "wall_head", "name_key": "MAP_POI_K_WALL_HEAD", "kind": "path", "at": [0.0, 29.0], "source": "spawn:WallHead"},
+          {"id": "fisher_stair", "name_key": "MAP_POI_K_FISHER_STAIR", "kind": "path", "at": [0.0, 25.5], "source": "trigger:stair_look"},
+          {"id": "low_town", "name_key": "MAP_POI_K_LOW_TOWN", "kind": "talk", "at": [6.0, -28.5], "source": "trigger:bark_netmender"},
+          {"id": "shrine", "name_key": "MAP_POI_K_SHRINE", "kind": "shrine", "at": [-30.0, 19.2], "source": "trigger:shrine"},
+          {"id": "chandler", "name_key": "MAP_POI_K_CHANDLER", "kind": "shop", "at": [-42.0, 20.2], "source": "trigger:chandler"},
+          {"id": "wall_gate", "name_key": "MAP_POI_K_WALL_GATE", "kind": "door", "at": [46.0, 31.0], "source": "spawn:WallGate"}
+        ]
+      },
+      {
+        "id": "ch08/coilspire",
+        "scene": "res://game/levels/ch08/coilspire/coilspire.tscn",
+        "name_key": "LOCATION_CH08_COILSPIRE",
+        "shapes": "res://game/levels/ch08/coilspire/coilspire_layout.json",
+        "shape_kind": "greybox_layout",
+        "shape_hints": {"skip": ["StormWall", "Virel"]},
+        "bounds": [-40.0, -120.0, 80.0, 190.0],
+        "pois": [
+          {"id": "path_foot", "name_key": "MAP_POI_Q_PATH_FOOT", "kind": "path", "at": [0.0, 62.0], "source": "spawn:PathFoot"},
+          {"id": "keepers_hut", "name_key": "MAP_POI_Q_KEEPERS_HUT", "kind": "home", "at": [-12.5, -1.0], "source": "trigger:hearth"},
+          {"id": "spire_door", "name_key": "MAP_POI_Q_SPIRE_DOOR", "kind": "door", "at": [0.0, -9.5], "source": "trigger:door"},
+          {"id": "second_tier", "name_key": "MAP_POI_Q_SECOND_TIER", "kind": "path", "at": [0.0, -38.0], "source": "spawn:Tier2"},
+          {"id": "fourth_tier", "name_key": "MAP_POI_Q_FOURTH_TIER", "kind": "path", "at": [0.0, -78.0], "source": "spawn:Tier4"},
+          {"id": "crown", "name_key": "MAP_POI_Q_CROWN", "kind": "pool", "at": [0.0, -97.0], "source": "trigger:crown"}
         ]
       },
       {

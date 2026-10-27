@@ -66,3 +66,98 @@ RENDER-REQUEST @ 6454c06c: battle_ch08_stair_hold, battle_hud_preview, battle_sw
 - **Queue: empty or blocked, with reasons.** `taskboard.py` has no `todo` with role ui (there is no `menus` role on the board). Waiting on others: the PC's renders (two RENDER-REQUEST lines); M2-MNU-306 role word (progression); M3-RBL-201 Reefball preview fields (combat); M3-UI-100's running total (M3-C08-02's `ch08_stair_groups_up`); m2-slice's one-line `dismiss()` (M2-UI-202). Not taken without routing: the shrine teleport list (Systems owns the shrine UI) and the Kite world-map menu (M6). **Lead: route the next ui-menus item here, or name one of those two.**
 - 2026-10-27: **PC render gpu/render-ui-5317c0e viewed:** 51 pass (including the cloud-rendered dialogue_voice_over and the four baselines self-approved on 10-25), 25 drift, all battle shots, all the heroes only (the hero battle actors' stance and pose replace big9's hero models; arenas, foes and HUD unchanged). **Re-approved after viewing** (99623a0c), with the PC's llvmpipe metadata.
 RENDER-REQUEST @ 99623a0c: portraits:hullgnaw,scuttler,squall_wing,tide_crawler,undertows_reach; tool: tools/portraits/render.sh --only hullgnaw,scuttler,squall_wing,tide_crawler,undertows_reach; why: PC parity for the five black creatures' portraits rendered in the cloud with light_scale/stage_environment (3ffe83bd). (The ui@6454c06c request, battle_ch08_stair_hold etc., stays queued for after the big11 gate, per the Lead.)
+
+### Queue from the Lead (2026-10-27 17:19): ui-menus also owns combat's, progression's and systems' UI-adjacent work
+| # | Item | State |
+|---|---|---|
+| 1 | M3-RBL-201 Reefball preview fields (engine + HUD) | **done** (fe4faefa): against, fetches, refused_actions(), stakes_key; reefball 70/0, pseudo 22/0, aspect 14/0, parity 3/0; coverage running |
+| 2 | M2-MNU-306 Formation role word (characters.json role_key, loc, validator, Formation) | **done** (89ff0d23): six role words, validator rule + test, on Formation's place line; formation 18/0, pseudo 22/0 |
+| 3 | Shrine teleport list (visited shrines, confirm, fade) | **done** (f1b22523): ShrineTravelMenu after the save menu; shrine 43/0 (6 new), save_menu 20/0 |
+| 4 | M3-UI-100 running total (`ch08_stair_groups_up` flag + request to act1-chapters) | **done**: flag declared, `objective.carry_flag` on the stair waves (validated), the meter shows "· N in all" (read only: a view never writes game state); M3-UI-203 asks act1-chapters to raise it in the flow; set_piece 35/0, pseudo 22/0, aspect 14/0, ch08 8/0 |
+| 5 | "Parts look primitive" pass: title life, save slots with place/playtime/party portraits, battle result pacing, eased transitions | **done**: title reveal (84c5c37e), save rows' party faces (1f54fe28), result stagger, shop/inn motion; title 40/0, save 195/0, battle 689/0, shop 27/0, inn 10/0, pseudo 22/0, aspect 14/0; render requested |
+| 6 | Accessibility sweep (100/130 %, colour vision, reduced motion; aspect + pseudo-loc for every new screen) | **done**: every screen added today is in the pseudo-loc walk at 100 and 130 % and in the aspect audit (Ch8 set piece, Reefball HUD with refused rows, Formation with the role, shrine travel: pseudo 23/0, aspect 15/0); every new motion has a Reduced-motion test (screens, dialogue box, title reveal, result stagger; the shop and inn use the same MenuMotion); colour is never alone: the stair meter's pips are filled vs ringed plus the count in words, Reefball's Contests / On a miss are words, refused actions are greyed with a reason |
+| 7 | Controller and keyboard prompt audit | **done**: the interaction prompt, hold prompt, tip cards and dialogue {action} lines follow the last device (test_input_parity_glyphs, test_hold_prompt); menus' help lines use device-neutral action words; every `{action}` placeholder in loc is shown through InputNames.fill; one hard-coded key left, the Ch1 tutorial's "Hold F" (DLG_CH01_TUT_003), already filed as M2-FP-30 for its owner. New guard: `tools/tests/test_loc_key_names.py` fails on any player-facing string that names a key (allow-list: that one line until M2-FP-30) |
+| 8 | Act I UI: area maps Ch4–Ch9, codex and bestiary for the 27 Act I creatures and NPCs | **done**: **maps**: Ch4, Ch5, Ch7 and Ch9 already had theirs; the Brine Shoals (Ch6) map and route stop added (bce52605; read only from act1-chapters' layout, so no request task was needed; Ch8 has no field zone of its own); zone_map 20/0, objective 15/0, test_zone_map_pois OK. **Bestiary**: after merging the integration branch (ff024dba) all 28 enemies (27 creatures plus the Inquisitor) have lore and the 27 creatures have baked portraits; the Inquisitor, a man, has none, and the slot falls back cleanly; bestiary 37/0. **Codex**: 22 Act I entries (26755f97): places Ch1 to Ch9, the Act I people, and the lamp-divers, the Order, the Pilgrim's Wake and the Saltwrights, each on the flag where Rhen learns it; codex 14/0, pseudo 23/0, aspect 15/0; Narrative asked to review (M3-NAR-01 note) |
+RENDER-REQUEST @ 26755f97: field_menu_codex, field_menu_map_haluna, field_menu_map_underway; why: Act I codex (ch02_met_asha now also unlocks the Order entry, so World's count and New move in the codex shot) and the Brine Shoals route stop (check that the map strips near Haluna and the Underway are unchanged).
+
+**MERGE-READY @ 26755f97** (claude/ui = integration @ 7cccb551 + this track): the Lead's 17:19 queue items 1–8, all done (see the table): M3-RBL-201, M2-MNU-306, shrine travel, M3-UI-100's running total, the 'parts look primitive' pass, the accessibility sweep, the prompt audit (test_loc_key_names), and Act I UI (the Ch6 map, 22 codex entries). Merge notes (ff024dba): encounters.json keeps carry_flag on the stair waves and adds the integration branch's three Ch8 field encounters; each conflicted baseline PNG takes the side approved last (11 ours, 1 theirs: battle_choreo_hit); balance_report.md is the integration branch's; shots/baselines/flags/PROVENANCE by merge_union.py. Checks run: import clean, gdlint + gdformat clean (765 files), validate_data 0/0, taskboard OK, no duplicate loc keys, test_zone_map_pois + test_loc_key_names OK; Godot: set_piece 35/0, bestiary 37/0, codex 14/0, zone_map 20/0, objective 15/0, shrine 43/0, pseudo 23/0, aspect 15/0, screen_motion 7/0, field_menu 32/0. Skipped: coverage (no game/battle or game/progression code since the coverage run at 6454c06c+; this batch is data, UI and tests), Blender (no Blender source), the full suite (the Lead's, after the merge batch). Shots: none in the cloud; three RENDER-REQUEST lines are pending (17325e00, 99623a0c portraits, 26755f97).
+RENDER-REQUEST @ 17325e00: boot_title, save_menu, save_menu_overwrite, battle_victory, battle_read_panel, shop_menu_buy, shop_menu_sell, inn_menu, reefball_hud_choice, reefball_hud_goal, formation_menu, battle_ch08_stair_hold; why: the 'parts look primitive' batch (title reveal: boot_title settles 72 frames now; save rows' party faces; result row stagger; shop/inn motion), M3-RBL-201 (Reefball Contests tags, greyed refused rows, stakes from matches.json), M2-MNU-306 (Formation role word on the place line), M3-UI-100's meter with the running total (battle_ch08_stair_hold is new, no baseline).
+
+- 2026-10-27: **Item 8 follow-up and the next item taken (M3-C07-05).**
+  - **Correction to item 8:** the integration merge brought Ch8's field zones, so "Ch8 has no field zone" no longer holds. `ch08/corrow` and `ch08/coilspire` now have maps and route stops (a195cd39). The codex adds Coilspire and Ivo Brannick, and Corrow now unlocks on `ch08_arrived_corrow`. That makes 24 Act I entries.
+  - **The tools codex test** still capped the set at 10. It is fixed (843448c2).
+  - **M3-C07-05**, progression's, UI-adjacent, now in review (f0accc4c):
+    - Tamsule's trader and inn;
+    - the Tidecup rewards on the match row (validated);
+    - the Oruvel Float, as a key item.
+  - **ShrineServices**, so greybox shrines save, attune and offer travel. The Brine Shoals camp is in the network. The layout payloads go to act1-chapters as request **M3-UI-204**.
+  - **Lead decision needed:** an accessory slot. The game has none (`equip_slots` is weapon and armor), so the Float can't be equipped and the Reefball outfitter has nothing to sell.
+  - **Checks:**
+    - shrine 47/0, reefball 70/0, shop 27/0, inn 10/0, item 82/0, save_menu 21/0;
+    - zone_map 20/0, objective 15/0, map 22/0, codex 14/0, pseudo 23/0, aspect 15/0;
+    - validate_data 0/0; gdlint and gdformat clean.
+    - Tools suite: 1147 tests. The one failure is the expected `test_screenshots` gap: `battle_ch08_stair_hold` has no baseline until the PC renders it (RENDER-REQUEST @ 17325e00).
+RENDER-REQUEST @ a195cd39: field_menu_codex; why: the codex set grew (Ch8 entries; the shot's flags unlock the Order entry as well). The map shots near Haluna and the Underway don't show the new Ch6 and Ch8 stops (the strip shows near stops only), so only the codex shot is asked again; it supersedes the 26755f97 line's field_menu_codex.
+
+**MERGE-READY @ a195cd39** (claude/ui = integration @ 7cccb551 + this track): everything in the MERGE-READY @ 26755f97 line, plus:
+- the Ch8 maps and codex entries;
+- M3-C07-05 (Tamsule's data, the Tidecup rewards, ShrineServices);
+- the tools codex test fix.
+
+Checks are as listed in the line above. Skipped: coverage (no change in game/battle or game/progression), Blender (no Blender source), and the full Godot suite (the Lead's).
+
+- 2026-10-27: **M3-C08-100 battle barks (combat's, UI-adjacent; 213a822f).**
+  - BattleBarks floats "Hold." (Toma, Hold the Stair), "Pull!" (Liss, Haul) and "Virel." (Asha's call), from skills.json `bark_key` and vowbound.json `call_bark_key`. Speech shows with damage numbers off.
+  - The sailmaker's needle is **blocked** on the same accessory-slot ruling as the Oruvel Float.
+  - **M3-UI-203 is done:** M3-C08-02 already raises `ch08_stair_groups_up` after every set-piece fight. The Reach's objective now carries the flag too.
+  - **Checks:** battle_barks 4/0, set_piece 35/0, ch08 14/0, validate_data 0/0, gdlint and gdformat clean. The battle filter and coverage results follow (game/battle/scene changed).
+- 2026-10-27: **Viewed PC render `gpu/render-ui-6454c06`** (07f1a2e8; compare.txt: battle_hud_preview and battle_swap_menu PASS; battle_ch08_stair_hold has no baseline).
+  - **The out PNG is NOT approved.** The stair meter sits on top of Wave 1's wrapped two-line tutorial; the help line grows to about y 155 at 1080p.
+  - **Fixed in 121362b3:** the meter moves to y 164, with a test against the real node rects (set_piece 36/0, aspect 15/0, pseudo 23/0).
+  - battle_ch08_stair_hold's first baseline comes from the 17325e00 request, which must now be re-rendered at or after 121362b3. **RENDER-REQUEST @ 121362b3 below supersedes the shot in 17325e00.**
+  - **Known overlap:** the opening banner ([560,156,800,120], shown for a moment at battle start) overlaps the meter's first second. It is transient, and is listed here for the Lead's eye on the render.
+RENDER-REQUEST @ 121362b3: battle_ch08_stair_hold, battle_hud_preview; why: the stair meter moved below the two-line help line (the 6454c06 render showed it over the tutorial); first baseline for battle_ch08_stair_hold; battle_hud_preview confirms a normal fight is unchanged.
+- 2026-10-27: **big11 merged into claude/ui (abf39c37).**
+  - **Merge notes:**
+    - ownership.md keeps both rows;
+    - conflicted baseline PNGs take the side approved last (6 theirs; battle_hud_16x10 and battle_hud_21x9 ours, from the 5317c0e approvals);
+    - unions by merge_union.py;
+    - **git's line merge had dropped `tut_menu_save_seen` from flags.tres; it is restored in the merge commit.**
+  - **Checks on the merged tree:**
+    - import clean, gdlint and gdformat clean (793 files), validate_data 0 errors;
+    - the one warning is the integration branch's PROVENANCE row for a missing `haluna/offering_step.glb`;
+    - battle 716/0, set_piece 36/0, battle_barks 4/0, shrine 47/0, codex 14/0, zone_map 20/0, settings 48/0, pseudo 23/0, aspect 15/0, field_menu 32/0, save_menu 21/0;
+    - coverage on the pre-merge head is OK: battle 99.89 %, progression 96.98 %, reefball 100 %.
+
+**MERGE-READY @ abf39c37** (claude/ui = integration @ 3cbcff9e (big11) + this track): everything in the MERGE-READY @ a195cd39 line, plus:
+- M3-C08-100 battle barks (Hold. / Pull! / Virel.);
+- M3-UI-203 closed, with the Reach's carry_flag;
+- the stair meter moved below the two-line help (from the 6454c06 render).
+
+Lead decisions open: an accessory slot (the Oruvel Float, the sailmaker's needle, the Reefball outfitter). Requests open: M3-UI-204 (act1-chapters: shrine payloads, Tamsule's trader, inn and shrine). Renders pending: 17325e00 (minus battle_ch08_stair_hold), 99623a0c portraits, a195cd39 codex, 121362b3 stair hold.
+- 2026-10-27: **Viewed PC render `gpu/render-ui-99623a0`** (the five black-creature portraits). hullgnaw, scuttler, tide_crawler and undertows_reach are byte-identical to the committed PNGs. squall_wing differs only in its wing-edge glints (rmse 0.00835), the same image to the eye side by side. **Approved:** the PC's squall_wing.png replaces the cloud render, since the PC is the rendering authority. The portraits request is closed.
+- 2026-10-27: **ADR 0040 implemented (the Lead's ruling: no accessory slot).**
+  - **The sailmaker's needle** (4752ee3b) is a Customize material. With two Tide Pearls it crafts **Sea Legs** (a new armour ability, a ward against Slow) and is spent. The niche's `give` is requested in M3-UI-204.
+  - **The Oruvel Float** (44d027c5) stays a key item, and its effect is a gate: `matches.json` `requires_item` and `ReefballMatch.is_open(row, holds)`, validated. It opens Oruvel's Act III league match.
+  - **Reefball-only gear** (e4142ec0): `gear.json` holds two bands and two floats, worn one per kind, which add stats to the player's side through `ReefballMatch.setup(..., worn)`. The flags are `rbl_gear_<id>_owned` and `rbl_worn_<kind>`.
+    - **The Tamsule outfitter:** ReefballOutfitterMenu, a TownMenu opened by a `{"reefball_outfitter": id}` payload. It buys, puts on, swaps and takes off gear.
+    - The match HUD says "The side wears ...".
+    - The outfitter is in the pseudo-loc walk and the aspect audit. **New shot `reefball_outfitter` (no baseline yet).**
+  - **Checks:**
+    - reefball 79/0, reefball_outfitter 6/0, customize 12/0, equip 66/0, item 82/0, shop 27/0, inn 10/0, town 6/0, pseudo 23/0, aspect 15/0;
+    - **coverage OK** (2788 tests, all passing): reefball **100 %** (466/466), battle 99.89 %, progression 96.98 %;
+    - validate_data 0 errors; tools test_reefball_validate 19/0.
+  - **Tools suite:** test_zone_map_pois caught the Brine Shoals Channel spawn moving with Ch6's dressing (M3-C06-1200). The map POI follows it (fixed in this push). test_screenshots fails only on the new shots without baselines. test_audio_loudness and test_shrine_gi_bake are the integration branch's known failures, owned by audio and by the PC's `gpu/shrine-gi-big12` (CONSOLIDATED).
+RENDER-REQUEST @ da7891cf: reefball_outfitter, reefball_hud_choice, reefball_hud_goal; why: ADR 0040: the new outfitter shot (first baseline), and the Reefball HUD's framing panel has a new line, hidden when the side wears nothing, so the two HUD shots should be unchanged.
+
+**MERGE-READY @ da7891cf** (claude/ui = integration @ 3cbcff9e + ADR 0040 commit ceaa77b0 + this track): everything in MERGE-READY @ abf39c37, plus ADR 0040's three homes, plus request task M3-UI-204. **M3-UI-204 is new on this branch only; act1-chapters sees it after this merge:** the shrine payloads, Tamsule's trader, inn, outfitter and shrine, and the needle's give.
+
+- 2026-10-27: **The Lead's 19:34 'continue' list.**
+  - The title and save polish, the accessibility sweep and the prompt audit were finished earlier (queue items 5–7, table above).
+  - Today's additions are covered:
+    - the outfitter is in the pseudo-loc walk at 100 and 130 % and in the aspect audit;
+    - its states are words (Owned, Worn, a refusal in words plus the danger colour);
+    - the barks float through the HUD's motion scale;
+    - test_loc_key_names passes on the new rows.
+  - **M3-UI-204** waits on this branch's merge, then on act1-chapters.
+  - **Nothing else is queued for ui-menus. Lead: route the next item here.**

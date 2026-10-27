@@ -1,64 +1,89 @@
 class_name BattleBarks
 extends Node
-## Battle barks (M3-C08-100; docs/kb/tech/battle_presentation.md "Barks"): a short spoken line over a fighter's head
-## when it uses a skill or calls a Vowbound, from choreo.json `barks`:
-## - `skills`: {skill id: {speaker, key}}. Only the speaker's own use of the skill speaks (Toma's "Hold." on Hold the
-##   Stair, Liss's "Pull!" on Haul).
-## - `calls`: {vowbound id: {speaker, key}}. The caller says the name as it calls (Asha's "Virel.").
-## The line pops as a float (BattleHud.pop_info, the `role` colour) at the speaker's head, and `barked` fires for the
-## voice blips (audio). Sincere and sparse: most skills say nothing (Flare Line, Virel herself). Listen-only.
+## Battle barks (M3-C08-100; act1_ch08.md §5): a hero's word as a skill lands, or as a Vowbound is
+## called. A short line floats over the speaker, whatever the damage-number setting is, because it
+## is speech, not a number.
+##   skills.json "bark_key"         spoken by the user when the skill resolves (Toma's "Hold." on
+##                                  Hold the Stair, Liss's "Pull!" on Haul);
+##   vowbound.json "call_bark_key"  spoken by the caller as the Vowbound is called (Asha: "Virel.").
+## A skill or Vowbound without one stays silent (Flare Line; Virel has no line). A view: it listens to
+## the engine and never writes combat state. The controller only attaches it (one line); it lives as a
+## node under the HUD, so a retry's new attach replaces it. `barked` fires for audio's voice blips.
 
-## A bark was shown: who said it and its loc key (audio plays the speaker's voice blips on it).
+## A bark was said: who said it and its loc key.
 signal barked(speaker: StringName, key: String)
 
-const KEY := "barks"
-const NODE_NAME := "BattleBarks"
+const NODE_NAME := &"BattleBarks"
 
-var cfg: Dictionary = {}
-## Barks shown (tests).
-var shown: Array[String] = []
-
-var _ctl: BattleController
+var ctl: BattleController
+## Every line said this battle, oldest first: {"speaker": id, "text": String} (tests and captures).
+var said: Array[Dictionary] = []
 var _engine: BattleEngine
 
 
-static func attached(choreo: BattleChoreo, controller: BattleController, engine: BattleEngine) -> BattleBarks:
-	var b := BattleBarks.new()
-	b.name = NODE_NAME
-	b.cfg = choreo.data.get(KEY, {}) as Dictionary
-	b._ctl = controller
-	b._engine = engine
-	choreo.add_child(b)
-	engine.action_resolved.connect(b._on_action)
-	engine.vowbound.called.connect(b._on_called)
-	return b
+## A view of `engine` for `controller`, already attached under its HUD (replacing an earlier one). Call
+## after setup().
+static func attached(controller: BattleController, engine: BattleEngine) -> BattleBarks:
+	var old := controller.hud.get_node_or_null(NodePath(NODE_NAME))
+	if old != null:
+		controller.hud.remove_child(old)
+		old.queue_free()
+	var view := BattleBarks.new()
+	view.name = NODE_NAME
+	view.ctl = controller
+	controller.hud.add_child(view)
+	view.attach(engine)
+	return view
 
 
-## The barks under `stage`'s sequencer (null when none).
-static func of(stage: BattleStage) -> BattleBarks:
-	if stage == null or stage.choreo == null:
-		return null
-	return stage.choreo.get_node_or_null(NODE_NAME) as BattleBarks
+func attach(engine: BattleEngine) -> void:
+	_engine = engine
+	engine.action_resolved.connect(_on_action_resolved)
+	engine.vowbound.called.connect(_on_called)
 
 
-func _on_action(result: ActionResult) -> void:
-	if result == null or not result.ok:
-		return
-	var row := (cfg.get("skills", {}) as Dictionary).get(String(result.skill_id), {}) as Dictionary
-	if not row.is_empty() and StringName(str(row.get("speaker", ""))) == result.actor_id:
-		_say(result.actor_id, str(row.get("key", "")))
+## The bark a skill's user says, translated ("" when it has none).
+func skill_bark(skill_id: StringName) -> String:
+	return _text(_skill_key(skill_id))
+
+
+## The bark a Vowbound's caller says as it comes ("" when it has none).
+func call_bark(vowbound_id: StringName) -> String:
+	return _text(_call_key(vowbound_id))
+
+
+func _on_action_resolved(result: ActionResult) -> void:
+	if result.ok:
+		_say(result.actor_id, _skill_key(result.skill_id))
 
 
 func _on_called(vowbound: BattleCombatant) -> void:
-	var row := (cfg.get("calls", {}) as Dictionary).get(String(vowbound.id), {}) as Dictionary
-	if not row.is_empty():
-		_say(StringName(str(row.get("speaker", ""))), str(row.get("key", "")))
+	var caller := StringName(str(_vowbound_row(vowbound.id).get("caller", "")))
+	var speaker := caller if ctl.stage.has_fighter(caller) else vowbound.id
+	_say(speaker, _call_key(vowbound.id))
 
 
 func _say(speaker: StringName, key: String) -> void:
-	var c := _engine.find(speaker)
-	if key == "" or c == null or not c.is_alive() or _ctl == null or _ctl.hud == null:
+	var text := _text(key)
+	if text == "":
 		return
-	_ctl.hud.pop_info(tr(key), _ctl.head_pos(speaker), StringName(str(cfg.get("role", "text"))))
-	shown.append(key)
+	said.append({"speaker": speaker, "text": text})
+	if ctl.stage.has_fighter(speaker):
+		ctl.hud.pop_info(text, ctl.head_pos(speaker, &"damage"), &"text")
 	barked.emit(speaker, key)
+
+
+func _skill_key(skill_id: StringName) -> String:
+	return str(_engine.db.skill(skill_id).get("bark_key", "")) if _engine.db.skills.has(skill_id) else ""
+
+
+func _call_key(vowbound_id: StringName) -> String:
+	return str(_vowbound_row(vowbound_id).get("call_bark_key", ""))
+
+
+func _vowbound_row(vowbound_id: StringName) -> Dictionary:
+	return _engine.vowbound.rows.get(vowbound_id, {}) as Dictionary
+
+
+static func _text(key: String) -> String:
+	return str(TranslationServer.translate(key)) if key != "" else ""
