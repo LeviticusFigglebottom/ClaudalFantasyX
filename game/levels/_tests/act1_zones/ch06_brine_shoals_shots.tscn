@@ -1,0 +1,15 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://game/levels/_tests/act1_zones/act1_zone_rig.gd" id="1_rig"]
+[ext_resource type="PackedScene" path="res://game/levels/ch06/brine_shoals/brine_shoals.tscn" id="2_zone"]
+
+[node name="Ch06BrineShoalsShots" type="Node3D"]
+script = ExtResource("1_rig")
+zone_scene = ExtResource("2_zone")
+flags = PackedStringArray("ch06_arrived")
+views = {
+"Camp": [[-8.0, 4.5, -16.0], [2.0, 1.0, -40.0], 55.0],
+"Channel": [[-8.0, 7.0, -30.0], [-24.0, 0.0, -55.0], 60.0],
+"DuskCamp": [[16.0, 2.6, -54.0], [24.0, 1.0, -44.0], 50.0],
+"Road": [[1.5, 3.2, 76.0], [0.0, 1.0, 30.0], 55.0]
+}

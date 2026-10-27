@@ -1,0 +1,55 @@
+# Live log: act1-chapters environment
+
+Branch `claude/act1-chapters`, cut by the Lead from `claude/m2-slice` @ 6c50823f (2026-10-25). Integration branch:
+`claude/undertow-lead-handoff-ze8rrn`. Binding rules: CLAUDE.md and `docs/kb/handoffs/live/TRACK-RULES.md` (on the
+integration branch).
+
+## Scope
+Act I from **Ch4 onward**: Ch4–Ch9 (greybox, built by m2-slice) and the chapters after them; the greybox-to-final swaps
+with env-art's Act I kits; Ch7's real Reefball match; real casts; encounters per chapter; the cutscene quality bar;
+greyboxing Ch10 onward to the end of Act I. **slice-polish** (`claude/m2-slice`) keeps the M2 slice, Ch1–Ch3, the
+cutscene sequencer (`game/cutscene/**`), `game/flow/**` and the playtest fixes.
+
+- **Id block:** tasks 1200–1299 (e.g. `M3-C04-1200`), ADRs 0200–0209, handoffs `<date>-cinematics-act1-chapters-<n>.md`.
+- **Paths claimed** (docs/kb/ownership.md, last row): `game/levels/ch04/**`–`ch09/**` and later chapters,
+  `game/data/dialogue/ch04/**` onward, `game/data/flow/chapters/ch04.json` onward, `game/data/flow/ch0[4-9]_*.json`,
+  `game/data/loc/ch04.csv` onward, `docs/kb/story/beats/act1_ch04.md` onward, the Ch4+ thread tests.
+  **For slice-polish:** Ch1 (`game/levels/ch01/**`, `game/data/dialogue/ch01/**`, `ch01.json`) stays yours with
+  Ch2–Ch3. Ch5 and Ch7's zones subclass your `Ch01Zone`; I won't edit it (I'll ask via a task if I need a hook).
+- **The Act I switches** in `first_playable.json` stay EMPTY until the human signs off M2 (the Lead flips them). F8
+  chapter select reaches Ch4–Ch9 meanwhile.
+
+## NEW ACCOUNT (from 2026-10-25)
+- **MERGE-READY @ 14ea50b9**: the integration branch (big8, c6a960ab) merged in (d7b55c10).
+  Conflicts: encounters.json (theirs' arenas + Ch8's rows), voices.json (theirs + Ivo; the 17 Act I speakers' `pending`
+  flags cleared now they're in speakers.json), translations (union, +ch08), validate_data (both sides' checks),
+  test_hero_clips (the all-dialogue check with M3-CHR-01's pending list), the two different combat-14 handoffs (both
+  kept; m2-slice's renamed `-cmb01`), balance_report (theirs). Ownership claim for Ch4+.
+  - **Checks run:** `--import`; Godot `--filter=ch0` 59 run, 0 failed; validate_data 0/0; dlgc --check 0/0;
+    taskboard --check; gdlint, gdformat clean; `tools.tests.test_hero_clips` 9 OK.
+  - **Checks skipped:** the full suite and sim (the merge touched no battle code on this side; the Lead gates the
+    integration merge); coverage (no game/battle or progression change of mine); Blender (no source); shots (no
+    scene of mine changed).
+
+- **PROGRESS @ e2fed1fc (2026-10-27): M3-C06-1200, Ch6 greybox → final (pushed, not yet MERGE-READY).**
+  `ZoneKitDressing` (ADR 0200, `game/levels/act1/`) dresses a greybox zone with env-art's kit from a generated layout
+  (`tools/act1/ch06_brine_shoals_dressing.py`), keeping the greybox's collision, triggers and states; story pieces
+  follow their blocks. Ch6 takes the ch06 sun and grade. Request M3-ENV-1201 (six story pieces the kit lacks).
+  - **Checks run:** `--filter=zone_kit` 5/0, `--filter=ch06` 5/0, `tools.tests.test_fog_lamps` OK, validate_data,
+    taskboard, gdlint, gdformat clean. First lavapipe views made and viewed; fixes in (greybox stand-ins hidden, plank
+    walk smoothed); the re-render is being viewed now, then two baselines are registered and a MERGE-READY line follows.
+
+- **MERGE-READY @ 09233381: M3-C06-1200 Ch6 greybox → final, done (status review, reviewer environment).**
+  Since e2fed1fc: greybox stand-ins hidden (an ember bed for the fire, crates for the purser; the shrine is the
+  wreck's bow), a smooth plank walk, a dusk shot rig, Ch04Zone `ramps` + `collision_path` (for Corrow next),
+  baselines `ch06_brine_road`, `ch06_brine_camp` (viewed, approved).
+  - **Checks run:** `--filter=zone_kit` 5/0, `--filter=ch06` 5/0; tools test_screenshots + test_fog_lamps 19 OK;
+    validate_data, taskboard, gdlint, gdformat clean; the two new shots captured in isolation and viewed.
+  - **Checks skipped:** the full suite (only Ch04Zone, the Ch6 zone and new files changed; Ch04/05/07/08/09 zones
+    inherit Ch04Zone's new `_build_blocks`: `--filter=ch0` 59 run, 0 failed); coverage (no battle
+    or progression code); Blender (no source); other shots (no other scene touched).
+
+## Exact next step
+Queue item 2, greybox → final: finish Ch6 (view the re-render, register `ch06_brine_road` and `ch06_brine_camp`),
+then Ch8 `corrow` (M3-ENV-04/04B), Ch5 `pemakar` (M3-ENV-03), Ch7 `tamsule_bell` (M3-ENV-01). The
+ferry (Ch4), oruvel, ashcrown and coilspire kits are only on `claude/env-art` until the Lead merges it.
