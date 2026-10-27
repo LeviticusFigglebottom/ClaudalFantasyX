@@ -102,17 +102,17 @@
         ],
         "max_exposed": 2
       },
-      "_allowances": "Costume 45/8: the skirts fold between calf and thigh in the deep kneel (rise_to_stand), inside the leg. VerseSleeve 42/6 (count 4 -> 6, M2-CHR-07): one gauze bag vertex enters the waist when the arm is down; the battle clips (hit, defend, cast, finisher, ko) add a frame or two where up to 6 sleeve-top vertices (on DEF-spine.003, up to 32 mm) sit inside the upper arm as it starts forward, and the deepest stays 36.5 mm (hit, the bag at the pelvis). Hidden under the sleeve: viewed at asha hit@6 and defend@2 from the Sleeve and ThreeQuarter cameras. Body 48/40: upper-arm skin passes the torso cloth's armhole edge as the arm hangs (the vest and bodice no longer poke out: viewed). max_exposed 2: two halter-edge vertices at the left shoulder in the extreme pose, under 2 mm.",
+      "_allowances": "M1-CHR-15 (every-frame worst in brackets). Costume 34/6 (32.8): the sandal soles sit inside the feet at rest; the skirts are clean in every frame (skirt panels: 43.8 -> 32.8; the old worst was the skirt in the calf-thigh fold of the deep kneel). VerseSleeve 36/6 (35.5, walk): the sleeve's inner elbow against the waist as the arm hangs (her staff arm now hangs 6 degrees wider, and the hanging bag rides the shoulder corrective). Body 47/24 (46.7): the extreme_pose stage pose, the right arm raised 80 degrees forward (the front of the shoulder passes the vest's armhole edge, as in M1-CHR-14); in the clips the armpit is 37.7 at worst (attack), down from 46 in walk and laugh before the shoulder correctives. max_exposed 2: two halter-edge vertices at the right shoulder, under 2 mm.",
       "penetration": {
         "limits_mm": {
-          "Costume": 45.0,
-          "VerseSleeve": 42.0,
-          "Body": 48.0
+          "Costume": 34.0,
+          "VerseSleeve": 36.0,
+          "Body": 47.0
         },
         "limits_count": {
-          "Costume": 8,
+          "Costume": 6,
           "VerseSleeve": 6,
-          "Body": 40
+          "Body": 24
         }
       }
     },
@@ -120,15 +120,15 @@
       "props": [
         "Props"
       ],
-      "_allowances": "Costume 32/6 and Body 63/50: the shirt's armhole against the lowered upper arm (talk, take_hand); clean in rhen_clip_take_hand. max_exposed 24: the thigh's hidden-face edge opens inside the deep knee fold of the kneel, under the trousers (rhen_clip_kneel).",
+      "_allowances": "M1-CHR-15 (every-frame worst in brackets). Costume 31.5/6 (31.2): the shirt's side against the forearm and the lowered upper arm (finisher, talk). Body 62/44 (61.1, item@6; count 42 every frame once merged with M2-CHR-12's clips): the toss lifts the right arm 92 degrees forward and its front passes the shirt's armhole edge; with the arms down (idle, talk) the armpit is under 30 since the shoulder correctives. max_exposed 24: the thigh's hidden-face edge opens inside the deep knee fold of the kneel, under the trousers (rhen_clip_kneel).",
       "penetration": {
         "limits_mm": {
-          "Costume": 32.0,
-          "Body": 63.0
+          "Costume": 31.5,
+          "Body": 62.0
         },
         "limits_count": {
           "Costume": 6,
-          "Body": 50
+          "Body": 44
         }
       },
       "seams": {
@@ -139,16 +139,14 @@
       "props": [
         "Props"
       ],
-      "_allowances": "Costume 33/6 and Body 71/200: his broad torso takes the lowered upper arm into the tunic's side (linear skinning); the tunic rides the torso only, so the arm now reads in front of its edge (toma_clip_talk). Props 16/6: the spear shaft grazes the forearm for a few frames while the hand turns it (spear_level, lower_spear, turn_seaward). max_exposed 2: two shoulder-edge vertices, under 5 mm.",
+      "_allowances": "M1-CHR-15 (every-frame worst in brackets). Costume 32/6 (31.7, talk): his broad torso takes the lowered upper arm into the tunic's side at mid-arm (linear skinning). Body 75/200 (73.9, run@4, every frame, after merging M2-CHR-12; the CHR-15 clips alone were 53.6, finisher): his toes through the trouser hem where the hem flares over the foot at the run's toe-off, and as the lunge flexes the ankle (follow-up in M2-CHR-513); the armpit is 18.5 in idle (69 in walk before the shoulder correctives). Props: no allowance (16.6 -> 0: the spear sits 3.4 cm out and its foot 1.2 degrees forward, and spear_level and lower_spear swing the arm out while the hand turns it). max_exposed 2: two shoulder-edge vertices, under 5 mm.",
       "penetration": {
         "limits_mm": {
-          "Costume": 33.0,
-          "Props": 16.0,
-          "Body": 71.0
+          "Costume": 32.0,
+          "Body": 75.0
         },
         "limits_count": {
           "Costume": 6,
-          "Props": 6,
           "Body": 200
         }
       },
@@ -157,7 +155,7 @@
       }
     },
     "sefir": {
-      "_garments": "act1_npcs.md §1.10: the long hair is a garment (HairBack), so hair passing through the mantle or the shoulders in a head turn shows up in garment_in_body and is fixed by weights, not hidden",
+      "_garments": "act1_npcs.md \u00a71.10: the long hair is a garment (HairBack), so hair passing through the mantle or the shoulders in a head turn shows up in garment_in_body and is fixed by weights, not hidden",
       "garments": [
         "Costume",
         "Mantle",

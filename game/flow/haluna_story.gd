@@ -135,14 +135,18 @@ func _on_trigger(_id: StringName, payload: Dictionary) -> void:
 func _bark(scene_id: StringName) -> void:
 	busy = true
 	_hush()
-	# M2-FP-107: a bark freezes Rhen but is no staged scene, so Asha and Toma stay beside him.
+	await _play_unstaged(scene_id)
+	HalunaVillagers.end_talks(_zone)  # M2-FP-102: the villager turns back to its work
+	busy = false
+
+
+## M2-FP-107/110: a bark or B05 freezes Rhen but is no staged scene, so Asha and Toma stay beside him.
+func _play_unstaged(scene_id: StringName) -> void:
 	sequencer.hold_player = false
 	sequencer.freeze_player = true
 	await sequencer.play(scene_id, _stage())
 	sequencer.hold_player = true
 	sequencer.freeze_player = false
-	HalunaVillagers.end_talks(_zone)  # M2-FP-102: the villager turns back to its work
-	busy = false
 
 
 ## B11 (M2-FP-15): the dock at night, then the end card.
@@ -173,7 +177,7 @@ func _end() -> void:
 	_hush()
 	var low_tide := StringName(str(cfg.get("before_ending_scene_id", "")))
 	if low_tide != &"":
-		await sequencer.play(low_tide, _stage())
+		await _play_unstaged(low_tide)
 		if _declined():
 			var spawn := StringName(str(cfg.get("ending_decline_spawn", "")))
 			_zone.call(&"place_at", spawn, _zone.call(&"spawn_yaw_deg", spawn))

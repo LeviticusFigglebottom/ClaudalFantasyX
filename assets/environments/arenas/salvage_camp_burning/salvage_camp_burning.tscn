@@ -1,0 +1,233 @@
+[gd_scene load_steps=27 format=3]
+
+[ext_resource type="Script" path="res://game/world/arenas/battle_arena_root.gd" id="1_r"]
+[ext_resource type="Shader" path="res://game/shaders/environment/env_sky_low_sun.gdshader" id="2_r"]
+[ext_resource type="Texture3D" path="res://assets/environments/arenas/salvage_camp_burning/lut_ch06_smoke.png" id="3_r"]
+[ext_resource type="Script" path="res://game/world/arenas/arena_sea.gd" id="4_r"]
+[ext_resource type="Resource" path="res://game/world/water/lagoon_waves.tres" id="5_r"]
+[ext_resource type="Shader" path="res://game/shaders/water/water_ocean.gdshader" id="6_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/brine_shoals/arena_camp_ground.glb" id="7_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/brine_shoals/tide_wheel_burned.glb" id="8_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/brine_shoals/camp_tent_burned.glb" id="9_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/brine_shoals/camp_tent.glb" id="10_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/brine_shoals/salvage_rack_burned.glb" id="11_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/brine_shoals/salvage_pile_burned.glb" id="12_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/brine_shoals/brine_vat_burned.glb" id="13_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/brine_shoals/brine_vat.glb" id="14_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/brine_shoals/crate_stack_burned.glb" id="15_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/brine_shoals/branding_brazier.glb" id="16_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/brine_shoals/chalk_mark_heavy.glb" id="17_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/brine_shoals/wreck_hull_section.glb" id="18_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/brine_shoals/wreck_mast_standing.glb" id="19_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/brine_shoals/smoke_plume.glb" id="20_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/brine_shoals/wreck_bow.glb" id="21_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/brine_shoals/wreck_ribs_large.glb" id="22_r"]
+
+[sub_resource type="ShaderMaterial" id="SkyMat"]
+shader = ExtResource("2_r")
+shader_parameter/azimuth_power = 1.0
+shader_parameter/band_energy = 0.4
+shader_parameter/band_height = 0.05
+shader_parameter/cloud_ambient_energy = 0.8
+shader_parameter/cloud_coverage = 0.55
+shader_parameter/cloud_sun_energy = 2.0
+shader_parameter/cloud_wind_deg = 240.0
+shader_parameter/col_band = Color(0.9098, 0.7529, 0.5647, 1)
+shader_parameter/col_cloud_lit = Color(0.9098, 0.8157, 0.6902, 1)
+shader_parameter/col_cloud_shadow = Color(0.4784, 0.4941, 0.5176, 1)
+shader_parameter/col_glow = Color(1, 0.8353, 0.702, 1)
+shader_parameter/col_ground = Color(0.3529, 0.3529, 0.3137, 1)
+shader_parameter/col_horizon_away = Color(0.8471, 0.7843, 0.6588, 1)
+shader_parameter/col_horizon_sun = Color(0.9098, 0.7882, 0.6275, 1)
+shader_parameter/col_mid = Color(0.7843, 0.7216, 0.6275, 1)
+shader_parameter/col_zenith = Color(0.498, 0.6392, 0.7529, 1)
+shader_parameter/glow_energy = 1.0
+shader_parameter/glow_power = 5.0
+shader_parameter/halo_energy = 2.0
+shader_parameter/horizon_curve = 0.5
+shader_parameter/mid_height = 0.1
+shader_parameter/mid_strength = 0.35
+shader_parameter/mid_width = 0.1
+
+[sub_resource type="Sky" id="Sky"]
+sky_material = SubResource("SkyMat")
+process_mode = 2
+
+[sub_resource type="Environment" id="Env"]
+resource_name = "salvage_camp_burning_ch06"
+background_mode = 2
+sky = SubResource("Sky")
+ambient_light_source = 2
+ambient_light_color = Color(0.6588, 0.7216, 0.6902, 1)
+ambient_light_energy = 0.55
+reflected_light_source = 2
+tonemap_mode = 4
+tonemap_exposure = 0.7
+tonemap_agx_white = 12.0
+ssao_enabled = true
+ssao_radius = 1.2
+ssao_intensity = 1.2
+glow_enabled = true
+glow_intensity = 0.55
+glow_bloom = 0.06
+glow_hdr_threshold = 1.0
+fog_enabled = true
+fog_mode = 0
+fog_light_color = Color(0.7216, 0.6588, 0.5647, 1)
+fog_density = 0.0022
+fog_sky_affect = 0.12
+fog_height = 0.0
+fog_height_density = 0.0
+adjustment_enabled = true
+adjustment_color_correction = ExtResource("3_r")
+adjustment_saturation = 0.9
+
+[sub_resource type="ShaderMaterial" id="SeaMat"]
+resource_name = "arena_silted_flats"
+render_priority = 0
+shader = ExtResource("6_r")
+shader_parameter/col_deep = Color(0.2902, 0.3529, 0.3137, 1)
+shader_parameter/col_scatter_shallow = Color(0.4314, 0.4784, 0.3843, 1)
+shader_parameter/absorption_per_m = Vector3(2, 0.6, 0.546)
+shader_parameter/absorption_scale = 3.5
+shader_parameter/scatter_energy = 0.25
+shader_parameter/caustic_strength = 0.0
+shader_parameter/col_foam = Color(0.9333, 0.9647, 0.9569, 1)
+shader_parameter/col_sss = Color(0.4784, 0.5412, 0.4157, 1)
+shader_parameter/foam_crest_threshold = 0.95
+shader_parameter/use_foam = false
+shader_parameter/use_sss = false
+shader_parameter/glint_strength = 0.35
+
+[node name="SalvageCampBurning" type="Node3D"]
+script = ExtResource("1_r")
+arena_id = &"salvage_camp_burning"
+sub_frame = &"ch06"
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Env")
+
+[node name="Sun" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.5, 0.496732, -0.709406, -0, 0.819152, 0.573576, 0.866025, -0.286788, 0.409576, 0, 30, 0)
+light_color = Color(1, 0.8353, 0.702, 1)
+light_energy = 2.4
+shadow_enabled = true
+shadow_bias = 0.03
+shadow_normal_bias = 1.0
+shadow_blur = 1.0
+directional_shadow_mode = 2
+directional_shadow_split_1 = 0.06
+directional_shadow_split_2 = 0.18
+directional_shadow_split_3 = 0.45
+directional_shadow_max_distance = 120.0
+
+[node name="Sea" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.3, 0)
+script = ExtResource("4_r")
+wave_set = ExtResource("5_r")
+material = SubResource("SeaMat")
+sea_glow_energy = 0.0
+tide_line_y = -1.3
+
+[node name="Ground" parent="." instance=ExtResource("7_r")]
+
+[node name="Dressing" type="Node3D" parent="."]
+
+[node name="tide_wheel_burned_1" parent="Dressing" instance=ExtResource("8_r")]
+transform = Transform3D(0.939693, 0, 0.34202, 0, 1, 0, -0.34202, 0, 0.939693, -3, -0.768, -14.5)
+
+[node name="camp_tent_burned_1" parent="Dressing" instance=ExtResource("9_r")]
+transform = Transform3D(0.34202, 0, 0.939693, 0, 1, 0, -0.939693, 0, 0.34202, -12, 0.006, -9)
+
+[node name="camp_tent_1" parent="Dressing" instance=ExtResource("10_r")]
+transform = Transform3D(0.5, 0, -0.866025, 0, 1, 0, 0.866025, 0, 0.5, 11.5, -0.028, -11.5)
+
+[node name="salvage_rack_burned_1" parent="Dressing" instance=ExtResource("11_r")]
+transform = Transform3D(0.984808, 0, 0.173648, 0, 1, 0, -0.173648, 0, 0.984808, 6, -0.784, -14)
+
+[node name="salvage_pile_burned_1" parent="Dressing" instance=ExtResource("12_r")]
+transform = Transform3D(0.819152, 0, 0.573576, 0, 1, 0, -0.573576, 0, 0.819152, -9.5, -0.882, -15)
+
+[node name="brine_vat_burned_1" parent="Dressing" instance=ExtResource("13_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 12, 0.001, -4)
+
+[node name="brine_vat_1" parent="Dressing" instance=ExtResource("14_r")]
+transform = Transform3D(0.766044, 0, 0.642788, 0, 1, 0, -0.642788, 0, 0.766044, 13.5, -0.033, -6.5)
+
+[node name="crate_stack_burned_1" parent="Dressing" instance=ExtResource("15_r")]
+transform = Transform3D(-0.34202, 0, 0.939693, 0, 1, 0, -0.939693, 0, -0.34202, -12.5, -0.001, -2)
+
+[node name="branding_brazier_1" parent="Dressing" instance=ExtResource("16_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 9, -0, 1.5)
+
+[node name="chalk_mark_heavy_1" parent="Dressing" instance=ExtResource("17_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -27, -1.663, -26)
+
+[node name="wreck_hull_section_1" parent="Dressing" instance=ExtResource("18_r")]
+transform = Transform3D(-1.09581, 0, 0.0958713, 0, 1.1, 0, -0.0958713, 0, -1.09581, 2, -1.548, -26)
+
+[node name="wreck_mast_standing_1" parent="Dressing" instance=ExtResource("19_r")]
+transform = Transform3D(0.996195, 0, 0.0871557, 0, 1, 0, -0.0871557, 0, 0.996195, -6, -1.333, -24)
+
+[node name="smoke_plume_1" parent="Dressing" instance=ExtResource("20_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 2, -1.138, -24)
+
+[node name="smoke_plume_2" parent="Dressing" instance=ExtResource("20_r")]
+transform = Transform3D(0.579555, 0, 0.155291, 0, 0.6, 0, -0.155291, 0, 0.579555, -12, -0.117, -12)
+
+[node name="smoke_plume_3" parent="Dressing" instance=ExtResource("20_r")]
+transform = Transform3D(0.689365, 0, -0.121554, 0, 0.7, 0, 0.121554, 0, 0.689365, 12, -0.614, -14)
+
+[node name="wreck_bow_1" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(0.5, 0, 0.866025, 0, 1, 0, -0.866025, 0, 0.5, -45, -1.322, -40)
+
+[node name="wreck_ribs_large_1" parent="Dressing" instance=ExtResource("22_r")]
+transform = Transform3D(-0.952628, 0, 0.55, 0, 1.1, 0, -0.55, 0, -0.952628, 40, -1.366, -50)
+
+[node name="FireLight0" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.0, 0.6, -14.0)
+light_color = Color(0.8784, 0.4392, 0.1804, 1)
+light_energy = 3.2
+omni_range = 12.0
+omni_attenuation = 1.4
+light_volumetric_fog_energy = 0.0
+
+[node name="FireLight1" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.0, 0.4, -9.0)
+light_color = Color(0.8784, 0.4392, 0.1804, 1)
+light_energy = 2.4
+omni_range = 10.0
+omni_attenuation = 1.4
+light_volumetric_fog_energy = 0.0
+
+[node name="FireLight2" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.5, 0.6, -15.0)
+light_color = Color(0.8784, 0.4392, 0.1804, 1)
+light_energy = 2.4
+omni_range = 10.0
+omni_attenuation = 1.4
+light_volumetric_fog_energy = 0.0
+
+[node name="FireLight3" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.0, 1.0, 1.5)
+light_color = Color(0.8784, 0.4392, 0.1804, 1)
+light_energy = 1.6
+omni_range = 6.0
+omni_attenuation = 1.4
+light_volumetric_fog_energy = 0.0
+shadow_enabled = true
+shadow_bias = 0.05
+
+[node name="CameraHints" type="Node3D" parent="."]
+
+[node name="wide_high" type="Marker3D" parent="CameraHints"]
+transform = Transform3D(0.99613, 0.0361477, -0.0801166, -0, 0.911516, 0.411265, 0.0878938, -0.409674, 0.907988, -1.5, 8, 14)
+
+[node name="party_side" type="Marker3D" parent="CameraHints"]
+transform = Transform3D(0.543251, -0.049669, 0.8381, 0, 0.998249, 0.05916, -0.83957, -0.0321387, 0.5423, 7, 1.6, 5)
+
+[node name="foe_side" type="Marker3D" parent="CameraHints"]
+transform = Transform3D(0.485643, 0.0508571, -0.872677, -0, 0.998306, 0.0581784, 0.874157, -0.0282539, 0.48482, -7.5, 1.6, 5)
+
+[node name="past_the_brazier" type="Marker3D" parent="CameraHints"]
+transform = Transform3D(0.488603, -0.024351, 0.872166, 0, 0.99961, 0.0279093, -0.872506, -0.0136366, 0.488413, 10.5, 1.4, 4)

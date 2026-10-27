@@ -7,6 +7,7 @@ extends TestCase
 
 const SANDBOX := "res://game/battle/scene/battle_sandbox.tscn"
 const BOX_SCENE := "res://game/ui/dialogue/dialogue_box.tscn"
+const SET_PIECE_SEED := 20261027
 ## The dialogue box panel's width at 16:9 (dialogue_box.tscn: centred, offsets -800 to 800), its cap (M2-ARC-09).
 const DIALOGUE_MAX_WIDTH_PX := 1600.0
 const SEQUENCER_CONFIG := "res://game/data/cutscene/sequencer.json"
@@ -100,6 +101,11 @@ func test_hold_prompt_and_act_card() -> void:
 func test_battle_hud() -> void:
 	for script: StringName in [BattleController.SCRIPT_PLAYER_PREVIEW, BattleController.SCRIPT_SWELL_RING]:
 		_sweep("battle %s" % script, _battle.bind(script), _battle_pieces)
+
+
+## M3-UI-100: a Ch8 set piece: the stair meter keeps its top-centre pin beside the timeline and help line.
+func test_set_piece_hud() -> void:
+	_sweep("battle set piece", _set_piece, _set_piece_pieces)
 
 
 func test_battle_panels_and_pause() -> void:
@@ -535,6 +541,27 @@ func _battle(script: StringName) -> Node:
 	ctl.hud.apply_settings(_ui)
 	ctl.run_script(script)
 	return ctl.hud
+
+
+func _set_piece() -> Node:
+	var ctl := (load(SANDBOX) as PackedScene).instantiate() as BattleController
+	ctl.auto_start = false
+	ctl.pacing_scale = 0.0
+	ctl.persist_progress = false
+	ParityHost.scene_root().add_child(ctl)
+	ctl.hud.apply_settings(_ui)
+	var party: Array[StringName] = [&"rhen", &"asha", &"toma"]
+	var reserve: Array[StringName] = [&"ysolde", &"kerrid"]
+	ctl.start_battle(party, reserve, &"ch08_stair_hold_1", SET_PIECE_SEED)
+	ctl.engine.objective_count = 2
+	ctl.set_piece.refresh()
+	return ctl.hud
+
+
+func _set_piece_pieces(h: Node) -> Array:
+	var out := _battle_pieces(h)
+	out.append(["stair meter", h.get_node(^"ObjectiveMeter"), "top"])
+	return out
 
 
 ## Frees everything an earlier screen left under the test scene, and unpauses.

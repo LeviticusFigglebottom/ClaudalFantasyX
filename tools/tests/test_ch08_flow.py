@@ -27,6 +27,15 @@ def _json(p: Path) -> dict:
     return json.loads(p.read_text(encoding="utf-8"))
 
 
+def _block_ids(layout: dict) -> set:
+    """The layout's blocks plus its collision file's blocks and ramps (collision_path, ADR 0200; KitCollision)."""
+    ids = {b["id"] for b in layout["blocks"]}
+    if "collision_path" in layout:
+        coll = _json(ROOT / layout["collision_path"].removeprefix("res://"))
+        ids |= {b["id"] for b in coll.get("blocks", []) + coll.get("ramps", [])}
+    return ids
+
+
 def _steps(zone: dict):
     for row in zone.get("arrive", []):
         yield from row.get("steps", [])
@@ -84,7 +93,7 @@ class Ch08FlowTest(unittest.TestCase):
     def test_the_trial_matches_the_layout(self) -> None:
         trial = self.field["trial"]
         layout = self.layouts["ch08/coilspire"]
-        blocks = {b["id"] for b in layout["blocks"]}
+        blocks = _block_ids(layout)
         flues = {t["payload"]["flue"] for t in layout["triggers"] if "flue" in t.get("payload", {})}
         keys = set()
         for tier in trial["tiers"]:
@@ -107,7 +116,7 @@ class Ch08FlowTest(unittest.TestCase):
 
     def test_extra_layout_keys_name_real_things(self) -> None:
         for loc, layout in self.layouts.items():
-            blocks = {b["id"] for b in layout["blocks"]}
+            blocks = _block_ids(layout)
             actors = set(layout.get("actors", {}))
             marks = set(layout.get("marks", {}))
             for b in layout.get("start_hidden", []):

@@ -23,6 +23,8 @@ const ALL: Array[StringName] = [IDLE, READY, ATTACK, CAST, ITEM, READ, DEFEND, F
 const REVIVE := &"revive"
 ## A creature actor plays clips through this method, so it idles again afterwards.
 const ACTOR_PLAY_METHOD := &"play_clip"
+## Set on an AnimationPlayer while BattleImpact holds it for a hit-stop; its value is the speed to restore.
+const HELD_META := &"hymn_impact_held"
 ## The creature track's API (M2-CRE-03, claude/creatures): FighterStandIn.creature() -> CreatureActor, with
 ## clip_for(skill, kind), play_action(skill, kind) and contact_time(clip). Called by name so this works before and
 ## after that branch merges.
@@ -63,13 +65,23 @@ static func play(f: Node, clip: StringName, speed: float = 1.0) -> bool:
 	while actor != null and actor != f and not actor.has_method(ACTOR_PLAY_METHOD):
 		actor = actor.get_parent()
 	if actor != null and actor != f and actor.has_method(ACTOR_PLAY_METHOD):
-		p.speed_scale = speed
+		set_speed(p, speed)
 		return bool(actor.call(ACTOR_PLAY_METHOD, clip))
-	p.speed_scale = speed
+	set_speed(p, speed)
 	p.play(clip)
 	if clip != IDLE and clip != KO and p.has_animation(IDLE):
 		p.queue(IDLE)
 	return true
+
+
+## Sets `p`'s playback speed, unless BattleImpact holds it (a hit-stop, meta HELD_META): then the speed waits in the
+## meta for the release, and the clip just started stays frozen on its first frame (M3-BPR-401: the struck target's
+## hit clip used to run through the hold).
+static func set_speed(p: AnimationPlayer, speed: float) -> void:
+	if p.has_meta(HELD_META):
+		p.set_meta(HELD_META, speed)
+	else:
+		p.speed_scale = speed
 
 
 ## A felled fighter's KO on its collapse beat: true when its model has a KO clip (the stage then applies the KO

@@ -3,13 +3,15 @@ extends Node
 ## (M2-FP-102; docs/kb/tech/cutscenes.md "Viewing a cutscene"). Software Forward+ (lavapipe):
 ##   godot-render --path . --audio-driver Dummy --fixed-fps 30 --resolution 960x540 \
 ##     res://tools/cutscene_frames/cutscene_frames.tscn -- --location=ch02/haluna --spawn=Beach \
-##     --flags=prologue_seen --every=1.0 --max-sec=150 --out=/abs/dir [--choice=0]
+##     --flags=prologue_seen --every=1.0 --max-sec=150 --out=/abs/dir [--choice=0] [--tour=Spawn:sec,...]
 ## It travels to --location at --spawn through SceneRouter.world_return (as the game does: the
 ## real fade, prewarm and arrival beats), with the --flags set first and every other flag clear.
 ## Dialogue advances by itself (the Accessibility "dialogue_auto" setting, M2-UI-25) and every choice
 ## takes option --choice. A frame is written every --every seconds of game time as
 ## <out>/f_<seconds*10>.png, plus a line per spoken line in <out>/lines.txt with its time, so a
-## frame can be matched to its line. It quits after --max-sec. Nothing is saved (autosaves held).
+## frame can be matched to its line. --tour places the party at each named spawn of the current scene
+## (place_at) at that game time, to view a long route section by section. It quits after --max-sec.
+## Nothing is saved (autosaves held).
 
 const DEFAULT_EVERY_SEC := 1.0
 const DEFAULT_MAX_SEC := 120.0
@@ -30,6 +32,8 @@ var _choice_wait := 0.0
 var _last_line := ""
 var _lines: PackedStringArray = []
 var _started := false
+## [[spawn, sec], ...] still to visit (--tour), in time order.
+var _tour: Array = []
 
 
 func _ready() -> void:
@@ -52,6 +56,10 @@ func _ready() -> void:
 				_out = value
 			"choice":
 				_choice = int(value)
+			"tour":
+				for stop: String in value.split(",", false):
+					var pair := stop.split(":")
+					_tour.append([StringName(pair[0]), float(pair[1]) if pair.size() > 1 else 0.0])
 	if _out == "" or _location == &"":
 		push_error("CutsceneFrames: --location and --out are required")
 		get_tree().quit(2)
@@ -82,6 +90,12 @@ func _process(delta: float) -> void:
 	if not _started:
 		return
 	_elapsed += delta
+	if not _tour.is_empty() and _elapsed >= float(_tour[0][1]):
+		var stop: Array = _tour.pop_front()
+		var scene := get_tree().current_scene
+		if scene != null and scene.has_method(&"place_at"):
+			scene.call(&"place_at", stop[0])
+			_lines.append("%06.1f TOUR %s" % [_elapsed, stop[0]])
 	_watch_line()
 	_watch_choices(delta)
 	if _elapsed >= _next_frame:

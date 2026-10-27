@@ -6,8 +6,7 @@ extends Node3D
 ## ("layout" and "room"), all kit pieces from M2-ENV-03 (assets/environments/kits/haluna/shrine_*):
 ## the spring, each basin's pedestal and turning bowl, the carved channels and their flowmap water,
 ## the inner pool and its water, the shell-valve door, the side pool and its water, the net-float
-## charm, plus the collision proxies and the interactables. A piece that fails to load falls back to
-## a plain primitive of the same size (and warns), so the trial still plays.
+## charm, the collision proxies and interactables; a piece that fails to load is a same-size primitive (warned).
 ##
 ## It turns a basin when Rhen uses it, runs water down the channels on the water's path (the water
 ## shows, the nacre shimmers, the lips pour), raises the inner pool, sinks the door, empties the side
@@ -620,6 +619,7 @@ func _pool_bounce() -> OmniLight3D:
 	light.light_energy = float(cfg_b.get("energy", 0.0))
 	light.omni_range = float(cfg_b.get("range_m", 1.0))
 	light.position.y = float(cfg_b.get("height_m", 0.0))
+	light.light_volumetric_fog_energy = 0.0  # M3-ARC-04: a lamp in ShaftFog never lights the volume
 	return light
 
 

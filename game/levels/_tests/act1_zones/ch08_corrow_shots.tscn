@@ -1,0 +1,16 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://game/levels/_tests/act1_zones/act1_zone_rig.gd" id="1_rig"]
+[ext_resource type="PackedScene" path="res://game/levels/ch08/corrow/corrow.tscn" id="2_zone"]
+
+[node name="Ch08CorrowShots" type="Node3D"]
+script = ExtResource("1_rig")
+zone_scene = ExtResource("2_zone")
+flags = PackedStringArray("ch08_arrived_corrow")
+views = {
+"Arrival": [[11.25, 3.0, 50.25], [13.9, 11.0, 2.32], 50.0],
+"Bastion": [[-49.93, 13.8, 3.17], [-82.22, 12.5, -0.97], 55.0],
+"LowTown": [[-16.18, 14.2, -3.07], [-49.31, 1.0, -26.29], 60.0],
+"Stair": [[-52.09, 2.6, -9.65], [-28.33, 6.0, -2.68], 55.0],
+"WallHead": [[2.0, 13.7, 0.51], [-24.97, 12.8, 1.04], 55.0]
+}

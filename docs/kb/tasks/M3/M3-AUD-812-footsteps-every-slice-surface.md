@@ -34,4 +34,11 @@ water (M3-AUD-811 is still open with the level owners). Make every slice zone's 
 - M3-AUD-811 stays open: level-authored areas are still the precise answer (for example under the dock, where the
   mesh bounds also cover the sand).
 
+- 2026-10-27 audio, **verified on a scratch merge with claude/hero-integration** (the real HeroFieldActor): its
+  foot_contact steps (26/0 across the footstep tests). The probe found that hero-integration's walk clip has **no
+  footfall markers yet** (characters' M2-CHR-12), so the body never emits, and FootstepAudio stepped only once per
+  `stall_m` (1.6 m). Fixed: after a stall it steps by distance until a contact arrives
+  (test_a_hero_body_without_footfall_markers_still_walks_at_stride). The tests set the controller's `_grounded`,
+  since they run no physics.
+
 ## Review log

@@ -24,14 +24,17 @@ import cw_breach  # noqa: E402
 import cw_common as cw  # noqa: E402
 import cw_fallen  # noqa: E402
 import cw_far  # noqa: E402
+import cw_night  # noqa: E402
 import cw_stair  # noqa: E402
+import cw_story  # noqa: E402
 import cw_town  # noqa: E402
 import cw_wall  # noqa: E402
 import cw_watchers  # noqa: E402
 
 kc = cw.kc
 MAX_GLB_BYTES = 5 * 1024 * 1024  # ADR 0005
-MODULES = (cw_wall, cw_watchers, cw_stair, cw_town, cw_far, cw_breach, cw_fallen)  # the last two: M3-ENV-04B
+# cw_breach, cw_fallen: M3-ENV-04B; cw_story: M3-ENV-707; cw_night: M3-ENV-708
+MODULES = (cw_wall, cw_watchers, cw_stair, cw_town, cw_far, cw_breach, cw_fallen, cw_story, cw_night)
 
 
 def targets() -> dict:

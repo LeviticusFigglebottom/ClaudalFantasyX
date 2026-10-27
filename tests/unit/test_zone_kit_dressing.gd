@@ -91,3 +91,16 @@ func test_the_zone_takes_the_kit_grade_and_lamps_obey_the_fog_rule() -> void:
 	for l: Node in fires:
 		assert_eq((l as OmniLight3D).light_volumetric_fog_energy, 0.0, "fog-lamp rule")
 	_close()
+
+
+func test_a_trimesh_collider_takes_the_lod1_mesh() -> void:
+	var piece := (
+		(load("res://assets/environments/kits/brine_shoals/camp_hard.glb") as PackedScene).instantiate() as Node3D
+	)
+	var body := ZoneKitDressing.trimesh_collider(piece)
+	assert_eq(body.get_child_count(), 1, "one shape: the LOD1, not both LODs")
+	var shape := (body.get_child(0) as CollisionShape3D).shape as ConcavePolygonShape3D
+	assert_true(shape != null and shape.get_faces().size() > 9, "a trimesh with faces")
+	body.free()
+	piece.free()
+	_close()

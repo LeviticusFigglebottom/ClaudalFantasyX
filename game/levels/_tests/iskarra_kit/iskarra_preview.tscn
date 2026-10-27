@@ -1,0 +1,183 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://assets/environments/zones/iskarra/iskarra_city.tscn" id="1_city"]
+[ext_resource type="Script" path="res://game/world/camera_shot.gd" id="2_shot"]
+[ext_resource type="Script" path="res://game/levels/ch02/haluna/haluna_shot_camera.gd" id="3_cam"]
+
+[sub_resource type="Resource" id="ShotP01"]
+script = ExtResource("2_shot")
+id = &"P01"
+position = Vector3(1.5, 3.4, 21)
+look_at = Vector3(-4, 7.5, -40)
+fov_deg = 40
+
+[sub_resource type="Resource" id="ShotI02"]
+script = ExtResource("2_shot")
+id = &"I02"
+position = Vector3(8, 1.9, 6.5)
+look_at = Vector3(-14, 6, -18)
+fov_deg = 50
+
+[sub_resource type="Resource" id="ShotI03"]
+script = ExtResource("2_shot")
+id = &"I03"
+position = Vector3(24, 2.2, -6)
+look_at = Vector3(-4, 5, -58)
+fov_deg = 45
+
+[sub_resource type="ProceduralSkyMaterial" id="Sky_dusk"]
+sky_top_color = Color(0.231, 0.31, 0.478, 1)
+sky_horizon_color = Color(0.949, 0.651, 0.29, 1)
+sky_curve = 0.18
+sky_energy_multiplier = 1.0
+ground_bottom_color = Color(0.055, 0.29, 0.333, 1)
+ground_horizon_color = Color(0.949, 0.651, 0.29, 1)
+sun_angle_max = 12.0
+sun_curve = 0.08
+
+[sub_resource type="Sky" id="Sky_main"]
+sky_material = SubResource("Sky_dusk")
+
+[sub_resource type="Gradient" id="Grade_dusk"]
+offsets = PackedFloat32Array(0, 0.25, 0.5, 0.85, 1)
+colors = PackedColorArray(0, 0.02, 0.03, 1, 0.24, 0.27, 0.27, 1, 0.56, 0.53, 0.5, 1, 0.9, 0.87, 0.82, 1, 1, 0.98, 0.94, 1)
+
+[sub_resource type="GradientTexture1D" id="Grade_dusk_tex"]
+gradient = SubResource("Grade_dusk")
+width = 256
+
+[sub_resource type="Environment" id="Env_dusk"]
+background_mode = 2
+sky = SubResource("Sky_main")
+ambient_light_source = 3
+ambient_light_color = Color(0.165, 0.42, 0.47, 1)
+ambient_light_sky_contribution = 0.3
+tonemap_mode = 4
+tonemap_exposure = 0.85
+glow_enabled = true
+glow_intensity = 0.5
+glow_bloom = 0.08
+fog_enabled = true
+fog_mode = 1
+fog_light_color = Color(0.788, 0.541, 0.353, 1)
+fog_density = 0.3
+fog_sky_affect = 0.2
+fog_depth_begin = 30.0
+fog_depth_end = 220.0
+adjustment_enabled = true
+adjustment_saturation = 1.05
+adjustment_color_correction = SubResource("Grade_dusk_tex")
+
+[sub_resource type="StandardMaterial3D" id="Mat_cloth_sand"]
+albedo_color = Color(0.788, 0.706, 0.557, 1)
+roughness = 0.9
+
+[sub_resource type="StandardMaterial3D" id="Mat_cloth_teal"]
+albedo_color = Color(0.369, 0.604, 0.588, 1)
+roughness = 0.9
+
+[sub_resource type="StandardMaterial3D" id="Mat_cloth_sea"]
+albedo_color = Color(0.235, 0.471, 0.659, 1)
+roughness = 0.9
+
+[sub_resource type="StandardMaterial3D" id="Mat_cloth_indigo"]
+albedo_color = Color(0.169, 0.227, 0.42, 1)
+roughness = 0.9
+
+[sub_resource type="StandardMaterial3D" id="Mat_water"]
+albedo_color = Color(0.055, 0.29, 0.333, 1)
+roughness = 0.08
+metallic_specular = 0.9
+
+[sub_resource type="PlaneMesh" id="Mesh_0"]
+material = SubResource("Mat_water")
+size = Vector2(600, 600)
+
+[sub_resource type="CapsuleMesh" id="Mesh_25"]
+material = SubResource("Mat_cloth_sand")
+radius = 0.3
+height = 1.7
+radial_segments = 12
+rings = 4
+
+[node name="IskarraPreview" type="Node3D"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Env_dusk")
+
+[node name="Sun" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.9439, 0, 0.3304, 0.0163, 0.9988, 0.0466, -0.3299, 0.0493, -0.9427, 0, 20, 0)
+light_color = Color(1, 0.624, 0.275, 1)
+light_energy = 2.2
+shadow_enabled = true
+directional_shadow_max_distance = 120.0
+
+[node name="Rim" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.507, 0, 0.8619, 0.1212, 0.9901, -0.0713, -0.8534, 0.1406, 0.502, 0, 20, 0)
+light_color = Color(0.949, 0.651, 0.29, 1)
+light_energy = 1.4
+
+[node name="Fill" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.6402, 0, -0.7682, -0.5497, 0.6986, -0.4581, 0.5367, 0.7155, 0.4472, 0, 20, 0)
+light_color = Color(0.353, 0.498, 0.659, 1)
+light_energy = 0.35
+
+[node name="Water" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+cast_shadow = 0
+mesh = SubResource("Mesh_0")
+
+[node name="City" parent="." instance=ExtResource("1_city")]
+
+[node name="Vigils" type="Node3D" parent="."]
+
+[node name="Rhen" type="MeshInstance3D" parent="Vigils"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.4, 1.85, -2.6)
+mesh = SubResource("Mesh_25")
+material_override = SubResource("Mat_cloth_teal")
+
+[node name="Asha" type="MeshInstance3D" parent="Vigils"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.6, 1.85, -2.8)
+mesh = SubResource("Mesh_25")
+material_override = SubResource("Mat_cloth_sea")
+
+[node name="Vigil3" type="MeshInstance3D" parent="Vigils"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 1.25, 3.5)
+mesh = SubResource("Mesh_25")
+material_override = SubResource("Mat_cloth_indigo")
+
+[node name="Vigil4" type="MeshInstance3D" parent="Vigils"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.5, 1.25, 1)
+mesh = SubResource("Mesh_25")
+
+[node name="Vigil5" type="MeshInstance3D" parent="Vigils"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13, 1.25, 5.5)
+mesh = SubResource("Mesh_25")
+
+[node name="Vigil6" type="MeshInstance3D" parent="Vigils"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 1.25, 7)
+mesh = SubResource("Mesh_25")
+
+[node name="Vigil7" type="MeshInstance3D" parent="Vigils"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 1.25, 8.5)
+mesh = SubResource("Mesh_25")
+
+[node name="Cameras" type="Node3D" parent="."]
+
+[node name="P01" type="Camera3D" parent="Cameras"]
+near = 0.1
+far = 2000.0
+script = ExtResource("3_cam")
+shot = SubResource("ShotP01")
+
+[node name="I02" type="Camera3D" parent="Cameras"]
+near = 0.1
+far = 2000.0
+script = ExtResource("3_cam")
+shot = SubResource("ShotI02")
+
+[node name="I03" type="Camera3D" parent="Cameras"]
+near = 0.1
+far = 2000.0
+script = ExtResource("3_cam")
+shot = SubResource("ShotI03")

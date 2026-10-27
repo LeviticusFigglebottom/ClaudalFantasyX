@@ -496,6 +496,13 @@ func reserve_rows(engine: BattleEngine) -> Array[Dictionary]:
 	for c in engine.party_reserve:
 		var right := tr("HUD_HP_FMT").format({"hp": c.hp, "max": c.max_hp})
 		rows.append(_row(c.id, display_name(c), right, &"text_dim", c.is_alive()))
+	# M3-UI-100: a hero a set piece keeps out of the fight is listed, greyed, with the reason ("Not with the party").
+	var reason := tr(engine.unavailable_key) if engine.unavailable_key != "" else ""
+	for hid in engine.unavailable:
+		var key := CharacterNames.key_for(
+			hid, str((engine.db.characters.get(hid, {}) as Dictionary).get("name_key", ""))
+		)
+		rows.append(_row(hid, tr(key) if key != "" else String(hid), reason, &"text_dim", false))
 	return rows
 
 
@@ -541,8 +548,17 @@ func swap_in_help(engine: BattleEngine, incoming: BattleCombatant) -> String:
 	return tr("HUD_HELP_SWAP_IN_FMT").format({"name": display_name(incoming), "out": display_name(engine.current)})
 
 
-func swap_out_help(incoming: BattleCombatant) -> String:
-	return tr("HUD_HELP_SWAP_OUT_FMT").format({"name": display_name(incoming)})
+func swap_out_help(incoming: BattleCombatant, engine: BattleEngine = null, out_id: StringName = &"") -> String:
+	var locked := swap_lock_text(engine, out_id) if engine != null else ""
+	return locked if locked != "" else tr("HUD_HELP_SWAP_OUT_FMT").format({"name": display_name(incoming)})
+
+
+## Why `out_id` cannot leave the field this turn (a set piece's lock: "Holding the stair"), or "" (M3-UI-100).
+func swap_lock_text(engine: BattleEngine, out_id: StringName) -> String:
+	if engine.swap_refusal(out_id) != BattleSetPiece.FAIL_LOCKED:
+		return ""
+	var reason := tr(engine.locked_key) if engine.locked_key != "" else tr("HUD_FAIL_GENERIC")
+	return tr("HUD_HELP_SWAP_LOCKED_FMT").format({"name": display_name(engine.find(out_id)), "reason": reason})
 
 
 ## The help line for a refused action: a localized sentence for every engine fail reason, never

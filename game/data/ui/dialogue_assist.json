@@ -8,7 +8,8 @@
     "action": {"dialogue_backlog": {"keys": ["L"], "joy_buttons": [3]}},
     "deadzone": 0.5,
     "subtitles": {"name_variation": "HeaderLabel", "body_variation": "BodyLabel", "backing_role": "panel_low",
-                  "name_role": "focus_gold", "body_role": "text", "speaker_roles": {}}
+                  "name_role": "focus_gold", "body_role": "text", "speaker_roles": {},
+      "voice_over": {"doc": "M2-UI-100: narration and #vo lines read as subtitles. The panel rests height_px tall, bottom_px above the screen edge (the lower letterbox band in a cutscene is 0.11 of 1080 = 119 px), at panel_alpha; the line is outlined outline_px in outline_role at outline_alpha. Spoken lines keep the scene panel.", "panel_alpha": 0.35, "height_px": 136, "bottom_px": 8, "outline_px": 6, "outline_role": "panel_low", "outline_alpha": 0.9}}
   },
   "dialogue_backlog": {
     "doc": "M2-UI-25: the Backlog page (DialogueBacklogPage, a FieldSubmenu: scrim, caustics, the tree paused while open). Rects are x, y, w, h at the 1920 x 1080 reference, multiples of 3. panel: the framed panel with its banner title and help line. list: the scrolled area of lines; each line is the speaker's name (HeaderLabel in focus_gold; none for narration) then its text (BodyLabel), name_gap_px between them and entry_gap_px between lines. It opens scrolled to the latest line. ui_up / ui_down scroll step_px, page keys page_fraction of the list's height, the mouse wheel wheel_px. track: the thin scroll track right of the list (offset_px from its right edge, width_px wide, min_thumb_px the least thumb). dim_alpha darkens everything under the page (the theme's panel_low swatch at that alpha), so the box's own line never reads through the panel. canvas_layer: over the cutscene overlay (32), under the Settings hub (66).",

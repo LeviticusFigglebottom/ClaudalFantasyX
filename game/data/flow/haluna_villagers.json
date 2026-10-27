@@ -1,16 +1,30 @@
 {
-  "doc": "M2-FP-102 (the human's playtest: placeholder villagers): HalunaVillagers (game/levels/ch02/haluna/haluna_villagers.gd) gives each of Haluna's villager bodies a FieldNpc (M3-CRE-610, docs/kb/tech/field_npc.md) with its M2-CHR-03 actor, so they idle out of step, breathe, turn to Rhen and talk instead of standing as capsules. body: the StaticBody3D's path in haluna.tscn (it keeps its collision; the FieldNpc is its child, so night_hide still removes it). npc_id: the npc.json tuning row and the idle phase. actor: the villager's actor scene. talk: the Interactable beside the body (a sibling under the same parent) whose use starts the talk. hide: the stand-in meshes the actor replaces (a row's own hide adds to it). stand_in_for: a body with no model of its own wears another villager's until Character builds one (request M2-CHR-100).",
-  "hide": ["StandIn", "Facing"],
+  "doc": "M2-FP-102/113: the three Haluna villager bodies creatures' VillagerLayer (M3-CRE-613, game/data/world/npc/zones/ch02_haluna.json, the owner of Haluna's villagers) doesn't cover yet: the shopkeeper, smith and innkeeper have no model of their own, so each wears another villager's (stand_in_for) until M2-CHR-100. HalunaVillagers (game/levels/ch02/haluna/haluna_villagers.gd) gives each body a FieldNpc with that actor. body: the StaticBody3D's path in haluna.tscn; talk: its Interactable (a sibling); hide: the stand-in meshes the actor replaces. Move these rows into VillagerLayer's data (request M3-CRE-100) and delete this file once the models exist.",
+  "hide": [
+    "StandIn",
+    "Facing"
+  ],
   "villagers": [
-    {"body": "NPCs/Market/Vendor", "npc_id": "vendor", "actor": "res://assets/characters/villagers/vendor/vendor_actor.tscn", "talk": "Talk"},
-    {"body": "NPCs/Chapel/Reed", "npc_id": "reed", "actor": "res://assets/characters/villagers/reed/reed_actor.tscn", "talk": "Talk", "hide": ["Broom"]},
-    {"body": "NPCs/Dock/Netmender", "npc_id": "netmender", "actor": "res://assets/characters/villagers/netmender/netmender_actor.tscn", "talk": "Talk"},
-    {"body": "NPCs/Dock/Fisher", "npc_id": "fisher", "actor": "res://assets/characters/villagers/fisher/fisher_actor.tscn"},
-    {"body": "NPCs/Lane/Child", "npc_id": "child", "actor": "res://assets/characters/villagers/child/child_actor.tscn", "talk": "Talk"},
-    {"body": "NPCs/Neme/Neme", "npc_id": "neme", "actor": "res://assets/characters/villagers/neme/neme_actor.tscn"},
-    {"body": "NPCs/Osu/Osu", "npc_id": "osu", "actor": "res://assets/characters/villagers/osu/osu_actor.tscn", "talk": "Talk"},
-    {"body": "NPCs/Town/Shopkeeper", "npc_id": "shopkeeper", "actor": "res://assets/characters/villagers/netmender/netmender_actor.tscn", "talk": "ShopkeeperTalk", "stand_in_for": "netmender"},
-    {"body": "NPCs/Town/Smith", "npc_id": "smith", "actor": "res://assets/characters/villagers/fisher/fisher_actor.tscn", "talk": "SmithTalk", "stand_in_for": "fisher"},
-    {"body": "NPCs/Town/Innkeeper", "npc_id": "innkeeper", "actor": "res://assets/characters/villagers/vendor/vendor_actor.tscn", "talk": "InnkeeperTalk", "stand_in_for": "vendor"}
+    {
+      "body": "NPCs/Town/Shopkeeper",
+      "npc_id": "shopkeeper",
+      "actor": "res://assets/characters/villagers/netmender/netmender_actor.tscn",
+      "talk": "ShopkeeperTalk",
+      "stand_in_for": "netmender"
+    },
+    {
+      "body": "NPCs/Town/Smith",
+      "npc_id": "smith",
+      "actor": "res://assets/characters/villagers/fisher/fisher_actor.tscn",
+      "talk": "SmithTalk",
+      "stand_in_for": "fisher"
+    },
+    {
+      "body": "NPCs/Town/Innkeeper",
+      "npc_id": "innkeeper",
+      "actor": "res://assets/characters/villagers/vendor/vendor_actor.tscn",
+      "talk": "InnkeeperTalk",
+      "stand_in_for": "vendor"
+    }
   ]
 }

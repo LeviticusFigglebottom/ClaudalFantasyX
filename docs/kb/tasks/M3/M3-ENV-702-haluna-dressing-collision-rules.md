@@ -25,7 +25,7 @@ M3-ENV-701 added set dressing to `haluna_layout.json` (env-art owns it). `Haluna
   - `laundry_line`: two post cylinders would be ideal; `{"shape": "none"}` is fine (the cloths hang above head
     height on the 4 m span).
   - Boxes (the default) are right for `crate_stack`, `cargo_sacks`, `woodpile`, `yard_fence`,
-    `shrine_offering`, `pot_plants`, `water_jar`, `basket_set`, `market_stall`, `fish_drying_rack`,
+    `wayside_offering`, `pot_plants`, `water_jar`, `basket_set`, `market_stall`, `fish_drying_rack`,
     `oil_lamp_post`, `coral_boulder_*`, `pilgrim_marker_post*` and `wreck_rib`.
 - [ ] A walk check: the lane 1 clutter leaves a 3 m path, the yard fences leave a 1.8 m gap on each door path,
       and the dock's end platform keeps its walkway.
