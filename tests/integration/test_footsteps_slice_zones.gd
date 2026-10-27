@@ -116,6 +116,8 @@ func test_a_walk_in_haluna_steps_from_the_hero_bodys_foot_contacts() -> void:
 	var f := _listener(HALUNA)
 	var added := _ensure_markers(body)
 	body.call(&"snap")
+	# _load turns the controller's physics off, so it never measures its floor: stand it on the sand.
+	player.set(&"_grounded", true)
 	player.global_position = _marker("Village")
 	# The test runs no physics, so the controller never lands; contacts off the ground are rightly ignored. The
 	# floor would set this on the first step in play.

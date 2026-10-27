@@ -130,7 +130,10 @@ func _render_creature(entry: Dictionary, out_name: String) -> String:
 	world.name = &"CreatureWorld"
 	var we := WorldEnvironment.new()
 	var env := Environment.new()
-	var env_d: Dictionary = stage.get("environment", {})
+	# An entry's own `environment` keys override the stage's (a glossy black creature reflects a cool backdrop).
+	var env_d: Dictionary = (stage.get("environment", {}) as Dictionary).merged(
+		entry.get("stage_environment", {}), true
+	)
 	for key: String in env_d:
 		var v: Variant = _value(env_d[key])
 		env.set(key, int(v) if typeof(env.get(key)) == TYPE_INT else v)
@@ -143,6 +146,9 @@ func _render_creature(entry: Dictionary, out_name: String) -> String:
 	var cfg: Dictionary = CreatureActor.row_for(actor.creature_id).get("portrait", {})
 	cfg = cfg.merged(entry.get("portrait", {}), true)
 	var lights: Array = stage.get("lights", [])
+	# A glossy black creature melts into the dark-blue panel: its entry raises some lights (light_scale: a
+	# multiplier per light-name prefix, such as {"rim": 4.0}).
+	var light_scale: Dictionary = entry.get("light_scale", {})
 	var prepare := func() -> void:
 		CreatureFraming.hold(actor, StringName(str(cfg.get("clip", "idle"))), float(cfg.get("clip_time", 0.0)))
 		CreatureFraming.frame_fit(
@@ -154,20 +160,24 @@ func _render_creature(entry: Dictionary, out_name: String) -> String:
 			float(cfg.get("margin", 1.0))
 		)
 		for l: Dictionary in lights:
-			world.add_child(_light(l, float(cfg.get("yaw_deg", 0.0))))
+			var scale := 1.0
+			for prefix: String in light_scale:
+				if str(l.get("name", "")).begins_with(prefix):
+					scale = float(light_scale[prefix])
+			world.add_child(_light(l, float(cfg.get("yaw_deg", 0.0)), scale))
 	return await _capture(world, cam, entry, out_name, prepare)
 
 
 ## A directional light from the manifest: yaw_deg is relative to the camera's yaw (0 = from the camera's
-## side, 180 = from behind the creature), pitch_deg above the horizon.
-static func _light(d: Dictionary, camera_yaw_deg: float) -> DirectionalLight3D:
+## side, 180 = from behind the creature), pitch_deg above the horizon; its energy times `energy_scale`.
+static func _light(d: Dictionary, camera_yaw_deg: float, energy_scale: float = 1.0) -> DirectionalLight3D:
 	var light := DirectionalLight3D.new()
 	var yaw := deg_to_rad(camera_yaw_deg + float(d.get("yaw_deg", 0.0)))
 	var pitch := deg_to_rad(float(d.get("pitch_deg", 0.0)))
 	var from := Vector3(sin(yaw) * cos(pitch), sin(pitch), cos(yaw) * cos(pitch))
 	light.basis = Basis.looking_at(-from, Vector3.UP if absf(from.y) < 0.99 else Vector3.FORWARD)
 	light.light_color = _value(d.get("color", [1.0, 1.0, 1.0])) as Color
-	light.light_energy = float(d.get("energy", 1.0))
+	light.light_energy = float(d.get("energy", 1.0)) * energy_scale
 	light.shadow_enabled = bool(d.get("shadow", false))
 	return light
 

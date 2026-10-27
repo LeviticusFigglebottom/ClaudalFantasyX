@@ -6,7 +6,8 @@ extends RefCounted
 ##   - FAIL "overflows": the text's ink (where its glyphs land, after the label grows to its
 ##     minimum size the way a frame would grow it) leaves its box: the nearest Panel,
 ##     PanelContainer or NinePatchRect around it (an ancestor, else the smallest one on the screen
-##     that holds the label's centre: menus draw their panels as siblings of their labels), every
+##     that holds the label's whole designed rect, else its centre: menus draw their panels as siblings
+##     of their labels), every
 ##     clipping ancestor (a ScrollContainer only across its scroll), and the 1920 x 1080 reference.
 ##   - FAIL "clipped": text cut with no sign of it: clip_text with no ellipsis, a wrapped label
 ##     whose max_lines_visible hides lines with no ellipsis, a RichTextLabel that hides lines it
@@ -346,7 +347,10 @@ func _box_for(c: Control) -> Rect2:
 				scrolled = scrolled.max(s)
 		n = n.get_parent()
 	if panel == null:
-		panel = _smallest_box_around((_designed.get(c, rect_of(c)) as Rect2).get_center(), c)
+		var designed: Rect2 = _designed.get(c, rect_of(c))
+		panel = _smallest_box_holding(designed, c)
+		if panel == null:
+			panel = _smallest_box_around(designed.get_center(), c)
 	if panel != null:
 		box = _clip(box, rect_of(panel), scrolled)  # a scrolled line may pass its panel's edge too
 	return box
@@ -391,6 +395,22 @@ static func _clip(box: Rect2, by: Rect2, scrolls: Vector2i) -> Rect2:
 		out.position.x = box.position.x
 		out.size.x = box.size.x
 	return out
+
+
+## The smallest panel on the screen whose designed rect holds all of `r` (not `c`'s own descendant). A
+## small panel laid over part of a wide label's row (the Lattice title bar's Whole board button, M3-MNU-04)
+## is not that label's box, though it holds the label's centre.
+func _smallest_box_holding(r: Rect2, c: Control) -> Control:
+	var best: Control = null
+	var best_area := INF
+	for b in _boxes:
+		if b == c or not is_instance_valid(b) or not _shown(b) or c.is_ancestor_of(b):
+			continue
+		var br: Rect2 = _designed.get(b, rect_of(b))
+		if br.encloses(r) and br.get_area() < best_area:
+			best = b
+			best_area = br.get_area()
+	return best
 
 
 ## The smallest panel on the screen whose designed rect holds `at` (not `c`'s own descendant).

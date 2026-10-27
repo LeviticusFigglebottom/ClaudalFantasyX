@@ -57,6 +57,7 @@ CutsceneStage (director_path, player_path)
 | `@music track [fade]` | Plays `music_dir/<track>.ogg`, or its `music_stand_ins` row (placeholders until Audio ships the cues). `silence` fades out. |
 | `@sfx sound [vol]` | One-shot from `sfx_dir`. `at=` is ignored for now (2D). |
 | `@vfx effect [at] [count]` | `CutsceneMotes` at the mark or actor. `drift`, `motion` and `rate` come from the effect's row for now. |
+| `@light name on\|off [sec]` | Finds a `Light3D` named `name` anywhere under the stage (Rhen's `LanternLight` rides his body) and eases its energy on `light_ease` to the energy it was authored with, or to 0. The prologue lights his lantern as the line lands. |
 | lines | The `DialogueBox` shows the line; `ui_accept` (or the field's interact key) skips the reveal, then advances. The speaker's `[emotion]` blends their face like `@face`, `DialogueBox.mouth_flap` drives the `lip_flap` shapes (visemes), and the speaker's `talk` clip plays (then `idle`) when the rig has them. |
 | options | `CutsceneChoices` over the box; the pick goes to `runner.choose()`. |
 
@@ -152,3 +153,26 @@ The human's playtest said cutscene turns snapped and walks started and stopped a
 - **Stand-in clip marks:** the actor glides onto the mark over `standin_glide_sec`, eased, instead of appearing there.
 
 Skipping and `instant` still land every motion at once. The hero integration track's clip blending (its AnimationTree) replaces `clip_blend_sec` for the heroes once it lands.
+
+### Hero bodies and fades (M2-HER-1104, M2-FP-102)
+- **Hero bodies:** the sequencer applies hero-integration's patch (`docs/kb/tech/hero_motion_sequencer.patch`). Every clip goes through `HeroMotion.play`: a hero body's `play_clip` (its AnimationTree) takes it, else the actor's AnimationPlayer. A walk reports the speed its root actually covers each frame (`HeroMotion.set_locomotion_speed`), so the gait blend follows the ramps above and the feet stop sliding; a `@mark ... run` sets off at `run_mps` and arrival sets 0. Every cast member on the stage gets `HeroIdleMicro` (breathing, a weight shift, a head that leads its turns); a capsule stand-in gets nothing. `walk_mps` is 1.0, the speed at which the field walk clip's feet plant.
+- **Fades and the letterbox** ease in and out on `fade_ease` / `letterbox_ease` (Godot's `ease()`, negative = in-out) instead of a linear ramp, so a scene never pops to or from black.
+
+## Viewing a cutscene (M2-FP-102)
+`tools/cutscene_frames/cutscene_frames.tscn` renders a location's arrival beat or cutscene to PNG frames, so it can be looked at frame by frame (on lavapipe, about 30 s of game time takes 10 minutes):
+
+```bash
+XDG_DATA_HOME=$SCRATCH/xdg godot-render --path . --audio-driver Dummy --fixed-fps 30 --resolution 960x540 \
+  res://tools/cutscene_frames/cutscene_frames.tscn -- --location=ch02/haluna --spawn=Beach \
+  --flags=prologue_seen --every=1.0 --max-sec=150 --out=$SCRATCH/frames/beach [--choice=0]
+```
+
+It travels through `SceneRouter.world_return` as the game does, with only `--flags` set. Dialogue advances by itself (the Accessibility auto-advance), every choice takes option `--choice`, and nothing is saved. It writes `f_<tenths of a second>.png` every `--every` seconds of game time, plus `lines.txt` with the time each line and choice appeared.
+
+### Held poses and clip stand-ins (M2-FP-103)
+The playtest found a kneeling Asha standing up for her first line: every line plays the speaker's `talk` clip, and since the hero bodies arrived a one-shot clip also returns to standing locomotion when it ends.
+- **Held poses:** an `@anim` of a clip in `sequencer.json` `hold_clips` (kneel_over_rhen, laugh, offer_hand, spear_level, sit_steps and the like) is a pose. A hero body plays it with `play_clip(..., hold = true)`, and the actor's lines don't play `talk` or `idle` over it, until that actor's next `@anim` or `@mark`. Any other `@anim` is a gesture: afterwards, lines play `talk` and `idle` again.
+- **Clip stand-ins:** `clip_stand_ins` is keyed `"<actor>/<clip>"`. While the actor's rig lacks a requested clip (`assets_src/characters/requested_clips.json`), the sequencer plays the named stand-in that the rig does have. The real clip plays as soon as it is built. Rhen's beach clips (`lie_in_shallows`, `sit_up`, `sit_in_shallows`) stand in as his kneel, so he is half risen in the shallows rather than standing; `stand_unsteady` stands in as his `rise_to_stand`. A requested clip with no stand-in is still skipped.
+
+### Camera breath (M2-FP-104)
+Once the director has landed a scripted shot, `CutsceneCameraBreath` turns the camera by a slow sum of sines about its own axes: about 0.2° of yaw and 0.14° of pitch over periods of 7 to 14 s, easing in over `ramp_sec`. It reads as an operator's hand on a fluid head, never a shake. A cut, a blend, a skip or the hand-back to the field resets it. The sequencer processes after the director (priority 10), so it turns the pose the director has just set and nothing accumulates. It is deterministic (no rng). Tuning: `sequencer.json` `camera_breath` (`enabled: false` turns it off).

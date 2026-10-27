@@ -1,0 +1,119 @@
+{
+  "_doc": "The Brine Shoals: shore crabs in clusters on the mud-flats west of the ridges and on the tideline below the camp's high hull; gulls work the wreck-ridges and stand on the wrecks (the Lit Age wreck top 2.4, the chalk hull 2.0, the hold hull 2.0) and the tide-wheel (4.0). No water in the greybox, so no fish. Placed on the greybox layout (M3-CRE-615); move the coordinates when env-art's kit replaces the blocks (same keys as ch02_haluna.json).",
+  "zone": "ch06/brine_shoals",
+  "flocks": [
+    {
+      "id": "south_wrecks",
+      "center": [
+        2.0,
+        40.0
+      ],
+      "radius_m": 22.0,
+      "altitude_m": [
+        6.0,
+        12.0
+      ],
+      "count": 3,
+      "perched_at_start": 1,
+      "perches": [
+        [
+          6.0,
+          2.4,
+          52.0,
+          0.0
+        ],
+        [
+          6.0,
+          2.4,
+          58.0,
+          180.0
+        ]
+      ]
+    },
+    {
+      "id": "camp_wrecks",
+      "center": [
+        4.0,
+        -20.0
+      ],
+      "radius_m": 20.0,
+      "altitude_m": [
+        6.0,
+        13.0
+      ],
+      "count": 3,
+      "perched_at_start": 2,
+      "perches": [
+        [
+          5.0,
+          2.0,
+          -4.0,
+          90.0
+        ],
+        [
+          5.5,
+          2.0,
+          -15.0,
+          -90.0
+        ],
+        [
+          4.5,
+          2.0,
+          -19.0,
+          90.0
+        ],
+        [
+          9.0,
+          4.0,
+          -35.0,
+          0.0
+        ]
+      ]
+    }
+  ],
+  "beaches": [
+    {
+      "id": "flats_south",
+      "center": [
+        -26.0,
+        48.0
+      ],
+      "half_extents": [
+        3.0,
+        4.5
+      ],
+      "yaw_deg": 0.0,
+      "y": 0.0,
+      "count": 8
+    },
+    {
+      "id": "flats_north",
+      "center": [
+        -26.0,
+        14.0
+      ],
+      "half_extents": [
+        3.5,
+        4.0
+      ],
+      "yaw_deg": 0.0,
+      "y": 0.0,
+      "count": 6
+    },
+    {
+      "id": "tideline",
+      "center": [
+        18.0,
+        -58.0
+      ],
+      "half_extents": [
+        4.0,
+        2.4
+      ],
+      "yaw_deg": 0.0,
+      "y": 0.0,
+      "count": 4
+    }
+  ],
+  "shoals": []
+}
