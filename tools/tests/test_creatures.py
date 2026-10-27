@@ -107,6 +107,19 @@ class ValidatorTest(unittest.TestCase):
         cr["creatures"]["ilun"]["vowbound"] = False
         self.assertEqual(errs(cr), [], "false is a plain creature row")
 
+    def test_a_stand_in_may_give_its_height_and_radius(self) -> None:
+        """M3-CRE-640: Kahre has no battle_sandbox.json row, so his creatures.json stand_in gives the height the VFX
+        anchors are fractions of, and the ring's radius."""
+        st = self.creatures["creatures"]["kahre"]["stand_in"]
+        self.assertGreater(st["height"], 3.0)
+        self.assertGreater(st["radius"], 0.3)
+        cr = copy.deepcopy(self.creatures)
+        cr["creatures"]["kahre"]["stand_in"]["height"] = 0
+        cr["creatures"]["kahre"]["stand_in"]["radius"] = "wide"
+        got = vc.creature_errors(cr, self.enemies, self.skills, lambda p: True)
+        self.assertTrue(any("kahre.stand_in.height: must be a number > 0" in x for x in got), got)
+        self.assertTrue(any("kahre.stand_in.radius: must be a number > 0" in x for x in got), got)
+
     def test_two_rows_cannot_share_a_scene(self) -> None:
         cr = copy.deepcopy(self.creatures)
         first = next(iter(cr["creatures"].values()))
