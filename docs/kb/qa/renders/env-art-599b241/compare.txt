@@ -1,0 +1,7 @@
+FAIL battle_arena_seawall_stairhead_storm: no baseline (inspect out/, then compare.py --update-baselines battle_arena_seawall_stairhead_storm)
+FAIL battle_arena_seawall_stairhead_hoist: no baseline (inspect out/, then compare.py --update-baselines battle_arena_seawall_stairhead_hoist)
+FAIL battle_arena_seawall_stairhead_surge: no baseline (inspect out/, then compare.py --update-baselines battle_arena_seawall_stairhead_surge)
+FAIL battle_arena_coilspire_headland_path: no baseline (inspect out/, then compare.py --update-baselines battle_arena_coilspire_headland_path)
+FAIL battle_arena_coilspire_tier_landing: no baseline (inspect out/, then compare.py --update-baselines battle_arena_coilspire_tier_landing)
+Screenshots: 5 compared, 5 failed (diffs in /root/hymn/tests/screenshots/out/diff)
+compare exit 1
