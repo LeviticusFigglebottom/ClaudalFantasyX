@@ -42,3 +42,5 @@ grade and lift the frames that read grey, without breaking each zone's colour-sc
   - **New piece** `flank_rocks`: basalt boulders, scree, dry scrub and ash lenses.
   - **Placement:** 36 patches on the gentler ground round the harbour (`pemakar_layout.py`, FLANK_PATCHES), clear
     of the tiers, the quay and the sea.
+- **2026-10-27 (env-art): Lowlight's piers.** In 43492e8's render they read as plain blocks. Each now has a sunk
+  panel on every face, a copper conduit band, and a stepped capital (`_pier_trim`).

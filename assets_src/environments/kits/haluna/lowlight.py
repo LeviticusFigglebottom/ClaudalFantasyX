@@ -104,6 +104,23 @@ def _slab(mb, x0, x1, z0, z1, y_top, thick, mat, rng, noise, *, flag=None, lod=F
         z += w
 
 
+def _pier_trim(mb, x, z, y0: float, y1: float, half: float, lod: bool) -> None:
+    """A pier's articulation (M3-ENV-705 audit: the hall's piers read as plain blocks): a sunk panel on each face
+    (a dark reveal in a ceramic frame), a copper conduit band a third of the way up, and a stepped capital."""
+    if lod:
+        return
+    dark, copper, cer = mb.material(M_DARK), mb.material(M_COPPER), mb.material(M_CERAMIC)
+    h = y1 - y0
+    for nx, nz in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+        c = (x + nx * (half + 0.004), y0 + h * 0.55, z + nz * (half + 0.004))
+        hs = (0.006, h * 0.28, half * 0.55) if nx else (half * 0.55, h * 0.28, 0.006)
+        kc.rounded_block(mb, c, hs, dark, radius=0.0, seg=1)
+    band_y = y0 + h * 0.3
+    kc.rounded_block(mb, (x, band_y, z), (half + 0.05, 0.09, half + 0.05), copper, radius=0.02, seg=1)
+    for k, (dy, grow) in enumerate(((0.0, 0.08), (0.16, 0.16))):
+        kc.rounded_block(mb, (x, y1 - 0.1 + dy, z), (half + grow, 0.08, half + grow), cer, radius=0.02, seg=1)
+
+
 def _pier(mb, x, z, rng, noise, lod):
     kc.rounded_block(mb, (x, FLOOR_Y + 0.45, z), (0.85, 0.45, 0.85), mb.material(M_STONE), radius=0.06, seg=1,
                      weather=STONE, variation=float(rng.random()))
@@ -111,6 +128,7 @@ def _pier(mb, x, z, rng, noise, lod):
                      mb.material(M_CERAMIC), radius=0.08, seg=1 if lod else 2, noise=None if lod else noise,
                      disp_m=0.02, weather=CERAMIC, variation=float(rng.random()))
     kc.rounded_block(mb, (x, 7.4, z), (0.85, 0.2, 0.85), mb.material(M_STONE), radius=0.05, seg=1, weather=STONE)
+    _pier_trim(mb, x, z, FLOOR_Y + 0.9, 7.2, 0.62, lod)
 
 
 def _walls(mb, rng, noise, lod):
@@ -402,6 +420,7 @@ def _pier_at(mb, x, z, rng, noise, lod) -> None:
                      mb.material(M_CERAMIC), radius=0.08, seg=1 if lod else 2, noise=None if lod else noise,
                      disp_m=0.02, weather=CERAMIC, variation=float(rng.random()))
     kc.rounded_block(mb, (x, top + 0.18, z), (0.8, 0.18, 0.8), mb.material(M_STONE), radius=0.05, seg=1, weather=STONE)
+    _pier_trim(mb, x, z, NAVE_FLOOR_Y + 1.1, top, 0.58, lod)
 
 
 WELL_R = 3.5

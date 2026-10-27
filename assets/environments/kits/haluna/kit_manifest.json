@@ -359,9 +359,9 @@
         34000,
         2400
       ],
-      "bytes": 679460,
+      "bytes": 748012,
       "lods": {
-        "engine_hall": 7140,
+        "engine_hall": 7812,
         "engine_hall-lod1": 480
       }
     },
@@ -920,9 +920,9 @@
         24000,
         1500
       ],
-      "bytes": 321616,
+      "bytes": 355932,
       "lods": {
-        "lowlight_nave_bay": 4380,
+        "lowlight_nave_bay": 4716,
         "lowlight_nave_bay-lod1": 412
       }
     },
@@ -931,9 +931,9 @@
         24000,
         1500
       ],
-      "bytes": 332552,
+      "bytes": 366872,
       "lods": {
-        "lowlight_nave_bay_broken": 4420,
+        "lowlight_nave_bay_broken": 4756,
         "lowlight_nave_bay_broken-lod1": 406
       }
     },
