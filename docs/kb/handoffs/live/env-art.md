@@ -311,6 +311,14 @@ env-art is cloud session `session_01YbaV2c8yquRHqj6afQYg89` on `claude/env-art`;
   is pulled back so Kerrid at (9.5, −5.5) stands on paving, and the test checks the stand-in vigils that remain, with
   the reason in the assert (M2-FP-103's real cast replaced the rest). Checks run: haluna_kit full rebuild (older
   pieces identical), `test_save_shrine_kit` 5, `test_haluna_kit`, validate_data.
+- **MERGE-READY @ 85309570: M3-AUD-811** (audio's request, to review): Haluna's footstep surfaces.
+  - HalunaDresser builds Area3Ds in `footstep_surface` from the layout's new `footstep_surfaces` key: the dock is
+    wood (priority 2) and the lagoon below mean sea level is water (priority 1).
+  - The areas sense nothing and sit under a plain `FootstepSurfaces` Node, outside HalunaCollision's pieces.
+  - The causeway's pools are slice-polish's scene (note in the task).
+
+  Checks run: Godot `--filter=haluna` 61/0 (with the new `test_haluna_footstep_surfaces.gd`), `test_haluna_dressing`,
+  gdlint/gdformat, taskboard. No shot shows the areas: they are invisible.
 
 ### Render requests
 RENDER-REQUEST @ a0d2549f: battle_arena_tideline_dawn,battle_arena_causeway_disc_sunset,battle_arena_causeway,battle_arena_tideline,causeway_c02_profile_against_the_lagoon,causeway_c08_drownbell_disc_approach,drownbell_flood,battle_boss_intro_drownbell,haluna_h01_village_from_sea,haluna_h10_dock_night,field_objective_line,field_interact_prompt,field_area_title,field_tip_card,dialogue_continue; why: M3-ENV-701 set dressing in Haluna, the causeway and the two arenas (the five field/dialogue shots frame Haluna's lane 1)
