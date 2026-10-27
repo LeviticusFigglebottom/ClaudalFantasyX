@@ -322,6 +322,8 @@ ACT3_FINALS: list[tuple] = [
     ("assets_src/music/act3/dace_ledger.py", "assets/audio/music/act3", ["dace_ledger.ogg"], "music"),
     ("assets_src/music/act3/the_kite.py", "assets/audio/music/act3", ["the_kite.ogg", "the_kite.loop.json"], "music_loop"),
     ("assets_src/music/act3/kite_maiden_flight.py", "assets/audio/music/act3", ["kite_maiden_flight.ogg"], "music"),
+    ("assets_src/music/act3/iskarra_ruins.py", "assets/audio/music/act3", ["iskarra_ruins.ogg", "iskarra_ruins.loop.json"], "music_loop"),
+    ("assets_src/music/act3/iskarra_spire.py", "assets/audio/music/act3", ["iskarra_spire.ogg", "iskarra_spire.loop.json"], "music_loop"),
 ]
 ACT3_DIR = "assets/audio/music/act3"
 # M3-AUD-859: Act III's SFX the same way (plain git has about 0.5 MiB of its budget left): assets_src/sfx/act3/ ->
