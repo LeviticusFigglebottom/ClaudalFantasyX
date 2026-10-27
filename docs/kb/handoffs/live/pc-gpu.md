@@ -8,10 +8,61 @@ record. The newest copy is on the most recently pushed `gpu/*` branch.
 > `session_01DKdurcvrzq9PEvuSu5L2nA`, which died when the PC was switched off mid-gate). The Lead is
 > cloud session `session_018aiGwGLGkxsnMnu8VfCu1m`. The integration branch is now
 > **`claude/undertow-lead-handoff-ze8rrn`** (-423ixt is frozen).
-> **This copy, on `gpu/shrine-gi-big12`, is the newest.**
+> **This copy, on `gpu/render-creatures-fce2e82`, is the newest.**
+
+## PAUSED @ 2026-10-27 17:29 EDT (the Lead's instruction, from the human)
+
+No job of this session is running. WSL `hymn` is idle: the batch (PIDs 302 and 20150, both mine) was stopped after creatures fce2e82b finished, and `PAUSED` is the last line of /root/renders/batch.log. No gate, benchmark or Blender job is running.
+
+**Done since the session began (all pushed):**
+- The big11 gate.
+- The big12 gate (`gpu/gate-big12-shots`, merged as e930595c).
+- The Shell Shrine GI rebake on big12 (`gpu/shrine-gi-big12`).
+- M2-NIT-904, the import exit-code and DONE check (`gpu/m2-nit-904-import-exit-check`; /root/gate.sh and /root/render_batch.sh are installed with it).
+- M3-RND-03, implemented and checked on lavapipe (`gpu/m3-rnd-03-sefir-tells` @ c3fd1eb4; the 4 revenant_tells_* baselines are to be approved after viewing).
+- M1-QA-09 on hardware (`gpu/m1-qa-09-heroes`).
+- The M2-CHR-11 verify.
+- Render queues 2–4 up to creatures fce2e82b, all listed as RENDERED below.
+
+**Interrupted:** nothing mid-capture. The rest of queue 4 never started.
+
+**Open render requests (unrendered, oldest first; the FAST-TRACK first):**
+- the rest of queue 4: battle-presentation 5a5b4fed, env-art 60eee2f7, characters ee3bd335, env-art 29ddd021;
+- queue 5 (new at the 17:00 scan): **hero-integration 7a8bff79 (FAST-TRACK)**, act1-chapters 9ccd51b2, env-art c990e2c2,
+  m2-slice ca7c8ede, creatures db3c9507, ui da7891cf, battle-presentation ed3a458e, env-art 191e5e89, env-art ab58f891.
+- Skipped as answered: 44a7d65c and 3fddb67b (both ancestors of big12, so its gate rendered them) and 12 older requests whose
+  shots a later request covers (5a3f9a37, faa61872, 24bf927a, fa67bfee, f21fba5f, ba49617a, 05f6abc9, 9ba01356, dcc68922,
+  32f33a75, b35e17c1, 5ff54f27). The audio and ze8rrn rows in render_scan's output mirror other tracks' lines.
+
+**Hardware queue, not started:**
+- The slice `--budget` re-sweep (ADR 0029/0037) is ready. The worktree is C:/Users/Aaron/hymn_budget, detached at integration 7f355a8f. It runs cold launches at High and Low with `--export` through tools/gpu_bench/run_cold_launch.sh, then the whole thread warm at High with `--budget`. The script is budget.sh in the session scratchpad.
+- Then the Act I playthrough (F8 chapter select; Ch1 and Ch4–Ch9; findings as tasks 900–999).
+
+**Exact next step on resume:**
+1. `git fetch`, then re-run render_scan.py (requests may have arrived while paused).
+2. Render the hero-integration 7a8bff79 fast-track first, then the open list above, oldest first, with /root/render_batch.sh.
+3. Publish with render_publish.sh.
+4. Then the budget re-sweep on the integration head of that day (re-point hymn_budget), and then the Act I playthrough.
 
 ## Renders for the tracks (RENDERED lines, newest first)
 
+- RENDERED @ fce2e82b: gpu/render-creatures-fce2e82; 41 pass, 60 drift
+- RENDERED @ 43492e80: gpu/render-env-art-43492e8; 0 pass, 1 drift
+- RENDERED @ 121362b3: gpu/render-ui-121362b; 1 pass, 1 drift
+- RENDERED @ 854e6a95: gpu/render-env-art-854e6a9; 1 pass, 4 drift
+- RENDERED @ db0819b2: gpu/render-battle-presentation-db0819b; 18 pass, 27 drift
+- RENDERED @ a195cd39: gpu/render-ui-a195cd3; 0 pass, 1 drift
+- RENDERED @ 95be6118: gpu/render-env-art-95be611; 0 pass, 1 drift
+- RENDERED @ 17b0601f: gpu/render-m2-slice-17b0601; 0 pass, 7 drift
+- RENDERED @ 94fe8f77: gpu/render-env-art-94fe8f7; 0 pass, 3 drift
+- RENDERED @ 26755f97: gpu/render-ui-26755f9; 2 pass, 0 drift
+- RENDERED @ fd630bb8: gpu/render-env-art-fd630bb; 1 pass, 2 drift
+- RENDERED @ 17325e00: gpu/render-ui-17325e0; 8 pass, 4 drift
+- RENDERED @ 7f56d643: gpu/render-characters-7f56d64; 0 pass, 5 drift
+- RENDERED @ 599b2418: gpu/render-env-art-599b241; 0 pass, 5 drift
+- RENDERED @ c0ee5230: gpu/render-act1-chapters-c0ee523; 5 pass, 9 drift
+- RENDERED @ d4430397: gpu/render-hero-integration-d443039; 0 pass, 6 drift
+- RENDERED @ c1d1e3e6: gpu/render-battle-presentation-c1d1e3e; 2 pass, 4 drift
 - **Shell Shrine GI rebaked on lead/gate-big12 @ 8a28be17** (the Lead's ask; test_shrine_gi_bake failed there): gpu/shrine-gi-big12,
   both states OK (1.56 s each, ~930 KB), gi_inputs.py --write; test_shrine_gi_bake passes. A first attempt ran on a silently
   aborted import (150 KB bake): the import retry now checks the exit code and the final DONE line (M2-NIT-904).
@@ -52,6 +103,15 @@ record. The newest copy is on the most recently pushed `gpu/*` branch.
 
 ## Gate results (newest first)
 
+- **GATE lead/gate-big12@8a28be17: FAIL (2 Godot failures = the cloud's, 3 tools failures, drift + 31 new shots; Lead to view).**
+  Godot 2820/2: test_creature_portraits (the 4 new creatures "have a portrait in the manifest") and
+  test_footsteps_slice_zones causeway tidepool (water expected, stone got). Coverage and boot not reached (ci_local stops
+  there). Tools: test_screenshots (31 shots without baselines, not 41), test_iskarra (3 vigils on the paving, want >= 7),
+  test_shrine_gi_bake (rebaked: gpu/shrine-gi-big12). Blender: 28/28 identical (asha, rhen, toma, sefir, ysolde, 9 villagers,
+  kits, creatures). Shots: 341 compared, 111 failed = 31 no baseline + 57 newly failing (Asha/Toma/Rhen clips and views,
+  the battle UI shots, strips, creature_portraits, shrine_s01, haluna h01/h04, vigil_line/voice_over) + 23 repeats
+  (arenas camp/shoals re-dressed ~0.1, choreo, inquisitor intro 0.164); 20 of big11's failures pass now. The shutdown
+  `Trying to cast a freed object` (life_audio.gd:124) now follows 19 shots. `docs/kb/qa/gate-runs/big12/` on `gpu/gate-big12-shots`.
 - **GATE lead/gate-big11@23ea8c6f: FAIL (expected drift + a new shutdown script error; Lead to view).** Godot 2738/0,
   coverage and boot ok. Tools: the known test_shrine_gi_bake failure (lane A re-run with it non-fatal). Blender: 13/13
   identical (base ze8rrn). Shots: 303 compared, 43 failed: 7 new shots, 5 Haluna-villager field/dialogue shots,
@@ -73,11 +133,15 @@ record. The newest copy is on the most recently pushed `gpu/*` branch.
 
 ## Hardware queue results (newest first)
 
+- **M3-RND-03 lavapipe check (2026-10-27):** gpu/m3-rnd-03-sefir-tells @ 02d1fa52, 4 shots without baselines,
+  `docs/kb/qa/gpu/2026-10-27-m3-rnd-03-lavapipe/`. With the tells on, Sefir's shadow edges are crisper and a tighter contact
+  line runs along his hem. There's no double lighting and no black shadow. His reflection holds its outline (subtle with this
+  test wave). Asha is unchanged. Rendering, env-art and art should view the shots and approve the baselines.
 - **M2-CHR-11 verify (2026-10-27):** claude/characters @ 3723f3eb (incl. 20773234), AVX2 i9-12900K: base_body, rhen, toma
   and 9 villagers 12/12 identical (664 s). Reported to the Lead and characters.
-- **In progress (2026-10-27 ~15:00):** the render queue (21 jobs: the BPR-404 fast-track, the three black re-renders, then
-  oldest first, then the RND-03 lavapipe check), big12 when pushed
-  (it jumps the queue), the ui portraits @ 99623a0c (render.sh) and m2-slice @ 4ce8a48a (GI bake).
+- **Was in progress before the pause (2026-10-27 ~17:00):** render queue 4 (22 jobs: the fast-tracks c1d1e3e6 and d4430397 are rendered and
+  being published, then the RND-03 lavapipe check 02d1fa52, then oldest first). Next: the slice `--budget` re-sweep, then
+  the Act I playthrough (never during a render).
 - **M1-QA-09 on hardware (heroes, 2026-10-27):** 49 shots at High 2× and Ultra on ze8rrn@f580e756, `gpu/m1-qa-09-heroes`
   `docs/kb/qa/gpu/2026-10-27-m1-qa-09-heroes/`. Asha's staff and Toma's spear aren't gripped (open hands; they float upright
   in run/walk_cycle/offer_hand). The staff goes through the skirt when kneeling. Asha's underskirt is a rigid tube in
