@@ -64,6 +64,8 @@ static func plan_for(data: Dictionary, engine: BattleEngine, result: ActionResul
 			kind = BattleChoreo.REACT_HEAL
 		elif kind == "" and int(hit.get("delay_ticks", 0)) > 0:
 			kind = BattleChoreo.REACT_PUSH
+		elif kind == "" and _immune(engine, tid, result.skill_id):
+			kind = BattleChoreo.REACT_IMMUNE  # M3-BPR-406: the blow lands on nothing it can hurt
 		var blow := BattleImpact.strength(data, engine, hit)  # M3-BPR-401: the blow's weight
 		peak = maxf(peak, blow)
 		if kind != "":
@@ -206,8 +208,22 @@ static func reaction_pose(
 			return [away * float(def.get("recoil_m", 0.0)) * w, away, float(def.get("tilt_deg", 0.0)) * w * tilt_k]
 		BattleChoreo.REACT_PUSH:  # shoved back down the timeline: a stagger, no blow's weight
 			return [away * float(def.get("recoil_m", 0.0)) * w, away, float(def.get("tilt_deg", 0.0)) * w * tilt_k]
+		BattleChoreo.REACT_IMMUNE:  # a hard stop: a stiff sideways shudder, no recoil, none under reduced motion
+			var side := Vector3.UP.cross(away).normalized()
+			var buzz := sin(TAU * float(def.get("shudders", 1.0)) * clampf((t - c) / sec, 0.0, 1.0))
+			return [side * float(def.get("shudder_m", 0.0)) * buzz * w * tilt_k, away, 0.0]
 		BattleChoreo.REACT_HEAL:
 			return [Vector3.UP * float(def.get("lift_m", 0.0)) * w, away, 0.0]
 		BattleChoreo.REACT_MISS:
 			return [Vector3.UP.cross(away).normalized() * float(def.get("dodge_m", 0.0)) * w, away, 0.0]
 	return [Vector3.ZERO, away, 0.0]
+
+
+## True when `tid` is damage-immune now (a set-piece phase) and `skill_id` would have hurt it (a physical or magical
+## blow with power).
+static func _immune(engine: BattleEngine, tid: StringName, skill_id: StringName) -> bool:
+	var t := engine.find(tid) if engine != null else null
+	if t == null or not t.damage_immune:
+		return false
+	var row := engine.db.skill(skill_id)
+	return str(row.get("kind", "")) in ["physical", "magical"] and float(row.get("power", 0)) > 0.0

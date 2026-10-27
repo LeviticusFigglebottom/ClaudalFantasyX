@@ -8,6 +8,7 @@ extends Node3D
 const CONFIG_PATH := "res://game/data/ui/battle_sandbox.json"
 const SETTING_SHAKE := &"screen_shake"  # M3-BPR-401: accessibility.json
 const WITHDRAWN_META := &"hymn_withdrawn"  # M3-BPR-406: the retreat started
+const WITHDRAW_TWEEN_META := &"hymn_withdraw_tween"  # its tween, so a freeze-frame can hold it mid-way
 
 static var _config: Dictionary = {}
 
@@ -212,6 +213,7 @@ func _withdraw(f: FighterStandIn) -> void:
 	var tw := create_tween().set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
 	tw.tween_property(f, "position", f.position + away, sec)
 	tw.tween_callback(f.hide)
+	f.set_meta(WITHDRAW_TWEEN_META, tw)
 
 
 ## How long the result panel waits after the battle ends: `base`, or longer for the victory pose or the escape.

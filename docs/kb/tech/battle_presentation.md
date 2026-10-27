@@ -671,3 +671,14 @@ yet (the Lamp Engine `boss_tall`, the Avalanche Ram `boss`). An encounter's own 
 - **Summoned foes walk in.** `BattleStage.add_enemy` plays the `enter` walk for every foe that joins mid-battle.
 - **`tools/battle_vfx_coverage.py`** lists, for each skill or item with no effect, its stage answer (`staged`). The
   particle itself is rendering's (request M3-BPR-411).
+
+## Phase looks and set-piece freeze-frames (M3-BPR-406)
+- **BattlePhaseLooks** (a node under the sequencer): on each phase change and turn, a living foe that is untargetable
+  fades every surface (GeometryInstance3D.transparency, model or primitive) to `phase_looks.untargetable.alpha`, and
+  comes back when the phase ends. The Reach's Breach reads as out of reach.
+- **`reaction.immune`**: a blow (physical or magical, with power) on a damage-immune foe stops dead: a sideways
+  shudder, no recoil, no tilt, and still under reduced motion.
+- **Freeze-frames** (`shots/set_piece_beat_shot.gd`, the real Ch8 wave): `battle_ch08_intercept` (the crawler's grip
+  lands on Toma, who covers the stair), `battle_ch08_counter` (Rhen's riposte lands), and `battle_ch08_withdraw` (a
+  crawler half-way back). The stage keeps a withdrawal's tween on the stand-in (`WITHDRAW_TWEEN_META`) so a capture
+  can hold it.

@@ -60,13 +60,16 @@
                        "gnaw": "finisher", "ladle_swing": "finisher", "pounce": "finisher"},
     "item_style": "item",
     "reaction": {
-      "doc": "The target's reaction on the contact beat. damage: recoil_m away from the actor and tilt_deg back, out and back over sec; heal: a lift_m rise; miss: a sidestep of dodge_m; push (M3-BPR-411): a hit that only pushes its target down the timeline (the ward shoved back by Rope Dive, Grip the Stair, Hand Closes; Drag Net) staggers it recoil_m back. clip names the model clip tried first (the clip contract).",
+      "doc": "The target's reaction on the contact beat. damage: recoil_m away from the actor and tilt_deg back, out and back over sec; heal: a lift_m rise; miss: a sidestep of dodge_m; push (M3-BPR-411): a hit that only pushes its target down the timeline (the ward shoved back by Rope Dive, Grip the Stair, Hand Closes; Drag Net) staggers it recoil_m back; immune (M3-BPR-406): a blow on a damage-immune foe (the Reach's Breach) stops dead, a stiff sideways shudder of shudder_m, shudders times over sec, no recoil, none under reduced motion. clip names the model clip tried first (the clip contract).",
       "damage": {"sec": 0.32, "recoil_m": 0.28, "tilt_deg": 9.0, "clip": "hit", "clip_recoil_k": 0.5},
       "heal": {"sec": 0.4, "lift_m": 0.08, "clip": "ready"},
       "miss": {"sec": 0.3, "dodge_m": 0.32, "clip": "dodge"},
-      "push": {"sec": 0.42, "recoil_m": 0.36, "tilt_deg": 5.0, "clip": "hit", "clip_recoil_k": 0.6}
+      "push": {"sec": 0.42, "recoil_m": 0.36, "tilt_deg": 5.0, "clip": "hit", "clip_recoil_k": 0.6},
+      "immune": {"sec": 0.3, "shudder_m": 0.05, "shudders": 3.0, "clip": "defend"}
     },
     "ko": {"delay_sec": 0.12, "collapse_sec": 0.5, "tilt_deg": 62.0, "drop_m": 0.18, "clip": "ko"},
+    "phase_looks": {"doc": "M3-BPR-406 BattlePhaseLooks: a foe whose phase makes it untargetable (the Reach's Breach) fades every surface to untargetable.alpha until the phase ends, so the player sees why their aim is refused (Pillar 4).",
+                    "untargetable": {"alpha": 0.45}},
     "telegraph": {"doc": "M3-BPR-413 BattleTelegraph: a foe gathering a charged skill (a skill row's charge) draws itself in and sways on that action's contact and on each later turn of the charge, so the stage agrees with the timeline's intent (Pillar 4). A boss whose bosses row gathers that charge keeps its own.",
                   "gather": {"sec": 1.0, "lift_m": 0.04, "crouch_m": 0.08, "recoil_m": 0.0, "tilt_deg": -4.0,
                              "sway_deg": 4.0, "sways": 2.0}},

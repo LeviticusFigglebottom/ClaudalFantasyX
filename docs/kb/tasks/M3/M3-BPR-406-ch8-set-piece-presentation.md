@@ -56,12 +56,17 @@ evacuation, and nobody's death is a joke.
 - [ ] **Ask act1-chapters (M3-C08-02's owner):** the per-wave beats. Should wave 3's Kirru (the guest) get its own
       camera beat on Storm-Call? Should the Reach's breach_gather turns stay on the default frame (the push-in only)?
       Reply on this task or in your live log; until then, each wave uses the shared staging above.
-- [ ] The phase looks (untargetable or damage-immune), and freeze-frames for a counter and a withdrawal: these need
-      PC renders.
+- [x] The phase looks: BattlePhaseLooks fades an untargetable foe to `phase_looks.untargetable.alpha` (the
+      Reach's Breach) and back. A blow on a damage-immune foe plays the `immune` reaction (a hard stop, a stiff
+      sideways shudder, no recoil). Test test_battle_phase_looks.
+- [x] Freeze-frames for an intercept, a counter and a withdrawal (set_piece_beat_shot.gd on the real wave; test
+      test_battle_set_piece_shots). The renders are requested.
 
 ## Acceptance criteria
 - [x] Every Ch8 encounter plays to its end at full pacing with no script error (a test drives each by policy).
-- [ ] Freeze-frame shots: an intercept at contact, a counter at contact, a withdrawal mid-way, the Reach's intro.
-- [ ] Reduced motion: no camera push-in; withdrawals fade in place.
+- [x] Freeze-frame shots: battle_ch08_intercept, battle_ch08_counter, battle_ch08_withdraw, battle_boss_intro_reach
+      (render requested; first baselines once viewed).
+- [x] Reduced motion: no camera push-in (test_battle_set_piece_stage, test_battle_reduced_motion_audit);
+      withdrawals hide in place (test_a_withdrawn_foe_leaves_the_stage_without_a_collapse); the immune shudder is still.
 
 ## Review log

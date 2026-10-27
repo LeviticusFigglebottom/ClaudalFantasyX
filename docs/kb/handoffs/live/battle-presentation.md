@@ -52,6 +52,7 @@ pass (lineup 4/0; it fails with the spread off), and the battle filter gives 638
 so a full battle-shot capture comes next.
 
 ### Render requests
+RENDER-REQUEST @ HEAD (see `git log -1 origin/claude/battle-presentation`): battle_ch08_intercept,battle_ch08_counter,battle_ch08_withdraw; why: M3-BPR-406's set-piece freeze-frames (new, no baselines yet): Toma taking the crawler's grip for the stair, Rhen's riposte landing, a crawler withdrawing half-way. Batch it with the 3-shot HEAD request below if that one hasn't run yet.
 RENDER-REQUEST @ HEAD (see `git log -1 origin/claude/battle-presentation`): battle_boss_intro_reach,battle_arena_wall_head,drownbell_flood; why: (1) reach and wall_head: big12's baselines were rendered without this branch's arena rework (5a5b4fe isn't in the integration branch), and the 5a5b4fe render predates big12's stair HUD. Only a render of this branch's HEAD shows both. (2) drownbell_flood: settle_actors now ends the summoned polyps' entrance (1284fdec); the ed3a458 render caught them mid-rise.
 (21:2x: the PC is paused. The Lead's cloud container serves these requests, and results land on `lead/gate-render-battle-presentation-<sha7>`. Requests are kept small.)
 RENDER-REQUEST (DONE 21:4x: cloud render 60cbb21 viewed and approved) @ 60cbb212: battle_boss_intro_hullgnaw; why: FAST-TRACK M3-BPR-404. At c1d1e3e the party rule (party_max_h 0.3) widened Hullgnaw's camera past the raft's rope rail, which cut across the serpent. At 0.36 it keeps its approved 10.6 m frame (Rhen 0.35 tall at its side); the Drownbell, Matron and Wraith frames don't change.
@@ -62,6 +63,26 @@ RENDER-REQUEST (CLOSED 21:3x: superseded by the big11/big12 approvals; render db
 RENDER-REQUEST @ 680cd88e: battle_boss_intro_reach,battle_choreo_melee,battle_choreo_hit,battle_choreo_ko,battle_choreo_toll; why: M3-BPR-406 Ch8 set pieces. The new Reach boss intro (no baseline yet: test_screenshots' baselined check is red until it is approved), and the hit-stop hold fix plus the counter planning re-checked on the choreo shots.
 
 RENDER-REQUEST @ 60b62678: battle_arena_wall_head,battle_boss_intro_reach; why: M3-BPR-406 greybox wall_head_storm arena for Ch8 (new shot, no baseline yet); the Reach intro now stands on it. Supersedes the reach id in the 680cd88e line.
+
+### 2026-10-27 23:xx: the self-directed backlog (TRACK-RULES)
+1. **Render branches:** all viewed (none open).
+2. **Task board (combat):**
+   - **M3-BPR-406 (Ch8 set pieces), every acceptance box now done:**
+     - phase looks: the untargetable Reach fades (BattlePhaseLooks), and a blow on a damage-immune foe plays the new
+       `immune` reaction;
+     - freeze-frames battle_ch08_intercept, _counter and _withdraw on the real wave (render requested);
+     - the reduced-motion box checked against its tests.
+     - Still open: the question to act1-chapters about per-wave beats.
+   - **Moved to review, the work having been done before:**
+     - M3-BPR-403 (line-up; every shot was viewed via the big11/big12 approvals and db0819b);
+     - M2-BPR-100 (the Drownbell intro's hero in frame, which M3-BPR-404 fixed, all six approved);
+     - M2-HER-1114 (the placeholder clip fixes at 56921688).
+   - The other combat TODOs wait on other tracks (C01..C09 rulings, Reefball).
+3. **Found and fixed:** shots.json pointed battle_arena_wall_head at a shot scene the Lead moved in big12. My big12
+   merge had kept the old path, so the screenshot manifest test failed on a missing scene. It now points at
+   `game/levels/_tests/battle_arenas/arena_wall_head.tscn`, as on the integration branch.
+- **Known red until the renders are viewed:** test_screenshots has no baselines yet for the three new Ch8 shots (the
+  first baselines come from the request above).
 
 ### 2026-10-27 22:3x: cloud renders 5a5b4fe and ed3a458 viewed; Ilun on the real model
 - **ed3a458, 4 drifts (melee, hit, ko, drownbell_flood):** viewed side by side with HEAD's baselines.

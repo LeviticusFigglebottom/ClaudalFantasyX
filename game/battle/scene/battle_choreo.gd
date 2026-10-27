@@ -38,6 +38,7 @@ const BEAT_KO := &"ko"
 const REACT_DAMAGE := "damage"
 const REACT_HEAL := "heal"
 const REACT_MISS := "miss"
+const REACT_IMMUNE := "immune"  # M3-BPR-406: a blow on a damage-immune foe: a hard stop, no recoil
 const REACT_PUSH := "push"  # M3-BPR-411: a landed push down the timeline with no damage (the ward shoved back)
 const FALLBACK_STYLE := "melee"
 const SETTING_SPEED := &"battle_speed"
@@ -133,6 +134,7 @@ static func attached(controller: BattleController, engine: BattleEngine) -> Batt
 	c.impact = BattleImpact.attached(c, controller, engine)  # M3-BPR-401: battle feel
 	BattleBossIntro.attached(c, controller, engine)  # M3-BPR-02: a boss's intro at the first turn
 	BattleBarks.attached(c, controller, engine)  # M3-C08-100: a spoken line on a few skills and calls
+	BattlePhaseLooks.attached(c, controller, engine)  # M3-BPR-406: an untargetable phase shows it
 	return c
 
 
