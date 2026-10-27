@@ -535,8 +535,12 @@ func test_a_hero_strike_lands_on_its_clips_contact_marker() -> void:
 
 
 func test_a_primitive_stand_in_has_no_clips() -> void:
-	var f := FighterStandIn.new()  # Ysolde is still a capsule; the heroes and foes are actor scenes (M2-UI-07)
-	f.setup(&"ysolde", BattleStage.stand_in_spec(&"ysolde"), {})
+	# Every hero and foe is an actor scene now (M2-UI-07; Ysolde M2-HER-1103): a spec with its scene taken out is the
+	# primitive.
+	var spec := BattleStage.stand_in_spec(&"ysolde").duplicate()
+	spec.erase("scene")
+	var f := FighterStandIn.new()
+	f.setup(&"ysolde", spec, {})
 	ctl.add_child(f)
 	assert_eq(BattleClips.player_of(f), null)
 	for clip in BattleClips.ALL:
