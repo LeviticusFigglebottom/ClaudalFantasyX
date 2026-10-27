@@ -1,0 +1,36 @@
+{
+ "format": 1,
+ "scene": "ch08_okeru",
+ "source": "game/data/dialogue/ch08/ch08_okeru.dlg",
+ "start": "ch08_okeru",
+ "nodes": {
+  "ch08_okeru": {
+   "headers": {"location": "ch08/corrow"},
+   "ops": [
+    {"op": "cue", "cue": "camera", "args": ["W04"], "kwargs": {}, "src": 11},
+    {"op": "cue", "cue": "sfx", "args": ["shield_dropped"], "kwargs": {}, "src": 12},
+    {"op": "cue", "cue": "mark", "args": ["ivo", "ivo_hug", "run"], "kwargs": {}, "src": 13},
+    {"op": "cue", "cue": "anim", "args": ["ivo", "hug_lift", "toma"], "kwargs": {}, "src": 14},
+    {"op": "line", "id": "ch08_okeru_001", "key": "DLG_CH08_OKERU_001", "speaker": "ivo", "emotion": "laugh", "voice": "", "src": 15},
+    {"op": "cue", "cue": "anim", "args": ["toma", "laugh"], "kwargs": {}, "src": 16},
+    {"op": "line", "id": "ch08_okeru_002", "key": "DLG_CH08_OKERU_002", "speaker": "toma", "emotion": "laugh", "voice": "", "src": 17},
+    {"op": "line", "id": "ch08_okeru_003", "key": "DLG_CH08_OKERU_003", "speaker": "ivo", "emotion": "smile", "voice": "", "src": 18},
+    {"op": "cue", "cue": "mark", "args": ["ivo", "ivo_kneel", "walk"], "kwargs": {}, "src": 19},
+    {"op": "cue", "cue": "anim", "args": ["ivo", "kneel_palms_flat"], "kwargs": {}, "src": 20},
+    {"op": "line", "id": "ch08_okeru_004", "key": "DLG_CH08_OKERU_004", "speaker": "ivo", "emotion": "tender", "voice": "", "src": 21},
+    {"op": "line", "id": "ch08_okeru_005", "key": "DLG_CH08_OKERU_005", "speaker": "asha", "emotion": "soft_smile", "voice": "", "src": 22},
+    {"op": "line", "id": "ch08_okeru_006", "key": "DLG_CH08_OKERU_006", "speaker": "ivo", "emotion": "laugh", "voice": "", "src": 23},
+    {"op": "cue", "cue": "anim", "args": ["ivo", "look_at", "rhen"], "kwargs": {}, "src": 24},
+    {"op": "line", "id": "ch08_okeru_007", "key": "DLG_CH08_OKERU_007", "speaker": "ivo", "emotion": "smile", "voice": "", "src": 25},
+    {"op": "line", "id": "ch08_okeru_008", "key": "DLG_CH08_OKERU_008", "speaker": "rhen", "emotion": "smile", "voice": "", "src": 26},
+    {"op": "cue", "cue": "anim", "args": ["ivo", "look_at", "liss"], "kwargs": {}, "src": 27},
+    {"op": "cue", "cue": "wait", "args": [1.0], "kwargs": {}, "src": 28},
+    {"op": "cue", "cue": "anim", "args": ["ivo", "look_at", "toma"], "kwargs": {}, "src": 29},
+    {"op": "line", "id": "ch08_okeru_009", "key": "DLG_CH08_OKERU_009", "speaker": "toma", "emotion": "neutral", "voice": "", "src": 30},
+    {"op": "cue", "cue": "wait", "args": [0.6], "kwargs": {}, "src": 31},
+    {"op": "line", "id": "ch08_okeru_010", "key": "DLG_CH08_OKERU_010", "speaker": "ivo", "emotion": "neutral", "voice": "", "src": 32},
+    {"op": "set", "flag": "ch08_met_ivo", "value": ["lit", true], "src": 33}
+   ]
+  }
+ }
+}

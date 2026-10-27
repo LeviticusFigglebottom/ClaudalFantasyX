@@ -59,6 +59,7 @@ SKIRT_PIECES = ("Skirt", "Apron", "Sash")  # long pieces that follow the pelvis 
 # a cheek raise or a squint reads by its shading); the rest of the 40 stay position-only for the size
 MORPH_NORMALS = [f"{b}_{s}" for b in ("brow_inner_up", "brow_down", "cheek_raise", "lid_squint", "mouth_smile",
                                       "mouth_frown") for s in ("L", "R")]
+POS_GRID = 1e-6  # m: host_snaps puts the donor skin and the hair cards on this grid (M2-CHR-11, as build_sefir)
 BROW_SEAT = 0.0003  # m at S = 1: the brow cards' base off the shipped skin (asha_eyes.brow adds its layer lift)
 
 # preview colours of the materials the shared table lacks (Godot replaces them by name)
@@ -141,15 +142,18 @@ def main() -> int:
     params = bb_params.load_params(path=str(path))
     extra = json.loads(path.read_text(encoding="utf-8"))
     build = extra.get("_build", {})
-    # M3-CHR-03 opt-ins (absent on the M2-CHR-03 seven, whose outputs stay byte-identical): `host_snaps` applies
-    # M1-CHR-14's host-determinism snaps (build_asha: MIDLINE_SNAP on the head, quantize_uvs, snap_shape_noise;
-    # villager_textures sets asha_textures.PRE_ROUND); `garment_fit` applies its garment lessons (fitted_weights)
+    # opt-ins: `host_snaps` (every villager since M2-CHR-11) applies M1-CHR-14's host-determinism snaps (build_asha:
+    # quantize_uvs, snap_shape_noise; villager_textures sets asha_textures.PRE_ROUND), plus M2-CHR-11's: the donor
+    # skin (so its midline too) and the hair cards on POS_GRID; `garment_fit` (M3-CHR-03, not on the
+    # M2-CHR-03 seven) applies its garment lessons (fitted_weights)
     snaps = bool(build.get("host_snaps", False))
     fit = bool(build.get("garment_fit", False))
     res = bb_donor.generate(params, log=log, subdiv_face=bool(build.get("subdiv_face", False)))
     lm, body = res["lm"], res["body"]
     face = body.face
     V, F = res["V"], np.asarray(res["F"])
+    if snaps:  # the face solve's last bits differ between numpy's SIMD paths (AVX-512 vs AVX2); scalp and hair see them
+        V = np.round(V / POS_GRID) * POS_GRID
     reg = np.array(res["reg"])
     freg = np.array(res["freg"])
     UVc = np.asarray(res["uv"])
@@ -271,6 +275,8 @@ def main() -> int:
     # ---- hair and head wrap: one rigid object on the head ----------------------------------------
     hstyle = villager_hair.style(extra["_hair"])
     hair = hstyle.build(lm, surf)
+    if snaps and hair.V:  # cards rooted on the midline and traced over the scalp carry the same host noise
+        hair.V = list(np.round(hair.varr() / POS_GRID) * POS_GRID)
     hair_tris = hair.tris()
     rigid_head = Part("HairHead")
     rigid_head.extend(hair)

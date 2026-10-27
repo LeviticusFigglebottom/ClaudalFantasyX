@@ -1,6 +1,6 @@
-[gd_scene load_steps=25 format=3]
+[gd_scene load_steps=33 format=3]
 
-[ext_resource type="Script" path="res://game/levels/ch02/haluna/haluna_mood.gd" id="1_rig"]
+[ext_resource type="Script" path="res://game/levels/_tests/oruvel_kit/oruvel_preview.gd" id="1_rig"]
 [ext_resource type="Script" path="res://game/levels/ch02/haluna/weathering_tide.gd" id="2_tide"]
 [ext_resource type="Script" path="res://game/levels/ch02/haluna/haluna_dresser.gd" id="3_dresser"]
 [ext_resource type="Script" path="res://game/world/water/water_surface.gd" id="4_water"]
@@ -10,6 +10,7 @@
 [ext_resource type="Environment" path="res://game/levels/_tests/oruvel_kit/oruvel_ch01_environment.tres" id="8_env"]
 [ext_resource type="Script" path="res://game/levels/ch02/haluna/haluna_shot_camera.gd" id="9_cam"]
 [ext_resource type="Script" path="res://game/world/camera_shot.gd" id="10_shot"]
+[ext_resource type="Environment" path="res://game/levels/_tests/oruvel_kit/oruvel_storm_environment.tres" id="11_storm_env"]
 
 [sub_resource type="Resource" id="Calm0"]
 script = ExtResource("6_comp")
@@ -38,6 +39,43 @@ phase_rad = 4.0
 [sub_resource type="Resource" id="CalmWaves"]
 script = ExtResource("5_set")
 components = Array[ExtResource("6_comp")]([SubResource("Calm0"), SubResource("Calm1"), SubResource("Calm2")])
+amplitude_scale = 1.0
+
+[sub_resource type="Resource" id="Swell0"]
+script = ExtResource("6_comp")
+direction_deg = 0.0
+wavelength_m = 34.0
+amplitude_m = 0.16
+steepness = 0.45
+phase_rad = 0.0
+
+[sub_resource type="Resource" id="Swell1"]
+script = ExtResource("6_comp")
+direction_deg = 22.0
+wavelength_m = 17.0
+amplitude_m = 0.08
+steepness = 0.55
+phase_rad = 1.7
+
+[sub_resource type="Resource" id="Swell2"]
+script = ExtResource("6_comp")
+direction_deg = 340.0
+wavelength_m = 7.5
+amplitude_m = 0.035
+steepness = 0.6
+phase_rad = 3.9
+
+[sub_resource type="Resource" id="Chop0"]
+script = ExtResource("6_comp")
+direction_deg = 60.0
+wavelength_m = 2.6
+amplitude_m = 0.012
+steepness = 0.5
+phase_rad = 0.8
+
+[sub_resource type="Resource" id="StormWaves"]
+script = ExtResource("5_set")
+components = Array[ExtResource("6_comp")]([SubResource("Swell0"), SubResource("Swell1"), SubResource("Swell2"), SubResource("Chop0")])
 amplitude_scale = 1.0
 
 [sub_resource type="Resource" id="ShotO01"]
@@ -114,13 +152,30 @@ position = Vector3(-41, 1.4, 28)
 look_at = Vector3(-57, 3.6, 7)
 fov_deg = 37.8
 
-[node name="OruvelPreview" type="Node3D" node_paths=PackedStringArray("sun", "tide", "water", "world_environment", "dresser")]
+[sub_resource type="Resource" id="ShotO17"]
+script = ExtResource("10_shot")
+id = &"O17"
+position = Vector3(40, 5, -23)
+look_at = Vector3(25, 1.4, -3)
+fov_deg = 46.4
+
+[sub_resource type="Resource" id="ShotO22"]
+script = ExtResource("10_shot")
+id = &"O22"
+position = Vector3(108, 14, 96)
+look_at = Vector3(108, 0, 60)
+fov_deg = 53.1
+
+[node name="OruvelPreview" type="Node3D" node_paths=PackedStringArray("sun", "tide", "water", "world_environment", "dresser", "seventh_terrace")]
 script = ExtResource("1_rig")
 sun = NodePath("Sun")
 tide = NodePath("Tide")
 water = NodePath("Water")
 world_environment = NodePath("WorldEnvironment")
 dresser = NodePath("Dresser")
+storm_environment = ExtResource("11_storm_env")
+storm_waves = SubResource("StormWaves")
+seventh_terrace = NodePath("SeventhTerrace")
 sun_elevation_deg = 58.0
 sun_azimuth_deg = 120.0
 time_of_day_h = 10.5
@@ -232,3 +287,15 @@ near = 0.05
 far = 6000.0
 script = ExtResource("9_cam")
 shot = SubResource("ShotO21")
+
+[node name="O17" type="Camera3D" parent="Cameras"]
+near = 0.05
+far = 40000.0
+script = ExtResource("9_cam")
+shot = SubResource("ShotO17")
+
+[node name="O22" type="Camera3D" parent="Cameras"]
+near = 0.05
+far = 40000.0
+script = ExtResource("9_cam")
+shot = SubResource("ShotO22")

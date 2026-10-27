@@ -1,0 +1,24 @@
+{
+ "format": 1,
+ "scene": "ch08_run_back",
+ "source": "game/data/dialogue/ch08/ch08_run_back.dlg",
+ "start": "ch08_run_back",
+ "nodes": {
+  "ch08_run_back": {
+   "headers": {"location": "ch08/corrow"},
+   "ops": [
+    {"op": "cue", "cue": "camera", "args": ["W07_storm"], "kwargs": {}, "src": 9},
+    {"op": "cue", "cue": "music", "args": ["undertow_rising"], "kwargs": {}, "src": 10},
+    {"op": "cue", "cue": "sfx", "args": ["wind_landward"], "kwargs": {}, "src": 11},
+    {"op": "cue", "cue": "wait", "args": [1.0], "kwargs": {}, "src": 12},
+    {"op": "cue", "cue": "camera", "args": ["W04_kite"], "kwargs": {}, "src": 13},
+    {"op": "cue", "cue": "sfx", "args": ["kite_torn"], "kwargs": {}, "src": 14},
+    {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 15},
+    {"op": "cue", "cue": "camera", "args": ["W07_storm"], "kwargs": {}, "src": 16},
+    {"op": "line", "id": "ch08_run_back_001", "key": "DLG_CH08_RUN_BACK_001", "speaker": "rhen", "emotion": "worried", "voice": "", "src": 17},
+    {"op": "line", "id": "ch08_run_back_002", "key": "DLG_CH08_RUN_BACK_002", "speaker": "toma", "emotion": "determined", "voice": "", "src": 18},
+    {"op": "cue", "cue": "wait", "args": [0.5], "kwargs": {}, "src": 19}
+   ]
+  }
+ }
+}

@@ -29,6 +29,7 @@ const KINDS: Array[String] = [
 	"shader_test",
 	"tamsule_bell_kit",
 	"vegetation",
+	"wildlife",
 ]
 ## M2-FP-07: the clip names the first-playable scripts call (`@anim asha <clip>`).
 const HERO_CLIPS: Array[String] = [

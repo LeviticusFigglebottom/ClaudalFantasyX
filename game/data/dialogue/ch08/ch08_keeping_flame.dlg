@@ -1,0 +1,50 @@
+// Ch8 B03, side scene (optional) "The Keeping Flame" (act1_ch08.md §4; F01, one locked shot plus
+// inserts of the driftwood and Fenn's hands). The keeper's hut at Coilspire's foot, by the hearth that
+// feeds the spire. No music: wind and fire. Old Fenn has kept the low flame for forty-one years and has
+// never let it go out. He doesn't get up. He lets Asha feed it, "like you'd put a blanket on a sleeping
+// child". Then he looks at her properly.
+// Rules: no more than four Fenn lines in a row (SPEC §3.6), broken by Asha's feeding and questions.
+// Fenn says nothing about the 1001 stair, the watch or its captain (rule 3). He met Imra at the hearth,
+// not at the gate. Asha smiles first, and it costs her (smile, then a held neutral).
+// Sets ch08_fed_the_beacon: in B07 Fenn climbs the spire and hands Asha the great key; in Ch9 he
+// kneels at the Ebbing.
+title: ch08_keeping_flame
+location: ch08/coilspire
+---
+@camera F01
+@music silence fade=1.5
+@sfx hearth_crackle
+@anim fenn feed_fire
+@wait 1.5
+Fenn [neutral]: Shut the door, Lady. She doesn't like a draught she didn't ask for. #line:ch08_flame_001
+@mark asha hearth_asha walk
+@wait 0.8
+Asha [soft_smile]: May I? #line:ch08_flame_002
+@camera F01_hands
+@anim fenn hand_driftwood asha
+Fenn [neutral]: Like you'd put a blanket on a sleeping child. Not a log on a fire. #line:ch08_flame_003
+@anim asha feed_fire
+@sfx hearth_settle
+@wait 1.5
+@camera F01
+Fenn [neutral]: There. She'll take that from you. #line:ch08_flame_004
+@anim fenn look_at asha
+@wait 1.0
+Fenn [neutral]: The last one fed her too. Eleven years back. Year of the last Rising. #line:ch08_flame_005
+Asha [neutral]: My mother. #line:ch08_flame_006
+Fenn [soft_smile]: Said she had a girl at home. Said the girl'd be braver than her. #line:ch08_flame_007
+@wait 0.8
+Asha [surprised]: ...She said that? #line:ch08_flame_008
+Fenn [neutral]: Said it to a fire. Fires don't carry tales. I do. #line:ch08_flame_009
+@face asha smile 0.6
+@wait 1.2
+@face asha neutral 1.0
+@wait 1.5
+Asha [neutral]: How long have you kept her? #line:ch08_flame_010
+Fenn [neutral]: Forty-one years. Never once let her out. Opened the beacon full twice. #line:ch08_flame_011
+@anim fenn feed_fire
+Fenn [soft_smile]: Third time's coming. I can smell it. #line:ch08_flame_012
+Asha [soft_smile]: Then I hope you're kept waiting a long while. #line:ch08_flame_013
+<<set $ch08_fed_the_beacon = true>>
+@wait 1.0
+===

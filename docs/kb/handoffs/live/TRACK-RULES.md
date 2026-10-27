@@ -55,3 +55,5 @@ The protocol:
 4. **Don't wait.** Keep working on the next item while the render is queued.
 
 Batch requests: one line per push, covering every shot your recent items can affect.
+- **Portrait renders:** post `RENDER-REQUEST @ <sha>: portraits:<id>[,portraits:<id>...]; tool: tools/portraits/render.sh --only <id>`. The PC runs render.sh and pushes the PNGs on the same kind of branch. Shot ids must exist in `tests/screenshots/shots.json` at the requested sha; anything else is skipped.
+- **PC import crashes:** if Godot's import aborts, the PC retries it up to 3 times on a fresh `.godot` and never publishes black captures.

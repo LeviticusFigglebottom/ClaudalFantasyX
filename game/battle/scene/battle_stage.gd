@@ -173,12 +173,12 @@ func battle_speed(fallback: float = 1.0) -> float:
 
 
 ## A short, decaying side-to-side camera nudge (deterministic: no randomness). `speed` is the
-## battle presentation speed (UiSettings.battle_speed, M2-UI-23).
-func shake(speed: float = 1.0) -> void:
+## battle presentation speed (UiSettings.battle_speed, M2-UI-23); `scale` sizes it (BattleImpact: by the blow).
+func shake(speed: float = 1.0, scale: float = 1.0) -> void:
 	if camera == null or not is_inside_tree():
 		return
 	var cfg: Dictionary = config().get("shake", {})
-	var amp := float(cfg.get("amplitude_m", 0.0))
+	var amp := float(cfg.get("amplitude_m", 0.0)) * scale
 	var steps := maxi(int(cfg.get("steps", 1)), 1)
 	var step_sec := float(cfg.get("sec", 0.0)) / steps
 	if amp <= 0.0 or step_sec <= 0.0:

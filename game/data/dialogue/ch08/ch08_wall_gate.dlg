@@ -1,0 +1,15 @@
+// Ch8 B04, the wall-gate (act1_ch08.md §2 B04; W07, locked). The stair-watch's gate, timber and iron
+// painted watch-red, opening onto the headland path. A watch gatekeeper lets them through for the
+// Cantor. This is the gate Kerrid kept in 1001. Nothing marks it: it is just a gate (rule 3). No line.
+// The chapter flow goes on to ch08/coilspire.
+title: ch08_wall_gate
+location: ch08/corrow
+---
+@camera W07
+@sfx gate_bar
+@anim gatekeeper open_gate
+@wait 1.5
+@mark asha gate_asha walk
+@mark toma gate_toma walk
+@fade out 0.8
+===

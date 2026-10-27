@@ -369,6 +369,15 @@
       "jitter": 0.06,
       "volume_db": 0.0,
       "pending": true
+    },
+    "ivo": {
+      "blips": [
+        "voice_soft"
+      ],
+      "pitch": 0.88,
+      "rate_ms": 60,
+      "jitter": 0.05,
+      "volume_db": 0.0
     }
   }
 }
