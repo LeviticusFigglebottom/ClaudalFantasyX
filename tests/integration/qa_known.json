@@ -65,15 +65,19 @@
       "liss",
       "marra",
       "netmender",
+      "officer",
       "stillguard_a",
       "stillguard_b",
       "townsfolk_a",
-      "townsfolk_b"
+      "townsfolk_b",
+      "watch_a",
+      "watch_b"
     ],
     "corrow_night.tscn": [
       "child",
       "fenn",
       "hobb",
+      "kerrid",
       "kerrid_stair",
       "liss",
       "marra",
