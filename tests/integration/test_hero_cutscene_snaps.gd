@@ -45,6 +45,8 @@ const KNOWN: Array[String] = [
 const MAX_SEC := 240.0
 ## Lines advance after this hold (driven: nobody reads them).
 const LINE_HOLD_SEC := 0.25
+## A body that moves more than this in a frame is walking (its floor is checked).
+const MOVING_M := 0.01
 ## A camera step at or over this (metres or degrees in a frame) is a cut.
 const CAMERA_CUT_M := 0.75
 const CAMERA_CUT_DEG := 20.0
@@ -74,6 +76,8 @@ func test_no_actor_snaps_in_any_cutscene() -> void:
 			if result.is_empty():
 				continue
 			played += 1
+			for who: String in result["off_floor"]:  # report-only until M3-CIN-1220's via= paths land (then it fails)
+				print("  OFF-FLOOR %s %s: %.2f m" % [scene_id, who, result["off_floor"][who]])
 			var cuts := result["cuts"] as Dictionary
 			for who: String in result["tracks"]:
 				var samples := (result["tracks"] as Dictionary)[who] as Array[Transform3D]
@@ -130,6 +134,12 @@ func _play(zone: Node3D, scene_id: StringName, dt: float) -> Dictionary:
 		return {}
 	var tracks := {}
 	var cuts := {}
+	var off_floor := {}  # actor -> its worst floor gap while walking (metres)
+	var limits := HeroMotionGuard.load_data().get("transform", {}) as Dictionary
+	var exclude: Array[RID] = []  # the cast's own colliders and the field player's capsule are not the floor
+	for n in zone.find_children("*", "CollisionObject3D", true, false):
+		if stage.is_ancestor_of(n) or n is FieldController:
+			exclude.append((n as CollisionObject3D).get_rid())
 	var cam_was := Transform3D()
 	var has_cam := false
 	var frame := 0
@@ -159,12 +169,17 @@ func _play(zone: Node3D, scene_id: StringName, dt: float) -> Dictionary:
 			if not tracks.has(who):
 				tracks[who] = [] as Array[Transform3D]
 			var t := body.global_transform if body != null else actor.global_transform
-			(tracks[who] as Array[Transform3D]).append(t)
+			var prev := tracks[who] as Array[Transform3D]
+			if not prev.is_empty() and prev[-1].origin.distance_to(t.origin) > MOVING_M:
+				var gap := HeroMotionGuard.floor_gap(zone.get_world_3d(), t.origin, exclude, limits)
+				if not is_nan(gap) and absf(gap) > float(limits.get("floor_tolerance_m", INF)):
+					off_floor[who] = maxf(float(off_floor.get(who, 0.0)), absf(gap))
+			prev.append(t)
 		frame += 1
 	if seq.is_playing():
 		print("  %s: still playing after %.0f s, stopped" % [scene_id, MAX_SEC])
 	print("  %s: %d frames, %d actors sampled" % [scene_id, frame, tracks.size()])
-	return {"tracks": tracks, "cuts": cuts}
+	return {"tracks": tracks, "cuts": cuts, "off_floor": off_floor}
 
 
 func _camera_cut(a: Transform3D, b: Transform3D) -> bool:
