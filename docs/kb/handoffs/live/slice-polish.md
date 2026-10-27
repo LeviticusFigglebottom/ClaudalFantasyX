@@ -414,6 +414,16 @@ Ch4–Ch9 onward. `m2-slice.md` beside this file is the history up to the 2026-1
     dlgc and validate_data clean; lint and format clean. No new render: none of this changes a frame.
   - **Not mine, left:** M3-AUD-830 (Ch5) and M3-ENV-714 (Ch8) belong to act1-chapters; M3-C09-201 is still blocked.
 
+- **BACKLOG EMPTY (2026-10-27 late), for now. The reasons, by TRACK-RULES step:**
+  1. No render branch for this track has posted since 17b0601. The open request is @ 37f8bb9b.
+  2. and 3. Every todo task for my roles is blocked or belongs to another track: M3-C09-201 (blocked), M3-AUD-830
+     and M3-ENV-714 (act1-chapters).
+  4. The primitives audit is done (2ab7a66e..28b0f97a). What remains on the allowlist waits on others: the vigils
+     on the character track, the save shrine on M3-ENV-101, LowHull on a kit piece.
+  5. The open Ch1–Ch3 items need eyes on renders or other tracks first: the Underway's room lighting and the
+     bell-room air pocket (Rendering), Ilun's chamber (env-art), and Oruvel's named cast (M3-CHR-100).
+  - I pick up again at the next render branch, a review, or a message.
+
 ### Render requests
 RENDER-REQUEST @ fdec3cc6: slice_prologue_vigil_line, slice_beach_h05_asha, slice_beach_h06_toma, slice_haluna_villagers_village, slice_causeway_head, slice_causeway_harrier_view, haluna_h01_village_from_sea, haluna_h02_tidewall_lane, haluna_h04_dock, haluna_h07_chapel_court, haluna_h10_dock_night, shrine_s01_approach, shrine_s02_threshold, shrine_s03_overview, shrine_s04_lip, shrine_s05_side_pool, drownbell_flood, battle_boss_intro_drownbell, battle_arena_causeway, field_causeway_dolly, boot_title; why: M2-FP-102..109, the human's playtest round (real cast and held poses in the prologue and Cutscene A, live villagers and wildlife, the final causeway), plus the greyscale audit of every slice beat. The six slice_* shots are new (no baseline yet).
 - **Known red until the render lands:** the six new `slice_*` shots have no baseline yet, so the tools test
