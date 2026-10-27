@@ -25,6 +25,7 @@ FLAGS_FILE = "game/data/flags.tres"
 ACTOR = "assets/characters/villagers/{id}/{id}_actor.tscn"
 TEST_ZONE_PREFIX = "_tests/"
 ACTIVITIES = {"", "work"}
+ATTACH = {"beside", "child"}
 ROUTINE_SECTIONS = {
     "look": {"bones", "max_yaw_deg", "max_pitch_up_deg", "max_pitch_down_deg", "smoothing_sec",
              "max_rate_deg_per_sec", "max_substep_sec", "head_height_m", "player_eye_height_m"},
@@ -135,6 +136,11 @@ def zone_errors(root: Path, rel: str, locations: set[str], flags: set[str]) -> l
                 errs.append(f"{where}.route[{j}]: not a point [x, y, z]")
             if str(e.get("activity", "")) not in ACTIVITIES:
                 errs.append(f"{where}.route[{j}]: unknown activity {e.get('activity')!r}")
+        attach = str(row.get("attach", "beside"))
+        if attach not in ATTACH:
+            errs.append(f"{where}: attach {attach!r} is not one of {sorted(ATTACH)}")
+        elif attach == "child" and (row.get("route") or row.get("follow")):
+            errs.append(f"{where}: a villager inside its stand-in (attach child) has no route or follow")
         if len(row.get("route", [])) == 1:
             errs.append(f"{where}: a route needs two or more points")
     for vid, row in by_id.items():

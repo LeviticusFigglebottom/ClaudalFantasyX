@@ -2706,6 +2706,22 @@
           "screen_space_aa": 1
         }
       }
+    },
+    {
+      "id": "npc_wake_feast",
+      "scene": "res://game/levels/_tests/npc/wake_villagers.tscn",
+      "camera": "Cameras/Feast",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 120,
+      "setup": {
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
     }
   ]
 }

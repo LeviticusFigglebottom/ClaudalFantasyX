@@ -310,3 +310,35 @@ func test_halunas_rows_resolve_in_the_zone() -> void:
 			assert_true(zone.get_node_or_null(NodePath(str(row["talk"]))) is Interactable, "talk spot exists")
 	assert_eq(layer.villager(&"fisher").partner, layer.villager(&"netmender"), "the dock pair chats")
 	_done()
+
+
+func test_wake_villagers_ride_inside_their_cutscene_actors() -> void:
+	var zone := (load("res://game/levels/ch04/haluna_wake/haluna_wake.tscn") as PackedScene).instantiate() as Node3D
+	_holder().add_child(zone)
+	var layer := VillagerLayer.new()
+	layer.zone_id = &"ch04/haluna_wake"
+	layer.auto_build = false
+	zone.add_child(layer)
+	assert_eq(layer.build(), 7, "the seven Haluna villagers")
+	var osu := layer.villager(&"osu")
+	var actor := zone.get_node("CutsceneStage/Actors/osu") as Node3D
+	assert_eq(osu.get_parent(), actor, "inside the cutscene actor")
+	assert_false((actor.get_node("StandIn") as Node3D).visible, "its capsule is hidden")
+	assert_eq(osu.route.size(), 0, "no route inside an actor")
+	for i in roundi(4.0 / DT):
+		layer.tick(DT)
+	assert_true(osu.chatting(), "Osu and the vendor stand 4 m apart: within chat range")
+	var to_vendor := layer.villager(&"vendor").global_position - osu.global_position
+	_near(
+		absf(angle_difference(osu.global_rotation.y, HeroLocomotion.yaw_of(to_vendor))),
+		0.0,
+		0.05,
+		"she turns to the vendor, though each rides in its own actor"
+	)
+	actor.position += Vector3(2.0, 0.0, 0.0)  # a cutscene moves the actor
+	layer.tick(DT)
+	_near(osu.global_position.distance_to(actor.global_position), 0.0, 0.001, "the villager goes with it")
+	actor.visible = false  # a zone state hides the actor
+	assert_false(osu.is_visible_in_tree(), "and its villager")
+	assert_eq(osu.partner, layer.villager(&"vendor"), "Osu and the vendor talk at the feast tables")
+	_done()
