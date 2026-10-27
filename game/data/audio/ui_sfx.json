@@ -333,6 +333,21 @@
       "_note": "M3-AUD-832: the UI track's Reefball HUD (claude/ui, M3-UI-01): the menu's sounds; the match's own are reefball_audio's. Pending until it merges"
     },
     {
+      "class": "Interactable",
+      "signals": {"used": "ui_interact"},
+      "_note": "M3-AUD-854: a soft touch when anything in the field is used; the menu or dialogue it opens outranks it in that frame (it is unlisted in priority). SaveShrine and every other subclass share it unless they get their own hook"
+    },
+    {
+      "class": "InteractPrompt",
+      "watch": [{"expr": "node.is_showing()", "on_true": true, "sfx": "ui_prompt_in", "_note": "the prompt appears over something you can use"}],
+      "_note": "M3-AUD-854"
+    },
+    {
+      "class": "CodexNotice",
+      "watch": [{"expr": "node.is_showing()", "on_true": true, "sfx": "ui_tip", "_note": "a codex entry learned"}],
+      "_note": "M3-AUD-854: the codex notice, as a tip card"
+    },
+    {
       "class": "BattleResultPanel",
       "signals": {"choice_made": "ui_confirm"},
       "watch": [

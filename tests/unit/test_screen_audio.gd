@@ -344,6 +344,25 @@ func test_the_outfitter_buys_wears_and_refuses() -> void:
 	_done()
 
 
+func test_the_field_prompt_ticks_and_using_something_touches() -> void:
+	var ui := _ui()
+	var thing := Interactable.new()
+	_host.add_child(thing)
+	assert_eq(str(ui.hook_for(thing).get("class", "")), "Interactable", "any interactable has the touch")
+	ui.watch(thing)
+	ui.step()
+	thing.used.emit(thing)
+	ui.step()
+	assert_eq(played, [&"ui_interact"] as Array[StringName])
+	played.clear()
+	var prompt := InteractPrompt.new()
+	_host.add_child(prompt)
+	ui.watch(prompt)
+	ui.step()
+	assert_eq(played, [] as Array[StringName], "no prompt shown, no tick")
+	_done()
+
+
 # --------------------------------------------------------------------------- helpers
 
 

@@ -23,6 +23,8 @@ by their row's volume_db (sfx_ui_screens.json), as ui_map_pan is.
     ui_count_run        the battle result's numbers counting up (BattleResultPanel, count_sec 0.6): a quick run of tiny
                         bar ticks climbing the D-A-E palette and speeding up, like coins told out (M3-AUD-848)
     ui_count_done       the count settled: two soft bars a fifth apart (A5 over D5), let ring
+    ui_prompt_in        the field's interact prompt appearing over something you can use: one tiny glass tick (M3-AUD-854)
+    ui_interact         using it: a soft touch (a cloth-muffled tap and a faint bar), under whatever it opens
 
 Render:  python3 assets_src/sfx/screen_sfx.py   (or tools/audio/render_all.py --only screen_sfx)
 """
@@ -169,6 +171,25 @@ def ui_count_done() -> np.ndarray:
     return _tail_fade(_room(buf, 0.5, 0.18, SEED + 954), 0.12)
 
 
+def ui_prompt_in() -> np.ndarray:
+    g = rng(SEED + 1001)
+    buf = np.zeros(int(0.35 * SR))
+    _place(buf, 0.6 * _glass(midi_to_hz(n("E7")), 0.25, 0.04, g), 0.0)
+    buf = filt(buf, [bq_highpass(1500, 0.7), bq_lowpass(10000, 0.7)])
+    return _tail_fade(_room(buf, 0.25, 0.08, SEED + 1002), 0.04)
+
+
+def ui_interact() -> np.ndarray:
+    g = rng(SEED + 1101)
+    buf = np.zeros(int(0.45 * SR))
+    tap = _env(int(0.05 * SR), 0.001, 0.012) * filt(g.standard_normal(int(0.05 * SR)), [bq_lowpass(1400, 0.7),
+                                                                                          bq_highpass(200, 0.7)])
+    _place(buf, 0.06 * tap, 0.0)
+    _place(buf, metallophone_note(n("A5"), 0.3, seed=SEED + 1102, decay=0.3, hardness=0.25, pair=False), 0.01)
+    buf = filt(buf, [bq_highpass(180, 0.7), bq_lowpass(8000, 0.7)])
+    return _tail_fade(_room(buf, 0.3, 0.1, SEED + 1103), 0.05)
+
+
 UI = {
     "ui_whoosh_in": ui_whoosh_in,
     "ui_whoosh_out": ui_whoosh_out,
@@ -180,6 +201,8 @@ UI = {
     "ui_reefball_glint": ui_reefball_glint,
     "ui_count_run": ui_count_run,
     "ui_count_done": ui_count_done,
+    "ui_prompt_in": ui_prompt_in,
+    "ui_interact": ui_interact,
 }
 FILES = [f"{u}.ogg" for u in UI]
 
