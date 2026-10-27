@@ -463,6 +463,17 @@ def build_plaza_rise(seed: int = 723) -> list[kc.MeshBuilder]:
         for k in range(3 if not lod else 1):
             kc.rounded_block(mb, (0.0, 0.8 - (k + 1) * 0.27 + 0.135, 2.2 + 0.27 * k + 0.135),
                              (4.2, 0.135, 0.15), mb.material(M_PAVING), radius=0.03, seg=1, variation=float(rng.random()))
+        if not lod:  # M3-ENV-724: a cast coping round the dais, a flush glazed border inside it, glazed riser bands
+            cer, glaze = mb.material(M_CERAMIC), mb.material(M_GLAZE)
+            for (cx, cz, sx, sz) in ((0.0, -3.0, 5.05, 0.12), (0.0, 2.2, 5.05, 0.12), (-5.0, -0.4, 0.12, 2.6),
+                                     (5.0, -0.4, 0.12, 2.6)):
+                kc.rounded_block(mb, (cx, 0.805, cz), (sx, 0.025, sz), cer, radius=0.01, seg=1, weather=WORN)
+            for (cx, cz, sx, sz) in ((0.0, -2.5, 4.4, 0.06), (0.0, 1.7, 4.4, 0.06), (-4.4, -0.4, 0.06, 2.1),
+                                     (4.4, -0.4, 0.06, 2.1)):
+                kc.rounded_block(mb, (cx, 0.8, cz), (sx, 0.006, sz), glaze, radius=0.0, seg=1)
+            for k in range(3):
+                kc.rounded_block(mb, (0.0, 0.8 - (k + 1) * 0.27 + 0.135, 2.2 + 0.27 * k + 0.282),
+                                 (4.1, 0.05, 0.006), glaze, radius=0.0, seg=1)
         out.append(mb)
     return out
 
