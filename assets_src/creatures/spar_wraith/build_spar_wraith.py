@@ -24,6 +24,7 @@ SEED = 4717
 PAL = {k: ck.hexrgb(v) for k, v in {
     "lacquer_black": "#1D1916", "abyss_navy": "#061A2B", "spawn_wound": "#3FE0C8", "timber_weathered": "#7E6A55",
     "sand_cloth": "#C9B48E", "bone": "#E6DAC0", "storm_slate": "#3E4A57", "brass": "#B08D57",
+    "deep_teal_shadow": "#0E4A55", "foam_white": "#EEF6F4",
 }.items()}
 
 HUB = np.array([0.0, 3.4, -0.2])  # where the spars cross and the web hangs from
@@ -157,6 +158,40 @@ def rigging(mesh: ck.Mesh, rig: ck.Rig, j: np.ndarray) -> None:
     ck.finish(mesh, Pp, Tp, "rope", PAL["sand_cloth"] * 0.6, rig.rigid("block"))
 
 
+def wraps(rig: ck.Rig, j: np.ndarray) -> tuple[ck.Mesh, ck.Mesh]:
+    """Phase 1's `Shroud` (its own sail-membranes wrapped round it, torn, wounds showing through) and phase 2's
+    `Sheath` (the sea hauled up its lines, a skin of water over the body), m2-slice act1_ch04 §5. Each is its own
+    node: the `hauled_down` phase hides the shroud at once (the burn is VFX) and shows the sheath once it has dropped."""
+    n, segs = 34, 18
+    path = ck.bezier([BODY_TOP, BODY_TOP + np.array([0, -0.8, -0.25]), BODY_BOT + np.array([0, 0.5, -0.1]), BODY_BOT], n)
+    u = np.linspace(0, 1, n)
+    skin = rig.chain([f"body{i}" for i in range(N_BODY)], j)
+    shroud = ck.Mesh("Shroud")
+    rad = (0.3 + 0.17 * np.sin(u * math.pi)) * (1.0 + 0.12 * np.sin(u * 23.0))
+    P, T = ck.tube(path, rad, segs, squash=0.85, up_hint=(1.0, 0.0, 0.0), cap_start=False, cap_end=False)
+    P = P + (0.06 * ck.fbm(P * 2.5, SEED + 30))[:, None] * np.array([1.0, 0.3, 1.0])  # it hangs in folds
+    tear = ck.fbm(P * 3.2, SEED + 31)
+    ring = np.repeat(u, segs)
+    hem = ring > 0.82 + 0.1 * ck.fbm(P * 6.0, SEED + 34)  # a ragged hem: the cloth hangs short of the head
+    keep = np.array([tear[tri].max() < 0.3 and not hem[tri].any() for tri in T])  # rents where it rotted through
+    T = T[keep]
+    seam = np.abs(np.sin(np.arctan2(P[:, 0], P[:, 2]) * 3.0 + P[:, 1] * 2.0))
+    col = ck.mix(PAL["sand_cloth"] * 0.85, PAL["timber_weathered"] * 0.6, (0.6 * ck.smoothstep(0.8, 1.0, seam))[:, None])
+    col = ck.mix(col, PAL["lacquer_black"], (0.75 * ck.smoothstep(0.12, 0.3, tear))[:, None])  # tarred, rotted edges
+    for inside in (False, True):
+        ck.finish(shroud, P, ck.flip(T) if inside else T, "sail", col * (0.6 if inside else 1.0), skin, wet=0.5,
+                  cavity=0.3)
+    sheath = ck.Mesh("Sheath")
+    rad = (0.23 + 0.17 * np.sin(u * math.pi)) * 1.04 * (1.0 - ck.smoothstep(0.8, 0.95, u))  # the head stays bare
+    P, T = ck.tube(path, rad + 0.004, segs, squash=0.82, up_hint=(1.0, 0.0, 0.0))
+    P = P + (0.03 * ck.fbm(P * 4.0, SEED + 32))[:, None]
+    run = ck.smoothstep(0.6, 0.95, np.abs(np.sin(P[:, 1] * 9.0 + ck.fbm(P * 2.0, SEED + 33) * 3.0)))
+    col = ck.mix(PAL["deep_teal_shadow"], PAL["storm_slate"], (0.5 * ck.fbm(P * 1.5, SEED + 35) + 0.5)[:, None])
+    col = ck.mix(col, PAL["foam_white"] * 0.8, (0.7 * run)[:, None])  # the sea running down it in streaks
+    ck.finish(sheath, P, T, "water", col, skin, wet=1.0)
+    return shroud, sheath
+
+
 def build_clips() -> list[ck.Clip]:
     bodies = [f"body{i}" for i in range(N_BODY)]
     idle = ck.Clip("idle", 3.4, loop=True)
@@ -195,7 +230,22 @@ def build_clips() -> list[ck.Clip]:
         ko.key("head", t, (30.0 * d, 0, 0))
         ko.key("spar_l", t, (0, 0, 22.0 * d))
         ko.key("spar_r", t, (0, 0, -22.0 * d))
-    return [idle, attack, cast, hit, ko]
+    # `hauled_down` (m2-slice act1_ch04 §5): the shroud burns away and it drops out of the rigging onto the deck. The
+    # drop is held on the body (the spars stay planted), so the deck strikes are the base clips played from that pose.
+    def deck_pose(c: ck.Clip, t: float, d: float) -> None:
+        c.key("body0", t, (8.0 * d, 0, 0), (0, -1.05 * d, 0.25 * d))
+        for i, b in enumerate(bodies[1:], 1):
+            c.key(b, t, (12.0 * d * (1 if i % 2 else -0.5), 0, 0))
+        c.key("head", t, (-10.0 * d, 0, 0))
+
+    drop = ck.Clip("phase_drop", 1.6)
+    for t, d, flail in ((0.0, 0.0, 0.0), (0.35, 0.1, 1.0), (0.8, 1.08, -0.6), (1.1, 0.96, 0.3), (1.6, 1.0, 0.0)):
+        deck_pose(drop, t, d)
+        drop.key("block", t, (0, 0, 35.0 * flail))
+    deck = ck.pose_of(lambda c: deck_pose(c, 0.0, 1.0))
+    idle_deck = ck.in_pose(idle, "idle_deck", deck)
+    variants = [ck.in_pose(c, f"{c.name}_deck", deck) for c in (attack, cast, hit)]
+    return [idle, attack, cast, hit, ko, drop, idle_deck] + variants
 
 
 def main() -> None:
@@ -208,7 +258,9 @@ def main() -> None:
     spars(mesh, rig)
     body(mesh, rig, j)
     rigging(mesh, rig, j)
-    info = ck.export_creature(mesh, rig, build_clips(), args.out, extras={"hymn_creature": "spar_wraith"})
+    shroud, sheath = wraps(rig, j)
+    info = ck.export_creature(mesh, rig, build_clips(), args.out, extra_meshes=[shroud, sheath],
+                              extras={"hymn_creature": "spar_wraith"})
     print(f"spar_wraith: {info}")
 
 

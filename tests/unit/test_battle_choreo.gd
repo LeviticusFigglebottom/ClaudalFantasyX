@@ -306,15 +306,7 @@ func test_reduced_motion_shortens_the_run() -> void:
 	choreo.reduced_motion = true
 	ctl.act(&"attack", [foe])
 	var plan := choreo.current()
-	var full := BattleChoreoPlan.melee_gap(
-		choreo.data,
-		choreo.style("melee"),
-		plan["from"],
-		plan["dir"],
-		plan["aim"],
-		choreo._bodies(&"rhen"),
-		choreo._radius(&"rhen")
-	)
+	var full := (plan["from"] as Vector3).distance_to(_home_pos(foe)) - float(choreo.style("melee")["stop_short_m"])
 	var ran := (plan["from"] as Vector3).distance_to(plan["to"] as Vector3)
 	var k := float((BattleChoreo.load_data()["reduced_motion"] as Dictionary)["travel_scale"])
 	assert_between(ran, full * k - 0.01, full * k + 0.01)
@@ -394,18 +386,18 @@ func test_the_party_holds_a_victory_pose_before_the_result() -> void:
 func test_victory_clips_start_one_after_another() -> void:
 	var players: Array[AnimationPlayer] = []
 	for cid: StringName in [&"rhen", &"asha"]:
-		var real := BattleClips.player_of(ctl.stage.stand_in(cid))
-		if real != null and real.has_animation(BattleClips.VICTORY):
-			players.append(real)  # a real hero model (claude/hero-integration) plays its own clip
-			continue
-		var player := AnimationPlayer.new()
-		var lib := AnimationLibrary.new()
-		for clip in [BattleClips.IDLE, BattleClips.VICTORY]:
-			var a := Animation.new()
-			a.length = 2.0
-			lib.add_animation(clip, a)
-		player.add_animation_library(&"", lib)
-		ctl.stage.stand_in(cid).add_child(player)
+		# A real hero model (hero-integration) brings its own player, which the outro drives; a stand-in gets one.
+		var player := BattleClips.player_of(ctl.stage.stand_in(cid))
+		if player == null:
+			player = AnimationPlayer.new()
+			var lib := AnimationLibrary.new()
+			for clip in [BattleClips.IDLE, BattleClips.VICTORY]:
+				var a := Animation.new()
+				a.length = 2.0
+				lib.add_animation(clip, a)
+			player.add_animation_library(&"", lib)
+			ctl.stage.stand_in(cid).add_child(player)
+		assert_true(player.has_animation(BattleClips.VICTORY), "%s has a victory clip" % cid)
 		players.append(player)
 	_to_turn_of(&"rhen")
 	for e in ctl.engine.enemies:
@@ -535,9 +527,9 @@ func test_a_hero_strike_lands_on_its_clips_contact_marker() -> void:
 
 
 func test_a_primitive_stand_in_has_no_clips() -> void:
-	var f := FighterStandIn.new()  # its own capsule: the sandbox's heroes may be real models now
-	ctl.stage.add_child(f)
-	f.setup(&"primitive", {"shape": "capsule", "color": "#808080", "radius": 0.3, "height": 1.7}, {})
+	var f := FighterStandIn.new()  # Ysolde is still a capsule; the heroes and foes are actor scenes (M2-UI-07)
+	f.setup(&"ysolde", BattleStage.stand_in_spec(&"ysolde"), {})
+	ctl.add_child(f)
 	assert_eq(BattleClips.player_of(f), null)
 	for clip in BattleClips.ALL:
 		assert_false(BattleClips.play(f, clip))

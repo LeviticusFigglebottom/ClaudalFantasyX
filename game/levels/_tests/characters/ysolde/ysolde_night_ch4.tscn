@@ -1,0 +1,40 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="PackedScene" path="res://game/levels/_tests/characters/ysolde/ysolde_stage.tscn" id="stage"]
+
+[sub_resource type="Environment" id="Night"]
+background_mode = 1
+background_color = Color(0.055, 0.086, 0.141, 1)
+ambient_light_source = 2
+ambient_light_color = Color(0.133, 0.208, 0.31, 1)
+ambient_light_energy = 0.35
+reflected_light_source = 1
+tonemap_mode = 4
+tonemap_exposure = 1.1
+tonemap_white = 8.0
+ssao_enabled = true
+ssao_radius = 0.04
+ssao_intensity = 1.0
+glow_enabled = true
+glow_intensity = 0.3
+glow_bloom = 0.02
+glow_hdr_threshold = 1.2
+fog_enabled = true
+fog_light_color = Color(0.133, 0.208, 0.31, 1)
+fog_light_energy = 0.6
+fog_density = 0.02
+fog_sky_affect = 0.0
+
+[node name="YsoldeStage" instance=ExtResource("stage")]
+emotion = "cold"
+
+[node name="WorldEnvironment" parent="."]
+environment = SubResource("Night")
+
+[node name="KeyLight" parent="."]
+light_color = Color(0.62, 0.71, 0.85, 1)
+light_energy = 0.45
+
+[node name="RimLight" parent="."]
+light_color = Color(0.56, 0.66, 0.82, 1)
+light_energy = 1.6

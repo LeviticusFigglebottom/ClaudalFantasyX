@@ -20,6 +20,13 @@
       "breath_sec": 2.4,
       "breath_min": 0.75
     },
-    "page": {"rect": [780, 178, 952, 744], "pad": 28}
+    "page": {"rect": [780, 178, 952, 744], "pad": 28},
+    "portrait": {
+      "doc": "M2-UI-26: the foe's live portrait (BestiaryPortraitSlot) in the height the page leaves, square in its bottom-right corner, between min_px (hidden below) and max_px. A never-Read foe is a silhouette in theme role silhouette_role at silhouette_alpha.",
+      "min_px": 160,
+      "max_px": 400,
+      "silhouette_role": "outline",
+      "silhouette_alpha": 0.92
+    }
   }
 }

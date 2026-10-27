@@ -1,0 +1,7 @@
+[gd_resource type="StandardMaterial3D" format=3]
+
+[resource]
+resource_name = "wick_wax"
+albedo_color = Color(0.604, 0.518, 0.384, 1)
+metallic = 0.0
+roughness = 0.55

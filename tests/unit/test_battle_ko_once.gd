@@ -146,7 +146,9 @@ func _fell(foe: BattleCombatant) -> void:
 		ctl.act(&"attack", [ctl.engine.living_foes_of(ctl.engine.current)[0].id])
 	foe.hp = 1
 	ctl.act(&"attack", [foe.id])
-	assert_eq(foe.hp, 0, "felled")
+	assert_true(
+		foe.hp == 0 or foe.yielded, "felled (or, for a foe that yields at 0 hp, yielded: it leaves the same way)"
+	)
 
 
 ## Three more actions by whoever is next (the party and the other foes).

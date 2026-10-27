@@ -1,0 +1,18 @@
+{
+  "act_card": {
+    "doc": "M3-C09-05 (act1_ch09.md §9 UI 2, B11): the title card on black between acts, and any other one-line title card on black (the Prologue's 'One month earlier.' is the same shape: ActCard.show_caption). The screen is black (back_color) for as long as the card is up; the words fade in over in_sec, hold for hold_sec, and fade out over out_sec, and then the black stays until the card is freed or hidden, so the next scene fades in from it. An act card is two lines: the act's numeral line ('Act II', label_key, BannerLabel small caps) over a centred gold rule and its name ('The Truth', title_key, TitleLabel). A caption is the name line alone. acts maps the act number (a string) to its keys. Rects are x, y, w, h at the 1920 x 1080 reference, pinned to the centre so the card stays centred at 21:9 and 16:10 (M2-UI-29). The words rise drift_px while they fade in (reduced motion: no rise).",
+    "canvas_layer": 34,
+    "back_color": "#000000",
+    "in_sec": 1.2,
+    "hold_sec": 3.0,
+    "out_sec": 1.2,
+    "drift_px": 9,
+    "acts": {
+      "2": {"label_key": "ACT_CARD_2_LABEL", "title_key": "ACT_CARD_2_TITLE"}
+    },
+    "label": {"rect": [360, 438, 1200, 66], "pin": "center"},
+    "rule": {"rect": [720, 516, 480, 12], "pin": "center"},
+    "title": {"rect": [360, 540, 1200, 105], "pin": "center"},
+    "caption": {"rect": [360, 480, 1200, 120], "pin": "center"}
+  }
+}

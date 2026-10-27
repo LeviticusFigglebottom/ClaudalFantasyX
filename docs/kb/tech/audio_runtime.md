@@ -318,6 +318,33 @@ max, true peak −2.96 to −10.7 dBTP, byte-identical across two renders.
 - `ui_craft` (1.15 s): two padded hammer taps, then an E6 bell glint and a B6 bar. Smaller than `ui_lattice_node`.
 - `ui_map_pan` (0.18 s): a soft paper slide with no pitch, 6 dB under the other UI rows in game.
 
+### The pages live (M2-AUD-17)
+
+claude/menus is merged here, so every hook above whose class exists is live (no `pending`), and validate_data checks
+its class and signal names. Only `FormationMenu` is still `pending`: no script declares it yet.
+`test_change_rows_and_live_hooks` fails if a hook is pending while its class exists, or live while it is absent.
+No new sound: the new and rewritten hooks reuse existing rows.
+
+| Class | What changed |
+|---|---|
+| `ShopMenu` | Rewritten. The guessed `bought` / `sold` / `refused` / `tab_changed` signals don't exist (it is a `TownMenu`, which declares only `closed`). Now: open / `closed`; `level` (ROOT 0, BUY 1, SELL 2) up/down is confirm/cancel; `root_page().cursor`, `detail_page().cursor` and `count` tick; `[wallet.amount(), item_total(inventory), equipment.uids().size()]` of `model.party` changing is `ui_buy` (a deal, so a sale into a full purse is still heard) |
+| `InnMenu` | Rewritten. No `rested` / `refused` signals. Now: open / `closed`; `root_page().cursor` ticks; `model.rests` rising is `ui_inn_rest`, which outranks the cursor's jump to Leave |
+| `LatticeMenu` | Adds `confirm_page().cursor` (the question's two rows) |
+| `EquipMenu` | `ui_error` is now `status_is_refusal() and level == 1`. GEAR's own lines never refuse, so a refusal there is a Confirm on a filled ability slot. On PIECES and RECIPES the line refuses as soon as the cursor lands, and the old watch played an error on a hover |
+| `StatusMenu` (new) | open / `closed`; `hero` changing is `ui_page` (another hero's sheet), which outranks `list_page().cursor`'s tick. Accept does nothing, so nothing plays |
+| `BattlePauseMenu` (new) | open (`on_enter`, the pause itself) / `closed` (Resume or Quit); `rows_page().cursor` ticks; `level` (ROOT 0, QUIT 1) up/down is confirm/cancel; `settings_menu != null` true/false is confirm/cancel (the Settings hub over the pause, then back) |
+| `FieldSubmenu`, `ZoneMapMenu`, `ZoneMapView`, `TipCard`, `ItemsMenu` | Checked against the real classes and unchanged, apart from dropping `pending` |
+
+- **Not heard:** a refused Confirm wherever the status line already showed that refusal before Confirm. That covers
+  the shop, the inn, Equip's PIECES and RECIPES, a key item on Items, and a second Confirm on the same refused
+  Lattice node. Customize's arming Confirm isn't heard either. The fix is listed in M2-AUD-15: a public refusal
+  counter or a signal.
+- **Tests** (`tests/unit/test_field_audio.gd`): the real LatticeMenu, EquipMenu, ItemsMenu, StatusMenu,
+  BattlePauseMenu, ShopMenu, InnMenu, ZoneMapMenu (with its view) and TipCard, built the way their own tests build
+  them and driven through `handle_input`. Each step hears exactly one row, or nothing. The rows go through
+  `UiAudio.player`, so nothing real plays. Stand-ins remain only for FormationMenu (absent), a ZoneMapView pan (the
+  real view can't pan) and the title (a real launch changes the scene).
+
 ## Reefball (M3-AUD-17)
 
 `ReefballAudio` (`game/audio/reefball_audio.gd`) listens to the arena with `game/data/audio/reefball_hooks.json`.
@@ -364,8 +391,10 @@ from `game/data/audio/choreo_sfx.json` (rows in `sfx_choreo.json`, Combat bus, f
   (`ChoreoAudio.attach_to`), under the director, keyed in `listeners` so it is freed when the choreography leaves (a
   retry builds a new one). Signals are connected by name (`has_signal`; extra arguments dropped with `unbind`); the
   methods it reads are guarded too (`current`, `style_id_for`, `entering`, `leaving`, `animating`, `after_sequence`,
-  and `speed`). So this branch compiles and runs without the classes; the hook row says `pending` until they merge
-  (validate_data then checks the class's signals for real).
+  and `speed`). The hook is live since M3-AUD-800 (big7 brought BattleChoreo here; no `pending`): validate_data
+  checks the class's `beat` / `contact` signals and that every choreo_sfx.json style is a choreo.json style.
+  `attach_to` first frees any ChoreoAudio whose choreography has left the tree, so a retry (BattleChoreo.attached
+  replaces the node) leaves exactly one listener.
 - **BattleBossChoreo and BattleVowboundChoreo are RefCounted helpers, not nodes**, and emit no signals of their own,
   so no node-added hook can see them. Their moments are heard from the engine (found as the `engine` of the
   choreography's nearest ancestor that has one, the BattleController) and from BattleChoreo's own state:
@@ -375,8 +404,11 @@ from `game/data/audio/choreo_sfx.json` (rows in `sfx_choreo.json`, Combat bus, f
     `entering(cid)` / `leaving(cid)`, as each move's clock reaches 0 (after its delay). A rise lasting `long_sec`
     or more (the C10 summon entry, 2.6 s) plays `vowbound_rise_long`. Fall or sink comes from
     `engine.vowbound.departed(v, fell)`;
-  - the **Flood brace**: `engine.phase_changed` to `flood.phase`, then `after_sequence`, then `flood_brace` for each
-    active member `stagger_sec` apart (BattleBossChoreo's brace; 0.12 s in both tables).
+  - the **Flood brace**: `engine.phase_changed` to the boss's flood phase, then `after_sequence`, then `flood_brace`
+    for each standing active member, `stagger_sec` apart (BattleBossChoreo's brace). The phase and stagger are read
+    from the choreography's own table (`BattleChoreo.data` `bosses.<enemy base id>.flood`, `flood_for()`), so the
+    sound and the motion share one number; choreo_sfx.json `flood` holds only the sfx (a `phase` / `stagger_sec`
+    there is a fallback, and validate_data needs one of the two).
 - **Beats.** `approach` and `return` spread `*_steps` footfalls (`choreo_step`) over the beat's length (plan times
   ÷ the battle speed); fighters in `no_steps` (fliers, the bell, Ilun) make none. `strike` starts the style's whoosh
   (or `strike_by_weapon`: the anchor-cleaver and the bell's hood swing heavy) `peaks[whoosh]` seconds before the
@@ -396,9 +428,13 @@ from `game/data/audio/choreo_sfx.json` (rows in `sfx_choreo.json`, Combat bus, f
   whooshes with a crest time, style ids known to `game/data/battle/choreo.json` once present);
   `tools/tests/test_audio_data.py` `ChoreoSfxTest`; `tests/unit/test_choreo_audio.gd` with a stand-in built at
   runtime (a GDScript compiled in the test, no class_name, named BattleChoreo through `ChoreoAudio.matcher`).
-- **After the merge, verify:** the real BattleChoreo's `beat`/`contact` signatures match (validate_data does it once
-  the class exists; drop `pending`), the whoosh crest against a live melee at 1x and 2x, and that a retry leaves one
-  ChoreoAudio. Kerrid has no row in characters.json yet; his `anchor_cleaver` accent waits for him.
+- **Verified on the real classes (M3-AUD-800):** `tests/integration/test_battle_audio_live.gd` builds the sandbox
+  battle (the real BattleController, BattleChoreo and CreatureActor foes) and attaches what the director's hooks
+  attach. The beat / contact signatures, `current()` (style, approach_end, contact, return_end, recover_end, kos),
+  `style_id_for`, `entering` / `leaving` (`{t, spec}` with `spec.sec`, t from -delay), `animating`,
+  `after_sequence` and `speed` all match. One whoosh then one accent per melee blow, the crest on the contact at 1x
+  and 2x, one collapse per KO, a retry leaves one ChoreoAudio and one BattleAudio. Kerrid has no row in
+  characters.json yet; his `anchor_cleaver` accent waits for him.
 
 ## Battle stings (M3-AUD-18)
 
@@ -410,9 +446,14 @@ on claude/battle-presentation). The director connects that signal to a `StingAud
 |---|---|---|
 | `battle_stinger` | `[encounter]` | `sting_tideline`: surf climbing, bubbles thickening, a crest that spills (2.4 s, −18) |
 | `battle_bark` | `[encounter, line_key, speaker_key]` | `sting_bark`: a low breath of water under the line (1.8 s, −22) |
-| `boss_intro` | `[encounter_id, title_key]` | `sting_boss`: low gong and drum, a struck open fifth, a darkening wash (4 s, −16); the Drownbell's `by_arg` row `sting_boss_bell` draws the water in, then a near, dry toll (5.3 s). The `boss_intro` duck (mix.json, Music −5 dB) holds 3.5 s under the card. |
+| `boss_intro` | `[encounter_id, title_key]` (the encounter id: `by_arg` keys are encounters.json ids) | `sting_boss`: low gong and drum, a struck open fifth, a darkening wash (4 s, −16); the Drownbell's `by_arg` row `sting_boss_bell` draws the water in, then a near, dry toll (5.3 s). The `boss_intro` duck (mix.json, Music −5 dB) holds 3.5 s under the card. |
 
-Reduced audio swaps the boss stings for `_soft` versions without sub-bass. The rows are on the Combat bus
+Reduced audio swaps the boss stings for `_soft` versions without sub-bass. **Emitters (M3-AUD-800):** on this
+branch only `battle_bark` is announced (BattleStinger `_show_bark`, `[encounter, line_key, speaker_key]`);
+`battle_stinger` (BattleStinger, `[encounter]`) and `boss_intro` (BattleBossIntro `_begin`, `[engine.encounter_id,
+title_key]`) are on claude/battle-presentation (M2-BPR-05's later commit and M3-BPR-02), not merged yet; their
+argument shapes there match this table. test_battle_audio_live.gd plays the bark from the real BattleStinger and the
+boss card's sting and duck from that shape. The rows are on the Combat bus
 (`sfx_battle.json`); the generator is `assets_src/sfx/battle_stings.py` (it reuses battle_sfx.py's helpers). Tests:
 `tests/unit/test_battle_stings.gd`, `tools/tests/test_audio_data.py` `BattleStingsTest`.
 
@@ -447,17 +488,22 @@ Reduced audio swaps the boss stings for `_soft` versions without sub-bass. The r
   guard), and `clips` maps a clip to an event: `attack` and `cast` play the creature's move. CreatureActor emits no
   signal of its own, so its AnimationPlayer's is the hook. While no model is heard for a kind, its move plays with
   its attack (`move_on_action`), as on this branch today. Nothing touches the model.
-- **Once claude/creatures merges, check that:**
-  - BattleStage's actors enter under the BattleController, so `scope` finds them. A model found outside it is
-    ignored.
-  - `models` counts each creature.
-  - The move then plays once per action, from the clip, not twice.
-  - If the battle-presentation track times hits to `CreatureActor.contact_time`, the attack voice may want the
-    same delay (`delays_ms.attack`).
+- **Verified on the real CreatureActor (M3-AUD-800):** the actors sit under FighterStandIn under BattleStage under
+  the BattleController, so `scope` finds them; `models` counts each sandbox creature once; `creature_id` is the base
+  id; its clips are `idle`, `hit`, `ko`, `attack`, `cast` and phase clips, and `clips` maps `attack` / `cast` (the
+  creatures.json `clip_by_kind`) to the move. A creature's action plays its attack voice as it starts and its move
+  once, from the strike clip (BattleChoreo's strike beat), never also with the attack. With actions landing
+  instantly no clip plays, so a heard model makes no move (nothing moves either).
+  - **Hurt and death follow the contact.** BattleChoreo times the blow (and BattleVfx the hit and KO sounds) to the
+    contact beat, and to `CreatureActor.contact_time` for a creature's clip, so CreatureAudio now hears the
+    choreography's contact signal (the node choreo_sfx.json's hook names, found under the scope) for hurts and
+    deaths, `delays_ms` after it; with no choreography, action_resolved as before. The attack voice stays on
+    action_resolved (`delays_ms.attack` 0): it is the creature's cry as it sets off, not the blow.
 - `tests/unit/test_creature_audio.gd` covers the table against enemies.json and the rows' imports, the opening idle
   and its cooldown, attack and the move fallback, one hurt per kind, one death (a hit or poison), silence for a
   hero's action and a miss, a model's clip playing the move by name (a plain Node3D with an AnimationPlayer, no
-  stub class), reduced audio, and BattleAudio bringing the listener.
+  stub class), reduced audio, and BattleAudio bringing the listener. `tests/integration/test_battle_audio_live.gd`
+  covers the real models (above).
 
 ## Blip pace (M3-AUD-21)
 

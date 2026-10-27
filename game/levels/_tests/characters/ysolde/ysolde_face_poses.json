@@ -1,0 +1,24 @@
+{
+  "_about": "Ysolde's emotion tags -> face blendshape weights (docs/kb/art/characters/ysolde.md §6.2). A pair is [L, R]; a scalar sets both sides of a paired shape. Her rest brow_outer_up_L 0.08 (the left brow sits 1.5 mm higher: a permanent faint evaluation) is added to every row, so brow_outer_up is always a pair. Her tells: mouth_press in nearly every row, the feeling in the lids, and a smile that lifts on the left first (mouth_smile L = R x 1.2). Blend 0.28 s with no overshoot: her emotions arrive late and leave early. Tags: game/data/dialogue/emotions.json. Read by the hero stage for the M3-CHR-01 review shots; the sequencer.json face_poses entry is requested from Cinematics.",
+  "blend_in_s": 0.28,
+  "rest": {"brow_outer_up_L": 0.08},
+  "overshoot": {},
+  "head_notes": {"laugh": "head dips 4 degrees (she looks down, not back)", "sad": "gaze drops 8 degrees", "determined": "chin lifts 2 degrees", "guilty": "gaze down 12 degrees, not away", "exhausted": "head pitch -4 degrees; shoulders stay up"},
+  "emotions": {
+    "neutral": {"mouth_press": 0.1, "brow_outer_up": [0.08, 0.0]},
+    "soft_smile": {"mouth_smile": [0.18, 0.15], "lid_squint": 0.08, "mouth_press": 0.1, "brow_outer_up": [0.08, 0.0]},
+    "smile": {"mouth_smile": [0.42, 0.35], "cheek_raise": 0.25, "lid_squint": 0.18, "brow_outer_up": [0.08, 0.0]},
+    "laugh": {"mouth_smile": [0.7, 0.58], "cheek_raise": 0.5, "lid_squint": 0.45, "jaw_open": 0.12, "mouth_press": 0.25, "brow_outer_up": [0.08, 0.0]},
+    "worried": {"brow_inner_up": 0.4, "brow_down": 0.2, "mouth_press": 0.3, "brow_outer_up": [0.08, 0.0]},
+    "sad": {"brow_inner_up": 0.45, "lid_close": 0.3, "mouth_press": 0.25, "mouth_frown": 0.15, "brow_outer_up": [0.08, 0.0]},
+    "grief": {"brow_inner_up": 0.85, "brow_down": 0.35, "lid_squint": 0.35, "mouth_frown": 0.45, "mouth_press": 0.35, "jaw_clench": 0.25, "brow_outer_up": [0.08, 0.0]},
+    "angry": {"brow_down": 0.6, "lid_squint": 0.45, "mouth_press": 0.4, "nose_sneer": 0.1, "brow_outer_up": [0.08, 0.0]},
+    "cold": {"brow_down": 0.2, "lid_close": 0.22, "mouth_press": 0.4, "brow_outer_up": [0.08, 0.0]},
+    "surprised": {"brow_inner_up": 0.45, "brow_outer_up": [0.68, 0.6], "lid_wide": 0.4, "jaw_open": 0.12},
+    "afraid": {"brow_inner_up": 0.75, "brow_outer_up": [0.38, 0.3], "lid_wide": 0.5, "mouth_stretch": 0.3, "mouth_press": 0.15},
+    "determined": {"brow_down": 0.4, "lid_squint": 0.2, "mouth_press": 0.45, "jaw_clench": 0.15, "brow_outer_up": [0.08, 0.0]},
+    "tender": {"brow_inner_up": 0.25, "mouth_smile": [0.15, 0.12], "lid_close": 0.22, "brow_outer_up": [0.08, 0.0]},
+    "guilty": {"brow_inner_up": 0.45, "lid_close": 0.35, "mouth_press": 0.4, "brow_outer_up": [0.08, 0.0]},
+    "exhausted": {"lid_close": 0.4, "brow_inner_up": 0.15, "mouth_press": 0.1, "brow_outer_up": [0.08, 0.0]}
+  }
+}

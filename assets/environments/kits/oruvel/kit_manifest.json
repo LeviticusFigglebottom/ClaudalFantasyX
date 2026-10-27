@@ -1,0 +1,205 @@
+{
+  "generator": "assets_src/environments/kits/oruvel/build.py",
+  "kit": "oruvel",
+  "pieces": {
+    "cabin_keelroof": {
+      "budget": [
+        10000,
+        600
+      ],
+      "bytes": 337900,
+      "lods": {
+        "cabin_keelroof": 6886,
+        "cabin_keelroof-lod1": 174
+      }
+    },
+    "cabin_patched": {
+      "budget": [
+        10000,
+        500
+      ],
+      "bytes": 257268,
+      "lods": {
+        "cabin_patched": 4331,
+        "cabin_patched-lod1": 62
+      }
+    },
+    "chandlery": {
+      "budget": [
+        24000,
+        1200
+      ],
+      "bytes": 706004,
+      "lods": {
+        "chandlery": 14897,
+        "chandlery-lod1": 430
+      }
+    },
+    "cookboat": {
+      "budget": [
+        11000,
+        600
+      ],
+      "bytes": 230740,
+      "lods": {
+        "cookboat": 4979,
+        "cookboat-lod1": 248
+      }
+    },
+    "dive_raft": {
+      "budget": [
+        18000,
+        900
+      ],
+      "bytes": 656916,
+      "lods": {
+        "dive_raft": 14404,
+        "dive_raft-lod1": 364
+      }
+    },
+    "hull_cabin": {
+      "budget": [
+        5500,
+        300
+      ],
+      "bytes": 211344,
+      "lods": {
+        "hull_cabin": 5188,
+        "hull_cabin-lod1": 144
+      }
+    },
+    "hull_outrigger": {
+      "budget": [
+        4500,
+        300
+      ],
+      "bytes": 171376,
+      "lods": {
+        "hull_outrigger": 3998,
+        "hull_outrigger-lod1": 232
+      }
+    },
+    "keel_hull": {
+      "budget": [
+        28000,
+        1500
+      ],
+      "bytes": 1178320,
+      "lods": {
+        "keel_hull": 25283,
+        "keel_hull-lod1": 443
+      }
+    },
+    "lintel_gull_open": {
+      "budget": [
+        2800,
+        420
+      ],
+      "bytes": 110212,
+      "lods": {
+        "lintel_gull_open": 772,
+        "lintel_gull_open-lod1": 338
+      }
+    },
+    "net_frame": {
+      "budget": [
+        5000,
+        300
+      ],
+      "bytes": 117352,
+      "lods": {
+        "net_frame": 2734,
+        "net_frame-lod1": 40
+      }
+    },
+    "net_pen": {
+      "budget": [
+        16000,
+        800
+      ],
+      "bytes": 632940,
+      "lods": {
+        "net_pen": 12698,
+        "net_pen-lod1": 544
+      }
+    },
+    "plank_bridge": {
+      "budget": [
+        5000,
+        200
+      ],
+      "bytes": 193288,
+      "lods": {
+        "plank_bridge": 4182,
+        "plank_bridge-lod1": 128
+      }
+    },
+    "raft_deck": {
+      "budget": [
+        18000,
+        900
+      ],
+      "bytes": 740020,
+      "lods": {
+        "raft_deck": 17376,
+        "raft_deck-lod1": 604
+      }
+    },
+    "raft_deck_small": {
+      "budget": [
+        12000,
+        600
+      ],
+      "bytes": 513576,
+      "lods": {
+        "raft_deck_small": 11384,
+        "raft_deck_small-lod1": 524
+      }
+    },
+    "salvage_heap": {
+      "budget": [
+        8000,
+        400
+      ],
+      "bytes": 119568,
+      "lods": {
+        "salvage_heap": 2060,
+        "salvage_heap-lod1": 72
+      }
+    },
+    "scale_hull": {
+      "budget": [
+        14000,
+        700
+      ],
+      "bytes": 317500,
+      "lods": {
+        "scale_hull": 6014,
+        "scale_hull-lod1": 304
+      }
+    },
+    "stall_awning": {
+      "budget": [
+        5000,
+        300
+      ],
+      "bytes": 102868,
+      "lods": {
+        "stall_awning": 1368,
+        "stall_awning-lod1": 96
+      }
+    },
+    "town_far": {
+      "budget": [
+        4000,
+        1500
+      ],
+      "bytes": 175084,
+      "lods": {
+        "town_far": 1874,
+        "town_far-lod1": 566
+      }
+    }
+  },
+  "schema": "hymn-kit/1"
+}
