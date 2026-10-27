@@ -20,7 +20,8 @@ The human's #1 playtest complaint was rigid, snapping motion. Make "no snapping"
 - [x] Battle: every clip change the battle makes, on the real Rhen, Asha and Toma (tests/unit/test_hero_battle_pops.gd).
 - [x] Field: the leader and followers through walk, run, stop and turn-around on the slice and Act I zones
       (tests/unit/test_hero_field_snaps.gd, 13 walkable zones; first_verse has no field player).
-- [ ] Cutscenes: hero actors through the slice cutscenes (prologue, Haluna beach) and the Act I greybox ones.
+- [x] Cutscenes: 26 in-engine scenes over Haluna and the Act I zones (tests/integration/test_hero_cutscene_snaps.gd).
+      The prologue scene is its own set (prologue_scene.gd) and is not in it yet.
 - [ ] Everything the guards find is fixed (or requested from the owner).
 
 ## Notes
@@ -47,5 +48,13 @@ static, so any blend between them has to move the arms. That's a gesture, not a 
   trial merge with claude/creatures: all 7 pass (turns 110–200 deg/s eased; clip peaks at about half the allowed
   step). Nothing to fix in FieldNpc. The gap is placement: request M2-HER-1112 (slice-polish) to put the layer in
   Haluna.
+
+### 2026-10-27: cutscenes
+- Heroes are clean in every scene. Every non-hero stage actor snaps: whip turns (~800 deg/s peaks from turn_sec 0.45)
+  and a walk jumped to its mark when the scene ends (Ysolde, ch04_gangplank, 1.15 m in a frame). Fix verified on
+  claude/m2-slice and handed over as request M2-HER-1113 (docs/kb/tech/cutscene_no_snap.patch). The test lists the
+  11 pairs as KNOWN (reported, not failed) until it lands.
+- Camera cuts are told apart (a camera jump of 0.75 m or 20 deg in a frame), so a reposition hidden by a cut is not
+  a snap.
 
 ## Review log
