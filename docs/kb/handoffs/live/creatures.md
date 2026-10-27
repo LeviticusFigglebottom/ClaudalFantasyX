@@ -395,4 +395,10 @@ RENDER-REQUEST @ 44080e1e: creature_tannin_archer, creature_gallery_ray, creatur
   - **Checks run:** Godot creature 37/0 (no test lost in the merge), Blender verify identical ×12, validate_data, taskboard, manifest, lint, format, tools test_creatures.
   - **Filed M3-CRE-631:** shipped base clips that dip under the floor (reef crab family and tide crawler legs in the KO, down to −0.32 m; slag tortoise claws 4.5 cm at rest), the reef crab's faint weak point, and its triangle count over budget. It rides the M3-CRE-630 batch rebuild.
 RENDER-REQUEST @ f21fba5f: creature_ridge_lynx, creature_cord_moth, creature_glass_skate, creature_root_crab, creature_fen_leech, creature_scree_crawler, creature_rim_crawler; why: M3-CRE-628 new Act II regulars and variants, never rendered (no baselines); judge whether the moth's knot rows and the skate's near-clear back read at battle distance.
+- **MERGE-READY @ cbd1ce38: M3-CRE-630, creature clips no longer play one frame late.**
+  - The kit keyed frame f+1 for clip time f/FPS, so every clip started and peaked 1/30 s late. Now fixed.
+  - All 46 kit-dependent jobs rebuilt: 42 creature GLBs changed; materials and wildlife are unchanged.
+  - **Checks run:** Blender verify identical ×46; Godot creature 37/0, battle 687/0, post_import 21/0.
+  - **Lead:** the GLBs got heavier in git history (all 42 at once). One batch was on purpose: a kit change rebuilds them all.
+  - **The PC render is held** until M3-CRE-631 (the shipped clips that dip under the floor, in progress in a worktree agent) lands, so one cycle re-approves every creature and battle_choreo shot.
 
