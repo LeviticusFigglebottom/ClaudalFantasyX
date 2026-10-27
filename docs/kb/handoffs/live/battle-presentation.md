@@ -83,6 +83,9 @@ RENDER-REQUEST @ 60b62678: battle_arena_wall_head,battle_boss_intro_reach; why: 
   - **For the Lead at merge:** creatures' `CreatureModels.vowbound_creature` and this branch's
     `BattleStage.vowbound_model` now use the same rule (a row with `vowbound` true and a `scene`). Theirs answers
     first; mine is a stopgap the second merger can delete.
+- **Checks:** full `--filter=battle` on 47327ca6: **757 run, 0 failed**; gdlint and gdformat clean. MERGE-READY
+  stands at the branch head. test_screenshots stays red only for reach, wall_head and drownbell_flood until the HEAD
+  render is viewed.
   - Ilun's four summon shots (battle_vowbound_call, battle_vowbound_out, battle_choreo_vowbound_rise,
     battle_choreo_summon) need a render **after** creatures merges. On this branch Ilun is still the capsule.
 
