@@ -97,7 +97,9 @@ for the tools unittests to pass on Windows.
   `/root/keep_<name>/` (run1/compare.txt, out/, blender.log), since the next sync wipes `tests/screenshots/out`.
 - **Import retry:** Godot 4.6.3's `--import` sometimes aborts ("double free or corruption") and leaves a partial
   `.godot/`; every capture after it is BLACK and reads as a huge drift (env-art and ui renders, 2026-10-27). gate.sh
-  and render_batch.sh grep the import log and retry up to three times on a fresh `.godot/`.
+  and render_batch.sh retry up to three times on a fresh `.godot/` unless the import exits 0 and prints its final
+  `loading_editor_layout` DONE line (M2-NIT-904: a SIGABRT can leave no crash text in the log; 2026-10-27 a partial
+  import made the Shell Shrine bake come out 150 KB instead of 930 KB, with no error).
 - **Track renders** (TRACK-RULES "RENDERING GOES TO THE PC"):
   1. `python tools/dev/pc_gate/render_scan.py .` in the Windows clone after `git fetch origin` lists unanswered
      `RENDER-REQUEST` lines (answered = a `RENDERED @ <sha>` line in any `origin/gpu/*` pc-gpu.md).

@@ -8,9 +8,11 @@ set -u
 import_ok() {  # Godot 4.6.3's --import sometimes aborts (double free); retry up to 3 times on a fresh .godot
   local log=$1 n
   for n in 1 2 3; do
-    rm -rf .godot; "$G4bin" --headless --path . --import > "$log" 2>&1
-    grep -qE "double free|Aborted|core dumped|Segmentation" "$log" || return 0
-    echo "import crashed (try $n)" >> "$log.retries"
+    rm -rf .godot; "$G4bin" --headless --path . --import > "$log" 2>&1; local rc=$?
+    # A SIGABRT can leave nothing in the log (the shell prints "Aborted", not Godot): trust the exit code
+    # and the editor-layout DONE line that a finished import prints, not only the log's crash text.
+    if [ $rc -eq 0 ] && grep -q "DONE.*loading_editor_layout" "$log"       && ! grep -qE "double free|Aborted|core dumped|Segmentation" "$log"; then return 0; fi
+    echo "import crashed (try $n, exit $rc)" >> "$log.retries"
   done; return 1
 }
 ref=$1; base=$2; shards=${3:-3}

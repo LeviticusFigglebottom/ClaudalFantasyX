@@ -4,13 +4,42 @@ Seeded by the Lead on 2026-10-23. **This environment owns this file** (CLAUDE.md
 branch after every finished item, and it replaces `docs/kb/qa/gpu/2026-10-23-pc-queue-progress.md` as the canonical
 record. The newest copy is on the most recently pushed `gpu/*` branch.
 
-> **Current session:** `session_01DKdurcvrzq9PEvuSu5L2nA` (Remote Control on this PC, from 2026-10-24). The Lead is
+> **Current session:** `session_01F3vrUMSWVyLnG3asrc8viy` (Remote Control on this PC, from 2026-10-27; it replaces
+> `session_01DKdurcvrzq9PEvuSu5L2nA`, which died when the PC was switched off mid-gate). The Lead is
 > cloud session `session_018aiGwGLGkxsnMnu8VfCu1m`. The integration branch is now
 > **`claude/undertow-lead-handoff-ze8rrn`** (-423ixt is frozen).
-> **This copy, on `gpu/m2-nit-903-runner-renders`, is the newest.**
+> **This copy, on `gpu/shrine-gi-big12`, is the newest.**
 
 ## Renders for the tracks (RENDERED lines, newest first)
 
+- **Shell Shrine GI rebaked on lead/gate-big12 @ 8a28be17** (the Lead's ask; test_shrine_gi_bake failed there): gpu/shrine-gi-big12,
+  both states OK (1.56 s each, ~930 KB), gi_inputs.py --write; test_shrine_gi_bake passes. A first attempt ran on a silently
+  aborted import (150 KB bake): the import retry now checks the exit code and the final DONE line (M2-NIT-904).
+- RENDERED @ eeaf91bf: gpu/render-act1-chapters-eeaf91b; 0 pass, 2 drift
+- RENDERED @ 44080e1e: gpu/render-creatures-44080e1; 0 pass, 4 drift
+- RENDERED @ 8b25b3b4: gpu/render-m2-slice-8b25b3b; 1 pass, 7 drift
+- RENDERED @ 99623a0c: gpu/render-ui-99623a0; 4 pass, 1 drift (portraits via render.sh: hullgnaw, scuttler, tide_crawler, undertows_reach
+  byte-identical to the cloud PNGs; squall_wing 0.0083, wing glints only)
+- RENDERED @ 8daa0c63: gpu/render-act1-chapters-8daa0c6; 0 pass, 2 drift
+- RENDERED @ 8770a067: gpu/render-env-art-8770a06; 1 pass, 10 drift
+- RENDERED @ 60b62678: gpu/render-battle-presentation-60b6267; 0 pass, 2 drift
+- RENDERED @ 1b84b89c: gpu/render-hero-integration-1b84b89; 11 pass, 0 drift
+- RENDERED @ 4ce8a48a: gpu/render-m2-slice-4ce8a48; 4 pass, 4 drift. **The Shell Shrine's GI rebaked on lavapipe** (both states,
+  16 s; shrine_gi_{open,closed}.res and shrine_gi_inputs.json are on the branch, so test_shrine_gi_bake passes). slice_haluna_villagers_village:
+  no capture at this sha (the PackedStringArray `flags` bug that 3fddb67b fixes).
+- RENDERED @ b99be560: gpu/render-creatures-b99be56; 0 pass, 1 drift
+- RENDERED @ 680cd88e: gpu/render-battle-presentation-680cd88; 0 pass, 4 drift
+- RENDERED @ 21125780: gpu/render-creatures-2112578; 0 pass, 1 drift
+- RENDERED @ 038d5651: gpu/render-characters-038d565; 10 pass, 9 drift
+- RENDERED @ 5112837a: gpu/render-act1-chapters-5112837; 0 pass, 2 drift
+- RENDERED @ 10f21a17: gpu/render-creatures-10f21a1; 0 pass, 2 drift
+- RENDERED @ 179069de: gpu/render-env-art-179069d; 0 pass, 1 drift
+- RENDERED @ b30c2cf2: gpu/render-act1-chapters-b30c2cf; 0 pass, 2 drift
+- RENDERED @ ba16d48b: gpu/render-env-art-ba16d48; 2 pass, 2 drift
+- RENDERED @ 6454c06c: gpu/render-ui-6454c06; 2 pass, 1 drift
+- RENDERED @ 1a422476: gpu/render-env-art-1a42247; 3 pass, 0 drift
+- RENDERED @ 22a5de11: gpu/render-env-art-22a5de1; 3 pass, 0 drift
+- RENDERED @ 25dcea24: gpu/render-battle-presentation-25dcea2; 2 pass, 4 drift
 - RENDERED @ 77a6a777: gpu/render-act1-chapters-77a6a77; 3 pass, 3 drift
 - RENDERED @ 71f19fbc: gpu/render-env-art-71f19fb; 0 pass, 3 drift
 - RENDERED @ b2453cfd: gpu/render-hero-integration-b2453cf; 3 pass, 7 drift
@@ -23,6 +52,11 @@ record. The newest copy is on the most recently pushed `gpu/*` branch.
 
 ## Gate results (newest first)
 
+- **GATE lead/gate-big11@23ea8c6f: FAIL (expected drift + a new shutdown script error; Lead to view).** Godot 2738/0,
+  coverage and boot ok. Tools: the known test_shrine_gi_bake failure (lane A re-run with it non-fatal). Blender: 13/13
+  identical (base ze8rrn). Shots: 303 compared, 43 failed: 7 new shots, 5 Haluna-villager field/dialogue shots,
+  and 31 repeats of big10's (boss intros, choreo, arenas). New: `Trying to cast a freed object` at shutdown after
+  11 villager/wildlife/Ch6 shots (capture.sh exits 1). `docs/kb/qa/gate-runs/big11/` on `gpu/gate-big11-shots`.
 - **GATE lead/gate-big9@ae4666e0: FAIL (expected drift; Lead to view).** Godot 2561/0, coverage ok, boot smoke ok,
   lint/data/unittests ok. Blender: 51 changed jobs (base ze8rrn), 40 identical, 11 DIFF, all M2-CHR-11 (rhen, toma,
   9 villagers). Shots: 281 compared, 48 failed (battle hero rigs, arenas, boss intros, flood, save_shrine_field,
@@ -36,6 +70,20 @@ record. The newest copy is on the most recently pushed `gpu/*` branch.
   (boss intros hermit/inquisitor/wraith, field_hero_party/rhen_walk/gait_strip). `docs/kb/qa/gate-runs/big10/`.
   The gate now runs Blender after the suite (HYMN_SKIP_BLENDER=1 in ci_local, then verify_blender_builds.py).
 - big9: merged by the Lead (integration 3b7cbf5e).
+
+## Hardware queue results (newest first)
+
+- **M2-CHR-11 verify (2026-10-27):** claude/characters @ 3723f3eb (incl. 20773234), AVX2 i9-12900K: base_body, rhen, toma
+  and 9 villagers 12/12 identical (664 s). Reported to the Lead and characters.
+- **In progress (2026-10-27 ~15:00):** the render queue (21 jobs: the BPR-404 fast-track, the three black re-renders, then
+  oldest first, then the RND-03 lavapipe check), big12 when pushed
+  (it jumps the queue), the ui portraits @ 99623a0c (render.sh) and m2-slice @ 4ce8a48a (GI bake).
+- **M1-QA-09 on hardware (heroes, 2026-10-27):** 49 shots at High 2× and Ultra on ze8rrn@f580e756, `gpu/m1-qa-09-heroes`
+  `docs/kb/qa/gpu/2026-10-27-m1-qa-09-heroes/`. Asha's staff and Toma's spear aren't gripped (open hands; they float upright
+  in run/walk_cycle/offer_hand). The staff goes through the skirt when kneeling. Asha's underskirt is a rigid tube in
+  offer_hand, with the shin through it. The extreme_pose skirt stretches. Toma's beard edge is blotchy. Rhen's limbs and
+  clothing, and Asha's braid, are clean. Identical at High and Ultra (asset or rig, not preset). Owners: characters
+  (hero-integration for the prop attach).
 
 ## PC setup for a new session
 
@@ -144,6 +192,9 @@ python -c "import sys; sys.path.insert(0,'tools/screenshots'); import compare, p
 
 | Branch | State | Content |
 |---|---|---|
+| gpu/gate-big11-shots | big11 gate result (for the Lead to view) | 43 failing shots (out + diff PNGs), compare.txt, blender_diffs.txt, README. |
+| gpu/m3-rnd-03-sefir-tells | **M3-RND-03 in review** (reviewer Art; env-art's M3-ENV-1000 waits on it) | RevenantTells: Sefir's reflection never ripples (still-actor capsule globals, flat SSR on his hits), his shadow faintly too sharp (keys stop casting him; a cancelling spot pair re-casts it crisper). 4 shots (on/off), 7 tests. Lavapipe no-drift check of the water shots queued. |
+| gpu/m1-qa-09-heroes | **M1-QA-09 on hardware** (report) | 49 hero shots at High 2x and Ultra; staff/spear not gripped, skirt and underskirt clipping (characters). |
 | gpu/m2-nit-903-runner-renders | **M2-NIT-903** (runner, for the Lead) | tools/dev/pc_gate: gaterun.sh (Blender after the suite), the import-crash retry in gate.sh, render_scan.py / render_batch.sh / render_publish.sh for track RENDER-REQUESTs; NIT-902's fresh-.godot sync.sh; gate_runner.md section. |
 | gpu/gate-big9-shots | big9 gate result (for the Lead to view) | 48 failing shots (out + diff PNGs), compare.txt, blender_diffs.txt, README with groups. |
 | gpu/m2-nit-902-gate-runner-fresh-import | **M2-NIT-902** (runner fix) | sync.sh never keeps .godot (a stale import failed test_post_import); runbook: 10 GB WSL cap, 2 shards, the shots-branch practice. |
