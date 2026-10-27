@@ -319,6 +319,7 @@ ACT2_DIR = "assets/audio/music/act2"
 # ADR 0039), rendered only with --act3 and never committed until LFS is live.
 ACT3_FINALS: list[tuple] = [
     ("assets_src/music/act3/the_kite.py", "assets/audio/music/act3", ["the_kite.ogg", "the_kite.loop.json"], "music_loop"),
+    ("assets_src/music/act3/kite_maiden_flight.py", "assets/audio/music/act3", ["kite_maiden_flight.ogg"], "music"),
 ]
 ACT3_DIR = "assets/audio/music/act3"
 
