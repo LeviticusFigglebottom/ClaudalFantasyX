@@ -1,0 +1,212 @@
+[gd_scene format=3]
+
+[ext_resource type="Environment" path="res://assets/environments/zones/ch05/ch05_ashcrown_day_environment.tres" id="1_env"]
+[ext_resource type="Script" path="res://game/world/camera_shot.gd" id="2_shot"]
+[ext_resource type="Script" path="res://game/levels/ch02/haluna/haluna_shot_camera.gd" id="3_cam"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/archive_stacks.glb" id="4_archive_stacks"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/cloudloom_hall.glb" id="5_cloudloom_hall"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/conduit_housing.glb" id="6_conduit_housing"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/keth_curtain.glb" id="7_keth_curtain"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/keth_road_switchback.glb" id="8_keth_road_switchback"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/keth_scree_slope.glb" id="9_keth_scree_slope"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/kirru_roost.glb" id="10_kirru_roost"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/lacquer_court_ground.glb" id="11_lacquer_court_ground"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/lacquer_hall.glb" id="12_lacquer_hall"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/lamp_niche_tier.glb" id="13_lamp_niche_tier"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/lowlight_nave_bay.glb" id="14_lowlight_nave_bay"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/lowlight_nave_bay_broken.glb" id="15_lowlight_nave_bay_broken"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/lowlight_sanctum.glb" id="16_lowlight_sanctum"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/name_shell_cord.glb" id="17_name_shell_cord"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/quellan_house.glb" id="18_quellan_house"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/sanctum_basin.glb" id="19_sanctum_basin"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/strangler_fig.glb" id="20_strangler_fig"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/vey_arcade_bay.glb" id="21_vey_arcade_bay"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/vey_gallery_bridge.glb" id="22_vey_gallery_bridge"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/well_shaft.glb" id="23_well_shaft"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/woolback_trough.glb" id="24_woolback_trough"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/woven_awning.glb" id="25_woven_awning"]
+
+[sub_resource type="Resource" id="ShotA1"]
+script = ExtResource("2_shot")
+id = &"A1"
+position = Vector3(20, 9, 30)
+look_at = Vector3(22, 2, -2)
+fov_deg = 55
+
+[sub_resource type="Resource" id="ShotA2"]
+script = ExtResource("2_shot")
+id = &"A2"
+position = Vector3(76, 5, 14)
+look_at = Vector3(78, 0.5, 0)
+fov_deg = 50
+
+[sub_resource type="Resource" id="ShotK1"]
+script = ExtResource("2_shot")
+id = &"K1"
+position = Vector3(14, 6, -56)
+look_at = Vector3(16, 3, -82)
+fov_deg = 55
+
+[sub_resource type="Resource" id="ShotK2"]
+script = ExtResource("2_shot")
+id = &"K2"
+position = Vector3(58, 4, -66)
+look_at = Vector3(66, 2, -84)
+fov_deg = 55
+
+[sub_resource type="Resource" id="ShotL1"]
+script = ExtResource("2_shot")
+id = &"L1"
+position = Vector3(22, 8, -138)
+look_at = Vector3(22, 6, -162)
+fov_deg = 60
+
+[sub_resource type="Resource" id="ShotL2"]
+script = ExtResource("2_shot")
+id = &"L2"
+position = Vector3(88, 6, -146)
+look_at = Vector3(92, 3, -162)
+fov_deg = 60
+
+[sub_resource type="Resource" id="ShotF1"]
+script = ExtResource("2_shot")
+id = &"F1"
+position = Vector3(4, 2.4, -212)
+look_at = Vector3(4, 1.5, -220)
+fov_deg = 50
+
+[sub_resource type="StandardMaterial3D" id="GroundMat"]
+albedo_color = Color(0.54, 0.52, 0.47, 1)
+roughness = 0.95
+
+[sub_resource type="PlaneMesh" id="GroundMesh"]
+material = SubResource("GroundMat")
+size = Vector2(400, 400)
+
+[node name="LateKitRows" type="Node3D"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = ExtResource("1_env")
+
+[node name="Sun" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.707107, 0.599661, -0.37471, -0, 0.529919, 0.848048, 0.707107, -0.599661, 0.37471, 0, 30, 0)
+light_color = Color(1, 0.9412, 0.8627, 1)
+light_energy = 2.8
+shadow_enabled = true
+directional_shadow_max_distance = 150.0
+
+[node name="Ground" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 60, -0.02, -110)
+mesh = SubResource("GroundMesh")
+
+[node name="Pieces" type="Node3D" parent="."]
+
+[node name="LacquerCourtGround" parent="Pieces" instance=ExtResource("11_lacquer_court_ground")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 0, 0, 0)
+
+[node name="LacquerHall" parent="Pieces" instance=ExtResource("12_lacquer_hall")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 40, 0, 0)
+
+[node name="SanctumBasin" parent="Pieces" instance=ExtResource("19_sanctum_basin")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 66, 1.2, 0)
+
+[node name="ArchiveStacks" parent="Pieces" instance=ExtResource("4_archive_stacks")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 86, 0, 0)
+
+[node name="CloudloomHall" parent="Pieces" instance=ExtResource("5_cloudloom_hall")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 0, 1, -80)
+
+[node name="QuellanHouse" parent="Pieces" instance=ExtResource("18_quellan_house")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 30, 0, -80)
+
+[node name="WoolbackTrough" parent="Pieces" instance=ExtResource("24_woolback_trough")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 40, 0, -80)
+
+[node name="WovenAwning" parent="Pieces" instance=ExtResource("25_woven_awning")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 46, 0, -80)
+
+[node name="KethCurtain" parent="Pieces" instance=ExtResource("7_keth_curtain")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 54, 4.2, -80)
+
+[node name="KethRoadSwitchback" parent="Pieces" instance=ExtResource("8_keth_road_switchback")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 62, 0.2, -80)
+
+[node name="KethScreeSlope" parent="Pieces" instance=ExtResource("9_keth_scree_slope")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 100, 0.1, -70)
+
+[node name="LowlightNaveBay" parent="Pieces" instance=ExtResource("14_lowlight_nave_bay")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 0, 0.8, -160)
+
+[node name="LowlightNaveBayBroken" parent="Pieces" instance=ExtResource("15_lowlight_nave_bay_broken")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 22, 0.8, -160)
+
+[node name="LowlightSanctum" parent="Pieces" instance=ExtResource("16_lowlight_sanctum")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 45, 0.7, -160)
+
+[node name="VeyArcadeBay" parent="Pieces" instance=ExtResource("21_vey_arcade_bay")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 65, 4, -160)
+
+[node name="StranglerFig" parent="Pieces" instance=ExtResource("20_strangler_fig")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 80, 0.5, -160)
+
+[node name="VeyGalleryBridge" parent="Pieces" instance=ExtResource("22_vey_gallery_bridge")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 92, 2, -160)
+
+[node name="LampNicheTier" parent="Pieces" instance=ExtResource("13_lamp_niche_tier")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 100, 0, -160)
+
+[node name="ConduitHousing" parent="Pieces" instance=ExtResource("6_conduit_housing")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 106, 1, -160)
+
+[node name="WellShaft" parent="Pieces" instance=ExtResource("23_well_shaft")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 118, 0, -160)
+
+[node name="KirruRoost" parent="Pieces" instance=ExtResource("10_kirru_roost")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 0, 0.6, -220)
+
+[node name="NameShellCord" parent="Pieces" instance=ExtResource("17_name_shell_cord")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 8, 0.5, -220)
+
+[node name="Cameras" type="Node3D" parent="."]
+
+[node name="A1" type="Camera3D" parent="Cameras"]
+near = 0.1
+far = 2000.0
+script = ExtResource("3_cam")
+shot = SubResource("ShotA1")
+
+[node name="A2" type="Camera3D" parent="Cameras"]
+near = 0.1
+far = 2000.0
+script = ExtResource("3_cam")
+shot = SubResource("ShotA2")
+
+[node name="K1" type="Camera3D" parent="Cameras"]
+near = 0.1
+far = 2000.0
+script = ExtResource("3_cam")
+shot = SubResource("ShotK1")
+
+[node name="K2" type="Camera3D" parent="Cameras"]
+near = 0.1
+far = 2000.0
+script = ExtResource("3_cam")
+shot = SubResource("ShotK2")
+
+[node name="L1" type="Camera3D" parent="Cameras"]
+near = 0.1
+far = 2000.0
+script = ExtResource("3_cam")
+shot = SubResource("ShotL1")
+
+[node name="L2" type="Camera3D" parent="Cameras"]
+near = 0.1
+far = 2000.0
+script = ExtResource("3_cam")
+shot = SubResource("ShotL2")
+
+[node name="F1" type="Camera3D" parent="Cameras"]
+near = 0.1
+far = 2000.0
+script = ExtResource("3_cam")
+shot = SubResource("ShotF1")
