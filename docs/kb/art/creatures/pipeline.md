@@ -140,6 +140,11 @@ table, asset_import.md §3) would add a distance cutoff, which battles, held at 
   (M3-CRE-640, Kahre: 3.3 and 0.75), merged last, so the anchors and the ring fit the model. **Check the default
   camera**: the Vowbound slot's mark sits at 0.765 of the screen width and the safe frame's right edge at 0.85, so
   only about 0.85 m behind the mark is inside it; a model long along the battle axis has to be built compact.
+  A Vowbound built ahead of its vowbound.json row (Combat's) carries `vowbound_pending` (M3-CRE-642, Nhoa): a
+  string naming the task that asks for the row. The validator then allows the missing row, and it is an error once
+  the row exists, so drop the key when the row lands. Its integration test binds an in-test copy of a live row under
+  its id. The summon shot's bottom safe line is about 0.6 m up on the mark, so anything lower (feet, strands) sits
+  under the HUD there, which is expected; check the top edge on that shot instead.
 - **`game/creatures/<id>/<id>_battle.tscn`**: a `Node3D` root with `creature_actor.gd` (`creature_id = &"<id>"`,
   `metadata/hymn_battle_actor = true`) and the GLB instanced as its first child, `Model`.
 - **`CreatureActor`** (`game/creatures/creature_actor.gd`) plays what creatures.json says: an action's clip

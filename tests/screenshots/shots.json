@@ -4078,6 +4078,14 @@
         960,
         720
       ]
+    },
+    {
+      "id": "creature_nhoa",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_nhoa.tscn",
+      "resolution": [
+        960,
+        720
+      ]
     }
   ]
 }
