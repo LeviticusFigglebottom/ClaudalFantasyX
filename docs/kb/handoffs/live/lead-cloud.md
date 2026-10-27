@@ -74,3 +74,4 @@
 - RENDERED @ ead04bab2d3963ea1a5a6dc13e4a09360169341c: lead/gate-render-m2-slice-ead04ba; 0 pass, 13 drift; 8 new without baseline, shell_shrine GI rebaked (cloud)
 - RENDERED @ 8be2adcd0a63633aa84182842c30e6cdbf1c22e5: lead/gate-render-env-art-8be2adc; 0 pass, 6 drift; 3 new without baseline (cloud)
 - RENDERED @ f39cdde37f4831bc6429aec4fa9afe0d9be26ed0: lead/gate-render-env-art-f39cdde; 1 pass, 3 drift (cloud)
+- RENDERED @ da7891cf8d765b3c49b3b975d46b99b6abf5f6fb: lead/gate-render-ui-da7891c; 1 pass, 2 drift; 1 new without baseline (cloud)
