@@ -80,7 +80,8 @@
     },
     {
       "id": "battle_victory",
-      "scene": "res://game/battle/scene/shots/battle_victory.tscn"
+      "scene": "res://game/battle/scene/shots/battle_victory.tscn",
+      "settle_frames": 90
     },
     {
       "id": "base_body_slender_front",

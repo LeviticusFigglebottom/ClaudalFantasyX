@@ -1,7 +1,10 @@
 class_name BattleResultPanel
 extends Control
 ## Victory / defeat / escape screen: a scrim, a tide-notch panel with the outcome title and
-## one row per fighter (XP and Lattice movement points gained), and a small choice menu.
+## one row per fighter (XP and Lattice movement points gained), the spoils (lume, drops), and a small
+## choice menu. The rows arrive in turn, and each number a row names in "count" ({cell, key, arg, n};
+## BattleRewards) counts up from 0 to n, eased, as its row arrives (panel_open "count_sec"). Confirm
+## while it counts shows every number at once instead of choosing; Reduced motion shows them at once.
 
 signal choice_made(choice_id: StringName)
 
@@ -21,6 +24,8 @@ var _subtitle: Label
 var _list: VBoxContainer
 var _choices: MenuPage
 var _open_tween: Tween
+## The counting cells: [{label: Label, key, arg, n}].
+var _counters: Array[Dictionary] = []
 
 
 func _ready() -> void:
@@ -76,6 +81,7 @@ func show_result(
 	for ch in _list.get_children():
 		_list.remove_child(ch)
 		ch.queue_free()
+	_counters.clear()
 	for r in rows:
 		_list.add_child(_row(r))
 	if _choices != null:
@@ -121,7 +127,10 @@ func handle_input(event: InputEvent) -> bool:
 	elif event.is_action_pressed(&"ui_down", true):
 		move_cursor(1)
 	elif event.is_action_pressed(&"ui_accept"):
-		accept()
+		if is_counting():
+			finish_open()  # the first Confirm shows every number; the next one chooses
+		else:
+			accept()
 	else:
 		return false
 	return true
@@ -138,8 +147,13 @@ func _row(r: Dictionary) -> Control:
 	h.alignment = BoxContainer.ALIGNMENT_CENTER
 	var label := _cell(str(r.get("label", "")), &"HudName", HORIZONTAL_ALIGNMENT_LEFT)
 	h.add_child(label)
-	h.add_child(_cell(str(r.get("xp_text", "")), &"HudNumber", HORIZONTAL_ALIGNMENT_RIGHT))
+	var xp := _cell(str(r.get("xp_text", "")), &"HudNumber", HORIZONTAL_ALIGNMENT_RIGHT)
+	h.add_child(xp)
 	var moves := _cell(str(r.get("moves_text", "")), &"HudNumber", HORIZONTAL_ALIGNMENT_RIGHT)
+	for c: Variant in r.get("count", []):
+		var spec := c as Dictionary
+		var cell := moves if str(spec.get("cell", "")) == "moves" else xp
+		_counters.append({"label": cell, "key": str(spec["key"]), "arg": str(spec["arg"]), "n": int(spec["n"])})
 	var role := &"text_dim" if bool(r.get("fell", false)) else &"swell"
 	moves.add_theme_color_override(&"font_color", get_theme_color(role, HymnThemeBuilder.PALETTE_TYPE))
 	if bool(r.get("fell", false)):
@@ -184,17 +198,43 @@ func _animate_open() -> void:
 		c.modulate.a = 0.0
 		tw.tween_property(c, "modulate:a", 1.0, row_sec).set_delay(at)
 		at += HudLayout.num(_open_m, "row_stagger_sec")
+	var rows := _list.get_children()
+	for c in _counters:
+		var cell := c["label"] as Label
+		var row_at := (
+			HudLayout.num(_open_m, "rows_delay_sec")
+			+ rows.find(cell.get_parent()) * HudLayout.num(_open_m, "row_stagger_sec")
+		)
+		cell.text = _count_text(c, 0)
+		var count := tw.tween_method(_set_count.bind(c), 0.0, float(int(c["n"])), HudLayout.num(_open_m, "count_sec"))
+		count.set_delay(row_at).set_trans(Tween.TRANS_QUAD)
 	if _choices != null:
 		_choices.modulate.a = 0.0
 		tw.tween_property(_choices, "modulate:a", 1.0, row_sec).set_delay(at)
 	_open_tween = tw
 
 
-## The whole open's length (the panel, then the rows in turn, then the choices).
+## The whole open's length (the panel, then the rows in turn and their numbers counting, then the choices).
 func open_duration() -> float:
 	var rows := _list.get_child_count()
 	var stagger := HudLayout.num(_open_m, "rows_delay_sec") + rows * HudLayout.num(_open_m, "row_stagger_sec")
-	return maxf(HudLayout.num(_open_m, "sec"), stagger + HudLayout.num(_open_m, "row_sec"))
+	var tail := HudLayout.num(_open_m, "row_sec")
+	if not _counters.is_empty():
+		tail = maxf(tail, HudLayout.num(_open_m, "count_sec"))
+	return maxf(HudLayout.num(_open_m, "sec"), stagger + tail)
+
+
+## True while the open (and its counting) is still playing.
+func is_counting() -> bool:
+	return _open_tween != null and _open_tween.is_valid() and _open_tween.is_running()
+
+
+func _set_count(value: float, c: Dictionary) -> void:
+	(c["label"] as Label).text = _count_text(c, roundi(value))
+
+
+func _count_text(c: Dictionary, value: int) -> String:
+	return tr(str(c["key"])).format({str(c["arg"]): value})
 
 
 ## Ends the open at rest now (tests).

@@ -39,7 +39,20 @@ func award_victory(ctl: BattleController) -> Array[Dictionary]:
 			moves = progress.award_battle(c.id, xp)
 		ctl.last_awards[c.id] = {"xp": xp, "moves": moves}
 		var moves_text := tr("HUD_RESULT_MOVES_FMT").format({"n": moves}) if moves >= 0 else tr("HUD_RESULT_NO_LATTICE")
-		rows.append({"label": label, "xp_text": tr("HUD_RESULT_XP_FMT").format({"xp": xp}), "moves_text": moves_text})
+		var count: Array[Dictionary] = [{"cell": "xp", "key": "HUD_RESULT_XP_FMT", "arg": "xp", "n": xp}]
+		if moves >= 0:
+			count.append({"cell": "moves", "key": "HUD_RESULT_MOVES_FMT", "arg": "n", "n": moves})
+		(
+			rows
+			. append(
+				{
+					"label": label,
+					"xp_text": tr("HUD_RESULT_XP_FMT").format({"xp": xp}),
+					"moves_text": moves_text,
+					"count": count,
+				}
+			)
+		)
 	var live := ctl.persist_progress and ctl.fixture == null
 	if live and progress != null:
 		# M1-ARC-13: refused (the save keeps its progress) while the Lattice tables are broken.
@@ -89,6 +102,7 @@ func spoil_rows(spoils: Dictionary, item_db: ItemDB) -> Array[Dictionary]:
 					"label": tr("HUD_RESULT_LUME"),
 					"xp_text": tr("HUD_RESULT_LUME_FMT").format({"n": lume}),
 					"moves_text": purse,
+					"count": [{"cell": "xp", "key": "HUD_RESULT_LUME_FMT", "arg": "n", "n": lume}],
 					ROW_SPOILS: true,
 				}
 			)
@@ -104,6 +118,7 @@ func spoil_rows(spoils: Dictionary, item_db: ItemDB) -> Array[Dictionary]:
 				{
 					"label": tr(str(item_db.item(iid).get("name_key", iid))),
 					"xp_text": tr("HUD_RESULT_DROP_FMT").format({"n": n}),
+					"count": [{"cell": "xp", "key": "HUD_RESULT_DROP_FMT", "arg": "n", "n": n}],
 					"moves_text": tr("HUD_RESULT_BAG_FULL") if full else "",
 					ROW_SPOILS: true,
 				}
