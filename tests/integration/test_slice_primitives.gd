@@ -29,6 +29,8 @@ const KNOWN: Dictionary = {
 func test_no_unlisted_primitive_shows_in_the_slice() -> void:
 	var tree := Engine.get_main_loop() as SceneTree
 	var host: Node = tree.current_scene if tree.current_scene != null else tree.root
+	var saved_flags := Game.state.flags.duplicate(true)
+	Game.state.flags.erase(&"ch01_gulls_cried")  # an earlier test's storm brings Oruvel up in it (its StormWall)
 	for path in SCENES:
 		var root := (load(path) as PackedScene).instantiate()
 		if root.has_method(&"prebuild"):
@@ -43,6 +45,7 @@ func test_no_unlisted_primitive_shows_in_the_slice() -> void:
 				assert_true(_known(at), "%s shows a %s at %s" % [path.get_file(), mi.mesh.get_class(), at])
 		host.remove_child(root)
 		root.free()
+	Game.state.flags = saved_flags
 
 
 func _known(at: String) -> bool:
