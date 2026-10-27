@@ -879,6 +879,16 @@
         ["{blender}", "--python", "assets_src/creatures/virel/build_virel.py", "--", "--out", "assets/creatures/virel/virel.glb"],
         ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "virel"]
       ]
+    },
+    {
+      "id": "creature_nhoa",
+      "owner": "character",
+      "sources": ["assets_src/creatures/nhoa/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/nhoa/*.glb", "assets/creatures/nhoa/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/nhoa/build_nhoa.py", "--", "--out", "assets/creatures/nhoa/nhoa.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "nhoa"]
+      ]
     }
 ]
 }
