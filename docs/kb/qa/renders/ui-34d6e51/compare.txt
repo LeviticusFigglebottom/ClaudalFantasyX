@@ -1,0 +1,7 @@
+FAIL battle_victory: rmse 0.01010 (limit 0.00800)
+PASS settings_accessibility: rmse 0.00000 (limit 0.00800)
+FAIL lattice_menu: rmse 0.00851 (limit 0.00800)
+FAIL lattice_menu_activate: rmse 0.01153 (limit 0.00800)
+FAIL lattice_overview: rmse 0.00843 (limit 0.00800)
+Screenshots: 5 compared, 4 failed (diffs in /home/user/wt/render/tests/screenshots/out/diff)
+compare exit 1
