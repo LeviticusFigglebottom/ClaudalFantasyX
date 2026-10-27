@@ -3,6 +3,12 @@
 ## NEW ACCOUNT (from 2026-10-25)
 Session `session_01Wmj8xaLtwcqiS3qwC6PciW`. Integration branch `claude/undertow-lead-handoff-ze8rrn`. Newest first.
 
+- **Act II boss music: the four modelled bosses' sources are merged (M3-AUD-844/845).** They are mangrove_drowner,
+  lamp_engine, avalanche_ram and wakefin. Each has two stems over a 74–84 s loop at −16 LUFS for the stack; the seams
+  are clean and the renders byte-identical. 7.2 MB in all, every file under 1.1 MB. The audio waits for LFS, like the
+  zones, and the intended music.json phase rows are in each task file.
+  - **Open:** Malcor Venn and the Abiding guard wait for their fights; the scene cues wait for Act II's beat sheets.
+
 - **TO THE LEAD: big12 merged in (integration e930595c, a clean merge). MERGE-READY @ 3b9324c4, with the life_audio
   teardown fix (3224c1d8) on top.** Take this head to clear the capture shards' exit 1. Checks on the merged head:
   validate_data 0/0, `--filter=audio` 162/0.

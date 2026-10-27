@@ -20,6 +20,7 @@ moment LFS works. Keep the files uncommitted and leave .gitattributes alone.
       the budget and the tests. tools/tests/test_act2_finals.py: every final renders from act2 into act2, and nothing
       there is tracked until .gitattributes routes it to LFS.
 - [x] The 12 zone finals from the sketches (M3-AUD-840..843): sources merged, 17.4 MB measured; audio waits for LFS.
-- [ ] The bosses, then the scenes as Act II's beat sheets arrive.
+- [x] The four modelled bosses (M3-AUD-844/845): sources merged, 7.2 MB measured.
+- [ ] Malcor Venn, the Abiding guard and the scene cues, as Act II's fights and beat sheets arrive.
 
 ## Review log
