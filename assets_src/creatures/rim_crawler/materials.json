@@ -1,0 +1,20 @@
+{
+  "_doc": "Rim crawler (act2/variants.md): the tide crawler's one carapace slot, bleached: chalky and dry where it is white (the vertex wetness is low there), still wet lacquer in the black joints, and its spawn_wound wounds and eyes dimmer and slower. write_materials.py on game/shaders/creature/creature.gdshader.",
+  "slots": {
+    "carapace": {
+      "roughness_dry": 0.85,
+      "roughness_wet": 0.15,
+      "specular": 0.45,
+      "wet_darken": 0.8,
+      "clearcoat_wet": 0.8,
+      "detail_scale": 24.0,
+      "detail_albedo": 0.16,
+      "detail_bump": 0.45,
+      "cavity_albedo": 0.4,
+      "emission_color": "#3FE0C8",
+      "emission_energy": 1.0,
+      "emission_pulse_hz": 0.2,
+      "emission_pulse_depth": 0.3
+    }
+  }
+}

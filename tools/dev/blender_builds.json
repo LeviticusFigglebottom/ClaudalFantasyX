@@ -702,6 +702,16 @@
       ]
     },
     {
+      "id": "creature_rim_crawler",
+      "owner": "character",
+      "sources": ["assets_src/creatures/rim_crawler/**", "assets_src/creatures/tide_crawler/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/rim_crawler/*.glb", "assets/creatures/rim_crawler/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/rim_crawler/build_rim_crawler.py", "--", "--out", "assets/creatures/rim_crawler/rim_crawler.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "rim_crawler"]
+      ]
+    },
+    {
       "id": "wildlife_gull",
       "owner": "character",
       "sources": ["assets_src/wildlife/gull/**", "assets_src/wildlife/common/**", "assets_src/creatures/common/creature_kit.py"],

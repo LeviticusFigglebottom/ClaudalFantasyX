@@ -167,6 +167,10 @@
       "scene": "res://game/creatures/scree_crawler/scree_crawler_battle.tscn",
       "contact": {"attack": 0.55},
       "portrait": {"rim_energy": 2.8, "kick_energy": 1.8}
+    },
+    "rim_crawler": {
+      "scene": "res://game/creatures/rim_crawler/rim_crawler_battle.tscn",
+      "contact": {"attack": 0.55}
     }
   }
 }

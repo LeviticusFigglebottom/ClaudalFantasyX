@@ -42,6 +42,13 @@ const SKATE := "res://game/creatures/glass_skate/glass_skate_battle.tscn"
 const SKATE_FLAT_MAX_M := 0.2
 const SKATE_ERUPT_SEC := 0.36
 const SKATE_ERUPT_MIN_M := 0.4
+## The Act II variants (M3-CRE-628) and their bases: the same rig and clips.
+const VARIANTS := {
+	"root_crab": "reef_crab",
+	"fen_leech": "sail_leech",
+	"scree_crawler": "slag_tortoise",
+	"rim_crawler": "tide_crawler",
+}
 const RING := {"radius_factor": 1.4, "inner_soft_m": 0.25, "notches": 6}
 const SANDBOX := "res://game/battle/scene/battle_sandbox.tscn"
 const SEED := 20261024
@@ -528,6 +535,38 @@ func test_the_glass_skate_lies_flat_erupts_and_flattens() -> void:
 	for b in skel.get_bone_count():
 		var y := _bone_y(skel, b)
 		assert_true(y > -RAM_FOOT_TOL_M and y < SKATE_FLAT_MAX_M, "%s lies flat (y %.3f)" % [skel.get_bone_name(b), y])
+
+
+func test_the_act2_variants_keep_their_bases_rigs_and_clips() -> void:
+	for id: String in VARIANTS:
+		var v := _actor("res://game/creatures/%s/%s_battle.tscn" % [id, id])
+		var b := _actor("res://game/creatures/%s/%s_battle.tscn" % [VARIANTS[id], VARIANTS[id]])
+		var vs := _skeleton(v)
+		var bs := _skeleton(b)
+		assert_eq(vs.get_bone_count(), bs.get_bone_count(), "%s has its base's rig" % id)
+		for k in bs.get_bone_count():
+			assert_true(vs.find_bone(bs.get_bone_name(k)) >= 0, "%s has %s" % [id, bs.get_bone_name(k)])
+		var vp := _player(v)
+		var bp := _player(b)
+		for clip in bp.get_animation_list():
+			assert_true(vp.has_animation(clip), "%s has %s" % [id, clip])
+			assert_true(
+				is_equal_approx(vp.get_animation(clip).length, bp.get_animation(clip).length),
+				"%s's %s is its base's" % [id, clip]
+			)
+	var crab := _skeleton(_actor("res://game/creatures/reef_crab/reef_crab_battle.tscn"))
+	var root_crab := _skeleton(_actor("res://game/creatures/root_crab/root_crab_battle.tscn"))
+	var knee := crab.find_bone("leg_l0_b")
+	assert_true(
+		root_crab.get_bone_global_rest(knee).origin.y > crab.get_bone_global_rest(knee).origin.y,
+		"the root crab climbs on longer legs (a higher knee)"
+	)
+	var leech := _skeleton(_actor("res://game/creatures/sail_leech/sail_leech_battle.tscn"))
+	var fen := _skeleton(_actor("res://game/creatures/fen_leech/fen_leech_battle.tscn"))
+	var tail := leech.find_bone("tail2")
+	assert_true(
+		fen.get_bone_global_rest(tail).origin.z < leech.get_bone_global_rest(tail).origin.z, "the fen leech is longer"
+	)
 
 
 func test_hits_rotate_their_variants_and_a_phase_keeps_its_own() -> void:

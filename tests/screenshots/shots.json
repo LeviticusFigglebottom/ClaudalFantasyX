@@ -3294,6 +3294,14 @@
         960,
         720
       ]
+    },
+    {
+      "id": "creature_rim_crawler",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_rim_crawler.tscn",
+      "resolution": [
+        960,
+        720
+      ]
     }
   ]
 }
