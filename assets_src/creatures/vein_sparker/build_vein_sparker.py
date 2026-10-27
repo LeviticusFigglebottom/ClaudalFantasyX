@@ -19,6 +19,7 @@ import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "common"))
 import creature_kit as ck  # noqa: E402
+import grounding as gr  # noqa: E402
 
 SEED = 5207
 PAL = {k: ck.hexrgb(v) for k, v in {
@@ -142,6 +143,10 @@ def legs(mesh: ck.Mesh, rig: ck.Rig) -> None:
                 ck.finish(mesh, P, T, "scale", PAL["hair_copper"] * 0.6, rig.rigid(f"leg_{fb}{tag}_b"))
 
 
+KO_DROP = 0.05  # the KO: how far the body sinks onto its belly (m)
+KO_SPLAY = 25.0  # the KO: the legs splay out (degrees at the hip, the left side's sign)
+
+
 def build_clips() -> list[ck.Clip]:
     tl = [f"tail{i}" for i in range(NT)]
     idle = ck.Clip("idle", 1.8, loop=True)  # head flicks, the coil twitches, the body pumps
@@ -166,17 +171,29 @@ def build_clips() -> list[ck.Clip]:
     for t, s in ((0.0, 0.0), (0.12, 1.0), (0.5, 0.0)):
         hit.key("root", t, (0, 14.0 * s, 0), (0.05 * s, 0, -0.06 * s))
         hit.key("head", t, (0, -20.0 * s, 0))
-    ko = ck.Clip("ko", 1.4)  # the legs splay, the coil unwinds
+    # the legs splay, the coil unwinds; M3-CRE-632: it sinks onto its belly (it dropped 0.09 m, 3.5 cm through the
+    # floor) and the legs splay out flat (keyed -25, they drove the feet 0.18 m down through it)
+    ko = ck.Clip("ko", 1.4)
     for t, s in ((0.0, 0.0), (0.4, 0.6), (0.9, 1.0), (1.4, 1.0)):
-        ko.key("root", t, (0, 0, 0), (0, -0.09 * s, 0))
+        ko.key("root", t, (0, 0, 0), (0, -KO_DROP * s, 0))
         ko.key("head", t, (14.0 * s, 0, 0))
         for b in tl[2:]:
             ko.key(b, t, (16.0 * s, 0, 0))
         for tag in ("l", "r"):
             sd = 1.0 if tag == "l" else -1.0
             for fb in ("f", "b"):
-                ko.key(f"leg_{fb}{tag}_a", t, (0, 0, -25.0 * s * sd))
+                ko.key(f"leg_{fb}{tag}_a", t, (0, 0, KO_SPLAY * s * sd))
     return [idle, attack, cast, hit, ko]
+
+
+# Kept off the floor (M3-CRE-632, common/grounding.py): a planted foot stays on the floor (its leg turns up at the
+# hip the least it takes), the coil rides up over the floor, and the body lifts the least it takes where it would
+# still press into it.
+GROUNDED_LIMBS = [(f"leg_{fb}{tag}_a", 2, 1.0 if tag == "l" else -1.0, 45.0) for tag in "lr" for fb in "fb"] + [("tail2", 0, -1.0, 30.0), ("root", gr.LIFT, 1.0, 0.1)]
+
+
+def export_clips(rig: ck.Rig, mesh: ck.Mesh) -> list[ck.Clip]:
+    return gr.grounded(rig, mesh, build_clips(), GROUNDED_LIMBS)
 
 
 def main() -> None:
@@ -189,7 +206,7 @@ def main() -> None:
     body(mesh, rig, js, jt)
     ridge(mesh, rig, js)
     legs(mesh, rig)
-    info = ck.export_creature(mesh, rig, build_clips(), args.out, extras={"hymn_creature": "vein_sparker"})
+    info = ck.export_creature(mesh, rig, export_clips(rig, mesh), args.out, extras={"hymn_creature": "vein_sparker"})
     print(f"vein_sparker: {info}")
 
 

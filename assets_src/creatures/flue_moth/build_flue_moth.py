@@ -19,6 +19,7 @@ import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "common"))
 import creature_kit as ck  # noqa: E402
+import grounding as gr  # noqa: E402
 
 SEED = 8411
 PAL = {k: ck.hexrgb(v) for k, v in {
@@ -152,11 +153,18 @@ def legs(mesh: ck.Mesh, rig: ck.Rig) -> None:
                 ck.finish(mesh, P, T, "fur", PAL["volcanic_stone"] * 0.8, rig.rigid(f"leg_{tag}{k}_{seg}"))
 
 
+SIDES = (("l", 1.0), ("r", -1.0))
+KO_ROLL = 75.0  # the KO: it tips onto its right side (degrees about z)
+KO_CURL = 90.0  # the KO: the legs curl in under the body (degrees at the hip)
+KO_WING = 90.0  # the KO: the right pair's extra turn about z, so they lie along the floor (degrees)
+
+
 def open_wings(clip: ck.Clip, t: float, amt: float) -> None:
-    """amt 1: both pairs swing out sideways and lift, showing the hindwings."""
+    """amt 1: both pairs swing out sideways and lift, showing the hindwings. M3-CRE-632: the lift is +z on the left
+    (it was keyed -z, which tipped the open wings down: 7 cm through the floor in the buffet, 11 cm in the flare)."""
     for s, tag in ((1.0, "l"), (-1.0, "r")):
-        clip.key(f"forewing_{tag}", t, (0, -s * 70.0 * amt, -s * 25.0 * amt))
-        clip.key(f"hindwing_{tag}", t, (0, -s * 95.0 * amt, -s * 15.0 * amt))
+        clip.key(f"forewing_{tag}", t, (0, -s * 70.0 * amt, s * 25.0 * amt))
+        clip.key(f"hindwing_{tag}", t, (0, -s * 95.0 * amt, s * 15.0 * amt))
 
 
 def build_clips() -> list[ck.Clip]:
@@ -179,13 +187,32 @@ def build_clips() -> list[ck.Clip]:
     for t, a in ((0.0, 0.0), (0.12, 1.0), (0.5, 0.0)):
         open_wings(hit, t, 0.3 * a)
         hit.key("root", t, (8.0 * a, 0, 0), (0, 0, -0.08 * a))
-    ko = ck.Clip("ko", 1.4)  # it tips onto its side, wings splayed
+    # it tips onto its side, wings splayed. M3-CRE-632: the legs curl in under it and the wings on the side it falls
+    # to lie out along the floor (they splayed down through it, 0.62 m)
+    ko = ck.Clip("ko", 1.4)
     for t, a in ((0.0, 0.0), (0.4, 0.6), (0.9, 1.0), (1.4, 1.0)):
-        open_wings(ko, t, 0.7 * a)
-        ko.key("root", t, (0, 0, 75.0 * a), (0.12 * a, -0.05 * a, 0))
+        for w, (yaw, lift) in (("fore", (70.0, 25.0)), ("hind", (95.0, 15.0))):  # open_wings at 0.7; the right pair
+            ko.key(f"{w}wing_l", t, (0, -yaw * 0.7 * a, lift * 0.7 * a))  # turns on to lie along the floor
+            ko.key(f"{w}wing_r", t, (0, yaw * 0.7 * a, -(lift * 0.7 + KO_WING) * a))
+        ko.key("root", t, (0, 0, KO_ROLL * a), (0.12 * a, -0.05 * a, 0))
         ko.key("antenna_l", t, (25.0 * a, 0, 0))
         ko.key("antenna_r", t, (25.0 * a, 0, 0))
+        for tag, s in SIDES:
+            for k in range(3):
+                ko.key(f"leg_{tag}{k}_a", t, (0, 0, -s * KO_CURL * a))
     return [idle, attack, cast, hit, ko]
+
+
+# Kept off the floor (M3-CRE-632, common/grounding.py): a planted foot stays on the floor as the body rears or
+# recoils over it (its leg turns up at the hip), the abdomen rides up over the floor as it rears, and in the KO the
+# body comes to rest on the floor, not through it.
+GROUNDED_LIMBS = [(f"leg_{tag}{k}_a", 2, s, 45.0, ("idle", "attack", "cast", "hit", "hit_b", "idle_b"))
+                  for tag, s in SIDES for k in range(3)]
+GROUNDED_LIMBS += [("abdomen0", 0, 1.0, 20.0), ("root", gr.LIFT, 1.0, 0.3, ("ko",))]
+
+
+def export_clips(rig: ck.Rig, mesh: ck.Mesh) -> list[ck.Clip]:
+    return gr.grounded(rig, mesh, build_clips(), GROUNDED_LIMBS)
 
 
 def main() -> None:
@@ -199,7 +226,7 @@ def main() -> None:
     antennae(mesh, rig)
     wings(mesh, rig)
     legs(mesh, rig)
-    info = ck.export_creature(mesh, rig, build_clips(), args.out, extras={"hymn_creature": "flue_moth"})
+    info = ck.export_creature(mesh, rig, export_clips(rig, mesh), args.out, extras={"hymn_creature": "flue_moth"})
     print(f"flue_moth: {info}")
 
 

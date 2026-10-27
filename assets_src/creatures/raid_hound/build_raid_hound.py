@@ -20,6 +20,7 @@ import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "common"))
 import creature_kit as ck  # noqa: E402
+import grounding as gr  # noqa: E402
 
 SEED = 6203
 PAL = {k: ck.hexrgb(v) for k, v in {
@@ -30,6 +31,8 @@ PAL = {k: ck.hexrgb(v) for k, v in {
 
 HIP = np.array([0.0, 0.72, -0.42])
 SHOULDER = np.array([0.0, 0.78, 0.28])
+KO_FORE = -20.0  # the KO's forearm turn (degrees): with the upper leg's -70, flat along the floor
+PAW_Y = 0.036  # the paw tube's axis height: its underside (r 0.035) on the floor (M3-CRE-632: was 0.02, 1.4 cm under)
 LEGS = {  # name: (attach, x side, front?)
     "fl": (SHOULDER + np.array([0.11, -0.12, 0.02]), 1.0, True), "fr": (SHOULDER + np.array([-0.11, -0.12, 0.02]), -1.0, True),
     "bl": (HIP + np.array([0.12, -0.08, 0.0]), 1.0, False), "br": (HIP + np.array([-0.12, -0.08, 0.0]), -1.0, False),
@@ -44,7 +47,7 @@ def leg_points(name: str) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarra
     else:
         knee = a + np.array([0.0, -0.26, 0.14])  # the hind leg's stifle forward, hock back: a dog's angles
         ankle = knee + np.array([0.0, -0.26, -0.16])
-    paw = np.array([ankle[0], 0.02, ankle[2] + 0.08])
+    paw = np.array([ankle[0], PAW_Y, ankle[2] + 0.08])
     return a, knee, ankle, paw
 
 
@@ -200,9 +203,9 @@ def build_clips() -> list[ck.Clip]:
     ko = ck.Clip("ko", 1.8)  # it lies down: beaten, not dead
     for t, s in ((0.0, 0.0), (0.6, 0.5), (1.3, 1.0), (1.8, 1.0)):
         ko.key("root", t, (0, 0, 0), (0, -0.42 * s, 0))
-        for n in ("fl", "fr"):
-            ko.key(f"{n}_upper", t, (-70.0 * s, 0, 0))
-            ko.key(f"{n}_lower", t, (60.0 * s, 0, 0))
+        for n in ("fl", "fr"):  # M3-CRE-632: the forelegs reach out flat along the floor (the forearm was keyed
+            ko.key(f"{n}_upper", t, (-70.0 * s, 0, 0))  # +60, which drove it 0.22 m down through the floor)
+            ko.key(f"{n}_lower", t, (KO_FORE * s, 0, 0))
         for n in ("bl", "br"):
             ko.key(f"{n}_upper", t, (-80.0 * s, 0, 0))
             ko.key(f"{n}_lower", t, (110.0 * s, 0, 0))
@@ -212,6 +215,15 @@ def build_clips() -> list[ck.Clip]:
         ko.key("ear_r", t, (40.0 * s, 0, 0))
         ko.key("tail0", t, (40.0 * s, 0, 0))
     return [idle, attack, cast, hit, ko]
+
+
+# Kept off the floor (M3-CRE-632, common/grounding.py): in the lunge's crouch (the body drops and pitches onto the
+# forelegs) a planted paw stays on the floor, each leg reaching forward at the shoulder or hip the least it takes.
+GROUNDED_LIMBS = [(f"{n}_upper", 0, -1.0, 55.0 if n[0] == "f" else 30.0) for n in ("fl", "fr", "bl", "br")]
+
+
+def export_clips(rig: ck.Rig, mesh: ck.Mesh) -> list[ck.Clip]:
+    return gr.grounded(rig, mesh, build_clips(), GROUNDED_LIMBS)
 
 
 def main() -> None:
@@ -225,7 +237,7 @@ def main() -> None:
     legs(mesh, rig)
     harness(mesh, rig)
     muzzle_cage(mesh, rig)
-    info = ck.export_creature(mesh, rig, build_clips(), args.out, extras={"hymn_creature": "raid_hound"})
+    info = ck.export_creature(mesh, rig, export_clips(rig, mesh), args.out, extras={"hymn_creature": "raid_hound"})
     print(f"raid_hound: {info}")
 
 

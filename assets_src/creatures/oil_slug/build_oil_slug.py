@@ -18,6 +18,7 @@ import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "common"))
 import creature_kit as ck  # noqa: E402
+import grounding as gr  # noqa: E402
 
 SEED = 3307
 PAL = {k: ck.hexrgb(v) for k, v in {
@@ -124,8 +125,10 @@ def build_clips() -> list[ck.Clip]:
 
     hit = ck.Clip("hit", 0.45)
     for t, s in ((0.0, 0.0), (0.1, 1.0), (0.45, 0.0)):
+        # M3-CRE-632: the recoil's offset is the body's, on the chain's first bone (keyed on every bone, it added up
+        # along the chain and drove the head 9 cm into the floor)
         for i, b in enumerate(sp):
-            hit.key(b, t, (0, 6.0 * s * (1 if i % 2 else -1), 0), (0, -0.02 * s, -0.03 * s))
+            hit.key(b, t, (0, 6.0 * s * (1 if i % 2 else -1), 0), (0, -0.01 * s, -0.03 * s) if i == 0 else (0, 0, 0))
         hit.key("horn_l", t, (40.0 * s, 0, 0))
         hit.key("horn_r", t, (40.0 * s, 0, 0))
 
@@ -138,6 +141,15 @@ def build_clips() -> list[ck.Clip]:
     return [idle, attack, cast, hit, ko]
 
 
+# Kept off the floor (M3-CRE-632, common/grounding.py): as the front half strikes down, it bends up at its middle
+# the least it takes for the head to strike the floor, not go through it.
+GROUNDED_LIMBS = [("spine3", 0, -1.0, 30.0)]
+
+
+def export_clips(rig: ck.Rig, mesh: ck.Mesh) -> list[ck.Clip]:
+    return gr.grounded(rig, mesh, build_clips(), GROUNDED_LIMBS)
+
+
 def main() -> None:
     argv = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else []
     ap = argparse.ArgumentParser()
@@ -148,7 +160,7 @@ def main() -> None:
     body(mesh, rig, j)
     frills(mesh, rig, j)
     horns(mesh, rig)
-    info = ck.export_creature(mesh, rig, build_clips(), args.out, extras={"hymn_creature": "oil_slug"})
+    info = ck.export_creature(mesh, rig, export_clips(rig, mesh), args.out, extras={"hymn_creature": "oil_slug"})
     print(f"oil_slug: {info}")
 
 
