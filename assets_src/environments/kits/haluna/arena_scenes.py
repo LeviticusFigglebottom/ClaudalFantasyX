@@ -1096,8 +1096,120 @@ WALLHEAD_STORM = _wallhead_arena("seawall_stairhead_storm", hoist=False, surge=F
 WALLHEAD_HOIST = _wallhead_arena("seawall_stairhead_hoist", hoist=True, surge=False)
 WALLHEAD_SURGE = _wallhead_arena("seawall_stairhead_surge", hoist=True, surge=True)
 
+
+# ---------------------------------------------------------------------------------------------
+# M3-ENV-713: the Coilspire headland path's landing (the Coilspire kit; act1_ch08.md B04)
+# ---------------------------------------------------------------------------------------------
+CS = "res://assets/environments/kits/coilspire/"
+CS_LAYOUT = ROOT / "game" / "levels" / "_tests" / "coilspire_kit" / "coilspire_layout.json"  # read-only
+CS_BACKDROP = ROOT / "game" / "levels" / "_tests" / "coilspire_kit" / "coilspire_backdrop.json"  # Corrow, read-only
+HEADLAND_SPIRE_BEARING = -30.0  # the spire stands back-left of the fight (deg, clockwise from the frame's -Z)
+HEADLAND_REPLACED = ("coilspire_ground", "headland_path")  # the arena's own levelled copies stand in for these
+HEADLAND_SCRUB_CLEAR_M = 9.0  # scrub this near the landing's centre is left out (the landing is 15 x 11 m)
+HEADLAND_SKIP = ("watcher_relief",)
+
+
+def _coilspire():
+    sys.path.append(str(HERE.parent / "coilspire"))  # the Coilspire kit's frames and its arena landing, read-only
+    import cs_arena  # noqa: PLC0415
+    import cs_common  # noqa: PLC0415
+
+    return cs_arena, cs_common
+
+
+def headland_pose() -> tuple[tuple[float, float, float], float]:
+    """The landing's centre in Corrow's world (x, y, z) and the turn (deg, clockwise seen from above) that puts the
+    spire at HEADLAND_SPIRE_BEARING."""
+    ca, cs = _coilspire()
+    p, y, _t = ca.landing()
+    pw = cs.world_from_headland(float(p[0]), y, float(p[1]))
+    sw = cs.world_from_spire(0.0, 0.0, 0.0)
+    bearing = math.degrees(math.atan2(sw[0] - pw[0], -(sw[2] - pw[2])))
+    return pw, HEADLAND_SPIRE_BEARING - bearing
+
+
+def headland_from_world(x: float, y: float, z: float, yaw: float) -> tuple[tuple[float, float, float], float]:
+    (x0, y0, z0), psi = headland_pose()
+    a = math.radians(psi)
+    bx, by = x - x0, -(z - z0)  # (east, north)
+    rx, ry = bx * math.cos(a) + by * math.sin(a), -bx * math.sin(a) + by * math.cos(a)
+    return (round(rx, 3), round(y - y0, 3), round(-ry, 3)), round(yaw - psi, 3)
+
+
+def _headland_pieces() -> list:
+    rows = []
+    for path in (CS_LAYOUT, CS_BACKDROP):
+        for p in json.loads(path.read_text(encoding="utf-8"))["pieces"]:
+            name = p["piece"]
+            if name in HEADLAND_REPLACED or name in HEADLAND_SKIP:
+                continue
+            at, yaw = headland_from_world(p["at"][0], p["y"], p["at"][1], p["yaw_deg"])
+            if name.startswith("scrub_clump"):
+                if math.hypot(at[0], at[2]) < HEADLAND_SCRUB_CLEAR_M:
+                    continue
+                at = (at[0], round(_headland_ground_y(p["at"][0], p["at"][1]) + at[1] - p["y"], 3), at[2])
+            kit = CS if path == CS_LAYOUT else CW
+            rows.append({"glb": kit + name + ".glb", "at": at, "yaw": yaw})
+    at, yaw = headland_from_world(*_headland_frame())
+    rows.append({"glb": CS + "arena_headland_path.glb", "at": at, "yaw": yaw, "floor": True})
+    return rows
+
+
+def _headland_ground_y(wx: float, wz: float) -> float:
+    """The arena ground's height (Corrow's world y) under a world point: the kit's grading with the levelled path
+    and the landing (cs_arena), so the scrub stands on the ground the arena has, not the kit's."""
+    ca, cs = _coilspire()
+    hx, hz, yaw = cs.HEADLAND
+    a = math.radians(yaw)
+    dx, dz = wx - hx, wz - hz
+    lx, lz = dx * math.cos(a) - dz * math.sin(a), dx * math.sin(a) + dz * math.cos(a)  # world_from_headland, inverted
+    with ca._Levelled():
+        return float(ca._height(np.array([lx]), np.array([lz]), cs.headland_noise())[0])
+
+
+def _headland_frame() -> tuple[float, float, float, float]:
+    """The headland frame's origin in Corrow's world (x, y, z) and its yaw: where the kit's ground and path go."""
+    _ca, cs = _coilspire()
+    hx, hz, yaw = cs.HEADLAND
+    return hx, 0.0, hz, yaw
+
+
+def _headland_arena() -> dict:
+    ground_at, ground_yaw = headland_from_world(*_headland_frame())
+    (_x0, _y0, _z0), psi = headland_pose()
+    return {
+        "id": "coilspire_headland_path",
+        "sub_frame": "ch08",
+        "ground": "deck",
+        "ground_glb": CS + "arena_headland_ground.glb",
+        "ground_at": ground_at,
+        "ground_yaw": ground_yaw,
+        "lut": "res://assets/environments/arenas/coilspire_headland_path/lut_ch08_storm.png",
+        # coilspire.md `ch08` on the headland (Corrow's storm sky; the beat sheet's `ch08_day` has no colour-script
+        # row yet): sun 30 deg / 250 deg turned with the arena, key #FFE4CE 2.0, ambient #7A8A9C, exposure 0.80.
+        "sun": {"elev": 30.0, "az": round((250.0 + psi) % 360.0, 1), "color": "#FFE4CE", "energy": 2.0},
+        "fill": {"color": "#7A8A9C", "energy": 1.0},
+        "exposure": 0.8,
+        "fog": {"color": "#5E6670", "aerial": 0.5, "density": 0.0018, "sky_affect": 0.3, "height": 0.0,
+                "height_density": 0.0},
+        "sky_shader": LOW_SUN_SKY,
+        "sky": dict(CORROW_SKY, cloud_coverage=0.6),
+        "sea": {"y": round(-_y0, 3), "tide_line_y": round(-_y0, 3), "sea_glow": 0.0, "material_res": CORROW_SEA},
+        "pieces": _headland_pieces(),
+        "scatters": [],
+        "hints": {
+            "wide_high": ((-1.5, 7.5, 13.5), (0.0, 0.3, -3.0)),
+            "party_side": ((5.6, 1.7, 4.5), (-1.5, 1.0, -0.5)),
+            "foe_side": ((-5.6, 1.7, 4.0), (1.5, 1.0, 0.0)),
+            "to_the_spire": ((4.5, 1.4, 6.5), (-8.0, 8.0, -40.0)),
+        },
+    }
+
+
+HEADLAND = _headland_arena()
+
 ARENAS = {a["id"]: a for a in (TIDELINE, CAUSEWAY, CAUSEWAY_ROUTE, DERELICT_DECK, ASH_TERRACE, UNDERWAY_TOWER,
-                               RAFT_MORNING, SHOALS, CAMP, WALLHEAD_STORM, WALLHEAD_HOIST, WALLHEAD_SURGE)}
+                               RAFT_MORNING, SHOALS, CAMP, WALLHEAD_STORM, WALLHEAD_HOIST, WALLHEAD_SURGE, HEADLAND)}
 
 
 # ---------------------------------------------------------------------------------------------

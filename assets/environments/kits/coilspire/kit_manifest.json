@@ -2,6 +2,28 @@
   "generator": "assets_src/environments/kits/coilspire/build.py",
   "kit": "coilspire",
   "pieces": {
+    "arena_headland_ground": {
+      "budget": [
+        20000,
+        2000
+      ],
+      "bytes": 594628,
+      "lods": {
+        "arena_headland_ground": 13216,
+        "arena_headland_ground-lod1": 1536
+      }
+    },
+    "arena_headland_path": {
+      "budget": [
+        20000,
+        900
+      ],
+      "bytes": 905412,
+      "lods": {
+        "arena_headland_path": 8792,
+        "arena_headland_path-lod1": 104
+      }
+    },
     "beacon_basket": {
       "budget": [
         5000,

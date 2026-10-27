@@ -141,6 +141,26 @@ material (`material_res`) at y −12. Dressing: the stair-watch's red shields by
 sacks; in the afternoon states the kites along the parapet (they come down on the run back, so the surge has
 none). Hints `along_the_walk` and `the_storm_wall`.
 
+### Ch8's headland path (`coilspire_headland_path`, M3-ENV-713, the Coilspire kit)
+
+`ch08_headland_gulls` and `ch08_headland_crabs` (act1_ch08.md B04). The path climbs 0.17–0.3 m per metre and is
+2.2 m wide, so the arena has its own copy of the headland. `cs_arena.py` in the Coilspire kit builds it:
+- `arena_headland_ground` and `arena_headland_path`, in the headland frame like the kit's ground and path;
+- the path's profile is levelled for 7 m either side of its mid-point (s 51 of 99 m), blending back over 9 m;
+- at the mid-point, a flagged landing 15.2 × 10.8 m (an ellipse along the path) with a kerb round its rim, open
+  where the path enters and leaves;
+- the kit's treads and kerbs inside it are dropped, and the ground under the flags sits 4 cm down.
+
+The arena re-bases the Coilspire preview (`coilspire_layout.json` and its Corrow `coilspire_backdrop.json`,
+read-only) on the landing's centre:
+- the spire stands 55 m away, back-left of the fight (bearing −30°);
+- the wall and Corrow are behind the camera's right;
+- the kit's own ground and path are left out;
+- scrub within 9 m is dropped, and the rest is re-seated on the arena's ground.
+
+Light `ch08` (16:00) turned with the arena, `lut_ch08_storm` (the beat sheet's `ch08_day` has no colour-script
+row yet), and Corrow's `storm_grey` sea 27.3 m below. Hint `to_the_spire`.
+
 ### The underwater arena (`underway_tower`)
 
 An arena under the sea carries its own look, because the battle scene has none:

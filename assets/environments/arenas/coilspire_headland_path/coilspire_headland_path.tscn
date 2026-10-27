@@ -1,0 +1,1244 @@
+[gd_scene load_steps=31 format=3]
+
+[ext_resource type="Script" path="res://game/world/arenas/battle_arena_root.gd" id="1_r"]
+[ext_resource type="Shader" path="res://game/shaders/environment/env_sky_low_sun.gdshader" id="2_r"]
+[ext_resource type="Texture3D" path="res://assets/environments/arenas/coilspire_headland_path/lut_ch08_storm.png" id="3_r"]
+[ext_resource type="Script" path="res://game/world/arenas/arena_sea.gd" id="4_r"]
+[ext_resource type="Resource" path="res://game/world/water/lagoon_waves.tres" id="5_r"]
+[ext_resource type="Material" path="res://game/levels/_tests/corrow_kit/corrow_water_material.tres" id="6_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/coilspire/arena_headland_ground.glb" id="7_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/coilspire/coilspire_shell.glb" id="8_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/coilspire/coilspire_flues.glb" id="9_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/coilspire/coilspire_tiers.glb" id="10_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/coilspire/keepers_hut.glb" id="11_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/coilspire/beacon_basket.glb" id="12_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/coilspire/flue_key.glb" id="13_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/coilspire/flue_key_wheel.glb" id="14_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/coilspire/tier_brazier.glb" id="15_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/coilspire/scrub_clump_b.glb" id="16_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/coilspire/scrub_clump_a.glb" id="17_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/corrow/corrow_far.glb" id="18_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/corrow/seawall_curve.glb" id="19_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/corrow/wall_apron.glb" id="20_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/corrow/watcher_head.glb" id="21_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/corrow/fisher_stair.glb" id="22_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/corrow/liss_hoist.glb" id="23_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/corrow/lowtown_ground.glb" id="24_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/corrow/lowtown_house_a.glb" id="25_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/corrow/lowtown_house_b.glb" id="26_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/coilspire/arena_headland_path.glb" id="27_r"]
+
+[sub_resource type="ShaderMaterial" id="SkyMat"]
+shader = ExtResource("2_r")
+shader_parameter/azimuth_power = 2.0
+shader_parameter/band_energy = 0.5
+shader_parameter/band_height = 0.04
+shader_parameter/cloud_ambient_energy = 1.35
+shader_parameter/cloud_coverage = 0.6
+shader_parameter/cloud_height_m = 1800.0
+shader_parameter/cloud_horizon_fade = 0.08
+shader_parameter/cloud_opacity = 0.96
+shader_parameter/cloud_scale_m = 5000.0
+shader_parameter/cloud_softness = 0.22
+shader_parameter/cloud_stretch = Vector2(1, 2.5)
+shader_parameter/cloud_sun_energy = 2.6
+shader_parameter/cloud_wind_deg = 135.0
+shader_parameter/col_band = Color(1, 0.8235, 0.6588, 1)
+shader_parameter/col_cloud_lit = Color(0.9098, 0.7216, 0.5647, 1)
+shader_parameter/col_cloud_shadow = Color(0.2039, 0.251, 0.298, 1)
+shader_parameter/col_glow = Color(1, 0.8941, 0.8078, 1)
+shader_parameter/col_ground = Color(0.1647, 0.2118, 0.251, 1)
+shader_parameter/col_horizon_away = Color(0.3686, 0.4, 0.4392, 1)
+shader_parameter/col_horizon_sun = Color(0.7216, 0.6039, 0.4784, 1)
+shader_parameter/col_zenith = Color(0.2431, 0.2902, 0.3412, 1)
+shader_parameter/glow_energy = 0.8
+shader_parameter/glow_power = 6.0
+shader_parameter/halo_energy = 1.5
+shader_parameter/halo_power = 200.0
+shader_parameter/horizon_curve = 0.25
+shader_parameter/mid_strength = 0.0
+shader_parameter/sky_energy = 1.9
+shader_parameter/sun_disc_energy = 10.0
+
+[sub_resource type="Sky" id="Sky"]
+sky_material = SubResource("SkyMat")
+process_mode = 2
+
+[sub_resource type="Environment" id="Env"]
+resource_name = "coilspire_headland_path_ch08"
+background_mode = 2
+sky = SubResource("Sky")
+ambient_light_source = 2
+ambient_light_color = Color(0.4784, 0.5412, 0.6118, 1)
+ambient_light_energy = 1.0
+reflected_light_source = 2
+tonemap_mode = 4
+tonemap_exposure = 0.8
+tonemap_agx_white = 12.0
+ssao_enabled = true
+ssao_radius = 1.2
+ssao_intensity = 1.2
+glow_enabled = true
+glow_intensity = 0.35
+glow_bloom = 0.03
+glow_hdr_threshold = 1.2
+fog_enabled = true
+fog_mode = 0
+fog_light_color = Color(0.3686, 0.4, 0.4392, 1)
+fog_aerial_perspective = 0.5
+fog_density = 0.0018
+fog_sky_affect = 0.3
+fog_height = 0.0
+fog_height_density = 0.0
+adjustment_enabled = true
+adjustment_color_correction = ExtResource("3_r")
+
+[node name="CoilspireHeadlandPath" type="Node3D"]
+script = ExtResource("1_r")
+arena_id = &"coilspire_headland_path"
+sub_frame = &"ch08"
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Env")
+
+[node name="Sun" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.379456, -0.462605, 0.801255, 0, 0.866025, 0.5, -0.92521, 0.189728, -0.328619, 0, 30, 0)
+light_color = Color(1, 0.8941, 0.8078, 1)
+light_energy = 2.0
+shadow_enabled = true
+shadow_bias = 0.03
+shadow_normal_bias = 1.0
+shadow_blur = 1.0
+directional_shadow_mode = 2
+directional_shadow_split_1 = 0.06
+directional_shadow_split_2 = 0.18
+directional_shadow_split_3 = 0.45
+directional_shadow_max_distance = 120.0
+
+[node name="Sea" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -27.285, 0)
+script = ExtResource("4_r")
+wave_set = ExtResource("5_r")
+material = ExtResource("6_r")
+sea_glow_energy = 0.0
+tide_line_y = -27.285
+
+[node name="Ground" parent="." instance=ExtResource("7_r")]
+transform = Transform3D(-0.885272, 0, 0.465074, 0, 1, 0, -0.465074, 0, -0.885272, -37.995, -27.285, -66.869)
+
+[node name="Dressing" type="Node3D" parent="."]
+
+[node name="coilspire_shell_1" parent="Dressing" instance=ExtResource("8_r")]
+transform = Transform3D(-0.885272, 0, 0.465074, 0, 1, 0, -0.465074, 0, -0.885272, -27.641, 12, -47.875)
+
+[node name="coilspire_flues_1" parent="Dressing" instance=ExtResource("9_r")]
+transform = Transform3D(-0.885272, 0, 0.465074, 0, 1, 0, -0.465074, 0, -0.885272, -27.641, 12, -47.875)
+
+[node name="coilspire_tiers_1" parent="Dressing" instance=ExtResource("10_r")]
+transform = Transform3D(-0.885272, 0, 0.465074, 0, 1, 0, -0.465074, 0, -0.885272, -27.641, 12, -47.875)
+
+[node name="keepers_hut_1" parent="Dressing" instance=ExtResource("11_r")]
+transform = Transform3D(-0.885272, 0, 0.465074, 0, 1, 0, -0.465074, 0, -0.885272, -27.641, 12, -47.875)
+
+[node name="beacon_basket_1" parent="Dressing" instance=ExtResource("12_r")]
+transform = Transform3D(-0.885272, 0, 0.465074, 0, 1, 0, -0.465074, 0, -0.885272, -27.641, 58, -47.875)
+
+[node name="flue_key_1" parent="Dressing" instance=ExtResource("13_r")]
+transform = Transform3D(0.465074, 0, 0.885272, 0, 1, 0, -0.885272, 0, 0.465074, -31.429, 13.25, -49.866)
+
+[node name="flue_key_wheel_1" parent="Dressing" instance=ExtResource("14_r")]
+transform = Transform3D(0.465074, 0, 0.885272, 0, 1, 0, -0.885272, 0, 0.465074, -30.88, 13.25, -49.577)
+
+[node name="flue_key_2" parent="Dressing" instance=ExtResource("13_r")]
+transform = Transform3D(0.900963, 0, -0.433895, 0, 1, 0, 0.433895, 0, 0.900963, -25.783, 13.25, -51.731)
+
+[node name="flue_key_wheel_2" parent="Dressing" instance=ExtResource("14_r")]
+transform = Transform3D(0.900963, 0, -0.433895, 0, 1, 0, 0.433895, 0, 0.900963, -26.052, 13.25, -51.172)
+
+[node name="flue_key_3" parent="Dressing" instance=ExtResource("13_r")]
+transform = Transform3D(-0.999205, 0, -0.0398702, 0, 1, 0, 0.0398702, 0, -0.999205, -27.47, 13.25, -43.598)
+
+[node name="flue_key_wheel_3" parent="Dressing" instance=ExtResource("14_r")]
+transform = Transform3D(-0.999205, 0, -0.0398702, 0, 1, 0, 0.0398702, 0, -0.999205, -27.495, 13.25, -44.218)
+
+[node name="flue_key_4" parent="Dressing" instance=ExtResource("13_r")]
+transform = Transform3D(-0.781183, 0, -0.624302, 0, 1, 0, 0.624302, 0, -0.781183, -25.478, 22.25, -45.169)
+
+[node name="flue_key_wheel_4" parent="Dressing" instance=ExtResource("14_r")]
+transform = Transform3D(-0.781183, 0, -0.624302, 0, 1, 0, 0.624302, 0, -0.781183, -25.866, 22.25, -45.654)
+
+[node name="flue_key_5" parent="Dressing" instance=ExtResource("13_r")]
+transform = Transform3D(-0.954251, 0, 0.299007, 0, 1, 0, -0.299007, 0, -0.954251, -28.676, 22.25, -44.57)
+
+[node name="flue_key_wheel_5" parent="Dressing" instance=ExtResource("14_r")]
+transform = Transform3D(-0.954251, 0, 0.299007, 0, 1, 0, -0.299007, 0, -0.954251, -28.49, 22.25, -45.162)
+
+[node name="flue_key_6" parent="Dressing" instance=ExtResource("13_r")]
+transform = Transform3D(-0.470996, 0, -0.882135, 0, 1, 0, 0.882135, 0, -0.470996, -24.586, 22.25, -46.244)
+
+[node name="flue_key_wheel_6" parent="Dressing" instance=ExtResource("14_r")]
+transform = Transform3D(-0.470996, 0, -0.882135, 0, 1, 0, 0.882135, 0, -0.470996, -25.133, 22.25, -46.536)
+
+[node name="flue_key_7" parent="Dressing" instance=ExtResource("13_r")]
+transform = Transform3D(-0.576646, 0, -0.816994, 0, 1, 0, 0.816994, 0, -0.576646, -25.405, 31.25, -46.297)
+
+[node name="flue_key_wheel_7" parent="Dressing" instance=ExtResource("14_r")]
+transform = Transform3D(-0.576646, 0, -0.816994, 0, 1, 0, 0.816994, 0, -0.576646, -25.911, 31.25, -46.654)
+
+[node name="flue_key_8" parent="Dressing" instance=ExtResource("13_r")]
+transform = Transform3D(0.728479, 0, -0.685069, 0, 1, 0, 0.685069, 0, 0.728479, -25.766, 31.25, -49.868)
+
+[node name="flue_key_wheel_8" parent="Dressing" instance=ExtResource("14_r")]
+transform = Transform3D(0.728479, 0, -0.685069, 0, 1, 0, 0.685069, 0, 0.728479, -26.19, 31.25, -49.416)
+
+[node name="flue_key_9" parent="Dressing" instance=ExtResource("13_r")]
+transform = Transform3D(-0.655255, 0, 0.755408, 0, 1, 0, -0.755408, 0, -0.655255, -29.24, 40.25, -46.487)
+
+[node name="flue_key_wheel_9" parent="Dressing" instance=ExtResource("14_r")]
+transform = Transform3D(-0.655255, 0, 0.755408, 0, 1, 0, -0.755408, 0, -0.655255, -28.772, 40.25, -46.893)
+
+[node name="flue_key_10" parent="Dressing" instance=ExtResource("13_r")]
+transform = Transform3D(0.704993, 0, 0.709214, 0, 1, 0, -0.709214, 0, 0.704993, -29.143, 40.25, -49.367)
+
+[node name="flue_key_wheel_10" parent="Dressing" instance=ExtResource("14_r")]
+transform = Transform3D(0.704993, 0, 0.709214, 0, 1, 0, -0.709214, 0, 0.704993, -28.703, 40.25, -48.931)
+
+[node name="flue_key_11" parent="Dressing" instance=ExtResource("13_r")]
+transform = Transform3D(-0.990948, 0, 0.134246, 0, 1, 0, -0.134246, 0, -0.990948, -27.378, 55.75, -49.81)
+
+[node name="flue_key_wheel_11" parent="Dressing" instance=ExtResource("14_r")]
+transform = Transform3D(-0.990948, 0, 0.134246, 0, 1, 0, -0.134246, 0, -0.990948, -27.245, 55.75, -50.793)
+
+[node name="tier_brazier_1" parent="Dressing" instance=ExtResource("15_r")]
+transform = Transform3D(-0.986898, 0, -0.161345, 0, 1, 0, 0.161345, 0, -0.986898, -27.641, 12.3, -47.875)
+
+[node name="tier_brazier_2" parent="Dressing" instance=ExtResource("15_r")]
+transform = Transform3D(-0.691072, 0, -0.722786, 0, 1, 0, 0.722786, 0, -0.691072, -26.781, 21, -45.558)
+
+[node name="tier_brazier_3" parent="Dressing" instance=ExtResource("15_r")]
+transform = Transform3D(-0.116931, 0, -0.99314, 0, 1, 0, 0.99314, 0, -0.116931, -25.93, 30, -48.145)
+
+[node name="tier_brazier_4" parent="Dressing" instance=ExtResource("15_r")]
+transform = Transform3D(0.504302, 0, -0.863528, 0, 1, 0, 0.863528, 0, 0.504302, -28.728, 39, -48.01)
+
+[node name="scrub_clump_b_1" parent="Dressing" instance=ExtResource("16_r")]
+transform = Transform3D(-0.7418, 0, 0.670621, 0, 1, 0, -0.670621, 0, -0.7418, -0.3, 6.848, -13.478)
+
+[node name="scrub_clump_a_1" parent="Dressing" instance=ExtResource("17_r")]
+transform = Transform3D(-0.981343, 0, 0.192265, 0, 1, 0, -0.192265, 0, -0.981343, -12.117, 11.011, -29.696)
+
+[node name="scrub_clump_a_2" parent="Dressing" instance=ExtResource("17_r")]
+transform = Transform3D(-0.823285, 0, 0.567628, 0, 1, 0, -0.567628, 0, -0.823285, -16.27, 4.206, -13.193)
+
+[node name="scrub_clump_a_3" parent="Dressing" instance=ExtResource("17_r")]
+transform = Transform3D(-0.915978, 0, 0.401228, 0, 1, 0, -0.401228, 0, -0.915978, -10.285, 7.62, -24.966)
+
+[node name="scrub_clump_b_2" parent="Dressing" instance=ExtResource("16_r")]
+transform = Transform3D(-0.860698, 0, 0.509117, 0, 1, 0, -0.509117, 0, -0.860698, 47.202, -12.661, -9.071)
+
+[node name="scrub_clump_b_3" parent="Dressing" instance=ExtResource("16_r")]
+transform = Transform3D(-0.754538, 0, 0.656257, 0, 1, 0, -0.656257, 0, -0.754538, 42.688, -16.243, 7.015)
+
+[node name="scrub_clump_a_4" parent="Dressing" instance=ExtResource("17_r")]
+transform = Transform3D(-0.881262, 0, 0.472628, 0, 1, 0, -0.472628, 0, -0.881262, -3.636, 6.467, -18.187)
+
+[node name="scrub_clump_a_5" parent="Dressing" instance=ExtResource("17_r")]
+transform = Transform3D(-0.778079, 0, 0.628167, 0, 1, 0, -0.628167, 0, -0.778079, -21.876, 9.012, -24.584)
+
+[node name="scrub_clump_a_6" parent="Dressing" instance=ExtResource("17_r")]
+transform = Transform3D(-0.966667, 0, 0.256036, 0, 1, 0, -0.256036, 0, -0.966667, 21.999, -9.98, 9.401)
+
+[node name="scrub_clump_b_4" parent="Dressing" instance=ExtResource("16_r")]
+transform = Transform3D(-0.821896, 0, 0.569638, 0, 1, 0, -0.569638, 0, -0.821896, 30.513, -2.026, -7.104)
+
+[node name="scrub_clump_a_7" parent="Dressing" instance=ExtResource("17_r")]
+transform = Transform3D(-0.952209, 0, 0.305446, 0, 1, 0, -0.305446, 0, -0.952209, -11.153, 2.061, -7.526)
+
+[node name="scrub_clump_b_5" parent="Dressing" instance=ExtResource("16_r")]
+transform = Transform3D(-0.972675, 0, 0.232172, 0, 1, 0, -0.232172, 0, -0.972675, -6.244, -6.563, 8.328)
+
+[node name="scrub_clump_a_8" parent="Dressing" instance=ExtResource("17_r")]
+transform = Transform3D(-0.950434, 0, 0.310925, 0, 1, 0, -0.310925, 0, -0.950434, 41.741, -7.807, -7.476)
+
+[node name="scrub_clump_a_9" parent="Dressing" instance=ExtResource("17_r")]
+transform = Transform3D(-0.853323, 0, 0.521382, 0, 1, 0, -0.521382, 0, -0.853323, -4.069, 1.369, -8.184)
+
+[node name="scrub_clump_b_6" parent="Dressing" instance=ExtResource("16_r")]
+transform = Transform3D(-0.969467, 0, 0.245223, 0, 1, 0, -0.245223, 0, -0.969467, -3.718, 5.792, -15.632)
+
+[node name="scrub_clump_a_10" parent="Dressing" instance=ExtResource("17_r")]
+transform = Transform3D(-0.98151, 0, 0.191409, 0, 1, 0, -0.191409, 0, -0.98151, -20.101, 9.857, -19.634)
+
+[node name="scrub_clump_a_11" parent="Dressing" instance=ExtResource("17_r")]
+transform = Transform3D(-0.841652, 0, 0.54002, 0, 1, 0, -0.54002, 0, -0.841652, 46.661, -19.21, 8.745)
+
+[node name="scrub_clump_a_12" parent="Dressing" instance=ExtResource("17_r")]
+transform = Transform3D(-0.862734, 0, 0.505657, 0, 1, 0, -0.505657, 0, -0.862734, 36.817, -13.559, 6.187)
+
+[node name="scrub_clump_b_7" parent="Dressing" instance=ExtResource("16_r")]
+transform = Transform3D(-0.940258, 0, 0.340462, 0, 1, 0, -0.340462, 0, -0.940258, 18.256, 0.471, -6.723)
+
+[node name="scrub_clump_a_13" parent="Dressing" instance=ExtResource("17_r")]
+transform = Transform3D(-0.942612, 0, 0.333889, 0, 1, 0, -0.333889, 0, -0.942612, -23.788, 10.948, -36.27)
+
+[node name="scrub_clump_b_8" parent="Dressing" instance=ExtResource("16_r")]
+transform = Transform3D(-0.87339, 0, 0.487021, 0, 1, 0, -0.487021, 0, -0.87339, 5.107, -7.877, 11.183)
+
+[node name="scrub_clump_a_14" parent="Dressing" instance=ExtResource("17_r")]
+transform = Transform3D(-0.966219, 0, 0.257723, 0, 1, 0, -0.257723, 0, -0.966219, 0.679, 4.317, -10.799)
+
+[node name="scrub_clump_b_9" parent="Dressing" instance=ExtResource("16_r")]
+transform = Transform3D(-0.709755, 0, 0.704448, 0, 1, 0, -0.704448, 0, -0.709755, -8.664, 5.996, -17.438)
+
+[node name="scrub_clump_a_15" parent="Dressing" instance=ExtResource("17_r")]
+transform = Transform3D(-0.955304, 0, 0.295625, 0, 1, 0, -0.295625, 0, -0.955304, -22.476, 9.721, -33.835)
+
+[node name="scrub_clump_a_16" parent="Dressing" instance=ExtResource("17_r")]
+transform = Transform3D(-0.974897, 0, 0.222655, 0, 1, 0, -0.222655, 0, -0.974897, -10.675, 8.659, -34.727)
+
+[node name="scrub_clump_a_17" parent="Dressing" instance=ExtResource("17_r")]
+transform = Transform3D(-0.755568, 0, 0.655071, 0, 1, 0, -0.655071, 0, -0.755568, 20.013, -1.192, -4.097)
+
+[node name="scrub_clump_b_10" parent="Dressing" instance=ExtResource("16_r")]
+transform = Transform3D(-0.981175, 0, 0.193121, 0, 1, 0, -0.193121, 0, -0.981175, 36.993, -17.657, 10.01)
+
+[node name="scrub_clump_b_11" parent="Dressing" instance=ExtResource("16_r")]
+transform = Transform3D(-0.981175, 0, 0.193121, 0, 1, 0, -0.193121, 0, -0.981175, 42.197, -11.422, -4.031)
+
+[node name="scrub_clump_a_18" parent="Dressing" instance=ExtResource("17_r")]
+transform = Transform3D(-0.833645, 0, 0.552301, 0, 1, 0, -0.552301, 0, -0.833645, 21.088, -7.021, 6.547)
+
+[node name="scrub_clump_b_12" parent="Dressing" instance=ExtResource("16_r")]
+transform = Transform3D(-0.821597, 0, 0.570068, 0, 1, 0, -0.570068, 0, -0.821597, 25.309, -11.492, 9.825)
+
+[node name="scrub_clump_a_19" parent="Dressing" instance=ExtResource("17_r")]
+transform = Transform3D(-0.778408, 0, 0.627759, 0, 1, 0, -0.627759, 0, -0.778408, 34.794, -11.909, 4.774)
+
+[node name="scrub_clump_b_13" parent="Dressing" instance=ExtResource("16_r")]
+transform = Transform3D(-0.830353, 0, 0.557238, 0, 1, 0, -0.557238, 0, -0.830353, 30.006, -13.472, 8.644)
+
+[node name="scrub_clump_b_14" parent="Dressing" instance=ExtResource("16_r")]
+transform = Transform3D(-0.970779, 0, 0.239974, 0, 1, 0, -0.239974, 0, -0.970779, -15.933, 8.745, -38.058)
+
+[node name="scrub_clump_b_15" parent="Dressing" instance=ExtResource("16_r")]
+transform = Transform3D(-0.97435, 0, 0.225036, 0, 1, 0, -0.225036, 0, -0.97435, 3.146, 2.718, -9.04)
+
+[node name="scrub_clump_a_20" parent="Dressing" instance=ExtResource("17_r")]
+transform = Transform3D(-0.937008, 0, 0.349308, 0, 1, 0, -0.349308, 0, -0.937008, -15.885, 2.686, -9.496)
+
+[node name="scrub_clump_a_21" parent="Dressing" instance=ExtResource("17_r")]
+transform = Transform3D(-0.765876, 0, 0.642988, 0, 1, 0, -0.642988, 0, -0.765876, -12.085, 8.431, -40.01)
+
+[node name="scrub_clump_a_22" parent="Dressing" instance=ExtResource("17_r")]
+transform = Transform3D(-0.969595, 0, 0.244715, 0, 1, 0, -0.244715, 0, -0.969595, -19.235, 8.552, -21.712)
+
+[node name="scrub_clump_a_23" parent="Dressing" instance=ExtResource("17_r")]
+transform = Transform3D(-0.714167, 0, 0.699975, 0, 1, 0, -0.699975, 0, -0.714167, 3.07, -8.666, 12.094)
+
+[node name="scrub_clump_a_24" parent="Dressing" instance=ExtResource("17_r")]
+transform = Transform3D(-0.958298, 0, 0.285772, 0, 1, 0, -0.285772, 0, -0.958298, -0.643, -6.369, 9.503)
+
+[node name="scrub_clump_a_25" parent="Dressing" instance=ExtResource("17_r")]
+transform = Transform3D(-0.862734, 0, 0.505657, 0, 1, 0, -0.505657, 0, -0.862734, -18.849, 9.682, -24.879)
+
+[node name="scrub_clump_a_26" parent="Dressing" instance=ExtResource("17_r")]
+transform = Transform3D(-0.726275, 0, 0.687404, 0, 1, 0, -0.687404, 0, -0.726275, 39.272, -9.471, -4.113)
+
+[node name="scrub_clump_a_27" parent="Dressing" instance=ExtResource("17_r")]
+transform = Transform3D(-0.857482, 0, 0.514514, 0, 1, 0, -0.514514, 0, -0.857482, -5.124, 7.108, -24.418)
+
+[node name="scrub_clump_a_28" parent="Dressing" instance=ExtResource("17_r")]
+transform = Transform3D(-0.933612, 0, 0.358286, 0, 1, 0, -0.358286, 0, -0.933612, 12.027, 4.141, -4.821)
+
+[node name="scrub_clump_a_29" parent="Dressing" instance=ExtResource("17_r")]
+transform = Transform3D(-0.722062, 0, 0.691828, 0, 1, 0, -0.691828, 0, -0.722062, 35.665, -4.411, -10.014)
+
+[node name="scrub_clump_a_30" parent="Dressing" instance=ExtResource("17_r")]
+transform = Transform3D(-0.850214, 0, 0.526437, 0, 1, 0, -0.526437, 0, -0.850214, 37.551, -11.376, 3.54)
+
+[node name="scrub_clump_b_16" parent="Dressing" instance=ExtResource("16_r")]
+transform = Transform3D(-0.744603, 0, 0.667508, 0, 1, 0, -0.667508, 0, -0.744603, 46.346, -12.576, -6.23)
+
+[node name="scrub_clump_a_31" parent="Dressing" instance=ExtResource("17_r")]
+transform = Transform3D(-0.945206, 0, 0.326476, 0, 1, 0, -0.326476, 0, -0.945206, 16.425, -9.28, 10.6)
+
+[node name="scrub_clump_a_32" parent="Dressing" instance=ExtResource("17_r")]
+transform = Transform3D(-0.947462, 0, 0.319869, 0, 1, 0, -0.319869, 0, -0.947462, 43.384, -18.789, 9.254)
+
+[node name="scrub_clump_a_33" parent="Dressing" instance=ExtResource("17_r")]
+transform = Transform3D(-0.859094, 0, 0.511818, 0, 1, 0, -0.511818, 0, -0.859094, -25.205, 7.954, -33.653)
+
+[node name="scrub_clump_b_17" parent="Dressing" instance=ExtResource("16_r")]
+transform = Transform3D(-0.934609, 0, 0.355678, 0, 1, 0, -0.355678, 0, -0.934609, -5.772, 6.246, -17.319)
+
+[node name="scrub_clump_a_34" parent="Dressing" instance=ExtResource("17_r")]
+transform = Transform3D(-0.888977, 0, 0.457951, 0, 1, 0, -0.457951, 0, -0.888977, 10.651, -8.613, 9.133)
+
+[node name="scrub_clump_a_35" parent="Dressing" instance=ExtResource("17_r")]
+transform = Transform3D(-0.776871, 0, 0.629659, 0, 1, 0, -0.629659, 0, -0.776871, 12.843, 4.283, -2.039)
+
+[node name="scrub_clump_a_36" parent="Dressing" instance=ExtResource("17_r")]
+transform = Transform3D(-0.76979, 0, 0.638298, 0, 1, 0, -0.638298, 0, -0.76979, -10.52, -3.399, 4.32)
+
+[node name="scrub_clump_a_37" parent="Dressing" instance=ExtResource("17_r")]
+transform = Transform3D(-0.87057, 0, 0.492044, 0, 1, 0, -0.492044, 0, -0.87057, -9.96, 8.85, -28.15)
+
+[node name="scrub_clump_b_18" parent="Dressing" instance=ExtResource("16_r")]
+transform = Transform3D(-0.976654, 0, 0.214821, 0, 1, 0, -0.214821, 0, -0.976654, 20.29, -10.992, 12.126)
+
+[node name="scrub_clump_a_38" parent="Dressing" instance=ExtResource("17_r")]
+transform = Transform3D(-0.917025, 0, 0.398829, 0, 1, 0, -0.398829, 0, -0.917025, 42.76, -14.145, 4.183)
+
+[node name="scrub_clump_a_39" parent="Dressing" instance=ExtResource("17_r")]
+transform = Transform3D(-0.784722, 0, 0.619848, 0, 1, 0, -0.619848, 0, -0.784722, 28.331, -1.892, -7.42)
+
+[node name="scrub_clump_b_19" parent="Dressing" instance=ExtResource("16_r")]
+transform = Transform3D(-0.805256, 0, 0.592927, 0, 1, 0, -0.592927, 0, -0.805256, -2.287, 3.424, -9.721)
+
+[node name="scrub_clump_a_40" parent="Dressing" instance=ExtResource("17_r")]
+transform = Transform3D(-0.755339, 0, 0.655334, 0, 1, 0, -0.655334, 0, -0.755339, -21.282, 7.947, -16.228)
+
+[node name="scrub_clump_a_41" parent="Dressing" instance=ExtResource("17_r")]
+transform = Transform3D(-0.739572, 0, 0.673077, 0, 1, 0, -0.673077, 0, -0.739572, 24.465, -2.738, -7.089)
+
+[node name="scrub_clump_b_20" parent="Dressing" instance=ExtResource("16_r")]
+transform = Transform3D(-0.872283, 0, 0.489002, 0, 1, 0, -0.489002, 0, -0.872283, 26.427, -1.712, -9.677)
+
+[node name="scrub_clump_a_42" parent="Dressing" instance=ExtResource("17_r")]
+transform = Transform3D(-0.878192, 0, 0.478309, 0, 1, 0, -0.478309, 0, -0.878192, -25.656, 9.715, -23.249)
+
+[node name="corrow_far_1" parent="Dressing" instance=ExtResource("18_r")]
+transform = Transform3D(-0.999205, 0, -0.0398702, 0, 1, 0, 0.0398702, 0, -0.999205, 286.85, -27.285, 98.31)
+
+[node name="seawall_curve_1" parent="Dressing" instance=ExtResource("19_r")]
+transform = Transform3D(-0.87764, 0, -0.47932, 0, 1, 0, 0.47932, 0, -0.87764, 418.685, -27.285, 61.84)
+
+[node name="wall_apron_1" parent="Dressing" instance=ExtResource("20_r")]
+transform = Transform3D(-0.87764, 0, -0.47932, 0, 1, 0, 0.47932, 0, -0.87764, 418.685, -27.285, 61.84)
+
+[node name="watcher_head_1" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.870356, 0, -0.492424, 0, 1, 0, 0.492424, 0, -0.870356, 420.845, -14.385, 56.52)
+
+[node name="watcher_head_2" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.875228, 0, -0.48371, 0, 1, 0, 0.48371, 0, -0.875228, 418.259, -14.385, 57.967)
+
+[node name="watcher_head_3" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.880022, 0, -0.474933, 0, 1, 0, 0.474933, 0, -0.880022, 415.657, -14.385, 59.388)
+
+[node name="watcher_head_4" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.884727, 0, -0.466109, 0, 1, 0, 0.466109, 0, -0.884727, 413.042, -14.385, 60.782)
+
+[node name="seawall_curve_2" parent="Dressing" instance=ExtResource("19_r")]
+transform = Transform3D(-0.896107, 0, -0.443838, 0, 1, 0, 0.443838, 0, -0.896107, 408.041, -27.285, 67.38)
+
+[node name="wall_apron_2" parent="Dressing" instance=ExtResource("20_r")]
+transform = Transform3D(-0.896107, 0, -0.443838, 0, 1, 0, 0.443838, 0, -0.896107, 408.041, -27.285, 67.38)
+
+[node name="watcher_head_5" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.889345, 0, -0.457238, 0, 1, 0, 0.457238, 0, -0.889345, 410.412, -14.385, 62.15)
+
+[node name="watcher_head_6" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.893873, 0, -0.448321, 0, 1, 0, 0.448321, 0, -0.893873, 407.77, -14.385, 63.492)
+
+[node name="watcher_head_7" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.898311, 0, -0.439359, 0, 1, 0, 0.439359, 0, -0.898311, 405.113, -14.385, 64.807)
+
+[node name="watcher_head_8" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.90266, 0, -0.430354, 0, 1, 0, 0.430354, 0, -0.90266, 402.444, -14.385, 66.097)
+
+[node name="seawall_curve_3" parent="Dressing" instance=ExtResource("19_r")]
+transform = Transform3D(-0.91314, 0, -0.407645, 0, 1, 0, 0.407645, 0, -0.91314, 397.184, -27.285, 72.489)
+
+[node name="wall_apron_3" parent="Dressing" instance=ExtResource("20_r")]
+transform = Transform3D(-0.91314, 0, -0.407645, 0, 1, 0, 0.407645, 0, -0.91314, 397.184, -27.285, 72.489)
+
+[node name="watcher_head_9" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.906919, 0, -0.421305, 0, 1, 0, 0.421305, 0, -0.906919, 399.763, -14.385, 67.359)
+
+[node name="watcher_head_10" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.911087, 0, -0.412214, 0, 1, 0, 0.412214, 0, -0.911087, 397.069, -14.385, 68.594)
+
+[node name="watcher_head_11" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.915164, 0, -0.403082, 0, 1, 0, 0.403082, 0, -0.915164, 394.362, -14.385, 69.802)
+
+[node name="watcher_head_12" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.919149, 0, -0.39391, 0, 1, 0, 0.39391, 0, -0.919149, 391.644, -14.385, 70.983)
+
+[node name="seawall_curve_4" parent="Dressing" instance=ExtResource("19_r")]
+transform = Transform3D(-0.928706, 0, -0.370817, 0, 1, 0, 0.370817, 0, -0.928706, 386.132, -27.285, 77.16)
+
+[node name="wall_apron_4" parent="Dressing" instance=ExtResource("20_r")]
+transform = Transform3D(-0.928706, 0, -0.370817, 0, 1, 0, 0.370817, 0, -0.928706, 386.132, -27.285, 77.16)
+
+[node name="watcher_head_13" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.923042, 0, -0.384698, 0, 1, 0, 0.384698, 0, -0.923042, 388.913, -14.385, 72.137)
+
+[node name="watcher_head_14" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.926843, 0, -0.375448, 0, 1, 0, 0.375448, 0, -0.926843, 386.171, -14.385, 73.264)
+
+[node name="watcher_head_15" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.930552, 0, -0.36616, 0, 1, 0, 0.36616, 0, -0.930552, 383.419, -14.385, 74.363)
+
+[node name="watcher_head_16" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.934167, 0, -0.356836, 0, 1, 0, 0.356836, 0, -0.934167, 380.655, -14.385, 75.435)
+
+[node name="seawall_curve_5" parent="Dressing" instance=ExtResource("19_r")]
+transform = Transform3D(-0.942793, 0, -0.333379, 0, 1, 0, 0.333379, 0, -0.942793, 374.901, -27.285, 81.386)
+
+[node name="wall_apron_5" parent="Dressing" instance=ExtResource("20_r")]
+transform = Transform3D(-0.942793, 0, -0.333379, 0, 1, 0, 0.333379, 0, -0.942793, 374.901, -27.285, 81.386)
+
+[node name="watcher_head_17" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.937689, 0, -0.347476, 0, 1, 0, 0.347476, 0, -0.937689, 377.882, -14.385, 76.479)
+
+[node name="watcher_head_18" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.941117, 0, -0.338081, 0, 1, 0, 0.338081, 0, -0.941117, 375.097, -14.385, 77.494)
+
+[node name="watcher_head_19" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.944451, 0, -0.328652, 0, 1, 0, 0.328652, 0, -0.944451, 372.302, -14.385, 78.483)
+
+[node name="watcher_head_20" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.94769, 0, -0.319191, 0, 1, 0, 0.319191, 0, -0.94769, 369.498, -14.385, 79.443)
+
+[node name="seawall_curve_6" parent="Dressing" instance=ExtResource("19_r")]
+transform = Transform3D(-0.955371, 0, -0.295408, 0, 1, 0, 0.295408, 0, -0.955371, 363.511, -27.285, 85.159)
+
+[node name="wall_apron_6" parent="Dressing" instance=ExtResource("20_r")]
+transform = Transform3D(-0.955371, 0, -0.295408, 0, 1, 0, 0.295408, 0, -0.955371, 363.511, -27.285, 85.159)
+
+[node name="watcher_head_21" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.950835, 0, -0.309697, 0, 1, 0, 0.309697, 0, -0.950835, 366.685, -14.385, 80.375)
+
+[node name="watcher_head_22" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.953885, 0, -0.300173, 0, 1, 0, 0.300173, 0, -0.953885, 363.862, -14.385, 81.278)
+
+[node name="watcher_head_23" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.956839, 0, -0.290619, 0, 1, 0, 0.290619, 0, -0.956839, 361.031, -14.385, 82.154)
+
+[node name="watcher_head_24" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.959697, 0, -0.281035, 0, 1, 0, 0.281035, 0, -0.959697, 358.19, -14.385, 83.002)
+
+[node name="seawall_curve_7" parent="Dressing" instance=ExtResource("19_r")]
+transform = Transform3D(-0.966421, 0, -0.256964, 0, 1, 0, 0.256964, 0, -0.966421, 351.979, -27.285, 88.474)
+
+[node name="wall_apron_7" parent="Dressing" instance=ExtResource("20_r")]
+transform = Transform3D(-0.966421, 0, -0.256964, 0, 1, 0, 0.256964, 0, -0.966421, 351.979, -27.285, 88.474)
+
+[node name="watcher_head_25" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.962455, 0, -0.27144, 0, 1, 0, 0.27144, 0, -0.962455, 355.342, -14.385, 83.82)
+
+[node name="watcher_head_26" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.965122, 0, -0.261802, 0, 1, 0, 0.261802, 0, -0.965122, 352.485, -14.385, 84.611)
+
+[node name="watcher_head_27" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.967692, 0, -0.252137, 0, 1, 0, 0.252137, 0, -0.967692, 349.62, -14.385, 85.372)
+
+[node name="watcher_head_28" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.970165, 0, -0.242447, 0, 1, 0, 0.242447, 0, -0.970165, 346.748, -14.385, 86.106)
+
+[node name="seawall_curve_8" parent="Dressing" instance=ExtResource("19_r")]
+transform = Transform3D(-0.975924, 0, -0.218109, 0, 1, 0, 0.218109, 0, -0.975924, 340.323, -27.285, 91.325)
+
+[node name="wall_apron_8" parent="Dressing" instance=ExtResource("20_r")]
+transform = Transform3D(-0.975924, 0, -0.218109, 0, 1, 0, 0.218109, 0, -0.975924, 340.323, -27.285, 91.325)
+
+[node name="watcher_head_29" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.972541, 0, -0.232733, 0, 1, 0, 0.232733, 0, -0.972541, 343.869, -14.385, 86.81)
+
+[node name="watcher_head_30" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.97482, 0, -0.222995, 0, 1, 0, 0.222995, 0, -0.97482, 340.983, -14.385, 87.485)
+
+[node name="watcher_head_31" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.977001, 0, -0.213235, 0, 1, 0, 0.213235, 0, -0.977001, 338.091, -14.385, 88.131)
+
+[node name="watcher_head_32" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.979085, 0, -0.203454, 0, 1, 0, 0.203454, 0, -0.979085, 335.191, -14.385, 88.748)
+
+[node name="seawall_curve_9" parent="Dressing" instance=ExtResource("19_r")]
+transform = Transform3D(-0.983866, 0, -0.178905, 0, 1, 0, 0.178905, 0, -0.983866, 328.563, -27.285, 93.708)
+
+[node name="wall_apron_9" parent="Dressing" instance=ExtResource("20_r")]
+transform = Transform3D(-0.983866, 0, -0.178905, 0, 1, 0, 0.178905, 0, -0.983866, 328.563, -27.285, 93.708)
+
+[node name="watcher_head_33" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.98107, 0, -0.193652, 0, 1, 0, 0.193652, 0, -0.98107, 332.286, -14.385, 89.338)
+
+[node name="watcher_head_34" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.982958, 0, -0.183831, 0, 1, 0, 0.183831, 0, -0.982958, 329.376, -14.385, 89.897)
+
+[node name="watcher_head_35" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.984747, 0, -0.173992, 0, 1, 0, 0.173992, 0, -0.984747, 326.46, -14.385, 90.427)
+
+[node name="watcher_head_36" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.986438, 0, -0.164135, 0, 1, 0, 0.164135, 0, -0.986438, 323.539, -14.385, 90.928)
+
+[node name="seawall_curve_10" parent="Dressing" instance=ExtResource("19_r")]
+transform = Transform3D(-0.990232, 0, -0.139432, 0, 1, 0, 0.139432, 0, -0.990232, 316.716, -27.285, 95.618)
+
+[node name="wall_apron_10" parent="Dressing" instance=ExtResource("20_r")]
+transform = Transform3D(-0.990232, 0, -0.139432, 0, 1, 0, 0.139432, 0, -0.990232, 316.716, -27.285, 95.618)
+
+[node name="watcher_head_37" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.98803, 0, -0.154262, 0, 1, 0, 0.154262, 0, -0.98803, 320.612, -14.385, 91.4)
+
+[node name="watcher_head_38" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.989523, 0, -0.144373, 0, 1, 0, 0.144373, 0, -0.989523, 317.682, -14.385, 91.843)
+
+[node name="watcher_head_39" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.990918, 0, -0.13447, 0, 1, 0, 0.13447, 0, -0.990918, 314.747, -14.385, 92.256)
+
+[node name="watcher_head_40" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.992213, 0, -0.124554, 0, 1, 0, 0.124554, 0, -0.992213, 311.808, -14.385, 92.64)
+
+[node name="seawall_curve_11" parent="Dressing" instance=ExtResource("19_r")]
+transform = Transform3D(-0.995016, 0, -0.0997192, 0, 1, 0, 0.0997192, 0, -0.995016, 304.803, -27.285, 97.053)
+
+[node name="wall_apron_11" parent="Dressing" instance=ExtResource("20_r")]
+transform = Transform3D(-0.995016, 0, -0.0997192, 0, 1, 0, 0.0997192, 0, -0.995016, 304.803, -27.285, 97.053)
+
+[node name="watcher_head_41" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.993409, 0, -0.114625, 0, 1, 0, 0.114625, 0, -0.993409, 308.864, -14.385, 92.995)
+
+[node name="watcher_head_42" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.994505, 0, -0.104685, 0, 1, 0, 0.104685, 0, -0.994505, 305.918, -14.385, 93.319)
+
+[node name="watcher_head_43" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.995503, 0, -0.0947338, 0, 1, 0, 0.0947338, 0, -0.995503, 302.97, -14.385, 93.615)
+
+[node name="watcher_head_44" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.9964, 0, -0.0847735, 0, 1, 0, 0.0847735, 0, -0.9964, 300.017, -14.385, 93.881)
+
+[node name="seawall_curve_12" parent="Dressing" instance=ExtResource("19_r")]
+transform = Transform3D(-0.998208, 0, -0.0598465, 0, 1, 0, 0.0598465, 0, -0.998208, 292.843, -27.285, 98.01)
+
+[node name="wall_apron_12" parent="Dressing" instance=ExtResource("20_r")]
+transform = Transform3D(-0.998208, 0, -0.0598465, 0, 1, 0, 0.0598465, 0, -0.998208, 292.843, -27.285, 98.01)
+
+[node name="watcher_head_45" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.997198, 0, -0.0748047, 0, 1, 0, 0.0748047, 0, -0.997198, 297.063, -14.385, 94.117)
+
+[node name="watcher_head_46" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.997896, 0, -0.0648284, 0, 1, 0, 0.0648284, 0, -0.997896, 294.106, -14.385, 94.324)
+
+[node name="watcher_head_47" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.998495, 0, -0.0548456, 0, 1, 0, 0.0548456, 0, -0.998495, 291.147, -14.385, 94.502)
+
+[node name="watcher_head_48" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.998993, 0, -0.0448574, 0, 1, 0, 0.0448574, 0, -0.998993, 288.187, -14.385, 94.649)
+
+[node name="seawall_curve_13" parent="Dressing" instance=ExtResource("19_r")]
+transform = Transform3D(-0.999802, 0, -0.019878, 0, 1, 0, 0.019878, 0, -0.999802, 280.852, -27.285, 98.489)
+
+[node name="wall_apron_13" parent="Dressing" instance=ExtResource("20_r")]
+transform = Transform3D(-0.999802, 0, -0.019878, 0, 1, 0, 0.019878, 0, -0.999802, 280.852, -27.285, 98.489)
+
+[node name="watcher_head_49" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.999391, 0, -0.0348821, 0, 1, 0, 0.0348821, 0, -0.999391, 285.225, -14.385, 94.768)
+
+[node name="watcher_head_50" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.99969, 0, -0.0248858, 0, 1, 0, 0.0248858, 0, -0.99969, 282.263, -14.385, 94.857)
+
+[node name="watcher_head_51" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.999889, 0, -0.0148871, 0, 1, 0, 0.0148871, 0, -0.999889, 279.3, -14.385, 94.915)
+
+[node name="watcher_head_52" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.999988, 0, -0.0048869, 0, 1, 0, 0.0048869, 0, -0.999988, 276.335, -14.385, 94.944)
+
+[node name="seawall_curve_14" parent="Dressing" instance=ExtResource("19_r")]
+transform = Transform3D(-0.999798, 0, 0.0201223, 0, 1, 0, -0.0201223, 0, -0.999798, 268.854, -27.285, 98.487)
+
+[node name="wall_apron_14" parent="Dressing" instance=ExtResource("20_r")]
+transform = Transform3D(-0.999798, 0, 0.0201223, 0, 1, 0, -0.0201223, 0, -0.999798, 268.854, -27.285, 98.487)
+
+[node name="watcher_head_53" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.999987, 0, 0.00511379, 0, 1, 0, -0.00511379, 0, -0.999987, 273.372, -14.385, 94.944)
+
+[node name="watcher_head_54" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.999886, 0, 0.015114, 0, 1, 0, -0.015114, 0, -0.999886, 270.407, -14.385, 94.914)
+
+[node name="watcher_head_55" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.999685, 0, 0.0251126, 0, 1, 0, -0.0251126, 0, -0.999685, 267.445, -14.385, 94.855)
+
+[node name="watcher_head_56" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.999383, 0, 0.0351088, 0, 1, 0, -0.0351088, 0, -0.999383, 264.482, -14.385, 94.766)
+
+[node name="seawall_curve_15" parent="Dressing" instance=ExtResource("19_r")]
+transform = Transform3D(-0.998193, 0, 0.0600904, 0, 1, 0, -0.0600904, 0, -0.998193, 256.864, -27.285, 98.006)
+
+[node name="wall_apron_15" parent="Dressing" instance=ExtResource("20_r")]
+transform = Transform3D(-0.998193, 0, 0.0600904, 0, 1, 0, -0.0600904, 0, -0.998193, 256.864, -27.285, 98.006)
+
+[node name="watcher_head_57" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.998982, 0, 0.0451015, 0, 1, 0, -0.0451015, 0, -0.998982, 261.52, -14.385, 94.647)
+
+[node name="watcher_head_58" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.998481, 0, 0.0550896, 0, 1, 0, -0.0550896, 0, -0.998481, 258.559, -14.385, 94.499)
+
+[node name="watcher_head_59" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.997881, 0, 0.0650722, 0, 1, 0, -0.0650722, 0, -0.997881, 255.601, -14.385, 94.32)
+
+[node name="watcher_head_60" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.99718, 0, 0.0750483, 0, 1, 0, -0.0750483, 0, -0.99718, 252.644, -14.385, 94.112)
+
+[node name="seawall_curve_16" parent="Dressing" instance=ExtResource("19_r")]
+transform = Transform3D(-0.994993, 0, 0.0999449, 0, 1, 0, -0.0999449, 0, -0.994993, 244.903, -27.285, 97.046)
+
+[node name="wall_apron_16" parent="Dressing" instance=ExtResource("20_r")]
+transform = Transform3D(-0.994993, 0, 0.0999449, 0, 1, 0, -0.0999449, 0, -0.994993, 244.903, -27.285, 97.046)
+
+[node name="watcher_head_61" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.99638, 0, 0.085017, 0, 1, 0, -0.085017, 0, -0.99638, 249.69, -14.385, 93.875)
+
+[node name="watcher_head_62" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.995479, 0, 0.0949771, 0, 1, 0, -0.0949771, 0, -0.995479, 246.738, -14.385, 93.608)
+
+[node name="watcher_head_63" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.99448, 0, 0.104928, 0, 1, 0, -0.104928, 0, -0.99448, 243.788, -14.385, 93.313)
+
+[node name="watcher_head_64" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.993381, 0, 0.114868, 0, 1, 0, -0.114868, 0, -0.993381, 240.843, -14.385, 92.987)
+
+[node name="seawall_curve_17" parent="Dressing" instance=ExtResource("19_r")]
+transform = Transform3D(-0.9902, 0, 0.139657, 0, 1, 0, -0.139657, 0, -0.9902, 232.99, -27.285, 95.608)
+
+[node name="wall_apron_17" parent="Dressing" instance=ExtResource("20_r")]
+transform = Transform3D(-0.9902, 0, 0.139657, 0, 1, 0, -0.139657, 0, -0.9902, 232.99, -27.285, 95.608)
+
+[node name="watcher_head_65" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.992182, 0, 0.124796, 0, 1, 0, -0.124796, 0, -0.992182, 237.901, -14.385, 92.631)
+
+[node name="watcher_head_66" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.990885, 0, 0.134713, 0, 1, 0, -0.134713, 0, -0.990885, 234.961, -14.385, 92.247)
+
+[node name="watcher_head_67" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.989488, 0, 0.144615, 0, 1, 0, -0.144615, 0, -0.989488, 232.026, -14.385, 91.832)
+
+[node name="watcher_head_68" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.987992, 0, 0.154503, 0, 1, 0, -0.154503, 0, -0.987992, 229.096, -14.385, 91.39)
+
+[node name="seawall_curve_18" parent="Dressing" instance=ExtResource("19_r")]
+transform = Transform3D(-0.983823, 0, 0.179146, 0, 1, 0, -0.179146, 0, -0.983823, 221.145, -27.285, 93.695)
+
+[node name="wall_apron_18" parent="Dressing" instance=ExtResource("20_r")]
+transform = Transform3D(-0.983823, 0, 0.179146, 0, 1, 0, -0.179146, 0, -0.983823, 221.145, -27.285, 93.695)
+
+[node name="watcher_head_69" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.986398, 0, 0.164376, 0, 1, 0, -0.164376, 0, -0.986398, 226.17, -14.385, 90.917)
+
+[node name="watcher_head_70" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.984705, 0, 0.174233, 0, 1, 0, -0.174233, 0, -0.984705, 223.249, -14.385, 90.415)
+
+[node name="watcher_head_71" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.982913, 0, 0.184071, 0, 1, 0, -0.184071, 0, -0.982913, 220.332, -14.385, 89.884)
+
+[node name="watcher_head_72" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.981023, 0, 0.193892, 0, 1, 0, -0.193892, 0, -0.981023, 217.421, -14.385, 89.324)
+
+[node name="seawall_curve_19" parent="Dressing" instance=ExtResource("19_r")]
+transform = Transform3D(-0.975871, 0, 0.218348, 0, 1, 0, -0.218348, 0, -0.975871, 209.385, -27.285, 91.31)
+
+[node name="wall_apron_19" parent="Dressing" instance=ExtResource("20_r")]
+transform = Transform3D(-0.975871, 0, 0.218348, 0, 1, 0, -0.218348, 0, -0.975871, 209.385, -27.285, 91.31)
+
+[node name="watcher_head_73" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.979038, 0, 0.203676, 0, 1, 0, -0.203676, 0, -0.979038, 214.517, -14.385, 88.735)
+
+[node name="watcher_head_74" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.976953, 0, 0.213457, 0, 1, 0, -0.213457, 0, -0.976953, 211.618, -14.385, 88.116)
+
+[node name="watcher_head_75" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.974769, 0, 0.223216, 0, 1, 0, -0.223216, 0, -0.974769, 208.726, -14.385, 87.469)
+
+[node name="watcher_head_76" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.972488, 0, 0.232953, 0, 1, 0, -0.232953, 0, -0.972488, 205.839, -14.385, 86.794)
+
+[node name="seawall_curve_20" parent="Dressing" instance=ExtResource("19_r")]
+transform = Transform3D(-0.966358, 0, 0.2572, 0, 1, 0, -0.2572, 0, -0.966358, 197.73, -27.285, 88.456)
+
+[node name="wall_apron_20" parent="Dressing" instance=ExtResource("20_r")]
+transform = Transform3D(-0.966358, 0, 0.2572, 0, 1, 0, -0.2572, 0, -0.966358, 197.73, -27.285, 88.456)
+
+[node name="watcher_head_77" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.97011, 0, 0.242667, 0, 1, 0, -0.242667, 0, -0.97011, 202.961, -14.385, 86.089)
+
+[node name="watcher_head_78" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.967634, 0, 0.252356, 0, 1, 0, -0.252356, 0, -0.967634, 200.089, -14.385, 85.355)
+
+[node name="watcher_head_79" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.965062, 0, 0.262021, 0, 1, 0, -0.262021, 0, -0.965062, 197.225, -14.385, 84.592)
+
+[node name="watcher_head_80" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.962394, 0, 0.271659, 0, 1, 0, -0.271659, 0, -0.962394, 194.368, -14.385, 83.802)
+
+[node name="seawall_curve_21" parent="Dressing" instance=ExtResource("19_r")]
+transform = Transform3D(-0.955299, 0, 0.295641, 0, 1, 0, -0.295641, 0, -0.955299, 186.199, -27.285, 85.138)
+
+[node name="wall_apron_21" parent="Dressing" instance=ExtResource("20_r")]
+transform = Transform3D(-0.955299, 0, 0.295641, 0, 1, 0, -0.295641, 0, -0.955299, 186.199, -27.285, 85.138)
+
+[node name="watcher_head_81" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.959629, 0, 0.28127, 0, 1, 0, -0.28127, 0, -0.959629, 191.52, -14.385, 82.982)
+
+[node name="watcher_head_82" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.956768, 0, 0.290852, 0, 1, 0, -0.290852, 0, -0.956768, 188.68, -14.385, 82.134)
+
+[node name="watcher_head_83" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.953811, 0, 0.300406, 0, 1, 0, -0.300406, 0, -0.953811, 185.849, -14.385, 81.258)
+
+[node name="watcher_head_84" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.950759, 0, 0.30993, 0, 1, 0, -0.30993, 0, -0.950759, 183.025, -14.385, 80.353)
+
+[node name="seawall_curve_22" parent="Dressing" instance=ExtResource("19_r")]
+transform = Transform3D(-0.942717, 0, 0.333593, 0, 1, 0, -0.333593, 0, -0.942717, 174.809, -27.285, 81.362)
+
+[node name="wall_apron_22" parent="Dressing" instance=ExtResource("20_r")]
+transform = Transform3D(-0.942717, 0, 0.333593, 0, 1, 0, -0.333593, 0, -0.942717, 174.809, -27.285, 81.362)
+
+[node name="watcher_head_85" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.947612, 0, 0.319422, 0, 1, 0, -0.319422, 0, -0.947612, 180.212, -14.385, 79.421)
+
+[node name="watcher_head_86" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.944371, 0, 0.328883, 0, 1, 0, -0.328883, 0, -0.944371, 177.408, -14.385, 78.46)
+
+[node name="watcher_head_87" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.941034, 0, 0.338311, 0, 1, 0, -0.338311, 0, -0.941034, 174.614, -14.385, 77.471)
+
+[node name="watcher_head_88" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.937604, 0, 0.347705, 0, 1, 0, -0.347705, 0, -0.937604, 171.83, -14.385, 76.454)
+
+[node name="seawall_curve_23" parent="Dressing" instance=ExtResource("19_r")]
+transform = Transform3D(-0.928622, 0, 0.371028, 0, 1, 0, -0.371028, 0, -0.928622, 163.58, -27.285, 77.135)
+
+[node name="wall_apron_23" parent="Dressing" instance=ExtResource("20_r")]
+transform = Transform3D(-0.928622, 0, 0.371028, 0, 1, 0, -0.371028, 0, -0.928622, 163.58, -27.285, 77.135)
+
+[node name="watcher_head_89" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.93408, 0, 0.357064, 0, 1, 0, -0.357064, 0, -0.93408, 169.056, -14.385, 75.41)
+
+[node name="watcher_head_90" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.930462, 0, 0.366388, 0, 1, 0, -0.366388, 0, -0.930462, 166.293, -14.385, 74.337)
+
+[node name="watcher_head_91" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.926752, 0, 0.375674, 0, 1, 0, -0.375674, 0, -0.926752, 163.54, -14.385, 73.238)
+
+[node name="watcher_head_92" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.922948, 0, 0.384924, 0, 1, 0, -0.384924, 0, -0.922948, 160.799, -14.385, 72.111)
+
+[node name="seawall_curve_24" parent="Dressing" instance=ExtResource("19_r")]
+transform = Transform3D(-0.913041, 0, 0.407868, 0, 1, 0, -0.407868, 0, -0.913041, 152.528, -27.285, 72.461)
+
+[node name="wall_apron_24" parent="Dressing" instance=ExtResource("20_r")]
+transform = Transform3D(-0.913041, 0, 0.407868, 0, 1, 0, -0.407868, 0, -0.913041, 152.528, -27.285, 72.461)
+
+[node name="watcher_head_93" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.919053, 0, 0.394134, 0, 1, 0, -0.394134, 0, -0.919053, 158.069, -14.385, 70.957)
+
+[node name="watcher_head_94" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.915065, 0, 0.403306, 0, 1, 0, -0.403306, 0, -0.915065, 155.351, -14.385, 69.775)
+
+[node name="watcher_head_95" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.910986, 0, 0.412437, 0, 1, 0, -0.412437, 0, -0.910986, 152.644, -14.385, 68.566)
+
+[node name="watcher_head_96" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.906823, 0, 0.421511, 0, 1, 0, -0.421511, 0, -0.906823, 149.951, -14.385, 67.329)
+
+[node name="seawall_curve_25" parent="Dressing" instance=ExtResource("19_r")]
+transform = Transform3D(-0.895999, 0, 0.444057, 0, 1, 0, -0.444057, 0, -0.895999, 141.672, -27.285, 67.349)
+
+[node name="wall_apron_25" parent="Dressing" instance=ExtResource("20_r")]
+transform = Transform3D(-0.895999, 0, 0.444057, 0, 1, 0, -0.444057, 0, -0.895999, 141.672, -27.285, 67.349)
+
+[node name="watcher_head_97" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.902563, 0, 0.430558, 0, 1, 0, -0.430558, 0, -0.902563, 147.269, -14.385, 66.067)
+
+[node name="watcher_head_98" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.898212, 0, 0.439563, 0, 1, 0, -0.439563, 0, -0.898212, 144.601, -14.385, 64.778)
+
+[node name="watcher_head_99" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.893771, 0, 0.448524, 0, 1, 0, -0.448524, 0, -0.893771, 141.944, -14.385, 63.462)
+
+[node name="watcher_head_100" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.889241, 0, 0.457439, 0, 1, 0, -0.457439, 0, -0.889241, 139.303, -14.385, 62.119)
+
+[node name="seawall_curve_26" parent="Dressing" instance=ExtResource("19_r")]
+transform = Transform3D(-0.877523, 0, 0.479534, 0, 1, 0, -0.479534, 0, -0.877523, 131.029, -27.285, 61.807)
+
+[node name="wall_apron_26" parent="Dressing" instance=ExtResource("20_r")]
+transform = Transform3D(-0.877523, 0, 0.479534, 0, 1, 0, -0.479534, 0, -0.877523, 131.029, -27.285, 61.807)
+
+[node name="watcher_head_101" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.884622, 0, 0.466309, 0, 1, 0, -0.466309, 0, -0.884622, 136.673, -14.385, 60.75)
+
+[node name="watcher_head_102" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.879914, 0, 0.475133, 0, 1, 0, -0.475133, 0, -0.879914, 134.058, -14.385, 59.355)
+
+[node name="watcher_head_103" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.875118, 0, 0.483909, 0, 1, 0, -0.483909, 0, -0.875118, 131.457, -14.385, 57.933)
+
+[node name="watcher_head_104" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.870235, 0, 0.492636, 0, 1, 0, -0.492636, 0, -0.870235, 128.871, -14.385, 56.485)
+
+[node name="seawall_curve_27" parent="Dressing" instance=ExtResource("19_r")]
+transform = Transform3D(-0.857643, 0, 0.514245, 0, 1, 0, -0.514245, 0, -0.857643, 120.617, -27.285, 55.843)
+
+[node name="wall_apron_27" parent="Dressing" instance=ExtResource("20_r")]
+transform = Transform3D(-0.857643, 0, 0.514245, 0, 1, 0, -0.514245, 0, -0.857643, 120.617, -27.285, 55.843)
+
+[node name="watcher_head_105" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.865265, 0, 0.501314, 0, 1, 0, -0.501314, 0, -0.865265, 126.299, -14.385, 55.013)
+
+[node name="watcher_head_106" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.860208, 0, 0.509943, 0, 1, 0, -0.509943, 0, -0.860208, 123.741, -14.385, 53.515)
+
+[node name="watcher_head_107" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.855066, 0, 0.51852, 0, 1, 0, -0.51852, 0, -0.855066, 121.199, -14.385, 51.99)
+
+[node name="watcher_head_108" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.849838, 0, 0.527045, 0, 1, 0, -0.527045, 0, -0.849838, 118.672, -14.385, 50.44)
+
+[node name="seawall_curve_28" parent="Dressing" instance=ExtResource("19_r")]
+transform = Transform3D(-0.836401, 0, 0.548118, 0, 1, 0, -0.548118, 0, -0.836401, 110.451, -27.285, 49.468)
+
+[node name="wall_apron_28" parent="Dressing" instance=ExtResource("20_r")]
+transform = Transform3D(-0.836401, 0, 0.548118, 0, 1, 0, -0.548118, 0, -0.836401, 110.451, -27.285, 49.468)
+
+[node name="watcher_head_109" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.844524, 0, 0.535517, 0, 1, 0, -0.535517, 0, -0.844524, 116.162, -14.385, 48.866)
+
+[node name="watcher_head_110" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.839127, 0, 0.543936, 0, 1, 0, -0.543936, 0, -0.839127, 113.666, -14.385, 47.266)
+
+[node name="watcher_head_111" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.833645, 0, 0.552301, 0, 1, 0, -0.552301, 0, -0.833645, 111.187, -14.385, 45.641)
+
+[node name="watcher_head_112" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.82808, 0, 0.56061, 0, 1, 0, -0.56061, 0, -0.82808, 108.724, -14.385, 43.992)
+
+[node name="seawall_curve_29" parent="Dressing" instance=ExtResource("19_r")]
+transform = Transform3D(-0.813811, 0, 0.581129, 0, 1, 0, -0.581129, 0, -0.813811, 100.549, -27.285, 42.692)
+
+[node name="wall_apron_29" parent="Dressing" instance=ExtResource("20_r")]
+transform = Transform3D(-0.813811, 0, 0.581129, 0, 1, 0, -0.581129, 0, -0.813811, 100.549, -27.285, 42.692)
+
+[node name="watcher_head_113" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.822432, 0, 0.568863, 0, 1, 0, -0.568863, 0, -0.822432, 106.279, -14.385, 42.318)
+
+[node name="watcher_head_114" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.816702, 0, 0.57706, 0, 1, 0, -0.57706, 0, -0.816702, 103.849, -14.385, 40.619)
+
+[node name="watcher_head_115" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.81089, 0, 0.585198, 0, 1, 0, -0.585198, 0, -0.81089, 101.438, -14.385, 38.897)
+
+[node name="watcher_head_116" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.804997, 0, 0.593278, 0, 1, 0, -0.593278, 0, -0.804997, 99.042, -14.385, 37.151)
+
+[node name="seawall_curve_30" parent="Dressing" instance=ExtResource("19_r")]
+transform = Transform3D(-0.78992, 0, 0.61321, 0, 1, 0, -0.61321, 0, -0.78992, 90.926, -27.285, 35.525)
+
+[node name="wall_apron_30" parent="Dressing" instance=ExtResource("20_r")]
+transform = Transform3D(-0.78992, 0, 0.61321, 0, 1, 0, -0.61321, 0, -0.78992, 90.926, -27.285, 35.525)
+
+[node name="watcher_head_117" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.799024, 0, 0.601299, 0, 1, 0, -0.601299, 0, -0.799024, 96.666, -14.385, 35.381)
+
+[node name="watcher_head_118" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.792971, 0, 0.60926, 0, 1, 0, -0.60926, 0, -0.792971, 94.306, -14.385, 33.586)
+
+[node name="watcher_head_119" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.786838, 0, 0.617159, 0, 1, 0, -0.617159, 0, -0.786838, 91.965, -14.385, 31.769)
+
+[node name="watcher_head_120" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.780638, 0, 0.624984, 0, 1, 0, -0.624984, 0, -0.780638, 89.642, -14.385, 29.928)
+
+[node name="seawall_curve_31" parent="Dressing" instance=ExtResource("19_r")]
+transform = Transform3D(-0.764764, 0, 0.644311, 0, 1, 0, -0.644311, 0, -0.764764, 81.596, -27.285, 27.979)
+
+[node name="wall_apron_31" parent="Dressing" instance=ExtResource("20_r")]
+transform = Transform3D(-0.764764, 0, 0.644311, 0, 1, 0, -0.644311, 0, -0.764764, 81.596, -27.285, 27.979)
+
+[node name="watcher_head_121" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.774348, 0, 0.632759, 0, 1, 0, -0.632759, 0, -0.774348, 87.337, -14.385, 28.064)
+
+[node name="watcher_head_122" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.767982, 0, 0.640472, 0, 1, 0, -0.640472, 0, -0.767982, 85.051, -14.385, 26.177)
+
+[node name="watcher_head_123" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.761538, 0, 0.64812, 0, 1, 0, -0.64812, 0, -0.761538, 82.784, -14.385, 24.267)
+
+[node name="watcher_head_124" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.755019, 0, 0.655703, 0, 1, 0, -0.655703, 0, -0.755019, 80.537, -14.385, 22.335)
+
+[node name="seawall_curve_32" parent="Dressing" instance=ExtResource("19_r")]
+transform = Transform3D(-0.738385, 0, 0.67438, 0, 1, 0, -0.67438, 0, -0.738385, 72.576, -27.285, 20.065)
+
+[node name="wall_apron_32" parent="Dressing" instance=ExtResource("20_r")]
+transform = Transform3D(-0.738385, 0, 0.67438, 0, 1, 0, -0.67438, 0, -0.738385, 72.576, -27.285, 20.065)
+
+[node name="watcher_head_125" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.748423, 0, 0.663221, 0, 1, 0, -0.663221, 0, -0.748423, 78.309, -14.385, 20.381)
+
+[node name="watcher_head_126" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.741753, 0, 0.670673, 0, 1, 0, -0.670673, 0, -0.741753, 76.1, -14.385, 18.403)
+
+[node name="watcher_head_127" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.735009, 0, 0.678057, 0, 1, 0, -0.678057, 0, -0.735009, 73.912, -14.385, 16.405)
+
+[node name="watcher_head_128" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.728192, 0, 0.685374, 0, 1, 0, -0.685374, 0, -0.728192, 71.743, -14.385, 14.384)
+
+[node name="seawall_curve_33" parent="Dressing" instance=ExtResource("19_r")]
+transform = Transform3D(-0.710824, 0, 0.70337, 0, 1, 0, -0.70337, 0, -0.710824, 63.879, -27.285, 11.797)
+
+[node name="wall_apron_33" parent="Dressing" instance=ExtResource("20_r")]
+transform = Transform3D(-0.710824, 0, 0.70337, 0, 1, 0, -0.70337, 0, -0.710824, 63.879, -27.285, 11.797)
+
+[node name="watcher_head_129" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.721301, 0, 0.692622, 0, 1, 0, -0.692622, 0, -0.721301, 69.595, -14.385, 12.342)
+
+[node name="watcher_head_130" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.714338, 0, 0.6998, 0, 1, 0, -0.6998, 0, -0.714338, 67.467, -14.385, 10.278)
+
+[node name="watcher_head_131" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.707304, 0, 0.706909, 0, 1, 0, -0.706909, 0, -0.707304, 65.361, -14.385, 8.193)
+
+[node name="watcher_head_132" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.700199, 0, 0.713947, 0, 1, 0, -0.713947, 0, -0.700199, 63.275, -14.385, 6.088)
+
+[node name="seawall_curve_34" parent="Dressing" instance=ExtResource("19_r")]
+transform = Transform3D(-0.682139, 0, 0.731223, 0, 1, 0, -0.731223, 0, -0.682139, 55.52, -27.285, 3.189)
+
+[node name="wall_apron_34" parent="Dressing" instance=ExtResource("20_r")]
+transform = Transform3D(-0.682139, 0, 0.731223, 0, 1, 0, -0.731223, 0, -0.682139, 55.52, -27.285, 3.189)
+
+[node name="watcher_head_133" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.693024, 0, 0.720914, 0, 1, 0, -0.720914, 0, -0.693024, 61.21, -14.385, 3.961)
+
+[node name="watcher_head_134" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.68578, 0, 0.727809, 0, 1, 0, -0.727809, 0, -0.68578, 59.166, -14.385, 1.814)
+
+[node name="watcher_head_135" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.678467, 0, 0.73463, 0, 1, 0, -0.73463, 0, -0.678467, 57.144, -14.385, -0.353)
+
+[node name="watcher_head_136" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.671087, 0, 0.741379, 0, 1, 0, -0.741379, 0, -0.671087, 55.144, -14.385, -2.541)
+
+[node name="seawall_curve_35" parent="Dressing" instance=ExtResource("19_r")]
+transform = Transform3D(-0.65235, 0, 0.757918, 0, 1, 0, -0.757918, 0, -0.65235, 47.513, -27.285, -5.747)
+
+[node name="wall_apron_35" parent="Dressing" instance=ExtResource("20_r")]
+transform = Transform3D(-0.65235, 0, 0.757918, 0, 1, 0, -0.757918, 0, -0.65235, 47.513, -27.285, -5.747)
+
+[node name="watcher_head_137" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.663639, 0, 0.748053, 0, 1, 0, -0.748053, 0, -0.663639, 53.167, -14.385, -4.748)
+
+[node name="watcher_head_138" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.656125, 0, 0.754652, 0, 1, 0, -0.754652, 0, -0.656125, 51.211, -14.385, -6.975)
+
+[node name="watcher_head_139" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.648545, 0, 0.761176, 0, 1, 0, -0.761176, 0, -0.648545, 49.277, -14.385, -9.221)
+
+[node name="watcher_head_140" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.6409, 0, 0.767624, 0, 1, 0, -0.767624, 0, -0.6409, 47.366, -14.385, -11.487)
+
+[node name="seawall_curve_36" parent="Dressing" instance=ExtResource("19_r")]
+transform = Transform3D(-0.621517, 0, 0.783401, 0, 1, 0, -0.783401, 0, -0.621517, 39.869, -27.285, -14.997)
+
+[node name="wall_apron_36" parent="Dressing" instance=ExtResource("20_r")]
+transform = Transform3D(-0.621517, 0, 0.783401, 0, 1, 0, -0.783401, 0, -0.621517, 39.869, -27.285, -14.997)
+
+[node name="watcher_head_141" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.633192, 0, 0.773995, 0, 1, 0, -0.773995, 0, -0.633192, 45.478, -14.385, -13.771)
+
+[node name="watcher_head_142" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.62542, 0, 0.780289, 0, 1, 0, -0.780289, 0, -0.62542, 43.613, -14.385, -16.075)
+
+[node name="watcher_head_143" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.617585, 0, 0.786504, 0, 1, 0, -0.786504, 0, -0.617585, 41.771, -14.385, -18.397)
+
+[node name="watcher_head_144" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.609703, 0, 0.79263, 0, 1, 0, -0.79263, 0, -0.609703, 39.952, -14.385, -20.738)
+
+[node name="seawall_curve_37" parent="Dressing" instance=ExtResource("19_r")]
+transform = Transform3D(-0.58969, 0, 0.80763, 0, 1, 0, -0.80763, 0, -0.58969, 32.6, -27.285, -24.543)
+
+[node name="wall_apron_37" parent="Dressing" instance=ExtResource("20_r")]
+transform = Transform3D(-0.58969, 0, 0.80763, 0, 1, 0, -0.80763, 0, -0.58969, 32.6, -27.285, -24.543)
+
+[node name="watcher_head_145" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.601745, 0, 0.798688, 0, 1, 0, -0.798688, 0, -0.601745, 38.156, -14.385, -23.096)
+
+[node name="watcher_head_146" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.593728, 0, 0.804666, 0, 1, 0, -0.804666, 0, -0.593728, 36.384, -14.385, -25.472)
+
+[node name="watcher_head_147" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.585651, 0, 0.810563, 0, 1, 0, -0.810563, 0, -0.585651, 34.636, -14.385, -27.865)
+
+[node name="watcher_head_148" parent="Dressing" instance=ExtResource("21_r")]
+transform = Transform3D(-0.577516, 0, 0.81638, 0, 1, 0, -0.81638, 0, -0.577516, 32.913, -14.385, -30.277)
+
+[node name="fisher_stair_1" parent="Dressing" instance=ExtResource("22_r")]
+transform = Transform3D(-0.985037, 0, -0.172342, 0, 1, 0, 0.172342, 0, -0.985037, 326.594, -27.285, 94.058)
+
+[node name="liss_hoist_1" parent="Dressing" instance=ExtResource("23_r")]
+transform = Transform3D(-0.995503, 0, -0.0947338, 0, 1, 0, 0.0947338, 0, -0.995503, 302.97, -14.385, 93.615)
+
+[node name="lowtown_ground_1" parent="Dressing" instance=ExtResource("24_r")]
+transform = Transform3D(-0.999205, 0, -0.0398702, 0, 1, 0, 0.0398702, 0, -0.999205, 371.421, -26.285, 110.948)
+
+[node name="lowtown_ground_2" parent="Dressing" instance=ExtResource("24_r")]
+transform = Transform3D(0.0398702, 0, -0.999205, 0, 1, 0, 0.999205, 0, 0.0398702, 372.378, -26.285, 134.928)
+
+[node name="lowtown_ground_3" parent="Dressing" instance=ExtResource("24_r")]
+transform = Transform3D(-0.0398702, 0, 0.999205, 0, 1, 0, -0.999205, 0, -0.0398702, 347.44, -26.285, 111.904)
+
+[node name="lowtown_ground_4" parent="Dressing" instance=ExtResource("24_r")]
+transform = Transform3D(-0.999205, 0, -0.0398702, 0, 1, 0, 0.0398702, 0, -0.999205, 348.397, -26.285, 135.885)
+
+[node name="lowtown_ground_5" parent="Dressing" instance=ExtResource("24_r")]
+transform = Transform3D(0.999205, 0, 0.0398702, 0, 1, 0, -0.0398702, 0, 0.999205, 323.459, -26.285, 112.861)
+
+[node name="lowtown_ground_6" parent="Dressing" instance=ExtResource("24_r")]
+transform = Transform3D(-0.0398702, 0, 0.999205, 0, 1, 0, -0.999205, 0, -0.0398702, 324.416, -26.285, 136.842)
+
+[node name="lowtown_ground_7" parent="Dressing" instance=ExtResource("24_r")]
+transform = Transform3D(0.0398702, 0, -0.999205, 0, 1, 0, 0.999205, 0, 0.0398702, 299.478, -26.285, 113.818)
+
+[node name="lowtown_ground_8" parent="Dressing" instance=ExtResource("24_r")]
+transform = Transform3D(0.999205, 0, 0.0398702, 0, 1, 0, -0.0398702, 0, 0.999205, 300.435, -26.285, 137.799)
+
+[node name="lowtown_ground_9" parent="Dressing" instance=ExtResource("24_r")]
+transform = Transform3D(-0.999205, 0, -0.0398702, 0, 1, 0, 0.0398702, 0, -0.999205, 275.497, -26.285, 114.775)
+
+[node name="lowtown_ground_10" parent="Dressing" instance=ExtResource("24_r")]
+transform = Transform3D(0.0398702, 0, -0.999205, 0, 1, 0, 0.999205, 0, 0.0398702, 276.454, -26.285, 138.756)
+
+[node name="lowtown_house_a_1" parent="Dressing" instance=ExtResource("25_r")]
+transform = Transform3D(-0.946001, 0, -0.324165, 0, 1, 0, 0.324165, 0, -0.946001, 389.292, -26.355, 90.715)
+
+[node name="lowtown_house_a_2" parent="Dressing" instance=ExtResource("25_r")]
+transform = Transform3D(-0.928648, 0, -0.370963, 0, 1, 0, 0.370963, 0, -0.928648, 375.085, -26.355, 96.626)
+
+[node name="lowtown_house_b_1" parent="Dressing" instance=ExtResource("26_r")]
+transform = Transform3D(-0.919787, 0, -0.392417, 0, 1, 0, 0.392417, 0, -0.919787, 367.611, -26.355, 98.816)
+
+[node name="lowtown_house_b_2" parent="Dressing" instance=ExtResource("26_r")]
+transform = Transform3D(-0.955407, 0, -0.295291, 0, 1, 0, 0.295291, 0, -0.955407, 360.311, -26.355, 101.556)
+
+[node name="lowtown_house_a_3" parent="Dressing" instance=ExtResource("25_r")]
+transform = Transform3D(-0.95103, 0, -0.3091, 0, 1, 0, 0.3091, 0, -0.95103, 352.185, -26.338, 103.216)
+
+[node name="lowtown_house_a_4" parent="Dressing" instance=ExtResource("25_r")]
+transform = Transform3D(-0.968994, 0, -0.247084, 0, 1, 0, 0.247084, 0, -0.968994, 343.628, -26.358, 105.219)
+
+[node name="lowtown_house_b_3" parent="Dressing" instance=ExtResource("26_r")]
+transform = Transform3D(-0.999712, 0, -0.023996, 0, 1, 0, 0.023996, 0, -0.999712, 297.706, -26.353, 111.453)
+
+[node name="lowtown_house_b_4" parent="Dressing" instance=ExtResource("26_r")]
+transform = Transform3D(-0.999306, 0, 0.0372542, 0, 1, 0, -0.0372542, 0, -0.999306, 282.493, -26.344, 113.23)
+
+[node name="lowtown_house_b_5" parent="Dressing" instance=ExtResource("26_r")]
+transform = Transform3D(-0.997796, 0, 0.066361, 0, 1, 0, -0.066361, 0, -0.997796, 273.799, -26.357, 113.269)
+
+[node name="lowtown_house_b_6" parent="Dressing" instance=ExtResource("26_r")]
+transform = Transform3D(-0.99673, 0, 0.0808078, 0, 1, 0, -0.0808078, 0, -0.99673, 265.286, -26.355, 112.302)
+
+[node name="lowtown_house_a_5" parent="Dressing" instance=ExtResource("25_r")]
+transform = Transform3D(-0.997046, 0, 0.076806, 0, 1, 0, -0.076806, 0, -0.997046, 256.657, -26.355, 112.084)
+
+[node name="lowtown_house_a_6" parent="Dressing" instance=ExtResource("25_r")]
+transform = Transform3D(-0.999498, 0, 0.0316724, 0, 1, 0, -0.0316724, 0, -0.999498, 247.983, -26.355, 111.333)
+
+[node name="lowtown_house_a_7" parent="Dressing" instance=ExtResource("25_r")]
+transform = Transform3D(0.129055, 0, -0.991637, 0, 1, 0, 0.991637, 0, 0.129055, 335.885, -26.328, 107.362)
+
+[node name="lowtown_house_b_7" parent="Dressing" instance=ExtResource("26_r")]
+transform = Transform3D(-0.0611356, 0, 0.998129, 0, 1, 0, -0.998129, 0, -0.0611356, 322.153, -26.343, 109.259)
+
+[node name="lowtown_house_b_8" parent="Dressing" instance=ExtResource("26_r")]
+transform = Transform3D(-0.0614841, 0, -0.998108, 0, 1, 0, 0.998108, 0, -0.0614841, 335.482, -26.337, 115.439)
+
+[node name="lowtown_house_a_8" parent="Dressing" instance=ExtResource("25_r")]
+transform = Transform3D(-0.03551, 0, 0.999369, 0, 1, 0, -0.999369, 0, -0.03551, 323.243, -26.329, 117.406)
+
+[node name="lowtown_house_a_9" parent="Dressing" instance=ExtResource("25_r")]
+transform = Transform3D(0.0510287, 0, -0.998697, 0, 1, 0, 0.998697, 0, 0.0510287, 336.161, -26.33, 123.708)
+
+[node name="lowtown_house_a_10" parent="Dressing" instance=ExtResource("25_r")]
+transform = Transform3D(-0.0896766, 0, 0.995971, 0, 1, 0, -0.995971, 0, -0.0896766, 323.521, -26.336, 126.005)
+
+[node name="lowtown_house_a_11" parent="Dressing" instance=ExtResource("25_r")]
+transform = Transform3D(0.0981908, 0, -0.995168, 0, 1, 0, 0.995168, 0, 0.0981908, 336.556, -26.336, 138.899)
+
+[node name="lowtown_house_b_9" parent="Dressing" instance=ExtResource("26_r")]
+transform = Transform3D(-0.0895027, 0, 0.995987, 0, 1, 0, -0.995987, 0, -0.0895027, 323.447, -26.33, 141.24)
+
+[node name="lowtown_house_a_12" parent="Dressing" instance=ExtResource("25_r")]
+transform = Transform3D(0.0745436, 0, -0.997218, 0, 1, 0, 0.997218, 0, 0.0745436, 337.13, -26.355, 146.484)
+
+[node name="lowtown_house_a_13" parent="Dressing" instance=ExtResource("25_r")]
+transform = Transform3D(-0.0966275, 0, 0.995321, 0, 1, 0, -0.995321, 0, -0.0966275, 324.78, -26.355, 157.24)
+
+[node name="lowtown_house_a_14" parent="Dressing" instance=ExtResource("25_r")]
+transform = Transform3D(0.988162, 0, 0.153417, 0, 1, 0, -0.153417, 0, 0.988162, 381.084, -26.355, 145.329)
+
+[node name="lowtown_house_a_15" parent="Dressing" instance=ExtResource("25_r")]
+transform = Transform3D(0.10826, 0, -0.994123, 0, 1, 0, 0.994123, 0, 0.10826, 344.796, -26.355, 147.955)
+
+[node name="lowtown_house_a_16" parent="Dressing" instance=ExtResource("25_r")]
+transform = Transform3D(-0.0471936, 0, -0.998886, 0, 1, 0, 0.998886, 0, -0.0471936, 373.585, -26.356, 154.946)
+
+[node name="lowtown_house_b_10" parent="Dressing" instance=ExtResource("26_r")]
+transform = Transform3D(0.987372, 0, 0.158417, 0, 1, 0, -0.158417, 0, 0.987372, 301.745, -26.355, 151.025)
+
+[node name="lowtown_house_b_11" parent="Dressing" instance=ExtResource("26_r")]
+transform = Transform3D(0.999764, 0, 0.0217276, 0, 1, 0, -0.0217276, 0, 0.999764, 276.741, -26.346, 133.335)
+
+[node name="lowtown_house_b_12" parent="Dressing" instance=ExtResource("26_r")]
+transform = Transform3D(0.0983645, 0, -0.99515, 0, 1, 0, 0.99515, 0, 0.0983645, 363.54, -26.342, 132.205)
+
+[node name="lowtown_house_a_17" parent="Dressing" instance=ExtResource("25_r")]
+transform = Transform3D(-0.996673, 0, 0.0815036, 0, 1, 0, -0.0815036, 0, -0.996673, 293.936, -26.331, 145.875)
+
+[node name="lowtown_house_a_18" parent="Dressing" instance=ExtResource("25_r")]
+transform = Transform3D(0.996673, 0, -0.0815036, 0, 1, 0, 0.0815036, 0, 0.996673, 265.581, -26.355, 151.953)
+
+[node name="lowtown_house_b_13" parent="Dressing" instance=ExtResource("26_r")]
+transform = Transform3D(-0.989106, 0, -0.147205, 0, 1, 0, 0.147205, 0, -0.989106, 254.509, -26.355, 132.545)
+
+[node name="lowtown_house_a_19" parent="Dressing" instance=ExtResource("25_r")]
+transform = Transform3D(-0.174765, 0, 0.98461, 0, 1, 0, -0.98461, 0, -0.174765, 381.675, -26.342, 133.796)
+
+[node name="lowtown_house_a_20" parent="Dressing" instance=ExtResource("25_r")]
+transform = Transform3D(0.987094, 0, 0.16014, 0, 1, 0, -0.16014, 0, 0.987094, 303.272, -26.333, 142.07)
+
+[node name="lowtown_house_a_21" parent="Dressing" instance=ExtResource("25_r")]
+transform = Transform3D(0.0604388, 0, 0.998172, 0, 1, 0, -0.998172, 0, 0.0604388, 273.922, -26.355, 158.05)
+
+[node name="lowtown_house_b_14" parent="Dressing" instance=ExtResource("26_r")]
+transform = Transform3D(0.999376, 0, 0.0353356, 0, 1, 0, -0.0353356, 0, 0.999376, 343.431, -26.346, 133.791)
+
+[node name="lowtown_house_a_22" parent="Dressing" instance=ExtResource("25_r")]
+transform = Transform3D(0.999664, 0, 0.0259152, 0, 1, 0, -0.0259152, 0, 0.999664, 281.531, -26.356, 159.594)
+
+[node name="lowtown_house_b_15" parent="Dressing" instance=ExtResource("26_r")]
+transform = Transform3D(-0.128709, 0, 0.991682, 0, 1, 0, -0.991682, 0, -0.128709, 306.137, -26.351, 123.518)
+
+[node name="lowtown_house_a_23" parent="Dressing" instance=ExtResource("25_r")]
+transform = Transform3D(-0.999886, 0, -0.0150965, 0, 1, 0, 0.0150965, 0, -0.999886, 351.557, -26.339, 137.739)
+
+[node name="arena_headland_path_1" parent="Dressing" instance=ExtResource("27_r")]
+transform = Transform3D(-0.885272, 0, 0.465074, 0, 1, 0, -0.465074, 0, -0.885272, -37.995, -27.285, -66.869)
+
+[node name="CameraHints" type="Node3D" parent="."]
+
+[node name="wide_high" type="Marker3D" parent="CameraHints"]
+transform = Transform3D(0.995893, 0.0360842, -0.083034, -0, 0.917141, 0.398563, 0.0905357, -0.396927, 0.913374, -1.5, 7.5, 13.5)
+
+[node name="party_side" type="Marker3D" parent="CameraHints"]
+transform = Transform3D(0.575779, -0.0656933, 0.814962, 0, 0.996767, 0.0803484, -0.817606, -0.0462629, 0.573917, 5.6, 1.7, 4.5)
+
+[node name="foe_side" type="Marker3D" parent="CameraHints"]
+transform = Transform3D(0.490844, 0.0745636, -0.868051, -0, 0.996331, 0.0855825, 0.871248, -0.0420076, 0.489043, -5.6, 1.7, 4)
+
+[node name="to_the_spire" type="Marker3D" parent="CameraHints"]
+transform = Transform3D(0.965716, 0.0352537, 0.257196, 0, 0.990736, -0.1358, -0.259601, 0.131144, 0.95677, 4.5, 1.4, 6.5)
