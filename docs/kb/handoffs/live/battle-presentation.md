@@ -65,6 +65,20 @@ RENDER-REQUEST @ 680cd88e: battle_boss_intro_reach,battle_choreo_melee,battle_ch
 
 RENDER-REQUEST @ 60b62678: battle_arena_wall_head,battle_boss_intro_reach; why: M3-BPR-406 greybox wall_head_storm arena for Ch8 (new shot, no baseline yet); the Reach intro now stands on it. Supersedes the reach id in the 680cd88e line.
 
+### 2026-10-28 00:0x: the Lead's 23:52 list
+- **Act II bosses' specials and telegraphs:**
+  - The Lamp Engine (`opened`), the Ram (charge gather plus pressure) and the Drowner (`uprooted`) were already
+    staged.
+  - **The Wakefin** now has its own: its blade sinks under while it gathers (no light; it fights in the dark), and the
+    camera closes in. Tested.
+  - "Kahre" is the Ch5 Vowbound, not an Act II boss; its first-call cinematic was done in M3-BPR-414.
+- **Boss intros:** all four Act II bosses have one (M3-BPR-408/418).
+- **The battle side of act1-chapters' Ch10–12:**
+  - Their branch (d0ec6878) has the field greyboxes and flows for Ch10–16, but no encounters or enemies yet; their
+    tasks say the encounters come after the beat sheets.
+  - Request **M3-BPR-419** asks them to use the staged enemy, phase and arena ids, so everything is live the day the
+    encounters land. Their Keth Pass RamArena matches `keth_terrace_wall`.
+
 **BACKLOG EMPTY (2026-10-27, after 8c302fa3):** every step of TRACK-RULES' list is done or waits on another track.
 1. **Renders:** none open for this track. The three requests above (the HEAD 3-shot set, the Ch8 freeze-frames, the
    Act II arenas) wait on the Lead's cloud renderer.

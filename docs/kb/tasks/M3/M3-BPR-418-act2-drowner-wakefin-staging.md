@@ -26,8 +26,10 @@ everything is keyed by enemy id, as 408 was.
 - **The Drowner tears free** (choreo.json `bosses.mangrove_drowner.phases.uprooted`, the phase id from its
   creatures.json row): its root lifts and rocks while its own `phase_change` clip plays, and the party braces in
   turn. Test: `test_the_drowner_tears_free_with_a_moment`.
-- The Wakefin's charges read through the generic BattleTelegraph gather (M3-BPR-413). The roster says its telegraphs
-  are sounds and the sea-glow (audio and rendering), and the timeline already shows its intent.
+- **The Wakefin's telegraph** (choreo.json `bosses.wakefin`, `camera.pressure.by_enemy.wakefin`): it fights in the dark,
+  so any charge it gathers sinks its blade under the water and holds it there (no light added), and the camera closes
+  in a step a turn. Sound and sea-glow are audio's and rendering's. Test `test_the_wakefin_sinks_its_blade_and_the_dark_closes_in`.
+- Request M3-BPR-419 to act1-chapters: the Act II boss encounters use these enemy, phase and arena ids.
 
 ## Next (when their rows exist)
 - [ ] Shots: battle_boss_intro_drowner, battle_boss_intro_wakefin, and a freeze-frame of the Drowner tearing free.
