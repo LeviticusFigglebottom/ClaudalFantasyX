@@ -392,9 +392,9 @@
         14000,
         600
       ],
-      "bytes": 336780,
+      "bytes": 419040,
       "lods": {
-        "iskarra_plaza": 3390,
+        "iskarra_plaza": 4260,
         "iskarra_plaza-lod1": 144
       }
     },
