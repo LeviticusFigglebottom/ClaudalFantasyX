@@ -223,6 +223,28 @@ Light `ch11` (12:30 overcast):
 The water is the colour script's `overcast_lagoon`, with SSR on (the conduits' long reflections). Hints:
 `under_the_shaft`, `the_lamps`. Nothing is frozen (ADR 0015/0016).
 
+### Ossa Fen's dead mangrove (`ossa_fen_roots`, M3-ENV-718, the Haluna kit's ossa_fen.py)
+
+For the Mangrove Drowner (Ch10; the encounter id belongs to the creatures and combat tracks). The floor is a mudbank
+in the channels, level at y 0 for 1.2 m past the slots' floor. Beyond that it shelves into still tannin water at
+−0.15, then into the channels. A few small surface roots cross the mud outside the slots' floor.
+
+| Where | What |
+|---|---|
+| Behind the enemy line | `mangrove_dead` at (−9.5, −7.5): the great dead tree, bleached and bare, leaning over the Drowner; its prop-roots only on the far side |
+| In the water, enemy side | The `BossAnchor` (−8.2, −0.15, −3.8): the Drowner's own roots stand in the water at the dead tree's foot |
+| Round the bank | Nine living `mangrove_tree`s on their mud mounds, five `reed_bed`s in the slack, the `fen_far_mangroves` ring in the fog |
+| Behind the camera | The channel the party came up, deepening |
+
+Light `ch10` (18:20 overcast dusk):
+- sun 2° / 275°, key `#FFFEFA` 0.9, ambient `#6F7E8E` 0.5, exposure 0.9, dense fog `#5A6A62`;
+- `lut_ch10_fen` (`fen_zone_lut.py`: ×0.85, greens ×0.45 pulled toward grey-teal, the motes' gold kept, the toe toward
+  tannin brown).
+
+The water is the colour script's `tannin_fen` (σ 0.6 / 1.4 / 4.0, deep `#3A2A18`, caustics off, SSR on), on the
+arena's own still wave set. The trees use the vegetation shaders' wind; their roots never sway. Hints:
+`the_dead_crown`, `the_channel`.
+
 ### The underwater arena (`underway_tower`)
 
 An arena under the sea carries its own look, because the battle scene has none:

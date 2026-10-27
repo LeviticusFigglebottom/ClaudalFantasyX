@@ -431,5 +431,23 @@ STANDARD["kit_lowlight_copper"] = {"albedo_color": hexc("#6E8E74"), "metallic": 
 STANDARD["kit_lowlight_conduit"] = {"albedo_color": hexc("#4FB3B0"), "roughness": 0.2, "emission_enabled": "true",
                                     "emission": hexc("#4FB3B0"), "emission_energy_multiplier": 2.0}
 
+# ---- M3-ENV-718 (appended by env-art): Ossa Fen, the Kirru mangrove estuary (ossa_fen.py; ossa_fen.md §1) -------
+# The Brine Shoals mud, darker and wetter (tannin-stained); the banyan bark and leaf atlas re-tinted for the
+# mangroves: grey-brown bark, grey-green leaves (lut_ch10_fen takes the greens further to grey-teal); the Drowner's
+# dead tree bleached to bone (palette bone); reeds; the far tree-line as one flat grey-green.
+MATERIALS["kit_fen_mud"] = _ext_stone(_BS + "mud_albedo.png", _BS + "mud_normal.png", (3.0, 3.0), base_triplanar=True,
+                                      col_tint=hexc("#8A7A64"), normal_strength=0.4, roughness_base=0.55,
+                                      specular_base=0.45, cavity_darken=0.35, ao_strength=0.7, variation_value=0.08,
+                                      use_barnacles=False, use_salt=False, algae_coverage="Vector2(0.2, 0.5)",
+                                      col_algae=hexc("#4A4A30"), use_moss=False)
+MATERIALS["kit_fen_bark"] = _tree_bark(9, 0.12, "Color(0.66, 0.62, 0.58, 1)", "Color(0.8, 0.77, 0.72, 1)",
+                                       roughness_value=0.75)
+MATERIALS["kit_fen_bark_dead"] = _tree_bark(14, 0.06, "Color(1.15, 1.12, 1.06, 1)", "Color(1.3, 1.27, 1.2, 1)",
+                                            roughness_value=0.9)
+MATERIALS["kit_fen_leaf"] = _tree_leaf(9, 0.12, col_tint=hexc("#B4C2B4"), translucency=0.4)
+STANDARD["kit_fen_reed"] = {"albedo_color": hexc("#8C8A5E"), "roughness": 0.85, "cull_mode": 2,
+                            "backlight_enabled": "true", "backlight": "Color(0.35, 0.33, 0.2, 1)"}
+STANDARD["kit_fen_canopy_far"] = {"albedo_color": hexc("#4E5C52"), "roughness": 0.95}
+
 if __name__ == "__main__":
     sys.exit(main())

@@ -17,7 +17,8 @@
       "coilspire_headland_path": "res://assets/environments/arenas/coilspire_headland_path/coilspire_headland_path.tscn",
       "coilspire_tier_landing": "res://assets/environments/arenas/coilspire_tier_landing/coilspire_tier_landing.tscn",
       "keth_seep_terrace": "res://assets/environments/arenas/keth_seep_terrace/keth_seep_terrace.tscn",
-      "lowlight_engine_hall": "res://assets/environments/arenas/lowlight_engine_hall/lowlight_engine_hall.tscn"
+      "lowlight_engine_hall": "res://assets/environments/arenas/lowlight_engine_hall/lowlight_engine_hall.tscn",
+      "ossa_fen_roots": "res://assets/environments/arenas/ossa_fen_roots/ossa_fen_roots.tscn"
     },
     "staging": {
       "doc": "M3-BPR-01: per-arena choreography (BattleChoreo): travel_scale scales every run, step, walk-in and exit (with reduced motion's on top); tempo scales the battle speed (under 1 = slower). Arenas with no row stage as the sandbox.",

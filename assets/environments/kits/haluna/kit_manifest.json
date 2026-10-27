@@ -255,6 +255,28 @@
         "feast_mat-lod1": 2
       }
     },
+    "fen_bank_ground": {
+      "budget": [
+        30000,
+        2400
+      ],
+      "bytes": 472964,
+      "lods": {
+        "fen_bank_ground": 12876,
+        "fen_bank_ground-lod1": 1920
+      }
+    },
+    "fen_far_mangroves": {
+      "budget": [
+        4000,
+        800
+      ],
+      "bytes": 58552,
+      "lods": {
+        "fen_far_mangroves": 1080,
+        "fen_far_mangroves-lod1": 384
+      }
+    },
     "fish_drying_rack": {
       "budget": [
         5000,
@@ -563,6 +585,28 @@
         "lit_terrace_wall-lod1": 44
       }
     },
+    "mangrove_dead": {
+      "budget": [
+        12000,
+        900
+      ],
+      "bytes": 191748,
+      "lods": {
+        "mangrove_dead": 4102,
+        "mangrove_dead-lod1": 560
+      }
+    },
+    "mangrove_tree": {
+      "budget": [
+        10000,
+        900
+      ],
+      "bytes": 366848,
+      "lods": {
+        "mangrove_tree": 5946,
+        "mangrove_tree-lod1": 646
+      }
+    },
     "market_stall": {
       "budget": [
         6000,
@@ -704,6 +748,17 @@
       "lods": {
         "pot_plants": 998,
         "pot_plants-lod1": 198
+      }
+    },
+    "reed_bed": {
+      "budget": [
+        3000,
+        300
+      ],
+      "bytes": 63848,
+      "lods": {
+        "reed_bed": 520,
+        "reed_bed-lod1": 80
       }
     },
     "roof_fan_shell": {

@@ -1377,9 +1377,71 @@ def _lowlight_arena() -> dict:
 
 LOWLIGHT_ARENA = _lowlight_arena()
 
+# ---------------------------------------------------------------------------------------------
+# M3-ENV-718: the Mangrove Drowner's mudbank under the dead tree, Ossa Fen (ossa_fen.py; ossa_fen.md §2)
+# ---------------------------------------------------------------------------------------------
+def _fen():
+    import ossa_fen  # noqa: PLC0415
+
+    return ossa_fen
+
+
+TANNIN_FEN = {  # the colour script's `tannin_fen` look (ch10): brown-black tea water, its own sigma, caustics off
+    "name": "arena_tannin_fen", "shader": "res://game/shaders/water/water_ocean.gdshader",
+    "params": [("col_deep", "#3A2A18"), ("col_scatter_shallow", "#4A3A22"), ("absorption_per_m", "Vector3(0.6, 1.4, 4)"),
+               ("absorption_scale", 1.0), ("scatter_energy", 0.08), ("caustic_strength", 0.0), ("col_foam", "#C8C4B4"),
+               ("col_sss", "#6A4A26"), ("foam_crest_threshold", 0.9), ("roughness_far", 0.06), ("use_caustics", "false"),
+               ("use_ssr", "true"), ("use_sss", "false")]}
+
+
+def _fen_arena() -> dict:
+    fen = _fen()
+    trees = [{"glb": KIT + "mangrove_tree.glb", "at": (x, 0.0, z), "yaw": yaw, "scale": sc, "structure": True}
+             for x, z, yaw, sc in fen.MANGROVES]
+    reeds = [{"glb": KIT + "reed_bed.glb", "at": at, "yaw": yaw}
+             for at, yaw in (((-10.0, 0.0, 4.0), 20.0), ((9.0, 0.0, -3.0), 110.0), ((5.5, 0.0, -9.5), 60.0),
+                             ((-15.5, 0.0, -4.0), 150.0), ((16.0, 0.0, 6.0), 80.0))]
+    return {
+        "id": "ossa_fen_roots",
+        "sub_frame": "ch10",
+        "ground": "deck",
+        "ground_glb": KIT + "fen_bank_ground.glb",
+        "lut": "res://assets/environments/arenas/ossa_fen_roots/lut_ch10_fen.png",
+        # Colour script ch10 (18:20 overcast dusk): sun 2 deg / 275 deg, key #FFFEFA 0.9, fill #6F7E8E 0.5, sky
+        # #4A5868 / #9A9488, fog #5A6A62 dense, exposure 0.9, lut_ch10_fen.
+        "sun": {"elev": 2.0, "az": 275.0, "color": "#FFFEFA", "energy": 0.9, "max_distance": 80.0},
+        "fill": {"color": "#6F7E8E", "energy": 0.5},
+        "exposure": 0.9,
+        "fog": {"color": "#5A6A62", "aerial": 0.5, "density": 0.012, "sky_affect": 0.3, "height": 0.0,
+                "height_density": 0.0},
+        "sky_shader": LOW_SUN_SKY,
+        "sky": dict(CORROW_SKY, col_zenith="#4A5868", col_horizon_sun="#B8AE9C", col_horizon_away="#9A9488",
+                    col_ground="#3A3A34", sky_energy=0.9, sun_disc_energy=0.0, halo_energy=0.4, glow_energy=0.3,
+                    cloud_coverage=0.85),
+        # The slack channels: still tea-dark water, a breath of ripple.
+        "sea": {"y": fen.WATER_Y, "tide_line_y": fen.WATER_Y, "sea_glow": 0.0, "material": TANNIN_FEN,
+                "waves": [(240.0, 6.0, 0.008, 0.08), (300.0, 2.5, 0.003, 0.05)]},
+        "pieces": [
+            {"glb": KIT + "mangrove_dead.glb", "at": (fen.DEAD_AT[0], 0.0, fen.DEAD_AT[1]), "yaw": 0.0, "structure": True},
+        ] + trees + reeds,
+        "extra_glbs": [KIT + "fen_far_mangroves.glb"],  # the far tree-line ring (r 70-110 m), centred on the arena
+        "scatters": [],
+        "hints": {
+            "wide_high": ((-1.5, 7.5, 13.5), (0.0, 0.8, -3.0)),
+            "party_side": ((5.6, 1.7, 4.5), (-1.5, 1.0, -0.5)),
+            "foe_side": ((-5.6, 1.7, 4.0), (1.5, 1.0, 0.0)),
+            "the_dead_crown": ((-1.0, 1.0, 2.5), (-7.0, 11.0, -6.0)),
+            "the_channel": ((-2.0, 1.6, -2.0), (2.0, 0.6, 20.0)),
+        },
+        "anchors": {"BossAnchor": fen.DROWNER_AT},
+    }
+
+
+FEN_ARENA = _fen_arena()
+
 ARENAS = {a["id"]: a for a in (TIDELINE, CAUSEWAY, CAUSEWAY_ROUTE, DERELICT_DECK, ASH_TERRACE, UNDERWAY_TOWER,
                                RAFT_MORNING, SHOALS, CAMP, WALLHEAD_STORM, WALLHEAD_HOIST, WALLHEAD_SURGE, HEADLAND, TIER_HALL, KETH_ARENA,
-                               LOWLIGHT_ARENA)}
+                               LOWLIGHT_ARENA, FEN_ARENA)}
 
 
 # ---------------------------------------------------------------------------------------------

@@ -70,7 +70,7 @@ line), `kit_fen_bark_dead` (bone), `kit_fen_leaf` (grey-green clusters), `kit_fe
 The battle floor at y 0 is a mudbank's level top, 12 × 9 m, with a mat of small surface roots that stays under the
 slots' metre:
 - **Behind the enemy line:** the dead mangrove. Its bare crown fills the upper frame. The `BossAnchor` stands in the
-  water at its foot, among its roots: (−6.5, −0.15, −3.5), at the water line, so the creature's own roots stand in it.
+  water at its foot, among its roots: (−8.2, −0.15, −3.8), at the water line, so the creature's own roots stand in it.
 - **Round it:** living mangroves on their roots, reed beds in the slack, the far tree-line in the fog.
 - **Behind the camera:** the channel the party came up.
 - **Hints:** `the_dead_crown` (looking up into the bare branches) and `the_channel` (back down the water).
@@ -93,3 +93,9 @@ slots' metre:
 ## Revisions
 
 - 2026-10-27 (env-art, M3-ENV-718): first issue, the sheet before the kit (the Lead's queue item 4: the Ch10 boss).
+- 2026-10-27 (env-art, M3-ENV-718): the arena is built.
+  - **Pieces.** `ossa_fen.py` makes `fen_bank_ground`, `mangrove_tree`, `mangrove_dead`, `reed_bed` and
+    `fen_far_mangroves`, with six `kit_fen_*` materials. The leaves are cards from the coastal leaf atlas, re-tinted.
+  - **Grade.** `lut_ch10_fen` comes from `fen_zone_lut.py`.
+  - **Arena.** `ossa_fen_roots` (battle_arenas.md). The anchor moved to (−8.2, −0.15, −3.8), so it stands in water,
+    and the dead tree leans straight at it. `kirru_roost` and `name_shell_cord` follow with the zone.
