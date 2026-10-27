@@ -1,0 +1,7 @@
+FAIL brine_b01_arrival: rmse 0.02651 (limit 0.00800)
+FAIL brine_b05_barge_channel: rmse 0.01880 (limit 0.00800)
+FAIL iskarra_p01_plaza_dusk: no baseline (inspect out/, then compare.py --update-baselines iskarra_p01_plaza_dusk)
+FAIL iskarra_i02_gate_from_the_plaza: no baseline (inspect out/, then compare.py --update-baselines iskarra_i02_gate_from_the_plaza)
+FAIL iskarra_i03_broken_tower: no baseline (inspect out/, then compare.py --update-baselines iskarra_i03_broken_tower)
+Screenshots: 5 compared, 5 failed (diffs in /home/user/wt/render/tests/screenshots/out/diff)
+compare exit 1
