@@ -1,0 +1,61 @@
+// Ch8 B17 "The wall falls" (act1_ch08.md §2 B17; W20 → W21 → W22 → W23 → W22 → W24 → W25).
+// Letterboxed, scripted. Played when the Reach's battle ends in its scripted escape.
+// W20: the Breach lands. The wall-head section to the stair's seaward side goes, its Watchers tipping
+// out into the storm, and the sea comes through the gap into the low town in one long grey slide. The
+// stair was not wide enough: the low town's far lanes, where people were still coming, going under.
+// Wide, unlit except by the storm. No close-ups of the drowning (pillar 1: sorrow, not spectacle).
+// W21: Rhen at the new lip, back to camera. W22 (his POV): inside the storm wall, a single cyan
+// silhouette, a man's shape, faceless, standing in the storm as if on a deck. The current-song (Dace's,
+// the same melody as Ch1's statement), diegetic, from Rhen's position only. W23: CU Rhen, held >= 3 s.
+// THIS IS A FREEZE: no step toward it, no reach, no word (rule 4). W22: the figure TURNS AWAY into the
+// dark and is gone, sideways and down, never up; the song goes with it.
+// W24: from behind Rhen, Kerrid's LEFT hand, wrapped in tarred hauling-cloth, takes his collar and hauls
+// him back off the lip as it falls away. He has just come up the drowned stair, the last man up it. No
+// rope-burn glow (ADR 0022 (g)). FRAME RULE: Kerrid never shares a frame with the figure; the figure is
+// gone before his hand enters W24. W25: Rhen on his back on the wet stone; Kerrid already turning to look
+// down the stair, which is now just sea, for a long beat, the way a man counts. Kerrid has no line.
+// The choice: Asha reaches Rhen. Sets ch08_wall_fell and ch08_rhen_froze; the first option sets
+// ch08_rhen_told_asha.
+title: ch08_wall_falls
+location: ch08/corrow
+---
+@letterbox on
+@camera W20
+@sfx wall_breach
+@music undertow_reach
+@wait 3.0
+<<set $ch08_wall_fell = true>>
+@camera W21
+@mark rhen breach_lip walk
+@wait 1.5
+@camera W22
+@music silence fade=0.5
+@sfx current_song at=figure
+@wait 2.0
+@camera W23
+@face rhen afraid 0.3
+@wait 3.5
+<<set $ch08_rhen_froze = true>>
+@camera W22
+@mark figure figure_gone walk
+@wait 2.0
+@camera W24
+@mark kerrid kerrid_collar run
+@anim kerrid catch_collar rhen
+@sfx stone_falls
+@mark rhen rhen_fallen walk
+@wait 1.5
+@camera W25
+@mark kerrid kerrid_drowned_stair walk
+@anim kerrid look_at drowned_stair
+@wait 3.0
+@mark asha asha_to_rhen run
+Asha [worried]: Rhen. What did you see? #line:ch08_wall_falls_001
+-> Someone. In the storm. Humming a current-song. #line:ch08_wall_falls_002
+    Asha [sad]: I heard them too. All of them. #line:ch08_wall_falls_003
+    <<set $ch08_rhen_told_asha = true>>
+-> Storm. Just the storm. #line:ch08_wall_falls_004
+    Asha [tender]: All right. #line:ch08_wall_falls_005
+@wait 1.0
+@letterbox off
+===

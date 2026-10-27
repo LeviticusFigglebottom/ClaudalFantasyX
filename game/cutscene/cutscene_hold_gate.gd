@@ -7,9 +7,11 @@ extends Node
 ## only on frames the action is held, so waits, walks and fades go on while it is held and stand still
 ## when it is let go. There is no timer, no score and nothing to fail: letting go only pauses, nothing
 ## resets, and the only way out of a gate is the scene reaching hold_input_end (or ending).
-## The prompt (a loc key from the host's data) shows for the whole gate. Data, from the host:
+## The prompt (a loc key from the host's data) shows for the whole gate, in UI's HoldPrompt widget
+## (M3-C09-05: the held action's key or pad button and the verb; holding lights the key, letting go
+## lets it breathe; no meter, no count). Data, from the host:
 ##   {"action": input action, "prompts": {prompt id: loc key}, "layer": the prompt's canvas layer,
-##    "bottom_px": the prompt's distance from the bottom of the screen}
+##    "bottom_px": the prompt's distance from the bottom of the screen (absent: hold_prompt.json's)}
 
 ## A gate opened (the prompt id from the event).
 signal gate_opened(prompt: StringName)
@@ -36,8 +38,8 @@ var prompt_id: StringName = &""
 var held_sec := 0.0
 ## Gates opened since setup (tests read it).
 var gates := 0
-## The on-screen prompt.
-var label: Label
+## The on-screen prompt (HoldPrompt, game/ui/prompts/).
+var prompt: HoldPrompt
 
 var _layer: CanvasLayer
 var _seq_processed := true
@@ -50,7 +52,7 @@ func setup(seq: CutsceneSequencer, cfg: Dictionary) -> void:
 	prompts = cfg.get(KEY_PROMPTS, {})
 	sequencer.event_requested.connect(_on_event)
 	sequencer.finished.connect(_on_finished)
-	_build_prompt(int(cfg.get(KEY_LAYER, 0)), float(cfg.get(KEY_BOTTOM, 0.0)))
+	_build_prompt(int(cfg.get(KEY_LAYER, 0)), float(cfg.get(KEY_BOTTOM, -1.0)))
 
 
 func _process(delta: float) -> void:
@@ -61,6 +63,8 @@ func _process(delta: float) -> void:
 ## One frame of an open gate: the scene's time moves by `delta` only when `held`. Returns true when
 ## the scene's time moved.
 func tick(delta: float, held: bool) -> bool:
+	if gating:
+		prompt.set_held(held)
 	if not gating or not held or sequencer == null:
 		return false
 	held_sec += delta
@@ -79,18 +83,18 @@ func _on_finished(_scene_id: StringName) -> void:
 	_close()
 
 
-func _open(prompt: StringName) -> void:
+func _open(id: StringName) -> void:
 	if gating:
 		return
 	gating = true
 	gates += 1
-	prompt_id = prompt
+	prompt_id = id
 	held_sec = 0.0
 	_seq_processed = sequencer.is_processing()
 	sequencer.set_process(false)
-	label.text = tr(str(prompts.get(String(prompt), "")))
 	_layer.visible = true
-	gate_opened.emit(prompt)
+	prompt.show_prompt(str(prompts.get(String(id), "")))
+	gate_opened.emit(id)
 
 
 func _close() -> void:
@@ -100,7 +104,7 @@ func _close() -> void:
 	prompt_id = &""
 	if is_instance_valid(sequencer):
 		sequencer.set_process(_seq_processed)
-	_layer.visible = false
+	prompt.hide_prompt()
 	gate_closed.emit()
 
 
@@ -112,13 +116,7 @@ func _build_prompt(layer: int, bottom_px: float) -> void:
 	_layer.layer = layer
 	_layer.visible = false
 	add_child(_layer)
-	label = Label.new()
-	label.name = "Prompt"
-	label.theme_type_variation = &"HintLabel"
-	label.set_anchors_and_offsets_preset(Control.PRESET_CENTER_BOTTOM)
-	label.grow_horizontal = Control.GROW_DIRECTION_BOTH
-	label.grow_vertical = Control.GROW_DIRECTION_BEGIN
-	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	label.offset_top -= bottom_px
-	label.offset_bottom -= bottom_px
-	_layer.add_child(label)
+	prompt = HoldPrompt.new()
+	prompt.action = action
+	prompt.bottom_px = bottom_px
+	_layer.add_child(prompt)

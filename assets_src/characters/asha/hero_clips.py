@@ -28,6 +28,18 @@ weight low; he settles, he does not fidget): the shared `idle`, `walk`, `run`, `
 `catch_rhen` (steadying Rhen as he stands), `sit_steps` (Ch3) and `turn_seaward` (the upper body and head turn to his
 left; the facing itself comes from the `@mark`). His spear is held like Asha's staff (the hand keeps it upright) except
 where a clip levels it; it rides the `DEF-spear` prop bone under the hand, which the clips leave at rest.
+
+Ysolde (M3-CHR-01, ysolde.md §1, §10: plumb, idle sway 30% of the party default, the lowest of the living cast; a
+hair of backward lean from the lifted chest): two persona keys, both off by default so the other libraries do not
+change. `book`: the right forearm flexes 65 degrees so the shut book rests against the right hip, and the walk's
+right-arm swing drops to 0.2. `breath` (default 1.0) scales the idle's breath terms (Sefir will take 0.0). Her clips:
+the shared `idle`, `walk`, `run`, `talk` (only the left hand lifts), and `board_step` (Ch4: one step up 18 cm onto the
+ferry, no hand on the rail), `vigil_book_shut` (both hands on the shut book at the waist, the head bowed),
+`reink_shell` (Ch4: at the shrine wall, the left index guard writing small strokes at chest height), `stand_apart` (arms
+folded at the waist, the head turned 15 degrees, the eyes down), `book_fan` (the right hand fans the book open, the
+left rises to it) and `cast_glyph` (the left hand traces the five strokes of the Glyph Trace, down, right, up, right,
+down, about 12 cm each, in front of the open book, then the book folds). The book opens on its `book_fan` blend shape:
+those two clips also key it (a blend-shape track on the `Book` mesh, BLEND_SHAPES).
 """
 from __future__ import annotations
 
@@ -61,6 +73,8 @@ PERSONA = {
     # toma.md §1: "stance" = ankle spacing / shoulder-joint spacing in the standing clips; "knee" = the soft knees
     # (degrees) that carry his weight low. The spear is held like the staff.
     "toma": {"sway": 0.7, "lean": 0.0, "staff": True, "arms_down": 38.0, "stance": 1.4, "knee": 7.0},
+    # ysolde.md §10: the book at the right hip ("book"), the idle's breath at full ("breath")
+    "ysolde": {"sway": 0.3, "lean": -1.0, "staff": False, "arms_down": 34.0, "book": True, "breath": 1.0},
 }
 CLIPS = {
     "asha": ["idle", "walk", "run", "talk", "kneel_over_rhen", "laugh", "rise_to_stand", "offer_hand",
@@ -68,8 +82,10 @@ CLIPS = {
     "rhen": ["idle", "walk", "run", "talk", "kneel_over_rhen", "rise_to_stand", "take_hand"],
     "toma": ["idle", "walk", "run", "talk", "spear_level", "lower_spear", "palms_level", "catch_rhen", "sit_steps",
              "turn_seaward"],
+    "ysolde": ["idle", "walk", "run", "talk", "board_step", "vigil_book_shut", "reink_shell", "stand_apart",
+               "book_fan", "cast_glyph"],
 }
-LOOPS = {"idle", "walk", "run", "talk", "walk_to_chamber"}
+LOOPS = {"idle", "walk", "run", "talk", "walk_to_chamber", "vigil_book_shut", "stand_apart"}
 
 
 # ---------------------------------------------------------------------------------------------
@@ -210,6 +226,11 @@ def stand(persona: dict) -> dict:
     if persona["staff"]:
         p["DEF-upper_arm.R"] = (-6.0, 0.0, a - 8.0)  # the staff a little forward of the body (asha.md §2.3)
         p["DEF-forearm.R"] = (-28.0, 0.0, 0.0)
+    if persona.get("book"):
+        p["DEF-forearm.R"] = (-BOOK_FOREARM, 0.0, 0.0)  # ysolde.md §10: the shut book rests against the right hip
+        p["DEF-hand.R"] = (BOOK_HAND, 0.0, 0.0)  # the wrist drops, so the book hangs along the hip, not out like a tray
+        p["DEF-hand.L"] = (0.0, 0.0, -GUARD_HAND)  # the guarded hand turns a little out: the points clear the thigh
+        p["DEF-upper_arm.L"] = (4.0, 0.0, -a + GUARD_ARM)
     return p
 
 
@@ -296,12 +317,17 @@ def walk_pose(t: float, persona: dict, stride: float, knee: float, arm: float, b
         "DEF-foot.L": (-6.0 * swing_l + 6.0 * math.cos(ph), 0.0, 0.0),
         "DEF-foot.R": (-6.0 * swing_r - 6.0 * math.cos(ph), 0.0, 0.0),
         "DEF-upper_arm.L": (arm * math.cos(ph), 0.0, 0.0),
-        "DEF-upper_arm.R": (-(arm * (0.35 if persona["staff"] else 1.0)) * math.cos(ph), 0.0, 0.0),
+        "DEF-upper_arm.R": (-(arm * (0.35 if persona["staff"] else (BOOK_SWING if persona.get("book") else 1.0)))
+                            * math.cos(ph), 0.0, 0.0),
     })
     return p
 
 
 def pose_at(clip: str, t: float, length: float, sk: Skeleton, persona: dict) -> dict:
+    if persona.get("hands_joined"):  # M3-CHR-02: Sefir's own clips (sefir_pose_at, below)
+        return sefir_pose_at(clip, t, length, sk, persona)
+    if clip in LOCO_CLIPS and _loco_hero(persona):  # M2-CHR-12: field locomotion (the block below Sefir's)
+        return loco_pose_at(clip, t, length, sk, persona)
     sway = persona["sway"]
     u = t / length
     if clip == "idle":
@@ -309,10 +335,10 @@ def pose_at(clip: str, t: float, length: float, sk: Skeleton, persona: dict) -> 
         return add(planted(sk, persona), {
             "hips": (0.010 * sway * math.sin(ph), -0.002 * sway * (1 - math.cos(2 * ph)), 0.0),
             "DEF-spine.001": (0.0, 0.0, -1.6 * sway * math.sin(ph)),
-            "DEF-spine.003": (0.7 * math.sin(2 * ph), 0.0, 0.0),  # breath
+            "DEF-spine.003": (0.7 * math.sin(2 * ph) * persona.get("breath", 1.0), 0.0, 0.0),  # breath
             "DEF-spine.006": (0.0, 1.5 * sway * math.sin(ph + 0.6), 0.6 * sway * math.sin(ph)),
             "DEF-thigh.L": (0.0, 0.0, 1.2 * sway * math.sin(ph)), "DEF-thigh.R": (0.0, 0.0, 1.2 * sway * math.sin(ph)),
-            "DEF-upper_arm.L": (1.5 * math.sin(2 * ph + 0.4), 0.0, 0.0),
+            "DEF-upper_arm.L": (1.5 * math.sin(2 * ph + 0.4) * persona.get("breath", 1.0), 0.0, 0.0),
         })
     if clip == "walk":
         return walk_pose(u, persona, 22.0, 38.0, 16.0, 0.018, 2.0)
@@ -320,7 +346,9 @@ def pose_at(clip: str, t: float, length: float, sk: Skeleton, persona: dict) -> 
         return add(walk_pose(u, persona, 15.0, 28.0, 7.0, 0.010, 4.0), {"DEF-spine.006": (6.0, 0.0, 0.0)})
     if clip == "run":
         p = walk_pose(u, persona, 38.0, 85.0, 34.0, 0.035, 10.0)
-        return add(p, {"DEF-forearm.L": (-60.0, 0.0, 0.0), "DEF-forearm.R": (-35.0 if persona["staff"] else -60.0, 0.0, 0.0),
+        return add(p, {"DEF-forearm.L": (-60.0, 0.0, 0.0),
+                       "DEF-forearm.R": (-35.0 if persona["staff"] else (0.0 if persona.get("book") else -60.0), 0.0,
+                                         0.0),
                        "DEF-upper_arm.L": (0.0, 0.0, 12.0), "DEF-upper_arm.R": (0.0, 0.0, -12.0)})
     if clip == "talk":
         ph = 2 * math.pi * u
@@ -428,13 +456,151 @@ def pose_at(clip: str, t: float, length: float, sk: Skeleton, persona: dict) -> 
             "DEF-upper_arm.R": (-6.0 * e, 0.0, 0.0)})
     if clip in BATTLE_FRAMES:  # M2-CHR-07: the battle clip contract (the block below LENGTHS)
         return battle_pose_at(clip, u, sk, persona)
+    if clip == "board_step":
+        return board_step(u, sk, persona)
+    if clip == "vigil_book_shut":
+        ph = 2 * math.pi * u
+        return add(vigil(persona), {
+            "hips": (0.010 * 0.5 * sway * math.sin(ph), 0.0, 0.0),
+            "DEF-spine.001": (0.0, 0.0, -1.6 * 0.5 * sway * math.sin(ph)),
+            "DEF-spine.003": (0.7 * math.sin(2 * ph) * persona.get("breath", 1.0), 0.0, 0.0)})
+    if clip == "reink_shell":
+        e = smooth(u / 0.35)
+        w = smooth((u - 0.3) / 0.15) * (1.0 - smooth((u - 0.92) / 0.08))
+        ph = 2 * math.pi * 2.5 * max(u - 0.3, 0.0) / 0.62  # small strokes: two and a half
+        p = blend(stand(persona), reink(persona), e)
+        return add(p, {"DEF-upper_arm.L": (1.6 * w * math.sin(ph), 1.2 * w * math.sin(2 * ph), 0.0),
+                       "DEF-hand.L": (3.0 * w * math.sin(ph + 0.6), 0.0, 0.0)})
+    if clip == "stand_apart":
+        ph = 2 * math.pi * u
+        return add(fold_arms(persona), {
+            "hips": (0.010 * sway * math.sin(ph), 0.0, 0.0),
+            "DEF-spine.001": (0.0, 0.0, -1.6 * sway * math.sin(ph)),
+            "DEF-spine.003": (0.7 * math.sin(2 * ph) * persona.get("breath", 1.0), 0.0, 0.0)})
+    if clip == "book_fan":
+        return blend(stand(persona), fan_pose(persona), smooth(u / 0.45))
+    if clip == "cast_glyph":
+        return add(fan_pose(persona), trace_offset(t))
     raise KeyError(clip)
+
+
+# ---------------------------------------------------------------------------------------------
+# Ysolde (M3-CHR-01, ysolde.md §10)
+# ---------------------------------------------------------------------------------------------
+BOOK_FOREARM = 65.0  # degrees the right forearm flexes to rest the shut book against the right hip
+BOOK_SWING = 0.2  # the walk's right-arm swing with the book (the staff's is 0.35)
+BOOK_HAND = 50.0  # degrees the right wrist drops in the book hold
+GUARD_HAND = 14.0  # degrees the left hand (the ink-guards) turns out from the thigh
+GUARD_ARM = 5.0  # degrees the left arm hangs further out than the right (the guards' points clear the thigh)
+STEP_RISE = 0.18  # m: board_step's deck height
+STEP_THIGH = 52.0  # degrees: the leading thigh lifts this much to set the foot on the deck
+TRACE_STEP_DEG = 12.5  # degrees of the left arm per stroke of the glyph: about 12 cm at her hand
+TRACE_START = 0.2  # s into cast_glyph (the fan is already open) ...
+TRACE_STROKE = 0.24  # s per stroke: five strokes in 1.2 s
+TRACE_HOLD = 0.2  # s, then the book folds over FOLD_S
+FOLD_S = 0.4
+FAN_OPEN = (0.2, 0.7)  # s: book_fan opens the book over this window (0.5 s)
+# the Glyph Trace (formulas.md § Swell; motifs/glyphs.json): her right is -h, down is +v, 1 = one stroke
+TRACE_PATH = [(0.0, 0.0), (0.0, 1.0), (1.0, 1.0), (1.0, 0.0), (2.0, 0.0), (2.0, 1.0)]
+
+
+def board_step(u: float, sk: Skeleton, persona: dict) -> dict:
+    """One step up onto a deck: the left foot is set on it, the weight rises over it (no hand on the rail), the right
+    foot comes up beside, and she settles plumb (Ch4, the dawn ferry)."""
+    s0 = stand(persona)
+    e1 = smooth(u / 0.35)
+    e2 = smooth((u - 0.35) / 0.40)
+    e3 = smooth((u - 0.72) / 0.25)
+    lift = STEP_THIGH * e1 * (1.0 - e2)
+    trail = 18.0 * e2 * (1.0 - e3)
+    swing = math.sin(math.pi * e3)
+    return add(s0, {"hips": (0.0, STEP_RISE * e2, 0.22 * e2),
+                    "DEF-spine.001": (5.0 * math.sin(math.pi * e2), 0.0, 0.0),
+                    # the free arm comes out and a little forward as the thigh lifts past the guarded hand
+                    "DEF-upper_arm.L": (-10.0 * lift / STEP_THIGH, 0.0, 16.0 * lift / STEP_THIGH),
+                    "DEF-thigh.L": (-lift, 0.0, 0.0), "DEF-shin.L": (lift, 0.0, 0.0),
+                    "DEF-thigh.R": (trail - 30.0 * swing, 0.0, 0.0),
+                    "DEF-shin.R": (20.0 * e2 * (1.0 - e3) + 40.0 * swing, 0.0, 0.0),
+                    "DEF-foot.R": (-10.0 * swing, 0.0, 0.0)})
+
+
+def vigil(persona: dict) -> dict:
+    """Both hands on the shut book in front, at the waist; the head bowed 6 degrees (the Prologue)."""
+    return add(stand(persona), {"DEF-spine.006": (6.0, 0.0, 0.0),
+                                "DEF-upper_arm.L": (-16.0, 6.0, -10.0), "DEF-forearm.L": (-64.0, -48.0, 0.0),
+                                "DEF-hand.L": (0.0, -10.0, GUARD_HAND),
+                                "DEF-upper_arm.R": (-10.0, -4.0, 6.0), "DEF-forearm.R": (-20.0, 40.0, 0.0)})
+
+
+def reink(persona: dict) -> dict:
+    """At the shrine wall: the left hand up at chest height, the index guard to the shell (a small turn of the
+    head and chest toward it); the right keeps the book at the waist. ysolde.md §10 asks for the right palm on the
+    wall and the book on the belt: the belt loop is a second book attachment, not built yet (ysolde_review.md)."""
+    return add(vigil(persona), {"DEF-spine.006": (2.0, 6.0, 0.0), "DEF-spine.003": (0.0, 4.0, 0.0),
+                                "DEF-upper_arm.L": (-44.0, -8.0, 26.0), "DEF-forearm.L": (-28.0, 40.0, 0.0),
+                                "DEF-hand.L": (0.0, 0.0, -10.0)})
+
+
+def fold_arms(persona: dict) -> dict:
+    """The idle with the arms folded at the waist, left over right (the right still holding the book), the head
+    turned 15 degrees toward the feast and the eyes down (Ch4, Pilgrim's Wake)."""
+    return add(vigil(persona), {"DEF-spine.006": (2.0, 15.0, 0.0), "DEF-forearm.L": (-8.0, -10.0, 0.0),
+                                "DEF-forearm.R": (-6.0, 8.0, 0.0)})
+
+
+def fan_pose(persona: dict) -> dict:
+    """The book fanned open in front at chest height, its gold toward the foe; the left hand up before it."""
+    a = persona["arms_down"]
+    return add(stand(persona), {"DEF-spine.003": (-2.0, 0.0, 0.0),
+                                "DEF-upper_arm.R": (-30.0, 30.0, -a * 0.25), "DEF-forearm.R": (-14.0, 30.0, 0.0),
+                                "DEF-hand.R": (-BOOK_HAND, -70.0, 0.0),
+                                "DEF-upper_arm.L": (-66.0, -30.0, a * 0.55), "DEF-forearm.L": (-20.0, -30.0, 0.0),
+                                "DEF-hand.L": (0.0, 0.0, -20.0)})
+
+
+def trace_point(t: float) -> tuple[float, float]:
+    """The left hand's place on the glyph (h, v) at t seconds into cast_glyph: the five strokes in order, each
+    eased in and out (a brush stroke starts and stops)."""
+    k = (t - TRACE_START) / TRACE_STROKE
+    if k <= 0.0:
+        return TRACE_PATH[0]
+    if k >= len(TRACE_PATH) - 1:
+        return TRACE_PATH[-1]
+    i = int(k)
+    f = smooth(k - i)
+    (h0, v0), (h1, v1) = TRACE_PATH[i], TRACE_PATH[i + 1]
+    return h0 + (h1 - h0) * f, v0 + (v1 - v0) * f
+
+
+def trace_offset(t: float) -> dict:
+    """cast_glyph's left-arm turns: the glyph traced about its middle (down = the arm pitches down, her right = the
+    arm turns to her right), then held, then the arm settles as the book folds."""
+    h, v = trace_point(t)
+    end = TRACE_START + TRACE_STROKE * (len(TRACE_PATH) - 1) + TRACE_HOLD
+    settle = smooth((t - end) / FOLD_S)
+    h, v = (h - 1.0) * (1.0 - settle), (v - 0.5) * (1.0 - settle)
+    return {"DEF-upper_arm.L": (TRACE_STEP_DEG * v, -TRACE_STEP_DEG * h, 0.0)}
+
+
+def book_fan_weight(clip: str, t: float) -> float | None:
+    """The `book_fan` shape (0 shut .. 1 the 160 degree arc) at t seconds, for the clips that key it."""
+    if clip == "book_fan":
+        return smooth((t - FAN_OPEN[0]) / (FAN_OPEN[1] - FAN_OPEN[0]))
+    if clip == "cast_glyph":
+        end = TRACE_START + TRACE_STROKE * (len(TRACE_PATH) - 1) + TRACE_HOLD
+        return 1.0 - smooth((t - end) / FOLD_S)
+    return None
+
+
+# blend-shape tracks: clip -> (mesh node under the Skeleton3D, shape), keyed by book_fan_weight
+BLEND_SHAPES = {"book_fan": ("Book", "book_fan"), "cast_glyph": ("Book", "book_fan")}
 
 
 LENGTHS = {"idle": 6.0, "walk": 1.1, "run": 0.7, "talk": 3.2, "kneel_over_rhen": 1.8, "laugh": 2.2,
            "rise_to_stand": 2.0, "offer_hand": 1.4, "take_hand": 1.2, "walk_to_chamber": 1.4, "emerge_doorway": 2.4,
            "face_west": 1.6, "spear_level": 1.6, "lower_spear": 1.6, "palms_level": 2.0, "catch_rhen": 1.4,
-           "sit_steps": 2.0, "turn_seaward": 1.6}
+           "sit_steps": 2.0, "turn_seaward": 1.6, "board_step": 2.0, "vigil_book_shut": 6.0, "reink_shell": 2.4,
+           "stand_apart": 6.0, "book_fan": 1.2, "cast_glyph": 2.2}
 
 
 # ---------------------------------------------------------------------------------------------
@@ -889,6 +1055,863 @@ def battle_pose_at(clip: str, u: float, sk: Skeleton, persona: dict) -> dict:
 
 
 # ---------------------------------------------------------------------------------------------
+# Sefir (M3-CHR-02, act1_npcs.md §1.8): plumb and still, no breath, the hands joined loosely before the navel, right
+# over left. A persona with `hands_joined` takes these clips in place of the shared ones (pose_at dispatches), so the
+# other heroes' libraries do not change. `breath` scales the breath term of his idle (0: absent, as the story asks).
+# ---------------------------------------------------------------------------------------------
+PERSONA["sefir"] = {"sway": 0.0, "lean": 0.0, "staff": False, "arms_down": 30.0, "breath": 0.0, "hands_joined": True}
+CLIPS["sefir"] = ["idle", "talk", "raise_palm", "incline_head", "glance", "pivot", "walk_glide"]
+LOOPS.add("walk_glide")
+LENGTHS.update({"raise_palm": 4.5, "incline_head": 2.4, "glance": 2.0, "pivot": 1.4, "walk_glide": 1.4})
+# the joined hands (world-axis turns on his skeleton, solved for the wrists 6-7 cm in front of the robe at the navel,
+# 14 cm apart; the right forearm a little higher and 2.5 cm further forward, so the right hand lies over the left)
+SEFIR_JOINED = {"DEF-upper_arm.L": (0.0, -1.5, -29.5), "DEF-forearm.L": (-60.0, -61.5, 0.0),
+                "DEF-upper_arm.R": (-0.5, 4.5, 34.0), "DEF-forearm.R": (-59.0, 48.5, 0.0)}
+# raise_palm: the Order's gesture with the left palm only, flat and face down at chest height
+SEFIR_PALM = {"DEF-upper_arm.L": (-46.0, -8.0, -14.0), "DEF-forearm.L": (-48.0, -12.0, 0.0),
+              "DEF-hand.L": (0.0, 0.0, -70.0)}
+
+
+def sefir_still(sk: Skeleton, persona: dict) -> dict:
+    p = stand(persona)
+    p.update(SEFIR_JOINED)
+    return p
+
+
+def euler_yxz(q: np.ndarray) -> tuple:
+    """Degrees (x, y, z) of a quaternion, the inverse of qeuler (Y * X * Z)."""
+    x, y, z, w = q
+    r02 = 2 * (x * z + w * y)
+    r12 = 2 * (y * z - w * x)
+    r22 = 1 - 2 * (x * x + y * y)
+    r10 = 2 * (x * y + w * z)
+    r11 = 1 - 2 * (x * x + z * z)
+    return (math.degrees(math.asin(max(-1.0, min(1.0, -r12)))), math.degrees(math.atan2(r02, r22)),
+            math.degrees(math.atan2(r10, r11)))
+
+
+def sefir_turned(pose: dict, yaw: float) -> dict:
+    """The pose with his whole body turned `yaw` degrees about the vertical at the hips: the root takes the turn,
+    and every other bone's world-axis turn is carried round with it (conjugated), so the joined hands stay joined."""
+    r = qaxis((0, 1, 0), yaw)
+    out = {}
+    for b, v in pose.items():
+        if b == "hips":
+            out[b] = v
+        elif b == HIPS:
+            out[b] = euler_yxz(qmul(r, qeuler(v)))
+        else:
+            out[b] = euler_yxz(qmul(r, qmul(qeuler(v), qinv(r))))
+    if HIPS not in out:
+        out[HIPS] = (0.0, yaw, 0.0)
+    return out
+
+
+def sefir_pose_at(clip: str, t: float, length: float, sk: Skeleton, persona: dict) -> dict:
+    u = t / length
+    base = sefir_still(sk, persona)
+    if clip == "idle":
+        # no motion: the loop exists so the AnimationPlayer has something to hold (the breath term is 0 for him)
+        return add(base, {"DEF-spine.003": (0.7 * persona.get("breath", 1.0) * math.sin(4 * math.pi * u), 0.0, 0.0)})
+    if clip == "talk":
+        # the least gesture in the cast: the left hand parts from the right and opens 10 degrees once per loop; the
+        # head moves under a degree
+        g = 0.5 - 0.5 * math.cos(2 * math.pi * u)
+        return add(base, {"DEF-forearm.L": (-6.0 * g, 10.0 * g, 0.0), "DEF-hand.L": (0.0, 0.0, -10.0 * g),
+                          "DEF-spine.006": (0.6 * math.sin(4 * math.pi * u), 0.8 * math.sin(2 * math.pi * u), 0.0)})
+    if clip == "raise_palm":
+        # up flat to chest height in 0.6 s, held through the sentence, lowered over 2.4 s ("settling the water")
+        w = smooth(t / 0.6) * (1.0 - smooth((t - 2.1) / 2.4))
+        palm = dict(base)
+        palm.update(SEFIR_PALM)
+        return add(blend(base, palm, w), {"DEF-spine.006": (3.0 * w, 0.0, 0.0)})
+    if clip == "incline_head":
+        # a 10 degree bow and a 3 degree tilt, held 1 s, rising over 0.8 s
+        w = smooth(t / 0.6) * (1.0 - smooth((t - 1.6) / 0.8))
+        return add(base, {"DEF-spine.005": (3.0 * w, 0.0, 0.0), "DEF-spine.006": (7.0 * w, 0.0, 3.0 * w)})
+    if clip == "glance":
+        # head (and eyes) 22 degrees to his left and back; the body does not follow (the @mark picks the side)
+        w = smooth(t / 0.45) * (1.0 - smooth((t - 1.25) / 0.75))
+        return add(base, {"DEF-spine.005": (0.0, 6.0 * w, 0.0), "DEF-spine.006": (0.0, 16.0 * w, 0.0)})
+    if clip == "pivot":
+        # a 30 degree turn in place on the heels, no step, no bob (the barge does the travelling)
+        return sefir_turned(base, 30.0 * smooth(u / 0.9))
+    if clip == "walk_glide":
+        # Act II (Ch13): a 14 degree stride, no vertical bob, hips level, no arm swing (the hands stay joined)
+        ph = 2 * math.pi * u
+        swing_l = max(0.0, math.sin(ph + math.pi * 0.5))
+        swing_r = max(0.0, math.sin(ph - math.pi * 0.5))
+        return add(base, {"DEF-spine": (0.0, 1.5 * math.sin(ph), 0.0), "DEF-spine.002": (0.0, -1.5 * math.sin(ph), 0.0),
+                          "DEF-thigh.L": (-7.0 * math.cos(ph), 0.0, 0.0), "DEF-thigh.R": (7.0 * math.cos(ph), 0.0, 0.0),
+                          "DEF-shin.L": (3.0 + 10.0 * swing_l, 0.0, 0.0), "DEF-shin.R": (3.0 + 10.0 * swing_r, 0.0, 0.0),
+                          "DEF-foot.L": (-3.0 * swing_l + 3.0 * math.cos(ph), 0.0, 0.0),
+                          "DEF-foot.R": (-3.0 * swing_r - 3.0 * math.cos(ph), 0.0, 0.0)})
+    raise KeyError(clip)
+
+
+# ---------------------------------------------------------------------------------------------
+# M2-CHR-12: field locomotion for Asha, Rhen and Toma (docs/kb/tasks/M2/M2-CHR-12-hero-field-locomotion.md)
+# ---------------------------------------------------------------------------------------------
+# Every clip here is in place: the field controller moves the root, and the clip's planted feet travel backward under
+# the body at exactly the speed the controller moves it. That is how the feet stay put on the ground: the motion is
+# authored in GROUND coordinates (footprints fixed on the floor, a root that travels `root_travel_m` forward or turns
+# `root_yaw_deg`), then expressed relative to the root. The legs are solved by two-bone IK onto those foot targets,
+# taken as a correction of the idle's own leg pose (so a target at the idle's footprint changes nothing):
+#   - `walk`, `run` (loops, replacing the old sine cycles for these three heroes; Ysolde keeps hers): heel strike,
+#     flat foot, heel-off rolling on the ball, a swing that lifts and lands with no speed on the ground; the stride
+#     per cycle is LOCO_GAIT's `S`, and the controller should move the root at S / length (locomotion.json).
+#   - `walk_start` (one step: the right foot stays down, the left lands on the cycle's heel strike), `run_start` (two:
+#     a short right push-off, then the left lands): from the idle's first frame to the cycle's first frame;
+#     `walk_stop` (the left stays down, the right comes up beside it), `run_stop` (the right brakes, the left closes):
+#     from the cycle's first frame to the idle's first frame. The root accelerates or brakes along `root_travel_m`,
+#     keyed per frame in locomotion.json.
+#   - `turn_in_place_l90`, `turn_in_place_r90`, `turn_in_place_180`: the lead foot stepping first; the root turns
+#     along `root_yaw_deg` (+ = to the hero's left); both ends are the idle's first frame; the head and chest lead.
+# A planted foot whose shin leans past STANCE_DORSI rolls onto its ball (the heel lifts, the ball stays put): the
+# trouser hems ride the shins and cannot take a deeply flexed ankle (the rig probe's skin-through-garment check).
+#   - `idle_breathe`, `idle_shift`: loops whose first frame is the idle's first frame (a deeper, slower breath; a
+#     weight shift onto one leg with the other knee relaxed, the heel lifting).
+# The left foot strikes at a cycle's t = 0 and the right at half its length; every locomotion clip carries Animation
+# markers `foot_l_down`, `foot_r_down` (a second step on the same foot: `foot_l_down_2`) at each heel contact.
+LOCO_HEROES = ("asha", "rhen", "toma")
+# Names and lengths as the hero-integration track's motion layer asks for them (M2-HER-1105).
+LOCO_NEW = ["idle_breathe", "idle_shift", "walk_start", "walk_stop", "run_start", "run_stop", "turn_in_place_l90",
+            "turn_in_place_r90", "turn_in_place_180"]
+LOCO_FRAMES = {"idle_breathe": 60, "idle_shift": 38, "walk_start": 7, "walk_stop": 8, "run_start": 12,
+               "run_stop": 9, "turn_in_place_l90": 9, "turn_in_place_r90": 9, "turn_in_place_180": 14}
+LOCO_LOOPS = {"idle_breathe", "idle_shift"}
+LOCO_CLIPS = {"walk", "run", *LOCO_NEW}
+LOCO_DATA = ROOT / "game" / "data" / "characters" / "locomotion.json"
+for _h in LOCO_HEROES:
+    CLIPS[_h] = CLIPS[_h] + [c for c in LOCO_NEW if c not in CLIPS[_h]]
+LOOPS |= LOCO_LOOPS
+LENGTHS.update({c: n / FPS for c, n in LOCO_FRAMES.items()})
+# The cycles' lengths, per hero, in whole keys (so a loop's last key is its first): the shared 1.1 s walk and 0.7 s
+# run fall between keys. Rhen's quicker cadence, Toma's slower one.
+LOCO_CYCLE_FRAMES = {"asha": {"walk": 17, "run": 11}, "rhen": {"walk": 16, "run": 10},
+                     "toma": {"walk": 18, "run": 11}}
+HEEL_BACK = 0.05  # m: the heel's contact point behind the ankle (the heel-strike pivot)
+ANKLE_DORSI = 10.0  # degrees a swinging foot may turn toes-up past its standing angle to the shin
+# ... and a planted foot, per hero, before its heel lifts (the trouser hems ride the shin: Rhen's and Toma's take
+# little; Asha's skirt hides the ankle)
+STANCE_DORSI = {"asha": 25.0, "rhen": 6.0, "toma": 10.0}
+SUPPORT_MAX = 0.06  # m: the most the hips slide toward the foot that carries the weight
+# A gait, per hero: S = stride per cycle (m: two steps), beta = the fraction of the cycle a foot is down, c = where
+# the stance is centred (m forward of the idle footprint), width = how far each footprint sits inside the idle's (m),
+# hs / to = the foot's pitch at heel strike (toes up) and at toe-off (heel up) in degrees, rh / rb = the heel and ball
+# rockers (fractions of the cycle), clear = swing clearance (m), peak = where in the swing the foot is highest,
+# bump = extra toe lift mid-swing (degrees), drop / bob = hips lower (m) and their bounce (walk: highest over the
+# planted foot; run: lowest there), sway (m), yaw / tilt = pelvis turn and drop (degrees), chest = counter-turn of the
+# chest, lean / flex / nod (degrees), arm = arm swing, elbow = extra elbow bend on the forward swing, fore / fore_s =
+# constant forearm bend (free arm / staff arm), abd = arms out (degrees), lag = how far the arms trail (cycle
+# fraction), head = how much of the chest's turn the head takes back, staff = the staff's or spear's follow (degrees).
+_WALK = {"beta": 0.6, "c": 0.0, "width": 0.0, "hs": 14.0, "to": 24.0, "rh": 0.12, "rb": 0.24, "clear": 0.055,
+         "peak": 0.4, "bump": 6.0, "drop": 0.02, "bob": 0.02, "run": False, "sway": 0.02, "yaw": 5.0, "tilt": 3.0,
+         "chest": 4.0, "lean": 2.0, "flex": 1.5, "nod": 1.0, "arm": 15.0, "elbow": 14.0, "fore": 0.0, "fore_s": 0.0,
+         "abd": 0.0, "lag": 0.04, "head": 0.8, "staff": 3.0}
+_RUN = dict(_WALK, beta=0.36, c=-0.08, hs=5.0, to=30.0, rh=0.06, rb=0.26, clear=0.12, peak=0.36, bump=10.0, drop=0.06,
+            bob=0.03, run=True, sway=0.012, yaw=7.0, tilt=2.0, chest=7.0, lean=9.0, flex=3.0, nod=2.0, arm=30.0,
+            elbow=24.0, fore=60.0, fore_s=35.0, abd=12.0, lag=0.05, staff=5.0)
+LOCO_GAIT = {
+    # asha.md §1: stillness (sway 0.4): a short, level, quiet walk, the staff carried upright in the right hand
+    "asha": {"walk": dict(_WALK, S=1.0, c=-0.02, sway=0.014, yaw=3.5, tilt=0.5, chest=3.0, lean=1.5, arm=13.0,
+                          bob=0.016, drop=0.035, abd=7.0, clear=0.04),  # abd: the verse sleeve's bag clears the thigh
+             "run": dict(_RUN, S=1.9, sway=0.008, lean=8.0, arm=26.0)},
+    # rhen.md §1: light and quick (sway 1.3, the 4 degree lean): springier, leaning, a bigger arm swing, a shorter
+    # stride for his legs, so the controller plays him at a quicker cadence for the same ground speed
+    "rhen": {"walk": dict(_WALK, S=1.05, c=-0.02, sway=0.022, yaw=4.0, tilt=1.0, chest=1.5, lean=4.0, arm=17.0, abd=5.0, back_r=0.35, bob=0.026,
+                          drop=0.03, clear=0.065, hs=16.0, to=28.0),
+             "run": dict(_RUN, S=2.0, c=-0.13, sway=0.014, lean=13.0, arm=36.0, bob=0.04, hs=0.0, to=34.0,
+                         clear=0.14)},
+    # toma.md §1: broad, the weight low, the spear held like the staff: a long, heavy, rolling stride, the feet
+    # tracking wide, a lower body and a big side-to-side transfer, little bounce
+    "toma": {"walk": dict(_WALK, S=1.25, sway=0.03, yaw=4.0, tilt=2.0, chest=3.0, lean=2.0, arm=11.0,
+                          bob=0.012, drop=0.045, clear=0.05),
+             "run": dict(_RUN, S=2.1, width=0.12, sway=0.018, lean=8.0, arm=22.0, bob=0.025, drop=0.07)},
+}
+SUPPORT_K = {"asha": 0.45, "rhen": 0.5, "toma": 0.35}  # how far the hips follow the weight-bearing foot
+
+
+def clip_length(hero: str, clip: str) -> float:
+    """A clip's length for this hero (s): LENGTHS, but for the three heroes' own walk and run cycles."""
+    n = LOCO_CYCLE_FRAMES.get(hero, {}).get(clip)
+    return n / FPS if n else LENGTHS[clip]
+
+
+def _loco_hero(persona: dict) -> str | None:
+    for hero in LOCO_HEROES:
+        if PERSONA[hero] is persona:
+            return hero
+    return None
+
+
+def _ry(deg: float) -> np.ndarray:
+    return qaxis((0.0, 1.0, 0.0), deg)
+
+
+def _px(deg: float) -> np.ndarray:
+    return qaxis((1.0, 0.0, 0.0), deg)
+
+
+def _loco_fk(sk: Skeleton, pose: dict) -> tuple:
+    """Global rotations and positions of the keyed bones (the generator's composition; legs only need this)."""
+    g, t = {}, {}
+    for name in BONES:
+        p = sk.parent[name]
+        pg = np.array([0.0, 0.0, 0.0, 1.0]) if p is None else g[p]
+        d = pose.get(name)
+        inh = qmul(pg, sk.rest_q[name])
+        g[name] = inh if d is None else qmul(qeuler(d), inh)
+        if p is None:
+            t[name] = sk.rest_t[name] + np.asarray(pose.get("hips", (0.0, 0.0, 0.0)), dtype=float)
+        else:
+            t[name] = t[p] + qrot(g[p], sk.rest_t[name])
+    return g, t
+
+
+_LOCO_RIG: dict = {}
+
+
+def _loco_rig(hero: str, sk: Skeleton, persona: dict) -> dict:
+    """The idle's first frame and its feet: ankle positions, foot turns (from the rest), the ball's reach."""
+    key = (hero, id(sk))
+    if key not in _LOCO_RIG:
+        idle0 = pose_at("idle", 0.0, LENGTHS["idle"], sk, persona)
+        g0, _t0 = _loco_fk(sk, {})
+        g, t = _loco_fk(sk, idle0)
+        rig = {"idle0": idle0, "sk": sk}
+        for s in "LR":
+            foot = f"DEF-foot.{s}"
+            rig[s] = {"A": t[foot], "F": qmul(g[foot], qinv(g0[foot]))}
+        rig["ball"] = float(sk.g_t["DEF-toe.L"][2] - sk.g_t["DEF-foot.L"][2])
+        rig["hero"] = hero
+        for s in "LR":  # the foot's own direction and its rest angle to the shin
+            fv = sk.g_t[f"DEF-toe.{s}"] - sk.g_t[f"DEF-foot.{s}"]
+            shin = sk.g_t[f"DEF-foot.{s}"] - sk.g_t[f"DEF-shin.{s}"]
+            rig[s]["foot_vec"] = fv
+            rig[s]["ankle_rest"] = math.degrees(math.acos(float(np.dot(shin, fv)) / float(
+                np.linalg.norm(shin) * np.linalg.norm(fv))))
+        rig["Ay"] = float(0.5 * (rig["L"]["A"][1] + rig["R"]["A"][1]))
+        rig["ball_piv"] = np.array([0.0, -rig["Ay"], rig["ball"]])
+        _LOCO_RIG[key] = rig
+        # the idle's own ankle angles: the stance limit never lifts a heel the idle keeps down (Toma's wide stance)
+        g1, t1 = _loco_fk(sk, idle0)
+        rig["dorsi0"] = {}
+        for s in "LR":
+            rep: dict = {}
+            _leg_ik(idle0, g1, t1, s, t1[f"DEF-foot.{s}"], rig[s]["F"], np.array([0.0, 0.0, 0.0, 1.0]), 0.0, 0.0, rig,
+                    rep)
+            rig["dorsi0"][s] = rep["dorsi"]
+    return _LOCO_RIG[key]
+
+
+def _leg_ik(pose: dict, g: dict, t: dict, side: str, target: np.ndarray, foot_q: np.ndarray, toe_q: np.ndarray,
+            twist: float, free: float = 0.0, rig: dict | None = None, report: dict | None = None) -> dict:
+    """Two-bone IK as a correction of the pose's own leg: the knee bends about its hinge until hip-to-ankle is the
+    target's distance, the thigh swings the ankle onto the target (shortest arc) and twists the knee `twist` degrees
+    toward the foot's heading; the foot then takes the world turn `foot_q` (from the rest) and the toe `toe_q`."""
+    th, sh, ft, toe = (f"DEF-{b}.{side}" for b in ("thigh", "shin", "foot", "toe"))
+    hip, knee, ankle = t[th], t[sh], t[ft]
+    k0, s0 = knee - hip, ankle - knee
+    l1, l2 = float(np.linalg.norm(k0)), float(np.linalg.norm(s0))
+    dv = np.asarray(target, dtype=float) - hip
+    d = min(float(np.linalg.norm(dv)), 0.9995 * (l1 + l2))
+    kh = k0 / l1
+    h = np.array([1.0, 0.0, 0.0]) - kh[0] * kh
+    h /= np.linalg.norm(h)
+    s_par = float(np.dot(s0, h)) * h
+    s_perp = s0 - s_par
+    a = float(np.dot(k0, s_par))
+    b = float(np.dot(k0, s_perp))
+    c = float(np.dot(k0, np.cross(h, s_perp)))
+    phi = math.atan2(c, b) + math.acos(max(-1.0, min(1.0, (0.5 * (d * d - l1 * l1 - l2 * l2) - a) / math.hypot(b, c))))
+    bend = qaxis(h, math.degrees(phi))
+    v = k0 + qrot(bend, s0)
+    u, w = v / np.linalg.norm(v), dv / np.linalg.norm(dv)
+    arc = np.concatenate([np.cross(u, w), [1.0 + float(np.dot(u, w))]])
+    arc /= np.linalg.norm(arc)
+    turn = qmul(qaxis(-w, twist), arc)
+    thigh = qmul(turn, qeuler(pose.get(th, (0.0, 0.0, 0.0))))
+    shin = qmul(qmul(turn, qmul(bend, qeuler(pose.get(sh, (0.0, 0.0, 0.0))))), qinv(turn))
+    if rig is not None:
+        # a foot in the air hangs from the ankle: at most ANKLE_DORSI degrees more toes-up (against the shin) than
+        # standing, or its instep pushes through the trouser hem and the leg wraps as the heel kicks up
+        shin_dir = qrot(turn, v - k0)
+        shin_dir /= np.linalg.norm(shin_dir)
+        fv = qrot(foot_q, rig[side]["foot_vec"])
+        fv /= np.linalg.norm(fv)
+        dorsi = math.degrees(math.acos(max(-1.0, min(1.0, float(np.dot(shin_dir, fv)))))) - rig[side]["ankle_rest"]
+        if report is not None:
+            report["dorsi"] = dorsi
+        over = dorsi - ANKLE_DORSI
+        if free > 0.0 and over > 0.0:
+            n = np.cross(fv, shin_dir)
+            foot_q = qmul(qaxis(n / np.linalg.norm(n), over * free), foot_q)
+    chain = qmul(shin, qmul(thigh, qeuler(pose.get(HIPS, (0.0, 0.0, 0.0)))))
+    return {th: _euler_yxz(thigh), sh: _euler_yxz(shin), ft: _euler_yxz(qmul(foot_q, qinv(chain))),
+            toe: _euler_yxz(toe_q)}
+
+
+def _loco_solve(rig: dict, body: dict, feet: dict) -> dict:
+    """The body (upper body and hips; legs still the idle's) with each leg solved onto feet[side] = (ankle position
+    relative to the root, heading, pitch, toe-flat weight)."""
+    g, t = _loco_fk(rig["sk"], body)
+    out = dict(body)
+    pelvis = body.get(HIPS, (0.0, 0.0, 0.0))[1]
+    for side in "LR":
+        ankle, yaw, pitch, tf = feet[side][:4]
+        free = feet[side][4] if len(feet[side]) > 4 else 0.0
+        limit = max(STANCE_DORSI.get(rig["hero"], 90.0), rig.get("dorsi0", {}).get(side, -90.0) + 0.5)
+        for _i in range(4):
+            foot_q = qmul(qmul(_ry(yaw), _px(pitch)), rig[side]["F"])
+            toe_q = qmul(qmul(_ry(yaw), _px(-pitch * tf)), qinv(_ry(yaw)))
+            rep: dict = {}
+            leg = _leg_ik(body, g, t, side, ankle, foot_q, toe_q, 1.0 * (yaw - pelvis), free, rig, rep)
+            if free > 0.0 or pitch < 0.0 or rep["dorsi"] <= limit + 0.05:
+                break
+            # a planted foot whose shin leans further over it than the costume allows rolls onto the ball: the heel
+            # lifts (the ball stays where it is on the floor, so nothing slides) until the ankle is back in range
+            ball = ankle + qrot(qmul(_ry(yaw), _px(pitch)), rig["ball_piv"])
+            pitch += rep["dorsi"] - limit
+            ankle = ball - qrot(qmul(_ry(yaw), _px(pitch)), rig["ball_piv"])
+            tf = 1.0
+        out.update(leg)
+    return out
+
+
+# ---- feet on the ground: a plant is a footprint (where the ankle is when the foot is flat) held from `on` to `off`
+def _plant(on: float, off: float, x: float, z: float, yaw: float = 0.0, hs: float = 0.0, to: float = 0.0,
+           rh: float = 0.0, rb: float = 0.0, clear: float = 0.05, peak: float = 0.4, bump: float = 0.0,
+           bow=None) -> dict:
+    """The swing INTO this plant uses its clear/peak/bump/bow."""
+    return {"on": on, "off": off, "x": x, "z": z, "yaw": yaw, "hs": hs, "to": to, "rh": rh, "rb": rb,
+            "clear": clear, "peak": peak, "bump": bump, "bow": bow}
+
+
+def _ankle_at(p: dict, pitch: float, heel: bool, rig: dict) -> np.ndarray:
+    ay = rig["Ay"]
+    piv = np.array([0.0, -ay, -HEEL_BACK if heel else rig["ball"]])
+    return np.array([p["x"], ay, p["z"]]) + qrot(_ry(p["yaw"]), piv - qrot(_px(pitch), piv))
+
+
+def _foot_ground(t: float, plants: list, rig: dict) -> tuple:
+    """(ankle, heading, pitch, toe-flat weight) of a foot at time t, in ground coordinates."""
+    for i, p in enumerate(plants):
+        if t > p["off"]:
+            continue
+        if t >= p["on"]:
+            if p["hs"] and t < p["on"] + p["rh"]:  # heel rocker: down onto the heel, the foot rolls flat
+                pitch = -p["hs"] * (1.0 - smooth((t - p["on"]) / p["rh"]))
+                return _ankle_at(p, pitch, True, rig), p["yaw"], pitch, 0.0
+            if p["to"] and t > p["off"] - p["rb"]:  # ball rocker: the heel lifts, the toes stay flat
+                pitch = p["to"] * smooth((t - p["off"] + p["rb"]) / p["rb"])
+                return _ankle_at(p, pitch, False, rig), p["yaw"], pitch, 1.0
+            return _ankle_at(p, 0.0, True, rig), p["yaw"], 0.0, 0.0
+        q = plants[i - 1]  # in the swing from q to p
+        s = (t - q["off"]) / (p["on"] - q["off"])
+        e = smooth(s)
+        a0 = _ankle_at(q, q["to"], False, rig)
+        a1 = _ankle_at(p, -p["hs"], True, rig)
+        pk = p["peak"]
+        warp = s + (0.5 - pk) / (pk * (1.0 - pk)) * s * (1.0 - s)
+        pos = a0 + (a1 - a0) * e + np.array([0.0, p["clear"] * math.sin(math.pi * warp) ** 2, 0.0])
+        if p["bow"] is not None:
+            pos = pos + np.asarray(p["bow"], dtype=float) * math.sin(math.pi * s) ** 2
+        pitch = q["to"] + (-p["hs"] - q["to"]) * e - p["bump"] * math.sin(math.pi * s) ** 2
+        return pos, q["yaw"] + (p["yaw"] - q["yaw"]) * e, pitch, 1.0 - smooth(s / 0.35)
+    raise ValueError("no plant covers t")
+
+
+def _swing_weight(t: float, plants: list) -> float:
+    """0 while the foot is down, easing to 1 through the middle of a swing (the ankle relaxes there)."""
+    for q, p in zip(plants, plants[1:]):
+        if q["off"] < t < p["on"]:
+            s = (t - q["off"]) / (p["on"] - q["off"])
+            return smooth(s / 0.25) * (1.0 - smooth((s - 0.75) / 0.25))
+    return 0.0
+
+
+def _support(t: float, plants: list, r_in: float = 0.12, r_out: float = 0.25) -> float:
+    """How much weight a foot carries: it takes it after landing, gives it up before lifting (0.05 in the air)."""
+    for p in plants:
+        if p["on"] <= t <= p["off"]:
+            return max(0.05, min(smooth((t - p["on"]) / r_in), smooth((p["off"] - t) / r_out)))
+    return 0.05
+
+
+def _to_root(pos: np.ndarray, yaw: float, root: tuple) -> tuple:
+    """Ground -> relative to the root (root = (x, z, heading))."""
+    rx, rz, ry = root
+    return qrot(_ry(-ry), pos - np.array([rx, 0.0, rz])), yaw - ry
+
+
+# ---- the cycles
+def _cycle_plants(rig: dict, g: dict, length: float, kmin: int = -1, kmax: int = 2) -> dict:
+    """A steady cycle's plants, ground coordinates with the root at z = 0 when the left heel strikes (t = 0)."""
+    s, beta = g["S"], g["beta"]
+    v = s / length
+    zf = 0.5 * beta * s + g["c"]
+    out = {}
+    for side, t0, sgn in (("L", 0.0, 1.0), ("R", 0.5, -1.0)):
+        a = rig[side]["A"]
+        out[side] = [_plant((k + t0) * length, (k + t0 + beta) * length, float(a[0]) - sgn * g["width"],
+                            float(a[2]) + zf + v * (k + t0) * length, 0.0, g["hs"], g["to"], g["rh"] * length,
+                            g["rb"] * length, g["clear"], g["peak"], g["bump"])
+                     for k in range(kmin, kmax + 1)]
+    return out
+
+
+def _gait_delta(g: dict, ph: float, persona: dict) -> dict:
+    """The body's motion over a cycle (a delta on the idle's first frame; the legs are solved after)."""
+    two = 2.0 * math.pi
+    beta = g["beta"]
+    c1 = math.cos(two * ph)
+    cs = math.cos(two * (ph - 0.5 * beta))  # +1 over the planted left foot
+    low = 0.5 + 0.5 * math.cos(2.0 * two * (ph - 0.5 * beta)) if g["run"] else \
+        0.5 - 0.5 * math.cos(2.0 * two * (ph - 0.5 * beta))  # 1 where the hips are lowest
+    low_lag = 0.5 + 0.5 * math.cos(2.0 * two * (ph - 0.5 * beta - 0.06)) if g["run"] else \
+        0.5 - 0.5 * math.cos(2.0 * two * (ph - 0.5 * beta - 0.06))
+    lean, yaw, chest, tilt = g["lean"], g["yaw"], g["chest"], g["tilt"]
+    turn = (yaw + chest) * c1
+    ca = math.cos(two * (ph - g["lag"]))
+    staff = persona["staff"]
+    k_r = 0.35 if staff else 1.0
+    fore_r = g["fore_s"] if staff else g["fore"]
+    swing_r = -g["arm"] * k_r * ca
+    if swing_r > 0.0 and g.get("back_r", 1.0) < 1.0:  # the right arm's back swing eased short of a hip pouch
+        swing_r *= 1.0 - (1.0 - g["back_r"]) * smooth(swing_r / (g["arm"] * k_r))
+    p = {"hips": (g["sway"] * cs, -g["drop"] - g["bob"] * low, 0.0),
+         HIPS: (0.0, -yaw * c1, tilt * cs),
+         "DEF-spine.001": (0.4 * lean + g["flex"] * low_lag, 0.3 * turn, -0.6 * tilt * cs),
+         "DEF-spine.002": (0.4 * lean, 0.4 * turn, -0.4 * tilt * cs),
+         "DEF-spine.003": (0.2 * lean, 0.3 * turn, 0.0),
+         "DEF-spine.005": (-0.3 * lean, -0.4 * g["head"] * chest * c1, 0.0),
+         "DEF-spine.006": (-0.5 * lean + g["nod"] * low_lag, -0.6 * g["head"] * chest * c1, 0.0),
+         "DEF-upper_arm.L": (g["arm"] * ca, 0.0, g["abd"]),
+         "DEF-upper_arm.R": (swing_r, 0.0, -g["abd"]),
+         "DEF-forearm.L": (-g["fore"] - g["elbow"] * 0.5 * (1.0 - ca), 0.0, 0.0),
+         "DEF-forearm.R": (-fore_r - g["elbow"] * k_r * 0.5 * (1.0 + ca), 0.0, 0.0)}
+    if staff:  # the staff (spear) swings a little behind the hand
+        p["DEF-hand.R"] = (g["staff"] * math.cos(two * (ph - g["lag"] - 0.06)), 0.0, 0.0)
+    return p
+
+
+def _cycle_pose(hero: str, clip: str, ph: float, sk: Skeleton, persona: dict) -> dict:
+    rig = _loco_rig(hero, sk, persona)
+    g = LOCO_GAIT[hero][clip]
+    length = clip_length(hero, clip)
+    t = ph * length
+    plants = _cycle_plants(rig, g, length)
+    # the staff (spear) held exactly upright plus its follow (staff_hold alone drifts past 20 degrees in the run)
+    body = _exact_hold(add(rig["idle0"], _gait_delta(g, ph, persona)), persona, 1.0)
+    root = (0.0, g["S"] / length * t, 0.0)
+    feet = {}
+    for side in "LR":
+        pos, yaw, pitch, tf = _foot_ground(t, plants[side], rig)
+        pos, yaw = _to_root(pos, yaw, root)
+        feet[side] = (pos, yaw, pitch, tf, _swing_weight(t, plants[side]))
+    return _loco_solve(rig, body, feet)
+
+
+# ---- starts, stops and turns: a schedule of plants, a root path and the cycle's weight in the body
+def _hermite(s: float, p0: float, m0: float, p1: float, m1: float) -> float:
+    s = min(max(s, 0.0), 1.0)
+    s2, s3 = s * s, s * s * s
+    return (2 * s3 - 3 * s2 + 1) * p0 + (s3 - 2 * s2 + s) * m0 + (-2 * s3 + 3 * s2) * p1 + (s3 - s2) * m1
+
+
+def _bump(t: float, rise: tuple, fall: tuple) -> float:
+    """0 -> 1 over `rise` (t0, t1), back to 0 over `fall`, eased: zero slope at all four times."""
+    return smooth((t - rise[0]) / (rise[1] - rise[0])) * (1.0 - smooth((t - fall[0]) / (fall[1] - fall[0])))
+
+
+def _rot_xz(a: np.ndarray, deg: float) -> tuple:
+    """The idle footprint a (x, z) turned `deg` about the root (to the hero's left for +)."""
+    r = math.radians(deg)
+    x, z = float(a[0]), float(a[2])
+    return x * math.cos(r) + z * math.sin(r), -x * math.sin(r) + z * math.cos(r)
+
+
+_LOCO_SCHED: dict = {}
+
+
+def _schedule(hero: str, clip: str, sk: Skeleton, persona: dict) -> dict:
+    key = (hero, clip, id(sk))
+    if key in _LOCO_SCHED:
+        return _LOCO_SCHED[key]
+    rig = _loco_rig(hero, sk, persona)
+    big = 1e9
+    L = LENGTHS[clip]
+    aL, aR = rig["L"]["A"], rig["R"]["A"]
+    sch = {"gait": None, "w": lambda t: 0.0, "ph": lambda t: 0.0, "extra": lambda t: {}, "yaw": lambda t: 0.0,
+           "travel": lambda t: 0.0, "r_out": 0.25, "blend_R": None}
+    if clip in ("walk_start", "run_start", "walk_stop", "run_stop"):
+        cyc = clip.split("_")[0]
+        g = LOCO_GAIT[hero][cyc]
+        T = clip_length(hero, cyc)
+        s, beta = g["S"], g["beta"]
+        v = s / T
+        zf = 0.5 * beta * s + g["c"]
+        xl, xr = float(aL[0]) - g["width"], float(aR[0]) + g["width"]
+        cp = _cycle_plants(rig, g, T)
+        sch["gait"] = g
+        idle_l = _plant(-big, 0.0, float(aL[0]), float(aL[2]))
+        idle_r = _plant(-big, 0.0, float(aR[0]), float(aR[2]))
+    if clip == "walk_start":
+        # one step: the right foot stays down (it is the cycle's planted right foot when the clip ends), the left
+        # heel peels and swings half a stride to the cycle's heel strike; the root accelerates from rest to v
+        d_end = 0.5 * s - zf
+        sch["travel"] = lambda t: _hermite(t / L, 0.0, 0.0, d_end, v * L)
+        r1 = _plant(-big, L + (beta - 0.5) * T, float(aR[0]), float(aR[2]), 0.0, 0.0, g["to"], 0.0, g["rb"] * T)
+        l1 = dict(idle_l, off=0.07, to=12.0, rb=0.07)
+        l2 = _plant(L, L + beta * T, xl, d_end + float(aL[2]) + zf, 0.0, g["hs"], g["to"], g["rh"] * T,
+                    g["rb"] * T, g["clear"], g["peak"], g["bump"])
+        sch["plants"] = {"L": [l1, l2], "R": [r1]}
+        sch["w"] = lambda t: smooth(t / L)
+        sch["ph"] = lambda t: (t - L) / T
+        sch["extra"] = lambda t: _scale({"hips": (0.0, -0.008, 0.015), "DEF-spine.001": (2.5, 0.0, 0.0),
+                                         "DEF-spine.006": (-1.2, 0.0, 0.0)}, _bump(t, (0.0, 0.4 * L), (0.4 * L, L)))
+    elif clip == "run_start":
+        t0 = 0.12
+        t_ro = L + (beta - 0.5) * T  # the right toe-off of the cycle: from here the root runs at full speed
+        d_ro = 0.5 * v * (t_ro - t0)
+        d_end = d_ro + v * (L - t_ro)
+
+        def travel(t: float) -> float:
+            if t <= t0:
+                return 0.0
+            if t <= t_ro:
+                return _hermite((t - t0) / (t_ro - t0), 0.0, 0.0, d_ro, v * (t_ro - t0))
+            return d_ro + v * (t - t_ro)
+
+        sch["travel"] = travel
+        r1 = dict(idle_r, off=0.2, to=12.0, rb=0.12)
+        r2 = _plant(0.4, t_ro, xr, d_ro + float(aR[2]) + zf - beta * s, 0.0, g["hs"], g["to"], g["rh"] * T,
+                    g["rb"] * T, 0.6 * g["clear"], g["peak"], g["bump"])
+        r3 = cp["R"][1] | {"z": cp["R"][1]["z"] + d_end, "on": cp["R"][1]["on"] + L, "off": cp["R"][1]["off"] + L}
+        l1 = dict(idle_l, off=0.46, to=0.7 * g["to"], rb=0.12)
+        l2 = _plant(L, L + beta * T, xl, d_end + float(aL[2]) + zf, 0.0, g["hs"], g["to"], g["rh"] * T,
+                    g["rb"] * T, g["clear"], g["peak"], g["bump"])
+        sch["plants"] = {"L": [l1, l2], "R": [r1, r2, r3]}
+        sch["r_out"] = 0.2
+        sch["w"] = lambda t: smooth((t - 0.08) / (L - 0.08))
+        sch["ph"] = lambda t: (t - L) / T
+        sch["extra"] = lambda t: _scale({"hips": (0.0, -0.03, 0.03), "DEF-spine.001": (5.0, 0.0, 0.0),
+                                         "DEF-spine.006": (-2.0, 0.0, 0.0)}, _bump(t, (0.0, 0.25), (0.25, L)))
+    elif clip == "walk_stop":
+        # the left heel strikes and stays down while the root brakes over its stance; the right foot swings up
+        # beside it and lands at the idle's footprint
+        d_end = zf
+        sch["travel"] = lambda t: _hermite(t / L, 0.0, v * L, d_end, 0.0)
+        l1 = dict(cp["L"][1], off=big, to=0.0, rb=0.0)
+        r2 = _plant(0.38, big, float(aR[0]), d_end + float(aR[2]), 0.0, 0.4 * g["hs"], 0.0, 0.08, 0.0, g["clear"],
+                    g["peak"], g["bump"])
+        sch["plants"] = {"L": [cp["L"][0], l1], "R": [cp["R"][0], r2]}
+        sch["w"] = lambda t: 1.0 - smooth(t / L)
+        sch["ph"] = lambda t: t / T
+        sch["extra"] = lambda t: add(
+            _scale({"DEF-spine.001": (-2.0, 0.0, 0.0), "DEF-spine.006": (1.0, 0.0, 0.0)},
+                   _bump(t, (0.0, 0.2), (0.2, 0.42))),
+            _scale({"hips": (0.0, -0.008, 0.0), "DEF-spine.001": (1.2, 0.0, 0.0)}, _bump(t, (0.3, 0.42), (0.42, L))))
+    elif clip == "run_stop":
+        # a braking step on the right, the left closes beside it; the root stops in 0.42 s
+        t_s = 0.42
+        d_end = 0.5 * v * t_s
+        sch["travel"] = lambda t: _hermite(t / t_s, 0.0, v * t_s, d_end, 0.0)
+        l1 = dict(cp["L"][1], off=0.24, to=14.0, rb=0.08)
+        l2 = _plant(0.46, big, float(aL[0]), d_end + float(aL[2]), 0.0, 3.0, 0.0, 0.06, 0.0, 0.06, 0.4, 4.0)
+        r2 = _plant(0.2, big, float(aR[0]), d_end + float(aR[2]), 0.0, 6.0, 0.0, 0.06, 0.0, g["clear"], 0.45,
+                    g["bump"])
+        sch["plants"] = {"L": [cp["L"][0], l1, l2], "R": [cp["R"][0], r2]}
+        sch["blend_R"] = (cp["R"], 0.12)  # the right foot is mid-swing on the first frame: retarget it over 0.12 s
+        sch["w"] = lambda t: 1.0 - smooth(t / 0.5)
+        sch["ph"] = lambda t: t / T
+        sch["extra"] = lambda t: add(
+            _scale({"DEF-spine.001": (-4.0, 0.0, 0.0), "DEF-spine.006": (2.0, 0.0, 0.0)},
+                   _bump(t, (0.0, 0.2), (0.2, 0.45))),
+            _scale({"hips": (0.0, -0.03, 0.0), "DEF-spine.001": (2.0, 0.0, 0.0)}, _bump(t, (0.15, 0.35), (0.35, L))))
+    elif clip.startswith("turn_"):
+        total = {"turn_in_place_l90": 90.0, "turn_in_place_r90": -90.0, "turn_in_place_180": 180.0}[clip]
+        k = L / (1.0 if abs(total) < 120.0 else 1.6)  # the timing below is authored for 1.0 s (1.6 s for 180)
+        t1 = L - 0.15 * k
+        sch["yaw"] = lambda t: total * smooth((t - 0.1 * k) / (t1 - 0.1 * k))
+        lead, trail = ("R", "L") if total < 0 else ("L", "R")
+        a = {"L": aL, "R": aR}
+        kw = {"hs": 4.0, "to": 8.0, "rh": 0.08 * k, "rb": 0.08 * k, "clear": 0.045, "peak": 0.45}
+        first = {s: _plant(-big, 0.0, float(a[s][0]), float(a[s][2]), to=8.0, rb=0.08 * k) for s in "LR"}
+        if abs(total) < 120.0:
+            lx, lz = _rot_xz(a[lead], total)
+            tx, tz = _rot_xz(a[trail], total)
+            sch["plants"] = {lead: [dict(first[lead], off=0.22 * k), _plant(0.5 * k, big, lx, lz, total, **kw)],
+                             trail: [dict(first[trail], off=0.46 * k), _plant(0.78 * k, big, tx, tz, total, **kw)]}
+        else:  # 180: the lead foot opens to 90, the trail foot crosses in front of it to 180, the lead closes
+            mx, mz = _rot_xz(a[lead], 90.0)
+            tx, tz = _rot_xz(a[trail], total)
+            lx, lz = _rot_xz(a[lead], total)
+            sch["plants"] = {lead: [dict(first[lead], off=0.22 * k), _plant(0.52 * k, 0.9 * k, mx, mz, 90.0, **kw),
+                                    _plant(1.3 * k, big, lx, lz, total, **kw)],
+                             trail: [dict(first[trail], off=0.5 * k), _plant(0.95 * k, big, tx, tz, total,
+                                                                             **dict(kw, bow=(0.0, 0.0, 0.1)))]}
+        sch["r_out"] = 0.22 * k
+        sch["lift"] = lambda t: _bump(t, (0.05 * k, 0.3 * k), (L - 0.35 * k, L - 0.05 * k))
+        yaw = sch["yaw"]
+
+        def extra(t: float, plants=sch["plants"]) -> dict:
+            psi = yaw(t)
+            rel = [_foot_ground(t, plants[s], rig)[1] - psi for s in "LR"]
+            pelvis = 0.25 * (rel[0] + rel[1])  # the pelvis splits the feet's headings
+            lead = smooth(t / (0.3 * k))  # the look ahead eases in from the idle
+            chest = 0.25 * lead * (yaw(t + 0.2 * k) - psi)
+            head = 0.45 * lead * (yaw(t + 0.3 * k) - psi)
+            r = sch["r_out"]
+            dip = max(1.0 - _support(t, plants["L"], 0.12 * k, r), 1.0 - _support(t, plants["R"], 0.12 * k, r))
+            torso = (0.0, 0.5 * chest, 0.0)  # the chest leads by `chest` and carries the arms with the pelvis
+            out = {"hips": (0.0, -0.005 * dip, 0.0), HIPS: (0.0, pelvis, 0.0),
+                   "DEF-spine.001": torso, "DEF-spine.002": torso,
+                   "DEF-spine.005": (0.0, 0.4 * (head - chest), 0.0),
+                   "DEF-spine.006": (0.0, 0.6 * (head - chest), 0.0)}
+            if persona["staff"]:  # the staff (spear) foot lifts off the floor while the feet step round it
+                lift = sch["lift"](t)
+                out.update({"DEF-upper_arm.R": (-4.0 * lift, 0.0, -3.0 * lift), "DEF-forearm.R": (-12.0 * lift, 0.0, 0.0)})
+            return out
+
+        sch["extra"] = extra
+    _LOCO_SCHED[key] = sch
+    return sch
+
+
+def _transition_pose(hero: str, clip: str, t: float, sk: Skeleton, persona: dict) -> dict:
+    rig = _loco_rig(hero, sk, persona)
+    sch = _schedule(hero, clip, sk, persona)
+    w = sch["w"](t)
+    body = dict(rig["idle0"])
+    if sch["gait"] is not None and w > 0.0:
+        body = _exact_hold(add(body, _scale(_gait_delta(sch["gait"], sch["ph"](t), persona), w)), persona, w)
+    body = add(body, sch["extra"](t))
+    if "lift" in sch:  # a turn's raised staff hand: the staff held exactly upright while it is up
+        body = _exact_hold(body, persona, sch["lift"](t))
+    root = (0.0, sch["travel"](t), sch["yaw"](t))
+    feet = {}
+    for side in "LR":
+        plants = sch["plants"][side]
+        pos, yaw, pitch, tf = _foot_ground(t, plants, rig)
+        free = _swing_weight(t, plants)
+        if side == "R" and sch["blend_R"] is not None and t < sch["blend_R"][1]:
+            # the cycle's own swing on the first frame, eased into the retargeted one
+            o_pos, o_yaw, o_pitch, o_tf = _foot_ground(t, sch["blend_R"][0], rig)
+            o_free = _swing_weight(t, sch["blend_R"][0])
+            e = smooth(t / sch["blend_R"][1])
+            pos, yaw, pitch, tf = (o_pos + (pos - o_pos) * e, o_yaw + (yaw - o_yaw) * e,
+                                   o_pitch + (pitch - o_pitch) * e, o_tf + (tf - o_tf) * e)
+            free = o_free + (free - o_free) * e
+        pos, yaw = _to_root(pos, yaw, root)
+        feet[side] = (pos, yaw, pitch, tf, free)
+    # the hips go over the foot that carries the weight (the cycle's own sway takes over as its weight rises)
+    body = add(body, {"hips": ((1.0 - w) * _seq(t, _sway_keys(hero, clip, sk, persona))["x"][0], 0.0, 0.0)})
+    return _loco_solve(rig, body, feet)
+
+
+def _sway_keys(hero: str, clip: str, sk: Skeleton, persona: dict) -> list:
+    """Keys for the hips' slide over the standing foot: 0 at both ends, and at the middle of each step's swing the
+    hips over the other foot (SUPPORT_K of its distance from the idle's centre, at most SUPPORT_MAX)."""
+    sch = _schedule(hero, clip, sk, persona)
+    if "sway" in sch:
+        return sch["sway"]
+    rig = _loco_rig(hero, sk, persona)
+    length = LENGTHS[clip]
+    centre = 0.5 * float(rig["L"]["A"][0] + rig["R"]["A"][0])
+    keys = [(0.0, {"x": (0.0, 0.0, 0.0)}), (length, {"x": (0.0, 0.0, 0.0)})]
+    for side, other in (("L", "R"), ("R", "L")):
+        plants = sch["plants"][side]
+        for q, p in zip(plants, plants[1:]):
+            tm = 0.5 * (q["off"] + p["on"])
+            if 0.0 < tm < length:
+                pos, _yaw = _to_root(_foot_ground(tm, sch["plants"][other], rig)[0], 0.0,
+                                     (0.0, sch["travel"](tm), sch["yaw"](tm)))
+                x = SUPPORT_MAX * math.tanh(SUPPORT_K[hero] * (float(pos[0]) - centre) / SUPPORT_MAX)
+                keys.append((tm, {"x": (x, 0.0, 0.0)}))
+    sch["sway"] = sorted(keys, key=lambda k: k[0])
+    return sch["sway"]
+
+
+def _idle_variant(hero: str, clip: str, u: float, sk: Skeleton, persona: dict) -> dict:
+    rig = _loco_rig(hero, sk, persona)
+    idle0 = rig["idle0"]
+    if clip == "idle_breathe":
+        # one slow, full breath: the chest lifts and the shoulders rise on a shorter inhale, a longer exhale
+        b = math.sin(math.pi * (u + 0.25 * u * (1.0 - u))) ** 2 if u > 0.0 else 0.0
+        if b == 0.0:
+            return dict(idle0)
+        sway = persona["sway"]
+        return add(idle0, {"DEF-spine.002": (-0.6 * b, 0.0, 0.0), "DEF-spine.003": (-1.4 * b, 0.0, 0.0),
+                           "DEF-shoulder.L": (0.0, 0.0, 2.0 * b), "DEF-shoulder.R": (0.0, 0.0, -2.0 * b),
+                           "DEF-upper_arm.L": (0.0, 0.0, -2.0 * b), "DEF-upper_arm.R": (0.0, 0.0, 2.0 * b),
+                           "DEF-spine.006": (1.2 * b, 0.6 * sway * math.sin(2.0 * math.pi * u), 0.0)})
+    # idle_shift: the weight onto one leg (Asha and Toma onto the right, the staff's side; Rhen onto the left), the
+    # other knee relaxes and its heel lifts, the pelvis drops on the free side, the chest and head answer it
+    e = _seq(u, [(0.0, {"e": (0.0, 0.0, 0.0)}), (0.22, {"e": (1.0, 0.0, 0.0)}), (0.62, {"e": (1.0, 0.0, 0.0)}),
+                 (0.86, {"e": (0.0, 0.0, 0.0)})])["e"][0]
+    if e == 0.0:
+        return dict(idle0)
+    side, sgn = ("L", 1.0) if hero == "rhen" else ("R", -1.0)  # the weight-bearing leg; +1 = the hero's left
+    free = "R" if side == "L" else "L"
+    amt = {"asha": 0.8, "rhen": 1.0, "toma": 0.6}[hero]
+    a = rig[side]["A"]
+    over = sgn * min(abs(float(a[0])) * 0.55, SUPPORT_MAX) * amt
+    body = add(idle0, _scale({"hips": (over, -0.008, 0.0), HIPS: (0.0, 2.0 * sgn, -3.0 * sgn),
+                              "DEF-spine.001": (0.0, 0.0, 2.0 * sgn), "DEF-spine.002": (0.0, -1.0 * sgn, 1.5 * sgn),
+                              "DEF-spine.006": (0.0, 0.0, -1.5 * sgn)}, e * amt))
+    if hero == "rhen":  # restless: a glance off to his right while the weight is over
+        g = _seq(u, [(0.3, {"e": (0.0, 0.0, 0.0)}), (0.4, {"e": (1.0, 0.0, 0.0)}), (0.52, {"e": (1.0, 0.0, 0.0)}),
+                     (0.62, {"e": (0.0, 0.0, 0.0)})])["e"][0]
+        body = add(body, {"DEF-spine.005": (0.0, -4.0 * g, 0.0), "DEF-spine.006": (0.0, -10.0 * g, 0.0)})
+    feet = {}
+    for s in "LR":
+        p = _plant(-1e9, 1e9, float(rig[s]["A"][0]), float(rig[s]["A"][2]))
+        pitch = 9.0 * e * amt if s == free else 0.0
+        feet[s] = (_ankle_at(p, pitch, False, rig), 0.0, pitch, 1.0 if s == free else 0.0)
+    return _loco_solve(rig, body, feet)
+
+
+def loco_pose_at(clip: str, t: float, length: float, sk: Skeleton, persona: dict) -> dict:
+    """A locomotion clip's pose (the three heroes; see the block's head). The ends are exact: a start's first frame is
+    the idle's first frame and its last the cycle's first; a stop the reverse; a turn is the idle's at both ends."""
+    hero = _loco_hero(persona)
+    u = t / length
+    if clip in ("walk", "run"):
+        return _cycle_pose(hero, clip, u % 1.0, sk, persona)
+    if clip in LOCO_LOOPS:
+        return _idle_variant(hero, clip, u % 1.0, sk, persona)
+    rig = _loco_rig(hero, sk, persona)
+    if clip.endswith("_start"):
+        if u <= 0.0:
+            return dict(rig["idle0"])
+        if u >= 1.0:
+            return _cycle_pose(hero, clip.split("_")[0], 0.0, sk, persona)
+    elif clip.endswith("_stop"):
+        if u <= 0.0:
+            return _cycle_pose(hero, clip.split("_")[0], 0.0, sk, persona)
+        if u >= 1.0:
+            return dict(rig["idle0"])
+    elif u <= 0.0 or u >= 1.0:
+        return dict(rig["idle0"])
+    return _transition_pose(hero, clip, t, sk, persona)
+
+
+def loco_plants(hero: str, clip: str, sk: Skeleton) -> dict:
+    """The plants (ground coordinates) a locomotion clip's feet follow, per side."""
+    persona = PERSONA[hero]
+    if clip in ("walk", "run"):
+        return _cycle_plants(_loco_rig(hero, sk, persona), LOCO_GAIT[hero][clip], clip_length(hero, clip))
+    return _schedule(hero, clip, sk, persona)["plants"]
+
+
+def loco_marker_times(hero: str, clip: str, sk: Skeleton) -> dict:
+    """{marker name: time}: each heel contact inside the clip (a cycle's t = 0 counts; a transition's ends belong to
+    the clip before or after it)."""
+    if hero not in LOCO_HEROES or clip not in LOCO_CLIPS or clip in LOCO_LOOPS:
+        return {}
+    length = clip_length(hero, clip)
+    cyc = clip in ("walk", "run")
+    start = clip.endswith("_start")
+    out = {}
+    for side in "LR":
+        n = 0
+        for p in loco_plants(hero, clip, sk)[side]:
+            # a cycle's t = 0 counts; a start's last frame is its landing (the same contact as the cycle's first)
+            if (0.0 <= p["on"] < length) if cyc else (0.0 < p["on"] < length or (start and p["on"] == length)):
+                n += 1
+                out[f"foot_{side.lower()}_down" + (f"_{n}" if n > 1 else "")] = p["on"]
+    return dict(sorted(out.items(), key=lambda kv: (kv[1], kv[0])))
+
+
+def loco_markers(hero: str, clip: str, sk: Skeleton) -> list:
+    """The `markers` line of a locomotion clip's Animation sub-resource (none for any other clip)."""
+    times = loco_marker_times(hero, clip, sk)
+    if not times:
+        return []
+    items = ", ".join(f'{{"color": Color(1, 1, 1, 1), "name": &"{n}", "time": {fmt(t)}}}' for n, t in times.items())
+    return [f"markers = [{items}]"]
+
+
+def ball_contact(sk: Skeleton, hero: str, pose: dict, side: str) -> np.ndarray:
+    """Where the ball of the foot meets the floor in a pose (relative to the root): the point the feet pivot on as
+    the heel lifts, so a planted foot holds it still on the ground."""
+    rig = _loco_rig(hero, sk, PERSONA[hero])
+    g, t = _loco_fk(sk, pose)
+    g0, _t0 = _loco_fk(sk, {})
+    foot = f"DEF-foot.{side}"
+    turn = qmul(qmul(g[foot], qinv(g0[foot])), qinv(rig[side]["F"]))  # the foot's turn from the idle's
+    return t[foot] + qrot(turn, rig["ball_piv"])
+
+
+def planted_speed(hero: str, clip: str, sk: Skeleton, tol: float = 0.0003) -> float:
+    """The ground speed the clip's planted feet imply (m/s), measured on its keys: wherever the ball of a foot is
+    on the floor (ball_contact), it travels backward; the slope of each such run of keys."""
+    persona = PERSONA[hero]
+    length = clip_length(hero, clip)
+    n = int(round(length * FPS))
+    slopes = []
+    for side in "LR":
+        pts = [ball_contact(sk, hero, pose_at(clip, i / FPS, length, sk, persona), side) for i in range(n + 1)]
+        run: list = []
+        for i in range(n + 2):
+            if i <= n and abs(float(pts[i][1])) < tol:
+                run.append(i)
+                continue
+            if len(run) >= 3:
+                ts = np.array(run) / FPS
+                zs = np.array([float(pts[j][2]) for j in run])
+                slopes.append(-float(np.polyfit(ts, zs, 1)[0]))
+            run = []
+    return float(np.mean(slopes))
+
+
+def locomotion_data() -> dict:
+    """game/data/characters/locomotion.json: per hero and clip, what the field controller needs."""
+    heroes = {}
+    for hero in LOCO_HEROES:
+        sk = Skeleton(ROOT / "assets" / "characters" / hero / f"{hero}.glb")
+        clips = {}
+        for clip in ["idle"] + LOCO_NEW[:2] + ["walk", "run"] + LOCO_NEW[2:]:
+            length = clip_length(hero, clip)
+            n = int(round(length * FPS))
+            row = {"length_s": round(length, 4), "loop": clip in LOOPS}
+            if clip in ("walk", "run"):
+                speed = planted_speed(hero, clip, sk)
+                row.update({"stride_m": round(speed * length, 3), "speed_mps": round(speed, 3)})
+            elif clip in LOCO_CLIPS and clip not in LOCO_LOOPS:
+                sch = _schedule(hero, clip, sk, PERSONA[hero])
+                if clip.startswith("turn_"):
+                    row.update({"turn_deg": round(sch["yaw"](length), 3),
+                                "root_yaw_deg": [round(sch["yaw"](i / FPS), 3) for i in range(n + 1)]})
+                else:
+                    cyc = clip.split("_")[0]
+                    v = LOCO_GAIT[hero][cyc]["S"] / clip_length(hero, cyc)
+                    row.update({"speed_mps": round(v, 3), "speed_at": "end" if clip.endswith("_start") else "start",
+                                "distance_m": round(sch["travel"](length), 4),
+                                "root_travel_m": [round(sch["travel"](i / FPS), 4) for i in range(n + 1)]})
+            marks = loco_marker_times(hero, clip, sk)
+            if marks:
+                row["markers"] = {k: round(v, 4) for k, v in marks.items()}
+            clips[clip] = row
+        heroes[hero] = clips
+    return {"_doc": "M2-CHR-12 (assets_src/characters/asha/hero_clips.py, the M2-CHR-12 block; regenerated with the "
+                    "hero clip libraries). In-place field locomotion: move the root, the clips keep the feet planted. "
+                    "Cycles: drive the root at speed_mps (stride_m per loop of length_s; scale the playback by "
+                    "ground speed / speed_mps). Starts and stops: move the root root_travel_m (metres, one value per "
+                    "15 fps key) forward from where the clip began; speed_mps is the cycle speed they reach at "
+                    "speed_at. Turns: turn the root root_yaw_deg per key (+ = to the hero's left). markers: heel "
+                    "contacts (s), also Animation markers in the clip.",
+            "fps": FPS, "heroes": heroes}
+
+
+def write_locomotion_data() -> None:
+    LOCO_DATA.parent.mkdir(parents=True, exist_ok=True)
+    LOCO_DATA.write_text(json.dumps(locomotion_data(), indent=1) + "\n", encoding="utf-8")
+
+
+# ---------------------------------------------------------------------------------------------
 # AnimationLibrary text resource
 # ---------------------------------------------------------------------------------------------
 def fmt(x: float) -> str:
@@ -903,7 +1926,7 @@ def build(hero: str) -> str:
     subs = []
     names = CLIPS[hero]
     for ci, clip in enumerate(names):
-        length = LENGTHS[clip]
+        length = clip_length(hero, clip)  # M2-CHR-12: LENGTHS, but the three heroes' own cycles
         loop = clip in LOOPS
         n = int(round(length * FPS))
         times = [i / FPS for i in range(n + 1)]
@@ -920,14 +1943,19 @@ def build(hero: str) -> str:
         lines = [f'[sub_resource type="Animation" id="clip_{ci}"]', f'resource_name = &"{clip}"',
                  f"length = {fmt(length)}", f"loop_mode = {1 if loop else 0}", f"step = {fmt(1.0 / FPS)}"]
         lines += battle_markers(clip, length)  # M2-CHR-07: the strike clips' `contact` marker
+        lines += loco_markers(hero, clip, sk)  # M2-CHR-12: the footstep markers
         tracks = [("position_3d", HIPS, [(t, list(p)) for t, p in keys_p])]
         tracks += [("rotation_3d", b, [(t, list(q)) for t, q in keys_q[b]]) for b in BONES]
+        if persona.get("book") and clip in BLEND_SHAPES:  # ysolde: the book opens on its shape
+            node, shape = BLEND_SHAPES[clip]
+            tracks.append(("blend_shape", f"/{node}:{shape}", [(t, [book_fan_weight(clip, t)]) for t in times]))
         for ti, (kind, bone, keys) in enumerate(tracks):
             vals = []
             for t, v in keys:
                 vals += [fmt(t), "1"] + [fmt(x) for x in v]
             lines += [f'tracks/{ti}/type = "{kind}"', f"tracks/{ti}/imported = false", f"tracks/{ti}/enabled = true",
-                      f'tracks/{ti}/path = NodePath("{base}{bone}")', f"tracks/{ti}/interp = 1",
+                      f'tracks/{ti}/path = NodePath("{base[:-1] + bone if kind == "blend_shape" else base + bone}")',
+                      f"tracks/{ti}/interp = 1",
                       f"tracks/{ti}/loop_wrap = true", f"tracks/{ti}/keys = PackedFloat32Array({', '.join(vals)})"]
         subs.append("\n".join(lines))
     data = ",\n".join(f'&"{c}": SubResource("clip_{i}")' for i, c in enumerate(names))
@@ -949,6 +1977,9 @@ def main() -> int:
         text = build(hero)
         p.write_text(text, encoding="utf-8")
         print(f"wrote {p.relative_to(ROOT)} ({len(text) / 1e6:.2f} MB, {len(CLIPS[hero])} clips)")
+    if set(args.hero or PERSONA) & set(LOCO_HEROES):  # M2-CHR-12: the controller's stride and speed table
+        write_locomotion_data()
+        print(f"wrote {LOCO_DATA.relative_to(ROOT)}")
     _ = json
     return 0
 

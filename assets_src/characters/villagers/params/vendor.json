@@ -104,7 +104,8 @@
     "leather": "#FFFFFF"
   },
   "_build": {
-    "shapes": "all"
+    "shapes": "all",
+    "host_snaps": true
   },
   "_persona": {
     "sway": 1.0,

@@ -319,6 +319,32 @@ def build_mesh(rig: ck.Rig) -> ck.Mesh:
     timbers(mesh, rig, rng)
     lamp(mesh, rig, rng)
     finish = rc.ck.finish
+    # the leg segments by bone: (from, to, which), to find the joints the salt cakes on
+    leg_seg = {}
+    for tag in "lr":
+        for i in range(4):
+            for seg in "ab":
+                b = rig.bones[rig.index(f"leg_{tag}{i}_{seg}")]
+                leg_seg[rig.index(f"leg_{tag}{i}_{seg}")] = (np.asarray(b.head), np.asarray(b.tail), seg)
+
+    def leg_salt(P, T, bone):
+        """On a leg segment: (salt ring, barnacle nodule, nodule rim, outward push). Salt cakes in rings at the
+        joints (the knee, the hip, and the carpus halfway down the lower leg) where the wrecks' brine pools and
+        dries, and a few barnacles sit on the upper segments, all lifted off the chitin so they read in battle."""
+        h, tl, seg = leg_seg[bone]
+        d = tl - h
+        t = np.clip(((P - h) @ d) / float(d @ d), 0.0, 1.0)
+        if seg == "a":
+            ring = np.maximum(ck.smoothstep(0.85, 0.97, t), ck.smoothstep(0.15, 0.03, t))
+        else:  # the tube's rings sit every sixth of the segment: one ring of vertices per band keeps them crisp
+            ring = np.maximum(ck.smoothstep(0.12, 0.02, t), ck.smoothstep(0.1, 0.02, np.abs(t - 0.5)))
+        ring = ring * (0.75 + 0.5 * ck.fbm(P * 17.0, SEED + 122)).clip(0.0, 1.0)
+        n = ck.value_noise(P * 26.0, SEED + 123)
+        up = ck.smoothstep(0.08, 0.2, P[:, 1]) * (1.0 - ring)
+        nod = ck.smoothstep(0.4, 0.6, n) * up
+        rim = ck.smoothstep(0.1, 0.35, n) * up * (1.0 - nod)
+        push = 0.02 * ring + 0.022 * nod
+        return ring, nod, rim, ck.vertex_normals(P, T) * push[:, None]
 
     def salted(mesh_, P, T, mat, color, bones, **kw):
         if mat != "chitin":
@@ -326,9 +352,17 @@ def build_mesh(rig: ck.Rig) -> ck.Mesh:
         P = np.asarray(P, dtype=np.float64)
         col = np.broadcast_to(np.asarray(color, dtype=np.float64), (len(P), 3))
         salt = ck.smoothstep(0.02, 0.3, ck.fbm(P * 13.0, SEED + 120)) * ck.smoothstep(0.02, 0.2, P[:, 1])
-        col = ck.mix(col, SALT, (0.7 * salt)[:, None]) * (0.92 + 0.1 * ck.fbm(P * 31.0, SEED + 121))[:, None]
-        kw["cavity"] = np.clip(np.asarray(kw.get("cavity", 0.0)) + 0.7 * salt * (1.0 - salt), 0.0, 1.0)  # crusty edges
-        kw["wet"] = np.asarray(kw.get("wet", 0.0)) * (1.0 - 0.7 * salt)
+        cav = np.asarray(kw.get("cavity", 0.0)) + 0.7 * salt * (1.0 - salt)  # crusty edges
+        amount = 0.7 * salt
+        if isinstance(bones, int) and bones in leg_seg:
+            ring, nod, rim, push = leg_salt(P, np.asarray(T), bones)
+            col = col * (0.72 + 0.28 * salt - 0.3 * rim)[:, None]  # bare chitin darker, so the salt reads
+            amount = np.maximum(amount, 0.95 * np.clip(1.4 * np.maximum(ring, nod), 0.0, 1.0))
+            cav = cav + 0.7 * rim + 0.6 * ring * (1.0 - ring)
+            P = P + push
+        col = ck.mix(col, SALT, amount[:, None]) * (0.92 + 0.1 * ck.fbm(P * 31.0, SEED + 121))[:, None]
+        kw["cavity"] = np.clip(cav, 0.0, 1.0)
+        kw["wet"] = np.asarray(kw.get("wet", 0.0)) * (1.0 - amount)
         return finish(mesh_, P, T, mat, col, bones, **kw)
 
     rc.ck.finish = salted

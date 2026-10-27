@@ -55,6 +55,16 @@ func test_petrify_and_ko_reach_every_surface() -> void:
 		assert_eq(m.transparency, 0.0)
 
 
+func test_an_actor_with_a_ko_clip_does_not_sink() -> void:
+	var f := _stand_in({"scene": ACTOR, "height": 1.6})
+	var player := BattleClips.player_of(f)
+	player.get_animation_library(&"").add_animation(BattleClips.KO, Animation.new())
+	f.set_ko(true, 0.4, 0.35)
+	assert_true(is_equal_approx(f.actor().position.y, 0.0), "the KO clip lays it down; no sink through the floor")
+	for n in f.actor().find_children("*", "MeshInstance3D", true, false):
+		assert_true(is_equal_approx((n as MeshInstance3D).transparency, 0.65), "it still fades")
+
+
 func test_a_missing_scene_falls_back_to_the_primitive() -> void:
 	var f := _stand_in({"scene": "res://no/such_actor.tscn", "height": 1.6, "shape": "box"})
 	assert_false(f.has_actor())

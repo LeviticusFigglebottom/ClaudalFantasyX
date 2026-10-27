@@ -1,0 +1,15 @@
+{
+ "format": 1,
+ "scene": "ch08_bark_kites",
+ "source": "game/data/dialogue/ch08/ch08_bark_kites.dlg",
+ "start": "ch08_bark_kites",
+ "nodes": {
+  "ch08_bark_kites": {
+   "headers": {"location": "ch08/corrow"},
+   "ops": [
+    {"op": "line", "id": "ch08_bark_kites_001", "key": "DLG_CH08_BARK_KITES_001", "speaker": "child", "emotion": "angry", "voice": "", "src": 6},
+    {"op": "line", "id": "ch08_bark_kites_002", "key": "DLG_CH08_BARK_KITES_002", "speaker": "child", "emotion": "determined", "voice": "", "src": 7}
+   ]
+  }
+ }
+}

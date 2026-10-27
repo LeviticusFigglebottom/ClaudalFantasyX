@@ -6,11 +6,13 @@ extends BattleController
 ##   start    the pending BattleRequest (BattleRequest.take() on the first start), live: the party's
 ##            carried HP/MP (BattleVitals), real inventory and Lattice. With no request pending it
 ##            falls back to the sandbox fight (battle_sandbox.json), so the scene opens on its own.
-##   result   after a victory or an escape the panel offers only Return (a story fight is not
-##            replayed); after a defeat (M2-FP-05) it offers Fight again (the same start,
+##   result   after a victory, an escape or a scripted escape (M3-CMB-01) the panel offers only
+##            Return (a story fight is not replayed); after a defeat (M2-FP-05) it offers Fight again (the same start,
 ##            BattleVitals records nothing on a defeat) and Return to last save.
 ##   Return   sets the request's victory_flag (victory only, Game.set_flag) and sends the party to
-##            the request's location and spawn (SceneRouter.world_return.go_to); after an escape,
+##            the request's location and spawn (SceneRouter.world_return.go_to); a set piece's
+##            objective_flag becomes objective_start + engine.objective_count (M3-C08-02: Ch8's
+##            stair meter), and "Fight again" puts it back to objective_start; after an escape,
 ##            to the request's escape_spawn when it names one (Haluna: BeforeBattle, the beach side
 ##            of the trigger). A defeat never returns to the field, so a field trigger cannot be
 ##            walked past by losing. Without a request, Return goes to the title as in the sandbox.
@@ -23,6 +25,7 @@ extends BattleController
 const RETURN_ONLY := {
 	BattleEngine.OUTCOME_VICTORY: ["HUD_VICTORY", "HUD_VICTORY_SUB"],
 	BattleEngine.OUTCOME_ESCAPED: ["HUD_ESCAPED", "HUD_ESCAPED_SUB"],
+	BattleEngine.OUTCOME_SCRIPTED_ESCAPE: ["HUD_SCRIPTED_ESCAPE", "HUD_SCRIPTED_ESCAPE_SUB"],
 }
 
 ## Defeat row: load the newest save record (or go to the title when there is none).
@@ -80,8 +83,10 @@ func return_to_field() -> bool:
 	if engine.outcome == BattleEngine.OUTCOME_DEFEAT:
 		return false
 	returned = true
-	if engine.outcome == BattleEngine.OUTCOME_VICTORY and request.victory_flag != &"":
-		Game.set_flag(request.victory_flag)
+	if engine.outcome in BattleSpoils.SPOILS_OUTCOMES and request.victory_flag != &"":
+		Game.set_flag(request.victory_flag)  # a set piece's scripted escape is its win (M3-CMB-01)
+	if engine.outcome in BattleSpoils.SPOILS_OUTCOMES and request.objective_flag != &"":
+		Game.set_flag(request.objective_flag, request.objective_start + engine.objective_count)
 	if request.return_scene != "":
 		_open_scene(request.return_scene)
 		return true
@@ -161,13 +166,15 @@ func _show_result() -> void:
 		return
 	var keys: Array = RETURN_ONLY[engine.outcome]
 	var title := str(keys[0])
-	if engine.outcome == BattleEngine.OUTCOME_VICTORY:
+	if engine.outcome in BattleSpoils.SPOILS_OUTCOMES:
 		title = BattleMenus.victory_title_key(engine)  # "The Inquisitor yields." (M3-C06-02)
 	var choices: Array[Dictionary] = [{"id": CHOICE_RETURN, "label": tr("HUD_RESULT_RETURN"), "enabled": true}]
 	hud.result.show_result(engine.outcome, tr(title), tr(str(keys[1])), hud.result.result_rows, choices)
 
 
 func _on_result_choice(choice: StringName) -> void:
+	if choice == CHOICE_RETRY and request != null and request.objective_flag != &"":
+		Game.set_flag(request.objective_flag, request.objective_start)  # the meter as the fight began
 	if choice == CHOICE_RETURN and request != null:
 		return_to_field()
 		return

@@ -38,6 +38,12 @@ game/data/battle/enemies.json  "model": "res://game/creatures/<id>/<id>_battle.t
   authored. A looping clip must end where it starts (`Clip.wave` does).
 - **The clip set** (design sheets; README rule 6): `idle` (loops), `attack`, `cast`, `hit`, `ko`, and for the
   boss `phase_change` plus a phase idle. Every creature has all five, even when no slice skill uses one yet.
+- **Battle variety (M3-CRE-612).** Unless a build authors its own, `export_creature` adds `hit_b` (the hit mirrored
+  and 1.35× heavier, so a recoil can go to the other side) and `idle_b` (the special at 0.3× and 1.4× speed, in
+  place: a fidget). CreatureActor rotates hits through creatures.json `hit_variants` (outside phases that map their
+  own hit) and plays the `idle_variety` fidget once every `every_sec` [min, max] while it idles on its own idle
+  clip, outside phases, playing (never on a portrait's paused pose) and alive; the interval comes from a hash of its
+  node path, so a scene replays the same way.
 - **In place (battle-presentation's clip contract, M2-BPR-02).** The strike clips `attack` and `cast` play in place:
   the sequencer moves the fighter to its target, so `export_creature` drops the `root` bone's horizontal travel in them
   (`IN_PLACE_CLIPS`). Author the lunge on `root` if you like; vertical travel (a dive, a hop), body leans and `hit`'s
@@ -109,7 +115,8 @@ table, asset_import.md §3) would add a distance cutoff, which battles, held at 
   (`clip_by_skill`, else `clip_by_kind` by the skill's kind), `hit`, the `ko` clip held and faded to
   battle_sandbox.json's `ko_alpha` (no sink), a freeze under Petrify (FighterStandIn swaps the surfaces to stone),
   a boss's phase (`phases.<id>`: a clip, an idle afterwards, an offset and tilt of the model over `sec`, node names
-  to `hide` or `show` at once, `hide_after` nodes hidden once the clip has played, and a `clips` map of stand-in
+  to `hide` or `show` at once (nodes a phase shows start hidden), `hide_after` and `show_after` nodes changed
+  once the clip has played, and a `clips` map of stand-in
   clips the phase plays instead, e.g. `attack` → `attack_dark`, which `play_clip` and `contact_time` follow), and
   breakable parts (`break_parts.<charge skill>`: node names shown `whole` or `broken`).
 - **`BattleActorMotion`** (`game/creatures/battle_actor_motion.gd`) is attached by `BattleStage.spawn` and listens

@@ -1040,24 +1040,25 @@ shot = SubResource("Shot_cut_B02_bag")
 
 [node name="asha" type="Node3D" parent="CutsceneStage/Actors"]
 script = ExtResource("11_pose")
-transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 0.2, -0.01, 8)
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 0.2, -0.01, 8)
 world_pose = {
-"DEF-thigh.L": Vector3(-88, 0, 0),
-"DEF-shin.L": Vector3(92, 0, 0),
-"DEF-thigh.R": Vector3(-5, 0, 0),
-"DEF-shin.R": Vector3(95, 0, 0),
-"DEF-spine.002": Vector3(14, 0, 0),
-"DEF-spine.003": Vector3(8, 0, 0),
-"DEF-upper_arm.L": Vector3(-30, 0, -62),
-"DEF-forearm.L": Vector3(-35, 0, 0),
-"DEF-upper_arm.R": Vector3(-20, 0, 70),
-"DEF-forearm.R": Vector3(-20, 0, 0)
+"DEF-thigh.L": Vector3(88, 0, 0),
+"DEF-shin.L": Vector3(-92, 0, 0),
+"DEF-thigh.R": Vector3(5, 0, 0),
+"DEF-shin.R": Vector3(-95, 0, 0),
+"DEF-spine.002": Vector3(-14, 0, 0),
+"DEF-spine.003": Vector3(-8, 0, 0),
+"DEF-upper_arm.L": Vector3(30, 0, 62),
+"DEF-forearm.L": Vector3(35, 0, 0),
+"DEF-upper_arm.R": Vector3(20, 0, -70),
+"DEF-forearm.R": Vector3(20, 0, 0)
 }
 materials_dir = "res://assets/characters/asha/materials"
 ground_bones = PackedStringArray("DEF-shin.R", "DEF-foot.L")
 ground_clearance_m = 0.06
 
 [node name="Model" parent="CutsceneStage/Actors/asha" instance=ExtResource("12_asha")]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 0, 0, 0)
 
 [node name="toma" type="Node3D" parent="CutsceneStage/Actors"]
 transform = Transform3D(0.707107, 0, -0.707107, 0, 1, 0, 0.707107, 0, 0.707107, -2.6, 0.11, 9.6)

@@ -1,0 +1,133 @@
+[gd_scene load_steps=15 format=3]
+
+[ext_resource type="Script" path="res://game/levels/_tests/npc/npc_stage.gd" id="stage"]
+[ext_resource type="Script" path="res://game/world/npc/field_npc.gd" id="npc"]
+[ext_resource type="Script" path="res://game/world/interactable.gd" id="inter"]
+[ext_resource type="PackedScene" path="res://assets/characters/villagers/fisher/fisher_actor.tscn" id="fisher"]
+[ext_resource type="PackedScene" path="res://assets/characters/villagers/netmender/netmender_actor.tscn" id="netmender"]
+[ext_resource type="PackedScene" path="res://assets/characters/villagers/osu/osu_actor.tscn" id="osu"]
+
+[sub_resource type="ProceduralSkyMaterial" id="Sky_mat"]
+sky_top_color = Color(0.46, 0.53, 0.63, 1)
+sky_horizon_color = Color(0.86, 0.79, 0.71, 1)
+sky_curve = 0.12
+ground_bottom_color = Color(0.36, 0.33, 0.31, 1)
+ground_horizon_color = Color(0.478, 0.431, 0.392, 1)
+ground_curve = 0.06
+sun_angle_max = 1.0
+sun_curve = 0.01
+
+[sub_resource type="Sky" id="Sky"]
+sky_material = SubResource("Sky_mat")
+
+[sub_resource type="Environment" id="Env"]
+background_mode = 2
+sky = SubResource("Sky")
+ambient_light_source = 3
+ambient_light_energy = 0.55
+reflected_light_source = 2
+tonemap_mode = 4
+tonemap_exposure = 1.0
+tonemap_white = 12.0
+ssao_enabled = true
+ssao_radius = 0.04
+ssao_intensity = 1.0
+
+[sub_resource type="StandardMaterial3D" id="Ground_mat"]
+albedo_color = Color(0.52, 0.47, 0.39, 1)
+roughness = 0.95
+
+[sub_resource type="PlaneMesh" id="Ground_mesh"]
+material = SubResource("Ground_mat")
+size = Vector2(24, 24)
+
+[sub_resource type="StandardMaterial3D" id="Player_mat"]
+albedo_color = Color(0.34, 0.4, 0.47, 1)
+roughness = 0.8
+
+[sub_resource type="CapsuleMesh" id="Player_mesh"]
+material = SubResource("Player_mat")
+radius = 0.24
+height = 1.7
+
+[sub_resource type="CylinderShape3D" id="Talk_shape"]
+height = 1.8
+radius = 1.2
+
+[node name="NpcStage" type="Node3D"]
+script = ExtResource("stage")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Env")
+
+[node name="Sun" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.683157, 0.381423, -0.622746, 0, 0.85276, 0.522303, 0.730271, -0.356815, 0.582569, 0, 4, 0)
+light_color = Color(1, 0.84, 0.66, 1)
+light_energy = 2.2
+shadow_enabled = true
+shadow_bias = 0.02
+shadow_normal_bias = 4.5
+directional_shadow_max_distance = 16.0
+
+[node name="Ground" type="MeshInstance3D" parent="."]
+mesh = SubResource("Ground_mesh")
+
+[node name="StandInPlayer" type="Node3D" parent="."]
+position = Vector3(1.8, 0, 1.0)
+
+[node name="Body" type="MeshInstance3D" parent="StandInPlayer"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.85, 0)
+mesh = SubResource("Player_mesh")
+
+[node name="Villagers" type="Node3D" parent="."]
+
+[node name="Fisher" type="Node3D" parent="Villagers"]
+position = Vector3(-2.3, 0, 0.5)
+rotation = Vector3(0, -1.326, 0)
+script = ExtResource("npc")
+npc_id = &"fisher"
+
+[node name="Actor" parent="Villagers/Fisher" instance=ExtResource("fisher")]
+
+[node name="Route" type="Node3D" parent="Villagers/Fisher"]
+
+[node name="P0" type="Marker3D" parent="Villagers/Fisher/Route"]
+position = Vector3(0, 0, -1.65)
+
+[node name="P1" type="Marker3D" parent="Villagers/Fisher/Route"]
+position = Vector3(1.2, 0, -2.4)
+
+[node name="P2" type="Marker3D" parent="Villagers/Fisher/Route"]
+position = Vector3(-0.8, 0, -2.6)
+
+[node name="Netmender" type="Node3D" parent="Villagers"]
+position = Vector3(1.1, 0, -2.7)
+rotation = Vector3(0, 2.85, 0)
+script = ExtResource("npc")
+npc_id = &"netmender"
+
+[node name="Actor" parent="Villagers/Netmender" instance=ExtResource("netmender")]
+
+[node name="Osu" type="Node3D" parent="Villagers"]
+position = Vector3(0, 0, 0.3)
+rotation = Vector3(0, 0.35, 0)
+script = ExtResource("npc")
+npc_id = &"osu"
+player_path = NodePath("../../StandInPlayer")
+
+[node name="Actor" parent="Villagers/Osu" instance=ExtResource("osu")]
+
+[node name="Interactable" type="Area3D" parent="Villagers/Osu"]
+script = ExtResource("inter")
+id = &"npc_stage_osu"
+prompt_key = "FIELD_PROMPT_LISTEN"
+
+[node name="Shape" type="CollisionShape3D" parent="Villagers/Osu/Interactable"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
+shape = SubResource("Talk_shape")
+
+[node name="Camera" type="Camera3D" parent="."]
+transform = Transform3D(0.999846, -0.002138, 0.01741, 0, 0.992546, 0.121873, -0.017541, -0.121854, 0.992393, 0.2, 1.55, 5.4)
+fov = 40.0
+near = 0.05
+current = true

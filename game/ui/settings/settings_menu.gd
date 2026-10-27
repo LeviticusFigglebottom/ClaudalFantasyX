@@ -94,6 +94,7 @@ func _ready() -> void:
 	_help.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_help.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	add_child(_help)
+	UiFrame.centre(self)  # M2-UI-29
 	_open = true
 	_render()
 

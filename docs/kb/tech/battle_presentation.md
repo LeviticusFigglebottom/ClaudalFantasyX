@@ -82,17 +82,29 @@ hero actor scene, M2-UI-07, or a creature actor, M2-CRE-03). A creature actor pl
 | `finisher` | no | `finisher`, `chant`, `dive`, `verse`, `brace`, `glyph` strike (Swell techniques, Vowbound finishers; M2-BPR-04) | each style's own shape (see Specials) |
 | `hit` | no | a damaging hit's target, on contact | recoil and tip back |
 | `dodge` | no | a missed target, on contact | sidestep |
-| `ko` | no (holds the last frame) | a felled target, `ko.delay_sec` after contact | drop and tip over, then the stand-in's sink and fade |
-| `victory` | yes | the party at the battle's end (M2-BPR-05) | a small hop |
+| `ko` | no (holds the last frame) | a felled target, `ko.delay_sec` after contact; plays once (M2-BPR-11) | drop and tip over, then the stand-in's sink and fade |
+| `victory` | yes | the party at the battle's end (M2-BPR-05), each fighter `stagger_sec` after the last | a small hop |
 
 - **Timing on the clip.** A strike clip should reach its contact frame at `contact_at` of its length at 1x
   speed; the sequencer plays it at the battle speed (`speed_scale`). A model clip replaces the procedural strike
   (no lunge or lean on top) but the travel still happens: the root moves, the clip animates in place.
 - **Root motion.** Clips are **in place** (no root translation). Travel belongs to the sequencer.
+- **KO pose.** Any pose that reads as down: a fall, or a kneel or slump (the heroes' M2-CHR-07 clips kneel). A
+  model with a `ko` clip is not sunk by the stand-in (its clip puts it on the ground; M2-HER-1103). A fallen party
+  member holds that last frame, faint, until a revive (its optional `revive` clip, then idle; else idle); a fallen
+  foe fades out.
+- **Blends.** BattleClips plays by name and leaves the blend to the model's AnimationPlayer: a hero scene sets short
+  per-pair blend times into its strikes (0.12–0.2 s, hero-integration M2-HER-1103) so the wind-up before an early
+  contact frame isn't swallowed by the 0.3 s default.
 - **Agreed with:** the characters track (`claude/characters`, heroes, M2-CHR-06 / M2-UI-07) and the creatures
   track (`claude/creatures`, CreatureActor `clip_by_kind`, M2-CRE-03); see their live logs. A creature's
   `clip_by_kind` names its own clips per skill kind; until those rows map onto the contract names, the creature
   plays its clip through BattleActorMotion and the sequencer only moves its root.
+- **Part cues** (M3-C05-07, `BattlePartCues`). Model parts that battle events show and hide without a phase change,
+  from `battle_sandbox.json → part_cues` per creatures.json row: the Cinder Matron's `Crust` shows when `recrust`
+  lands on her or a hit on her `reacted` (her quench in the Pour), and hides when a hit adds `armor_break`. Applied on
+  the action's contact beat (`BattleChoreo.contact`), hides before shows within one hit (the engine's order).
+  `BattleStage`'s `choreo` setter attaches it, so a retry's new sequencer gets a fresh one. Listens only.
 
 **Placeholder clips (M2-BPR-10).** Until the heroes' battle clips land (M2-CHR-07), `BattlePlaceholderClips`
 (`game/battle/scene/battle_placeholder_clips.gd`) gives a model with a `Skeleton3D` and an `AnimationPlayer` a
@@ -437,7 +449,7 @@ when `BattleVowboundChoreo.enter_spec` asks:
   (`summon_cinematic`, the UI track's row, M2-UI-23) on Short, the default. Full plays it on every call; Off skips
   the rise (`off_entry`: the Vowbound is simply there). A capture fixture, instant pacing and "skip animations" play
   the short entry (`vowbound.entry`). The decision reads
-  `UiSettings.summon_cinematic_cut` (accessibility.json `summon_cinematics`, M2-BPR-11).
+  `UiSettings.summon_cinematic_cut` (accessibility.json `summon_cinematics`, M2-BPR-1000).
 - **What:** the water stills (`entry.delay_sec` 1.4 s after the party steps off), Ilun rises slowly (2.6 s), and a
   steady bound light (`glimmer_bound`, color script C10: no flicker, no drift, no trails) fades in at his slot and
   stays while he is out. The camera eases to the low `summon` frame (camera.shots), holds, and is back on the
@@ -536,3 +548,42 @@ creature actor could play a `ready` or roar clip at the hold when the creatures 
 
 - **Audio hook (boss intros):** as an intro starts it announces `EventBus.dialogue_event("boss_intro",
   [encounter_id, title_key])`, the same channel as the stinger's `battle_bark`, so audio can play a sting.
+
+## Impact: battle feel (M3-BPR-401)
+The human's note: battles looked primitive. `BattleImpact` (`game/battle/scene/battle_impact.gd`, a child of
+BattleChoreo, listen-only) adds weight on the contact beat. Every number is in `choreo.json` `impact`.
+- **Strength.** A hit's weight, 0..1: its damage over the target's max HP, 1 at `full_frac` (0.35); a crit adds
+  `crit_bonus`. A miss or a heal is 0. BattleChoreoPlan stores each damage reaction's `weight` and the plan's peak
+  `impact`.
+- **Hit-stop.** From `heavy_strength`, the contact holds the choreography clock and the actor's and targets' clips
+  for `hit_stop_frames` [2, 4] (lerped by strength) at `stop_fps` 60, divided by the battle speed. A seek (a
+  freeze-frame) carries none.
+- **Shake.** From `shake_min_strength`, `BattleStage.shake(speed, scale)` at `shake_scale` [0.6, 1.6] of its base
+  amplitude. The old crit-only shake now runs only for instant pacing (BattleFloats with no sequence).
+- **Flash.** A warm OmniLight3D pulse at the hardest-hit target (`flash`: colour, energy [lo, hi] capped at
+  `energy_cap`, range, height, `sec` back to dark, eased out). Never a screen flash; fog energy 0 (the fog rule). On
+  a held clock it follows the choreography time, so freeze-frames are deterministic.
+- **Recoil.** Each damage reaction's recoil and tilt scale by `recoil_scale` [0.75, 1.45]; a model that plays its own
+  hit clip still gets `reaction.damage.clip_recoil_k` (0.5) of the root push under it.
+- **KO slow-mo.** The blow that fells the last foe slows the clock to `ko_slowmo.factor` (0.35) for `sec` from
+  `lead_sec` before the collapse.
+- **Hand-off.** `BattleChoreo.remaining_sec` adds `BattleImpact.extra_sec` (the coming hit-stop and the rest of the
+  slow-mo), so the controller waits for the stretched sequence.
+- **Reduced motion.** No shake (`reduced_motion.shake_scale` 0), the flash at `flash_scale` 0.5, a gentler slow-mo
+  (`slowmo_factor` 0.6). Hit-stop stays: it is a pause, not motion.
+- **Damage numbers** already pop (6% in 80 ms) and ease out on the rise (DamageNumber, the UI track's, to
+  docs/kb/art/ui.md §5); they land on the contact beat. Element particles on contact are the PC track's BattleVfx.
+- **Tests:** `tests/unit/test_battle_impact.gd`; data checks `tools/validate_choreo.py` `impact_errors`.
+
+## Spacing: no overlaps (M3-BPR-402)
+A melee run used to stop a fixed `stop_short_m` short of the target's centre, so a big creature (the Drownbell,
+radius 0.85) or the lunge put the actor inside it. `BattleChoreoPlan.melee_gap` now also stops it so that, at the end
+of its lunge, the actor keeps its radius + each body's radius + `spacing.clearance_m` from every living fighter in
+its path (a body off the path changes nothing). A radius is the model's real footprint (`BattleChoreoPlan.footprint`:
+the mean of its visible meshes' half-width and half-depth about the stand-in's origin, times `footprint_k`; the eel
+about 0.5 m, the gull harrier about 1.0 m), else the primitive's `stand_ins` radius. The test samples a
+hero on a creature and a creature on a hero across the whole sequence and asserts no two footprints overlap. With
+the real hero rigs (claude/hero-integration) the footprint comes from their meshes too. **Open:** the enemy line-up
+slots were sized for the primitives, so some real models overlap each other on their marks (the reef crab and the
+gull harrier); a run never brings an actor closer to such a body than it started. Spreading the slots by footprint
+is M3-BPR-403.

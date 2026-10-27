@@ -59,6 +59,7 @@ import asha_glb  # noqa: E402
 import hero_clips  # noqa: E402
 
 CONFIG = Path(__file__).resolve().with_name("rig_checks.json")
+VILLAGERS_DIR = ROOT / "assets_src" / "characters" / "villagers"
 # HYMN_RIG_ROOT=<checkout>: read the hero GLBs from another checkout's assets/characters (e.g. a GLB being rebuilt in
 # the main checkout while this code runs from a worktree). Everything else comes from this checkout.
 ROOT_ENV = "HYMN_RIG_ROOT"
@@ -280,8 +281,34 @@ class Part:
         self.F, self.src = np.concatenate(F), np.concatenate(src)
 
 
+def villagers() -> list[str]:
+    """M3-CHR-03: villager builds the guards cover (a `"villager": true` entry under "heroes" in rig_checks.json).
+    Their GLB is assets/characters/villagers/<npc>/<npc>.glb and their clips are villager_clips.py's."""
+    data = json.loads(CONFIG.read_text(encoding="utf-8"))
+    return sorted(k for k, v in data.get("heroes", {}).items() if isinstance(v, dict) and v.get("villager"))
+
+
+def is_villager(hero: str) -> bool:
+    return hero not in hero_clips.PERSONA and hero in villagers()
+
+
+def _villager_clips():
+    if str(VILLAGERS_DIR) not in sys.path:
+        sys.path.insert(0, str(VILLAGERS_DIR))
+    import villager_clips
+
+    return villager_clips
+
+
+def clip_names(hero: str) -> list[str]:
+    """The clips the game plays for this character (hero_clips.CLIPS, or villager_clips.clips_for)."""
+    return _villager_clips().clips_for(hero) if is_villager(hero) else list(hero_clips.CLIPS[hero])
+
+
 def hero_glb(hero: str) -> Path:
     base = Path(os.environ.get(ROOT_ENV) or ROOT)
+    if is_villager(hero):
+        return base / "assets" / "characters" / "villagers" / hero / f"{hero}.glb"
     return base / "assets" / "characters" / hero / f"{hero}.glb"
 
 
@@ -448,12 +475,19 @@ def world_pose_local(rig: Rig, world: dict) -> dict:
 def clip_poses(rig: Rig, every: int, clips: list | None = None, max_samples: int | None = None) -> list[Pose]:
     """Every `every`-th key (and always the last) of every clip, as hero_clips.build writes them; with `max_samples`,
     long clips widen the stride so they give at most about that many."""
-    persona = hero_clips.PERSONA[rig.hero]
+    if is_villager(rig.hero):
+        vc = _villager_clips()
+        persona = vc.persona(rig.hero)
+        length_of, is_loop, pose_fn = vc.length_of, vc.is_loop, vc.pose_at
+    else:
+        persona = hero_clips.PERSONA[rig.hero]
+        length_of = lambda c: hero_clips.clip_length(rig.hero, c)  # noqa: E731  (M2-CHR-12: per-hero cycles)
+        is_loop, pose_fn = hero_clips.LOOPS.__contains__, hero_clips.pose_at
     sk = rig.skeleton
     out = []
-    for clip in clips or hero_clips.CLIPS[rig.hero]:
-        length = hero_clips.LENGTHS[clip]
-        loop = clip in hero_clips.LOOPS
+    for clip in clips or clip_names(rig.hero):
+        length = length_of(clip)
+        loop = is_loop(clip)
         n = int(round(length * hero_clips.FPS))
         stride = max(1, every)
         if max_samples:
@@ -462,7 +496,7 @@ def clip_poses(rig: Rig, every: int, clips: list | None = None, max_samples: int
         for f in frames:
             t = f / hero_clips.FPS
             tt = (t % length) if loop else t
-            pose = hero_clips.staff_hold(hero_clips.pose_at(clip, tt, length, sk, persona), persona)
+            pose = hero_clips.staff_hold(pose_fn(clip, tt, length, sk, persona), persona)
             turns = {b: hero_clips.qeuler(v) for b, v in pose.items() if b != "hips"}
             local = sk.local_pose(turns)
             hips = sk.rest_t[hero_clips.HIPS] + np.asarray(pose.get("hips", (0.0, 0.0, 0.0)), dtype=float)
@@ -997,7 +1031,8 @@ def format_report(result: dict, verdict: list[dict], per_pose: bool = True) -> s
 
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description="Headless rig probe for the heroes (M1-CHR-14).")
-    ap.add_argument("--hero", choices=sorted(hero_clips.PERSONA), action="append", help="default: every hero")
+    ap.add_argument("--hero", choices=sorted(hero_clips.PERSONA) + villagers(), action="append",
+                    help="default: every hero (the villagers in rig_checks.json only when named)")
     ap.add_argument("--report", action="store_true", help="print the verdicts and the per-pose tables")
     ap.add_argument("--every", type=int, help="clip key stride (default: every_nth_frame in rig_checks.json)")
     ap.add_argument("--json", type=Path, help="write the full result (rows and verdicts) here")

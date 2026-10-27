@@ -6,6 +6,8 @@ extends TestCase
 const SANDBOX := "res://game/battle/scene/battle_sandbox.tscn"
 const SEED := 20261022
 const LATER_ACTIONS := 3
+const ENEMIES := "res://game/data/battle/enemies.json"
+const ENCOUNTERS := "res://game/data/battle/encounters.json"
 
 var ctl: BattleController
 var ko_starts := 0
@@ -34,15 +36,12 @@ func test_a_creature_foe_plays_its_ko_once_then_fades_out() -> void:
 
 
 func test_a_primitive_foe_falls_once_and_is_hidden() -> void:
-	var models := CreatureModels.models()  # the wickfry has a model now: take it away for this test
-	var had: Variant = models.get("wickfry")
-	models.erase("wickfry")
-	_start(&"ch01_underway_shoals")
-	if had != null:
-		models["wickfry"] = had
+	var encounter := _primitive_foe_encounter()
+	assert_ne(encounter, &"", "some encounter leads with a foe that has no model yet")
+	_start(encounter)
 	var foe := _first_foe()
 	var f := ctl.stage.stand_in(foe.id)
-	assert_true(BattleClips.creature_of(f) == null, "a primitive stand-in")
+	assert_true(BattleClips.creature_of(f) == null, "%s has no model: a primitive stand-in" % foe.id)
 	_fell(foe)
 	var body: Node3D = f._body
 	var fallen := f.transform
@@ -88,6 +87,33 @@ func test_petrify_still_pauses_and_resumes_a_clip() -> void:
 	_free()
 
 
+## A revived hero stands up through its `revive` clip when it has one (characters' review), else straight to idle.
+func test_a_revived_hero_stands_up_through_its_revive_clip() -> void:
+	_start(&"sandbox_reef")
+	for with_revive: bool in [true, false]:
+		var f := Node3D.new()
+		var player := AnimationPlayer.new()
+		var lib := AnimationLibrary.new()
+		var clips: Array[StringName] = [BattleClips.IDLE, BattleClips.KO]
+		if with_revive:
+			clips.append(BattleClips.REVIVE)
+		for clip in clips:
+			var a := Animation.new()
+			a.length = 0.8
+			lib.add_animation(clip, a)
+		player.add_animation_library(&"", lib)
+		f.add_child(player)
+		ctl.add_child(f)
+		assert_true(BattleClips.play_ko(f))
+		BattleClips.ko_changed(f, false)
+		var want := BattleClips.REVIVE if with_revive else BattleClips.IDLE
+		assert_eq(str(player.current_animation), str(want), "stands up (revive clip: %s)" % with_revive)
+		if with_revive:
+			assert_eq(str(player.get_queue()), str([BattleClips.IDLE]), "then idles")
+		f.free()
+	_free()
+
+
 func _on_started(clip: StringName) -> void:
 	if clip == BattleClips.KO:
 		ko_starts += 1
@@ -107,6 +133,24 @@ func _start(encounter: StringName) -> void:
 	ctl.stage.choreo.live = false
 
 
+## An encounter whose first foe has no `model` in enemies.json (a primitive stand-in) and that has a second foe, so
+## the battle goes on after the first falls. The creatures track keeps giving foes models (the Wickfry has one now),
+## so the test looks one up instead of naming it (at big9 the Stillguard Inquisitor, who yields rather than falls:
+## BattleStage.refresh_ko treats both alike).
+func _primitive_foe_encounter() -> StringName:
+	var enemies: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(ENEMIES))
+	var bare: Dictionary = {}
+	for row: Dictionary in enemies["enemies"]:
+		if str(row.get("model", "")) == "":
+			bare[str(row["id"])] = true
+	var encounters: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(ENCOUNTERS))
+	for enc: Dictionary in encounters["encounters"]:
+		var foes: Array = enc["enemies"]
+		if foes.size() >= 2 and bare.has(str(foes[0])) and not enc.has("entries"):
+			return StringName(enc["id"])
+	return &""
+
+
 func _first_foe() -> BattleCombatant:
 	return ctl.engine.enemies[0]
 
@@ -119,7 +163,9 @@ func _fell(foe: BattleCombatant) -> void:
 		ctl.act(&"attack", [ctl.engine.living_foes_of(ctl.engine.current)[0].id])
 	foe.hp = 1
 	ctl.act(&"attack", [foe.id])
-	assert_eq(foe.hp, 0, "felled")
+	assert_true(
+		foe.hp == 0 or foe.yielded, "felled (or, for a foe that yields at 0 hp, yielded: it leaves the same way)"
+	)
 
 
 ## Three more actions by whoever is next (the party and the other foes).

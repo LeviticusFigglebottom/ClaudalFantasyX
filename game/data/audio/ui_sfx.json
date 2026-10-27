@@ -228,6 +228,7 @@
         {"expr": "node.list_page().cursor", "sfx": "ui_cursor"},
         {"expr": "node.picker_page().cursor", "sfx": "ui_cursor"},
         {"expr": "node.model.sort", "sfx": "ui_item_sort", "_note": "kind, name or count (outranks the cursor it keeps)"},
+        {"expr": "node.model.view", "sfx": "ui_page", "_note": "the Bag / Key Items tabs (M3-MNU-03; outranks the cursor the switch resets)"},
         {"expr": "item_total(node.model.inventory())", "fall": "ui_item_use",
          "_note": "an item spent on a hero (outranks the picker closing after the last one)"},
         {"expr": "node.model.view", "sfx": "ui_page",
@@ -275,6 +276,35 @@
          "_note": "M3-AUD-813: a refused pick or move (M2-AUD-15's public read)"}
       ],
       "_note": "M2-AUD-14: claude/menus' Formation page (M2-MNU-07); no signals of its own beyond FieldSubmenu.closed"
+    },
+    {
+      "class": "SettingsPage",
+      "_note": "M2-AUD-08 via M3-UI-02 (UI track): the Audio, Accessibility and Controls pages (GraphicsMenu keeps its own row). A value step plays ui_cursor at the new level.",
+      "on_enter": "ui_menu_open",
+      "signals": {
+        "closed": "ui_menu_close"
+      },
+      "watch": [
+        {
+          "expr": "node.model.cursor",
+          "sfx": "ui_cursor"
+        },
+        {
+          "expr": "node.model.value_text(node.model.current())",
+          "sfx": "ui_cursor"
+        }
+      ]
+    },
+    {
+      "class": "MemoriesMenu",
+      "on_enter": "ui_menu_open",
+      "signals": {"closed": "ui_menu_close", "memory_chosen": "ui_confirm"},
+      "watch": [
+        {"expr": "node.column", "rise": "ui_confirm", "fall": "ui_cancel", "_note": "MemoriesMenu.Column CHAPTERS / MEMORIES"},
+        {"expr": "node.chapters_page().cursor", "sfx": "ui_cursor"},
+        {"expr": "node.memories_page().cursor", "sfx": "ui_cursor"}
+      ],
+      "_note": "M2-MNU-303: claude/menus' Memories page (M3-MNU-02) had only FieldSubmenu's open and close"
     }
   ]
 }

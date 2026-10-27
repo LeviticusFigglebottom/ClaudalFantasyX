@@ -1,0 +1,27 @@
+{
+ "format": 1,
+ "scene": "ch08_beacon_opened",
+ "source": "game/data/dialogue/ch08/ch08_beacon_opened.dlg",
+ "start": "ch08_beacon_opened",
+ "nodes": {
+  "ch08_beacon_opened": {
+   "headers": {"location": "ch08/coilspire"},
+   "ops": [
+    {"op": "cue", "cue": "letterbox", "args": ["on"], "kwargs": {}, "src": 9},
+    {"op": "cue", "cue": "camera", "args": ["F08_key"], "kwargs": {}, "src": 10},
+    {"op": "cue", "cue": "anim", "args": ["asha", "turn_great_key"], "kwargs": {}, "src": 11},
+    {"op": "cue", "cue": "sfx", "args": ["beacon_roar"], "kwargs": {}, "src": 12},
+    {"op": "cue", "cue": "wait", "args": [1.5], "kwargs": {}, "src": 13},
+    {"op": "cue", "cue": "music", "args": ["undertow_rising"], "kwargs": {"fade": 0.5}, "src": 14},
+    {"op": "cue", "cue": "camera", "args": ["W08"], "kwargs": {}, "src": 15},
+    {"op": "cue", "cue": "sfx", "args": ["coast_bells"], "kwargs": {}, "src": 16},
+    {"op": "cue", "cue": "wait", "args": [4.0], "kwargs": {}, "src": 17},
+    {"op": "set", "flag": "ch08_beacon_opened", "value": ["lit", true], "src": 18},
+    {"op": "cue", "cue": "camera", "args": ["F08"], "kwargs": {}, "src": 19},
+    {"op": "line", "id": "ch08_beacon_opened_001", "key": "DLG_CH08_BEACON_OPENED_001", "speaker": "toma", "emotion": "determined", "voice": "", "src": 20},
+    {"op": "cue", "cue": "mark", "args": ["toma", "gallery_out", "run"], "kwargs": {}, "src": 21},
+    {"op": "cue", "cue": "fade", "args": ["out", 0.6], "kwargs": {}, "src": 22}
+   ]
+  }
+ }
+}

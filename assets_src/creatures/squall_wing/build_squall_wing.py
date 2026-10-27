@@ -90,6 +90,42 @@ def _drop_tris(T: np.ndarray, keep_v: np.ndarray) -> np.ndarray:
     return T[keep_v[T].all(axis=1)]
 
 
+def _relax_outline(T: np.ndarray, X: np.ndarray, V: np.ndarray, nx: int, nv: int, chord, seed: int,
+                   iters: int = 3) -> tuple[np.ndarray, np.ndarray]:
+    """Smooths the inner outlines of a holed nx-by-nv membrane grid (vertex = row * nx + column) in the
+    membrane's (span, chord-metres) plane: each outline vertex moves toward the mean of its outline neighbours
+    (the grid's border stays put), then takes a small fray along the outline's normal."""
+    E = np.sort(np.vstack([T[:, [0, 1]], T[:, [1, 2]], T[:, [2, 0]]]), axis=1)
+    e, cnt = np.unique(E, axis=0, return_counts=True)
+    e = e[cnt == 1]
+    if len(e) == 0:
+        return X, V
+    row, col = np.arange(len(X)) // nx, np.arange(len(X)) % nx
+    pinned = (row == 0) | (row == nv - 1) | (col == 0) | (col == nx - 1)
+    q = np.column_stack([X, V * chord(X)])
+    nb_sum = np.zeros_like(q)
+    nb_n = np.zeros(len(X))
+    for _ in range(iters):
+        nb_sum[:] = 0.0
+        nb_n[:] = 0.0
+        for i, j in ((0, 1), (1, 0)):
+            np.add.at(nb_sum, e[:, i], q[e[:, j]])
+            np.add.at(nb_n, e[:, i], 1.0)
+        move = (nb_n > 0) & ~pinned
+        q[move] = 0.4 * q[move] + 0.6 * nb_sum[move] / nb_n[move][:, None]
+    # the fray: along the outline's normal (perpendicular to the neighbours' chord), a few millimetres
+    nb_sum[:] = 0.0
+    for i, j, sg in ((0, 1, 1.0), (1, 0, -1.0)):
+        np.add.at(nb_sum, e[:, i], sg * (q[e[:, j]] - q[e[:, i]]))
+    tang = nb_sum / np.maximum(np.linalg.norm(nb_sum, axis=1, keepdims=True), 1e-9)
+    nrm = np.column_stack([tang[:, 1], -tang[:, 0]])
+    fray = 0.009 * ck.value_noise(np.column_stack([q * 40.0, np.zeros(len(q))]), seed)
+    move = (nb_n > 0) & ~pinned
+    q[move] += nrm[move] * fray[move, None]
+    X2 = q[:, 0]
+    return X2, q[:, 1] / chord(X2)
+
+
 # ---------------------------------------------------------------------------------------------
 # Rig: the gull harrier's layout and bone names (its clips' wing poses carry over), no twine
 # ---------------------------------------------------------------------------------------------
@@ -342,10 +378,13 @@ def wing(mesh: ck.Mesh, rig: ck.Rig, side: float) -> None:
         closer = dd < rent_d
         lift = np.where(closer, side_s * np.sin(math.pi * t) * ck.smoothstep(2.0, 1.0, dd), lift)
         rent_d = np.minimum(rent_d, dd)
-    P = membrane(Xn, Vn)
-    jit = ck.fbm(P * 40.0, SEED + 31 + int(side > 0))
-    P = P + np.column_stack([np.zeros(len(P)), 0.010 * lift + 0.004 * jit * ck.smoothstep(2.0, 1.0, rent_d),
-                             np.zeros(len(P))])
+    def place(Xq, Vq):
+        Pq = membrane(Xq, Vq)
+        jit = ck.fbm(Pq * 40.0, SEED + 31 + int(side > 0))
+        return Pq + np.column_stack([np.zeros(len(Pq)), 0.010 * lift + 0.004 * jit * ck.smoothstep(2.0, 1.0, rent_d),
+                                     np.zeros(len(Pq))])
+
+    P = place(Xn, Vn)
     fn = np.cross(P[T[:, 1]] - P[T[:, 0]], P[T[:, 2]] - P[T[:, 0]])
     if fn[:, 1].sum() < 0:
         T = ck.flip(T)
@@ -366,6 +405,11 @@ def wing(mesh: ck.Mesh, rig: ck.Rig, side: float) -> None:
     tear = tear * ck.smoothstep(0.3, 0.6, V) * ck.smoothstep(0.12, 0.25, X)
     cut = 0.17 if side > 0 else 0.13
     T = T[(tear[T].mean(axis=1) < cut) & ~tri_in]
+    # the holes' outlines follow the grid in steps: walk each outline (edges of one kept triangle, the grid's own
+    # border pinned) and relax it toward its neighbours along the outline, then fray it a little, so a rent's edge
+    # runs as a torn line and not a saw
+    Xn, Vn = _relax_outline(T, Xn, Vn, NX, NV, lambda xq: np.interp(xq, chord_x, chord_c), SEED + 60 + int(side > 0))
+    P = place(Xn, Vn)
     rim = np.maximum(ck.smoothstep(cut - 0.03, cut, tear), ck.smoothstep(1.35, 1.0, rent_d))
     X, V = Xn, Vn
     xi = np.clip(np.searchsorted(x, X), 0, NX - 1)

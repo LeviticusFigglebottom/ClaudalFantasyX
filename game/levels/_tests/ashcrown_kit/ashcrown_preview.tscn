@@ -1,0 +1,215 @@
+[gd_scene load_steps=19 format=3]
+
+[ext_resource type="Script" path="res://game/levels/_tests/ashcrown_kit/ashcrown_preview.gd" id="1_rig"]
+[ext_resource type="Script" path="res://game/levels/ch02/haluna/haluna_dresser.gd" id="2_dresser"]
+[ext_resource type="Environment" path="res://game/levels/_tests/ashcrown_kit/ashcrown_ch05_environment.tres" id="3_env"]
+[ext_resource type="Script" path="res://game/levels/ch02/haluna/haluna_shot_camera.gd" id="4_cam"]
+[ext_resource type="Script" path="res://game/world/camera_shot.gd" id="5_shot"]
+[ext_resource type="Script" path="res://game/levels/ch02/haluna/weathering_tide.gd" id="6_tide"]
+
+[sub_resource type="PlaneMesh" id="SeaMesh"]
+size = Vector2(9000, 9000)
+
+[sub_resource type="StandardMaterial3D" id="SeaMat"]
+albedo_color = Color(0.1804, 0.2745, 0.3137, 1)
+roughness = 0.35
+
+[sub_resource type="Resource" id="ShotA01"]
+script = ExtResource("5_shot")
+id = &"A01"
+position = Vector3(0.00, -2.40, 47.20)
+look_at = Vector3(0.00, 26.00, 0.00)
+fov_deg = 67.4
+
+[sub_resource type="Resource" id="ShotA02"]
+script = ExtResource("5_shot")
+id = &"A02"
+position = Vector3(29.00, -2.30, 43.00)
+look_at = Vector3(-5.00, 5.00, 19.00)
+fov_deg = 46.4
+
+[sub_resource type="Resource" id="ShotA03"]
+script = ExtResource("5_shot")
+id = &"A03"
+position = Vector3(-6.50, -2.40, 33.00)
+look_at = Vector3(0.00, -0.50, 19.00)
+fov_deg = 37.8
+
+[sub_resource type="Resource" id="ShotA04"]
+script = ExtResource("5_shot")
+id = &"A04"
+position = Vector3(0.00, -2.50, 14.00)
+look_at = Vector3(0.00, -3.00, -30.00)
+fov_deg = 53.1
+
+[sub_resource type="Resource" id="ShotA05"]
+script = ExtResource("5_shot")
+id = &"A05"
+position = Vector3(2.30, -2.20, -2.40)
+look_at = Vector3(-0.20, -3.00, -8.40)
+fov_deg = 27.0
+
+[sub_resource type="Resource" id="ShotA06"]
+script = ExtResource("5_shot")
+id = &"A06"
+position = Vector3(-2.50, 19.60, 11.60)
+look_at = Vector3(-20.00, 18.80, 9.80)
+fov_deg = 46.4
+
+[sub_resource type="Resource" id="ShotA07"]
+script = ExtResource("5_shot")
+id = &"A07"
+position = Vector3(0.60, 43.60, -0.90)
+look_at = Vector3(0.00, 8.00, 36.00)
+fov_deg = 53.1
+
+[sub_resource type="Resource" id="ShotA08"]
+script = ExtResource("5_shot")
+id = &"A08"
+position = Vector3(1.20, -2.30, -10.60)
+look_at = Vector3(-3.00, 8.00, -80.00)
+fov_deg = 53.1
+
+[sub_resource type="Resource" id="ShotA10"]
+script = ExtResource("5_shot")
+id = &"A10"
+position = Vector3(-110.00, -26.50, -35.00)
+look_at = Vector3(-10.00, 75.00, -45.00)
+fov_deg = 46.4
+
+[sub_resource type="Resource" id="ShotO1"]
+script = ExtResource("5_shot")
+id = &"O1"
+position = Vector3(110.00, 40.00, 160.00)
+look_at = Vector3(0.00, 5.00, 5.00)
+fov_deg = 37.8
+
+[sub_resource type="Resource" id="ShotO2"]
+script = ExtResource("5_shot")
+id = &"O2"
+position = Vector3(0.00, -230.00, 560.00)
+look_at = Vector3(0.00, 0.00, 0.00)
+fov_deg = 27.0
+
+[node name="AshcrownPreview" type="Node3D" node_paths=PackedStringArray("sun", "tide", "world_environment", "dresser")]
+script = ExtResource("1_rig")
+sun = NodePath("Sun")
+tide = NodePath("Tide")
+world_environment = NodePath("WorldEnvironment")
+dresser = NodePath("Dresser")
+sun_elevation_deg = 58.0
+sun_azimuth_deg = 225.0
+time_of_day_h = 13.0
+wind_azimuth_deg = 250.0
+wind_speed_m_s = 5.0
+wind_gust = 0.3
+water_height_m = -306.72
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = ExtResource("3_env")
+
+[node name="Sun" type="DirectionalLight3D" parent="."]
+light_color = Color(1, 0.9412, 0.8627, 1)
+light_energy = 2.8
+shadow_enabled = true
+shadow_bias = 0.03
+shadow_normal_bias = 1.0
+shadow_blur = 1.6
+sky_mode = 0
+directional_shadow_mode = 2
+directional_shadow_split_1 = 0.05
+directional_shadow_split_2 = 0.15
+directional_shadow_split_3 = 0.4
+directional_shadow_max_distance = 350.0
+
+[node name="SeaStandIn" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -306.72, 0)
+cast_shadow = 0
+mesh = SubResource("SeaMesh")
+surface_material_override/0 = SubResource("SeaMat")
+
+[node name="HallProbe" type="ReflectionProbe" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.0, -0.5)
+size = Vector3(14.2, 12.2, 39.6)
+interior = true
+ambient_mode = 2
+ambient_color = Color(0.1686, 0.149, 0.1333, 1)
+ambient_color_energy = 0.8
+
+[node name="Tide" type="Node" parent="."]
+script = ExtResource("6_tide")
+tide_line_y = -306.72
+water_height_y = -306.72
+
+[node name="Dresser" type="Node3D" parent="." node_paths=PackedStringArray("tide")]
+script = ExtResource("2_dresser")
+tide = NodePath("../Tide")
+layout_path = "res://game/levels/_tests/ashcrown_kit/ashcrown_layout.json"
+
+[node name="Cameras" type="Node3D" parent="."]
+
+[node name="A01" type="Camera3D" parent="Cameras"]
+near = 0.05
+far = 8000.0
+script = ExtResource("4_cam")
+shot = SubResource("ShotA01")
+
+[node name="A02" type="Camera3D" parent="Cameras"]
+near = 0.05
+far = 8000.0
+script = ExtResource("4_cam")
+shot = SubResource("ShotA02")
+
+[node name="A03" type="Camera3D" parent="Cameras"]
+near = 0.05
+far = 8000.0
+script = ExtResource("4_cam")
+shot = SubResource("ShotA03")
+
+[node name="A04" type="Camera3D" parent="Cameras"]
+near = 0.05
+far = 8000.0
+script = ExtResource("4_cam")
+shot = SubResource("ShotA04")
+
+[node name="A05" type="Camera3D" parent="Cameras"]
+near = 0.05
+far = 8000.0
+script = ExtResource("4_cam")
+shot = SubResource("ShotA05")
+
+[node name="A06" type="Camera3D" parent="Cameras"]
+near = 0.05
+far = 8000.0
+script = ExtResource("4_cam")
+shot = SubResource("ShotA06")
+
+[node name="A07" type="Camera3D" parent="Cameras"]
+near = 0.05
+far = 8000.0
+script = ExtResource("4_cam")
+shot = SubResource("ShotA07")
+
+[node name="A08" type="Camera3D" parent="Cameras"]
+near = 0.05
+far = 8000.0
+script = ExtResource("4_cam")
+shot = SubResource("ShotA08")
+
+[node name="A10" type="Camera3D" parent="Cameras"]
+near = 0.05
+far = 8000.0
+script = ExtResource("4_cam")
+shot = SubResource("ShotA10")
+
+[node name="O1" type="Camera3D" parent="Cameras"]
+near = 0.05
+far = 8000.0
+script = ExtResource("4_cam")
+shot = SubResource("ShotO1")
+
+[node name="O2" type="Camera3D" parent="Cameras"]
+near = 0.05
+far = 8000.0
+script = ExtResource("4_cam")
+shot = SubResource("ShotO2")

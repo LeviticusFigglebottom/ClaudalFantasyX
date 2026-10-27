@@ -1,0 +1,39 @@
+{
+ "format": 1,
+ "scene": "ch08_stranger_on_wall",
+ "source": "game/data/dialogue/ch08/ch08_stranger_on_wall.dlg",
+ "start": "ch08_stranger_on_wall",
+ "nodes": {
+  "ch08_stranger_on_wall": {
+   "headers": {"location": "ch08/corrow"},
+   "ops": [
+    {"op": "cue", "cue": "camera", "args": ["W13"], "kwargs": {}, "src": 17},
+    {"op": "cue", "cue": "music", "args": ["seawall_hold"], "kwargs": {}, "src": 18},
+    {"op": "cue", "cue": "anim", "args": ["asha", "hands_half_raised"], "kwargs": {}, "src": 19},
+    {"op": "cue", "cue": "wait", "args": [1.5], "kwargs": {}, "src": 20},
+    {"op": "line", "id": "ch08_stranger_001", "key": "DLG_CH08_STRANGER_001", "speaker": "asha", "emotion": "afraid", "voice": "", "src": 21},
+    {"op": "line", "id": "ch08_stranger_002", "key": "DLG_CH08_STRANGER_002", "speaker": "toma", "emotion": "determined", "voice": "", "src": 22},
+    {"op": "cue", "cue": "wait", "args": [1.0], "kwargs": {}, "src": 23},
+    {"op": "cue", "cue": "camera", "args": ["W13_boy"], "kwargs": {}, "src": 24},
+    {"op": "cue", "cue": "mark", "args": ["boy", "boy_stair_top", "walk"], "kwargs": {}, "src": 25},
+    {"op": "cue", "cue": "wait", "args": [1.0], "kwargs": {}, "src": 26},
+    {"op": "cue", "cue": "mark", "args": ["asha", "boy_kneel", "walk"], "kwargs": {}, "src": 27},
+    {"op": "cue", "cue": "anim", "args": ["asha", "kneel_hum", "boy"], "kwargs": {}, "src": 28},
+    {"op": "cue", "cue": "sfx", "args": ["asha_hum_lullaby"], "kwargs": {}, "src": 29},
+    {"op": "cue", "cue": "wait", "args": [3.0], "kwargs": {}, "src": 30},
+    {"op": "cue", "cue": "mark", "args": ["boy", "boy_climbed", "walk"], "kwargs": {}, "src": 31},
+    {"op": "cue", "cue": "anim", "args": ["rhen", "look_at", "asha"], "kwargs": {}, "src": 32},
+    {"op": "cue", "cue": "face", "args": ["rhen", "surprised", 0.4], "kwargs": {}, "src": 33},
+    {"op": "cue", "cue": "wait", "args": [1.5], "kwargs": {}, "src": 34},
+    {"op": "cue", "cue": "camera", "args": ["W14"], "kwargs": {}, "src": 35},
+    {"op": "cue", "cue": "sfx", "args": ["pell_storm_note"], "kwargs": {"at": "pell"}, "src": 36},
+    {"op": "cue", "cue": "anim", "args": ["pell", "storm_call"], "kwargs": {}, "src": 37},
+    {"op": "cue", "cue": "wait", "args": [2.5], "kwargs": {}, "src": 38},
+    {"op": "line", "id": "ch08_stranger_003", "key": "DLG_CH08_STRANGER_003", "speaker": "rhen", "emotion": "surprised", "voice": "", "src": 39},
+    {"op": "line", "id": "ch08_stranger_004", "key": "DLG_CH08_STRANGER_004", "speaker": "asha", "emotion": "neutral", "voice": "", "src": 40},
+    {"op": "set", "flag": "ch08_pell_seen", "value": ["lit", true], "src": 41},
+    {"op": "cue", "cue": "wait", "args": [0.5], "kwargs": {}, "src": 42}
+   ]
+  }
+ }
+}

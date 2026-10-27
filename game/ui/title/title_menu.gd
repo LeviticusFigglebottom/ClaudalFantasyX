@@ -82,6 +82,7 @@ func _ready() -> void:
 	model = TitleMenuModel.new(save_system)
 	UiSettings.shared().follow(self)
 	_build()
+	UiFrame.centre(self)  # M2-UI-29
 	model.changed.connect(_render)
 	_render()
 	if MemoryReplay.take_gallery_request() and model.has_memories:

@@ -1,0 +1,54 @@
+{
+  "version": 1,
+  "doc": "Idle micro-motion and head lead (M2-HER-1104, ADR 0190): HeroIdleMicro (game/hero_motion/hero_idle_micro.gd), a SkeletonModifier3D layered on whatever clip or pose a hero shows. Degrees, seconds. Breathing and the weight shift scale by the modifier's amount (1 standing, 0 walking or running; it eases between them over amount_fade_sec; HeroMotion.set_locomotion_speed sets it to 0 above still_below_mps m/s). The head lead does not: while the body turns, the neck and head turn ahead of it by lead_sec of the turn speed, capped at max_deg. Each bone list gives a bone and its share of the motion; a bone missing from a rig is skipped.",
+  "amount_fade_sec": 0.35,
+  "still_below_mps": 0.2,
+  "breath": {
+    "doc": "A slow inhale and exhale: the chest lifts (pitches back) by chest_pitch_deg spread over chest_bones, and the shoulders rise by shoulder_lift_deg. period_sec varies per actor by up to period_spread (a share), so two heroes never breathe in step.",
+    "period_sec": 4.4,
+    "period_spread": 0.12,
+    "chest_pitch_deg": 1.6,
+    "chest_bones": {
+      "DEF-spine.002": 0.3,
+      "DEF-spine.003": 0.45,
+      "DEF-spine.004": 0.25
+    },
+    "shoulder_lift_deg": 1.8,
+    "shoulder_bones": [
+      "DEF-shoulder.L",
+      "DEF-shoulder.R"
+    ],
+    "head_counter": 0.6,
+    "head_bones": {
+      "DEF-spine.006": 1.0
+    }
+  },
+  "sway": {
+    "doc": "The weight shifting from foot to foot: the hips roll by hips_roll_deg and yaw by hips_yaw_deg about the body, the legs counter the roll so the feet stay planted, and the spine counters it (spine_counter shares, negative = against the hips) so the head stays level.",
+    "period_sec": 9.5,
+    "period_spread": 0.15,
+    "hips_bone": "DEF-spine",
+    "hips_roll_deg": 1.4,
+    "hips_yaw_deg": 0.8,
+    "leg_bones": [
+      "DEF-thigh.L",
+      "DEF-thigh.R"
+    ],
+    "spine_counter": {
+      "DEF-spine.002": -0.45,
+      "DEF-spine.004": -0.4
+    }
+  },
+  "head_lead": {
+    "doc": "While the body turns at rate r (deg/s), the neck and head turn r * lead_sec ahead of it, at most max_deg, shared across bones. The turn rate is measured from the skeleton's own yaw each frame (smoothed over rate_smoothing_sec) unless a driver sets it.",
+    "lead_sec": 0.09,
+    "max_deg": 24.0,
+    "rate_smoothing_sec": 0.05,
+    "bones": {
+      "DEF-spine.003": 0.15,
+      "DEF-spine.004": 0.3,
+      "DEF-spine.005": 0.25,
+      "DEF-spine.006": 0.3
+    }
+  }
+}

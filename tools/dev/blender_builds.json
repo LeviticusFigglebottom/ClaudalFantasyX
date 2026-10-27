@@ -151,6 +151,45 @@
       ]
     },
     {
+      "id": "villager_tavi",
+      "threads": 4,
+      "owner": "character",
+      "_note": "M3-CHR-03: Tavi Orse (Ch7) on the villager build, with the params opt-ins host_snaps (M1-CHR-14's MIDLINE_SNAP, quantize_uvs, snap_shape_noise and PRE_ROUND) and garment_fit (torso-only top, leg-following skirts, feet on the sandals). His clip library adds hand_on_shoulder, hear_news and name_rite (villager_clips.EXTRA_CLIPS).",
+      "sources": ["assets_src/characters/villagers/**", "assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**"],
+      "outputs": ["assets/characters/villagers/tavi/*.glb", "assets/characters/villagers/tavi/textures/*.png", "assets/characters/villagers/tavi/materials/*.tres", "assets/characters/villagers/tavi/*.tscn", "assets/characters/villagers/tavi/anim/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/characters/villagers/build_villager.py", "--", "--npc", "tavi", "--bake-dir", "{scratch}/tavi_bake"],
+        ["{python}", "assets_src/characters/villagers/villager_textures.py", "--npc", "tavi", "--bake-dir", "{scratch}/tavi_bake"],
+        ["{python}", "assets_src/characters/villagers/write_materials.py", "tavi"],
+        ["{python}", "assets_src/characters/villagers/villager_clips.py", "tavi"]
+      ]
+    },
+    {
+      "id": "villager_kell",
+      "threads": 4,
+      "owner": "character",
+      "_note": "M3-CHR-03: Mother Kell (Ch1) on the villager build, with host_snaps and garment_fit as Tavi; her clips add press_wick, trim_wick and haggle_laugh. Her wick, wick bundle and shears are the props_wick job's.",
+      "sources": ["assets_src/characters/villagers/**", "assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**"],
+      "outputs": ["assets/characters/villagers/kell/*.glb", "assets/characters/villagers/kell/textures/*.png", "assets/characters/villagers/kell/materials/*.tres", "assets/characters/villagers/kell/*.tscn", "assets/characters/villagers/kell/anim/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/characters/villagers/build_villager.py", "--", "--npc", "kell", "--bake-dir", "{scratch}/kell_bake"],
+        ["{python}", "assets_src/characters/villagers/villager_textures.py", "--npc", "kell", "--bake-dir", "{scratch}/kell_bake"],
+        ["{python}", "assets_src/characters/villagers/write_materials.py", "kell"],
+        ["{python}", "assets_src/characters/villagers/villager_clips.py", "kell"]
+      ]
+    },
+    {
+      "id": "props_wick",
+      "threads": 4,
+      "owner": "character",
+      "_note": "M3-CHR-03: the one wick source (act1_npcs.md 4.4): the wick, the wick bundle and the trimming shears, with their StandardMaterial3D slots. The same wick serves Kell's hand, her apron bundle, Rhen's tin and the E7 post-credits lamp.",
+      "sources": ["assets_src/characters/props/wick.py"],
+      "outputs": ["assets/characters/props/wick/*.glb", "assets/characters/props/wick/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/characters/props/wick.py"]
+      ]
+    },
+    {
       "id": "shader_test",
       "owner": "rendering",
       "sources": ["assets_src/characters/shader_test/build_shader_test_meshes.py", "assets_src/characters/shader_test/layout.py"],
@@ -238,6 +277,20 @@
       ]
     },
     {
+      "id": "coilspire_kit", "threads": 4,
+      "owner": "environment",
+      "_doc": "M3-ENV-10: the Coilspire temple kit (Corrow's skyline spire up close). Geometry reuses the Haluna kit's core (kit_common), the Corrow kit's helpers (cw_common) and its far piece (cw_far: the same building's height law, flues, cage and headland) and the Brine Shoals heightfield (bs_common), all read-only; pinned at 4 threads like corrow_kit. The {python} step rebuilds its materials (the Haluna writers, loaded by path), so it is verified too. No maps of its own: it uses the Corrow, Haluna and Brine Shoals kits' textures.",
+      "sources": ["assets_src/environments/kits/coilspire/*.py", "assets_src/environments/kits/haluna/kit_common.py",
+                  "assets_src/environments/kits/haluna/materials.py", "assets_src/environments/kits/corrow/cw_common.py",
+                  "assets_src/environments/kits/corrow/cw_far.py", "assets_src/environments/kits/brine_shoals/bs_common.py"],
+      "outputs": ["assets/environments/kits/coilspire/*.glb", "assets/environments/kits/coilspire/kit_manifest.json",
+                  "assets/environments/kits/coilspire/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/environments/kits/coilspire/build.py", "--", "--all", "--out-dir", "assets/environments/kits/coilspire", "--manifest", "assets/environments/kits/coilspire/kit_manifest.json"],
+        ["{python}", "assets_src/environments/kits/coilspire/cs_materials.py"]
+      ]
+    },
+    {
       "id": "oruvel_underway_kit", "threads": 4,
       "owner": "environment",
       "_doc": "M3-ENV-05: the Oruvel Underway kit (the Ch1 drowned tower and its sea floor). Geometry reuses the Haluna kit's core (kit_common) read-only; the two {python} steps rebuild its maps and materials (with the Haluna texture helpers and material writers), so they are verified too. Threads pinned at 4, as haluna_kit.",
@@ -250,6 +303,32 @@
         ["{blender}", "--python", "assets_src/environments/kits/oruvel_underway/build.py", "--", "--all", "--out-dir", "assets/environments/kits/oruvel_underway", "--manifest", "assets/environments/kits/oruvel_underway/kit_manifest.json"],
         ["{python}", "assets_src/environments/kits/oruvel_underway/ou_textures.py"],
         ["{python}", "assets_src/environments/kits/oruvel_underway/ou_materials.py"]
+      ]
+    },
+    {
+      "id": "sefir",
+      "threads": 4,
+      "owner": "character",
+      "_note": "M3-CHR-02: Sefir reuses Asha's modules (build_asha as a helper library, asha_textures with per-hero knobs) and Rhen's and Toma's costume helpers (rhen_costume, toma_costume), so their sources are his too. The texture run sets asha_textures.PRE_ROUND (host-independent PNGs, M1-CHR-14).",
+      "sources": ["assets_src/characters/sefir/**", "assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**"],
+      "outputs": ["assets/characters/sefir/*.glb", "assets/characters/sefir/textures/*.png", "assets/characters/sefir/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/characters/sefir/build_sefir.py", "--", "--out", "assets/characters/sefir/sefir.glb", "--bake-dir", "{scratch}/sefir_bake"],
+        ["{python}", "assets_src/characters/sefir/sefir_textures.py", "--bake-dir", "{scratch}/sefir_bake"],
+        ["{python}", "assets_src/characters/sefir/write_materials.py"]
+      ]
+    },
+    {
+      "id": "ysolde",
+      "threads": 4,
+      "owner": "character",
+      "_note": "M3-CHR-01: Ysolde reuses Asha's modules (build_asha as a helper library, asha_textures with per-hero knobs, PRE_ROUND set), Rhen's and Toma's costume helpers (rhen_costume, toma_costume, build_toma's rig-extra helpers) and the villagers' bun hair and age layer (villager_hair, villager_textures), so all their sources are hers too.",
+      "sources": ["assets_src/characters/ysolde/**", "assets_src/characters/villagers/**", "assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**"],
+      "outputs": ["assets/characters/ysolde/*.glb", "assets/characters/ysolde/textures/*.png", "assets/characters/ysolde/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/characters/ysolde/build_ysolde.py", "--", "--out", "assets/characters/ysolde/ysolde.glb", "--bake-dir", "{scratch}/ysolde_bake"],
+        ["{python}", "assets_src/characters/ysolde/ysolde_textures.py", "--bake-dir", "{scratch}/ysolde_bake"],
+        ["{python}", "assets_src/characters/ysolde/write_materials.py"]
       ]
     },
     {
@@ -520,6 +599,85 @@
       "runs": [
         ["{blender}", "--python", "assets_src/creatures/wall_polyp/build_wall_polyp.py", "--", "--out", "assets/creatures/wall_polyp/wall_polyp.glb"],
         ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "wall_polyp"]
+      ]
+    },
+    {
+      "id": "brightwater_ferry_kit", "threads": 4,
+      "owner": "environment",
+      "_doc": "M3-ENV-08: the Brightwater ferry kit (Ch4: the ferry Kind Weather, the drowned hulls on the reef edge). Geometry reuses the Haluna kit's core (kit_common) and lintel-gull (village) and the Brine Shoals kit's heightfield (bs_common) read-only; the {python} steps rebuild its materials (the Haluna writers) and its grade LUT (the Haluna zone_lut and Brine Shoals hue helpers), so they are verified too. Threads pinned at 4, as haluna_kit.",
+      "sources": ["assets_src/environments/kits/brightwater_ferry/*.py", "assets_src/environments/kits/haluna/kit_common.py",
+                  "assets_src/environments/kits/haluna/village.py", "assets_src/environments/kits/haluna/materials.py",
+                  "assets_src/environments/kits/haluna/zone_lut.py", "assets_src/environments/kits/brine_shoals/bs_common.py",
+                  "assets_src/environments/kits/brine_shoals/bs_zone_lut.py"],
+      "outputs": ["assets/environments/kits/brightwater_ferry/*.glb", "assets/environments/kits/brightwater_ferry/kit_manifest.json",
+                  "assets/environments/kits/brightwater_ferry/materials/*.tres", "assets/environments/kits/brightwater_ferry/lut_ch04_crossing.png"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/environments/kits/brightwater_ferry/build.py", "--", "--all", "--out-dir", "assets/environments/kits/brightwater_ferry", "--manifest", "assets/environments/kits/brightwater_ferry/kit_manifest.json"],
+        ["{python}", "assets_src/environments/kits/brightwater_ferry/bf_materials.py"],
+        ["{python}", "assets_src/environments/kits/brightwater_ferry/bf_zone_lut.py"]
+      ]
+    },
+    {
+      "id": "oruvel_kit", "threads": 4,
+      "owner": "environment",
+      "_doc": "M3-ENV-07: the Oruvel raft-town kit (Ch1). Geometry reuses the Haluna kit's core (kit_common) and village.py (posts, the lintel-gull) read-only; no maps of its own (the Haluna maps, read-only). The {python} steps rebuild its materials (with the Haluna material writers) and, M3-ENV-07B, the storm grade LUT lut_ch01_storm (the Haluna zone_lut and Brine Shoals hue helpers), so they are verified too. Threads pinned at 4, as haluna_kit.",
+      "sources": ["assets_src/environments/kits/oruvel/*.py", "assets_src/environments/kits/haluna/kit_common.py",
+                  "assets_src/environments/kits/haluna/village.py", "assets_src/environments/kits/haluna/materials.py",
+                  "assets_src/environments/kits/haluna/zone_lut.py", "assets_src/environments/kits/brine_shoals/bs_zone_lut.py",
+                  "assets_src/environments/vegetation/textures.py"],
+      "outputs": ["assets/environments/kits/oruvel/*.glb", "assets/environments/kits/oruvel/kit_manifest.json",
+                  "assets/environments/kits/oruvel/materials/*.tres", "assets/environments/kits/oruvel/lut_ch01_storm.png"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/environments/kits/oruvel/build.py", "--", "--all", "--out-dir", "assets/environments/kits/oruvel", "--manifest", "assets/environments/kits/oruvel/kit_manifest.json"],
+        ["{python}", "assets_src/environments/kits/oruvel/ov_materials.py"],
+        ["{python}", "assets_src/environments/kits/oruvel/ov_zone_lut.py"]
+      ]
+    },
+    {
+      "id": "ashcrown_kit", "threads": 4,
+      "owner": "environment",
+      "_doc": "M3-ENV-09: the Ashcrown temple kit (Ch5, the Lightning temple at the plume's foot). Geometry reuses the Haluna kit's core (kit_common, village's hip roof) and the Pemakar kit's common and skyline modules (the ash pass, massif_height, the far Ashcrown's numbers) read-only; the two {python} steps rebuild its maps and materials (with the Haluna texture helpers and material writers and the Pemakar material defaults), so they are verified too. Threads pinned at 4, as haluna_kit.",
+      "sources": ["assets_src/environments/kits/ashcrown/*.py", "assets_src/environments/kits/haluna/kit_common.py",
+                  "assets_src/environments/kits/haluna/village.py", "assets_src/environments/kits/haluna/kit_textures.py",
+                  "assets_src/environments/kits/haluna/materials.py", "assets_src/environments/kits/pemakar/pemakar_common.py",
+                  "assets_src/environments/kits/pemakar/pemakar_skyline.py", "assets_src/environments/kits/pemakar/pemakar_materials.py",
+                  "assets_src/environments/vegetation/textures.py"],
+      "outputs": ["assets/environments/kits/ashcrown/*.glb", "assets/environments/kits/ashcrown/kit_manifest.json",
+                  "assets/environments/kits/ashcrown/textures/*.png", "assets/environments/kits/ashcrown/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/environments/kits/ashcrown/build.py", "--", "--all", "--out-dir", "assets/environments/kits/ashcrown", "--manifest", "assets/environments/kits/ashcrown/kit_manifest.json"],
+        ["{python}", "assets_src/environments/kits/ashcrown/ac_textures.py"],
+        ["{python}", "assets_src/environments/kits/ashcrown/ac_materials.py"]
+      ]
+    },
+    {
+      "id": "wildlife_gull",
+      "owner": "character",
+      "sources": ["assets_src/wildlife/gull/**", "assets_src/wildlife/common/**", "assets_src/creatures/common/creature_kit.py"],
+      "outputs": ["assets/wildlife/gull/*.glb", "assets/wildlife/gull/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/wildlife/gull/build_gull.py", "--", "--out", "assets/wildlife/gull/gull.glb"],
+        ["{python}", "assets_src/wildlife/common/write_materials.py", "--wildlife", "gull"]
+      ]
+    },
+    {
+      "id": "wildlife_shore_crab",
+      "owner": "character",
+      "sources": ["assets_src/wildlife/shore_crab/**", "assets_src/wildlife/common/**", "assets_src/creatures/common/creature_kit.py"],
+      "outputs": ["assets/wildlife/shore_crab/*.glb", "assets/wildlife/shore_crab/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/wildlife/shore_crab/build_shore_crab.py", "--", "--out", "assets/wildlife/shore_crab/shore_crab.glb"],
+        ["{python}", "assets_src/wildlife/common/write_materials.py", "--wildlife", "shore_crab"]
+      ]
+    },
+    {
+      "id": "wildlife_shoal_fish",
+      "owner": "character",
+      "sources": ["assets_src/wildlife/shoal_fish/**", "assets_src/wildlife/common/**", "assets_src/creatures/common/creature_kit.py"],
+      "outputs": ["assets/wildlife/shoal_fish/*.glb", "assets/wildlife/shoal_fish/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/wildlife/shoal_fish/build_shoal_fish.py", "--", "--out", "assets/wildlife/shoal_fish/shoal_fish.glb"],
+        ["{python}", "assets_src/wildlife/common/write_materials.py", "--wildlife", "shoal_fish"]
       ]
     }
   ]

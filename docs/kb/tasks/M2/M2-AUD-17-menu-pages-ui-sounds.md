@@ -37,4 +37,6 @@ row. Inside the pages nothing is heard yet.
 
 - **Renumbered again (Lead merge, big8, 2026-10-24):** M2-AUD-15 collided with claude/audio's M2-AUD-15 (the menus public-reads request) and M2-AUD-16 is audio's too. Now M2-AUD-17.
 
+- **Lead merge, big9 (2026-10-24):** claude/menus' M2-MNU-303 had made the Formation, Status, Memories and battle pause hooks live too. ui_sfx.json keeps audio's Status and battle pause hooks (they hear more: another hero's sheet, the Settings hub over the pause), menus' Formation and Memories hooks, and FormationMenu is live (the class is on the branch).
+
 ## Review log

@@ -11,6 +11,7 @@
     "debug_page_camera": {"keys": ["F7"]},
     "debug_page_chapters": {"keys": ["F8"]},
     "debug_battle_sandbox": {"keys": ["F9"]},
+    "debug_pseudo_loc": {"keys": ["F10"]},
     "debug_overlay_hide": {"keys": ["F12"]}
   },
   "deadzone": 0.5,

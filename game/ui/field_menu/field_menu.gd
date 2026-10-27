@@ -26,8 +26,12 @@ extends Control
 ## Stay under the cursor, the line saying what is lost) and then returns to the title (boot.tscn)
 ## through FlowRouting. M2-MNU-07 added Formation (FormationMenu, the same way); when it closes the
 ## heroes follow the saved line's order.
+## M2-MNU-303: the menu fades and rises in from the field and fades out when it closes (MenuMotion);
+## a page over it keeps the backdrop still, and the menu's own content fades back in when it closes.
 
 signal closed
+## The close transition has finished (at once under Reduced motion): open_in's layer frees itself.
+signal gone
 
 enum Level { ROOT, HEROES, MODES, QUIT }
 
@@ -73,8 +77,13 @@ var _desc: Label
 var _help: Label
 var _objective_head: Label
 var _objective: Label
+var _save_head: Label
+var _save_line: Label
+var _save_hint: Label
+var _party_cards: Array[PartyCard] = []
 var _owns_pause := false
 var _is_closed := false
+var _motion: MenuMotion
 ## A line that stays on the description until the cursor moves ("Rhen's gauge now fills by ...").
 var _notice := ""
 
@@ -88,7 +97,7 @@ static func open_in(host: Node, with_model: FieldMenuModel = null) -> FieldMenu:
 	layer.layer = int(load_data().get("canvas_layer", 1))
 	layer.process_mode = Node.PROCESS_MODE_ALWAYS
 	layer.add_child(menu)
-	menu.closed.connect(layer.queue_free)
+	menu.gone.connect(layer.queue_free)
 	host.add_child(layer)
 	return menu
 
@@ -117,11 +126,16 @@ func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_STOP
 	UiSettings.shared().follow(self)
 	_build()
+	UiFrame.centre(self)  # the panel centred at 16:10 and 21:9, the scrim full screen (M2-UI-29)
 	_root.replace_rows(model.root_rows())
 	_render()
 	if pause_tree and not get_tree().paused:
 		get_tree().paused = true
 		_owns_pause = true
+	MenuMotion.follow_reduced_motion(self)
+	_motion = MenuMotion.new(self)
+	_motion.gone.connect(_on_motion_gone)
+	_motion.play_in()
 
 
 func _exit_tree() -> void:
@@ -202,7 +216,16 @@ func close() -> void:
 	if child != null and child.is_open():
 		child.close()
 	_restore_pause()
+	if _motion != null:
+		_motion.play_out()
+	else:
+		gone.emit()
 	closed.emit()
+
+
+## The open, close and return transitions (null before _ready). Tests drive them with motion().finish().
+func motion() -> MenuMotion:
+	return _motion
 
 
 ## Closes the menu and returns to the title (FlowRouting waits for an idle router). Unsaved
@@ -228,6 +251,16 @@ func desc_text() -> String:
 ## The root's Objective block ("" when hidden).
 func objective_text() -> String:
 	return _objective.text if _objective.visible else ""
+
+
+## The party cards on the root (M2-MNU-304), one per place of the active line.
+func party_cards() -> Array[PartyCard]:
+	return _party_cards
+
+
+## The root's Last saved line as shown ("" while hidden; M2-MNU-300).
+func last_save_text() -> String:
+	return _save_line.text if _save_line.visible else ""
 
 
 func help_text() -> String:
@@ -277,13 +310,14 @@ func _open_map() -> void:
 
 func _on_map_closed() -> void:
 	map_menu = null
-	visible = true
+	_come_back()
 
 
 ## Opens the party page for root row `id` (CHILD_PAGES) over a PartySheet of this menu's state.
 func _open_child(id: StringName) -> void:
 	var sheet := PartySheet.new(model.state, model.heroes)
 	var page := (CHILD_PAGES[id] as Script).call(&"create", sheet) as FieldSubmenu
+	page.over_menu = true  # the same scrim and caustics: only the page's content moves
 	child = FieldSubmenu.mount(page, self)
 	visible = false
 	child.closed.connect(_on_child_closed)
@@ -293,7 +327,8 @@ func _on_child_closed() -> void:
 	if child is FormationMenu:
 		_follow_formation()
 	child = null
-	visible = true
+	_come_back()
+	_refresh_party()  # an item, gear or the line may have changed
 	_root.replace_rows(model.root_rows())
 	_render()
 
@@ -323,7 +358,7 @@ func _open_settings() -> void:
 
 func _on_settings_closed() -> void:
 	settings_menu = null
-	visible = true
+	_come_back()
 	_root.replace_rows(model.root_rows())  # in the text size or palette just chosen
 	_render()
 
@@ -336,7 +371,7 @@ func _open_bestiary() -> void:
 
 func _on_bestiary_closed() -> void:
 	bestiary = null
-	visible = true
+	_come_back()
 
 
 func _open_codex() -> void:
@@ -347,7 +382,7 @@ func _open_codex() -> void:
 
 func _on_codex_closed() -> void:
 	codex_menu = null
-	visible = true
+	_come_back()
 
 
 ## The hero list, with the cursor on `on_hero` when given (coming back from its modes).
@@ -399,6 +434,11 @@ func _render() -> void:
 	_objective.text = model.objective_line()
 	_objective.visible = at_root and _objective.text != ""
 	_objective_head.visible = _objective.visible
+	_save_line.text = model.last_save_line()
+	for l: Label in [_save_head, _save_line, _save_hint]:
+		l.visible = at_root and _save_line.text != ""
+	for card: PartyCard in _party_cards:
+		card.visible = at_root and card.hero() != &""
 	var id := StringName(str((_root if at_root else _detail).current_row().get("id", "")))
 	match level:
 		Level.ROOT:
@@ -422,6 +462,17 @@ func _place_detail(at_root: bool) -> void:
 	var top := HudLayout.rect_of(dm).position.y
 	_detail.size.y = MenuPage.height_for(dm, maxi(_detail.row_count(), 1), true)
 	_desc.position.y = top if at_root else top + _detail.size.y + HudLayout.num(em, "gap")
+
+
+## Shows the menu again when a page over it closes; its content fades back in over the still backdrop.
+func _come_back() -> void:
+	visible = true
+	if is_open() and _motion != null:
+		_motion.play_in(true, "return_sec")
+
+
+func _on_motion_gone() -> void:
+	gone.emit()
 
 
 func _restore_pause() -> void:
@@ -456,7 +507,7 @@ func _build() -> void:
 	_title_rule(Rect2(title.position, Vector2(pr.size.x * 0.5, title.size.y)))
 	var help_h := HudLayout.num(pm, "help_height")
 	var help_at := Vector2(pr.position.x + pad, pr.end.y - pad - help_h)
-	_help = _label(&"HelpDimLabel", Rect2(help_at, Vector2(pr.size.x - pad * 2.0, help_h)))
+	_help = HudLayout.wrap_upward(_label(&"HelpDimLabel", Rect2(help_at, Vector2(pr.size.x - pad * 2.0, help_h))))
 	var rm: Dictionary = _d.get("root", {})
 	_root = _page(rm, &"field_root", "", 0)
 	_root.row_hovered.connect(_on_hovered.bind(Level.ROOT))
@@ -477,6 +528,47 @@ func _build() -> void:
 	_objective = _label(&"BodyLabel", Rect2(orr.position + Vector2(0.0, head_h), orr.size - Vector2(0.0, head_h)))
 	_objective.vertical_alignment = VERTICAL_ALIGNMENT_TOP
 	_objective.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_build_last_save(_d.get("last_save", {}))
+	_build_party(_d.get("party", {}))
+
+
+## M2-MNU-304: the active line as cards across the right column on the root, under the line about the
+## highlighted row: portrait, name, HP and MP (the playtest's "parts look primitive").
+func _build_party(pm: Dictionary) -> void:
+	var at := HudLayout.rect_of(pm).position
+	var step := HudLayout.num(pm, "card_w") + HudLayout.num(pm, "spacing")
+	for i in FormationMenuModel.places():
+		var card := PartyCard.new()
+		card.setup(pm)
+		card.position = at + Vector2(step * i, 0.0)
+		add_child(card)
+		_party_cards.append(card)
+	_refresh_party()
+
+
+## Fills the cards from the active line as the next fight has it (FormationMenuModel over a PartySheet).
+func _refresh_party() -> void:
+	var line := FormationMenuModel.new(PartySheet.new(model.state, model.heroes))
+	for i in _party_cards.size():
+		var cid := line.active[i] if i < line.active.size() else &""
+		if cid == &"":
+			_party_cards[i].show_hero(&"", "", {})
+			continue
+		_party_cards[i].show_hero(cid, line.sheet.hero_name(cid), line.vitals(cid))
+
+
+## M2-MNU-300: the root's Last saved block above the objective: a dim head, the place and time, and the
+## reminder that saving happens at shrines (there is no save row).
+func _build_last_save(sm: Dictionary) -> void:
+	var sr := HudLayout.rect_of(sm)
+	var line_h := HudLayout.num(sm, "line_height")
+	_save_head = _label(&"DimLabel", Rect2(sr.position, Vector2(sr.size.x, line_h)))
+	_save_head.text = tr(FieldMenuModel.LAST_SAVE_HEAD_KEY)
+	_save_line = _label(&"BodyLabel", Rect2(sr.position + Vector2(0.0, line_h), Vector2(sr.size.x, line_h)))
+	_save_line.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	_save_hint = _label(&"HelpDimLabel", Rect2(sr.position + Vector2(0.0, line_h * 2.0), Vector2(sr.size.x, line_h)))
+	_save_hint.text = tr(FieldMenuModel.SAVE_HINT_KEY)
+	_save_hint.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 
 
 ## A MenuPage at its block's rect, as tall as `rows` rows need (0 = the root's three).

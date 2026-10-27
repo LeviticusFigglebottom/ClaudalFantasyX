@@ -24,7 +24,9 @@ extends Node
 ##                      those steps and stops (a "Not yet" choice stepping Rhen back).
 ##   {"battle": encounter, "return_spawn", "escape_spawn", "victory_flag"} opens the field battle,
 ##                      which returns to this zone; ends the run. Its party is the step's "party" and
-##                      "reserve" when given, else the current party; "seed" overrides the rng seed.
+##                      "reserve" when given, else the current party; "seed" overrides the rng seed;
+##                      "objective_flag" names a numeric flag that carries a set piece's objective
+##                      count across fights (BattleRequest.objective_flag; Ch8's stair meter).
 ##   {"go": {"location", "spawn"}} travels to another location; ends the run.
 ##   {"scene": path}    changes to a scene (a cutscene set, the end card); ends the run.
 ## Payloads with {"dialogue": id} play that bark (in-engine); with "overheard": true as well, it plays
@@ -33,6 +35,7 @@ extends Node
 const KEY_DIALOGUE := "dialogue"
 const KEY_OVERHEARD := "overheard"
 const KEY_BEAT := "beat"
+const KEY_OBJECTIVE_FLAG := "objective_flag"
 const KIND_BATTLE := &"battle"
 const KIND_GO := &"go"
 const KIND_SCENE := &"scene"
@@ -222,6 +225,9 @@ func _battle_request(step: Dictionary) -> BattleRequest:
 		r.reserve = Game.state.reserve_ids.duplicate()
 	if step.has("seed"):
 		r.rng_seed = int(step["seed"])
+	if step.has(KEY_OBJECTIVE_FLAG):
+		r.objective_flag = StringName(str(step[KEY_OBJECTIVE_FLAG]))
+		r.objective_start = int(Game.get_flag(r.objective_flag, 0))
 	return r
 
 

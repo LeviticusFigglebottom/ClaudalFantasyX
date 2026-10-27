@@ -21,7 +21,7 @@ Owner: UI/UX + Combat (M1-UI-01, M1-CMB-01, M1-UI-02). Art rules: [`docs/kb/art/
 | `game/data/ui/battle_fixtures.json` | Frozen battle tables and per-state setups for the HUD captures (§ Capture fixtures below). |
 | `game/battle/scene/` | `battle_sandbox.tscn`, `BattleController`, `BattleStage`, `BattleMenus`, `BattleFixture`, `FighterStandIn`, `ground_ring.gdshader`, and `shots/` (capture entry scenes). |
 | `assets/fonts/` | Source Sans 3 and EB Garamond, each with its `OFL.txt`. |
-| `game/ui/bestiary/` | `BestiaryMenu` (+ `bestiary_menu.tscn`), `BestiaryMenuModel`, and the `bestiary_menu` capture driver (`BestiaryShot`, `shots/`). Layout: `game/data/ui/bestiary_menu.json` (M2-UI-02). |
+| `game/ui/bestiary/` | `BestiaryMenu` (+ `bestiary_menu.tscn`), `BestiaryMenuModel`, `BestiaryPortraitSlot` (M2-UI-26), and the `bestiary_menu` capture driver (`BestiaryShot`, `shots/`). Layout: `game/data/ui/bestiary_menu.json` (M2-UI-02). |
 | `game/ui/field_menu/` | `FieldMenu` (+ `field_menu.tscn`), `FieldMenuModel`, and the `field_menu` / `field_menu_swell_modes` capture driver (`FieldMenuShot`, `shots/`). Layout: `game/data/ui/field_menu.json` (M2-UI-04). |
 | `game/ui/shop/` | `ShopMenu` / `ShopMenuModel`, `InnMenu` / `InnMenuModel`, their shared base `TownMenu`, the zone-agnostic `TownServices` hook, and the `shop_menu_buy` / `shop_menu_sell` / `inn_menu` capture driver (`TownMenuShot`, `shots/`). Layout: `game/data/ui/shop_menu.json` (M2-UI-06). |
 | `game/ui/map/` | `ZoneMapMenu` (+ `zone_map_menu.tscn`), `ZoneMapView`, `RouteStrip`, `MapGlyphs`, the node-free `MapModel` and `ZoneMapShapes`, and the `field_menu_map_haluna` / `field_menu_map_shrine` / `field_menu_map_underway` capture driver (`ZoneMapShot`, `shots/`). Layout: `game/data/ui/zone_map_menu.json`; zones and places: `game/data/ui/zone_maps.json` (M2-UI-18). |
@@ -154,8 +154,10 @@ s.theme_for(base_theme)                 # base itself at the defaults, else a ca
   - The left list holds every logged foe that enemies.json still lists, in enemies.json order, with its defeat count (`×N`). An unread one also says "Not Read" in the middle column (words, not only the dim count).
   - The right side shows the entry under the cursor. A Read foe gets the full page from its row (`EnemyPage.from_row`: stats, weaknesses, lore, "Defeated: N"). A foe defeated but never Read shows its name, its count and how to learn more.
   - Ids the table no longer lists are skipped on screen and never removed from the save (`skipped_ids()`).
+  - **Live portrait** (M2-UI-26): `BestiaryPortraitSlot` takes the height the page leaves under the text and holds the creatures track's `CreaturePortrait` square in its bottom-right corner (`bestiary_menu.json → portrait`: `min_px`, below which it hides, and `max_px`), so it never covers the text at any text size. A Read foe shows in colour; a foe never Read shows as a flat silhouette (`silhouette.gdshader`, theme role `silhouette_role` at `silhouette_alpha`): the party has met it, but a Read is what shows its colours. A foe with no model shows nothing. The portrait holds a still pose (creatures.json `portrait` clip and time), so captures are pixel-stable. `close()` clears it, which frees the model and stops its viewport. The battle Read panel has no portrait: the foe is on the stage beside it, and the panel is sized to leave the timeline and the command menu uncovered.
   - Up and down choose, hover shows, cancel closes.
   - **Reached from the field menu** (M2-UI-04, § Field menu below): Bestiary calls `BestiaryMenu.open_in(field_menu)`.
+  - **Baked creature portraits** (M2-MNU-302, ADR 0120). The menus track baked one PNG per creatures.json row (`assets/ui/portraits/creatures/`, 256 px RGBA) with `tools/portraits/render.sh` (`portraits.json → creatures`: the creature alone in a small world, `creature_stage` lights, creatures.json's `portrait` clip, time and framing through `CreatureFraming`, per-entry overrides), and `CreaturePortraits` (Node-free) finds an enemy's picture through its `model` scene. The bestiary page itself uses the UI track's live `BestiaryPortraitSlot` above (both landed the same day; the owner's page wins). The PNGs are there for any screen that wants a still picture without a 3D viewport; `tests/unit/test_creature_portraits.gd` keeps them complete. A model change does not refresh them: rerun `render.sh --only <creature>`.
 - **Captures:** `battle_read_panel` (fixture `read_panel`: Ysolde, quick and taught `read`, Reads the reflecting Lantern Eel; the fixture adds the enemies' `lore_key`s and a `read` row to the frozen tables), `battle_opening_banner` (fixture `opening_banner`: an ambush), `bestiary_menu` (`BestiaryShot`: a fixed log over the frozen enemies, the Lantern Eel's page on show).
 
 ## Swell fill modes (M2-UI-01)
@@ -179,6 +181,9 @@ s.theme_for(base_theme)                 # base itself at the defaults, else a ca
 - **Layout.** `field_menu.json`. Every rect is a multiple of 3 at the 1080p reference, so the 1280 x 720 captures (2/3 scale) draw each frame edge on a whole pixel. Before that, the page borders broke up at fractional pixels. The right page is only as tall as its rows (`MenuPage.height_for`). `MenuPage.set_header` is new: the right page is set up titled once and renamed per level.
 - **Captures:** `field_menu` (the root, cursor on Swell) and `field_menu_swell_modes` (Rhen's modes with Tether unlocked and Wake in use, cursor on Tether). Both come from `FieldMenuShot` on a scratch `GameStateData`. The modes come from swell.json, as they do in play.
 - **The target info panel knows a Read foe.** `BattleController._show_pick` now takes `revealed` from `BattleBestiary.knows(c)`, which is `book.is_read(BattleEngine.enemy_id(c))` for a foe. A foe the party has Read, in this battle or before it (a live battle's book is `Game.state.bestiary`), shows its HP gauge instead of "HP unknown until Read". The controller line count is unchanged (994). Capture fixtures log into a scratch book, so no battle baseline moves.
+
+- **Last saved (M2-MNU-300).** There is no save row; saving stays at shrines and the chapter autosaves (the Lead's call, 2026-10-24). The root shows the newest loadable save's place and time above the objective (`FieldMenuModel.last_save_line`, through `TitleSaveEntry.continue_slot` and `SaveSlotInfo`), with a shrine reminder. The tutorial tip `menu_save` says the same once.
+- **Party cards (M2-MNU-304).** The root shows the active line as `PartyCard`s (portrait, name, HP and MP) between the row line and Last saved (`field_menu.json` "party"); they hide off the root and refresh when a party page closes.
 
 ## The Vowbound (M2-UI-05, ADR 0030)
 
@@ -368,7 +373,7 @@ The human's top priority for the slice: the player always knows the next step. A
 - **Rows.** `game/data/flow/objectives.json` lists the rows in story order: `{id, line_key, requires: [flags], until: flag, zone?, target?: {zone, poi}, side?}`.
   - A row applies when every `requires` flag is set and its `until` flag is not. A row with a `zone` applies only in that zone, and never in a scene with no map, so test zones and shot scenes show nothing.
   - The main objective is the first main row that applies; `side` rows are optional errands.
-  - First pass by UI for B01–B11. m2-slice keeps the rows current (M2-FP-29).
+  - First pass by UI for B01–B11. m2-slice keeps the rows current (M2-FP-1000).
   - **Act I (M3-UI-04):** 39 rows walk the main beats of Ch1, Ch4, Ch5, Ch7 and Ch9 on each chapter's own flags. Each row is zoned to its greybox zone and targets a POI there. Gaps (no flag between some beats, per-tier trial flags, Ch6 and Ch8) are listed in `docs/kb/tasks/M3/M3-UI-04-act1-area-maps.md`.
   - `validate_data.py` (`check_objectives`) checks that flags are declared, loc keys exist, and zones and targets resolve.
 - **Places.** `game/data/ui/zone_maps.json` (`ZoneMaps`) lists the zones (scene, name, map bounds, shape source) and the pilgrimage route. Each point of interest has a world `at` and a `source` (a node in the zone scene, or a point in the trial layout). `tools/tests/test_zone_map_pois.py` fails when a point drifts from its source.
@@ -427,7 +432,7 @@ Two Accessibility rows, added the same way as text speed (M2-UI-12): data rows i
   - **What it never touches:** the engine and its seeded rng, so outcomes stay the same at every speed (`test_the_speed_never_changes_the_battle`). Also the Swell input windows: `SwellRingClock` and `SwellInput` run on real time in `tick()`, never on the paced wait. HUD panels, the opening banner, menu cursors and timeline chips keep their own pace, because they answer input or carry text to read. Instant pacing (`pacing_scale` 0, used by tests and captures) stays instant, and Normal changes no battle shot.
 - **`summon_cinematic`** (Full, Short, Off; default Short) sets the cut of a Vowbound's call cinematic (SPEC §6.3: full on first use, then shortened, with a skip toggle). `UiSettings.summon_cinematic_cut(first_call)` returns `CUT_FULL`, `CUT_SHORT` (skip the middle beats) or `CUT_NONE` (straight to the effect), from `accessibility.json` `summon_cinematics`. Short plays the first call of each Vowbound in full and later calls short. Full is always full, and Off always skips.
   - **The call cinematic is M2-BPR-08 (C10, on claude/battle-presentation),** which reads `summon_cinematic` with the same row and loc text: Short plays it in full on the first call (per-save flag `ch03_ilun_first_call_seen`) and shortened after, Full plays it every time, and Off goes straight to the arrival. **At merge,** keep one copy of the `summon_cinematic` row and keys and of the six `SET_BATTLE_SPEED*` rows, and keep their `battle_animations` row.
-  - **Wired at the big7 Lead merge** under request task **M2-BPR-11** (filed as M2-BPR-07, renumbered): `BattleSummonCinematic.wants_full` asks `summon_cinematic_cut`.
+  - **Wired at the big7 Lead merge** under request task **M2-BPR-1000** (M2-BPR-11 until big9) (filed as M2-BPR-07, renumbered): `BattleSummonCinematic.wants_full` asks `summon_cinematic_cut`.
 - **Tests:** `test_accessibility_battle_speed.gd`. **Shot:** `settings_accessibility` (the page grows by two rows).
 
 ## Dialogue assist: continue glyph, backlog, auto-advance (M2-UI-25)
@@ -516,6 +521,73 @@ SPEC §6.11: a lore codex that also unlocks text records found in the world. No 
 - **Columns and input.** Three columns: CATEGORIES, ENTRIES, TEXT. Up and Down move in the current column. Confirm or Right go one column in: a category opens its entries (an empty one does not), and an entry whose text is longer than its page opens the text, where Up and Down scroll it. That is how a pad, which has no Page keys, reads a long text. Left or Cancel go back a column, and Cancel on the categories closes. Page Up and Page Down scroll the text from any column. Mouse: hover a category to show it, click it to open; hover or click an entry to open it; the wheel steps a list or scrolls the text it is over; right click is Cancel (UiInput). The text scrolls by `scroll_step_px`, clipped to its page, with a thin gold thumb when it is longer than the page.
 - **Shot:** `field_menu_codex` (CodexShot: the field menu's Codex row, then Places, the cursor on the Saltgrass Causeway; "New" still on the Shell Shrine). **Tests:** `test_codex.gd` (model, unlocks, the record hook through the EventBus and a scratch Interactable, the menu, the field menu row, parity with all three devices).
 - **Mouse on the categories:** while the entries or the text have the cursor, the categories page is dimmed, so hover passes it by (M2-UI-26). A click on a category opens it.
+
+## Resolution and aspect (M2-UI-29)
+
+- **How the window maps to the layout.** `project.godot` stretches canvas items with aspect `expand` from 1920 x 1080 (unchanged; no ADR). Any 16:9 window (1280 x 720, 1920 x 1080, 3840 x 2160) lays out in 1920 x 1080. 16:10 (1920 x 1200, the 1280 x 800 handheld) lays out in 1920 x 1200. 21:9 lays out in 2560 x 1080, and 3440 x 1440 in 2580 x 1080. The extra room is always added at the right, or at the bottom.
+- **What was wrong.** Every UI rect in `game/data/ui/*.json` is at the 1920 x 1080 reference, and `HudLayout.place()` anchored everything top-left. At 16:10 and 21:9:
+  - **full-screen menus** sat off centre: 60 px high at 16:10, and 320 to 330 px left at 21:9;
+  - **HUD pieces** pinned right or bottom stayed at their 1920 x 1080 spot: the timeline and party bars 640 px from the right edge, and the bars, commands and Swell panel 120 px above the bottom;
+  - **centred pieces** (the help line, the opening banner, the area title, the Read and result panels) sat left of centre.
+  - Scrims and backdrops were already full-rect and covered the screen. The cutscene layer was already anchor-based and held. The full table is in the task file.
+- **Full-screen menus: `UiFrame.centre(root)`** (`game/ui/theme/ui_frame.gd`), called once after the menu is built.
+  - The root becomes the 1920 x 1080 reference frame, centred on the screen. Its children at reference coordinates, including ones added later, land centred.
+  - Its full-rect children (scrims, CausticBackdrop, TitleBackdrop) are stretched past the frame to the whole screen. This happens again on every window change (`Viewport.size_changed`).
+  - A root that takes the mouse gets a `FrameCatcher`: a pass-through Control under its content, as large as the screen. A click beside the frame still reaches the root, which swallows it as before (the Read panel still closes on it), and nothing behind the menu sees it.
+  - It is called in: FieldMenu, FieldSubmenu (all party pages, Memories, the backlog, the battle pause), Bestiary, Codex, ZoneMap, SettingsMenu, SettingsPage, TownMenu (shop and inn), SaveMenu, TitleMenu, ReadPanel and BattleResultPanel.
+- **HUD pieces: a section's `"pin"`.** It is one of `top_left` (the default), `top`, `top_right`, `left`, `center`, `right`, `bottom_left`, `bottom` or `bottom_right`.
+  - `HudLayout.place()` anchors the piece there, so it keeps its 16:9 margin to that edge, or stays centred on it. Content that outgrows the rect grows away from the edge.
+  - `HudLayout.pinned_rect(sec, parent_size)` gives the same spot for code that draws by hand (the area title's band and rule).
+  - `HudLayout.place_frame(c, pin)` makes a reference-sized frame on a corner. `CommandMenu` uses it for `bottom_left`, so the root and sub-menu pages keep their margins.
+  - Pinned: battle `help_line` and `opening_banner` (top), `timeline` (top_right), `party` (bottom_right), `commands` and `swell_ring` (bottom_left), and the Swell "unlocked" float (`unlock_pin`: center); field `tutorial_tips.panel` (top_right), `codex_notice.panel` (bottom_right, so a long title now grows up), and `area_title` band, name and rule (top).
+  - Unchanged: the objective line, the target info and the boss status (top_left). The interaction prompt, the objective cue, the damage numbers and the target marks follow the 3D projection.
+- **Text at 130 %.**
+  - The Swell panel's hint and the battle pause's help line ran past their panels. `UiFrame.fit_line(label, width)` shrinks a one-line label only as far as it must, never below its variation's size in the base theme, so the 100 % design is the floor. The Swell hint refits on a theme change.
+  - MenuPage row labels grow both ways, so a 46 px line box stays centred on its 40 px row.
+  - Formation's detail lines kept a wrapped height measured at the old width (a 1432 px tall, invisible box). They now refresh their minimum size before they are sized (one line in the Menus track's file).
+- **Known, not fixed here.** At 21:9 the dialogue box stretches to 2260 px, which makes very long lines. It is still pinned and readable, so M2-ARC-09 asks Architect for a maximum width. Menus stay a centred 16:9 composition, so at 21:9 the title's build label sits at the frame's corner, not the screen's.
+- **Tests:** `test_aspect_layouts.gd` builds every screen group at 16:9, 16:10, 21:9 and 43:18 with text at 100 % and 130 %, through a real window resize (`tests/aspect_host.gd`). It checks that:
+  - no visible Control leaves the screen;
+  - no text runs out of its panel (measured glyph extent, `AspectHost.ink_rect`);
+  - covers cover the screen and frames are centred and reference-sized;
+  - each HUD piece keeps its 16:9 margin to its pin;
+  - a live window change refits an open menu and the battle HUD.
+  - Headless tests never reach a frame's end, so `AspectHost.settle()` runs the deferred layout (container sorts, wrapped-label heights) first.
+  - Mutation check: with `centre()` and the pins switched off, 8 of the 11 tests fail.
+- **Shots:** `field_menu_21x9` and `battle_hud_21x9` (1280 x 540, laid out in 2560 x 1080), and `field_menu_16x10` and `battle_hud_16x10` (1280 x 800, laid out in 1920 x 1200).
+
+## Pseudo-localisation (M2-UI-28)
+
+- **What it is.** A debug-only locale (`en_XA`) in which every loc string is accented and about 40% longer, in brackets: "Settings" becomes "[Šéţţîñĝš ····]".
+  - Text with no brackets is not localized.
+  - Text missing its closing bracket is cut.
+  - A box that holds English but not the longer text is too small for German or French.
+- **The generator.** `PseudoLoc` (`game/core/debug/pseudo_loc.gd`, data `game/data/debug/pseudo_loc.json`) builds a `Translation` from every loc CSV.
+  - It accents the letters, pads each line by `expansion` of its visible length in groups of `pad_group` dots (so word wrapping can break them), and wraps the whole string in `prefix` / `suffix`.
+  - `{placeholders}`, `%`-formats, BBCode tags and newlines are copied untouched, so `String.format`, `%` and RichTextLabel markup keep working.
+  - Godot's own `internationalization/pseudolocalization` is not used: it works headless, but it accents `{placeholders}` and BBCode tags, which breaks `String.format`.
+- **Turning it on (debug builds only):**
+  - Launch with `--pseudo-loc` (after `--` or before it) or with `HYMN_PSEUDO_LOC=1`. UiInput applies it at startup, before the first scene builds its text.
+  - Or press **F10** in the debug overlay. Screens built afterwards show it; reopen a menu to see it.
+  - Release exports strip `game/core/debug/`. Nothing outside it names `PseudoLoc` (UiInput loads it by path; `test_pseudo_locale.gd` checks this), and `enable()` refuses in a non-debug build.
+- **The screen walk** (`tests/unit/test_pseudo_loc_screens.gd`). One test per screen group, each at 100% and 130% text (UiSettings `text_scale`), on a 1920 x 1080 canvas.
+  - Groups: the title with the Settings hub and every page and the Memories gallery; the field menu (root, Swell, Quit); every party page; the map, the bestiary and the codex; the shop and the inn; save and load; the dialogue box with every compiled line and every choice set, and the backlog; the objective line (every objective), the tip card (every tip), the interaction prompt (every verb) and the area title (every location); every battle capture state and the battle pause.
+  - The headless window is square, so the test sets the root's `content_scale_aspect` to `keep`, or anchored screens would lay out on a 1920 x 1920 canvas.
+- **The rule** (`tests/text_fit_probe.gd`, `TextFitProbe`). The probe first settles the screen: a test never ends a frame, so it grows each control to its minimum size the way its grow direction says, and sorts every container.
+  - It then measures every visible Label, Button and RichTextLabel.
+  - **Fail, "overflows":** the text's glyphs leave their box. The box is the nearest Panel, PanelContainer or NinePatchRect around the text: an ancestor, or else the smallest one on the screen holding the label's centre (menus draw their panels beside their labels). It is also cut by every clipping ancestor (not along a scroll: a ScrollContainer, or a clip inside a page that answers `max_scroll()`, like the backlog and the codex text) and by the 1920 x 1080 reference.
+    - Glyphs, not line boxes: a badge's line box may graze its panel while its digits sit well inside. An accent over a capital may rise past the font's ascent, as the font intends.
+    - A PanelContainer that grows past its own box fails the same way.
+  - **Fail, "clipped":** text cut with no sign of it: `clip_text` with no ellipsis, a wrapped label whose `max_lines_visible` hides lines with no ellipsis, a RichTextLabel that hides lines it cannot scroll to, or one word wider than a wrapping label.
+  - **Warning, "trimmed":** an ellipsis. The player sees the cut, and the full text is usually elsewhere (a detail pane). The test prints these for review and never fails on them. **"Grew"** (a PanelContainer grew but still fits its box) is also a warning.
+  - Overflows in screens another track owns are listed in the test's `KNOWN` with their request task. They print as warnings until the owner fixes them and deletes the row.
+- **`HudLayout.wrap_upward(label)`:** the fix for a help or hint line at a panel's foot. It wraps onto as many lines as the text needs and grows upward from the foot. A line that fits keeps its rect and alignment, so no screenshot moved. A shorter text later gives the extra lines back (a grown Control never shrinks on its own, so it refits on `minimum_size_changed`, and on `draw` for a text set while hidden).
+  - Used by the field menu, the shop and the inn, the Swell input panels, and every FieldSubmenu page (Items, Equip, Lattice, Status, Formation, Memories, the battle pause).
+- **Other fixes:**
+  - `EnemyPageView.max_width` (set by the bestiary and the Read panel): the stat grid drops from four pairs a row to two, then one, when four would push the page past its frame.
+  - MenuPage headers ellipsize instead of running past the page.
+  - The shop and the inn now follow the player's text size (`UiSettings.follow`), which they had never done.
+- **Findings and requests:** `docs/kb/tasks/M2/M2-UI-28-pseudo-localisation.md`.
 
 ## Party pages, Quit to Title and the battle pause (M2-MNU-01..05)
 
@@ -626,3 +698,35 @@ SPEC §6.11: a "Memories" scene-replay gallery, reached from the title. It repla
   - `tests/unit/test_memories.gd`: data, model, records, the menu by `ui_*`, and the title row (hidden, shown from the live run or a save, upward growth, open and back).
   - `tests/integration/test_memory_replay.gd`: instant sequencer, synchronous load. First verse: its `start_battle` is recorded, never emitted; `Game.state` is the same object with the same dict; the stage is freed; no autosave is waiting; it returns to the title. Dock at night: night, Asha placed, Rhen on the dock, no encounters. Pila: `replay_flags` gives the full scene. Also a locked memory, `end()` mid-scene, and the title reopening the gallery on the memory.
   - `tests/unit/test_input_parity_memories.gd`: keys, pad and mouse from the title row, and the wheel.
+
+## Menu motion (M2-MNU-303)
+
+The playtest note "parts look primitive": the menus snapped. They now move, briefly, and Reduced motion still makes everything instant.
+
+- **Page transitions (`MenuMotion`, game/ui/menus/menu_motion.gd; data game/data/ui/menu_motion.json).** The field menu and every `FieldSubmenu` page (Lattice, Equip, Items, Status, Formation, Memories, the battle pause, the dialogue backlog) fade in while rising `slide_px` (18 at the reference) over `open_sec` (0.18 s, cubic ease-out), and fade out while sinking over `close_sec` (0.12 s, ease-in; shorter when closed while still coming in). The slide moves the centred root's offsets and re-stretches its UiFrame covers on every step, so the scrim and caustics never slide.
+  - Over the open world (the field menu from the field, the battle pause over a fight) the scrim fades with the page. A page opened over another menu (`FieldSubmenu.over_menu`, set by `FieldMenu._open_child`) keeps the same backdrop still at full strength and fades only its content; when it closes its backdrop goes at once and the field menu's content fades back in over `return_sec` (0.12 s), so there is never a double scrim. The field menu does the same when the bestiary, codex, map or Settings hub closes over it.
+  - **`closed` keeps its meaning.** `close()` refuses input at once (`is_open()` is false), lifts the pause and emits `closed` at once; a new `gone` signal follows once the fade is over, and `mount()` / `FieldMenu.open_in()` free their CanvasLayer on `gone`. A closing page sets every node's `mouse_filter` to ignore, so it never takes the pointer while it fades (it used to hide at once for that, M2-UI-26).
+  - Nothing is written before the tween's first step, so a test that runs no frames sees a page at rest. Tests drive a transition with `motion().advance(sec)` / `motion().finish()`.
+  - The bestiary, codex, zone map, save and settings screens are not `FieldSubmenu`s and keep their own (instant) behaviour.
+- **Cursor easing.** `MenuPage` already eased its cursor (`cursor_sec`, quad ease-out, the mote lagging `mote_lag_sec`) and nudged the cursor row's text; Reduced motion jumps. Two small additions, shared with the UI track: `cursor_rect()` (the frame's rect now) and `settle()` (ends the cursor's slide and the nudges at their targets; tests). `MenuMotion.follow_reduced_motion(root)` keeps an open menu's MenuPages on the setting, so turning Reduced motion on in Settings over the field menu or the battle pause reaches their cursors at once.
+- **Reduced motion and captures.** Under Reduced motion (or a duration of 0, or a root outside the tree) both transitions are instant: `closed` and `gone` together, the page hidden at once. Captures run 30 settle frames at a fixed 60 fps (0.5 s), longer than any duration, so every field menu and party page shot grabs the page at rest and the baselines are unchanged (`test_menu_motion` checks the durations against shots.json's settle frames).
+- **Focus sounds (audio's `ui_sfx.json`).** Nothing in a page calls a sound. The FieldSubmenu, Lattice, Equip, Items and Formation hooks were `pending`; their classes, signals and watch expressions match the pages now, so `pending` is cleared and the data check validates them. New rows (appended): `StatusMenu` (the hero list's cursor), `MemoriesMenu` (column change, both cursors, `memory_chosen`) and `BattlePauseMenu` (level, the rows' cursor); each also plays `ui_menu_open` / `ui_menu_close`. `test_menu_motion` executes every watch expression of the menus track's hooks on the real pages.
+
+## Ch9: the held-input prompt, the act card, and names not yet learned (M3-C09-05)
+
+- **`HoldPrompt`** (`game/ui/prompts/hold_prompt.gd`; data `game/data/ui/hold_prompt.json`) is the no-fail held input's prompt: the Ebbing's "Hold to raise the staff", and act3_ending E4's later. It is one small plate at the bottom centre, holding a keycap and a verb. The keycap names the held action's binding for the device used last (`InputNames`; it follows UiInput's shared tracking, M2-UI-26).
+  - **No meter, no count, no fail.** Holding lights the keycap (`held_fill`/`held_border` palette roles). Letting go lets the plate breathe, easing between `breath_low` and full over `breath_sec`, while the scene waits. With reduced motion it stays steady.
+  - `CutsceneHoldGate` (`game/cutscene/`) instances it in place of its old `HintLabel`. Its data keeps the canvas layer and `bottom_px`. `gate.tick(delta, held)` passes `held` to `prompt.set_held`.
+  - API: `show_prompt(key)`, `set_held(bool)`, `hide_prompt()`, `advance(delta)`.
+- **`ActCard`** (`game/ui/cards/act_card.gd`; data `game/data/ui/act_card.json`) is a title card on black.
+  - `show_act(n)` shows the act's numeral line ("Act II", BannerLabel small caps) over a centred OrnamentRule and its name ("The Truth", TitleLabel), loc keys from `acts`. `show_caption(key)` shows one line alone: the Prologue's "One month earlier." is the same shape.
+  - The black is whole from the first frame and stays after the words fade out (`finished`), so the next scene fades in from it. `hide_card()` takes it away.
+  - `ActCard.open_in(parent)` gives it its own layer. `listen(seq)` shows the act from `<<event act_card N>>`.
+  - **Not wired yet:** the event is Systems' (M3-C09-09), and swapping B11's caption for it is M3-C09-201.
+- **`CharacterNames`** (`game/ui/names/character_names.gd`; data `game/data/ui/character_names.json` `until_named`) is the one resolver for the name a character goes by before the party learns theirs. Pell is "The Kirru" (`CHAR_PELL_UNNAMED`) until `ch09_pell_named` (Ch9 B09), read through `Game.get_flag`, or through a reader that is passed in.
+  - Asked by: the dialogue box's speaker name (and so the backlog), `FieldMenuModel.hero_name`, `PartySheet.hero_name` (the formation, status and other party pages), and `BattleMenus.display_name` (party side only: the timeline, the party bars, the help lines).
+  - Pell's own "Pell." on the dawn road is still spoken by "The Kirru": the flag is set after the line.
+  - A Memories replay reads the live flags, so after Ch9 it names him "Pell" from his first line.
+  - The bestiary and codex have no Pell entry yet. A future entry should ask CharacterNames too.
+- **Layout:** both widgets are pinned for 21:9 and 16:10 (`test_aspect_layouts.gd` `test_hold_prompt_and_act_card`: the prompt keeps its bottom-centre margin, the black covers the screen, the title stays centred). Both are in the pseudo-loc audit (`test_pseudo_loc_screens.gd` `test_cutscene_cards_and_prompts_fit`, with the unnamed name plate).
+- **Shots:** `cutscene_hold_prompt` and `cutscene_act_card` (drivers in `game/ui/prompts/shots/` and `game/ui/cards/shots/`). **Tests:** `test_hold_prompt.gd`, `test_act_card.gd`, `test_character_names.gd`, and `test_ch09_thread.gd` `test_the_ebbing_cannot_fail`, which is unchanged and green.
