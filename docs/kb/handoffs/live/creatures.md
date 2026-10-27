@@ -526,3 +526,9 @@ RENDER-REQUEST @ a785a613: portraits:glass_skate,root_crab,fen_leech,scree_crawl
   5. **More creatures:** the Act II roster is fully built (the outline has no other foe fights: Ch13 has none, Ch14's boss is the Warden plus the flat-engine, Ch16's is people). The next gap is the **Vowbound**:
      - Kahre (Ch5) and Virel (Ch8) are callable in vowbound.json, but a call shows a primitive placeholder, as Ilun did. Now building in parallel: M3-CRE-640 and M3-CRE-641.
      - After them, Act II's Nhoa (Ch11), Hesk (Ch12) and Ethren (Ch13). They aren't in vowbound.json yet; Combat adds the rows.
+- **Act II Vowbound: design sheets written** (docs/kb/art/creatures/vowbound/nhoa.md, hesk.md, ethren.md). Build tasks M3-CRE-642/643/644 are filed as `todo`; they follow Kahre and Virel.
+  - **For Combat:** none of the three has a vowbound.json row yet. The models don't wait on stats, only their skill-to-clip maps do.
+  - **For the Lead (no human question):** two palette calls are flagged in the sheets, each with a default that stays inside the palette rules:
+    - Hesk's "white light" is drawn as glimmer_bound on gauze-white cords; a true white-gold holy light would need a palette ADR.
+    - Ethren is lacquer with gold only on the edges, to hold gold_leaf's 5%-of-frame budget; a fully gold figure would need a Sanctum exception.
+  - **For rendering:** Nhoa's Farewell-Tide rising column is the one bound-light exception vowbound.md names. color_script.md should say so; it's your file.
