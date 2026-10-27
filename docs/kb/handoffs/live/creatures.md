@@ -352,4 +352,9 @@ RENDER-REQUEST @ b5e05d2f: creature_drownbell, creature_drownbell_toll, creature
   - **Checks run:** Godot creature 27/0, post_import 21/0, validate_data, taskboard, manifest, Blender verify identical.
 - **Kit-wide finding (to fix later, M3 polish):** every creature GLB's clips play one frame (1/30 s) late in the file; a hit authored to peak at 0.10 s peaks at 0.13 s. The hit snap (0.1 s) still lands near half the recoil, so nothing is broken. Fixing it rebuilds all 29 creatures, so it waits for a batch rebuild.
 RENDER-REQUEST @ 10f21a17: creature_lamp_engine, creature_lamp_engine_opened; why: M3-CRE-623 new Act II boss, never rendered (no baselines); check the battle-distance read, the closed-seam glow, and the hub and lamp teals reading apart.
+- **MERGE-READY @ 21125780: M3-CRE-624, the Avalanche Ram (Ch12 boss, worktree agent).**
+  - 15.2k triangles; a woolback grown huge, with frozen fleece locks, partings that glow spawn_wound, and the herd-cord.
+  - Measured from the GLB: the head at 2.86 m; hooves solved to y 0 in every clip; the KO lies down without going below the floor.
+  - **Checks run:** Godot creature 28/0, post_import 21/0, Blender verify identical (and the Lamp Engine's again on the merged tree), validate_data, taskboard, manifest, lint, format.
+RENDER-REQUEST @ 21125780: creature_avalanche_ram; why: M3-CRE-624 new Act II boss, never rendered (no baseline); check the chest's front, the charge's raised foreleg, and the muzzle length at portrait distance.
 
