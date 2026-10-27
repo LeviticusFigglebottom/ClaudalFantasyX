@@ -492,6 +492,18 @@ def naming_rite() -> np.ndarray:
     return finish(buf, fade_s=1.6)
 
 
+def float_ring_bell() -> np.ndarray:
+    """The little bell at the scoring ring (M3-AUD-824; act1_ch07.md §6): the float strikes the ring, the bell swings
+    twice on its bracket and rings over the arena; small and bright, above the score's splash."""
+    g = rng(SEED + 95)
+    n = _n(3.2)
+    x = np.zeros(n)
+    for k, (at, vel) in enumerate(((0.0, 0.55), (0.42, 0.35))):
+        place(x, tower_bell(88.0, vel, seed=SEED + 96 + k, t60=2.4, dark=0.15), at)
+    st = np.stack([x, x], 1)
+    return finish(arena(st, SEED + 97, mix=0.22, tail=0.8)[:, 0], fade_s=0.4)
+
+
 # --------------------------------------------------------------------------- render
 
 ONE_SHOTS = {
@@ -511,6 +523,7 @@ ONE_SHOTS = {
     "whistle_short": lambda: whistle("short"),
     "whistle_end": lambda: whistle("end"),
     "naming_rite": naming_rite,
+    "float_ring_bell": float_ring_bell,
 }
 
 

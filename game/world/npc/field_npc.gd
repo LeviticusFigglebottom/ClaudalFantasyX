@@ -516,7 +516,7 @@ func _walk_speed() -> float:
 ## The heading it rests on: toward its chat partner while they chat, else its resting heading.
 func _rest_heading() -> float:
 	if chatting():
-		var d := partner.position - position
+		var d := partner_offset()
 		return HeroLocomotion.yaw_of(Vector3(d.x, 0.0, d.z))
 	return rest_yaw
 
@@ -535,6 +535,13 @@ func _player_free_again() -> bool:
 	return talk_sec >= _num("talk_unheld_sec")
 
 
+## The partner's offset from this node in this node's parent space (the partner may sit under another parent: a
+## villager inside a cutscene actor), planar.
+func partner_offset() -> Vector3:
+	var d := _to_parent(partner.global_position) - position
+	return Vector3(d.x, 0.0, d.z)
+
+
 # --- chat pairs ---------------------------------------------------------------------------------------
 
 
@@ -544,7 +551,7 @@ func chatting() -> bool:
 		return false
 	if mode != Mode.REST or partner.mode != Mode.REST:
 		return false
-	var d := partner.position - position
+	var d := partner_offset()
 	if Vector2(d.x, d.z).length() > _sub("chat", "max_distance_m"):
 		return false
 	return _bout_on if _chat_lead() else partner._bout_on

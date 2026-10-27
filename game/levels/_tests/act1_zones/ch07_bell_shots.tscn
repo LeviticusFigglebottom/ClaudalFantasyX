@@ -1,0 +1,13 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://game/levels/_tests/act1_zones/act1_zone_rig.gd" id="1_rig"]
+[ext_resource type="PackedScene" path="res://game/levels/ch07/tamsule_bell_galleries/tamsule_bell_galleries.tscn" id="2_zone"]
+
+[node name="Ch07BellShots" type="Node3D"]
+script = ExtResource("1_rig")
+zone_scene = ExtResource("2_zone")
+flags = PackedStringArray("ch07_saw_galleries")
+views = {
+"Galleries": [[-34.31, 7.6, -13.86], [0.0, 12.0, 0.0], 62.0],
+"Moorings": [[-19.19, 4.2, -23.7], [-12.05, 0.6, -17.2], 55.0]
+}

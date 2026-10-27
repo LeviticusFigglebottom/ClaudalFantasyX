@@ -280,8 +280,11 @@ func test_a_body_without_contacts_falls_back_to_distance_and_a_stalled_one_to_st
 	assert_eq(f.contact_source, &"tree", "markers exist")
 	_frames(f, w, WALK_MPS, 10.0 / WALK_MPS)  # the tree is never advanced
 	var stall := float((d["contacts"] as Dictionary)["stall_m"])
-	var stalled := int(floor((10.0 + stride * float(d["first_step"])) / stall))
-	assert_eq(_rows("hero_step_").size(), stalled, "a body that does not animate still steps every stall_m")
+	# M3-AUD-812: one step at stall_m, then walk_step_m strides (hero-integration's clips without footfall markers)
+	var first_at := stall - stride * float(d["first_step"])
+	var stalled := 1 + int(floor((10.0 - first_at) / stride + 1e-6))
+	assert_true(f.stalled, "it noticed the stall")
+	assert_between(_rows("hero_step_").size(), stalled - 1, stalled + 1, "after the stall it walks at walk_step_m")
 	f.free()
 	w.free()
 

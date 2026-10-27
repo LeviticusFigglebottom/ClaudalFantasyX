@@ -54,11 +54,11 @@ static func load_data() -> Dictionary:
 	return parsed if parsed is Dictionary else {}
 
 
-## Ends every villager's talk under `zone` (a bark has finished; HalunaStory).
+## Ends every villager's talk under `zone`, VillagerLayer's included (a bark has finished; HalunaStory).
 static func end_talks(zone: Node) -> void:
 	if zone == null:
 		return
-	for node: Node in zone.find_children(NODE_NAME, "", true, false):
+	for node: Node in zone.find_children("*", "FieldNpc", true, false):
 		var npc := node as FieldNpc
-		if npc != null and npc.is_talking():
+		if npc.is_talking():
 			npc.end_talk()

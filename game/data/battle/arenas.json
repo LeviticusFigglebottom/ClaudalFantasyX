@@ -11,6 +11,7 @@
       "ash_terrace_lanternfall": "res://assets/environments/arenas/ash_terrace_lanternfall/ash_terrace_lanternfall.tscn",
       "brine_shoals_afternoon": "res://assets/environments/arenas/brine_shoals_afternoon/brine_shoals_afternoon.tscn",
       "salvage_camp_burning": "res://assets/environments/arenas/salvage_camp_burning/salvage_camp_burning.tscn",
+      "wall_head_storm": "res://game/battle/arenas/wall_head_storm.tscn",
       "seawall_stairhead_storm": "res://assets/environments/arenas/seawall_stairhead_storm/seawall_stairhead_storm.tscn",
       "seawall_stairhead_hoist": "res://assets/environments/arenas/seawall_stairhead_hoist/seawall_stairhead_hoist.tscn",
       "seawall_stairhead_surge": "res://assets/environments/arenas/seawall_stairhead_surge/seawall_stairhead_surge.tscn",

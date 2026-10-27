@@ -4,7 +4,8 @@ extends TestCase
 ## built) → B01 (the chapter becomes 7) → the B02 barks → B03 Tavi ("She couldn't swim, Tavi.";
 ## Pio's band) → the Bell's galleries (B04, Liss's line unanswered; the checkpoint autosave) → the
 ## naming at the rim (B05), which hands off to the Reefball match through `start_reefball
-## tidecup_opening` → the STAND-IN match (ch07_tidecup_played, no win) and its return to CatchPool →
+## tidecup_opening` → the match scene (TidecupMatch, M3-C07-1206; the engine's AI plays both sides here),
+## which sets ch07_tidecup_played (and the win flag on a win only) and returns to CatchPool →
 ## B07 (Tavi withdraws) → the moorings side scene (B09) → the port's afternoon barks (B08) → B10 →
 ## Ch8's ch08/corrow at Mole (M3-C08-02). Instant sequencers; every hand-off is recorded
 ## through ZoneStory.hand_off. Also: B07 is identical win or lose, and no story script reads the
@@ -20,6 +21,7 @@ const DIALOGUE_DIR := "res://game/data/dialogue"
 const CHAPTERS := "res://game/data/flow/chapters.json"
 const WON := "ch07_tidecup_won"
 const MATCH_ID := "tidecup_opening"
+const MATCH_SCENE := "res://game/levels/ch07/tidecup_match/tidecup_match.tscn"
 ## Scripts that may read the win flag: only where the match's reward is given (act1_ch07.md §3,
 ## §5.4). The reward is the Reefball match's own, so no .dlg gives it yet. Dialogue paths, relative
 ## to DIALOGUE_DIR.
@@ -199,10 +201,21 @@ func _naming_and_match() -> void:
 	assert_eq(str(ev.get("name", "")), "start_reefball", "B05 ends on the hand-off to the Reefball match")
 	var args: Array = ev.get("args", [])
 	assert_eq(str(args[0]) if args.size() == 1 else "", MATCH_ID, "the Reefball agent's story match")
-	# The stand-in match: played, never won, and back to the pool the way the match returns.
-	assert_true(bool(Game.get_flag(&"ch07_tidecup_played")), "the stand-in sets ch07_tidecup_played")
-	assert_false(bool(Game.get_flag(StringName(WON))), "and reports no win")
-	assert_eq(hand_offs.back(), [ZoneStory.KIND_GO, {"location": String(BELL_ID), "spawn": "CatchPool"}])
+	assert_eq(hand_offs.back(), [ZoneStory.KIND_SCENE, MATCH_SCENE], "the naming hands off to the match")
+	assert_false(bool(Game.get_flag(&"ch07_tidecup_played")), "not played until the match ends")
+	# The match itself: the AI on both sides; then played (won or not) and back to the pool.
+	var routed: Array = []
+	FlowRouting.record = func(change: Array) -> void: routed.append(change)
+	var m := (load(MATCH_SCENE) as PackedScene).instantiate() as TidecupMatch
+	m.autoplay = true
+	_host().add_child(m)
+	FlowRouting.record = Callable()
+	assert_true(m.outcome in [ReefballMatch.WIN, ReefballMatch.LOSS, ReefballMatch.DRAW], "the match ended")
+	assert_true(bool(Game.get_flag(&"ch07_tidecup_played")), "the match sets ch07_tidecup_played")
+	assert_eq(bool(Game.get_flag(StringName(WON))), m.outcome == ReefballMatch.WIN, "the win flag on a win only")
+	assert_eq(routed, [[BELL_ID, &"CatchPool"]], "back to the catch-pool")
+	_host().remove_child(m)
+	m.free()
 	assert_false(_trigger(&"rim").is_available(), "the naming plays once")
 
 

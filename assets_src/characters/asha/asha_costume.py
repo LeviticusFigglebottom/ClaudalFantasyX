@@ -266,8 +266,44 @@ def collar(fields: Fields, rect, height: float, n: int = 48) -> Part:
 # ---------------------------------------------------------------------------------------------
 # Skirts and sash
 # ---------------------------------------------------------------------------------------------
+def convex_radii(r: np.ndarray, D: np.ndarray) -> np.ndarray:
+    """M1-CHR-15: the radii along the rays D (unit, horizontal) of the convex hull of the points r * D. A skirt row
+    cast below the crotch hugs each leg and pinches to the centre between them (a ray that misses both legs gets
+    r = 0); a real skirt spans the gap."""
+    Q = D[:, :2] * r[:, None]
+    pts = sorted(set(map(tuple, np.round(Q, 12))) | {(0.0, 0.0)})
+    if len(pts) < 3:
+        return r
+
+    def cross(o, a, b):
+        return (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0])
+
+    lower, upper = [], []
+    for q in pts:
+        while len(lower) >= 2 and cross(lower[-2], lower[-1], q) <= 0:
+            lower.pop()
+        lower.append(q)
+    for q in reversed(pts):
+        while len(upper) >= 2 and cross(upper[-2], upper[-1], q) <= 0:
+            upper.pop()
+        upper.append(q)
+    H = np.array(lower[:-1] + upper[:-1])
+    A, E = H, np.roll(H, -1, axis=0) - H
+    out = r.copy()
+    for i, d in enumerate(D[:, :2]):
+        den = d[0] * (-E[:, 1]) - d[1] * (-E[:, 0])  # solve t d - s e = a
+        ok = np.abs(den) > 1e-15
+        t = np.where(ok, (A[:, 0] * (-E[:, 1]) - A[:, 1] * (-E[:, 0])) / np.where(ok, den, 1.0), -1.0)
+        sp = np.where(ok, (d[0] * A[:, 1] - d[1] * A[:, 0]) / np.where(ok, den, 1.0), -1.0)
+        hit = ok & (t > 0.0) & (sp >= -1e-9) & (sp <= 1.0 + 1e-9)
+        if hit.any():
+            out[i] = max(float(r[i]), float(t[hit].max()))
+    return out
+
+
 def skirt(fields: Fields, name: str, rect, z_top: float, hem_fn, off: float, n_th: int, n_rows: int, folds: int,
-          fold_amp: float, flare: float, back_inset: float | None, seed: int) -> Part:
+          fold_amp: float, flare: float, back_inset: float | None, seed: int,
+          convex: tuple[float, float] | None = None) -> Part:
     part = Part(name)
     part._mat = "cloth"
     lm = fields.lm
@@ -289,6 +325,10 @@ def skirt(fields: Fields, name: str, rect, z_top: float, hem_fn, off: float, n_t
         r = cast_last(fn, O, D, 0.5 * S)
         if prev_r is not None:
             r = np.maximum(r, prev_r + flare * (prev_z - z))
+        if convex:  # M1-CHR-15: below z0, blending in by z1, span the gap between the legs (the skirt panels carry it)
+            k = np.clip((convex[0] - z) / max(convex[0] - convex[1], 1e-9), 0.0, 1.0)
+            if (k > 0.0).any():
+                r = r + (convex_radii(r, D) - r) * (k * k * (3.0 - 2.0 * k))
         prev_r, prev_z = r, z
         amp = fold_amp * S * t ** 1.3
         rr = r * (1.0 + 0) + amp * (np.sin(folds * th + phase) + 0.4 * np.sin(2.3 * folds * th + 1.7 * phase))
@@ -531,7 +571,7 @@ def build_costume(body, params: dict) -> dict[str, Part]:
                               56, 22, 11, 0.012, 0.16, 0.0015 * S, int(params["seed"]))
     out["SkirtInner"] = skirt(fields, "SkirtInner", ATLAS["skirt_inner"], float(lm.P("crotch")[2]) - 0.05 * S,
                               lambda th: np.full_like(th, 0.065 * S), 0.004 * S, 48, 12, 9, 0.008, 0.13,
-                              0.0012 * S, int(params["seed"]) + 1)
+                              0.0012 * S, int(params["seed"]) + 1, convex=(z_waist, z_waist - 0.01 * S))
     # 4. sash
     out["Sash"] = sash(fields, out["SkirtOuter"], out["Vest"], ATLAS["sash"], ATLAS["sash_tails"],
                        float(params["sash_width_m"]) * S, z_waist - 0.02 * S, int(params["seed"]) + 2)
@@ -563,10 +603,18 @@ def build_costume(body, params: dict) -> dict[str, Part]:
 
 
 KEEP_ABOVE_KNEE = 0.16  # m (at s = 1) of thigh kept above the knee joint under the skirts
+SKIRT_CUT_BELOW_WAIST = 0.08  # m (at s = 1): the body under the skirts is cut only above this far below the waist
 
 
-def coverage(body, params: dict, V: np.ndarray, reg: np.ndarray) -> np.ndarray:
-    """True for body vertices hidden under opaque clothing (with a margin), asha.md §8.1."""
+def z_keep_top(lm) -> float:
+    """Height of the cut edge of the hidden thighs under the skirts (coverage)."""
+    return max(float(lm.side_pt("knee", sd)[2]) for sd in ("L", "R")) + KEEP_ABOVE_KNEE * lm.S
+
+
+def coverage(body, params: dict, V: np.ndarray, reg: np.ndarray, under_skirt: bool = False) -> np.ndarray:
+    """True for body vertices hidden under opaque clothing (with a margin), asha.md §8.1. With `under_skirt`, the
+    body kept under the skirts instead (M1-CHR-15: the skirt panels tent away from the legs, so the legs and hips
+    below the panels' pivot stay whole; build_asha decimates them, as nothing sees them through the cloth)."""
     lm = body.lm
     S = lm.S
     chart = TorsoChart(lm)
@@ -582,7 +630,12 @@ def coverage(body, params: dict, V: np.ndarray, reg: np.ndarray) -> np.ndarray:
     legs = (reg == "leg_L") | (reg == "leg_R") | torso
     # M1-CHR-14: the knees and shins stay under the skirts (a stride or a kneel carries them out through the
     # cloth, and a deleted shin left a floating foot); only the thighs and hips are cut
-    z_keep = max(float(lm.side_pt("knee", sd)[2]) for sd in ("L", "R")) + KEEP_ABOVE_KNEE * S
+    z_keep = z_keep_top(lm)
     lo = np.maximum(np.maximum(hem, 0.065 * S) + 0.045 * S, z_keep)
     skirt = legs & (V[:, 2] < z_waist - 0.03 * S - m * 0.5) & (V[:, 2] > lo)
-    return vest | bodice | skirt
+    # M1-CHR-15: only the band above the skirt panels' pivot is cut (a cut edge below it showed through the open hem
+    # when a panel tented away from a raised thigh)
+    cut = skirt & (V[:, 2] > z_waist - SKIRT_CUT_BELOW_WAIST * S)
+    if under_skirt:
+        return skirt & ~cut & ~(vest | bodice)
+    return vest | bodice | cut

@@ -68,3 +68,12 @@ physics query is needed, because audio tests the feet against the shapes. Wanted
   sets the gait rather than the pace; test_footstep_contacts_audio.gd covers it.
 
 ## Review log
+- 2026-10-27 combat (hero-integration), for the HeroFieldActor half:
+  - **Confirmed and exposed.** `HeroBody` (`HeroFieldActor.NAME`) carries `hero_id` and
+    `signal foot_contact(foot: StringName, run: bool)` (`&"l"` / `&"r"`). It is emitted once per contact marker of
+    the clip the body actually shows (the live slot of loco / act_a / act_b, so walk, run, starts, stops, turns and
+    cutscene `play_clip`s). `run` comes from the clip, so audio doesn't need the speed threshold. Added in 696fa2f9
+    and still there after big10.
+  - The tree node names loco / act_a / act_b / ts_a / ts_b / mode stay (ADR 0190's API list).
+  - New since then: `HeroFootIK` (M2-HER-1116) moves the feet on uneven ground; the body's `global_position` is
+    unchanged. Characters' marker half and the levels' surface areas are still theirs to confirm.

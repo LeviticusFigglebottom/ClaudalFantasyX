@@ -2,6 +2,14 @@
   "version": 1,
   "doc": "Music cues and where they play (M2-AUD-02; docs/kb/tech/audio_runtime.md). cues: id -> file (one stream) or stems (synchronized layers of equal length; start_stems are audible at the start, the rest start silent), volume_db (0: assets ship at -16 LUFS), resume (a cue that comes back, after a battle say, carries on from where it stopped). Looping comes from each file's import settings (render_all.py writes them from the .loop.json sidecars). zones: scene -> the zone's music and ambience beds, switched under the router's fade (SceneRouter.scene_swapping). A missing `music` key leaves the music as it is; \"silence\" fades it out. variants: the first whose `flag` is set replaces the row's keys. battle: the cue per encounter (else default), and phases: an engine phase_changed id -> the stems to bring in or take out over sec. Cue ids are the .dlg @music ids (vertical_slice.md §6). tools/validate_data.py checks every file, scene and flag.",
   "cues": {
+    "oruvel_raft": {"file": "res://assets/audio/music/oruvel.ogg", "resume": true, "_note": "M3-AUD-823: the scripts' id for `oruvel`: Ch1's raft-town bed (C1-02 onward). Same file, so the cue is composed once."},
+    "oruvel_underway": {"file": "res://assets/audio/music/lamp_diver.ogg", "resume": true, "_note": "M3-AUD-823: the scripts' id for `lamp_diver`: Ch1's drowned-tower dive (C1-05, C1-06). Same file, so the cue is composed once."},
+    "haluna_wake": {"file": "res://assets/audio/music/pilgrims_wake.ogg", "resume": true, "_note": "M3-AUD-823: the scripts' id for `pilgrims_wake`: Ch4's feast at the wall, Asha's living funeral (C4-03, C4-04). Same file, so the cue is composed once."},
+    "brightwater_crossing": {"file": "res://assets/audio/music/brightwater_ferry.ogg", "resume": true, "_note": "M3-AUD-823: the scripts' id for `brightwater_ferry`: Ch4's dawn ferry across the strait. Same file, so the cue is composed once."},
+    "pemakar_terraces": {"file": "res://assets/audio/music/terraces_of_ash.ogg", "resume": true, "_note": "M3-AUD-823: the scripts' id for `terraces_of_ash`: Ch5's Pemakar terraces. Same file, so the cue is composed once."},
+    "ashcrown_trial": {"file": "res://assets/audio/music/ashcrown.ogg", "resume": true, "_note": "M3-AUD-823: the scripts' id for `ashcrown`: Ch5's Ashcrown temple trial. Same file, so the cue is composed once."},
+    "tamsule_port": {"file": "res://assets/audio/music/tamsule.ogg", "resume": true, "_note": "M3-AUD-823: the scripts' id for `tamsule`: Ch7's Tamsule port. Same file, so the cue is composed once."},
+    "coilspire_flues": {"file": "res://assets/audio/music/coilspire.ogg", "resume": true, "_note": "M3-AUD-823: the scripts' id for `coilspire`: Ch8's Coilspire flues (replaces the sequencer's temple_trial stand-in). Same file, so the cue is composed once."},
     "battle_standard": {
       "file": "res://assets/audio/music/battle_standard.ogg",
       "_note": "the M1-AUD-02 prototype (v1), kept for A/B; battles play v2"
@@ -223,7 +231,75 @@
       "file": "res://assets/audio/music/drowned_choir.ogg",
       "resume": true,
       "_note": "Ch16, the Drowned Choir. Act II sketch (M3-AUD-805); no zone row until ch16/drowned_choir/drowned_choir.tscn exists"
+    },
+    "tidecup_after": {
+      "file": "res://assets/audio/music/tidecup_after.ogg",
+      "_note": "Ch7 B07 After the Bell (ch07_after_the_bell.dlg) and its B10 reprise (ch07_leaving_tamsule.dlg): a through-composed cutscene cue (M3-AUD-822)"
+    },
+    "tidecup_crowd": {
+      "file": "res://assets/audio/music/tidecup_crowd.ogg",
+      "_note": "Ch7 B04 the galleries (ch07_galleries.dlg): the packed bowl under the Bell, a loop under the bell_hum layer (M3-AUD-822)"
+    },
+    "virel_bound": {
+      "file": "res://assets/audio/music/virel_bound.ogg",
+      "_note": "Ch8 B06 the binding of Virel (ch08_binding.dlg): a sting, the Hush's first phrase on the spire reed (M3-AUD-822)"
+    },
+    "corrow_aftermath": {
+      "file": "res://assets/audio/music/corrow_aftermath.ogg",
+      "_note": "Ch8 B18 the cut rope (ch08_cut_rope.dlg): rain and a single plucked string, a loop to the chapter's end (M3-AUD-822)"
+    },
+    "seawall_hold": {
+      "stems": [
+        "res://assets/audio/music/seawall_hold_p1.ogg",
+        "res://assets/audio/music/seawall_hold_p2.ogg",
+        "res://assets/audio/music/seawall_hold_p3.ogg"
+      ],
+      "start_stems": [
+        0
+      ],
+      "_note": "Ch8 B10-B14, the seawall's three waves (ch08_first_down.dlg, ch08_hoist.dlg, ch08_stranger_on_wall.dlg) (M3-AUD-822). No encounter or wave rows until the set piece exists; intended: wave 2 `The Rope` -> stems_on [1], wave 3 -> stems_on [2], each over 3 s"
     }
+,
+    "hearer_hum": {
+      "file": "res://assets/audio/music/hearer_hum.ogg",
+      "_note": "Ch4 C4-06, the dock in the dark (ch04_dock_in_the_dark.dlg): the sea, the far wake, and the dead humming in the next room; a loop (M3-AUD-820); the sequencer plays it by name"
+    }
+,
+    "ysolde_theme": {
+      "file": "res://assets/audio/music/ysolde_theme.ogg",
+      "_note": "Ysolde's theme, a sketch: Ch4 C4-07 The Ink (ch04_the_ink.dlg) and C4-09 the gangplank (ch04_gangplank.dlg); a loop (M3-AUD-820); the sequencer plays it by name"
+    }
+,
+    "name_board_home": {
+      "file": "res://assets/audio/music/name_board_home.ogg",
+      "_note": "Ch4 C4-14, the name-board (ch04_name_board.dlg): the beach's star-path phrase once, resolved home (M3-AUD-820); the sequencer plays it by name"
+    }
+,
+    "the_long_way_round": {
+      "file": "res://assets/audio/music/the_long_way_round.ogg",
+      "_note": "Ch4 C4-04/C4-05, the shell is set (ch04_shell_is_set.dlg): the village's farewell song, diegetic; the sung lines' markers for @wait music= are in assets_src/music/the_long_way_round.py (M3-AUD-820)"
+    }
+,
+    "oruvel_theme": {
+      "file": "res://assets/audio/music/oruvel_theme.ogg",
+      "_note": "Ch7 B09, the Empty Moorings (ch07_empty_moorings.dlg): Ch1's Oruvel tune on one flute over the Tamsule Bell's hum (M3-AUD-820); the sequencer plays it by name"
+    }
+,
+    "tavi_kell": {
+      "file": "res://assets/audio/music/tavi_kell.ogg",
+      "_note": "Ch7 B03, Tavi (ch07_tavi.dlg), after the hold on 'She couldn't swim': solo piano (M3-AUD-820); the sequencer plays it by name"
+    },
+    "rhen_current_hum": {"file": "res://assets/audio/music/rhen_current_hum.ogg", "_note": "Ch1 C1-06, ch01_current_shaft.dlg (M3-AUD-819): Rhen hums phrase 1 of Dace's current-song (motifs.py) riding the shaft; one pass, not a loop"},
+    "going_under": {"file": "res://assets/audio/music/going_under.ogg", "_note": "Ch1 C1-15, ch01_going_under.dlg (M3-AUD-819): the roar falling away, then the whole current-song far below; ends in silence (the last note at 22.9 s)"},
+    "undertow_rising": {"stems": ["res://assets/audio/music/undertow_rising_p1.ogg", "res://assets/audio/music/undertow_rising_p2.ogg"], "start_stems": [0], "_note": "Ch1 C1-12 ch01_the_rising.dlg, C1-13 the run; Ch8 B07-B09 ch08_beacon_opened.dlg, ch08_run_back.dlg (M3-AUD-819). Loops after its intro. Intended: C1-13's run brings stem 1 (the pulse) in over 2 s; Ch8 plays stem 0 only"},
+    "corrow_night": {"file": "res://assets/audio/music/corrow_night.ogg", "resume": true, "_note": "Ch9 B01 ch09_strand.dlg, B03 and B08 ch09_the_ebbing.dlg (M3-AUD-819); no zone row until the ch08/corrow night variant exists"},
+    "dawn_road": {"file": "res://assets/audio/music/dawn_road.ogg", "_note": "Ch9 B09 ch09_the_road_out.dlg (M3-AUD-819)"},
+    "lanternfall": {"file": "res://assets/audio/music/lanternfall.ogg", "_note": "Ch5 B04-B06, Lanternfall in Pemakar (ch05_lanternfall_boats.dlg, ch05_lanternfall_weir.dlg, ch05_inn_gate.dlg; M3-AUD-821): the town's festival music, thinning to one drum that loops at the weir"},
+    "hush_second_verse": {"file": "res://assets/audio/music/hush_second_verse.ogg", "_note": "Ch5 B10, the second verse in Ashcrown's anvil court (ch05_kahre.dlg; M3-AUD-821); not looped; mir at 31.54 s, the thunder at 32.59 s"},
+    "kerrid_stair": {"file": "res://assets/audio/music/kerrid_stair.ogg", "_note": "Ch5 B05 close, Kerrid falls in at the weir (ch05_lanternfall_weir.dlg; M3-AUD-821); his motif's first statement, not looped (motifs.py KERRID_STAIR)"},
+    "liss_theme": {"file": "res://assets/audio/music/liss_theme.ogg", "_note": "Ch6 B06-B07 in the burned camp, the Brine Shoals (ch06_after_barge.dlg, ch06_liss_lantern.dlg; M3-AUD-821): Liss's theme"},
+    "raid": {"file": "res://assets/audio/music/raid.ogg", "_note": "Ch6 B03, the raid on the salvage camp (ch06_raid.dlg; M3-AUD-821): fire, a drum and the Order's hum; it leaves its first 23 s to the stillguard_hum SFX"},
+    "shoals_dusk": {"file": "res://assets/audio/music/shoals_dusk.ogg", "_note": "Ch6 B08, the camp on the wreck-ridge at night (ch06_ridge_camp.dlg; M3-AUD-821): the shoals' tune on one reed and the tide"}
   },
   "zones": [
     {
@@ -257,13 +333,23 @@
       "scene": "res://game/flow/end_card.tscn",
       "music": "hush_coda",
       "_note": "B12"
-    }
+    },
+    {"scene": "res://game/levels/ch01/oruvel/oruvel.tscn", "music": "oruvel", "_note": "M3-AUD-828: Ch1, the raft-town; the scene has landed"},
+    {"scene": "res://game/levels/ch01/oruvel_underway/oruvel_underway.tscn", "music": "lamp_diver", "_note": "M3-AUD-828: Ch1, the drowned tower; the scene has landed"},
+    {"scene": "res://game/levels/ch04/haluna_wake/haluna_wake.tscn", "music": "haluna_night", "_note": "M3-AUD-828: Ch4, Haluna's wake by night (act1_ch04.md §6: the zone plays haluna_night); the scene has landed"},
+    {"scene": "res://game/levels/ch04/brightwater_ferry/brightwater_ferry.tscn", "music": "brightwater_ferry", "_note": "M3-AUD-828: Ch4, the ferry; the scene has landed"},
+    {"scene": "res://game/levels/ch05/pemakar/pemakar.tscn", "music": "terraces_of_ash", "_note": "M3-AUD-828: Ch5, Pemakar; the scene has landed"},
+    {"scene": "res://game/levels/ch05/ashcrown/ashcrown.tscn", "music": "ashcrown", "_note": "M3-AUD-828: Ch5, the Ashcrown temple; the scene has landed"},
+    {"scene": "res://game/levels/ch06/brine_shoals/brine_shoals.tscn", "music": "brine_shoals", "_note": "M3-AUD-828: Ch6, the Shoals; the scene has landed"},
+    {"scene": "res://game/levels/ch07/tamsule/tamsule.tscn", "music": "tamsule", "_note": "M3-AUD-828: Ch7, the port; the scene has landed"},
+    {"scene": "res://game/levels/ch07/tamsule_bell_galleries/tamsule_bell_galleries.tscn", "music": "tamsule_bell_galleries", "_note": "M3-AUD-828: Ch7, the Bell's galleries; the scene has landed"},
+    {"scene": "res://game/levels/ch09/corrow_night/corrow_night.tscn", "music": "corrow_night", "_note": "M3-AUD-819/828: Ch9, Corrow's night strand"}
   ],
   "battle": {
     "default": "battle_standard_v2",
     "encounters": {
       "drownbell": "drownbell",
-      "ch01_hullgnaw": "hullgnaw"
+      "ch01_hullgnaw": "hullgnaw", "ch04_spar_wraith": "spar_wraith", "ch05_cinder_matron": "cinder_matron", "ch06_inquisitor": "stillguard_inquisitor"
     },
     "phases": {
       "flood": {
@@ -272,7 +358,7 @@
         ],
         "sec": 4.0,
         "_note": "the Flood (phase 2): low strings and the rising water come in over 4 s"
-      }
+      }, "pour": {"stems_on": [1], "sec": 3.0, "_note": "M3-AUD-828: the Cinder Matron's Pour (phase 2): its second stem over 3 s"}
     }
   }
 }

@@ -20,6 +20,9 @@ path, so no code change is needed.
 - [ ] Once big9 is on the integration branch, `game/data/ui/battle_sandbox.json` `stand_ins.{rhen,asha,toma}.scene`
       point at `res://game/hero_motion/battle/{rhen,asha,toma}_battle_actor.tscn` (three lines; the hunk is in
       `docs/kb/tech/hero_battle_proposed.patch`).
+- [ ] Also Ysolde (2026-10-27): `stand_ins.ysolde` is still a capsule, though characters' `ysolde_battle.tscn` exists.
+      Give it `"scene": "res://game/hero_motion/battle/ysolde_battle_actor.tscn", "yaw_deg": -90.0` (her contract clips
+      are placeholders until M2-HER-1115; the wrapper tunes those too).
 - [ ] The battle filter stays green; the battle shots that show heroes are re-captured, viewed and re-approved.
 
 ## Notes

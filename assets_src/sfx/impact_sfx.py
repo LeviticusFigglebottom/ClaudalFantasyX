@@ -7,13 +7,13 @@ under it, mostly below 300 Hz, so a heavy blow is felt rather than heard twice. 
 tools/audio/synth/ (SPEC §2, §9: no samples, no recordings, no generated audio). Mono, 44.1 kHz, Ogg Vorbis q4
 (mix.md §5), under assets/audio/sfx/battle/, on the Combat bus.
 
-    impact_medium_1..3     a body blow: a short sub drop (75 -> 48 Hz) and a dull low-mid knock
+    impact_medium_1..3     a body blow: a short sub drop (75 -> 48 Hz) and a dull low-mid knock (-21.2)
     impact_heavy_1..3      a heavy blow: a deeper, longer sub drop (62 -> 34 Hz), a dry crack on the transient and a
                            short low room after it (it lands as the hit-stop releases)
     impact_crushing_1..2   the heaviest: the heavy blow with a grit of debris and a long low bloom
     ko_slowmo_1..2         the last foe falling in slow motion: the air drawn in and down (a band of noise sinking
                            from 2 kHz to 300 Hz), a sub swell under it, and one muffled heartbeat at its end
-Loudness (momentary max; peaks <= -2 dBFS sample, so decoded true peaks stay <= -1 dBTP): medium -24, heavy -21,
+Loudness (momentary max; peaks <= -2 dBFS sample, so decoded true peaks stay <= -1 dBTP): medium -21.2, heavy -21,
 crushing -19, slow-mo -20 LUFS. Combat SFX are -18 (mix.md §2), so each layer stays under the hit it supports.
 
 Render:  python3 assets_src/sfx/impact_sfx.py   (or tools/audio/render_all.py --only impact_sfx)
@@ -37,7 +37,7 @@ from synth.mixer import measure, normalize_momentary, write_ogg  # noqa: E402
 OUT_DIR = os.path.join(ROOT, "assets", "audio", "sfx", "battle")
 SEED = 81600
 CEILING = -2.0
-TARGETS = {"medium": -24.0, "heavy": -21.0, "crushing": -19.0, "slowmo": -20.0}
+TARGETS = {"medium": -21.2, "heavy": -21.0, "crushing": -19.0, "slowmo": -20.0}
 VARIANTS = {"medium": 3, "heavy": 3, "crushing": 2, "slowmo": 2}
 
 
