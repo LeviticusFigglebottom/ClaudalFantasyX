@@ -10,6 +10,9 @@ extends Control
 ## Layout: game/data/ui/graphics_menu.json ("page", "help", "backdrop_alpha").
 
 signal closed
+## The close transition has finished (at once under Reduced motion); the page frees itself then
+## (M2-MNU-305, MenuMotion).
+signal gone
 
 ## The page's logic (set by the subclass before _ready).
 var page_model: SettingsPageModel
@@ -21,6 +24,7 @@ var _help: Label
 var _backdrop: ColorRect
 var _caustics: CausticBackdrop
 var _open := false
+var _motion: MenuMotion
 
 
 func _ready() -> void:
@@ -60,6 +64,12 @@ func _ready() -> void:
 	page_model.changed.connect(_render)
 	_open = true
 	_render()
+	# Over the hub, whose backdrop is the same: only the content moves.
+	MenuMotion.follow_reduced_motion(self)
+	_motion = MenuMotion.new(self)
+	_motion.gone.connect(gone.emit)
+	gone.connect(queue_free)
+	_motion.play_in(true)
 
 
 func _notification(what: int) -> void:
@@ -101,8 +111,17 @@ func close() -> void:
 	if not _open or is_busy():
 		return
 	_open = false
+	if _motion != null:
+		_motion.play_out(true)
+	else:
+		visible = false
+		gone.emit()
 	closed.emit()
-	queue_free()
+
+
+## The open and close transitions (null before _ready). Tests drive them with motion().finish().
+func motion() -> MenuMotion:
+	return _motion
 
 
 ## The value shown on `row` (tests and captures read it).

@@ -6,8 +6,6 @@ extends TestCase
 const SANDBOX := "res://game/battle/scene/battle_sandbox.tscn"
 const SEED := 20261022
 const LATER_ACTIONS := 3
-const ENEMIES := "res://game/data/battle/enemies.json"
-const ENCOUNTERS := "res://game/data/battle/encounters.json"
 
 var ctl: BattleController
 var ko_starts := 0
@@ -36,12 +34,15 @@ func test_a_creature_foe_plays_its_ko_once_then_fades_out() -> void:
 
 
 func test_a_primitive_foe_falls_once_and_is_hidden() -> void:
-	var encounter := _primitive_foe_encounter()
-	assert_ne(encounter, &"", "some encounter leads with a foe that has no model yet")
-	_start(encounter)
+	var models := CreatureModels.models()  # the wickfry has a model now: take it away for this test
+	var had: Variant = models.get("wickfry")
+	models.erase("wickfry")
+	_start(&"ch01_underway_shoals")
+	if had != null:
+		models["wickfry"] = had
 	var foe := _first_foe()
 	var f := ctl.stage.stand_in(foe.id)
-	assert_true(BattleClips.creature_of(f) == null, "%s has no model: a primitive stand-in" % foe.id)
+	assert_true(BattleClips.creature_of(f) == null, "a primitive stand-in")
 	_fell(foe)
 	var body: Node3D = f._body
 	var fallen := f.transform
@@ -131,24 +132,6 @@ func _start(encounter: StringName) -> void:
 	var reserve: Array[StringName] = []
 	ctl.start_battle(active, reserve, encounter, SEED)
 	ctl.stage.choreo.live = false
-
-
-## An encounter whose first foe has no `model` in enemies.json (a primitive stand-in) and that has a second foe, so
-## the battle goes on after the first falls. The creatures track keeps giving foes models (the Wickfry has one now),
-## so the test looks one up instead of naming it (at big9 the Stillguard Inquisitor, who yields rather than falls:
-## BattleStage.refresh_ko treats both alike).
-func _primitive_foe_encounter() -> StringName:
-	var enemies: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(ENEMIES))
-	var bare: Dictionary = {}
-	for row: Dictionary in enemies["enemies"]:
-		if str(row.get("model", "")) == "":
-			bare[str(row["id"])] = true
-	var encounters: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(ENCOUNTERS))
-	for enc: Dictionary in encounters["encounters"]:
-		var foes: Array = enc["enemies"]
-		if foes.size() >= 2 and bare.has(str(foes[0])) and not enc.has("entries"):
-			return StringName(enc["id"])
-	return &""
 
 
 func _first_foe() -> BattleCombatant:

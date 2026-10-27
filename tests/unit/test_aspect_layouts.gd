@@ -7,12 +7,17 @@ extends TestCase
 
 const SANDBOX := "res://game/battle/scene/battle_sandbox.tscn"
 const BOX_SCENE := "res://game/ui/dialogue/dialogue_box.tscn"
+const SET_PIECE_SEED := 20261027
+## The dialogue box panel's width at 16:9 (dialogue_box.tscn: centred, offsets -800 to 800), its cap (M2-ARC-09).
+const DIALOGUE_MAX_WIDTH_PX := 1600.0
 const SEQUENCER_CONFIG := "res://game/data/cutscene/sequencer.json"
 const LINE_KEY := &"DLG_CH02_BEACH_004"
 const TEST_DIR := "user://test_aspect_saves"
 const HALUNA := &"ch02/haluna"
 const BEACH := Vector3(-8.0, 0.0, 6.0)
 const MAP_FLAGS: Array[StringName] = [&"ch02_met_asha", &"ch02_tideline_won", &"ch02_ate_at_nemes"]
+const REEFBALL_CHOICE := "res://game/ui/reefball/shots/reefball_hud_choice.tscn"
+const REEFBALL_GOAL := "res://game/ui/reefball/shots/reefball_hud_goal.tscn"
 ## The checks for a full-screen menu's frame (UiFrame.centre: centred, reference-sized) and a cover.
 const FRAME := "frame"
 const COVER := "cover"
@@ -98,10 +103,21 @@ func test_battle_hud() -> void:
 		_sweep("battle %s" % script, _battle.bind(script), _battle_pieces)
 
 
+## M3-UI-100: a Ch8 set piece: the stair meter keeps its top-centre pin beside the timeline and help line.
+func test_set_piece_hud() -> void:
+	_sweep("battle set piece", _set_piece, _set_piece_pieces)
+
+
 func test_battle_panels_and_pause() -> void:
 	for script: StringName in [BattleCaptureScript.SCRIPT_READ_PANEL, BattleController.SCRIPT_DEFEAT]:
 		_sweep("battle %s" % script, _battle.bind(script), _battle_pieces)
 	_sweep("battle pause", func() -> Node: return BattlePauseMenu.open_in(ParityHost.scene_root()), _framed)
+
+
+## M3-UI-01: the Reefball HUD on a pass choice (menu and preview open) and just after a goal (banner).
+func test_reefball_hud() -> void:
+	for driver: String in [REEFBALL_CHOICE, REEFBALL_GOAL]:
+		_sweep(driver.get_file().get_basename(), _reefball.bind(driver), _reefball_pieces)
 
 
 ## Built at 16:9, then the window changes under it: the frame recentres and the scrims follow.
@@ -247,11 +263,21 @@ func _framed(root: Node) -> Array:
 
 
 func _box_pieces(box: Node) -> Array:
+	_box_width_capped(box.get_node(^"Panel") as Control)
 	return [["box panel", box.get_node(^"Panel"), "bottom"]]
+
+
+## M2-ARC-09: the box's panel is never wider than at 16:9 (centred at the bottom on wider screens).
+func _box_width_capped(panel: Control) -> void:
+	assert_true(
+		panel.size.x <= DIALOGUE_MAX_WIDTH_PX + 0.5,
+		"the dialogue box is at most %d px wide (%s)" % [DIALOGUE_MAX_WIDTH_PX, panel.size.x]
+	)
 
 
 func _cutscene_pieces(o: Node) -> Array:
 	var overlay := o as CutsceneOverlay
+	_box_width_capped(overlay.box.get_node(^"Panel") as Control)
 	return [
 		["letterbox top", overlay.bar_top, "top"],
 		["letterbox bottom", overlay.bar_bottom, "bottom"],
@@ -492,6 +518,20 @@ func _field_hud() -> Node:
 	return root
 
 
+## A Reefball HUD capture driver (M3-UI-01), on its own layer as a match scene would hold it.
+func _reefball(path: String) -> Node:
+	var layer := CanvasLayer.new()
+	ParityHost.scene_root().add_child(layer)
+	var shot := (load(path) as PackedScene).instantiate() as ReefballHudShot
+	shot.fresh_settings = false
+	layer.add_child(shot)
+	return shot.hud
+
+
+func _reefball_pieces(h: Node) -> Array:
+	return (h as ReefballHud).pieces()
+
+
 func _battle(script: StringName) -> Node:
 	var ctl := (load(SANDBOX) as PackedScene).instantiate() as BattleController
 	ctl.auto_start = false
@@ -501,6 +541,27 @@ func _battle(script: StringName) -> Node:
 	ctl.hud.apply_settings(_ui)
 	ctl.run_script(script)
 	return ctl.hud
+
+
+func _set_piece() -> Node:
+	var ctl := (load(SANDBOX) as PackedScene).instantiate() as BattleController
+	ctl.auto_start = false
+	ctl.pacing_scale = 0.0
+	ctl.persist_progress = false
+	ParityHost.scene_root().add_child(ctl)
+	ctl.hud.apply_settings(_ui)
+	var party: Array[StringName] = [&"rhen", &"asha", &"toma"]
+	var reserve: Array[StringName] = [&"ysolde", &"kerrid"]
+	ctl.start_battle(party, reserve, &"ch08_stair_hold_1", SET_PIECE_SEED)
+	ctl.engine.objective_count = 2
+	ctl.set_piece.refresh()
+	return ctl.hud
+
+
+func _set_piece_pieces(h: Node) -> Array:
+	var out := _battle_pieces(h)
+	out.append(["stair meter", h.get_node(^"ObjectiveMeter"), "top"])
+	return out
 
 
 ## Frees everything an earlier screen left under the test scene, and unpauses.

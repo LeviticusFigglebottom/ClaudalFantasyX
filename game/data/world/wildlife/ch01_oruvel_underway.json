@@ -1,0 +1,50 @@
+{
+  "_doc": "The drowned tower under Oruvel: small shoals hang in the crown, the bell-room and the galleries, and dart off when Rhen comes near. Underwater, so no gulls or crabs. The rooms' floors are y 0 under 3 m walls. Placed on the greybox layout (M3-CRE-615); move the coordinates when env-art's kit replaces the blocks (same keys as ch02_haluna.json).",
+  "zone": "ch01/oruvel_underway",
+  "flocks": [],
+  "beaches": [],
+  "shoals": [
+    {
+      "id": "crown",
+      "center": [
+        0.0,
+        1.6,
+        9.0
+      ],
+      "radius_m": 4.0,
+      "count": 10
+    },
+    {
+      "id": "bellroom",
+      "center": [
+        40.0,
+        1.9,
+        8.0
+      ],
+      "radius_m": 3.0,
+      "count": 6,
+      "scale": 0.8
+    },
+    {
+      "id": "galleries",
+      "center": [
+        80.0,
+        1.8,
+        -6.0
+      ],
+      "radius_m": 4.5,
+      "count": 14
+    },
+    {
+      "id": "gauge",
+      "center": [
+        93.0,
+        1.4,
+        -29.0
+      ],
+      "radius_m": 3.0,
+      "count": 8,
+      "scale": 0.8
+    }
+  ]
+}

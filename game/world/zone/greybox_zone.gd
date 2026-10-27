@@ -38,6 +38,8 @@ var field_camera: Camera3D
 var stage: CutsceneStage
 var story: ZoneStory
 var sun: DirectionalLight3D
+## The final zone scene a layout's "dressing" instanced (M2-FP-108); null for a pure greybox.
+var dressing: Node3D
 var encounters: FieldEncounters
 var layout: Dictionary = {}
 var defaults: Dictionary = {}
@@ -61,6 +63,7 @@ func build() -> void:
 	_built = true
 	defaults = read_json(DEFAULTS_PATH)
 	layout = read_json(layout_path) if layout_path != "" else {}
+	_build_dressing()
 	_build_lighting()
 	_build_blocks()
 	var spawns: Dictionary = (layout.get("spawns", {}) as Dictionary).duplicate()
@@ -69,6 +72,7 @@ func build() -> void:
 	_build_markers(SPAWNS, spawns)
 	_build_player()
 	_build_stage()
+	_build_wildlife()
 	_build_triggers()
 	_build_camera_volumes()
 	story = ZoneStory.new()
@@ -145,7 +149,28 @@ static func read_json(path: String) -> Dictionary:
 	return parsed as Dictionary
 
 
+## M2-FP-108: a layout "dressing" {scene, adopt} instances a final zone scene (env-art's route: its own sky,
+## sun and sea) and dresses it here, off the tree, through the adopt script's static adopt(dresser), whose
+## dresser then skips dressing again in _ready. The greybox lighting is not built over it.
+func _build_dressing() -> void:
+	var spec: Dictionary = layout.get("dressing", {})
+	var packed := load(str(spec.get("scene", ""))) as PackedScene if spec.has("scene") else null
+	if packed == null:
+		return
+	dressing = packed.instantiate() as Node3D
+	dressing.name = "Dressing"
+	add_child(dressing)
+	var dresser := dressing.get_node_or_null(^"Dresser")
+	var adopt := load(str(spec.get("adopt", ""))) as Script if spec.has("adopt") else null
+	if dresser != null and adopt != null:
+		var adopted: Node = adopt.call(&"adopt", dresser)
+		adopted.call(&"dress")
+	sun = dressing.get_node_or_null(^"Sun") as DirectionalLight3D
+
+
 func _build_lighting() -> void:
+	if dressing != null:
+		return
 	var s: Dictionary = _merged("sun")
 	sun = DirectionalLight3D.new()
 	sun.name = "Sun"
@@ -191,11 +216,12 @@ func _build_blocks() -> void:
 		var body: Node3D = StaticBody3D.new() if bool(b.get("solid", true)) else Node3D.new()
 		body.name = str(b.get("id", "Block"))
 		body.position = _vec3(b.get("pos", [0, 0, 0]))
-		body.rotation_degrees.y = float(b.get("yaw", 0.0))
-		var mi := MeshInstance3D.new()
-		mi.name = "Mesh"
-		mi.mesh = mesh
-		body.add_child(mi)
+		body.rotation_degrees = Vector3(float(b.get("pitch", 0.0)), float(b.get("yaw", 0.0)), 0.0)
+		if bool(b.get("visible", true)):  # M2-FP-108: false = collision only, under a dressing
+			var mi := MeshInstance3D.new()
+			mi.name = "Mesh"
+			mi.mesh = mesh
+			body.add_child(mi)
 		if body is StaticBody3D:
 			var shape := BoxShape3D.new()
 			shape.size = size
@@ -217,6 +243,16 @@ func _build_markers(folder: StringName, points: Dictionary, parent: Node = self)
 		m.position = Vector3(float(p[0]), float(p[1]), float(p[2]))
 		m.rotation_degrees.y = float(p[3]) if p.size() > 3 else 0.0
 		root.add_child(m)
+
+
+## M2-FP-102: ambient gulls, crabs and fish (M3-CRE-611) for any location with a wildlife file.
+func _build_wildlife() -> void:
+	if location_id == &"" or not FileAccess.file_exists(WildlifeConfig.zone_path(location_id)):
+		return
+	var w := WildlifeLayer.new()
+	w.name = "WildlifeLayer"
+	w.zone_id = location_id
+	add_child(w)
 
 
 func _build_player() -> void:
@@ -271,7 +307,7 @@ func _build_stage() -> void:
 		a.position = _vec3(at)
 		a.rotation_degrees.y = float(at[3]) if at.size() > 3 else 0.0
 		a.visible = not bool(row.get("hidden", false))
-		a.add_child(_capsule_mesh(d))
+		a.add_child(_actor_body(id, row, d))
 		actors.add_child(a)
 	var shots := Node.new()
 	shots.name = "Shots"
@@ -380,6 +416,19 @@ func _capsule_shape(d: Dictionary) -> CollisionShape3D:
 	cs.shape = shape
 	cs.position.y = shape.height * 0.5
 	return cs
+
+
+## M2-FP-111: an actor row's "model" (a villager actor scene, e.g. Kell's) stands in its place idling and breathing,
+## so the cutscene's @anim and talk clips have a body; without one (or when it can't load) it is the capsule.
+func _actor_body(id: String, row: Dictionary, d: Dictionary) -> Node3D:
+	var packed := load(str(row["model"])) as PackedScene if row.has("model") else null
+	if packed == null:
+		return _capsule_mesh(d)
+	var body := packed.instantiate() as Node3D
+	body.name = "Model"
+	HeroMotion.play(body, &"idle", 0.0)
+	HeroMotion.add_micro_motion(body, StringName(id))
+	return body
 
 
 func _capsule_mesh(d: Dictionary) -> MeshInstance3D:

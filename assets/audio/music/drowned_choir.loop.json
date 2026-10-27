@@ -1,0 +1,13 @@
+{
+  "bar_beats": 3,
+  "beat_count": 48,
+  "bpm": 47.0,
+  "downbeat_offset_s": 0.3191383219954649,
+  "loop_bars": 16,
+  "loop_length_samples": 2702298,
+  "loop_length_seconds": 61.276598639455784,
+  "loop_offset_seconds": 0.0,
+  "loop_start_samples": 0,
+  "sample_rate": 44100,
+  "total_samples": 2702298
+}

@@ -1,0 +1,45 @@
+{
+  "version": 1,
+  "doc": "Haluna on the Pilgrim's Wake night (ch04/haluna_wake, the Ch4 greybox; VillagerLayer, docs/kb/tech/field_npc.md). The same seven villagers as ch02_haluna.json, in the greybox's cutscene-staged actors (CutsceneStage/Actors/<id>, which Ch4's cutscenes move), so every row rides inside its stand-in (attach child): no routes, and the zone's states that hide an actor hide its villager. At the feast tables Osu and the vendor talk quietly in bouts; the fisher sits with them; Neme waits by her door; the child by the lane; Reed by the chapel; the netmender out on the dark dock. The wake is solemn: no work clips, the look-arounds slow (npc.json rows stay as they are). Move it with the zone when act1-chapters finalises it.",
+  "zone": "ch04/haluna_wake",
+  "storm_flag": "",
+  "villagers": [
+    {
+      "npc_id": "osu",
+      "stand_in": "CutsceneStage/Actors/osu",
+      "attach": "child",
+      "chat_with": "vendor"
+    },
+    {
+      "npc_id": "vendor",
+      "stand_in": "CutsceneStage/Actors/vendor",
+      "attach": "child",
+      "chat_with": "osu"
+    },
+    {
+      "npc_id": "fisher",
+      "stand_in": "CutsceneStage/Actors/fisher",
+      "attach": "child"
+    },
+    {
+      "npc_id": "neme",
+      "stand_in": "CutsceneStage/Actors/neme",
+      "attach": "child"
+    },
+    {
+      "npc_id": "child",
+      "stand_in": "CutsceneStage/Actors/child",
+      "attach": "child"
+    },
+    {
+      "npc_id": "reed",
+      "stand_in": "CutsceneStage/Actors/reed",
+      "attach": "child"
+    },
+    {
+      "npc_id": "netmender",
+      "stand_in": "CutsceneStage/Actors/netmender",
+      "attach": "child"
+    }
+  ]
+}

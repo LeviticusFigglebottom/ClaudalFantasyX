@@ -14,6 +14,7 @@ const BOSSES := {
 	&"ch05_cinder_matron": [&"rhen", &"asha", &"toma"],
 	&"ch06_inquisitor": [&"rhen", &"asha", &"toma"],
 	&"drownbell": [&"rhen", &"asha", &"toma"],
+	&"undertows_reach": [&"rhen", &"asha", &"liss"],  # M3-BPR-406: Ch8's W18, low and looking up
 }
 const SEED := 20261024
 
@@ -211,6 +212,61 @@ func test_the_camera_frames_the_boss_and_comes_home() -> void:
 	intro.advance(_total(intro))
 	assert_true(intro.done())
 	assert_true(ctl.stage.choreo.camera.at_default(), "home at the end")
+	_free()
+
+
+func test_the_shot_fits_the_boss_model_size() -> void:
+	# M3-BPR-404: the distance follows the model's bounds, so a big boss is never framed too close.
+	var intro := _start(&"ch01_hullgnaw", 0.0)
+	intro.force_play = true
+	intro.play()
+	var pose := intro._pose
+	assert_false(pose.is_empty(), "Hullgnaw has a fitted shot")
+	var small := intro._fit(pose, AABB(Vector3(-0.5, 0.0, -0.5), Vector3.ONE), 1.0)
+	var big := intro._fit(pose, AABB(Vector3(-1.5, 0.0, -1.5), Vector3.ONE * 3.0), 1.0)
+	var d_small := (small["pos"] as Vector3).distance_to(small["look"] as Vector3)
+	var d_big := (big["pos"] as Vector3).distance_to(big["look"] as Vector3)
+	assert_true(d_big > d_small, "a bigger model is framed from farther away")
+	var dir := ((pose["pos"] as Vector3) - (pose["look"] as Vector3)).normalized()
+	var dir_big := ((big["pos"] as Vector3) - (big["look"] as Vector3)).normalized()
+	assert_between(dir.dot(dir_big), 1.0 - EPS, 1.0 + EPS, "the fit keeps the shot's angle")
+	assert_eq(big["fov"], pose["fov"], "and its field of view")
+	var fc := cfg["fit"] as Dictionary
+	var r := Vector3.ONE.length() * 1.5
+	var half := deg_to_rad(float(pose["fov"])) * 0.5
+	var need := r * float(fc["margin"]) / sin(half)
+	assert_true(d_big >= minf(need, float(fc["max_m"])) - EPS, "the whole bounding sphere fits the frame")
+	intro.skip()
+	_free()
+
+
+func test_a_row_can_widen_the_fit() -> void:
+	var intro := _start(&"ch06_inquisitor", 0.0)
+	intro.force_play = true
+	intro.play()
+	var box := AABB(Vector3(-2.0, 0.0, -2.0), Vector3.ONE * 4.0)
+	var plain := intro._fit(intro._pose, box, 1.0)
+	intro.row = intro.row.duplicate()
+	intro.row["fit_margin"] = float((cfg["fit"] as Dictionary)["margin"]) * 1.5
+	var wide := intro._fit(intro._pose, box, 1.0)
+	var d_wide := (wide["pos"] as Vector3).distance_to(wide["look"] as Vector3)
+	var d_plain := (plain["pos"] as Vector3).distance_to(plain["look"] as Vector3)
+	assert_true(d_wide > d_plain, "fit_margin overrides the default margin")
+	intro.skip()
+	_free()
+
+
+func test_every_boss_stands_clear_of_the_title_card() -> void:
+	# M3-BPR-404: a small boss framed close sank behind the card (the Inquisitor's capsule).
+	for enc: StringName in BOSSES:
+		var intro := _start(enc, 0.0)
+		intro.force_play = true
+		intro.play()
+		var f := ctl.stage.stand_in(intro.boss_id)
+		var b := intro._bounds(f)
+		var feet := Vector3(b.get_center().x, b.position.y, b.get_center().z)
+		assert_true(intro._clears_card(intro._pose, feet), "%s: its feet are above the card" % enc)
+		intro.skip()
 	_free()
 
 

@@ -33,6 +33,7 @@ import chapter_flow_check  # noqa: E402
 import dlgc  # noqa: E402
 from validate_creatures import check_creatures  # noqa: E402
 from validate_wildlife import check_wildlife  # noqa: E402  (M3-CRE-611)
+from validate_npc import check_npc  # noqa: E402  (M3-CRE-613)
 
 ELEMENTS = {"none", "fire", "water", "lightning", "ice", "holy", "glimmer"}
 AFFINITIES = {"normal", "weak", "resist", "immune", "absorb"}
@@ -1321,6 +1322,7 @@ def run(root: Path) -> Report:
     check_binary_sizes(root, rep)
     check_creatures(root, files, rep)
     check_wildlife(root, rep)  # M3-CRE-611
+    check_npc(root, rep)  # M3-CRE-613
     return rep
 
 

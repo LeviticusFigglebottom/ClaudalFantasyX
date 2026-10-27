@@ -1,7 +1,8 @@
-# Ambient wildlife (M3-CRE-611)
+# Ambient wildlife (M3-CRE-611; insects M3-CRE-616)
 
 Non-combat life for the slice zones: ordinary gulls wheeling over the shore and settling on posts and roofs, small
-shore crabs on the sand that scuttle off when the player comes near, and small fish shoals in the shallows. They
+shore crabs on the sand that scuttle off when the player comes near, small fish shoals in the shallows, and insects:
+pale moths looping round the lamps at night, dragonflies patrolling over water and paddies. They
 are set dressing, never encounters: no collision, no interaction, nothing the battle or story code reads.
 
 Pillar check: *beauty in decline* wants a world that is still alive around its ruin, and *sincerity* wants the
@@ -10,15 +11,15 @@ that could read as a threat or a pickup.
 
 ## The animals
 
-| | Gull | Shore crab | Shoal fish |
-|---|---|---|---|
-| Asset | `assets/wildlife/gull/gull.glb` (`gull_flying`, `gull_perched`) | `assets/wildlife/shore_crab/shore_crab.glb` | `assets/wildlife/shoal_fish/shoal_fish.glb` |
-| Source | `assets_src/wildlife/gull/build_gull.py` | `assets_src/wildlife/shore_crab/build_shore_crab.py` | `assets_src/wildlife/shoal_fish/build_shoal_fish.py` |
-| Size | 1.0 m span, 0.46 m bill to tail | 11 cm carapace, 20 cm across the legs | 14 cm |
-| Triangles | 1,280 flying, 1,192 perched | 1,064 | 186 |
-| GLB | 84 KB (both meshes) | 36 KB | 8 KB |
-| Material slot | `plumage` | `shell` | `scales` |
-| Motion (shader mode) | flap (1) in flight, head turn and nod (2) perched | alternating leg gait (3) | body wave (4) |
+| | Gull | Shore crab | Shoal fish | Insect |
+|---|---|---|---|---|
+| Asset | `assets/wildlife/gull/gull.glb` (`gull_flying`, `gull_perched`) | `assets/wildlife/shore_crab/shore_crab.glb` | `assets/wildlife/shoal_fish/shoal_fish.glb` | `assets/wildlife/insect/insect.glb` (`insect_moth`, `insect_dragonfly`) |
+| Source | `assets_src/wildlife/gull/build_gull.py` | `assets_src/wildlife/shore_crab/build_shore_crab.py` | `assets_src/wildlife/shoal_fish/build_shoal_fish.py` | `assets_src/wildlife/insect/build_insect.py` |
+| Size | 1.0 m span, 0.46 m bill to tail | 11 cm carapace, 20 cm across the legs | 14 cm | moth 3 cm span; dragonfly 7 cm long, 6.8 cm span |
+| Triangles | 1,280 flying, 1,192 perched | 1,064 | 186 | 248 moth, 272 dragonfly |
+| GLB | 84 KB (both meshes) | 36 KB | 8 KB | 22 KB (both meshes) |
+| Material slot | `plumage` | `shell` | `scales` | `moth`, `dragonfly` (one per mesh) |
+| Motion (shader mode) | flap (1) in flight, head turn and nod (2) perched | alternating leg gait (3) | body wave (4) | wing flutter (5) |
 
 **Gull.** A small, clean shore gull: white head, body and tail; a pale pearl-grey mantle and upper wing
 (`overcast_slate` lifted 45% toward `cumulus_lit`); black wingtips with white mirrors (`lacquer_black`,
@@ -37,6 +38,21 @@ larger; four long legs a side held wide, so it runs sideways. Nothing like the r
 (`deep_teal_shadow` toward `reef_blue`), a bright silver flank stripe (`foam_white`), a white belly; a forked tail
 and a small dorsal fin. Wet, slightly metallic, with a rim sheen so the school glints.
 
+**Moth.** A small pale dusk moth: a soft, furry body (`bone` toward `sand_cloth`, mottled toward the grey-brown),
+two pairs of broad wings held flat, the forewings dusty off-white (`frangipani` toward `coral_stone_weathered`)
+going grey-brown at the root (`timber_weathered` with `coral_stone_weathered`) with two faint darker bands slanting
+across, the hind wings a greyer, plainer underlayer; two small black eyes and short, fine antennae. Matte (rough,
+with a fine detail noise for the scales).
+
+**Dragonfly.** A slim, 7 cm skimmer: a stout thorax and a long, thin abdomen, muted blue-green at the front
+(`bronze_patina` with `faded_teal_cloth`) running to bronze at the tip (`brass` toward `tortoiseshell`), with dark
+segment joints and dark shoulder stripes; a wide head that is nearly all dark eye. Four narrow wings held flat and
+level, the hind pair broader at the root. There is no alpha in the wildlife shader, so the wings are opaque glass:
+a pale tint (`salt_glass` toward `foam_white`, greyed with `overcast_slate` so it never reads as a glimmer light)
+with a darker vein edge (`timber_weathered` with `lacquer_black`) and a small dark spot near each tip. The
+`dragonfly` material carries its gloss in the wetness channel (wings glossy, body half, eyes wet; `wet_darken` 1 so
+only the shine changes) and a faint rim sheen so the wings glint.
+
 **Reserved colours.** The three glimmer and wound lights (`spawn_wound` `#3FE0C8`, `glimmer_held`,
 `glimmer_bound`) are never used on wildlife; `tools/tests/test_wildlife.py` checks the sources and materials.
 
@@ -47,14 +63,22 @@ and a small dorsal fin. Wet, slightly metallic, with a rim sheen so the school g
   meshes with Blender 5.0.1. The vertex channels are the creature kit's (albedo and wetness in `COLOR_0`, a detail
   coordinate in `TEXCOORD_0`, cavity in `TEXCOORD_1.x`), except that `TEXCOORD_1.y` is the **motion mask**: a
   gull's wing span (0 at the shoulder to 1 at the tip) or its head, a crab's legs (0 at the hip to ±1 at the tip,
-  the sign being the gait group). Deterministic, so two runs are byte-identical.
+  the sign being the gait group), an insect's wing span (0 at the root to ±1 at the tip, the sign the side, + on
+  +x). Deterministic, so two runs are byte-identical.
 - **Material:** `game/world/wildlife/wildlife.gdshader`, the creature shader's surface (vertex-colour albedo,
   wetness with clearcoat, cavity, detail noise, rim sheen) without emission, plus a vertex stage that moves the
   mesh by mode and per-instance custom data (phase, amplitude, mode, parameter). There is no `TIME`, so a frame
   is a pure function of the simulation, and the screenshot is exact. `assets_src/wildlife/<id>/materials.json` →
   `python3 assets_src/wildlife/common/write_materials.py --wildlife <id>` → `assets/wildlife/<id>/materials/<slot>.tres`.
-  The pivots the shader needs (the gull's shoulder and neck) are material parameters taken from the build.
-- **Jobs:** `wildlife_gull`, `wildlife_shore_crab`, `wildlife_shoal_fish` in `tools/dev/blender_builds.json`
+  The pivots the shader needs (the gull's shoulder and neck, an insect's wing root) are material parameters taken
+  from the build.
+- **Wing flutter (mode 5, M3-CRE-616):** each wing turns about the body's long axis at the wing root
+  (`flutter_pivot`), by `flutter_angle` × the instance's amplitude × sin(phase), flexing a little toward the tip;
+  vertices behind `flutter_split_z` (the dragonfly's hind pair) beat `flutter_hind_lag` radians later, and the body
+  bobs `flutter_bob`. The moth's beat is fast and small (0.5 rad, 13-17 Hz, both pairs together); the
+  dragonfly's a quick shimmer (0.22 rad, 22-28 Hz, the hind pair a quarter beat behind), still while perched.
+  At 60 fps both rates alias into a flicker, which is what an insect's wing reads as on screen.
+- **Jobs:** `wildlife_gull`, `wildlife_shore_crab`, `wildlife_shoal_fish`, `wildlife_insect` in `tools/dev/blender_builds.json`
   (`python3 tools/dev/verify_blender_builds.py --job wildlife_<id>` must print `identical`). Their sources include
   the creature kit, so a kit change reruns them.
 - **Import:** a `wildlife` category (`game/data/import/wildlife.json`, `game/core/import/wildlife_post_import.gd`):
@@ -66,10 +90,11 @@ and a small dorsal fin. Wet, slightly metallic, with a rim sheen so the school g
 
 | Class | What it does |
 |---|---|
-| `WildlifeLayer` (Node3D) | Reads the zone's file, makes the groups and four MultiMeshes, steps them each frame, culls |
+| `WildlifeLayer` (Node3D) | Reads the zone's file, makes the groups and up to six MultiMeshes, steps them each frame, culls |
 | `WildlifeGullFlock` | Birds on their own circles (radius, height, speed, a slow rise and fall), banked into the turn, flapping in bursts between glides; now and then one glides in on a Hermite curve to a free perch, stands there turning its head (sometimes nodding), and takes off back into the circle |
 | `WildlifeCrabBeach` | Each crab has a home spot in its area and shuffles near it; a player inside `flee_radius_m` makes it turn side-on and scuttle away until it is `safe_radius_m` off (along the edge if cornered, never out of the area), hold still for `return_after_s`, then walk home once the player has gone |
 | `WildlifeShoal` | The shoal's centre wanders between points in its area (only where the ground is deep enough), turning as it goes; each fish holds a place in the school with a slow wobble and follows it with a lag; a player wading within `startle_radius_m` makes it dart away |
+| `WildlifeSwarm` | Insects of one type. **Moths** loop round a point (a lamp), each on its own orbit (a fraction of the radius, its own speed and direction) with a bob, a jitter re-drawn every fraction of a second, and now and then a dart (a larger jitter chased fast); they ignore the player. **Dragonflies** hold a hover with a slight drift, then dart in a straight, eased line to a new spot 1-3 m off; with `perches`, now and then one darts to a free perch and sits with its wings still; a player within `flee_radius_m` (1.5 m) sends it `flee_m` away at 6 m/s, along the area's edge if cornered. Both stay within `radius_m` of the centre and `height_m` of its y |
 | `WildlifeBuffer` | One MultiMesh's per-instance data (transform plus the shader's custom data) |
 | `WildlifeConfig` | Data loading, the zone seed (FNV-1a of the zone id), range draws |
 
@@ -83,24 +108,31 @@ and hides past `cull.distance_m` (120 m). A MultiMesh is re-uploaded only when s
 
 ## Budgets
 
-| | Budget (per zone) | Haluna | Causeway |
-|---|---|---|---|
-| Gulls | 12 | 8 (2 flocks) | 4 |
-| Crabs | 24 | 12 (2 beaches) | 8 |
-| Fish | 80 | 38 (3 shoals) | 5 |
-| Draw calls | 4 | 4 | 4 |
-| CPU | 1.0 ms | see below | |
+| | Budget (per zone) | Haluna | Causeway | Pemakar |
+|---|---|---|---|---|
+| Gulls | 12 | 8 (2 flocks) | 4 | |
+| Crabs | 24 | 12 (2 beaches) | 8 | |
+| Fish | 80 | 38 (3 shoals) | 5 | |
+| Insects (moths + dragonflies) | 24 | 4 dragonflies (1 patrol) | | 10 moths (2 lamps), 4 dragonflies |
+| Draw calls | 6 | 5 | 4 | 2 |
+| CPU | 1.0 ms | see below | | see below |
 
-- **Draw calls:** four MultiMeshes per zone (gulls flying, gulls perched, crabs, fish), one surface each, so four
-  draws in the opaque pass. Shadows: the perched gulls and the crabs cast (two more draws per shadow cascade or
-  split that reaches them); the flying gulls and the fish do not.
-- **Triangles:** at most 8 × 1,280 + 12 × 1,064 + 38 × 186 ≈ 30k in Haluna, all of it small on screen.
+- **Draw calls:** up to six MultiMeshes per zone (gulls flying, gulls perched, crabs, fish, moths, dragonflies),
+  one surface each, so up to six draws in the opaque pass; a kind with nothing placed makes no MultiMesh. Shadows:
+  the perched gulls and the crabs cast (two more draws per shadow cascade or split that reaches them); the flying
+  gulls, the fish and the insects do not.
+- **Triangles:** at most 8 × 1,280 + 12 × 1,064 + 38 × 186 + 4 × 272 ≈ 31k in Haluna, all of it small on screen;
+  a full insect budget adds at most 24 × 272 ≈ 6.5k.
 - **CPU (measured 2026-10-24, headless debug build on the shared container CPU, `WildlifeLayer.step` in the
   dressed Haluna zone with HalunaTerrain as the ground):** every group simulated (no camera): **0.27 ms** per
   frame on average over 1,200 frames (worst 0.56 ms) with the player walking through the north crabs; in the zone
   with the field camera at the `BeforeBattle` spawn looking at the beach (2 groups active, 5 paused): **0.19 ms**
   average, 0.32 ms worst; at the shrine spawn looking away (all 7 paused): **0.06 ms**. A release build is
   faster. No Skeleton3D, AnimationPlayer or physics bodies are involved.
+- **Insects (measured 2026-10-27, same build and container, 1,200 frames, every group simulated, the player
+  circling through the patrols):** Pemakar's 14 insects (2 moth swarms, 1 dragonfly patrol): **0.07 ms** per frame
+  average (worst 0.20 ms); Haluna's 4 dragonflies alone 0.02 ms, and the whole Haluna layer with them 0.21 ms
+  (worst 0.67 ms).
 
 ## For zone owners: one node
 
@@ -123,6 +155,8 @@ in `build()` with its `location_id`). That is all: the layer reads
 |---|---|---|---|
 | `ch02/haluna` | `game/data/world/wildlife/ch02_haluna.json` | `HalunaMood/Terrain.height_at` (from the zone root) | Beach flock over the tide wall and the first houses (perches: tide-wall tops, house ridge ends); dock flock (the dock's tall posts, the net-rack posts, the stilt house's peak); crabs on the sand north and south of the Beach spawn; shoals in the shallows north, south and past the dock |
 | `ch03/saltgrass_causeway` | `game/data/world/wildlife/ch03_saltgrass_causeway.json` | none (the greybox flat is y 0) | Gulls over the causeway and on the marker posts; crabs east of the path and round the tide pool; fry in the pool. Move the coordinates when the route kit replaces the blocks |
+| `ch02/haluna` (insects) | the same file, `swarms` | (swarms fly at fixed heights) | Haluna has no marsh or reed bed, so one dragonfly patrol (4) hovers over the lagoon shallows' edge by the north crabs, centre (-2, 1.5, 22), radius 4 |
+| `ch05/pemakar` | `game/data/world/wildlife/ch05_pemakar.json` | none (the greybox is flat) | Lanternfall night: two moth swarms (5 each) at the lamps on the `Lamps` strip, (0, 2.2, -36) and (0, 2.2, -24), radius 0.9; a dragonfly patrol (4) over the paddies, (22, 1.2, -31), radius 5, for the day variant (a night zone that does not want it drops the row). No gulls, crabs or fish yet: the harbour and the weir are the zone owner's to place |
 
 The prologue's dead city and the First Verse cutscene set have no wildlife on purpose (a dead city, and a sung
 scene where gulls would pull the eye); a zone that wants some only needs a data file and the node.
@@ -130,16 +164,45 @@ scene where gulls would pull the eye); a zone that wants some only needs a data 
 When a zone's layout moves (a perch, the waterline, a dock), update its data file: perches are
 `[x, y, z, yaw_deg]` (yaw 0 faces +z, 90 faces +x), each inside its flock's `radius_m`; crab areas are
 `center`, `half_extents`, `yaw_deg` and a fallback `y`; shoals are `center` (x, y under the water surface, z),
-`radius_m`, optional `scale` and `spread_m`. `python3 tools/validate_data.py` (via `tools/validate_wildlife.py`)
+`radius_m`, optional `scale` and `spread_m`; swarms (M3-CRE-616) are `id`, `type` (`moth` or `dragonfly`),
+`center` (x, y, z: a moth swarm's lamp, a patrol's hover height, about 1-2 m over the ground), `radius_m`, `count`
+and, for a dragonfly patrol only, optional `perches` `[x, y, z, yaw_deg]` inside the radius. `python3 tools/validate_data.py` (via `tools/validate_wildlife.py`)
 checks the file: the zone id names it and is a location, perches sit inside their flock, the counts stay within
 the budgets.
 
 ## Review
 
 - `game/levels/_tests/wildlife/wildlife_stage.tscn` (data `wildlife_stage.json`): sand, a water plane over a
-  seabed, two posts, a stand-in player, the three kinds at close range. Shot `wildlife_stage`
+  seabed, two posts, a stand-in player, the kinds at close range; since M3-CRE-616 also a low lamp post near the
+  camera with five moths round it, and two dragonflies over the water's edge. Shot `wildlife_stage`
   (`tests/screenshots/shots.json`, 30 settle frames at `--fixed-fps 60`, deterministic to rmse 0).
 - `tests/unit/test_wildlife.gd`: determinism, gull bounds and perching, crabs fleeing and returning, fish counts and
-  bounds, every zone file read within budget, budget clamping, the MultiMesh wiring.
-- `tools/tests/test_wildlife.py`: the validator, materials byte for byte, jobs, provenance, import wiring, GLB
-  channels and triangle budgets, reserved colours.
+  bounds, every zone file read within budget, budget clamping, the MultiMesh wiring; moths in their area and
+  ignoring the player, dragonflies hovering, darting and perching in their area, a dragonfly darting from the
+  player, the insect budget and its two shadowless MultiMeshes.
+- `tools/tests/test_wildlife.py`: the validator (with the insect tables, per-mesh materials and swarm rows),
+  materials byte for byte, jobs, provenance, import wiring, GLB channels and triangle budgets (300 for an insect),
+  reserved colours.
+
+## Act I zones (M3-CRE-615)
+
+Data files for the Act I greybox zones, placed on each `<zone>_layout.json` (flat ground at y 0). Every zone owner
+adds the same one node (or GreyboxZone adds it for any location with a file). Move the coordinates when env-art's
+kits replace the blocks.
+
+| Zone | Gulls | Crabs | Fish | Why |
+|---|---|---|---|---|
+| `ch01/oruvel` | 6 (cabin roof, Kell's stall, the Seventh Terrace) | – | – | A raft-town: gulls, no beach; the sea is a solid greybox slab, so no fish until the raft-town kit brings water |
+| `ch01/oruvel_underway` | – | – | 38 (crown, bell-room, galleries, gauge room) | The drowned tower: shoals hang in the rooms and dart from Rhen |
+| `ch04/brightwater_ferry` | 5 (the lookout, the deckhouse, the islet rails) | – | – | Gulls follow the ferry; none on the derelict (nothing lives aboard the Seventh Terrace) |
+| `ch04/haluna_wake` | – | 5 (the dark shore by the dock) | – | Night: the gulls roost; a few ghost crabs work the shore |
+| `ch05/pemakar` | – | 5 (the quay's edge, away from the lamps) | – | Lanternfall night; insects (M3-CRE-616): moths at two lamps, dragonflies over the paddies |
+| `ch06/brine_shoals` | 6 (the wrecks, the tide-wheel) | 18 (clusters on the flats, the tideline) | – | Mud-flats and wrecks |
+| `ch07/tamsule` | 6 (the stilt house, the market stalls) | – | – | The floating market; the river is a greybox slab |
+
+**No wildlife on purpose:** `ch09/corrow_night` (the strand of the drowned at night), `ch05/ashcrown` (ash and
+lightning), `ch07/tamsule_bell_galleries` (story staging under the Bell), the prologue and the First Verse set.
+
+Review: `game/levels/_tests/wildlife/zone_wildlife.gd` instances a zone scene with its layer;
+`zone_wildlife_brine_shoals.tscn` (shots `wildlife_zone_brine_flats`, `wildlife_zone_brine_wrecks`) and
+`zone_wildlife_oruvel_underway.tscn` (`wildlife_zone_underway_crown`).

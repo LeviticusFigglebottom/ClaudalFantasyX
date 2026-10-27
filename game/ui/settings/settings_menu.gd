@@ -9,6 +9,9 @@ extends Control
 ## "help", "backdrop_alpha", "hub").
 
 signal closed
+## The close transition has finished (at once under Reduced motion): the hub frees itself, and
+## open_in's layer with it (M2-MNU-305, MenuMotion).
+signal gone
 
 const ROW_GRAPHICS := &"graphics"
 const ROW_ACCESSIBILITY := &"accessibility"
@@ -31,6 +34,9 @@ const HELP_KEYS := {
 
 ## The page open over the hub (null when none).
 var page: SettingsPage
+## Opened over the field menu, whose scrim and caustics are the same: the backdrop stays still and
+## only the content moves (MenuMotion's static backdrop). Set before it enters the tree.
+var over_menu := false
 ## The accessibility settings the hub and its Accessibility page use (shared unless a test sets one).
 var ui_settings: UiSettings
 ## Where the Accessibility and Controls pages save ("" = nowhere; tests).
@@ -44,17 +50,19 @@ var _backdrop: ColorRect
 var _caustics: CausticBackdrop
 var _data: Dictionary = {}
 var _open := false
+var _motion: MenuMotion
 
 
 ## Opens the hub on its own CanvasLayer under `host` (the field menu); the layer frees itself when
 ## the hub closes. It processes while the tree is paused.
-static func open_in(host: Node) -> SettingsMenu:
+static func open_in(host: Node, over: bool = false) -> SettingsMenu:
 	var menu := SettingsMenu.new()
+	menu.over_menu = over
 	var layer := CanvasLayer.new()
 	layer.layer = int((GraphicsMenuModel.load_data().get("hub", {}) as Dictionary).get("canvas_layer", 1))
 	layer.process_mode = Node.PROCESS_MODE_ALWAYS
 	layer.add_child(menu)
-	menu.closed.connect(layer.queue_free)
+	menu.gone.connect(layer.queue_free)
 	host.add_child(layer)
 	return menu
 
@@ -97,6 +105,11 @@ func _ready() -> void:
 	UiFrame.centre(self)  # M2-UI-29
 	_open = true
 	_render()
+	MenuMotion.follow_reduced_motion(self)
+	_motion = MenuMotion.new(self)
+	_motion.gone.connect(gone.emit)
+	gone.connect(queue_free)
+	_motion.play_in(over_menu)
 
 
 func _notification(what: int) -> void:
@@ -171,9 +184,17 @@ func close() -> void:
 	if is_page_open():
 		page.close()
 	_open = false
-	visible = false  # freed at the frame's end: until then it must not take the pointer (M2-UI-26)
+	if _motion != null:
+		_motion.play_out(over_menu)  # it never takes the pointer again while it fades (M2-UI-26)
+	else:
+		visible = false
+		gone.emit()
 	closed.emit()
-	queue_free()
+
+
+## The open, close and return transitions (null before _ready). Tests drive them with motion().finish().
+func motion() -> MenuMotion:
+	return _motion
 
 
 func help_text() -> String:
@@ -222,6 +243,8 @@ func _paint_backdrop() -> void:
 func _on_page_closed() -> void:
 	page = null
 	_set_hub_visible(true)
+	if _open and _motion != null:
+		_motion.play_in(true, "return_sec")  # the hub's rows fade back in as the page fades out
 	_list.replace_rows(_rows())  # in the text size or palette just chosen
 	_render()
 

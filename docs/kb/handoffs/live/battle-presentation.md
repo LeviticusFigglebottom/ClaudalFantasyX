@@ -4,6 +4,93 @@
 
 The gap (the human's playtest note): battles had no action animation. This track adds a listen-only presentation layer: choreography, a clip contract, a camera director, the specials, the intro and outro. Docs: `docs/kb/tech/battle_presentation.md`.
 
+## NEW ACCOUNT (from 2026-10-25)
+Session `session_015hKkhtpX67kS4yZeA8AAhv`. Integration branch `claude/undertow-lead-handoff-ze8rrn` merged in
+(c6a960ab).
+
+**FAST-TRACK MERGE-READY @ 4e89c967: M3-BPR-404 boss-intro framing (the human's "Hullgnaw framed too close").**
+- **Cherry-pick exactly these two commits, in order:** `269054a3 4e89c967`. They touch only
+  battle_boss_intro.gd, choreo.json (boss_intro), test_battle_boss_intro.gd, the 404 task file, one doc section and
+  the six baselines. Verified: the pair cherry-picks cleanly onto `-ze8rrn` c6a960ab, and `--filter=boss_intro`
+  gives 17 run, 0 failed there.
+- **What changed:** the camera fits the boss model's bounds, and the feet must clear the title card. The search
+  aims lower first, then widens. The Inquisitor's fit_margin 1.6 is gone, because it sank his capsule behind the
+  card.
+- **Shots that move (all six viewed and re-approved, captured on integration + 404 only):**
+  battle_boss_intro_hullgnaw (rmse 0.253), battle_boss_intro_matron (0.109), battle_boss_intro_drownbell (0.104),
+  battle_boss_intro_inquisitor (0.053), battle_boss_intro_hermit (0.039), battle_boss_intro_wraith (0.039).
+- **Checks run:** gdlint, gdformat, validate_data 0/0, taskboard --check, `--filter=boss_intro` 17/0, and the six
+  shots captured and compared.
+- **Checks skipped:** the full manifest (only boss-intro shots can move), Blender (none touched), coverage (no
+  battle-core change).
+
+**MERGE-READY @ a9f8d67b: M3-BPR-401 battle feel + M3-BPR-402 melee spacing** (with M2-BPR-11 follow-ups e03f04ba,
+d5d4edfd and the test fix 9369e8c0). Merge the branch head; it includes 404, the integration branch -ze8rrn 492651da
+is merged in, and big10's bpr pick a3e489bb is an ancestor.
+- **New since the handover:**
+  - c3b01d7f/e5a1d3e6: a **Screen shake setting** (Full / Half / Off; accessibility.json row `screen_shake`,
+    loc SET_SCREEN_SHAKE*). Reduced motion now drops every battle shake, BattleFloats' too.
+  - The audio hooks: BattleImpact `landed(target, strength, stop_sec)` and `slowmo_planned`. Request
+    **M3-BPR-405** (role audio) asks for an impact weight layer and a KO swell on them.
+  - A 402 fix (the melee_approach commit): a body *beside* the path turns the run instead of stopping it short.
+    Rhen had struck the air 2.9 m from the reef crab, because the gull harrier's wing footprint blocked the path.
+  - 9369e8c0: test_battle_ko_once takes the wickfry's new model away for its primitive case. **It fails on -ze8rrn
+    and big10 as well**, because the wickfry gained a model; cherry-pick 9369e8c0 if needed.
+- **Shots that move (viewed, re-approved):**
+  - battle_choreo_melee (rmse 0.069): Rhen no longer inside the gull harrier.
+  - battle_choreo_hit (0.091): Rhen meets the crab, with the flash and the scaled recoil.
+  - battle_choreo_ko (0.034): the impact flash under the falling harrier.
+  - battle_choreo_toll (0.062): Ysolde's heavier recoil at 13 HP.
+  - Every other battle_*, arena and drownbell shot passes (43 + 12 compared). The boss intros are 404's six.
+- **Checks run:** Godot `--filter=battle` 634 run, 0 failed; gdlint, gdformat, validate_data 0/0, taskboard --check.
+- **Checks skipped:** the full manifest (only battle shots can move), Blender (none touched), and tools tests (no
+  tools change).
+- **Coverage:** not run. game/battle core is untouched; every change is under game/battle/scene.
+
+**In progress:** M3-BPR-403, the opening line-up spaced by footprint (BattleLineup), on a local worktree. Its tests
+pass (lineup 4/0; it fails with the spread off), and the battle filter gives 638/0. It moves every sandbox_reef shot,
+so a full battle-shot capture comes next.
+
+### Render requests
+RENDER-REQUEST @ 25dcea24: battle_boss_intro_hullgnaw,battle_boss_intro_inquisitor,battle_boss_intro_matron,battle_boss_intro_hermit,battle_boss_intro_wraith,battle_boss_intro_drownbell; why: FAST-TRACK M3-BPR-404, the Hullgnaw boss intro framed too close (the human's playtest). The camera fits the boss model and clears the title card. All six move.
+RENDER-REQUEST @ 25dcea24: battle_hud_preview,battle_swap_menu,battle_victory,battle_statuses,battle_swell_ring,battle_read_panel,battle_opening_banner,battle_swell_modes,battle_vowbound_call,battle_vowbound_out,battle_choreo_melee,battle_choreo_hit,battle_choreo_cast,battle_choreo_support,battle_choreo_read,battle_choreo_ko,battle_choreo_swap,battle_arena_tideline,battle_arena_causeway,battle_choreo_lamp_dive,battle_choreo_toll,battle_choreo_vowbound_rise,battle_choreo_summon,drownbell_flood,battle_swell_chant,battle_swell_brace,battle_swell_glyph,battle_statuses_colorblind,battle_pause,battle_arena_raft,battle_arena_underway,battle_arena_route,battle_arena_derelict,battle_arena_terrace,battle_arena_tideline_dawn,battle_arena_causeway_disc_sunset,battle_arena_causeway_route_afternoon,battle_arena_derelict_deck_night,battle_arena_ash_terrace_lanternfall,battle_arena_oruvel_raft_morning,battle_arena_underway_tower,battle_arena_shoals,battle_arena_camp,battle_hud_21x9,battle_hud_16x10; why: M3-BPR-401 battle feel (flash, recoil, shake by damage, KO slow-mo, the hit-stop hold fix) + M3-BPR-402 melee spacing and detour + M3-BPR-403 opening line-up spread sideways by footprint, now on the big9 real heroes. Expect the choreo_* and every sandbox_reef shot to move; arenas may move where 403 spreads a line-up.
+
+RENDER-REQUEST @ 680cd88e: battle_boss_intro_reach,battle_choreo_melee,battle_choreo_hit,battle_choreo_ko,battle_choreo_toll; why: M3-BPR-406 Ch8 set pieces. The new Reach boss intro (no baseline yet: test_screenshots' baselined check is red until it is approved), and the hit-stop hold fix plus the counter planning re-checked on the choreo shots.
+
+RENDER-REQUEST @ 60b62678: battle_arena_wall_head,battle_boss_intro_reach; why: M3-BPR-406 greybox wall_head_storm arena for Ch8 (new shot, no baseline yet); the Reach intro now stands on it. Supersedes the reach id in the 680cd88e line.
+
+### FAST-TRACK M3-BPR-404 on the post-big9 integration branch (updated 2026-10-27)
+- **Cherry-picking 269054a3 and 4e89c967 now conflicts on the six baseline PNGs.** big9 re-approved them with the
+  real heroes, and the PNGs in my commits were rendered with primitive heroes.
+- **Use the code-only mbox instead:** `git am docs/kb/tasks/M3/M3-BPR-404-boss-intro-fit.patch` (from this branch).
+  It holds the same two commits without the PNGs. Verified on -ze8rrn 7cccb551: it applies cleanly,
+  `--filter=boss_intro` gives 17 run, 0 failed, and validate_data is 0/0.
+- **Then:** take the six baselines from the PC's render of the first request line above. That render is at this
+  branch's head, which differs from integration + 404 only by 403's party line-up spread. If you want a pixel-exact
+  pick, push the git-am result to a lead/gate branch and request the six there.
+
+**Also merged and fixed (2026-10-27, pushed):**
+- The integration branch with big9 is merged in (7708d572). Conflicts were the baselines (theirs), strings
+  (union, no duplicate keys), test_battle_choreo (theirs), and test_battle_ko_once (mine: it no longer needs any
+  model-less foe).
+- **f8cd9269, the BattleImpact hold bug** (creatures' M3-CRE-617 report): the struck target's clip now stays held
+  through the hit-stop. Regression test included; it fails without the fix.
+- 4a525046: the reduced-motion run test measures against the real approach. Big9's real heroes have real
+  footprints.
+- **M3-BPR-403** (BattleLineup, merged from my worktree): the opening line-up spreads sideways on screen by
+  footprint, each fighter at most 0.6 m off its mark. Tests: lineup 5/0.
+- Battle filter after all of it: **711 run, 0 failed**. gdlint, gdformat and validate_data are clean.
+- Cloud captures stopped, per the human's directive: only my wt403 PIDs, checked by their cwd.
+- **creatures, please note:** your M3-CRE-617 last box (the target's clip held through the hit-stop) is fixed at
+  f8cd9269.
+- **M3-BPR-406 (doing), Ch8 set pieces on stage:**
+  - all four Ch8 encounters play to their result panel at full pacing (new test);
+  - **withdrawn foes used to stay standing** on stage; they now back away and are hidden;
+  - counters show the hero's riposte;
+  - the Reach has a boss intro.
+  - Battle filter: 714 run, 0 failed.
+  - Open: the intercept step-in (it needs a stair marker on the Ch8 arena), the breach push-in and the phase looks.
+
 ## STATE AT HANDOVER (2026-10-25)
 
 **HANDOVER DONE @ e4b36a0d.**

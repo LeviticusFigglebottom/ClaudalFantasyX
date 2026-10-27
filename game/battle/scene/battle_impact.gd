@@ -15,6 +15,12 @@ extends Node
 ## Reduced motion: no shake, the flash at reduced_motion.flash_scale, a gentler slow-mo. The controller's hand-off
 ## waits for the stretched time (BattleChoreo.remaining_sec adds extra_sec). Presentation only, listen-only.
 
+## A blow with weight landed (M3-BPR-401 audio hook): the hardest-hit target, the blow's strength (0..1) and the
+## hit-stop it holds for (real seconds, 0 for none). Audio layers an impact by weight on it (BattleImpact events).
+signal landed(target_id: StringName, strength: float, stop_sec: float)
+## The sequence that fells the last foe slows down: from `from_sec` (plan time) for `sec` at `factor` (audio hook).
+signal slowmo_planned(from_sec: float, sec: float, factor: float)
+
 const KEY := "impact"
 
 var cfg: Dictionary = {}
@@ -26,7 +32,7 @@ var _choreo: BattleChoreo
 var _ctl: BattleController
 var _engine: BattleEngine
 var _stop_left := 0.0
-var _held: Dictionary = {}  # AnimationPlayer -> its speed_scale before the hit-stop
+var _held: Dictionary = {}  # AnimationPlayer -> true (its speed to restore is in meta BattleClips.HELD_META)
 var _slow := Vector3(INF, -INF, 1.0)  # plan-time window [x, y) at factor z
 var _light: OmniLight3D
 var _flash_t := -1.0
@@ -96,6 +102,7 @@ func on_plan(plan: Dictionary) -> void:
 		factor = float((cfg.get("reduced_motion", {}) as Dictionary).get("slowmo_factor", factor))
 	var from := maxf(float(plan.get("ko_at", 0.0)) - float(sm.get("lead_sec", 0.0)), 0.0)
 	_slow = Vector3(from, from + float(sm.get("sec", 0.0)), clampf(factor, 0.05, 1.0))
+	slowmo_planned.emit(_slow.x, _slow.y - _slow.x, _slow.z)
 
 
 ## Real seconds `delta` as plan-clock seconds (before the battle speed): a hit-stop eats them, a slow-mo stretches.
@@ -145,21 +152,26 @@ func _on_contact(result: ActionResult) -> void:
 		if k > 0.0:
 			_ctl.stage.shake(_choreo.speed, lerp_pair(cfg.get("shake_scale", [1.0, 1.0]), peak) * k)
 	if peak > 0.0:
-		_flash(_struck(result), peak, float(rm.get("flash_scale", 1.0)) if _choreo.reduced_motion else 1.0)
+		var struck := _struck(result)
+		_flash(struck, peak, float(rm.get("flash_scale", 1.0)) if _choreo.reduced_motion else 1.0)
+		landed.emit(struck, peak, _stop_left)
 
 
 func _hold(ids: Array) -> void:
 	for cid: Variant in ids:
 		var p := BattleClips.player_of(_ctl.stage.stand_in(StringName(str(cid))))
 		if p != null and not _held.has(p):
-			_held[p] = p.speed_scale
+			_held[p] = true
+			p.set_meta(BattleClips.HELD_META, p.speed_scale)  # a clip started during the hold keeps it (BattleClips)
 			p.speed_scale = 0.0
 
 
 func _release() -> void:
 	for p: Variant in _held:
 		if is_instance_valid(p):
-			(p as AnimationPlayer).speed_scale = float(_held[p])
+			var ap := p as AnimationPlayer
+			ap.speed_scale = float(ap.get_meta(BattleClips.HELD_META, 1.0))
+			ap.remove_meta(BattleClips.HELD_META)
 	_held.clear()
 
 

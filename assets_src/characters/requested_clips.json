@@ -5371,6 +5371,11 @@
       []
      ]
     ]
+   },
+   "lie_in_shallows": {
+    "alias": "ko",
+    "at": 1.0,
+    "loop": true
    }
   },
   "ysolde": {

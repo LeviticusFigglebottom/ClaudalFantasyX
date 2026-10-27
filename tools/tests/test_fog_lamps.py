@@ -23,7 +23,6 @@ LAMP_TYPES = ("OmniLight3D", "SpotLight3D")
 NODE = re.compile(r'^\[node name="([^"]+)" type="([^"]+)"', re.M)
 # Lights in scenes Environment doesn't own, each with the request task that fixes it (delete the row when it lands).
 KNOWN_EXCEPTIONS = {
-    "game/levels/ch03/shell_shrine/shell_shrine.tscn": {"Shaft_b1", "Shaft_side_pool", "Shaft_b3_lip"},  # M3-ARC-04
 }
 FOG_ENERGY = re.compile(r"^light_volumetric_fog_energy = ([-0-9.e]+)$", re.M)
 

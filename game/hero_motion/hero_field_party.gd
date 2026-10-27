@@ -8,8 +8,11 @@ extends Node
 ## Follower i keeps (i + 1) * spacing_m of trail behind the leader. It steers to that trail point at
 ## the leader's speed plus follow_gain * the gap (at most max_speed_mps), accelerating at accel_mps2
 ## and braking at decel_mps2, and never comes nearer than min_gap_m to the body ahead. A ray to the
-## floor (the player excluded) sets its feet. After a teleport of the leader, a long gap (catch_up_m)
-## or a hide, the trail is laid straight behind the leader and the followers are put on it at once.
+## floor (the player excluded) sets its feet, but only a floor within step_m of the height the leader
+## walked at that trail point (a rail above, a gap at a pier's edge below is not his floor; his height
+## stands), and the feet ease toward it at vertical_mps, so a stair or a slope never pops. After a
+## teleport of the leader, a long gap (catch_up_m) or a hide, the trail is laid straight behind the
+## leader and the followers are put on it at once.
 ##
 ## They hide while a cutscene that holds the player plays (CutsceneSequencer.is_playing() with
 ## hold_player), while the zone's CutsceneStage shows the same hero as a visible Actors/<id>, and
@@ -18,6 +21,8 @@ extends Node
 ## game/data/hero_motion/hero_motion.json "field.followers". Added by HeroFieldActor.attach.
 
 const NAME := &"HeroParty"
+## Nearer than this to the speaker (flat metres), a follower keeps its heading: the direction would be noise.
+const FACE_MIN_M := 0.05
 
 var controller: FieldController
 ## The leader's body (its hero id is never a follower).
@@ -36,6 +41,10 @@ var _rescan_left := 0.0
 var _stages: Array[Node] = []
 var _sequencers: Array[Node] = []
 var _started := false
+## Set when the leader talks to someone (FieldController.interacted): stopped followers turn to face `_face_at`
+## until the leader walks on.
+var _facing := false
+var _face_at := Vector3.ZERO
 
 
 ## Every node under `root` whose script (or a base of it) has the global class name `type_name`.
@@ -59,6 +68,17 @@ static func _collect(n: Node, type_name: StringName, out: Array[Node]) -> void:
 func _ready() -> void:
 	name = NAME
 	_cfg = HeroFieldActor.field_data().get("followers", {}) as Dictionary
+	if controller != null and not controller.interacted.is_connected(face_speaker):
+		controller.interacted.connect(face_speaker)
+
+
+## The leader is talking to `speaker`: every follower standing still turns (eased, through its body) to face it,
+## and keeps facing it until the leader walks on.
+func face_speaker(speaker: Node3D) -> void:
+	if speaker == null or not is_instance_valid(speaker) or not speaker.is_inside_tree():
+		return
+	_face_at = speaker.global_position
+	_facing = true
 
 
 func _physics_process(delta: float) -> void:
@@ -82,6 +102,8 @@ func advance(delta: float) -> void:
 		catch_up()
 	var jumped := lead.distance_to(_last_leader) > (leader.loco.teleport_m if leader != null else 0.0)
 	var leader_speed := Vector2(lead.x - _last_leader.x, lead.z - _last_leader.z).length() / maxf(delta, 1e-6)
+	if leader_speed > float(_cfg.get("face_release_mps", 0.0)):
+		_facing = false
 	_last_leader = lead
 	var hide := should_hide()
 	if hide != _hidden:
@@ -217,8 +239,8 @@ func catch_up() -> void:
 		trail.append(lead + back * (k * sample))
 	_last_leader = lead
 	for i in followers.size():
-		var p := _grounded(trail_point((i + 1) * float(_cfg.get("spacing_m", 0.0))))
-		followers[i].global_position = p
+		var at := trail_point((i + 1) * float(_cfg.get("spacing_m", 0.0)))
+		followers[i].global_position = _grounded(at, at.y)
 		followers[i].rotation.y = yaw
 		_velocities[i] = Vector3.ZERO
 		var body := followers[i].get_node_or_null(NodePath(String(HeroFieldActor.NAME))) as HeroFieldActor
@@ -282,8 +304,13 @@ func _move(i: int, leader_speed: float, delta: float) -> void:
 		p = Vector3(ahead.x, p.y, ahead.z) + away * gap_min
 		v -= away * minf(v.dot(away), 0.0)
 	_velocities[i] = v
-	f.global_position = _grounded(p)
-	if v.length() > 0.0:
+	var floor_at := _grounded(p, target.y)
+	p.y = move_toward(f.global_position.y, floor_at.y, float(_cfg.get("vertical_mps", INF)) * delta)
+	f.global_position = p
+	var to := Vector3(_face_at.x - f.global_position.x, 0.0, _face_at.z - f.global_position.z)
+	if _facing and v.length() <= float(_cfg.get("face_release_mps", 0.0)) and to.length() > FACE_MIN_M:
+		f.rotation.y = HeroLocomotion.yaw_of(to)  # the body eases into it (HeroLocomotion's capped turn)
+	elif v.length() > 0.0:
 		f.rotation.y = HeroLocomotion.yaw_of(v)
 	f.visible = not staged(StringName(f.get_meta(&"hero_id", "")))
 
@@ -293,15 +320,20 @@ func _apply_staged() -> void:
 		f.visible = not _hidden and not staged(StringName(f.get_meta(&"hero_id", "")))
 
 
-## `p` with its height on the floor under it (the player excluded), or the leader's height.
-func _grounded(p: Vector3) -> Vector3:
+## `p` with its height on the floor under it (the player excluded) when that floor is within step_m of
+## `ref_y` (the leader's height on the trail there; NAN: his height now), else at `ref_y`.
+func _grounded(p: Vector3, ref_y: float = NAN) -> Vector3:
+	var ref := controller.global_position.y if is_nan(ref_y) else ref_y
 	var up := float(_cfg.get("ray_up_m", 0.0))
 	var down := float(_cfg.get("ray_down_m", 0.0))
 	var world := controller.get_world_3d()
 	if world != null:
-		var q := PhysicsRayQueryParameters3D.create(p + Vector3.UP * up, p + Vector3.DOWN * down)
+		var from := Vector3(p.x, ref, p.z)
+		var q := PhysicsRayQueryParameters3D.create(from + Vector3.UP * up, from + Vector3.DOWN * down)
 		q.exclude = [controller.get_rid()]
 		var hit := world.direct_space_state.intersect_ray(q)
 		if not hit.is_empty():
-			return Vector3(p.x, (hit["position"] as Vector3).y, p.z)
-	return Vector3(p.x, controller.global_position.y, p.z)
+			var y := (hit["position"] as Vector3).y
+			if absf(y - ref) <= float(_cfg.get("step_m", INF)):
+				return Vector3(p.x, y, p.z)
+	return Vector3(p.x, ref, p.z)

@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "doc": "VillagerLayer test data (M3-CRE-613, tests/unit/test_villager_routines.gd): a walker that carries its stand-in and the talk spot, and a sitter with no routine.",
+  "zone": "_tests/villager_layer",
+  "storm_flag": "ch01_gulls_cried",
+  "villagers": [
+    {
+      "npc_id": "child",
+      "stand_in": "NPCs/Walker",
+      "hide": ["StandIn", "Facing", "Prop"],
+      "talk": "NPCs/Talk",
+      "follow": ["NPCs/Talk"],
+      "route": [[1.0, 0.0, 0.0], {"at": [1.0, 0.0, -3.0], "pause_sec": 1.0}]
+    },
+    {
+      "npc_id": "neme",
+      "stand_in": "NPCs/Sitter"
+    }
+  ]
+}

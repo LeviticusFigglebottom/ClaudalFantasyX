@@ -12,6 +12,8 @@
       "chip_pitch": 40,
       "first_chip_offset": 84,
       "chevron_px": 8,
+      "entry_fill_role": "panel_raised",
+      "entry_frame_role": "swell",
       "arrow_px": 10,
       "pad": 4,
       "ghost_alpha": 0.5,
@@ -116,6 +118,7 @@
                        "rule_length": 320, "rule_px": 1, "mark_px": 10, "chevron_px": 2, "rise_px": 8,
                        "fade_in_sec": 0.3, "hold_sec": 1.8, "fade_out_sec": 0.5, "band_alpha": 0.72,
                        "band_fade": 0.22, "reveal_wait_max_sec": 3.0},
+    "objective_meter": {"doc": "M3-UI-100: a set piece's objective (ObjectiveMeter): top centre under the help line, clear of the timeline and boss_status. title_width for the words, then one pip_px pip per group of the quota (pip_gap apart; filled in pip_on_role, open in pip_off_role with a pip_line_px ring), the count right-aligned in count_width.", "rect": [760, 104, 400, 56], "pin": "top", "pad": 16, "title_width": 200, "count_width": 72, "pip_px": 16, "pip_gap": 8, "pip_line_px": 2, "pip_on_role": "focus_gold", "pip_off_role": "text_dim"},
     "boss_status": {"rect": [48, 156, 480, 0], "line_gap": 2}
   }
 }

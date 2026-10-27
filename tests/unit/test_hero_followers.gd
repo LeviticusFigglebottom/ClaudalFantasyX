@@ -134,6 +134,37 @@ func test_hidden_while_a_cutscene_holds_the_player() -> void:
 	_done()
 
 
+func test_followers_turn_to_face_who_rhen_talks_to() -> void:
+	for i in 30:
+		_step()
+	var speaker := Interactable.new()
+	zone.add_child(speaker)
+	speaker.global_position = player.global_position + Vector3(4.0, 0.0, 0.0)  # off to his right
+	player.interacted.emit(speaker)
+	var guard := HeroMotionGuard.load_data()
+	var dt := HeroMotionGuard.frame_sec(guard)
+	var tracks: Array = [[] as Array[Transform3D], [] as Array[Transform3D]]
+	for i in 90:
+		_step()
+		for k in party.followers.size():
+			(tracks[k] as Array[Transform3D]).append(party.body_of(_ids()[k]).global_transform)
+	for k in party.followers.size():
+		var f := party.followers[k]
+		var want := HeroLocomotion.yaw_of(speaker.global_position - f.global_position)
+		var shown := party.body_of(_ids()[k]).visible_yaw()
+		assert_between(absf(angle_difference(shown, want)), 0.0, deg_to_rad(5.0), "%s faces the speaker" % _ids()[k])
+		var snaps := HeroMotionGuard.transform_snaps(tracks[k] as Array[Transform3D], dt, guard["transform"])
+		assert_true(snaps.is_empty(), "%s turns to it without a snap" % _ids()[k])
+	player.input_override = UP
+	for i in 60:
+		_step()
+	var asha := party.body_of(&"asha")
+	assert_true(asha.loco.speed > 0.5, "she walks on with him")
+	var heading := HeroLocomotion.yaw_of(player.global_position - party.followers[0].global_position)
+	assert_between(absf(angle_difference(asha.visible_yaw(), heading)), 0.0, deg_to_rad(30.0), "facing her walk again")
+	_done()
+
+
 func _step() -> void:
 	player.step(DT)
 	party.advance(DT)

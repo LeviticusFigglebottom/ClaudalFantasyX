@@ -3,10 +3,10 @@ extends TestCase
 ## name, at the ball's place when a signal carries it), moves the crowd's beds and keeps the zone's, silences them
 ## for the naming rite and brings the murmur back after it; it reads swimmers against the water sphere (entry,
 ## exit with hysteresis, strokes, no stroke for a jump); and the director builds one bound to its own players.
-## The sphere, the ball and the match are not on this branch, so the stand-ins are built here and name their hook
-## with the `audio_class` meta (no class_name stubs: they would collide with the real classes on merge). The meta is
-## set after a stand-in enters the tree, so the game's own Audio autoload (which tests never advance) does not hook it
-## and start beds that would still be playing when the run quits.
+## The mechanism tests use stand-ins naming a local hook table's class with the `audio_class` meta (no class_name
+## stubs). The meta is set after a stand-in enters the tree, so the game's own Audio autoload (which tests never
+## advance) does not hook it and start beds that would still be playing when the run quits. M3-AUD-824: the real
+## ReefballMatch (headless) is heard through the node that holds it in `match`.
 
 const SWIM_GROUP := &"reefball_swimmer"
 const EAR_GROUP := &"test_reefball_ear"
@@ -20,6 +20,28 @@ class MatchStandIn:
 	signal near_miss(a: int, b: int, c: int, d: int)
 	signal naming_rite_started
 	signal match_ended
+
+
+## The shipped hook's own signals were guesses before the minigame landed; the crowd and argument mechanics are
+## still tested on them, through this local table's hook.
+const MECHANISM_HOOK := {
+	"class": "MatchStandIn",
+	"signals":
+	{
+		"kickoff": {"sfx": "reefball_whistle_start", "crowd": "excited"},
+		"ball_kicked": {"sfx_at": "reefball_kick"},
+		"goal_scored": {"sfx_at": "reefball_score", "sfx": "reefball_cheer"},
+		"near_miss": {"sfx": "reefball_gasp"},
+		"naming_rite_started":
+		{"sfx": "reefball_naming_rite", "crowd": "silence", "restore": "murmur", "restore_after_sec": 12.0},
+		"match_ended": {"sfx": "reefball_whistle_end", "crowd": "murmur"},
+	},
+}
+
+
+class Holder:
+	extends Node3D
+	var match: ReefballMatch
 
 
 class SphereStandIn:
@@ -42,12 +64,18 @@ func before_each() -> void:
 	fades.clear()
 
 
+func _mechanism_table() -> Dictionary:
+	var table := (AudioData.table(AudioData.REEFBALL_HOOKS) as Dictionary).duplicate(true)
+	table["hooks"] = [MECHANISM_HOOK.duplicate(true)]
+	return table
+
+
 func test_match_signals_play_rows_and_move_the_crowd() -> void:
-	var r := _listener()
+	var r := _listener(_mechanism_table())
 	var m := MatchStandIn.new()
 	_host().add_child(m)
-	m.set_meta(ReefballAudio.META_CLASS, "ReefballMatch")
-	assert_true(r.wants(m), "the stand-in names the ReefballMatch hook")
+	m.set_meta(ReefballAudio.META_CLASS, "MatchStandIn")
+	assert_true(r.wants(m), "the stand-in names the hook")
 	r.watch(m)
 	r.watch(m)
 	m.kickoff.emit()
@@ -86,18 +114,65 @@ func test_match_signals_play_rows_and_move_the_crowd() -> void:
 
 
 func test_a_node_without_the_hooks_signals_is_watched_quietly() -> void:
-	var r := _listener()
+	var r := _listener(_mechanism_table())
 	var n := Node3D.new()
 	_host().add_child(n)
-	n.set_meta(ReefballAudio.META_CLASS, "ReefballBall")
+	n.set_meta(ReefballAudio.META_CLASS, "MatchStandIn")
 	r.watch(n)
 	assert_eq(r.watched.size(), 1, "watched")
-	assert_eq(played, [], "and nothing plays: it has none of kicked / pushed / caught / shot")
+	assert_eq(played, [], "and nothing plays: it has none of the hook's signals")
 	var plain := Node3D.new()
 	_host().add_child(plain)
 	assert_false(r.wants(plain), "a node with no hook is left alone")
 	n.free()
 	plain.free()
+	r.free()
+	_done()
+
+
+func test_the_real_match_is_heard_through_its_holder() -> void:
+	var r := _listener()
+	var h := Holder.new()
+	_host().add_child(h)
+	h.global_position = Vector3(2, 0, 3)
+	assert_true(r.wants(h), "a node with a `match` property is a holder")
+	r.watch(h)
+	assert_eq(r.watched.size(), 0, "nothing to connect while it holds no match")
+	var m := ReefballFixture.begun()
+	h.match = m
+	r.advance(1.0 / 60.0)
+	assert_eq(r.watched.size(), 1, "the match is connected once the holder has it")
+	r.advance(1.0 / 60.0)
+	assert_eq(r.watched.size(), 1, "once")
+	var at := Vector3(2, 0, 3)
+	m.action_resolved.emit({"action": ReefballMatch.PASS, "success": true, "scored": false})
+	assert_eq(played, [[&"reefball_kick", at]], "a pass is a kick, at the holder")
+	played.clear()
+	m.action_resolved.emit({"action": ReefballMatch.LOFT, "success": false, "scored": false})
+	assert_eq(played, [[&"reefball_shot", at], [&"reefball_gasp", null]], "a missed loft: the shot, then a gasp")
+	played.clear()
+	m.float_scored.emit(m.player_side, [1, 0])
+	assert_eq(
+		played,
+		[[&"reefball_cheer", null], [&"reefball_score", at], [&"reefball_float_ring_bell", at]],
+		"our float: the cheer, the score and the ring's bell"
+	)
+	assert_eq(r.crowd, ReefballAudio.CROWD_EXCITED, "the stands get excited")
+	played.clear()
+	m.float_scored.emit(1 - m.player_side, [1, 1])
+	assert_eq(played[0], [&"reefball_groan", null], "theirs: a groan")
+	played.clear()
+	m.match_finished.emit(ReefballMatch.WIN, [2, 1])
+	assert_eq(played, [[&"reefball_cheer", null], [&"reefball_whistle_end", null]], "the win: a cheer, the whistle")
+	assert_eq(r.crowd, ReefballAudio.CROWD_MURMUR)
+	played.clear()
+	var real := m.legal_actions()
+	if not real.is_empty():
+		m.perform(real[0]["action"], real[0].get("target", &""))
+		assert_false(played.is_empty(), "a performed action sounds through the real signal")
+	h.free()
+	r.advance(0.1)
+	assert_eq(r.watched.size(), 0, "a freed holder is dropped")
 	r.free()
 	_done()
 

@@ -37,6 +37,10 @@ transform = Transform3D(-0.866025, 0.12941, -0.482963, 0, 0.965926, 0.258819, 0.
 light_color = Color(0.663, 0.863, 0.949, 1)
 light_energy = 0.8
 
+[node name="Kick" type="DirectionalLight3D" parent="Viewport"]
+light_color = Color(0.663, 0.863, 0.949, 1)
+light_energy = 0.0
+
 [node name="Camera" type="Camera3D" parent="Viewport"]
 current = true
 fov = 30.0

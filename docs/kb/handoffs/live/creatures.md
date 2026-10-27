@@ -245,3 +245,131 @@ Merge the three creature worktrees as they finish (they append to creatures.json
 ## Setup notes
 - `fetch_blender.py` failed twice on truncated debs from the proxy (`dpkg-deb ... unexpected end of file`). Delete the named `.deb` under `~/.cache/hymn/blender-*/debs/` and rerun; it finished on the third pass.
 - `ln -s ~/.cache/hymn/godot-4.6.3+ds-2/godot ~/.local/bin/godot` (and `godot-render`, and `~/.cache/hymn/blender-5.0.1+dfsg-5/blender`).
+
+## NEW ACCOUNT (from 2026-10-25)
+- **MERGE-READY @ 52c2d19c: integration -ze8rrn (de93e79e) merged; item 1 triage, no code change needed.**
+  - `test_post_import.gd` (3 FAIL at handover): **21/0 on a fresh import.** It was a stale `.godot` import cache,
+    not code.
+  - `test_battle_ko_once.gd::test_a_primitive_foe_falls_once_and_is_hidden`: **it fails on the integration head too**
+    (wickfry has glassfry's model since big8). It's **already fixed in lead/gate-big9 by 2e956d3f** (the test now
+    picks any encounter led by a model-less foe), so it clears when big9 lands. Nothing to file.
+  - **Lead, note:** big9 took claude/creatures @ 23f94ed5 (612 only). **611 wildlife and 610 FieldNpc are not in
+    big9**; take this head in big10. The zone wiring (slice-polish) waits on them.
+  - Checks run: validate_data 0/0, taskboard, Godot post_import 21/0, field_npc 10/0, wildlife 10/0, creature 24/0,
+    hero 68/0, battle_ko_once 4/1 (the known one above). Skipped: lint and format (no code change), shots, Blender
+    (nothing changed).
+- **MERGE-READY @ 78b8a992: M3-CRE-613, villagers alive (FAST-TRACK candidate: the human's "placeholder villagers").**
+  - **What it adds:**
+    - NpcLook head modifier;
+    - FieldNpc attention (a glance at a party that comes near, look-arounds), chat pairs in bouts, work, storm (shelter, brace, sky looks, home again), and a talk that ends on its own;
+    - **VillagerLayer**: one node per zone turns the stand-ins into the real M2-CHR-03 villagers from `game/data/world/npc/zones/<zone>.json`. Haluna's file places all seven.
+  - Four shots of the real Haluna zone with the layer (npc_haluna_dock/market/chapel/lane), each viewed and approved. The dock shows the netmender and the fisher facing each other in a chat.
+  - Also restored the llvmpipe metadata of save_shrine_field and settings_accessibility (the "?" the Lead flagged).
+  - **Checks run:** validate_data 0/0 (the new validate_npc included), taskboard, gdlint, gdformat, tools test_npc 8 OK, screenshot manifest valid; Godot villager_routines 11/0, field_npc 10/0, hero 68/0.
+  - **Checks skipped:** other shots (no shared scene or shader touched; the layer only exists in my review stage until a zone adds it), coverage (no game/battle or game/progression change), Blender (no asset change).
+  - **Lead:** 610 (FieldNpc) and 611 (wildlife) are not in big9. They ride with this head.
+
+### For other tracks (relay, please)
+- **slice-polish:** Haluna's villagers are still capsules. Add ONE node to `haluna.tscn` at the root:
+  `[node name="VillagerLayer" type="Node3D" parent="."]`, script `res://game/world/npc/villager_layer.gd`,
+  `zone_id = &"ch02/haluna"`.
+  - It hides only the stand-ins' StandIn and Facing (plus Reed's Broom and Osu's Bowl), and keeps the collision and the Talk Interactables, so ids, payloads and dialogue are unchanged.
+  - It puts each villager beside its stand-in, so night_hide still works.
+  - Talks end by themselves when the player gets control back.
+  - For GreyboxZone.build(): add a VillagerLayer when `FileAccess.file_exists(VillagerLayer.path_for(location_id))`, as with WildlifeLayer.
+  - Also add the WildlifeLayer node.
+  - Tell me (via your log) the stand-in paths in the causeway and shrine zones, if they have any.
+  - Docs: docs/kb/tech/field_npc.md, "VillagerLayer".
+- **act1-chapters:** VillagerLayer has a `storm_flag`. Oruvel with `ch01_gulls_cried` sends its villagers to shelter when the storm rises, with no zone call needed (or call `FieldNpc.set_storm_all(get_tree(), on)` from OruvelZone.set_storm). List the Act I villager stand-in paths in your log and I'll write the data files.
+- **characters:** request task M3-CRE-614: villager work clips (mend_net, tend_stall, sweep, hold_bowl), an optional `brace` loop, hand props (broom, bowl, net), and bodies for Haluna's Shopkeeper, Smith and Innkeeper.
+- **hero-integration (FYI):** NpcLook is a SkeletonModifier3D added after HeroIdleMicro on villager skeletons; it turns DEF-spine.004/.005/.006. Tell me if the idle_micro bones or the modifier order change.
+- **MERGE-READY @ ee52f218: M3-CRE-615, ambient wildlife in the Act I zones (queue item 3).**
+  - Data on the greybox layouts:
+    - gulls over Oruvel, the Brightwater ferry and Tamsule;
+    - crabs on Brine Shoals' flats and tideline, the Haluna wake-night shore and Pemakar's quay;
+    - fish shoals in the drowned tower (oruvel_underway).
+  - Corrow's strand, Ashcrown and the bell galleries are empty on purpose (docs/kb/art/wildlife.md, "Act I zones").
+  - Three shots of the real greybox zones, each viewed and approved (wildlife_zone_brine_flats/brine_wrecks/underway_crown).
+  - **Checks run:** validate_data, validate_wildlife, Godot wildlife 10/0, taskboard. **Checks skipped:** coverage and Blender (no code or asset change).
+  - **Zone owners (act1-chapters):** add the one WildlifeLayer node, or have GreyboxZone add it for any location with a file.
+- **In progress: M3-CRE-616, insects** (moths at lamps, dragonflies over flats and paddies) as a fourth wildlife kind,
+  built in a worktree agent. It lands as its own MERGE-READY.
+- **MERGE-READY @ 9bf973cc: M3-CRE-617, hits land on the contact frame (queue item 4, syncs with M3-BPR-401).**
+  - Every creature's hit peaks 0.13–0.20 s in, so the hit-stop used to freeze the pre-hit idle pose. A hit now cuts in at 0.1 s with no blend (creatures.json `hit_snap`).
+  - The Drownbell, Matron, limpet and Reach hits barely moved; they are rebuilt with real recoils (Blender verify identical; hit frames viewed before and after).
+  - **Checks run:** validate_data, lint, format; Godot creature 25/0 and battle 619/1 (the 1 is the known test_battle_ko_once primitive-foe test that battle-presentation is fixing); 11 battle_choreo shots all pass (battle_choreo_hit rmse 0.006, which is the struck crab now mid-recoil, viewed).
+  - The creature stage shots of the four rebuilt bosses and creature_portraits are re-rendering; I'll report any drift.
+
+### For other tracks (relay, please)
+- **battle-presentation (M3-BPR-401 bug, your files):** the struck target's clip is NOT held during the hit-stop.
+  - `_step_beats` fires contact, so BattleImpact._hold sets every involved AnimationPlayer's speed_scale to 0.
+  - Then the react beat calls `BattleClips.play`, which sets `p.speed_scale = speed` again. So the target's hit clip runs through the hold while the attacker and the procedural recoil stay frozen.
+  - Suggested fix: BattleImpact holds the targets again after their reactions start (or BattleClips.play leaves a held player at 0 and BattleImpact restores `speed` on release).
+  - My side is done: creature hits now start on a struck pose (M3-CRE-617), so once the hold works the frozen frame shows the blow.
+- Re-checked after M3-CRE-617: creature_drownbell, _toll, _cinder_matron, _tower_limpet and _undertows_reach have rmse 0 (the rebuilt hits don't touch them).
+- **MERGE-READY @ 15c8c997: M3-CRE-618, portrait rim for the dark creatures (queue item 5).**
+  - CreaturePortrait's key and rim now come from the camera, not the world, so every portrait yaw is lit alike.
+  - The 9 darkest creatures by measured albedo get rim 2.8 plus a low kick light.
+  - The review sheet fits all 20 (it cropped its top and bottom rows); viewed and re-approved.
+  - **Checks run:** validate_data, lint, format, Godot creature 25/0, tools test_creatures. **Checks skipped:** other shots (nothing else uses CreaturePortrait on this branch).
+- **For ui-menus (relay):** your bestiary bake (tools/portraits) uses the same camera-relative rims, with `light_scale` for hullgnaw, scuttler, squall_wing, tide_crawler and undertows_reach. By measured albedo, add `spawn_polyp` and `wall_polyp` (black bases), `flue_moth` and `oil_slug` (glossy near-black). creatures.json `portrait.rim_energy` > 1.1 marks the dark ones if you'd rather read it than keep a list.
+- **MERGE-READY @ b5e05d2f: M3-CRE-616 insects, M3-CRE-613 wake villagers, M3-CRE-620/621 Act II.**
+  - **616, ambient insects (merged from a worktree agent):**
+    - moths at lamps and dragonflies over water and paddies, as a fourth wildlife kind (6 draw calls a zone, 0.07 ms in Pemakar);
+    - zone data for Haluna (dragonflies) and Pemakar (two moth swarms and a paddy patrol, unioned with my Act I crabs);
+    - wildlife_stage re-approved by the agent after viewing.
+  - **613, follow-up:**
+    - VillagerLayer rows can ride inside a greybox cutscene actor (`attach: child`);
+    - Haluna's wake night (ch04/haluna_wake) gets the seven villagers at the feast;
+    - fixed a FieldNpc bug where two villagers in different parents read 0 m apart and turned away;
+    - new review shot npc_wake_feast (PC render requested).
+  - **620:** the Act II roster (7 regulars, 4 variants, 4 bosses and a boss part) and design sheets for all of them (docs/kb/art/creatures/act2/).
+  - **621, the Mangrove Drowner (Ch10 boss, worktree agent):**
+    - 16.4k triangles; phase `uprooted` with the stump hidden after it; risen strike clips;
+    - no enemies.json row yet (Act II encounters don't exist).
+    - Polish notes are in M3-CRE-622: the roots read as smooth tubes and the risen pose as spidery.
+  - **Checks run:** validate_data, taskboard, gdlint, gdformat, screenshot manifest; tools test_creatures, test_wildlife and test_npc OK; Godot creature 26/0, villager_routines 12/0, field_npc 10/0, wildlife 14/0; Blender verify identical for wildlife_insect and creature_mangrove_drowner.
+  - **Checks skipped:** coverage (no game/battle or game/progression change); shots (now the PC's, see below).
+- **Lead (for big10):** the KO-test fix is in big9. Act I's encounter needs are met: every enemy on every branch has a model except stillguard_inquisitor (a person).
+- **Note for act1-chapters' Ch6 dressing:** when it merges, the wildlife_zone_brine_* shots will drift (the greybox becomes the kit). Re-approve after viewing; the wildlife data keeps its coordinates.
+
+### Render requests
+RENDER-REQUEST @ b5e05d2f: creature_drownbell, creature_drownbell_toll, creature_cinder_matron, creature_tower_limpet, creature_undertows_reach, creature_portraits, battle_choreo_melee, battle_choreo_hit, battle_choreo_cast, battle_choreo_support, battle_choreo_read, battle_choreo_ko, battle_choreo_swap, battle_choreo_lamp_dive, battle_choreo_toll, battle_choreo_vowbound_rise, battle_choreo_summon, creature_mangrove_drowner, creature_mangrove_drowner_risen, wildlife_stage, wildlife_zone_brine_flats, wildlife_zone_brine_wrecks, wildlife_zone_underway_crown, npc_haluna_dock, npc_haluna_market, npc_haluna_chapel, npc_haluna_lane, npc_stage_field, npc_wake_feast; why: M3-CRE-617 hit snap and rebuilt boss hits, M3-CRE-618 portrait lights, M3-CRE-621 new boss, M3-CRE-616 insects, M3-CRE-613/615 villager and wildlife review stages (every shot but npc_wake_feast was cloud-rendered, viewed and approved or compared before the directive; this pass confirms PC parity; npc_wake_feast has no baseline yet).
+- **Merged big9 (integration 7cccb551) at d435d939.**
+  - Append-only unions: ownership, asset_import, blender_builds (60 jobs), test_post_import, shots, baselines.
+  - creature_portraits.png keeps this branch's version (it's in the render request).
+  - **Checks run:** validate_data, taskboard, manifest, lint, format, tools tests; Godot creature 26/0, villager_routines 12/0, field_npc 10/0, wildlife 14/0, post_import 21/0, battle_ko_once 6/0 (big9's fix is in).
+- **Lead's capsule item (battle_arena_camp):** the white capsule beside the raid hound is **`stillguard_inquisitor`** (Inquisitor Hadric Moll), a person, so it belongs to the characters track.
+  - **Request filed:** M3-CRE-625 (role character, request-from creatures). It asks for a GLB with idle, attack, cast, hit and a kneeling yield `ko`. Creatures then wires the battle side (actor scene, creatures.json row).
+  - characters' own M3-C06-06 (todo, unowned) lists him among a dozen Ch6 assets.
+- **Capsule sweep** (enemies.json and encounters.json on the integration branch, act1-chapters, m2-slice, battle-presentation and characters; plus every skill summon and every set-piece entry):
+  - **the only foe without a model is `stillguard_inquisitor`** (encounter ch06_inquisitor);
+  - summons (spawn_polyp, squall_wing, tide_crawler) all have models;
+  - set-piece entries (the_climb, the_surge, the_kirru) are timeline-only and never seated on the stage, so they draw no capsule.
+- **MERGE-READY @ 10f21a17: M3-CRE-623, the Lamp Engine (Ch11 boss, worktree agent).**
+  - 18.5k triangles; phase `opened` (the rings fold back as petals and the core shows), with opened-pose strike clips.
+  - Checked by numbers, not renders: feet at y 0, every lamp clear of the frame, the core 1.3% visible closed and 48% open, every colour a palette swatch, no break parts yet (they need a charge skill).
+  - **Checks run:** Godot creature 27/0, post_import 21/0, validate_data, taskboard, manifest, Blender verify identical.
+- **Kit-wide finding (to fix later, M3 polish):** every creature GLB's clips play one frame (1/30 s) late in the file; a hit authored to peak at 0.10 s peaks at 0.13 s. The hit snap (0.1 s) still lands near half the recoil, so nothing is broken. Fixing it rebuilds all 29 creatures, so it waits for a batch rebuild.
+RENDER-REQUEST @ 10f21a17: creature_lamp_engine, creature_lamp_engine_opened; why: M3-CRE-623 new Act II boss, never rendered (no baselines); check the battle-distance read, the closed-seam glow, and the hub and lamp teals reading apart.
+- **MERGE-READY @ 21125780: M3-CRE-624, the Avalanche Ram (Ch12 boss, worktree agent).**
+  - 15.2k triangles; a woolback grown huge, with frozen fleece locks, partings that glow spawn_wound, and the herd-cord.
+  - Measured from the GLB: the head at 2.86 m; hooves solved to y 0 in every clip; the KO lies down without going below the floor.
+  - **Checks run:** Godot creature 28/0, post_import 21/0, Blender verify identical (and the Lamp Engine's again on the merged tree), validate_data, taskboard, manifest, lint, format.
+RENDER-REQUEST @ 21125780: creature_avalanche_ram; why: M3-CRE-624 new Act II boss, never rendered (no baseline); check the chest's front, the charge's raised foreleg, and the muzzle length at portrait distance.
+- **DECISION: one villager runtime, two placements (the Lead's big11 note on the duplicate systems).**
+  - **Creatures owns the runtime:** FieldNpc, NpcLook, the routines, npc.json, the zone routine files and VillagerLayer.
+  - **Zone owners own placement.** Haluna keeps slice-polish's HalunaVillagers (M2-FP-102: it places a FieldNpc inside each body in HalunaZone.prebuild(), under the fade). That is the right place for it.
+  - **The join, new here:** VillagerLayer now **adopts** villagers a zone placed itself, wiring only the chat partner, the work and shelter points and the storm flag. It never doubles them (tested: test_the_layer_adopts_villagers_a_zone_placed_itself).
+  - **slice-polish (relay, please):** after `HalunaVillagers.populate(self)`, add **`VillagerLayer.wire(self, &"ch02/haluna")`**. That gives the netmender and the fisher their chat on the dock, and the work and shelter points. Glances, look-arounds and work already run on your FieldNpcs from npc.json.
+    - Reed's sweep route and the child's lane walk need those two placed beside their bodies (a FieldNpc carries its body when it walks). Optional; tell me if you want it.
+  - My review stage's Haluna placement is only for my shots; the game uses yours. Written into docs/kb/tech/field_npc.md, "Who owns what".
+  - **Lead:** I'll take big11's test_villager_routines storm-flag fix when big11 reaches the integration branch.
+- **MERGE-READY @ b99be560: M3-CRE-626, the Wakefin (Ch15 boss, worktree agent).** With it, all four Act II bosses are built.
+  - 11.1k triangles; a black sailfish whose blade cuts the waterline at y 0, with sea-glow flank seams and spawn_wound wounds along the spine.
+  - Measured: the blade top is 2.21 m at rest; the body sits below y 0 except in the breach; the KO lies belly-up at the surface.
+  - **For the arena owner (Ch15, act1-chapters or whoever builds Act II arenas):** the submerged body stays hidden only if the barge arena has an opaque water surface at y 0. Its portrait shows the whole fish.
+  - **Checks run:** Godot creature 29/0, Blender verify identical, validate_data, taskboard, manifest, lint, format, tools test_creatures.
+RENDER-REQUEST @ b99be560: creature_wakefin; why: M3-CRE-626 new Act II boss, never rendered (no baseline); check the fin reads at battle distance and the waterline sits at the blade's base.
+- **RENDERED @ b5e05d2f (gpu/render-creatures-b5e05d2), viewed:** 28 of 29 pass on the PC (most rmse 0), so every cloud-approved shot in it has pixel parity. npc_wake_feast had no baseline; viewed (Osu and the vendor face each other) and approved. Still open: the Lamp Engine, Avalanche Ram and Wakefin requests.
+

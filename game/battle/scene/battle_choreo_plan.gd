@@ -42,11 +42,13 @@ static func plan_for(data: Dictionary, engine: BattleEngine, result: ActionResul
 	var kos: Array[StringName] = []
 	var peak := 0.0
 	var stagger := float(st.get("stagger_sec", 0.0))
+	var riposte := a + s + float((data.get("counter", {}) as Dictionary).get("delay_sec", 0.0))
 	for hit: Dictionary in result.hits:
 		var tid := StringName(str(hit.get("target_id", "")))
-		if not targets.has(tid):
+		var by := StringName(str(hit.get("counter_by", "")))  # M3-BPR-406: a counter stance answers the actor
+		if not targets.has(tid) and by == &"":
 			targets.append(tid)
-		if tid == result.actor_id:
+		if tid == result.actor_id and by == &"":
 			continue
 		var amount := int(hit.get("amount", 0))
 		var kind := (
@@ -60,7 +62,8 @@ static func plan_for(data: Dictionary, engine: BattleEngine, result: ActionResul
 		peak = maxf(peak, blow)
 		if kind != "":
 			var w := BattleImpact.recoil_weight(data, blow) if kind == BattleChoreo.REACT_DAMAGE else 1.0
-			reactions.append({"target": tid, "kind": kind, "at": c + stagger * reactions.size(), "weight": w})
+			var at := riposte if by != &"" else c + stagger * reactions.size()
+			reactions.append({"target": tid, "kind": kind, "at": at, "weight": w, "counter_by": by})
 		var t := engine.find(tid) if engine != null else null
 		if amount > 0 and t != null and t.hp <= 0 and not kos.has(tid):
 			kos.append(tid)
@@ -94,6 +97,8 @@ static func retime(data: Dictionary, plan: Dictionary) -> void:
 		react_end = maxf(react_end, at + float((reaction.get(r["kind"], {}) as Dictionary).get("sec", 0.0)))
 		if kos.has(r["target"]):
 			ko_from = maxf(ko_from, at)
+	if kos.has(plan["actor"]):  # felled by a counter: it falls once it is home (M3-BPR-406)
+		ko_from = maxf(ko_from, float(plan["return_end"]))
 	var ko := data.get("ko", {}) as Dictionary
 	plan["ko_at"] = ko_from + float(ko.get("delay_sec", 0.0))
 	var total := maxf(float(plan["return_end"]), react_end)
@@ -121,6 +126,33 @@ static func melee_gap(
 		if side < need:
 			gap = minf(gap, along - sqrt(need * need - side * side))
 	return maxf(gap, 0.0)
+
+
+## A melee run's direction and length (M3-BPR-402): straight at `aim` unless a body beside the path stops it short;
+## then it turns by spacing.detour_step_deg each way, up to detour_max_deg, and takes the smallest turn whose run
+## ends within detour_reach_m of where an unobstructed run (only `target_bodies` in the way) would. {dir, gap}.
+static func melee_approach(
+	data: Dictionary, st: Dictionary, from: Vector3, aim: Vector3, bodies: Array, target_bodies: Array, ra: float
+) -> Dictionary:
+	var dir := BattleChoreo._flat(aim - from)
+	var best := {"dir": dir, "gap": melee_gap(data, st, from, dir, aim, bodies, ra)}
+	var sp := data.get("spacing", {}) as Dictionary
+	var step := float(sp.get("detour_step_deg", 0.0))
+	if dir == Vector3.ZERO or step <= 0.0:
+		return best
+	var ideal := from + dir * melee_gap(data, st, from, dir, aim, target_bodies, ra)
+	var reach := BattleChoreo._flat_len(aim - ideal) + float(sp.get("detour_reach_m", 0.0))
+	if BattleChoreo._flat_len(aim - (from + dir * float(best["gap"]))) <= reach:
+		return best
+	var deg := step
+	while deg <= float(sp.get("detour_max_deg", 0.0)) + 0.001:
+		for sgn: float in [1.0, -1.0]:
+			var d := dir.rotated(Vector3.UP, deg_to_rad(deg * sgn))
+			var g := melee_gap(data, st, from, d, aim, bodies, ra)
+			if BattleChoreo._flat_len(aim - (from + d * g)) <= reach:
+				return {"dir": d, "gap": g}
+		deg += step
+	return best
 
 
 ## A fighter model's footprint radius on the ground (M3-BPR-402): the mean of its visible meshes' half-width and

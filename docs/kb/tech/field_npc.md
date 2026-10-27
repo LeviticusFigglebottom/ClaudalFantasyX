@@ -87,4 +87,131 @@ nested dictionaries merge.
 - **Stage:** `game/levels/_tests/npc/npc_stage.tscn`. The fisher walks a route, the netmender idles, and
   Osu turns to a stand-in player and talks.
 - **Shot:** `npc_stage_field`, 150 frames at a fixed 60 fps.
-- **Tests:** `tests/unit/test_field_npc.gd`.
+- **Tests:** `tests/unit/test_field_npc.gd` (routines and the layer: `tests/unit/test_villager_routines.gd`).
+
+## Routines (M3-CRE-613)
+
+The human's playtest ("placeholder villagers", "parts look primitive") asked for a village that is busy
+whether or not the party is watching. Each routine is optional and data-driven (`npc.json`), and none of it
+uses randomness: every "now and then" is drawn from a hash of the villager's id and a counter
+(`HeroIdleMicro.share`), so two villagers never act in step and a frame is a pure function of the ticks.
+
+### Attention: the head (`NpcLook`)
+
+`NpcLook` (`game/world/npc/npc_look.gd`) is a `SkeletonModifier3D` added after `HeroIdleMicro`. It turns the
+neck and head (`look.bones` shares) by a yaw about up and a pitch about the body's side, on top of whatever
+clip plays. Each angle follows its target through a critically damped spring (`smoothing_sec`) with its speed
+capped (`max_rate_deg_per_sec`), so a glance starts soft, never snaps and never overshoots. Beyond
+`max_yaw_deg` a target is out of reach: a villager doesn't strain to look behind itself.
+
+FieldNpc picks the target each tick, highest first:
+
+| Priority | When | The head |
+|---|---|---|
+| 1 | Talking (and the hold after) | On the player's eyes (`look.player_eye_height_m`) |
+| 2 | The party comes within `glance.radius_m` | On the party for `glance.hold_sec`, again every `glance.rest_sec` while it stays, if in reach |
+| 3 | A storm | Braced: down `storm.brace_pitch_deg`, partly toward `storm.look_azimuth_deg`; up at the sky `storm.sky_pitch_deg` for `sky_look_sec` every `sky_every_sec` |
+| 4 | Chatting | On the partner's head |
+| 5 | Working | Down on the work (`work_target_path`, else `work.look_at` in node space); up and aside every `work.look_up_every_sec` |
+| 6 | Otherwise | Now and then a slow look to one side (`look_around`) |
+
+### Chat pairs
+
+Two FieldNpcs whose `partner` is each other (`chat_with`, or a VillagerLayer row's `chat_with`) chat while both
+rest within `chat.max_distance_m`. They turn to face each other (the eased body turn, not just the head),
+take turns of `chat.turn_sec` (`talk` on the speaker, idle on the listener, whose head is on the speaker),
+with a shared silence in `chat.pause_share` of the turns. They chat in bouts (`chat.bout_sec`) and go back
+to their own business between them (`chat.quiet_sec`): the netmender turns back to the net. The pair's lead
+(its id sorts first) runs the schedule and the other reads it, so they never both talk. Talking to one
+breaks the chat; the other glances at the player.
+
+### Work
+
+A villager row with a `work` section works at rest, and at route points whose `activity` is `work`
+(Marker3D metadata `activity = "work"`, or a VillagerLayer route entry). If the data names a `clips.work`
+clip and the actor has it, that clip replaces idle; otherwise idle plays and the head carries the work.
+The seven M2-CHR-03 villagers have only `idle`, `talk` and `walk`: the work clips and hand props are
+requested from characters (M3-CRE-614) and play as soon as their `clips.work` rows name them.
+
+### Storm
+
+`set_storm(on)` on one villager, `FieldNpc.set_storm_all(tree, on)` for every one, or a VillagerLayer's
+`storm_flag`. Each villager reacts after its own `storm.react_sec`. With a shelter (`shelter_path`, or a
+layer row's `shelter`) it hurries there at `storm.walk_speed_mps` and rests facing the shelter marker's way;
+without one it stops where it stands. Braced, the idle (or a `clips.storm` clip) runs at
+`storm.idle_playback`. Chats pause. When the storm ends it walks home to where it stood and resumes its
+route.
+
+### Ending a talk without wiring
+
+Besides `end_talk()`, `follow_dialogue(runner)` and walking off, a talk ends when the player has control again:
+if the player has `accepts_input` (a FieldController), the talk ends once a dialogue that held the player lets
+go, or after `talk_unheld_sec` if nothing held them (a bark). The zones need no call.
+
+## VillagerLayer: one node per zone
+
+`VillagerLayer` (`game/world/npc/villager_layer.gd`) turns a zone's stand-ins into villagers from
+`game/data/world/npc/zones/<zone id with / as _>.json`. **Zone owners add one node at the zone root:**
+
+```
+[ext_resource type="Script" path="res://game/world/npc/villager_layer.gd" id="vl"]
+...
+[node name="VillagerLayer" type="Node3D" parent="."]
+script = ExtResource("vl")
+zone_id = &"ch02/haluna"
+```
+
+or in code: `var v := VillagerLayer.new(); v.zone_id = location_id; add_child(v)` (a GreyboxZone can do this
+in `build()` for any location that has a file, as with WildlifeLayer).
+
+For each row the layer:
+- adds a FieldNpc carrying `assets/characters/villagers/<npc_id>/<npc_id>_actor.tscn` **beside the stand-in**
+  (same parent and transform), so whatever hides the stand-in's group (Haluna's `night_hide`) hides the
+  villager too;
+- hides the stand-in's placeholder children (`hide`, default `StandIn` and `Facing`), keeping its collision;
+- connects the row's `talk` Interactable, so using it starts the villager's talk (the zone's dialogue still
+  runs off the Interactable as before; nothing about ids or payloads changes);
+- carries the stand-in body and the `follow` nodes (a talk Area3D) along when the villager walks, so collision
+  and the talk spot stay on the villager;
+- sets the routine: `route`, `chat_with`, `work_at`, `shelter`.
+
+| Row key | Meaning |
+|---|---|
+| `npc_id` | The villager (child, fisher, neme, netmender, osu, reed, vendor) |
+| `stand_in` | The stand-in node, a path from the zone root |
+| `hide` | Stand-in children to hide (default `["StandIn", "Facing"]`) |
+| `talk` | The Interactable that starts its talk |
+| `follow` | Nodes (zone-root paths) that ride along when it walks |
+| `route` | Zone-root points `[x, y, z]` or `{"at", "pause_sec", "activity"}`: two or more |
+| `chat_with` | Another row's `npc_id` (both rows name each other) |
+| `work_at` | `[x, y, z]` its head looks at while working (default: `npc.json` `work.look_at`) |
+| `shelter` | `[x, y, z, yaw_deg]` it hurries to in a storm (yaw: FieldNpc's, 0 faces -Z) |
+
+File keys: `zone` (the location id; it names the file), `storm_flag` (optional; while it is set every villager
+here braces). `python3 tools/validate_data.py` (via `tools/validate_npc.py`) checks the files.
+
+| Zone | File | Villagers |
+|---|---|---|
+| `ch02/haluna` | `zones/ch02_haluna.json` | All seven: the vendor setting out the stall; Reed sweeping the chapel court between two sweep stations; the netmender mending and chatting with the fisher on the dock (both turn to the player at the dock's talk spot); the child wandering the lane; Neme watching the lane by her house; Osu with her bowl. The Town's shopkeeper, smith and innkeeper keep their stand-ins until they have bodies (M3-CRE-614). |
+
+Review: `game/levels/_tests/npc/haluna_villagers.tscn` (the real zone with a layer), shots `npc_haluna_dock`,
+`npc_haluna_market`, `npc_haluna_chapel`, `npc_haluna_lane`. Tests: `tests/unit/test_villager_routines.gd`,
+`tools/tests/test_npc.py`.
+
+## Who owns what (decided 2026-10-27, creatures with slice-polish's M2-FP-102)
+
+- **Runtime: creatures.** FieldNpc, NpcLook, the routines, `npc.json` (per-villager tuning: work, glance,
+  look-around, chat, storm), the zone routine files (`game/data/world/npc/zones/`), VillagerLayer and validate_npc.
+- **Placement in a zone: that zone's owner.** Haluna's villagers are placed by slice-polish's HalunaVillagers
+  (`game/levels/ch02/haluna/haluna_villagers.gd`, `game/data/flow/haluna_villagers.json`) in
+  `HalunaZone.prebuild()`, under the router's fade: a FieldNpc inside each body, the capsules hidden, the talk wired.
+  Zones without their own wiring (greybox and Act I zones) let VillagerLayer place them (`attach: beside` or
+  `child`).
+- **The join:** after placing its villagers, a zone with its own wiring calls
+  `VillagerLayer.wire(self, location_id)`. The layer **adopts** every villager it finds on a row's stand-in
+  (`VillagerLayer.placed_on`) and wires only what needs the zone: the chat partner, the work and shelter points,
+  the storm flag. It never adds a second villager. Glances, look-arounds and work already come with FieldNpc from
+  `npc.json`, so they work under either wiring.
+- **Routes** need a villager beside its stand-in (it carries the body). An adopted villager rides inside its body,
+  so its row's `route` and `follow` do not apply; Haluna's routes (Reed's sweep, the child's lane) wait until the
+  zone owner places those two beside their bodies (or lets the layer place them).

@@ -258,6 +258,7 @@ func _setup(m: Node3D) -> void:
 		)
 		contacts = HeroFootContacts.new(_field.get("foot_contacts", {}) as Dictionary)
 	HeroMotion.add_micro_motion(model, hero_id)  # M2-HER-1104: breathing, weight shift, the head leads turns
+	HeroMotion.add_foot_ik(model)  # M2-HER-1116: feet on slopes and steps, after the micro-motion
 
 
 func _build_tree() -> void:
@@ -309,6 +310,9 @@ static func _clip_node(clip: StringName) -> AnimationNodeAnimation:
 ## puts the body on it at once.
 func bind(node: Node3D) -> void:
 	source = node
+	var ik := HeroMotion.foot_ik_of(model) if model != null else null
+	if ik != null and node is CollisionObject3D:
+		ik.exclude = [(node as CollisionObject3D).get_rid()] as Array[RID]  # its own capsule is not the floor
 	var names: Array = _field.get("standin_names", [])
 	for child in node.get_children():
 		var vis := child as GeometryInstance3D

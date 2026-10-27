@@ -2327,6 +2327,8 @@ def story_pose_at(spec: dict, clip: str, t: float, length: float, sk: Skeleton, 
         u = t / length
         if spec.get("reverse"):
             u = 1.0 - u
+        if "at" in spec:  # one moment of the aliased clip, held (lie_in_shallows: the ko's last frame)
+            u = float(spec["at"])
         return pose_at(spec["alias"], u * length, length, sk, persona)
     u = t / length
     start = story_posture(spec.get("from", "stand"), sk, persona)

@@ -59,3 +59,10 @@
 - 2026-10-24: merged rnd-21, CHR-08, sweep O, qa-08, first-playable, cmb, ui-04, sweep P, rnd-01, m2-slice, rnd-23. Spawned the characters track. Hourly check-in trig_01LJyLo42xCq3WVmAza3BMhe.
 - 2026-10-24: new Lead took over. Toolchain up. PC and m2-slice briefed.
 - 2026-10-24 (old account): see CONSOLIDATED-history-2026-10-23.md.
+
+## Cloud renders (PC paused)
+- RENDERED @ 7a8bff79d15491fe5f03f5ebdaa8211b184eaf5b: lead/gate-render-hero-integration-7a8bff7; 0 pass, 7 drift (cloud)
+- RENDERED @ 60cbb212cec3781e32e8ac0f96303b895d54f01e: lead/gate-render-battle-presentation-60cbb21; 0 pass, 1 drift (cloud)
+- RENDERED @ 1c9bf8bd7ec282e7dab59df80807c1baed0e4173: lead/gate-render-hero-integration-1c9bf8b; 0 pass, 7 drift (cloud)
+- RENDERED @ 5a5b4fed21aa09992244352679a50aa125695273: lead/gate-render-battle-presentation-5a5b4fe; 0 pass, 2 drift; 2 new without baseline (cloud)
+- RENDERED @ ed3a458ef8ee2ab08c0626b6e70b42fb0fadf117: lead/gate-render-battle-presentation-ed3a458; 0 pass, 4 drift (cloud)
