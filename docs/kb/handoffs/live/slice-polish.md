@@ -121,6 +121,23 @@ Ch4–Ch9 onward. `m2-slice.md` beside this file is the history up to the 2026-1
         it;
       - re-run test_haluna_villagers against it.
 
+- **Lead's big11 items (16:53):**
+  - **Duplicate villager systems, resolved (M2-FP-113, 65b9e235):**
+    - creatures' VillagerLayer owns Haluna's villagers, and HalunaZone adds it;
+    - my HalunaVillagers keeps only the three shop bodies (shopkeeper, smith, innkeeper) it doesn't cover;
+    - request M3-CRE-100 to creatures: their `haluna_villagers` review stage should use the zone's layer (or its
+      `npc_haluna_*` shots will show every villager twice), and their data should take the shop rows.
+  - **The shrine GI (M3-ENV-704):**
+    - placed env-art's rope, debris and net pieces on the islet, and two offerings inside the entrance (`4ce8a48a`);
+    - `offering_step.glb` isn't on the integration branch yet;
+    - the bake needs a rendering device, so it goes to the PC (request below);
+    - `test_shrine_gi_bake` stays red until that bake lands.
+  - **Merged `lead/gate-big11`** (c5560fb6).
+  - **Checks:** haluna 57, villager 18, npc 10, cutscene 60, swap 15, shrine 37, first_verse 2, all 0 failed;
+    validate_data clean apart from env-art's `offering_step` PROVENANCE warning.
+- **MERGE-READY @ 4ce8a48a** (M2-FP-113 and M3-ENV-704, placement only). Two tools tests are red until the PC answers:
+  `test_screenshots` (the slice shots' baselines) and `test_shrine_gi_bake` (the rebake).
+
 ### Render requests
 RENDER-REQUEST @ fdec3cc6: slice_prologue_vigil_line, slice_beach_h05_asha, slice_beach_h06_toma, slice_haluna_villagers_village, slice_causeway_head, slice_causeway_harrier_view, haluna_h01_village_from_sea, haluna_h02_tidewall_lane, haluna_h04_dock, haluna_h07_chapel_court, haluna_h10_dock_night, shrine_s01_approach, shrine_s02_threshold, shrine_s03_overview, shrine_s04_lip, shrine_s05_side_pool, drownbell_flood, battle_boss_intro_drownbell, battle_arena_causeway, field_causeway_dolly, boot_title; why: M2-FP-102..109, the human's playtest round (real cast and held poses in the prologue and Cutscene A, live villagers and wildlife, the final causeway), plus the greyscale audit of every slice beat. The six slice_* shots are new (no baseline yet).
 - **Known red until the render lands:** the six new `slice_*` shots have no baseline yet, so the tools test
@@ -132,3 +149,4 @@ RENDER-REQUEST @ fdec3cc6: slice_prologue_vigil_line, slice_beach_h05_asha, slic
     approval.
 RENDER-REQUEST @ 44a7d65c: shrine_s01_approach, shrine_s02_threshold, shrine_s03_overview, shrine_s04_lip, shrine_s05_side_pool; why: M3-ARC-04 sets the shrine's shaft lamps' volumetric fog energy to 0 (the fog should read from the shader and the sun, not lamp scatter). If the e1e63f43 request is not rendered yet, render this one instead for those five shots.
 RENDER-REQUEST @ 5a3f9a37: slice_verse_steps; why: M2-FP-112, the first verse with Rhen and Toma on their real bodies (a new shot; it also covers the e1e63f43 and 44a7d65c requests if they are still unanswered).
+RENDER-REQUEST @ 4ce8a48a: gi_bake:shell_shrine, shrine_s01_approach, shrine_s02_threshold, shrine_s03_overview, shrine_s04_lip, shrine_s05_side_pool, npc_haluna_market, npc_haluna_dock, slice_haluna_villagers_village; why: M3-ENV-704 dresses the islet and the entrance (bake both GI states with tools/shrine/bake_shrine_gi.tscn under godot-render, then python3 tools/shrine/gi_inputs.py --write, and push the VoxelGIData and inputs file too). M2-FP-113 moves Haluna's villagers to VillagerLayer. This supersedes the 44a7d65c request for the five shrine shots.
