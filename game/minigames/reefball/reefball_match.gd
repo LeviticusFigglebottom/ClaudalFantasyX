@@ -341,18 +341,17 @@ func _take_float(taker: ReefballDiver) -> void:
 	fetched = holder.depth >= fetch_depth()
 
 
-## Why the holder may not take `action` (not a pass) now: a REFUSE_KEYS key, or &"" when it may.
+## Why the holder may not take `action` (RISE, DIVE or LOFT; passes are judged per receiver) now: a REFUSE_KEYS
+## key, or &"" when it may.
 func _refusal(action: StringName) -> StringName:
 	match action:
 		RISE:
 			return &"rise_unfetched" if holder.depth - 1 == RING and not fetched else &""
 		DIVE:
 			return &"dive_bed" if holder.depth >= bed() else &""
-		LOFT:
-			if not fetched:
-				return &"loft_unfetched"
-			return &"loft_deep" if holder.depth > int(_block("loft").get("max_depth", 0)) else &""
-	return &""
+	if not fetched:
+		return &"loft_unfetched"
+	return &"loft_deep" if holder.depth > int(_block("loft").get("max_depth", 0)) else &""
 
 
 static func _ids(ds: Array[ReefballDiver]) -> Array[StringName]:
