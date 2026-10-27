@@ -1,0 +1,6 @@
+PASS slice_prologue_vigil_line: rmse 0.00000 (limit 0.00800)
+FAIL iskarra_p01_plaza_dusk: rmse 0.15857 (limit 0.00800)
+FAIL iskarra_i02_gate_from_the_plaza: rmse 0.11423 (limit 0.00800)
+FAIL iskarra_i03_broken_tower: rmse 0.15951 (limit 0.00800)
+Screenshots: 4 compared, 3 failed (diffs in /home/user/wt/render/tests/screenshots/out/diff)
+compare exit 1
