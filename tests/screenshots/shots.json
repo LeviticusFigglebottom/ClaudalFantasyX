@@ -2526,6 +2526,10 @@
       "scene": "res://game/battle/scene/shots/battle_boss_intro_drownbell.tscn"
     },
     {
+      "id": "battle_boss_intro_reach",
+      "scene": "res://game/battle/scene/shots/battle_boss_intro_reach.tscn"
+    },
+    {
       "id": "hero_cutscene_turn_strip",
       "scene": "res://game/levels/_tests/hero_motion/cutscene_turn_strip.tscn",
       "camera": "Camera",

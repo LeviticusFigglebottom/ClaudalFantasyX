@@ -350,7 +350,10 @@
                             "title_key": "BOSS_TITLE_INQUISITOR", "epithet_key": "BOSS_EPITHET_INQUISITOR",
                             "on_retry": false},
         "drownbell": {"enemy": "drownbell", "shot": "boss_tall", "hold_sec": 2.2, "title_key": "BOSS_TITLE_DROWNBELL",
-                      "epithet_key": "BOSS_EPITHET_DROWNBELL", "on_retry": false}
+                      "epithet_key": "BOSS_EPITHET_DROWNBELL", "on_retry": false},
+        "undertows_reach": {"enemy": "undertows_reach", "shot": "boss_skyward", "hold_sec": 2.4,
+                            "title_key": "BOSS_TITLE_UNDERTOWS_REACH", "epithet_key": "BOSS_EPITHET_UNDERTOWS_REACH",
+                            "on_retry": false}
       }
     }
   }
