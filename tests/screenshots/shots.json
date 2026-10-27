@@ -3030,6 +3030,181 @@
           }
         }
       }
+    },
+    {
+      "id": "slice_prologue_vigil_line",
+      "scene": "res://game/levels/_tests/slice_shots/slice_cutscene_shot.tscn",
+      "camera": "default",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 990,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        },
+        "nodes": {
+          ".": {
+            "level_path": "res://game/levels/prologue/prologue.tscn",
+            "scene_id": "prologue_dead_city"
+          }
+        }
+      }
+    },
+    {
+      "id": "slice_beach_h05_asha",
+      "scene": "res://game/levels/_tests/slice_shots/slice_cutscene_shot.tscn",
+      "camera": "default",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 1080,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        },
+        "nodes": {
+          ".": {
+            "level_path": "res://game/levels/ch02/haluna/haluna.tscn",
+            "spawn": "Beach",
+            "flags": [
+              "prologue_seen"
+            ],
+            "scene_id": "ch02_girl_on_the_beach"
+          }
+        }
+      }
+    },
+    {
+      "id": "slice_beach_h06_toma",
+      "scene": "res://game/levels/_tests/slice_shots/slice_cutscene_shot.tscn",
+      "camera": "default",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 1500,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        },
+        "nodes": {
+          ".": {
+            "level_path": "res://game/levels/ch02/haluna/haluna.tscn",
+            "spawn": "Beach",
+            "flags": [
+              "prologue_seen"
+            ],
+            "scene_id": "ch02_girl_on_the_beach"
+          }
+        }
+      }
+    },
+    {
+      "id": "slice_haluna_villagers_village",
+      "scene": "res://game/levels/_tests/slice_shots/slice_cutscene_shot.tscn",
+      "camera": "default",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 90,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        },
+        "nodes": {
+          ".": {
+            "level_path": "res://game/levels/ch02/haluna/haluna.tscn",
+            "spawn": "Village",
+            "flags": [
+              "prologue_seen",
+              "ch02_met_asha"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "slice_causeway_head",
+      "scene": "res://game/levels/_tests/slice_shots/slice_cutscene_shot.tscn",
+      "camera": "default",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 90,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        },
+        "nodes": {
+          ".": {
+            "level_path": "res://game/levels/ch03/saltgrass_causeway/saltgrass_causeway.tscn",
+            "spawn": "FromHaluna",
+            "flags": [
+              "prologue_seen",
+              "ch02_met_asha",
+              "ch02_tideline_won",
+              "ch02_ate_at_nemes"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "slice_causeway_harrier_view",
+      "scene": "res://game/levels/_tests/slice_shots/slice_cutscene_shot.tscn",
+      "camera": "default",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 90,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        },
+        "nodes": {
+          ".": {
+            "level_path": "res://game/levels/ch03/saltgrass_causeway/saltgrass_causeway.tscn",
+            "spawn": "BeforeHarrier",
+            "flags": [
+              "prologue_seen",
+              "ch02_met_asha",
+              "ch02_tideline_won",
+              "ch02_ate_at_nemes",
+              "ch03_harrier_won"
+            ]
+          }
+        }
+      }
     }
   ]
 }
