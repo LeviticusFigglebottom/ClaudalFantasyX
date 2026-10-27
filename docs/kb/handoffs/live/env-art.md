@@ -339,6 +339,21 @@ env-art is cloud session `session_01YbaV2c8yquRHqj6afQYg89` on `claude/env-art`;
   `test_brine_shoals_kit` 31, the Environments and glbs load headless, and the full tools suite (red only on
   screenshots and the integration's audio). No shot uses the new pieces or grades yet.
 - **MERGE-READY (also in this push): M3-ENV-1201** to review. It was built under M3-ENV-703.
+- **MERGE-READY @ 55cb8501: the Act II zone kits** (the Lead's item 4, "sheets first, then kits"), all in the Haluna kit.
+  - **Lowlight (M3-ENV-716):** `conduit_housing`, with **the Saltwright housing-mark** Liss reads in L03 (a circle
+    crossed by three lines over two seats); `lowlight_nave_bay` and `_broken`; `well_shaft`; `lowlight_sanctum`;
+    `vey_arcade_bay`; `vey_gallery_bridge`; `strangler_fig`.
+    - **For Character:** M3-ENV-719 asks for the same mark on Rhen's lantern, so the Ch11 reveal reads on screen.
+  - **Keth Pass (M3-ENV-717):** `keth_road_switchback` (10 m modules that chain), `keth_scree_slope` and
+    `woolback_trough`. Quellan and Cloudloom follow with their zones.
+  - **Ossa Fen (M3-ENV-718):** `kirru_roost` and `name_shell_cord`. The shells are the living clutch's: the Kirru keep
+    nothing of their dead (bible §8).
+  - **Also:** M3-C04-03, C05-03, C08-102 and C09-04 now note where their kit items were delivered. What's left on
+    them is act1-chapters' placement (ADR 0200), so the Lead may re-route them.
+
+  Checks run: haluna_kit full rebuilds (older pieces byte-identical each time), `test_lowlight` 7,
+  `test_lowlight_housing` 3, `test_ossa_fen` 9, `test_haluna_kit`, validate_data, taskboard. No shot shows these
+  pieces yet (no zone previews for them). Godot import clean.
 
 ### Render requests
 RENDER-REQUEST @ a0d2549f: battle_arena_tideline_dawn,battle_arena_causeway_disc_sunset,battle_arena_causeway,battle_arena_tideline,causeway_c02_profile_against_the_lagoon,causeway_c08_drownbell_disc_approach,drownbell_flood,battle_boss_intro_drownbell,haluna_h01_village_from_sea,haluna_h10_dock_night,field_objective_line,field_interact_prompt,field_area_title,field_tip_card,dialogue_continue; why: M3-ENV-701 set dressing in Haluna, the causeway and the two arenas (the five field/dialogue shots frame Haluna's lane 1)
