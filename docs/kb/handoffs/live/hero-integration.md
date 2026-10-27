@@ -515,3 +515,11 @@ RENDER-REQUEST @ 1c9bf8bd: battle_choreo_cast, battle_choreo_read, battle_choreo
 - Kerrid: when claude/characters exports kerrid_lod1.glb (M3-CHR-505), do the fold-into-characters handoff's §2 steps
   1–4.
 - M3-ARC-1216 is in review; its last box is act1-chapters'.
+
+### Render review, 2026-10-27 ~21:50
+- **`lead/gate-render-hero-integration-7a8bff7` viewed (7 drift), NOT approved.** Ysolde's model is right in all
+  of them, with no breakage. But 7a8bff79 predates big12, and against this branch's baselines (big12's approved ones)
+  the drift also covers big12's own changes: the reef crab's and harrier's new models and poses, Toma and the
+  tutorial text in battle_heroes_idle (which has no Ysolde in it). Copying these would revert big12's approvals.
+- **Still needed:** the RENDER-REQUEST above, at a sha with big12 in (4d351143 or later on claude/hero-integration).
+  Same 7 ids. Only Ysolde should drift.
