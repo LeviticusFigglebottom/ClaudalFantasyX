@@ -1,0 +1,7 @@
+FAIL haluna_h01_village_from_sea: rmse 0.05404 (limit 0.00800)
+FAIL haluna_h02_tidewall_lane: rmse 0.08149 (limit 0.00800)
+FAIL haluna_h04_dock: rmse 0.01082 (limit 0.00800)
+FAIL haluna_h10_dock_night: rmse 0.00912 (limit 0.00800)
+FAIL battle_arena_causeway_route_afternoon: rmse 0.03161 (limit 0.00800)
+Screenshots: 5 compared, 5 failed (diffs in /home/user/wt/render/tests/screenshots/out/diff)
+compare exit 1
