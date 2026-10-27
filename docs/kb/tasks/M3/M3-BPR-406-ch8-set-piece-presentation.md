@@ -45,8 +45,14 @@ evacuation, and nobody's death is a joke.
       (test_battle_set_piece_stage).
 - [x] Withdrawals: the foe backs away and is hidden (it used to stay standing); reduced motion hides it in place.
 - [x] Counters: the hero's riposte clip, then the attacker's clip-only reaction; a riposte KO falls once home.
-- [ ] Intercept step-in (needs a stair position on the arena: env-art/act1-chapters' Ch8 arena, not built yet).
-- [ ] The Reach's intro row, the breach_gather push-in, and the phase looks: these need PC renders to tune.
+- [x] Arena: greybox `wall_head_storm` (Ch8 grade), with `EntryMarker_ward` at the stair head. The final kit is
+      requested from env-art (M3-BPR-407).
+- [x] Intercept: no step-in needed. The stair head is behind the party line, so the guard on his mark already
+      stands between the foe and the stair, and the foe's grip lands on him there. Revisit if the final kit puts the
+      stair elsewhere.
+- [x] The Breach push-in (camera.pressure) and the Reach's intro row.
+- [ ] The phase looks (untargetable or damage-immune), and freeze-frames for a counter and a withdrawal: these need
+      PC renders.
 
 ## Acceptance criteria
 - [x] Every Ch8 encounter plays to its end at full pacing with no script error (a test drives each by policy).
