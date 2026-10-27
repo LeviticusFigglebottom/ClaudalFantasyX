@@ -642,6 +642,16 @@
       ]
     },
     {
+      "id": "creature_ridge_lynx",
+      "owner": "character",
+      "sources": ["assets_src/creatures/ridge_lynx/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/ridge_lynx/*.glb", "assets/creatures/ridge_lynx/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/ridge_lynx/build_ridge_lynx.py", "--", "--out", "assets/creatures/ridge_lynx/ridge_lynx.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "ridge_lynx"]
+      ]
+    },
+    {
       "id": "wildlife_gull",
       "owner": "character",
       "sources": ["assets_src/wildlife/gull/**", "assets_src/wildlife/common/**", "assets_src/creatures/common/creature_kit.py"],

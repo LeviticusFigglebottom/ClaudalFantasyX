@@ -25,6 +25,14 @@ const FIN_IDLE_MIN_Y := 1.3
 const FIN_DIVE_SEC := 1.13
 const FIN_KO_BAND_M := 0.6
 const FIN_BELLY_UP := -0.8
+const LYNX := "res://game/creatures/ridge_lynx/ridge_lynx_battle.tscn"
+## The ridge lynx's checks: its crouch (the telegraph, at CROUCH_SEC) lowers the body at least this far with the paws
+## planted, the leap lifts the root above LEAP_MIN_M at its apex, and at the end of the KO it lies with its head low.
+const LYNX_CROUCH_SEC := 0.38
+const LYNX_CROUCH_MIN_M := 0.1
+const LYNX_APEX_SEC := 0.6
+const LYNX_LEAP_MIN_M := 0.5
+const LYNX_KO_HEAD_MAX_Y := 0.4
 const RING := {"radius_factor": 1.4, "inner_soft_m": 0.25, "notches": 6}
 const SANDBOX := "res://game/battle/scene/battle_sandbox.tscn"
 const SEED := 20261024
@@ -407,6 +415,62 @@ func test_the_wakefin_circles_cuts_dives_and_floats_belly_up() -> void:
 
 func _bone_y(skel: Skeleton3D, bone: int) -> float:
 	return (skel.global_transform * skel.get_bone_global_pose(bone)).origin.y
+
+
+func _skeleton(a: Node) -> Skeleton3D:
+	return a.find_children("*", "Skeleton3D", true, false)[0] as Skeleton3D
+
+
+func _player(a: Node) -> AnimationPlayer:
+	return a.find_children("*", "AnimationPlayer", true, false)[0] as AnimationPlayer
+
+
+func _seek(player: AnimationPlayer, clip: StringName, sec: float) -> void:
+	player.play(clip)
+	player.seek(sec, true)
+
+
+func test_the_ridge_lynx_crouches_pounces_and_lies_down() -> void:
+	var l := _actor(LYNX)
+	assert_eq(l.current_clip, &"idle")
+	assert_false(l.enter_phase(&"uprooted"), "no phases: its sheet asks for none")
+	assert_true(l.play_action(&"", &"physical"))
+	assert_eq(l.current_clip, &"attack", "the pounce")
+	assert_true(is_equal_approx(l.contact_time(&"attack"), 0.7), "it comes down on the back row at 0.7 s")
+	assert_true(l.play_action(&"", &"magical"))
+	assert_eq(l.current_clip, &"cast", "the yowl")
+	var skel := _skeleton(l)
+	var bones: Array[String] = ["root", "body", "neck0", "neck1", "head", "jaw", "ear_l", "ear_r"]
+	for k in 4:
+		bones.append("spine%d" % k)
+	for k in 3:
+		bones.append("tail%d" % k)
+	for leg in ["fl", "fr", "bl", "br"]:
+		bones.append_array(["%s_upper" % leg, "%s_lower" % leg, "%s_paw" % leg])
+	for b in bones:
+		assert_true(skel.find_bone(b) >= 0, "the rig has %s" % b)
+	assert_eq(skel.get_bone_count(), bones.size(), "spine 4, neck 2, head, jaw, ears, four legs of 3, tail 3")
+	var player := _player(l)
+	var paws: Array[int] = []
+	for leg in ["fl", "fr", "bl", "br"]:
+		paws.append(skel.find_bone("%s_paw" % leg))
+	for clip: StringName in [&"idle", &"attack", &"cast", &"hit", &"hit_b"]:
+		_seek(player, clip, player.get_animation(clip).length - RAM_END_SEC)
+		for p in paws:
+			var moved := skel.get_bone_global_pose(p).origin.distance_to(skel.get_bone_global_rest(p).origin)
+			assert_true(moved < RAM_FOOT_TOL_M, "%s ends with %s where it stood" % [clip, skel.get_bone_name(p)])
+	var body := skel.find_bone("body")
+	_seek(player, &"attack", LYNX_CROUCH_SEC)
+	assert_true(_bone_y(skel, body) < skel.get_bone_global_rest(body).origin.y - LYNX_CROUCH_MIN_M, "the crouch")
+	for p in paws:
+		var moved := skel.get_bone_global_pose(p).origin.distance_to(skel.get_bone_global_rest(p).origin)
+		assert_true(moved < RAM_FOOT_TOL_M, "%s stays planted in the crouch" % skel.get_bone_name(p))
+	_seek(player, &"attack", LYNX_APEX_SEC)
+	assert_true(_bone_y(skel, skel.find_bone("root")) > LYNX_LEAP_MIN_M, "the leap clears the front row")
+	_seek(player, &"ko", player.get_animation(&"ko").length - RAM_END_SEC)
+	assert_true(_bone_y(skel, skel.find_bone("head")) < LYNX_KO_HEAD_MAX_Y, "it lies down with its head low")
+	for b in skel.get_bone_count():
+		assert_true(_bone_y(skel, b) > -RAM_FOOT_TOL_M, "%s stays above the snow in the KO" % skel.get_bone_name(b))
 
 
 func test_hits_rotate_their_variants_and_a_phase_keeps_its_own() -> void:

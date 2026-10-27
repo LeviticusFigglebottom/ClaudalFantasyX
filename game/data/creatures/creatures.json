@@ -132,6 +132,13 @@
       "ko_fade_sec": 1.2,
       "stand_in": {"yaw_deg": 60.0},
       "portrait": {"yaw_deg": 60.0, "pitch_deg": 10.0, "rim_energy": 2.8, "kick_energy": 1.8}
+    },
+    "ridge_lynx": {
+      "scene": "res://game/creatures/ridge_lynx/ridge_lynx_battle.tscn",
+      "contact": {"attack": 0.7, "cast": 0.75},
+      "ko_fade_sec": 1.2,
+      "stand_in": {"yaw_deg": 60.0},
+      "portrait": {"yaw_deg": 40.0, "pitch_deg": 10.0}
     }
   }
 }
