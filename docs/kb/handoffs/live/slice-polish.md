@@ -98,6 +98,14 @@ Ch4–Ch9 onward. `m2-slice.md` beside this file is the history up to the 2026-1
   integration branch, so Ch1 uses the same kit mechanism as Ch4+. Not duplicated here.
 - **Session handoff:** docs/kb/handoffs/2026-10-27-cinematics-slice-polish-1.md.
 
+- **MERGE-READY @ 5a3f9a37 (FAST-TRACK):**
+  - M2-FP-111: a greybox stage actor can stand as a villager model (Kell in Ch1's Oruvel; request M3-CHR-100);
+  - M2-FP-112: Cutscene B's Rhen and Toma wear their real bodies;
+  - the balance report regenerated after big10 (`sim --check` exit 0).
+  - **Checks run:** validate_data, taskboard, lint and format; Godot: ch01 14, zone 51, first_verse 2, fp_thread 2,
+    memory 6, shell_shrine 15, slice_shots 1, all 0 failed.
+  - **Checks skipped:** coverage and Blender (nothing they cover).
+
 ### Render requests
 RENDER-REQUEST @ fdec3cc6: slice_prologue_vigil_line, slice_beach_h05_asha, slice_beach_h06_toma, slice_haluna_villagers_village, slice_causeway_head, slice_causeway_harrier_view, haluna_h01_village_from_sea, haluna_h02_tidewall_lane, haluna_h04_dock, haluna_h07_chapel_court, haluna_h10_dock_night, shrine_s01_approach, shrine_s02_threshold, shrine_s03_overview, shrine_s04_lip, shrine_s05_side_pool, drownbell_flood, battle_boss_intro_drownbell, battle_arena_causeway, field_causeway_dolly, boot_title; why: M2-FP-102..109, the human's playtest round (real cast and held poses in the prologue and Cutscene A, live villagers and wildlife, the final causeway), plus the greyscale audit of every slice beat. The six slice_* shots are new (no baseline yet).
 - **Known red until the render lands:** the six new `slice_*` shots have no baseline yet, so the tools test
@@ -108,3 +116,4 @@ RENDER-REQUEST @ fdec3cc6: slice_prologue_vigil_line, slice_beach_h05_asha, slic
   - **Suggestion for the Lead (TRACK-RULES):** allow a `"pending_baseline": true` key on a new shot until its first
     approval.
 RENDER-REQUEST @ 44a7d65c: shrine_s01_approach, shrine_s02_threshold, shrine_s03_overview, shrine_s04_lip, shrine_s05_side_pool; why: M3-ARC-04 sets the shrine's shaft lamps' volumetric fog energy to 0 (the fog should read from the shader and the sun, not lamp scatter). If the e1e63f43 request is not rendered yet, render this one instead for those five shots.
+RENDER-REQUEST @ 5a3f9a37: slice_verse_steps; why: M2-FP-112, the first verse with Rhen and Toma on their real bodies (a new shot; it also covers the e1e63f43 and 44a7d65c requests if they are still unanswered).
