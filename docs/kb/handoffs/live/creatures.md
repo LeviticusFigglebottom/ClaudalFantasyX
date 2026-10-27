@@ -544,3 +544,17 @@ RENDER-REQUEST @ a785a613: portraits:glass_skate,root_crab,fen_leech,scree_crawl
   - **Checks run:** Blender verify identical; tools test_creatures and test_blender_builds; Godot creature 50/1 (the known portrait red, now including kahre.png), vowbound 58/0, kahre 6/0, ilun 6/0, battle 720/0 (run by the agent); validate_data, taskboard, lint, format.
 RENDER-REQUEST @ e1229633: creature_kahre; why: M3-CRE-640 first render (no baseline). Check that the hide reads as dark stone, not teal, and that the anvil reads as iron.
 RENDER-REQUEST @ e1229633: portraits:kahre; tool: tools/portraits/render.sh --only kahre
+- **MERGE-READY @ 3d853298: M3-CRE-641, Virel, the Kite-Serpent, the Ch8 Fire Vowbound, in place of the placeholder.**
+  - **The model:** a 6.25 m ribbon of sailcloth panels on light timber spars, coiled once around an upright loop, hovering 1.7 m up. A three-line bridle carries the brass tuning key.
+    - The seam light is skinned bands of steady glimmer_bound (not particles). There's no warm colour on her form: palette.json keeps ember_orange to flame, and act1_ch08.md F07 says her seams read as bound teal, with the fire in her battle VFX.
+    - 12,158 triangles; 16 bones.
+  - **Clips:** the stand-in set, plus rise, dismiss and special (Flare Line, contact 1.4 s: pulled into one taut 5.4 m line).
+  - **Framing:** the coil keeps her inside the default camera's safe frame. One frame of Flare Line touches the right edge, by under 3 px.
+  - **For ui:** battle_sandbox.json has no `virel` row, so her damage numbers sit at 1.0 m and the chest anchor at 1.7 m (the bottom of her loop). A row with height 2.6 fixes both. (Kahre's height lives in creatures.json for the same reason; either place works, your call.)
+  - **For battle-presentation:**
+    - choreo.json first_call_flags lists only ilun, so Virel's first call at the wall-head (Ch8) needs a `virel` flag to play the cinematic;
+    - M3-CRE-639's rise and dismiss request covers her too.
+  - **For battle VFX:** her fire has to come from the Kite Flare and Flare Line effects; her seams never change colour.
+  - **Checks run:** Blender verify identical (virel, kahre); tools test_creatures and test_blender_builds; the screenshot manifest (357 valid); Godot creature 54/1 (the known portrait red, now 19 PNGs with kahre and virel), vowbound 62/0, kahre, virel and ilun 6/0 each, battle 720/0; validate_data, taskboard, lint, format.
+RENDER-REQUEST @ 3d853298: creature_virel, creature_kahre; why: M3-CRE-641 and M3-CRE-640 first renders (no baselines). Supersedes the 25f03f01 kahre line.
+RENDER-REQUEST @ 3d853298: portraits:kahre,virel; tool: tools/portraits/render.sh --only kahre,virel
