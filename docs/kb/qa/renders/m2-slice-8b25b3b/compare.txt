@@ -1,0 +1,10 @@
+PASS haluna_h10_dock_night: rmse 0.00577 (limit 0.00800)
+FAIL slice_beach_h05_asha: no baseline (inspect out/, then compare.py --update-baselines slice_beach_h05_asha)
+FAIL slice_beach_h06_toma: no baseline (inspect out/, then compare.py --update-baselines slice_beach_h06_toma)
+FAIL slice_haluna_villagers_village: no baseline (inspect out/, then compare.py --update-baselines slice_haluna_villagers_village)
+FAIL slice_causeway_head: no baseline (inspect out/, then compare.py --update-baselines slice_causeway_head)
+FAIL slice_causeway_harrier_view: no baseline (inspect out/, then compare.py --update-baselines slice_causeway_harrier_view)
+FAIL slice_verse_steps: no baseline (inspect out/, then compare.py --update-baselines slice_verse_steps)
+FAIL slice_dock_night_yes: no baseline (inspect out/, then compare.py --update-baselines slice_dock_night_yes)
+Screenshots: 8 compared, 7 failed (diffs in /root/hymn/tests/screenshots/out/diff)
+compare exit 1
