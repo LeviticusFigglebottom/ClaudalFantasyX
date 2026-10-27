@@ -3,6 +3,15 @@
 ## NEW ACCOUNT (from 2026-10-25)
 Session `session_01Wmj8xaLtwcqiS3qwC6PciW`. Integration branch `claude/undertow-lead-handoff-ze8rrn`. Newest first.
 
+- **MERGE-READY @ 329331f0:**
+  - **M3-AUD-826:** villagers step on their routes (each FieldNpc gets a quiet FootstepAudio: cloth, no hero gear).
+  - **M3-AUD-827:** the six Act I zone beds and the 17 Ch4–Ch9 voices are live; their scenes and speakers landed.
+  - **M3-AUD-828:** Act I's zones play their music (nine zone rows), and its bosses theirs (Spar-Wraith, Cinder
+    Matron with its Pour stem, the Inquisitor).
+  - Checks run: `--filter=audio` 151/0, `field_audio` 19/0, `voice` 12/0, `audio_runtime` 11/0, `life_audio` 10/0;
+    validate_data 0/0; gdlint, gdformat.
+  - Checks skipped: the full suite. The zone rows now play music in nine Act I zones, so the chapter tests should
+    see it in the next full run, which I'll do with the composers' integration. Also screenshots, Blender, coverage.
 - **MERGE-READY @ cfe3817c (FAST-TRACK, footsteps):** verified M3-AUD-802/812 on a scratch merge with
   claude/hero-integration. The real HeroFieldActor.foot_contact steps (26/0). **Found and fixed:** hero-integration's
   walk clip has no footfall markers yet (characters' M2-CHR-12), so its body never emits and the steps came only
