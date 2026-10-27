@@ -96,6 +96,13 @@ RENDER-REQUEST @ 60b62678: battle_arena_wall_head,battle_boss_intro_reach; why: 
 RENDER-REQUEST @ dcc68922: battle_hud_preview,battle_choreo_toll,drownbell_flood,battle_swell_ring,battle_read_panel; why: M3-BPR-409. The target ring now draws over ground VFX (render_priority 10); view the ring over the toll's wave and the flood.
 
 ### 2026-10-27 late: the Lead's queue items 3–7
+- **Battle filter after items 3–7 and the 408 fix-up: 726 run, 0 failed.** An earlier run caught two failures, now
+  fixed:
+  - the Ram's new `charge` style had no sound row in audio's choreo_sfx.json, so the style is withdrawn and asked of
+    audio as M3-BPR-410; its framing moved to camera.enemy_by_actor;
+  - the specials test assumed every boss row names an existing enemy.
+
+
 - **3, M3-BPR-408 (a433b3b3): the Act II bosses' camera language, by enemy id.**
   - The Lamp Engine opens: a phase moment where the core rises and the party steadies in turn.
   - The Avalanche Ram's physical moves play a low, side-on `charge` run (style_by_actor, enemy_by_style).
