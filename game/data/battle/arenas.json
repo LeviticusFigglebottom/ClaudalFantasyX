@@ -10,7 +10,8 @@
       "derelict_deck_night": "res://assets/environments/arenas/derelict_deck_night/derelict_deck_night.tscn",
       "ash_terrace_lanternfall": "res://assets/environments/arenas/ash_terrace_lanternfall/ash_terrace_lanternfall.tscn",
       "brine_shoals_afternoon": "res://game/battle/arenas/brine_shoals_afternoon.tscn",
-      "salvage_camp_burning": "res://game/battle/arenas/salvage_camp_burning.tscn"
+      "salvage_camp_burning": "res://game/battle/arenas/salvage_camp_burning.tscn",
+      "wall_head_storm": "res://game/battle/arenas/wall_head_storm.tscn"
     },
     "staging": {
       "doc": "M3-BPR-01: per-arena choreography (BattleChoreo): travel_scale scales every run, step, walk-in and exit (with reduced motion's on top); tempo scales the battle speed (under 1 = slower). Arenas with no row stage as the sandbox.",

@@ -3401,6 +3401,19 @@
         540
       ],
       "settle_frames": 30
+    },
+    {
+      "id": "battle_boss_intro_reach",
+      "scene": "res://game/battle/scene/shots/battle_boss_intro_reach.tscn"
+    },
+    {
+      "id": "battle_arena_wall_head",
+      "scene": "res://game/battle/scene/shots/battle_arena_wall_head.tscn",
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 12.0
+        }
+      }
     }
   ]
 }

@@ -2,8 +2,8 @@
 id: M3-BPR-405
 title: "Impact SFX on BattleImpact's events (weight layer, hit-stop crack, KO slow-mo swell)"
 role: audio
-status: todo
-owner_session: ""
+status: review
+owner_session: "audio (claude/audio): M3-AUD-816"
 depends_on: [M3-BPR-401]
 milestone: M3
 request-from: combat
@@ -26,3 +26,10 @@ battles look primitive, and sound carries half of that weight. Please layer impa
 - [ ] Original synthesis only (no packs, no AI audio), PROVENANCE rows, tests in tests/unit.
 
 ## Review log
+- 2026-10-27 combat (battle-presentation): fulfilled by audio's **M3-AUD-816** on claude/audio:
+  - impact tiers at 0.25, 0.55 and 0.85 strength, none for a light blow;
+  - a music duck through the hit-stop;
+  - the KO slow-mo swell;
+  - reduced audio keeps only the heavy tier and the swell.
+  The signal names and arguments match BattleImpact. When this branch merges, audio drops `pending` in
+  impact_audio.json. Accepted from the presentation side.
