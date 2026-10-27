@@ -32,7 +32,7 @@ RULES = [
     ("sfx/battle/sting_boss*.ogg", "momentary", -16.0, 1.0, -1.0, "boss intro stings (M3-AUD-18)"),
     ("sfx/battle/sting_bark.ogg", "momentary", -22.0, 1.0, -1.0, "the bark's breath, under a line (M3-AUD-18)"),
     # M3-AUD-816 (assets_src/sfx/impact_sfx.py): weight layers under the -18 element hit, and the KO slow-mo swell
-    ("sfx/battle/impact_medium_*.ogg", "momentary", -24.0, 1.0, -1.0, "a body blow's layer, well under the hit"),
+    ("sfx/battle/impact_medium_*.ogg", "momentary", -21.2, 1.0, -1.0, "a body blow's layer, about 3 LU under the hit"),
     ("sfx/battle/impact_heavy_*.ogg", "momentary", -21.0, 1.0, -1.0, "a heavy blow's layer, under the hit"),
     ("sfx/battle/impact_crushing_*.ogg", "momentary", -19.0, 1.0, -1.0, "the heaviest blow's layer"),
     ("sfx/battle/ko_slowmo_*.ogg", "momentary", -20.0, 1.0, -1.0, "the last foe's slow-mo swell"),
