@@ -71,7 +71,7 @@ func test_zone_maps_find_zones_by_scene() -> void:
 	var maps := ZoneMaps.new()
 	assert_eq(maps.zone_for_scene("res://game/levels/ch02/haluna/haluna.tscn"), HALUNA)
 	assert_eq(maps.zone_for_scene("res://nowhere.tscn"), &"")
-	assert_eq(maps.route().size(), 12, "Act I, the Underway to Corrow (M3-UI-04)")
+	assert_eq(maps.route().size(), 13, "Act I, the Underway to Corrow (M3-UI-04; the Brine Shoals, Ch6)")
 	assert_eq(StringName(str(maps.route()[2]["id"])), HALUNA, "Ch1's two zones come before Haluna")
 	assert_eq(maps.poi_position(HALUNA, &"shrine"), Vector3(-67.0, 0.0, 44.3))
 	assert_eq(maps.zone_for_scene("res://game/levels/ch01/oruvel_underway/oruvel_underway.tscn"), UNDERWAY)

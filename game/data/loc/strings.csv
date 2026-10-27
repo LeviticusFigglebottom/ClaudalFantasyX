@@ -1054,3 +1054,13 @@ BOSS_TITLE_INQUISITOR,Inquisitor Hadric Moll
 BOSS_EPITHET_INQUISITOR,A tired officer who still believes the Edict
 HUD_SCRIPTED_ESCAPE,You held.
 HUD_SCRIPTED_ESCAPE_SUB,There was no winning it. Only getting them out.
+MAP_ROUTE_BRINE_SHOALS,Brine Shoals
+MAP_POI_S_ROAD_END,The end of the Pemakar road
+MAP_POI_S_BRASS_WRECK,The brass wreck
+MAP_POI_S_MIDDAY_HULL,The midday hull
+MAP_POI_S_CHALK_HULL,The chalk-marked hull
+MAP_POI_S_LAST_RIDGE,The last ridge
+MAP_POI_S_CAMP_SHRINE,The camp shrine
+MAP_POI_S_VENDOR_BOAT,The vendor's boat
+MAP_POI_S_TIDELINE,The tideline
+MAP_POI_S_CHANNEL,The channel out
