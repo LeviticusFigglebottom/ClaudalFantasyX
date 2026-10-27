@@ -132,6 +132,11 @@
       "ko_fade_sec": 1.2,
       "stand_in": {"yaw_deg": 60.0},
       "portrait": {"yaw_deg": 60.0, "pitch_deg": 10.0, "rim_energy": 2.8, "kick_energy": 1.8}
+    },
+    "tannin_archer": {
+      "scene": "res://game/creatures/tannin_archer/tannin_archer_battle.tscn",
+      "contact": {"attack": 0.55, "cast": 0.9},
+      "portrait": {"yaw_deg": 50.0, "pitch_deg": 12.0}
     }
   }
 }

@@ -642,6 +642,16 @@
       ]
     },
     {
+      "id": "creature_tannin_archer",
+      "owner": "character",
+      "sources": ["assets_src/creatures/tannin_archer/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/tannin_archer/*.glb", "assets/creatures/tannin_archer/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/tannin_archer/build_tannin_archer.py", "--", "--out", "assets/creatures/tannin_archer/tannin_archer.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "tannin_archer"]
+      ]
+    },
+    {
       "id": "wildlife_gull",
       "owner": "character",
       "sources": ["assets_src/wildlife/gull/**", "assets_src/wildlife/common/**", "assets_src/creatures/common/creature_kit.py"],
