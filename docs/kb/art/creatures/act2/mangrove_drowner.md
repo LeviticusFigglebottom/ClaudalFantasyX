@@ -93,3 +93,9 @@ weakens the drag.
   gaps between root clusters and pinched where they clamp it, with deep folds (in the gaps), broad boils and small
   tight blisters crowding the folds' lips. The `spawn_wound` seams (the weak point, ADR 0151) run down the bottom of
   the folds, most of them on the front.
+- **On the water (M3-CRE-622):** y 0 is the water and nothing goes under it in any clip (GroundedClipsTest, no
+  allow-list): the feet rest on it, flattened, and the aerial roots stop just short of it. The `ko` keels the dead
+  tree over backward on its foot's edge while the mass slumps out onto the water; the sinking is the water's VFX.
+- **Clusters in plan:** the roots of a cluster leave the trunk spread round it and converge on its heading toward
+  their feet; once risen, the legs' planes turn so the stance is three planted pairs (front-right, front-left under
+  the drag, the bank with its trailing roots alongside), the wide gap behind.
