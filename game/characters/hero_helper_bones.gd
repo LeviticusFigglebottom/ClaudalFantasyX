@@ -6,8 +6,11 @@ extends RefCounted
 ## The parameters are game/data/characters/helper_bones.json. A skeleton without helper bones is left alone.
 
 const DATA_PATH := "res://game/data/characters/helper_bones.json"
+## M2-CHR-515: the held props (Asha's staff, Toma's spear), written by hero_clips.py.
+const GRIP_PATH := "res://game/data/characters/grips.json"
 
 static var _data: Dictionary = {}
+static var _grips: Dictionary = {}
 
 
 static func data() -> Dictionary:
@@ -26,7 +29,74 @@ static func drive(skel: Skeleton3D) -> void:
 	skel.force_update_all_bone_transforms()
 	_drive_armpits(skel, d["armpit"])
 	_drive_skirt(skel, d["skirt"])
+	_drive_prop(skel)
 	skel.force_update_all_bone_transforms()
+
+
+static func grips() -> Dictionary:
+	if _grips.is_empty():
+		var parsed: Variant = JSON.parse_string(FileAccess.get_file_as_string(GRIP_PATH))
+		_grips = parsed if parsed is Dictionary else {}
+	return _grips
+
+
+## The held-prop entry for this skeleton (keyed by its armature node's name), or an empty Dictionary.
+static func prop_entry(skel: Skeleton3D) -> Dictionary:
+	var g := grips()
+	if g.is_empty() or skel.get_parent() == null:
+		return {}
+	var e: Variant = (g["skeletons"] as Dictionary).get(String(skel.get_parent().name), {})
+	return e if e is Dictionary else {}
+
+
+static func _quat(a: Array) -> Quaternion:
+	return Quaternion(float(a[0]), float(a[1]), float(a[2]), float(a[3]))
+
+
+## M2-CHR-515: the hand closes round its prop and turns it upright in the hand's posed frame (the hold), and the prop
+## slides through the fist so that, standing near upright, its foot rests on the floor (the skeleton's y = 0).
+static func _drive_prop(skel: Skeleton3D) -> void:
+	var e := prop_entry(skel)
+	if e.is_empty():
+		return
+	var g := grips()
+	var hand := skel.find_bone(String(e["hand"]))
+	var bone := skel.find_bone(String(e["bone"]))
+	if hand < 0 or bone < 0:
+		return
+	skel.force_update_all_bone_transforms()
+	var rest_g := skel.get_bone_global_rest(hand).basis.get_rotation_quaternion()
+	var cur_g := skel.get_bone_global_pose(hand).basis.get_rotation_quaternion()
+	var target := cur_g * rest_g.inverse() * _quat(e["hold"]) * rest_g
+	var parent := skel.get_bone_parent(hand)
+	var parent_g := skel.get_bone_global_pose(parent).basis.get_rotation_quaternion()
+	skel.set_bone_pose_rotation(hand, (parent_g.inverse() * target).normalized())
+	var fingers: Dictionary = e["fingers"]
+	for name: Variant in fingers:
+		var f := skel.find_bone(String(name))
+		if f >= 0:
+			skel.set_bone_pose_rotation(f, _quat(fingers[name]).normalized())
+	skel.force_update_all_bone_transforms()
+	var rest_local := skel.get_bone_rest(bone)
+	skel.set_bone_pose_rotation(bone, rest_local.basis.get_rotation_quaternion())
+	skel.set_bone_pose_position(bone, rest_local.origin)
+	skel.force_update_all_bone_transforms()
+	var pose := skel.get_bone_global_pose(bone)
+	var axis := pose.basis.y.normalized()
+	var slide := 0.0
+	if axis.y > 0.2:
+		var foot_y := pose.origin.y + axis.y * float(e["foot"])
+		var to_floor := (float(g["floor_m"]) - foot_y) / axis.y
+		var up: Array = g["upright_deg"]
+		var tilt := rad_to_deg(acos(clampf(axis.y, -1.0, 1.0)))
+		var w := 1.0 - smoothstep(0.0, 1.0, (tilt - float(up[0])) / (float(up[1]) - float(up[0])))
+		slide = w * to_floor
+		if foot_y + slide * axis.y < float(g["floor_m"]):
+			slide = to_floor
+		slide = clampf(slide, -float(g["slide_max_m"]), float(g["slide_max_m"]))
+	skel.set_bone_pose_position(
+		bone, rest_local.origin + rest_local.basis.get_rotation_quaternion() * Vector3(0.0, slide, 0.0)
+	)
 
 
 ## True when the skeleton has any helper bone.

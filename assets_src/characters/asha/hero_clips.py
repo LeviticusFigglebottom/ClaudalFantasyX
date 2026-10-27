@@ -164,6 +164,7 @@ class Skeleton:
         self.ankle_w = float(abs(self.g_t["DEF-foot.L"][0] - self.g_t["DEF-foot.R"][0]))
         helpers_init(self, glb, nodes, parent)  # M1-CHR-15: the skirt and shoulder helper bones, if the GLB has them
         hooks_init(self, nodes, parent)  # M2-CHR-513: Rhen's reef-hooks and the grips that hold them
+        grips_init(self, glb, js, nodes, parent)  # M2-CHR-515: the held prop's bone, and the fingers closed round it
 
     def local_pose(self, turns: dict, hips=None, hold=None) -> dict:
         """World-axis turns (bone -> quaternion) -> local rotations, parents first. `hips` is the pose's hips offset
@@ -183,6 +184,8 @@ class Skeleton:
             out[name] = lq / np.linalg.norm(lq)
         helper_pose(self, g, out, hips)  # M1-CHR-15
         hook_pose(self, g, out, hips, hold or {})  # M2-CHR-513
+        prop_pose(self, g, out, hips, bool((hold or {}).get("_carry")))  # M2-CHR-515: the prop slides to the floor
+        grip_pose(self, out, hold or {})
         return out
 
 
@@ -211,16 +214,60 @@ def add(a: dict, b: dict) -> dict:
 
 
 def staff_hold(pose: dict, persona: dict) -> dict:
-    """Asha's staff is rigid in her right hand: undo the arm's turns at the hand so it stays upright."""
+    """Asha's staff (Toma's spear) is held in the right fist: the pose's DEF-hand.R is the prop's own world tilt, and
+    this sets the hand so the prop is turned by exactly that tilt from upright. The hand's world turn is the tilt
+    after the hold (prop_hold: the turn that stands the prop, built through the fist, upright), less what the arm
+    and the spine above the hips already turned it (M2-CHR-515; before, the arm's angles were subtracted, which
+    drifted once the arm was far from rest)."""
     if not persona["staff"]:
+        pose.pop("_assist", None)
         return pose
-    total = np.zeros(3)
-    for b in ("DEF-spine.001", "DEF-spine.002", "DEF-spine.003", "DEF-shoulder.R", "DEF-upper_arm.R",
-              "DEF-forearm.R"):
-        total += np.asarray(pose.get(b, (0.0, 0.0, 0.0)), dtype=float)
+    pose = dict(pose)
+    assist = ELBOW_ASSIST if pose.pop("_assist", True) else 0.0  # a strike keeps its authored arm (battle_pose_at)
+    want = qmul(qeuler(pose.get("DEF-hand.R", (0.0, 0.0, 0.0))), prop_hold(persona))  # the hand's world turn
+    fore_dir = _FORE.get(_hero_of(persona), np.array([0.0, -1.0, 0.0]))  # the forearm's line at rest
+    fore = np.asarray(pose.get("DEF-forearm.R", (0.0, 0.0, 0.0)), dtype=float)
+
+    def wrist_for(f: np.ndarray) -> tuple:
+        chain = np.array([0.0, 0.0, 0.0, 1.0])
+        for b in _HAND_CHAIN:  # the forearm's accumulated world turn: child turns on the left
+            chain = qmul(chain, qeuler(f if b == "DEF-forearm.R" else pose.get(b, (0.0, 0.0, 0.0))))
+        w = qmul(want, qinv(chain))  # the hand's own turn that gives exactly the tilt
+        axis = qrot(chain, fore_dir)  # the forearm's line: a turn about it is the forearm's own roll
+        sw, tw = _swing_twist(w, axis / np.linalg.norm(axis))
+        return w, sw, tw, _angle(sw)
+
+    w, sw, tw, bend = wrist_for(fore)
+    if bend > WRIST_MAX:  # the elbow helps first: the forearm takes the swing past the limit, up to ELBOW_ASSIST
+        extra = qpow(sw, min(bend - WRIST_MAX, assist) / bend)  # continuous in the pose: no pops
+        fore = np.asarray(_euler_yxz(qmul(extra, qeuler(fore))), dtype=float)
+        w, sw, tw, bend = wrist_for(fore)
+    tw = qpow(tw, min(1.0, TWIST_MAX / max(_angle(tw), 1e-9)))
+    if bend > WRIST_MAX:  # no wrist bends further: past it, the prop goes where the fist points
+        sw = qpow(sw, WRIST_MAX / bend)
     out = dict(pose)
-    out["DEF-hand.R"] = tuple(np.asarray(pose.get("DEF-hand.R", (0.0, 0.0, 0.0))) - total)
+    out["DEF-forearm.R"] = tuple(float(x) for x in fore)
+    out["DEF-hand.R"] = _euler_yxz(qmul(sw, tw))
     return out
+
+
+def _angle(q: np.ndarray) -> float:
+    return math.degrees(2.0 * math.acos(min(1.0, abs(float(q[3])))))
+
+
+def _swing_twist(q: np.ndarray, axis: np.ndarray) -> tuple:
+    """q as swing * twist, the twist about the unit `axis`."""
+    p = float(np.dot(q[:3], axis)) * axis
+    t = np.array([p[0], p[1], p[2], q[3]])
+    n = float(np.linalg.norm(t))
+    t = np.array([0.0, 0.0, 0.0, 1.0]) if n < 1e-9 else t / n
+    return qmul(q, qinv(t)), t
+
+
+STAFF_ARM = (-14.0, -10.0, -60.0)  # the staff arm in stand: upper arm forward, its abduction change, forearm forward
+WRIST_MAX = 45.0  # degrees: the most the staff hand bends off the forearm's line to hold its prop's authored tilt
+TWIST_MAX = 100.0  # degrees: the forearm's own roll (pronation, supination) that the hand may take
+ELBOW_ASSIST = 60.0  # degrees the forearm may turn to take the wrist's swing past WRIST_MAX
 
 
 def stand(persona: dict) -> dict:
@@ -230,9 +277,10 @@ def stand(persona: dict) -> dict:
          "DEF-upper_arm.R": (4.0, 0.0, a), "DEF-forearm.R": (-12.0, 0.0, 0.0),
          "DEF-spine.001": (lean * 0.4, 0.0, 0.0), "DEF-spine.006": (-lean * 0.3, 0.0, 0.0),
          "DEF-thigh.L": (-lean * 0.5, 0.0, 0.0), "DEF-thigh.R": (-lean * 0.5, 0.0, 0.0)}
-    if persona["staff"]:
-        p["DEF-upper_arm.R"] = (-6.0, 0.0, a - 14.0)  # the staff a little forward of the body (asha.md §2.3)
-        p["DEF-forearm.R"] = (-28.0, 0.0, 0.0)
+    if persona["staff"]:  # the staff a little forward of the body (asha.md §2.3), held upright in the fist on the bent
+        # arm (M2-CHR-515: the forearm comes forward so the wrist stays straight with the thumb up)
+        p["DEF-upper_arm.R"] = (STAFF_ARM[0], 0.0, a + STAFF_ARM[1])
+        p["DEF-forearm.R"] = (STAFF_ARM[2], 0.0, 0.0)
     if persona.get("book"):
         p["DEF-forearm.R"] = (-BOOK_FOREARM, 0.0, 0.0)  # ysolde.md §10: the shut book rests against the right hip
         p["DEF-hand.R"] = (BOOK_HAND, 0.0, 0.0)  # the wrist drops, so the book hangs along the hip, not out like a tray
@@ -271,7 +319,10 @@ def spear_level(sk: Skeleton, persona: dict) -> dict:
         "DEF-shin.L": (20.0, 0.0, 0.0), "DEF-shin.R": (20.0, 0.0, 0.0),
         "DEF-foot.L": (-10.0, 0.0, 0.0), "DEF-foot.R": (-10.0, 0.0, 0.0),
         "DEF-spine.001": (8.0, 0.0, 0.0), "DEF-spine.002": (4.0, 0.0, 0.0), "DEF-spine.006": (-6.0, 0.0, 0.0),
-        "DEF-upper_arm.R": (-38.0, 0.0, -a * 0.35), "DEF-forearm.R": (-30.0, 0.0, 0.0),
+        # M2-CHR-515: the right arm straight, forward and down, so the fist holds the levelled spear with a straight
+        # wrist (totals: upper arm -30 forward, 10 out; forearm 0, turned in 20), on top of the stand's staff arm
+        "DEF-upper_arm.R": (-30.0 - STAFF_ARM[0], 0.0, 10.0 - (a + STAFF_ARM[1])),
+        "DEF-forearm.R": (-STAFF_ARM[2], -20.0, 0.0),
         "DEF-hand.R": (98.0, 0.0, 0.0),
         "DEF-upper_arm.L": (-48.0, 0.0, a * 0.6), "DEF-forearm.L": (-48.0, 0.0, 0.0),
         "DEF-hand.L": (0.0, 40.0, 0.0),
@@ -912,13 +963,15 @@ def _toma_keys(clip: str, sk: Skeleton, persona: dict, base: dict) -> list:
             "DEF-upper_arm.L": (-50.0, 0.0, 24.0), "DEF-forearm.L": (-40.0, 0.0, 0.0)})
         hit = add(_legs(sk, persona, 0.08, 0.16, -0.08), {
             "DEF-spine.001": (8.0, 12.0, 0.0), "DEF-spine.002": (4.0, 6.0, 0.0), "DEF-spine.006": (-4.0, -12.0, 0.0),
-            "DEF-upper_arm.R": (-54.0, 0.0, -28.0), "DEF-forearm.R": (-2.0, 0.0, 0.0), "DEF-hand.R": (90.0, 20.0, 0.0),
+            # M2-CHR-515: an underhand thrust from the hip, the arm straight forward and down as in spear_level (the
+            # fist holds the levelled spear with a straight wrist; at shoulder height it could not); the lunge carries it
+            "DEF-upper_arm.R": (-24.0, 0.0, -14.0), "DEF-forearm.R": (28.0, -20.0, 0.0), "DEF-hand.R": (90.0, 20.0, 0.0),
             "DEF-upper_arm.L": (12.0, 0.0, 12.0), "DEF-forearm.L": (-50.0, 0.0, 0.0)})
         # the arm lifts before the hand turns the spear level, and the spear stands again before the arm comes down
         # (spear_level's order: turned low, its foot would sweep through his right foot)
         lift = {"DEF-upper_arm.R": (-24.0, 0.0, -24.0), "DEF-forearm.R": (-40.0, 0.0, 0.0)}
-        follow = _scale(hit, 0.55)
-        follow["DEF-hand.R"] = (0.0, 0.0, 0.0)
+        follow = _scale(hit, 0.55)  # M2-CHR-515: the spear comes back up with the arm (stood upright on the extended
+        # arm, the fist could not hold it, and the elbow pushed the follow-through past the strike)
         return [(0.0, {}), (0.12, lift), (0.3, wind), (0.55, hit), (0.78, follow), (1.0, {})]
     if clip == "cast":
         # the spear grounded, the left fist to the chest, then the open palm put out level at the foe
@@ -961,8 +1014,7 @@ def _toma_keys(clip: str, sk: Skeleton, persona: dict, base: dict) -> list:
             "DEF-upper_arm.R": (-58.0, 0.0, -28.0), "DEF-forearm.R": (-10.0, 0.0, 0.0), "DEF-hand.R": (110.0, 16.0, 0.0),
             "DEF-upper_arm.L": (14.0, 0.0, 14.0), "DEF-forearm.L": (-50.0, 0.0, 0.0)})
         early = {"DEF-upper_arm.R": (-50.0, 0.0, -24.0), "DEF-forearm.R": (-40.0, 0.0, 0.0)}  # the arm first, as attack
-        follow = _scale(drive, 0.5)
-        follow["DEF-hand.R"] = (0.0, 0.0, 0.0)
+        follow = _scale(drive, 0.5)  # M2-CHR-515: the spear comes back up with the arm (as attack's)
         return [(0.0, {}), (0.16, early), (0.42, lift), (0.62, drive), (0.84, follow), (1.0, {})]
     if clip == "hit":
         jolt = add(_legs(sk, persona, 0.03), {
@@ -1041,6 +1093,9 @@ KO_REST = {"asha": (-0.77, -0.2), "rhen": (-0.83, -0.2), "toma": (-0.86, -0.2)}
 # sandal straps) and lies with the feet pointed. Rhen's and Toma's trouser hems ride the shin and cannot take a flexed
 # ankle (the rig probe's skin-through-garment check, as
 # STANCE_DORSI), so their ankles stay at rest: they kneel and lie on their bent toes, the shins lifted off the floor.
+# M2-CHR-515: the staff arm's turns (upper arm, forearm; on the stand's) in the lying pose, so the fist, which holds the staff across
+# the palm, lays it on the floor with a natural wrist (searched numerically: its ends 2-25 cm above the floor)
+LYING_STAFF_ARM = {"asha": ((-10.0, 0.0, -15.0), (30.0, -30.0, 0.0)), "toma": ((-20.0, 0.0, -30.0), (15.0, -30.0, 0.0))}
 KO_LEGS = {"asha": {"kneel": (4.0, 103.0, -45.0, -30.0), "lie": (14.0, 80.0, 0.0)},
            "rhen": {"kneel": (10.0, 90.0, 10.0, 0.0), "lie": (18.0, -10.0, 0.0)},
            "toma": {"kneel": (4.0, 101.0, -10.0, -20.0), "lie": (18.0, -10.0, 0.0)}}
@@ -1105,6 +1160,10 @@ def _lying(hero: str, sk: Skeleton, persona: dict) -> dict:
         "DEF-upper_arm.L": (6.0, 0.0, 15.0), "DEF-upper_arm.R": (20.0, 0.0, -15.0)})
     if persona["staff"]:  # still gripped, laid along the floor at the right side, its foot past her head
         p["_prop"] = (-90.0, 12.0, 0.0)
+        up, fo = LYING_STAFF_ARM[hero]  # M2-CHR-515: the arm turned so the fist lays it there with a natural wrist
+        st = stand(persona)
+        p["DEF-upper_arm.R"] = tuple(np.asarray(st["DEF-upper_arm.R"]) + np.asarray(up))
+        p["DEF-forearm.R"] = tuple(np.asarray(st["DEF-forearm.R"]) + np.asarray(fo))
     return p
 
 
@@ -1224,7 +1283,6 @@ def _euler_yxz(q: np.ndarray) -> tuple:
 
 _HAND_CHAIN = ("DEF-forearm.R", "DEF-upper_arm.R", "DEF-shoulder.R", "DEF-spine.003", "DEF-spine.002", "DEF-spine.001",
                "DEF-spine")
-_STAFF_SUM = ("DEF-spine.001", "DEF-spine.002", "DEF-spine.003", "DEF-shoulder.R", "DEF-upper_arm.R", "DEF-forearm.R")
 
 
 def _exact_hold(pose: dict, persona: dict, w: float) -> dict:
@@ -1232,33 +1290,40 @@ def _exact_hold(pose: dict, persona: dict, w: float) -> dict:
     raised arm tipped the staff 40 degrees). In a battle pose DEF-hand.R is the prop's own world tilt; this sets the
     hand so that, after staff_hold, the prop is turned by exactly that tilt. `w` (keyed: 0 on the clip's first and
     last frames, so they stay the idle's) fades it in."""
-    if not persona["staff"] or w <= 0.0:
-        return pose
-    chain = np.array([0.0, 0.0, 0.0, 1.0])
-    for b in _HAND_CHAIN:  # the forearm's accumulated world turn: child turns on the left
-        chain = qmul(chain, qeuler(pose.get(b, (0.0, 0.0, 0.0))))
-    tilt = np.asarray(pose.get("DEF-hand.R", (0.0, 0.0, 0.0)), dtype=float)
-    exact = np.asarray(_euler_yxz(qmul(qeuler(tilt), qinv(chain))))
-    need = exact + sum(np.asarray(pose.get(b, (0.0, 0.0, 0.0)), dtype=float) for b in _STAFF_SUM)
-    out = dict(pose)
-    out["DEF-hand.R"] = tuple(tilt + (need - tilt) * w)
-    return out
+    return pose  # M2-CHR-515: staff_hold is exact in every pose now, so there is nothing to correct
+
+
+STAFF_ARM_M2 = (-6.0, -14.0, -28.0)  # the stand's staff arm the battle keys were authored on (M2-CHR-07, as STAFF_ARM)
+
+
+def _staff_arm_comp(persona: dict) -> dict:
+    """M2-CHR-515: the battle keys are deltas on the stand they were authored on; its staff arm has since bent to hold
+    the staff in the fist, so the keys (not the rest frames) add back the difference and strike as authored."""
+    if not persona["staff"]:
+        return {}
+    return {"DEF-upper_arm.R": (STAFF_ARM_M2[0] - STAFF_ARM[0], 0.0, STAFF_ARM_M2[1] - STAFF_ARM[1]),
+            "DEF-forearm.R": (STAFF_ARM_M2[2] - STAFF_ARM[2], 0.0, 0.0)}
 
 
 def battle_pose_at(clip: str, u: float, sk: Skeleton, persona: dict) -> dict:
     """A battle clip's pose at u in [0, 1]: the idle's first frame plus the clip's keyed deltas."""
     hero = _battle_hero(persona)
     base = pose_at("idle", 0.0, LENGTHS["idle"], sk, persona)
+    comp = _staff_arm_comp(persona)
     if clip == "victory":
-        return _exact_hold(add(base, _victory(hero, u, sk, persona)), persona, 1.0)
+        return _exact_hold(add(add(base, comp), _victory(hero, u, sk, persona)), persona, 1.0)
     if clip in ("ko", "revive"):  # M2-CHR-513: absolute poses, the body pitched down onto the floor
         pose = (_ko if clip == "ko" else _revive)(hero, u, sk, persona, base)
         w = smooth(u / 0.2) if clip == "ko" else 1.0 - smooth((u - 0.8) / 0.2)
         return _exact_hold(pose, persona, w)
-    keys = [(k, dict(p, _exact=(1.0, 0.0, 0.0)) if p else p) for k, p in _BATTLE_KEYS[hero](clip, sk, persona, base)]
+    keys = [(k, dict(add(p, comp), _exact=(1.0, 0.0, 0.0)) if p else p)
+            for k, p in _BATTLE_KEYS[hero](clip, sk, persona, base)]
     delta = _seq(u, keys)
     w = delta.pop("_exact", (0.0, 0.0, 0.0))[0]
-    return _exact_hold(add(base, delta), persona, w)
+    out = _exact_hold(add(base, delta), persona, w)
+    if persona["staff"]:  # M2-CHR-515: the strike's arm path as authored (staff_hold caps the wrist only)
+        out["_assist"] = False
+    return out
 
 
 # ---------------------------------------------------------------------------------------------
@@ -2655,8 +2720,10 @@ def hooks_init(sk: "Skeleton", nodes: list, parent: dict) -> None:
 
 
 def hook_hold(hero: str, clip: str, u: float) -> dict:
-    """{side: 0..1}: how far each hook is drawn at fraction u of the clip (HOOK_HOLD)."""
-    out = {}
+    """{side: 0..1}: how far each hook is drawn at fraction u of the clip (HOOK_HOLD); plus "_carry" in the field's
+    locomotion clips and the idle they start from (M2-CHR-515: a staff or spear is carried, not slid along the floor
+    under the feet; the idle carries it too so every transition and variant starts on the idle's first frame)."""
+    out = {"_carry": True} if clip in LOCO_CLIPS or clip == "idle" else {}
     for side, (a, b, c, d) in HOOK_HOLD.get(hero, {}).get(clip, {}).items():
         out[side] = smooth((u - a) / (b - a)) * (1.0 - smooth((u - c) / (d - c)))
     return out
@@ -2978,6 +3045,259 @@ STANCE_DORSI["liss"] = 25.0
 CLIPS["liss"] = CLIPS["liss"] + ["revive"]
 
 
+# ---------------------------------------------------------------------------------------------
+# M2-CHR-515 (M1-QA-09 on hardware: "the staff isn't gripped"): no clip keyed a finger, so the hand that holds Asha's
+# staff, Toma's spear or Rhen's drawn hook stayed open. Each held prop's shaft is read from the GLB (the Staff mesh;
+# the vertices on DEF-spear; Rhen's hook_grip marker frame), and each finger is curled about its own bones' x axis
+# (the .01, .02 and .03 bones by 1, GRIP_MID and GRIP_TIP of one angle, either sign) to the angle that lays its joints
+# GRIP_PAD outside the shaft; the thumb turns about the .01 bone's x and z and curls its .02 and .03 the same way. The
+# result is keyed in every clip (Rhen's weighted by his hook hold) and written to game/data/characters/grips.json for
+# the stages (HeroHelperBones.drive).
+# ---------------------------------------------------------------------------------------------
+GRIP = {"asha": {"R": ("mesh", "Staff", "DEF-staff")}, "toma": {"R": ("mesh", "Props", "DEF-spear")},
+        "rhen": {"L": ("marker", HOOK_GRIP + "L", None), "R": ("marker", HOOK_GRIP + "R", None)}}
+GRIP_ALWAYS = {"asha", "toma"}  # the prop never leaves the hand; Rhen's hooks only while drawn
+GRIP_FINGERS = ("f_index", "f_middle", "f_ring", "f_pinky")
+GRIP_MID, GRIP_TIP = 1.1, 0.8
+GRIP_PAD = 0.009  # m: a finger joint's centre this far outside the shaft (the finger's own half-thickness)
+GRIP_HOOK_RADIUS = 0.0135  # m: the wrapped hook grip (rhen_props.reef_hooks)
+GRIP_SHAFT_MAX = 0.03  # m: prop vertices nearer the shaft's axis than this are the shaft (its radius is their median)
+GRIP_DATA = ROOT / "game" / "data" / "characters" / "grips.json"
+
+
+PROP_FLOOR = 0.006  # m: the held prop's foot rests this far above the floor when it stands near upright
+PROP_UPRIGHT = (20.0, 40.0)  # degrees from vertical: resting on the floor fully below the first, not past the second
+PROP_SLIDE_MAX = 0.6  # m: the most the prop slides through the fist either way (the kneel takes about half a metre)
+_HOLD: dict = {}  # hero -> the hand's turn (from rest) that stands the held prop upright, read from the GLB
+_FORE: dict = {}  # hero -> the staff forearm's line at rest (elbow to wrist), read from the GLB
+
+
+def _arc(a: np.ndarray, b: np.ndarray) -> np.ndarray:
+    """The shortest rotation taking the unit vector a to the unit vector b (x, y, z, w)."""
+    a, b = a / np.linalg.norm(a), b / np.linalg.norm(b)
+    c = float(a @ b)
+    if c < -1.0 + 1e-9:
+        return np.array([1.0, 0.0, 0.0, 0.0])
+    q = np.concatenate([np.cross(a, b), [1.0 + c]])
+    return q / np.linalg.norm(q)
+
+
+def prop_hold(persona: dict) -> np.ndarray:
+    """The hand's turn that stands this hero's staff or spear upright (identity for a hero without one)."""
+    hero = _hero_of(persona)
+    if hero in GRIP and hero not in _HOLD and GRIP[hero].get("R", ("",))[0] == "mesh":
+        Skeleton(ROOT / "assets" / "characters" / hero / f"{hero}.glb")  # reads it (grips_init)
+    return _HOLD.get(hero, np.array([0.0, 0.0, 0.0, 1.0]))
+
+
+def prop_pose(sk: "Skeleton", g: dict, out: dict, hips, carry: bool = False) -> None:
+    """The held prop's bone (into out, and its position into out[POS_KEY]): slid along its own axis through the fist
+    so that, standing near upright, its foot rests PROP_FLOOR above the floor (and in any pose never goes under it);
+    `carry` (walking, running) only lifts it clear."""
+    pr = getattr(sk, "prop", None)
+    if not pr:
+        return
+    b, hand = pr["bone"], pr["hand"]
+    pos = {HIPS: sk.rest_t[HIPS] + (np.zeros(3) if hips is None else np.asarray(hips, dtype=float))}
+    for name in BONES[1:]:
+        pos[name] = pos[sk.parent[name]] + qrot(g[sk.parent[name]], sk.rest_t[name])
+    gp = qmul(g[hand], sk.rest_q[b])
+    head = pos[hand] + qrot(g[hand], sk.rest_t[b])
+    axis = qrot(gp, np.array([0.0, 1.0, 0.0]))
+    slide = 0.0
+    if axis[1] > 0.2:
+        foot_y = float(head[1] + axis[1] * pr["foot"])
+        to_floor = (PROP_FLOOR - foot_y) / float(axis[1])
+        tilt = math.degrees(math.acos(min(1.0, float(axis[1]))))
+        w = 1.0 - smooth((tilt - PROP_UPRIGHT[0]) / (PROP_UPRIGHT[1] - PROP_UPRIGHT[0]))
+        slide = 0.0 if carry else w * to_floor  # carried (walking): only lifted clear of the floor
+        if foot_y + slide * float(axis[1]) < PROP_FLOOR:
+            slide = to_floor
+        slide = max(-PROP_SLIDE_MAX, min(PROP_SLIDE_MAX, slide))
+    out[b] = sk.rest_q[b]
+    t = sk.rest_t[b] + qrot(sk.rest_q[b], np.array([0.0, slide, 0.0]))
+    out.setdefault(POS_KEY, {})[b] = tuple(float(x) for x in t)
+
+
+def _node_globals(nodes: list, parent: dict) -> tuple:
+    """Rest global (rotation, translation) of every node, by index."""
+    gq, gt = {}, {}
+
+    def walk(i: int) -> None:
+        if i in gq:
+            return
+        n = nodes[i]
+        q = np.array(n.get("rotation", [0.0, 0.0, 0.0, 1.0]), dtype=float)
+        t = np.array(n.get("translation", [0.0, 0.0, 0.0]), dtype=float)
+        if i in parent:
+            walk(parent[i])
+            gq[i], gt[i] = qmul(gq[parent[i]], q), gt[parent[i]] + qrot(gq[parent[i]], t)
+        else:
+            gq[i], gt[i] = q, t
+
+    for i in range(len(nodes)):
+        walk(i)
+    return gq, gt
+
+
+def _shaft(kind: str, a: str, b: str | None, glb: Path, js: dict, idx: dict, gq: dict, gt: dict) -> tuple:
+    """(a point on the shaft, its unit direction, its radius), rest pose, skeleton frame."""
+    if kind == "marker":
+        i = idx[a]
+        d = qrot(gq[i], np.array([0.0, 1.0, 0.0]))
+        return gt[i], d / np.linalg.norm(d), GRIP_HOOK_RADIUS, None
+    _js, bin_ = asha_glb.read_glb(glb)
+    names = [js["nodes"][j]["name"] for j in js["skins"][0]["joints"]]
+    pts = []
+    for prim in asha_glb.mesh_by_name(js, a)["primitives"]:
+        at = prim["attributes"]
+        P = asha_glb.accessor(js, bin_, at["POSITION"]).astype(float)
+        J = asha_glb.accessor(js, bin_, at["JOINTS_0"]).astype(int)
+        W = asha_glb.accessor(js, bin_, at["WEIGHTS_0"]).astype(float)
+        if W.max() > 1.0:
+            W = W / (255.0 if W.max() <= 255 else 65535.0)
+        for i in range(len(P)):
+            if any(names[int(J[i, k])] == b and W[i, k] >= 0.5 for k in range(4)):
+                pts.append(P[i])
+    P = np.array(pts)
+    c = P.mean(axis=0)
+    _u, _s, vt = np.linalg.svd(P - c, full_matrices=False)
+    d = vt[0] / np.linalg.norm(vt[0])
+    dist = np.array([_axis_dist(p, c, d) for p in P])
+    return c, d, float(np.median(dist[dist < GRIP_SHAFT_MAX])), P  # the shaft, not its cage, blade or head
+
+
+def _axis_dist(p: np.ndarray, c: np.ndarray, d: np.ndarray) -> float:
+    v = p - c
+    return float(np.linalg.norm(v - d * float(v @ d)))
+
+
+def grips_init(sk: "Skeleton", glb: Path, js: dict, nodes: list, parent: dict) -> None:
+    """The grip (local rotations of the finger bones) for each hand of GRIP that this skeleton has."""
+    sk.grips, sk.prop = {}, None
+    hero = next((h for h in GRIP if sk.root_name.startswith(h + "_")), None)
+    if hero is None:
+        return
+    idx = {n.get("name"): i for i, n in enumerate(nodes)}
+    gq, gt = _node_globals(nodes, parent)
+    for side, (kind, a, b) in GRIP[hero].items():
+        if (kind == "marker" and a not in idx) or (kind == "mesh" and b not in idx):
+            continue
+        c, d, r, P = _shaft(kind, a, b, glb, js, idx, gq, gt)
+        if kind == "mesh":  # the prop's bone: how it stands upright (the hold) and where its foot is
+            bi = idx[b]
+            axis = qrot(gq[bi], np.array([0.0, 1.0, 0.0]))
+            sk.prop = {"bone": b, "hand": nodes[parent[bi]]["name"],
+                       "foot": float(min((p - gt[bi]) @ axis for p in P)),  # m along the bone's y (< 0)
+                       "hold": _arc(axis, np.array([0.0, 1.0, 0.0]))}
+            sk.rest_q[b] = np.array(nodes[bi].get("rotation", [0.0, 0.0, 0.0, 1.0]), dtype=float)
+            sk.rest_t[b] = np.array(nodes[bi].get("translation", [0.0, 0.0, 0.0]), dtype=float)
+            _HOLD[hero] = sk.prop["hold"]
+            fd = gt[idx[f"DEF-hand.{side}"]] - gt[idx[f"DEF-forearm.{side}"]]
+            _FORE[hero] = fd / np.linalg.norm(fd)
+        palm = gt[idx[f"DEF-f_middle.01.{side}"]]
+        c = c + d * float((palm - c) @ d)  # the shaft point level with the palm
+        out = {}
+        for f in GRIP_FINGERS + ("thumb",):
+            chain = [f"DEF-{f}.0{k}.{side}" for k in (1, 2, 3)]
+            if not all(n in idx for n in chain):
+                continue
+            out.update(_solve_finger(chain, f == "thumb", nodes, parent, idx, gq, gt, c, d, r))
+        sk.grips[side] = out
+        for name in out:
+            sk.rest_q[name] = np.array(nodes[idx[name]].get("rotation", [0.0, 0.0, 0.0, 1.0]), dtype=float)
+    sk.grip_hero = hero
+
+
+def _chain_points(chain: list, rots: list, nodes: list, parent: dict, idx: dict, gq: dict, gt: dict) -> list:
+    """Joint positions (the .02 and .03 heads and the tip) with the chain's local rotations `rots` (deltas)."""
+    i0 = idx[chain[0]]
+    pq, pt = gq[parent[i0]], gt[parent[i0]]
+    pts, heads = [], []
+    for name, dq in zip(chain, rots):
+        n = nodes[idx[name]]
+        t = pt + qrot(pq, np.array(n.get("translation", [0.0, 0.0, 0.0]), dtype=float))
+        pq = qmul(pq, qmul(np.array(n.get("rotation", [0.0, 0.0, 0.0, 1.0]), dtype=float), dq))
+        pt = t
+        heads.append(t)
+    seg = np.linalg.norm(heads[-1] - heads[-2])
+    tip = heads[-1] + qrot(pq, np.array([0.0, 1.0, 0.0])) * seg * 0.85
+    return heads[1:] + [tip]
+
+
+def _solve_finger(chain: list, thumb: bool, nodes: list, parent: dict, idx: dict, gq: dict, gt: dict,
+                  c: np.ndarray, d: np.ndarray, r: float) -> dict:
+    x = np.array([1.0, 0.0, 0.0])
+    z = np.array([0.0, 0.0, 1.0])
+
+    def cost(rots: list) -> float:
+        e = 0.0
+        for p in _chain_points(chain, rots, nodes, parent, idx, gq, gt):
+            dist = _axis_dist(p, c, d)
+            e += (dist - (r + GRIP_PAD)) ** 2 + (25.0 * (r + 0.5 * GRIP_PAD - dist)) ** 2 * (dist < r + 0.5 * GRIP_PAD)
+        return e
+
+    best, best_rots = None, None
+    curls = range(0, 112, 2)
+    if not thumb:
+        for sgn in (1.0, -1.0):
+            for a in curls:
+                rots = [qaxis(x, sgn * a), qaxis(x, sgn * a * GRIP_MID), qaxis(x, sgn * a * GRIP_TIP)]
+                e = cost(rots)
+                if best is None or e < best - 1e-12:
+                    best, best_rots = e, rots
+    else:
+        for ax in range(-60, 61, 6):
+            for az in range(-60, 61, 6):
+                q1 = qmul(qaxis(x, ax), qaxis(z, az))
+                for sgn in (1.0, -1.0):
+                    for a in range(0, 62, 6):
+                        rots = [q1, qaxis(x, sgn * a), qaxis(x, sgn * a)]
+                        e = cost(rots)
+                        if best is None or e < best - 1e-12:
+                            best, best_rots = e, rots
+    out = {}
+    for name, dq in zip(chain, best_rots):
+        q = qmul(np.array(nodes[idx[name]].get("rotation", [0.0, 0.0, 0.0, 1.0]), dtype=float), dq)
+        out[name] = q / np.linalg.norm(q)
+    return out
+
+
+def grip_weight(sk: "Skeleton", side: str, hold: dict) -> float:
+    return 1.0 if getattr(sk, "grip_hero", None) in GRIP_ALWAYS else float(hold.get(side, 0.0))
+
+
+def grip_pose(sk: "Skeleton", out: dict, hold: dict) -> None:
+    """The finger bones' local rotations (into out): the grip, weighted (GRIP_ALWAYS, else the hook hold)."""
+    for side, rots in getattr(sk, "grips", {}).items():
+        w = grip_weight(sk, side, hold)
+        for name, q1 in rots.items():
+            q0 = sk.rest_q[name]
+            out[name] = q0 if w <= 0.0 else (q1 if w >= 1.0 else _slerp(q0, q1, w))
+
+
+def grip_bones(sk: "Skeleton") -> list:
+    return [n for side in sorted(getattr(sk, "grips", {})) for n in sk.grips[side]]
+
+
+def write_grip_data() -> None:
+    """The always-held grips, for poses set outside a clip (HeroHelperBones.drive)."""
+    data = {"_doc": "M2-CHR-515: for a hero whose hand never lets go of its prop, keyed by the skeleton node's name: "
+                    "`hand`, the prop's `bone` (its local y runs up the shaft; `foot`, m along it, is the shaft's "
+                    "foot), `hold` (x, y, z, w: the hand's world turn from rest that stands the prop upright) and "
+                    "`fingers` (local rotations that close the hand round it). `floor_m` and `upright_deg` as in "
+                    "hero_clips.prop_pose. Written by assets_src/characters/asha/hero_clips.py from the GLBs.",
+            "floor_m": PROP_FLOOR, "upright_deg": list(PROP_UPRIGHT), "slide_max_m": PROP_SLIDE_MAX, "skeletons": {}}
+    rnd = lambda q: [round(float(v), 6) for v in q]  # noqa: E731
+    for hero in sorted(GRIP_ALWAYS):
+        sk = Skeleton(ROOT / "assets" / "characters" / hero / f"{hero}.glb")
+        data["skeletons"][sk.root_name] = {
+            "hand": sk.prop["hand"], "bone": sk.prop["bone"], "foot": round(sk.prop["foot"], 6),
+            "hold": rnd(sk.prop["hold"]),
+            "fingers": {n: rnd(q) for side in sorted(sk.grips) for n, q in sk.grips[side].items()}}
+    GRIP_DATA.write_text(json.dumps(data, indent=1) + "\n", encoding="utf-8")
+
+
 # M3-CHR-05: the story clips go after each hero's own (every hero's block above has set its list by now)
 for _h, _clips in STORY.items():
     CLIPS[_h] = CLIPS[_h] + [c for c in _clips if c not in CLIPS[_h]]
@@ -3009,6 +3329,8 @@ def build(hero: str) -> str:
         keys_p = []
         keys_s: dict = {}  # M1-CHR-15: the lower skirt panels' gathers
         keys_h: dict = {}  # M2-CHR-513: the hooks' positions and rotations
+        keys_pr: list = []  # M2-CHR-515: the held prop's slide
+        keys_g: dict = {}  # and the grip
         for t in times:
             tt = (t % length) if loop else t
             pose = staff_hold(pose_at(clip, tt, length, sk, persona), persona)
@@ -3018,6 +3340,10 @@ def build(hero: str) -> str:
                 keys_q[b].append((t, local[b]))
             for b, v in local.get(SCALE_KEY, {}).items():
                 keys_s.setdefault(b, []).append((t, v))
+            if sk.prop:  # M2-CHR-515: the staff or spear sliding through the fist
+                keys_pr.append((t, local[POS_KEY][sk.prop["bone"]]))
+            for b in grip_bones(sk):  # and the fingers closed round it
+                keys_g.setdefault(b, []).append((t, local[b]))
             for side in sk.hooks:  # M2-CHR-513
                 b = HOOK_BONE + side
                 keys_h.setdefault(b, ([], []))
@@ -3036,6 +3362,9 @@ def build(hero: str) -> str:
         tracks += [("rotation_3d", b, [(t, list(q)) for t, q in reduce_keys(keys_q[b])]) for b in sk.helpers]
         # every clip keys every gather (a still one is two keys), so no clip leaves another's gather on the bone
         tracks += [("scale_3d", b, _flat_keys(keys_s[b])) for b in sorted(keys_s)]
+        if keys_pr:
+            tracks.append(("position_3d", sk.prop["bone"], [(t, list(p)) for t, p in reduce_positions(keys_pr)]))
+        tracks += [("rotation_3d", b, [(t, list(q)) for t, q in reduce_keys(keys_g[b])]) for b in grip_bones(sk)]
         for b in sorted(keys_h):
             tracks += [("position_3d", b, _flat_keys(keys_h[b][0])),
                        ("rotation_3d", b, [(t, list(q)) for t, q in reduce_keys(keys_h[b][1])])]
@@ -3073,6 +3402,9 @@ def main() -> int:
     if set(args.hero or PERSONA) & set(LOCO_HEROES):  # M2-CHR-12: the controller's stride and speed table
         write_locomotion_data()
         print(f"wrote {LOCO_DATA.relative_to(ROOT)}")
+    if set(args.hero or PERSONA) & GRIP_ALWAYS:  # M2-CHR-515: the held props' grips, for the stages
+        write_grip_data()
+        print(f"wrote {GRIP_DATA.relative_to(ROOT)}")
     _ = json
     return 0
 
