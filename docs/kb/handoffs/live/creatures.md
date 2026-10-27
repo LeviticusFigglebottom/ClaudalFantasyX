@@ -477,3 +477,11 @@ RENDER-REQUEST @ db3c9507: portraits:flat_engine; tool: tools/portraits/render.s
   - The attach goes through CreatureModels (a creatures.json row with `"vowbound": true`), so ui's battle_sandbox.json capsule row stays only as the fallback.
   - **For battle-presentation:** M3-CRE-639 (role combat) asks you to play `rise`, `dismiss` and `special` from choreo.json once the model lands. The existing `ready` and `ko` keep working until then.
   - **Checks run on the big12 merge:** Godot full 2830/2 (the Lead's known two: creature portraits, ours, waits on the PC bake; the footsteps causeway test, audio's); tools test_creatures, test_blender_builds, test_npc; validate_data, taskboard, lint, format.
+- **MERGE-READY @ 3b0e44b0: M3-CRE-622, the Mangrove Drowner redesigned** (the redesign, after the first pass still read as a spider).
+  - It's a walking mangrove stump now: a tall trunk; twelve roots in four lopsided bundles, the bank side longest; aerial roots.
+  - Risen, it tears the trunk up, leans 48° and walks on three root clusters.
+  - Grounded in every clip at +0.002 m with no allow-list (the old allow-list entry is removed). 14,700 triangles.
+  - Silhouette check (side, front and top for rooted, KO, phase change and risen): every top view is lopsided bundles, no sunburst. The one risk left is the risen front view, a dark dome on splayed roots, so the render decides.
+  - **Checks run:** Blender verify identical ×3; tools test_creatures (the grounding test passes) and test_blender_builds; Godot creature 42/1 (the known portrait red); validate_data, taskboard.
+RENDER-REQUEST @ 3b0e44b0: creature_mangrove_drowner, creature_mangrove_drowner_risen, creature_flat_engine; why: M3-CRE-622 redesign (supersedes the db3c9507 Drowner ids; is the risen front still spider-like?) and M3-CRE-637's first flat-engine render (carried over from db3c9507).
+RENDER-REQUEST @ 3b0e44b0: portraits:mangrove_drowner,flat_engine; tool: tools/portraits/render.sh --only mangrove_drowner,flat_engine
