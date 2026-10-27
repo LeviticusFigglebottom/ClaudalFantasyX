@@ -1439,9 +1439,46 @@ def _fen_arena() -> dict:
 
 FEN_ARENA = _fen_arena()
 
+# ---------------------------------------------------------------------------------------------
+# M3-ENV-720: the Wakefin on Merel's drifting bridal barge, the open sea at night (bridal_barge.py; open_sea_ch15.md)
+# ---------------------------------------------------------------------------------------------
+def _bridal():
+    import bridal_barge  # noqa: PLC0415
+
+    return bridal_barge
+
+
+BRIDAL_ARENA = {
+    "id": "bridal_barge_night",
+    "sub_frame": "ch15",
+    "ground": "deck",
+    "ground_glb": KIT + "bridal_barge.glb",
+    "lut": "res://assets/environments/arenas/bridal_barge_night/lut_ch15_unlamped.png",
+    # Colour script ch15 (01:00, unlamped): the moon #D2DFFF 0.25 (rule 3b: <= 2.5 x the sea-glow 0.12), fill
+    # #0B1630 0.15, fog #1C3A4A 0.004, exposure 1.10, night_sea, lut_ch15_unlamped. No lamp: nothing warm lights it.
+    "sun": {"elev": 38.0, "az": 150.0, "color": "#D2DFFF", "energy": 0.25, "max_distance": 60.0, "moon": True},
+    "fill": {"color": "#0B1630", "energy": 0.15},
+    "exposure": 1.1,
+    "glow": (0.6, 0.08, 0.9),
+    "fog": {"color": "#1C3A4A", "density": 0.004, "sky_affect": 0.0, "height": 0.0, "height_density": 0.0},
+    "sky_shader": "res://game/shaders/environment/env_sky_night.gdshader",
+    "sky": {"col_zenith": "#050A14", "col_horizon": "#0B1630", "col_ground": "#061A2B"},
+    "sea": {"y": _bridal().WATERLINE_Y, "tide_line_y": _bridal().WATERLINE_Y, "sea_glow": 0.12, "material": NIGHT_SEA},
+    "pieces": [],
+    "scatters": [],
+    "hints": {
+        "wide_high": ((-1.5, 7.5, 13.5), (0.0, 0.8, -3.0)),
+        "party_side": ((5.6, 1.7, 4.5), (-1.5, 1.0, -0.5)),
+        "foe_side": ((-5.6, 1.7, 4.0), (1.5, 1.0, 0.0)),
+        "the_bier": ((3.0, 1.4, 2.8), (6.2, 0.6, 0.0)),
+        "the_dark_water": ((-2.0, 0.9, -2.0), (-14.0, -0.6, -6.0)),
+    },
+    "anchors": {"BossAnchor": (-10.0, _bridal().WATERLINE_Y, -1.5)},
+}
+
 ARENAS = {a["id"]: a for a in (TIDELINE, CAUSEWAY, CAUSEWAY_ROUTE, DERELICT_DECK, ASH_TERRACE, UNDERWAY_TOWER,
                                RAFT_MORNING, SHOALS, CAMP, WALLHEAD_STORM, WALLHEAD_HOIST, WALLHEAD_SURGE, HEADLAND, TIER_HALL, KETH_ARENA,
-                               LOWLIGHT_ARENA, FEN_ARENA)}
+                               LOWLIGHT_ARENA, FEN_ARENA, BRIDAL_ARENA)}
 
 
 # ---------------------------------------------------------------------------------------------

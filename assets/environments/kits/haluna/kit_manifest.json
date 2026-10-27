@@ -90,6 +90,17 @@
         "basket_set-lod1": 153
       }
     },
+    "bridal_barge": {
+      "budget": [
+        16000,
+        1200
+      ],
+      "bytes": 217384,
+      "lods": {
+        "bridal_barge": 3754,
+        "bridal_barge-lod1": 648
+      }
+    },
     "cairn": {
       "budget": [
         2500,

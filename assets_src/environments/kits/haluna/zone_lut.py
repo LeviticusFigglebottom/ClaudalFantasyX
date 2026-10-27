@@ -122,6 +122,12 @@ GRADES = {
                           "highlight_strength": 0.4, "warm_deg": (-20.0, 50.0), "warm_sat": 1.1, "cool_sat": 0.95,
                           "cool_hex": "#B8C4E0", "cool_strength": 0.3, "green_deg": (70.0, 165.0),
                           "green_target_deg": 178.0, "green_shift": 0.35},
+    # M3-ENV-720: lut_ch15_unlamped (colour script ch15): no warm source anywhere at night, so the warm hues are cut
+    # (never boosted) and the highlights cooled toward the moon; saturation x0.85; the toe and black point night_sky.
+    "ch15_unlamped": {"saturation": 0.85, "s_curve": 0.5, "toe_hex": NIGHT_SKY_HEX, "toe_strength": 0.5,
+                      "toe_end": 0.3, "black_floor": 1.0, "highlight_hex": "#DCE6FF", "highlight_start": 0.7,
+                      "highlight_strength": 0.4, "warm_deg": (-20.0, 60.0), "warm_sat": 0.85, "cool_sat": 0.9,
+                      "cool_hex": "#C8D6EE", "cool_strength": 0.35},
 }
 
 

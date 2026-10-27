@@ -32,6 +32,7 @@ import keth  # noqa: E402
 import lowlight  # noqa: E402
 import ossa_fen  # noqa: E402
 import save_shrine  # noqa: E402
+import bridal_barge  # noqa: E402
 import kit_common as kc  # noqa: E402
 import props  # noqa: E402
 import ruins  # noqa: E402
@@ -95,6 +96,8 @@ def targets() -> dict:
         out[name] = (name, ossa_fen, fn)
     for name, fn in sorted(save_shrine.TARGETS.items()):  # M3-ENV-101 the save shrine
         out[name] = (name, save_shrine, fn)
+    for name, fn in sorted(bridal_barge.TARGETS.items()):  # M3-ENV-720 the Ch15 bridal barge
+        out[name] = (name, bridal_barge, fn)
     return out
 
 

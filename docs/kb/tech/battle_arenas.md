@@ -245,6 +245,26 @@ The water is the colour script's `tannin_fen` (σ 0.6 / 1.4 / 4.0, deep `#3A2A18
 arena's own still wave set. The trees use the vegetation shaders' wind; their roots never sway. Hints:
 `the_dead_crown`, `the_channel`.
 
+### The bridal barge at night (`bridal_barge_night`, M3-ENV-720, the Haluna kit's bridal_barge.py)
+
+For the Wakefin (Ch15; the encounter id belongs to the creatures and combat tracks). The floor is Merel's bridal
+barge, its deck level at y 0 (16 × 7.5 m, along X, the bow toward the enemy side). It drifts on open water at −0.6.
+The near rail (0.35 m) stays under the camera's rays to the slots.
+
+| Where | What |
+|---|---|
+| In the sea, off the bow | The `BossAnchor` (−10, −0.6, −1.5): the Wakefin circles at the waterline; its fin is the read |
+| The stern | The canopy of red bridal cloth on gilt posts; Tobin's bier under Merel's bridal cloth |
+| The bow | An empty gilt lamp hook (wedding barges carry no lamp) |
+| Around | Open water and the sea-glow to the horizon; no land |
+
+Light `ch15` (01:00, unlamped):
+- the moon `#D2DFFF` 0.25 (rule 3b), fill `#0B1630` 0.15, `night_sea` with sea-glow 0.12, exposure 1.10;
+- `lut_ch15_unlamped` (`zone_lut.py`: ×0.85, the warm hues cut, never boosted, the toe at `night_sky`);
+- **no lamps and no flames**: `test_bridal_barge` pins it.
+
+Hints: `the_bier`, `the_dark_water`.
+
 ### The underwater arena (`underway_tower`)
 
 An arena under the sea carries its own look, because the battle scene has none:
