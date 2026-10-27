@@ -157,7 +157,7 @@ def parse_args() -> argparse.Namespace:
 
 
 def rigid_part(part: Part, bone: str, wnames: list, skel: bpy.types.Object) -> bpy.types.Object:
-    ob = hb.part_object(part)
+    ob = hb.part_object_snapped(part)
     W = np.zeros((len(part.V), len(wnames)), dtype=np.float32)
     W[:, wnames.index(bone)] = 1.0
     hb.apply_weights(ob, W, wnames, skel)
@@ -219,7 +219,7 @@ def main() -> int:
     res = bb_donor.generate(params, log=log, subdiv_face=True)
     lm, body = res["lm"], res["body"]
     face = body.face
-    V, F = res["V"], np.asarray(res["F"])
+    V, F = hb.snap_positions(res["V"]), np.asarray(res["F"])  # M1-CHR-15: host-independent positions
     reg = np.array(res["reg"])
     freg = np.array(res["freg"])
     UVc = np.asarray(res["uv"])
@@ -234,12 +234,14 @@ def main() -> int:
     Nw = bb_donor.face_normals_vertex(V, F)
     log(f"rig: {len(skel.data.bones)} deform bones, donor weights on {len(wnames)} bones, dropped {dropped} "
         f"({time.time() - t0:.1f}s)")
+    W, wnames, arms = hb.armpit_helpers(skel, V, W, wnames)  # M1-CHR-15: the shoulder correctives
     surf = hb.head_surface(V, F, Nw, freg, Scalp(body))  # the shipped head skin (hair and beard roots)
 
     # ---- head (same construction as Asha's and Rhen's) plus the beard --------------------------
     is_head = np.isin(freg, ["head", "scalp", "mouth"])
     used_h, Fh, remap_h, Sh = hb.submesh(V, F, is_head, res["seams"])
     Vh = V[used_h]
+    Vh[np.abs(Vh) < hb.MIDLINE_SNAP] = 0.0  # M1-CHR-15: host-independent midline (as build_asha)
     fh_reg = freg[is_head]
     inner_v = hb.inner_lip_vertices(Vh, Nw[used_h], res["lip_dz"][used_h], face.mouth_half,
                                     lm.h / 0.222)
@@ -278,7 +280,7 @@ def main() -> int:
     extras.append(beard)
     for ex in extras:
         head.extend(ex)
-    Vhead = head.varr()
+    Vhead = hb.snap_positions(head.varr())  # M1-CHR-15
     ob_head = hb.make_object("Head", Vhead, head.F, head.UV, head.M)
     me = ob_head.data
     auto = np.zeros((len(me.vertices), 3))
@@ -289,6 +291,7 @@ def main() -> int:
                                                        np.where(fh_reg == "mouth", 4, 2)))
     hb.unwrap_faces(ob_head, {"skin_head", "mouth"}, hb.head_seams(Fh, cat, Vh, lm),
                     shrink=(np.nonzero(cat != 1)[0], 0.45))
+    hb.quantize_uvs(ob_head)  # M1-CHR-15: host-independent UVs (as build_asha)
     pad = np.zeros(len(Vhead) - n_skin)
     masks = {"lower": np.concatenate([res["lower"][used_h], pad]), "lip": np.concatenate([res["lip_w"][used_h], pad])}
     lip_frame = {k: np.concatenate([res[n][used_h], pad]) for k, n in (("contact", "lip_contact"), ("dz", "lip_dz"),
@@ -323,6 +326,8 @@ def main() -> int:
     covered = toma_costume.coverage(body, cparams, V, reg)
     hidden = np.where(F >= 0, covered[np.maximum(F, 0)], True).all(axis=1) & ~is_head
     costume, anchors = ({}, None) if args.no_costume else toma_costume.build_costume(body, cparams)
+    for p in costume.values():
+        hb.snap_part(p)  # M1-CHR-15
     costume_tris = sum(p.tris() for p in costume.values())
     log(f"costume: {costume_tris} tris, hidden body quads {int(hidden.sum())} ({time.time() - t0:.1f}s)")
     head_i = wnames.index(HEAD_BONE)
@@ -342,6 +347,8 @@ def main() -> int:
             if name in TORSO_PARTS:
                 sl = slice(o, o + len(p.V))
                 Wc[sl] = hb.transfer_weights(Pc[sl], V[reg == "torso"], W[reg == "torso"])
+                # M1-CHR-15: the tunic over the underarm turns with the skin under it (the shoulder correctives)
+                Wc[sl] = hb.helper_bones.armpit_cloth_weights(Pc[sl], Wc[sl], wnames, V, W, arms, lm.S)
             o += len(p.V)
         wnames_x = wnames + extra_bone_names()
         Wc = np.concatenate([Wc, np.zeros((len(Pc), len(wnames_x) - len(wnames)), dtype=np.float32)], axis=1)
@@ -351,7 +358,7 @@ def main() -> int:
             offs[name] = o
             o += len(p.V)
         bone_specs = rig_extras(costume, offs, anchors, Pc, Wc, wnames_x, lm)
-        ob = hb.part_object(opaque)
+        ob = hb.part_object_snapped(opaque)
         hb.apply_weights(ob, Wc, wnames_x, skel)
         garment_objs.append(ob)
         outer = np.concatenate([p.varr() for p in costume.values()] + [V[reg == "torso"]])
@@ -386,7 +393,7 @@ def main() -> int:
         rigid_parts = Part("HairHead")
         for p in hair.values():
             rigid_parts.extend(p)
-        ob = hb.part_object(rigid_parts)
+        ob = hb.part_object_snapped(rigid_parts)
         Wr = np.zeros((len(rigid_parts.V), len(wnames)), dtype=np.float32)
         Wr[:, head_i] = 1.0
         hb.apply_weights(ob, Wr, wnames, skel)
@@ -402,6 +409,7 @@ def main() -> int:
     ob_body = hb.make_object("Body", V[used_b], Fb_l, UVb, ["skin_body"] * len(Fb), normals=Nw[used_b])
     hb.apply_weights(ob_body, W[used_b], wnames, skel)
     hb.unwrap_faces(ob_body, {"skin_body"}, hb.uv_seams(Fb_l, UVb))
+    hb.quantize_uvs(ob_body)  # M1-CHR-15
     dense = np.isin(reg[used_b], ["hand_L", "hand_R", "foot_L", "foot_R"])
     t_all = sum(len(f) - 2 for f in Fb_l)
     t_dense = sum(len(f) - 2 for f in Fb_l if dense[list(f)].all())
@@ -416,7 +424,7 @@ def main() -> int:
     for sd in ("L", "R"):
         fr = face.eyes[sd]
         for part in (asha_eyes.eyeball(fr), asha_eyes.cornea(fr), asha_eyes.occlusion(fr), asha_eyes.tear_line(fr)):
-            ob = hb.part_object(part)
+            ob = hb.part_object_snapped(part)
             hb.attach_to_bone(ob, skel, f"DEF-eye.{sd}", fr.E)
             eye_objs.append(ob)
             eye_tris += part.tris()
@@ -429,6 +437,8 @@ def main() -> int:
         "seconds": 0.0,
     }
     report["triangles"]["total_lod0"] = sum(report["triangles"].values())
+    for ob in export_objs:
+        hb.snap_shape_noise(ob)  # M1-CHR-15: host-independent morph targets (as build_asha)
     if args.bake_dir:
         lip_terms = {k: np.concatenate([res[n][used_h], pad]) for k, n in (("CONTACT", "lip_contact"),
                                                                             ("CORNER", "lip_corner"),

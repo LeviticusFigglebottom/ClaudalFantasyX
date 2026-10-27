@@ -1,0 +1,13 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://game/levels/_tests/act1_zones/act1_zone_rig.gd" id="1_rig"]
+[ext_resource type="PackedScene" path="res://game/levels/ch08/coilspire/coilspire.tscn" id="2_zone"]
+
+[node name="Ch08CoilspireShots" type="Node3D"]
+script = ExtResource("1_rig")
+zone_scene = ExtResource("2_zone")
+flags = PackedStringArray("ch08_arrived_corrow")
+views = {
+"Path": [[285.41, 29.5, 111.76], [308.41, 59.29, 158.61], 55.0],
+"Hall": [[307.14, 40.89, 157.33], [309.12, 41.49, 159.31], 70.0]
+}

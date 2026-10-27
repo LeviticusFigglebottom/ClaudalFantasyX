@@ -6,7 +6,7 @@
 Same format and pipeline position as the Haluna kit's zone_lut.py (imported read-only: a 32^3 table as a
 1024 x 32 strip, sRGB -> sRGB after AgX, imported as a Texture3D). Never hand-painted.
 
-Intent: the ash veil. Saturation x0.88 around luminance; leaf greens (60-140 deg) pulled a further half
+Intent: the ash veil. Saturation x1.0 around luminance (M3-ENV-705; was x0.88); leaf greens (60-140 deg) pulled a further half
 toward grey-olive (ash on every leaf); the copper's verdigris (145-180 deg) and the lacquer red and raw
 copper (350-40 deg) spared the cut and lifted 6% (the frame's only colours); the volcanic stone stays
 neutral-cool (no warm cast in the mids); S-curve 0.5; the toe toward `storm_slate` `#3E4A57` (rule 5:
@@ -27,11 +27,13 @@ sys.path.append(str(HERE.parent / "haluna"))
 import zone_lut as zl  # noqa: E402  (the Haluna kit's LUT format and colour helpers, read-only)
 
 OUT_DEFAULT = ROOT / "game" / "levels" / "_tests" / "ashcrown_kit" / "lut_ch05_ashcrown.png"
-SATURATION = 0.88
+# M3-ENV-705 (the human: no greyscale scenes): full saturation outside the leaf greens (was 0.88), and the three
+# accents lifted harder (was 1.06), so the copper, the lacquer and the forge carry the frame against the ash.
+SATURATION = 1.0
 GREEN_HUE = (60.0, 140.0)
 GREEN_CUT = 0.5  # a further cut of the leaf greens' remaining saturation
 KEEP_BANDS = ((145.0, 180.0), (-10.0, 40.0))  # verdigris; lacquer red, raw copper, ember
-KEEP_BOOST = 1.06
+KEEP_BOOST = 1.18
 S_CURVE = 0.5
 TOE_HEX = "#3E4A57"  # storm_slate
 TOE_STRENGTH = 0.35

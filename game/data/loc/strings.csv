@@ -1057,3 +1057,5 @@ SET_SCREEN_SHAKE_FULL,Full
 SET_SCREEN_SHAKE_HALF,Half
 SET_SCREEN_SHAKE_OFF,Off
 TUT_TIDELINE_TIMELINE,"The turn order runs down the right, next at the top. Every action costs time: watch where yours will land before you choose."
+BOSS_TITLE_UNDERTOWS_REACH,The Undertow's Reach
+BOSS_EPITHET_UNDERTOWS_REACH,The storm puts a hand on the wall

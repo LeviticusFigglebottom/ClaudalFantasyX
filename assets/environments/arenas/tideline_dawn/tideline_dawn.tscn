@@ -1,4 +1,4 @@
-[gd_scene load_steps=31 format=3]
+[gd_scene load_steps=37 format=3]
 
 [ext_resource type="Script" path="res://game/world/arenas/battle_arena_root.gd" id="1_r"]
 [ext_resource type="Shader" path="res://game/shaders/environment/env_sky_low_sun.gdshader" id="2_r"]
@@ -24,9 +24,15 @@
 [ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/coral_boulder_b.glb" id="22_r"]
 [ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/coral_boulder_a.glb" id="23_r"]
 [ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/coral_boulder_c.glb" id="24_r"]
-[ext_resource type="Script" path="res://game/world/vegetation/vegetation_scatter.gd" id="25_r"]
-[ext_resource type="PackedScene" path="res://assets/environments/vegetation/saltgrass_clumps.glb" id="26_r"]
-[ext_resource type="Material" path="res://assets/environments/vegetation/materials/saltgrass.tres" id="27_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/tide_debris.glb" id="25_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/net_heap.glb" id="26_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/rope_coil.glb" id="27_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/crate_stack.glb" id="28_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/basket_set.glb" id="29_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/offering_step.glb" id="30_r"]
+[ext_resource type="Script" path="res://game/world/vegetation/vegetation_scatter.gd" id="31_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/vegetation/saltgrass_clumps.glb" id="32_r"]
+[ext_resource type="Material" path="res://assets/environments/vegetation/materials/saltgrass.tres" id="33_r"]
 
 [sub_resource type="ShaderMaterial" id="SkyMat"]
 shader = ExtResource("2_r")
@@ -222,12 +228,36 @@ transform = Transform3D(-0.939693, 0, -0.34202, 0, 1, 0, 0.34202, 0, -0.939693, 
 [node name="coral_boulder_b_2" parent="Dressing" instance=ExtResource("22_r")]
 transform = Transform3D(6.73556e-17, 0, 1.1, 0, 1.1, 0, -1.1, 0, 6.73556e-17, 12, 3.314, -90)
 
+[node name="tide_debris_1" parent="Dressing" instance=ExtResource("25_r")]
+transform = Transform3D(-0.173648, 0, 0.984808, 0, 1, 0, -0.984808, 0, -0.173648, 3.5, -0.222, -9)
+
+[node name="tide_debris_2" parent="Dressing" instance=ExtResource("25_r")]
+transform = Transform3D(0.34202, 0, 0.939693, 0, 1, 0, -0.939693, 0, 0.34202, 9, -0.452, -30)
+
+[node name="tide_debris_3" parent="Dressing" instance=ExtResource("25_r")]
+transform = Transform3D(-0.46488, 0, 0.996939, 0, 1.1, 0, -0.996939, 0, -0.46488, 13, -0.389, -62)
+
+[node name="net_heap_1" parent="Dressing" instance=ExtResource("26_r")]
+transform = Transform3D(0.866025, 0, 0.5, 0, 1, 0, -0.5, 0, 0.866025, -11.5, 0.749, -13.5)
+
+[node name="rope_coil_1" parent="Dressing" instance=ExtResource("27_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -6, 0.226, -13)
+
+[node name="crate_stack_1" parent="Dressing" instance=ExtResource("28_r")]
+transform = Transform3D(0.173648, 0, 0.984808, 0, 1, 0, -0.984808, 0, 0.173648, -13, 1.276, -5.5)
+
+[node name="basket_set_1" parent="Dressing" instance=ExtResource("29_r")]
+transform = Transform3D(0.939693, 0, 0.34202, 0, 1, 0, -0.34202, 0, 0.939693, -11.8, 0.923, -7.6)
+
+[node name="offering_step_1" parent="Dressing" instance=ExtResource("30_r")]
+transform = Transform3D(-0.984808, 0, -0.173648, 0, 1, 0, 0.173648, 0, -0.984808, 5.2, -0.292, -21)
+
 [node name="SaltgrassDune" type="MultiMeshInstance3D" parent="Dressing" node_paths=PackedStringArray("ground")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -19.0, 0, -24.0)
-script = ExtResource("25_r")
-source_scene = ExtResource("26_r")
+script = ExtResource("31_r")
+source_scene = ExtResource("32_r")
 mesh_node = &"saltgrass_a"
-material = ExtResource("27_r")
+material = ExtResource("33_r")
 count = 1800
 half_extents_m = Vector2(11.0, 34.0)
 seed_value = 31
@@ -240,10 +270,10 @@ height_max_m = 9.0
 
 [node name="SaltgrassToe" type="MultiMeshInstance3D" parent="Dressing" node_paths=PackedStringArray("ground")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.0, 0, -8.0)
-script = ExtResource("25_r")
-source_scene = ExtResource("26_r")
+script = ExtResource("31_r")
+source_scene = ExtResource("32_r")
 mesh_node = &"saltgrass_b"
-material = ExtResource("27_r")
+material = ExtResource("33_r")
 count = 320
 half_extents_m = Vector2(4.0, 14.0)
 seed_value = 37
@@ -256,10 +286,10 @@ height_max_m = 9.0
 
 [node name="SaltgrassHeadland" type="MultiMeshInstance3D" parent="Dressing" node_paths=PackedStringArray("ground")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.0, 0, -100.0)
-script = ExtResource("25_r")
-source_scene = ExtResource("26_r")
+script = ExtResource("31_r")
+source_scene = ExtResource("32_r")
 mesh_node = &"saltgrass_a"
-material = ExtResource("27_r")
+material = ExtResource("33_r")
 count = 900
 half_extents_m = Vector2(26.0, 14.0)
 seed_value = 41

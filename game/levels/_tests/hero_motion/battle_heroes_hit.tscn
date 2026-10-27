@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://game/levels/_tests/hero_motion/battle_heroes_stage.gd" id="1_stage"]
+
+[node name="BattleHeroes" type="Node"]
+script = ExtResource("1_stage")
+pose = &"hit"

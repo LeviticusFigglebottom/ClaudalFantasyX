@@ -285,3 +285,41 @@ position, so the fix can be found in the source. The garment-in-skin count only 
 deepest 24 per group and pose, so treat it as a lower bound; the worst depth is exact. Add a new hero by adding a
 `heroes` entry (its props, garments and seam groups). Meshes named in the config but missing from a GLB are skipped,
 and a hero with no braid skips the braid checks.
+
+## 17. Helper bones for deep poses (M1-CHR-15)
+Linear blend skinning cannot keep a floor-length skirt over a lunge or the underarm out of the bodice, so the builds
+add helper bones that no pose names, and every clip keys them from its own pose.
+- **Where they live:**
+  - the bones and their weights: `assets_src/characters/asha/helper_bones.py`, wired in through `build_asha.add_bones`
+    and `build_asha.armpit_helpers` (used by Asha, Rhen and Toma);
+  - the solve: `hero_clips.helper_pose`, called from `Skeleton.local_pose`;
+  - the parameters: `game/data/characters/helper_bones.json`, shared with the runtime solve
+    `game/characters/hero_helper_bones.gd`.
+- **Clips:** `hero_clips.build` keys every helper bone the GLB has (`Skeleton.keyed`), so any new clip gets them with
+  no extra code. A skeleton without helpers (Sefir, the villagers) gets no extra tracks.
+- **Shoulder correctives, `DEF-armpit.L/.R` (every hero):**
+  - Each is a copy of the upper arm (head, tail, roll), parented to the shoulder.
+  - It turns `share` (0.35) of the upper arm's own turn while the arm comes down, rising to all of it once the arm lifts
+    30° above its rest elevation.
+  - The underarm skin moves its upper-arm weight onto it: full on the underside, from 0.13 of the arm's length to 0.3,
+    fading out by 0.65 (`helper_bones.armpit_share`).
+  - Asha's verse-sleeve bag also rides it partly, by how far it hangs below the arm (`hanging_weights`).
+- **Skirt panels, `DEF-skirt_<k>` and `DEF-skirt_<k>.001` (Asha):**
+  - There are 8 sectors round from the front. Each is a two-bone chain on the hips. It pivots on the outer skirt 7.5 cm
+    above the hip joints, and the joint sits 70% of the way to the knees.
+  - Skirt cloth below the pivot rides the two nearest chains. Cloth within 1.2–3.5 cm of a leg keeps that leg's
+    M1-CHR-14 weights.
+  - Per pose, each bone swings out by the least angle that keeps every cloth vertex it carries at its rest distance
+    from the leg axes (capped at 8.5 cm, 4 mm slack). The search is 2.5° steps, then bisection.
+  - Neighbours may not lag each other by more than 20° per sector.
+  - The inner skirt is a convex tube (`asha_costume.convex_radii`): it used to pinch to the centre between the legs.
+- **Kept body:** the legs and hips stay whole under the skirts. Only the band above the panels' pivot is cut, because a
+  cut edge lower down showed through the open hem. The kept part is decimated to 25% (`UNDER_SKIRT_RATIO`), so LOD0
+  is 64,952.
+- **Hand-set poses:**
+  - `AshaStage` calls `HeroHelperBones.drive(skel)` after `world_pose` or `test_pose`.
+  - `rig_probe`'s stage poses do the same (`hero_clips.helper_locals`).
+  - The Haluna placeholder pose needs the same call (M2-ENV-14).
+  - `test_hero_stage.gd` checks that the runtime solve matches the baked keys within 1°.
+- **Host determinism:** Rhen and Toma now use Asha's snaps (midline, UVs, shape-key noise, `PRE_ROUND`). They also put
+  every mesh position on a 1 µm grid (`build_asha.snap_positions` / `part_object_snapped`), as Sefir does.

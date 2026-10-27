@@ -2,7 +2,7 @@
 id: M2-HER-1110
 title: "No-snapping audit: automated guards for transform snaps and clip pops across field, cutscenes and battle"
 role: combat
-status: doing
+status: review
 owner_session: "hero-integration (session_01PzF7Jc4XVQdTWcaYUyCjPB)"
 reviewer: qa
 depends_on: [M2-HER-1101, M2-HER-1103, M2-HER-1104]
@@ -20,8 +20,11 @@ The human's #1 playtest complaint was rigid, snapping motion. Make "no snapping"
 - [x] Battle: every clip change the battle makes, on the real Rhen, Asha and Toma (tests/unit/test_hero_battle_pops.gd).
 - [x] Field: the leader and followers through walk, run, stop and turn-around on the slice and Act I zones
       (tests/unit/test_hero_field_snaps.gd, 13 walkable zones; first_verse has no field player).
-- [ ] Cutscenes: hero actors through the slice cutscenes (prologue, Haluna beach) and the Act I greybox ones.
-- [ ] Everything the guards find is fixed (or requested from the owner).
+- [x] Cutscenes: 26 in-engine scenes over Haluna and the Act I zones (tests/integration/test_hero_cutscene_snaps.gd).
+      The prologue scene is its own set (prologue_scene.gd) and is not in it yet.
+- [x] Everything the guards find is fixed (in this track's files) or requested from its owner: M2-HER-1113 (cutscene
+      turns and end jumps), M2-HER-1114 (the placeholder crash and arm flip). The tests' KNOWN lists name them until
+      they land. ADR 0192.
 
 ## Notes
 ### 2026-10-25: battle
@@ -39,5 +42,21 @@ static, so any blend between them has to move the arms. That's a gesture, not a 
 - Every other zone: peaks at the 3.6 m/s run and the 400 deg/s turn cap. Followers catching up reach 5.4 m/s (their
   data cap; inside the guard's 6.0). Rhen peaks at 5.85 m/s on Pemakar and 5.49 on Ashcrown: slope or step
   push-ups from the CharacterBody, under the limit. Worth a look in play (FieldController is m2-slice's).
+
+### 2026-10-27: villagers
+- tests/unit/test_villager_snaps.gd: Haluna's villagers (creatures' VillagerLayer, loaded by path so the test skips
+  until it lands) run their routines for 6 s, then the player visits each one (from 120 deg round its facing), talks
+  and leaves. Every actor root is checked for snaps, and every clip change at FieldNpc's own blends for pops. On a local
+  trial merge with claude/creatures: all 7 pass (turns 110–200 deg/s eased; clip peaks at about half the allowed
+  step). Nothing to fix in FieldNpc. The gap is placement: request M2-HER-1112 (slice-polish) to put the layer in
+  Haluna.
+
+### 2026-10-27: cutscenes
+- Heroes are clean in every scene. Every non-hero stage actor snaps: whip turns (~800 deg/s peaks from turn_sec 0.45)
+  and a walk jumped to its mark when the scene ends (Ysolde, ch04_gangplank, 1.15 m in a frame). Fix verified on
+  claude/m2-slice and handed over as request M2-HER-1113 (docs/kb/tech/cutscene_no_snap.patch). The test lists the
+  11 pairs as KNOWN (reported, not failed) until it lands.
+- Camera cuts are told apart (a camera jump of 0.75 m or 20 deg in a frame), so a reposition hidden by a cut is not
+  a snap.
 
 ## Review log

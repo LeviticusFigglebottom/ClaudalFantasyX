@@ -90,6 +90,9 @@ class TestProbeMath(unittest.TestCase):
         a = rig_probe.world_pose_local(rig, world)
         b = rig.skeleton.local_pose({k: hero_clips.qeuler(v) for k, v in world.items()})
         for bone, q in a.items():
+            if bone == hero_clips.SCALE_KEY:  # the skirt panels' floor gathers (M1-CHR-15)
+                self.assertEqual(q, b[bone])
+                continue
             self.assertLess(min(np.abs(q - b[bone]).max(), np.abs(q + b[bone]).max()), 1e-9, bone)
 
     def test_closest_point_and_nearest_vertex_agree_with_brute_force(self):

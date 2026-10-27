@@ -6,6 +6,8 @@ extends Control
 ## (Stop/Sleep) is hatched and dimmed; `moved` draws a ▲/▼ for chips the preview shifts.
 ## A Doomed turn carries an hourglass and its count (TurnEntry.doom). The chip acting now has a
 ## heavier focus frame with an outer glow and a caption ("Acting now", or why it acts alone).
+## A scripted entry (a set piece's Climb or Surge, M3-UI-100) is neither ally nor foe to the eye: a raised fill,
+## a dashed frame and a round portrait (battle_hud.json timeline entry_fill_role / entry_frame_role).
 
 const TEAM_ENEMY := &"enemy"
 
@@ -26,6 +28,8 @@ var doom := 0
 var caption := ""
 ## The telegraphed skill this turn is committed to ("" = none), shown after the name (M2-FP-06).
 var intent_label := ""
+## A scripted timeline entry, not a fighter (the identity's "entry"; M3-UI-100).
+var entry := false
 ## The running slide/fade, killed when a newer layout arrives (TurnTimeline._move).
 var move_tween: Tween
 
@@ -85,6 +89,7 @@ func apply(slot: Dictionary, identity: Dictionary, current: bool) -> void:
 	is_current = current
 	label_text = str(identity.get("label", String(combatant_id)))
 	tint = identity.get("tint", Color.WHITE)
+	entry = bool(identity.get("entry", false))
 	intent_label = str(slot.get("intent_label", ""))
 	# A committed turn names its skill alone ("The Toll"): the glyph and the side colour already say
 	# whose turn it is, and "<name> · <skill>" ran past the chip's width (M2-FP-12).
@@ -158,6 +163,8 @@ func _draw() -> void:
 		return
 	var shape := _shape()
 	var fill := _theme(&"enemy_chip") if team == TEAM_ENEMY else _theme(&"ally_chip")
+	if entry:
+		fill = _theme(StringName(str(_metrics.get("entry_fill_role", ""))))
 	if ghost:
 		fill.a *= HudLayout.num(_metrics, "ghost_alpha")
 	draw_colored_polygon(shape, fill)
@@ -166,6 +173,8 @@ func _draw() -> void:
 		_draw_hatch()
 	if ghost:
 		_draw_dashed(shape, _theme(&"focus_gold"))
+	elif entry and not is_current:
+		_draw_dashed(shape, _theme(StringName(str(_metrics.get("entry_frame_role", "")))))
 	elif is_current:
 		# The fighter acting now: an outer glow, a heavier frame, and a solid lamp bar on the edge.
 		var glow := HudLayout.num(_metrics, "current_glow_px")
@@ -202,6 +211,9 @@ func _draw_portrait() -> void:
 	var col := tint
 	if ghost:
 		col.a *= HudLayout.num(_metrics, "ghost_alpha")
+	if entry:
+		draw_circle(r.get_center(), side * 0.5, col)  # an entry's portrait is round: a third shape cue
+		return
 	if team == TEAM_ENEMY:
 		# Enemy portrait is a diamond, ally a square: a second shape cue.
 		var c := r.get_center()

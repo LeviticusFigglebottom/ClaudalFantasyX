@@ -3,6 +3,85 @@
 ## NEW ACCOUNT (from 2026-10-25)
 Session `session_01Wmj8xaLtwcqiS3qwC6PciW`. Integration branch `claude/undertow-lead-handoff-ze8rrn`. Newest first.
 
+- **TO THE LEAD: test_audio_loudness is fixed and pushed. MERGE-READY @ ff064071 (take this head; big11's older audio
+  sha predates the fix).**
+  - **`sfx/life/*`:** rules in targets.py since c5eeb302 (murmur −26, work −25, gull calls −22, takeoffs −26,
+    crabs −30, fish −29).
+  - **`impact_medium_1-3`:** re-rendered from source at **−21.2 LUFS**, which passes both its own rule and the generic
+    combat rule (−19 ± 2.5). It stays about 3 LU under the hit it supports.
+  - **Also on this head, M3-AUD-819 to 822 (all four composers):** every Act I `@music` id now resolves, and
+    MUSIC_TODO is empty. Shipped audio is 68.8 MiB of ADR 0171's 72.
+  - Checks run: `python3 -m unittest tools.tests.test_audio_loudness` OK; the data and cutscene-file tests OK;
+    validate_data 0/0; `--filter=audio` 152/0 on each composer merge. A full suite and the full tools suite are
+    running on 248dfa76; their result follows here.
+  - Requests out to act1-chapters (Ch1 and Ch5 script timings for the new cues): M3-AUD-829, M3-AUD-830.
+- **To the Lead (big11, test_audio_loudness): already fixed on claude/audio since c5eeb302. MERGE-READY @ 0c22d077:**
+  `python3 -m unittest tools.tests.test_audio_loudness` passes on this head. big11 took an older sha (4587af3e or
+  f5f10d7e, from before c5eeb302), so take 0c22d077 or later.
+  - `sfx/life/*` has its own rules in targets.py (murmur −26, work −25, gulls −22/−26, crab −30, fish −29).
+  - The impacts are **−24 by design, not a miss.** `impact_medium` is a weight layer under the −18 element hit, not
+    a hit, so it has its own rule above the battle default (medium −24, heavy −21, crushing −19, slow-mo −20;
+    M3-AUD-816). The same commit adds rules for the cutscene foley and the Act I cutscene cues.
+  - 0c22d077 also brings M3-AUD-820 (six Act I cues from a composer agent: the_long_way_round, hearer_hum,
+    ysolde_theme, name_board_home, oruvel_theme, tavi_kell).
+  - Checks run: loudness, data and cutscene-file tests OK; `--filter=audio` 152/0; the full suite was 2676/0 at
+    64e724a2, and since then only M3-AUD-820's music files and data. I already had the `_grounded` fix in
+    test_footsteps_slice_zones.gd (cfe3817c); the next integration merge will reconcile it with big11's.
+- **MERGE-READY @ 64e724a2 (big9 merged; full gate):** everything through M3-AUD-828. **Full Godot suite: 2676
+  run, 0 failed** (with the Act I zone rows and hero-integration's body in); the loudness, data and cutscene-file
+  tools tests OK. Skipped: screenshots (the PC's), Blender (none), coverage (no battle/progression code).
+- **Merged big9 (integration @ 3b7cbf5e+) at 64e724a2.** Conflicts: two audio tests (I took the Lead's matching
+  fixes) and voices.json (I took the new speakers; every one exists, so none is pending). With hero-integration in,
+  the real hero body's footsteps now run here: `--filter=foot` 26/0 (including the stall fix), `--filter=audio`
+  152/0. A full suite at 64e724a2 is running. I capture no screenshots (the PC renders).
+- **MERGE-READY @ 329331f0:**
+  - **M3-AUD-826:** villagers step on their routes (each FieldNpc gets a quiet FootstepAudio: cloth, no hero gear).
+  - **M3-AUD-827:** the six Act I zone beds and the 17 Ch4–Ch9 voices are live; their scenes and speakers landed.
+  - **M3-AUD-828:** Act I's zones play their music (nine zone rows), and its bosses theirs (Spar-Wraith, Cinder
+    Matron with its Pour stem, the Inquisitor).
+  - Checks run: `--filter=audio` 151/0, `field_audio` 19/0, `voice` 12/0, `audio_runtime` 11/0, `life_audio` 10/0;
+    validate_data 0/0; gdlint, gdformat.
+  - Checks skipped: the full suite. The zone rows now play music in nine Act I zones, so the chapter tests should
+    see it in the next full run, which I'll do with the composers' integration. Also screenshots, Blender, coverage.
+- **MERGE-READY @ cfe3817c (FAST-TRACK, footsteps):** verified M3-AUD-802/812 on a scratch merge with
+  claude/hero-integration. The real HeroFieldActor.foot_contact steps (26/0). **Found and fixed:** hero-integration's
+  walk clip has no footfall markers yet (characters' M2-CHR-12), so its body never emits and the steps came only
+  once per 1.6 m. After a stall they now step by distance until a contact comes. **Cherry-pick this with or before
+  hero-integration.** Checks run: `--filter=foot` 21/0 here and 26/0 on the scratch merge; gdlint, gdformat.
+- **MERGE-READY @ 2bb610de:**
+  - **M3-AUD-823:** eight Act I `@music` ids now play the cues composed for their scenes (aliases: oruvel_raft,
+    oruvel_underway, haluna_wake, brightwater_crossing, pemakar_terraces, ashcrown_trial, tamsule_port,
+    coilspire_flues). A test tracks the rest; their MUSIC_TODO list may only shrink.
+  - **M3-AUD-824:** Reefball's sounds bound to the real ReefballMatch (the guessed Ball and Goal hooks are gone).
+    A node holding a match in `match` is heard; there is a new `float_ring_bell`.
+  - **M3-AUD-825:** the Ashcrown strike trial heard (AshcrownAudio on Ch05AshcrownZone's AshcrownTrial).
+  - **ADR 0171:** audio budget 72 MiB to finish Act I. **The Lead's call:** a storage plan (LFS or an audio pack)
+    is needed before Act II's finals.
+  - Checks run: `--filter=audio` 150/0, `reefball` 55/0, `ashcrown` 11/0; the loudness, data and cutscene-file
+    tests OK; validate_data 0/0; determinism identical; gdlint and gdformat.
+  - Checks skipped: the full suite (the last was clean at d1fa5c0f; since then only audio scripts, data and the
+    reefball audio test changed), screenshots, Blender, coverage.
+- **In flight:** four composer agents (M3-AUD-819 Ch1+Ch9, 820 Ch4+Oruvel, 821 Ch5+Ch6, 822 Ch7+Ch8) writing the
+  remaining Act I music cues in worktrees. I integrate and gate them when they report.
+- **MERGE-READY @ d71abea1 (FAST-TRACK: M3-AUD-816, 817, 818):**
+  - **M3-AUD-816, battle impact tiers** on battle-presentation's BattleImpact: weight layers under the element hit,
+    a music duck under the hit-stop, and the KO slow-mo swell. The hook is `pending` until claude/battle-presentation
+    merges; checked against that branch with pending off. test_battle_ko_once now uses battle-presentation's exact
+    wickfry lines, so that merge has no conflict there.
+  - **M3-AUD-817, the slice's cutscene pass:** every CutsceneStage actor gets its own footsteps; CutsceneAudio plays
+    foley on `@anim`, `@light` and `@vfx` cues (silent through a skip); the prologue plays its new room tone
+    `iskarra_dusk` (it had no sound at all).
+  - **M3-AUD-818, Act I's 68 cutscene `@sfx` cues:** every one named a file that didn't exist, so it played
+    nothing. Four were then fixed to act1-chapters' briefs: barge_pole has no water; Pell's note is a voice;
+    staff_bell_shells is in the Ebbing's key; current_song sings **Dace's current-song, now in
+    assets_src/music/motifs.py**. A new tools test fails on any `@sfx` without its file; it passes here and on a
+    scratch merge with claude/act1-chapters (all of Ch8).
+  - **Fix:** the loudness test had no rules for the life, impact and cutscene files. I had pushed 814 and 816 without
+    running it. It passes now (c5eeb302).
+  - Checks run: **full Godot suite at d1fa5c0f: 2388 run, 0 failed** (GDScript unchanged since); filtered `audio`
+    146/0, `cutscene` 43/0, `prologue` 5/0; the loudness test OK; the **full tools suite** (911 tests) OK;
+    `render_all --determinism` identical for every new job; validate_data 0/0, taskboard --check, gdlint, gdformat.
+  - Checks skipped: screenshots (no scene or shader), Blender (none), coverage (no battle/progression code).
 - **MERGE-READY @ 4587af3e (FAST-TRACK: M3-AUD-814):** villagers' chat turns and work, gulls, crabs and fish
   (LifeAudio, 44 synthesized one-shots, 0.6 MiB). The hooks are `pending` until claude/creatures merges (FieldNpc,
   WildlifeLayer); when it does, drop the two `pending` flags in life.json. M3-AUD-815 asks creatures for
@@ -15,7 +94,6 @@ Session `session_01Wmj8xaLtwcqiS3qwC6PciW`. Integration branch `claude/undertow-
     net-mending sounds. The stage has no chat pairs, so murmurs are covered only by the unit tests.
   - Checks skipped: full suite (last clean at f8298577; since then new files plus a few lines in the director),
     screenshots, Blender, coverage (none touched).
-- **Next:** item 4, impact SFX tiers on battle-presentation's `BattleImpact.landed` / `slowmo_planned`.
 - **MERGE-READY @ f8298577:** everything since 261a827d: M3-AUD-812 (FAST-TRACK footsteps), M3-AUD-813 (menu hooks)
   and **M3-AUD-805, Act II sketches II** (six cues: Ansedra, the Lamp Archive, the Peace Wedding, Unlamped, the Pale
   Rim, the Drowned Choir; −16.0 LUFS, TP ≤ −1.4; 3.4 MiB, ADR 0170 budget kept; the wip/ folder is gone).

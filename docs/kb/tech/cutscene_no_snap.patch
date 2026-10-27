@@ -1,0 +1,51 @@
+diff --git a/game/cutscene/cutscene_motion.gd b/game/cutscene/cutscene_motion.gd
+index 3e0f0080..3263897a 100644
+--- a/game/cutscene/cutscene_motion.gd
++++ b/game/cutscene/cutscene_motion.gd
+@@ -66,3 +66,14 @@ static func _top_speed(dist: float, speed: float, r: Vector2) -> float:
+ 	if ramp_m <= dist or r.x + r.y <= 0.0:
+ 		return speed
+ 	return 2.0 * dist / (r.x + r.y)
++
++
++## Seconds until every actor walk and turn among a sequencer's running `motions` ("move:<id>" and "turn:<id>"
++## keys, each {elapsed, duration}) has ended (M2-HER-1113: a scene's end waits for them instead of jumping them).
++static func actor_motion_left(motions: Dictionary) -> float:
++	var left := 0.0
++	for key: StringName in motions.keys():
++		if String(key).begins_with("move:") or String(key).begins_with("turn:"):
++			var m: Dictionary = motions[key]
++			left = maxf(left, float(m["duration"]) - float(m["elapsed"]))
++	return left
+diff --git a/game/cutscene/cutscene_sequencer.gd b/game/cutscene/cutscene_sequencer.gd
+index 97bc551f..64414fe0 100644
+--- a/game/cutscene/cutscene_sequencer.gd
++++ b/game/cutscene/cutscene_sequencer.gd
+@@ -317,9 +317,12 @@ func _begin(scene_id: StringName, stage: CutsceneStage) -> void:
+ 
+ 
+ func _finish() -> void:
++	var skipped := _skipping
+ 	_skipping = false
+ 	_awaiting = &""
+ 	set_skip_held(false)
++	if not skipped and not _aborted:  # M2-HER-1113: a running walk or turn plays out rather than jump to its end
++		await _wait_for(CutsceneMotion.actor_motion_left(_motions))
+ 	_complete_motions()
+ 	_key_off()
+ 	if overlay != null:
+diff --git a/game/data/cutscene/sequencer.json b/game/data/cutscene/sequencer.json
+index f22a341c..a1e294cd 100644
+--- a/game/data/cutscene/sequencer.json
++++ b/game/data/cutscene/sequencer.json
+@@ -5,8 +5,8 @@
+   "letterbox_sec": 0.6,
+   "walk_mps": 1.0,
+   "run_mps": 3.2,
+-  "turn_sec": 0.45,
+-  "_motion_note": "M2-FP-29 (the human's playtest: turns snapped, walks started and stopped at once; game/cutscene/cutscene_motion.gd): a turn eases in and out on Godot's ease() curve turn_ease (negative = in-out) over turn_min_sec (no angle) up to turn_sec (a half turn); a walk waits walk_anticipation_sec, speeds up over walk_accel_sec and slows over walk_decel_sec (both shortened together on a short walk); every clip change cross-fades over clip_blend_sec; a stand-in clip mark is glided onto over standin_glide_sec.",
++  "turn_sec": 0.9,
++  "_motion_note": "M2-FP-29 (the human's playtest: turns snapped, walks started and stopped at once; game/cutscene/cutscene_motion.gd): a turn eases in and out on Godot's ease() curve turn_ease (negative = in-out) over turn_min_sec (no angle) up to turn_sec (a half turn; M2-HER-1113: 0.9, so the in-out ease peaks near 400 deg/s like a hero's field turn, where 0.45 peaked near 800 and read as a whip); a walk waits walk_anticipation_sec, speeds up over walk_accel_sec and slows over walk_decel_sec (both shortened together on a short walk); every clip change cross-fades over clip_blend_sec; a stand-in clip mark is glided onto over standin_glide_sec.",
+   "turn_min_sec": 0.25,
+   "turn_ease": -2.0,
+   "walk_anticipation_sec": 0.15,

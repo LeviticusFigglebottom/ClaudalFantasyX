@@ -4,7 +4,7 @@
   "blender_deb": "5.0.1+dfsg-5",
   "_threads": "M1-QA-06: Blender runs with --threads <n>, never the host's CPU count. A job that exports tangents runs single-threaded: Blender's threaded tangent export races (base_body differed run to run at 4 threads, and was stable at 1). Vegetation stopped exporting them (M1-ENV-07), so it is back at the default. Every other job is pinned at 4, the count its committed files were built with (Asha's body bakes change with the thread count). Verified on a 4-vCPU host only (M1-NIT-01). See docs/kb/qa/blender_builds.md.",
   "default_threads": 4,
-  "copy_into_sandbox": ["assets_src"],
+  "copy_into_sandbox": ["assets_src", "game/data/characters"],
   "coverage_exempt": [],
   "jobs": [
     {
@@ -62,7 +62,7 @@
       "threads": 4,
       "owner": "character",
       "_note": "M2-CHR-03: one parametric villager build (build_villager.py --npc, params/<npc>.json) on Asha's modules (build_asha as a helper library, asha_textures with per-villager knobs), Rhen's and Toma's costume and hair helpers, so all their sources are this job's too. The first job also writes the cloth atlas every villager shares (villager_textures.cloth_atlas, tinted per villager in its materials).",
-      "sources": ["assets_src/characters/villagers/**", "assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**"],
+      "sources": ["assets_src/characters/villagers/**", "assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**", "game/data/characters/helper_bones.json"],
       "outputs": ["assets/characters/villagers/neme/*.glb", "assets/characters/villagers/neme/textures/*.png", "assets/characters/villagers/neme/materials/*.tres", "assets/characters/villagers/neme/*.tscn", "assets/characters/villagers/neme/anim/*.tres", "assets/characters/villagers/textures/*.png"],
       "runs": [
         ["{blender}", "--python", "assets_src/characters/villagers/build_villager.py", "--", "--npc", "neme", "--bake-dir", "{scratch}/neme_bake"],
@@ -76,7 +76,7 @@
       "id": "villager_osu",
       "threads": 4,
       "owner": "character",
-      "sources": ["assets_src/characters/villagers/**", "assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**"],
+      "sources": ["assets_src/characters/villagers/**", "assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**", "game/data/characters/helper_bones.json"],
       "outputs": ["assets/characters/villagers/osu/*.glb", "assets/characters/villagers/osu/textures/*.png", "assets/characters/villagers/osu/materials/*.tres", "assets/characters/villagers/osu/*.tscn", "assets/characters/villagers/osu/anim/*.tres"],
       "runs": [
         ["{blender}", "--python", "assets_src/characters/villagers/build_villager.py", "--", "--npc", "osu", "--bake-dir", "{scratch}/osu_bake"],
@@ -89,7 +89,7 @@
       "id": "villager_child",
       "threads": 4,
       "owner": "character",
-      "sources": ["assets_src/characters/villagers/**", "assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**"],
+      "sources": ["assets_src/characters/villagers/**", "assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**", "game/data/characters/helper_bones.json"],
       "outputs": ["assets/characters/villagers/child/*.glb", "assets/characters/villagers/child/textures/*.png", "assets/characters/villagers/child/materials/*.tres", "assets/characters/villagers/child/*.tscn", "assets/characters/villagers/child/anim/*.tres"],
       "runs": [
         ["{blender}", "--python", "assets_src/characters/villagers/build_villager.py", "--", "--npc", "child", "--bake-dir", "{scratch}/child_bake"],
@@ -102,7 +102,7 @@
       "id": "villager_vendor",
       "threads": 4,
       "owner": "character",
-      "sources": ["assets_src/characters/villagers/**", "assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**"],
+      "sources": ["assets_src/characters/villagers/**", "assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**", "game/data/characters/helper_bones.json"],
       "outputs": ["assets/characters/villagers/vendor/*.glb", "assets/characters/villagers/vendor/textures/*.png", "assets/characters/villagers/vendor/materials/*.tres", "assets/characters/villagers/vendor/*.tscn", "assets/characters/villagers/vendor/anim/*.tres"],
       "runs": [
         ["{blender}", "--python", "assets_src/characters/villagers/build_villager.py", "--", "--npc", "vendor", "--bake-dir", "{scratch}/vendor_bake"],
@@ -115,7 +115,7 @@
       "id": "villager_reed",
       "threads": 4,
       "owner": "character",
-      "sources": ["assets_src/characters/villagers/**", "assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**"],
+      "sources": ["assets_src/characters/villagers/**", "assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**", "game/data/characters/helper_bones.json"],
       "outputs": ["assets/characters/villagers/reed/*.glb", "assets/characters/villagers/reed/textures/*.png", "assets/characters/villagers/reed/materials/*.tres", "assets/characters/villagers/reed/*.tscn", "assets/characters/villagers/reed/anim/*.tres"],
       "runs": [
         ["{blender}", "--python", "assets_src/characters/villagers/build_villager.py", "--", "--npc", "reed", "--bake-dir", "{scratch}/reed_bake"],
@@ -128,7 +128,7 @@
       "id": "villager_netmender",
       "threads": 4,
       "owner": "character",
-      "sources": ["assets_src/characters/villagers/**", "assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**"],
+      "sources": ["assets_src/characters/villagers/**", "assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**", "game/data/characters/helper_bones.json"],
       "outputs": ["assets/characters/villagers/netmender/*.glb", "assets/characters/villagers/netmender/textures/*.png", "assets/characters/villagers/netmender/materials/*.tres", "assets/characters/villagers/netmender/*.tscn", "assets/characters/villagers/netmender/anim/*.tres"],
       "runs": [
         ["{blender}", "--python", "assets_src/characters/villagers/build_villager.py", "--", "--npc", "netmender", "--bake-dir", "{scratch}/netmender_bake"],
@@ -141,7 +141,7 @@
       "id": "villager_fisher",
       "threads": 4,
       "owner": "character",
-      "sources": ["assets_src/characters/villagers/**", "assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**"],
+      "sources": ["assets_src/characters/villagers/**", "assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**", "game/data/characters/helper_bones.json"],
       "outputs": ["assets/characters/villagers/fisher/*.glb", "assets/characters/villagers/fisher/textures/*.png", "assets/characters/villagers/fisher/materials/*.tres", "assets/characters/villagers/fisher/*.tscn", "assets/characters/villagers/fisher/anim/*.tres"],
       "runs": [
         ["{blender}", "--python", "assets_src/characters/villagers/build_villager.py", "--", "--npc", "fisher", "--bake-dir", "{scratch}/fisher_bake"],
@@ -155,7 +155,7 @@
       "threads": 4,
       "owner": "character",
       "_note": "M3-CHR-03: Tavi Orse (Ch7) on the villager build, with the params opt-ins host_snaps (M1-CHR-14's MIDLINE_SNAP, quantize_uvs, snap_shape_noise and PRE_ROUND) and garment_fit (torso-only top, leg-following skirts, feet on the sandals). His clip library adds hand_on_shoulder, hear_news and name_rite (villager_clips.EXTRA_CLIPS).",
-      "sources": ["assets_src/characters/villagers/**", "assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**"],
+      "sources": ["assets_src/characters/villagers/**", "assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**", "game/data/characters/helper_bones.json"],
       "outputs": ["assets/characters/villagers/tavi/*.glb", "assets/characters/villagers/tavi/textures/*.png", "assets/characters/villagers/tavi/materials/*.tres", "assets/characters/villagers/tavi/*.tscn", "assets/characters/villagers/tavi/anim/*.tres"],
       "runs": [
         ["{blender}", "--python", "assets_src/characters/villagers/build_villager.py", "--", "--npc", "tavi", "--bake-dir", "{scratch}/tavi_bake"],
@@ -169,7 +169,7 @@
       "threads": 4,
       "owner": "character",
       "_note": "M3-CHR-03: Mother Kell (Ch1) on the villager build, with host_snaps and garment_fit as Tavi; her clips add press_wick, trim_wick and haggle_laugh. Her wick, wick bundle and shears are the props_wick job's.",
-      "sources": ["assets_src/characters/villagers/**", "assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**"],
+      "sources": ["assets_src/characters/villagers/**", "assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**", "game/data/characters/helper_bones.json"],
       "outputs": ["assets/characters/villagers/kell/*.glb", "assets/characters/villagers/kell/textures/*.png", "assets/characters/villagers/kell/materials/*.tres", "assets/characters/villagers/kell/*.tscn", "assets/characters/villagers/kell/anim/*.tres"],
       "runs": [
         ["{blender}", "--python", "assets_src/characters/villagers/build_villager.py", "--", "--npc", "kell", "--bake-dir", "{scratch}/kell_bake"],
@@ -651,36 +651,6 @@
       ]
     },
     {
-      "id": "wildlife_gull",
-      "owner": "character",
-      "sources": ["assets_src/wildlife/gull/**", "assets_src/wildlife/common/**", "assets_src/creatures/common/creature_kit.py"],
-      "outputs": ["assets/wildlife/gull/*.glb", "assets/wildlife/gull/materials/*.tres"],
-      "runs": [
-        ["{blender}", "--python", "assets_src/wildlife/gull/build_gull.py", "--", "--out", "assets/wildlife/gull/gull.glb"],
-        ["{python}", "assets_src/wildlife/common/write_materials.py", "--wildlife", "gull"]
-      ]
-    },
-    {
-      "id": "wildlife_shore_crab",
-      "owner": "character",
-      "sources": ["assets_src/wildlife/shore_crab/**", "assets_src/wildlife/common/**", "assets_src/creatures/common/creature_kit.py"],
-      "outputs": ["assets/wildlife/shore_crab/*.glb", "assets/wildlife/shore_crab/materials/*.tres"],
-      "runs": [
-        ["{blender}", "--python", "assets_src/wildlife/shore_crab/build_shore_crab.py", "--", "--out", "assets/wildlife/shore_crab/shore_crab.glb"],
-        ["{python}", "assets_src/wildlife/common/write_materials.py", "--wildlife", "shore_crab"]
-      ]
-    },
-    {
-      "id": "wildlife_shoal_fish",
-      "owner": "character",
-      "sources": ["assets_src/wildlife/shoal_fish/**", "assets_src/wildlife/common/**", "assets_src/creatures/common/creature_kit.py"],
-      "outputs": ["assets/wildlife/shoal_fish/*.glb", "assets/wildlife/shoal_fish/materials/*.tres"],
-      "runs": [
-        ["{blender}", "--python", "assets_src/wildlife/shoal_fish/build_shoal_fish.py", "--", "--out", "assets/wildlife/shoal_fish/shoal_fish.glb"],
-        ["{python}", "assets_src/wildlife/common/write_materials.py", "--wildlife", "shoal_fish"]
-      ]
-    },
-    {
       "id": "creature_mangrove_drowner",
       "owner": "character",
       "sources": ["assets_src/creatures/mangrove_drowner/**", "assets_src/creatures/common/**"],
@@ -718,6 +688,46 @@
       "runs": [
         ["{blender}", "--python", "assets_src/creatures/wakefin/build_wakefin.py", "--", "--out", "assets/creatures/wakefin/wakefin.glb"],
         ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "wakefin"]
+      ]
+    },
+    {
+      "id": "wildlife_gull",
+      "owner": "character",
+      "sources": ["assets_src/wildlife/gull/**", "assets_src/wildlife/common/**", "assets_src/creatures/common/creature_kit.py"],
+      "outputs": ["assets/wildlife/gull/*.glb", "assets/wildlife/gull/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/wildlife/gull/build_gull.py", "--", "--out", "assets/wildlife/gull/gull.glb"],
+        ["{python}", "assets_src/wildlife/common/write_materials.py", "--wildlife", "gull"]
+      ]
+    },
+    {
+      "id": "wildlife_shore_crab",
+      "owner": "character",
+      "sources": ["assets_src/wildlife/shore_crab/**", "assets_src/wildlife/common/**", "assets_src/creatures/common/creature_kit.py"],
+      "outputs": ["assets/wildlife/shore_crab/*.glb", "assets/wildlife/shore_crab/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/wildlife/shore_crab/build_shore_crab.py", "--", "--out", "assets/wildlife/shore_crab/shore_crab.glb"],
+        ["{python}", "assets_src/wildlife/common/write_materials.py", "--wildlife", "shore_crab"]
+      ]
+    },
+    {
+      "id": "wildlife_shoal_fish",
+      "owner": "character",
+      "sources": ["assets_src/wildlife/shoal_fish/**", "assets_src/wildlife/common/**", "assets_src/creatures/common/creature_kit.py"],
+      "outputs": ["assets/wildlife/shoal_fish/*.glb", "assets/wildlife/shoal_fish/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/wildlife/shoal_fish/build_shoal_fish.py", "--", "--out", "assets/wildlife/shoal_fish/shoal_fish.glb"],
+        ["{python}", "assets_src/wildlife/common/write_materials.py", "--wildlife", "shoal_fish"]
+      ]
+    },
+    {
+      "id": "wildlife_insect",
+      "owner": "character",
+      "sources": ["assets_src/wildlife/insect/**", "assets_src/wildlife/common/**", "assets_src/creatures/common/creature_kit.py"],
+      "outputs": ["assets/wildlife/insect/*.glb", "assets/wildlife/insect/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/wildlife/insect/build_insect.py", "--", "--out", "assets/wildlife/insect/insect.glb"],
+        ["{python}", "assets_src/wildlife/common/write_materials.py", "--wildlife", "insect"]
       ]
     },
     {
@@ -831,16 +841,6 @@
       ]
     },
     {
-      "id": "wildlife_insect",
-      "owner": "character",
-      "sources": ["assets_src/wildlife/insect/**", "assets_src/wildlife/common/**", "assets_src/creatures/common/creature_kit.py"],
-      "outputs": ["assets/wildlife/insect/*.glb", "assets/wildlife/insect/materials/*.tres"],
-      "runs": [
-        ["{blender}", "--python", "assets_src/wildlife/insect/build_insect.py", "--", "--out", "assets/wildlife/insect/insect.glb"],
-        ["{python}", "assets_src/wildlife/common/write_materials.py", "--wildlife", "insect"]
-      ]
-    },
-    {
       "id": "creature_flat_engine",
       "owner": "character",
       "sources": ["assets_src/creatures/flat_engine/**", "assets_src/creatures/common/**"],
@@ -850,5 +850,5 @@
         ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "flat_engine"]
       ]
     }
-  ]
+]
 }
