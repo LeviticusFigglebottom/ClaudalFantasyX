@@ -10,6 +10,7 @@ const GNAW := "res://game/creatures/hullgnaw/hullgnaw_battle.tscn"
 const MATRON := "res://game/creatures/cinder_matron/cinder_matron_battle.tscn"
 const REACH := "res://game/creatures/undertows_reach/undertows_reach_battle.tscn"
 const WRAITH := "res://game/creatures/spar_wraith/spar_wraith_battle.tscn"
+const DROWNER := "res://game/creatures/mangrove_drowner/mangrove_drowner_battle.tscn"
 const RING := {"radius_factor": 1.4, "inner_soft_m": 0.25, "notches": 6}
 const SANDBOX := "res://game/battle/scene/battle_sandbox.tscn"
 const SEED := 20261024
@@ -274,6 +275,23 @@ func test_a_phase_plays_its_own_strikes() -> void:
 	assert_true(a.play_action(&"", &"magical"))
 	assert_eq(a.current_clip, &"cast_breach")
 	assert_eq(a.phase_clip(&"hit"), &"hit", "the Breach has no hit of its own")
+
+
+func test_the_mangrove_drowner_uproots_and_strikes_risen() -> void:
+	var d := _actor(DROWNER)
+	var stump := d.find_child("Stump", true, false) as Node3D
+	assert_true(stump != null and stump.visible, "it starts rooted under its trunk stump")
+	assert_true(d.enter_phase(&"uprooted"))
+	assert_eq(d.current_clip, &"phase_change")
+	assert_true(stump.visible, "the stump is seen splintering first")
+	d.settle()
+	assert_false(stump.visible, "hide_after: the stump is gone once it has torn free")
+	assert_eq(d.current_clip, &"idle_risen", "it idles risen on its legs")
+	assert_true(d.play_clip(&"attack"))
+	assert_eq(d.current_clip, &"attack_risen", "it drags from the risen pose")
+	assert_true(is_equal_approx(d.contact_time(&"attack"), 0.7), "the drag lands at 0.7 s")
+	assert_true(d.play_hit())
+	assert_eq(d.current_clip, &"hit_risen", "the risen hit wins over the variants")
 
 
 func test_hits_rotate_their_variants_and_a_phase_keeps_its_own() -> void:

@@ -523,6 +523,16 @@
       ]
     },
     {
+      "id": "creature_mangrove_drowner",
+      "owner": "character",
+      "sources": ["assets_src/creatures/mangrove_drowner/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/mangrove_drowner/*.glb", "assets/creatures/mangrove_drowner/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/mangrove_drowner/build_mangrove_drowner.py", "--", "--out", "assets/creatures/mangrove_drowner/mangrove_drowner.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "mangrove_drowner"]
+      ]
+    },
+    {
       "id": "wildlife_gull",
       "owner": "character",
       "sources": ["assets_src/wildlife/gull/**", "assets_src/wildlife/common/**", "assets_src/creatures/common/creature_kit.py"],

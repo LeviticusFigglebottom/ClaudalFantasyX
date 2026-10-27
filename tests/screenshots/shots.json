@@ -1798,6 +1798,22 @@
       ]
     },
     {
+      "id": "creature_mangrove_drowner",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_mangrove_drowner.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
+      "id": "creature_mangrove_drowner_risen",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_mangrove_drowner_risen.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
       "id": "creature_tower_limpet",
       "scene": "res://game/levels/_tests/creatures/shots/creature_tower_limpet.tscn",
       "resolution": [
