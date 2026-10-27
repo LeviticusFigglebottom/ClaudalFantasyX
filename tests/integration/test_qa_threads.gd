@@ -33,7 +33,8 @@ func test_every_thread_plays_through_clean() -> void:
 			tc.begin_test("%s::%s" % [file, mname])
 			tc.before_each()
 			qa.take()
-			tc.call(mname)
+			if not TestCase.runs_to_the_end(tc, mname):
+				tc.fail(TestCase.SUSPENDED)
 			for f in tc.failures:
 				fail("%s: the thread's own check failed: %s" % [mname, f])
 			for e in qa.take():

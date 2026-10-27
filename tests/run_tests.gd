@@ -22,7 +22,7 @@ func _ready() -> void:
 			if filter != "" and not file.contains(filter):
 				continue
 			var script := load("%s/%s" % [dir_path, file]) as GDScript
-			if script == null:
+			if script == null or not script.can_instantiate():  # a parse error loads as a script with no methods
 				all_failures.append("%s: failed to load (parse error?)" % file)
 				failed += 1
 				continue
@@ -34,7 +34,8 @@ func _ready() -> void:
 				tc.begin_test("%s::%s" % [file, mname])
 				tc.before_each()
 				errors.take()
-				tc.call(mname)
+				if not TestCase.runs_to_the_end(tc, mname):
+					tc.fail(TestCase.SUSPENDED)
 				if errors.take() > 0:
 					tc.fail("script error: %s" % errors.last_message)
 				total += 1
