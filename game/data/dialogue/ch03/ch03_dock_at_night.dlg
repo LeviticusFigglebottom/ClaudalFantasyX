@@ -4,16 +4,13 @@
 // and "Then you walk behind me." Nobody speaks of what the pilgrimage ends in (that's Ch4). If Rhen
 // asked Toma on the steps (ch03_rhen_asked_after), he almost asks her too, and she asks about his day
 // first, her tell (voice_guide.md), and he lets her. In-engine; Toma walks up the dock mid-scene.
-// M2-FP-115 staging: H10 from the dock end (haluna.md §5) as Rhen walks out to her; it drifts into the side-on
-// two-shot N01 as he arrives; N02 holds on Toma coming up the dock for his objection; N01 again for her answer.
+// M2-FP-115: an E scene (vertical_slice.md: no letterbox, the player keeps the camera rail), so the staging is in
+// the bodies: Rhen walks out to her at the dock end, they turn to each other, and she turns to Toma for her answer.
 title: ch03_dock_at_night
 location: ch02/haluna
 ---
-@letterbox on
-@camera H10
 @mark rhen rhen_by_asha walk
-@wait 2.0
-@camera N01 blend=5.0 ease=in_out_sine
+@wait 6.0
 @anim rhen look_at asha
 @anim asha look_at rhen
 <<if $ch03_rhen_asked_after>>
@@ -26,15 +23,11 @@ Asha [neutral]: At first tide. The causeway won't wait for me. #line:ch03_dock_0
 @mark toma dock_toma walk
 Rhen [determined]: Then let me come. As your guardian. I can dive, and I can carry, and I don't scare. #line:ch03_dock_006
 Asha [smile]: Yes. #line:ch03_dock_007
-@camera N02 blend=0.0
 Toma [worried]: Asha. A guardian is not chosen on a dock, at night— #line:ch03_dock_008
-@camera N01 blend=0.0
 @anim asha look_at toma
 Asha [tender]: This one was, Toma. #line:ch03_dock_009
-@camera N02 blend=0.0
 Toma [exhausted]: ... #line:ch03_dock_010
 @wait 0.8
 Toma [neutral]: Then you walk behind me. #line:ch03_dock_011
 <<set $ch03_rhen_sworn_guardian = true>>
-@letterbox off
 ===
