@@ -3,6 +3,13 @@
 ## NEW ACCOUNT (from 2026-10-25)
 Session `session_01Wmj8xaLtwcqiS3qwC6PciW`. Integration branch `claude/undertow-lead-handoff-ze8rrn`. Newest first.
 
+- **MERGE-READY: M3-AUD-856, the Ch19 Iskarra cues.** Sources only: six ACT3_FINALS rows, nothing tracked under act3/.
+  - **iskarra_ruins:** a 136.8 s loop in A aeolian, 3/4 at 50 BPM. MEL_A two octaves down over the drone on A, with the vigil's rising glass motes and dusk-gold strings.
+  - **iskarra_spire:** a 129.2 s loop in E minor at 104 BPM. ORDER_HUM is stretched to a bar a beat as the engine's drone, with the Lamp Engine's tick thickening and just-tuned glass climbing.
+  - Both measure −16.0 LUFS, with true peaks under −1.8 dBTP, and both are deterministic.
+  - The intended music.json rows are in the task file. Review: design.
+  - M3-AUD-858 (the revenant pair and Kerrid's night) is still with its composer.
+
 - **MERGE-READY: M3-AUD-859, the Kite's foley**, sources only, held for LFS.
   - kite_foley.py renders two 40 s deck beds and 14 one-shots:
     - kite_deck: in flight, with both lift engines.
