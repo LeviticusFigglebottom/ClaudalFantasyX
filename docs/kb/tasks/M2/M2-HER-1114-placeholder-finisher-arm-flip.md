@@ -43,4 +43,9 @@ last frame) so it can be revived. Please limit the fade to foes, or confirm the 
   limit; idle -> victory is close (0.087 m/frame against 0.090 allowed).
 - Placeholder clips only cover a hero until characters ships the real ones (Ysolde's: request M2-HER-1115).
 
+- 2026-10-27 (requester): the arm flip is handled in the hero track's own files, so Ysolde's battle is clean today.
+  HeroBattleActor gives the placeholders it receives short-path rotation keys, and caps fades into fast placeholders
+  at 0.06 s. Her guard is clean and its KNOWN list is empty. The generator fix (and the `stop()` before the library
+  swap) would still help any other caller. Nothing here blocks the hero track.
+
 ## Review log

@@ -41,10 +41,9 @@ const CHANGES: Array[Array] = [
 	[&"victory", &"idle"],
 ]
 
-## Pops already handed to their owner, as "<hero>:<from>><to>": reported, not failed, until the fix lands.
-## M2-HER-1114 (battle-presentation): the placeholder finisher turns Ysolde's left upper arm ~180 deg between two keys,
-## so a cross-fade into it flips the arm (a hand 1.3 m in a frame). Remove the entry once the fix is on this branch.
-const KNOWN: Array[String] = ["ysolde:ready>finisher"]
+## Pops already handed to their owner, as "<hero>:<from>><to>": reported, not failed, until the fix lands. Empty:
+## Ysolde's placeholder finisher flip (M2-HER-1114) is handled by HeroBattleActor (short-path keys, capped fades).
+const KNOWN: Array[String] = []
 
 var made: Array[Node] = []
 
@@ -95,7 +94,7 @@ func test_no_battle_clip_change_pops_or_cuts() -> void:
 			)
 			if KNOWN.has("%s:%s>%s" % [hero, from, to]):
 				if bool(r["pop"]):
-					print("  KNOWN (M2-HER-1114): %s %s -> %s" % [hero, from, to])
+					print("  KNOWN: %s %s -> %s" % [hero, from, to])
 				continue
 			assert_false(bool(r["cut"]), "%s %s -> %s cross-fades (blend %.2f s)" % [hero, from, to, r["blend"]])
 			assert_false(
