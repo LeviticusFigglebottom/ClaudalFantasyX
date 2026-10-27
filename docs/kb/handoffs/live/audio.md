@@ -3,6 +3,11 @@
 ## NEW ACCOUNT (from 2026-10-25)
 Session `session_01Wmj8xaLtwcqiS3qwC6PciW`. Integration branch `claude/undertow-lead-handoff-ze8rrn`. Newest first.
 
+- **MERGE-READY @ cfe3817c (FAST-TRACK, footsteps):** verified M3-AUD-802/812 on a scratch merge with
+  claude/hero-integration. The real HeroFieldActor.foot_contact steps (26/0). **Found and fixed:** hero-integration's
+  walk clip has no footfall markers yet (characters' M2-CHR-12), so its body never emits and the steps came only
+  once per 1.6 m. After a stall they now step by distance until a contact comes. **Cherry-pick this with or before
+  hero-integration.** Checks run: `--filter=foot` 21/0 here and 26/0 on the scratch merge; gdlint, gdformat.
 - **MERGE-READY @ 2bb610de:**
   - **M3-AUD-823:** eight Act I `@music` ids now play the cues composed for their scenes (aliases: oruvel_raft,
     oruvel_underway, haluna_wake, brightwater_crossing, pemakar_terraces, ashcrown_trial, tamsule_port,
