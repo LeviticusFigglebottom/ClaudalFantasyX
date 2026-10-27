@@ -52,10 +52,17 @@ M2_CUES = ("haluna_village", "haluna_night", "battle_standard_v2", "hush_first_v
            "tamsule_bell_galleries", "stillguard_inquisitor", "ossa_fen", "reedhollow", "sunken_vey", "lowlight",
            "keth_pass", "quellan",
            "ansedra", "lamp_archive", "peace_wedding", "unlamped", "pale_rim", "drowned_choir")
+# M3-AUD-820: the Ch4 and Ch7 scene cues
+M2_CUES += ("hearer_hum", "ysolde_theme", "name_board_home", "the_long_way_round", "oruvel_theme", "tavi_kell")
+M2_CUES += ("tidecup_after", "tidecup_crowd", "virel_bound", "virel_summon", "corrow_aftermath")  # M3-AUD-822
+M2_CUES += ("rhen_current_hum", "going_under", "corrow_night", "dawn_road")  # M3-AUD-819
+M2_CUES += ("lanternfall", "hush_second_verse", "kerrid_stair", "kahre_summon", "liss_theme", "raid",
+             "shoals_dusk")  # M3-AUD-821
 AMBIENCE_BUDGET = int(2.5 * 1024 * 1024)  # the M2-AUD-05 field beds together
 # Per-job budgets for later "ambience_loop" jobs (each job's beds together; the M2-AUD-05 job keeps AMBIENCE_BUDGET).
 AMBIENCE_JOB_BUDGETS = {"assets_src/sfx/causeway_ambience.py": int(1.2 * 1024 * 1024),
-                        "assets_src/sfx/act1_ambience.py": int(3.0 * 1024 * 1024)}  # M2-AUD-13: two q1 beds; M3-AUD-16: six
+                        "assets_src/sfx/act1_ambience.py": int(3.0 * 1024 * 1024),  # M2-AUD-13: two q1 beds; M3-AUD-16: six
+                        "assets_src/sfx/prologue_ambience.py": int(0.6 * 1024 * 1024)}  # M3-AUD-817: one q1 bed
 AMBIENCE_LUFS, AMBIENCE_MAX_TP = -26.0, -5.0  # mix.md §2: ambience loops at -26 LUFS, rendered at <= -6 dBFS
 
 
@@ -136,7 +143,7 @@ JOBS = [
      [f"ball_{k}_{v}.ogg" for k, n in (("kick", 3), ("push", 2), ("catch", 2), ("shot", 2)) for v in range(1, n + 1)]
      + ["ball_score.ogg", "sphere_enter.ogg", "sphere_exit.ogg", "sphere_swim_1.ogg", "sphere_swim_2.ogg",
         "sphere_swim_3.ogg", "crowd_cheer_1.ogg", "crowd_cheer_2.ogg", "crowd_groan.ogg", "crowd_gasp.ogg",
-        "whistle_start.ogg", "whistle_short.ogg", "whistle_end.ogg", "naming_rite.ogg"]
+        "whistle_start.ogg", "whistle_short.ogg", "whistle_end.ogg", "naming_rite.ogg", "float_ring_bell.ogg"]
      + [f"crowd_{b}{ext}" for b in ("murmur", "excited") for ext in (".ogg", ".loop.json")], "sfx_set"),
     ("assets_src/music/tidecup_match.py", "assets/audio/music",
      ["tidecup_match.ogg", "tidecup_match.loop.json"], "music_loop"),
@@ -208,6 +215,17 @@ JOBS = [
     ("assets_src/sfx/life_sfx.py", "assets/audio/sfx/life", _source_files("assets_src/sfx/life_sfx.py"), "sfx"),
     # M3-AUD-816: battle impact tiers and the KO slow-mo swell (ImpactAudio)
     ("assets_src/sfx/impact_sfx.py", "assets/audio/sfx/battle", _source_files("assets_src/sfx/impact_sfx.py"), "sfx"),
+    # M3-AUD-817: cutscene foley (CutsceneAudio) and the prologue's room tone
+    ("assets_src/sfx/cutscene_foley.py", "assets/audio/sfx/cutscene", _source_files("assets_src/sfx/cutscene_foley.py"),
+     "sfx"),
+    ("assets_src/sfx/prologue_ambience.py", "assets/audio/ambience", ["iskarra_dusk.ogg", "iskarra_dusk.loop.json"],
+     "ambience_loop"),
+    # M3-AUD-818: Act I's cutscene `@sfx` cues (the sequencer plays assets/audio/sfx/<id>.ogg)
+    ("assets_src/sfx/act1_cutscene_sfx.py", "assets/audio/sfx", _source_files("assets_src/sfx/act1_cutscene_sfx.py"),
+     "sfx"),
+    # M3-AUD-825: the Ashcrown strike trial (AshcrownAudio)
+    ("assets_src/sfx/ashcrown_sfx.py", "assets/audio/sfx/ashcrown", _source_files("assets_src/sfx/ashcrown_sfx.py"),
+     "sfx"),
     # M3-AUD-804: Act II sketches (Ch10 Ossa Fen and Reedhollow, Ch11 Sunken Vey and Lowlight, Ch12 Keth Pass and Quellan)
     ("assets_src/music/ossa_fen.py", "assets/audio/music", ["ossa_fen.ogg", "ossa_fen.loop.json"], "music_loop"),
     ("assets_src/music/reedhollow.py", "assets/audio/music", ["reedhollow.ogg", "reedhollow.loop.json"], "music_loop"),
@@ -222,6 +240,40 @@ JOBS = [
     ("assets_src/music/unlamped.py", "assets/audio/music", ["unlamped.ogg", "unlamped.loop.json"], "music_loop"),
     ("assets_src/music/pale_rim.py", "assets/audio/music", ["pale_rim.ogg", "pale_rim.loop.json"], "music_loop"),
     ("assets_src/music/drowned_choir.py", "assets/audio/music", ["drowned_choir.ogg", "drowned_choir.loop.json"], "music_loop"),
+    # M3-AUD-820: the Ch4 and Ch7 scene and cutscene cues (the scripts' `@music <id>`)
+    ("assets_src/music/hearer_hum.py", "assets/audio/music", ["hearer_hum.ogg", "hearer_hum.loop.json"], "music_loop"),
+    ("assets_src/music/ysolde_theme.py", "assets/audio/music", ["ysolde_theme.ogg", "ysolde_theme.loop.json"],
+     "music_loop"),
+    ("assets_src/music/name_board_home.py", "assets/audio/music", ["name_board_home.ogg"], "music"),
+    ("assets_src/music/the_long_way_round.py", "assets/audio/music", ["the_long_way_round.ogg"], "music"),
+    ("assets_src/music/oruvel_theme.py", "assets/audio/music", ["oruvel_theme.ogg"], "music"),
+    ("assets_src/music/tavi_kell.py", "assets/audio/music", ["tavi_kell.ogg"], "music"),
+    # M3-AUD-822: Ch7 and Ch8's scripted `@music` cues (the Tidecup's aftermath and crowd, Virel, the seawall waves)
+    ("assets_src/music/tidecup_after.py", "assets/audio/music", ["tidecup_after.ogg"], "music"),
+    ("assets_src/music/tidecup_crowd.py", "assets/audio/music", ["tidecup_crowd.ogg", "tidecup_crowd.loop.json"], "music_loop"),
+    ("assets_src/music/virel_bound.py", "assets/audio/music", ["virel_bound.ogg"], "music"),
+    ("assets_src/music/virel_summon.py", "assets/audio/sfx", ["virel_summon.ogg"], "music"),
+    ("assets_src/music/corrow_aftermath.py", "assets/audio/music",
+     ["corrow_aftermath.ogg", "corrow_aftermath.loop.json"], "music_loop"),
+    ("assets_src/music/seawall_hold.py", "assets/audio/music",
+     [f"seawall_hold_p{i}{ext}" for i in (1, 2, 3) for ext in (".ogg", ".loop.json")], "music_loop"),
+    # M3-AUD-819: Act I's scripted cues (Ch1 the hum, going under, the Rising's stems; Ch9 the night and the road)
+    ("assets_src/music/rhen_current_hum.py", "assets/audio/music", ["rhen_current_hum.ogg"], "music"),
+    ("assets_src/music/going_under.py", "assets/audio/music", ["going_under.ogg"], "music"),
+    ("assets_src/music/undertow_rising.py", "assets/audio/music",
+     [f"undertow_rising_p{i}{ext}" for i in (1, 2) for ext in (".ogg", ".loop.json")], "music_loop"),
+    ("assets_src/music/corrow_night.py", "assets/audio/music", ["corrow_night.ogg", "corrow_night.loop.json"],
+     "music_loop"),
+    ("assets_src/music/dawn_road.py", "assets/audio/music", ["dawn_road.ogg", "dawn_road.loop.json"], "music_loop"),
+    # M3-AUD-821: Act I's scripted Ch5-Ch6 cues (lanternfall, the second verse, Kerrid's motif, Kahre's sting, Liss's
+    # theme, the raid, the shoals at night)
+    ("assets_src/music/lanternfall.py", "assets/audio/music", ["lanternfall.ogg", "lanternfall.loop.json"], "music_loop"),
+    ("assets_src/music/hush_second_verse.py", "assets/audio/music", ["hush_second_verse.ogg"], "music"),
+    ("assets_src/music/kerrid_stair.py", "assets/audio/music", ["kerrid_stair.ogg"], "music"),
+    ("assets_src/music/kahre_summon.py", "assets/audio/sfx", ["kahre_summon.ogg"], "music"),
+    ("assets_src/music/liss_theme.py", "assets/audio/music", ["liss_theme.ogg", "liss_theme.loop.json"], "music_loop"),
+    ("assets_src/music/raid.py", "assets/audio/music", ["raid.ogg", "raid.loop.json"], "music_loop"),
+    ("assets_src/music/shoals_dusk.py", "assets/audio/music", ["shoals_dusk.ogg", "shoals_dusk.loop.json"], "music_loop"),
 ]
 M1_JOBS = 5  # the first JOBS rows are M1's audio (SIZE_BUDGET)
 

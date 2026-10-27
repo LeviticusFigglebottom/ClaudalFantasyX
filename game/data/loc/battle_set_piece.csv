@@ -1,0 +1,7 @@
+keys,en
+HUD_FLOAT_INTERCEPTED,Intercepted
+HUD_FLOAT_COUNTER,Counter
+HUD_FLOAT_WITHDRAWN,Withdraws
+HUD_HELP_SWAP_LOCKED_FMT,{name} can't leave the line: {reason}.
+HUD_OBJECTIVE_COUNT_FMT,{count} / {quota}
+HUD_OBJECTIVE_DEFAULT,Objective

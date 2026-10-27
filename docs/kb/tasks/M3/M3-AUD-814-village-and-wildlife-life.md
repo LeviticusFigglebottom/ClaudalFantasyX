@@ -33,4 +33,8 @@ and darts, all in silence. Give them near, positional sound, by listening only (
   validate_data and `--filter=life`.
 - Listen-for notes are in docs/kb/audio/listening_notes.md, "M3: village and wildlife life".
 
+- 2026-10-27 audio, M3-AUD-826 (a follow-up): **villagers' steps.** Each FieldNpc gets its own FootstepAudio
+  (footsteps.json with life.json `villager.steps` over it: −9 dB, a 0.45 m stride, cloth but no hero gear, distance
+  steps only), advanced only within `hear_m`. test_a_villager_walking_its_route_steps_quietly_without_hero_gear.
+
 ## Review log

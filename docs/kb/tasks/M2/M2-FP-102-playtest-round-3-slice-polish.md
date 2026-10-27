@@ -30,8 +30,21 @@ rigid or snapping animation, greyscale or flat frames, placeholder villagers, an
   and innkeeper wear other villagers' models until M2-CHR-100.
 - [x] **Ambient life:** creatures' WildlifeLayer (M3-CRE-611, cherry-picked) in Haluna (HalunaZone prebuild) and in
   every GreyboxZone with a wildlife file (the causeway). The causeway and the shrine have no villagers to wire.
-- [ ] **Primitive moments:** the slice walked from the scripts; each one fixed here or routed as a request task.
-- [ ] **Hullgnaw intro framing** (M3-BPR-404, battle-presentation): verified in the slice once it lands.
+- [x] **Primitive moments:** the slice walked from the scripts and the renders. Fixed:
+  - the prologue's capsules and locked shot (M2-FP-103);
+  - Cutscene A's standing kneelers (M2-FP-103);
+  - dead-still held shots (M2-FP-104);
+  - the untaught first battle (M2-FP-105);
+  - villagers who never turn or talk (M2-FP-106);
+  - the party vanishing for barks (M2-FP-107);
+  - the greybox causeway (M2-FP-108);
+  - Asha and Toma vanishing at the causeway head (M2-FP-110).
+
+  Routed: M2-CHR-100 (shop villagers), M2-RND-100 (causeway prewarm), and Rhen's requested clips
+  (lie_in_shallows, sit, trim_wicks, sit_steps).
+- [x] **Hullgnaw intro framing** (M3-BPR-404, battle-presentation): landed in big10. Viewed the approved
+  `battle_boss_intro_hullgnaw`: the whole boss is in frame. The slice's own boss (`battle_boss_intro_drownbell`)
+  frames the full bell, backlit by the sunset, with the toll cracks reading.
 
 ## Notes
 - Wildlife came over from claude/creatures as cherry-picks of 4fac2939, 185719dc, 27562bb8 and 01a19d34, again

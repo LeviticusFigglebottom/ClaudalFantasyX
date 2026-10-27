@@ -1,0 +1,23 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3]
+
+[ext_resource type="Shader" path="res://game/world/wildlife/wildlife.gdshader" id="1_shader"]
+
+[resource]
+resource_name = "dragonfly"
+shader = ExtResource("1_shader")
+shader_parameter/cavity_albedo = 0.35
+shader_parameter/cavity_ao = 0.4
+shader_parameter/clearcoat_wet = 0.6
+shader_parameter/detail_albedo = 0.05
+shader_parameter/detail_scale = 900
+shader_parameter/flutter_angle = 0.22
+shader_parameter/flutter_bob = 0.0006
+shader_parameter/flutter_hind_lag = 1.6
+shader_parameter/flutter_pivot = Vector3(0.0025, 0.0035, 0)
+shader_parameter/flutter_split_z = 0.015
+shader_parameter/metallic = 0.2
+shader_parameter/rim_sheen = 0.3
+shader_parameter/roughness_dry = 0.4
+shader_parameter/roughness_wet = 0.12
+shader_parameter/specular = 0.7
+shader_parameter/wet_darken = 1

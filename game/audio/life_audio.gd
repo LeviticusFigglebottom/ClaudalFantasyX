@@ -9,6 +9,8 @@ extends Node
 ##   villager's work row at its work point every `work.every_sec`.
 ## - wildlife: a flock calls now and then from one of its gulls, a gull taking off claps off, a crab bolting
 ##   scuttles, a startled shoal darts. Positions are in the layer's space.
+## - villager steps (M3-AUD-826): each villager gets its own FootstepAudio over footsteps.json with `villager.steps`
+##   on top (quieter, a shorter stride, cloth but no hero gear), so the routes they walk are heard.
 ## Only nodes within `hear_m` of the ear (the viewport's camera) are read. Time passes only through advance(delta)
 ## (AudioDirector.advance calls it; tests call it directly).
 
@@ -18,6 +20,10 @@ const KIND_WILDLIFE := &"wildlife"
 
 ## Plays a row at a place: (id: StringName, at: Vector3) -> void.
 var player_at: Callable = Callable()
+## Plays a footstep row: (id: StringName, at: Vector3, opts: Dictionary) -> void (the villagers' FootstepAudio).
+var step_player: Callable = Callable()
+## footsteps.json, the base of the villagers' steps (empty: villagers take no steps).
+var footstep_data: Dictionary = {}
 ## The ear's position, or null for none (every node is heard): () -> Variant. Defaults to the viewport camera.
 var ear: Callable = Callable()
 ## life.json.
@@ -46,6 +52,7 @@ func configure(table: Dictionary) -> void:
 ## Points the player at `dir`'s play_sfx_at.
 func bind_director(dir: AudioDirector) -> void:
 	player_at = func(id: StringName, at: Vector3) -> void: dir.play_sfx_at(id, at)
+	step_player = func(id: StringName, at: Vector3, opts: Dictionary) -> void: dir.play_sfx_at(id, at, opts)
 
 
 ## The hook kind for `node` (&"" when it has none).
@@ -75,7 +82,38 @@ func watch(node: Node) -> void:
 	var kind := kind_for(node)
 	if kind == &"":
 		return
-	watched.append({"node": node, "kind": kind, "state": {}})
+	var w := {"node": node, "kind": kind, "state": {}}
+	if kind == KIND_VILLAGER:
+		w["steps"] = _villager_steps(node as Node3D)
+	watched.append(w)
+
+
+## The villagers' footstep table: footsteps.json with life.json's villager.steps over it.
+func villager_step_table() -> Dictionary:
+	if footstep_data.is_empty():
+		return {}
+	var table := footstep_data.duplicate(true)
+	var cfg := (data.get("villager", {}) as Dictionary).get("steps", {}) as Dictionary
+	for k: String in cfg:
+		if k == "gear" and not bool(cfg[k]):
+			(table.get("foley", {}) as Dictionary).erase("gear")
+		elif not k.begins_with("_"):
+			table[k] = cfg[k]
+	table.erase("contacts")  # villagers' clips are not the heroes': step by distance
+	return table
+
+
+func _villager_steps(npc: Node3D) -> FootstepAudio:
+	var table := villager_step_table()
+	if table.is_empty():
+		return null
+	var f := FootstepAudio.new(table)
+	f.name = "VillagerSteps"
+	f.player = step_player
+	add_child(f)
+	var scene := npc.get_tree().current_scene if npc.is_inside_tree() else null
+	f.attach(npc, scene.scene_file_path if scene != null else "")
+	return f
 
 
 func advance(delta: float) -> void:
@@ -85,11 +123,16 @@ func advance(delta: float) -> void:
 		var w := watched[i]
 		var node := w["node"] as Node3D
 		if not is_instance_valid(node) or not node.is_inside_tree():
+			if is_instance_valid(w.get("steps")):
+				(w["steps"] as Node).queue_free()
 			watched.remove_at(i)
 			continue
 		if w["kind"] == KIND_VILLAGER:
 			var near := at_ear == null or node.global_position.distance_to(at_ear as Vector3) <= hear
 			_villager(node, w["state"] as Dictionary, delta, near)
+			var steps := w.get("steps") as FootstepAudio
+			if steps != null and near:
+				steps.advance(delta)
 		elif w["kind"] == KIND_WILDLIFE:
 			_wildlife(node, w["state"] as Dictionary, delta, at_ear, hear)
 

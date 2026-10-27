@@ -100,6 +100,21 @@ None of the five M3-ENV-06 arenas has a `BossAnchor` or a `FloodAnchor`.
   (`UW_DROPPED`: the fight's bay's two columns, a coral head, a curtain, fragments, a pipe run). `Sea` is the
   lagoon's surface at y +22.4. The underwater look is described below.
 
+### Ch6's arenas from the Brine Shoals kit (M3-ENV-706)
+
+They replace M3-BPR-03's greybox under the same ids, lit by the colour script's `ch06` (15:30 haze: sun 35° / 240°,
+key `#FFD5B3` 2.4, fill `#A8B8B0` 0.55, exposure 0.70, saturation ×0.9, `lut_ch06_smoke`) over the validated
+`silted_flats` water.
+
+- **`brine_shoals_afternoon`** (the wreck-ridge encounters): the kit's `arena_shoals_ground` (`bs_arenas.py`), a flat
+  silt floor at y 0 easing into tidal mud with rivulets, two grit ridges with stranded wrecks either side, the plank
+  walk and a wrack line going on north, and the burning camp's smoke far off. Hint `from_the_ridge`.
+- **`salvage_camp_burning`** (`ch06_inquisitor`): `arena_camp_ground`, the Saltwrights' hard with the fight on its
+  shingle top (y 0) and the mud 1.15 m below. The camp burns round it: the collapsing tide-wheel behind the foes,
+  burned tents, one still catching, the salvage pile, the vats, the Order's branding brazier, three smoke columns.
+  Its four fires are `FireLight0`–`3` at the arena's root (`lamp_parent` / `lamp_name`; M3-BPR-03's test reads
+  them), `light_volumetric_fog_energy` 0. Hint `past_the_brazier`.
+
 ### The underwater arena (`underway_tower`)
 
 An arena under the sea carries its own look, because the battle scene has none:

@@ -342,6 +342,30 @@ STANDARD["kit_kelp"] = {"albedo_color": hexc("#4A4A22"), "roughness": 0.35, "cul
 STANDARD["kit_dry_frond"] = {"albedo_color": hexc("#8C6B40"), "roughness": 0.85, "cull_mode": 2,
                              "backlight_enabled": "true", "backlight": "Color(0.35, 0.25, 0.1, 1)"}
 
+# M3-ENV-709 (Ch4's wake night): a single wake-shell's two story states, by per-placement override. Inked: the name
+# freshly re-inked, the glyph near-black and deep. Faded: years of salt, the glyph barely darker than the shell.
+MATERIALS["kit_wake_shell_inked"] = {"shader": SHELL, "params": {
+    "tex_glyph": ("tex", TEX + "shell_glyph.png"), "col_glyph": hexc("#1F1A16"), "glyph_depth": 1.0}}
+MATERIALS["kit_wake_shell_faded"] = {"shader": SHELL, "params": {
+    "tex_glyph": ("tex", TEX + "shell_glyph.png"), "col_glyph": hexc("#9C9384"), "glyph_depth": 0.3}}
+
+# ---- M3-ENV-710 (appended by env-art): the Prologue's Iskarra (iskarra.py) ---------------------------------
+# White Lit Age ceramic (palette lit_ceramic #DCE3E0), still glazed above the tide: low roughness so the dusk sun
+# runs gold along the flutes; algae, barnacles and salt only in the waterline band the vertex colours mark.
+MATERIALS["kit_iskarra_ceramic"] = stone("coral_concrete_albedo.png", "coral_concrete_normal.png", (2.0, 2.0),
+                                         base_triplanar=True, col_paint=hexc("#DCE3E0"), paint_cover=0.9,
+                                         normal_strength=0.35, roughness_base=0.38, specular_base=0.55,
+                                         cavity_darken=0.3, variation_value=0.08, barnacle_coverage=0.4,
+                                         algae_coverage="Vector2(0.5, 0.9)", salt_coverage="Vector2(0.2, 0.5)",
+                                         use_moss=False)
+# The plaza's paving: dressed pale stone, a step warmer and rougher than the ceramic so the towers stay the whites.
+MATERIALS["kit_iskarra_paving"] = stone("coral_dressed_albedo.png", "coral_dressed_normal.png", (0.8, 0.8),
+                                        base_triplanar=True, col_tint=hexc("#E4DDCF"), normal_strength=0.9,
+                                        roughness_base=0.8, cavity_darken=0.3, ao_strength=0.7, variation_value=0.14,
+                                        salt_coverage="Vector2(0.15, 0.4)", use_algae=False, use_moss=False)
+# Lit Age bronze gone to verdigris (finials, lamp cages).
+STANDARD["kit_iskarra_bronze"] = {"albedo_color": hexc("#5E8C78"), "metallic": 0.55, "roughness": 0.55}
+
 
 if __name__ == "__main__":
     sys.exit(main())

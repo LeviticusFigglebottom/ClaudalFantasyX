@@ -1,12 +1,14 @@
 #!/usr/bin/env python3
 """Ambient wildlife data checks (M3-CRE-611, docs/kb/art/wildlife.md). Run by tools/validate_data.py.
 
-* game/data/world/wildlife/wildlife.json: the three kinds (gull, crab, fish) with every tuning key WildlifeLayer
-  reads, their scene, mesh names and material that exist, [lo, hi] ranges in order, the budgets and culling.
+* game/data/world/wildlife/wildlife.json: the four kinds (gull, crab, fish, insect) with every tuning key
+  WildlifeLayer reads, their scene, mesh names and material(s) that exist, [lo, hi] ranges in order, the budgets and
+  culling. The insect kind (M3-CRE-616) keeps its tuning in a `moth` and a `dragonfly` table, one material per mesh.
 * game/data/world/wildlife/<zone>.json (every other file there) and the review stage's data: the `zone` id names
   the file (ch02/haluna -> ch02_haluna.json) and is a locations.json location; flocks, beaches and shoals are
   well formed (unique ids, positive counts, perches inside the flock's radius, perched_at_start no more than the
-  perches), and the zone's totals stay within the budgets.
+  perches), swarms too (type moth or dragonfly, perches only on a dragonfly patrol and inside its radius), and the
+  zone's totals stay within the budgets.
 """
 
 from __future__ import annotations
@@ -33,17 +35,34 @@ KIND_KEYS = {
     "fish": {"scale", "speed_mps", "dart_speed_mps", "spread_m", "follow_rate", "turn_rate", "wander_arrive_m",
              "wobble_m", "wobble_hz", "startle_radius_m", "startle_s", "swim_hz", "swim_hz_per_mps", "swim_amp",
              "bottom_clearance_m", "startle_follow_mult", "wobble_y_fraction"},
+    "insect": {"moth", "dragonfly"},  # tables: INSECT_KEYS
 }
-KIND_MESHES = {"gull": {"flying", "perched"}, "crab": {"body"}, "fish": {"body"}}
+# The insect kind's tables (WildlifeSwarm): every key, and the ones drawn once per insect from a [lo, hi] range
+# (the rest are read as plain numbers).
+INSECT_KEYS = {
+    "moth": {"scale", "orbit_fraction", "orbit_hz", "counter_orbit_chance", "height_m", "bob_m", "bob_hz",
+             "jitter_m", "jitter_s", "jitter_rate", "dart_m", "dart_s", "dart_time_s", "dart_rate_mult", "turn_rate",
+             "flutter_hz", "flutter_amp"},
+    "dragonfly": {"scale", "height_m", "hover_s", "hover_amp", "drift_m", "drift_hz", "dart_m", "dart_speed_mps",
+                  "dart_amp", "perch_chance", "perch_s", "flee_radius_m", "flee_m", "flee_speed_mps", "turn_rate",
+                  "amp_rate", "flutter_hz"},
+}
+INSECT_RANGES = {
+    "moth": {"scale", "orbit_fraction", "orbit_hz", "bob_hz", "jitter_s", "dart_s", "flutter_hz"},
+    "dragonfly": {"scale", "hover_s", "drift_hz", "dart_m", "dart_speed_mps", "perch_s", "flutter_hz"},
+}
+SWARM_TYPES = set(INSECT_KEYS)
+KIND_MESHES = {"gull": {"flying", "perched"}, "crab": {"body"}, "fish": {"body"}, "insect": {"moth", "dragonfly"}}
 KIND_COMMON = {"scene", "meshes", "material", "cast_shadow"}
-BUDGET_KEYS = {"gulls", "crabs", "fish", "draw_calls", "ms_per_frame"}
+BUDGET_KEYS = {"gulls", "crabs", "fish", "insects", "draw_calls", "ms_per_frame"}
 # zone row tables -> (budget key, required keys, optional keys)
 ROWS = {
     "flocks": ("gulls", {"id", "center", "radius_m", "altitude_m", "count", "perches"}, {"perched_at_start"}),
     "beaches": ("crabs", {"id", "center", "half_extents", "count"}, {"yaw_deg", "y"}),
     "shoals": ("fish", {"id", "center", "radius_m", "count"}, {"scale", "spread_m"}),
+    "swarms": ("insects", {"id", "type", "center", "radius_m", "count"}, {"perches"}),
 }
-ZONE_KEYS = {"zone", "ground", "flocks", "beaches", "shoals"}
+ZONE_KEYS = {"zone", "ground", "flocks", "beaches", "shoals", "swarms"}
 
 
 def _num(v: object) -> bool:
@@ -82,15 +101,25 @@ def kinds_errors(doc: object, exists: Callable[[str], bool]) -> list[str]:
         unknown = set(k) - keys - KIND_COMMON - {"_doc"}
         if unknown:
             errs.append(f"{w}: unknown keys {sorted(unknown)}")
-        for key in keys & set(k):
-            v = k[key]
-            ok = _vec(v, 3) if key == "spread_m" else _range_or_num(v)
-            if not ok:
-                errs.append(f"{w}.{key}: must be a number or a [lo, hi] range")
+        if kid == "insect":
+            errs += _insect_table_errors(k, w)
+        else:
+            for key in keys & set(k):
+                v = k[key]
+                ok = _vec(v, 3) if key == "spread_m" else _range_or_num(v)
+                if not ok:
+                    errs.append(f"{w}.{key}: must be a number or a [lo, hi] range")
         if not _res_exists(k.get("scene", ""), exists):
             errs.append(f"{w}.scene: {k.get('scene')!r} does not exist")
-        if not _res_exists(k.get("material", ""), exists):
-            errs.append(f"{w}.material: {k.get('material')!r} does not exist")
+        material = k.get("material", "")
+        if isinstance(material, dict):  # one per mesh (the insects)
+            if set(material) != KIND_MESHES[kid]:
+                errs.append(f"{w}.material: one per mesh, {sorted(KIND_MESHES[kid])}")
+            for mk, res in sorted(material.items()):
+                if not _res_exists(res, exists):
+                    errs.append(f"{w}.material.{mk}: {res!r} does not exist")
+        elif not _res_exists(material, exists):
+            errs.append(f"{w}.material: {material!r} does not exist")
         meshes = k.get("meshes")
         if not isinstance(meshes, dict) or set(meshes) != KIND_MESHES[kid]:
             errs.append(f"{w}.meshes: must name {sorted(KIND_MESHES[kid])}")
@@ -108,6 +137,30 @@ def kinds_errors(doc: object, exists: Callable[[str], bool]) -> list[str]:
     cull = doc.get("cull")
     if not isinstance(cull, dict) or not _num(cull.get("distance_m")) or not isinstance(cull.get("frustum"), bool):
         errs.append(f"{w0}.cull: needs distance_m (number) and frustum (bool)")
+    return errs
+
+
+def _insect_table_errors(k: dict, w: str) -> list[str]:
+    errs: list[str] = []
+    for table, keys in INSECT_KEYS.items():
+        t = k.get(table)
+        wt = f"{w}.{table}"
+        if not isinstance(t, dict):
+            errs.append(f"{wt}: must be an object")
+            continue
+        missing = keys - set(t)
+        if missing:
+            errs.append(f"{wt}: missing {sorted(missing)}")
+        unknown = set(t) - keys - {"_doc"}
+        if unknown:
+            errs.append(f"{wt}: unknown keys {sorted(unknown)}")
+        for key in keys & set(t):
+            v = t[key]
+            if key in INSECT_RANGES[table]:
+                if not _range_or_num(v):
+                    errs.append(f"{wt}.{key}: must be a number or a [lo, hi] range")
+            elif not _num(v) or v < 0:
+                errs.append(f"{wt}.{key}: must be a non-negative number")
     return errs
 
 
@@ -191,6 +244,25 @@ def _row_errors(table: str, row: dict, w: str) -> list[str]:
         start = row.get("perched_at_start", 0)
         if not isinstance(start, int) or start < 0 or start > len(perches):
             errs.append(f"{w}.perched_at_start: an integer, at most the number of perches")
+    elif table == "swarms":
+        if row["type"] not in SWARM_TYPES:
+            errs.append(f"{w}.type: must be one of {sorted(SWARM_TYPES)}")
+        if not _vec(row["center"], 3):
+            return errs + [f"{w}.center: must be [x, y, z]"]
+        r = row["radius_m"]
+        if not _num(r) or r <= 0:
+            return errs + [f"{w}.radius_m: must be positive"]
+        perches = row.get("perches", [])
+        if not isinstance(perches, list):
+            return errs + [f"{w}.perches: must be a list"]
+        if perches and row["type"] != "dragonfly":
+            errs.append(f"{w}.perches: only a dragonfly patrol perches")
+        cx, _cy, cz = row["center"]
+        for k, p in enumerate(perches):
+            if not _vec(p, 4):
+                errs.append(f"{w}.perches[{k}]: must be [x, y, z, yaw_deg]")
+            elif ((p[0] - cx) ** 2 + (p[2] - cz) ** 2) ** 0.5 > r:
+                errs.append(f"{w}.perches[{k}]: outside the swarm's radius_m")
     elif table == "beaches":
         if not _vec(row["center"], 2):
             errs.append(f"{w}.center: must be [x, z]")

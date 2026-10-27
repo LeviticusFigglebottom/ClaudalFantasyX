@@ -75,6 +75,8 @@ var swell: BattleSwell
 var swell_input_live := true
 ## Boss mechanics on the stage and HUD (phases, spawns, the toll, the field; M2-FP-06).
 var boss: BattleBossHud
+## A set piece's entries, objective meter and withdrawals (M3-UI-100).
+var set_piece: BattleSetPieceHud
 ## The Vowbound's call, menu, stage and panel (M2-UI-05; BattleVowboundHud).
 var vow: BattleVowboundHud
 
@@ -237,6 +239,7 @@ func _build_engine(
 	bestiary.attach(engine, persist_progress and fixture == null)
 	BattleChoreo.attached(self, engine)  # M2-BPR-01: listen-only choreography; it lands the floats
 	boss = BattleBossHud.attached(self, engine)
+	set_piece = BattleSetPieceHud.attached(self, engine)
 	BattleVfx.attached(self, engine)  # M2-RND-03: listen-only battle VFX (docs/kb/tech/battle_vfx.md)
 	stage.spawn(engine)
 	stage.refresh_ko(engine)
@@ -372,6 +375,9 @@ func _found(target_ids: Array[StringName]) -> Array[BattleCombatant]:
 ## Swaps active `out_id` for reserve `in_id` at no time cost.
 func swap_members(out_id: StringName, in_id: StringName) -> bool:
 	if not engine.swap(out_id, in_id):
+		var locked := menus.swap_lock_text(engine, out_id)  # a set piece's lock says why (M3-UI-100)
+		if locked != "":
+			hud.set_help(locked)
 		return false
 	_clear_targets()
 	stage.sync_party(engine)
@@ -795,7 +801,7 @@ func _show_pick() -> void:
 	hud.party.set_targeted(ally_ids)
 	if state == STATE_SWAP_OUT:
 		_show_swap_preview(_candidates[_target_index], _swap_in_id)
-		hud.set_help(menus.swap_out_help(engine.find(_swap_in_id)))
+		hud.set_help(menus.swap_out_help(engine.find(_swap_in_id), engine, _candidates[_target_index]))
 		return
 	if _pending_item != &"":
 		_preview_item(_pending_item, chosen)

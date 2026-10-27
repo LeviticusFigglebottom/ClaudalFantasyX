@@ -59,3 +59,96 @@ Ch4–Ch9 onward. `m2-slice.md` beside this file is the history up to the 2026-1
 - **MERGE-READY @ 5ad11bab (FAST-TRACK):** adds 1b366c7f, in which H06 aims at the kneeling pair's faces while Rhen's lying
   clip is a stand-in (both heads clipped the top). It also merges the integration branch's Lead docs (492651da).
   Checks: haluna 54 and key_light 9, 0 failed. Skipped: everything else (no other code changed since 51e73a22).
+- **MERGE-READY @ 363b6f70 (FAST-TRACK, M2-FP-106..108):**
+  - **M2-FP-106:** a villager who speaks in a scene (Neme at her table, the barks) turns to Rhen and talks
+    (`CutsceneNpcTalk`).
+  - **M2-FP-107:** barks freeze Rhen without hiding Asha and Toma (`CutsceneSequencer.freeze_player`). HeroFieldParty
+    hid the followers for every player-holding scene.
+  - **M2-FP-108:** B06 plays on env-art's final Saltgrass Causeway instead of the greybox.
+    - GreyboxZone takes a layout `dressing`, plus collision-only, pitched blocks.
+    - `tools/causeway/build_causeway_gameplay.py` generates the gameplay layout and moves creatures' causeway
+      wildlife onto the 301 m route.
+    - VIEWED: cumulus sky, saltgrass, flats, slabs and marker posts, with the party on the route.
+    - **Request M2-RND-100 (PC):** prewarm the causeway. The first visible frame took 1.7 s on lavapipe.
+  - **Checks run:**
+    - validate_data, taskboard, dlgc, lint, format and ruff clean;
+    - tools: test_causeway_gameplay;
+    - Godot: villagers 6, cutscene 60, haluna 56, causeway_route 3, zone_story 15, fp_thread 2, causeway 9,
+      wildlife 10, slice_beats 5, all 0 failed.
+  - **Checks skipped:** coverage (no battle or progression code); Blender (no source); the shot manifest (no shot
+    covers B06's zone; viewed through tools/cutscene_frames).
+  - **Note for creatures:** `game/data/world/wildlife/ch03_saltgrass_causeway.json` is now generated (it asked for
+    the move at the swap).
+
+- **MERGE-READY @ 44a7d65c:**
+  - merged the integration branch with big9 and big10 (91cc7e5c: PROVENANCE and flags by merge_union; shots.json
+    takes big10's manifest plus the six slice shots);
+  - M2-FP-110: B05 keeps Asha and Toma, and their lines play on the followers;
+  - M3-ARC-04: the shrine's fog lamps;
+  - CutsceneClips split out of the sequencer (line cap);
+  - M3-BPR-404 verified: the Hullgnaw and Drownbell intros are framed whole.
+  - **Checks run:**
+    - validate_data, taskboard, dlgc, lint and format clean;
+    - tools: test_fog_lamps, test_causeway_gameplay;
+    - Godot on the merged tree: cutscene 60, fp_ 28, prologue 7, haluna 57, villagers 7, zone 51, causeway 12,
+      wildlife 10, field_npc 10, slice_ 10, hero 85, ch01 13, swap 15, shrine 37, all 0 failed.
+  - **Checks skipped:** coverage (no battle or progression code); Blender (no source).
+  - **Known red:** the six new slice shots wait for their PC baselines (see below).
+- **Ch1 to slice quality (queue item 6):** this waits on act1-chapters' KitCollision (ADR 0200) reaching the
+  integration branch, so Ch1 uses the same kit mechanism as Ch4+. Not duplicated here.
+- **Session handoff:** docs/kb/handoffs/2026-10-27-cinematics-slice-polish-1.md.
+
+- **MERGE-READY @ 5a3f9a37 (FAST-TRACK):**
+  - M2-FP-111: a greybox stage actor can stand as a villager model (Kell in Ch1's Oruvel; request M3-CHR-100);
+  - M2-FP-112: Cutscene B's Rhen and Toma wear their real bodies;
+  - the balance report regenerated after big10 (`sim --check` exit 0).
+  - **Checks run:** validate_data, taskboard, lint and format; Godot: ch01 14, zone 51, first_verse 2, fp_thread 2,
+    memory 6, shell_shrine 15, slice_shots 1, all 0 failed.
+  - **Checks skipped:** coverage and Blender (nothing they cover).
+
+- **Lead's relays (15:17, 15:34):**
+  - **The prologue's "everyone is still here" shot:** `slice_prologue_vigil_line` (fdec3cc6, in the render request)
+    is that moment: the line up, the lantern lit, the P02 two-shot. No second shot is needed.
+  - **Creatures' VillagerLayer (M3-CRE-613, still only on claude/creatures):**
+    - It does what my M2-FP-102 `HalunaVillagers` does for the seven M2-CHR-03 villagers, and more: routes, chat
+      partners, work focus, storms.
+    - The two can't double up: VillagerLayer only acts once its node is added to `haluna.tscn` (mine).
+    - **Plan when it reaches the integration branch:**
+      - add the VillagerLayer node (`zone_id ch02/haluna`);
+      - cut `game/data/flow/haluna_villagers.json` down to the three shop stand-ins (shopkeeper, smith, innkeeper,
+        until M2-CHR-100), or hand those rows to creatures' data;
+      - keep CutsceneNpcTalk (M2-FP-106) and `freeze_player` (M2-FP-107), which work on any FieldNpc and complement
+        it;
+      - re-run test_haluna_villagers against it.
+
+- **Lead's big11 items (16:53):**
+  - **Duplicate villager systems, resolved (M2-FP-113, 65b9e235):**
+    - creatures' VillagerLayer owns Haluna's villagers, and HalunaZone adds it;
+    - my HalunaVillagers keeps only the three shop bodies (shopkeeper, smith, innkeeper) it doesn't cover;
+    - request M3-CRE-100 to creatures: their `haluna_villagers` review stage should use the zone's layer (or its
+      `npc_haluna_*` shots will show every villager twice), and their data should take the shop rows.
+  - **The shrine GI (M3-ENV-704):**
+    - placed env-art's rope, debris and net pieces on the islet, and two offerings inside the entrance (`4ce8a48a`);
+    - `offering_step.glb` isn't on the integration branch yet;
+    - the bake needs a rendering device, so it goes to the PC (request below);
+    - `test_shrine_gi_bake` stays red until that bake lands.
+  - **Merged `lead/gate-big11`** (c5560fb6).
+  - **Checks:** haluna 57, villager 18, npc 10, cutscene 60, swap 15, shrine 37, first_verse 2, all 0 failed;
+    validate_data clean apart from env-art's `offering_step` PROVENANCE warning.
+- **MERGE-READY @ 4ce8a48a** (M2-FP-113 and M3-ENV-704, placement only). Two tools tests are red until the PC answers:
+  `test_screenshots` (the slice shots' baselines) and `test_shrine_gi_bake` (the rebake).
+
+### Render requests
+RENDER-REQUEST @ fdec3cc6: slice_prologue_vigil_line, slice_beach_h05_asha, slice_beach_h06_toma, slice_haluna_villagers_village, slice_causeway_head, slice_causeway_harrier_view, haluna_h01_village_from_sea, haluna_h02_tidewall_lane, haluna_h04_dock, haluna_h07_chapel_court, haluna_h10_dock_night, shrine_s01_approach, shrine_s02_threshold, shrine_s03_overview, shrine_s04_lip, shrine_s05_side_pool, drownbell_flood, battle_boss_intro_drownbell, battle_arena_causeway, field_causeway_dolly, boot_title; why: M2-FP-102..109, the human's playtest round (real cast and held poses in the prologue and Cutscene A, live villagers and wildlife, the final causeway), plus the greyscale audit of every slice beat. The six slice_* shots are new (no baseline yet).
+- **Known red until the render lands:** the six new `slice_*` shots have no baseline yet, so the tools test
+  `test_screenshots::test_repo_manifest_is_valid_and_baselined` fails on this branch from fdec3cc6 on.
+  - The render protocol adds the shot before its baseline exists, and the test has no pending mechanism.
+  - **Lead:** merge or cherry-pick up to 363b6f70 / 8be5d39f freely. Take fdec3cc6 (M2-FP-109) only together with
+    my approval commit, which follows the PC's `gpu/render-slice-polish-fdec3cc` (or e1e63f4).
+  - **Suggestion for the Lead (TRACK-RULES):** allow a `"pending_baseline": true` key on a new shot until its first
+    approval.
+RENDER-REQUEST @ 44a7d65c: shrine_s01_approach, shrine_s02_threshold, shrine_s03_overview, shrine_s04_lip, shrine_s05_side_pool; why: M3-ARC-04 sets the shrine's shaft lamps' volumetric fog energy to 0 (the fog should read from the shader and the sun, not lamp scatter). If the e1e63f43 request is not rendered yet, render this one instead for those five shots.
+RENDER-REQUEST @ 5a3f9a37: slice_verse_steps; why: M2-FP-112, the first verse with Rhen and Toma on their real bodies (a new shot; it also covers the e1e63f43 and 44a7d65c requests if they are still unanswered).
+RENDER-REQUEST @ 4ce8a48a: gi_bake:shell_shrine, shrine_s01_approach, shrine_s02_threshold, shrine_s03_overview, shrine_s04_lip, shrine_s05_side_pool, npc_haluna_market, npc_haluna_dock, slice_haluna_villagers_village; why: M3-ENV-704 dresses the islet and the entrance (bake both GI states with tools/shrine/bake_shrine_gi.tscn under godot-render, then python3 tools/shrine/gi_inputs.py --write, and push the VoxelGIData and inputs file too). M2-FP-113 moves Haluna's villagers to VillagerLayer. This supersedes the 44a7d65c request for the five shrine shots.
+RENDER-REQUEST @ faa61872: slice_beach_h05_asha, slice_beach_h06_toma, slice_haluna_villagers_village, slice_causeway_head, slice_causeway_harrier_view, slice_verse_steps; why: these didn't capture in gpu/render-m2-slice-fdec3cc ("no capture"). The cutscene shots now run at time_scale 4 (h05 270, h06 375, verse 630 frames), in case the 600 s per-shot timeout killed them. PC: please push the capture log lines for any shot that fails again (the 90-frame causeway and village shots shouldn't have timed out).
+RENDER-REQUEST @ 3fddb67b: slice_beach_h05_asha, slice_beach_h06_toma, slice_haluna_villagers_village, slice_causeway_head, slice_causeway_harrier_view, slice_verse_steps; why: found the cause of "no capture". These shots set `flags`, which CaptureSetup refused as a PackedStringArray; it is a plain Array now, and test_slice_shots goes through CaptureSetup. Render this sha instead of 87d04cea's.

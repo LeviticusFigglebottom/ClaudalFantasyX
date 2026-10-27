@@ -32,7 +32,7 @@ var _choreo: BattleChoreo
 var _ctl: BattleController
 var _engine: BattleEngine
 var _stop_left := 0.0
-var _held: Dictionary = {}  # AnimationPlayer -> its speed_scale before the hit-stop
+var _held: Dictionary = {}  # AnimationPlayer -> true (its speed to restore is in meta BattleClips.HELD_META)
 var _slow := Vector3(INF, -INF, 1.0)  # plan-time window [x, y) at factor z
 var _light: OmniLight3D
 var _flash_t := -1.0
@@ -161,14 +161,17 @@ func _hold(ids: Array) -> void:
 	for cid: Variant in ids:
 		var p := BattleClips.player_of(_ctl.stage.stand_in(StringName(str(cid))))
 		if p != null and not _held.has(p):
-			_held[p] = p.speed_scale
+			_held[p] = true
+			p.set_meta(BattleClips.HELD_META, p.speed_scale)  # a clip started during the hold keeps it (BattleClips)
 			p.speed_scale = 0.0
 
 
 func _release() -> void:
 	for p: Variant in _held:
 		if is_instance_valid(p):
-			(p as AnimationPlayer).speed_scale = float(_held[p])
+			var ap := p as AnimationPlayer
+			ap.speed_scale = float(ap.get_meta(BattleClips.HELD_META, 1.0))
+			ap.remove_meta(BattleClips.HELD_META)
 	_held.clear()
 
 
