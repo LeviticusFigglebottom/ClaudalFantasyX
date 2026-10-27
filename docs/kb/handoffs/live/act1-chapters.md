@@ -76,8 +76,21 @@ cutscene sequencer (`game/cutscene/**`), `game/flow/**` and the playtest fixes.
     a camera changed), coverage (no battle/progression code), the full suite.
   - **Ch4 (180510e1) is still WIP in this branch's head** until its render request is answered.
 
+- **PROGRESS @ 77a6a777: M3-C09-1209 Ch9 corrow_night on the Corrow kit's fallen wall (WIP until rendered).**
+  Strand of the drowned (sunk shingle banks), the landing at the breach, a bridge to Ch8's mole up to Liss at her cut
+  hoist, the road as the walk east of the gate, the lake behind the wall; Iskarra's set moved 1700 m east. Shared
+  `KitCollision` (Ch04Zone, Ch05Zone), `environment_res` in Ch05Zone variants (Ch9's dawn), `KitWalkProbe`.
+  - **Checks run:** `--filter=ch0` 71/0 (thread tests Ch4–Ch9 and both Corrow probes); validate_data, gdlint, gdformat.
+  - **Encounters (queue item 5):** `sim.py --check` on every Act I suite at 400 seeds: all in band but
+    `ch08_flue_moths` naive (60.8% vs 20–60%); at 1000 seeds it is in band (58.4%; role_answer 93.2% vs 92). Near
+    both edges; left as is. The 27 Act I creatures are all in the encounter tables (only Ch1's `wickfry` still
+    carries its old id; the creature is `glassfry`: slice-polish's Ch1).
+  - **Queue item 7 note for the Lead:** Act I ends at Ch9 (act_outline.md; Ch9's act card). Ch10 opens Act II (M4), so
+    I'm not greyboxing it unless you say so; Act I polish (swaps, casts, cutscene bar) continues.
+
 ### Render requests
 RENDER-REQUEST @ 180510e1: ch04_ferry_deck, ch04_ferry_derelict; why: M3-C04-1204 dresses the Ch4 ferry and derelict with the ferry kit (new shots, no baseline yet)
+RENDER-REQUEST @ 77a6a777: ch09_corrow_strand, ch09_corrow_road, ch08_corrow_arrival, ch08_corrow_stair, ch06_brine_road, ch06_brine_camp; why: M3-C09-1209 puts Ch9 on the Corrow kit (new shots); the Ch8 and Ch6 shots re-checked on the PC after the KitCollision refactor and the big9 merge
 
 ## Exact next step
 Ch9 `ch09/corrow_night` onto the Corrow frame (it reuses Corrow's kit and grade, ch09 night), then Ch4 `haluna_wake`,
