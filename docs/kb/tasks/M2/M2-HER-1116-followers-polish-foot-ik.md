@@ -35,4 +35,10 @@ The standing queue's item 6: the party should behave like people around Rhen, an
   `HeroMotion.add_foot_ik(actor)`, after FieldNpc adds its micro-motion. That's for creatures to take; offered in
   the fold-into-characters handoff.
 
+### 2026-10-27: CPU cost (cloud, headless, Haluna)
+- `HeroFootIK.apply` costs 18.1 µs per body-frame, 2 rays included, averaged over 600 frames of Rhen running on
+  Haluna's terrain. Legs were bent on 13% of those frames; the rest were inside the dead zone. Three heroes come to
+  about 55 µs a frame (0.3% of a 60 fps frame). Only the PC's GPU-side check is left (skinning is unchanged; the IK
+  only rewrites bone poses).
+
 ## Review log
