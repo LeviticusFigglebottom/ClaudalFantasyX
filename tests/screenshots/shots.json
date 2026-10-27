@@ -2530,6 +2530,11 @@
       "scene": "res://game/battle/scene/shots/battle_boss_intro_reach.tscn"
     },
     {
+      "id": "battle_arena_wall_head",
+      "scene": "res://game/battle/scene/shots/battle_arena_wall_head.tscn",
+      "setup": {"globals": {"hymn_wind_time": 12.0}}
+    },
+    {
       "id": "hero_cutscene_turn_strip",
       "scene": "res://game/levels/_tests/hero_motion/cutscene_turn_strip.tscn",
       "camera": "Camera",
