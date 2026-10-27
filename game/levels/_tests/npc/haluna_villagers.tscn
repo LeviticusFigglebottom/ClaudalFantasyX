@@ -1,0 +1,24 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://game/levels/_tests/npc/haluna_villagers.gd" id="stage"]
+
+[node name="HalunaVillagers" type="Node3D"]
+script = ExtResource("stage")
+
+[node name="Cameras" type="Node3D" parent="."]
+
+[node name="Dock" type="Camera3D" parent="Cameras"]
+transform = Transform3D(0.725953, -0.116538, 0.677799, 0, 0.985539, 0.16945, -0.687745, -0.123013, 0.715455, 27, 3.1, 43.2)
+fov = 40.0
+
+[node name="Market" type="Camera3D" parent="Cameras"]
+transform = Transform3D(0.644136, -0.0613897, 0.762444, 0, 0.996774, 0.0802572, -0.764911, -0.0516966, 0.642058, -36.2, 3.1, 4.7)
+fov = 40.0
+
+[node name="Chapel" type="Camera3D" parent="Cameras"]
+transform = Transform3D(0.934784, -0.0460942, 0.352214, 0, 0.991545, 0.129763, -0.355218, -0.121301, 0.92688, -114.9, 4, 38)
+fov = 40.0
+
+[node name="Lane" type="Camera3D" parent="Cameras"]
+transform = Transform3D(-0.180652, 0.0787153, -0.980392, 0, 0.996792, 0.080032, 0.983547, 0.0144579, -0.180072, -74.9, 3.1, -10.4)
+fov = 40.0
