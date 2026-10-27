@@ -55,6 +55,336 @@
    ],
    "energy": 6.0,
    "range": 60.0
+  },
+  {
+   "at": [
+    -52.761,
+    1.4,
+    24.957
+   ],
+   "energy": 1.4,
+   "range": 6.0,
+   "color": "#FFB46B",
+   "block": "LampA"
+  },
+  {
+   "at": [
+    -48.804,
+    1.4,
+    24.372
+   ],
+   "energy": 1.4,
+   "range": 6.0,
+   "color": "#FFB46B",
+   "block": "LampA"
+  },
+  {
+   "at": [
+    -44.847,
+    1.4,
+    23.788
+   ],
+   "energy": 1.4,
+   "range": 6.0,
+   "color": "#FFB46B",
+   "block": "LampA"
+  },
+  {
+   "at": [
+    -40.89,
+    1.4,
+    23.204
+   ],
+   "energy": 1.4,
+   "range": 6.0,
+   "color": "#FFB46B",
+   "block": "LampA"
+  },
+  {
+   "at": [
+    -36.933,
+    1.4,
+    22.619
+   ],
+   "energy": 1.4,
+   "range": 6.0,
+   "color": "#FFB46B",
+   "block": "LampB"
+  },
+  {
+   "at": [
+    -32.976,
+    1.4,
+    22.035
+   ],
+   "energy": 1.4,
+   "range": 6.0,
+   "color": "#FFB46B",
+   "block": "LampB"
+  },
+  {
+   "at": [
+    -29.019,
+    1.4,
+    21.451
+   ],
+   "energy": 1.4,
+   "range": 6.0,
+   "color": "#FFB46B",
+   "block": "LampB"
+  },
+  {
+   "at": [
+    -52.542,
+    1.4,
+    26.441
+   ],
+   "energy": 1.4,
+   "range": 6.0,
+   "color": "#FFB46B",
+   "block": "LampA"
+  },
+  {
+   "at": [
+    -48.585,
+    1.4,
+    25.856
+   ],
+   "energy": 1.4,
+   "range": 6.0,
+   "color": "#FFB46B",
+   "block": "LampA"
+  },
+  {
+   "at": [
+    -44.628,
+    1.4,
+    25.272
+   ],
+   "energy": 1.4,
+   "range": 6.0,
+   "color": "#FFB46B",
+   "block": "LampA"
+  },
+  {
+   "at": [
+    -40.671,
+    1.4,
+    24.688
+   ],
+   "energy": 1.4,
+   "range": 6.0,
+   "color": "#FFB46B",
+   "block": "LampA"
+  },
+  {
+   "at": [
+    -36.714,
+    1.4,
+    24.103
+   ],
+   "energy": 1.4,
+   "range": 6.0,
+   "color": "#FFB46B",
+   "block": "LampB"
+  },
+  {
+   "at": [
+    -32.757,
+    1.4,
+    23.519
+   ],
+   "energy": 1.4,
+   "range": 6.0,
+   "color": "#FFB46B",
+   "block": "LampB"
+  },
+  {
+   "at": [
+    -28.8,
+    1.4,
+    22.935
+   ],
+   "energy": 1.4,
+   "range": 6.0,
+   "color": "#FFB46B",
+   "block": "LampB"
+  },
+  {
+   "at": [
+    -52.323,
+    1.4,
+    27.925
+   ],
+   "energy": 1.4,
+   "range": 6.0,
+   "color": "#FFB46B",
+   "block": "LampA"
+  },
+  {
+   "at": [
+    -48.366,
+    1.4,
+    27.34
+   ],
+   "energy": 1.4,
+   "range": 6.0,
+   "color": "#FFB46B",
+   "block": "LampA"
+  },
+  {
+   "at": [
+    -44.409,
+    1.4,
+    26.756
+   ],
+   "energy": 1.4,
+   "range": 6.0,
+   "color": "#FFB46B",
+   "block": "LampA"
+  },
+  {
+   "at": [
+    -40.452,
+    1.4,
+    26.172
+   ],
+   "energy": 1.4,
+   "range": 6.0,
+   "color": "#FFB46B",
+   "block": "LampA"
+  },
+  {
+   "at": [
+    -36.495,
+    1.4,
+    25.587
+   ],
+   "energy": 1.4,
+   "range": 6.0,
+   "color": "#FFB46B",
+   "block": "LampB"
+  },
+  {
+   "at": [
+    -32.538,
+    1.4,
+    25.003
+   ],
+   "energy": 1.4,
+   "range": 6.0,
+   "color": "#FFB46B",
+   "block": "LampB"
+  },
+  {
+   "at": [
+    -28.581,
+    1.4,
+    24.419
+   ],
+   "energy": 1.4,
+   "range": 6.0,
+   "color": "#FFB46B",
+   "block": "LampB"
+  },
+  {
+   "at": [
+    -24.764,
+    1.4,
+    21.183
+   ],
+   "energy": 1.4,
+   "range": 6.0,
+   "color": "#FFB46B",
+   "block": "LampC"
+  },
+  {
+   "at": [
+    -20.771,
+    1.4,
+    20.943
+   ],
+   "energy": 1.4,
+   "range": 6.0,
+   "color": "#FFB46B",
+   "block": "LampC"
+  },
+  {
+   "at": [
+    -16.778,
+    1.4,
+    20.703
+   ],
+   "energy": 1.4,
+   "range": 6.0,
+   "color": "#FFB46B",
+   "block": "LampC"
+  },
+  {
+   "at": [
+    -12.785,
+    1.4,
+    20.463
+   ],
+   "energy": 1.4,
+   "range": 6.0,
+   "color": "#FFB46B",
+   "block": "LampD"
+  },
+  {
+   "at": [
+    -8.792,
+    1.4,
+    20.223
+   ],
+   "energy": 1.4,
+   "range": 6.0,
+   "color": "#FFB46B",
+   "block": "LampD"
+  },
+  {
+   "at": [
+    -22.587,
+    1.4,
+    24.058
+   ],
+   "energy": 1.4,
+   "range": 6.0,
+   "color": "#FFB46B",
+   "block": "LampC"
+  },
+  {
+   "at": [
+    -18.594,
+    1.4,
+    23.818
+   ],
+   "energy": 1.4,
+   "range": 6.0,
+   "color": "#FFB46B",
+   "block": "LampC"
+  },
+  {
+   "at": [
+    -14.602,
+    1.4,
+    23.578
+   ],
+   "energy": 1.4,
+   "range": 6.0,
+   "color": "#FFB46B",
+   "block": "LampD"
+  },
+  {
+   "at": [
+    -10.609,
+    1.4,
+    23.338
+   ],
+   "energy": 1.4,
+   "range": 6.0,
+   "color": "#FFB46B",
+   "block": "LampD"
   }
  ],
  "pieces": [

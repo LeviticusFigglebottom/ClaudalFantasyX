@@ -19,6 +19,7 @@ Derived from Ch8's generated files (re-run tools/act1/ch08_corrow_dressing.py fi
 from __future__ import annotations
 
 import json
+import math
 import sys
 from pathlib import Path
 
@@ -114,7 +115,34 @@ def dressing() -> dict:
                                                  "IskarraWater", "IskarraPlaza", "IskarraSteps", "IskarraTowerA",
                                                  "IskarraTowerB", "VigilBurner"]}
     src["fire_lights"] = [{"at": l["at"], "energy": l["energy"], "range": l["range"]} for l in src.get("fire_lights", [])]
+    src["fire_lights"] += vigil_lights()
     return src
+
+
+VIGIL_ROWS = ("ShroudRow1", "ShroudRow2", "ShroudRow3", "ShroudRow4", "StillguardRow")
+VIGIL = {"step_m": 4.0, "out_m": 0.8, "y": 1.4, "energy": 1.4, "range": 6.0, "color": "#FFB46B"}
+
+
+def vigil_lights() -> list[dict]:
+    """The vigil lamps along the rows of the drowned, every VIGIL step_m, each going out with the nearest Lamp block
+    (the dawn variant hides them): the strand reads at night by its own small fires."""
+    layout = json.loads(LAYOUT.read_text(encoding="utf-8"))
+    rows = {b["id"]: b for b in layout["blocks"]}
+    lamps = [b for b in layout["blocks"] if b["id"].startswith("Lamp")]
+    out = []
+    for rid in VIGIL_ROWS:
+        b = rows[rid]
+        a = math.radians(b.get("yaw", 0.0))
+        ux, uz = math.cos(a), -math.sin(a)  # the row's length (local x)
+        n = int(b["size"][0] // VIGIL["step_m"])
+        for i in range(n):
+            u = (i + 0.5) * VIGIL["step_m"] - b["size"][0] * 0.5
+            x = b["pos"][0] + ux * u + uz * VIGIL["out_m"]
+            z = b["pos"][2] + uz * u - ux * VIGIL["out_m"]
+            near = min(lamps, key=lambda m: (m["pos"][0] - x) ** 2 + (m["pos"][2] - z) ** 2)
+            out.append({"at": [cf.r3(x), VIGIL["y"], cf.r3(z)], "energy": VIGIL["energy"], "range": VIGIL["range"],
+                        "color": VIGIL["color"], "block": near["id"]})
+    return out
 
 
 # --- the one-time move of the story points ----------------------------------------------------------------------
