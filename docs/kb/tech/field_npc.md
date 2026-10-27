@@ -177,7 +177,8 @@ For each row the layer:
 
 | Row key | Meaning |
 |---|---|
-| `npc_id` | The villager (child, fisher, neme, netmender, osu, reed, vendor) |
+| `npc_id` | The villager (child, fisher, neme, netmender, osu, reed, vendor; or a role with no model yet, such as the shopkeeper) |
+| `actor` | Optional: another villager whose model it wears until it has its own (M3-CRE-100). Its own `npc_id` still names its talk, tuning and chat |
 | `stand_in` | The stand-in node, a path from the zone root |
 | `hide` | Stand-in children to hide (default `["StandIn", "Facing"]`) |
 | `talk` | The Interactable that starts its talk |
@@ -192,7 +193,7 @@ here braces). `python3 tools/validate_data.py` (via `tools/validate_npc.py`) che
 
 | Zone | File | Villagers |
 |---|---|---|
-| `ch02/haluna` | `zones/ch02_haluna.json` | All seven: the vendor setting out the stall; Reed sweeping the chapel court between two sweep stations; the netmender mending and chatting with the fisher on the dock (both turn to the player at the dock's talk spot); the child wandering the lane; Neme watching the lane by her house; Osu with her bowl. The Town's shopkeeper, smith and innkeeper keep their stand-ins until they have bodies (M3-CRE-614). |
+| `ch02/haluna` | `zones/ch02_haluna.json` | All seven: the vendor setting out the stall; Reed sweeping the chapel court between two sweep stations; the netmender mending and chatting with the fisher on the dock (both turn to the player at the dock's talk spot); the child wandering the lane; Neme watching the lane by her house; Osu with her bowl. Plus the Town's shopkeeper, smith and innkeeper (M3-CRE-100), wearing the netmender's, fisher's and vendor's models until M2-CHR-100 gives them their own. |
 
 Review: `game/levels/_tests/npc/haluna_villagers.tscn` (the real zone with a layer), shots `npc_haluna_dock`,
 `npc_haluna_market`, `npc_haluna_chapel`, `npc_haluna_lane`. Tests: `tests/unit/test_villager_routines.gd`,
@@ -212,6 +213,10 @@ Review: `game/levels/_tests/npc/haluna_villagers.tscn` (the real zone with a lay
   (`VillagerLayer.placed_on`) and wires only what needs the zone: the chat partner, the work and shelter points,
   the storm flag. It never adds a second villager. Glances, look-arounds and work already come with FieldNpc from
   `npc.json`, so they work under either wiring.
+- **When the layer builds (M3-CRE-100).** Added together with its zone (a prebuilt zone entering the tree), it
+  builds at once: the zone's own placement has already run. Added while the zone is in its own `_ready`, or later
+  (`wire`), it builds one call later (deferred), after the zone has placed its villagers, so it adopts them. Either
+  way each villager shows once. Haluna adds its layer itself (M2-FP-113); the review stage reuses that one.
 - **Routes** need a villager beside its stand-in (it carries the body). An adopted villager rides inside its body,
   so its row's `route` and `follow` do not apply; Haluna's routes (Reed's sweep, the child's lane) wait until the
   zone owner places those two beside their bodies (or lets the layer place them).

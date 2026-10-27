@@ -4,7 +4,8 @@
 * game/data/world/npc/npc.json: `defaults` carries every routine section FieldNpc reads; [lo, hi] ranges are in
   order; every `villagers` row names a villager with an actor scene.
 * game/data/world/npc/zones/<zone>.json (and the test stage's data): the `zone` id names the file
-  (ch02/haluna -> ch02_haluna.json) and is a locations.json location; each row's npc_id has an actor scene, is
+  (ch02/haluna -> ch02_haluna.json) and is a locations.json location; each row's npc_id (or its `actor`, a
+  villager whose model it wears) has an actor scene, is
   unique in the zone and has a stand_in path; chat_with names another row that chats back; route entries are
   points or {at, pause_sec, activity} with a known activity; shelter and work_at are [x, y, z] or
   [x, y, z, yaw_deg]; storm_flag (when set) is a declared flag.
@@ -123,8 +124,10 @@ def zone_errors(root: Path, rel: str, locations: set[str], flags: set[str]) -> l
         if vid in by_id:
             errs.append(f"{where}: npc_id {vid!r} appears twice")
         by_id[vid] = row
-        if not (root / ACTOR.format(id=vid)).exists():
-            errs.append(f"{where}: npc_id {vid!r} has no actor scene")
+        actor = str(row.get("actor", vid))
+        if not (root / ACTOR.format(id=actor)).exists():
+            errs.append(f"{where}: npc_id {vid!r} has no actor scene" if actor == vid
+                        else f"{where}: actor {actor!r} (worn by {vid!r}) has no actor scene")
         if not str(row.get("stand_in", "")):
             errs.append(f"{where}: no stand_in")
         for key in ("shelter", "work_at"):

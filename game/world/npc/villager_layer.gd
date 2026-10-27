@@ -17,6 +17,9 @@ extends Node3D
 ## the work and shelter points, the storm flag); placement, hiding and talk stay the zone's. An adopted villager
 ## rides inside its body, so a row's route and follow do not apply to it. `VillagerLayer.wire(zone, zone_id)` is
 ## the one call such a zone makes after placing them.
+##
+## A row's `actor` (a villager id) dresses it in that villager's model while its own doesn't exist yet; its npc_id
+## (talk, tuning, chat) stays its own.
 
 const DATA_DIR := "res://game/data/world/npc/zones/"
 const ACTOR_PATH := "res://assets/characters/villagers/%s/%s_actor.tscn"
@@ -50,7 +53,14 @@ var _built := false
 func _ready() -> void:
 	process_priority = 10  # after the villagers have moved this frame
 	if auto_build:
-		build()
+		# Added while the zone is already in its own _ready (or later): build once the zone has finished its
+		# set-up, so villagers it places after adding this layer (HalunaVillagers' shop bodies) are adopted, not
+		# doubled. Added with the zone (a prebuilt zone entering the tree): the zone's set-up is done; build now.
+		var zone := get_parent()
+		if zone != null and zone.is_node_ready():
+			build.call_deferred()
+		else:
+			build()
 	set_process(auto_build)
 
 
@@ -128,7 +138,9 @@ func _make(row: Dictionary) -> FieldNpc:
 		adopted.shelter = _marker(row.get("shelter", null), String(stand_in.name) + "Villager" + SHELTER_SUFFIX)
 		adopted.work_target = _marker(row.get("work_at", null), String(stand_in.name) + "Villager" + WORK_SUFFIX)
 		return adopted
-	var scene := load(ACTOR_PATH % [id, id]) as PackedScene if id != &"" else null
+	# `actor` (optional): wear another villager's model until this one has its own (M3-CRE-100: the shop bodies).
+	var actor_id := str(row.get("actor", id))
+	var scene := load(ACTOR_PATH % [actor_id, actor_id]) as PackedScene if actor_id != "" else null
 	if stand_in == null or scene == null:
 		push_warning("VillagerLayer %s: cannot place %s (stand-in %s)" % [zone_id, id, row.get("stand_in", "")])
 		return null

@@ -399,3 +399,42 @@ func test_the_layer_survives_its_villagers_being_freed_first() -> void:
 	assert_eq(layer.live_villagers().size(), 1, "the other one stays")
 	assert_false(mate.chatting(), "and it stops chatting with nobody")
 	_done()
+
+
+## M3-CRE-100: a row's `actor` dresses it in another villager's model; its own id stays for talk and tuning.
+func test_a_row_can_wear_another_villagers_model() -> void:
+	var data := VillagerLayer.load_data(STAGE_DATA)
+	(data["villagers"] as Array)[1]["actor"] = "fisher"
+	var path := "user://villager_layer_actor_test.json"
+	var f := FileAccess.open(path, FileAccess.WRITE)
+	f.store_string(JSON.stringify(data))
+	f.close()
+	var zone := _stage()
+	var layer := VillagerLayer.new()
+	layer.data_path = path
+	layer.auto_build = false
+	zone.add_child(layer)
+	layer.build()
+	var neme := layer.villager(&"neme")
+	assert_true(neme != null, "the row keeps its own id")
+	assert_eq(neme.actor_scene.resource_path, FISHER, "and wears the fisher's model")
+	DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
+	_done()
+
+
+## M3-CRE-100: Haluna adds its layer in its own _ready, then HalunaVillagers places the shop bodies' villagers;
+## the layer builds after that and adopts them, so each villager shows once (not one from each system).
+func test_a_layer_added_in_the_zones_ready_adopts_what_the_zone_places_after() -> void:
+	var zone := (load(HALUNA) as PackedScene).instantiate() as Node3D
+	_holder().add_child(zone)  # not prebuilt: the zone adds its VillagerLayer in its _ready
+	await (Engine.get_main_loop() as SceneTree).process_frame
+	var ids: Array[StringName] = []
+	for n: Node in zone.find_children("*", "FieldNpc", true, false):
+		var id := (n as FieldNpc).npc_id
+		assert_false(id in ids, "%s shows once" % id)
+		ids.append(id)
+	for id: StringName in [&"shopkeeper", &"smith", &"innkeeper", &"vendor"]:
+		assert_true(id in ids, "%s is in the village" % id)
+	var layer := zone.get_node(^"VillagerLayer") as VillagerLayer
+	assert_true(layer.villager(&"shopkeeper") != null, "the layer owns the shop rows too (adopted)")
+	_done()
