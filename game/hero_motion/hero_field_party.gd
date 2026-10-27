@@ -21,6 +21,8 @@ extends Node
 ## game/data/hero_motion/hero_motion.json "field.followers". Added by HeroFieldActor.attach.
 
 const NAME := &"HeroParty"
+## Nearer than this to the speaker (flat metres), a follower keeps its heading: the direction would be noise.
+const FACE_MIN_M := 0.05
 
 var controller: FieldController
 ## The leader's body (its hero id is never a follower).
@@ -39,6 +41,10 @@ var _rescan_left := 0.0
 var _stages: Array[Node] = []
 var _sequencers: Array[Node] = []
 var _started := false
+## Set when the leader talks to someone (FieldController.interacted): stopped followers turn to face `_face_at`
+## until the leader walks on.
+var _facing := false
+var _face_at := Vector3.ZERO
 
 
 ## Every node under `root` whose script (or a base of it) has the global class name `type_name`.
@@ -62,6 +68,17 @@ static func _collect(n: Node, type_name: StringName, out: Array[Node]) -> void:
 func _ready() -> void:
 	name = NAME
 	_cfg = HeroFieldActor.field_data().get("followers", {}) as Dictionary
+	if controller != null and not controller.interacted.is_connected(face_speaker):
+		controller.interacted.connect(face_speaker)
+
+
+## The leader is talking to `speaker`: every follower standing still turns (eased, through its body) to face it,
+## and keeps facing it until the leader walks on.
+func face_speaker(speaker: Node3D) -> void:
+	if speaker == null or not is_instance_valid(speaker) or not speaker.is_inside_tree():
+		return
+	_face_at = speaker.global_position
+	_facing = true
 
 
 func _physics_process(delta: float) -> void:
@@ -85,6 +102,8 @@ func advance(delta: float) -> void:
 		catch_up()
 	var jumped := lead.distance_to(_last_leader) > (leader.loco.teleport_m if leader != null else 0.0)
 	var leader_speed := Vector2(lead.x - _last_leader.x, lead.z - _last_leader.z).length() / maxf(delta, 1e-6)
+	if leader_speed > float(_cfg.get("face_release_mps", 0.0)):
+		_facing = false
 	_last_leader = lead
 	var hide := should_hide()
 	if hide != _hidden:
@@ -288,7 +307,10 @@ func _move(i: int, leader_speed: float, delta: float) -> void:
 	var floor_at := _grounded(p, target.y)
 	p.y = move_toward(f.global_position.y, floor_at.y, float(_cfg.get("vertical_mps", INF)) * delta)
 	f.global_position = p
-	if v.length() > 0.0:
+	var to := Vector3(_face_at.x - f.global_position.x, 0.0, _face_at.z - f.global_position.z)
+	if _facing and v.length() <= float(_cfg.get("face_release_mps", 0.0)) and to.length() > FACE_MIN_M:
+		f.rotation.y = HeroLocomotion.yaw_of(to)  # the body eases into it (HeroLocomotion's capped turn)
+	elif v.length() > 0.0:
 		f.rotation.y = HeroLocomotion.yaw_of(v)
 	f.visible = not staged(StringName(f.get_meta(&"hero_id", "")))
 
