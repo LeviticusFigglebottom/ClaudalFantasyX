@@ -143,7 +143,8 @@ cutscene sequencer (`game/cutscene/**`), `game/flow/**` and the playtest fixes.
   lamp under each vigil light, the Ebbing raft, Ivo's shroud, the coil, the milestone; the night's grade lift is now in
   the generator (copy_grades had been overwriting it). `--filter=zone_kit` 8/0, `corrow` 17/0, `ch08` 23/0, `ch09`
   11/0, `act1_cutscene_walks` 1/0, validate_data. Still greybox in Ch9: the landing, the rocks, the bridge, the lake,
-  the burner, and the Iskarra set (env-art's `iskarra_city.tscn` is a scene, not kit pieces: next).
+  the burner. **@ 2d3ccdf2:** the Iskarra set is env-art's Iskarra (its drop-in scene's 20 pieces; ZoneKitDressing
+  `scale_y`); `ch09_corrow_walkable` 5/0 (a test of the pieces), `zone_kit` 8/0, walks 1/0.
 - **Lead queue (21:23), status:**
   1. Ch9 road capsule: it is **Kerrid** at the milestone (no model yet: M3-CHR-505, characters); so are the two on
      ch06_brine_road (Ysolde, no field body yet: M3-HER-1219; Kerrid). They go when those land; no villager body on a
@@ -174,7 +175,8 @@ SUPERSEDED by the request @ c0ee5230 below: eeaf91bf
 SUPERSEDED by the request @ 9ccd51b2 below: c0ee5230
 SUPERSEDED by the request below: 9ccd51b2 (c0ee523 viewed: ch05_pemakar_crown and ch08_corrow_stair approved 160eadea; the rest were approved by big12)
 RENDER-REQUEST @ 225370ba: ch05_pemakar_harbour, ch09_corrow_strand, ch06_brine_road, ch08_corrow_arrival, ch08_corrow_stair, ch08_coilspire_hall; why: the harbour view re-aimed (it stood behind Asha's head), the strand lit (it was near-black), the casts (Stillguard, hound) and Coilspire's moved key t4_d
-RENDER-REQUEST @ 5696ffde: ch08_corrow_arrival, ch08_corrow_stair, ch09_corrow_strand, ch09_corrow_road; why: Corrow's story pieces replace their greybox (M3-ENV-707/708), Ch9's drowned, lamps and raft
+SUPERSEDED by the request below: 5696ffde
+RENDER-REQUEST @ 2d3ccdf2: ch08_corrow_arrival, ch08_corrow_stair, ch09_corrow_strand, ch09_corrow_road; why: Corrow's story pieces replace their greybox (M3-ENV-707/708), Ch9's drowned, lamps and raft (Iskarra has no shot yet)
 
 ## Exact next step
 1. When the PC answers RENDER-REQUEST @ 9ccd51b2 (`gpu/render-act1-chapters-9ccd51b`): view every out/diff PNG;
