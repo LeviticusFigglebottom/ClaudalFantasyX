@@ -2,8 +2,8 @@
 id: M3-CRE-642
 title: "Nhoa, the Rootlight (Ice, bound Ch11): the Vowbound model (design sheet done; build next)"
 role: character
-status: todo
-owner_session: ""
+status: doing
+owner_session: "creatures (worktree agent)"
 reviewer: art
 depends_on: [M3-CRE-638]
 milestone: M3

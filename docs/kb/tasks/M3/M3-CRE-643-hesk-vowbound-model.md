@@ -2,8 +2,8 @@
 id: M3-CRE-643
 title: "Hesk, the Cord-Keeper (Holy, bound Ch12): the Vowbound model (design sheet done; build next)"
 role: character
-status: todo
-owner_session: ""
+status: doing
+owner_session: "creatures (worktree agent)"
 reviewer: art
 depends_on: [M3-CRE-638]
 milestone: M3
