@@ -310,6 +310,127 @@
         "ink_kit-lod1": 12
       }
     },
+    "iskarra_arch": {
+      "budget": [
+        4000,
+        200
+      ],
+      "bytes": 101320,
+      "lods": {
+        "iskarra_arch": 2220,
+        "iskarra_arch-lod1": 108
+      }
+    },
+    "iskarra_arch_fallen": {
+      "budget": [
+        4000,
+        200
+      ],
+      "bytes": 111780,
+      "lods": {
+        "iskarra_arch_fallen": 2148,
+        "iskarra_arch_fallen-lod1": 156
+      }
+    },
+    "iskarra_crown_fallen": {
+      "budget": [
+        4000,
+        300
+      ],
+      "bytes": 79824,
+      "lods": {
+        "iskarra_crown_fallen": 1692,
+        "iskarra_crown_fallen-lod1": 136
+      }
+    },
+    "iskarra_lamp_column": {
+      "budget": [
+        1500,
+        100
+      ],
+      "bytes": 42792,
+      "lods": {
+        "iskarra_lamp_column": 822,
+        "iskarra_lamp_column-lod1": 60
+      }
+    },
+    "iskarra_plaza": {
+      "budget": [
+        14000,
+        600
+      ],
+      "bytes": 329688,
+      "lods": {
+        "iskarra_plaza": 3384,
+        "iskarra_plaza-lod1": 144
+      }
+    },
+    "iskarra_plaza_rise": {
+      "budget": [
+        3000,
+        120
+      ],
+      "bytes": 11664,
+      "lods": {
+        "iskarra_plaza_rise": 84,
+        "iskarra_plaza_rise-lod1": 24
+      }
+    },
+    "iskarra_tower_broken": {
+      "budget": [
+        16000,
+        1200
+      ],
+      "bytes": 222536,
+      "lods": {
+        "iskarra_tower_broken": 5496,
+        "iskarra_tower_broken-lod1": 312
+      }
+    },
+    "iskarra_tower_small": {
+      "budget": [
+        16000,
+        1200
+      ],
+      "bytes": 152528,
+      "lods": {
+        "iskarra_tower_small": 3660,
+        "iskarra_tower_small-lod1": 232
+      }
+    },
+    "iskarra_tower_small_broken": {
+      "budget": [
+        16000,
+        1200
+      ],
+      "bytes": 100332,
+      "lods": {
+        "iskarra_tower_small_broken": 2256,
+        "iskarra_tower_small_broken-lod1": 144
+      }
+    },
+    "iskarra_tower_spire": {
+      "budget": [
+        16000,
+        1200
+      ],
+      "bytes": 396812,
+      "lods": {
+        "iskarra_tower_spire": 9408,
+        "iskarra_tower_spire-lod1": 544
+      }
+    },
+    "iskarra_tower_stepped": {
+      "budget": [
+        16000,
+        1200
+      ],
+      "bytes": 286268,
+      "lods": {
+        "iskarra_tower_stepped": 6912,
+        "iskarra_tower_stepped-lod1": 352
+      }
+    },
     "laundry_line": {
       "budget": [
         3600,
