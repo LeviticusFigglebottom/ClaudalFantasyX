@@ -66,6 +66,17 @@ const SKATE := "res://game/creatures/glass_skate/glass_skate_battle.tscn"
 const SKATE_FLAT_MAX_M := 0.2
 const SKATE_ERUPT_SEC := 0.36
 const SKATE_ERUPT_MIN_M := 0.4
+## M3-CRE-637, the flat-engine (Ch14 boss part): its stilling lifts every paddle at least FLAT_LIFT_MIN_DEG at
+## FLAT_LIFT_SEC and presses them flat (under FLAT_PRESSED_MAX_DEG) at its contact; a hit kicks one paddle up at
+## least FLAT_KICK_MIN_DEG at its 0.1 s peak; the KO tips each drum half apart by FLAT_SPLIT_DEG (min, max).
+const FLAT := "res://game/creatures/flat_engine/flat_engine_battle.tscn"
+const FLAT_CONTACT_SEC := 0.8
+const FLAT_LIFT_SEC := 0.6
+const FLAT_LIFT_MIN_DEG := 8.0
+const FLAT_PRESSED_MAX_DEG := 1.0
+const FLAT_HIT_PEAK_SEC := 0.1
+const FLAT_KICK_MIN_DEG := 15.0
+const FLAT_SPLIT_DEG := [5.0, 9.0]
 ## The Act II variants (M3-CRE-628) and their bases: the same rig and clips.
 const VARIANTS := {
 	"root_crab": "reef_crab",
@@ -832,3 +843,34 @@ func test_the_conduit_crawler_scrubs_jabs_and_folds_its_legs() -> void:
 	assert_true(body > CRAWLER_KO_BODY_MIN_Y, "onto its belly plate, not through the floor")
 	for leg in legs:
 		assert_true(_bone_at(skel, leg).y > -RAM_FOOT_TOL_M, "%s stays above the floor" % leg)
+
+
+func test_the_flat_engine_presses_the_water_flat_and_splits_on_its_ko() -> void:
+	var bones: Array[String] = ["root", "drum", "half_a", "half_b", "chimney"]
+	for k in 8:
+		bones.append("paddle%d" % k)
+	var e := _act2_regular(FLAT, [FLAT_CONTACT_SEC, FLAT_CONTACT_SEC], bones)
+	var whole := e.find_child("Engine", true, false) as Node3D
+	var broken := e.find_child("EngineBroken", true, false) as Node3D
+	assert_true(whole != null and whole.visible, "it stands whole: the lit window, the fanned paddles")
+	assert_true(broken != null and not broken.visible, "the broken variant waits for its break part")
+	assert_false(e.set_part_broken(&"any_charge", true), "no charge skill names its part yet")
+	var skel := _pose(e, &"cast", FLAT_LIFT_SEC)
+	for k in 8:
+		assert_true(_turn_deg(skel, "paddle%d" % k) > FLAT_LIFT_MIN_DEG, "the stilling lifts paddle %d" % k)
+	skel = _pose(e, &"cast", FLAT_CONTACT_SEC)
+	for k in 8:
+		assert_true(_turn_deg(skel, "paddle%d" % k) < FLAT_PRESSED_MAX_DEG, "and presses paddle %d flat" % k)
+	skel = _pose(e, &"hit", FLAT_HIT_PEAK_SEC)
+	assert_true(_turn_deg(skel, "paddle3") > FLAT_KICK_MIN_DEG, "a hit kicks one paddle up at its peak")
+	skel = _pose(e, &"ko", INF)
+	for h in ["half_a", "half_b"]:
+		assert_between(_turn_deg(skel, h), FLAT_SPLIT_DEG[0], FLAT_SPLIT_DEG[1], "the KO splits the drum: %s" % h)
+	for b in bones:
+		assert_true(_bone_at(skel, b).y > -RAM_FOOT_TOL_M, "%s stays on the water in the KO" % b)
+
+
+## How far a bone is turned from its rest (degrees).
+func _turn_deg(skel: Skeleton3D, bone: String) -> float:
+	var b := skel.find_bone(bone)
+	return rad_to_deg(skel.get_bone_rest(b).basis.get_rotation_quaternion().angle_to(skel.get_bone_pose_rotation(b)))

@@ -839,6 +839,16 @@
         ["{blender}", "--python", "assets_src/wildlife/insect/build_insect.py", "--", "--out", "assets/wildlife/insect/insect.glb"],
         ["{python}", "assets_src/wildlife/common/write_materials.py", "--wildlife", "insect"]
       ]
+    },
+    {
+      "id": "creature_flat_engine",
+      "owner": "character",
+      "sources": ["assets_src/creatures/flat_engine/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/flat_engine/*.glb", "assets/creatures/flat_engine/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/flat_engine/build_flat_engine.py", "--", "--out", "assets/creatures/flat_engine/flat_engine.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "flat_engine"]
+      ]
     }
   ]
 }

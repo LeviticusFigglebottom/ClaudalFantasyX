@@ -278,6 +278,11 @@
       "id": "rim_crawler",
       "scene": "res://game/creatures/rim_crawler/rim_crawler_battle.tscn",
       "out_dir": "res://assets/ui/portraits/creatures"
+    },
+    {
+      "id": "flat_engine",
+      "scene": "res://game/creatures/flat_engine/flat_engine_battle.tscn",
+      "out_dir": "res://assets/ui/portraits/creatures"
     }
   ],
   "creature_stage": {
