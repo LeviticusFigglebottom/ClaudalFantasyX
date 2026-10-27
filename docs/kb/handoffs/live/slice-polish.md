@@ -59,3 +59,23 @@ Ch4–Ch9 onward. `m2-slice.md` beside this file is the history up to the 2026-1
 - **MERGE-READY @ 5ad11bab (FAST-TRACK):** adds 1b366c7f, in which H06 aims at the kneeling pair's faces while Rhen's lying
   clip is a stand-in (both heads clipped the top). It also merges the integration branch's Lead docs (492651da).
   Checks: haluna 54 and key_light 9, 0 failed. Skipped: everything else (no other code changed since 51e73a22).
+- **MERGE-READY @ 363b6f70 (FAST-TRACK, M2-FP-106..108):**
+  - **M2-FP-106:** a villager who speaks in a scene (Neme at her table, the barks) turns to Rhen and talks
+    (`CutsceneNpcTalk`).
+  - **M2-FP-107:** barks freeze Rhen without hiding Asha and Toma (`CutsceneSequencer.freeze_player`). HeroFieldParty
+    hid the followers for every player-holding scene.
+  - **M2-FP-108:** B06 plays on env-art's final Saltgrass Causeway instead of the greybox.
+    - GreyboxZone takes a layout `dressing`, plus collision-only, pitched blocks.
+    - `tools/causeway/build_causeway_gameplay.py` generates the gameplay layout and moves creatures' causeway
+      wildlife onto the 301 m route.
+    - VIEWED: cumulus sky, saltgrass, flats, slabs and marker posts, with the party on the route.
+    - **Request M2-RND-100 (PC):** prewarm the causeway. The first visible frame took 1.7 s on lavapipe.
+  - **Checks run:**
+    - validate_data, taskboard, dlgc, lint, format and ruff clean;
+    - tools: test_causeway_gameplay;
+    - Godot: villagers 6, cutscene 60, haluna 56, causeway_route 3, zone_story 15, fp_thread 2, causeway 9,
+      wildlife 10, slice_beats 5, all 0 failed.
+  - **Checks skipped:** coverage (no battle or progression code); Blender (no source); the shot manifest (no shot
+    covers B06's zone; viewed through tools/cutscene_frames).
+  - **Note for creatures:** `game/data/world/wildlife/ch03_saltgrass_causeway.json` is now generated (it asked for
+    the move at the swap).
