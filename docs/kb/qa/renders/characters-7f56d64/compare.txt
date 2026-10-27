@@ -1,0 +1,7 @@
+FAIL asha_clip_bow_palms_flat: no baseline (inspect out/, then compare.py --update-baselines asha_clip_bow_palms_flat)
+FAIL rhen_clip_lift_housing: no baseline (inspect out/, then compare.py --update-baselines rhen_clip_lift_housing)
+FAIL toma_clip_stack_bowls: no baseline (inspect out/, then compare.py --update-baselines toma_clip_stack_bowls)
+FAIL ysolde_clip_read_letter: no baseline (inspect out/, then compare.py --update-baselines ysolde_clip_read_letter)
+FAIL rhen_clip_talk_explain: no baseline (inspect out/, then compare.py --update-baselines rhen_clip_talk_explain)
+Screenshots: 5 compared, 5 failed (diffs in /root/hymn/tests/screenshots/out/diff)
+compare exit 1
