@@ -5,6 +5,14 @@
 # compare. Both lanes run at once; HYMN_GATE_LANES=A or B runs one. No venv: Blender honours VIRTUAL_ENV and then
 # can't import its own numpy, so tools/requirements.txt (and Pillow) go into the distro's Python. Results under $HYMN_GATE_DIR/gate_<ref>/ (default /root).
 set -u
+import_ok() {  # Godot 4.6.3's --import sometimes aborts (double free); retry up to 3 times on a fresh .godot
+  local log=$1 n
+  for n in 1 2 3; do
+    rm -rf .godot; "$G4bin" --headless --path . --import > "$log" 2>&1
+    grep -qE "double free|Aborted|core dumped|Segmentation" "$log" || return 0
+    echo "import crashed (try $n)" >> "$log.retries"
+  done; return 1
+}
 ref=$1; base=$2; shards=${3:-3}
 name=$(echo "$ref" | tr '/' '_')
 HERE=$(cd "$(dirname "$0")" && pwd)
@@ -15,7 +23,7 @@ R=${HYMN_GATE_DIR:-/root}/gate_$name; rm -rf $R; mkdir -p $R
 t0=$(date +%s)
 G4=$HOME/.cache/hymn/godot-4.6.3+ds-2
 # Import once up front so both lanes start on a warm .godot/.
-$G4/godot --headless --path . --import > $R/import0.log 2>&1 || true
+G4bin=$G4/godot; import_ok $R/import0.log || echo "IMPORT FAILED 3x" >> $R/import0.log
 lanes=${HYMN_GATE_LANES:-AB}
 pa=""; pb=""
 [[ $lanes == *A* ]] && (

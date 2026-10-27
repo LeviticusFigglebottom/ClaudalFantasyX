@@ -89,3 +89,20 @@ Put shims for `python3`, `gdlint` and `gdformat` (`python -m gdtoolkit.linter` /
 to the Windows binary and `HYMN_SKIP_BLENDER=1`. Its screenshot step SKIPs: lavapipe and the pinned Blender are
 Linux packages, so they belong in WSL. It's a cross-check, not the gate of record. It needs M2-NIT-04 and M2-NIT-05
 for the tools unittests to pass on Windows.
+
+## Gate and render scripts (M2-NIT-903, 2026-10-27)
+- **`gaterun.sh <ref> <blender-base>`** (in WSL, copied to /root with gate.sh and sync.sh): the gate with
+  `HYMN_SKIP_BLENDER=1` inside ci_local, then `verify_blender_builds.py` for the changed jobs on the same checkout.
+  A known Blender DIFF (M2-CHR-11) used to stop lane A before the Godot suite (big9). Results stay in
+  `/root/keep_<name>/` (run1/compare.txt, out/, blender.log), since the next sync wipes `tests/screenshots/out`.
+- **Import retry:** Godot 4.6.3's `--import` sometimes aborts ("double free or corruption") and leaves a partial
+  `.godot/`; every capture after it is BLACK and reads as a huge drift (env-art and ui renders, 2026-10-27). gate.sh
+  and render_batch.sh grep the import log and retry up to three times on a fresh `.godot/`.
+- **Track renders** (TRACK-RULES "RENDERING GOES TO THE PC"):
+  1. `python tools/dev/pc_gate/render_scan.py .` in the Windows clone after `git fetch origin` lists unanswered
+     `RENDER-REQUEST` lines (answered = a `RENDERED @ <sha>` line in any `origin/gpu/*` pc-gpu.md).
+  2. `render_batch.sh <queue>` in WSL renders each `<track> <sha> <ids>` line into `/root/renders/<track>-<sha7>/`
+     (2 shards, then compare of those ids).
+  3. `render_publish.sh <track> <sha>` in Git Bash pushes `gpu/render-<track>-<sha7>` with the out and diff PNGs of the
+     non-PASS shots and compare.txt, and adds the RENDERED line to the running pc-gpu.md copy (`$HYMN_PC_GPU_MD`).
+  Check the import logs before publishing; never publish a render whose import crashed.
