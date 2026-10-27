@@ -1,0 +1,140 @@
+{
+  "version": 1,
+  "doc": "Village and wildlife life (M3-AUD-814; docs/kb/tech/audio_runtime.md \"Life\"): villagers' chat turns and work, gulls, crabs and fish, all positional on World. life.json says when each plays; LifeAudio plays them. The files come from assets_src/sfx/life_sfx.py (assets/audio/sfx/life/). Same row format as sfx.json; AudioData.sfx_rows merges this file in.",
+  "sfx": {
+    "villager_murmur_low": {
+      "files": [
+        "res://assets/audio/sfx/life/villager_murmur_low_1.ogg",
+        "res://assets/audio/sfx/life/villager_murmur_low_2.ogg",
+        "res://assets/audio/sfx/life/villager_murmur_low_3.ogg",
+        "res://assets/audio/sfx/life/villager_murmur_low_4.ogg",
+        "res://assets/audio/sfx/life/villager_murmur_low_5.ogg",
+        "res://assets/audio/sfx/life/villager_murmur_low_6.ogg"
+      ],
+      "bus": "World",
+      "pitch_jitter": 0.03,
+      "cooldown_ms": 400,
+      "voices": 3,
+      "unit_size_m": 5.0
+    },
+    "villager_murmur_high": {
+      "files": [
+        "res://assets/audio/sfx/life/villager_murmur_high_1.ogg",
+        "res://assets/audio/sfx/life/villager_murmur_high_2.ogg",
+        "res://assets/audio/sfx/life/villager_murmur_high_3.ogg",
+        "res://assets/audio/sfx/life/villager_murmur_high_4.ogg",
+        "res://assets/audio/sfx/life/villager_murmur_high_5.ogg",
+        "res://assets/audio/sfx/life/villager_murmur_high_6.ogg"
+      ],
+      "bus": "World",
+      "pitch_jitter": 0.03,
+      "cooldown_ms": 400,
+      "voices": 3,
+      "unit_size_m": 5.0
+    },
+    "work_net": {
+      "files": [
+        "res://assets/audio/sfx/life/work_net_1.ogg",
+        "res://assets/audio/sfx/life/work_net_2.ogg",
+        "res://assets/audio/sfx/life/work_net_3.ogg",
+        "res://assets/audio/sfx/life/work_net_4.ogg"
+      ],
+      "bus": "World",
+      "pitch_jitter": 0.04,
+      "cooldown_ms": 600,
+      "voices": 2,
+      "unit_size_m": 4.0
+    },
+    "work_sweep": {
+      "files": [
+        "res://assets/audio/sfx/life/work_sweep_1.ogg",
+        "res://assets/audio/sfx/life/work_sweep_2.ogg",
+        "res://assets/audio/sfx/life/work_sweep_3.ogg",
+        "res://assets/audio/sfx/life/work_sweep_4.ogg"
+      ],
+      "bus": "World",
+      "pitch_jitter": 0.04,
+      "cooldown_ms": 600,
+      "voices": 2,
+      "unit_size_m": 4.0
+    },
+    "work_wares": {
+      "files": [
+        "res://assets/audio/sfx/life/work_wares_1.ogg",
+        "res://assets/audio/sfx/life/work_wares_2.ogg",
+        "res://assets/audio/sfx/life/work_wares_3.ogg",
+        "res://assets/audio/sfx/life/work_wares_4.ogg"
+      ],
+      "bus": "World",
+      "pitch_jitter": 0.04,
+      "cooldown_ms": 600,
+      "voices": 2,
+      "unit_size_m": 4.0
+    },
+    "work_bowl": {
+      "files": [
+        "res://assets/audio/sfx/life/work_bowl_1.ogg",
+        "res://assets/audio/sfx/life/work_bowl_2.ogg",
+        "res://assets/audio/sfx/life/work_bowl_3.ogg",
+        "res://assets/audio/sfx/life/work_bowl_4.ogg"
+      ],
+      "bus": "World",
+      "pitch_jitter": 0.04,
+      "cooldown_ms": 600,
+      "voices": 2,
+      "unit_size_m": 4.0
+    },
+    "gull_call_near": {
+      "files": [
+        "res://assets/audio/sfx/life/gull_call_near_1.ogg",
+        "res://assets/audio/sfx/life/gull_call_near_2.ogg",
+        "res://assets/audio/sfx/life/gull_call_near_3.ogg",
+        "res://assets/audio/sfx/life/gull_call_near_4.ogg",
+        "res://assets/audio/sfx/life/gull_call_near_5.ogg",
+        "res://assets/audio/sfx/life/gull_call_near_6.ogg"
+      ],
+      "bus": "World",
+      "pitch_jitter": 0.05,
+      "cooldown_ms": 700,
+      "voices": 3,
+      "unit_size_m": 12.0
+    },
+    "gull_takeoff": {
+      "files": [
+        "res://assets/audio/sfx/life/gull_takeoff_1.ogg",
+        "res://assets/audio/sfx/life/gull_takeoff_2.ogg",
+        "res://assets/audio/sfx/life/gull_takeoff_3.ogg"
+      ],
+      "bus": "World",
+      "pitch_jitter": 0.06,
+      "cooldown_ms": 300,
+      "voices": 2,
+      "unit_size_m": 8.0
+    },
+    "crab_scuttle": {
+      "files": [
+        "res://assets/audio/sfx/life/crab_scuttle_1.ogg",
+        "res://assets/audio/sfx/life/crab_scuttle_2.ogg",
+        "res://assets/audio/sfx/life/crab_scuttle_3.ogg",
+        "res://assets/audio/sfx/life/crab_scuttle_4.ogg"
+      ],
+      "bus": "World",
+      "pitch_jitter": 0.08,
+      "cooldown_ms": 250,
+      "voices": 2,
+      "unit_size_m": 3.0
+    },
+    "fish_dart": {
+      "files": [
+        "res://assets/audio/sfx/life/fish_dart_1.ogg",
+        "res://assets/audio/sfx/life/fish_dart_2.ogg",
+        "res://assets/audio/sfx/life/fish_dart_3.ogg"
+      ],
+      "bus": "World",
+      "pitch_jitter": 0.06,
+      "cooldown_ms": 400,
+      "voices": 2,
+      "unit_size_m": 4.0
+    }
+  }
+}

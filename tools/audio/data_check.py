@@ -24,6 +24,7 @@ VOICES = "game/data/audio/voices.json"  # M3-AUD-07
 REEFBALL_HOOKS = "game/data/audio/reefball_hooks.json"  # M3-AUD-17
 CHOREO_SFX = "game/data/audio/choreo_sfx.json"  # M3-AUD-13
 BATTLE_STINGS = "game/data/audio/battle_stings.json"  # M3-AUD-18
+LIFE = "game/data/audio/life.json"  # M3-AUD-814
 CHOREO = "game/data/battle/choreo.json"  # the battle-presentation track's styles (once merged)
 SPEAKERS = "game/data/dialogue/speakers.json"
 CREATURE_VOICES = "game/data/audio/creature_voices.json"  # M3-AUD-14
@@ -383,6 +384,55 @@ def ui_hook_errors(doc: object, ids: set[str], classes: dict[str, list[str]] | N
     return errs
 
 
+LIFE_KINDS = ("villager", "wildlife")
+
+
+def life_errors(doc: object, ids: set[str], classes: dict[str, list[str]] | None) -> list[str]:
+    """life.json (M3-AUD-814): hooks name a kind and a real class (unless pending); every row it plays is an sfx row;
+    every [min, max] interval is positive."""
+    if not isinstance(doc, dict):
+        return [f"{LIFE}: must be an object"]
+    errs: list[str] = []
+    for j, h in enumerate(doc.get("hooks", [])):
+        w = f"{LIFE} hooks[{j}]"
+        if not isinstance(h, dict) or not isinstance(h.get("class"), str) or not h["class"]:
+            errs.append(f"{w}.class: needs a class name")
+            continue
+        if h.get("kind") not in LIFE_KINDS:
+            errs.append(f"{w}.kind: one of {', '.join(LIFE_KINDS)}")
+        if classes is not None and not h.get("pending", False) and h["class"] not in classes:
+            errs.append(f"{w}.class: no script declares class_name {h['class']} (mark the hook pending until it lands)")
+
+    def row(v: object, w: str) -> None:
+        if v not in ids:
+            errs.append(f"{w}: {v} is not an sfx row")
+
+    def interval(v: object, w: str) -> None:
+        if not (isinstance(v, list) and len(v) == 2 and all(_num(x) and x > 0 for x in v) and v[0] <= v[1]):
+            errs.append(f"{w}: a [min, max] pair of seconds > 0")
+
+    vil = doc.get("villager") or {}
+    for k, rid in (vil.get("murmur") or {}).items():
+        row(rid, f"{LIFE} villager.murmur.{k}")
+    for npc, voice in (vil.get("voices") or {}).items():
+        if voice not in (vil.get("murmur") or {}):
+            errs.append(f"{LIFE} villager.voices.{npc}: {voice} is not a murmur voice")
+    work = vil.get("work") or {}
+    for npc, rid in (work.get("rows") or {}).items():
+        row(rid, f"{LIFE} villager.work.rows.{npc}")
+    if work:
+        interval(work.get("every_sec"), f"{LIFE} villager.work.every_sec")
+    wild = doc.get("wildlife") or {}
+    for kind, keys in (("gull", ("call", "takeoff")), ("crab", ("scuttle",)), ("fish", ("dart",))):
+        cfg = wild.get(kind) or {}
+        for k in keys:
+            if k in cfg:
+                row(cfg[k], f"{LIFE} wildlife.{kind}.{k}")
+    if "call_every_sec" in (wild.get("gull") or {}):
+        interval(wild["gull"]["call_every_sec"], f"{LIFE} wildlife.gull.call_every_sec")
+    return errs
+
+
 def audio_errors(files: dict[str, object], exists: Callable[[str], bool], flags: set[str]) -> list[str]:
     errs, buses = mix_errors(files.get(MIX))
     acc = ((files.get(ACCESSIBILITY) or {}).get("accessibility") or {}).get("settings", [])
@@ -415,6 +465,8 @@ def audio_errors(files: dict[str, object], exists: Callable[[str], bool], flags:
     if CHOREO_SFX in files:
         errs += choreo_errors(files[CHOREO_SFX], merged_sfx(files).get("sfx") or {}, files.get(CLASSES),
                               files.get(CHOREO))
+    if LIFE in files:
+        errs += life_errors(files[LIFE], ids, files.get(CLASSES))
     if REEFBALL_HOOKS in files:
         all_beds = set(amb_beds) | set(((files.get(MUSIC) or {}).get("ambience") or {}).keys())
         errs += reefball_hook_errors(files[REEFBALL_HOOKS], ids, all_beds, files.get(CLASSES))
@@ -572,7 +624,7 @@ def load_files(root: Path) -> dict[str, object]:
     out = {}
     extra = [p.relative_to(root).as_posix() for p in sorted((root / SFX_DIR).glob("sfx_*.json"))]
     for rel in [MIX, MUSIC, SFX, BATTLE_SFX, SHRINE_SFX, UI_SFX, AMBIENCE, FOOTSTEPS, ENCOUNTERS, VFX_EFFECTS,
-                ACCESSIBILITY, VOICES, SPEAKERS, REEFBALL_HOOKS, CHOREO_SFX, CHOREO, BATTLE_STINGS, CREATURE_VOICES, ENEMIES] + extra:
+                ACCESSIBILITY, VOICES, SPEAKERS, REEFBALL_HOOKS, CHOREO_SFX, CHOREO, BATTLE_STINGS, CREATURE_VOICES, ENEMIES, LIFE] + extra:
         p = root / rel
         if p.is_file():
             out[rel] = json.loads(p.read_text(encoding="utf-8"))

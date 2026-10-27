@@ -14,6 +14,7 @@ const FOOTSTEPS := "footsteps"
 const VOICES := "voices"
 const REEFBALL_HOOKS := "reefball_hooks"
 const BATTLE_STINGS := "battle_stings"
+const LIFE := "life"
 ## The reserved music id meaning "fade the bed out" (the .dlg format's `@music silence`).
 const SILENCE := &"silence"
 
