@@ -1,0 +1,4 @@
+FAIL creature_lamp_engine: no baseline (inspect out/, then compare.py --update-baselines creature_lamp_engine)
+FAIL creature_lamp_engine_opened: no baseline (inspect out/, then compare.py --update-baselines creature_lamp_engine_opened)
+Screenshots: 2 compared, 2 failed (diffs in /root/hymn/tests/screenshots/out/diff)
+compare exit 1
