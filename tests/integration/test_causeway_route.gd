@@ -45,7 +45,6 @@ func test_the_route_is_dressed_and_lit_by_its_own_scene() -> void:
 
 func test_every_spawn_stands_on_the_walk_floor() -> void:
 	_load()
-	await (Engine.get_main_loop() as SceneTree).physics_frame
 	var space := zone.get_world_3d().direct_space_state
 	for spawn: Node in zone.get_node(^"Spawns").get_children():
 		var p := (spawn as Node3D).global_position
