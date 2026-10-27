@@ -35,11 +35,14 @@ the effects are Rendering's (the water shader, the shadow setup).
 - **Reflection:** the still actor's capsule goes to the new `hymn_still_actor_*` globals. The water's SSR marches a
   flat ray wherever the mirror ray meets the capsule and lands on him, so his reflection stays a mirror while Asha's
   ripples.
-- **Shadow:** his meshes join layer 18. The keys stop casting him (`shadow_caster_mask`), and a cancelling spot pair
-  (positive and shadowed with blur 0.12, negative and unshadowed) re-casts his shadow crisper. Nothing is lit twice.
+- **Shadow:** his meshes move to layer 18; the key stops casting him (`shadow_caster_mask`); a cancelling pair of
+  copies of the key (positive and shadowed with blur 0.12, negative and unshadowed) re-casts his shadow crisper.
+  Nothing is lit twice. Distant spot lights in place of the copies were tried first and failed in Godot 4.6.3
+  (probe on the RX 9070 XT): a spot 200 m out shadowed the light's side of the caster as well; at d <= 80 m
+  (range 2d) the probe was right, but in the scene 60 m gave acne and black tiles.
 - **Shots:** `revenant_tells_{reflection,shadow}` and their `_off` controls. Viewed at High on the RX 9070 XT; the
   lavapipe renders are on the branch for approval.
-- **Tests:** `tests/unit/test_revenant_tells.gd` (7).
+- **Tests:** `tests/unit/test_revenant_tells.gd` (8).
 - **Limits:** no reflection at Low (no SSR); in close cutscene shots the key light takes him off layer 18.
 
 ## Review log

@@ -10,8 +10,8 @@ level that has the project's water (`water_surface_body.gdshaderinc`) and shadow
 Add a `RevenantTells` (Node3D) anywhere in the scene and set `actor_path` to the actor's root (Sefir's character
 node). It engages on the frame after `_ready`, so an actor that a parent adds in its own `_ready` is found.
 - `still_reflection` and `sharp_shadow` switch each tell on its own.
-- `lights` names the lights whose shadow of him turns sharp. Leave it empty for every shadowed DirectionalLight3D in
-  the current scene.
+- `lights` names the lights whose shadow of him turns sharp. Leave it empty for the brightest shadowed
+  DirectionalLight3D in the current scene (the key).
 - `engage()` and `disengage()` turn it on and off at runtime (a cutscene can call them). `_exit_tree` disengages.
 
 ## How it works
@@ -25,18 +25,24 @@ radius, from his meshes' AABB padded by `capsule_pad_m`, with the heights in `hy
 - The extra march only runs for the pixels where his mirror image falls.
 - There are two slots. A third still actor gets none and ripples like anyone else, with a warning.
 
-**The shadow.** A light can't soften one caster and not another, so the actor's meshes join the **still layer**
-(18; 19 is the cutscene key light, 20 UndertowHalfRes), and:
-1. each shadowed DirectionalLight3D drops that layer from its `shadow_caster_mask`, so it no longer casts him;
-2. two spot lights sit `spot_distance_m` (200 m) up that light's direction, aimed at him, with its colour and energy
-   (the spot range window is compensated). One is shadowed, `shadow_caster_mask` = the still layer, with a
-   `shadow_blur` (0.12) sharper than the key's (0.6 on the stage). The other is identical but `light_negative`
+**The shadow.** A light can't soften one caster and not another, so:
+1. The actor's meshes move to the **still layer** (18; 19 is the cutscene key light, 20 UndertowHalfRes). They
+   move to it alone: a light casts any mesh that shares a layer with its `shadow_caster_mask`, so a mesh left
+   on layer 1 too would still cast. Cameras and lights see layer 18 by default.
+2. The key (the brightest shadowed DirectionalLight3D, or `lights`) drops that layer from its
+   `shadow_caster_mask`, so it no longer casts him. The other lights (the rim) keep casting him softly.
+3. Two copies of the key follow it every frame: one is shadowed, with `shadow_caster_mask` = the still layer and
+   a `shadow_blur` (0.12) sharper than the key's (0.6 on the stage); the other is identical but `light_negative`
    and unshadowed.
 
-Where nothing blocks them, the pair cancels exactly, so no surface is lit twice (verified on the RX 9070 XT: the
-floor matches the tells-off render). Where he blocks the positive spot, the key's light is removed with a crisper
-edge than the soft key gives everyone else. The spots' shadows use the positional atlas, so the key's directional
-cascades aren't split.
+Where nothing blocks the copies they cancel exactly, so no surface is lit twice. Where he blocks the positive
+one, the key's light is removed with a crisper edge than the soft key gives everyone else: faint side by side
+with Asha, not a cut-out.
+- **Cost:** the positive copy is one more shadowed directional light, so it shares the directional shadow atlas
+  with the key while the tell is engaged.
+- **Spots don't work:** distant spot lights standing in for the key were tried first. In Godot 4.6.3 a spot 200 m
+  out shadowed the light's side of the caster too, and at 60 m it showed acne and black tiles. The probe numbers
+  are in the task's result.
 
 ## Limits
 

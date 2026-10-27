@@ -56,9 +56,9 @@ func _free() -> void:
 	root.free()
 
 
-func test_the_actor_joins_the_still_layer_and_leaves_the_keys_casters() -> void:
+func test_the_actor_moves_to_the_still_layer_and_leaves_the_keys_casters() -> void:
 	var still := tells.still_mask()
-	assert_eq(mesh.layers, 1 | still, "the actor keeps his layer and joins the still one")
+	assert_eq(mesh.layers, still, "the actor moves onto the still layer alone (else layer 1 still casts)")
 	assert_eq(key.shadow_caster_mask & still, 0, "the key no longer casts the actor")
 	var full := DirectionalLight3D.new()
 	assert_eq(key.shadow_caster_mask | still, full.shadow_caster_mask, "the key still casts everything else")
@@ -66,32 +66,48 @@ func test_the_actor_joins_the_still_layer_and_leaves_the_keys_casters() -> void:
 	_free()
 
 
-func test_a_cancelling_pair_of_spots_stands_in_for_the_key() -> void:
+func test_a_cancelling_pair_of_copies_stands_in_for_the_key() -> void:
 	assert_eq(tells.pairs.size(), 1)
-	var sharp := tells.pairs[0][2] as SpotLight3D
-	var cancel := tells.pairs[0][3] as SpotLight3D
-	assert_false(sharp.light_negative, "the shadowed spot adds light")
+	var sharp := tells.pairs[0][2] as DirectionalLight3D
+	var cancel := tells.pairs[0][3] as DirectionalLight3D
+	assert_false(sharp.light_negative, "the shadowed copy adds light")
 	assert_true(sharp.shadow_enabled)
 	assert_eq(sharp.shadow_caster_mask, tells.still_mask(), "it shadows the actor only")
 	assert_true(sharp.shadow_blur < key.shadow_blur, "its shadow is sharper than the key's")
 	assert_true(cancel.light_negative, "its twin takes the same light away")
 	assert_false(cancel.shadow_enabled)
-	for s: SpotLight3D in [sharp, cancel]:
-		assert_eq(s.light_color, key.light_color)
-		assert_eq(s.light_energy, sharp.light_energy, "the pair cancels exactly")
-		assert_true(s.light_energy >= key.light_energy, "the range window is compensated")
-		assert_eq(s.light_cull_mask, key.light_cull_mask)
+	for t: DirectionalLight3D in [sharp, cancel]:
+		assert_eq(t.light_color, key.light_color)
+		assert_eq(t.light_energy, key.light_energy, "the pair cancels exactly")
+		assert_eq(t.light_cull_mask, key.light_cull_mask)
+		assert_eq(t.directional_shadow_max_distance, key.directional_shadow_max_distance)
 	_free()
 
 
-func test_the_spots_sit_up_the_keys_direction_and_aim_at_the_actor() -> void:
-	var sharp := tells.pairs[0][2] as SpotLight3D
-	var dist := float(tells.config.get("spot_distance_m", 0.0))
-	var to_spot := sharp.global_position - actor.global_position
-	assert_between(to_spot.length(), dist - 2.0, dist + 2.0, "spot_distance_m from the actor")
-	assert_between(to_spot.normalized().dot(key.global_basis.z.normalized()), 0.999, 1.001, "along the key")
-	var aim := -sharp.global_basis.z.normalized()
-	assert_between(aim.dot(-to_spot.normalized()), 0.999, 1.001, "the cone points at the actor")
+func test_the_copies_follow_the_key() -> void:
+	key.rotate_y(0.7)
+	key.light_energy = 3.1
+	tells._process(0.0)
+	for k in [2, 3]:
+		var t := tells.pairs[0][k] as DirectionalLight3D
+		assert_true(t.global_basis.z.is_equal_approx(key.global_basis.z), "same direction as the key")
+		assert_between(t.light_energy, 3.1 - EPS, 3.1 + EPS)
+	_free()
+
+
+func test_only_the_brightest_key_is_paired_by_default() -> void:
+	tells.disengage()
+	var rim := DirectionalLight3D.new()
+	rim.shadow_enabled = true
+	rim.light_energy = 1.0
+	root.add_child(rim)
+	var auto := RevenantTells.new()
+	root.add_child(auto)
+	auto.actor_path = auto.get_path_to(actor)
+	auto.engage()
+	assert_eq(auto.pairs.size(), 1)
+	assert_eq(auto.pairs[0][0], key, "the key (2.4) over the rim (1.0)")
+	assert_eq(rim.shadow_caster_mask & auto.still_mask(), auto.still_mask(), "the rim still casts him")
 	_free()
 
 
@@ -113,7 +129,7 @@ func test_the_capsule_reaches_the_still_actor_globals() -> void:
 
 func test_disengage_puts_everything_back() -> void:
 	var caster := key.shadow_caster_mask | tells.still_mask()
-	var sharp := tells.pairs[0][2] as SpotLight3D
+	var sharp := tells.pairs[0][2] as DirectionalLight3D
 	tells.disengage()
 	assert_eq(mesh.layers, 1)
 	assert_eq(key.shadow_caster_mask, caster)

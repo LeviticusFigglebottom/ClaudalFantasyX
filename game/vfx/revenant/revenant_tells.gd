@@ -7,13 +7,15 @@ extends Node3D
 ##   hymn_still_actor_* globals every frame. The water (water_surface_body.gdshaderinc) marches its SSR
 ##   with a flat normal wherever the mirror ray meets that capsule and the flat march lands on the actor,
 ##   so his reflection stays a mirror while everyone else's breaks up. Tiers without SSR (Low) show none.
-## - **A shadow that is faintly too sharp.** Each shadowed DirectionalLight3D stops casting the actor
-##   (its shadow_caster_mask loses the still layer, which the actor's meshes join). A pair of spot lights
-##   stands in for that light on the actor alone, spot_distance_m up the light's direction: one with the
-##   light's colour and energy, shadowed (shadow_caster_mask = the still layer, shadow_blur sharper than the
-##   key's), and one identical but negative and unshadowed. Unshadowed, the pair cancels exactly, so
-##   nothing is lit twice; in the actor's shadow only the positive one is blocked, which removes the key
-##   there with a crisper edge than everyone else's shadow gets.
+## - **A shadow that is faintly too sharp.** The key (the brightest shadowed DirectionalLight3D, or `lights`)
+##   stops casting the actor: his meshes move to the still layer (as CutsceneKeyLight moves a close shot's
+##   cast) and the key's shadow_caster_mask drops it. Two copies of the key stand in for it on him alone:
+##   one shadowed with shadow_caster_mask = the still layer and a shadow_blur sharper than the key's, and
+##   one identical but negative and unshadowed. Where nothing blocks them they cancel exactly, so nothing
+##   is lit twice; in his shadow only the positive one is blocked, which removes the key there with a
+##   crisper edge than everyone else's shadow gets. (Distant spot lights standing in for the key were tried:
+##   Godot 4.6.3 shadowed the light's side of the caster at 200 m, acne and black tiles at 60 m.) The positive
+##   copy is one more shadowed directional light, so it shares the directional shadow atlas.
 ##
 ## The cutscene key light (CutsceneKeyLight) moves a close shot's cast onto its own layer, which takes the
 ## still layer off the actor while it is engaged: in those close shots his shadow is the sun's soft one.
@@ -32,13 +34,13 @@ static var _slot_owners: Array = [null, null]
 @export var actor_path: NodePath
 @export var still_reflection := true
 @export var sharp_shadow := true
-## The lights whose shadow of the actor turns sharp. Empty = every shadowed DirectionalLight3D in the
-## current scene when engaging.
+## The lights whose shadow of the actor turns sharp. Empty = the brightest shadowed DirectionalLight3D in
+## the current scene when engaging (the key; the others keep casting him softly).
 @export var lights: Array[NodePath] = []
 
 var config: Dictionary = {}
 var actor: Node3D
-## [light, its original shadow_caster_mask, positive spot, negative spot] per light.
+## [light, its original shadow_caster_mask, positive copy, negative copy] per light.
 var pairs: Array = []
 var slot := -1
 # [GeometryInstance3D, original layers] per actor mesh.
@@ -91,7 +93,9 @@ func engage() -> void:
 	for n in actor.find_children("*", "GeometryInstance3D", true, false):
 		var g := n as GeometryInstance3D
 		_meshes.append([g, g.layers])
-		g.layers |= mask
+		# Only the still layer: a light casts any mesh sharing a layer with its caster mask, so a mesh
+		# left on layer 1 too would still cast from the keys. Cameras and lights see layer 18 by default.
+		g.layers = mask
 		var vi := g as VisualInstance3D
 		var box := (to_local * vi.global_transform) * vi.get_aabb()
 		bounds = box if first else bounds.merge(box)
@@ -154,21 +158,15 @@ func _update() -> void:
 		var h: Vector2 = ShaderGlobals.get_value(HEIGHTS_GLOBAL, Vector2.ZERO)
 		h[slot] = float(c[2])
 		ShaderGlobals.set_value(HEIGHTS_GLOBAL, h)
-	if pairs.is_empty():
-		return
-	var aim := actor.global_transform * (_local_base + Vector3.UP * _local_height * 0.5)
-	var dist := float(config.get("spot_distance_m", 0.0))
 	for p: Array in pairs:
 		var light := p[0] as DirectionalLight3D
 		if not is_instance_valid(light):
 			continue
-		# A DirectionalLight3D shines along its -Z: the light is up +Z.
-		var pos := aim + light.global_basis.z.normalized() * dist
 		for k in [2, 3]:
-			var spot := p[k] as SpotLight3D
-			spot.look_at_from_position(pos, aim, _up_for(light.global_basis.z))
-			_copy_light(light, spot)
-			spot.visible = light.is_visible_in_tree()
+			var twin := p[k] as DirectionalLight3D
+			twin.global_transform = light.global_transform
+			_copy_light(light, twin)
+			twin.visible = light.is_visible_in_tree()
 
 
 func _claim_slot() -> void:
@@ -193,53 +191,50 @@ func _shadow_lights() -> Array[DirectionalLight3D]:
 	var root: Node = get_tree().current_scene if get_tree().current_scene != null else owner
 	if root == null:
 		root = get_parent()
+	var key: DirectionalLight3D = null
 	for n in root.find_children("*", "DirectionalLight3D", true, false):
 		var l := n as DirectionalLight3D
-		if l.shadow_enabled and l.is_visible_in_tree() and not l is CutsceneKeyLight:
-			out.append(l)
+		if not l.shadow_enabled or not l.is_visible_in_tree() or l is CutsceneKeyLight:
+			continue
+		if key == null or l.light_energy > key.light_energy:
+			key = l
+	if key != null:
+		out.append(key)
 	return out
 
 
 func _add_pair(light: DirectionalLight3D, mask: int) -> void:
-	var dist := float(config.get("spot_distance_m", 0.0))
-	var reach := float(config.get("shadow_reach_m", 0.0)) * float(config.get("cone_margin", 1.0))
-	var spots: Array[SpotLight3D] = []
+	var twins: Array[DirectionalLight3D] = []
 	for negative in [false, true]:
-		var s := SpotLight3D.new()
-		s.name = "%sTell%s" % [light.name, "Cancel" if negative else "Sharp"]
-		s.top_level = true
-		s.light_negative = negative
-		s.shadow_enabled = not negative
-		s.shadow_caster_mask = mask
-		s.shadow_blur = float(config.get("shadow_blur", 0.0))
-		s.shadow_bias = float(config.get("spot_shadow_bias", 0.0))
-		s.shadow_normal_bias = float(config.get("spot_shadow_normal_bias", 0.0))
-		s.light_cull_mask = light.light_cull_mask
-		s.light_size = 0.0
-		s.light_indirect_energy = 0.0
-		s.light_volumetric_fog_energy = 0.0
-		s.light_bake_mode = Light3D.BAKE_DISABLED
-		s.spot_attenuation = 0.0
-		s.spot_angle_attenuation = float(config.get("spot_angle_attenuation", 1.0))
-		# Range: far past the actor so the range window barely varies over the covered ground;
-		# _copy_light divides the energy by the window at the actor.
-		s.spot_range = dist * 4.0
-		s.spot_angle = rad_to_deg(atan(reach / maxf(dist, 0.001)))
-		add_child(s)
-		spots.append(s)
-	pairs.append([light, light.shadow_caster_mask, spots[0], spots[1]])
+		var t := DirectionalLight3D.new()
+		t.name = "%sTell%s" % [light.name, "Cancel" if negative else "Sharp"]
+		t.top_level = true
+		t.light_negative = negative
+		t.shadow_enabled = not negative
+		t.shadow_caster_mask = mask
+		t.shadow_blur = float(config.get("shadow_blur", 0.0))
+		t.shadow_bias = light.shadow_bias
+		t.shadow_normal_bias = light.shadow_normal_bias
+		t.directional_shadow_mode = light.directional_shadow_mode
+		t.directional_shadow_split_1 = light.directional_shadow_split_1
+		t.directional_shadow_split_2 = light.directional_shadow_split_2
+		t.directional_shadow_split_3 = light.directional_shadow_split_3
+		t.directional_shadow_max_distance = light.directional_shadow_max_distance
+		t.light_cull_mask = light.light_cull_mask
+		t.light_angular_distance = 0.0
+		t.light_indirect_energy = 0.0
+		t.light_volumetric_fog_energy = 0.0
+		t.light_bake_mode = Light3D.BAKE_DISABLED
+		t.sky_mode = DirectionalLight3D.SKY_MODE_LIGHT_ONLY
+		add_child(t)
+		twins.append(t)
+	pairs.append([light, light.shadow_caster_mask, twins[0], twins[1]])
 	light.shadow_caster_mask &= ~mask
 
 
-func _copy_light(light: DirectionalLight3D, spot: SpotLight3D) -> void:
-	# Godot's omni/spot window at the actor's distance (attenuation 0: no inverse-square).
-	var nd := pow(float(config.get("spot_distance_m", 0.0)) / spot.spot_range, 4.0)
-	var window := maxf(pow(maxf(1.0 - nd, 0.0), 2.0), 0.001)
-	spot.light_color = light.light_color
-	spot.light_energy = light.light_energy / window
-	spot.light_temperature = light.light_temperature
-	spot.light_specular = light.light_specular
-
-
-static func _up_for(dir: Vector3) -> Vector3:
-	return Vector3.FORWARD if absf(dir.normalized().y) > 0.99 else Vector3.UP
+func _copy_light(light: DirectionalLight3D, twin: DirectionalLight3D) -> void:
+	twin.light_color = light.light_color
+	twin.light_energy = light.light_energy
+	twin.light_intensity_lux = light.light_intensity_lux
+	twin.light_temperature = light.light_temperature
+	twin.light_specular = light.light_specular
