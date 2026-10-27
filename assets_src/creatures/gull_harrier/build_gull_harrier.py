@@ -26,6 +26,7 @@ import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "common"))
 import creature_kit as ck  # noqa: E402
+import grounding as gr  # noqa: E402
 
 SEED = 6113
 PAL = {k: ck.hexrgb(v) for k, v in {
@@ -717,6 +718,20 @@ def build_clips() -> list[ck.Clip]:
     return [idle, attack, cast, hit, ko]
 
 
+HOVER = 1.05  # creatures.json stand_in.hover (the stormgull's too): the stand-in lifts the model by it
+# Kept off the floor (M3-CRE-632, common/grounding.py), measured with the hover (the floor is y -HOVER here): the
+# twine hank lies along the ground after the KO's fall (each segment turns up the least it takes, from its end), and a
+# wing the heavier, mirrored recoil (hit_b) would flail down through the floor turns up at the shoulder; as it lands
+# breast first the neck holds the head off the floor, and the body settles onto it, not through it.
+GROUNDED_LIMBS = [(f"twine_{i}", 0, 1.0, 60.0) for i in (2, 1, 0)] + [
+    (f"shoulder_{tag}", 2, s, 45.0, ("hit", "hit_b")) for tag, s in (("l", 1.0), ("r", -1.0))] + [
+    ("neck", 0, -1.0, 30.0, ("ko",)), ("body", gr.LIFT, 1.0, 0.05, ("ko",))]
+
+
+def export_clips(rig: ck.Rig, mesh: ck.Mesh) -> list[ck.Clip]:
+    return gr.grounded(rig, mesh, build_clips(), GROUNDED_LIMBS, floor=-HOVER)
+
+
 def main() -> None:
     argv = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else []
     ap = argparse.ArgumentParser()
@@ -724,7 +739,7 @@ def main() -> None:
     args = ap.parse_args(argv)
     rig = build_rig()
     mesh = build_mesh(rig)
-    info = ck.export_creature(mesh, rig, build_clips(), args.out, extras={"hymn_creature": "gull_harrier"})
+    info = ck.export_creature(mesh, rig, export_clips(rig, mesh), args.out, extras={"hymn_creature": "gull_harrier"})
     print(f"gull_harrier: {info}")
 
 

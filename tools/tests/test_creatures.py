@@ -252,31 +252,51 @@ def skinned_lowest(glb: Path) -> dict[str, float]:
 
 
 class GroundedClipsTest(unittest.TestCase):
-    """M3-CRE-631: every vertex of every baked frame of every clip stays at or above the floor (y 0, 5 mm tolerance),
-    measured from the GLB, not the root bone.
+    """M3-CRE-631, M3-CRE-632: every vertex of every baked frame of every clip of every creature in creatures.json
+    stays at or above the floor (y 0, 5 mm tolerance), measured from the GLB, not the root bone. A flier is measured
+    with its creatures.json `stand_in.hover` added, since the stand-in lifts the model by it in battle (its KO comes
+    down by that hover and lands on the floor, test_a_ko_ends_on_the_ground). It skins all of them in about 11 s.
 
-    It covers the creatures fixed or measured clean so far, not every creature yet: skinning all of them takes over 20
-    s, and many shipped creatures still dip under the floor (listed in docs/kb/tasks/M3/M3-CRE-631). Creatures that go
-    below y 0 by design must never be added: the Wakefin swims below the waterline, and a flier's clips sit under its
-    creatures.json `stand_in.hover`, which lifts it (its KO comes down by that hover, test_a_ko_ends_on_the_ground)."""
+    Only a creature whose design puts it below the floor may be left out (ALLOW, each citing its sheet). A phase's
+    creatures.json `offset_m` (the Drownbell sinking into the flood) is the stage's, not the clip's, and isn't added."""
 
     TOLERANCE = 0.005
-    GROUNDED = (
-        # M3-CRE-631: the reef crab and its variants, the tide crawler and its variant, the slag tortoise and its variant
-        "reef_crab", "wallcrab", "wreck_crab", "root_crab", "tide_crawler", "rim_crawler", "slag_tortoise", "scree_crawler",
-        # already clean when this test was added (M3-CRE-624, M3-CRE-628 and earlier)
-        "avalanche_ram", "ridge_lynx", "glass_skate", "conduit_crawler", "rime_urchin",
-    )
+    ALLOW = {
+        # it rises out of the water between the raft's planks, and its KO slides back down between them
+        # (docs/kb/art/creatures/act1/hullgnaw.md)
+        "hullgnaw": "rises from the water between the planks",
+        # it rises out of the water or sand; as built, its tail is buried and runs along under the ground before the S
+        # rises (docs/kb/art/creatures/lantern_eel.md, "Notes for the model")
+        "lantern_eel": "its tail is buried",
+        # rooted in the water: its prop-roots go black and wet below the waterline, its KO sinks, and phase 2 tears it
+        # out of the tree (docs/kb/art/creatures/act2/mangrove_drowner.md)
+        "mangrove_drowner": "roots in the water",
+        # a limb of the storm coming down over the seawall from behind the parapet; its far body is the storm VFX
+        # (docs/kb/art/creatures/act1/undertows_reach.md)
+        "undertows_reach": "rises from the storm behind the wall",
+        # a fish fought from a barge: mostly a fin above the water, it breaches to strike and dives (cast)
+        # (docs/kb/art/creatures/act2/wakefin.md)
+        "wakefin": "swims below the waterline",
+        # it lies half out of the fen's water on a mangrove root, whose ends dip under (y 0 is the water); its KO rolls
+        # off the root and sinks (docs/kb/art/creatures/act2/tannin_archer.md; the build's docstring)
+        "tannin_archer": "half out of the water on a root",
+    }
 
     def test_clips_stay_above_the_floor(self) -> None:
-        rows = _load(vc.CREATURES_FILE)["creatures"]
-        defaults = _load(vc.CREATURES_FILE)["defaults"]
-        for cid in self.GROUNDED:
-            hover = float({**defaults["stand_in"], **rows[cid].get("stand_in", {})}.get("hover", 0.0))
-            self.assertEqual(hover, 0.0, f"{cid} hovers: its clips sit below y 0 by design, so it can't be listed")
+        data = _load(vc.CREATURES_FILE)
+        for cid, row in data["creatures"].items():
+            if cid in self.ALLOW:
+                continue
+            hover = float({**data["defaults"]["stand_in"], **row.get("stand_in", {})}.get("hover", 0.0))
             for clip, low in skinned_lowest(ROOT / "assets/creatures" / cid / f"{cid}.glb").items():
                 with self.subTest(creature=cid, clip=clip):
-                    self.assertGreaterEqual(low, -self.TOLERANCE, f"{cid} {clip}: a vertex goes {-low:.3f} m under the floor")
+                    self.assertGreaterEqual(low + hover, -self.TOLERANCE,
+                                            f"{cid} {clip}: a vertex goes {-(low + hover):.3f} m under the floor"
+                                            + (f" (with its {hover} m hover)" if hover else ""))
+
+    def test_the_allow_list_names_creatures(self) -> None:
+        rows = _load(vc.CREATURES_FILE)["creatures"]
+        self.assertEqual(sorted(set(self.ALLOW) - set(rows)), [], "an ALLOW entry names no creature")
 
 
 if __name__ == "__main__":

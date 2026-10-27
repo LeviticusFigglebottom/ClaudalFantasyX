@@ -30,14 +30,17 @@ def _local(head, rot, loc) -> np.ndarray:
 class Poser:
     """Skinning matrices of a rig in a pose, and the mesh posed by them (Godot axes, metres)."""
 
-    def __init__(self, rig: ck.Rig, mesh: ck.Mesh) -> None:
+    def __init__(self, rig: ck.Rig, mesh: ck.Mesh | list[ck.Mesh]) -> None:
+        """`mesh`: one mesh, or several in the same rig (M3-CRE-632: a body and its extra meshes, e.g. a rim)."""
         self.rig = rig
         self.names = [b.name for b in rig.bones]
         self.parent = [rig.index(b.parent) if b.parent else -1 for b in rig.bones]
         self.heads = [np.asarray(b.head, dtype=np.float64) for b in rig.bones]
-        a = mesh.arrays()
-        self.P = np.c_[a["pos"], np.ones(len(a["pos"]))]
-        self.J, self.W = a["joints"], a["weights"]
+        arrays = [m.arrays() for m in (mesh if isinstance(mesh, (list, tuple)) else [mesh])]
+        pos = np.concatenate([a["pos"] for a in arrays])
+        self.P = np.c_[pos, np.ones(len(pos))]
+        self.J = np.concatenate([a["joints"] for a in arrays])
+        self.W = np.concatenate([a["weights"] for a in arrays])
         self.children: dict[int, list[int]] = {i: [] for i in range(len(self.names))}
         for i, p in enumerate(self.parent):
             if p >= 0:
@@ -64,7 +67,8 @@ class Poser:
         """Recomputes `mats` for `bones` (a subtree, parents first) after their keys in `pose` changed."""
         for i in bones:
             rot, loc = pose.get(self.names[i], ((0.0, 0.0, 0.0), (0.0, 0.0, 0.0)))
-            mats[i] = mats[self.parent[i]] @ _local(self.heads[i], rot, loc)
+            M = _local(self.heads[i], rot, loc)
+            mats[i] = M if self.parent[i] < 0 else mats[self.parent[i]] @ M  # M3-CRE-632: the root may be a limb
 
     def vertices(self, mats: list[np.ndarray], mask: np.ndarray | None = None) -> np.ndarray:
         S = np.asarray(mats)
@@ -98,12 +102,15 @@ def lowest(poser: Poser, clip: ck.Clip) -> list[float]:
 def _correct(poser: Poser, mats, pose, bone: str, sub: list[int], mask, axis: int, sign: float, limit: float,
              floor: float) -> float:
     """The least turn (degrees about the rest `axis`, or a lift in metres when axis is "lift") of `bone` that puts
-    its subtree's vertices at or above `floor`."""
+    its subtree's vertices at or above `floor`. `axis` may also be (wx, wy, wz): the turn adds `sign` × c × w to the
+    bone's Euler degrees (M3-CRE-632: a leg splayed round a body turns about its own outward axis)."""
     rot0, loc0 = pose.get(bone, ((0.0, 0.0, 0.0), (0.0, 0.0, 0.0)))
 
     def low(c: float) -> float:
         rot, loc = list(rot0), list(loc0)
-        if axis == 3:
+        if isinstance(axis, tuple):
+            rot = [r + sign * c * w for r, w in zip(rot, axis)]
+        elif axis == LIFT:
             loc[1] += c
         else:
             rot[axis] += sign * c
@@ -142,10 +149,13 @@ LIFT = 3  # a limb spec's axis: lift the limb along its parent's up (metres) ins
 STEPS = 16  # the search's coarse steps over a limb's range
 
 
-def grounded(rig: ck.Rig, mesh: ck.Mesh, clips: list[ck.Clip], limbs: list[tuple], floor: float = 0.0) -> list[ck.Clip]:
-    """`limbs`: (bone, axis 0/1/2 or LIFT, sign, limit) per limb, in order; the turn is `sign` × degrees about the
-    bone's rest axis (up to `limit`), or a lift up to `limit` metres. Returns the clips (plus hit_b and idle_b) with
-    those bones keyed at every frame."""
+def grounded(rig: ck.Rig, mesh: ck.Mesh | list[ck.Mesh], clips: list[ck.Clip], limbs: list[tuple],
+             floor: float = 0.0) -> list[ck.Clip]:
+    """`limbs`: (bone, axis 0/1/2, (wx, wy, wz) or LIFT, sign, limit) per limb, in order; the turn is `sign` × degrees
+    about the bone's rest axis (up to `limit`), or a lift up to `limit` metres. An optional fifth item, a tuple of clip
+    names, corrects the limb in those clips only (M3-CRE-632; it keeps its authored pose in the others). The root may
+    be a limb (a lift of the whole body), and `mesh` may be a list (a body and its extra meshes). Returns the clips
+    (plus hit_b and idle_b) with those bones keyed at every frame."""
     poser = Poser(rig, mesh)
     subs = {b: poser.subtree(b) for b, *_ in limbs}
     masks = {b: (np.isin(poser.J, subs[b]) & (poser.W > 1e-6)).any(axis=1) for b in subs}
@@ -158,8 +168,9 @@ def grounded(rig: ck.Rig, mesh: ck.Mesh, clips: list[ck.Clip], limbs: list[tuple
         for t in frame_times(clip):
             pose = pose_at(clip, poser.names, t)
             mats = poser.matrices(pose)
-            for b, axis, sign, limit in limbs:
-                _correct(poser, mats, pose, b, subs[b], masks[b], axis, sign, limit, floor)
+            for b, axis, sign, limit, *only in limbs:
+                if not only or clip.name in only[0]:
+                    _correct(poser, mats, pose, b, subs[b], masks[b], axis, sign, limit, floor)
                 fixed.key(b, t, pose[b][0], pose[b][1])
         out.append(fixed)
     return out
