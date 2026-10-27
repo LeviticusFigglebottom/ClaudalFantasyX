@@ -109,6 +109,8 @@
       "HelpDimLabel": {"base": "Label", "font": "sans", "size": 24, "color": "text_dim"},
       "FlavorLabel": {"base": "Label", "font": "sans_italic", "size": 24},
       "DimLabel": {"base": "Label", "font": "sans_medium", "size": 22, "color": "text_dim"},
+      "FlavorDimLabel": {"base": "Label", "font": "sans_italic", "size": 24, "color": "text_dim"},
+      "DialogueBodySung": {"base": "Label", "font": "sans_italic", "size": 30},
       "DamageNumber": {"base": "Label", "font": "sans_bold", "size": 44, "tabular": true, "outline": true},
       "DamageNumberCrit": {"base": "Label", "font": "sans_bold", "size": 56, "tabular": true, "outline": true},
       "FloatText": {"base": "Label", "font": "sans_bold", "size": 28, "outline": true},

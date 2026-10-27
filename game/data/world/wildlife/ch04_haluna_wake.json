@@ -1,0 +1,22 @@
+{
+  "_doc": "Haluna on the Pilgrim's Wake night: the gulls are roosting out of sight; a few ghost crabs work the dark shore by the dock head, where the village has gone quiet. Placed on the greybox layout (M3-CRE-615); move the coordinates when env-art's kit replaces the blocks (same keys as ch02_haluna.json).",
+  "zone": "ch04/haluna_wake",
+  "flocks": [],
+  "beaches": [
+    {
+      "id": "dock_shore",
+      "center": [
+        27.0,
+        -20.0
+      ],
+      "half_extents": [
+        2.5,
+        5.0
+      ],
+      "yaw_deg": 0.0,
+      "y": 0.0,
+      "count": 5
+    }
+  ],
+  "shoals": []
+}

@@ -14,11 +14,15 @@ grade: ch02
 ---
 @letterbox on
 @camera H05
+// M2-FP-103: he is down in the shallows when the scene opens (lie_in_shallows is on Character's list;
+// until it is built sequencer.json clip_stand_ins kneels him, half risen, rather than standing him up).
+@anim rhen lie_in_shallows
+// M2-FP-103: she is already kneeling over him when the dawn fades in (the clip settles under the black).
+@anim asha kneel_over_rhen
 @music haluna_dawn fade=4.0
 @fade in 2.5
 The sea gave me back at dawn. Somebody was humming. #line:ch02_beach_001 #vo
 A star-path. The one they teach children for finding the way home. #line:ch02_beach_016 #vo
-@anim asha kneel_over_rhen
 @face asha soft_smile 0.6
 Asha [soft_smile]: There you are. No, don't sit up yet. You've swallowed half the bay. #line:ch02_beach_002
 @camera H06 blend=0.0

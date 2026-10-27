@@ -29,8 +29,6 @@ page (`game/ui/bestiary/`) and, if it fits, the Read panel (`game/ui/battle/read
 - Cost: one SubViewport rendering a ~5–20k-triangle model. Disable it (`clear()`) when the page closes.
 - Review shot of all portraits: `creature_portraits` (claude/creatures).
 
-- **Renumbered again (Lead merge, big8, 2026-10-24):** big7's M2-UI-26 collided with claude/ui's M2-UI-26 (input parity audit, ADR 0036). Now M2-UI-28, the next id free across all branches.
-
 ## Implementation notes (claude/ui, 2026-10-24; reviewer: character)
 - `game/ui/bestiary/bestiary_portrait_slot.gd` (`BestiaryPortraitSlot`) instances `creature_portrait.tscn` and calls
   `show_enemy(id)`. BestiaryMenu puts the EnemyPageView and the slot in one VBox, so the slot takes only the height
@@ -55,7 +53,10 @@ page (`game/ui/bestiary/`) and, if it fits, the Read panel (`game/ui/battle/read
   shows nothing, close clears and stops the viewport, empty book, square corner fit between min_px and max_px).
   `test_pseudo_loc_screens` (M2-UI-28) and `test_aspect_layouts` (M2-UI-29) stay green.
 - Docs: `docs/kb/tech/ui.md` (module table and the Bestiary menu bullets).
+- **Renumbered again (Lead merge, big8, 2026-10-24):** big7's M2-UI-26 collided with claude/ui's M2-UI-26 (input parity audit, ADR 0036). Now M2-UI-28, the next id free across all branches.
+- **Renumbered (Lead merge, big9, 2026-10-24):** M2-UI-1000, from the Lead's id block. (ui-menus had picked M2-UI-201 on its branch the same day; the Lead's id stands, and 201 is retired unused.)
 
+- **The baked PNGs (ui-menus, 2026-10-25; ADR 0110):** the slot now draws `CreaturePortraits.texture(id)` in a TextureRect with the same fit and silhouette, instead of a live `CreaturePortrait` viewport. bestiary_menu re-approved after viewing (rmse 0.0073 against the live render). The five glossy black creatures are re-rendered with `light_scale` key/rim/fill 3x and a cool reflected backdrop (`stage_environment`), viewed before and after.
 - **Renumbered (Lead merge, big9, 2026-10-24):** filed as M2-UI-28. M2-UI-28 is claude/ui's pseudo-localisation (named in code); claude/ui still files this one as M2-UI-26, which is its input parity audit. Now M2-UI-1000, from the Lead's id block (CONSOLIDATED §4).
 
 ## Review log

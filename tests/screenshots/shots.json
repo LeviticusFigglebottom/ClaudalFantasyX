@@ -2532,7 +2532,11 @@
     {
       "id": "battle_arena_wall_head",
       "scene": "res://game/battle/scene/shots/battle_arena_wall_head.tscn",
-      "setup": {"globals": {"hymn_wind_time": 12.0}}
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 12.0
+        }
+      }
     },
     {
       "id": "hero_cutscene_turn_strip",
@@ -3165,6 +3169,176 @@
         "globals": {
           "hymn_wind_time": 40.0
         },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "ch06_brine_road",
+      "scene": "res://game/levels/_tests/act1_zones/ch06_brine_shoals_shots.tscn",
+      "camera": "Cameras/Road",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "ch06_brine_camp",
+      "scene": "res://game/levels/_tests/act1_zones/ch06_brine_shoals_shots.tscn",
+      "camera": "Cameras/Camp",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "reefball_hud_choice",
+      "scene": "res://game/ui/reefball/shots/reefball_hud_choice.tscn"
+    },
+    {
+      "id": "reefball_hud_goal",
+      "scene": "res://game/ui/reefball/shots/reefball_hud_goal.tscn"
+    },
+    {
+      "id": "npc_haluna_dock",
+      "scene": "res://game/levels/_tests/npc/haluna_villagers.tscn",
+      "camera": "Cameras/Dock",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 240,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "npc_haluna_market",
+      "scene": "res://game/levels/_tests/npc/haluna_villagers.tscn",
+      "camera": "Cameras/Market",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 240,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "npc_haluna_chapel",
+      "scene": "res://game/levels/_tests/npc/haluna_villagers.tscn",
+      "camera": "Cameras/Chapel",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 240,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "npc_haluna_lane",
+      "scene": "res://game/levels/_tests/npc/haluna_villagers.tscn",
+      "camera": "Cameras/Lane",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 240,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "wildlife_zone_brine_flats",
+      "scene": "res://game/levels/_tests/wildlife/zone_wildlife_brine_shoals.tscn",
+      "camera": "Cameras/Flats",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 60,
+      "setup": {
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "wildlife_zone_brine_wrecks",
+      "scene": "res://game/levels/_tests/wildlife/zone_wildlife_brine_shoals.tscn",
+      "camera": "Cameras/Wrecks",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 60,
+      "setup": {
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "wildlife_zone_underway_crown",
+      "scene": "res://game/levels/_tests/wildlife/zone_wildlife_oruvel_underway.tscn",
+      "camera": "Cameras/Crown",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 60,
+      "setup": {
         "viewport": {
           "use_taa": false,
           "screen_space_aa": 1

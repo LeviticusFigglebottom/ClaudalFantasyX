@@ -329,6 +329,19 @@ MATERIALS["kit_ground"] = {"shader": "res://game/shaders/environment/env_ground.
     "tex_stone": ("tex", TEX + "coral_stone_albedo.png"), "tex_stone_normal": ("tex", TEX + "coral_stone_normal.png"),
     "tex_detail": ("tex", TEX + "weathering_detail.png")}}
 
+# ---- M3-ENV-701 (appended by env-art): set dressing (dressing.py) ---------------------------------
+# Driftwood: the timber grain bleached bone-grey by sun and salt, heavy salt in the cracks, no paint.
+MATERIALS["kit_driftwood"] = stone("timber_albedo.png", "timber_normal.png", (0.3, 1.2), base_triplanar=True,
+                                   col_tint=hexc("#E2DCD0"), normal_strength=1.4, roughness_base=0.9,
+                                   specular_base=0.25, cavity_darken=0.5, variation_value=0.18,
+                                   salt_coverage="Vector2(0.3, 0.7)", use_algae=False, use_moss=False)
+# Wrack kelp: olive-brown and wet, a little glossy, thin enough to glow at the edges against the sun.
+STANDARD["kit_kelp"] = {"albedo_color": hexc("#4A4A22"), "roughness": 0.35, "cull_mode": 2,
+                        "backlight_enabled": "true", "backlight": "Color(0.3, 0.28, 0.08, 1)"}
+# Fallen palm fronds (the ground scatter): sun-browned, matte, thin enough to glow when the sun is behind.
+STANDARD["kit_dry_frond"] = {"albedo_color": hexc("#8C6B40"), "roughness": 0.85, "cull_mode": 2,
+                             "backlight_enabled": "true", "backlight": "Color(0.35, 0.25, 0.1, 1)"}
+
 
 if __name__ == "__main__":
     sys.exit(main())
