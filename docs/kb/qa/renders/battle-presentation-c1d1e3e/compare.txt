@@ -1,0 +1,8 @@
+FAIL battle_boss_intro_hullgnaw: rmse 0.16196 (limit 0.00800)
+PASS battle_boss_intro_inquisitor: rmse 0.00000 (limit 0.00800)
+FAIL battle_boss_intro_matron: rmse 0.10192 (limit 0.00800)
+PASS battle_boss_intro_hermit: rmse 0.00020 (limit 0.00800)
+FAIL battle_boss_intro_wraith: rmse 0.03581 (limit 0.00800)
+FAIL battle_boss_intro_drownbell: rmse 0.16174 (limit 0.00800)
+Screenshots: 6 compared, 4 failed (diffs in /root/hymn/tests/screenshots/out/diff)
+compare exit 1
