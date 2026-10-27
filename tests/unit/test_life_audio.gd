@@ -313,3 +313,23 @@ func test_a_startled_shoal_darts_once() -> void:
 	l.advance(DT)
 	assert_eq(played.size(), 2, "a new startle darts again")
 	_done()
+
+
+func test_a_villager_walking_its_route_steps_quietly_without_hero_gear() -> void:
+	var l := _life()
+	var steps: Array = []
+	l.footstep_data = (AudioData.table(AudioData.FOOTSTEPS) as Dictionary).duplicate(true)
+	l.step_player = func(id: StringName, _at: Vector3, opts: Dictionary) -> void: steps.append([id, opts])
+	var n := _npc(&"fisher")
+	l.watch(n)
+	for i in int(5.0 / 0.66 / DT):  # 5 m at a villager's 0.66 m/s
+		n.position.z += 0.66 * DT
+		l.advance(DT)
+	var ids: Array = steps.map(func(s: Array) -> String: return String(s[0]))
+	var feet := ids.filter(func(id: String) -> bool: return id.begins_with("hero_step_"))
+	assert_between(feet.size(), 8, 13, "5 m at a 0.45 m stride (%d)" % feet.size())
+	assert_true(ids.any(func(id: String) -> bool: return id.begins_with("hero_cloth_")), "cloth moves with them")
+	assert_false(ids.any(func(id: String) -> bool: return id.begins_with("hero_gear_")), "no hero's lantern or shells")
+	var walk_db := float((steps[ids.find(feet[0])][1] as Dictionary).get("volume_db", 0.0))
+	assert_eq(walk_db, -9.0, "quieter than the heroes")
+	_done()

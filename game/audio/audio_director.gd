@@ -97,6 +97,7 @@ func _ready() -> void:
 	ui.configure(AudioData.table(AudioData.UI_SFX))
 	reefball.configure(AudioData.table(AudioData.REEFBALL_HOOKS))
 	life.configure(AudioData.table(AudioData.LIFE))
+	life.footstep_data = AudioData.table(AudioData.FOOTSTEPS)
 	impact.configure(AudioData.table(AudioData.IMPACT))
 	cutscene.data = AudioData.table(AudioData.CUTSCENE_FOLEY)
 	stings.data = AudioData.table(AudioData.BATTLE_STINGS)
