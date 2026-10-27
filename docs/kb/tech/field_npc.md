@@ -80,7 +80,7 @@ nested dictionaries merge.
 
 - **Signals:** `talk_started(player)`, `talk_ended()`, `point_reached(index)`.
 - **Methods:** `begin_talk(player)`, `end_talk()`, `follow_dialogue(runner)`, `is_talking()`, `yaw()`,
-  `tick(delta)`.
+  `tick(delta)`; `chatting()` and `chat_speaking()` (read by audio's LifeAudio, M3-AUD-815).
 
 ## Review and tests
 

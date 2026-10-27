@@ -124,6 +124,9 @@ func test_a_chat_pair_faces_each_other_and_takes_turns() -> void:
 		b.tick(DT)
 		var a_talks := a.current_clip == &"talk"
 		var b_talks := b.current_clip == &"talk"
+		if a.chat_speaking() != a_talks or b.chat_speaking() != b_talks:
+			fail("chat_speaking() disagrees with the talk clip at frame %d" % i)
+			break
 		if a_talks and b_talks:
 			both += 1
 		if a_talks:

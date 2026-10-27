@@ -545,6 +545,11 @@ func partner_offset() -> Vector3:
 # --- chat pairs ---------------------------------------------------------------------------------------
 
 
+## True while this villager speaks its turn of a chat (read by audio's LifeAudio, M3-AUD-815).
+func chat_speaking() -> bool:
+	return _chat_speaker == npc_id and chatting()
+
+
 ## True while it rests near its partner and both are free to chat (no talk with the player, no storm).
 func chatting() -> bool:
 	if partner == null or not is_instance_valid(partner) or _storm_on or partner._storm_on:
