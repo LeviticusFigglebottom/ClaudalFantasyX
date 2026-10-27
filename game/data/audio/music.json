@@ -232,6 +232,36 @@
       "resume": true,
       "_note": "Ch16, the Drowned Choir. Act II sketch (M3-AUD-805); no zone row until ch16/drowned_choir/drowned_choir.tscn exists"
     }
+,
+    "hearer_hum": {
+      "file": "res://assets/audio/music/hearer_hum.ogg",
+      "_note": "Ch4 C4-06, the dock in the dark (ch04_dock_in_the_dark.dlg): the sea, the far wake, and the dead humming in the next room; a loop (M3-AUD-820); the sequencer plays it by name"
+    }
+,
+    "ysolde_theme": {
+      "file": "res://assets/audio/music/ysolde_theme.ogg",
+      "_note": "Ysolde's theme, a sketch: Ch4 C4-07 The Ink (ch04_the_ink.dlg) and C4-09 the gangplank (ch04_gangplank.dlg); a loop (M3-AUD-820); the sequencer plays it by name"
+    }
+,
+    "name_board_home": {
+      "file": "res://assets/audio/music/name_board_home.ogg",
+      "_note": "Ch4 C4-14, the name-board (ch04_name_board.dlg): the beach's star-path phrase once, resolved home (M3-AUD-820); the sequencer plays it by name"
+    }
+,
+    "the_long_way_round": {
+      "file": "res://assets/audio/music/the_long_way_round.ogg",
+      "_note": "Ch4 C4-04/C4-05, the shell is set (ch04_shell_is_set.dlg): the village's farewell song, diegetic; the sung lines' markers for @wait music= are in assets_src/music/the_long_way_round.py (M3-AUD-820)"
+    }
+,
+    "oruvel_theme": {
+      "file": "res://assets/audio/music/oruvel_theme.ogg",
+      "_note": "Ch7 B09, the Empty Moorings (ch07_empty_moorings.dlg): Ch1's Oruvel tune on one flute over the Tamsule Bell's hum (M3-AUD-820); the sequencer plays it by name"
+    }
+,
+    "tavi_kell": {
+      "file": "res://assets/audio/music/tavi_kell.ogg",
+      "_note": "Ch7 B03, Tavi (ch07_tavi.dlg), after the hold on 'She couldn't swim': solo piano (M3-AUD-820); the sequencer plays it by name"
+    }
   },
   "zones": [
     {

@@ -14,9 +14,9 @@ SILENCE = "silence"
 # Cues the scripts name that audio has not delivered yet (M3-AUD-819..822 are composing them). The list may only
 # shrink: a cue that lands must leave it, and a new script id must get a cue or join it on purpose.
 MUSIC_TODO = {
-    "corrow_night", "dawn_road", "going_under", "hearer_hum", "hush_second_verse", "kerrid_stair", "lanternfall",
-    "liss_theme", "name_board_home", "oruvel_theme", "raid", "rhen_current_hum", "shoals_dusk", "tavi_kell",
-    "the_long_way_round", "tidecup_after", "tidecup_crowd", "undertow_rising", "ysolde_theme",
+    "corrow_night", "dawn_road", "going_under", "hush_second_verse", "kerrid_stair", "lanternfall",
+    "liss_theme", "raid", "rhen_current_hum", "shoals_dusk",
+    "tidecup_after", "tidecup_crowd", "undertow_rising",
     # Ch8's, once its scripts are on this branch (claude/act1-chapters)
     "virel_bound", "corrow_aftermath", "seawall_hold",
 }

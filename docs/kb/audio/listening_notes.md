@@ -934,3 +934,58 @@ Sixty-eight `@sfx` cues, heard in their cutscenes (the F8 chapter select reaches
 - **Ch8's set piece** (the Reach, the breach, the stone falling): the loudest cues in Act I (−15 to −17). Are they
   too much against the music cues there?
 - **Ch9 staff_bell_shells and harbour_lap:** the Ebbing's quiet; nothing should crowd the dance.
+
+## M3: Ch4 and Ch7 scene cues (M3-AUD-820)
+Six cues the Act I scripts already call with `@music <id>` (the F8 chapter select reaches them once claude/act1-chapters
+merges). About 6 minutes in all.
+
+| # | File | Length | Plays |
+|---|---|---|---|
+| 1 | `music/the_long_way_round.ogg` | 80.2 s | Ch4 C4-04/05: the village's farewell song at Asha's wake (**final**) |
+| 2 | `music/hearer_hum.ogg` | 61.0 s loop | Ch4 C4-06: the dock in the dark |
+| 3 | `music/ysolde_theme.ogg` | 61.0 s loop | Ch4 C4-07 The Ink, C4-09 the gangplank (sketch) |
+| 4 | `music/name_board_home.ogg` | 58.2 s | Ch4 C4-14: the name-board |
+| 5 | `music/tavi_kell.ogg` | 32.7 s | Ch7 B03: after "She couldn't swim, Tavi." |
+| 6 | `music/oruvel_theme.ogg` | 59.5 s | Ch7 B09: the Empty Moorings |
+
+### (1) The Long Way Round: a major-key farewell
+- **The tune** is original, F major, 4/4 at 88, one note per syllable of Narrative's four #sung lines; every stressed
+  syllable falls on beat 1 or 3. One voice starts it (012); the village joins on 013 (a second voice on the tune and a
+  women's harmony a third under); the men's roots join on 014; 015 peaks on "love" (G5 over B-flat). Then 014 again,
+  softly, under Rhen's lines to Toma; 021 (015's words) over Asha's face; and a slower tag on "on the tide".
+- **The voices are breath flutes shaped by vowels** ("ah" lead, "oh" harmony, "oo" men), as the Hush's first verse
+  does, until voices are settled. **Does it sound like a village singing, or like a flute band?** Can you hear the
+  words' rhythm in it? Is it singable after one hearing? **Does the major key make it worse?**
+- **Markers** (s, for `@wait music=`): 012 2.20, 013 13.25, 014 25.08, 015 35.79, the 014 repeat 47.28, 021 57.99,
+  the tag 69.16, the last note released 78.18. The script fades the cue in over 2 s, so the first syllable comes
+  after the fade.
+
+### (2) hearer_hum: someone humming in the next room
+- Water under the dock, slaps on the pilings, the far wake (voices, two drum strokes twice a loop), and under it three
+  low voices humming one D, heard **through a wall** (nothing above about 450 Hz). It is mastered to -16 like every
+  music cue, so "near silence" is its character, not its level. **Is the hum there without being noticed at first?**
+  Is it too present (the hum is about 6 LU under the water)? Does it read as a voice through a wall, or as a drone?
+
+### (3) Ysolde's theme: cold and exact
+- A plucked board zither (stiff steel strings, a small lacquered box) over a steady reed drone on C and G; the line
+  moves in fourths and fifths, quarters and paired eighths, each phrase ending on a long note; it turns Lydian (F#)
+  in its second half. Timing scatter is 2 ms, no vibrato, the drone doesn't breathe; one gilded bowl at bars 1 and 9.
+  **Cold and correct, or just thin?** Does the zither read as a zither, or a harp or a guitar? Does it sound like
+  Ansedra (the bowls, C major) and not like the Low Reaches?
+
+### (4) name_board_home: the lullaby, true for once
+- The beach's star-path phrase (haluna_dawn's right hand) once, slower (46 BPM against 50), with its own harmony and
+  the low metallophone doubling the long notes. On the beach it stopped on an unresolved ninth; here the last E
+  resolves to D over D major. **Does the resolution land, or sound too neat?** Do you recognise the beach?
+
+### (5) tavi_kell: two notes of Oruvel
+- Solo piano, very sparse: a low E, an E minor third, then Oruvel's first two notes (D, B) over an open G, and no G
+  after them; a single D later over A minor; a C major chord with the B and D inside it, left ringing. **Is the quote
+  recognisable after Ch1 (the squeezebox's opening fall)?** Is it too sparse to hold four minutes of scene? (It ends
+  after 33 s; the scene goes on in the market's noise.)
+
+### (6) oruvel_theme: the town on one flute
+- Oruvel's A section and the tag's head, on one breath flute, straight and slow (63 BPM), moved up a tone to sit on
+  the Tamsule Bell's A, over the Bell's hum as bound glimmer: its partials as steady sines, no breathing, no beating.
+  **Does the hum sound bound (still, wrong) next to the galleries' breathing drone?** Is the tune still Oruvel without
+  its swing and squeezebox?
