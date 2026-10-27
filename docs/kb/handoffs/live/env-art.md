@@ -402,6 +402,7 @@ env-art is cloud session `session_01YbaV2c8yquRHqj6afQYg89` on `claude/env-art`;
   `test_drowned_choir` 4, `test_arenas`, `test_haluna_kit`, Godot `--filter=arena` 18/0.
 
 ### Render requests
+RENDER-REQUEST @ f104a0b7 FAST-TRACK: iskarra_p01_plaza_dusk,iskarra_i02_gate_from_the_plaza,iskarra_i03_broken_tower,slice_prologue_vigil_line; why: M3-ENV-724, the Lead's Iskarra fast-track (both passes: the towers faced out, tile cladding and glaze, windowed storeys, galleries, grime and spalling, the plaza inlay, cracked slabs and grass, the vigil gear and shells, banners, the drowned midground and skyline). slice_prologue_vigil_line renders on this branch's prologue; its capsules are slice-polish's. FIRST in the queue.
 RENDER-REQUEST @ a0d2549f: battle_arena_tideline_dawn,battle_arena_causeway_disc_sunset,battle_arena_causeway,battle_arena_tideline,causeway_c02_profile_against_the_lagoon,causeway_c08_drownbell_disc_approach,drownbell_flood,battle_boss_intro_drownbell,haluna_h01_village_from_sea,haluna_h10_dock_night,field_objective_line,field_interact_prompt,field_area_title,field_tip_card,dialogue_continue; why: M3-ENV-701 set dressing in Haluna, the causeway and the two arenas (the five field/dialogue shots frame Haluna's lane 1)
 RENDER-REQUEST @ 22a5de11: battle_arena_oruvel_raft_morning,battle_arena_causeway,drownbell_flood; why: the merge took the PC gate's copies of these three over env-art's; confirm they still match with the arena dressing
 RENDER-REQUEST @ 1a422476: ashcrown_a01_approach,ashcrown_a04_anvil_hall,ashcrown_a10_plume_from_the_rim; why: M3-ENV-705 Ashcrown grade (saturation x1.0, accents +18%) answering the human's greyscale complaint
@@ -428,7 +429,7 @@ RENDER-REQUEST @ 191e5e89: battle_arena_bridal_barge_night; why: M3-ENV-720 the 
 RENDER-REQUEST @ c7703809: battle_arena_ansedra_lagoon_escape; why: M3-ENV-721 Warden Venn's escape on Ansedra's lagoon at dusk (new shot)
 RENDER-REQUEST @ fca99879: battle_arena_drowned_choir_ring; why: M3-ENV-722 the Drowned Choir at moonrise (new shot)
 SUPERSEDED by the FAST-TRACK request below: 4c0e9732
-RENDER-REQUEST @ 0958af1a FAST-TRACK: iskarra_p01_plaza_dusk,iskarra_i02_gate_from_the_plaza,iskarra_i03_broken_tower; why: M3-ENV-724, the Lead's Iskarra fast-track for the Prologue. The towers had been inside out since M3-ENV-710; this pass adds tile cladding, blue glaze, windowed storeys, gallery ledges, the plaza inlay, a drowned midground, and hero figures. the far skyline (iskarra_far_towers) too. Supersedes the Iskarra ids in 60eee2f7, 854e6a95 and 4c0e9732.
+SUPERSEDED by the FAST-TRACK request at the top: RENDER-REQUEST @ 0958af1a FAST-TRACK: iskarra_p01_plaza_dusk,iskarra_i02_gate_from_the_plaza,iskarra_i03_broken_tower; why: M3-ENV-724, the Lead's Iskarra fast-track for the Prologue. The towers had been inside out since M3-ENV-710; this pass adds tile cladding, blue glaze, windowed storeys, gallery ledges, the plaza inlay, a drowned midground, and hero figures. the far skyline (iskarra_far_towers) too. Supersedes the Iskarra ids in 60eee2f7, 854e6a95 and 4c0e9732.
 RENDER-REQUEST @ 4c0e9732: battle_arena_seawall_stairhead_storm,battle_arena_seawall_stairhead_hoist,battle_arena_seawall_stairhead_surge,battle_arena_coilspire_headland_path,battle_arena_coilspire_tier_landing; why: 599b241's outs predate big12's hero stances. The arenas are unchanged, so these are first baselines on the current actors. Supersedes 599b2418.
 ANSWERED: 94fe8f7 (Tamsule TP01/TP03/TP05) and fd630bb (Pemakar P04/P11) were viewed and approved in f2a85a46. In fd630bb, Lanternfall passed.
 ANSWERED: 179069d (causeway_route_afternoon): superseded by big12's viewed baseline (6e15d8d8) at a later head; nothing to approve.
@@ -557,7 +558,7 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
-- **ISKARRA: in progress (the Lead's direct instruction, 22:29). Act II/III is paused until the Iskarra render is
+- **ISKARRA: both passes pushed; FAST-TRACK render requested @ f104a0b7. Was: in progress (the Lead's direct instruction, 22:29). Act II/III is paused until the Iskarra render is
   approved.**
   - **Already pushed** (FAST-TRACK request @ 0958af1a, not yet rendered):
     - Commits 4c0e9732 and 0958af1a.
@@ -570,6 +571,12 @@ Read this section first; everything below it is history. The branch is `claude/e
     - Paving under Kerrid (9.5, −5.5).
     - The vigil count in test_iskarra.
     - Set dressing at Haluna's density.
+  - **For slice-polish (the Prologue's staging is yours):** the three `City/Vigils` capsules (Kerrid, Pell,
+    Liss) are the last capsules in the frame.
+    - Kerrid and Liss have no character models yet. VillagerLayer's adult bodies (fisher, netmender) cast as
+      stand-ins would read as people.
+    - The preview uses the four hero battle stand-ins at their marks (`iskarra_preview_figures.gd`), if that helps.
+    - Also swap `City/Water` (a flat PlaneMesh) for the lagoon WaterSurface the preview uses.
   - **Lit candles:** none. ADR 0017 and the act outline say "There is no fire" and Rhen's lantern is the only
     flame, so the vigils get unlit offerings and the lamp columns stay dead. Lead: say if you want that overruled.
 - **2026-10-27 ~21:40, the Lead's FAST-TRACK: Iskarra (M3-ENV-724), MERGE-READY @ 0958af1a** (4c0e9732 plus the far skyline) (claude/env-art, which
