@@ -143,3 +143,38 @@ func test_the_breach_closes_in_turn_by_turn() -> void:
 	ctl.stage.choreo.reduced_motion = true
 	assert_eq(cam.rest_fov(), cam.default_fov, "reduced motion: no push-in")
 	_free()
+
+
+func test_the_stair_has_its_few_barks() -> void:
+	# M3-C08-100: Toma's "Hold." on Hold the Stair; Asha says Virel's name as she calls her; most skills say nothing.
+	_make()
+	var active: Array[StringName] = [&"rhen", &"asha", &"liss"]
+	var reserve: Array[StringName] = [&"toma"]
+	ctl.start_battle(active, reserve, &"ch08_stair_hold_1", SEED)
+	ctl.stage.choreo.live = false
+	var barks := BattleBarks.of(ctl.stage)
+	assert_true(barks != null, "the barks listen")
+	var heard: Array = []
+	barks.barked.connect(func(who: StringName, key: String) -> void: heard.append([who, key]))
+	var guard := 0
+	while ctl.current_actor_id() != &"toma" and guard < 40:
+		guard += 1
+		if ctl.engine.is_party_turn():
+			var a := ctl.engine.current.id
+			ctl.engine.perform(&"stand_fast", [ctl.engine.current])
+			ctl.after_action(a)
+		ctl.tick(STEP_SEC)
+	assert_eq(ctl.current_actor_id(), &"toma", "Toma's turn comes")
+	var targets: Array[StringName] = []
+	for t in ctl.default_targets(&"hold_the_stair"):
+		targets.append(t.id)
+	ctl.act(&"hold_the_stair", targets)
+	assert_eq(heard.size(), 1, "one bark")
+	if heard.size() == 1:
+		assert_eq(heard[0][0], &"toma")
+		assert_eq(heard[0][1], "BARK_CH08_TOMA_HOLD")
+	var virel := BattleCombatant.new()
+	virel.id = &"virel"
+	barks._on_called(virel)
+	assert_eq(heard.back(), [&"asha", "BARK_CH08_ASHA_VIREL"], "Asha calls her by name")
+	_free()

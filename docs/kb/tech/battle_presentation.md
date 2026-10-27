@@ -645,3 +645,18 @@ Ch8's evacuation battles (docs/kb/design/set_piece_battles.md) add things the st
   plain default.
 - **Still to do** (task M3-BPR-406): the intercept step-in, which needs EntryMarker_ward on the Ch8 arena
   (request M3-BPR-407 to env-art); a look for untargetable or damage-immune phases; freeze-frame shots.
+
+## Barks (M3-C08-100)
+A few skills and calls say one short line over the speaker's head. `BattleBarks` (`game/battle/scene/battle_barks.gd`,
+listen-only under BattleChoreo) reads choreo.json `barks`:
+- `skills`: {skill id: {speaker, key}}. Only the speaker's own use speaks.
+- `calls`: {vowbound id: {speaker, key}}. The caller says the name as it calls.
+
+The line pops as a float (BattleHud.pop_info, palette role `role`) at the speaker's head, and `barked(speaker, key)`
+fires for audio's voice blips. Ch8's (act1_ch08.md B05): Toma's "Hold." on Hold the Stair, Liss's "Pull!" on Haul,
+Asha's "Virel." on the call. Flare Line and Virel say nothing. Keep them rare: a bark marks a moment, not every swing.
+
+## Act II boss intros by enemy id (M3-BPR-408)
+`boss_intro.by_enemy` gives a boss its intro wherever it first appears, for bosses whose encounters are not written
+yet (the Lamp Engine `boss_tall`, the Avalanche Ram `boss`). An encounter's own `rows` entry wins
+(`BattleBossIntro.row_for`).
