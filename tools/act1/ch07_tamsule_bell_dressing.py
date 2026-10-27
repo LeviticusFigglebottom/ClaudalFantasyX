@@ -201,6 +201,10 @@ def collision() -> dict:
         ramps.append(ramp(f"{name}ToWalk", polar(tg.R_FRONT - 1.6, az, DECK), polar(tg.R_FRONT + 0.4, az, tg.DECK_Y),
                           2 * hw))
         ramps.append(ramp(f"{name}ToProw", polar(deck0 + 0.6, az, DECK), polar(deck0 - 0.5, az, PROW_Y), 2 * hw - 0.5))
+    # the pool's coping, where the poolkeeper and the divers stand (the player never reaches it: the prows end in rails)
+    for i, (b0, b1) in enumerate(arcs(0.0, 360.0)):
+        blocks.append(arc_box(f"Coping{i}", b0, b1, tw.POOL_R[0], tw.POOL_R[1], tw.POOL_COPING_Y - 1.0,
+                              tw.POOL_COPING_Y))
     # the moorings: the staging behind the posts and the bridge up to the north-west gallery's walkway
     st0, st1 = STAGING_Z - STAGING_HALF, STAGING_Z + STAGING_HALF
     blocks.append(moor_box("Staging", -8.0, 8.0, st0, st1, BOARD_Y - 1.0, BOARD_Y))
@@ -286,7 +290,10 @@ SPAWNS = {
     "CatchPool": _on(OURS, 19.6, DECK, facing_in(OURS)),
 }
 MARKS = {
-    "divers_boat": _moor(7.5, STAGING_Z - STAGING_HALF - 3.0, 0.0, FACE_OUT),
+    "divers_boat": _on(290.0, COPING, tw.POOL_COPING_Y, facing_out(290.0)),  # on the coping, toward their moorings
+    "tavi_leaves": _on(OURS, 30.6, DECK, facing_out(OURS)),  # B07: Tavi walks up his platform, away from the pool
+    "tavi_away": _moor(-7.4, STAGING_Z, BOARD_Y, 90.0 - MOOR_YAW),  # B09: off along the staging (then hidden)
+    "asha_staging": _moor(1.5, STAGING_Z - 0.6, BOARD_Y, FACE_POSTS),  # B09: where Asha waits as the scene opens
     "poolkeeper_rim": _on(279.0, COPING, tw.POOL_COPING_Y, facing_out(279.0)),
     "bell_ribs": [0.0, 38.0, 0.0],
     "drop": [0.0, 31.5, 0.0],
@@ -307,10 +314,11 @@ MARKS = {
     "river_mouth": _on(185.0, 80.0, 0.0, facing_out(185.0)),
 }
 ACTORS = {
-    "asha": _on(276.0, WALK_R, tg.DECK_Y, facing_in(276.0)),
-    "toma": _on(278.5, WALK_R, tg.DECK_Y, facing_in(278.5)),
-    "liss": _on(281.0, WALK_R, tg.DECK_Y, facing_in(281.0)),
-    "ysolde": _on(283.5, WALK_R, tg.DECK_Y, facing_in(283.5)),
+    # seated at the head of Oruvel's platform, each in line with their rim mark, so B07's walk is straight down it
+    "asha": _side(OURS, 32.4, tg.DECK_Y, -0.9, facing_in(OURS)),
+    "toma": _side(OURS, 32.4, tg.DECK_Y, 0.9, facing_in(OURS)),
+    "liss": _side(OURS, 33.2, tg.DECK_Y, -0.9, facing_in(OURS)),
+    "ysolde": _side(OURS, 33.2, tg.DECK_Y, 0.9, facing_in(OURS)),
     "kerrid": _on(0.0, 48.0, -0.5, facing_out(0.0)),  # knee-deep, his back to the Bell
     "tavi": _on(OURS, 14.4, PROW_Y, facing_out(OURS)),
     "ione": _on(THEIRS, 14.4, PROW_Y, facing_in(THEIRS)),

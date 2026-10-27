@@ -50,6 +50,8 @@ func test_every_act1_cutscene_walk_stays_on_the_floor() -> void:
 	var lines: Array = problems.keys()
 	lines.sort()
 	for line: String in lines:
+		if OS.get_environment("HYMN_WALKS") != "":
+			print("WALK: %s" % line)  # the whole list, for fixing them
 		var key := line.get_slice(": ", 0) + ": " + line.get_slice(": ", 1)
 		seen[key] = true
 		if not known.has(key):
@@ -70,8 +72,8 @@ func _on_cue(cue: StringName, args: Array, kwargs: Dictionary, seq: CutsceneSequ
 	var actor := stage.actor(StringName(str(args[0])))
 	var mark := stage.mark(StringName(str(args[1])))
 	var zone := _zone_of(stage)
-	if actor == null or mark == null or zone == null or not actor.is_visible_in_tree():
-		return
+	if actor == null or mark == null or zone == null or not actor.is_visible_in_tree() or actor is FieldController:
+		return  # the player walks from wherever he set the scene off, which the threads don't stand him at
 	if seq.overlay != null and seq.overlay.fade_alpha() >= UNSEEN_FADE:
 		return
 	walks += 1
@@ -87,7 +89,12 @@ func _on_cue(cue: StringName, args: Array, kwargs: Dictionary, seq: CutsceneSequ
 		if why != "":
 			break
 	if why != "":
-		problems["%s %s: @mark %s %s: %s" % [zone.location_id, seq._scene_id, args[0], args[1], why]] = true
+		var ends := "from %s to %s" % [_short(path[0]), _short(path[path.size() - 1])]
+		problems["%s %s: @mark %s %s: %s; %s" % [zone.location_id, seq._scene_id, args[0], args[1], why, ends]] = true
+
+
+static func _short(v: Vector3) -> String:
+	return "(%.1f, %.2f, %.1f)" % [v.x, v.y, v.z]
 
 
 func _zone_of(n: Node) -> GreyboxZone:
