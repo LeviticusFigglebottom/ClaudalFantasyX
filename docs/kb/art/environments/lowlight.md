@@ -106,3 +106,7 @@ The hall is built to the battle contract (battle_arenas.md):
   The arena is `lowlight_engine_hall` (battle_arenas.md). The dais moved off-centre and the boss anchor to
   (−6.4, −0.6, −2.6), so the Engine stands in the water past the steps, as §2 meant. The Vey's and the temple's zone
   pieces follow.
+- 2026-10-27 (env-art, M3-ENV-716): `conduit_housing`, with **the Saltwright housing-mark** (L03). It is stamped
+  3 mm proud: a circle (15 cm on the housing) crossed by three fine parallel lines slanted 30°, which is the
+  Saltwrights' camp-sign as on Ch6's chalk marks, over two small round seats side by side ("pair-built", Liss's word
+  in Ch6). Rhen's lantern takes the same mark (M3-ENV-719, Character).

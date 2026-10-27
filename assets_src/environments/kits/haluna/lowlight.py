@@ -11,6 +11,11 @@ Built in the Haluna kit (its import kind and materials directory, as iskarra.py 
                    and its rubble in the water; the stair from the sanctum behind the camera.
   conduit_run      a 4 m copper-and-salt-glass light line on brackets, the bound light steady (lowlight.md §0)
   lamp_niche_tier  a tier of six empty glass lamp niches with bronze trim-arms, 4 m (the Engine's work)
+  conduit_housing  a copper junction housing on a conduit run (0.56 x 0.4 x 0.26 m), a salt-glass window on the bound
+                   light inside, the two runs entering through bolted collars, and stamped in its face the **Saltwright
+                   housing-mark** Liss reads (L03): the Saltwrights' circle crossed by three fine lines (their
+                   camp-sign, bs_story's chalk_mark) over two small round seats side by side, "pair-built". Rhen's
+                   lantern carries the same mark (Character's request). Origin at the back plate's centre, face +Z.
 
 Nothing here is frozen (ADR 0015/0016).
 """
@@ -30,7 +35,8 @@ M_CONDUIT = "kit_lowlight_conduit"
 M_GLASS = "kit_salt_glass"
 M_DARK = "kit_interior_dark"
 
-TRI_BUDGET = {"engine_hall": (34000, 2400), "conduit_run": (1500, 120), "lamp_niche_tier": (3000, 200)}
+TRI_BUDGET = {"engine_hall": (34000, 2400), "conduit_run": (1500, 120), "lamp_niche_tier": (3000, 200),
+              "conduit_housing": (3000, 120)}
 
 HALL_HALF = 12.0
 HALL_H = 9.0
@@ -214,4 +220,64 @@ def build_niche_tier(seed: int = 1603) -> list[kc.MeshBuilder]:
     return out
 
 
-TARGETS = {"engine_hall": build_hall, "conduit_run": build_conduit, "lamp_niche_tier": build_niche_tier}
+MARK_R = 0.075  # the housing-mark's circle
+MARK_RELIEF = 0.003  # stamped proud of the face
+
+
+def _mark(mb, centre, face_z, lod) -> None:
+    """The Saltwright housing-mark, stamped in relief: a circle crossed by three fine parallel lines, and below it
+    two small round seats side by side (pair-built)."""
+    if lod:
+        return
+    copper = mb.material(M_COPPER)
+    cx, cy = centre
+    a = np.linspace(0.0, 2 * math.pi, 33)
+    kc.tube(mb, np.stack([cx + np.cos(a) * MARK_R, cy + np.sin(a) * MARK_R, np.full_like(a, face_z + MARK_RELIEF)], -1),
+            0.005, 4, copper)
+    for k in (-1, 0, 1):  # the lines run corner to corner, slanted 30 degrees, clipped by the circle
+        off = k * 0.03
+        d = np.array([math.cos(math.radians(30.0)), math.sin(math.radians(30.0))])
+        n = np.array([-d[1], d[0]])
+        half = math.sqrt(max(MARK_R ** 2 - off ** 2, 0.0)) * 0.96
+        p0 = np.array([cx, cy]) + n * off - d * half
+        p1 = np.array([cx, cy]) + n * off + d * half
+        kc.tube(mb, np.array([[p0[0], p0[1], face_z + MARK_RELIEF], [p1[0], p1[1], face_z + MARK_RELIEF]]), 0.0045, 4,
+                copper)
+    for sx in (-1.0, 1.0):  # the two seats
+        kc.tube(mb, np.array([[cx + sx * 0.03, cy - MARK_R - 0.035, face_z], [cx + sx * 0.03, cy - MARK_R - 0.035,
+                                                                             face_z + MARK_RELIEF * 2.0]]),
+                0.012, 8, copper, cap_end=True)
+
+
+def build_housing(seed: int = 1604) -> list[kc.MeshBuilder]:
+    out = []
+    for lod in (False, True):
+        rng = kc.rng_for("conduit_housing", seed)
+        mb = kc.MeshBuilder("conduit_housing" + ("-lod1" if lod else ""))
+        copper = mb.material(M_COPPER)
+        hx, hy, hz = 0.28, 0.2, 0.13
+        kc.rounded_block(mb, (0.0, 0.0, hz), (hx, hy, hz), copper, radius=0.03, seg=1 if lod else 2,
+                         weather=CERAMIC, variation=float(rng.random()))
+        face = hz * 2.0
+        # The window on the bound light: a salt-glass pane over the conduit's glow, in a copper frame.
+        kc.rounded_block(mb, (0.1, 0.02, face - 0.02), (0.1, 0.12, 0.02), mb.material(M_CONDUIT), radius=0.01, seg=1)
+        kc.rounded_block(mb, (0.1, 0.02, face + 0.004), (0.11, 0.13, 0.006), mb.material(M_GLASS), radius=0.01, seg=1)
+        if not lod:
+            for x in (-0.01, 0.21):
+                kc.tube(mb, np.array([[x, -0.12, face + 0.01], [x, 0.16, face + 0.01]]), 0.008, 4, copper)
+            # Bolted collars where the two runs enter, left and right.
+            for sx in (-1.0, 1.0):
+                x = sx * (hx + 0.03)
+                kc.tube(mb, np.array([[x - sx * 0.03, 0.0, 0.1], [x + sx * 0.03, 0.0, 0.1]]), 0.09, 12, copper,
+                        cap_start=True, cap_end=True)
+                for k in range(6):
+                    a = 2 * math.pi * k / 6
+                    kc.rounded_block(mb, (x + sx * 0.035, math.cos(a) * 0.07, 0.1 + math.sin(a) * 0.07),
+                                     (0.008, 0.01, 0.01), copper, radius=0.004, seg=1)
+        _mark(mb, (-0.14, 0.04), face, lod)
+        out.append(mb)
+    return out
+
+
+TARGETS = {"engine_hall": build_hall, "conduit_run": build_conduit, "lamp_niche_tier": build_niche_tier,
+           "conduit_housing": build_housing}

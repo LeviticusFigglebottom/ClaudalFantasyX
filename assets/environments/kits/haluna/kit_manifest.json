@@ -167,6 +167,17 @@
         "causeway_slab_steps-lod1": 36
       }
     },
+    "conduit_housing": {
+      "budget": [
+        3000,
+        120
+      ],
+      "bytes": 50616,
+      "lods": {
+        "conduit_housing": 656,
+        "conduit_housing-lod1": 36
+      }
+    },
     "conduit_run": {
       "budget": [
         1500,
