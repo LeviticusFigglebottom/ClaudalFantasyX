@@ -3,6 +3,9 @@
 ## NEW ACCOUNT (from 2026-10-25)
 Session `session_01Wmj8xaLtwcqiS3qwC6PciW`. Integration branch `claude/undertow-lead-handoff-ze8rrn`. Newest first.
 
+- **Full gate at 248dfa76 (all four composer batches merged): Godot suite 2676 run, 0 failed; tools suite 1145
+  tests OK.** Since then only the impact_medium re-render (the loudness test is OK) and the mix report. Take
+  6a4842eb or later.
 - **TO THE LEAD: test_audio_loudness is fixed and pushed. MERGE-READY @ ff064071 (take this head; big11's older audio
   sha predates the fix).**
   - **`sfx/life/*`:** rules in targets.py since c5eeb302 (murmur −26, work −25, gull calls −22, takeoffs −26,
