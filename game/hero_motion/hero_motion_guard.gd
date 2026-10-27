@@ -63,6 +63,20 @@ static func snaps_only(found: Array[Dictionary]) -> Array[Dictionary]:
 	return found.filter(func(s: Dictionary) -> bool: return s["kind"] != CUT)
 
 
+## The fastest step (m/s) and turn (deg/s) in `samples` (one per `dt`), cuts of `cut_m` or more left out:
+## {speed, turn}. What the field and cutscene audits print next to their verdicts.
+static func peak_rates(samples: Array[Transform3D], dt: float, cut_m: float = INF) -> Dictionary:
+	var speed := 0.0
+	var turn := 0.0
+	for i in range(1, samples.size()):
+		var step := samples[i].origin.distance_to(samples[i - 1].origin)
+		if step >= cut_m:
+			continue
+		speed = maxf(speed, step / dt)
+		turn = maxf(turn, rad_to_deg(absf(angle_difference(yaw_of(samples[i - 1]), yaw_of(samples[i])))) / dt)
+	return {"speed": speed, "turn": turn}
+
+
 ## Every bone's position in world space (metres).
 static func bone_points(skel: Skeleton3D) -> PackedVector3Array:
 	var out := PackedVector3Array()
