@@ -116,6 +116,18 @@ func test_battle_panels_and_pause() -> void:
 
 
 ## The shrine travel list: a framed page, centred, its covers full screen.
+## The options pass: the Accessibility page with its speed preview showing (the text speed row).
+func test_speed_preview() -> void:
+	_sweep("speed preview", _speed_preview, _framed)
+
+
+func _speed_preview() -> Node:
+	var page := AccessibilityMenu.new(UiSettings.shared(), "")
+	ParityHost.scene_root().add_child(page)
+	page.model.set_cursor(page.model.row_ids().find(UiSettings.TEXT_SPEED))
+	return page
+
+
 func test_shrine_travel() -> void:
 	var saved_state := Game.state
 	_sweep("shrine travel", _shrine_travel, _framed)
