@@ -418,4 +418,11 @@ RENDER-REQUEST @ 32f33a75: battle_hud_preview, battle_swap_menu, battle_victory,
   - **Lead: suggest fast-tracking that patch onto big11.** It's audio's file, so with their OK or yours.
   - **My side (0a6a0937):** VillagerLayer had the same latent pattern (a typed loop variable over freed keys), now fixed. New test `test_the_layer_survives_its_villagers_being_freed_first`, verified red on the old code with exactly this error.
   - **Checks run:** Godot villager_routines 14/0, field_npc 10/0, wildlife 14/0, lint, format, taskboard.
+- **Merged big11 (integration f85a361b).**
+  - Unions: blender_builds by job id (74 jobs, the integration's text plus my 16 newer jobs); shared files via merge_union.
+  - **Checks run:** villager_routines 14/0 (includes big11's storm-flag fix), field_npc 10/0, wildlife 14/0, battle 710/0, post_import 21/0, the tools suites, validate_data (1 warning, env-art's: `offering_step.glb` listed in PROVENANCE but missing), lint, format.
+  - **Known red, FAST-TRACK for ui-menus or the Lead:** creature 41/1. ui's test_creature_portraits wants a bestiary portrait for every creatures.json row, and my 15 Act II creatures have no enemy yet (so no bestiary entry).
+    - **Request M3-CRE-634** (role ui) carries a 3-line patch, verified 4/0 here, that limits the rule to the creatures enemies use. I didn't commit it to their file.
+    - The integration branch itself is green: it doesn't have the Act II rows yet.
+  - **The shutdown freed-object error on the integration branch** is fixed only once audio's LifeAudio takes the M3-CRE-633 patch. My VillagerLayer fix doesn't clear it on its own.
 
