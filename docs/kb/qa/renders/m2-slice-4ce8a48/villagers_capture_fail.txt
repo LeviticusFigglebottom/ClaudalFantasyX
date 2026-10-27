@@ -1,0 +1,4 @@
+CAPTURE FAIL slice_haluna_villagers_village: setup.nodes['.'].flags: cannot use ["prologue_seen","ch02_met_asha"] for a PackedStringArray
+Capture: 1 shot(s), 1 failed, renderer forward_plus/vulkan on llvmpipe (LLVM 22.1.8, 256 bits)
+CAPTURE PROCESS EXIT 1: slice_haluna_villagers_village
+capture wall time: 670 s (log: /root/renders/m2-slice-4ce8a48/hymn_capture.log)

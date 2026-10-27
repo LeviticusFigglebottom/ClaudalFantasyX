@@ -4,9 +4,74 @@ Seeded by the Lead on 2026-10-23. **This environment owns this file** (CLAUDE.md
 branch after every finished item, and it replaces `docs/kb/qa/gpu/2026-10-23-pc-queue-progress.md` as the canonical
 record. The newest copy is on the most recently pushed `gpu/*` branch.
 
-> **Current session:** `session_01UFcBRsk9M9EKtxJKdBU2mB` (Remote Control on this PC). It took over from
-> session_01778wbLbDFnRRLTKjnawv3T on 2026-10-23. The Lead is cloud session `session_019iimsngAgPLEram1wcbLpE`.
-> **This copy, on `gpu/m2-rnd-910-quit-mid-warmup`, is the newest.**
+> **Current session:** `session_01F3vrUMSWVyLnG3asrc8viy` (Remote Control on this PC, from 2026-10-27; it replaces
+> `session_01DKdurcvrzq9PEvuSu5L2nA`, which died when the PC was switched off mid-gate). The Lead is
+> cloud session `session_018aiGwGLGkxsnMnu8VfCu1m`. The integration branch is now
+> **`claude/undertow-lead-handoff-ze8rrn`** (-423ixt is frozen).
+> **This copy, on `gpu/render-m2-slice-4ce8a48`, is the newest.**
+
+## Renders for the tracks (RENDERED lines, newest first)
+
+- RENDERED @ 4ce8a48a: gpu/render-m2-slice-4ce8a48; 4 pass, 4 drift. **The Shell Shrine's GI rebaked on lavapipe** (both states,
+  16 s; shrine_gi_{open,closed}.res and shrine_gi_inputs.json are on the branch, so test_shrine_gi_bake passes). slice_haluna_villagers_village:
+  no capture at this sha (the PackedStringArray `flags` bug that 3fddb67b fixes).
+- RENDERED @ b99be560: gpu/render-creatures-b99be56; 0 pass, 1 drift
+- RENDERED @ 680cd88e: gpu/render-battle-presentation-680cd88; 0 pass, 4 drift
+- RENDERED @ 21125780: gpu/render-creatures-2112578; 0 pass, 1 drift
+- RENDERED @ 038d5651: gpu/render-characters-038d565; 10 pass, 9 drift
+- RENDERED @ 5112837a: gpu/render-act1-chapters-5112837; 0 pass, 2 drift
+- RENDERED @ 10f21a17: gpu/render-creatures-10f21a1; 0 pass, 2 drift
+- RENDERED @ 179069de: gpu/render-env-art-179069d; 0 pass, 1 drift
+- RENDERED @ b30c2cf2: gpu/render-act1-chapters-b30c2cf; 0 pass, 2 drift
+- RENDERED @ ba16d48b: gpu/render-env-art-ba16d48; 2 pass, 2 drift
+- RENDERED @ 6454c06c: gpu/render-ui-6454c06; 2 pass, 1 drift
+- RENDERED @ 1a422476: gpu/render-env-art-1a42247; 3 pass, 0 drift
+- RENDERED @ 22a5de11: gpu/render-env-art-22a5de1; 3 pass, 0 drift
+- RENDERED @ 25dcea24: gpu/render-battle-presentation-25dcea2; 2 pass, 4 drift
+- RENDERED @ 77a6a777: gpu/render-act1-chapters-77a6a77; 3 pass, 3 drift
+- RENDERED @ 71f19fbc: gpu/render-env-art-71f19fb; 0 pass, 3 drift
+- RENDERED @ b2453cfd: gpu/render-hero-integration-b2453cf; 3 pass, 7 drift
+- RENDERED @ b5e05d2f: gpu/render-creatures-b5e05d2; 28 pass, 1 drift
+- RENDERED @ fdec3cc6: gpu/render-m2-slice-fdec3cc; 12 pass, 9 drift
+- RENDERED @ a0d2549f: gpu/render-env-art-a0d2549; 10 pass, 5 drift
+- RENDERED @ 180510e1: gpu/render-act1-chapters-180510e; 0 pass, 2 drift
+- RENDERED @ dc93a5de: gpu/render-characters-dc93a5d; 16 pass, 29 drift
+- RENDERED @ 5317c0e6: gpu/render-ui-5317c0e; 51 pass, 25 drift (not in shots.json at this sha: portraits:hullgnaw,scuttler,squall_wing,tide_crawler,undertows_reach)
+
+## Gate results (newest first)
+
+- **GATE lead/gate-big11@23ea8c6f: FAIL (expected drift + a new shutdown script error; Lead to view).** Godot 2738/0,
+  coverage and boot ok. Tools: the known test_shrine_gi_bake failure (lane A re-run with it non-fatal). Blender: 13/13
+  identical (base ze8rrn). Shots: 303 compared, 43 failed: 7 new shots, 5 Haluna-villager field/dialogue shots,
+  and 31 repeats of big10's (boss intros, choreo, arenas). New: `Trying to cast a freed object` at shutdown after
+  11 villager/wildlife/Ch6 shots (capture.sh exits 1). `docs/kb/qa/gate-runs/big11/` on `gpu/gate-big11-shots`.
+- **GATE lead/gate-big9@ae4666e0: FAIL (expected drift; Lead to view).** Godot 2561/0, coverage ok, boot smoke ok,
+  lint/data/unittests ok. Blender: 51 changed jobs (base ze8rrn), 40 identical, 11 DIFF, all M2-CHR-11 (rhen, toma,
+  9 villagers). Shots: 281 compared, 48 failed (battle hero rigs, arenas, boss intros, flood, save_shrine_field,
+  field_tip_card, settings_accessibility, formation_menu, creature_portraits). PNGs, compare.txt and the README with
+  the groups: `docs/kb/qa/gate-runs/big9/` on `gpu/gate-big9-shots`. Wall 37 min + an 18 min lane A rerun (the
+  Blender DIFF stops lane A before the Godot suite, so the PC now runs Blender after the suite: see big10).
+- **GATE lead/gate-big10@181708a7: FAIL (expected drift; Lead to view).** Godot 2637/0, coverage ok, boot smoke ok,
+  lint/data/unittests ok. Blender: 22 changed jobs (base lead/gate-big9), 20 identical, 2 DIFF (rhen, toma: M2-CHR-11).
+  Shots: 292 compared, 51 failed = 37 identical repeats of big9's (already approved), 8 repeats that changed again
+  (Hullgnaw intro reframed 0.266, drownbell/matron intros, choreo hit/melee/toll/ko, creature_portraits), 6 new
+  (boss intros hermit/inquisitor/wraith, field_hero_party/rhen_walk/gait_strip). `docs/kb/qa/gate-runs/big10/`.
+  The gate now runs Blender after the suite (HYMN_SKIP_BLENDER=1 in ci_local, then verify_blender_builds.py).
+- big9: merged by the Lead (integration 3b7cbf5e).
+
+## Hardware queue results (newest first)
+
+- **M2-CHR-11 verify (2026-10-27):** claude/characters @ 3723f3eb (incl. 20773234), AVX2 i9-12900K: base_body, rhen, toma
+  and 9 villagers 12/12 identical (664 s). Reported to the Lead and characters.
+- **In progress (2026-10-27 ~15:00):** the render queue (21 jobs: the BPR-404 fast-track, the three black re-renders, then
+  oldest first, then the RND-03 lavapipe check), big12 when pushed
+  (it jumps the queue), the ui portraits @ 99623a0c (render.sh) and m2-slice @ 4ce8a48a (GI bake).
+- **M1-QA-09 on hardware (heroes, 2026-10-27):** 49 shots at High 2× and Ultra on ze8rrn@f580e756, `gpu/m1-qa-09-heroes`
+  `docs/kb/qa/gpu/2026-10-27-m1-qa-09-heroes/`. Asha's staff and Toma's spear aren't gripped (open hands; they float upright
+  in run/walk_cycle/offer_hand). The staff goes through the skirt when kneeling. Asha's underskirt is a rigid tube in
+  offer_hand, with the shin through it. The extreme_pose skirt stretches. Toma's beard edge is blotchy. Rhen's limbs and
+  clothing, and Asha's braid, are clean. Identical at High and Ultra (asset or rig, not preset). Owners: characters
+  (hero-integration for the prop attach).
 
 ## PC setup for a new session
 
@@ -115,7 +180,15 @@ python -c "import sys; sys.path.insert(0,'tools/screenshots'); import compare, p
 
 | Branch | State | Content |
 |---|---|---|
-| gpu/m2-rnd-910-quit-mid-warmup | **M2-RND-910 in review** (reviewer Architect; based on lead/gate-big8) | Quit during a first-run warm-up hung (predelete waited on RND-18's worker-thread load()). Loads now via ResourceLoader threaded requests; predelete never waits on a load. boot_title first-run capture exits in 5 s (was killed); new test. |
+| gpu/gate-big11-shots | big11 gate result (for the Lead to view) | 43 failing shots (out + diff PNGs), compare.txt, blender_diffs.txt, README. |
+| gpu/m3-rnd-03-sefir-tells | **M3-RND-03 in review** (reviewer Art; env-art's M3-ENV-1000 waits on it) | RevenantTells: Sefir's reflection never ripples (still-actor capsule globals, flat SSR on his hits), his shadow faintly too sharp (keys stop casting him; a cancelling spot pair re-casts it crisper). 4 shots (on/off), 7 tests. Lavapipe no-drift check of the water shots queued. |
+| gpu/m1-qa-09-heroes | **M1-QA-09 on hardware** (report) | 49 hero shots at High 2x and Ultra; staff/spear not gripped, skirt and underskirt clipping (characters). |
+| gpu/m2-nit-903-runner-renders | **M2-NIT-903** (runner, for the Lead) | tools/dev/pc_gate: gaterun.sh (Blender after the suite), the import-crash retry in gate.sh, render_scan.py / render_batch.sh / render_publish.sh for track RENDER-REQUESTs; NIT-902's fresh-.godot sync.sh; gate_runner.md section. |
+| gpu/gate-big9-shots | big9 gate result (for the Lead to view) | 48 failing shots (out + diff PNGs), compare.txt, blender_diffs.txt, README with groups. |
+| gpu/m2-nit-902-gate-runner-fresh-import | **M2-NIT-902** (runner fix) | sync.sh never keeps .godot (a stale import failed test_post_import); runbook: 10 GB WSL cap, 2 shards, the shots-branch practice. |
+| gpu/gate-big8-shots | big8's 29 failing shots (out + diff PNGs, clean cache) | for the Lead to view; README groups them. |
+| gpu/m2-nit-901-audio-check-windows | **M2-NIT-901** (accepted, in big8) | data_check keys sfx_*.json by POSIX path (399 false errors on Windows). |
+| gpu/m2-rnd-910-quit-mid-warmup | **M2-RND-910** (accepted, in big8) | Quit during a first-run warm-up hung (predelete waited on RND-18's worker-thread load()). Loads now via ResourceLoader threaded requests; predelete never waits on a load. boot_title first-run capture exits in 5 s (was killed); new test. |
 | gpu/m2-gate-runner | **Gate runner** (for the Lead) | WSL2 `hymn` + tools/dev/pc_gate/ + tools/dev/gate_runner.md. Parity proved (196/196 on d6a0886d). Filed M2-CHR-11 (Blender AVX2 DIFFs) and M2-ARC-12 (stall tests' clock margin). |
 | gpu/m2-rnd-16-release-exit-leak | **M2-RND-16 in review** (reviewer Architect) | The exit leak (130 in use): a Godot 4.6.3 GDScript compiler bug: a function naming HalunaDresser then HalunaZoneDresser (its subclass) pins the class graph. Not release-only. Fix: haluna_zone.gd names the subclass first; 0 in use (editor and release). New tool: slice_sweep --leak-probe. |
 | gpu/m3-rnd-05-reefball-night | **M3-RND-05 in review** (reviewer Art) | The night match: the ball's water column carries the rule-3 sea-glow (on/off 1.56-5.0x, stone <= 2.36x the sea), lamp-keyed players; arena lamps need light_volumetric_fog_energy 0 (they lit the god-ray fog green). +0.01-0.08 ms. Stacked on RND-04. Two new pending shots. |
@@ -169,6 +242,22 @@ python -c "import sys; sys.path.insert(0,'tools/screenshots'); import compare, p
 | gpu/grief-mouth-fill | **local only, abandoned** | An empty branch plus `stash@{0}` (a stage FillLight); superseded by the RND-21 shader family. Safe to delete. |
 
 ## Unfinished queue, in order (exact next step first)
+
+**Queue from the new Lead (session_018aiGwG..., 2026-10-24/27):**
+1. GATE lead/gate-big9: **done**, pushed to `gpu/gate-big9-shots`.
+2. GATE lead/gate-big10 @ 181708a7: **done**, pushed to `gpu/gate-big10-shots`. Any later
+   `lead/gate-*` pre-empts items 3-6 at the next safe point (never during a benchmark).
+**Standing (2026-10-27): the PC does ALL rendering** (TRACK-RULES "RENDERING GOES TO THE PC"): poll the
+`origin/claude/*` live logs for `RENDER-REQUEST @ <sha>` lines after each item and every ~30 min; answer with
+`RENDERED @ <sha>: gpu/render-<track>-<sha7>; n pass, m drift` below. Priority: gates > fast-track renders > other
+renders (oldest first) > the hardware queue.
+3. M1-QA-09 on hardware (on integration 3b7cbf5e, all three heroes; NEXT): Asha braid/clothing/staff clipping and limbs, then the other heroes (screenshots on a gpu/ branch).
+4. Slice `--budget` re-sweep (ADR 0029/0037) on the integration head after big9 merges.
+5. Act I playthrough on hardware (F8 chapter select: Ch1, Ch4-Ch9); file findings as M?-*-9xx tasks.
+6. M2-CHR-11: when characters pushes the AVX2 SIMD snaps, `verify_blender_builds.py --all` on it.
+Later: M3-RND-02 (needs the owner's OK to cap GPU clocks); RND-16; `gpu/godot-472-port` stays parked.
+
+**Earlier queue (kept for the record):**
 
 **Queue (the Lead's top-up of 2026-10-24).** Base each item on the integration branch once the Lead's batch merge
 lands; until then, base on the current head (a514c06, then 54425e2).
@@ -255,4 +344,14 @@ None of it is needed: everything quoted in the reports can be reproduced from th
   timeline order. In 22 of them 100% of the changed pixels lie in the timeline column. battle_hud_preview also has the
   "acts again in 4 -> 5 turns" hint; battle_swell_ring also has the Lamp Dive ring state ("Perfect"), which the Lead
   is viewing. The 061b0361 run was stopped at the Lead's request.
+- **GATE lead/gate-big8@aa55b77e: FAIL (expected-kind drifts plus the known Blender set), wall 27.4 min.** Lane A
+  (fresh import): Godot **2324 run, 0 failed**; coverage OK; smoke OK; data, lint and tools tests OK. Blender, 44
+  changed jobs: 35 identical, **9 DIFF** (exactly the M2-CHR-11 set: rhen, toma and seven villagers). Lane B: **238
+  compared, 29 failed**: 16 battle_arena_*, 6 battle_boss_intro_*, drownbell_flood, creature_portraits, and 5 not on
+  the Lead's list (field_area_title, field_interact_prompt, field_objective_line, field_tip_card, dialogue_continue:
+  UI unchanged, the Haluna stone and sand behind it differ). settings_hub, settings_accessibility and
+  shrine_s01–s05 pass. PNGs: gpu/gate-big8-shots (docs/kb/qa/gate-runs/big8/).
+- **Runner bug, fixed (M2-NIT-902):** the first big8 attempt kept a stale .godot. It failed 3 test_post_import tests
+  (stale LOD ranges; 21/21 fresh) and moved two tideline arena shots; the rerun's PNGs are the clean ones. Claude Code
+  also reaped one attempt for low system memory; with the owner's OK WSL now caps at 10 GB with 2 shards.
 

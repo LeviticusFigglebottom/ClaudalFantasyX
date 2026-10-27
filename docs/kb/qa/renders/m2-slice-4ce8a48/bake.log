@@ -1,0 +1,27 @@
+Godot Engine v4.6.3.stable.debian4.6.3+ds-2 - https://godotengine.org
+Vulkan 1.4.354 - Forward+ - Using Device #0: Unknown - llvmpipe (LLVM 22.1.8, 256 bits)
+WARNING: Started the engine as `root`/superuser. This is a security risk, and subsystems like audio may not work correctly.
+Set the environment variable `GODOT_SILENCE_ROOT_WARNING` to 1 to silence this warning.
+     at: setup2 (main/main.cpp:3478)
+
+bake_shrine_gi: level built
+bake_shrine_gi: baking open
+bake_shrine_gi: open -> res://assets/levels/ch03/shell_shrine/shrine_gi_open.res (1521 ms, OK)
+bake_shrine_gi: baking closed
+bake_shrine_gi: closed -> res://assets/levels/ch03/shell_shrine/shrine_gi_closed.res (1514 ms, OK)
+bake exit 0 in 16 s
+gi_inputs: wrote assets/levels/ch03/shell_shrine/shrine_gi_inputs.json
+BEFORE: de5beffdb4d3f06b1e015de88738c3e0  assets/levels/ch03/shell_shrine/shrine_gi_closed.res
+ab16ea2301f27457e940456fafd7a5e8  assets/levels/ch03/shell_shrine/shrine_gi_open.res
+AFTER: c3c922ea2bb81e5d2bcb8168890c7f88  assets/levels/ch03/shell_shrine/shrine_gi_closed.res
+a738bca227d9e7f90cfab9617e3d99cf  assets/levels/ch03/shell_shrine/shrine_gi_open.res
+total 1832
+drwxr-xr-x 2 root root   4096 Oct 27 14:51 .
+drwxr-xr-x 3 root root   4096 Oct 27 14:51 ..
+-rw-r--r-- 1 root root 932627 Oct 27 14:52 shrine_gi_closed.res
+-rw-r--r-- 1 root root    105 Oct 27 14:52 shrine_gi_inputs.json
+-rw-r--r-- 1 root root 928895 Oct 27 14:52 shrine_gi_open.res
+ M assets/levels/ch03/shell_shrine/shrine_gi_closed.res
+ M assets/levels/ch03/shell_shrine/shrine_gi_inputs.json
+ M assets/levels/ch03/shell_shrine/shrine_gi_open.res
+?? tests/integration/test_ch01_stage_models.gd.uid
