@@ -391,6 +391,15 @@ env-art is cloud session `session_01YbaV2c8yquRHqj6afQYg89` on `claude/env-art`;
 
   Checks run: haluna_kit full rebuild (older pieces identical; every other arena byte-identical), `test_ansedra` 6,
   `test_arenas`, `test_haluna_kit`, Godot `--filter=arena` 18/0.
+- **MERGE-READY @ fca99879: M3-ENV-722**, the Pale Rim and the Drowned Choir (Ch16), with the sheet `pale_rim.md`.
+  - **New pieces:** `choir_singer` (24 m hooded robed singers, heads up, mouths open: singers, not idols),
+    `choir_amphitheatre` and `pale_rim_flats`.
+  - **The arena:** `drowned_choir_ring`, with ten singers round it at moonrise, for Sefir's Abiding guard.
+  - **The grade:** `lut_ch16_choir`.
+  - **For combat/act1:** set the Ch16 guard encounter's arena to `drowned_choir_ring`.
+
+  Checks run: haluna_kit full rebuild (older pieces identical; every other arena byte-identical),
+  `test_drowned_choir` 4, `test_arenas`, `test_haluna_kit`, Godot `--filter=arena` 18/0.
 
 ### Render requests
 RENDER-REQUEST @ a0d2549f: battle_arena_tideline_dawn,battle_arena_causeway_disc_sunset,battle_arena_causeway,battle_arena_tideline,causeway_c02_profile_against_the_lagoon,causeway_c08_drownbell_disc_approach,drownbell_flood,battle_boss_intro_drownbell,haluna_h01_village_from_sea,haluna_h10_dock_night,field_objective_line,field_interact_prompt,field_area_title,field_tip_card,dialogue_continue; why: M3-ENV-701 set dressing in Haluna, the causeway and the two arenas (the five field/dialogue shots frame Haluna's lane 1)
@@ -417,6 +426,7 @@ RENDER-REQUEST @ ab58f891: haluna_h01_village_from_sea,haluna_h02_tidewall_lane,
 RENDER-REQUEST @ c990e2c2: battle_arena_ossa_fen_roots; why: M3-ENV-718 the Mangrove Drowner's fen arena (new shot)
 RENDER-REQUEST @ 191e5e89: battle_arena_bridal_barge_night; why: M3-ENV-720 the Wakefin's unlamped bridal barge (new shot)
 RENDER-REQUEST @ c7703809: battle_arena_ansedra_lagoon_escape; why: M3-ENV-721 Warden Venn's escape on Ansedra's lagoon at dusk (new shot)
+RENDER-REQUEST @ fca99879: battle_arena_drowned_choir_ring; why: M3-ENV-722 the Drowned Choir at moonrise (new shot)
 
 ## STATE AT HANDOVER (2026-10-25)
 
