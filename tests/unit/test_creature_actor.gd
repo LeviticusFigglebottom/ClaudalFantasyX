@@ -18,6 +18,13 @@ const RAM := "res://game/creatures/avalanche_ram/avalanche_ram_battle.tscn"
 const RAM_END_SEC := 0.001
 const RAM_FOOT_TOL_M := 0.01
 const RAM_KO_HEAD_MAX_Y := 1.0
+const WAKEFIN := "res://game/creatures/wakefin/wakefin_battle.tscn"
+## The Wakefin's checks (y 0 is the water): the blade's upper bone stands above this in the idle, the dive takes it
+## under at its deepest second, and at the end of the KO every bone lies within this band round the surface.
+const FIN_IDLE_MIN_Y := 1.3
+const FIN_DIVE_SEC := 1.13
+const FIN_KO_BAND_M := 0.6
+const FIN_BELLY_UP := -0.8
 const RING := {"radius_factor": 1.4, "inner_soft_m": 0.25, "notches": 6}
 const SANDBOX := "res://game/battle/scene/battle_sandbox.tscn"
 const SEED := 20261024
@@ -360,6 +367,46 @@ func test_the_avalanche_ram_charges_bellows_and_lies_down() -> void:
 	for b in skel.get_bone_count():
 		var y := (skel.global_transform * skel.get_bone_global_pose(b)).origin.y
 		assert_true(y > -RAM_FOOT_TOL_M, "%s stays above the ground in the KO" % skel.get_bone_name(b))
+
+
+func test_the_wakefin_circles_cuts_dives_and_floats_belly_up() -> void:
+	var w := _actor(WAKEFIN)
+	assert_eq(w.current_clip, &"idle")
+	assert_false(w.enter_phase(&"uprooted"), "a boss without phases: its sheet asks for none")
+	assert_true(w.play_action(&"", &"physical"))
+	assert_eq(w.current_clip, &"attack", "the cut")
+	assert_true(is_equal_approx(w.contact_time(&"attack"), 0.8), "the blade sweeps the deck at 0.8 s")
+	assert_true(w.play_action(&"", &"magical"))
+	assert_eq(w.current_clip, &"cast", "the dive")
+	var skel := w.find_children("*", "Skeleton3D", true, false)[0] as Skeleton3D
+	var bones: Array[String] = ["root", "head", "bill", "fin_0", "fin_1", "fin_2", "pec_l", "pec_r"]
+	bones.append_array(["tail_upper", "tail_lower"])
+	for k in 10:
+		bones.append("spine_%d" % k)
+	for b in bones:
+		assert_true(skel.find_bone(b) >= 0, "the rig has %s" % b)
+	assert_eq(skel.get_bone_count(), bones.size(), "spine 10, the bill, a blade of 3, pectorals, tail lobes")
+	var player := w.find_children("*", "AnimationPlayer", true, false)[0] as AnimationPlayer
+	var fin := skel.find_bone("fin_2")
+	player.play(&"idle")
+	player.seek(0.0, true)
+	assert_true(_bone_y(skel, fin) > FIN_IDLE_MIN_Y, "the blade stands high out of the water as it circles")
+	player.play(&"cast")
+	player.seek(FIN_DIVE_SEC, true)
+	assert_true(_bone_y(skel, fin) < 0.0, "the dive takes the blade under")
+	player.play(&"ko")
+	player.seek(player.get_animation(&"ko").length - RAM_END_SEC, true)
+	var root := skel.global_transform.basis * skel.get_bone_global_pose(skel.find_bone("root")).basis
+	assert_true(root.y.normalized().y < FIN_BELLY_UP, "it ends rolled belly-up")
+	for b in skel.get_bone_count():
+		var y := _bone_y(skel, b)
+		assert_true(
+			absf(y) < FIN_KO_BAND_M, "%s lies at the surface after the KO (y %.2f)" % [skel.get_bone_name(b), y]
+		)
+
+
+func _bone_y(skel: Skeleton3D, bone: int) -> float:
+	return (skel.global_transform * skel.get_bone_global_pose(bone)).origin.y
 
 
 func test_hits_rotate_their_variants_and_a_phase_keeps_its_own() -> void:

@@ -11,7 +11,7 @@ alone. Hits peak near 0.1 s (M3-CRE-617).
 | The Mangrove Drowner | [mangrove_drowner.md](mangrove_drowner.md) | spawn, boss | 3.2 m (rooted), 3.6 m (risen) | Ossa Fen, the roots (Ch10) | built (M3-CRE-621) |
 | The Lamp Engine | [lamp_engine.md](lamp_engine.md) | construct, boss | 3.4 m | Lowlight, the engine hall (Ch11) | built (M3-CRE-623), first PC render pending |
 | The Avalanche Ram | [avalanche_ram.md](avalanche_ram.md) | spawn-touched beast, boss | 3.0 m at the head | the terrace wall above Keth Pass (Ch12) | built (M3-CRE-624) |
-| The Wakefin | [wakefin.md](wakefin.md) | spawn, boss | 2.2 m of fin above the water | the open sea at night, the bridal barge (Ch15) | sheet only |
+| The Wakefin | [wakefin.md](wakefin.md) | spawn, boss | 2.2 m of fin above the water | the open sea at night, the bridal barge (Ch15) | built (M3-CRE-626), first PC render pending |
 
 **Built models.** The Mangrove Drowner (M3-CRE-621): `assets_src/creatures/mangrove_drowner/`, 16,370 triangles
 (budget 18k), root arches to 3.1 m (3.6 m risen) with the trunk stump's splinters to 3.8 m above them, 48 bones (the sheet's core chain of 4, twelve 3-bone roots and the stump, plus six splinter bones
@@ -50,3 +50,19 @@ none). Weak points: seven `spawn_wound` partings in the coat (three a side and o
 fleece slot's emission mask. Review shot `creature_avalanche_ram` (three-quarter, idle) waits for its PC render.
 No enemies.json row yet. Not modelled, by the sheet: the breath steam, the snow the bellow brings down off the
 terrace wall (the field hazard), the ice that cracks off on a hit and the `glimmer_held` the partings shed (VFX).
+
+The Wakefin (M3-CRE-626): `assets_src/creatures/wakefin/`, 11,128 triangles (budget 14k), 6.0 m from the tail lobes'
+tips to the bill's point, its swept dorsal blade standing 2.21 m above the water, 20 bones: root, head, the sheet's
+spine 10, the bill, a blade of 3 (by height, each hinged along the back's line), two pectorals and two tail lobes. y 0
+is the water's surface: the spine axis (the root) sits at y −0.38, the back's height under the blade's front root, so
+the waterline falls where the blade meets the back (−0.06..+0.05 over the idle). Clips: `idle` (4 s, in place: it
+banks and yaws into a turn and back, a swimming wave runs down the spine, the blade leans and its top curls, it
+surfaces a little twice a loop), `attack` (the breach: the whole fish out of the water, rolled so the blade sweeps
+flat across the deck; contact 0.8 s of 1.6 s), `cast` (the dive: the blade goes under, 0.9–1.3 s, and it rises at
+1.5 s, the contact), `hit` (the blade jerks over and the body rolls, peak 0.1 s) and `ko` (the blade flops flat, it
+rolls belly-up and floats up to lie at the surface, drifting away; it ends at y −0.46..+0.79). No phases. Lights: a
+`sea_glow` seam along each flank (its own slot, the sea's light) and eight `spawn_wound` wounds along the spine (the
+body slot's emission mask, the weak points). It was checked without a render (numbers in the task file); its review
+shot `creature_wakefin` (three-quarter, idle) waits for its first PC render. No enemies.json row yet. Not modelled, by
+the sheet: the sea-glow wake, the dark water and the surfacing ring of the dive, and the `glimmer_held` the wounds
+shed (VFX).

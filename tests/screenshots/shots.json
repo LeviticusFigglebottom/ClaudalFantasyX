@@ -3238,6 +3238,14 @@
         960,
         720
       ]
+    },
+    {
+      "id": "creature_wakefin",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_wakefin.tscn",
+      "resolution": [
+        960,
+        720
+      ]
     }
   ]
 }
