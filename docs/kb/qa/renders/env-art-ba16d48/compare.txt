@@ -1,0 +1,6 @@
+FAIL haluna_h01_village_from_sea: rmse 0.02183 (limit 0.00800)
+FAIL haluna_h04_dock: rmse 0.01082 (limit 0.00800)
+PASS haluna_h10_dock_night: rmse 0.00577 (limit 0.00800)
+PASS field_menu_map_haluna: rmse 0.00000 (limit 0.00800)
+Screenshots: 4 compared, 2 failed (diffs in /root/hymn/tests/screenshots/out/diff)
+compare exit 1
