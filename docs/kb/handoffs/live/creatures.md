@@ -453,4 +453,11 @@ RENDER-REQUEST @ fce2e82b: battle_hud_preview, battle_swap_menu, battle_victory,
   - **For the Ch15 barge arena** (whoever builds the Act II arenas): it needs an opaque water surface at y 0, so the submerged body stays hidden. On a plain floor it reads like the creature stage.
   - The bestiary portrait has no floor, so it shows the whole fish.
 RENDER-REQUEST @ 95b6daf8: portraits:mangrove_drowner,lamp_engine,avalanche_ram,wakefin,tannin_archer,gallery_ray,rime_urchin,conduit_crawler,ridge_lynx,cord_moth,glass_skate,root_crab,fen_leech,scree_crawler,rim_crawler; tool: tools/portraits/render.sh --only mangrove_drowner,lamp_engine,avalanche_ram,wakefin,tannin_archer,gallery_ray,rime_urchin,conduit_crawler,ridge_lynx,cord_moth,glass_skate,root_crab,fen_leech,scree_crawler,rim_crawler
+- **Queue status for the Lead (your 19:34 list):**
+  1. **Portrait manifest and Wakefin:** done before your note. 95b6daf8 has all 15 Act II creatures and the portrait RENDER-REQUEST; the Wakefin answer is above.
+  2. **The one-frame-late clips:** done at cbd1ce38 (M3-CRE-630: 46 jobs rebuilt, verify identical ×46). hit_snap re-tuned now at the push after 27f39bbe: 0.067 s default, the ashwing 0.1 s, measured over all 42 on-time hits. Render: the 101-shot request at 5e46d7dd covers every creature and battle shot. The re-tune can move battle_choreo_hit again, so view that one against this head.
+  3. **Capsule sweep on integration 73cddee1:** still only stillguard_inquisitor (Moll, characters, M3-CRE-625). Summons and set-piece entries are clean.
+  4. **Act II:** the roster's 15 creatures are built. The flat-engine (Ch14 boss part) has its sheet now and is building (M3-CRE-637). The Drowner polish (M3-CRE-622) is building. Both are worktree agents.
+  5. **Wildlife:** Ch8 corrow and coilspire added (M3-CRE-636). Ch5 Ashcrown, Ch7 bell galleries and Ch9 Corrow-night stay empty on purpose (reasons in docs/kb/art/wildlife.md; Corrow-night: crabs among the shrouds would read as carrion). Ch4, Ch5 Pemakar and Ch7 Tamsule have had data since M3-CRE-615/616.
+  6. **Task board, creatures' todos:** M3-AUD-815 done (`chat_speaking()`, `startled()`); M3-CRE-201 closed (the Matron's model had landed); M3-CRE-622 in progress. The rest of the character todos are the characters track's.
 
