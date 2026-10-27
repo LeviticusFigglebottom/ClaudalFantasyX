@@ -1,0 +1,9 @@
+BLENDER FAIL rhen  106.8 s  3 DIFF, 28 identical
+    DIFF      assets/characters/rhen/rhen.glb  sha256 c5870b2298d6 committed vs df59fe4fe810 rebuilt; data differs: HairHead.POSITION, HairHead.NORMAL, Head.POSITION, bufferView 69, bufferView 71, bufferView 97  [HairHead.NORMAL, HairHead.POSITION, Head.POSITION, accessor 139, accessor 142, accessor 143, accessor 144, accessor 145, accessor 148, accessor 149]
+    DIFF      assets/characters/rhen/rhen_lod1.glb  sha256 e023d4d7efbe committed vs 20adefc05f69 rebuilt; glTF structure differs (keys: accessors, bufferViews, buffers)  [HairHead.001.COLOR_0, HairHead.001.JOINTS_0, HairHead.001.NORMAL, HairHead.001.POSITION, HairHead.001.TEXCOORD_0, HairHead.001.WEIGHTS_0, HairHead.001.indices, Head.001.POSITION]
+    DIFF      assets/characters/rhen/textures/rhen_head_normal.png  sha256 a8ff96d8d3c2 committed vs 67f5a9d98450 rebuilt  [<bytes>]
+BLENDER FAIL toma  156.2 s  3 DIFF, 35 identical
+    DIFF      assets/characters/toma/textures/toma_head_normal.png  sha256 394d429800bc committed vs bf07d7268683 rebuilt  [<bytes>]
+    DIFF      assets/characters/toma/toma.glb  sha256 4865473cd577 committed vs 8cebc01c104c rebuilt; data differs: Head.POSITION, bufferView 69, bufferView 71, bufferView 97, bufferView 99, bufferView 101  [Head.POSITION, accessor 139, accessor 142, accessor 143, accessor 144, accessor 145, accessor 148, accessor 149]
+    DIFF      assets/characters/toma/toma_lod1.glb  sha256 1bad1768380f committed vs 871db8da7b42 rebuilt; data differs: Head.001.POSITION, Head.001.POSITION  [Head.001.POSITION]
+Blender builds: 22 job(s), 2 failed, 0 uncovered, 1054 s
