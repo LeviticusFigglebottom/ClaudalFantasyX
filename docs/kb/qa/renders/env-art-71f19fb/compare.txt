@@ -1,0 +1,5 @@
+FAIL battle_arena_shoals: rmse 0.09539 (limit 0.00800)
+FAIL battle_arena_camp: rmse 0.11154 (limit 0.00800)
+FAIL battle_boss_intro_inquisitor: rmse 0.15938 (limit 0.00800)
+Screenshots: 3 compared, 3 failed (diffs in /root/hymn/tests/screenshots/out/diff)
+compare exit 1
