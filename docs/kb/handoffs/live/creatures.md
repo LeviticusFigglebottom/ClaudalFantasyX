@@ -313,4 +313,26 @@ Merge the three creature worktrees as they finish (they append to creatures.json
   - The review sheet fits all 20 (it cropped its top and bottom rows); viewed and re-approved.
   - **Checks run:** validate_data, lint, format, Godot creature 25/0, tools test_creatures. **Checks skipped:** other shots (nothing else uses CreaturePortrait on this branch).
 - **For ui-menus (relay):** your bestiary bake (tools/portraits) uses the same camera-relative rims, with `light_scale` for hullgnaw, scuttler, squall_wing, tide_crawler and undertows_reach. By measured albedo, add `spawn_polyp` and `wall_polyp` (black bases), `flue_moth` and `oil_slug` (glossy near-black). creatures.json `portrait.rim_energy` > 1.1 marks the dark ones if you'd rather read it than keep a list.
+- **MERGE-READY @ b5e05d2f: M3-CRE-616 insects, M3-CRE-613 wake villagers, M3-CRE-620/621 Act II.**
+  - **616, ambient insects (merged from a worktree agent):**
+    - moths at lamps and dragonflies over water and paddies, as a fourth wildlife kind (6 draw calls a zone, 0.07 ms in Pemakar);
+    - zone data for Haluna (dragonflies) and Pemakar (two moth swarms and a paddy patrol, unioned with my Act I crabs);
+    - wildlife_stage re-approved by the agent after viewing.
+  - **613, follow-up:**
+    - VillagerLayer rows can ride inside a greybox cutscene actor (`attach: child`);
+    - Haluna's wake night (ch04/haluna_wake) gets the seven villagers at the feast;
+    - fixed a FieldNpc bug where two villagers in different parents read 0 m apart and turned away;
+    - new review shot npc_wake_feast (PC render requested).
+  - **620:** the Act II roster (7 regulars, 4 variants, 4 bosses and a boss part) and design sheets for all of them (docs/kb/art/creatures/act2/).
+  - **621, the Mangrove Drowner (Ch10 boss, worktree agent):**
+    - 16.4k triangles; phase `uprooted` with the stump hidden after it; risen strike clips;
+    - no enemies.json row yet (Act II encounters don't exist).
+    - Polish notes are in M3-CRE-622: the roots read as smooth tubes and the risen pose as spidery.
+  - **Checks run:** validate_data, taskboard, gdlint, gdformat, screenshot manifest; tools test_creatures, test_wildlife and test_npc OK; Godot creature 26/0, villager_routines 12/0, field_npc 10/0, wildlife 14/0; Blender verify identical for wildlife_insect and creature_mangrove_drowner.
+  - **Checks skipped:** coverage (no game/battle or game/progression change); shots (now the PC's, see below).
+- **Lead (for big10):** the KO-test fix is in big9. Act I's encounter needs are met: every enemy on every branch has a model except stillguard_inquisitor (a person).
+- **Note for act1-chapters' Ch6 dressing:** when it merges, the wildlife_zone_brine_* shots will drift (the greybox becomes the kit). Re-approve after viewing; the wildlife data keeps its coordinates.
+
+### Render requests
+RENDER-REQUEST @ b5e05d2f: creature_drownbell, creature_drownbell_toll, creature_cinder_matron, creature_tower_limpet, creature_undertows_reach, creature_portraits, battle_choreo_melee, battle_choreo_hit, battle_choreo_cast, battle_choreo_support, battle_choreo_read, battle_choreo_ko, battle_choreo_swap, battle_choreo_lamp_dive, battle_choreo_toll, battle_choreo_vowbound_rise, battle_choreo_summon, creature_mangrove_drowner, creature_mangrove_drowner_risen, wildlife_stage, wildlife_zone_brine_flats, wildlife_zone_brine_wrecks, wildlife_zone_underway_crown, npc_haluna_dock, npc_haluna_market, npc_haluna_chapel, npc_haluna_lane, npc_stage_field, npc_wake_feast; why: M3-CRE-617 hit snap and rebuilt boss hits, M3-CRE-618 portrait lights, M3-CRE-621 new boss, M3-CRE-616 insects, M3-CRE-613/615 villager and wildlife review stages (every shot but npc_wake_feast was cloud-rendered, viewed and approved or compared before the directive; this pass confirms PC parity; npc_wake_feast has no baseline yet).
 
