@@ -2,7 +2,128 @@
 
 Feature track for the battle creatures (cloud session_01CYks9e592YBEfygyTawcJD), branch `claude/creatures`, started from `origin/claude/undertow-lead-handoff-423ixt` aeb0875. **This environment owns this file** (CLAUDE.md §7a). The Lead is session_019iimsngAgPLEram1wcbLpE.
 
+## STATE AT HANDOVER (2026-10-25)
+
+**HANDOVER DONE @ 7683996d** (claude/creatures, pushed; this line's own commit follows it).
+
+Branch `claude/creatures` @ 5065b869 (pushed). Nothing is uncommitted, and no subagents are running. Any worktree
+branches left under `.claude/worktrees/` are already merged or applied here and need nothing.
+
+### Done and merge-ready
+- **On the integration branch already** (big7 d6a0886d, big8 6c6e5514): all 27 Act I creatures, the creature pipeline,
+  battle wiring, the M2/M3 creature tasks.
+- **On claude/creatures since big8**, MERGE-READY @ 5065b869 for the Lead's next batch:
+  - integration big8 merged at its own merge commit, and claude/hero-integration (MERGE-READY for big9) merged at
+    9c5e4c26 with the Lead's approval;
+  - **M3-CRE-610 villagers alive** (ac7ea5b9..bada52a9): FieldNpc, docs/kb/tech/field_npc.md;
+  - **M3-CRE-611 ambient wildlife**: WildlifeLayer, the `wildlife` import category, docs/kb/art/wildlife.md;
+  - **M3-CRE-612 battle polish**: hit_b and idle_b for every creature, hit rotation, the idle fidget, and flier
+    `stand_in.hover` so KOs land;
+  - the spar_wraith's `hauled_down` phase, phase `clips` and `show_after`, and the polish passes.
+- **Checks at 5065b869** (combined tree):
+  - validate_data 0/0, taskboard, lint and format clean, tools creature, wildlife and post_import tests OK;
+  - Godot field_npc 10/0, hero 68/0, field_ 106/0, creature 24/0, wildlife 10/0;
+  - **post_import: 3 FAIL, battle: 1 FAIL (see Known bugs).**
+  - Shots not re-run after the big8 and hero merges.
+
+### Exact next steps (for the new environment)
+1. **Triage the failures after the big8 merge:**
+   - `test_post_import.gd`: test_fixture_lod_ranges_follow_the_rules, test_vegetation_import_matches_vegetation_plant_defaults
+     and test_a_distance_sweep_draws_exactly_one_lod.
+   - `test_battle_ko_once.gd`: test_a_primitive_foe_falls_once_and_is_hidden.
+   - First check whether they fail on the integration branch itself (6c6e5514). If so they aren't ours: tell the
+     owners. The KO test assumes `wickfry` has no model, but m2-slice's model lines (big8) give it glassfry's, so
+     battle-presentation needs another primitive foe for that test.
+2. Capture and compare the creature, battle, npc and wildlife shots on the merged tree (60+2). View any change before
+   approving. Big8 took the three battle baselines that conflicted from the integration branch.
+3. Write the MERGE-READY line for the Lead batch.
+4. When it lands: m2-slice adds a WildlifeLayer to haluna.tscn and GreyboxZone, and calls FieldNpc begin_talk/end_talk
+   around villager barks (agreed by message; see the 22:20 entry).
+5. Open: the Matron's re-crust hook (battle-presentation); the Undertow's Reach `water` slot (PC GPU look); a "dialogue
+   finished" signal on FieldEvents (Systems request, optional).
+
+### Open questions
+None for the human.
+
+### Known bugs
+- The 4 test failures above, not yet triaged.
+- The wreck crab's leg barnacles are faceted (budget nearly spent); the Matron's yoke cells are even.
+
+### Gotchas (the creature pipeline)
+- **Builds:** procedural numpy in `assets_src/creatures/<id>/build_<id>.py` on `common/creature_kit.py`, exported by
+  Blender 5.0.1 with `--threads 4`. Every job in `tools/dev/blender_builds.json` must rebuild byte-identical
+  (`tools/dev/verify_blender_builds.py --job <id>`). Append jobs as text: reformatting the JSON breaks merges.
+- **The kit changes every creature:** a kit change (`with_variety`, `IN_PLACE_CLIPS`) rebuilds all 27, so rebuild them
+  all and verify.
+- **Variants:** stormgull, wallcrab, wreck_crab, squall_wing and wall_polyp import their base build. Their jobs list
+  the base folder as a source.
+- **Vertex data carries the look:** COLOR_0 albedo and wetness, UV2 cavity and emission. Materials come from each
+  creature's `materials.json` through `write_materials.py`.
+- **Import rule:** the `game/data/import/creatures.json` `assets` list is not recursive: list each folder. Run
+  `godot --import` before new class_names resolve.
+- **Shots:** `capture.sh` ignores HYMN_SHOTS; use `--shots a,b`. Set HYMN_LOG_DIR and XDG_DATA_HOME to scratch dirs.
+  Never kill processes by pattern.
+- **Data:** creatures.json phase ids must match enemies.json phases once an enemy uses the model. KO end must sit on
+  the floor (a tools test pins a flier's drop to its `stand_in.hover`).
+- **Messages:** send_message to the Lead was refused (untrusted device) for most of the session, so the live log is the
+  channel.
+
 ## Now
+- **22:20, m2-slice:** once wildlife_layer.gd reaches the integration branch, they add a WildlifeLayer to haluna.tscn,
+  and GreyboxZone will add one automatically for any location with a game/data/world/wildlife/<zone>.json. For
+  FieldNpc (after it lands) they'll call begin_talk/end_talk around HalunaStory/ZoneStory barks, or
+  follow_dialogue(runner).
+- **MERGE-READY @ d9001836: the Lead's new queue (M3-CRE-610..612), all in review.**
+  - **611 ambient wildlife (merged):** gull (flying and perched), shore crab and shoal fish, built from the kit in a
+    new `wildlife` import category. WildlifeLayer is MultiMesh, 4 draw calls a zone, 0.27 ms average and 0.56 ms worst
+    in Haluna (budget 1 ms); off-screen groups pause and anything past 120 m hides. Data for ch02/haluna and
+    ch03/saltgrass_causeway. **Zone owners add one WildlifeLayer node** (docs/kb/art/wildlife.md); m2-slice has been
+    asked.
+  - **612 battle polish:** hit_b and idle_b for every creature, hit rotation, the idle fidget, and flier `hover` so
+    KOs land on the floor (KO audit viewed).
+  - **610 villagers:** parked as patches until hero-integration merges (see the 22:10 entry).
+  - **Checks run:** validate_data, taskboard, lint, format, tools unittest (creatures, wildlife, post_import; the
+    agent ran the full tools suite: 706 OK), Godot wildlife 10/0, creature 16/0, post_import 19/0, battle 527/0, the
+    Blender verify of all 27 creature jobs and 3 wildlife jobs (identical), 60 creature and battle shots unchanged,
+    wildlife_stage and npc_stage_field approved after viewing. **Skipped:** the full manifest and coverage (no change
+    in game/battle or game/progression).
+- **21:30, the Lead's new queue (M3-CRE-610..612, id block 600–699; ownership row added for game/world/npc,
+  game/world/wildlife and their data, tests and assets paths):**
+  - **610 villagers alive** (worktree agent): FieldNpc, which gives villager actors idle loops, a talk gesture, an eased
+    turn to face the player (reusing hero-integration's HeroLocomotion and HeroIdleMicro) and walk routes. It is built
+    on a LOCAL merge of claude/hero-integration (not yet on the integration branch); only the NPC commits land here,
+    after hero-integration merges. Zones stay m2-slice's: they add the node (docs/kb/tech/field_npc.md).
+    **Done and parked (22:10):** 3 commits as patches in docs/kb/tasks/M3/M3-CRE-610-parked/ (`git am` after
+    hero-integration merges). field_npc 10/0, hero 35/0; the npc_stage_field shot was viewed and approved.
+  - **611 ambient wildlife** (worktree agent): gulls, shore crabs and fish shoals; a WildlifeLayer node plus per-zone
+    data for the zone owners to add.
+  - **612 battle polish** (here): hit_b and idle_b derived for every creature (f426c0e8), hit rotation, and an idle
+    fidget. In progress: Blender verify of all creature jobs, the 60 creature/battle shots, and a KO end-pose audit
+    (BPR-11 plays a KO once, then fades, so KOs must end grounded).
+- **19:50, m2-slice: the `model` lines are in** on claude/m2-slice (544958b1, after big7). 15 Act I enemies point at
+  their creature scenes; the internal id `wickfry` is kept and points at glassfry's scene (flags and saves use it).
+  stillguard_inquisitor is the character track's. spar_wraith's `hauled_down` row comes with big8. This unblocks the
+  last blocked creatures item; only the Matron's re-crust hook (battle-presentation) is left outside this track.
+- **19:45: big7 merged into claude/creatures** (integration 8f808cc6). Conflicts were three battle baselines, taken from
+  the integration branch, then re-captured on the merged tree: all 60 creature and battle shots pass against them.
+  BattleActorMotion's action/hit handoff to BattleChoreo arrived as agreed. Checks after the merge: validate_data,
+  taskboard, lint, format, tools tests, Godot creature 14/0 and battle 527/0. m2-slice has been told the `model`
+  lines can land now (the scenes are on the integration branch). The polish batch rides big8.
+- **MERGE-READY @ b6d98d1c (+ this log).** Since 0eb5a1a9: the spar_wraith's two phases (d2848fbd) and the minor
+  polish (the Matron's slag cells in mixed sizes, salt bands and barnacles on the wreck crab's legs, smoothed rent edges
+  on the squall wing). Checks: validate_data, taskboard, lint and format, tools creature tests, Godot creature 14/0
+  and battle 412/0, Blender verify of each changed job (identical). 4 creature shots compared and passing:
+  creature_spar_wraith was re-approved at 0.03089, the Matron 0.02893, the crab 0.02448, the wing 0.00742, each after
+  viewing. Skipped: other shots and coverage (no shared code beyond CreatureActor's phase keys, which the creature
+  tests cover).
+  - **Queue:** every item is done or blocked. Blocked: enemy `model` lines (m2-slice adds them once this branch is on
+    the integration branch) and the Matron's re-crust hook (battle-presentation). Nothing open on the creatures side
+    beyond optional finesse (the wreck crab's leg tubes are coarse; only 58 triangles of budget left).
+- **Resumed after the usage-limit stop (17:30).** Integration 81651b7e merged. The Lead's resume list (Ch6–Ch9, clips,
+  slice polish) was already done (see the entries below). New since then: m2-slice's Ch4 boss phase `hauled_down` for
+  the spar_wraith is built at d2848fbd (Shroud, drop, water Sheath, deck strikes; new `show_after` phase key; the
+  kit's `pose_of`/`in_pose`). Now running: one agent on the three minor polish notes (the Matron's cell-size variety,
+  the wreck crab's leg detail, the squall wing's saw-toothed rents).
 - **MERGE-READY @ 63f7bed3: polish batch.** The Cinder Matron's crack lines (Voronoi slag cells with ember seams, 23.2k
   triangles) and a cleaner mask; the squall wing's see-through rents in wings and body; the wreck crab's salt-plate
   crust and bleached legs; phase strikes (a phase `clips` map, the Reach's Dark and Breach strikes).
@@ -80,6 +201,7 @@ Feature track for the battle creatures (cloud session_01CYks9e592YBEfygyTawcJD),
 - **Un-pushed state:** none. Drafts for Ch5 (ashwing, slag tortoise, Cinder Matron), Ch6 (shoal skipper, raid-hound), Ch8 (tide crawler) and the Ch1 scuttler build cleanly in the scratchpad. They land after this merge-ready point, on top of 2f36b27.
 
 ## Decisions so far
+- **Id blocks (Lead, 21:00):** new task ids M3-CRE-600..699, ADRs 0150–0159, handoffs `<date>-<role>-creatures-<n>.md`. Existing ids stay.
 - **Hook:** the UI track's M2-UI-07 (on `claude/ui`, 08c872c1) already makes `FighterStandIn` instance a spec's `"scene"`. The creatures build on that hook rather than a parallel one: the enemies.json `model` field becomes the stand-in spec's `scene`.
 - **Materials:** one creature shader (`game/shaders/creature/creature.gdshader`) reading vertex data (albedo, wetness, cavity, wound mask), not the texture-based character families. Why: pipeline.md §2.
 - **Import:** a new `creatures` category. Clip loop modes are set at runtime from `game/data/creatures/creatures.json`, so the shared `AssetImportRules` (which the characters track is also changing) is not touched.

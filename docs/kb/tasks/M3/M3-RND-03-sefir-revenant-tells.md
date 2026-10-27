@@ -25,7 +25,7 @@ the effects are Rendering's (the water shader, the shadow setup).
 ## Notes
 - The actor: `assets/characters/sefir/sefir.glb` (`sefir_lod1.glb` for distance), stage
   `game/levels/_tests/characters/sefir/sefir_stage.tscn`.
-- Environment owns the Brine Shoals water and the barge (M3-ENV-01); the effect should be a shader or layer feature
+- Environment owns the Brine Shoals water and the barge (M3-ENV-1000); the effect should be a shader or layer feature
   any level can use, so his Act II scenes (Ansedra's pools, the Drowned Choir) get it too.
 
 ## Review log

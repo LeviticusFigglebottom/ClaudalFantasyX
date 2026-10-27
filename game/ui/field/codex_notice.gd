@@ -168,8 +168,7 @@ func _build() -> void:
 	var r := HudLayout.rect_of(pm)
 	_panel = PanelContainer.new()
 	_panel.theme_type_variation = &"PanelSmall"
-	_panel.position = r.position
-	_panel.size = r.size
+	HudLayout.place(_panel, pm)  # lower right at any aspect, growing up for a long title (M2-UI-29)
 	_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(_panel)
 	var box := VBoxContainer.new()

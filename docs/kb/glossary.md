@@ -271,9 +271,6 @@ Hullgnaw, Drownbell (slice), Spar-Wraith, Cinder Matron, the Undertow's Reach, M
 - **Tide Brace**: Toma's Swell input: hold through the blows, let go on the counter. **Return Tide**: his first Swell technique.
 - **Glyph Trace**: Ysolde's Swell input: trace a Lamptongue glyph's strokes before the window closes (*swift* for a clean, quick trace). **Written Light**: her first Swell technique (strikes every foe).
 
-### Added 2026-10-24 (M3-CHR-506, Character Art)
-- **shell-tile wraps**: the cords of small square shell tiles on Pell's forearms (the art sheet's reading of his "beaded cord wraps"). The left wrap's sequence is the call and the right's the mirrored response, echoing his call-and-response Swell input. *art/characters/pell.md §3*
-
 ### Added 2026-10-24 (M3-RBL-01, Combat)
 - **float** (Reefball): the woven ball. A score is **bringing it up** through the single **ring** at the top of the drop (N-12). *design/reefball.md*
 - **fetch** (Reefball): a side may only score a float it has taken down to low water or deeper this possession, from the rescue drill. A float won high up must be fetched first.
@@ -281,3 +278,6 @@ Hullgnaw, Drownbell (slice), Spar-Wraith, Cinder Matron, the Undertow's Reach, M
 - **rise, dive, pass, loft** (Reefball actions): swim up with the float, swim down with it, hand it on, throw it up through the ring.
 - **lifter, anchor, presser, ringward** (Reefball roles). A **ringward** waits at the ring to ward off lofts; there is no keeper.
 - **breath** (Reefball): the divers' resource; it comes back only at the ring, so a winded diver leaves play to breathe.
+
+### Added 2026-10-24 (M3-CHR-506, Character Art)
+- **shell-tile wraps**: the cords of small square shell tiles on Pell's forearms (the art sheet's reading of his "beaded cord wraps"). The left wrap's sequence is the call and the right's the mirrored response, echoing his call-and-response Swell input. *art/characters/pell.md §3*

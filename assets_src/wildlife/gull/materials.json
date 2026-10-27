@@ -1,0 +1,22 @@
+{
+  "_doc": "Ambient gull surface (docs/kb/art/wildlife.md). One slot for both meshes; write_materials.py writes assets/wildlife/gull/materials/plumage.tres on game/world/wildlife/wildlife.gdshader. wing_pivot is build_gull.py's shoulder (SHOULDER_X, SHOULDER_Y); head_pivot is its perched neck (printed by the build).",
+  "slots": {
+    "plumage": {
+      "roughness_dry": 0.86,
+      "roughness_wet": 0.5,
+      "specular": 0.35,
+      "wet_darken": 0.85,
+      "clearcoat_wet": 0.1,
+      "detail_scale": 90.0,
+      "detail_albedo": 0.05,
+      "cavity_albedo": 0.35,
+      "cavity_ao": 0.5,
+      "wing_pivot": [0.045, 0.018, 0.0],
+      "flap_angle": 0.55,
+      "flap_lag": 0.9,
+      "flap_bob": 0.02,
+      "head_pivot": [0.0, 0.1677, 0.0995],
+      "nod_angle": 0.35
+    }
+  }
+}

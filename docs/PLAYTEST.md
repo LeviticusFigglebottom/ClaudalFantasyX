@@ -70,7 +70,7 @@ Ch4 to Ch6 aren't built yet, so Ch7 isn't on the New Game thread. To play it fro
 5. **The naming.** Walk down to the catch-pool's rim. The two captains each name one person the sea has taken, and the crowd answers.
 6. **The match is a stand-in for now.** The Reefball match isn't built, so the naming goes straight to its end: the zone reloads at the pool and "After the Bell" plays. It's written to read the same whether Oruvel won or lost.
 7. **Optional, "The Empty Moorings":** walk east over the bridge to the timber staging with six small dark rings and talk to Tavi at his boat.
-8. **The afternoon.** Leave by the gallery entrance (south-west) to return to the port, where some of the talk has changed. Walk to the harbour (east) to board the trader for Corrow. The end card stands in for Ch8.
+8. **The afternoon.** Leave by the gallery entrance (south-west) to return to the port, where some of the talk has changed. Walk to the harbour (east) to board the trader for Corrow. Ch8 starts at Corrow's mole.
 
 ## Running it
 
@@ -154,7 +154,7 @@ Ch5 isn't on the New Game thread yet: Ch4, which brings the ferry in, is being b
 
 ## Ch9, "The Ebbing" (greybox; the end of Act I; about 20–25 minutes)
 
-Ch8 isn't built yet, so Ch9 isn't on the New Game thread. From an editor run, press **F5** (teleport) and pick **Ch9: Corrow, the night of the Ebbing**. Everything is grey blocks and capsules, and the chapter is nearly silent (its music and sounds don't exist yet). **Ch9 has no fights.**
+Ch9 follows Ch8's cut rope. To start it on its own from an editor run, press **F5** (teleport) and pick **Ch9: Corrow, the night of the Ebbing**. Everything is grey blocks and capsules, and the chapter is nearly silent (its music and sounds don't exist yet). **Ch9 has no fights.**
 
 1. **The strand of the drowned,** at night after the storm. The dead lie in rows under sailcloth. Pale cyan lights hang over the flooded town behind the broken wall.
 2. **Walk among them.** Talk to Marra at the east end of the soldiers' row (the one with the shields). You overhear Hobb reading names and a guard by the rows. Liss is on the wall-head at the west end, but she only speaks if Ch8 has played.
@@ -191,6 +191,44 @@ Ch6 follows Ch5's dawn. To start it on its own from an editor run, press **F5** 
 - **Toma's "No. Not them."** shows as his first-turn prompt in the fight, not as a bark when you pick a greyed command.
 - **The barge's look** (no wake, no water sound, Sefir's stillness) needs the water shader and the character art. In the greybox it's a white block with capsules on it.
 - **The flats** have the same random fights as the ridges.
+
+## Ch8, "The Seawall" (greybox; about 50–60 minutes)
+
+Ch8 follows Ch7's harbour. To start it on its own from an editor run, press **F5** (teleport) and pick **Ch8: Corrow, the harbour mole**, or **F8** (chapter select) and pick Ch8. Everything is grey blocks and capsules, and the chapter has no music or sounds yet.
+
+1. **Landfall under the kites.** The trader comes in under the seawall. Townsfolk come down the mole steps for the Cantor. Kerrid says "Later." and walks off along the foot of the wall. He's out of the party for the whole chapter.
+2. **Corrow by day.** Walk up the mole onto the wall-head, where Toma's old shield-mate finds him. You can't go through the wall-gate until you've met him.
+   - Walk west along the wall-head to the head of the Fisher Stair. Asha stops and looks down it (no line).
+   - You overhear the watch captain drilling fishers at the stair, a bored Stillguard, and two children arguing about kites. Talk to the net-mender in the low town below the stair.
+   - The Bastion (west) has the **save shrine** (it rests the party) and the **chandler** (a stand-in shop).
+3. **The wall-gate.** The watch-red gate at the wall-head's east end leads out along the headland to Coilspire.
+4. **The headland path.** Random fights (stormgulls, which are Rhen's, and wallcrabs, which Toma's Shell Breaker cracks), and one fight at the path's midpoint that always happens.
+   - **Optional, "The Keeping Flame":** at the spire's foot, before you go in, sit by the hearth with the old keeper (west). It only plays before the door.
+5. **Coilspire, the flue trial.** The Tender lets the party in. The spire is four rooms in a row, going north from the door, and each has copper flue-keys (the small orange blocks; **E** to turn). The fire climbs to the next room when exactly the right keys are open. A wrong key makes it cough and resets that room's keys. Nothing is timed and nothing fails. Asha gives a hint if no key is turned for 90 seconds.
+   - Room 1: two of the three keys. Room 2: two of the three middle keys. **Optional:** the key on the west wall, turned on its own with every other key in the room shut, opens a niche (the sailmaker's needle).
+   - Room 3: the green key is seized. Liss frees it and finds something behind it. Then pick its partner.
+   - Room 4: three of the four.
+   - There's a fight with two flue moths on the landing of rooms 2 and 4. They drink fire; Ysolde's frost is the answer.
+6. **The crown.** Asha goes into the crown chamber alone. Then the gallery: the storm is coming against the wind. **Turn the great key** (E) to open the beacon.
+7. **The storm.** Back at the wall-gate in the dark. At the stair, Toma takes his place in the shield-line, and **the game autosaves**.
+8. **The set piece: four fights on the Fisher Stair**, with short scenes between them. Toma is locked in at the stair-head, and his Attack is Stand Firm (a counter stance). Kerrid is "not with the party". A fight ends when enough groups of climbers have reached the top (the Fisher Stair's turns on the timeline), not when the spawn are all down.
+   - **Wave 1, "Hold":** Toma, Ysolde and Liss, with Rhen and Asha in reserve. Crawlers telegraph a grip on the stair; Toma's Hold the Stair or Challenge takes it.
+   - **The hoist:** Liss rigs a rope on the wall's face. From now on she can **Haul** (Haste on the stair).
+   - **Wave 2, "The Rope":** Toma, Rhen and Liss. The fliers dive a hauled rope.
+   - **The stranger on the wall:** a tall figure on the outer parapet makes the storm's own sound.
+   - **Wave 3, "The Last of the Low Town":** Toma, Liss and Ysolde. The Kirru on the parapet calls one spawn off every other turn; only the party can burn the rooted polyp.
+   - **"Captain?"** A short scene at the stair's foot.
+   - **The Undertow's Reach:** Toma, Asha and Liss. It can't be beaten. Hold it, call Virel when the dark comes (her finisher lights the wall), and when it pulls back and can't be touched, get the last two groups up.
+   - Between fights, everyone comes back with at least half their HP (MP stays as it was). If you lose a fight, **Fight again** restarts that fight, with the climbers' count as it was when that fight began.
+9. **The wall falls.** There's one choice for Rhen at the end; both are fine.
+10. **The cut rope.** The Stillguard cut the hoist down. Then the party goes down to the strand for the night, and Ch9 starts.
+
+**Ch8 placeholders:**
+- **There's no stair meter on screen yet,** and the Climb, the Surge and the Kirru don't have their own timeline chips (a UI request). The count is kept, but you can't see it.
+- **The battle barks** ("Hold.", "Pull!") aren't spoken yet. Toma's "Hold." is said once, at the start of the Reach.
+- **Liss's and Virel's kits are provisional,** and so is the Reach's look. In the greybox the storm is a dark slab, the hoist is a rope and a box, and the breach just removes a section of wall.
+- **No smith or inn in Corrow yet.** The chandler is a stand-in shop.
+- **The flue trial has no visual clue** for which keys draw yet: it's trial and error in the greybox.
 
 ## Reporting
 

@@ -1,0 +1,144 @@
+{
+  "version": 1,
+  "doc": "Hero motion tuning (M2-HER-1101..1104, ADR 0190): how the real hero models turn, blend their gait and idle in the field, in battle and in cutscenes. Metres, seconds, degrees. Read by HeroLocomotion (game/hero_motion/hero_locomotion.gd).",
+  "turn": {
+    "doc": "The visible body turns toward its travel (or its node's facing when still) at most max_rate_deg_per_sec, never snapping. The turn speed eases in (max_accel) and out (settle_gain: degrees per second per degree of error left).",
+    "max_rate_deg_per_sec": 400.0,
+    "max_accel_deg_per_sec2": 2600.0,
+    "settle_gain": 9.0,
+    "min_move_speed_mps": 0.2
+  },
+  "gait": {
+    "doc": "Locomotion blend (BlendSpace1D on ground speed): idle at 0, walk at walk_clip_mps, run at run_clip_mps, the speeds at which each in-place clip's feet plant without sliding (Rhen's, measured; the field heroes override them per hero in field.heroes). Above run the clip speeds up to max_playback_scale. speed_smoothing_sec filters the speed the blend sees, so a start or stop rolls through the gait instead of popping.",
+    "walk_clip_mps": 1.09,
+    "run_clip_mps": 2.35,
+    "max_playback_scale": 1.5,
+    "speed_smoothing_sec": 0.12,
+    "teleport_m": 2.5
+  },
+  "field": {
+    "doc": "Field bodies (M2-HER-1101/1102): HeroFieldActor puts a hero model on the FieldController (the party leader) and on CutsceneStage Actors/<hero id> capsules; HeroFieldParty walks the other joined heroes on the leader's trail. Each hero's walk_clip_mps / run_clip_mps override 'gait' (measured by HeroClipGait with gait_measure; tests/unit/test_hero_field_actor.gd checks them within measure_tolerance). model_yaw_offset_deg turns the model (it faces +Z) onto the field's forward (-Z); ground_offset_m lifts it off the node's origin (its feet). standin_names are the capsule visuals hidden under a body (anything else, such as a lantern, stays). locomotion_clips are the BlendSpace1D clips: play_clip of one of them returns to locomotion; clip_blend_sec is play_clip's default cross-fade. A hero's carry list moves props of its source (by node name) onto a bone of the model at a model-space point, so they turn with the body (Rhen's LanternLight hangs in his lantern's salt glass, measured from rhen_lod1's Props mesh).",
+    "leader_default": "rhen",
+    "heroes": {
+      "rhen": {
+        "scene": "res://assets/characters/rhen/rhen_lod1.glb",
+        "walk_clip_mps": 1.09,
+        "run_clip_mps": 2.35,
+        "carry": [
+          {
+            "name": "LanternLight",
+            "bone": "DEF-spine.004",
+            "at_model": [
+              -0.156,
+              1.483,
+              -0.167
+            ]
+          }
+        ]
+      },
+      "asha": {
+        "scene": "res://assets/characters/asha/asha_lod1.glb",
+        "walk_clip_mps": 0.95,
+        "run_clip_mps": 2.01
+      },
+      "toma": {
+        "scene": "res://assets/characters/toma/toma_lod1.glb",
+        "walk_clip_mps": 1.09,
+        "run_clip_mps": 2.26
+      }
+    },
+    "model_yaw_offset_deg": 180.0,
+    "ground_offset_m": 0.0,
+    "standin_names": [
+      "StandIn",
+      "Facing",
+      "Body",
+      "Spear",
+      "Lantern"
+    ],
+    "locomotion_clips": {
+      "idle": "idle",
+      "walk": "walk",
+      "run": "run"
+    },
+    "clip_blend_sec": 0.25,
+    "gait_measure": {
+      "doc": "HeroClipGait: each bone is in contact while within contact_tol_m of its lowest height in the cycle; its backward speed then (mean over every contact sample of every bone, sampled `samples` times a cycle) is the clip's ground speed. The data above must match it within measure_tolerance (a fraction).",
+      "bones": [
+        "DEF-foot.L",
+        "DEF-foot.R"
+      ],
+      "contact_tol_m": 0.02,
+      "samples": 240,
+      "measure_tolerance": 0.1,
+      "planted_ball": {
+        "doc": "M2-HER-1107: M2-CHR-12's walk and run pivot a planted foot on its ball as the heel lifts, so the ankle no longer holds still on the ground and the ball does. For those clips (speeds from locomotion.json) the measure follows the toe bones' heads (the balls) within contact_tol_m of their lowest.",
+        "bones": [
+          "DEF-toe.L",
+          "DEF-toe.R"
+        ],
+        "contact_tol_m": 0.005
+      }
+    },
+    "gait_clips": {
+      "doc": "M2-HER-1107 (HeroGaitClips): M2-CHR-12's starts, stops, turns in place and idle variant over the locomotion blend, with their root curves from locomotion_data (characters track; absent until it merges, and then nothing plays). The body is moving above start_speed_mps and still below still_speed_mps (filtered ground speed). Starts: from rest (still at least min_still_sec), travelling within start_max_angle_deg of the body's facing; a run start when the target speed (the FieldController's stick, else the speed) exceeds run_pick_ratio x the hero's walk clip speed; a walk start switches to the run start while it has covered at most run_switch_max_travel_m. Stops: only after reaching stop_min_speed_ratio x the walk clip speed; when the source's target speed drops to 0, or (a source that cannot tell) the speed falls under stop_unknown_ratio x the walk clip speed; the clip enters where its remaining travel is the distance left to stop (the source's, else from stop_decel_mps2), plays by distance at no less than stop_min_scale (1 once still) and gives way if the speed climbs stop_abort_mps in a frame. Turns: still and rested, the facing turn_min_deg or more away: the 90s up to turn_180_min_deg, the 180 past it, scaled to land on the facing. idle_variant plays once after idle_variant_after_sec plus a per-hero share of idle_variant_spread_sec standing still. Clip time scales are capped at max_scale; blend_in_sec cross-fades into a clip, hand_back_sec back to the blend at its end (the clips join the cycles and the idle exactly).",
+      "locomotion_data": "res://game/data/characters/locomotion.json",
+      "clips": {
+        "walk_start": "walk_start",
+        "run_start": "run_start",
+        "walk_stop": "walk_stop",
+        "run_stop": "run_stop",
+        "turn_l90": "turn_in_place_l90",
+        "turn_r90": "turn_in_place_r90",
+        "turn_180": "turn_in_place_180",
+        "idle_variant": "idle_shift"
+      },
+      "still_speed_mps": 0.1,
+      "start_speed_mps": 0.25,
+      "min_still_sec": 0.3,
+      "start_max_angle_deg": 50.0,
+      "run_pick_ratio": 1.3,
+      "run_switch_max_travel_m": 0.12,
+      "stop_min_speed_ratio": 0.6,
+      "stop_unknown_ratio": 0.5,
+      "stop_decel_mps2": 12.0,
+      "stop_min_scale": 0.75,
+      "stop_abort_mps": 0.05,
+      "max_scale": 3.0,
+      "blend_in_sec": 0.15,
+      "hand_back_sec": 0.08,
+      "turn_min_deg": 60.0,
+      "turn_180_min_deg": 135.0,
+      "idle_variant_after_sec": 8.0,
+      "idle_variant_spread_sec": 5.0
+    },
+    "followers": {
+      "doc": "HeroFieldParty: at most `max` followers (party order, the leader excluded) walk the leader's breadcrumb trail (a crumb every trail_sample_m, at most trail_max_points), follower i at (i + 1) * spacing_m of trail behind the leader. Each steers to its trail point at up to max_speed_mps, faster the bigger the gap (follow_gain per second), accelerating at accel_mps2 and braking at decel_mps2, and never closer than min_gap_m to the body ahead. Further than catch_up_m from its point (a zone load, a long jump, the end of a cutscene) it is put on the trail at once. A ray from ray_up_m above to ray_down_m below its point sets its feet on the floor. rescan_sec: how often the zone is searched again for cutscene stages and sequencers.",
+      "max": 2,
+      "spacing_m": 1.15,
+      "trail_sample_m": 0.2,
+      "trail_max_points": 80,
+      "max_speed_mps": 5.4,
+      "follow_gain": 3.0,
+      "accel_mps2": 9.0,
+      "decel_mps2": 12.0,
+      "min_gap_m": 0.8,
+      "catch_up_m": 6.0,
+      "ray_up_m": 1.0,
+      "ray_down_m": 3.0,
+      "rescan_sec": 0.5
+    },
+    "foot_contacts": {
+      "doc": "HeroFieldActor.foot_contact (M3-AUD-810): a marker whose name starts with a key below is that foot's footfall (M2-CHR-12's foot_l_down / foot_r_down, _2 for a repeat); the clips in run_clips step as a run.",
+      "markers": {
+        "foot_l_down": "l",
+        "foot_r_down": "r"
+      },
+      "run_clips": [
+        "run",
+        "run_start",
+        "run_stop"
+      ]
+    }
+  }
+}

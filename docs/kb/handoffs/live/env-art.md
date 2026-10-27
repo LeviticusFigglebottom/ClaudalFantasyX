@@ -4,7 +4,117 @@ Environment-art track, cloud session `session_01QmWUfYxd8DMg7XM3MyR6ps`, branch 
 
 Scope: assets and kit pieces (Blender jobs, materials, import rules), handed to `claude/m2-slice` with a swap-in note here. Art Director sign-offs. I don't edit m2-slice's scenes (`game/levels/ch02/**`, `ch03/**`) except through a request task.
 
+## STATE AT HANDOVER (2026-10-25)
+
+**HANDOVER DONE @ 1fee4436** (`claude/env-art`; the code is merge-ready at d065835e, and only docs changed after it).
+
+Read this section first; everything below it is history. The branch is `claude/env-art`. The env-art session
+(cloud) stopped for the account move with no subagents running.
+
+### Done and merge-ready
+- **MERGE-READY @ d065835e.** Full Godot suite 2016 run, 0 failed. Full tools unittests at 5ab6029c: 947 OK. Every
+  Blender job touched is byte-identical, and every env-art baseline passes on isolated captures. It includes the
+  integration branch at 7fa22c77.
+- **Everything is in `status: review` (reviewer rendering) unless marked:**
+  - M2-ENV-10, the B06 Saltgrass Causeway route.
+  - M2-ENV-11, the arenas `tideline_dawn` and `causeway_disc_sunset`.
+  - M3-ENV-06, the five Act I arenas: `oruvel_raft_morning`, `underway_tower`, `causeway_route_afternoon`,
+    `derelict_deck_night`, `ash_terrace_lanternfall`.
+  - Act I zone kits:
+
+    | Task | Zone | Kit |
+    |---|---|---|
+    | M3-ENV-01 | Tidecup | `tamsule_bell` |
+    | M3-ENV-02 | Brine Shoals | `brine_shoals` |
+    | M3-ENV-03 | Terraces of Ash | `pemakar` |
+    | M3-ENV-04 | the Seawall | `corrow` |
+    | M3-ENV-04B | the Seawall breach and Ch9 night | `corrow` |
+    | M3-ENV-05 | the sea floor | `oruvel_underway` |
+    | M3-ENV-07 | Oruvel raft-town | `oruvel` |
+    | M3-ENV-07B | Oruvel storm and Hullgnaw's split | `oruvel` |
+    | M3-ENV-08 | Brightwater ferry | `brightwater_ferry` |
+    | M3-ENV-08B | the Seventh Terrace | `brightwater_ferry` |
+    | M3-ENV-09 | Ashcrown | `ashcrown` |
+    | M3-ENV-09B | Pemakar's far Ashcrown | `pemakar` |
+    | M3-ENV-10 | Coilspire | `coilspire` |
+    | M3-ENV-11 | close-range plume | `pemakar` |
+
+  - Fixes: M2-ENV-12 (Haluna gull normals), M3-ENV-700 (ferry transom).
+- **Arenas are swapped in:** `game/data/battle/arenas.json` points all seven arena ids at
+  `assets/environments/arenas/<id>/<id>.tscn`.
+
+### In progress
+- Nothing.
+- **Not preserved:** env-art's superseded Shell Shrine kit WIP (local worktree branch `worktree-agent-a79dd51292ba3250f`
+  @ d0749489; m2-slice's kit was adopted under M2-ENV-03). Pushing it to a separate branch was refused in this
+  environment, so it goes with the container. It was for parts only; nothing depends on it.
+
+### Exact next steps
+1. The Lead merges `claude/env-art` @ d065835e (or later) into the integration branch. Delete
+   `.godot/imported/*.glb-*` before `--import` in the gate worktree.
+2. A review sweep of the `status: review` tasks listed above (reviewer rendering).
+3. Every Act I zone in the act outline now has a kit. The next env-art queue is the Lead's call. Candidates:
+   - the weaker preview views each task file lists (for example Corrow C03's sea face, Oruvel O10's gull, Ashcrown
+     A08's loggia, Brightwater B07's stem-gull);
+   - Act II zones (Ch10 Ossa Fen and onward);
+   - night and storm variants once Art adds the colour-script rows.
+4. New env-art ids come from the id block: tasks M3-ENV-701+, ADRs 0160–0169, handoffs `<date>-<role>-env-art-<n>.md`.
+
+### Open questions (owed by others; none blocks env-art)
+- **Art:** colour-script rows `ch01_storm`, `ch04_derelict`, `ch05_temple` and `ch08_day`; `ch08_after` (proposed in
+  corrow.md §7); the `ash_fall` swatch.
+- **Character + Tools:** sign-off on the import kinds `brine_shoals_kit`, `pemakar_kit`, `corrow_kit`,
+  `oruvel_underway_kit`, `oruvel_kit`, `brightwater_ferry_kit`, `ashcrown_kit` and `coilspire_kit`.
+- **Rendering:**
+  - M3-RND-24: underwater downwelling and in-scatter vs walls.
+  - M3-RND-25: the underway arena's look.
+  - M3-RND-26: the Tidecup drop.
+  - The Ch9 ambient 0.7 vs the colour script's 0.3.
+- **m2-slice:** M3-ARC-04 (the shrine's `Shaft_*` lights inside `ShaftFog`).
+- **Narrative:** the Ch9 Fisher Stair (the breach cuts it after 12 steps); the sea floor's floor count (F9 is the
+  gallery) and its dead ship's ribs (Hullgnaw).
+
+### Known bugs and loose ends
+- Five UI and dialogue baselines drift from the wetter Haluna tidewalls (not env-art's to re-approve):
+  `field_objective_line`, `field_interact_prompt`, `field_area_title`, `field_tip_card`, `dialogue_continue`.
+- Battle-presentation (both happen on the greybox too):
+  - In multi-shot captures, `AudioDirector.attach_battle` logs a freed-instance error.
+  - The arena loader logs an owner warning when it reparents the WorldEnvironment.
+- Big kit pieces placed by hand need a larger per-placement LOD1 start: the import ends LOD0 at 70 m from the
+  piece's middle.
+- `haluna_h10_dock_night` sits at rmse 0.00545, within the limit, from older drift.
+
+### Gotchas (read before touching env-art files)
+- **Fog-lamp rule (the Lead):** every OmniLight3D and SpotLight3D in an arena, or near a dense FogVolume, sets
+  `light_volumetric_fog_energy = 0`, because Godot's default of 1.0 bands the volume bright. `arena_scenes.py`
+  writes it. `tools/tests/test_fog_lamps.py` enforces it, with `KNOWN_EXCEPTIONS` tied to request tasks.
+- **Baselines only from isolated captures:** use `tools/screenshots/capture.sh --shots <ids> --out <dir>` (one Godot
+  process per shot, as ci_local does). A single shared `capture.tscn` run is order-dependent once creature models
+  are in frame (rmse 0.03 from shot position alone).
+  - Before `compare.py --update-baselines`, copy the PNGs and `capture_report.json` into `tests/screenshots/out/`.
+  - If only `baselines.json`'s key order moved, restore it with `git checkout`.
+- **Haluna material writers:** kits must load them by path under the name `haluna_materials` (importlib), never
+  `import materials`, because tamsule_bell has its own `materials.py`.
+- **New kit `.glb.import` files** need `import_script/path` set to the kit's post-import script, or the materials
+  don't map.
+- **LUT `.png.import`** files are hand-written 3D-texture imports; the kits' import-settings scripts must skip them.
+- **Tests:**
+  - TestCase is a RefCounted, so reach the tree via `(Engine.get_main_loop() as SceneTree)`.
+  - The runner does not await coroutines.
+  - `free()` (not `queue_free()`) any zone with a publishing WaterSurface before a test returns.
+- **Append-only shared files** (shots.json, baselines.json, blender_builds.json, PROVENANCE.md, the KINDS lists)
+  conflict on every agent merge. Union them; check `blender_builds.json` for empty `{}` jobs, and run
+  `tools.tests.test_blender_builds`.
+- **Gates:** run only fast scoped checks per item, long runs niced in the background, and Blender verify only for
+  the jobs touched. `godot` and `godot-render` must be on PATH (`~/.local/bin` symlinks; `tools/dev/fetch_godot.py`).
+  The Blender wrapper is `~/.cache/hymn/blender-*/blender`.
+- **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
+
 ## Now
+- **Id blocks (the Lead, CONSOLIDATED §4):** env-art's new task ids are 700–799 (e.g. M3-ENV-710), its ADRs
+  0160–0169, and its handoffs are named `<date>-<role>-env-art-<n>.md`. Existing ids stay. The big8 renumbering
+  is applied here too: the shell shrine shaft-lamps task is now **M3-ARC-04** (was M3-ARC-02), and the Tidecup
+  drop-look task is now **M3-RND-26** (was M3-RND-01).
 - **2026-10-24 afternoon (the Lead's M2-review blockers):**
   - **M2-ENV-10, the B06 Saltgrass Causeway route: done, in review (rendering).** Covers the flats terrain, the
     layout, the shipped dressing scene and the preview C01–C08. The Drownbell disc is seated, and 2 baselines
@@ -14,7 +124,7 @@ Scope: assets and kit pieces (Blender jobs, materials, import rules), handed to 
     (972131e); after the merge only its `arenas.json` repoint remains (swap-in note below).
   - **M3-ENV-02, Brine Shoals: in review, merged here** (c2bb5563). Its own import category
     `brine_shoals_kit` needs Character + Tools sign-off (M3-RND-21 filed). **M3-ENV-01 Tidecup:** in review
-    (M3-RND-01 filed).
+    (M3-RND-26 filed; renumbered from M3-RND-01).
   - **M3-ENV-03 Terraces of Ash (Pemakar): in review, merged here** (f5c35191).
     - Kit: 25 pieces, 27 materials, Blender job `pemakar_kit` (61 identical). Its import kind `pemakar_kit`
       needs Character + Tools sign-off.
@@ -64,9 +174,85 @@ Scope: assets and kit pieces (Blender jobs, materials, import rules), handed to 
   - **M3-ENV-06: all five arenas merged** (169445e9). Request M3-RND-25 covers the underwater look.
   - **New queue (the Lead's no-idle directive; filed by env-art 2026-10-24 evening):** the last four Act I zones
     without kits.
-    - **Running (worktree agents):** M3-ENV-07 Oruvel raft-town (it also re-dresses the `oruvel_raft_morning`
-      arena's town), M3-ENV-08 Brightwater ferry deck, M3-ENV-09 Ashcrown temple.
-    - **Next:** M3-ENV-10 Coilspire temple. **Two items remain after the running three.**
+    - **M3-ENV-08 Brightwater ferry: in review, merged here** (e1f12963).
+      - Kit: 11 pieces, 27 materials, Blender job `brightwater_ferry_kit` (40 outputs identical). Its import kind
+        `brightwater_ferry_kit` needs Character + Tools sign-off.
+      - Baselines: `brightwater_b02_awning` and `brightwater_b03_rail_drowned`.
+      - Checks: brightwater 5/5, post_import 21/21, unittests OK.
+      - Calls to confirm: the moon sits low in the east (88°, 16°) so the hulks read on its path, and a new grade
+        `lut_ch04_crossing` keeps the sea's teal (`lut_ch04_wake` is untouched).
+      - Follow-up **M3-ENV-08B**: the boardable derelict *Seventh Terrace*. It depends on M3-ENV-07.
+      - For Rendering: the daylight `ch04_derelict` grade.
+    - **M3-ENV-07 Oruvel raft-town: in review, merged here** (06ef403d).
+      - Kit: 18 pieces, 23 materials, Blender job `oruvel_kit` (42 identical). Its import kind `oruvel_kit` needs
+        Character + Tools sign-off.
+      - The `oruvel_raft_morning` arena's town is now built from this kit; its baseline was re-approved after
+        viewing.
+      - Baselines: `oruvel_o01_surfacing` and `oruvel_o19_dive_mooring`.
+      - Checks: oruvel 11/11, post_import 21/21, arena 13/13, oruvel_kit and haluna_kit Blender jobs identical.
+      - Weak: the O10 gull and the drowned tower showing through the water.
+      - Follow-up **M3-ENV-07B**: the storm state and Hullgnaw's deck split.
+      - Found **M2-ENV-12**: Haluna's lintel-gulls are built inside-out and shade dark. Filed; fixing it moves
+        the Haluna gull shots.
+    - **M3-ENV-09 Ashcrown temple: in review, merged here** (e70d898e).
+      - Kit: 9 pieces, 26 materials, Blender job `ashcrown_kit` (40 identical). Its import kind `ashcrown_kit` needs
+        Character + Tools sign-off.
+      - It is the same building as Pemakar's far Ashcrown: same origin and tier numbers, checked by a test.
+      - Baselines: `ashcrown_a01_approach` and `ashcrown_a04_anvil_hall`.
+      - Checks: ashcrown 5/5, post_import 21/21, unittests OK.
+      - Follow-ups filed: **M3-ENV-09B** (Pemakar's far temple from this kit) and **M3-ENV-11** (a close-range
+        plume, because the 900 m plume facets inside 300 m).
+      - Fixed on the way: a merge left an empty job in `blender_builds.json` (e78e9196). Coverage now reports 0
+        uncovered.
+    - **M2-ENV-12 Haluna gull normals: in review, merged here.**
+      - `village._loft` took its outward reference from the wrong column, so every gull loft was inside-out. It is
+        fixed at the source.
+      - Outputs changed: `lintel_gull_a/b/c`, Brightwater's `ferry_hull` (its stem-gull) and Oruvel's
+        `lintel_gull_open`. All six jobs that use `village.py` are byte-identical after the rebuild.
+      - Re-approved after viewing: `haluna_h03_lintel_gull` (rmse 0.047, the gull alone).
+    - **Arena baselines after big7 (59ce74a5):** big7's creature models replace the enemy stand-ins, so the seven
+      env-art arena preview shots moved. Each was viewed beside its baseline: only the enemies changed, plus the
+      Drownbell's long sunset shadow. All seven are re-approved.
+    - **For the Lead (not env-art's baselines, not re-approved):** `field_objective_line`, `field_interact_prompt`,
+      `field_area_title`, `field_tip_card` (0.068) and `dialogue_continue` (0.057) drift because the Haluna
+      tidewalls render wetter and darker. They drift the same with the old gulls, so the cause is not M2-ENV-12.
+      It is most likely M2-ENV-06's tidewall pass reaching UI baselines captured before it. They need their owners'
+      re-approval after viewing.
+    - **M3-ENV-08B the Seventh Terrace: in review, merged here** (a96b8c68).
+      - One hero ship for Ch1's mooring and Ch4's derelict: 13 pieces inside `brightwater_ferry_kit`, set,
+        lowered and fallen sails, and a separate name-board.
+      - Baseline: `oruvel_o07_name_board`. D06 matches O07 to within 2 mm.
+      - Checks: brightwater_ferry_kit 62 and oruvel_kit 42 identical on the merged sources; brightwater 6/6,
+        oruvel 11/11, post_import 21/21.
+      - For Rendering: the `ch04_derelict` sub-frame. The derelict preview uses a stand-in day sun until it exists.
+      - Filed **M3-ENV-700**: the ferry's transom is wound inward, and `bf_import_settings.py` overwrites the ch04
+        LUT import.
+    - **M3-ENV-09B: in review, merged here.**
+      - Pemakar's preview and the Lanternfall arena now place the Ashcrown kit's five exterior pieces at the rim
+        (LOD1 from 600 m). The silhouette is retired from the layouts but kept as an asset.
+      - `pemakar_p01` re-approved after viewing (rmse 0.0016); p03 doesn't change.
+    - **Baselines must come from `tools/screenshots/capture.sh` (one process per shot), not one shared
+      `capture.tscn` run (08c48cc3).**
+      - With creature models in frame, shared-mode captures depend on capture order: the route arena moved by rmse
+        0.03 from its position in the run alone. Isolated captures are byte-identical run to run.
+      - The ten arena and flood baselines I had approved from shared runs are re-approved from isolated captures,
+        each viewed.
+    - **M3-ENV-10 Coilspire temple: in review, merged here** (44c3bac5).
+      - Kit: 12 pieces, 16 materials, Blender job `coilspire_kit` (29 identical). Its import kind `coilspire_kit`
+        needs Character + Tools sign-off.
+      - It is the same building as Corrow's far spire (reads `cw_far`, checked by tests). Its K08 view is shot
+        from Corrow's C01 camera.
+      - Baselines: `coilspire_k01_headland_path` and `coilspire_k03_well`; isolated re-capture gives rmse 0.
+      - Checks: coilspire 5/5, post_import 21/21.
+      - For m2-slice: the 10 flue-key wheels are tagged in the layout for the trial. Liss's wright's mark is a decal
+        for m2-slice or VFX.
+      - For Art: a `ch08_day` colour-script row.
+    - **All four Act I zones filed as M3-ENV-07..10 are in review.**
+    - **Merged here, in review:** M3-ENV-07B the Oruvel storm (baseline `oruvel_o17_pen_split`; Art owes the
+      `ch01_storm` row) and M3-ENV-700 the ferry's transom (`ferry_hull` and `derelict_hulk_a`; b03 moved by
+      0.0007, under the limit). **M3-ENV-11, the close-range plume, is still running.**
+    - **M3-ENV-11 the close-range plume: in review, merged here** (d065835e). **No agents are running and the queue is
+      empty.** Next: the Lead's queue, or the weaker views each task file lists.
 - **Done (merge-ready):**
   - **M2-ART-01/02/03, Art sign-offs:** all three approve-with-fixes, status done. Fixes filed: **M2-UI-08** (Swell lamp at rest, bestiary defeat counts white not focus cyan), **M2-RND-09** (underwater: scatter/transmit to `lagoon_teal`, TIR to `deep_teal_shadow`, lantern halo warm, motes boosted only below the surface, recapture `waterline_high`), **M2-RND-10** (storm: narrower rents with darker lips, softer curtains, per-chapter flash table, landfall darker and slate-teal, rain ≤12% bright streaks, the Letting's wound_intensity 1.8 and rise_ratio 2.0). palette.json 0.2.1 extends the `spawn_wound`, `glimmer_held` and `glimmer_lift` usage notes to the storm. art/ui.md §10 records the accepted UI.
   - **M2-ENV-06 pass 1 (still `doing`):** Haluna kit textures, materials and tide-wall geometry to final quality; the five haluna baselines **re-approved after viewing** (h01 0.01584, h02 0.06091, h03 0.01360, h04 0.01108, h07 0.01049; palette checks 19/19). Details in the task file. **Only haluna_mood shots use these files.**
@@ -81,6 +267,50 @@ Scope: assets and kit pieces (Blender jobs, materials, import rules), handed to 
 - **Un-pushed state:** none (worktree agents' branches are local until merged here).
 
 ## For the Lead
+- **MERGE-READY @ d065835e (supersedes 5ab6029c below).** It adds M3-ENV-11, the close-range Pemakar plume (review):
+  `ash_plume_near` and the shader's near group, which fades out by 400 to 800 m, so the 900 m read is unchanged.
+  - `ashcrown_a01` and `a04` were re-approved after viewing, and `ashcrown_a10_plume_from_the_rim` is new.
+  - Checks run: full Godot suite 2016 run, 0 failed; pemakar_kit 63 and ashcrown_kit 40 identical; P01, P03,
+    Lanternfall, A01, A04 and A10 all rmse 0 on isolated captures; the kit, arena and fog-lamp unittests OK.
+  - The full tools suite last ran at 5ab6029c (947 OK); this item touched only the tests that were re-run.
+- **MERGE-READY @ 5ab6029c** (claude/env-art; it includes the integration branch at 7fa22c77).
+  - **Items since 74c6dc0e, all in review:**
+    - M3-ENV-07 Oruvel raft-town (and the raft arena's town); 07B its storm state and Hullgnaw's split.
+    - M3-ENV-08 Brightwater ferry; 08B the Seventh Terrace; 700 the ferry's transom.
+    - M3-ENV-09 Ashcrown; 09B Pemakar's far Ashcrown from that kit.
+    - M3-ENV-10 Coilspire.
+    - M2-ENV-12 the Haluna gull normals.
+    - The ten arena and flood baselines re-approved from isolated captures.
+    - The big8 renumbering applied (M3-ARC-04, M3-RND-26).
+  - **Checks run:**
+    - full Godot suite: 2015 run, 0 failed;
+    - full tools unittests: 947 OK (4 skipped);
+    - Blender jobs: every job touched is byte-identical (oruvel, brightwater_ferry, ashcrown, coilspire, haluna,
+      pemakar, corrow);
+    - every new or changed env-art baseline, re-captured with `capture.sh` (one process per shot), passes;
+    - lint, format, validate_data and taskboard are clean.
+  - **Checks skipped:** the full screenshot manifest (the Lead's) and coverage (no changes to game/battle or
+    game/progression).
+  - **Not env-art's baselines, flagged:** five UI and dialogue shots drift from the wetter Haluna tidewalls (listed
+    above).
+  - **Waiting on people:**
+    - Character + Tools: sign-off on the import kinds `oruvel_kit`, `brightwater_ferry_kit`, `ashcrown_kit` and
+      `coilspire_kit`.
+    - Art: colour-script rows `ch01_storm`, `ch04_derelict`, `ch05_temple` and `ch08_day`.
+- **MERGE-READY @ 74c6dc0e, for big8.** It includes the integration branch at 8f808cc6 (big7).
+  - **Items:**
+    - All seven final arenas swap in through `game/data/battle/arenas.json`.
+    - `battle_arena_tideline`, `battle_arena_causeway` and `drownbell_flood` were re-captured, viewed and
+      re-approved.
+    - `test_battle_arena.gd` now checks the contract's `CameraHints` instead of the greybox's `Fill`.
+    - The M3-ENV-07..10 task files are filed.
+  - **Checks run:** full Godot suite 1988 run / 0 failed; full tools unittests 838 OK (4 skipped); lint, format,
+    validate_data and taskboard clean.
+  - **Checks skipped:** the full screenshot manifest (only the three arena shots can move) and coverage.
+  - **Noted for battle-presentation, and present on the greybox too:**
+    - In multi-shot captures, AudioDirector.attach_battle logs a freed-instance error.
+    - The loader logs an owner warning when it reparents the WorldEnvironment.
+    - The final arenas capture 5–8× slower than the greybox.
 - **MERGE-READY @ 169445e9** (claude/env-art; it includes the integration branch at 1e3ff5d6).
   - **Items since ba7679c1, all in review:**
     - M3-ENV-03 Terraces of Ash.
@@ -100,7 +330,7 @@ Scope: assets and kit pieces (Blender jobs, materials, import rules), handed to 
     - Character + Tools sign-off on the import kinds `brine_shoals_kit`, `pemakar_kit`, `corrow_kit` and
       `oruvel_underway_kit`.
     - Rendering: M3-RND-24 and M3-RND-25 (the underwater rig).
-    - m2-slice: M3-ARC-02 (the shrine's shaft lights and the fog).
+    - m2-slice: M3-ARC-04 (the shrine's shaft lights and the fog).
     - Narrative: the Ch9 stair; the sea floor's floor count and its ship's ribs.
     - Art: the `ch08_after` colour-script row.
 - **MERGE-READY @ ba7679c1** (claude/env-art, which includes the integration branch at 1e3ff5d6).
@@ -128,7 +358,7 @@ Scope: assets and kit pieces (Blender jobs, materials, import rules), handed to 
 - **Fog-lamp rule (the Lead, 2026-10-24):** a light near a dense FogVolume keeps `light_volumetric_fog_energy = 0`.
   In `ch03/shell_shrine/shell_shrine.tscn` I set it on my own `Bounce/Skylight` (the light added under M2-ENV-09;
   no registered baseline shows the shrine). Your three `Bounce/Shaft_*` lights and `_pool_bounce()` in
-  `shell_shrine_level.gd` are still on the default 1.0 inside `ShaftFog`. **M3-ARC-02** is filed for you;
+  `shell_shrine_level.gd` are still on the default 1.0 inside `ShaftFog`. **M3-ARC-04** is filed for you;
   `tools/tests/test_fog_lamps.py` lists them as known exceptions until it lands.
 - **M2-ENV-10, B06 Saltgrass Causeway:** instance
   `assets/environments/zones/saltgrass_causeway/saltgrass_causeway_dressing.tscn`. Rails and triggers come from
@@ -188,7 +418,7 @@ Scope: assets and kit pieces (Blender jobs, materials, import rules), handed to 
   legs at azimuth 0..300, galleries `_a/_b/_c` at 40/90/140/220/270/320, platforms at 90 and 270, pennant lines at
   60/120/240/300, catch-pool) is placed with `rotation.y = -azimuth` and no offset. **Keep `SphereAnchor` at
   (0, 31.5, 0) with its `Drop` child, and `ColumnAnchor` (y 20) and `GoalRingAnchor` (y 43): PC GPU swaps the drop
-  there (M3-RND-01).** Gameplay is yours: spawns on the galleries' walkway (y 2.4) and tiers (floors y 4.0 to 10.4,
+  there (M3-RND-26).** Gameplay is yours: spawns on the galleries' walkway (y 2.4) and tiers (floors y 4.0 to 10.4,
   every 1.6 m), Toma and Asha on the west gallery's second tier (T02), the captains on the prow steps (y 2.46, r 13
   to 15.4 on azimuth 90 and 270), Tavi's side scene on Oruvel's posts (r 21, azimuth 19-51, T03), the match trigger
   at the catch-pool. Collision: the kit exports no `-col` proxies; boxes for the walkway, tiers, jetties and

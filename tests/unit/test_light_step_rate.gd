@@ -65,6 +65,26 @@ func test_closing_the_equip_page_refreshes_live_meters() -> void:
 	_teardown()
 
 
+## A meter kept across a battle (M2-FP-28) keeps the rate its gap was scaled at, so gear changed while away
+## still rescales the rest of the gap when the zone comes back.
+func test_a_kept_meter_rescales_to_the_rate_on_return() -> void:
+	var zone := GreyboxZone.new()
+	zone.location_id = &"test_light_step_zone"
+	FieldEncounters.meters[String(zone.location_id)] = {
+		"walked_m": 10.0, "next_m": 30.0, "grace_m": 0.0, "rng_state": 1, "rate_pct": FieldEncounters.FULL_RATE_PCT
+	}
+	_wear_light_step(FieldMenuModel.field_heroes()[0])
+	var meter := FieldEncounters.new()
+	meter.setup(zone, {"min_m": 5.0, "max_m": 5.0})
+	assert_true(meter.rate_pct < FieldEncounters.FULL_RATE_PCT, "the new rate: %s" % meter.rate_pct)
+	var left := 20.0 * FieldEncounters.FULL_RATE_PCT / meter.rate_pct
+	assert_true(is_equal_approx(meter.next_m, 10.0 + left), "20 m left grew to %s: %s" % [left, meter.next_m])
+	FieldEncounters.meters.erase(String(zone.location_id))
+	meter.free()
+	zone.free()
+	_teardown()
+
+
 func _host() -> Node:
 	var tree := Engine.get_main_loop() as SceneTree
 	return tree.current_scene if tree.current_scene != null else tree.root

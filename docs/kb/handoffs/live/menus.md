@@ -14,6 +14,9 @@ Why this track exists: the progression and equipment systems (Lattice, equipment
 | M2-MNU-04 Quit to Title + battle pause | **done on the branch** (cdbb916): Quit behind a Stay-first confirm; battle pause on P / Pause / pad Start; shot `battle_pause` |
 | M2-MNU-05 screenshots, navigation, accessibility sweep | **review**: every new screen viewed at 130% text and in the colorblind palette; the Lattice side panel and the Equip table now flow at any text size (tests at 1.0/1.15/1.3) |
 
+## Id block (Lead rule, 2026-10-24, CONSOLIDATED §4 "id blocks")
+New task ids from this track are numbered 300-399 (e.g. M2-MNU-310, M3-MNU-301), new ADRs 0120-0129, and per-session handoffs are named `<date>-<role>-menus-<n>.md`. Existing ids stay as they are.
+
 ## For other tracks
 - **ui (claude/ui):** I changed your field-menu shell, minimally: `FieldMenuModel` gained the rows (ROOT_IDS, PARTY_ROWS, root_enabled, quit_rows, `field_heroes()` extracted from from_game), `FieldMenu` gained `Level.QUIT`, `child` (a FieldSubmenu opened from `CHILD_PAGES`) and `quit_to_title()`; `field_menu.json` panel and root rects grew for nine rows; `FieldMenuShot` now walks down to Swell by id. Baselines `field_menu` and `field_menu_swell_modes` re-approved after viewing. Please merge `claude/menus` before your next field-menu change.
 - **battle-presentation (claude/battle-presentation):** `battle_sandbox.tscn` has a new last child `BattlePause` (a plain Node; script `game/ui/menus/battle_pause/battle_pause.gd`). The pause is a tree pause, so anything that must hold still has to run in the default process mode: no `PROCESS_MODE_ALWAYS`, no `get_tree().create_timer(..., true)` (SceneTreeTimers ignore pause by default; pass `process_always = false`), tweens bound to nodes. Today nothing in game/battle or game/ui/battle breaks that rule. Pause is refused in the states listed in `game/data/ui/battle_pause.json` `blocked_states` (idle, result); if BattleChoreo's intro or outro should not be pausable, tell me and I'll add a hook rather than a state.
@@ -36,8 +39,63 @@ The scene-swap regression test now measures the real swap on an injected per-fra
 | ~~M3-MNU-01 Lore codex~~ | **withdrawn**: the UI track built it as M3-UI-03 at the same time (no task claimed when I checked); my agent was stopped before any commit landed here, and the task file is removed |
 | M2-MNU-10 Lattice: walk to a sealed gate | **review** (merged bbd45c8): the cheapest neighbour, cost shown, then the open confirm |
 
+## STATE AT HANDOVER (2026-10-25)
+**HANDOVER DONE @ fc70e774** (this note is the only later commit).
+
+**Clean.** Nothing is uncommitted or unpushed, and no subagent is running. The three worktree branches (`worktree-agent-a186d848…`, `a7732033…`, `a51eb998…`) are fully merged into claude/menus and need nothing.
+
+**Done and merge-ready.** `claude/menus` @ **681464f1** (MERGE-READY line below; the later commits are docs only).
+- Full Godot suite 2260/0, lint and format clean, validate_data 0/0.
+- In review: M2-MNU-01..11, M3-MNU-02..04, M2-AUD-15/16 (earlier queues), and this queue's M2-MNU-300 (Last saved, no save row), 301 (hero portraits), 302 (baked creature PNGs), 303 (menu motion), 304 (party cards on the field menu root).
+- ADR 0120: menu portraits are baked PNGs from `tools/portraits/render.sh`.
+
+**In progress.** Nothing. M2-MNU-305 (motion for the UI track's bestiary, codex, map, save and Settings screens) is filed as `todo`. Those are claude/ui's files, so it should be taken there or on the Lead's word.
+
+**Exact next steps for a new menus session.**
+1. Branch from the integration branch, or check out `claude/menus`.
+2. Merge the integration branch and `claude/ui`.
+3. `python3 tools/dev/fetch_godot.py && python3 tools/dev/fetch_render_deps.py && pip install -r tools/requirements.txt`, then `godot --headless --path . --import`.
+4. Run `XDG_DATA_HOME=<scratch> godot --headless --path . res://tests/run_tests.tscn` (must be 0 failed) and write a fresh MERGE-READY line here.
+5. Take Lead routing. Candidates: M2-MNU-305; a stronger rim light for the black creatures in `tools/portraits/portraits.json` `creature_stage` (with art); the Kite world-map menu (Act III); the shrine teleport list (Systems owns the shrine UI).
+
+**Open questions (for the Lead).**
+- SPEC §8 in the brief reads as §6.11 (§8 is Rendering). The §6.11 menu list is now built.
+- The bestiary has two portrait paths: the UI track's live `BestiaryPortraitSlot` (in use) and the baked PNGs (unused). Keep both, or switch the bestiary to the baked PNGs if the live viewport costs too much on weak machines (ADR 0120)?
+- `battle_pause` (rmse 0.0054) and `dialogue_backlog` (0.0006) pass with drift from the 3D scene behind them; refresh their baselines?
+
+**Known bugs and issues.**
+- `tools/tests` test_hero_clips: 2 failures (dialogue `@anim` clips missing for Asha and Toma; characters/story).
+- The Formation page has no role word, because characters.json has no role field (Story/Design).
+- Portraits do not follow model changes. Rerun `tools/portraits/render.sh [--only <id>]` (about 1 min per hero, a few seconds per creature) and commit the PNGs.
+
+**Gotchas.**
+- **Test runner:** it has no `after_each`, so free nodes at the end of each test. Parity tests call `InputDriver.clear_screen()` in `before_each`. Pages are at rest without frames; drive motion with `motion().finish()`.
+- **`closed` vs `gone`:** `FieldSubmenu.closed` fires at once, and `gone` fires after the fade. Free layers on `gone`.
+- **Merges:**
+  - Union `baselines.json` and `shots.json` entry by entry (a three-way dict merge; keep the file's own formatting). Merge `balance_report.md` by `###` section.
+  - `project.godot` `[autoload]` keeps both UiInput and Audio.
+  - After every merge, check that `cut -d, -f1 game/data/loc/strings.csv | sort | uniq -d` prints nothing.
+- **Screenshots:** they are 1280×720 renders of the 1920 reference. Reimport (`--import`) after adding loc keys, or captures show raw keys.
+- **Ids:** this track's block is tasks 300–399 and ADRs 0120–0129; handoffs are `<date>-ui-menus-<n>.md`.
+
+## Third queue (from the Lead, 2026-10-24: the human's "parts look primitive" playtest note)
+Design call: **no save row** in the field menu; saving stays at shrines plus the chapter autosaves.
+| Task | State |
+|---|---|
+| M2-MNU-300 Last saved block on the field menu root + the `menu_save` tip | **review** (abf5061a): the newest loadable save's place and time above the objective, shrine reminder; field_menu, field_menu_21x9, field_menu_16x10 re-approved after viewing |
+| M2-MNU-301 hero portraits in every menu (a lavapipe renderer under tools/portraits/, PROVENANCE rows, expressions) | **review** (merged f5e1d2c5; art): `tools/portraits/render.sh` renders each hero's own review stage (unedited) to 256 px RGBA; 15 PNGs (neutral, smile, determined, worried, grief × 3) with PROVENANCE rows; `HeroPortraits` + `HeroPortraitFrame`; Status, Equip, Formation and Lattice show them (the pages had no placeholders, so slots were added; the Shop shows no hero). Ownership row for `tools/portraits/**`, `assets/ui/portraits/**`. Whoever changes a hero model reruns render.sh. Known: `tools/tests` test_hero_clips has 2 failures (dialogue @anim clips missing for Asha/Toma; characters/story) |
+| M2-MNU-304 party cards on the field menu root | **review** (de724dd8): the active line as portrait cards with HP/MP; also a Formation 130 % fit fix |
+| M2-MNU-302 bestiary creature portraits (27 Act I + the slice's five) | **review** (art): 27 baked PNGs (one per creatures.json row, keyed by creature so m2-slice's models are covered) with PROVENANCE rows, `CreaturePortraits`, `CreaturePortraitFrame`. **Overlap:** the UI track shipped a live bestiary portrait the same day (M2-UI-26 `BestiaryPortraitSlot`); the bestiary is theirs, so the merge keeps their page and the baked PNGs stay available (see the task's merge note). Contact sheet viewed: every creature reads; the glossy black ones (hullgnaw, scuttler, tide_crawler, undertows_reach, squall_wing) could take a stronger rim (art) |
+| M2-MNU-303 menu motion (page transitions, cursor easing, ui_sfx focus sounds, Reduced motion) | **review** (merged): `MenuMotion` + `menu_motion.json` (open 0.18 s fade + 18 px rise, close 0.12 s, return 0.12 s); `closed` still fires at once, new `gone` after the fade frees the layer; menus-track `ui_sfx` hooks no longer pending, rows added for Status, Memories, battle pause; 12 shots unchanged by the motion. **For the Lead:** `battle_pause` (rmse 0.00486) and `dialogue_backlog` (0.00056) pass but drift in the 3D scene behind the menu, not from this change; their baselines may want a refresh. **For audio:** `test_field_audio.gd` pending check narrowed to the UI track's three rows |
+| M2-MNU-305 motion for the UI track's own screens (bestiary, codex, map, save, Settings) | **todo**, filed for claude/ui or the Lead's word (their files) |
+| Then M3 menu work (SPEC §8 is Rendering; read as §6.11, whose list is now built) | open: Kite world-map menu (Act III), shrine teleport list (Systems) when routed |
+
 ## Exact next step
-**MERGE-READY @ fa8a6c7e, with one known failure that is not this track's** (claude/menus = big7 + claude/ui @ 0bfdcd3 + claude/audio @ 662f9d7 + claude/m2-slice @ d034c31 + this track): all menus items as in the lines below (M2-MNU-01..10, M3-MNU-02..04), plus M2-AUD-15 (public reads for audio) and M2-AUD-16 (the BattlePause probe leak), both in review. Checks run on fa8a6c7e: gdlint + gdformat clean (604 files), validate_data 0/0 (audio's voices.json now covers m2-slice's speakers), full Godot suite 2162 run / 1 failed. The failure: test_controls_menu::test_the_hub_has_a_controls_row_that_opens_the_page indexes the Settings hub by position and the Audio row (claude/audio's volume rows) moves Controls down; the UI track's file, reported with the fix (index by id). Merge notes: project.godot keeps both autoloads (UiInput, Audio); battle_controller.gd is claude/ui's (990 lines, BattlePointer.handle_pick). Skipped: the full screenshot manifest (Lead at merge), coverage (no game/battle or game/progression change of this track's), the Blender step.
+**MERGE-READY @ 681464f1** (claude/menus = the integration branch @ M3-CMB-02 + claude/ui @ f2b456af + this track): M2-MNU-300 (Last saved, `menu_save` tip), M2-MNU-301 (hero portraits + `tools/portraits/` renderer, 15 PNGs), M2-MNU-302 (27 baked creature PNGs; the bestiary page keeps UI's live portrait), M2-MNU-303 (menu motion, ui_sfx hooks live), M2-MNU-304 (party cards on the field menu root), all in review; plus everything in the earlier lines. Merge notes: battle baselines taken from claude/ui's 2bd80fe5 (re-approved after the integration merge); balance_report.md kept whole (claude/ui's copy had lost the "Drownbell after the big7 merge" heading; this branch has every section); fighter_stand_in.gd keeps both M2-HER-1103's KO-clip sink and the integration branch's hide-when-faded line. Checks on 681464f1: gdlint + gdformat clean (635 files), validate_data 0/0, taskboard OK, full Godot suite 2260 run / 0 failed. Shots viewed: field_menu (+21x9, 16x10), formation_menu, status_menu, equip_menu, equip_customize, lattice_menu(_activate), lattice_overview re-approved; bestiary_menu at claude/ui's baseline rmse 0; battle_pause 0.0054 (passes; the 3D scene behind it). Skipped: full manifest (Lead), coverage (no battle/progression change of ours), Blender. tools/tests: 2 failures in test_hero_clips (dialogue @anim clips missing for Asha/Toma; characters/story, not this track).
+
+**MERGE-READY @ 7cc3309f** (claude/menus = the integration branch @ M2-NIT-06 + claude/ui @ its id-block log + this track): M2-MNU-300 (Last saved block on the field menu root, `menu_save` tip; no save row per the Lead), in review, plus everything in the f49f2869 line below. Merge notes: `field_encounters.gd` keeps both M2-FP-28's per-location meter and M2-MNU-08's refresh_rate (the kept meter now also stores its rate_pct, so gear changed between visits rescales it); `ui_sfx.json` hooks unioned (audio's menu rows + UI's SettingsPage). Checks on 7cc3309f: gdlint + gdformat clean (611 files), validate_data 0/0, taskboard OK, full Godot suite 2198 run / 0 failed. Shots field_menu, field_menu_21x9, field_menu_16x10 re-approved after viewing; field_menu_swell_modes rmse 0. Skipped: full manifest (Lead), coverage (no battle/progression change), Blender. M2-MNU-301 and 303 are still with worktree agents.
+
+**MERGE-READY @ f49f2869** (claude/menus = big7 + claude/ui @ 427c65f + claude/audio @ 662f9d7 + claude/m2-slice @ d034c31 + this track): menus items M2-MNU-01..11, M3-MNU-02..04, M2-AUD-15/16, all in review. Checks run on f49f2869: gdlint + gdformat clean (610 files), validate_data 0/0, taskboard OK, full Godot suite 2189 run / 0 failed (the creatures-vs-UI-07 test fixed by claude/ui; the pseudo-locale walk passes with no KNOWN rows). Shots: none changed by M2-MNU-11 (equip_menu, equip_customize, status_menu, lattice_menu, lattice_menu_activate, lattice_overview at rmse 0). Skipped: the full screenshot manifest (Lead at merge), coverage (no game/battle or game/progression change of this track's), the Blender step.
 
 
 **MERGE-READY @ 31aa92c8** (fourth batch; merges claude/ui @ 2b9012d5 and the integration branch @ 81651b7e): M3-MNU-03 key items view (Bag / Key Items tabs on the Items page) and M3-MNU-04 Lattice overview (whole board, every hero named, initials on woken nodes; new remappable action lattice_overview, M / pad X, with a row in controls.json and one ensure_action line in controls_model.gd, both the UI track's files, minimal); both in review; plus everything in the earlier lines below. Checks run on 31aa92c8: gdlint + gdformat clean (540 files), validate_data 0/0, taskboard OK, full Godot suite 1921 run / 0 failed. Shots viewed and approved: items_menu_key and lattice_overview (new); items_menu, items_menu_use, lattice_menu, lattice_menu_activate re-approved (tabs / the overview button). Skipped: the full screenshot manifest (Lead at merge), coverage (no game/battle or game/progression change), the Blender step.
@@ -84,3 +142,6 @@ Merge the three worktree agents' branches as they report (Lattice, Equip, Items/
 - 2026-10-24: (after a usage-limit stop and a worker restart) M3-MNU-04 merged; claude/ui merged; full suite 1921/0; MERGE-READY @ 31aa92c8. Queue empty again; checking the UI track and the Lead for the next menu work.
 - 2026-10-24: merged the Lead's big7 (as asked). Conflicts resolved (see the merge commit a5903bb), two merge repairs (d7294c0). Full suite 2105/7, all from UI-vs-audio and audio-vs-m2-slice data meeting; reported to both. Waiting on their fixes before a new MERGE-READY.
 - 2026-10-24: merged claude/audio (voice rows) and claude/ui (settings tests after big7, handle_pick); did M2-AUD-15 and M2-AUD-16 (audio's requests). Full suite 2162/1 (UI's controls test, reported). MERGE-READY @ fa8a6c7e with that caveat.
+- 2026-10-24: merged claude/ui (M2-UI-29 aspect audit touched field_submenu/battle_pause/formation by a line each; M2-UI-07; controls test fixed). Full suite 2173/1 (UI-07 vs creatures, reported). MERGE-READY @ 140a8b88.
+- 2026-10-24: merged claude/ui (creatures assertion fixed; M2-UI-28 pseudo-locale walk). Did M2-MNU-11 (the walk's findings in Status, Customize and the Lattice title). Full suite 2189/0. MERGE-READY @ f49f2869. Queue empty.
+- 2026-10-24: the Lead's id-block rule recorded above (tasks 300-399, ADRs 0120-0129, handoffs <date>-<role>-menus-<n>).

@@ -77,8 +77,8 @@ func before_each() -> void:
 
 func test_ch9_plays_from_the_strand_to_the_end_card() -> void:
 	var reg := LocationRegistry.load_default()
-	assert_true(reg.is_playable(ZONE_ID), "the strand is reachable from its own location (Ch8 isn't built)")
-	assert_eq(reg.spawn_of(ZONE_ID), &"Strand", "where Ch8 will hand off")
+	assert_true(reg.is_playable(ZONE_ID), "the strand is reachable from its own location too")
+	assert_eq(reg.spawn_of(ZONE_ID), &"Strand", "where Ch8 hands off")
 	_strand()
 	_the_ebbing()
 	_dawn()

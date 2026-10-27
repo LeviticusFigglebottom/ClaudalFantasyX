@@ -68,7 +68,7 @@ def read_glb(path: Path) -> dict:
 
 class KitGeometryTests(unittest.TestCase):
     def test_every_target_is_inside_its_budget_with_a_lod_chain(self) -> None:
-        self.assertEqual(len(TARGETS), 26)  # 25 kit pieces + M3-ENV-06's arena_ash_tread
+        self.assertEqual(len(TARGETS), 27)  # 25 kit pieces + M3-ENV-06's arena_ash_tread + M3-ENV-11's ash_plume_near
         for name, (key, module, _fn) in TARGETS.items():
             with self.subTest(target=name):
                 builders = built(name)
@@ -120,6 +120,33 @@ class SkylineTests(unittest.TestCase):
             self.assertEqual(mb.materials, [pc.M_PLUME])
             self.assertTrue(sky._check_plume_winding(mb), mb.name)
 
+    def test_near_plume_refines_the_far_plume(self) -> None:
+        # M3-ENV-11: the near plume is the far plume's surface, denser, and hands over to the far plume's LOD0.
+        near, near_lod1 = built("ash_plume_near")
+        far = built("ash_plume")[0]
+        self.assertEqual(near_lod1.pos, far.pos)
+        self.assertEqual(near_lod1.tris, far.tris)
+        self.assertGreater(near.triangle_count, 5 * far.triangle_count)
+        self.assertEqual(near.materials, [pc.M_PLUME])
+        self.assertTrue(sky._check_plume_winding(near))
+        uv = np.asarray(near.uv)
+        self.assertAlmostEqual(float(uv[:, 1].min()), 0.0, delta=1e-6)
+        self.assertAlmostEqual(float(uv[:, 1].max()), 1.0, delta=1e-6)
+        heads = np.asarray(near.uv2)[:, 0]
+        self.assertTrue(0.0 <= heads.min() and heads.max() <= 1.0 and heads.std() > 0.05, "UV2.x carries the heads")
+        self.assertTrue(np.all(np.asarray(far.uv2)[:, 0] == 1.0), "the far plume's UV2.x stays 1 (no billow shading)")
+        # The same column: the near and far meshes span the same box to within a few metres.
+        lo_n, hi_n = near.bounds()
+        lo_f, hi_f = far.bounds()
+        self.assertLess(float(np.abs(lo_n - lo_f).max()), 12.0)
+        self.assertLess(float(np.abs(hi_n - hi_f).max()), 12.0)
+        # Softer normals than the far mesh's: from ring to ring they turn far less (the far mesh's facets).
+        def turn(mb, rings: int, sides: int) -> float:
+            n = np.asarray(mb.nrm[: rings * (sides + 1)]).reshape(rings, sides + 1, 3)
+            return float(np.percentile(1.0 - np.sum(n[1:, :-1] * n[:-1, :-1], axis=-1), 90))
+
+        self.assertLess(turn(near, *sky.NEAR_GRID), 0.25 * turn(far, 64, 52))
+
     def test_massif_rises_behind_the_town(self) -> None:
         noise = pc.kc.Noise3(pc.kc.rng_for("mountain_massif", 801))
         z = np.arange(-115.0, -660.0, -5.0)
@@ -148,7 +175,7 @@ class LayoutTests(unittest.TestCase):
 
     def test_layout_names_only_kit_pieces(self) -> None:
         self.assertEqual(self.layout["kit_dir"], "res://assets/environments/kits/pemakar/")
-        names = {spec["piece"] for spec in self.layout["pieces"]}
+        names = {spec["piece"] for spec in self.layout["pieces"] if "kit_dir" not in spec}
         self.assertTrue(names <= set(TARGETS), names - set(TARGETS))
         self.assertEqual(self.layout["boats"]["piece"], "leaf_boat_lit")
         for spec in self.layout["pieces"]:
@@ -173,6 +200,25 @@ class LayoutTests(unittest.TestCase):
         self.assertGreater(len(pts), 100)
         self.assertTrue((pts[:, 2] >= LAYOUT_GEN.SEA_SHORE_Z_M).all())
         self.assertTrue(np.allclose(pts[:, 1], LAYOUT_GEN.SEA_LIGHT_Y_M))
+
+    def test_ashcrown_is_the_ashcrown_kits_building_at_the_rim(self) -> None:
+        # M3-ENV-09B: the far temple is the Ashcrown kit's exterior pieces at the kit's origin (the rim point; the
+        # kit's y 0 is the rim), with the Ashcrown preview's LOD1 distances; the silhouette is no longer placed.
+        kit = ROOT / "assets" / "environments" / "kits" / "ashcrown"
+        ac_layout = json.loads((ROOT / "game" / "levels" / "_tests" / "ashcrown_kit" / "ashcrown_layout.json")
+                               .read_text())
+        ac_lod1 = {p["piece"]: p["lod1_from_m"] for p in ac_layout["pieces"]}
+        temple = [p for p in self.layout["pieces"] if "kit_dir" in p]
+        self.assertEqual(sorted(p["piece"] for p in temple), sorted(LAYOUT_GEN.ASHCROWN_PIECES))
+        rim = [round(float(v), 3) for v in sky.massif_rim_point()]
+        for p in temple:
+            self.assertEqual(p["kit_dir"], "res://assets/environments/kits/ashcrown/")
+            self.assertEqual(p["materials_dir"], p["kit_dir"] + "materials/")
+            self.assertTrue((kit / f"{p['piece']}.glb").is_file(), p["piece"])
+            self.assertEqual(p["at"], rim)
+            self.assertEqual(p["yaw_deg"], 0.0)
+            self.assertEqual(p["lod1_from_m"], ac_lod1[p["piece"]], p["piece"])
+        self.assertNotIn("ashcrown_silhouette", {p["piece"] for p in self.layout["pieces"]})
 
     def test_no_shipped_reference_to_the_preview(self) -> None:
         rules = IMPORT_RULES.read_text()

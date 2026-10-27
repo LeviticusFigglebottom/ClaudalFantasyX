@@ -65,6 +65,42 @@
 
 **Recommended setup for the new account:** Lead (cloud) + pc-gpu (the empty Remote Control session) + slice-polish + act1-chapters + ui-menus + battle-presentation + characters + hero-integration + creatures + env-art + audio. That's 10 sessions plus the Lead. The usage limits were hit several times at this scale; if limits bite, pause creatures and audio first, then act1-chapters.
 
+## 2a. Merge state (new account)
+- **10-27: big9 MERGED** (integration 3b7cbf5e). PC gate: Godot 2561/0, coverage and boot OK, Blender 40 identical + 11 M2-CHR-11 DIFFs (rhen, toma, 9 villagers), 281 shots with 48 re-approved after the Lead viewed them. The results are on `gpu/gate-big9-shots`.
+- **10-27: big10 MERGED** (integration f5ec3bda). PC gate: Godot 2637/0, coverage and boot OK, Blender 20 identical + rhen/toma, 292 shots with 51 re-approved (37 identical to big9's; 14 viewed). It includes M3-BPR-404: the Hullgnaw, Drownbell and Matron intros now fit the boss.
+- **big12** is being pre-built locally on top of gate-big11 (pipelining) and gates right after big11.
+- **big11** `lead/gate-big11` @ 23ea8c6f (every track head as of 10-27 ~15:30 + integration f5ec3bda) is gating on the PC with the full manifest. Cloud: Godot 2738/0. Known tools failures, owned by the tracks: test_audio_loudness (audio) and test_shrine_gi_bake (the stale shrine bake; slice-polish M3-ENV-704). Open: the duplicate Haluna villager systems (creatures' VillagerLayer vs slice-polish's HalunaVillagers); one owner to be picked.
+- **Open from viewing big9:**
+  - Ysolde is still a capsule in battle → hero-integration (FAST-TRACK).
+  - Inquisitor Hadric Moll is a capsule (battle_arena_camp, battle_boss_intro_inquisitor) → characters (a human foe).
+  - No manifest shot covers the prologue's "everyone is still here" colour → slice-polish.
+
+## 2b. Rendering is PC-only (human directive, 10-27)
+No cloud session captures screenshots. Tracks post `RENDER-REQUEST @ sha: ids` lines in their live logs, and the PC renders them and pushes `gpu/render-<track>-<sha7>`. The protocol is in TRACK-RULES.md. Gates stay on the PC as before.
+
+## 2c. Lead decisions (10-27)
+- ADR 0171 (audio 72 MiB for Act I) accepted.
+- Act II audio storage (Git LFS or a build-time render) goes to the human. Audio prototypes the build-time render as ADR 0172 (proposed).
+- M3-CRE-629: one weak-point colour (`spawn_wound`) for every foe (Pillar 4); creatures writes ADR 0151.
+- Villagers: creatures owns the runtime (FieldNpc, VillagerLayer); zone owners own placement; VillagerLayer adopts zone-placed villagers.
+
+## 3a. Live roster (new account, from 2026-10-25)
+| Track | Session | Branch | Live log | Ids |
+|---|---|---|---|---|
+| Lead | session_018aiGwGLGkxsnMnu8VfCu1m | claude/undertow-lead-handoff-ze8rrn (integration) | lead-cloud.md | 1000–1099 |
+| pc-gpu (Remote Control) | **session_01F3vrUMSWVyLnG3asrc8viy** (since 10-27 17:30; the old session_01DKdurcvrzq9PEvuSu5L2nA died when the PC was switched off mid-big11-gate) | gpu/* | pc-gpu.md | 900–999, ADR 0180+ |
+| slice-polish | session_01KZCgTqxhHKjvMCm1dAosvZ | claude/m2-slice | slice-polish.md | 100–199, ADR 0101–0109 |
+| act1-chapters | session_01TbP4NmiuX6qan2V9CWsDNN | claude/act1-chapters (new, cut from m2-slice 6c50823f) | act1-chapters.md | 1200–1299, ADR 0200–0209 |
+| ui-menus | session_01KGBUwbYgXe9JS6D8jXw6ZG | claude/ui (claude/menus merged in, then retired) | ui-menus.md | 200–399, ADR 0110–0129 |
+| battle-presentation | session_015hKkhtpX67kS4yZeA8AAhv | claude/battle-presentation | battle-presentation.md | 400–499, ADR 0130–0139 |
+| characters | session_014AiZf1ZSvb9MAjxtUka4pd | claude/characters | characters.md | 500–599, ADR 0140–0149 |
+| hero-integration | session_01PzF7Jc4XVQdTWcaYUyCjPB | claude/hero-integration | hero-integration.md | 1100–1199, ADR 0190–0199 |
+| creatures | session_01EbDaRQ5n7hpvwuRG6jEDQY | claude/creatures | creatures.md | 600–699, ADR 0150–0159 |
+| env-art | session_01YbaV2c8yquRHqj6afQYg89 | claude/env-art | env-art.md | 700–799, ADR 0160–0169 |
+| audio | session_01Wmj8xaLtwcqiS3qwC6PciW | claude/audio | audio.md | 800–899, ADR 0170–0179 |
+
+**No combat, progression or systems track exists in this account:** ui-menus owns their UI-adjacent tasks (M3-RBL-201, M2-MNU-306, the shrine teleport list). The common brief is [`TRACK-RULES.md`](TRACK-RULES.md). The gate runners are retired.
+
 ## 4. Process rules that work: keep them
 - **Never idle** (the human, 2026-10-24).
   - Every track keeps a long standing queue. When it empties, or the track waits on another track or a human verdict, it takes its next item, adjacent work or M3, and logs it.
@@ -115,7 +151,7 @@
 - The M2 slice review (blocking; play the integration branch).
 - Music: the listening verdict (docs/kb/audio/listening_notes.md), which blocks M1-LEAD-01.
 - The Asha face direction (ADR 0019's stronger stylisation, or keep).
-- Git LFS for files over 5 MB? GitHub Actions never leave "queued"; check the repo settings.
+- Git LFS for files over 5 MB? It's now needed before Act II's final audio (ADR 0171). GitHub Actions never leave "queued"; check the repo settings.
 - M3-RND-02: OK to cap the PC GPU's clocks or power for the min-spec proxy?
 
 ## 7. Toolchain and gotchas

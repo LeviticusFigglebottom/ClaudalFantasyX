@@ -176,7 +176,9 @@ func set_ko(ko: bool, sink_m: float, alpha: float) -> void:
 	if creature() != null:  # it plays its own KO clip and fade, and does not sink
 		creature().set_ko(ko, alpha)
 		return
-	_body.position = _rest - Vector3(0.0, sink_m if ko else 0.0, 0.0)
+	# A model with a KO clip lies on the ground itself (M2-HER-1103): sinking it too puts it through the floor.
+	var sink := sink_m if ko and not BattleClips.has_clip(self, BattleClips.KO) else 0.0
+	_body.position = _rest - Vector3(0.0, sink, 0.0)
 	_body.visible = not (ko and alpha <= 0.0)  # faded right out: hidden, so it casts no shadow either
 	if _actor != null:
 		for m in _surfaces:

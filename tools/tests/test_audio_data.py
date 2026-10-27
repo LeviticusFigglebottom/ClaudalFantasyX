@@ -156,6 +156,27 @@ class AudioDataTest(unittest.TestCase):
                      "gravel is not a surface", "run_step_m: a stride"):
             self.assertTrue(any(want in e for e in errs), (want, errs))
 
+    def test_footsteps_check_gait_rows_foley_and_contacts(self) -> None:
+        """M3-AUD-802: a surface's {walk, run, stop, turn} rows, the foley rows, the contact and area settings."""
+        def edit(f: dict) -> None:
+            f["surfaces"]["water"] = {"walk": "tick", "stop": "slosh", "skid": "tick"}
+            f["foley"] = {"cloth": {"walk": "swish"}, "gear": {"rhen": "tick"}, "gear_every": 0}
+            f["contacts"] = {"markers": ["foot_l_down", ""], "stall_m": -1}
+            f["surface_areas"] = {"meta": "surface"}
+        errs = self._broken(dc.FOOTSTEPS, edit)
+        for want in ("surfaces.water: no run row", "surfaces.water.stop: slosh is not", "surfaces.water.skid: not one",
+                     "foley.cloth.walk: swish is not", "gear_every", "contacts.markers", "contacts.stall_m",
+                     "surface_areas: needs group"):
+            self.assertTrue(any(want in e for e in errs), (want, errs))
+        self.assertFalse(any("foley.gear.rhen" in e for e in errs), errs)
+
+        def good(f: dict) -> None:
+            f["surfaces"]["water"] = {"walk": "tick", "run": "tick", "stop": "tick", "turn": "tick"}
+            f["foley"] = {"cloth": {"walk": "tick", "run": "tick"}, "gear": {"rhen": "tick"}, "gear_every": 2}
+            f["contacts"] = {"markers": ["foot_l_down"], "stall_m": 3.0}
+            f["surface_areas"] = {"group_prefix": "audio_surface_"}
+        self.assertEqual(self._broken(dc.FOOTSTEPS, good), [])
+
     def test_ui_hooks_check_rows_classes_and_signals_not_names(self) -> None:
         def edit(u: dict) -> None:
             u["hooks"][0]["signals"]["opened"] = "tick"
@@ -408,6 +429,18 @@ class ChoreoSfxTest(unittest.TestCase):
         for want in ("whoosh hit has no crest time", "row ui must play on the Combat bus", "spoon is not a weapon",
                      "staff has no accent", "nope is not an sfx.json row", "music is not one of"):
             self.assertIn(want, errs)
+
+    def test_the_flood_timing_comes_from_choreo_json(self) -> None:
+        """M3-AUD-800: phase and stagger_sec may be left to choreo.json's bosses.<boss>.flood (one number for the
+        brace's motion and sound); with neither, it fails."""
+        doc = copy.deepcopy(self.DOC)
+        doc["flood"] = {"sfx": "hit"}
+        self.assertTrue(any("flood: no phase id" in e for e in self._errs(doc)))
+        styles = {"melee": {}}
+        choreo = {"choreo": {"styles": styles, "bosses": {"bell": {"flood": {"phase": "flood", "stagger_sec": 0.1}}}}}
+        self.assertEqual(self._errs(doc, choreo=choreo), [])
+        doc["flood"]["stagger_sec"] = -1
+        self.assertTrue(any("flood.stagger_sec" in e for e in self._errs(doc, choreo=choreo)))
 
     def test_styles_follow_choreo_json_when_present(self) -> None:
         choreo = {"choreo": {"styles": {"cast": {}}}}

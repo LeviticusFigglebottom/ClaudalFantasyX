@@ -29,6 +29,50 @@
       "affinities": {"lightning": "absorb", "water": "weak"},
       "swell": {"rate": 150, "technique": "last_strike"},
       "_note": "M3-C05-02 PROVISIONAL (Kahre, the Lightning Vowbound, bound in Ch5 B10; vowbound.md §2). Raw lightning that ignores defence and the real Last Strike are the combat request M3-C05-06. In no sim suite."
+    },
+    {
+      "id": "virel",
+      "name_key": "VOWBOUND_VIREL",
+      "caller": "asha",
+      "bound_flag": "ch08_virel_bound",
+      "call_rank": 3,
+      "base": {
+        "hp": 50,
+        "mp": 10,
+        "strength": 4,
+        "magic": 8,
+        "defense": 8,
+        "magic_defense": 8,
+        "agility": 12,
+        "accuracy": 4,
+        "evasion": 6,
+        "luck": 4
+      },
+      "scale_pct": {
+        "hp": 100,
+        "mp": 50,
+        "strength": 50,
+        "magic": 100,
+        "defense": 75,
+        "magic_defense": 75,
+        "agility": 100,
+        "accuracy": 100,
+        "evasion": 50,
+        "luck": 100
+      },
+      "skills": [
+        "attack",
+        "kite_flare"
+      ],
+      "affinities": {
+        "fire": "absorb",
+        "water": "weak"
+      },
+      "swell": {
+        "rate": 300,
+        "technique": "flare_line"
+      },
+      "_note": "M3-CMB-01 PROVISIONAL (Virel, the Fire Vowbound, bound in Ch8 B06; vowbound.md §3): fast fire that delays foes on the timeline, and Flare Line, which lights the wall (clears storm_dark). Its full kit is a combat request. Banded in the undertows_reach suite."
     }
   ]
 }

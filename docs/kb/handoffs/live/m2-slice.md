@@ -2,7 +2,178 @@
 
 Feature track for the M2 vertical slice (session_01DQ9tdk8Uatb8Jr6raAkXiC), branch `claude/m2-slice`, started from `claude/first-playable` 67984ce. **This environment owns this file** (CLAUDE.md §7a). The Lead is session_019iimsngAgPLEram1wcbLpE; the integration branch is `claude/undertow-lead-handoff-423ixt`.
 
+## STATE AT HANDOVER (2026-10-25)
+**HANDOVER DONE @ ce3e9615** (handover docs; code head 97620754).
+
+A newcomer starts here. Branch `claude/m2-slice`, head **97620754** (pushed). There are no worktrees and nothing un-pushed. The per-session handoff is `docs/kb/handoffs/2026-10-25-cinematics-m2-slice-1.md`.
+
+### What this environment is
+m2-slice owns the M2 vertical slice (Haluna → the Saltgrass causeway → the Shell Shrine → the Drownbell → the end card) and Act I gameplay and narrative, Ch1–Ch9, as greybox. The human playtests **this branch**. The Lead fast-tracks its fixes to the integration branch `claude/undertow-lead-handoff-423ixt`.
+- **send_message to the Lead (session_019iimsngAgPLEram1wcbLpE) is refused** (elevated_session_untrusted_device). This file is the report channel. Other sessions can be messaged:
+  - creatures: session_01CYks9e592YBEfygyTawcJD
+  - menus: session_01Q26A4D653s52czT76QPURY
+  - battle-presentation: session_014EcW9e5tEmjDi5S2HmCECd
+  - hero-integration: session_013oczHh2qUMy5kVz7nXsZef
+- **ID blocks** (CONSOLIDATED §4): new task ids 100–199, ADRs 0100–0109 (0100 is used; next is 0101), handoffs `<date>-<role>-m2-slice-<n>.md`.
+
+### Done and merge-ready (all on 97620754)
+- **The integration branch through big7** (d6a0886d), merged at 00bf4b01.
+- **The human's playtest fixes:**
+  - **M2-FP-28:**
+    - random encounters: the meter persists per location, `place_at` re-anchors, plus a 12 m post-battle grace (a9b8033b);
+    - New Game → prologue → Haluna, with Act I a data switch (399651ca);
+    - the prologue's colour: a rim light and teal ambient (9036c019), then the figures' cloth, Rhen's lantern and the grade stand-in (583759c0).
+  - **M2-FP-29:** cutscene motion eases: turns, walks with anticipation and ramps, clip cross-fades, gliding stand-ins (716c2db4).
+  - **M2-FP-101:** Haluna's Asha faces her root's forward (74ed95b4).
+- **The switches the Lead flips when the human signs off M2:** in `game/data/flow/first_playable.json`:
+  - `prologue.next_location` → `ch01/oruvel_underway` / `Drop`;
+  - `end_card.next_location` → `ch04/haluna_wake` / `NemeDoor`.
+
+  F8 debug chapter select (M3-ARC-02, `game/data/debug/chapter_select.json`) starts a fresh game at Ch1–Ch9 meanwhile.
+- **Act I as greybox:** Ch1, Ch3 causeway, Ch4, Ch5, Ch6, Ch7 (stand-in Reefball match), **Ch8** (M3-C08-02, merged at 97620754) and Ch9. They are chained Ch7 → Ch8 → Ch9. Each has a `tests/integration/test_chNN_thread.gd`.
+- **M3-CMB-01:** Ch8's set-piece battle pieces in the CTB engine (ADR 0100, `docs/kb/design/set_piece_battles.md`), merged at 74ef8626.
+- **Act I enemies take the creatures track's battle models** (544958b1).
+- **Tools:** merge_union does a keyed three-way union for loc CSVs (94402863).
+- **Last full gate:**
+  - the full Godot suite on f3ef6f8c (CMB-01 over big7): 2069 run, 0 failed;
+  - tools OK;
+  - sim in band;
+  - coverage battle 99.96% and progression 96.89%.
+
+  Since then, scoped runs only, all green: Ch8 merge ch0* 59, zone_story 15, debug_overlay 14, fp_thread 2; validate, taskboard, dlgc, lint and format clean.
+- **Lead: the MERGE-READY line is this head.** Run one full gate (Godot suite, tools, `sim.py --check`, coverage) on the integration merge.
+
+### In progress
+Nothing. No subagents are running.
+
+### Exact next steps, in priority order
+1. **When the Lead merges this branch,** check `game/data/loc/dialogue.csv`: it's a dlgc output, so regenerate it with `python3 tools/dlgc.py`, never hand-resolve. `strings.csv` and the other loc CSVs merge with `python3 tools/dev/merge_union.py`.
+2. **When `claude/hero-integration` (and characters' M2-CHR-12) reach the integration branch:**
+   - merge it;
+   - apply `docs/kb/tech/hero_motion_sequencer.patch` (`git apply`);
+   - set `game/data/cutscene/sequencer.json` `walk_mps` to 1.0;
+   - in `CutsceneSequencer._cue_mark`, call `HeroMotion.set_locomotion_speed(actor, run_mps)` at the start of a run move.
+   - Hooks for that track: `docs/kb/tech/field_hero_hooks.md`.
+3. **When creatures' batch after big8 lands** (`game/world/wildlife/wildlife_layer.gd`):
+   - add a `WildlifeLayer` (zone_id `ch02/haluna`) to `haluna.tscn`;
+   - make `GreyboxZone` add one when `game/data/world/wildlife/<location>.json` exists.
+   - When FieldNpc lands (`docs/kb/tech/field_npc.md`): call `begin_talk(player)` / `end_talk()` around villager barks in HalunaStory and ZoneStory.
+4. **Prologue:** light Rhen's lantern "as the line lands" (the colour script). It needs a new `@light <node> on|off [sec]` cue in `CutsceneSequencer`; for now the lantern is lit throughout.
+5. **Ch7's real Reefball match** (the Reefball agent's seam; the match is a stand-in now).
+6. **Reviews pending on m2-slice's tasks:**
+   - M3-C08-02 and the other chapters' C0x-02: narrative;
+   - M3-CMB-01: Lead and combat.
+
+### Open questions for the Lead and the human
+- **M3-CMB-01 bands:** the Ch8 waves' `naive` band is 10–60%, not the beat sheet's 40–60%. Wave 1's masher sits at 15%. Confirm.
+- **When to flip the two switches** to Act I (after the human signs off M2).
+
+### Requests filed to other roles (open)
+| Task | Role | What |
+|---|---|---|
+| M2-UI-100 | UI | Voice-over lines as subtitles; the dialogue panel hides the prologue's figures |
+| M3-UI-100 | UI | The set-piece battle HUD: timeline entries, locked/unavailable heroes greyed, intercept floats, stair meter |
+| M3-CHR-01 | character | About 115 Act I body clips listed in `assets_src/characters/requested_clips.json`; calls to them are skipped until built |
+| M3-C08-100 / 101 / 102 | combat / audio / env | Ch8's needle item and battle barks; Ch8 audio; Ch8 kits |
+| M3-C06-05 | combat | Ch6's raid hound intercept, pounce and Smoke field |
+
+### Known bugs and limits
+- **`test_shrine_audio::test_the_zone_plays_the_shrine_cue` fails when run alone** (`--filter=shrine`), but passes in the full suite. `play_music_async` is a threaded load the test doesn't await. It's the audio track's test.
+- **Haluna's 17 resident prewarm entries (M2-ENV-05) are back** with big7's rewritten swap test, which passes.
+  - On the old swap test they made the boot swap's hidden frames 156–196 ms.
+  - If `test_scene_router_swap` regresses, those flags are the first suspect (`git show 1b405ad2`).
+  - **Cold-cache flake:** that test can fail once on the first run after a fresh `--import`.
+- **Ch8:** the stormgull suite is close to its band edges, the flue trial has no visual telltale, the greybox is flat, and most music and SFX are stand-ins. See the cinematics-m2-slice-1 handoff.
+- **The capsules are still capsules on this branch** until hero-integration lands.
+
+### Gotchas a newcomer will hit
+- **Godot:** `export PATH=/root/.local/bin:$PATH`, or `python3 tools/dev/fetch_godot.py`.
+  - Set a unique `XDG_DATA_HOME` per run.
+  - Run `godot --headless --path . --import` after any merge before running tests.
+  - Filter tests with `-- --filter=<x>`.
+- **The shrine GI bake** needs `godot-render` (lavapipe), not headless (`tools/shrine/bake_shrine_gi.tscn`). `tools/shrine/gi_inputs.py --check` guards staleness.
+- **Lint caps files at 1000 lines.** `shell_shrine_level.gd` and `battle_controller.gd` are exactly at it.
+- **`gdformat -l 120`.**
+- **New dialogue speakers** need rows in both `game/data/dialogue/speakers.json` and `game/data/audio/voices.json`.
+- **New `@anim <hero> <clip>` calls** need the clip in `hero_clips.CLIPS` or in `requested_clips.json`, or `test_hero_clips` fails.
+- **Sim:** foe order in an encounter changes the naive policy's results. Edit `tools/balance/targets.json` as data (json.dumps, indent=2).
+- **Never kill processes by pattern;** only kill PIDs you started.
+
 ## Now
+- **MERGE-READY @ 74ef8626** (plus this log commit)
+  - **Items since 17853df1:**
+    - the playtest round 2 fixes:
+      - motion easing (716c2db4);
+      - the prologue figures, lantern and grade (583759c0);
+      - Haluna's Asha faces her root's forward (74ed95b4, hero-integration's catch);
+      - the hero hooks doc (d06ba098);
+    - M2-UI-100 and M3-UI-100 (UI requests);
+    - **M3-CMB-01 merged** (74ef8626). Ch8's set-piece battle pieces, ADR 0100, gated on its merge over big7 (f3ef6f8c → 40a55f3d):
+      - full Godot suite 2069 run, 0 failed;
+      - tools OK;
+      - sim exit 0, nothing out of band;
+      - coverage battle 99.96% and progression 96.89%, within baseline.
+  - **Checks after the final merge:** ch08 8, set_piece 28, haluna 47, prologue 6 and cutscene 44, all 0 failed; validate_data, taskboard, lint and format clean.
+  - **Checks skipped:**
+    - a second full run on 74ef8626: the merge was clean, and the gated sides are covered by the scoped runs above;
+    - Blender: no source touched;
+    - the shot manifest: no shot covers the changed areas.
+  - **Next:** M3-C08-02, Ch8 playable (it was blocked on CMB-01).
+- **Playtest round 2 (Lead, ~20:00)**
+  1. **The prologue's "everyone is still here" segment: fixed in-scene** (583759c0).
+     - **Presets are not the cause:** low, medium, high and ultra render the same, and nothing desaturates.
+     - **The grey read came from:**
+       - the 7 vigil figures the line is about, which were near-black `Mat_shadow` (L 0.33, chroma 0.045);
+       - the dialogue panel plus the letterbox, which cover about 42% of the frame in navy and black while the line is up.
+     - **Fix:** the figures wear palette cloth colours (Rhen faded teal, Asha sea blue, Toma indigo, the rest sand). Rhen's lantern is an oil-lamp OmniLight, and there is a dusk grade stand-in (gold mid-tones, teal toe) until Rendering's LUT.
+     - **Measured:** figures L 0.33 → 0.59 and chroma 0.045 → 0.058; the scene above the box 0.061 → 0.070.
+     - **Test:** `test_the_figures_and_the_grade_carry_colour_while_the_line_is_up`. prologue 6 and prewarm 18 runs, 0 failed.
+     - **Still covering the frame: the dialogue panel** (UI's file). Request M2-UI-100 (10ba388e) asks for voice-over and narrator lines as subtitles.
+     - **Follow-up:** the colour script lights Rhen's lantern as the line lands. That needs a `@light` sequencer cue; for now the lantern is lit throughout.
+  2. **Cutscene motion eases: done** (716c2db4, M2-FP-29). New `CutsceneMotion`:
+     - Turns ease in and out, over a time scaled by the angle.
+     - Walks have a beat of anticipation, then accelerate, cruise and decelerate, and turn into their heading instead of snapping.
+     - Every clip change cross-fades (0.25 s).
+     - Stand-in marks glide instead of jumping.
+     - The tunings are in sequencer.json and documented in cutscenes.md "Motion".
+     - **Tests:** test_cutscene_motion (5) and two real-time sequencer tests. Scoped runs, all 0 failed: cutscene 44, haluna 46, ch0* 45, fp_ 26, zone_story 15, face 25, lip 14.
+  3. **Hero swap: hooks handed over** (d06ba098). `docs/kb/tech/field_hero_hooks.md` names every place a hero capsule is built or driven: GreyboxZone `_build_player` / `_build_stage`, the Haluna, shrine and first-verse scenes, and the sequencer's clip and motion contract. The hero integration track has my OK to edit those hook points, or to name an API for me to wire. I'm not duplicating its work.
+- **Pre-existing, not m2-slice's: `test_shrine_audio::test_the_zone_plays_the_shrine_cue` fails when run alone** (`--filter=shrine`).
+  - It fails the same way on HEAD without my changes.
+  - **The cause:** `AudioDirector.apply_zone` → `play_music_async` is a threaded load the test doesn't wait for, so `music.player().stream` is null. In the full suite the stream is already cached, so it passes.
+  - **Audio's test, from big7.** It needs to await the load, or use a sync path in tests.
+- **M3-CMB-01 (Ch8 set-piece pieces) is built** (subagent; ADR 0038; docs/kb/design/set_piece_battles.md).
+  - **Merged over big7** in a scratch worktree (f3ef6f8c, not on the branch yet). The full gate, with suite, tools, sim and coverage, is running there.
+  - **Bands at 1000 seeds (role_answer / naive):**
+    - Waves 1–3: 89.8 / 15.4%, 87.8 / 53.2% and 93.0 / 33.2%;
+    - the Reach: 80.7% / 0.3%.
+  - **Battle coverage:** 99.96%, against a 99.93% baseline.
+  - **ADR renumbered to 0100** (m2-slice's block; hero-integration keeps 0038).
+  - **Lead to confirm:** the waves' naive band is 10–60%, not the beat sheet's 40–60%. Wave 1's masher sits at 15%, and raising it pushed role_answer past 95%.
+  - **UI still to do** (needs a UI task): entries on the timeline, Swap and formation greyed for locked or unavailable heroes, floats for intercepts and withdrawals, and the stair-meter HUD.
+- **MERGE-READY @ a851364c** (plus this log commit)
+  - **Items:**
+    - big7 merged (00bf4b01);
+    - the playtest fixes: the encounter meter and grace (a9b8033b), prologue → Haluna (399651ca), the rim light (9036c019);
+    - the end card switch (M3-C04-04);
+    - the F8 chapter select (M3-ARC-02);
+    - merge_union's keyed loc union;
+    - voices for the Act I speakers;
+    - creature models for 15 Act I enemies (544958b1);
+    - M3-CHR-01, the clip request (ba066d6f, a851364c);
+    - and everything earlier.
+  - **Checks run:**
+    - the full Godot suite on 00bf4b01: 2011 run, 0 failed;
+    - the sim on 00bf4b01: exit 0, nothing out of band;
+    - the tools unittest on 00bf4b01: 709 run, 2 failures, both test_hero_clips (big7's clip-call tests against the Act I dialogue). Fixed by M3-CHR-01; test_hero_clips is now 9 run, OK;
+    - for the model lines: creature 13, choreo 39, field_battle 12 and ch0* 45, all 0 failed;
+    - validate_data, taskboard, dlgc, lint and format: clean.
+  - **Checks skipped:**
+    - a second full Godot run after 00bf4b01: since then only enemies.json model lines, tests and docs changed, all covered above;
+    - coverage: no game/battle or game/progression code change;
+    - Blender: no source touched;
+    - the full shot manifest: no shot covers the changed areas.
+  - **M3-CHR-01:** Act I's staging calls about 100 body clips nobody has built (Rhen 46, Asha 20, Toma 12, Ysolde 9, Kerrid 7, Liss 6). They're skipped at runtime until built. The list is `assets_src/characters/requested_clips.json`; test_hero_clips allows exactly those and still catches typos. **Lead: please route it to the character track.**
 - **big7 is merged into claude/m2-slice** (00bf4b01, pushed): characters, creatures, battle presentation, menus, combat, audio and lip sync. The branch the human plays now has animated heroes, enemy models and battle transitions.
   - **Playtest fixes kept on top:** the encounter meter with its grace, prologue → Haluna, and the prologue's rim light.
   - **Merge decisions** (also in the commit message):
@@ -334,6 +505,12 @@ Feature track for the M2 vertical slice (session_01DQ9tdk8Uatb8Jr6raAkXiC), bran
 Lead: please queue more slice work.
 
 ## Queue
+- **Wildlife** (creatures M3-CRE-611, claude/creatures 778bf972, landing after big8): add a `WildlifeLayer` (game/world/wildlife/wildlife_layer.gd) to haluna.tscn. Make GreyboxZone add one when game/data/world/wildlife/<location>.json exists.
+- **Villagers alive** (creatures M3-CRE-610, FieldNpc, after hero-integration): call begin_talk(player) and end_talk() around villager barks in HalunaStory and ZoneStory (docs/kb/tech/field_npc.md).
+- **hero-integration's sequencer patch** (docs/kb/tech/hero_motion_sequencer.patch on claude/hero-integration): apply it after that branch reaches the integration branch. With it:
+  - set sequencer.json `walk_mps` 1.3 → 1.0, to match the M2-CHR-12 walk cycle;
+  - in `_cue_mark`, call `HeroMotion.set_locomotion_speed(actor, run_mps)` at the start of a run move, so it gets the run start (M2-HER-1107).
+- **Rhen's lantern lit "as the line lands"** in the prologue: needs an `@light` cue (follow-up).
 1. ~~M2-FP-10 dialogue key light~~ (review)
 2. ~~Drownbell follow-ups (M2-FP-06)~~ → M2-FP-12 (review)
 3. ~~M2-FP-05 and M1-ARC-15 follow-ups; M1-UI-10~~: FP-05 and ARC-15 had no open review items (their known gaps are documented). M1-UI-10 is done (review).

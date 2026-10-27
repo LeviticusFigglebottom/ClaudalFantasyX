@@ -1,0 +1,283 @@
+extends TestCase
+## M3-CRE-611: the ambient wildlife (game/world/wildlife/, docs/kb/art/wildlife.md). The simulations are
+## headless RefCounted classes stepped with fixed deltas; the layer is built off the tree (no camera, so every
+## group is active) from the review stage's data and from each zone file.
+
+const DT := 1.0 / 60.0
+const STAGE_DATA := "res://game/levels/_tests/wildlife/wildlife_stage.json"
+const ZONE_DIR := "res://game/data/world/wildlife/"
+const KINDS_FILE := "wildlife.json"
+## Hermite approach and take-off curves may swing a little wide of the orbit; the flock stays within this.
+const FLOCK_SLACK := 1.25
+const EPS := 1e-3
+
+var _kinds: Dictionary = {}
+
+
+func before_each() -> void:
+	_kinds = WildlifeConfig.load_kinds()
+
+
+func _layer(path: String, zone_id: StringName = &"") -> WildlifeLayer:
+	var layer := WildlifeLayer.new()
+	layer.data_path = path
+	layer.zone_id = zone_id
+	layer.build()
+	return layer
+
+
+func _snapshot(layer: WildlifeLayer) -> Array[PackedFloat32Array]:
+	var out: Array[PackedFloat32Array] = []
+	for key: StringName in [
+		WildlifeLayer.GULLS_FLYING, WildlifeLayer.GULLS_PERCHED, WildlifeLayer.CRABS, WildlifeLayer.FISH
+	]:
+		out.append((layer.buffers[key] as WildlifeBuffer).data.duplicate())
+	return out
+
+
+## A player that walks a slow loop through the stage, so the crabs and the shoal react.
+func _player_at(frame: int) -> Vector3:
+	var t := frame * DT * 0.4
+	return Vector3(-0.5 + 1.5 * cos(t), 0.0, 1.0 + 1.2 * sin(t))
+
+
+func test_same_seed_same_positions_after_n_frames() -> void:
+	var a := _layer(STAGE_DATA)
+	var b := _layer(STAGE_DATA)
+	for f in 900:
+		a.step(DT, _player_at(f), true)
+		b.step(DT, _player_at(f), true)
+	var sa := _snapshot(a)
+	var sb := _snapshot(b)
+	for k in sa.size():
+		assert_eq(sa[k], sb[k], "buffer %d identical after 900 frames" % k)
+	var c := _layer(STAGE_DATA, &"_tests/another_seed")
+	for f in 900:
+		c.step(DT, _player_at(f), true)
+	assert_ne(_snapshot(c)[3], sa[3], "another zone id seeds other choices")
+	a.free()
+	b.free()
+	c.free()
+
+
+func _flock_row(perched_at_start: int) -> Dictionary:
+	return {
+		"id": "t",
+		"center": [10.0, -5.0],
+		"radius_m": 20.0,
+		"altitude_m": [6.0, 12.0],
+		"count": 5,
+		"perched_at_start": perched_at_start,
+		"perches": [[0.0, 2.0, -5.0, 90.0], [14.0, 3.0, 4.0, 0.0], [20.0, 2.5, -15.0, 180.0]]
+	}
+
+
+func test_gulls_stay_in_their_flock_bounds_and_land_on_perches() -> void:
+	var kind: Dictionary = _kinds["kinds"]["gull"]
+	var flock := WildlifeGullFlock.new(_flock_row(0), kind, 1234, 5)
+	var landed := 0
+	var took_off := false
+	var was_perched: Array[bool] = []
+	was_perched.resize(flock.count())
+	var max_r := 0.0
+	var lo := INF
+	var hi := -INF
+	for f in 60 * 240:
+		flock.step(DT)
+		var used := {}
+		for i in flock.count():
+			var g := flock.gulls[i]
+			var h := Vector2(g.pos.x - flock.center.x, g.pos.z - flock.center.z).length()
+			max_r = maxf(max_r, h)
+			lo = minf(lo, g.pos.y)
+			hi = maxf(hi, g.pos.y)
+			var perched := g.state == WildlifeGullFlock.State.PERCHED
+			if perched:
+				var p := flock.perches[g.perch]
+				assert_true(g.pos.distance_to(Vector3(p.x, p.y, p.z)) < EPS, "a perched gull stands on its perch")
+				assert_false(used.has(g.perch), "one gull per perch")
+				used[g.perch] = true
+				if not was_perched[i]:
+					landed += 1
+			elif was_perched[i]:
+				took_off = true
+			was_perched[i] = perched
+	assert_true(landed > 0, "gulls land on perches (%d landings in 4 min)" % landed)
+	assert_true(took_off, "and take off again")
+	assert_between(max_r, 0.0, flock.radius * FLOCK_SLACK, "horizontal distance from the flock centre")
+	var und := float(kind["undulate_m"])
+	assert_between(lo, 2.0 - EPS, 12.0 + und, "lowest point is a perch")
+	assert_between(hi, 2.0, flock.altitude.y + und + float(kind["takeoff_lift_m"]), "highest point")
+
+
+func test_gulls_can_start_perched_and_face_their_perch() -> void:
+	var kind: Dictionary = _kinds["kinds"]["gull"]
+	var flock := WildlifeGullFlock.new(_flock_row(2), kind, 99, 5)
+	assert_eq(flock.perched_count(), 2, "two start on perches")
+	var xf := flock.transform_of(flock.gulls[0])
+	assert_true(xf.basis.z.normalized().is_equal_approx(Vector3(1.0, 0.0, 0.0)), "yaw 90 faces +x (the sea)")
+	var fly := WildlifeBuffer.new(5)
+	var sit := WildlifeBuffer.new(5)
+	flock.write(fly, sit, 0)
+	assert_true(sit.visible(0) and not fly.visible(0), "a perched bird draws only in the perched MultiMesh")
+	assert_true(fly.visible(4) and not sit.visible(4), "a flying bird only in the flying one")
+
+
+func _beach_row() -> Dictionary:
+	return {"id": "t", "center": [0.0, 0.0], "half_extents": [6.0, 4.0], "yaw_deg": 20.0, "y": 0.3, "count": 6}
+
+
+func test_crabs_flee_within_radius_and_return_home_later() -> void:
+	var kind: Dictionary = _kinds["kinds"]["crab"]
+	var beach := WildlifeCrabBeach.new(_beach_row(), kind, 77, 6, Callable())
+	var c := beach.crabs[0]
+	var home := c.home
+	var flee_r := float(kind["flee_radius_m"])
+	var start := Vector3(home.x + flee_r * 0.5, 0.0, home.y)
+	beach.step(DT, start, true)
+	assert_eq(c.state, WildlifeCrabBeach.State.FLEE, "a player inside flee_radius_m startles it")
+	var d0 := c.pos.distance_to(Vector2(start.x, start.z))
+	for f in 60 * 3:
+		beach.step(DT, start, true)
+		for k in beach.crabs:
+			assert_true(beach.contains(k.pos, EPS), "crabs stay in their area")
+	var d1 := c.pos.distance_to(Vector2(start.x, start.z))
+	assert_true(d1 > d0 + 0.5, "it scuttled away (%.2f -> %.2f m)" % [d0, d1])
+	assert_true(c.amp > 0.5 or c.state == WildlifeCrabBeach.State.WARY, "legs moving while it runs")
+	var far := Vector3(100.0, 0.0, 100.0)
+	for f in 60 * 40:
+		beach.step(DT, far, true)
+	var shuffle := float(kind["shuffle_m"]) * sqrt(2.0) + float(kind["arrive_m"])
+	for k in beach.crabs:
+		assert_true(k.pos.distance_to(k.home) <= shuffle, "every crab is back near home")
+		assert_ne(k.state, WildlifeCrabBeach.State.FLEE, "and calm")
+	assert_eq(c.y, 0.3, "flat area height without a ground callable")
+
+
+func test_crabs_ignore_a_player_outside_the_radius_and_use_the_ground() -> void:
+	var kind: Dictionary = _kinds["kinds"]["crab"]
+	var ground := func(x: float, z: float) -> float: return 0.1 * x + 0.05 * z
+	var beach := WildlifeCrabBeach.new(_beach_row(), kind, 5, 4, ground)
+	var c := beach.crabs[1]
+	var p := Vector3(c.pos.x + float(kind["flee_radius_m"]) + 0.5, 0.0, c.pos.y)
+	for f in 30:
+		beach.step(DT, p, true)
+	assert_ne(c.state, WildlifeCrabBeach.State.FLEE, "outside flee_radius_m nothing happens")
+	assert_true(absf(c.y - (0.1 * c.pos.x + 0.05 * c.pos.y)) < EPS, "stands on the ground callable")
+
+
+func test_fish_count_and_bounds() -> void:
+	var kind: Dictionary = _kinds["kinds"]["fish"]
+	var row := {"id": "t", "center": [3.0, -0.3, 2.0], "radius_m": 3.0, "count": 14, "scale": 1.0}
+	var shoal := WildlifeShoal.new(row, kind, 31, 14, Callable())
+	assert_eq(shoal.count(), 14, "fish count")
+	var spread := WildlifeConfig.vec3(kind["spread_m"])
+	var reach := shoal.radius + spread.length() + float(kind["wobble_m"]) + EPS
+	var startled := false
+	for f in 60 * 120:
+		var p := Vector3(3.0 + 2.0 * cos(f * DT * 0.2), 0.0, 2.0) if f % 1200 < 300 else Vector3(50.0, 0.0, 50.0)
+		shoal.step(DT, p, true)
+		startled = startled or shoal._startle > 0.0
+		for fish in shoal.fish:
+			var h := Vector2(fish.pos.x - shoal.center.x, fish.pos.z - shoal.center.z).length()
+			assert_true(h <= reach, "fish within the shoal's area (%.2f <= %.2f)" % [h, reach])
+			assert_true(absf(fish.pos.y - shoal.center.y) <= spread.y + float(kind["wobble_m"]) + EPS, "depth band")
+	assert_true(startled, "a wading player startles the shoal")
+	var buf := WildlifeBuffer.new(14)
+	shoal.write(buf, 0)
+	assert_true(buf.visible(13), "every fish is drawn")
+
+
+func _zone_files() -> PackedStringArray:
+	var out := PackedStringArray()
+	for f in DirAccess.get_files_at(ZONE_DIR):
+		if f.ends_with(".json") and f != KINDS_FILE:
+			out.append(f)
+	return out
+
+
+func test_the_layer_reads_each_zone_file_within_budget() -> void:
+	var files := _zone_files()
+	assert_true(files.size() >= 2, "Haluna and the causeway have wildlife files")
+	var budgets: Dictionary = _kinds["budgets"]
+	for f in files:
+		var data := WildlifeConfig.load_json(ZONE_DIR + f)
+		var zone_id := StringName(str(data["zone"]))
+		assert_eq(WildlifeConfig.zone_path(zone_id), ZONE_DIR + f, "%s is named after its zone id" % f)
+		var layer := _layer("", zone_id)
+		var want := {"flocks": 0, "beaches": 0, "shoals": 0}
+		for key: String in want:
+			for row: Dictionary in data.get(key, []):
+				want[key] += int(row["count"])
+		assert_eq(layer.gull_count(), want["flocks"], "%s gulls" % f)
+		assert_eq(layer.crab_count(), want["beaches"], "%s crabs" % f)
+		assert_eq(layer.fish_count(), want["shoals"], "%s fish" % f)
+		assert_true(layer.gull_count() <= int(budgets["gulls"]), "%s gull budget" % f)
+		assert_true(layer.crab_count() <= int(budgets["crabs"]), "%s crab budget" % f)
+		assert_true(layer.fish_count() <= int(budgets["fish"]), "%s fish budget" % f)
+		assert_true(layer.draw_calls() <= int(budgets["draw_calls"]), "%s draw calls" % f)
+		assert_eq(layer.multimeshes.size(), layer.draw_calls(), "%s one MultiMesh per drawn kind" % f)
+		for f2 in 120:
+			layer.step(DT, Vector3.ZERO, false)
+		layer.free()
+
+
+func test_counts_over_budget_are_clamped() -> void:
+	var path := "user://wildlife_over_budget.json"
+	var budgets: Dictionary = _kinds["budgets"]
+	var data := {
+		"zone": "_tests/over_budget",
+		"flocks":
+		[
+			{
+				"id": "a",
+				"center": [0, 0],
+				"radius_m": 10,
+				"altitude_m": [5, 8],
+				"count": int(budgets["gulls"]) + 5,
+				"perches": []
+			}
+		],
+		"beaches": [],
+		"shoals":
+		[
+			{"id": "a", "center": [0, -0.3, 0], "radius_m": 3, "count": int(budgets["fish"]), "scale": 1.0},
+			{"id": "b", "center": [9, -0.3, 0], "radius_m": 3, "count": 10, "scale": 1.0}
+		]
+	}
+	var fa := FileAccess.open(path, FileAccess.WRITE)
+	fa.store_string(JSON.stringify(data))
+	fa.close()
+	var layer := _layer(path)
+	assert_eq(layer.gull_count(), int(budgets["gulls"]), "gulls clamped to the budget")
+	assert_eq(layer.fish_count(), int(budgets["fish"]), "fish clamped across shoals")
+	assert_eq(layer.shoals[1].count(), 0, "the later shoal gets what is left")
+	assert_eq(layer.draw_calls(), 3, "gulls flying and perched, fish: no crabs, so no crab MultiMesh")
+	layer.free()
+	DirAccess.remove_absolute(path)
+
+
+func test_buffers_feed_the_multimeshes() -> void:
+	var layer := _layer(STAGE_DATA)
+	layer.step(DT, Vector3.ZERO, false)
+	for key: StringName in layer.multimeshes:
+		var mm := (layer.multimeshes[key] as MultiMeshInstance3D).multimesh
+		assert_eq(mm.instance_count, (layer.buffers[key] as WildlifeBuffer).count, "%s instances" % key)
+		assert_true(mm.use_custom_data, "%s carries the motion in custom data" % key)
+		assert_eq(mm.buffer.size(), mm.instance_count * WildlifeBuffer.FLOATS, "%s buffer layout" % key)
+		var mmi := layer.multimeshes[key] as MultiMeshInstance3D
+		var mat := mmi.material_override as ShaderMaterial
+		assert_true(
+			mat != null and mat.shader.resource_path == "res://game/world/wildlife/wildlife.gdshader",
+			"%s material" % key
+		)
+	assert_eq(layer.find_children("*", "CollisionObject3D", true, false).size(), 0, "wildlife never blocks the player")
+	layer.free()
+
+
+func test_zone_seed_is_stable() -> void:
+	assert_eq(WildlifeConfig.seed_for(&"ch02/haluna"), WildlifeConfig.seed_for(&"ch02/haluna"), "same id, same seed")
+	assert_ne(
+		WildlifeConfig.seed_for(&"ch02/haluna"), WildlifeConfig.seed_for(&"ch03/saltgrass_causeway"), "ids differ"
+	)
+	assert_eq(WildlifeConfig.seed_for(&""), WildlifeConfig.FNV_OFFSET, "FNV-1a offset basis for the empty id")

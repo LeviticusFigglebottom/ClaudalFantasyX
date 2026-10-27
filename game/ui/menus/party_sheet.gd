@@ -65,8 +65,7 @@ func combatant(cid: StringName) -> BattleCombatant:
 
 func hero_name(cid: StringName) -> String:
 	var row: Dictionary = battle_db.characters.get(cid, {})
-	var key := str(row.get("name_key", ""))
-	return TranslationServer.translate(key) if key != "" else String(cid)
+	return CharacterNames.display(cid, str(row.get("name_key", "")))  # "The Kirru" until named (M3-C09-05)
 
 
 ## Writes the Lattice progress back into `state` (LatticeProgress.save_into: refused, keeping the

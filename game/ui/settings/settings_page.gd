@@ -56,6 +56,7 @@ func _ready() -> void:
 	_help.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	_help.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(_help)
+	UiFrame.centre(self)  # M2-UI-29
 	page_model.changed.connect(_render)
 	_open = true
 	_render()

@@ -19,6 +19,7 @@ SHRINE_SFX = "game/data/audio/shrine_sfx.json"
 UI_SFX = "game/data/audio/ui_sfx.json"
 AMBIENCE = "game/data/audio/ambience.json"
 FOOTSTEPS = "game/data/audio/footsteps.json"
+FOOTSTEP_KINDS = ("walk", "run", "stop", "turn")  # M3-AUD-802: a surface's rows
 VOICES = "game/data/audio/voices.json"  # M3-AUD-07
 REEFBALL_HOOKS = "game/data/audio/reefball_hooks.json"  # M3-AUD-17
 CHOREO_SFX = "game/data/audio/choreo_sfx.json"  # M3-AUD-13
@@ -275,8 +276,33 @@ def footstep_errors(doc: object, exists, ids: set[str]) -> list[str]:
     errs: list[str] = []
     surfaces = doc.get("surfaces") or {}
     for surf, sid in surfaces.items():
-        if sid not in ids:
+        if isinstance(sid, dict):  # M3-AUD-802: {walk, run, stop, turn}; walk and run are required
+            for kind in ("walk", "run"):
+                if kind not in sid:
+                    errs.append(f"{FOOTSTEPS} surfaces.{surf}: no {kind} row")
+            for kind, rid in sid.items():
+                if kind not in FOOTSTEP_KINDS:
+                    errs.append(f"{FOOTSTEPS} surfaces.{surf}.{kind}: not one of {', '.join(FOOTSTEP_KINDS)}")
+                elif rid not in ids:
+                    errs.append(f"{FOOTSTEPS} surfaces.{surf}.{kind}: {rid} is not an sfx.json row")
+        elif sid not in ids:
             errs.append(f"{FOOTSTEPS} surfaces.{surf}: {sid} is not an sfx.json row")
+    foley = doc.get("foley") or {}
+    for key in ("cloth", "gear"):
+        for k, rid in (foley.get(key) or {}).items():
+            if rid not in ids:
+                errs.append(f"{FOOTSTEPS} foley.{key}.{k}: {rid} is not an sfx.json row")
+    if foley and (not isinstance(foley.get("gear_every", 1), int) or foley.get("gear_every", 1) < 1):
+        errs.append(f"{FOOTSTEPS} foley.gear_every: a whole number >= 1")
+    contacts = doc.get("contacts") or {}
+    if contacts and not all(isinstance(m, str) and m for m in contacts.get("markers", [])):
+        errs.append(f"{FOOTSTEPS} contacts.markers: marker names are non-empty strings")
+    for k in ("min_interval_sec", "stall_m", "retry_sec", "min_weight"):
+        if k in contacts and (not _num(contacts[k]) or contacts[k] < 0):
+            errs.append(f"{FOOTSTEPS} contacts.{k}: a number >= 0")
+    areas = doc.get("surface_areas") or {}
+    if areas and not (areas.get("group") or areas.get("group_prefix")):
+        errs.append(f"{FOOTSTEPS} surface_areas: needs group or group_prefix")
     if doc.get("default") not in surfaces:
         errs.append(f"{FOOTSTEPS} default: {doc.get('default')} is not a surface")
     for scene, surf in (doc.get("scenes") or {}).items():
@@ -758,8 +784,19 @@ def choreo_errors(doc: object, rows: dict, classes: dict[str, list[str]] | None,
         errs.append(f"{w0} vowbound.long_sec: seconds > 0")
     flood = doc.get("flood") or {}
     row(flood.get("sfx"), f"{w0} flood.sfx", blank=False)
-    if not isinstance(flood.get("phase"), str) or not _num(flood.get("stagger_sec")) or flood["stagger_sec"] < 0:
-        errs.append(f"{w0} flood: a phase id and stagger_sec >= 0")
+    # M3-AUD-800: the phase and stagger are the choreography's own (choreo.json bosses.<boss>.flood); this table's
+    # are only a fallback, so one of the two must give them.
+    floods = [flood]
+    if isinstance(choreo, dict):
+        for b in ((choreo.get("choreo") or {}).get("bosses") or {}).values():
+            if isinstance(b, dict) and isinstance(b.get("flood"), dict):
+                floods.append(b["flood"])
+    if "phase" in flood and not isinstance(flood["phase"], str):
+        errs.append(f"{w0} flood.phase: a phase id")
+    if "stagger_sec" in flood and (not _num(flood["stagger_sec"]) or flood["stagger_sec"] < 0):
+        errs.append(f"{w0} flood.stagger_sec: seconds >= 0")
+    if not any(isinstance(f.get("phase"), str) and _num(f.get("stagger_sec")) for f in floods):
+        errs.append(f"{w0} flood: no phase id and stagger_sec here or in {CHOREO} bosses.*.flood")
     for k in doc.get("reduced_skip", []):
         if k not in CHOREO_SKIPS:
             errs.append(f"{w0} reduced_skip: {k} is not one of {sorted(CHOREO_SKIPS)}")

@@ -1,0 +1,67 @@
+keys,en
+ENC_CH08_STAIR_HOLD_1,The Fisher Stair: Hold
+ENC_CH08_STAIR_HOLD_2,The Fisher Stair: The Rope
+ENC_CH08_STAIR_HOLD_3,The Fisher Stair: The Last of the Low Town
+ENC_CH08_UNDERTOWS_REACH,The Undertow's Reach
+ENTRY_CH08_FISHER_STAIR,The Fisher Stair
+ENTRY_CH08_SURGE,The Surge
+ENTRY_CH08_KIRRU,The Kirru
+ENEMY_TIDE_CRAWLER,Tide Crawler
+LORE_TIDE_CRAWLER,"A wet, plated thing the size of a hound that climbs sheer stone as easily as sand. It goes for the hand-line, not the hands, as if it knows the rope is what keeps people alive."
+ENEMY_SQUALL_WING,Squall Wing
+LORE_SQUALL_WING,"A gull-shaped hole in the rain, edged with a cold cyan shimmer. It dives at anything that moves fast, and nothing on the wall moves faster than a hauled rope."
+ENEMY_WALL_POLYP,Wall Polyp
+LORE_WALL_POLYP,"A spawn-polyp rooted in the carved faces of the Watchers' stones. It cannot move, so it mends whatever climbs past it. Burning it off scars the carving underneath."
+ENEMY_UNDERTOWS_REACH,The Undertow's Reach
+LORE_UNDERTOWS_REACH,"Not a creature. A limb of the storm itself, a column of black water and cloud that closes on the wall-head like a hand. Its wounds bleed cyan, and they do not matter to it."
+PHASE_REACH_GRIP,The Grip
+PHASE_REACH_DARK,The Dark
+PHASE_REACH_BREACH,The Breach
+FIELD_STORM_DARK,Storm-dark
+TUT_CH08_WAVE_HOLD,"Each turn of the Fisher Stair brings a group of climbers up. Spawn that grip the stair push it back: hold it on a shield."
+TUT_CH08_WAVE_ROPE,"Liss can haul the stair to speed the climb, but the Squall Wings dive a hauled rope."
+TUT_CH08_WAVE_LAST,"The Kirru on the parapet draws one spawn off with every call. Only the party can burn the rooted polyp."
+TUT_CH08_REACH_GRIP,The storm's hand is closing on the stair. Hold it on a shield.
+TUT_CH08_REACH_DARK,The climbers can't see the stair. Call on Virel to light it.
+TUT_CH08_REACH_BREACH,Nothing can touch it. Get the last of them up.
+HUD_CH08_STAIR_HOLDS,The stair holds.
+HUD_CH08_REACH_SURVIVED,The last of them are up.
+HUD_SWAP_CH08_HOLDING_THE_STAIR,Holding the stair
+HUD_PARTY_CH08_NOT_WITH_PARTY,Not with the party
+HUD_FAIL_CH08_TOMA_HOLDS,"Toma holds the stair. He will not leave it to strike."
+SKILL_STAND_FIRM,Stand Firm
+SKILL_STAND_FIRM_RIPOSTE,Riposte
+SKILL_HOLD_THE_STAIR,Hold the Stair
+SKILL_HOIST_HAUL,Haul
+SKILL_KITE_FLARE,Kite Flare
+SKILL_FLARE_LINE,Flare Line
+SKILL_TIDE_CLAW,Tide Claw
+SKILL_REACH_FOR_STAIR,Reach for the Stair
+SKILL_GRIP_THE_STAIR,Grip the Stair
+SKILL_WING_PECK,Peck
+SKILL_ROPE_DIVE,Rope Dive
+SKILL_CLIMB_UP,A Group Climbs
+SKILL_SURGE_RISES,The Surge Rises
+SKILL_SURGE_EBBS,The Surge Ebbs
+SKILL_STORM_CALL_SOUND,The Kirru Calls
+SKILL_STORM_CALL,Storm-Call
+SKILL_CLOSE_THE_HAND,Close the Hand
+SKILL_UNDERTOW_PULL,Undertow Pull
+SKILL_CRUST_SLAM,Crust Slam
+SKILL_BREACH,Breach
+VOWBOUND_VIREL,Virel
+CHAR_IVO,Ivo
+LOCATION_CH08_CORROW,Corrow
+LOCATION_CH08_COILSPIRE,Coilspire
+FIELD_PROMPT_CH08_FLUE_KEY,Turn the flue-key
+FIELD_PROMPT_CH08_GREAT_KEY,Open the beacon
+FIELD_PROMPT_CH08_HEARTH,Sit by the hearth
+FIELD_PROMPT_CH08_GATE,Through the wall-gate
+ENEMY_STORMGULL,Stormgull
+LORE_STORMGULL,"A gull harrier gone dark with the weather. It rides the updraught off the headland without a wingbeat, and the static it carries crackles in its feathers before it spits it."
+ENEMY_WALLCRAB,Wallcrab
+LORE_WALLCRAB,"A reef crab the colour of laterite, grown fat on the seawall's weed. Corrow's children say it is a piece of the wall that got bored and walked off."
+ENEMY_FLUE_MOTH,Flue Moth
+LORE_FLUE_MOTH,"Not spawn. A soot-moth as wide as a door, drawn up Coilspire's flues by the keeping flame. It drinks fire and sheds soot, and the Tenders sweep its dust off the braziers every morning."
+ENC_CH08_HEADLAND,The Headland Path
+ENC_CH08_COILSPIRE,Coilspire

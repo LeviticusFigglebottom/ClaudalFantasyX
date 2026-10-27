@@ -32,17 +32,20 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import chapter_flow_check  # noqa: E402
 import dlgc  # noqa: E402
 from validate_creatures import check_creatures  # noqa: E402
+from validate_wildlife import check_wildlife  # noqa: E402  (M3-CRE-611)
 
 ELEMENTS = {"none", "fire", "water", "lightning", "ice", "holy", "glimmer"}
 AFFINITIES = {"normal", "weak", "resist", "immune", "absorb"}
 SKILL_KINDS = {"physical", "magical", "heal", "support"}
 SKILL_TARGETS = {"single_foe", "all_foes", "single_ally", "all_allies", "self"}
 AI_TARGETS = {"random_foe", "lowest_hp_foe", "highest_hp_foe", "self", "random_ally", "all_foes", "all_allies",
-              "largest_ally"}
-AI_CONDITIONS = {"self_hp_below_pct", "turn_mod", "foe_has_status", "allies_alive_below", "field_active"}
+              "largest_ally", "ward"}  # ward: M3-CMB-01, the battle's ward entry (set_piece_battles.md)
+AI_CONDITIONS = {"self_hp_below_pct", "turn_mod", "foe_has_status", "allies_alive_below", "field_active",
+                 "ward_has_status"}  # ward_has_status: M3-CMB-01
 # M2-CMB-02 (combat): target kinds only skills take (items keep SKILL_TARGETS). all_other_allies is
 # every living active ally but the user (Shallows Verse: a song for the others, never the singer).
 SKILL_ONLY_TARGETS = {"all_other_allies"}
+SKILL_ONLY_TARGETS.add("ward")  # M3-CMB-01: a set piece's ward entry (the Climb), set_piece_battles.md
 STAT_KEYS = {"level", "hp", "mp", "strength", "magic", "defense", "magic_defense",
              "agility", "accuracy", "evasion", "luck"}
 CANON_STATUSES = {"poison", "sleep", "silence", "darkness", "petrify", "slow", "haste", "stop",
@@ -289,6 +292,8 @@ def _ai_arg_ok(cond: str, arg: object, status_ids: set[str]) -> bool:
         return arg in status_ids
     if cond == "field_active":
         return isinstance(arg, str) and bool(arg)
+    if cond == "ward_has_status":  # M3-CMB-01
+        return arg in status_ids
     return False
 
 
@@ -1303,6 +1308,7 @@ def run(root: Path) -> Report:
     data_keys += check_codex(files, declared_flags_quiet(root), rep)  # M3-UI-03
     data_keys += check_memories(root, files, declared_flags_quiet(root), rep)  # M3-MNU-02
     data_keys += check_reefball(files, rep)
+    data_keys += check_set_pieces(files, rep)
     check_loc(root, data_keys, load_loc_keys(root, rep), rep)
     check_flags(root, load_flags(root, rep), rep)
     check_undertow(root, files, rep)
@@ -1314,6 +1320,7 @@ def run(root: Path) -> Report:
     check_banned(root, rep)
     check_binary_sizes(root, rep)
     check_creatures(root, files, rep)
+    check_wildlife(root, rep)  # M3-CRE-611
     return rep
 
 
@@ -1994,6 +2001,7 @@ def check_swell(files: dict[str, object], rep: Report) -> list[str]:
 BOSS_PHASE_STATS = {"strength", "magic", "defense", "magic_defense", "agility", "accuracy", "evasion", "luck"}
 BOSS_PHASE_KEYS = {"id", "at_hp_pct", "name_key", "prompt_key", "skills", "ai", "affinities", "stats",
                    "delay_immune", "field", "spawn", "remove"}
+BOSS_PHASE_KEYS |= {"untargetable", "damage_immune", "spawn_bound", "field_rules"}  # M3-CMB-01 (set pieces)
 
 
 def _boss_ai_errors(ai: object, w: str, own: set[str], status_ids: set[str]) -> list[str]:
@@ -2528,6 +2536,175 @@ def check_tutorial_tips(files: dict[str, object], declared: set[str], rep: Repor
     for e in errs:
         rep.err(e)
     return [k for k in keys if k]
+# --- Set-piece battles (M3-CMB-01, docs/kb/design/set_piece_battles.md, BattleSetPiece) -----------
+
+SET_PIECE_ROLES = {"ward", "tide", "guest"}
+SET_PIECE_SIDES = {"party", "enemy"}
+SET_PIECE_OUTCOMES = {"victory", "scripted_escape"}
+SET_PIECE_ENTRY_KEYS = {"id", "name_key", "side", "role", "agility", "skills", "ai", "delay_immune", "summon_cap",
+                        "joins_at_phase", "_note"}
+FIELD_RULE_ON = {"party", "enemy", "ward"}
+
+
+def _set_piece_entry_errors(row: object, w: str, refs: dict[str, set[str]], phases: set[str]) -> list[str]:
+    if not isinstance(row, dict) or not isinstance(row.get("id"), str) or not row["id"]:
+        return [f"{w}: an entry needs a string id"]
+    w = f"{w}.{row['id']}"
+    errs = [f"{w}: unknown key '{k}'" for k in sorted(set(row) - SET_PIECE_ENTRY_KEYS)]
+    if row["id"] in refs["characters"] or row["id"] in refs["enemies"] or "#" in row["id"]:
+        errs.append(f"{w}: id must not be a hero or enemy id, nor contain '#'")
+    if not isinstance(row.get("name_key"), str) or not row["name_key"]:
+        errs.append(f"{w}: needs a name_key")
+    if row.get("side") not in SET_PIECE_SIDES:
+        errs.append(f"{w}: side must be one of {sorted(SET_PIECE_SIDES)}")
+    if row.get("role") not in SET_PIECE_ROLES:
+        errs.append(f"{w}: role must be one of {sorted(SET_PIECE_ROLES)}")
+    if not _is_int(row.get("agility")) or row["agility"] < 1:
+        errs.append(f"{w}: agility must be an int >= 1 (its pace on the timeline)")
+    own = set(row.get("skills", [])) if isinstance(row.get("skills"), list) else set()
+    if not own:
+        errs.append(f"{w}: skills must be a non-empty list")
+    errs += [f"{w}: unknown skill '{sk}'" for sk in sorted(own - refs["skills"])]
+    errs += _boss_ai_errors(row.get("ai"), f"{w}.ai", own, refs["statuses"])
+    if "delay_immune" in row and not isinstance(row["delay_immune"], bool):
+        errs.append(f"{w}: delay_immune must be true or false")
+    if "summon_cap" in row and (not _is_int(row["summon_cap"]) or row["summon_cap"] < 1):
+        errs.append(f"{w}: summon_cap must be an int >= 1")
+    if "joins_at_phase" in row and row["joins_at_phase"] not in phases:
+        errs.append(f"{w}: joins_at_phase '{row['joins_at_phase']}' is no phase of this encounter's foes")
+    return errs
+
+
+def _set_piece_objective_errors(obj: object, w: str, wards: set[str], phases: set[str]) -> list[str]:
+    if not isinstance(obj, dict) or obj.get("ward") not in wards:
+        return [f"{w}: objective.ward must name this encounter's ward entry"]
+    errs: list[str] = []
+    if not _is_int(obj.get("quota")) or obj["quota"] < 1:
+        errs.append(f"{w}: objective.quota must be an int >= 1")
+    if obj.get("outcome", "victory") not in SET_PIECE_OUTCOMES:
+        errs.append(f"{w}: objective.outcome must be one of {sorted(SET_PIECE_OUTCOMES)}")
+    if "from_phase" in obj and obj["from_phase"] not in phases:
+        errs.append(f"{w}: objective.from_phase '{obj['from_phase']}' is no phase of this encounter's foes")
+    return errs
+
+
+def _set_piece_party_errors(enc: dict, w: str, refs: dict[str, set[str]]) -> list[str]:
+    errs: list[str] = []
+    for key, reason in (("locked_active", "locked_key"), ("unavailable", "unavailable_key")):
+        heroes = enc.get(key, [])
+        if not isinstance(heroes, list) or any(h not in refs["characters"] for h in heroes):
+            errs.append(f"{w}: {key} must list hero ids")
+        elif heroes and (not isinstance(enc.get(reason), str) or not enc[reason]):
+            errs.append(f"{w}: {key} needs {reason} (the reason the menus show)")
+    if set(enc.get("locked_active", [])) & set(enc.get("unavailable", [])):
+        errs.append(f"{w}: a hero can't be both locked_active and unavailable")
+    over = enc.get("attack_override", {})
+    if not isinstance(over, dict) or any(h not in refs["characters"] or s not in refs["skills"]
+                                         for h, s in over.items()):
+        errs.append(f"{w}: attack_override must map hero ids to skill ids")
+    return errs
+
+
+def _set_piece_encounter_errors(enc: dict, refs: dict[str, set[str]], enemies: dict[str, dict]) -> list[str]:
+    w = f"encounters.{enc['id']}"
+    phases = {p.get("id") for eid in enc.get("enemies", []) for p in enemies.get(eid, {}).get("phases", [])
+              if isinstance(p, dict)}
+    entries = enc.get("entries", [])
+    if not isinstance(entries, list):
+        return [f"{w}: entries must be a list"]
+    errs: list[str] = []
+    ids = [r.get("id") for r in entries if isinstance(r, dict)]
+    if len(ids) != len(set(ids)):
+        errs.append(f"{w}: entry ids must be unique")
+    for row in entries:
+        errs += _set_piece_entry_errors(row, f"{w}.entries", refs, phases)
+    wards = {r.get("id") for r in entries if isinstance(r, dict) and r.get("role") == "ward"}
+    if len(wards) > 1:
+        errs.append(f"{w}: at most one ward entry")
+    if "objective" in enc:
+        errs += _set_piece_objective_errors(enc["objective"], w, wards, phases)
+    return errs + _set_piece_party_errors(enc, w, refs)
+
+
+def _set_piece_skill_errors(s: dict, refs: dict[str, set[str]]) -> list[str]:
+    w = f"skills.{s['id']}"
+    errs: list[str] = []
+    if "covers" in s and s["covers"] != "ward":
+        errs.append(f"{w}: covers must be 'ward'")
+    for key in ("counter", "on_cover"):
+        if key in s and s[key] not in refs["skills"]:
+            errs.append(f"{w}: {key} names unknown skill '{s[key]}'")
+    if "on_cover" in s and s.get("target") != "ward":
+        errs.append(f"{w}: on_cover only applies to a skill whose target is 'ward'")
+    if "withdraws" in s and not isinstance(s["withdraws"], bool):
+        errs.append(f"{w}: withdraws must be true or false")
+    if "spares_tag" in s and (not isinstance(s["spares_tag"], str) or not s["spares_tag"]):
+        errs.append(f"{w}: spares_tag must name a tag")
+    if "pushes_ward" in s and (not _is_int(s["pushes_ward"]) or s["pushes_ward"] < 1):
+        errs.append(f"{w}: pushes_ward must be an int >= 1 (ranks)")
+    return errs
+
+
+def _field_rule_errors(p: dict, pw: str, statuses: set[str]) -> list[str]:
+    rules = p.get("field_rules", [])
+    if not rules:
+        return []
+    errs: list[str] = [] if p.get("field") else [f"{pw}: field_rules need the phase's field"]
+    for r in rules if isinstance(rules, list) else [rules]:
+        if not isinstance(r, dict) or r.get("on") not in FIELD_RULE_ON or r.get("status") not in statuses:
+            errs.append(f"{pw}: a field rule needs on ({sorted(FIELD_RULE_ON)}) and a known status")
+        elif "duration" in r and (not _is_int(r["duration"]) or r["duration"] < 1):
+            errs.append(f"{pw}: a field rule's duration must be an int >= 1")
+    return errs
+
+
+def _set_piece_enemy_errors(e: dict, refs: dict[str, set[str]]) -> list[str]:
+    w = f"enemies.{e['id']}"
+    errs: list[str] = []
+    if "hp_floor_pct" in e and (not _is_int(e["hp_floor_pct"]) or not 0 <= e["hp_floor_pct"] < 100):
+        errs.append(f"{w}: hp_floor_pct must be an int in 0..99")
+    for p in e.get("phases", []) if isinstance(e.get("phases"), list) else []:
+        if not isinstance(p, dict):
+            continue
+        pw = f"{w}.phases.{p.get('id')}"
+        for key in ("untargetable", "damage_immune", "spawn_bound"):
+            if key in p and not isinstance(p[key], bool):
+                errs.append(f"{pw}: {key} must be true or false")
+        errs += _field_rule_errors(p, pw, refs["statuses"])
+    return errs
+
+
+def set_piece_errors(skills: list[dict], enemies: list[dict], encounters: list[dict], chars: set[str],
+                     statuses: set[str]) -> list[str]:
+    """Errors in the set-piece keys (M3-CMB-01): encounters' entries, objective, locked_active,
+    unavailable and attack_override; skills' covers, counter, on_cover, withdraws, spares_tag and
+    pushes_ward; enemies' hp_floor_pct and their phases' untargetable, damage_immune, spawn_bound
+    and field_rules."""
+    refs = {"skills": {s["id"] for s in skills}, "enemies": {e["id"] for e in enemies}, "characters": chars,
+            "statuses": statuses}
+    by_id = {e["id"]: e for e in enemies}
+    errs: list[str] = []
+    for s in skills:
+        errs += _set_piece_skill_errors(s, refs)
+    for e in enemies:
+        errs += _set_piece_enemy_errors(e, refs)
+    for enc in encounters:
+        errs += _set_piece_encounter_errors(enc, refs, by_id)
+    return errs
+
+
+def check_set_pieces(files: dict[str, object], rep: Report) -> list[str]:
+    """Validates the set-piece keys (M3-CMB-01). Returns the entries' and party rules' *_key values."""
+    def rows(table: str) -> list[dict]:
+        doc = files.get(f"game/data/battle/{table}.json")
+        lst = doc.get(table, []) if isinstance(doc, dict) else []
+        return [r for r in lst if isinstance(r, dict) and isinstance(r.get("id"), str)]
+    encounters = rows("encounters")
+    for e in set_piece_errors(rows("skills"), rows("enemies"), encounters, {c["id"] for c in rows("characters")},
+                              {s["id"] for s in rows("statuses")}):
+        rep.err(e)
+    return collect_keys([{k: v for k, v in enc.items() if k in ("entries", "locked_key", "unavailable_key")}
+                         for enc in encounters])
 
 
 CODEX_FILE = "game/data/lore/codex.json"
