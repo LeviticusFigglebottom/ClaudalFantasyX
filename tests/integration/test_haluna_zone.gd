@@ -21,7 +21,9 @@ const NPCS := {
 	&"npc_lane": "ch02_bark_lane",
 }
 const BARKS: Array[StringName] = [&"ch02_bark_market", &"ch02_bark_chapel", &"ch02_bark_dock", &"ch02_bark_lane"]
-const STAGE_SHOTS: Array[StringName] = [&"H05", &"H06", &"H01", &"H08", &"H08_hand", &"H03", &"B02_bag"]
+const STAGE_SHOTS: Array[StringName] = [
+	&"H05", &"H06", &"H01", &"H08", &"H08_hand", &"H03", &"H10", &"N01", &"N02", &"B02_bag"
+]
 ## In front of the chapel door (order_chapel at (-118, 27.5), 9.25 m deep: its south face is z 32.1).
 const CHAPEL_FRONT := Vector3(-119.5, 0.0, 35.0)
 const CHAPEL_SOUTH_WALL_Z := 32.0
@@ -219,7 +221,8 @@ func test_the_cutscene_stage_resolves_cutscene_a() -> void:
 		# The rail root is the zone root, at the origin.
 		var shot := stage.shot(id)
 		var close := CutsceneKeyLight.is_close(shot.position, shot.look_at, shot.fov_deg, key_cfg)
-		assert_eq(close, id not in [&"H01", &"H03"], "%s keyed: %s" % [id, close])  # the wides (H03: a roof gull)
+		# The wides (H03: a roof gull) and B11's night setups (M2-FP-115: the dock end, two medium two-shots).
+		assert_eq(close, id not in [&"H01", &"H03", &"H10", &"N01", &"N02"], "%s keyed: %s" % [id, close])
 	# The PC's FP-10 check: under the 74° noon sun the close shots lower the key 30°.
 	for id: StringName in [&"H05", &"H06"]:
 		assert_eq(stage.shot_node(id).key_pitch_deg, 30.0, "%s key pitch" % id)
