@@ -176,6 +176,25 @@ env-art is cloud session `session_01YbaV2c8yquRHqj6afQYg89` on `claude/env-art`;
 
     The shoals arena (fa67bfee) shows a working mix. The two capsules are character placeholders, not kit.
 
+- **M3-ENV-713, the missing Act I arenas** (the Lead's item 4). All seven Ch8 encounters had no arena and fought on the
+  sandbox's greybox. Five new arenas (merge-ready at 599b2418 once the PC answers; the only red is `test_screenshots`,
+  which wants the new shots' baselines):
+  - `seawall_stairhead_storm`, `_hoist` and `_surge`: the wall-head over the Fisher Stair, from the Corrow kit, in
+    three states. Liss's hoist is rigged from wave 2; the surge has `BossAnchor` for the Undertow's Reach.
+  - `coilspire_headland_path`: a levelled, flagged landing at the path's mid-point, using the Coilspire kit's new
+    `arena_headland_ground` and `arena_headland_path` (`cs_arena.py`).
+  - `coilspire_tier_landing`: a cut-away tier of the well (`arena_tier_hall`).
+
+  Checks run:
+  - full tools suite (1156; only that red);
+  - Godot `--filter=arena` 18/0, with all five in `test_battle_arenas` (floor and camera line);
+  - Coilspire full rebuild (older pieces identical);
+  - validate_data, taskboard.
+
+  The battle_arenas.md sections are in.
+  - **For act1-chapters:** request **M3-ENV-714** sets the Ch8 encounters' `arena` ids. Until then the arenas sit
+    unused in arenas.json.
+
 ### Render requests
 RENDER-REQUEST @ a0d2549f: battle_arena_tideline_dawn,battle_arena_causeway_disc_sunset,battle_arena_causeway,battle_arena_tideline,causeway_c02_profile_against_the_lagoon,causeway_c08_drownbell_disc_approach,drownbell_flood,battle_boss_intro_drownbell,haluna_h01_village_from_sea,haluna_h10_dock_night,field_objective_line,field_interact_prompt,field_area_title,field_tip_card,dialogue_continue; why: M3-ENV-701 set dressing in Haluna, the causeway and the two arenas (the five field/dialogue shots frame Haluna's lane 1)
 RENDER-REQUEST @ 22a5de11: battle_arena_oruvel_raft_morning,battle_arena_causeway,drownbell_flood; why: the merge took the PC gate's copies of these three over env-art's; confirm they still match with the arena dressing
@@ -187,6 +206,7 @@ ANSWERED: 71f19fbc (gpu/render-env-art-71f19fb) and a0d2549f (gpu/render-env-art
 RENDER-REQUEST @ 24bf927a: iskarra_p01_plaza_dusk,iskarra_i02_gate_from_the_plaza,iskarra_i03_broken_tower; why: M3-ENV-710 Iskarra kit for the Prologue under its dusk (new shots, no baseline yet)
 RENDER-REQUEST @ fa67bfee: battle_arena_shoals,battle_arena_camp,battle_boss_intro_inquisitor; why: M3-ENV-706 density pass after viewing 71f19fb (the shoals read as bare sand, the camp's hard as one pebble repeat)
 RENDER-REQUEST @ 8770a067: corrow_c01_wall_head,corrow_c08_watcher_profile,corrow_c10_breach_fallen,brine_b01_arrival,brine_b05_barge_channel,battle_arena_shoals,battle_arena_camp,battle_boss_intro_inquisitor,iskarra_p01_plaza_dusk,iskarra_i02_gate_from_the_plaza,iskarra_i03_broken_tower; why: M3-ENV-712 carved Watcher backs, M3-ENV-705 Brine Shoals zenith, M3-ENV-706 Ch6 arena density, M3-ENV-710 Iskarra (supersedes the 24bf927a and fa67bfee lines)
+RENDER-REQUEST @ 599b2418: battle_arena_seawall_stairhead_storm,battle_arena_seawall_stairhead_hoist,battle_arena_seawall_stairhead_surge,battle_arena_coilspire_headland_path,battle_arena_coilspire_tier_landing; why: M3-ENV-713 Ch8's five new arenas (new shots, no baseline yet)
 
 ## STATE AT HANDOVER (2026-10-25)
 
