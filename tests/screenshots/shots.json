@@ -3281,6 +3281,76 @@
           "screen_space_aa": 1
         }
       }
+    },
+    {
+      "id": "liss_front",
+      "scene": "res://game/levels/_tests/characters/liss/liss_stage.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "liss_back",
+      "scene": "res://game/levels/_tests/characters/liss/liss_stage.tscn",
+      "camera": "Cameras/Back",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "liss_three_quarter",
+      "scene": "res://game/levels/_tests/characters/liss/liss_stage.tscn",
+      "camera": "Cameras/ThreeQuarterLeft",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "liss_face",
+      "scene": "res://game/levels/_tests/characters/liss/liss_stage.tscn",
+      "camera": "Cameras/Face",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "liss_face_stylized",
+      "scene": "res://game/levels/_tests/characters/liss/liss_face_stylized.tscn",
+      "camera": "Cameras/Compare",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "liss_silhouette_vs_rhen",
+      "scene": "res://game/levels/_tests/characters/liss/liss_silhouette_vs_rhen.tscn",
+      "camera": "Cameras/Lineup",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "liss_clip_haul_rope",
+      "scene": "res://game/levels/_tests/characters/liss/liss_clip_haul_rope.tscn",
+      "camera": "Cameras/ThreeQuarterLeft",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
     }
   ]
 }

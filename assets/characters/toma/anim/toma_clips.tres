@@ -10510,7 +10510,7 @@ tracks/33/keys = PackedFloat32Array(0, 1, -0.15552, -0.697739, 0.448142, 0.53679
 [sub_resource type="Animation" id="clip_43"]
 resource_name = &"haul_rope"
 length = 3
-loop_mode = 0
+loop_mode = 1
 step = 0.0666667
 tracks/0/type = "position_3d"
 tracks/0/imported = false

@@ -26,7 +26,7 @@ sys.path.insert(0, str(ROOT / "assets_src" / "characters" / "asha"))
 
 import hero_clips  # noqa: E402
 
-HEROES = ("asha", "rhen", "toma")
+HEROES = ("asha", "rhen", "toma", "liss")  # M3-CHR-03: Liss, a party member from Ch6
 # the contract (battle_presentation.md § Clip contract)
 LOOPING = {"idle", "victory"}
 ONE_SHOT = {"ready", "attack", "cast", "item", "read", "defend", "finisher", "hit", "dodge"}
@@ -57,6 +57,8 @@ EXISTING = {  # the clips before M2-CHR-07; their sub-resources must stay byte-i
     "rhen": ["idle", "walk", "run", "talk", "kneel_over_rhen", "rise_to_stand", "take_hand"],
     "toma": ["idle", "walk", "run", "talk", "spear_level", "lower_spear", "palms_level", "catch_rhen", "sit_steps",
              "turn_seaward"],
+    "liss": ["idle", "walk", "run", "talk", "crouch_shelter", "carry_crate", "bury_lamp", "clock_lantern", "point_up",
+             "haul_rope"],  # M3-CHR-03: her own clips, then the contract
 }
 
 
