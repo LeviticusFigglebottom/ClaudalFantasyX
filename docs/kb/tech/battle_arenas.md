@@ -115,6 +115,32 @@ key `#FFD5B3` 2.4, fill `#A8B8B0` 0.55, exposure 0.70, saturation ×0.9, `lut_ch
   Its four fires are `FireLight0`–`3` at the arena's root (`lamp_parent` / `lamp_name`; M3-BPR-03's test reads
   them), `light_volumetric_fog_energy` 0. Hint `past_the_brazier`.
 
+### Ch8's wall-head at the Fisher Stair (M3-ENV-713, the Corrow kit)
+
+Every Ch8 encounter had no arena and fought on the sandbox. The set-piece (act1_ch08.md B10–B16,
+set_piece_battles.md) is the wall-head walk over the Fisher Stair (W09–W11), in three states of one table
+(`_wallhead_arena` in `arena_scenes.py`):
+
+| Arena id | Encounters (to set in encounters.json) | Light |
+|---|---|---|
+| `seawall_stairhead_storm` | `ch08_stair_hold_1` (B10) | `ch08` 16:00: sun 30° (world az 250°, over the sea), key `#FFE4CE` 2.0, ambient `#7A8A9C` 1.0, fog `#5E6670`, exposure 0.80, `lut_ch08_storm`, the kit's storm sky |
+| `seawall_stairhead_hoist` | `ch08_stair_hold_2`, `ch08_stair_hold_3` (B12, B14) | the storm coming in: key 1.4, cloud 0.82, fog 0.003; Liss's hoist rigged (`liss_hoist`, its basket and rope by the kerb) |
+| `seawall_stairhead_surge` | `undertows_reach` (B16) | corrow.md `ch08_surge`: sun 22° behind the front at 0.35, ambient `#5E6E80` 0.6, the sky closed (cloud 0.9, no disc), fog 0.006, exposure 0.95, sea-glow 0.06; `BossAnchor` on the parapet behind the enemy line, where the Reach's hand grips |
+
+The kit preview's layout (`game/levels/_tests/corrow_kit/corrow_layout.json`, read-only) is re-based on the walk
+at arc length s −30 (`wallhead_from_world`). The preview is unbent at that segment and turned half round, so:
+- the sea and the parapet's Watchers stand behind the enemy line (−Z), and the camera sees their carved backs
+  (M3-ENV-712);
+- the low town lies 11 m down behind the camera;
+- the Fisher Stair's foot is 10 m to the party's right, and Liss's hoist 13.3 m to the enemies' left;
+- the walk is at y 0 with its centre line at z 0.7. Parapet from z −2.3 and kerb from +3.1 keep every slot's
+  1 m clear floor; that segment is the `Ground`, turned by `ground_yaw`.
+
+Pieces beyond 170 m are left out, except the far land and the headland. The sea is the kit's own `storm_grey`
+material (`material_res`) at y −12. Dressing: the stair-watch's red shields by the stair head, coils, salvage and
+sacks; in the afternoon states the kites along the parapet (they come down on the run back, so the surge has
+none). Hints `along_the_walk` and `the_storm_wall`.
+
 ### The underwater arena (`underway_tower`)
 
 An arena under the sea carries its own look, because the battle scene has none:

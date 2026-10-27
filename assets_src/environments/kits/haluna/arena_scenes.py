@@ -967,8 +967,137 @@ CAMP = {
 }
 
 
+
+# ---------------------------------------------------------------------------------------------
+# M3-ENV-713: Ch8's set-piece arena, the wall-head at the Fisher Stair (Corrow kit), in its three states
+# ---------------------------------------------------------------------------------------------
+CW = "res://assets/environments/kits/corrow/"
+CW_LAYOUT = ROOT / "game" / "levels" / "_tests" / "corrow_kit" / "corrow_layout.json"  # the kit preview's, read-only
+CW_WALK_Y = 12.0  # cw_common.WALK_Y: the walk's paving, the arena's floor
+CW_ARC_R = 300.0  # cw_common.ARC_R_M
+WALLHEAD_S = -30.0  # the arena's segment (a segment centre): the stair foot at s -40 is 10 m to the party's right
+WALLHEAD_Z = 0.7  # the walk's centre line in the arena: parapet from z -2.3, inner kerb from +3.1 (slots + 1 m clear)
+WALLHEAD_RADIUS_M = 170.0  # the preview's wall, town and far pieces kept within this of the arena (the far land always)
+WALLHEAD_ALWAYS = ("corrow_far", "coilspire_headland")
+WALLHEAD_SKIP = ("watcher_relief",)  # the sea face's carvings: below the parapet, never in a battle frame
+CORROW_SKY = {  # game/levels/_tests/corrow_kit/corrow_ch08_environment.tres (the kit's ch08 sky)
+    "col_zenith": "#3E4A57", "col_horizon_sun": "#B89A7A", "col_horizon_away": "#5E6670", "col_ground": "#2A3640",
+    "sky_energy": 1.9, "horizon_curve": 0.25, "azimuth_power": 2.0, "col_band": "#FFD2A8", "band_energy": 0.5,
+    "band_height": 0.04, "mid_strength": 0.0, "col_glow": "#FFE4CE", "glow_energy": 0.8, "glow_power": 6.0,
+    "halo_energy": 1.5, "halo_power": 200.0, "sun_disc_energy": 10.0, "col_cloud_lit": "#E8B890",
+    "col_cloud_shadow": "#34404C", "cloud_coverage": 0.72, "cloud_softness": 0.22, "cloud_opacity": 0.96,
+    "cloud_height_m": 1800.0, "cloud_scale_m": 5000.0, "cloud_stretch": "Vector2(1, 2.5)", "cloud_wind_deg": 135.0,
+    "cloud_sun_energy": 2.6, "cloud_ambient_energy": 1.35, "cloud_horizon_fade": 0.08}
+CORROW_SEA = "res://game/levels/_tests/corrow_kit/corrow_water_material.tres"  # storm_grey (colour script ch08)
+
+
+def wallhead_pose() -> tuple[float, float, float]:
+    """World (x, z) and yaw (deg) of the arena's segment centre on the walk (cw_common.bend_points' arc)."""
+    th = WALLHEAD_S / CW_ARC_R
+    return CW_ARC_R * math.sin(th), CW_ARC_R - CW_ARC_R * math.cos(th), -math.degrees(th)
+
+
+def wallhead_from_world(x: float, y: float, z: float, yaw: float) -> tuple[tuple[float, float, float], float]:
+    """The Corrow preview's world -> the arena: unbend at the segment, then turn half round so the sea (+Z in the
+    world) is behind the enemy line (-Z) and the town is behind the camera (+Z); the walk at y 0."""
+    x0, z0, yaw0 = wallhead_pose()
+    a = math.radians(-yaw0)
+    dx, dz = x - x0, z - z0
+    lx, lz = dx * math.cos(a) + dz * math.sin(a), -dx * math.sin(a) + dz * math.cos(a)
+    return (round(-lx, 3), round(y - CW_WALK_Y, 3), round(WALLHEAD_Z - lz, 3)), round(yaw - yaw0 + 180.0, 3)
+
+
+def _wallhead_pieces(hoist: bool) -> list:
+    """The kit preview's wall (segments, aprons, the parapet's heads), the stair, the low town and the far land,
+    re-based on the arena's segment. Its own segment is the arena's Ground. Liss's hoist only once it is rigged
+    (B11: waves 2 and 3, the boss)."""
+    rows = []
+    for p in json.loads(CW_LAYOUT.read_text(encoding="utf-8"))["pieces"]:
+        name = p["piece"]
+        if name in WALLHEAD_SKIP or (name == "liss_hoist" and not hoist):
+            continue
+        at, yaw = wallhead_from_world(p["at"][0], p["y"], p["at"][1], p["yaw_deg"])
+        if name not in WALLHEAD_ALWAYS and math.hypot(at[0], at[2]) > WALLHEAD_RADIUS_M:
+            continue
+        if name == "seawall_curve" and abs(at[0]) < 0.5 and abs(at[2] - WALLHEAD_Z) < 0.5:
+            continue  # the Ground
+        rows.append({"glb": CW + name + ".glb", "at": at, "yaw": yaw})
+    return rows
+
+
+# The wall-head's own clutter, beyond the slots: the stair-watch's shields stacked by the stair head (party side),
+# a rope coil and the salvage the watch dragged up, a lifting basket by the hoist (when rigged).
+WALLHEAD_DRESSING = [
+    {"glb": CW + "round_shield.glb", "at": (6.4, 0.0, 2.4), "yaw": 20.0},
+    {"glb": CW + "round_shield.glb", "at": (7.1, 0.0, 2.1), "yaw": -35.0},
+    {"glb": CW + "round_shield.glb", "at": (7.6, 0.0, -1.6), "yaw": 70.0},
+    {"glb": KIT + "rope_coil.glb", "at": (-6.2, 0.0, 2.3), "yaw": 0.0},
+    {"glb": BS + "crate_stack.glb", "at": (-7.7, 0.0, -1.3), "yaw": 95.0},
+    {"glb": KIT + "cargo_sacks.glb", "at": (8.8, 0.0, 0.4), "yaw": 160.0},
+]
+WALLHEAD_HOIST_DRESSING = [
+    {"glb": CW + "hoist_basket.glb", "at": (-11.6, 0.0, 2.2), "yaw": 30.0},
+    {"glb": KIT + "rope_coil.glb", "at": (-12.4, 0.0, 1.0), "yaw": 40.0},
+]
+# The kites still up over the wall in the afternoon (they come down on the run back, B08): along the parapet.
+WALLHEAD_KITES = [{"glb": CW + "kite_line.glb", "at": (0.0, 0.0, -2.9), "yaw": 180.0, "structure": True}]
+
+
+def _wallhead_arena(arena_id: str, *, hoist: bool, surge: bool) -> dict:
+    """Ch8's stair-head (act1_ch08.md W09-W11; set_piece_battles.md): the waves (B10 `ch08` 16:00, B12 and B14 the
+    storm coming in) and the boss (B16, `ch08_surge`: the sun a smear behind the front, near-night)."""
+    pieces = WALLHEAD_DRESSING + (WALLHEAD_HOIST_DRESSING if hoist else []) + ([] if surge else WALLHEAD_KITES)
+    _x0, _z0, yaw0 = wallhead_pose()
+    sun_az = round(70.0 - yaw0, 1)  # the world's 250 deg turned with the arena: over the sea, frame right
+    if surge:
+        # corrow.md `ch08_surge`: 22 deg / 255 deg behind the front, #FFE4CE at 0.35; ambient #5E6E80 0.6; spray
+        # haze thick; the sky closed down.
+        light = {"sun": {"elev": 22.0, "az": round(sun_az + 5.0, 1), "color": "#FFE4CE", "energy": 0.35},
+                 "fill": {"color": "#5E6E80", "energy": 0.6}, "exposure": 0.95,
+                 "fog": {"color": "#5E6670", "light_energy": 0.6, "aerial": 0.6, "density": 0.006, "sky_affect": 0.5,
+                         "height": 0.0, "height_density": 0.0},
+                 "sky": dict(CORROW_SKY, sky_energy=0.9, cloud_coverage=0.9, sun_disc_energy=0.0, glow_energy=0.2,
+                             halo_energy=0.3, band_energy=0.15)}
+    else:
+        # Colour script ch08 (16:00): sun 30 deg / 250 deg, key #FFE4CE 2.0 (1.4 as the storm comes in for waves 2
+        # and 3), ambient the kit's sky-tinted #7A8A9C, fog #5E6670, exposure 0.80.
+        key = 1.4 if hoist else 2.0
+        light = {"sun": {"elev": 30.0, "az": sun_az, "color": "#FFE4CE", "energy": key},
+                 "fill": {"color": "#7A8A9C", "energy": 0.85 if hoist else 1.0}, "exposure": 0.8,
+                 "fog": {"color": "#5E6670", "aerial": 0.5, "density": 0.003 if hoist else 0.0022,
+                         "sky_affect": 0.3, "height": 0.0, "height_density": 0.0},
+                 "sky": dict(CORROW_SKY, cloud_coverage=0.82) if hoist else dict(CORROW_SKY)}
+    return {
+        "id": arena_id,
+        "sub_frame": "ch08_surge" if surge else "ch08",
+        "ground": "deck",
+        "ground_glb": CW + "seawall_curve.glb",
+        "ground_at": (0.0, -CW_WALK_Y, WALLHEAD_Z),
+        "ground_yaw": 180.0,
+        "lut": f"res://assets/environments/arenas/{arena_id}/lut_ch08_storm.png",
+        **light,
+        "sky_shader": LOW_SUN_SKY,
+        "sea": {"y": -CW_WALK_Y, "tide_line_y": -CW_WALK_Y, "sea_glow": 0.06 if surge else 0.0,
+                "material_res": CORROW_SEA},
+        "pieces": pieces + _wallhead_pieces(hoist),
+        "scatters": [],
+        "hints": {
+            "wide_high": ((-1.5, 7.5, 13.5), (0.0, 0.3, -3.0)),
+            "party_side": ((5.6, 1.7, 4.5), (-1.5, 1.0, -0.5)),
+            "foe_side": ((-5.6, 1.7, 4.0), (1.5, 1.0, 0.0)),
+            "along_the_walk": ((-9.5, 1.8, 1.4), (3.0, 1.0, -0.2)),
+            "the_storm_wall": ((2.0, 0.7, 5.0), (-3.0, 3.5, -14.0)),
+        },
+        "anchors": {"BossAnchor": (-6.0, 0.9, -3.4)} if surge else {},
+    }
+
+
+WALLHEAD_STORM = _wallhead_arena("seawall_stairhead_storm", hoist=False, surge=False)
+WALLHEAD_HOIST = _wallhead_arena("seawall_stairhead_hoist", hoist=True, surge=False)
+WALLHEAD_SURGE = _wallhead_arena("seawall_stairhead_surge", hoist=True, surge=True)
+
 ARENAS = {a["id"]: a for a in (TIDELINE, CAUSEWAY, CAUSEWAY_ROUTE, DERELICT_DECK, ASH_TERRACE, UNDERWAY_TOWER,
-                               RAFT_MORNING, SHOALS, CAMP)}
+                               RAFT_MORNING, SHOALS, CAMP, WALLHEAD_STORM, WALLHEAD_HOIST, WALLHEAD_SURGE)}
 
 
 # ---------------------------------------------------------------------------------------------
@@ -1077,13 +1206,16 @@ def write_arena(a: dict) -> Path:
         sc.sub.append(f'[sub_resource type="ShaderMaterial" id="SeaMat"]\nresource_name = "{m["name"]}"\n'
                       f'render_priority = 0\nshader = ExtResource("{sc.res("Shader", m["shader"])}")\n' + params)
         sea_props["material"] = 'SubResource("SeaMat")'
+    elif "material_res" in sea:  # a zone's own water material, shared as it is (the Corrow storm_grey)
+        sea_props["material"] = f'ExtResource("{sc.res("Material", sea["material_res"])}")'
     else:
         sea_props["material"] = f'ExtResource("{sc.res("Material", WATER_MAT)}")'
     sea_props.update({"sea_glow_energy": sea["sea_glow"], "tide_line_y": sea["tide_line_y"]})
     sc.node("Sea", "Node3D", ".", sea_props)
     ground_props = {}
-    if "ground_at" in a:  # the ground glb placed off the origin (the Underway's terrace apron)
-        ground_props["transform"] = _xyz(a["ground_at"])
+    if "ground_at" in a:  # the ground glb placed off the origin (the Underway's terrace apron), turned (the wall-head)
+        ground_props["transform"] = (yaw_xform(a["ground_yaw"], a["ground_at"]) if "ground_yaw" in a
+                                     else _xyz(a["ground_at"]))
     sc.node("Ground", None, ".", ground_props, instance=sc.res("PackedScene", a["ground_glb"]))
     if "disc" in a:
         cx, cz = a["disc"]["center"]

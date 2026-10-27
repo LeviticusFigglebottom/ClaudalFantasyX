@@ -12,6 +12,9 @@ const ARENAS: Array[StringName] = [
 	&"ash_terrace_lanternfall",
 	&"underway_tower",
 	&"oruvel_raft_morning",
+	&"seawall_stairhead_storm",
+	&"seawall_stairhead_hoist",
+	&"seawall_stairhead_surge",
 ]
 ## The clear floor (arenas.py FLOOR_Y / FLOOR_TOLERANCE_M / FLOOR_CLEAR_M): within this radius of a slot,
 ## nothing rises above the floor by more than the tolerance, and most of the ground is the floor itself
