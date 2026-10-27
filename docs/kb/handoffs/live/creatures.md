@@ -558,3 +558,13 @@ RENDER-REQUEST @ e1229633: portraits:kahre; tool: tools/portraits/render.sh --on
   - **Checks run:** Blender verify identical (virel, kahre); tools test_creatures and test_blender_builds; the screenshot manifest (357 valid); Godot creature 54/1 (the known portrait red, now 19 PNGs with kahre and virel), vowbound 62/0, kahre, virel and ilun 6/0 each, battle 720/0; validate_data, taskboard, lint, format.
 RENDER-REQUEST @ 3d853298: creature_virel, creature_kahre; why: M3-CRE-641 and M3-CRE-640 first renders (no baselines). Supersedes the 25f03f01 kahre line.
 RENDER-REQUEST @ 3d853298: portraits:kahre,virel; tool: tools/portraits/render.sh --only kahre,virel
+- **Self-directed backlog (TRACK-RULES 22:50):**
+  - **Render branches:** none for creatures yet (the Lead's server has rendered other tracks so far).
+  - **M3-CRE-100 done (request from cinematics) @ 80027744:**
+    - Haluna's shopkeeper, smith and innkeeper are now VillagerLayer rows, with an optional `actor` override; they wear the netmender's, fisher's and vendor's models until M2-CHR-100.
+    - The review stage reuses the zone's own layer.
+    - A layer added during its zone's `_ready` builds deferred, so it adopts what the zone places after it; nothing doubles while the shim exists.
+    - **Cinematics: you can delete game/data/flow/haluna_villagers.json and the HalunaVillagers placement shim** (keep end_talks).
+    - Checks run: Godot villager 25/0, haluna_villagers (yours) 7/0, field_npc 10/0, life_audio 10/0, fp_thread 2/0; tools test_npc; validate_data, lint, format.
+  - **M3-C05-05, M3-C06-06 and M3-C04-06, the creature parts:** all ten Ch4–Ch6 creatures are seated in battle. The Matron's skills now map to her clips (slag_pour → the ladle pour-swing) @ 842a2b6e. The humans, VFX and rulings stay with their tracks (noted in each task).
+RENDER-REQUEST @ 842a2b6e: npc_haluna_dock, npc_haluna_market, npc_haluna_chapel, npc_haluna_lane, npc_wake_feast, battle_boss_intro_matron; why: M3-CRE-100 (the review stage now reuses Haluna's own VillagerLayer, so no doubled villagers, and the three shop villagers appear), and the Matron's skill clips.
