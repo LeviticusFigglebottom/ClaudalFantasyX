@@ -21,6 +21,10 @@ const META_ACTOR := &"hymn_battle_actor"
 @export var hero_id: StringName = &""
 ## Breathing and weight shift on top of the clips (HeroIdleMicro).
 @export var micro_motion := true
+## The model to instance under this node when the scene carries none: a path, not a scene dependency, so a wrapper
+## can be written before the characters track's model reaches the branch. Missing, the actor shows its stand-in's
+## capsule (the FighterStandIn spec's colour and size) instead of nothing.
+@export_file("*.glb", "*.tscn") var model_path := ""
 
 var player: AnimationPlayer
 
@@ -35,6 +39,11 @@ var _tuned_clips := 0
 
 func _ready() -> void:
 	set_meta(META_ACTOR, hero_id)
+	if model_path != "" and find_children("*", "Skeleton3D", true, false).is_empty():
+		if not ResourceLoader.exists(model_path):
+			_stand_in_capsule()
+			return
+		add_child((load(model_path) as PackedScene).instantiate())
 	var found := find_children("*", "AnimationPlayer", true, false)
 	if found.is_empty():
 		push_warning("HeroBattleActor %s: no AnimationPlayer under the model" % hero_id)
@@ -133,6 +142,23 @@ static func cap_into(p: AnimationPlayer, clips: Array[StringName], cap_sec: floa
 			if StringName(from) != to and p.has_animation(to):
 				var t := HeroMotionGuard.blend_of(p, StringName(from), to)
 				p.set_blend_time(StringName(from), to, minf(t, cap_sec))
+
+
+## Until the model lands: the capsule its FighterStandIn would have shown (spec colour, radius, height), standing on
+## the ground.
+func _stand_in_capsule() -> void:
+	var spec: Dictionary = get_parent().get(&"spec") if get_parent() != null and "spec" in get_parent() else {}
+	var mesh := CapsuleMesh.new()
+	mesh.radius = float(spec.get("radius", mesh.radius))
+	mesh.height = float(spec.get("height", mesh.height))
+	var mat := StandardMaterial3D.new()
+	mat.albedo_color = Color.html(str(spec.get("color", "#B9AE98")))
+	var body := MeshInstance3D.new()
+	body.name = "StandIn"
+	body.mesh = mesh
+	body.material_override = mat
+	body.position = Vector3.UP * mesh.height * 0.5
+	add_child(body)
 
 
 ## The model's skeleton (where an idle micro-motion modifier goes), or null.

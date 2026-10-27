@@ -9,6 +9,7 @@ const WRAPPERS := {
 	&"asha": "res://game/hero_motion/battle/asha_battle_actor.tscn",
 	&"toma": "res://game/hero_motion/battle/toma_battle_actor.tscn",
 	&"ysolde": "res://game/hero_motion/battle/ysolde_battle_actor.tscn",
+	&"liss": "res://game/hero_motion/battle/liss_battle_actor.tscn",
 }
 ## The changes the battle makes: a turn's readying and its action, each one-shot's return to idle, a KO and
 ## its revive, and the outro.
@@ -63,6 +64,8 @@ func test_no_battle_clip_change_pops_or_cuts() -> void:
 	var checked := 0
 	for hero: StringName in WRAPPERS:
 		var actor := _actor(hero)
+		if actor.player == null:
+			continue  # its model has not reached this branch yet (HeroBattleActor.model_path)
 		BattleClips.player_of(actor)  # as a battle does: placeholder clips for any the model lacks
 		actor.retune()  # what the actor's next frame does
 		var p := actor.player

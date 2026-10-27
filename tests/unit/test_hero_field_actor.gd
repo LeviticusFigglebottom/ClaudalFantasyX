@@ -240,6 +240,8 @@ func test_stage_hero_capsules_get_bodies_and_others_keep_theirs() -> void:
 func test_the_clip_speeds_match_the_measured_foot_plant() -> void:
 	var f := HeroFieldActor.field_data()
 	for id: String in (f["heroes"] as Dictionary).keys():
+		if HeroFieldActor.scene_path(StringName(id)) == "":
+			continue  # a hero whose model has not reached this branch yet (it gets no body until it does)
 		var row := (f["heroes"] as Dictionary)[id] as Dictionary
 		var speeds := HeroFieldActor.gait_speeds(StringName(id))
 		var cfg := HeroFieldActor.measure_config(StringName(id))
