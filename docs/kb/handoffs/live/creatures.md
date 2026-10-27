@@ -283,4 +283,27 @@ Merge the three creature worktrees as they finish (they append to creatures.json
 - **act1-chapters:** VillagerLayer has a `storm_flag`. Oruvel with `ch01_gulls_cried` sends its villagers to shelter when the storm rises, with no zone call needed (or call `FieldNpc.set_storm_all(get_tree(), on)` from OruvelZone.set_storm). List the Act I villager stand-in paths in your log and I'll write the data files.
 - **characters:** request task M3-CRE-614: villager work clips (mend_net, tend_stall, sweep, hold_bowl), an optional `brace` loop, hand props (broom, bowl, net), and bodies for Haluna's Shopkeeper, Smith and Innkeeper.
 - **hero-integration (FYI):** NpcLook is a SkeletonModifier3D added after HeroIdleMicro on villager skeletons; it turns DEF-spine.004/.005/.006. Tell me if the idle_micro bones or the modifier order change.
+- **MERGE-READY @ ee52f218: M3-CRE-615, ambient wildlife in the Act I zones (queue item 3).**
+  - Data on the greybox layouts:
+    - gulls over Oruvel, the Brightwater ferry and Tamsule;
+    - crabs on Brine Shoals' flats and tideline, the Haluna wake-night shore and Pemakar's quay;
+    - fish shoals in the drowned tower (oruvel_underway).
+  - Corrow's strand, Ashcrown and the bell galleries are empty on purpose (docs/kb/art/wildlife.md, "Act I zones").
+  - Three shots of the real greybox zones, each viewed and approved (wildlife_zone_brine_flats/brine_wrecks/underway_crown).
+  - **Checks run:** validate_data, validate_wildlife, Godot wildlife 10/0, taskboard. **Checks skipped:** coverage and Blender (no code or asset change).
+  - **Zone owners (act1-chapters):** add the one WildlifeLayer node, or have GreyboxZone add it for any location with a file.
+- **In progress: M3-CRE-616, insects** (moths at lamps, dragonflies over flats and paddies) as a fourth wildlife kind,
+  built in a worktree agent. It lands as its own MERGE-READY.
+- **MERGE-READY @ 9bf973cc: M3-CRE-617, hits land on the contact frame (queue item 4, syncs with M3-BPR-401).**
+  - Every creature's hit peaks 0.13–0.20 s in, so the hit-stop used to freeze the pre-hit idle pose. A hit now cuts in at 0.1 s with no blend (creatures.json `hit_snap`).
+  - The Drownbell, Matron, limpet and Reach hits barely moved; they are rebuilt with real recoils (Blender verify identical; hit frames viewed before and after).
+  - **Checks run:** validate_data, lint, format; Godot creature 25/0 and battle 619/1 (the 1 is the known test_battle_ko_once primitive-foe test that battle-presentation is fixing); 11 battle_choreo shots all pass (battle_choreo_hit rmse 0.006, which is the struck crab now mid-recoil, viewed).
+  - The creature stage shots of the four rebuilt bosses and creature_portraits are re-rendering; I'll report any drift.
+
+### For other tracks (relay, please)
+- **battle-presentation (M3-BPR-401 bug, your files):** the struck target's clip is NOT held during the hit-stop.
+  - `_step_beats` fires contact, so BattleImpact._hold sets every involved AnimationPlayer's speed_scale to 0.
+  - Then the react beat calls `BattleClips.play`, which sets `p.speed_scale = speed` again. So the target's hit clip runs through the hold while the attacker and the procedural recoil stay frozen.
+  - Suggested fix: BattleImpact holds the targets again after their reactions start (or BattleClips.play leaves a held player at 0 and BattleImpact restores `speed` on release).
+  - My side is done: creature hits now start on a struck pose (M3-CRE-617), so once the hold works the frozen frame shows the blow.
 
