@@ -116,8 +116,36 @@ func play_clip(clip: StringName) -> bool:
 		mapped = _next_hit(clip)
 	if _ko or _frozen or not has_clip(mapped):
 		return false
-	_play(mapped)
+	if is_hit_clip(clip):
+		_play_snapped(mapped)
+	else:
+		_play(mapped)
 	return true
+
+
+## True for the row's hit clip and its variants (the clips a hit snaps into, see _play_snapped).
+func is_hit_clip(clip: StringName) -> bool:
+	if clip == StringName(str(_row.get("hit", "hit"))):
+		return true
+	for v: Variant in _row.get("hit_variants", []):
+		if clip == StringName(str(v)):
+			return true
+	return false
+
+
+## M3-CRE-617: a hit lands on the contact frame. It cuts (no cross-fade) into the clip `hit_snap.preroll_sec` in,
+## where every creature's recoil is about half way (its peak is 0.13-0.20 s), so the frame the battle's hit-stop
+## holds (M3-BPR-401) shows the blow landing, not the idle it came from; the rest of the recoil plays after.
+func _play_snapped(clip: StringName) -> void:
+	var snap: Dictionary = _row.get("hit_snap", {})
+	if snap.is_empty():
+		_play(clip)
+		return
+	current_clip = clip
+	_player.play(clip, float(snap.get("blend_sec", 0.0)))
+	var at := minf(float(snap.get("preroll_sec", 0.0)), _player.get_animation(clip).length)
+	if at > 0.0:
+		_player.seek(at, true)
 
 
 func _next_hit(clip: StringName) -> StringName:

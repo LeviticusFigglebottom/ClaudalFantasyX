@@ -35,7 +35,8 @@ func test_defaults_come_from_the_data_file() -> void:
 				&"master_volume",
 				&"music_volume",
 				&"sfx_volume",
-				&"voice_volume"
+				&"voice_volume",
+				&"screen_shake"
 			]
 			as Array[StringName]
 		)

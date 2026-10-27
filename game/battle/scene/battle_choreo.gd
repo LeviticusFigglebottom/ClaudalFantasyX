@@ -177,6 +177,14 @@ func _bodies(skip: StringName) -> Array:
 	return out
 
 
+func _target_bodies(ids: Array[StringName]) -> Array:
+	var out: Array = []
+	for cid in ids:
+		if _ctl.stage.stand_in(cid) != null:
+			out.append([_home_of(cid).origin, _radius(cid)])
+	return out
+
+
 ## A fighter's footprint: its model's (BattleChoreoPlan.footprint, cached), else its stand-in spec radius.
 func _radius(cid: StringName) -> float:
 	if not _radii.has(cid):
@@ -327,7 +335,12 @@ func _start(result: ActionResult, plan: Dictionary) -> void:
 	var to := from
 	match str(st.get("travel", "")):
 		TRAVEL_TARGET:
-			to = from + dir * BattleChoreoPlan.melee_gap(data, st, from, dir, aim, _bodies(actor_id), _radius(actor_id))
+			var run := BattleChoreoPlan.melee_approach(
+				data, st, from, aim, _bodies(actor_id), _target_bodies(targets), _radius(actor_id)
+			)
+			if run["dir"] != Vector3.ZERO:
+				dir = run["dir"]  # M3-BPR-402: it may come at the target from a little to one side
+			to = from + dir * float(run["gap"])
 		TRAVEL_STEP:
 			to = from + dir * float(st.get("step_m", 0.0))
 	to = from + (to - from) * (_rm("travel_scale") if reduced_motion else 1.0) * arena_travel

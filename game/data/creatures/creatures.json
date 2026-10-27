@@ -14,6 +14,7 @@
     "break_parts": {},
     "contact": {},
     "hit_variants": ["hit", "hit_b"],
+    "hit_snap": {"preroll_sec": 0.1, "blend_sec": 0.0, "_note": "M3-CRE-617: a hit cuts into its clip preroll_sec in (about half the recoil; every hit peaks 0.13-0.20 s), so a hit-stop holds the struck pose. {} plays it from the start with the row blend."},
     "idle_variety": {"clip": "idle_b", "every_sec": [7.0, 13.0]},
     "portrait": {"clip": "idle", "clip_time": 0.0, "yaw_deg": 30.0, "pitch_deg": 14.0, "fov_deg": 28.0, "margin": 0.85}
   },

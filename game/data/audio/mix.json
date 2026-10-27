@@ -54,6 +54,20 @@
       "buses": {
         "Music": -5.0
       }
+    },
+    "impact": {
+      "sec": 0.04,
+      "buses": {
+        "Music": -6.0,
+        "Ambience": -4.0
+      }
+    },
+    "ko_slowmo": {
+      "sec": 0.35,
+      "buses": {
+        "Music": -9.0,
+        "Ambience": -5.0
+      }
     }
   },
   "music": {

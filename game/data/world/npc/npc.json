@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "doc": "Field villager behaviour (M3-CRE-610, docs/kb/tech/field_npc.md): FieldNpc (game/world/npc/field_npc.gd) idles, talks, turns to face the player and walks short routes. Metres, seconds, degrees. `defaults` apply to every villager; `villagers.<npc_id>` overrides any key (nested dictionaries merge). `locomotion` is merged over game/data/hero_motion/hero_motion.json and handed to HeroLocomotion, so the turn and the gait filter are the hero maths with villager tuning.",
+  "doc": "Field villager behaviour (M3-CRE-610, docs/kb/tech/field_npc.md): FieldNpc (game/world/npc/field_npc.gd) idles, talks, turns to face the player and walks short routes. Metres, seconds, degrees. `defaults` apply to every villager; `villagers.<npc_id>` overrides any key (nested dictionaries merge). `locomotion` is merged over game/data/hero_motion/hero_motion.json and handed to HeroLocomotion, so the turn and the gait filter are the hero maths with villager tuning. M3-CRE-613 adds the routines: `look` (the NpcLook head modifier), `glance` (at a party that comes near), `look_around` (an idle look to one side now and then), `chat` (two villagers with chat_with take turns), `work` (a work clip at rest and where the head looks), `storm` (set_storm: the reaction delay, the hurry to shelter, the brace and the looks at the sky). A [min, max] pair is drawn per villager and per occurrence from a hash of its id (no randomness).",
   "defaults": {
     "locomotion": {
       "doc": "Villagers turn slower and softer than the heroes, and their gait filter is longer so a start or a stop rolls through the walk. walk_clip_mps: the speed at which the villager walk clip's feet plant (measured from the M2-CHR-03 adult walk: ~0.37 m of foot travel per 0.55 s stance).",
@@ -35,7 +35,82 @@
     "stop_radius_m": 2.2,
     "face_radius_m": 1.6,
     "release_radius_m": 4.0,
-    "return_delay_sec": 1.2
+    "return_delay_sec": 1.2,
+    "talk_unheld_sec": 3.0,
+    "look": {
+      "doc": "NpcLook: the neck and head turn by yaw (about up) and pitch (about the body's side) shared over `bones`, eased by a critically damped spring over smoothing_sec with the speed capped. A target past max_yaw_deg is out of reach: the villager doesn't strain to glance behind itself. head_height_m: the eye height above the node it aims from; player_eye_height_m: where on the player it looks.",
+      "bones": {
+        "DEF-spine.004": 0.2,
+        "DEF-spine.005": 0.35,
+        "DEF-spine.006": 0.45
+      },
+      "max_yaw_deg": 70.0,
+      "max_pitch_up_deg": 30.0,
+      "max_pitch_down_deg": 35.0,
+      "smoothing_sec": 0.32,
+      "max_rate_deg_per_sec": 160.0,
+      "max_substep_sec": 0.02,
+      "head_height_m": 1.5,
+      "player_eye_height_m": 1.5
+    },
+    "glance": {
+      "doc": "When the party comes within radius_m the villager's head turns to it for hold_sec, then again every rest_sec while it stays near (only when the head can reach it).",
+      "radius_m": 6.0,
+      "hold_sec": [
+        1.4,
+        2.4
+      ],
+      "rest_sec": [
+        3.5,
+        7.0
+      ]
+    },
+    "look_around": {
+      "doc": "At rest with nothing to attend to: every every_sec a slow look up to yaw_deg to one side, held hold_sec.",
+      "every_sec": [
+        5.0,
+        11.0
+      ],
+      "hold_sec": [
+        1.2,
+        2.6
+      ],
+      "yaw_deg": 45.0
+    },
+    "chat": {
+      "doc": "Two villagers with chat_with, both resting within max_distance_m, face each other and take turns of turn_sec; pause_share of the turns are a shared silence. The pair's lead (its id sorts first) runs the schedule. bout_sec and quiet_sec: they chat in bouts and go back to their own business (work, looking about) in between.",
+      "max_distance_m": 4.0,
+      "turn_sec": [
+        2.2,
+        4.6
+      ],
+      "pause_share": 0.2,
+      "bout_sec": [
+        14.0,
+        26.0
+      ],
+      "quiet_sec": [
+        8.0,
+        16.0
+      ]
+    },
+    "storm": {
+      "doc": "set_storm(true): after react_sec (per villager) it hurries (walk_speed_mps) to its shelter point if it has one, else braces where it stands. Braced: the head down brace_pitch_deg and partly turned (brace_yaw_share) toward look_azimuth_deg (clockwise from north, as zone_weather.json; omitted: straight ahead); every sky_every_sec it looks up sky_pitch_deg for sky_look_sec. idle_playback: the idle (or storm clip) runs a little quicker, uneasy. set_storm(false) walks it home.",
+      "react_sec": [
+        0.3,
+        1.6
+      ],
+      "walk_speed_mps": 1.1,
+      "brace_pitch_deg": 12.0,
+      "brace_yaw_share": 0.3,
+      "sky_every_sec": [
+        3.0,
+        5.5
+      ],
+      "sky_look_sec": 1.3,
+      "sky_pitch_deg": 24.0,
+      "idle_playback": 1.15
+    }
   },
   "villagers": {
     "child": {
@@ -49,7 +124,33 @@
         }
       },
       "walk_speed_mps": 0.46,
-      "pause_sec": 1.4
+      "pause_sec": 1.4,
+      "look_around": {
+        "every_sec": [
+          2.0,
+          4.5
+        ],
+        "hold_sec": [
+          0.7,
+          1.4
+        ],
+        "yaw_deg": 60.0
+      },
+      "glance": {
+        "radius_m": 8.0,
+        "hold_sec": [
+          2.0,
+          3.5
+        ],
+        "rest_sec": [
+          1.5,
+          3.0
+        ]
+      },
+      "look": {
+        "smoothing_sec": 0.22,
+        "max_rate_deg_per_sec": 220.0
+      }
     },
     "osu": {
       "doc": "The elder: a slower turn, a longer settle back to rest.",
@@ -61,13 +162,73 @@
       },
       "walk_speed_mps": 0.5,
       "return_delay_sec": 1.8,
-      "pause_sec": 3.5
+      "pause_sec": 3.5,
+      "work": {
+        "doc": "The bowl in her hands.",
+        "look_at": [
+          0.0,
+          1.0,
+          -0.35
+        ],
+        "look_up_every_sec": [
+          5.0,
+          8.0
+        ],
+        "look_up_sec": 2.2,
+        "look_up_yaw_deg": 25.0
+      }
     },
     "fisher": {
       "pause_sec": 2.0
     },
     "netmender": {
-      "pause_sec": 3.0
+      "pause_sec": 3.0,
+      "work": {
+        "doc": "Mending a net across the knees: the head down on the hands.",
+        "look_at": [
+          0.0,
+          0.75,
+          -0.45
+        ],
+        "look_up_every_sec": [
+          6.0,
+          9.0
+        ],
+        "look_up_sec": 1.6,
+        "look_up_yaw_deg": 35.0
+      }
+    },
+    "vendor": {
+      "work": {
+        "doc": "Setting out the stall's wares.",
+        "look_at": [
+          0.15,
+          0.95,
+          -0.7
+        ],
+        "look_up_every_sec": [
+          4.0,
+          7.0
+        ],
+        "look_up_sec": 1.8,
+        "look_up_yaw_deg": 40.0
+      }
+    },
+    "reed": {
+      "work": {
+        "doc": "Sweeping the chapel court: the head on the broom's sweep.",
+        "look_at": [
+          0.25,
+          0.0,
+          -1.0
+        ],
+        "look_up_every_sec": [
+          7.0,
+          11.0
+        ],
+        "look_up_sec": 1.5,
+        "look_up_yaw_deg": 30.0
+      }
     }
   }
 }

@@ -5,5 +5,12 @@
     "close_sec": 0.12,
     "return_sec": 0.12,
     "slide_px": 18
+  },
+  "dialogue_box": {
+    "doc": "The dialogue box's transitions (DialogueBoxMotion, docs/kb/tech/ui.md section Dialogue box motion). Shown, the panel fades in while rising rise_px (at the 1920 x 1080 reference) over open_sec; DialogueBox.dismiss() fades it out while sinking over close_sec, then hides it; a new speaker's name fades in over name_sec. Reduced motion, or a duration of 0, makes it instant. Every duration ends well inside a capture's 30 settle frames.",
+    "open_sec": 0.16,
+    "close_sec": 0.14,
+    "name_sec": 0.12,
+    "rise_px": 12
   }
 }

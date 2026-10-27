@@ -56,7 +56,44 @@ func dress() -> void:
 	for spec: Dictionary in layout.get("scatter", []):
 		_scatter(spec)
 	_place_night_lamps(pieces, kinds, layout.get("night_lamps", {}))
+	_place_yard_sets(pieces, kinds, layout.get("yard_sets", {}))
 	dressed.emit()
+
+
+## M3-ENV-701: the lived-in clutter round each house (crates, laundry, rope, jars), from the layout's
+## "yard_sets". House i of a listed kind takes variant (i + offset) % n; each entry's local offset is
+## `edge` x the kind's half size plus `at`, in the house's frame, on the ground (`dy` above it). An entry
+## that would land within `lane_clear_m` of a lane's centre line is left out (the lanes stay walkable).
+## Deterministic and draws nothing from the scatter rng, so the rest of the dressing is unchanged.
+func _place_yard_sets(pieces: Array[Node3D], kinds: Array[String], cfg: Dictionary) -> void:
+	var variants: Array = cfg.get("variants", [])
+	var per_kind: Dictionary = cfg.get("per_kind", {})
+	if variants.is_empty():
+		return
+	var offset := int(cfg.get("variant_offset", 0))
+	var clear := float(cfg.get("lane_clear_m", 0.0))
+	for i in pieces.size():
+		if not per_kind.has(kinds[i]):
+			continue
+		var half: Array = per_kind[kinds[i]]
+		var house := pieces[i].transform
+		var variant: Array = variants[(i + offset) % variants.size()]
+		for entry: Dictionary in variant:
+			var edge: Array = entry.get("edge", [0.0, 0.0])
+			var at: Array = entry.get("at", [0.0, 0.0])
+			var local := Vector3(
+				float(edge[0]) * float(half[0]) + float(at[0]), 0.0, float(edge[1]) * float(half[1]) + float(at[1])
+			)
+			var world := house * local
+			if clear > 0.0 and lane_distance(world.x, world.z) < clear:
+				continue
+			var node := instance_piece(String(entry["piece"]), entry.get("materials", {}))
+			if node == null:
+				continue
+			var yaw := house.basis.get_euler().y + deg_to_rad(float(entry.get("yaw_deg", 0.0)))
+			world.y = ground_y(world.x, world.z) + float(entry.get("dy", 0.0))
+			node.transform = Transform3D(Basis(Vector3.UP, yaw), world)
+			add_child(node)
 
 
 ## The night lamps (`NightLamps`, hidden): an oil lamp, an OmniLight3D and a small emissive flame, at
@@ -99,6 +136,18 @@ func _place_night_lamps(pieces: Array[Node3D], kinds: Array[String], cfg: Dictio
 			light.shadow_enabled = false
 			light.position = p
 			lamps.add_child(light)
+
+
+## Distance from (x, z) to the nearest lane centre line of the layout.
+func lane_distance(x: float, z: float) -> float:
+	var p := Vector2(x, z)
+	var best := INF
+	for lane: Array in layout.get("lanes", []):
+		for k in lane.size() - 1:
+			var a := Vector2(float(lane[k][0]), float(lane[k][1]))
+			var b := Vector2(float(lane[k + 1][0]), float(lane[k + 1][1]))
+			best = minf(best, p.distance_to(Geometry2D.get_closest_point_to_segment(p, a, b)))
+	return best
 
 
 ## The night lamps' container, or null when the layout has none.
@@ -176,11 +225,21 @@ func instance_piece(piece: String, overrides: Dictionary = {}, lod1_from_m: floa
 	var node := packed.instantiate() as Node3D
 	node.name = piece
 	var lod_from := lod1_from_m if lod1_from_m > 0.0 else float(layout.get("lod1_from_m", 70.0))
-	var ends := PackedFloat32Array([lod_from, float(layout.get("lod_end_m", 2000.0))])
+	var lod_end := float(layout.get("lod_end_m", 2000.0))
+	# M3-ENV-701: small props switch and cull close ([lod1_from, end] in "prop_lods"), and the smallest
+	# cast no shadow ("prop_no_shadow"), so the set dressing stays inside the draw and shadow budgets.
+	var prop_lod: Array = layout.get("prop_lods", {}).get(piece, [])
+	if prop_lod.size() == 2:
+		lod_from = float(prop_lod[0]) if lod1_from_m <= 0.0 else lod_from
+		lod_end = float(prop_lod[1])
+	var no_shadow: bool = layout.get("prop_no_shadow", []).has(piece)
+	var ends := PackedFloat32Array([lod_from, lod_end])
 	var margin := float(layout.get("lod_margin_m", 2.0))
 	for child: Node in node.find_children("*", "MeshInstance3D", true, false):
 		var mi := child as MeshInstance3D
 		_apply_materials(mi, overrides)
+		if no_shadow:
+			mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 		# M1-ENV-10: `<piece>` is the visibility child of `<piece>-lod1`, so exactly one draws.
 		var lod := 1 if String(mi.name).ends_with(LOD_SUFFIX) else 0
 		LodChain.apply(mi, lod, ends, margin, 0.0, LodChain.sibling(mi, lod + 1))

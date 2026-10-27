@@ -348,11 +348,19 @@ def build_clips() -> list[ck.Clip]:
         cast.key("rope1", t, (r, 0, 0))
         cast.key("rope2", t, (r * 1.3, 0, 0))
 
-    hit = ck.Clip("hit", 0.5)
-    for k, t in enumerate(np.linspace(0.0, 0.45, 10)):
-        s = (1.0 if k % 2 else -1.0) * (1.0 - t / 0.5) * (0.0 if k == 0 else 1.0)
-        hit.key("bell", float(t), (0.6 * s, 0.0, 2.2 * s))
-    hit.key("bell", 0.5)
+    # M3-CRE-617: the blow rocks the whole bell back on its legs (peak at 0.1 s, where a hit snaps in), the legs
+    # brace, the rim rings and the bell shivers as it settles.
+    hit = ck.Clip("hit", 0.6)
+    for k, t in enumerate(np.linspace(0.0, 0.54, 10)):
+        s = (1.0 if k % 2 else -1.0) * (1.0 - t / 0.6) * (0.0 if k == 0 else 1.0)
+        hit.key("bell", float(t), (0.8 * s, 0.0, 2.6 * s))
+    hit.key("bell", 0.6)
+    for t, rx, lift in ((0.0, 0.0, 0.0), (0.1, -5.0, 0.04), (0.26, 2.2, 0.0), (0.42, -0.8, 0.0), (0.6, 0.0, 0.0)):
+        hit.key("root", t, (rx, 0, 0), (0, lift, -0.06 * rx / 5.0))
+    for t, s in ((0.06, 0.0), (0.1, 1.0), (0.15, -0.8), (0.2, 0.6), (0.26, -0.4), (0.34, 0.2), (0.44, 0.0)):
+        hit.key("rim", t, (0.0, 0.0, 1.0 * s))
+    for t, deg in ((0.0, 0.0), (0.1, 9.0), (0.35, 3.0), (0.6, 0.0)):
+        legs_extend(hit, t, deg)
 
     phase = ck.Clip("phase_change", 2.4)  # the legs fold; CreatureActor sinks and tilts the model (creatures.json)
     for t, deg in ((0.0, 0.0), (0.8, 20.0), (1.8, 38.0), (2.4, 40.0)):

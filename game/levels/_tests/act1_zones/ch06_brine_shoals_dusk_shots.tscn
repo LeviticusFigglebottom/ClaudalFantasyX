@@ -1,0 +1,13 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://game/levels/_tests/act1_zones/act1_zone_rig.gd" id="1_rig"]
+[ext_resource type="PackedScene" path="res://game/levels/ch06/brine_shoals/brine_shoals.tscn" id="2_zone"]
+
+[node name="Ch06BrineShoalsDuskShots" type="Node3D"]
+script = ExtResource("1_rig")
+zone_scene = ExtResource("2_zone")
+flags = PackedStringArray("ch06_arrived", "ch06_midday_seen", "ch06_sheltered_liss", "ch06_inquisitor_yielded", "ch06_met_sefir", "ch06_liss_joined", "ch06_camp_made")
+views = {
+"DuskCamp": [[16.0, 2.6, -54.0], [24.0, 1.0, -44.0], 50.0],
+"Tideline": [[26.0, 2.2, -50.0], [21.0, 0.2, -58.5], 45.0]
+}

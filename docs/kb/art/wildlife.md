@@ -143,3 +143,26 @@ the budgets.
   bounds, every zone file read within budget, budget clamping, the MultiMesh wiring.
 - `tools/tests/test_wildlife.py`: the validator, materials byte for byte, jobs, provenance, import wiring, GLB
   channels and triangle budgets, reserved colours.
+
+## Act I zones (M3-CRE-615)
+
+Data files for the Act I greybox zones, placed on each `<zone>_layout.json` (flat ground at y 0). Every zone owner
+adds the same one node (or GreyboxZone adds it for any location with a file). Move the coordinates when env-art's
+kits replace the blocks.
+
+| Zone | Gulls | Crabs | Fish | Why |
+|---|---|---|---|---|
+| `ch01/oruvel` | 6 (cabin roof, Kell's stall, the Seventh Terrace) | – | – | A raft-town: gulls, no beach; the sea is a solid greybox slab, so no fish until the raft-town kit brings water |
+| `ch01/oruvel_underway` | – | – | 38 (crown, bell-room, galleries, gauge room) | The drowned tower: shoals hang in the rooms and dart from Rhen |
+| `ch04/brightwater_ferry` | 5 (the lookout, the deckhouse, the islet rails) | – | – | Gulls follow the ferry; none on the derelict (nothing lives aboard the Seventh Terrace) |
+| `ch04/haluna_wake` | – | 5 (the dark shore by the dock) | – | Night: the gulls roost; a few ghost crabs work the shore |
+| `ch05/pemakar` | – | 5 (the quay's edge, away from the lamps) | – | Lanternfall night |
+| `ch06/brine_shoals` | 6 (the wrecks, the tide-wheel) | 18 (clusters on the flats, the tideline) | – | Mud-flats and wrecks |
+| `ch07/tamsule` | 6 (the stilt house, the market stalls) | – | – | The floating market; the river is a greybox slab |
+
+**No wildlife on purpose:** `ch09/corrow_night` (the strand of the drowned at night), `ch05/ashcrown` (ash and
+lightning), `ch07/tamsule_bell_galleries` (story staging under the Bell), the prologue and the First Verse set.
+
+Review: `game/levels/_tests/wildlife/zone_wildlife.gd` instances a zone scene with its layer;
+`zone_wildlife_brine_shoals.tscn` (shots `wildlife_zone_brine_flats`, `wildlife_zone_brine_wrecks`) and
+`zone_wildlife_oruvel_underway.tscn` (`wildlife_zone_underway_crown`).
