@@ -140,6 +140,15 @@ RENDER-REQUEST @ dcc68922: battle_hud_preview,battle_choreo_toll,drownbell_flood
 - Note: in the Drownbell's frame the real Toma stands large in the right foreground, near the timeline. The boss and
   the card are clear. I'll look at moving the boss_tall shot's side later.
 
+RENDER-REQUEST @ c1d1e3e6: battle_boss_intro_hullgnaw,battle_boss_intro_inquisitor,battle_boss_intro_matron,battle_boss_intro_hermit,battle_boss_intro_wraith,battle_boss_intro_drownbell; why: FAST-TRACK M3-BPR-404, the big11 regression. The real Toma stood huge over the timeline in the Drownbell's intro; the intro now keeps the party clear. Expect the Drownbell to move and the other five to be unchanged.
+
+**FAST-TRACK @ c1d1e3e6: big11 merged in (5fbbdb2d); the Drownbell party-crowding fix.**
+- **The fix:** `_party_clear`, plus an orbit in `_fit_search`.
+- **Checks:** boss_intro 19/0. The new test fails without the orbit, and only on the Drownbell. validate_data shows
+  0 errors and 1 warning (env-art's missing offering_step.glb row, not mine). gdlint and gdformat are clean.
+- **For the Lead's pick:** the code is in commit c1d1e3e6 (battle_boss_intro.gd, choreo.json boss_intro.fit, the test,
+  the task). Take the baselines from the PC render of the line above once I've viewed it.
+
 ### FAST-TRACK M3-BPR-404 on the post-big9 integration branch (updated 2026-10-27)
 - **Cherry-picking 269054a3 and 4e89c967 now conflicts on the six baseline PNGs.** big9 re-approved them with the
   real heroes, and the PNGs in my commits were rendered with primitive heroes.
