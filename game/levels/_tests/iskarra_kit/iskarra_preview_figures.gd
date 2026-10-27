@@ -1,7 +1,8 @@
 extends Node3D
 ## The Iskarra preview's figures (M3-ENV-724): the heroes that have models, standing at their Prologue vigil marks
 ## as the battle stand-ins (FighterStandIn, its idle), so the shots read the city's scale against real people
-## instead of capsules. The Prologue's own staging is slice-polish's (game/levels/prologue/).
+## instead of capsules. The Prologue's own staging is slice-polish's (game/levels/prologue/). Ysolde stays out until
+## her battle stand-in has its scene (M2-HER-1108): until then it is a capsule, which read as a prop at I02's edge.
 
 ## Hero ids, one per mark.
 @export var heroes: Array[StringName] = []

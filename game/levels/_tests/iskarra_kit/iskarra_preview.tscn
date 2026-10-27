@@ -104,9 +104,9 @@ material = ExtResource("6_water_mat")
 
 [node name="Figures" type="Node3D" parent="."]
 script = ExtResource("7_figures")
-heroes = Array[StringName]([&"rhen", &"asha", &"toma", &"ysolde"])
-marks = Array[Vector3]([Vector3(1, 1, -0.4), Vector3(-3.2, 1, -3), Vector3(-12, 0.4, 3.5), Vector3(7.5, 0.4, 1)])
-yaws_deg = Array[float]([90.0, 165.0, -135.0, 150.0])
+heroes = Array[StringName]([&"rhen", &"asha", &"toma"])
+marks = Array[Vector3]([Vector3(1, 1, -0.4), Vector3(-3.2, 1, -3), Vector3(-12, 0.4, 3.5)])
+yaws_deg = Array[float]([90.0, 165.0, -135.0])
 
 [node name="Cameras" type="Node3D" parent="."]
 
