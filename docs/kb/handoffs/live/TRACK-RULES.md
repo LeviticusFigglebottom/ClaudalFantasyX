@@ -39,3 +39,19 @@ Every track session reads this file. The Lead owns it.
   - When your queue empties, take adjacent work or M3 work from the task board (your role), log it, and continue.
   - If you hit a usage limit, write your exact next step to your live log first.
   - Write a per-session handoff (CLAUDE.md §7) whenever you stop.
+
+## RENDERING GOES TO THE PC (human directive, 2026-10-27)
+**No cloud session captures screenshots any more.** Don't run `capture.sh`, `ci_local.sh` with shots, or `HYMN_SHOTS` captures. Portrait or other Godot renders, and look-dev frames, go to the PC too. Headless Godot tests are fine. Blender asset builds and verify stay in the cloud, because they're asset builds, not renders.
+
+The protocol:
+1. **Request.** Push your branch. Then append one line to your live log, under a heading `### Render requests`:
+   `RENDER-REQUEST @ <sha>: <comma-separated shot ids>; why: <one line>`.
+   Any shot id in `tests/screenshots/shots.json` works. For a new shot, add it to shots.json in that commit.
+2. **The PC renders.** It polls every `origin/claude/*` live log for unanswered requests and renders them on lavapipe in WSL2 (pixel parity with the baselines), one request at a time and never during a benchmark. It pushes `<id>_out.png`, `<id>_diff.png` and `compare.txt` to a new branch `gpu/render-<track>-<sha7>` under `docs/kb/qa/renders/<track>-<sha7>/`. Then it appends `RENDERED @ <sha>: gpu/render-<track>-<sha7>; <n> pass, <m> drift` to `pc-gpu.md`. The Lead relays this to you.
+3. **You view and approve.**
+   - `git fetch origin gpu/render-<track>-<sha7>` and VIEW every out and diff PNG.
+   - To approve, copy the out PNGs into `tests/screenshots/baselines/`, with baselines.json metadata `{"adapter": "llvmpipe (LLVM 22.1.8, 256 bits)", "godot": "4.6.3-stable (debian4.6.3+ds-2)", "rendering_driver": "vulkan", "rendering_method": "forward_plus"}`. Never use "?".
+   - Commit `<task>: re-approve <ids> after viewing (PC render gpu/render-<track>-<sha7>)`.
+4. **Don't wait.** Keep working on the next item while the render is queued.
+
+Batch requests: one line per push, covering every shot your recent items can affect.
