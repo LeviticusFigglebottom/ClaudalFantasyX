@@ -59,6 +59,47 @@ RENDER-REQUEST @ 680cd88e: battle_boss_intro_reach,battle_choreo_melee,battle_ch
 
 RENDER-REQUEST @ 60b62678: battle_arena_wall_head,battle_boss_intro_reach; why: M3-BPR-406 greybox wall_head_storm arena for Ch8 (new shot, no baseline yet); the Reach intro now stands on it. Supersedes the reach id in the 680cd88e line.
 
+### 2026-10-27 night: the Lead's 19:35 queue (items 1-5)
+Status of each item. "Blocked" names the reason and what unblocks it.
+1. **Act I party kits (M3-BPR-412): done, with one gap blocked.**
+   - Every kit skill of Rhen, Asha, Toma, Ysolde, Kerrid and Liss resolves to a real style with a contract clip and
+     camera shots. Reel Shot casts from range, and Anchor Fall plays the finisher.
+   - Every Swell technique resolves through the real `style_id_for`: lamp_dive → dive, shallows_verse → verse,
+     return_tide → brace, written_light → glyph, floodnet → chant, last_strike and flare_line → cast.
+   - Tests: `test_battle_party_kits` (2 tests, 2/0). The second checks every Swell, every Vowbound and every enemy skill.
+   - **Blocked: Sefir.** There's no `sefir` row in characters.json (an Act II hero; there's no kit to stage). This
+     unblocks when design or characters add the row; the test then covers the kit automatically.
+   - **Blocked: real clips for Kerrid and Liss.** Request **M3-BPR-412** goes to characters. The placeholder clips
+     stand in until then.
+2. **Creature specials and telegraphs (M3-BPR-413): done for Act I, Act II blocked.**
+   - Every foe's gathering charge reads on stage through BattleTelegraph and `telegraph.gather`. A boss whose
+     row owns the charge (the Drownbell) keeps its own gather.
+   - All 28 enemies' skills resolve to a real style with a clip and camera shots (the audit above).
+   - **Blocked: the 6 Act II creatures and bosses.** They have no enemies.json rows yet, apart from the Avalanche
+     Ram's intro and charge rows, which are already keyed by id (M3-BPR-408). This unblocks when design adds the
+     rows; the audit then covers them.
+3. **Act I Vowbound cinematics (M3-BPR-414): done.**
+   - Ilun, Kahre and Virel each get the C10 first-call cinematic (the seen-flags are declared in flags.tres).
+     Reduced-motion variants and turn-order visibility are covered by test_battle_summon_cinematic and
+     test_battle_clarity.
+   - Signatures resolve as follows: brine_lash → finisher, tidal_ward → chant, forge_bolt → cast, kite_flare → cast.
+4. **Victory and result handoff (M3-BPR-415): done.** The result panel waits for the real heroes' victory pose
+   (`clip_sec`). A scripted escape walks the party off. ui-menus owns the panel itself.
+5. **VFX coverage gaps (M3-BPR-411): audit done, fill blocked.**
+   - `python3 tools/battle_vfx_coverage.py` lists every skill and battle item that plays no effect, and proposes an
+     existing library effect for each one.
+   - **Blocked:** effects.json belongs to rendering. The map is proposed in request **M3-BPR-411**.
+- **Charge sound:** request **M3-BPR-410** to audio. The `charge` style comes back once audio's choreo_sfx row exists.
+- **Checks run:** full `--filter=battle` **745 run, 0 failed** at 5cd7cad5; party_kits 2/0 after the new audit;
+  gdlint and gdformat clean.
+- **Checks skipped:** coverage (no battle-core change), Blender (none touched), and shots (no scene or visual change
+  since the requests above).
+
+**MERGE-READY @ the branch head (see `git log -1 origin/claude/battle-presentation`):** M3-BPR-404 (the
+FAST-TRACK, with the big11 crowding fix c1d1e3e6), 406, 407 (requested), 408, 409, 411, 412, 413, 414, 415, and
+everything in the 2d988e27 MERGE-READY below.
+- test_screenshots stays red until the PC renders are approved: the boss intros at c1d1e3e6, plus wall_head and reach.
+
 ### 2026-10-27 evening
 - **Merged big10** (integration 792ee805) at 19172f4c. Conflicts:
   - the three boss-intro PNGs: took theirs; my 404 render request supersedes them;

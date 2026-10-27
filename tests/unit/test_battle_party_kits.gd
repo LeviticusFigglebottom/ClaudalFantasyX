@@ -32,6 +32,35 @@ func test_every_kit_skill_has_a_real_style() -> void:
 	assert_true(checked > 20, "the kits are checked (%d)" % checked)
 
 
+## M3-BPR-412/413/414 (the Lead's 19:35 items 1-3): every Swell technique, every Vowbound skill and every enemy skill
+## resolves, through the real BattleChoreoPlan.style_id_for, to a style with a contract clip and camera shots.
+func test_every_swell_vowbound_and_enemy_skill_has_a_real_style() -> void:
+	var data := BattleChoreo.load_data()
+	var engine := BattleEngine.new()
+	engine.db = BattleDB.load_default()
+	var cases: Array = []  # [[actor id, skill id], ...]
+	for sid: StringName in engine.db.skills:
+		if bool((engine.db.skills[sid] as Dictionary).get("swell", false)):
+			cases.append([&"asha", sid])
+	for row: Dictionary in BattleVowbound.load_config():
+		for sid: Variant in row.get("skills", []):
+			cases.append([StringName(str(row["id"])), StringName(str(sid))])
+	for eid: StringName in engine.db.enemies:
+		for sid: Variant in (engine.db.enemies[eid] as Dictionary).get("skills", []):
+			cases.append([StringName("%s#1" % eid), StringName(str(sid))])
+	var cam := data["camera"]["by_style"] as Dictionary
+	for c: Array in cases:
+		var r := ActionResult.new()
+		r.actor_id = c[0]
+		r.skill_id = c[1]
+		var style_id := BattleChoreoPlan.style_id_for(data, engine, r)
+		assert_true((data["styles"] as Dictionary).has(style_id), "%s %s: a style (%s)" % [c[0], c[1], style_id])
+		var st := BattleChoreoPlan.style(data, style_id)
+		assert_true(BattleClips.ALL.has(StringName(str(st["clip"]))), "%s %s: a contract clip" % c)
+		assert_true(cam.has(style_id), "%s %s: camera shots for %s" % [c[0], c[1], style_id])
+	assert_true(cases.size() > 60, "the Swells, Vowbound and foes are checked (%d)" % cases.size())
+
+
 func _style_for(data: Dictionary, db: BattleDB, r: ActionResult) -> String:
 	var by_skill := data["style_by_skill"] as Dictionary
 	if by_skill.has(String(r.skill_id)):
