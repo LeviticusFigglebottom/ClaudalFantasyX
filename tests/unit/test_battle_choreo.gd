@@ -394,6 +394,10 @@ func test_the_party_holds_a_victory_pose_before_the_result() -> void:
 func test_victory_clips_start_one_after_another() -> void:
 	var players: Array[AnimationPlayer] = []
 	for cid: StringName in [&"rhen", &"asha"]:
+		var real := BattleClips.player_of(ctl.stage.stand_in(cid))
+		if real != null and real.has_animation(BattleClips.VICTORY):
+			players.append(real)  # a real hero model (claude/hero-integration) plays its own clip
+			continue
 		var player := AnimationPlayer.new()
 		var lib := AnimationLibrary.new()
 		for clip in [BattleClips.IDLE, BattleClips.VICTORY]:
@@ -531,7 +535,9 @@ func test_a_hero_strike_lands_on_its_clips_contact_marker() -> void:
 
 
 func test_a_primitive_stand_in_has_no_clips() -> void:
-	var f := ctl.stage.stand_in(&"rhen")
+	var f := FighterStandIn.new()  # its own capsule: the sandbox's heroes may be real models now
+	ctl.stage.add_child(f)
+	f.setup(&"primitive", {"shape": "capsule", "color": "#808080", "radius": 0.3, "height": 1.7}, {})
 	assert_eq(BattleClips.player_of(f), null)
 	for clip in BattleClips.ALL:
 		assert_false(BattleClips.play(f, clip))
