@@ -751,7 +751,7 @@ def keyp(c: ck.Clip, t: float, pose: dict) -> None:
 
 REST: dict = {}
 CROSSED = arms(upper=(-55.0, -38.0, 6.0), fore=(-62.0, -30.0, 0.0), hand=(0.0, 0.0, -10.0))  # before her chest
-FOLDED = merge(body(spine=(0.0, 26.0, 16.0), neck=(22.0, 26.0, 18.0, 8.0), head=14.0, lift=-0.08), CROSSED,
+FOLDED = merge(body(spine=(0.0, 14.0, 10.0), neck=(12.0, 16.0, 10.0, 0.0), head=-12.0, lift=-0.08), CROSSED,
                strands(out=(-10.0, -12.0, -8.0)))  # bowed and folded in (rise's start, dismiss's end)
 
 
@@ -859,11 +859,11 @@ def build_defend() -> ck.Clip:
 
 def build_ko() -> ck.Clip:
     c = ck.Clip("ko", KO_SEC)  # she bows her neck and folds in on herself; the strands hang straight down
-    down = merge(body(spine=(0.0, 30.0, 22.0), neck=(26.0, 30.0, 22.0, 12.0), head=16.0, lift=-0.1, antler=-6.0),
+    down = merge(body(spine=(0.0, 18.0, 12.0), neck=(14.0, 18.0, 12.0, 0.0), head=-8.0, lift=-0.1, antler=-6.0),
                  arms(upper=(-18.0, -12.0, -4.0), fore=(-26.0, -10.0, 0.0), hand=(0.0, 0.0, -10.0)))
     keyp(c, 0.0, REST)
     keyp(c, 0.2, hit_pose(0.6, 1.0))
-    keyp(c, 1.0, merge(down, body(spine=(0.0, 26.0, 18.0), neck=(22.0, 26.0, 18.0, 10.0), head=12.0, lift=-0.08)))
+    keyp(c, 1.0, merge(down, body(spine=(0.0, 15.0, 10.0), neck=(12.0, 16.0, 10.0, 0.0), head=-10.0, lift=-0.08)))
     keyp(c, 1.45, down)
     keyp(c, KO_SEC, down)
     return c
