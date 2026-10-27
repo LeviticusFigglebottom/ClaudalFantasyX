@@ -315,6 +315,11 @@ ACT2_FINALS: list[tuple] = [
      [f"lamp_engine_p{i}{ext}" for i in (1, 2) for ext in (".ogg", ".loop.json")], "music_loop"),
 ]
 ACT2_DIR = "assets/audio/music/act2"
+# M3-AUD-852: Act III's cues (act3_plan.md), the same way: assets_src/music/act3/ -> assets/audio/music/act3/ (Git LFS,
+# ADR 0039), rendered only with --act3 and never committed until LFS is live.
+ACT3_FINALS: list[tuple] = [
+]
+ACT3_DIR = "assets/audio/music/act3"
 
 
 def _load(path):
@@ -398,15 +403,18 @@ def main() -> int:
     ap.add_argument("--determinism", action="store_true", help="render twice and compare bytes")
     ap.add_argument("--only", default="", help="only the jobs whose source path contains this text")
     ap.add_argument("--act2", action="store_true", help="Act II's final cues (ACT2_FINALS, Git LFS) instead of JOBS")
+    ap.add_argument("--act3", action="store_true", help="Act III's cues (ACT3_FINALS, Git LFS) instead of JOBS")
     args = ap.parse_args()
 
     self_test()  # BS.1770 meter sanity (48 kHz coefficients, 997 Hz reference)
 
-    jobs = [j for j in (ACT2_FINALS if args.act2 else JOBS) if not args.only or args.only in j[0]]
+    lfs = args.act2 or args.act3
+    jobs = [j for j in (ACT2_FINALS if args.act2 else ACT3_FINALS if args.act3 else JOBS)
+            if not args.only or args.only in j[0]]
     rows, total, new_total, amb_total, ok = [], 0, 0, 0, True
     amb_jobs: dict = {}
     for src, rel_dir, files, kind in jobs:
-        m1 = not args.act2 and JOBS.index((src, rel_dir, files, kind)) < M1_JOBS
+        m1 = not lfs and JOBS.index((src, rel_dir, files, kind)) < M1_JOBS
         out_dir = os.path.join(ROOT, rel_dir)
         print(f"rendering {src} ...", flush=True)
         _render_job(src, out_dir, files, kind)
@@ -469,9 +477,10 @@ def main() -> int:
         if size > AMBIENCE_JOB_BUDGETS[src]:
             print(f"FAIL: {src}'s beds over their size budget")
             ok = False
-    if args.act2:
-        act2 = sum(r[1] for r in rows)
-        print(f"Act II finals {act2} bytes ({act2 / 1048576:.2f} MiB): Git LFS (ADR 0039), outside the plain-git budget")
+    if lfs:
+        size = sum(r[1] for r in rows)
+        print(f"{'Act II finals' if args.act2 else 'Act III cues'} {size} bytes ({size / 1048576:.2f} MiB): Git LFS (ADR "
+              "0039), outside the plain-git budget")
     elif not args.only:
         print(f"total {total} bytes ({total / 1048576:.2f} MiB), budget {SIZE_BUDGET / 1048576:.0f} MiB; "
               f"M1-AUD-02 cues {new_total / 1048576:.2f} MiB, budget {NEW_AUDIO_BUDGET / 1048576:.0f} MiB")

@@ -3,6 +3,20 @@
 ## NEW ACCOUNT (from 2026-10-25)
 Session `session_01Wmj8xaLtwcqiS3qwC6PciW`. Integration branch `claude/undertow-lead-handoff-ze8rrn`. Newest first.
 
+- **Self-directed backlog (TRACK-RULES, from 22:50):**
+  1. **Renders:** none for audio (no shots).
+  2. **Todo tasks:** none on claude/audio.
+  3. **Requests to audio, all answered by work already on integration:**
+     - **M3-HER-1122** (hero-integration QA, 68 sounds and 29 cues) and **M3-AUD-100** (m2-slice): every id they list
+       ships on the integration branch (M3-AUD-818..823, plus M3-AUD-833's stand-ins for the alias and stem cues).
+       Their runs predate those merges, so they should take the integration head and drop the qa_known.json rows.
+       Those files are theirs; I didn't edit them.
+     - **M3-CRE-633** (the teardown cast): fixed by 3224c1d8.
+  4. **Next act (step 5):** Act III cues for the zones env-art has built (Hollowmere M3-ENV-723, the Kite M3-ENV-725,
+     the Lamp Spire M3-ENV-726). render_all.py has `ACT3_FINALS` and `--act3` (assets/audio/music/act3/, LFS, never
+     committed until it's live), covered by test_act2_finals. Two composers are on hollowmere and dace_ledger, and
+     the_kite and kite_maiden_flight (M3-AUD-852..853); iskarra_ruins and iskarra_spire come next.
+
 - **TO THE LEAD: your 21:42 queue is done. MERGE-READY @ 3fc783ed.**
   1. **Ilun (M3-AUD-846):** his voice (creature_voices `ilun`), and his net-float and wing layers over the summon's
      call, rise and dismissal (choreo_sfx `vowbound.layers`). Floodnet and the ilun_summon sting already existed.
