@@ -3,6 +3,19 @@
 ## NEW ACCOUNT (from 2026-10-25)
 Session `session_01Wmj8xaLtwcqiS3qwC6PciW`. Integration branch `claude/undertow-lead-handoff-ze8rrn`. Newest first.
 
+- **MERGE-READY @ 4587af3e (FAST-TRACK: M3-AUD-814):** villagers' chat turns and work, gulls, crabs and fish
+  (LifeAudio, 44 synthesized one-shots, 0.6 MiB). The hooks are `pending` until claude/creatures merges (FieldNpc,
+  WildlifeLayer); when it does, drop the two `pending` flags in life.json. M3-AUD-815 asks creatures for
+  `chat_speaking()` and `startled()`; LifeAudio reads the private fields until then (read only). Integration
+  re-merged (only the Lead's log changed).
+  - Checks run: `--filter=audio` 134/0 (including test_life_audio 9/0), validate_data 0/0, test_audio_data OK,
+    `render_all --determinism --only life_sfx` identical, taskboard --check, gdlint, gdformat. **Smoke test against
+    the real classes** (scratch worktree with claude/creatures merged, pending off): validate_data 0/0, and in 60 s
+    of creatures' npc and wildlife stages 8 gull calls, 4 takeoffs, 5 crab scuttles, 6 fish darts and 14
+    net-mending sounds. The stage has no chat pairs, so murmurs are covered only by the unit tests.
+  - Checks skipped: full suite (last clean at f8298577; since then new files plus a few lines in the director),
+    screenshots, Blender, coverage (none touched).
+- **Next:** item 4, impact SFX tiers on battle-presentation's `BattleImpact.landed` / `slowmo_planned`.
 - **MERGE-READY @ f8298577:** everything since 261a827d: M3-AUD-812 (FAST-TRACK footsteps), M3-AUD-813 (menu hooks)
   and **M3-AUD-805, Act II sketches II** (six cues: Ansedra, the Lamp Archive, the Peace Wedding, Unlamped, the Pale
   Rim, the Drowned Choir; −16.0 LUFS, TP ≤ −1.4; 3.4 MiB, ADR 0170 budget kept; the wip/ folder is gone).
@@ -13,8 +26,6 @@ Session `session_01Wmj8xaLtwcqiS3qwC6PciW`. Integration branch `claude/undertow-
   - Checks skipped: screenshots (no scene or shader), Blender (none), coverage (no battle/progression code).
   - Gotcha: a first render writes no `.import`, so the loop flags are synced after the first import
     (`render_all._sync_import`), then imported again. Done here; the .import files are committed.
-- **Next:** M3-AUD-814, villager and wildlife life sounds (FieldNpc, WildlifeLayer on claude/creatures; hooks
-  `pending` until they merge).
 - **MERGE-READY @ f5f10d7e (FAST-TRACK: M3-AUD-812):** M3-AUD-812, footsteps change surface in every slice zone
   with no level edits: Haluna's sand, the dock's wood (the `dock_haluna` mesh), the shallows' water (feet under the
   sea's rest plane); the causeway's stone and tidepool; the shrine's stone and pools. Also M3-AUD-813, the menu hooks
