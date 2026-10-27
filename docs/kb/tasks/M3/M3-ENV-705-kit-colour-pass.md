@@ -21,8 +21,13 @@ grade and lift the frames that read grey, without breaking each zone's colour-sc
 - [ ] View the PC renders of A01, A04, A10; re-approve or adjust.
 - [ ] The Shell Shrine interior: proposed to slice-polish with M3-ENV-704 (its grade and GI are theirs; the kit
       stone `kit_shrine_stone` is env-art's and can warm a step if they want it with the rebake).
-- [x] `causeway_route_afternoon` read as bleached beach (luminance 0.75, saturation 0.16): its ground now takes
-      the B06 zone's own `kit_causeway_ground` (wet-dark tidal mud), not the generic `kit_ground`. PC render requested.
+- [x] `causeway_route_afternoon` read as bleached beach (luminance 0.75, saturation 0.16). Its ground now takes the
+      B06 zone's own `kit_causeway_ground`, not the generic `kit_ground`.
+      - **Correction after viewing gpu/render-env-art-179069d and big12's baseline:** the change only matched the
+        arena to the field. The B06 field is itself pale sand flats (slice_causeway_head), so the arena still reads
+        pale; the earlier "wet-dark tidal mud" was wrong.
+      - The read is now consistent with the field. Darkening both is a zone-grade question for Rendering and the
+        Lead, not an arena fix.
 - [ ] Brine Shoals B01/B05: the colour script desaturates ch06 on purpose (×0.9, "brown-grey flats ... so the
       camp's orange carries the frame"); left as designed unless the human's review names them.
 - **2026-10-27 (env-art): the white barge's trim.** B05 read the barge as flat white.
