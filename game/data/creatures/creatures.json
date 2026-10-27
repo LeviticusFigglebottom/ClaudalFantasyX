@@ -106,6 +106,13 @@
                      "clips": {"attack": "attack_risen", "cast": "cast_risen", "hit": "hit_risen"}}
       },
       "portrait": {"rim_energy": 2.8, "kick_energy": 1.8}
+    },
+    "avalanche_ram": {
+      "scene": "res://game/creatures/avalanche_ram/avalanche_ram_battle.tscn",
+      "contact": {"attack": 0.75, "cast": 0.9},
+      "ko_fade_sec": 1.2,
+      "stand_in": {"yaw_deg": 60.0},
+      "portrait": {"yaw_deg": 40.0, "pitch_deg": 10.0}
     }
   }
 }

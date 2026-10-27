@@ -533,6 +533,16 @@
       ]
     },
     {
+      "id": "creature_avalanche_ram",
+      "owner": "character",
+      "sources": ["assets_src/creatures/avalanche_ram/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/avalanche_ram/*.glb", "assets/creatures/avalanche_ram/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/avalanche_ram/build_avalanche_ram.py", "--", "--out", "assets/creatures/avalanche_ram/avalanche_ram.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "avalanche_ram"]
+      ]
+    },
+    {
       "id": "wildlife_gull",
       "owner": "character",
       "sources": ["assets_src/wildlife/gull/**", "assets_src/wildlife/common/**", "assets_src/creatures/common/creature_kit.py"],
