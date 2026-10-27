@@ -1056,3 +1056,4 @@ SET_SCREEN_SHAKE_HELP,"How hard the battle camera shakes when a blow lands. Redu
 SET_SCREEN_SHAKE_FULL,Full
 SET_SCREEN_SHAKE_HALF,Half
 SET_SCREEN_SHAKE_OFF,Off
+TUT_TIDELINE_TIMELINE,"The turn order runs down the right, next at the top. Every action costs time: watch where yours will land before you choose."

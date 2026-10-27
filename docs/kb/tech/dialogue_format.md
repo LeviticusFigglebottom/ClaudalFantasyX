@@ -175,6 +175,7 @@ Asha [tender]: Vey ennu, vey ennu, #line:ch03_verse_042 #sung #lamptongue #notr 
 | `@music` | `track` | `fade=sec` | Music change. **`silence` is reserved**: not a track, it fades the bed out to nothing over `fade=` (`DialogueStep.is_music_silence()`). Audio never names a track `silence`. |
 | `@sfx` | `sound` | `vol=0..1`, `at=actor\|mark` | One-shot sound. `vol` is a linear gain (1.0 = as authored, the default); `at=` places it in the scene. |
 | `@vfx` | `effect` (`<vfx_effects>`) | `at=`, `count=int≥1`, `drift=<vfx_drift>`, `motion=<vfx_motion>`, `rate=<vfx_rate>`, `form=id` | Trigger VFX |
+| `@light` | `light`, `on\|off`, `[sec]` | none | M2-FP-102: a stage practical (a Light3D found by node name, wherever a body carries it) eases to its authored energy or to 0 over `sec` (0 = at once). |
 | `@wait` | `[sec]` | `music=marker`, `max=sec` | Pause for `sec`, **or** until the music reaches `marker` ([contract below](#music-waits-wait-musicmarker)). Exactly one of `sec`/`music=`. `max=` (music waits only) is the sequencer's fallback timeout. |
 
 Option sets (`sets` in `cues.json`):
