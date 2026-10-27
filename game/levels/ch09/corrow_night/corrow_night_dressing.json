@@ -16,27 +16,9 @@
    "LandingEnd",
    "LandingW",
    "LandingE",
-   "Raft",
    "Rocks",
    "RocksDown",
    "LowTownLake",
-   "ShroudRow1",
-   "ShroudRow2",
-   "ShroudRow3",
-   "ShroudRow4",
-   "StillguardRow",
-   "StillguardShields",
-   "IvoShroud",
-   "LampA",
-   "LampB",
-   "LampC",
-   "LampD",
-   "HoistCoil",
-   "Milestone",
-   "MolePier",
-   "MoleRamp",
-   "MoleOverParapet",
-   "MoleDown",
    "MoleBridge",
    "IskarraWater",
    "IskarraPlaza",
@@ -59,9 +41,9 @@
   },
   {
    "at": [
-    -52.761,
-    2.0,
-    24.957
+    -52.805,
+    1.5,
+    24.66
    ],
    "energy": 0.9,
    "range": 8.0,
@@ -70,9 +52,9 @@
   },
   {
    "at": [
-    -48.804,
-    2.0,
-    24.372
+    -48.848,
+    1.5,
+    24.075
    ],
    "energy": 0.9,
    "range": 8.0,
@@ -81,9 +63,9 @@
   },
   {
    "at": [
-    -44.847,
-    2.0,
-    23.788
+    -44.891,
+    1.5,
+    23.491
    ],
    "energy": 0.9,
    "range": 8.0,
@@ -92,9 +74,9 @@
   },
   {
    "at": [
-    -40.89,
-    2.0,
-    23.204
+    -40.934,
+    1.5,
+    22.907
    ],
    "energy": 0.9,
    "range": 8.0,
@@ -103,9 +85,9 @@
   },
   {
    "at": [
-    -36.933,
-    2.0,
-    22.619
+    -36.977,
+    1.5,
+    22.322
    ],
    "energy": 0.9,
    "range": 8.0,
@@ -114,9 +96,9 @@
   },
   {
    "at": [
-    -32.976,
-    2.0,
-    22.035
+    -33.02,
+    1.5,
+    21.738
    ],
    "energy": 0.9,
    "range": 8.0,
@@ -125,9 +107,9 @@
   },
   {
    "at": [
-    -29.019,
-    2.0,
-    21.451
+    -29.062,
+    1.5,
+    21.154
    ],
    "energy": 0.9,
    "range": 8.0,
@@ -136,9 +118,9 @@
   },
   {
    "at": [
-    -52.542,
-    2.0,
-    26.441
+    -52.586,
+    1.5,
+    26.144
    ],
    "energy": 0.9,
    "range": 8.0,
@@ -147,9 +129,9 @@
   },
   {
    "at": [
-    -48.585,
-    2.0,
-    25.856
+    -48.629,
+    1.5,
+    25.559
    ],
    "energy": 0.9,
    "range": 8.0,
@@ -158,9 +140,9 @@
   },
   {
    "at": [
-    -44.628,
-    2.0,
-    25.272
+    -44.672,
+    1.5,
+    24.975
    ],
    "energy": 0.9,
    "range": 8.0,
@@ -169,9 +151,9 @@
   },
   {
    "at": [
-    -40.671,
-    2.0,
-    24.688
+    -40.715,
+    1.5,
+    24.391
    ],
    "energy": 0.9,
    "range": 8.0,
@@ -180,9 +162,9 @@
   },
   {
    "at": [
-    -36.714,
-    2.0,
-    24.103
+    -36.758,
+    1.5,
+    23.806
    ],
    "energy": 0.9,
    "range": 8.0,
@@ -191,141 +173,185 @@
   },
   {
    "at": [
-    -32.757,
-    2.0,
+    -32.801,
+    1.5,
+    23.222
+   ],
+   "energy": 0.9,
+   "range": 8.0,
+   "color": "#FFB46B",
+   "block": "LampB"
+  },
+  {
+   "at": [
+    -28.843,
+    1.5,
+    22.638
+   ],
+   "energy": 0.9,
+   "range": 8.0,
+   "color": "#FFB46B",
+   "block": "LampB"
+  },
+  {
+   "at": [
+    -52.367,
+    1.5,
+    27.628
+   ],
+   "energy": 0.9,
+   "range": 8.0,
+   "color": "#FFB46B",
+   "block": "LampA"
+  },
+  {
+   "at": [
+    -48.41,
+    1.5,
+    27.043
+   ],
+   "energy": 0.9,
+   "range": 8.0,
+   "color": "#FFB46B",
+   "block": "LampA"
+  },
+  {
+   "at": [
+    -44.453,
+    1.5,
+    26.459
+   ],
+   "energy": 0.9,
+   "range": 8.0,
+   "color": "#FFB46B",
+   "block": "LampA"
+  },
+  {
+   "at": [
+    -40.496,
+    1.5,
+    25.875
+   ],
+   "energy": 0.9,
+   "range": 8.0,
+   "color": "#FFB46B",
+   "block": "LampA"
+  },
+  {
+   "at": [
+    -36.539,
+    1.5,
+    25.29
+   ],
+   "energy": 0.9,
+   "range": 8.0,
+   "color": "#FFB46B",
+   "block": "LampB"
+  },
+  {
+   "at": [
+    -32.582,
+    1.5,
+    24.706
+   ],
+   "energy": 0.9,
+   "range": 8.0,
+   "color": "#FFB46B",
+   "block": "LampB"
+  },
+  {
+   "at": [
+    -28.624,
+    1.5,
+    24.122
+   ],
+   "energy": 0.9,
+   "range": 8.0,
+   "color": "#FFB46B",
+   "block": "LampB"
+  },
+  {
+   "at": [
+    -24.782,
+    1.5,
+    20.884
+   ],
+   "energy": 0.9,
+   "range": 8.0,
+   "color": "#FFB46B",
+   "block": "LampC"
+  },
+  {
+   "at": [
+    -20.789,
+    1.5,
+    20.644
+   ],
+   "energy": 0.9,
+   "range": 8.0,
+   "color": "#FFB46B",
+   "block": "LampC"
+  },
+  {
+   "at": [
+    -16.796,
+    1.5,
+    20.404
+   ],
+   "energy": 0.9,
+   "range": 8.0,
+   "color": "#FFB46B",
+   "block": "LampC"
+  },
+  {
+   "at": [
+    -12.803,
+    1.5,
+    20.164
+   ],
+   "energy": 0.9,
+   "range": 8.0,
+   "color": "#FFB46B",
+   "block": "LampD"
+  },
+  {
+   "at": [
+    -8.81,
+    1.5,
+    19.924
+   ],
+   "energy": 0.9,
+   "range": 8.0,
+   "color": "#FFB46B",
+   "block": "LampD"
+  },
+  {
+   "at": [
+    -22.605,
+    1.5,
+    23.759
+   ],
+   "energy": 0.9,
+   "range": 8.0,
+   "color": "#FFB46B",
+   "block": "LampC"
+  },
+  {
+   "at": [
+    -18.612,
+    1.5,
     23.519
    ],
    "energy": 0.9,
    "range": 8.0,
    "color": "#FFB46B",
-   "block": "LampB"
-  },
-  {
-   "at": [
-    -28.8,
-    2.0,
-    22.935
-   ],
-   "energy": 0.9,
-   "range": 8.0,
-   "color": "#FFB46B",
-   "block": "LampB"
-  },
-  {
-   "at": [
-    -52.323,
-    2.0,
-    27.925
-   ],
-   "energy": 0.9,
-   "range": 8.0,
-   "color": "#FFB46B",
-   "block": "LampA"
-  },
-  {
-   "at": [
-    -48.366,
-    2.0,
-    27.34
-   ],
-   "energy": 0.9,
-   "range": 8.0,
-   "color": "#FFB46B",
-   "block": "LampA"
-  },
-  {
-   "at": [
-    -44.409,
-    2.0,
-    26.756
-   ],
-   "energy": 0.9,
-   "range": 8.0,
-   "color": "#FFB46B",
-   "block": "LampA"
-  },
-  {
-   "at": [
-    -40.452,
-    2.0,
-    26.172
-   ],
-   "energy": 0.9,
-   "range": 8.0,
-   "color": "#FFB46B",
-   "block": "LampA"
-  },
-  {
-   "at": [
-    -36.495,
-    2.0,
-    25.587
-   ],
-   "energy": 0.9,
-   "range": 8.0,
-   "color": "#FFB46B",
-   "block": "LampB"
-  },
-  {
-   "at": [
-    -32.538,
-    2.0,
-    25.003
-   ],
-   "energy": 0.9,
-   "range": 8.0,
-   "color": "#FFB46B",
-   "block": "LampB"
-  },
-  {
-   "at": [
-    -28.581,
-    2.0,
-    24.419
-   ],
-   "energy": 0.9,
-   "range": 8.0,
-   "color": "#FFB46B",
-   "block": "LampB"
-  },
-  {
-   "at": [
-    -24.764,
-    2.0,
-    21.183
-   ],
-   "energy": 0.9,
-   "range": 8.0,
-   "color": "#FFB46B",
    "block": "LampC"
   },
   {
    "at": [
-    -20.771,
-    2.0,
-    20.943
-   ],
-   "energy": 0.9,
-   "range": 8.0,
-   "color": "#FFB46B",
-   "block": "LampC"
-  },
-  {
-   "at": [
-    -16.778,
-    2.0,
-    20.703
-   ],
-   "energy": 0.9,
-   "range": 8.0,
-   "color": "#FFB46B",
-   "block": "LampC"
-  },
-  {
-   "at": [
-    -12.785,
-    2.0,
-    20.463
+    -14.62,
+    1.5,
+    23.279
    ],
    "energy": 0.9,
    "range": 8.0,
@@ -334,53 +360,9 @@
   },
   {
    "at": [
-    -8.792,
-    2.0,
-    20.223
-   ],
-   "energy": 0.9,
-   "range": 8.0,
-   "color": "#FFB46B",
-   "block": "LampD"
-  },
-  {
-   "at": [
-    -22.587,
-    2.0,
-    24.058
-   ],
-   "energy": 0.9,
-   "range": 8.0,
-   "color": "#FFB46B",
-   "block": "LampC"
-  },
-  {
-   "at": [
-    -18.594,
-    2.0,
-    23.818
-   ],
-   "energy": 0.9,
-   "range": 8.0,
-   "color": "#FFB46B",
-   "block": "LampC"
-  },
-  {
-   "at": [
-    -14.602,
-    2.0,
-    23.578
-   ],
-   "energy": 0.9,
-   "range": 8.0,
-   "color": "#FFB46B",
-   "block": "LampD"
-  },
-  {
-   "at": [
-    -10.609,
-    2.0,
-    23.338
+    -10.627,
+    1.5,
+    23.039
    ],
    "energy": 0.9,
    "range": 8.0,
@@ -3478,41 +3460,91 @@
    "yaw_deg": 13.37
   },
   {
-   "piece": "lowtown_house_a",
+   "piece": "stillguard_barracks",
    "at": [
-    -95.163,
-    -7.008
+    -91.905,
+    -7.98
    ],
    "y": 12.0,
-   "yaw_deg": 106.62
+   "yaw_deg": 16.62
   },
   {
-   "piece": "lowtown_house_b",
-   "at": [
-    -88.839,
-    -8.895
-   ],
-   "y": 12.0,
-   "yaw_deg": 106.62
-  },
-  {
-   "piece": "lowtown_house_b",
+   "piece": "order_chapel",
    "at": [
     -77.101,
     -10.573
    ],
    "y": 12.0,
-   "yaw_deg": 103.94
+   "yaw_deg": 103.94,
+   "kit_dir": "res://assets/environments/kits/haluna/"
   },
   {
-   "piece": "crate_stack",
-   "kit_dir": "res://assets/environments/kits/brine_shoals/",
+   "piece": "market_stall",
    "at": [
     -78.747,
     -0.038
    ],
    "y": 12.0,
-   "yaw_deg": 14.71
+   "yaw_deg": 14.71,
+   "kit_dir": "res://assets/environments/kits/haluna/"
+  },
+  {
+   "piece": "awning_cloth",
+   "at": [
+    -78.747,
+    -0.038
+   ],
+   "y": 12.0,
+   "yaw_deg": 14.71,
+   "kit_dir": "res://assets/environments/kits/haluna/"
+  },
+  {
+   "piece": "wall_gate",
+   "at": [
+    34.921,
+    2.039
+   ],
+   "y": 12.0,
+   "yaw_deg": -6.68
+  },
+  {
+   "piece": "hoist_pins",
+   "at": [
+    -16.343,
+    3.15
+   ],
+   "y": 16.6,
+   "yaw_deg": 3.15
+  },
+  {
+   "piece": "level_stone_shrine",
+   "at": [
+    -66.685,
+    -2.947
+   ],
+   "y": 12.0,
+   "yaw_deg": 12.41,
+   "kit_dir": "res://assets/environments/kits/brine_shoals/"
+  },
+  {
+   "piece": "mole_pier",
+   "at": [
+    13.694,
+    26.342
+   ],
+   "y": 1.2,
+   "yaw_deg": -2.865,
+   "lod1_from_m": 150.0
+  },
+  {
+   "piece": "mole_sea_stair",
+   "at": [
+    13.694,
+    26.342
+   ],
+   "y": 1.2,
+   "yaw_deg": -2.865,
+   "lod1_from_m": 150.0
   },
   {
    "piece": "camp_hard",
@@ -3593,6 +3625,917 @@
    "y": 2.5999999999999996,
    "yaw_deg": 138.95,
    "block": "Rocks"
+  },
+  {
+   "piece": "shroud_a",
+   "at": [
+    -52.645,
+    25.742
+   ],
+   "y": 0.6,
+   "yaw_deg": 97.64,
+   "block": "ShroudRow1"
+  },
+  {
+   "piece": "shroud_b",
+   "at": [
+    -50.278,
+    25.34
+   ],
+   "y": 0.6,
+   "yaw_deg": 100.6,
+   "block": "ShroudRow1"
+  },
+  {
+   "piece": "shroud_small",
+   "at": [
+    -47.907,
+    24.969
+   ],
+   "y": 0.6,
+   "yaw_deg": 98.42,
+   "block": "ShroudRow1"
+  },
+  {
+   "piece": "shroud_b",
+   "at": [
+    -45.512,
+    24.759
+   ],
+   "y": 0.6,
+   "yaw_deg": 95.88,
+   "block": "ShroudRow1"
+  },
+  {
+   "piece": "shroud_a",
+   "at": [
+    -43.146,
+    24.354
+   ],
+   "y": 0.6,
+   "yaw_deg": 99.1,
+   "block": "ShroudRow1"
+  },
+  {
+   "piece": "shroud_b",
+   "at": [
+    -40.784,
+    23.922
+   ],
+   "y": 0.6,
+   "yaw_deg": 97.67,
+   "block": "ShroudRow1"
+  },
+  {
+   "piece": "shroud_a",
+   "at": [
+    -38.394,
+    23.677
+   ],
+   "y": 0.6,
+   "yaw_deg": 98.11,
+   "block": "ShroudRow1"
+  },
+  {
+   "piece": "shroud_small",
+   "at": [
+    -36.019,
+    23.329
+   ],
+   "y": 0.6,
+   "yaw_deg": 96.34,
+   "block": "ShroudRow1"
+  },
+  {
+   "piece": "shroud_a",
+   "at": [
+    -33.656,
+    22.902
+   ],
+   "y": 0.6,
+   "yaw_deg": 96.07,
+   "block": "ShroudRow1"
+  },
+  {
+   "piece": "shroud_b",
+   "at": [
+    -31.276,
+    22.594
+   ],
+   "y": 0.6,
+   "yaw_deg": 100.94,
+   "block": "ShroudRow1"
+  },
+  {
+   "piece": "shroud_a",
+   "at": [
+    -28.9,
+    22.256
+   ],
+   "y": 0.6,
+   "yaw_deg": 100.05,
+   "block": "ShroudRow1"
+  },
+  {
+   "piece": "shroud_a",
+   "at": [
+    -52.428,
+    27.214
+   ],
+   "y": 0.6,
+   "yaw_deg": 99.88,
+   "block": "ShroudRow2"
+  },
+  {
+   "piece": "shroud_b",
+   "at": [
+    -50.06,
+    26.818
+   ],
+   "y": 0.6,
+   "yaw_deg": 97.15,
+   "block": "ShroudRow2"
+  },
+  {
+   "piece": "shroud_small",
+   "at": [
+    -47.673,
+    26.558
+   ],
+   "y": 0.6,
+   "yaw_deg": 99.75,
+   "block": "ShroudRow2"
+  },
+  {
+   "piece": "shroud_b",
+   "at": [
+    -45.304,
+    26.168
+   ],
+   "y": 0.6,
+   "yaw_deg": 95.93,
+   "block": "ShroudRow2"
+  },
+  {
+   "piece": "shroud_a",
+   "at": [
+    -42.934,
+    25.793
+   ],
+   "y": 0.6,
+   "yaw_deg": 96.66,
+   "block": "ShroudRow2"
+  },
+  {
+   "piece": "shroud_b",
+   "at": [
+    -40.559,
+    25.444
+   ],
+   "y": 0.6,
+   "yaw_deg": 100.26,
+   "block": "ShroudRow2"
+  },
+  {
+   "piece": "shroud_a",
+   "at": [
+    -38.187,
+    25.081
+   ],
+   "y": 0.6,
+   "yaw_deg": 100.72,
+   "block": "ShroudRow2"
+  },
+  {
+   "piece": "shroud_small",
+   "at": [
+    -35.797,
+    24.838
+   ],
+   "y": 0.6,
+   "yaw_deg": 95.73,
+   "block": "ShroudRow2"
+  },
+  {
+   "piece": "shroud_a",
+   "at": [
+    -33.434,
+    24.408
+   ],
+   "y": 0.6,
+   "yaw_deg": 98.35,
+   "block": "ShroudRow2"
+  },
+  {
+   "piece": "shroud_b",
+   "at": [
+    -31.068,
+    24.001
+   ],
+   "y": 0.6,
+   "yaw_deg": 97.95,
+   "block": "ShroudRow2"
+  },
+  {
+   "piece": "shroud_a",
+   "at": [
+    -28.673,
+    23.79
+   ],
+   "y": 0.6,
+   "yaw_deg": 96.07,
+   "block": "ShroudRow2"
+  },
+  {
+   "piece": "shroud_a",
+   "at": [
+    -52.204,
+    28.731
+   ],
+   "y": 0.6,
+   "yaw_deg": 96.13,
+   "block": "ShroudRow3"
+  },
+  {
+   "piece": "shroud_b",
+   "at": [
+    -49.83,
+    28.378
+   ],
+   "y": 0.6,
+   "yaw_deg": 100.77,
+   "block": "ShroudRow3"
+  },
+  {
+   "piece": "shroud_small",
+   "at": [
+    -47.465,
+    27.968
+   ],
+   "y": 0.6,
+   "yaw_deg": 95.45,
+   "block": "ShroudRow3"
+  },
+  {
+   "piece": "shroud_b",
+   "at": [
+    -45.093,
+    27.598
+   ],
+   "y": 0.6,
+   "yaw_deg": 98.64,
+   "block": "ShroudRow3"
+  },
+  {
+   "piece": "shroud_a",
+   "at": [
+    -42.721,
+    27.237
+   ],
+   "y": 0.6,
+   "yaw_deg": 95.91,
+   "block": "ShroudRow3"
+  },
+  {
+   "piece": "shroud_b",
+   "at": [
+    -40.335,
+    26.962
+   ],
+   "y": 0.6,
+   "yaw_deg": 100.93,
+   "block": "ShroudRow3"
+  },
+  {
+   "piece": "shroud_a",
+   "at": [
+    -37.963,
+    26.6
+   ],
+   "y": 0.6,
+   "yaw_deg": 97.79,
+   "block": "ShroudRow3"
+  },
+  {
+   "piece": "shroud_small",
+   "at": [
+    -35.583,
+    26.284
+   ],
+   "y": 0.6,
+   "yaw_deg": 95.96,
+   "block": "ShroudRow3"
+  },
+  {
+   "piece": "shroud_a",
+   "at": [
+    -33.21,
+    25.924
+   ],
+   "y": 0.6,
+   "yaw_deg": 96.44,
+   "block": "ShroudRow3"
+  },
+  {
+   "piece": "shroud_b",
+   "at": [
+    -30.835,
+    25.578
+   ],
+   "y": 0.6,
+   "yaw_deg": 101.15,
+   "block": "ShroudRow3"
+  },
+  {
+   "piece": "shroud_a",
+   "at": [
+    -28.474,
+    25.139
+   ],
+   "y": 0.6,
+   "yaw_deg": 98.73,
+   "block": "ShroudRow3"
+  },
+  {
+   "piece": "shroud_a",
+   "at": [
+    -25.114,
+    22.023
+   ],
+   "y": 0.6,
+   "yaw_deg": 91.34,
+   "block": "ShroudRow4"
+  },
+  {
+   "piece": "shroud_b",
+   "at": [
+    -22.721,
+    21.825
+   ],
+   "y": 0.6,
+   "yaw_deg": 96.41,
+   "block": "ShroudRow4"
+  },
+  {
+   "piece": "shroud_small",
+   "at": [
+    -20.319,
+    21.798
+   ],
+   "y": 0.6,
+   "yaw_deg": 91.17,
+   "block": "ShroudRow4"
+  },
+  {
+   "piece": "shroud_b",
+   "at": [
+    -17.926,
+    21.607
+   ],
+   "y": 0.6,
+   "yaw_deg": 96.15,
+   "block": "ShroudRow4"
+  },
+  {
+   "piece": "shroud_a",
+   "at": [
+    -15.535,
+    21.388
+   ],
+   "y": 0.6,
+   "yaw_deg": 94.11,
+   "block": "ShroudRow4"
+  },
+  {
+   "piece": "shroud_b",
+   "at": [
+    -13.141,
+    21.213
+   ],
+   "y": 0.6,
+   "yaw_deg": 92.64,
+   "block": "ShroudRow4"
+  },
+  {
+   "piece": "shroud_a",
+   "at": [
+    -10.739,
+    21.17
+   ],
+   "y": 0.6,
+   "yaw_deg": 93.98,
+   "block": "ShroudRow4"
+  },
+  {
+   "piece": "shroud_small",
+   "at": [
+    -8.342,
+    21.042
+   ],
+   "y": 0.6,
+   "yaw_deg": 90.96,
+   "block": "ShroudRow4"
+  },
+  {
+   "piece": "shroud_a",
+   "at": [
+    -22.541,
+    24.833
+   ],
+   "y": 0.6,
+   "yaw_deg": 95.62,
+   "block": "StillguardRow"
+  },
+  {
+   "piece": "round_shield",
+   "at": [
+    -22.509,
+    25.356
+   ],
+   "y": 0.6,
+   "yaw_deg": -149.71,
+   "block": "StillguardShields"
+  },
+  {
+   "piece": "shroud_b",
+   "at": [
+    -20.144,
+    24.705
+   ],
+   "y": 0.6,
+   "yaw_deg": 92.85,
+   "block": "StillguardRow"
+  },
+  {
+   "piece": "round_shield",
+   "at": [
+    -20.114,
+    25.212
+   ],
+   "y": 0.6,
+   "yaw_deg": -5.01,
+   "block": "StillguardShields"
+  },
+  {
+   "piece": "shroud_a",
+   "at": [
+    -17.747,
+    24.581
+   ],
+   "y": 0.6,
+   "yaw_deg": 90.55,
+   "block": "StillguardRow"
+  },
+  {
+   "piece": "round_shield",
+   "at": [
+    -17.718,
+    25.068
+   ],
+   "y": 0.6,
+   "yaw_deg": -72.23,
+   "block": "StillguardShields"
+  },
+  {
+   "piece": "shroud_b",
+   "at": [
+    -15.354,
+    24.398
+   ],
+   "y": 0.6,
+   "yaw_deg": 93.04,
+   "block": "StillguardRow"
+  },
+  {
+   "piece": "round_shield",
+   "at": [
+    -15.322,
+    24.924
+   ],
+   "y": 0.6,
+   "yaw_deg": 76.83,
+   "block": "StillguardShields"
+  },
+  {
+   "piece": "shroud_a",
+   "at": [
+    -12.957,
+    24.272
+   ],
+   "y": 0.6,
+   "yaw_deg": 92.39,
+   "block": "StillguardRow"
+  },
+  {
+   "piece": "round_shield",
+   "at": [
+    -12.926,
+    24.78
+   ],
+   "y": 0.6,
+   "yaw_deg": 31.97,
+   "block": "StillguardShields"
+  },
+  {
+   "piece": "shroud_b",
+   "at": [
+    -10.56,
+    24.158
+   ],
+   "y": 0.6,
+   "yaw_deg": 91.06,
+   "block": "StillguardRow"
+  },
+  {
+   "piece": "round_shield",
+   "at": [
+    -10.531,
+    24.636
+   ],
+   "y": 0.6,
+   "yaw_deg": -77.72,
+   "block": "StillguardShields"
+  },
+  {
+   "piece": "strand_lamp",
+   "at": [
+    -52.805,
+    24.66
+   ],
+   "y": 0.6,
+   "yaw_deg": 0.0,
+   "block": "LampA"
+  },
+  {
+   "piece": "strand_lamp",
+   "at": [
+    -48.848,
+    24.075
+   ],
+   "y": 0.6,
+   "yaw_deg": 0.0,
+   "block": "LampA"
+  },
+  {
+   "piece": "strand_lamp",
+   "at": [
+    -44.891,
+    23.491
+   ],
+   "y": 0.6,
+   "yaw_deg": 0.0,
+   "block": "LampA"
+  },
+  {
+   "piece": "strand_lamp",
+   "at": [
+    -40.934,
+    22.907
+   ],
+   "y": 0.6,
+   "yaw_deg": 0.0,
+   "block": "LampA"
+  },
+  {
+   "piece": "strand_lamp",
+   "at": [
+    -36.977,
+    22.322
+   ],
+   "y": 0.6,
+   "yaw_deg": 0.0,
+   "block": "LampB"
+  },
+  {
+   "piece": "strand_lamp",
+   "at": [
+    -33.02,
+    21.738
+   ],
+   "y": 0.6,
+   "yaw_deg": 0.0,
+   "block": "LampB"
+  },
+  {
+   "piece": "strand_lamp",
+   "at": [
+    -29.062,
+    21.154
+   ],
+   "y": 0.6,
+   "yaw_deg": 0.0,
+   "block": "LampB"
+  },
+  {
+   "piece": "strand_lamp",
+   "at": [
+    -52.586,
+    26.144
+   ],
+   "y": 0.6,
+   "yaw_deg": 0.0,
+   "block": "LampA"
+  },
+  {
+   "piece": "strand_lamp",
+   "at": [
+    -48.629,
+    25.559
+   ],
+   "y": 0.6,
+   "yaw_deg": 0.0,
+   "block": "LampA"
+  },
+  {
+   "piece": "strand_lamp",
+   "at": [
+    -44.672,
+    24.975
+   ],
+   "y": 0.6,
+   "yaw_deg": 0.0,
+   "block": "LampA"
+  },
+  {
+   "piece": "strand_lamp",
+   "at": [
+    -40.715,
+    24.391
+   ],
+   "y": 0.6,
+   "yaw_deg": 0.0,
+   "block": "LampA"
+  },
+  {
+   "piece": "strand_lamp",
+   "at": [
+    -36.758,
+    23.806
+   ],
+   "y": 0.6,
+   "yaw_deg": 0.0,
+   "block": "LampB"
+  },
+  {
+   "piece": "strand_lamp",
+   "at": [
+    -32.801,
+    23.222
+   ],
+   "y": 0.6,
+   "yaw_deg": 0.0,
+   "block": "LampB"
+  },
+  {
+   "piece": "strand_lamp",
+   "at": [
+    -28.843,
+    22.638
+   ],
+   "y": 0.6,
+   "yaw_deg": 0.0,
+   "block": "LampB"
+  },
+  {
+   "piece": "strand_lamp",
+   "at": [
+    -52.367,
+    27.628
+   ],
+   "y": 0.6,
+   "yaw_deg": 0.0,
+   "block": "LampA"
+  },
+  {
+   "piece": "strand_lamp",
+   "at": [
+    -48.41,
+    27.043
+   ],
+   "y": 0.6,
+   "yaw_deg": 0.0,
+   "block": "LampA"
+  },
+  {
+   "piece": "strand_lamp",
+   "at": [
+    -44.453,
+    26.459
+   ],
+   "y": 0.6,
+   "yaw_deg": 0.0,
+   "block": "LampA"
+  },
+  {
+   "piece": "strand_lamp",
+   "at": [
+    -40.496,
+    25.875
+   ],
+   "y": 0.6,
+   "yaw_deg": 0.0,
+   "block": "LampA"
+  },
+  {
+   "piece": "strand_lamp",
+   "at": [
+    -36.539,
+    25.29
+   ],
+   "y": 0.6,
+   "yaw_deg": 0.0,
+   "block": "LampB"
+  },
+  {
+   "piece": "strand_lamp",
+   "at": [
+    -32.582,
+    24.706
+   ],
+   "y": 0.6,
+   "yaw_deg": 0.0,
+   "block": "LampB"
+  },
+  {
+   "piece": "strand_lamp",
+   "at": [
+    -28.624,
+    24.122
+   ],
+   "y": 0.6,
+   "yaw_deg": 0.0,
+   "block": "LampB"
+  },
+  {
+   "piece": "strand_lamp",
+   "at": [
+    -24.782,
+    20.884
+   ],
+   "y": 0.6,
+   "yaw_deg": 0.0,
+   "block": "LampC"
+  },
+  {
+   "piece": "strand_lamp",
+   "at": [
+    -20.789,
+    20.644
+   ],
+   "y": 0.6,
+   "yaw_deg": 0.0,
+   "block": "LampC"
+  },
+  {
+   "piece": "strand_lamp",
+   "at": [
+    -16.796,
+    20.404
+   ],
+   "y": 0.6,
+   "yaw_deg": 0.0,
+   "block": "LampC"
+  },
+  {
+   "piece": "strand_lamp",
+   "at": [
+    -12.803,
+    20.164
+   ],
+   "y": 0.6,
+   "yaw_deg": 0.0,
+   "block": "LampD"
+  },
+  {
+   "piece": "strand_lamp",
+   "at": [
+    -8.81,
+    19.924
+   ],
+   "y": 0.6,
+   "yaw_deg": 0.0,
+   "block": "LampD"
+  },
+  {
+   "piece": "strand_lamp",
+   "at": [
+    -22.605,
+    23.759
+   ],
+   "y": 0.6,
+   "yaw_deg": 0.0,
+   "block": "LampC"
+  },
+  {
+   "piece": "strand_lamp",
+   "at": [
+    -18.612,
+    23.519
+   ],
+   "y": 0.6,
+   "yaw_deg": 0.0,
+   "block": "LampC"
+  },
+  {
+   "piece": "strand_lamp",
+   "at": [
+    -14.62,
+    23.279
+   ],
+   "y": 0.6,
+   "yaw_deg": 0.0,
+   "block": "LampD"
+  },
+  {
+   "piece": "strand_lamp",
+   "at": [
+    -10.627,
+    23.039
+   ],
+   "y": 0.6,
+   "yaw_deg": 0.0,
+   "block": "LampD"
+  },
+  {
+   "piece": "strand_lamp",
+   "at": [
+    -46.161,
+    25.606
+   ],
+   "y": 0.6,
+   "yaw_deg": 0.0,
+   "block": "LampA"
+  },
+  {
+   "piece": "strand_lamp",
+   "at": [
+    -33.13,
+    25.24
+   ],
+   "y": 0.6,
+   "yaw_deg": 0.0,
+   "block": "LampB"
+  },
+  {
+   "piece": "strand_lamp",
+   "at": [
+    -20.387,
+    22.498
+   ],
+   "y": 0.6,
+   "yaw_deg": 0.0,
+   "block": "LampC"
+  },
+  {
+   "piece": "strand_lamp",
+   "at": [
+    -11.067,
+    23.471
+   ],
+   "y": 0.6,
+   "yaw_deg": 0.0,
+   "block": "LampD"
+  },
+  {
+   "piece": "ebbing_raft",
+   "at": [
+    -24.06,
+    60.204
+   ],
+   "y": -0.4,
+   "yaw_deg": 5.73,
+   "block": "Raft"
+  },
+  {
+   "piece": "shroud_a",
+   "at": [
+    -8.279,
+    24.124
+   ],
+   "y": 0.6,
+   "yaw_deg": 1.72,
+   "block": "IvoShroud"
+  },
+  {
+   "piece": "rope_coil",
+   "at": [
+    -17.348,
+    -0.5
+   ],
+   "y": 12.0,
+   "yaw_deg": 3.3,
+   "block": "HoistCoil",
+   "kit_dir": "res://assets/environments/kits/haluna/"
+  },
+  {
+   "piece": "milestone",
+   "at": [
+    64.224,
+    8.235
+   ],
+   "y": 12.0,
+   "yaw_deg": -12.41,
+   "block": "Milestone"
   }
  ]
 }
