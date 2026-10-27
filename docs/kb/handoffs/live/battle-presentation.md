@@ -57,6 +57,8 @@ RENDER-REQUEST @ 25dcea24: battle_hud_preview,battle_swap_menu,battle_victory,ba
 
 RENDER-REQUEST @ 680cd88e: battle_boss_intro_reach,battle_choreo_melee,battle_choreo_hit,battle_choreo_ko,battle_choreo_toll; why: M3-BPR-406 Ch8 set pieces. The new Reach boss intro (no baseline yet: test_screenshots' baselined check is red until it is approved), and the hit-stop hold fix plus the counter planning re-checked on the choreo shots.
 
+RENDER-REQUEST @ 60b62678: battle_arena_wall_head,battle_boss_intro_reach; why: M3-BPR-406 greybox wall_head_storm arena for Ch8 (new shot, no baseline yet); the Reach intro now stands on it. Supersedes the reach id in the 680cd88e line.
+
 ### FAST-TRACK M3-BPR-404 on the post-big9 integration branch (updated 2026-10-27)
 - **Cherry-picking 269054a3 and 4e89c967 now conflicts on the six baseline PNGs.** big9 re-approved them with the
   real heroes, and the PNGs in my commits were rendered with primitive heroes.
