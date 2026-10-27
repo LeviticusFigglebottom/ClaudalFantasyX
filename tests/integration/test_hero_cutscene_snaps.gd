@@ -1,37 +1,44 @@
 extends TestCase
-## M2-HER-1110: no snapping in cutscenes. Every in-engine cutscene the slice and Act I zones play (the prologue,
-## the chapter files' "play" steps and the slice's HalunaStory scenes) is played in driven time on its zone's stage,
+## M2-HER-1110: no snapping in cutscenes. Every in-engine cutscene the game plays (HeroGuardSources.cutscenes(): the
+## prologue, the slice's HalunaStory scenes, the chapter files' "play" steps) is played in driven time on its stage,
 ## and each stage actor's visible body (its HeroBody when it has one) is sampled every frame. A step or a turn
 ## faster than motion_guard.json's limits is a snap, unless the camera cut on that frame (a reposition hidden by
 ## a cut is staging, not a snap) or it is a deliberate jump of cut_m or more.
 
-const SCENES := {
-	"res://game/levels/prologue/prologue.tscn": ["prologue_dead_city"],
-	"res://game/levels/ch02/haluna/haluna.tscn": ["ch02_girl_on_the_beach", "ch02_nemes_table", "ch03_dock_at_night"],
-	"res://game/levels/ch01/oruvel/oruvel.tscn": ["ch01_the_rising", "ch01_kell_stall", "ch01_hullgnaw_rises"],
-	"res://game/levels/ch01/oruvel_underway/oruvel_underway.tscn": ["ch01_bell_room", "ch01_the_drop"],
-	"res://game/levels/ch04/haluna_wake/haluna_wake.tscn": ["ch04_the_wake", "ch04_wake_neme", "ch04_shell_is_set"],
-	"res://game/levels/ch04/brightwater_ferry/brightwater_ferry.tscn": ["ch04_gangplank", "ch04_under_way"],
-	"res://game/levels/ch05/pemakar/pemakar.tscn": ["ch05_ferry_comes_in", "ch05_smiths_question"],
-	"res://game/levels/ch05/ashcrown/ashcrown.tscn": ["ch05_crown_pavilion", "ch05_kerrid_steps_up"],
-	"res://game/levels/ch06/brine_shoals/brine_shoals.tscn": ["ch06_ridge_camp", "ch06_raid", "ch06_barge"],
-	"res://game/levels/ch07/tamsule/tamsule.tscn": ["ch07_into_tamsule", "ch07_tavi"],
-	"res://game/levels/ch07/tamsule_bell_galleries/tamsule_bell_galleries.tscn": ["ch07_galleries", "ch07_naming"],
-	"res://game/levels/ch09/corrow_night/corrow_night.tscn": ["ch09_strand", "ch09_the_road_out"],
-}
 ## Snaps already handed to their owner, as "<scene>:<actor>": reported, not failed, until the fix lands. M2-HER-1113
-## (slice-polish, docs/kb/tech/cutscene_no_snap.patch): stage-actor turns peaking near 800 deg/s, and a walk jumped
-## to its mark when the scene ends. Remove each entry once the patch is on this branch; the test then holds them.
+## (slice-polish, docs/kb/tech/cutscene_no_snap.patch): stage-actor turns peaking near 800 deg/s, a walk jumped to its
+## mark when the scene ends, and a far stand-in clip mark glided across (Ch9's pole_out, 30 m). Remove each entry
+## once the patch is on this branch; the test then holds them.
 const KNOWN: Array[String] = [
+	"ch01_net_pen:pen_child",
 	"ch04_gangplank:ysolde",
+	"ch05_kahre:kerrid",
+	"ch05_matron_wakes:kerrid",
+	"ch06_after_barge:wrights",
 	"ch06_barge:stillguard_a",
 	"ch06_barge:stillguard_b",
 	"ch06_barge:wrights",
 	"ch06_raid:hound",
-	"ch06_raid:inquisitor",
+	"ch07_after_the_bell:liss",
+	"ch07_after_the_bell:oruvel_diver_1",
+	"ch07_after_the_bell:oruvel_diver_2",
+	"ch07_after_the_bell:poolkeeper",
+	"ch07_after_the_bell:tavi",
+	"ch07_empty_moorings:Player",
+	"ch07_empty_moorings:asha",
+	"ch07_empty_moorings:kerrid",
+	"ch07_empty_moorings:tavi",
 	"ch07_galleries:liss",
 	"ch07_tavi:tavi",
-	"ch09_the_road_out:liss",
+	"ch08_cut_rope:liss",
+	"ch08_cut_rope:officer",
+	"ch08_cut_rope:toma",
+	"ch08_first_down:hobb",
+	"ch08_keeping_flame:fenn",
+	"ch08_landfall:kerrid",
+	"ch09_the_ebbing:asha",
+	"ch09_the_ebbing:pell",
+	"ch09_the_road_out:kerrid",
 	"ch09_the_road_out:pell",
 ]
 ## A scene that has not ended by then is stopped (driven time; seconds).
@@ -55,10 +62,9 @@ func test_no_actor_snaps_in_any_cutscene() -> void:
 	var dt := HeroMotionGuard.frame_sec(data)
 	Game.state.party_ids = [&"rhen", &"asha", &"toma"] as Array[StringName]
 	var played := 0
-	for path: String in SCENES:
-		if not ResourceLoader.exists(path):
-			continue
-		for scene_id: String in SCENES[path]:
+	var scenes := HeroGuardSources.cutscenes()
+	for path: String in scenes:
+		for scene_id: String in scenes[path]:
 			var zone := (load(path) as PackedScene).instantiate() as Node3D
 			if "autoplay" in zone:
 				zone.set(&"autoplay", false)  # the prologue set plays itself when it is the current scene
