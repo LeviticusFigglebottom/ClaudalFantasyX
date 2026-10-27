@@ -216,6 +216,19 @@ Ch4–Ch9 onward. `m2-slice.md` beside this file is the history up to the 2026-1
     rig shot, including the Ch1 ones), causeway_route 4, haluna_villagers and cutscene_pose (probed), all 0 failed;
     lint, format and taskboard clean.
 
+- **MERGE-READY @ b35e17c1** (M3-C01-100, second pass). Oruvel's greybox story blocks are now kit pieces:
+  - **The *Seventh Terrace*:** the Brightwater ferry kit's own ship, from env-art's composition at Oruvel. She is
+    Ch4's derelict, and O07's board must match D06. She sits in a second ZoneKitDressing and follows her blocks
+    into the storm.
+  - **The lintel-gulls:** on every cabin ridge, the chandlery and the keel-hull, at env-art's ridge heights (C1-11).
+    O10 frames the chandlery's.
+  - **Kell's lantern.**
+
+  Only the LowHull and the storm wall stay greybox.
+  - **Checks:** ch01 21, zone_map 20, kit_dressing 5, slice_shots 1, all 0 failed; tools test_ch01_oruvel_dressing,
+    validate_data, taskboard, lint and format clean.
+  - **Checks skipped:** coverage and Blender (nothing they cover).
+
 - **Correction (ec3ba50a):** my first B11 pass (4f616566) added a letterbox and three scripted camera setups.
   vertical_slice.md defines B11 (and B02) as **E** scenes: in-engine, no letterbox, and the player keeps the camera
   rail. Those cues are out. B11 keeps Rhen's walk out to Asha and the turns between them. Lead: take ec3ba50a with
@@ -239,3 +252,4 @@ RENDER-REQUEST @ 8b25b3b4: slice_beach_h05_asha, slice_beach_h06_toma, slice_hal
 RENDER-REQUEST @ ba49617a: ch01_oruvel_dressed; why: M3-C01-100 dresses Ch1's Oruvel with the raft-town kit (a new shot from the ScaleHull spawn looking north over the town; no baseline yet). If the dressed town reads wrong (decks floating or sunk, grey blocks showing through), push the out PNG anyway so I can fix the placement.
 RENDER-REQUEST @ 05f6abc9: ch01_underway_crown, ch01_underway_gallery, ch01_oruvel_dressed; why: M3-C01-101 dresses Ch1's Underway with the drowned-tower kit, the sea and the UnderwaterRig (the first zone with the rig; new shots, no baselines). Also renders the Oruvel shot from the ba49617a request, so render this one instead. Please push the out PNGs even if a frame reads wrong (black, a grey box, the camera above the water), so I can fix the placement or the lighting.
 RENDER-REQUEST @ 9ba01356: slice_verse_hall, slice_verse_steps, ch01_underway_crown, ch01_underway_gallery, ch01_oruvel_dressed; why: M2-FP-116 moves the First Verse from the CSG set into the real shrine (slice_verse_hall is new: S07, Asha going in from the portal; slice_verse_steps is S06 on the outer steps), plus the 05f6abc9 Ch1 shots. This one supersedes 05f6abc9 and ba49617a. Please push every out PNG, even a bad frame.
+RENDER-REQUEST @ b35e17c1: ch01_oruvel_dressed, ch01_o07_name_board, ch01_o10_gull, ch01_underway_crown, ch01_underway_gallery, slice_verse_hall, slice_verse_steps; why: M3-C01-100's second pass (the Seventh Terrace, the lintel-gulls; the two inserts are new shots), plus everything from the 9ba01356 request, which this supersedes. Push every out PNG, even a bad frame.
