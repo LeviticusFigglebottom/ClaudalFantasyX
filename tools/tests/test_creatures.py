@@ -268,9 +268,6 @@ class GroundedClipsTest(unittest.TestCase):
         # it rises out of the water or sand; as built, its tail is buried and runs along under the ground before the S
         # rises (docs/kb/art/creatures/lantern_eel.md, "Notes for the model")
         "lantern_eel": "its tail is buried",
-        # rooted in the water: its prop-roots go black and wet below the waterline, its KO sinks, and phase 2 tears it
-        # out of the tree (docs/kb/art/creatures/act2/mangrove_drowner.md)
-        "mangrove_drowner": "roots in the water",
         # a limb of the storm coming down over the seawall from behind the parapet; its far body is the storm VFX
         # (docs/kb/art/creatures/act1/undertows_reach.md)
         "undertows_reach": "rises from the storm behind the wall",
