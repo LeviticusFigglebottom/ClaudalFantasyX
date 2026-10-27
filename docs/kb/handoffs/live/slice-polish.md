@@ -273,6 +273,28 @@ Ch4–Ch9 onward. `m2-slice.md` beside this file is the history up to the 2026-1
     - slice_verse_steps: it predates M2-FP-116 and still shows the CSG set.
   - **Checks:** haluna 57, fp_ 29, 0 failed.
 
+- **MERGE-READY @ e7dae062** (the Lead's 19:54 queue).
+  - **Item 1:** M2-HER-1113 and M3-CIN-1221 were already in at b2d39f8c (see below).
+  - **Item 3, first-battle clarity (verified, no change).** M2-FP-105's tideline tip matches the real UI. The
+    timeline is pinned top-right with slot 0 at the top ("runs down the right, next at the top"). A hovered
+    command ghosts the actor's next turn and marks shifted chips ▲/▼ ("watch where yours will land"). Rhen's first
+    turn shows the command tip.
+  - **Item 4, the primitives re-audit (M2-FP-118):**
+    - **Sound:** `@sfx` now plays audio's sfx row (bus, variation, cooldown; `at=` placed) via `CutsceneSound`, else
+      the `.ogg`. The slice's only cue (the toll) exists. **68 of 69 cued Act I sounds don't exist anywhere** →
+      **M3-AUD-100** (request to audio, listed per chapter; Ch1's 11 first).
+    - **Static NPCs:** Oruvel's eight capsule townsfolk wear villager bodies (idle and micro-motion). They are
+      stand-ins; M3-CHR-100 still asks for their own looks. The roof child sits on the kit cabin's ridge.
+    - **Guard:** test_slice_primitives now also covers Ch1's two zones. Left on its list: the Prologue's set
+      (M3-ENV-100), the save shrine (M3-ENV-101), Neme's bag, and Ch1's LowHull.
+    - **Hard cuts:** every `blend=0.0` in the slice's scenes is authored camera grammar (decisions_log N-13), and
+      the end-of-scene jumps are fixed by M2-HER-1113.
+  - **Shrine GI, Lead:** this branch already carries the 4ce8a48 rebake (bd2315d9). If big12's rebake
+    (gpu/shrine-gi-big12) merges after this branch, take big12's `.res` and `inputs.json` on the binary conflict.
+  - **Checks:** cutscene 66, first_verse 3, battle_audio 21, ch01 21, slice_primitives 1, zone_map 20, objective
+    15, all 0 failed; lint, format, validate_data and taskboard clean.
+  - **Checks skipped:** coverage and Blender.
+
 - **Correction (ec3ba50a):** my first B11 pass (4f616566) added a letterbox and three scripted camera setups.
   vertical_slice.md defines B11 (and B02) as **E** scenes: in-engine, no letterbox, and the player keeps the camera
   rail. Those cues are out. B11 keeps Rhen's walk out to Asha and the turns between them. Lead: take ec3ba50a with
