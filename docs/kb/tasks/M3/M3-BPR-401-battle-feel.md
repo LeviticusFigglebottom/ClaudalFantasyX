@@ -21,6 +21,9 @@ The human's note: battles look primitive. Add weight on the contact beat, all da
 - [x] Damage-number pop and easing: already to the art spec (UI's DamageNumber), landing on contact.
 - [x] A Screen shake setting (Full / Half / Off, accessibility.json `screen_shake`); Reduced motion drops every
       battle shake, BattleFloats' too (BattleStage.shake_setting).
+- [x] Audio hooks: BattleImpact.landed / slowmo_planned; request M3-BPR-405 to audio.
+- [x] Shots viewed and re-approved: battle_choreo_ko (flash under the falling harrier), battle_choreo_toll (heavier
+      recoil on Ysolde at 13 HP), battle_choreo_hit (the struck crab's flash and recoil).
 - [x] Tests (test_battle_impact), validator (impact_errors), doc ("Impact").
 
 ## Notes
