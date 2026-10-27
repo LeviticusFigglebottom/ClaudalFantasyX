@@ -132,9 +132,19 @@ def _blade(part: Part, root: np.ndarray, d: np.ndarray, n_side: np.ndarray, leng
 def reef_hooks(anchor: np.ndarray, hip_x: float, lm, length: float) -> Part:
     """Two hooks crossed at the small of the back (`anchor`), grips out past both hips."""
     part = Part("ReefHooks")
+    for _side, p, _end, _d in reef_hook_parts(anchor, hip_x, lm, length):
+        part.extend(p)
+    return part
+
+
+def reef_hook_parts(anchor: np.ndarray, hip_x: float, lm, length: float) -> list:
+    """M2-CHR-513: the two hooks as separate parts, each on its own bone so Rhen can draw them:
+    [(side, part, grip end, grip -> blade unit direction)], the left-hip grip ("L") first."""
+    out = []
     S = lm.S
     back = np.array([0.0, 1.0, 0.0])
     for k, sgn in enumerate((1.0, -1.0)):
+        part = Part(f"ReefHook.{'L' if sgn > 0 else 'R'}")
         # the grip end sits past the hip on side sgn, 30 degrees below horizontal toward the centre
         a = math.radians(HOOK_ANGLE_DEG)
         d = np.array([-sgn * math.cos(a), 0.0, math.sin(a)])  # grip -> blade, up and across
@@ -149,5 +159,6 @@ def reef_hooks(anchor: np.ndarray, hip_x: float, lm, length: float) -> Part:
         uv_sphere(part, grip_end - d * 0.006 * S, 0.016 * S, 10, 6, "steel", axis_fwd=-d, tags=TAG_PROP)
         _ring(part, grip_top, d, 0.016 * S, 0.004 * S, "steel", n=14)
         _blade(part, grip_top + d * 0.004 * S, d, back, length * S, S)
-    part.C = [(0.0, 0.0, 0.0, 0.0)] * len(part.V)
-    return part
+        part.C = [(0.0, 0.0, 0.0, 0.0)] * len(part.V)
+        out.append(("L" if sgn > 0 else "R", part, grip_end, d))
+    return out

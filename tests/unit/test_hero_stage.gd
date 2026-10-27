@@ -198,3 +198,37 @@ func test_smile_variant_is_opt_in_data() -> void:
 	var compare := stage.find_child("AshaCompare", true, false)
 	assert_true(compare != null, "the comparison character is built")
 	stage.free()
+
+
+## M1-CHR-15: HeroHelperBones (the stages' solve for hand-set poses) matches the helper keys the clips bake
+## (hero_clips.py's solve): the skirt panels and the shoulder correctives, within a degree, and the lower panels'
+## floor gathers (scales) within 0.03.
+## Sampled on 15 fps keys: between keys the baked helpers interpolate while the solve sees the interpolated body.
+func test_helper_bones_match_the_baked_clips() -> void:
+	for spec: Array in [
+		["asha", &"kneel_over_rhen", 1.6], ["asha", &"walk", 0.6], ["asha", &"run", 0.4], ["toma", &"talk", 1.0]
+	]:
+		var model := (load("res://assets/characters/%s/%s.glb" % [spec[0], spec[0]]) as PackedScene).instantiate()
+		_host().add_child(model)
+		var skel := model.find_child("Skeleton3D", true, false) as Skeleton3D
+		var ap := model.find_child("AnimationPlayer", true, false) as AnimationPlayer
+		assert_true(HeroHelperBones.has_helpers(skel), "%s has helper bones" % spec[0])
+		ap.play(spec[1])
+		ap.seek(float(spec[2]), true)
+		ap.pause()
+		var baked := {}
+		var baked_s := {}
+		for i: int in skel.get_bone_count():
+			var n := skel.get_bone_name(i)
+			if n.begins_with("DEF-armpit.") or n.begins_with("DEF-skirt_"):
+				baked[i] = skel.get_bone_pose_rotation(i)
+				baked_s[i] = skel.get_bone_pose_scale(i)
+				skel.set_bone_pose_rotation(i, skel.get_bone_rest(i).basis.get_rotation_quaternion())
+				skel.set_bone_pose_scale(i, Vector3.ONE)
+		HeroHelperBones.drive(skel)
+		for i: int in baked:
+			var err := rad_to_deg((baked[i] as Quaternion).angle_to(skel.get_bone_pose_rotation(i)))
+			assert_true(err < 1.0, "%s %s %s: %.2f deg" % [spec[0], spec[1], skel.get_bone_name(i), err])
+			var ds := ((baked_s[i] as Vector3) - skel.get_bone_pose_scale(i)).length()
+			assert_true(ds < 0.03, "%s %s %s: scale off by %.3f" % [spec[0], spec[1], skel.get_bone_name(i), ds])
+		model.free()
