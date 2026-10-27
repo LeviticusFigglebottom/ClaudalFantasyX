@@ -24,11 +24,13 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.abspath(os.path.join(HERE, "..", ".."))
 sys.path.insert(0, os.path.join(ROOT, "tools", "audio"))
 sys.path.insert(0, HERE)
+sys.path.insert(0, os.path.join(ROOT, "assets_src", "music"))
 
 import numpy as np  # noqa: E402
 
 from field_ambience import gull_call, lap, modal, murmur_phrase, stick_slip  # noqa: E402
 from field_sfx import _env, _noise, _place, _room, _tail_fade  # noqa: E402
+from motifs import phrases_in_seconds  # noqa: E402
 from synth.bells import tower_bell  # noqa: E402
 from synth.dsp import SR, bq_bandpass, bq_highpass, bq_lowpass, filt, rng  # noqa: E402
 from synth.mixer import measure, normalize_momentary, write_ogg  # noqa: E402
@@ -421,13 +423,15 @@ def anvil_crack(g):  # the Matron wakes: the great anvil-stone cracks, iron ring
 # --------------------------------------------------------------------------- Ch6: the Brine Shoals
 
 
-def barge_pole(g):  # the Reeds poling the barge through the smoke: the plunge, the push, the drag
-    buf = _buf(1.8)
-    _place(buf, _noise(g, 0.12, [bq_lowpass(1100, 0.7)], 0.003, 0.05) * 0.7, 0.0)
-    for _ in range(10):
-        _place(buf, bubble(float(g.uniform(2.5, 6.0)), amp=float(g.uniform(0.2, 0.6))), float(g.uniform(0.0, 0.3)))
-    _place(buf, _band(g, 1.0, 250, 900) * np.sin(np.linspace(0, np.pi, int(1.0 * SR))) * 0.4, 0.3)
-    _place(buf, _creak(g, 0.4, 100, 320, ((300.0, 1.0), (720.0, 0.5))) * 0.3, 0.5)
+def barge_pole(g):  # the Reeds poling the barge through the smoke: wood creak and their footfalls, and NO water
+    # (act1_ch06.md §6: the absence is the effect; brine_iron_hiss is B05's only water sound)
+    buf = _buf(2.2)
+    _place(buf, _creak(g, 0.7, 70, 260, ((280.0, 1.0), (690.0, 0.6), (1500.0, 0.25))) * 0.8, 0.1)  # the pole bending
+    for k in range(3):  # bare feet stepping along the deck planks with the push
+        at = 0.25 + 0.42 * k
+        _place(buf, _thump(g, float(g.uniform(110, 140)), 0.15, 0.03) * 0.5, at)
+        _place(buf, _wood(g, float(g.uniform(190, 240)), 0.2) * 0.25, at)
+    _place(buf, _creak(g, 0.5, 90, 300, ((380.0, 1.0), (900.0, 0.5))) * 0.4, 1.3)  # the barge's planks settling
     return buf
 
 
@@ -695,11 +699,16 @@ def asha_hum_lullaby(g):  # Asha kneels by the boy on the wall and hums: soft, c
     return _hum(g, notes, "m", 1.2, int(g.integers(1 << 30)), vib=8.0)
 
 
-def pell_storm_note(g):  # Pell's storm call: one long open note sung into the wind, swelling and breaking off
-    notes = [(60.0, 0.25), (64.0, 2.4)]
-    y = sing([("a", 0.25), ("o", 2.4)], notes, vel=0.8, seed=int(g.integers(1 << 30)), scale=1.0, tilt=1.6,
-             breath=0.18, vib_cents=26.0, vib_rate=5.2, jitter_cents=8.0, release=0.3)
-    return _room_tail(g, y * _shape(len(y), 0.3, 0.4), 1.5, 0.3)
+def pell_storm_note(g):  # Pell's Storm-Call: one huge low note from a throat, rising and falling: a voice doing a storm
+    # (act1_ch08.md §6: clearly a voice, never the weather; built from the synth voice, a growl under it)
+    notes = [(38.0, 0.6), (47.0, 1.6), (50.0, 0.8), (41.0, 1.6)]
+    phon = [("u", 0.6), ("o", 1.6), ("a", 0.8), ("u", 1.6)]
+    y = sing(phon, notes, vel=0.9, seed=int(g.integers(1 << 30)), scale=0.82, tilt=1.3, breath=0.35, vib_cents=55.0,
+             vib_rate=3.2, jitter_cents=35.0, release=0.5)
+    t_ = np.arange(len(y)) / SR
+    rough = 1 + 0.5 * np.sin(2 * np.pi * 27 * t_) * (0.5 + 0.5 * np.sin(2 * np.pi * 0.4 * t_))  # the throat's rasp
+    breath = _band(g, len(y) / SR, 300, 2500) * np.abs(y).max() * 0.08 * _shape(len(y), 0.8, 1.0)
+    return _room_tail(g, y * rough + breath, 2.2, 0.3)
 
 
 def flue_key_free(g):  # "She wants oil, not muscle." the seized flue key easing, then turning free with a clunk
@@ -734,13 +743,18 @@ def wall_breach(g):  # the seawall breaks: the stone going, and the sea through 
     return buf
 
 
-def current_song(g):  # the figure in the current sings: a wordless voice far down in the water, slow, alone
-    # an original line in a five-note mode (E G A B D), each note a held vowel, under water
-    notes = [(64, 1.0), (67, 0.8), (69, 1.4), (67, 0.7), (64, 1.0), (62, 1.6)]
-    y = sing([(v, d) for v, (_, d) in zip(("a", "o", "u", "o", "a", "u"), notes)], notes, vel=0.5,
-             seed=int(g.integers(1 << 30)), scale=1.15, tilt=1.7, breath=0.1, vib_cents=20.0, vib_rate=4.2,
-             jitter_cents=5.0, release=0.6)
-    return _room_tail(g, filt(y, [bq_lowpass(1500, 0.7)]), 3.0, 0.55)
+def current_song(g):  # B17, from Rhen's position only: Dace's current-song, one unaccompanied low voice in the storm
+    # The whole tune, the same notes as Ch1's statement (assets_src/music/motifs.py CURRENT_SONG), an octave down.
+    vowels = ("o", "a", "o", "u", "a", "o", "u")
+    out = []
+    for phrase in phrases_in_seconds():
+        notes = [(m - 12.0, d) for m, d in phrase]
+        phon = [(vowels[i % len(vowels)], d) for i, (_, d) in enumerate(notes)]
+        out.append(sing(phon, notes, vel=0.55, seed=int(g.integers(1 << 30)), scale=0.9, tilt=1.8, breath=0.12,
+                        vib_cents=16.0, vib_rate=4.6, jitter_cents=6.0, release=0.4))
+        out.append(np.zeros(int(0.45 * SR)))  # his breath
+    y = np.concatenate(out)
+    return _room_tail(g, filt(y, [bq_lowpass(1800, 0.7)]), 3.0, 0.5)
 
 
 def stone_falls(g):  # Kerrid catches Rhen's collar as the stone goes: blocks breaking away and falling
@@ -776,17 +790,25 @@ def shingle_kneel(g):  # Rhen kneels on the shingle: pebbles shifting and crunch
     return buf
 
 
-def raft_pole(g):  # Asha poling the raft out across the harbour, slow and level
-    return barge_pole(g)
+def raft_pole(g):  # Asha poling the raft out across the harbour, slow and level: the plunge, the push, the drag
+    buf = _buf(1.8)
+    _place(buf, _noise(g, 0.12, [bq_lowpass(1100, 0.7)], 0.003, 0.05) * 0.7, 0.0)
+    for _ in range(10):
+        _place(buf, bubble(float(g.uniform(2.5, 6.0)), amp=float(g.uniform(0.2, 0.6))), float(g.uniform(0.0, 0.3)))
+    _place(buf, _band(g, 1.0, 250, 900) * np.sin(np.linspace(0, np.pi, int(1.0 * SR))) * 0.4, 0.3)
+    _place(buf, _creak(g, 0.4, 100, 320, ((300.0, 1.0), (720.0, 0.5))) * 0.3, 0.5)
+    return buf
 
 
 def staff_bell_shells(g):  # the Ebbing: Asha's staff raised, its bell-shells shivering together
+    # pitched in the cue's key (the_ebbing.py: A minor, its pentatonic A C D E G): every shell and both bells on it
+    penta = [1760.0, 2093.0, 2349.3, 2637.0, 3136.0, 3520.0]  # A6 C7 D7 E7 G7 A7
     buf = _buf(2.6)
     for _ in range(int(g.integers(9, 14))):
-        f = float(g.uniform(2200, 4400))
-        _place(buf, modal([f, f * 2.6, f * 4.9], [0.08, 0.04, 0.02], [1.0, 0.4, 0.15], 0.3, g, click=0.2)
+        f = penta[int(g.integers(0, len(penta)))] * float(g.uniform(0.998, 1.002))
+        _place(buf, modal([f, f * 2.0, f * 3.0], [0.08, 0.035, 0.015], [1.0, 0.3, 0.1], 0.3, g, click=0.2)
                * float(g.uniform(0.2, 0.7)), float(g.uniform(0.0, 0.9)))
-    for m, at in ((84.0, 0.1), (88.0, 0.35)):
+    for m, at in ((81.0, 0.1), (88.0, 0.35)):  # A5 and E6
         _place(buf, tower_bell(m, 0.3, seed=int(g.integers(1 << 30)), t60=1.8, dark=0.3)[: int(2.0 * SR)] * 0.25, at)
     return buf
 

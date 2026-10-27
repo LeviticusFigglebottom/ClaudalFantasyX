@@ -29,4 +29,15 @@ sound were silent.
   sharp one-shots about −18 LUFS (momentary max), foley about −22, the long beds under a line about −24.
 - Listen-for notes: docs/kb/audio/listening_notes.md, "M3: Act I cutscene cues".
 
+- 2026-10-27 audio, to act1-chapters' briefs (M3-C06-04, M3-C08-101, M3-C09-06):
+  - `barge_pole` is wood creak and the Reeds' footfalls only, with no water, so `brine_iron_hiss` stays B05's only
+    water sound. `raft_pole` (Ch9) keeps its water.
+  - `pell_storm_note` is a voice doing a storm: one huge, low, rising and falling throat note.
+  - `staff_bell_shells` is pitched in the_ebbing's A minor pentatonic.
+  - `current_song` sings **Dace's current-song**, now written once in assets_src/music/motifs.py `CURRENT_SONG`
+    (D dorian, distinct from the Hush). `rhen_current_hum` and `going_under` (Ch1) must use those notes, so the
+    melodies match by construction.
+- Still open from those briefs (music, not `@sfx`): the chapters' missing `@music` cues, `vein_run`
+  (AshcrownTrial `ran`/`landed`) and `float_ring_bell`. Those are M3-AUD-819 and on.
+
 ## Review log
