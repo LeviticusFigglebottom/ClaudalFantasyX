@@ -481,7 +481,8 @@ def clip_poses(rig: Rig, every: int, clips: list | None = None, max_samples: int
         length_of, is_loop, pose_fn = vc.length_of, vc.is_loop, vc.pose_at
     else:
         persona = hero_clips.PERSONA[rig.hero]
-        length_of, is_loop, pose_fn = hero_clips.LENGTHS.__getitem__, hero_clips.LOOPS.__contains__, hero_clips.pose_at
+        length_of = lambda c: hero_clips.clip_length(rig.hero, c)  # noqa: E731  (M2-CHR-12: per-hero cycles)
+        is_loop, pose_fn = hero_clips.LOOPS.__contains__, hero_clips.pose_at
     sk = rig.skeleton
     out = []
     for clip in clips or clip_names(rig.hero):

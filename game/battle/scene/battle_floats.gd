@@ -71,7 +71,7 @@ func show_hits(result: ActionResult, flinch: bool) -> void:
 				ctl.hud.pop_info(tr("HUD_FLOAT_INVERTED"), at, &"danger")
 		elif amount < 0:
 			ctl.hud.pop_number(str(-amount), at, DamageNumber.KIND_HEAL, ally, false, n)
-	if heavy and ctl.show_damage_numbers and ctl.hud.animations_enabled():
+	if heavy and flinch and ctl.show_damage_numbers and ctl.hud.animations_enabled():  # BattleImpact shakes a sequence
 		ctl.stage.shake(ctl.stage.battle_speed(ctl.hud.battle_speed()))
 
 

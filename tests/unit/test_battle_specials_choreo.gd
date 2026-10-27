@@ -197,7 +197,7 @@ func test_the_toll_lands_on_contact_and_the_wave_reaches_each_member_in_turn() -
 	var near_id := StringName(str(nearest["target"]))
 	var react_sec := float(data["reaction"]["damage"]["sec"])
 	choreo.seek(float(nearest["at"]) + react_sec * 0.5)
-	var recoil := float(data["reaction"]["damage"]["recoil_m"]) * float(st["react_scale"])
+	var recoil := float(data["reaction"]["damage"]["recoil_m"]) * float(st["react_scale"]) * float(nearest["weight"])
 	assert_between(_at(near_id).distance_to(_home(near_id)), recoil * 0.9, recoil * 1.1, "a hard recoil")
 	for x: Dictionary in plan["reactions"]:
 		if float(x["at"]) > float(nearest["at"]) + react_sec * 0.5 + EPS:

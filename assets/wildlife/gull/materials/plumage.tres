@@ -1,0 +1,22 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3]
+
+[ext_resource type="Shader" path="res://game/world/wildlife/wildlife.gdshader" id="1_shader"]
+
+[resource]
+resource_name = "plumage"
+shader = ExtResource("1_shader")
+shader_parameter/cavity_albedo = 0.35
+shader_parameter/cavity_ao = 0.5
+shader_parameter/clearcoat_wet = 0.1
+shader_parameter/detail_albedo = 0.05
+shader_parameter/detail_scale = 90
+shader_parameter/flap_angle = 0.55
+shader_parameter/flap_bob = 0.02
+shader_parameter/flap_lag = 0.9
+shader_parameter/head_pivot = Vector3(0, 0.1677, 0.0995)
+shader_parameter/nod_angle = 0.35
+shader_parameter/roughness_dry = 0.86
+shader_parameter/roughness_wet = 0.5
+shader_parameter/specular = 0.35
+shader_parameter/wet_darken = 0.85
+shader_parameter/wing_pivot = Vector3(0.045, 0.018, 0)

@@ -1,0 +1,28 @@
+{
+  "_doc": "M3-CRE-611: the Saltgrass Causeway's ambient wildlife (WildlifeLayer zone_id ch03/saltgrass_causeway), placed on the greybox (saltgrass_causeway_layout.json): the flat sand's top is y 0, the tall marker posts at x -2.8 (z -14, -22, -26, -30, -34) top out at 1.6, the tide pool is the 3 x 2.4 m patch at (5, -60) between its two rocks. Gulls work the causeway and stand on the posts; crabs keep to the sand east of the path and around the pool; a few fry hang in the pool. Move the coordinates with the route kit when Env-art replaces the blocks (same keys as ch02_haluna.json).",
+  "zone": "ch03/saltgrass_causeway",
+  "flocks": [
+    {
+      "id": "causeway",
+      "center": [0.0, -36.0],
+      "radius_m": 26.0,
+      "altitude_m": [5.5, 11.0],
+      "count": 4,
+      "perched_at_start": 2,
+      "perches": [
+        [-2.8, 1.6, -14.0, 90.0],
+        [-2.8, 1.6, -22.0, -90.0],
+        [-2.8, 1.6, -26.0, 90.0],
+        [-2.8, 1.6, -30.0, 180.0],
+        [-2.8, 1.6, -34.0, -90.0]
+      ]
+    }
+  ],
+  "beaches": [
+    {"id": "east_sand", "center": [7.0, -32.0], "half_extents": [2.5, 7.0], "yaw_deg": 0.0, "y": 0.0, "count": 4},
+    {"id": "tidepool", "center": [5.0, -60.0], "half_extents": [3.0, 2.6], "yaw_deg": 0.0, "y": 0.0, "count": 4}
+  ],
+  "shoals": [
+    {"id": "tidepool", "center": [5.0, 0.09, -60.0], "radius_m": 0.8, "count": 5, "scale": 0.55, "spread_m": [0.5, 0.0, 0.4]}
+  ]
+}

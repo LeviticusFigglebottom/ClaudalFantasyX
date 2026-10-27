@@ -145,6 +145,49 @@
    }
   },
   {
+   "id": "ashcrown_a08_crater_loggia",
+   "scene": "res://game/levels/_tests/ashcrown_kit/ashcrown_preview.tscn",
+   "camera": "Cameras/A08",
+   "resolution": [
+    960,
+    540
+   ],
+   "settle_frames": 24,
+   "setup": {
+    "globals": {
+     "hymn_wind_time": 40.0
+    },
+    "viewport": {
+     "use_taa": false,
+     "screen_space_aa": 1
+    },
+    "nodes": {
+     ".": {
+      "interior": true
+     }
+    }
+   }
+  },
+  {
+   "id": "ashcrown_a10_plume_from_the_rim",
+   "scene": "res://game/levels/_tests/ashcrown_kit/ashcrown_preview.tscn",
+   "camera": "Cameras/A10",
+   "resolution": [
+    960,
+    540
+   ],
+   "settle_frames": 24,
+   "setup": {
+    "globals": {
+     "hymn_wind_time": 40.0
+    },
+    "viewport": {
+     "use_taa": false,
+     "screen_space_aa": 1
+    }
+   }
+  },
+  {
    "id": "ashcrown_o1_overview",
    "scene": "res://game/levels/_tests/ashcrown_kit/ashcrown_preview.tscn",
    "camera": "Cameras/O1",

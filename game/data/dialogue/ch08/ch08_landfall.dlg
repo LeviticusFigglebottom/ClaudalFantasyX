@@ -1,0 +1,34 @@
+// Ch8 B01 "Landfall under the kites" (act1_ch08.md §2 B01; W01 → W02). In-engine, played on arrival.
+// 10:40, warm noon (`ch08_day`). W01: the trader from Tamsule comes in under the seawall: grey laterite
+// in a long curve, row upon row of Watchers (carved faces, eyes shut, mouths open as if humming), and
+// dozens of cloth kites over the wall-head, flown because a Cantor has come, "so the Watchers have
+// something to look up at". Act I's last festival frame. W02: on the mole steps a few townsfolk have
+// come down to see the Cantor. Asha smiles first.
+// Kerrid peels off: "Later." and he walks away along the outer foot of the wall, the way he declines
+// inns. A plain exit, played as habit, with NO look back at the wall (rule 3: nothing stages Corrow as
+// his return). Toma: "He does that." Nobody follows. The chapter flow drops him from the party after
+// this scene; he is gone until B15.
+title: ch08_landfall
+location: ch08/corrow
+---
+@camera W01
+@music corrow_day fade=2.0
+@sfx gulls_far
+@wait 3.0
+@camera W02
+@mark townsfolk_a mole_greet_a walk
+@mark townsfolk_b mole_greet_b walk
+@face asha smile 0.4
+Townsfolk [smile]: The Cantor! Look up, look, they've put every kite out for you. #line:ch08_landfall_001
+Asha [smile]: They're beautiful. Thank you. Are they all for the Watchers? #line:ch08_landfall_002
+Townsfolk [soft_smile]: So they've got something to look up at, Lady. Their eyes are shut all year. #line:ch08_landfall_003
+@mark asha mole_steps_asha walk
+@mark toma mole_steps_toma walk
+@wait 0.8
+Kerrid [neutral]: Later. #line:ch08_landfall_004
+@mark kerrid wall_foot walk
+@wait 1.5
+Rhen [neutral]: Where's he— #line:ch08_landfall_005
+Toma [neutral]: He does that. #line:ch08_landfall_006
+@wait 0.6
+===

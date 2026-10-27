@@ -1,0 +1,14 @@
+{
+ "format": 1,
+ "scene": "ch08_flue_hint",
+ "source": "game/data/dialogue/ch08/ch08_flue_hint.dlg",
+ "start": "ch08_flue_hint",
+ "nodes": {
+  "ch08_flue_hint": {
+   "headers": {"location": "ch08/coilspire"},
+   "ops": [
+    {"op": "line", "id": "ch08_flue_hint_001", "key": "DLG_CH08_FLUE_HINT_001", "speaker": "asha", "emotion": "neutral", "voice": "", "src": 6}
+   ]
+  }
+ }
+}

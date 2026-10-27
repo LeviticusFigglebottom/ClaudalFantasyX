@@ -1,0 +1,38 @@
+// Ch8 B11 "The hoist" (act1_ch08.md §2 B11; W12). In-engine, between Wave 1 and Wave 2: the spawn have
+// pulled back down the wall face in a lull of the surge. Liss looks at the stair, at the crowd, and at
+// two Watchers on the parapet with their stone mouths open. She drives iron pins into the Watchers'
+// mouths, hangs her blocks off them and runs a rope down the wall's inner face beside the stair, with a
+// fish-basket on the end. PLAIN ROPE AND IRON, nothing bound (ADR 0017 (c); rule 1).
+// Liss's tell in reverse: working means she's fine. The first basket comes up with three children in
+// it. Toma looks at the pins in the Watchers' mouths, then takes the rope's tail and hauls without a
+// word (his devotion is to the people; the Order's view of the stone comes in B18).
+// Sets ch08_hoist_rigged (Liss's Haul, skills.json hoist_haul requires_flag).
+title: ch08_hoist
+location: ch08/corrow
+---
+@camera W12
+@music seawall_hold
+@mark liss hoist_liss walk
+@anim liss look_at watchers_mouths
+@wait 1.0
+@anim liss drive_pin watchers_mouths
+@sfx watchers_pin
+Stillguard [angry]: Those are the Watchers! #line:ch08_hoist_001
+Ivo [determined]: Children first. Argue with the stone after. #line:ch08_hoist_002
+@sfx watchers_pin
+@sfx hoist_block
+Liss [determined]: Seat the pin. Seat it. She'll hold. #line:ch08_hoist_003
+<<set $ch08_hoist_rigged = true>>
+@anim liss haul_rope
+@sfx hoist_block
+@wait 2.0
+@mark child_a basket_top_a walk
+@mark child_b basket_top_b walk
+@mark child_c basket_top_c walk
+@wait 1.0
+@anim toma look_at watchers_mouths
+@wait 1.0
+@mark toma hoist_toma walk
+@anim toma haul_rope
+@wait 1.0
+===

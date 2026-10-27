@@ -1,0 +1,8 @@
+// Ch8 B02, bark 3: a net-mender in the low town, under the wall's lee. The 1001 section reads paler in
+// the stone; no one says 1001 (rule 3). Talk prompt.
+title: ch08_bark_netmender
+location: ch08/corrow
+---
+Old Net-Mender [neutral]: Wall's been rebuilt after every Rising. You can count them in the stone. #line:ch08_bark_netmender_001
+Old Net-Mender [neutral]: The pale blocks are the last one. #line:ch08_bark_netmender_002
+===

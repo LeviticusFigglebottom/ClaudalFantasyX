@@ -1,5 +1,5 @@
 {
-  "doc": "Menu portrait manifest (M2-MNU-301, ADR 0120). tools/portraits/render.sh renders every entry with tools/portraits/portrait_renderer.tscn on the lavapipe wrapper, one Godot process per entry. 'heroes': each hero's review stage (the characters track's AshaStage scene: model, hero materials, shader tier, face-pose table, lights) posed once per emotion tag of game/data/dialogue/emotions.json and seen through the stage's Face camera with this file's framing (camera keys override the defaults'); the nodes in hide_nodes and the sky are dropped for a transparent background. 'model', 'materials' and 'face_poses' name the sources the stage uses (tests check they agree; the PROVENANCE rows cite them). 'creatures' is the bestiary's list (M2-MNU-302), rendered by the same scene. Output: <out_dir>/<id>_<emotion>.png at 'size', drawn at size x supersample and Lanczos-reduced, after 'settle_frames' frames (deterministic: pinned wind, no TAA).",
+  "doc": "Menu portrait manifest (M2-MNU-301, ADR 0120). tools/portraits/render.sh renders every entry with tools/portraits/portrait_renderer.tscn on the lavapipe wrapper, one Godot process per entry. 'heroes': each hero's review stage (the characters track's AshaStage scene: model, hero materials, shader tier, face-pose table, lights) posed once per emotion tag of game/data/dialogue/emotions.json and seen through the stage's Face camera with this file's framing (camera keys override the defaults'); the nodes in hide_nodes and the sky are dropped for a transparent background. 'model', 'materials' and 'face_poses' name the sources the stage uses (tests check they agree; the PROVENANCE rows cite them). Output: <out_dir>/<id>_<emotion>.png at 'size', drawn at size x supersample and Lanczos-reduced, after 'settle_frames' frames (deterministic: pinned wind, no TAA). 'creatures' is the bestiary's list (M2-MNU-302): one entry per creatures.json row (its id and its battle actor 'scene', which enemies.json's `model` names), rendered alone in a small world built from 'creature_stage' (environment keys set on a new Environment, colours as [r, g, b(, a)]; directional 'lights' with yaw_deg relative to the camera's yaw, 0 = from the camera's side, 180 = from behind; dark-blue panels want the cool rims), held and framed from creatures.json's `portrait` block (CreatureFraming.hold and frame_fit); an entry's own 'portrait' keys override that block where a framing reads badly at menu size (wide fliers and tall shapes cropped, flat ones seen edge-on). Output <out_dir>/<id>.png, same size and supersample; the bestiary finds an enemy's picture through its model's creature id (CreaturePortraits).",
   "defaults": {
     "size": [256, 256],
     "supersample": 2,
@@ -41,5 +41,170 @@
       "camera": {}
     }
   ],
-  "creatures": []
+  "creatures": [
+    {
+      "id": "ashwing",
+      "scene": "res://game/creatures/ashwing/ashwing_battle.tscn",
+      "out_dir": "res://assets/ui/portraits/creatures",
+      "portrait": {"pitch_deg": 40.0}
+    },
+    {
+      "id": "bottle_hermit",
+      "scene": "res://game/creatures/bottle_hermit/bottle_hermit_battle.tscn",
+      "out_dir": "res://assets/ui/portraits/creatures"
+    },
+    {
+      "id": "cinder_matron",
+      "scene": "res://game/creatures/cinder_matron/cinder_matron_battle.tscn",
+      "out_dir": "res://assets/ui/portraits/creatures"
+    },
+    {
+      "id": "drownbell",
+      "scene": "res://game/creatures/drownbell/drownbell_battle.tscn",
+      "out_dir": "res://assets/ui/portraits/creatures"
+    },
+    {
+      "id": "flue_moth",
+      "scene": "res://game/creatures/flue_moth/flue_moth_battle.tscn",
+      "out_dir": "res://assets/ui/portraits/creatures"
+    },
+    {
+      "id": "glassfry",
+      "scene": "res://game/creatures/glassfry/glassfry_battle.tscn",
+      "out_dir": "res://assets/ui/portraits/creatures"
+    },
+    {
+      "id": "gull_harrier",
+      "scene": "res://game/creatures/gull_harrier/gull_harrier_battle.tscn",
+      "out_dir": "res://assets/ui/portraits/creatures",
+      "portrait": {"margin": 0.75}
+    },
+    {
+      "id": "hullgnaw",
+      "scene": "res://game/creatures/hullgnaw/hullgnaw_battle.tscn",
+      "out_dir": "res://assets/ui/portraits/creatures"
+    },
+    {
+      "id": "lantern_eel",
+      "scene": "res://game/creatures/lantern_eel/lantern_eel_battle.tscn",
+      "out_dir": "res://assets/ui/portraits/creatures",
+      "portrait": {"yaw_deg": 70.0, "margin": 1.0}
+    },
+    {
+      "id": "oil_slug",
+      "scene": "res://game/creatures/oil_slug/oil_slug_battle.tscn",
+      "out_dir": "res://assets/ui/portraits/creatures"
+    },
+    {
+      "id": "raid_hound",
+      "scene": "res://game/creatures/raid_hound/raid_hound_battle.tscn",
+      "out_dir": "res://assets/ui/portraits/creatures"
+    },
+    {
+      "id": "reef_crab",
+      "scene": "res://game/creatures/reef_crab/reef_crab_battle.tscn",
+      "out_dir": "res://assets/ui/portraits/creatures",
+      "portrait": {"margin": 0.95}
+    },
+    {
+      "id": "sail_leech",
+      "scene": "res://game/creatures/sail_leech/sail_leech_battle.tscn",
+      "out_dir": "res://assets/ui/portraits/creatures",
+      "portrait": {"pitch_deg": 40.0}
+    },
+    {
+      "id": "scuttler",
+      "scene": "res://game/creatures/scuttler/scuttler_battle.tscn",
+      "out_dir": "res://assets/ui/portraits/creatures"
+    },
+    {
+      "id": "shoal_skipper",
+      "scene": "res://game/creatures/shoal_skipper/shoal_skipper_battle.tscn",
+      "out_dir": "res://assets/ui/portraits/creatures"
+    },
+    {
+      "id": "slag_tortoise",
+      "scene": "res://game/creatures/slag_tortoise/slag_tortoise_battle.tscn",
+      "out_dir": "res://assets/ui/portraits/creatures"
+    },
+    {
+      "id": "spar_wraith",
+      "scene": "res://game/creatures/spar_wraith/spar_wraith_battle.tscn",
+      "out_dir": "res://assets/ui/portraits/creatures",
+      "portrait": {"margin": 0.95}
+    },
+    {
+      "id": "spawn_polyp",
+      "scene": "res://game/creatures/spawn_polyp/spawn_polyp_battle.tscn",
+      "out_dir": "res://assets/ui/portraits/creatures"
+    },
+    {
+      "id": "squall_wing",
+      "scene": "res://game/creatures/squall_wing/squall_wing_battle.tscn",
+      "out_dir": "res://assets/ui/portraits/creatures",
+      "portrait": {"margin": 0.75}
+    },
+    {
+      "id": "stormgull",
+      "scene": "res://game/creatures/stormgull/stormgull_battle.tscn",
+      "out_dir": "res://assets/ui/portraits/creatures",
+      "portrait": {"margin": 0.75}
+    },
+    {
+      "id": "tide_crawler",
+      "scene": "res://game/creatures/tide_crawler/tide_crawler_battle.tscn",
+      "out_dir": "res://assets/ui/portraits/creatures",
+      "portrait": {"margin": 0.95}
+    },
+    {
+      "id": "tower_limpet",
+      "scene": "res://game/creatures/tower_limpet/tower_limpet_battle.tscn",
+      "out_dir": "res://assets/ui/portraits/creatures"
+    },
+    {
+      "id": "undertows_reach",
+      "scene": "res://game/creatures/undertows_reach/undertows_reach_battle.tscn",
+      "out_dir": "res://assets/ui/portraits/creatures"
+    },
+    {
+      "id": "vein_sparker",
+      "scene": "res://game/creatures/vein_sparker/vein_sparker_battle.tscn",
+      "out_dir": "res://assets/ui/portraits/creatures"
+    },
+    {
+      "id": "wall_polyp",
+      "scene": "res://game/creatures/wall_polyp/wall_polyp_battle.tscn",
+      "out_dir": "res://assets/ui/portraits/creatures",
+      "portrait": {"margin": 0.95}
+    },
+    {
+      "id": "wallcrab",
+      "scene": "res://game/creatures/wallcrab/wallcrab_battle.tscn",
+      "out_dir": "res://assets/ui/portraits/creatures",
+      "portrait": {"margin": 0.95}
+    },
+    {
+      "id": "wreck_crab",
+      "scene": "res://game/creatures/wreck_crab/wreck_crab_battle.tscn",
+      "out_dir": "res://assets/ui/portraits/creatures",
+      "portrait": {"margin": 0.95}
+    }
+  ],
+  "creature_stage": {
+    "environment": {
+      "background_mode": 1,
+      "background_color": [0, 0, 0, 0],
+      "ambient_light_source": 2,
+      "ambient_light_color": [0.247, 0.471, 0.537],
+      "ambient_light_energy": 1.4,
+      "tonemap_mode": 4,
+      "glow_enabled": false
+    },
+    "lights": [
+      {"name": "key", "yaw_deg": 40.0, "pitch_deg": 40.0, "color": [1.0, 0.957, 0.878], "energy": 1.5},
+      {"name": "rim_left", "yaw_deg": 150.0, "pitch_deg": 30.0, "color": [0.663, 0.863, 0.949], "energy": 3.0},
+      {"name": "rim_right", "yaw_deg": -150.0, "pitch_deg": 30.0, "color": [0.663, 0.863, 0.949], "energy": 2.0},
+      {"name": "fill", "yaw_deg": -70.0, "pitch_deg": 10.0, "color": [0.55, 0.7, 0.85], "energy": 0.6}
+    ]
+  }
 }

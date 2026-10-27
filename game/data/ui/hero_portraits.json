@@ -10,7 +10,8 @@
       "status": {"emotion": "neutral", "fallen": "worried"},
       "equip": {"emotion": "determined"},
       "lattice": {"emotion": "determined"},
-      "formation": {"emotion": "neutral", "fallen": "worried"}
+      "formation": {"emotion": "neutral", "fallen": "worried"},
+      "field_menu": {"emotion": "smile", "fallen": "worried"}
     }
   }
 }
