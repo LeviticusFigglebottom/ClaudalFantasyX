@@ -3254,6 +3254,14 @@
         960,
         720
       ]
+    },
+    {
+      "id": "creature_gallery_ray",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_gallery_ray.tscn",
+      "resolution": [
+        960,
+        720
+      ]
     }
   ]
 }

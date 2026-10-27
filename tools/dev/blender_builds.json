@@ -652,6 +652,16 @@
       ]
     },
     {
+      "id": "creature_gallery_ray",
+      "owner": "character",
+      "sources": ["assets_src/creatures/gallery_ray/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/gallery_ray/*.glb", "assets/creatures/gallery_ray/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/gallery_ray/build_gallery_ray.py", "--", "--out", "assets/creatures/gallery_ray/gallery_ray.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "gallery_ray"]
+      ]
+    },
+    {
       "id": "wildlife_gull",
       "owner": "character",
       "sources": ["assets_src/wildlife/gull/**", "assets_src/wildlife/common/**", "assets_src/creatures/common/creature_kit.py"],

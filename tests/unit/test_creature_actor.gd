@@ -31,6 +31,14 @@ const ARCHER := "res://game/creatures/tannin_archer/tannin_archer_battle.tscn"
 const ARCHER_AIM_RISE_M := 0.1
 const ARCHER_KO_OFF_X := 0.2
 const ARCHER_KO_MAX_Y := 0.25
+## The gallery ray flies: its stand-in hover; the cast settles it at least this far down onto the pool, the KO lands its
+## root on the floor (within this much of the hover), and in the idle its outer wing joints rise this far
+## between strokes (over the body's bob).
+const RAY := "res://game/creatures/gallery_ray/gallery_ray_battle.tscn"
+const RAY_HOVER := 1.4
+const RAY_POOL_DROP_M := 1.2
+const RAY_FLOOR_TOL_M := 0.05
+const RAY_STROKE_M := 0.03
 const RING := {"radius_factor": 1.4, "inner_soft_m": 0.25, "notches": 6}
 const SANDBOX := "res://game/battle/scene/battle_sandbox.tscn"
 const SEED := 20261024
@@ -590,3 +598,23 @@ func test_the_tannin_archer_spits_from_its_root_and_rolls_off_it() -> void:
 	assert_true(_bone_at(skel, "root").is_equal_approx(root_rest), "the mangrove root it lay on stays put")
 	assert_true(_bone_at(skel, "spine_0").x > ARCHER_KO_OFF_X, "it rolls off the root to the side")
 	assert_true(_bone_at(skel, "jaw").y < ARCHER_KO_MAX_Y, "and lies at the water")
+
+
+func test_the_gallery_ray_glides_settles_into_its_pool_and_falls_flat() -> void:
+	var bones: Array[String] = ["root", "body"]
+	for side in ["l", "r"]:
+		for k in 3:
+			bones.append("wing_%s%d" % [side, k])
+	for k in 4:
+		bones.append("tail_%d" % k)
+	var a := _act2_regular(RAY, [0.6, 0.9], bones)
+	var spec := CreatureActor.row_for(&"gallery_ray")["stand_in"] as Dictionary
+	assert_true(is_equal_approx(float(spec["hover"]), RAY_HOVER), "it flies at head height")
+	var skel := _pose(a, &"idle", 1.5)
+	var up := _bone_at(skel, "wing_l2").y
+	skel = _pose(a, &"idle", 0.0)
+	assert_true(up - _bone_at(skel, "wing_l2").y > RAY_STROKE_M, "the wings undulate as it glides")
+	skel = _pose(a, &"cast", 0.9)
+	assert_true(_bone_at(skel, "root").y < -RAY_POOL_DROP_M, "the cast settles it into the pool")
+	skel = _pose(a, &"ko", INF)
+	assert_true(absf(_bone_at(skel, "root").y + RAY_HOVER) < RAY_FLOOR_TOL_M, "the KO lays it flat on the floor")
