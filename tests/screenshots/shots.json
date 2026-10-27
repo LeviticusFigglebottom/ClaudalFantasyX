@@ -3156,6 +3156,63 @@
         540
       ],
       "settle_frames": 30
+    },
+    {
+      "id": "iskarra_p01_plaza_dusk",
+      "scene": "res://game/levels/_tests/iskarra_kit/iskarra_preview.tscn",
+      "camera": "Cameras/P01",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "iskarra_i02_gate_from_the_plaza",
+      "scene": "res://game/levels/_tests/iskarra_kit/iskarra_preview.tscn",
+      "camera": "Cameras/I02",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "iskarra_i03_broken_tower",
+      "scene": "res://game/levels/_tests/iskarra_kit/iskarra_preview.tscn",
+      "camera": "Cameras/I03",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
     }
   ]
 }
