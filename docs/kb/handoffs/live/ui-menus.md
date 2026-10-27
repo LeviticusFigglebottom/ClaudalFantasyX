@@ -105,3 +105,9 @@ RENDER-REQUEST @ a195cd39: field_menu_codex; why: the codex set grew (Ch8 entrie
 - the tools codex test fix.
 
 Checks are as listed in the line above. Skipped: coverage (no change in game/battle or game/progression), Blender (no Blender source), and the full Godot suite (the Lead's).
+
+- 2026-10-27: **M3-C08-100 battle barks (combat's, UI-adjacent; 213a822f).**
+  - BattleBarks floats "Hold." (Toma, Hold the Stair), "Pull!" (Liss, Haul) and "Virel." (Asha's call), from skills.json `bark_key` and vowbound.json `call_bark_key`. Speech shows with damage numbers off.
+  - The sailmaker's needle is **blocked** on the same accessory-slot ruling as the Oruvel Float.
+  - **M3-UI-203 is done:** M3-C08-02 already raises `ch08_stair_groups_up` after every set-piece fight. The Reach's objective now carries the flag too.
+  - **Checks:** battle_barks 4/0, set_piece 35/0, ch08 14/0, validate_data 0/0, gdlint and gdformat clean. The battle filter and coverage results follow (game/battle/scene changed).
