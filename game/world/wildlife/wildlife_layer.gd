@@ -1,13 +1,15 @@
 class_name WildlifeLayer
 extends Node3D
 ## Ambient, non-combat wildlife for a zone (M3-CRE-611, docs/kb/art/wildlife.md): gulls wheeling and settling on
-## perches, shore crabs that scuttle off when the player comes near, fish shoals in the shallows. A zone adds one
+## perches, shore crabs that scuttle off when the player comes near, fish shoals in the shallows, and (M3-CRE-616)
+## insects: moths round the lamps, dragonflies patrolling over water and paddies. A zone adds one
 ## WildlifeLayer node (at the zone's origin) with `zone_id` set to its location id; the placement is
 ## game/data/world/wildlife/<zone id with / as _>.json, the kinds and budgets wildlife.json.
 ##
-## Cheap by construction: four MultiMeshes for the whole layer (gulls flying, gulls perched, crabs, fish; the
-## motion is the wildlife shader's, driven per instance from here), no Skeleton3D, no AnimationPlayer, no physics
-## bodies (wildlife never blocks the player). A group (a flock, a beach, a shoal) pauses while its bounds are off
+## Cheap by construction: at most six MultiMeshes for the whole layer (gulls flying, gulls perched, crabs, fish,
+## moths, dragonflies; the motion is the wildlife shader's, driven per instance from here), no Skeleton3D, no
+## AnimationPlayer, no physics bodies (wildlife never blocks the player). A group (a flock, a beach, a shoal, a
+## swarm) pauses while its bounds are off
 ## screen and hides past the cull distance. Deterministic: every animal's choices come from a seed made from the
 ## zone id, and the motion from the frame deltas only.
 
@@ -15,6 +17,8 @@ const GULLS_FLYING := &"gull_flying"
 const GULLS_PERCHED := &"gull_perched"
 const CRABS := &"crab"
 const FISH := &"fish"
+const MOTHS := &"moth"
+const DRAGONFLIES := &"dragonfly"
 const PLAYER_GROUP := &"player"
 const USEC_PER_MS := 1000.0
 const VIS_HIDDEN := 0
@@ -38,6 +42,7 @@ var budgets: Dictionary = {}
 var flocks: Array[WildlifeGullFlock] = []
 var beaches: Array[WildlifeCrabBeach] = []
 var shoals: Array[WildlifeShoal] = []
+var swarms: Array[WildlifeSwarm] = []
 ## Per MultiMesh: the instance buffer (WildlifeBuffer) and the node drawing it.
 var buffers: Dictionary = {}
 var multimeshes: Dictionary = {}
@@ -97,15 +102,25 @@ func build() -> void:
 		var n := _take(row, left, "fish")
 		left -= n
 		shoals.append(WildlifeShoal.new(row, k["fish"], _group_seed("fish", row), n, ground))
+	left = int(budgets.get("insects", 0))
+	for row: Dictionary in zone.get("swarms", []):
+		var n := _take(row, left, "insects")
+		left -= n
+		swarms.append(WildlifeSwarm.new(row, k["insect"], _group_seed("insect", row), n))
 	var gulls := gull_count()
 	buffers[GULLS_FLYING] = WildlifeBuffer.new(gulls)
 	buffers[GULLS_PERCHED] = WildlifeBuffer.new(gulls)
 	buffers[CRABS] = WildlifeBuffer.new(crab_count())
 	buffers[FISH] = WildlifeBuffer.new(fish_count())
+	buffers[MOTHS] = WildlifeBuffer.new(insect_count(WildlifeSwarm.TYPE_MOTH))
+	buffers[DRAGONFLIES] = WildlifeBuffer.new(insect_count(WildlifeSwarm.TYPE_DRAGONFLY))
 	_make_multimesh(GULLS_FLYING, k["gull"], "flying", _union(flocks))
 	_make_multimesh(GULLS_PERCHED, k["gull"], "perched", _union(flocks))
 	_make_multimesh(CRABS, k["crab"], "body", _union(beaches))
 	_make_multimesh(FISH, k["fish"], "body", _union(shoals))
+	if k.has("insect"):
+		_make_multimesh(MOTHS, k["insect"], "moth", _union(swarms_of(WildlifeSwarm.TYPE_MOTH)))
+		_make_multimesh(DRAGONFLIES, k["insect"], "dragonfly", _union(swarms_of(WildlifeSwarm.TYPE_DRAGONFLY)))
 	_write_all()
 
 
@@ -156,6 +171,23 @@ func fish_count() -> int:
 	return n
 
 
+## Insects of one type (WildlifeSwarm.TYPE_MOTH or TYPE_DRAGONFLY), or of both with "".
+func insect_count(swarm_type: String = "") -> int:
+	var n := 0
+	for s in swarms:
+		if swarm_type == "" or s.swarm_type == swarm_type:
+			n += s.count()
+	return n
+
+
+func swarms_of(swarm_type: String) -> Array[WildlifeSwarm]:
+	var out: Array[WildlifeSwarm] = []
+	for s in swarms:
+		if s.swarm_type == swarm_type:
+			out.append(s)
+	return out
+
+
 ## Draw calls before shadow passes: one per MultiMesh that has instances.
 func draw_calls() -> int:
 	var n := 0
@@ -176,6 +208,8 @@ func step(delta: float, player: Vector3, has_player: bool, camera: Camera3D = nu
 	var perched: WildlifeBuffer = buffers.get(GULLS_PERCHED)
 	var crabs: WildlifeBuffer = buffers.get(CRABS)
 	var fish: WildlifeBuffer = buffers.get(FISH)
+	var moths: WildlifeBuffer = buffers.get(MOTHS)
+	var dragonflies: WildlifeBuffer = buffers.get(DRAGONFLIES)
 	var dirty := {}
 	var g := 0
 	var base := 0
@@ -213,6 +247,23 @@ func step(delta: float, player: Vector3, has_player: bool, camera: Camera3D = nu
 			_write_or_hide(vis, fish, base, s.count(), s.write)
 			dirty[FISH] = true
 		base += s.count()
+		g += 1
+	var moth_base := 0
+	var dragonfly_base := 0
+	for s in swarms:
+		var vis := _visibility(s.bounds, camera)
+		if vis == VIS_ACTIVE:
+			s.step(delta, player, has_player)
+		var moth := s.is_moth()
+		if _changed(g, vis):
+			_write_or_hide(
+				vis, moths if moth else dragonflies, moth_base if moth else dragonfly_base, s.count(), s.write
+			)
+			dirty[MOTHS if moth else DRAGONFLIES] = true
+		if moth:
+			moth_base += s.count()
+		else:
+			dragonfly_base += s.count()
 		g += 1
 	_upload(dirty)
 	last_step_ms = float(Time.get_ticks_usec() - t0) / USEC_PER_MS
@@ -299,7 +350,10 @@ func _make_multimesh(key: StringName, kind: Dictionary, mesh_key: String, aabb: 
 	var mmi := MultiMeshInstance3D.new()
 	mmi.name = String(key).to_pascal_case()
 	mmi.multimesh = mm
-	var mat := load(str(kind["material"])) as Material
+	# one material for the kind, or one per mesh (the insects: {"moth": ..., "dragonfly": ...})
+	var mat_ref: Variant = kind["material"]
+	var mat_path := str((mat_ref as Dictionary)[mesh_key]) if mat_ref is Dictionary else str(mat_ref)
+	var mat := load(mat_path) as Material
 	if mat != null:
 		mmi.material_override = mat
 	var shadow: bool = (kind.get("cast_shadow", {}) as Dictionary).get(mesh_key, false)
