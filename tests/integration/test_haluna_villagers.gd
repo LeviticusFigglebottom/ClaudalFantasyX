@@ -145,3 +145,25 @@ func test_a_bark_freezes_rhen_and_keeps_the_party_in_view() -> void:
 	assert_true(zone.player.accepts_input, "and walks again after")
 	assert_true(story.sequencer.hold_player, "the next staged scene holds the player again")
 	_done()
+
+
+## M2-FP-110: B05 at the causeway head is Asha and Toma talking. It no longer hides them (it isn't staged), and
+## their lines play on the followers the player sees, because their stage actors are hidden after Cutscene A.
+func test_the_causeway_head_talk_keeps_asha_and_toma_and_they_talk() -> void:
+	var saved_party := Game.state.party_ids.duplicate()  # before the flag: its join hook adds Asha and Toma
+	Game.set_flag(&"ch02_met_asha")
+	Game.state.party_ids.assign([&"rhen", &"asha", &"toma"])
+	_load()
+	var party := zone.player.get_node(NodePath(String(HeroFieldParty.NAME))) as HeroFieldParty
+	party.advance(1.0 / 60.0)  # builds the followers from party_ids
+	party.rescan()
+	assert_true(CutsceneNpcTalk.follower(zone, &"asha") != null, "Asha follows Rhen")
+	var story := zone.get_node(^"Story") as HalunaStory
+	story.sequencer.instant = true
+	var hidden: Array[bool] = []
+	story.sequencer.line_shown.connect(func(_s: DialogueStep) -> void: hidden.append(party.should_hide()))
+	await story.call(&"_play_unstaged", &"ch02_low_tide")
+	assert_false(hidden.is_empty(), "B05 played lines")
+	assert_false(true in hidden, "Asha and Toma stayed in view")
+	Game.state.party_ids.assign(saved_party)
+	_done()

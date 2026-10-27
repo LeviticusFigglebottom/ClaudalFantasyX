@@ -360,6 +360,8 @@ func _line(step: DialogueStep) -> void:
 	overlay.box.show_line(step)
 	line_shown.emit(step)
 	var speaker := _stage.actor(step.speaker) if _stage != null and step.speaker != &"" else null
+	if speaker != null and not speaker.is_visible_in_tree():
+		speaker = CutsceneNpcTalk.follower(_stage.get_parent(), step.speaker)  # M2-FP-110: the follower talks
 	if speaker == null and _stage != null:
 		_npc_talk.speak(_stage.get_parent(), step.speaker, _player)  # M2-FP-106: a villager turns and talks
 	if speaker != null:
