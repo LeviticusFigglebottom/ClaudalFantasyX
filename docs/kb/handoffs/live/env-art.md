@@ -195,6 +195,32 @@ env-art is cloud session `session_01YbaV2c8yquRHqj6afQYg89` on `claude/env-art`;
   - **For act1-chapters:** request **M3-ENV-714** sets the Ch8 encounters' `arena` ids. Until then the arenas sit
     unused in arenas.json.
 
+- **Lead's new queue (18:14).** Items 3 and 5 were already done:
+  - item 3, the 8 arena-less encounters: Ch8's seven are M3-ENV-713; the eighth, `sandbox_reef`, is the sandbox's
+    own fixture;
+  - item 5, `offering_step`: explained above; clean on env-art's head.
+- **For act1-chapters' blocked swaps** (their 17:44 entry). Merge-ready at fd630bb8 once the PC answers; the only
+  red is `test_screenshots`, which wants the new shots' baselines.
+  - **M3-ENV-1214 (Ch5 Pemakar), done:**
+    - pieces `harbour_quay` (32 m), `sea_cut_weir` (the hero mesh), `wake_wall` and `crown_bell`
+      (`pemakar_harbour.py`);
+    - a `day` grade for B11, `pemakar_day_environment.tres`, as the preview's `day` mood.
+    - Placement numbers are in the task file. **One conflict to settle:** your weir stand-in at x 10 lies in front of
+      your 32 m quay, so the weir's cut would run through the quay deck. Shorten the quay or move the weir. The
+      preview puts it where your bottom channel meets the shore (x −39.3).
+  - **Ch5 Ashcrown (M3-ARC-1216):** env-art recommends the traversal (option 1). Re-cutting the flights under 40°
+    would change the temple's massing and its silhouette from Pemakar. **M3-ENV-715** exports every steep flight's
+    path (foot, head, landings, width, angle) as `assets/environments/kits/ashcrown/ashcrown_flights.json`, ready
+    for a traversal.
+  - **Ch7 port (M3-C07-04):** next for env-art: the `tamsule.md` sheet, then the "Tamsule stilt" kit.
+
+  Checks run:
+  - full tools suite (only that red);
+  - `test_pemakar_kit`, `test_ashcrown_kit`, `test_arenas`;
+  - Godot `--filter=pemakar` 6/0;
+  - Pemakar full rebuild (older pieces identical);
+  - validate_data, taskboard.
+
 ### Render requests
 RENDER-REQUEST @ a0d2549f: battle_arena_tideline_dawn,battle_arena_causeway_disc_sunset,battle_arena_causeway,battle_arena_tideline,causeway_c02_profile_against_the_lagoon,causeway_c08_drownbell_disc_approach,drownbell_flood,battle_boss_intro_drownbell,haluna_h01_village_from_sea,haluna_h10_dock_night,field_objective_line,field_interact_prompt,field_area_title,field_tip_card,dialogue_continue; why: M3-ENV-701 set dressing in Haluna, the causeway and the two arenas (the five field/dialogue shots frame Haluna's lane 1)
 RENDER-REQUEST @ 22a5de11: battle_arena_oruvel_raft_morning,battle_arena_causeway,drownbell_flood; why: the merge took the PC gate's copies of these three over env-art's; confirm they still match with the arena dressing
@@ -207,6 +233,7 @@ RENDER-REQUEST @ 24bf927a: iskarra_p01_plaza_dusk,iskarra_i02_gate_from_the_plaz
 RENDER-REQUEST @ fa67bfee: battle_arena_shoals,battle_arena_camp,battle_boss_intro_inquisitor; why: M3-ENV-706 density pass after viewing 71f19fb (the shoals read as bare sand, the camp's hard as one pebble repeat)
 RENDER-REQUEST @ 8770a067: corrow_c01_wall_head,corrow_c08_watcher_profile,corrow_c10_breach_fallen,brine_b01_arrival,brine_b05_barge_channel,battle_arena_shoals,battle_arena_camp,battle_boss_intro_inquisitor,iskarra_p01_plaza_dusk,iskarra_i02_gate_from_the_plaza,iskarra_i03_broken_tower; why: M3-ENV-712 carved Watcher backs, M3-ENV-705 Brine Shoals zenith, M3-ENV-706 Ch6 arena density, M3-ENV-710 Iskarra (supersedes the 24bf927a and fa67bfee lines)
 RENDER-REQUEST @ 599b2418: battle_arena_seawall_stairhead_storm,battle_arena_seawall_stairhead_hoist,battle_arena_seawall_stairhead_surge,battle_arena_coilspire_headland_path,battle_arena_coilspire_tier_landing; why: M3-ENV-713 Ch8's five new arenas (new shots, no baseline yet)
+RENDER-REQUEST @ fd630bb8: pemakar_p04_harbour_day,pemakar_p11_sea_cut_weir_day,battle_arena_ash_terrace_lanternfall; why: M3-ENV-1214 Pemakar's harbour pieces and day grade (new shots), the crown bell now in the Lanternfall arena's town
 
 ## STATE AT HANDOVER (2026-10-25)
 
