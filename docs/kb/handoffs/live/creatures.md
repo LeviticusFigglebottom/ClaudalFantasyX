@@ -346,4 +346,10 @@ RENDER-REQUEST @ b5e05d2f: creature_drownbell, creature_drownbell_toll, creature
   - **the only foe without a model is `stillguard_inquisitor`** (encounter ch06_inquisitor);
   - summons (spawn_polyp, squall_wing, tide_crawler) all have models;
   - set-piece entries (the_climb, the_surge, the_kirru) are timeline-only and never seated on the stage, so they draw no capsule.
+- **MERGE-READY @ 10f21a17: M3-CRE-623, the Lamp Engine (Ch11 boss, worktree agent).**
+  - 18.5k triangles; phase `opened` (the rings fold back as petals and the core shows), with opened-pose strike clips.
+  - Checked by numbers, not renders: feet at y 0, every lamp clear of the frame, the core 1.3% visible closed and 48% open, every colour a palette swatch, no break parts yet (they need a charge skill).
+  - **Checks run:** Godot creature 27/0, post_import 21/0, validate_data, taskboard, manifest, Blender verify identical.
+- **Kit-wide finding (to fix later, M3 polish):** every creature GLB's clips play one frame (1/30 s) late in the file; a hit authored to peak at 0.10 s peaks at 0.13 s. The hit snap (0.1 s) still lands near half the recoil, so nothing is broken. Fixing it rebuilds all 29 creatures, so it waits for a batch rebuild.
+RENDER-REQUEST @ 10f21a17: creature_lamp_engine, creature_lamp_engine_opened; why: M3-CRE-623 new Act II boss, never rendered (no baselines); check the battle-distance read, the closed-seam glow, and the hub and lamp teals reading apart.
 
