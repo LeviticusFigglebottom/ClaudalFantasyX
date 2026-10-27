@@ -8,6 +8,7 @@
 
 from __future__ import annotations
 
+import math
 import sys
 import unittest
 from pathlib import Path
@@ -60,6 +61,18 @@ class IskarraSpireTests(unittest.TestCase):
         self.assertAlmostEqual(at[1], -sp.ELEVATION_M)
         self.assertEqual(a["lamp_spec"]["color"], "#4FB3B0")
 
+
+    def test_the_engines_shadow_misses_the_slots(self) -> None:
+        """The 2 deg afterglow behind the party: the anchor-engine's long shadow runs away from every battle slot (it
+        lay across the enemy line with the light behind them)."""
+        a = ar.ARENAS["iskarra_spire_crown"]
+        az = math.radians(a["sun"]["az"])
+        to_sun = np.array([math.sin(az), -math.cos(az)])
+        ex, ez = sp.ENGINE_AT
+        for sx, sz in SLOTS_XZ:
+            with self.subTest(slot=(sx, sz)):
+                v = np.array([sx - ex, sz - ez])
+                self.assertGreater(float(v @ to_sun), 0.0)  # the slot is on the engine's sunward side
 
 if __name__ == "__main__":
     unittest.main()

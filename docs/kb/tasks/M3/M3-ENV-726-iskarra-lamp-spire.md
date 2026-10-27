@@ -30,4 +30,8 @@ sheet, so this task writes it.
 - **For combat and act1-chapters:** set the Ch19 revenant pair's encounter arena to `iskarra_spire_crown` when the
   encounter exists. It is not in encounters.json yet.
 
+- **2026-10-27 (env-art):** a shadow sweep over every arena after fca9987 (a 24 m singer's moon-shadow lay over the
+  Choir's party) found the same failure here before the first render. The 2° afterglow came from behind the enemy
+  line, so the 7.4 m engine's ~200 m shadow lay across the enemy slots. The afterglow now comes from behind the party,
+  as the arena's own note intended (azimuth 100°). `test_the_engines_shadow_misses_the_slots` holds it.
 ## Review log

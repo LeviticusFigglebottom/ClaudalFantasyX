@@ -1611,8 +1611,9 @@ SPIRE_CROWN = {
     "lut": "res://assets/environments/arenas/iskarra_spire_crown/lut_ch19_spire.png",
     # Colour script ch19 (the spire climbed into night): the afterglow low in the west #FF9F46 0.7 behind the party,
     # fill #5A7FA8 0.4, the sky #22304E over a #C8763E horizon, the warm fog thin; the anchor-engine's bound teal
-    # the only lamp. The drowned city 112 m below.
-    "sun": {"elev": 2.0, "az": 285.0, "color": "#FF9F46", "energy": 0.7, "max_distance": 60.0},
+    # the only lamp. The drowned city 112 m below. The afterglow is behind the party (+x: az 100 in the arena's frame),
+    # so the anchor-engine's long shadow falls away from the slots (az 285 laid it across the enemy line).
+    "sun": {"elev": 2.0, "az": 100.0, "color": "#FF9F46", "energy": 0.7, "max_distance": 60.0},
     "fill": {"color": "#5A7FA8", "energy": 0.4},
     "exposure": 1.0,
     "glow": (0.6, 0.08, 1.0),

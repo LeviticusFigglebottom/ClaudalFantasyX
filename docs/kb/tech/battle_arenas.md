@@ -420,8 +420,7 @@ balustrade runs round its edge, and an arcade of twelve columns carries round ar
 | Behind the enemy line, (−7.2, −4.6) | The founders' `anchor_engine`: a salt-glass column round a bound core, caged in three bronze rings; its teal is the one practical light (`Lamp0`, shadowed) |
 | Below, y −112 | `iskarra_far_towers`, the drowned city, set off the origin by `extra_glbs`' new `(glb, (x, y, z))` form |
 
-- **Light** (iskarra.md §3): the afterglow low in the west `#FF9F46` 0.7, fill `#5A7FA8` 0.4, exposure 1.0,
-  `lut_ch19_spire`.
+- **Light** (iskarra.md §3): the afterglow low in the west `#FF9F46` 0.7, set behind the party (azimuth 100° in the arena's frame) so the engine's long shadow falls away from the slots (tested); fill `#5A7FA8` 0.4, exposure 1.0, `lut_ch19_spire`.
 - **Hints:** `the_engine`, `the_city_below`.
 
 ### The Cage in the last remembered room (`undertow_cage`, M3-ENV-727, the Haluna kit's undertow_layers.py)
