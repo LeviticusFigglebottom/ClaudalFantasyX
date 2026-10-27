@@ -34,11 +34,11 @@ Sizes are estimates (about 0.95 MB a minute at q3) until a final is rendered; th
 | 12 | `cloudloom` | new | loop ~120 s, the open-roofed weaving-hall | 1.9 MB | |
 | 12 | `hesk_bound` / `hesk_summon` | new | stings | 0.3 MB | |
 | 12 | `avalanche_ram` | new | boss, 2 stems (no phases: the second stem is the bellow's rage under 50% HP) | 3.8 MB | |
-| 13 | `ansedra` | sketch | loop ~150 s | 2.4 MB | |
+| 13 | `ansedra` | sketch | loop ~150 s | 2.4 MB | 1.65 MB, 152.4 s, −16.01 LUFS |
 | 13 | `sanctum_of_the_level` | new | loop ~120 s, the still mirror | 1.9 MB | |
-| 13 | `lamp_archive` | sketch | loop ~150 s | 2.4 MB | |
+| 13 | `lamp_archive` | sketch | loop ~150 s | 2.4 MB | 1.25 MB, 137.3 s, −16.07 LUFS |
 | 13 | `ethren_bound` / `ethren_summon` | new | stings | 0.3 MB | |
-| 14 | `peace_wedding` | sketch | cue ~3 min (the ceremony; it breaks at the trap) | 2.9 MB | |
+| 14 | `peace_wedding` | sketch | cue ~3 min (the ceremony; it breaks at the trap) | 2.9 MB | 1.42 MB, 130.9 s loop, −16.03 LUFS (the ceremony's loop; the break at the trap is a later cue) |
 | 14 | `lagoon_escape` | new | cue ~2 min, the first ripples; the bells; Merel left behind | 1.9 MB | |
 | 14 | `malcor_venn` | new | boss, 2 stems (phase 1 the still water slows; phase 2 he boards) | 3.8 MB | |
 | 15 | `unlamped` | sketch | loop ~150 s | 2.4 MB | |
