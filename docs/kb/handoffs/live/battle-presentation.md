@@ -24,12 +24,32 @@ Session `session_015hKkhtpX67kS4yZeA8AAhv`. Integration branch `claude/undertow-
 - **Checks skipped:** the full manifest (only boss-intro shots can move), Blender (none touched), coverage (no
   battle-core change).
 
-**In progress (not merge-ready yet): 401/402.**
-- New commits: c3b01d7f (screen_shake setting), e5a1d3e6 (its doc), the audio hooks commit (BattleImpact `landed` /
-  `slowmo_planned`), request M3-BPR-405 to audio, and 9369e8c0 (the KO test no longer assumes the wickfry has no
-  model; it fails on `-ze8rrn` too).
-- Battle tests on the branch: 633 run, 1 failed before 9369e8c0 (that test); re-run pending.
-- **Next:** capture the battle_choreo_*, arena and battle shots, view them and re-approve, then post MERGE-READY.
+**MERGE-READY @ a9f8d67b: M3-BPR-401 battle feel + M3-BPR-402 melee spacing** (with M2-BPR-11 follow-ups e03f04ba,
+d5d4edfd and the test fix 9369e8c0). Merge the branch head; it includes 404, the integration branch -ze8rrn 492651da
+is merged in, and big10's bpr pick a3e489bb is an ancestor.
+- **New since the handover:**
+  - c3b01d7f/e5a1d3e6: a **Screen shake setting** (Full / Half / Off; accessibility.json row `screen_shake`,
+    loc SET_SCREEN_SHAKE*). Reduced motion now drops every battle shake, BattleFloats' too.
+  - The audio hooks: BattleImpact `landed(target, strength, stop_sec)` and `slowmo_planned`. Request
+    **M3-BPR-405** (role audio) asks for an impact weight layer and a KO swell on them.
+  - A 402 fix (the melee_approach commit): a body *beside* the path turns the run instead of stopping it short.
+    Rhen had struck the air 2.9 m from the reef crab, because the gull harrier's wing footprint blocked the path.
+  - 9369e8c0: test_battle_ko_once takes the wickfry's new model away for its primitive case. **It fails on -ze8rrn
+    and big10 as well**, because the wickfry gained a model; cherry-pick 9369e8c0 if needed.
+- **Shots that move (viewed, re-approved):**
+  - battle_choreo_melee (rmse 0.069): Rhen no longer inside the gull harrier.
+  - battle_choreo_hit (0.091): Rhen meets the crab, with the flash and the scaled recoil.
+  - battle_choreo_ko (0.034): the impact flash under the falling harrier.
+  - battle_choreo_toll (0.062): Ysolde's heavier recoil at 13 HP.
+  - Every other battle_*, arena and drownbell shot passes (43 + 12 compared). The boss intros are 404's six.
+- **Checks run:** Godot `--filter=battle` 634 run, 0 failed; gdlint, gdformat, validate_data 0/0, taskboard --check.
+- **Checks skipped:** the full manifest (only battle shots can move), Blender (none touched), and tools tests (no
+  tools change).
+- **Coverage:** not run. game/battle core is untouched; every change is under game/battle/scene.
+
+**In progress:** M3-BPR-403, the opening line-up spaced by footprint (BattleLineup), on a local worktree. Its tests
+pass (lineup 4/0; it fails with the spread off), and the battle filter gives 638/0. It moves every sandbox_reef shot,
+so a full battle-shot capture comes next.
 
 ## STATE AT HANDOVER (2026-10-25)
 
