@@ -83,7 +83,7 @@ RENDER-REQUEST @ 60b62678: battle_arena_wall_head,battle_boss_intro_reach; why: 
 (Ch8 so far), M3-BPR-408 (Act II intros by enemy id), and M3-C08-100's barks.
 - Merge the branch head; it carries big10.
 - **Checks run:** gdlint, gdformat, validate_data 0/0, taskboard --check, and Godot `--filter=battle` 716/0 at 19172f4c
-  plus the scoped filters after (boss 58/0, set_piece_stage 5/0, placeholder 8/0).
+  plus the scoped filters after (boss 58/0, set_piece_stage 5/0, placeholder 8/0); full `--filter=battle` at 2d988e27: 719/0.
 - **Checks skipped:** coverage (no battle-core change), Blender (none touched).
 - **Known red until the PC render is approved:** tools test_screenshots, which has no baseline yet for
   battle_boss_intro_reach and battle_arena_wall_head.
