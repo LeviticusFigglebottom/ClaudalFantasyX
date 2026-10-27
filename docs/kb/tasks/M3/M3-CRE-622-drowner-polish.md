@@ -2,7 +2,7 @@
 id: M3-CRE-622
 title: "The Mangrove Drowner, polish: knuckled tapering prop-roots, a folded core, less spider in the risen stance"
 role: character
-status: review
+status: todo
 owner_session: "worktree-agent-a2773b09b6372eb5f"
 reviewer: art
 depends_on: [M3-CRE-621]
@@ -56,3 +56,15 @@ featureless sphere.
 - Sheet updated: five legs (was six), and model notes.
 
 ## Review log
+- 2026-10-27, creatures (review of the first pass's silhouettes, side/front/top, rooted and risen): **still reads as a
+  spider (a tarantula)** in every view, the top view most of all (a sunburst). The detail is better (knuckles, taper,
+  folds), but the knuckled roots now read as segmented legs. The cause is topology, not detail: a central bulb with
+  radial roots *is* a spider. Merged as a step; reopened for a **silhouette redesign**:
+  - make it **vertical**: a tall, thick trunk (to about 3.5 m, cut by the canopy) standing *above* the cage, with the
+    spawn core wedged **low inside** the roots, not a ball on legs;
+  - put the prop-roots in **tiers** at different heights from the trunk, overlapping in depth: a tangle, not a ring;
+    roots on one side longer (the bank side), so the plan view is lopsided, never radial;
+  - hang thin, straight **aerial roots** from the trunk to the water: vertical lines that no spider has;
+  - risen: it tears the trunk up with it and **leans**, walking on three or four root-clusters, the trunk tipping
+    forward like a felled tree that walks; no even leg ring;
+  - amend the sheet (docs/kb/art/creatures/act2/mangrove_drowner.md) first, then build; PC render to judge.
