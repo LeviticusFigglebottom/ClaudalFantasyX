@@ -59,3 +59,19 @@
 - 2026-10-24: merged rnd-21, CHR-08, sweep O, qa-08, first-playable, cmb, ui-04, sweep P, rnd-01, m2-slice, rnd-23. Spawned the characters track. Hourly check-in trig_01LJyLo42xCq3WVmAza3BMhe.
 - 2026-10-24: new Lead took over. Toolchain up. PC and m2-slice briefed.
 - 2026-10-24 (old account): see CONSOLIDATED-history-2026-10-23.md.
+
+## Cloud renders (PC paused)
+- RENDERED @ 7a8bff79d15491fe5f03f5ebdaa8211b184eaf5b: lead/gate-render-hero-integration-7a8bff7; 0 pass, 7 drift (cloud)
+- RENDERED @ 60cbb212cec3781e32e8ac0f96303b895d54f01e: lead/gate-render-battle-presentation-60cbb21; 0 pass, 1 drift (cloud)
+- RENDERED @ 1c9bf8bd7ec282e7dab59df80807c1baed0e4173: lead/gate-render-hero-integration-1c9bf8b; 0 pass, 7 drift (cloud)
+- RENDERED @ 5a5b4fed21aa09992244352679a50aa125695273: lead/gate-render-battle-presentation-5a5b4fe; 0 pass, 2 drift; 2 new without baseline (cloud)
+- RENDERED @ ed3a458ef8ee2ab08c0626b6e70b42fb0fadf117: lead/gate-render-battle-presentation-ed3a458; 0 pass, 4 drift (cloud)
+- RENDERED @ 60eee2f73a37fad79613876a42696da58d8f4962: lead/gate-render-env-art-60eee2f; 0 pass, 5 drift; 3 new without baseline (cloud)
+- RENDERED @ c990e2c2c300cf38cb05106e5ea98b8cfb36e20e: lead/gate-render-env-art-c990e2c; 0 pass, 1 drift; 1 new without baseline (cloud)
+- RENDERED @ 191e5e89146500aec22ab308413253964391c496: lead/gate-render-env-art-191e5e8; 0 pass, 1 drift; 1 new without baseline (cloud)
+- RENDERED @ ab58f891793e482ec9d7ae0ab47e765b72f0e840: lead/gate-render-env-art-ab58f89; 0 pass, 5 drift (cloud)
+- RENDERED @ ee3bd3354a6942e6bea5a8598e6b6251d5e717af: lead/gate-render-characters-ee3bd33; 1 pass, 7 drift; 7 new without baseline (cloud)
+- RENDERED @ ead04bab2d3963ea1a5a6dc13e4a09360169341c: lead/gate-render-m2-slice-ead04ba; 0 pass, 13 drift; 8 new without baseline, shell_shrine GI rebaked (cloud)
+- RENDERED @ 8be2adcd0a63633aa84182842c30e6cdbf1c22e5: lead/gate-render-env-art-8be2adc; 0 pass, 6 drift; 3 new without baseline (cloud)
+- RENDERED @ f39cdde37f4831bc6429aec4fa9afe0d9be26ed0: lead/gate-render-env-art-f39cdde; 1 pass, 3 drift (cloud)
+- RENDERED @ da7891cf8d765b3c49b3b975d46b99b6abf5f6fb: lead/gate-render-ui-da7891c; 1 pass, 2 drift; 1 new without baseline (cloud)
