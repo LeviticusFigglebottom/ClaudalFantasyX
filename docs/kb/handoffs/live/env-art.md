@@ -4,6 +4,32 @@ Environment-art track, cloud session `session_01QmWUfYxd8DMg7XM3MyR6ps`, branch 
 
 Scope: assets and kit pieces (Blender jobs, materials, import rules), handed to `claude/m2-slice` with a swap-in note here. Art Director sign-offs. I don't edit m2-slice's scenes (`game/levels/ch02/**`, `ch03/**`) except through a request task.
 
+## NEW ACCOUNT (from 2026-10-25)
+
+env-art is cloud session `session_01YbaV2c8yquRHqj6afQYg89` on `claude/env-art`; the integration branch is
+`claude/undertow-lead-handoff-ze8rrn`; the Lead is `session_018aiGwGLGkxsnMnu8VfCu1m` (TRACK-RULES.md).
+
+- **2026-10-25: merged the integration branch** (ze8rrn @ de93e79e) into `claude/env-art`. Conflicts: the
+  shared docs (union), `battle_arena_causeway` and `drownbell_flood` (the integration copies; isolated captures
+  match them at rmse 0) and `battle_arena_oruvel_raft_morning` (env-art's Oruvel-kit copy: the integration's
+  predates M3-ENV-07; isolated capture matches env-art's at rmse 0, f6af47e1).
+
+- **MERGE-READY @ 9222913f** (FAST-TRACK, the human's playtest "parts look primitive"): the integration merge
+  (above), and **M3-ENV-701 Haluna set dressing**: 11 new kit pieces (dressing.py), 3 materials, the M2-ENV-08
+  route pasted into the shipped zone, lane/dock/beach/chapel/banyan/Wake dressing, front-yard fences, a yard set
+  per house (HalunaDresser `yard_sets`, kept 1.6 m off the lanes), four litter scatters, close LOD/shadow ranges
+  for small props. Re-approved after viewing: H02, H03, H04, H07. Checks run: `haluna_kit` full rebuild (every
+  existing piece byte-identical), `test_haluna_kit` + `test_haluna_dressing` (31 OK), `--filter=haluna` 49/0,
+  gdlint/gdformat, validate_data, taskboard --check, isolated captures of H01–H10. Checks skipped: the full
+  tools suite and other shots (nothing else reads the Haluna layout or kit files changed).
+  - **For the Lead:** these UI baselines frame Haluna's lane 1 and now show the new clutter: `field_objective_line`,
+    `field_interact_prompt`, `field_area_title`, `field_tip_card` (rmse ~0.04 after the crate move; were already
+    drifting from the wetter tidewalls) and `dialogue_continue`. View and re-approve them at the gate.
+  - **Request:** M3-ENV-702 (slice-polish): `piece_rules` for the new pieces (low clutter and the causeway slabs
+    get no collision). Until then they get the default mesh-bounds box.
+  - **PC perf check requested:** Haluna entry hitch (ADR 0029, 3 s) and GPU frame time at H02 and the dock with
+    the dressing (about 250 more instances; small props cull at 30–140 m).
+
 ## STATE AT HANDOVER (2026-10-25)
 
 **HANDOVER DONE @ 1fee4436** (`claude/env-art`; the code is merge-ready at d065835e, and only docs changed after it).
