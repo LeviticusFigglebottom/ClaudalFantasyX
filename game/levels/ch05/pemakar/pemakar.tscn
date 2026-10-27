@@ -6,6 +6,7 @@
 [ext_resource type="Script" path="res://game/world/water/water_surface.gd" id="4_water"]
 [ext_resource type="Resource" path="res://game/world/water/lagoon_waves.tres" id="5_waves"]
 [ext_resource type="Material" path="res://game/levels/ch05/pemakar/pemakar_sea_material.tres" id="6_sea"]
+[ext_resource type="Script" path="res://game/levels/act1/zone_cast.gd" id="90_cast"]
 
 [node name="Pemakar" type="Node3D"]
 script = ExtResource("1_zone")
@@ -27,3 +28,6 @@ water = NodePath("../Water")
 script = ExtResource("2_dressing")
 layout_path = "res://game/levels/ch05/pemakar/pemakar_dressing.json"
 tide = NodePath("../Tide")
+
+[node name="Cast" type="Node" parent="."]
+script = ExtResource("90_cast")

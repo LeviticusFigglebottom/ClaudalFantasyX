@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3]
+[gd_scene load_steps=12 format=3]
 
 [ext_resource type="Script" path="res://game/levels/ch06/ch06_zone.gd" id="1_zone"]
 [ext_resource type="Script" path="res://game/levels/act1/zone_kit_dressing.gd" id="2_dressing"]
@@ -7,6 +7,7 @@
 [ext_resource type="Script" path="res://game/world/water/wave_set.gd" id="5_set"]
 [ext_resource type="Script" path="res://game/world/water/wave_component.gd" id="6_comp"]
 [ext_resource type="Material" path="res://game/levels/ch06/brine_shoals/brine_shoals_water_material.tres" id="7_water_mat"]
+[ext_resource type="Script" path="res://game/levels/act1/zone_cast.gd" id="90_cast"]
 
 [sub_resource type="Resource" id="Calm0"]
 script = ExtResource("6_comp")
@@ -49,3 +50,6 @@ water = NodePath("../Water")
 script = ExtResource("2_dressing")
 layout_path = "res://game/levels/ch06/brine_shoals/brine_shoals_dressing.json"
 tide = NodePath("../Tide")
+
+[node name="Cast" type="Node" parent="."]
+script = ExtResource("90_cast")

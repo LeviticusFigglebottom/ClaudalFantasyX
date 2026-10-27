@@ -87,13 +87,13 @@
     "liss": {"at": [-32.197, 2.4, -6.259, 259.0], "color": "#7a8c5a"},
     "ysolde": {"at": [-31.894, 2.4, -7.657, 256.5], "color": "#d0d4dc"},
     "kerrid": {"at": [0.0, -0.5, -48.0, 0.0], "color": "#8a7a52", "radius": 0.38, "height": 2.0},
-    "tavi": {"at": [-14.4, 2.46, 0.0, 90.0], "color": "#2a2420"},
-    "ione": {"at": [14.4, 2.46, -0.0, 90.0], "color": "#3a7a8a"},
-    "poolkeeper": {"at": [-10.912, 0.6, -6.3, 240.0], "color": "#c8c0b0"},
-    "oruvel_diver_1": {"at": [-12.531, 0.6, 1.317, 276.0], "color": "#2a2420"},
-    "oruvel_diver_2": {"at": [-12.369, 0.6, 2.404, 281.0], "color": "#2a2420"},
-    "sorrin_diver_1": {"at": [12.531, 0.6, 1.317, 84.0], "color": "#3a7a8a"},
-    "sorrin_diver_2": {"at": [12.369, 0.6, 2.404, 79.0], "color": "#3a7a8a"}
+    "tavi": {"cast": "tavi", "at": [-14.4, 2.46, 0.0, 90.0], "color": "#2a2420"},
+    "ione": {"cast": "vendor", "at": [14.4, 2.46, -0.0, 90.0], "color": "#3a7a8a"},
+    "poolkeeper": {"cast": "reed", "at": [-10.912, 0.6, -6.3, 240.0], "color": "#c8c0b0"},
+    "oruvel_diver_1": {"cast": "fisher", "at": [-12.531, 0.6, 1.317, 276.0], "color": "#2a2420"},
+    "oruvel_diver_2": {"cast": "netmender", "at": [-12.369, 0.6, 2.404, 281.0], "color": "#2a2420"},
+    "sorrin_diver_1": {"cast": "fisher", "at": [12.531, 0.6, 1.317, 84.0], "color": "#3a7a8a"},
+    "sorrin_diver_2": {"cast": "netmender", "at": [12.369, 0.6, 2.404, 79.0], "color": "#3a7a8a"}
   },
   "shots": {
     "R01": {"pos": [-34.306, 7.6, -13.86], "look_at": [-15.0, 2.6, 0.0], "fov": 55},
