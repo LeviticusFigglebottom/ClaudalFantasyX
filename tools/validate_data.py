@@ -132,6 +132,18 @@ def _check_stats(where: str, stats: object, rep: Report) -> None:
             rep.err(f"{where}: stat '{k}' must be a non-negative int")
 
 
+def character_role_errors(characters: list) -> list[str]:
+    """M2-MNU-306: every hero row names its role word (`role_key`, a loc key the Formation page shows)."""
+    errs: list[str] = []
+    for c in characters:
+        if not isinstance(c, dict):
+            continue
+        k = c.get("role_key")
+        if not isinstance(k, str) or not k:
+            errs.append(f"game/data/battle/characters.json {c.get('id')}: missing role_key (M2-MNU-306)")
+    return errs
+
+
 def check_battle(files: dict[str, object], rep: Report) -> list[str]:
     """Validates battle tables. Returns every *_key value found (for loc checks)."""
     keys: list[str] = []
@@ -143,6 +155,8 @@ def check_battle(files: dict[str, object], rep: Report) -> list[str]:
     skill_ids = {s["id"] for s in skills}
     status_ids = {s["id"] for s in statuses}
     char_ids = {c["id"] for c in characters}
+    for e in character_role_errors(characters):
+        rep.err(e)
     enemy_ids = {e["id"] for e in enemies}
     item_ids = _ids(files, "game/data/items/items.json", "items")
 
