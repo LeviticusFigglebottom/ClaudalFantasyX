@@ -557,6 +557,21 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
+- **ISKARRA: in progress (the Lead's direct instruction, 22:29). Act II/III is paused until the Iskarra render is
+  approved.**
+  - **Already pushed** (FAST-TRACK request @ 0958af1a, not yet rendered):
+    - Commits 4c0e9732 and 0958af1a.
+    - The towers were inside out since M3-ENV-710; now fixed.
+    - Glazed tile cladding and a blue glaze; windowed storeys; real gallery ledges.
+    - The plaza inlay and fallen tiles; a drowned midground and the far skyline.
+    - Hero stand-ins in place of the preview's capsules; the cast-on-stone test.
+  - **Now:**
+    - Stone and plaster breakup, damage and decals on the towers, gate and plaza.
+    - Paving under Kerrid (9.5, −5.5).
+    - The vigil count in test_iskarra.
+    - Set dressing at Haluna's density.
+  - **Lit candles:** none. ADR 0017 and the act outline say "There is no fire" and Rhen's lantern is the only
+    flame, so the vigils get unlit offerings and the lamp columns stay dead. Lead: say if you want that overruled.
 - **2026-10-27 ~21:40, the Lead's FAST-TRACK: Iskarra (M3-ENV-724), MERGE-READY @ 0958af1a** (4c0e9732 plus the far skyline) (claude/env-art, which
   includes the integration branch at big12, 7f355a8f).
   - **Root cause of the greybox read.** Every Iskarra tower shaft and lamp column had been wound inside out since
