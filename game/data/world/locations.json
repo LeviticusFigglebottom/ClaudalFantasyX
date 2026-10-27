@@ -101,6 +101,111 @@
       "_note": "M3-C09-02: Corrow on the night of the Ebbing and the dawn road (Ch9 B01-B10), a greybox zone (Ch09Zone) standing in for the ch08/corrow night variant until Ch8 lands. Ch8 hands off here at Strand; until then it is reached from this row. The act break hands off to the end card (Ch10 is Act II, not in M3)."
     },
     {
+      "id": "ch10/ossa_fen",
+      "scene": "res://game/levels/ch10/ossa_fen/ossa_fen.tscn",
+      "spawn": "FenEdge",
+      "name_key": "LOCATION_CH10_OSSA_FEN",
+      "_note": "M4-C10-02: Ossa Fen at the overcast dusk, the first zone of Act II (act_outline Ch10), a greybox zone (Ch10Zone) from tools/act1/ch10_greybox.py: the fen's edge where Pell stops, the root-walks, the Drowner's clearing. Reached on its own until Ch9's act break hands off here."
+    },
+    {
+      "id": "ch10/reedhollow",
+      "scene": "res://game/levels/ch10/reedhollow/reedhollow.tscn",
+      "spawn": "Gate",
+      "name_key": "LOCATION_CH10_REEDHOLLOW",
+      "_note": "M4-C10-02: Reedhollow, the Kirru village round its lagoon (act_outline Ch10), a greybox zone (Ch10Zone). Ossa Fen's root-walks hand off here at Gate; Pell is not let in."
+    },
+    {
+      "id": "ch11/sunken_vey",
+      "scene": "res://game/levels/ch11/sunken_vey/sunken_vey.tscn",
+      "spawn": "Landing",
+      "name_key": "LOCATION_CH11_SUNKEN_VEY",
+      "_note": "M4-C11-02: Sunken Vey, the drowned galleries (act_outline Ch11), a greybox zone (Ch11Zone) from tools/act1/ch11_greybox.py: the landing, the conduit court (Liss's housing-mark), the fig-choked side gallery, the way on to Lowlight."
+    },
+    {
+      "id": "ch11/lowlight",
+      "scene": "res://game/levels/ch11/lowlight/lowlight.tscn",
+      "spawn": "Gate",
+      "name_key": "LOCATION_CH11_LOWLIGHT",
+      "_note": "M4-C11-02: Lowlight, the temple half underwater (act_outline Ch11), a greybox zone (Ch11Zone): the atrium (the lamp bench), the Lamp Engine's hall, the well-shaft's flights down to the drowned sanctum (Nhoa)."
+    },
+    {
+      "id": "ch12/keth_pass",
+      "scene": "res://game/levels/ch12/keth_pass/keth_pass.tscn",
+      "spawn": "PassFoot",
+      "name_key": "LOCATION_CH12_KETH_PASS",
+      "_note": "M4-C12-02: Keth Pass, the mountain route (act_outline Ch12), a greybox zone (Ch12Zone) from tools/act1/ch12_greybox.py: the switchback flights, the pass-cords, the knotted cord post, the Ram's terrace shelf, the saddle."
+    },
+    {
+      "id": "ch12/quellan",
+      "scene": "res://game/levels/ch12/quellan/quellan.tscn",
+      "spawn": "FromPass",
+      "name_key": "LOCATION_CH12_QUELLAN",
+      "_note": "M4-C12-02: Quellan, the highland town (act_outline Ch12), a greybox zone (Ch12Zone): the street, the inn, the well, the road up to Cloudloom."
+    },
+    {
+      "id": "ch12/cloudloom",
+      "scene": "res://game/levels/ch12/cloudloom/cloudloom.tscn",
+      "spawn": "Approach",
+      "name_key": "LOCATION_CH12_CLOUDLOOM",
+      "_note": "M4-C12-02: Cloudloom, the summit temple (act_outline Ch12), a greybox zone (Ch12Zone): the stair up, the open-roofed weaving-hall and its keth, Hesk's dais."
+    },
+    {
+      "id": "ch13/ansedra",
+      "scene": "res://game/levels/ch13/ansedra/ansedra.tscn",
+      "spawn": "Moorings",
+      "name_key": "LOCATION_CH13_ANSEDRA",
+      "_note": "M4-C13-02: Ansedra, the holy city on its mirror lagoon (act_outline Ch13), a greybox zone (Ch13Zone) from tools/act1/ch13_greybox.py: the outer moorings (Kerrid's nights), Sefir's house, Corran's old house, the causeways to the Sanctum and the Lamp Archive."
+    },
+    {
+      "id": "ch13/sanctum",
+      "scene": "res://game/levels/ch13/sanctum/sanctum.tscn",
+      "spawn": "Gate",
+      "name_key": "LOCATION_CH13_SANCTUM",
+      "_note": "M4-C13-02: the Sanctum of the Level, the Glimmer temple (act_outline Ch13), a greybox zone (Ch13Zone): the vestibule, the nave round the still basin, Ethren's and Corran's places. Kerrid never comes in."
+    },
+    {
+      "id": "ch13/lamp_archive",
+      "scene": "res://game/levels/ch13/lamp_archive/lamp_archive.tscn",
+      "spawn": "Door",
+      "name_key": "LOCATION_CH13_LAMP_ARCHIVE",
+      "_note": "M4-C13-02: the Lamp Archive, the Order's library of Lit Age records (ADR 0016), a greybox zone (Ch13Zone): the reading room, the ledgers' table and the Cantor roll's."
+    },
+    {
+      "id": "ch13/ansedra_lacquer_court",
+      "scene": "res://game/levels/ch13/ansedra_lacquer_court/ansedra_lacquer_court.tscn",
+      "spawn": "CourtEntry",
+      "name_key": "LOCATION_CH14_LACQUER_COURT",
+      "_note": "M4-C14-02: the Lacquer Court, the wedding court on Ansedra's still water (act_outline Ch14), a greybox zone (Ch13Zone) from tools/act1/ch14_greybox.py: the colonnade, the dais, the galleries, the water-steps down to the bridal barge, the water-gate."
+    },
+    {
+      "id": "ch15/open_sea",
+      "scene": "res://game/levels/ch15/open_sea/open_sea.tscn",
+      "spawn": "Deck",
+      "name_key": "LOCATION_CH15_OPEN_SEA",
+      "_note": "M4-C15-02: the open sea at night aboard the unlamped bridal barge (act_outline Ch15), a greybox zone (Ch15Zone) from tools/act1/ch15_16_greybox.py: the deck, Tobin's bier, the stern, the shoal of held dead below."
+    },
+    {
+      "id": "ch17/hollowmere",
+      "scene": "res://game/levels/ch17/hollowmere/hollowmere.tscn",
+      "spawn": "Dock",
+      "name_key": "LOCATION_CH17_HOLLOWMERE",
+      "_note": "M4-C15-02: Hollowmere, the Saltwright town of lashed hulls, its first visit at Ch15's dawn (act_outline Ch15, Ch17), a greybox zone (Ch17Zone): the dock, the jetties and hull-houses, the pyre-raft, the Hollowmere ship."
+    },
+    {
+      "id": "ch16/pale_rim",
+      "scene": "res://game/levels/ch16/pale_rim/pale_rim.tscn",
+      "spawn": "Rim",
+      "name_key": "LOCATION_CH16_PALE_RIM",
+      "_note": "M4-C16-02: the Pale Rim, the white shallows (act_outline Ch16), a greybox zone (Ch16Zone): the ship at the Rim, the long wade east by the cairns to the Choir's edge."
+    },
+    {
+      "id": "ch16/drowned_choir",
+      "scene": "res://game/levels/ch16/drowned_choir/drowned_choir.tscn",
+      "spawn": "Approach",
+      "name_key": "LOCATION_CH16_DROWNED_CHOIR",
+      "_note": "M4-C16-02: the Drowned Choir at moonrise (act_outline Ch16), a greybox zone (Ch16Zone): the ring of colossal mouths, Kesh's place, Sefir's."
+    },
+    {
       "id": "ch06/brine_shoals",
       "scene": "res://game/levels/ch06/brine_shoals/brine_shoals.tscn",
       "spawn": "Entry",

@@ -11,10 +11,7 @@
  "time_of_day_h": 15.5,
  "greybox": {
   "hide_all": true,
-  "keep": [
-   "ChalkMark",
-   "Hatch"
-  ]
+  "keep": []
  },
  "fire_light_color": "#E0702E",
  "fire_lights": [
@@ -45,6 +42,27 @@
    ],
    "energy": 1.2,
    "range": 7.0
+  },
+  {
+   "at": [
+    9.0,
+    2.4,
+    -35.0
+   ],
+   "energy": 1.4,
+   "range": 7.0,
+   "block": "TideWheel"
+  },
+  {
+   "at": [
+    27.0,
+    1.2,
+    -44.0
+   ],
+   "energy": 0.6,
+   "range": 3.0,
+   "color": "#9fd8e0",
+   "block": "Shrine"
   }
  ],
  "pieces": [
@@ -1026,25 +1044,64 @@
    "block": "Lamp"
   },
   {
-   "piece": "salvage_pile_burned",
+   "piece": "ridge_fire",
    "at": [
     22.0,
     -40.0
    ],
-   "y": -0.25,
-   "yaw_deg": 40.0,
-   "scale": 0.35,
+   "y": 0.0,
+   "yaw_deg": 0.0,
    "block": "Fire"
   },
   {
-   "piece": "crate_stack",
+   "piece": "vendor_boat",
    "at": [
     29.0,
     -37.0
    ],
-   "y": 0.05,
-   "yaw_deg": 80.0,
+   "y": 0.0,
+   "yaw_deg": 0.0,
    "block": "VendorBoat"
+  },
+  {
+   "piece": "level_stone_shrine",
+   "at": [
+    27.0,
+    -44.5
+   ],
+   "y": 0.0,
+   "yaw_deg": 0.0,
+   "block": "Shrine"
+  },
+  {
+   "piece": "tide_wheel_burned",
+   "at": [
+    9.0,
+    -36.0
+   ],
+   "y": 0.0,
+   "yaw_deg": 0.0,
+   "block": "TideWheel"
+  },
+  {
+   "piece": "chalk_mark",
+   "at": [
+    4.45,
+    -2.0
+   ],
+   "y": 1.2,
+   "yaw_deg": 0.0,
+   "block": "ChalkMark"
+  },
+  {
+   "piece": "hatch",
+   "at": [
+    3.45,
+    -17.0
+   ],
+   "y": 0.7,
+   "yaw_deg": 0.0,
+   "block": "Hatch"
   }
  ]
 }
