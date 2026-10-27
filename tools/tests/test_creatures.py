@@ -107,6 +107,24 @@ class ValidatorTest(unittest.TestCase):
         cr["creatures"]["ilun"]["vowbound"] = False
         self.assertEqual(errs(cr), [], "false is a plain creature row")
 
+    def test_a_vowbound_modelled_ahead_of_its_row_says_so(self) -> None:
+        """M3-CRE-643 (Nhoa's key, M3-CRE-642): a Vowbound modelled before Combat adds her vowbound.json row carries
+        `vowbound_pending` (the task asking for the row); it allows the missing row and is an error once the row
+        exists, so the marker cannot outlive it."""
+        vb = _load(vc.VOWBOUND_FILE)
+
+        def errs(cr) -> list[str]:
+            return vc.creature_errors(cr, self.enemies, self.skills, lambda p: True, vb)
+
+        if "hesk" not in {r["id"] for r in vb["vowbound"]}:
+            self.assertEqual(self.creatures["creatures"]["hesk"]["vowbound_pending"], "M3-CRE-643")
+        cr = copy.deepcopy(self.creatures)
+        cr["creatures"]["nobody"] = dict(cr["creatures"]["ilun"], scene="res://game/creatures/nobody/n.tscn",
+                                         vowbound_pending="M3-CRE-999")
+        self.assertFalse(any(".nobody." in x for x in errs(cr)), "pending: no row needed")
+        cr["creatures"]["ilun"]["vowbound_pending"] = "M3-CRE-638"
+        self.assertTrue(any("ilun.vowbound_pending: " in x and "drop the marker" in x for x in errs(cr)))
+
     def test_a_stand_in_may_give_its_height_and_radius(self) -> None:
         """M3-CRE-640: Kahre has no battle_sandbox.json row, so his creatures.json stand_in gives the height the VFX
         anchors are fractions of, and the ring's radius."""
