@@ -115,6 +115,8 @@ cutscene sequencer (`game/cutscene/**`), `game/flow/**` and the playtest fixes.
   asks env-art for a day grade, the sea-cut weir, the wake-wall, the crown bell, a quay). ZoneKitDressing gained
   `multimeshes`, `far_lights`, per-light `color`, `trimesh_lod0`; KitWalkProbe now reads kit box colliders and can
   query the physics space for trimesh pieces. `--filter=ch0` 79/0, `zone` 58/0, `walkable` 13/0.
+- **PROGRESS @ c0ee5230: M3-CIN-1217 villager casts.** ZoneCast puts the villager models on the Act I stage actors (`"cast"` on each actor row): Neme, Osu, Tavi as themselves, the rest as fisher, netmender, vendor, child, reed; heroes come from hero-integration (Rhen, Asha, Toma). Requests: M3-CHR-1218 (Garo, Marra, Hobb, Fenn, Ione, the Stillguard), M3-HER-1219 (Ysolde's field body). Also fixed: Ch7's galleries faced their story points the wrong way (an actor faces its -Z), 68406c91. `--filter=ch0` 79/0, `zone` 60/0, `walkable` 13/0.
+- **Blocked swaps:** Ch5 Ashcrown (M3-C05-1215): the kit's flying stair is 48° and its vein stairs 60°, past the controller's 45°, so it needs a steep-stair traversal (request M3-ARC-1216). Ch4 `haluna_wake` belongs on the real Ch2 Haluna once it is ZoneStory (ADR 0035, slice-polish) with env-art's wake dressing (M3-C04-03); I'm not building a second dressed Haluna.
 - **Ch7's port (`ch07/tamsule`) is waiting on a kit:** env-art's "Tamsule stilt" kit (M3-C07-04, role environment) is
   still todo. The galleries part of M3-C07-04 is done by M3-C07-1211. I'll compose the port from the Bell kit's port
   pieces and Oruvel's rafts only if the Lead wants it before env-art gets to it.
@@ -122,12 +124,18 @@ cutscene sequencer (`game/cutscene/**`), `game/flow/**` and the playtest fixes.
 ### Render requests
 DONE @ 180510e1 (viewed gpu/render-act1-chapters-180510e): ch04_ferry_derelict approved (df86873f); ch04_ferry_deck re-aimed (the camera stood 0.6 m from the ferrymaster), re-requested below
 DONE @ 77a6a777 (viewed gpu/render-act1-chapters-77a6a77): ch08_corrow_arrival, ch08_corrow_stair, ch06_brine_camp pass (rmse 0); ch06_brine_road re-approved (its drift is the real hero model in front), ch09_corrow_road approved (df86873f); ch09_corrow_strand was near-black: vigil lamps and a brighter moon added, re-requested below
-RENDER-REQUEST @ b30c2cf2: ch08_coilspire_path, ch08_coilspire_hall; why: M3-C08-1210 stands Coilspire upright on its kit (new shots)
-RENDER-REQUEST @ 5112837a: ch07_bell_galleries, ch07_bell_moorings; why: M3-C07-1211 puts Ch7's Bell galleries on the Tamsule Bell kit (new shots)
-RENDER-REQUEST @ 8daa0c63: ch05_pemakar_harbour, ch05_pemakar_crown; why: M3-C05-1213 puts Ch5 Pemakar on its kit (new shots, Lanternfall night)
-RENDER-REQUEST @ eeaf91bf: ch04_ferry_deck, ch09_corrow_strand; why: re-done after viewing the PC renders (the deck view re-aimed; the strand lit by its vigil lamps)
+SUPERSEDED by the request @ c0ee5230 below: b30c2cf2
+SUPERSEDED by the request @ c0ee5230 below: 5112837a
+SUPERSEDED by the request @ c0ee5230 below: 8daa0c63
+SUPERSEDED by the request @ c0ee5230 below: eeaf91bf
+RENDER-REQUEST @ c0ee5230: ch04_ferry_deck, ch04_ferry_derelict, ch05_pemakar_harbour, ch05_pemakar_crown, ch06_brine_road, ch06_brine_camp, ch07_bell_galleries, ch07_bell_moorings, ch08_corrow_arrival, ch08_corrow_stair, ch08_coilspire_path, ch08_coilspire_hall, ch09_corrow_strand, ch09_corrow_road; why: every Act I shot, one pass: the villager casts (M3-CIN-1217) change the approved ones, and it carries the pending new shots (Coilspire, Ch7 galleries, Ch5 Pemakar) and the two re-dos (Ch4 deck, Ch9 strand)
 
 ## Exact next step
-Swaps still to do: Ch5 Ashcrown (its kit), Ch4 `haluna_wake` (Haluna's kit at night); Ch7's port waits on env-art's kit. Ch1 is slice-polish's. When the PC answers a
-render request above: fetch `gpu/render-act1-chapters-<sha7>`, view every out/diff PNG, approve, and write the
-MERGE-READY lines for Ch4, Ch9, Coilspire, Ch7's galleries and Ch5 Pemakar.
+1. When the PC answers RENDER-REQUEST @ c0ee5230 (`gpu/render-act1-chapters-c0ee523`): view every out/diff PNG;
+   approve what reads (copy to `tests/screenshots/baselines/`, the llvmpipe metadata in baselines.json); fix and
+   re-request what doesn't; then write the MERGE-READY lines for Ch4 (M3-C04-1204), Ch9 (M3-C09-1209), Coilspire
+   (M3-C08-1210), Ch7's galleries (M3-C07-1211), Ch5 Pemakar (M3-C05-1213) and the casts (M3-CIN-1217).
+2. Queue item 6, the cutscene quality bar, on the Act I scripts (easing, HeroMotion, no snapping, no greyscale
+   frames, villagers alive), now that the stage actors are real models.
+3. Blocked or waiting: Ashcrown (M3-ARC-1216), `haluna_wake` (Haluna's ZoneStory move), Ch7's port (env-art's
+   kit, M3-C07-04), the Reefball HUD (M3-UI-01: TidecupMatch loads it by path when it lands).
