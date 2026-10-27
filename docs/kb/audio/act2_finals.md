@@ -26,11 +26,11 @@ Sizes are estimates (about 0.95 MB a minute at q3) until a final is rendered; th
 | 10 | `farewell_tide` | reedhollow's material | cue ~90 s, the dusk rite; the motes lift; it ends on a rise and the backs turned | 1.4 MB | |
 | 10 | `mangrove_drowner` | new | boss, 2 stems × ~120 s (phase 2 `uprooted`) | 3.8 MB | |
 | 11 | `sunken_vey` | sketch | loop ~150 s | 2.4 MB | 0.98 MB, 156.5 s, −15.99 LUFS |
-| 11 | `lowlight` | sketch | loop ~150 s | 2.4 MB | |
+| 11 | `lowlight` | sketch | loop ~150 s | 2.4 MB | 1.39 MB, 149.0 s, −15.99 LUFS |
 | 11 | `nhoa_bound` / `nhoa_summon` | new (as virel's) | stings ≤ 8 s / ≤ 6 s (sfx folder) | 0.3 MB | |
 | 11 | `lamp_engine` | new | boss, 2 stems (phase 2 `opened`; the core's release is a small upward lift) | 3.8 MB | |
-| 12 | `keth_pass` | sketch | loop ~150 s | 2.4 MB | |
-| 12 | `quellan` | sketch | loop ~150 s | 2.4 MB | |
+| 12 | `keth_pass` | sketch | loop ~150 s | 2.4 MB | 1.60 MB, 125.2 s, −16.05 LUFS |
+| 12 | `quellan` | sketch | loop ~150 s | 2.4 MB | 1.34 MB, 125.2 s, −16.02 LUFS |
 | 12 | `cloudloom` | new | loop ~120 s, the open-roofed weaving-hall | 1.9 MB | |
 | 12 | `hesk_bound` / `hesk_summon` | new | stings | 0.3 MB | |
 | 12 | `avalanche_ram` | new | boss, 2 stems (no phases: the second stem is the bellow's rage under 50% HP) | 3.8 MB | |
