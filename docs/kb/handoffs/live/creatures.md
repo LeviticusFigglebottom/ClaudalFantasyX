@@ -510,3 +510,11 @@ RENDER-REQUEST @ c69a14de: battle_choreo_hit, battle_choreo_ko, battle_choreo_me
   - **For ui (M3-CRE-634, updated):** test_creature_portraits now also flags the ilun row (the bestiary is foes only). The same enemies-only fix covers it.
   - **Checks run:** Blender verify identical; tools test_creatures and test_blender_builds; Godot creature 46/1 (the known portrait red), vowbound 54/0, battle 720/0; validate_data, taskboard, lint, format.
 RENDER-REQUEST @ 14e26ef6: creature_ilun, battle_vowbound_out, battle_choreo_vowbound_rise, battle_choreo_summon; why: M3-CRE-638, Ilun's first renders (the three Vowbound battle shots move from the capsule to the model; creature_ilun has no baseline). Check his framing in the safe frame.
+- **For battle-presentation: Ilun's model is live in the real summon path @ a785a613.**
+  - BattleStage.sync_party → _place → stand_in_spec → CreatureModels gives the called Vowbound the model in battle_vowbound_call and battle_vowbound_out, the short entry (battle_choreo_vowbound_rise) and the full first-call cinematic (battle_choreo_summon).
+  - New integration test tests/integration/test_ilun_summon_path.gd calls him the way the shots do and asserts the stand-in shows the actor, not the capsule.
+  - Your summon choreography already moves the model; only the clip names are left (M3-CRE-639: rise and dismiss in choreo.json).
+- **Portrait manifest complete @ a785a613:** `ilun` added (the Lead's list); mangrove_drowner, lamp_engine, avalanche_ram and wakefin were already there (95b6daf8). test_creature_portraits now fails only on the 17 unbaked PNGs below. **This one bake request supersedes my earlier portrait lines (95b6daf8, aa762dee).** Batches of six:
+RENDER-REQUEST @ a785a613: portraits:mangrove_drowner,lamp_engine,avalanche_ram,wakefin,ilun,flat_engine; tool: tools/portraits/render.sh --only mangrove_drowner,lamp_engine,avalanche_ram,wakefin,ilun,flat_engine
+RENDER-REQUEST @ a785a613: portraits:tannin_archer,gallery_ray,rime_urchin,conduit_crawler,ridge_lynx,cord_moth; tool: tools/portraits/render.sh --only tannin_archer,gallery_ray,rime_urchin,conduit_crawler,ridge_lynx,cord_moth
+RENDER-REQUEST @ a785a613: portraits:glass_skate,root_crab,fen_leech,scree_crawler,rim_crawler; tool: tools/portraits/render.sh --only glass_skate,root_crab,fen_leech,scree_crawler,rim_crawler
