@@ -127,6 +127,25 @@ cutscene sequencer (`game/cutscene/**`), `game/flow/**` and the playtest fixes.
   `tools.tests.test_screenshots` stays red until ch04_ferry_deck is baselined (the render below).
 - **FOR THE LEAD / m2-slice:** after `cutscene_mark_via.patch` (M3-CIN-1221), apply `act1_walk_vias.patch` too and
   empty `known` in `tests/integration/act1_cutscene_walks_known.json` (or tell me and I will).
+- **MERGED big12** (integration 7f355a8f) @ 18a11bc0; the full suite there: 2833 run, 2 failed, neither in act1-chapters'
+  files (they come with big12): `test_creature_portraits` (mangrove_drowner, lamp_engine, avalanche_ram, wakefin have
+  manifest portraits but no creatures.json rows) and `test_footsteps_slice_zones` (Ch2 causeway tidepool reads stone).
+  Tools tests red on the integration branch too: `test_audio_loudness`, `test_shrine_gi_bake`, `test_screenshots`.
+- **Lead queue (21:23), status:**
+  1. Ch9 road capsule: it is **Kerrid** at the milestone (no model yet: M3-CHR-505, characters); so are the two on
+     ch06_brine_road (Ysolde, no field body yet: M3-HER-1219; Kerrid). They go when those land; no villager body on a
+     hero. The dark strand: brighter moon (1.25), fill and exposure, softer vigil lamps up on poles, linen shrouds
+     (3e354c8c); re-render requested below.
+  2. Off-floor walks: 33 left, all `via=` paths, written (`docs/kb/tech/act1_walk_vias.patch`); they need the
+     sequencer's via support (`cues.json` mark.via), which is on claude/m2-slice, not on the integration branch yet.
+     When it is merged I apply the patch and empty the known list.
+  3. Ashcrown: waits on hero-integration's steep stairs (MERGE-READY @ bccce923, not on the integration branch yet).
+  4. Capsule folk: every non-hero actor that a body exists for is cast (ZoneCast `creature:` and `hero:` casts: the
+     hound, the Matron, the spar wraith as their creatures; the Stillguard, the watch, the officer, the inquisitor, the
+     board-caller as villagers; Ch9's vigil Rhen/Asha/Toma as themselves). Left: heroes without bodies (Kerrid, Liss,
+     Pell, Ysolde) and Ch8's storm figure (a cyan silhouette by design, not a person).
+  5. **Act I balance at 1000 seeds: all 23 Act I suites, 97/97 bands ok** (`sim.py --seeds 1000 --check`, exit 0).
+  6. Act II (Ch10+): next once 1-3 land; no Ch10 beat sheet exists yet, so the first step is a request to story.
 - **Blocked swaps:** Ch5 Ashcrown (M3-C05-1215): the kit's flying stair is 48° and its vein stairs 60°, past the controller's 45°, so it needs a steep-stair traversal (request M3-ARC-1216). Ch4 `haluna_wake` belongs on the real Ch2 Haluna once it is ZoneStory (ADR 0035, slice-polish) with env-art's wake dressing (M3-C04-03); I'm not building a second dressed Haluna.
 - **Ch7's port (`ch07/tamsule`) is waiting on a kit:** env-art's "Tamsule stilt" kit (M3-C07-04, role environment) is
   still todo. The galleries part of M3-C07-04 is done by M3-C07-1211. I'll compose the port from the Bell kit's port
@@ -140,7 +159,8 @@ SUPERSEDED by the request @ c0ee5230 below: 5112837a
 SUPERSEDED by the request @ c0ee5230 below: 8daa0c63
 SUPERSEDED by the request @ c0ee5230 below: eeaf91bf
 SUPERSEDED by the request @ 9ccd51b2 below: c0ee5230
-RENDER-REQUEST @ 9ccd51b2: ch04_ferry_deck, ch04_ferry_derelict, ch05_pemakar_harbour, ch05_pemakar_crown, ch06_brine_road, ch06_brine_camp, ch07_bell_galleries, ch07_bell_moorings, ch08_corrow_arrival, ch08_corrow_stair, ch08_coilspire_path, ch08_coilspire_hall, ch09_corrow_strand, ch09_corrow_road; why: every Act I shot, one pass (c0ee5230's request, unanswered, plus 9ccd51b2's moved marks and actors, Coilspire's key t4_d and Ch9's rock path)
+SUPERSEDED by the request below: 9ccd51b2 (c0ee523 viewed: ch05_pemakar_crown and ch08_corrow_stair approved 160eadea; the rest were approved by big12)
+RENDER-REQUEST @ 225370ba: ch05_pemakar_harbour, ch09_corrow_strand, ch06_brine_road, ch08_corrow_arrival, ch08_corrow_stair, ch08_coilspire_hall; why: the harbour view re-aimed (it stood behind Asha's head), the strand lit (it was near-black), the casts (Stillguard, hound) and Coilspire's moved key t4_d
 
 ## Exact next step
 1. When the PC answers RENDER-REQUEST @ 9ccd51b2 (`gpu/render-act1-chapters-9ccd51b`): view every out/diff PNG;
