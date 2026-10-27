@@ -441,6 +441,10 @@ RENDER-REQUEST @ 9c26b66e: haluna_h07_chapel_court,haluna_h01_village_from_sea,h
 RENDER-REQUEST @ 5d53f98c: battle_arena_iskarra_spire_crown; why: M3-ENV-726, Ch19's Lamp Spire crown with the anchor-engine and the city below (new shot).
 ANSWERED: lead/gate-render-env-art-191e5e8 (battle_arena_bridal_barge_night) and c990e2c (battle_arena_ossa_fen_roots): viewed and approved as first baselines.
 ANSWERED: lead/gate-render-env-art-ab58f89: haluna_h01, h02 and h10 viewed and re-approved (the drift is the density pass's palms and their shadows); h04 identical. causeway_route_afternoon keeps big12's viewed baseline (the arena is unchanged since).
+ANSWERED (the Lead's item 3): gpu/m3-rnd-03-sefir-tells @ c3fd1eb4. All four `revenant_tells_*` shots (reflection and shadow, each on and off) viewed and APPROVED from env-art's side.
+- **Shadow:** Sefir's shadow and hand shadows are crisper, with the tighter hem line, while Asha's stay soft.
+- **Reflection:** his outline holds where the ripples would break it; the difference is subtle at this framing.
+- Their shots and baselines live only on that branch, so the Lead's merge carries them with its `--update-baselines`. M3-ENV-1000's hookup follows once RevenantTells is on the integration branch.
 NOT APPROVED: 95be611 (battle_arena_keth_seep_terrace). The backdrop reads as a wall of stretched white blocks and the seep strips as pale-blue ribbons, not a mountain pass. Rework is queued after the Iskarra fast-track (M3-ENV-717).
 RENDER-REQUEST @ 7f1a0fc7: battle_arena_keth_seep_terrace; why: M3-ENV-717 rework after 95be611 (crisp weathered wall, threads of seep). Supersedes 95be6118.
 
