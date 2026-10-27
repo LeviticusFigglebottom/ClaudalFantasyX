@@ -71,6 +71,60 @@ func test_illegal_actions_are_refused_without_a_roll() -> void:
 	assert_eq(m.strokes_left, 10)
 
 
+## M3-RBL-201: every action not on the menu is listed with why, and only those.
+func test_refused_actions_say_why() -> void:
+	var m := ReefballFixture.begun()
+	m.diver(&"e_mate").depth = 0
+	var got: Array[String] = []
+	for r in m.refused_actions():
+		got.append("%s:%s:%s" % [r["action"], r["target"], r["reason_key"]])
+	var want: Array[String] = [
+		"dive::RBL_REFUSE_DIVE_BED", "pass:e_mate:RBL_REFUSE_PASS_RING", "loft::RBL_REFUSE_LOFT_DEEP"
+	]
+	assert_eq(got, want, "at the weep, a mate at the ring, too deep to loft")
+	_clear_west(m)
+	m.holder.depth = 1
+	m.fetched = false
+	var reasons: Array[String] = []
+	for r in m.refused_actions():
+		reasons.append(str(r["reason_key"]))
+	assert_true(reasons.has("RBL_REFUSE_RISE_UNFETCHED"), "no rise into the ring unfetched")
+	assert_true(reasons.has("RBL_REFUSE_LOFT_UNFETCHED"), "no loft unfetched")
+	for r in m.refused_actions():
+		assert_true(m.preview(r["action"], r["target"]).is_empty(), "a refused action has no preview")
+	for o in m.legal_actions():
+		for r in m.refused_actions():
+			assert_false(o["action"] == r["action"] and o["target"] == r["target"], "never both")
+	m.finished = true
+	assert_true(m.refused_actions().is_empty(), "nothing once the match is over")
+
+
+## M3-RBL-201: who an option is up against, and whether a success fetches the float.
+func test_preview_names_who_presses_and_whether_it_fetches() -> void:
+	var m := ReefballFixture.begun()
+	var rise := m.preview(ReefballMatch.RISE)
+	assert_eq(rise["against"], [&"w_carry", &"w_mate"] as Array[StringName], "the rise's contesters")
+	assert_false(rise["fetches"], "a rise never fetches")
+	var dive_m := ReefballFixture.begun()
+	_clear_west(dive_m)
+	dive_m.holder.depth = 2
+	dive_m.fetched = false
+	var dive := dive_m.preview(ReefballMatch.DIVE)
+	assert_eq(dive["against"], [] as Array[StringName], "a dive is up against nobody")
+	assert_true(dive["fetches"], "down to fetch_depth: fetched on a success")
+	var p := m.preview(ReefballMatch.PASS, &"e_mate")
+	assert_eq(
+		p["against"],
+		m.opponents_at(m.holder.side, m.diver(&"e_mate").depth).map(func(d: ReefballDiver) -> StringName: return d.id)
+	)
+	assert_false(p["fetches"], "the float is already fetched")
+	m.holder.depth = 2
+	_place(m, {&"w_keep": 0, &"w_carry": 2, &"w_mate": 4})
+	var loft := m.preview(ReefballMatch.LOFT)
+	assert_eq(loft["against"], [&"w_keep", &"w_carry"] as Array[StringName], "wardens, then pressers")
+	assert_false(loft["fetches"])
+
+
 func test_unfetched_float_cannot_score() -> void:
 	var m := ReefballFixture.begun()
 	_clear_west(m)

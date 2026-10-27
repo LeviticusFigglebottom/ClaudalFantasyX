@@ -72,7 +72,7 @@ Attackers never wait at the ring. Movement is deterministic (no roll), so the po
 follow from the positions before it.
 
 **Clock.** The match lasts `match_strokes` strokes. Each action spends its strokes, and every action costs
-at least one (the validator checks), so a match always ends. A tie when the strokes run out goes to an
+at least one (the validator checks), so a match always ends. **The last action always completes:** a 2-stroke rise with 1 stroke left is taken, and `strokes_left` may end below 0 (M3-RBL-201's ruling); the clock ends after that contact, and the HUD shows "0 strokes left". A tie when the strokes run out goes to an
 overtime period of `overtime_strokes`, where the next float up wins at once; after `overtime_periods`
 periods it is a draw.
 
@@ -108,7 +108,8 @@ previewed odds (`roll < odds`). A test checks the two agree over many seeds.
 | `begin()` | Starts the clock and kicks off. |
 | `is_player_contact() -> bool` | The player's side holds the float: show the action menu. |
 | `legal_actions() -> Array[Dictionary]` | The menu, each entry as `preview()` returns it. |
-| `preview(action, target = &"") -> Dictionary` | `{action, actor, target, odds, strokes, breath, scores, fail_to, to_depth}`, or `{}` when illegal. |
+| `preview(action, target = &"") -> Dictionary` | `{action, actor, target, odds, strokes, breath, scores, fail_to, to_depth, against, fetches}`, or `{}` when illegal. `against` (M3-RBL-201) lists the opponents counted in the odds: a rise's contesters (the carrier's band and the band above), a pass's markers (the receiver's band), a loft's wardens then pressers; `[]` for a dive. `fetches` is true when a success takes an unfetched float to `fetch_depth` or deeper (a dive or a pass). |
+| `refused_actions() -> Array[Dictionary]` | The actions not legal now, each `{action, target, reason_key}` (M3-RBL-201): `RBL_REFUSE_RISE_UNFETCHED`, `RBL_REFUSE_DIVE_BED`, `RBL_REFUSE_LOFT_UNFETCHED`, `RBL_REFUSE_LOFT_DEEP`, `RBL_REFUSE_PASS_RING`. Never overlaps `legal_actions()`; the HUD lists them greyed with a short reason. |
 | `perform(action, target = &"") -> Dictionary` | Resolves it: the preview fields plus `{ok, roll, success, holder, scored, strokes_left}`. Illegal actions return `{ok: false, error}` with no roll and no change. |
 | `play_ai_contact(ai = null) -> Dictionary` | The AI decides the current contact (the match's opposing profile by default). The UI calls it on the opponents' contacts. |
 | `snapshot() -> Dictionary` | Plain data for the HUD, debug overlays and tests: score, clock, holder, fetched, and each diver's band, breath and resting state. |
@@ -132,7 +133,7 @@ seed and the same decisions always play the same match.
   coefficients, breath, swimming, roles and AI profiles.
 - `sides.json`: each side's divers (role, and the seven stats breath, stroke, reach, grip, strip, loft,
   ward, in `stat_min..stat_max`), its captain and its kickoff diver.
-- `matches.json`: the two sides, `player_side`, `first_float` and the opposing `ai_profile`.
+- `matches.json`: the two sides, `player_side`, `first_float`, the opposing `ai_profile` and an optional `stakes_key` (what rides on the match; the HUD's framing line, M3-RBL-201).
 
 `tools/validate_data.py` checks all three (the M3-RBL-01 section): shapes, ranges, unique ids across
 sides, known roles and profiles, captains and kickoff divers on their own side, every action costing a

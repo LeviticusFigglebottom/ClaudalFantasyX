@@ -3,7 +3,7 @@
   "matches": [
     {
       "id": "tidecup_opening",
-      "name_key": "RBL_MATCH_TIDECUP_OPENING",
+      "name_key": "RBL_MATCH_TIDECUP_OPENING", "stakes_key": "RBL_HUD_STAKES_TIDECUP_OPENING",
       "sides": ["oruvel", "pemakar"],
       "player_side": 0,
       "first_float": 1,

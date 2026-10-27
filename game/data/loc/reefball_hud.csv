@@ -41,3 +41,14 @@ RBL_HUD_TAG_RESTING,Resting
 RBL_HUD_TAG_TAKER,On a miss
 RBL_HUD_TAG_TARGET,Receives
 RBL_HUD_SCORE_DASH,–
+RBL_REFUSE_RISE_UNFETCHED,"The float isn't fetched: take it down to the fetch depth before rising to the ring."
+RBL_REFUSE_DIVE_BED,Already at the weep: nowhere deeper to go.
+RBL_REFUSE_LOFT_UNFETCHED,Only a fetched float can be lofted.
+RBL_REFUSE_LOFT_DEEP,Too deep to loft from here: rise first.
+RBL_REFUSE_PASS_RING,Nobody holds the float at the ring.
+RBL_HUD_TAG_AGAINST,Contests
+RBL_HUD_PREVIEW_FETCHES,{line}; fetches the float
+RBL_HUD_REFUSED_UNFETCHED,Not fetched
+RBL_HUD_REFUSED_AT_WEEP,At the weep
+RBL_HUD_REFUSED_TOO_DEEP,Too deep
+RBL_HUD_REFUSED_AT_RING,At the ring

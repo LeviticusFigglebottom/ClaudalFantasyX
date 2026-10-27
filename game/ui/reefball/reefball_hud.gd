@@ -27,6 +27,8 @@ const DATA_PATH := "res://game/data/ui/reefball_hud.json"
 var match_ref: ReefballMatch
 ## The options on the menu, as legal_actions() gave them (empty when the player is not choosing).
 var options: Array[Dictionary] = []
+## The actions not legal now, as refused_actions() gave them: greyed under the options with why (M3-RBL-201).
+var refused: Array[Dictionary] = []
 ## The settings the HUD follows (UiSettings.shared() unless set before _ready).
 var settings: UiSettings
 
@@ -158,12 +160,9 @@ func clock_text() -> String:
 	return tr("RBL_HUD_STROKES").format({"n": n})
 
 
-## What rides on the match: the match row's own stakes_key, else this HUD's data by match id.
+## What rides on the match: the match row's stakes_key (M3-RBL-201; "" when it has none).
 func stakes_key() -> String:
-	var own := str(match_ref.match_row.get("stakes_key", ""))
-	if own != "":
-		return own
-	return str((section("stakes")).get(str(match_ref.match_row.get("id", "")), ""))
+	return str(match_ref.match_row.get("stakes_key", ""))
 
 
 ## The opponent read: the line for the opposing AI profile ("" when none).
@@ -196,6 +195,7 @@ func _refresh_divers() -> void:
 	var o := current_option()
 	var target: StringName = o.get("target", &"") if not o.is_empty() else &""
 	var taker: StringName = o.get("fail_to", &"") if not o.is_empty() else &""
+	var against: Array = o.get("against", []) if not o.is_empty() else []
 	var mine := match_ref.player_side
 	var ours: Array[Dictionary] = []
 	var theirs: Array[Dictionary] = []
@@ -215,6 +215,9 @@ func _refresh_divers() -> void:
 		if d.id == taker:
 			tag = tr("RBL_HUD_TAG_TAKER")
 			tag_role = StringName(str(section("read")["tag_role"]))
+		elif against.has(d.id):
+			tag = tr("RBL_HUD_TAG_AGAINST")  # counted in the odds (M3-RBL-201)
+			tag_role = StringName(str(section("read")["against_role"]))
 		elif d.id == target:
 			tag = tr("RBL_HUD_TAG_TARGET")
 			tag_role = StringName(str(section("side")["tag_role"]))
@@ -249,9 +252,11 @@ func _low_fraction(d: ReefballDiver) -> float:
 # --- The choice ----------------------------------------------------------------------------------
 
 
-## Opens the menu on `opts` (ReefballMatch.legal_actions()), cursor on the first.
-func show_choices(opts: Array[Dictionary]) -> void:
+## Opens the menu on `opts` (ReefballMatch.legal_actions()), cursor on the first; `not_now`
+## (ReefballMatch.refused_actions()) are listed greyed after them with a short reason.
+func show_choices(opts: Array[Dictionary], not_now: Array[Dictionary] = []) -> void:
 	options = opts
+	refused = not_now
 	_rebuild_page()
 	_refresh_preview()
 	refresh()
@@ -260,6 +265,7 @@ func show_choices(opts: Array[Dictionary]) -> void:
 ## Closes the menu and the preview (the other side's contact, a result, the end).
 func hide_choices() -> void:
 	options = []
+	refused = []
 	if _page != null:
 		_page.queue_free()
 		remove_child(_page)
@@ -344,6 +350,13 @@ func _rebuild_page() -> void:
 				}
 			)
 		)
+	var short := section("refused_short")
+	for r in refused:
+		var why := str(r.get("reason_key", ""))
+		var row := {"id": r["action"], "label": option_label(r), "right": tr(str(short.get(why, why)))}
+		row["right_role"] = &"text_dim"
+		row["enabled"] = false  # listed so the player sees what is not on offer, and why
+		rows.append(row)
 	_page = MenuPage.new()
 	_page.name = &"Choices"
 	var r := HudLayout.rect_of(m)
@@ -381,6 +394,8 @@ func _refresh_preview() -> void:
 		_p_outcome.add_theme_color_override(&"font_color", _c(StringName(str(pm["score_role"]))))
 	else:
 		_p_outcome.text = tr("RBL_HUD_PREVIEW_ENDS").format({"band": band_name(int(o["to_depth"]))})
+		if bool(o.get("fetches", false)):
+			_p_outcome.text = tr("RBL_HUD_PREVIEW_FETCHES").format({"line": _p_outcome.text})
 		_p_outcome.remove_theme_color_override(&"font_color")
 	var taker := StringName(o.get("fail_to", &""))
 	_p_miss.visible = taker != &""

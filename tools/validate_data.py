@@ -3038,6 +3038,8 @@ def reefball_matches_errors(doc: object, sides: set[str], profiles: set[str]) ->
                 errs.append(f"{w}: {k} must be 0 or 1")
         if m.get("ai_profile") not in profiles:
             errs.append(f"{w}: unknown ai_profile '{m.get('ai_profile')}'")
+        if "stakes_key" in m and (not isinstance(m["stakes_key"], str) or not m["stakes_key"]):
+            errs.append(f"{w}: stakes_key must be a non-empty loc key (M3-RBL-201)")
     return errs
 
 

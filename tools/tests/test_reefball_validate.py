@@ -96,6 +96,16 @@ class ReefballValidateTest(unittest.TestCase):
         m["sides"] = ["oruvel", "nowhere"]
         self.assertTrue(any("unknown side 'nowhere'" in e for e in self.errs()))
 
+    def test_stakes_key(self) -> None:
+        # M3-RBL-201: optional, but a present stakes_key is a non-empty loc key, collected for the loc check.
+        files = {vd.REEFBALL_RULES: self.rules, vd.REEFBALL_SIDES: self.sides, vd.REEFBALL_MATCHES: self.matches}
+        self.assertIn("RBL_HUD_STAKES_TIDECUP_OPENING", vd.check_reefball(files, vd.Report()))
+        m = self.matches["matches"][0]
+        m["stakes_key"] = ""
+        self.assertTrue(any("stakes_key" in e for e in self.errs()))
+        del m["stakes_key"]
+        self.assertEqual(self.errs(), [])
+
     def test_bad_top_level(self) -> None:
         self.assertTrue(vd.reefball_errors({}, {}, {}))
         self.rules["rules"]["bands"] = [{"id": "ring", "name_key": "K"}]

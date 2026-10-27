@@ -24,6 +24,14 @@ const RING := 0
 const WIN := &"win"
 const LOSS := &"loss"
 const DRAW := &"draw"
+## refused_actions()' reason keys (loc, M3-RBL-201), by why an action is not legal.
+const REFUSE_KEYS := {
+	&"rise_unfetched": "RBL_REFUSE_RISE_UNFETCHED",
+	&"dive_bed": "RBL_REFUSE_DIVE_BED",
+	&"loft_unfetched": "RBL_REFUSE_LOFT_UNFETCHED",
+	&"loft_deep": "RBL_REFUSE_LOFT_DEEP",
+	&"pass_ring": "RBL_REFUSE_PASS_RING",
+}
 
 var db: ReefballDB
 var rules: Dictionary = {}
@@ -151,7 +159,9 @@ func legal_actions() -> Array[Dictionary]:
 ## What `action` (on `target` for a pass) would do, without changing anything: {action, actor,
 ## target, odds, strokes, breath, scores (a success brings the float up), fail_to (the diver who
 ## takes the float on a miss, &"" when the action cannot miss), to_depth (the actor's or receiver's
-## band on a success)}. {} when the action is not legal now.
+## band on a success), against (the opponents counted in the odds: a rise's contesters, a pass's
+## markers, a loft's wardens then pressers; M3-RBL-201), fetches (a success takes an unfetched float
+## to fetch_depth or deeper)}. {} when the action is not legal now (refused_actions() says why).
 func preview(action: StringName, target: StringName = &"") -> Dictionary:
 	if finished or holder == null or not (rules.get("actions", {}) as Dictionary).has(String(action)):
 		return {}
@@ -159,17 +169,19 @@ func preview(action: StringName, target: StringName = &"") -> Dictionary:
 	var fail: ReefballDiver = null
 	var to_depth := holder.depth
 	var scores := false
+	var against: Array[ReefballDiver] = []
 	match action:
 		RISE:
-			if holder.depth - 1 == RING and not fetched:
+			if _refusal(RISE) != &"":
 				return {}
 			var contesters := _contesters()
+			against = contesters
 			odds = ReefballFormulas.rise_odds(rules, holder, contesters)
 			fail = ReefballFormulas.best(contesters, "strip")
 			to_depth = holder.depth - 1
 			scores = to_depth == RING
 		DIVE:
-			if holder.depth >= bed():
+			if _refusal(DIVE) != &"":
 				return {}
 			odds = 1.0
 			to_depth = holder.depth + 1
@@ -178,14 +190,16 @@ func preview(action: StringName, target: StringName = &"") -> Dictionary:
 			if mate == null or mate == holder or mate.side != holder.side or mate.depth == RING:
 				return {}
 			var markers := opponents_at(holder.side, mate.depth)
+			against = markers
 			odds = ReefballFormulas.pass_odds(rules, holder, mate, markers)
 			fail = _nearest_opponent(mate.depth)
 			to_depth = mate.depth
 		LOFT:
-			if not fetched or holder.depth > int(_block("loft").get("max_depth", 0)):
+			if _refusal(LOFT) != &"":
 				return {}
 			var wardens := opponents_at(holder.side, RING)
 			var pressers := opponents_at(holder.side, holder.depth)
+			against = wardens + pressers
 			odds = ReefballFormulas.loft_odds(rules, holder, wardens, pressers)
 			fail = _loft_catcher(wardens, pressers)
 			scores = true
@@ -200,7 +214,27 @@ func preview(action: StringName, target: StringName = &"") -> Dictionary:
 		"scores": scores,
 		"fail_to": fail.id if fail != null and odds < 1.0 else &"",
 		"to_depth": to_depth,
+		"against": _ids(against),
+		"fetches": not fetched and to_depth >= fetch_depth() and (action == DIVE or action == PASS),
 	}
+
+
+## The actions the holder may not take now, each {action, target, reason_key} (a loc key saying why), in
+## ACTIONS order (passes by teammate order; the holder itself is never listed). Empty when the match is over.
+func refused_actions() -> Array[Dictionary]:
+	var out: Array[Dictionary] = []
+	if finished or holder == null:
+		return out
+	for action in ACTIONS:
+		if action == PASS:
+			for mate in side_divers(holder.side):
+				if mate != holder and mate.depth == RING:
+					out.append({"action": PASS, "target": mate.id, "reason_key": REFUSE_KEYS[&"pass_ring"]})
+			continue
+		var why := _refusal(action)
+		if why != &"":
+			out.append({"action": action, "target": &"", "reason_key": REFUSE_KEYS[why]})
+	return out
 
 
 ## Resolves `action` for the holder with one roll of `rng`. Returns the preview fields plus
@@ -305,6 +339,27 @@ func _take_float(taker: ReefballDiver) -> void:
 	if holder.depth == RING:
 		holder.depth = RING + 1
 	fetched = holder.depth >= fetch_depth()
+
+
+## Why the holder may not take `action` (not a pass) now: a REFUSE_KEYS key, or &"" when it may.
+func _refusal(action: StringName) -> StringName:
+	match action:
+		RISE:
+			return &"rise_unfetched" if holder.depth - 1 == RING and not fetched else &""
+		DIVE:
+			return &"dive_bed" if holder.depth >= bed() else &""
+		LOFT:
+			if not fetched:
+				return &"loft_unfetched"
+			return &"loft_deep" if holder.depth > int(_block("loft").get("max_depth", 0)) else &""
+	return &""
+
+
+static func _ids(ds: Array[ReefballDiver]) -> Array[StringName]:
+	var out: Array[StringName] = []
+	for d in ds:
+		out.append(d.id)
+	return out
 
 
 ## Opponents in the holder's band and the band above (the band it would rise into).

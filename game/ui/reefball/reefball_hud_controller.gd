@@ -93,7 +93,7 @@ func _open_contact() -> void:
 	hud.hide_banner()
 	if match_state.is_player_contact():
 		if player_ai == null:
-			hud.show_choices(match_state.legal_actions())
+			hud.show_choices(match_state.legal_actions(), match_state.refused_actions())
 		else:
 			match_state.play_ai_contact(player_ai)
 	else:
