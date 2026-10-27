@@ -106,14 +106,48 @@ cutscene sequencer (`game/cutscene/**`), `game/flow/**` and the playtest fixes.
   prow step where Tavi stands; Oruvel's moorings moved from azimuth 35 to 325 (the two runs of galleries are parted by
   the boat lanes, so 35 was unreachable from the party's side), with a boardwalk staging and bridge. Map-only pads
   and gallery "buildings" in the layout keep the area map drawn. `--filter=ch07` 8/0, `test_ch07_bell_walkable` 4/0.
+- **PROGRESS @ 8daa0c63: M3-C05-1213 Ch5 Pemakar on its kit (WIP until rendered).** The kit's ten tiers in its own
+  frame: a quay at the shore (kit wall/tread modules) with the Ch4 ferry alongside, the harbour road up the massif's
+  rows to the first flight, ten flights as ramps; the story near the stair (the kit's tiers are dressing, not lanes:
+  verandas and plinths close the lanes, roofs reach over the next tier), so the smithy trades places with the house
+  by the stair and the inn moves along its arc to x −6.6. The Lanternfall night (388 lamps, 943 leaf-boats, far and
+  sea lights) follows the `Lamps` block, which the day variant hides; the day uses the kit's dusk grade (M3-ENV-1214
+  asks env-art for a day grade, the sea-cut weir, the wake-wall, the crown bell, a quay). ZoneKitDressing gained
+  `multimeshes`, `far_lights`, per-light `color`, `trimesh_lod0`; KitWalkProbe now reads kit box colliders and can
+  query the physics space for trimesh pieces. `--filter=ch0` 79/0, `zone` 58/0, `walkable` 13/0.
+- **PROGRESS @ c0ee5230: M3-CIN-1217 villager casts.** ZoneCast puts the villager models on the Act I stage actors (`"cast"` on each actor row): Neme, Osu, Tavi as themselves, the rest as fisher, netmender, vendor, child, reed; heroes come from hero-integration (Rhen, Asha, Toma). Requests: M3-CHR-1218 (Garo, Marra, Hobb, Fenn, Ione, the Stillguard), M3-HER-1219 (Ysolde's field body). Also fixed: Ch7's galleries faced their story points the wrong way (an actor faces its -Z), 68406c91. `--filter=ch0` 79/0, `zone` 60/0, `walkable` 13/0.
+- **FOR THE LEAD / m2-slice: M3-CIN-1221, a sequencer patch** (`docs/kb/tech/cutscene_mark_via.patch`, applies clean): `@mark <actor> <mark> via=<mark>,<mark>` walks a path as one eased walk turning at each corner (CutsceneSequencer, CutsceneMotion path helpers, `cues.json` `mark.via`, a unit test). Why: `test_act1_cutscene_walks` (6a016642) replays the Act I threads and finds 66 seen walks leaving the floor or passing through something (Corrow's mole rails and the Fisher Stair walked as a slope through the air, Pemakar's harbour to its crown, Tamsule's decks over the water, houses and tables in the greybox zones). The ones that need a path wait on this patch; I'm fixing the rest (marks, off-screen places) now (M3-CIN-1220).
+- **PROGRESS @ 9ccd51b2: M3-CIN-1220, Act I cutscene walks.** 66 → 33 known, and every one left is a path: the
+  `via=` cues are written as `docs/kb/tech/act1_walk_vias.patch` (36 cues, 19 `.dlg` + compiled), which applies on
+  top of M3-CIN-1221's sequencer patch; with both applied the audit is clean bar the exempt `figure_gone`. Along the
+  way: Coilspire's shell and tiers collide from LOD1 with the doorways from LOD0 (`collide_lod0_in`, triangles clipped
+  to boxes), so the doors and all five flights walk (`test_ch08_coilspire_walkable`); Corrow's wall boxes overlap at
+  the joints; Ch9 has a path down Pell's rocks; Ch5's scene-change walks start near the scene (`place_actor`);
+  `tools.tests.test_ch08_flow` green again. `--filter=ch0` 83/0, `zone` 61/0, `kit` 30/0, `cutscene` 55/0.
+  `tools.tests.test_screenshots` stays red until ch04_ferry_deck is baselined (the render below).
+- **FOR THE LEAD / m2-slice:** after `cutscene_mark_via.patch` (M3-CIN-1221), apply `act1_walk_vias.patch` too and
+  empty `known` in `tests/integration/act1_cutscene_walks_known.json` (or tell me and I will).
+- **Blocked swaps:** Ch5 Ashcrown (M3-C05-1215): the kit's flying stair is 48° and its vein stairs 60°, past the controller's 45°, so it needs a steep-stair traversal (request M3-ARC-1216). Ch4 `haluna_wake` belongs on the real Ch2 Haluna once it is ZoneStory (ADR 0035, slice-polish) with env-art's wake dressing (M3-C04-03); I'm not building a second dressed Haluna.
+- **Ch7's port (`ch07/tamsule`) is waiting on a kit:** env-art's "Tamsule stilt" kit (M3-C07-04, role environment) is
+  still todo. The galleries part of M3-C07-04 is done by M3-C07-1211. I'll compose the port from the Bell kit's port
+  pieces and Oruvel's rafts only if the Lead wants it before env-art gets to it.
 
 ### Render requests
-RENDER-REQUEST @ 180510e1: ch04_ferry_deck, ch04_ferry_derelict; why: M3-C04-1204 dresses the Ch4 ferry and derelict with the ferry kit (new shots, no baseline yet)
-RENDER-REQUEST @ 77a6a777: ch09_corrow_strand, ch09_corrow_road, ch08_corrow_arrival, ch08_corrow_stair, ch06_brine_road, ch06_brine_camp; why: M3-C09-1209 puts Ch9 on the Corrow kit (new shots); the Ch8 and Ch6 shots re-checked on the PC after the KitCollision refactor and the big9 merge
-RENDER-REQUEST @ b30c2cf2: ch08_coilspire_path, ch08_coilspire_hall; why: M3-C08-1210 stands Coilspire upright on its kit (new shots)
-RENDER-REQUEST @ 5112837a: ch07_bell_galleries, ch07_bell_moorings; why: M3-C07-1211 puts Ch7's Bell galleries on the Tamsule Bell kit (new shots)
+DONE @ 180510e1 (viewed gpu/render-act1-chapters-180510e): ch04_ferry_derelict approved (df86873f); ch04_ferry_deck re-aimed (the camera stood 0.6 m from the ferrymaster), re-requested below
+DONE @ 77a6a777 (viewed gpu/render-act1-chapters-77a6a77): ch08_corrow_arrival, ch08_corrow_stair, ch06_brine_camp pass (rmse 0); ch06_brine_road re-approved (its drift is the real hero model in front), ch09_corrow_road approved (df86873f); ch09_corrow_strand was near-black: vigil lamps and a brighter moon added, re-requested below
+SUPERSEDED by the request @ c0ee5230 below: b30c2cf2
+SUPERSEDED by the request @ c0ee5230 below: 5112837a
+SUPERSEDED by the request @ c0ee5230 below: 8daa0c63
+SUPERSEDED by the request @ c0ee5230 below: eeaf91bf
+SUPERSEDED by the request @ 9ccd51b2 below: c0ee5230
+RENDER-REQUEST @ 9ccd51b2: ch04_ferry_deck, ch04_ferry_derelict, ch05_pemakar_harbour, ch05_pemakar_crown, ch06_brine_road, ch06_brine_camp, ch07_bell_galleries, ch07_bell_moorings, ch08_corrow_arrival, ch08_corrow_stair, ch08_coilspire_path, ch08_coilspire_hall, ch09_corrow_strand, ch09_corrow_road; why: every Act I shot, one pass (c0ee5230's request, unanswered, plus 9ccd51b2's moved marks and actors, Coilspire's key t4_d and Ch9's rock path)
 
 ## Exact next step
-Swaps still to do: Ch5 Pemakar (terraces: trimesh treads + ramps for the flights) and Ashcrown, Ch7 Tamsule (port), Ch4 `haluna_wake` (Haluna's kit at night). Ch1 is slice-polish's. When the PC answers a
-render request above: fetch `gpu/render-act1-chapters-<sha7>`, view every out/diff PNG, approve, and write the
-MERGE-READY lines for Ch4, Ch9, Coilspire and Ch7's galleries.
+1. When the PC answers RENDER-REQUEST @ 9ccd51b2 (`gpu/render-act1-chapters-9ccd51b`): view every out/diff PNG;
+   approve what reads (copy to `tests/screenshots/baselines/`, the llvmpipe metadata in baselines.json); fix and
+   re-request what doesn't; then write the MERGE-READY lines for Ch4 (M3-C04-1204), Ch9 (M3-C09-1209), Coilspire
+   (M3-C08-1210), Ch7's galleries (M3-C07-1211), Ch5 Pemakar (M3-C05-1213) and the casts (M3-CIN-1217).
+2. Queue item 6, the cutscene quality bar, on the Act I scripts (easing, HeroMotion, no snapping, no greyscale
+   frames, villagers alive), now that the stage actors are real models.
+3. Blocked or waiting: Ashcrown (M3-ARC-1216), `haluna_wake` (Haluna's ZoneStory move), Ch7's port (env-art's
+   kit, M3-C07-04), the Reefball HUD (M3-UI-01: TidecupMatch loads it by path when it lands).

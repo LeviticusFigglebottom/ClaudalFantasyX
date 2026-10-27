@@ -3260,6 +3260,44 @@
       }
     },
     {
+      "id": "ch05_pemakar_harbour",
+      "scene": "res://game/levels/_tests/act1_zones/ch05_pemakar_shots.tscn",
+      "camera": "Cameras/Harbour",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "ch05_pemakar_crown",
+      "scene": "res://game/levels/_tests/act1_zones/ch05_pemakar_shots.tscn",
+      "camera": "Cameras/Crown",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
       "id": "wildlife_stage",
       "scene": "res://game/levels/_tests/wildlife/wildlife_stage.tscn",
       "resolution": [

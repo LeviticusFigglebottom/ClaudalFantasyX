@@ -44,6 +44,7 @@ PARAPET_Z = (cf.cw.PARAPET[0], cf.cw.PARAPET[1])
 PARAPET_TOP = 14.5  # the parapet and the Watchers' heads: nobody climbs them
 TOWN = (-118.0, 8.0, -70.0)  # the town floor: x from, x to, z north edge (south edge is under the wall)
 LAYOUT = ZONE / "corrow_layout.json"
+JOINT_OVERLAP_M = 0.25  # each wall box reaches this far past its segment's ends
 STORY_CLEAR_M = 4.5  # no house within this of a town mark, spawn or actor
 
 
@@ -86,7 +87,9 @@ def wall_collision() -> list[dict]:
         s = 6.0 + 12.0 * k
         s0, s1 = s - 6.0, s + 6.0
         gap = k == GAP_K
-        rows.append(arc_box("WallSection" if gap else f"Wall{k:+d}", s0, s1, -1.0, cf.WALK_Y, *WALL_Z))
+        # the walk's boxes are chords of the arc: each overlaps the next, or a crack opens at the joint's outer side
+        rows.append(arc_box("WallSection" if gap else f"Wall{k:+d}", s0 - JOINT_OVERLAP_M, s1 + JOINT_OVERLAP_M, -1.0,
+                            cf.WALK_Y, *WALL_Z))
         for i, (a, b) in enumerate(split(s0, s1, [MOLE_GAP_S])):
             rows.append(arc_box("WallSectionParapet" if gap else f"Parapet{k:+d}{'ab'[i]}", a, b, cf.WALK_Y,
                                 PARAPET_TOP, *PARAPET_Z))
