@@ -80,6 +80,24 @@ Ch4–Ch9 onward. `m2-slice.md` beside this file is the history up to the 2026-1
   - **Note for creatures:** `game/data/world/wildlife/ch03_saltgrass_causeway.json` is now generated (it asked for
     the move at the swap).
 
+- **MERGE-READY @ 44a7d65c:**
+  - merged the integration branch with big9 and big10 (91cc7e5c: PROVENANCE and flags by merge_union; shots.json
+    takes big10's manifest plus the six slice shots);
+  - M2-FP-110: B05 keeps Asha and Toma, and their lines play on the followers;
+  - M3-ARC-04: the shrine's fog lamps;
+  - CutsceneClips split out of the sequencer (line cap);
+  - M3-BPR-404 verified: the Hullgnaw and Drownbell intros are framed whole.
+  - **Checks run:**
+    - validate_data, taskboard, dlgc, lint and format clean;
+    - tools: test_fog_lamps, test_causeway_gameplay;
+    - Godot on the merged tree: cutscene 60, fp_ 28, prologue 7, haluna 57, villagers 7, zone 51, causeway 12,
+      wildlife 10, field_npc 10, slice_ 10, hero 85, ch01 13, swap 15, shrine 37, all 0 failed.
+  - **Checks skipped:** coverage (no battle or progression code); Blender (no source).
+  - **Known red:** the six new slice shots wait for their PC baselines (see below).
+- **Ch1 to slice quality (queue item 6):** this waits on act1-chapters' KitCollision (ADR 0200) reaching the
+  integration branch, so Ch1 uses the same kit mechanism as Ch4+. Not duplicated here.
+- **Session handoff:** docs/kb/handoffs/2026-10-27-cinematics-slice-polish-1.md.
+
 ### Render requests
 RENDER-REQUEST @ fdec3cc6: slice_prologue_vigil_line, slice_beach_h05_asha, slice_beach_h06_toma, slice_haluna_villagers_village, slice_causeway_head, slice_causeway_harrier_view, haluna_h01_village_from_sea, haluna_h02_tidewall_lane, haluna_h04_dock, haluna_h07_chapel_court, haluna_h10_dock_night, shrine_s01_approach, shrine_s02_threshold, shrine_s03_overview, shrine_s04_lip, shrine_s05_side_pool, drownbell_flood, battle_boss_intro_drownbell, battle_arena_causeway, field_causeway_dolly, boot_title; why: M2-FP-102..109, the human's playtest round (real cast and held poses in the prologue and Cutscene A, live villagers and wildlife, the final causeway), plus the greyscale audit of every slice beat. The six slice_* shots are new (no baseline yet).
 - **Known red until the render lands:** the six new `slice_*` shots have no baseline yet, so the tools test
@@ -89,3 +107,4 @@ RENDER-REQUEST @ fdec3cc6: slice_prologue_vigil_line, slice_beach_h05_asha, slic
     my approval commit, which follows the PC's `gpu/render-slice-polish-fdec3cc` (or e1e63f4).
   - **Suggestion for the Lead (TRACK-RULES):** allow a `"pending_baseline": true` key on a new shot until its first
     approval.
+RENDER-REQUEST @ 44a7d65c: shrine_s01_approach, shrine_s02_threshold, shrine_s03_overview, shrine_s04_lip, shrine_s05_side_pool; why: M3-ARC-04 sets the shrine's shaft lamps' volumetric fog energy to 0 (the fog should read from the shader and the sun, not lamp scatter). If the e1e63f43 request is not rendered yet, render this one instead for those five shots.
