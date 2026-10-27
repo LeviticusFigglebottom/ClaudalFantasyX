@@ -17,7 +17,8 @@ const VOWBOUND := "res://game/data/battle/vowbound.json"
 
 func test_no_zone_shows_a_capsule_the_owners_do_not_know_of() -> void:
 	var known := _json(KNOWN).get("capsules", {}) as Dictionary
-	var party_was: Array[StringName] = Game.state.party_ids.duplicate()
+	var state_was := Game.state  # a fresh state: no flags left by earlier tests pick a zone's variant
+	Game.state = GameStateData.new()
 	Game.state.party_ids = [&"rhen", &"asha", &"toma"] as Array[StringName]
 	var paths: Array[String] = HeroGuardSources.field_zones()
 	var prologue := str(HeroGuardSources.scenes_by_location().get(HeroGuardSources.PROLOGUE_ID, ""))
@@ -33,7 +34,7 @@ func test_no_zone_shows_a_capsule_the_owners_do_not_know_of() -> void:
 		_host().add_child(zone)
 		var shown := capsules(zone)
 		for flags in _variant_flags(zone):  # the zone as each layout variant shows it (Ch9's dawn road)
-			var state_was := Game.state
+			var default_state := Game.state
 			Game.state = GameStateData.new()
 			Game.state.party_ids = [&"rhen", &"asha", &"toma"] as Array[StringName]
 			for f in flags:
@@ -42,7 +43,7 @@ func test_no_zone_shows_a_capsule_the_owners_do_not_know_of() -> void:
 			for who in capsules(zone):
 				if not shown.has(who):
 					shown.append(who)
-			Game.state = state_was
+			Game.state = default_state
 		var listed: Array = known.get(path.get_file(), [])
 		for who in shown:
 			if listed.has(who):
@@ -50,7 +51,7 @@ func test_no_zone_shows_a_capsule_the_owners_do_not_know_of() -> void:
 			else:
 				fail("%s shows %s as a capsule" % [path.get_file(), who])
 		zone.free()
-	Game.state.party_ids = party_was
+	Game.state = state_was
 
 
 func test_every_party_member_has_a_battle_actor() -> void:

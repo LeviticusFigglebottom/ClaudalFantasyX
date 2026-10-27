@@ -365,6 +365,11 @@ func _move(i: int, leader_speed: float, delta: float) -> void:
 		# eased back at most its top speed a frame: a follower held by a wall would otherwise be shoved in one jump
 		p = p.move_toward(spot, float(_cfg.get("gap_push_mps", 0.0)) * delta)
 		v -= away * minf(v.dot(away), 0.0)
+	# the push rides on the step, so the step as a whole keeps the top speed (Ch7's galleries: 6.9 m/s without this)
+	var step := Vector3(p.x - f.global_position.x, 0.0, p.z - f.global_position.z).limit_length(
+		float(_cfg.get("max_speed_mps", INF)) * delta
+	)
+	p = Vector3(f.global_position.x + step.x, p.y, f.global_position.z + step.z)
 	var moved := _clear_step(f.global_position, Vector3(p.x - f.global_position.x, 0.0, p.z - f.global_position.z))
 	if moved.length_squared() < Vector3(p.x - f.global_position.x, 0.0, p.z - f.global_position.z).length_squared():
 		v = moved / delta  # a wall took part of the step: the speed is what was left
