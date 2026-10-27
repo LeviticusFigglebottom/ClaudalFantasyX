@@ -97,6 +97,8 @@ var _motions: Dictionary = {}
 ## a held actor's lines don't play talk or idle over the pose.
 var _held: Dictionary = {}
 var _breath: CutsceneCameraBreath
+## M2-FP-106: the zone's villagers (FieldNpc) this scene's lines have turned to Rhen.
+var _npc_talk := CutsceneNpcTalk.new()
 var _vfx_count := 0
 ## True while a skip fast-forwards (until the next choice or the end).
 var _skipping := false
@@ -337,6 +339,7 @@ func _finish() -> void:
 		_complete_motions()
 	_restore_player()
 	_held.clear()
+	_npc_talk.end_all()
 	_key_drop()
 	SaveSystem.release_autosave(self)
 	_playing = false
@@ -354,6 +357,8 @@ func _line(step: DialogueStep) -> void:
 	overlay.box.show_line(step)
 	line_shown.emit(step)
 	var speaker := _stage.actor(step.speaker) if _stage != null and step.speaker != &"" else null
+	if speaker == null and _stage != null:
+		_npc_talk.speak(_stage.get_parent(), step.speaker, _player)  # M2-FP-106: a villager turns and talks
 	if speaker != null:
 		if step.emotion != &"":
 			_set_face(step.speaker, step.emotion, -1.0)

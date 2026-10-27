@@ -99,3 +99,24 @@ func test_night_still_sends_the_dock_home() -> void:
 	for npc in _npcs():
 		assert_false(npc.npc_id in [&"netmender", &"fisher"], "%s has gone home for the night" % npc.npc_id)
 	_done()
+
+
+## M2-FP-106: a line spoken by a villager who is no stage actor (Neme at her table) turns that FieldNpc to
+## Rhen and plays its talk for the scene; the scene's end lets it go.
+func test_a_villagers_line_turns_her_to_rhen_for_the_scene() -> void:
+	_load()
+	var neme: FieldNpc = null
+	for npc in _npcs():
+		if npc.npc_id == &"neme":
+			neme = npc
+	assert_true(neme != null, "Neme is a FieldNpc")
+	var seq := CutsceneSequencer.new()
+	seq.instant = true
+	zone.add_child(seq)
+	var during: Array[bool] = []
+	seq.line_shown.connect(func(_s: DialogueStep) -> void: during.append(neme.is_talking()))
+	await seq.play(&"ch02_nemes_table", zone.stage)
+	assert_true(during.size() > 1 and during[1], "she is talking by her second line")
+	assert_false(neme.is_talking(), "the scene's end lets her go")
+	seq.free()
+	_done()
