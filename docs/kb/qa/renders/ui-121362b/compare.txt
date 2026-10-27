@@ -1,0 +1,4 @@
+PASS battle_hud_preview: rmse 0.00692 (limit 0.00800)
+FAIL battle_ch08_stair_hold: no baseline (inspect out/, then compare.py --update-baselines battle_ch08_stair_hold)
+Screenshots: 2 compared, 1 failed (diffs in /root/hymn/tests/screenshots/out/diff)
+compare exit 1
