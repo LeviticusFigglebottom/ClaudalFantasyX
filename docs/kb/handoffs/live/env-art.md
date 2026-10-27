@@ -402,7 +402,8 @@ RENDER-REQUEST @ 43492e80: battle_arena_lowlight_engine_hall; why: M3-ENV-716 th
 RENDER-REQUEST @ 60eee2f7: iskarra_p01_plaza_dusk,iskarra_i02_gate_from_the_plaza,iskarra_i03_broken_tower,brine_b01_arrival,brine_b05_barge_channel; why: after viewing 8770a06: Iskarra gets real water (reflections) and the paving inlay as channel lines; B01/B05 show the boat wake (supersedes these ids in 854e6a95)
 ANSWERED: 8770a06 (gpu/render-env-art-8770a06): corrow_c01_wall_head and corrow_c08_watcher_profile viewed and re-approved in 895ff7ec; the Ch6 arenas, Iskarra and B01/B05 re-requested (big11's actors, the plaza and the wake changed since). ba16d48 and 179069d predate big11's NPCs and actor stances: re-requested below.
 ANSWERED: 22a5de1 and 1a42247 (3 pass each after the import-crash re-render): nothing to approve.
-RENDER-REQUEST @ 29ddd021: haluna_h01_village_from_sea,haluna_h04_dock,battle_arena_causeway_route_afternoon; why: the fish weirs (ba16d48) and the route arena's tidal mud (179069d), not on the integration branch, now with big11's villagers and stances
+SUPERSEDED by the request below for the Haluna ids: RENDER-REQUEST @ 29ddd021: haluna_h01_village_from_sea,haluna_h04_dock,battle_arena_causeway_route_afternoon; why: the fish weirs (ba16d48) and the route arena's tidal mud (179069d), not on the integration branch, now with big11's villagers and stances
+RENDER-REQUEST @ ab58f891: haluna_h01_village_from_sea,haluna_h02_tidewall_lane,haluna_h04_dock,haluna_h10_dock_night,battle_arena_causeway_route_afternoon; why: the beach palms clustered (no longer one even row from the sea) on top of the fish weirs and big11's villagers; the route arena's tidal mud
 RENDER-REQUEST @ c990e2c2: battle_arena_ossa_fen_roots; why: M3-ENV-718 the Mangrove Drowner's fen arena (new shot)
 RENDER-REQUEST @ 191e5e89: battle_arena_bridal_barge_night; why: M3-ENV-720 the Wakefin's unlamped bridal barge (new shot)
 
