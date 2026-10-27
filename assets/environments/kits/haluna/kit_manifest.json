@@ -761,6 +761,39 @@
         "kirru_roost-lod1": 492
       }
     },
+    "kite_engine": {
+      "budget": [
+        4000,
+        300
+      ],
+      "bytes": 45320,
+      "lods": {
+        "kite_engine": 496,
+        "kite_engine-lod1": 96
+      }
+    },
+    "kite_hull": {
+      "budget": [
+        16000,
+        1200
+      ],
+      "bytes": 118664,
+      "lods": {
+        "kite_hull": 2174,
+        "kite_hull-lod1": 172
+      }
+    },
+    "kite_rig": {
+      "budget": [
+        10000,
+        800
+      ],
+      "bytes": 49264,
+      "lods": {
+        "kite_rig": 442,
+        "kite_rig-lod1": 170
+      }
+    },
     "lacquer_court_ground": {
       "budget": [
         12000,

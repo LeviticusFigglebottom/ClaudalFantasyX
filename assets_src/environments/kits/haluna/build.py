@@ -36,6 +36,7 @@ import bridal_barge  # noqa: E402
 import ansedra  # noqa: E402
 import drowned_choir  # noqa: E402
 import hollowmere  # noqa: E402
+import kite  # noqa: E402
 import kit_common as kc  # noqa: E402
 import props  # noqa: E402
 import ruins  # noqa: E402
@@ -107,6 +108,8 @@ def targets() -> dict:
         out[name] = (name, drowned_choir, fn)
     for name, fn in sorted(hollowmere.TARGETS.items()):  # M3-ENV-723 Hollowmere, the Saltwright raft-city (Ch17)
         out[name] = (name, hollowmere, fn)
+    for name, fn in sorted(kite.TARGETS.items()):  # M3-ENV-725 the Kite, the party's hub from Ch18
+        out[name] = (name, kite, fn)
     return out
 
 
