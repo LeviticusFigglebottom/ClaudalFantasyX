@@ -975,7 +975,9 @@ CW = "res://assets/environments/kits/corrow/"
 CW_LAYOUT = ROOT / "game" / "levels" / "_tests" / "corrow_kit" / "corrow_layout.json"  # the kit preview's, read-only
 CW_WALK_Y = 12.0  # cw_common.WALK_Y: the walk's paving, the arena's floor
 CW_ARC_R = 300.0  # cw_common.ARC_R_M
-WALLHEAD_S = -30.0  # the arena's segment (a segment centre): the stair foot at s -40 is 10 m to the party's right
+# M3-BPR-407: the arena's segment (a segment centre) sits so the Fisher Stair's head lands on the party's right
+# (its foot is at s -40, its head landing at s ~ -17.4: x ~ +11 here) with Liss's hoist (s -16.5) beside it.
+WALLHEAD_S = -6.0
 WALLHEAD_Z = 0.7  # the walk's centre line in the arena: parapet from z -2.3, inner kerb from +3.1 (slots + 1 m clear)
 WALLHEAD_RADIUS_M = 170.0  # the preview's wall, town and far pieces kept within this of the arena (the far land always)
 WALLHEAD_ALWAYS = ("corrow_far", "coilspire_headland")
@@ -1040,10 +1042,11 @@ WALLHEAD_DRESSING = [
     {"glb": BS + "crate_stack.glb", "at": (-7.7, 0.0, -1.3), "yaw": 95.0},
     {"glb": KIT + "cargo_sacks.glb", "at": (8.8, 0.0, 0.4), "yaw": 160.0},
 ]
-WALLHEAD_HOIST_DRESSING = [
-    {"glb": CW + "hoist_basket.glb", "at": (-11.6, 0.0, 2.2), "yaw": 30.0},
-    {"glb": KIT + "rope_coil.glb", "at": (-12.4, 0.0, 1.0), "yaw": 40.0},
+WALLHEAD_HOIST_DRESSING = [  # by the hoist, on the party's right with the stair head (M3-BPR-407)
+    {"glb": CW + "hoist_basket.glb", "at": (8.4, 0.0, -1.7), "yaw": 30.0},
+    {"glb": KIT + "rope_coil.glb", "at": (9.4, 0.0, -0.6), "yaw": 40.0},
 ]
+WALLHEAD_ENTRY_WARD = (10.6, 0.0, 2.4)  # EntryMarker_ward: the walk at the stair head, where the Climb arrives
 # The kites still up over the wall in the afternoon (they come down on the run back, B08): along the parapet.
 WALLHEAD_KITES = [{"glb": CW + "kite_line.glb", "at": (0.0, 0.0, -2.9), "yaw": 180.0, "structure": True}]
 
@@ -1093,7 +1096,7 @@ def _wallhead_arena(arena_id: str, *, hoist: bool, surge: bool) -> dict:
             "along_the_walk": ((-9.5, 1.8, 1.4), (3.0, 1.0, -0.2)),
             "the_storm_wall": ((2.0, 0.7, 5.0), (-3.0, 3.5, -14.0)),
         },
-        "anchors": {"BossAnchor": (-6.0, 0.9, -3.4)} if surge else {},
+        "anchors": ({"BossAnchor": (-6.0, 0.9, -3.4)} if surge else {}) | {"EntryMarker_ward": WALLHEAD_ENTRY_WARD},
     }
 
 
