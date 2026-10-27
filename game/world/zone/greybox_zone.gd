@@ -307,7 +307,7 @@ func _build_stage() -> void:
 		a.position = _vec3(at)
 		a.rotation_degrees.y = float(at[3]) if at.size() > 3 else 0.0
 		a.visible = not bool(row.get("hidden", false))
-		a.add_child(_capsule_mesh(d))
+		a.add_child(_actor_body(id, row, d))
 		actors.add_child(a)
 	var shots := Node.new()
 	shots.name = "Shots"
@@ -416,6 +416,19 @@ func _capsule_shape(d: Dictionary) -> CollisionShape3D:
 	cs.shape = shape
 	cs.position.y = shape.height * 0.5
 	return cs
+
+
+## M2-FP-111: an actor row's "model" (a villager actor scene, e.g. Kell's) stands in its place idling and breathing,
+## so the cutscene's @anim and talk clips have a body; without one (or when it can't load) it is the capsule.
+func _actor_body(id: String, row: Dictionary, d: Dictionary) -> Node3D:
+	var packed := load(str(row["model"])) as PackedScene if row.has("model") else null
+	if packed == null:
+		return _capsule_mesh(d)
+	var body := packed.instantiate() as Node3D
+	body.name = "Model"
+	HeroMotion.play(body, &"idle", 0.0)
+	HeroMotion.add_micro_motion(body, StringName(id))
+	return body
 
 
 func _capsule_mesh(d: Dictionary) -> MeshInstance3D:
