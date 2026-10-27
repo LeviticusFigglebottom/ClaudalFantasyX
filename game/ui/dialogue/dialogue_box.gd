@@ -4,6 +4,8 @@ extends Control
 ## (assets/audio/sfx/text_blip.ogg pitched by speakers.json). Feed it LINE steps from a
 ## DialogueRunner; it resolves text with tr(). Lip-flap is not done here: mouth_flap fires for
 ## each revealed vowel (open) and the first non-vowel after it (closed) so Cinematics can hook in.
+## It no longer snaps (DialogueBoxMotion): shown, its panel fades and rises in; a new speaker's name fades
+## in; dismiss() fades it out before hiding it. Reduced motion makes all of it instant.
 
 signal reveal_finished
 signal mouth_flap(speaker: StringName, open: bool)
@@ -39,6 +41,9 @@ var _shown: int = 0
 var _revealing: bool = false
 var _mouth_open: bool = false
 var _blip_chars: int = 0
+## The name key on show (a different one fades the name in).
+var _name_key: StringName = &""
+var _motion: DialogueBoxMotion
 
 @onready var _name_label: Label = %SpeakerName
 @onready var _body_label: Label = %Body
@@ -69,7 +74,13 @@ func _ready() -> void:
 		speakers = DialogueSpeakers.load_default()
 	_blip.volume_db = settings.blip_volume_db
 	clear()
+	_motion = DialogueBoxMotion.new(self, get_node(^"Panel") as Control, _name_label)
 	DialogueAssist.attach(self)  # M2-UI-25: continue glyph, backlog, auto-advance (UI-owned)
+
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_VISIBILITY_CHANGED and visible and _motion != null and not _motion.is_dismissing():
+		_motion.play_in()
 
 
 func _process(delta: float) -> void:
@@ -112,6 +123,12 @@ func show_text(
 		name_key = display_name_key if display_name_key != &"" else own
 	_name_label.text = tr(name_key) if name_key != &"" else ""
 	_name_label.visible = name_key != &""
+	if _motion != null:
+		if _motion.is_dismissing():
+			_motion.play_in()  # a line arrived while it was going: it comes back
+		elif name_key != _name_key and name_key != &"" and visible:
+			_motion.play_name()
+	_name_key = name_key
 	_body_label.theme_type_variation = SUNG_VARIATION if sung else &""
 	_text = InputNames.fill(tr(text_key))  # {action} names the binding, for the last device (M2-UI-26)
 	_body_label.text = _text
@@ -174,7 +191,22 @@ func set_chars_per_sec(value: float) -> void:
 	settings.set_chars_per_sec(value)
 
 
+## Fades the box out, then hides it (DialogueBoxMotion.dismissed; at once under Reduced motion). Use it
+## instead of `visible = false` where the box should not snap away (the end of a scene).
+func dismiss() -> void:
+	if visible and _motion != null:
+		_motion.play_out()
+	else:
+		visible = false
+
+
+## The box's transitions (null before _ready). Tests drive them with motion().finish().
+func motion() -> DialogueBoxMotion:
+	return _motion
+
+
 func clear() -> void:
+	_name_key = &""
 	_revealing = false
 	_speaker = &""
 	_voice = &""

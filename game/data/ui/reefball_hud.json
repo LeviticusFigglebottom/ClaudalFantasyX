@@ -1,0 +1,35 @@
+{
+  "reefball_hud": {
+    "doc": "M3-UI-01: the Reefball match HUD (SPEC 6.10, docs/kb/design/reefball.md, docs/kb/tech/ui.md 'Reefball HUD'). A view over ReefballMatch only: every number shown comes from the engine (snapshot, legal_actions, preview, the signals). Rects are [x, y, w, h] at the 1920 x 1080 reference; a section's pin is the edge it keeps its margin to at 16:10 and 21:9 (HudLayout.place, M2-UI-29). Panels grown by their text (130% text, a longer language) grow away from their pin. Column widths are px; *_role are theme palette roles.",
+    "framing": {"rect": [48, 40, 600, 128], "pin": "top_left", "pad": 14, "gap": 2},
+    "scoreboard": {"rect": [660, 32, 600, 148], "pin": "top", "pad": 12, "gap": 0, "side_width": 180, "dash_width": 40},
+    "contact": {"rect": [660, 196, 600, 120], "pin": "top", "pad": 12, "gap": 2,
+                "yours_role": "focus_gold", "theirs_role": "stone"},
+    "read": {"rect": [1272, 40, 600, 312], "pin": "top_right", "pad": 14, "gap": 4, "header_height": 40,
+             "row_height": 36, "name_width": 196, "band_width": 116, "gauge_width": 50, "number_width": 72,
+             "gauge_px": 6, "tag_role": "danger", "mark_role": "cursor_wash"},
+    "side": {"rect": [1272, 788, 600, 244], "pin": "bottom_right", "pad": 14, "gap": 4, "header_height": 40,
+             "row_height": 36, "name_width": 196, "band_width": 116, "gauge_width": 50, "number_width": 72,
+             "gauge_px": 6, "tag_role": "focus_gold", "mark_role": "cursor_wash"},
+    "drop": {"rect": [1272, 372, 600, 396], "pin": "right", "pad": 12, "label_width": 150, "dot_px": 18,
+             "dot_gap": 14, "ring_px": 3, "line_px": 2, "dash_px": 8, "band_alpha": 0.55, "ring_band_alpha": 0.8,
+             "ours_role": "text", "theirs_role": "stone", "holder_role": "focus_gold",
+             "target_role": "focus", "taker_role": "danger", "fetch_role": "text_dim", "resting_alpha": 0.45},
+    "commands": {"rect": [48, 724, 480, 308], "pin": "bottom_left", "header_height": 44, "row_pitch": 40,
+                 "max_rows": 6, "row_inset": 12, "text_indent": 40, "submenu_dim": 0.5, "cursor_sec": 0.09,
+                 "mote_lag_sec": 0.03, "mote_px": 10, "mote_offset": 14, "breath_sec": 2.4, "breath_min": 0.75,
+                 "cost_width": 150, "rank_width": 46, "odds_role": "focus_gold", "sure_role": "heal"},
+    "preview": {"rect": [552, 808, 640, 224], "pin": "bottom_left", "pad": 14, "gap": 2,
+                "miss_role": "danger", "score_role": "focus_gold"},
+    "banner": {"rect": [660, 404, 600, 164], "pin": "center", "pad": 18, "gap": 4},
+    "pacing": {"ai_think_sec": 0.7, "goal_hold_sec": 1.8},
+    "reads": {
+      "story_opponent": "RBL_HUD_READ_BOLD",
+      "smart": "RBL_HUD_READ_CAREFUL"
+    },
+    "stakes": {
+      "_note": "Until matches.json carries a stakes_key (M3-RBL-201), the framing line comes from here by match id; a match row's own stakes_key wins.",
+      "tidecup_opening": "RBL_HUD_STAKES_TIDECUP_OPENING"
+    }
+  }
+}

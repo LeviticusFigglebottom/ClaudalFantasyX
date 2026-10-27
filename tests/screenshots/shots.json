@@ -3161,6 +3161,14 @@
           "screen_space_aa": 1
         }
       }
+    },
+    {
+      "id": "reefball_hud_choice",
+      "scene": "res://game/ui/reefball/shots/reefball_hud_choice.tscn"
+    },
+    {
+      "id": "reefball_hud_goal",
+      "scene": "res://game/ui/reefball/shots/reefball_hud_goal.tscn"
     }
   ]
 }
