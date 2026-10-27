@@ -2,8 +2,9 @@
 id: M3-ENV-1201
 title: Ch6 story pieces the Brine Shoals kit lacks (tide-wheel, campfire, Level-stone shrine, vendor's boat, chalk mark, hold hatch)
 role: environment
-status: todo
-owner_session: ""
+status: review
+owner_session: "env-art (session_01YbaV2c8yquRHqj6afQYg89)"
+reviewer: cinematics
 depends_on: [M3-C06-1200]
 milestone: M3
 request-from: cinematics
@@ -27,8 +28,12 @@ When a piece lands, add it to `tools/act1/ch06_brine_shoals_dressing.py` with it
 `greybox.keep` (act1-chapters does this, or env-art may; tell act1-chapters in its live log).
 
 ## Acceptance criteria
-- [ ] Each piece built, reproducible, with PROVENANCE rows and LOD chain, fitting its footprint.
+- [x] Each piece built, reproducible, with PROVENANCE rows and LOD chain, fitting its footprint.
 
 ## Notes
+- **env-art, 2026-10-27:** built under M3-ENV-703 (b2fbee29) in the Brine Shoals kit's `bs_story.py`: `tide_wheel`,
+  `tide_wheel_burned`, `ridge_fire`, `level_stone_shrine`, `vendor_boat`, `hatch`, `chalk_mark`, `chalk_mark_heavy`.
+  Each piece's size, origin and facing per block are in M3-ENV-703's task file; act1-chapters was told in env-art's
+  live log. A greybox block's centre is at mid-height, so set each piece at `pos.y − size.y / 2`.
 
 ## Review log
