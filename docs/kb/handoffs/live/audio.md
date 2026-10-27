@@ -3,6 +3,20 @@
 ## NEW ACCOUNT (from 2026-10-25)
 Session `session_01Wmj8xaLtwcqiS3qwC6PciW`. Integration branch `claude/undertow-lead-handoff-ze8rrn`. Newest first.
 
+- **MERGE-READY: M3-AUD-859, the Kite's foley**, sources only, held for LFS.
+  - kite_foley.py renders two 40 s deck beds and 14 one-shots:
+    - kite_deck: in flight, with both lift engines.
+    - kite_deck_dark: after H09, gliding on sail alone.
+    - The one-shots: H09's engine stop and lanterns, sail fills, E4's rope strain and landing, the tiller, the ledger chest.
+  - Total 0.94 MiB; deterministic; every file at its rule.
+  - New `ACT3_SFX` in render_all, rendered with `--act3`, into **assets/audio/sfx/act3/**. Nothing there is tracked; test_act2_finals checks it.
+  - **For the Lead, when LFS goes live:** route `assets/audio/sfx/act3/**` as well as the music dirs.
+  - Review: env-art.
+- **Container restart at about 23:40:** two composers and my render running at once ran out of memory. Both composers
+  have been resumed in their worktrees and now render strictly one at a time (they check for another
+  `render_all.py --act3` first): Iskarra (M3-AUD-856) and the revenant pair plus Kerrid's night (M3-AUD-858). Nothing
+  was lost from git.
+
 - **MERGE-READY: M3-AUD-857, Kahre's and Virel's voices** (backlog: the creatures' newest designs). claude/creatures
   has built both Vowbound, and until now they had only the shared rows.
   - vowbound_sfx.py now voices them. Kahre: a hornbill's boom, the mane's sparks, thunder off the anvil, and the
