@@ -36,10 +36,10 @@ marked, and no level marks any yet. Audio is listen-only and never edits a level
       separate jetty: the dock is the one pier.
   - **Test.** `tests/unit/test_haluna_footstep_surfaces.gd` asks FootstepAudio itself: the deck is wood at three
     points and at the end platform; wading beside the dock is water; the beach above the water stays sand.
-  - **For slice-polish:** the causeway's planks and pools are in `ch03/saltgrass_causeway` (your scene). The same
-    rows work in any scene: an Area3D in `footstep_surface` with a `surface` meta. A request isn't filed, because
-    the route's plank pieces (`causeway_plank_*` in the M2-ENV-10 drop-in) are where to hang them. Say if you'd
-    rather env-art add a generated surfaces node to the drop-in.
+  - **For slice-polish:** the causeway (`ch03/saltgrass_causeway`, your scene) is laid stone (`causeway_slab_*`),
+    which is already the scene's default, so only its pools want `water` areas. The same rows work in any scene: an
+    Area3D in `footstep_surface` with a `surface` meta. Say if you'd rather env-art generate them from
+    `saltgrass_causeway_layout.json`.
   - **Later zones** (piers and fords): the zones' kits get rows when their drop-ins are built.
 
 ## Review log
