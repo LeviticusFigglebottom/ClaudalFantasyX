@@ -859,6 +859,16 @@
         ["{blender}", "--python", "assets_src/creatures/ilun/build_ilun.py", "--", "--out", "assets/creatures/ilun/ilun.glb"],
         ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "ilun"]
       ]
+    },
+    {
+      "id": "creature_virel",
+      "owner": "character",
+      "sources": ["assets_src/creatures/virel/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/virel/*.glb", "assets/creatures/virel/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/virel/build_virel.py", "--", "--out", "assets/creatures/virel/virel.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "virel"]
+      ]
     }
 ]
 }
