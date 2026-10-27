@@ -22,6 +22,9 @@ second-stem trigger can't happen.
       keeping the sequencer's fade and volume semantics. A file or stand-in is the fallback.
 - [ ] `@stem <index> on|off fade=<s>` (or `@music <id> stems=0,1`): calls `MusicDeck.set_stem` on the playing cue.
 - [ ] The zone bed's hold while the sequencer's music plays keeps working (audio_director.gd `_seen_seq_music`).
+- [ ] `@wait music=<marker>` waits for the playing cue to reach music.json's `markers.<marker>` (seconds from the
+      cue's first sample), instead of only holding for `max=`. The Ch4 song's sung lines and the Ebbing's movements
+      have markers now; tools/tests/test_music_markers.py keeps them equal to their sources.
 - [ ] Tell audio when this lands: audio will drop the two stem stand-ins and act1-chapters can add the
       `@stem 1 on fade=2.0` line to the run (M3-AUD-829).
 

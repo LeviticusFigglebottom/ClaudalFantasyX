@@ -72,7 +72,8 @@
     },
     "the_ebbing": {
       "file": "res://assets/audio/music/the_ebbing.ogg",
-      "_note": "M3 Ch9, the Ebbing (through-composed)"
+      "_note": "M3 Ch9, the Ebbing (through-composed)",
+      "markers": {"cantor": 11.75, "dance": 34.25, "dance_full": 56.75, "thinning": 79.25, "last_chord": 96.125}
     },
     "tidecup_match": {
       "file": "res://assets/audio/music/tidecup_match.ogg",
@@ -277,7 +278,9 @@
 ,
     "the_long_way_round": {
       "file": "res://assets/audio/music/the_long_way_round.ogg",
-      "_note": "Ch4 C4-04/C4-05, the shell is set (ch04_shell_is_set.dlg): the village's farewell song, diegetic; the sung lines' markers for @wait music= are in assets_src/music/the_long_way_round.py (M3-AUD-820)"
+      "_note": "Ch4 C4-04/C4-05, the shell is set (ch04_shell_is_set.dlg): the village's farewell song, diegetic; the sung lines' markers for @wait music= are in assets_src/music/the_long_way_round.py (M3-AUD-820)",
+      "markers": {"ch04_shell_012": 2.2, "ch04_shell_013": 13.252, "ch04_shell_014": 25.082, "ch04_shell_015": 35.793,
+                  "verse_repeat": 47.282, "ch04_shell_021": 57.993, "tag": 69.161, "end": 78.182}
     }
 ,
     "oruvel_theme": {
