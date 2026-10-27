@@ -358,6 +358,13 @@
         "undertows_reach": {"enemy": "undertows_reach", "shot": "boss_skyward", "hold_sec": 2.4,
                             "title_key": "BOSS_TITLE_UNDERTOWS_REACH", "epithet_key": "BOSS_EPITHET_UNDERTOWS_REACH",
                             "on_retry": false}
+      },
+      "by_enemy_doc": "M3-BPR-408: intro rows by the boss's enemy id, for bosses whose encounters are not written yet (Act II). An encounter's own row (rows) wins; otherwise the first foe with a by_enemy row gets it. Same keys as rows, without enemy.",
+      "by_enemy": {
+        "lamp_engine": {"shot": "boss_tall", "hold_sec": 2.4, "title_key": "BOSS_TITLE_LAMP_ENGINE",
+                        "epithet_key": "BOSS_EPITHET_LAMP_ENGINE", "on_retry": false},
+        "avalanche_ram": {"shot": "boss", "hold_sec": 2.0, "title_key": "BOSS_TITLE_AVALANCHE_RAM",
+                          "epithet_key": "BOSS_EPITHET_AVALANCHE_RAM", "on_retry": false}
       }
     }
   }

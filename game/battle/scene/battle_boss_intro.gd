@@ -65,7 +65,7 @@ static func attached(choreo: BattleChoreo, controller: BattleController, engine:
 	var s := BattleBossIntro.new()
 	s.name = NODE_NAME
 	s.cfg = choreo.data.get(KEY, {}) as Dictionary
-	s.row = (s.cfg.get("rows", {}) as Dictionary).get(String(engine.encounter_id), {}) as Dictionary
+	s.row = row_for(s.cfg, engine.encounter_id, BattleIds.of(engine.enemies))
 	s._choreo = choreo
 	s._ctl = controller
 	s._engine = engine
@@ -75,6 +75,22 @@ static func attached(choreo: BattleChoreo, controller: BattleController, engine:
 	if not s.row.is_empty():
 		engine.turn_started.connect(s._on_first_turn, CONNECT_ONE_SHOT)
 	return s
+
+
+## The encounter's intro row: its own (rows), else the first foe's by enemy id (by_enemy: a boss whose encounters
+## are not written yet, the Act II bosses, gets its intro wherever it appears; M3-BPR-408). {} for none.
+static func row_for(cfg: Dictionary, encounter: StringName, enemy_ids: Array[StringName]) -> Dictionary:
+	var own := (cfg.get("rows", {}) as Dictionary).get(String(encounter), {}) as Dictionary
+	if not own.is_empty():
+		return own
+	var by := cfg.get("by_enemy", {}) as Dictionary
+	for eid in enemy_ids:
+		var base := String(eid).get_slice("#", 0)
+		if by.has(base):
+			var r := (by[base] as Dictionary).duplicate()
+			r["enemy"] = base
+			return r
+	return {}
 
 
 ## The intro under `stage`'s sequencer (null when none).

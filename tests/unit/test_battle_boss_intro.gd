@@ -337,3 +337,21 @@ func test_ch06_the_intro_and_the_first_turn_prompts_do_not_collide() -> void:
 func _free() -> void:
 	ctl.get_parent().remove_child(ctl)
 	ctl.free()
+
+
+func test_an_act_two_boss_gets_its_intro_wherever_it_appears() -> void:
+	# M3-BPR-408: the Lamp Engine and the Avalanche Ram have no encounters yet; their rows are by enemy id.
+	var by := cfg["by_enemy"] as Dictionary
+	for boss: String in ["lamp_engine", "avalanche_ram"]:
+		assert_true(by.has(boss), "%s has an intro row" % boss)
+		var ids: Array[StringName] = [StringName("%s#1" % boss)]
+		var r := BattleBossIntro.row_for(cfg, &"some_future_encounter", ids)
+		assert_eq(str(r.get("enemy", "")), boss, "%s: framed on itself" % boss)
+		for key: String in ["title_key", "epithet_key"]:
+			assert_ne(TranslationServer.translate(str(r[key])), str(r[key]), "%s %s is translated" % [boss, key])
+		assert_true((BattleChoreo.load_data()["camera"]["shots"] as Dictionary).has(str(r["shot"])), "a real shot")
+	var none: Array[StringName] = [&"reef_crab#1"]
+	assert_true(BattleBossIntro.row_for(cfg, &"sandbox_reef", none).is_empty(), "a regular fight has none")
+	var own: Array[StringName] = [&"hullgnaw#1"]
+	assert_eq(BattleBossIntro.row_for(cfg, &"ch01_hullgnaw", own), cfg["rows"]["ch01_hullgnaw"], "its own row wins")
+	_free()
