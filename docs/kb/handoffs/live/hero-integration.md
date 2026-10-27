@@ -309,3 +309,24 @@ Session `session_01PzF7Jc4XVQdTWcaYUyCjPB`. Per the Lead: no send_message; reque
   error as 0 failed). The choreo hunks for battle-presentation are already on its branch: nothing to relay there.
 - Note for m2-slice / slice-polish (FieldController owner): Rhen peaks at 5.85 m/s on Pemakar and 5.49 on Ashcrown
   (run 3.6): step or slope push-ups. Under the 6 m/s snap limit, but worth a look in play.
+- **MERGE-READY @ 1518a17f** (FAST-TRACK, snapping motion): M2-HER-1110 guards for villagers and cutscenes.
+  - `tests/unit/test_villager_snaps.gd` is duck-typed on creatures' VillagerLayer (it skips until creatures lands).
+    On a local trial merge with claude/creatures, all 7 Haluna villagers pass: no snaps, eased turns, and 42 clip
+    changes under half the pop limit.
+  - `tests/integration/test_hero_cutscene_snaps.gd`: 26 slice and Act I scenes. The heroes are clean. 11 non-hero
+    actor/scene pairs snap: whip turns, and a walk jumped at a scene's end. They're listed as KNOWN until request
+    **M2-HER-1113** (slice-polish) applies `docs/kb/tech/cutscene_no_snap.patch`, which I verified on claude/m2-slice
+    7d981830: guard clean, cutscene 61/0, fp_ 28/0, haluna 55/0, prologue 7/0, _thread 34/0.
+  - Request **M2-HER-1112** (slice-polish): put creatures' VillagerLayer in haluna.tscn after creatures merges. No zone
+    places it yet, so Haluna would keep its stand-ins.
+  - Checks run: gdlint and gdformat, validate_data, taskboard --check, Godot hero_ filters, villager_snaps,
+    hero_cutscene_snaps. Skipped: shots (no scene or shader touched up to here), Blender, coverage.
+- **NOT merge-ready yet @ b2453cfd:** the battle_heroes_* shot rig (M2-HER-1106, from hero_battle_shots.patch). The
+  tools test `test_repo_manifest_is_valid_and_baselined` is red until its 7 baselines are approved after the PC
+  render below. Merge only 1518a17f until then.
+- M2-HER-1109 is done: slice-polish has the HeroMotion sequencer patch on claude/m2-slice.
+- For the Lead to relay: M2-HER-1108 (ui-menus: repoint the battle stand_ins; big9 has landed, so it's unblocked),
+  M2-HER-1111 (QA & Tools: the runner hides parse errors), M2-HER-1112 and M2-HER-1113 (slice-polish).
+
+### Render requests
+RENDER-REQUEST @ b2453cfd: battle_heroes_idle, battle_heroes_attack, battle_heroes_hit, battle_heroes_ko, battle_heroes_victory, battle_heroes_cast, battle_heroes_finisher, field_hero_party, field_hero_rhen_walk, field_hero_gait_strip; why: new battle hero shots (M2-HER-1106), and the field hero shots after characters' gait clips and the followers' floor change (M2-HER-1110)
