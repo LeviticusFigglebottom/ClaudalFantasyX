@@ -54,4 +54,14 @@ battle-presentation owns the choreography; this track only adds the hero-actor s
   merged; then add them here and approve baselines. Requests: characters (victory, KO fall, weapon in hand), UI +
   Combat (the scene paths; FighterStandIn.set_ko's sink), battle-presentation (four tests, victory clip stagger).
 
+### 2026-10-25: new account
+- Merged the integration branch. battle-presentation's branch already carries the choreo test hunks and the KO no-sink
+  (as does claude/ui), and it now plays an optional `revive` clip (characters' M2-CHR-513) on a revive. battle_hero.json
+  gets ko -> revive 0.15 s (the clip starts on the ko's last frame), revive -> idle / ready 0.3 s.
+- Pop guard on the real models: tests/unit/test_hero_battle_pops.gd (M2-HER-1110) samples every bone through all 26
+  battle clip changes for each hero: no pops, no cuts.
+- Left: the stand_ins repoint (request M2-HER-1108, ui-menus, after big9); the battle_heroes_* shots
+  (hero_battle_shots.patch, after ui, characters and battle-presentation are on the integration branch); re-check KO,
+  victory and revive when M2-CHR-513 lands (the pop test picks the new clips up by itself).
+
 ## Review log
