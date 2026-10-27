@@ -305,6 +305,8 @@ ACT2_FINALS: list[tuple] = [
     ("assets_src/music/act2/drowned_choir.py", "assets/audio/music/act2", ["drowned_choir.ogg", "drowned_choir.loop.json"], "music_loop"),
     ("assets_src/music/act2/mangrove_drowner.py", "assets/audio/music/act2",
      [f"mangrove_drowner_p{i}{ext}" for i in (1, 2) for ext in (".ogg", ".loop.json")], "music_loop"),
+    ("assets_src/music/act2/lamp_engine.py", "assets/audio/music/act2",
+     [f"lamp_engine_p{i}{ext}" for i in (1, 2) for ext in (".ogg", ".loop.json")], "music_loop"),
 ]
 ACT2_DIR = "assets/audio/music/act2"
 
