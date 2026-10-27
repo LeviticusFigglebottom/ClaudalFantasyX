@@ -938,6 +938,13 @@ def choreo_errors(doc: object, rows: dict, classes: dict[str, list[str]] | None,
     vb = doc.get("vowbound") or {}
     for k in ("call", "rise", "rise_long", "sink", "fall"):
         row(vb.get(k), f"{w0} vowbound.{k}", blank=False)
+    for vid, lay in (vb.get("layers") or {}).items():  # M3-AUD-846: a Vowbound's own sound over each moment
+        for k, sid in (lay or {}).items():
+            if k.startswith("_"):
+                continue
+            if k not in ("call", "rise", "sink", "fall"):
+                errs.append(f"{w0} vowbound.layers.{vid}.{k}: one of call, rise, sink, fall")
+            row(sid, f"{w0} vowbound.layers.{vid}.{k}")
     if not _num(vb.get("long_sec")) or vb["long_sec"] <= 0:
         errs.append(f"{w0} vowbound.long_sec: seconds > 0")
     flood = doc.get("flood") or {}

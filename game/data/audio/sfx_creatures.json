@@ -1472,6 +1472,53 @@
       "pitch_jitter": 0.04,
       "voices": 3,
       "cooldown_ms": 120
+    },
+    "cre_ilun_idle": {
+      "files": [
+        "res://assets/audio/sfx/creatures/ilun_idle_1.ogg"
+      ],
+      "bus": "Combat",
+      "volume_db": 0.0,
+      "voices": 2
+    },
+    "cre_ilun_attack": {
+      "files": [
+        "res://assets/audio/sfx/creatures/ilun_attack_1.ogg",
+        "res://assets/audio/sfx/creatures/ilun_attack_2.ogg"
+      ],
+      "bus": "Combat",
+      "volume_db": 0.0,
+      "pitch_jitter": 0.04,
+      "voices": 2
+    },
+    "cre_ilun_hurt": {
+      "files": [
+        "res://assets/audio/sfx/creatures/ilun_hurt_1.ogg",
+        "res://assets/audio/sfx/creatures/ilun_hurt_2.ogg"
+      ],
+      "bus": "Combat",
+      "volume_db": 0.0,
+      "pitch_jitter": 0.04,
+      "voices": 3
+    },
+    "cre_ilun_death": {
+      "files": [
+        "res://assets/audio/sfx/creatures/ilun_death_1.ogg"
+      ],
+      "bus": "Combat",
+      "volume_db": 0.0,
+      "voices": 2
+    },
+    "cre_ilun_glide": {
+      "files": [
+        "res://assets/audio/sfx/creatures/ilun_glide_1.ogg",
+        "res://assets/audio/sfx/creatures/ilun_glide_2.ogg"
+      ],
+      "bus": "Combat",
+      "volume_db": 0.0,
+      "pitch_jitter": 0.04,
+      "voices": 3,
+      "cooldown_ms": 120
     }
   }
 }

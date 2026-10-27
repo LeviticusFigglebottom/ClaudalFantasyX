@@ -61,6 +61,7 @@ RULES = [
     ("sfx/choreo/swell_*.ogg", "momentary", -19.0, 1.0, -1.0, "Swell finisher accents, over their own VFX sound"),
     ("sfx/choreo/vowbound_beckon.ogg", "momentary", -19.0, 1.0, -1.0, "the caller's call, under vowbound_call"),
     ("sfx/choreo/vowbound_sink.ogg", "momentary", -20.0, 1.0, -1.0, "the Vowbound's dismissal"),
+    ("sfx/choreo/ilun_*.ogg", "momentary", -22.0, 1.0, -1.0, "Ilun's layers under the shared Vowbound rows (M3-AUD-846)"),
     ("sfx/choreo/*.ogg", "momentary", -18.0, 1.0, -1.0, "KO collapse, toll wave, surge, the Vowbound's rise and fall"),
     # M3-AUD-14 (assets_src/sfx/creature_sfx.py): movement repeats on every action, idles sit under the battle
     *[(f"sfx/creatures/*_{w}_*.ogg", "momentary", -21.0, 1.0, -1.0, f"creature movement ({w})")

@@ -402,6 +402,17 @@
         "death": "cre_conduit_crawler_death",
         "move": "cre_conduit_crawler_tick"
       }
+    },
+    "ilun": {
+      "family": "vowbound",
+      "_note": "M3-AUD-846: Ilun the Net-Warden (Asha's Vowbound): heard by his combatant id and, once M3-CRE-638's model lands, its clips; assets_src/sfx/vowbound_sfx.py",
+      "events": {
+        "idle": "cre_ilun_idle",
+        "attack": "cre_ilun_attack",
+        "hurt": "cre_ilun_hurt",
+        "death": "cre_ilun_death",
+        "move": "cre_ilun_glide"
+      }
     }
   }
 }
