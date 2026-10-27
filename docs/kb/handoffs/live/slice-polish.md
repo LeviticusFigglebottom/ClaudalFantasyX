@@ -237,6 +237,32 @@ Ch4–Ch9 onward. `m2-slice.md` beside this file is the history up to the 2026-1
   - **Checks:** ch01 21, ch01_underway 4, all 0 failed; the tools dressing test is up to date.
   - **Checks skipped:** coverage and Blender (nothing they cover).
 
+- **MERGE-READY @ bd2315d9.** Covers big11 merged in, the Lead's relayed requests, and the PC's 4ce8a48a render.
+  - **big11 merged** (d4921946 → 24f7d235; baselines.json merged as JSON). The Ch1 kit tests clear their own
+    storm flag first.
+  - **M2-HER-1113 (FAST-TRACK), applied.** Hero-integration's `cutscene_no_snap.patch`: half turns at 0.9 s, walks
+    play out at a scene's end, and far stand-in marks are cuts. **Hero-integration: empty the guard's KNOWN list.**
+  - **M3-CIN-1221, applied.** Act1-chapters' `cutscene_mark_via.patch`, hand-merged onto this sequencer's HeroMotion
+    locomotion: `@mark <actor> <mark> via=a,b`. `flat_dir` moved into CutsceneMotion, so the sequencer is 999 lines.
+    Their unit test is in, plus a `flat_dir` case.
+  - **M2-UI-202, done.** `_finish` calls `overlay.box.dismiss()`, so the box fades out at a scene's end.
+  - **M2-HER-1112, already done** under M2-FP-113: `HalunaZone._add_life()` adds the VillagerLayer (`zone_id`
+    ch02/haluna) in prebuild, and the haluna filter is green. HalunaVillagers stays, as the Lead decided. Once
+    creatures' adopting VillagerLayer lands, the three shop bodies get their routines with no change here.
+  - **Shrine GI rebake (M3-ENV-704) taken from gpu/render-m2-slice-4ce8a48.** test_shrine_gi_bake passes. Viewed
+    and re-approved: shrine_s01_approach (the islet dressing), npc_haluna_dock and npc_haluna_market (idle
+    micro-motion).
+  - **Fixes:**
+    - test_memory_replay finds Rhen beside Asha (M2-FP-115's walk-out);
+    - test_footsteps_slice_zones finds the final causeway's tide pool (audio's test, after M2-FP-108).
+  - **Checks:**
+    - full Godot suite, sharded, 2756 run: the one failure (memory_replay) is fixed above;
+    - after the patches: cutscene 64, fp_ 29, memory 6, haluna 57, prologue 7, _thread 34, dialogue 76, ch0 67,
+      slice_ 15, hero_cutscene 7, shrine 37, all 0 failed;
+    - test_shrine_gi_bake OK; lint, format, dlgc and taskboard clean.
+  - **Checks skipped:** coverage (game/battle and game/progression untouched) and Blender.
+  - **PC, FYI:** the shutdown "cast a freed object" error is creatures' (known, Lead).
+
 - **Correction (ec3ba50a):** my first B11 pass (4f616566) added a letterbox and three scripted camera setups.
   vertical_slice.md defines B11 (and B02) as **E** scenes: in-engine, no letterbox, and the player keeps the camera
   rail. Those cues are out. B11 keeps Rhen's walk out to Asha and the turns between them. Lead: take ec3ba50a with
