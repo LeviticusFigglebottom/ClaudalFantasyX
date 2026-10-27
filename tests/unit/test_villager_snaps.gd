@@ -35,6 +35,12 @@ var _made: Array[Node] = []
 
 
 func before_each() -> void:
+	_free_made()
+
+
+## The runner makes a fresh TestCase per test, so before_each never sees the last test's nodes: each test frees its
+## own before it returns (a leaked Haluna zone's sea kept publishing the water level into test_water_surface).
+func _free_made() -> void:
 	for n in _made:
 		if is_instance_valid(n):
 			n.get_parent().remove_child(n)
@@ -85,6 +91,7 @@ func test_no_villager_snaps_through_its_routine_and_a_visit() -> void:
 		for s in snaps:
 			print("  %s frame %d: %s %.1f" % [who, s["frame"], s["kind"], s["value"]])
 		assert_true(snaps.is_empty(), "%s never snaps (%d snaps)" % [who, snaps.size()])
+	_free_made()
 
 
 func test_no_villager_clip_change_pops() -> void:
@@ -132,6 +139,7 @@ func test_no_villager_clip_change_pops() -> void:
 			checked += 1
 	if checked == 0:
 		print("  skipped: no villager actors with clips on this branch yet")
+	_free_made()
 
 
 ## Ticks the layer (it ticks its villagers) for `sec`, sampling each villager's visible actor.
