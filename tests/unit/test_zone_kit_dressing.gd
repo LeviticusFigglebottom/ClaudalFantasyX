@@ -104,3 +104,19 @@ func test_a_trimesh_collider_takes_the_lod1_mesh() -> void:
 	body.free()
 	piece.free()
 	_close()
+
+
+func test_a_trimesh_lod0_collider_takes_the_lod0_mesh() -> void:
+	var piece := (
+		(load("res://assets/environments/kits/brine_shoals/camp_hard.glb") as PackedScene).instantiate() as Node3D
+	)
+	var lod1 := ZoneKitDressing.trimesh_collider(piece)
+	var lod0 := ZoneKitDressing.trimesh_collider(piece, false)
+	assert_eq(lod0.get_child_count(), 1, "one shape: the LOD0")
+	var faces0 := ((lod0.get_child(0) as CollisionShape3D).shape as ConcavePolygonShape3D).get_faces().size()
+	var faces1 := ((lod1.get_child(0) as CollisionShape3D).shape as ConcavePolygonShape3D).get_faces().size()
+	assert_true(faces0 > faces1, "the finer mesh (%d faces against %d)" % [faces0, faces1])
+	lod0.free()
+	lod1.free()
+	piece.free()
+	_close()
