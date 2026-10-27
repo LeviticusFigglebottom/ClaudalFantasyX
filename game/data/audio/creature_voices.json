@@ -413,6 +413,102 @@
         "death": "cre_ilun_death",
         "move": "cre_ilun_glide"
       }
+    },
+    "ridge_lynx": {
+      "family": "lynx",
+      "_note": "Ch12 regular: a high-pass lynx's growl, hiss and yowl, snowshoe paws; assets_src/sfx/act2_creature_sfx.py (M3-AUD-849)",
+      "events": {
+        "idle": "cre_ridge_lynx_idle",
+        "attack": "cre_ridge_lynx_attack",
+        "hurt": "cre_ridge_lynx_hurt",
+        "death": "cre_ridge_lynx_death",
+        "move": "cre_ridge_lynx_pad"
+      }
+    },
+    "cord_moth": {
+      "family": "moth",
+      "_note": "Ch12 regular: the Act I moth family, pale and a little brighter; assets_src/sfx/act2_creature_sfx.py (M3-AUD-849)",
+      "events": {
+        "idle": "cre_cord_moth_idle",
+        "attack": "cre_cord_moth_attack",
+        "hurt": "cre_cord_moth_hurt",
+        "death": "cre_cord_moth_death",
+        "move": "cre_cord_moth_flutter"
+      }
+    },
+    "glass_skate": {
+      "family": "skate",
+      "_note": "Ch16 regular: buried in white sand under shallow water; it erupts and slaps; assets_src/sfx/act2_creature_sfx.py (M3-AUD-849)",
+      "events": {
+        "idle": "cre_glass_skate_idle",
+        "attack": "cre_glass_skate_attack",
+        "hurt": "cre_glass_skate_hurt",
+        "death": "cre_glass_skate_death",
+        "move": "cre_glass_skate_glide"
+      }
+    },
+    "flat_engine": {
+      "family": "flat_engine",
+      "_note": "Ch14 boss part (Malcor Venn's barge): a bound iron drum pressing the lagoon flat, its hum steady; assets_src/sfx/act2_creature_sfx.py (M3-AUD-849)",
+      "events": {
+        "idle": "cre_flat_engine_idle",
+        "attack": "cre_flat_engine_attack",
+        "hurt": "cre_flat_engine_hurt",
+        "death": "cre_flat_engine_death",
+        "move": "cre_flat_engine_clank"
+      }
+    },
+    "root_crab": {
+      "family": "crab",
+      "variant_of": "reef_crab",
+      "pitch": 0.85,
+      "_note": "Ch10 variant: a bark-and-root reef crab, a little heavier (M3-AUD-849; its parent's set at another pitch, as its model reuses the parent's rig)",
+      "events": {
+        "idle": "cre_reef_crab_idle",
+        "attack": "cre_reef_crab_attack",
+        "hurt": "cre_reef_crab_hurt",
+        "death": "cre_reef_crab_death",
+        "move": "cre_reef_crab_skitter"
+      }
+    },
+    "fen_leech": {
+      "family": "leech",
+      "variant_of": "sail_leech",
+      "pitch": 0.9,
+      "_note": "Ch10 variant: a longer, ribbon-flat sail leech (M3-AUD-849; its parent's set at another pitch, as its model reuses the parent's rig)",
+      "events": {
+        "idle": "cre_sail_leech_idle",
+        "attack": "cre_sail_leech_attack",
+        "hurt": "cre_sail_leech_hurt",
+        "death": "cre_sail_leech_death",
+        "move": "cre_sail_leech_flap"
+      }
+    },
+    "scree_crawler": {
+      "family": "tortoise",
+      "variant_of": "slag_tortoise",
+      "pitch": 1.08,
+      "_note": "Ch12 variant: a frost-split scree shell (M3-AUD-849; its parent's set at another pitch, as its model reuses the parent's rig)",
+      "events": {
+        "idle": "cre_slag_tortoise_idle",
+        "attack": "cre_slag_tortoise_attack",
+        "hurt": "cre_slag_tortoise_hurt",
+        "death": "cre_slag_tortoise_death",
+        "move": "cre_slag_tortoise_plod"
+      }
+    },
+    "rim_crawler": {
+      "family": "crab",
+      "variant_of": "tide_crawler",
+      "pitch": 1.06,
+      "_note": "Ch16 variant: a bleached, chalky tide crawler (M3-AUD-849; its parent's set at another pitch, as its model reuses the parent's rig)",
+      "events": {
+        "idle": "cre_tide_crawler_idle",
+        "attack": "cre_tide_crawler_attack",
+        "hurt": "cre_tide_crawler_hurt",
+        "death": "cre_tide_crawler_death",
+        "move": "cre_tide_crawler_skitter"
+      }
     }
   }
 }
