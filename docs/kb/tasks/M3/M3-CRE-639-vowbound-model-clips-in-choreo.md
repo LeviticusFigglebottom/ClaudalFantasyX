@@ -38,4 +38,12 @@ It also has three Vowbound clips that only the choreography can trigger:
   game/data/ui/battle_sandbox.json's capsule row stays as the fallback and needs no edit.
 - Bound light rule (color_script.md): his light is steady and moves only with his body, so no trails on the rise.
 
+## Update (2026-10-27, the model has landed: M3-CRE-638)
+- **The exact change is data only:**
+  - set `choreo.json` `vowbound.entry.clip` and `summon_cinematic.entry.clip` to `"rise"` (2.6 s, matching the cinematic's `sec`);
+  - set `vowbound.dismiss.clip` to `"dismiss"` (1.0 s against your 0.9 s `sec`).
+  - `validate_choreo.py` may need those clip names allowed.
+- `special` already plays for Floodnet through creatures.json, and `ko` fits the fall.
+- **Framing:** a 4.6 m wingspan, his body hovering 1.35 m up. In our vertex preview of the default camera, his tail and the float cross the right edge of the HUD safe frame. If the render confirms it, a vowbound_slot nudge or a summon-shot change is yours. Tell us if you'd rather have him smaller.
+
 ## Review log
