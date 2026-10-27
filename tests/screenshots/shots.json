@@ -3381,7 +3381,8 @@
             "flags": [
               "prologue_seen"
             ],
-            "scene_id": "ch02_girl_on_the_beach"
+            "scene_id": "ch02_girl_on_the_beach",
+            "hold_line": "ch02_beach_002"
           }
         },
         "time_scale": 4.0
@@ -3411,7 +3412,8 @@
             "flags": [
               "prologue_seen"
             ],
-            "scene_id": "ch02_girl_on_the_beach"
+            "scene_id": "ch02_girl_on_the_beach",
+            "hold_line": "ch02_beach_003"
           }
         },
         "time_scale": 4.0
@@ -3502,8 +3504,7 @@
               "prologue_seen",
               "ch02_met_asha",
               "ch02_tideline_won",
-              "ch02_ate_at_nemes",
-              "ch03_harrier_won"
+              "ch02_ate_at_nemes"
             ]
           }
         }
