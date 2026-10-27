@@ -2,7 +2,7 @@
 id: M3-C06-1200
 title: Ch6 greybox to final, the Brine Shoals kit dresses ch06/brine_shoals (ZoneKitDressing, ADR 0200)
 role: cinematics
-status: doing
+status: review
 owner_session: act1-chapters (claude/act1-chapters)
 depends_on: [M3-ENV-02, M3-C06-02]
 milestone: M3
@@ -22,12 +22,17 @@ split).
 - [x] The channel's water is a solid strip; the `Channel` spawn moves to the bank.
 - [x] The sun is the colour script's `ch06` frame (35°, azimuth 240, #FFD5B3 at 2.4); the dusk row is lower and dimmer.
 - [x] `test_ch06_thread` passes.
-- [ ] The shots viewed on lavapipe; two baselines registered.
+- [x] The shots viewed on lavapipe (road, camp, channel, dusk camp, tideline); baselines `ch06_brine_road` and
+      `ch06_brine_camp` registered.
 
 ## Notes
 - Story blocks with no kit piece yet stay visible greybox: `TideWheel`, `Fire`, `Shrine` (the Level-stone in a
   wreck's bow), `VendorBoat`, `ChalkMark`, `Hatch`. Requested of env-art in M3-ENV-1201.
 - Still open from M3-C06-03 (environment/rendering): the chalk camp-sign decals, Stillguard torches, the no-wake
   water around the barge, the diggable tideline patch, and the `ch06_hold`/`ch06_dusk`/`ch06_dawn` grades.
+
+- Reviewer: environment (placement against the kit's intent), then narrative for the story pieces.
+- Rendering: the sky keeps its day colours under the dusk row (the light rows change the sun and ambient only);
+  a `ch06_dusk` sky/grade would finish it (M3-C06-03 item 7).
 
 ## Review log

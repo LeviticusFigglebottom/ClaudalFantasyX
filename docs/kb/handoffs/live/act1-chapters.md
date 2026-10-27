@@ -39,6 +39,16 @@ cutscene sequencer (`game/cutscene/**`), `game/flow/**` and the playtest fixes.
     taskboard, gdlint, gdformat clean. First lavapipe views made and viewed; fixes in (greybox stand-ins hidden, plank
     walk smoothed); the re-render is being viewed now, then two baselines are registered and a MERGE-READY line follows.
 
+- **MERGE-READY @ (this commit): M3-C06-1200 Ch6 greybox → final, done (status review, reviewer environment).**
+  Since e2fed1fc: greybox stand-ins hidden (an ember bed for the fire, crates for the purser; the shrine is the
+  wreck's bow), a smooth plank walk, a dusk shot rig, Ch04Zone `ramps` + `collision_path` (for Corrow next),
+  baselines `ch06_brine_road`, `ch06_brine_camp` (viewed, approved).
+  - **Checks run:** `--filter=zone_kit` 5/0, `--filter=ch06` 5/0; tools test_screenshots + test_fog_lamps 19 OK;
+    validate_data, taskboard, gdlint, gdformat clean; the two new shots captured in isolation and viewed.
+  - **Checks skipped:** the full suite (only Ch04Zone, the Ch6 zone and new files changed; Ch04/05/07/08/09 zones
+    inherit Ch04Zone's new `_build_blocks`, covered next by `--filter=ch0` with the Corrow work); coverage (no battle
+    or progression code); Blender (no source); other shots (no other scene touched).
+
 ## Exact next step
 Queue item 2, greybox → final: finish Ch6 (view the re-render, register `ch06_brine_road` and `ch06_brine_camp`),
 then Ch8 `corrow` (M3-ENV-04/04B), Ch5 `pemakar` (M3-ENV-03), Ch7 `tamsule_bell` (M3-ENV-01). The

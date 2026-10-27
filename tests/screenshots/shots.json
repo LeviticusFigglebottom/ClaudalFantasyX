@@ -2524,6 +2524,8 @@
     {
       "id": "battle_boss_intro_drownbell",
       "scene": "res://game/battle/scene/shots/battle_boss_intro_drownbell.tscn"
-    }
+    },
+    {"id": "ch06_brine_road", "scene": "res://game/levels/_tests/act1_zones/ch06_brine_shoals_shots.tscn", "camera": "Cameras/Road", "resolution": [960, 540], "settle_frames": 24, "setup": {"globals": {"hymn_wind_time": 40.0}, "viewport": {"use_taa": false, "screen_space_aa": 1}}},
+    {"id": "ch06_brine_camp", "scene": "res://game/levels/_tests/act1_zones/ch06_brine_shoals_shots.tscn", "camera": "Cameras/Camp", "resolution": [960, 540], "settle_frames": 24, "setup": {"globals": {"hymn_wind_time": 40.0}, "viewport": {"use_taa": false, "screen_space_aa": 1}}}
   ]
 }
