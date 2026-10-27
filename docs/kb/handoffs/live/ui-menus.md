@@ -148,7 +148,7 @@ Lead decisions open: an accessory slot (the Oruvel Float, the sailmaker's needle
     - **coverage OK** (2788 tests, all passing): reefball **100 %** (466/466), battle 99.89 %, progression 96.98 %;
     - validate_data 0 errors; tools test_reefball_validate 19/0.
   - **Tools suite:** test_zone_map_pois caught the Brine Shoals Channel spawn moving with Ch6's dressing (M3-C06-1200). The map POI follows it (fixed in this push). test_screenshots fails only on the new shots without baselines. test_audio_loudness and test_shrine_gi_bake are the integration branch's known failures, owned by audio and by the PC's `gpu/shrine-gi-big12` (CONSOLIDATED).
-RENDER-REQUEST @ HEAD (after this push): reefball_outfitter, reefball_hud_choice, reefball_hud_goal; why: ADR 0040: the new outfitter shot (first baseline), and the Reefball HUD's framing panel has a new line, hidden when the side wears nothing, so the two HUD shots should be unchanged.
+RENDER-REQUEST @ da7891cf: reefball_outfitter, reefball_hud_choice, reefball_hud_goal; why: ADR 0040: the new outfitter shot (first baseline), and the Reefball HUD's framing panel has a new line, hidden when the side wears nothing, so the two HUD shots should be unchanged.
 
-**MERGE-READY @ HEAD** (claude/ui = integration @ 73cddee1 minus nothing + this track): everything in MERGE-READY @ abf39c37, plus ADR 0040's three homes, plus request task M3-UI-204. **M3-UI-204 is new on this branch only; act1-chapters sees it after this merge:** the shrine payloads, Tamsule's trader, inn, outfitter and shrine, and the needle's give.
+**MERGE-READY @ da7891cf** (claude/ui = integration @ 3cbcff9e + ADR 0040 commit ceaa77b0 + this track): everything in MERGE-READY @ abf39c37, plus ADR 0040's three homes, plus request task M3-UI-204. **M3-UI-204 is new on this branch only; act1-chapters sees it after this merge:** the shrine payloads, Tamsule's trader, inn, outfitter and shrine, and the needle's give.
 
