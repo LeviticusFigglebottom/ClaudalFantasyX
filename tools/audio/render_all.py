@@ -54,6 +54,7 @@ M2_CUES = ("haluna_village", "haluna_night", "battle_standard_v2", "hush_first_v
            "ansedra", "lamp_archive", "peace_wedding", "unlamped", "pale_rim", "drowned_choir")
 # M3-AUD-820: the Ch4 and Ch7 scene cues
 M2_CUES += ("hearer_hum", "ysolde_theme", "name_board_home", "the_long_way_round", "oruvel_theme", "tavi_kell")
+M2_CUES += ("tidecup_after", "tidecup_crowd", "virel_bound", "virel_summon", "corrow_aftermath")  # M3-AUD-822
 AMBIENCE_BUDGET = int(2.5 * 1024 * 1024)  # the M2-AUD-05 field beds together
 # Per-job budgets for later "ambience_loop" jobs (each job's beds together; the M2-AUD-05 job keeps AMBIENCE_BUDGET).
 AMBIENCE_JOB_BUDGETS = {"assets_src/sfx/causeway_ambience.py": int(1.2 * 1024 * 1024),
@@ -244,6 +245,15 @@ JOBS = [
     ("assets_src/music/the_long_way_round.py", "assets/audio/music", ["the_long_way_round.ogg"], "music"),
     ("assets_src/music/oruvel_theme.py", "assets/audio/music", ["oruvel_theme.ogg"], "music"),
     ("assets_src/music/tavi_kell.py", "assets/audio/music", ["tavi_kell.ogg"], "music"),
+    # M3-AUD-822: Ch7 and Ch8's scripted `@music` cues (the Tidecup's aftermath and crowd, Virel, the seawall waves)
+    ("assets_src/music/tidecup_after.py", "assets/audio/music", ["tidecup_after.ogg"], "music"),
+    ("assets_src/music/tidecup_crowd.py", "assets/audio/music", ["tidecup_crowd.ogg", "tidecup_crowd.loop.json"], "music_loop"),
+    ("assets_src/music/virel_bound.py", "assets/audio/music", ["virel_bound.ogg"], "music"),
+    ("assets_src/music/virel_summon.py", "assets/audio/sfx", ["virel_summon.ogg"], "music"),
+    ("assets_src/music/corrow_aftermath.py", "assets/audio/music",
+     ["corrow_aftermath.ogg", "corrow_aftermath.loop.json"], "music_loop"),
+    ("assets_src/music/seawall_hold.py", "assets/audio/music",
+     [f"seawall_hold_p{i}{ext}" for i in (1, 2, 3) for ext in (".ogg", ".loop.json")], "music_loop"),
 ]
 M1_JOBS = 5  # the first JOBS rows are M1's audio (SIZE_BUDGET)
 

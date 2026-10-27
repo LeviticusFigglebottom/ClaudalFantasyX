@@ -231,6 +231,33 @@
       "file": "res://assets/audio/music/drowned_choir.ogg",
       "resume": true,
       "_note": "Ch16, the Drowned Choir. Act II sketch (M3-AUD-805); no zone row until ch16/drowned_choir/drowned_choir.tscn exists"
+    },
+    "tidecup_after": {
+      "file": "res://assets/audio/music/tidecup_after.ogg",
+      "_note": "Ch7 B07 After the Bell (ch07_after_the_bell.dlg) and its B10 reprise (ch07_leaving_tamsule.dlg): a through-composed cutscene cue (M3-AUD-822)"
+    },
+    "tidecup_crowd": {
+      "file": "res://assets/audio/music/tidecup_crowd.ogg",
+      "_note": "Ch7 B04 the galleries (ch07_galleries.dlg): the packed bowl under the Bell, a loop under the bell_hum layer (M3-AUD-822)"
+    },
+    "virel_bound": {
+      "file": "res://assets/audio/music/virel_bound.ogg",
+      "_note": "Ch8 B06 the binding of Virel (ch08_binding.dlg): a sting, the Hush's first phrase on the spire reed (M3-AUD-822)"
+    },
+    "corrow_aftermath": {
+      "file": "res://assets/audio/music/corrow_aftermath.ogg",
+      "_note": "Ch8 B18 the cut rope (ch08_cut_rope.dlg): rain and a single plucked string, a loop to the chapter's end (M3-AUD-822)"
+    },
+    "seawall_hold": {
+      "stems": [
+        "res://assets/audio/music/seawall_hold_p1.ogg",
+        "res://assets/audio/music/seawall_hold_p2.ogg",
+        "res://assets/audio/music/seawall_hold_p3.ogg"
+      ],
+      "start_stems": [
+        0
+      ],
+      "_note": "Ch8 B10-B14, the seawall's three waves (ch08_first_down.dlg, ch08_hoist.dlg, ch08_stranger_on_wall.dlg) (M3-AUD-822). No encounter or wave rows until the set piece exists; intended: wave 2 `The Rope` -> stems_on [1], wave 3 -> stems_on [2], each over 3 s"
     }
 ,
     "hearer_hum": {

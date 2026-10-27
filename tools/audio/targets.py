@@ -14,9 +14,11 @@ RULES = [
     # M3-AUD-09: each "stem" rule is one cue's stack (test_audio_loudness groups the files by rule)
     ("music/cinder_matron_p*.ogg", "stem", -16.0, 0.5, -1.0, "the Cinder Matron's two stems, stacked at -16"),
     ("music/undertows_reach_p*.ogg", "stem", -16.0, 0.5, -1.0, "the Undertow's Reach's three stems, stacked at -16"),
+    ("music/seawall_hold_p*.ogg", "stem", -16.0, 0.5, -1.0, "the seawall waves' three stems, stacked at -16 (M3-AUD-822)"),
     ("music/*.ogg", "integrated", -16.0, 0.5, -1.0, "music beds, themes and cutscene cues"),
     ("ambience/*.ogg", "integrated", -26.0, 0.5, -5.0, "ambience beds (mix.md: -26, peaks well down)"),
     ("sfx/ilun_summon.ogg", "integrated", -16.0, 0.5, -1.0, "a music sting (Music bus)"),
+    ("sfx/virel_summon.ogg", "integrated", -16.0, 0.5, -1.0, "Virel's music sting (Music bus; M3-AUD-822)"),
     ("sfx/battle/stinger_*_soft.ogg", "momentary", -17.0, 1.0, -1.0, "reduced-audio stingers"),
     ("sfx/battle/stinger_*.ogg", "momentary", -16.0, 1.0, -1.0, "opening stingers"),
     ("sfx/battle/drownbell_toll_soft.ogg", "momentary", -17.0, 1.0, -1.0, "the reduced-audio toll"),
