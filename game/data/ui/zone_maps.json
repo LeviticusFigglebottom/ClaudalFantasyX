@@ -192,7 +192,7 @@
           {"id": "camp_shrine", "name_key": "MAP_POI_S_CAMP_SHRINE", "kind": "shrine", "at": [27.0, -43.5], "source": "trigger:shrine"},
           {"id": "vendor_boat", "name_key": "MAP_POI_S_VENDOR_BOAT", "kind": "shop", "at": [28.0, -37.0], "source": "trigger:vendor"},
           {"id": "tideline", "name_key": "MAP_POI_S_TIDELINE", "kind": "path", "at": [21.0, -55.0], "source": "trigger:tideline"},
-          {"id": "channel", "name_key": "MAP_POI_S_CHANNEL", "kind": "dock", "at": [-22.0, -70.0], "source": "spawn:Channel"}
+          {"id": "channel", "name_key": "MAP_POI_S_CHANNEL", "kind": "dock", "at": [-17.0, -70.0], "source": "spawn:Channel"}
         ]
       },
       {

@@ -136,3 +136,19 @@ RENDER-REQUEST @ 121362b3: battle_ch08_stair_hold, battle_hud_preview; why: the 
 
 Lead decisions open: an accessory slot (the Oruvel Float, the sailmaker's needle, the Reefball outfitter). Requests open: M3-UI-204 (act1-chapters: shrine payloads, Tamsule's trader, inn and shrine). Renders pending: 17325e00 (minus battle_ch08_stair_hold), 99623a0c portraits, a195cd39 codex, 121362b3 stair hold.
 - 2026-10-27: **Viewed PC render `gpu/render-ui-99623a0`** (the five black-creature portraits). hullgnaw, scuttler, tide_crawler and undertows_reach are byte-identical to the committed PNGs. squall_wing differs only in its wing-edge glints (rmse 0.00835), the same image to the eye side by side. **Approved:** the PC's squall_wing.png replaces the cloud render, since the PC is the rendering authority. The portraits request is closed.
+- 2026-10-27: **ADR 0040 implemented (the Lead's ruling: no accessory slot).**
+  - **The sailmaker's needle** (4752ee3b) is a Customize material. With two Tide Pearls it crafts **Sea Legs** (a new armour ability, a ward against Slow) and is spent. The niche's `give` is requested in M3-UI-204.
+  - **The Oruvel Float** (44d027c5) stays a key item, and its effect is a gate: `matches.json` `requires_item` and `ReefballMatch.is_open(row, holds)`, validated. It opens Oruvel's Act III league match.
+  - **Reefball-only gear** (e4142ec0): `gear.json` holds two bands and two floats, worn one per kind, which add stats to the player's side through `ReefballMatch.setup(..., worn)`. The flags are `rbl_gear_<id>_owned` and `rbl_worn_<kind>`.
+    - **The Tamsule outfitter:** ReefballOutfitterMenu, a TownMenu opened by a `{"reefball_outfitter": id}` payload. It buys, puts on, swaps and takes off gear.
+    - The match HUD says "The side wears ...".
+    - The outfitter is in the pseudo-loc walk and the aspect audit. **New shot `reefball_outfitter` (no baseline yet).**
+  - **Checks:**
+    - reefball 79/0, reefball_outfitter 6/0, customize 12/0, equip 66/0, item 82/0, shop 27/0, inn 10/0, town 6/0, pseudo 23/0, aspect 15/0;
+    - **coverage OK** (2788 tests, all passing): reefball **100 %** (466/466), battle 99.89 %, progression 96.98 %;
+    - validate_data 0 errors; tools test_reefball_validate 19/0.
+  - **Tools suite:** test_zone_map_pois caught the Brine Shoals Channel spawn moving with Ch6's dressing (M3-C06-1200). The map POI follows it (fixed in this push). test_screenshots fails only on the new shots without baselines. test_audio_loudness and test_shrine_gi_bake are the integration branch's known failures, owned by audio and by the PC's `gpu/shrine-gi-big12` (CONSOLIDATED).
+RENDER-REQUEST @ HEAD (after this push): reefball_outfitter, reefball_hud_choice, reefball_hud_goal; why: ADR 0040: the new outfitter shot (first baseline), and the Reefball HUD's framing panel has a new line, hidden when the side wears nothing, so the two HUD shots should be unchanged.
+
+**MERGE-READY @ HEAD** (claude/ui = integration @ 73cddee1 minus nothing + this track): everything in MERGE-READY @ abf39c37, plus ADR 0040's three homes, plus request task M3-UI-204. **M3-UI-204 is new on this branch only; act1-chapters sees it after this merge:** the shrine payloads, Tamsule's trader, inn, outfitter and shrine, and the needle's give.
+
