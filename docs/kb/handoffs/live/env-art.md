@@ -309,6 +309,8 @@ RENDER-REQUEST @ 94fe8f77: tamsule_tp01_port_and_bell,tamsule_tp03_floating_mark
 RENDER-REQUEST @ 95be6118: battle_arena_keth_seep_terrace; why: M3-ENV-717 the Avalanche Ram's arena (new shot)
 RENDER-REQUEST @ 854e6a95: battle_arena_shoals,battle_arena_camp,battle_boss_intro_inquisitor,field_tip_card,brine_b05_barge_channel,iskarra_p01_plaza_dusk,iskarra_i02_gate_from_the_plaza,iskarra_i03_broken_tower,battle_arena_keth_seep_terrace; why: after the big11 merge, big11's copies of the first four lack env-art's Ch6 density pass and Haluna clutter; B05 gains the boat wake (M3-ENV-1000); the Iskarra plaza's corner moved for Kerrid's vigil (supersedes the Iskarra ids in 8770a067)
 RENDER-REQUEST @ 43492e80: battle_arena_lowlight_engine_hall; why: M3-ENV-716 the Lamp Engine's flooded hall (new shot)
+RENDER-REQUEST @ 60eee2f7: iskarra_p01_plaza_dusk,iskarra_i02_gate_from_the_plaza,iskarra_i03_broken_tower,brine_b01_arrival,brine_b05_barge_channel; why: after viewing 8770a06: Iskarra gets real water (reflections) and the paving inlay as channel lines; B01/B05 show the boat wake (supersedes these ids in 854e6a95)
+ANSWERED: 8770a06 (gpu/render-env-art-8770a06): corrow_c01_wall_head and corrow_c08_watcher_profile viewed and re-approved in 895ff7ec; the Ch6 arenas, Iskarra and B01/B05 re-requested (big11's actors, the plaza and the wake changed since). ba16d48 and 179069d predate big11's NPCs and actor stances: re-request at the next Haluna or route change.
 
 ## STATE AT HANDOVER (2026-10-25)
 
