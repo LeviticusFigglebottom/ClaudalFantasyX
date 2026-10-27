@@ -2563,6 +2563,7 @@
       "id": "battle_boss_intro_matron",
       "scene": "res://game/battle/scene/shots/battle_boss_intro_matron.tscn"
     },
+    {"id": "battle_ch08_stair_hold", "scene": "res://game/battle/scene/shots/battle_ch08_stair_hold.tscn"},
     {
       "id": "battle_boss_intro_hermit",
       "scene": "res://game/battle/scene/shots/battle_boss_intro_hermit.tscn"

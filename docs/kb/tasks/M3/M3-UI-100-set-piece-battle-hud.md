@@ -2,8 +2,9 @@
 id: M3-UI-100
 title: Battle HUD for Ch8's set-piece fights (timeline entries, locked/unavailable heroes, intercept floats, the stair meter)
 role: ui
-status: doing
+status: review
 owner_session: "claude/ui (ui-menus)"
+reviewer: combat
 depends_on: [M3-CMB-01]
 milestone: M3
 request-from: cinematics
@@ -16,7 +17,19 @@ M3-CMB-01 (ADR 0100, `docs/kb/design/set_piece_battles.md`) added scripted timel
 - **Stair meter:** a HUD for the objective quota (`engine.objective_count` against `objective.quota`), carried across the three waves.
 
 ## Acceptance criteria
-- [ ] Each piece reads the engine state named above. It needs no new engine API; if it does, request one from combat.
+- [x] Each piece reads the engine state named above. It needs no new engine API; if it does, request one from combat.
 - [ ] Screenshots of a Ch8 wave and the Reach once M3-C08-02 builds the fights.
+
+## Implementation notes (ui-menus, 2026-10-27)
+- **`BattleSetPieceHud`** (`game/battle/scene/battle_set_piece_hud.gd`), listen-only, attached by one line in `BattleController` (990/1000 lines):
+  - entries get `TurnTimeline.set_entry_identity` (named, e.g. "The Fisher Stair"), from setup and on `combatants_joined`;
+  - `TimelineChip` draws an entry apart: `panel_raised` fill, a dashed `swell` frame and a round portrait (battle_hud.json timeline `entry_fill_role`, `entry_frame_role`);
+  - an `ObjectiveMeter` (`game/ui/battle/objective_meter.gd`; battle_hud.json `objective_meter`, top centre under the help line) titled with the objective's `label_key` or the ward's name, one pip per group of the quota and "2 / 3" spelled out; shown while `BattleSetPiece.objective_running`, refreshed on actions, turns and phases;
+  - foes still standing when an objective ends float "Withdraws".
+- **Locks** (`BattleMenus`): `swap_lock_text` gives "Toma can't leave the line: Holding the stair."; the swap-out pick's help shows it, and a refused `swap_members` sets it. The reserve page lists `engine.unavailable` heroes greyed with `unavailable_key` ("Not with the party").
+- **Floats** (`BattleFloats`): "Intercepted" over the guard (`ActionResult.intercepted_by`), "Counter" over the one who struck back (`counter_by`), "Withdraws" on a Storm-Call `withdrawn` hit.
+- Strings: `game/data/loc/battle_set_piece.csv` (new translation in project.godot). No new engine API.
+- **Carry across waves:** the engine resets `objective_count` per wave; the flow (M3-C08-02) keeps the total in `ch08_stair_groups_up`. The meter shows this wave's count against its quota; a running total can read that flag when the flow lands.
+- Tests: `tests/unit/test_set_piece_hud.gd` (6). Shot `battle_ch08_stair_hold` (new; wave 1, two groups up): render requested from the PC. The Reach's shot waits for M3-C08-02's fight.
 
 ## Review log
