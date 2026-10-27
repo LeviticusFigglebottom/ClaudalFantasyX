@@ -209,7 +209,7 @@ func test_every_act_one_greybox_zone_builds_a_map() -> void:
 		for r: Variant in maps.route():
 			on_route = on_route or StringName(str((r as Dictionary)["id"])) == id
 		assert_true(on_route, "%s is on the route" % id)
-	assert_eq(seen, 9, "Ch1's two zones, Ch4's two, Ch5's two, Ch7's two and Ch9's")
+	assert_eq(seen, 10, "Ch1's two zones, Ch3's causeway (M2-FP-1000), Ch4's two, Ch5's two, Ch7's two and Ch9's")
 
 
 func test_greybox_blocks_sort_by_height_and_hints() -> void:

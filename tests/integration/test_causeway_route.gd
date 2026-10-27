@@ -89,3 +89,18 @@ func test_the_route_after_the_harrier_meets_two_or_three_fights() -> void:
 	assert_true(fewest >= MIN_FIGHTS, "at least %d fights (%.0f m walk)" % [MIN_FIGHTS, walk])
 	assert_true(most <= MAX_FIGHTS, "at most %d fights (%.0f m walk)" % [MAX_FIGHTS, walk])
 	_done()
+
+
+## M2-FP-1000: the final causeway is on the map: its path drawn from the walk floor, its stops named, and the
+## objective pointing on to the shrine steps.
+func test_the_causeway_has_a_map_and_an_objective() -> void:
+	var none := func(_f: StringName) -> bool: return false
+	var m := MapModel.new(&"ch03/saltgrass_causeway", Vector3(1.4, 0.0, -0.7), 0.0, none)
+	assert_true(m.has_map(), "the causeway has a map")
+	var data := MapModel.load_data()
+	var s := ZoneMapShapes.build(
+		m.shape_kind(), m.shape_source(), m.bounds(), data["map"], data["pieces"], data["greybox"], m.shape_hints()
+	)
+	assert_true(s.floors.size() > 50, "the walk floor is drawn along the route (%d floors)" % s.floors.size())
+	assert_eq(m.objective_poi(), &"shrine_steps", "the objective points on to the shrine")
+	assert_eq(m.objective_line(), tr("OBJ_CAUSEWAY_TO_SHRINE"))

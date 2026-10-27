@@ -1057,3 +1057,9 @@ SET_SCREEN_SHAKE_FULL,Full
 SET_SCREEN_SHAKE_HALF,Half
 SET_SCREEN_SHAKE_OFF,Off
 TUT_TIDELINE_TIMELINE,"The turn order runs down the right, next at the top. Every action costs time: watch where yours will land before you choose."
+MAP_POI_SC_POSTS,The marker posts
+MAP_POI_SC_HARRIER,The open flats
+MAP_POI_SC_TIDEPOOLS,The tide pools
+MAP_POI_SC_RING,The Lit Age ring
+MAP_POI_SC_SHRINE_STEPS,The shrine steps
+OBJ_CAUSEWAY_TO_SHRINE,Follow the causeway out to the Shell Shrine while the tide is low.
