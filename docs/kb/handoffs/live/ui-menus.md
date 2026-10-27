@@ -117,3 +117,21 @@ Checks are as listed in the line above. Skipped: coverage (no change in game/bat
   - battle_ch08_stair_hold's first baseline comes from the 17325e00 request, which must now be re-rendered at or after 121362b3. **RENDER-REQUEST @ 121362b3 below supersedes the shot in 17325e00.**
   - **Known overlap:** the opening banner ([560,156,800,120], shown for a moment at battle start) overlaps the meter's first second. It is transient, and is listed here for the Lead's eye on the render.
 RENDER-REQUEST @ 121362b3: battle_ch08_stair_hold, battle_hud_preview; why: the stair meter moved below the two-line help line (the 6454c06 render showed it over the tutorial); first baseline for battle_ch08_stair_hold; battle_hud_preview confirms a normal fight is unchanged.
+- 2026-10-27: **big11 merged into claude/ui (abf39c37).**
+  - **Merge notes:**
+    - ownership.md keeps both rows;
+    - conflicted baseline PNGs take the side approved last (6 theirs; battle_hud_16x10 and battle_hud_21x9 ours, from the 5317c0e approvals);
+    - unions by merge_union.py;
+    - **git's line merge had dropped `tut_menu_save_seen` from flags.tres; it is restored in the merge commit.**
+  - **Checks on the merged tree:**
+    - import clean, gdlint and gdformat clean (793 files), validate_data 0 errors;
+    - the one warning is the integration branch's PROVENANCE row for a missing `haluna/offering_step.glb`;
+    - battle 716/0, set_piece 36/0, battle_barks 4/0, shrine 47/0, codex 14/0, zone_map 20/0, settings 48/0, pseudo 23/0, aspect 15/0, field_menu 32/0, save_menu 21/0;
+    - coverage on the pre-merge head is OK: battle 99.89 %, progression 96.98 %, reefball 100 %.
+
+**MERGE-READY @ abf39c37** (claude/ui = integration @ 3cbcff9e (big11) + this track): everything in the MERGE-READY @ a195cd39 line, plus:
+- M3-C08-100 battle barks (Hold. / Pull! / Virel.);
+- M3-UI-203 closed, with the Reach's carry_flag;
+- the stair meter moved below the two-line help (from the 6454c06 render).
+
+Lead decisions open: an accessory slot (the Oruvel Float, the sailmaker's needle, the Reefball outfitter). Requests open: M3-UI-204 (act1-chapters: shrine payloads, Tamsule's trader, inn and shrine). Renders pending: 17325e00 (minus battle_ch08_stair_hold), 99623a0c portraits, a195cd39 codex, 121362b3 stair hold.
