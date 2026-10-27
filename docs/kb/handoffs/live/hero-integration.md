@@ -455,3 +455,19 @@ PERF-REQUEST @ bccce923: foot IK frame cost on hardware. Haluna, the party runni
     completion the combined patch fixes, so it's KNOWN under M2-HER-1113 (31 pairs).
   - Checks run: hero_ 107/0 (with that entry), field 147/0, zone 60/0, haluna 56/0, villager 19/0, tools
     test_screenshots, gdlint.
+- **MERGE-READY @ 7a8bff79**
+  - **Ysolde FAST-TRACK, done.** Her battle actor has been wired since d4430397. Now her placeholder clips no longer
+    flip an arm: HeroBattleActor gives them short-path keys and caps fades into fast placeholders at 0.06 s. The pop
+    guard's KNOWN list is empty: hero_battle 8/0, battle 710/0.
+  - **Liss on the hero layer:** her field body row (walk 0.97 and run 2.19 m/s, measured on her model) and her
+    battle wrapper (the model by path; her stand-in's capsule until characters' model merges). Checked on a scratch
+    worktree with her assets: all 26 battle changes clean, her revive included; hero_field_actor 13/0. Her
+    battle_sandbox row: request **M3-HER-1120** (ui-menus).
+  - Kerrid has no model anywhere yet; Sefir isn't a party member.
+  - **Fold-into-characters handoff:**
+    `docs/kb/handoffs/2026-10-27-tech-hero-integration-fold-into-characters.md`.
+  - Items 3 (stairs) and 4 (face the speaker, narrow lanes) were done earlier (5091eb81, 0b15b4f6).
+  - Checks run: hero_ 107/0, battle 710/0, fighter 5/0, clips 7/0, gdlint, validate_data, taskboard.
+
+### Render requests
+RENDER-REQUEST @ 7a8bff79: battle_choreo_cast, battle_choreo_read, battle_choreo_toll, battle_statuses, battle_swell_glyph, battle_read_panel, battle_heroes_idle; why: Ysolde's real model replaces her capsule (FAST-TRACK, same as the request @ d4430397 if it's still unanswered), and her placeholder clips' new fades; for the Lead to view and approve
