@@ -461,3 +461,10 @@ RENDER-REQUEST @ 95b6daf8: portraits:mangrove_drowner,lamp_engine,avalanche_ram,
   5. **Wildlife:** Ch8 corrow and coilspire added (M3-CRE-636). Ch5 Ashcrown, Ch7 bell galleries and Ch9 Corrow-night stay empty on purpose (reasons in docs/kb/art/wildlife.md; Corrow-night: crabs among the shrouds would read as carrion). Ch4, Ch5 Pemakar and Ch7 Tamsule have had data since M3-CRE-615/616.
   6. **Task board, creatures' todos:** M3-AUD-815 done (`chat_speaking()`, `startled()`); M3-CRE-201 closed (the Matron's model had landed); M3-CRE-622 in progress. The rest of the character todos are the characters track's.
 
+- **MERGE-READY @ db3c9507: M3-CRE-637 (the flat-engine, Ch14 boss part) and M3-CRE-622's first pass.**
+  - Flat-engine: 7,620 triangles; a lacquer drum, chimney, salt-glass window and eight paddles flat on the water; 13 bones; `cast` presses the paddles at 0.8 s; `ko` splits the drum. Grounded at 0.000 in every frame; no allow-list.
+  - **Not wired yet:** its `break_parts` entry needs a charge skill that doesn't exist yet. The task file has the exact entry. Until then the window stays lit through the KO.
+  - The Drowner's first polish pass is merged as a step. On review its silhouettes still read as a spider (the top view a sunburst), so M3-CRE-622 is reopened with a redesign direction: a vertical trunk, tiered lopsided roots, and hanging aerial roots.
+  - **Checks run:** Blender verify identical (flat_engine ×5); Godot creature 42/1 (the known portrait red); tools test_creatures and test_blender_builds; validate_data, taskboard, lint, format.
+RENDER-REQUEST @ db3c9507: creature_flat_engine, creature_mangrove_drowner, creature_mangrove_drowner_risen; why: M3-CRE-637 first render of the flat-engine (its near-black drum: check it reads on default lights) and M3-CRE-622's first Drowner pass (to compare with the redesign).
+RENDER-REQUEST @ db3c9507: portraits:flat_engine; tool: tools/portraits/render.sh --only flat_engine
