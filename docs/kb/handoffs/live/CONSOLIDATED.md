@@ -74,6 +74,9 @@
   - Hullgnaw's intro is framed close → battle-presentation M3-BPR-404 (FAST-TRACK).
   - No manifest shot covers the prologue's "everyone is still here" colour → slice-polish.
 
+## 2b. Rendering is PC-only (human directive, 10-27)
+No cloud session captures screenshots. Tracks post `RENDER-REQUEST @ sha: ids` lines in their live logs, and the PC renders them and pushes `gpu/render-<track>-<sha7>`. The protocol is in TRACK-RULES.md. Gates stay on the PC as before.
+
 ## 3a. Live roster (new account, from 2026-10-25)
 | Track | Session | Branch | Live log | Ids |
 |---|---|---|---|---|
