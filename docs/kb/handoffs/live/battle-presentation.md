@@ -52,7 +52,7 @@ pass (lineup 4/0; it fails with the spread off), and the battle filter gives 638
 so a full battle-shot capture comes next.
 
 ### Render requests
-RENDER-REQUEST @ HEAD (see `git log -1 origin/claude/battle-presentation`): battle_ch08_intercept,battle_ch08_counter,battle_ch08_withdraw; why: M3-BPR-406's set-piece freeze-frames (new, no baselines yet): Toma taking the crawler's grip for the stair, Rhen's riposte landing, a crawler withdrawing half-way. Batch it with the 3-shot HEAD request below if that one hasn't run yet.
+RENDER-REQUEST @ HEAD (see `git log -1 origin/claude/battle-presentation`): battle_ch08_intercept,battle_ch08_counter,battle_ch08_withdraw,battle_ch08_stair_hold; why: M3-BPR-406's set-piece freeze-frames (new, no baselines yet): Toma taking the crawler's grip for the stair, Rhen's riposte landing, a crawler withdrawing half-way. Also stair_hold: Kerrid (in the reserve) and Liss now have their own stand-ins and timeline tints. Batch it with the 3-shot HEAD request below if that one hasn't run yet.
 RENDER-REQUEST @ HEAD (see `git log -1 origin/claude/battle-presentation`): battle_boss_intro_reach,battle_arena_wall_head,drownbell_flood; why: (1) reach and wall_head: big12's baselines were rendered without this branch's arena rework (5a5b4fe isn't in the integration branch), and the 5a5b4fe render predates big12's stair HUD. Only a render of this branch's HEAD shows both. (2) drownbell_flood: settle_actors now ends the summoned polyps' entrance (1284fdec); the ed3a458 render caught them mid-rise.
 (21:2x: the PC is paused. The Lead's cloud container serves these requests, and results land on `lead/gate-render-battle-presentation-<sha7>`. Requests are kept small.)
 RENDER-REQUEST (DONE 21:4x: cloud render 60cbb21 viewed and approved) @ 60cbb212: battle_boss_intro_hullgnaw; why: FAST-TRACK M3-BPR-404. At c1d1e3e the party rule (party_max_h 0.3) widened Hullgnaw's camera past the raft's rope rail, which cut across the serpent. At 0.36 it keeps its approved 10.6 m frame (Rhen 0.35 tall at its side); the Drownbell, Matron and Wraith frames don't change.
@@ -83,6 +83,17 @@ RENDER-REQUEST @ 60b62678: battle_arena_wall_head,battle_boss_intro_reach; why: 
    `game/levels/_tests/battle_arenas/arena_wall_head.tscn`, as on the integration branch.
 - **Known red until the renders are viewed:** test_screenshots has no baselines yet for the three new Ch8 shots (the
   first baselines come from the request above).
+4. **"Parts look primitive" audit:**
+   - **Kerrid and Liss had no stand-in rows.** Both fell back to the shared default capsule and the default grey
+     timeline tint. They now have stand-ins sized from their sheets (Kerrid 1.82 m and heavy, Liss 1.56 m) in their
+     garment colours.
+   - Their timeline tints are their own: Kerrid's iron grey #8E9296 (his sheet: the only colour on him is a red cord,
+     and red reads as foe/danger here) and Liss's launcher copper #A0603A.
+   - **ui-menus:** these tints are provisional. Change them if the timeline has an identity palette.
+   - New test `test_every_hero_has_its_own_stand_in_and_tint`.
+   - **Still capsules, owned elsewhere:** Ysolde's battle actor (hero-integration M2-HER-1115, in flight on its
+     branch), Ilun (creatures M3-CRE-638, built and waiting to merge), the Inquisitor (creatures M3-CRE-625), and the
+     wall_head greybox (env-art, M3-BPR-407).
 
 ### 2026-10-27 22:3x: cloud renders 5a5b4fe and ed3a458 viewed; Ilun on the real model
 - **ed3a458, 4 drifts (melee, hit, ko, drownbell_flood):** viewed side by side with HEAD's baselines.
