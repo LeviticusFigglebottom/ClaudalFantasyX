@@ -79,6 +79,28 @@
         "camp_tent_burned-lod1": 8
       }
     },
+    "chalk_mark": {
+      "budget": [
+        600,
+        60
+      ],
+      "bytes": 10716,
+      "lods": {
+        "chalk_mark": 104,
+        "chalk_mark-lod1": 28
+      }
+    },
+    "chalk_mark_heavy": {
+      "budget": [
+        600,
+        60
+      ],
+      "bytes": 15124,
+      "lods": {
+        "chalk_mark_heavy": 176,
+        "chalk_mark_heavy-lod1": 28
+      }
+    },
     "channel_straight_a": {
       "budget": [
         4800,
@@ -123,6 +145,17 @@
         "crate_stack_burned-lod1": 48
       }
     },
+    "hatch": {
+      "budget": [
+        2000,
+        120
+      ],
+      "bytes": 30512,
+      "lods": {
+        "hatch": 432,
+        "hatch-lod1": 12
+      }
+    },
     "lamp_burial": {
       "budget": [
         2400,
@@ -132,6 +165,17 @@
       "lods": {
         "lamp_burial": 440,
         "lamp_burial-lod1": 36
+      }
+    },
+    "level_stone_shrine": {
+      "budget": [
+        5000,
+        400
+      ],
+      "bytes": 72856,
+      "lods": {
+        "level_stone_shrine": 1048,
+        "level_stone_shrine-lod1": 180
       }
     },
     "liss_crate": {
@@ -189,6 +233,17 @@
         "plank_walk-lod1": 12
       }
     },
+    "ridge_fire": {
+      "budget": [
+        2500,
+        200
+      ],
+      "bytes": 82104,
+      "lods": {
+        "ridge_fire": 918,
+        "ridge_fire-lod1": 96
+      }
+    },
     "salvage_pile": {
       "budget": [
         7000,
@@ -244,6 +299,28 @@
         "smoke_plume-lod1": 60
       }
     },
+    "tide_wheel": {
+      "budget": [
+        9000,
+        700
+      ],
+      "bytes": 128756,
+      "lods": {
+        "tide_wheel": 1676,
+        "tide_wheel-lod1": 596
+      }
+    },
+    "tide_wheel_burned": {
+      "budget": [
+        9000,
+        700
+      ],
+      "bytes": 117992,
+      "lods": {
+        "tide_wheel_burned": 1404,
+        "tide_wheel_burned-lod1": 452
+      }
+    },
     "tideline_wrack": {
       "budget": [
         5000,
@@ -253,6 +330,17 @@
       "lods": {
         "tideline_wrack": 4576,
         "tideline_wrack-lod1": 108
+      }
+    },
+    "vendor_boat": {
+      "budget": [
+        9000,
+        800
+      ],
+      "bytes": 123788,
+      "lods": {
+        "vendor_boat": 2577,
+        "vendor_boat-lod1": 103
       }
     },
     "white_barge": {
