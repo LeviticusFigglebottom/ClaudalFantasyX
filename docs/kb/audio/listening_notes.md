@@ -912,3 +912,14 @@ Heard once claude/battle-presentation merges, in any fight. Listen for:
 - **The hit-stop duck:** −6 dB of music for about 0.15 s. Is it felt as a held breath or as a dropout?
 - **The KO slow-mo:** the air drawn down and the one heartbeat under the last foe's fall, with the music ducked
   −9 dB. The victory sting should follow cleanly.
+
+## M3: the slice's cutscenes (M3-AUD-817)
+Play the prologue and Cutscene A in Haluna. Listen for:
+- **The prologue's room tone (iskarra_dusk):** the city should feel enormous and empty: water on stone, the towers'
+  faint singing in the gusts, a far drip. Is the singing too tonal (it is two quiet tones a fifth apart)?
+- **The lantern catching** under the line, "the only flame in the frame": a breath of flare, then a small steady
+  flutter. Does it crowd the voice?
+- **The glimmer lift** after the line: tiny chimes drifting upward, never a tune.
+- **Steps in cutscenes:** Rhen crossing the plaza. Wet stone in the prologue is `stone`; Haluna's beach is sand,
+  its shallows water.
+- **Cloth on `look_at`:** very quiet (−27). Too much over 63 uses?

@@ -103,9 +103,16 @@
       "bus": "Ambience",
       "volume_db": 0.0,
       "_note": "M3-AUD-16 (assets_src/sfx/act1_ambience.py)"
+    },
+    "iskarra_dusk": {
+      "file": "res://assets/audio/ambience/iskarra_dusk.ogg",
+      "bus": "Ambience",
+      "volume_db": 0.0,
+      "_note": "M3-AUD-817: the prologue's room tone (assets_src/sfx/prologue_ambience.py)"
     }
   },
   "zones": {
+    "res://game/levels/prologue/prologue.tscn": {"day": ["iskarra_dusk"], "_note": "M3-AUD-817: Iskarra's drowned plaza at dusk, the room tone under the prologue cutscene"},
     "res://game/levels/ch02/haluna/haluna.tscn": {
       "day": [
         "haluna_day",

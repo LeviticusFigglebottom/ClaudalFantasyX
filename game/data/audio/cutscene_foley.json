@@ -1,0 +1,32 @@
+{
+  "version": 1,
+  "doc": "Cutscene foley by listening (M3-AUD-817; docs/kb/tech/audio_runtime.md \"Cutscene foley\"). CutsceneAudio (game/audio/cutscene_audio.gd) hears each CutsceneSequencer's cue_played and never writes it; nothing plays while it is_skipping(). anim: `@anim <actor> <clip>`: the clip name (exact first, then the first glob that matches) -> an sfx row, at the actor (CutsceneStage.actor) plus at_height_m. light: `@light <name> on|off`: the light name glob -> a row for on and for off, at the light; `off` plays only when the light was lit (the prologue starts by putting its lantern out unseen). vfx: `@vfx <effect> at=<place>`: the effect -> a row, at the place (CutsceneStage.place). '' silences a clip. Steps in cutscenes are the actors' own FootstepAudio (the director attaches one to every CutsceneStage.cast() member).",
+  "at_height_m": 1.1,
+  "anim": {
+    "vigil_book_shut": "cs_book_shut",
+    "look_at": "cs_cloth_turn",
+    "look_back": "cs_cloth_turn",
+    "kneel_palms_flat": "cs_cloth_kneel",
+    "kneel*": "cs_cloth_kneel",
+    "rise_to_stand": "cs_cloth_rise",
+    "stand*": "cs_cloth_rise",
+    "sit*": "cs_cloth_sit",
+    "shield_up": "cs_shield_up",
+    "unsling_cleaver": "cs_unsling",
+    "untie_band": "cs_untie",
+    "feed_fire": "cs_feed_fire",
+    "trim_wicks": "cs_trim_wicks",
+    "pole_barge": "cs_pole_water",
+    "float_boat": "cs_pole_water",
+    "laugh": ""
+  },
+  "light": {
+    "*Lantern*": {"on": "cs_lantern_catch", "off": "cs_lantern_snuff"},
+    "*Lamp*": {"on": "cs_lantern_catch", "off": "cs_lantern_snuff"}
+  },
+  "vfx": {
+    "glimmer_lift": "cs_glimmer_lift",
+    "glimmer_held": "cs_glimmer_held",
+    "glimmer_bound": "cs_glimmer_bound"
+  }
+}

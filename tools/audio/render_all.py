@@ -55,7 +55,8 @@ M2_CUES = ("haluna_village", "haluna_night", "battle_standard_v2", "hush_first_v
 AMBIENCE_BUDGET = int(2.5 * 1024 * 1024)  # the M2-AUD-05 field beds together
 # Per-job budgets for later "ambience_loop" jobs (each job's beds together; the M2-AUD-05 job keeps AMBIENCE_BUDGET).
 AMBIENCE_JOB_BUDGETS = {"assets_src/sfx/causeway_ambience.py": int(1.2 * 1024 * 1024),
-                        "assets_src/sfx/act1_ambience.py": int(3.0 * 1024 * 1024)}  # M2-AUD-13: two q1 beds; M3-AUD-16: six
+                        "assets_src/sfx/act1_ambience.py": int(3.0 * 1024 * 1024),  # M2-AUD-13: two q1 beds; M3-AUD-16: six
+                        "assets_src/sfx/prologue_ambience.py": int(0.6 * 1024 * 1024)}  # M3-AUD-817: one q1 bed
 AMBIENCE_LUFS, AMBIENCE_MAX_TP = -26.0, -5.0  # mix.md §2: ambience loops at -26 LUFS, rendered at <= -6 dBFS
 
 
@@ -208,6 +209,11 @@ JOBS = [
     ("assets_src/sfx/life_sfx.py", "assets/audio/sfx/life", _source_files("assets_src/sfx/life_sfx.py"), "sfx"),
     # M3-AUD-816: battle impact tiers and the KO slow-mo swell (ImpactAudio)
     ("assets_src/sfx/impact_sfx.py", "assets/audio/sfx/battle", _source_files("assets_src/sfx/impact_sfx.py"), "sfx"),
+    # M3-AUD-817: cutscene foley (CutsceneAudio) and the prologue's room tone
+    ("assets_src/sfx/cutscene_foley.py", "assets/audio/sfx/cutscene", _source_files("assets_src/sfx/cutscene_foley.py"),
+     "sfx"),
+    ("assets_src/sfx/prologue_ambience.py", "assets/audio/ambience", ["iskarra_dusk.ogg", "iskarra_dusk.loop.json"],
+     "ambience_loop"),
     # M3-AUD-804: Act II sketches (Ch10 Ossa Fen and Reedhollow, Ch11 Sunken Vey and Lowlight, Ch12 Keth Pass and Quellan)
     ("assets_src/music/ossa_fen.py", "assets/audio/music", ["ossa_fen.ogg", "ossa_fen.loop.json"], "music_loop"),
     ("assets_src/music/reedhollow.py", "assets/audio/music", ["reedhollow.ogg", "reedhollow.loop.json"], "music_loop"),
