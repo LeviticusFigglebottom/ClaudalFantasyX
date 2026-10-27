@@ -462,5 +462,12 @@ STANDARD["kit_lacquer_black"] = {"albedo_color": hexc("#16161A"), "roughness": 0
 STANDARD["kit_window_lit"] = {"albedo_color": hexc("#FFB16E"), "emission_enabled": "true", "emission": hexc("#FFB16E"),
                               "emission_energy_multiplier": 2.5, "roughness": 0.9}
 
+# ---- M3-ENV-722 (appended by env-art): the Pale Rim (drowned_choir.py; pale_rim.md §1) -------------------------
+# The Rim's white sand under the water: the Haluna beach sand bleached near-white.
+MATERIALS["kit_rim_sand"] = stone("sand_albedo.png", "sand_normal.png", (2.0, 2.0), base_triplanar=True,
+                                  col_tint=hexc("#F2F0EA"), normal_strength=0.6, roughness_base=0.85,
+                                  cavity_darken=0.15, variation_value=0.05, use_moss=False, use_barnacles=False,
+                                  use_algae=False, use_salt=False)
+
 if __name__ == "__main__":
     sys.exit(main())

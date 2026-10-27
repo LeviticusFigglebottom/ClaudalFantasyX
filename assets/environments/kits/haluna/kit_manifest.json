@@ -211,6 +211,28 @@
         "causeway_slab_steps-lod1": 36
       }
     },
+    "choir_amphitheatre": {
+      "budget": [
+        18000,
+        1400
+      ],
+      "bytes": 516116,
+      "lods": {
+        "choir_amphitheatre": 5044,
+        "choir_amphitheatre-lod1": 304
+      }
+    },
+    "choir_singer": {
+      "budget": [
+        5000,
+        300
+      ],
+      "bytes": 99192,
+      "lods": {
+        "choir_singer": 2172,
+        "choir_singer-lod1": 274
+      }
+    },
     "cloudloom_hall": {
       "budget": [
         16000,
@@ -847,6 +869,17 @@
       "lods": {
         "outrigger_7m": 1940,
         "outrigger_7m-lod1": 300
+      }
+    },
+    "pale_rim_flats": {
+      "budget": [
+        6000,
+        800
+      ],
+      "bytes": 144560,
+      "lods": {
+        "pale_rim_flats": 4032,
+        "pale_rim_flats-lod1": 448
       }
     },
     "pass_cord": {

@@ -1526,9 +1526,69 @@ ANSEDRA_ESCAPE = {
     "anchors": {"BossAnchor": (PURSUIT_AT[0] - 2.5, -0.2, PURSUIT_AT[1] + 0.6)},
 }
 
+# ---------------------------------------------------------------------------------------------
+# M3-ENV-722: Sefir's Abiding guard in the Drowned Choir at moonrise (drowned_choir.py; pale_rim.md §2)
+# ---------------------------------------------------------------------------------------------
+def _choir():
+    import drowned_choir  # noqa: PLC0415
+
+    return drowned_choir
+
+
+CHOIR_RING_R = 44.0
+CHOIR_SINGERS = 10
+PALE_RIM_NIGHT = {  # the colour script's `pale_rim` look (absorption x0.8) at night: the deep darkened under the moon
+    "name": "arena_pale_rim_night", "shader": "res://game/shaders/water/water_ocean.gdshader",
+    "params": [("col_deep", "#2E4C50"), ("col_scatter_shallow", "#7FB8B4"), ("absorption_per_m", "Vector3(2, 0.5, 0.42)"),
+               ("absorption_scale", 0.8), ("scatter_energy", 0.12), ("caustic_strength", 0.0), ("col_foam", "#EEF4F4"),
+               ("col_sss", "#7FB8B4"), ("foam_crest_threshold", 0.95), ("roughness_far", 0.04), ("use_caustics", "false"),
+               ("use_ssr", "true"), ("use_sss", "false")]}
+
+
+def _choir_arena() -> dict:
+    dc = _choir()
+    singers = []
+    for k in range(CHOIR_SINGERS):
+        th = 2 * math.pi * (k + 0.5) / CHOIR_SINGERS
+        x, z = math.cos(th) * CHOIR_RING_R, math.sin(th) * CHOIR_RING_R
+        singers.append({"glb": KIT + "choir_singer.glb", "at": (round(x, 3), dc.SAND_Y, round(z, 3)),
+                        "yaw": round(math.degrees(math.atan2(-math.cos(th), -math.sin(th))), 3), "structure": True})
+    return {
+        "id": "drowned_choir_ring",
+        "sub_frame": "ch16",
+        "ground": "deck",
+        "ground_glb": KIT + "choir_amphitheatre.glb",
+        "lut": "res://assets/environments/arenas/drowned_choir_ring/lut_ch16_choir.png",
+        # pale_rim.md §0 (the Choir at moonrise): the moon low behind the enemy line #D2DFFF 0.35, fill #2A3A4E 0.25,
+        # the pale_rim water at night, sea-glow 0.1, exposure 1.1, lut_ch16_choir.
+        "sun": {"elev": 9.0, "az": 320.0, "color": "#D2DFFF", "energy": 0.35, "max_distance": 80.0, "moon": True},
+        "fill": {"color": "#2A3A4E", "energy": 0.25},
+        "exposure": 1.1,
+        "glow": (0.5, 0.06, 1.0),
+        "fog": {"color": "#3A4A5A", "density": 0.003, "sky_affect": 0.0, "height": 0.0, "height_density": 0.0},
+        "sky_shader": "res://game/shaders/environment/env_sky_night.gdshader",
+        "sky": {"col_zenith": "#0E1626", "col_horizon": "#3A4A60", "col_ground": "#2E4C50", "moon_disc_energy": 10.0,
+                "col_moon": "#D2DFFF"},
+        "sea": {"y": dc.WATER_Y, "tide_line_y": dc.WATER_Y, "sea_glow": 0.1, "material": PALE_RIM_NIGHT,
+                "waves": [(30.0, 4.0, 0.006, 0.08), (110.0, 2.0, 0.003, 0.05)]},
+        "pieces": singers,
+        "extra_glbs": [KIT + "pale_rim_flats.glb"],
+        "scatters": [],
+        "hints": {
+            "wide_high": ((-1.5, 7.5, 13.5), (0.0, 0.8, -3.0)),
+            "party_side": ((5.6, 1.7, 4.5), (-1.5, 1.0, -0.5)),
+            "foe_side": ((-5.6, 1.7, 4.0), (1.5, 1.0, 0.0)),
+            "the_mouths": ((1.0, 0.8, 3.0), (-10.0, 22.0, -40.0)),
+            "the_ring": ((0.0, 6.0, 12.0), (-20.0, 10.0, -50.0)),
+        },
+    }
+
+
+CHOIR_ARENA = _choir_arena()
+
 ARENAS = {a["id"]: a for a in (TIDELINE, CAUSEWAY, CAUSEWAY_ROUTE, DERELICT_DECK, ASH_TERRACE, UNDERWAY_TOWER,
                                RAFT_MORNING, SHOALS, CAMP, WALLHEAD_STORM, WALLHEAD_HOIST, WALLHEAD_SURGE, HEADLAND, TIER_HALL, KETH_ARENA,
-                               LOWLIGHT_ARENA, FEN_ARENA, BRIDAL_ARENA, ANSEDRA_ESCAPE)}
+                               LOWLIGHT_ARENA, FEN_ARENA, BRIDAL_ARENA, ANSEDRA_ESCAPE, CHOIR_ARENA)}
 
 
 # ---------------------------------------------------------------------------------------------

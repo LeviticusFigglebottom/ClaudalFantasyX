@@ -135,6 +135,12 @@ GRADES = {
                      "black_floor": 0.6, "highlight_hex": "#FFD0A8", "highlight_start": 0.7, "highlight_strength": 0.35,
                      "warm_deg": (-20.0, 25.0), "warm_sat": 1.15, "cool_sat": 0.85, "cool_hex": "#B8C4E0",
                      "cool_strength": 0.3},
+    # M3-ENV-722: lut_ch16_choir (colour script ch16, the Choir variant): moonlit, the stone faces cold, Kesh's held
+    # light a pale cyan; low contrast (the Rim's), saturation x0.7, the toe a cold slate.
+    "ch16_choir": {"saturation": 0.7, "s_curve": 0.3, "toe_hex": "#1E2A3A", "toe_strength": 0.45, "toe_end": 0.32,
+                   "black_floor": 0.5, "highlight_hex": "#E6EEFA", "highlight_start": 0.68, "highlight_strength": 0.4,
+                   "warm_deg": (-20.0, 60.0), "warm_sat": 0.7, "cool_sat": 0.9, "cool_hex": "#C8DCEE",
+                   "cool_strength": 0.35},
 }
 
 

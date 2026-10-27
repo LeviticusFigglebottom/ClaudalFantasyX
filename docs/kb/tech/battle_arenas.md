@@ -279,6 +279,20 @@ Light `ch14`: sun 1° / 270°, key `#FFAA5F` 1.4, fill `#4A5A78` 0.4, exposure 0
 the reds pushed, the rest cooled, S-curve 0.7, the toe navy). No lamp on either barge. Hints: `the_engine`,
 `the_city_watching`.
 
+### The Drowned Choir at moonrise (`drowned_choir_ring`, M3-ENV-722, the Haluna kit's drowned_choir.py)
+
+For Sefir's Abiding guard (Ch16; a group, so no `BossAnchor`). The floor is the singer's dais at the bottom of the
+sunken amphitheatre: laid ceramic flags, r 7.5, level at y 0. The flooded ring channel lies round it (the water at
+−0.25); six broken seat-tiers rise to r 21.5; the white sand flats run under the water to the horizon.
+
+| Where | What |
+|---|---|
+| Round the arena, r 44 | Ten `choir_singer`s (24 m, hooded, the heads tilted up and the mouths open) standing in the sea, all facing the centre; the far side of the ring fills the frame behind the enemy line |
+| The sky | The moon low behind the enemy line (`#D2DFFF` 0.35), the night sky shader's disc |
+
+Light (pale_rim.md §0, the Choir at moonrise): fill `#2A3A4E` 0.25, `pale_rim` water at night, sea-glow 0.1,
+exposure 1.1, `lut_ch16_choir` (`zone_lut.py`: ×0.7, low contrast, the stone cold). Hints: `the_mouths`, `the_ring`.
+
 ### The underwater arena (`underway_tower`)
 
 An arena under the sea carries its own look, because the battle scene has none:
