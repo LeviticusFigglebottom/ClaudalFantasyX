@@ -172,6 +172,8 @@ func _render() -> void:
 	else:
 		_desc.text = tr(str(ROW_DESC_KEYS.get(id, "")))
 		_help.text = tr("BATTLE_PAUSE_HELP")
+	var pm: Dictionary = _d.get("panel", {})
+	UiFrame.fit_line(_help, HudLayout.rect_of(pm).size.x - HudLayout.num(pm, "pad") * 2.0)  # 130 % text (M2-UI-29)
 
 
 func _on_clicked(index: int) -> void:

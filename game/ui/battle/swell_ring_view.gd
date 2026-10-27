@@ -75,7 +75,7 @@ func _ready() -> void:
 	var title_h := metric("title_height")
 	var hint_h := metric("hint_height")
 	_title = _label(&"HeaderLabel", Rect2(0, 0, size.x, title_h))
-	_hint = _label(&"HelpLabel", Rect2(0, size.y - hint_h, size.x, hint_h))
+	_hint = HudLayout.wrap_upward(_label(&"HelpLabel", Rect2(0, size.y - hint_h, size.x, hint_h)))
 	var pad := metric("pad")
 	var side := Vector2(metric("assist_width"), metric("assist_height"))
 	_assist = _label(&"DimLabel", Rect2(Vector2(pad, title_h), side))
@@ -118,7 +118,7 @@ func open(r: SwellInput, title_text: String, hint: String) -> void:
 	ring = r
 	_pointer_action = &""
 	_title.text = title_text
-	_hint.text = hint
+	set_hint(hint)
 	visible = true
 	refresh()
 
@@ -174,8 +174,16 @@ func is_open() -> bool:
 	return visible and ring != null
 
 
+## Sets the hint line, shrunk back toward 100 % text when a larger text size would run it past the
+## panel (M2-UI-29).
 func set_hint(hint: String) -> void:
 	_hint.text = hint
+	UiFrame.fit_line(_hint, size.x)
+
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_THEME_CHANGED and _hint != null:
+		UiFrame.fit_line(_hint, size.x)  # a new text size refits the hint
 
 
 func hint_text() -> String:

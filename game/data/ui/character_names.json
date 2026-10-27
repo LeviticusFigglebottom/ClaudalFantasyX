@@ -1,0 +1,8 @@
+{
+  "character_names": {
+    "doc": "M3-C09-05 (act1_ch09.md §9 UI 3): the name a character goes by in the UI before the party learns their own. Every UI that shows a party member or a speaker by name asks CharacterNames (game/ui/names/character_names.gd): the dialogue box's speaker name (and so the backlog), the field menu, the party pages (formation, status and the rest, through PartySheet.hero_name) and the battle HUD and menus (BattleMenus.display_name). A row {id: {name_key, until_flag}} shows name_key in place of the character's own name until until_flag is set (read through Game.get_flag). Pell is 'The Kirru' until he tells Rhen his name on the dawn road (Ch9 B09 sets ch09_pell_named).",
+    "until_named": {
+      "pell": {"name_key": "CHAR_PELL_UNNAMED", "until_flag": "ch09_pell_named"}
+    }
+  }
+}

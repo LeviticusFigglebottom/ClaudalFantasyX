@@ -2,8 +2,8 @@
 id: M1-CHR-15
 title: "Skirt and corrective bones for deep poses (floor-length skirts in a lunge, armpits, spear turn)"
 role: character
-status: todo
-owner_session: ""
+status: doing
+owner_session: "characters (cloud session_01JqzzxgJU9Dmu7fRhmCG9aQ, branch claude/characters)"
 depends_on: [M1-CHR-14]
 milestone: M1
 request-from: "character"

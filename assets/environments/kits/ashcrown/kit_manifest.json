@@ -1,0 +1,106 @@
+{
+  "generator": "assets_src/environments/kits/ashcrown/build.py",
+  "kit": "ashcrown",
+  "pieces": {
+    "anvil_altar": {
+      "budget": [
+        5000,
+        500
+      ],
+      "bytes": 55940,
+      "lods": {
+        "anvil_altar": 994,
+        "anvil_altar-lod1": 30
+      }
+    },
+    "anvil_hall": {
+      "budget": [
+        20000,
+        1400
+      ],
+      "bytes": 286024,
+      "lods": {
+        "anvil_hall": 4950,
+        "anvil_hall-lod1": 12
+      }
+    },
+    "ashcrown_tiers": {
+      "budget": [
+        30000,
+        2400
+      ],
+      "bytes": 2317336,
+      "lods": {
+        "ashcrown_tiers": 25278,
+        "ashcrown_tiers-lod1": 154
+      }
+    },
+    "crest_ground": {
+      "budget": [
+        40000,
+        6000
+      ],
+      "bytes": 1411320,
+      "lods": {
+        "crest_ground": 40000,
+        "crest_ground-lod1": 5760
+      }
+    },
+    "crown_pavilion": {
+      "budget": [
+        9000,
+        900
+      ],
+      "bytes": 188572,
+      "lods": {
+        "crown_pavilion": 2876,
+        "crown_pavilion-lod1": 452
+      }
+    },
+    "flying_stair": {
+      "budget": [
+        14000,
+        1200
+      ],
+      "bytes": 649620,
+      "lods": {
+        "flying_stair": 10836,
+        "flying_stair-lod1": 174
+      }
+    },
+    "forecourt": {
+      "budget": [
+        14000,
+        1000
+      ],
+      "bytes": 373860,
+      "lods": {
+        "forecourt": 5950,
+        "forecourt-lod1": 8
+      }
+    },
+    "pilgrim_causeway": {
+      "budget": [
+        11000,
+        700
+      ],
+      "bytes": 549728,
+      "lods": {
+        "pilgrim_causeway": 10010,
+        "pilgrim_causeway-lod1": 104
+      }
+    },
+    "plume_vent": {
+      "budget": [
+        3000,
+        400
+      ],
+      "bytes": 124356,
+      "lods": {
+        "plume_vent": 2950,
+        "plume_vent-lod1": 352
+      }
+    }
+  },
+  "schema": "hymn-kit/1"
+}

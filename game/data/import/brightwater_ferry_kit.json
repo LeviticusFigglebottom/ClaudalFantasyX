@@ -1,0 +1,24 @@
+{
+  "_about": "M3-ENV-08 post-import rules for the Brightwater ferry kit (game/core/import/brightwater_ferry_kit_post_import.gd, AssetImportRules). The same LOD table as the Haluna kit and HalunaDresser's defaults (which still override them at runtime with the layout's values); every glTF slot maps to the kit's own materials folder. The kit exports no -col proxies yet; walk collision is m2-slice's (swap-in note in docs/kb/tasks/M3/M3-ENV-08-brightwater-ferry.md).",
+  "kind": "brightwater_ferry_kit",
+  "script": "res://game/core/import/brightwater_ferry_kit_post_import.gd",
+  "assets": ["res://assets/environments/kits/brightwater_ferry/"],
+  "adoption_pending": {},
+  "generate_lods": false,
+  "materials": {
+    "slot_dir": "res://assets/environments/kits/brightwater_ferry/materials/",
+    "by_node": {},
+    "warn_unmapped": true
+  },
+  "lods": {
+    "suffix": "-lod",
+    "end_m": [70.0, 2000.0],
+    "margin_m": 2.0
+  },
+  "collision": {
+    "proxy_suffix": "-col",
+    "shape": "trimesh",
+    "layer": 1,
+    "mask": 1
+  }
+}

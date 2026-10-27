@@ -401,3 +401,15 @@ func _check_cue(stage: CutsceneStage, step: DialogueStep, missing: Array[String]
 
 func _host() -> Node:
 	return (Engine.get_main_loop() as SceneTree).current_scene
+
+
+func test_asha_faces_her_roots_forward() -> void:
+	# hero-integration's catch: her glTF model faces +Z, but the cutscene sequencer turns an actor's
+	# root -Z toward a target, so a look_at or @mark left her back to it. The Model child turns 180
+	# degrees and the root compensates (her pose and placement are unchanged in the world).
+	_load_into_tree()
+	var asha := zone.get_node("CutsceneStage/Actors/asha") as Node3D
+	var model := asha.get_node("Model") as Node3D
+	var face := model.global_basis.z.normalized()  # glTF forward
+	assert_true(face.dot(-asha.global_basis.z.normalized()) > 0.99, "her face is her root's forward")
+	_done()

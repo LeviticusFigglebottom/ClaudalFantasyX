@@ -1,0 +1,24 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="PackedScene" path="res://game/levels/_tests/characters/sefir/sefir_stage.tscn" id="stage"]
+[ext_resource type="PackedScene" path="res://assets/characters/asha/asha.glb" id="asha"]
+[ext_resource type="PackedScene" path="res://assets/characters/rhen/rhen.glb" id="rhen"]
+[ext_resource type="PackedScene" path="res://assets/characters/toma/toma.glb" id="toma"]
+
+[node name="SefirLineup" instance=ExtResource("stage")]
+
+[node name="Others" type="Node3D" parent="."]
+
+[node name="Toma" parent="Others" instance=ExtResource("toma")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.35, 0, 0)
+
+[node name="Asha" parent="Others" instance=ExtResource("asha")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.25, 0, 0)
+
+[node name="Rhen" parent="Others" instance=ExtResource("rhen")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.45, 0, 0)
+
+[node name="Lineup" type="Camera3D" parent="Cameras"]
+transform = Transform3D(1, 0, 0, 0, 0.996195, 0.0871557, 0, -0.0871557, 0.996195, 0.4, 1.15, 6.9)
+fov = 34.0
+near = 0.05

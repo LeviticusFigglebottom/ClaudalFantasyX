@@ -285,6 +285,53 @@ func test_real_time_blend_runs_and_fade_takes_its_time() -> void:
 	_free()
 
 
+func test_a_walk_sets_off_and_settles_instead_of_starting_at_full_speed() -> void:
+	# M2-FP-29, the human's playtest: walks started and stopped instantly and turns snapped.
+	asha.global_position = SPOT + Vector3(-1.2, 0.0, 0.0)  # a walk short enough to end inside the scene
+	_start(FIXTURE)
+	_drive_until(func() -> bool: return seq.has_motion(&"move:asha"))
+	var yaw0 := asha.rotation.y
+	var steps: Array[float] = []
+	var last: Array[Vector3] = [asha.global_position]
+	_drive_until(
+		func() -> bool:
+			steps.append(asha.global_position.distance_to(last[0]))
+			last[0] = asha.global_position
+			return not seq.has_motion(&"move:asha")
+	)
+	assert_true(asha.global_position.distance_to(SPOT) < 0.01, "it arrives on its mark")
+	assert_true(absf(angle_difference(yaw0, asha.rotation.y)) > 0.0, "it turned")
+	var moving := steps.filter(func(d: float) -> bool: return d > 0.0)
+	assert_true(moving.size() > 4)
+	assert_eq(steps[0], 0.0, "a beat of anticipation before it moves")
+	var peak: float = moving.max()
+	assert_true(moving[0] < peak * 0.5, "it speeds up as it sets off")
+	assert_true(moving[-1] < peak * 0.5, "and slows as it settles")
+	_drive()
+	_free()
+
+
+func test_a_turn_is_never_a_snap() -> void:
+	_start(FIXTURE)
+	_drive_until(func() -> bool: return seq.has_motion(&"turn:asha"))
+	var yaws: Array[float] = [asha.rotation.y]
+	_drive_until(
+		func() -> bool:
+			yaws.append(asha.rotation.y)
+			return not seq.has_motion(&"turn:asha")
+	)
+	var biggest := 0.0
+	var total := 0.0
+	for i in range(1, yaws.size()):
+		var step := absf(angle_difference(yaws[i - 1], yaws[i]))
+		biggest = maxf(biggest, step)
+		total += step
+	assert_true(yaws.size() > 4, "it takes several frames")
+	assert_true(biggest < total * 0.5, "no single frame does most of the turn")
+	_drive()
+	_free()
+
+
 func test_director_leaving_mid_blend_ends_the_cutscene() -> void:
 	_start(FIXTURE)
 	_drive_until(func() -> bool: return director.is_blending())

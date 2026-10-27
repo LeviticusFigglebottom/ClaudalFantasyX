@@ -18,6 +18,8 @@ var live := true
 var _choreo: BattleChoreo
 var _engine: BattleEngine
 var _ids: Array[StringName] = []
+## Fighters whose victory clip has started (each on its own stagger, like the hops).
+var _clip_started: Dictionary = {}
 ## The outro waiting for the last action's choreography to finish.
 var _pending: StringName = &""
 
@@ -53,12 +55,10 @@ func _begin(kind: StringName) -> void:
 	playing = kind
 	elapsed = 0.0
 	_ids.clear()
+	_clip_started.clear()
 	for c in _engine.party_active:
 		if c.is_alive() and _choreo.stand_in(c.id) != null:
 			_ids.append(c.id)
-	if kind == VICTORY:
-		for cid in _ids:
-			BattleClips.play(_choreo.stand_in(cid), StringName(str(cfg(kind).get("clip", ""))), _choreo.speed)
 	_apply()
 
 
@@ -126,7 +126,11 @@ func _apply() -> void:
 		var u := clampf((t0 - float(c.get("stagger_sec", 0.0)) * i) / sec, 0.0, 1.0)
 		var fwd := _choreo.facing(cid)
 		if playing == VICTORY:
-			if BattleClips.has_clip(f, StringName(str(c.get("clip", "")))):
+			var clip := StringName(str(c.get("clip", "")))
+			if BattleClips.has_clip(f, clip):
+				if t0 >= float(c.get("stagger_sec", 0.0)) * i and not _clip_started.has(cid):
+					_clip_started[cid] = true
+					BattleClips.play(f, clip, _choreo.speed)
 				continue
 			var hop := absf(sin(PI * u * float(c.get("hops", 1)))) * float(c.get("hop_m", 0.0))
 			_choreo.pose(cid, Vector3.UP * hop, fwd, 0.0)

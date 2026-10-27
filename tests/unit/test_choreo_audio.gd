@@ -1,17 +1,19 @@
 extends TestCase
 ## M3-AUD-13: the battle choreography's sound layers (game/audio/choreo_audio.gd, choreo_sfx.json, sfx_choreo.json).
-## The battle-presentation classes are not on this branch, so a stand-in is built at runtime: a Node with a GDScript
-## compiled from STANDIN (no class_name, which would collide with the real BattleChoreo on merge) that declares the
-## same signals and methods, and ChoreoAudio.matcher names it "BattleChoreo". Every row exists and imports; the
-## beats play footfalls, a whoosh cresting on the contact and the collapse; the contact plays the actor's weapon
-## accent (never on a miss), the Swell, toll and surge rows; the Vowbound's call, rise, sink and fall and the party's
-## walk-ins play as each move starts; the Flood braces once the action is done; reduced audio keeps one layer.
+## Each rule is driven in isolation through a stand-in built at runtime: a Node with a GDScript compiled from
+## STANDIN (no class_name) that declares BattleChoreo's signals and methods; ChoreoAudio.matcher names it
+## "BattleChoreo" (the real BattleChoreo is driven in tests/integration/test_battle_audio_live.gd, M3-AUD-800).
+## Every row exists and imports; the beats play footfalls, a whoosh cresting on the contact and the collapse; the
+## contact plays the actor's weapon accent (never on a miss), the Swell, toll and surge rows; the Vowbound's call,
+## rise, sink and fall and the party's walk-ins play as each move starts; the Flood braces once the action is done
+## (choreo.json's stagger); reduced audio keeps one layer.
 
 const ENCOUNTER := &"sandbox_reef"
 const STANDIN := """extends Node
 signal beat(kind: StringName, actor_id: StringName)
 signal contact(result: ActionResult)
 var speed := 1.0
+var data: Dictionary = {}
 var plan: Dictionary = {}
 var styles: Dictionary = {}
 var anim := true
@@ -317,8 +319,15 @@ func test_instant_pacing_keeps_the_contact_layer_only() -> void:
 
 
 func test_the_flood_braces_after_the_action_in_slot_order() -> void:
-	standin.set(&"plan", MELEE)
+	standin.set(&"data", BattleChoreo.load_data())
+	var bell := BattleCombatant.new()
+	bell.id = &"drownbell"
+	var stagger := float(BattleChoreo.load_data()["bosses"]["drownbell"]["flood"]["stagger_sec"])
+	assert_eq(float(audio.flood_for(bell)["stagger_sec"]), stagger, "the stagger is the choreography's own")
 	engine.phase_changed.emit(engine.enemies[0], &"flood")
+	assert_eq((standin.get(&"after") as Array).size(), 0, "a foe with no flood row braces no one")
+	standin.set(&"plan", MELEE)
+	engine.phase_changed.emit(bell, &"flood")
 	assert_eq(_ids(), [], "it waits for the action playing")
 	var after: Array = standin.get(&"after")
 	assert_eq(after.size(), 1)
@@ -326,7 +335,8 @@ func test_the_flood_braces_after_the_action_in_slot_order() -> void:
 	(after[0] as Callable).call()
 	_step(0.3)
 	assert_eq(_ids(), [&"flood_brace", &"flood_brace", &"flood_brace"], "each of the three")
-	assert_between(float(heard[2][1]) - float(heard[0][1]), 0.22, 0.26, "0.12 s apart")
+	var gap := float(heard[2][1]) - float(heard[0][1])
+	assert_between(gap, 2.0 * stagger - 0.02, 2.0 * stagger + 0.02, "choreo.json's stagger apart")
 	_teardown()
 
 

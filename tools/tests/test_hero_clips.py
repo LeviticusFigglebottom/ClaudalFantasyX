@@ -4,8 +4,10 @@ Run: python3 -m unittest discover -s tools/tests
 
 The committed AnimationLibrary resources are reproducible from the committed GLBs (byte for byte),
 carry the clips the first-playable scripts call, stay small, and pose the skeleton sensibly (the
-kneel drops the hips to kneeling height; Asha's staff hand keeps the staff upright).
+kneel drops the hips to kneeling height; Asha's staff hand keeps the staff upright; Ysolde's book at the hip
+and the order of her Glyph Trace).
 """
+import json
 import re
 import sys
 import unittest
@@ -19,6 +21,13 @@ import hero_clips  # noqa: E402
 REQUESTED = {"idle", "walk", "run", "talk", "kneel_over_rhen", "laugh", "rise_to_stand", "offer_hand",
              "walk_to_chamber", "emerge_doorway", "face_west"}  # docs/kb/tasks/M2/M2-FP-07-asha-clips-request.md
 MAX_BYTES = 2 * 1024 * 1024
+# Act I clips requested but not built yet (M3-CHR-1000): the dialogue may call them, nothing else.
+PENDING = {
+    hero: set(clips)
+    for hero, clips in json.loads(
+        (ROOT / "assets_src" / "characters" / "requested_clips.json").read_text(encoding="utf-8")
+    )["clips"].items()
+}
 
 
 
@@ -52,9 +61,18 @@ class TestHeroClips(unittest.TestCase):
         self.assertIn("take_hand", hero_clips.CLIPS["rhen"])  # the request lists Rhen's clip for the shared rig
 
     def test_scripts_call_only_existing_clips(self):
-        """Every `@anim asha <clip>` in the slice's dialogue has a clip (look_at is the sequencer's own turn)."""
+        """Every `@anim asha <clip>` in the dialogue has a clip (look_at is the sequencer's own turn).
+
+        The slice's dialogue (the prologue and Ch1-Ch3) must be fully built; past the slice a clip may still be on
+        the requested list (PENDING, M3-CHR-1000)."""
         called = slice_calls("asha")
         self.assertEqual(called - set(hero_clips.CLIPS["asha"]) - {"look_at"}, set())
+        called = set()
+        for dlg in (ROOT / "game" / "data" / "dialogue").rglob("*.dlg"):
+            if "test" in dlg.parts:
+                continue
+            called |= set(re.findall(r"@anim asha ([a-z_]+)", dlg.read_text(encoding="utf-8")))
+        self.assertEqual(called - set(hero_clips.CLIPS["asha"]) - {"look_at"} - PENDING.get("asha", set()), set())
 
     def test_kneel_drops_the_hips_and_the_staff_stays_upright(self):
         import numpy as np
@@ -104,6 +122,19 @@ def _fk(sk, pose: dict, persona: dict):
     return g, t
 
 
+class TestRequestedClips(unittest.TestCase):
+    """M3-CHR-1000: the requested-clip list names only clips the dialogue calls and nobody built yet."""
+
+    def test_every_pending_clip_is_called_and_not_built(self):
+        for hero, clips in PENDING.items():
+            called = set()
+            for dlg in (ROOT / "game" / "data" / "dialogue").rglob("*.dlg"):
+                if "test" not in dlg.parts:
+                    called |= set(re.findall(rf"@anim {hero} ([a-z_]+)", dlg.read_text(encoding="utf-8")))
+            self.assertEqual(clips - called, set(), f"{hero}: requested but no longer called")
+            self.assertEqual(clips & set(hero_clips.CLIPS.get(hero, [])), set(), f"{hero}: built, drop it from the list")
+
+
 class TestTomaClips(unittest.TestCase):
     """M2-CHR-04: Toma's persona (toma.md §1) and the clips his dialogue calls."""
 
@@ -116,7 +147,7 @@ class TestTomaClips(unittest.TestCase):
         called = slice_calls("toma")
         called.discard("look_at")  # the sequencer's own turn
         self.assertTrue(called, "the dialogue calls Toma's clips")
-        self.assertEqual(called - set(hero_clips.CLIPS["toma"]), set())
+        self.assertEqual(called - set(hero_clips.CLIPS["toma"]) - PENDING.get("toma", set()), set())
         self.assertTrue({"idle", "walk", "run", "talk"} <= set(hero_clips.CLIPS["toma"]))
         names = set(re.findall(r'resource_name = &"([a-z_]+)"', hero_clips.out_path("toma").read_text(encoding="utf-8")))
         self.assertEqual(names, set(hero_clips.CLIPS["toma"]))
@@ -158,6 +189,173 @@ class TestTomaClips(unittest.TestCase):
         _g, t = _fk(self.sk, hero_clips.pose_at("sit_steps", length, length, self.sk, self.persona), self.persona)
         seat = float(t["DEF-thigh.L"][1])
         self.assertAlmostEqual(seat, self.sk.leg_shin + self.sk.ankle_h, delta=0.06)
+
+
+class TestSefirClips(unittest.TestCase):
+    """M3-CHR-02: Sefir's persona (act1_npcs.md §1.8: no sway, no breath, hands joined) and his Act I clips."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.sk = hero_clips.Skeleton(ROOT / "assets" / "characters" / "sefir" / "sefir.glb")
+        cls.persona = hero_clips.PERSONA["sefir"]
+
+    def test_persona_and_clip_list(self):
+        self.assertEqual(self.persona, {"sway": 0.0, "lean": 0.0, "staff": False, "arms_down": 30.0, "breath": 0.0,
+                                        "hands_joined": True})
+        self.assertEqual(hero_clips.CLIPS["sefir"], ["idle", "talk", "raise_palm", "incline_head", "glance", "pivot",
+                                                     "walk_glide"])
+        names = set(re.findall(r'resource_name = &"([a-z_]+)"', hero_clips.out_path("sefir").read_text(encoding="utf-8")))
+        self.assertEqual(names, set(hero_clips.CLIPS["sefir"]))
+        called = set()
+        for dlg in (ROOT / "game" / "data" / "dialogue").rglob("*.dlg"):
+            if "test" not in dlg.parts:
+                called |= set(re.findall(r"@anim sefir ([a-z_]+)", dlg.read_text(encoding="utf-8")))
+        self.assertEqual(called - set(hero_clips.CLIPS["sefir"]) - {"look_at"} - PENDING.get("sefir", set()), set())
+
+    def test_idle_is_still(self):
+        """His idle is a held pose (that is intended; the review must not fix it): zero rotation delta, and no hips
+        motion, across every key of the loop."""
+        import numpy as np
+
+        length = hero_clips.LENGTHS["idle"]
+        n = int(round(length * hero_clips.FPS))
+        first = None
+        for i in range(n + 1):
+            pose = hero_clips.staff_hold(hero_clips.pose_at("idle", i / hero_clips.FPS, length, self.sk, self.persona),
+                                         self.persona)
+            local = self.sk.local_pose({b: hero_clips.qeuler(v) for b, v in pose.items() if b != "hips"})
+            q = np.array([local[b] * np.sign(local[b][3] or 1.0) for b in hero_clips.BONES])
+            hips = np.asarray(pose.get("hips", (0.0, 0.0, 0.0)), dtype=float)
+            if first is None:
+                first = (q, hips)
+            self.assertLess(float(np.abs(q - first[0]).max()), 1e-12, f"key {i}")
+            self.assertLess(float(np.abs(hips - first[1]).max()), 1e-12, f"key {i}")
+
+    def test_hands_joined_before_the_navel_right_over_left(self):
+        _g, t = _fk(self.sk, hero_clips.pose_at("idle", 0.0, 6.0, self.sk, self.persona), self.persona)
+        left, right = t["DEF-hand.L"], t["DEF-hand.R"]
+        self.assertLess(abs(float(left[0] + right[0])), 0.02)  # either side of the midline
+        self.assertLess(abs(float(left[0] - right[0])), 0.18)  # wrists 14 cm apart: the hands overlap
+        navel = self.sk.g_t["DEF-spine"][1] + 0.12  # a hand's breadth above the hips joint
+        self.assertAlmostEqual(float(left[1]), navel, delta=0.06)
+        self.assertGreater(float(left[2]), 0.12)  # in front of the robe
+        self.assertGreater(float(right[2]), float(left[2]))  # the right hand lies over (in front of) the left
+
+    def test_clips_keep_the_body_still_but_for_their_gesture(self):
+        """raise_palm moves only the left arm and the head; glance and incline_head only the neck and head; the
+        pivot turns the whole body 30 degrees and keeps the hands joined."""
+        import numpy as np
+
+        base = hero_clips.sefir_still(self.sk, self.persona)
+        for clip, allowed in (("raise_palm", {"DEF-upper_arm.L", "DEF-forearm.L", "DEF-hand.L", "DEF-spine.006"}),
+                              ("glance", {"DEF-spine.005", "DEF-spine.006"}),
+                              ("incline_head", {"DEF-spine.005", "DEF-spine.006"}),
+                              ("talk", {"DEF-forearm.L", "DEF-hand.L", "DEF-spine.006"})):
+            length = hero_clips.LENGTHS[clip]
+            pose = hero_clips.pose_at(clip, 0.5 * length, length, self.sk, self.persona)
+            moved = {b for b in pose if b != "hips" and not np.allclose(pose[b], base.get(b, (0.0, 0.0, 0.0)))}
+            self.assertTrue(moved, clip)
+            self.assertLessEqual(moved, allowed, clip)
+        length = hero_clips.LENGTHS["pivot"]
+        _g, t0 = _fk(self.sk, hero_clips.pose_at("pivot", 0.0, length, self.sk, self.persona), self.persona)
+        _g, t1 = _fk(self.sk, hero_clips.pose_at("pivot", length, length, self.sk, self.persona), self.persona)
+        gap0 = np.linalg.norm(t0["DEF-hand.L"] - t0["DEF-hand.R"])
+        gap1 = np.linalg.norm(t1["DEF-hand.L"] - t1["DEF-hand.R"])
+        self.assertAlmostEqual(float(gap0), float(gap1), delta=1e-6)
+        a0 = np.arctan2(*(t0["DEF-upper_arm.L"] - t0["DEF-upper_arm.R"])[[2, 0]])
+        a1 = np.arctan2(*(t1["DEF-upper_arm.L"] - t1["DEF-upper_arm.R"])[[2, 0]])
+        self.assertAlmostEqual(abs(float(np.degrees(a1 - a0))), 30.0, delta=0.5)
+
+
+class TestYsoldeClips(unittest.TestCase):
+    """M3-CHR-01: Ysolde's persona (ysolde.md §10), the book at the right hip, and the Glyph Trace in cast_glyph."""
+
+    @classmethod
+    def setUpClass(cls):
+        sys.path.insert(0, str(ROOT / "tools" / "dev"))
+        import rig_probe
+
+        cls.rig = rig_probe.Rig("ysolde")
+        cls.sk = cls.rig.skeleton
+        cls.persona = hero_clips.PERSONA["ysolde"]
+
+    def at(self, clip: str, t: float) -> dict:
+        """Global positions of every joint at t seconds into a clip (glTF axes: +X her left, +Y up, +Z forward)."""
+        import numpy as np
+
+        length = hero_clips.LENGTHS[clip]
+        pose = hero_clips.staff_hold(hero_clips.pose_at(clip, t, length, self.sk, self.persona), self.persona)
+        local = self.sk.local_pose({b: hero_clips.qeuler(v) for b, v in pose.items() if b != "hips"})
+        hips = self.sk.rest_t[hero_clips.HIPS] + np.asarray(pose.get("hips", (0.0, 0.0, 0.0)), dtype=float)
+        g = self.rig.globals(local, hips)
+        return {n: g[i][:3, 3] for n, i in self.rig.index.items()}
+
+    def test_persona_and_clip_list(self):
+        self.assertEqual(self.persona, {"sway": 0.3, "lean": -1.0, "staff": False, "arms_down": 34.0, "book": True,
+                                        "breath": 1.0})
+        self.assertEqual(hero_clips.CLIPS["ysolde"], ["idle", "walk", "run", "talk", "board_step", "vigil_book_shut",
+                                                      "reink_shell", "stand_apart", "book_fan", "cast_glyph"])
+        text = hero_clips.out_path("ysolde").read_text(encoding="utf-8")
+        self.assertEqual(set(re.findall(r'resource_name = &"([a-z_]+)"', text)), set(hero_clips.CLIPS["ysolde"]))
+        for hero in ("asha", "rhen", "toma"):  # the new keys are off by default
+            self.assertNotIn("book", hero_clips.PERSONA[hero])
+            self.assertNotIn("breath", hero_clips.PERSONA[hero])
+
+    def test_book_rests_at_the_right_hip(self):
+        """In the standing clips the book's prop bone is at her right side, at hip height, a hand's width in front
+        of the hip joint at most (the forearm flexes 65 degrees, the wrist drops)."""
+        for clip in ("idle", "walk", "talk"):
+            length = hero_clips.LENGTHS[clip]
+            for t in (0.0, 0.5 * length):
+                p = self.at(clip, t)
+                book, hip = p["DEF-book"], p["DEF-thigh.R"]
+                self.assertLess(float(book[0]), -0.12, clip)  # her right
+                self.assertLess(abs(float(book[1] - hip[1])), 0.15, clip)  # at the hip's height
+                self.assertLess(float(book[2] - hip[2]), 0.32, clip)  # held to the hip, not out in front
+
+    def test_book_fan_shape_track(self):
+        text = hero_clips.out_path("ysolde").read_text(encoding="utf-8")
+        self.assertEqual(text.count('type = "blend_shape"'), 2)
+        self.assertIn('NodePath("ysolde_skeleton/Skeleton3D/Book:book_fan")', text)
+        self.assertEqual(hero_clips.book_fan_weight("book_fan", 0.0), 0.0)
+        self.assertEqual(hero_clips.book_fan_weight("book_fan", hero_clips.LENGTHS["book_fan"]), 1.0)
+        self.assertEqual(hero_clips.book_fan_weight("cast_glyph", 0.0), 1.0)
+        self.assertEqual(hero_clips.book_fan_weight("cast_glyph", hero_clips.LENGTHS["cast_glyph"]), 0.0)
+        self.assertIsNone(hero_clips.book_fan_weight("idle", 0.0))
+        for hero in ("asha", "rhen", "toma"):
+            self.assertNotIn("blend_shape", hero_clips.out_path(hero).read_text(encoding="utf-8"))
+
+    def test_cast_glyph_traces_the_five_strokes_in_order(self):
+        """formulas.md § Swell: down, right, up, right, down, each about 12 cm at the index guard's tip, in front of
+        the open book; the book folds only after the last stroke."""
+        import numpy as np
+
+        names = {(0, -1): "down", (0, 1): "up", (-1, 0): "right", (1, 0): "left"}  # +X is her left
+        dirs = []
+        n = len(hero_clips.TRACE_PATH) - 1
+        for k in range(n):
+            t0 = hero_clips.TRACE_START + k * hero_clips.TRACE_STROKE
+            a = self.at("cast_glyph", t0)["DEF-f_index.03.L"]
+            b = self.at("cast_glyph", t0 + hero_clips.TRACE_STROKE)["DEF-f_index.03.L"]
+            d = b - a
+            axis = 0 if abs(d[0]) > abs(d[1]) else 1
+            key = (int(np.sign(d[0])), 0) if axis == 0 else (0, int(np.sign(d[1])))
+            dirs.append(names[key])
+            self.assertGreater(float(np.hypot(d[0], d[1])), 0.08, f"stroke {k + 1}")
+            self.assertLess(float(np.hypot(d[0], d[1])), 0.16, f"stroke {k + 1}")
+            self.assertEqual(hero_clips.book_fan_weight("cast_glyph", t0 + hero_clips.TRACE_STROKE), 1.0)
+        self.assertEqual(dirs, ["down", "right", "up", "right", "down"])
+        sys.path.insert(0, str(ROOT / "assets_src" / "characters" / "ysolde"))
+        import ysolde_motifs
+
+        self.assertEqual(ysolde_motifs.stroke_directions(ysolde_motifs.glyph("trace")), dirs)
+
+    def test_board_step_ends_on_the_deck(self):
+        length = hero_clips.LENGTHS["board_step"]
+        p0, p1 = self.at("board_step", 0.0), self.at("board_step", length)
+        rise = float(p1["DEF-foot.L"][1] - p0["DEF-foot.L"][1])
+        self.assertAlmostEqual(rise, hero_clips.STEP_RISE, delta=0.01)
+        self.assertAlmostEqual(float(p1["DEF-foot.R"][1] - p0["DEF-foot.R"][1]), rise, delta=0.01)
 
 
 if __name__ == "__main__":

@@ -38,16 +38,16 @@ criteria below are already separate.
       `liss_clip_haul_rope`. Baselines are viewed and approved.
 
 ### Tavi Orse and Mother Kell (villager path, act1_npcs.md §3-§4)
-- [ ] `params/tavi.json` and `params/kell.json` from the drafts in §3.3 and §4.3, tuned against the face shots. Jobs
+- [x] `params/tavi.json` and `params/kell.json` from the drafts in §3.3 and §4.3, tuned against the face shots. Jobs
       `villager_tavi` and `villager_kell` with `"threads": 4`, byte-identical. LOD0 inside `test_villagers.py`'s 20–36k
       range, each GLB under 3 MB, and an `<npc>_actor.tscn` for each.
-- [ ] `villager_hair` accepts a `female` hairline on the `short` kind (for Kell), if it doesn't already. If that module
+- [x] `villager_hair` accepts a `female` hairline on the `short` kind (for Kell), if it doesn't already. If that module
       changes, every `villager_*` job is re-verified.
-- [ ] Face poses `game/levels/_tests/characters/villagers/{tavi,kell}_face_poses.json`: all 15 tags, with the overrides
+- [x] Face poses `game/levels/_tests/characters/villagers/{tavi,kell}_face_poses.json`: all 15 tags, with the overrides
       in §3.4 and §4.5.
-- [ ] The wick, the wick bundle and the trimming shears come from one source (`assets_src/characters/props/wick.py`, or
+- [x] The wick, the wick bundle and the trimming shears come from one source (`assets_src/characters/props/wick.py`, or
       wherever the build settles), with PROVENANCE rows. The same wick serves Rhen's tin and the E7 post-credits lamp.
-- [ ] Shots `villager_tavi_front`, `villager_tavi_face`, `villager_kell_front` and `villager_kell_face`, plus a lineup
+- [x] Shots `villager_tavi_front`, `villager_tavi_face`, `villager_kell_front` and `villager_kell_face`, plus a lineup
       with the Haluna villagers. Baselines are viewed and approved.
 
 ### All
@@ -60,5 +60,33 @@ criteria below are already separate.
   his son (sweep-H B1).
 - Echo watch for Liss (act1_npcs.md §2.2): no goggles, no yellow, no swirl patterns, and trousers rather than a skirt.
 - Tavi's and Kell's extra clips belong to M3-CHR-04, because they need per-NPC clip lists in `villager_clips.py`.
+- **2026-10-24, villager half (character-13, worktree subagent; handoff 2026-10-24-character-13.md).** Tavi and Kell
+  are done; Liss's criteria and the "All" row's `liss_review.md` remain, so the task stays `doing`.
+  - **Pipeline (shared villager modules, every change opt-in):** `_build.host_snaps` applies M1-CHR-14's MIDLINE_SNAP,
+    quantize_uvs, snap_shape_noise and PRE_ROUND. `_build.garment_fit` puts the top on the torso only, makes the skirt
+    and apron follow the legs (build_asha.skirt_weights), puts the sandals on the feet and keeps the trousers off the
+    arms. Also new: top `armhole_drop_m` (Tavi 0.115) and `cover_margin_m`, skirt `keep_above_knee_m` (Kell 1.0: whole
+    legs under the calf skirt), `_skin.fingertip_oil` (Kell 0.25) and `villager_clips.EXTRA_CLIPS`. The seven M2
+    villagers carry none of these, so their outputs stay byte-identical (verify below).
+  - The M3-CHR-04 clips came along, because the per-NPC list was needed anyway. Tavi has `hand_on_shoulder`,
+    `hear_news` and `name_rite`; Kell has `press_wick`, `trim_wick` (a loop) and `haggle_laugh`. Hand heights and palm
+    directions were checked numerically against the rig: Kell's left palm faces up at 1.02 m, the right palm faces
+    down over it, and the slap lands at 0.99 m. Tavi's hand rests at 1.40 m, and his float hands are 15 cm apart at
+    1.29 m.
+  - `villager_hair` already took `hairline: "female"` on `short` (the table is looked up by name), so it was not
+    changed.
+  - Numbers: Tavi LOD0 30,198 (LOD1 14,258), GLB 1.85 MB. Kell LOD0 33,596 (LOD1 15,958), GLB 2.03 MB. Props: wick 580
+    triangles, bundle 2,456, shears 772.
+  - Rig probe (`rig_probe.py --hero tavi --hero kell`, now villager-aware). Tavi: Costume 29.9 mm (6 vertices, talk),
+    Body 66.4 mm (1 vertex, walk), 2 exposed vertices at 5 mm. Kell: Costume 31.5 mm (6, haggle_laugh), Body 4.8 mm (2),
+    6 exposed vertices at 4.6 mm under the sleeve (walk). Before `keep_above_knee_m`, Kell's thigh edge was exposed by
+    110 mm in the walk; now 0. Seams and weights are clean. What remains is the hanging upper arm in the torso
+    garment's side, the linear-skinning limit the heroes also carry. It was viewed in clip frames and pinned as
+    ratchets in rig_checks.json with reasons. Changing `arms_down` (41 to 37, 38 to 34) did not move it, so it was
+    reverted to the sheet's values.
+  - Known limits: the mourning band reads a little like a soft visor at the face camera (the same band as the
+    fisher's). Kell's short grey crop is still card-flaky up close (villagers_review.md §4). Kell's face reads broad and
+    a little masculine (the donor's adult face, age in the textures). No props sit in the GLBs; the wick, bundle and
+    shears are scene props for BoneAttachment3Ds.
 
 ## Review log
