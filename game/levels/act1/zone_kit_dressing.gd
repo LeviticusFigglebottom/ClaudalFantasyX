@@ -15,8 +15,8 @@ extends HalunaDresser
 ##                    (Corrow's trader is the ferry kit's hull); each kit keeps its own material cache.
 ##   greybox      {"hide_all": bool, "keep": [ids]}: hides the greybox meshes (collision stays), except
 ##                  the kept ones (story pieces no kit has yet).
-##   fire_lights  [{"at": [x, y, z], "energy", "range", "block"?}] shadowless omnis in
-##                  "fire_light_color"; a "block" light follows its block, like a piece.
+##   fire_lights  [{"at": [x, y, z], "energy", "range", "block"?, "shadow"?, "attenuation"?}] omnis in
+##                  "fire_light_color" (shadowless unless "shadow"); a "block" light follows its block.
 ##   environment  a res:// Environment: the zone's WorldEnvironment takes a copy (sky, grade, fog).
 ##   time_of_day_h  the hymn_time_of_day the sky reads.
 ## It writes hymn_sun_direction from the zone's sun every frame, so the sky's sun follows the story's
@@ -199,7 +199,8 @@ func _place_fire_lights() -> void:
 		light.light_color = color
 		light.light_energy = float(row.get("energy", 1.0))
 		light.omni_range = float(row.get("range", 5.0))
-		light.shadow_enabled = false
+		light.shadow_enabled = bool(row.get("shadow", false))
+		light.omni_attenuation = float(row.get("attenuation", light.omni_attenuation))
 		light.light_volumetric_fog_energy = 0.0  # the fog-lamp rule (test_fog_lamps)
 		light.position = Vector3(float(at[0]), float(at[1]), float(at[2]))
 		root.add_child(light)
