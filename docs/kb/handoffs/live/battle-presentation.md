@@ -52,15 +52,39 @@ pass (lineup 4/0; it fails with the spread off), and the battle filter gives 638
 so a full battle-shot capture comes next.
 
 ### Render requests
+RENDER-REQUEST @ HEAD (see `git log -1 origin/claude/battle-presentation`): battle_boss_intro_reach,battle_arena_wall_head,drownbell_flood; why: (1) reach and wall_head: big12's baselines were rendered without this branch's arena rework (5a5b4fe isn't in the integration branch), and the 5a5b4fe render predates big12's stair HUD. Only a render of this branch's HEAD shows both. (2) drownbell_flood: settle_actors now ends the summoned polyps' entrance (1284fdec); the ed3a458 render caught them mid-rise.
 (21:2x: the PC is paused. The Lead's cloud container serves these requests, and results land on `lead/gate-render-battle-presentation-<sha7>`. Requests are kept small.)
 RENDER-REQUEST (DONE 21:4x: cloud render 60cbb21 viewed and approved) @ 60cbb212: battle_boss_intro_hullgnaw; why: FAST-TRACK M3-BPR-404. At c1d1e3e the party rule (party_max_h 0.3) widened Hullgnaw's camera past the raft's rope rail, which cut across the serpent. At 0.36 it keeps its approved 10.6 m frame (Rhen 0.35 tall at its side); the Drownbell, Matron and Wraith frames don't change.
-RENDER-REQUEST @ ed3a458e: battle_choreo_melee,battle_choreo_hit,battle_choreo_ko,drownbell_flood; why: M3-BPR-416 (trimmed 21:3x for the Lead's cloud renderer). The reef crab's Brine Spit now stays in place, a timeline push staggers its target, and summoned polyps walk onto their marks. These four shots can move. The reach and wall_head shots are no longer needed: big12 baselined them.
+RENDER-REQUEST (DONE 22:3x: cloud render ed3a458 viewed; superseded, see below) @ ed3a458e: battle_choreo_melee,battle_choreo_hit,battle_choreo_ko,drownbell_flood; why: M3-BPR-416 (trimmed 21:3x for the Lead's cloud renderer). The reef crab's Brine Spit now stays in place, a timeline push staggers its target, and summoned polyps walk onto their marks. These four shots can move. The reach and wall_head shots are no longer needed: big12 baselined them.
 RENDER-REQUEST @ 25dcea24: battle_boss_intro_hullgnaw,battle_boss_intro_inquisitor,battle_boss_intro_matron,battle_boss_intro_hermit,battle_boss_intro_wraith,battle_boss_intro_drownbell; why: FAST-TRACK M3-BPR-404, the Hullgnaw boss intro framed too close (the human's playtest). The camera fits the boss model and clears the title card. All six move.
 RENDER-REQUEST (CLOSED 21:3x: superseded by the big11/big12 approvals; render db0819b viewed, nothing copied) @ 25dcea24: battle_hud_preview,battle_swap_menu,battle_victory,battle_statuses,battle_swell_ring,battle_read_panel,battle_opening_banner,battle_swell_modes,battle_vowbound_call,battle_vowbound_out,battle_choreo_melee,battle_choreo_hit,battle_choreo_cast,battle_choreo_support,battle_choreo_read,battle_choreo_ko,battle_choreo_swap,battle_arena_tideline,battle_arena_causeway,battle_choreo_lamp_dive,battle_choreo_toll,battle_choreo_vowbound_rise,battle_choreo_summon,drownbell_flood,battle_swell_chant,battle_swell_brace,battle_swell_glyph,battle_statuses_colorblind,battle_pause,battle_arena_raft,battle_arena_underway,battle_arena_route,battle_arena_derelict,battle_arena_terrace,battle_arena_tideline_dawn,battle_arena_causeway_disc_sunset,battle_arena_causeway_route_afternoon,battle_arena_derelict_deck_night,battle_arena_ash_terrace_lanternfall,battle_arena_oruvel_raft_morning,battle_arena_underway_tower,battle_arena_shoals,battle_arena_camp,battle_hud_21x9,battle_hud_16x10; why: M3-BPR-401 battle feel (flash, recoil, shake by damage, KO slow-mo, the hit-stop hold fix) + M3-BPR-402 melee spacing and detour + M3-BPR-403 opening line-up spread sideways by footprint, now on the big9 real heroes. Expect the choreo_* and every sandbox_reef shot to move; arenas may move where 403 spreads a line-up.
 
 RENDER-REQUEST @ 680cd88e: battle_boss_intro_reach,battle_choreo_melee,battle_choreo_hit,battle_choreo_ko,battle_choreo_toll; why: M3-BPR-406 Ch8 set pieces. The new Reach boss intro (no baseline yet: test_screenshots' baselined check is red until it is approved), and the hit-stop hold fix plus the counter planning re-checked on the choreo shots.
 
 RENDER-REQUEST @ 60b62678: battle_arena_wall_head,battle_boss_intro_reach; why: M3-BPR-406 greybox wall_head_storm arena for Ch8 (new shot, no baseline yet); the Reach intro now stands on it. Supersedes the reach id in the 680cd88e line.
+
+### 2026-10-27 22:3x: cloud renders 5a5b4fe and ed3a458 viewed; Ilun on the real model
+- **ed3a458, 4 drifts (melee, hit, ko, drownbell_flood):** viewed side by side with HEAD's baselines.
+  - melee, hit and ko are within 0.008 to 0.015 of HEAD's big12 approvals, with the same frames, so none copied.
+  - **drownbell_flood: not approved.** M3-BPR-416's new entrance caught the polyp mid-rise (dim, small, no glow).
+    Fixed: `settle_actors` (which the capture calls) now ends every entrance in progress. Tested.
+- **5a5b4fe, 2 new (reach, wall_head): not approved.** big12 baselined both from integration code without this
+  branch's arena rework, and the 5a5b4fe render lacks big12's stair HUD. Neither matches HEAD, so I re-requested both
+  at HEAD (one 3-shot request with drownbell_flood).
+- **Found in the big12 wall_head baseline:** the stair meter is drawn over the help line's second line. That's
+  ui-menus' M3-UI-100, with combat as reviewer, so the finding is in its review log. I didn't change their files.
+- **Ilun on the real model** (creatures' M3-CRE-638, claude/creatures a41ab41c):
+  - I tested it in a local worktree that merged their branch into mine. It was never pushed and has been removed.
+  - All of Ilun's actions play on the model, each landing on its clip's own contact: Attack and Brine Lash (`attack`,
+    0.55 s), Tidal Ward (`cast`, 0.80 s), and Floodnet (`special`, 1.45 s, Swell style chant).
+  - Their test_ilun_summon_path passes (2/0), and so do my summon_cinematic (8/0) and vowbound (58/0) filters.
+  - New test `test_a_real_vowbound_lands_each_action_on_its_clip_contact`: it checks every Vowbound that has a real
+    actor. Here it checks Ilun's 4 actions; on this branch, which has no model yet, it skips.
+  - **For the Lead at merge:** creatures' `CreatureModels.vowbound_creature` and this branch's
+    `BattleStage.vowbound_model` now use the same rule (a row with `vowbound` true and a `scene`). Theirs answers
+    first; mine is a stopgap the second merger can delete.
+  - Ilun's four summon shots (battle_vowbound_call, battle_vowbound_out, battle_choreo_vowbound_rise,
+    battle_choreo_summon) need a render **after** creatures merges. On this branch Ilun is still the capsule.
 
 ### 2026-10-27 21:4x: Hullgnaw approved
 - I viewed the cloud render lead/gate-render-battle-presentation-60cbb21. The serpent is whole above the card with

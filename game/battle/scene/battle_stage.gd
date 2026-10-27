@@ -72,12 +72,14 @@ static func stand_in_spec(cid: StringName) -> Dictionary:
 	return spec.merged(model if not model.is_empty() else vowbound_model(base), true)
 
 
-## A Vowbound's own creature model (M3-BPR-417, Ilun while creatures builds it): a creatures.json row keyed by the
-## Vowbound's id with a `scene` replaces the capsule, with that row's stand_in keys, as enemies.json `model` does for
-## a foe. {} for anyone else or a row with no scene (the capsule stays).
+## A Vowbound's own creature model (M3-BPR-417): a creatures.json row keyed by the Vowbound's id with `vowbound` true
+## and a `scene` replaces the capsule, with that row's stand_in keys. The same rule as the creatures track's
+## CreatureModels.vowbound_creature (M3-CRE-638); once that reaches this branch it answers first and this stopgap can
+## go. {} for anyone else or a row with no scene (the capsule stays).
 static func vowbound_model(base: String) -> Dictionary:
 	var rows := CreatureActor.data().get("creatures", {}) as Dictionary
-	if not rows.has(base) or str((rows[base] as Dictionary).get("scene", "")) == "":
+	var own := rows.get(base, {}) as Dictionary
+	if not bool(own.get("vowbound", false)) or str(own.get("scene", "")) == "":
 		return {}
 	var is_vowbound := false
 	for v: Dictionary in BattleVowbound.load_config():

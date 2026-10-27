@@ -12,10 +12,14 @@ const SCENE := "res://game/creatures/spawn_polyp/spawn_polyp_battle.tscn"
 var ctl: BattleController
 var choreo: BattleChoreo
 var _flag_was: Variant
+var _row_was: Variant  # the creatures track's real row, when this branch has it (M3-CRE-638)
 
 
 func before_each() -> void:
-	(CreatureActor.data()["creatures"] as Dictionary)[String(ILUN)] = {"scene": SCENE, "stand_in": {"yaw_deg": 15.0}}
+	_row_was = (CreatureActor.data()["creatures"] as Dictionary).get(String(ILUN), null)
+	(CreatureActor.data()["creatures"] as Dictionary)[String(ILUN)] = {
+		"scene": SCENE, "vowbound": true, "stand_in": {"yaw_deg": 15.0}
+	}
 	ctl = (load(SANDBOX) as PackedScene).instantiate() as BattleController
 	ctl.auto_start = false
 	ctl.pacing_scale = 0.0
@@ -62,8 +66,59 @@ func test_the_first_call_rises_on_the_model() -> void:
 	_free()
 
 
+func test_a_row_without_the_vowbound_mark_is_not_taken() -> void:
+	(CreatureActor.data()["creatures"] as Dictionary)[String(ILUN)] = {"scene": SCENE}
+	assert_eq(BattleStage.vowbound_model(String(ILUN)), {}, "only a row marked vowbound (M3-CRE-638's rule)")
+	_free()
+
+
+## Every Vowbound that has its real creature actor (creatures' M3-CRE-638 row; Ilun first) plays each of its skills and
+## its Swell finisher on that actor, with the reaction on the clip's own contact marker. A Vowbound still a capsule is
+## skipped; the borrowed stand-in row above is put back to the real one (or none) first.
+func test_a_real_vowbound_lands_each_action_on_its_clip_contact() -> void:
+	_restore_row()
+	var checked := 0
+	for row: Dictionary in BattleVowbound.load_config():
+		var vid := StringName(str(row["id"]))
+		var real := str(BattleStage.stand_in_spec(vid).get("scene", "")) != ""
+		if not real:
+			continue
+		var skills: Array = (row.get("skills", []) as Array).duplicate()
+		skills.append(str((row.get("swell", {}) as Dictionary).get("technique", "")))
+		for sid: Variant in skills:
+			checked += _contact_lands(vid, StringName(str(sid)))
+	print("vowbound actors checked: %d actions" % checked)
+	_free()
+
+
+func _contact_lands(vid: StringName, sk: StringName) -> int:
+	var data := BattleChoreo.load_data()
+	var r := ActionResult.new()
+	r.actor_id = vid
+	r.skill_id = sk
+	var style := BattleChoreoPlan.style(data, BattleChoreoPlan.style_id_for(data, ctl.engine, r))
+	var f := FighterStandIn.new()
+	f.setup(vid, BattleStage.stand_in_spec(vid), BattleStage.config().get("ring", {}) as Dictionary)
+	ctl.add_child(f)
+	var kind := StringName(str(ctl.engine.db.skill(sk).get("kind", "")))
+	var clip := BattleClips.action_clip(f, sk, kind)
+	assert_ne(clip, &"", "%s %s: its own clip" % [vid, sk])
+	assert_true(BattleClips.contact_sec(f, clip) >= 0.0, "%s %s: a contact time on %s" % [vid, sk, clip])
+	assert_false(style.is_empty(), "%s %s: a style" % [vid, sk])
+	f.queue_free()
+	return 1
+
+
+func _restore_row() -> void:
+	var rows := CreatureActor.data()["creatures"] as Dictionary
+	if _row_was == null:
+		rows.erase(String(ILUN))
+	else:
+		rows[String(ILUN)] = _row_was
+
+
 func _free() -> void:
-	(CreatureActor.data()["creatures"] as Dictionary).erase(String(ILUN))
+	_restore_row()
 	Game.set_flag(FLAG, _flag_was)
 	ctl.persist_progress = false
 	ctl.get_parent().remove_child(ctl)
