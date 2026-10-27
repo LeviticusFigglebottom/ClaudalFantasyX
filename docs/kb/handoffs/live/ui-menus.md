@@ -8,6 +8,14 @@ The old **ui** and **menus** tracks merged into one (Lead, 2026-10-25). `claude/
 
 ## NEW ACCOUNT (from 2026-10-25)
 
+### STATUS FOR THE LEAD (2026-10-27 15:55; every sha below is on origin/claude/ui)
+1. **M3-UI-01 Reefball HUD patch: DONE** (00f91c6c..ef5dcd9f, applied 10-25; reefball 67/0 then, battle 687/0 now). Do not re-apply: it is in.
+2. **M2-MNU-305 menu motion: DONE** (30378725; screen_motion 7/0).
+3. **Creature rim light: DONE** (3ffe83bd; `light_scale` + `stage_environment` in portraits.json for the five black creatures). PC parity render requested: `portraits:hullgnaw,scuttler,squall_wing,tide_crawler,undertows_reach` in the RENDER-REQUEST @ 5317c0e6 below.
+4. **Duplicate M2-UI-26 id: DONE.** The bestiary portrait task is **M2-UI-1000** (your big9 id; this track's interim M2-UI-201 is retired). One file: `docs/kb/tasks/M2/M2-UI-1000-bestiary-creature-portrait.md`.
+5. **Bestiary portrait path: DONE** — ADR 0110 (baked PNGs through BestiaryPortraitSlot, silhouette kept); 3ffe83bd.
+6. **M3 UI from the board:** M2-UI-100 (narration as subtitles) DONE (d526ca72); M2-HER-1103 DONE (80d358bf); **M3-UI-100 (Ch8 set-piece HUD) in progress**, code and tests written (set_piece 6/6), neighbouring tests running, merge and render request next. Nothing else on `taskboard.py --role ui` is todo.
+
 ### Standing queue
 | # | Item | State |
 |---|---|---|
