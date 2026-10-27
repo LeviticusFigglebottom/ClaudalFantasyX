@@ -318,6 +318,7 @@ ACT2_DIR = "assets/audio/music/act2"
 # M3-AUD-852: Act III's cues (act3_plan.md), the same way: assets_src/music/act3/ -> assets/audio/music/act3/ (Git LFS,
 # ADR 0039), rendered only with --act3 and never committed until LFS is live.
 ACT3_FINALS: list[tuple] = [
+    ("assets_src/music/act3/the_kite.py", "assets/audio/music/act3", ["the_kite.ogg", "the_kite.loop.json"], "music_loop"),
 ]
 ACT3_DIR = "assets/audio/music/act3"
 
