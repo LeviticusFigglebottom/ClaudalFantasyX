@@ -40,6 +40,11 @@ DOLLY_UP_M = 1.5
 TRACK_UP_M = 1.0
 BEAT_BOX = [16.0, 6.0, 16.0]
 SPAWN_STEP_M = 6.0
+# Random fights after the harrier: a gap is drawn between these shares of the walk left to the islet, so the
+# final route (about 215 m after C07) meets two or three, as the greybox's 70 m did with its 25-45 m gaps,
+# never the six to eight its old fixed gaps would give over the longer walk (the playtest's back-to-back fights).
+ENCOUNTER_MIN_SHARE = 0.32
+ENCOUNTER_MAX_SHARE = 0.45
 
 
 def seg_len(a, b):
@@ -201,7 +206,9 @@ def build(route):
         "spawns": spawns,
         "triggers": triggers,
         "camera_volumes": cams,
-        "encounters": {"table": [{"encounter": "ch03_causeway_shore", "weight": 1}], "min_m": 25, "max_m": 45,
+        "encounters": {"table": [{"encounter": "ch03_causeway_shore", "weight": 1}],
+                       "min_m": round(ENCOUNTER_MIN_SHARE * (total - harrier_s), 1),
+                       "max_m": round(ENCOUNTER_MAX_SHARE * (total - harrier_s), 1),
                        "when": {"set": ["ch03_harrier_won"]}, "seed": 3},
     }
 
