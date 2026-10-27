@@ -182,6 +182,21 @@ Ch4–Ch9 onward. `m2-slice.md` beside this file is the history up to the 2026-1
   - **Also in it:** test_ch01_oruvel_kit now clears `ch01_gulls_cried` first. An earlier suite left the storm up,
     which broke the storm-swap test in the full ch01 run.
 
+- **MERGE-READY @ 9ba01356 (FAST-TRACK, M2-FP-116, the human's "primitive moments").** The First Verse (Cutscene
+  B) played on M2-FP-04's CSG set: an island cylinder, a dome, box steps and a bronze sphere for the bell. It now
+  plays in the real Shell Shrine:
+  - env-art's shrine dressing;
+  - the trial's pools, basins and spring from the kit;
+  - the shrine level's sea and set dressing;
+  - the Drownbell model offshore.
+
+  The scene is restaged on the real portal, steps and inner pool, with the lines unchanged.
+  - **Checks:** fp_ 28, first_verse 2, shell_shrine_level 9, haluna_weather 3, hero_field_snaps 2, dialogue 76,
+    cutscene 60, slice_shots 1, all 0 failed; dlgc, validate_data, taskboard, lint and format all clean.
+  - **Checks skipped:** coverage and Blender (nothing they cover).
+  - **Open:** Ilun's chamber behind the east door isn't built, so S08 holds him over the inner pool under the
+    vault.
+
 - **Correction (ec3ba50a):** my first B11 pass (4f616566) added a letterbox and three scripted camera setups.
   vertical_slice.md defines B11 (and B02) as **E** scenes: in-engine, no letterbox, and the player keeps the camera
   rail. Those cues are out. B11 keeps Rhen's walk out to Asha and the turns between them. Lead: take ec3ba50a with
@@ -204,3 +219,4 @@ RENDER-REQUEST @ 3fddb67b: slice_beach_h05_asha, slice_beach_h06_toma, slice_hal
 RENDER-REQUEST @ 8b25b3b4: slice_beach_h05_asha, slice_beach_h06_toma, slice_haluna_villagers_village, slice_causeway_head, slice_causeway_harrier_view, slice_verse_steps, slice_dock_night_yes, haluna_h10_dock_night; why: the rig fix (3fddb67b), B11 staged (M2-FP-115), and the causeway pacing (M2-FP-114). This supersedes the 87d04cea and a2eb22c4 requests.
 RENDER-REQUEST @ ba49617a: ch01_oruvel_dressed; why: M3-C01-100 dresses Ch1's Oruvel with the raft-town kit (a new shot from the ScaleHull spawn looking north over the town; no baseline yet). If the dressed town reads wrong (decks floating or sunk, grey blocks showing through), push the out PNG anyway so I can fix the placement.
 RENDER-REQUEST @ 05f6abc9: ch01_underway_crown, ch01_underway_gallery, ch01_oruvel_dressed; why: M3-C01-101 dresses Ch1's Underway with the drowned-tower kit, the sea and the UnderwaterRig (the first zone with the rig; new shots, no baselines). Also renders the Oruvel shot from the ba49617a request, so render this one instead. Please push the out PNGs even if a frame reads wrong (black, a grey box, the camera above the water), so I can fix the placement or the lighting.
+RENDER-REQUEST @ 9ba01356: slice_verse_hall, slice_verse_steps, ch01_underway_crown, ch01_underway_gallery, ch01_oruvel_dressed; why: M2-FP-116 moves the First Verse from the CSG set into the real shrine (slice_verse_hall is new: S07, Asha going in from the portal; slice_verse_steps is S06 on the outer steps), plus the 05f6abc9 Ch1 shots. This one supersedes 05f6abc9 and ba49617a. Please push every out PNG, even a bad frame.
