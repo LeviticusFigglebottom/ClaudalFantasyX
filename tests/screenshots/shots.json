@@ -3248,6 +3248,14 @@
       ]
     },
     {
+      "id": "creature_wakefin_body",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_wakefin_body.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
       "id": "creature_tannin_archer",
       "scene": "res://game/levels/_tests/creatures/shots/creature_tannin_archer.tscn",
       "resolution": [
