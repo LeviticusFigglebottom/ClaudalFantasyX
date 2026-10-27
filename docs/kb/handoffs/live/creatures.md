@@ -568,3 +568,10 @@ RENDER-REQUEST @ 3d853298: portraits:kahre,virel; tool: tools/portraits/render.s
     - Checks run: Godot villager 25/0, haluna_villagers (yours) 7/0, field_npc 10/0, life_audio 10/0, fp_thread 2/0; tools test_npc; validate_data, lint, format.
   - **M3-C05-05, M3-C06-06 and M3-C04-06, the creature parts:** all ten Ch4–Ch6 creatures are seated in battle. The Matron's skills now map to her clips (slag_pour → the ladle pour-swing) @ 842a2b6e. The humans, VFX and rulings stay with their tracks (noted in each task).
 RENDER-REQUEST @ 842a2b6e: npc_haluna_dock, npc_haluna_market, npc_haluna_chapel, npc_haluna_lane, npc_wake_feast, battle_boss_intro_matron; why: M3-CRE-100 (the review stage now reuses Haluna's own VillagerLayer, so no doubled villagers, and the three shop villagers appear), and the Matron's skill clips.
+- **test_creature_portraits (Lead, big13): the manifest is complete. The red is unbaked PNGs, not missing manifest rows.**
+  - On `lead/gate-big13` @ 1d83553f, all 43 creatures.json rows have a tools/portraits/portraits.json entry (I checked by script).
+  - On claude/creatures @ 6082090b, all 46 do.
+  - The failures are each portrait's "exists / is imported / has a PROVENANCE row" checks for PNGs nobody has baked yet: 16 on big13, 19 here (plus ilun, kahre and virel, which landed after big13).
+  - The fix is the bake. **ONE request for all of them, superseding my earlier portrait lines (95b6daf8, aa762dee, a41ab41c, 25f03f01, 1f69ca74):**
+RENDER-REQUEST @ 6082090b: portraits:avalanche_ram,conduit_crawler,cord_moth,fen_leech,flat_engine,gallery_ray,glass_skate,ilun,kahre,lamp_engine,mangrove_drowner,ridge_lynx,rim_crawler,rime_urchin,root_crab,scree_crawler,tannin_archer,virel,wakefin; tool: tools/portraits/render.sh --only avalanche_ram,conduit_crawler,cord_moth,fen_leech,flat_engine,gallery_ray,glass_skate,ilun,kahre,lamp_engine,mangrove_drowner,ridge_lynx,rim_crawler,rime_urchin,root_crab,scree_crawler,tannin_archer,virel,wakefin
+  - Once the PNGs land (a lead/gate-render-creatures branch), I'll view each one, commit them with their PROVENANCE rows, and the test turns green.
