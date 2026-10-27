@@ -86,6 +86,27 @@ class ValidatorTest(unittest.TestCase):
         self.assertEqual(vc.creature_errors([], self.enemies, self.skills, lambda p: True),
                          [f"{vc.CREATURES_FILE}: must be an object"])
 
+    def test_a_vowbound_row_names_a_vowbound_and_no_enemy_model(self) -> None:
+        """M3-CRE-638: `vowbound` true makes a row a Vowbound's actor (CreatureModels finds it by id)."""
+        vb = _load(vc.VOWBOUND_FILE)
+
+        def errs(cr, en=None) -> list[str]:
+            return vc.creature_errors(cr, en or self.enemies, self.skills, lambda p: True, vb)
+
+        self.assertTrue(self.creatures["creatures"]["ilun"]["vowbound"], "Ilun is a Vowbound's actor")
+        self.assertEqual(errs(self.creatures), [])
+        cr = copy.deepcopy(self.creatures)
+        cr["creatures"]["ilun"]["vowbound"] = "yes"
+        self.assertTrue(any("ilun.vowbound: must be true or false" in x for x in errs(cr)))
+        cr["creatures"]["nobody"] = dict(cr["creatures"].pop("ilun"), vowbound=True)
+        self.assertTrue(any("no game/data/battle/vowbound.json row 'nobody'" in x for x in errs(cr)))
+        en = copy.deepcopy(self.enemies)
+        en["enemies"][0]["model"] = self.creatures["creatures"]["ilun"]["scene"]
+        self.assertTrue(any("a Vowbound's scene may not be an enemy's model" in x for x in errs(self.creatures, en)))
+        cr = copy.deepcopy(self.creatures)
+        cr["creatures"]["ilun"]["vowbound"] = False
+        self.assertEqual(errs(cr), [], "false is a plain creature row")
+
     def test_two_rows_cannot_share_a_scene(self) -> None:
         cr = copy.deepcopy(self.creatures)
         first = next(iter(cr["creatures"].values()))

@@ -1,5 +1,5 @@
 {
-  "_doc": "Battle creature actors (M2-CRE-03, docs/kb/art/creatures/pipeline.md). Presentation only: no combat numbers. enemies.json `model` names a row's `scene`; BattleStage turns it into the FighterStandIn spec's `scene` (the M2-UI-07 hook) and merges `stand_in`. CreatureActor reads the rest: which clip an action plays (clip_by_skill, else clip_by_kind by the skill's kind), which clips loop, the KO fade, the boss's phases and breakable parts, the hit variants it rotates through and the idle fidget it plays now and then (M3-CRE-612).",
+  "_doc": "Battle creature actors (M2-CRE-03, docs/kb/art/creatures/pipeline.md). Presentation only: no combat numbers. enemies.json `model` names a row's `scene`; BattleStage turns it into the FighterStandIn spec's `scene` (the M2-UI-07 hook) and merges `stand_in`. CreatureActor reads the rest: which clip an action plays (clip_by_skill, else clip_by_kind by the skill's kind), which clips loop, the KO fade, the boss's phases and breakable parts, the hit variants it rotates through and the idle fidget it plays now and then (M3-CRE-612). A row with `vowbound` true (M3-CRE-638) is a Vowbound's actor: its id is a game/data/battle/vowbound.json row and no enemy names its scene; CreatureModels gives that Vowbound's stand-in its scene and stand_in.",
   "defaults": {
     "idle": "idle",
     "hit": "hit",
@@ -199,6 +199,13 @@
       "ko_fade_sec": 1.2,
       "stand_in": {"yaw_deg": 90.0},
       "portrait": {"yaw_deg": 30.0, "pitch_deg": 24.0}
+    },
+    "ilun": {
+      "scene": "res://game/creatures/ilun/ilun_battle.tscn",
+      "vowbound": true,
+      "clip_by_skill": {"brine_lash": "attack", "tidal_ward": "cast", "floodnet": "special"},
+      "contact": {"attack": 0.55, "cast": 0.8, "special": 1.45},
+      "stand_in": {"yaw_deg": -90.0}
     }
   }
 }

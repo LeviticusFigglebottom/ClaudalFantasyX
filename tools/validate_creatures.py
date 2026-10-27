@@ -5,6 +5,8 @@
   name real skills, `phases` name a phase some enemy has.
 - game/data/battle/enemies.json: an enemy's optional `model` is a res://game/creatures/...tscn that exists and that
   a creatures.json row names as its `scene`.
+- A row with `vowbound` true (M3-CRE-638) is a Vowbound's actor: its id is a game/data/battle/vowbound.json row (the
+  stand-in CreatureModels gives that Vowbound), and no enemy uses its scene as a `model`.
 """
 
 from __future__ import annotations
@@ -15,12 +17,13 @@ from typing import Callable
 CREATURES_FILE = "game/data/creatures/creatures.json"
 ENEMIES_FILE = "game/data/battle/enemies.json"
 SKILLS_FILE = "game/data/battle/skills.json"
+VOWBOUND_FILE = "game/data/battle/vowbound.json"
 SCENE_PREFIX = "res://game/creatures/"
 
 DEFAULT_KEYS = {"idle", "hit", "ko", "loop", "blend_sec", "clip_by_kind", "clip_by_skill", "ko_fade_sec",
                 "stand_in", "phases", "break_parts", "portrait", "contact", "hit_variants", "idle_variety",
                 "hit_snap"}
-ROW_KEYS = DEFAULT_KEYS | {"scene"}
+ROW_KEYS = DEFAULT_KEYS | {"scene", "vowbound"}
 STAND_IN_KEYS = {"yaw_deg", "hover"}
 PHASE_KEYS = {"clip", "idle", "offset_m", "tilt_deg", "sec", "show", "hide", "hide_after", "show_after", "clips"}
 PART_KEYS = {"whole", "broken"}
@@ -139,8 +142,10 @@ def _row_errors(w: str, row: dict, skills: set[str], phase_ids: set[str] | None)
     return errs
 
 
-def creature_errors(creatures: object, enemies: object, skills: object, scene_exists: Callable[[str], bool]) -> list[str]:
-    """Errors for creatures.json and enemies.json `model`. `scene_exists(res_path) -> bool`."""
+def creature_errors(creatures: object, enemies: object, skills: object, scene_exists: Callable[[str], bool],
+                    vowbound: object = None) -> list[str]:
+    """Errors for creatures.json and enemies.json `model`. `scene_exists(res_path) -> bool`. `vowbound` is
+    vowbound.json (None: a `vowbound` row's id is not checked against it)."""
     w0 = CREATURES_FILE
     if not isinstance(creatures, dict):
         return [f"{w0}: must be an object"]
@@ -181,6 +186,8 @@ def creature_errors(creatures: object, enemies: object, skills: object, scene_ex
                 errs.append(f"{w}.scene: {scene} does not exist")
         used = isinstance(scene, str) and any(e.get("model") == scene for e in enemy_rows)
         errs += _row_errors(w, row, skill_ids, phase_ids if used else None)
+        if "vowbound" in row:
+            errs += _vowbound_errors(w, cid, row["vowbound"], used, vowbound)
     for e in enemy_rows:
         if "model" not in e:
             continue
@@ -196,6 +203,21 @@ def creature_errors(creatures: object, enemies: object, skills: object, scene_ex
     return errs
 
 
+def _vowbound_errors(w: str, cid: str, flag: object, used: bool, vowbound: object) -> list[str]:
+    if not isinstance(flag, bool):
+        return [f"{w}.vowbound: must be true or false"]
+    if not flag:
+        return []
+    errs: list[str] = []
+    if used:
+        errs.append(f"{w}.vowbound: a Vowbound's scene may not be an enemy's model")
+    if vowbound is not None:
+        rows = vowbound.get("vowbound", []) if isinstance(vowbound, dict) else []
+        if cid not in {v.get("id") for v in rows if isinstance(v, dict)}:
+            errs.append(f"{w}.vowbound: no {VOWBOUND_FILE} row '{cid}'")
+    return errs
+
+
 def check_creatures(root: Path, files: dict[str, object], rep) -> None:
     def exists(res: str) -> bool:
         return (root / res[len("res://"):]).is_file()
@@ -203,5 +225,6 @@ def check_creatures(root: Path, files: dict[str, object], rep) -> None:
     if CREATURES_FILE not in files:
         rep.err(f"{CREATURES_FILE}: missing")
         return
-    for e in creature_errors(files[CREATURES_FILE], files.get(ENEMIES_FILE), files.get(SKILLS_FILE), exists):
+    for e in creature_errors(files[CREATURES_FILE], files.get(ENEMIES_FILE), files.get(SKILLS_FILE), exists,
+                             files.get(VOWBOUND_FILE)):
         rep.err(e)
