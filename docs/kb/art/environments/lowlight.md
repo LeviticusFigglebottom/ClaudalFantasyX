@@ -116,4 +116,5 @@ The hall is built to the battle contract (battle_arenas.md):
   - `vey_arcade_bay`, two storeys of pointed arches with the lamp gallery's corbels;
   - `vey_gallery_bridge`.
 
-  Still to build: `lowlight_sanctum` and `strangler_fig`.
+  Then `lowlight_sanctum` (the apse round the well's mouth) and `strangler_fig` (root strands fused round a 1.2 m
+  pier; the banyan's bark and leaf). The zone kit is complete.

@@ -651,6 +651,17 @@
         "lowlight_nave_bay_broken-lod1": 406
       }
     },
+    "lowlight_sanctum": {
+      "budget": [
+        18000,
+        1200
+      ],
+      "bytes": 236096,
+      "lods": {
+        "lowlight_sanctum": 4024,
+        "lowlight_sanctum-lod1": 288
+      }
+    },
     "mangrove_dead": {
       "budget": [
         12000,
@@ -1203,6 +1214,17 @@
       "lods": {
         "storehouse_stilt": 4442,
         "storehouse_stilt-lod1": 364
+      }
+    },
+    "strangler_fig": {
+      "budget": [
+        8000,
+        600
+      ],
+      "bytes": 337984,
+      "lods": {
+        "strangler_fig": 6388,
+        "strangler_fig-lod1": 552
       }
     },
     "tide_debris": {

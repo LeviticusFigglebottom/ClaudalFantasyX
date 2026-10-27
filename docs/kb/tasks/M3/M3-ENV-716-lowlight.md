@@ -14,7 +14,7 @@ The Lead's queue item 4: the Act II places that the creatures track's Ch10–12 
 ## Acceptance criteria
 - [x] The design sheet: `docs/kb/art/environments/lowlight.md`.
 - [x] The kit's arena pieces and the arena `lowlight_engine_hall` for the Lamp Engine (creatures' lamp_engine), to the battle contract (battle_arenas.md).
-- [ ] The zone kit's remaining pieces (the sheet's §1). Built: `conduit_housing` (the housing-mark), `lowlight_nave_bay` (+ `_broken`), `well_shaft`, `vey_arcade_bay`, `vey_gallery_bridge`. To build: `lowlight_sanctum`, `strangler_fig`.
+- [x] The zone kit's remaining pieces (the sheet's §1): `conduit_housing` (the housing-mark), `lowlight_nave_bay` (+ `_broken`), `well_shaft`, `vey_arcade_bay`, `vey_gallery_bridge`, `lowlight_sanctum`, `strangler_fig` (2026-10-27).
 - [ ] PC renders viewed and approved.
 
 ## Notes

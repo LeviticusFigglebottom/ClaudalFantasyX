@@ -30,6 +30,13 @@ Built in the Haluna kit (its import kind and materials directory, as iskarra.py 
                             a lamp gallery's corbels at +5.6; origin at the bay's centre on the lagoon's datum
   vey_gallery_bridge        a lamp-gallery walk spanning 6 m between two arcades at +5.6: an iron frame, ceramic
                             treads, a rail with a conduit along it; origin at its centre, deck at y 0
+  lowlight_sanctum          the sanctum (r 7): a semicircular apse on -Z with a half-dome, three niche tiers and the
+                            cornice conduit; the dry floor at y 0 with the well-shaft's mouth (r 3.65) open in its
+                            middle; three steps down to the nave (+Z) to its knee-deep floor; origin at the mouth
+  strangler_fig             a strangler fig on a 1.2 m square ceramic pier: root strands spiralling down and fusing
+                            round the pier from its top (9 m) into the water, a crown of banyan-spray leaf cards (the
+                            Haluna banyan's bark and leaf materials; the vegetation wind contract); origin at the pier's
+                            foot centre on the datum. The pier itself is the arcade's or the nave's.
 
 Nothing here is frozen (ADR 0015/0016).
 """
@@ -51,7 +58,8 @@ M_DARK = "kit_interior_dark"
 
 TRI_BUDGET = {"engine_hall": (34000, 2400), "conduit_run": (1500, 120), "lamp_niche_tier": (3000, 200),
               "conduit_housing": (3000, 120), "lowlight_nave_bay": (24000, 1500), "well_shaft": (14000, 900),
-              "vey_arcade_bay": (12000, 900), "vey_gallery_bridge": (4000, 300)}
+              "vey_arcade_bay": (12000, 900), "vey_gallery_bridge": (4000, 300), "lowlight_sanctum": (18000, 1200),
+              "strangler_fig": (8000, 600)}
 BUDGET_KEY = {"lowlight_nave_bay_broken": "lowlight_nave_bay"}
 
 HALL_HALF = 12.0
@@ -528,7 +536,139 @@ def build_gallery_bridge(seed: int = 1608) -> list[kc.MeshBuilder]:
     return out
 
 
+SANCTUM_R = 7.0
+SANCTUM_H = 9.0
+
+
+def build_sanctum(seed: int = 1609) -> list[kc.MeshBuilder]:
+    out = []
+    for lod in (False, True):
+        rng = kc.rng_for("lowlight_sanctum", seed)
+        noise = kc.Noise3(rng)
+        mb = kc.MeshBuilder("lowlight_sanctum" + ("-lod1" if lod else ""))
+        stone, ceramic = mb.material(M_STONE), mb.material(M_CERAMIC)
+        # The floor: an annulus of laid stone round the well's mouth, out to the apse wall (and square on +Z).
+        n_a = 24 if lod else 64
+        a = np.linspace(0.0, 2 * math.pi, n_a + 1)
+        r_in, r_out = WELL_R + 0.15, SANCTUM_R
+        inner = np.stack([np.cos(a) * r_in, np.zeros_like(a), np.sin(a) * r_in], -1)
+        outer = np.stack([np.cos(a) * r_out, np.zeros_like(a), np.sin(a) * r_out], -1)
+        front = np.sin(a) > 0.0  # the +Z half meets the square front, out to its corners
+        sq = r_out / np.maximum(np.abs(np.cos(a)), np.abs(np.sin(a)))
+        outer[front] = np.stack([np.cos(a) * sq, np.zeros_like(a), np.sin(a) * sq], -1)[front]
+        ring = np.stack([inner, outer], 1)
+        kc.quad_strip(mb, ring, stone, uv=ring[..., [0, 2]] / 1.2, col=(0, 0, 0, 0.5), uv2=(0.8, 0.5), flip=True)
+        # The apse: a half-cylinder wall on -Z to the springing, and a half-dome over it.
+        half = np.linspace(math.pi, 2 * math.pi, (12 if lod else 33))
+        ys = np.linspace(0.0, SANCTUM_H * 0.6, 3 if lod else 9)
+        A, Y = np.meshgrid(half, ys)
+        wall = np.stack([np.cos(A) * SANCTUM_R, Y, np.sin(A) * SANCTUM_R], -1)
+        kc.quad_strip(mb, wall, ceramic, uv=np.stack([A * SANCTUM_R, Y], -1) / 2.0, col=(0, 0, 0, 0.6), uv2=(0.7, 0.5))
+        el = np.linspace(0.0, math.pi * 0.5, 5 if lod else 13)
+        A, E = np.meshgrid(half, el)
+        y0 = SANCTUM_H * 0.6
+        dome = np.stack([np.cos(A) * np.cos(E) * SANCTUM_R, y0 + np.sin(E) * SANCTUM_H * 0.4,
+                         np.sin(A) * np.cos(E) * SANCTUM_R], -1)
+        kc.quad_strip(mb, dome, ceramic, uv=np.stack([A * SANCTUM_R, E * SANCTUM_R], -1) / 2.0, col=(0, 0, 0, 0.6),
+                      uv2=(0.6, 0.5))
+        # The apse's arch toward the nave, and the side walls closing the square front (+Z).
+        prof = _pointed_arch(SANCTUM_R, y0, SANCTUM_H + 0.6, 7 if lod else 17)
+        kc.tube(mb, np.stack([prof[:, 0], prof[:, 1], np.zeros(len(prof))], -1), 0.35, 4 if lod else 6, stone)
+        for sx in (-1.0, 1.0):
+            kc.rounded_block(mb, (sx * (SANCTUM_R + 0.4), SANCTUM_H * 0.5, SANCTUM_R * 0.5),
+                             (0.4, SANCTUM_H * 0.5, SANCTUM_R * 0.5), ceramic, radius=0.05, seg=1,
+                             noise=None if lod else noise, disp_m=0.01, weather=CERAMIC, variation=float(rng.random()))
+        # Three steps down from the sanctum's floor to the nave's knee-deep floor (+Z edge).
+        for k in range(3):
+            y = -(k + 1) * 0.15
+            kc.rounded_block(mb, (0.0, y - 0.15, SANCTUM_R + 0.25 + 0.4 * k), (SANCTUM_R - 0.6, 0.15, 0.2), stone,
+                             radius=0.02, seg=1, weather=STONE, variation=float(rng.random()))
+        if not lod:
+            # The niche tiers round the apse, and the cornice's conduit.
+            for gy in (1.8, 3.4, 5.0):
+                for th in np.linspace(math.pi + 0.25, 2 * math.pi - 0.25, 11):
+                    d = np.array([math.cos(th), 0.0, math.sin(th)])
+                    c = d * (SANCTUM_R - 0.03) + np.array([0.0, gy, 0.0])
+                    kc.rounded_block(mb, c, (0.3, 0.4, 0.05), mb.material(M_DARK), rot=kc.rot_y(-th - math.pi * 0.5),
+                                     radius=0.02, seg=1)
+                    kc.rounded_block(mb, c - d * 0.12 + np.array([0.0, -0.12, 0.0]), (0.12, 0.14, 0.12),
+                                     mb.material(M_GLASS), radius=0.11, seg=2)
+            cor = np.stack([np.cos(half) * (SANCTUM_R - 0.12), np.full_like(half, y0 - 0.3),
+                            np.sin(half) * (SANCTUM_R - 0.12)], -1)
+            kc.tube(mb, cor, 0.06, 6, mb.material(M_CONDUIT))
+        out.append(mb)
+    return out
+
+
+FIG_TOP = 9.0
+FIG_HALF = 0.62  # the pier's half width plus the roots' clearance
+
+
+def _square_ring(t: np.ndarray, half: float) -> np.ndarray:
+    """A point at parameter t (0..4 round) on a square of half-size `half` with rounded corners, in (x, z)."""
+    t = t % 4.0
+    side = np.floor(t).astype(int)
+    f = t - side
+    pts = np.zeros((len(t), 2))
+    corners = np.array([[-1, -1], [1, -1], [1, 1], [-1, 1]], float) * half
+    for k in range(4):
+        m = side == k
+        pts[m] = corners[k] + (corners[(k + 1) % 4] - corners[k]) * f[m, None]
+    r = np.linalg.norm(pts, axis=1, keepdims=True)
+    return pts / r * (0.55 * r + 0.45 * half * 1.25)  # rounded toward a circle
+
+
+def build_strangler_fig(seed: int = 1610) -> list[kc.MeshBuilder]:
+    import ossa_fen  # noqa: PLC0415  (the tree helpers: wind weights, leaf clusters)
+
+    out = []
+    for lod in (False, True):
+        rng = kc.rng_for("strangler_fig", seed)
+        noise = kc.Noise3(rng)
+        mb = kc.MeshBuilder("strangler_fig" + ("-lod1" if lod else ""))
+        root, bark = mb.material("kit_banyan_root"), mb.material("kit_banyan_bark")
+        start = mb.vertex_count
+        # Root strands: each starts at the pier's top and spirals down round it, fusing with its neighbours.
+        n_strands = 7 if lod else 16
+        for k in range(n_strands):
+            t0 = 4.0 * k / n_strands + rng.uniform(0.0, 0.2)
+            turns = rng.uniform(0.3, 0.9) * (1 if rng.random() < 0.6 else -1)
+            ys = np.linspace(FIG_TOP, -0.4, 6 if lod else 18)
+            tt = t0 + turns * 4.0 * (FIG_TOP - ys) / FIG_TOP
+            xz = _square_ring(tt, FIG_HALF + rng.uniform(0.0, 0.08))
+            pts = np.stack([xz[:, 0], ys, xz[:, 1]], -1)
+            radii = np.linspace(0.05, 0.12, len(ys)) * rng.uniform(0.7, 1.3)
+            kc.tube(mb, pts, radii, 4 if lod else 6, root, noise=None if lod else noise, disp_m=0.01,
+                    v_scale=1.0 / 1.4, u_repeat=2.0)
+        # A few cross-ties fusing the strands (the lattice a strangler makes).
+        if not lod:
+            for _k in range(10):
+                y = rng.uniform(1.0, FIG_TOP - 1.0)
+                t = rng.uniform(0.0, 4.0)
+                xz = _square_ring(np.array([t, t + rng.uniform(0.4, 0.9)]), FIG_HALF + 0.03)
+                kc.tube(mb, np.array([[xz[0, 0], y, xz[0, 1]], [xz[1, 0], y + rng.normal(0, 0.3), xz[1, 1]]]), 0.05, 5,
+                        root)
+        ossa_fen._wind(mb, start, FIG_TOP + 3.0, sway=False)
+        # The crown: limbs leaving the pier's top, leaf clusters at their ends.
+        start = mb.vertex_count
+        ends: list = []
+        top = np.array([0.0, FIG_TOP, 0.0])
+        for k in range(4):
+            th = 2 * math.pi * (k + rng.uniform(0.0, 0.5)) / 4
+            ossa_fen._bough(mb, rng, noise, top, np.array([math.cos(th), 0.7, math.sin(th)]), rng.uniform(1.2, 1.8), 0.12,
+                            1, bark, ends, lod=lod, bare=False)
+        ossa_fen._wind(mb, start, FIG_TOP + 3.0, phase=0.2)
+        for k, (e, d) in enumerate(ends):
+            ossa_fen._leaf_cluster(mb, rng, e + d * 0.15, 5 if lod else 12, 0.7, FIG_TOP + 3.0, phase=k * 0.11)
+        # The cluster cards use the fen's leaf material; the fig takes the banyan's.
+        leaf_fen = mb.materials.index(ossa_fen.M_LEAF)
+        mb.materials[leaf_fen] = "kit_banyan_leaf"
+        out.append(mb)
+    return out
+
+
 TARGETS = {"engine_hall": build_hall, "conduit_run": build_conduit, "lamp_niche_tier": build_niche_tier,
            "conduit_housing": build_housing, "lowlight_nave_bay": build_nave_bay,
            "lowlight_nave_bay_broken": lambda: build_nave_bay(broken=True), "well_shaft": build_well_shaft,
-           "vey_arcade_bay": build_arcade_bay, "vey_gallery_bridge": build_gallery_bridge}
+           "vey_arcade_bay": build_arcade_bay, "vey_gallery_bridge": build_gallery_bridge,
+           "lowlight_sanctum": build_sanctum, "strangler_fig": build_strangler_fig}
