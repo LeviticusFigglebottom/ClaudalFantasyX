@@ -69,6 +69,13 @@
 - **10-27: big9 MERGED** (integration 3b7cbf5e). PC gate: Godot 2561/0, coverage and boot OK, Blender 40 identical + 11 M2-CHR-11 DIFFs (rhen, toma, 9 villagers), 281 shots with 48 re-approved after the Lead viewed them. The results are on `gpu/gate-big9-shots`.
 - **10-27: big10 MERGED** (integration f5ec3bda). PC gate: Godot 2637/0, coverage and boot OK, Blender 20 identical + rhen/toma, 292 shots with 51 re-approved (37 identical to big9's; 14 viewed). It includes M3-BPR-404: the Hullgnaw, Drownbell and Matron intros now fit the boss.
 - **big12** `lead/gate-big12` @ 8a28be17 (big11 + every track head as of 10-27 ~18:00) is gating on the PC, full manifest, 341 shots. Cloud: Godot 2820/2, both owned by tracks: creature portraits (creatures) and the footsteps causeway test (audio). Tools: 41 new shots without baselines, the shrine GI bake (PC), test_iskarra (env-art).
+- **To fold into the big12 merge:** `gpu/shrine-gi-big12` @ a748e599 (the Shell Shrine GI rebaked on big12's tree; fixes test_shrine_gi_bake).
+- **Unmerged PC branches to merge with a later batch:**
+  - `gpu/m2-nit-903-runner-renders`;
+  - `gpu/m2-nit-904-import-exit-check` @ 5d5b65d1 (the import retry now needs exit 0 plus DONE);
+  - `gpu/m3-rnd-03-sefir-tells` @ 02d1fa52 (review);
+  - `gpu/m1-qa-09-heroes` (the QA report).
+- **ADR 0040:** no accessory slot. The Float is a key item, the needle a Customize material, Reefball stock is Reefball-only gear.
 - **M2-CHR-11 VERIFIED on AVX2** (PC, claude/characters @ 3723f3eb): base_body, rhen, toma and the 9 villagers, 12/12 identical. Blender rebuilds now match the cloud; it lands with big12.
 - **M1-QA-09 hardware results** (`gpu/m1-qa-09-heroes` @ c50f039f): Asha's staff and Toma's spear aren't gripped (they float); the staff goes through the skirt when kneeling; the underskirt is a rigid tube in offer_hand. Rhen and the braid are clean. This is now characters' top item.
 - **10-27 18:45: big11 MERGED** (integration 3cbcff9e): 43 baselines re-approved after viewing; Godot 2738/0, Blender 13/13 identical. Opened: the Drownbell intro crowds Toma into the frame (bpr FAST-TRACK); Ch6 capsule NPCs (act1-chapters); the shutdown freed-object error (creatures).
@@ -97,7 +104,7 @@ No cloud session captures screenshots. Tracks post `RENDER-REQUEST @ sha: ids` l
 | ui-menus | session_01KGBUwbYgXe9JS6D8jXw6ZG | claude/ui (claude/menus merged in, then retired) | ui-menus.md | 200–399, ADR 0110–0129 |
 | battle-presentation | session_015hKkhtpX67kS4yZeA8AAhv | claude/battle-presentation | battle-presentation.md | 400–499, ADR 0130–0139 |
 | characters | session_014AiZf1ZSvb9MAjxtUka4pd | claude/characters | characters.md | 500–599, ADR 0140–0149 |
-| hero-integration | session_01PzF7Jc4XVQdTWcaYUyCjPB | claude/hero-integration | hero-integration.md | 1100–1199, ADR 0190–0199 |
+| **integration-qa** (was hero-integration, repurposed 10-27 20:20: headless full-thread playthrough guards, save/load guards, cross-track seams, hero-layer maintenance) | session_01PzF7Jc4XVQdTWcaYUyCjPB | claude/hero-integration | hero-integration.md | 1100–1199, ADR 0190–0199 |
 | creatures | session_01EbDaRQ5n7hpvwuRG6jEDQY | claude/creatures | creatures.md | 600–699, ADR 0150–0159 |
 | env-art | session_01YbaV2c8yquRHqj6afQYg89 | claude/env-art | env-art.md | 700–799, ADR 0160–0169 |
 | audio | session_01Wmj8xaLtwcqiS3qwC6PciW | claude/audio | audio.md | 800–899, ADR 0170–0179 |
