@@ -464,14 +464,25 @@
         "ink_kit-lod1": 12
       }
     },
+    "iskarra_arcade_sunk": {
+      "budget": [
+        5000,
+        300
+      ],
+      "bytes": 76508,
+      "lods": {
+        "iskarra_arcade_sunk": 732,
+        "iskarra_arcade_sunk-lod1": 276
+      }
+    },
     "iskarra_arch": {
       "budget": [
         4000,
         200
       ],
-      "bytes": 101320,
+      "bytes": 86072,
       "lods": {
-        "iskarra_arch": 2220,
+        "iskarra_arch": 1644,
         "iskarra_arch-lod1": 108
       }
     },
@@ -480,9 +491,9 @@
         4000,
         200
       ],
-      "bytes": 111780,
+      "bytes": 100896,
       "lods": {
-        "iskarra_arch_fallen": 2148,
+        "iskarra_arch_fallen": 1716,
         "iskarra_arch_fallen-lod1": 156
       }
     },
@@ -491,10 +502,32 @@
         4000,
         300
       ],
-      "bytes": 79824,
+      "bytes": 98460,
       "lods": {
-        "iskarra_crown_fallen": 1692,
-        "iskarra_crown_fallen-lod1": 136
+        "iskarra_crown_fallen": 1904,
+        "iskarra_crown_fallen-lod1": 160
+      }
+    },
+    "iskarra_drowned_block": {
+      "budget": [
+        9000,
+        400
+      ],
+      "bytes": 135572,
+      "lods": {
+        "iskarra_drowned_block": 1572,
+        "iskarra_drowned_block-lod1": 132
+      }
+    },
+    "iskarra_drowned_dome": {
+      "budget": [
+        9000,
+        400
+      ],
+      "bytes": 131624,
+      "lods": {
+        "iskarra_drowned_dome": 1860,
+        "iskarra_drowned_dome-lod1": 172
       }
     },
     "iskarra_lamp_column": {
@@ -502,9 +535,9 @@
         1500,
         100
       ],
-      "bytes": 42792,
+      "bytes": 40484,
       "lods": {
-        "iskarra_lamp_column": 822,
+        "iskarra_lamp_column": 678,
         "iskarra_lamp_column-lod1": 60
       }
     },
@@ -513,9 +546,9 @@
         14000,
         600
       ],
-      "bytes": 419040,
+      "bytes": 527380,
       "lods": {
-        "iskarra_plaza": 4260,
+        "iskarra_plaza": 6036,
         "iskarra_plaza-lod1": 144
       }
     },
@@ -532,57 +565,57 @@
     },
     "iskarra_tower_broken": {
       "budget": [
-        16000,
-        1200
+        36000,
+        2400
       ],
-      "bytes": 222536,
+      "bytes": 591544,
       "lods": {
-        "iskarra_tower_broken": 5496,
-        "iskarra_tower_broken-lod1": 312
+        "iskarra_tower_broken": 10424,
+        "iskarra_tower_broken-lod1": 360
       }
     },
     "iskarra_tower_small": {
       "budget": [
-        16000,
-        1200
+        36000,
+        2400
       ],
-      "bytes": 152528,
+      "bytes": 300384,
       "lods": {
-        "iskarra_tower_small": 3660,
-        "iskarra_tower_small-lod1": 232
+        "iskarra_tower_small": 5504,
+        "iskarra_tower_small-lod1": 280
       }
     },
     "iskarra_tower_small_broken": {
       "budget": [
-        16000,
-        1200
+        36000,
+        2400
       ],
-      "bytes": 100332,
+      "bytes": 179824,
       "lods": {
-        "iskarra_tower_small_broken": 2256,
-        "iskarra_tower_small_broken-lod1": 144
+        "iskarra_tower_small_broken": 3184,
+        "iskarra_tower_small_broken-lod1": 168
       }
     },
     "iskarra_tower_spire": {
       "budget": [
-        16000,
-        1200
+        36000,
+        2400
       ],
-      "bytes": 396812,
+      "bytes": 1304304,
       "lods": {
-        "iskarra_tower_spire": 9408,
-        "iskarra_tower_spire-lod1": 544
+        "iskarra_tower_spire": 22232,
+        "iskarra_tower_spire-lod1": 664
       }
     },
     "iskarra_tower_stepped": {
       "budget": [
-        16000,
-        1200
+        36000,
+        2400
       ],
-      "bytes": 286268,
+      "bytes": 631396,
       "lods": {
-        "iskarra_tower_stepped": 6912,
-        "iskarra_tower_stepped-lod1": 352
+        "iskarra_tower_stepped": 11400,
+        "iskarra_tower_stepped-lod1": 424
       }
     },
     "keth_curtain": {
