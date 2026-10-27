@@ -120,11 +120,12 @@ cutscene sequencer (`game/cutscene/**`), `game/flow/**` and the playtest fixes.
   pieces and Oruvel's rafts only if the Lead wants it before env-art gets to it.
 
 ### Render requests
-RENDER-REQUEST @ 180510e1: ch04_ferry_deck, ch04_ferry_derelict; why: M3-C04-1204 dresses the Ch4 ferry and derelict with the ferry kit (new shots, no baseline yet)
-RENDER-REQUEST @ 77a6a777: ch09_corrow_strand, ch09_corrow_road, ch08_corrow_arrival, ch08_corrow_stair, ch06_brine_road, ch06_brine_camp; why: M3-C09-1209 puts Ch9 on the Corrow kit (new shots); the Ch8 and Ch6 shots re-checked on the PC after the KitCollision refactor and the big9 merge
+DONE @ 180510e1 (viewed gpu/render-act1-chapters-180510e): ch04_ferry_derelict approved (df86873f); ch04_ferry_deck re-aimed (the camera stood 0.6 m from the ferrymaster), re-requested below
+DONE @ 77a6a777 (viewed gpu/render-act1-chapters-77a6a77): ch08_corrow_arrival, ch08_corrow_stair, ch06_brine_camp pass (rmse 0); ch06_brine_road re-approved (its drift is the real hero model in front), ch09_corrow_road approved (df86873f); ch09_corrow_strand was near-black: vigil lamps and a brighter moon added, re-requested below
 RENDER-REQUEST @ b30c2cf2: ch08_coilspire_path, ch08_coilspire_hall; why: M3-C08-1210 stands Coilspire upright on its kit (new shots)
 RENDER-REQUEST @ 5112837a: ch07_bell_galleries, ch07_bell_moorings; why: M3-C07-1211 puts Ch7's Bell galleries on the Tamsule Bell kit (new shots)
 RENDER-REQUEST @ 8daa0c63: ch05_pemakar_harbour, ch05_pemakar_crown; why: M3-C05-1213 puts Ch5 Pemakar on its kit (new shots, Lanternfall night)
+RENDER-REQUEST @ eeaf91bf: ch04_ferry_deck, ch09_corrow_strand; why: re-done after viewing the PC renders (the deck view re-aimed; the strand lit by its vigil lamps)
 
 ## Exact next step
 Swaps still to do: Ch5 Ashcrown (its kit), Ch4 `haluna_wake` (Haluna's kit at night); Ch7's port waits on env-art's kit. Ch1 is slice-polish's. When the PC answers a
