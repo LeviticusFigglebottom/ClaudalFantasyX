@@ -68,7 +68,7 @@
 ## 2a. Merge state (new account)
 - **10-27: big9 MERGED** (integration 3b7cbf5e). PC gate: Godot 2561/0, coverage and boot OK, Blender 40 identical + 11 M2-CHR-11 DIFFs (rhen, toma, 9 villagers), 281 shots with 48 re-approved after the Lead viewed them. The results are on `gpu/gate-big9-shots`.
 - **10-27: big10 MERGED** (integration f5ec3bda). PC gate: Godot 2637/0, coverage and boot OK, Blender 20 identical + rhen/toma, 292 shots with 51 re-approved (37 identical to big9's; 14 viewed). It includes M3-BPR-404: the Hullgnaw, Drownbell and Matron intros now fit the boss.
-- **big11** (every track head as of 10-27 ~15:30 + integration f5ec3bda) is being built by a local agent → lead/gate-big11.
+- **big11** `lead/gate-big11` @ 23ea8c6f (every track head as of 10-27 ~15:30 + integration f5ec3bda) is gating on the PC with the full manifest. Cloud: Godot 2738/0. Known tools failures, owned by the tracks: test_audio_loudness (audio) and test_shrine_gi_bake (the stale shrine bake; slice-polish M3-ENV-704). Open: the duplicate Haluna villager systems (creatures' VillagerLayer vs slice-polish's HalunaVillagers); one owner to be picked.
 - **Open from viewing big9:**
   - Ysolde is still a capsule in battle → hero-integration (FAST-TRACK).
   - Inquisitor Hadric Moll is a capsule (battle_arena_camp, battle_boss_intro_inquisitor) → characters (a human foe).
