@@ -149,6 +149,19 @@ RENDER-REQUEST @ c1d1e3e6: battle_boss_intro_hullgnaw,battle_boss_intro_inquisit
 - **For the Lead's pick:** the code is in commit c1d1e3e6 (battle_boss_intro.gd, choreo.json boss_intro.fit, the test,
   the task). Take the baselines from the PC render of the line above once I've viewed it.
 
+RENDER-REQUEST @ db0819b2: battle_hud_preview,battle_swap_menu,battle_victory,battle_statuses,battle_swell_ring,battle_read_panel,battle_opening_banner,battle_swell_modes,battle_vowbound_call,battle_vowbound_out,battle_choreo_melee,battle_choreo_hit,battle_choreo_cast,battle_choreo_support,battle_choreo_read,battle_choreo_ko,battle_choreo_swap,battle_arena_tideline,battle_arena_causeway,battle_choreo_lamp_dive,battle_choreo_toll,battle_choreo_vowbound_rise,battle_choreo_summon,drownbell_flood,battle_swell_chant,battle_swell_brace,battle_swell_glyph,battle_statuses_colorblind,battle_pause,battle_arena_raft,battle_arena_underway,battle_arena_route,battle_arena_derelict,battle_arena_terrace,battle_arena_tideline_dawn,battle_arena_causeway_disc_sunset,battle_arena_causeway_route_afternoon,battle_arena_derelict_deck_night,battle_arena_ash_terrace_lanternfall,battle_arena_oruvel_raft_morning,battle_arena_underway_tower,battle_arena_shoals,battle_arena_camp,battle_arena_wall_head,battle_hud_21x9,battle_hud_16x10,battle_boss_intro_reach; why: one consolidated battle set at the post-big11 head. It covers M3-BPR-401/402/403 (impact, spacing, the sideways line-up), 406 (the Ch8 arena and the Reach intro, both new with no baseline yet), 408 and 409 (the ring over VFX). It **supersedes** the 25dcea24 (second line), 680cd88e, 60b62678 and dcc68922 lines. The boss intros stay on their own FAST-TRACK line (c1d1e3e6).
+
+**Renders viewed, 2026-10-27 evening:**
+- gpu/render-battle-presentation-25dcea2: four re-approved at 89ffba3c (above).
+- **gpu/render-battle-presentation-680cd88: viewed, NOT approved.** The renders are fine (Rhen meets the crab with the
+  flash and recoil; the KO flash; the toll). But they are from 680cd88e, before big11, whose PC-approved battle_choreo
+  baselines are now on this branch, and before my later changes (the line-up spread, the ring priority, the Act II
+  rows). Approving them would put older pictures over newer approved ones, so the consolidated request above replaces
+  them. Notes for the next view:
+  - battle_choreo_melee catches Rhen mid-run, because the real clips moved the contact;
+  - in battle_choreo_toll Ysolde is still a capsule (ui-menus' repoint M2-HER-1108).
+- Battle filter at the post-big11 head with the Drownbell fix: **731 run, 0 failed**.
+
 ### FAST-TRACK M3-BPR-404 on the post-big9 integration branch (updated 2026-10-27)
 - **Cherry-picking 269054a3 and 4e89c967 now conflicts on the six baseline PNGs.** big9 re-approved them with the
   real heroes, and the PNGs in my commits were rendered with primitive heroes.
