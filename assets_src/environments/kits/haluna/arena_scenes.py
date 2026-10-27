@@ -1565,8 +1565,10 @@ def _choir_arena() -> dict:
         "ground_glb": KIT + "choir_amphitheatre.glb",
         "lut": "res://assets/environments/arenas/drowned_choir_ring/lut_ch16_choir.png",
         # pale_rim.md §0 (the Choir at moonrise): the moon low behind the enemy line #D2DFFF 0.35, fill #2A3A4E 0.25,
-        # the pale_rim water at night, sea-glow 0.1, exposure 1.1, lut_ch16_choir.
-        "sun": {"elev": 9.0, "az": 320.0, "color": "#D2DFFF", "energy": 0.35, "max_distance": 80.0, "moon": True},
+        # the pale_rim water at night, sea-glow 0.1, exposure 1.1, lut_ch16_choir. The moon stands in the gap between
+        # two singers (az 306 bisects one: they stand at 18 + 36k deg) and at 12 deg, so no singer's shadow (24 m tall)
+        # and not the tiers' rim falls on the dais: at 9 deg / 320 one lay across the whole party (fca9987's render).
+        "sun": {"elev": 12.0, "az": 306.0, "color": "#D2DFFF", "energy": 0.35, "max_distance": 80.0, "moon": True},
         "fill": {"color": "#2A3A4E", "energy": 0.25},
         "exposure": 1.1,
         "glow": (0.5, 0.06, 1.0),

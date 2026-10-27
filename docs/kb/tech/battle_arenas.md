@@ -288,7 +288,7 @@ sunken amphitheatre: laid ceramic flags, r 7.5, level at y 0. The flooded ring c
 | Where | What |
 |---|---|
 | Round the arena, r 44 | Ten `choir_singer`s (24 m, hooded, the heads tilted up and the mouths open) standing in the sea, all facing the centre; the far side of the ring fills the frame behind the enemy line |
-| The sky | The moon low behind the enemy line (`#D2DFFF` 0.35), the night sky shader's disc |
+| The sky | The moon low behind the enemy line (`#D2DFFF` 0.35, 12° at azimuth 306°: in the gap between two singers, so no singer's shadow and not the tiers' rim falls on the dais; tested), the night sky shader's disc |
 
 Light (pale_rim.md §0, the Choir at moonrise): fill `#2A3A4E` 0.25, `pale_rim` water at night, sea-glow 0.1,
 exposure 1.1, `lut_ch16_choir` (`zone_lut.py`: ×0.7, low contrast, the stone cold). Hints: `the_mouths`, `the_ring`.

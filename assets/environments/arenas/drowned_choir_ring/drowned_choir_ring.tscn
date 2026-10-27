@@ -97,7 +97,7 @@ sub_frame = &"ch16"
 environment = SubResource("Env")
 
 [node name="Sun" type="DirectionalLight3D" parent="."]
-transform = Transform3D(-0.766044, 0.100554, -0.634874, 0, 0.987688, 0.156434, 0.642788, 0.119836, -0.756613, 0, 30, 0)
+transform = Transform3D(-0.587785, 0.168204, -0.791338, 0, 0.978148, 0.207912, 0.809017, 0.122207, -0.574941, 0, 30, 0)
 light_color = Color(0.8235, 0.8745, 1, 1)
 light_energy = 0.35
 shadow_enabled = true

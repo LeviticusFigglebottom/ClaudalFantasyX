@@ -59,5 +59,22 @@ class DrownedChoirTests(unittest.TestCase):
                 self.assertLessEqual(lod1.triangle_count, dc.TRI_BUDGET[name][1])
 
 
+    def test_no_singer_shadows_the_dais(self) -> None:
+        """M3-ENV-705 (fca9987's render): the moon must pass between the singers, so no 24 m figure's shadow lies
+        across the party. Every singer between the moon and the dais stands further off the moon's line than the dais's
+        radius plus its own."""
+        a = ar.ARENAS["drowned_choir_ring"]
+        az = math.radians(a["sun"]["az"])
+        d = np.array([math.sin(az), -math.cos(az)])  # toward the moon, in (x, z)
+        p = np.asarray(dc.TARGETS["choir_singer"]()[0].pos)
+        singer_r = float(np.hypot(p[:, 0], p[:, 2]).max())
+        for piece in a["pieces"]:
+            x, _y, z = piece["at"]
+            along = x * d[0] + z * d[1]
+            if along <= 0.0:
+                continue
+            with self.subTest(singer=(x, z)):
+                self.assertGreater(abs(-x * d[1] + z * d[0]), dc.DAIS_R + singer_r)
+
 if __name__ == "__main__":
     unittest.main()
