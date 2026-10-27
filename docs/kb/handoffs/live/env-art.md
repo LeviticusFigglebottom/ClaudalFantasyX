@@ -433,6 +433,7 @@ RENDER-REQUEST @ 4c0e9732: battle_arena_seawall_stairhead_storm,battle_arena_sea
 ANSWERED: 94fe8f7 (Tamsule TP01/TP03/TP05) and fd630bb (Pemakar P04/P11) were viewed and approved in f2a85a46. In fd630bb, Lanternfall passed.
 ANSWERED: 179069d (causeway_route_afternoon): superseded by big12's viewed baseline (6e15d8d8) at a later head; nothing to approve.
 NOT APPROVED: 95be611 (battle_arena_keth_seep_terrace). The backdrop reads as a wall of stretched white blocks and the seep strips as pale-blue ribbons, not a mountain pass. Rework is queued after the Iskarra fast-track (M3-ENV-717).
+RENDER-REQUEST @ 7f1a0fc7: battle_arena_keth_seep_terrace; why: M3-ENV-717 rework after 95be611 (crisp weathered wall, threads of seep). Supersedes 95be6118.
 
 ## STATE AT HANDOVER (2026-10-25)
 
