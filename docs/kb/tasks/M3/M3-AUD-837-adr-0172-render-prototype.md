@@ -5,7 +5,7 @@ role: audio
 status: review
 owner_session: "audio (cloud session_01Wmj8xaLtwcqiS3qwC6PciW, branch claude/audio)"
 reviewer: tech
-depends_on: [M3-AUD-826]
+depends_on: []
 milestone: M3
 request-from: lead
 ---
