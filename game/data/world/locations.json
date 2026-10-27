@@ -101,6 +101,20 @@
       "_note": "M3-C09-02: Corrow on the night of the Ebbing and the dawn road (Ch9 B01-B10), a greybox zone (Ch09Zone) standing in for the ch08/corrow night variant until Ch8 lands. Ch8 hands off here at Strand; until then it is reached from this row. The act break hands off to the end card (Ch10 is Act II, not in M3)."
     },
     {
+      "id": "ch10/ossa_fen",
+      "scene": "res://game/levels/ch10/ossa_fen/ossa_fen.tscn",
+      "spawn": "FenEdge",
+      "name_key": "LOCATION_CH10_OSSA_FEN",
+      "_note": "M4-C10-02: Ossa Fen at the overcast dusk, the first zone of Act II (act_outline Ch10), a greybox zone (Ch10Zone) from tools/act1/ch10_greybox.py: the fen's edge where Pell stops, the root-walks, the Drowner's clearing. Reached on its own until Ch9's act break hands off here."
+    },
+    {
+      "id": "ch10/reedhollow",
+      "scene": "res://game/levels/ch10/reedhollow/reedhollow.tscn",
+      "spawn": "Gate",
+      "name_key": "LOCATION_CH10_REEDHOLLOW",
+      "_note": "M4-C10-02: Reedhollow, the Kirru village round its lagoon (act_outline Ch10), a greybox zone (Ch10Zone). Ossa Fen's root-walks hand off here at Gate; Pell is not let in."
+    },
+    {
       "id": "ch06/brine_shoals",
       "scene": "res://game/levels/ch06/brine_shoals/brine_shoals.tscn",
       "spawn": "Entry",
