@@ -565,8 +565,12 @@ Read this section first; everything below it is history. The branch is `claude/e
     - Also on this head: the big12 merge (8339d660), `--filter=haluna` 62/0 and `--filter=battle_arena` 18/0.
       The tools suite is all OK except test_screenshots, which is red only for the new arena shots awaiting their
       first PC baselines (seawall/coilspire and the others above).
-  - **Parked at a safe point.** M3-ENV-723 Hollowmere: its source is committed but not in build.py. The Ansedra zone
-    pieces are done (afa5b0bb).
+  - **Since then, the same branch:**
+    - M3-ENV-717: the Keth wall rework (7f1a0fc7, re-render requested).
+    - M3-ENV-716: the Lowlight baseline (5475b0ac).
+    - **M3-ENV-723 Hollowmere** (8cf1e66b, review): the sheet, a 6-piece kit, and the `act3_dusk` grade in
+      `zones/ch17/`. No shot yet; act1-chapters places it.
+    - The Ansedra zone pieces (afa5b0bb).
 - **Id blocks (the Lead, CONSOLIDATED §4):** env-art's new task ids are 700–799 (e.g. M3-ENV-710), its ADRs
   0160–0169, and its handoffs are named `<date>-<role>-env-art-<n>.md`. Existing ids stay. The big8 renumbering
   is applied here too: the shell shrine shaft-lamps task is now **M3-ARC-04** (was M3-ARC-02), and the Tidecup
