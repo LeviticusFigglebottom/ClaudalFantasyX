@@ -5,7 +5,9 @@ extends TestCase
 ## plan and play to the end with her strike on the contact beat and no overlap at the strike point.
 
 const SANDBOX := "res://game/battle/scene/battle_sandbox.tscn"
-const SCENE := "res://game/characters/heroes/ysolde_battle.tscn"
+## hero-integration's wrapper (M2-HER-1103) once it lands, else characters' bare model.
+const WRAPPER := "res://game/hero_motion/battle/ysolde_battle_actor.tscn"
+const BARE := "res://game/characters/heroes/ysolde_battle.tscn"
 const SEED := 20261027
 const EPS := 0.001
 
@@ -18,7 +20,7 @@ var _had: Variant = null
 func before_each() -> void:
 	_row = (BattleStage.config()["stand_ins"] as Dictionary)["ysolde"] as Dictionary  # her real model, as the repoint
 	_had = _row.get("scene")
-	_row["scene"] = SCENE
+	_row["scene"] = _scene()
 	_row["yaw_deg"] = -90.0
 	ctl = (load(SANDBOX) as PackedScene).instantiate() as BattleController
 	ctl.auto_start = false
@@ -34,9 +36,9 @@ func before_each() -> void:
 
 
 func test_her_model_plays_every_contract_clip() -> void:
-	if not ResourceLoader.exists(SCENE):
+	if _scene() == "":
 		_free()
-		return  # characters' model not on this branch
+		return  # no model of hers on this branch
 	var f := ctl.stage.stand_in(&"ysolde")
 	assert_true(BattleClips.player_of(f) != null, "her model has a player")
 	for clip in BattleClips.ALL:
@@ -46,15 +48,15 @@ func test_her_model_plays_every_contract_clip() -> void:
 	_free()
 
 
-func test_her_ember_and_read_play_to_the_end() -> void:
-	if not ResourceLoader.exists(SCENE):
+func test_her_whole_kit_plays_to_the_end() -> void:
+	if _scene() == "":
 		_free()
 		return
 	var choreo := ctl.stage.choreo
 	for e in ctl.engine.enemies + ctl.engine.party_active:  # the fight lasts while she takes her turns
 		e.max_hp = 100000
 		e.hp = 100000
-	for skill: StringName in [&"ember", &"read"]:
+	for skill: StringName in [&"attack", &"ember", &"frost", &"slow_hex", &"read"]:  # her whole kit
 		var guard := 0
 		while ctl.current_actor_id() != &"ysolde" and guard < 40:
 			guard += 1
@@ -75,6 +77,13 @@ func test_her_ember_and_read_play_to_the_end() -> void:
 		ctl.pacing_scale = 0.0
 		ctl.tick(30.0)
 	_free()
+
+
+func _scene() -> String:
+	for path: String in [WRAPPER, BARE]:
+		if ResourceLoader.exists(path):
+			return path
+	return ""
 
 
 func _free() -> void:
