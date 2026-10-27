@@ -1,0 +1,6 @@
+FAIL battle_choreo_melee: rmse 0.11854 (limit 0.00800)
+FAIL battle_choreo_hit: rmse 0.11000 (limit 0.00800)
+FAIL battle_choreo_ko: rmse 0.09280 (limit 0.00800)
+FAIL battle_choreo_toll: rmse 0.07905 (limit 0.00800)
+Screenshots: 4 compared, 4 failed (diffs in /root/hymn/tests/screenshots/out/diff)
+compare exit 1
