@@ -587,3 +587,13 @@ it). A hit-stop ducks `impact` (mix.json) for its length plus `hold_sec`. On
 `slowmo_planned(from_sec, sec, factor)`, `ko_slowmo` plays when the slow-mo starts (from_sec of plan time over the
 choreography's `speed`), and the `ko_slowmo` duck holds through the slowed time (sec / factor) plus `hold_sec`.
 Reduced audio skips `reduced_skip`.
+
+## Cutscene foley (M3-AUD-817)
+- **Steps:** when a `CutsceneStage` enters the tree, `AudioDirector.attach_cast` gives every `cast()` member a
+  `FootstepAudio` (the player's own is kept). Cutscene walks step like the field: from the body's foot contacts,
+  else by distance, on the ground under the feet.
+- **Cues:** `CutsceneAudio` (`cutscene_audio.gd`) connects each `CutsceneSequencer`'s `cue_played`.
+  `cutscene_foley.json` maps an `@anim` clip (exact name, then globs; `''` is silent), an `@light` name (`on` /
+  `off`, and `off` only if the light is lit) and an `@vfx` effect to a row, played at the actor (plus
+  `at_height_m`), the light or the `at=` place. Nothing plays while `is_skipping()`.
+- **Room tone:** the prologue's `iskarra_dusk` bed is ambience.json's zone row for `prologue.tscn`.
