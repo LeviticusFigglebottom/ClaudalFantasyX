@@ -1,0 +1,12 @@
+PASS field_hero_rhen_walk: rmse 0.00000 (limit 0.00800)
+PASS field_hero_party: rmse 0.00000 (limit 0.00800)
+PASS field_hero_gait_strip: rmse 0.00000 (limit 0.00800)
+FAIL battle_heroes_idle: no baseline (inspect out/, then compare.py --update-baselines battle_heroes_idle)
+FAIL battle_heroes_attack: no baseline (inspect out/, then compare.py --update-baselines battle_heroes_attack)
+FAIL battle_heroes_hit: no baseline (inspect out/, then compare.py --update-baselines battle_heroes_hit)
+FAIL battle_heroes_ko: no baseline (inspect out/, then compare.py --update-baselines battle_heroes_ko)
+FAIL battle_heroes_victory: no baseline (inspect out/, then compare.py --update-baselines battle_heroes_victory)
+FAIL battle_heroes_cast: no baseline (inspect out/, then compare.py --update-baselines battle_heroes_cast)
+FAIL battle_heroes_finisher: no baseline (inspect out/, then compare.py --update-baselines battle_heroes_finisher)
+Screenshots: 10 compared, 7 failed (diffs in /root/hymn/tests/screenshots/out/diff)
+compare exit 1
