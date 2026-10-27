@@ -1,7 +1,7 @@
 {
   "doc": "M3-C01-02 greybox: ch01/oruvel, the raft-town by day and in the storm (act1_ch01.md C1-07 to C1-15). Lashed hulls at deck height 0 joined by plank bridges: the scale-hull (south), the commons (the cookboats, the net lanes, the roof), the outer mooring and the Seventh Terrace (west), the keel-hull (north), Kell's chandlery on the second mooring and the dive mooring beyond it (east), and the net-pen hull round the Reefball practice net (south-east, the boss arena). The sea under the hulls is a solid floor 1 m down: there is no swimming in the greybox. storm (Ch01OruvelZone): once ch01_gulls_cried is set, the stand-in storm light, the day's town gone to the keel-hull, the storm cast and the wall up, the bridge from the dive mooring to Kell's mooring gone, and the run's low hull, which drifts clear once both lashings are cut. Env-art's raft-town kit (and its storm rig) replaces the blocks.",
   "block_color": "#a08566",
-  "sun": {"pitch_deg": -68.0, "yaw_deg": 30.0, "energy": 1.6, "color": "#fff6e8"},
+  "sun": {"pitch_deg": -58.0, "yaw_deg": 60.0, "energy": 3.0, "color": "#ffefe1"},
   "environment": {"background": "#9cc8e6", "ambient_color": "#d6e4ec", "ambient_energy": 0.7},
   "blocks": [
     {"id": "Sea", "pos": [10, -1.5, -12], "size": [120, 1, 90], "color": "#2f6f86"},
@@ -88,7 +88,7 @@
     {"id": "hullgnaw", "at": [30, 0, -21], "size": [8, 0, 6], "requires_flag": "ch01_children_safe", "blocked_by_flag": "ch01_hullgnaw_defeated", "payload": {"beat": "hullgnaw"}}
   ],
   "storm": {
-    "flag": "ch01_gulls_cried",
+    "flag": "ch01_gulls_cried", "environment_res": "res://game/levels/ch01/oruvel/oruvel_storm_environment.tres",
     "sun": {"pitch_deg": -40.0, "energy": 0.55, "color": "#a9bccd"},
     "environment": {"background": "#5d84a6", "ambient_color": "#6f8294", "ambient_energy": 0.45},
     "hide": ["scaleman", "cook", "netmender", "netmender_2", "roof_child", "skipper_sadi", "sabe", "SeventhTerrace", "NameBoard", "DiveBridge"],
