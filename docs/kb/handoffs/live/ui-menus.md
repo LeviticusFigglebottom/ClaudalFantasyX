@@ -152,3 +152,12 @@ RENDER-REQUEST @ da7891cf: reefball_outfitter, reefball_hud_choice, reefball_hud
 
 **MERGE-READY @ da7891cf** (claude/ui = integration @ 3cbcff9e + ADR 0040 commit ceaa77b0 + this track): everything in MERGE-READY @ abf39c37, plus ADR 0040's three homes, plus request task M3-UI-204. **M3-UI-204 is new on this branch only; act1-chapters sees it after this merge:** the shrine payloads, Tamsule's trader, inn, outfitter and shrine, and the needle's give.
 
+- 2026-10-27: **The Lead's 19:34 'continue' list.**
+  - The title and save polish, the accessibility sweep and the prompt audit were finished earlier (queue items 5–7, table above).
+  - Today's additions are covered:
+    - the outfitter is in the pseudo-loc walk at 100 and 130 % and in the aspect audit;
+    - its states are words (Owned, Worn, a refusal in words plus the danger colour);
+    - the barks float through the HUD's motion scale;
+    - test_loc_key_names passes on the new rows.
+  - **M3-UI-204** waits on this branch's merge, then on act1-chapters.
+  - **Nothing else is queued for ui-menus. Lead: route the next item here.**
