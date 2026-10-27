@@ -27,6 +27,11 @@ RULES = [
     ("sfx/battle/sting_boss*_soft.ogg", "momentary", -17.0, 1.0, -1.0, "reduced-audio boss stings (M3-AUD-18)"),
     ("sfx/battle/sting_boss*.ogg", "momentary", -16.0, 1.0, -1.0, "boss intro stings (M3-AUD-18)"),
     ("sfx/battle/sting_bark.ogg", "momentary", -22.0, 1.0, -1.0, "the bark's breath, under a line (M3-AUD-18)"),
+    # M3-AUD-816 (assets_src/sfx/impact_sfx.py): weight layers under the -18 element hit, and the KO slow-mo swell
+    ("sfx/battle/impact_medium_*.ogg", "momentary", -24.0, 1.0, -1.0, "a body blow's layer, well under the hit"),
+    ("sfx/battle/impact_heavy_*.ogg", "momentary", -21.0, 1.0, -1.0, "a heavy blow's layer, under the hit"),
+    ("sfx/battle/impact_crushing_*.ogg", "momentary", -19.0, 1.0, -1.0, "the heaviest blow's layer"),
+    ("sfx/battle/ko_slowmo_*.ogg", "momentary", -20.0, 1.0, -1.0, "the last foe's slow-mo swell"),
     ("sfx/battle/*.ogg", "momentary", -19.0, 2.5, -1.0, "combat SFX (-18 nominal; quieter layers to -21.5)"),
     ("sfx/shrine/shrine_pool_fill.ogg", "integrated", -24.0, 0.5, -6.0, "the shrine pool's fill bed"),
     ("sfx/shrine/*.ogg", "momentary", -18.0, 0.5, -1.0, "the trial's world SFX"),
@@ -66,6 +71,30 @@ RULES = [
     ("sfx/foley/cloth_*.ogg", "momentary", -24.0, 1.0, -3.0, "cloth swish, layered on every step"),
     ("sfx/foley/gear_*.ogg", "momentary", -24.0, 1.0, -3.0, "carried gear (lantern, shells, leather), every other step"),
     ("sfx/foley/*.ogg", "momentary", -22.0, 2.0, -1.0, "other movement foley"),
+    # M3-AUD-814 (assets_src/sfx/life_sfx.py): villagers and wildlife, positional and quiet
+    ("sfx/life/villager_murmur_*.ogg", "momentary", -26.0, 1.0, -3.0, "a chat turn, never over a line"),
+    ("sfx/life/work_*.ogg", "momentary", -25.0, 1.0, -3.0, "villagers' work foley"),
+    ("sfx/life/gull_call_near_*.ogg", "momentary", -22.0, 1.0, -3.0, "a gull calling close by"),
+    ("sfx/life/gull_takeoff_*.ogg", "momentary", -26.0, 1.0, -3.0, "a gull's wing claps"),
+    ("sfx/life/crab_scuttle_*.ogg", "momentary", -30.0, 1.0, -3.0, "a crab bolting, heard only up close"),
+    ("sfx/life/fish_dart_*.ogg", "momentary", -29.0, 1.0, -3.0, "a school startled in the shallows"),
+    # M3-AUD-817 (assets_src/sfx/cutscene_foley.py): foley on cutscene cues
+    ("sfx/cutscene/cs_book_shut_*.ogg", "momentary", -22.0, 1.0, -2.0, "cutscene foley"),
+    ("sfx/cutscene/cs_lantern_catch_*.ogg", "momentary", -21.0, 1.0, -2.0, "cutscene foley"),
+    ("sfx/cutscene/cs_lantern_snuff_*.ogg", "momentary", -24.0, 1.0, -2.0, "cutscene foley"),
+    ("sfx/cutscene/cs_glimmer_lift_*.ogg", "momentary", -25.0, 1.0, -2.0, "cutscene foley"),
+    ("sfx/cutscene/cs_glimmer_held_*.ogg", "momentary", -27.0, 1.0, -2.0, "cutscene foley"),
+    ("sfx/cutscene/cs_glimmer_bound_*.ogg", "momentary", -25.0, 1.0, -2.0, "cutscene foley"),
+    ("sfx/cutscene/cs_cloth_turn_*.ogg", "momentary", -27.0, 1.0, -2.0, "cutscene foley"),
+    ("sfx/cutscene/cs_cloth_kneel_*.ogg", "momentary", -24.0, 1.0, -2.0, "cutscene foley"),
+    ("sfx/cutscene/cs_cloth_rise_*.ogg", "momentary", -24.0, 1.0, -2.0, "cutscene foley"),
+    ("sfx/cutscene/cs_cloth_sit_*.ogg", "momentary", -25.0, 1.0, -2.0, "cutscene foley"),
+    ("sfx/cutscene/cs_shield_up_*.ogg", "momentary", -22.0, 1.0, -2.0, "cutscene foley"),
+    ("sfx/cutscene/cs_unsling_*.ogg", "momentary", -22.0, 1.0, -2.0, "cutscene foley"),
+    ("sfx/cutscene/cs_untie_*.ogg", "momentary", -25.0, 1.0, -2.0, "cutscene foley"),
+    ("sfx/cutscene/cs_feed_fire_*.ogg", "momentary", -23.0, 1.0, -2.0, "cutscene foley"),
+    ("sfx/cutscene/cs_trim_wicks_*.ogg", "momentary", -26.0, 1.0, -2.0, "cutscene foley"),
+    ("sfx/cutscene/cs_pole_water_*.ogg", "momentary", -23.0, 1.0, -2.0, "cutscene foley"),
 ]
 FILE_LIMIT = 5 * 1024 * 1024        # CLAUDE.md §8: no file over 5 MB
 TOTAL_BUDGET = 56 * 1024 * 1024     # every shipped audio file (ADR 0170: up to the Act II sketches)
