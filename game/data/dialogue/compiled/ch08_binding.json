@@ -1,0 +1,34 @@
+{
+ "format": 1,
+ "scene": "ch08_binding",
+ "source": "game/data/dialogue/ch08/ch08_binding.dlg",
+ "start": "ch08_binding",
+ "nodes": {
+  "ch08_binding": {
+   "headers": {"location": "ch08/coilspire"},
+   "ops": [
+    {"op": "cue", "cue": "letterbox", "args": ["on"], "kwargs": {}, "src": 14},
+    {"op": "cue", "cue": "camera", "args": ["F06"], "kwargs": {}, "src": 15},
+    {"op": "cue", "cue": "mark", "args": ["asha", "crown_door", "walk"], "kwargs": {}, "src": 16},
+    {"op": "cue", "cue": "wait", "args": [1.5], "kwargs": {}, "src": 17},
+    {"op": "cue", "cue": "fade", "args": ["out", 0.4], "kwargs": {}, "src": 18},
+    {"op": "cue", "cue": "camera", "args": ["F07"], "kwargs": {}, "src": 19},
+    {"op": "cue", "cue": "vfx", "args": ["glimmer_bound"], "kwargs": {"at": "virel_coil"}, "src": 20},
+    {"op": "cue", "cue": "fade", "args": ["in", 0.4], "kwargs": {}, "src": 21},
+    {"op": "cue", "cue": "music", "args": ["virel_bound"], "kwargs": {}, "src": 22},
+    {"op": "cue", "cue": "wait", "args": [3.0], "kwargs": {}, "src": 23},
+    {"op": "cue", "cue": "fade", "args": ["out", 0.6], "kwargs": {}, "src": 24},
+    {"op": "set", "flag": "ch08_virel_bound", "value": ["lit", true], "src": 25},
+    {"op": "cue", "cue": "mark", "args": ["asha", "crown_out"], "kwargs": {}, "src": 26},
+    {"op": "cue", "cue": "camera", "args": ["F06_out"], "kwargs": {}, "src": 27},
+    {"op": "cue", "cue": "fade", "args": ["in", 0.8], "kwargs": {}, "src": 28},
+    {"op": "cue", "cue": "wait", "args": [1.0], "kwargs": {}, "src": 29},
+    {"op": "line", "id": "ch08_binding_001", "key": "DLG_CH08_BINDING_001", "speaker": "asha", "emotion": "exhausted", "voice": "", "src": 30},
+    {"op": "cue", "cue": "face", "args": ["asha", "soft_smile", 0.6], "kwargs": {}, "src": 31},
+    {"op": "line", "id": "ch08_binding_002", "key": "DLG_CH08_BINDING_002", "speaker": "asha", "emotion": "soft_smile", "voice": "", "src": 32},
+    {"op": "cue", "cue": "wait", "args": [0.8], "kwargs": {}, "src": 33},
+    {"op": "cue", "cue": "letterbox", "args": ["off"], "kwargs": {}, "src": 34}
+   ]
+  }
+ }
+}

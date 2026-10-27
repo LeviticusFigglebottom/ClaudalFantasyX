@@ -1,0 +1,37 @@
+{
+ "format": 1,
+ "scene": "ch08_stuck_key",
+ "source": "game/data/dialogue/ch08/ch08_stuck_key.dlg",
+ "start": "ch08_stuck_key",
+ "nodes": {
+  "ch08_stuck_key": {
+   "headers": {"location": "ch08/coilspire"},
+   "ops": [
+    {"op": "cue", "cue": "camera", "args": ["F05_t3"], "kwargs": {}, "src": 12},
+    {"op": "cue", "cue": "anim", "args": ["toma", "strain_key", "seized_key"], "kwargs": {}, "src": 13},
+    {"op": "cue", "cue": "wait", "args": [1.0], "kwargs": {}, "src": 14},
+    {"op": "cue", "cue": "mark", "args": ["liss", "seized_key_liss", "walk"], "kwargs": {}, "src": 15},
+    {"op": "line", "id": "ch08_stuck_key_001", "key": "DLG_CH08_STUCK_KEY_001", "speaker": "liss", "emotion": "determined", "voice": "", "src": 16},
+    {"op": "cue", "cue": "anim", "args": ["liss", "ease_key", "seized_key"], "kwargs": {}, "src": 17},
+    {"op": "cue", "cue": "sfx", "args": ["flue_key_free"], "kwargs": {}, "src": 18},
+    {"op": "cue", "cue": "wait", "args": [1.2], "kwargs": {}, "src": 19},
+    {"op": "line", "id": "ch08_stuck_key_002", "key": "DLG_CH08_STUCK_KEY_002", "speaker": "liss", "emotion": "soft_smile", "voice": "", "src": 20},
+    {"op": "cue", "cue": "camera", "args": ["F04"], "kwargs": {}, "src": 21},
+    {"op": "cue", "cue": "face", "args": ["liss", "neutral", 0.2], "kwargs": {}, "src": 22},
+    {"op": "cue", "cue": "wait", "args": [1.5], "kwargs": {}, "src": 23},
+    {"op": "cue", "cue": "mark", "args": ["rhen", "seized_key_rhen", "walk"], "kwargs": {}, "src": 24},
+    {"op": "line", "id": "ch08_stuck_key_003", "key": "DLG_CH08_STUCK_KEY_003", "speaker": "liss", "emotion": "neutral", "voice": "", "src": 25, "tags": ["whisper"]},
+    {"op": "line", "id": "ch08_stuck_key_004", "key": "DLG_CH08_STUCK_KEY_004", "speaker": "rhen", "emotion": "neutral", "voice": "", "src": 26, "tags": ["whisper"]},
+    {"op": "cue", "cue": "wait", "args": [0.8], "kwargs": {}, "src": 27},
+    {"op": "line", "id": "ch08_stuck_key_005", "key": "DLG_CH08_STUCK_KEY_005", "speaker": "liss", "emotion": "neutral", "voice": "", "src": 28, "tags": ["whisper"]},
+    {"op": "line", "id": "ch08_stuck_key_006", "key": "DLG_CH08_STUCK_KEY_006", "speaker": "rhen", "emotion": "neutral", "voice": "", "src": 29, "tags": ["whisper"]},
+    {"op": "cue", "cue": "anim", "args": ["liss", "charcoal_rubbing"], "kwargs": {}, "src": 30},
+    {"op": "cue", "cue": "wait", "args": [1.5], "kwargs": {}, "src": 31},
+    {"op": "line", "id": "ch08_stuck_key_007", "key": "DLG_CH08_STUCK_KEY_007", "speaker": "liss", "emotion": "cold", "voice": "", "src": 32, "tags": ["whisper"]},
+    {"op": "line", "id": "ch08_stuck_key_008", "key": "DLG_CH08_STUCK_KEY_008", "speaker": "rhen", "emotion": "neutral", "voice": "", "src": 33, "tags": ["whisper"]},
+    {"op": "set", "flag": "ch08_liss_found_marks", "value": ["lit", true], "src": 34},
+    {"op": "cue", "cue": "camera", "args": ["F05_t3"], "kwargs": {}, "src": 35}
+   ]
+  }
+ }
+}

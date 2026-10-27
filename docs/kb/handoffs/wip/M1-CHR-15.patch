@@ -1,0 +1,1890 @@
+diff --git a/assets_src/characters/asha/asha_costume.py b/assets_src/characters/asha/asha_costume.py
+index be8c3a8b..10b4d665 100644
+--- a/assets_src/characters/asha/asha_costume.py
++++ b/assets_src/characters/asha/asha_costume.py
+@@ -266,8 +266,44 @@ def collar(fields: Fields, rect, height: float, n: int = 48) -> Part:
+ # ---------------------------------------------------------------------------------------------
+ # Skirts and sash
+ # ---------------------------------------------------------------------------------------------
++def convex_radii(r: np.ndarray, D: np.ndarray) -> np.ndarray:
++    """M1-CHR-15: the radii along the rays D (unit, horizontal) of the convex hull of the points r * D. A skirt row
++    cast below the crotch hugs each leg and pinches to the centre between them (a ray that misses both legs gets
++    r = 0); a real skirt spans the gap."""
++    Q = D[:, :2] * r[:, None]
++    pts = sorted(set(map(tuple, np.round(Q, 12))) | {(0.0, 0.0)})
++    if len(pts) < 3:
++        return r
++
++    def cross(o, a, b):
++        return (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0])
++
++    lower, upper = [], []
++    for q in pts:
++        while len(lower) >= 2 and cross(lower[-2], lower[-1], q) <= 0:
++            lower.pop()
++        lower.append(q)
++    for q in reversed(pts):
++        while len(upper) >= 2 and cross(upper[-2], upper[-1], q) <= 0:
++            upper.pop()
++        upper.append(q)
++    H = np.array(lower[:-1] + upper[:-1])
++    A, E = H, np.roll(H, -1, axis=0) - H
++    out = r.copy()
++    for i, d in enumerate(D[:, :2]):
++        den = d[0] * (-E[:, 1]) - d[1] * (-E[:, 0])  # solve t d - s e = a
++        ok = np.abs(den) > 1e-15
++        t = np.where(ok, (A[:, 0] * (-E[:, 1]) - A[:, 1] * (-E[:, 0])) / np.where(ok, den, 1.0), -1.0)
++        sp = np.where(ok, (d[0] * A[:, 1] - d[1] * A[:, 0]) / np.where(ok, den, 1.0), -1.0)
++        hit = ok & (t > 0.0) & (sp >= -1e-9) & (sp <= 1.0 + 1e-9)
++        if hit.any():
++            out[i] = max(float(r[i]), float(t[hit].max()))
++    return out
++
++
+ def skirt(fields: Fields, name: str, rect, z_top: float, hem_fn, off: float, n_th: int, n_rows: int, folds: int,
+-          fold_amp: float, flare: float, back_inset: float | None, seed: int) -> Part:
++          fold_amp: float, flare: float, back_inset: float | None, seed: int,
++          convex: tuple[float, float] | None = None) -> Part:
+     part = Part(name)
+     part._mat = "cloth"
+     lm = fields.lm
+@@ -289,6 +325,10 @@ def skirt(fields: Fields, name: str, rect, z_top: float, hem_fn, off: float, n_t
+         r = cast_last(fn, O, D, 0.5 * S)
+         if prev_r is not None:
+             r = np.maximum(r, prev_r + flare * (prev_z - z))
++        if convex:  # M1-CHR-15: below z0, blending in by z1, span the gap between the legs (the skirt panels carry it)
++            k = np.clip((convex[0] - z) / max(convex[0] - convex[1], 1e-9), 0.0, 1.0)
++            if (k > 0.0).any():
++                r = r + (convex_radii(r, D) - r) * (k * k * (3.0 - 2.0 * k))
+         prev_r, prev_z = r, z
+         amp = fold_amp * S * t ** 1.3
+         rr = r * (1.0 + 0) + amp * (np.sin(folds * th + phase) + 0.4 * np.sin(2.3 * folds * th + 1.7 * phase))
+@@ -531,7 +571,7 @@ def build_costume(body, params: dict) -> dict[str, Part]:
+                               56, 22, 11, 0.012, 0.16, 0.0015 * S, int(params["seed"]))
+     out["SkirtInner"] = skirt(fields, "SkirtInner", ATLAS["skirt_inner"], float(lm.P("crotch")[2]) - 0.05 * S,
+                               lambda th: np.full_like(th, 0.065 * S), 0.004 * S, 48, 12, 9, 0.008, 0.13,
+-                              0.0012 * S, int(params["seed"]) + 1)
++                              0.0012 * S, int(params["seed"]) + 1, convex=(z_waist, z_waist - 0.01 * S))
+     # 4. sash
+     out["Sash"] = sash(fields, out["SkirtOuter"], out["Vest"], ATLAS["sash"], ATLAS["sash_tails"],
+                        float(params["sash_width_m"]) * S, z_waist - 0.02 * S, int(params["seed"]) + 2)
+@@ -563,10 +603,18 @@ def build_costume(body, params: dict) -> dict[str, Part]:
+ 
+ 
+ KEEP_ABOVE_KNEE = 0.16  # m (at s = 1) of thigh kept above the knee joint under the skirts
++SKIRT_CUT_BELOW_WAIST = 0.08  # m (at s = 1): the body under the skirts is cut only above this far below the waist
++
++
++def z_keep_top(lm) -> float:
++    """Height of the cut edge of the hidden thighs under the skirts (coverage)."""
++    return max(float(lm.side_pt("knee", sd)[2]) for sd in ("L", "R")) + KEEP_ABOVE_KNEE * lm.S
+ 
+ 
+-def coverage(body, params: dict, V: np.ndarray, reg: np.ndarray) -> np.ndarray:
+-    """True for body vertices hidden under opaque clothing (with a margin), asha.md §8.1."""
++def coverage(body, params: dict, V: np.ndarray, reg: np.ndarray, under_skirt: bool = False) -> np.ndarray:
++    """True for body vertices hidden under opaque clothing (with a margin), asha.md §8.1. With `under_skirt`, the
++    body kept under the skirts instead (M1-CHR-15: the skirt panels tent away from the legs, so the legs and hips
++    below the panels' pivot stay whole; build_asha decimates them, as nothing sees them through the cloth)."""
+     lm = body.lm
+     S = lm.S
+     chart = TorsoChart(lm)
+@@ -582,7 +630,12 @@ def coverage(body, params: dict, V: np.ndarray, reg: np.ndarray) -> np.ndarray:
+     legs = (reg == "leg_L") | (reg == "leg_R") | torso
+     # M1-CHR-14: the knees and shins stay under the skirts (a stride or a kneel carries them out through the
+     # cloth, and a deleted shin left a floating foot); only the thighs and hips are cut
+-    z_keep = max(float(lm.side_pt("knee", sd)[2]) for sd in ("L", "R")) + KEEP_ABOVE_KNEE * S
++    z_keep = z_keep_top(lm)
+     lo = np.maximum(np.maximum(hem, 0.065 * S) + 0.045 * S, z_keep)
+     skirt = legs & (V[:, 2] < z_waist - 0.03 * S - m * 0.5) & (V[:, 2] > lo)
+-    return vest | bodice | skirt
++    # M1-CHR-15: only the band above the skirt panels' pivot is cut (a cut edge below it showed through the open hem
++    # when a panel tented away from a raised thigh)
++    cut = skirt & (V[:, 2] > z_waist - SKIRT_CUT_BELOW_WAIST * S)
++    if under_skirt:
++        return skirt & ~cut & ~(vest | bodice)
++    return vest | bodice | cut
+diff --git a/assets_src/characters/asha/asha_staff.py b/assets_src/characters/asha/asha_staff.py
+index 4673fea8..7457ea58 100644
+--- a/assets_src/characters/asha/asha_staff.py
++++ b/assets_src/characters/asha/asha_staff.py
+@@ -11,7 +11,7 @@ import numpy as np
+ from asha_mesh import Part, tube, uv_sphere
+ 
+ TAG_STAFF = 61
+-STAFF_OUT = 0.010  # m: the shaft sits this far out from her side of the fist's centre line (M1-CHR-14)
++STAFF_OUT = 0.016  # m: the shaft sits this far out from her side of the fist's centre line (M1-CHR-14; M1-CHR-15: 1 -> 1.6 cm, clear of the wrist with her staff arm wider)
+ 
+ 
+ def staff(lm) -> Part:
+diff --git a/assets_src/characters/asha/build_asha.py b/assets_src/characters/asha/build_asha.py
+index 44f4c53a..aeffd198 100644
+--- a/assets_src/characters/asha/build_asha.py
++++ b/assets_src/characters/asha/build_asha.py
+@@ -43,12 +43,14 @@ import bb_cage  # noqa: E402
+ import bb_donor  # noqa: E402
+ import bb_params  # noqa: E402
+ import bb_rig  # noqa: E402
++import helper_bones  # noqa: E402
+ from asha_mesh import Part  # noqa: E402
+ 
+ PARAMS = HERE / "asha_params.json"
+ HEAD_BONE = "DEF-spine.006"
+ MIDLINE_SNAP = 1e-9  # m: coordinates smaller than this are float noise from the face solve
+ SHAPE_GRID = 1e-6  # m: shape-key deltas are rounded to this (host-independent morph targets)
++POS_GRID = 1e-6  # m: Rhen's and Toma's mesh positions are rounded to this (M1-CHR-15; host-independent, as Sefir)
+ UV_GRID = 2.0 ** -16  # UVs are rounded to this (1/32 texel at 2K; host-independent unwrap)
+ 
+ # material name -> (preview linear rgb, roughness). Godot replaces these by name with the hero
+@@ -143,6 +145,11 @@ def part_object(part: Part, normals: np.ndarray | None = None) -> bpy.types.Obje
+     return make_object(part.name, part.varr(), part.F, part.UV, part.M, part.C or None, normals)
+ 
+ 
++def part_object_snapped(part: Part, normals: np.ndarray | None = None) -> bpy.types.Object:
++    """part_object with the part's positions on the POS_GRID grid (M1-CHR-15: Rhen and Toma)."""
++    return part_object(snap_part(part), normals)
++
++
+ def unwrap_faces(ob: bpy.types.Object, mats: set[str], seams: set | None = None, margin: float = 0.003,
+                  shrink: tuple[np.ndarray, float] | None = None) -> None:
+     """Conformal unwrap + pack of the faces using the given materials only (other parts keep their
+@@ -185,6 +192,19 @@ def unwrap_faces(ob: bpy.types.Object, mats: set[str], seams: set | None = None,
+ 
+ 
+ HAND_FOOT_RATIO = 0.3  # the donor's hands and feet are dense (~10.7k tris); cut for the LOD0 budget
++UNDER_SKIRT_RATIO = 0.25  # M1-CHR-15: the legs and hips kept whole under the skirts, cut for the LOD0 budget
++
++
++def region_of(ob: bpy.types.Object, P0: np.ndarray, reg0: np.ndarray, names: list) -> np.ndarray:
++    """(n,) mask of the object's vertices whose nearest source vertex (P0) is in one of the regions `names`."""
++    from mathutils import kdtree
++
++    kd = kdtree.KDTree(len(P0))
++    for i, p in enumerate(P0):
++        kd.insert(tuple(map(float, p)), i)
++    kd.balance()
++    want = np.isin(reg0, names)
++    return np.array([bool(want[kd.find(v.co)[1]]) for v in ob.data.vertices])
+ 
+ 
+ def decimate_where(ob: bpy.types.Object, mask: np.ndarray, ratio: float, P0: np.ndarray, N0: np.ndarray) -> None:
+@@ -435,6 +455,16 @@ def skirt_weights(P: np.ndarray, W0: np.ndarray, V: np.ndarray, W: np.ndarray, r
+     return limit4(W0 * (1.0 - d[:, None]) + legs * d[:, None])
+ 
+ 
++def snap_positions(P: np.ndarray) -> np.ndarray:
++    """Positions on a POS_GRID grid: their last bits are host-dependent float noise (the CPU's SIMD paths in numpy)."""
++    return np.round(np.asarray(P, dtype=np.float64) / POS_GRID) * POS_GRID
++
++
++def snap_part(part: Part) -> Part:
++    part.V = [p for p in snap_positions(part.varr())]
++    return part
++
++
+ def quantize_uvs(ob: bpy.types.Object) -> None:
+     """UVs on a UV_GRID grid, before the bake dump and the export. Blender's unwrap left one head UV a float32
+     ULP apart between hosts (the Lead's gate, M1-CHR-14), and the texture raster turned that into texel flips."""
+@@ -480,6 +510,66 @@ def rigid(ob: bpy.types.Object, bone: str, skel: bpy.types.Object) -> None:
+     ob.parent = skel
+ 
+ 
++def add_bones(skel: bpy.types.Object, specs: list) -> None:
++    """M1-CHR-15: append deform bones (name, head, tail, parent[, roll]) to the game skeleton."""
++    bpy.ops.object.select_all(action="DESELECT")
++    bpy.context.view_layer.objects.active = skel
++    skel.select_set(True)
++    bpy.ops.object.mode_set(mode="EDIT")
++    eb = skel.data.edit_bones
++    for spec in specs:
++        name, head, tail, parent = spec[:4]
++        e = eb.new(name)
++        e.head = tuple(map(float, head))
++        e.tail = tuple(map(float, tail))
++        e.roll = float(spec[4]) if len(spec) > 4 else 0.0
++        e.use_deform = True
++        e.parent = eb[parent]
++    bpy.ops.object.mode_set(mode="OBJECT")
++
++
++def add_armpit_bones(skel: bpy.types.Object) -> dict:
++    """M1-CHR-15: the shoulder correctives (helper_bones), copies of the upper arms on the shoulders. Returns
++    side -> (head, tail) of the upper arm, for the weights."""
++    arms, specs = {}, []
++    for side in ("L", "R"):
++        b = skel.data.bones[f"DEF-upper_arm.{side}"]
++        head, tail = np.array(b.head_local, dtype=float), np.array(b.tail_local, dtype=float)
++        arms[side] = (head, bone_head(skel, f"DEF-forearm.{side}"))  # the whole upper arm (it has a twist bone)
++        bpy.context.view_layer.objects.active = skel
++        bpy.ops.object.mode_set(mode="EDIT")
++        roll = float(skel.data.edit_bones[b.name].roll)
++        bpy.ops.object.mode_set(mode="OBJECT")
++        specs.append((f"{helper_bones.ARMPIT_BONE}{side}", head, tail, f"DEF-shoulder.{side}", roll))
++    add_bones(skel, specs)
++    return arms
++
++
++def nearest_distance(P: np.ndarray, Q: np.ndarray) -> np.ndarray:
++    """Distance from each row of P to the nearest row of Q."""
++    from mathutils import kdtree
++
++    kd = kdtree.KDTree(len(Q))
++    for i, q in enumerate(Q):
++        kd.insert(tuple(map(float, q)), i)
++    kd.balance()
++    return np.array([kd.find(tuple(map(float, p)))[2] for p in P])
++
++
++def armpit_helpers(skel: bpy.types.Object, V: np.ndarray, W: np.ndarray, wnames: list) -> tuple:
++    """M1-CHR-15, every hero: adds the shoulder correctives (helper_bones) to the skeleton and their weight columns
++    after the donor's, and moves part of the underarm skin's upper-arm weight onto them. Returns (W, wnames, arms)."""
++    arms = add_armpit_bones(skel)
++    wnames = wnames + helper_bones.armpit_names()
++    W = np.concatenate([W, np.zeros((len(V), len(wnames) - W.shape[1]), dtype=np.float32)], axis=1)
++    W, _moved = helper_bones.armpit_skin_weights(V, W, wnames, arms)
++    return W, wnames, arms
++
++
++def bone_head(skel: bpy.types.Object, name: str) -> np.ndarray:
++    return np.array(skel.data.bones[name].head_local, dtype=float)
++
++
+ def attach_to_bone(ob: bpy.types.Object, skel: bpy.types.Object, bone: str, world_pos: np.ndarray) -> None:
+     ob.parent = skel
+     ob.parent_type = "BONE"
+@@ -532,6 +622,11 @@ def main() -> int:
+     Nw = bb_donor.face_normals_vertex(V, F)
+     log(f"rig: {len(skel.data.bones)} deform bones, donor weights on {len(wnames)} bones, dropped {dropped} "
+         f"({time.time() - t0:.1f}s)")
++    # M1-CHR-15: the shoulder correctives and the skirt panels (helper_bones). Their weight columns go after the
++    # donor's; the underarm skin moves part of its upper-arm weight onto the correctives
++    W, wnames, arms = armpit_helpers(skel, V, W, wnames)
++    wnames = wnames + helper_bones.skirt_names()
++    W = np.concatenate([W, np.zeros((len(V), len(wnames) - W.shape[1]), dtype=np.float32)], axis=1)
+ 
+     # ---- split head / body --------------------------------------------------------------------
+     is_head = np.isin(freg, ["head", "scalp", "mouth"])
+@@ -621,19 +716,36 @@ def main() -> int:
+         opaque = Part("Costume")
+         is_skirt = []
+         is_torso = []
++        is_sash = []
+         for key, p in costume.items():
+             if key != "VerseSleeve":
+                 opaque.extend(p)
+                 is_skirt += [key in SKIRT_PARTS] * len(p.V)
+                 is_torso += [key in TORSO_PARTS] * len(p.V)
++                is_sash += [key == "Sash"] * len(p.V)
+         Pc = opaque.varr()
+         Wc = transfer_weights(Pc, V[src_mask], W[src_mask])
+         # M1-CHR-14: the bodice, vest and collar ride the torso only; arm weights at the armholes dragged
+         # the side panels out past a lowered arm
+         tm = np.array(is_torso, bool)
+         Wc[tm] = transfer_weights(Pc[tm], V[reg == "torso"], W[reg == "torso"])
++        # M1-CHR-15: the torso cloth over the underarm turns with the skin under it (the shoulder correctives)
++        Wc[tm] = helper_bones.armpit_cloth_weights(Pc[tm], Wc[tm], wnames, V, W, arms, lm.S)
++        # M1-CHR-15: below the hip joints the skirts (and the sash tails over them) ride the skirt panels
+         sk = np.array(is_skirt, bool)
+-        Wc[sk] = skirt_weights(Pc[sk], Wc[sk], V, W, reg, lm, spine_i)
++        centre = np.array([0.0, 0.01 * lm.S, 0.0])
++        z_pivot = min(float(bone_head(skel, "DEF-thigh.L")[2]) + helper_bones.SKIRT_PIVOT_ABOVE_HIP * lm.S,
++                      float(lm.P("waist")[2]) - (0.03 + helper_bones.SKIRT_TOP_BAND) * lm.S)
++        specs = helper_bones.skirt_bone_specs(costume["SkirtOuter"].varr(), centre, z_pivot,
++                                              float(bone_head(skel, "DEF-shin.L")[2]),
++                                              float(bone_head(skel, "DEF-foot.L")[2]), "DEF-spine")
++        add_bones(skel, specs)
++        hang = sk | (np.array(is_sash, bool) & (Pc[:, 2] < z_pivot))
++        legs = np.isin(reg, ["leg_L", "leg_R", "torso"]) & (V[:, 2] < z_pivot)  # the skin under the panels
++        W_legs = skirt_weights(Pc[hang], Wc[hang], V, W, reg, lm, spine_i)  # M1-CHR-14's leg-following weights
++        Wc[hang] = helper_bones.skirt_weights(Pc[hang], Wc[hang], wnames, centre, z_pivot,
++                                              float(bone_head(skel, "DEF-shin.L")[2]), lm.S, W_legs,
++                                              nearest_distance(Pc[hang], V[legs]))
+         ob = part_object(opaque)
+         apply_weights(ob, Wc, wnames, skel)
+         garment_objs.append(ob)
+@@ -641,6 +753,8 @@ def main() -> int:
+         Ps = sl.varr()
+         arm_mask = np.isin(reg, ["arm_R"]) | ((reg == "torso") & (V[:, 0] < -0.12 * lm.S))
+         Ws = transfer_weights(Ps, V[arm_mask], W[arm_mask])
++        # M1-CHR-15: the bag hanging under the arm turns with the arm only partly (the shoulder corrective)
++        Ws = helper_bones.hanging_weights(Ps, Ws, wnames, arms["R"][0], lm.side_pt("wrist", "R"), "R", lm.S)
+         ob = part_object(sl)
+         apply_weights(ob, Ws, wnames, skel)
+         garment_objs.append(ob)
+@@ -686,9 +800,15 @@ def main() -> int:
+     apply_weights(ob_body, W[used_b], wnames, skel)
+     unwrap_faces(ob_body, {"skin_body"}, uv_seams(Fb_l, UVb))  # the donor's islands, re-flattened and packed
+     quantize_uvs(ob_body)
+-    dense = np.isin(reg[used_b], ["hand_L", "hand_R", "foot_L", "foot_R"])
++    # M1-CHR-15: the legs and hips kept under the skirts are decimated first (nothing sees them through the cloth)
++    under = asha_costume.coverage(body, cparams, V, reg, under_skirt=True)[used_b]
+     t_all = sum(len(f) - 2 for f in Fb_l)
+-    t_dense = sum(len(f) - 2 for f in Fb_l if dense[list(f)].all())
++    t_under = sum(len(f) - 2 for f in Fb_l if under[list(f)].all())
++    decimate_where(ob_body, under, 1.0 - (1.0 - UNDER_SKIRT_RATIO) * t_under / t_all, V[used_b], Nw[used_b])
++    dense = region_of(ob_body, V[used_b], reg[used_b], ["hand_L", "hand_R", "foot_L", "foot_R"])
++    ob_body.data.calc_loop_triangles()
++    t_all = len(ob_body.data.loop_triangles)
++    t_dense = sum(1 for t in ob_body.data.loop_triangles if dense[list(t.vertices)].all())
+     decimate_where(ob_body, dense, 1.0 - (1.0 - HAND_FOOT_RATIO) * t_dense / t_all, V[used_b], Nw[used_b])
+     ob_body.data.calc_loop_triangles()
+     body_tris = len(ob_body.data.loop_triangles)
+diff --git a/assets_src/characters/asha/helper_bones.py b/assets_src/characters/asha/helper_bones.py
+new file mode 100644
+index 00000000..b944daaf
+--- /dev/null
++++ b/assets_src/characters/asha/helper_bones.py
+@@ -0,0 +1,215 @@
++"""Helper bones for deep poses (M1-CHR-15): skirt panels and shoulder correctives, and the weights that use them.
++
++Pure numpy (Blender's build space: +X the hero's left, -Y the way she faces, +Z up); build_asha.add_bones puts the
++bones on the game skeleton. No pose names these bones: hero_clips.py keys them in every clip from the pose itself
++(hero_clips.helper_pose), so they are a deterministic drape baked into the clips.
++
++* **Skirt panels** (`DEF-skirt_<k>`, `DEF-skirt_<k>.001`, k = 0..SKIRT_SECTORS-1 round from the front, to her left):
++  each sector of a floor-length skirt is a two-bone chain hanging from the hips, pivoting at the hip joints' height
++  on the outer skirt (hips -> knees, then knees -> hem). The clips swing each panel out just far enough that the
++  legs stay inside the cloth (the support of the legs' hull in that sector's direction), and the lower bone hangs
++  back towards the vertical. Skirt cloth below the pivot rides the two nearest sectors' chains instead of the legs:
++  each panel moves rigidly, so nothing stretches between the knees and the under-layer cannot twist.
++* **Shoulder correctives** (`DEF-armpit.L` / `.R`): a copy of the upper arm (same head, tail and roll, parented to
++  the shoulder) that turns hero_clips.ARMPIT_SHARE of the upper arm's own turn. The underarm skin next to the torso
++  takes part of its upper-arm weight onto it, and the torso cloth's armhole edge takes the same share where it lies
++  over that skin, so the two move together when the arms come down instead of the arm's inner skin sliding out
++  through the bodice.
++"""
++from __future__ import annotations
++
++import math
++
++import numpy as np
++
++SKIRT_SECTORS = 8
++SKIRT_BONE = "DEF-skirt_"
++ARMPIT_BONE = "DEF-armpit."
++# skirt weights (m at s = 1): the band above the pivot over which the cloth hands over from the hips to the panels,
++# and the band about the knee pivot over which the upper bone hands over to the lower
++SKIRT_TOP_BAND = 0.05
++SKIRT_KNEE_BAND = 0.06
++SKIRT_PIVOT_ABOVE_HIP = 0.09  # m (at s = 1): the panels pivot this far above the hip joints (over a raised thigh)
++SKIRT_HUG_NEAR = 0.012  # m (at s = 1): skirt cloth this near a leg's skin at rest follows that leg
++SKIRT_HUG_FAR = 0.035  # m: and from this far on it rides the panels
++SKIRT_SPLIT = 0.7  # the upper panel bone runs this much of the way from the pivot down to the knees' height
++SKIRT_PIVOT_SLICE = 0.03  # m: the skirt ring this near the pivot height sets each panel's pivot radius
++# armpit weights: along the upper arm (fraction of its length from the shoulder joint), the share of the upper-arm
++# weight moved to the corrective falls from ARMPIT_MAX at ARMPIT_T0 to 0 at ARMPIT_T1; round the arm it is full on
++# the underside (towards the torso) and fades out over the top
++ARMPIT_MAX = 1.0
++ARMPIT_T0 = 0.3
++ARMPIT_T1 = 0.65
++ARMPIT_TSTART = (0.03, 0.13)  # and it fades in over these fractions, clear of the chest and shoulder at the joint
++ARMPIT_UNDER = (-0.35, 0.35)  # cos to the arm's up: the share is full below the first, none above the second
++HANG_MAX = 0.75
++HANG_FROM = 0.04  # m (at s = 1)
++HANG_RAMP = 0.15  # m
++ARMPIT_CLOTH_REACH = 0.02  # m: a cloth vertex this near underarm skin takes that skin's weights
++ARMPIT_CLOTH_FULL = 0.3  # the skin's corrective share at which the cloth over it takes ARMPIT_CLOTH_MIX of the skin's weights
++ARMPIT_CLOTH_MIX = 0.0
++
++
++def smooth01(x: np.ndarray) -> np.ndarray:
++    x = np.clip(x, 0.0, 1.0)
++    return x * x * (3.0 - 2.0 * x)
++
++
++def skirt_names() -> list[str]:
++    out = []
++    for k in range(SKIRT_SECTORS):
++        out += [f"{SKIRT_BONE}{k}", f"{SKIRT_BONE}{k}.001"]
++    return out
++
++
++def armpit_names() -> list[str]:
++    return [f"{ARMPIT_BONE}L", f"{ARMPIT_BONE}R"]
++
++
++def _azimuth(P: np.ndarray, centre: np.ndarray) -> np.ndarray:
++    """Radians round the vertical through `centre`: 0 at the front (-Y), +pi/2 at her left (+X)."""
++    return np.arctan2(P[:, 0] - centre[0], -(P[:, 1] - centre[1]))
++
++
++def skirt_bone_specs(P_outer: np.ndarray, centre: np.ndarray, z_pivot: float, z_knee: float, z_hem: float,
++                     parent: str) -> list:
++    """(name, head, tail, parent) of the panel chains: each pivots on the outer skirt at the pivot height in its
++    sector's direction; the upper bone hangs straight down SKIRT_SPLIT of the way to the knees' height (raised
++    forward, it ends at the knee), the lower one on to the hem."""
++    near = np.abs(P_outer[:, 2] - z_pivot) < SKIRT_PIVOT_SLICE
++    az = _azimuth(P_outer[near], centre)
++    rad = np.linalg.norm(P_outer[near, :2] - centre[:2], axis=1)
++    specs = []
++    for k in range(SKIRT_SECTORS):
++        phi = 2.0 * math.pi * k / SKIRT_SECTORS
++        d = np.abs((az - phi + math.pi) % (2.0 * math.pi) - math.pi)
++        r0 = float(rad[d < math.pi / SKIRT_SECTORS].max())
++        u = np.array([math.sin(phi), -math.cos(phi), 0.0])
++        top = np.array([centre[0], centre[1], z_pivot]) + u * r0
++        knee = np.array([top[0], top[1], z_pivot + (z_knee - z_pivot) * SKIRT_SPLIT])
++        hem = np.array([top[0], top[1], z_hem])
++        a, b = f"{SKIRT_BONE}{k}", f"{SKIRT_BONE}{k}.001"
++        specs += [(a, top, knee, parent), (b, knee, hem, a)]
++    return specs
++
++
++def skirt_weights(P: np.ndarray, W0: np.ndarray, names: list[str], centre: np.ndarray, z_pivot: float,
++                  z_knee: float, S: float, W_legs: np.ndarray, d_leg: np.ndarray) -> np.ndarray:
++    """Skirt cloth below the pivot on the two nearest sectors' chains (the upper bone above the panels' joint, the
++    lower below, blended over SKIRT_KNEE_BAND); above it the hips' weights W0, handed over across SKIRT_TOP_BAND.
++    Cloth that hugs a leg at rest (within SKIRT_HUG_NEAR of its skin, d_leg) keeps that leg's weights W_legs instead,
++    fading to the panels by SKIRT_HUG_FAR: it stays over the leg (and over the cut edge of the hidden thigh), while
++    the cloth that spans between the legs and the flared outer skirt ride the panels."""
++    z_joint = z_pivot + (z_knee - z_pivot) * SKIRT_SPLIT  # the panel bones' joint
++    n = SKIRT_SECTORS
++    s = (_azimuth(P, centre) / (2.0 * math.pi) * n) % n
++    k0 = np.floor(s).astype(int) % n
++    f = s - np.floor(s)
++    lower = smooth01((z_joint + 0.5 * SKIRT_KNEE_BAND * S - P[:, 2]) / (SKIRT_KNEE_BAND * S))
++    panel = smooth01((z_pivot + SKIRT_TOP_BAND * S - P[:, 2]) / (SKIRT_TOP_BAND * S))
++    hug = smooth01((SKIRT_HUG_FAR * S - d_leg) / ((SKIRT_HUG_FAR - SKIRT_HUG_NEAR) * S))
++    W = np.zeros((len(P), len(names)), dtype=np.float64)
++    rows = np.arange(len(P))
++    for kk, wk in ((k0, 1.0 - f), ((k0 + 1) % n, f)):
++        up = np.array([names.index(f"{SKIRT_BONE}{k}") for k in range(n)])[kk]
++        lo = np.array([names.index(f"{SKIRT_BONE}{k}.001") for k in range(n)])[kk]
++        np.add.at(W, (rows, up), wk * (1.0 - lower))
++        np.add.at(W, (rows, lo), wk * lower)
++    W = W * (1.0 - hug)[:, None] + W_legs.astype(np.float64) * hug[:, None]
++    out = W0.astype(np.float64) * (1.0 - panel)[:, None] + W * panel[:, None]
++    return _limit4(out).astype(np.float32)
++
++
++def armpit_share(P: np.ndarray, head: np.ndarray, tail: np.ndarray, side_x: float) -> np.ndarray:
++    """(n,) fraction of the upper-arm weight a skin vertex moves onto its side's corrective."""
++    d = tail - head
++    L = float(np.linalg.norm(d))
++    d = d / L
++    up = np.array([0.0, 0.0, 1.0]) - d * d[2]
++    up /= np.linalg.norm(up)
++    rel = P - head
++    t = rel @ d / L
++    radial = rel - np.outer(rel @ d, d)
++    rn = radial / np.maximum(np.linalg.norm(radial, axis=1, keepdims=True), 1e-9)
++    under = smooth01((ARMPIT_UNDER[1] - rn @ up) / (ARMPIT_UNDER[1] - ARMPIT_UNDER[0]))  # 1 on the underside
++    along = smooth01((ARMPIT_T1 - t) / (ARMPIT_T1 - ARMPIT_T0))
++    near_side = np.sign(P[:, 0]) == np.sign(side_x)
++    start = smooth01((t - ARMPIT_TSTART[0]) / (ARMPIT_TSTART[1] - ARMPIT_TSTART[0]))  # not the chest at the joint
++    return ARMPIT_MAX * along * under * start * near_side
++
++
++def armpit_skin_weights(P: np.ndarray, W: np.ndarray, names: list[str], arms: dict) -> tuple[np.ndarray, np.ndarray]:
++    """Moves part of each skin vertex's upper-arm weight to the corrective. `arms`: side -> (head, tail) of the upper
++    arm. Returns the new weights (columns `names`, which hold the correctives) and each vertex's moved share of its
++    total weight (for the cloth over it)."""
++    W64 = W.astype(np.float64)
++    moved = np.zeros(len(P))
++    for side, (head, tail) in arms.items():
++        ua = names.index(f"DEF-upper_arm.{side}")
++        h = names.index(f"{ARMPIT_BONE}{side}")
++        share = armpit_share(P, head, tail, head[0]) * W64[:, ua]
++        share = np.where(share > 1e-4, share, 0.0)
++        W64[:, h] += share
++        W64[:, ua] -= share
++        moved += share
++    out = W.copy()
++    rows = moved > 0.0  # the other rows keep their exact weights
++    out[rows] = _limit4(W64[rows]).astype(np.float32)
++    return out, moved
++
++
++def armpit_cloth_weights(Pc: np.ndarray, Wc: np.ndarray, names: list[str], Ps: np.ndarray, Ws: np.ndarray,
++                         arms: dict, S: float) -> np.ndarray:
++    """Torso cloth over the underarm: a vertex whose nearest skin vertex rides a corrective takes that skin's weights
++    (in proportion to the skin's corrective share, ARMPIT_CLOTH_FULL for all of it), fading back to its own between
++    ARMPIT_CLOTH_REACH and 3 cm further, so the cloth and the skin under it turn together."""
++    out = Wc.copy()
++    Wc = Wc.astype(np.float64)
++    touched = np.zeros(len(Pc), dtype=bool)
++    r0, r1 = ARMPIT_CLOTH_REACH * S, (ARMPIT_CLOTH_REACH + 0.03) * S
++    for side, (head, tail) in arms.items():
++        h = names.index(f"{ARMPIT_BONE}{side}")
++        zone = 1.2 * float(np.linalg.norm(tail - head))
++        near = np.nonzero(np.linalg.norm(Ps - head, axis=1) < zone + r1)[0]
++        Q = Ps[near]
++        for i in np.nonzero(np.linalg.norm(Pc - head, axis=1) < zone)[0]:
++            dd = np.linalg.norm(Q - Pc[i], axis=1)
++            j = int(np.argmin(dd))
++            share = float(Ws[near[j], h])
++            if dd[j] >= r1 or share <= 1e-4:
++                continue
++            f = float(smooth01(np.array([(r1 - dd[j]) / (r1 - r0)]))[0]) * min(1.0, share / ARMPIT_CLOTH_FULL) * ARMPIT_CLOTH_MIX
++            if f <= 1e-4:
++                continue
++            Wc[i] = Wc[i] * (1.0 - f) + Ws[near[j]] * f
++            touched[i] = True
++    out[touched] = _limit4(Wc[touched]).astype(np.float32)
++    return out
++
++
++def hanging_weights(P: np.ndarray, W: np.ndarray, names: list[str], head: np.ndarray, wrist: np.ndarray,
++                    side: str, S: float) -> np.ndarray:
++    """A sheet hanging below an arm (Asha's verse-sleeve bag) moves part of its arm weights onto that side's
++    corrective, by how far it hangs below the arm's line at rest (HANG_MAX from HANG_FROM + HANG_RAMP down): when the
++    arm comes down, the bag turns with it less and keeps hanging beside the hip instead of swinging into the waist."""
++    W64 = W.astype(np.float64)
++    d = wrist - head
++    t = np.clip((P - head) @ d / float(d @ d), 0.0, 1.0)
++    below = (head[2] + t * d[2]) - P[:, 2]
++    share = HANG_MAX * smooth01((below - HANG_FROM * S) / (HANG_RAMP * S))
++    arm = [names.index(n) for n in names if n.startswith((f"DEF-upper_arm.{side}", f"DEF-forearm.{side}"))]
++    h = names.index(f"{ARMPIT_BONE}{side}")
++    moved = W64[:, arm] * share[:, None]
++    W64[:, arm] -= moved
++    W64[:, h] += moved.sum(axis=1)
++    out = W.copy()
++    rows = share > 1e-4
++    out[rows] = _limit4(W64[rows]).astype(np.float32)
++    return out
++
++
++def _limit4(W: np.ndarray) -> np.ndarray:
++    if W.shape[1] > 4:
++        thr = -np.sort(-W, axis=1)[:, 3:4]
++        W = np.where(W >= thr, W, 0.0)
++    return W / np.maximum(W.sum(axis=1, keepdims=True), 1e-12)
+diff --git a/assets_src/characters/asha/hero_clips.py b/assets_src/characters/asha/hero_clips.py
+index 6d68ea62..d4a2641c 100644
+--- a/assets_src/characters/asha/hero_clips.py
++++ b/assets_src/characters/asha/hero_clips.py
+@@ -146,6 +146,7 @@ class Skeleton:
+         self.hip_w = float(abs(self.g_t["DEF-thigh.L"][0] - self.g_t["DEF-thigh.R"][0]))
+         self.shoulder_w = float(abs(self.g_t["DEF-upper_arm.L"][0] - self.g_t["DEF-upper_arm.R"][0]))
+         self.ankle_w = float(abs(self.g_t["DEF-foot.L"][0] - self.g_t["DEF-foot.R"][0]))
++        helpers_init(self, glb, nodes, parent)  # M1-CHR-15: the skirt and shoulder helper bones, if the GLB has them
+ 
+     def local_pose(self, turns: dict) -> dict:
+         """World-axis turns (bone -> quaternion) -> local rotations, parents first."""
+@@ -160,6 +161,7 @@ class Skeleton:
+             g[name] = gq
+             lq = qmul(qinv(pg), gq)
+             out[name] = lq / np.linalg.norm(lq)
++        helper_pose(self, g, out)  # M1-CHR-15
+         return out
+ 
+ 
+@@ -208,7 +210,7 @@ def stand(persona: dict) -> dict:
+          "DEF-spine.001": (lean * 0.4, 0.0, 0.0), "DEF-spine.006": (-lean * 0.3, 0.0, 0.0),
+          "DEF-thigh.L": (-lean * 0.5, 0.0, 0.0), "DEF-thigh.R": (-lean * 0.5, 0.0, 0.0)}
+     if persona["staff"]:
+-        p["DEF-upper_arm.R"] = (-6.0, 0.0, a - 8.0)  # the staff a little forward of the body (asha.md §2.3)
++        p["DEF-upper_arm.R"] = (-6.0, 0.0, a - 14.0)  # the staff a little forward of the body (asha.md §2.3)
+         p["DEF-forearm.R"] = (-28.0, 0.0, 0.0)
+     return p
+ 
+@@ -250,6 +252,26 @@ def spear_level(sk: Skeleton, persona: dict) -> dict:
+     })
+ 
+ 
++# M1-CHR-15: spear_level and lower_spear run one path, v = 0 (planted) to 1 (levelled), over SPEAR_MOVE of the clip.
++# The arm swings out and up (SPEAR_LIFT, peaking mid-path) while the hand turns the spear, so neither the shaft (at the
++# wrist) nor its foot (at his right foot) passes through him; the hand turns over SPEAR_TURN of the path.
++SPEAR_MOVE = 0.75
++SPEAR_LIFT = {"DEF-upper_arm.R": (-12.0, 0.0, -10.0), "DEF-forearm.R": (-40.0, 0.0, 0.0)}
++SPEAR_TURN = (1.0 / 6.0, 5.0 / 6.0)
++SPEAR_ARMS = 5.0 / 6.0
++
++
++def spear_path(sk: Skeleton, persona: dict, v: float) -> dict:
++    base, lev = planted(sk, persona), spear_level(sk, persona)
++    out = add(blend(base, lev, smooth(v / SPEAR_ARMS)), _scale_pose(SPEAR_LIFT, math.sin(math.pi * v)))
++    out["DEF-hand.R"] = blend(base, lev, smooth((v - SPEAR_TURN[0]) / (SPEAR_TURN[1] - SPEAR_TURN[0])))["DEF-hand.R"]
++    return out
++
++
++def _scale_pose(p: dict, s: float) -> dict:
++    return {k: tuple(np.asarray(v, dtype=float) * s) for k, v in p.items()}
++
++
+ def sit(sk: Skeleton, persona: dict) -> dict:
+     """Seated on a step at knee height, the knees apart, leaning a little forward with the left forearm on the
+     thigh; the spear stays upright in the right hand (Ch3)."""
+@@ -275,7 +297,7 @@ def kneel(sk: Skeleton, persona: dict) -> dict:
+          "DEF-spine.001": (14.0, 0.0, 0.0), "DEF-spine.002": (12.0, 0.0, 0.0), "DEF-spine.003": (6.0, 0.0, 0.0),
+          "DEF-spine.005": (6.0, 0.0, 0.0), "DEF-spine.006": (16.0, 0.0, 0.0),
+          "DEF-upper_arm.L": (-34.0, 0.0, -a + 6.0), "DEF-forearm.L": (-38.0, 0.0, 0.0),
+-         "DEF-upper_arm.R": (-10.0, 0.0, a - 6.0), "DEF-forearm.R": (-30.0, 0.0, 0.0)}
++         "DEF-upper_arm.R": (-10.0, 0.0, a - 12.0), "DEF-forearm.R": (-30.0, 0.0, 0.0)}
+     return p
+ 
+ 
+@@ -378,18 +400,9 @@ def pose_at(clip: str, t: float, length: float, sk: Skeleton, persona: dict) ->
+                         "DEF-upper_arm.L": (-18.0 * e, -10.0 * e, 16.0 * e),
+                         "DEF-forearm.L": (-78.0 * e, -72.0 * e, 0.0), "DEF-hand.L": (0.0, -20.0 * e, -10.0 * e)})
+     if clip == "spear_level":
+-        # M1-CHR-14: the arms lift before the hand turns the spear level (turned together, its foot swept through
+-        # his right foot)
+-        out = blend(planted(sk, persona), spear_level(sk, persona), smooth(u / 0.75))
+-        turn = blend(planted(sk, persona), spear_level(sk, persona), smooth((u - 0.2) / 0.55))
+-        out["DEF-hand.R"] = turn["DEF-hand.R"]
+-        return out
++        return spear_path(sk, persona, min(u / SPEAR_MOVE, 1.0))  # M1-CHR-15: the path below
+     if clip == "lower_spear":
+-        # and back: the spear turns upright before the arms come down
+-        out = blend(spear_level(sk, persona), planted(sk, persona), smooth(u / 0.8))
+-        turn = blend(spear_level(sk, persona), planted(sk, persona), smooth(u / 0.55))
+-        out["DEF-hand.R"] = turn["DEF-hand.R"]
+-        return out
++        return spear_path(sk, persona, 1.0 - min(u / SPEAR_MOVE, 1.0))  # and back along it
+     if clip == "palms_level":
+         # "Be level": the left palm comes up flat at chest height, then sweeps slowly out, level; the head bows
+         e = smooth(u / 0.45)
+@@ -985,6 +998,234 @@ def sefir_pose_at(clip: str, t: float, length: float, sk: Skeleton, persona: dic
+     raise KeyError(clip)
+ 
+ 
++# ---------------------------------------------------------------------------------------------
++# M1-CHR-15: helper bones -- the skirt drape and the shoulder correctives. The builds add extra deform bones that no
++# pose names (build_asha.helper_bone_specs); every clip keys them from its own pose, so they are a deterministic
++# drape baked into the clips. A skeleton without them (Sefir, the villagers) gets no extra tracks, and its library
++# does not change.
++# ---------------------------------------------------------------------------------------------
++HELPER_DATA = ROOT / "game" / "data" / "characters" / "helper_bones.json"  # shared with hero_helper_bones.gd
++_HELP = json.loads(HELPER_DATA.read_text(encoding="utf-8"))
++ARMPIT_BONE = _HELP["armpit"]["bone_prefix"]  # DEF-armpit.L / .R: at the shoulder joint, turning ARMPIT_SHARE
++ARMPIT_DRIVER = _HELP["armpit"]["driver_prefix"]  # of the upper arm's own turn
++ARMPIT_SHARE = float(_HELP["armpit"]["share"])
++ARMPIT_RAISE_FULL = math.radians(float(_HELP["armpit"]["raise_full_deg"]))
++# DEF-skirt_<k>: sector k's panel from its pivot to the panels' joint; DEF-skirt_<k>.001: on to the hem. The skirt is
++# solved against its own cloth: each panel bone swings out (about its pivot, in the vertical plane through its sector)
++# by the least angle that keeps every cloth vertex it carries (SKIRT_CLOTH_MIN of its weight or more) within
++# SKIRT_SLACK of its rest distance (capped at SKIRT_CLEAR) from the axis of every leg segment; see the data file.
++_SK = _HELP["skirt"]
++SKIRT_BONE = _SK["bone_prefix"]
++SKIRT_LEG_SEGMENTS = tuple(tuple(x) for x in _SK["leg_segments"])
++SKIRT_CLOTH_MESH = _SK["cloth_mesh"]
++SKIRT_CLOTH_MIN = float(_SK["cloth_min_weight"])
++SKIRT_CLEAR = float(_SK["clear_m"])
++SKIRT_SLACK = float(_SK["slack_m"])
++SKIRT_MAX_SWING = float(_SK["max_swing_deg"])
++SKIRT_LAG = float(_SK["lag_deg_per_45"])
++SKIRT_GRID = float(_SK["grid_deg"])
++SKIRT_BISECT = int(_SK["bisect"])
++
++
++def qpow(q: np.ndarray, s: float) -> np.ndarray:
++    """The rotation q scaled to s of its angle (shortest way)."""
++    q = q / np.linalg.norm(q)
++    if q[3] < 0.0:
++        q = -q
++    ang = 2.0 * math.acos(min(1.0, float(q[3])))
++    if ang < 1e-12:
++        return np.array([0.0, 0.0, 0.0, 1.0])
++    return qaxis(q[:3] / np.linalg.norm(q[:3]), math.degrees(ang) * s)
++
++
++def helpers_init(sk: "Skeleton", glb: Path, nodes: list, parent: dict) -> None:
++    """Record the GLB's helper bones on the skeleton: names (in node order), rest rotation and translation, parent;
++    and, for the skirt panels, the cloth each one carries (rest positions relative to the hips joint)."""
++    sk.helpers = []
++    for i, n in enumerate(nodes):
++        name = n.get("name", "")
++        if not name.startswith((SKIRT_BONE, ARMPIT_BONE)):
++            continue
++        pn = nodes[parent[i]]["name"]
++        sk.helpers.append(name)
++        sk.rest_q[name] = np.array(n.get("rotation", [0.0, 0.0, 0.0, 1.0]), dtype=float)
++        sk.rest_t[name] = np.array(n.get("translation", [0.0, 0.0, 0.0]), dtype=float)
++        sk.parent[name] = pn
++    sk.keyed = BONES + sk.helpers
++    sk.skirt = sorted(h for h in sk.helpers if h.startswith(SKIRT_BONE) and h.count(".") == 0)
++    for h in sk.skirt:
++        assert sk.parent[h] == HIPS and h + ".001" in sk.helpers, h
++    for h in sk.helpers:
++        if h.startswith(ARMPIT_BONE):
++            assert sk.parent[h] == sk.parent[ARMPIT_DRIVER + h[-1]], h
++    if sk.skirt:
++        sk.skirt_cloth = _panel_cloth(sk, glb, sk.skirt + [h + ".001" for h in sk.skirt])
++
++
++def _panel_cloth(sk: "Skeleton", glb: Path, bones: list) -> dict:
++    """bone -> (n, 3) rest positions, relative to the hips joint, of the cloth vertices with at least SKIRT_CLOTH_MIN
++    of their weight on that bone (so a vertex between two panels counts for both)."""
++    js, bin_ = asha_glb.read_glb(glb)
++    names = [js["nodes"][j]["name"] for j in js["skins"][0]["joints"]]
++    out = {b: [] for b in bones}
++    mesh = asha_glb.mesh_by_name(js, SKIRT_CLOTH_MESH)
++    for prim in mesh["primitives"]:
++        a = prim["attributes"]
++        P = asha_glb.accessor(js, bin_, a["POSITION"]).astype(float)
++        J = asha_glb.accessor(js, bin_, a["JOINTS_0"]).astype(int)
++        W = asha_glb.accessor(js, bin_, a["WEIGHTS_0"]).astype(float)
++        if js["accessors"][a["WEIGHTS_0"]].get("normalized") and W.max() > 1.0:
++            W = W / (255.0 if W.max() <= 255 else 65535.0)
++        for i in range(len(P)):
++            for k in range(4):
++                b = names[int(J[i, k])]
++                if b in out and W[i, k] >= SKIRT_CLOTH_MIN:
++                    out[b].append(P[i] - sk.g_t[HIPS])
++    return {b: np.array(v).reshape(-1, 3) for b, v in out.items()}
++
++
++def _leg_segments(sk: "Skeleton", g: dict) -> tuple:
++    """(heads, tails), each (n, 3): the SKIRT_LEG_SEGMENTS of both legs, relative to the hips joint, for global
++    rotations g."""
++    pos = {HIPS: np.zeros(3)}
++    for name in BONES[1:]:
++        p = sk.parent[name]
++        pos[name] = pos[p] + qrot(g[p], sk.rest_t[name])
++    a = [pos[f"{x}.{s}"] for s in ("L", "R") for x, _ in SKIRT_LEG_SEGMENTS]
++    b = [pos[f"{y}.{s}"] for s in ("L", "R") for _, y in SKIRT_LEG_SEGMENTS]
++    return np.array(a), np.array(b)
++
++
++def _seg_dist(C: np.ndarray, A: np.ndarray, B: np.ndarray) -> np.ndarray:
++    """(n, m) distances from points C (n, 3) to segments A-B (m, 3)."""
++    AB = B - A
++    t = np.einsum("nmk,mk->nm", C[:, None, :] - A[None], AB) / np.maximum((AB * AB).sum(axis=1), 1e-12)
++    Q = A[None] + np.clip(t, 0.0, 1.0)[..., None] * AB[None]
++    return np.linalg.norm(C[:, None, :] - Q, axis=2)
++
++
++def _rot_about(C: np.ndarray, pivot: np.ndarray, axis: np.ndarray, ang: float) -> np.ndarray:
++    """Points C turned by `ang` radians about the line through `pivot` along the unit `axis` (Rodrigues)."""
++    v = C - pivot
++    c, s = math.cos(ang), math.sin(ang)
++    return pivot + v * c + np.cross(axis, v) * s + np.outer(v @ axis, axis) * (1.0 - c)
++
++
++def _swing(C0: np.ndarray, place, A: np.ndarray, B: np.ndarray, A0: np.ndarray, B0: np.ndarray) -> float:
++    """Least angle in [0, SKIRT_MAX_SWING] at which the cloth `place(angle)` keeps its rest clearance from the legs
++    (see SKIRT_SLACK): coarse steps, then bisection; when no angle clears, the one that comes nearest."""
++    if not len(C0):
++        return 0.0
++    need = np.minimum(_seg_dist(C0, A0, B0), SKIRT_CLEAR) - SKIRT_SLACK
++
++    def margin(ang: float) -> float:
++        return float((_seg_dist(place(ang), A, B) - need).min())
++
++    if margin(0.0) >= 0.0:
++        return 0.0
++    top = math.radians(SKIRT_MAX_SWING)
++    step = math.radians(SKIRT_GRID)
++    best, best_m = 0.0, margin(0.0)
++    lo = 0.0
++    ang = step
++    while ang <= top + 1e-9:
++        m = margin(ang)
++        if m >= 0.0:
++            hi = ang
++            for _ in range(SKIRT_BISECT):
++                mid = 0.5 * (lo + hi)
++                if margin(mid) >= 0.0:
++                    hi = mid
++                else:
++                    lo = mid
++            return hi
++        if m > best_m:
++            best, best_m = ang, m
++        lo = ang
++        ang += step
++    return best
++
++
++def skirt_solve(sk: "Skeleton", g: dict) -> dict:
++    """{upper panel bone: (outward axis, upper swing, lower swing)} in the pelvis's frame, radians, for the pose's
++    global rotations g. AshaStage and the cutscene stages run the same solve (game/characters/hero_helper_bones.gd)."""
++    rq_h = sk.rest_q[HIPS]
++    inv_dp = qinv(qmul(g[HIPS], qinv(rq_h)))  # the pelvis's turn: the skirt is solved in the pelvis's frame
++    A, B = _leg_segments(sk, g)
++    A = np.array([qrot(inv_dp, x) for x in A])
++    B = np.array([qrot(inv_dp, x) for x in B])
++    if not hasattr(sk, "_rest_legs"):
++        g0 = {}
++        for name in BONES:
++            pn = sk.parent[name]
++            g0[name] = sk.rest_q[name] if pn is None else qmul(g0[pn], sk.rest_q[name])
++        sk._rest_legs = _leg_segments(sk, g0)
++    A0, B0 = sk._rest_legs
++    down = np.array([0.0, -1.0, 0.0])
++    tops, knees, axes, us = [], [], [], []
++    for h in sk.skirt:
++        top = qrot(rq_h, sk.rest_t[h])  # the panel's pivot, relative to the hips joint (rest pelvis frame)
++        tops.append(top)
++        knees.append(top + qrot(qmul(rq_h, sk.rest_q[h]), sk.rest_t[h + ".001"]))  # the lower bone's head at rest
++        u = np.array([top[0], 0.0, top[2]])
++        us.append(u / np.linalg.norm(u))
++        axes.append(np.cross(down, us[-1]))
++    # neighbouring panels share the cloth between them: neither may lag the other by more than SKIRT_LAG per 45 deg
++    lag = math.radians(SKIRT_LAG) / (math.pi / 4)
++    apart = np.arccos(np.clip(np.array(us) @ np.array(us).T, -1.0, 1.0))
++    a1 = np.array([_swing(sk.skirt_cloth[h], lambda ang, C=sk.skirt_cloth[h], t=t, ax=ax: _rot_about(C, t, ax, ang),
++                          A, B, A0, B0) for h, t, ax in zip(sk.skirt, tops, axes)])
++    a1 = np.minimum((a1[None, :] - lag * apart).max(axis=1), math.radians(SKIRT_MAX_SWING))
++    a2 = []
++    for h, t, k, ax, x1 in zip(sk.skirt, tops, knees, axes, a1):
++        C2 = sk.skirt_cloth[h + ".001"]
++        tip = _rot_about(k[None], t, ax, x1)[0]
++        a2.append(_swing(C2, lambda ang, C2=C2, k=k, ax=ax, tip=tip: _rot_about(C2, k, ax, ang) + (tip - k),
++                         A, B, A0, B0))
++    a2 = np.minimum((np.array(a2)[None, :] - lag * apart).max(axis=1), math.radians(SKIRT_MAX_SWING))
++    return {h: (ax, float(x1), float(x2)) for h, ax, x1, x2 in zip(sk.skirt, axes, a1, a2)}
++
++
++def helper_pose(sk: "Skeleton", g: dict, out: dict) -> None:
++    """Local rotations of the helper bones, from the pose's global rotations g of the keyed bones (into out)."""
++    if not sk.helpers:
++        return
++    for h in sk.helpers:
++        if h.startswith(ARMPIT_BONE):
++            drv = ARMPIT_DRIVER + h[-1]
++            d = qmul(out[drv], qinv(sk.rest_q[drv]))  # the upper arm's own turn, in the shared parent's frame
++            up = np.array([0.0, 1.0, 0.0])  # the bone's own axis
++            lift = math.asin(max(-1.0, min(1.0, float(qrot(g[drv], up)[1])))) - math.asin(
++                max(-1.0, min(1.0, float(qrot(qmul(g[sk.parent[drv]], sk.rest_q[drv]), up)[1]))))
++            share = ARMPIT_SHARE + (1.0 - ARMPIT_SHARE) * smooth(lift / ARMPIT_RAISE_FULL)
++            q = qmul(qpow(d, share), sk.rest_q[h])
++            out[h] = q / np.linalg.norm(q)
++    if not sk.skirt:
++        return
++    rq_h = sk.rest_q[HIPS]
++    for h, (axis, a1, a2) in skirt_solve(sk, g).items():
++        lo = h + ".001"
++        g1 = qmul(rq_h, sk.rest_q[h])  # the upper bone's rest rotation in the pelvis's frame
++        loc1 = qmul(qinv(rq_h), qmul(qaxis(axis, math.degrees(a1)), g1))
++        out[h] = loc1 / np.linalg.norm(loc1)
++        loc2 = qmul(qinv(g1), qmul(qaxis(axis, math.degrees(a2 - a1)), qmul(g1, sk.rest_q[lo])))
++        out[lo] = loc2 / np.linalg.norm(loc2)
++
++
++def helper_locals(sk: "Skeleton", local: dict) -> dict:
++    """The helper bones' local rotations for a pose given as local rotations of (some of) the keyed bones, the rest
++    at rest: what game/characters/hero_helper_bones.gd sets after a stage's hand-set pose (rig_probe's stage poses)."""
++    if not sk.helpers:
++        return {}
++    g, out = {}, {}
++    for name in BONES:
++        p = sk.parent[name]
++        out[name] = np.asarray(local.get(name, sk.rest_q[name]), dtype=float)
++        g[name] = out[name] if p is None else qmul(g[p], out[name])
++    helper_pose(sk, g, out)
++    return {h: out[h] for h in sk.helpers}
++
++
+ # ---------------------------------------------------------------------------------------------
+ # AnimationLibrary text resource
+ # ---------------------------------------------------------------------------------------------
+@@ -1004,21 +1245,21 @@ def build(hero: str) -> str:
+         loop = clip in LOOPS
+         n = int(round(length * FPS))
+         times = [i / FPS for i in range(n + 1)]
+-        keys_q = {b: [] for b in BONES}
++        keys_q = {b: [] for b in sk.keyed}  # M1-CHR-15: the body bones, then the GLB's helper bones
+         keys_p = []
+         for t in times:
+             tt = (t % length) if loop else t
+             pose = staff_hold(pose_at(clip, tt, length, sk, persona), persona)
+             turns = {b: qeuler(v) for b, v in pose.items() if b != "hips"}
+             local = sk.local_pose(turns)
+-            for b in BONES:
++            for b in sk.keyed:
+                 keys_q[b].append((t, local[b]))
+             keys_p.append((t, sk.rest_t[HIPS] + np.asarray(pose.get("hips", (0.0, 0.0, 0.0)), dtype=float)))
+         lines = [f'[sub_resource type="Animation" id="clip_{ci}"]', f'resource_name = &"{clip}"',
+                  f"length = {fmt(length)}", f"loop_mode = {1 if loop else 0}", f"step = {fmt(1.0 / FPS)}"]
+         lines += battle_markers(clip, length)  # M2-CHR-07: the strike clips' `contact` marker
+         tracks = [("position_3d", HIPS, [(t, list(p)) for t, p in keys_p])]
+-        tracks += [("rotation_3d", b, [(t, list(q)) for t, q in keys_q[b]]) for b in BONES]
++        tracks += [("rotation_3d", b, [(t, list(q)) for t, q in keys_q[b]]) for b in sk.keyed]
+         for ti, (kind, bone, keys) in enumerate(tracks):
+             vals = []
+             for t, v in keys:
+@@ -1046,7 +1287,6 @@ def main() -> int:
+         text = build(hero)
+         p.write_text(text, encoding="utf-8")
+         print(f"wrote {p.relative_to(ROOT)} ({len(text) / 1e6:.2f} MB, {len(CLIPS[hero])} clips)")
+-    _ = json
+     return 0
+ 
+ 
+diff --git a/assets_src/characters/rhen/build_rhen.py b/assets_src/characters/rhen/build_rhen.py
+index 81db3a0e..887a9911 100644
+--- a/assets_src/characters/rhen/build_rhen.py
++++ b/assets_src/characters/rhen/build_rhen.py
+@@ -79,7 +79,7 @@ def parse_args() -> argparse.Namespace:
+ 
+ 
+ def rigid_part(part: Part, bone: str, wnames: list, skel: bpy.types.Object) -> bpy.types.Object:
+-    ob = hb.part_object(part)
++    ob = hb.part_object_snapped(part)
+     W = np.zeros((len(part.V), len(wnames)), dtype=np.float32)
+     W[:, wnames.index(bone)] = 1.0
+     hb.apply_weights(ob, W, wnames, skel)
+@@ -95,7 +95,7 @@ def main() -> int:
+     res = bb_donor.generate(params, log=log, subdiv_face=True)
+     lm, body = res["lm"], res["body"]
+     face = body.face
+-    V, F = res["V"], np.asarray(res["F"])
++    V, F = hb.snap_positions(res["V"]), np.asarray(res["F"])  # M1-CHR-15: host-independent positions
+     reg = np.array(res["reg"])
+     freg = np.array(res["freg"])
+     UVc = np.asarray(res["uv"])
+@@ -110,11 +110,13 @@ def main() -> int:
+     Nw = bb_donor.face_normals_vertex(V, F)
+     log(f"rig: {len(skel.data.bones)} deform bones, donor weights on {len(wnames)} bones, dropped {dropped} "
+         f"({time.time() - t0:.1f}s)")
++    W, wnames, arms = hb.armpit_helpers(skel, V, W, wnames)  # M1-CHR-15: the shoulder correctives
+ 
+     # ---- head (same construction as Asha's) ----------------------------------------------------
+     is_head = np.isin(freg, ["head", "scalp", "mouth"])
+     used_h, Fh, remap_h, Sh = hb.submesh(V, F, is_head, res["seams"])
+     Vh = V[used_h]
++    Vh[np.abs(Vh) < hb.MIDLINE_SNAP] = 0.0  # M1-CHR-15: host-independent midline (as build_asha)
+     fh_reg = freg[is_head]
+     inner_v = hb.inner_lip_vertices(Vh, Nw[used_h], res["lip_dz"][used_h], face.mouth_half,
+                                     lm.h / 0.222)
+@@ -146,7 +148,7 @@ def main() -> int:
+     extras.append(asha_mouth.mouth_interior(lm, res["fit"].lip_line_y + 0.0015 * lm.S))
+     for ex in extras:
+         head.extend(ex)
+-    Vhead = head.varr()
++    Vhead = hb.snap_positions(head.varr())  # M1-CHR-15
+     ob_head = hb.make_object("Head", Vhead, head.F, head.UV, head.M)
+     me = ob_head.data
+     auto = np.zeros((len(me.vertices), 3))
+@@ -157,6 +159,7 @@ def main() -> int:
+                                                        np.where(fh_reg == "mouth", 4, 2)))
+     hb.unwrap_faces(ob_head, {"skin_head", "mouth"}, hb.head_seams(Fh, cat, Vh, lm),
+                     shrink=(np.nonzero(cat != 1)[0], 0.45))
++    hb.quantize_uvs(ob_head)  # M1-CHR-15: host-independent UVs (as build_asha)
+     pad = np.zeros(len(Vhead) - n_skin)
+     masks = {"lower": np.concatenate([res["lower"][used_h], pad]), "lip": np.concatenate([res["lip_w"][used_h], pad])}
+     lip_frame = {k: np.concatenate([res[n][used_h], pad]) for k, n in (("contact", "lip_contact"), ("dz", "lip_dz"),
+@@ -182,6 +185,8 @@ def main() -> int:
+     covered = rhen_costume.coverage(body, cparams, V, reg)
+     hidden = np.where(F >= 0, covered[np.maximum(F, 0)], True).all(axis=1) & ~is_head
+     costume, anchors = ({}, None) if args.no_costume else rhen_costume.build_costume(body, cparams)
++    for p in costume.values():
++        hb.snap_part(p)  # M1-CHR-15
+     costume_tris = sum(p.tris() for p in costume.values())
+     log(f"costume: {costume_tris} tris, hidden body quads {int(hidden.sum())} ({time.time() - t0:.1f}s)")
+     head_i = wnames.index(HEAD_BONE)
+@@ -194,7 +199,9 @@ def main() -> int:
+             opaque.extend(p)
+         Pc = opaque.varr()
+         Wc = hb.transfer_weights(Pc, V[src_mask], W[src_mask])
+-        ob = hb.part_object(opaque)
++        # M1-CHR-15: the shirt over the underarm turns with the skin under it (the shoulder correctives)
++        Wc = hb.helper_bones.armpit_cloth_weights(Pc, Wc, wnames, V, W, arms, lm.S)
++        ob = hb.part_object_snapped(opaque)
+         hb.apply_weights(ob, Wc, wnames, skel)
+         garment_objs.append(ob)
+         S = lm.S
+@@ -224,7 +231,7 @@ def main() -> int:
+         rigid_parts = Part("HairHead")
+         for p in hair.values():
+             rigid_parts.extend(p)
+-        ob = hb.part_object(rigid_parts)
++        ob = hb.part_object_snapped(rigid_parts)
+         Wr = np.zeros((len(rigid_parts.V), len(wnames)), dtype=np.float32)
+         Wr[:, head_i] = 1.0
+         hb.apply_weights(ob, Wr, wnames, skel)
+@@ -240,6 +247,7 @@ def main() -> int:
+     ob_body = hb.make_object("Body", V[used_b], Fb_l, UVb, ["skin_body"] * len(Fb), normals=Nw[used_b])
+     hb.apply_weights(ob_body, W[used_b], wnames, skel)
+     hb.unwrap_faces(ob_body, {"skin_body"}, hb.uv_seams(Fb_l, UVb))
++    hb.quantize_uvs(ob_body)  # M1-CHR-15
+     dense = np.isin(reg[used_b], ["hand_L", "hand_R", "foot_L", "foot_R"])
+     t_all = sum(len(f) - 2 for f in Fb_l)
+     t_dense = sum(len(f) - 2 for f in Fb_l if dense[list(f)].all())
+@@ -254,7 +262,7 @@ def main() -> int:
+     for sd in ("L", "R"):
+         fr = face.eyes[sd]
+         for part in (asha_eyes.eyeball(fr), asha_eyes.cornea(fr), asha_eyes.occlusion(fr), asha_eyes.tear_line(fr)):
+-            ob = hb.part_object(part)
++            ob = hb.part_object_snapped(part)
+             hb.attach_to_bone(ob, skel, f"DEF-eye.{sd}", fr.E)
+             eye_objs.append(ob)
+             eye_tris += part.tris()
+@@ -267,6 +275,8 @@ def main() -> int:
+         "seconds": 0.0,
+     }
+     report["triangles"]["total_lod0"] = sum(report["triangles"].values())
++    for ob in export_objs:
++        hb.snap_shape_noise(ob)  # M1-CHR-15: host-independent morph targets (as build_asha)
+     if args.bake_dir:
+         lip_terms = {k: np.concatenate([res[n][used_h], pad]) for k, n in (("CONTACT", "lip_contact"),
+                                                                             ("CORNER", "lip_corner"),
+diff --git a/assets_src/characters/rhen/rhen_textures.py b/assets_src/characters/rhen/rhen_textures.py
+index ab8b90a7..c65ca130 100644
+--- a/assets_src/characters/rhen/rhen_textures.py
++++ b/assets_src/characters/rhen/rhen_textures.py
+@@ -239,6 +239,7 @@ def cloth_atlas(cparams: dict, size: int = 2048) -> None:
+ 
+ 
+ def main() -> int:
++    at.PRE_ROUND = at.PRE_ROUND_DECIMALS  # M1-CHR-15: host-independent PNGs (as Asha's run)
+     ap = argparse.ArgumentParser()
+     ap.add_argument("--bake-dir")
+     ap.add_argument("--only", default="skin,cloth")
+diff --git a/assets_src/characters/toma/build_toma.py b/assets_src/characters/toma/build_toma.py
+index 6e38a7c2..cc8852ac 100644
+--- a/assets_src/characters/toma/build_toma.py
++++ b/assets_src/characters/toma/build_toma.py
+@@ -157,7 +157,7 @@ def parse_args() -> argparse.Namespace:
+ 
+ 
+ def rigid_part(part: Part, bone: str, wnames: list, skel: bpy.types.Object) -> bpy.types.Object:
+-    ob = hb.part_object(part)
++    ob = hb.part_object_snapped(part)
+     W = np.zeros((len(part.V), len(wnames)), dtype=np.float32)
+     W[:, wnames.index(bone)] = 1.0
+     hb.apply_weights(ob, W, wnames, skel)
+@@ -219,7 +219,7 @@ def main() -> int:
+     res = bb_donor.generate(params, log=log, subdiv_face=True)
+     lm, body = res["lm"], res["body"]
+     face = body.face
+-    V, F = res["V"], np.asarray(res["F"])
++    V, F = hb.snap_positions(res["V"]), np.asarray(res["F"])  # M1-CHR-15: host-independent positions
+     reg = np.array(res["reg"])
+     freg = np.array(res["freg"])
+     UVc = np.asarray(res["uv"])
+@@ -234,12 +234,14 @@ def main() -> int:
+     Nw = bb_donor.face_normals_vertex(V, F)
+     log(f"rig: {len(skel.data.bones)} deform bones, donor weights on {len(wnames)} bones, dropped {dropped} "
+         f"({time.time() - t0:.1f}s)")
++    W, wnames, arms = hb.armpit_helpers(skel, V, W, wnames)  # M1-CHR-15: the shoulder correctives
+     surf = hb.head_surface(V, F, Nw, freg, Scalp(body))  # the shipped head skin (hair and beard roots)
+ 
+     # ---- head (same construction as Asha's and Rhen's) plus the beard --------------------------
+     is_head = np.isin(freg, ["head", "scalp", "mouth"])
+     used_h, Fh, remap_h, Sh = hb.submesh(V, F, is_head, res["seams"])
+     Vh = V[used_h]
++    Vh[np.abs(Vh) < hb.MIDLINE_SNAP] = 0.0  # M1-CHR-15: host-independent midline (as build_asha)
+     fh_reg = freg[is_head]
+     inner_v = hb.inner_lip_vertices(Vh, Nw[used_h], res["lip_dz"][used_h], face.mouth_half,
+                                     lm.h / 0.222)
+@@ -278,7 +280,7 @@ def main() -> int:
+     extras.append(beard)
+     for ex in extras:
+         head.extend(ex)
+-    Vhead = head.varr()
++    Vhead = hb.snap_positions(head.varr())  # M1-CHR-15
+     ob_head = hb.make_object("Head", Vhead, head.F, head.UV, head.M)
+     me = ob_head.data
+     auto = np.zeros((len(me.vertices), 3))
+@@ -289,6 +291,7 @@ def main() -> int:
+                                                        np.where(fh_reg == "mouth", 4, 2)))
+     hb.unwrap_faces(ob_head, {"skin_head", "mouth"}, hb.head_seams(Fh, cat, Vh, lm),
+                     shrink=(np.nonzero(cat != 1)[0], 0.45))
++    hb.quantize_uvs(ob_head)  # M1-CHR-15: host-independent UVs (as build_asha)
+     pad = np.zeros(len(Vhead) - n_skin)
+     masks = {"lower": np.concatenate([res["lower"][used_h], pad]), "lip": np.concatenate([res["lip_w"][used_h], pad])}
+     lip_frame = {k: np.concatenate([res[n][used_h], pad]) for k, n in (("contact", "lip_contact"), ("dz", "lip_dz"),
+@@ -323,6 +326,8 @@ def main() -> int:
+     covered = toma_costume.coverage(body, cparams, V, reg)
+     hidden = np.where(F >= 0, covered[np.maximum(F, 0)], True).all(axis=1) & ~is_head
+     costume, anchors = ({}, None) if args.no_costume else toma_costume.build_costume(body, cparams)
++    for p in costume.values():
++        hb.snap_part(p)  # M1-CHR-15
+     costume_tris = sum(p.tris() for p in costume.values())
+     log(f"costume: {costume_tris} tris, hidden body quads {int(hidden.sum())} ({time.time() - t0:.1f}s)")
+     head_i = wnames.index(HEAD_BONE)
+@@ -342,6 +347,8 @@ def main() -> int:
+             if name in TORSO_PARTS:
+                 sl = slice(o, o + len(p.V))
+                 Wc[sl] = hb.transfer_weights(Pc[sl], V[reg == "torso"], W[reg == "torso"])
++                # M1-CHR-15: the tunic over the underarm turns with the skin under it (the shoulder correctives)
++                Wc[sl] = hb.helper_bones.armpit_cloth_weights(Pc[sl], Wc[sl], wnames, V, W, arms, lm.S)
+             o += len(p.V)
+         wnames_x = wnames + extra_bone_names()
+         Wc = np.concatenate([Wc, np.zeros((len(Pc), len(wnames_x) - len(wnames)), dtype=np.float32)], axis=1)
+@@ -351,7 +358,7 @@ def main() -> int:
+             offs[name] = o
+             o += len(p.V)
+         bone_specs = rig_extras(costume, offs, anchors, Pc, Wc, wnames_x, lm)
+-        ob = hb.part_object(opaque)
++        ob = hb.part_object_snapped(opaque)
+         hb.apply_weights(ob, Wc, wnames_x, skel)
+         garment_objs.append(ob)
+         outer = np.concatenate([p.varr() for p in costume.values()] + [V[reg == "torso"]])
+@@ -386,7 +393,7 @@ def main() -> int:
+         rigid_parts = Part("HairHead")
+         for p in hair.values():
+             rigid_parts.extend(p)
+-        ob = hb.part_object(rigid_parts)
++        ob = hb.part_object_snapped(rigid_parts)
+         Wr = np.zeros((len(rigid_parts.V), len(wnames)), dtype=np.float32)
+         Wr[:, head_i] = 1.0
+         hb.apply_weights(ob, Wr, wnames, skel)
+@@ -402,6 +409,7 @@ def main() -> int:
+     ob_body = hb.make_object("Body", V[used_b], Fb_l, UVb, ["skin_body"] * len(Fb), normals=Nw[used_b])
+     hb.apply_weights(ob_body, W[used_b], wnames, skel)
+     hb.unwrap_faces(ob_body, {"skin_body"}, hb.uv_seams(Fb_l, UVb))
++    hb.quantize_uvs(ob_body)  # M1-CHR-15
+     dense = np.isin(reg[used_b], ["hand_L", "hand_R", "foot_L", "foot_R"])
+     t_all = sum(len(f) - 2 for f in Fb_l)
+     t_dense = sum(len(f) - 2 for f in Fb_l if dense[list(f)].all())
+@@ -416,7 +424,7 @@ def main() -> int:
+     for sd in ("L", "R"):
+         fr = face.eyes[sd]
+         for part in (asha_eyes.eyeball(fr), asha_eyes.cornea(fr), asha_eyes.occlusion(fr), asha_eyes.tear_line(fr)):
+-            ob = hb.part_object(part)
++            ob = hb.part_object_snapped(part)
+             hb.attach_to_bone(ob, skel, f"DEF-eye.{sd}", fr.E)
+             eye_objs.append(ob)
+             eye_tris += part.tris()
+@@ -429,6 +437,8 @@ def main() -> int:
+         "seconds": 0.0,
+     }
+     report["triangles"]["total_lod0"] = sum(report["triangles"].values())
++    for ob in export_objs:
++        hb.snap_shape_noise(ob)  # M1-CHR-15: host-independent morph targets (as build_asha)
+     if args.bake_dir:
+         lip_terms = {k: np.concatenate([res[n][used_h], pad]) for k, n in (("CONTACT", "lip_contact"),
+                                                                             ("CORNER", "lip_corner"),
+diff --git a/assets_src/characters/toma/toma_props.py b/assets_src/characters/toma/toma_props.py
+index 5390c9b1..457192aa 100644
+--- a/assets_src/characters/toma/toma_props.py
++++ b/assets_src/characters/toma/toma_props.py
+@@ -30,7 +30,8 @@ SCUTE_GROOVE_W = 0.012  # m, half-width of the groove along a scute border
+ BOSS_RINGS = 7
+ SPEAR_SHAFT_R = 0.016
+ SPEAR_SPLAY_DEG = 1.5  # the shaft's foot out from his side, its head in (M1-CHR-14)
+-SPEAR_OUT = 0.012  # m: the shaft's offset out from his right side of the grip point (M1-CHR-14)
++SPEAR_RAKE_DEG = -1.2  # M1-CHR-15: the shaft's foot forward, its head back (the foot stood in his right toes)
++SPEAR_OUT = 0.034  # m: the shaft's offset out from his right side of the grip point (M1-CHR-14; M1-CHR-15: 1.2 -> 3.4 cm, clear of the wrist and of his right toes)
+ SPEAR_HEAD_L = 0.26  # blade, socket included
+ SHIELD_ATLAS_DISC = (0.0, 0.0, 1.0, 1.0)  # the disc fills the square; the back uses the free corner
+ SHIELD_ATLAS_BACK = (0.0, 0.0, 0.12, 0.12)
+@@ -197,8 +198,9 @@ def spear(lm, params: dict, cord_rect) -> Part:
+     grip = spear_grip(lm) + np.array([-SPEAR_OUT, 0.0, 0.0])
+     L = float(params["spear_length_m"])
+     # the foot of the shaft splays out from his right foot (wide stance: upright, it stood in his toes)
+-    lean = math.radians(SPEAR_SPLAY_DEG)
+-    upv = np.array([math.sin(lean), 0.0, math.cos(lean)])
++    lean, rake = math.radians(SPEAR_SPLAY_DEG), math.radians(SPEAR_RAKE_DEG)
++    upv = np.array([math.sin(lean), -math.sin(rake), math.cos(lean) * math.cos(rake)])
++    upv /= np.linalg.norm(upv)
+     base = grip - upv * ((grip[2] - 0.006) / upv[2])
+     fwd = np.array([0.0, -1.0, 0.0])
+     side = np.array([-1.0, 0.0, 0.0])  # the hook and the blade's flats face out from his right side
+diff --git a/assets_src/characters/toma/toma_textures.py b/assets_src/characters/toma/toma_textures.py
+index 2d44123c..e8f2348d 100644
+--- a/assets_src/characters/toma/toma_textures.py
++++ b/assets_src/characters/toma/toma_textures.py
+@@ -645,6 +645,7 @@ def short_hair_atlas() -> None:
+ 
+ 
+ def main() -> int:
++    at.PRE_ROUND = at.PRE_ROUND_DECIMALS  # M1-CHR-15: host-independent PNGs (as Asha's run)
+     ap = argparse.ArgumentParser()
+     ap.add_argument("--bake-dir")
+     ap.add_argument("--only", default="skin,cloth,shield,hair")
+diff --git a/docs/kb/art/characters/pipeline.md b/docs/kb/art/characters/pipeline.md
+index 60674d65..511a2243 100644
+--- a/docs/kb/art/characters/pipeline.md
++++ b/docs/kb/art/characters/pipeline.md
+@@ -285,3 +285,41 @@ position, so the fix can be found in the source. The garment-in-skin count only
+ deepest 24 per group and pose, so treat it as a lower bound; the worst depth is exact. Add a new hero by adding a
+ `heroes` entry (its props, garments and seam groups). Meshes named in the config but missing from a GLB are skipped,
+ and a hero with no braid skips the braid checks.
++
++## 17. Helper bones for deep poses (M1-CHR-15)
++Linear blend skinning cannot keep a floor-length skirt over a lunge or the underarm out of the bodice, so the builds
++add helper bones that no pose names, and every clip keys them from its own pose.
++- **Where they live:**
++  - the bones and their weights: `assets_src/characters/asha/helper_bones.py`, wired in through `build_asha.add_bones`
++    and `build_asha.armpit_helpers` (used by Asha, Rhen and Toma);
++  - the solve: `hero_clips.helper_pose`, called from `Skeleton.local_pose`;
++  - the parameters: `game/data/characters/helper_bones.json`, shared with the runtime solve
++    `game/characters/hero_helper_bones.gd`.
++- **Clips:** `hero_clips.build` keys every helper bone the GLB has (`Skeleton.keyed`), so any new clip gets them with
++  no extra code. A skeleton without helpers (Sefir, the villagers) gets no extra tracks.
++- **Shoulder correctives, `DEF-armpit.L/.R` (every hero):**
++  - Each is a copy of the upper arm (head, tail, roll), parented to the shoulder.
++  - It turns `share` (0.35) of the upper arm's own turn while the arm comes down, rising to all of it once the arm lifts
++    30° above its rest elevation.
++  - The underarm skin moves its upper-arm weight onto it: full on the underside, from 0.13 of the arm's length to 0.3,
++    fading out by 0.65 (`helper_bones.armpit_share`).
++  - Asha's verse-sleeve bag also rides it partly, by how far it hangs below the arm (`hanging_weights`).
++- **Skirt panels, `DEF-skirt_<k>` and `DEF-skirt_<k>.001` (Asha):**
++  - There are 8 sectors round from the front. Each is a two-bone chain on the hips. It pivots on the outer skirt 7.5 cm
++    above the hip joints, and the joint sits 70% of the way to the knees.
++  - Skirt cloth below the pivot rides the two nearest chains. Cloth within 1.2–3.5 cm of a leg keeps that leg's
++    M1-CHR-14 weights.
++  - Per pose, each bone swings out by the least angle that keeps every cloth vertex it carries at its rest distance
++    from the leg axes (capped at 8.5 cm, 4 mm slack). The search is 2.5° steps, then bisection.
++  - Neighbours may not lag each other by more than 20° per sector.
++  - The inner skirt is a convex tube (`asha_costume.convex_radii`): it used to pinch to the centre between the legs.
++- **Kept body:** the legs and hips stay whole under the skirts. Only the band above the panels' pivot is cut, because a
++  cut edge lower down showed through the open hem. The kept part is decimated to 25% (`UNDER_SKIRT_RATIO`), so LOD0
++  is 64,952.
++- **Hand-set poses:**
++  - `AshaStage` calls `HeroHelperBones.drive(skel)` after `world_pose` or `test_pose`.
++  - `rig_probe`'s stage poses do the same (`hero_clips.helper_locals`).
++  - The Haluna placeholder pose needs the same call (M2-ENV-14).
++  - `test_hero_stage.gd` checks that the runtime solve matches the baked keys within 1°.
++- **Host determinism:** Rhen and Toma now use Asha's snaps (midline, UVs, shape-key noise, `PRE_ROUND`). They also put
++  every mesh position on a 1 µm grid (`build_asha.snap_positions` / `part_object_snapped`), as Sefir does.
+diff --git a/docs/kb/handoffs/2026-10-24-character-14.md b/docs/kb/handoffs/2026-10-24-character-14.md
+new file mode 100644
+index 00000000..4f381d84
+--- /dev/null
++++ b/docs/kb/handoffs/2026-10-24-character-14.md
+@@ -0,0 +1,73 @@
++# Handoff — character — 2026-10-24 #14 (M1-CHR-15, worktree subagent)
++
++## Done
++- **M1-CHR-15 is in review (reviewer: rendering).** The before → after table is in the task file, and the design is in
++  pipeline.md §17.
++- **Shoulder correctives, `DEF-armpit.L/.R` (every hero):**
++  - They are copies of the upper arms, on the shoulders.
++  - Each turns 0.35 of the arm's own turn while the arm is lowered, and all of it once the arm is lifted 30°.
++  - The underarm skin rides them, and so does Asha's sleeve bag.
++- **Skirt panels, `DEF-skirt_0..7` and `.001` (Asha):**
++  - Each panel swings out by the least angle that keeps its cloth at its rest clearance from the leg axes. Neighbours
++    may lag by at most 20° per 45°.
++  - Cloth that hugs a leg keeps that leg's M1-CHR-14 weights.
++  - The inner skirt is now a convex tube (`asha_costume.convex_radii`, opt-in; the villagers are unchanged).
++  - The legs and hips under the skirts stay whole. They are decimated to 25%, for LOD0 64,952.
++- **Clips:** `hero_clips` keys every helper bone that the GLB has, from the generic build path (`Skeleton.keyed`), so
++  new clips get them for free. Sefir's and the villagers' libraries are unchanged.
++- **Hand-set poses:**
++  - `game/characters/hero_helper_bones.gd` solves the same from a hand-set pose. AshaStage calls it after
++    `world_pose`/`test_pose`, and rig_probe's stage poses mirror that.
++  - The parameters are in `game/data/characters/helper_bones.json`.
++  - `test_hero_stage.gd::test_helper_bones_match_the_baked_clips` checks the solve against the baked keys (within 1°).
++- **Toma's spear:**
++  - `SPEAR_OUT` is now 3.4 cm, and `SPEAR_RAKE_DEG` is -1.2.
++  - `spear_level` and `lower_spear` run one path (`spear_path`): the arm swings out (`SPEAR_LIFT`) while the hand turns
++    the spear.
++  - Props worst 16.6 → 0.
++- **Asha:** `STAFF_OUT` is now 1.6 cm, and the staff arm in `stand` and `kneel` hangs 6° wider. This takes the sleeve
++  out of the waist.
++- **Host determinism for Rhen and Toma:**
++  - `MIDLINE_SNAP`, `quantize_uvs` after each unwrap, and `snap_shape_noise`.
++  - `PRE_ROUND` in their texture runs.
++  - The donor V and every part on a 1 µm grid (`hb.snap_positions` / `part_object_snapped`) before export and the LOD1
++    decimation.
++- **Ratchets:** lowered in rig_checks.json:
++  - Asha: Costume 34/6, VerseSleeve 36/6, Body 47/24.
++  - Rhen: Costume 31.5/6, Body 62/40.
++  - Toma: Costume 32/6, Body 54/200; Props now has no allowance.
++- **Shots:** 26 re-approved after viewing side by side; the RMSE list is in the report to the coordinator.
++- **Request task:** M2-ENV-14. HalunaActorPose should call `HeroHelperBones.drive` after its `world_pose`.
++
++## In progress
++- Nothing local. The commits are on the worktree branch and not pushed.
++
++## Exact next step
++- The Lead merges, then runs `verify_blender_builds.py --job asha/rhen/toma` on the PC (AVX2) host.
++- Then the rendering reviewer judges the deep-pose skirt silhouette in the shots `asha_clip_offer_hand`,
++  `asha_clip_kneel_over_rhen`, `asha_clip_laugh` and `asha_extreme_pose`.
++
++## Known issues
++- **Skirt look:** in the deepest poses the skirts read as a stiff, wide bell. The upper panels near-level over a raised
++  thigh, and the lower ones hang straight down. Faint creases show at the sector seams.
++  - The poses are clean: no leg through the cloth and no tear.
++  - A softer drape needs cloth simulation, or more sectors with a looser lag (lag 30 cost 6 mm in `run`).
++- **Still above the 10 mm target:**
++  - Asha's sandal soles sit 33 mm inside her feet at rest. This is the Costume floor, and was there before.
++  - The front of the shoulder passes the armhole edge with the arm raised forward (extreme_pose 46.7; attack 37.7).
++  - Rhen's and Toma's shirt and tunic sides are about 31 mm into the hanging arm.
++  - Toma's right toes go through his trouser hem (53.6 at finisher).
++  - Rhen's raised-arm toss (item 61).
++- **Glossary:** rows 195 and 254 are stale (see the live log). Not touched.
++
++## Files touched
++- assets_src/characters/asha/{helper_bones.py (new), build_asha.py, hero_clips.py, asha_costume.py, asha_staff.py}
++- assets_src/characters/rhen/{build_rhen.py, rhen_textures.py};
++  assets_src/characters/toma/{build_toma.py, toma_props.py, toma_textures.py}
++- assets/characters/{asha,rhen,toma}/ (GLBs, LOD1, clips, changed textures)
++- game/characters/hero_helper_bones.gd (new), game/data/characters/helper_bones.json (new),
++  game/levels/_tests/characters/asha/asha_stage.gd
++- tools/dev/rig_probe.py, tools/dev/rig_checks.json
++- tools/tests/{test_toma.py, test_hero_battle_clips.py}, tests/unit/test_hero_stage.gd
++- tests/screenshots/baselines/ (26 shots), docs/kb/art/characters/pipeline.md
++- docs/kb/tasks/M1/M1-CHR-15-*.md, docs/kb/tasks/M2/M2-ENV-14-*.md
+diff --git a/docs/kb/tasks/M1/M1-CHR-15-skirt-and-corrective-bones.md b/docs/kb/tasks/M1/M1-CHR-15-skirt-and-corrective-bones.md
+index 70f91ae1..1c17ac8e 100644
+--- a/docs/kb/tasks/M1/M1-CHR-15-skirt-and-corrective-bones.md
++++ b/docs/kb/tasks/M1/M1-CHR-15-skirt-and-corrective-bones.md
+@@ -2,7 +2,8 @@
+ id: M1-CHR-15
+ title: "Skirt and corrective bones for deep poses (floor-length skirts in a lunge, armpits, spear turn)"
+ role: character
+-status: doing
++status: review
++reviewer: rendering
+ owner_session: "characters (cloud session_01JqzzxgJU9Dmu7fRhmCG9aQ, branch claude/characters)"
+ depends_on: [M1-CHR-14]
+ milestone: M1
+@@ -28,4 +29,45 @@ M1-CHR-14 fixed every clip-frame fault that weighting and garment cuts can fix.
+ ## Notes
+ - Rebuild hygiene (from M1-CHR-14): when Rhen, Toma or the villagers next rebuild, have their texture runs set `asha_textures.PRE_ROUND = PRE_ROUND_DECIMALS` the way Asha's run does. That makes their PNGs host-independent too (the 8-bit rounding flips; see live/characters.md). Their builds also need the shape-delta grid.
+ 
++- **2026-10-24, done (worktree subagent; handoff 2026-10-24-character-14.md, pipeline.md §17).**
++  - **Helper bones:**
++    - `DEF-armpit.L/.R` on every hero. Each turns 0.35 of the upper arm's own turn while the arm is lowered, and all of
++      it once the arm is lifted 30°.
++    - `DEF-skirt_0..7(.001)` on Asha: 8 two-bone panel chains on the hips.
++    - Every clip keys these bones from the generic build path (`Skeleton.keyed`).
++    - The runtime twin is `HeroHelperBones.drive` (AshaStage after `world_pose`; Haluna is M2-ENV-14). It matches the
++      baked keys within 1° (test_hero_stage).
++    - The parameters are in `game/data/characters/helper_bones.json`.
++  - **Skirt solve:** each panel swings out by the least angle that keeps the cloth it carries at its rest clearance from
++    the leg axes. The legs and hips under the skirts stay whole (decimated to 25%; LOD0 64,952), and the inner skirt
++    is a convex tube.
++  - **Toma's spear:**
++    - It sits 3.4 cm out from the fist, and its foot is 1.2° forward.
++    - `spear_level` and `lower_spear` run one path: the arm swings out while the hand turns the spear.
++  - **Asha's staff:** it sits 1.6 cm out from the fist, and her staff arm hangs 6° wider.
++  - **Rhen and Toma** got the host snaps: midline, UVs, shape noise and PRE_ROUND, plus a 1 µm position grid.
++  - **Every-frame probe, worst before → after (mm):**
++
++    | Hero | Check | Before | After |
++    |---|---|---|---|
++    | Asha | Costume | 43.8 | 32.8 (the sandal soles at rest; the skirts 0) |
++    | Asha | VerseSleeve | 40.2 | 35.5 |
++    | Asha | Body | 46.7 | 46.7 (extreme_pose; the clips 46 → 37.7) |
++    | Rhen | Costume | 31.2 | 31.2 |
++    | Rhen | Body | 61.7 | 61.1 (item; arms down < 30) |
++    | Toma | Costume | 31.7 | 31.7 |
++    | Toma | Props | 16.6 | 0 |
++    | Toma | Body | 69.1 | 53.6 (toe through the trouser hem; armpit 18.5) |
++
++    Exposed boundaries are 2 / 22 / 2, unchanged.
++  - **Ratchets:** lowered in rig_checks.json, with the notes rewritten.
++  - **Not met:** the 10 mm target.
++    - The sandal soles sit inside the feet at rest.
++    - The extreme pose and raised-arm clips still put the front of the shoulder past the armhole edge.
++    - Rhen's and Toma's shirt and tunic sides sit against the hanging arm.
++    - Toma's toes go through his hem.
++  - **Look:** in the deepest poses (offer_hand, kneel, laugh, extreme_pose) the skirts read as a stiff, wide bell with
++    faint creases at the sector seams. They are clean, but not soft. Viewed and approved as no worse than the torn
++    look before; the rendering reviewer should judge.
++
+ ## Review log
+diff --git a/docs/kb/tasks/M2/M2-ENV-14-haluna-actor-pose-helper-bones.md b/docs/kb/tasks/M2/M2-ENV-14-haluna-actor-pose-helper-bones.md
+new file mode 100644
+index 00000000..68ec12ff
+--- /dev/null
++++ b/docs/kb/tasks/M2/M2-ENV-14-haluna-actor-pose-helper-bones.md
+@@ -0,0 +1,29 @@
++---
++id: M2-ENV-14
++title: "HalunaActorPose: pose the heroes' helper bones after the placeholder pose"
++role: environment
++status: todo
++owner_session: ""
++depends_on: [M1-CHR-15]
++milestone: M2
++request-from: "character"
++priority: normal
++---
++## Goal
++M1-CHR-15 gave Asha skirt-panel bones and every hero shoulder-corrective bones. The clips carry them baked, but a
++pose set by hand does not move them. `game/levels/ch02/haluna/haluna_actor_pose.gd` (`HalunaActorPose.apply()`) sets
++Asha's beach kneel with `world_pose`, so until it calls the solve her skirt hangs at rest while her raised thigh goes
++through it.
++
++## Acceptance criteria
++- [ ] After the `world_pose` loop in `apply()` (and before the ground lowering), call
++      `HeroHelperBones.drive(skeleton)` (game/characters/hero_helper_bones.gd). One line; it is a no-op for a
++      skeleton without helper bones. It costs a fraction of a second once, so it is fine in `prebuild()`'s thread.
++- [ ] The Haluna kneel viewed: the skirt drapes over the raised knee.
++
++## Notes
++- The character stage does the same (`AshaStage._apply_pose`, game/levels/_tests/characters/asha/asha_stage.gd).
++- The solve's parameters are game/data/characters/helper_bones.json; `tests/unit/test_hero_stage.gd`
++  checks it matches the clips' baked keys.
++
++## Review log
+diff --git a/game/characters/hero_helper_bones.gd b/game/characters/hero_helper_bones.gd
+new file mode 100644
+index 00000000..6c3d8ea7
+--- /dev/null
++++ b/game/characters/hero_helper_bones.gd
+@@ -0,0 +1,256 @@
++class_name HeroHelperBones
++extends RefCounted
++## M1-CHR-15: poses a hero's helper bones (the shoulder correctives and the skirt panels) from the rest of the
++## skeleton's pose. The clips carry these bones baked (assets_src/characters/asha/hero_clips.py, the same solve);
++## call this after setting a pose by hand instead (the character stages' world_pose, a cutscene placeholder pose).
++## The parameters are game/data/characters/helper_bones.json. A skeleton without helper bones is left alone.
++
++const DATA_PATH := "res://game/data/characters/helper_bones.json"
++
++static var _data: Dictionary = {}
++
++
++static func data() -> Dictionary:
++	if _data.is_empty():
++		var parsed: Variant = JSON.parse_string(FileAccess.get_file_as_string(DATA_PATH))
++		_data = parsed if parsed is Dictionary else {}
++	return _data
++
++
++## Sets the helper bones' pose rotations on `skel` from its current pose.
++static func drive(skel: Skeleton3D) -> void:
++	var d := data()
++	if d.is_empty():
++		return
++	skel.force_update_all_bone_transforms()
++	_drive_armpits(skel, d["armpit"])
++	_drive_skirt(skel, d["skirt"])
++	skel.force_update_all_bone_transforms()
++
++
++## True when the skeleton has any helper bone.
++static func has_helpers(skel: Skeleton3D) -> bool:
++	var d := data()
++	if d.is_empty():
++		return false
++	for i: int in skel.get_bone_count():
++		var n := skel.get_bone_name(i)
++		if n.begins_with(d["armpit"]["bone_prefix"]) or n.begins_with(d["skirt"]["bone_prefix"]):
++			return true
++	return false
++
++
++static func _rest_q(skel: Skeleton3D, bone: int) -> Quaternion:
++	return skel.get_bone_rest(bone).basis.get_rotation_quaternion()
++
++
++static func _drive_armpits(skel: Skeleton3D, a: Dictionary) -> void:
++	for side: String in ["L", "R"]:
++		var h := skel.find_bone(String(a["bone_prefix"]) + side)
++		var drv := skel.find_bone(String(a["driver_prefix"]) + side)
++		if h < 0 or drv < 0:
++			continue
++		var turn := (skel.get_bone_pose_rotation(drv) * _rest_q(skel, drv).inverse()).normalized()
++		var q := Quaternion.IDENTITY.slerp(turn, float(a["share"])) * _rest_q(skel, h)
++		skel.set_bone_pose_rotation(h, q.normalized())
++
++
++static func _drive_skirt(skel: Skeleton3D, s: Dictionary) -> void:
++	var prefix := String(s["bone_prefix"])
++	var names: Array[String] = []
++	for i: int in skel.get_bone_count():
++		var n := skel.get_bone_name(i)
++		if n.begins_with(prefix) and not n.contains("."):
++			names.append(n)
++	if names.is_empty():
++		return
++	names.sort()
++	var hips := skel.get_bone_parent(skel.find_bone(names[0]))
++	var cloth := _panel_cloth(skel, s, names, hips)
++	var hips_rest := skel.get_bone_global_rest(hips)
++	var hips_pose := skel.get_bone_global_pose(hips)
++	var rq_h := hips_rest.basis.get_rotation_quaternion()
++	var inv_dp := (hips_pose.basis.get_rotation_quaternion() * rq_h.inverse()).inverse()
++	var legs := _leg_segments(skel, s, hips_pose.origin, inv_dp, false)
++	var legs0 := _leg_segments(skel, s, hips_rest.origin, Quaternion.IDENTITY, true)
++	var down := Vector3(0.0, -1.0, 0.0)
++	var tops: Array[Vector3] = []
++	var knees: Array[Vector3] = []
++	var axes: Array[Vector3] = []
++	var us: Array[Vector3] = []
++	for n: String in names:
++		var top := skel.get_bone_global_rest(skel.find_bone(n)).origin - hips_rest.origin
++		tops.append(top)
++		knees.append(skel.get_bone_global_rest(skel.find_bone(n + ".001")).origin - hips_rest.origin)
++		var u := Vector3(top.x, 0.0, top.z).normalized()
++		us.append(u)
++		axes.append(down.cross(u).normalized())
++	var lag := deg_to_rad(float(s["lag_deg_per_45"])) / (PI / 4.0)
++	var top_swing := deg_to_rad(float(s["max_swing_deg"]))
++	var a1: Array[float] = []
++	for k: int in names.size():
++		a1.append(_swing(cloth[names[k]], tops[k], axes[k], Vector3.ZERO, legs, legs0, s))
++	a1 = _limit_lag(a1, us, lag, top_swing)
++	var a2: Array[float] = []
++	for k: int in names.size():
++		var tip := tops[k] + Basis(axes[k], a1[k]) * (knees[k] - tops[k])
++		a2.append(_swing(cloth[names[k] + ".001"], knees[k], axes[k], tip - knees[k], legs, legs0, s))
++	a2 = _limit_lag(a2, us, lag, top_swing)
++	for k: int in names.size():
++		var h := skel.find_bone(names[k])
++		var lo := skel.find_bone(names[k] + ".001")
++		var g1 := rq_h * _rest_q(skel, h)
++		var loc1 := rq_h.inverse() * Quaternion(axes[k], a1[k]) * g1
++		skel.set_bone_pose_rotation(h, loc1.normalized())
++		var loc2 := g1.inverse() * Quaternion(axes[k], a2[k] - a1[k]) * g1 * _rest_q(skel, lo)
++		skel.set_bone_pose_rotation(lo, loc2.normalized())
++
++
++## Neighbouring panels may not lag each other by more than `lag` radians per radian between them.
++static func _limit_lag(a: Array[float], us: Array[Vector3], lag: float, top: float) -> Array[float]:
++	var out: Array[float] = []
++	for i: int in a.size():
++		var best := -INF
++		for j: int in a.size():
++			var apart := acos(clampf(us[i].dot(us[j]), -1.0, 1.0))
++			best = maxf(best, a[j] - lag * apart)
++		out.append(minf(best, top))
++	return out
++
++
++## bone -> rest positions (relative to the hips joint) of the cloth vertices with at least cloth_min_weight on it.
++static func _panel_cloth(skel: Skeleton3D, s: Dictionary, names: Array[String], hips: int) -> Dictionary:
++	var out := {}
++	var want := {}
++	for n: String in names:
++		out[n] = PackedVector3Array()
++		out[n + ".001"] = PackedVector3Array()
++		want[skel.find_bone(n)] = n
++		want[skel.find_bone(n + ".001")] = n + ".001"
++	var mi := skel.find_child(String(s["cloth_mesh"]), true, false) as MeshInstance3D
++	if mi == null or mi.mesh == null or mi.skin == null:
++		return out
++	var to_skel := skel.global_transform.affine_inverse() * mi.global_transform
++	var origin := skel.get_bone_global_rest(hips).origin
++	var lim := float(s["cloth_min_weight"])
++	var binds: Array[int] = []
++	for b: int in mi.skin.get_bind_count():
++		var bone := mi.skin.get_bind_bone(b)
++		if bone < 0:
++			bone = skel.find_bone(String(mi.skin.get_bind_name(b)))
++		binds.append(bone)
++	for surf: int in mi.mesh.get_surface_count():
++		var arr := mi.mesh.surface_get_arrays(surf)
++		var verts: PackedVector3Array = arr[Mesh.ARRAY_VERTEX]
++		var bones: PackedInt32Array = arr[Mesh.ARRAY_BONES]
++		var weights: PackedFloat32Array = arr[Mesh.ARRAY_WEIGHTS]
++		if verts.is_empty() or bones.is_empty():
++			continue
++		var per := bones.size() / verts.size()
++		for i: int in verts.size():
++			for k: int in per:
++				var w := weights[i * per + k]
++				if w < lim:
++					continue
++				var bone := binds[bones[i * per + k]]
++				if want.has(bone):
++					var arr_out: PackedVector3Array = out[want[bone]]
++					arr_out.append(to_skel * verts[i] - origin)
++					out[want[bone]] = arr_out
++	return out
++
++
++## [heads, tails] of the leg segments of both legs, relative to `origin`, turned by `turn` (the pelvis's frame).
++static func _leg_segments(
++	skel: Skeleton3D, s: Dictionary, origin: Vector3, turn: Quaternion, rest: bool
++) -> Array[PackedVector3Array]:
++	var heads := PackedVector3Array()
++	var tails := PackedVector3Array()
++	for side: String in ["L", "R"]:
++		for seg: Variant in s["leg_segments"]:
++			var a := skel.find_bone("%s.%s" % [seg[0], side])
++			var b := skel.find_bone("%s.%s" % [seg[1], side])
++			var pa := skel.get_bone_global_rest(a).origin if rest else skel.get_bone_global_pose(a).origin
++			var pb := skel.get_bone_global_rest(b).origin if rest else skel.get_bone_global_pose(b).origin
++			heads.append(turn * (pa - origin))
++			tails.append(turn * (pb - origin))
++	return [heads, tails]
++
++
++static func _seg_dist(c: Vector3, a: Vector3, b: Vector3) -> float:
++	var ab := b - a
++	var t := clampf((c - a).dot(ab) / maxf(ab.length_squared(), 1e-12), 0.0, 1.0)
++	return c.distance_to(a + ab * t)
++
++
++## Least angle in [0, max_swing_deg] at which the cloth (turned about `pivot` along `axis`, then shifted by `shift`)
++## keeps its rest clearance from the legs: coarse steps, then bisection; when no angle clears, the nearest.
++static func _swing(
++	cloth: PackedVector3Array,
++	pivot: Vector3,
++	axis: Vector3,
++	shift: Vector3,
++	legs: Array[PackedVector3Array],
++	legs0: Array[PackedVector3Array],
++	s: Dictionary
++) -> float:
++	if cloth.is_empty():
++		return 0.0
++	var clear := float(s["clear_m"])
++	var slack := float(s["slack_m"])
++	var nseg := legs[0].size()
++	var need := PackedFloat32Array()
++	need.resize(cloth.size() * nseg)
++	for i: int in cloth.size():
++		for j: int in nseg:
++			need[i * nseg + j] = minf(_seg_dist(cloth[i], legs0[0][j], legs0[1][j]), clear) - slack
++	if _margin(cloth, pivot, axis, shift, 0.0, legs, need, true) >= 0.0:
++		return 0.0
++	var top := deg_to_rad(float(s["max_swing_deg"]))
++	var step := deg_to_rad(float(s["grid_deg"]))
++	var best := 0.0
++	var best_m := _margin(cloth, pivot, axis, shift, 0.0, legs, need, false)
++	var lo := 0.0
++	var ang := step
++	while ang <= top + 1e-9:
++		var m := _margin(cloth, pivot, axis, shift, ang, legs, need, false)
++		if m >= 0.0:
++			var hi := ang
++			for _i: int in int(s["bisect"]):
++				var mid := 0.5 * (lo + hi)
++				if _margin(cloth, pivot, axis, shift, mid, legs, need, true) >= 0.0:
++					hi = mid
++				else:
++					lo = mid
++			return hi
++		if m > best_m:
++			best = ang
++			best_m = m
++		lo = ang
++		ang += step
++	return best
++
++
++## The least (distance - need) over cloth and leg segments; with `early`, any negative value as soon as one is found.
++static func _margin(
++	cloth: PackedVector3Array,
++	pivot: Vector3,
++	axis: Vector3,
++	shift: Vector3,
++	ang: float,
++	legs: Array[PackedVector3Array],
++	need: PackedFloat32Array,
++	early: bool
++) -> float:
++	var rot := Basis(axis, ang)
++	var nseg := legs[0].size()
++	var worst := INF
++	for i: int in cloth.size():
++		var c := pivot + rot * (cloth[i] - pivot) + shift
++		for j: int in nseg:
++			var m := _seg_dist(c, legs[0][j], legs[1][j]) - need[i * nseg + j]
++			if m < worst:
++				worst = m
++				if early and worst < 0.0:
++					return worst
++	return worst
+diff --git a/game/characters/hero_helper_bones.gd.uid b/game/characters/hero_helper_bones.gd.uid
+new file mode 100644
+index 00000000..53cf51ea
+--- /dev/null
++++ b/game/characters/hero_helper_bones.gd.uid
+@@ -0,0 +1 @@
++uid://cpis100w5b87b
+diff --git a/game/data/characters/helper_bones.json b/game/data/characters/helper_bones.json
+new file mode 100644
+index 00000000..83434bd1
+--- /dev/null
++++ b/game/data/characters/helper_bones.json
+@@ -0,0 +1,36 @@
++{
++  "_doc": "M1-CHR-15: how the heroes' helper bones follow a pose. assets_src/characters/asha/hero_clips.py bakes them into every clip from these values; game/characters/hero_helper_bones.gd solves the same for poses set outside a clip (the character stages' world_pose, cutscene placeholder poses). The builds add the bones (assets_src/characters/asha/helper_bones.py); a skeleton without them is left alone.",
++  "armpit": {
++    "_doc": "DEF-armpit.L/.R sit on the shoulder with the upper arm's head, tail and roll, and turn `share` of the upper arm's own turn (relative to the shoulder) while the arm comes down, rising to all of it as the arm lifts above its rest elevation by raise_full_deg (the arm's own lift, in the skeleton's frame): the underarm skin rides them, so a lowered arm does not sink into the torso cloth, and a raised one carries it as before.",
++    "bone_prefix": "DEF-armpit.",
++    "driver_prefix": "DEF-upper_arm.",
++    "share": 0.35,
++    "raise_full_deg": 30.0
++  },
++  "skirt": {
++    "_doc": "DEF-skirt_<k> (pivot on the outer skirt above the hip joints, down to the panels' joint) and DEF-skirt_<k>.001 (on to the hem), one chain per sector of the floor-length skirts, parented to the hips. Each bone swings out in the vertical plane through its sector by the least angle (coarse steps of grid_deg, then `bisect` halvings, up to max_swing_deg) that keeps every vertex of `cloth_mesh` with at least cloth_min_weight on it within slack_m of its rest distance (capped at clear_m) from the axis of every leg segment (both legs). The upper bone is solved first, the lower one about its moved tip; neighbouring panels may not lag each other by more than lag_deg_per_45 per 45 degrees between them.",
++    "bone_prefix": "DEF-skirt_",
++    "cloth_mesh": "Costume",
++    "cloth_min_weight": 0.3,
++    "clear_m": 0.085,
++    "slack_m": 0.004,
++    "max_swing_deg": 95.0,
++    "lag_deg_per_45": 20.0,
++    "grid_deg": 2.5,
++    "bisect": 12,
++    "leg_segments": [
++      [
++        "DEF-thigh",
++        "DEF-shin"
++      ],
++      [
++        "DEF-shin",
++        "DEF-foot"
++      ],
++      [
++        "DEF-foot",
++        "DEF-toe"
++      ]
++    ]
++  }
++}
+diff --git a/game/levels/_tests/characters/asha/asha_stage.gd b/game/levels/_tests/characters/asha/asha_stage.gd
+index a0f125d1..60812279 100644
+--- a/game/levels/_tests/characters/asha/asha_stage.gd
++++ b/game/levels/_tests/characters/asha/asha_stage.gd
+@@ -214,6 +214,8 @@ func _apply_pose(root: Node) -> void:
+ 		return
+ 	_apply_local_pose(skel)
+ 	_apply_world_pose(skel)
++	if not (test_pose.is_empty() and world_pose.is_empty()):
++		HeroHelperBones.drive(skel)  # M1-CHR-15: the skirt panels and shoulder correctives follow a hand-set pose
+ 
+ 
+ func _apply_world_pose(skel: Skeleton3D) -> void:
+diff --git a/tests/unit/test_hero_stage.gd b/tests/unit/test_hero_stage.gd
+index 91040210..e1ef9027 100644
+--- a/tests/unit/test_hero_stage.gd
++++ b/tests/unit/test_hero_stage.gd
+@@ -134,3 +134,30 @@ func test_smile_variant_is_opt_in_data() -> void:
+ 	var compare := stage.find_child("AshaCompare", true, false)
+ 	assert_true(compare != null, "the comparison character is built")
+ 	stage.free()
++
++
++## M1-CHR-15: HeroHelperBones (the stages' solve for hand-set poses) matches the helper keys the clips bake
++## (hero_clips.py's solve): the skirt panels and the shoulder correctives, within a degree.
++func test_helper_bones_match_the_baked_clips() -> void:
++	for spec: Array in [
++		["asha", &"kneel_over_rhen", 1.6], ["asha", &"walk", 0.33], ["asha", &"run", 0.4], ["toma", &"talk", 1.0]
++	]:
++		var model := (load("res://assets/characters/%s/%s.glb" % [spec[0], spec[0]]) as PackedScene).instantiate()
++		_host().add_child(model)
++		var skel := model.find_child("Skeleton3D", true, false) as Skeleton3D
++		var ap := model.find_child("AnimationPlayer", true, false) as AnimationPlayer
++		assert_true(HeroHelperBones.has_helpers(skel), "%s has helper bones" % spec[0])
++		ap.play(spec[1])
++		ap.seek(float(spec[2]), true)
++		ap.pause()
++		var baked := {}
++		for i: int in skel.get_bone_count():
++			var n := skel.get_bone_name(i)
++			if n.begins_with("DEF-armpit.") or n.begins_with("DEF-skirt_"):
++				baked[i] = skel.get_bone_pose_rotation(i)
++				skel.set_bone_pose_rotation(i, skel.get_bone_rest(i).basis.get_rotation_quaternion())
++		HeroHelperBones.drive(skel)
++		for i: int in baked:
++			var err := rad_to_deg((baked[i] as Quaternion).angle_to(skel.get_bone_pose_rotation(i)))
++			assert_true(err < 1.0, "%s %s %s: %.2f deg" % [spec[0], spec[1], skel.get_bone_name(i), err])
++		model.free()
+diff --git a/tools/dev/rig_checks.json b/tools/dev/rig_checks.json
+index 2223d64d..a105f065 100644
+--- a/tools/dev/rig_checks.json
++++ b/tools/dev/rig_checks.json
+@@ -102,17 +102,17 @@
+         ],
+         "max_exposed": 2
+       },
+-      "_allowances": "Costume 45/8: the skirts fold between calf and thigh in the deep kneel (rise_to_stand), inside the leg. VerseSleeve 42/6 (count 4 -> 6, M2-CHR-07): one gauze bag vertex enters the waist when the arm is down; the battle clips (hit, defend, cast, finisher, ko) add a frame or two where up to 6 sleeve-top vertices (on DEF-spine.003, up to 32 mm) sit inside the upper arm as it starts forward, and the deepest stays 36.5 mm (hit, the bag at the pelvis). Hidden under the sleeve: viewed at asha hit@6 and defend@2 from the Sleeve and ThreeQuarter cameras. Body 48/40: upper-arm skin passes the torso cloth's armhole edge as the arm hangs (the vest and bodice no longer poke out: viewed). max_exposed 2: two halter-edge vertices at the left shoulder in the extreme pose, under 2 mm.",
++      "_allowances": "M1-CHR-15 (every-frame worst in brackets). Costume 34/6 (32.8): the sandal soles sit inside the feet at rest; the skirts are clean in every frame (skirt panels: 43.8 -> 32.8; the old worst was the skirt in the calf-thigh fold of the deep kneel). VerseSleeve 36/6 (35.5, walk): the sleeve's inner elbow against the waist as the arm hangs (her staff arm now hangs 6 degrees wider, and the hanging bag rides the shoulder corrective). Body 47/24 (46.7): the extreme_pose stage pose, the right arm raised 80 degrees forward (the front of the shoulder passes the vest's armhole edge, as in M1-CHR-14); in the clips the armpit is 37.7 at worst (attack), down from 46 in walk and laugh before the shoulder correctives. max_exposed 2: two halter-edge vertices at the right shoulder, under 2 mm.",
+       "penetration": {
+         "limits_mm": {
+-          "Costume": 45.0,
+-          "VerseSleeve": 42.0,
+-          "Body": 48.0
++          "Costume": 34.0,
++          "VerseSleeve": 36.0,
++          "Body": 47.0
+         },
+         "limits_count": {
+-          "Costume": 8,
++          "Costume": 6,
+           "VerseSleeve": 6,
+-          "Body": 40
++          "Body": 24
+         }
+       }
+     },
+@@ -120,15 +120,15 @@
+       "props": [
+         "Props"
+       ],
+-      "_allowances": "Costume 32/6 and Body 63/50: the shirt's armhole against the lowered upper arm (talk, take_hand); clean in rhen_clip_take_hand. max_exposed 24: the thigh's hidden-face edge opens inside the deep knee fold of the kneel, under the trousers (rhen_clip_kneel).",
++      "_allowances": "M1-CHR-15 (every-frame worst in brackets). Costume 31.5/6 (31.2): the shirt's side against the forearm and the lowered upper arm (finisher, talk). Body 62/40 (61.1, item@6): the toss lifts the right arm 92 degrees forward and its front passes the shirt's armhole edge; with the arms down (idle, talk) the armpit is under 30 since the shoulder correctives. max_exposed 24: the thigh's hidden-face edge opens inside the deep knee fold of the kneel, under the trousers (rhen_clip_kneel).",
+       "penetration": {
+         "limits_mm": {
+-          "Costume": 32.0,
+-          "Body": 63.0
++          "Costume": 31.5,
++          "Body": 62.0
+         },
+         "limits_count": {
+           "Costume": 6,
+-          "Body": 50
++          "Body": 40
+         }
+       },
+       "seams": {
+@@ -139,16 +139,14 @@
+       "props": [
+         "Props"
+       ],
+-      "_allowances": "Costume 33/6 and Body 71/200: his broad torso takes the lowered upper arm into the tunic's side (linear skinning); the tunic rides the torso only, so the arm now reads in front of its edge (toma_clip_talk). Props 16/6: the spear shaft grazes the forearm for a few frames while the hand turns it (spear_level, lower_spear, turn_seaward). max_exposed 2: two shoulder-edge vertices, under 5 mm.",
++      "_allowances": "M1-CHR-15 (every-frame worst in brackets). Costume 32/6 (31.7, talk): his broad torso takes the lowered upper arm into the tunic's side at mid-arm (linear skinning). Body 54/200 (53.6, finisher): his right toes through the trouser hem as the lunge flexes the ankle; the armpit is 18.5 in idle (69 in walk before the shoulder correctives). Props: no allowance (16.6 -> 0: the spear sits 3.4 cm out and its foot 1.2 degrees forward, and spear_level and lower_spear swing the arm out while the hand turns it). max_exposed 2: two shoulder-edge vertices, under 5 mm.",
+       "penetration": {
+         "limits_mm": {
+-          "Costume": 33.0,
+-          "Props": 16.0,
+-          "Body": 71.0
++          "Costume": 32.0,
++          "Body": 54.0
+         },
+         "limits_count": {
+           "Costume": 6,
+-          "Props": 6,
+           "Body": 200
+         }
+       },
+@@ -157,7 +155,7 @@
+       }
+     },
+     "sefir": {
+-      "_garments": "act1_npcs.md §1.10: the long hair is a garment (HairBack), so hair passing through the mantle or the shoulders in a head turn shows up in garment_in_body and is fixed by weights, not hidden",
++      "_garments": "act1_npcs.md \u00a71.10: the long hair is a garment (HairBack), so hair passing through the mantle or the shoulders in a head turn shows up in garment_in_body and is fixed by weights, not hidden",
+       "garments": [
+         "Costume",
+         "Mantle",
+diff --git a/tools/dev/rig_probe.py b/tools/dev/rig_probe.py
+index 1649e52b..5726a49c 100644
+--- a/tools/dev/rig_probe.py
++++ b/tools/dev/rig_probe.py
+@@ -13,8 +13,10 @@ rest TRS), and computes linear-blend-skinned vertex positions for a pose, exactl
+ 
+ Poses come from `assets_src/characters/asha/hero_clips.py` (the same functions that write the AnimationLibrary the
+ game plays, so a pose here is a frame of the shipped clip): the rest pose, every N-th key of every clip of the hero,
+-and the stage's world-axis test poses (`asha_extreme_pose.tscn`, composed like `AshaStage._apply_world_pose`). Bones
+-the clips do not key (fingers, eyes, props, sash tails) stay at their rest local transform and inherit.
++and the stage's world-axis test poses (`asha_extreme_pose.tscn`, composed like `AshaStage._apply_world_pose`, then
++the helper bones posed as `HeroHelperBones.drive` does, M1-CHR-15). Bones the clips do not key (fingers, eyes, props,
++sash tails) stay at their rest local transform and inherit; the helper bones (skirt panels, shoulder correctives) are
++keyed by every clip.
+ 
+ Three checks (thresholds in `tools/dev/rig_checks.json`, per-hero overrides under "heroes"):
+ 
+@@ -442,6 +444,8 @@ def world_pose_local(rig: Rig, world: dict) -> dict:
+         pq = np.array([0.0, 0.0, 0.0, 1.0]) if p < 0 else gq(p)
+         lq = hero_clips.qmul(hero_clips.qinv(pq), new)
+         local[bone] = lq / np.linalg.norm(lq)
++    # M1-CHR-15: the stage then poses the helper bones from the rest (HeroHelperBones.drive)
++    local.update(hero_clips.helper_locals(rig.skeleton, local))
+     return local
+ 
+ 
+diff --git a/tools/tests/test_hero_battle_clips.py b/tools/tests/test_hero_battle_clips.py
+index ba9eb8cc..f9017139 100644
+--- a/tools/tests/test_hero_battle_clips.py
++++ b/tools/tests/test_hero_battle_clips.py
+@@ -119,7 +119,7 @@ class TestHeroBattleClips(unittest.TestCase):
+                                              r'tracks/\d+/enabled = true\ntracks/\d+/path = NodePath\("([^"]+)"\)', sub):
+                     node, _, bone = path.partition(":")
+                     self.assertEqual(node, f"{root}/Skeleton3D", f"{hero} {clip} {path}")
+-                    self.assertIn(bone, hero_clips.BONES, f"{hero} {clip} {path}")
++                    self.assertIn(bone, self.sk[hero].keyed, f"{hero} {clip} {path}")  # M1-CHR-15: plus helpers
+                     if kind == "position_3d":
+                         self.assertEqual(bone, hero_clips.HIPS, f"{hero} {clip}")
+                 hips = [np.asarray(p.get("hips", (0.0, 0.0, 0.0)), dtype=float) for _t, p in self._keys(hero, clip)]
+diff --git a/tools/tests/test_toma.py b/tools/tests/test_toma.py
+index d538d549..45c346c9 100644
+--- a/tools/tests/test_toma.py
++++ b/tools/tests/test_toma.py
+@@ -124,7 +124,9 @@ class TestCommitted(unittest.TestCase):
+         joints = [nodes[i]["name"] for i in js["skins"][0]["joints"]]
+         parent = {c: i for i, n in enumerate(nodes) for c in n.get("children", [])}
+         idx = {n.get("name"): i for i, n in enumerate(nodes)}
+-        want = {"DEF-pauldron": "DEF-shoulder.L", "DEF-shield": "DEF-spine.003", "DEF-spear": "DEF-hand.R"}
++        want = {"DEF-pauldron": "DEF-shoulder.L", "DEF-shield": "DEF-spine.003", "DEF-spear": "DEF-hand.R",
++                # M1-CHR-15: the shoulder correctives (every hero)
++                "DEF-armpit.L": "DEF-shoulder.L", "DEF-armpit.R": "DEF-shoulder.R"}
+         for root in ("DEF-sash_tail_a", "DEF-sash_tail_b"):
+             chain = [root] + [f"{root}.{i:03d}" for i in range(1, 4)]
+             want[chain[0]] = "DEF-spine"

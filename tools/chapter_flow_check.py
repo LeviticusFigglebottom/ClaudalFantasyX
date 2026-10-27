@@ -15,7 +15,7 @@ LAYOUT_PATH_RE = re.compile(r'^layout_path = "(res://[^"]+)"', re.M)
 ZONE_KEYS = {"party", "arrive", "beats", "barks", "overheard_hold_sec", "doc"}
 END_STEPS = {"battle", "go", "scene"}
 STEP_KEYS = {"play", "place", "set", "chapter", "party", "zone", "beat", "if_event"} | END_STEPS
-STEP_EXTRA = {"battle": {"return_spawn", "escape_spawn", "victory_flag", "party", "reserve", "seed"},
+STEP_EXTRA = {"battle": {"return_spawn", "escape_spawn", "victory_flag", "objective_flag", "party", "reserve", "seed"},
               "zone": {"args"}, "if_event": {"steps"}}
 TRIGGER_KEYS = {"id", "at", "size", "yaw", "activation", "prompt_key", "payload", "requires_flag",
                 "blocked_by_flag", "sets_flag", "once"}
@@ -106,6 +106,8 @@ def _step_errors(step: object, w: str, loc: str, zone: dict, ctx: Context) -> li
                 errs += _spawn_errors(step[key], loc, f"{w}.{key}", ctx)
         if step.get("victory_flag") and step["victory_flag"] not in ctx.flags:
             errs.append(f"{w}: undeclared victory_flag '{step['victory_flag']}'")
+        if step.get("objective_flag") and step["objective_flag"] not in ctx.flags:
+            errs.append(f"{w}: undeclared objective_flag '{step['objective_flag']}'")
         if "party" in step:
             errs += _party_errors({"party": step["party"], "reserve": step.get("reserve", [])}, w, ctx)
     elif kind == "go":

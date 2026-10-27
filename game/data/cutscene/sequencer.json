@@ -26,7 +26,10 @@
     "haluna_dawn": "hush_theme_sketch",
     "haluna_village": "hush_theme_sketch",
     "shell_shrine_interior": "temple_trial",
-    "hush_first_verse": "hush_theme_v2"
+    "hush_first_verse": "hush_theme_v2",
+    "corrow_day": "corrow_seawall",
+    "coilspire_flues": "temple_trial",
+    "undertow_reach": "undertows_reach_p1"
   },
   "choices": {
     "right_px": 200,

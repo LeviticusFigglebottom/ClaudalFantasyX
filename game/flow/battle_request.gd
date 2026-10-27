@@ -44,6 +44,12 @@ var escape_spawn: StringName = &""
 ## After a victory or an escape, open this scene instead of travelling to return_location (M2-FP-06:
 ## the Drownbell is the last fight of the first playable and goes to the end card). "" = travel.
 var return_scene: String = ""
+## A set piece's carried meter (M3-C08-02: Ch8's stair meter, ch08_stair_groups_up): a numeric flag.
+## FieldBattle sets it to objective_start + the engine's objective_count after a win or a scripted
+## escape, and back to objective_start on "Fight again". &"" = none.
+var objective_flag: StringName = &""
+## The meter's value when the fight was asked for (ZoneStory reads it off the flag).
+var objective_start := 0
 
 
 ## A request with the saved formation (or the data file's party) and the data file's seed; nothing

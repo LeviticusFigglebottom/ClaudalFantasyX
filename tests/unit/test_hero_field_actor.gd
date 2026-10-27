@@ -235,22 +235,27 @@ func test_stage_hero_capsules_get_bodies_and_others_keep_theirs() -> void:
 	_done()
 
 
+## The speeds the body actually uses (locomotion.json's once M2-CHR-12 is in, else hero_motion.json's)
+## against HeroClipGait's own measure of whichever clips the model has.
 func test_the_clip_speeds_match_the_measured_foot_plant() -> void:
 	var f := HeroFieldActor.field_data()
-	var cfg := f["gait_measure"] as Dictionary
-	var tol := float(cfg["measure_tolerance"])
 	for id: String in (f["heroes"] as Dictionary).keys():
 		var row := (f["heroes"] as Dictionary)[id] as Dictionary
+		var speeds := HeroFieldActor.gait_speeds(StringName(id))
+		var cfg := HeroFieldActor.measure_config(StringName(id))
+		var tol := float(cfg["measure_tolerance"])
 		var m := (load(str(row["scene"])) as PackedScene).instantiate()
+		var has_new := (m.find_child("AnimationPlayer", true, false) as AnimationPlayer).has_animation(&"walk_start")
+		assert_eq(str(speeds["source"]) == "locomotion", has_new, "%s: locomotion.json speeds with its clips" % id)
 		for k: String in ["walk", "run"]:
 			var measured := HeroClipGait.clip_speed(m, StringName(k), cfg)
-			var data_mps := float(row["%s_clip_mps" % k])
+			var data_mps := float(speeds["%s_clip_mps" % k])
 			assert_true(measured > 0.0, "%s %s measured" % [id, k])
 			assert_between(
 				data_mps,
 				measured * (1.0 - tol),
 				measured * (1.0 + tol),
-				"%s %s: data %.2f vs %.2f" % [id, k, data_mps, measured]
+				"%s %s (%s): data %.2f vs %.2f" % [id, k, speeds["source"], data_mps, measured]
 			)
 		m.free()
 	_done()

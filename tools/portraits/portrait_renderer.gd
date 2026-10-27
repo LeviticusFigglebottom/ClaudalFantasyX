@@ -4,7 +4,8 @@ extends Node
 ## materials, shader tier, face pose from the emotion tag, pinned wind, the Face camera aimed at the eye
 ## midpoint) is instanced once per emotion into a transparent SubViewport, with the manifest's framing
 ## and the backdrop nodes hidden. Nothing of the stage is copied: its own _ready poses and aims.
-## Creatures (M2-MNU-302) go through the same _capture(); _render_creature is the hook to fill.
+## Creatures (M2-MNU-302): each creatures.json actor in its own small world (see _render_creature), the
+## same _capture().
 ## Run it through tools/portraits/render.sh (the lavapipe wrapper, one process per entry); it needs a
 ## real renderer, never --headless.
 ## User args (after `--`): --only=<id>[,<id>]  --emotions=<tag>[,<tag>]  --out-dir=<absolute dir>
@@ -48,6 +49,8 @@ func _run() -> void:
 	for kind: String in [KIND_HEROES, KIND_CREATURES]:
 		for entry_v: Variant in (manifest as Dictionary).get(kind, []):
 			var entry := _merged(defaults, entry_v as Dictionary)
+			if kind == KIND_CREATURES:
+				entry["creature_stage"] = (manifest as Dictionary).get("creature_stage", {})
 			var id := str(entry.get("id", ""))
 			if not only.is_empty() and not only.has(id):
 				continue
@@ -111,16 +114,77 @@ func _render_hero(entry: Dictionary, emotion: String, out_name: String) -> Strin
 	return await _capture(stage, cam, entry, out_name)
 
 
-## M2-MNU-302 hook: build the creature's world (CreatureFraming and its `portrait` block) and call
-## _capture() with its camera.
-func _render_creature(_entry: Dictionary, _out_name: String) -> String:
-	await get_tree().process_frame
-	return "creature portraits are not wired yet (M2-MNU-302)"
+## A creature (M2-MNU-302): its battle actor scene (the enemy's `model`) alone in a small world, the
+## manifest's creature_stage lights and environment (cool rim for the dark-blue panels), held at
+## creatures.json's `portrait` clip and time and framed by CreatureFraming.frame_fit() from that block's
+## yaw, pitch, fov and margin; the entry's own `portrait` keys, when it has any, override that block.
+func _render_creature(entry: Dictionary, out_name: String) -> String:
+	var packed := load(str(entry.get("scene", ""))) as PackedScene
+	if packed == null:
+		return "cannot load creature scene %s" % entry.get("scene", "")
+	var actor := packed.instantiate() as CreatureActor
+	if actor == null:
+		return "%s is not a CreatureActor" % entry.get("scene", "")
+	var stage: Dictionary = entry.get("creature_stage", {})
+	var world := Node3D.new()
+	world.name = &"CreatureWorld"
+	var we := WorldEnvironment.new()
+	var env := Environment.new()
+	var env_d: Dictionary = stage.get("environment", {})
+	for key: String in env_d:
+		var v: Variant = _value(env_d[key])
+		env.set(key, int(v) if typeof(env.get(key)) == TYPE_INT else v)
+	we.environment = env
+	world.add_child(we)
+	var cam := Camera3D.new()
+	cam.name = &"Camera"
+	world.add_child(cam)
+	world.add_child(actor)
+	var cfg: Dictionary = CreatureActor.row_for(actor.creature_id).get("portrait", {})
+	cfg = cfg.merged(entry.get("portrait", {}), true)
+	var lights: Array = stage.get("lights", [])
+	var prepare := func() -> void:
+		CreatureFraming.hold(actor, StringName(str(cfg.get("clip", "idle"))), float(cfg.get("clip_time", 0.0)))
+		CreatureFraming.frame_fit(
+			cam,
+			CreatureFraming.bounds([actor]),
+			float(cfg.get("yaw_deg", 0.0)),
+			float(cfg.get("pitch_deg", 0.0)),
+			float(cfg.get("fov_deg", cam.fov)),
+			float(cfg.get("margin", 1.0))
+		)
+		for l: Dictionary in lights:
+			world.add_child(_light(l, float(cfg.get("yaw_deg", 0.0))))
+	return await _capture(world, cam, entry, out_name, prepare)
+
+
+## A directional light from the manifest: yaw_deg is relative to the camera's yaw (0 = from the camera's
+## side, 180 = from behind the creature), pitch_deg above the horizon.
+static func _light(d: Dictionary, camera_yaw_deg: float) -> DirectionalLight3D:
+	var light := DirectionalLight3D.new()
+	var yaw := deg_to_rad(camera_yaw_deg + float(d.get("yaw_deg", 0.0)))
+	var pitch := deg_to_rad(float(d.get("pitch_deg", 0.0)))
+	var from := Vector3(sin(yaw) * cos(pitch), sin(pitch), cos(yaw) * cos(pitch))
+	light.basis = Basis.looking_at(-from, Vector3.UP if absf(from.y) < 0.99 else Vector3.FORWARD)
+	light.light_color = _value(d.get("color", [1.0, 1.0, 1.0])) as Color
+	light.light_energy = float(d.get("energy", 1.0))
+	light.shadow_enabled = bool(d.get("shadow", false))
+	return light
+
+
+## A manifest value: a 3- or 4-number array is a Color, anything else as is.
+static func _value(v: Variant) -> Variant:
+	if v is Array and ((v as Array).size() == 3 or (v as Array).size() == 4):
+		var a := v as Array
+		return Color(float(a[0]), float(a[1]), float(a[2]), float(a[3]) if a.size() == 4 else 1.0)
+	return v
 
 
 ## Renders `root` (freed after) through `cam` in a transparent SubViewport of size x supersample,
-## Lanczos-reduced to `size`, and saves <out_dir>/<out_name>.png. Returns "" or the error.
-func _capture(root: Node, cam: Camera3D, entry: Dictionary, out_name: String) -> String:
+## Lanczos-reduced to `size`, and saves <out_dir>/<out_name>.png. `prepare` (when valid) runs once `root` is
+## in the tree, before the camera is made current (poses and framing that need global transforms).
+## Returns "" or the error.
+func _capture(root: Node, cam: Camera3D, entry: Dictionary, out_name: String, prepare := Callable()) -> String:
 	var size_a: Array = entry.get("size", [])
 	var size := Vector2i(int(size_a[0]), int(size_a[1]))
 	var vp := SubViewport.new()
@@ -130,6 +194,8 @@ func _capture(root: Node, cam: Camera3D, entry: Dictionary, out_name: String) ->
 	vp.render_target_update_mode = SubViewport.UPDATE_ALWAYS
 	add_child(vp)
 	vp.add_child(root)
+	if prepare.is_valid():
+		prepare.call()
 	cam.make_current()
 	for i in int(entry.get("settle_frames", 1)):
 		await get_tree().process_frame

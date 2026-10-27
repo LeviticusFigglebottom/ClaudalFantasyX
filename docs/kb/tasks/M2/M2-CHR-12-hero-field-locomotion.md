@@ -2,7 +2,7 @@
 id: M2-CHR-12
 title: Field locomotion clips for Asha, Rhen and Toma (idle variants, walk and run with starts and stops, turns in place)
 role: character
-status: doing
+status: review
 owner_session: "characters (cloud session_01JqzzxgJU9Dmu7fRhmCG9aQ, branch claude/characters)"
 reviewer: lead
 depends_on: [M2-FP-07, M2-CHR-07]
@@ -28,5 +28,16 @@ In the human's playtest the slice heroes walked the field as placeholders, and t
 - [ ] Clip shots viewed, and a handoff that lists names, lengths and strides for the hero-integration track.
 
 ## Notes
+- 2026-10-24 (characters, worktree agent): done in the "M2-CHR-12" block of `assets_src/characters/asha/hero_clips.py`
+  (two dispatch lines in `pose_at` and `build`, one in `main`, and `clip_length()` for the per-hero cycle lengths;
+  `tools/dev/rig_probe.py` samples with it). Clips per hero: `walk`, `run` (rebuilt: IK onto planted footprints,
+  heel-strike / flat / ball-roll / swing; Ysolde keeps the old ones), `idle_breathe`, `idle_shift`, `walk_start`,
+  `walk_stop`, `run_start`, `run_stop`, `turn_in_place_l90`, `turn_in_place_r90`, `turn_in_place_180` (names and
+  lengths per the hero-integration track's M2-HER-1105 request). In place; stride, speed, root travel and yaw per key
+  and footstep markers in `game/data/characters/locomotion.json` and as Animation markers. Test:
+  `tools/tests/test_hero_locomotion.py`. Handoff for the hero-integration track:
+  `docs/kb/handoffs/2026-10-24-character-17.md`. Shots: `<hero>_clip_walk_cycle`, `<hero>_clip_turn`.
+  validate_data has no schema pattern for `game/data/characters/`, so the JSON is not registered there (the test
+  checks it regenerates byte for byte).
 
 ## Review log

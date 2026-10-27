@@ -1,0 +1,14 @@
+{
+ "format": 1,
+ "scene": "ch08_bark_stillguard",
+ "source": "game/data/dialogue/ch08/ch08_bark_stillguard.dlg",
+ "start": "ch08_bark_stillguard",
+ "nodes": {
+  "ch08_bark_stillguard": {
+   "headers": {"location": "ch08/corrow"},
+   "ops": [
+    {"op": "line", "id": "ch08_bark_stillguard_001", "key": "DLG_CH08_BARK_STILLGUARD_001", "speaker": "stillguard", "emotion": "exhausted", "voice": "", "src": 6}
+   ]
+  }
+ }
+}

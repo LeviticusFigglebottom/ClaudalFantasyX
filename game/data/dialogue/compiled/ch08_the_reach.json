@@ -1,0 +1,22 @@
+{
+ "format": 1,
+ "scene": "ch08_the_reach",
+ "source": "game/data/dialogue/ch08/ch08_the_reach.dlg",
+ "start": "ch08_the_reach",
+ "nodes": {
+  "ch08_the_reach": {
+   "headers": {"location": "ch08/corrow"},
+   "ops": [
+    {"op": "cue", "cue": "letterbox", "args": ["on"], "kwargs": {}, "src": 10},
+    {"op": "cue", "cue": "camera", "args": ["W18"], "kwargs": {}, "src": 11},
+    {"op": "cue", "cue": "music", "args": ["undertow_reach"], "kwargs": {"fade": 0.5}, "src": 12},
+    {"op": "cue", "cue": "sfx", "args": ["reach_rises"], "kwargs": {}, "src": 13},
+    {"op": "cue", "cue": "wait", "args": [2.5], "kwargs": {}, "src": 14},
+    {"op": "cue", "cue": "sfx", "args": ["reach_grips"], "kwargs": {}, "src": 15},
+    {"op": "cue", "cue": "anim", "args": ["toma", "shield_up"], "kwargs": {}, "src": 16},
+    {"op": "line", "id": "ch08_the_reach_001", "key": "DLG_CH08_THE_REACH_001", "speaker": "toma", "emotion": "determined", "voice": "", "src": 17},
+    {"op": "cue", "cue": "letterbox", "args": ["off"], "kwargs": {}, "src": 18}
+   ]
+  }
+ }
+}

@@ -159,6 +159,8 @@ shrine's pool fill. Every rule is in `tools/audio/targets.py`.
 **Budget (2026-10-24):** the slice plus the first Act I cues reached 23.5 MiB, so the total audio budget in
 `tools/audio/targets.py` is now 48 MiB (about 1 MB per minute of music; the full game's 60–80 cues land near 70–90 MB,
 which is a repository-size question for the Lead: Git LFS, STATUS.md). Each file stays under 5 MB.
+**ADR 0170 (2026-10-24):** 56 MiB, so the Act II sketches (M3-AUD-804/805) and the field foley fit (47.1 MiB before
+the second sketch set). The full game's storage plan is still the Lead's to decide before Act III's cues.
 
 **Loop import rule:** `.import` files keep `beat_count=0`. Godot 4.6 loops an Ogg after `beat_count` beats counted
 from the start of the file (not from `loop_offset`), so a cue with an intro would wrap early by its intro's length.

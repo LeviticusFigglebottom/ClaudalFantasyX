@@ -9,6 +9,8 @@
                         lacquered pavilion and a copper spire (Ashcrown proper is a later task)
   ash_plume             the plume, a lofted, billowing volume rising from the caldera and leaning west on
                         the trade wind; UV.y runs 0 at the vent to 1 at the top (env_ash_plume reads it)
+  ash_plume_near        the same plume for close views (Ashcrown, inside ~800 m; M3-ENV-11): its surface
+                        sampled densely with rounded creases and softened normals; LOD1 is ash_plume's LOD0
 """
 
 from __future__ import annotations
@@ -25,10 +27,17 @@ TRI_BUDGET = {
     "mountain_massif": (30000, 5200),
     "ashcrown_silhouette": (6000, 900),
     "ash_plume": (7000, 1800),
+    "ash_plume_near": (42000, 7000),
 }
 
 PLUME_H_M = 460.0
 PLUME_LEAN_M = 320.0  # how far west the top drifts
+# The near plume (M3-ENV-11): the same surface as ash_plume (its noise seeded by that name), denser.
+PLUME_SEED_NAME = "ash_plume"
+NEAR_GRID = (160, 128)  # rings, sides (ash_plume LOD0: 64, 52)
+NEAR_CREASE = 0.04  # rounds the creases between the heads (in the noise's own units, of 0.5)
+NEAR_NORMAL_SMOOTH = 3  # grid smoothing passes over the normals
+NEAR_RADIAL_BEND = 0.3  # how far the normals lean toward the column's radial direction
 ASH_BAND_M = 4.8  # the massif's far terrace band height
 
 
@@ -153,11 +162,13 @@ def ashcrown(name: str, seed: int, *, lod: bool = False) -> kc.MeshBuilder:
 # ---------------------------------------------------------------------------------------------
 # Ash plume
 # ---------------------------------------------------------------------------------------------
-def plume(name: str, seed: int, *, lod: bool = False) -> kc.MeshBuilder:
-    rng = kc.rng_for(name, seed)
-    noise = kc.Noise3(rng)
-    mb = kc.MeshBuilder(pc.lod_name(name, lod))
-    rings, sides = (16, 14) if lod else (64, 52)
+def _plume_shell(noise: kc.Noise3, rings: int, sides: int, crease_m: float = 0.0):
+    """The plume's lofted surface sampled on a (rings, sides + 1) grid: the same continuous shape at any density
+    (the billows are noise read at each point), so a denser grid refines the far mesh rather than replacing it.
+    `crease_m` > 0 rounds the creases between the cauliflower heads (|x| becomes sqrt(x^2 + c^2) - c), which
+    only the near piece does: sampled densely, the sharp creases show as dark seams in the shading.
+    Returns (points, the undisplaced outward directions, u, v, uv2, the column's radius per ring, and the
+    heads: how far each point stands out on the small billows, 0 deep in a crease to 1 on a head's crown)."""
     t = np.linspace(0.0, 1.0, rings)
     spine = np.stack([-PLUME_LEAN_M * t ** 1.8, PLUME_H_M * t, 30.0 * np.sin(t * 2.2)], axis=-1)
     # Necks and swells along the column (puffs rising one after another), not a smooth cone.
@@ -171,10 +182,14 @@ def plume(name: str, seed: int, *, lod: bool = False) -> kc.MeshBuilder:
         n2 = np.cross(n1, tang[i])
         d = np.outer(np.cos(ang), n1) + np.outer(np.sin(ang), n2)
         p[i] = spine[i] + d * radius[i]
+
+    def crease(x: np.ndarray) -> np.ndarray:
+        return np.abs(x) if crease_m <= 0.0 else np.sqrt(x * x + crease_m * crease_m) - crease_m
+
     # Billows: big lumps that grow with height; the vent stays tight.
     lump = noise.fbm(p / 70.0, 3) - 0.5
-    lump2 = np.abs(noise.fbm(p / 26.0 + 11.0, 2) - 0.5) * 2.0 - 0.3  # rounded cauliflower heads
-    lump3 = np.abs(noise.fbm(p / 11.0 + 23.0, 2) - 0.5) * 2.0 - 0.3  # small heads on the big ones
+    lump2 = crease(noise.fbm(p / 26.0 + 11.0, 2) - 0.5) * 2.0 - 0.3  # rounded cauliflower heads
+    lump3 = crease(noise.fbm(p / 11.0 + 23.0, 2) - 0.5) * 2.0 - 0.3  # small heads on the big ones
     out = kc.normalize(p - spine[:, None, :])
     p = p + out * ((lump * 1.1 + lump2 * 0.55 + lump3 * 0.18) * radius[:, None]
                    * (0.35 + 0.65 * t[:, None]))[..., None]
@@ -182,16 +197,66 @@ def plume(name: str, seed: int, *, lod: bool = False) -> kc.MeshBuilder:
     u = np.tile(ang / (2.0 * math.pi), (rings, 1))
     v = np.tile(t[:, None], (1, sides + 1))
     uv2 = np.stack([np.full(u.shape, 1.0), np.clip(0.5 + lump, 0, 1)], axis=-1)
-    kc.quad_strip(mb, p, mb.material(pc.M_PLUME), uv=np.stack([u, v], axis=-1), col=(0, 0, 0, 0), uv2=uv2,
-                  flip=True)
-    # Cap the top with a dome (so the plume reads closed from below).
+    # Weighted like the displacement (small at the vent), so the shading never paints heads the shape lacks.
+    heads = 0.5 + (np.clip((lump2 * 0.55 + lump3 * 0.18 + 0.2) / 0.3, 0.0, 1.0) - 0.5) * (0.35 + 0.65 * t[:, None])
+    return p, out, u, v, uv2, radius, heads
+
+
+def _plume_cap(mb: kc.MeshBuilder, p: np.ndarray, u: np.ndarray, radius: np.ndarray) -> int:
+    """Caps the top with a dome (so the plume reads closed from below); returns the cap's first vertex."""
+    sides = p.shape[1] - 1
     top = p[-1, :-1]
     c = top.mean(axis=0) + np.array([0.0, radius[-1] * 0.35, 0.0])
     base = mb.add_vertices(np.vstack([top, c[None]]), kc.UP, np.column_stack([u[-1, :-1], np.ones(sides)]).tolist()
                            + [[0.5, 1.0]], (1.0, 0.5), (0, 0, 0, 0))
     for s in range(sides):
         mb.add_tri(base + s, base + sides, base + (s + 1) % sides, mb.material(pc.M_PLUME))
+    return base
+
+
+def plume(name: str, seed: int, *, lod: bool = False) -> kc.MeshBuilder:
+    rng = kc.rng_for(name, seed)
+    noise = kc.Noise3(rng)
+    mb = kc.MeshBuilder(pc.lod_name(name, lod))
+    rings, sides = (16, 14) if lod else (64, 52)
+    p, _out, u, v, uv2, radius, _heads = _plume_shell(noise, rings, sides)
+    kc.quad_strip(mb, p, mb.material(pc.M_PLUME), uv=np.stack([u, v], axis=-1), col=(0, 0, 0, 0), uv2=uv2,
+                  flip=True)
+    _plume_cap(mb, p, u, radius)
     kc.recompute_normals(mb)
+    return mb
+
+
+def plume_near(name: str, seed: int, *, lod: bool = False) -> kc.MeshBuilder:
+    """The plume for close views (M3-ENV-11; pemakar.md §2.4): the far plume's own surface (the same noise:
+    built from `ash_plume`'s seed) sampled about six times as densely, with the creases between the heads
+    rounded and the normals softened (smoothed over the grid, then bent toward the column's radial direction,
+    the usual trick for a cloud: the shading turns over the whole billow, not over every small head); UV2.x
+    carries the heads (crowns 1, creases 0) so the shader can shade billows that the sun does not reach. Its LOD1
+    is the far plume's LOD0 (the same mesh), so past the near range it is the plume the town sees."""
+    if lod:
+        far = plume(PLUME_SEED_NAME, seed)
+        far.name = pc.lod_name(name, True)
+        return far
+    noise = kc.Noise3(kc.rng_for(PLUME_SEED_NAME, seed))
+    mb = kc.MeshBuilder(pc.lod_name(name, False))
+    rings, sides = NEAR_GRID
+    p, out, u, v, uv2, radius, heads = _plume_shell(noise, rings, sides, crease_m=NEAR_CREASE)
+    uv2 = uv2.copy()
+    uv2[..., 0] = heads  # UV2.x: the billow shading env_ash_plume's `billow_shade` reads (the far plume's is 1)
+    kc.quad_strip(mb, p, mb.material(pc.M_PLUME), uv=np.stack([u, v], axis=-1), col=(0, 0, 0, 0), uv2=uv2,
+                  flip=True)
+    cap = _plume_cap(mb, p, u, radius)
+    kc.recompute_normals(mb)
+    n = np.asarray(mb.nrm[: rings * (sides + 1)], float).reshape(rings, sides + 1, 3)[:, :-1]
+    for _ in range(NEAR_NORMAL_SMOOTH):
+        up = np.concatenate([n[:1], n[:-1]], axis=0)
+        down = np.concatenate([n[1:], n[-1:]], axis=0)
+        n = kc.normalize(n * 2.0 + up + down + np.roll(n, 1, axis=1) + np.roll(n, -1, axis=1))
+    n = kc.normalize(n * (1.0 - NEAR_RADIAL_BEND) + out[:, :-1] * NEAR_RADIAL_BEND)
+    n = np.concatenate([n, n[:, :1]], axis=1)
+    mb.nrm[: rings * (sides + 1)] = n.reshape(-1, 3).tolist()
+    mb.nrm[cap: cap + sides] = n[-1, :-1].tolist()  # the dome's rim shares the column's top ring
     return mb
 
 
@@ -211,4 +276,5 @@ TARGETS = {
     "mountain_massif": lambda: [massif("mountain_massif", 801), massif("mountain_massif", 801, lod=True)],
     "ashcrown_silhouette": lambda: [ashcrown("ashcrown_silhouette", 802), ashcrown("ashcrown_silhouette", 802, lod=True)],
     "ash_plume": lambda: [plume("ash_plume", 803), plume("ash_plume", 803, lod=True)],
+    "ash_plume_near": lambda: [plume_near("ash_plume_near", 803), plume_near("ash_plume_near", 803, lod=True)],
 }

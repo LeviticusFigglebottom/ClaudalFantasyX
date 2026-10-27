@@ -68,7 +68,7 @@ def read_glb(path: Path) -> dict:
 
 class KitGeometryTests(unittest.TestCase):
     def test_every_target_is_inside_its_budget_with_a_lod_chain(self) -> None:
-        self.assertEqual(len(TARGETS), 26)  # 25 kit pieces + M3-ENV-06's arena_ash_tread
+        self.assertEqual(len(TARGETS), 27)  # 25 kit pieces + M3-ENV-06's arena_ash_tread + M3-ENV-11's ash_plume_near
         for name, (key, module, _fn) in TARGETS.items():
             with self.subTest(target=name):
                 builders = built(name)
@@ -119,6 +119,33 @@ class SkylineTests(unittest.TestCase):
             self.assertAlmostEqual(float(uv[:, 1].max()), 1.0, delta=1e-6)
             self.assertEqual(mb.materials, [pc.M_PLUME])
             self.assertTrue(sky._check_plume_winding(mb), mb.name)
+
+    def test_near_plume_refines_the_far_plume(self) -> None:
+        # M3-ENV-11: the near plume is the far plume's surface, denser, and hands over to the far plume's LOD0.
+        near, near_lod1 = built("ash_plume_near")
+        far = built("ash_plume")[0]
+        self.assertEqual(near_lod1.pos, far.pos)
+        self.assertEqual(near_lod1.tris, far.tris)
+        self.assertGreater(near.triangle_count, 5 * far.triangle_count)
+        self.assertEqual(near.materials, [pc.M_PLUME])
+        self.assertTrue(sky._check_plume_winding(near))
+        uv = np.asarray(near.uv)
+        self.assertAlmostEqual(float(uv[:, 1].min()), 0.0, delta=1e-6)
+        self.assertAlmostEqual(float(uv[:, 1].max()), 1.0, delta=1e-6)
+        heads = np.asarray(near.uv2)[:, 0]
+        self.assertTrue(0.0 <= heads.min() and heads.max() <= 1.0 and heads.std() > 0.05, "UV2.x carries the heads")
+        self.assertTrue(np.all(np.asarray(far.uv2)[:, 0] == 1.0), "the far plume's UV2.x stays 1 (no billow shading)")
+        # The same column: the near and far meshes span the same box to within a few metres.
+        lo_n, hi_n = near.bounds()
+        lo_f, hi_f = far.bounds()
+        self.assertLess(float(np.abs(lo_n - lo_f).max()), 12.0)
+        self.assertLess(float(np.abs(hi_n - hi_f).max()), 12.0)
+        # Softer normals than the far mesh's: from ring to ring they turn far less (the far mesh's facets).
+        def turn(mb, rings: int, sides: int) -> float:
+            n = np.asarray(mb.nrm[: rings * (sides + 1)]).reshape(rings, sides + 1, 3)
+            return float(np.percentile(1.0 - np.sum(n[1:, :-1] * n[:-1, :-1], axis=-1), 90))
+
+        self.assertLess(turn(near, *sky.NEAR_GRID), 0.25 * turn(far, 64, 52))
 
     def test_massif_rises_behind_the_town(self) -> None:
         noise = pc.kc.Noise3(pc.kc.rng_for("mountain_massif", 801))

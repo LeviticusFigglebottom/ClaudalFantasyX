@@ -1,0 +1,10 @@
+// Ch8 B02, bark 1: Hobb, the watch's captain now (a fisher of fifty, the three-knot watch-red cord on
+// his hip), drilling young fishers at the head of the Fisher Stair. Overheard as Rhen walks past. The
+// first time the game voices the stair-law. Cinematics: never frame Hobb's cord with Kerrid's.
+title: ch08_bark_hobb
+location: ch08/corrow
+---
+Hobb [determined]: First down, last up. Say it. #line:ch08_bark_hobb_001
+Fisher [determined]: First down, last up. #line:ch08_bark_hobb_002
+Hobb [neutral]: Again, and mean it. The sea won't wait for you to wake up. #line:ch08_bark_hobb_003
+===

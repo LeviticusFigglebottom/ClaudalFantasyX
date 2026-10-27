@@ -16,7 +16,8 @@ Options (after `--`):
     --blend PATH        also save a .blend with the Rigify control rig (for animators, not committed)
     --no-rig            skip Rigify and skinning (fast geometry-only build, used by the unit test)
 
-Deterministic: no randomness at all; the same parameters give byte-identical geometry.
+Deterministic: no randomness at all; the same parameters give byte-identical geometry, on any host: positions are
+on a 1 µm grid and UVs on a 2^-16 grid (M2-CHR-11; no shape keys or textures here).
 M1-CHR-03 (ADR 0021): the mesh is the MakeHuman hm08 CC0 donor topology, fitted to the variant's
 proportions and re-shaped by bb_donor (vendored data in assets_src/third_party/mpfb2/, no MPFB code);
 its UVs and skin weights are the donor's. The anatomy field and the rig are ours.
@@ -38,6 +39,10 @@ sys.path.insert(0, str(HERE))
 import bb_cage  # noqa: E402
 import bb_donor  # noqa: E402
 import bb_params  # noqa: E402
+
+POS_GRID = 1e-6  # m: vertex positions are rounded to this (host-independent mesh, M2-CHR-11 as build_sefir: the
+# donor fit's last bits, near-midline coordinates above all, differ between numpy's AVX-512 and AVX2 paths)
+UV_GRID = 2.0 ** -16  # UVs are rounded to this (build_asha.UV_GRID: 1/32 texel at 2K)
 
 PLACEHOLDER_NOTE = (
     "PLACEHOLDER: M1-CHR-01 base body. Flat skin-tone material and painted-on eye placeholders; "
@@ -96,7 +101,7 @@ def set_uvs(ob: bpy.types.Object, uv: np.ndarray) -> int:
     """Per-corner UVs (the donor's atlas, MakeHuman convention: v up, as Blender)."""
     me = ob.data
     layer = me.uv_layers.new(name="UVMap")
-    flat = np.asarray(uv, dtype=np.float64).reshape(-1, 2)
+    flat = np.round(np.asarray(uv, dtype=np.float64).reshape(-1, 2) / UV_GRID) * UV_GRID
     layer.data.foreach_set("uv", flat.ravel())
     return 0
 
@@ -156,7 +161,7 @@ def main() -> int:
 
     res = bb_donor.generate(params, log=log)
     lm = res["lm"]
-    V, F = res["V"], res["F"]
+    V, F = np.round(res["V"] / POS_GRID) * POS_GRID, res["F"]
     body = mesh_object(f"base_body_{params['name']}", V, [tuple(map(int, f)) for f in F])
     man = bb_cage.check_manifold(np.asarray(F))
     log(f"donor mesh: non-manifold edges {man['non_manifold']}")
