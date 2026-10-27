@@ -6,9 +6,19 @@ or object of Maresh, `spawn_wound` weak points, spawn in wet lacquer black with 
 construct's bound light in `glimmer_bound`, every colour a palette.json swatch, and the battle read by silhouette
 alone. Hits peak near 0.1 s (M3-CRE-617).
 
-| Creature | Sheet | Kind | Height | Where it fights |
-|---|---|---|---|---|
-| The Mangrove Drowner | [mangrove_drowner.md](mangrove_drowner.md) | spawn, boss | 3.2 m (rooted), 3.6 m (risen) | Ossa Fen, the roots (Ch10) |
-| The Lamp Engine | [lamp_engine.md](lamp_engine.md) | construct, boss | 3.4 m | Lowlight, the engine hall (Ch11) |
-| The Avalanche Ram | [avalanche_ram.md](avalanche_ram.md) | spawn-touched beast, boss | 3.0 m at the head | the terrace wall above Keth Pass (Ch12) |
-| The Wakefin | [wakefin.md](wakefin.md) | spawn, boss | 2.2 m of fin above the water | the open sea at night, the bridal barge (Ch15) |
+| Creature | Sheet | Kind | Height | Where it fights | Model |
+|---|---|---|---|---|---|
+| The Mangrove Drowner | [mangrove_drowner.md](mangrove_drowner.md) | spawn, boss | 3.2 m (rooted), 3.6 m (risen) | Ossa Fen, the roots (Ch10) | built (M3-CRE-621) |
+| The Lamp Engine | [lamp_engine.md](lamp_engine.md) | construct, boss | 3.4 m | Lowlight, the engine hall (Ch11) | sheet only |
+| The Avalanche Ram | [avalanche_ram.md](avalanche_ram.md) | spawn-touched beast, boss | 3.0 m at the head | the terrace wall above Keth Pass (Ch12) | sheet only |
+| The Wakefin | [wakefin.md](wakefin.md) | spawn, boss | 2.2 m of fin above the water | the open sea at night, the bridal barge (Ch15) | sheet only |
+
+**Built models.** The Mangrove Drowner (M3-CRE-621): `assets_src/creatures/mangrove_drowner/`, 16,370 triangles
+(budget 18k), root arches to 3.1 m (3.6 m risen) with the trunk stump's splinters to 3.8 m above them, 48 bones (the sheet's core chain of 4, twelve 3-bone roots and the stump, plus six splinter bones
+that fly off in the phase). Its `uprooted` phase (creatures.json) plays `phase_change` (2.2 s), hides the `Stump`
+mesh after it, idles on `idle_risen`, and strikes from the risen pose (`attack_risen`, `cast_risen`, `hit_risen`).
+Contacts: the drag at 0.7 s, the rising water at 1.0 s. Review shots: `creature_mangrove_drowner` and
+`creature_mangrove_drowner_risen`. It has no enemies.json row yet (no Act II encounter exists), so the validator
+doesn't check its phase name against an enemy; the encounter designers add the row, with a phase `uprooted` at
+50% HP. The snagged motes (`glimmer_held`, rising as `glimmer_lift` on the KO) and the drawing-in water of the
+drag's telegraph are VFX, not modelled; the break part (the two snagged-mote roots) waits for a charge skill.
