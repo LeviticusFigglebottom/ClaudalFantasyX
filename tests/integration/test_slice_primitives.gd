@@ -1,7 +1,8 @@
 extends TestCase
-## The human's playtest: "primitive moments" (M2-FP-116). No scene in the M2 slice shows a visible PrimitiveMesh
-## (a box, cylinder, sphere, capsule or torus standing in for a model) except the ones listed below, each waiting
-## on its request. A new stand-in fails here until it is listed with the request that replaces it.
+## The human's playtest: "primitive moments" (M2-FP-116). No scene in the M2 slice (or Ch1's two zones, M3-C01-100
+## and 101) shows a visible PrimitiveMesh (a box, cylinder, sphere, capsule or torus standing in for a model) except
+## the ones listed below, each waiting on its request. A new stand-in fails here until it is listed with the
+## request that replaces it.
 
 const SCENES: Array[String] = [
 	"res://game/levels/prologue/prologue.tscn",
@@ -9,6 +10,8 @@ const SCENES: Array[String] = [
 	"res://game/levels/ch03/saltgrass_causeway/saltgrass_causeway.tscn",
 	"res://game/levels/ch03/shell_shrine/shell_shrine.tscn",
 	"res://game/levels/ch03/first_verse/first_verse.tscn",
+	"res://game/levels/ch01/oruvel/oruvel.tscn",
+	"res://game/levels/ch01/oruvel_underway/oruvel_underway.tscn",
 ]
 ## Path prefixes (from the scene root) still allowed, and why.
 const KNOWN: Dictionary = {
@@ -18,6 +21,8 @@ const KNOWN: Dictionary = {
 	"Set/ChamberPassage": "env-art's passage behind the shrine's east door (part of its dressing)",
 	"Dressing/ChamberPassage": "the same, in the shrine level",
 	"Room/InnerPoolWater/": "the First Verse's pool water (a flat octagon, the shrine level's own shape)",
+	"Greybox/LowHull/": "Ch1's lashed low hull (C1-13's run), kept greybox until a kit piece fits it",
+	"Underwater/UnderwaterPost": "the UnderwaterRig's full-screen post passes (quads, never seen as shapes)",
 }
 
 

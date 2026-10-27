@@ -49,7 +49,6 @@ const PROCESS_AFTER_DIRECTOR := 10
 const UNSUPPORTED_KWARGS := {
 	&"camera": ["grade"],
 	&"anim": ["loop"],
-	&"sfx": ["at"],
 	&"vfx": ["drift", "motion", "rate", "form"],
 }
 
@@ -634,16 +633,11 @@ func _cue_music(step: DialogueStep) -> void:
 
 
 func _cue_sfx(step: DialogueStep) -> void:
-	var path := "%s%s.ogg" % [config.get("sfx_dir", ""), step.args[0]]
-	if not ResourceLoader.exists(path):
+	var at_id := StringName(str(step.kwargs.get("at", "")))
+	var at := _stage.place(at_id) if _stage != null and at_id != &"" else null
+	var vol := float(step.kwargs.get("vol", 1.0))
+	if not CutsceneSound.play(self, str(config.get("sfx_dir", "")), StringName(str(step.args[0])), vol, at):
 		_warn("no sound '%s'" % step.args[0])
-		return
-	var p := AudioStreamPlayer.new()
-	p.stream = load(path)
-	p.volume_db = linear_to_db(float(step.kwargs.get("vol", 1.0)))
-	p.finished.connect(p.queue_free)
-	add_child(p)
-	p.play()
 
 
 func _cue_vfx(step: DialogueStep) -> void:
