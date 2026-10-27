@@ -43,12 +43,14 @@ import bb_cage  # noqa: E402
 import bb_donor  # noqa: E402
 import bb_params  # noqa: E402
 import bb_rig  # noqa: E402
+import helper_bones  # noqa: E402
 from asha_mesh import Part  # noqa: E402
 
 PARAMS = HERE / "asha_params.json"
 HEAD_BONE = "DEF-spine.006"
 MIDLINE_SNAP = 1e-9  # m: coordinates smaller than this are float noise from the face solve
 SHAPE_GRID = 1e-6  # m: shape-key deltas are rounded to this (host-independent morph targets)
+POS_GRID = 1e-6  # m: Rhen's and Toma's mesh positions are rounded to this (M1-CHR-15; host-independent, as Sefir)
 UV_GRID = 2.0 ** -16  # UVs are rounded to this (1/32 texel at 2K; host-independent unwrap)
 
 # material name -> (preview linear rgb, roughness). Godot replaces these by name with the hero
@@ -143,6 +145,11 @@ def part_object(part: Part, normals: np.ndarray | None = None) -> bpy.types.Obje
     return make_object(part.name, part.varr(), part.F, part.UV, part.M, part.C or None, normals)
 
 
+def part_object_snapped(part: Part, normals: np.ndarray | None = None) -> bpy.types.Object:
+    """part_object with the part's positions on the POS_GRID grid (M1-CHR-15: Rhen and Toma)."""
+    return part_object(snap_part(part), normals)
+
+
 def unwrap_faces(ob: bpy.types.Object, mats: set[str], seams: set | None = None, margin: float = 0.003,
                  shrink: tuple[np.ndarray, float] | None = None) -> None:
     """Conformal unwrap + pack of the faces using the given materials only (other parts keep their
@@ -185,6 +192,19 @@ def unwrap_faces(ob: bpy.types.Object, mats: set[str], seams: set | None = None,
 
 
 HAND_FOOT_RATIO = 0.3  # the donor's hands and feet are dense (~10.7k tris); cut for the LOD0 budget
+UNDER_SKIRT_RATIO = 0.25  # M1-CHR-15: the legs and hips kept whole under the skirts, cut for the LOD0 budget
+
+
+def region_of(ob: bpy.types.Object, P0: np.ndarray, reg0: np.ndarray, names: list) -> np.ndarray:
+    """(n,) mask of the object's vertices whose nearest source vertex (P0) is in one of the regions `names`."""
+    from mathutils import kdtree
+
+    kd = kdtree.KDTree(len(P0))
+    for i, p in enumerate(P0):
+        kd.insert(tuple(map(float, p)), i)
+    kd.balance()
+    want = np.isin(reg0, names)
+    return np.array([bool(want[kd.find(v.co)[1]]) for v in ob.data.vertices])
 
 
 def decimate_where(ob: bpy.types.Object, mask: np.ndarray, ratio: float, P0: np.ndarray, N0: np.ndarray) -> None:
@@ -435,6 +455,16 @@ def skirt_weights(P: np.ndarray, W0: np.ndarray, V: np.ndarray, W: np.ndarray, r
     return limit4(W0 * (1.0 - d[:, None]) + legs * d[:, None])
 
 
+def snap_positions(P: np.ndarray) -> np.ndarray:
+    """Positions on a POS_GRID grid: their last bits are host-dependent float noise (the CPU's SIMD paths in numpy)."""
+    return np.round(np.asarray(P, dtype=np.float64) / POS_GRID) * POS_GRID
+
+
+def snap_part(part: Part) -> Part:
+    part.V = [p for p in snap_positions(part.varr())]
+    return part
+
+
 def quantize_uvs(ob: bpy.types.Object) -> None:
     """UVs on a UV_GRID grid, before the bake dump and the export. Blender's unwrap left one head UV a float32
     ULP apart between hosts (the Lead's gate, M1-CHR-14), and the texture raster turned that into texel flips."""
@@ -478,6 +508,66 @@ def rigid(ob: bpy.types.Object, bone: str, skel: bpy.types.Object) -> None:
     mod = ob.modifiers.new("Armature", "ARMATURE")
     mod.object = skel
     ob.parent = skel
+
+
+def add_bones(skel: bpy.types.Object, specs: list) -> None:
+    """M1-CHR-15: append deform bones (name, head, tail, parent[, roll]) to the game skeleton."""
+    bpy.ops.object.select_all(action="DESELECT")
+    bpy.context.view_layer.objects.active = skel
+    skel.select_set(True)
+    bpy.ops.object.mode_set(mode="EDIT")
+    eb = skel.data.edit_bones
+    for spec in specs:
+        name, head, tail, parent = spec[:4]
+        e = eb.new(name)
+        e.head = tuple(map(float, head))
+        e.tail = tuple(map(float, tail))
+        e.roll = float(spec[4]) if len(spec) > 4 else 0.0
+        e.use_deform = True
+        e.parent = eb[parent]
+    bpy.ops.object.mode_set(mode="OBJECT")
+
+
+def add_armpit_bones(skel: bpy.types.Object) -> dict:
+    """M1-CHR-15: the shoulder correctives (helper_bones), copies of the upper arms on the shoulders. Returns
+    side -> (head, tail) of the upper arm, for the weights."""
+    arms, specs = {}, []
+    for side in ("L", "R"):
+        b = skel.data.bones[f"DEF-upper_arm.{side}"]
+        head, tail = np.array(b.head_local, dtype=float), np.array(b.tail_local, dtype=float)
+        arms[side] = (head, bone_head(skel, f"DEF-forearm.{side}"))  # the whole upper arm (it has a twist bone)
+        bpy.context.view_layer.objects.active = skel
+        bpy.ops.object.mode_set(mode="EDIT")
+        roll = float(skel.data.edit_bones[b.name].roll)
+        bpy.ops.object.mode_set(mode="OBJECT")
+        specs.append((f"{helper_bones.ARMPIT_BONE}{side}", head, tail, f"DEF-shoulder.{side}", roll))
+    add_bones(skel, specs)
+    return arms
+
+
+def nearest_distance(P: np.ndarray, Q: np.ndarray) -> np.ndarray:
+    """Distance from each row of P to the nearest row of Q."""
+    from mathutils import kdtree
+
+    kd = kdtree.KDTree(len(Q))
+    for i, q in enumerate(Q):
+        kd.insert(tuple(map(float, q)), i)
+    kd.balance()
+    return np.array([kd.find(tuple(map(float, p)))[2] for p in P])
+
+
+def armpit_helpers(skel: bpy.types.Object, V: np.ndarray, W: np.ndarray, wnames: list) -> tuple:
+    """M1-CHR-15, every hero: adds the shoulder correctives (helper_bones) to the skeleton and their weight columns
+    after the donor's, and moves part of the underarm skin's upper-arm weight onto them. Returns (W, wnames, arms)."""
+    arms = add_armpit_bones(skel)
+    wnames = wnames + helper_bones.armpit_names()
+    W = np.concatenate([W, np.zeros((len(V), len(wnames) - W.shape[1]), dtype=np.float32)], axis=1)
+    W, _moved = helper_bones.armpit_skin_weights(V, W, wnames, arms)
+    return W, wnames, arms
+
+
+def bone_head(skel: bpy.types.Object, name: str) -> np.ndarray:
+    return np.array(skel.data.bones[name].head_local, dtype=float)
 
 
 def attach_to_bone(ob: bpy.types.Object, skel: bpy.types.Object, bone: str, world_pos: np.ndarray) -> None:
@@ -532,6 +622,11 @@ def main() -> int:
     Nw = bb_donor.face_normals_vertex(V, F)
     log(f"rig: {len(skel.data.bones)} deform bones, donor weights on {len(wnames)} bones, dropped {dropped} "
         f"({time.time() - t0:.1f}s)")
+    # M1-CHR-15: the shoulder correctives and the skirt panels (helper_bones). Their weight columns go after the
+    # donor's; the underarm skin moves part of its upper-arm weight onto the correctives
+    W, wnames, arms = armpit_helpers(skel, V, W, wnames)
+    wnames = wnames + helper_bones.skirt_names()
+    W = np.concatenate([W, np.zeros((len(V), len(wnames) - W.shape[1]), dtype=np.float32)], axis=1)
 
     # ---- split head / body --------------------------------------------------------------------
     is_head = np.isin(freg, ["head", "scalp", "mouth"])
@@ -621,19 +716,36 @@ def main() -> int:
         opaque = Part("Costume")
         is_skirt = []
         is_torso = []
+        is_sash = []
         for key, p in costume.items():
             if key != "VerseSleeve":
                 opaque.extend(p)
                 is_skirt += [key in SKIRT_PARTS] * len(p.V)
                 is_torso += [key in TORSO_PARTS] * len(p.V)
+                is_sash += [key == "Sash"] * len(p.V)
         Pc = opaque.varr()
         Wc = transfer_weights(Pc, V[src_mask], W[src_mask])
         # M1-CHR-14: the bodice, vest and collar ride the torso only; arm weights at the armholes dragged
         # the side panels out past a lowered arm
         tm = np.array(is_torso, bool)
         Wc[tm] = transfer_weights(Pc[tm], V[reg == "torso"], W[reg == "torso"])
+        # M1-CHR-15: the torso cloth over the underarm turns with the skin under it (the shoulder correctives)
+        Wc[tm] = helper_bones.armpit_cloth_weights(Pc[tm], Wc[tm], wnames, V, W, arms, lm.S)
+        # M1-CHR-15: below the hip joints the skirts (and the sash tails over them) ride the skirt panels
         sk = np.array(is_skirt, bool)
-        Wc[sk] = skirt_weights(Pc[sk], Wc[sk], V, W, reg, lm, spine_i)
+        centre = np.array([0.0, 0.01 * lm.S, 0.0])
+        z_pivot = min(float(bone_head(skel, "DEF-thigh.L")[2]) + helper_bones.SKIRT_PIVOT_ABOVE_HIP * lm.S,
+                      float(lm.P("waist")[2]) - (0.03 + helper_bones.SKIRT_TOP_BAND) * lm.S)
+        specs = helper_bones.skirt_bone_specs(costume["SkirtOuter"].varr(), centre, z_pivot,
+                                              float(bone_head(skel, "DEF-shin.L")[2]),
+                                              float(bone_head(skel, "DEF-foot.L")[2]), "DEF-spine")
+        add_bones(skel, specs)
+        hang = sk | (np.array(is_sash, bool) & (Pc[:, 2] < z_pivot))
+        legs = np.isin(reg, ["leg_L", "leg_R", "torso"]) & (V[:, 2] < z_pivot)  # the skin under the panels
+        W_legs = skirt_weights(Pc[hang], Wc[hang], V, W, reg, lm, spine_i)  # M1-CHR-14's leg-following weights
+        Wc[hang] = helper_bones.skirt_weights(Pc[hang], Wc[hang], wnames, centre, z_pivot,
+                                              float(bone_head(skel, "DEF-shin.L")[2]), lm.S, W_legs,
+                                              nearest_distance(Pc[hang], V[legs]))
         ob = part_object(opaque)
         apply_weights(ob, Wc, wnames, skel)
         garment_objs.append(ob)
@@ -641,6 +753,8 @@ def main() -> int:
         Ps = sl.varr()
         arm_mask = np.isin(reg, ["arm_R"]) | ((reg == "torso") & (V[:, 0] < -0.12 * lm.S))
         Ws = transfer_weights(Ps, V[arm_mask], W[arm_mask])
+        # M1-CHR-15: the bag hanging under the arm turns with the arm only partly (the shoulder corrective)
+        Ws = helper_bones.hanging_weights(Ps, Ws, wnames, arms["R"][0], lm.side_pt("wrist", "R"), "R", lm.S)
         ob = part_object(sl)
         apply_weights(ob, Ws, wnames, skel)
         garment_objs.append(ob)
@@ -686,9 +800,15 @@ def main() -> int:
     apply_weights(ob_body, W[used_b], wnames, skel)
     unwrap_faces(ob_body, {"skin_body"}, uv_seams(Fb_l, UVb))  # the donor's islands, re-flattened and packed
     quantize_uvs(ob_body)
-    dense = np.isin(reg[used_b], ["hand_L", "hand_R", "foot_L", "foot_R"])
+    # M1-CHR-15: the legs and hips kept under the skirts are decimated first (nothing sees them through the cloth)
+    under = asha_costume.coverage(body, cparams, V, reg, under_skirt=True)[used_b]
     t_all = sum(len(f) - 2 for f in Fb_l)
-    t_dense = sum(len(f) - 2 for f in Fb_l if dense[list(f)].all())
+    t_under = sum(len(f) - 2 for f in Fb_l if under[list(f)].all())
+    decimate_where(ob_body, under, 1.0 - (1.0 - UNDER_SKIRT_RATIO) * t_under / t_all, V[used_b], Nw[used_b])
+    dense = region_of(ob_body, V[used_b], reg[used_b], ["hand_L", "hand_R", "foot_L", "foot_R"])
+    ob_body.data.calc_loop_triangles()
+    t_all = len(ob_body.data.loop_triangles)
+    t_dense = sum(1 for t in ob_body.data.loop_triangles if dense[list(t.vertices)].all())
     decimate_where(ob_body, dense, 1.0 - (1.0 - HAND_FOOT_RATIO) * t_dense / t_all, V[used_b], Nw[used_b])
     ob_body.data.calc_loop_triangles()
     body_tris = len(ob_body.data.loop_triangles)

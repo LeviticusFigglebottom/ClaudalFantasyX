@@ -81,6 +81,7 @@
     "reefball_naming_rite": {
       "files": ["res://assets/audio/sfx/reefball/naming_rite.ogg"],
       "bus": "SFX", "voices": 1, "cooldown_ms": 5000
-    }
+    },
+    "reefball_float_ring_bell": {"files": ["res://assets/audio/sfx/reefball/float_ring_bell.ogg"], "bus": "World", "voices": 1, "cooldown_ms": 1000, "unit_size_m": 15.0, "_note": "M3-AUD-824: the scoring ring's little bell (act1_ch07.md §6 float_ring_bell)"}
   }
 }

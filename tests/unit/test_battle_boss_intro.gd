@@ -14,6 +14,7 @@ const BOSSES := {
 	&"ch05_cinder_matron": [&"rhen", &"asha", &"toma"],
 	&"ch06_inquisitor": [&"rhen", &"asha", &"toma"],
 	&"drownbell": [&"rhen", &"asha", &"toma"],
+	&"undertows_reach": [&"rhen", &"asha", &"liss"],  # M3-BPR-406: Ch8's W18, low and looking up
 }
 const SEED := 20261024
 

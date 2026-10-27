@@ -10,6 +10,7 @@ const SEQUENCER_CONFIG := "res://game/data/cutscene/sequencer.json"
 const COMPILED_DIALOGUE := "res://game/data/dialogue/compiled"
 const BOX_SCENE := "res://game/ui/dialogue/dialogue_box.tscn"
 const SANDBOX := "res://game/battle/scene/battle_sandbox.tscn"
+const SET_PIECE_SEED := 20261027
 const THEME_PATH := "res://game/ui/theme/hymn_theme.tres"
 const TEST_DIR := "user://test_pseudo_loc_screens"
 const TITLE_SETTINGS_DRIVERS: Array[String] = ["res://game/ui/menus/memories/shots/memories_menu.tscn"]
@@ -330,6 +331,29 @@ func test_battle_fits() -> void:
 		_probe(pause, "battle pause")
 		_clear()
 	_done("battle")
+
+
+## M3-UI-100: a Ch8 set piece: the stair meter, the lock's help line and the reserve page with the hero kept out.
+func test_set_piece_fits() -> void:
+	for scale in _scales():
+		_settings_at(scale)
+		var ctl := (load(SANDBOX) as PackedScene).instantiate() as BattleController
+		ctl.auto_start = false
+		ctl.pacing_scale = 0.0
+		ctl.persist_progress = false
+		ctl.show_damage_numbers = false
+		_host(ctl)
+		ctl.hud.apply_settings(UiSettings.shared())
+		var party: Array[StringName] = [&"rhen", &"asha", &"toma"]
+		var reserve: Array[StringName] = [&"ysolde", &"kerrid"]
+		ctl.start_battle(party, reserve, &"ch08_stair_hold_1", SET_PIECE_SEED)
+		ctl.engine.objective_count = 2
+		ctl.set_piece.refresh()
+		ctl.hud.set_help(ctl.menus.swap_lock_text(ctl.engine, &"toma"))
+		ctl.hud.commands.push(BattleMenus.PAGE_SWAP, tr("HUD_PAGE_RESERVE"), ctl.menus.reserve_rows(ctl.engine))
+		_probe(ctl.hud, "battle set piece")
+		_clear()
+	_done("set piece")
 
 
 ## M3-UI-01: the Reefball HUD on a pass choice (menu, preview, the read's marks) and just after a

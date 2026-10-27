@@ -88,3 +88,24 @@ func test_a_night_mood_set_before_ready_applies_on_entry() -> void:
 
 func _host() -> Node:
 	return (Engine.get_main_loop() as SceneTree).current_scene
+
+
+## M3-ENV-709 (Ch4 C4-01): one house's lamps go out without touching its neighbours'.
+func test_a_house_lamp_turns_off_alone() -> void:
+	world.mood = HalunaMood.MOOD_NIGHT
+	var houses := world.dresser.night_lamp_houses()
+	assert_true(houses.size() > 30, "every house hangs a lamp")
+	var lamps := world.dresser.night_lamps()
+	world.dresser.set_night_lamp(houses[0], false)
+	var off := 0
+	var lit := 0
+	for child in lamps.get_children():
+		var house := int(child.get_meta(HalunaDresser.LAMP_HOUSE_META, -1))
+		if house == houses[0]:
+			off += 0 if (child as Node3D).visible else 1
+		elif (child as Node3D).visible:
+			lit += 1
+	assert_eq(off, 2, "its flame and its light are out")
+	assert_eq(lit, (houses.size() - 1) * 2, "every other house is still lit")
+	world.dresser.set_night_lamp(houses[0], true)
+	_done()

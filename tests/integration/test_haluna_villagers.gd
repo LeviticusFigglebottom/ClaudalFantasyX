@@ -1,12 +1,15 @@
 extends TestCase
-## M2-FP-102: Haluna's villagers wear their M2-CHR-03 actors and live as FieldNpcs (M3-CRE-610) instead
-## of standing as capsules; a talk starts on the villager's Interactable and ends with the bark.
+## M2-FP-102/113: Haluna's villagers wear their M2-CHR-03 actors and live as FieldNpcs (M3-CRE-610) instead
+## of standing as capsules: creatures' VillagerLayer (M3-CRE-613) owns the seven, HalunaVillagers the three shop
+## bodies it doesn't cover yet. A talk starts on the villager's Interactable and ends with the bark.
 
 const ZONE := "res://game/levels/ch02/haluna/haluna.tscn"
 const DT := 1.0 / 60.0
 const SETTLE_FRAMES := 30
-## The rows with a body of their own (stand_in_for rows wear another's model).
-const OWN_MODELS: Array[StringName] = [&"vendor", &"reed", &"netmender", &"fisher", &"child", &"neme", &"osu"]
+## Every villager the zone must show, once each: VillagerLayer's seven and the three shop bodies.
+const VILLAGERS: Array[StringName] = [
+	&"vendor", &"reed", &"netmender", &"fisher", &"child", &"neme", &"osu", &"shopkeeper", &"smith", &"innkeeper"
+]
 
 var zone: HalunaZone
 var saved_flags: Dictionary
@@ -40,29 +43,24 @@ func _done() -> void:
 
 func _npcs() -> Array[FieldNpc]:
 	var out: Array[FieldNpc] = []
-	for n: Node in zone.find_children(HalunaVillagers.NODE_NAME, "", true, false):
-		if n is FieldNpc:
-			out.append(n as FieldNpc)
+	for n: Node in zone.find_children("*", "FieldNpc", true, false):
+		out.append(n as FieldNpc)
 	return out
 
 
-func test_every_row_has_a_live_villager_and_no_capsule_shows() -> void:
+func test_every_villager_is_alive_once_and_no_capsule_shows() -> void:
 	_load()
-	var rows: Array = HalunaVillagers.load_data().get(HalunaVillagers.KEY_ROWS, [])
-	var npcs := _npcs()
-	assert_eq(npcs.size(), rows.size(), "one FieldNpc per row")
 	var ids: Array[StringName] = []
-	for npc in npcs:
+	for npc in _npcs():
+		assert_false(npc.npc_id in ids, "%s appears once, not from two systems" % npc.npc_id)
 		ids.append(npc.npc_id)
 		assert_true(npc.actor != null, "%s wears an actor" % npc.npc_id)
 		assert_true(npc.anim != null and npc.anim.has_animation(&"idle"), "%s has an idle clip" % npc.npc_id)
-		var body := npc.get_parent() as Node3D
-		for path: String in ["StandIn", "Facing"]:
-			var mesh := body.get_node_or_null(path) as Node3D
-			assert_true(mesh == null or not mesh.visible, "%s's %s capsule is hidden" % [npc.npc_id, path])
-		assert_true(body is StaticBody3D, "%s keeps its collision body" % npc.npc_id)
-	for id in OWN_MODELS:
+	for id in VILLAGERS:
 		assert_true(id in ids, "%s is in the village" % id)
+	for n: Node in zone.get_node(^"NPCs").find_children("StandIn", "MeshInstance3D", true, false):
+		assert_false((n as Node3D).visible, "%s's capsule is hidden" % n.get_parent().name)
+	assert_eq(zone.find_children("*", "VillagerLayer", true, false).size(), 1, "one VillagerLayer")
 	_done()
 
 
@@ -144,4 +142,26 @@ func test_a_bark_freezes_rhen_and_keeps_the_party_in_view() -> void:
 	assert_false(false in frozen, "Rhen was frozen for every line")
 	assert_true(zone.player.accepts_input, "and walks again after")
 	assert_true(story.sequencer.hold_player, "the next staged scene holds the player again")
+	_done()
+
+
+## M2-FP-110: B05 at the causeway head is Asha and Toma talking. It no longer hides them (it isn't staged), and
+## their lines play on the followers the player sees, because their stage actors are hidden after Cutscene A.
+func test_the_causeway_head_talk_keeps_asha_and_toma_and_they_talk() -> void:
+	var saved_party := Game.state.party_ids.duplicate()  # before the flag: its join hook adds Asha and Toma
+	Game.set_flag(&"ch02_met_asha")
+	Game.state.party_ids.assign([&"rhen", &"asha", &"toma"])
+	_load()
+	var party := zone.player.get_node(NodePath(String(HeroFieldParty.NAME))) as HeroFieldParty
+	party.advance(1.0 / 60.0)  # builds the followers from party_ids
+	party.rescan()
+	assert_true(CutsceneNpcTalk.follower(zone, &"asha") != null, "Asha follows Rhen")
+	var story := zone.get_node(^"Story") as HalunaStory
+	story.sequencer.instant = true
+	var hidden: Array[bool] = []
+	story.sequencer.line_shown.connect(func(_s: DialogueStep) -> void: hidden.append(party.should_hide()))
+	await story.call(&"_play_unstaged", &"ch02_low_tide")
+	assert_false(hidden.is_empty(), "B05 played lines")
+	assert_false(true in hidden, "Asha and Toma stayed in view")
+	Game.state.party_ids.assign(saved_party)
 	_done()

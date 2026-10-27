@@ -31,3 +31,15 @@ func end_all() -> void:
 
 func talking() -> Array[FieldNpc]:
 	return _talking
+
+
+## M2-FP-110: the party follower (HeroFieldParty, M2-HER-1102) showing hero `id` under `root`, or null. A line
+## whose stage actor is hidden (Asha and Toma after Cutscene A) talks on the follower the player can see.
+static func follower(root: Node, id: StringName) -> Node3D:
+	if root == null or id == &"":
+		return null
+	for node: Node in root.find_children("*", "HeroFieldParty", true, false):
+		for anchor: Node3D in (node as HeroFieldParty).followers:
+			if StringName(str(anchor.get_meta(&"hero_id", ""))) == id and anchor.is_visible_in_tree():
+				return anchor
+	return null

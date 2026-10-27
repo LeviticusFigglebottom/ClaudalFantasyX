@@ -10,6 +10,7 @@ const MODE_FLAP := 1.0
 const MODE_HEAD := 2.0
 const MODE_LEGS := 3.0
 const MODE_SWIM := 4.0
+const MODE_FLUTTER := 5.0
 
 var data := PackedFloat32Array()
 var count := 0

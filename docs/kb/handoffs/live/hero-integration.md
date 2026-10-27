@@ -309,3 +309,61 @@ Session `session_01PzF7Jc4XVQdTWcaYUyCjPB`. Per the Lead: no send_message; reque
   error as 0 failed). The choreo hunks for battle-presentation are already on its branch: nothing to relay there.
 - Note for m2-slice / slice-polish (FieldController owner): Rhen peaks at 5.85 m/s on Pemakar and 5.49 on Ashcrown
   (run 3.6): step or slope push-ups. Under the 6 m/s snap limit, but worth a look in play.
+- **MERGE-READY @ 1518a17f** (FAST-TRACK, snapping motion): M2-HER-1110 guards for villagers and cutscenes.
+  - `tests/unit/test_villager_snaps.gd` is duck-typed on creatures' VillagerLayer (it skips until creatures lands).
+    On a local trial merge with claude/creatures, all 7 Haluna villagers pass: no snaps, eased turns, and 42 clip
+    changes under half the pop limit.
+  - `tests/integration/test_hero_cutscene_snaps.gd`: 26 slice and Act I scenes. The heroes are clean. 11 non-hero
+    actor/scene pairs snap: whip turns, and a walk jumped at a scene's end. They're listed as KNOWN until request
+    **M2-HER-1113** (slice-polish) applies `docs/kb/tech/cutscene_no_snap.patch`, which I verified on claude/m2-slice
+    7d981830: guard clean, cutscene 61/0, fp_ 28/0, haluna 55/0, prologue 7/0, _thread 34/0.
+  - Request **M2-HER-1112** (slice-polish): put creatures' VillagerLayer in haluna.tscn after creatures merges. No zone
+    places it yet, so Haluna would keep its stand-ins.
+  - Checks run: gdlint and gdformat, validate_data, taskboard --check, Godot hero_ filters, villager_snaps,
+    hero_cutscene_snaps. Skipped: shots (no scene or shader touched up to here), Blender, coverage.
+- **NOT merge-ready yet @ b2453cfd:** the battle_heroes_* shot rig (M2-HER-1106, from hero_battle_shots.patch). The
+  tools test `test_repo_manifest_is_valid_and_baselined` is red until its 7 baselines are approved after the PC
+  render below. Merge only 1518a17f until then.
+- M2-HER-1109 is done: slice-polish has the HeroMotion sequencer patch on claude/m2-slice.
+- For the Lead to relay: M2-HER-1108 (ui-menus: repoint the battle stand_ins; big9 has landed, so it's unblocked),
+  M2-HER-1111 (QA & Tools: the runner hides parse errors), M2-HER-1112 and M2-HER-1113 (slice-polish).
+
+### Render requests
+RENDER-REQUEST @ b2453cfd: battle_heroes_idle, battle_heroes_attack, battle_heroes_hit, battle_heroes_ko, battle_heroes_victory, battle_heroes_cast, battle_heroes_finisher, field_hero_party, field_hero_rhen_walk, field_hero_gait_strip; why: new battle hero shots (M2-HER-1106), and the field hero shots after characters' gait clips and the followers' floor change (M2-HER-1110)
+- **MERGE-READY @ 1b84b89c** (FAST-TRACK, the human's #1 complaint). Merged big10 (7f187123) in.
+  - M2-HER-1116: foot IK on every field and cutscene hero body (`HeroFootIK`; flat ground untouched, a continuous
+    1 cm dead zone); followers turn to face whoever Rhen talks to; Ysolde gets a field and cutscene body (her stage
+    actors no longer whip-turn).
+  - M2-HER-1103: Ysolde's battle wrapper. **Fix:** placeholder clips on a hero who lacks some (Ysolde) were untuned,
+    so her KO stood up in one frame. The wrapper now installs them on a stopped player, then tunes them.
+  - M2-HER-1110: the cutscene guard now covers the prologue and every cue-named actor (27 scenes) and prints what each
+    sampled. On claude/m2-slice + the M2-HER-1113 patch, the real prologue cast and every KNOWN pair are clean.
+  - ADR 0192 (no snapping is a test).
+  - Checks run after big10: gdlint and gdformat on game/hero_motion and my tests, validate_data, taskboard --check,
+    tools test_screenshots, Godot filters hero_ 97/0, villager 2/0 (the layer half skips: M3-CRE-613 isn't merged
+    yet), npc 10/0, battle 703/0, field 147/0, zone 51/0, haluna 50/0, cutscene 52/0, _thread 34/0, fp_ 27/0.
+  - Skipped: Blender (none touched), coverage (no game/battle or game/progression change), shots (cloud renders are
+    off; see the request below).
+- **Crash for battle-presentation (M2-HER-1114), please relay:** BattlePlaceholderClips._install swaps the library
+  under a playing AnimationPlayer, and Godot segfaults. My wrapper now avoids it. The 2-line fix for every other
+  caller is in the task.
+- New requests for the Lead to relay:
+  - **M2-HER-1114** (battle-presentation): that crash, plus the placeholder finisher's arm flip;
+  - **M2-HER-1115** (characters): Ysolde's battle clips;
+  - **M3-HER-1117** (creatures): villagers' foot IK, a one-liner;
+  - **M2-HER-1108** now covers Ysolde's stand_in too.
+  - Still open: 1108, 1111, 1112, 1113.
+
+### Render requests
+RENDER-REQUEST @ 1b84b89c: field_hero_rhen_walk, field_hero_party, field_hero_gait_strip, hero_cutscene_turn_strip, field_lane_fixed, field_court_pan, field_causeway_dolly, haluna_h02_tidewall_lane, haluna_h04_dock, haluna_h07_chapel_court, haluna_h10_dock_night; why: foot IK on uneven ground and the followers' floor and facing changes (M2-HER-1116), and characters' M2-CHR-12 gait clips now in via big10 (the earlier battle_heroes_* request @ b2453cfd stands)
+- @ bc444574: docs only. M3-AUD-810: confirmed the HeroBody half of audio's footstep request (foot_contact(foot, run) and the tree names); M2-HER-1116: foot IK costs 18 us per body-frame on the cloud CPU (Haluna run, legs bent on 13% of frames).
+- **Blockers, all on other tracks.** Each is a request task; the next step is mine once it lands.
+  1. **Haluna's villagers are still frozen in the game** (top blocker). big10 brought FieldNpc but not creatures'
+     VillagerLayer (M3-CRE-613), and no zone places one (M2-HER-1112, slice-polish). The villager guard's clip half
+     now runs on this branch and passes; its routine half runs once the layer is here.
+  2. Battle wrappers: UI's stand_ins repoint (M2-HER-1108). Then I re-run the pop guard on the integration branch.
+  3. PC renders: battle_heroes_* @ b2453cfd and the field/hero set @ 1b84b89c. I view and approve them.
+  4. Owners' fixes:
+     - M2-HER-1113 cutscene patch → I empty the cutscene guard's KNOWN list;
+     - M2-HER-1114 placeholder crash and arm flip → I empty the battle guard's KNOWN entry;
+     - M2-CHR-513 → I re-check KO, victory and revive (the pop test picks them up by itself).

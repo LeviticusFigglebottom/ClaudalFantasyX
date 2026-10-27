@@ -32,6 +32,16 @@
       "voices": 1,
       "cooldown_ms": 2000,
       "_note": "M2-AUD-03 music sting (assets_src/music/ilun_summon.py)"
-    }
+    },
+    "virel_summon": {
+      "files": [
+        "res://assets/audio/sfx/virel_summon.ogg"
+      ],
+      "bus": "Music",
+      "voices": 1,
+      "cooldown_ms": 2000,
+      "_note": "M3-AUD-822 music sting (assets_src/music/virel_summon.py): Ch8 B16, Asha calls Virel"
+    },
+    "kahre_summon": {"files": ["res://assets/audio/sfx/kahre_summon.ogg"], "bus": "Music", "voices": 1, "cooldown_ms": 2000, "_note": "M3-AUD-821 music sting when Kahre is called (assets_src/music/kahre_summon.py)"}
   }
 }

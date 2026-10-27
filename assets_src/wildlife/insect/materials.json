@@ -1,0 +1,39 @@
+{
+  "_doc": "Ambient insect surfaces (docs/kb/art/wildlife.md, M3-CRE-616); write_materials.py writes assets/wildlife/insect/materials/<slot>.tres on game/world/wildlife/wildlife.gdshader. moth: matte and dusty (a fine, high detail noise for the fur and wing scales). dragonfly: the wetness channel carries the gloss (wings 0, body 0.35, eyes 0.8 in build_insect.py; wet_darken 1 so it only changes the shine), with a faint rim sheen so the wings glint. flutter_pivot is build_insect.py's wing root (*_WING_ROOT_X, *_WING_Y); flutter_split_z its DF_SPLIT_Z (the hind pair lies behind it and beats flutter_hind_lag radians later; the moth's pairs beat together).",
+  "slots": {
+    "moth": {
+      "roughness_dry": 0.95,
+      "roughness_wet": 0.9,
+      "specular": 0.25,
+      "wet_darken": 1.0,
+      "clearcoat_wet": 0.0,
+      "detail_scale": 2400.0,
+      "detail_albedo": 0.12,
+      "cavity_albedo": 0.3,
+      "cavity_ao": 0.4,
+      "flutter_pivot": [0.0012, 0.0015, 0.0],
+      "flutter_angle": 0.5,
+      "flutter_split_z": -1.0,
+      "flutter_hind_lag": 0.0,
+      "flutter_bob": 0.0012
+    },
+    "dragonfly": {
+      "roughness_dry": 0.4,
+      "roughness_wet": 0.12,
+      "metallic": 0.2,
+      "specular": 0.7,
+      "wet_darken": 1.0,
+      "clearcoat_wet": 0.6,
+      "detail_scale": 900.0,
+      "detail_albedo": 0.05,
+      "cavity_albedo": 0.35,
+      "cavity_ao": 0.4,
+      "rim_sheen": 0.3,
+      "flutter_pivot": [0.0025, 0.0035, 0.0],
+      "flutter_angle": 0.22,
+      "flutter_split_z": 0.015,
+      "flutter_hind_lag": 1.6,
+      "flutter_bob": 0.0006
+    }
+  }
+}

@@ -124,7 +124,9 @@ class TestCommitted(unittest.TestCase):
         joints = [nodes[i]["name"] for i in js["skins"][0]["joints"]]
         parent = {c: i for i, n in enumerate(nodes) for c in n.get("children", [])}
         idx = {n.get("name"): i for i, n in enumerate(nodes)}
-        want = {"DEF-pauldron": "DEF-shoulder.L", "DEF-shield": "DEF-spine.003", "DEF-spear": "DEF-hand.R"}
+        want = {"DEF-pauldron": "DEF-shoulder.L", "DEF-shield": "DEF-spine.003", "DEF-spear": "DEF-hand.R",
+                # M1-CHR-15: the shoulder correctives (every hero)
+                "DEF-armpit.L": "DEF-shoulder.L", "DEF-armpit.R": "DEF-shoulder.R"}
         for root in ("DEF-sash_tail_a", "DEF-sash_tail_b"):
             chain = [root] + [f"{root}.{i:03d}" for i in range(1, 4)]
             want[chain[0]] = "DEF-spine"

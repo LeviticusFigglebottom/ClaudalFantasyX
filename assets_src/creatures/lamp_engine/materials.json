@@ -1,0 +1,16 @@
+{
+  "_doc": "The Lamp Engine's surfaces (docs/kb/art/creatures/act2/lamp_engine.md). Slots are the glTF material names; write_materials.py writes assets/creatures/lamp_engine/materials/<slot>.tres on game/shaders/creature/creature.gdshader. frame is the brass (bronze_patina, wet below the waterline, lacquer_black joints, a sooty inside to the petals and the hood, by vertex colour and wetness; no emission). hub is the gimbal hubs, the weak points: spawn_wound, its slow weak-point pulse. glass is the twelve salt-glass chimneys lit from inside by their bound light (glimmer_bound, steady, never pulsing: color_script.md rule 2), sea_glow drips on them. core is the cracked salt-glass globe holding the brightest bound light (glimmer_bound, steady). Colours are palette.json swatches.",
+  "slots": {
+    "frame": {"metallic": 0.55, "roughness_dry": 0.4, "roughness_wet": 0.22, "specular": 0.6, "wet_darken": 0.6,
+              "clearcoat_wet": 0.6, "detail_scale": 18.0, "detail_albedo": 0.12, "detail_bump": 0.4, "cavity_albedo": 0.5,
+              "emission_energy": 0.0},
+    "hub": {"metallic": 0.2, "roughness_dry": 0.3, "specular": 0.6, "detail_albedo": 0.0, "detail_bump": 0.0,
+            "emission_color": "#3FE0C8", "emission_energy": 2.4, "emission_pulse_hz": 0.3, "emission_pulse_depth": 0.3},
+    "glass": {"roughness_dry": 0.12, "roughness_wet": 0.06, "specular": 0.7, "clearcoat_wet": 0.8, "wet_darken": 0.3,
+              "detail_scale": 26.0, "detail_albedo": 0.04, "detail_bump": 0.1, "cavity_albedo": 0.2,
+              "emission_color": "#4FB3B0", "emission_energy": 1.8},
+    "core": {"roughness_dry": 0.1, "specular": 0.7, "clearcoat_wet": 0.7, "wet_darken": 0.2, "detail_scale": 12.0,
+             "detail_albedo": 0.05, "detail_bump": 0.15, "cavity_albedo": 0.5,
+             "emission_color": "#4FB3B0", "emission_energy": 2.8}
+  }
+}

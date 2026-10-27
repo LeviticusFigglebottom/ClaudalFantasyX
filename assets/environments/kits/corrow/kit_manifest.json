@@ -2,6 +2,17 @@
   "generator": "assets_src/environments/kits/corrow/build.py",
   "kit": "corrow",
   "pieces": {
+    "bastion_platform": {
+      "budget": [
+        90000,
+        3000
+      ],
+      "bytes": 2110948,
+      "lods": {
+        "bastion_platform": 64372,
+        "bastion_platform-lod1": 356
+      }
+    },
     "coilspire_headland": {
       "budget": [
         9000,
@@ -24,6 +35,17 @@
         "corrow_far-lod1": 600
       }
     },
+    "ebbing_raft": {
+      "budget": [
+        5000,
+        300
+      ],
+      "bytes": 59812,
+      "lods": {
+        "ebbing_raft": 798,
+        "ebbing_raft-lod1": 92
+      }
+    },
     "fisher_stair": {
       "budget": [
         12000,
@@ -44,6 +66,72 @@
       "lods": {
         "fisher_stair_broken": 3438,
         "fisher_stair_broken-lod1": 288
+      }
+    },
+    "flood_debris": {
+      "budget": [
+        3000,
+        200
+      ],
+      "bytes": 38008,
+      "lods": {
+        "flood_debris": 472,
+        "flood_debris-lod1": 96
+      }
+    },
+    "hoist_basket": {
+      "budget": [
+        1500,
+        120
+      ],
+      "bytes": 12112,
+      "lods": {
+        "hoist_basket": 136,
+        "hoist_basket-lod1": 42
+      }
+    },
+    "hoist_pins": {
+      "budget": [
+        800,
+        80
+      ],
+      "bytes": 17240,
+      "lods": {
+        "hoist_pins": 144,
+        "hoist_pins-lod1": 64
+      }
+    },
+    "hoist_rope": {
+      "budget": [
+        300,
+        30
+      ],
+      "bytes": 6108,
+      "lods": {
+        "hoist_rope": 80,
+        "hoist_rope-lod1": 6
+      }
+    },
+    "kite_line": {
+      "budget": [
+        6000,
+        600
+      ],
+      "bytes": 103364,
+      "lods": {
+        "kite_line": 1664,
+        "kite_line-lod1": 104
+      }
+    },
+    "kite_line_high": {
+      "budget": [
+        6000,
+        600
+      ],
+      "bytes": 49432,
+      "lods": {
+        "kite_line_high": 704,
+        "kite_line_high-lod1": 40
       }
     },
     "liss_hoist": {
@@ -112,6 +200,61 @@
         "lowtown_rubble-lod1": 544
       }
     },
+    "marra_step": {
+      "budget": [
+        2500,
+        200
+      ],
+      "bytes": 69848,
+      "lods": {
+        "marra_step": 1672,
+        "marra_step-lod1": 12
+      }
+    },
+    "milestone": {
+      "budget": [
+        1200,
+        100
+      ],
+      "bytes": 24240,
+      "lods": {
+        "milestone": 252,
+        "milestone-lod1": 12
+      }
+    },
+    "mole_pier": {
+      "budget": [
+        40000,
+        2000
+      ],
+      "bytes": 313444,
+      "lods": {
+        "mole_pier": 8912,
+        "mole_pier-lod1": 48
+      }
+    },
+    "mole_sea_stair": {
+      "budget": [
+        12000,
+        600
+      ],
+      "bytes": 319656,
+      "lods": {
+        "mole_sea_stair": 5184,
+        "mole_sea_stair-lod1": 36
+      }
+    },
+    "round_shield": {
+      "budget": [
+        900,
+        80
+      ],
+      "bytes": 24020,
+      "lods": {
+        "round_shield": 408,
+        "round_shield-lod1": 64
+      }
+    },
     "seawall_breach_a": {
       "budget": [
         14000,
@@ -167,6 +310,72 @@
         "seawall_curve-lod1": 96
       }
     },
+    "shroud_a": {
+      "budget": [
+        2400,
+        200
+      ],
+      "bytes": 29964,
+      "lods": {
+        "shroud_a": 704,
+        "shroud_a-lod1": 48
+      }
+    },
+    "shroud_b": {
+      "budget": [
+        2400,
+        200
+      ],
+      "bytes": 29960,
+      "lods": {
+        "shroud_b": 704,
+        "shroud_b-lod1": 48
+      }
+    },
+    "shroud_small": {
+      "budget": [
+        2400,
+        200
+      ],
+      "bytes": 29976,
+      "lods": {
+        "shroud_small": 704,
+        "shroud_small-lod1": 48
+      }
+    },
+    "stillguard_barracks": {
+      "budget": [
+        14000,
+        1200
+      ],
+      "bytes": 490052,
+      "lods": {
+        "stillguard_barracks": 11800,
+        "stillguard_barracks-lod1": 412
+      }
+    },
+    "strand_lamp": {
+      "budget": [
+        900,
+        80
+      ],
+      "bytes": 16848,
+      "lods": {
+        "strand_lamp": 114,
+        "strand_lamp-lod1": 66
+      }
+    },
+    "trader_boat": {
+      "budget": [
+        12000,
+        1000
+      ],
+      "bytes": 123816,
+      "lods": {
+        "trader_boat": 2781,
+        "trader_boat-lod1": 147
+      }
+    },
     "wall_apron": {
       "budget": [
         6000,
@@ -176,6 +385,17 @@
       "lods": {
         "wall_apron": 3392,
         "wall_apron-lod1": 16
+      }
+    },
+    "wall_gate": {
+      "budget": [
+        5000,
+        400
+      ],
+      "bytes": 38156,
+      "lods": {
+        "wall_gate": 432,
+        "wall_gate-lod1": 60
       }
     },
     "watcher_head": {

@@ -240,7 +240,7 @@ class CausewayZoneTests(unittest.TestCase):
 
     def test_saltgrass_stands_above_the_grass_line_and_off_the_bed(self) -> None:
         lay = json.loads(self.LAYOUT.read_text())
-        rows = [r for inst in lay["instances"] for r in inst["xforms"]]
+        rows = [r for inst in lay["instances"] if inst["name"].startswith("Saltgrass") for r in inst["xforms"]]
         self.assertGreater(len(rows), 1000)
         xs = np.array([r[0] for r in rows])
         zs = np.array([r[2] for r in rows])

@@ -25,7 +25,8 @@ STAND_IN_KEYS = {"yaw_deg", "hover"}
 PHASE_KEYS = {"clip", "idle", "offset_m", "tilt_deg", "sec", "show", "hide", "hide_after", "show_after", "clips"}
 PART_KEYS = {"whole", "broken"}
 HIT_SNAP_KEYS = {"preroll_sec", "blend_sec", "_note"}
-PORTRAIT_KEYS = {"clip", "clip_time", "yaw_deg", "pitch_deg", "fov_deg", "margin"}
+PORTRAIT_KEYS = {"clip", "clip_time", "yaw_deg", "pitch_deg", "fov_deg", "margin", "key_energy", "rim_energy",
+                 "rim_side_deg", "rim_elev_deg", "kick_energy", "kick_elev_deg"}
 IDLE_VARIETY_KEYS = {"clip", "every_sec"}
 
 

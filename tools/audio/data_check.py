@@ -26,6 +26,8 @@ CHOREO_SFX = "game/data/audio/choreo_sfx.json"  # M3-AUD-13
 BATTLE_STINGS = "game/data/audio/battle_stings.json"  # M3-AUD-18
 LIFE = "game/data/audio/life.json"  # M3-AUD-814
 IMPACT = "game/data/audio/impact_audio.json"  # M3-AUD-816
+CUTSCENE_FOLEY = "game/data/audio/cutscene_foley.json"  # M3-AUD-817
+ASHCROWN_SFX = "game/data/audio/ashcrown_sfx.json"  # M3-AUD-825
 CHOREO = "game/data/battle/choreo.json"  # the battle-presentation track's styles (once merged)
 SPEAKERS = "game/data/dialogue/speakers.json"
 CREATURE_VOICES = "game/data/audio/creature_voices.json"  # M3-AUD-14
@@ -213,6 +215,8 @@ def hook_errors(name: str, doc: object, ids: set[str], vfx_effects: set[str]) ->
     numbers = {k: v for k, v in body.items() if _num(v)}
     for k in numbers:
         body.pop(k)
+    if name == ASHCROWN_SFX:
+        body.pop("at", None)  # node paths under the zone, not sfx rows
     _refs(body, name, ids, errs)
     if name == BATTLE_SFX:
         for eid in (doc.get("vfx") or {}):
@@ -434,6 +438,26 @@ def life_errors(doc: object, ids: set[str], classes: dict[str, list[str]] | None
     return errs
 
 
+def cutscene_foley_errors(doc: object, ids: set[str]) -> list[str]:
+    """cutscene_foley.json (M3-AUD-817): every anim, light and vfx row is an sfx row ('' silences an anim clip), and a
+    light row names on and off."""
+    if not isinstance(doc, dict):
+        return [f"{CUTSCENE_FOLEY}: must be an object"]
+    errs: list[str] = []
+    for kind in ("anim", "vfx"):
+        for k, rid in (doc.get(kind) or {}).items():
+            if not (rid == "" and kind == "anim") and rid not in ids:
+                errs.append(f"{CUTSCENE_FOLEY} {kind}.{k}: {rid} is not an sfx row")
+    for k, row in (doc.get("light") or {}).items():
+        if not isinstance(row, dict) or set(row) != {"on", "off"}:
+            errs.append(f"{CUTSCENE_FOLEY} light.{k}: needs on and off")
+            continue
+        for state, rid in row.items():
+            if rid not in ids:
+                errs.append(f"{CUTSCENE_FOLEY} light.{k}.{state}: {rid} is not an sfx row")
+    return errs
+
+
 def impact_errors(doc: object, ids: set[str], classes: dict[str, list[str]] | None, mix: object) -> list[str]:
     """impact_audio.json (M3-AUD-816): a real hook class (unless pending), sfx rows for every tier and the slow-mo,
     tiers in rising order, and ducks that mix.json defines."""
@@ -495,7 +519,7 @@ def audio_errors(files: dict[str, object], exists: Callable[[str], bool], flags:
     if FOOTSTEPS in files:
         errs += footstep_errors(files[FOOTSTEPS], exists, ids)
     vfx_effects = set(((files.get(VFX_EFFECTS) or {}).get("effects") or {}).keys())
-    for name in (BATTLE_SFX, SHRINE_SFX):
+    for name in (BATTLE_SFX, SHRINE_SFX, ASHCROWN_SFX):
         if name in files:
             errs += hook_errors(name, files[name], ids, vfx_effects)
     if UI_SFX in files:
@@ -509,6 +533,8 @@ def audio_errors(files: dict[str, object], exists: Callable[[str], bool], flags:
                               files.get(CHOREO))
     if LIFE in files:
         errs += life_errors(files[LIFE], ids, files.get(CLASSES))
+    if CUTSCENE_FOLEY in files:
+        errs += cutscene_foley_errors(files[CUTSCENE_FOLEY], ids)
     if IMPACT in files:
         errs += impact_errors(files[IMPACT], ids, files.get(CLASSES), files.get(MIX))
     if REEFBALL_HOOKS in files:
@@ -602,8 +628,16 @@ def reefball_hook_errors(doc: object, ids: set[str], beds: set[str], classes: di
                 errs.append(f"{w}.{k}: {a[k]} is not murmur, excited or silence")
         if "restore" in a and (not _num(a.get("restore_after_sec")) or a["restore_after_sec"] <= 0):
             errs.append(f"{w}.restore_after_sec: a restore needs a time > 0")
-        if not any(k in a for k in ("sfx", "sfx_at", "crowd")):
-            errs.append(f"{w}: does nothing (needs sfx, sfx_at or crowd)")
+        picks = a.get("by")  # M3-AUD-824: sub-actions picked from a signal argument
+        picks = picks if isinstance(picks, list) else [picks] if picks is not None else []
+        for j, p in enumerate(picks):
+            if not isinstance(p, dict) or not isinstance(p.get("arg", 0), int) or not isinstance(p.get("values"), dict):
+                errs.append(f"{w}.by[{j}]: needs an int arg and a values object")
+                continue
+            for val, sub in p["values"].items():
+                action(sub, f"{w}.by[{j}].values.{val}")
+        if not any(k in a for k in ("sfx", "sfx_at", "crowd")) and not picks:
+            errs.append(f"{w}: does nothing (needs sfx, sfx_at, crowd or by)")
 
     crowd = doc.get("crowd") or {}
     for k in ("murmur", "excited"):
@@ -668,7 +702,7 @@ def load_files(root: Path) -> dict[str, object]:
     out = {}
     extra = [p.relative_to(root).as_posix() for p in sorted((root / SFX_DIR).glob("sfx_*.json"))]
     for rel in [MIX, MUSIC, SFX, BATTLE_SFX, SHRINE_SFX, UI_SFX, AMBIENCE, FOOTSTEPS, ENCOUNTERS, VFX_EFFECTS,
-                ACCESSIBILITY, VOICES, SPEAKERS, REEFBALL_HOOKS, CHOREO_SFX, CHOREO, BATTLE_STINGS, CREATURE_VOICES, ENEMIES, LIFE, IMPACT] + extra:
+                ACCESSIBILITY, VOICES, SPEAKERS, REEFBALL_HOOKS, CHOREO_SFX, CHOREO, BATTLE_STINGS, CREATURE_VOICES, ENEMIES, LIFE, IMPACT, CUTSCENE_FOLEY, ASHCROWN_SFX] + extra:
         p = root / rel
         if p.is_file():
             out[rel] = json.loads(p.read_text(encoding="utf-8"))
