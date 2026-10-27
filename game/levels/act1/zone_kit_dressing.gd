@@ -16,6 +16,8 @@ extends HalunaDresser
 ##                    "trimesh_lod0": the same from LOD0 (a terrain whose LOD1 is too coarse to walk on).
 ##                  "collide_lod0_in": [{"pos", "size", "yaw"?}]  boxes in the layout's frame where a "trimesh"
 ##                    collides from LOD0 (a doorway a closed LOD1 shell would seal).
+##                  "scale_y": the piece's vertical scale, over HalunaDresser's uniform "scale" (env-art's Iskarra
+##                    towers are squat or tall copies of one tower);
 ##                  "kit_dir" (+ "materials_dir", default <kit_dir>materials/)  a piece from another kit
 ##                    (Corrow's trader is the ferry kit's hull); each kit keeps its own material cache.
 ##   greybox      {"hide_all": bool, "keep": [ids]}: hides the greybox meshes (collision stays), except
@@ -38,6 +40,7 @@ const KEY_COLLIDE := "collide"
 const KEY_COLLIDE_LOD0_IN := "collide_lod0_in"
 const KEY_SPIN := "spin_with"
 const KEY_KIT_DIR := "kit_dir"
+const KEY_SCALE_Y := "scale_y"
 const KEY_MATERIALS_DIR := "materials_dir"
 const COLLIDE_TRIMESH := "trimesh"
 const COLLIDE_TRIMESH_LOD0 := "trimesh_lod0"
@@ -74,6 +77,9 @@ func dress() -> void:
 		var piece := _place_from_kit(spec)
 		if piece == null:
 			continue
+		if spec.has(KEY_SCALE_Y):
+			var s := float(spec.get("scale", 1.0))
+			piece.basis = piece.basis.scaled(Vector3(1.0, float(spec[KEY_SCALE_Y]) / s, 1.0))
 		var collide: Variant = spec.get(KEY_COLLIDE, false)
 		if collide is String and collide == COLLIDE_TRIMESH:
 			piece.add_child(trimesh_collider(piece, true, lod0_boxes(spec.get(KEY_COLLIDE_LOD0_IN, []))))

@@ -21,10 +21,6 @@
    "LowTownLake",
    "MoleBridge",
    "IskarraWater",
-   "IskarraPlaza",
-   "IskarraSteps",
-   "IskarraTowerA",
-   "IskarraTowerB",
    "VigilBurner"
   ]
  },
@@ -4536,6 +4532,227 @@
    "y": 12.0,
    "yaw_deg": -12.41,
    "block": "Milestone"
+  },
+  {
+   "piece": "iskarra_plaza",
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "at": [
+    2000.0,
+    0.0
+   ],
+   "y": 0.0,
+   "yaw_deg": 0.0,
+   "block": "IskarraPlaza"
+  },
+  {
+   "piece": "iskarra_plaza_rise",
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "at": [
+    1997.0,
+    -4.0
+   ],
+   "y": -0.2,
+   "yaw_deg": 0.0,
+   "block": "IskarraPlaza"
+  },
+  {
+   "piece": "iskarra_tower_spire",
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "at": [
+    1954.0,
+    -72.0
+   ],
+   "y": -3.4,
+   "yaw_deg": 20.0,
+   "block": "IskarraPlaza"
+  },
+  {
+   "piece": "iskarra_tower_stepped",
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "at": [
+    1976.0,
+    -94.0
+   ],
+   "y": -3.4,
+   "yaw_deg": 0.0,
+   "block": "IskarraPlaza",
+   "scale": 0.91,
+   "scale_y": 1.0
+  },
+  {
+   "piece": "iskarra_tower_broken",
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "at": [
+    1992.0,
+    -62.0
+   ],
+   "y": -3.4,
+   "yaw_deg": 140.0,
+   "block": "IskarraPlaza",
+   "scale": 0.8,
+   "scale_y": 0.6
+  },
+  {
+   "piece": "iskarra_crown_fallen",
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "at": [
+    1998.4,
+    -58.0
+   ],
+   "y": -0.4,
+   "yaw_deg": -25.0,
+   "block": "IskarraPlaza"
+  },
+  {
+   "piece": "iskarra_tower_spire",
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "at": [
+    2014.0,
+    -86.0
+   ],
+   "y": -3.4,
+   "yaw_deg": -35.0,
+   "block": "IskarraPlaza",
+   "scale": 1.17,
+   "scale_y": 1.12
+  },
+  {
+   "piece": "iskarra_tower_stepped",
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "at": [
+    2034.0,
+    -68.0
+   ],
+   "y": -3.4,
+   "yaw_deg": 60.0,
+   "block": "IskarraPlaza",
+   "scale": 0.82,
+   "scale_y": 0.77
+  },
+  {
+   "piece": "iskarra_tower_spire",
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "at": [
+    2058.0,
+    -102.0
+   ],
+   "y": -3.4,
+   "yaw_deg": 75.0,
+   "block": "IskarraPlaza",
+   "scale_y": 0.88
+  },
+  {
+   "piece": "iskarra_tower_spire",
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "at": [
+    1930.0,
+    -112.0
+   ],
+   "y": -3.4,
+   "yaw_deg": -60.0,
+   "block": "IskarraPlaza",
+   "scale": 0.92,
+   "scale_y": 0.68
+  },
+  {
+   "piece": "iskarra_tower_small_broken",
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "at": [
+    2026.0,
+    -42.0
+   ],
+   "y": -3.4,
+   "yaw_deg": -160.0,
+   "block": "IskarraPlaza"
+  },
+  {
+   "piece": "iskarra_crown_fallen",
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "at": [
+    2030.8,
+    -39.0
+   ],
+   "y": -0.4,
+   "yaw_deg": 155.0,
+   "block": "IskarraPlaza",
+   "scale": 0.8
+  },
+  {
+   "piece": "iskarra_tower_small",
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "at": [
+    1966.0,
+    -46.0
+   ],
+   "y": -3.4,
+   "yaw_deg": 10.0,
+   "block": "IskarraPlaza"
+  },
+  {
+   "piece": "iskarra_arch",
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "at": [
+    1985.8,
+    -20.0
+   ],
+   "y": -0.9,
+   "yaw_deg": 0.0,
+   "block": "IskarraPlaza"
+  },
+  {
+   "piece": "iskarra_arch_fallen",
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "at": [
+    2019.8,
+    -24.0
+   ],
+   "y": -0.9,
+   "yaw_deg": 0.0,
+   "block": "IskarraPlaza"
+  },
+  {
+   "piece": "iskarra_lamp_column",
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "at": [
+    1985.0,
+    -8.2
+   ],
+   "y": 0.0,
+   "yaw_deg": 0.0,
+   "block": "IskarraPlaza"
+  },
+  {
+   "piece": "iskarra_lamp_column",
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "at": [
+    1995.0,
+    -8.2
+   ],
+   "y": 0.0,
+   "yaw_deg": 90.0,
+   "block": "IskarraPlaza"
+  },
+  {
+   "piece": "iskarra_lamp_column",
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "at": [
+    2005.0,
+    -8.2
+   ],
+   "y": 0.0,
+   "yaw_deg": 180.0,
+   "block": "IskarraPlaza"
+  },
+  {
+   "piece": "iskarra_lamp_column",
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "at": [
+    2015.0,
+    -8.2
+   ],
+   "y": 0.0,
+   "yaw_deg": -90.0,
+   "block": "IskarraPlaza"
   }
  ]
 }
