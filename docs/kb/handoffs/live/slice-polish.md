@@ -79,3 +79,6 @@ Ch4–Ch9 onward. `m2-slice.md` beside this file is the history up to the 2026-1
     covers B06's zone; viewed through tools/cutscene_frames).
   - **Note for creatures:** `game/data/world/wildlife/ch03_saltgrass_causeway.json` is now generated (it asked for
     the move at the swap).
+
+### Render requests
+RENDER-REQUEST @ fdec3cc6: slice_prologue_vigil_line, slice_beach_h05_asha, slice_beach_h06_toma, slice_haluna_villagers_village, slice_causeway_head, slice_causeway_harrier_view, haluna_h01_village_from_sea, haluna_h02_tidewall_lane, haluna_h04_dock, haluna_h07_chapel_court, haluna_h10_dock_night, shrine_s01_approach, shrine_s02_threshold, shrine_s03_overview, shrine_s04_lip, shrine_s05_side_pool, drownbell_flood, battle_boss_intro_drownbell, battle_arena_causeway, field_causeway_dolly, boot_title; why: M2-FP-102..109, the human's playtest round (real cast and held poses in the prologue and Cutscene A, live villagers and wildlife, the final causeway), plus the greyscale audit of every slice beat. The six slice_* shots are new (no baseline yet).
