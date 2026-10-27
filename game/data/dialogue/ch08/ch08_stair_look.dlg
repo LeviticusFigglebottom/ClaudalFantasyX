@@ -1,0 +1,15 @@
+// Ch8 B02, in-engine insert 2, the stair (act1_ch08.md §2 B02; W05). Wordless, 20 s. At the head of
+// the Fisher Stair Asha stops and looks down its whole length into the low town for a held beat, then
+// walks on. Kerrid told her in Ch5, "I held a stair for your mother once." A player who remembers can
+// connect the stair to her mother and to 1001; nothing here says he died there. No line, no music
+// sting (the bed plays on). W05 holds Asha at least 1 s. The chapter flow sets ch08_saw_the_stair.
+title: ch08_stair_look
+location: ch08/corrow
+---
+@camera W05
+@mark asha stair_head_look walk
+@face asha neutral
+@wait 1.0
+@wait 1.5
+@mark asha stair_head_on walk
+===

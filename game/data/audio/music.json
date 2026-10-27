@@ -157,6 +157,72 @@
     "stillguard_inquisitor": {
       "file": "res://assets/audio/music/stillguard_inquisitor.ogg",
       "_note": "Ch6 boss, the Stillguard Inquisitor and a raid-hound in the Brine Shoals (M3-AUD-20); no battle.encounters row until the encounter exists; intended: battle.encounters stillguard_inquisitor -> stillguard_inquisitor"
+    },
+    "ossa_fen": {
+      "file": "res://assets/audio/music/ossa_fen.ogg",
+      "resume": true,
+      "_note": "Ch10, Ossa Fen, the mangrove channels: Act II sketch (M3-AUD-804); no zone row until ch10/ossa_fen exists"
+    },
+    "reedhollow": {
+      "file": "res://assets/audio/music/reedhollow.ogg",
+      "resume": true,
+      "_note": "Ch10, Reedhollow, the Kirru roost-village: Act II sketch (M3-AUD-804); no zone row until ch10/reedhollow exists"
+    },
+    "sunken_vey": {
+      "file": "res://assets/audio/music/sunken_vey.ogg",
+      "resume": true,
+      "_note": "Ch11, Sunken Vey, the drowned galleries: Act II sketch (M3-AUD-804); no zone row until ch11/sunken_vey exists"
+    },
+    "lowlight": {
+      "file": "res://assets/audio/music/lowlight.ogg",
+      "resume": true,
+      "_note": "Ch11, the Lowlight temple and the Lamp Engine's pulse: Act II sketch (M3-AUD-804); no zone row until ch11/lowlight exists"
+    },
+    "keth_pass": {
+      "file": "res://assets/audio/music/keth_pass.ogg",
+      "resume": true,
+      "_note": "Ch12, Keth Pass, the mountain route: Act II sketch (M3-AUD-804); no zone row until ch12/keth_pass exists"
+    },
+    "quellan": {
+      "file": "res://assets/audio/music/quellan.ogg",
+      "resume": true,
+      "_note": "Ch12, Quellan, the highland town: Act II sketch (M3-AUD-804); no zone row until ch12/quellan exists"
+    }
+,
+    "ansedra": {
+      "file": "res://assets/audio/music/ansedra.ogg",
+      "resume": true,
+      "_note": "Ch13, Ansedra, the holy city: gold and lacquer. Act II sketch (M3-AUD-805); no zone row until ch13/ansedra/ansedra.tscn exists"
+    }
+,
+    "lamp_archive": {
+      "file": "res://assets/audio/music/lamp_archive.ogg",
+      "resume": true,
+      "_note": "Ch13, the Lamp Archive, the founding truth on paper. Act II sketch (M3-AUD-805); no zone row until ch13/lamp_archive/lamp_archive.tscn exists"
+    }
+,
+    "peace_wedding": {
+      "file": "res://assets/audio/music/peace_wedding.ogg",
+      "resume": true,
+      "_note": "Ch14, the peace wedding in the Lacquer Court at dusk. Act II sketch (M3-AUD-805); no zone row until ch13/ansedra_lacquer_court/ansedra_lacquer_court.tscn exists"
+    }
+,
+    "unlamped": {
+      "file": "res://assets/audio/music/unlamped.ogg",
+      "resume": true,
+      "_note": "Ch15, the open sea at night aboard the bridal barge. Act II sketch (M3-AUD-805); no zone row until ch15/open_sea/open_sea.tscn exists"
+    }
+,
+    "pale_rim": {
+      "file": "res://assets/audio/music/pale_rim.ogg",
+      "resume": true,
+      "_note": "Ch16, the Pale Rim, the white shallows. Act II sketch (M3-AUD-805); no zone row until ch16/pale_rim/pale_rim.tscn exists"
+    }
+,
+    "drowned_choir": {
+      "file": "res://assets/audio/music/drowned_choir.ogg",
+      "resume": true,
+      "_note": "Ch16, the Drowned Choir. Act II sketch (M3-AUD-805); no zone row until ch16/drowned_choir/drowned_choir.tscn exists"
     }
   },
   "zones": [

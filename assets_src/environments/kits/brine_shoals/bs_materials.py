@@ -139,6 +139,12 @@ STANDARD: dict[str, dict] = {
     "bs_lacquer_red": {"albedo_color": hexc("#B3261E"), "roughness": 0.22, "clearcoat_enabled": "true",
                        "clearcoat": 0.6},
     "bs_gold": {"albedo_color": hexc("#D4A437"), "roughness": 0.28, "metallic": 1.0},  # gold_leaf
+    # M3-ENV-703 (bs_story.py): Saltwright chalk on tarred planks (salt-white, dusty, a little thin), the Order's
+    # Level-stone (order_marble greyed by the shoals) and its level line (the greybox block's #9FD8E0, 0.6).
+    "bs_chalk": {"albedo_color": hexc("#D9D4C6"), "roughness": 1.0},  # opaque: no sorting against the hull
+    "bs_level_stone": {"albedo_color": hexc("#C9CFCF"), "roughness": 0.7},
+    "bs_level_glow": {"albedo_color": hexc("#9FD8E0"), "emission_enabled": "true", "emission": hexc("#9FD8E0"),
+                      "emission_energy_multiplier": 0.6, "roughness": 0.5},
 }
 
 SHADER: dict[str, dict] = {

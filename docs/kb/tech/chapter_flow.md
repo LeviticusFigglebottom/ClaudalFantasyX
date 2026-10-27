@@ -130,7 +130,7 @@ The zone's first arrival row then plays B07 the same either way. No story `.dlg`
 
 **Seams to other chapters.**
 - **Entry:** Ch6's dawn (B10) hands off to `ch07/tamsule` at `RiverMouth`; the location row and the F5 teleport reach it directly too.
-- **Exit:** `ch08/corrow` isn't built, so B10 hands off to the end card. Ch8 swaps the `leave` beat's last step for a `go`.
+- **Exit:** B10 hands off to `ch08/corrow` at `Mole` (M3-C08-02).
 
 ## Ch4 (M3-C04-02)
 Ch4 "The Pilgrim's Wake" is built the same way: `game/data/flow/chapters/ch04.json`, two zones under `game/levels/ch04/`, scripts in `game/data/dialogue/ch04/`, loc rows in `game/data/loc/ch04.csv`, and the test `tests/integration/test_ch04_thread.gd`.
@@ -168,7 +168,7 @@ Flags inside them are set by `<<set>>` at the line that earns them.
 **The Iskarra vigil is staged in the same zone.** The prologue scene is hard-wired to its own cutscene and hand-off, and a scene change fades through the router. So the vigil is a stand-in plaza far east in the zone (x 300), with its own seven stand-ins (`vigil_*`), the burner and shots P02–P04. Env-art decides the real staging (M3-C09-04).
 
 **Seams.**
-- **Entry:** Ch8 isn't built, so `ch09/corrow_night` is reached from its own `locations.json` row (spawn `Strand`) or the F5 teleport. The first arrival sets the chapter to 9, and the chapter autosave follows.
+- **Entry:** Ch8's B18 hands off to `ch09/corrow_night` at `Strand` (M3-C08-02); its own `locations.json` row and the F5 teleport reach it too. The first arrival sets the chapter to 9, and the chapter autosave follows.
 - **Ch8's flags.** Ch9 reads three flags that Ch8 must set: `ch08_met_ivo` (the side scene), `ch08_fed_the_beacon` (Fenn's line in B08, else Hobb's) and `ch08_hoist_cut_down` (Liss's bark). They are declared in flags.tres with that note. Ch9 doesn't read `ch08_stair_groups_up`.
 - **The night to dawn.** The Ebbing's scene ends on black, and its beat goes to the same zone at `RoadGate`, so the zone reloads in its dawn variant.
 - **Exit:** Ch10 (Act II) isn't in M3, so the act break hands off to the end card.
@@ -194,6 +194,36 @@ Ch6 "Salt Edict" is built the same way: `game/data/flow/chapters/ch06.json`, one
 
 **Random fights.** The layout has one table for the whole road. It runs between `ch06_arrived` and `ch06_sheltered_liss`, so the camp has none. GreyboxZone has a single `encounters` block, so the ridges and the flats share it; separate tables for the flats need a zone-root feature (M3-C06-05).
 
+## Ch8 (M3-C08-02)
+Ch8 "The Seawall" is built the same way: `game/data/flow/chapters/ch08.json`, two zones under `game/levels/ch08/`, scripts in `game/data/dialogue/ch08/`, rows in `game/data/loc/ch08.csv`, tunables in `game/data/flow/ch08_field.json`, and the tests `tests/integration/test_ch08_thread.gd` and `tools/tests/test_ch08_flow.py`.
+
+**The zones.**
+- `ch08/corrow` is Corrow by day, in the storm and after it: the harbour mole, the wall-head and its Watchers, the Fisher Stair, the low town and the Bastion. The storm and the aftermath are flag-driven `states` and `lights` (from `ch08_beacon_opened` and `ch08_wall_fell`), so a battle's reload or a load comes back right.
+- `ch08/coilspire` is the headland path, the keeper's hut, the four tiers of the flue trial, the crown chamber and the beacon gallery.
+
+**The zone roots.** `Ch08Zone` extends `Ch06Zone`, so it keeps the `states`, the `lights`, `checkpoint`, `place_actor` and Ch01Zone's calls. It adds three things:
+- the layout's `start_hidden`: blocks built hidden for a state to show (the flood, the breach, the hoist, the storm wall);
+- the layout's `states_when`: rows like `states` under a ZoneStory `when`, so every flag must hold. Fenn stands in the gallery only when he fed the beacon and Virel is bound.
+- `mend(source)`: between the set piece's fights, every party member's carried HP is raised to at least `mend.hp_pct` of their battle maximum. The maximum is built the way a live battle builds it (Lattice, gear). MP is left alone.
+
+`Ch08CoilspireZone` is the view of `CoilspireTrial` (`game/levels/ch08/coilspire/coilspire_trial.gd`; data in `ch08_field.json` `trial`), as Ashcrown's zone is of its trial.
+- Its triggers carry `{"flue": key}`. They answer only after the door (`ch08_entered_coilspire`), while the flame isn't at the crown and the story is free.
+- The climb is kept in the numeric flag `ch08_flue_tiers_lit`, so the two placed fights inside don't lose it.
+- Tier 3's seized key plays the `stuck_key` beat (Liss and the mark) when Liss is in the party or the reserve, then turns.
+
+**The set piece and the stair meter** (act1_ch08.md §5a; set_piece_battles.md).
+- A battle step takes `objective_flag`, a numeric flag. ZoneStory records the flag's value on the request (`BattleRequest.objective_start`).
+- After a win or a scripted escape, FieldBattle sets it to that value plus `engine.objective_count`. "Fight again" puts it back to that value.
+- Every Ch8 fight carries `ch08_stair_groups_up`. Each fight returns to `WallHead`, and the next arrival row mends the party, plays the scene between and opens the next fight. Wave 1 follows B09's checkpoint, so "Return to last save" goes back to B09.
+- The battle parties are the sim suites' (`tools/balance/targets.json` `ch08_*`), so the bands describe what the player plays.
+
+**Seams.**
+- **Entry:** Ch7's `leave` beat hands off to `ch08/corrow` at `Mole`, which is also the location's own spawn. B01's party step drops Kerrid: active Rhen, Asha and Toma; reserve Ysolde and Liss.
+- **Exit:** B18 writes Kerrid back into the reserve and hands off to `ch09/corrow_night` at `Strand`. Ch9's zone stays its own location; whether it becomes `ch08/corrow`'s night variant is M3-C09-04's call.
+- **Ch9's three Ch8 flags** (`ch08_met_ivo`, `ch08_fed_the_beacon`, `ch08_hoist_cut_down`) are set here. Ivo is on the critical path (the wall-gate needs `ch08_met_ivo`).
+
+**Field fights.** The headland's random table and its forced fight are `ch08_headland_gulls` (two stormgulls, Rhen's) and `ch08_headland_crabs` (two wallcrabs, Toma's). The spire's two placed fights are `ch08_flue_moths` (Ysolde's frost). The three enemies are `enemies.json` rows on the creatures track's models (M3-CRE-06), with `sim.py` suites in `tools/balance/targets.json`. Liss's Haul and Virel's kit are still M3-CMB-01's provisional rows.
+
 ## Debug chapter select (M3-ARC-02)
 F8 in the debug overlay (debug builds only) lists the starts in `game/data/debug/chapter_select.json`: Ch1, then each built chapter. Enter on a start:
 1. begins a fresh game;
@@ -205,3 +235,11 @@ F8 in the debug overlay (debug builds only) lists the starts in `game/data/debug
 
 The slice's end card leads on to `end_card.next_location` / `next_spawn` in `first_playable.json` when they are set (M3-C04-04). They are empty for the M2 review build, so the card returns to the title.
 
+
+## Kit dressing (ADR 0200, act1-chapters)
+An Act I zone swaps its greybox look for env-art's kit with a `ZoneKitDressing` child (`game/levels/act1/zone_kit_dressing.gd`, a `HalunaDresser` subclass), instanced in the zone's `.tscn` as `Dressing`, with `Water` (`WaterSurface`) and `Tide` (`WeatheringTide`) beside it when the kit has water. The greybox stays the gameplay: collision, triggers, marks, spawns and `states` are unchanged.
+- **The dressing layout** `game/levels/chNN/<zone>/<zone>_dressing.json` is generated by `tools/act1/chNN_<zone>_dressing.py` in the zone's own frame (HalunaDresser's `kit_dir`, `materials_dir`, LOD keys and `pieces`). Never edit the JSON by hand; re-run the generator after a kit merge.
+- **Keys:** a piece's `"block": <id>` follows `Greybox/<id>`'s visibility (so `hide_block`/`show_block` and `states` drive it); `"collide": true` gives decor off the route a box collider; `greybox: {hide_all, keep}` hides the block meshes except the story blocks no kit has yet; `fire_lights` (shadowless, fog energy 0, optionally following a block); `environment` (a copied grade, `.tres` next to the zone); `time_of_day_h`.
+- **Heights:** the floor is still the flat greybox, so pieces sit near y = 0 (a raised hard is sunk). Water the player must not walk on is a new solid block in the zone's layout.
+- **Shots:** `game/levels/_tests/act1_zones/<chNN_zone>_shots.tscn` (`Act1ZoneRig`: the zone with its story held, plus `views` built as `Cameras/<name>`).
+- **Ch6 (M3-C06-1200):** the Brine Shoals kit; `tools/act1/ch06_brine_shoals_dressing.py`. The channel runs north up x = −24 from its silted head at z = −24 (`ChannelWater` keeps Rhen on the banks; the `Channel` spawn is on the east bank). The sun is the colour script's `ch06` frame.

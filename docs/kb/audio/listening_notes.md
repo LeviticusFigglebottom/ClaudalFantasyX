@@ -692,3 +692,223 @@ fight. It should sound lawful and cold, with sorrow under it.
   against the drums?** If it's thin, I'd double it on the flute an octave up in A rather than raise the piano.
 - **Do the shields sound like a struck shield,** or like a pot or a gong? If they're a gong, the plate gets shorter.
 - **Can you hear the loop wrap?** The seam is 73.8 s after the intro, a sixteenth before bar 1's downbeat.
+
+## M3: Act II sketches I (M3-AUD-804)
+
+Six **sketches**, one per Act II place in Ch10-12. They're for judging direction: is each place's colour right,
+and do the six feel like one act? They aren't finished cues. None of the scenes exists yet, so for now you can only
+hear them on their own. The scenes are in act_outline.md (Ch10, Ch11, Ch12), and the places in bible §5.5-5.7 and
+§8. Each is a seamless loop of about a minute (about 6 minutes in all). Act II's colour is overcast, storm,
+moonlight and cold blue stone, so all six sit darker and slower than Act I, except Quellan, which is the warm room
+after the cold road.
+
+The new instruments are in `assets_src/music/act2_voices.py`: a fen reed pipe; the Kirru's whistle, root-harp,
+water-gourd and tongue-clicks; a glass harmonica (Sefir's recipe); the Lamp Engine's stroke and its hum; a highland
+ten-string lute; woolback bells; and seamless textures (insects, wind, the pass-cords, the deep's cold).
+
+| # | File | Length | Key, metre | Plays |
+|---|---|---|---|---|
+| 1 | `music/ossa_fen.ogg` | 61.9 s loop | G Dorian, 4/4 at 62 | Ch10: Ossa Fen, the mangrove channels |
+| 2 | `music/reedhollow.ogg` | 61.5 s loop | the Kirru mode on A (A B C# D# F#), 5/4 (3+2) at 78 | Ch10: Reedhollow, the Kirru village |
+| 3 | `music/sunken_vey.ogg` | 62.6 s loop | E-flat Dorian, 3/4 at 46 | Ch11: Sunken Vey, the drowned galleries |
+| 4 | `music/lowlight.ogg` | 62.1 s loop | C minor, 4/4 at 58 | Ch11: the Lowlight temple and the Lamp Engine |
+| 5 | `music/keth_pass.ogg` | 62.6 s loop | E minor, 6/8 at 46 | Ch12: Keth Pass, the mountain route |
+| 6 | `music/quellan.ogg` | 62.6 s loop | F major, 4/4 at 92 | Ch12: Quellan, the highland town |
+
+### (1) Ossa Fen: humid and still
+
+- **The band:** a nasal double-reed pipe (new) plays a low, swaying tune over a still drone on G and D and a very
+  dark string pad. A muted low string on 1 and the "and" of 3 is a pole finding the mud. Insects are made from
+  texture, not samples: clustered high chirps, a faint bed, and now and then a far frog's purr. Drips fall from the
+  roots. In bars 13-16 the pipe stops and a low, soft flute answers.
+- **The key:** G Dorian. Its E natural is the fen's colour, heard in the C major chords. **Does it feel humid and
+  still, or only slow?** **Is the reed pipe a reed** (nasal, a little buzzy, a touch flat at the ends of long
+  notes), or does it sound like a cheap synth oboe? That's the biggest risk in this sketch.
+- **The insects:** do they read as insects in the heat, or as hiss or tinnitus? If they're tiring over a long
+  explore, they come down or thin out.
+
+### (2) Reedhollow: a people with their own music
+
+- **The idea:** the Kirru aren't human, and the Order calls them soulless. Their music shouldn't sound like the
+  coast's. So no metallophones and no D pentatonic (Haluna's), and a mode of their own: **A B C# D# F#. It has no
+  fifth**, so it never sits down on a home chord. It floats, rises, and ends its phrases in silence instead of
+  cadences.
+- **The band, all new:** two **whistlers** (a low, near-pure whistle that glides between notes and slides *up* into
+  its long ones, with a tongue-click at each phrase start), the first left and the answer right. The **root-harp**
+  is gut strings on a mangrove-root frame over the water: on some notes the player presses the string up into
+  pitch after the pluck, so the harp rises too. **Water-gourds** play on the two group starts of the 3+2 bar, and
+  **tongue-clicks** on the offbeats are the Kirru talking. In bars 11-14 the clutch hums a wordless line that rises
+  one step a bar and never comes down: the farewell-tide's *shape* (not the song itself; that scene isn't scored
+  yet). Bar 16 is only clicks and the harp's root: the backs turned.
+- **Key questions:** **does it sound like a people with their own music, and not "exotic"?** Is the fifthless mode
+  beautiful, or does it just sound unresolved? Do the whistles read as voices (good) or as a theremin (bad)? Is the
+  5/4 unhurried, or does it limp?
+- The farewell-tide is meant to carry the Eighth Verse without knowing it (bible §7). This sketch doesn't decide
+  that melody. If you like the rising line, it's a candidate seed.
+
+### (3) Sunken Vey: under the water, among the dead
+
+- **The band:** a glass harmonica sings a slow song in 3/4 at 46 (the slowest 3/4 in the game). From bar 9 a
+  second glass doubles its long notes an octave below. Everything else is heard as if through water, low-passed
+  hard: a drone on Eb and Bb, a very dark pad, a drowned bell at bars 1 and 9, and a low root pluck every other
+  bar. The conduits' bound light is a faint pair of high tones that swell once every two beats. Bubbles rise in
+  short strings.
+- **The key:** E-flat Dorian. The C natural (the top of the song over A-flat major) is the light still in the
+  conduits. **Does it sound submerged, glassy and dead-but-gorgeous, or just muffled?** Is the conduits' pulse
+  audible enough to read as *light*, or is it lost?
+- **Glass here and in Sefir's motif:** the glass harmonica is the game's voice for glimmer, and Sefir's theme uses it
+  too. Does it point at the Order too early? If so, I'll swap it for bowed glass bars.
+
+### (4) Lowlight: a dead machine still keeping time
+
+- **The engine:** a muffled piston stroke through water on every beat, with a valve clank. Beat 4 limps late,
+  beat 2 stutters every fourth bar, and in the last bar the engine **stalls for two beats** before it catches again
+  on the loop's downbeat. Under it is the conduits' choked hum on C, which flickers and sometimes nearly fails, and
+  a very low heave of the deep's cold. Glints of drowned glimmer drift down in register like silt.
+- **The motifs (the game's own, developed):** the low flute plays **the Kirru call from Reedhollow**, moved to C
+  and sinking at the end: Nhoa is Ressa, the only Kirru Cantor, held at the foot of the well-shaft. The glass plays
+  **the Hush's outline** (the long held note, the fall of a third, the turn a sixth below) in C minor: the
+  Cantor's song she was given. In bars 12-15 they sound together and don't quite agree (the call's E against the
+  Hush's E-flat). **Is that clash the point (Kirru against Order, in one drowned woman), or does it just sound
+  wrong?** If it's wrong, I'd keep the two apart.
+- **Is the pulse dead (mechanical, wrong, tired) or just a drum?** Does the stall read as the machine failing, or
+  as a glitch in the file? Pell kneels before his sister in this temple. Does the cue leave room for that?
+
+### (5) Keth Pass: cold, wind-borne, wide
+
+- **The band:** two breathy pipes, hard left and right, play the tune **in hocket**. Each plays every other note,
+  so the tune exists only between them. The wind never stops. The pass-cords whistle in it: very narrow bands of
+  wind-noise on E, G, B and E, each swelling on its own gust. An open-fifth string pad sits wide, a big drum sounds
+  far below every four bars, and a soft frame-drum step falls on the second dotted quarter. In bars 13-16 one pipe
+  plays alone, lower and slower (C D G Em). In A' (bars 17-20) the hocket goes up an octave.
+- **The key:** E minor, 6/8 at 46 dotted quarters, the slowest 6/8 in the game. **Does it feel high, cold and
+  huge?** Does the hocket sound like two players, or like a broken-up line? **Do the cords sound like cords
+  singing,** or like a whistle-tone fault? Is the wind tiring?
+- **Toma notices Kerrid's breath doesn't fog.** That beat isn't scored here; the verse (bars 13-16) is the place
+  a later cutscene cue could branch from.
+
+### (6) Quellan: warm against the cold
+
+- **The band:** a warm breath flute in its middle plays a tune in F major (the only cue in F major). A second flute
+  a third below joins in A'. The **ten-string** (new) is a small, deep-backed lute of paired wire courses, strummed
+  long-short-short on every beat. Under it are a fingered bass on 1 and 3, a big drum on 1, and a frame-drum slap
+  on the "and" of 2. Outside, the woolbacks' wooden-clappered bells clonk in small, uneven clusters. A C7
+  turnaround in the last half-bar leads home.
+- **Key questions:** **is it warm (a hearth after the pass), or just cheerful?** The Ullari are stoic about death,
+  but at home they're a town. Does the strum read as a highland lute, or as a ukulele? (If it's a ukulele, the
+  body gets deeper and the courses lower.) Do the herd bells sound like animals passing in the street, or like a
+  clock?
+- Quellan sits next to Keth Pass (E minor, 6/8, cold). Does going from one to the other feel like coming inside?
+
+**For all six:** can you hear any loop wrap? Every file starts a sixteenth before its first downbeat, so the wrap
+falls between notes. And as a set: **do the six sound like one act** (darker, colder, slower than Act I) **and like
+six different places?**
+## M3: Act II sketches II, Ansedra to the Drowned Choir (M3-AUD-805)
+
+Six **sketches**: loops to judge the direction by, not finished cues. None of their scenes exists yet, so for now
+you can only hear them on their own. The scenes are in act_outline.md (Ch13 to Ch16). About 6 minutes in all.
+
+| # | File | Length | Plays |
+|---|---|---|---|
+| 1 | `music/ansedra.ogg` | 61.0 s loop | Ch13: Ansedra, the holy city, gold and lacquer |
+| 2 | `music/lamp_archive.ogg` | 61.0 s loop | Ch13: the Lamp Archive, the three days of reading before the wedding |
+| 3 | `music/peace_wedding.ogg` | 61.4 s loop | Ch14: the wedding in the Lacquer Court at dusk, before the trap is sprung |
+| 4 | `music/unlamped.ogg` | 61.2 s loop | Ch15: the open sea at night, aboard the bridal barge with no lamp |
+| 5 | `music/pale_rim.ogg` | 61.2 s loop | Ch16: the Pale Rim, days of wading through white shallows |
+| 6 | `music/drowned_choir.ogg` | 61.3 s loop | Ch16: the Drowned Choir, the stone figures in the water |
+
+### (1) Ansedra: gold, and nothing alive under it
+
+- **The idea:** the bowls (gilded bars that beat slowly, like a gamelan) ring the same four notes on every bar, and
+  never change the pattern, only the chord. Those four notes are Sefir's motif reordered, so the city rings with its
+  Warden before you hear him. A breathy flute plays a court tune over a warm pad, with the Order humming an open
+  fifth on C under everything. In bars 11-14 Sefir's own motif comes in on his glass harmonica (the same instrument as
+  `sefir_theme`), with the congregation humming it an octave down. Its wrong note, C#, is held until the chord under
+  it turns to D-flat major seventh: for a bar the wrong note becomes the floor, all gold, with nowhere to go.
+- **The key:** C major (the Order's key), 4/4 at 63 BPM. **Is it opulent and a little hollow, or just pleasant?** If
+  it's too pleasant, I'd thin the pad's thirds before touching the tune.
+- Does the D-flat bar sound like gilding, or like a mistake?
+
+### (2) The Lamp Archive: the truth on paper
+
+- **The idea:** a grand piano alone in a big, dry room, with a dark pad far under it and three page-turns a loop.
+  The left hand is the ledger: a low fifth on each downbeat, and the same soft D ticking on beats 2 and 3 for the
+  whole loop (the same hand signing for four hundred years). The right hand reads the Hush's first phrase in D minor
+  and stops where the theme would climb. In bars 7-11 the phrase is read twice at once, an octave apart and a bar out
+  of step, and the two copies disagree. That is Liss laying the pages side by side. At the end comes Sefir's motif,
+  and in D minor its C# is the leading tone, so for the first time it resolves, up to D.
+- **The key:** D minor, 3/4 at 59 BPM. **Quiet, dusty and uneasy, or only sparse?** Is the D tick a pen and a
+  column of names, or a clock? If it's a clock, it gets less regular.
+- **Do the page-turns read as paper,** or as noise bursts? They're mixed far back on purpose.
+- Can you hear Sefir's motif resolving at the end, and does it feel like a discovery?
+
+### (3) The peace wedding: a dance that is a trap
+
+- **The idea:** a real court dance in 3/4. A plucked zither plays bass on 1 and chords on 2 and 3, a flute plays
+  the tune, gilded bars double its downbeats, and a soft frame drum plays. The first sixteen bars are honestly
+  lovely. Then in bars 17-24 the harmony slides to E-flat major and C minor, and a damped low gong starts stepping
+  every *two* beats, against the dance's three: something keeping a different time in the same room. The Order
+  hums Sefir's motif in G, and its last note (G#) is held over C until it becomes the A-flat of C minor. When the tune
+  returns, its third bar has caught the minor, and it ends on the dominant, never on G.
+- **The key:** G major, 3/4 at 88 BPM. **Do you want the peace too, in bars 1-16?** If the A section isn't
+  beautiful, the trap doesn't work.
+- **Does the two-against-three gong read as wrong footsteps,** or as a mistake in the drum part? If it's the
+  latter, it gets lower and further away.
+
+### (4) Unlamped: the sea at night, no lamp
+
+- **The idea:** no pulse at all; nobody is rowing. A sea of filtered noise swells once a bar. A low bowed E-flat
+  drone sits under a pad that rocks between E-flat minor and C-flat, like a barge with nobody steering. A low,
+  breathy flute keeps a vigil rather than singing. The sea-glow is soft glass bars, always rising (the held dead
+  come up off the water toward Kerrid), sparse at first and gathering in bars 8-11. The flute's last note is A-flat,
+  left unresolved.
+- **The key:** E-flat minor, the darkest in the score, notated 4/4 at 51 BPM in 13 bars (an odd number, so the
+  loop never settles into pairs). **Is it dark and grieving, or only dark?**
+- Is the sea a sea, or a hiss?
+- Do the rising motes read as light coming up off the water?
+
+### (5) The Pale Rim: almost silent
+
+- **The idea:** mostly air. A halo of high, pure tones beats slowly, like glare off white water. Far down there is
+  an open fifth on E, and there are no thirds at all for most of the loop: no colour, the white. The only motion is
+  the party wading: five walkers, a soft splash at each step, a little irregular, the last one a step behind
+  (Kerrid walks last). A flute, very far off, plays three short calls in thirteen bars. In the third call it
+  touches A# and G#, the loop's only third.
+- **The key:** E (no third), 4/4 at 51 BPM. **Vast and bleached, or empty?** It's played at the same loudness as
+  every other cue, so "almost silent" here means sparse, not quiet. If it's too present, it could be the one cue
+  that sits a few dB under the others (that would need an ADR on mix.md §2).
+- **Does the wading sound like water around legs,** or like footsteps on gravel?
+- Is the halo restful, or a whine? If it's a whine, the top two partials go.
+
+### (6) The Drowned Choir: the Hush, sung by the stones
+
+- **The idea:** everything is heard through water. Men hum the roots and women hum the Hush's first phrase, slowed
+  right down. In bars 13-16 the mouths open: six voices sing open vowels (oo to oh to ah) on F major and then E
+  major, and one distant alto sings the Hush's first three notes. The water's filter opens slowly toward those bars
+  and closes again after them. A deep gong sounds at bars 1 and 9, and a few bubbles rise.
+- **The key:** A minor (the Hush's key), 3/4 at 47 BPM. **Awe and grief, or just murk?**
+- **The sung voices are synthesized,** and a synthetic voice is the thing most likely to sound uncanny. Are the open
+  vowels in bars 13-16 a choir of stones, or a robot? If they're a robot, they get further back, or go to hum.
+- Is the Hush recognizable at this tempo, under the water?
+
+**For all six:** can you hear the loop wrap? Each file starts a sixteenth before its first downbeat, so the wrap
+falls between notes. And **do they sound like the same game as Act I** (the same flute, bars, hum and pad), while
+each sounds like its own place?
+
+## M3: village and wildlife life (M3-AUD-814)
+Heard in Haluna once claude/creatures merges (or on creatures' `_tests/npc` and `_tests/wildlife` stages). Listen for:
+- **Murmur turns:** two villagers chatting should read as people talking out of earshot, never as words, and never as
+  a loop: a turn starts with its speaker's turn and two voices alternate. Is −26 LUFS (momentary max) too present
+  next to the dialogue blips?
+- **Work:** the net-mender's twine and knot, the sweeper's broom on the chapel stones, the stall's bowls and jars,
+  the bowl's pestle. Every 2.5–5.5 s: does it feel like steady work or like a metronome?
+- **Gulls near:** brighter than the bed's far gulls; do the two layers sit together? Takeoff claps should be soft.
+- **Crabs and fish:** very quiet ticks and plips, heard only up close. Too faint to notice is better than too loud.
+
+## M3: battle impact weight (M3-AUD-816)
+Heard once claude/battle-presentation merges, in any fight. Listen for:
+- **Tiers:** a medium blow should thicken the hit, not double it; a heavy one should land as the hit-stop releases.
+  Is the crushing tier's debris too much on every crit?
+- **The hit-stop duck:** −6 dB of music for about 0.15 s. Is it felt as a held breath or as a dropout?
+- **The KO slow-mo:** the air drawn down and the one heartbeat under the last foe's fall, with the music ducked
+  −9 dB. The victory sting should follow cleanly.

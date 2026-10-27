@@ -3,8 +3,9 @@ extends Node3D
 ## The prologue (SPEC §3.5; M2-FP-03; docs/kb/tech/first_playable_flow.md): New Game lands here
 ## (locations.json new_game). A placeholder dead city at dusk built from primitives, staged for the
 ## `prologue_dead_city` cutscene: one Camera3D under a FieldCameraDirector, a CutsceneStage with
-## Shots/P01, and Spawns/Start. There is no player; place_at() stands in for one, so the location
-## registry (and tools/validate_data.py) count the scene as playable.
+## Shots/P01 and P02, the vigil's cast under Actors (Rhen, Asha and Toma take their HeroFieldActor
+## bodies at _ready, Ysolde is her model; M2-FP-103), and Spawns/Start. There is no player; place_at()
+## stands in for one, so the location registry (and tools/validate_data.py) count the scene as playable.
 ##
 ## When it is the current scene (and `autoplay` is on) it sets `prologue_seen`, plays the cutscene,
 ## then sends the party to first_playable.json prologue.next_location / next_spawn through
@@ -38,6 +39,8 @@ var finished := false
 
 
 func _ready() -> void:
+	# M2-FP-103: the vigil's heroes wear their real bodies (HeroFieldActor), not capsules.
+	HeroFieldActor.attach_stage(stage)
 	if autoplay:
 		_autoplay.call_deferred()
 

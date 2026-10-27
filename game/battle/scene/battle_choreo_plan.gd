@@ -40,6 +40,7 @@ static func plan_for(data: Dictionary, engine: BattleEngine, result: ActionResul
 	var targets: Array[StringName] = []
 	var reactions: Array[Dictionary] = []
 	var kos: Array[StringName] = []
+	var peak := 0.0
 	var stagger := float(st.get("stagger_sec", 0.0))
 	for hit: Dictionary in result.hits:
 		var tid := StringName(str(hit.get("target_id", "")))
@@ -55,8 +56,11 @@ static func plan_for(data: Dictionary, engine: BattleEngine, result: ActionResul
 		)
 		if kind == "" and amount < 0:
 			kind = BattleChoreo.REACT_HEAL
+		var blow := BattleImpact.strength(data, engine, hit)  # M3-BPR-401: the blow's weight
+		peak = maxf(peak, blow)
 		if kind != "":
-			reactions.append({"target": tid, "kind": kind, "at": c + stagger * reactions.size()})
+			var w := BattleImpact.recoil_weight(data, blow) if kind == BattleChoreo.REACT_DAMAGE else 1.0
+			reactions.append({"target": tid, "kind": kind, "at": c + stagger * reactions.size(), "weight": w})
 		var t := engine.find(tid) if engine != null else null
 		if amount > 0 and t != null and t.hp <= 0 and not kos.has(tid):
 			kos.append(tid)
@@ -67,6 +71,7 @@ static func plan_for(data: Dictionary, engine: BattleEngine, result: ActionResul
 		"targets": targets,
 		"reactions": reactions,
 		"kos": kos,
+		"impact": peak,
 		"approach_end": a,
 		"contact": c,
 		"strike_end": a + s,
@@ -95,3 +100,73 @@ static func retime(data: Dictionary, plan: Dictionary) -> void:
 	if not kos.is_empty():
 		total = maxf(total, float(plan["ko_at"]) + float(ko.get("collapse_sec", 0.0)))
 	plan["total"] = total
+
+
+## How far a melee run goes along `dir` from `from` (M3-BPR-402): stop_short_m short of the aim, and never so far
+## that the actor (radius `ra`), at the end of its lunge, comes within its radius + a body's radius + clearance_m
+## (choreo.json spacing) of any body in its path. `bodies`: [[position, radius], ...] of everyone else on the field.
+static func melee_gap(
+	data: Dictionary, st: Dictionary, from: Vector3, dir: Vector3, aim: Vector3, bodies: Array, ra: float
+) -> float:
+	var gap := BattleChoreo._flat_len(aim - from) - float(st.get("stop_short_m", 0.0))
+	var clear := float((data.get("spacing", {}) as Dictionary).get("clearance_m", 0.0)) + float(st.get("lunge_m", 0.0))
+	for b: Array in bodies:
+		var rel := (b[0] as Vector3) - from
+		rel.y = 0.0
+		var along := rel.dot(dir)
+		if along <= 0.0:
+			continue  # behind the actor
+		var side := (rel - dir * along).length()
+		var need := ra + float(b[1]) + clear
+		if side < need:
+			gap = minf(gap, along - sqrt(need * need - side * side))
+	return maxf(gap, 0.0)
+
+
+## A melee run's direction and length (M3-BPR-402): straight at `aim` unless a body beside the path stops it short;
+## then it turns by spacing.detour_step_deg each way, up to detour_max_deg, and takes the smallest turn whose run
+## ends within detour_reach_m of where an unobstructed run (only `target_bodies` in the way) would. {dir, gap}.
+static func melee_approach(
+	data: Dictionary, st: Dictionary, from: Vector3, aim: Vector3, bodies: Array, target_bodies: Array, ra: float
+) -> Dictionary:
+	var dir := BattleChoreo._flat(aim - from)
+	var best := {"dir": dir, "gap": melee_gap(data, st, from, dir, aim, bodies, ra)}
+	var sp := data.get("spacing", {}) as Dictionary
+	var step := float(sp.get("detour_step_deg", 0.0))
+	if dir == Vector3.ZERO or step <= 0.0:
+		return best
+	var ideal := from + dir * melee_gap(data, st, from, dir, aim, target_bodies, ra)
+	var reach := BattleChoreo._flat_len(aim - ideal) + float(sp.get("detour_reach_m", 0.0))
+	if BattleChoreo._flat_len(aim - (from + dir * float(best["gap"]))) <= reach:
+		return best
+	var deg := step
+	while deg <= float(sp.get("detour_max_deg", 0.0)) + 0.001:
+		for sgn: float in [1.0, -1.0]:
+			var d := dir.rotated(Vector3.UP, deg_to_rad(deg * sgn))
+			var g := melee_gap(data, st, from, d, aim, bodies, ra)
+			if BattleChoreo._flat_len(aim - (from + d * g)) <= reach:
+				return {"dir": d, "gap": g}
+		deg += step
+	return best
+
+
+## A fighter model's footprint radius on the ground (M3-BPR-402): the mean of its visible meshes' half-width and
+## half-depth about the stand-in's origin, times spacing.footprint_k. -1 for a primitive stand-in (no model).
+static func footprint(f: Node3D, data: Dictionary) -> float:
+	if f == null or (BattleClips.player_of(f) == null and BattleClips.creature_of(f) == null):
+		return -1.0
+	var lo := Vector3.INF
+	var hi := -Vector3.INF
+	var inv := f.global_transform.affine_inverse()
+	for n in f.find_children("*", "VisualInstance3D", true, false):
+		var vi := n as VisualInstance3D
+		if not vi.is_visible_in_tree() or vi is Light3D:
+			continue
+		var box := (inv * vi.global_transform) * vi.get_aabb()
+		lo = lo.min(box.position)
+		hi = hi.max(box.end)
+	if not lo.is_finite() or not hi.is_finite():
+		return -1.0
+	var half_x := maxf(-lo.x, hi.x)
+	var half_z := maxf(-lo.z, hi.z)
+	return (half_x + half_z) * 0.5 * float((data.get("spacing", {}) as Dictionary).get("footprint_k", 1.0))

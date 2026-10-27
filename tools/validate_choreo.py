@@ -269,6 +269,52 @@ def choreo_errors(doc: object, skills: object) -> list[str]:
     errs += camera_errors(c.get("camera"), styles)
     if "placeholder_clips" in c:
         errs += placeholder_errors(c["placeholder_clips"])
+    if "impact" in c:
+        errs += impact_errors(c["impact"])
+    sp_ = c.get("spacing")
+    if sp_ is not None and (not isinstance(sp_, dict) or not _num(sp_.get("clearance_m")) or sp_["clearance_m"] < 0
+                            or not _num(sp_.get("footprint_k", 1.0)) or sp_.get("footprint_k", 1.0) <= 0):
+        errs.append(f"{CHOREO_FILE}: spacing needs clearance_m >= 0 and footprint_k > 0")
+    return errs
+
+
+def _pair(v: object, lo: float = 0.0) -> bool:
+    return isinstance(v, list) and len(v) == 2 and all(_num(x) and x >= lo for x in v) and v[0] <= v[1]
+
+
+def impact_errors(imp: object) -> list[str]:
+    """M3-BPR-401 BattleImpact: strengths in (0, 1], hit-stop 0-6 frames, a capped flash, reduced-motion scales."""
+    w = f"{CHOREO_FILE}: impact"
+    if not isinstance(imp, dict):
+        return [f"{w} must be an object"]
+    errs: list[str] = []
+    for k in ("full_frac", "stop_fps"):
+        if not _num(imp.get(k)) or imp[k] <= 0:
+            errs.append(f"{w}.{k} must be a number > 0")
+    for k in ("crit_bonus", "heavy_strength", "shake_min_strength"):
+        if not _num(imp.get(k)) or not 0 <= imp[k] <= 1:
+            errs.append(f"{w}.{k} must be a number in [0, 1]")
+    frames = imp.get("hit_stop_frames")
+    if not _pair(frames) or frames[1] > 6:
+        errs.append(f"{w}.hit_stop_frames must be [lo, hi] frames with 0 <= lo <= hi <= 6")
+    for k in ("shake_scale", "recoil_scale"):
+        if not _pair(imp.get(k)):
+            errs.append(f"{w}.{k} must be [lo, hi] with 0 <= lo <= hi")
+    fl = imp.get("flash")
+    if not isinstance(fl, dict) or not _pair(fl.get("energy")) or not _num(fl.get("energy_cap")) \
+            or fl["energy"][1] > fl["energy_cap"] or any(not _num(fl.get(k)) or fl[k] <= 0 for k in
+                                                         ("range_m", "height_frac", "sec")):
+        errs.append(f"{w}.flash needs energy [lo, hi] <= energy_cap, and range_m, height_frac, sec > 0")
+    elif not isinstance(fl.get("color"), str) or not fl["color"].startswith("#"):
+        errs.append(f"{w}.flash.color must be a #hex color")
+    sm = imp.get("ko_slowmo")
+    if not isinstance(sm, dict) or not _num(sm.get("factor")) or not 0 < sm["factor"] <= 1 \
+            or any(not _num(sm.get(k)) or sm[k] < 0 for k in ("lead_sec", "sec")):
+        errs.append(f"{w}.ko_slowmo needs factor in (0, 1] and lead_sec, sec >= 0")
+    rm = imp.get("reduced_motion")
+    if not isinstance(rm, dict) or any(not _num(rm.get(k)) or not 0 <= rm[k] <= 1 for k in
+                                       ("shake_scale", "flash_scale", "slowmo_factor")) or rm.get("slowmo_factor") == 0:
+        errs.append(f"{w}.reduced_motion needs shake_scale, flash_scale in [0, 1] and slowmo_factor in (0, 1]")
     return errs
 
 

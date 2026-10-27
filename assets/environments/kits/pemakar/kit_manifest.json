@@ -24,6 +24,17 @@
         "ash_plume-lod1": 434
       }
     },
+    "ash_plume_near": {
+      "budget": [
+        42000,
+        7000
+      ],
+      "bytes": 1449600,
+      "lods": {
+        "ash_plume_near": 40832,
+        "ash_plume_near-lod1": 6604
+      }
+    },
     "ashcrown_silhouette": {
       "budget": [
         6000,

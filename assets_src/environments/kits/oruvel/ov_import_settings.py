@@ -6,7 +6,8 @@
 
 Same values as assets_src/environments/kits/haluna/import_settings.py (imported read-only), plus the
 post-import script: the kit has its own import category (game/data/import/oruvel_kit.json), whose
-slot rule maps every slot to this kit's own materials.
+slot rule maps every slot to this kit's own materials. The storm grade LUT (lut_ch01_storm.png, M3-ENV-07B) keeps
+its hand-written 3D-texture import: this script never touches a `lut_*` file.
 """
 
 from __future__ import annotations
@@ -29,6 +30,8 @@ def main() -> int:
         print("no .import files yet: run `godot --headless --path . --import` first")
         return 1
     for f in files:
+        if f.name.startswith("lut_"):
+            continue  # a grade LUT is a Texture3D (its .import is written by hand), not a kit map
         if f.name.endswith(".png.import"):
             vals = dict(hs.PNG)
             vals.update(hs.NORMAL)  # no kit map may lose its B channel to RGTC

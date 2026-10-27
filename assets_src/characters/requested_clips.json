@@ -18,6 +18,7 @@
       "hold_lamp",
       "jump_gap",
       "laugh",
+      "lie_in_shallows",
       "lift_housing",
       "lift_name_board",
       "light_from_lantern",
@@ -70,7 +71,11 @@
       "touch_arm",
       "touch_forearm",
       "touch_shell",
-      "turn_on_raft"
+      "turn_on_raft",
+      "feed_fire",
+      "hands_half_raised",
+      "kneel_hum",
+      "turn_great_key"
     ],
     "toma": [
       "fold_cloth",
@@ -84,7 +89,11 @@
       "stack_bowls",
       "stop",
       "unroll_ink_kit",
-      "wipe_face"
+      "wipe_face",
+      "haul_rope",
+      "look_away",
+      "present_papers",
+      "strain_key"
     ],
     "ysolde": [
       "cap_ink",
@@ -104,7 +113,8 @@
       "shake_head",
       "stand_apart",
       "stand_watch_seaward",
-      "unsling_cleaver"
+      "unsling_cleaver",
+      "push_climber"
     ],
     "liss": [
       "collide",
@@ -112,7 +122,12 @@
       "flatten_sand",
       "hand_over",
       "set_in_hole",
-      "stand"
+      "stand",
+      "charcoal_rubbing",
+      "coil_rope",
+      "drive_pin",
+      "ease_key",
+      "haul_rope"
     ],
     "sefir": [
       "bow_from_barge"

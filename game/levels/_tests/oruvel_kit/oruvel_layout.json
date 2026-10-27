@@ -1039,6 +1039,32 @@
     7.0
    ],
    "fov": 37.8
+  },
+  "O17": {
+   "eye": [
+    40.0,
+    5.0,
+    -23.0
+   ],
+   "look": [
+    25.0,
+    1.4,
+    -3.0
+   ],
+   "fov": 46.4
+  },
+  "O22": {
+   "eye": [
+    108.0,
+    14.0,
+    96.0
+   ],
+   "look": [
+    108.0,
+    0.0,
+    60.0
+   ],
+   "fov": 53.1
   }
  },
  "anchors": {
@@ -1092,5 +1118,423 @@
    1.5,
    9.4
   ]
- }
+ },
+ "states": {
+  "storm": {
+   "_about": "M3-ENV-07B: the storm variant (C1-12 to C1-15). `hide` names the day's placements the storm replaces; `pieces` are placed in their stead (HalunaDresser format). Shown by OruvelPreview's phase ch01_storm.",
+   "hide": [
+    {
+     "piece": "net_pen",
+     "at": [
+      27.5,
+      -11.5
+     ],
+     "y": 0.0
+    },
+    {
+     "piece": "raft_deck",
+     "at": [
+      11.0,
+      -13.0
+     ],
+     "y": 0.0
+    },
+    {
+     "piece": "cabin_patched",
+     "at": [
+      8.672,
+      -12.521
+     ],
+     "y": 0.8
+    },
+    {
+     "piece": "lintel_gull_open",
+     "at": [
+      6.825,
+      -12.618
+     ],
+     "y": 3.92
+    },
+    {
+     "piece": "plank_bridge",
+     "at": [
+      1.002,
+      -12.58
+     ],
+     "y": 0.8
+    },
+    {
+     "piece": "plank_bridge",
+     "at": [
+      -26.732,
+      -13.625
+     ],
+     "y": 0.8
+    },
+    {
+     "piece": "hull_cabin",
+     "at": [
+      15.5,
+      6.5
+     ],
+     "y": 0.0
+    }
+   ],
+   "pieces": [
+    {
+     "piece": "net_pen_split_a",
+     "at": [
+      27.9,
+      -18.3
+     ],
+     "y": -0.1,
+     "yaw_deg": 5.0,
+     "tilt_deg": [
+      12.0,
+      -4.0
+     ]
+    },
+    {
+     "piece": "net_pen_split_b",
+     "at": [
+      20.7,
+      -5.0
+     ],
+     "y": -0.12,
+     "yaw_deg": -8.0,
+     "tilt_deg": [
+      -1.774,
+      5.0
+     ]
+    },
+    {
+     "piece": "net_pen_split_c",
+     "at": [
+      34.4,
+      -4.9
+     ],
+     "y": -0.14,
+     "yaw_deg": 9.0,
+     "tilt_deg": [
+      -7.165,
+      3.5
+     ]
+    },
+    {
+     "piece": "raft_deck_broken",
+     "at": [
+      11.0,
+      -13.0
+     ],
+     "y": 0.0,
+     "yaw_deg": 177.0
+    },
+    {
+     "piece": "plank_bridge_broken",
+     "at": [
+      1.002,
+      -12.58
+     ],
+     "y": 0.8,
+     "yaw_deg": 92.29
+    },
+    {
+     "piece": "plank_bridge_broken",
+     "at": [
+      -26.732,
+      -13.625
+     ],
+     "y": 0.8,
+     "yaw_deg": 83.77
+    },
+    {
+     "piece": "hull_capsized",
+     "at": [
+      16.5,
+      7.4
+     ],
+     "y": 0.0,
+     "yaw_deg": 8.0,
+     "materials": {
+      "ov_hull_paint": "ov_paint_ochre"
+     }
+    },
+    {
+     "piece": "storm_debris",
+     "at": [
+      5.0,
+      -6.0
+     ],
+     "y": 0.0,
+     "yaw_deg": 35.0
+    },
+    {
+     "piece": "storm_debris",
+     "at": [
+      19.5,
+      -1.5
+     ],
+     "y": 0.0,
+     "yaw_deg": -70.0
+    },
+    {
+     "piece": "storm_debris",
+     "at": [
+      -24.0,
+      -7.0
+     ],
+     "y": 0.0,
+     "yaw_deg": 150.0
+    },
+    {
+     "piece": "reef_edge_far",
+     "at": [
+      -40.0,
+      300.0
+     ],
+     "y": 0.0,
+     "yaw_deg": 6.0,
+     "lod1_from_m": 600.0
+    },
+    {
+     "piece": "reef_edge_far",
+     "at": [
+      190.0,
+      330.0
+     ],
+     "y": 0.0,
+     "yaw_deg": -14.0,
+     "lod1_from_m": 600.0
+    },
+    {
+     "piece": "reef_edge_far",
+     "at": [
+      -250.0,
+      320.0
+     ],
+     "y": 0.0,
+     "yaw_deg": 18.0,
+     "lod1_from_m": 600.0
+    },
+    {
+     "piece": "raft_deck_broken",
+     "at": [
+      70.0,
+      60.0
+     ],
+     "y": 0.0,
+     "yaw_deg": 0.0
+    },
+    {
+     "piece": "plank_bridge_broken",
+     "at": [
+      79.0,
+      57.0
+     ],
+     "y": 0.8,
+     "yaw_deg": 0.0
+    },
+    {
+     "piece": "hull_capsized",
+     "at": [
+      85.0,
+      60.0
+     ],
+     "y": 0.0,
+     "yaw_deg": 0.0
+    },
+    {
+     "piece": "storm_debris",
+     "at": [
+      96.0,
+      60.0
+     ],
+     "y": 0.0,
+     "yaw_deg": 0.0
+    },
+    {
+     "piece": "net_pen_split_a",
+     "at": [
+      112.0,
+      54.7
+     ],
+     "y": 0.0,
+     "yaw_deg": 0.0,
+     "tilt_deg": [
+      0.0,
+      -0.0
+     ]
+    },
+    {
+     "piece": "net_pen_split_b",
+     "at": [
+      106.7,
+      65.3
+     ],
+     "y": 0.0,
+     "yaw_deg": -0.0,
+     "tilt_deg": [
+      -0.0,
+      0.0
+     ]
+    },
+    {
+     "piece": "net_pen_split_c",
+     "at": [
+      117.3,
+      65.3
+     ],
+     "y": 0.0,
+     "yaw_deg": 0.0,
+     "tilt_deg": [
+      -0.0,
+      0.0
+     ]
+    },
+    {
+     "piece": "net_pen_split_a",
+     "at": [
+      130.4,
+      53.2
+     ],
+     "y": -0.1,
+     "yaw_deg": 5.0,
+     "tilt_deg": [
+      12.0,
+      -4.0
+     ]
+    },
+    {
+     "piece": "net_pen_split_b",
+     "at": [
+      123.2,
+      66.5
+     ],
+     "y": -0.12,
+     "yaw_deg": -8.0,
+     "tilt_deg": [
+      -1.774,
+      5.0
+     ]
+    },
+    {
+     "piece": "net_pen_split_c",
+     "at": [
+      136.9,
+      66.6
+     ],
+     "y": -0.14,
+     "yaw_deg": 9.0,
+     "tilt_deg": [
+      -7.165,
+      3.5
+     ]
+    }
+   ]
+  }
+ },
+ "rigs": {
+  "net_pen_split": {
+   "_about": "Hullgnaw's phase 2 (act1_ch01 section 5): amount a 0..1 (0 = the intact pen; the net_pen piece is hidden from a > 0), swell time t s. Each section: origin = hinge + a * drift; basis = Basis(UP, a * yaw_deg) * Basis.from_euler(a * (tilt_deg.x + swell), 0, a * tilt_deg.y), swell = pitch_deg * sin(TAU * t / period_s + phase). The state's pieces are the pose at a 1, t 0.",
+   "pen": {
+    "piece": "net_pen",
+    "at": [
+     27.5,
+     -11.5
+    ],
+    "y": 0.0
+   },
+   "sections": [
+    {
+     "piece": "net_pen_split_a",
+     "hinge": [
+      27.5,
+      0.0,
+      -16.8
+     ],
+     "open": {
+      "drift": [
+       0.4,
+       -0.1,
+       -1.5
+      ],
+      "yaw_deg": 5.0,
+      "tilt_deg": [
+       12.0,
+       -4.0
+      ]
+     },
+     "swell": {
+      "pitch_deg": 2.5,
+      "period_s": 5.5,
+      "phase": 0.0
+     }
+    },
+    {
+     "piece": "net_pen_split_b",
+     "hinge": [
+      22.2,
+      0.0,
+      -6.2
+     ],
+     "open": {
+      "drift": [
+       -1.5,
+       -0.12,
+       1.2
+      ],
+      "yaw_deg": -8.0,
+      "tilt_deg": [
+       -3.5,
+       5.0
+      ]
+     },
+     "swell": {
+      "pitch_deg": 2.0,
+      "period_s": 6.1,
+      "phase": 2.1
+     }
+    },
+    {
+     "piece": "net_pen_split_c",
+     "hinge": [
+      32.8,
+      0.0,
+      -6.2
+     ],
+     "open": {
+      "drift": [
+       1.6,
+       -0.14,
+       1.3
+      ],
+      "yaw_deg": 9.0,
+      "tilt_deg": [
+       -5.5,
+       3.5
+      ]
+     },
+     "swell": {
+      "pitch_deg": 2.2,
+      "period_s": 4.8,
+      "phase": 4.0
+     }
+    }
+   ]
+  }
+ },
+ "storm_lights": [
+  {
+   "id": "kell_beacon",
+   "at": [
+    -38.5,
+    5.102,
+    -15.8
+   ],
+   "color": "#FFB466",
+   "energy": 3.0,
+   "range_m": 9.0,
+   "flame_r_m": 0.07
+  }
+ ]
 }

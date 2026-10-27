@@ -3,7 +3,7 @@
   "layer": 32,
   "letterbox_ratio": 0.11,
   "letterbox_sec": 0.6,
-  "walk_mps": 1.3,
+  "walk_mps": 1.0,
   "run_mps": 3.2,
   "turn_sec": 0.45,
   "_motion_note": "M2-FP-29 (the human's playtest: turns snapped, walks started and stopped at once; game/cutscene/cutscene_motion.gd): a turn eases in and out on Godot's ease() curve turn_ease (negative = in-out) over turn_min_sec (no angle) up to turn_sec (a half turn); a walk waits walk_anticipation_sec, speeds up over walk_accel_sec and slows over walk_decel_sec (both shortened together on a short walk); every clip change cross-fades over clip_blend_sec; a stand-in clip mark is glided onto over standin_glide_sec.",
@@ -14,6 +14,28 @@
   "walk_decel_sec": 0.5,
   "clip_blend_sec": 0.25,
   "standin_glide_sec": 0.5,
+  "_ease_note": "M2-FP-102 (the human's playtest: abrupt fades): @fade and the letterbox ease in and out on Godot's ease() curve (negative = in-out) instead of a linear ramp.",
+  "fade_ease": -1.8,
+  "letterbox_ease": -2.0,
+  "light_ease": 2.2,
+  "_hold_note": "M2-FP-103 (the playtest: a kneeling Asha stood up for her first line): an @anim of one of hold_clips is a pose the actor holds (a hero body's play_clip hold) until its own next @anim or @mark, and its lines don't play the talk or idle clip over it. Any other @anim is a gesture, after which lines play talk and idle again.",
+  "hold_clips": ["kneel_over_rhen", "laugh", "offer_hand", "face_west", "sit_in_shallows", "sit_up", "sit_steps", "spear_level", "catch_rhen", "take_hand", "vigil_book_shut", "stand_apart", "kneel", "lie_in_shallows"],
+  "_stand_in_note": "M2-FP-103: clip_stand_ins maps '<actor>/<clip>' to a clip the rig has, played while the requested clip (assets_src/characters/requested_clips.json) is not built yet; the real clip plays as soon as the rig carries it. Rhen's beach clips stand in as his kneel (half risen in the shallows) and his rise.",
+  "camera_breath": {
+    "doc": "M2-FP-104: a landed scripted shot turns by a slow sum of sines (yaw_deg / pitch_deg amplitude, averaged over the periods), easing in over ramp_sec; a cut or blend resets it. Deterministic.",
+    "enabled": true,
+    "ramp_sec": 1.5,
+    "yaw_deg": 0.22,
+    "yaw_periods_sec": [7.3, 11.9],
+    "pitch_deg": 0.14,
+    "pitch_periods_sec": [9.1, 13.7]
+  },
+  "clip_stand_ins": {
+    "rhen/lie_in_shallows": "kneel_over_rhen",
+    "rhen/sit_up": "kneel_over_rhen",
+    "rhen/sit_in_shallows": "kneel_over_rhen",
+    "rhen/stand_unsteady": "rise_to_stand"
+  },
   "fade_color": "#05080B",
   "fade_back_sec": 0.8,
   "music_wait_fallback_sec": 4.0,
@@ -26,7 +48,10 @@
     "haluna_dawn": "hush_theme_sketch",
     "haluna_village": "hush_theme_sketch",
     "shell_shrine_interior": "temple_trial",
-    "hush_first_verse": "hush_theme_v2"
+    "hush_first_verse": "hush_theme_v2",
+    "corrow_day": "corrow_seawall",
+    "coilspire_flues": "temple_trial",
+    "undertow_reach": "undertows_reach_p1"
   },
   "choices": {
     "right_px": 200,

@@ -1,0 +1,21 @@
+// Ch8 B04, the end of the headland path (act1_ch08.md §2 B04; F02). At Coilspire's door the spire's
+// Tender looks at Liss's bare right arm, then at Toma's papers, and lets her in, tight-lipped. The
+// custom that let Liss go in Ch6 is now a rule at a temple door (pillar 2: the faith's mercy has a
+// shape). Music: corrow_day has thinned to wind; coilspire_flues comes up as the door opens. The chapter
+// flow sets ch08_entered_coilspire and puts the party inside at the hearth's tier.
+title: ch08_spire_door
+location: ch08/coilspire
+---
+@camera F02_door
+@music coilspire_flues fade=3.0
+@anim tender look_at liss
+@wait 1.2
+@anim tender look_at toma
+@anim toma present_papers
+@wait 1.0
+Tender [cold]: The Lady Cantor's guardians may attend her. #line:ch08_spire_door_001
+@sfx spire_door
+@mark asha door_asha walk
+@mark liss door_liss walk
+@wait 0.8
+===

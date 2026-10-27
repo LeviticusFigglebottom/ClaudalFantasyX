@@ -6,6 +6,7 @@ extends Node3D
 ## camera on heavy hits (the controller skips it under reduced motion).
 
 const CONFIG_PATH := "res://game/data/ui/battle_sandbox.json"
+const SETTING_SHAKE := &"screen_shake"  # M3-BPR-401: accessibility.json
 
 static var _config: Dictionary = {}
 
@@ -173,12 +174,12 @@ func battle_speed(fallback: float = 1.0) -> float:
 
 
 ## A short, decaying side-to-side camera nudge (deterministic: no randomness). `speed` is the
-## battle presentation speed (UiSettings.battle_speed, M2-UI-23).
-func shake(speed: float = 1.0) -> void:
+## battle presentation speed (UiSettings.battle_speed, M2-UI-23); `scale` sizes it (BattleImpact: by the blow).
+func shake(speed: float = 1.0, scale: float = 1.0) -> void:
 	if camera == null or not is_inside_tree():
 		return
 	var cfg: Dictionary = config().get("shake", {})
-	var amp := float(cfg.get("amplitude_m", 0.0))
+	var amp := float(cfg.get("amplitude_m", 0.0)) * scale * shake_setting()
 	var steps := maxi(int(cfg.get("steps", 1)), 1)
 	var step_sec := float(cfg.get("sec", 0.0)) / steps
 	if amp <= 0.0 or step_sec <= 0.0:
@@ -192,6 +193,17 @@ func shake(speed: float = 1.0) -> void:
 		var fade := 1.0 - float(i) / steps
 		_shake_tween.tween_property(camera, "h_offset", amp * side * fade, step_sec)
 	_shake_tween.tween_property(camera, "h_offset", 0.0, step_sec)
+
+
+## The player's screen-shake scale (M3-BPR-401): the screen_shake setting (1 full, 0.5 half, 0 off), and none under
+## reduced motion, whose help text promises no shake. 1 without settings (tests, tools).
+static func shake_setting() -> float:
+	var settings := UiSettings.shared()
+	if settings == null:
+		return 1.0
+	if settings.reduced_motion():
+		return 0.0
+	return float(settings.get_value(SETTING_SHAKE)) if settings.settings().has(SETTING_SHAKE) else 1.0
 
 
 ## Jumps every creature's phase change to its end (CreatureActor.settle; M2-CRE-08), for captures.

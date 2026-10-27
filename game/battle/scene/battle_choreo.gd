@@ -72,6 +72,8 @@ var vow: BattleVowboundChoreo
 var summon: BattleSummonCinematic
 ## A boss's set-piece motion (null without a boss row in choreo.json bosses; M2-BPR-04).
 var boss: BattleBossChoreo
+## M3-BPR-401: hit-stop, shake, flash and KO slow-mo on the contact (BattleImpact).
+var impact: BattleImpact
 
 var _ctl: BattleController
 var _engine: BattleEngine
@@ -94,6 +96,7 @@ var _entering: Dictionary = {}
 var _leaving: Array[Dictionary] = []
 ## Accents on fighters' roots: combatant id -> {t, spec, back, clip}.
 var _accents: Dictionary = {}
+var _radii: Dictionary = {}  # combatant id -> footprint radius (M3-BPR-402)
 
 
 static func load_data() -> Dictionary:
@@ -123,6 +126,7 @@ static func attached(controller: BattleController, engine: BattleEngine) -> Batt
 	c.vow = BattleVowboundChoreo.new(c, engine)  # M2-BPR-04: listen-only, like the sequencer
 	c.boss = BattleBossChoreo.attached_if_boss(c, engine)
 	c.summon = BattleSummonCinematic.attached(c, controller, engine)  # M2-BPR-08: C10
+	c.impact = BattleImpact.attached(c, controller, engine)  # M3-BPR-401: battle feel
 	BattleBossIntro.attached(c, controller, engine)  # M3-BPR-02: a boss's intro at the first turn
 	return c
 
@@ -164,6 +168,31 @@ func _process(delta: float) -> void:
 		advance(delta)
 
 
+## [[home position, radius], ...] of every fighter on the field but `skip` (melee spacing, M3-BPR-402).
+func _bodies(skip: StringName) -> Array:
+	var out: Array = []
+	for c: BattleCombatant in _engine.party_active + _engine.enemies:
+		if c.id != skip and c.is_alive() and _ctl.stage.stand_in(c.id) != null:
+			out.append([_home_of(c.id).origin, _radius(c.id)])
+	return out
+
+
+func _target_bodies(ids: Array[StringName]) -> Array:
+	var out: Array = []
+	for cid in ids:
+		if _ctl.stage.stand_in(cid) != null:
+			out.append([_home_of(cid).origin, _radius(cid)])
+	return out
+
+
+## A fighter's footprint: its model's (BattleChoreoPlan.footprint, cached), else its stand-in spec radius.
+func _radius(cid: StringName) -> float:
+	if not _radii.has(cid):
+		var r := BattleChoreoPlan.footprint(_ctl.stage.stand_in(cid), data)
+		_radii[cid] = r if r > 0.0 else float(BattleStage.stand_in_spec(cid).get("radius", 0.0))
+	return float(_radii[cid])
+
+
 ## True when actions play as choreography (not instant).
 func animating() -> bool:
 	return force_play or (not skip and _ctl != null and _ctl.pacing_scale > 0.0)
@@ -192,7 +221,8 @@ func plan_time() -> float:
 func remaining_sec() -> float:
 	if _plan.is_empty():
 		return 0.0
-	return maxf(float(_plan["total"]) - _t, 0.0) / speed
+	var extra := impact.extra_sec(_plan, _t) if impact != null else 0.0  # hit-stop and slow-mo time
+	return maxf(float(_plan["total"]) - _t, 0.0) / speed + extra
 
 
 ## How long the controller holds after an action: `base`, or the choreography's rest plus a settle (an entrance,
@@ -291,6 +321,8 @@ func _start(result: ActionResult, plan: Dictionary) -> void:
 	_plan = plan
 	_t = 0.0
 	_fired = {}
+	if impact != null:
+		impact.on_plan(plan)
 	var actor_id := StringName(str(plan["actor"]))
 	var from := _home_of(actor_id).origin
 	var targets: Array[StringName] = []
@@ -303,8 +335,12 @@ func _start(result: ActionResult, plan: Dictionary) -> void:
 	var to := from
 	match str(st.get("travel", "")):
 		TRAVEL_TARGET:
-			var gap := maxf(_flat_len(aim - from) - float(st.get("stop_short_m", 0.0)), 0.0)
-			to = from + dir * gap
+			var run := BattleChoreoPlan.melee_approach(
+				data, st, from, aim, _bodies(actor_id), _target_bodies(targets), _radius(actor_id)
+			)
+			if run["dir"] != Vector3.ZERO:
+				dir = run["dir"]  # M3-BPR-402: it may come at the target from a little to one side
+			to = from + dir * float(run["gap"])
 		TRAVEL_STEP:
 			to = from + dir * float(st.get("step_m", 0.0))
 	to = from + (to - from) * (_rm("travel_scale") if reduced_motion else 1.0) * arena_travel
@@ -345,7 +381,7 @@ func advance(delta: float) -> void:
 	_advance_entering(delta)
 	if _plan.is_empty():
 		return
-	_t += delta * speed
+	_t += (impact.warp(delta, _t) if impact != null else delta) * speed
 	_step_beats()
 	if _plan.is_empty():
 		return
@@ -360,6 +396,8 @@ func seek(t: float) -> void:
 		return
 	_t = clampf(t, 0.0, float(_plan["total"]))
 	_step_beats()
+	if impact != null:
+		impact.finish()  # a freeze-frame jump carries no hit-stop
 	_apply()
 
 
@@ -379,6 +417,8 @@ func finish() -> void:
 		_ctl.hud.timeline.set_head_caption("")
 	_plan = {}
 	_result = null
+	if impact != null:
+		impact.finish()
 	sequence_finished.emit(actor_id)
 	var pending := _after
 	_after = []
@@ -561,9 +601,12 @@ func _reaction_pose(r: Dictionary) -> Array:
 	var def := (data.get("reaction", {}) as Dictionary).get(r["kind"], {}) as Dictionary
 	var sec := float(def.get("sec", 0.0))
 	var c := float(r.get("at", _plan["contact"]))
-	if bool(r["clip"]) or _t < c or sec <= 0.0:
+	var clip_k := float(def.get("clip_recoil_k", 0.0)) if str(r["kind"]) == REACT_DAMAGE else 0.0
+	if (bool(r["clip"]) and clip_k <= 0.0) or _t < c or sec <= 0.0:
 		return [Vector3.ZERO, away, 0.0]
-	var w := sin(PI * clampf((_t - c) / sec, 0.0, 1.0))
+	var w := sin(PI * clampf((_t - c) / sec, 0.0, 1.0)) * float(r.get("weight", 1.0))  # M3-BPR-401
+	if bool(r["clip"]):
+		w *= clip_k  # its own hit clip plays in place: a smaller root push under it
 	var tilt_k := _rm("tilt_scale") if reduced_motion else 1.0
 	match str(r["kind"]):
 		REACT_DAMAGE:

@@ -1,5 +1,139 @@
 # Live log: audio (branch `claude/audio`)
 
+## NEW ACCOUNT (from 2026-10-25)
+Session `session_01Wmj8xaLtwcqiS3qwC6PciW`. Integration branch `claude/undertow-lead-handoff-ze8rrn`. Newest first.
+
+- **MERGE-READY @ 4587af3e (FAST-TRACK: M3-AUD-814):** villagers' chat turns and work, gulls, crabs and fish
+  (LifeAudio, 44 synthesized one-shots, 0.6 MiB). The hooks are `pending` until claude/creatures merges (FieldNpc,
+  WildlifeLayer); when it does, drop the two `pending` flags in life.json. M3-AUD-815 asks creatures for
+  `chat_speaking()` and `startled()`; LifeAudio reads the private fields until then (read only). Integration
+  re-merged (only the Lead's log changed).
+  - Checks run: `--filter=audio` 134/0 (including test_life_audio 9/0), validate_data 0/0, test_audio_data OK,
+    `render_all --determinism --only life_sfx` identical, taskboard --check, gdlint, gdformat. **Smoke test against
+    the real classes** (scratch worktree with claude/creatures merged, pending off): validate_data 0/0, and in 60 s
+    of creatures' npc and wildlife stages 8 gull calls, 4 takeoffs, 5 crab scuttles, 6 fish darts and 14
+    net-mending sounds. The stage has no chat pairs, so murmurs are covered only by the unit tests.
+  - Checks skipped: full suite (last clean at f8298577; since then new files plus a few lines in the director),
+    screenshots, Blender, coverage (none touched).
+- **Next:** item 4, impact SFX tiers on battle-presentation's `BattleImpact.landed` / `slowmo_planned`.
+- **MERGE-READY @ f8298577:** everything since 261a827d: M3-AUD-812 (FAST-TRACK footsteps), M3-AUD-813 (menu hooks)
+  and **M3-AUD-805, Act II sketches II** (six cues: Ansedra, the Lamp Archive, the Peace Wedding, Unlamped, the Pale
+  Rim, the Drowned Choir; −16.0 LUFS, TP ≤ −1.4; 3.4 MiB, ADR 0170 budget kept; the wip/ folder is gone).
+  - Checks run: **full Godot suite on f8298577: 2367 run, 0 real failures.** test_scene_router_swap failed only
+    because that run had no `godot` on PATH (probe exit 127); re-run with PATH set it passed 15/0. Also the loudness
+    test OK, `render_all --determinism` identical for all six, `--filter=audio` 125/0, validate_data 0/0,
+    test_audio_data OK, taskboard --check, gdlint and gdformat.
+  - Checks skipped: screenshots (no scene or shader), Blender (none), coverage (no battle/progression code).
+  - Gotcha: a first render writes no `.import`, so the loop flags are synced after the first import
+    (`render_all._sync_import`), then imported again. Done here; the .import files are committed.
+- **MERGE-READY @ f5f10d7e (FAST-TRACK: M3-AUD-812):** M3-AUD-812, footsteps change surface in every slice zone
+  with no level edits: Haluna's sand, the dock's wood (the `dock_haluna` mesh), the shallows' water (feet under the
+  sea's rest plane); the causeway's stone and tidepool; the shrine's stone and pools. Also M3-AUD-813, the menu hooks
+  after the merge: FormationMenu live, the Key Items tab, refusals through M2-AUD-15's reads; test_battle_ko_once
+  lifts wickfry's new model for its primitive case. Integration merged at 261a827d (two task-file conflicts,
+  resolved).
+  - Checks run: full Godot suite on 261a827d (2355 run, 7 failed: 4 from the uncommitted M3-AUD-805 patch, rendering
+    mid-run, and 3 real merge fallout, fixed in M3-AUD-813). Then filtered `footstep` 16/0, `footsteps_slice` 4/0,
+    `field_audio` 19/0, `ko_once` 5/0; loudness test OK; validate_data, taskboard --check, gdlint and gdformat
+    clean on the committed tree.
+  - Checks skipped: screenshots (no scene or shader touched), Blender (none), coverage (no battle/progression code).
+  - Verified against claude/hero-integration's real `HeroFieldActor.foot_contact(foot, run)`: the body is the
+    controller's `HeroBody` child, as footsteps.json expects. test_footsteps_slice_zones walks it once that merges.
+## STATE AT HANDOVER (2026-10-25)
+
+**HANDOVER DONE @ 20ee527f** (claude/audio pushed; nothing un-pushed; no worktree holds unsaved work).
+
+Written for a fresh Lead with no prior context. The branch is **claude/audio**, at ca22f8ae when this was written. The
+integration branch is `claude/undertow-lead-handoff-423ixt` (last merged into claude/audio at 2a699ddb).
+
+## Done and merge-ready
+- **Last full gate:** MERGE-READY @ 2a699ddb, with the full Godot suite at 2006 run, 0 failed, and the loudness test
+  OK. It covers everything through M2-AUD-17, M3-AUD-800 and M3-AUD-801.
+- **Merged after that, scoped checks only:**
+  - M3-AUD-803, KO-once (verified on a scratch merge with claude/battle-presentation).
+  - M3-AUD-802, hero footsteps and foley (84 files), plus the stride and run-flag follow-ups.
+  - M3-AUD-804, Act II sketches I (six cues).
+  - ADR 0170 (the audio budget is 56 MiB).
+  - The checks run on these were validate_data (0 errors), test_audio_data, gdlint, gdformat, Godot
+    `--filter=audio` (114/0) and `--filter=footstep`.
+  - **Before merging this branch, run the full Godot suite and the loudness test once.**
+- **Review queue (41 audio tasks, all `review`, reviewer qa):** `python3 tools/taskboard.py --role audio`. In short:
+  - all of M2's audio: the runtime (ADR 0031), the slice cues, battle and field SFX, the mix, reverb and the causeway;
+  - Act I music: every chapter, zone, temple and boss theme, including the Stillguard;
+  - the M3 SFX sets: choreography, creatures, menus, stings, Reefball and the zone beds;
+  - syllable blips, the sphere muffle, the mix pass and the voices;
+  - the live hooks (M2-AUD-17, M3-AUD-800, M3-AUD-801);
+  - hero footsteps (M3-AUD-802), KO-once (M3-AUD-803) and the Act II sketches I (M3-AUD-804).
+
+## In progress
+- **M3-AUD-805, Act II sketches II** (Ansedra, the Lamp Archive, the Peace Wedding, Unlamped, the Pale Rim, the Drowned
+  Choir). The sources are committed as WIP; nothing is wired or rendered on the branch. The exact steps are in
+  `docs/kb/audio/wip/README.md` (apply the patch, render, import, run the checks).
+
+## Exact next steps, in order
+1. **Finish M3-AUD-805** with docs/kb/audio/wip/README.md.
+2. **Merge the integration branch,** run the full suite and the loudness test, then post MERGE-READY.
+3. **Switch on the pending hooks as their targets merge.** A `"pending": true` row means its target isn't on
+   claude/audio yet. When it lands, drop the flag; validate_data then checks the real names. Run the filtered tests.
+   - **claude/hero-integration and claude/characters:** footsteps take `HeroBody.foot_contact(foot, run)` (confirmed
+     by hero-integration, M3-AUD-810). Walk Rhen in Haluna and check `FootstepAudio.contact_source` is `signal`.
+     Tune `foley.cloth_db` and `gear_db` in footsteps.json by ear.
+   - **claude/battle-presentation:** `battle_stinger` and `boss_intro` are emitted only there. audio needs no change;
+     test_battle_audio_live.gd already allows both orders.
+   - **claude/m2-slice:** the zone beds (ambience.json, six `pending` zones), 17 voices (voices.json `pending`), and
+     the zone and encounter rows for the Act I cues (each cue's `_note` in music.json names its scene or encounter).
+   - **claude/menus:** FormationMenu (ui_sfx.json). Also requests M2-AUD-15 (public reads for refusals) and M2-AUD-16
+     (the BattlePause leak).
+   - **The Reefball minigame:** ReefballMatch, ReefballBall and ReefballGoal are guessed names in reefball_hooks.json;
+     rename them to the real classes.
+   - **The level owners (M3-AUD-811):** surface areas for wood and water steps.
+4. **Re-run the mix report** after each batch: `python3 tools/audio/mix_report.py --out docs/kb/audio/mix_report.md`.
+5. **Then:** more Act II, and Act III planning.
+
+## The human's listening verdict: pending
+Nothing has been heard by the human. Every check is a measurement. `docs/kb/audio/listening_notes.md` lists what to
+listen for in each cue and set (M2 and M3 sections). The most important to hear are:
+- the slice cues;
+- the blip level (voices.json `mix_db` +6, M3-AUD-23);
+- the Tamsule Bell bed's loop point (a possible tick);
+- the Act II sketches' instrument voices.
+When the verdict comes, revise the source (never the .ogg) and re-render with `--determinism`.
+
+## Known bugs and open requests
+- Requests out to other roles: M2-AUD-07, M2-AUD-08, M2-AUD-09, M2-AUD-12, M3-ARC-01, M2-AUD-15, M2-AUD-16, M3-AUD-810
+  and M3-AUD-811.
+- The menus' own tests leak about 250 GDScript resources at exit, and the battle scene keeps two menu scripts
+  (M2-AUD-16: `BattlePause._ready` never frees the menu it builds to read the layout). This is not audio's, and it
+  isn't a test failure.
+- `test_scene_router_swap` (the boot frame) is sensitive to CPU load. It fails only when renders run alongside it;
+  it passes on a quiet machine. It is not audio's.
+- The repo-size question: shipped audio is 47.1 MiB of the 56 MiB budget (ADR 0170). The full game needs a storage
+  plan (Git LFS, ADR 0005) before Act III's cues.
+
+## Gotchas (hard-won)
+- **Loops:** .import files must have `beat_count=0` (Godot 4.6 counts beats from the file start).
+  `render_all._sync_import` writes them; re-run the import after a render. The seam gate is under 3x spectral flux:
+  start a sixteenth before the downbeat (`downbeat_offset_s`).
+- **Balance from measurement only:** render, read `LoopMixer.bus_lufs`, set gains, re-render. The piano model is
+  about 31 dB below the breath flute, and the flute speaks 50–80 ms late (FLUTE_PRE 0.065).
+- **Mono files** measure as mono: ffmpeg's upmix adds −3 dB.
+- **Hooks by name, never class_name stubs.** Stubs would collide on merge. Listeners never write game state
+  (ADR 0031).
+- **Tests must not leave real playbacks.** The headless driver keeps them past the end of the run ("resources still
+  in use"), and the game's own Audio autoload hears every node a test adds. Record through the listeners' player
+  Callables, or name stand-ins (the `audio_class` meta) after add_child.
+- **Zone music loads on a worker thread.** Tests call `dir.flush_pending()` after apply_zone. A big7 merge once
+  dropped that line.
+- **Append-only files:** PROVENANCE.md and the string tables merge with `tools/dev/merge_union.py`, and PROVENANCE
+  rows go in their own commit. Agents' render_all.py edits sometimes glue a comment onto the previous line; check
+  the JOBS list after a merge.
+- **Id blocks:** new audio tasks are 800–899, ADRs 0170–0179, and handoffs are named
+  `<date>-audio-audio-<n>.md`.
+- **Never kill processes by pattern.** Give each run its own XDG_DATA_HOME and scratch folder.
+- The Lead's session sometimes refuses cross-session messages ("needs a trusted device"). The live log is the
+  channel that always works.
+
+
 Environment: cloud session `session_01FtDSYm5dJHkdC3RqXsDjif`, branch `claude/audio` (from the integration branch
 `claude/undertow-lead-handoff-423ixt` at 1023a25). Role: Audio. The Lead reads this file; newest state first.
 
@@ -58,6 +192,19 @@ Your queue of five is taken:
 ## Id rule (the Lead's CONSOLIDATED §4, "id blocks")
 New audio task ids are 800–899 (M3-AUD-800…), new ADRs 0170–0179, and handoffs are named
 `<date>-audio-audio-<n>.md`. Existing ids stay as they are. The Lead's menu-pages task is M2-AUD-17.
+
+## Queue check (2026-10-24, the Lead's latest)
+- **Items 1–5 are done and merged on claude/audio:**
+  - M2-AUD-14 and M2-AUD-17, the menu-page sounds, live on the real classes.
+  - Act I music: Ch1, Ch4–Ch9 and the bosses, with Ashcrown, Coilspire, the Bell galleries and the Stillguard
+    (M3-AUD-19/20).
+  - M3-AUD-21, syllable blips on the reveal's pauses.
+  - The Reefball soundscape: M3-AUD-17 and M3-AUD-22, with the sphere live (M3-AUD-801).
+  - M3-AUD-23, the mix pass.
+- **New, now doing:**
+  - M3-AUD-802, hero footsteps and foley (worktree agent; coordinating via hero-integration's live log).
+  - M3-AUD-803, KO-once (me).
+  - M3-AUD-804 and M3-AUD-805, Act II music sketches (worktree agents).
 
 ## MERGE-READY @ 2a699ddb
 - **Items (all `review`):**

@@ -106,6 +106,20 @@
       "spawn": "Entry",
       "name_key": "LOCATION_CH06_BRINE_SHOALS",
       "_note": "M3-C06-02: the Brine Shoals (Ch6 B01-B10): the wreck-ridges and mud-flats, the burning Saltwright camp, the shoal channel and the ridge camp; a greybox zone (Ch06Zone). Ch5's dawn hands off here at Entry; B10 hands off to ch07/tamsule at RiverMouth."
+    },
+    {
+      "id": "ch08/corrow",
+      "scene": "res://game/levels/ch08/corrow/corrow.tscn",
+      "spawn": "Mole",
+      "name_key": "LOCATION_CH08_CORROW",
+      "_note": "M3-C08-02: Corrow and its seawall (Ch8 B01-B02, B04's gate, B08-B18): the harbour mole, the wall-head and the Watchers, the Fisher Stair, the low town and the Bastion, by day, in the storm and after it; a greybox zone (Ch08Zone). Ch7's leave beat hands off here at Mole; the set piece's fights return to WallHead; B18 hands off to ch09/corrow_night at Strand."
+    },
+    {
+      "id": "ch08/coilspire",
+      "scene": "res://game/levels/ch08/coilspire/coilspire.tscn",
+      "spawn": "PathFoot",
+      "name_key": "LOCATION_CH08_COILSPIRE",
+      "_note": "M3-C08-02: the headland path, the keeper's hut and Coilspire, the fire temple (Ch8 B03-B07): the flue trial, the crown chamber and the beacon gallery; a greybox zone (Ch08CoilspireZone). Corrow's wall-gate hands off here at PathFoot; the beacon's opening hands back to ch08/corrow at WallGate."
     }
   ],
   "shrines": [

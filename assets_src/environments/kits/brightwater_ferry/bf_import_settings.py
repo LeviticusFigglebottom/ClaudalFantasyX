@@ -6,7 +6,8 @@
 
 Same values as assets_src/environments/kits/haluna/import_settings.py (imported read-only), plus the
 post-import script: the kit has its own import category (game/data/import/brightwater_ferry_kit.json), whose
-slot rule maps every slot to this kit's own materials.
+slot rule maps every slot to this kit's own materials. Only 2D texture imports get the PNG settings: the grade
+LUT (lut_ch04_crossing.png) is a 3D-texture import and is left alone (M3-ENV-700).
 """
 
 from __future__ import annotations
@@ -30,6 +31,8 @@ def main() -> int:
         return 1
     for f in files:
         if f.name.endswith(".png.import"):
+            if 'importer="texture"' not in f.read_text():
+                continue  # the grade LUT is a 3D-texture import (lut_ch04_crossing): never give it 2D settings
             vals = dict(hs.PNG)
             vals.update(hs.NORMAL)  # no kit map may lose its B channel to RGTC
         elif f.name.endswith(".glb.import"):

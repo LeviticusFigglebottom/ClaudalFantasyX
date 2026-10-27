@@ -60,6 +60,15 @@
     "at": {"type": "id"}
    }
   },
+  "light": {
+   "doc": "M2-FP-102: turn a practical light on the stage (a Light3D found by node name, e.g. Rhen's LanternLight) on or off, easing its energy over sec (0 or none = at once). On restores the energy it was authored with.",
+   "args": [
+    {"name": "light", "type": "id"},
+    {"name": "state", "type": "enum", "values": ["on", "off"]},
+    {"name": "sec", "type": "number", "min": 0, "optional": true}
+   ],
+   "kwargs": {}
+  },
   "vfx": {
    "doc": "Trigger a VFX. Glimmer light rules: glimmer_lift rises (motion=spiral_up), glimmer_held sinks (drift=down_seaward), glimmer_bound is still.",
    "args": [{"name": "effect", "type": "enum", "set": "vfx_effects"}],

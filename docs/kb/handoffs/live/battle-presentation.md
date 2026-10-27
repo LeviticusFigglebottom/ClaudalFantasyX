@@ -4,6 +4,121 @@
 
 The gap (the human's playtest note): battles had no action animation. This track adds a listen-only presentation layer: choreography, a clip contract, a camera director, the specials, the intro and outro. Docs: `docs/kb/tech/battle_presentation.md`.
 
+## NEW ACCOUNT (from 2026-10-25)
+Session `session_015hKkhtpX67kS4yZeA8AAhv`. Integration branch `claude/undertow-lead-handoff-ze8rrn` merged in
+(c6a960ab).
+
+**FAST-TRACK MERGE-READY @ 4e89c967: M3-BPR-404 boss-intro framing (the human's "Hullgnaw framed too close").**
+- **Cherry-pick exactly these two commits, in order:** `269054a3 4e89c967`. They touch only
+  battle_boss_intro.gd, choreo.json (boss_intro), test_battle_boss_intro.gd, the 404 task file, one doc section and
+  the six baselines. Verified: the pair cherry-picks cleanly onto `-ze8rrn` c6a960ab, and `--filter=boss_intro`
+  gives 17 run, 0 failed there.
+- **What changed:** the camera fits the boss model's bounds, and the feet must clear the title card. The search
+  aims lower first, then widens. The Inquisitor's fit_margin 1.6 is gone, because it sank his capsule behind the
+  card.
+- **Shots that move (all six viewed and re-approved, captured on integration + 404 only):**
+  battle_boss_intro_hullgnaw (rmse 0.253), battle_boss_intro_matron (0.109), battle_boss_intro_drownbell (0.104),
+  battle_boss_intro_inquisitor (0.053), battle_boss_intro_hermit (0.039), battle_boss_intro_wraith (0.039).
+- **Checks run:** gdlint, gdformat, validate_data 0/0, taskboard --check, `--filter=boss_intro` 17/0, and the six
+  shots captured and compared.
+- **Checks skipped:** the full manifest (only boss-intro shots can move), Blender (none touched), coverage (no
+  battle-core change).
+
+**MERGE-READY @ a9f8d67b: M3-BPR-401 battle feel + M3-BPR-402 melee spacing** (with M2-BPR-11 follow-ups e03f04ba,
+d5d4edfd and the test fix 9369e8c0). Merge the branch head; it includes 404, the integration branch -ze8rrn 492651da
+is merged in, and big10's bpr pick a3e489bb is an ancestor.
+- **New since the handover:**
+  - c3b01d7f/e5a1d3e6: a **Screen shake setting** (Full / Half / Off; accessibility.json row `screen_shake`,
+    loc SET_SCREEN_SHAKE*). Reduced motion now drops every battle shake, BattleFloats' too.
+  - The audio hooks: BattleImpact `landed(target, strength, stop_sec)` and `slowmo_planned`. Request
+    **M3-BPR-405** (role audio) asks for an impact weight layer and a KO swell on them.
+  - A 402 fix (the melee_approach commit): a body *beside* the path turns the run instead of stopping it short.
+    Rhen had struck the air 2.9 m from the reef crab, because the gull harrier's wing footprint blocked the path.
+  - 9369e8c0: test_battle_ko_once takes the wickfry's new model away for its primitive case. **It fails on -ze8rrn
+    and big10 as well**, because the wickfry gained a model; cherry-pick 9369e8c0 if needed.
+- **Shots that move (viewed, re-approved):**
+  - battle_choreo_melee (rmse 0.069): Rhen no longer inside the gull harrier.
+  - battle_choreo_hit (0.091): Rhen meets the crab, with the flash and the scaled recoil.
+  - battle_choreo_ko (0.034): the impact flash under the falling harrier.
+  - battle_choreo_toll (0.062): Ysolde's heavier recoil at 13 HP.
+  - Every other battle_*, arena and drownbell shot passes (43 + 12 compared). The boss intros are 404's six.
+- **Checks run:** Godot `--filter=battle` 634 run, 0 failed; gdlint, gdformat, validate_data 0/0, taskboard --check.
+- **Checks skipped:** the full manifest (only battle shots can move), Blender (none touched), and tools tests (no
+  tools change).
+- **Coverage:** not run. game/battle core is untouched; every change is under game/battle/scene.
+
+**In progress:** M3-BPR-403, the opening line-up spaced by footprint (BattleLineup), on a local worktree. Its tests
+pass (lineup 4/0; it fails with the spread off), and the battle filter gives 638/0. It moves every sandbox_reef shot,
+so a full battle-shot capture comes next.
+
+## STATE AT HANDOVER (2026-10-25)
+
+**HANDOVER DONE @ e4b36a0d.**
+
+**Branch:** `claude/battle-presentation` @ 269054a3 (plus this docs commit). Integration branch
+`claude/undertow-lead-handoff-423ixt` merged in up to big8 (6c6e5514). No subagents or worktrees running; nothing
+un-pushed.
+
+### Already on the integration branch
+- M2-BPR-01..10 (big7/big8) and the KO fix M2-BPR-11 (fast-tracked at be807afe; the Lead dropped its `c.yielded`
+  clause there; this branch keeps it).
+
+### Merge-ready on this branch (not yet merged)
+- **M2-BPR-11 follow-ups** (e03f04ba, d5d4edfd): hero-integration's review (the tests take the clip path for real
+  heroes, no KO sink for a model with a ko clip, staggered victory clips) and the optional `revive` clip.
+  M2-BPR-10 is done (characters approved). Battle tests were green (550/0) at d5d4edfd.
+
+### In progress (code pushed, gate not finished)
+- **M3-BPR-401 battle feel** (c2598a43): BattleImpact: hit-stop, shake by damage, impact flash, recoil by damage,
+  KO slow-mo; choreo.json `impact`; validator `impact_errors`; tests `test_battle_impact` (12/0).
+- **M3-BPR-402 melee spacing** (c2598a43, 6ba9bd5d): BattleChoreoPlan.melee_gap and footprint (from the real
+  models); overlap test. Battle tests 603/0 at 6ba9bd5d.
+- **M3-BPR-404 boss-intro framing** (269054a3, WIP): the Lead's Hullgnaw bug. The camera fits the boss's model
+  bounds (choreo.json `boss_intro.fit`, row `fit_margin`). boss_intro tests 14/0. Viewed and good: Hullgnaw,
+  Matron, Hermit (min_m 2.2), Wraith, Drownbell. **The Inquisitor with fit_margin 1.6 is captured but not viewed.**
+  There's no task file yet; write `docs/kb/tasks/M3/M3-BPR-404-boss-intro-fit.md`.
+- **Screenshot baselines are NOT re-approved** for any of the above. 401/402 move the battle_choreo_* contact
+  frames (the flash, the scaled recoil, shorter runs) and probably arena and other battle shots; 404 moves all six
+  battle_boss_intro_*.
+
+### Exact next steps
+1. Merge the integration branch again. Then `python3 tools/validate_data.py`, gdlint/gdformat, and
+   `godot --headless --path . res://tests/run_tests.tscn -- --filter=battle` (expect 0 failed).
+2. Capture every `battle_*` and `drownbell_*` shot, with your own TMPDIR/XDG_DATA_HOME. It's about 80 minutes on
+   lavapipe now that the final arenas are heavy, so split it into batches.
+   Run `tools/screenshots/capture.sh --shots <ids> --out <dir>`, then `compare.py --out <dir> --shots <ids>`.
+   View every FAIL side by side. Approve only the intended changes: the flash, the recoil, the spacing, the boss
+   framing, and env-art's final arenas. Use `compare.py --out <dir> --update-baselines <ids>`.
+3. View battle_boss_intro_inquisitor (fit_margin 1.6). Tune it if the capsule still crowds the card.
+4. Then write MERGE-READY in this log for 401/402/404, with checks and shas.
+5. Next queue: M3-BPR-403, which spaces the line-up slots by real footprints (BattleStage). Real creature models
+   overlap on their marks (the reef crab and gull harrier in sandbox_reef). Re-check the camera safe frames after it.
+6. Bring in hero-integration's real heroes (claude/hero-integration, M2-HER-1103) when the Lead merges them. View a
+   melee freeze-frame per hero, and check the footprints read.
+
+### Open questions / requests out
+- **M3-CHR-01** (characters): 32 Asha/Toma clips that the Act I dialogue calls. `test_hero_clips` fails on any
+  branch with m2-slice + big7 until it's done.
+- **M3-AUD-13** (audio): placeholder voice rows for 23 speakers.
+- creatures: `creature_actor.gd` got two of our fixes (set_frozen idempotent; the KO fade hides a foe). Please
+  review them.
+- audio: `audio_director.gd:486` loop var Object→Variant (freed keys in multi-shot captures).
+- env-art: their "owner inconsistent" warning was not reproduced here. Ask for the exact log line.
+
+### Known bugs / gotchas
+- `battle_choreo.gd` is 967/1000 lines (gdlint cap). New logic goes in helpers: BattleChoreoPlan (static),
+  BattleImpact, BattleOutro and the like.
+- `battle_controller.gd` is 995/1000. Edit in place only.
+- `BattleChoreo._flat()` NORMALISES the vector. Use `_flat_len` or zero `.y` yourself for distances.
+- A seek (freeze-frame) clears any hit-stop. The impact flash follows the choreography clock when `live` is false,
+  which keeps captures deterministic.
+- The KO path must stay idempotent. BattleStage.refresh_ko re-applies stone and KO to every fighter after every
+  action.
+- The tools tests take about 19 minutes under plain unittest (audio loudness, rig integrity). Use
+  `python3 tools/run_tool_tests.py -j 4`.
+- `capture.sh` logs to `$TMPDIR/hymn_capture.log`. Always set TMPDIR to your own scratch folder.
+- Never kill processes by pattern, and never with a pattern that also matches your own shell.
+
 ## Queue (tasks M2-BPR-01..08, role combat; all built, all `review`, reviewer lead)
 | Task | State |
 |---|---|

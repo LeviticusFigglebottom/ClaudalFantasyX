@@ -120,6 +120,17 @@ MATERIALS: dict[str, dict] = {
     "ov_clay": weather(*CONCRETE, (0.6, 0.6), base_triplanar=True, col_paint=hexc("#A8573A"), paint_cover=0.86,
                        normal_strength=0.6, roughness_base=0.82, cavity_darken=0.3, variation_value=0.14,
                        use_salt=False, **DRY),
+    # M3-ENV-07B, the storm's far reef (reef_edge_far): the bared reef flat, bleached coral rubble going dark where it
+    # is still wet (VC.B), weed and barnacles at the live water.
+    "ov_reef": weather(*CONCRETE, (2.0, 2.0), base_triplanar=True, col_paint=hexc("#B4AA98"), paint_cover=0.85,
+                       normal_strength=0.9, roughness_base=0.7, specular_base=0.4, cavity_darken=0.45,
+                       erosion_pit_darken=0.35, variation_value=0.18, wet_darken=0.6, wet_roughness=0.12,
+                       use_salt=False),
+    # The drowned towers' crowns standing clear: Lit Age concrete under a coral crust, weed-dark to the old waterline.
+    "ov_crown": weather(*CONCRETE, (1.5, 1.5), base_triplanar=True, col_paint=hexc("#A8A699"), paint_cover=0.8,
+                        normal_strength=0.8, roughness_base=0.75, specular_base=0.35, cavity_darken=0.5,
+                        erosion_pit_darken=0.4, variation_value=0.14, wet_darken=0.6, wet_roughness=0.12,
+                        use_salt=False),
 }
 
 STANDARD: dict[str, dict] = {

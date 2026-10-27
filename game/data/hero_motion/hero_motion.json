@@ -113,7 +113,7 @@
       "idle_variant_spread_sec": 5.0
     },
     "followers": {
-      "doc": "HeroFieldParty: at most `max` followers (party order, the leader excluded) walk the leader's breadcrumb trail (a crumb every trail_sample_m, at most trail_max_points), follower i at (i + 1) * spacing_m of trail behind the leader. Each steers to its trail point at up to max_speed_mps, faster the bigger the gap (follow_gain per second), accelerating at accel_mps2 and braking at decel_mps2, and never closer than min_gap_m to the body ahead. Further than catch_up_m from its point (a zone load, a long jump, the end of a cutscene) it is put on the trail at once. A ray from ray_up_m above to ray_down_m below its point sets its feet on the floor. rescan_sec: how often the zone is searched again for cutscene stages and sequencers.",
+      "doc": "HeroFieldParty: at most `max` followers (party order, the leader excluded) walk the leader's breadcrumb trail (a crumb every trail_sample_m, at most trail_max_points), follower i at (i + 1) * spacing_m of trail behind the leader. Each steers to its trail point at up to max_speed_mps, faster the bigger the gap (follow_gain per second), accelerating at accel_mps2 and braking at decel_mps2, and never closer than min_gap_m to the body ahead. Further than catch_up_m from its point (a zone load, a long jump, the end of a cutscene) it is put on the trail at once. A ray from ray_up_m above to ray_down_m below its point sets its feet on the floor, but only a floor within step_m of the height the leader walked at there (a rail or a crate top above, a gap at a pier's edge below is not his floor: his height stands; M2-HER-1110 found Asha dropping 2 m through the Brightwater Ferry's pier edge), and the feet ease toward it at vertical_mps (stairs and slopes never pop). rescan_sec: how often the zone is searched again for cutscene stages and sequencers.",
       "max": 2,
       "spacing_m": 1.15,
       "trail_sample_m": 0.2,
@@ -126,7 +126,21 @@
       "catch_up_m": 6.0,
       "ray_up_m": 1.0,
       "ray_down_m": 3.0,
+      "step_m": 0.45,
+      "vertical_mps": 4.0,
       "rescan_sec": 0.5
+    },
+    "foot_contacts": {
+      "doc": "HeroFieldActor.foot_contact (M3-AUD-810): a marker whose name starts with a key below is that foot's footfall (M2-CHR-12's foot_l_down / foot_r_down, _2 for a repeat); the clips in run_clips step as a run.",
+      "markers": {
+        "foot_l_down": "l",
+        "foot_r_down": "r"
+      },
+      "run_clips": [
+        "run",
+        "run_start",
+        "run_stop"
+      ]
     }
   }
 }

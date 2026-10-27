@@ -254,7 +254,8 @@ func _after_the_fight() -> void:
 	assert_true(_at(&"RidgeCamp"), "B08: the ridge camp")
 	assert_false(zone.block_shown("Barge") or zone.block_shown("sefir"), "the barge has gone")
 	assert_false(zone.block_shown("inquisitor"), "the raid's cast has gone up the road")
-	assert_true(zone.sun.light_energy < 1.0, "the dusk light")
+	assert_true(zone.sun.light_energy < float(zone.layout["sun"]["energy"]), "the dusk light, under the day's")
+	assert_true(zone.sun.rotation_degrees.x > -10.0, "a low dusk sun")
 	assert_true(zone.block_shown("Lamp"), "the burned lamp on the tideline")
 
 

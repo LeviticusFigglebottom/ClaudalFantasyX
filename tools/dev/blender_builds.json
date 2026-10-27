@@ -602,6 +602,85 @@
       ]
     },
     {
+      "id": "brightwater_ferry_kit", "threads": 4,
+      "owner": "environment",
+      "_doc": "M3-ENV-08: the Brightwater ferry kit (Ch4: the ferry Kind Weather, the drowned hulls on the reef edge). Geometry reuses the Haluna kit's core (kit_common) and lintel-gull (village) and the Brine Shoals kit's heightfield (bs_common) read-only; the {python} steps rebuild its materials (the Haluna writers) and its grade LUT (the Haluna zone_lut and Brine Shoals hue helpers), so they are verified too. Threads pinned at 4, as haluna_kit.",
+      "sources": ["assets_src/environments/kits/brightwater_ferry/*.py", "assets_src/environments/kits/haluna/kit_common.py",
+                  "assets_src/environments/kits/haluna/village.py", "assets_src/environments/kits/haluna/materials.py",
+                  "assets_src/environments/kits/haluna/zone_lut.py", "assets_src/environments/kits/brine_shoals/bs_common.py",
+                  "assets_src/environments/kits/brine_shoals/bs_zone_lut.py"],
+      "outputs": ["assets/environments/kits/brightwater_ferry/*.glb", "assets/environments/kits/brightwater_ferry/kit_manifest.json",
+                  "assets/environments/kits/brightwater_ferry/materials/*.tres", "assets/environments/kits/brightwater_ferry/lut_ch04_crossing.png"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/environments/kits/brightwater_ferry/build.py", "--", "--all", "--out-dir", "assets/environments/kits/brightwater_ferry", "--manifest", "assets/environments/kits/brightwater_ferry/kit_manifest.json"],
+        ["{python}", "assets_src/environments/kits/brightwater_ferry/bf_materials.py"],
+        ["{python}", "assets_src/environments/kits/brightwater_ferry/bf_zone_lut.py"]
+      ]
+    },
+    {
+      "id": "oruvel_kit", "threads": 4,
+      "owner": "environment",
+      "_doc": "M3-ENV-07: the Oruvel raft-town kit (Ch1). Geometry reuses the Haluna kit's core (kit_common) and village.py (posts, the lintel-gull) read-only; no maps of its own (the Haluna maps, read-only). The {python} steps rebuild its materials (with the Haluna material writers) and, M3-ENV-07B, the storm grade LUT lut_ch01_storm (the Haluna zone_lut and Brine Shoals hue helpers), so they are verified too. Threads pinned at 4, as haluna_kit.",
+      "sources": ["assets_src/environments/kits/oruvel/*.py", "assets_src/environments/kits/haluna/kit_common.py",
+                  "assets_src/environments/kits/haluna/village.py", "assets_src/environments/kits/haluna/materials.py",
+                  "assets_src/environments/kits/haluna/zone_lut.py", "assets_src/environments/kits/brine_shoals/bs_zone_lut.py",
+                  "assets_src/environments/vegetation/textures.py"],
+      "outputs": ["assets/environments/kits/oruvel/*.glb", "assets/environments/kits/oruvel/kit_manifest.json",
+                  "assets/environments/kits/oruvel/materials/*.tres", "assets/environments/kits/oruvel/lut_ch01_storm.png"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/environments/kits/oruvel/build.py", "--", "--all", "--out-dir", "assets/environments/kits/oruvel", "--manifest", "assets/environments/kits/oruvel/kit_manifest.json"],
+        ["{python}", "assets_src/environments/kits/oruvel/ov_materials.py"],
+        ["{python}", "assets_src/environments/kits/oruvel/ov_zone_lut.py"]
+      ]
+    },
+    {
+      "id": "ashcrown_kit", "threads": 4,
+      "owner": "environment",
+      "_doc": "M3-ENV-09: the Ashcrown temple kit (Ch5, the Lightning temple at the plume's foot). Geometry reuses the Haluna kit's core (kit_common, village's hip roof) and the Pemakar kit's common and skyline modules (the ash pass, massif_height, the far Ashcrown's numbers) read-only; the two {python} steps rebuild its maps and materials (with the Haluna texture helpers and material writers and the Pemakar material defaults), so they are verified too. Threads pinned at 4, as haluna_kit.",
+      "sources": ["assets_src/environments/kits/ashcrown/*.py", "assets_src/environments/kits/haluna/kit_common.py",
+                  "assets_src/environments/kits/haluna/village.py", "assets_src/environments/kits/haluna/kit_textures.py",
+                  "assets_src/environments/kits/haluna/materials.py", "assets_src/environments/kits/pemakar/pemakar_common.py",
+                  "assets_src/environments/kits/pemakar/pemakar_skyline.py", "assets_src/environments/kits/pemakar/pemakar_materials.py",
+                  "assets_src/environments/vegetation/textures.py"],
+      "outputs": ["assets/environments/kits/ashcrown/*.glb", "assets/environments/kits/ashcrown/kit_manifest.json",
+                  "assets/environments/kits/ashcrown/textures/*.png", "assets/environments/kits/ashcrown/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/environments/kits/ashcrown/build.py", "--", "--all", "--out-dir", "assets/environments/kits/ashcrown", "--manifest", "assets/environments/kits/ashcrown/kit_manifest.json"],
+        ["{python}", "assets_src/environments/kits/ashcrown/ac_textures.py"],
+        ["{python}", "assets_src/environments/kits/ashcrown/ac_materials.py"]
+      ]
+    },
+    {
+      "id": "wildlife_gull",
+      "owner": "character",
+      "sources": ["assets_src/wildlife/gull/**", "assets_src/wildlife/common/**", "assets_src/creatures/common/creature_kit.py"],
+      "outputs": ["assets/wildlife/gull/*.glb", "assets/wildlife/gull/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/wildlife/gull/build_gull.py", "--", "--out", "assets/wildlife/gull/gull.glb"],
+        ["{python}", "assets_src/wildlife/common/write_materials.py", "--wildlife", "gull"]
+      ]
+    },
+    {
+      "id": "wildlife_shore_crab",
+      "owner": "character",
+      "sources": ["assets_src/wildlife/shore_crab/**", "assets_src/wildlife/common/**", "assets_src/creatures/common/creature_kit.py"],
+      "outputs": ["assets/wildlife/shore_crab/*.glb", "assets/wildlife/shore_crab/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/wildlife/shore_crab/build_shore_crab.py", "--", "--out", "assets/wildlife/shore_crab/shore_crab.glb"],
+        ["{python}", "assets_src/wildlife/common/write_materials.py", "--wildlife", "shore_crab"]
+      ]
+    },
+    {
+      "id": "wildlife_shoal_fish",
+      "owner": "character",
+      "sources": ["assets_src/wildlife/shoal_fish/**", "assets_src/wildlife/common/**", "assets_src/creatures/common/creature_kit.py"],
+      "outputs": ["assets/wildlife/shoal_fish/*.glb", "assets/wildlife/shoal_fish/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/wildlife/shoal_fish/build_shoal_fish.py", "--", "--out", "assets/wildlife/shoal_fish/shoal_fish.glb"],
+        ["{python}", "assets_src/wildlife/common/write_materials.py", "--wildlife", "shoal_fish"]
+      ]
+    },
+    {
       "id": "creature_mangrove_drowner",
       "owner": "character",
       "sources": ["assets_src/creatures/mangrove_drowner/**", "assets_src/creatures/common/**"],
@@ -752,36 +831,6 @@
       ]
     },
     {
-      "id": "wildlife_gull",
-      "owner": "character",
-      "sources": ["assets_src/wildlife/gull/**", "assets_src/wildlife/common/**", "assets_src/creatures/common/creature_kit.py"],
-      "outputs": ["assets/wildlife/gull/*.glb", "assets/wildlife/gull/materials/*.tres"],
-      "runs": [
-        ["{blender}", "--python", "assets_src/wildlife/gull/build_gull.py", "--", "--out", "assets/wildlife/gull/gull.glb"],
-        ["{python}", "assets_src/wildlife/common/write_materials.py", "--wildlife", "gull"]
-      ]
-    },
-    {
-      "id": "wildlife_shore_crab",
-      "owner": "character",
-      "sources": ["assets_src/wildlife/shore_crab/**", "assets_src/wildlife/common/**", "assets_src/creatures/common/creature_kit.py"],
-      "outputs": ["assets/wildlife/shore_crab/*.glb", "assets/wildlife/shore_crab/materials/*.tres"],
-      "runs": [
-        ["{blender}", "--python", "assets_src/wildlife/shore_crab/build_shore_crab.py", "--", "--out", "assets/wildlife/shore_crab/shore_crab.glb"],
-        ["{python}", "assets_src/wildlife/common/write_materials.py", "--wildlife", "shore_crab"]
-      ]
-    },
-    {
-      "id": "wildlife_shoal_fish",
-      "owner": "character",
-      "sources": ["assets_src/wildlife/shoal_fish/**", "assets_src/wildlife/common/**", "assets_src/creatures/common/creature_kit.py"],
-      "outputs": ["assets/wildlife/shoal_fish/*.glb", "assets/wildlife/shoal_fish/materials/*.tres"],
-      "runs": [
-        ["{blender}", "--python", "assets_src/wildlife/shoal_fish/build_shoal_fish.py", "--", "--out", "assets/wildlife/shoal_fish/shoal_fish.glb"],
-        ["{python}", "assets_src/wildlife/common/write_materials.py", "--wildlife", "shoal_fish"]
-      ]
-    },
-    {
       "id": "wildlife_insect",
       "owner": "character",
       "sources": ["assets_src/wildlife/insect/**", "assets_src/wildlife/common/**", "assets_src/creatures/common/creature_kit.py"],
@@ -789,52 +838,6 @@
       "runs": [
         ["{blender}", "--python", "assets_src/wildlife/insect/build_insect.py", "--", "--out", "assets/wildlife/insect/insect.glb"],
         ["{python}", "assets_src/wildlife/common/write_materials.py", "--wildlife", "insect"]
-      ]
-    },
-    {
-      "id": "brightwater_ferry_kit", "threads": 4,
-      "owner": "environment",
-      "_doc": "M3-ENV-08: the Brightwater ferry kit (Ch4: the ferry Kind Weather, the drowned hulls on the reef edge). Geometry reuses the Haluna kit's core (kit_common) and lintel-gull (village) and the Brine Shoals kit's heightfield (bs_common) read-only; the {python} steps rebuild its materials (the Haluna writers) and its grade LUT (the Haluna zone_lut and Brine Shoals hue helpers), so they are verified too. Threads pinned at 4, as haluna_kit.",
-      "sources": ["assets_src/environments/kits/brightwater_ferry/*.py", "assets_src/environments/kits/haluna/kit_common.py",
-                  "assets_src/environments/kits/haluna/village.py", "assets_src/environments/kits/haluna/materials.py",
-                  "assets_src/environments/kits/haluna/zone_lut.py", "assets_src/environments/kits/brine_shoals/bs_common.py",
-                  "assets_src/environments/kits/brine_shoals/bs_zone_lut.py"],
-      "outputs": ["assets/environments/kits/brightwater_ferry/*.glb", "assets/environments/kits/brightwater_ferry/kit_manifest.json",
-                  "assets/environments/kits/brightwater_ferry/materials/*.tres", "assets/environments/kits/brightwater_ferry/lut_ch04_crossing.png"],
-      "runs": [
-        ["{blender}", "--python", "assets_src/environments/kits/brightwater_ferry/build.py", "--", "--all", "--out-dir", "assets/environments/kits/brightwater_ferry", "--manifest", "assets/environments/kits/brightwater_ferry/kit_manifest.json"],
-        ["{python}", "assets_src/environments/kits/brightwater_ferry/bf_materials.py"],
-        ["{python}", "assets_src/environments/kits/brightwater_ferry/bf_zone_lut.py"]
-      ]
-    },
-    {
-      "id": "oruvel_kit", "threads": 4,
-      "owner": "environment",
-      "_doc": "M3-ENV-07: the Oruvel raft-town kit (Ch1). Geometry reuses the Haluna kit's core (kit_common) and village.py (posts, the lintel-gull) read-only; no maps of its own (the Haluna maps, read-only). The {python} step rebuilds its materials (with the Haluna material writers), so it is verified too. Threads pinned at 4, as haluna_kit.",
-      "sources": ["assets_src/environments/kits/oruvel/*.py", "assets_src/environments/kits/haluna/kit_common.py",
-                  "assets_src/environments/kits/haluna/village.py", "assets_src/environments/kits/haluna/materials.py"],
-      "outputs": ["assets/environments/kits/oruvel/*.glb", "assets/environments/kits/oruvel/kit_manifest.json",
-                  "assets/environments/kits/oruvel/materials/*.tres"],
-      "runs": [
-        ["{blender}", "--python", "assets_src/environments/kits/oruvel/build.py", "--", "--all", "--out-dir", "assets/environments/kits/oruvel", "--manifest", "assets/environments/kits/oruvel/kit_manifest.json"],
-        ["{python}", "assets_src/environments/kits/oruvel/ov_materials.py"]
-      ]
-    },
-    {
-      "id": "ashcrown_kit", "threads": 4,
-      "owner": "environment",
-      "_doc": "M3-ENV-09: the Ashcrown temple kit (Ch5, the Lightning temple at the plume's foot). Geometry reuses the Haluna kit's core (kit_common, village's hip roof) and the Pemakar kit's common and skyline modules (the ash pass, massif_height, the far Ashcrown's numbers) read-only; the two {python} steps rebuild its maps and materials (with the Haluna texture helpers and material writers and the Pemakar material defaults), so they are verified too. Threads pinned at 4, as haluna_kit.",
-      "sources": ["assets_src/environments/kits/ashcrown/*.py", "assets_src/environments/kits/haluna/kit_common.py",
-                  "assets_src/environments/kits/haluna/village.py", "assets_src/environments/kits/haluna/kit_textures.py",
-                  "assets_src/environments/kits/haluna/materials.py", "assets_src/environments/kits/pemakar/pemakar_common.py",
-                  "assets_src/environments/kits/pemakar/pemakar_skyline.py", "assets_src/environments/kits/pemakar/pemakar_materials.py",
-                  "assets_src/environments/vegetation/textures.py"],
-      "outputs": ["assets/environments/kits/ashcrown/*.glb", "assets/environments/kits/ashcrown/kit_manifest.json",
-                  "assets/environments/kits/ashcrown/textures/*.png", "assets/environments/kits/ashcrown/materials/*.tres"],
-      "runs": [
-        ["{blender}", "--python", "assets_src/environments/kits/ashcrown/build.py", "--", "--all", "--out-dir", "assets/environments/kits/ashcrown", "--manifest", "assets/environments/kits/ashcrown/kit_manifest.json"],
-        ["{python}", "assets_src/environments/kits/ashcrown/ac_textures.py"],
-        ["{python}", "assets_src/environments/kits/ashcrown/ac_materials.py"]
       ]
     }
   ]

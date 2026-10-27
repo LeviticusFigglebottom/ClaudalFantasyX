@@ -1,9 +1,9 @@
 {
-  "version": 1,
-  "doc": "Footsteps (M2-AUD-05; docs/kb/tech/audio_runtime.md). FootstepAudio (game/audio/footstep_audio.gd) listens to the field walker: every walk_step_m (below run_above_m_s) or run_step_m of horizontal distance it plays the scene's surface row (surfaces: surface -> an sfx row) at the walker's feet, quieter by walk_db when walking. A walk ends after stop_sec without movement (frames between physics ticks read none) and restarts first_step of a stride in, so the first step lands soon. Moves under still_m per frame are idle jitter; a jump over teleport_m is a warp, not a walk. speed_smooth_sec smooths the pace. scenes: scene -> surface, else default. The movement speeds are game/data/world/field_movement.json's (walk 2.4, run 4.6 m/s). tools/validate_data.py checks the rows and scenes.",
-  "walk_step_m": 1.05,
-  "run_step_m": 1.6,
-  "run_above_m_s": 3.5,
+  "version": 2,
+  "doc": "Footsteps and movement foley (M2-AUD-05, M3-AUD-802; docs/kb/tech/audio_runtime.md \"Footsteps\"). FootstepAudio (game/audio/footstep_audio.gd) listens to the field walker. contacts: when the walker's `body` child (HeroFieldActor's HeroBody) or the walker has the `signal` signal, each emission is a step (its `run_arg` argument, hero-integration's foot_contact(foot, run), says walk or run; without one the pace does); else each contact marker (`markers`, M2-CHR-12's heel contacts) that its AnimationTree's clip nodes (in a 1D blend space, the dominant clip at or over min_weight) or its playing AnimationPlayer cross is a step, a run when the clip is in run_clips. Contacts within min_interval_sec are one step; stall_m of walking with no contact plays a distance step; the body is looked for every retry_sec until found. Without contacts: every walk_step_m (below run_above_m_s) or run_step_m of horizontal distance is a step. Each step plays the surface's walk or run row at the feet (quieter by walk_db when walking) and the foley: cloth on every step, the hero's gear (by the body's hero_id, else gear_default) every gear_every steps, each at its *_db on top of the gait's. stop: a walk that slowed from from_m_s to under below_m_s (or stood still stop_sec) after min_steps steps plays the surface's stop row. turn: a change of travel heading of min_deg within window_sec at min_m_s or more plays the turn row (cooldown_sec apart). A walk ends after stop_sec without movement (frames between physics ticks read none) and restarts first_step of a stride in. Moves under still_m per frame are idle jitter; a jump over teleport_m is a warp, not a walk. speed_smooth_sec smooths the pace. surfaces: surface -> {walk, run, stop, turn} sfx rows (or one row for every gait). The surface is the ground's: the highest surface_priority node in group surface_areas.group (its `surface` meta) or in group group_prefix + <surface> whose collision shapes hold the feet; else scenes[scene], else default. tools/validate_data.py checks the rows and scenes. Strides (M3-AUD-802, hero-integration ADR 0191): the field walks at 1.0 m/s and runs at 3.6 m/s (field_movement.json); a step is half a stride (Rhen: walk 0.53 m, run 1.0 m, per characters' locomotion.json), so the distance stepper uses those, and run_above_m_s is the midpoint of the two gaits (2.3), since the smoothed pace (speed_smooth_sec) would take about 0.5 s to pass a threshold set just under the run speed.",
+  "walk_step_m": 0.53,
+  "run_step_m": 1.0,
+  "run_above_m_s": 2.3,
   "walk_db": -3.0,
   "run_db": 0.0,
   "first_step": 0.6,
@@ -11,10 +11,48 @@
   "still_m": 0.001,
   "teleport_m": 3.0,
   "speed_smooth_sec": 0.15,
-  "surfaces": {"sand": "step_sand", "stone": "step_stone", "wood": "step_wood"},
+  "contacts": {
+    "body": "HeroBody",
+    "signal": "foot_contact",
+    "run_arg": "run",
+    "markers": ["foot_l_down", "foot_r_down"],
+    "run_clips": ["run", "run_start", "run_stop"],
+    "min_weight": 0.3,
+    "min_interval_sec": 0.15,
+    "stall_m": 1.6,
+    "retry_sec": 0.5
+  },
+  "foley": {
+    "cloth": {"walk": "hero_cloth_walk", "run": "hero_cloth_run"},
+    "cloth_db": 0.0,
+    "gear": {"rhen": "hero_gear_lantern", "asha": "hero_gear_shells", "toma": "hero_gear_leather"},
+    "gear_every": 2,
+    "gear_db": 0.0,
+    "gear_default": "rhen"
+  },
+  "stop": {"min_steps": 2, "from_m_s": 0.8, "below_m_s": 0.3, "db": 0.0},
+  "turn": {"min_deg": 100.0, "window_sec": 0.3, "min_m_s": 0.5, "cooldown_sec": 0.6, "db": 0.0},
+  "surfaces": {
+    "sand": {"walk": "hero_step_sand_walk", "run": "hero_step_sand_run", "stop": "hero_stop_sand", "turn": "hero_turn_sand"},
+    "stone": {"walk": "hero_step_stone_walk", "run": "hero_step_stone_run", "stop": "hero_stop_stone", "turn": "hero_turn_stone"},
+    "wood": {"walk": "hero_step_wood_walk", "run": "hero_step_wood_run", "stop": "hero_stop_wood", "turn": "hero_turn_wood"},
+    "water": {"walk": "hero_step_water_walk", "run": "hero_step_water_run", "stop": "hero_stop_water", "turn": "hero_turn_water"}
+  },
+  "surface_areas": {"group": "footstep_surface", "meta": "surface", "group_prefix": "audio_surface_", "priority_meta": "surface_priority"},
+  "mesh_surfaces": {
+    "_note": "M3-AUD-812: listen-only ground for levels that mark none. A MeshInstance3D whose own or parent's name matches a pattern (glob, any case) plays the rule's surface when its bounds, grown up_m over the top and down_m under the bottom, hold the feet. Level areas (surface_areas) win over these; among these the highest priority wins. LOD meshes (skip_suffix) are skipped; the zone is rescanned every rescan_sec.",
+    "rules": [
+      {"match": ["dock_*", "*_dock", "*pier*", "*jetty*", "*boardwalk*", "*plank*", "*gangway*"], "surface": "wood", "priority": 2, "up_m": 0.35, "down_m": 0.1},
+      {"match": ["Tidepool*", "*PoolWater", "*shallows*", "*ford*"], "surface": "water", "priority": 1, "up_m": 0.05, "down_m": 0.8}
+    ],
+    "skip_suffix": "-lod1",
+    "rescan_sec": 10.0
+  },
+  "water_level": {"_note": "M3-AUD-812: wading. Feet under the rest plane of a sea in `group` (WaterSurface's publishers: the zone sea) by up to wade_m, with above_m of slack, step in `surface`.", "group": "hymn_water_level_publishers", "surface": "water", "wade_m": 1.2, "above_m": 0.05},
   "default": "stone",
   "scenes": {
     "res://game/levels/ch02/haluna/haluna.tscn": "sand",
-    "res://game/levels/ch03/shell_shrine/shell_shrine.tscn": "stone"
+    "res://game/levels/ch03/shell_shrine/shell_shrine.tscn": "stone",
+    "res://game/levels/ch03/saltgrass_causeway/saltgrass_causeway.tscn": "stone"
   }
 }
