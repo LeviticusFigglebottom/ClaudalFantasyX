@@ -71,6 +71,20 @@ func test_the_lamp_engine_opens_with_a_moment() -> void:
 	_free()
 
 
+func test_the_drowner_tears_free_with_a_moment() -> void:
+	# M3-BPR-418: the Mangrove Drowner's `uprooted` phase (its creatures.json row) plays its moment, as the Lamp
+	# Engine's `opened` does.
+	var foe := ctl.engine.enemies[0]
+	var row := (ctl.stage.choreo.data["bosses"] as Dictionary)["mangrove_drowner"] as Dictionary
+	var phase_ids := (CreatureActor.row_for(&"mangrove_drowner").get("phases", {}) as Dictionary).keys()
+	assert_true(phase_ids.has("uprooted"), "the creature's own phase id")
+	var boss := BattleBossChoreo.new()
+	boss.attach(ctl.stage.choreo, ctl.engine, foe.id, row)
+	ctl.engine.phase_changed.emit(foe, &"uprooted")
+	assert_eq(boss.moments, [&"uprooted"] as Array[StringName], "tearing free plays its moment")
+	_free()
+
+
 func _free() -> void:
 	ctl.get_parent().remove_child(ctl)
 	ctl.free()

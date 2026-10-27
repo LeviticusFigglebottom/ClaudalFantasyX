@@ -65,6 +65,9 @@ RENDER-REQUEST @ 680cd88e: battle_boss_intro_reach,battle_choreo_melee,battle_ch
 RENDER-REQUEST @ 60b62678: battle_arena_wall_head,battle_boss_intro_reach; why: M3-BPR-406 greybox wall_head_storm arena for Ch8 (new shot, no baseline yet); the Reach intro now stands on it. Supersedes the reach id in the 680cd88e line.
 
 ### 2026-10-27 23:xx: the self-directed backlog (TRACK-RULES)
+5. **The next act (M3-BPR-418):** the Mangrove Drowner (Ch10) and the Wakefin (Ch15) get intro rows by enemy id. The
+   Drowner's `uprooted` phase (its creature's phase id) gets its own moment, like the Lamp Engine's `opened`. Tested;
+   the shots wait for their encounters.
 1. **Render branches:** all viewed (none open).
 2. **Task board (combat):**
    - **M3-BPR-406 (Ch8 set pieces), every acceptance box now done:**

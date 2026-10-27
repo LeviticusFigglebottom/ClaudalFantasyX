@@ -342,7 +342,7 @@ func _free() -> void:
 func test_an_act_two_boss_gets_its_intro_wherever_it_appears() -> void:
 	# M3-BPR-408: the Lamp Engine and the Avalanche Ram have no encounters yet; their rows are by enemy id.
 	var by := cfg["by_enemy"] as Dictionary
-	for boss: String in ["lamp_engine", "avalanche_ram"]:
+	for boss: String in ["lamp_engine", "avalanche_ram", "mangrove_drowner", "wakefin"]:  # M3-BPR-418: two more
 		assert_true(by.has(boss), "%s has an intro row" % boss)
 		var ids: Array[StringName] = [StringName("%s#1" % boss)]
 		var r := BattleBossIntro.row_for(cfg, &"some_future_encounter", ids)

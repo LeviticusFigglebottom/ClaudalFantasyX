@@ -682,3 +682,8 @@ yet (the Lamp Engine `boss_tall`, the Avalanche Ram `boss`). An encounter's own 
   lands on Toma, who covers the stair), `battle_ch08_counter` (Rhen's riposte lands), and `battle_ch08_withdraw` (a
   crawler half-way back). The stage keeps a withdrawal's tween on the stand-in (`WITHDRAW_TWEEN_META`) so a capture
   can hold it.
+
+## Act II, next bosses (M3-BPR-418)
+- `boss_intro.by_enemy` also has the Mangrove Drowner (`boss_tall`) and the Wakefin (`boss`).
+- `bosses.mangrove_drowner.phases.uprooted`: the Drowner tears free of its tree and stands on its roots (a lift and a
+  rock while its own clip plays; the party braces in turn). Same machinery as the Lamp Engine's `opened`.
