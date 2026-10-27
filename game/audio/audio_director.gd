@@ -195,6 +195,8 @@ func advance(delta: float) -> void:
 	ui.step()
 	reefball.advance(delta)
 	life.advance(delta)
+	if cutscene != null:
+		cutscene.advance(delta)
 	impact.advance(delta)
 	stings.advance(delta)
 	for l: Variant in listeners.values():
@@ -605,6 +607,8 @@ func attach_cast(stage: Node) -> void:
 		return
 	for actor: Node3D in (stage as CutsceneStage).cast():
 		attach_footsteps(actor)
+	if cutscene != null:
+		cutscene.watch_lamps(stage)  # M3-AUD-847: a lit lamp on the stage crackles at the lamp
 
 
 ## A VoiceAudio for dialogue box `box` (once; M3-AUD-07). Its blips play through play_sfx.

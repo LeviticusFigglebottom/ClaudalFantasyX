@@ -98,6 +98,7 @@ RULES = [
     ("sfx/cutscene/cs_shield_up_*.ogg", "momentary", -22.0, 1.0, -2.0, "cutscene foley"),
     ("sfx/cutscene/cs_unsling_*.ogg", "momentary", -22.0, 1.0, -2.0, "cutscene foley"),
     ("sfx/cutscene/cs_untie_*.ogg", "momentary", -25.0, 1.0, -2.0, "cutscene foley"),
+    ("sfx/cutscene/cs_lamp_crackle_*.ogg", "momentary", -30.0, 1.0, -2.0, "a lit lamp's wick, at the lamp (M3-AUD-847)"),
     ("sfx/cutscene/cs_feed_fire_*.ogg", "momentary", -23.0, 1.0, -2.0, "cutscene foley"),
     ("sfx/cutscene/cs_trim_wicks_*.ogg", "momentary", -26.0, 1.0, -2.0, "cutscene foley"),
     ("sfx/cutscene/cs_pole_water_*.ogg", "momentary", -23.0, 1.0, -2.0, "cutscene foley"),

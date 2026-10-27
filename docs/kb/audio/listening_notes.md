@@ -1149,3 +1149,11 @@ Also listen for:
   them apart without looking?
 - **Shrine travel:** a slow glass arpeggio over a rising wash, under the router's fade. Is it long enough to cover
   the fade, and short enough not to linger into the new place?
+
+## M3: the Iskarra prologue soundscape (M3-AUD-847)
+
+`ambience/iskarra_dusk.ogg` now carries the vigil. Now and then, far across the plaza, someone murmurs a few words to
+themselves, never close enough to follow (about three times in each 44 s loop, about 15 dB under the wind). Rhen's
+lamp crackles at the lamp itself (`cs_lamp_crackle`, heard only near it). Listen at the prologue's own level:
+- Do the murmurs make the plaza feel kept by people apart, or do they read as a crowd?
+- Does the wick's crackle sit under the dialogue without ticking like a clock?
