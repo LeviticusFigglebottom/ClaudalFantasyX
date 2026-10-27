@@ -3246,6 +3246,38 @@
         960,
         720
       ]
+    },
+    {
+      "id": "creature_tannin_archer",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_tannin_archer.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
+      "id": "creature_gallery_ray",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_gallery_ray.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
+      "id": "creature_rime_urchin",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_rime_urchin.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
+      "id": "creature_conduit_crawler",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_conduit_crawler.tscn",
+      "resolution": [
+        960,
+        720
+      ]
     }
   ]
 }

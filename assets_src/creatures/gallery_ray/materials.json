@@ -1,0 +1,13 @@
+{
+  "_doc": "The gallery ray's surfaces (docs/kb/art/creatures/act2/gallery_ray.md). Slots are the glTF material names; write_materials.py writes assets/creatures/gallery_ray/materials/<slot>.tres on game/shaders/creature/creature.gdshader. body is the pale disc (a salt_glass back mottled toward cumulus_shadow, a bone belly, by vertex colour), the tail and the pelvic lobes, whose emission mask is the two spiracles, the small spawn_wound weak points; margin is the outer band of the wings, the same pale skin carrying the ray's own faint sea_glow (its light, not glimmer: a low energy and a slow swell), with a rim sheen; eye is wet lacquer_black. Colours are palette.json swatches.",
+  "slots": {
+    "body": {"roughness_dry": 0.4, "roughness_wet": 0.15, "specular": 0.55, "wet_darken": 0.35, "clearcoat_wet": 0.6,
+             "detail_scale": 40.0, "detail_albedo": 0.06, "detail_bump": 0.12, "cavity_albedo": 0.5,
+             "emission_color": "#3FE0C8", "emission_energy": 1.8, "emission_pulse_hz": 0.3, "emission_pulse_depth": 0.4},
+    "margin": {"roughness_dry": 0.35, "roughness_wet": 0.15, "specular": 0.55, "wet_darken": 0.35, "clearcoat_wet": 0.6,
+               "detail_scale": 40.0, "detail_albedo": 0.04, "detail_bump": 0.06, "rim_sheen": 0.5,
+               "emission_color": "#1C6B78", "emission_energy": 0.8, "emission_pulse_hz": 0.12, "emission_pulse_depth": 0.3},
+    "eye": {"roughness_dry": 0.12, "roughness_wet": 0.06, "specular": 0.7, "clearcoat_wet": 1.0, "detail_albedo": 0.0,
+            "detail_bump": 0.0}
+  }
+}

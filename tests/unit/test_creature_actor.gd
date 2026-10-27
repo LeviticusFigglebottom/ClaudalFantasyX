@@ -25,6 +25,30 @@ const FIN_IDLE_MIN_Y := 1.3
 const FIN_DIVE_SEC := 1.13
 const FIN_KO_BAND_M := 0.6
 const FIN_BELLY_UP := -0.8
+## M3-CRE-627, the Act II regulars. The tannin archer: its head rises this far over its idle for the long jet, and at
+## the end of its KO it has rolled at least this far sideways off its root and lies with its head this low.
+const ARCHER := "res://game/creatures/tannin_archer/tannin_archer_battle.tscn"
+const ARCHER_AIM_RISE_M := 0.1
+const ARCHER_KO_OFF_X := 0.2
+const ARCHER_KO_MAX_Y := 0.25
+## The gallery ray flies: its stand-in hover; the cast settles it at least this far down onto the pool, the KO lands its
+## root on the floor (within this much of the hover), and in the idle its outer wing joints rise this far
+## between strokes (over the body's bob).
+const RAY := "res://game/creatures/gallery_ray/gallery_ray_battle.tscn"
+const RAY_HOVER := 1.4
+const RAY_POOL_DROP_M := 1.2
+const RAY_FLOOR_TOL_M := 0.05
+const RAY_STROKE_M := 0.03
+## The rime urchin: on the hit every spine sector clenches at least this far (radians), on the cast every sector
+## turns at least this far toward the target, and the KO settles the test at least this far onto its ice.
+const URCHIN := "res://game/creatures/rime_urchin/rime_urchin_battle.tscn"
+const URCHIN_CLENCH_RAD := 0.15
+const URCHIN_AIM_RAD := 0.3
+const URCHIN_SETTLE_M := 0.03
+## The conduit crawler: its body sinks at least this far between its folded legs in the KO, and stays this high.
+const CRAWLER := "res://game/creatures/conduit_crawler/conduit_crawler_battle.tscn"
+const CRAWLER_KO_DROP_M := 0.12
+const CRAWLER_KO_BODY_MIN_Y := 0.05
 const RING := {"radius_factor": 1.4, "inner_soft_m": 0.25, "notches": 6}
 const SANDBOX := "res://game/battle/scene/battle_sandbox.tscn"
 const SEED := 20261024
@@ -536,3 +560,115 @@ func test_a_hit_snaps_onto_its_struck_pose() -> void:
 	assert_true(a.is_hit_clip(&"hit_b") and not a.is_hit_clip(&"attack"), "hit variants snap, strikes do not")
 	assert_true(a.play_action(&"pinch", &"physical"))
 	assert_between(player.current_animation_position, 0.0, 0.001, "a strike still starts at its beginning")
+
+
+## M3-CRE-627: an Act II regular strikes and casts on its clips, syncs both to its contact seconds and has its
+## sheet's rig (exactly these bones).
+func _act2_regular(path: String, contacts: Array[float], bones: Array[String]) -> CreatureActor:
+	var a := _actor(path)
+	assert_eq(a.current_clip, &"idle")
+	assert_false(a.enter_phase(&"uprooted"), "%s: a regular has no phases" % path)
+	for k in 2:
+		var clip: StringName = [&"attack", &"cast"][k]
+		assert_true(a.play_action(&"", [&"physical", &"magical"][k]))
+		assert_eq(a.current_clip, clip)
+		assert_true(
+			is_equal_approx(a.contact_time(clip), contacts[k]), "%s: %s lands at %.2f s" % [path, clip, contacts[k]]
+		)
+	var skel := a.find_children("*", "Skeleton3D", true, false)[0] as Skeleton3D
+	for b in bones:
+		assert_true(skel.find_bone(b) >= 0, "%s: the rig has %s" % [path, b])
+	assert_eq(skel.get_bone_count(), bones.size(), "%s: the sheet's rig" % path)
+	return a
+
+
+## Poses the actor's model at `sec` into `clip` (clamped to just before its end) and returns its skeleton.
+func _pose(a: CreatureActor, clip: StringName, sec: float) -> Skeleton3D:
+	var player := a.find_children("*", "AnimationPlayer", true, false)[0] as AnimationPlayer
+	player.play(clip)
+	player.seek(minf(sec, player.get_animation(clip).length - RAM_END_SEC), true)
+	return a.find_children("*", "Skeleton3D", true, false)[0] as Skeleton3D
+
+
+func _bone_at(skel: Skeleton3D, bone: String) -> Vector3:
+	return (skel.global_transform * skel.get_bone_global_pose(skel.find_bone(bone))).origin
+
+
+func test_the_tannin_archer_spits_from_its_root_and_rolls_off_it() -> void:
+	var bones: Array[String] = ["root", "tail", "jaw", "pec_l", "pec_r"]
+	for k in 5:
+		bones.append("spine_%d" % k)
+	var a := _act2_regular(ARCHER, [0.55, 0.9], bones)
+	var skel := _pose(a, &"idle", 0.0)
+	var jaw_rest := _bone_at(skel, "jaw")
+	var root_rest := _bone_at(skel, "root")
+	skel = _pose(a, &"cast", 0.9)
+	assert_true(_bone_at(skel, "jaw").y > jaw_rest.y + ARCHER_AIM_RISE_M, "the long jet: it raises its head to aim")
+	skel = _pose(a, &"ko", INF)
+	assert_true(_bone_at(skel, "root").is_equal_approx(root_rest), "the mangrove root it lay on stays put")
+	assert_true(_bone_at(skel, "spine_0").x > ARCHER_KO_OFF_X, "it rolls off the root to the side")
+	assert_true(_bone_at(skel, "jaw").y < ARCHER_KO_MAX_Y, "and lies at the water")
+
+
+func test_the_gallery_ray_glides_settles_into_its_pool_and_falls_flat() -> void:
+	var bones: Array[String] = ["root", "body"]
+	for side in ["l", "r"]:
+		for k in 3:
+			bones.append("wing_%s%d" % [side, k])
+	for k in 4:
+		bones.append("tail_%d" % k)
+	var a := _act2_regular(RAY, [0.6, 0.9], bones)
+	var spec := CreatureActor.row_for(&"gallery_ray")["stand_in"] as Dictionary
+	assert_true(is_equal_approx(float(spec["hover"]), RAY_HOVER), "it flies at head height")
+	var skel := _pose(a, &"idle", 1.5)
+	var up := _bone_at(skel, "wing_l2").y
+	skel = _pose(a, &"idle", 0.0)
+	assert_true(up - _bone_at(skel, "wing_l2").y > RAY_STROKE_M, "the wings undulate as it glides")
+	skel = _pose(a, &"cast", 0.9)
+	assert_true(_bone_at(skel, "root").y < -RAY_POOL_DROP_M, "the cast settles it into the pool")
+	skel = _pose(a, &"ko", INF)
+	assert_true(absf(_bone_at(skel, "root").y + RAY_HOVER) < RAY_FLOOR_TOL_M, "the KO lays it flat on the floor")
+
+
+func test_the_rime_urchin_clenches_aims_its_spines_and_settles_on_its_ice() -> void:
+	var bones: Array[String] = ["root", "body"]
+	for k in 8:
+		bones.append("sector_%d" % k)
+	var a := _act2_regular(URCHIN, [0.5, 0.8], bones)
+	var skel := _pose(a, &"idle", 0.0)
+	var body_rest := _bone_at(skel, "body")
+	var plinth := _bone_at(skel, "root")
+	for clip_at: Array in [[&"hit", 0.1, URCHIN_CLENCH_RAD], [&"cast", 0.8, URCHIN_AIM_RAD]]:
+		skel = _pose(a, clip_at[0], clip_at[1])
+		for k in 8:
+			var b := skel.find_bone("sector_%d" % k)
+			var turned := skel.get_bone_rest(b).basis.get_rotation_quaternion().angle_to(skel.get_bone_pose_rotation(b))
+			assert_true(turned > float(clip_at[2]), "%s: sector %d's spines move (%.2f rad)" % [clip_at[0], k, turned])
+	skel = _pose(a, &"ko", INF)
+	assert_true(_bone_at(skel, "body").y < body_rest.y - URCHIN_SETTLE_M, "the KO settles the test")
+	assert_true(_bone_at(skel, "root").is_equal_approx(plinth), "on the ice plinth, which stays")
+
+
+func test_the_conduit_crawler_scrubs_jabs_and_folds_its_legs() -> void:
+	var bones: Array[String] = ["root", "body"]
+	var legs: Array[String] = []
+	for side in ["l", "r"]:
+		for k in 3:
+			legs.append_array(["leg_%s%d_a" % [side, k], "leg_%s%d_b" % [side, k]])
+		bones.append_array(["arm_%s_a" % side, "arm_%s_b" % side])
+	bones.append_array(legs)
+	var a := _act2_regular(CRAWLER, [0.45, 1.0], bones)
+	var skel := _pose(a, &"idle", 0.0)
+	var body_rest := _bone_at(skel, "body").y
+	for clip: StringName in [&"attack", &"cast", &"hit", &"hit_b"]:
+		skel = _pose(a, clip, INF)
+		for leg in legs:
+			var b := skel.find_bone(leg)
+			var moved := skel.get_bone_global_pose(b).origin.distance_to(skel.get_bone_global_rest(b).origin)
+			assert_true(moved < RAM_FOOT_TOL_M, "%s ends with %s back where it stood" % [clip, leg])
+	skel = _pose(a, &"ko", INF)
+	var body := _bone_at(skel, "body").y
+	assert_true(body < body_rest - CRAWLER_KO_DROP_M, "its legs fold and it sinks")
+	assert_true(body > CRAWLER_KO_BODY_MIN_Y, "onto its belly plate, not through the floor")
+	for leg in legs:
+		assert_true(_bone_at(skel, leg).y > -RAM_FOOT_TOL_M, "%s stays above the floor" % leg)

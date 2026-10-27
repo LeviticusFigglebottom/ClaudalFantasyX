@@ -642,6 +642,46 @@
       ]
     },
     {
+      "id": "creature_tannin_archer",
+      "owner": "character",
+      "sources": ["assets_src/creatures/tannin_archer/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/tannin_archer/*.glb", "assets/creatures/tannin_archer/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/tannin_archer/build_tannin_archer.py", "--", "--out", "assets/creatures/tannin_archer/tannin_archer.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "tannin_archer"]
+      ]
+    },
+    {
+      "id": "creature_gallery_ray",
+      "owner": "character",
+      "sources": ["assets_src/creatures/gallery_ray/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/gallery_ray/*.glb", "assets/creatures/gallery_ray/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/gallery_ray/build_gallery_ray.py", "--", "--out", "assets/creatures/gallery_ray/gallery_ray.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "gallery_ray"]
+      ]
+    },
+    {
+      "id": "creature_rime_urchin",
+      "owner": "character",
+      "sources": ["assets_src/creatures/rime_urchin/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/rime_urchin/*.glb", "assets/creatures/rime_urchin/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/rime_urchin/build_rime_urchin.py", "--", "--out", "assets/creatures/rime_urchin/rime_urchin.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "rime_urchin"]
+      ]
+    },
+    {
+      "id": "creature_conduit_crawler",
+      "owner": "character",
+      "sources": ["assets_src/creatures/conduit_crawler/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/conduit_crawler/*.glb", "assets/creatures/conduit_crawler/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/conduit_crawler/build_conduit_crawler.py", "--", "--out", "assets/creatures/conduit_crawler/conduit_crawler.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "conduit_crawler"]
+      ]
+    },
+    {
       "id": "wildlife_gull",
       "owner": "character",
       "sources": ["assets_src/wildlife/gull/**", "assets_src/wildlife/common/**", "assets_src/creatures/common/creature_kit.py"],
