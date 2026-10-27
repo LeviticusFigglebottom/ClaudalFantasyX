@@ -3,6 +3,18 @@
 ## NEW ACCOUNT (from 2026-10-25)
 Session `session_01Wmj8xaLtwcqiS3qwC6PciW`. Integration branch `claude/undertow-lead-handoff-ze8rrn`. Newest first.
 
+- **TO THE LEAD: the big12 causeway test is fixed. MERGE-READY @ befc79be** (lead/gate-big12 merged in, dc10c187).
+  - **What changed:** M2-FP-108's final causeway has no tidepool. Its ground is now stone slabs over sand flats with the
+    sea below y −0.7. In footsteps.json the causeway's scene ground is `sand` (the flats), and a mesh rule makes
+    `causeway_slab*`, `causeway_disc*` and `offering_step*` stone; under the sea's rest plane is water (the existing
+    wading rule). The test is renamed `test_the_causeway_is_stone_slabs_over_sand_flats_and_the_sea` and checks the
+    real dressed slabs.
+  - **Checks:** `--filter=footsteps` 5/0, `footstep` 21/0, `audio` 160/0, `causeway` 13/0; validate_data 0/0.
+  - **Full Godot suite on befc79be: 2828 run, 1 failed, and the failure is not audio's.** test_creature_portraits:
+    creatures.json's mangrove_drowner, lamp_engine, avalanche_ram and wakefin have no portrait in
+    game/data/ui/creature_portraits.json. It comes in with big12 (my branch is identical to gate-big12 in those
+    paths). It belongs to the UI or creatures track, and the portraits need a PC render.
+
 - **LFS (ADR 0039) taken in, 10-27 ~19:20.**
   - **ADR 0172 is parked** as a fallback study (its status line says so).
   - **M3-AUD-839:** docs/kb/audio/act2_finals.md lists Act II's 30 final cues with estimates (about 72 MB, all for
