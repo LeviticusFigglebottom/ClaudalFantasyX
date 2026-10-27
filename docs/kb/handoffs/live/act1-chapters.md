@@ -106,14 +106,27 @@ cutscene sequencer (`game/cutscene/**`), `game/flow/**` and the playtest fixes.
   prow step where Tavi stands; Oruvel's moorings moved from azimuth 35 to 325 (the two runs of galleries are parted by
   the boat lanes, so 35 was unreachable from the party's side), with a boardwalk staging and bridge. Map-only pads
   and gallery "buildings" in the layout keep the area map drawn. `--filter=ch07` 8/0, `test_ch07_bell_walkable` 4/0.
+- **PROGRESS @ 8daa0c63: M3-C05-1213 Ch5 Pemakar on its kit (WIP until rendered).** The kit's ten tiers in its own
+  frame: a quay at the shore (kit wall/tread modules) with the Ch4 ferry alongside, the harbour road up the massif's
+  rows to the first flight, ten flights as ramps; the story near the stair (the kit's tiers are dressing, not lanes:
+  verandas and plinths close the lanes, roofs reach over the next tier), so the smithy trades places with the house
+  by the stair and the inn moves along its arc to x −6.6. The Lanternfall night (388 lamps, 943 leaf-boats, far and
+  sea lights) follows the `Lamps` block, which the day variant hides; the day uses the kit's dusk grade (M3-ENV-1214
+  asks env-art for a day grade, the sea-cut weir, the wake-wall, the crown bell, a quay). ZoneKitDressing gained
+  `multimeshes`, `far_lights`, per-light `color`, `trimesh_lod0`; KitWalkProbe now reads kit box colliders and can
+  query the physics space for trimesh pieces. `--filter=ch0` 79/0, `zone` 58/0, `walkable` 13/0.
+- **Ch7's port (`ch07/tamsule`) is waiting on a kit:** env-art's "Tamsule stilt" kit (M3-C07-04, role environment) is
+  still todo. The galleries part of M3-C07-04 is done by M3-C07-1211. I'll compose the port from the Bell kit's port
+  pieces and Oruvel's rafts only if the Lead wants it before env-art gets to it.
 
 ### Render requests
 RENDER-REQUEST @ 180510e1: ch04_ferry_deck, ch04_ferry_derelict; why: M3-C04-1204 dresses the Ch4 ferry and derelict with the ferry kit (new shots, no baseline yet)
 RENDER-REQUEST @ 77a6a777: ch09_corrow_strand, ch09_corrow_road, ch08_corrow_arrival, ch08_corrow_stair, ch06_brine_road, ch06_brine_camp; why: M3-C09-1209 puts Ch9 on the Corrow kit (new shots); the Ch8 and Ch6 shots re-checked on the PC after the KitCollision refactor and the big9 merge
 RENDER-REQUEST @ b30c2cf2: ch08_coilspire_path, ch08_coilspire_hall; why: M3-C08-1210 stands Coilspire upright on its kit (new shots)
 RENDER-REQUEST @ 5112837a: ch07_bell_galleries, ch07_bell_moorings; why: M3-C07-1211 puts Ch7's Bell galleries on the Tamsule Bell kit (new shots)
+RENDER-REQUEST @ 8daa0c63: ch05_pemakar_harbour, ch05_pemakar_crown; why: M3-C05-1213 puts Ch5 Pemakar on its kit (new shots, Lanternfall night)
 
 ## Exact next step
-Swaps still to do: Ch5 Pemakar (terraces: trimesh treads + ramps for the flights) and Ashcrown, Ch7 Tamsule (port), Ch4 `haluna_wake` (Haluna's kit at night). Ch1 is slice-polish's. When the PC answers a
+Swaps still to do: Ch5 Ashcrown (its kit), Ch4 `haluna_wake` (Haluna's kit at night); Ch7's port waits on env-art's kit. Ch1 is slice-polish's. When the PC answers a
 render request above: fetch `gpu/render-act1-chapters-<sha7>`, view every out/diff PNG, approve, and write the
-MERGE-READY lines for Ch4, Ch9, Coilspire and Ch7's galleries.
+MERGE-READY lines for Ch4, Ch9, Coilspire, Ch7's galleries and Ch5 Pemakar.
