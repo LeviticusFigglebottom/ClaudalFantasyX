@@ -19,7 +19,7 @@ moment LFS works. Keep the files uncommitted and leave .gitattributes alone.
 - [x] render_all.py: `ACT2_FINALS` and `--act2`, rendered into assets/audio/music/act2/ and outside the default run,
       the budget and the tests. tools/tests/test_act2_finals.py: every final renders from act2 into act2, and nothing
       there is tracked until .gitattributes routes it to LFS.
-- [ ] The 12 zone finals from the sketches (M3-AUD-840..843).
+- [x] The 12 zone finals from the sketches (M3-AUD-840..843): sources merged, 17.4 MB measured; audio waits for LFS.
 - [ ] The bosses, then the scenes as Act II's beat sheets arrive.
 
 ## Review log

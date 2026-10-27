@@ -3,6 +3,16 @@
 ## NEW ACCOUNT (from 2026-10-25)
 Session `session_01Wmj8xaLtwcqiS3qwC6PciW`. Integration branch `claude/undertow-lead-handoff-ze8rrn`. Newest first.
 
+- **Act II: the 12 zone finals' sources are merged (M3-AUD-840..843; claude/audio, pushed).** They are ossa_fen,
+  reedhollow, sunken_vey, lowlight, keth_pass, quellan, ansedra, lamp_archive, peace_wedding, unlamped, pale_rim and
+  drowned_choir. Each is a 125–157 s seamless loop built on its sketch; the sketches are unchanged.
+  - **Numbers:** 17.4 MB measured in all, every file under 2.2 MB and none near 5 MB; −16 ±0.1 LUFS; seams clean;
+    byte-identical on re-render (the table is in docs/kb/audio/act2_finals.md).
+  - **No audio is committed.** It renders with `render_all.py --act2`. **When LFS is live:** one commit adds the 24
+    files, their .import files, music.json rows (swapping each zone row from the sketch to `act2/<cue>`) and
+    PROVENANCE rows.
+  - **Next:** the four modelled bosses' music (drowner, Lamp Engine, Ram, Wakefin).
+
 - **TO THE LEAD: the big12 causeway test is fixed. MERGE-READY @ befc79be** (lead/gate-big12 merged in, dc10c187).
   - **What changed:** M2-FP-108's final causeway has no tidepool. Its ground is now stone slabs over sand flats with the
     sea below y −0.7. In footsteps.json the causeway's scene ground is `sand` (the flats), and a mesh rule makes

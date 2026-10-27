@@ -41,12 +41,12 @@ Sizes are estimates (about 0.95 MB a minute at q3) until a final is rendered; th
 | 14 | `peace_wedding` | sketch | cue ~3 min (the ceremony; it breaks at the trap) | 2.9 MB | 1.42 MB, 130.9 s loop, −16.03 LUFS (the ceremony's loop; the break at the trap is a later cue) |
 | 14 | `lagoon_escape` | new | cue ~2 min, the first ripples; the bells; Merel left behind | 1.9 MB | |
 | 14 | `malcor_venn` | new | boss, 2 stems (phase 1 the still water slows; phase 2 he boards) | 3.8 MB | |
-| 15 | `unlamped` | sketch | loop ~150 s | 2.4 MB | |
+| 15 | `unlamped` | sketch | loop ~150 s | 2.4 MB | 1.74 MB, 155.3 s, −16.04 LUFS |
 | 15 | `wakefin` | new | boss, 2 stems, in the dark | 3.8 MB | |
 | 15 | `kerrid_at_sea` | new | cue ~2.5 min under his telling (a bed for a voice, as `iskarra_vigil`; KERRID_STAIR far below) | 2.4 MB | |
 | 15 | `hollowmere_answers` | new | cue ~60 s: Liss's current-song into the fog, Hollowmere answering (CURRENT_SONG) | 1.0 MB | |
-| 16 | `pale_rim` | sketch | loop ~150 s | 2.4 MB | |
-| 16 | `drowned_choir` | sketch | loop ~150 s | 2.4 MB | |
+| 16 | `pale_rim` | sketch | loop ~150 s | 2.4 MB | 1.68 MB, 155.3 s, −16.03 LUFS |
+| 16 | `drowned_choir` | sketch | loop ~150 s | 2.4 MB | 0.83 MB, 153.2 s, −16.00 LUFS |
 | 16 | `kesh_bound` | new | sting (`kesh_summon` belongs to Act III's H03) | 0.2 MB | |
 | 16 | `sefir_go_home` | new | cue ~2 min, the temptation (Sefir's motif at its warmest; ORDER_HUM) | 1.9 MB | |
 | 16 | `abiding_guard` | new | boss, 2 stems; the storm waking early is stem 2 | 3.8 MB | |
@@ -57,8 +57,8 @@ about 18 MB). It all goes to LFS. No single file goes over 5 MB (a boss's stems 
 needs ADR 0039's over-5-MB rule.
 
 ## Order of work
-1. **The 12 zone finals from the sketches** (M3-AUD-840..843, three each). Their sources and measured sizes land now,
-   and their audio lands with LFS.
+1. **The 12 zone finals from the sketches** (M3-AUD-840..843): **sources done**. Measured 17.4 MB in all (against 28.8
+   estimated). Their audio lands with LFS.
 2. **The six bosses**: the four whose models exist (drowner, engine, ram, wakefin) first.
 3. The new zones and the scene cues, as Act II's beat sheets are written (none exist yet: act_outline.md is the
    only source, so their timings wait on Story's sheets).
