@@ -97,9 +97,10 @@ cutscene sequencer (`game/cutscene/**`), `game/flow/**` and the playtest fixes.
 ### Render requests
 RENDER-REQUEST @ 180510e1: ch04_ferry_deck, ch04_ferry_derelict; why: M3-C04-1204 dresses the Ch4 ferry and derelict with the ferry kit (new shots, no baseline yet)
 RENDER-REQUEST @ 77a6a777: ch09_corrow_strand, ch09_corrow_road, ch08_corrow_arrival, ch08_corrow_stair, ch06_brine_road, ch06_brine_camp; why: M3-C09-1209 puts Ch9 on the Corrow kit (new shots); the Ch8 and Ch6 shots re-checked on the PC after the KitCollision refactor and the big9 merge
+RENDER-REQUEST @ b30c2cf2: ch08_coilspire_path, ch08_coilspire_hall; why: M3-C08-1210 stands Coilspire upright on its kit (new shots)
 
 ## Exact next step
-Ch9 `ch09/corrow_night` onto the Corrow frame (it reuses Corrow's kit and grade, ch09 night), then Ch4 `haluna_wake`,
-Ch5 Pemakar (terraces: trimesh treads + ramps for flights) and Ashcrown, Ch7 Tamsule Bell, Ch1 is slice-polish's.
-When the PC answers the render request above: view the out/diff PNGs, approve, and write the Ch4 MERGE-READY line.
-RENDER-REQUEST @ b30c2cf2: ch08_coilspire_path, ch08_coilspire_hall; why: M3-C08-1210 stands Coilspire upright on its kit (new shots)
+Swaps still to do: Ch5 Pemakar (terraces: trimesh treads + ramps for the flights) and Ashcrown, Ch7 Tamsule (port)
+and the Bell's galleries, Ch4 `haluna_wake` (Haluna's kit at night). Ch1 is slice-polish's. When the PC answers a
+render request above: fetch `gpu/render-act1-chapters-<sha7>`, view every out/diff PNG, approve, and write the
+MERGE-READY lines for Ch4, Ch9 and Coilspire.
