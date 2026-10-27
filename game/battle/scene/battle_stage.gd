@@ -261,11 +261,15 @@ static func shake_setting() -> float:
 	return float(settings.get_value(SETTING_SHAKE)) if settings.settings().has(SETTING_SHAKE) else 1.0
 
 
-## Jumps every creature's phase change to its end (CreatureActor.settle; M2-CRE-08), for captures.
+## Jumps every creature's phase change to its end (CreatureActor.settle; M2-CRE-08), and every entrance in progress
+## onto its mark (a summoned foe's walk, M3-BPR-416), for captures.
 func settle_actors() -> void:
-	for f: FighterStandIn in _fighters.values():
+	for cid: StringName in _fighters.keys():
+		var f := _fighters[cid] as FighterStandIn
 		if f.creature() != null:
 			f.creature().settle()
+		if choreo != null:
+			choreo.skip_entering(cid)
 
 
 func stand_in(cid: StringName) -> FighterStandIn:
