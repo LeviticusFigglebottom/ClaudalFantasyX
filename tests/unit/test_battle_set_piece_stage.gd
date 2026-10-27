@@ -178,3 +178,16 @@ func test_the_stair_has_its_few_barks() -> void:
 	barks._on_called(virel)
 	assert_eq(heard.back(), [&"asha", "BARK_CH08_ASHA_VIREL"], "Asha calls her by name")
 	_free()
+
+
+func test_the_timeline_names_the_entries() -> void:
+	# The Fisher Stair and the Surge read by name on the order, not as raw ids (the arena render showed "the_climb").
+	_make()
+	var active: Array[StringName] = [&"rhen", &"asha", &"liss"]
+	var reserve: Array[StringName] = [&"toma"]
+	ctl.start_battle(active, reserve, &"ch08_stair_hold_1", SEED)
+	for c in ctl.engine.entries:
+		var ident := ctl.hud.timeline._identity.get(c.id, {}) as Dictionary
+		assert_eq(str(ident.get("label", "")), tr(c.name_key), "%s reads %s" % [c.id, tr(c.name_key)])
+	assert_false(ctl.engine.entries.is_empty(), "the wave has its entries")
+	_free()
