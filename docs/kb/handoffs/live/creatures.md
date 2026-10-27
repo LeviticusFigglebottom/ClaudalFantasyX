@@ -425,4 +425,11 @@ RENDER-REQUEST @ 32f33a75: battle_hud_preview, battle_swap_menu, battle_victory,
     - **Request M3-CRE-634** (role ui) carries a 3-line patch, verified 4/0 here, that limits the rule to the creatures enemies use. I didn't commit it to their file.
     - The integration branch itself is green: it doesn't have the Act II rows yet.
   - **The shutdown freed-object error on the integration branch** is fixed only once audio's LifeAudio takes the M3-CRE-633 patch. My VillagerLayer fix doesn't clear it on its own.
+- **RENDERED @ 10f21a1, 2112578, b99be56 (the Lamp Engine ×2, the Avalanche Ram, the Wakefin), viewed: not approved.**
+  - These shas predate M3-CRE-630, which shifted every creature clip by a frame. Baselines come from the 98-shot render at 4214a48e, which covers the same ids.
+  - **Review:**
+    - **The Lamp Engine** reads as its sheet, closed and opened.
+    - **The Ram's head reads as a duck's:** the dark flat muzzle on a white face looks like a bill. It needs a camelid head.
+    - **The Wakefin's review shot** shows only the fin, because the stage floor hides the body; it needs a shot that shows the fish, and stronger wounds.
+  - Filed **M3-CRE-635**.
 
