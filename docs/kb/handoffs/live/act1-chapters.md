@@ -94,13 +94,26 @@ cutscene sequencer (`game/cutscene/**`), `game/flow/**` and the playtest fixes.
   trial's gates across flights 1–4, its 14 keys on the kit's flue-keys (wheels spin with the Key blocks), braziers
   and their lights with the Flame blocks. `--filter=ch08` 19/0; `tools.tests.test_act1_kit_collision` 4 OK.
 
+- **MERGE-READY @ 6a1501d5: the integration branch (big10, 7f187123) merged in.** One conflict (`voices.json`
+  `wright`: took the integration's `pending: true`); flags, shots and baselines by `merge_union.py`. Re-imported;
+  `--filter=ch0` 75/0, `--filter=zone` 57/0, gdlint/gdformat clean, validate_data 0/0.
+- **Fixed @ 091623d8: the area-map POIs of ch04/brightwater_ferry and ch09/corrow_night** had stayed on the greybox
+  positions after the kit relayouts (`tools.tests.test_zone_map_pois` was red): moved onto their sources, stale
+  hints and bounds fixed. Request **M3-UI-1212** (role ui): let `ZoneMapShapes` read a kit zone's `collision_path`
+  file, so kit zones' maps aren't thin.
+- **PROGRESS @ 5112837a: M3-C07-1211 Ch7 the Bell's galleries on the Tamsule Bell kit (WIP until rendered).** The
+  kit's arena frame; the party's gallery is the west (Oruvel's), the naming trigger on Oruvel's platform before the
+  prow step where Tavi stands; Oruvel's moorings moved from azimuth 35 to 325 (the two runs of galleries are parted by
+  the boat lanes, so 35 was unreachable from the party's side), with a boardwalk staging and bridge. Map-only pads
+  and gallery "buildings" in the layout keep the area map drawn. `--filter=ch07` 8/0, `test_ch07_bell_walkable` 4/0.
+
 ### Render requests
 RENDER-REQUEST @ 180510e1: ch04_ferry_deck, ch04_ferry_derelict; why: M3-C04-1204 dresses the Ch4 ferry and derelict with the ferry kit (new shots, no baseline yet)
 RENDER-REQUEST @ 77a6a777: ch09_corrow_strand, ch09_corrow_road, ch08_corrow_arrival, ch08_corrow_stair, ch06_brine_road, ch06_brine_camp; why: M3-C09-1209 puts Ch9 on the Corrow kit (new shots); the Ch8 and Ch6 shots re-checked on the PC after the KitCollision refactor and the big9 merge
 RENDER-REQUEST @ b30c2cf2: ch08_coilspire_path, ch08_coilspire_hall; why: M3-C08-1210 stands Coilspire upright on its kit (new shots)
+RENDER-REQUEST @ 5112837a: ch07_bell_galleries, ch07_bell_moorings; why: M3-C07-1211 puts Ch7's Bell galleries on the Tamsule Bell kit (new shots)
 
 ## Exact next step
-Swaps still to do: Ch5 Pemakar (terraces: trimesh treads + ramps for the flights) and Ashcrown, Ch7 Tamsule (port)
-and the Bell's galleries, Ch4 `haluna_wake` (Haluna's kit at night). Ch1 is slice-polish's. When the PC answers a
+Swaps still to do: Ch5 Pemakar (terraces: trimesh treads + ramps for the flights) and Ashcrown, Ch7 Tamsule (port), Ch4 `haluna_wake` (Haluna's kit at night). Ch1 is slice-polish's. When the PC answers a
 render request above: fetch `gpu/render-act1-chapters-<sha7>`, view every out/diff PNG, approve, and write the
-MERGE-READY lines for Ch4, Ch9 and Coilspire.
+MERGE-READY lines for Ch4, Ch9, Coilspire and Ch7's galleries.
