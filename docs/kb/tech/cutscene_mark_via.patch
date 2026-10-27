@@ -1,0 +1,173 @@
+diff --git a/game/cutscene/cutscene_motion.gd b/game/cutscene/cutscene_motion.gd
+index 3e0f0080..d27546f1 100644
+--- a/game/cutscene/cutscene_motion.gd
++++ b/game/cutscene/cutscene_motion.gd
+@@ -66,3 +66,34 @@ static func _top_speed(dist: float, speed: float, r: Vector2) -> float:
+ 	if ramp_m <= dist or r.x + r.y <= 0.0:
+ 		return speed
+ 	return 2.0 * dist / (r.x + r.y)
++
++
++## The length of a polyline (the sum of its legs).
++static func path_length(path: PackedVector3Array) -> float:
++	var total := 0.0
++	for i in range(1, path.size()):
++		total += path[i - 1].distance_to(path[i])
++	return total
++
++
++## The index of the leg `s` metres along `path` lies on (0 for the first; the last leg past the end).
++static func path_leg(path: PackedVector3Array, s: float) -> int:
++	var run := 0.0
++	for i in range(1, path.size()):
++		run += path[i - 1].distance_to(path[i])
++		if s < run:
++			return i - 1
++	return maxi(path.size() - 2, 0)
++
++
++## The point `s` metres along `path` (clamped to its ends).
++static func path_point(path: PackedVector3Array, s: float) -> Vector3:
++	if path.is_empty():
++		return Vector3.ZERO
++	var left := maxf(s, 0.0)
++	for i in range(1, path.size()):
++		var leg := path[i - 1].distance_to(path[i])
++		if left <= leg and leg > 0.0:
++			return path[i - 1].lerp(path[i], left / leg)
++		left -= leg
++	return path[path.size() - 1]
+diff --git a/game/cutscene/cutscene_sequencer.gd b/game/cutscene/cutscene_sequencer.gd
+index 8ae34951..db443216 100644
+--- a/game/cutscene/cutscene_sequencer.gd
++++ b/game/cutscene/cutscene_sequencer.gd
+@@ -474,7 +474,8 @@ func _cue_fade(step: DialogueStep) -> void:
+ 
+ 
+ func _cue_mark(step: DialogueStep) -> void:
+-	var actor := _actor(StringName(str(step.args[0])))
++	var id := StringName(str(step.args[0]))
++	var actor := _actor(id)
+ 	var target_id := StringName(str(step.args[1]))
+ 	var target := _stage.mark(target_id) if _stage != null else null
+ 	if actor == null:
+@@ -484,20 +485,28 @@ func _cue_mark(step: DialogueStep) -> void:
+ 		return
+ 	var gait := StringName(str(step.args[2])) if step.args.size() > 2 else &"walk"
+ 	var speed := maxf(float(config.get("run_mps" if gait == GAIT_RUN else "walk_mps", 1.0)), 0.01)
+-	var from := actor.global_position
+-	var to := target.global_position
+-	var flat := Vector3(to.x - from.x, 0.0, to.z - from.z)
++	# The way: from where the actor stands, through the `via` marks in order, to the mark (a path round a
++	# rail, down a stair, along a deck); one walk over the whole way, its turns eased at each corner.
++	var path := PackedVector3Array([actor.global_position])
++	for via_id in str(step.kwargs.get("via", "")).split(",", false):
++		var via := _stage.mark(StringName(via_id.strip_edges())) if _stage != null else null
++		if via == null:
++			_warn("no via mark '%s' on the stage" % via_id.strip_edges())
++			continue
++		path.append(via.global_position)
++	path.append(target.global_position)
++	var flat := _flat_dir(path, 0)
+ 	if flat.length() > 0.01:
+-		_turn_to(StringName(str(step.args[0])), actor, flat)  # turns into the walk, never snaps
++		_turn_to(id, actor, flat)  # turns into the walk, never snaps
+ 	# M2-FP-29: a beat of anticipation, then the walk speeds up, cruises and slows to a stop; the
+ 	# walk clip cross-fades in as it sets off and back to idle as it settles.
+-	var dist := from.distance_to(to)
++	var dist := CutsceneMotion.path_length(path)
+ 	var accel := float(config.get("walk_accel_sec", 0.0))
+ 	var decel := float(config.get("walk_decel_sec", 0.0))
+ 	var lead := float(config.get("walk_anticipation_sec", 0.0))
+ 	var walk := CutsceneMotion.walk_duration(dist, speed, accel, decel)
+ 	var dur := lead + walk
+-	var state := {"walking": false}
++	var state := {"walking": false, "leg": 0}
+ 	_start_motion(
+ 		&"move:%s" % step.args[0],
+ 		dur,
+@@ -508,7 +517,14 @@ func _cue_mark(step: DialogueStep) -> void:
+ 			if sec > 0.0 and t < 1.0 and not state["walking"]:
+ 				state["walking"] = true
+ 				_play_clip(actor, gait)
+-			_place(actor, from.lerp(to, CutsceneMotion.walk_fraction(sec, dist, speed, accel, decel)))
++			var s := CutsceneMotion.walk_fraction(sec, dist, speed, accel, decel) * dist
++			var leg := CutsceneMotion.path_leg(path, s)
++			if leg > int(state["leg"]) and t < 1.0:
++				state["leg"] = leg
++				var turn := _flat_dir(path, leg)
++				if turn.length() > 0.01:
++					_turn_to(id, actor, turn)  # the corner, eased like the first turn
++			_place(actor, CutsceneMotion.path_point(path, s))
+ 			if t >= 1.0:
+ 				if not state["walking"]:
+ 					_play_clip(actor, gait)  # instant or skipped: the walk still happened
+@@ -516,6 +532,13 @@ func _cue_mark(step: DialogueStep) -> void:
+ 	)
+ 
+ 
++## The level direction of leg `i` of `path` (from point i to point i + 1), or zero.
++static func _flat_dir(path: PackedVector3Array, i: int) -> Vector3:
++	if i + 1 >= path.size():
++		return Vector3.ZERO
++	return Vector3(path[i + 1].x - path[i].x, 0.0, path[i + 1].z - path[i].z)
++
++
+ func _cue_anim(step: DialogueStep) -> void:
+ 	var actor := _actor(StringName(str(step.args[0])))
+ 	if actor == null:
+diff --git a/game/data/dialogue/cues.json b/game/data/dialogue/cues.json
+index 974a7034..1ac9ff17 100644
+--- a/game/data/dialogue/cues.json
++++ b/game/data/dialogue/cues.json
+@@ -28,9 +28,9 @@
+    "kwargs": {"loop": {"type": "bool"}}
+   },
+   "mark": {
+-   "doc": "Move an actor to a scene mark.",
++   "doc": "Move an actor to a scene mark: in a straight line, or along the via marks (comma-separated, in order) as one eased walk turning at each corner.",
+    "args": [{"name": "actor", "type": "id"}, {"name": "mark", "type": "id"}, {"name": "gait", "type": "enum", "values": ["walk", "run"], "optional": true}],
+-   "kwargs": {}
++   "kwargs": {"via": {"type": "string"}}
+   },
+   "face": {
+    "doc": "Override the facial expression over sec seconds (otherwise lines' [emotion] drives it).",
+diff --git a/tests/unit/test_cutscene_mark_via.gd b/tests/unit/test_cutscene_mark_via.gd
+new file mode 100644
+index 00000000..63d67591
+--- /dev/null
++++ b/tests/unit/test_cutscene_mark_via.gd
+@@ -0,0 +1,33 @@
++extends TestCase
++## M3-CIN-1220 (a patch for m2-slice's sequencer, docs/kb/tech/cutscene_mark_via.patch): `@mark <actor> <mark>
++## via=<mark>,<mark>` walks the polyline through the via marks as one eased walk. CutsceneMotion's path helpers: the
++## length, the leg a distance lies on, and the point there.
++
++const PATH := [Vector3(0, 0, 0), Vector3(3, 0, 0), Vector3(3, 2.4, -4)]
++
++
++func _path() -> PackedVector3Array:
++	return PackedVector3Array(PATH)
++
++
++func test_a_path_is_as_long_as_its_legs() -> void:
++	assert_true(is_equal_approx(CutsceneMotion.path_length(_path()), 3.0 + Vector3(0, 2.4, -4).length()))
++	assert_eq(CutsceneMotion.path_length(PackedVector3Array([Vector3.ONE])), 0.0, "one point: no length")
++
++
++func test_a_distance_lies_on_its_leg() -> void:
++	assert_eq(CutsceneMotion.path_leg(_path(), 0.0), 0)
++	assert_eq(CutsceneMotion.path_leg(_path(), 2.9), 0)
++	assert_eq(CutsceneMotion.path_leg(_path(), 3.1), 1, "past the corner")
++	assert_eq(CutsceneMotion.path_leg(_path(), 99.0), 1, "past the end: the last leg")
++
++
++func test_the_point_along_a_path_turns_the_corner_and_lands() -> void:
++	assert_eq(CutsceneMotion.path_point(_path(), 0.0), Vector3.ZERO)
++	assert_true(CutsceneMotion.path_point(_path(), 1.5).is_equal_approx(Vector3(1.5, 0, 0)), "on the first leg")
++	assert_true(CutsceneMotion.path_point(_path(), 3.0).is_equal_approx(Vector3(3, 0, 0)), "at the corner")
++	var second := Vector3(0, 2.4, -4).length()
++	var half := CutsceneMotion.path_point(_path(), 3.0 + second * 0.5)
++	assert_true(half.is_equal_approx(Vector3(3, 1.2, -2)), "half up the second leg (a stair's line)")
++	assert_eq(CutsceneMotion.path_point(_path(), 99.0), Vector3(3, 2.4, -4), "clamped to the end")
++	assert_eq(CutsceneMotion.path_point(_path(), -1.0), Vector3.ZERO, "clamped to the start")
