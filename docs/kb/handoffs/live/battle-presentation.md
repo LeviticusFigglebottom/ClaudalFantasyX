@@ -52,6 +52,7 @@ pass (lineup 4/0; it fails with the spread off), and the battle filter gives 638
 so a full battle-shot capture comes next.
 
 ### Render requests
+RENDER-REQUEST @ 60cbb212: battle_boss_intro_hullgnaw; why: FAST-TRACK M3-BPR-404. At c1d1e3e the party rule (party_max_h 0.3) widened Hullgnaw's camera past the raft's rope rail, which cut across the serpent. At 0.36 it keeps its approved 10.6 m frame (Rhen 0.35 tall at its side); the Drownbell, Matron and Wraith frames don't change.
 RENDER-REQUEST @ ed3a458e: battle_choreo_melee,battle_choreo_hit,battle_choreo_ko,battle_choreo_toll,battle_choreo_summon,drownbell_flood,battle_boss_intro_reach,battle_arena_wall_head; why: M3-BPR-416. The reef crab's Brine Spit now stays in place, a timeline push staggers its target, and summoned foes (the flood's polyps) walk onto their marks. The sandbox_reef choreo shots and drownbell_flood may move. The reach and wall_head shots are still unbaselined (repeated from 60b62678).
 RENDER-REQUEST @ 25dcea24: battle_boss_intro_hullgnaw,battle_boss_intro_inquisitor,battle_boss_intro_matron,battle_boss_intro_hermit,battle_boss_intro_wraith,battle_boss_intro_drownbell; why: FAST-TRACK M3-BPR-404, the Hullgnaw boss intro framed too close (the human's playtest). The camera fits the boss model and clears the title card. All six move.
 RENDER-REQUEST @ 25dcea24: battle_hud_preview,battle_swap_menu,battle_victory,battle_statuses,battle_swell_ring,battle_read_panel,battle_opening_banner,battle_swell_modes,battle_vowbound_call,battle_vowbound_out,battle_choreo_melee,battle_choreo_hit,battle_choreo_cast,battle_choreo_support,battle_choreo_read,battle_choreo_ko,battle_choreo_swap,battle_arena_tideline,battle_arena_causeway,battle_choreo_lamp_dive,battle_choreo_toll,battle_choreo_vowbound_rise,battle_choreo_summon,drownbell_flood,battle_swell_chant,battle_swell_brace,battle_swell_glyph,battle_statuses_colorblind,battle_pause,battle_arena_raft,battle_arena_underway,battle_arena_route,battle_arena_derelict,battle_arena_terrace,battle_arena_tideline_dawn,battle_arena_causeway_disc_sunset,battle_arena_causeway_route_afternoon,battle_arena_derelict_deck_night,battle_arena_ash_terrace_lanternfall,battle_arena_oruvel_raft_morning,battle_arena_underway_tower,battle_arena_shoals,battle_arena_camp,battle_hud_21x9,battle_hud_16x10; why: M3-BPR-401 battle feel (flash, recoil, shake by damage, KO slow-mo, the hit-stop hold fix) + M3-BPR-402 melee spacing and detour + M3-BPR-403 opening line-up spread sideways by footprint, now on the big9 real heroes. Expect the choreo_* and every sandbox_reef shot to move; arenas may move where 403 spreads a line-up.
@@ -59,6 +60,33 @@ RENDER-REQUEST @ 25dcea24: battle_hud_preview,battle_swap_menu,battle_victory,ba
 RENDER-REQUEST @ 680cd88e: battle_boss_intro_reach,battle_choreo_melee,battle_choreo_hit,battle_choreo_ko,battle_choreo_toll; why: M3-BPR-406 Ch8 set pieces. The new Reach boss intro (no baseline yet: test_screenshots' baselined check is red until it is approved), and the hit-stop hold fix plus the counter planning re-checked on the choreo shots.
 
 RENDER-REQUEST @ 60b62678: battle_arena_wall_head,battle_boss_intro_reach; why: M3-BPR-406 greybox wall_head_storm arena for Ch8 (new shot, no baseline yet); the Reach intro now stands on it. Supersedes the reach id in the 680cd88e line.
+
+### 2026-10-27 21:xx: big12 merged in; the FAST-TRACK render viewed; Ilun's model ready
+- **Merged big12** (integration e930595c) at 6d57bdff:
+  - the four battle_choreo baselines and shots.json taken from the integration branch (it carries the reach and
+    wall_head shots);
+  - ownership.md, flags.tres and strings.csv unioned;
+  - validate_data 0/0.
+- **PC render gpu/render-battle-presentation-c1d1e3e, all four drifts viewed:**
+  - **drownbell, approved:** the bell is whole above the card, and the party stands small at the right, clear of the
+    timeline (the big11 fix works).
+  - **matron and wraith, approved:** the same compositions as their baselines, now with the real heroes (big11).
+  - **hullgnaw, NOT approved.** The party rule at 0.3 rejected Rhen at the serpent's side (0.35 of the screen, inside
+    the safe frame). The camera widened from 10.6 to 11.7 m, past the raft's rope rail, and the rail and a post cut
+    across Hullgnaw's head.
+    - Fixed: `party_max_h` is now 0.36, and Hullgnaw keeps the frame it has with no party rule at all.
+    - The Drownbell keeps the +45° orbit just approved, and the Matron and Wraith don't move.
+    - New test `test_the_party_rule_widens_a_shot_only_when_the_party_crowds_it` (it fails at 0.3).
+    - Re-requested at 60cbb212.
+  - inquisitor and hermit pass unchanged.
+  - Approvals: 7aa31b6f.
+- **Ilun's model (M3-BPR-417):** a creatures.json row keyed by a Vowbound's id with a `scene` now replaces the
+  capsule. Before, only enemies.json `model` reached the stage, so Ilun would have stayed a capsule.
+  - Tested on a borrowed creature scene: the call, the C10 rise, and the head for the frame.
+  - **creatures:** what Ilun's row needs is in docs/kb/tasks/M3/M3-BPR-417 (row id `ilun`, the scene, stand_in yaw,
+    attack and cast clips with contact times).
+- **Checks:** boss_intro 20/0, vowbound_model 2/0; gdlint and gdformat clean. Full `--filter=battle` on HEAD:
+  FULLRUN_PLACEHOLDER.
 
 ### 2026-10-27 20:50: the audit list, entry by entry (answering the Lead's 20:47)
 The list is empty except for blocked entries. Each one below has its staging, its test and its render request, or
