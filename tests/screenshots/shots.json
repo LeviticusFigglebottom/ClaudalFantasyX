@@ -3278,6 +3278,62 @@
         960,
         720
       ]
+    },
+    {
+      "id": "creature_ridge_lynx",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_ridge_lynx.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
+      "id": "creature_cord_moth",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_cord_moth.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
+      "id": "creature_glass_skate",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_glass_skate.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
+      "id": "creature_root_crab",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_root_crab.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
+      "id": "creature_fen_leech",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_fen_leech.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
+      "id": "creature_scree_crawler",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_scree_crawler.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
+      "id": "creature_rim_crawler",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_rim_crawler.tscn",
+      "resolution": [
+        960,
+        720
+      ]
     }
   ]
 }

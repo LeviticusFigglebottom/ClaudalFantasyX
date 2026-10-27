@@ -30,6 +30,10 @@ BODY_Y = 0.40  # carapace centre height
 SHELL_R = (0.52, 0.21, 0.42)  # dome radii (x, y up, z forward)
 SIDE_R = -1.0
 LEG_Z = (0.19, 0.06, -0.08, -0.21)  # hip z of the four walking legs, front to back  # the crusher's side: its right, -x, faces the battle camera once the stage turns it to the party
+# The walking legs' proportions, a variant's parameter (the root crab climbs on longer legs, M3-CRE-628): the knee's
+# x, its height and its z as a factor of the hip's, then the foot's x and z factor (the foot is on the ground).
+LEG_KNEE = (0.62, 0.47, 1.7)
+LEG_FOOT = (0.80, 2.3)
 
 
 def build_rig() -> ck.Rig:
@@ -41,9 +45,9 @@ def build_rig() -> ck.Rig:
         for i in range(4):
             z = LEG_Z[i]
             hip = (side * 0.36, 0.33, z)
-            knee = (side * 0.62, 0.47, z * 1.7)
+            knee = (side * LEG_KNEE[0], LEG_KNEE[1], z * LEG_KNEE[2])
             rig.add(f"leg_{tag}{i}_a", hip, knee, "body")
-            rig.add(f"leg_{tag}{i}_b", knee, (side * 0.80, 0.0, z * 2.3), f"leg_{tag}{i}_a")
+            rig.add(f"leg_{tag}{i}_b", knee, (side * LEG_FOOT[0], 0.0, z * LEG_FOOT[1]), f"leg_{tag}{i}_a")
     for side, tag, s in ((SIDE_R, "crusher", 1.0), (-SIDE_R, "cutter", 0.6)):
         sh = (side * 0.26, 0.36, 0.30)
         wr = (side * (0.36 + 0.14 * s), 0.40, 0.50 + 0.04 * s)

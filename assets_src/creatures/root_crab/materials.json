@@ -1,0 +1,38 @@
+{
+  "_doc": "root_crab (act2/variants.md): the reef_crab slots. The shell is mangrove bark (rougher, a deeper grain; the root knot is on it too) and keeps the spawn_wound crack's emission. Colours are vertex data. write_materials.py on game/shaders/creature/creature.gdshader.",
+  "slots": {
+    "shell": {
+      "roughness_dry": 0.95,
+      "roughness_wet": 0.45,
+      "wet_darken": 0.72,
+      "clearcoat_wet": 0.2,
+      "detail_scale": 34.0,
+      "detail_albedo": 0.2,
+      "detail_bump": 0.3,
+      "cavity_albedo": 0.45,
+      "emission_color": "#3FE0C8",
+      "emission_energy": 1.4,
+      "emission_pulse_hz": 0.35,
+      "emission_pulse_depth": 0.35,
+      "specular": 0.3
+    },
+    "chitin": {
+      "roughness_dry": 0.62,
+      "roughness_wet": 0.3,
+      "wet_darken": 0.7,
+      "clearcoat_wet": 0.5,
+      "detail_scale": 30.0,
+      "detail_albedo": 0.12,
+      "detail_bump": 0.2,
+      "cavity_albedo": 0.5
+    },
+    "eye": {
+      "roughness_dry": 0.12,
+      "roughness_wet": 0.06,
+      "specular": 0.7,
+      "clearcoat_wet": 1.0,
+      "detail_albedo": 0.0,
+      "detail_bump": 0.0
+    }
+  }
+}
