@@ -1,0 +1,8 @@
+FAIL ch06_brine_road: rmse 0.02870 (limit 0.00800)
+PASS ch06_brine_camp: rmse 0.00000 (limit 0.00800)
+PASS ch08_corrow_arrival: rmse 0.00000 (limit 0.00800)
+PASS ch08_corrow_stair: rmse 0.00000 (limit 0.00800)
+FAIL ch09_corrow_strand: no baseline (inspect out/, then compare.py --update-baselines ch09_corrow_strand)
+FAIL ch09_corrow_road: no baseline (inspect out/, then compare.py --update-baselines ch09_corrow_road)
+Screenshots: 6 compared, 3 failed (diffs in /root/hymn/tests/screenshots/out/diff)
+compare exit 1
