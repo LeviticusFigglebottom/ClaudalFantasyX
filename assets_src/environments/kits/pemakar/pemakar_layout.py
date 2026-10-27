@@ -64,6 +64,7 @@ SEA_LIGHT_COUNT = 200
 SEA_SHORE_Z_M = 29.0  # where the sea meets the massif's foot below the town (massif_height = 0)
 HARBOUR_FRONT_Z = 27.0  # the quay's front edge (the ch05/pemakar zone's QUAY_FRONT_Z), M3-ENV-1214
 HARBOUR_DECK_Y = 1.2
+FLANK_PATCHES = 36  # flank_rocks patches on the massif's lower flank (M3-ENV-705)
 WEIR_CREST_Y = 0.4  # the sea-cut weir's crest over the sea
 SEA_DRIFT_M = 120.0  # how far out the drift reaches
 SEA_LIGHT_Y_M = 0.35  # just above the swell crests (lagoon_waves, about 0.3 m)
@@ -311,6 +312,26 @@ def build(seed: int = SEED) -> dict:
 
     # --- skyline and far lights -------------------------------------------------------------------
     pieces.append(piece("mountain_massif", np.zeros(3), 0.0))
+    # M3-ENV-705: the massif's lower flank round the harbour read as a bare smooth slope in P04/P11. Rock patches
+    # (flank_rocks: boulders, scree, dry scrub, ash lenses) on its gentler ground, clear of the town's tiers, the
+    # quay and the sea; each seated at its lowest corner so nothing floats.
+    flank_noise = kc.Noise3(kc.rng_for("mountain_massif", 801))
+    flank_rng = kc.rng_for("flank_rocks_layout", 745)
+    placed = 0
+    for _ in range(400):
+        if placed >= FLANK_PATCHES:
+            break
+        x, z = float(flank_rng.uniform(-150.0, 150.0)), float(flank_rng.uniform(-50.0, 24.0))
+        if abs(x) < 64.0 and pc.town_tier_at(np.array([x]), np.array([z]))[0] >= -0.5:
+            continue
+        if abs(x) < 24.0 and z > 12.0:
+            continue
+        cs = np.array([[-7.0, -5.0], [7.0, -5.0], [-7.0, 5.0], [7.0, 5.0], [0.0, 0.0]])
+        hs = sky.massif_height(x + cs[:, 0], z + cs[:, 1], flank_noise)
+        if hs.min() < 1.0 or (hs.max() - hs.min()) / 14.0 > 0.25:
+            continue
+        pieces.append(piece("flank_rocks", np.array([x, float(hs.min()) - 0.05, z]), float(flank_rng.uniform(0, 6.28))))
+        placed += 1
     rim = np.array(sky.massif_rim_point())
     for name in ASHCROWN_PIECES:
         pieces.append(piece(name, rim, 0.0, kit_dir=ASHCROWN_KIT_DIR, materials_dir=ASHCROWN_MATERIALS_DIR,

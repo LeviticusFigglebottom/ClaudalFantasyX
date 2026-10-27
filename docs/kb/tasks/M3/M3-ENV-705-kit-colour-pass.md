@@ -38,3 +38,7 @@ grade and lift the frames that read grey, without breaking each zone's colour-sc
   - **Added, keeping it crisp and straight as haluna.md asks:** marble corner and bay pilasters, a dentil course,
     arched marble window heads, two marble steps to the door, and arched openings in the cupola's drum.
   - LOD0 is 5.5k tris against a 9k budget.
+- **2026-10-27 (env-art): the Pemakar massif's lower flank.** P04 and P11 read it as a bare smooth slope.
+  - **New piece** `flank_rocks`: basalt boulders, scree, dry scrub and ash lenses.
+  - **Placement:** 36 patches on the gentler ground round the harbour (`pemakar_layout.py`, FLANK_PATCHES), clear
+    of the tiers, the quay and the sea.
