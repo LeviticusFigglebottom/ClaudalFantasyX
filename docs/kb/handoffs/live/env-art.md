@@ -253,6 +253,28 @@ env-art is cloud session `session_01YbaV2c8yquRHqj6afQYg89` on `claude/env-art`;
 
   Checks run: haluna_kit full rebuild (older pieces identical), Godot `--filter=arena` 18/0, full tools suite
   (only `test_screenshots` red: new shots without baselines).
+- **MERGE-READY @ 854e6a95: big11 merged** (integration 3cbcff9e, merge c7f1f83b).
+  - **The merge.** The shot manifests were merged by shot id and PROVENANCE by path. The stale `shrine_offering`
+    row is dropped: that piece was renamed `wayside_offering` in 39f66d4c, and this is the queue's item 5. Of the six
+    contested baselines, big11's PC-gate copies win. `battle_arena_shoals`, `battle_arena_camp`,
+    `battle_boss_intro_inquisitor` and `field_tip_card` need a re-render with env-art's later density pass (request
+    below).
+  - **M3-ENV-1000 (doing): the wake.** The Brine Shoals kit's `boat_wake` (`bs_wake.py`, `bs_wake` on
+    `env_boat_wake.gdshader`) is a Kelvin wake for the boats that move. Sefir's barge never gets one. The preview
+    poles a vendor boat up the channel in B05. Left to do: the `RevenantTells` hookup, once M3-RND-03 reaches the
+    integration branch.
+  - **M3-ENV-710.** M2-FP-103 moved Kerrid's vigil to (9.5, −5.5), over the plaza's fallen corner. I pulled the
+    break back to clear him; the test now checks the three stand-ins that remain.
+  - **For the Lead:** `test_audio_loudness` is red on the integration branch itself. 44 `sfx/life/*` files have no
+    target rule, and `sfx/battle/impact_medium_*` sit at −24 LUFS against −19. Env-art's audio and tools files are
+    identical to the integration's.
+
+  Checks run:
+  - full tools suite (red only on screenshots and audio, as above);
+  - Godot `--filter=arena` 18/0, `brine` 5/0, `shader` 42/0, `iskarra` 1/0;
+  - brine_shoals_kit full rebuild (older pieces identical) and haluna_kit full rebuild (only `iskarra_plaza`
+    changed);
+  - validate_data, taskboard, gdlint.
 
 ### Render requests
 RENDER-REQUEST @ a0d2549f: battle_arena_tideline_dawn,battle_arena_causeway_disc_sunset,battle_arena_causeway,battle_arena_tideline,causeway_c02_profile_against_the_lagoon,causeway_c08_drownbell_disc_approach,drownbell_flood,battle_boss_intro_drownbell,haluna_h01_village_from_sea,haluna_h10_dock_night,field_objective_line,field_interact_prompt,field_area_title,field_tip_card,dialogue_continue; why: M3-ENV-701 set dressing in Haluna, the causeway and the two arenas (the five field/dialogue shots frame Haluna's lane 1)
@@ -269,6 +291,7 @@ RENDER-REQUEST @ 599b2418: battle_arena_seawall_stairhead_storm,battle_arena_sea
 RENDER-REQUEST @ fd630bb8: pemakar_p04_harbour_day,pemakar_p11_sea_cut_weir_day,battle_arena_ash_terrace_lanternfall; why: M3-ENV-1214 Pemakar's harbour pieces and day grade (new shots), the crown bell now in the Lanternfall arena's town
 RENDER-REQUEST @ 94fe8f77: tamsule_tp01_port_and_bell,tamsule_tp03_floating_market,tamsule_tp05_gantry_foot; why: M3-C07-04 the Tamsule port kit preview (new shots)
 RENDER-REQUEST @ 95be6118: battle_arena_keth_seep_terrace; why: M3-ENV-717 the Avalanche Ram's arena (new shot)
+RENDER-REQUEST @ 854e6a95: battle_arena_shoals,battle_arena_camp,battle_boss_intro_inquisitor,field_tip_card,brine_b05_barge_channel,iskarra_p01_plaza_dusk,iskarra_i02_gate_from_the_plaza,iskarra_i03_broken_tower,battle_arena_keth_seep_terrace; why: after the big11 merge, big11's copies of the first four lack env-art's Ch6 density pass and Haluna clutter; B05 gains the boat wake (M3-ENV-1000); the Iskarra plaza's corner moved for Kerrid's vigil (supersedes the Iskarra ids in 8770a067)
 
 ## STATE AT HANDOVER (2026-10-25)
 
