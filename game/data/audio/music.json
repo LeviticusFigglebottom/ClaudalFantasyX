@@ -343,7 +343,8 @@
     {"scene": "res://game/levels/ch06/brine_shoals/brine_shoals.tscn", "music": "brine_shoals", "_note": "M3-AUD-828: Ch6, the Shoals; the scene has landed"},
     {"scene": "res://game/levels/ch07/tamsule/tamsule.tscn", "music": "tamsule", "_note": "M3-AUD-828: Ch7, the port; the scene has landed"},
     {"scene": "res://game/levels/ch07/tamsule_bell_galleries/tamsule_bell_galleries.tscn", "music": "tamsule_bell_galleries", "_note": "M3-AUD-828: Ch7, the Bell's galleries; the scene has landed"},
-    {"scene": "res://game/levels/ch09/corrow_night/corrow_night.tscn", "music": "corrow_night", "_note": "M3-AUD-819/828: Ch9, Corrow's night strand"}
+    {"scene": "res://game/levels/ch09/corrow_night/corrow_night.tscn", "music": "corrow_night", "_note": "M3-AUD-819/828: Ch9, Corrow's night strand"},
+    {"scene": "res://game/levels/ch03/saltgrass_causeway/saltgrass_causeway.tscn", "music": "saltgrass_causeway", "reverb": "open_sea", "_note": "B06 (M2-AUD-12): the route from Haluna to the shrine"}
   ],
   "battle": {
     "default": "battle_standard_v2",

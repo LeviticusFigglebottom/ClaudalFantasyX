@@ -17,7 +17,10 @@ func test_kell_stands_as_her_model_idling() -> void:
 	var ap := HeroMotion.player_of(kell)
 	assert_true(ap != null and ap.has_animation(&"idle"), "her actor has an idle clip")
 	assert_eq(String(ap.current_animation), "idle", "and idles, never a T-pose")
-	var cook := zone.stage.actor(&"cook")
-	assert_false(cook.find_children("*", "MeshInstance3D", false, false).is_empty(), "a row without a model keeps it")
+	# M2-FP-118: every Oruvel townsperson wears a villager body (stand-ins until M3-CHR-101), none a capsule.
+	for id: StringName in [&"cook", &"scaleman", &"netmender", &"netmender_2", &"roof_child", &"skipper_sadi", &"sabe"]:
+		var a := zone.stage.actor(id)
+		assert_true(a.find_children("*", "MeshInstance3D", false, false).is_empty(), "%s is no capsule" % id)
+		assert_true(HeroMotion.player_of(a) != null, "%s wears a body" % id)
 	host.remove_child(zone)
 	zone.free()

@@ -5,6 +5,7 @@ extends Ch01Zone
 ##   {"flag": the flag that means the storm is up (ch01_gulls_cried),
 ##    "sun": {...}, "environment": {...}   the stand-in storm light (until lut_ch01_storm and the
 ##                                          Undertow preset ch01_landfall), merged over the day's,
+##    "environment_res": res://...        with a kit Dressing (M3-C01-100): the storm's whole Environment,
 ##    "hide": [block or actor ids], "show": [...]   the day's town gone, the storm's cast and rig up,
 ##    "lashings": {"flags": [...], "frees": block id}  a low hull that drifts clear once every
 ##                                          lashing flag is set (C1-13's two cuts)}.
@@ -14,6 +15,8 @@ extends Ch01Zone
 
 ## True while the storm variant is up.
 var storm := false
+
+var _day_environment: Environment
 
 
 func _ready() -> void:
@@ -34,10 +37,19 @@ func set_storm(on: bool) -> void:
 	sun.light_energy = float(sun_row.get("energy", 1.0))
 	sun.light_color = Color.html(str(sun_row.get("color", "#ffffff")))
 	sun.rotation_degrees = Vector3(float(sun_row.get("pitch_deg", 0.0)), float(sun_row.get("yaw_deg", 0.0)), 0.0)
-	var env := (get_node(^"WorldEnvironment") as WorldEnvironment).environment
-	env.background_color = Color.html(str(env_row.get("background", "#000000")))
-	env.ambient_light_color = Color.html(str(env_row.get("ambient_color", "#ffffff")))
-	env.ambient_light_energy = float(env_row.get("ambient_energy", 1.0))
+	var we := get_node(^"WorldEnvironment") as WorldEnvironment
+	if get_node_or_null(^"Dressing") != null:
+		# M3-C01-100: dressed with the kit, the zone swaps whole environments (the kit's ch01 frame, env-art's
+		# storm stand-in), so the greybox colours never flatten the grade.
+		if _day_environment == null:
+			_day_environment = we.environment
+		var res := str(s.get("environment_res", "")) if on else ""
+		we.environment = (load(res) as Environment).duplicate() if res != "" else _day_environment
+	else:
+		var env := we.environment
+		env.background_color = Color.html(str(env_row.get("background", "#000000")))
+		env.ambient_light_color = Color.html(str(env_row.get("ambient_color", "#ffffff")))
+		env.ambient_light_energy = float(env_row.get("ambient_energy", 1.0))
 	for id: Variant in s.get("hide", []):
 		_set_block(str(id), not on)
 	for id: Variant in s.get("show", []):

@@ -4206,6 +4206,210 @@
         960,
         720
       ]
+    },
+    {
+      "id": "slice_dock_night_yes",
+      "scene": "res://game/levels/_tests/slice_shots/slice_cutscene_shot.tscn",
+      "camera": "default",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 360,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        },
+        "time_scale": 4.0,
+        "nodes": {
+          ".": {
+            "level_path": "res://game/levels/ch02/haluna/haluna.tscn",
+            "story_call": "_night",
+            "flags": [
+              "prologue_seen",
+              "ch02_met_asha",
+              "ch02_tideline_won",
+              "ch02_ate_at_nemes",
+              "ch03_drownbell_defeated"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "ch01_oruvel_dressed",
+      "scene": "res://game/levels/_tests/slice_shots/slice_cutscene_shot.tscn",
+      "camera": "default",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 90,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        },
+        "nodes": {
+          ".": {
+            "level_path": "res://game/levels/ch01/oruvel/oruvel.tscn",
+            "spawn": "ScaleHull",
+            "flags": []
+          }
+        }
+      }
+    },
+    {
+      "id": "ch01_underway_crown",
+      "scene": "res://game/levels/_tests/slice_shots/slice_cutscene_shot.tscn",
+      "camera": "default",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 90,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        },
+        "nodes": {
+          ".": {
+            "level_path": "res://game/levels/ch01/oruvel_underway/oruvel_underway.tscn",
+            "spawn": "Drop",
+            "flags": [
+              "ch01_started"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "ch01_underway_gallery",
+      "scene": "res://game/levels/_tests/slice_shots/slice_cutscene_shot.tscn",
+      "camera": "default",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 90,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        },
+        "nodes": {
+          ".": {
+            "level_path": "res://game/levels/ch01/oruvel_underway/oruvel_underway.tscn",
+            "spawn": "Gallery",
+            "flags": [
+              "ch01_started"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "slice_verse_hall",
+      "scene": "res://game/levels/_tests/slice_shots/slice_cutscene_shot.tscn",
+      "camera": "default",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 60,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        },
+        "nodes": {
+          ".": {
+            "level_path": "res://game/levels/ch03/first_verse/first_verse.tscn",
+            "scene_id": "ch03_the_first_verse",
+            "flags": [
+              "ch02_met_asha"
+            ]
+          }
+        },
+        "time_scale": 4.0
+      }
+    },
+    {
+      "id": "ch01_o07_name_board",
+      "scene": "res://game/levels/_tests/slice_shots/slice_cutscene_shot.tscn",
+      "camera": "default",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 60,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        },
+        "nodes": {
+          ".": {
+            "level_path": "res://game/levels/ch01/oruvel/oruvel.tscn",
+            "spawn": "ScaleHull",
+            "scene_id": "ch01_bark_outer_mooring",
+            "flags": [
+              "ch01_started"
+            ]
+          }
+        },
+        "time_scale": 4.0
+      }
+    },
+    {
+      "id": "ch01_o10_gull",
+      "scene": "res://game/levels/_tests/slice_shots/slice_cutscene_shot.tscn",
+      "camera": "default",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 60,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        },
+        "nodes": {
+          ".": {
+            "level_path": "res://game/levels/ch01/oruvel/oruvel.tscn",
+            "spawn": "KellRun",
+            "scene_id": "ch01_gulls",
+            "flags": [
+              "ch01_started"
+            ]
+          }
+        },
+        "time_scale": 4.0
+      }
     }
   ]
 }

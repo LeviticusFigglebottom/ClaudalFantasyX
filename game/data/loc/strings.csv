@@ -1092,3 +1092,9 @@ ITEM_SAILMAKERS_NEEDLE,Sailmaker's Needle
 ITEM_SAILMAKERS_NEEDLE_DESC,"A sailmaker's steel needle, left sealed in a niche of Coilspire's flues. With two Tide Pearls it stitches Sea Legs into armour (Customize); the needle is spent in the stitching."
 ABILITY_SEA_LEGS,Sea Legs
 ABILITY_SEA_LEGS_DESC,Prevents Slow.
+MAP_POI_SC_POSTS,The marker posts
+MAP_POI_SC_HARRIER,The open flats
+MAP_POI_SC_TIDEPOOLS,The tide pools
+MAP_POI_SC_RING,The Lit Age ring
+MAP_POI_SC_SHRINE_STEPS,The shrine steps
+OBJ_CAUSEWAY_TO_SHRINE,Follow the causeway out to the Shell Shrine while the tide is low.

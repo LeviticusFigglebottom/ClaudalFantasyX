@@ -1,0 +1,52 @@
+extends TestCase
+## The human's playtest: "primitive moments" (M2-FP-116). No scene in the M2 slice (or Ch1's two zones, M3-C01-100
+## and 101) shows a visible PrimitiveMesh (a box, cylinder, sphere, capsule or torus standing in for a model) except
+## the ones listed below, each waiting on its request. A new stand-in fails here until it is listed with the
+## request that replaces it.
+
+const SCENES: Array[String] = [
+	"res://game/levels/prologue/prologue.tscn",
+	"res://game/levels/ch02/haluna/haluna.tscn",
+	"res://game/levels/ch03/saltgrass_causeway/saltgrass_causeway.tscn",
+	"res://game/levels/ch03/shell_shrine/shell_shrine.tscn",
+	"res://game/levels/ch03/first_verse/first_verse.tscn",
+	"res://game/levels/ch01/oruvel/oruvel.tscn",
+	"res://game/levels/ch01/oruvel_underway/oruvel_underway.tscn",
+]
+## Path prefixes (from the scene root) still allowed, and why.
+const KNOWN: Dictionary = {
+	"City/": "the Prologue's Iskarra set (M3-ENV-100)",
+	"HalunaMood/SaveShrine/Visual/": "the save shrine's model (M3-ENV-101)",
+	"NPCs/Neme/Bag": "Neme's bag, a creatures prop",
+	"Set/ChamberPassage": "env-art's passage behind the shrine's east door (part of its dressing)",
+	"Dressing/ChamberPassage": "the same, in the shrine level",
+	"Room/InnerPoolWater/": "the First Verse's pool water (a flat octagon, the shrine level's own shape)",
+	"Greybox/LowHull/": "Ch1's lashed low hull (C1-13's run), kept greybox until a kit piece fits it",
+	"Underwater/UnderwaterPost": "the UnderwaterRig's full-screen post passes (quads, never seen as shapes)",
+}
+
+
+func test_no_unlisted_primitive_shows_in_the_slice() -> void:
+	var tree := Engine.get_main_loop() as SceneTree
+	var host: Node = tree.current_scene if tree.current_scene != null else tree.root
+	for path in SCENES:
+		var root := (load(path) as PackedScene).instantiate()
+		if root.has_method(&"prebuild"):
+			root.call(&"prebuild")
+		if root.get(&"autoplay") != null:
+			root.set(&"autoplay", false)
+		host.add_child(root)  # the runner calls tests without awaiting them: everything here is synchronous
+		for m: Node in root.find_children("*", "MeshInstance3D", true, false):
+			var mi := m as MeshInstance3D
+			if mi.mesh is PrimitiveMesh and mi.is_visible_in_tree():
+				var at := str(root.get_path_to(mi))
+				assert_true(_known(at), "%s shows a %s at %s" % [path.get_file(), mi.mesh.get_class(), at])
+		host.remove_child(root)
+		root.free()
+
+
+func _known(at: String) -> bool:
+	for prefix: String in KNOWN:
+		if at.begins_with(prefix):
+			return true
+	return false
