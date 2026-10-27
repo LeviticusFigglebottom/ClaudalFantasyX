@@ -275,6 +275,22 @@ env-art is cloud session `session_01YbaV2c8yquRHqj6afQYg89` on `claude/env-art`;
   - brine_shoals_kit full rebuild (older pieces identical) and haluna_kit full rebuild (only `iskarra_plaza`
     changed);
   - validate_data, taskboard, gdlint.
+- **MERGE-READY @ 43492e80: M3-ENV-716**, the Lamp Engine's arena `lowlight_engine_hall` (Ch11), in the Haluna kit.
+  - **The hall.** The kit's `lowlight.py` makes `engine_hall`, `conduit_run` and `lamp_niche_tier`. In the hall:
+    - a flooded floor at −0.6 with still water at −0.15;
+    - a dry flagged dais at y 0, set off-centre;
+    - eight piers and a ribbed vault, one bay fallen behind the enemy line;
+    - the trimming rail with twelve bound-teal lamps;
+    - the lamp-niche tiers.
+  - **Grade and anchor.** `lut_ch11_vey` comes from `lowlight_zone_lut.py`. The `BossAnchor` is at
+    (−6.4, −0.6, −2.6), knee-deep.
+  - **Arena writer.** `arena_scenes.py` gains an optional sea `waves` key (an arena's own wave set). Every other
+    arena is byte-identical.
+  - **For act1/creatures:** set the Ch11 Engine encounter's arena to `lowlight_engine_hall`.
+
+  Checks run: haluna_kit full rebuild (older pieces identical), `test_lowlight` 7, `test_arenas`, `test_haluna_kit`,
+  `test_fog_lamps`, `test_release_excludes_tests`, Godot `--filter=arena` 18/0, and the full tools suite (red only on
+  screenshots and the integration's audio).
 
 ### Render requests
 RENDER-REQUEST @ a0d2549f: battle_arena_tideline_dawn,battle_arena_causeway_disc_sunset,battle_arena_causeway,battle_arena_tideline,causeway_c02_profile_against_the_lagoon,causeway_c08_drownbell_disc_approach,drownbell_flood,battle_boss_intro_drownbell,haluna_h01_village_from_sea,haluna_h10_dock_night,field_objective_line,field_interact_prompt,field_area_title,field_tip_card,dialogue_continue; why: M3-ENV-701 set dressing in Haluna, the causeway and the two arenas (the five field/dialogue shots frame Haluna's lane 1)
@@ -292,6 +308,7 @@ RENDER-REQUEST @ fd630bb8: pemakar_p04_harbour_day,pemakar_p11_sea_cut_weir_day,
 RENDER-REQUEST @ 94fe8f77: tamsule_tp01_port_and_bell,tamsule_tp03_floating_market,tamsule_tp05_gantry_foot; why: M3-C07-04 the Tamsule port kit preview (new shots)
 RENDER-REQUEST @ 95be6118: battle_arena_keth_seep_terrace; why: M3-ENV-717 the Avalanche Ram's arena (new shot)
 RENDER-REQUEST @ 854e6a95: battle_arena_shoals,battle_arena_camp,battle_boss_intro_inquisitor,field_tip_card,brine_b05_barge_channel,iskarra_p01_plaza_dusk,iskarra_i02_gate_from_the_plaza,iskarra_i03_broken_tower,battle_arena_keth_seep_terrace; why: after the big11 merge, big11's copies of the first four lack env-art's Ch6 density pass and Haluna clutter; B05 gains the boat wake (M3-ENV-1000); the Iskarra plaza's corner moved for Kerrid's vigil (supersedes the Iskarra ids in 8770a067)
+RENDER-REQUEST @ 43492e80: battle_arena_lowlight_engine_hall; why: M3-ENV-716 the Lamp Engine's flooded hall (new shot)
 
 ## STATE AT HANDOVER (2026-10-25)
 
