@@ -134,6 +134,7 @@ seed and the same decisions always play the same match.
 - `sides.json`: each side's divers (role, and the seven stats breath, stroke, reach, grip, strip, loft,
   ward, in `stat_min..stat_max`), its captain and its kickoff diver.
 - `matches.json`: the two sides, `player_side`, `first_float`, the opposing `ai_profile` and an optional `stakes_key` (what rides on the match; the HUD's framing line, M3-RBL-201).
+  Two more optional fields (M3-C07-05, ADR 0040). `rewards` sets lume and items per outcome; the flow pays them. `requires_item` names a key item the party must hold before the flow offers the match; read it with `ReefballMatch.is_open(row, holds)`. The Oruvel Float gates Oruvel's Act III league match, and that is the Float's only effect: it is never equipped.
 
 `tools/validate_data.py` checks all three (the M3-RBL-01 section): shapes, ranges, unique ids across
 sides, known roles and profiles, captains and kickoff divers on their own side, every action costing a

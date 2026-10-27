@@ -56,6 +56,14 @@ var contacts := 0
 var ai: ReefballAI
 
 
+## Whether the match row may be offered (ADR 0040): a row with "requires_item" needs the party to hold
+## that key item (the Oruvel Float opens Oruvel's Act III league match). `holds`: (item id) -> bool, the
+## flow's inventory check, so the match itself never reads the game.
+static func is_open(row: Dictionary, holds: Callable) -> bool:
+	var need := StringName(str(row.get("requires_item", "")))
+	return need == &"" or bool(holds.call(need))
+
+
 ## Builds the match `match_id` from `database`, seeded with `seed_value`. False (and push_error)
 ## for an unknown match or side.
 func setup(database: ReefballDB, match_id: StringName, seed_value: int) -> bool:

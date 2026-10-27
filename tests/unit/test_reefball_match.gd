@@ -370,3 +370,14 @@ func _play_out(seed_value: int) -> Dictionary:
 	while not m.finished:
 		m.play_ai_contact()
 	return m.snapshot()
+
+
+func test_a_match_gated_on_a_key_item_opens_only_while_the_party_holds_it() -> void:
+	# ADR 0040: the Oruvel Float is a key item; its effect is a gate (Oruvel's Act III league match).
+	var gated := {"id": "league_oruvel", "requires_item": "oruvel_float"}
+	var held: Array[StringName] = []
+	var holds := func(item: StringName) -> bool: return held.has(item)
+	assert_false(ReefballMatch.is_open(gated, holds), "no Float, no match")
+	held.append(&"oruvel_float")
+	assert_true(ReefballMatch.is_open(gated, holds), "the Float opens it")
+	assert_true(ReefballMatch.is_open({"id": "tidecup_opening"}, holds), "an ungated match is always open")

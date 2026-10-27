@@ -122,6 +122,15 @@ class ReefballValidateTest(unittest.TestCase):
         del m["rewards"]
         self.assertEqual(self.errs(), [])
 
+    def test_requires_item(self) -> None:
+        # ADR 0040: a match may be gated on a key item the party holds (the Oruvel Float in the Act III league).
+        m = self.matches["matches"][0]
+        m["requires_item"] = "oruvel_float"
+        self.assertEqual(vd.reefball_errors(self.rules, self.sides, self.matches, {"oruvel_float"}), [])
+        m["requires_item"] = "no_such_item"
+        errs = vd.reefball_errors(self.rules, self.sides, self.matches, {"oruvel_float"})
+        self.assertTrue(any("requires_item 'no_such_item'" in e for e in errs))
+
     def test_bad_top_level(self) -> None:
         self.assertTrue(vd.reefball_errors({}, {}, {}))
         self.rules["rules"]["bands"] = [{"id": "ring", "name_key": "K"}]

@@ -3067,6 +3067,8 @@ def reefball_matches_errors(
             errs.append(f"{w}: stakes_key must be a non-empty loc key (M3-RBL-201)")
         if "rewards" in m:
             errs += reefball_rewards_errors(m["rewards"], w, items)
+        if "requires_item" in m and items is not None and m["requires_item"] not in items:
+            errs.append(f"{w}: requires_item '{m['requires_item']}' is not an item (ADR 0040: a key item's gate)")
     return errs
 
 
