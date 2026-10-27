@@ -3308,6 +3308,54 @@
           "screen_space_aa": 1
         }
       }
+    },
+    {
+      "id": "pemakar_p04_harbour_day",
+      "scene": "res://game/levels/_tests/pemakar_kit/pemakar_kit_preview.tscn",
+      "camera": "Cameras/P04",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        },
+        "nodes": {
+          ".": {
+            "mood": "day"
+          }
+        }
+      }
+    },
+    {
+      "id": "pemakar_p11_sea_cut_weir_day",
+      "scene": "res://game/levels/_tests/pemakar_kit/pemakar_kit_preview.tscn",
+      "camera": "Cameras/P11",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        },
+        "nodes": {
+          ".": {
+            "mood": "day"
+          }
+        }
+      }
     }
   ]
 }

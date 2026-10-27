@@ -68,7 +68,8 @@ def read_glb(path: Path) -> dict:
 
 class KitGeometryTests(unittest.TestCase):
     def test_every_target_is_inside_its_budget_with_a_lod_chain(self) -> None:
-        self.assertEqual(len(TARGETS), 27)  # 25 kit pieces + M3-ENV-06's arena_ash_tread + M3-ENV-11's ash_plume_near
+        self.assertEqual(len(TARGETS), 31)  # 25 kit pieces + M3-ENV-06's arena_ash_tread + M3-ENV-11's ash_plume_near
+        # + M3-ENV-1214's harbour_quay, sea_cut_weir, wake_wall, crown_bell
         for name, (key, module, _fn) in TARGETS.items():
             with self.subTest(target=name):
                 builders = built(name)
