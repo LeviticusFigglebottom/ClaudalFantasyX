@@ -85,6 +85,38 @@ The terrace top is the battle floor at y 0, 16 × 10 m of old road paving with t
 - The keth have no script and no flags; the knots carry the names.
 - The seep's light is steady and runs down; motes near it rise fast (`glimmer_lift`, the heights).
 
+## 5. Quellan and Cloudloom (`ch12/quellan`, `ch12/cloudloom`)
+
+**Quellan** (bible §5): the Ullari highland town below the summit.
+- **Fabric:** dry-laid grey stone houses, one and two storeys, built into the slope with flat turf-edged roofs.
+- **Awnings:** every doorway and yard is shaded by a **woven awning** on poles, in undyed wool with the red
+  weft-bands that the keth also use.
+- **Town:** narrow stepped lanes; the pass-cords run across the lanes too.
+
+**Cloudloom** (bible §5; ADR 0015, N-15: Holy, Hesk; **stone, cord and sky, not ice**): a weaving-hall cut into the
+summit rock.
+- **Shell:** the walls are the rock itself, dressed smooth and white inside; the floor is white stone.
+- **Roof:** there is none. A lattice of timber beams spans the hall, and from every beam hang thousands of keth.
+- **Noon:** the sun comes straight down through the open roof, and the cords' shadows fall on the white floor like
+  writing. Ysolde reads them, and lies about what they say.
+- **Centre:** the old loom-frame where Hesk is bound.
+
+**Light at noon** (`ch12` key, high): sun 75° / 180°, key `#FAF6FF` 3.0, fill `#7FA6DC` 0.6, the floor's bounce white.
+The shadow-writing needs hard shadows (the shadow blur low). No snow or ice inside; the thin wind stirs the cords.
+
+| Piece | What it is | Size | Budget |
+|---|---|---|---|
+| `cloudloom_hall` | The rock-cut hall: white dressed walls 9 m, the white stone floor, the beam lattice over the open roof, the loom-frame on its dais at the centre, the entrance cut on +Z | 24 × 16 | 16k / 1.2k |
+| `keth_curtain` | One beam's hang of keth: 240 cords, 1.2–4 m, undyed and red, knotted (two-sided strips, so they cast the writing) | 6 m | 4k / 300 |
+| `quellan_house` | A dry-stone highland house, two storeys into the slope, flat turf-edged roof, a door with a woven awning | 6 × 5 × 6 | 7k / 500 |
+| `woven_awning` | A freestanding awning: four poles, undyed wool with red weft-bands, sagging | 3 × 2.5 | 1.5k / 120 |
+
+| Shot | Lens | Camera | Frame |
+|---|---|---|---|
+| K05 ◆★ | 24 mm | Cloudloom's floor, looking up | The beam lattice and the keth against the open sky. |
+| K06 ◆★ | 35 mm | The floor at noon | The cords' shadows written across the white stone, a figure reading them. |
+| K07 ◆ | 28 mm | A Quellan lane | Stepped stone, the awnings, a pass-cord across the lane. |
+
 ## Open question (for the creatures track)
 
 `avalanche_ram.md` gives the Ram fleece "matted into plates of ice", an ice beard, and snow shed by its cast. ADR
@@ -105,3 +137,6 @@ live log for the creatures track.
   1 m, with a laid-stone bed, a dry-stone parapet on the drop side and the cut bank's scree; modules chain end to
   end. `keth_scree_slope` is a 40 × 40 m panel. `woolback_trough` is the trough with its broken herd-gate. Quellan's
   and Cloudloom's pieces follow with those zones.
+- 2026-10-27 (env-art, M3-ENV-717): §5 Quellan and Cloudloom, and their pieces: `cloudloom_hall` (the rock-cut
+  hall, the beam lattice over the open roof, the loom-frame), `keth_curtain` (one beam's 240 keth, two-sided so they
+  cast the floor's writing), `quellan_house` and `woven_awning`. Nothing frozen.

@@ -16,6 +16,15 @@ Built in the Haluna kit (its import kind and materials directory, as iskarra.py)
                        parapet on the drop side (+Z), the cut bank's scree on the uphill side; modules chain end to end.
   keth_scree_slope     a 40 x 40 m scree-and-crag panel rising 18 m toward -Z, its front edge level at y 0.
   woolback_trough      the herders' stone trough, 3 x 0.8 m, and a broken herd-gate, one rail tied with red.
+  cloudloom_hall       Cloudloom (keth_pass.md §5): the rock-cut weaving-hall, 24 x 16 m inside, white dressed walls to
+                       9 m, the white stone floor, the beam lattice over the open roof, the loom-frame on its dais at
+                       the centre, the entrance cut through the +Z wall. Stone, cord and sky: nothing frozen.
+  keth_curtain         one beam's hang of keth: 240 cords, 1.2-4 m, undyed and red, knotted, two-sided strips (they cast
+                       the floor's writing); origin at the beam's centre, the beam along X, the cords hanging to -Y.
+  quellan_house        a dry-stone highland house, two storeys (5.2 m) on a level footing (the layout sinks its back into
+                       the slope), a flat turf-edged roof, the door on +Z under a woven awning; origin at the front's
+                       foot centre.
+  woven_awning         a freestanding woven awning on four poles, 3 x 2.5 m, undyed wool with red weft-bands, sagging.
   pass_cord            a cord from post to post across a saddle, 18 m, sagging, hung with knotted keth (undyed wool
                        and red: a knot is a name). Origin at the span's centre on the ground, the cord along X.
   cairn                a road cairn of stacked stones with cords tied round it.
@@ -41,7 +50,8 @@ M_RED = "kit_keth_red"
 M_DARK = "kit_interior_dark"
 M_TIMBER = "kit_timber"
 
-TRI_BUDGET = {"keth_road_switchback": (8000, 500), "keth_scree_slope": (12000, 1000), "woolback_trough": (2000, 150),
+TRI_BUDGET = {"cloudloom_hall": (16000, 1200), "keth_curtain": (4000, 300), "quellan_house": (7000, 500),
+              "woven_awning": (1500, 120), "keth_road_switchback": (8000, 500), "keth_scree_slope": (12000, 1000), "woolback_trough": (2000, 150),
               "keth_terrace_ground": (26000, 2400), "lit_terrace_wall": (16000, 1200), "seep_pool": (5000, 300),
               "pass_cord": (7000, 400), "cairn": (2500, 150), "keth_far_ridges": (4000, 1500)}
 
@@ -440,6 +450,181 @@ def build_trough(seed: int = 1509) -> list[kc.MeshBuilder]:
     return out
 
 
+# ---------------------------------------------------------------------------------------------
+# Quellan and Cloudloom (keth_pass.md §5)
+# ---------------------------------------------------------------------------------------------
+HALL_HALF = (12.0, 8.0)  # x, z inside
+HALL_H = 9.0
+BEAM_Y = 8.6
+BEAM_SPACING = 2.0
+
+
+def build_cloudloom_hall(seed: int = 1510) -> list[kc.MeshBuilder]:
+    out = []
+    hx, hz = HALL_HALF
+    for lod in (False, True):
+        rng = kc.rng_for("cloudloom_hall", seed)
+        noise = kc.Noise3(rng)
+        mb = kc.MeshBuilder("cloudloom_hall" + ("-lod1" if lod else ""))
+        white, crag, timber = mb.material(M_LIT), mb.material(M_CRAG), mb.material(M_TIMBER)
+        # The floor: large white slabs (one plate at LOD1).
+        if lod:
+            kc.rounded_block(mb, (0.0, -0.1, 0.0), (hx, 0.1, hz), white, radius=0.02, seg=1)
+        else:
+            for x in np.arange(-hx, hx - 0.01, 2.0):
+                for z in np.arange(-hz, hz - 0.01, 2.0):
+                    kc.rounded_block(mb, (x + 1.0, -0.1 + rng.uniform(-0.004, 0.0), z + 1.0), (0.985, 0.1, 0.985),
+                                     white, radius=0.015, seg=1, weather=LIT, variation=float(rng.random()))
+        # The walls: dressed white inside, the summit's rough crag outside (a thick rock mass), the entrance on +Z.
+        for (cx, cz, sx, sz) in ((0.0, -hz - 1.5, hx + 3.0, 1.5), (-hx - 1.5, 0.0, 1.5, hz), (hx + 1.5, 0.0, 1.5, hz)):
+            kc.rounded_block(mb, (cx, HALL_H * 0.5, cz), (sx, HALL_H * 0.5, sz), white, radius=0.06, seg=1,
+                             noise=None if lod else noise, disp_m=0.01, weather=LIT, variation=float(rng.random()))
+            kc.rounded_block(mb, (cx * 1.12, HALL_H * 0.45, cz * 1.12), (sx * 1.05 + 0.6, HALL_H * 0.55, sz * 1.05 + 0.6),
+                             crag, radius=0.6, seg=1 if lod else 2, noise=None if lod else noise, disp_m=0.4,
+                             weather=ROCK, variation=float(rng.random()))
+        for sx in (-1.0, 1.0):  # the front wall, either side of the 3 m entrance
+            kc.rounded_block(mb, (sx * (hx + 3.0 + 1.5) * 0.5, HALL_H * 0.5, hz + 1.5),
+                             ((hx + 3.0 - 1.5) * 0.5, HALL_H * 0.5, 1.5), white, radius=0.06, seg=1, weather=LIT,
+                             variation=float(rng.random()))
+        kc.rounded_block(mb, (0.0, HALL_H - 1.5, hz + 1.5), (1.5, 1.5, 1.5), white, radius=0.06, seg=1, weather=LIT)
+        # The beam lattice over the open roof: main beams across X every 2 m, two long ties along Z.
+        for z in np.arange(-hz + 1.0, hz, BEAM_SPACING):
+            kc.rounded_block(mb, (0.0, BEAM_Y, z), (hx + 0.6, 0.14, 0.12), timber, radius=0.03, seg=1,
+                             noise=None if lod else noise, disp_m=0.008)
+        for x in (-hx * 0.5, hx * 0.5):
+            kc.rounded_block(mb, (x, BEAM_Y + 0.28, 0.0), (0.12, 0.14, hz + 0.6), timber, radius=0.03, seg=1)
+        # The loom-frame on its dais at the centre.
+        kc.rounded_block(mb, (0.0, 0.15, 0.0), (2.4, 0.15, 1.6), white, radius=0.04, seg=1, weather=LIT)
+        for sx in (-1.0, 1.0):
+            kc.tube(mb, np.array([[sx * 1.8, 0.3, 0.0], [sx * 1.8, 3.4, 0.0]]), 0.1, 4 if lod else 8, timber,
+                    cap_end=True)
+        for y in (0.9, 3.1):
+            kc.tube(mb, np.array([[-1.9, y, 0.0], [1.9, y, 0.0]]), 0.07, 4 if lod else 8, timber)
+        if not lod:  # the warp: undyed and red threads strung between the beams of the loom
+            for k, x in enumerate(np.linspace(-1.6, 1.6, 33)):
+                kc.tube(mb, np.array([[x, 0.95, 0.0], [x, 3.05, 0.0]]), 0.006, 3, mb.material(M_RED if k % 6 == 0 else M_WOOL))
+        out.append(mb)
+    return out
+
+
+def build_keth_curtain(seed: int = 1511) -> list[kc.MeshBuilder]:
+    out = []
+    for lod in (False, True):
+        rng = kc.rng_for("keth_curtain", seed)
+        mb = kc.MeshBuilder("keth_curtain" + ("-lod1" if lod else ""))
+        wool, red = mb.material(M_WOOL), mb.material(M_RED)
+        n = 60 if lod else 240
+        for k in range(n):
+            x = rng.uniform(-3.0, 3.0)
+            z = rng.normal(0.0, 0.05)
+            ln = rng.uniform(1.2, 4.0)
+            w = (0.012 if not lod else 0.05)
+            mat = red if rng.random() < 0.28 else wool
+            sway = np.array([rng.normal(0, 0.04), 0.0, rng.normal(0, 0.08)])
+            top = np.array([x, -0.14, z])
+            bot = top + np.array([0.0, -ln, 0.0]) + sway
+            side = np.array([w, 0.0, 0.0])
+            grid = np.array([[top - side, top + side], [bot - side, bot + side]])
+            for flip in (False, True):
+                kc.quad_strip(mb, grid, mat, uv=np.array([[[0, 0], [1, 0]], [[0, 1], [1, 1]]]), col=(0, 0, 0, 0.3),
+                              uv2=(0.9, 0.5), flip=flip, smooth=False)
+            if not lod:
+                for kk in range(int(rng.integers(1, 4))):  # the knots (a knot is a name): a short, wider band
+                    c = top + (bot - top) * (kk + 1) / 4.0
+                    k_side = np.array([0.022, 0.0, 0.0])
+                    knot = np.array([[c - k_side + [0, 0.02, 0], c + k_side + [0, 0.02, 0]],
+                                     [c - k_side - [0, 0.02, 0], c + k_side - [0, 0.02, 0]]]) + [0.0, 0.0, 0.004]
+                    for flip in (False, True):
+                        kc.quad_strip(mb, knot + ([0.0, 0.0, -0.008] if flip else 0.0), mat,
+                                      uv=np.array([[[0, 0], [1, 0]], [[0, 1], [1, 1]]]), col=(0, 0, 0, 0.3),
+                                      uv2=(0.8, 0.5), flip=flip, smooth=False)
+        out.append(mb)
+    return out
+
+
+def build_quellan_house(seed: int = 1512) -> list[kc.MeshBuilder]:
+    out = []
+    for lod in (False, True):
+        rng = kc.rng_for("quellan_house", seed)
+        noise = kc.Noise3(rng)
+        mb = kc.MeshBuilder("quellan_house" + ("-lod1" if lod else ""))
+        crag, timber = mb.material(M_CRAG), mb.material(M_TIMBER)
+        w, d, h = 6.0, 6.0, 5.2
+        if lod:
+            kc.rounded_block(mb, (0.0, h * 0.5, -d * 0.5), (w * 0.5, h * 0.5, d * 0.5), crag, radius=0.1, seg=1)
+        else:
+            # Dry-laid courses: rows of blocks round the four walls, 0.35 m courses, the joints staggered.
+            y = 0.0
+            course = 0
+            while y < h - 0.01:
+                ch = min(rng.uniform(0.3, 0.4), h - y)
+                for (a, b, z_or_x, along_x) in ((-w * 0.5, w * 0.5, 0.0, True), (-w * 0.5, w * 0.5, -d, True),
+                                                (-d, 0.0, -w * 0.5, False), (-d, 0.0, w * 0.5, False)):
+                    t = a + (0.3 if course % 2 else 0.0)
+                    while t < b - 0.05:
+                        ln = min(rng.uniform(0.5, 0.9), b - t)
+                        door = along_x and z_or_x == 0.0 and abs(t + ln * 0.5) < 0.6 and y < 2.0
+                        if not door:
+                            c = (t + ln * 0.5, y + ch * 0.5, z_or_x) if along_x else (z_or_x, y + ch * 0.5, t + ln * 0.5)
+                            half = (ln * 0.5 - 0.015, ch * 0.5 - 0.01, 0.25) if along_x else (0.25, ch * 0.5 - 0.01, ln * 0.5 - 0.015)
+                            kc.rounded_block(mb, c, half, crag, radius=0.04, seg=1, noise=noise, disp_m=0.015,
+                                             weather=ROCK, variation=float(rng.random()))
+                        t += ln
+                y += ch
+                course += 1
+            kc.rounded_block(mb, (0.0, 2.05, 0.05), (0.7, 0.08, 0.3), timber, radius=0.02, seg=1)  # the lintel
+        # The flat roof, its turf edge, and the door's woven awning on two poles.
+        kc.rounded_block(mb, (0.0, h + 0.12, -d * 0.5), (w * 0.5 + 0.2, 0.12, d * 0.5 + 0.2), timber, radius=0.03, seg=1)
+        kc.rounded_block(mb, (0.0, h + 0.3, -d * 0.5), (w * 0.5 + 0.15, 0.08, d * 0.5 + 0.15), mb.material(M_GRASS),
+                         radius=0.06, seg=1, noise=None if lod else noise, disp_m=0.03)
+        _awning(mb, rng, (0.0, 0.0, 1.2), 2.4, 1.8, 2.3, lod)
+        out.append(mb)
+    return out
+
+
+def _awning(mb, rng, centre, wx: float, dz: float, h: float, lod: bool, *, poles: int = 2) -> None:
+    """A woven awning: a sagging cloth from the house (or two back poles) at `h` to two front poles at h - 0.25,
+    undyed with red weft-bands across it."""
+    cx, cy, cz = centre
+    timber = mb.material(M_TIMBER)
+    front = cz + dz * 0.5
+    back = cz - dz * 0.5
+    pole_zs = (front,) if poles == 2 else (front, back)
+    for z in pole_zs:
+        for sx in (-1.0, 1.0):
+            top = h - (0.25 if z == front else 0.0)
+            kc.tube(mb, np.array([[cx + sx * wx * 0.5, cy, z], [cx + sx * wx * 0.5, cy + top, z]]), 0.035,
+                    4 if lod else 6, timber, cap_end=True)
+    nu, nv = (3, 3) if lod else (9, 7)
+    u = np.linspace(-0.5, 0.5, nu)
+    v = np.linspace(0.0, 1.0, nv)
+    U, V = np.meshgrid(u, v)
+    X = cx + U * wx
+    Z = back + V * dz
+    Y = cy + h - 0.25 * V - 0.18 * np.sin(V * math.pi) * (1.0 - (2.0 * U) ** 2)
+    grid = np.stack([X, Y, Z], -1)
+    bands = (np.floor(V[:-1, :-1] * 6.0) % 3 == 1)
+    for flip in (False, True):
+        start = mb.triangle_count
+        kc.quad_strip(mb, grid, mb.material(M_WOOL), uv=np.stack([U, V], -1) * 3.0, col=(0, 0, 0, 0.3), uv2=(0.9, 0.5),
+                      flip=flip, smooth=False)
+        if not lod:  # the red weft-bands
+            red = mb.material(M_RED)
+            for k, b in enumerate(np.repeat(bands.reshape(-1), 2)):
+                if b:
+                    mb.tri_mat[start + k] = red
+
+
+def build_woven_awning(seed: int = 1513) -> list[kc.MeshBuilder]:
+    out = []
+    for lod in (False, True):
+        rng = kc.rng_for("woven_awning", seed)
+        mb = kc.MeshBuilder("woven_awning" + ("-lod1" if lod else ""))
+        _awning(mb, rng, (0.0, 0.0, 0.0), 3.0, 2.5, 2.4, lod, poles=4)
+        out.append(mb)
+    return out
+
+
 TARGETS = {
     "keth_terrace_ground": build_ground,
     "lit_terrace_wall": build_wall,
@@ -450,4 +635,8 @@ TARGETS = {
     "keth_road_switchback": build_switchback,
     "keth_scree_slope": build_scree_slope,
     "woolback_trough": build_trough,
+    "cloudloom_hall": build_cloudloom_hall,
+    "keth_curtain": build_keth_curtain,
+    "quellan_house": build_quellan_house,
+    "woven_awning": build_woven_awning,
 }

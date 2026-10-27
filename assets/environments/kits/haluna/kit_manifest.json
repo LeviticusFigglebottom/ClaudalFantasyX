@@ -167,6 +167,17 @@
         "causeway_slab_steps-lod1": 36
       }
     },
+    "cloudloom_hall": {
+      "budget": [
+        16000,
+        1200
+      ],
+      "bytes": 203672,
+      "lods": {
+        "cloudloom_hall": 1778,
+        "cloudloom_hall-lod1": 292
+      }
+    },
     "conduit_housing": {
       "budget": [
         3000,
@@ -495,6 +506,17 @@
       "lods": {
         "iskarra_tower_stepped": 6912,
         "iskarra_tower_stepped-lod1": 352
+      }
+    },
+    "keth_curtain": {
+      "budget": [
+        4000,
+        300
+      ],
+      "bytes": 319560,
+      "lods": {
+        "keth_curtain": 2844,
+        "keth_curtain-lod1": 240
       }
     },
     "keth_far_ridges": {
@@ -836,6 +858,17 @@
       "lods": {
         "pot_plants": 998,
         "pot_plants-lod1": 198
+      }
+    },
+    "quellan_house": {
+      "budget": [
+        7000,
+        500
+      ],
+      "bytes": 664620,
+      "lods": {
+        "quellan_house": 6456,
+        "quellan_house-lod1": 76
       }
     },
     "reed_bed": {
@@ -1426,6 +1459,17 @@
       "lods": {
         "woolback_trough": 118,
         "woolback_trough-lod1": 60
+      }
+    },
+    "woven_awning": {
+      "budget": [
+        1500,
+        120
+      ],
+      "bytes": 25172,
+      "lods": {
+        "woven_awning": 264,
+        "woven_awning-lod1": 64
       }
     },
     "wreck_rib": {
