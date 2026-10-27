@@ -381,6 +381,16 @@ env-art is cloud session `session_01YbaV2c8yquRHqj6afQYg89` on `claude/env-art`;
 
   Checks run: haluna_kit full rebuild (older pieces identical; every other arena byte-identical), `test_bridal_barge`
   5, Godot `--filter=arena` 18/0, and the full tools suite (red only on screenshots and the integration's audio).
+- **MERGE-READY @ c7703809: M3-ENV-721**, Ansedra (Ch13–14) with the sheet `ansedra.md`.
+  - **New pieces:** `bowl_dome`; the skyline `ansedra_far_domes` and its `_lit` variant (the city's windows lit);
+    the Conclave's `pursuit_barge` with its bound flat-engine.
+  - **Venn's arena:** `ansedra_lagoon_escape`, on the bridal barge with the pursuit barge alongside, at the wedding's
+    dusk.
+  - **The grade:** `lut_ch14_wedding` is a new `zone_lut.py` grade.
+  - **For combat/act1:** set the Ch14 Venn encounter's arena to `ansedra_lagoon_escape` when it exists.
+
+  Checks run: haluna_kit full rebuild (older pieces identical; every other arena byte-identical), `test_ansedra` 6,
+  `test_arenas`, `test_haluna_kit`, Godot `--filter=arena` 18/0.
 
 ### Render requests
 RENDER-REQUEST @ a0d2549f: battle_arena_tideline_dawn,battle_arena_causeway_disc_sunset,battle_arena_causeway,battle_arena_tideline,causeway_c02_profile_against_the_lagoon,causeway_c08_drownbell_disc_approach,drownbell_flood,battle_boss_intro_drownbell,haluna_h01_village_from_sea,haluna_h10_dock_night,field_objective_line,field_interact_prompt,field_area_title,field_tip_card,dialogue_continue; why: M3-ENV-701 set dressing in Haluna, the causeway and the two arenas (the five field/dialogue shots frame Haluna's lane 1)
@@ -406,6 +416,7 @@ SUPERSEDED by the request below for the Haluna ids: RENDER-REQUEST @ 29ddd021: h
 RENDER-REQUEST @ ab58f891: haluna_h01_village_from_sea,haluna_h02_tidewall_lane,haluna_h04_dock,haluna_h10_dock_night,battle_arena_causeway_route_afternoon; why: the beach palms clustered (no longer one even row from the sea) on top of the fish weirs and big11's villagers; the route arena's tidal mud
 RENDER-REQUEST @ c990e2c2: battle_arena_ossa_fen_roots; why: M3-ENV-718 the Mangrove Drowner's fen arena (new shot)
 RENDER-REQUEST @ 191e5e89: battle_arena_bridal_barge_night; why: M3-ENV-720 the Wakefin's unlamped bridal barge (new shot)
+RENDER-REQUEST @ c7703809: battle_arena_ansedra_lagoon_escape; why: M3-ENV-721 Warden Venn's escape on Ansedra's lagoon at dusk (new shot)
 
 ## STATE AT HANDOVER (2026-10-25)
 
