@@ -1,0 +1,18 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://game/levels/_tests/wildlife/zone_wildlife.gd" id="stage"]
+
+[node name="ZoneWildlife" type="Node3D"]
+script = ExtResource("stage")
+zone_scene = "res://game/levels/ch06/brine_shoals/brine_shoals.tscn"
+zone_id = &"ch06/brine_shoals"
+
+[node name="Cameras" type="Node3D" parent="."]
+
+[node name="Flats" type="Camera3D" parent="Cameras"]
+transform = Transform3D(0.806405, -0.104311, 0.582091, 0, 0.98432, 0.176391, -0.591364, -0.142243, 0.793761, -23, 1, 52)
+fov = 45.0
+
+[node name="Wrecks" type="Camera3D" parent="Cameras"]
+transform = Transform3D(0.851658, 0.0613773, -0.520491, -0, 0.993119, 0.11711, 0.524097, -0.0997381, 0.845798, 2, 3.4, 61.5)
+fov = 45.0

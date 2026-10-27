@@ -24,6 +24,8 @@ VOICES = "game/data/audio/voices.json"  # M3-AUD-07
 REEFBALL_HOOKS = "game/data/audio/reefball_hooks.json"  # M3-AUD-17
 CHOREO_SFX = "game/data/audio/choreo_sfx.json"  # M3-AUD-13
 BATTLE_STINGS = "game/data/audio/battle_stings.json"  # M3-AUD-18
+LIFE = "game/data/audio/life.json"  # M3-AUD-814
+IMPACT = "game/data/audio/impact_audio.json"  # M3-AUD-816
 CHOREO = "game/data/battle/choreo.json"  # the battle-presentation track's styles (once merged)
 SPEAKERS = "game/data/dialogue/speakers.json"
 CREATURE_VOICES = "game/data/audio/creature_voices.json"  # M3-AUD-14
@@ -303,6 +305,26 @@ def footstep_errors(doc: object, exists, ids: set[str]) -> list[str]:
     areas = doc.get("surface_areas") or {}
     if areas and not (areas.get("group") or areas.get("group_prefix")):
         errs.append(f"{FOOTSTEPS} surface_areas: needs group or group_prefix")
+    meshes = doc.get("mesh_surfaces") or {}  # M3-AUD-812
+    for j, rule in enumerate(meshes.get("rules", [])):
+        w = f"{FOOTSTEPS} mesh_surfaces.rules[{j}]"
+        if rule.get("surface") not in surfaces:
+            errs.append(f"{w}: {rule.get('surface')} is not a surface")
+        pats = rule.get("match")
+        if not isinstance(pats, list) or not pats or not all(isinstance(p, str) and p for p in pats):
+            errs.append(f"{w}.match: a non-empty list of name patterns")
+        for k in ("up_m", "down_m"):
+            if k in rule and (not _num(rule[k]) or rule[k] < 0):
+                errs.append(f"{w}.{k}: a number >= 0")
+    water = doc.get("water_level") or {}
+    if water:
+        if water.get("surface") not in surfaces:
+            errs.append(f"{FOOTSTEPS} water_level.surface: {water.get('surface')} is not a surface")
+        if not water.get("group"):
+            errs.append(f"{FOOTSTEPS} water_level: needs group")
+        for k in ("wade_m", "above_m"):
+            if not _num(water.get(k)) or water[k] < 0:
+                errs.append(f"{FOOTSTEPS} water_level.{k}: a number >= 0")
     if doc.get("default") not in surfaces:
         errs.append(f"{FOOTSTEPS} default: {doc.get('default')} is not a surface")
     for scene, surf in (doc.get("scenes") or {}).items():
@@ -363,6 +385,96 @@ def ui_hook_errors(doc: object, ids: set[str], classes: dict[str, list[str]] | N
     return errs
 
 
+LIFE_KINDS = ("villager", "wildlife")
+
+
+def life_errors(doc: object, ids: set[str], classes: dict[str, list[str]] | None) -> list[str]:
+    """life.json (M3-AUD-814): hooks name a kind and a real class (unless pending); every row it plays is an sfx row;
+    every [min, max] interval is positive."""
+    if not isinstance(doc, dict):
+        return [f"{LIFE}: must be an object"]
+    errs: list[str] = []
+    for j, h in enumerate(doc.get("hooks", [])):
+        w = f"{LIFE} hooks[{j}]"
+        if not isinstance(h, dict) or not isinstance(h.get("class"), str) or not h["class"]:
+            errs.append(f"{w}.class: needs a class name")
+            continue
+        if h.get("kind") not in LIFE_KINDS:
+            errs.append(f"{w}.kind: one of {', '.join(LIFE_KINDS)}")
+        if classes is not None and not h.get("pending", False) and h["class"] not in classes:
+            errs.append(f"{w}.class: no script declares class_name {h['class']} (mark the hook pending until it lands)")
+
+    def row(v: object, w: str) -> None:
+        if v not in ids:
+            errs.append(f"{w}: {v} is not an sfx row")
+
+    def interval(v: object, w: str) -> None:
+        if not (isinstance(v, list) and len(v) == 2 and all(_num(x) and x > 0 for x in v) and v[0] <= v[1]):
+            errs.append(f"{w}: a [min, max] pair of seconds > 0")
+
+    vil = doc.get("villager") or {}
+    for k, rid in (vil.get("murmur") or {}).items():
+        row(rid, f"{LIFE} villager.murmur.{k}")
+    for npc, voice in (vil.get("voices") or {}).items():
+        if voice not in (vil.get("murmur") or {}):
+            errs.append(f"{LIFE} villager.voices.{npc}: {voice} is not a murmur voice")
+    work = vil.get("work") or {}
+    for npc, rid in (work.get("rows") or {}).items():
+        row(rid, f"{LIFE} villager.work.rows.{npc}")
+    if work:
+        interval(work.get("every_sec"), f"{LIFE} villager.work.every_sec")
+    wild = doc.get("wildlife") or {}
+    for kind, keys in (("gull", ("call", "takeoff")), ("crab", ("scuttle",)), ("fish", ("dart",))):
+        cfg = wild.get(kind) or {}
+        for k in keys:
+            if k in cfg:
+                row(cfg[k], f"{LIFE} wildlife.{kind}.{k}")
+    if "call_every_sec" in (wild.get("gull") or {}):
+        interval(wild["gull"]["call_every_sec"], f"{LIFE} wildlife.gull.call_every_sec")
+    return errs
+
+
+def impact_errors(doc: object, ids: set[str], classes: dict[str, list[str]] | None, mix: object) -> list[str]:
+    """impact_audio.json (M3-AUD-816): a real hook class (unless pending), sfx rows for every tier and the slow-mo,
+    tiers in rising order, and ducks that mix.json defines."""
+    if not isinstance(doc, dict):
+        return [f"{IMPACT}: must be an object"]
+    errs: list[str] = []
+    for j, h in enumerate(doc.get("hooks", [])):
+        w = f"{IMPACT} hooks[{j}]"
+        if not isinstance(h, dict) or not isinstance(h.get("class"), str) or not h["class"]:
+            errs.append(f"{w}.class: needs a class name")
+            continue
+        if classes is not None and not h.get("pending", False):
+            if h["class"] not in classes:
+                errs.append(f"{w}.class: no script declares class_name {h['class']} (mark the hook pending until it lands)")
+            else:
+                for role, sig in (h.get("signals") or {}).items():
+                    if sig not in classes[h["class"]]:
+                        errs.append(f"{w}.signals.{role}: {h['class']} declares no signal {sig}")
+    last = -1.0
+    for j, tier in enumerate(doc.get("tiers", [])):
+        w = f"{IMPACT} tiers[{j}]"
+        lo = tier.get("min_strength") if isinstance(tier, dict) else None
+        if not _num(lo) or not 0 < lo <= 1 or lo <= last:
+            errs.append(f"{w}.min_strength: rising, in (0, 1]")
+        else:
+            last = lo
+        if not isinstance(tier, dict) or tier.get("sfx") not in ids:
+            errs.append(f"{w}.sfx: not an sfx row")
+    ducks = (mix or {}).get("ducks") or {} if isinstance(mix, dict) else {}
+    for key in ("hitstop", "slowmo"):
+        cfg = doc.get(key) or {}
+        if "sfx" in cfg and cfg["sfx"] not in ids:
+            errs.append(f"{IMPACT} {key}.sfx: {cfg['sfx']} is not an sfx row")
+        if cfg.get("duck") and cfg["duck"] not in ducks:
+            errs.append(f"{IMPACT} {key}.duck: {cfg['duck']} is not a mix.json duck")
+    for rid in doc.get("reduced_skip", []):
+        if rid not in ids:
+            errs.append(f"{IMPACT} reduced_skip: {rid} is not an sfx row")
+    return errs
+
+
 def audio_errors(files: dict[str, object], exists: Callable[[str], bool], flags: set[str]) -> list[str]:
     errs, buses = mix_errors(files.get(MIX))
     acc = ((files.get(ACCESSIBILITY) or {}).get("accessibility") or {}).get("settings", [])
@@ -395,6 +507,10 @@ def audio_errors(files: dict[str, object], exists: Callable[[str], bool], flags:
     if CHOREO_SFX in files:
         errs += choreo_errors(files[CHOREO_SFX], merged_sfx(files).get("sfx") or {}, files.get(CLASSES),
                               files.get(CHOREO))
+    if LIFE in files:
+        errs += life_errors(files[LIFE], ids, files.get(CLASSES))
+    if IMPACT in files:
+        errs += impact_errors(files[IMPACT], ids, files.get(CLASSES), files.get(MIX))
     if REEFBALL_HOOKS in files:
         all_beds = set(amb_beds) | set(((files.get(MUSIC) or {}).get("ambience") or {}).keys())
         errs += reefball_hook_errors(files[REEFBALL_HOOKS], ids, all_beds, files.get(CLASSES))
@@ -552,7 +668,7 @@ def load_files(root: Path) -> dict[str, object]:
     out = {}
     extra = [p.relative_to(root).as_posix() for p in sorted((root / SFX_DIR).glob("sfx_*.json"))]
     for rel in [MIX, MUSIC, SFX, BATTLE_SFX, SHRINE_SFX, UI_SFX, AMBIENCE, FOOTSTEPS, ENCOUNTERS, VFX_EFFECTS,
-                ACCESSIBILITY, VOICES, SPEAKERS, REEFBALL_HOOKS, CHOREO_SFX, CHOREO, BATTLE_STINGS, CREATURE_VOICES, ENEMIES] + extra:
+                ACCESSIBILITY, VOICES, SPEAKERS, REEFBALL_HOOKS, CHOREO_SFX, CHOREO, BATTLE_STINGS, CREATURE_VOICES, ENEMIES, LIFE, IMPACT] + extra:
         p = root / rel
         if p.is_file():
             out[rel] = json.loads(p.read_text(encoding="utf-8"))

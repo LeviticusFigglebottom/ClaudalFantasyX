@@ -100,7 +100,7 @@ The project will move to another account with new environments on the same repo.
 - `main` is always green. Work on a branch per role or task (`<role>/<task-id>-slug`, or the session branch you were given), ideally in a **git worktree** when streams run in parallel.
 - Merge to `main` at least daily, and only behind passing CI. Prefer merge commits on shared branches. Never rewrite history someone else depends on.
 - Commit messages are imperative and reference the task id, e.g. `M1-CMB-01: add swap preview`.
-- Never commit generated `.godot/` caches, large binaries over 5 MB (Git LFS is deferred, ADR 0005), or any copyrighted reference material.
+- Never commit generated `.godot/` caches, large binaries over 5 MB as plain blobs (Git LFS is approved for new large binaries by path, ADR 0039; screenshot baselines stay plain git; never migrate history), or any copyrighted reference material.
 
 ## 8a. Shared machine etiquette (parallel agents)
 - **Never kill processes by pattern** (`pkill -f capture.tscn`, `killall godot` and the like). Other agents run the same commands in their own worktrees. Kill only PIDs you started, for example by remembering `$!` or by checking `/proc/<pid>/cwd` is your worktree.

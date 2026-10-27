@@ -22,7 +22,10 @@ extends Node
 ## heading of `turn.min_deg` within `turn.window_sec` plays its turn scuff.
 ## The surface is the ground's: the highest-priority node in group `surface_areas.group` (its `surface` meta) or in
 ## group `surface_areas.group_prefix` + <surface> whose collision shapes hold the feet; else the scene's (its
-## `scenes` row, else `default`). A surface row is one sfx id for every gait, or {walk, run, stop, turn}.
+## `scenes` row, else `default`). Before the scene's, two listen-only reads that need no level change (M3-AUD-812):
+## a kit mesh named in `mesh_surfaces` (the Haluna dock is wood, a pool is water) whose bounds hold the feet, then
+## wading: the feet under the zone sea's rest plane (`water_level`). A surface row is one sfx id for every gait, or
+## {walk, run, stop, turn}.
 ## A paused walker (the field menu pauses the tree) covers no distance and its body's clock stands, so it takes no
 ## steps.
 
@@ -68,6 +71,10 @@ var _turn_ref := 0.0
 var _turn_age := 0.0
 var _turn_cool := 0.0
 var _has_turn_ref := false
+## mesh_candidates() for _meshes_root, scanned at _meshes_at_ms.
+var _meshes: Array[Array] = []
+var _meshes_root: Node
+var _meshes_at_ms := -1000000000
 
 
 func _init(table: Dictionary = {}) -> void:
@@ -487,9 +494,121 @@ func _hero_id() -> String:
 	return id if id != "" else str((data.get("foley", {}) as Dictionary).get("gear_default", ""))
 
 
+## The ground under `at`, in order: a level's surface area (surface_areas), a kit mesh named by `mesh_surfaces`
+## holding the feet, wading below the zone sea (`water_level`), else the scene's surface.
 func _ground(at: Vector3) -> StringName:
-	last_surface = surface_at(data, walker.get_tree(), at, surface)
+	var tree := walker.get_tree()
+	last_surface = surface_at(data, tree, at, NO_SURFACE)
+	if last_surface == NO_SURFACE:
+		last_surface = mesh_surface_at(_mesh_candidates(), at, NO_SURFACE)
+	if last_surface == NO_SURFACE:
+		last_surface = wading_at(data, tree, at, surface)
 	return last_surface
+
+
+## The meshes `mesh_surfaces` names under the walker's zone, rescanned when the zone changes or every
+## `mesh_surfaces.rescan_sec` (a dresser may place pieces after the walker arrives).
+func _mesh_candidates() -> Array[Array]:
+	var cfg := data.get("mesh_surfaces", {}) as Dictionary
+	if cfg.is_empty():
+		return _meshes
+	var root := zone_root(walker)
+	var now := Time.get_ticks_msec()
+	var stale := now - _meshes_at_ms > int(float(cfg.get("rescan_sec", 10.0)) * 1000.0)
+	if root != _meshes_root or stale:
+		_meshes = mesh_candidates(data, root)
+		_meshes_root = root
+		_meshes_at_ms = now
+	return _meshes
+
+
+## The scene the walker belongs to: its nearest ancestor loaded from a scene file, else the running scene.
+static func zone_root(node: Node) -> Node:
+	var at := node.get_parent() if node != null else null
+	while at != null and at != node.get_tree().root:
+		if at.scene_file_path != "":
+			return at
+		at = at.get_parent()
+	return node.get_tree().current_scene if node != null else null
+
+
+## Every MeshInstance3D under `root` whose own or parent's name matches a `mesh_surfaces.rules` pattern:
+## [[mesh, surface, priority, up_m, down_m], ...]. LOD meshes (`skip_suffix`) are left out.
+static func mesh_candidates(table: Dictionary, root: Node) -> Array[Array]:
+	var out: Array[Array] = []
+	var cfg := table.get("mesh_surfaces", {}) as Dictionary
+	var rules := cfg.get("rules", []) as Array
+	if root == null or rules.is_empty():
+		return out
+	var skip := str(cfg.get("skip_suffix", ""))
+	var surfaces := table.get("surfaces", {}) as Dictionary
+	for n: Node in root.find_children("*", "MeshInstance3D", true, false):
+		var own := String(n.name)
+		if skip != "" and own.ends_with(skip):
+			continue
+		var names := [own, String(n.get_parent().name)]
+		for rule: Dictionary in rules:
+			if not surfaces.has(str(rule.get("surface", ""))) or not _matches(names, rule.get("match", [])):
+				continue
+			(
+				out
+				. append(
+					[
+						n,
+						StringName(str(rule["surface"])),
+						float(rule.get("priority", 0.0)),
+						float(rule.get("up_m", 0.0)),
+						float(rule.get("down_m", 0.0)),
+					]
+				)
+			)
+			break
+	return out
+
+
+static func _matches(names: Array, patterns: Array) -> bool:
+	for name: String in names:
+		for pattern: String in patterns:
+			if name.matchn(pattern):
+				return true
+	return false
+
+
+## The highest-priority candidate whose bounds (in its own frame, grown `up_m` over the top and `down_m` under the
+## bottom) hold `at`, else `fallback`.
+static func mesh_surface_at(candidates: Array[Array], at: Vector3, fallback: StringName) -> StringName:
+	var best := fallback
+	var best_prio := -INF
+	for c in candidates:
+		var mi := c[0] as MeshInstance3D
+		if not is_instance_valid(mi) or not mi.is_inside_tree() or not mi.is_visible_in_tree() or mi.mesh == null:
+			continue
+		if float(c[2]) <= best_prio:
+			continue
+		var box := mi.get_aabb()
+		box.position.y -= float(c[4])
+		box.size.y += float(c[3]) + float(c[4])
+		if box.has_point(mi.global_transform.affine_inverse() * at):
+			best = c[1] as StringName
+			best_prio = float(c[2])
+	return best
+
+
+## `water_level.surface` when `at` lies under the rest plane of a sea in group `water_level.group` (by up to
+## `wade_m`, and with `above_m` of slack over it), else `fallback`.
+static func wading_at(table: Dictionary, tree: SceneTree, at: Vector3, fallback: StringName) -> StringName:
+	var cfg := table.get("water_level", {}) as Dictionary
+	var surf := StringName(str(cfg.get("surface", "")))
+	if cfg.is_empty() or tree == null or not (table.get("surfaces", {}) as Dictionary).has(String(surf)):
+		return fallback
+	for n in tree.get_nodes_in_group(StringName(str(cfg.get("group", "")))):
+		var sea := n as Node3D
+		if sea == null or not sea.is_inside_tree():
+			continue
+		var depth := sea.global_position.y - at.y
+		if depth >= -float(cfg.get("above_m", 0.0)) and depth <= float(cfg.get("wade_m", 0.0)):
+			return surf
+	return fallback
 
 
 func _gait_db(run: bool) -> float:

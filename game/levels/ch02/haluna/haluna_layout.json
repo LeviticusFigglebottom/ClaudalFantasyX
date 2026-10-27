@@ -1587,6 +1587,1208 @@
    ],
    "yaw_deg": -31.1,
    "_note": "M2-ENV-04 (m2-slice): the Pilgrim's Wake wall at the causeway head, in reach (B04, H08), its shell face to the village; Grandmother Osu stands at its gap. The far piece out on the sand (30, -196) stays as the vista."
+  },
+  {
+   "piece": "causeway_slab_steps",
+   "at": [
+    7.0,
+    -126.0
+   ],
+   "yaw_deg": -59.3,
+   "dy": -0.05,
+   "_m701": true
+  },
+  {
+   "piece": "causeway_slab_flat",
+   "at": [
+    10.42,
+    -128.47
+   ],
+   "yaw_deg": -63.9,
+   "dy": 0.23,
+   "_m701": true
+  },
+  {
+   "piece": "causeway_slab_flat",
+   "at": [
+    12.55,
+    -129.98
+   ],
+   "yaw_deg": -59.2,
+   "dy": 0.28,
+   "_m701": true
+  },
+  {
+   "piece": "causeway_slab_flat",
+   "at": [
+    14.82,
+    -131.24
+   ],
+   "yaw_deg": -64.1,
+   "dy": 0.18,
+   "_m701": true
+  },
+  {
+   "piece": "causeway_slab_broken",
+   "at": [
+    17.22,
+    -132.29
+   ],
+   "yaw_deg": -58.1,
+   "dy": 0.23,
+   "_m701": true
+  },
+  {
+   "piece": "causeway_slab_flat",
+   "at": [
+    19.67,
+    -133.26
+   ],
+   "yaw_deg": -55.9,
+   "dy": 0.23,
+   "_m701": true
+  },
+  {
+   "piece": "causeway_slab_flat",
+   "at": [
+    22.06,
+    -134.32
+   ],
+   "yaw_deg": -56.6,
+   "dy": 0.27,
+   "_m701": true
+  },
+  {
+   "piece": "causeway_slab_flat",
+   "at": [
+    24.33,
+    -135.59
+   ],
+   "yaw_deg": -56.3,
+   "dy": 0.24,
+   "_m701": true
+  },
+  {
+   "piece": "causeway_slab_flat",
+   "at": [
+    26.46,
+    -137.09
+   ],
+   "yaw_deg": -62.5,
+   "dy": 0.24,
+   "_m701": true
+  },
+  {
+   "piece": "causeway_slab_broken",
+   "at": [
+    28.5,
+    -138.75
+   ],
+   "yaw_deg": -64.0,
+   "dy": 0.27,
+   "_m701": true
+  },
+  {
+   "piece": "causeway_slab_flat",
+   "at": [
+    30.54,
+    -140.41
+   ],
+   "yaw_deg": -60.0,
+   "dy": 0.27,
+   "_m701": true
+  },
+  {
+   "piece": "causeway_slab_flat",
+   "at": [
+    32.68,
+    -141.91
+   ],
+   "yaw_deg": -57.1,
+   "dy": 0.25,
+   "_m701": true
+  },
+  {
+   "piece": "causeway_slab_flat",
+   "at": [
+    34.96,
+    -143.16
+   ],
+   "yaw_deg": -62.8,
+   "dy": 0.19,
+   "_m701": true
+  },
+  {
+   "piece": "causeway_slab_broken",
+   "at": [
+    37.36,
+    -144.21
+   ],
+   "yaw_deg": -53.6,
+   "dy": 0.29,
+   "_m701": true
+  },
+  {
+   "piece": "causeway_slab_flat",
+   "at": [
+    39.8,
+    -145.18
+   ],
+   "yaw_deg": -55.7,
+   "dy": 0.3,
+   "_m701": true
+  },
+  {
+   "piece": "coral_boulder_b",
+   "at": [
+    10.34,
+    -132.14
+   ],
+   "yaw_deg": 27.5,
+   "dy": -0.1,
+   "_m701": true
+  },
+  {
+   "piece": "coral_boulder_a",
+   "at": [
+    16.4,
+    -127.8
+   ],
+   "yaw_deg": 200.7,
+   "dy": -0.1,
+   "_m701": true
+  },
+  {
+   "piece": "coral_boulder_c",
+   "at": [
+    20.02,
+    -137.38
+   ],
+   "yaw_deg": 164.7,
+   "dy": -0.1,
+   "_m701": true
+  },
+  {
+   "piece": "coral_boulder_a",
+   "at": [
+    22.89,
+    -140.38
+   ],
+   "yaw_deg": 253.4,
+   "dy": -0.1,
+   "_m701": true
+  },
+  {
+   "piece": "coral_boulder_b",
+   "at": [
+    32.11,
+    -136.58
+   ],
+   "yaw_deg": 8.9,
+   "dy": -0.1,
+   "_m701": true
+  },
+  {
+   "piece": "coral_boulder_a",
+   "at": [
+    35.68,
+    -138.41
+   ],
+   "yaw_deg": 130.9,
+   "dy": -0.1,
+   "_m701": true
+  },
+  {
+   "piece": "coral_boulder_c",
+   "at": [
+    41.43,
+    -142.45
+   ],
+   "yaw_deg": 143.6,
+   "dy": -0.1,
+   "_m701": true
+  },
+  {
+   "piece": "coral_boulder_b",
+   "at": [
+    34.36,
+    -146.53
+   ],
+   "yaw_deg": 179.4,
+   "dy": -0.1,
+   "_m701": true
+  },
+  {
+   "piece": "pilgrim_marker_post_broken",
+   "at": [
+    10.29,
+    -126.32
+   ],
+   "yaw_deg": 24.5,
+   "_m701": true
+  },
+  {
+   "piece": "pilgrim_marker_post",
+   "at": [
+    27.5,
+    -136.52
+   ],
+   "yaw_deg": 30.8,
+   "_m701": true
+  },
+  {
+   "piece": "pilgrim_marker_post_leaning",
+   "at": [
+    44.71,
+    -146.72
+   ],
+   "yaw_deg": 34.7,
+   "_m701": true
+  },
+  {
+   "piece": "lit_age_ring",
+   "at": [
+    28.99,
+    -147.75
+   ],
+   "yaw_deg": 10.7,
+   "dy": -0.15,
+   "_m701": true
+  },
+  {
+   "piece": "wreck_rib",
+   "at": [
+    15.0,
+    -108.0
+   ],
+   "yaw_deg": 160.0,
+   "dy": -0.05,
+   "_m701": true
+  },
+  {
+   "piece": "oil_lamp_post",
+   "at": [
+    -5.5,
+    -95.5
+   ],
+   "yaw_deg": 120.0,
+   "_m701": true
+  },
+  {
+   "piece": "oil_lamp_post",
+   "at": [
+    3.5,
+    -121.0
+   ],
+   "yaw_deg": 200.0,
+   "_m701": true
+  },
+  {
+   "piece": "net_float_cluster",
+   "at": [
+    3.9,
+    -121.0
+   ],
+   "yaw_deg": 200.0,
+   "dy": 0.9,
+   "_m701": true
+  },
+  {
+   "piece": "water_jar",
+   "at": [
+    -11.8,
+    -118.6
+   ],
+   "yaw_deg": 15.0,
+   "_m701": true
+  },
+  {
+   "piece": "basket_set",
+   "at": [
+    -10.6,
+    -117.4
+   ],
+   "yaw_deg": -40.0,
+   "_m701": true
+  },
+  {
+   "piece": "market_stall",
+   "at": [
+    -13.0,
+    -98.0
+   ],
+   "yaw_deg": 75.0,
+   "_m701": true
+  },
+  {
+   "piece": "fish_drying_rack",
+   "at": [
+    -2.0,
+    -104.0
+   ],
+   "yaw_deg": 30.0,
+   "_m701": true
+  },
+  {
+   "piece": "sandals",
+   "at": [
+    -12.2,
+    -119.6
+   ],
+   "yaw_deg": 10.0,
+   "_m701": true
+  },
+  {
+   "piece": "crate_stack",
+   "at": [
+    -72.06,
+    -11.53
+   ],
+   "yaw_deg": -9.0,
+   "_m701": true
+  },
+  {
+   "piece": "water_jar",
+   "at": [
+    -84.75,
+    -11.94
+   ],
+   "yaw_deg": -9.5,
+   "_m701": true
+  },
+  {
+   "piece": "basket_set",
+   "at": [
+    -83.85,
+    -11.79
+   ],
+   "yaw_deg": 20.5,
+   "_m701": true
+  },
+  {
+   "piece": "cargo_sacks",
+   "at": [
+    -78.61,
+    -13.37
+   ],
+   "yaw_deg": -23.0,
+   "_m701": true
+  },
+  {
+   "piece": "rope_coil",
+   "at": [
+    -68.44,
+    -7.29
+   ],
+   "yaw_deg": 23.0,
+   "_m701": true
+  },
+  {
+   "piece": "net_heap",
+   "at": [
+    -64.15,
+    -8.8
+   ],
+   "yaw_deg": -14.0,
+   "_m701": true
+  },
+  {
+   "piece": "crate_stack",
+   "at": [
+    -52.56,
+    -1.24
+   ],
+   "yaw_deg": 161.9,
+   "_m701": true
+  },
+  {
+   "piece": "water_jar",
+   "at": [
+    -51.06,
+    -0.63
+   ],
+   "yaw_deg": -22.1,
+   "_m701": true
+  },
+  {
+   "piece": "fish_drying_rack",
+   "at": [
+    -45.5,
+    -1.37
+   ],
+   "yaw_deg": -22.6,
+   "_m701": true
+  },
+  {
+   "piece": "crate_stack",
+   "at": [
+    23.35,
+    38.11
+   ],
+   "yaw_deg": 125.0,
+   "y": 1.4,
+   "_m701": true
+  },
+  {
+   "piece": "cargo_sacks",
+   "at": [
+    23.35,
+    40.55
+   ],
+   "yaw_deg": 45.0,
+   "y": 1.4,
+   "_m701": true
+  },
+  {
+   "piece": "rope_coil",
+   "at": [
+    20.93,
+    39.19
+   ],
+   "yaw_deg": 35.0,
+   "y": 1.4,
+   "_m701": true
+  },
+  {
+   "piece": "rope_coil",
+   "at": [
+    4.32,
+    53.81
+   ],
+   "yaw_deg": 105.0,
+   "y": 1.4,
+   "_m701": true
+  },
+  {
+   "piece": "rope_coil",
+   "at": [
+    13.55,
+    45.21
+   ],
+   "yaw_deg": 235.0,
+   "y": 1.4,
+   "_m701": true
+  },
+  {
+   "piece": "basket_set",
+   "at": [
+    25.88,
+    39.63
+   ],
+   "yaw_deg": 15.0,
+   "y": 1.4,
+   "_m701": true
+  },
+  {
+   "piece": "net_heap",
+   "at": [
+    -9.0,
+    39.0
+   ],
+   "yaw_deg": 20,
+   "_m701": true
+  },
+  {
+   "piece": "tide_debris",
+   "at": [
+    -1.0,
+    38.0
+   ],
+   "yaw_deg": 75,
+   "_m701": true
+  },
+  {
+   "piece": "tide_debris",
+   "at": [
+    3.0,
+    68.0
+   ],
+   "yaw_deg": 100,
+   "_m701": true
+  },
+  {
+   "piece": "basket_set",
+   "at": [
+    -10.0,
+    56.5
+   ],
+   "yaw_deg": 40,
+   "_m701": true
+  },
+  {
+   "piece": "water_jar",
+   "at": [
+    -11.0,
+    57.6
+   ],
+   "yaw_deg": 0,
+   "_m701": true
+  },
+  {
+   "piece": "net_heap",
+   "at": [
+    9.5,
+    36.0
+   ],
+   "yaw_deg": -60,
+   "_m701": true
+  },
+  {
+   "piece": "rope_coil",
+   "at": [
+    -7.5,
+    50.5
+   ],
+   "yaw_deg": 0,
+   "_m701": true
+  },
+  {
+   "piece": "crate_stack",
+   "at": [
+    -12.0,
+    62.0
+   ],
+   "yaw_deg": 30,
+   "_m701": true
+  },
+  {
+   "piece": "fish_drying_rack",
+   "at": [
+    -15.0,
+    44.0
+   ],
+   "yaw_deg": 95,
+   "_m701": true
+  },
+  {
+   "piece": "tide_debris",
+   "at": [
+    5.45,
+    -100
+   ],
+   "yaw_deg": 70,
+   "_m701": true
+  },
+  {
+   "piece": "tide_debris",
+   "at": [
+    -0.03,
+    -62
+   ],
+   "yaw_deg": 95,
+   "_m701": true
+  },
+  {
+   "piece": "tide_debris",
+   "at": [
+    -4.62,
+    -34
+   ],
+   "yaw_deg": 80,
+   "_m701": true
+  },
+  {
+   "piece": "tide_debris",
+   "at": [
+    -4.39,
+    -6
+   ],
+   "yaw_deg": 100,
+   "_m701": true
+  },
+  {
+   "piece": "tide_debris",
+   "at": [
+    -5.34,
+    22
+   ],
+   "yaw_deg": 85,
+   "_m701": true
+  },
+  {
+   "piece": "tide_debris",
+   "at": [
+    3.59,
+    84
+   ],
+   "yaw_deg": 110,
+   "_m701": true
+  },
+  {
+   "piece": "tide_debris",
+   "at": [
+    6.36,
+    104
+   ],
+   "yaw_deg": 75,
+   "_m701": true
+  },
+  {
+   "piece": "shrine_offering",
+   "at": [
+    -111.5,
+    33.5
+   ],
+   "yaw_deg": 36,
+   "_m701": true
+  },
+  {
+   "piece": "shrine_offering",
+   "at": [
+    -120.6,
+    33.2
+   ],
+   "yaw_deg": 0,
+   "_m701": true
+  },
+  {
+   "piece": "water_jar",
+   "at": [
+    -115.8,
+    32.9
+   ],
+   "yaw_deg": 0,
+   "_m701": true
+  },
+  {
+   "piece": "shrine_offering",
+   "at": [
+    -16.6,
+    -120.0
+   ],
+   "yaw_deg": -34,
+   "_m701": true
+  },
+  {
+   "piece": "basket_set",
+   "at": [
+    -109.9,
+    34.6
+   ],
+   "yaw_deg": -60,
+   "_m701": true
+  },
+  {
+   "piece": "yard_fence",
+   "at": [
+    -62.06,
+    -53.56
+   ],
+   "yaw_deg": -1.6,
+   "_m701": true
+  },
+  {
+   "piece": "yard_fence",
+   "at": [
+    -64.06,
+    -53.61
+   ],
+   "yaw_deg": -1.6,
+   "_m701": true
+  },
+  {
+   "piece": "yard_fence",
+   "at": [
+    -58.26,
+    -53.45
+   ],
+   "yaw_deg": -1.6,
+   "_m701": true
+  },
+  {
+   "piece": "yard_fence",
+   "at": [
+    -56.26,
+    -53.39
+   ],
+   "yaw_deg": -1.6,
+   "_m701": true
+  },
+  {
+   "piece": "yard_fence",
+   "at": [
+    -43.82,
+    -49.98
+   ],
+   "yaw_deg": 0.7,
+   "_m701": true
+  },
+  {
+   "piece": "yard_fence",
+   "at": [
+    -40.03,
+    -50.02
+   ],
+   "yaw_deg": 0.7,
+   "_m701": true
+  },
+  {
+   "piece": "yard_fence",
+   "at": [
+    -38.03,
+    -50.05
+   ],
+   "yaw_deg": 0.7,
+   "_m701": true
+  },
+  {
+   "piece": "yard_fence",
+   "at": [
+    -72.39,
+    -49.59
+   ],
+   "yaw_deg": 183.0,
+   "_m701": true
+  },
+  {
+   "piece": "yard_fence",
+   "at": [
+    -70.39,
+    -49.7
+   ],
+   "yaw_deg": 183.0,
+   "_m701": true
+  },
+  {
+   "piece": "yard_fence",
+   "at": [
+    -76.18,
+    -49.39
+   ],
+   "yaw_deg": 183.0,
+   "_m701": true
+  },
+  {
+   "piece": "yard_fence",
+   "at": [
+    -78.18,
+    -49.29
+   ],
+   "yaw_deg": 183.0,
+   "_m701": true
+  },
+  {
+   "piece": "yard_fence",
+   "at": [
+    -53.72,
+    -46.87
+   ],
+   "yaw_deg": 176.3,
+   "_m701": true
+  },
+  {
+   "piece": "yard_fence",
+   "at": [
+    -51.73,
+    -46.74
+   ],
+   "yaw_deg": 176.3,
+   "_m701": true
+  },
+  {
+   "piece": "yard_fence",
+   "at": [
+    -57.51,
+    -47.11
+   ],
+   "yaw_deg": 176.3,
+   "_m701": true
+  },
+  {
+   "piece": "yard_fence",
+   "at": [
+    -59.51,
+    -47.24
+   ],
+   "yaw_deg": 176.3,
+   "_m701": true
+  },
+  {
+   "piece": "yard_fence",
+   "at": [
+    -82.2,
+    38.9
+   ],
+   "yaw_deg": -2.8,
+   "_m701": true
+  },
+  {
+   "piece": "yard_fence",
+   "at": [
+    -84.19,
+    38.8
+   ],
+   "yaw_deg": -2.8,
+   "_m701": true
+  },
+  {
+   "piece": "yard_fence",
+   "at": [
+    -78.4,
+    39.09
+   ],
+   "yaw_deg": -2.8,
+   "_m701": true
+  },
+  {
+   "piece": "yard_fence",
+   "at": [
+    -76.4,
+    39.19
+   ],
+   "yaw_deg": -2.8,
+   "_m701": true
+  },
+  {
+   "piece": "yard_fence",
+   "at": [
+    -63.62,
+    42.59
+   ],
+   "yaw_deg": 2.9,
+   "_m701": true
+  },
+  {
+   "piece": "yard_fence",
+   "at": [
+    -59.82,
+    42.4
+   ],
+   "yaw_deg": 2.9,
+   "_m701": true
+  },
+  {
+   "piece": "yard_fence",
+   "at": [
+    -57.82,
+    42.29
+   ],
+   "yaw_deg": 2.9,
+   "_m701": true
+  },
+  {
+   "piece": "yard_fence",
+   "at": [
+    -90.0,
+    45.03
+   ],
+   "yaw_deg": 179.0,
+   "_m701": true
+  },
+  {
+   "piece": "yard_fence",
+   "at": [
+    -88.0,
+    45.07
+   ],
+   "yaw_deg": 179.0,
+   "_m701": true
+  },
+  {
+   "piece": "yard_fence",
+   "at": [
+    -93.8,
+    44.97
+   ],
+   "yaw_deg": 179.0,
+   "_m701": true
+  },
+  {
+   "piece": "yard_fence",
+   "at": [
+    -95.8,
+    44.93
+   ],
+   "yaw_deg": 179.0,
+   "_m701": true
+  },
+  {
+   "piece": "yard_fence",
+   "at": [
+    -72.9,
+    45.06
+   ],
+   "yaw_deg": 178.3,
+   "_m701": true
+  },
+  {
+   "piece": "yard_fence",
+   "at": [
+    -70.9,
+    45.12
+   ],
+   "yaw_deg": 178.3,
+   "_m701": true
+  },
+  {
+   "piece": "yard_fence",
+   "at": [
+    -76.7,
+    44.95
+   ],
+   "yaw_deg": 178.3,
+   "_m701": true
+  },
+  {
+   "piece": "yard_fence",
+   "at": [
+    -78.69,
+    44.89
+   ],
+   "yaw_deg": 178.3,
+   "_m701": true
+  },
+  {
+   "piece": "yard_fence",
+   "at": [
+    -39.92,
+    53.06
+   ],
+   "yaw_deg": 178.3,
+   "_m701": true
+  },
+  {
+   "piece": "yard_fence",
+   "at": [
+    -37.92,
+    53.12
+   ],
+   "yaw_deg": 178.3,
+   "_m701": true
+  },
+  {
+   "piece": "yard_fence",
+   "at": [
+    -43.72,
+    52.95
+   ],
+   "yaw_deg": 178.3,
+   "_m701": true
+  },
+  {
+   "piece": "yard_fence",
+   "at": [
+    -45.72,
+    52.89
+   ],
+   "yaw_deg": 178.3,
+   "_m701": true
+  },
+  {
+   "piece": "yard_fence",
+   "at": [
+    -81.84,
+    -94.98
+   ],
+   "yaw_deg": 0.6,
+   "_m701": true
+  },
+  {
+   "piece": "yard_fence",
+   "at": [
+    -83.84,
+    -94.96
+   ],
+   "yaw_deg": 0.6,
+   "_m701": true
+  },
+  {
+   "piece": "yard_fence",
+   "at": [
+    -78.04,
+    -95.02
+   ],
+   "yaw_deg": 0.6,
+   "_m701": true
+  },
+  {
+   "piece": "yard_fence",
+   "at": [
+    -76.04,
+    -95.04
+   ],
+   "yaw_deg": 0.6,
+   "_m701": true
+  },
+  {
+   "piece": "yard_fence",
+   "at": [
+    -44.63,
+    -92.93
+   ],
+   "yaw_deg": 2.2,
+   "_m701": true
+  },
+  {
+   "piece": "yard_fence",
+   "at": [
+    -46.62,
+    -92.85
+   ],
+   "yaw_deg": 2.2,
+   "_m701": true
+  },
+  {
+   "piece": "yard_fence",
+   "at": [
+    -40.83,
+    -93.08
+   ],
+   "yaw_deg": 2.2,
+   "_m701": true
+  },
+  {
+   "piece": "yard_fence",
+   "at": [
+    -38.83,
+    -93.16
+   ],
+   "yaw_deg": 2.2,
+   "_m701": true
+  },
+  {
+   "piece": "yard_fence",
+   "at": [
+    -97.74,
+    -98.45
+   ],
+   "yaw_deg": 1.7,
+   "_m701": true
+  },
+  {
+   "piece": "yard_fence",
+   "at": [
+    -99.74,
+    -98.39
+   ],
+   "yaw_deg": 1.7,
+   "_m701": true
+  },
+  {
+   "piece": "yard_fence",
+   "at": [
+    -93.94,
+    -98.56
+   ],
+   "yaw_deg": 1.7,
+   "_m701": true
+  },
+  {
+   "piece": "yard_fence",
+   "at": [
+    -91.94,
+    -98.62
+   ],
+   "yaw_deg": 1.7,
+   "_m701": true
+  },
+  {
+   "piece": "yard_fence",
+   "at": [
+    -62.71,
+    93.14
+   ],
+   "yaw_deg": 176.2,
+   "_m701": true
+  },
+  {
+   "piece": "yard_fence",
+   "at": [
+    -60.72,
+    93.27
+   ],
+   "yaw_deg": 176.2,
+   "_m701": true
+  },
+  {
+   "piece": "yard_fence",
+   "at": [
+    -66.5,
+    92.89
+   ],
+   "yaw_deg": 176.2,
+   "_m701": true
+  },
+  {
+   "piece": "yard_fence",
+   "at": [
+    -68.5,
+    92.76
+   ],
+   "yaw_deg": 176.2,
+   "_m701": true
+  },
+  {
+   "piece": "yard_fence",
+   "at": [
+    -46.37,
+    94.41
+   ],
+   "yaw_deg": 182.8,
+   "_m701": true
+  },
+  {
+   "piece": "yard_fence",
+   "at": [
+    -44.37,
+    94.32
+   ],
+   "yaw_deg": 182.8,
+   "_m701": true
+  },
+  {
+   "piece": "yard_fence",
+   "at": [
+    -50.17,
+    94.6
+   ],
+   "yaw_deg": 182.8,
+   "_m701": true
+  },
+  {
+   "piece": "yard_fence",
+   "at": [
+    -52.16,
+    94.7
+   ],
+   "yaw_deg": 182.8,
+   "_m701": true
+  },
+  {
+   "piece": "yard_fence",
+   "at": [
+    -108.28,
+    -0.05
+   ],
+   "yaw_deg": 181.7,
+   "_m701": true
+  },
+  {
+   "piece": "yard_fence",
+   "at": [
+    -106.28,
+    -0.12
+   ],
+   "yaw_deg": 181.7,
+   "_m701": true
+  },
+  {
+   "piece": "yard_fence",
+   "at": [
+    -112.08,
+    0.06
+   ],
+   "yaw_deg": 181.7,
+   "_m701": true
+  },
+  {
+   "piece": "yard_fence",
+   "at": [
+    -114.08,
+    0.12
+   ],
+   "yaw_deg": 181.7,
+   "_m701": true
   }
  ],
  "plants": [
@@ -2840,6 +4042,114 @@
    "patch_frequency": 0.06,
    "patch_threshold": 0.05,
    "visibility_end_m": 160.0
+  },
+  {
+   "name": "LitterFronds",
+   "glb": "res://assets/environments/kits/haluna/village_litter.glb",
+   "mesh_node": "frond_dry",
+   "material": "res://assets/environments/kits/haluna/materials/kit_dry_frond.tres",
+   "rect": [
+    -150.0,
+    -125.0,
+    150.0,
+    250.0
+   ],
+   "count": 320,
+   "seed": 71,
+   "inland_m": [
+    8.0,
+    200.0
+   ],
+   "scale": [
+    0.7,
+    1.2
+   ],
+   "max_lane": 0.35,
+   "patch_frequency": 0.05,
+   "patch_threshold": -0.1,
+   "visibility_end_m": 90.0,
+   "_m701": true
+  },
+  {
+   "name": "LitterHusks",
+   "glb": "res://assets/environments/kits/haluna/village_litter.glb",
+   "mesh_node": "coconut_husk",
+   "material": "res://assets/environments/kits/haluna/materials/kit_lashing.tres",
+   "rect": [
+    -150.0,
+    -125.0,
+    150.0,
+    250.0
+   ],
+   "count": 220,
+   "seed": 72,
+   "inland_m": [
+    8.0,
+    200.0
+   ],
+   "scale": [
+    0.8,
+    1.2
+   ],
+   "max_lane": 0.3,
+   "patch_frequency": 0.07,
+   "patch_threshold": 0.0,
+   "visibility_end_m": 55.0,
+   "_m701": true
+  },
+  {
+   "name": "LitterShells",
+   "glb": "res://assets/environments/kits/haluna/village_litter.glb",
+   "mesh_node": "shell_scatter",
+   "material": "res://assets/environments/kits/haluna/materials/kit_nacre.tres",
+   "rect": [
+    -40.0,
+    -150.0,
+    80.0,
+    300.0
+   ],
+   "count": 420,
+   "seed": 73,
+   "inland_m": [
+    1.0,
+    26.0
+   ],
+   "scale": [
+    0.8,
+    1.4
+   ],
+   "max_lane": 1.0,
+   "patch_frequency": 0.09,
+   "patch_threshold": -0.2,
+   "visibility_end_m": 45.0,
+   "_m701": true
+  },
+  {
+   "name": "LitterPebbles",
+   "glb": "res://assets/environments/kits/haluna/village_litter.glb",
+   "mesh_node": "pebble_cluster",
+   "material": "res://assets/environments/kits/haluna/materials/kit_coral_stone.tres",
+   "rect": [
+    -150.0,
+    -125.0,
+    150.0,
+    250.0
+   ],
+   "count": 260,
+   "seed": 74,
+   "inland_m": [
+    20.0,
+    200.0
+   ],
+   "scale": [
+    0.7,
+    1.3
+   ],
+   "max_lane": 0.6,
+   "patch_frequency": 0.08,
+   "patch_threshold": 0.1,
+   "visibility_end_m": 50.0,
+   "_m701": true
   }
  ],
  "night_lamps": {
@@ -2873,5 +4183,339 @@
     ]
    ]
   }
- }
+ },
+ "yard_sets": {
+  "_doc": "M3-ENV-701 (the human's playtest: 'parts look primitive'): each listed house kind takes variant (index + variant_offset) % 4, placed in the house's frame: local = edge x per_kind half size [w/2, d/2] + at (metres, +z is the front deck), on the ground plus dy. The deck is 1.8 m deep, 0.45 m up.",
+  "variant_offset": 0,
+  "lane_clear_m": 1.6,
+  "per_kind": {
+   "house_tile_a": [
+    2.5,
+    3.0
+   ],
+   "house_tile_b": [
+    2.0,
+    2.5
+   ],
+   "house_tile_c": [
+    3.0,
+    4.0
+   ]
+  },
+  "variants": [
+   [
+    {
+     "piece": "net_float_cluster",
+     "edge": [
+      1,
+      1
+     ],
+     "at": [
+      -0.15,
+      1.7
+     ],
+     "dy": 1.25
+    },
+    {
+     "piece": "rope_coil",
+     "edge": [
+      -1,
+      1
+     ],
+     "at": [
+      -0.9,
+      0.4
+     ],
+     "yaw_deg": 30
+    },
+    {
+     "piece": "water_jar",
+     "edge": [
+      1,
+      1
+     ],
+     "at": [
+      0.6,
+      -0.6
+     ]
+    },
+    {
+     "piece": "sandals",
+     "edge": [
+      0,
+      1
+     ],
+     "at": [
+      0.5,
+      1.4
+     ],
+     "dy": 0.45,
+     "yaw_deg": 10
+    },
+    {
+     "piece": "pot_plants",
+     "edge": [
+      -1,
+      1
+     ],
+     "at": [
+      0.55,
+      1.35
+     ],
+     "dy": 0.45,
+     "yaw_deg": 180
+    },
+    {
+     "piece": "woodpile",
+     "edge": [
+      1,
+      -1
+     ],
+     "at": [
+      0.9,
+      0.9
+     ],
+     "yaw_deg": 90
+    }
+   ],
+   [
+    {
+     "piece": "crate_stack",
+     "edge": [
+      -1,
+      0
+     ],
+     "at": [
+      -1.1,
+      0.4
+     ],
+     "yaw_deg": 90
+    },
+    {
+     "piece": "cargo_sacks",
+     "edge": [
+      -1,
+      0
+     ],
+     "at": [
+      -1.1,
+      -1.8
+     ],
+     "yaw_deg": 80
+    },
+    {
+     "piece": "basket_set",
+     "edge": [
+      1,
+      1
+     ],
+     "at": [
+      -0.6,
+      0.9
+     ],
+     "dy": 0.45,
+     "yaw_deg": -15
+    },
+    {
+     "piece": "pot_plants",
+     "edge": [
+      1,
+      1
+     ],
+     "at": [
+      0.75,
+      0.3
+     ],
+     "yaw_deg": 20
+    }
+   ],
+   [
+    {
+     "piece": "laundry_line",
+     "edge": [
+      1,
+      0
+     ],
+     "at": [
+      1.4,
+      -0.3
+     ],
+     "yaw_deg": 90
+    },
+    {
+     "piece": "water_jar",
+     "edge": [
+      -1,
+      1
+     ],
+     "at": [
+      -0.5,
+      0.4
+     ]
+    },
+    {
+     "piece": "basket_set",
+     "edge": [
+      1,
+      1
+     ],
+     "at": [
+      0.8,
+      -1.4
+     ],
+     "yaw_deg": 60
+    },
+    {
+     "piece": "woodpile",
+     "edge": [
+      -1,
+      0
+     ],
+     "at": [
+      -0.9,
+      -0.5
+     ],
+     "yaw_deg": -90
+    },
+    {
+     "piece": "pot_plants",
+     "edge": [
+      0,
+      1
+     ],
+     "at": [
+      -0.7,
+      1.4
+     ],
+     "dy": 0.45
+    }
+   ],
+   [
+    {
+     "piece": "fish_drying_rack",
+     "edge": [
+      1,
+      0
+     ],
+     "at": [
+      1.7,
+      -0.5
+     ],
+     "yaw_deg": 90
+    },
+    {
+     "piece": "rope_coil",
+     "edge": [
+      -1,
+      1
+     ],
+     "at": [
+      0.8,
+      1.0
+     ],
+     "dy": 0.45
+    },
+    {
+     "piece": "net_float_cluster",
+     "edge": [
+      -1,
+      1
+     ],
+     "at": [
+      0.15,
+      1.7
+     ],
+     "dy": 1.25
+    },
+    {
+     "piece": "crate_stack",
+     "edge": [
+      -1,
+      -1
+     ],
+     "at": [
+      -1.1,
+      0.6
+     ],
+     "yaw_deg": 0
+    }
+   ]
+  ]
+ },
+ "prop_lods": {
+  "_doc": "M3-ENV-701: [lod1_from_m, end_m] for small props (a per-placement lod1_from_m still wins).",
+  "sandals": [
+   12.0,
+   30.0
+  ],
+  "rope_coil": [
+   18.0,
+   55.0
+  ],
+  "net_float_cluster": [
+   18.0,
+   55.0
+  ],
+  "basket_set": [
+   22.0,
+   70.0
+  ],
+  "water_jar": [
+   22.0,
+   70.0
+  ],
+  "shrine_offering": [
+   22.0,
+   80.0
+  ],
+  "tide_debris": [
+   30.0,
+   120.0
+  ],
+  "net_heap": [
+   30.0,
+   120.0
+  ],
+  "crate_stack": [
+   30.0,
+   110.0
+  ],
+  "cargo_sacks": [
+   30.0,
+   110.0
+  ],
+  "yard_fence": [
+   30.0,
+   120.0
+  ],
+  "woodpile": [
+   30.0,
+   110.0
+  ],
+  "pot_plants": [
+   22.0,
+   80.0
+  ],
+  "laundry_line": [
+   35.0,
+   140.0
+  ],
+  "fish_drying_rack": [
+   35.0,
+   140.0
+  ],
+  "oil_lamp_post": [
+   35.0,
+   160.0
+  ],
+  "market_stall": [
+   45.0,
+   200.0
+  ]
+ },
+ "prop_no_shadow": [
+  "sandals",
+  "rope_coil",
+  "net_float_cluster"
+ ]
 }

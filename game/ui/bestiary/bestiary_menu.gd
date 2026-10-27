@@ -3,7 +3,7 @@ extends Control
 ## The bestiary (M2-UI-02, SPEC §6.11): every foe the party has Read or defeated, listed on the
 ## left with its defeat count, and the chosen foe's page on the right (EnemyPageView, the same
 ## page as the battle Read panel, built from enemies.json by BestiaryMenuModel), with the foe's
-## live portrait under it (BestiaryPortraitSlot; a silhouette until it is Read; M2-UI-26). Out of battle.
+## baked portrait under it (BestiaryPortraitSlot; a silhouette until it is Read; M2-UI-1000, ADR 0110). Out of battle.
 ## Layout: game/data/ui/bestiary_menu.json (1920x1080 reference).
 ##
 ## Input (keyboard and controller through ui_*): ui_up / ui_down choose, ui_page_up / ui_page_down
@@ -13,6 +13,9 @@ extends Control
 ## or instance bestiary_menu.tscn after configure(model).
 
 signal closed
+## The close transition has finished (at once under Reduced motion): open_in's layer frees itself
+## (M2-MNU-305, MenuMotion).
+signal gone
 
 const SCENE_PATH := "res://game/ui/bestiary/bestiary_menu.tscn"
 const DATA_PATH := "res://game/data/ui/bestiary_menu.json"
@@ -21,6 +24,9 @@ const PAGE_ID := &"bestiary"
 
 ## Pause the tree while open (the field must not move under a menu).
 @export var pause_tree := true
+## Opened over the field menu, whose scrim and caustics are the same: the backdrop stays still and
+## only the content moves (MenuMotion's static backdrop). Set before it enters the tree.
+var over_menu := false
 
 var model: BestiaryMenuModel
 ## The id of the entry on show (&"" for an empty book).
@@ -35,18 +41,20 @@ var _help: Label
 var _entries: Array[Dictionary] = []
 var _owns_pause := false
 var _is_closed := false
+var _motion: MenuMotion
 
 
 ## Instances the menu on its own CanvasLayer under `host` and opens it; the layer frees itself
 ## when the menu closes. `with_model` defaults to the game's log (BestiaryMenuModel.from_game()).
-static func open_in(host: Node, with_model: BestiaryMenuModel = null) -> BestiaryMenu:
+static func open_in(host: Node, with_model: BestiaryMenuModel = null, over: bool = false) -> BestiaryMenu:
 	var menu := (load(SCENE_PATH) as PackedScene).instantiate() as BestiaryMenu
 	menu.configure(with_model)
+	menu.over_menu = over
 	var layer := CanvasLayer.new()
 	layer.layer = int(load_data().get("canvas_layer", 1))
 	layer.process_mode = Node.PROCESS_MODE_ALWAYS
 	layer.add_child(menu)
-	menu.closed.connect(layer.queue_free)
+	menu.gone.connect(layer.queue_free)
 	host.add_child(layer)
 	return menu
 
@@ -78,6 +86,10 @@ func _ready() -> void:
 	if pause_tree and not get_tree().paused:
 		get_tree().paused = true
 		_owns_pause = true
+	MenuMotion.follow_reduced_motion(self)
+	_motion = MenuMotion.new(self)
+	_motion.gone.connect(gone.emit)
+	_motion.play_in(over_menu)
 
 
 func _exit_tree() -> void:
@@ -156,9 +168,24 @@ func close() -> void:
 	if _is_closed:
 		return
 	_is_closed = true
-	_portrait.clear()  # stop its viewport rendering behind a closed page
+	_portrait.clear()  # nothing held behind a closed page
 	_restore_pause()
+	_fade_out()
 	closed.emit()
+
+
+## The open and close transitions (null before _ready). Tests drive them with motion().finish().
+func motion() -> MenuMotion:
+	return _motion
+
+
+## Fades the screen out; `gone` follows (at once without a transition). It never takes the pointer again.
+func _fade_out() -> void:
+	if _motion != null:
+		_motion.play_out(over_menu)
+	else:
+		visible = false
+		gone.emit()
 
 
 func _move(delta: int) -> void:

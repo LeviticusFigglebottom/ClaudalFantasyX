@@ -123,6 +123,33 @@ static func melee_gap(
 	return maxf(gap, 0.0)
 
 
+## A melee run's direction and length (M3-BPR-402): straight at `aim` unless a body beside the path stops it short;
+## then it turns by spacing.detour_step_deg each way, up to detour_max_deg, and takes the smallest turn whose run
+## ends within detour_reach_m of where an unobstructed run (only `target_bodies` in the way) would. {dir, gap}.
+static func melee_approach(
+	data: Dictionary, st: Dictionary, from: Vector3, aim: Vector3, bodies: Array, target_bodies: Array, ra: float
+) -> Dictionary:
+	var dir := BattleChoreo._flat(aim - from)
+	var best := {"dir": dir, "gap": melee_gap(data, st, from, dir, aim, bodies, ra)}
+	var sp := data.get("spacing", {}) as Dictionary
+	var step := float(sp.get("detour_step_deg", 0.0))
+	if dir == Vector3.ZERO or step <= 0.0:
+		return best
+	var ideal := from + dir * melee_gap(data, st, from, dir, aim, target_bodies, ra)
+	var reach := BattleChoreo._flat_len(aim - ideal) + float(sp.get("detour_reach_m", 0.0))
+	if BattleChoreo._flat_len(aim - (from + dir * float(best["gap"]))) <= reach:
+		return best
+	var deg := step
+	while deg <= float(sp.get("detour_max_deg", 0.0)) + 0.001:
+		for sgn: float in [1.0, -1.0]:
+			var d := dir.rotated(Vector3.UP, deg_to_rad(deg * sgn))
+			var g := melee_gap(data, st, from, d, aim, bodies, ra)
+			if BattleChoreo._flat_len(aim - (from + d * g)) <= reach:
+				return {"dir": d, "gap": g}
+		deg += step
+	return best
+
+
 ## A fighter model's footprint radius on the ground (M3-BPR-402): the mean of its visible meshes' half-width and
 ## half-depth about the stand-in's origin, times spacing.footprint_k. -1 for a primitive stand-in (no model).
 static func footprint(f: Node3D, data: Dictionary) -> float:

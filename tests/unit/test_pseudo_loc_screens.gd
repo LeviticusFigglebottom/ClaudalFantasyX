@@ -38,6 +38,8 @@ const TOWN_DRIVERS: Array[String] = [
 	"res://game/ui/shop/shots/shop_sell.tscn",
 	"res://game/ui/shop/shots/inn.tscn",
 ]
+const REEFBALL_CHOICE := "res://game/ui/reefball/shots/reefball_hud_choice.tscn"
+const REEFBALL_GOAL := "res://game/ui/reefball/shots/reefball_hud_goal.tscn"
 ## Overflows in screens another track owns, filed as request tasks: printed as KNOWN, not failed,
 ## until the owner fixes them and deletes the row. Key: the start of the finding.
 const KNOWN := {}
@@ -328,6 +330,29 @@ func test_battle_fits() -> void:
 		_probe(pause, "battle pause")
 		_clear()
 	_done("battle")
+
+
+## M3-UI-01: the Reefball HUD on a pass choice (menu, preview, the read's marks) and just after a
+## goal (the banner), then on every option of that choice, then at the final banner.
+func test_reefball_hud_fits() -> void:
+	for scale in _scales():
+		_settings_at(scale)
+		for path: String in [REEFBALL_CHOICE, REEFBALL_GOAL]:
+			var shot := (load(path) as PackedScene).instantiate() as ReefballHudShot
+			shot.fresh_settings = false
+			_host(shot)
+			_probe(shot.hud, path.get_file().get_basename())
+			if shot.hud.is_choosing():
+				for i in shot.hud.options.size():
+					shot.hud.set_cursor(i)
+					_probe(shot.hud, "reefball option %d" % i)
+			else:
+				for _i in ReefballHudShot.MAX_STEPS * 4:
+					if not shot.controller.flush():
+						break
+				_probe(shot.hud, "reefball final")
+			_clear()
+	_done("reefball HUD")
 
 
 # --- helpers -------------------------------------------------------------------------------------

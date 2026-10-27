@@ -284,3 +284,28 @@ integration branch at 07781cba and merged with it again at 0b1e76a4. The handove
 - send_message to the Lead's session was refused ("trusted device"); this live log was the channel.
 
 HANDOVER DONE @ f6d90968 (this note is the commit after it).
+
+## NEW ACCOUNT (from 2026-10-25)
+Session `session_01PzF7Jc4XVQdTWcaYUyCjPB`. Per the Lead: no send_message; requests go through task files and this log.
+- 4da79410: merged the integration branch (-ze8rrn @ c6a960ab). Conflicts: shots.json, baselines.json (union by id),
+  ownership.md (both rows kept). No duplicate loc keys.
+- **Patch status (for the Lead to relay):**
+  - `hero_motion_sequencer.patch` still applies cleanly to claude/m2-slice 6c50823f → request task **M2-HER-1109**
+    (slice-polish).
+  - `hero_battle_proposed.patch`: the choreo test hunks and the KO no-sink are ALREADY on claude/battle-presentation
+    (a3e489bb) and the no-sink on claude/ui (776a24a1). Nothing left for battle-presentation. Only the three-line
+    `battle_sandbox.json` repoint remains → request task **M2-HER-1108** (ui-menus), after big9 lands.
+- **MERGE-READY @ f79449c5** (FAST-TRACK: the human's #1 complaint, snapping motion): M2-HER-1110 HeroMotionGuard and
+  its tests (battle pops on the real heroes: 26 clip changes x 3, none pop or cut; field snaps over 13 slice and Act I
+  zones), **fix: followers no longer drop 2 m through the Brightwater Ferry's pier edge** (HeroFieldParty takes a floor
+  only within step_m of Rhen's trail height and eases the feet: stairs and slopes no longer pop); M2-HER-1103 revive
+  blend rows for characters' coming revive clip. Merged big9 (5c5b9292) in. Checks run: gdlint and gdformat on
+  game/hero_motion and the new tests, validate_data, taskboard --check, Godot filters hero_ 90/0, field 123/0, zone
+  50/0, haluna 49/0, battle_choreo 28/0, fighter 5/0, clips 7/0. Skipped: shots (no scene or shader touched; the
+  followers' feet only change where a floor sits more than 0.45 m off Rhen's path), Blender (none touched), coverage
+  (no game/battle or game/progression change).
+- For the Lead to relay: request tasks M2-HER-1108 (ui-menus: repoint the battle stand_ins, now that big9 has
+  landed), M2-HER-1109 (slice-polish: the sequencer patch), M2-HER-1111 (QA & Tools: run_tests.gd counts a parse
+  error as 0 failed). The choreo hunks for battle-presentation are already on its branch: nothing to relay there.
+- Note for m2-slice / slice-polish (FieldController owner): Rhen peaks at 5.85 m/s on Pemakar and 5.49 on Ashcrown
+  (run 3.6): step or slope push-ups. Under the 6 m/s snap limit, but worth a look in play.

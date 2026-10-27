@@ -839,11 +839,14 @@ def build_clips() -> list[ck.Clip]:
         cast.key("arm_r", t, (-15.0 * s, 0, -8.0 * s))
         cast.key("head", t, (-12.0 * s, 0, 0))
         cast.key("torso", t, (-4.0 * s, 0, 0), (0, 0.04 * s, 0))
-    hit = ck.Clip("hit", 0.6)  # a grinding shudder of plates
+    # a grinding shudder of plates; M3-CRE-617: she rocks back under the blow first (peak 0.1 s, where a hit snaps
+    # in) and the head snaps aside, then the plates grind her upright
+    hit = ck.Clip("hit", 0.6)
     for k, t in enumerate(np.linspace(0, 0.6, 7)):
         s = 0.0 if k in (0, 6) else (1.0 if k % 2 else -1.0) * (1 - t / 0.6)
-        hit.key("torso", float(t), (-2.0 * abs(s), 0, 2.0 * s))
-        hit.key("head", float(t), (0, 0, -3.0 * s))
+        back = {1: 1.0, 2: 0.45, 3: 0.15}.get(k, 0.0)
+        hit.key("torso", float(t), (-2.5 * abs(s) - 6.0 * back, 0, 3.0 * s), (0, 0, -0.08 * back))
+        hit.key("head", float(t), (-4.0 * back, 0, -6.0 * s))
     phase = ck.Clip("phase_change", 2.0)  # the crust bursts off: a hunch, then she heaves up and throws her arms out
     for t, s in ((0.0, 0.0), (0.5, -1.0), (0.8, 1.0), (1.3, 0.3), (2.0, 0.0)):
         phase.key("torso", t, (6.0 * s, 0, 0), (0, 0.06 * abs(s), 0))

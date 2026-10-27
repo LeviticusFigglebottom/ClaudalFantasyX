@@ -508,6 +508,15 @@ Hadric Moll (`ch06_inquisitor`, M3-BPR-03) and the Drownbell (`drownbell`). Once
 
 - **The shot is checked**: the boss's feet and head must sit in the camera's `safe_frame` (as every director shot);
   a shot that fails keeps the default for the intro and only the card plays. A test checks every row passes.
+- **Fit to the model (M3-BPR-404; the human's playtest: Hullgnaw framed too close).** The shot keeps its angle and
+  fov, but its distance fits a sphere around the boss's visible meshes (their AABB in camera-parent space) in the
+  narrower field of view at `boss_intro.fit.margin` (1.05), clamped to `min_m`..`max_m`, aimed `look_drop` (0.3)
+  of the radius below the centre. The boss's top and bottom must pass the safe frame **and its feet must clear the
+  title card's top edge** by `card_clear_px` (a small boss framed close, the Inquisitor's capsule, and the Matron's
+  base sank behind the card). To get there it first aims lower (`drop_step` up to `drop_max`, which lifts the boss
+  in the frame), then widens (× `widen_step` up to `widen_max`); the closest pose that holds wins. If none clears
+  the card, the closest that passes the safe frame; if none passes, the default camera. A row's `fit_margin`
+  overrides the margin; `fit: false` keeps the shot's own offsets.
 - **The title card** is its own `CanvasLayer` (`card.layer` 2, above the HUD, below the router's fade) in the HUD's
   current theme: the name in `TitleLabel` over a thin `focus_gold` rule and the epithet in `FlavorLabel`, on a dark
   band that fades at both ends (art/ui.md §9 contrast). It sits centre-low (`card.rect` 560, 616, 800 × 140 at the
@@ -571,8 +580,15 @@ BattleChoreo, listen-only) adds weight on the contact beat. Every number is in `
   slow-mo), so the controller waits for the stretched sequence.
 - **Reduced motion.** No shake (`reduced_motion.shake_scale` 0), the flash at `flash_scale` 0.5, a gentler slow-mo
   (`slowmo_factor` 0.6). Hit-stop stays: it is a pause, not motion.
+- **Screen shake setting.** Every battle shake (BattleStage.shake, so BattleFloats' too) scales by the
+  accessibility row `screen_shake` (Full 1, Half 0.5, Off 0) and is 0 under Reduced motion
+  (`BattleStage.shake_setting`).
 - **Damage numbers** already pop (6% in 80 ms) and ease out on the rise (DamageNumber, the UI track's, to
   docs/kb/art/ui.md §5); they land on the contact beat. Element particles on contact are the PC track's BattleVfx.
+- **Audio hooks (listen-only).** `BattleImpact.landed(target_id, strength, stop_sec)` fires on each contact with
+  weight (the hardest-hit target, 0..1, the hit-stop in real seconds). `slowmo_planned(from_sec, sec, factor)`
+  fires when a sequence will fell the last foe. Audio layers an impact by weight and a KO swell on them
+  (request M3-BPR-405).
 - **Tests:** `tests/unit/test_battle_impact.gd`; data checks `tools/validate_choreo.py` `impact_errors`.
 
 ## Spacing: no overlaps (M3-BPR-402)
@@ -587,3 +603,9 @@ the real hero rigs (claude/hero-integration) the footprint comes from their mesh
 slots were sized for the primitives, so some real models overlap each other on their marks (the reef crab and the
 gull harrier); a run never brings an actor closer to such a body than it started. Spreading the slots by footprint
 is M3-BPR-403.
+- **Detour.** A body *beside* the path (the gull harrier's wings next to the reef crab) used to stop the run short:
+  Rhen struck the air 2.9 m from the crab. `BattleChoreoPlan.melee_approach` now tries the straight line first.
+  If something other than the targets stops it short, it turns by `spacing.detour_step_deg` each way, up to
+  `detour_max_deg`, and takes the smallest turn whose run ends within `detour_reach_m` of where an unobstructed run
+  would. So the actor comes at the target a little from one side and still meets it. Test:
+  `test_a_body_beside_the_path_turns_the_run_instead_of_stopping_it`.

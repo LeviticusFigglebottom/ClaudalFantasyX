@@ -1,0 +1,54 @@
+{
+  "_doc": "The Kind Weather at the islet: gulls follow the ferry and stand on her lookout (6.6), deckhouse roof (3.0) and the islet's rails (1.0). None on the derelict: nothing lives aboard the Seventh Terrace. The sea is a solid greybox floor 2 m down, so no fish yet. Placed on the greybox layout (M3-CRE-615); move the coordinates when env-art's kit replaces the blocks (same keys as ch02_haluna.json).",
+  "zone": "ch04/brightwater_ferry",
+  "flocks": [
+    {
+      "id": "ferry",
+      "center": [
+        0.0,
+        14.0
+      ],
+      "radius_m": 28.0,
+      "altitude_m": [
+        7.0,
+        14.0
+      ],
+      "count": 5,
+      "perched_at_start": 2,
+      "perches": [
+        [
+          0.0,
+          6.6,
+          -2.0,
+          0.0
+        ],
+        [
+          -1.2,
+          3.0,
+          13.0,
+          90.0
+        ],
+        [
+          1.2,
+          3.0,
+          15.0,
+          -90.0
+        ],
+        [
+          -9.3,
+          1.0,
+          30.0,
+          90.0
+        ],
+        [
+          9.3,
+          1.0,
+          34.0,
+          -90.0
+        ]
+      ]
+    }
+  ],
+  "beaches": [],
+  "shoals": []
+}
