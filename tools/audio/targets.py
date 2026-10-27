@@ -62,12 +62,15 @@ RULES = [
     ("sfx/choreo/vowbound_beckon.ogg", "momentary", -19.0, 1.0, -1.0, "the caller's call, under vowbound_call"),
     ("sfx/choreo/vowbound_sink.ogg", "momentary", -20.0, 1.0, -1.0, "the Vowbound's dismissal"),
     ("sfx/choreo/ilun_*.ogg", "momentary", -22.0, 1.0, -1.0, "Ilun's layers under the shared Vowbound rows (M3-AUD-846)"),
+    ("sfx/choreo/kahre_*.ogg", "momentary", -22.0, 1.0, -1.0, "Kahre's layers under the shared Vowbound rows (M3-AUD-857)"),
+    ("sfx/choreo/virel_*.ogg", "momentary", -22.0, 1.0, -1.0, "Virel's layers under the shared Vowbound rows (M3-AUD-857)"),
     ("sfx/choreo/*.ogg", "momentary", -18.0, 1.0, -1.0, "KO collapse, toll wave, surge, the Vowbound's rise and fall"),
     # M3-AUD-14 (assets_src/sfx/creature_sfx.py): movement repeats on every action, idles sit under the battle
     *[(f"sfx/creatures/*_{w}_*.ogg", "momentary", -21.0, 1.0, -1.0, f"creature movement ({w})")
       for w in ("skitter", "slither", "wingbeat", "flutter", "squelch", "flap", "shift", "creak", "surge", "grind",
                 "plod", "scurry", "shimmer", "hop", "pad",
-                "heave", "clank", "trudge", "cut", "scull", "glide", "rattle", "tick")],  # M3-AUD-831: Act II
+                "heave", "clank", "trudge", "cut", "scull", "glide", "rattle", "tick",  # M3-AUD-831: Act II
+                "step", "drift")],  # M3-AUD-857: Kahre's knuckle-walk, Virel's cloth
     ("sfx/creatures/*_idle_*.ogg", "momentary", -20.0, 1.0, -1.0, "a creature's idle voice (under the battle)"),
     ("sfx/creatures/*.ogg", "momentary", -18.0, 1.0, -1.0, "creature voices: attack, hurt, death"),
     # M3-AUD-802 (assets_src/sfx/hero_foley.py): the field heroes' steps (played at walk_db), scuffs and foley layers

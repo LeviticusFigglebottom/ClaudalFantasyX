@@ -414,6 +414,28 @@
         "move": "cre_ilun_glide"
       }
     },
+    "kahre": {
+      "family": "vowbound",
+      "_note": "M3-AUD-857: Kahre the Forge-Crowned (Asha's Lightning Vowbound): the hornbill's boom, the mane's sparks, thunder off the anvil, his knuckle-walk; heard by his combatant id and his model's clips (M3-CRE-640); assets_src/sfx/vowbound_sfx.py",
+      "events": {
+        "idle": "cre_kahre_idle",
+        "attack": "cre_kahre_attack",
+        "hurt": "cre_kahre_hurt",
+        "death": "cre_kahre_death",
+        "move": "cre_kahre_step"
+      }
+    },
+    "virel": {
+      "family": "vowbound",
+      "_note": "M3-AUD-857: Virel the Kite-Serpent (Asha's Fire Vowbound): sailcloth luffing, the seams' flame, the brass tuning key; heard by her combatant id and her model's clips; assets_src/sfx/vowbound_sfx.py",
+      "events": {
+        "idle": "cre_virel_idle",
+        "attack": "cre_virel_attack",
+        "hurt": "cre_virel_hurt",
+        "death": "cre_virel_death",
+        "move": "cre_virel_drift"
+      }
+    },
     "ridge_lynx": {
       "family": "lynx",
       "_note": "Ch12 regular: a high-pass lynx's growl, hiss and yowl, snowshoe paws; assets_src/sfx/act2_creature_sfx.py (M3-AUD-849)",

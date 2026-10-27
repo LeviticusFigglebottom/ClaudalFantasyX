@@ -310,9 +310,19 @@ func test_the_vowbound_call_rise_and_fall() -> void:
 
 func test_a_vowbound_without_layers_plays_only_the_shared_rows() -> void:
 	var other := BattleCombatant.new()
-	other.id = &"kahre"
+	other.id = &"unvoiced_vowbound"
 	engine.vowbound.called.emit(other)
-	assert_eq(_ids(), [&"vowbound_beckon"], "no layer row for him yet: the shared call only")
+	assert_eq(_ids(), [&"vowbound_beckon"], "no layer row for it: the shared call only")
+	_teardown()
+
+
+func test_kahre_and_virel_answer_the_call_with_their_own_layer() -> void:
+	for vid: StringName in [&"kahre", &"virel"]:
+		var v := BattleCombatant.new()
+		v.id = vid
+		engine.vowbound.called.emit(v)
+		assert_eq(_ids(), [&"vowbound_beckon", StringName(String(vid) + "_call")], "%s's keepsake answers" % vid)
+		heard.clear()
 	_teardown()
 
 
