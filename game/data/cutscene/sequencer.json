@@ -29,7 +29,16 @@
     "hush_first_verse": "hush_theme_v2",
     "corrow_day": "corrow_seawall",
     "coilspire_flues": "temple_trial",
-    "undertow_reach": "undertows_reach_p1"
+    "undertow_reach": "undertows_reach_p1",
+    "oruvel_raft": "oruvel",
+    "oruvel_underway": "lamp_diver",
+    "haluna_wake": "pilgrims_wake",
+    "brightwater_crossing": "brightwater_ferry",
+    "pemakar_terraces": "terraces_of_ash",
+    "ashcrown_trial": "ashcrown",
+    "tamsule_port": "tamsule",
+    "undertow_rising": "undertow_rising_p1",
+    "seawall_hold": "seawall_hold_p1"
   },
   "choices": {
     "right_px": 200,
