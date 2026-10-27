@@ -100,6 +100,13 @@ env-art is cloud session `session_01YbaV2c8yquRHqj6afQYg89` on `claude/env-art`;
   rebuild (older pieces identical), gdlint, gdformat, validate_data, taskboard. Shots unchanged (sets hidden).
   - **For act1-chapters:** Ch4's zone shows the sets by flag; details in the task file.
 
+- **For slice-polish (M2-FP-108):** env-art's a0d2549f added dressing to
+  `assets/environments/zones/saltgrass_causeway/causeway_layout.json` (offering steps at marker posts, wrack,
+  nets, coils, a crate stack, shell/pebble instances). If `tools/causeway/build_causeway_gameplay.py` reads that
+  layout, re-run it after merging; none of the new pieces sits on the bed's walk line (they stand 1–14 m off it).
+- **M3-C01-04** (Ch1 kit swap): noted in its task file that the swap is the Ch1 scene owner's (ZoneKitDressing, as
+  Ch4–Ch9); env-art supplies missing pieces on request.
+
 ### Render requests
 RENDER-REQUEST @ a0d2549f: battle_arena_tideline_dawn,battle_arena_causeway_disc_sunset,battle_arena_causeway,battle_arena_tideline,causeway_c02_profile_against_the_lagoon,causeway_c08_drownbell_disc_approach,drownbell_flood,battle_boss_intro_drownbell,haluna_h01_village_from_sea,haluna_h10_dock_night,field_objective_line,field_interact_prompt,field_area_title,field_tip_card,dialogue_continue; why: M3-ENV-701 set dressing in Haluna, the causeway and the two arenas (the five field/dialogue shots frame Haluna's lane 1)
 RENDER-REQUEST @ 22a5de11: battle_arena_oruvel_raft_morning,battle_arena_causeway,drownbell_flood; why: the merge took the PC gate's copies of these three over env-art's; confirm they still match with the arena dressing
