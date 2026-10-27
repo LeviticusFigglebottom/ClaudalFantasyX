@@ -311,7 +311,6 @@
     },
     {
       "class": "ShrineTravelMenu",
-      "pending": true,
       "on_enter": "ui_page",
       "signals": {"travel_chosen": "ui_shrine_travel", "closed": "ui_menu_close"},
       "watch": [
@@ -319,7 +318,7 @@
         {"expr": "node.level", "rise": "ui_page", "fall": "ui_cancel", "_note": "ShrineTravelMenu.Level LIST / CONFIRM"},
         {"expr": "node._notice != ''", "on_true": true, "sfx": "ui_error", "_note": "a refused trip keeps the list open and says why"}
       ],
-      "_note": "M3-AUD-832: the UI track's shrine travel list (claude/ui; offered after a shrine's save menu). Pending until it merges"
+      "_note": "M3-AUD-832: the UI track's shrine travel list (claude/ui; offered after a shrine's save menu). Live since big13 merged it"
     },
     {
       "class": "ReefballHud",
