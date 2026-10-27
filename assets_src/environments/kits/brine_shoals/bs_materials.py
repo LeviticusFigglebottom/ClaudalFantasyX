@@ -32,6 +32,7 @@ TEX = "res://assets/environments/kits/brine_shoals/textures/"
 HTEX = "res://assets/environments/kits/haluna/textures/"
 WEATHER = "res://game/shaders/environment/env_weathering.gdshader"
 SMOKE = "res://game/shaders/environment/env_smoke_plume.gdshader"
+WAKE = "res://game/shaders/environment/env_boat_wake.gdshader"
 hexc = hm.hexc
 
 BASE = {
@@ -154,6 +155,10 @@ SHADER: dict[str, dict] = {
         "density": 0.72, "edge_softness": 2.0, "base_fade_m": 0.08, "top_fade": 0.45, "fire_glow": 0.3,
         "noise_scale": 3.2, "rise_speed": 0.06, "light_energy": 1.6, "col_core": hexc("#3C3C3A"),
         "forward_scatter": 0.6, "near_fade_m": 6.0}},
+    # M3-ENV-1000 (bs_wake.py): a moving boat's wake; the dresser sets speed_m_s per boat (0: moored, no wake).
+    "bs_wake": {"shader": WAKE, "params": {
+        "col_foam": hexc("#EAEFEA"), "col_churn": hexc("#9DB8AE"), "opacity": 0.7, "speed_m_s": 1.6,
+        "full_speed_m_s": 1.6, "wake_length_m": 16.0}},
 }
 
 

@@ -210,3 +210,7 @@ lists the files). Read of the final captures (lavapipe, 960 × 540):
   the creeks had to be cut 0.4 m deep and read as dunes); the wind is **offshore from the east-north-east**
   so the smoke crosses the channel below the camp, where the barge comes up; **B05** is framed from astern
   at 65 mm (bow-on at 85 mm the barge read as a pavilion on a raft); the wreck lists 28°.
+- 2026-10-27 (env-art, M3-ENV-705's no-greyscale pass): the preview sky's `horizon_curve` 0.12 → 0.06, so the
+  colour script's `#7FA3C0` zenith reaches the top third of B01/B05 instead of the frame holding one beige
+  horizon band (the human: no greyscale scenes). The colours are unchanged; the haze, the fog and the LUT are as
+  the colour script gives them.

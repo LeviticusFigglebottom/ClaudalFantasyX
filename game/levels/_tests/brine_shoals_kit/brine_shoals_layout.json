@@ -39,6 +39,9 @@
   ]
  ],
  "fire_light_color": "#E0702E",
+ "prop_no_shadow": [
+  "boat_wake"
+ ],
  "pieces": [
   {
    "piece": "mudflat_far",
@@ -908,6 +911,24 @@
    ],
    "y": -0.15,
    "yaw_deg": 73.98
+  },
+  {
+   "piece": "vendor_boat",
+   "at": [
+    1.1,
+    6.0
+   ],
+   "y": -0.15,
+   "yaw_deg": 16.02
+  },
+  {
+   "piece": "boat_wake",
+   "at": [
+    1.624,
+    7.826
+   ],
+   "y": -0.15,
+   "yaw_deg": 106.02
   },
   {
    "piece": "camp_hard",
