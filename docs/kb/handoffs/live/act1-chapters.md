@@ -131,6 +131,11 @@ cutscene sequencer (`game/cutscene/**`), `game/flow/**` and the playtest fixes.
   files (they come with big12): `test_creature_portraits` (mangrove_drowner, lamp_engine, avalanche_ram, wakefin have
   manifest portraits but no creatures.json rows) and `test_footsteps_slice_zones` (Ch2 causeway tidepool reads stone).
   Tools tests red on the integration branch too: `test_audio_loudness`, `test_shrine_gi_bake`, `test_screenshots`.
+- **MERGE-READY @ 84352ccc: big12 merged (18a11bc0), M3-CIN-1220's walks (9ccd51b2), M3-CIN-1217's casts for every
+  non-hero actor with a body (3e354c8c, 84352ccc), the Ch9 strand's light and Pemakar's harbour view.** Checks:
+  the full Godot suite on the merge 2833/2 (the two big12 failures above, not act1-chapters'), then on 84352ccc
+  `--filter=zone_cast` 3/0, `ch0` 84/0, `kit` 30/0, `zone` 67/1 (the same footsteps one), gdlint, gdformat,
+  validate_data, taskboard, dlgc. `test_screenshots` waits on the render request below (ch05_pemakar_harbour).
 - **Lead queue (21:23), status:**
   1. Ch9 road capsule: it is **Kerrid** at the milestone (no model yet: M3-CHR-505, characters); so are the two on
      ch06_brine_road (Ysolde, no field body yet: M3-HER-1219; Kerrid). They go when those land; no villager body on a
