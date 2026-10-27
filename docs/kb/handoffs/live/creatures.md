@@ -386,4 +386,13 @@ RENDER-REQUEST @ 44080e1e: creature_tannin_archer, creature_gallery_ray, creatur
   - docs/kb/art/palette.json `spawn_wound.usage_limit` amended: every foe's weak point; on a beast or construct, one small closed mark; the wound seams and motes stay the spawn's.
   - **M3-CRE-630 filed:** the one-frame-late clips, a kit fix for the next batch rebuild.
   - Checks: validate_data, taskboard. Nothing else touched.
+- **MERGE-READY @ f21fba5f: M3-CRE-628, the Act II regulars for Ch12/16 and the four variants (worktree agent).** With it, every Act II creature on the roster is built.
+  - **Regulars:** ridge_lynx 7.0k, cord_moth 4.1k (hovers at 1.25 m), glass_skate 2.6k (0.16 m tall, so its encounter row will want a low battle height for damage numbers and VFX anchors).
+  - **Variants:**
+    - root_crab, fen_leech and scree_crawler use new base-build parameters that default to the bases' own values; every base rebuilds identical (reef crab, wallcrab, wreck crab, sail leech, slag tortoise);
+    - rim_crawler is palette only;
+    - root crab, fen leech and scree crawler are dark, so they get rim 2.8 and kick 1.8.
+  - **Checks run:** Godot creature 37/0 (no test lost in the merge), Blender verify identical ×12, validate_data, taskboard, manifest, lint, format, tools test_creatures.
+  - **Filed M3-CRE-631:** shipped base clips that dip under the floor (reef crab family and tide crawler legs in the KO, down to −0.32 m; slag tortoise claws 4.5 cm at rest), the reef crab's faint weak point, and its triangle count over budget. It rides the M3-CRE-630 batch rebuild.
+RENDER-REQUEST @ f21fba5f: creature_ridge_lynx, creature_cord_moth, creature_glass_skate, creature_root_crab, creature_fen_leech, creature_scree_crawler, creature_rim_crawler; why: M3-CRE-628 new Act II regulars and variants, never rendered (no baselines); judge whether the moth's knot rows and the skate's near-clear back read at battle distance.
 
