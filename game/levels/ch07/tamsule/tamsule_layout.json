@@ -57,7 +57,7 @@
     "kerrid": {"at": [-4, 0, -18, 0], "color": "#8a7a52", "radius": 0.38, "height": 2.0},
     "tavi": {"cast": "tavi", "at": [17, 0, -14, 270], "color": "#2a2420"},
     "vendor": {"cast": "vendor", "at": [-6, 0, 4.5, 0], "color": "#c48a5a"},
-    "board": {"at": [6, 0, 0.5, 0], "color": "#8aa070"},
+    "board": {"cast": "vendor", "at": [6, 0, 0.5, 0], "color": "#8aa070"},
     "child": {"cast": "child", "at": [2, 0, 8, 180], "color": "#d4b07a", "radius": 0.2, "height": 1.1},
     "fisher": {"cast": "fisher", "at": [-18, 0, 3, 90], "color": "#6e8a9a"},
     "netmender": {"cast": "netmender", "at": [-23, 0, 3, 90], "color": "#9a8a9a"},

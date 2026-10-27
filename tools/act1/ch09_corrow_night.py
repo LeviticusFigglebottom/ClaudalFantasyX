@@ -127,7 +127,7 @@ def dressing() -> dict:
 
 
 VIGIL_ROWS = ("ShroudRow1", "ShroudRow2", "ShroudRow3", "ShroudRow4", "StillguardRow")
-VIGIL = {"step_m": 4.0, "out_m": 0.8, "y": 1.4, "energy": 1.4, "range": 6.0, "color": "#FFB46B"}
+VIGIL = {"step_m": 4.0, "out_m": 0.8, "y": 2.0, "energy": 0.9, "range": 8.0, "color": "#FFB46B"}
 
 
 def vigil_lights() -> list[dict]:
