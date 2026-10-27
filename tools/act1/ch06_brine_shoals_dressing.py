@@ -116,9 +116,20 @@ def dusk_camp() -> list[dict]:
         piece("tideline_wrack", 18.0, -58.0, y=0.0, yaw=2.0),
         piece("tideline_wrack", 26.0, -58.3, y=0.0, yaw=-3.0),
         piece("lamp_burial", 22.0, -58.0, y=0.0, yaw=20.0, block="Lamp"),
-        # stand-ins until M3-ENV-1201's pieces: the fire's ember bed, the purser's goods (the shrine is the bow)
-        piece("salvage_pile_burned", 22.0, -40.0, y=-0.25, yaw=40.0, scale=0.35, block="Fire"),
-        piece("crate_stack", 29.0, -37.0, y=0.05, yaw=80.0, block="VendorBoat"),
+        # M3-ENV-1201's pieces on their blocks: the party's fire, the purser's boat, the Level-stone shrine in the bow
+        piece("ridge_fire", 22.0, -40.0, y=0.0, block="Fire"),
+        piece("vendor_boat", 29.0, -37.0, y=0.0, block="VendorBoat"),
+        piece("level_stone_shrine", 27.0, -44.5, y=0.0, block="Shrine"),
+    ]
+
+
+def story_marks() -> list[dict]:
+    """M3-ENV-1201's pieces for the raid: the burning tide-wheel (W14's two-shot), the chalk sign on the hull (B02) and
+    the hold's hatch in its side (B03), each on its block (the chalk mark and the hatch are centred on theirs)."""
+    return [
+        piece("tide_wheel_burned", 9.0, -36.0, y=0.0, block="TideWheel"),
+        piece("chalk_mark", 4.45, -2.0, y=1.2, block="ChalkMark"),
+        piece("hatch", 3.45, -17.0, y=0.7, block="Hatch"),
     ]
 
 
@@ -135,15 +146,16 @@ def layout() -> dict:
         "lod_margin_m": 2.0,
         "environment": RES_ZONE + "brine_shoals_environment.tres",
         "time_of_day_h": 15.5,
-        # the shrine is a rest point: its greybox stands in until M3-ENV-1201
-        "greybox": {"hide_all": True, "keep": ["ChalkMark", "Hatch", "Shrine"]},
+        "greybox": {"hide_all": True, "keep": []},
         "fire_light_color": "#E0702E",
         "fire_lights": [
             {"at": [11.5, 2.4, -45.5], "energy": 1.6, "range": 9.0, "block": "Smoke"},
             {"at": [-6.0, 1.2, -43.0], "energy": 0.8, "range": 4.0},
             {"at": [22.0, 0.6, -40.0], "energy": 1.2, "range": 7.0},
+            {"at": [9.0, 2.4, -35.0], "energy": 1.4, "range": 7.0, "block": "TideWheel"},  # the burning wheel
+            {"at": [27.0, 1.2, -44.0], "energy": 0.6, "range": 3.0, "color": "#9fd8e0", "block": "Shrine"},  # rest
         ],
-        "pieces": ground() + road() + wrecks() + camp() + dusk_camp(),
+        "pieces": ground() + road() + wrecks() + camp() + dusk_camp() + story_marks(),
     }
 
 

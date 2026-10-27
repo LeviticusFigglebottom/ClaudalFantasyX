@@ -87,7 +87,7 @@ func test_the_zone_takes_the_kit_grade_and_lamps_obey_the_fog_rule() -> void:
 	assert_eq(env.background_mode, Environment.BG_SKY, "the kit's sky")
 	assert_true(env.adjustment_enabled and env.adjustment_color_correction != null, "the ch06 LUT")
 	var fires := _dressing().find_children("*", "OmniLight3D", true, false)
-	assert_eq(fires.size(), 3, "the hulk, the brazier and the dusk fire")
+	assert_eq(fires.size(), 5, "the hulk, the brazier, the dusk fire, the burning tide-wheel and the shrine")
 	for l: Node in fires:
 		assert_eq((l as OmniLight3D).light_volumetric_fog_energy, 0.0, "fog-lamp rule")
 	_close()
