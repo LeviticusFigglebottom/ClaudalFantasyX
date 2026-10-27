@@ -116,6 +116,8 @@ func test_a_walk_in_haluna_steps_from_the_hero_bodys_foot_contacts() -> void:
 	var f := _listener(HALUNA)
 	var added := _ensure_markers(body)
 	body.call(&"snap")
+	# _load turns the controller's physics off, so it never measures its floor: stand it on the sand.
+	player.set(&"_grounded", true)
 	player.global_position = _marker("Village")
 	for i in WALK_FRAMES:
 		player.global_position += Vector3(0.0, 0.0, -1.0 * DT)
