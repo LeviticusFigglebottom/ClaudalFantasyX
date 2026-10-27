@@ -432,4 +432,10 @@ RENDER-REQUEST @ 32f33a75: battle_hud_preview, battle_swap_menu, battle_victory,
     - **The Ram's head reads as a duck's:** the dark flat muzzle on a white face looks like a bill. It needs a camelid head.
     - **The Wakefin's review shot** shows only the fin, because the stage floor hides the body; it needs a shot that shows the fish, and stronger wounds.
   - Filed **M3-CRE-635**.
+- **MERGE-READY @ 5ff54f27: M3-CRE-635 (worktree agent).**
+  - **The Avalanche Ram:** a camelid head (long, narrow, a soft muzzle dark only at the nose, long upright ears); the neck slimmer; the icicles fewer and irregular. 14.9k triangles. Silhouettes viewed: it reads as a llama-like woolback, no longer a duck.
+  - **The Wakefin:** stronger spine wounds, and a new shot `creature_wakefin_body` through a new creature-stage `show_floor` option (existing shots unchanged).
+  - **Checks run:** Godot creature 41/1 (the known M3-CRE-634, ui's), Blender verify identical ×2, tools test_creatures, validate_data, lint.
+  - Note: tools' test_screenshots baseline check stays red for shots that wait on their first PC render (expected under the render protocol).
+RENDER-REQUEST @ 5ff54f27: creature_avalanche_ram, creature_wakefin, creature_wakefin_body; why: M3-CRE-635 the Ram's new head, the Wakefin's wounds and its new body shot (these three supersede the same ids in the 4214a48e request).
 
