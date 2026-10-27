@@ -404,6 +404,104 @@ vec2 detail_slope(vec2 p, vec2 dir, float t) {
 	return slope;
 }
 
+#if WATER_SSR_STEPS > 0
+// Screen-space reflection: marches view-space ray `r` from `vtx` against the depth buffer. Returns the
+// hit weight (0 = miss; screen-edge and distance fades folded in), the reflected colour in `col` and
+// the hit's world position in `hit_world`. `water_y` is the water's world height (only geometry above
+// the water is reflected).
+float water_ssr_march(vec3 vtx, vec3 r, float water_y, mat4 proj, mat4 inv_proj, mat4 inv_view, out vec3 col,
+		out vec3 hit_world) {
+	col = vec3(0.0);
+	hit_world = vec3(0.0);
+	float prev_t = 0.0;
+	for (int i = 1; i <= WATER_SSR_STEPS; i++) {
+		float ti = ssr_max_distance_m * pow(float(i) / float(WATER_SSR_STEPS), ssr_step_exponent);
+		vec3 p = vtx + r * ti;
+		vec4 clip = proj * vec4(p, 1.0);
+		if (clip.w <= 0.0) {
+			return 0.0;
+		}
+		vec2 uv = clip.xy / clip.w * 0.5 + 0.5;
+		if (uv.x < 0.0 || uv.x > 1.0 || uv.y < 0.0 || uv.y > 1.0) {
+			return 0.0;
+		}
+		float sz = scene_view_pos(uv, inv_proj).z;
+		if (p.z < sz) {
+			float lo = prev_t;
+			float hi = ti;
+#if WATER_SSR_REFINE > 0
+			for (int j = 0; j < WATER_SSR_REFINE; j++) {
+				float mid = 0.5 * (lo + hi);
+				vec3 pm = vtx + r * mid;
+				vec4 cm = proj * vec4(pm, 1.0);
+				vec2 um = cm.xy / cm.w * 0.5 + 0.5;
+				if (pm.z < scene_view_pos(um, inv_proj).z) {
+					hi = mid;
+				} else {
+					lo = mid;
+				}
+			}
+#endif
+			vec3 ph = vtx + r * hi;
+			vec4 ch = proj * vec4(ph, 1.0);
+			vec2 uh = ch.xy / ch.w * 0.5 + 0.5;
+			float gap = scene_view_pos(uh, inv_proj).z - ph.z;
+			hit_world = (inv_view * vec4(ph, 1.0)).xyz;
+			// Only geometry above the water can be reflected by it.
+			if (gap < ssr_thickness_m + hi * WATER_SSR_THICKNESS_GROWTH && hit_world.y > water_y - WATER_SSR_BELOW_M) {
+				vec2 edge = smoothstep(vec2(0.0), vec2(ssr_edge_fade), uh)
+						* smoothstep(vec2(0.0), vec2(ssr_edge_fade), 1.0 - uh);
+				col = textureLod(screen_tex, uh, 0.0).rgb;
+				return edge.x * edge.y * (1.0 - hi / ssr_max_distance_m);
+			}
+			return 0.0;
+		}
+		prev_t = ti;
+	}
+	return 0.0;
+}
+
+// Still actors (M3-RND-03, hymn_still_actor_*): vertical capsules, treated as cylinders. True when world
+// ray (o, d) passes through one of them.
+bool water_still_cylinder(vec3 o, vec3 d, vec4 c, float h) {
+	if (c.w <= 0.0) {
+		return false;
+	}
+	vec2 oc = o.xz - c.xz;
+	float a = dot(d.xz, d.xz);
+	float b = dot(oc, d.xz);
+	float k = dot(oc, oc) - c.w * c.w;
+	float disc = b * b - a * k;
+	if (a < HYMN_EPSILON || disc < 0.0) {
+		return false;
+	}
+	float sq = sqrt(disc);
+	float t0 = max((-b - sq) / a, 0.0);
+	float t1 = (-b + sq) / a;
+	if (t1 < 0.0) {
+		return false;
+	}
+	// The ray's height over [t0, t1] must overlap the capsule's [base, base + h].
+	float y0 = o.y + d.y * t0;
+	float y1 = o.y + d.y * t1;
+	return max(y0, y1) >= c.y && min(y0, y1) <= c.y + h;
+}
+
+bool water_still_ray(vec3 o, vec3 d) {
+	return water_still_cylinder(o, d, hymn_still_actor_0, hymn_still_actor_heights.x)
+			|| water_still_cylinder(o, d, hymn_still_actor_1, hymn_still_actor_heights.y);
+}
+
+bool water_still_inside(vec3 p, vec4 c, float h) {
+	return c.w > 0.0 && distance(p.xz, c.xz) <= c.w && p.y >= c.y && p.y <= c.y + h;
+}
+
+bool water_still_point(vec3 p) {
+	return water_still_inside(p, hymn_still_actor_0, hymn_still_actor_heights.x)
+			|| water_still_inside(p, hymn_still_actor_1, hymn_still_actor_heights.y);
+}
+#endif
+
 float foam_pattern(vec2 p) {
 	return hymn_fbm2(p * foam_scale_per_m, WATER_FOAM_OCTAVES, WATER_FOAM_LACUNARITY, WATER_FOAM_GAIN);
 }
@@ -603,54 +701,34 @@ void fragment() {
 	float ssr_hit = 0.0;
 	vec3 ssr_col = vec3(0.0);
 #if WATER_SSR_STEPS > 0
-	vec3 r = reflect(-VIEW, n_view);
-	// Ripple normals can bend a reflected ray under the surface; it would "hit" the seabed.
-	float r_rise = (INV_VIEW_MATRIX * vec4(r, 0.0)).y;
-	if (use_ssr && r_rise > WATER_SSR_MIN_RISE) {
-		float prev_t = 0.0;
-		for (int i = 1; i <= WATER_SSR_STEPS; i++) {
-			float ti = ssr_max_distance_m * pow(float(i) / float(WATER_SSR_STEPS), ssr_step_exponent);
-			vec3 p = VERTEX + r * ti;
-			vec4 clip = PROJECTION_MATRIX * vec4(p, 1.0);
-			if (clip.w <= 0.0) {
-				break;
-			}
-			vec2 uv = clip.xy / clip.w * 0.5 + 0.5;
-			if (uv.x < 0.0 || uv.x > 1.0 || uv.y < 0.0 || uv.y > 1.0) {
-				break;
-			}
-			float sz = scene_view_pos(uv, INV_PROJECTION_MATRIX).z;
-			if (p.z < sz) {
-				float lo = prev_t;
-				float hi = ti;
-#if WATER_SSR_REFINE > 0
-				for (int j = 0; j < WATER_SSR_REFINE; j++) {
-					float mid = 0.5 * (lo + hi);
-					vec3 pm = VERTEX + r * mid;
-					vec4 cm = PROJECTION_MATRIX * vec4(pm, 1.0);
-					vec2 um = cm.xy / cm.w * 0.5 + 0.5;
-					if (pm.z < scene_view_pos(um, INV_PROJECTION_MATRIX).z) {
-						hi = mid;
-					} else {
-						lo = mid;
-					}
+	if (use_ssr) {
+		// A still actor's reflection never ripples (M3-RND-03): where the flat mirror ray meets a still
+		// actor's capsule and the flat march lands on him, his reflection is the flat one.
+		bool still = false;
+		if (hymn_still_actor_0.w > 0.0 || hymn_still_actor_1.w > 0.0) {
+			vec3 r_flat = reflect(-VIEW, normalize((VIEW_MATRIX * vec4(0.0, 1.0, 0.0, 0.0)).xyz));
+			vec3 rw_flat = (INV_VIEW_MATRIX * vec4(r_flat, 0.0)).xyz;
+			if (water_still_ray(world, rw_flat)) {
+				vec3 col_flat;
+				vec3 hit_flat;
+				float h_flat = water_ssr_march(VERTEX, r_flat, world.y, PROJECTION_MATRIX, INV_PROJECTION_MATRIX,
+						INV_VIEW_MATRIX, col_flat, hit_flat);
+				if (h_flat > 0.0 && water_still_point(hit_flat)) {
+					ssr_hit = h_flat;
+					ssr_col = col_flat;
+					still = true;
 				}
-#endif
-				vec3 ph = VERTEX + r * hi;
-				vec4 ch = PROJECTION_MATRIX * vec4(ph, 1.0);
-				vec2 uh = ch.xy / ch.w * 0.5 + 0.5;
-				float gap = scene_view_pos(uh, INV_PROJECTION_MATRIX).z - ph.z;
-				float hit_y = (INV_VIEW_MATRIX * vec4(ph, 1.0)).y;
-				// Only geometry above the water can be reflected by it.
-				if (gap < ssr_thickness_m + hi * WATER_SSR_THICKNESS_GROWTH && hit_y > world.y - WATER_SSR_BELOW_M) {
-					vec2 edge = smoothstep(vec2(0.0), vec2(ssr_edge_fade), uh)
-							* smoothstep(vec2(0.0), vec2(ssr_edge_fade), 1.0 - uh);
-					ssr_hit = edge.x * edge.y * (1.0 - hi / ssr_max_distance_m);
-					ssr_col = textureLod(screen_tex, uh, 0.0).rgb;
-				}
-				break;
 			}
-			prev_t = ti;
+		}
+		if (!still) {
+			vec3 r = reflect(-VIEW, n_view);
+			// Ripple normals can bend a reflected ray under the surface; it would "hit" the seabed.
+			float r_rise = (INV_VIEW_MATRIX * vec4(r, 0.0)).y;
+			if (r_rise > WATER_SSR_MIN_RISE) {
+				vec3 hit_world;
+				ssr_hit = water_ssr_march(VERTEX, r, world.y, PROJECTION_MATRIX, INV_PROJECTION_MATRIX, INV_VIEW_MATRIX,
+						ssr_col, hit_world);
+			}
 		}
 	}
 #endif

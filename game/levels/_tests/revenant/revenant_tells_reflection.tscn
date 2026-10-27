@@ -1,0 +1,34 @@
+[gd_scene load_steps=8 format=3]
+
+[ext_resource type="PackedScene" path="res://game/levels/_tests/revenant/revenant_tells_shadow.tscn" id="base"]
+[ext_resource type="Script" path="res://game/world/water/water_surface.gd" id="water"]
+[ext_resource type="Script" path="res://game/world/water/wave_set.gd" id="set"]
+[ext_resource type="Script" path="res://game/world/water/wave_component.gd" id="comp"]
+[ext_resource type="Material" path="res://game/levels/_tests/brine_shoals_kit/brine_shoals_water_material.tres" id="mat"]
+
+[sub_resource type="Resource" id="Calm0"]
+script = ExtResource("comp")
+direction_deg = 20.0
+wavelength_m = 3.0
+amplitude_m = 0.005
+steepness = 0.08
+
+[sub_resource type="Resource" id="Waves"]
+script = ExtResource("set")
+components = Array[ExtResource("comp")]([SubResource("Calm0")])
+amplitude_scale = 1.0
+
+[node name="RevenantTellsReflection" instance=ExtResource("base")]
+
+[node name="Water" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.03, 0)
+script = ExtResource("water")
+wave_set = SubResource("Waves")
+material = ExtResource("mat")
+core_half_extent_m = 12.0
+core_cell_m = 0.1
+outer_half_extent_m = 40.0
+
+[node name="Reflections" type="Camera3D" parent="Cameras"]
+transform = Transform3D(1, 0, 0, 0, 0.998752, -0.049938, 0, 0.049938, 0.998752, -0.8, 0.32, 4.6)
+fov = 40.0
