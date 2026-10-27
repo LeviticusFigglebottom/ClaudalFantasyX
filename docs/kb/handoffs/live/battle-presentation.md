@@ -51,6 +51,37 @@ is merged in, and big10's bpr pick a3e489bb is an ancestor.
 pass (lineup 4/0; it fails with the spread off), and the battle filter gives 638/0. It moves every sandbox_reef shot,
 so a full battle-shot capture comes next.
 
+### Render requests
+RENDER-REQUEST @ 25dcea24: battle_boss_intro_hullgnaw,battle_boss_intro_inquisitor,battle_boss_intro_matron,battle_boss_intro_hermit,battle_boss_intro_wraith,battle_boss_intro_drownbell; why: FAST-TRACK M3-BPR-404, the Hullgnaw boss intro framed too close (the human's playtest). The camera fits the boss model and clears the title card. All six move.
+RENDER-REQUEST @ 25dcea24: battle_hud_preview,battle_swap_menu,battle_victory,battle_statuses,battle_swell_ring,battle_read_panel,battle_opening_banner,battle_swell_modes,battle_vowbound_call,battle_vowbound_out,battle_choreo_melee,battle_choreo_hit,battle_choreo_cast,battle_choreo_support,battle_choreo_read,battle_choreo_ko,battle_choreo_swap,battle_arena_tideline,battle_arena_causeway,battle_choreo_lamp_dive,battle_choreo_toll,battle_choreo_vowbound_rise,battle_choreo_summon,drownbell_flood,battle_swell_chant,battle_swell_brace,battle_swell_glyph,battle_statuses_colorblind,battle_pause,battle_arena_raft,battle_arena_underway,battle_arena_route,battle_arena_derelict,battle_arena_terrace,battle_arena_tideline_dawn,battle_arena_causeway_disc_sunset,battle_arena_causeway_route_afternoon,battle_arena_derelict_deck_night,battle_arena_ash_terrace_lanternfall,battle_arena_oruvel_raft_morning,battle_arena_underway_tower,battle_arena_shoals,battle_arena_camp,battle_hud_21x9,battle_hud_16x10; why: M3-BPR-401 battle feel (flash, recoil, shake by damage, KO slow-mo, the hit-stop hold fix) + M3-BPR-402 melee spacing and detour + M3-BPR-403 opening line-up spread sideways by footprint, now on the big9 real heroes. Expect the choreo_* and every sandbox_reef shot to move; arenas may move where 403 spreads a line-up.
+
+### FAST-TRACK M3-BPR-404 on the post-big9 integration branch (updated 2026-10-27)
+- **Cherry-picking 269054a3 and 4e89c967 now conflicts on the six baseline PNGs.** big9 re-approved them with the
+  real heroes, and the PNGs in my commits were rendered with primitive heroes.
+- **Use the code-only mbox instead:** `git am docs/kb/tasks/M3/M3-BPR-404-boss-intro-fit.patch` (from this branch).
+  It holds the same two commits without the PNGs. Verified on -ze8rrn 7cccb551: it applies cleanly,
+  `--filter=boss_intro` gives 17 run, 0 failed, and validate_data is 0/0.
+- **Then:** take the six baselines from the PC's render of the first request line above. That render is at this
+  branch's head, which differs from integration + 404 only by 403's party line-up spread. If you want a pixel-exact
+  pick, push the git-am result to a lead/gate branch and request the six there.
+
+**Also merged and fixed (2026-10-27, pushed):**
+- The integration branch with big9 is merged in (7708d572). Conflicts were the baselines (theirs), strings
+  (union, no duplicate keys), test_battle_choreo (theirs), and test_battle_ko_once (mine: it no longer needs any
+  model-less foe).
+- **f8cd9269, the BattleImpact hold bug** (creatures' M3-CRE-617 report): the struck target's clip now stays held
+  through the hit-stop. Regression test included; it fails without the fix.
+- 4a525046: the reduced-motion run test measures against the real approach. Big9's real heroes have real
+  footprints.
+- **M3-BPR-403** (BattleLineup, merged from my worktree): the opening line-up spreads sideways on screen by
+  footprint, each fighter at most 0.6 m off its mark. Tests: lineup 5/0.
+- Battle filter after all of it: **711 run, 0 failed**. gdlint, gdformat and validate_data are clean.
+- Cloud captures stopped, per the human's directive: only my wt403 PIDs, checked by their cwd.
+- **creatures, please note:** your M3-CRE-617 last box (the target's clip held through the hit-stop) is fixed at
+  f8cd9269.
+- New task **M3-BPR-406** (todo): Ch8 set-piece presentation (entries, intercepts, counters, withdrawals, the
+  Reach), built on big10's BattleSetPiece.
+
 ## STATE AT HANDOVER (2026-10-25)
 
 **HANDOVER DONE @ e4b36a0d.**
