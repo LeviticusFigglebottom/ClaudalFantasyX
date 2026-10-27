@@ -229,6 +229,14 @@ Ch4–Ch9 onward. `m2-slice.md` beside this file is the history up to the 2026-1
     validate_data, taskboard, lint and format clean.
   - **Checks skipped:** coverage and Blender (nothing they cover).
 
+- **MERGE-READY @ 17b0601f** (M3-C01-101, second pass). The Underway's galleries now stand on their podium:
+  - seafloor cells, with the podium's lip on every side and the stairwell open to the dark;
+  - seagrass;
+  - a sand drift through a breach in the east wall;
+  - the dead ship's ribs to the east.
+  - **Checks:** ch01 21, ch01_underway 4, all 0 failed; the tools dressing test is up to date.
+  - **Checks skipped:** coverage and Blender (nothing they cover).
+
 - **Correction (ec3ba50a):** my first B11 pass (4f616566) added a letterbox and three scripted camera setups.
   vertical_slice.md defines B11 (and B02) as **E** scenes: in-engine, no letterbox, and the player keeps the camera
   rail. Those cues are out. B11 keeps Rhen's walk out to Asha and the turns between them. Lead: take ec3ba50a with
@@ -253,3 +261,4 @@ RENDER-REQUEST @ ba49617a: ch01_oruvel_dressed; why: M3-C01-100 dresses Ch1's Or
 RENDER-REQUEST @ 05f6abc9: ch01_underway_crown, ch01_underway_gallery, ch01_oruvel_dressed; why: M3-C01-101 dresses Ch1's Underway with the drowned-tower kit, the sea and the UnderwaterRig (the first zone with the rig; new shots, no baselines). Also renders the Oruvel shot from the ba49617a request, so render this one instead. Please push the out PNGs even if a frame reads wrong (black, a grey box, the camera above the water), so I can fix the placement or the lighting.
 RENDER-REQUEST @ 9ba01356: slice_verse_hall, slice_verse_steps, ch01_underway_crown, ch01_underway_gallery, ch01_oruvel_dressed; why: M2-FP-116 moves the First Verse from the CSG set into the real shrine (slice_verse_hall is new: S07, Asha going in from the portal; slice_verse_steps is S06 on the outer steps), plus the 05f6abc9 Ch1 shots. This one supersedes 05f6abc9 and ba49617a. Please push every out PNG, even a bad frame.
 RENDER-REQUEST @ b35e17c1: ch01_oruvel_dressed, ch01_o07_name_board, ch01_o10_gull, ch01_underway_crown, ch01_underway_gallery, slice_verse_hall, slice_verse_steps; why: M3-C01-100's second pass (the Seventh Terrace, the lintel-gulls; the two inserts are new shots), plus everything from the 9ba01356 request, which this supersedes. Push every out PNG, even a bad frame.
+RENDER-REQUEST @ 17b0601f: ch01_underway_crown, ch01_underway_gallery, ch01_oruvel_dressed, ch01_o07_name_board, ch01_o10_gull, slice_verse_hall, slice_verse_steps; why: the same set as b35e17c1 plus the Underway's podium (the gallery shot looks out over it). Supersedes b35e17c1. Push every out PNG, even a bad frame.
