@@ -3690,7 +3690,7 @@
         960,
         540
       ],
-      "settle_frames": 60,
+      "settle_frames": 96,
       "setup": {
         "globals": {
           "hymn_wind_time": 40.0
