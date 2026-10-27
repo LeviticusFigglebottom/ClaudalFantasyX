@@ -518,3 +518,11 @@ RENDER-REQUEST @ 14e26ef6: creature_ilun, battle_vowbound_out, battle_choreo_vow
 RENDER-REQUEST @ a785a613: portraits:mangrove_drowner,lamp_engine,avalanche_ram,wakefin,ilun,flat_engine; tool: tools/portraits/render.sh --only mangrove_drowner,lamp_engine,avalanche_ram,wakefin,ilun,flat_engine
 RENDER-REQUEST @ a785a613: portraits:tannin_archer,gallery_ray,rime_urchin,conduit_crawler,ridge_lynx,cord_moth; tool: tools/portraits/render.sh --only tannin_archer,gallery_ray,rime_urchin,conduit_crawler,ridge_lynx,cord_moth
 RENDER-REQUEST @ a785a613: portraits:glass_skate,root_crab,fen_leech,scree_crawler,rim_crawler; tool: tools/portraits/render.sh --only glass_skate,root_crab,fen_leech,scree_crawler,rim_crawler
+- **Queue status for the Lead (your 22:29 list):**
+  1. **Ilun in the real summon path:** done, with an integration test and a note for battle-presentation above.
+  2. **Portrait manifest:** done, ilun added. One bake request now covers all 17 missing PNGs (above).
+  3. **One-frame clip batch rebuild:** done earlier (M3-CRE-630 @ cbd1ce38, 46 jobs). The kit still keys frame f. The PC render fce2e82 confirmed it, and I approved 28 shots from it.
+  4. **Wildlife Ch4–Ch9:** every zone has data except ch05/ashcrown, ch07/tamsule_bell_galleries and ch09/corrow_night, which are empty on purpose (docs/kb/art/wildlife.md gives the reasons).
+  5. **More creatures:** the Act II roster is fully built (the outline has no other foe fights: Ch13 has none, Ch14's boss is the Warden plus the flat-engine, Ch16's is people). The next gap is the **Vowbound**:
+     - Kahre (Ch5) and Virel (Ch8) are callable in vowbound.json, but a call shows a primitive placeholder, as Ilun did. Now building in parallel: M3-CRE-640 and M3-CRE-641.
+     - After them, Act II's Nhoa (Ch11), Hesk (Ch12) and Ethren (Ch13). They aren't in vowbound.json yet; Combat adds the rows.
