@@ -136,6 +136,14 @@ cutscene sequencer (`game/cutscene/**`), `game/flow/**` and the playtest fixes.
   the full Godot suite on the merge 2833/2 (the two big12 failures above, not act1-chapters'), then on 84352ccc
   `--filter=zone_cast` 3/0, `ch0` 84/0, `kit` 30/0, `zone` 67/1 (the same footsteps one), gdlint, gdformat,
   validate_data, taskboard, dlgc. `test_screenshots` waits on the render request below (ch05_pemakar_harbour).
+- **MERGE-READY @ 5696ffde: Corrow's story boxes become env-art's pieces (M3-ENV-707/708).** Ch8: the barracks,
+  the Order chapel, the chandler's stall, the trader, the wall-gate, the kites, Marra's step, the hoist's pins and
+  basket, the net racks, the shrine and the mole (only Flood and Lake, the water, stay greybox). Ch9: the drowned in
+  their rows (head to foot along each row: the rows are 1.5 m apart), the Stillguard's shields at their feet, a clay
+  lamp under each vigil light, the Ebbing raft, Ivo's shroud, the coil, the milestone; the night's grade lift is now in
+  the generator (copy_grades had been overwriting it). `--filter=zone_kit` 8/0, `corrow` 17/0, `ch08` 23/0, `ch09`
+  11/0, `act1_cutscene_walks` 1/0, validate_data. Still greybox in Ch9: the landing, the rocks, the bridge, the lake,
+  the burner, and the Iskarra set (env-art's `iskarra_city.tscn` is a scene, not kit pieces: next).
 - **Lead queue (21:23), status:**
   1. Ch9 road capsule: it is **Kerrid** at the milestone (no model yet: M3-CHR-505, characters); so are the two on
      ch06_brine_road (Ysolde, no field body yet: M3-HER-1219; Kerrid). They go when those land; no villager body on a
@@ -166,6 +174,7 @@ SUPERSEDED by the request @ c0ee5230 below: eeaf91bf
 SUPERSEDED by the request @ 9ccd51b2 below: c0ee5230
 SUPERSEDED by the request below: 9ccd51b2 (c0ee523 viewed: ch05_pemakar_crown and ch08_corrow_stair approved 160eadea; the rest were approved by big12)
 RENDER-REQUEST @ 225370ba: ch05_pemakar_harbour, ch09_corrow_strand, ch06_brine_road, ch08_corrow_arrival, ch08_corrow_stair, ch08_coilspire_hall; why: the harbour view re-aimed (it stood behind Asha's head), the strand lit (it was near-black), the casts (Stillguard, hound) and Coilspire's moved key t4_d
+RENDER-REQUEST @ 5696ffde: ch08_corrow_arrival, ch08_corrow_stair, ch09_corrow_strand, ch09_corrow_road; why: Corrow's story pieces replace their greybox (M3-ENV-707/708), Ch9's drowned, lamps and raft
 
 ## Exact next step
 1. When the PC answers RENDER-REQUEST @ 9ccd51b2 (`gpu/render-act1-chapters-9ccd51b`): view every out/diff PNG;
