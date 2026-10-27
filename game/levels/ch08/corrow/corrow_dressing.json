@@ -21,7 +21,6 @@
    "Flood",
    "Lake",
    "Shrine",
-   "Chandler",
    "WallGate",
    "MolePier",
    "MoleRamp",
@@ -3240,8 +3239,8 @@
   {
    "piece": "seawall_curve",
    "at": [
-    -63.711,
-    -2.872
+    -63.505,
+    -1.893
    ],
    "y": 0.0,
    "yaw_deg": 101.88
@@ -3249,8 +3248,8 @@
   {
    "piece": "seawall_curve",
    "at": [
-    -97.162,
-    6.147
+    -96.849,
+    7.096
    ],
    "y": 0.0,
    "yaw_deg": -71.7
@@ -3356,6 +3355,17 @@
    "yaw_deg": -1.72,
    "scale": 0.5,
    "block": "Trader"
+  },
+  {
+   "piece": "crate_stack",
+   "kit_dir": "res://assets/environments/kits/brine_shoals/",
+   "at": [
+    -78.747,
+    -0.038
+   ],
+   "y": 12.0,
+   "yaw_deg": 14.71,
+   "block": "Chandler"
   }
  ]
 }

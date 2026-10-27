@@ -139,7 +139,7 @@ def bastion_pieces() -> list[dict]:
     edge = cf.cw.PARAPET[1]  # the parapet's outer edge, local z
     for sc in (s0 + 6.0, s0 + 18.0, s0 + 30.0, s1 - 6.0):
         out.append(seg(sc, zo + edge, 180.0))  # the town side: local +z faces inland
-    for zc in (zi - 7.0, zo + 6.0):
+    for zc in (zi - 6.0, zo + 6.0):  # two 12 m segments from the walk's edge to the town-side edge
         out.append(seg(s1 - edge, zc, 90.0))  # the east end faces +s
         out.append(seg(s0 + edge, zc, -90.0))  # the west end faces -s
     for sc in (s0 + 12.0, s1 - 12.0):
@@ -279,6 +279,14 @@ def breach_pieces() -> list[dict]:
     return out
 
 
+def stand_ins() -> list[dict]:
+    """Kit stand-ins on story blocks until M3-ENV-1203's pieces: the chandler's stall is crates."""
+    blocks = {r["id"]: r for r in json.loads(LAYOUT.read_text(encoding="utf-8"))["blocks"]}
+    b = blocks["Chandler"]
+    return [{"piece": "crate_stack", "kit_dir": "res://assets/environments/kits/brine_shoals/",
+             "at": [b["pos"][0], b["pos"][2]], "y": cf.WALK_Y, "yaw_deg": b["yaw"], "block": "Chandler"}]
+
+
 def trader() -> list[dict]:
     """The trader the party comes in on (B01), on the Trader block: the Brightwater ferry kit's hull, rig and cargo at
     half scale, no name board (a coaster, not the ferry). A stand-in until a trader is built (M3-ENV-1203)."""
@@ -307,6 +315,7 @@ def dressing() -> dict:
         pieces.append({"piece": piece, "at": [cf.r3(x), cf.r3(z)], "y": cf.WALK_Y, "yaw_deg": cf.yaw_norm(b["yaw"] + 90.0),
                        "block": bid})
     pieces += trader()
+    pieces += stand_ins()
     preview = json.loads((PREVIEW / "corrow_layout.json").read_text(encoding="utf-8"))
     return {
         "schema": "ZoneKitDressing (game/levels/act1/zone_kit_dressing.gd; ADR 0200)",
@@ -321,7 +330,7 @@ def dressing() -> dict:
         "environment": RES_ZONE + "corrow_ch08_environment.tres",
         "time_of_day_h": 16.0,
         "greybox": {"hide_all": True, "keep": ["NetRacks", "MarraStep", "HoistPins", "HoistRope",
-                                               "Basket", "RopeCoil", "Flood", "Lake", "Shrine", "Chandler",
+                                               "Basket", "RopeCoil", "Flood", "Lake", "Shrine",
                                                "WallGate", "MolePier", "MoleRamp",
                                                "MoleOverParapet", "MoleDown"]},
         "fire_light_color": preview.get("fire_light_color", "#E0702E"),
@@ -338,6 +347,8 @@ def copy_grades() -> None:
         (ZONE / name).write_text(text, encoding="utf-8")
     for lut in ("lut_ch08_storm.png", "lut_ch09_ebbing.png"):
         shutil.copyfile(PREVIEW / lut, ZONE / lut)
+        if (ZONE / f"{lut}.import").exists():
+            continue  # Godot owns the copy's import file once it has imported it (its uid and cache path)
         imp = (PREVIEW / f"{lut}.import").read_text(encoding="utf-8")
         imp = re.sub(r"^(uid|path|dest_files)=.*\n", "", imp, flags=re.M)
         (ZONE / f"{lut}.import").write_text(imp.replace("res://game/levels/_tests/corrow_kit/", RES_ZONE),
