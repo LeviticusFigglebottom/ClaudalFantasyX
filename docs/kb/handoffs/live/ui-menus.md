@@ -197,4 +197,20 @@ RENDER-REQUEST @ 34d6e51d: battle_victory, lattice_menu, lattice_menu_activate, 
   - **`gpu/render-ui-a195cd3`: approved** field_menu_codex (the counts only, 9 of 34).
   - **`gpu/render-ui-121362b`: not approved.** Its battle_ch08_stair_hold has the meter fix but the old sandbox arena. big12's approved baseline (6e15d8d8) has the new wall arena, but **the meter is back over the tutorial**, because it was rendered from a tree without 121362b's fix. Neither image matches the merged tree, so the shot needs a fresh render:
 RENDER-REQUEST @ 50182f0e: battle_ch08_stair_hold; why: big12's baseline shows the stair meter over the two-line tutorial (rendered without 121362b's fix); at this head the meter sits below the help line over the wall_head_storm arena. A small request for the Lead's cloud render server.
+- 2026-10-27 22:30, **for the Lead's re-sent list:** items 1–5 were done before it arrived. See the "Queue from the Lead (2026-10-27 20:25)" table, pushed at 54a835a3. **Item 6, the accessibility and controller-prompt audit of every screen added since big9, is done** (5650bc47). Per screen:
+
+| Screen | Checks |
+|---|---|
+| Shrine travel | pseudo-loc 100/130 %; aspect; reduced motion (MenuMotion); **new: input parity** (keys, pad, mouse) |
+| Reefball outfitter | pseudo-loc; aspect; reduced motion (TownMenu's motion); states in words (Owned, Worn, refusals); **new: input parity** |
+| Reefball HUD | the refused rows and the "The side wears" line: pseudo-loc, aspect, existing parity |
+| Set-piece HUD | the meter now clears the two-line help (tested on real rects); pips filled vs ringed plus words |
+| Speed previews | pseudo-loc (fits at 130 %); **new: aspect sweep with it showing**; under reduced motion the battle pip is words only |
+| Result count-up | Reduced motion shows the final numbers; Confirm skips the count; parity via test_input_parity_battle |
+| Lattice | the bloom is off under reduced motion; step markers are filled vs ringed (shape, not colour alone); existing Lattice parity |
+| Battle barks | speech floats with damage numbers off, at the HUD's motion scale |
+
+  - **Prompt audit:** every new help line uses device-neutral action words. test_loc_key_names and test_loc_readiness pass.
+  - **Checks:** input_parity_shop 3/0, input_parity_shrine 2/0, aspect 16/0.
+  - **Queue empty again. Lead: route the next item.**
 
