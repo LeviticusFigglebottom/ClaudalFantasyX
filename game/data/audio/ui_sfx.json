@@ -1,10 +1,10 @@
 {
   "version": 1,
-  "doc": "Menu sounds by listening (M2-AUD-05; ADR 0031; docs/kb/tech/audio_runtime.md). UiAudio (game/audio/ui_audio.gd) watches every node whose script's global class (or a base class) has a hook here, and never writes it. signals: signal -> sfx row (the signal's arguments are dropped). on_enter / on_exit: a row when the menu is attached (deferred, after its _ready) or leaves the tree. watch: Expressions over `node` read once a frame (the first read is the baseline; a failed read changes nothing): a change plays sfx; rise / fall when a number goes up / down; values maps the new value (as text) to a row; on_true plays only when the new value is truthy. page_with_row(page, row_id) is in scope: the page's instance id when it shows that row, else 0. priority: one frame plays at most one UI row, the first of this list among those asked for (unlisted rows come last). pending: the class has not landed on this branch yet; the checker skips its class and signal names until it does, and the hook does nothing until then. tools/audio/data_check.py checks every row, class and signal.",
-  "priority": ["ui_error", "ui_title_confirm", "ui_lattice_node", "ui_lattice_unlock", "ui_craft", "ui_item_use",
+  "doc": "Menu sounds by listening (M2-AUD-05; ADR 0031; docs/kb/tech/audio_runtime.md). UiAudio (game/audio/ui_audio.gd) watches every node whose script's global class (or a base class) has a hook here, and never writes it. signals: signal -> sfx row (the signal's arguments are dropped). on_enter / on_exit: a row when the menu is attached (deferred, after its _ready) or leaves the tree. watch: Expressions over `node` read once a frame (the first read is the baseline; a failed read changes nothing): a change plays sfx; rise / fall when a number goes up / down; values maps the new value (as text) to a row; on_true plays only when the new value is truthy. page_with_row(page, row_id) is in scope: the page's instance id when it shows that row, else 0. priority: one frame plays at most one UI row, the first of this list among those asked for (unlisted rows come last). pending: the class has not landed on this branch yet; the checker skips its class and signal names until it does, and the hook does nothing until then. tools/audio/data_check.py checks every row, class and signal. layer: a watch row that plays beside the frame's chosen row instead of competing with it; initial: a watch row that may play on its first read; motion: {accessor, in, out}, the menu motion whooshes (M3-AUD-832).",
+  "priority": ["ui_error", "ui_shrine_travel", "ui_title_confirm", "ui_save_slot", "ui_load_slot", "ui_lattice_node", "ui_lattice_unlock", "ui_craft", "ui_item_use",
                "ui_formation_swap", "ui_unequip", "ui_equip", "ui_map_marker", "ui_lattice_step", "ui_customize_open",
                "ui_formation_pick", "ui_menu_close", "ui_map_close", "ui_cancel", "ui_vowbound_open",
-               "ui_menu_open", "ui_map_open", "ui_title_swell", "ui_inn_rest", "ui_buy", "ui_tip", "ui_confirm",
+               "ui_menu_open", "ui_reefball_choices", "ui_map_open", "ui_title_swell", "ui_inn_rest", "ui_buy", "ui_tip", "ui_confirm",
                "ui_item_sort", "ui_page", "ui_map_tick", "ui_map_pan", "ui_cursor"],
   "hooks": [
     {
@@ -75,10 +75,11 @@
       "class": "SaveMenu",
       "on_enter": "ui_menu_open",
       "signals": {
-        "saved": "ui_confirm",
-        "loaded": "ui_confirm",
+        "saved": "ui_save_slot",
+        "loaded": "ui_load_slot",
         "closed": "ui_menu_close"
       },
+      "_note": "M3-AUD-832: a save written and a save taken up have their own sounds (they outrank the phase's confirm)",
       "watch": [
         {
           "expr": "node.model.cursor",
@@ -113,7 +114,9 @@
         {"expr": "node.model.confirm_cursor", "sfx": "ui_cursor"},
         {"expr": "node.model.confirming", "on_true": true, "sfx": "ui_page"},
         {"expr": "node.is_launched()", "on_true": true, "sfx": "ui_title_confirm",
-         "_note": "M3-AUD-15: Begin / Continue started the game (outranks chosen's ui_confirm)"}
+         "_note": "M3-AUD-15: Begin / Continue started the game (outranks chosen's ui_confirm)"},
+        {"expr": "node.reveal.is_playing()", "on_true": true, "initial": true, "layer": true, "sfx": "ui_title_reveal",
+         "_note": "M3-AUD-832: the UI track's TitleReveal (claude/ui) under the swell; never under Reduced motion (it does not play); the read fails harmlessly until the reveal lands"}
       ]
     },
     {
@@ -305,6 +308,35 @@
         {"expr": "node.memories_page().cursor", "sfx": "ui_cursor"}
       ],
       "_note": "M2-MNU-303: claude/menus' Memories page (M3-MNU-02) had only FieldSubmenu's open and close"
+    },
+    {
+      "class": "ShrineTravelMenu",
+      "pending": true,
+      "on_enter": "ui_page",
+      "signals": {"travel_chosen": "ui_shrine_travel", "closed": "ui_menu_close"},
+      "watch": [
+        {"expr": "node.rows_page().cursor", "sfx": "ui_cursor"},
+        {"expr": "node.level", "rise": "ui_page", "fall": "ui_cancel", "_note": "ShrineTravelMenu.Level LIST / CONFIRM"},
+        {"expr": "node._notice != ''", "on_true": true, "sfx": "ui_error", "_note": "a refused trip keeps the list open and says why"}
+      ],
+      "_note": "M3-AUD-832: the UI track's shrine travel list (claude/ui; offered after a shrine's save menu). Pending until it merges"
+    },
+    {
+      "class": "ReefballHud",
+      "signals": {"action_chosen": "ui_confirm"},
+      "watch": [
+        {"expr": "node.is_choosing()", "on_true": true, "sfx": "ui_reefball_choices"},
+        {"expr": "node.cursor()", "sfx": "ui_cursor"},
+        {"expr": "bool(node.current_option().get('scores', false))", "on_true": true, "layer": true,
+         "sfx": "ui_reefball_glint", "_note": "the preview shows a scoring choice under the cursor"}
+      ],
+      "_note": "M3-AUD-832: the UI track's Reefball HUD (claude/ui, M3-UI-01): the menu's sounds; the match's own are reefball_audio's. Pending until it merges"
     }
-  ]
+  ],
+  "motion": {
+    "doc": "M3-AUD-832: menu motion whooshes. A watched node whose `accessor` method returns its MenuMotion layers `in` as it rises into place and `out` as it sinks away (FieldMenu, every FieldSubmenu page, and SaveMenu once claude/ui gives it one). Reduced motion makes the transitions instant: nothing moves, so nothing plays. Their rows' volume_db keep them about 12 dB under the open and close sounds.",
+    "accessor": "motion",
+    "in": "ui_whoosh_in",
+    "out": "ui_whoosh_out"
+  }
 }
