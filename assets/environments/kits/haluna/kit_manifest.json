@@ -2,6 +2,17 @@
   "generator": "assets_src/environments/kits/haluna/build.py",
   "kit": "haluna",
   "pieces": {
+    "anchor_engine": {
+      "budget": [
+        8000,
+        600
+      ],
+      "bytes": 136876,
+      "lods": {
+        "anchor_engine": 2640,
+        "anchor_engine-lod1": 564
+      }
+    },
     "ansedra_far_domes": {
       "budget": [
         8000,
@@ -1500,6 +1511,17 @@
       "lods": {
         "shrine_wall_straight": 2772,
         "shrine_wall_straight-lod1": 56
+      }
+    },
+    "spire_crown_floor": {
+      "budget": [
+        24000,
+        1600
+      ],
+      "bytes": 858568,
+      "lods": {
+        "spire_crown_floor": 11404,
+        "spire_crown_floor-lod1": 1532
       }
     },
     "stilt_house": {

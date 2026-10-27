@@ -37,6 +37,7 @@ import ansedra  # noqa: E402
 import drowned_choir  # noqa: E402
 import hollowmere  # noqa: E402
 import kite  # noqa: E402
+import iskarra_spire  # noqa: E402
 import kit_common as kc  # noqa: E402
 import props  # noqa: E402
 import ruins  # noqa: E402
@@ -110,6 +111,8 @@ def targets() -> dict:
         out[name] = (name, hollowmere, fn)
     for name, fn in sorted(kite.TARGETS.items()):  # M3-ENV-725 the Kite, the party's hub from Ch18
         out[name] = (name, kite, fn)
+    for name, fn in sorted(iskarra_spire.TARGETS.items()):  # M3-ENV-726 the Iskarra Lamp Spire's crown (Ch19)
+        out[name] = (name, iskarra_spire, fn)
     return out
 
 

@@ -1586,9 +1586,56 @@ def _choir_arena() -> dict:
 
 CHOIR_ARENA = _choir_arena()
 
+# ---------------------------------------------------------------------------------------------
+# M3-ENV-726: Warden Hesper Oan and Ilsabet Rue on the Iskarra Lamp Spire's crown at nightfall (iskarra_spire.py;
+# iskarra.md §3)
+# ---------------------------------------------------------------------------------------------
+def _spire():
+    import iskarra_spire  # noqa: PLC0415
+
+    return iskarra_spire
+
+
+SPIRE_CROWN = {
+    "id": "iskarra_spire_crown",
+    "sub_frame": "ch19",
+    "ground": "deck",
+    "ground_glb": KIT + "spire_crown_floor.glb",
+    "lut": "res://assets/environments/arenas/iskarra_spire_crown/lut_ch19_spire.png",
+    # Colour script ch19 (the spire climbed into night): the afterglow low in the west #FF9F46 0.7 behind the party,
+    # fill #5A7FA8 0.4, the sky #22304E over a #C8763E horizon, the warm fog thin; the anchor-engine's bound teal
+    # the only lamp. The drowned city 112 m below.
+    "sun": {"elev": 2.0, "az": 285.0, "color": "#FF9F46", "energy": 0.7, "max_distance": 60.0},
+    "fill": {"color": "#5A7FA8", "energy": 0.4},
+    "exposure": 1.0,
+    "glow": (0.6, 0.08, 1.0),
+    "fog": {"color": "#8A6A5A", "aerial": 0.6, "density": 0.0016, "sky_affect": 0.15, "height": 0.0,
+            "height_density": 0.0},
+    "sky_shader": LOW_SUN_SKY,
+    "sky": dict(CORROW_SKY, col_zenith="#22304E", col_horizon_sun="#C8763E", col_horizon_away="#3E4A66",
+                col_ground="#1A2232", sky_energy=0.9, sun_disc_energy=0.0, halo_energy=0.7, glow_energy=0.6,
+                cloud_coverage=0.3, col_cloud_lit="#E08A5A", col_cloud_shadow="#2E3650"),
+    "sea": {"y": -_spire().ELEVATION_M, "tide_line_y": -_spire().ELEVATION_M, "sea_glow": 0.06},
+    "pieces": [{"glb": KIT + "anchor_engine.glb", "at": (_spire().ENGINE_AT[0], 0.0, _spire().ENGINE_AT[1]),
+                "yaw": 0.0, "structure": True}],
+    "extra_glbs": [(KIT + "iskarra_far_towers.glb", (0.0, -_spire().ELEVATION_M, 0.0))],
+    "scatters": [],
+    "lamp_spec": {"color": "#4FB3B0", "energy": 2.6, "range_m": 14.0, "attenuation": 1.2},
+    "lamps": [{"at": (_spire().ENGINE_AT[0], 3.6, _spire().ENGINE_AT[1]), "flame": False, "shadow": True}],
+    "hints": {
+        "wide_high": ((-1.5, 7.5, 13.5), (0.0, 0.8, -3.0)),
+        "party_side": ((5.6, 1.7, 4.5), (-1.5, 1.0, -0.5)),
+        "foe_side": ((-5.6, 1.7, 4.0), (1.5, 1.0, 0.0)),
+        "the_engine": ((-1.0, 2.0, 2.0), (_spire().ENGINE_AT[0], 3.5, _spire().ENGINE_AT[1])),
+        "the_city_below": ((6.0, 2.5, 6.0), (40.0, -90.0, -60.0)),
+    },
+}
+
+
 ARENAS = {a["id"]: a for a in (TIDELINE, CAUSEWAY, CAUSEWAY_ROUTE, DERELICT_DECK, ASH_TERRACE, UNDERWAY_TOWER,
                                RAFT_MORNING, SHOALS, CAMP, WALLHEAD_STORM, WALLHEAD_HOIST, WALLHEAD_SURGE, HEADLAND, TIER_HALL, KETH_ARENA,
-                               LOWLIGHT_ARENA, FEN_ARENA, BRIDAL_ARENA, ANSEDRA_ESCAPE, CHOIR_ARENA)}
+                               LOWLIGHT_ARENA, FEN_ARENA, BRIDAL_ARENA, ANSEDRA_ESCAPE, CHOIR_ARENA,
+                               SPIRE_CROWN)}
 
 
 # ---------------------------------------------------------------------------------------------
@@ -1740,6 +1787,10 @@ def write_arena(a: dict) -> Path:
         sc.node("Disc", None, ".", {"transform": f"Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, {cx}, 0, {cz})"},
                 instance=sc.res("PackedScene", a["disc"]["glb"]))
     for k, glb in enumerate(a.get("extra_glbs", [])):
+        if isinstance(glb, tuple):  # M3-ENV-726: (glb, (x, y, z)), a backdrop set off the origin (the city below)
+            glb, at = glb
+            sc.node(f"Kit{k}", None, ".", {"transform": _xyz(at)}, instance=sc.res("PackedScene", glb))
+            continue
         sc.node(f"Kit{k}", None, ".", {}, instance=sc.res("PackedScene", glb))
     sc.node("Dressing", "Node3D", ".", {})
     counts: dict[str, int] = {}

@@ -22,7 +22,8 @@
       "ossa_fen_roots": "res://assets/environments/arenas/ossa_fen_roots/ossa_fen_roots.tscn",
       "bridal_barge_night": "res://assets/environments/arenas/bridal_barge_night/bridal_barge_night.tscn",
       "ansedra_lagoon_escape": "res://assets/environments/arenas/ansedra_lagoon_escape/ansedra_lagoon_escape.tscn",
-      "drowned_choir_ring": "res://assets/environments/arenas/drowned_choir_ring/drowned_choir_ring.tscn"
+      "drowned_choir_ring": "res://assets/environments/arenas/drowned_choir_ring/drowned_choir_ring.tscn",
+      "iskarra_spire_crown": "res://assets/environments/arenas/iskarra_spire_crown/iskarra_spire_crown.tscn"
     },
     "staging": {
       "doc": "M3-BPR-01: per-arena choreography (BattleChoreo): travel_scale scales every run, step, walk-in and exit (with reduced motion's on top); tempo scales the battle speed (under 1 = slower). Arenas with no row stage as the sandbox.",

@@ -407,3 +407,19 @@ the encounter row. The first fight (Haluna beach) and the Drownbell get their ar
   deck so the contract's floor tests stay as they were.
 - **The sunset party stands in the bell's shadow:** at 2° the bell stand-in's shadow runs 60 m east over party
   slot 0. It reads (dark figures on lit paving around it) and it is the light the script asks for.
+
+### The Lamp Spire's crown at nightfall (`iskarra_spire_crown`, M3-ENV-726, the Haluna kit's iskarra_spire.py)
+
+For Warden Hesper Oan and Ilsabet Rue (Ch19). Iskarra's Lamp Spire is crowned 112 m over the drowned city.
+
+**The floor** is a round deck of the city's flags (r 12), level at y 0, with flush glazed rings and rays. A
+balustrade runs round its edge, and an arcade of twelve columns carries round arches; two bays have fallen.
+
+| Where | What |
+|---|---|
+| Behind the enemy line, (−7.2, −4.6) | The founders' `anchor_engine`: a salt-glass column round a bound core, caged in three bronze rings; its teal is the one practical light (`Lamp0`, shadowed) |
+| Below, y −112 | `iskarra_far_towers`, the drowned city, set off the origin by `extra_glbs`' new `(glb, (x, y, z))` form |
+
+- **Light** (iskarra.md §3): the afterglow low in the west `#FF9F46` 0.7, fill `#5A7FA8` 0.4, exposure 1.0,
+  `lut_ch19_spire`.
+- **Hints:** `the_engine`, `the_city_below`.

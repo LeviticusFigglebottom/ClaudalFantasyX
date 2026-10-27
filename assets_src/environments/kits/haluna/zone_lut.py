@@ -143,6 +143,13 @@ GRADES = {
                   "black_floor": 0.4, "highlight_hex": "#FFD9A8", "highlight_start": 0.62, "highlight_strength": 0.45,
                   "warm_deg": (-20.0, 60.0), "warm_sat": 1.12, "cool_sat": 0.95, "cool_hex": "#B8C8E0",
                   "cool_strength": 0.25, "white_cap": 0.92},
+    # M3-ENV-726: lut_ch19_spire (colour script ch19, the Lamp Spire's crown at nightfall): the Prologue's dusk
+    # gone to blue in the shadows, the afterglow's gold kept in the highlights, the engine's bound teal clean; skin
+    # held warm (the warm band's saturation up), S-curve 0.55, saturation x1.05.
+    "ch19_spire": {"saturation": 1.05, "s_curve": 0.55, "toe_hex": "#1C2840", "toe_strength": 0.45, "toe_end": 0.32,
+                   "black_floor": 0.45, "highlight_hex": "#FFD2A0", "highlight_start": 0.66, "highlight_strength": 0.4,
+                   "warm_deg": (-20.0, 55.0), "warm_sat": 1.12, "cool_sat": 1.0, "cool_hex": "#B0C8DC",
+                   "cool_strength": 0.25},
     "ch16_choir": {"saturation": 0.7, "s_curve": 0.3, "toe_hex": "#1E2A3A", "toe_strength": 0.45, "toe_end": 0.32,
                    "black_floor": 0.5, "highlight_hex": "#E6EEFA", "highlight_start": 0.68, "highlight_strength": 0.4,
                    "warm_deg": (-20.0, 60.0), "warm_sat": 0.7, "cool_sat": 0.9, "cool_hex": "#C8DCEE",
