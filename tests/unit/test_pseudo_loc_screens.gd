@@ -38,6 +38,7 @@ const TOWN_DRIVERS: Array[String] = [
 	"res://game/ui/shop/shots/shop_buy.tscn",
 	"res://game/ui/shop/shots/shop_sell.tscn",
 	"res://game/ui/shop/shots/inn.tscn",
+	"res://game/ui/reefball/shots/reefball_outfitter.tscn",
 ]
 const REEFBALL_CHOICE := "res://game/ui/reefball/shots/reefball_hud_choice.tscn"
 const REEFBALL_GOAL := "res://game/ui/reefball/shots/reefball_hud_goal.tscn"

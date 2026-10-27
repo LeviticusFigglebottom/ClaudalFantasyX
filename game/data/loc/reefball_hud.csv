@@ -52,3 +52,35 @@ RBL_HUD_REFUSED_UNFETCHED,Not fetched
 RBL_HUD_REFUSED_AT_WEEP,At the weep
 RBL_HUD_REFUSED_TOO_DEEP,Too deep
 RBL_HUD_REFUSED_AT_RING,At the ring
+RBL_GEAR_BRASS_THREAD_BAND,Brass-Thread Band
+RBL_GEAR_BRASS_THREAD_BAND_DESC,"A side-band worked with brass thread, the kind the river sides wear for luck and a surer hold."
+RBL_GEAR_KELP_DYED_BAND,Kelp-Dyed Band
+RBL_GEAR_KELP_DYED_BAND_DESC,"Cloth dyed in kelp until it smells of the deep. Divers swear it keeps their breath long."
+RBL_GEAR_CORK_PRACTICE_FLOAT,Cork Practice Float
+RBL_GEAR_CORK_PRACTICE_FLOAT_DESC,"A light cork float for drills. A side that trains with it throws farther and reaches sooner."
+RBL_GEAR_WEIGHTED_FLOAT,Weighted Float
+RBL_GEAR_WEIGHTED_FLOAT_DESC,"A float with lead sewn into its seam. Drilling with it makes every stroke count for more."
+RBL_OUTFIT_TITLE,The Reefball Outfitter
+RBL_OUTFIT_OWNED,Owned
+RBL_OUTFIT_WORN,Worn
+RBL_OUTFIT_LEAVE,Leave
+RBL_OUTFIT_LEAVE_DESC,"Gear for the side's matches only. It does nothing in a fight."
+RBL_OUTFIT_BONUS_FMT,{stat} +{amount}
+RBL_OUTFIT_BONUS_JOIN," · "
+RBL_OUTFIT_BUY_FMT,Buy {name} for {price}. The side wears it if it has nothing of its kind on.
+RBL_OUTFIT_NO_FUNDS_FMT,{name} costs {price}. The purse is short.
+RBL_OUTFIT_WEAR_FMT,Choose to put on {name}.
+RBL_OUTFIT_SWAP_FMT,Choose to put on {name} in place of {other}.
+RBL_OUTFIT_TAKE_OFF_FMT,Choose to take off {name}.
+RBL_OUTFIT_BOUGHT_FMT,Bought {name}.
+RBL_OUTFIT_NOW_WORN_FMT,The side wears {name}.
+RBL_OUTFIT_TAKEN_OFF_FMT,{name} is off.
+RBL_OUTFIT_HELP,Up and Down: choose · Confirm: buy or wear · Cancel: leave
+RBL_STAT_BREATH,Breath
+RBL_STAT_STROKE,Stroke
+RBL_STAT_REACH,Reach
+RBL_STAT_GRIP,Grip
+RBL_STAT_STRIP,Strip
+RBL_STAT_LOFT,Loft
+RBL_STAT_WARD,Ward
+RBL_HUD_WEARING_FMT,The side wears {gear}.

@@ -740,6 +740,14 @@ SPEC §6.6's teleport network (`ShrineNetwork`, M1-ARC-06: attunement in `Game.s
 
 It shows even with damage numbers off, because it is speech. `said` keeps the battle's lines for tests and captures.
 
+**The Reefball outfitter (ADR 0040, M3-C07-05).** ReefballOutfitterMenu is a TownMenu over ReefballOutfitterModel. TownServices opens it for a `{"reefball_outfitter": id}` payload; its layout is the `shop_menu.json` "reefball_outfitter" section.
+- **The rows:** each gear piece with its price, or Owned or Worn on the right, then Leave.
+- **The line:** the piece's words, then what it adds ("Grip +1 · Strip +1"). Under it, what choosing it does (buy, put on in place of another, take off), or "the purse is short" in the danger colour.
+- **Buying** wears the piece when nothing of its kind is on.
+- **The match HUD's framing panel** names what the side wears.
+
+Tests: `test_reefball_outfitter.gd`. The shot is `reefball_outfitter`; it is in the pseudo-loc walk and the aspect audit.
+
 ## "Parts look primitive": the pass of 2026-10-27
 
 The human's playtest note, the Lead's item 5. Everything below honours Reduced motion and ends inside its shot's settle frames.

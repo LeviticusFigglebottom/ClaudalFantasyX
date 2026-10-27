@@ -23,6 +23,7 @@ These are layout edits in zones you own, so this is a request.
     `{"id": "shrine", "activation": "interact", "prompt_key": "FIELD_PROMPT_REST", "requires_flag": "ch07_arrived", "payload": {"save_shrine": "tamsule_shrine"}}`;
   - a trader: `{"id": "trader", "activation": "interact", "prompt_key": "SHOP_PROMPT", "requires_flag": "ch07_arrived", "payload": {"shop": "tamsule_trader"}}`;
   - an inn: `{"id": "inn", "activation": "interact", ..., "payload": {"inn": "tamsule_inn"}}`;
+  - the Reefball outfitter (ADR 0040; act1_ch07.md B02's outfitter): `{"id": "outfitter", "activation": "interact", "prompt_key": "SHOP_PROMPT", "requires_flag": "ch07_arrived", "payload": {"reefball_outfitter": "tamsule"}}`;
   - the `locations.json` shrines row `{"id": "tamsule_shrine", "location_id": "ch07/tamsule", "spawn": "Shrine"}`. Add it with the spawn, because the validator checks that the spawn exists.
   - Placement is yours. B02's market boats and stilt lanes read naturally.
 - [ ] **Corrow (Ch8):** a `Shrine` spawn by the `shrine` trigger at (-30, 19.2), plus `"save_shrine": "corrow_shrine"` on its payload, plus the row `{"id": "corrow_shrine", "location_id": "ch08/corrow", "spawn": "Shrine"}`.

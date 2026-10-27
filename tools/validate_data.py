@@ -1323,6 +1323,7 @@ def run(root: Path) -> Report:
     data_keys += check_codex(files, declared_flags_quiet(root), rep)  # M3-UI-03
     data_keys += check_memories(root, files, declared_flags_quiet(root), rep)  # M3-MNU-02
     data_keys += check_reefball(files, rep)
+    data_keys += check_reefball_gear(files, declared_flags_quiet(root), rep)  # ADR 0040
     data_keys += check_set_pieces(files, rep)
     check_loc(root, data_keys, load_loc_keys(root, rep), rep)
     check_flags(root, load_flags(root, rep), rep)
@@ -2881,6 +2882,8 @@ REEFBALL_DIR = "game/data/reefball"
 REEFBALL_RULES = f"{REEFBALL_DIR}/rules.json"
 REEFBALL_SIDES = f"{REEFBALL_DIR}/sides.json"
 REEFBALL_MATCHES = f"{REEFBALL_DIR}/matches.json"
+REEFBALL_GEAR = f"{REEFBALL_DIR}/gear.json"
+REEFBALL_GEAR_KINDS = ("band", "float")
 REEFBALL_STATS = ("breath", "stroke", "reach", "grip", "strip", "loft", "ward")
 REEFBALL_ACTIONS = ("rise", "dive", "pass", "loft")
 REEFBALL_COEFFS = {"rise": ("base", "edge_k", "crowd_k"),
@@ -3122,6 +3125,46 @@ def check_reefball(files: dict[str, object], rep: Report) -> list[str]:
         rep.err(e)
     return collect_keys(docs)
 
+
+
+def reefball_gear_errors(doc: object, flags: set[str] | None) -> list[str]:
+    """ADR 0040: Reefball-only gear rows: id, a kind (REEFBALL_GEAR_KINDS), name and desc keys, a price >= 0
+    and a non-empty bonus of positive ints over REEFBALL_STATS; each piece's owned flag and each kind's worn
+    flag are declared (`flags`, None: not checked)."""
+    errs: list[str] = []
+    for g in _rows(doc, "gear", REEFBALL_GEAR, errs):
+        w = f"{REEFBALL_GEAR} {g['id']}"
+        _need_keys(g, w, ("name_key", "desc_key"), errs)
+        if g.get("kind") not in REEFBALL_GEAR_KINDS:
+            errs.append(f"{w}: kind must be one of {', '.join(REEFBALL_GEAR_KINDS)}")
+        if not _is_int(g.get("price")) or g["price"] < 0:
+            errs.append(f"{w}: price must be an int >= 0")
+        bonus = g.get("bonus")
+        if not isinstance(bonus, dict) or not bonus:
+            errs.append(f"{w}: bonus must name at least one stat")
+        else:
+            for stat, n in bonus.items():
+                if stat not in REEFBALL_STATS:
+                    errs.append(f"{w}: bonus stat '{stat}' is not a Reefball stat")
+                elif not _is_int(n) or n < 1:
+                    errs.append(f"{w}: bonus '{stat}' must be an int >= 1")
+        if flags is not None and f"rbl_gear_{g['id']}_owned" not in flags:
+            errs.append(f"{w}: flag 'rbl_gear_{g['id']}_owned' is not declared in game/data/flags.tres")
+    if flags is not None:
+        errs += [f"{REEFBALL_GEAR}: flag 'rbl_worn_{k}' is not declared in game/data/flags.tres"
+                 for k in REEFBALL_GEAR_KINDS if f"rbl_worn_{k}" not in flags]
+    return errs
+
+
+def check_reefball_gear(files: dict[str, object], flags: set[str], rep: Report) -> list[str]:
+    """Validates game/data/reefball/gear.json (ADR 0040). Returns its *_key values for the loc check."""
+    doc = files.get(REEFBALL_GEAR)
+    if doc is None:
+        rep.err(f"{REEFBALL_GEAR}: missing")
+        return []
+    for e in reefball_gear_errors(doc, flags):
+        rep.err(e)
+    return collect_keys([doc])
 
 if __name__ == "__main__":
     sys.exit(main())

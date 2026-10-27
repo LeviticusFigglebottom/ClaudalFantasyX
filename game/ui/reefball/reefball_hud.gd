@@ -36,6 +36,8 @@ var _d: Dictionary = {}
 var _framing: PanelContainer
 var _match_name: Label
 var _stakes: Label
+## The Reefball-only gear the player's side wears (ADR 0040; hidden when none).
+var _gear: Label
 var _scoreboard: PanelContainer
 var _side_names: Array[Label] = []
 var _scores: Array[Label] = []
@@ -147,6 +149,8 @@ func refresh() -> void:
 	_match_name.text = tr(str(match_ref.match_row.get("name_key", "")))
 	_stakes.text = tr(stakes_key())
 	_stakes.visible = stakes_key() != ""
+	_gear.text = gear_text()
+	_gear.visible = _gear.text != ""
 	_refresh_contact()
 	_refresh_divers()
 
@@ -163,6 +167,16 @@ func clock_text() -> String:
 ## What rides on the match: the match row's stakes_key (M3-RBL-201; "" when it has none).
 func stakes_key() -> String:
 	return str(match_ref.match_row.get("stakes_key", ""))
+
+
+## The gear the player's side wears, by name ("" when none; ReefballMatch.worn_gear, ADR 0040).
+func gear_text() -> String:
+	var names: Array[String] = []
+	for gid in match_ref.worn_gear:
+		names.append(tr(str((match_ref.db.gear.get(gid, {}) as Dictionary).get("name_key", ""))))
+	if names.is_empty():
+		return ""
+	return tr("RBL_HUD_WEARING_FMT").format({"gear": tr("RBL_OUTFIT_BONUS_JOIN").join(names)})
 
 
 ## The opponent read: the line for the opposing AI profile ("" when none).
@@ -572,6 +586,7 @@ func _build() -> void:
 	_match_name = _label(&"HeaderLabel", fbox)
 	_match_name.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	_stakes = _wrap(&"HelpDimLabel", fbox, fm)
+	_gear = _wrap(&"HelpDimLabel", fbox, fm)
 
 	var sm := section("scoreboard")
 	_scoreboard = _panel(sm)

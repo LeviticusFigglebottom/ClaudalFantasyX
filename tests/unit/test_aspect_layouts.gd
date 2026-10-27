@@ -78,6 +78,7 @@ func test_field_menu_and_its_pages() -> void:
 func test_shop_inn_and_save() -> void:
 	_sweep("shop", _shop, _framed)
 	_sweep("inn", _inn, _framed)
+	_sweep("reefball outfitter", _outfitter, _framed)
 	_sweep("save", _save, _framed)
 	SaveSystem.save_dir = _saved_dir
 
@@ -412,6 +413,20 @@ func _inn() -> Node:
 	var heal := func(_source: StringName) -> void: pass
 	menu.configure(
 		InnMenuModel.new(Inn.new(db, &"haluna_inn"), PartyGoods.from_state(db, _state()), FlagReader.new(), heal)
+	)
+	ParityHost.scene_root().add_child(menu)
+	return menu
+
+
+func _outfitter() -> Node:
+	var menu := (load(ReefballOutfitterMenu.SCENE_PATH) as PackedScene).instantiate() as ReefballOutfitterMenu
+	menu.pause_tree = false
+	var none := func(_f: StringName) -> Variant: return ""
+	var keep := func(_f: StringName, _v: Variant) -> void: pass
+	menu.configure(
+		ReefballOutfitterModel.new(
+			ReefballDB.load_default(), PartyGoods.from_state(ItemDB.load_default(), _state()).wallet, none, keep
+		)
 	)
 	ParityHost.scene_root().add_child(menu)
 	return menu

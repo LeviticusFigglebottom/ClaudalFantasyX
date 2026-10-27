@@ -134,6 +134,7 @@ seed and the same decisions always play the same match.
 - `sides.json`: each side's divers (role, and the seven stats breath, stroke, reach, grip, strip, loft,
   ward, in `stat_min..stat_max`), its captain and its kickoff diver.
 - `matches.json`: the two sides, `player_side`, `first_float`, the opposing `ai_profile` and an optional `stakes_key` (what rides on the match; the HUD's framing line, M3-RBL-201).
+- `gear.json` (ADR 0040, M3-C07-05): Reefball-only gear, never battle equipment. Each piece has a `kind` (band or float), a `price` and a `bonus` (stats). The side wears at most one piece of each kind, and `ReefballMatch.setup(db, id, seed, worn)` adds the worn pieces' bonuses to every diver on the player's side, capped at `stat_max` (`worn_gear`; the HUD names them). Owning a piece is the flag `rbl_gear_<id>_owned`, and the worn piece of each kind is `rbl_worn_<kind>`. `ReefballOutfitterModel.worn_ids()` reads them for the flow. The Tamsule outfitter (`ReefballOutfitterMenu`, payload `{"reefball_outfitter": id}`) sells them.
   Two more optional fields (M3-C07-05, ADR 0040). `rewards` sets lume and items per outcome; the flow pays them. `requires_item` names a key item the party must hold before the flow offers the match; read it with `ReefballMatch.is_open(row, holds)`. The Oruvel Float gates Oruvel's Act III league match, and that is the Float's only effect: it is never equipped.
 
 `tools/validate_data.py` checks all three (the M3-RBL-01 section): shapes, ranges, unique ids across

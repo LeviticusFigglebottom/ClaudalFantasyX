@@ -3345,6 +3345,10 @@
           "screen_space_aa": 1
         }
       }
+    },
+    {
+      "id": "reefball_outfitter",
+      "scene": "res://game/ui/reefball/shots/reefball_outfitter.tscn"
     }
   ]
 }

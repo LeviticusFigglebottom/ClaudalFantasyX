@@ -381,3 +381,30 @@ func test_a_match_gated_on_a_key_item_opens_only_while_the_party_holds_it() -> v
 	held.append(&"oruvel_float")
 	assert_true(ReefballMatch.is_open(gated, holds), "the Float opens it")
 	assert_true(ReefballMatch.is_open({"id": "tidecup_opening"}, holds), "an ungated match is always open")
+
+
+func test_worn_gear_lifts_the_player_side_only_capped_and_refills_breath() -> void:
+	# ADR 0040: Reefball-only gear, worn by the player's side for the match.
+	var raw := ReefballFixture.tables()
+	raw["gear"] = [
+		{"id": "band", "kind": "band", "bonus": {"grip": 2, "breath": 3}},
+		{"id": "big", "kind": "float", "bonus": {"loft": 50}},
+	]
+	var m := ReefballMatch.new()
+	var worn: Array[StringName] = [&"band", &"big", &"nope"]
+	assert_true(m.setup(ReefballFixture.db(raw), ReefballFixture.MATCH, 1, worn), "an unknown piece is skipped")
+	assert_eq(m.worn_gear, [&"band", &"big"] as Array[StringName])
+	var ours := m.diver(&"e_carry")
+	assert_eq(ours.stat("grip"), 14, "+2")
+	assert_eq(ours.stat("loft"), 20, "capped at stat_max")
+	assert_eq(ours.breath, 15, "breath refilled to the new maximum")
+	var theirs := m.diver(&"w_carry")
+	assert_eq(theirs.stat("grip"), 12, "the other side wears nothing")
+	assert_eq(theirs.breath, 12)
+
+
+func test_no_gear_changes_nothing() -> void:
+	var m := ReefballMatch.new()
+	assert_true(m.setup(ReefballFixture.db(), ReefballFixture.MATCH, 1))
+	assert_true(m.worn_gear.is_empty())
+	assert_eq(m.diver(&"e_carry").stat("grip"), 12)

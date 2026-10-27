@@ -54,6 +54,8 @@ var holder: ReefballDiver
 var fetched := false
 var contacts := 0
 var ai: ReefballAI
+## The Reefball-only gear the player's side wears this match (gear.json ids; ADR 0040).
+var worn_gear: Array[StringName] = []
 
 
 ## Whether the match row may be offered (ADR 0040): a row with "requires_item" needs the party to hold
@@ -64,9 +66,10 @@ static func is_open(row: Dictionary, holds: Callable) -> bool:
 	return need == &"" or bool(holds.call(need))
 
 
-## Builds the match `match_id` from `database`, seeded with `seed_value`. False (and push_error)
+## Builds the match `match_id` from `database`, seeded with `seed_value`, with the player's side
+## wearing `worn` (gear.json ids; unknown ids are skipped with a push_error). False (and push_error)
 ## for an unknown match or side.
-func setup(database: ReefballDB, match_id: StringName, seed_value: int) -> bool:
+func setup(database: ReefballDB, match_id: StringName, seed_value: int, worn: Array[StringName] = []) -> bool:
 	db = database
 	rules = db.rules
 	if not db.matches.has(match_id):
@@ -86,8 +89,28 @@ func setup(database: ReefballDB, match_id: StringName, seed_value: int) -> bool:
 			d.order = divers.size()
 			divers.append(d)
 	player_side = int(match_row.get("player_side", 0))
+	_wear(worn)
 	ai = ReefballAI.new(db.ai_profiles.get(StringName(str(match_row.get("ai_profile", ""))), {}))
 	return true
+
+
+## Adds each worn piece's bonus to every diver on the player's side, capped at rules.stat_max, and
+## refills their breath to the new maximum.
+func _wear(worn: Array[StringName]) -> void:
+	worn_gear.clear()
+	var cap := int(rules.get("stat_max", 0))
+	for gid in worn:
+		if not db.gear.has(gid):
+			push_error("ReefballMatch: unknown gear '%s'" % gid)
+			continue
+		worn_gear.append(gid)
+		var bonus: Dictionary = (db.gear[gid] as Dictionary).get("bonus", {})
+		for d in divers:
+			if d.side != player_side:
+				continue
+			for stat_name: Variant in bonus:
+				d.stats[str(stat_name)] = mini(d.stat(str(stat_name)) + int(bonus[stat_name]), cap)
+			d.breath = d.max_breath()
 
 
 ## Starts the clock and gives the first float to match.first_float at the weep.

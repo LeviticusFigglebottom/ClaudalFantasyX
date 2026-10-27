@@ -137,6 +137,35 @@ class ReefballValidateTest(unittest.TestCase):
         self.assertTrue(any("bands must list" in e for e in self.errs()))
 
 
+
+class ReefballGearValidateTest(unittest.TestCase):
+    """ADR 0040: Reefball-only gear rows and their owned and worn flags."""
+
+    FLAGS = {"rbl_gear_band_a_owned", "rbl_worn_band", "rbl_worn_float"}
+
+    def doc(self, **row: object) -> dict:
+        base = {"id": "band_a", "kind": "band", "name_key": "K", "desc_key": "D", "price": 10, "bonus": {"grip": 1}}
+        base.update(row)
+        return {"gear": [base]}
+
+    def test_a_good_row_passes_and_the_shipped_file_too(self) -> None:
+        self.assertEqual(vd.reefball_gear_errors(self.doc(), self.FLAGS), [])
+        shipped = json.loads((ROOT / vd.REEFBALL_GEAR).read_text(encoding="utf-8"))
+        self.assertEqual(vd.reefball_gear_errors(shipped, vd.declared_flags_quiet(ROOT)), [])
+
+    def test_bad_rows_are_named(self) -> None:
+        for row, says in (({"kind": "hat"}, "kind must be"), ({"price": -1}, "price must be"),
+                          ({"bonus": {}}, "at least one stat"), ({"bonus": {"luck": 1}}, "not a Reefball stat"),
+                          ({"bonus": {"grip": 0}}, "must be an int >= 1")):
+            errs = vd.reefball_gear_errors(self.doc(**row), self.FLAGS)
+            self.assertTrue(any(says in e for e in errs), (row, errs))
+
+    def test_the_flags_must_be_declared(self) -> None:
+        errs = vd.reefball_gear_errors(self.doc(), {"rbl_worn_band"})
+        self.assertTrue(any("rbl_gear_band_a_owned" in e for e in errs))
+        self.assertTrue(any("rbl_worn_float" in e for e in errs))
+        self.assertEqual(vd.reefball_gear_errors(self.doc(), None), [], "None: flags not checked")
+
 class ReefballSimHelpersTest(unittest.TestCase):
     SUITE = {"id": "s", "match": "m", "bands": {"naive": [10, 30], "smart": [55, 80], "other": None},
              "max_draw_pct": 15}
