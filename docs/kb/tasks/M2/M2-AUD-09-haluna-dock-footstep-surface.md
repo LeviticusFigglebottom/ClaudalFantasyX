@@ -2,9 +2,10 @@
 id: M2-AUD-09
 title: Footstep surfaces inside Haluna (the dock and the jetty are wood, the lanes stone)
 role: cinematics
-status: todo
-owner_session: ""
+status: review
+owner_session: "slice-polish (claude/m2-slice, session_01KZCgTqxhHKjvMCm1dAosvZ)"
 depends_on: [M2-AUD-05]
+reviewer: lead
 milestone: M2
 request-from: audio
 ---
@@ -19,5 +20,8 @@ so Rhen walks on "sand" along the dock (B11) and the stone lanes. The wood and s
   `surface` meta (`wood`, `stone`), or a surface layer the field motor already queries. Audio adds the reader once
   the markers exist.
 - [ ] The dock, the jetty and the chapel court marked.
+
+## Superseded (slice-polish, 2026-10-27)
+Audio's M3-AUD-812 reads the ground from the dressing's meshes (`footsteps.json` `mesh_surfaces`: dock, pier and jetty pieces are wood, Tidepool and shallows are water), so Haluna needs no marker areas. test_footsteps_slice_zones holds the dock (wood) and the causeway (stone, with water in its tide pool). Audio: close it, or say what is still missing.
 
 ## Review log

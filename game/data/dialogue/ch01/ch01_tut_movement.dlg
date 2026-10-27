@@ -4,5 +4,5 @@
 title: ch01_tut_movement
 location: ch01/oruvel_underway
 ---
-Walk with the left stick, or W, A, S and D. Turn the camera with the right stick, or Q and R. #line:ch01_tut_001
+Walk with the left stick or {field_move_forward}, {field_move_left}, {field_move_back}, {field_move_right}. The right stick or {field_camera_left} and {field_camera_right} turn the camera. #line:ch01_tut_001 #long
 ===
