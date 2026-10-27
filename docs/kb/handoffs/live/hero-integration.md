@@ -330,3 +330,29 @@ Session `session_01PzF7Jc4XVQdTWcaYUyCjPB`. Per the Lead: no send_message; reque
 
 ### Render requests
 RENDER-REQUEST @ b2453cfd: battle_heroes_idle, battle_heroes_attack, battle_heroes_hit, battle_heroes_ko, battle_heroes_victory, battle_heroes_cast, battle_heroes_finisher, field_hero_party, field_hero_rhen_walk, field_hero_gait_strip; why: new battle hero shots (M2-HER-1106), and the field hero shots after characters' gait clips and the followers' floor change (M2-HER-1110)
+- **MERGE-READY @ 1b84b89c** (FAST-TRACK, the human's #1 complaint). Merged big10 (7f187123) in.
+  - M2-HER-1116: foot IK on every field and cutscene hero body (`HeroFootIK`; flat ground untouched, a continuous
+    1 cm dead zone); followers turn to face whoever Rhen talks to; Ysolde gets a field and cutscene body (her stage
+    actors no longer whip-turn).
+  - M2-HER-1103: Ysolde's battle wrapper. **Fix:** placeholder clips on a hero who lacks some (Ysolde) were untuned,
+    so her KO stood up in one frame. The wrapper now installs them on a stopped player, then tunes them.
+  - M2-HER-1110: the cutscene guard now covers the prologue and every cue-named actor (27 scenes) and prints what each
+    sampled. On claude/m2-slice + the M2-HER-1113 patch, the real prologue cast and every KNOWN pair are clean.
+  - ADR 0192 (no snapping is a test).
+  - Checks run after big10: gdlint and gdformat on game/hero_motion and my tests, validate_data, taskboard --check,
+    tools test_screenshots, Godot filters hero_ 97/0, villager 2/0 (the layer half skips: M3-CRE-613 isn't merged
+    yet), npc 10/0, battle 703/0, field 147/0, zone 51/0, haluna 50/0, cutscene 52/0, _thread 34/0, fp_ 27/0.
+  - Skipped: Blender (none touched), coverage (no game/battle or game/progression change), shots (cloud renders are
+    off; see the request below).
+- **Crash for battle-presentation (M2-HER-1114), please relay:** BattlePlaceholderClips._install swaps the library
+  under a playing AnimationPlayer, and Godot segfaults. My wrapper now avoids it. The 2-line fix for every other
+  caller is in the task.
+- New requests for the Lead to relay:
+  - **M2-HER-1114** (battle-presentation): that crash, plus the placeholder finisher's arm flip;
+  - **M2-HER-1115** (characters): Ysolde's battle clips;
+  - **M3-HER-1117** (creatures): villagers' foot IK, a one-liner;
+  - **M2-HER-1108** now covers Ysolde's stand_in too.
+  - Still open: 1108, 1111, 1112, 1113.
+
+### Render requests
+RENDER-REQUEST @ 1b84b89c: field_hero_rhen_walk, field_hero_party, field_hero_gait_strip, hero_cutscene_turn_strip, field_lane_fixed, field_court_pan, field_causeway_dolly, haluna_h02_tidewall_lane, haluna_h04_dock, haluna_h07_chapel_court, haluna_h10_dock_night; why: foot IK on uneven ground and the followers' floor and facing changes (M2-HER-1116), and characters' M2-CHR-12 gait clips now in via big10 (the earlier battle_heroes_* request @ b2453cfd stands)
