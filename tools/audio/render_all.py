@@ -284,6 +284,13 @@ JOBS = [
 ]
 M1_JOBS = 5  # the first JOBS rows are M1's audio (SIZE_BUDGET)
 
+# M3-AUD-839: Act II's final cues (assets_src/music/act2/ -> assets/audio/music/act2/). That path is Git LFS (ADR
+# 0039), and LFS isn't live in the cloud yet, so these render only with --act2 and are never committed until the Lead
+# announces it: the default run, the size budget and the tests don't expect them. Composers append rows here.
+ACT2_FINALS: list[tuple] = [
+]
+ACT2_DIR = "assets/audio/music/act2"
+
 
 def _load(path):
     spec = importlib.util.spec_from_file_location(os.path.splitext(os.path.basename(path))[0],
@@ -365,15 +372,16 @@ def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--determinism", action="store_true", help="render twice and compare bytes")
     ap.add_argument("--only", default="", help="only the jobs whose source path contains this text")
+    ap.add_argument("--act2", action="store_true", help="Act II's final cues (ACT2_FINALS, Git LFS) instead of JOBS")
     args = ap.parse_args()
 
     self_test()  # BS.1770 meter sanity (48 kHz coefficients, 997 Hz reference)
 
-    jobs = [j for j in JOBS if not args.only or args.only in j[0]]
+    jobs = [j for j in (ACT2_FINALS if args.act2 else JOBS) if not args.only or args.only in j[0]]
     rows, total, new_total, amb_total, ok = [], 0, 0, 0, True
     amb_jobs: dict = {}
     for src, rel_dir, files, kind in jobs:
-        m1 = JOBS.index((src, rel_dir, files, kind)) < M1_JOBS
+        m1 = not args.act2 and JOBS.index((src, rel_dir, files, kind)) < M1_JOBS
         out_dir = os.path.join(ROOT, rel_dir)
         print(f"rendering {src} ...", flush=True)
         _render_job(src, out_dir, files, kind)
@@ -436,7 +444,10 @@ def main() -> int:
         if size > AMBIENCE_JOB_BUDGETS[src]:
             print(f"FAIL: {src}'s beds over their size budget")
             ok = False
-    if not args.only:
+    if args.act2:
+        act2 = sum(r[1] for r in rows)
+        print(f"Act II finals {act2} bytes ({act2 / 1048576:.2f} MiB): Git LFS (ADR 0039), outside the plain-git budget")
+    elif not args.only:
         print(f"total {total} bytes ({total / 1048576:.2f} MiB), budget {SIZE_BUDGET / 1048576:.0f} MiB; "
               f"M1-AUD-02 cues {new_total / 1048576:.2f} MiB, budget {NEW_AUDIO_BUDGET / 1048576:.0f} MiB")
         if total > SIZE_BUDGET or new_total > NEW_AUDIO_BUDGET:
