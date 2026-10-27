@@ -468,3 +468,11 @@ RENDER-REQUEST @ 95b6daf8: portraits:mangrove_drowner,lamp_engine,avalanche_ram,
   - **Checks run:** Blender verify identical (flat_engine ×5); Godot creature 42/1 (the known portrait red); tools test_creatures and test_blender_builds; validate_data, taskboard, lint, format.
 RENDER-REQUEST @ db3c9507: creature_flat_engine, creature_mangrove_drowner, creature_mangrove_drowner_risen; why: M3-CRE-637 first render of the flat-engine (its near-black drum: check it reads on default lights) and M3-CRE-622's first Drowner pass (to compare with the redesign).
 RENDER-REQUEST @ db3c9507: portraits:flat_engine; tool: tools/portraits/render.sh --only flat_engine
+- **big12 merged in (integration e930595c).** Conflicts were unioned:
+  - blender_builds.json: the integration's text, with the 12 creature jobs only here appended;
+  - ownership, PROVENANCE, shots and baselines;
+  - creature_portraits.png: the integration's PC-gated baseline.
+- **TOP ITEM (Lead): Ilun, Asha's Vowbound, is building (M3-CRE-638, claimed by creatures, worktree agent).**
+  - The order: a design sheet (docs/kb/art/creatures/vowbound/ilun.md), the model and clips (idle … victory, plus rise, dismiss and special), then the attach.
+  - The attach goes through CreatureModels (a creatures.json row with `"vowbound": true`), so ui's battle_sandbox.json capsule row stays only as the fallback.
+  - **For battle-presentation:** M3-CRE-639 (role combat) asks you to play `rise`, `dismiss` and `special` from choreo.json once the model lands. The existing `ready` and `ko` keep working until then.
