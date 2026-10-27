@@ -1079,3 +1079,9 @@ MAP_POI_Q_SPIRE_DOOR,The spire door
 MAP_POI_Q_SECOND_TIER,The second tier
 MAP_POI_Q_FOURTH_TIER,The fourth tier
 MAP_POI_Q_CROWN,The crown chamber
+SET_SCREEN_SHAKE,Screen shake
+SET_SCREEN_SHAKE_HELP,"How hard the battle camera shakes when a blow lands. Reduced motion turns it off."
+SET_SCREEN_SHAKE_FULL,Full
+SET_SCREEN_SHAKE_HALF,Half
+SET_SCREEN_SHAKE_OFF,Off
+TUT_TIDELINE_TIMELINE,"The turn order runs down the right, next at the top. Every action costs time: watch where yours will land before you choose."

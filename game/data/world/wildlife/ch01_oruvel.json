@@ -1,0 +1,60 @@
+{
+  "_doc": "Oruvel by day: gulls wheel over the raft-town and stand on the cabin roof (top 2.4), Kell's stall (2.0) and the Seventh Terrace (1.5). The sea under the hulls is a solid greybox floor, so no fish until the raft-town kit brings water; no crabs on the decks. Placed on the greybox layout (M3-CRE-615); move the coordinates when env-art's kit replaces the blocks (same keys as ch02_haluna.json).",
+  "zone": "ch01/oruvel",
+  "flocks": [
+    {
+      "id": "commons",
+      "center": [
+        0.0,
+        -12.0
+      ],
+      "radius_m": 38.0,
+      "altitude_m": [
+        6.0,
+        13.0
+      ],
+      "count": 6,
+      "perched_at_start": 2,
+      "perches": [
+        [
+          -13.5,
+          2.4,
+          -19.0,
+          0.0
+        ],
+        [
+          -10.5,
+          2.4,
+          -18.0,
+          90.0
+        ],
+        [
+          31.0,
+          2.0,
+          -9.0,
+          180.0
+        ],
+        [
+          33.0,
+          2.0,
+          -9.0,
+          -90.0
+        ],
+        [
+          -35.5,
+          1.5,
+          -15.0,
+          90.0
+        ],
+        [
+          -35.5,
+          1.5,
+          -9.0,
+          -90.0
+        ]
+      ]
+    }
+  ],
+  "beaches": [],
+  "shoals": []
+}

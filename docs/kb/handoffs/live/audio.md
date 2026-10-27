@@ -1,5 +1,44 @@
 # Live log: audio (branch `claude/audio`)
 
+## NEW ACCOUNT (from 2026-10-25)
+Session `session_01Wmj8xaLtwcqiS3qwC6PciW`. Integration branch `claude/undertow-lead-handoff-ze8rrn`. Newest first.
+
+- **MERGE-READY @ 4587af3e (FAST-TRACK: M3-AUD-814):** villagers' chat turns and work, gulls, crabs and fish
+  (LifeAudio, 44 synthesized one-shots, 0.6 MiB). The hooks are `pending` until claude/creatures merges (FieldNpc,
+  WildlifeLayer); when it does, drop the two `pending` flags in life.json. M3-AUD-815 asks creatures for
+  `chat_speaking()` and `startled()`; LifeAudio reads the private fields until then (read only). Integration
+  re-merged (only the Lead's log changed).
+  - Checks run: `--filter=audio` 134/0 (including test_life_audio 9/0), validate_data 0/0, test_audio_data OK,
+    `render_all --determinism --only life_sfx` identical, taskboard --check, gdlint, gdformat. **Smoke test against
+    the real classes** (scratch worktree with claude/creatures merged, pending off): validate_data 0/0, and in 60 s
+    of creatures' npc and wildlife stages 8 gull calls, 4 takeoffs, 5 crab scuttles, 6 fish darts and 14
+    net-mending sounds. The stage has no chat pairs, so murmurs are covered only by the unit tests.
+  - Checks skipped: full suite (last clean at f8298577; since then new files plus a few lines in the director),
+    screenshots, Blender, coverage (none touched).
+- **Next:** item 4, impact SFX tiers on battle-presentation's `BattleImpact.landed` / `slowmo_planned`.
+- **MERGE-READY @ f8298577:** everything since 261a827d: M3-AUD-812 (FAST-TRACK footsteps), M3-AUD-813 (menu hooks)
+  and **M3-AUD-805, Act II sketches II** (six cues: Ansedra, the Lamp Archive, the Peace Wedding, Unlamped, the Pale
+  Rim, the Drowned Choir; −16.0 LUFS, TP ≤ −1.4; 3.4 MiB, ADR 0170 budget kept; the wip/ folder is gone).
+  - Checks run: **full Godot suite on f8298577: 2367 run, 0 real failures.** test_scene_router_swap failed only
+    because that run had no `godot` on PATH (probe exit 127); re-run with PATH set it passed 15/0. Also the loudness
+    test OK, `render_all --determinism` identical for all six, `--filter=audio` 125/0, validate_data 0/0,
+    test_audio_data OK, taskboard --check, gdlint and gdformat.
+  - Checks skipped: screenshots (no scene or shader), Blender (none), coverage (no battle/progression code).
+  - Gotcha: a first render writes no `.import`, so the loop flags are synced after the first import
+    (`render_all._sync_import`), then imported again. Done here; the .import files are committed.
+- **MERGE-READY @ f5f10d7e (FAST-TRACK: M3-AUD-812):** M3-AUD-812, footsteps change surface in every slice zone
+  with no level edits: Haluna's sand, the dock's wood (the `dock_haluna` mesh), the shallows' water (feet under the
+  sea's rest plane); the causeway's stone and tidepool; the shrine's stone and pools. Also M3-AUD-813, the menu hooks
+  after the merge: FormationMenu live, the Key Items tab, refusals through M2-AUD-15's reads; test_battle_ko_once
+  lifts wickfry's new model for its primitive case. Integration merged at 261a827d (two task-file conflicts,
+  resolved).
+  - Checks run: full Godot suite on 261a827d (2355 run, 7 failed: 4 from the uncommitted M3-AUD-805 patch, rendering
+    mid-run, and 3 real merge fallout, fixed in M3-AUD-813). Then filtered `footstep` 16/0, `footsteps_slice` 4/0,
+    `field_audio` 19/0, `ko_once` 5/0; loudness test OK; validate_data, taskboard --check, gdlint and gdformat
+    clean on the committed tree.
+  - Checks skipped: screenshots (no scene or shader touched), Blender (none), coverage (no battle/progression code).
+  - Verified against claude/hero-integration's real `HeroFieldActor.foot_contact(foot, run)`: the body is the
+    controller's `HeroBody` child, as footsteps.json expects. test_footsteps_slice_zones walks it once that merges.
 ## STATE AT HANDOVER (2026-10-25)
 
 **HANDOVER DONE @ 20ee527f** (claude/audio pushed; nothing un-pushed; no worktree holds unsaved work).

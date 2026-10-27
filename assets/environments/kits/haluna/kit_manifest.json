@@ -90,6 +90,17 @@
         "basket_set-lod1": 153
       }
     },
+    "cargo_sacks": {
+      "budget": [
+        3200,
+        300
+      ],
+      "bytes": 67004,
+      "lods": {
+        "cargo_sacks": 992,
+        "cargo_sacks-lod1": 288
+      }
+    },
     "causeway_disc": {
       "budget": [
         60000,
@@ -178,6 +189,17 @@
         "coral_boulder_c-lod1": 408
       }
     },
+    "crate_stack": {
+      "budget": [
+        2600,
+        160
+      ],
+      "bytes": 139416,
+      "lods": {
+        "crate_stack": 2392,
+        "crate_stack-lod1": 36
+      }
+    },
     "dock_haluna": {
       "budget": [
         26000,
@@ -244,6 +266,17 @@
         "house_tile_c-lod1": 400
       }
     },
+    "laundry_line": {
+      "budget": [
+        3600,
+        300
+      ],
+      "bytes": 54380,
+      "lods": {
+        "laundry_line": 762,
+        "laundry_line-lod1": 86
+      }
+    },
     "lintel_gull_a": {
       "budget": [
         2400,
@@ -308,6 +341,17 @@
       "lods": {
         "net_float_cluster": 2166,
         "net_float_cluster-lod1": 114
+      }
+    },
+    "net_heap": {
+      "budget": [
+        2400,
+        200
+      ],
+      "bytes": 62872,
+      "lods": {
+        "net_heap": 1564,
+        "net_heap-lod1": 100
       }
     },
     "net_rack": {
@@ -387,6 +431,17 @@
         "pilgrim_marker_post_leaning-lod1": 15
       }
     },
+    "pot_plants": {
+      "budget": [
+        3000,
+        250
+      ],
+      "bytes": 64780,
+      "lods": {
+        "pot_plants": 998,
+        "pot_plants-lod1": 198
+      }
+    },
     "roof_fan_shell": {
       "budget": [
         18000,
@@ -418,6 +473,17 @@
       "lods": {
         "roof_tile_hip": 8176,
         "roof_tile_hip-lod1": 344
+      }
+    },
+    "rope_coil": {
+      "budget": [
+        2200,
+        120
+      ],
+      "bytes": 81212,
+      "lods": {
+        "rope_coil": 2166,
+        "rope_coil-lod1": 102
       }
     },
     "ruin_column_broken": {
@@ -600,6 +666,17 @@
         "shrine_islet-lod1": 1710
       }
     },
+    "shrine_offering": {
+      "budget": [
+        4200,
+        300
+      ],
+      "bytes": 127524,
+      "lods": {
+        "shrine_offering": 1740,
+        "shrine_offering-lod1": 173
+      }
+    },
     "shrine_roof_fan": {
       "budget": [
         60000,
@@ -710,6 +787,17 @@
         "storehouse_stilt-lod1": 364
       }
     },
+    "tide_debris": {
+      "budget": [
+        3200,
+        240
+      ],
+      "bytes": 47320,
+      "lods": {
+        "tide_debris": 814,
+        "tide_debris-lod1": 68
+      }
+    },
     "tidewall_gate": {
       "budget": [
         5600,
@@ -776,6 +864,20 @@
         "timber_stilt_post-lod1": 15
       }
     },
+    "village_litter": {
+      "budget": [
+        900,
+        60
+      ],
+      "bytes": 67328,
+      "lods": {
+        "coconut_husk": 320,
+        "frond_dry": 92,
+        "frond_dry-lod1": 24,
+        "pebble_cluster": 288,
+        "shell_scatter": 540
+      }
+    },
     "wakeshell_wall": {
       "budget": [
         28000,
@@ -809,6 +911,17 @@
         "windbreak_placeholder-lod1": 430
       }
     },
+    "woodpile": {
+      "budget": [
+        4000,
+        200
+      ],
+      "bytes": 98516,
+      "lods": {
+        "woodpile": 1412,
+        "woodpile-lod1": 92
+      }
+    },
     "wreck_rib": {
       "budget": [
         4000,
@@ -818,6 +931,17 @@
       "lods": {
         "wreck_rib": 754,
         "wreck_rib-lod1": 168
+      }
+    },
+    "yard_fence": {
+      "budget": [
+        1400,
+        120
+      ],
+      "bytes": 26372,
+      "lods": {
+        "yard_fence": 340,
+        "yard_fence-lod1": 60
       }
     }
   },
