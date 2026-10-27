@@ -106,6 +106,22 @@ class ReefballValidateTest(unittest.TestCase):
         del m["stakes_key"]
         self.assertEqual(self.errs(), [])
 
+    def test_rewards(self) -> None:
+        # M3-C07-05: optional rewards per outcome (lume, and items that exist in items.json).
+        m = self.matches["matches"][0]
+        m["rewards"] = {"win": {"lume": 300, "items": {"salt_tonic": 1}}, "loss": {"lume": 120}}
+        self.assertEqual(vd.reefball_errors(self.rules, self.sides, self.matches, {"salt_tonic"}), [])
+        m["rewards"] = {"win": {"items": {"no_such_item": 1}}}
+        errs = vd.reefball_errors(self.rules, self.sides, self.matches, {"salt_tonic"})
+        self.assertTrue(any("unknown item 'no_such_item'" in e for e in errs))
+        for bad, says in (({"tie": {"lume": 1}}, "outcome must be one of"), ({"win": {"lume": -1}}, "lume must be"),
+                          ({"win": {"items": {"salt_tonic": 0}}}, "count must be"), ({"win": {"gold": 1}}, "only lume"),
+                          ([], "must be an object")):
+            m["rewards"] = bad
+            self.assertTrue(any(says in e for e in self.errs()), (bad, self.errs()))
+        del m["rewards"]
+        self.assertEqual(self.errs(), [])
+
     def test_bad_top_level(self) -> None:
         self.assertTrue(vd.reefball_errors({}, {}, {}))
         self.rules["rules"]["bands"] = [{"id": "ring", "name_key": "K"}]

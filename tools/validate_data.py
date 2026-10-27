@@ -3041,7 +3041,12 @@ def reefball_sides_errors(doc: object, roles: set[str], stat_range: tuple[int, i
     return errs, {s["id"] for s in sides}
 
 
-def reefball_matches_errors(doc: object, sides: set[str], profiles: set[str]) -> list[str]:
+REEFBALL_OUTCOMES = ("win", "loss", "draw")
+
+
+def reefball_matches_errors(
+    doc: object, sides: set[str], profiles: set[str], items: set[str] | None = None
+) -> list[str]:
     errs: list[str] = []
     for m in _rows(doc, "matches", REEFBALL_MATCHES, errs):
         w = f"{REEFBALL_MATCHES} {m['id']}"
@@ -3058,14 +3063,44 @@ def reefball_matches_errors(doc: object, sides: set[str], profiles: set[str]) ->
             errs.append(f"{w}: unknown ai_profile '{m.get('ai_profile')}'")
         if "stakes_key" in m and (not isinstance(m["stakes_key"], str) or not m["stakes_key"]):
             errs.append(f"{w}: stakes_key must be a non-empty loc key (M3-RBL-201)")
+        if "rewards" in m:
+            errs += reefball_rewards_errors(m["rewards"], w, items)
     return errs
 
 
-def reefball_errors(rules: object, sides: object, matches: object) -> list[str]:
-    """Every Reefball data error (rules, then sides, then matches)."""
+def reefball_rewards_errors(rewards: object, w: str, items: set[str] | None) -> list[str]:
+    """M3-C07-05: a match's optional rewards, {outcome: {"lume": int >= 0, "items": {item id: count > 0}}} for
+    the outcomes win, loss and draw. `items` (None: not checked) is items.json's ids."""
+    if not isinstance(rewards, dict):
+        return [f"{w}: rewards must be an object of outcomes"]
+    errs: list[str] = []
+    for outcome, row in rewards.items():
+        rw = f"{w}: rewards.{outcome}"
+        if outcome not in REEFBALL_OUTCOMES:
+            errs.append(f"{rw}: the outcome must be one of {', '.join(REEFBALL_OUTCOMES)}")
+            continue
+        if not isinstance(row, dict) or not set(row) <= {"lume", "items"}:
+            errs.append(f"{rw}: must be an object with only lume and items")
+            continue
+        if "lume" in row and (not _is_int(row["lume"]) or row["lume"] < 0):
+            errs.append(f"{rw}: lume must be an int >= 0")
+        given = row.get("items", {})
+        if not isinstance(given, dict):
+            errs.append(f"{rw}: items must map item ids to counts")
+            continue
+        for iid, n in given.items():
+            if items is not None and iid not in items:
+                errs.append(f"{rw}: unknown item '{iid}'")
+            if not _is_int(n) or n < 1:
+                errs.append(f"{rw}: item '{iid}' count must be an int >= 1")
+    return errs
+
+
+def reefball_errors(rules: object, sides: object, matches: object, items: set[str] | None = None) -> list[str]:
+    """Every Reefball data error (rules, then sides, then matches). `items`: items.json's ids, for rewards."""
     errs, roles, profiles, stat_range = reefball_rules_errors(rules)
     side_errs, side_ids = reefball_sides_errors(sides, roles, stat_range)
-    return errs + side_errs + reefball_matches_errors(matches, side_ids, profiles)
+    return errs + side_errs + reefball_matches_errors(matches, side_ids, profiles, items)
 
 
 def check_reefball(files: dict[str, object], rep: Report) -> list[str]:
@@ -3077,7 +3112,9 @@ def check_reefball(files: dict[str, object], rep: Report) -> list[str]:
         rep.err(f"{p}: missing")
     if missing:
         return []
-    for e in reefball_errors(*docs):
+    item_doc = files.get("game/data/items/items.json")
+    items = _ids(files, "game/data/items/items.json", "items") if item_doc is not None else None
+    for e in reefball_errors(*docs, items=items):
         rep.err(e)
     return collect_keys(docs)
 
