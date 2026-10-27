@@ -4,6 +4,17 @@
 `claude/characters` (cut from `claude/undertow-lead-handoff-423ixt` at 952ef7c). The Lead reads it hourly.
 
 ## Now
+- **M3-CHR-02 Sefir → review (rendering), worktree subagent, not pushed.** Hero build on the shared modules: LOD0 58,426,
+  LOD1 27,118, sefir.glb 4.42 MB; rig probe all ok with no ratchet; `verify --job sefir` 32 identical (also on the AVX2
+  numpy path). Mantle gold lowered to 14% so a waist-up frame is <= 5% (front 4.96%); chest-up close-ups are 8-9%
+  (the crown). 7 sefir_* baselines. Requests M3-CIN-01, M3-RND-03, M3-ENV-01. Handoff 2026-10-24-character-11.md,
+  review `docs/kb/art/characters/sefir_review.md`.
+- **M3-CHR-01 Ysolde → review (reviewer: rendering).** Worktree subagent off cd01d151, commits aa4cc74b, cb9c3ade +
+  docs; not pushed. Handoff 2026-10-24-character-10.md, review ysolde_review.md.
+  - LOD0 58,918 / LOD1 27,894; 4.31 / 1.27 MB. `verify --job ysolde` 37 identical, also under the AVX2-only numpy path.
+  - Probe: props and collar 0 mm, seams 0; ratchets costume 31/6 (run knee fold), body 45/70 (armpit), 4 exposed.
+  - hero_clips.py edits are self-contained (persona, clips, a Ysolde block after `pose_at`; `.get()` branches);
+    Asha's, Rhen's and Toma's libraries byte-identical. Merging with e32848cc touches only the append-only lists.
 - **MERGE-READY @ e253f302 (CHR-14 braid and clipping, villagers, Rhen and Toma, host determinism).**
   - **Full `tools/ci_local.sh` at ad6e232:** merged with the integration branch, run with `taskset -c 0-3`, HYMN_BLENDER_REQUIRED=1, every shot and its own HYMN_LOG_DIR. It exited 0:
     - 580 tool tests, 1459 Godot tests;
@@ -29,8 +40,52 @@
     - 3 new shots (`<hero>_battle_attack`), viewed and approved.
   - **Ratchet:** Asha's VerseSleeve count limit rose 4 → 6 (sleeve-top vertices under the sleeve at hit and defend; viewed). The depth limit is unchanged.
   - **Requests sent to the battle track:** read the `contact` marker (contact currently lands late), finisher and support per-style timing, and ko revive.
-  - **The battle track has wired all three:** strikes land on the `contact` marker, the shared finisher and cast clips are fine, and a revive returns a hero to idle. **To do:** review M2-BPR-10 (their placeholder battle poses; reviewer: character) once claude/battle-presentation and this branch meet on the integration branch.
-- **In flight, two worktree sub-agents:** M3-CHR-01 Ysolde (hero) and M3-CHR-02 Sefir (hero).
+  - **The battle track has wired all three:** strikes land on the `contact` marker, the shared finisher and cast clips are fine, and a revive returns a hero to idle. **M2-BPR-10 reviewed (approved; sent to them to log):** the axis conventions match hero_clips. The placeholders cover heroes without a battle set (Ysolde, and Liss and Kerrid later). This was a data-only review; the poses weren't seen rendered.
+- **MERGE-READY @ e32848cc: M3-CHR-02 Sefir Aurane** (review: rendering). Handoff: 2026-10-24-character-11.md; review: sefir_review.md.
+  - **Build:** LOD0 58,426 tris, sefir.glb 4.42 MB.
+  - **Probe:** passes at the default limits, with no ratchet.
+  - **Reproducibility:** `verify --job sefir` 32 identical, on both numpy SIMD paths.
+  - **Gold:** the mantle's gold is cut to 14%, which gives a waist-up frame of 4.96% (under the 5% limit). Chest-up close-ups are still 8–9%, from the crown. That needs a Cinematics framing rule or an Art Director ruling; no exception claimed.
+  - **New shots:** 7, viewed and approved. Request tasks: M3-CIN-01 (slow blink), M3-RND-03, M3-ENV-01.
+  - **Gates after merging with M2-CHR-07:**
+    - hero_clips merged as the union of both blocks; all four clip libraries regenerate byte-identical;
+    - test_hero_clips, test_hero_battle_clips, test_sefir and test_rig_integrity: OK;
+    - post_import 19/19.
+- **MERGE-READY @ (this commit): M3-CHR-01 Ysolde (review: rendering) and M3-CHR-03, villager half: Tavi Orse and Mother Kell.**
+  - **Ysolde:** LOD0 58,918, ysolde.glb 4.31 MB. `verify --job ysolde` 37 identical, on both numpy SIMD paths. Collar, book and ink-guards 0 mm.
+    - Ratchets: costume 31/6 (a run knee fold under the robe), body 45/70 (armpit), 4 exposed.
+    - 9 shots, viewed. Handoff 2026-10-24-character-10.md; review ysolde_review.md.
+  - **Tavi and Kell:** LOD0 30,198 and 33,596. Opt-in params keep the seven M2 villagers byte-identical. The wick props are a new job, `props_wick`.
+    - `verify` on the 9 villager jobs plus props_wick: identical.
+    - Ratchets: the armpit only.
+    - 9 shots, viewed. Handoff 2026-10-24-character-13.md.
+    - Neither has a level slot yet (there is no Ch1 or Ch7 scene); the actor scenes are listed in the handoff.
+  - **Gates on the merged head (075838e6):**
+    - validate_data, taskboard, a manifest of 148 shots;
+    - test_villagers, test_rig_integrity (7 characters), test_blender_builds, test_hero_clips, test_hero_battle_clips: OK;
+    - post_import 19/19, hero_stage 9/9;
+    - all five hero clip libraries regenerate byte-identical.
+- **RE-PRIORITISED (the Lead, after the human's playtest): the M3 heroes are PAUSED** (Liss and Kerrid stop after their current commit; Ysolde and Sefir are already merged). Top of the queue:
+  1. **M2-CHR-07, the battle clip set:** DONE and merge-ready (see its line above). Its clips are idle, ready, attack, cast, item, read, defend, finisher (= "special"), hit, dodge, ko and victory, for Asha, Rhen and Toma.
+  2. **M2-CHR-12, field locomotion** (new): idle variants, walk and run with starts and stops, turns in place. Worktree sub-agent.
+  3. **M2-CHR-11, host snaps** (new): rhen and toma are folded into M1-CHR-15, which is rebuilding them anyway; base_body and the seven villagers go to a worktree sub-agent.
+  - The hero-integration track's live log is read each cycle. The branch didn't exist at 2026-10-24 ~20:00.
+- **hero-integration clip requests (M2-HER-1105 on claude/hero-integration), which I take:**
+  - **Locomotion, in M2-CHR-12 (in flight; names aligned):** walk_start, walk_stop, run_stop, turn_in_place_l90, turn_in_place_r90, turn_in_place_180, idle_shift.
+  - **Battle fixes, next after M2-CHR-12 lands:**
+    - a livelier `victory` (it barely moves);
+    - `ko` as a fall that lies down, unless battle-presentation rewords the contract;
+    - Rhen's hooks in hand for attack and finisher (needs a hook bone; with M1-CHR-15's Rhen rebuild);
+    - a ~0.8 s `revive`.
+- **Id blocks (the Lead's rule, CONSOLIDATED §4):** my new task ids are 500–599, ADRs 0140–0149, and handoffs are named `<date>-character-characters-<n>.md`.
+  - Kerrid and Pell are renumbered M3-CHR-05/06 → **M3-CHR-505/506**, so they don't collide with big8's M3-CHR-05 (the 32 Ch4–Ch9 clips). That task folds into the clip work when it lands.
+  - The duplicate M2-CHR-11 is removed. The canonical `M2-CHR-11-host-snaps-heroes-villagers.md` is claimed, with the PC evidence that hair positions and the LOD1 decimate inputs differ too.
+  - Kerrid's paused branch still names the task M3-CHR-05; rename it when it resumes.
+- **Un-pushed paused WIP (local worktree branches; not merged on purpose):**
+  - **Kerrid, M3-CHR-505:** branch `worktree-agent-a163619bbd2d21786` @ e67e6aba. The build runs end to end, but the GLB is 5.30 MB (cap 5) and LOD1 is 35k (budget ~28k). His hero_clips block makes a no-argument `hero_clips.py` run fail until kerrid.glb exists, so he isn't merged. The next step is in the task's Notes.
+  - **Liss, M3-CHR-03 hero half:** branch `worktree-agent-a61329e979970a83f` @ c5e3a320. LOD0 55,820, about 4.1 MB, with the 10 story clips and 11 battle clips. Not merged: two source edits (`TAIL_ROOT_H`, `SLEEVE_KEEP_NEAR_TORSO`) aren't built into the committed files yet, and the probe, Godot tests, shots and verify are still to run. The next step is in the task's Notes.
+- **Kerrid and Pell design sheets merged** (kerrid.md, pell.md; M3-CHR-505 and 06).
+  - Pell (M3-CHR-506) waits on **M3-NAR-01**: in outline, Pell's arc is close to the inspiring series' beast-folk guardian; the costume avoids every visual cue, but Narrative must rule on the arc. That task also carries the sheets' story questions and the stale ADR 0020 and glossary rows.
 - **From the M3 sheets:**
   - Liss is a party member, so she is on the hero path; she stays in M3-CHR-03.
   - Mother Kell is Oruvel's chandler, not the diver. The story corrected this; glossary rows 195 and 254 are stale.

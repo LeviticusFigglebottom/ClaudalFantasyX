@@ -1,6 +1,6 @@
 {
-  "doc": "Body clips the Act I dialogue (M3, m2-slice) stages with `@anim <hero> <clip>` that the heroes don't have yet: requested from the character track in docs/kb/tasks/M3/M3-CHR-01-act1-body-clips.md. Until a clip is built its call is skipped at runtime (CutsceneSequencer checks has_animation). tools/tests/test_hero_clips.py allows these and still fails on any call that is neither built nor listed here (a typo). Remove a clip from here when it is built.",
-  "task": "M3-CHR-01",
+  "doc": "Body clips the Act I dialogue (M3, m2-slice) stages with `@anim <hero> <clip>` that the heroes don't have yet: requested from the character track in docs/kb/tasks/M3/M3-CHR-1000-act1-body-clips.md. Until a clip is built its call is skipped at runtime (CutsceneSequencer checks has_animation). tools/tests/test_hero_clips.py allows these and still fails on any call that is neither built nor listed here (a typo). Remove a clip from here when it is built.",
+  "task": "M3-CHR-1000",
   "clips": {
     "rhen": [
       "brace",
@@ -127,6 +127,9 @@
       "drive_pin",
       "ease_key",
       "haul_rope"
+    ],
+    "sefir": [
+      "bow_from_barge"
     ]
   }
 }

@@ -28,6 +28,7 @@ const HELP_KEYS := {
 	Level.RECIPES: "EQUIP_MENU_HELP_RECIPES",
 }
 const PREVIEW_COLS: Array[String] = ["name", "now", "arrow", "next", "delta"]
+const PORTRAIT_PAGE := &"equip"
 
 var sheet: PartySheet
 var model: EquipMenuModel
@@ -47,6 +48,8 @@ var _choice: MenuPage
 var _help: Label
 var _desc: Label
 var _status: Label
+## M2-MNU-301: the shown hero's portrait beside the heroes page.
+var _portrait: HeroPortraitFrame
 var _preview_title: Label
 ## One row of Labels per stat (PREVIEW_COLS order).
 var _stat_cells: Array[Array] = []
@@ -87,6 +90,10 @@ func close() -> void:
 
 func hero_page() -> MenuPage:
 	return _heroes
+
+
+func portrait() -> HeroPortraitFrame:
+	return _portrait
 
 
 func gear_page() -> MenuPage:
@@ -348,6 +355,9 @@ func _build_page() -> void:
 	_choice.row_clicked.connect(_on_clicked.bind(Level.PIECES))
 	for page in [_heroes, _gear, _choice]:
 		_fit_in_rect(page.header_label())  # a long piece name stays in its own page (M2-MNU-05)
+	_portrait = HeroPortraitFrame.new()
+	HudLayout.place(_portrait, _d.get("portrait", {}))
+	add_child(_portrait)
 	_build_lines()
 	_build_preview()
 	if not model.heroes().is_empty():
@@ -454,6 +464,10 @@ func _render() -> void:
 	_gear.visible = not choosing
 	_gear.set_dimmed(level != Level.GEAR)
 	_gear.set_header(model.gear_title(_shown_hero()) if _shown_hero() != &"" else "")
+	var shown := _shown_hero()
+	_portrait.show_hero(
+		shown, model.hero_name(shown) if shown != &"" else "", HeroPortraits.page_emotion(PORTRAIT_PAGE)
+	)
 	_gear.size.y = MenuPage.height_for(_d.get("gear", {}), maxi(_gear.row_count(), 1), true)
 	_choice.visible = choosing
 	if choosing:
@@ -604,6 +618,24 @@ func _set_changes(lines: Array[Dictionary]) -> void:
 		l.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		l.add_theme_color_override(&"font_color", _c(line.get("role", &"text")))
 		_changes.add_child(l)
+	_fit_changes()
+
+
+## M2-MNU-11: the change list never runs past its box. Each line keeps the lines that still fit, the cut
+## one ending in an ellipsis, and a line with no room left is hidden (clip_contents alone cut text silently).
+func _fit_changes() -> void:
+	var room := _changes.size.y
+	var gap := float(_changes.get_theme_constant(&"separation"))
+	for c in _changes.get_children():
+		var l := c as Label
+		var line_h := float(l.get_line_height())
+		var lines := l.get_line_count()
+		var fit := int(floor(room / line_h)) if line_h > 0.0 else lines
+		l.visible = fit >= 1
+		if fit < lines:
+			l.max_lines_visible = maxi(fit, 1)
+			l.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+		room -= line_h * mini(lines, maxi(fit, 0)) + gap
 
 
 # --- mouse ---------------------------------------------------------------------------------------

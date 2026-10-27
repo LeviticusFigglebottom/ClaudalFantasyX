@@ -12,8 +12,8 @@
     "band_feather_px": 45,
     "rule_px": 3,
     "rule_node_px": 9,
-    "band": {"rect": [360, 204, 1200, 180]},
-    "name": {"rect": [360, 225, 1200, 96]},
-    "rule": {"rect": [660, 330, 600, 12]}
+    "band": {"rect": [360, 204, 1200, 180], "pin": "top"},
+    "name": {"rect": [360, 225, 1200, 96], "pin": "top"},
+    "rule": {"rect": [660, 330, 600, 12], "pin": "top"}
   }
 }

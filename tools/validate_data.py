@@ -1304,10 +1304,10 @@ def run(root: Path) -> Report:
     check_read_openings(files, rep)
     data_keys += check_objectives(files, declared_flags_quiet(root), rep)  # M2-UI-16/18
     data_keys += check_tutorial_tips(files, declared_flags_quiet(root), rep)  # M2-UI-24
-    data_keys += check_set_pieces(files, rep)
     data_keys += check_codex(files, declared_flags_quiet(root), rep)  # M3-UI-03
     data_keys += check_memories(root, files, declared_flags_quiet(root), rep)  # M3-MNU-02
     data_keys += check_reefball(files, rep)
+    data_keys += check_set_pieces(files, rep)
     check_loc(root, data_keys, load_loc_keys(root, rep), rep)
     check_flags(root, load_flags(root, rep), rep)
     check_undertow(root, files, rep)

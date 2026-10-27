@@ -107,7 +107,9 @@ func show_text(
 	_sung = sung
 	var name_key := &""
 	if speaker != &"":
-		name_key = display_name_key if display_name_key != &"" else speakers.name_key(speaker)
+		# M3-C09-05: a name the party hasn't learned yet ("The Kirru") comes from CharacterNames.
+		var own := StringName(CharacterNames.key_for(speaker, String(speakers.name_key(speaker))))
+		name_key = display_name_key if display_name_key != &"" else own
 	_name_label.text = tr(name_key) if name_key != &"" else ""
 	_name_label.visible = name_key != &""
 	_body_label.theme_type_variation = SUNG_VARIATION if sung else &""

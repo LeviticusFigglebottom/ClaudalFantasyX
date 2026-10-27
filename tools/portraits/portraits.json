@@ -1,0 +1,45 @@
+{
+  "doc": "Menu portrait manifest (M2-MNU-301, ADR 0120). tools/portraits/render.sh renders every entry with tools/portraits/portrait_renderer.tscn on the lavapipe wrapper, one Godot process per entry. 'heroes': each hero's review stage (the characters track's AshaStage scene: model, hero materials, shader tier, face-pose table, lights) posed once per emotion tag of game/data/dialogue/emotions.json and seen through the stage's Face camera with this file's framing (camera keys override the defaults'); the nodes in hide_nodes and the sky are dropped for a transparent background. 'model', 'materials' and 'face_poses' name the sources the stage uses (tests check they agree; the PROVENANCE rows cite them). 'creatures' is the bestiary's list (M2-MNU-302), rendered by the same scene. Output: <out_dir>/<id>_<emotion>.png at 'size', drawn at size x supersample and Lanczos-reduced, after 'settle_frames' frames (deterministic: pinned wind, no TAA).",
+  "defaults": {
+    "size": [256, 256],
+    "supersample": 2,
+    "settle_frames": 24,
+    "tier": "high",
+    "camera": {"distance": 1.0, "yaw_degrees": 18.0, "pitch_degrees": 4.0, "aim_drop": 0.06, "fov": 24.0},
+    "hide_nodes": ["Floor", "Cyclorama"],
+    "environment": {"background_mode": 0, "glow_enabled": false}
+  },
+  "heroes": [
+    {
+      "id": "rhen",
+      "stage": "res://game/levels/_tests/characters/rhen/rhen_stage.tscn",
+      "model": "res://assets/characters/rhen/rhen.glb",
+      "materials": "res://assets/characters/rhen/materials/",
+      "face_poses": "res://game/levels/_tests/characters/rhen/rhen_face_poses.json",
+      "out_dir": "res://assets/ui/portraits/heroes",
+      "emotions": ["neutral", "smile", "determined", "worried", "grief"],
+      "camera": {}
+    },
+    {
+      "id": "asha",
+      "stage": "res://game/levels/_tests/characters/asha/asha_stage.tscn",
+      "model": "res://assets/characters/asha/asha.glb",
+      "materials": "res://assets/characters/asha/materials/",
+      "face_poses": "res://game/data/cutscene/asha_face_poses.json",
+      "out_dir": "res://assets/ui/portraits/heroes",
+      "emotions": ["neutral", "smile", "determined", "worried", "grief"],
+      "camera": {}
+    },
+    {
+      "id": "toma",
+      "stage": "res://game/levels/_tests/characters/toma/toma_stage.tscn",
+      "model": "res://assets/characters/toma/toma.glb",
+      "materials": "res://assets/characters/toma/materials/",
+      "face_poses": "res://game/levels/_tests/characters/toma/toma_face_poses.json",
+      "out_dir": "res://assets/ui/portraits/heroes",
+      "emotions": ["neutral", "smile", "determined", "worried", "grief"],
+      "camera": {}
+    }
+  ],
+  "creatures": []
+}

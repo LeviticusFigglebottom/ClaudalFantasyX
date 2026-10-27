@@ -13,6 +13,7 @@ extends FieldSubmenu
 
 const DATA_PATH := "res://game/data/ui/status_menu.json"
 const LIST_ID := &"status_heroes"
+const PORTRAIT_PAGE := &"status"
 
 var sheet: PartySheet
 var model: StatusMenuModel
@@ -21,6 +22,8 @@ var hero: StringName = &""
 
 var _list: MenuPage
 var _help: Label
+## M2-MNU-301: the hero's portrait beside the name and vitals.
+var _portrait: HeroPortraitFrame
 ## Built per hero and freed on the next one (labels and gauges of the detail).
 var _detail: Array[Control] = []
 var _shown: Dictionary = {}
@@ -51,6 +54,10 @@ func list_page() -> MenuPage:
 
 func help_text() -> String:
 	return _help.text
+
+
+func portrait() -> HeroPortraitFrame:
+	return _portrait
 
 
 ## The StatusMenuModel.page() on show.
@@ -120,6 +127,9 @@ func _build_page() -> void:
 	_list.replace_rows(rows)
 	_list.row_hovered.connect(_on_row)
 	_list.row_clicked.connect(_on_row)
+	_portrait = HeroPortraitFrame.new()
+	HudLayout.place(_portrait, _d.get("portrait", {}))
+	add_child(_portrait)
 	hero = StringName(str(_list.current_row().get("id", "")))
 	_render()
 
@@ -130,8 +140,11 @@ func _render() -> void:
 	_detail.clear()
 	_shown = model.page(hero) if hero != &"" else {}
 	if _shown.is_empty():
+		_portrait.show_hero(&"", "")
 		_add_label(&"HelpLabel", HudLayout.rect_of(_d.get("vitals", {})), tr("FIELD_MENU_NO_HEROES"))
 		return
+	var emotion := HeroPortraits.page_emotion(PORTRAIT_PAGE, bool(_shown["fallen"]))
+	_portrait.show_hero(hero, str(_shown["name"]), emotion)
 	_render_vitals(_d.get("vitals", {}))
 	_render_stats(_d.get("stats", {}))
 	var gap := HudLayout.num(_d.get("section", {}), "section_gap")
@@ -272,6 +285,7 @@ func _line(r: Rect2, text: String, role: StringName, wrap: bool = false, variati
 		l.vertical_alignment = VERTICAL_ALIGNMENT_TOP
 		l.max_lines_visible = int(HudLayout.num(sec, "wrap_lines"))
 		l.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+		l.size = Vector2(r.size.x, h)  # M2-MNU-11: the text, set before autowrap, had widened it to one line
 		return r.position.y + line_h * maxf(1.0, float(mini(l.get_line_count(), l.max_lines_visible)))
 	l.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	return r.position.y + h

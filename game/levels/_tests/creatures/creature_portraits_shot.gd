@@ -1,6 +1,6 @@
 extends Control
 ## Screenshot fixture (M2-CRE-10): a CreaturePortrait for every enemy with a model, on the UI's deep panel colour,
-## as the bestiary page would show them (the UI request is M2-UI-28).
+## as the bestiary page would show them (the UI request is M2-UI-1000).
 
 const PORTRAIT := preload("res://game/creatures/creature_portrait.tscn")
 

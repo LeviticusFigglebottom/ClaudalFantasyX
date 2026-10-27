@@ -278,3 +278,6 @@ Hullgnaw, Drownbell (slice), Spar-Wraith, Cinder Matron, the Undertow's Reach, M
 - **rise, dive, pass, loft** (Reefball actions): swim up with the float, swim down with it, hand it on, throw it up through the ring.
 - **lifter, anchor, presser, ringward** (Reefball roles). A **ringward** waits at the ring to ward off lofts; there is no keeper.
 - **breath** (Reefball): the divers' resource; it comes back only at the ring, so a winded diver leaves play to breathe.
+
+### Added 2026-10-24 (M3-CHR-506, Character Art)
+- **shell-tile wraps**: the cords of small square shell tiles on Pell's forearms (the art sheet's reading of his "beaded cord wraps"). The left wrap's sequence is the call and the right's the mirrored response, echoing his call-and-response Swell input. *art/characters/pell.md §3*

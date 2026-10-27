@@ -64,8 +64,10 @@ static func announce(mode: StringName, ctl: BattleController) -> void:
 	if not ctl.show_damage_numbers:
 		return
 	var text := unlocked_text(ctl, mode)
-	var at: Array = HudLayout.section(&"swell_ring").get("unlock_at", [0, 0])
-	ctl.hud.pop_info(text, Vector2(float(at[0]), float(at[1])), &"swell")
+	var sm := HudLayout.section(&"swell_ring")
+	var at: Array = sm.get("unlock_at", [0, 0])
+	var spot := {"rect": [at[0], at[1], 0, 0], "pin": sm.get("unlock_pin", HudLayout.DEFAULT_PIN)}
+	ctl.hud.pop_info(text, HudLayout.pinned_rect(spot, ctl.hud.size).position, &"swell")
 
 
 ## "{mode} unlocked" for `mode`, in words.

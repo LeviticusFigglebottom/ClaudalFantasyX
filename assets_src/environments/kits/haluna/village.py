@@ -655,8 +655,12 @@ def _loft(mb: kc.MeshBuilder, spine: np.ndarray, rx: np.ndarray, ry: np.ndarray,
     col = np.stack([np.zeros_like(u), weather.salt * breakup * 0.6, np.zeros_like(u),
                     weather.erosion * (0.5 + 0.5 * breakup)], axis=-1)
     uv2 = np.stack([np.full(u.shape, 0.95), np.full(u.shape, float(rng.random()))], axis=-1)
-    flip = _orient_grid(p, p[len(spine) // 2, sides // 4] - spine[len(spine) // 2])
-    kc.quad_strip(mb, p, mat, uv=np.stack([u * 0.3, v * 0.6], axis=-1), col=col, uv2=uv2, flip=flip, smooth=False)
+    # The outward hint is taken at the grid point _orient_grid measures (its middle row and column); a hint from
+    # another column pointed across the section and wound every loft inside-out (M2-ENV-12).
+    mid_r, mid_c = len(spine) // 2, (sides + 1) // 2
+    flip = _orient_grid(p, p[mid_r, mid_c] - spine[mid_r])
+    # Smooth normals for the LOD (the full mesh is re-faceted by _facet, which recomputes them from the winding).
+    kc.quad_strip(mb, p, mat, uv=np.stack([u * 0.3, v * 0.6], axis=-1), col=col, uv2=uv2, flip=flip, smooth=True)
 
 
 GULLS = {"lintel_gull_a": ("folded", 0.72, 31), "lintel_gull_b": ("raised", 0.82, 32),

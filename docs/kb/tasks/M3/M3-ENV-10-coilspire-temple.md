@@ -2,8 +2,8 @@
 id: M3-ENV-10
 title: "Ch8 Coilspire temple (kit at final quality)"
 role: environment
-status: todo
-owner_session: ""
+status: review
+owner_session: "env-art"
 depends_on: [M3-ENV-04]
 milestone: M3
 request-from: environment
@@ -13,30 +13,24 @@ reviewer: rendering
 Act I zone kit, filed by env-art after the Lead's M3 queue emptied (the Lead's no-idle directive, 2026-10-24).
 Ch8 "The Seawall" from docs/kb/story/beats/act_outline.md, zone `ch08/coilspire`: the temple on the headland whose beacon the Corrow kit already lights (`coilspire_headland`, docs/kb/art/environments/corrow.md), with its interior and approach, storm-lit. Match the headland massing so the distant and near temples are one building.
 
-Gameplay placement (spawns, triggers, NPCs, collision tuning) is m2-slice's: hand it over as swap-in notes in
-docs/kb/handoffs/live/env-art.md.
+Gameplay placement (spawns, triggers, NPCs, collision tuning) is m2-slice's: hand it over as swap-in notes (below;
+docs/kb/handoffs/live/env-art.md is the Lead's to merge).
 
 ## Acceptance criteria
-- [x] **Design notes first:** `docs/kb/art/environments/<zone>.md` in the haluna.md format (mood in one line,
-      layout and orientation, lighting sub-frame and grade from color_script.md, kit table with dimensions,
-      materials against palette.json, composed shot list with lenses), reviewed against the act outline and the
-      story bible before any geometry; references in words only (references.md).
-      → `docs/kb/art/environments/corrow.md` (committed 7733f8d5 before any geometry; revised after the
-      preview, see its Revisions).
-- [x] A procedural kit in `assets_src/environments/kits/<zone>/` with its own Blender job, LOD0/LOD1 within
-      budgets and chained per vegetation.md "One LOD at every distance", vertex-colour weathering per haluna.md
-      §4, materials written by script, PROVENANCE rows, `verify_blender_builds` byte-identical, every file under
-      5 MB, no reference images, packs or AI generation.
-      → `assets_src/environments/kits/corrow/` (11 pieces), job `corrow_kit` (pinned at 4 threads: the glbs,
-      manifest, maps and materials), its own import category `corrow_kit`. The destroyed-wall state is the
-      follow-up **M3-ENV-04B** (todo).
-- [x] An Environment-owned preview scene with composed views of the design notes' key shots, viewed on lavapipe
-      and iterated to final quality (pillar 2, the palette, the colour script). Register at most the two most
-      telling shots as screenshot baselines (the repo's binary budget).
-      → `game/levels/_tests/corrow_kit/` (7 views); baselines `corrow_c01_wall_head`, `corrow_c08_watcher_profile`.
-- [x] Tests for anything with runtime code; a swap-in note for m2-slice.
-      → `tools/tests/test_corrow_kit.py` (20), `tests/unit/test_corrow_preview.gd` (5); swap-in note below
-      (docs/kb/handoffs/live/env-art.md is the Lead's to merge).
+- [x] **Design notes first:** `docs/kb/art/environments/coilspire.md` in the haluna.md format, checked against the
+      act outline Ch8, the Ch8 beat sheet (B03-B08, §7, §9 request 3), bible §5.4, the colour script `ch08` and
+      corrow.md / `cw_far.py`; references in words (a row appended to references.md §2).
+      → committed 2dc3b399 before any geometry; revised after the preview (its Revisions).
+- [x] A procedural kit in `assets_src/environments/kits/coilspire/` (12 pieces) with its own Blender job
+      `coilspire_kit` (threads 4: the glbs, manifest and materials), its own import category `coilspire_kit`
+      (json + post-import script, in both KINDS lists, a row in asset_import.md, every .glb.import pointing at it),
+      LOD0/LOD1 chains within budgets, vertex-colour weathering, materials by script, PROVENANCE rows, an ownership
+      row, `verify_blender_builds --job coilspire_kit` byte-identical, every file under 5 MB.
+- [x] The same building as Corrow's skyline piece: position, radius law, flues, cage, headland rock
+      (`tools/tests/test_coilspire_kit.py` OneBuildingTests; preview view K08 from Corrow's C01 camera).
+- [x] An Environment-owned preview scene `game/levels/_tests/coilspire_kit/` (8 views), viewed on lavapipe and
+      iterated (eleven passes); baselines `coilspire_k01_headland_path`, `coilspire_k03_well`.
+- [x] Tests: `tools/tests/test_coilspire_kit.py` (24), `tests/unit/test_coilspire_preview.gd` (5).
 
 ## Notes
 - **Kit** (generators import the Haluna kit's `kit_common.py` and `village.py` (roof) and the Brine Shoals
@@ -81,7 +75,42 @@ docs/kb/handoffs/live/env-art.md.
   colour script's density for GPU tiers); the storm itself is not in the kit.
 
 ## Notes
+- **Kit** (`build.py`, `cs_common.py` (frames, the far piece's law read from `cw_far`, the stair/landing plan,
+  the path, the graded ground), `cs_spire.py`, `cs_tiers.py`, `cs_hut.py`, `cs_headland.py`, `cs_materials.py`,
+  `cs_zone_lut.py`, `cs_preview_layout.py`, `cs_import_settings.py`; Haluna `kit_common`/`materials` and Corrow
+  `cw_common`/`cw_far`/`cw_preview_layout` read-only, the Haluna writers loaded by path as `haluna_materials`):
+  coilspire_shell 35930/712, coilspire_flues 12228/840, coilspire_tiers 14374/632, beacon_basket 1936/392,
+  keepers_hut 1594/36, flue_key 260/72, flue_key_wheel 936/156, tier_brazier 820/168, coilspire_ground 13216/1536,
+  headland_path 6684/66, scrub_clump_a/b 848/24. 16 materials (copper on the Tamsule `env_bronze`), no new maps.
+  4.4 MB in 26 files, largest 1.2 MB.
+- **Swap-in for m2-slice** (zone `game/levels/ch08/coilspire/`):
+  - Scene: dress with `HalunaDresser` from a layout like `game/levels/_tests/coilspire_kit/coilspire_layout.json`
+    (generated by `cs_preview_layout.py`: copy its helpers `spire_piece`, `headland_piece`, `keys`, `braziers`,
+    `wall_yaw`; never reference the `_tests` file). Kit dir `res://assets/environments/kits/coilspire/`. Frame:
+    headland pieces at world (318, 0, 178) yaw -30; spire pieces at (308.412, 39.285, 158.608) yaw -30 (the beacon
+    basket +46 up). The zone can use its own origin: keep the relative transform.
+  - Trial (B05): ten flue-keys, each a `flue_key` housing plus a `flue_key_wheel` (turn the wheel node about its
+    local Z); layout entries carry `tag` = tier, kind (`coil`, `riser`, `side`), spire angle. Tier 1: 0/88/240 deg;
+    tier 2: 204, 260, and the side flue 180 (its sealed lamp-niche beside it: the sail-needle pickup); tier 3: 188
+    (Liss's seized key: put the wright's-mark decal on the stone behind it) and 106; tier 4: 291 and 17. Braziers
+    (`tier_brazier`, tag tier1-4) on the dais and each landing's centre line; light each as a tier is won (the
+    preview's `hearth_lights`: oil_lamp #FFB16E 2.0 / 8 m, the hall's 3.2 / 10 m, all with
+    `light_volumetric_fog_energy = 0`). The great key (B07) is tagged `great_key`, on the gallery at 70 deg.
+  - Walkable (no `-col` proxies yet): the hall floor (y 0), landings at 9/18/27 m (D-shapes: `cs_common.plan()`
+    centres 221.9/143.3/339.4 deg, half-arc 75.5 deg, chord a quarter-radius off the axis), the crown floor at
+    35 m (a 0.85 m grate over the well; a notch 174-294 deg where flight 4 rises), the treads
+    (`cs_common.plan()` gives every tread's angle and height; 0.2 m rise), the gallery ring at 42.6 m (door 224
+    deg), the path (`cs_common.PATH`, treads from `cs_headland.tread_runs()`), the forecourt (r 9 m, y -0.35).
+    Block: the well (fall guard on landing chords and the crown grate edge), the rail, the shell.
+  - Lighting: the preview's two phases (`ch08`, `ch08_coilspire_int`); keep the Sun's `sky_mode` at light-and-sky.
+    Exterior uses Corrow's `lut_ch08_storm`; interior `lut_ch08_coilspire_int` (move both LUTs out of `_tests`).
+- **Known limits / follow-ups (not filed: new ids would be M3-ENV-7xx):** Liss's mark is a decal for m2-slice/VFX;
+  slit light shafts barely read without GI; scrub and far rock are simple; the hut interior is minimal; the wall-gate
+  (W07) belongs to the Corrow zone and is not in this kit; `ch08_day` (B04 noon) awaits a colour-script row.
+
+## Notes
 - Arena lamps and lights near a dense FogVolume set `light_volumetric_fog_energy = 0`
   (the Lead's rule; `tools/tests/test_fog_lamps.py`).
 
 ## Review log
+- (awaiting rendering review)
