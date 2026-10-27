@@ -11,6 +11,7 @@ const MATRON := "res://game/creatures/cinder_matron/cinder_matron_battle.tscn"
 const REACH := "res://game/creatures/undertows_reach/undertows_reach_battle.tscn"
 const WRAITH := "res://game/creatures/spar_wraith/spar_wraith_battle.tscn"
 const DROWNER := "res://game/creatures/mangrove_drowner/mangrove_drowner_battle.tscn"
+const ENGINE := "res://game/creatures/lamp_engine/lamp_engine_battle.tscn"
 const RING := {"radius_factor": 1.4, "inner_soft_m": 0.25, "notches": 6}
 const SANDBOX := "res://game/battle/scene/battle_sandbox.tscn"
 const SEED := 20261024
@@ -293,6 +294,29 @@ func test_the_mangrove_drowner_uproots_and_strikes_risen() -> void:
 	assert_true(is_equal_approx(d.contact_time(&"attack"), 0.7), "the drag lands at 0.7 s")
 	assert_true(d.play_hit())
 	assert_eq(d.current_clip, &"hit_risen", "the risen hit wins over the variants")
+
+
+func test_the_lamp_engine_opens_its_rings_and_strikes_open() -> void:
+	var e := _actor(ENGINE)
+	var player := e.find_children("*", "AnimationPlayer", true, false)[0] as AnimationPlayer
+	var skel := e.find_children("*", "Skeleton3D", true, false)[0] as Skeleton3D
+	var petal := skel.find_bone("petal1_0")
+	assert_true(petal >= 0, "the middle ring's petals are bones")
+	assert_true(e.enter_phase(&"opened"))
+	assert_eq(e.current_clip, &"phase_change", "the rings fold back first")
+	e.settle()
+	assert_eq(e.current_clip, &"idle_opened", "it idles open, the core showing")
+	assert_eq(player.get_animation(&"idle_opened").loop_mode, Animation.LOOP_LINEAR, "the open idle loops")
+	player.advance(0.5)  # past the cross-fade from the phase clip (this first step only starts the queued clip)
+	player.advance(0.0)  # and this one applies its pose
+	var rest := skel.get_bone_rest(petal).basis.get_rotation_quaternion()
+	var fold := rad_to_deg(rest.angle_to(skel.get_bone_pose_rotation(petal)))
+	assert_between(fold, 60.0, 76.0, "the middle ring stands folded back like a petal (%.1f deg)" % fold)
+	assert_true(e.play_clip(&"attack"))
+	assert_eq(e.current_clip, &"attack_opened", "it trims from the open pose")
+	assert_true(is_equal_approx(e.contact_time(&"attack"), 0.6), "the trim lands at 0.6 s")
+	assert_true(e.play_hit())
+	assert_eq(e.current_clip, &"hit_opened", "the open hit wins over the variants")
 
 
 func test_hits_rotate_their_variants_and_a_phase_keeps_its_own() -> void:

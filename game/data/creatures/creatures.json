@@ -106,6 +106,18 @@
                      "clips": {"attack": "attack_risen", "cast": "cast_risen", "hit": "hit_risen"}}
       },
       "portrait": {"rim_energy": 2.8, "kick_energy": 1.8}
+    },
+    "lamp_engine": {
+      "scene": "res://game/creatures/lamp_engine/lamp_engine_battle.tscn",
+      "contact": {"attack": 0.6, "cast": 1.0, "attack_opened": 0.6, "cast_opened": 1.0},
+      "loop": ["idle", "idle_opened"],
+      "ko_fade_sec": 1.2,
+      "stand_in": {"yaw_deg": 90.0},
+      "phases": {
+        "opened": {"clip": "phase_change", "idle": "idle_opened", "sec": 0,
+                   "clips": {"attack": "attack_opened", "cast": "cast_opened", "hit": "hit_opened"}}
+      },
+      "portrait": {"clip": "idle", "clip_time": 0.0}
     }
   }
 }

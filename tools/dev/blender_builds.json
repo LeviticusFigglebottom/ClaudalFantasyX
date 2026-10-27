@@ -612,6 +612,16 @@
       ]
     },
     {
+      "id": "creature_lamp_engine",
+      "owner": "character",
+      "sources": ["assets_src/creatures/lamp_engine/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/lamp_engine/*.glb", "assets/creatures/lamp_engine/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/lamp_engine/build_lamp_engine.py", "--", "--out", "assets/creatures/lamp_engine/lamp_engine.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "lamp_engine"]
+      ]
+    },
+    {
       "id": "wildlife_gull",
       "owner": "character",
       "sources": ["assets_src/wildlife/gull/**", "assets_src/wildlife/common/**", "assets_src/creatures/common/creature_kit.py"],
