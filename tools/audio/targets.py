@@ -95,6 +95,9 @@ RULES = [
     ("sfx/cutscene/cs_feed_fire_*.ogg", "momentary", -23.0, 1.0, -2.0, "cutscene foley"),
     ("sfx/cutscene/cs_trim_wicks_*.ogg", "momentary", -26.0, 1.0, -2.0, "cutscene foley"),
     ("sfx/cutscene/cs_pole_water_*.ogg", "momentary", -23.0, 1.0, -2.0, "cutscene foley"),
+    # M3-AUD-825 (assets_src/sfx/ashcrown_sfx.py): the strike trial's world SFX; the stud tick repeats, so it is quieter
+    ("sfx/ashcrown/ash_stud_*.ogg", "momentary", -24.0, 1.0, -1.0, "a stud going dark (repeats)"),
+    ("sfx/ashcrown/*.ogg", "momentary", -18.0, 1.0, -1.0, "the Ashcrown trial's world SFX"),
     # M3-AUD-818 (assets_src/sfx/act1_cutscene_sfx.py): Act I's `@sfx` cues, each at its own level
     ("sfx/splash.ogg", "momentary", -18.0, 1.0, -1.0, "an Act I cutscene cue"),
     ("sfx/bell_room_drip.ogg", "momentary", -26.0, 1.0, -1.0, "an Act I cutscene cue"),

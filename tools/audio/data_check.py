@@ -27,6 +27,7 @@ BATTLE_STINGS = "game/data/audio/battle_stings.json"  # M3-AUD-18
 LIFE = "game/data/audio/life.json"  # M3-AUD-814
 IMPACT = "game/data/audio/impact_audio.json"  # M3-AUD-816
 CUTSCENE_FOLEY = "game/data/audio/cutscene_foley.json"  # M3-AUD-817
+ASHCROWN_SFX = "game/data/audio/ashcrown_sfx.json"  # M3-AUD-825
 CHOREO = "game/data/battle/choreo.json"  # the battle-presentation track's styles (once merged)
 SPEAKERS = "game/data/dialogue/speakers.json"
 CREATURE_VOICES = "game/data/audio/creature_voices.json"  # M3-AUD-14
@@ -214,6 +215,8 @@ def hook_errors(name: str, doc: object, ids: set[str], vfx_effects: set[str]) ->
     numbers = {k: v for k, v in body.items() if _num(v)}
     for k in numbers:
         body.pop(k)
+    if name == ASHCROWN_SFX:
+        body.pop("at", None)  # node paths under the zone, not sfx rows
     _refs(body, name, ids, errs)
     if name == BATTLE_SFX:
         for eid in (doc.get("vfx") or {}):
@@ -516,7 +519,7 @@ def audio_errors(files: dict[str, object], exists: Callable[[str], bool], flags:
     if FOOTSTEPS in files:
         errs += footstep_errors(files[FOOTSTEPS], exists, ids)
     vfx_effects = set(((files.get(VFX_EFFECTS) or {}).get("effects") or {}).keys())
-    for name in (BATTLE_SFX, SHRINE_SFX):
+    for name in (BATTLE_SFX, SHRINE_SFX, ASHCROWN_SFX):
         if name in files:
             errs += hook_errors(name, files[name], ids, vfx_effects)
     if UI_SFX in files:
@@ -699,7 +702,7 @@ def load_files(root: Path) -> dict[str, object]:
     out = {}
     extra = [p.relative_to(root).as_posix() for p in sorted((root / SFX_DIR).glob("sfx_*.json"))]
     for rel in [MIX, MUSIC, SFX, BATTLE_SFX, SHRINE_SFX, UI_SFX, AMBIENCE, FOOTSTEPS, ENCOUNTERS, VFX_EFFECTS,
-                ACCESSIBILITY, VOICES, SPEAKERS, REEFBALL_HOOKS, CHOREO_SFX, CHOREO, BATTLE_STINGS, CREATURE_VOICES, ENEMIES, LIFE, IMPACT, CUTSCENE_FOLEY] + extra:
+                ACCESSIBILITY, VOICES, SPEAKERS, REEFBALL_HOOKS, CHOREO_SFX, CHOREO, BATTLE_STINGS, CREATURE_VOICES, ENEMIES, LIFE, IMPACT, CUTSCENE_FOLEY, ASHCROWN_SFX] + extra:
         p = root / rel
         if p.is_file():
             out[rel] = json.loads(p.read_text(encoding="utf-8"))

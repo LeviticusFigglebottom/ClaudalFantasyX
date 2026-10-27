@@ -461,6 +461,8 @@ func _on_node_added(node: Node) -> void:
 		_later(attach_battle, node)
 	elif node is ShellShrineLevel:
 		_later(attach_shrine, node)
+	elif node is Ch05AshcrownZone:
+		_later(attach_ashcrown, node)
 	elif node is FieldController:
 		_later(attach_footsteps, node)
 	elif reefball != null and reefball.wants(node):
@@ -567,6 +569,18 @@ func attach_shrine(level: Node) -> void:
 	add_child(l)
 	l.attach(self, level as ShellShrineLevel)
 	listeners[level] = l
+
+
+## An AshcrownAudio for the Ashcrown zone `zone` (M3-AUD-825): the strike trial's sounds.
+func attach_ashcrown(zone: Node) -> void:
+	if not is_instance_valid(zone) or not zone.is_inside_tree() or listeners.has(zone):
+		return
+	var l := AshcrownAudio.new(AudioData.table(AudioData.ASHCROWN_SFX))
+	l.name = "AshcrownAudio"
+	l.bind_director(self)
+	add_child(l)
+	l.attach(zone as Node3D)
+	listeners[zone] = l
 
 
 ## A FootstepAudio for the field walker `walker`, on the surface of the zone applied last (else the running scene).
