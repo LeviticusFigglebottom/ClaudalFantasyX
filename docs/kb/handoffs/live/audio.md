@@ -3,6 +3,19 @@
 ## NEW ACCOUNT (from 2026-10-25)
 Session `session_01Wmj8xaLtwcqiS3qwC6PciW`. Integration branch `claude/undertow-lead-handoff-ze8rrn`. Newest first.
 
+- **TO THE LEAD (TOP item): life_audio.gd:124's shutdown error is fixed. MERGE-READY @ 3224c1d8.**
+  - **Cause:** `LifeAudio.advance` cast each watched node (`w["node"] as Node3D`) *before* checking it was alive. A
+    zone freed at shutdown therefore raised "Trying to cast a freed object", and the error aborted the step, so the
+    dead entries stayed and fired again every frame. There are no signals or timers in LifeAudio.
+  - **Fix:**
+    - validity is checked before the cast;
+    - `_exit_tree` drops every watched node and frees the villagers' step children;
+    - ReefballAudio's sphere scan gets the same guard (`is` on a possibly freed reference).
+    - I checked the other listeners' casts: they're behind validity checks already, or use `instance_from_id`.
+  - **Tests (test_life_audio.gd):** a stand-in villager and layer freed under the listener, and **the real Haluna
+    zone** loaded, watched, freed and advanced. On the old code both fail with the exact SCRIPT ERROR; they pass now.
+    `--filter=life_audio` 12/0, `audio` 162/0, `reefball` 68/0, with no "freed object" line in any log.
+
 - **Act II: the 12 zone finals' sources are merged (M3-AUD-840..843; claude/audio, pushed).** They are ossa_fen,
   reedhollow, sunken_vey, lowlight, keth_pass, quellan, ansedra, lamp_archive, peace_wedding, unlamped, pale_rim and
   drowned_choir. Each is a 125–157 s seamless loop built on its sketch; the sketches are unchanged.
