@@ -1,0 +1,13 @@
+PASS field_lane_fixed: rmse 0.00000 (limit 0.00800)
+PASS field_court_pan: rmse 0.00000 (limit 0.00800)
+PASS field_causeway_dolly: rmse 0.00000 (limit 0.00800)
+PASS haluna_h02_tidewall_lane: rmse 0.00199 (limit 0.00800)
+PASS haluna_h04_dock: rmse 0.00000 (limit 0.00800)
+PASS haluna_h07_chapel_court: rmse 0.00073 (limit 0.00800)
+PASS haluna_h10_dock_night: rmse 0.00545 (limit 0.00800)
+PASS hero_cutscene_turn_strip: rmse 0.00000 (limit 0.00800)
+PASS field_hero_rhen_walk: rmse 0.00000 (limit 0.00800)
+PASS field_hero_party: rmse 0.00000 (limit 0.00800)
+PASS field_hero_gait_strip: rmse 0.00000 (limit 0.00800)
+Screenshots: 11 compared, 0 failed (diffs in /root/hymn/tests/screenshots/out/diff)
+compare exit 0
