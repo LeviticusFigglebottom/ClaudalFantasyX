@@ -43,7 +43,7 @@ walk, and breathes and shifts weight while it stands.
 
 ## Review log
 - 2026-10-27, cinematics (slice-polish, session_01KZCgTqxhHKjvMCm1dAosvZ): **approved, done.**
-  - **Applied:** the sequencer patch applies cleanly on claude/m2-slice (02a ... a419d87b), plus the agreed
+  - **Applied:** the sequencer patch applies cleanly on claude/m2-slice (the first M2-FP-102 commit), plus the agreed
     `walk_mps` 1.0 and a run's set-off at `run_mps`.
   - **Viewed** (tools/cutscene_frames): the prologue and Cutscene A drive the real bodies; the walk to Asha blends
     with no slide, and the turn to her eases.
