@@ -381,4 +381,9 @@ RENDER-REQUEST @ b99be560: creature_wakefin; why: M3-CRE-626 new Act II boss, ne
     - the creature README and every shipped beast use it (reef crab, lantern eel, gull harrier, shoal skipper, ashwing, slag tortoise).
     - Proposal: one weak-point colour for every foe (pillar 4). The spawn keep the wound language: open seams and motes. Nothing shipped changes.
 RENDER-REQUEST @ 44080e1e: creature_tannin_archer, creature_gallery_ray, creature_rime_urchin, creature_conduit_crawler; why: M3-CRE-627 new Act II regulars, never rendered (no baselines).
+- **MERGE-READY @ 37e4b4eb: M3-CRE-629 done (Lead-approved).**
+  - ADR 0151 accepts one weak-point colour for every foe; ADR 0150 stays as the proposal.
+  - docs/kb/art/palette.json `spawn_wound.usage_limit` amended: every foe's weak point; on a beast or construct, one small closed mark; the wound seams and motes stay the spawn's.
+  - **M3-CRE-630 filed:** the one-frame-late clips, a kit fix for the next batch rebuild.
+  - Checks: validate_data, taskboard. Nothing else touched.
 
