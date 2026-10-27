@@ -19,7 +19,7 @@
 [ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/rope_coil.glb" id="17_rope"]
 [ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/tide_debris.glb" id="18_debris"]
 [ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/net_heap.glb" id="19_net"]
-[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/shrine_offering.glb" id="20_offering"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/wayside_offering.glb" id="20_offering"]
 [ext_resource type="PackedScene" path="res://assets/creatures/drownbell/drownbell.glb" id="21_bell"]
 
 [sub_resource type="ProceduralSkyMaterial" id="SkyMat"]
