@@ -245,6 +245,14 @@ env-art is cloud session `session_01YbaV2c8yquRHqj6afQYg89` on `claude/env-art`;
     its cast. ADR 0015 bans ice, frost and frozen water in any temple **or set-piece** from Ch12 to Ch15, and the
     Ch12 boss is a set-piece. keth_pass.md proposes locks matted with seep-crust and silt, and a cast that sheds
     scree. Please confirm or route to Narrative.
+- **MERGE-READY @ 95be6118: M3-ENV-717**, the Avalanche Ram's arena `keth_seep_terrace` (Ch12), in the Haluna kit
+  (`keth.py`): the terrace ground, the seeping Lit Age wall (emissive seep sheets, nothing frozen), the seep pool and
+  pale grass, a pass-cord with red and undyed keth, cairns, the far ridges; `lut_ch12_heights` from
+  `keth_zone_lut.py`. `BossAnchor` (−7.5, 0, −3) by the pool. Preview fixture `preview_keth_seep_terrace.tscn`.
+  - **For act1/creatures:** set the Ch12 Ram encounter's arena to `keth_seep_terrace`.
+
+  Checks run: haluna_kit full rebuild (older pieces identical), Godot `--filter=arena` 18/0, full tools suite
+  (only `test_screenshots` red: new shots without baselines).
 
 ### Render requests
 RENDER-REQUEST @ a0d2549f: battle_arena_tideline_dawn,battle_arena_causeway_disc_sunset,battle_arena_causeway,battle_arena_tideline,causeway_c02_profile_against_the_lagoon,causeway_c08_drownbell_disc_approach,drownbell_flood,battle_boss_intro_drownbell,haluna_h01_village_from_sea,haluna_h10_dock_night,field_objective_line,field_interact_prompt,field_area_title,field_tip_card,dialogue_continue; why: M3-ENV-701 set dressing in Haluna, the causeway and the two arenas (the five field/dialogue shots frame Haluna's lane 1)
@@ -260,6 +268,7 @@ RENDER-REQUEST @ 8770a067: corrow_c01_wall_head,corrow_c08_watcher_profile,corro
 RENDER-REQUEST @ 599b2418: battle_arena_seawall_stairhead_storm,battle_arena_seawall_stairhead_hoist,battle_arena_seawall_stairhead_surge,battle_arena_coilspire_headland_path,battle_arena_coilspire_tier_landing; why: M3-ENV-713 Ch8's five new arenas (new shots, no baseline yet)
 RENDER-REQUEST @ fd630bb8: pemakar_p04_harbour_day,pemakar_p11_sea_cut_weir_day,battle_arena_ash_terrace_lanternfall; why: M3-ENV-1214 Pemakar's harbour pieces and day grade (new shots), the crown bell now in the Lanternfall arena's town
 RENDER-REQUEST @ 94fe8f77: tamsule_tp01_port_and_bell,tamsule_tp03_floating_market,tamsule_tp05_gantry_foot; why: M3-C07-04 the Tamsule port kit preview (new shots)
+RENDER-REQUEST @ 95be6118: battle_arena_keth_seep_terrace; why: M3-ENV-717 the Avalanche Ram's arena (new shot)
 
 ## STATE AT HANDOVER (2026-10-25)
 
