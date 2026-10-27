@@ -3413,14 +3413,6 @@ def write_grip_data() -> None:
     GRIP_DATA.write_text(json.dumps(data, indent=1) + "\n", encoding="utf-8")
 
 
-# M3-CHR-05: the story clips go after each hero's own (every hero's block above has set its list by now)
-for _h, _clips in STORY.items():
-    CLIPS[_h] = CLIPS[_h] + [c for c in _clips if c not in CLIPS[_h]]
-    for _c, _spec in _clips.items():
-        if _spec.get("alias") in LOOPS or _spec.get("loop"):  # an alias of a cycle is a cycle
-            LOOPS.add(_c)
-
-
 # ---------------------------------------------------------------------------------------------
 # Kerrid (M3-CHR-505, kerrid.md §1, §10): a heavy man hunched forward as if walking into wind; idle sway 0.5, **no
 # breath** (the unrisen don't breathe: the review must not "fix" it), planted (stance 1.2, knees soft 4 degrees). The
@@ -3442,7 +3434,7 @@ PERSONA["kerrid"] = {"sway": 0.5, "lean": 0.0, "staff": False, "arms_down": 34.0
 KERRID_STORY = ["collar_catch", "go_still", "turn_at_name", "set_bowl_on_post", "stand_watch", "wade",
                 "push_climber", "down_a_step", "collar_haul", "look_down_stair", "carry_child"]
 KERRID_OWN = {"walk", "run", "talk", *KERRID_STORY}
-CLIPS["kerrid"] = ["idle", "walk", "run", "talk", *KERRID_STORY] + BATTLE_CLIPS
+CLIPS["kerrid"] = ["idle", "walk", "run", "talk", *KERRID_STORY] + BATTLE_CLIPS + ["revive"]
 LOOPS |= {"stand_watch", "wade", "push_climber", "carry_child"}
 LENGTHS.update({"collar_catch": 2.4, "go_still": 1.6, "turn_at_name": 2.8, "set_bowl_on_post": 4.0,
                 "stand_watch": 7.0, "wade": 1.6, "push_climber": 2.2, "down_a_step": 1.6, "collar_haul": 1.4,
@@ -3453,6 +3445,13 @@ BATTLE_STRIKER["kerrid"] = {"attack": ("DEF-hand.R", (0.0, -0.6, 0.8)), "cast": 
                             "finisher": ("DEF-hand.R", (0.0, 0.0, 1.0)), "item": ("DEF-hand.L", (0.0, -0.4, 0.92)),
                             "read": ("DEF-spine.006", (0.0, 0.0, 1.0)), "defend": ("DEF-spine", (0.0, -1.0, 0.0))}
 FOOT_FLAT["kerrid"] = 0.5
+# M2-CHR-513's ko and revive: his mid-calf wading trousers take no flexed ankle (as Toma's hems), so he kneels and lies
+# on his bent toes
+KO_LEGS["kerrid"] = {"kneel": (10.0, 84.0, -10.0, -20.0), "lie": (4.0, -10.0, 0.0)}
+KO_REST["kerrid"] = (-0.86, -0.2)
+KO_DROP["kerrid"] = (0.04, 0.06)
+KO_ARMS_OUT["kerrid"] = 8.0
+STANCE_DORSI["kerrid"] = 10.0  # the hem's limit, as Toma's
 # both hands on the haft, the cleaver low across the body, the fluke near the right foot (the battle idle's hands);
 # the strike poses build on it
 K_GRIP = {"DEF-upper_arm.R": (-14.0, 0.0, 6.0), "DEF-forearm.R": (-34.0, 0.0, 0.0),
@@ -3652,6 +3651,7 @@ def kerrid_pose_at(clip: str, t: float, length: float, sk: Skeleton, persona: di
 def _kerrid_keys(clip: str, sk: Skeleton, persona: dict, base: dict) -> list:
     """Kerrid (kerrid.md §10.3: weight and hauling): the cleaver held low in both hands like a hauling tool, every
     blow slow to start; never shouldered or twirled. Deltas on the idle's first frame (base)."""
+    a = persona["arms_down"]
     grip = _minus(add(base, K_GRIP), base)
     if clip == "ready":
         k = add(add(grip, _legs(sk, persona, 0.03)), {
@@ -3761,6 +3761,14 @@ def kerrid_victory(u: float, sk: Skeleton, persona: dict) -> dict:
 
 
 _BATTLE_KEYS["kerrid"] = _kerrid_keys
+
+
+# M3-CHR-05: the story clips go after each hero's own (every hero's block above has set its list by now)
+for _h, _clips in STORY.items():
+    CLIPS[_h] = CLIPS[_h] + [c for c in _clips if c not in CLIPS[_h]]
+    for _c, _spec in _clips.items():
+        if _spec.get("alias") in LOOPS or _spec.get("loop"):  # an alias of a cycle is a cycle
+            LOOPS.add(_c)
 
 
 # ---------------------------------------------------------------------------------------------

@@ -70,6 +70,7 @@ TROUSER_OFF = 0.009
 SANDAL_TIE_OFF = 0.0035
 WRAP_HAND = (0.16, 0.34, 0.52)  # shares of the hand's length the wrap runs over the back of the hand to the knuckles
 WRAP_FROM_T = 0.53  # along the arm (0.5 = the elbow): the half-hitch under the elbow
+WRAP_CUT_IN = 0.07  # the forearm skin is cut under the wrap from this far past its top edge (the edge stays covered)
 BELT_OFF = 0.005
 ROPE_OFF_SKIN = 0.008  # under the arms, the rope's surface over the smock (kerrid.md: 6 mm) plus a margin
 CORD_ROWS = 16
@@ -376,7 +377,7 @@ def coverage(body, params: dict, V: np.ndarray, reg: np.ndarray) -> np.ndarray:
     sh, wr = lm.side_pt("shoulder", "L"), lm.side_pt("wrist", "L")
     ax = wr - sh
     t = (V - sh) @ ax / (ax @ ax)
-    wrapped = (reg == "arm_L") & (t > WRAP_FROM_T + 0.04) & (t < 0.95)
+    wrapped = (reg == "arm_L") & (t > WRAP_FROM_T + WRAP_CUT_IN) & (t < 0.95)
     legs = (reg == "leg_L") | (reg == "leg_R") | torso
     z_keep = max(float(lm.side_pt("knee", sd)[2]) for sd in ("L", "R")) + YC.KEEP_ABOVE_KNEE * S
     lower = legs & (V[:, 2] < z_waist - m) & (V[:, 2] > z_keep)
