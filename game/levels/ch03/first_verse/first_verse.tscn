@@ -275,7 +275,7 @@ script = ExtResource("3_stage")
 director_path = NodePath("../CameraDirector")
 clip_marks = {
 "asha/emerge_doorway": "doorway",
-"asha/stand_at_pool": "pool_edge",
+"asha/walk_to_chamber": "pool_edge",
 "asha/face_west": "threshold_west",
 "rhen/sit_steps": "steps_rhen",
 "toma/sit_steps": "steps_toma",
