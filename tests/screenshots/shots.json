@@ -3598,7 +3598,7 @@
     },
     {
       "id": "battle_arena_wall_head",
-      "scene": "res://game/battle/scene/shots/battle_arena_wall_head.tscn",
+      "scene": "res://game/levels/_tests/battle_arenas/arena_wall_head.tscn",
       "setup": {
         "globals": {
           "hymn_wind_time": 12.0
