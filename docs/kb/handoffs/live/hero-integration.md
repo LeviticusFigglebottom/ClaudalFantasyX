@@ -405,3 +405,33 @@ RENDER-REQUEST @ d4430397: battle_choreo_cast, battle_choreo_read, battle_choreo
 - **Merge note for the Lead:** claude/ui's 80d358bf and my d4430397 both edit game/data/ui/battle_sandbox.json's
   stand_ins, on adjacent rows. Resolve by keeping both: UI's Rhen, Asha and Toma rows, and my Ysolde row with her
   scene and yaw_deg.
+- **MERGE-READY @ bccce923**
+  - **M3-ARC-1216, steep stairs (ADR 0193).** HeroStairFlight and HeroStairs: Rhen climbs 48° and descends 60°
+    flights on their profile, step by step, eased, at slope_speed_mps 1.0. Standing still doesn't slide; pushing
+    sideways keeps him inside the edges; walking under a flying stair doesn't climb it. Asha and Toma follow up the
+    steps (test_hero_stairs, 7).
+  - **M2-HER-1116 followers:** never inside a wall (slide along it; a clear catch-up side; an eased min-gap push);
+    take steep flights; Ysolde follows when she joins (test_hero_followers, 11). Foot IK on/off switch.
+  - Checks run: hero_ 107/0, field 147/0, zone 51/0, haluna 50/0, hero_stairs 7/0, hero_followers 11/0, gdlint and
+    gdformat, validate_data, taskboard --check.
+  - Skipped: shots (no scene or shader touched; followers only differ next to walls), Blender, coverage.
+- **For act1-chapters (unblocks M3-C05-1215, the Ashcrown swap): how to place a steep flight.** Full notes are in
+  M3-ARC-1216.
+  - Mark it with a `HeroStairFlight` node (origin = the centre of the foot on the lower floor; it climbs along the
+    node's -Z; run_m, rise_m, width_m), **or** a row in the zone layout's `"stairs"` list:
+    `{"id": "FlyingStair", "foot": [x, y, z], "head": [x, y, z], "width_m": 2.0}`. No code change on your side:
+    HeroStairs builds the rows when the zone loads.
+  - Keep the flight's blocking collision, and give each end a landing floor.
+  - Cutscene walks across a flight need M3-HER-1119 (slice-polish), and villagers need M3-HER-1118 (creatures).
+- **For slice-polish (relay, please): ONE patch now,** `docs/kb/tech/cutscene_walks_combined.patch`.
+  - It replaces both `cutscene_no_snap.patch` (M2-HER-1113) and act1-chapters' `cutscene_mark_via.patch`
+    (M3-CIN-1221). Those two overlap in `_cue_mark`, and the via patch no longer applied to claude/m2-slice.
+  - Cut against claude/m2-slice d4921946. The sequencer ends at 999 lines.
+  - Verified there with my hero layer overlaid: the cutscene guard over all 79 scenes, mark_via 3/0, sequencer 17/0,
+    cutscene 64/0, fp_ 28/0, haluna 57/0, prologue 7/0, _thread 34/0, ch09 7/0.
+  - Once it lands, act1-chapters can write `via=` (M3-CIN-1220) and I empty my guard's KNOWN list (queue item 6).
+- **Merge note:** M3-ARC-1216's task file was on act1-chapters only. My branch adds it with my claim (the Lead
+  reassigned it). On an add/add conflict, keep mine.
+
+### Perf requests
+PERF-REQUEST @ bccce923: foot IK frame cost on hardware. Haluna, the party running the beach-to-court loop, 60 s each with game/data/hero_motion/foot_ik.json "enabled": true and then false; report the mean and p99 frame times and the delta. Cloud CPU estimate: 18 us per hero per frame.
