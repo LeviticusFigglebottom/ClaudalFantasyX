@@ -82,3 +82,10 @@ Ch4–Ch9 onward. `m2-slice.md` beside this file is the history up to the 2026-1
 
 ### Render requests
 RENDER-REQUEST @ fdec3cc6: slice_prologue_vigil_line, slice_beach_h05_asha, slice_beach_h06_toma, slice_haluna_villagers_village, slice_causeway_head, slice_causeway_harrier_view, haluna_h01_village_from_sea, haluna_h02_tidewall_lane, haluna_h04_dock, haluna_h07_chapel_court, haluna_h10_dock_night, shrine_s01_approach, shrine_s02_threshold, shrine_s03_overview, shrine_s04_lip, shrine_s05_side_pool, drownbell_flood, battle_boss_intro_drownbell, battle_arena_causeway, field_causeway_dolly, boot_title; why: M2-FP-102..109, the human's playtest round (real cast and held poses in the prologue and Cutscene A, live villagers and wildlife, the final causeway), plus the greyscale audit of every slice beat. The six slice_* shots are new (no baseline yet).
+- **Known red until the render lands:** the six new `slice_*` shots have no baseline yet, so the tools test
+  `test_screenshots::test_repo_manifest_is_valid_and_baselined` fails on this branch from fdec3cc6 on.
+  - The render protocol adds the shot before its baseline exists, and the test has no pending mechanism.
+  - **Lead:** merge or cherry-pick up to 363b6f70 / 8be5d39f freely. Take fdec3cc6 (M2-FP-109) only together with
+    my approval commit, which follows the PC's `gpu/render-slice-polish-fdec3cc` (or e1e63f4).
+  - **Suggestion for the Lead (TRACK-RULES):** allow a `"pending_baseline": true` key on a new shot until its first
+    approval.
