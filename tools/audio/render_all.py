@@ -55,6 +55,7 @@ M2_CUES = ("haluna_village", "haluna_night", "battle_standard_v2", "hush_first_v
 # M3-AUD-820: the Ch4 and Ch7 scene cues
 M2_CUES += ("hearer_hum", "ysolde_theme", "name_board_home", "the_long_way_round", "oruvel_theme", "tavi_kell")
 M2_CUES += ("tidecup_after", "tidecup_crowd", "virel_bound", "virel_summon", "corrow_aftermath")  # M3-AUD-822
+M2_CUES += ("rhen_current_hum", "going_under", "corrow_night", "dawn_road")  # M3-AUD-819
 AMBIENCE_BUDGET = int(2.5 * 1024 * 1024)  # the M2-AUD-05 field beds together
 # Per-job budgets for later "ambience_loop" jobs (each job's beds together; the M2-AUD-05 job keeps AMBIENCE_BUDGET).
 AMBIENCE_JOB_BUDGETS = {"assets_src/sfx/causeway_ambience.py": int(1.2 * 1024 * 1024),
@@ -254,6 +255,14 @@ JOBS = [
      ["corrow_aftermath.ogg", "corrow_aftermath.loop.json"], "music_loop"),
     ("assets_src/music/seawall_hold.py", "assets/audio/music",
      [f"seawall_hold_p{i}{ext}" for i in (1, 2, 3) for ext in (".ogg", ".loop.json")], "music_loop"),
+    # M3-AUD-819: Act I's scripted cues (Ch1 the hum, going under, the Rising's stems; Ch9 the night and the road)
+    ("assets_src/music/rhen_current_hum.py", "assets/audio/music", ["rhen_current_hum.ogg"], "music"),
+    ("assets_src/music/going_under.py", "assets/audio/music", ["going_under.ogg"], "music"),
+    ("assets_src/music/undertow_rising.py", "assets/audio/music",
+     [f"undertow_rising_p{i}{ext}" for i in (1, 2) for ext in (".ogg", ".loop.json")], "music_loop"),
+    ("assets_src/music/corrow_night.py", "assets/audio/music", ["corrow_night.ogg", "corrow_night.loop.json"],
+     "music_loop"),
+    ("assets_src/music/dawn_road.py", "assets/audio/music", ["dawn_road.ogg", "dawn_road.loop.json"], "music_loop"),
 ]
 M1_JOBS = 5  # the first JOBS rows are M1's audio (SIZE_BUDGET)
 

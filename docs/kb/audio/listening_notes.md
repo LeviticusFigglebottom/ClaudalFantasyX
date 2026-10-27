@@ -1013,3 +1013,26 @@ reaches the scenes.
   the block knocking on 2 and 4, the pawl, plucks and bass; (3) adds the storm's G as a sub drone under the B minor.
   The steps are about +1.7 and +1.5 LU. **Effort, not triumph?** Listen on speakers that reach 50 Hz: stem 3 is
   mostly below 150 Hz. The limiter takes up to about 4–5 dB off the biggest drum hits.
+
+## M3: Act I scripted cues (M3-AUD-819)
+Five cues the Act I scripts already call (`@music`); heard in their cutscenes (the F8 chapter select reaches them).
+- **rhen_current_hum** (Ch1 C1-06, the shaft, 15 s): Rhen hums phrase 1 of Dace's current-song (motifs.py) twice,
+  the second time fainter as the music crossfades to `oruvel_raft`. Listen for: the two "soundings" (the repeated D)
+  heard as two hums, not one note; whether the synth voice reads as a young man humming under his breath or as an
+  instrument; the bubbles between the passes (too cute?). It must be recognisable again in `going_under`.
+- **going_under** (Ch1 C1-15, 30 s): the roar falls away by ~4.5 s, the song starts at 6.2 s, its last note at
+  22.9 s, silence by ~29 s. The vocalise is far down (dark, wet, the top gone). **Timing:** the script
+  (ch01_going_under.dlg) holds U11 for `@wait 6.0` and then fades the music, which cuts the song after phrase 1. To
+  "cut to black on the song's last note" (beats doc), U11 needs about `@wait 17.4` (Story's call). Is the roar big
+  enough after `undertow_wall_roar`?
+- **undertow_rising** (Ch1 C1-12/13, Ch8 B07-B09; two stems, a 17.6 s intro and a 70 s loop): the intro is Oruvel's
+  squeezebox tune stopping on a C, a breath, then the brass and the cluster rising. Listen for: does the low brass
+  model read as brass (trombones and tuba) or as an organ; is stem 2 (the run's sixteenths) a hurry and never a
+  charge; the limping second drum stroke. **Ch8 hears the same intro**, so Oruvel's tune plays at Coilspire too (as
+  Rhen's memory of the first storm). If Story wants Ch8 without it, that needs a second cue id or a start offset.
+  Stem 2 is not switched on by anything yet (music.json `_note`).
+- **corrow_night** (Ch9 B01/B03/B08, a 61 s loop): the day tune on the flute, slower, with nothing under it but the
+  surf; the Order's hum in broken fragments, far off. Is the hum audible enough to be recognised as the shrine's
+  tune, and still "people doing other things"?
+- **dawn_road** (Ch9 B09, a 62 s loop): the causeway's pulse, slower and duller, and the causeway's melody on a low
+  flute, then a call in open fifths. Does it read as the causeway "come back older", or just as a different cue?

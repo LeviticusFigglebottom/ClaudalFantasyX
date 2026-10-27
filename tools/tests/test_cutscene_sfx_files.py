@@ -14,9 +14,8 @@ SILENCE = "silence"
 # Cues the scripts name that audio has not delivered yet (M3-AUD-819..822 are composing them). The list may only
 # shrink: a cue that lands must leave it, and a new script id must get a cue or join it on purpose.
 MUSIC_TODO = {
-    "corrow_night", "dawn_road", "going_under", "hush_second_verse", "kerrid_stair", "lanternfall",
-    "liss_theme", "raid", "rhen_current_hum", "shoals_dusk",
-    "undertow_rising",
+    "hush_second_verse", "kerrid_stair", "lanternfall",
+    "liss_theme", "raid", "shoals_dusk",
 }
 
 
