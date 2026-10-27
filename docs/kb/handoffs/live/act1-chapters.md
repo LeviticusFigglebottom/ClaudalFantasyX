@@ -163,6 +163,10 @@ cutscene sequencer (`game/cutscene/**`), `game/flow/**` and the playtest fixes.
   well-shaft's flights (ramps) down past the waterline to the drowned sanctum (Nhoa). `chapters/ch11.json`, two flags,
   `loc/ch11.csv` (project.godot: one more translation path), `locations.json` rows. `--filter=ch11` 3/0, validate_data,
   the chapter/location/map/loc tools tests. Beat sheet requested (M4-C11-01, narrative).
+- **MERGE-READY @ 1e802dcb: M4-C12-02 Ch12 greybox** (`ch12/keth_pass`, `ch12/quellan`, `ch12/cloudloom`, from
+  `tools/act1/ch12_greybox.py`): the pass's switchback flights, pass-cords, knotted post, the Ram's shelf under the
+  seeping Lit Age wall, the saddle; Quellan's street, inn and road north; Cloudloom's weaving-hall, keth and Hesk's dais.
+  `--filter=ch12` 4/0, validate_data, the chapter/location/map/loc tools tests. Beat sheet requested (M4-C12-01).
 - **Lead queue (21:23), status:**
   1. Ch9 road capsule: it is **Kerrid** at the milestone (no model yet: M3-CHR-505, characters); so are the two on
      ch06_brine_road (Ysolde, no field body yet: M3-HER-1219; Kerrid). They go when those land; no villager body on a
