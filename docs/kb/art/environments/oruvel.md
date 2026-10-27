@@ -102,7 +102,7 @@ by hull size); the bridges between them slope a little and sag under their own w
 | Sub-frame | Use | Time | Sun elev / az | Key | Fill / ambient | Exposure / grade |
 |---|---|---|---|---|---|---|
 | `ch01` | the whole raft-town by day (O01–O10) | 10:30 | 58° / 120° | `#FFEFE1`, energy 3.0 | `#8FC3E0` 0.6 (the sky's own radiance, ambient from the sky at 0.6) | exposure 0.65 (EV100 14.5), saturation ×1.12 in `lut_ch01_raft` (+8% in cyans and oranges, mild toe lift), the cumulus noon sky with a light fair-weather field (coverage low: "the sky is clear", C1-11) |
-| `ch01_storm` | C1-12 to C1-15 (O11–O18) | 11:10–11:28 | (same sun) | — | — | `lut_ch01_storm` (greens to slate, saturation 0.75 over 4 s); the storm variant of this kit: a follow-up (§7) |
+| `ch01_storm` (**stand-in**, M3-ENV-07B: the colour script has no storm row yet; Art to write it) | C1-12 to C1-15 (O11–O18) | 11:10–11:28 | 58° / 120° (the same sun) | `#F6F0E8`, energy 2.6 (veiled as the wall's high cloud spreads) | sky ambient 0.5 | exposure 0.65; `lut_ch01_storm` (`ov_zone_lut.py`: saturation ×0.75, the greens and the lagoon's turquoise (70–182°) crushed further and pulled to slate `#56666C`, the warm paint and the beacon's flame cut less (×0.8), S-curve 0.55, slate-teal toe `#1C3640`, highlights to a cold `#E8EEF2`); the sky cleared of cumulus (it stays blue above the wall: act1_ch01 §9 Art 2); spray haze `#96A9B2` 0.0012; the swell in from the south (0.16 m at 34 m); the Undertow at `ch01_arrival`, approach azimuth 180° (out to sea) |
 
 **Value structure.** Upper-mid overall (the brightest frame so far): the sky and the sunlit water are the two big
 light fields; the hulls carry the saturated notes in a band across the middle third; the darks are the teal shadow
@@ -151,6 +151,22 @@ crossing); floats are bound log pairs and lashed barrels.
 | **Heroes** | `keel_hull`, `chandlery`, `scale_hull`, `cookboat`, `dive_raft`, `net_pen` | **Keel-hull:** a 22 m × 6.4 m old trading hull, 2.2 m deep, gunwale +1.1, deck +1.0; three decks: the main deck (the meeting deck, a canvas awning on spars), a deckhouse (8 × 4.6 m, deck on its roof at +3.6 with a rail) and an aft house on that (4 × 3.6 m, a keel-roof, ridge +6.6, the town's biggest gull at the stern ridge), a carved stern post, ladders between decks, lamp rails. **Chandlery:** an 8 m cabin hull with a keel-roof cabin (5 × 3.6 m) on it, the street side open as a counter under a striped awning, **lamp racks** (two rails of 8 unlit oil lanterns), four tall clay oil jars, a **wick board** of 12 spools on pegs, the **post shelf** (a 4 × 3 pigeonhole box), a stool, and the **beacon lamp** on a post on the roof (a 0.6 m brass lantern with a cowl). **Scale-hull:** a 7 m hull with a booth (2.4 × 2 m, a plank roof), the counter, a **brass beam scale** (a 1.2 m beam on a post, two pans on chains, a pointer), the chit stamp and ink tin, a stack of chits, a small **Level plaque** (0.25 m brass, a horizontal bar over a plumb drop: an original mark) on the booth post. **Cookboat:** a 7.5 m hull with a clay stove amidships (a firebox and a pot), a smoke hood of tin on four posts, two cookpots, a rack of bowls, the **knot tally** (a cord hanging from the hood with nine knots), stools on the gunwale plank. **Dive raft:** 7 × 6 m deck on two 9 m hulls, deck top +0.75, a **1.6 × 1.6 m dive well** in the middle, an **A-frame** (3.2 m) over the well with a block, the **tether winch** at the well's side (a 0.5 m drum wound with tether, two cheeks, a crank and a brass pawl), a **ladder** from the well's edge down to −2.4 m, a rack of four diver lanterns (unlit), a basket of lead weights, two coiled tethers, a lamp hook by the well. **Net-pen hull:** a 12 × 12 m square of lashed walkways (1.4 m wide) round a 9.2 m pool, four corner posts (2.4 m) with the practice net hung between them and down into the water, float logs under the walkways, a short ladder. |
 | **Props** | `net_frame`, `salvage_heap`, `town_far` | Net frame: four 3.2 m poles in a row (6 m) with two nets draped between them, floats along the head-rope, a basket. Salvage heap: 3 × 2 m of Lit Age ceramic panels, brass pipe lengths, an empty lamp housing, two crates, a basket, a coil of rope. Far town: a 64 × 30 m strip of low hull, cabin and keel-roof silhouettes and masts for 80 m and beyond. |
 
+**The storm pieces (M3-ENV-07B, `ov_storm.py`; §7).** Every broken piece is in its intact piece's frame, so the storm
+state swaps pieces one for one, and everything in it is soaked (VC.B wet ≥ 0.55, rising to 0.95 at the water; the salt
+washed down):
+
+| Piece | What it is |
+|---|---|
+| `raft_deck_broken` | `raft_deck` torn between its middle and east hulls: the bearers snapped along the tear (splintered ends), planks sprung and missing, the east hull and its 3 m strip of deck pulling away (rolled 12°, drifted 1.2 m, settling 0.25 m), its lashings parted and trailing in the water, loose planks in the opening |
+| `plank_bridge_broken` | `plank_bridge` gone at mid-span (C1-13, "the bridge goes"): each half still hard-lashed at its deck end and hanging into the water (30° and 48°), splintered stringers, the hand-ropes and a stay trailing, planks floating below |
+| `hull_capsized` | `hull_cabin` keel-up and awash: its tarred bottom 0.3 m clear, rolled 9° and down by the bow, its painter trailing, a thwart, an oar and a basket floating by |
+| `storm_debris` | over 14 × 10 m: a cabin's keel-roof adrift (keel-up, torn wall boards still nailed under its eaves, its lamp rail on), floating planks (some broken, some still nailed in pairs), barrels, a crate, a basket, glass floats, a torn net |
+| `net_pen_split_a` / `_b` / `_c` | Hullgnaw's arena in three (act1_ch01 §5 phase 2): A the north walkway with the practice net and its posts; B the west walkway and the south walkway west of x 0.8 (the ladder); C the east walkway and the rest of the south one. The pen net is torn at every split (ragged, its head sagging, twine trailing), the south hand-rope snapped in two. Each piece's origin is its **hinge** (`ov_storm.SPLIT_SECTIONS`): placed at net_pen + hinge with no turn, the three compose the pen |
+| `reef_edge_far` | the sea drawn back off the outer reef (C1-12, O11): a 240 × 40 m strip of bared reef flat 0.1–0.5 m clear of the water with coral heads, and seven of the drowned city's tower crowns standing clear (broken top floors, column stubs, dark window rows, weed-dark to their old waterline); for 250 m and beyond |
+
+Materials: two new weathering slots, `ov_reef` (bleached coral rubble `#B4AA98`, dark where wet) and `ov_crown`
+(Lit Age concrete under a coral crust `#A8A699`). No slot emits: Kell's beacon is the zone's light (§3).
+
 **Budgets (triangles, LOD0 / LOD1; as built in brackets):** outrigger 4,500 / 300 (3,998 / 232); cabin hull
 5,500 / 300 (5,188 / 144); raft deck 18,000 / 900 (17,376 / 604); small raft 12,000 / 600 (11,384 / 524); bridge
 5,000 / 200 (4,182 / 128); keel-roof cabin 10,000 / 600 (6,886 / 174); patched cabin 10,000 / 500 (4,331 / 62); stall
@@ -158,7 +174,10 @@ crossing); floats are bound log pairs and lashed barrels.
 24,000 / 1,200 (14,897 / 430); scale-hull 14,000 / 700 (6,014 / 304); cookboat 11,000 / 600 (4,979 / 248); dive
 raft 18,000 / 900 (14,404 / 364); net-pen 16,000 / 800 (12,698 / 544); net frame 5,000 / 300 (2,734 / 40); salvage
 heap 8,000 / 400 (2,060 / 72); far town 4,000 / 1,500 (1,874 / 566: its LOD0 is already coarse, for 80 m and
-beyond). The kit is 6.7 MB in 42 files, the largest (the keel-hull) 1.2 MB. LOD1 begins at 70 m
+beyond). Storm (M3-ENV-07B): broken raft 18,000 / 900 (17,866 / 628); broken bridge 5,000 / 220 (3,954 / 64); capsized
+hull 5,500 / 300 (4,302 / 144); debris 9,000 / 500 (6,328 / 460); each pen section 7,000 / 400 (A 3,962 / 148, B 5,061 /
+272, C 4,533 / 272); far reef 6,000 / 1,500 (2,382 / 254). The kit is 6.7 MB in 42 files before the storm (2.4 MB more
+in its 8 pieces), the largest (the keel-hull) 1.2 MB. LOD1 begins at 70 m
 (the Haluna table); every piece is a chain (`<piece>`, `<piece>-lod1`), so one LOD draws at every distance
 (vegetation.md "One LOD at every distance").
 
@@ -203,14 +222,17 @@ Cinematics owns them. **◆** marks the preview shots built in `oruvel_kit/`.
 | O08 ◆ | 35 mm (37.8°) | 1.5 m on the deck of the raft south of the keel-hull | The keel-hull broadside: its three decks stepping up to the aft house, the meeting awning, the big carved gull on the stern ridge against the sky. | Where the town meets, and where the drill runs to. |
 | O09 ◆ | 65 mm (20.9°) | 1.4 m at the chandlery's counter, shallow depth of field | Kell's counter in focus (the wick board, a spool, the counter's worn edge), the lamp racks and oil jars soft above and behind, the awning's stripe across the top. | Her trade: the light every diver goes down with. |
 | O10 ◆ | 85 mm (16.1°) | 1.2 m on the dive raft, low, looking up north-west | The nearest lintel-gull on a keel-roof ridge, 35% of frame height, facing the lens and the sea, its open throat a dark bore; a cloudless blue behind it; the winch's drum soft in the lower left. | Every carved gull faces the sea, and the sky is clear. |
-| O11–O18 | — | — | The Rising, the drill, the run, Hullgnaw and going under: the storm variant (§7) and Cinematics. | |
+| O11–O16, O18 | — | — | The Rising, the drill, the run, Hullgnaw and going under: the storm variant (§7) and Cinematics. | |
+| O17 ◆ | 28 mm (46.4°) | 5 m above the water, north-east of the pen, looking south-west | **Storm** (M3-ENV-07B, phase `ch01_storm`): the pen split three ways in the foreground (the north walkway with the practice net pitched toward the hole, the east arm going under), the drill's town on the right, the reef bared on the horizon and the Undertow standing up into a clear blue sky on the left. | He wins the fight and loses the town. |
+| O22 ◆ | 24 mm (53.1°) | 14 m, storm row | Review only (storm): every storm piece once, the pen's sections at rest and open. | |
 | O19 ◆ | 28 mm (46.4°) | 4.5 m above the water, south-east of the dive raft, looking down 30° | The dive raft from above: the winch, the A-frame and its block over the dark dive well, the ladder going down into turquoise, the tether running down to the tower's pale crown 6 m below; the neighbour raft and the town behind. | The dive mooring over the drowned city: the job, and what it stands on. |
 | O21 ◆ | 35 mm (37.8°) | 1.4 m above the water, off her starboard quarter | The *Seventh Terrace* moored and crewed (M3-ENV-08B, review). | |
 | O20 ◆ | 24 mm (53.1°) | 7.5 m, kit row | Review only: the small pieces each on a raft deck in front (one long deck), the hulls and rafts behind, the keel-hull and the net-pen at the back; open light. | The kit, side by side. |
 
 **Registered baselines (the repo's binary budget: at most two):** O01 (`oruvel_o01_surfacing`) and O19
 (`oruvel_o19_dive_mooring`): the town at Rhen's eye from the water, and the dive raft over the drowned city. M3-ENV-08B
-adds O07 (`oruvel_o07_name_board`), the Seventh Terrace's one baseline (the Brightwater kit's hero board).
+adds O07 (`oruvel_o07_name_board`), the Seventh Terrace's one baseline (the Brightwater kit's hero board). M3-ENV-07B adds
+O17 (`oruvel_o17_pen_split`), the storm's one baseline.
 
 ## 5. Review Checklist
 
@@ -253,21 +275,49 @@ read-only). Read of the final captures (lavapipe, 960 × 540):
   look takes it to deep teal; a near-vertical view or a shallower crown would show it); no figures (characters are
   Character Art's); the town is emptier than C1-09's barks want (no laundry on most cabins, no people); the far town
   reads as blocks at 80 m; the colour script's volumetric haze is off on lavapipe.
+- **M3-ENV-07B, the storm** (phase `ch01_storm`): **O17** (baseline): the Undertow fills the upper left, a slate wall with
+  a cyan wound standing up into a sky cleared to blue, the reef bared on the horizon as a pale line of tower crowns; the
+  pen in three in the foreground (the north walkway pitched, its practice net sodden and sagging; the east arm going
+  under; the west section adrift beyond), the keel-roof debris and the drill's town on the right, the lagoon gone from
+  turquoise to slate-teal under the swell. It reads as the beat (he wins the fight and loses the town). **O22** (review):
+  every storm piece; the pen at rest composes the intact pen. Limits: the torn nets read as dark hashed noise at this
+  distance (the Haluna net rule); the debris keel-roof's soaked tar crown reads as a smooth pale dome rather than a
+  hull bottom; the broken raft (rc) is mostly behind the stall raft in O17; the wall's foot is lost in the haze at 18 km
+  (`ch01_arrival` is "far off"; a closer `ch01_landfall` is Rendering's).
 - Found while building: the Haluna kit's `village.lintel_gull` lofts are wound inside-out (their signed volume is
   negative, its perch block's positive), so with a back-face-culled material they show their inner faces and render
   dark. `lintel_gull_open` turns its lofts outward; the Haluna gulls themselves are unchanged (a follow-up for the
   Haluna kit's owner, noted in the M3-ENV-07 task).
 
-## 7. Follow-ups
+## 7. The Storm (M3-ENV-07B) and Follow-ups
 
-- **The storm variant** (C1-12 to C1-15; act1_ch01 §9 item 1): snapped lashings, separating raft sections, capsized
-  hull pieces, the net-pen hull's three-way split (the boss rig), the sea drawn back off the reef. A task of its own,
-  as Corrow's fallen state was (M3-ENV-04B).
+**The storm state** (C1-12 to C1-15; act1_ch01 §9 item 1). The preview's root is `OruvelPreview` (`oruvel_preview.gd`,
+extends HalunaMood): `phase` `day` is the `ch01` frame exactly as authored (the three day baselines do not move);
+`ch01_storm` is the stand-in frame of §0, the layout's `states.storm` (the day's placements it replaces hidden, the
+broken pieces in their stead), Kell's beacon lit (`storm_lights`: an oil-flame omni in the chandlery's roof lantern,
+`light_volumetric_fog_energy = 0`, a small flame), the *Seventh Terrace* gone from her mooring (O13: she runs for open
+water), and Rendering's Undertow at `ch01_arrival` on the southern horizon (quality high, its clock held). What breaks:
+the net-pen (three sections at the rig's open pose), row A's east raft (`raft_deck_broken` turned end for end, its torn
+strip toward rb; the patched cabin and its gull on that strip gone), the bridge from rb to it and the bridge to the second
+mooring (C1-13), the ochre cabin hull south-east of the landing (keel-up), three debris fields, and the reef bared 300 m
+south (three `reef_edge_far`).
+
+**The split rig** (`rigs.net_pen_split` in the layout; `ov_storm.SPLIT_SECTIONS`; `OruvelPreview.section_transform`):
+amount a in 0..1, swell time t. Each section: origin = hinge + a · drift; basis = Basis(UP, a · yaw) ·
+Basis.from_euler(a · (tilt.x + swell), 0, a · tilt.z); swell = pitch_deg · sin(TAU · t / period + phase). Hinges (net_pen
+frame): A (0, 0, −5.3), B (−5.3, 0, 5.3), C (5.3, 0, 5.3). Open: A drifts 1.5 m north and pitches its broken inner edge
+12° down toward the hole, B and C drift 1.4–2 m out to the south-west and south-east with their long arms going under.
+
+**Read of the storm captures** (lavapipe, 960 × 540): see §6's M3-ENV-07B entry.
+
+- **The colour-script row.** `ch01_storm` here is a stand-in (Art: color_script.md `ch01`, act1_ch01 §9 Art item 1).
 - **The *Seventh Terrace*** (act1_ch01 §9 item 4): built in M3-ENV-08B (brightwater_ferry.md §7); O13 (under sail,
   running) is the storm variant's frame (`terrace_sails_set` in place of the furled sails and `terrace_moored`).
 - **The rebuilt variant** (act3_ending E7, `post_credits`): the same moorings rebuilt, not the same hulls.
 
 ## Revisions
+- 2026-10-24 (env-art, M3-ENV-07B): the storm state (§0 stand-in `ch01_storm` row, §2 storm pieces and budgets, §4 O17
+  and O22, §6 read, §7 the state and the split rig); O17 registered as the storm's one baseline.
 - 2026-10-24 (env-art, M3-ENV-07, after the preview): the gull perches at the keel's south end (over the gable,
   facing the sea), not amidships, so it silhouettes from the moorings; the chandlery's awning is 0.5 m deep (a deeper
   one shaded the counter at 58°); the kit row (O20) is at 24 mm on one long deck; budgets as built (§2);

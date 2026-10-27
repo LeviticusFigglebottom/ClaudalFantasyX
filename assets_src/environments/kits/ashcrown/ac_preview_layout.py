@@ -39,6 +39,7 @@ FAR_LOD1_M = {"crest_ground": 3000.0, "ashcrown_tiers": 600.0, "flying_stair": 6
               "pilgrim_causeway": 600.0, "crown_pavilion": 600.0, "anvil_hall": 200.0, "anvil_altar": 200.0,
               "plume_vent": 600.0}
 COURT_LAMP_ZS = (22.0, 28.0, 34.0, 40.0)
+PLUME_LOD1_M = 900.0  # the near plume's dense LOD0 out to here (measured from the plume's foot)
 
 
 def r3(v) -> list[float]:
@@ -50,9 +51,10 @@ def build_layout() -> dict:
               for name in sorted(build.targets())]
     borrowed = [
         # The plume where the Pemakar layout stands it (pemakar_layout: the vent's floor minus 10 m), with
-        # this kit's noon material.
-        {"glb": PEMAKAR + "ash_plume.glb", "at": r3((0.0, ac.vent_y(), ac.VENT_Z)), "yaw_deg": 0.0,
-         "materials": {"kit_plume": MATERIALS + "ac_plume_day.tres"}, "lod1_from_m": 2500.0},
+        # this kit's noon material. The near plume (M3-ENV-11): ash_plume's own surface, dense, out to
+        # PLUME_LOD1_M (O2's 660 m included); beyond, its LOD1 is ash_plume's LOD0.
+        {"glb": PEMAKAR + "ash_plume_near.glb", "at": r3((0.0, ac.vent_y(), ac.VENT_Z)), "yaw_deg": 0.0,
+         "materials": {"kit_plume": MATERIALS + "ac_plume_day.tres"}, "lod1_from_m": PLUME_LOD1_M},
         # The open-hand gate at the causeway's head (1.6x: 5.1 m forearms over the 4 m stair).
         {"glb": PEMAKAR + "open_hand_gate.glb", "at": r3((0.0, ac.FLOOR_Y, ac.GATE_Z)), "yaw_deg": 0.0,
          "scale": GATE_SCALE},

@@ -59,9 +59,16 @@ RULES = [
                 "plod", "scurry", "shimmer", "hop", "pad")],
     ("sfx/creatures/*_idle_*.ogg", "momentary", -20.0, 1.0, -1.0, "a creature's idle voice (under the battle)"),
     ("sfx/creatures/*.ogg", "momentary", -18.0, 1.0, -1.0, "creature voices: attack, hurt, death"),
+    # M3-AUD-802 (assets_src/sfx/hero_foley.py): the field heroes' steps (played at walk_db), scuffs and foley layers
+    ("sfx/foley/step_*.ogg", "momentary", -18.5, 1.0, -1.0, "hero footsteps by surface and gait (-18, transients limited)"),
+    ("sfx/foley/stop_*.ogg", "momentary", -20.0, 1.0, -1.0, "the halt scuff, after the last step"),
+    ("sfx/foley/turn_*.ogg", "momentary", -21.0, 1.0, -1.0, "the turn scuff, under the steps"),
+    ("sfx/foley/cloth_*.ogg", "momentary", -24.0, 1.0, -3.0, "cloth swish, layered on every step"),
+    ("sfx/foley/gear_*.ogg", "momentary", -24.0, 1.0, -3.0, "carried gear (lantern, shells, leather), every other step"),
+    ("sfx/foley/*.ogg", "momentary", -22.0, 2.0, -1.0, "other movement foley"),
 ]
 FILE_LIMIT = 5 * 1024 * 1024        # CLAUDE.md §8: no file over 5 MB
-TOTAL_BUDGET = 48 * 1024 * 1024     # every shipped audio file (mix.md §5: the slice + Act I; ~1 MB per minute of music)
+TOTAL_BUDGET = 56 * 1024 * 1024     # every shipped audio file (ADR 0170: up to the Act II sketches)
 
 
 def rule_for(rel: str):

@@ -1,0 +1,23 @@
+// Ch8 B07, second half (act1_ch08.md §2 B07; F08_key → W08). Played when the player turns the great
+// flue-key in the gallery (the one input). The beacon roars up out of its basket, and down the coast,
+// one after another, the bells answer (W08, a long lens from the gallery: the beacon flaring, then the
+// bells' lights coming on one by one). Toma: "Down. Now. The stair." Sets ch08_beacon_opened. The
+// chapter flow then runs the party back to Corrow's wall-gate in the storm (B08).
+title: ch08_beacon_opened
+location: ch08/coilspire
+---
+@letterbox on
+@camera F08_key
+@anim asha turn_great_key
+@sfx beacon_roar
+@wait 1.5
+@music undertow_rising fade=0.5
+@camera W08
+@sfx coast_bells
+@wait 4.0
+<<set $ch08_beacon_opened = true>>
+@camera F08
+Toma [determined]: Down. Now. The stair. #line:ch08_beacon_opened_001
+@mark toma gallery_out run
+@fade out 0.6
+===

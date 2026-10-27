@@ -1,0 +1,35 @@
+// Ch8 B06 "The binding of Virel" (act1_ch08.md §2 B06; F06 → F07 → fade). Letterboxed, scripted.
+// F06: Asha goes into the crown chamber alone, by rite, as at the Shell Shrine. The others wait on the
+// crown stair, where the noise of the beacon is. F07: a single held frame of Virel, a long
+// ribbon-serpent of sailcloth panels coiled the height of the chamber, fire along every seam, PERFECTLY
+// STILL (N-05, color rule 2), a brass tuning key at its throat. At rest the seams read as steady
+// glimmer_bound, never flickering: no live flame here (fire is her battle VFX). Cut on a short fade,
+// never a blend. No face beyond F07's frame (save it for the summon). Virel does not speak.
+// Asha comes out with the third verse and the third band on her sleeve. She does NOT sing it (rule 5).
+// No released light lifts off her this time (Ilun's weight stays with Ch3). Cut short by B07.
+// Sets ch08_virel_bound (vowbound.json bound_flag; the sleeve's band 3).
+title: ch08_binding
+location: ch08/coilspire
+---
+@letterbox on
+@camera F06
+@mark asha crown_door walk
+@wait 1.5
+@fade out 0.4
+@camera F07
+@vfx glimmer_bound at=virel_coil
+@fade in 0.4
+@music virel_bound
+@wait 3.0
+@fade out 0.6
+<<set $ch08_virel_bound = true>>
+@mark asha crown_out
+@camera F06_out
+@fade in 0.8
+@wait 1.0
+Asha [exhausted]: She's very warm. #line:ch08_binding_001
+@face asha soft_smile 0.6
+Asha [soft_smile]: I think she was a kind person. Somewhere under all that fire. #line:ch08_binding_002
+@wait 0.8
+@letterbox off
+===
