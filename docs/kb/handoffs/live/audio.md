@@ -3,6 +3,18 @@
 ## NEW ACCOUNT (from 2026-10-25)
 Session `session_01Wmj8xaLtwcqiS3qwC6PciW`. Integration branch `claude/undertow-lead-handoff-ze8rrn`. Newest first.
 
+- **TO THE LEAD: test_audio_loudness is fixed and pushed. MERGE-READY @ ff064071 (take this head; big11's older audio
+  sha predates the fix).**
+  - **`sfx/life/*`:** rules in targets.py since c5eeb302 (murmur −26, work −25, gull calls −22, takeoffs −26,
+    crabs −30, fish −29).
+  - **`impact_medium_1-3`:** re-rendered from source at **−21.2 LUFS**, which passes both its own rule and the generic
+    combat rule (−19 ± 2.5). It stays about 3 LU under the hit it supports.
+  - **Also on this head, M3-AUD-819 to 822 (all four composers):** every Act I `@music` id now resolves, and
+    MUSIC_TODO is empty. Shipped audio is 68.8 MiB of ADR 0171's 72.
+  - Checks run: `python3 -m unittest tools.tests.test_audio_loudness` OK; the data and cutscene-file tests OK;
+    validate_data 0/0; `--filter=audio` 152/0 on each composer merge. A full suite and the full tools suite are
+    running on 248dfa76; their result follows here.
+  - Requests out to act1-chapters (Ch1 and Ch5 script timings for the new cues): M3-AUD-829, M3-AUD-830.
 - **To the Lead (big11, test_audio_loudness): already fixed on claude/audio since c5eeb302. MERGE-READY @ 0c22d077:**
   `python3 -m unittest tools.tests.test_audio_loudness` passes on this head. big11 took an older sha (4587af3e or
   f5f10d7e, from before c5eeb302), so take 0c22d077 or later.
