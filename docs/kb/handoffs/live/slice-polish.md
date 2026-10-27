@@ -138,6 +138,22 @@ Ch4–Ch9 onward. `m2-slice.md` beside this file is the history up to the 2026-1
 - **MERGE-READY @ 4ce8a48a** (M2-FP-113 and M3-ENV-704, placement only). Two tools tests are red until the PC answers:
   `test_screenshots` (the slice shots' baselines) and `test_shrine_gi_bake` (the rebake).
 
+- **Lead's 17:14 list:**
+  - **Items 1 and 2** were already done: the GI rebake is posted to the PC (it needs a rendering device), and
+    VillagerLayer owns Haluna's villagers (M2-FP-113).
+  - **Item 4:** M2-FP-114. The final causeway's random fights scale with the walk after the harrier: two or three,
+    not the six to eight its old fixed 25–45 m gaps would give over 215 m.
+  - **Item 3:** M2-FP-115. B11 "The dock at night" is staged (H10, the N01 two-shot, N02 on Toma, letterbox, Rhen
+    walks out to Asha); new shot `slice_dock_night_yes`.
+  - **PC render fdec3cc viewed:**
+    - approved slice_prologue_vigil_line, battle_arena_causeway and drownbell_flood (faa61872);
+    - held back battle_boss_intro_drownbell: Toma's body fills the right third of the intro (request M2-BPR-100);
+    - five shots never captured because the rig's `flags` didn't take JSON (fixed in 3fddb67b).
+- **MERGE-READY @ 8b25b3b4** (M2-FP-114, M2-FP-115).
+  - **Checks:** causeway 13, fp_thread 2, zone_story 15, haluna 57, key_light 9, dialogue 76, slice_shots 1, all
+    0 failed; dlgc, lint and format clean.
+  - **Checks skipped:** coverage and Blender (nothing they cover).
+
 ### Render requests
 RENDER-REQUEST @ fdec3cc6: slice_prologue_vigil_line, slice_beach_h05_asha, slice_beach_h06_toma, slice_haluna_villagers_village, slice_causeway_head, slice_causeway_harrier_view, haluna_h01_village_from_sea, haluna_h02_tidewall_lane, haluna_h04_dock, haluna_h07_chapel_court, haluna_h10_dock_night, shrine_s01_approach, shrine_s02_threshold, shrine_s03_overview, shrine_s04_lip, shrine_s05_side_pool, drownbell_flood, battle_boss_intro_drownbell, battle_arena_causeway, field_causeway_dolly, boot_title; why: M2-FP-102..109, the human's playtest round (real cast and held poses in the prologue and Cutscene A, live villagers and wildlife, the final causeway), plus the greyscale audit of every slice beat. The six slice_* shots are new (no baseline yet).
 - **Known red until the render lands:** the six new `slice_*` shots have no baseline yet, so the tools test
@@ -152,3 +168,4 @@ RENDER-REQUEST @ 5a3f9a37: slice_verse_steps; why: M2-FP-112, the first verse wi
 RENDER-REQUEST @ 4ce8a48a: gi_bake:shell_shrine, shrine_s01_approach, shrine_s02_threshold, shrine_s03_overview, shrine_s04_lip, shrine_s05_side_pool, npc_haluna_market, npc_haluna_dock, slice_haluna_villagers_village; why: M3-ENV-704 dresses the islet and the entrance (bake both GI states with tools/shrine/bake_shrine_gi.tscn under godot-render, then python3 tools/shrine/gi_inputs.py --write, and push the VoxelGIData and inputs file too). M2-FP-113 moves Haluna's villagers to VillagerLayer. This supersedes the 44a7d65c request for the five shrine shots.
 RENDER-REQUEST @ faa61872: slice_beach_h05_asha, slice_beach_h06_toma, slice_haluna_villagers_village, slice_causeway_head, slice_causeway_harrier_view, slice_verse_steps; why: these didn't capture in gpu/render-m2-slice-fdec3cc ("no capture"). The cutscene shots now run at time_scale 4 (h05 270, h06 375, verse 630 frames), in case the 600 s per-shot timeout killed them. PC: please push the capture log lines for any shot that fails again (the 90-frame causeway and village shots shouldn't have timed out).
 RENDER-REQUEST @ 3fddb67b: slice_beach_h05_asha, slice_beach_h06_toma, slice_haluna_villagers_village, slice_causeway_head, slice_causeway_harrier_view, slice_verse_steps; why: found the cause of "no capture". These shots set `flags`, which CaptureSetup refused as a PackedStringArray; it is a plain Array now, and test_slice_shots goes through CaptureSetup. Render this sha instead of 87d04cea's.
+RENDER-REQUEST @ 8b25b3b4: slice_beach_h05_asha, slice_beach_h06_toma, slice_haluna_villagers_village, slice_causeway_head, slice_causeway_harrier_view, slice_verse_steps, slice_dock_night_yes, haluna_h10_dock_night; why: the rig fix (3fddb67b), B11 staged (M2-FP-115), and the causeway pacing (M2-FP-114). This supersedes the 87d04cea and a2eb22c4 requests.
