@@ -1,8 +1,51 @@
-[gd_scene format=3]
+[gd_scene load_steps=11 format=3]
 
 [ext_resource type="Script" path="res://game/levels/ch06/ch06_zone.gd" id="1_zone"]
+[ext_resource type="Script" path="res://game/levels/act1/zone_kit_dressing.gd" id="2_dressing"]
+[ext_resource type="Script" path="res://game/levels/ch02/haluna/weathering_tide.gd" id="3_tide"]
+[ext_resource type="Script" path="res://game/world/water/water_surface.gd" id="4_water"]
+[ext_resource type="Script" path="res://game/world/water/wave_set.gd" id="5_set"]
+[ext_resource type="Script" path="res://game/world/water/wave_component.gd" id="6_comp"]
+[ext_resource type="Material" path="res://game/levels/ch06/brine_shoals/brine_shoals_water_material.tres" id="7_water_mat"]
+
+[sub_resource type="Resource" id="Calm0"]
+script = ExtResource("6_comp")
+direction_deg = 330.0
+wavelength_m = 7.0
+amplitude_m = 0.004
+steepness = 0.3
+phase_rad = 0.0
+
+[sub_resource type="Resource" id="Calm1"]
+script = ExtResource("6_comp")
+direction_deg = 290.0
+wavelength_m = 3.3
+amplitude_m = 0.002
+steepness = 0.4
+phase_rad = 2.1
+
+[sub_resource type="Resource" id="CalmWaves"]
+script = ExtResource("5_set")
+components = Array[ExtResource("6_comp")]([SubResource("Calm0"), SubResource("Calm1")])
+amplitude_scale = 1.0
 
 [node name="BrineShoals" type="Node3D"]
 script = ExtResource("1_zone")
 location_id = &"ch06/brine_shoals"
 layout_path = "res://game/levels/ch06/brine_shoals/brine_shoals_layout.json"
+
+[node name="Water" type="Node3D" parent="."]
+script = ExtResource("4_water")
+publishes_water_level = true
+wave_set = SubResource("CalmWaves")
+material = ExtResource("7_water_mat")
+
+[node name="Tide" type="Node" parent="." node_paths=PackedStringArray("water")]
+script = ExtResource("3_tide")
+water_height_y = -0.15
+water = NodePath("../Water")
+
+[node name="Dressing" type="Node3D" parent="." node_paths=PackedStringArray("tide")]
+script = ExtResource("2_dressing")
+layout_path = "res://game/levels/ch06/brine_shoals/brine_shoals_dressing.json"
+tide = NodePath("../Tide")
