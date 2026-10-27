@@ -442,6 +442,39 @@
         "ground_lamp-lod1": 47
       }
     },
+    "heart_column": {
+      "budget": [
+        3000,
+        400
+      ],
+      "bytes": 31336,
+      "lods": {
+        "heart_column": 408,
+        "heart_column-lod1": 150
+      }
+    },
+    "heart_eyewall": {
+      "budget": [
+        6000,
+        1200
+      ],
+      "bytes": 196336,
+      "lods": {
+        "heart_eyewall": 4848,
+        "heart_eyewall-lod1": 544
+      }
+    },
+    "heart_floor": {
+      "budget": [
+        9000,
+        600
+      ],
+      "bytes": 283320,
+      "lods": {
+        "heart_floor": 2964,
+        "heart_floor-lod1": 224
+      }
+    },
     "held_pillar": {
       "budget": [
         3000,

@@ -43,5 +43,22 @@ back as islands, and nothing is quite where it was.
   stands, a bare island) in the dense navy fog.
 - **Hints:** `the_rooms`, `the_cage`.
 
+## 3. The Heart (Ch21; kit `undertow_heart.py`, M3-ENV-728)
+Story: act3_ending H01–H08. The storm's centre: Imra holds it together, Dace beside her, and Sefir is fought here.
+- **Grade:** colour script `ch21`. Phases 1–2 keep `lut_ch20_abyss`; phase 3, the Letting, cross-fades to
+  `lut_ch21_heart` (the navy toe kept, the highlights turned to a warm gold gain), the key warm `#FFDCBF` 1.2 and the
+  rim `#FFE9B8` 2.0.
+
+| Piece | What it is | Size | Budget |
+|---|---|---|---|
+| `heart_floor` | The floor of held light the party walks to the centre on: salt-glass plates in rings over a lit disc, the seams showing the light, a step down at the rim to still water | r 11 | 9k / 600 |
+| `heart_column` | Imra's light: a column of held glimmer rising from the water in three glass sleeves, a ring of light at its foot | 40 m | 3k / 400 |
+| `heart_eyewall` | The storm's eyewall seen from inside: a dark wall at r 160, 220 m high, banded with held light spiralling down and in | r 160 | 6k / 1.2k |
+
+- **Arena:** `undertow_heart` (held) and `undertow_heart_letting` (the Letting). The column stands at (−9.5, −12),
+  out in the water behind the enemy line; Imra and Dace at its foot are Characters'.
+- **The Letting's motes** (cyan sinking to gold rising, up to 35% of the frame) are a VFX layer, not the kit.
+
 ## Revisions
 - 2026-10-27 (env-art, M3-ENV-727): first issue, with the kit and the Cage's arena.
+- 2026-10-27 (env-art, M3-ENV-728): §3, the Heart and Sefir's two arenas.

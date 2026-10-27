@@ -156,6 +156,12 @@ GRADES = {
                    "black_floor": 0.6, "highlight_hex": "#D8F0F6", "highlight_start": 0.62, "highlight_strength": 0.4,
                    "warm_deg": (-20.0, 60.0), "warm_sat": 0.85, "cool_sat": 1.05, "cool_hex": "#9CC8DA",
                    "cool_strength": 0.3},
+    # M3-ENV-728: lut_ch21_heart (colour script ch21, the Letting): the abyss's navy toe kept, the held cyan turned
+    # to a warm gold gain in the highlights as the motes rise; S-curve 0.55, saturation x1.0, skin warm.
+    "ch21_heart": {"saturation": 1.0, "s_curve": 0.55, "toe_hex": "#0A1E30", "toe_strength": 0.5, "toe_end": 0.34,
+                   "black_floor": 0.55, "highlight_hex": "#FFE2B4", "highlight_start": 0.6, "highlight_strength": 0.5,
+                   "warm_deg": (-20.0, 60.0), "warm_sat": 1.15, "cool_sat": 0.9, "cool_hex": "#A8C4D4",
+                   "cool_strength": 0.2},
     "ch16_choir": {"saturation": 0.7, "s_curve": 0.3, "toe_hex": "#1E2A3A", "toe_strength": 0.45, "toe_end": 0.32,
                    "black_floor": 0.5, "highlight_hex": "#E6EEFA", "highlight_start": 0.68, "highlight_strength": 0.4,
                    "warm_deg": (-20.0, 60.0), "warm_sat": 0.7, "cool_sat": 0.9, "cool_hex": "#C8DCEE",

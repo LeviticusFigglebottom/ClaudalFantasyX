@@ -1676,10 +1676,63 @@ UNDERTOW_CAGE = {
 }
 
 
+
+# ---------------------------------------------------------------------------------------------
+# M3-ENV-728: the Heart of the Undertow, Sefir's fight (undertow_heart.py; undertow_layers.md §3). Two states:
+# `undertow_heart` (phases 1-2, held: lut_ch20_abyss, the column's cyan) and `undertow_heart_letting` (phase 3, the
+# Letting: lut_ch21_heart, the colour script's warm key and rim).
+# ---------------------------------------------------------------------------------------------
+def _heart():
+    import undertow_heart  # noqa: PLC0415
+
+    return undertow_heart
+
+
+HEART_HINTS = {
+    "wide_high": ((-1.5, 7.5, 13.5), (0.0, 0.8, -3.0)),
+    "party_side": ((5.6, 1.7, 4.5), (-1.5, 1.0, -0.5)),
+    "foe_side": ((-5.6, 1.7, 4.0), (1.5, 1.0, 0.0)),
+    "the_column": ((3.0, 1.2, 6.0), (_heart().COLUMN_AT[0], 12.0, _heart().COLUMN_AT[1])),
+    "the_eyewall": ((-2.0, 1.6, 4.0), (60.0, 40.0, -140.0)),
+}
+UNDERTOW_HEART = {
+    "id": "undertow_heart",
+    "sub_frame": "ch21",
+    "ground": "deck",
+    "ground_glb": KIT + "heart_floor.glb",
+    "lut": "res://assets/environments/arenas/undertow_heart/lut_ch20_abyss.png",
+    # Colour script ch21, phases 1-2 (held): no sun; the motes' cold key from above #C4D6FF 0.8, fill #0E4A55 0.3,
+    # sky #020610 / #061A2B, fog #0E2A3A, exposure 1.05, lut_ch20_abyss; Imra's column the practical light, cyan.
+    "sun": {"elev": 70.0, "az": 200.0, "color": "#C4D6FF", "energy": 0.8, "max_distance": 60.0, "moon": True},
+    "fill": {"color": "#0E4A55", "energy": 0.3},
+    "exposure": 1.05,
+    "glow": (0.7, 0.1, 0.9),
+    "fog": {"color": "#0E2A3A", "density": 0.008, "sky_affect": 0.5, "height": 0.0, "height_density": 0.0},
+    "sky_shader": "res://game/shaders/environment/env_sky_night.gdshader",
+    "sky": {"col_zenith": "#020610", "col_horizon": "#061A2B", "col_ground": "#020610"},
+    "sea": {"y": _heart().WATER_Y, "tide_line_y": _heart().WATER_Y, "sea_glow": 0.15},
+    "pieces": [{"glb": KIT + "heart_column.glb", "at": (_heart().COLUMN_AT[0], 0.0, _heart().COLUMN_AT[1]),
+                "yaw": 0.0, "structure": True}],
+    "extra_glbs": [KIT + "heart_eyewall.glb"],
+    "scatters": [],
+    "lamp_spec": {"color": "#7FC6D9", "energy": 3.0, "range_m": 18.0, "attenuation": 1.1},
+    "lamps": [{"at": (_heart().COLUMN_AT[0], 3.0, _heart().COLUMN_AT[1]), "flame": False, "shadow": True}],
+    "hints": HEART_HINTS,
+}
+# Phase 3, the Letting: the colour script's warm key #FFDCBF 1.2 from the column's side, the rim #FFE9B8 2.0 its
+# lamp; lut_ch21_heart.
+UNDERTOW_HEART_LETTING = dict(
+    UNDERTOW_HEART, id="undertow_heart_letting",
+    lut="res://assets/environments/arenas/undertow_heart_letting/lut_ch21_heart.png",
+    sun={"elev": 35.0, "az": 140.0, "color": "#FFDCBF", "energy": 1.2, "max_distance": 60.0},
+    lamp_spec={"color": "#FFE9B8", "energy": 2.0, "range_m": 22.0, "attenuation": 1.0},
+    sky={"col_zenith": "#061A2B", "col_horizon": "#3A3428", "col_ground": "#020610"},
+)
+
 ARENAS = {a["id"]: a for a in (TIDELINE, CAUSEWAY, CAUSEWAY_ROUTE, DERELICT_DECK, ASH_TERRACE, UNDERWAY_TOWER,
                                RAFT_MORNING, SHOALS, CAMP, WALLHEAD_STORM, WALLHEAD_HOIST, WALLHEAD_SURGE, HEADLAND, TIER_HALL, KETH_ARENA,
                                LOWLIGHT_ARENA, FEN_ARENA, BRIDAL_ARENA, ANSEDRA_ESCAPE, CHOIR_ARENA,
-                               SPIRE_CROWN, UNDERTOW_CAGE)}
+                               SPIRE_CROWN, UNDERTOW_CAGE, UNDERTOW_HEART, UNDERTOW_HEART_LETTING)}
 
 
 # ---------------------------------------------------------------------------------------------

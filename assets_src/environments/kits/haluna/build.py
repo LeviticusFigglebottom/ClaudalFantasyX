@@ -39,6 +39,7 @@ import hollowmere  # noqa: E402
 import kite  # noqa: E402
 import iskarra_spire  # noqa: E402
 import undertow_layers  # noqa: E402
+import undertow_heart  # noqa: E402
 import kit_common as kc  # noqa: E402
 import props  # noqa: E402
 import ruins  # noqa: E402
@@ -116,6 +117,8 @@ def targets() -> dict:
         out[name] = (name, iskarra_spire, fn)
     for name, fn in sorted(undertow_layers.TARGETS.items()):  # M3-ENV-727 the Undertow's layers (Ch20)
         out[name] = (name, undertow_layers, fn)
+    for name, fn in sorted(undertow_heart.TARGETS.items()):  # M3-ENV-728 the Heart of the Undertow (Ch21)
+        out[name] = (name, undertow_heart, fn)
     return out
 
 

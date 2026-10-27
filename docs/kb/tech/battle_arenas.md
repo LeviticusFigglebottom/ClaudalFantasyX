@@ -437,3 +437,20 @@ flags on a floating fragment (r 9), level at y 0, with the Lit Age sunburst behi
 - **Light** (undertow_layers.md §0): `#C4D6FF` 0.8 from above, fill `#061A2B`, dense fog `#0E3A48`, exposure 1.1,
   `lut_ch20_abyss`.
 - **Hints:** `the_rooms`, `the_cage`.
+
+### The Heart, Sefir's fight (`undertow_heart`, `undertow_heart_letting`, M3-ENV-728, the Haluna kit's undertow_heart.py)
+
+For Sefir (Ch21, three phases). The floor is `heart_floor`: a disc (r 11) of salt-glass plates over held glimmer, the
+seams lit, level at y 0, stepping down at its rim to still water at −0.3.
+
+| Where | What |
+|---|---|
+| Behind the enemy line, in the water | `heart_column`, Imra's light: a 40 m column of held glimmer in glass sleeves, with a `Lamp` |
+| Round everything, r 160 m | `heart_eyewall`, the storm's inner wall, dark, banded with held light spiralling down and in |
+
+- **`undertow_heart`** (phases 1–2, held): `#C4D6FF` 0.8 from above, fill `#0E4A55` 0.3, fog `#0E2A3A`, exposure
+  1.05, `lut_ch20_abyss`; the column's lamp cyan `#7FC6D9`.
+- **`undertow_heart_letting`** (phase 3, the Letting): the colour script's warm key `#FFDCBF` 1.2, the column's lamp
+  the rim `#FFE9B8` 2.0, `lut_ch21_heart`. The cross-fade between the two over the countdown is the battle stage's
+  (or Rendering's) to drive; these are its two ends.
+- **Hints:** `the_column`, `the_eyewall`.

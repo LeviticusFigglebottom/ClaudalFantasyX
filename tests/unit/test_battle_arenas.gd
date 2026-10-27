@@ -25,6 +25,8 @@ const ARENAS: Array[StringName] = [
 	&"drowned_choir_ring",
 	&"iskarra_spire_crown",
 	&"undertow_cage",
+	&"undertow_heart",
+	&"undertow_heart_letting",
 ]
 ## The clear floor (arenas.py FLOOR_Y / FLOOR_TOLERANCE_M / FLOOR_CLEAR_M): within this radius of a slot,
 ## nothing rises above the floor by more than the tolerance, and most of the ground is the floor itself
