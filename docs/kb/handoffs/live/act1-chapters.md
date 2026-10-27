@@ -167,6 +167,11 @@ cutscene sequencer (`game/cutscene/**`), `game/flow/**` and the playtest fixes.
   `tools/act1/ch12_greybox.py`): the pass's switchback flights, pass-cords, knotted post, the Ram's shelf under the
   seeping Lit Age wall, the saddle; Quellan's street, inn and road north; Cloudloom's weaving-hall, keth and Hesk's dais.
   `--filter=ch12` 4/0, validate_data, the chapter/location/map/loc tools tests. Beat sheet requested (M4-C12-01).
+- **MERGE-READY @ ab243228: M4-C13-02 Ch13 greybox** (`ch13/ansedra`, `ch13/sanctum`, `ch13/lamp_archive`, from
+  `tools/act1/ch13_greybox.py`): the moorings (Kerrid's nights), the causeways, Sefir's house, Corran's old house, the
+  mirror lagoon's gold domes; the Sanctum's still basin, Ethren's and Corran's places (Kerrid kept out by `party` steps:
+  a zone's own `party` only fills an empty party, noted on M4-C10-02 for Pell); the archive's tables. `--filter=ch13`
+  4/0, validate_data, the chapter/location/map/loc tools tests. Beat sheet requested (M4-C13-01).
 - **Lead queue (21:23), status:**
   1. Ch9 road capsule: it is **Kerrid** at the milestone (no model yet: M3-CHR-505, characters); so are the two on
      ch06_brine_road (Ysolde, no field body yet: M3-HER-1219; Kerrid). They go when those land; no villager body on a
