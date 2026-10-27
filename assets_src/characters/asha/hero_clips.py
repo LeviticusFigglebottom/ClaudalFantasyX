@@ -163,10 +163,13 @@ class Skeleton:
         self.shoulder_w = float(abs(self.g_t["DEF-upper_arm.L"][0] - self.g_t["DEF-upper_arm.R"][0]))
         self.ankle_w = float(abs(self.g_t["DEF-foot.L"][0] - self.g_t["DEF-foot.R"][0]))
         helpers_init(self, glb, nodes, parent)  # M1-CHR-15: the skirt and shoulder helper bones, if the GLB has them
+        hooks_init(self, nodes, parent)  # M2-CHR-513: Rhen's reef-hooks and the grips that hold them
 
-    def local_pose(self, turns: dict, hips=None) -> dict:
+    def local_pose(self, turns: dict, hips=None, hold=None) -> dict:
         """World-axis turns (bone -> quaternion) -> local rotations, parents first. `hips` is the pose's hips offset
-        (m, from rest): the skirt panels gather on the floor (M1-CHR-15); their scales go under the "_scale" key."""
+        (m, from rest): the skirt panels gather on the floor (M1-CHR-15); their scales go under the "_scale" key.
+        `hold` is {side: 0..1}, how far each reef-hook is drawn into its hand (M2-CHR-513, hook_hold); the hooks'
+        positions go under the "_pos" key."""
         g = {}
         out = {}
         for name in BONES:
@@ -179,6 +182,7 @@ class Skeleton:
             lq = qmul(qinv(pg), gq)
             out[name] = lq / np.linalg.norm(lq)
         helper_pose(self, g, out, hips)  # M1-CHR-15
+        hook_pose(self, g, out, hips, hold or {})  # M2-CHR-513
         return out
 
 
@@ -627,7 +631,8 @@ LENGTHS = {"idle": 6.0, "walk": 1.1, "run": 0.7, "talk": 3.2, "kneel_over_rhen":
 BATTLE_HEROES = ("asha", "rhen", "toma")
 BATTLE_CLIPS = ["ready", "attack", "cast", "item", "read", "defend", "finisher", "hit", "dodge", "ko", "victory"]
 BATTLE_FRAMES = {"ready": 9, "attack": 9, "cast": 15, "item": 10, "read": 15, "defend": 10, "finisher": 21,
-                 "hit": 9, "dodge": 9, "ko": 18, "victory": 36}
+                 "hit": 9, "dodge": 9, "ko": 18, "victory": 36,
+                 "revive": 12}  # M2-CHR-513: revive (optional in the contract) is appended last, below
 BATTLE_LOOPS = {"victory"}
 # The contact: where the blow lands, as a fraction of the clip (choreo.json styles: melee -> attack 0.55, cast ->
 # cast 0.8, finisher -> finisher 0.62, item 0.7, read 0.6, guard -> defend 0.6). Each clip's strike pose is keyed at
@@ -726,11 +731,6 @@ def _sway(sk: Skeleton, persona: dict, dx: float, drop: float) -> dict:
                                            "DEF-foot.R": (0.0, 0.0, -a)})
 
 
-def _ko_kneel(sk: Skeleton, persona: dict, base: dict, held: dict) -> dict:
-    """The felled pose as a delta on `base`: down on the right knee (kneel), slumped, plus the hero's own `held`."""
-    return _minus(add(kneel(sk, persona), held), base)
-
-
 def _asha_keys(clip: str, sk: Skeleton, persona: dict, base: dict) -> list:
     """Asha (asha.md §1: stillness; the staff in her right hand, the verse sleeve on that arm): small, low motions,
     the staff kept upright by staff_hold except where her hand turns it (DEF-hand.R is then the staff's own tilt)."""
@@ -808,16 +808,6 @@ def _asha_keys(clip: str, sk: Skeleton, persona: dict, base: dict) -> list:
         lean = add(_sway(sk, persona, 0.06, 0.02), {"DEF-spine.001": (0.0, 8.0, -6.0), "DEF-spine.006": (0.0, 0.0, 4.0),
                                                     "DEF-upper_arm.L": (0.0, 0.0, 10.0)})
         return [(0.0, {}), (0.35, lean), (1.0, {})]
-    if clip == "ko":
-        # down on the right knee, leaning on the staff: its foot set in front, the head bowed
-        felled = _ko_kneel(sk, persona, base, {
-            "DEF-spine.002": (6.0, 0.0, 0.0), "DEF-spine.006": (12.0, 0.0, 0.0),
-            "DEF-upper_arm.R": (-62.0, 0.0, -20.0), "DEF-forearm.R": (-16.0, 0.0, 0.0), "DEF-hand.R": (-34.0, 0.0, 0.0),
-            "DEF-upper_arm.L": (30.0, 0.0, 6.0)})
-        buckle = add(_legs(sk, persona, 0.12), {"DEF-spine.001": (10.0, 0.0, 0.0), "DEF-spine.006": (8.0, 0.0, 0.0),
-                                                "DEF-upper_arm.R": (-40.0, 0.0, -20.0), "DEF-forearm.R": (-10.0, 0.0, 0.0),
-                                                "DEF-hand.R": (-16.0, 0.0, 0.0)})
-        return [(0.0, {}), (0.35, buckle), (0.85, felled), (1.0, felled)]
     raise KeyError(clip)
 
 
@@ -897,13 +887,6 @@ def _rhen_keys(clip: str, sk: Skeleton, persona: dict, base: dict) -> list:
                                                       "DEF-upper_arm.L": (-30.0, 0.0, 6.0),
                                                       "DEF-forearm.L": (-60.0, 0.0, 0.0)})
         return [(0.0, {}), (0.3, lean), (1.0, {})]
-    if clip == "ko":
-        felled = _ko_kneel(sk, persona, base, {
-            "DEF-spine.001": (4.0, 0.0, 0.0), "DEF-spine.002": (6.0, 0.0, 0.0), "DEF-spine.006": (14.0, 0.0, 0.0),
-            "DEF-upper_arm.L": (4.0, 0.0, 14.0), "DEF-forearm.L": (30.0, 0.0, 0.0),
-            "DEF-foot.R": (30.0, 0.0, 0.0), "DEF-toe.R": (40.0, 0.0, 0.0)})  # the instep down, as Toma
-        buckle = add(_legs(sk, persona, 0.14), {"DEF-spine.001": (12.0, 0.0, 0.0), "DEF-spine.006": (10.0, 0.0, 0.0)})
-        return [(0.0, {}), (0.3, buckle), (0.8, felled), (1.0, felled)]
     raise KeyError(clip)
 
 
@@ -985,37 +968,234 @@ def _toma_keys(clip: str, sk: Skeleton, persona: dict, base: dict) -> list:
         lean = add(_sway(sk, persona, 0.05, 0.03), {"DEF-spine.001": (0.0, 6.0, -5.0),
                                                      "DEF-upper_arm.L": (0.0, 0.0, 6.0)})
         return [(0.0, {}), (0.35, lean), (1.0, {})]
-    if clip == "ko":
-        # down on the right knee, leaning on the spear set before him, the head bowed
-        felled = _ko_kneel(sk, persona, base, {
-            "DEF-spine.002": (4.0, 0.0, 0.0), "DEF-spine.006": (12.0, 0.0, 0.0),
-            "DEF-upper_arm.R": (-40.0, 0.0, -10.0), "DEF-forearm.R": (-30.0, 0.0, 0.0), "DEF-hand.R": (-38.0, 0.0, 0.0),
-            "DEF-upper_arm.L": (20.0, 0.0, 6.0), "DEF-forearm.L": (-30.0, 0.0, 0.0),
-            "DEF-foot.R": (30.0, 0.0, 0.0), "DEF-toe.R": (40.0, 0.0, 0.0)})  # the instep down: no toe through the hem
-        buckle = add(_legs(sk, persona, 0.1), {"DEF-spine.001": (8.0, 0.0, 0.0), "DEF-spine.006": (8.0, 0.0, 0.0)})
-        return [(0.0, {}), (0.35, buckle), (0.85, felled), (1.0, felled)]
     raise KeyError(clip)
 
 
 def _victory(hero: str, u: float, sk: Skeleton, persona: dict) -> dict:
-    """The loop the standing party holds at the battle's end: a settled pose and a slow breath, periodic in u."""
+    """The loop the standing party holds at the battle's end (M2-CHR-513: livelier than M2-CHR-07's breath, so it reads
+    on the battle camera): a delta on the idle's first frame, periodic in u (every term a whole number of cycles per
+    loop), the feet planted (`_sway`, `_legs`). Each hero in their own idiom; the chest and the head turn by several
+    degrees."""
     ph = 2 * math.pi * u
-    sway = persona["sway"]
-    breath = {"hips": (0.006 * sway * math.sin(ph), -0.004 * (1.0 - math.cos(ph)), 0.0),
-              "DEF-spine.003": (-1.2 * math.sin(ph), 0.0, 0.0), "DEF-spine.001": (0.0, 0.0, -1.0 * sway * math.sin(ph))}
-    if hero == "asha":  # the staff upright, the free hand at the breastbone, the chin lifted (face_west's settle)
-        held = {"DEF-spine.003": (-2.0, 0.0, 0.0), "DEF-spine.006": (-5.0, 0.0, 0.0),
-                "DEF-upper_arm.L": (-18.0, -10.0, 16.0), "DEF-forearm.L": (-78.0, -72.0, 0.0),
-                "DEF-hand.L": (0.0, -20.0, -10.0), "DEF-upper_arm.R": (-8.0, 0.0, -8.0)}
-    elif hero == "rhen":  # loose: the gauntlet pressed to his chest, the head up and turned off toward the sea
-        held = {"DEF-spine.006": (-6.0, 8.0 + 4.0 * math.sin(ph), 0.0),
-                "DEF-upper_arm.L": (-36.0, 0.0, 10.0), "DEF-forearm.L": (-50.0, -50.0, -60.0),
-                "DEF-upper_arm.R": (0.0, 0.0, -4.0 * math.sin(ph))}
-    else:  # Toma: the spear grounded, the left palm flat on his chest, the chin up
-        held = {"DEF-spine.006": (-5.0, 0.0, 0.0), "DEF-upper_arm.R": (-6.0, 0.0, 0.0),
-                "DEF-upper_arm.L": (-40.0, 0.0, 14.0), "DEF-forearm.L": (-50.0, -80.0, -40.0),
-                "DEF-hand.L": (0.0, 0.0, -20.0)}
-    return add(held, breath)
+    s1, c1 = math.sin(ph), math.cos(ph)
+    if hero == "asha":
+        # the lantern-staff raised high before her (the cast's lift, held), a slow side-to-side sway that the chest
+        # and head answer, the chin up to the light, the free hand open and low
+        return add(_sway(sk, persona, 0.022 * s1, 0.012), {
+            "DEF-spine.001": (1.0, 0.0, -3.5 * s1), "DEF-spine.002": (0.0, 2.5 * math.sin(ph + 0.7), 0.0),
+            "DEF-spine.003": (-2.0 - 1.2 * math.sin(2 * ph), 3.0 * math.sin(ph + 0.9), 0.0),
+            "DEF-spine.006": (-7.0 + 1.5 * math.sin(2 * ph + 0.5), 5.0 * math.sin(ph + 1.3), 4.0 * s1),
+            "DEF-upper_arm.R": (-50.0, 0.0, -8.0), "DEF-forearm.R": (-60.0, 0.0, 0.0),
+            "DEF-hand.R": (3.0 + 2.0 * math.sin(2 * ph), 0.0, 4.0 * s1),  # the staff's own lean, swaying with her
+            "DEF-upper_arm.L": (-14.0, 0.0, 14.0 + 3.0 * math.sin(ph + 0.6)), "DEF-forearm.L": (-24.0, 0.0, 0.0),
+            "DEF-hand.L": (0.0, -30.0, 0.0)})
+    if hero == "rhen":
+        # quick and lively: four bounces on the balls of his feet per loop, the gauntlet fist punched up on each rise,
+        # the other arm loose, the chest and head turning as he grins round at the others
+        b = 0.5 - 0.5 * math.cos(4 * ph)  # 0 at the top of a bounce, 1 at the bottom
+        return add(_legs(sk, persona, 0.015 + 0.035 * b), {
+            "hips": (0.012 * s1, 0.0, 0.0),
+            "DEF-spine.001": (3.0 + 4.0 * b, 6.0 * s1, -2.0 * s1),
+            "DEF-spine.003": (-3.0, 4.0 * math.sin(ph + 0.4), 0.0),
+            "DEF-spine.006": (-8.0 + 5.0 * b, 9.0 * math.sin(ph + 0.8), 3.0 * math.sin(2 * ph)),
+            "DEF-upper_arm.L": (-118.0 + 14.0 * b, 0.0, 16.0), "DEF-forearm.L": (-30.0 - 20.0 * b, 0.0, 0.0),
+            "DEF-upper_arm.R": (-6.0 * math.sin(4 * ph), 0.0, -4.0), "DEF-forearm.R": (-40.0 - 10.0 * b, 0.0, 0.0)})
+
+    # Toma: the spear planted upright at his right side, the hand on it at the chest; he rolls his shoulders, the
+    # left then the right, half a loop apart, and his head tilts with them as the stiffness goes out of his neck
+    def roll(side: str, phase: float) -> tuple:
+        sign = 1.0 if side == "L" else -1.0  # +Z lifts the left shoulder and -Z the right; -Y / +Y draw them back
+        return (0.0, -9.0 * math.cos(ph + phase) * sign, 9.0 * math.sin(ph + phase) * sign)
+
+    return add(_sway(sk, persona, 0.014 * s1, 0.02), {
+        "DEF-shoulder.L": roll("L", 0.0), "DEF-shoulder.R": roll("R", math.pi),
+        "DEF-spine.001": (2.0, 0.0, -2.0 * s1), "DEF-spine.003": (1.5 * math.sin(2 * ph), 4.0 * c1, 2.0 * s1),
+        "DEF-spine.006": (-4.0 + 2.0 * math.sin(2 * ph), -3.0 * c1, 7.0 * math.sin(ph + 0.4)),
+        "DEF-upper_arm.R": (-20.0, 0.0, -6.0), "DEF-forearm.R": (-46.0, 0.0, 0.0),
+        "DEF-upper_arm.L": (2.0 + 4.0 * c1, 0.0, 17.0 + 4.0 * s1), "DEF-forearm.L": (-14.0, 0.0, 0.0)})
+
+
+# ---- M2-CHR-513: `ko` falls and lies down; `revive` gets up again
+# A lying pose is authored standing, in the body's own axes (as if the hero stood up inside it), then the whole body is
+# pitched forward about the hips joint (`_pitched`) and the hips are put where the lying body rests. Only the hips
+# bone takes the pitch itself; every other bone's world-axis turn is the same turn seen from the pitched body
+# (R d R^-1),
+# so the pose composes exactly as it did standing. The props stay rigid on the hand (_exact_hold): DEF-hand.R is the
+# staff's or spear's own world tilt, so it can be laid on the floor beside the hero.
+KO_PITCH = 86.0  # degrees: face down, the chest a little higher than the hips
+# Where the hips joint rests when the hero lies face down (m, offsets from the hips' rest position: up, forward), and
+# how far the body sits from the floor; measured on the skinned Body (tools/tests/test_hero_battle_clips.py checks that
+# no part of the Body goes under the floor in ko or revive, and that the lying body is centred on the actor's spot).
+KO_REST = {"asha": (-0.77, -0.2), "rhen": (-0.83, -0.2), "toma": (-0.86, -0.2)}
+# The legs, per hero (degrees, world-axis turns in the body's axes): kneeling (thigh, shin, foot, toe) and lying (shin,
+# foot, toe). Asha's skirt hides her ankles, so she kneels with the toes half tucked (deeper pushes them through the
+# sandal straps) and lies with the feet pointed. Rhen's and Toma's trouser hems ride the shin and cannot take a flexed
+# ankle (the rig probe's skin-through-garment check, as
+# STANCE_DORSI), so their ankles stay at rest: they kneel and lie on their bent toes, the shins lifted off the floor.
+KO_LEGS = {"asha": {"kneel": (4.0, 103.0, -45.0, -30.0), "lie": (14.0, 80.0, 0.0)},
+           "rhen": {"kneel": (10.0, 90.0, 10.0, 0.0), "lie": (18.0, -10.0, 0.0)},
+           "toma": {"kneel": (4.0, 101.0, -10.0, -20.0), "lie": (18.0, -10.0, 0.0)}}
+# How far the knees give (m, the hips lower) in the buckle that starts the fall and in the crouch revive stands up
+# through: Rhen and Toma lift their heels (FOOT_FLAT) rather than flex the ankle, so a deep bend tips their toes into
+# the floor.
+KO_DROP = {"asha": (0.12, 0.2), "rhen": (0.04, 0.06), "toma": (0.04, 0.06)}
+KO_ARMS_OUT = {"asha": 0.0, "rhen": 8.0, "toma": 8.0}  # degrees the hanging arms open in the buckle and crouch
+# m: an ankle that travels more than KO_SWING_MIN between keys lifts this high on the way (ko, revive: higher in
+# revive opens Rhen's knee fold past its ratchet as he gets his feet under him)
+KO_SWING = (0.07, 0.06)
+KO_SWING_MIN = 0.15
+
+
+def _pitched(pose: dict, pitch: float) -> dict:
+    """An absolute pose authored standing, pitched forward `pitch` degrees with the body (see above). Its "hips"
+    position is left as it is: the caller places the lying body. A "_prop" entry is the staff's or spear's world tilt:
+    it becomes DEF-hand.R as it is (the world's, not the body's), for _exact_hold."""
+    r = qaxis((1.0, 0.0, 0.0), pitch)
+    out = {"hips": pose.get("hips", (0.0, 0.0, 0.0)), HIPS: (pitch, 0.0, 0.0)}
+    for b, v in pose.items():
+        if b in ("hips", "_prop"):
+            continue
+        q = qeuler(v)
+        out[b] = _euler_yxz(qmul(r, q) if b == HIPS else qmul(qmul(r, q), qinv(r)))
+    if "_prop" in pose:
+        out["DEF-hand.R"] = tuple(pose["_prop"])
+    return out
+
+
+def _kneel_both(hero: str, sk: Skeleton, persona: dict) -> dict:
+    """Down on both knees, up on the toes (the heels raised behind, the toes bent flat on the floor), slumped, the arms
+    hanging."""
+    drop = sk.hip_h - (sk.leg_shin + sk.ankle_h) - 0.01
+    th, sh, ft, toe = KO_LEGS[hero]["kneel"]
+    p = add(stand(persona), {
+        "hips": (0.0, -drop - 0.012, -0.03),
+        "DEF-thigh.L": (th, 0.0, -3.0), "DEF-thigh.R": (th, 0.0, 3.0),
+        "DEF-shin.L": (sh, 0.0, 0.0), "DEF-shin.R": (sh, 0.0, 0.0),
+        "DEF-foot.L": (ft, 0.0, 0.0), "DEF-foot.R": (ft, 0.0, 0.0),
+        "DEF-toe.L": (toe, 0.0, 0.0), "DEF-toe.R": (toe, 0.0, 0.0),
+        "DEF-spine.001": (6.0, 0.0, 0.0), "DEF-spine.002": (0.0, 0.0, 0.0), "DEF-spine.006": (18.0, 0.0, 0.0),
+        "DEF-upper_arm.L": (-6.0, 0.0, 28.0), "DEF-upper_arm.R": (-6.0, 0.0, -28.0)})
+    if persona["staff"]:  # leaning on the staff, its foot set out in front
+        p = add(p, {"DEF-upper_arm.R": (-8.0, 0.0, 0.0), "DEF-forearm.R": (-16.0, 0.0, 0.0)})
+        p["_prop"] = (-50.0, 0.0, 0.0)
+    return p
+
+
+def _lying(hero: str, sk: Skeleton, persona: dict) -> dict:
+    """The felled pose before `_pitched`: the legs long behind, the feet pointed, the arms along the sides, the head
+    turned to lay a cheek on the floor (the arms stay as far out as they hang standing: closer in, the upper arm's skin
+    pushes through the armhole)."""
+    sh, ft, toe = KO_LEGS[hero]["lie"]
+    p = add(stand(persona), {
+        "DEF-thigh.L": (2.0, 0.0, 4.0), "DEF-thigh.R": (2.0, 0.0, -4.0),
+        "DEF-shin.L": (sh, 0.0, 0.0), "DEF-shin.R": (sh, 0.0, 0.0),
+        "DEF-foot.L": (ft, 0.0, 0.0), "DEF-foot.R": (ft, 0.0, 0.0),
+        "DEF-toe.L": (toe, 0.0, 0.0), "DEF-toe.R": (toe, 0.0, 0.0),
+        "DEF-spine.001": (-4.0, 0.0, 0.0), "DEF-spine.002": (-2.0, 0.0, 0.0),
+        "DEF-spine.004": (12.0, 0.0, 0.0), "DEF-spine.005": (14.0, -18.0, 0.0), "DEF-spine.006": (6.0, -24.0, -8.0),
+        "DEF-upper_arm.L": (6.0, 0.0, 15.0), "DEF-upper_arm.R": (20.0, 0.0, -15.0)})
+    if persona["staff"]:  # still gripped, laid along the floor at the right side, its foot past her head
+        p["_prop"] = (-90.0, 12.0, 0.0)
+    return p
+
+
+def _flat_legs(sk: Skeleton, persona: dict, drop: float) -> dict:
+    """_legs with the feet kept flat on the floor whatever FOOT_FLAT is: a lifted heel turns about the ankle, which
+    tips the toes into the floor. The knees bend little in the buckle and the crouch (KO_DROP), so the ankle's flex
+    stays inside what the trouser hems take."""
+    legs = _legs(sk, persona, drop)
+    for side in "LR":
+        legs[f"DEF-foot.{side}"] = (-(legs[f"DEF-thigh.{side}"][0] + legs[f"DEF-shin.{side}"][0]), 0.0, 0.0)
+    return legs
+
+
+def _ko_keys(hero: str, sk: Skeleton, persona: dict, base: dict) -> list:
+    """(u, absolute standing-frame pose, pitch, hips) keys of the fall: the knees buckle, the hero drops onto both
+    knees, then pitches forward onto the front and lies still (the last keys hold)."""
+    buckle = add(base, add(_flat_legs(sk, persona, KO_DROP[hero][0]), {"DEF-spine.001": (10.0, 0.0, 0.0),
+                                                                       "DEF-spine.006": (10.0, 0.0, 0.0),
+                                                      "DEF-upper_arm.L": (-8.0, 0.0, 6.0 + KO_ARMS_OUT[hero]),
+                                                      "DEF-upper_arm.R": (-8.0, 0.0, -6.0 - KO_ARMS_OUT[hero])}))
+    if persona["staff"]:  # the staff's foot goes out in front as the knees go, so it stays out of the floor
+        buckle["_prop"] = (-25.0, 0.0, 0.0)
+    knees = _kneel_both(hero, sk, persona)
+    down = _lying(hero, sk, persona)
+    lie = KO_REST[hero]
+    rest = (0.0, lie[0], lie[1])
+    return [(0.0, base, 0.0, base.get("hips", (0.0, 0.0, 0.0))),
+            (0.2, buckle, 0.0, buckle["hips"]),
+            (0.45, knees, 4.0, knees["hips"]),
+            (0.78, down, KO_PITCH, rest),
+            (0.88, down, KO_PITCH, rest)]
+
+
+def _slerp(a: np.ndarray, b: np.ndarray, t: float) -> np.ndarray:
+    if float(np.dot(a, b)) < 0.0:
+        b = -b
+    d = min(1.0, float(np.dot(a, b)))
+    th = math.acos(d)
+    if th < 1e-9:
+        return a
+    return (math.sin((1.0 - t) * th) * a + math.sin(t * th) * b) / math.sin(th)
+
+
+def _key_feet(sk: Skeleton, key: tuple) -> tuple:
+    """A key's pitched, placed pose and, per side, where its ankle is and how its foot is turned (world, from rest)."""
+    pose = dict(_pitched(key[1], key[2]), hips=key[3])
+    g0, _t0 = _loco_fk(sk, {})
+    g, t = _loco_fk(sk, pose)
+    return pose, {s: (t[f"DEF-foot.{s}"], qmul(g[f"DEF-foot.{s}"], qinv(g0[f"DEF-foot.{s}"]))) for s in "LR"}
+
+
+def _keyed_pitched(u: float, keys: list, sk: Skeleton, hero: str, persona: dict, swing: float = 0.0) -> dict:
+    """Between keys (u, pose, pitch, hips): the standing-frame pose eased, the pitch and the hips eased with it, then
+    pitched and placed. A fall's pitch accelerates (ease in) where it grows by more than 30 degrees. The legs are then
+    solved (_leg_ik) onto ankles and foot turns eased between the keys' own in world space, so a knee or a foot on
+    the floor at two keys travels along it rather than swinging through it. Rhen's and Toma's feet are kept within
+    ANKLE_DORSI of their shins on the way (their trouser hems; _leg_ik's limit)"""
+    rig, free = (_loco_rig(hero, sk, persona), 1.0) if STANCE_DORSI[hero] < 20.0 else (None, 0.0)
+    if u <= keys[0][0]:
+        return _key_feet(sk, keys[0])[0]
+    for ka, kb in zip(keys, keys[1:]):
+        (ua, pa, ta, ha), (ub, pb, tb, hb) = ka, kb
+        if u > ub:
+            continue
+        s = (u - ua) / (ub - ua)
+        e = s * s if tb - ta > 30.0 else smooth(s)
+        eh = 1.0 - (1.0 - s) ** 2 if ta - tb > 30.0 else e  # getting up: the hips lift first, the knees come under
+        hips = tuple(np.asarray(ha) + (np.asarray(hb) - np.asarray(ha)) * eh)
+        pose = dict(_pitched(blend(pa, pb, smooth(s)), ta + (tb - ta) * e), hips=hips)
+        (_p, fa), (_q, fb) = _key_feet(sk, ka), _key_feet(sk, kb)
+        g, t = _loco_fk(sk, pose)
+        for side in "LR":
+            target = fa[side][0] + (fb[side][0] - fa[side][0]) * smooth(s)
+            if float(np.linalg.norm(fb[side][0] - fa[side][0])) > KO_SWING_MIN:  # a foot that travels swings up
+                target = target + np.array([0.0, swing * math.sin(math.pi * smooth(s)), 0.0])
+            foot_q = _slerp(fa[side][1], fb[side][1], smooth(s))
+            toe = qeuler(pose.get(f"DEF-toe.{side}", (0.0, 0.0, 0.0)))
+            pose.update(_leg_ik(pose, g, t, side, target, foot_q, toe, 0.0, free, rig))
+        return pose
+    return _key_feet(sk, keys[-1])[0]
+
+
+def _ko(hero: str, u: float, sk: Skeleton, persona: dict, base: dict) -> dict:
+    return _keyed_pitched(u, _ko_keys(hero, sk, persona, base), sk, hero, persona, KO_SWING[0])
+
+
+def _revive(hero: str, u: float, sk: Skeleton, persona: dict, base: dict) -> dict:
+    """From ko's last frame to the idle's first: pushed up onto the knees, then up onto the feet."""
+    ko = _ko_keys(hero, sk, persona, base)
+    _u, down, pitch, rest = ko[-1]
+    knees = _kneel_both(hero, sk, persona)
+    crouch = add(base, add(_flat_legs(sk, persona, KO_DROP[hero][1]), {
+        "DEF-spine.001": (16.0, 0.0, 0.0), "DEF-spine.006": (-6.0, 0.0, 0.0),
+        "DEF-upper_arm.L": (0.0, 0.0, KO_ARMS_OUT[hero]), "DEF-upper_arm.R": (0.0, 0.0, -KO_ARMS_OUT[hero])}))
+    if persona["staff"]:  # the staff arm a little forward and out, its sleeve clear of the thigh
+        crouch = add(crouch, {"DEF-upper_arm.R": (-14.0, 0.0, -8.0)})
+        crouch["_prop"] = (-25.0, 0.0, 0.0)
+    return _keyed_pitched(u, [(0.0, down, pitch, rest), (0.4, knees, 4.0, knees["hips"]),
+                              (0.7, crouch, 0.0, crouch["hips"]), (1.0, base, 0.0, base.get("hips", (0.0, 0.0, 0.0)))],
+                          sk, hero, persona, KO_SWING[1])
 
 
 _BATTLE_KEYS = {"asha": _asha_keys, "rhen": _rhen_keys, "toma": _toma_keys}
@@ -1062,6 +1242,10 @@ def battle_pose_at(clip: str, u: float, sk: Skeleton, persona: dict) -> dict:
     base = pose_at("idle", 0.0, LENGTHS["idle"], sk, persona)
     if clip == "victory":
         return _exact_hold(add(base, _victory(hero, u, sk, persona)), persona, 1.0)
+    if clip in ("ko", "revive"):  # M2-CHR-513: absolute poses, the body pitched down onto the floor
+        pose = (_ko if clip == "ko" else _revive)(hero, u, sk, persona, base)
+        w = smooth(u / 0.2) if clip == "ko" else 1.0 - smooth((u - 0.8) / 0.2)
+        return _exact_hold(pose, persona, w)
     keys = [(k, dict(p, _exact=(1.0, 0.0, 0.0)) if p else p) for k, p in _BATTLE_KEYS[hero](clip, sk, persona, base)]
     delta = _seq(u, keys)
     w = delta.pop("_exact", (0.0, 0.0, 0.0))[0]
@@ -1236,7 +1420,8 @@ LOCO_GAIT = {
     "rhen": {"walk": dict(_WALK, S=1.05, c=-0.02, sway=0.022, yaw=4.0, tilt=1.0, chest=1.5, lean=4.0, arm=17.0, abd=5.0, back_r=0.35, bob=0.026,
                           drop=0.03, clear=0.065, hs=16.0, to=28.0),
              "run": dict(_RUN, S=2.0, c=-0.13, sway=0.014, lean=13.0, arm=36.0, bob=0.04, hs=0.0, to=34.0,
-                         clear=0.14)},
+                         clear=0.14, fwd=0.7, fwd_elbow=45.0,
+                         fwd_abd=10.0)},  # M2-CHR-513: a sprinter's arm, not a reach
     # toma.md §1: broad, the weight low, the spear held like the staff: a long, heavy, rolling stride, the feet
     # tracking wide, a lower body and a big side-to-side transfer, little bounce
     "toma": {"walk": dict(_WALK, S=1.25, sway=0.03, yaw=4.0, tilt=2.0, chest=3.0, lean=2.0, arm=11.0,
@@ -1494,6 +1679,20 @@ def _gait_delta(g: dict, ph: float, persona: dict) -> dict:
     swing_r = -g["arm"] * k_r * ca
     if swing_r > 0.0 and g.get("back_r", 1.0) < 1.0:  # the right arm's back swing eased short of a hip pouch
         swing_r *= 1.0 - (1.0 - g["back_r"]) * smooth(swing_r / (g["arm"] * k_r))
+    swing_l = g["arm"] * ca
+    bend_l = g["elbow"] * 0.5 * (1.0 - ca)
+    bend_r = g["elbow"] * k_r * 0.5 * (1.0 + ca)
+    abd_l = abd_r = g["abd"]
+    if "fwd" in g:  # M2-CHR-513: a sprinter's forward swing (Rhen's run): the upper arm comes forward only `fwd` of
+        # its back swing and the elbow folds `fwd_elbow` more, so the hand rises to the chest close in, not out at arm's
+        # length (hero-integration's review: the arm read as a reach)
+        f_l, f_r = max(0.0, -ca), max(0.0, ca)  # how far each arm is into its forward swing
+        swing_l *= 1.0 - (1.0 - g["fwd"]) * f_l
+        swing_r *= 1.0 - (1.0 - g["fwd"]) * f_r
+        bend_l += g["fwd_elbow"] * f_l
+        bend_r += g["fwd_elbow"] * f_r
+        abd_l += g["fwd_abd"] * f_l  # and opens a little, clear of the armpit
+        abd_r += g["fwd_abd"] * f_r
     p = {"hips": (g["sway"] * cs, -g["drop"] - g["bob"] * low, 0.0),
          HIPS: (0.0, -yaw * c1, tilt * cs),
          "DEF-spine.001": (0.4 * lean + g["flex"] * low_lag, 0.3 * turn, -0.6 * tilt * cs),
@@ -1501,10 +1700,10 @@ def _gait_delta(g: dict, ph: float, persona: dict) -> dict:
          "DEF-spine.003": (0.2 * lean, 0.3 * turn, 0.0),
          "DEF-spine.005": (-0.3 * lean, -0.4 * g["head"] * chest * c1, 0.0),
          "DEF-spine.006": (-0.5 * lean + g["nod"] * low_lag, -0.6 * g["head"] * chest * c1, 0.0),
-         "DEF-upper_arm.L": (g["arm"] * ca, 0.0, g["abd"]),
-         "DEF-upper_arm.R": (swing_r, 0.0, -g["abd"]),
-         "DEF-forearm.L": (-g["fore"] - g["elbow"] * 0.5 * (1.0 - ca), 0.0, 0.0),
-         "DEF-forearm.R": (-fore_r - g["elbow"] * k_r * 0.5 * (1.0 + ca), 0.0, 0.0)}
+         "DEF-upper_arm.L": (swing_l, 0.0, abd_l),
+         "DEF-upper_arm.R": (swing_r, 0.0, -abd_r),
+         "DEF-forearm.L": (-g["fore"] - bend_l, 0.0, 0.0),
+         "DEF-forearm.R": (-fore_r - bend_r, 0.0, 0.0)}
     if staff:  # the staff (spear) swings a little behind the hand
         p["DEF-hand.R"] = (g["staff"] * math.cos(two * (ph - g["lag"] - 0.06)), 0.0, 0.0)
     return p
@@ -1925,6 +2124,12 @@ def write_locomotion_data() -> None:
     LOCO_DATA.write_text(json.dumps(locomotion_data(), indent=1) + "\n", encoding="utf-8")
 
 
+# M2-CHR-513: the battle heroes' `revive` (BattleClips plays it on a revive before idle, when the model has it) goes
+# after every other clip, so the earlier clips keep their sub-resource ids and their text
+for _h in BATTLE_HEROES:
+    CLIPS[_h] = CLIPS[_h] + ["revive"]
+
+
 # ---------------------------------------------------------------------------------------------
 # M1-CHR-15: helper bones -- the skirt drape and the shoulder correctives. The builds add extra deform bones that no
 # pose names (build_asha.helper_bone_specs); every clip keys them from its own pose, so they are a deterministic
@@ -2258,6 +2463,81 @@ def helper_locals(sk: "Skeleton", local: dict) -> dict:
 
 
 # ---------------------------------------------------------------------------------------------
+# M2-CHR-513: Rhen's reef-hooks in hand. Each hook rides its own bone (DEF-hook.<side>, on the hips: sheathed across
+# the small of his back); a marker bone on each hand (hook_grip.<side>) is the same frame held in the fist. A clip
+# that draws a hook keys its bone from the sheath to the marker's place and back (position and rotation, relative to
+# the hips), so the hook leaves the back as the hand reaches the grip at the hip, and every Rhen clip keys both hooks
+# (a sheathed hook is two keys), so no clip leaves one in hand.
+# ---------------------------------------------------------------------------------------------
+HOOK_BONE = "DEF-hook."
+HOOK_GRIP = "hook_grip."
+POS_KEY = "_pos"  # local_pose's entry for the hook bones' positions: {bone: (x, y, z)}
+# {hero: {clip: {side: (draw from, in hand at, sheathe from, sheathed at)}}}, fractions of the clip: the attack's right
+# hand drops to its hook's grip at the wind-up and drives with it; the lamp dive hammers down with both
+HOOK_HOLD = {"rhen": {"attack": {"R": (0.1, 0.25, 0.8, 1.0)},
+                      "finisher": {"L": (0.1, 0.25, 0.85, 1.0), "R": (0.1, 0.25, 0.85, 1.0)}}}
+HOOK_ARC = 0.12  # m: a hook on its way between the back and the hand swings this far out from the hips' axis
+
+
+def hooks_init(sk: "Skeleton", nodes: list, parent: dict) -> None:
+    """Record the GLB's hook bones and their grip markers (rest rotation and translation, parent) on the skeleton."""
+    sk.hooks = []
+    for i, n in enumerate(nodes):
+        name = n.get("name", "")
+        if not name.startswith((HOOK_BONE, HOOK_GRIP)):
+            continue
+        sk.rest_q[name] = np.array(n.get("rotation", [0.0, 0.0, 0.0, 1.0]), dtype=float)
+        sk.rest_t[name] = np.array(n.get("translation", [0.0, 0.0, 0.0]), dtype=float)
+        sk.parent[name] = nodes[parent[i]]["name"]
+        if name.startswith(HOOK_BONE):
+            sk.hooks.append(name[len(HOOK_BONE):])
+    sk.hooks.sort()
+    for side in sk.hooks:
+        assert sk.parent[HOOK_BONE + side] == HIPS, side
+        assert sk.parent[HOOK_GRIP + side] == f"DEF-hand.{side}", side
+
+
+def hook_hold(hero: str, clip: str, u: float) -> dict:
+    """{side: 0..1}: how far each hook is drawn at fraction u of the clip (HOOK_HOLD)."""
+    out = {}
+    for side, (a, b, c, d) in HOOK_HOLD.get(hero, {}).get(clip, {}).items():
+        out[side] = smooth((u - a) / (b - a)) * (1.0 - smooth((u - c) / (d - c)))
+    return out
+
+
+def hook_pose(sk: "Skeleton", g: dict, out: dict, hips, hold: dict) -> None:
+    """The hook bones' local rotations (into out) and positions (out[POS_KEY]) for the pose's global rotations g, its
+    hips offset and the hold weights."""
+    if not getattr(sk, "hooks", None):
+        return
+    pos = {HIPS: sk.rest_t[HIPS] + (np.zeros(3) if hips is None else np.asarray(hips, dtype=float))}
+    for name in BONES[1:]:
+        pos[name] = pos[sk.parent[name]] + qrot(g[sk.parent[name]], sk.rest_t[name])
+    inv_h = qinv(g[HIPS])
+    out_pos = out.setdefault(POS_KEY, {})
+    for side in sk.hooks:
+        hook, grip, hand = HOOK_BONE + side, HOOK_GRIP + side, f"DEF-hand.{side}"
+        w = float(hold.get(side, 0.0))
+        q0, t0 = sk.rest_q[hook], sk.rest_t[hook]
+        if w <= 0.0:
+            out[hook], out_pos[hook] = q0 / np.linalg.norm(q0), tuple(float(x) for x in t0)
+            continue
+        q1 = qmul(inv_h, qmul(g[hand], sk.rest_q[grip]))
+        t1 = qrot(inv_h, pos[hand] + qrot(g[hand], sk.rest_t[grip]) - pos[HIPS])
+        if float(np.dot(q0, q1)) < 0.0:
+            q1 = -q1
+        th = math.acos(min(1.0, abs(float(np.dot(q0, q1)))))
+        q = q0 if th < 1e-9 else (math.sin((1.0 - w) * th) * q0 + math.sin(w * th) * q1) / math.sin(th)
+        t = t0 + (t1 - t0) * w
+        mid = 0.5 * (t0 + t1)  # out from the hips' axis on the way, round the body rather than through it
+        side_v = np.array([mid[0], 0.0, mid[2]])
+        if float(np.linalg.norm(side_v)) > 1e-9:
+            t = t + side_v / np.linalg.norm(side_v) * HOOK_ARC * math.sin(math.pi * w)
+        out[hook] = q / np.linalg.norm(q)
+        out_pos[hook] = tuple(float(x) for x in t)
+
+
+# ---------------------------------------------------------------------------------------------
 # AnimationLibrary text resource
 # ---------------------------------------------------------------------------------------------
 def fmt(x: float) -> str:
@@ -2279,15 +2559,21 @@ def build(hero: str) -> str:
         keys_q = {b: [] for b in sk.keyed}  # M1-CHR-15: the body bones, then the GLB's helper bones
         keys_p = []
         keys_s: dict = {}  # M1-CHR-15: the lower skirt panels' gathers
+        keys_h: dict = {}  # M2-CHR-513: the hooks' positions and rotations
         for t in times:
             tt = (t % length) if loop else t
             pose = staff_hold(pose_at(clip, tt, length, sk, persona), persona)
             turns = {b: qeuler(v) for b, v in pose.items() if b != "hips"}
-            local = sk.local_pose(turns, pose.get("hips"))
+            local = sk.local_pose(turns, pose.get("hips"), hook_hold(hero, clip, tt / length))
             for b in sk.keyed:
                 keys_q[b].append((t, local[b]))
             for b, v in local.get(SCALE_KEY, {}).items():
                 keys_s.setdefault(b, []).append((t, v))
+            for side in sk.hooks:  # M2-CHR-513
+                b = HOOK_BONE + side
+                keys_h.setdefault(b, ([], []))
+                keys_h[b][0].append((t, local[POS_KEY][b]))
+                keys_h[b][1].append((t, local[b]))
             keys_p.append((t, sk.rest_t[HIPS] + np.asarray(pose.get("hips", (0.0, 0.0, 0.0)), dtype=float)))
         lines = [f'[sub_resource type="Animation" id="clip_{ci}"]', f'resource_name = &"{clip}"',
                  f"length = {fmt(length)}", f"loop_mode = {1 if loop else 0}", f"step = {fmt(1.0 / FPS)}"]
@@ -2298,6 +2584,9 @@ def build(hero: str) -> str:
         tracks += [("rotation_3d", b, [(t, list(q)) for t, q in reduce_keys(keys_q[b])]) for b in sk.helpers]
         # every clip keys every gather (a still one is two keys), so no clip leaves another's gather on the bone
         tracks += [("scale_3d", b, _flat_keys(keys_s[b])) for b in sorted(keys_s)]
+        for b in sorted(keys_h):
+            tracks += [("position_3d", b, _flat_keys(keys_h[b][0])),
+                       ("rotation_3d", b, [(t, list(q)) for t, q in reduce_keys(keys_h[b][1])])]
         if persona.get("book") and clip in BLEND_SHAPES:  # ysolde: the book opens on its shape
             node, shape = BLEND_SHAPES[clip]
             tracks.append(("blend_shape", f"/{node}:{shape}", [(t, [book_fan_weight(clip, t)]) for t in times]))

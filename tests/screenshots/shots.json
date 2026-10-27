@@ -2834,6 +2834,76 @@
     {
       "id": "battle_boss_intro_drownbell",
       "scene": "res://game/battle/scene/shots/battle_boss_intro_drownbell.tscn"
+    },
+    {
+      "id": "asha_battle_ko",
+      "scene": "res://game/levels/_tests/characters/asha/asha_battle_ko.tscn",
+      "camera": "Cameras/ThreeQuarter",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "asha_battle_victory",
+      "scene": "res://game/levels/_tests/characters/asha/asha_battle_victory.tscn",
+      "camera": "Cameras/ThreeQuarter",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "rhen_battle_ko",
+      "scene": "res://game/levels/_tests/characters/rhen/rhen_battle_ko.tscn",
+      "camera": "Cameras/ThreeQuarterLeft",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "rhen_battle_victory",
+      "scene": "res://game/levels/_tests/characters/rhen/rhen_battle_victory.tscn",
+      "camera": "Cameras/ThreeQuarterLeft",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "rhen_battle_finisher",
+      "scene": "res://game/levels/_tests/characters/rhen/rhen_battle_finisher.tscn",
+      "camera": "Cameras/ThreeQuarterLeft",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "toma_battle_ko",
+      "scene": "res://game/levels/_tests/characters/toma/toma_battle_ko.tscn",
+      "camera": "Cameras/ThreeQuarter",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "toma_battle_victory",
+      "scene": "res://game/levels/_tests/characters/toma/toma_battle_victory.tscn",
+      "camera": "Cameras/ThreeQuarter",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
     }
   ]
 }

@@ -401,11 +401,12 @@ class Rig:
         """Global 4x4 of every node for local rotations {bone name: quaternion} (+ the hips translation)."""
         local_q = local_q or {}
         scales = local_q.get(hero_clips.SCALE_KEY, {})  # M1-CHR-15: the skirt panels' floor gathers
+        moved = local_q.get(hero_clips.POS_KEY, {})  # M2-CHR-513: the reef-hooks, drawn
         g: list[np.ndarray | None] = [None] * len(self.names)
         hips = self.index.get(hero_clips.HIPS)
         for i in self.order:
             q = local_q.get(self.names[i], self.rest_q[i])
-            t = hips_t if (i == hips and hips_t is not None) else self.rest_t[i]
+            t = hips_t if (i == hips and hips_t is not None) else np.asarray(moved.get(self.names[i], self.rest_t[i]))
             m = trs(t, q, np.asarray(scales.get(self.names[i], self.rest_s[i]), dtype=float))
             g[i] = m if self.parent[i] < 0 else g[self.parent[i]] @ m
         return g
@@ -503,7 +504,8 @@ def clip_poses(rig: Rig, every: int, clips: list | None = None, max_samples: int
             tt = (t % length) if loop else t
             pose = hero_clips.staff_hold(pose_fn(clip, tt, length, sk, persona), persona)
             turns = {b: hero_clips.qeuler(v) for b, v in pose.items() if b != "hips"}
-            local = sk.local_pose(turns, pose.get("hips"))
+            hold = {} if is_villager(rig.hero) else hero_clips.hook_hold(rig.hero, clip, tt / length)
+            local = sk.local_pose(turns, pose.get("hips"), hold)
             hips = sk.rest_t[hero_clips.HIPS] + np.asarray(pose.get("hips", (0.0, 0.0, 0.0)), dtype=float)
             out.append(Pose(f"{clip}@{f}", local, hips, "clip"))
     return out

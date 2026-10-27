@@ -47,6 +47,7 @@ class TestHeroClips(unittest.TestCase):
     def test_asha_has_every_requested_clip(self):
         expected = REQUESTED | set(hero_clips.BATTLE_CLIPS)  # M2-CHR-07: plus the battle clip contract
         expected |= set(hero_clips.LOCO_NEW)  # M2-CHR-12: plus the field locomotion clips
+        expected |= {"revive"}  # M2-CHR-513: and the battle's optional revive
         self.assertEqual(set(hero_clips.CLIPS["asha"]), expected)
         text = hero_clips.out_path("asha").read_text(encoding="utf-8")
         names = set(re.findall(r'resource_name = &"([a-z_0-9]+)"', text))
