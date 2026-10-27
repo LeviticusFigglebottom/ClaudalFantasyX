@@ -1,0 +1,4 @@
+FAIL ch05_pemakar_harbour: no baseline (inspect out/, then compare.py --update-baselines ch05_pemakar_harbour)
+FAIL ch05_pemakar_crown: no baseline (inspect out/, then compare.py --update-baselines ch05_pemakar_crown)
+Screenshots: 2 compared, 2 failed (diffs in /root/hymn/tests/screenshots/out/diff)
+compare exit 1
