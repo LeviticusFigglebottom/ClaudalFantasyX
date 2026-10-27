@@ -197,6 +197,9 @@ JOBS = [
     # M3-AUD-14: creature voices and movement (the file list is the source's own, like battle_sfx's)
     ("assets_src/sfx/creature_sfx.py", "assets/audio/sfx/creatures", _source_files("assets_src/sfx/creature_sfx.py"),
      "sfx"),
+    # M3-AUD-831: the Act II creatures (the Ch10-12 bosses, the Wakefin, the Ch10-11 regulars), into the same folder
+    ("assets_src/sfx/act2_creature_sfx.py", "assets/audio/sfx/creatures",
+     _source_files("assets_src/sfx/act2_creature_sfx.py"), "sfx"),
     # M2-AUD-14: the menus track's pages (Items, Formation, Customize, the zone map's pan)
     ("assets_src/sfx/menu_page_sfx.py", "assets/audio/sfx",
      [f"{u}.ogg" for u in ("ui_item_use", "ui_item_sort", "ui_formation_pick", "ui_formation_swap",
