@@ -3356,6 +3356,63 @@
           }
         }
       }
+    },
+    {
+      "id": "tamsule_tp01_port_and_bell",
+      "scene": "res://game/levels/_tests/tamsule_port_kit/tamsule_port_kit.tscn",
+      "camera": "Cameras/TP01",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "tamsule_tp03_floating_market",
+      "scene": "res://game/levels/_tests/tamsule_port_kit/tamsule_port_kit.tscn",
+      "camera": "Cameras/TP03",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "tamsule_tp05_gantry_foot",
+      "scene": "res://game/levels/_tests/tamsule_port_kit/tamsule_port_kit.tscn",
+      "camera": "Cameras/TP05",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
     }
   ]
 }
