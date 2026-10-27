@@ -427,7 +427,8 @@ RENDER-REQUEST @ c990e2c2: battle_arena_ossa_fen_roots; why: M3-ENV-718 the Mang
 RENDER-REQUEST @ 191e5e89: battle_arena_bridal_barge_night; why: M3-ENV-720 the Wakefin's unlamped bridal barge (new shot)
 RENDER-REQUEST @ c7703809: battle_arena_ansedra_lagoon_escape; why: M3-ENV-721 Warden Venn's escape on Ansedra's lagoon at dusk (new shot)
 RENDER-REQUEST @ fca99879: battle_arena_drowned_choir_ring; why: M3-ENV-722 the Drowned Choir at moonrise (new shot)
-RENDER-REQUEST @ 4c0e9732 FAST-TRACK: iskarra_p01_plaza_dusk,iskarra_i02_gate_from_the_plaza,iskarra_i03_broken_tower; why: M3-ENV-724, the Lead's Iskarra fast-track for the Prologue. The towers had been inside out since M3-ENV-710; this pass adds tile cladding, blue glaze, windowed storeys, gallery ledges, the plaza inlay, a drowned midground, and hero figures. Supersedes the Iskarra ids in 60eee2f7 and 854e6a95.
+SUPERSEDED by the FAST-TRACK request below: 4c0e9732
+RENDER-REQUEST @ 0958af1a FAST-TRACK: iskarra_p01_plaza_dusk,iskarra_i02_gate_from_the_plaza,iskarra_i03_broken_tower; why: M3-ENV-724, the Lead's Iskarra fast-track for the Prologue. The towers had been inside out since M3-ENV-710; this pass adds tile cladding, blue glaze, windowed storeys, gallery ledges, the plaza inlay, a drowned midground, and hero figures. the far skyline (iskarra_far_towers) too. Supersedes the Iskarra ids in 60eee2f7, 854e6a95 and 4c0e9732.
 RENDER-REQUEST @ 4c0e9732: battle_arena_seawall_stairhead_storm,battle_arena_seawall_stairhead_hoist,battle_arena_seawall_stairhead_surge,battle_arena_coilspire_headland_path,battle_arena_coilspire_tier_landing; why: 599b241's outs predate big12's hero stances. The arenas are unchanged, so these are first baselines on the current actors. Supersedes 599b2418.
 ANSWERED: 94fe8f7 (Tamsule TP01/TP03/TP05) and fd630bb (Pemakar P04/P11) were viewed and approved in f2a85a46. In fd630bb, Lanternfall passed.
 ANSWERED: 179069d (causeway_route_afternoon): superseded by big12's viewed baseline (6e15d8d8) at a later head; nothing to approve.
@@ -540,7 +541,7 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
-- **2026-10-27 ~21:40, the Lead's FAST-TRACK: Iskarra (M3-ENV-724), MERGE-READY @ 4c0e9732** (claude/env-art, which
+- **2026-10-27 ~21:40, the Lead's FAST-TRACK: Iskarra (M3-ENV-724), MERGE-READY @ 0958af1a** (4c0e9732 plus the far skyline) (claude/env-art, which
   includes the integration branch at big12, 7f355a8f).
   - **Root cause of the greybox read.** Every Iskarra tower shaft and lamp column had been wound inside out since
     M3-ENV-710, so Godot drew the inside of each far wall. Fixed, and covered by a test.
