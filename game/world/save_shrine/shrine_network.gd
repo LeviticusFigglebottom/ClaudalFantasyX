@@ -102,3 +102,9 @@ static func registry_point(network_id: StringName) -> Dictionary:
 	if network_id == &"":
 		return {}
 	return _registry().shrine_point(network_id)
+
+
+## The name_key of a network shrine's location ("" when not listed): the travel list's words (ShrineTravelMenu).
+static func name_key_of(network_id: StringName) -> String:
+	var loc := StringName(str(registry_point(network_id).get(LocationRegistry.KEY_LOCATION, "")))
+	return _registry().name_key_of(loc) if loc != &"" else ""
