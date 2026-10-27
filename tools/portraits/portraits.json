@@ -283,6 +283,11 @@
       "id": "flat_engine",
       "scene": "res://game/creatures/flat_engine/flat_engine_battle.tscn",
       "out_dir": "res://assets/ui/portraits/creatures"
+    },
+    {
+      "id": "ilun",
+      "scene": "res://game/creatures/ilun/ilun_battle.tscn",
+      "out_dir": "res://assets/ui/portraits/creatures"
     }
   ],
   "creature_stage": {
