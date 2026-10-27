@@ -2,8 +2,8 @@
 id: M3-CRE-622
 title: "The Mangrove Drowner, polish: knuckled tapering prop-roots, a folded core, less spider in the risen stance"
 role: character
-status: todo
-owner_session: "worktree-agent-a2773b09b6372eb5f"
+status: doing
+owner_session: "creatures (worktree agent, redesign pass)"
 reviewer: art
 depends_on: [M3-CRE-621]
 milestone: M3
