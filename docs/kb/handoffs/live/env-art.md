@@ -49,6 +49,15 @@ env-art is cloud session `session_01YbaV2c8yquRHqj6afQYg89` on `claude/env-art`;
   Checks run: `test_shrine_gi_bake`, `test_haluna_dressing`, `test_haluna_kit` OK; `--filter=haluna` 49/0;
   `haluna_kit` rebuild (all other pieces identical); validate_data; taskboard. Shots: unchanged (same geometry).
 
+- **MERGE-READY @ a0d2549f: M3-ENV-701 on the B06 causeway and the two slice arenas** (offerings at the marker
+  posts, wrack, nets, coils, shells and pebbles along the bed; tideline_dawn and causeway_disc_sunset dressed).
+  Checks run: `test_haluna_kit`, `test_arenas`, `test_fog_lamps` OK; the full tools suite at 39f66d4c (1027 OK);
+  validate_data. Shots: viewed on lavapipe before the render move, every one inside its limit; the PC re-renders
+  them below. Also **M3-ENV-704** filed: slice-polish places dressing in the Shell Shrine and rebakes its GI.
+
+### Render requests
+RENDER-REQUEST @ a0d2549f: battle_arena_tideline_dawn,battle_arena_causeway_disc_sunset,battle_arena_causeway,battle_arena_tideline,causeway_c02_profile_against_the_lagoon,causeway_c08_drownbell_disc_approach,drownbell_flood,battle_boss_intro_drownbell,haluna_h01_village_from_sea,haluna_h10_dock_night,field_objective_line,field_interact_prompt,field_area_title,field_tip_card,dialogue_continue; why: M3-ENV-701 set dressing in Haluna, the causeway and the two arenas (the five field/dialogue shots frame Haluna's lane 1)
+
 ## STATE AT HANDOVER (2026-10-25)
 
 **HANDOVER DONE @ 1fee4436** (`claude/env-art`; the code is merge-ready at d065835e, and only docs changed after it).
