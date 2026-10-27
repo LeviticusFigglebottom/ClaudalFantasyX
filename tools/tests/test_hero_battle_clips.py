@@ -119,7 +119,7 @@ class TestHeroBattleClips(unittest.TestCase):
                                              r'tracks/\d+/enabled = true\ntracks/\d+/path = NodePath\("([^"]+)"\)', sub):
                     node, _, bone = path.partition(":")
                     self.assertEqual(node, f"{root}/Skeleton3D", f"{hero} {clip} {path}")
-                    self.assertIn(bone, hero_clips.BONES, f"{hero} {clip} {path}")
+                    self.assertIn(bone, self.sk[hero].keyed, f"{hero} {clip} {path}")  # M1-CHR-15: plus helpers
                     if kind == "position_3d":
                         self.assertEqual(bone, hero_clips.HIPS, f"{hero} {clip}")
                 hips = [np.asarray(p.get("hips", (0.0, 0.0, 0.0)), dtype=float) for _t, p in self._keys(hero, clip)]

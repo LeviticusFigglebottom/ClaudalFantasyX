@@ -11,7 +11,7 @@ import numpy as np
 from asha_mesh import Part, tube, uv_sphere
 
 TAG_STAFF = 61
-STAFF_OUT = 0.010  # m: the shaft sits this far out from her side of the fist's centre line (M1-CHR-14)
+STAFF_OUT = 0.016  # m: the shaft sits this far out from her side of the fist's centre line (M1-CHR-14; M1-CHR-15: 1 -> 1.6 cm, clear of the wrist with her staff arm wider)
 
 
 def staff(lm) -> Part:

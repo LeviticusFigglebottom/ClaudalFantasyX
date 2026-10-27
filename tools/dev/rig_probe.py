@@ -13,8 +13,10 @@ rest TRS), and computes linear-blend-skinned vertex positions for a pose, exactl
 
 Poses come from `assets_src/characters/asha/hero_clips.py` (the same functions that write the AnimationLibrary the
 game plays, so a pose here is a frame of the shipped clip): the rest pose, every N-th key of every clip of the hero,
-and the stage's world-axis test poses (`asha_extreme_pose.tscn`, composed like `AshaStage._apply_world_pose`). Bones
-the clips do not key (fingers, eyes, props, sash tails) stay at their rest local transform and inherit.
+and the stage's world-axis test poses (`asha_extreme_pose.tscn`, composed like `AshaStage._apply_world_pose`, then
+the helper bones posed as `HeroHelperBones.drive` does, M1-CHR-15). Bones the clips do not key (fingers, eyes, props,
+sash tails) stay at their rest local transform and inherit; the helper bones (skirt panels, shoulder correctives) are
+keyed by every clip.
 
 Three checks (thresholds in `tools/dev/rig_checks.json`, per-hero overrides under "heroes"):
 
@@ -398,12 +400,13 @@ class Rig:
     def globals(self, local_q: dict | None = None, hips_t=None) -> list[np.ndarray]:
         """Global 4x4 of every node for local rotations {bone name: quaternion} (+ the hips translation)."""
         local_q = local_q or {}
+        scales = local_q.get(hero_clips.SCALE_KEY, {})  # M1-CHR-15: the skirt panels' floor gathers
         g: list[np.ndarray | None] = [None] * len(self.names)
         hips = self.index.get(hero_clips.HIPS)
         for i in self.order:
             q = local_q.get(self.names[i], self.rest_q[i])
             t = hips_t if (i == hips and hips_t is not None) else self.rest_t[i]
-            m = trs(t, q, self.rest_s[i])
+            m = trs(t, q, np.asarray(scales.get(self.names[i], self.rest_s[i]), dtype=float))
             g[i] = m if self.parent[i] < 0 else g[self.parent[i]] @ m
         return g
 
@@ -469,6 +472,8 @@ def world_pose_local(rig: Rig, world: dict) -> dict:
         pq = np.array([0.0, 0.0, 0.0, 1.0]) if p < 0 else gq(p)
         lq = hero_clips.qmul(hero_clips.qinv(pq), new)
         local[bone] = lq / np.linalg.norm(lq)
+    # M1-CHR-15: the stage then poses the helper bones from the rest (HeroHelperBones.drive)
+    local.update(hero_clips.helper_locals(rig.skeleton, local))
     return local
 
 
@@ -498,7 +503,7 @@ def clip_poses(rig: Rig, every: int, clips: list | None = None, max_samples: int
             tt = (t % length) if loop else t
             pose = hero_clips.staff_hold(pose_fn(clip, tt, length, sk, persona), persona)
             turns = {b: hero_clips.qeuler(v) for b, v in pose.items() if b != "hips"}
-            local = sk.local_pose(turns)
+            local = sk.local_pose(turns, pose.get("hips"))
             hips = sk.rest_t[hero_clips.HIPS] + np.asarray(pose.get("hips", (0.0, 0.0, 0.0)), dtype=float)
             out.append(Pose(f"{clip}@{f}", local, hips, "clip"))
     return out

@@ -50,7 +50,7 @@ def _tracks(sub: str) -> dict:
     for ti, kind in re.findall(r'tracks/(\d+)/type = "(\w+)"', sub):
         path = re.search(rf'tracks/{ti}/path = NodePath\("([^"]+)"\)', sub).group(1)
         vals = re.search(rf"tracks/{ti}/keys = PackedFloat32Array\(([^)]*)\)", sub).group(1).split(", ")
-        width = {"position_3d": 5, "rotation_3d": 6, "blend_shape": 3}[kind]
+        width = {"position_3d": 5, "rotation_3d": 6, "scale_3d": 5, "blend_shape": 3}[kind]
         out[(kind, path)] = [tuple(vals[i + 2:i + width]) for i in range(0, len(vals), width)]
     return out
 

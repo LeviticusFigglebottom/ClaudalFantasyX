@@ -162,9 +162,11 @@ class Skeleton:
         self.hip_w = float(abs(self.g_t["DEF-thigh.L"][0] - self.g_t["DEF-thigh.R"][0]))
         self.shoulder_w = float(abs(self.g_t["DEF-upper_arm.L"][0] - self.g_t["DEF-upper_arm.R"][0]))
         self.ankle_w = float(abs(self.g_t["DEF-foot.L"][0] - self.g_t["DEF-foot.R"][0]))
+        helpers_init(self, glb, nodes, parent)  # M1-CHR-15: the skirt and shoulder helper bones, if the GLB has them
 
-    def local_pose(self, turns: dict) -> dict:
-        """World-axis turns (bone -> quaternion) -> local rotations, parents first."""
+    def local_pose(self, turns: dict, hips=None) -> dict:
+        """World-axis turns (bone -> quaternion) -> local rotations, parents first. `hips` is the pose's hips offset
+        (m, from rest): the skirt panels gather on the floor (M1-CHR-15); their scales go under the "_scale" key."""
         g = {}
         out = {}
         for name in BONES:
@@ -176,6 +178,7 @@ class Skeleton:
             g[name] = gq
             lq = qmul(qinv(pg), gq)
             out[name] = lq / np.linalg.norm(lq)
+        helper_pose(self, g, out, hips)  # M1-CHR-15
         return out
 
 
@@ -224,7 +227,7 @@ def stand(persona: dict) -> dict:
          "DEF-spine.001": (lean * 0.4, 0.0, 0.0), "DEF-spine.006": (-lean * 0.3, 0.0, 0.0),
          "DEF-thigh.L": (-lean * 0.5, 0.0, 0.0), "DEF-thigh.R": (-lean * 0.5, 0.0, 0.0)}
     if persona["staff"]:
-        p["DEF-upper_arm.R"] = (-6.0, 0.0, a - 8.0)  # the staff a little forward of the body (asha.md §2.3)
+        p["DEF-upper_arm.R"] = (-6.0, 0.0, a - 14.0)  # the staff a little forward of the body (asha.md §2.3)
         p["DEF-forearm.R"] = (-28.0, 0.0, 0.0)
     if persona.get("book"):
         p["DEF-forearm.R"] = (-BOOK_FOREARM, 0.0, 0.0)  # ysolde.md §10: the shut book rests against the right hip
@@ -271,6 +274,26 @@ def spear_level(sk: Skeleton, persona: dict) -> dict:
     })
 
 
+# M1-CHR-15: spear_level and lower_spear run one path, v = 0 (planted) to 1 (levelled), over SPEAR_MOVE of the clip.
+# The arm swings out and up (SPEAR_LIFT, peaking mid-path) while the hand turns the spear, so neither the shaft (at the
+# wrist) nor its foot (at his right foot) passes through him; the hand turns over SPEAR_TURN of the path.
+SPEAR_MOVE = 0.75
+SPEAR_LIFT = {"DEF-upper_arm.R": (-12.0, 0.0, -10.0), "DEF-forearm.R": (-40.0, 0.0, 0.0)}
+SPEAR_TURN = (1.0 / 6.0, 5.0 / 6.0)
+SPEAR_ARMS = 5.0 / 6.0
+
+
+def spear_path(sk: Skeleton, persona: dict, v: float) -> dict:
+    base, lev = planted(sk, persona), spear_level(sk, persona)
+    out = add(blend(base, lev, smooth(v / SPEAR_ARMS)), _scale_pose(SPEAR_LIFT, math.sin(math.pi * v)))
+    out["DEF-hand.R"] = blend(base, lev, smooth((v - SPEAR_TURN[0]) / (SPEAR_TURN[1] - SPEAR_TURN[0])))["DEF-hand.R"]
+    return out
+
+
+def _scale_pose(p: dict, s: float) -> dict:
+    return {k: tuple(np.asarray(v, dtype=float) * s) for k, v in p.items()}
+
+
 def sit(sk: Skeleton, persona: dict) -> dict:
     """Seated on a step at knee height, the knees apart, leaning a little forward with the left forearm on the
     thigh; the spear stays upright in the right hand (Ch3)."""
@@ -296,7 +319,7 @@ def kneel(sk: Skeleton, persona: dict) -> dict:
          "DEF-spine.001": (14.0, 0.0, 0.0), "DEF-spine.002": (12.0, 0.0, 0.0), "DEF-spine.003": (6.0, 0.0, 0.0),
          "DEF-spine.005": (6.0, 0.0, 0.0), "DEF-spine.006": (16.0, 0.0, 0.0),
          "DEF-upper_arm.L": (-34.0, 0.0, -a + 6.0), "DEF-forearm.L": (-38.0, 0.0, 0.0),
-         "DEF-upper_arm.R": (-10.0, 0.0, a - 6.0), "DEF-forearm.R": (-30.0, 0.0, 0.0)}
+         "DEF-upper_arm.R": (-10.0, 0.0, a - 12.0), "DEF-forearm.R": (-30.0, 0.0, 0.0)}
     return p
 
 
@@ -404,18 +427,9 @@ def pose_at(clip: str, t: float, length: float, sk: Skeleton, persona: dict) -> 
                         "DEF-upper_arm.L": (-18.0 * e, -10.0 * e, 16.0 * e),
                         "DEF-forearm.L": (-78.0 * e, -72.0 * e, 0.0), "DEF-hand.L": (0.0, -20.0 * e, -10.0 * e)})
     if clip == "spear_level":
-        # M1-CHR-14: the arms lift before the hand turns the spear level (turned together, its foot swept through
-        # his right foot)
-        out = blend(planted(sk, persona), spear_level(sk, persona), smooth(u / 0.75))
-        turn = blend(planted(sk, persona), spear_level(sk, persona), smooth((u - 0.2) / 0.55))
-        out["DEF-hand.R"] = turn["DEF-hand.R"]
-        return out
+        return spear_path(sk, persona, min(u / SPEAR_MOVE, 1.0))  # M1-CHR-15: the path below
     if clip == "lower_spear":
-        # and back: the spear turns upright before the arms come down
-        out = blend(spear_level(sk, persona), planted(sk, persona), smooth(u / 0.8))
-        turn = blend(spear_level(sk, persona), planted(sk, persona), smooth(u / 0.55))
-        out["DEF-hand.R"] = turn["DEF-hand.R"]
-        return out
+        return spear_path(sk, persona, 1.0 - min(u / SPEAR_MOVE, 1.0))  # and back along it
     if clip == "palms_level":
         # "Be level": the left palm comes up flat at chest height, then sweeps slowly out, level; the head bows
         e = smooth(u / 0.45)
@@ -1912,6 +1926,338 @@ def write_locomotion_data() -> None:
 
 
 # ---------------------------------------------------------------------------------------------
+# M1-CHR-15: helper bones -- the skirt drape and the shoulder correctives. The builds add extra deform bones that no
+# pose names (build_asha.helper_bone_specs); every clip keys them from its own pose, so they are a deterministic
+# drape baked into the clips. A skeleton without them (Sefir, the villagers) gets no extra tracks, and its library
+# does not change.
+# ---------------------------------------------------------------------------------------------
+HELPER_DATA = ROOT / "game" / "data" / "characters" / "helper_bones.json"  # shared with hero_helper_bones.gd
+_HELP = json.loads(HELPER_DATA.read_text(encoding="utf-8"))
+ARMPIT_BONE = _HELP["armpit"]["bone_prefix"]  # DEF-armpit.L / .R: at the shoulder joint, turning ARMPIT_SHARE
+ARMPIT_DRIVER = _HELP["armpit"]["driver_prefix"]  # of the upper arm's own turn
+ARMPIT_SHARE = float(_HELP["armpit"]["share"])
+ARMPIT_RAISE_FULL = math.radians(float(_HELP["armpit"]["raise_full_deg"]))
+HELPER_KEY_TOL = math.radians(float(_HELP["key_tolerance_deg"]))  # a helper key a straight slerp gives is dropped
+# DEF-skirt_<k>: sector k's panel from its pivot to the panels' joint; DEF-skirt_<k>.001: on to the hem. The skirt is
+# solved against its own cloth: each panel bone swings out (about its pivot, in the vertical plane through its sector)
+# by the least angle that keeps every cloth vertex it carries (SKIRT_CLOTH_MIN of its weight or more) within
+# SKIRT_SLACK of its rest distance (capped at SKIRT_CLEAR) from the axis of every leg segment; see the data file.
+_SK = _HELP["skirt"]
+SKIRT_BONE = _SK["bone_prefix"]
+SKIRT_LEG_SEGMENTS = tuple(tuple(x) for x in _SK["leg_segments"])
+SKIRT_CLOTH_MESH = _SK["cloth_mesh"]
+SKIRT_CLOTH_MIN = float(_SK["cloth_min_weight"])
+SKIRT_CLEAR = float(_SK["clear_m"])
+SKIRT_SLACK = float(_SK["slack_m"])
+SKIRT_MAX_SWING = float(_SK["max_swing_deg"])
+SKIRT_LAG = float(_SK["lag_deg_per_45"])
+SKIRT_GRID = float(_SK["grid_deg"])
+SKIRT_BISECT = int(_SK["bisect"])
+SKIRT_FLOOR = float(_SK["floor_clear_m"])
+SKIRT_GATHER_MIN = float(_SK["gather_min"])
+SKIRT_FLARE = float(_SK["gather_flare"])
+SKIRT_OVER_FROM = math.radians(float(_SK["overhang_from_deg"]))
+SKIRT_OVER_EASE = math.radians(float(_SK["overhang_ease_deg"]))
+SKIRT_OVER_MARGIN = float(_SK["overhang_margin_m"])
+SKIRT_SUPPORT_SIDE = float(_SK["support_lateral_m"])
+SKIRT_SUPPORT_STEPS = int(_SK["support_samples"])
+SCALE_KEY = "_scale"  # local_pose's entry for the helper bones' scales: {bone: (x, y, z)}
+
+
+def reduce_keys(keys: list) -> list:
+    """A helper bone's (t, quaternion) keys with every key dropped that the slerp between the keys kept either side
+    of it reproduces within HELPER_KEY_TOL (greedy, from the first key; the first and last keys stay). The helpers
+    follow the body, so in a still stretch of a clip they hold one value: this keeps the libraries small."""
+    if len(keys) < 3:
+        return keys
+
+    def ang(a: np.ndarray, b: np.ndarray) -> float:
+        return 2.0 * math.acos(min(1.0, abs(float(np.dot(a, b)))))
+
+    def slerp(a: np.ndarray, b: np.ndarray, t: float) -> np.ndarray:
+        if float(np.dot(a, b)) < 0.0:
+            b = -b
+        th = math.acos(min(1.0, float(np.dot(a, b))))
+        if th < 1e-9:
+            return a
+        return (math.sin((1.0 - t) * th) * a + math.sin(t * th) * b) / math.sin(th)
+
+    out, a = [keys[0]], 0
+    for b in range(2, len(keys)):
+        ta, qa = keys[a][0], np.asarray(keys[a][1], dtype=float)
+        tb, qb = keys[b][0], np.asarray(keys[b][1], dtype=float)
+        if any(ang(slerp(qa, qb, (keys[i][0] - ta) / (tb - ta)), np.asarray(keys[i][1], dtype=float)) > HELPER_KEY_TOL
+               for i in range(a + 1, b)):
+            out.append(keys[b - 1])
+            a = b - 1
+    out.append(keys[-1])
+    return out
+
+
+def _flat_keys(keys: list) -> list:
+    """(t, value) keys with every key dropped that repeats both neighbours' value (first and last stay)."""
+    return [(t, list(v)) for i, (t, v) in enumerate(keys)
+            if i in (0, len(keys) - 1) or not (keys[i - 1][1] == v == keys[i + 1][1])]
+
+
+def qpow(q: np.ndarray, s: float) -> np.ndarray:
+    """The rotation q scaled to s of its angle (shortest way)."""
+    q = q / np.linalg.norm(q)
+    if q[3] < 0.0:
+        q = -q
+    ang = 2.0 * math.acos(min(1.0, float(q[3])))
+    if ang < 1e-12:
+        return np.array([0.0, 0.0, 0.0, 1.0])
+    return qaxis(q[:3] / np.linalg.norm(q[:3]), math.degrees(ang) * s)
+
+
+def helpers_init(sk: "Skeleton", glb: Path, nodes: list, parent: dict) -> None:
+    """Record the GLB's helper bones on the skeleton: names (in node order), rest rotation and translation, parent;
+    and, for the skirt panels, the cloth each one carries (rest positions relative to the hips joint)."""
+    sk.helpers = []
+    for i, n in enumerate(nodes):
+        name = n.get("name", "")
+        if not name.startswith((SKIRT_BONE, ARMPIT_BONE)):
+            continue
+        pn = nodes[parent[i]]["name"]
+        sk.helpers.append(name)
+        sk.rest_q[name] = np.array(n.get("rotation", [0.0, 0.0, 0.0, 1.0]), dtype=float)
+        sk.rest_t[name] = np.array(n.get("translation", [0.0, 0.0, 0.0]), dtype=float)
+        sk.parent[name] = pn
+    sk.keyed = BONES + sk.helpers
+    sk.skirt = sorted(h for h in sk.helpers if h.startswith(SKIRT_BONE) and h.count(".") == 0)
+    for h in sk.skirt:
+        assert sk.parent[h] == HIPS and h + ".001" in sk.helpers, h
+    for h in sk.helpers:
+        if h.startswith(ARMPIT_BONE):
+            assert sk.parent[h] == sk.parent[ARMPIT_DRIVER + h[-1]], h
+    if sk.skirt:
+        sk.skirt_cloth = _panel_cloth(sk, glb, sk.skirt + [h + ".001" for h in sk.skirt])
+
+
+def _panel_cloth(sk: "Skeleton", glb: Path, bones: list) -> dict:
+    """bone -> (n, 3) rest positions, relative to the hips joint, of the cloth vertices with at least SKIRT_CLOTH_MIN
+    of their weight on that bone (so a vertex between two panels counts for both)."""
+    js, bin_ = asha_glb.read_glb(glb)
+    names = [js["nodes"][j]["name"] for j in js["skins"][0]["joints"]]
+    out = {b: [] for b in bones}
+    mesh = asha_glb.mesh_by_name(js, SKIRT_CLOTH_MESH)
+    for prim in mesh["primitives"]:
+        a = prim["attributes"]
+        P = asha_glb.accessor(js, bin_, a["POSITION"]).astype(float)
+        J = asha_glb.accessor(js, bin_, a["JOINTS_0"]).astype(int)
+        W = asha_glb.accessor(js, bin_, a["WEIGHTS_0"]).astype(float)
+        if js["accessors"][a["WEIGHTS_0"]].get("normalized") and W.max() > 1.0:
+            W = W / (255.0 if W.max() <= 255 else 65535.0)
+        for i in range(len(P)):
+            for k in range(4):
+                b = names[int(J[i, k])]
+                if b in out and W[i, k] >= SKIRT_CLOTH_MIN:
+                    out[b].append(P[i] - sk.g_t[HIPS])
+    return {b: np.array(v).reshape(-1, 3) for b, v in out.items()}
+
+
+def _leg_segments(sk: "Skeleton", g: dict) -> tuple:
+    """(heads, tails), each (n, 3): the SKIRT_LEG_SEGMENTS of both legs, relative to the hips joint, for global
+    rotations g."""
+    pos = {HIPS: np.zeros(3)}
+    for name in BONES[1:]:
+        p = sk.parent[name]
+        pos[name] = pos[p] + qrot(g[p], sk.rest_t[name])
+    a = [pos[f"{x}.{s}"] for s in ("L", "R") for x, _ in SKIRT_LEG_SEGMENTS]
+    b = [pos[f"{y}.{s}"] for s in ("L", "R") for _, y in SKIRT_LEG_SEGMENTS]
+    return np.array(a), np.array(b)
+
+
+def _seg_dist(C: np.ndarray, A: np.ndarray, B: np.ndarray) -> np.ndarray:
+    """(n, m) distances from points C (n, 3) to segments A-B (m, 3)."""
+    AB = B - A
+    t = np.einsum("nmk,mk->nm", C[:, None, :] - A[None], AB) / np.maximum((AB * AB).sum(axis=1), 1e-12)
+    Q = A[None] + np.clip(t, 0.0, 1.0)[..., None] * AB[None]
+    return np.linalg.norm(C[:, None, :] - Q, axis=2)
+
+
+def _rot_about(C: np.ndarray, pivot: np.ndarray, axis: np.ndarray, ang: float) -> np.ndarray:
+    """Points C turned by `ang` radians about the line through `pivot` along the unit `axis` (Rodrigues)."""
+    v = C - pivot
+    c, s = math.cos(ang), math.sin(ang)
+    return pivot + v * c + np.cross(axis, v) * s + np.outer(v @ axis, axis) * (1.0 - c)
+
+
+def _swing(C0: np.ndarray, place, A: np.ndarray, B: np.ndarray, A0: np.ndarray, B0: np.ndarray) -> float:
+    """Least angle in [0, SKIRT_MAX_SWING] at which the cloth `place(angle)` keeps its rest clearance from the legs
+    (see SKIRT_SLACK): coarse steps, then bisection; when no angle clears, the one that comes nearest."""
+    if not len(C0):
+        return 0.0
+    need = np.minimum(_seg_dist(C0, A0, B0), SKIRT_CLEAR) - SKIRT_SLACK
+
+    def margin(ang: float) -> float:
+        return float((_seg_dist(place(ang), A, B) - need).min())
+
+    if margin(0.0) >= 0.0:
+        return 0.0
+    top = math.radians(SKIRT_MAX_SWING)
+    step = math.radians(SKIRT_GRID)
+    best, best_m = 0.0, margin(0.0)
+    lo = 0.0
+    ang = step
+    while ang <= top + 1e-9:
+        m = margin(ang)
+        if m >= 0.0:
+            hi = ang
+            for _ in range(SKIRT_BISECT):
+                mid = 0.5 * (lo + hi)
+                if margin(mid) >= 0.0:
+                    hi = mid
+                else:
+                    lo = mid
+            return hi
+        if m > best_m:
+            best, best_m = ang, m
+        lo = ang
+        ang += step
+    return best
+
+
+def skirt_solve(sk: "Skeleton", g: dict, hips=None) -> dict:
+    """{upper panel bone: (outward axis, upper swing, lower swing, gather)} in the pelvis's frame, radians, for the
+    pose's global rotations g and hips offset `hips` (m, from rest; None = at rest). The gather is the lower panel's
+    length scale (SKIRT_GATHER_MIN..1) that keeps its cloth SKIRT_FLOOR above the floor: floor-length cloth that
+    cannot hang its full length (kneeling, crouching) pools on the ground rather than fanning out.
+    AshaStage and the cutscene stages run the same solve (game/characters/hero_helper_bones.gd)."""
+    rq_h = sk.rest_q[HIPS]
+    inv_dp = qinv(qmul(g[HIPS], qinv(rq_h)))  # the pelvis's turn: the skirt is solved in the pelvis's frame
+    A, B = _leg_segments(sk, g)
+    A = np.array([qrot(inv_dp, x) for x in A])
+    B = np.array([qrot(inv_dp, x) for x in B])
+    if not hasattr(sk, "_rest_legs"):
+        g0 = {}
+        for name in BONES:
+            pn = sk.parent[name]
+            g0[name] = sk.rest_q[name] if pn is None else qmul(g0[pn], sk.rest_q[name])
+        sk._rest_legs = _leg_segments(sk, g0)
+    A0, B0 = sk._rest_legs
+    down = np.array([0.0, -1.0, 0.0])
+    tops, knees, axes, us = [], [], [], []
+    for h in sk.skirt:
+        top = qrot(rq_h, sk.rest_t[h])  # the panel's pivot, relative to the hips joint (rest pelvis frame)
+        tops.append(top)
+        knees.append(top + qrot(qmul(rq_h, sk.rest_q[h]), sk.rest_t[h + ".001"]))  # the lower bone's head at rest
+        u = np.array([top[0], 0.0, top[2]])
+        us.append(u / np.linalg.norm(u))
+        axes.append(np.cross(down, us[-1]))
+    # neighbouring panels share the cloth between them: neither may lag the other by more than SKIRT_LAG per 45 deg
+    lag = math.radians(SKIRT_LAG) / (math.pi / 4)
+    apart = np.arccos(np.clip(np.array(us) @ np.array(us).T, -1.0, 1.0))
+    a1 = np.array([_swing(sk.skirt_cloth[h], lambda ang, C=sk.skirt_cloth[h], t=t, ax=ax: _rot_about(C, t, ax, ang),
+                          A, B, A0, B0) for h, t, ax in zip(sk.skirt, tops, axes)])
+    a1 = np.minimum((a1[None, :] - lag * apart).max(axis=1), math.radians(SKIRT_MAX_SWING))
+    a2 = []
+    for h, t, k, ax, x1 in zip(sk.skirt, tops, knees, axes, a1):
+        C2 = sk.skirt_cloth[h + ".001"]
+        tip = _rot_about(k[None], t, ax, x1)[0]
+        a2.append(_swing(C2, lambda ang, C2=C2, k=k, ax=ax, tip=tip: _rot_about(C2, k, ax, ang) + (tip - k),
+                         A, B, A0, B0))
+    a2 = np.minimum((np.array(a2)[None, :] - lag * apart).max(axis=1), math.radians(SKIRT_MAX_SWING))
+    dp = qmul(g[HIPS], qinv(rq_h))  # back from the pelvis's frame to the skeleton's
+    base_y = float(sk.g_t[HIPS][1]) + (0.0 if hips is None else float(hips[1]))
+    up = np.array([0.0, 1.0, 0.0])
+    gathers = []
+    for h, t, k, ax, x1, x2 in zip(sk.skirt, tops, knees, axes, a1, a2):
+        bone = qrot(qmul(rq_h, qmul(sk.rest_q[h], sk.rest_q[h + ".001"])), up)  # the lower bone's rest axis
+        V = sk.skirt_cloth[h + ".001"] - k
+        # elementwise only (no dot products): the same bits on every numpy SIMD path
+        along = (V[:, 0] * bone[0] + V[:, 1] * bone[1] + V[:, 2] * bone[2])[:, None] * bone[None, :]
+        tip = _rot_about(k[None], t, ax, x1)[0]
+        c2, s2 = math.cos(x2), math.sin(x2)
+        x, y, z, w = (float(c) for c in dp)
+        ry = (2.0 * (x * y + w * z), 1.0 - 2.0 * (x * x + z * z), 2.0 * (y * z - w * x))  # dp's matrix, row y
+
+        def low(sc: float, V=V, along=along, ax=ax, tip=tip, c2=c2, s2=s2, ry=ry) -> float:
+            v = V + (sc - 1.0) * along  # Rodrigues about the knee, elementwise
+            va = v[:, 0] * ax[0] + v[:, 1] * ax[1] + v[:, 2] * ax[2]
+            cr = np.stack([ax[1] * v[:, 2] - ax[2] * v[:, 1], ax[2] * v[:, 0] - ax[0] * v[:, 2],
+                           ax[0] * v[:, 1] - ax[1] * v[:, 0]], axis=1)
+            P = tip + v * c2 + cr * s2 + va[:, None] * ax[None, :] * (1.0 - c2)
+            return base_y + float((P[:, 0] * ry[0] + P[:, 1] * ry[1] + P[:, 2] * ry[2]).min())
+
+        sc = 1.0
+        if len(V) and x2 > SKIRT_OVER_FROM:  # lying out over the legs: what runs past them would fall, so gather it
+            d = _rot_about(bone[None], np.zeros(3), ax, x2)[0]  # the lower panel's posed direction
+            reach = 0.0  # how far along it the legs reach (their points beside the panel)
+            for f in range(SKIRT_SUPPORT_STEPS + 1):
+                Q = A + (B - A) * (f / SKIRT_SUPPORT_STEPS) - tip
+                side = np.abs(Q[:, 0] * ax[0] + Q[:, 1] * ax[1] + Q[:, 2] * ax[2])
+                proj = Q[:, 0] * d[0] + Q[:, 1] * d[1] + Q[:, 2] * d[2]
+                if (side < SKIRT_SUPPORT_SIDE).any():
+                    reach = max(reach, float(proj[side < SKIRT_SUPPORT_SIDE].max()))
+            full = float((V[:, 0] * bone[0] + V[:, 1] * bone[1] + V[:, 2] * bone[2]).max())  # the panel's length
+            want = min(1.0, max(SKIRT_GATHER_MIN, (reach + SKIRT_OVER_MARGIN) / max(full, 1e-6)))
+            sc = 1.0 - smooth(float(x2 - SKIRT_OVER_FROM) / SKIRT_OVER_EASE) * (1.0 - want)
+        if len(V) and low(sc) < SKIRT_FLOOR:
+            lo_s, hi_s = SKIRT_GATHER_MIN, sc
+            if low(lo_s) < SKIRT_FLOOR:
+                sc = lo_s
+            else:
+                for _ in range(SKIRT_BISECT):
+                    mid = 0.5 * (lo_s + hi_s)
+                    if low(mid) >= SKIRT_FLOOR:
+                        lo_s = mid
+                    else:
+                        hi_s = mid
+                sc = lo_s
+        gathers.append(sc)
+    return {h: (ax, float(x1), float(x2), sc) for h, ax, x1, x2, sc in zip(sk.skirt, axes, a1, a2, gathers)}
+
+
+def helper_pose(sk: "Skeleton", g: dict, out: dict, hips=None) -> None:
+    """Local rotations of the helper bones, from the pose's global rotations g of the keyed bones and its hips offset
+    (into out; the lower skirt panels' scales under out[SCALE_KEY])."""
+    if not sk.helpers:
+        return
+    for h in sk.helpers:
+        if h.startswith(ARMPIT_BONE):
+            drv = ARMPIT_DRIVER + h[-1]
+            d = qmul(out[drv], qinv(sk.rest_q[drv]))  # the upper arm's own turn, in the shared parent's frame
+            up = np.array([0.0, 1.0, 0.0])  # the bone's own axis
+            lift = math.asin(max(-1.0, min(1.0, float(qrot(g[drv], up)[1])))) - math.asin(
+                max(-1.0, min(1.0, float(qrot(qmul(g[sk.parent[drv]], sk.rest_q[drv]), up)[1]))))
+            share = ARMPIT_SHARE + (1.0 - ARMPIT_SHARE) * smooth(lift / ARMPIT_RAISE_FULL)
+            q = qmul(qpow(d, share), sk.rest_q[h])
+            out[h] = q / np.linalg.norm(q)
+    if not sk.skirt:
+        return
+    rq_h = sk.rest_q[HIPS]
+    scales = out.setdefault(SCALE_KEY, {})
+    for h, (axis, a1, a2, sc) in skirt_solve(sk, g, hips).items():
+        lo = h + ".001"
+        flare = 1.0 + SKIRT_FLARE * (1.0 - sc)  # pooled cloth spreads a little sideways
+        scales[lo] = (round(flare, 6), round(sc, 6), round(flare, 6))
+        g1 = qmul(rq_h, sk.rest_q[h])  # the upper bone's rest rotation in the pelvis's frame
+        loc1 = qmul(qinv(rq_h), qmul(qaxis(axis, math.degrees(a1)), g1))
+        out[h] = loc1 / np.linalg.norm(loc1)
+        loc2 = qmul(qinv(g1), qmul(qaxis(axis, math.degrees(a2 - a1)), qmul(g1, sk.rest_q[lo])))
+        out[lo] = loc2 / np.linalg.norm(loc2)
+
+
+def helper_locals(sk: "Skeleton", local: dict) -> dict:
+    """The helper bones' local rotations for a pose given as local rotations of (some of) the keyed bones, the rest
+    at rest: what game/characters/hero_helper_bones.gd sets after a stage's hand-set pose (rig_probe's stage poses)."""
+    if not sk.helpers:
+        return {}
+    g, out = {}, {}
+    for name in BONES:
+        p = sk.parent[name]
+        out[name] = np.asarray(local.get(name, sk.rest_q[name]), dtype=float)
+        g[name] = out[name] if p is None else qmul(g[p], out[name])
+    helper_pose(sk, g, out)
+    res = {h: out[h] for h in sk.helpers}
+    if out.get(SCALE_KEY):
+        res[SCALE_KEY] = out[SCALE_KEY]
+    return res
+
+
+# ---------------------------------------------------------------------------------------------
 # AnimationLibrary text resource
 # ---------------------------------------------------------------------------------------------
 def fmt(x: float) -> str:
@@ -1930,15 +2276,18 @@ def build(hero: str) -> str:
         loop = clip in LOOPS
         n = int(round(length * FPS))
         times = [i / FPS for i in range(n + 1)]
-        keys_q = {b: [] for b in BONES}
+        keys_q = {b: [] for b in sk.keyed}  # M1-CHR-15: the body bones, then the GLB's helper bones
         keys_p = []
+        keys_s: dict = {}  # M1-CHR-15: the lower skirt panels' gathers
         for t in times:
             tt = (t % length) if loop else t
             pose = staff_hold(pose_at(clip, tt, length, sk, persona), persona)
             turns = {b: qeuler(v) for b, v in pose.items() if b != "hips"}
-            local = sk.local_pose(turns)
-            for b in BONES:
+            local = sk.local_pose(turns, pose.get("hips"))
+            for b in sk.keyed:
                 keys_q[b].append((t, local[b]))
+            for b, v in local.get(SCALE_KEY, {}).items():
+                keys_s.setdefault(b, []).append((t, v))
             keys_p.append((t, sk.rest_t[HIPS] + np.asarray(pose.get("hips", (0.0, 0.0, 0.0)), dtype=float)))
         lines = [f'[sub_resource type="Animation" id="clip_{ci}"]', f'resource_name = &"{clip}"',
                  f"length = {fmt(length)}", f"loop_mode = {1 if loop else 0}", f"step = {fmt(1.0 / FPS)}"]
@@ -1946,6 +2295,9 @@ def build(hero: str) -> str:
         lines += loco_markers(hero, clip, sk)  # M2-CHR-12: the footstep markers
         tracks = [("position_3d", HIPS, [(t, list(p)) for t, p in keys_p])]
         tracks += [("rotation_3d", b, [(t, list(q)) for t, q in keys_q[b]]) for b in BONES]
+        tracks += [("rotation_3d", b, [(t, list(q)) for t, q in reduce_keys(keys_q[b])]) for b in sk.helpers]
+        # every clip keys every gather (a still one is two keys), so no clip leaves another's gather on the bone
+        tracks += [("scale_3d", b, _flat_keys(keys_s[b])) for b in sorted(keys_s)]
         if persona.get("book") and clip in BLEND_SHAPES:  # ysolde: the book opens on its shape
             node, shape = BLEND_SHAPES[clip]
             tracks.append(("blend_shape", f"/{node}:{shape}", [(t, [book_fan_weight(clip, t)]) for t in times]))
