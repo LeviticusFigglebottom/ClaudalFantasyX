@@ -324,6 +324,13 @@ ACT3_FINALS: list[tuple] = [
     ("assets_src/music/act3/kite_maiden_flight.py", "assets/audio/music/act3", ["kite_maiden_flight.ogg"], "music"),
 ]
 ACT3_DIR = "assets/audio/music/act3"
+# M3-AUD-859: Act III's SFX the same way (plain git has about 0.5 MiB of its budget left): assets_src/sfx/act3/ ->
+# assets/audio/sfx/act3/, rendered with --act3 too and held for LFS.
+ACT3_SFX: list[tuple] = [
+    ("assets_src/sfx/act3/kite_foley.py", "assets/audio/sfx/act3", _source_files("assets_src/sfx/act3/kite_foley.py"),
+     "sfx_set"),
+]
+ACT3_SFX_DIR = "assets/audio/sfx/act3"
 
 
 def _load(path):
@@ -407,13 +414,13 @@ def main() -> int:
     ap.add_argument("--determinism", action="store_true", help="render twice and compare bytes")
     ap.add_argument("--only", default="", help="only the jobs whose source path contains this text")
     ap.add_argument("--act2", action="store_true", help="Act II's final cues (ACT2_FINALS, Git LFS) instead of JOBS")
-    ap.add_argument("--act3", action="store_true", help="Act III's cues (ACT3_FINALS, Git LFS) instead of JOBS")
+    ap.add_argument("--act3", action="store_true", help="Act III's cues and SFX (ACT3_FINALS, ACT3_SFX: Git LFS) instead of JOBS")
     args = ap.parse_args()
 
     self_test()  # BS.1770 meter sanity (48 kHz coefficients, 997 Hz reference)
 
     lfs = args.act2 or args.act3
-    jobs = [j for j in (ACT2_FINALS if args.act2 else ACT3_FINALS if args.act3 else JOBS)
+    jobs = [j for j in (ACT2_FINALS if args.act2 else ACT3_FINALS + ACT3_SFX if args.act3 else JOBS)
             if not args.only or args.only in j[0]]
     rows, total, new_total, amb_total, ok = [], 0, 0, 0, True
     amb_jobs: dict = {}

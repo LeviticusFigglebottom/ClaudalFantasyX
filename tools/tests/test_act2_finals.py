@@ -42,6 +42,22 @@ class Act2FinalsTest(unittest.TestCase):
             self.assertTrue((ROOT / src).is_file(), src)
         self.assertFalse(any(rel == render_all.ACT3_DIR for _, rel, _, _ in render_all.JOBS))
 
+    def test_every_act3_sfx_renders_from_act3_into_act3(self) -> None:
+        for src, rel_dir, files, kind in render_all.ACT3_SFX:
+            self.assertTrue(src.startswith("assets_src/sfx/act3/"), src)
+            self.assertEqual(rel_dir, render_all.ACT3_SFX_DIR, src)
+            self.assertTrue((ROOT / src).is_file(), src)
+            self.assertIn(kind, ("sfx", "sfx_set"), src)
+        self.assertFalse(any(rel == render_all.ACT3_SFX_DIR for _, rel, _, _ in render_all.JOBS))
+
+    def test_nothing_under_act3_sfx_is_committed_before_lfs(self) -> None:
+        if lfs_routes(render_all.ACT3_SFX_DIR):
+            self.skipTest(".gitattributes routes act3 SFX to LFS (ADR 0039 is live)")
+        tracked = subprocess.run(["git", "ls-files", render_all.ACT3_SFX_DIR], cwd=ROOT, capture_output=True,
+                                 text=True).stdout.split()
+        self.assertEqual([t for t in tracked if t.endswith((".ogg", ".loop.json", ".ogg.import"))], [],
+                         "Act III SFX land with LFS too (M3-AUD-859)")
+
     def test_nothing_under_act3_is_committed_before_lfs(self) -> None:
         if lfs_routes(render_all.ACT3_DIR):
             self.skipTest(".gitattributes routes act3 to LFS (ADR 0039 is live)")
