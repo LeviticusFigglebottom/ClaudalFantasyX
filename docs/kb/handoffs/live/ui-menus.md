@@ -66,3 +66,15 @@ RENDER-REQUEST @ 6454c06c: battle_ch08_stair_hold, battle_hud_preview, battle_sw
 - **Queue: empty or blocked, with reasons.** `taskboard.py` has no `todo` with role ui (there is no `menus` role on the board). Waiting on others: the PC's renders (two RENDER-REQUEST lines); M2-MNU-306 role word (progression); M3-RBL-201 Reefball preview fields (combat); M3-UI-100's running total (M3-C08-02's `ch08_stair_groups_up`); m2-slice's one-line `dismiss()` (M2-UI-202). Not taken without routing: the shrine teleport list (Systems owns the shrine UI) and the Kite world-map menu (M6). **Lead: route the next ui-menus item here, or name one of those two.**
 - 2026-10-27: **PC render gpu/render-ui-5317c0e viewed:** 51 pass (including the cloud-rendered dialogue_voice_over and the four baselines self-approved on 10-25), 25 drift, all battle shots, all the heroes only (the hero battle actors' stance and pose replace big9's hero models; arenas, foes and HUD unchanged). **Re-approved after viewing** (99623a0c), with the PC's llvmpipe metadata.
 RENDER-REQUEST @ 99623a0c: portraits:hullgnaw,scuttler,squall_wing,tide_crawler,undertows_reach; tool: tools/portraits/render.sh --only hullgnaw,scuttler,squall_wing,tide_crawler,undertows_reach; why: PC parity for the five black creatures' portraits rendered in the cloud with light_scale/stage_environment (3ffe83bd). (The ui@6454c06c request, battle_ch08_stair_hold etc., stays queued for after the big11 gate, per the Lead.)
+
+### Queue from the Lead (2026-10-27 17:19): ui-menus also owns combat's, progression's and systems' UI-adjacent work
+| # | Item | State |
+|---|---|---|
+| 1 | M3-RBL-201 Reefball preview fields (engine + HUD) | doing |
+| 2 | M2-MNU-306 Formation role word (characters.json role_key, loc, validator, Formation) | queued |
+| 3 | Shrine teleport list (visited shrines, confirm, fade) | queued |
+| 4 | M3-UI-100 running total (`ch08_stair_groups_up` flag + request to act1-chapters) | queued |
+| 5 | "Parts look primitive" pass: title life, save slots with place/playtime/party portraits, battle result pacing, eased transitions | queued |
+| 6 | Accessibility sweep (100/130 %, colour vision, reduced motion; aspect + pseudo-loc for every new screen) | queued |
+| 7 | Controller and keyboard prompt audit | queued |
+| 8 | Act I UI: area maps Ch4–Ch9, codex and bestiary for the 27 Act I creatures and NPCs | queued |
