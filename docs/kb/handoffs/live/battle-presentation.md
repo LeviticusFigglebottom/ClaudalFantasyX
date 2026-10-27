@@ -151,6 +151,23 @@ RENDER-REQUEST @ c1d1e3e6: battle_boss_intro_hullgnaw,battle_boss_intro_inquisit
 
 RENDER-REQUEST @ db0819b2: battle_hud_preview,battle_swap_menu,battle_victory,battle_statuses,battle_swell_ring,battle_read_panel,battle_opening_banner,battle_swell_modes,battle_vowbound_call,battle_vowbound_out,battle_choreo_melee,battle_choreo_hit,battle_choreo_cast,battle_choreo_support,battle_choreo_read,battle_choreo_ko,battle_choreo_swap,battle_arena_tideline,battle_arena_causeway,battle_choreo_lamp_dive,battle_choreo_toll,battle_choreo_vowbound_rise,battle_choreo_summon,drownbell_flood,battle_swell_chant,battle_swell_brace,battle_swell_glyph,battle_statuses_colorblind,battle_pause,battle_arena_raft,battle_arena_underway,battle_arena_route,battle_arena_derelict,battle_arena_terrace,battle_arena_tideline_dawn,battle_arena_causeway_disc_sunset,battle_arena_causeway_route_afternoon,battle_arena_derelict_deck_night,battle_arena_ash_terrace_lanternfall,battle_arena_oruvel_raft_morning,battle_arena_underway_tower,battle_arena_shoals,battle_arena_camp,battle_arena_wall_head,battle_hud_21x9,battle_hud_16x10,battle_boss_intro_reach; why: one consolidated battle set at the post-big11 head. It covers M3-BPR-401/402/403 (impact, spacing, the sideways line-up), 406 (the Ch8 arena and the Reach intro, both new with no baseline yet), 408 and 409 (the ring over VFX). It **supersedes** the 25dcea24 (second line), 680cd88e, 60b62678 and dcc68922 lines. The boss intros stay on their own FAST-TRACK line (c1d1e3e6).
 
+**MERGE-READY @ e1077bbe** (post-big11), carrying:
+- M3-BPR-401 and 402: the hold fix, the detour, the screen shake setting;
+- M3-BPR-403: the sideways line-up;
+- M3-BPR-404: the card clearance plus the big11 party-clear fix, FAST-TRACK;
+- M3-BPR-406: Ch8 (withdrawals, counters, the arena, the Reach intro, the Breach push-in);
+- M3-BPR-408: the Act II bosses by enemy id;
+- M3-BPR-409: the ring over VFX;
+- M3-C08-100's barks and M2-HER-1114.
+
+**Checks run:** Godot `--filter=battle` 731/0, validate_data 0 errors, taskboard --check, gdlint, gdformat, tools
+test_choreo_validate 21/0.
+**Checks skipped:** coverage (no game/battle core change), Blender.
+**Red until the PC render is approved:** tools test_screenshots, which has no baseline yet for battle_boss_intro_reach
+and battle_arena_wall_head (both in the consolidated request above).
+**Baselines:** 404's four are approved at 89ffba3c. The rest wait on the two open requests (c1d1e3e6 FAST-TRACK, and
+the consolidated one).
+
 **Renders viewed, 2026-10-27 evening:**
 - gpu/render-battle-presentation-25dcea2: four re-approved at 89ffba3c (above).
 - **gpu/render-battle-presentation-680cd88: viewed, NOT approved.** The renders are fine (Rhen meets the crab with the
