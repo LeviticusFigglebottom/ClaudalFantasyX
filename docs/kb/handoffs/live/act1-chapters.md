@@ -88,6 +88,12 @@ cutscene sequencer (`game/cutscene/**`), `game/flow/**` and the playtest fixes.
   - **Queue item 7 note for the Lead:** Act I ends at Ch9 (act_outline.md; Ch9's act card). Ch10 opens Act II (M4), so
     I'm not greyboxing it unless you say so; Act I polish (swaps, casts, cutscene bar) continues.
 
+- **PROGRESS @ b30c2cf2: M3-C08-1210 Coilspire stood upright on its kit (WIP until rendered).** The greybox's flat
+  tiers are now the kit's: the hall, landings at 9/18/27 m, the crown at 35, the gallery at 42.6, the path from the
+  walk's end. Trimesh from the kit's shell/tiers/ground/hut plus ramp chains over the five flights and the path; the
+  trial's gates across flights 1–4, its 14 keys on the kit's flue-keys (wheels spin with the Key blocks), braziers
+  and their lights with the Flame blocks. `--filter=ch08` 19/0; `tools.tests.test_act1_kit_collision` 4 OK.
+
 ### Render requests
 RENDER-REQUEST @ 180510e1: ch04_ferry_deck, ch04_ferry_derelict; why: M3-C04-1204 dresses the Ch4 ferry and derelict with the ferry kit (new shots, no baseline yet)
 RENDER-REQUEST @ 77a6a777: ch09_corrow_strand, ch09_corrow_road, ch08_corrow_arrival, ch08_corrow_stair, ch06_brine_road, ch06_brine_camp; why: M3-C09-1209 puts Ch9 on the Corrow kit (new shots); the Ch8 and Ch6 shots re-checked on the PC after the KitCollision refactor and the big9 merge
@@ -96,3 +102,4 @@ RENDER-REQUEST @ 77a6a777: ch09_corrow_strand, ch09_corrow_road, ch08_corrow_arr
 Ch9 `ch09/corrow_night` onto the Corrow frame (it reuses Corrow's kit and grade, ch09 night), then Ch4 `haluna_wake`,
 Ch5 Pemakar (terraces: trimesh treads + ramps for flights) and Ashcrown, Ch7 Tamsule Bell, Ch1 is slice-polish's.
 When the PC answers the render request above: view the out/diff PNGs, approve, and write the Ch4 MERGE-READY line.
+RENDER-REQUEST @ b30c2cf2: ch08_coilspire_path, ch08_coilspire_hall; why: M3-C08-1210 stands Coilspire upright on its kit (new shots)
