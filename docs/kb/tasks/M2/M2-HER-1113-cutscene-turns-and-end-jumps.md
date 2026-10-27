@@ -24,6 +24,16 @@ clean everywhere (their HeroBody caps the visible turn at 400 deg/s). Every acto
    harbour. ch09_zone.gd says this beat *cuts* her onto the raft, but M2-FP-29's glide moves her across in 0.5 s,
    peaking near 120 m/s, while the shot after the camera cut watches.
 
+**2026-10-27, ONE patch for slice-polish:** `docs/kb/tech/cutscene_walks_combined.patch` replaces both
+`cutscene_no_snap.patch` (this task) and act1-chapters' `cutscene_mark_via.patch` (M3-CIN-1221). Both edit
+`_cue_mark` and CutsceneMotion, and the via patch no longer applied to claude/m2-slice. Cut against claude/m2-slice
+d4921946:
+- `via=`: act1-chapters' polyline walks, merged with slice-polish's newer locomotion tracking (`_locomotion` gets the
+  distance along the path);
+- this task's three fixes;
+- `_flat_dir` moved into CutsceneMotion (`flat_dir`), so the sequencer is 999 lines, under the 1000-line cap;
+- the via helpers' test (test_cutscene_mark_via.gd).
+
 ## Acceptance criteria
 - [ ] Apply `docs/kb/tech/cutscene_no_snap.patch` (on claude/hero-integration; **re-cut 2026-10-27 against claude/m2-slice
       d4921946**, `git apply --check` clean). It does three things:
