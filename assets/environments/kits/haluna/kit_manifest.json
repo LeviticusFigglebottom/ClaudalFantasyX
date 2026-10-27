@@ -557,10 +557,10 @@
         4000,
         200
       ],
-      "bytes": 86072,
+      "bytes": 101152,
       "lods": {
-        "iskarra_arch": 1644,
-        "iskarra_arch-lod1": 108
+        "iskarra_arch": 1924,
+        "iskarra_arch-lod1": 140
       }
     },
     "iskarra_arch_fallen": {
@@ -623,9 +623,9 @@
         1500,
         100
       ],
-      "bytes": 40484,
+      "bytes": 47128,
       "lods": {
-        "iskarra_lamp_column": 678,
+        "iskarra_lamp_column": 818,
         "iskarra_lamp_column-lod1": 60
       }
     },
@@ -634,9 +634,9 @@
         14000,
         600
       ],
-      "bytes": 527380,
+      "bytes": 624296,
       "lods": {
-        "iskarra_plaza": 6036,
+        "iskarra_plaza": 6936,
         "iskarra_plaza-lod1": 144
       }
     },
@@ -656,9 +656,9 @@
         36000,
         2400
       ],
-      "bytes": 591544,
+      "bytes": 629500,
       "lods": {
-        "iskarra_tower_broken": 10424,
+        "iskarra_tower_broken": 10784,
         "iskarra_tower_broken-lod1": 360
       }
     },
@@ -667,9 +667,9 @@
         36000,
         2400
       ],
-      "bytes": 300384,
+      "bytes": 311408,
       "lods": {
-        "iskarra_tower_small": 5504,
+        "iskarra_tower_small": 5600,
         "iskarra_tower_small-lod1": 280
       }
     },
@@ -678,9 +678,9 @@
         36000,
         2400
       ],
-      "bytes": 179824,
+      "bytes": 193300,
       "lods": {
-        "iskarra_tower_small_broken": 3184,
+        "iskarra_tower_small_broken": 3304,
         "iskarra_tower_small_broken-lod1": 168
       }
     },
@@ -689,9 +689,9 @@
         36000,
         2400
       ],
-      "bytes": 1304304,
+      "bytes": 1337364,
       "lods": {
-        "iskarra_tower_spire": 22232,
+        "iskarra_tower_spire": 22544,
         "iskarra_tower_spire-lod1": 664
       }
     },
@@ -700,10 +700,21 @@
         36000,
         2400
       ],
-      "bytes": 631396,
+      "bytes": 662008,
       "lods": {
-        "iskarra_tower_stepped": 11400,
+        "iskarra_tower_stepped": 11688,
         "iskarra_tower_stepped-lod1": 424
+      }
+    },
+    "iskarra_vigil_dressing": {
+      "budget": [
+        9000,
+        500
+      ],
+      "bytes": 221092,
+      "lods": {
+        "iskarra_vigil_dressing": 3048,
+        "iskarra_vigil_dressing-lod1": 60
       }
     },
     "keth_curtain": {

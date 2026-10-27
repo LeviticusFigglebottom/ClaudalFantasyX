@@ -49,3 +49,18 @@ vigil gap in test_iskarra.
 - Budgets: a tower is 36k / 2.4k (it was 16k / 1.2k), because the windows are geometry; the spire is 22k.
 
 ## Review log
+- **2026-10-27 22:40 (env-art): the second pass, per the Lead's direct instruction.**
+  - **Breakup on every tower:**
+    - grime runs under every gallery, wet in the vertex colour and broken round the shaft by noise;
+    - spalled patches where the tile has fallen and the grey cast core shows (`kit_coral_concrete`, 8–30 per
+      tower).
+  - **The plaza:** cracked slabs (halves settled apart) and salt-grass tufts in the joints. The paving keeps every
+    slab within 2.2 m of each cast mark (`CAST_MARKS_LOCAL`, Kerrid's included), whatever the broken edge does.
+  - **`iskarra_vigil_dressing`**, in the plaza's frame:
+    - packs and bedrolls by each mark, and Rhen's and Asha's on the dais;
+    - seven wake-shells laid along the front step's lip, one for each who keeps the vigil;
+    - a broken water jar and its sherds;
+    - salt-grass along the edges, and creepers down the podium's sides.
+  - **Banners:** torn sea-blue banners on the gate's lintel, and a mourning strip on each lamp column.
+  - **No fire anywhere** (ADR 0017): no lit candles or lamps.
+  - **test_iskarra:** seven on the plaza (the cast's actors plus the vigils), every cast mark on stone.

@@ -50,6 +50,8 @@ import kit_common as kc
 M_CERAMIC = "kit_iskarra_ceramic"
 M_CLAD = "kit_iskarra_cladding"
 M_GLAZE = "kit_iskarra_glaze"
+M_CORE_EXPOSED = "kit_coral_concrete"
+M_GRASS = "kit_keth_grass"  # pale salt-grass, two-sided (the Keth seep's; read-only)  # the cast core where the cladding has spalled (M3-ENV-724)
 M_PAVING = "kit_iskarra_paving"
 M_BRONZE = "kit_iskarra_bronze"
 M_GLASS = "kit_salt_glass"
@@ -65,6 +67,7 @@ TRI_BUDGET = {
     "iskarra_drowned": (9000, 400),
     "iskarra_arcade_sunk": (5000, 300),
     "iskarra_far_towers": (14000, 1300),
+    "iskarra_vigil_dressing": (9000, 500),
     "iskarra_crown_fallen": (4000, 300),
     "iskarra_plaza": (14000, 600),
     "iskarra_plaza_rise": (3000, 120),
@@ -83,9 +86,11 @@ WORN = kc.Weathering(moss=0.0, salt=0.6, wet=0.0, erosion=0.6)  # dry above the 
 
 
 def _shaft(mb: kc.MeshBuilder, y0: float, y1: float, r0: float, r1: float, rng, noise, *, lod: bool,
-           top_jagged: float = 0.0, waterline: float | None = None) -> None:
+           top_jagged: float = 0.0, waterline: float | None = None, stains=()) -> None:
     """A fluted ceramic shaft from y0 (radius r0) to y1 (r1), its vertex colours carrying the waterline band
-    (salt and wet below `waterline`+1 m) and wear; `top_jagged` > 0 breaks the top rim into a ragged edge."""
+    (salt and wet below `waterline`+1 m) and wear; `top_jagged` > 0 breaks the top rim into a ragged edge.
+    `stains` (gallery heights, M3-ENV-724): a thousand years of rain run off each ledge in dark streaks, wet in the
+    vertex colour, fading over the 5 m below it, broken round the shaft by noise."""
     na = (FLUTES * 4 if not lod else 12) + 1
     ny = max(2, int((y1 - y0) / (2.0 if not lod else 8.0)) + 1)
     a = np.linspace(0.0, 2 * math.pi, na)
@@ -108,7 +113,12 @@ def _shaft(mb: kc.MeshBuilder, y0: float, y1: float, r0: float, r1: float, rng, 
         wet = np.zeros_like(Y)
         salt = np.zeros_like(Y)
     breakup = noise.fbm(P / 4.0, 2) if not lod else np.full(Y.shape, 0.5)
-    col = np.stack([np.zeros_like(Y), np.clip(salt + 0.15 * breakup, 0, 1), wet, 0.35 + 0.4 * breakup], axis=-1)
+    for g in stains:
+        runs = np.clip((noise.fbm(np.stack([np.cos(A) * 4.0, np.full_like(A, g * 0.1), np.sin(A) * 4.0], -1), 2)
+                        - 0.45) * 3.0, 0.0, 1.0)
+        below = (Y < g - 0.3) * np.clip(1.0 - (g - 0.3 - Y) / 5.0, 0.0, 1.0)
+        wet = np.maximum(wet, 0.55 * runs * below)
+    col = np.stack([np.zeros_like(Y), np.clip(salt + 0.15 * breakup, 0, 1), wet, 0.35 + 0.5 * breakup], axis=-1)
     uv = np.stack([A * (r0 + r1) * 0.5, Y], axis=-1)  # metres: the cladding's tile runs level round the shaft
     uv2 = np.stack([np.full(Y.shape, 0.9), np.full(Y.shape, float(rng.random()))], axis=-1)
     kc.quad_strip(mb, P, mb.material(M_CLAD), uv=uv, col=col, uv2=uv2, flip=True)  # faces out (M3-ENV-724 fix)
@@ -199,6 +209,22 @@ def _storeys(mb: kc.MeshBuilder, galleries, r_at, lod: bool, *, y_top: float = 1
                 _window(mb, 2 * math.pi * (k + off) / n, y, r * 1.03)
 
 
+def _damage(mb: kc.MeshBuilder, rng, y_lo: float, y_hi: float, r_at, n: int, lod: bool) -> None:
+    """Spalled cladding (M3-ENV-724): patches where the glazed tile has fallen and the grey cast core shows, set
+    flush on the shaft (a decal with depth: a thin block, its edges catching the light)."""
+    if lod:
+        return
+    core = mb.material(M_CORE_EXPOSED)
+    for _ in range(n):
+        th = float(rng.uniform(0.0, 2 * math.pi))
+        y = float(rng.uniform(y_lo, y_hi))
+        r = r_at(y) * 1.03 + 0.012
+        w, h = float(rng.uniform(0.35, 1.3)), float(rng.uniform(0.25, 0.9))
+        c = np.array([math.cos(th) * r, y, math.sin(th) * r])
+        kc.rounded_block(mb, c, (0.015, h * 0.5, w * 0.5), core, rot=kc.rot_y(-th) @ kc.rot_x(rng.normal(0, 0.2)),
+                         radius=0.0, seg=1, weather=WORN, variation=float(rng.random()))
+
+
 def _dome(mb: kc.MeshBuilder, y: float, r: float, h: float, rng, noise, lod: bool, finial: bool = True,
           mat: str = M_CERAMIC) -> None:
     """A domed cap from radius r at y, rising h, with a ribbed surface and a bronze finial."""
@@ -227,8 +253,9 @@ def build_tower(kind: str, seed: int) -> list[kc.MeshBuilder]:
         noise = kc.Noise3(rng)
         mb = kc.MeshBuilder(name + ("-lod1" if lod else ""))
         if kind == "spire":
-            _shaft(mb, 0.0, 52.0, 6.0, 5.16, rng, noise, lod=lod, waterline=WATERLINE_M)
             gal = list(np.arange(12.0, 52.0, 9.0)) + [52.0]
+            _shaft(mb, 0.0, 52.0, 6.0, 5.16, rng, noise, lod=lod, waterline=WATERLINE_M, stains=gal)
+            _damage(mb, rng, 5.0, 50.0, lambda y: 6.0 - 0.84 * y / 52.0, 26, lod)
             for y in gal[:-1]:
                 _gallery(mb, y, 6.0 - 0.84 * y / 52.0, rng, lod)
             _storeys(mb, gal, lambda y: 6.0 - 0.84 * y / 52.0, lod)
@@ -236,7 +263,10 @@ def build_tower(kind: str, seed: int) -> list[kc.MeshBuilder]:
         elif kind == "stepped":
             tiers = ((0.0, 20.0, 5.5, 5.2), (20.0, 33.0, 4.4, 4.1), (33.0, 42.0, 3.3, 3.0))
             for y0, y1, r0, r1 in tiers:
-                _shaft(mb, y0, y1, r0, r1, rng, noise, lod=lod, waterline=WATERLINE_M if y0 == 0.0 else None)
+                _shaft(mb, y0, y1, r0, r1, rng, noise, lod=lod, waterline=WATERLINE_M if y0 == 0.0 else None,
+                       stains=(y1,))
+                _damage(mb, rng, max(y0, 4.0) + 0.5, y1 - 1.5, lambda y, a=r0, b=r1, c=y0, d=y1: a + (b - a) * (y - c) /
+                        (d - c), 8, lod)
                 _gallery(mb, y1, r1 + 0.2, rng, lod)
                 if not lod and y1 < 42.0:
                     # The set-back's flat roof between tiers.
@@ -250,18 +280,23 @@ def build_tower(kind: str, seed: int) -> list[kc.MeshBuilder]:
             _storeys(mb, (42.0,), lambda y: 3.3 - 0.3 * (y - 33.0) / 9.0, lod, y_min=33.5)
             _dome(mb, 42.0, 3.1, 4.0, rng, noise, lod, mat=M_GLAZE)
         elif kind == "broken":
-            _shaft(mb, 0.0, 40.0, 5.0, 4.3, rng, noise, lod=lod, top_jagged=3.5, waterline=WATERLINE_M)
+            _shaft(mb, 0.0, 40.0, 5.0, 4.3, rng, noise, lod=lod, top_jagged=3.5, waterline=WATERLINE_M,
+                   stains=(13.0, 24.0, 36.0))
+            _damage(mb, rng, 5.0, 34.0, lambda y: 5.0 - 0.7 * y / 40.0, 30, lod)
             for y in (13.0, 24.0):
                 _gallery(mb, y, 5.0 - 0.7 * y / 40.0, rng, lod)
             _storeys(mb, (13.0, 24.0, 33.0), lambda y: 5.0 - 0.7 * y / 40.0, lod, y_top=34.5)
         elif kind == "small":
-            _shaft(mb, 0.0, 17.0, 3.5, 3.1, rng, noise, lod=lod, waterline=WATERLINE_M)
+            _shaft(mb, 0.0, 17.0, 3.5, 3.1, rng, noise, lod=lod, waterline=WATERLINE_M, stains=(10.0, 17.0))
+            _damage(mb, rng, 4.5, 15.5, lambda y: 3.5 - 0.4 * y / 17.0, 8, lod)
             _gallery(mb, 10.0, 3.26, rng, lod)
             _gallery(mb, 17.0, 3.1, rng, lod)
             _storeys(mb, (10.0, 17.0), lambda y: 3.5 - 0.4 * y / 17.0, lod)
             _dome(mb, 17.0, 3.2, 3.6, rng, noise, lod)
         else:  # small_broken
-            _shaft(mb, 0.0, 14.0, 3.0, 2.7, rng, noise, lod=lod, top_jagged=1.8, waterline=WATERLINE_M)
+            _shaft(mb, 0.0, 14.0, 3.0, 2.7, rng, noise, lod=lod, top_jagged=1.8, waterline=WATERLINE_M,
+                   stains=(8.5, 12.0))
+            _damage(mb, rng, 4.5, 11.0, lambda y: 3.0 - 0.3 * y / 14.0, 10, lod)
             _gallery(mb, 8.5, 2.82, rng, lod)
             _storeys(mb, (13.0,), lambda y: 3.0 - 0.3 * y / 14.0, lod, y_top=11.5)
         out.append(mb)
@@ -297,15 +332,29 @@ def _paving(mb: kc.MeshBuilder, x0: float, x1: float, z0: float, z1: float, y: f
                 continue
             dy = rng.normal(0.0, 0.02) - (0.08 if rng.random() < 0.06 else 0.0)
             yaw = rng.normal(0.0, 0.01)
-            kc.rounded_block(mb, (x, y - 0.15 + dy, z), (slab * 0.5 - 0.03, 0.15, slab * 0.5 - 0.03),
-                             mb.material(M_PAVING), rot=kc.rot_y(yaw), radius=0.03, seg=1, noise=noise,
-                             disp_m=0.008, weather=WORN, variation=float(rng.random()))
+            if rng.random() < 0.12:  # M3-ENV-724: a slab cracked across, its halves settled apart
+                tilt = rng.normal(0.0, 0.02)
+                for sgn in (-1.0, 1.0):
+                    kc.rounded_block(mb, (x + sgn * slab * 0.25, y - 0.15 + dy - (0.02 if sgn > 0 else 0.0), z),
+                                     (slab * 0.25 - 0.035, 0.15, slab * 0.5 - 0.03), mb.material(M_PAVING),
+                                     rot=kc.rot_y(yaw + sgn * 0.02) @ kc.rot_z(tilt * sgn), radius=0.03, seg=1,
+                                     noise=noise, disp_m=0.008, weather=WORN, variation=float(rng.random()))
+            else:
+                kc.rounded_block(mb, (x, y - 0.15 + dy, z), (slab * 0.5 - 0.03, 0.15, slab * 0.5 - 0.03),
+                                 mb.material(M_PAVING), rot=kc.rot_y(yaw), radius=0.03, seg=1, noise=noise,
+                                 disp_m=0.008, weather=WORN, variation=float(rng.random()))
+            if rng.random() < 0.18:  # sea-grass grown in the joint at the slab's corner
+                _tuft(mb, rng, (x + slab * 0.5, y, z + slab * 0.5), float(rng.uniform(0.15, 0.4)))
             if j % 4 == 1:
                 kc.rounded_block(mb, (x, y - 0.02 + dy + 0.003, z), (slab * 0.5 - 0.03, 0.02, CHANNEL_HALF_W),
                                  mb.material(M_GLAZE), rot=kc.rot_y(yaw), radius=0.01, seg=1,
                                  weather=WORN, variation=float(rng.random()))
 
 
+# The Prologue's cast marks in the plaza's frame (prologue.tscn: the plaza at (0, 0.4, 2)): Kerrid, Liss, Pell, Toma,
+# Ysolde. The paving keeps every slab within CAST_CLEAR_M of them (M3-ENV-724, the vigil gap).
+CAST_MARKS_LOCAL = ((9.5, -7.5), (4.5, -8.5), (-12.0, -0.5), (-12.0, 1.5), (7.5, -1.0))
+CAST_CLEAR_M = 2.2
 MEDALLION_AT = (3.5, 2.5)  # plaza-local x, z: clear of the dais, the steps and the vigils
 
 
@@ -325,6 +374,22 @@ def _sunburst(mb: kc.MeshBuilder, at, rng) -> None:
                          glaze if k % 2 == 0 else cer, rot=kc.rot_y(-th), radius=0.0, seg=1)
 
 
+def _tuft(mb: kc.MeshBuilder, rng, at, h: float, blades: int = 7) -> None:
+    """A tuft of salt-grass in a joint: crossed two-sided blade cards, bent by the wind off the sea."""
+    grass = mb.material(M_GRASS)
+    x, y, z = at
+    for k in range(blades):
+        th = 2 * math.pi * k / blades + float(rng.uniform(-0.3, 0.3))
+        lean = np.array([math.cos(th), 0.0, math.sin(th)]) * float(rng.uniform(0.1, 0.35)) + np.array([0.08, 0, 0])
+        hh = h * float(rng.uniform(0.6, 1.0))
+        side = np.array([-math.sin(th), 0.0, math.cos(th)]) * 0.02
+        base = np.array([x, y, z])
+        top = base + np.array([0.0, hh, 0.0]) + lean * hh
+        grid = np.array([[base - side, base + side], [top - side * 0.2, top + side * 0.2]])
+        kc.quad_strip(mb, grid, grass, uv=np.array([[[0, 0], [1, 0]], [[0, 1], [1, 1]]]), col=(0.6, 0.3, 0.5, 0.4),
+                      uv2=(0.9, float(rng.random())), smooth=False)
+
+
 def build_plaza(seed: int = 722, *, w: float = 34.0, d: float = 18.0) -> list[kc.MeshBuilder]:
     hx, hz = w * 0.5, d * 0.5
     out = []
@@ -334,6 +399,8 @@ def build_plaza(seed: int = 722, *, w: float = 34.0, d: float = 18.0) -> list[kc
         mb = kc.MeshBuilder("iskarra_plaza" + ("-lod1" if lod else ""))
 
         def keep(x, z):  # the back-right corner has fallen into the sea along a ragged line (clear of Kerrid's vigil)
+            if any(math.hypot(x - mx, z - mz) < CAST_CLEAR_M for mx, mz in CAST_MARKS_LOCAL):
+                return True  # M3-ENV-724: stone under every cast mark, whatever the broken edge does
             return (x - hx * 0.25) * 0.55 + (-z - hz * 0.2) < 7.5 + 1.5 * math.sin(x * 0.9)
 
         _paving(mb, -hx, hx, -hz, hz - 2.4, 0.0, rng, noise, lod, keep=keep)
@@ -428,6 +495,9 @@ def build_arch(seed: int = 724, *, fallen: bool = False) -> list[kc.MeshBuilder]
                     x = -3.0 + k
                     kc.rounded_block(mb, (x, h + 1.1, 0.82), (0.3, 0.3, 0.06), mb.material(M_CERAMIC), radius=0.1,
                                      seg=2, variation=0.6)
+            # Two torn banners from the lintel's front (M3-ENV-724), the gate's last colour.
+            for x0 in (-2.6, 1.0):
+                _banner(mb, rng, (x0, h + 0.45, 0.86), (x0 + 1.6, h + 0.45, 0.86), 4.2, lod)
         else:
             _pillar(mb, -3.8, h, rng, noise, lod)
             _pillar(mb, 3.8, 3.1, rng, noise, lod, broken=True)
@@ -468,6 +538,8 @@ def build_lamp_column(seed: int = 725) -> list[kc.MeshBuilder]:
                 kc.tube(mb, arc, 0.018, 4, mb.material(M_BRONZE))
             kc.tube(mb, np.array([[0.0, 6.2, 0.0], [0.0, 6.55, 0.0]]), np.array([0.06, 0.02]), 6,
                     mb.material(M_BRONZE), cap_end=True)
+            # A strip of mourning cloth knotted under the head (M3-ENV-724).
+            _banner(mb, rng, (0.12, 5.5, 0.0), (0.12, 5.5, 0.24), 1.6, False)
         out.append(mb)
     return out
 
@@ -602,6 +674,105 @@ def build_far_towers(seed: int = 729) -> list[kc.MeshBuilder]:
     return out
 
 
+def _pack(mb, rng, at, yaw: float) -> None:
+    """A traveller's pack and a rolled bedroll beside it (the party's gear: no fire, ADR 0017)."""
+    sand, indigo, lash = mb.material("kit_cloth_sand"), mb.material("kit_cloth_indigo"), mb.material("kit_lashing")
+    x, y, z = at
+    R = kc.rot_y(yaw)
+    kc.rounded_block(mb, (x, y + 0.24, z), (0.2, 0.24, 0.14), sand, rot=R @ kc.rot_z(rng.normal(0, 0.08)),
+                     radius=0.08, seg=2)
+    kc.rounded_block(mb, (x, y + 0.5, z), (0.17, 0.05, 0.12), sand, rot=R, radius=0.04, seg=1)
+    d = R @ np.array([0.0, 0.0, 1.0])
+    e = R @ np.array([1.0, 0.0, 0.0])
+    roll = np.array([x, y + 0.1, z]) + d * 0.45
+    kc.tube(mb, np.array([roll - e * 0.35, roll + e * 0.35]), 0.1, 10, indigo, cap_start=True, cap_end=True)
+    for s_ in (-0.2, 0.2):
+        a = np.linspace(0.0, 2 * math.pi, 9)
+        c = roll + e * s_
+        ring = np.stack([np.full_like(a, 0.0), np.cos(a) * 0.105, np.sin(a) * 0.105], -1) @ np.array([e, [0, 1, 0], d])
+        kc.tube(mb, ring + c, 0.012, 3, lash)
+
+
+def build_vigil_dressing(seed: int = 730) -> list[kc.MeshBuilder]:
+    """The vigil on the plaza (M3-ENV-724), in the plaza's frame: each member's gear by their mark, seven shells laid
+    along the front step's lip (one for each who keeps the vigil), a broken jar, salt-grass along the edges and
+    creepers down the podium's sides. Nothing burns (ADR 0017: Rhen's lantern is the only flame)."""
+    out = []
+    hx, hz = 17.0, 9.0
+    for lod in (False, True):
+        rng = kc.rng_for("iskarra_vigil_dressing", seed)
+        mb = kc.MeshBuilder("iskarra_vigil_dressing" + ("-lod1" if lod else ""))
+        for (mx, mz), yaw in zip(CAST_MARKS_LOCAL, (0.3, -0.5, 1.2, 1.9, 2.6)):
+            if lod:
+                kc.rounded_block(mb, (mx + 0.7, 0.2, mz + 0.4), (0.2, 0.2, 0.15), mb.material("kit_cloth_sand"),
+                                 radius=0.05, seg=1)
+                continue
+            _pack(mb, rng, (mx + 0.75 * math.cos(yaw), 0.0, mz + 0.75 * math.sin(yaw)), yaw)
+        if not lod:
+            _pack(mb, rng, (-1.2, 0.8, -1.1), 0.4)  # Rhen's and Asha's, on the dais
+            # Seven shells along the lip of the front steps' top, evenly spaced, mouths to the sea.
+            shell = mb.material("kit_wake_shell")
+            for k in range(7):
+                x = -4.5 + 1.5 * k
+                kc.rounded_block(mb, (x, 0.03, hz - 2.55), (0.09, 0.03, 0.07), shell, rot=kc.rot_y(rng.normal(0, 0.2)),
+                                 radius=0.03, seg=2)
+            # A broken water jar by the lamp row, its sherds.
+            clay = "kit_earthenware"
+            import props  # noqa: PLC0415
+
+            props.lathe(mb, [(0.18, 0.0), (0.26, 0.2), (0.22, 0.42), (0.12, 0.5)], clay, rng, sides=12,
+                        at=(-9.0, 0.0, -7.6))
+            for j in range(5):
+                kc.rounded_block(mb, (-8.4 + rng.uniform(-0.4, 0.4), 0.02, -7.2 + rng.uniform(-0.4, 0.4)),
+                                 (0.08, 0.015, 0.05), mb.material(clay), rot=kc.rot_y(rng.uniform(0, 3)), radius=0.01,
+                                 seg=1)
+            # Salt-grass along the paving's edges and the balustrade stumps.
+            for j in range(60):
+                side = rng.integers(0, 3)
+                if side == 0:
+                    x, z = rng.uniform(-hx + 0.3, hx - 0.3), -hz + rng.uniform(0.2, 1.5)
+                elif side == 1:
+                    x, z = -hx + rng.uniform(0.3, 1.2), rng.uniform(-hz, hz - 3.0)
+                else:
+                    x, z = hx - rng.uniform(0.3, 1.2), rng.uniform(-hz * 0.2, hz - 3.0)
+                if any(math.hypot(x - mx, z - mz) < 1.2 for mx, mz in CAST_MARKS_LOCAL):
+                    continue
+                _tuft(mb, rng, (x, 0.0, z), float(rng.uniform(0.2, 0.55)), blades=6)
+            # Creepers hanging down the podium's two sides into the sea, salt-burned at their tips.
+            leaf = mb.material("kit_canopy_leaf_dark")
+            for sx in (-1.0, 1.0):
+                for j in range(9):
+                    z = rng.uniform(-hz + 1.0, hz - 3.5)
+                    n = 6
+                    t = np.linspace(0.0, 1.0, n)
+                    path = np.stack([np.full(n, sx * (hx + 0.05)) + sx * 0.12 * np.sin(t * 3.0),
+                                     -t * rng.uniform(1.5, 3.5), z + 0.3 * np.sin(t * 5.0 + j)], -1)
+                    kc.tube(mb, path, 0.015, 3, mb.material("kit_banyan_root"))
+                    for p in path[1:]:
+                        g = np.array([[p + [0, 0.12, -0.1], p + [0, 0.12, 0.1]], [p + [sx * 0.08, -0.1, -0.1],
+                                                                                   p + [sx * 0.08, -0.1, 0.1]]])
+                        kc.quad_strip(mb, g, leaf, uv=np.array([[[0, 0], [1, 0]], [[0, 1], [1, 1]]]),
+                                      col=(0.4, 0.2, 0.5, 0.6), uv2=(0.8, float(rng.random())), smooth=False)
+        out.append(mb)
+    return out
+
+
+def _banner(mb, rng, top_a, top_b, drop: float, lod: bool) -> None:
+    """A torn Lit Age banner hung from two points: sea-blue cloth faded, its lower edge ragged; both faces."""
+    cloth = mb.material("kit_cloth_sea_blue")
+    nu, nv = (3, 3) if lod else (6, 8)
+    u = np.linspace(0.0, 1.0, nu)
+    v = np.linspace(0.0, 1.0, nv)
+    U, V = np.meshgrid(u, v, indexing="ij")
+    top = np.asarray(top_a) + (np.asarray(top_b) - np.asarray(top_a)) * U[..., None]
+    rag = 1.0 - 0.35 * (np.abs(np.sin(U * 9.0 + 1.7)) ** 3) * (V ** 4)
+    sway = np.stack([np.zeros_like(U), np.zeros_like(U), 0.12 * np.sin(V * 2.5 + U)], -1) * V[..., None]
+    pts = top + np.stack([np.zeros_like(U), -drop * V * rag, np.zeros_like(U)], -1) + sway
+    for f in (False, True):
+        kc.quad_strip(mb, pts, cloth, uv=np.stack([U, V], -1), col=(0.0, 0.2, 0.0, 0.5), uv2=(0.85, 0.5), flip=f,
+                      smooth=not lod)
+
+
 TARGETS = {
     "iskarra_tower_spire": lambda: build_tower("spire", 731),
     "iskarra_tower_stepped": lambda: build_tower("stepped", 732),
@@ -620,4 +791,5 @@ TARGETS = {
                                                         dome=True),
     "iskarra_arcade_sunk": build_arcade_sunk,
     "iskarra_far_towers": build_far_towers,
+    "iskarra_vigil_dressing": build_vigil_dressing,
 }

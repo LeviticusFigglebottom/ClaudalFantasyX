@@ -23,6 +23,7 @@ TOWER_FOOT_Y = -3.0
 PIECES = (
     ("Plaza", "iskarra_plaza", 0.0, 0.4, 2.0, 0.0, 1.0, 1.0),
     ("Rise", "iskarra_plaza_rise", -3.0, 0.2, -2.0, 0.0, 1.0, 1.0),
+    ("VigilDressing", "iskarra_vigil_dressing", 0.0, 0.4, 2.0, 0.0, 1.0, 1.0),  # M3-ENV-724, in the plaza's frame
     ("TowerA", "iskarra_tower_spire", -46.0, TOWER_FOOT_Y, -70.0, 20.0, 1.0, 1.0),
     ("TowerB", "iskarra_tower_stepped", -24.0, TOWER_FOOT_Y, -92.0, 0.0, 0.91, 1.0),
     ("TowerC", "iskarra_tower_broken", -8.0, TOWER_FOOT_Y, -60.0, 140.0, 0.8, 0.6),
