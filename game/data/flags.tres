@@ -163,5 +163,7 @@ flags = {
 "ch08_wall_fell": "Ch8 B17: the seaward section of the wall-head fell and the sea came into the low town.",
 "ch08_rhen_froze": "Ch8 B17 (critical): Rhen froze at the broken edge before the figure in the storm, and Kerrid hauled him back by the collar (Ch17, Ch21 H02 payoffs).",
 "ch08_rhen_told_asha": "Ch8 B17 choice: Rhen told Asha he saw someone in the storm, humming a current-song (Ch21 H02 payoff).",
-"ch08_done": "Ch8 B18: the hoist is down and the chapter is over; the party goes down to Corrow's strand for the night (Ch9)."
+"ch08_done": "Ch8 B18: the hoist is down and the chapter is over; the party goes down to Corrow's strand for the night (Ch9).",
+"ch05_kahre_first_call_seen": "Kahre's first call in battle (C10) has played in full; later calls play the short entry (M3-BPR-414).",
+"ch08_virel_first_call_seen": "Virel's first call in battle (C10) has played in full; later calls play the short entry (M3-BPR-414)."
 }
