@@ -320,6 +320,8 @@ ACT2_DIR = "assets/audio/music/act2"
 ACT3_FINALS: list[tuple] = [
     ("assets_src/music/act3/hollowmere.py", "assets/audio/music/act3", ["hollowmere.ogg", "hollowmere.loop.json"], "music_loop"),
     ("assets_src/music/act3/dace_ledger.py", "assets/audio/music/act3", ["dace_ledger.ogg"], "music"),
+    ("assets_src/music/act3/the_kite.py", "assets/audio/music/act3", ["the_kite.ogg", "the_kite.loop.json"], "music_loop"),
+    ("assets_src/music/act3/kite_maiden_flight.py", "assets/audio/music/act3", ["kite_maiden_flight.ogg"], "music"),
 ]
 ACT3_DIR = "assets/audio/music/act3"
 
