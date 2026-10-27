@@ -10,6 +10,12 @@ const SEA_Y := -0.8
 const TOLERANCE := 0.01
 
 var zone: Ch01OruvelZone
+var saved_flags: Dictionary
+
+
+func before_each() -> void:
+	saved_flags = Game.state.flags.duplicate(true)
+	Game.state.flags.erase(&"ch01_gulls_cried")  # an earlier test's storm would bring the zone up in it
 
 
 func _load() -> void:
@@ -27,6 +33,7 @@ func _host() -> Node:
 func _done() -> void:
 	_host().remove_child(zone)
 	zone.free()
+	Game.state.flags = saved_flags
 
 
 func test_the_town_is_dressed_over_the_greybox() -> void:
