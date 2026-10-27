@@ -518,6 +518,13 @@ Read this section first; everything below it is history. The branch is `claude/e
 - `haluna_h10_dock_night` sits at rmse 0.00545, within the limit, from older drift.
 
 ### Gotchas (read before touching env-art files)
+- **Winding (2026-10-27, M3-ENV-724).** `kc.quad_strip`'s face normal is cross(column direction, row direction). A
+  lathe-style grid of rows along +Y with columns round the axis faces *inward*, so pass `flip=True` (Iskarra's
+  shafts were inside out for days). Check new pieces numerically, either radially or with the ray audit: rays from
+  outside, where a first hit on a back face means a hole.
+  - **The audit across the Haluna kit found no other visible case.** `outrigger_7m`'s outer and inner shells are
+    swapped, but they read the same from outside. Double-layer sheets (laundry, awnings, roost panels, sails)
+    score as "back" by construction and are fine.
 - **Fog-lamp rule (the Lead):** every OmniLight3D and SpotLight3D in an arena, or near a dense FogVolume, sets
   `light_volumetric_fog_energy = 0`, because Godot's default of 1.0 bands the volume bright. `arena_scenes.py`
   writes it. `tools/tests/test_fog_lamps.py` enforces it, with `KNOWN_EXCEPTIONS` tied to request tasks.
