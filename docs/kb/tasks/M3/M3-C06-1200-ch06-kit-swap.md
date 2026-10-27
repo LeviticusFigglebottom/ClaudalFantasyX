@@ -26,11 +26,11 @@ split).
       `ch06_brine_camp` registered.
 
 ## Notes
-- Story blocks with no kit piece yet stay visible greybox: `TideWheel`, `Fire`, `Shrine` (the Level-stone in a
-  wreck's bow), `VendorBoat`, `ChalkMark`, `Hatch`. Requested of env-art in M3-ENV-1201.
+- Story blocks with no kit piece yet (requested of env-art in M3-ENV-1201): `ChalkMark` and `Hatch` stay visible
+  greybox; `Fire` (an ember bed from `salvage_pile_burned`) and `VendorBoat` (a crate stack) have kit stand-ins; the
+  `Shrine` box is hidden (it sits in the wreck's bow); `TideWheel` is hidden (a slab read worse than nothing).
 - Still open from M3-C06-03 (environment/rendering): the chalk camp-sign decals, Stillguard torches, the no-wake
   water around the barge, the diggable tideline patch, and the `ch06_hold`/`ch06_dusk`/`ch06_dawn` grades.
-
 - Reviewer: environment (placement against the kit's intent), then narrative for the story pieces.
 - Rendering: the sky keeps its day colours under the dusk row (the light rows change the sun and ambient only);
   a `ch06_dusk` sky/grade would finish it (M3-C06-03 item 7).
