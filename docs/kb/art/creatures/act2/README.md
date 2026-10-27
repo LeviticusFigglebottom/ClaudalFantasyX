@@ -9,7 +9,7 @@ alone. Hits peak near 0.1 s (M3-CRE-617).
 | Creature | Sheet | Kind | Height | Where it fights | Model |
 |---|---|---|---|---|---|
 | The Mangrove Drowner | [mangrove_drowner.md](mangrove_drowner.md) | spawn, boss | 3.2 m (rooted), 3.6 m (risen) | Ossa Fen, the roots (Ch10) | built (M3-CRE-621) |
-| The Lamp Engine | [lamp_engine.md](lamp_engine.md) | construct, boss | 3.4 m | Lowlight, the engine hall (Ch11) | sheet only |
+| The Lamp Engine | [lamp_engine.md](lamp_engine.md) | construct, boss | 3.4 m | Lowlight, the engine hall (Ch11) | built (M3-CRE-623), first PC render pending |
 | The Avalanche Ram | [avalanche_ram.md](avalanche_ram.md) | spawn-touched beast, boss | 3.0 m at the head | the terrace wall above Keth Pass (Ch12) | sheet only |
 | The Wakefin | [wakefin.md](wakefin.md) | spawn, boss | 2.2 m of fin above the water | the open sea at night, the bridal barge (Ch15) | sheet only |
 
@@ -22,3 +22,16 @@ Contacts: the drag at 0.7 s, the rising water at 1.0 s. Review shots: `creature_
 doesn't check its phase name against an enemy; the encounter designers add the row, with a phase `uprooted` at
 50% HP. The snagged motes (`glimmer_held`, rising as `glimmer_lift` on the KO) and the drawing-in water of the
 drag's telegraph are VFX, not modelled; the break part (the two snagged-mote roots) waits for a charge skill.
+
+The Lamp Engine (M3-CRE-623): `assets_src/creatures/lamp_engine/`, 18,488 triangles (budget 20k), 3.40 m to the
+finial with the feet at y 0, 50 bones: the sheet's body, core, three ring bones, twelve lamp gimbals, two arms of 3
+and four legs of 2, plus a hinge bone per petal (twelve: a ring folds as four petals), a moving scissor blade per
+arm and a foot per leg (kept flat while the KO kneels). Three gimballed rings of four petals each close a lantern
+housing round the core; each petal carries its quarter of the hoop and a salt-glass lamp on a gimbal fork, whose two
+hubs are the `spawn_wound` weak points. Its `opened` phase (creatures.json) plays `phase_change` (2.0 s: the middle
+ring folds back 68°, then the top 50° and the bottom 22°, each lamp swinging back in its gimbal a beat behind), idles
+on `idle_opened`, and strikes from the open pose (`attack_opened`, `cast_opened`, `hit_opened`). The KO starts open
+(a boss falls in phase 2) and kneels 0.55 m. Contacts: the trim at 0.6 s, the gathering at 1.0 s. It was checked
+without a render (numbers in the task file); its review shots `creature_lamp_engine` and
+`creature_lamp_engine_opened` wait for their first PC render. No enemies.json row yet; the break parts (the three
+rings) wait for a charge skill.
