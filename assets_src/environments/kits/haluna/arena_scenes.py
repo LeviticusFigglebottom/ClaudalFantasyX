@@ -1496,9 +1496,8 @@ def _xyz(p) -> str:
     return f"Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, {p[0]}, {p[1]}, {p[2]})"
 
 
-def write_arena(a: dict) -> Path:
-    sc = Scene()
-    script = sc.res("Script", "res://game/world/arenas/battle_arena_root.gd")
+def _env_props(sc: Scene, a: dict, name: str) -> list[str]:
+    """The arena's (or a zone grade's) sky as sub-resources in `sc`, and its Environment's property lines."""
     sky_shader = sc.res("Shader", a.get("sky_shader", LOW_SUN_SKY))
     lut = sc.res("Texture3D", a["lut"])
     sky_params = "\n".join(f"shader_parameter/{k} = {_value(sc, v)}" for k, v in sorted(a["sky"].items()))
@@ -1514,9 +1513,8 @@ def write_arena(a: dict) -> Path:
                    f"ambient_light_energy = {a['fill']['energy']}"]
     fog_extra = [f"fog_light_energy = {fog['light_energy']}"] if "light_energy" in fog else []
     fog_extra += [f"fog_aerial_perspective = {fog['aerial']}"] if "aerial" in fog else []
-    sc.sub.append("\n".join([
-        '[sub_resource type="Environment" id="Env"]',
-        f'resource_name = "{a["id"]}_{a["sub_frame"]}"',
+    return [
+        f'resource_name = "{name}"',
         "background_mode = 2", 'sky = SubResource("Sky")',
         *ambient, "reflected_light_source = 2",
         "tonemap_mode = 4", f"tonemap_exposure = {a['exposure']}", "tonemap_agx_white = 12.0",
@@ -1529,7 +1527,26 @@ def write_arena(a: dict) -> Path:
         f"fog_height = {fog['height']}", f"fog_height_density = {fog['height_density']}",
         "adjustment_enabled = true", f'adjustment_color_correction = ExtResource("{lut}")',
         *([f"adjustment_saturation = {a['saturation']}"] if "saturation" in a else []),
-    ]))
+    ]
+
+
+def write_environment(a: dict, out: Path) -> Path:
+    """A zone grade's Environment as a standalone .tres (the same sky, fog, tonemap and LUT as an arena's)."""
+    sc = Scene()
+    props = _env_props(sc, a, a["sub_frame"])
+    lines = [f"[gd_resource type=\"Environment\" load_steps={len(sc.ext) + len(sc.sub) + 1} format=3]", ""]
+    lines += [f'[ext_resource type="{kind}" path="{path}" id="{rid}"]' for path, (kind, rid) in sc.ext.items()]
+    lines += [""] + [s + "\n" for s in sc.sub] + ["[resource]"] + props
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    return out
+
+
+def write_arena(a: dict) -> Path:
+    sc = Scene()
+    script = sc.res("Script", "res://game/world/arenas/battle_arena_root.gd")
+    props = _env_props(sc, a, f"{a['id']}_{a['sub_frame']}")
+    sc.sub.append("\n".join(['[sub_resource type="Environment" id="Env"]', *props]))
     sc.node(a["id"].title().replace("_", ""), "Node3D", None,
             {"script": f'ExtResource("{script}")', "arena_id": f'&"{a["id"]}"', "sub_frame": f'&"{a["sub_frame"]}"'})
     sc.node("WorldEnvironment", "WorldEnvironment", ".", {"environment": 'SubResource("Env")'})

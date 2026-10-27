@@ -252,6 +252,33 @@ class TidelineTests(unittest.TestCase):
         self.assertAlmostEqual(float(mb.bounds()[0][1]), 0.0, delta=1e-6, msg="origin at the foot")
 
 
+class GradeTests(unittest.TestCase):
+    """M3-C06-03 item 7: the Ch6 sub-frames' Environments, LUTs and sun rows."""
+
+    def test_the_grades_are_committed_and_point_at_their_luts(self) -> None:
+        zone = ROOT / "assets" / "environments" / "zones" / "brine_shoals"
+        rows = json.loads((zone / "ch06_grades.json").read_text())
+        for name in ("ch06_hold", "ch06_dusk", "ch06_dawn"):
+            with self.subTest(grade=name):
+                env = ROOT / rows[name]["environment"].removeprefix("res://")
+                self.assertTrue(env.exists())
+                text = env.read_text()
+                self.assertIn(f"lut_ch06_{name.removeprefix('ch06_')}.png", text)
+                self.assertIn('[gd_resource type="Environment"', text)
+
+    def test_sun_rows_follow_the_layouts_own_convention(self) -> None:
+        grades = _load("bs_grades")
+        layout = json.loads((ROOT / "game" / "levels" / "ch06" / "brine_shoals" / "brine_shoals_layout.json").read_text())
+        self.assertAlmostEqual(grades.sun_yaw(240.0), float(layout["sun"]["yaw_deg"]), msg="ch06's own sun, az 240")
+        self.assertAlmostEqual(grades.sun_yaw(75.0), 105.0)
+        self.assertAlmostEqual(grades.sun_yaw(280.0), -100.0)
+
+    def test_the_smoke_lut_is_unchanged_by_the_sub_frames(self) -> None:
+        lut = _load("bs_zone_lut")
+        self.assertEqual(lut.GRADES["smoke"]["saturation"], 0.90)
+        self.assertEqual(lut.GRADES["smoke"]["toe_hex"], "#0E4A55")
+
+
 class CommittedAssetTests(unittest.TestCase):
     def test_one_glb_per_target_inside_its_budget(self) -> None:
         glbs = sorted(ASSETS.glob("*.glb"))

@@ -2,8 +2,9 @@
 id: M3-C06-03
 title: Ch6 kits swap-in (Brine Shoals, the Saltwright camp, the white barge) and the W shots, with the no-wake water
 role: environment
-status: doing
+status: review
 owner_session: "env-art (session_01YbaV2c8yquRHqj6afQYg89)"
+reviewer: cinematics
 depends_on: [M3-C06-02]
 milestone: M3
 request-from: cinematics
@@ -40,7 +41,13 @@ Ch6's zone `ch06/brine_shoals` is greybox blocks (`game/levels/ch06/brine_shoals
      0.44 m patches of wet sand, flush with the flats). For act1-chapters: the `LampHole` block becomes
      `lamp_hole_open` while the lamp is being buried, then `lamp_hole_covered` (the layout's `states`, by
      `ch06_saw_lamp_buried`). Put `hand_print` beside it for the insert shot.
-  5. **The grades (item 7).** Still open. The colour script has only `ch06`; `ch06_hold`, `ch06_dusk` and `ch06_dawn`
-     need sub-frames first (Art), then the Environments for the layout's light rows (`environment_res`).
+  5. **The grades (item 7).** Done. The colour script now has the `ch06_hold`, `ch06_dusk` and `ch06_dawn`
+     sub-frames. Each has an Environment (`assets/environments/zones/brine_shoals/ch06_<grade>_environment.tres`),
+     a LUT (`lut_ch06_<grade>`, from `bs_zone_lut.py --grade`) and a sun row in `ch06_grades.json` (Ch06Zone's
+     fields: pitch = −elevation, yaw = 180 − azimuth). For act1-chapters: a light row takes the grade's sun row and
+     sets the WorldEnvironment's `environment` to the grade's `.tres` (an `environment_res` key, as the 10-25 note
+     planned). The hold's key is Rhen's lantern, so the W08 cutscene adds that light.
+  - **Left after review:** M3-ENV-1000's reflection hookup, waiting on M3-RND-03, and act1-chapters' wiring of the
+    new pieces and grades.
 
 ## Review log
