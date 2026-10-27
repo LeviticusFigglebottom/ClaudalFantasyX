@@ -157,6 +157,12 @@ cutscene sequencer (`game/cutscene/**`), `game/flow/**` and the playtest fixes.
   test_chapter_flow, test_locations_validate, test_zone_map_pois, test_loc_literals. Requested the beat sheet
   (M4-C10-01, narrative). Pell isn't a party hero yet (M3-C09-07), so he's not in the formation. Ch9's act break
   still ends on the end card: switching it to Ch10 is the Lead's call (Act I switches stay empty).
+- **MERGE-READY @ 27b9a4c7: M4-C11-02 Ch11 greybox** (`ch11/sunken_vey`, `ch11/lowlight`, from
+  `tools/act1/ch11_greybox.py`, sharing Ch10's builders): the drowned galleries and the conduit court (Liss's
+  housing-mark), the fig-choked side gallery; Lowlight's atrium (the lamp bench), the Lamp Engine's hall, the
+  well-shaft's flights (ramps) down past the waterline to the drowned sanctum (Nhoa). `chapters/ch11.json`, two flags,
+  `loc/ch11.csv` (project.godot: one more translation path), `locations.json` rows. `--filter=ch11` 3/0, validate_data,
+  the chapter/location/map/loc tools tests. Beat sheet requested (M4-C11-01, narrative).
 - **Lead queue (21:23), status:**
   1. Ch9 road capsule: it is **Kerrid** at the milestone (no model yet: M3-CHR-505, characters); so are the two on
      ch06_brine_road (Ysolde, no field body yet: M3-HER-1219; Kerrid). They go when those land; no villager body on a
