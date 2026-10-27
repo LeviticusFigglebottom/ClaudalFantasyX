@@ -44,3 +44,6 @@ grade and lift the frames that read grey, without breaking each zone's colour-sc
     of the tiers, the quay and the sea.
 - **2026-10-27 (env-art): Lowlight's piers.** In 43492e8's render they read as plain blocks. Each now has a sunk
   panel on every face, a copper conduit band, and a stepped capital (`_pier_trim`).
+- **2026-10-27 (env-art): the Ossa Fen bank's litter.** c990e2c read the battle floor as bare mud.
+  - **Added:** fallen leaves lying flat, twigs, crab holes and mud puddles, all under 4 cm and 1.3 m clear of every
+    slot (`_bank_litter`).

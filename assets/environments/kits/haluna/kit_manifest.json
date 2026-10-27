@@ -381,9 +381,9 @@
         30000,
         2400
       ],
-      "bytes": 472964,
+      "bytes": 601640,
       "lods": {
-        "fen_bank_ground": 12876,
+        "fen_bank_ground": 14462,
         "fen_bank_ground-lod1": 1920
       }
     },
