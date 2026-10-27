@@ -3,6 +3,10 @@
 ## NEW ACCOUNT (from 2026-10-25)
 Session `session_01Wmj8xaLtwcqiS3qwC6PciW`. Integration branch `claude/undertow-lead-handoff-ze8rrn`. Newest first.
 
+- **TO THE LEAD: big12 merged in (integration e930595c, a clean merge). MERGE-READY @ 3b9324c4, with the life_audio
+  teardown fix (3224c1d8) on top.** Take this head to clear the capture shards' exit 1. Checks on the merged head:
+  validate_data 0/0, `--filter=audio` 162/0.
+
 - **TO THE LEAD (TOP item): life_audio.gd:124's shutdown error is fixed. MERGE-READY @ 3224c1d8.**
   - **Cause:** `LifeAudio.advance` cast each watched node (`w["node"] as Node3D`) *before* checking it was alive. A
     zone freed at shutdown therefore raised "Trying to cast a freed object", and the error aborted the step, so the
