@@ -1,0 +1,5 @@
+PASS drownbell_flood: rmse 0.00064 (limit 0.00800)
+PASS battle_arena_oruvel_raft_morning: rmse 0.00000 (limit 0.00800)
+PASS battle_arena_causeway: rmse 0.00577 (limit 0.00800)
+Screenshots: 3 compared, 0 failed (diffs in /root/hymn/tests/screenshots/out/diff)
+compare exit 0
