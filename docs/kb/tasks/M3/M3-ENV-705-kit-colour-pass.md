@@ -25,3 +25,7 @@ grade and lift the frames that read grey, without breaking each zone's colour-sc
       the B06 zone's own `kit_causeway_ground` (wet-dark tidal mud), not the generic `kit_ground`. PC render requested.
 - [ ] Brine Shoals B01/B05: the colour script desaturates ch06 on purpose (×0.9, "brown-grey flats ... so the
       camp's orange carries the frame"); left as designed unless the human's review names them.
+- **2026-10-27 (env-art): the white barge's trim.** B05 read the barge as flat white.
+  - **Added:** a gilt Level line, red panel studs, gilt capitals, a white fringe, white curtains tied back at the
+    posts, a red prow post with the Level sign, and a cushion.
+  - **Limits held:** red and gold stay within test_order_colours_stay_small (commit b7182ba1).
