@@ -2,8 +2,8 @@
 id: M2-HER-1111
 title: "Test runner: a test file with a parse error passes silently (request to QA & Tools)"
 role: qa
-status: todo
-owner_session: ""
+status: doing
+owner_session: "integration-qa (hero-integration track, session_01PzF7Jc4XVQdTWcaYUyCjPB)"
 depends_on: []
 milestone: M2
 request-from: combat
