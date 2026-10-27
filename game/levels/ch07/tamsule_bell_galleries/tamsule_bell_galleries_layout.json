@@ -55,45 +55,45 @@
     {"id": "MapBridge", "pos": [-16.204, 0.1, -23.141], "size": [3.0, 0.2, 7.5], "yaw": 35.0, "solid": false}
   ],
   "spawns": {
-    "Entrance": [-30.822, 2.4, 11.218, 50.0],
-    "Gallery": [-32.481, 2.4, 4.565, 98.0],
-    "PoolSteps": [-17.6, 2.0, 0.0, 90.0],
-    "CatchPool": [-19.6, 2.0, 0.0, 90.0]
+    "Entrance": [-30.822, 2.4, 11.218, 230.0],
+    "Gallery": [-32.481, 2.4, 4.565, 278.0],
+    "PoolSteps": [-17.6, 2.0, 0.0, 270.0],
+    "CatchPool": [-19.6, 2.0, 0.0, 270.0]
   },
   "marks": {
-    "divers_boat": [-9.63, 0.0, -26.828, 215.0],
-    "poolkeeper_rim": [-12.445, 0.6, -1.971, 261.0],
+    "divers_boat": [-9.63, 0.0, -26.828, 35.0],
+    "poolkeeper_rim": [-12.445, 0.6, -1.971, 81.0],
     "bell_ribs": [0.0, 38.0, 0.0],
     "drop": [0.0, 31.5, 0.0],
     "column_foot": [0.0, 0.5, 0.0],
-    "tavi_boat": [-12.127, 1.6, -20.807, 215.0],
-    "asha_rim": [-16.976, 2.0, 0.9, 90.0],
-    "toma_rim": [-17.577, 2.0, -0.9, 90.0],
-    "liss_rim": [-18.578, 2.0, 0.9, 90.0],
-    "ysolde_rim": [-19.179, 2.0, -0.9, 90.0],
-    "rhen_moorings": [-17.05, 1.6, -16.505, 35.0],
-    "asha_ring_1": [-17.345, 1.6, -14.834, 35.0],
-    "asha_ring_3": [-13.659, 1.6, -17.415, 35.0],
-    "asha_ring_6": [-8.089, 1.6, -21.315, 35.0],
-    "rhen_ring_6": [-8.744, 1.6, -20.856, 35.0],
-    "kerrid_far": [3.627, -0.5, -51.873, 356.0],
-    "ring_wicklight": [-12.995, 1.4, -16.467, 35.0],
-    "ring_gull": [-6.304, 1.4, -19.464, 35.0],
-    "river_mouth": [-6.972, 0.0, 79.696, 355.0]
+    "tavi_boat": [-12.127, 1.6, -20.807, 35.0],
+    "asha_rim": [-16.976, 2.0, 0.9, 270.0],
+    "toma_rim": [-17.577, 2.0, -0.9, 270.0],
+    "liss_rim": [-18.578, 2.0, 0.9, 270.0],
+    "ysolde_rim": [-19.179, 2.0, -0.9, 270.0],
+    "rhen_moorings": [-17.05, 1.6, -16.505, 215.0],
+    "asha_ring_1": [-17.345, 1.6, -14.834, 215.0],
+    "asha_ring_3": [-13.659, 1.6, -17.415, 215.0],
+    "asha_ring_6": [-8.089, 1.6, -21.315, 215.0],
+    "rhen_ring_6": [-8.744, 1.6, -20.856, 215.0],
+    "kerrid_far": [3.627, -0.5, -51.873, 176.0],
+    "ring_wicklight": [-12.995, 1.4, -16.467, 215.0],
+    "ring_gull": [-6.304, 1.4, -19.464, 215.0],
+    "river_mouth": [-6.972, 0.0, 79.696, 175.0]
   },
   "actors": {
-    "asha": {"at": [-32.62, 2.4, -3.429, 84.0], "color": "#e0c890"},
-    "toma": {"at": [-32.44, 2.4, -4.848, 81.5], "color": "#4a5a70", "radius": 0.36, "height": 1.9},
-    "liss": {"at": [-32.197, 2.4, -6.259, 79.0], "color": "#7a8c5a"},
-    "ysolde": {"at": [-31.894, 2.4, -7.657, 76.5], "color": "#d0d4dc"},
+    "asha": {"at": [-32.62, 2.4, -3.429, 264.0], "color": "#e0c890"},
+    "toma": {"at": [-32.44, 2.4, -4.848, 261.5], "color": "#4a5a70", "radius": 0.36, "height": 1.9},
+    "liss": {"at": [-32.197, 2.4, -6.259, 259.0], "color": "#7a8c5a"},
+    "ysolde": {"at": [-31.894, 2.4, -7.657, 256.5], "color": "#d0d4dc"},
     "kerrid": {"at": [0.0, -0.5, -48.0, 0.0], "color": "#8a7a52", "radius": 0.38, "height": 2.0},
-    "tavi": {"at": [-14.4, 2.46, 0.0, 270.0], "color": "#2a2420"},
-    "ione": {"at": [14.4, 2.46, -0.0, 270.0], "color": "#3a7a8a"},
-    "poolkeeper": {"at": [-10.912, 0.6, -6.3, 60.0], "color": "#c8c0b0"},
-    "oruvel_diver_1": {"at": [-12.531, 0.6, 1.317, 96.0], "color": "#2a2420"},
-    "oruvel_diver_2": {"at": [-12.369, 0.6, 2.404, 101.0], "color": "#2a2420"},
-    "sorrin_diver_1": {"at": [12.531, 0.6, 1.317, 264.0], "color": "#3a7a8a"},
-    "sorrin_diver_2": {"at": [12.369, 0.6, 2.404, 259.0], "color": "#3a7a8a"}
+    "tavi": {"at": [-14.4, 2.46, 0.0, 90.0], "color": "#2a2420"},
+    "ione": {"at": [14.4, 2.46, -0.0, 90.0], "color": "#3a7a8a"},
+    "poolkeeper": {"at": [-10.912, 0.6, -6.3, 240.0], "color": "#c8c0b0"},
+    "oruvel_diver_1": {"at": [-12.531, 0.6, 1.317, 276.0], "color": "#2a2420"},
+    "oruvel_diver_2": {"at": [-12.369, 0.6, 2.404, 281.0], "color": "#2a2420"},
+    "sorrin_diver_1": {"at": [12.531, 0.6, 1.317, 84.0], "color": "#3a7a8a"},
+    "sorrin_diver_2": {"at": [12.369, 0.6, 2.404, 79.0], "color": "#3a7a8a"}
   },
   "shots": {
     "R01": {"pos": [-34.306, 7.6, -13.86], "look_at": [-15.0, 2.6, 0.0], "fov": 55},
@@ -109,9 +109,9 @@
     "R09": {"pos": [-13.831, 2.1, -17.661], "look_at": [-8.799, 1.4, -18.842], "fov": 40}
   },
   "triggers": [
-    {"id": "rim", "at": [-16.2, 2.0, 0.0], "size": [3.2, 0.0, 1.2], "requires_flag": "ch07_saw_galleries", "blocked_by_flag": "ch07_tidecup_played", "payload": {"beat": "naming"}, "yaw": 90.0},
+    {"id": "rim", "at": [-16.2, 2.0, 0.0], "size": [3.2, 0.0, 1.2], "requires_flag": "ch07_saw_galleries", "blocked_by_flag": "ch07_tidecup_played", "payload": {"beat": "naming"}, "yaw": -90.0},
     {"id": "moorings", "activation": "interact", "at": [-11.554, 1.6, -19.987], "size": [3.0, 0.0, 2.6], "prompt_key": "FIELD_PROMPT_CH07_TAVI", "requires_flag": "ch07_tavi_withdrew", "blocked_by_flag": "ch07_blessed_moorings", "payload": {"beat": "moorings"}, "yaw": -325.0},
-    {"id": "to_port", "at": [-29.48, 2.4, 14.379], "size": [3.0, 0.0, 2.0], "requires_flag": "ch07_tavi_withdrew", "payload": {"beat": "to_port"}, "yaw": 116.0}
+    {"id": "to_port", "at": [-29.48, 2.4, 14.379], "size": [3.0, 0.0, 2.0], "requires_flag": "ch07_tavi_withdrew", "payload": {"beat": "to_port"}, "yaw": -64.0}
   ],
   "collision_path": "res://game/levels/ch07/tamsule_bell_galleries/tamsule_bell_galleries_collision.json"
 }
