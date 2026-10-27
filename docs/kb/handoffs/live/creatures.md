@@ -258,3 +258,29 @@ Merge the three creature worktrees as they finish (they append to creatures.json
   - Checks run: validate_data 0/0, taskboard, Godot post_import 21/0, field_npc 10/0, wildlife 10/0, creature 24/0,
     hero 68/0, battle_ko_once 4/1 (the known one above). Skipped: lint and format (no code change), shots, Blender
     (nothing changed).
+- **MERGE-READY @ {sha}: M3-CRE-613, villagers alive (FAST-TRACK candidate: the human's "placeholder villagers").**
+  - **What it adds:**
+    - NpcLook head modifier;
+    - FieldNpc attention (a glance at a party that comes near, look-arounds), chat pairs in bouts, work, storm (shelter, brace, sky looks, home again), and a talk that ends on its own;
+    - **VillagerLayer**: one node per zone turns the stand-ins into the real M2-CHR-03 villagers from `game/data/world/npc/zones/<zone>.json`. Haluna's file places all seven.
+  - Four shots of the real Haluna zone with the layer (npc_haluna_dock/market/chapel/lane), each viewed and approved. The dock shows the netmender and the fisher facing each other in a chat.
+  - Also restored the llvmpipe metadata of save_shrine_field and settings_accessibility (the "?" the Lead flagged).
+  - **Checks run:** validate_data 0/0 (the new validate_npc included), taskboard, gdlint, gdformat, tools test_npc 8 OK, screenshot manifest valid; Godot villager_routines 11/0, field_npc 10/0, hero 68/0.
+  - **Checks skipped:** other shots (no shared scene or shader touched; the layer only exists in my review stage until a zone adds it), coverage (no game/battle or game/progression change), Blender (no asset change).
+  - **Lead:** 610 (FieldNpc) and 611 (wildlife) are not in big9. They ride with this head.
+
+### For other tracks (relay, please)
+- **slice-polish:** Haluna's villagers are still capsules. Add ONE node to `haluna.tscn` at the root:
+  `[node name="VillagerLayer" type="Node3D" parent="."]`, script `res://game/world/npc/villager_layer.gd`,
+  `zone_id = &"ch02/haluna"`.
+  - It hides only the stand-ins' StandIn and Facing (plus Reed's Broom and Osu's Bowl), and keeps the collision and the Talk Interactables, so ids, payloads and dialogue are unchanged.
+  - It puts each villager beside its stand-in, so night_hide still works.
+  - Talks end by themselves when the player gets control back.
+  - For GreyboxZone.build(): add a VillagerLayer when `FileAccess.file_exists(VillagerLayer.path_for(location_id))`, as with WildlifeLayer.
+  - Also add the WildlifeLayer node.
+  - Tell me (via your log) the stand-in paths in the causeway and shrine zones, if they have any.
+  - Docs: docs/kb/tech/field_npc.md, "VillagerLayer".
+- **act1-chapters:** VillagerLayer has a `storm_flag`. Oruvel with `ch01_gulls_cried` sends its villagers to shelter when the storm rises, with no zone call needed (or call `FieldNpc.set_storm_all(get_tree(), on)` from OruvelZone.set_storm). List the Act I villager stand-in paths in your log and I'll write the data files.
+- **characters:** request task M3-CRE-614: villager work clips (mend_net, tend_stall, sweep, hold_bowl), an optional `brace` loop, hand props (broom, bowl, net), and bodies for Haluna's Shopkeeper, Smith and Innkeeper.
+- **hero-integration (FYI):** NpcLook is a SkeletonModifier3D added after HeroIdleMicro on villager skeletons; it turns DEF-spine.004/.005/.006. Tell me if the idle_micro bones or the modifier order change.
+

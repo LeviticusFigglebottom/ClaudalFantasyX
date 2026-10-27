@@ -2,7 +2,7 @@
 id: M3-CRE-613
 title: "Villagers alive: routines (work, chat pairs, glances, storm) and a one-node VillagerLayer that replaces the zone stand-ins"
 role: character
-status: doing
+status: review
 owner_session: "creatures (cloud session_01EbDaRQ5n7hpvwuRG6jEDQY, branch claude/creatures)"
 reviewer: art
 depends_on: [M3-CRE-610, M2-CHR-03]
