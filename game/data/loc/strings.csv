@@ -1085,3 +1085,7 @@ SET_SCREEN_SHAKE_FULL,Full
 SET_SCREEN_SHAKE_HALF,Half
 SET_SCREEN_SHAKE_OFF,Off
 TUT_TIDELINE_TIMELINE,"The turn order runs down the right, next at the top. Every action costs time: watch where yours will land before you choose."
+ITEM_SAILMAKERS_NEEDLE,Sailmaker's Needle
+ITEM_SAILMAKERS_NEEDLE_DESC,"A sailmaker's steel needle, left sealed in a niche of Coilspire's flues. With two Tide Pearls it stitches Sea Legs into armour (Customize); the needle is spent in the stitching."
+ABILITY_SEA_LEGS,Sea Legs
+ABILITY_SEA_LEGS_DESC,Prevents Slow.

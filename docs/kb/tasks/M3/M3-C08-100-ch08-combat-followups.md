@@ -2,7 +2,7 @@
 id: M3-C08-100
 title: "Ch8 combat follow-ups: the sailmaker's needle, the set piece's battle barks"
 role: combat
-status: blocked
+status: review
 owner_session: "ui-menus (claude/ui, session_01KGBUwbYgXe9JS6D8jXw6ZG)"
 depends_on: [M3-C08-02, M3-CMB-01]
 milestone: M3
@@ -27,5 +27,6 @@ Two things the Ch8 flow (M3-C08-02) sets up but the battle data doesn't have yet
   - **Battle barks: done.** `BattleBarks` (`game/battle/scene/battle_barks.gd`) is a listen-only view that the controller attaches in one line. It floats a speaker's line as the skill resolves, or as a Vowbound is called. Damage numbers being off doesn't hide it, because it is speech.
   - **The data:** skills.json `bark_key` on `hold_the_stair` ("Hold.") and `hoist_haul` ("Pull!"), and vowbound.json `call_bark_key` on Virel ("Virel."). Flare Line and Virel himself stay silent. The loc rows are in battle_set_piece.csv; the validator's loc check covers the keys. Tests: `tests/unit/test_battle_barks.gd`.
   - **The sailmaker's needle: blocked** on the Lead's accessory-slot ruling. There is no accessory slot (see M3-C07-05; the Oruvel Float has the same question). Once it's ruled, add the item, and have `Ch08CoilspireZone._on_niche` give it (cinematics' code).
+- **2026-10-27, ui-menus, after ADR 0040 (no accessory slot):** the needle is now `sailmakers_needle`, a Customize material. With two Tide Pearls it crafts **Sea Legs** (new armour ability, a ward against Slow) into an empty armour slot, and the needle is spent. The tests are in test_customize.gd. **Still open, cinematics:** `Ch08CoilspireZone._on_niche` should `give({"sailmakers_needle": 1})` (requested in M3-UI-204). Ch20 can read `ch08_found_sail_needle`, which stays true after the needle is spent.
 
 ## Review log

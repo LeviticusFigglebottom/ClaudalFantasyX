@@ -28,6 +28,7 @@ These are layout edits in zones you own, so this is a request.
 - [ ] **Corrow (Ch8):** a `Shrine` spawn by the `shrine` trigger at (-30, 19.2), plus `"save_shrine": "corrow_shrine"` on its payload, plus the row `{"id": "corrow_shrine", "location_id": "ch08/corrow", "spawn": "Shrine"}`.
 - [ ] The Brightwater ferry's shrine stays heal-only, because a ship under way is no travel destination.
 - [ ] After the edits, tell ui-menus. The map POIs follow: `game/data/ui/zone_maps.json` gets a shrine, a shop and an inn for Tamsule, checked by `tools/tests/test_zone_map_pois.py`.
+- [ ] **Coilspire (Ch8):** the tier-2 niche gives the needle: `Ch08CoilspireZone._on_niche` calls `give({"sailmakers_needle": 1})` (ADR 0040; the item is in `items.json`).
 
 ## Notes
 - The hook ignores an id that has no `shrines` row (it logs a warning), so payload and row can land in either order.
