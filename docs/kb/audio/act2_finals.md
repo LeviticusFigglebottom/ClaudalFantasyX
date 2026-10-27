@@ -21,11 +21,11 @@ Sizes are estimates (about 0.95 MB a minute at q3) until a final is rendered; th
 
 | Ch | Cue (final) | From | Kind | Est. | Measured |
 |---|---|---|---|---|---|
-| 10 | `ossa_fen` | sketch | loop ~150 s | 2.4 MB | |
-| 10 | `reedhollow` | sketch | loop ~150 s (its clutch line carries the Letting's first cell: act3_plan.md §4 Q2) | 2.4 MB | |
+| 10 | `ossa_fen` | sketch | loop ~150 s | 2.4 MB | 2.11 MB (q2), 154.8 s, −16.07 LUFS |
+| 10 | `reedhollow` | sketch | loop ~150 s (its clutch line carries the Letting's first cell: act3_plan.md §4 Q2) | 2.4 MB | 1.58 MB, 153.9 s, −15.97 LUFS |
 | 10 | `farewell_tide` | reedhollow's material | cue ~90 s, the dusk rite; the motes lift; it ends on a rise and the backs turned | 1.4 MB | |
 | 10 | `mangrove_drowner` | new | boss, 2 stems × ~120 s (phase 2 `uprooted`) | 3.8 MB | |
-| 11 | `sunken_vey` | sketch | loop ~150 s | 2.4 MB | |
+| 11 | `sunken_vey` | sketch | loop ~150 s | 2.4 MB | 0.98 MB, 156.5 s, −15.99 LUFS |
 | 11 | `lowlight` | sketch | loop ~150 s | 2.4 MB | |
 | 11 | `nhoa_bound` / `nhoa_summon` | new (as virel's) | stings ≤ 8 s / ≤ 6 s (sfx folder) | 0.3 MB | |
 | 11 | `lamp_engine` | new | boss, 2 stems (phase 2 `opened`; the core's release is a small upward lift) | 3.8 MB | |
