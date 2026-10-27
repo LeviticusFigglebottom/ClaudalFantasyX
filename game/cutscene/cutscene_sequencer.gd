@@ -65,6 +65,9 @@ var restore_fade := true
 ## Freeze the stage's player for the scene. Overheard barks (M2-FP-13) set false: Rhen walks on
 ## while the lines advance by themselves (auto_advance).
 var hold_player := true
+## M2-FP-107: freeze the player's input like hold_player, but the scene is no staged cutscene, so the
+## party's followers (HeroFieldParty, which hides for hold_player scenes) stay in view. Barks set it.
+var freeze_player := false
 ## A replay (the Memories gallery, SPEC §6.11): flags read the live game but every <<set>> stays in
 ## this play (ReplayFlagAccess), and <<event>>s are recorded in `events` but never emitted or forwarded
 ## to the EventBus, so a replayed scene starts no battle and changes no save.
@@ -305,7 +308,7 @@ func _begin(scene_id: StringName, stage: CutsceneStage) -> void:
 			var member_id := &"rhen" if member == _player else StringName(String(member.name).to_lower())
 			HeroMotion.add_micro_motion(member, member_id)
 	SaveSystem.hold_autosave(self)
-	if not hold_player:
+	if not hold_player and not freeze_player:
 		_player = null
 	if _player != null:
 		_player_input_was = _player.accepts_input

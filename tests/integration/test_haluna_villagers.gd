@@ -120,3 +120,28 @@ func test_a_villagers_line_turns_her_to_rhen_for_the_scene() -> void:
 	assert_false(neme.is_talking(), "the scene's end lets her go")
 	seq.free()
 	_done()
+
+
+## M2-FP-107: a bark freezes Rhen but keeps Asha and Toma in view (the party's followers hide only for a
+## staged scene), and the story's sequencer holds the player again for the next staged one.
+func test_a_bark_freezes_rhen_and_keeps_the_party_in_view() -> void:
+	_load()
+	var story := zone.get_node(^"Story") as HalunaStory
+	story.sequencer.instant = true
+	var party := zone.player.get_node_or_null(NodePath(String(HeroFieldParty.NAME))) as HeroFieldParty
+	assert_true(party != null, "the player has the party's followers")
+	party.rescan()
+	var hidden: Array[bool] = []
+	var frozen: Array[bool] = []
+	story.sequencer.line_shown.connect(
+		func(_s: DialogueStep) -> void:
+			hidden.append(party.should_hide())
+			frozen.append(not zone.player.accepts_input)
+	)
+	await story.call(&"_bark", &"ch02_bark_market")
+	assert_false(hidden.is_empty(), "the bark played lines")
+	assert_false(true in hidden, "the followers never hid")
+	assert_false(false in frozen, "Rhen was frozen for every line")
+	assert_true(zone.player.accepts_input, "and walks again after")
+	assert_true(story.sequencer.hold_player, "the next staged scene holds the player again")
+	_done()
