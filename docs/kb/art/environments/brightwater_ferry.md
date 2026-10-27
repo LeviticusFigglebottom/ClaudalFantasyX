@@ -306,7 +306,7 @@ red lacquer on a black ground, inside a copper-banded frame, with a seven-step t
   gangplank in Ch1). Same plank, seam and bulwark proportions as the ferry and `arena_derelict_deck`.
 - **Bands:** copper sheathing below y −1.15 (0.35 m above the waterline: the copper boot-top shows in every
   view), black lacquer above, a red-lacquered wale at y −0.45 and a red sheer strake under the cap rail; the
-  counter (the transom above the wale) in deep red lacquer, so the black name-board stands out on it.
+  counter (the transom above the wale) in deep red lacquer, so the black name-board stands out on it; its planks' seams show, a black moulding frames it, and copper nail-heads run along the wale (M3-ENV-705).
 - **Main hatch (open)** at z −3.6, 1.8 × 1.6 m coaming, a ladder down into **the hold** (y −1.9 floor, from
   z −5.4 to −1.8): copper ingots in crossed stacks, crates, and on a shelf **the lamp-housing** Rhen sold the
   skipper (a dead Lit Age ceramic housing with a brass rim; C4-12 "he finds the housing and puts it back").
