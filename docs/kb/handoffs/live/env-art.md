@@ -438,6 +438,8 @@ ANSWERED: lead/gate-render-env-art-60eee2f (cloud): brine_b01_arrival and brine_
 RENDER-REQUEST @ b7182ba1: brine_b05_barge_channel,brine_b01_arrival; why: M3-ENV-705, the white barge's Order trim (B05 read it flat white).
 RENDER-REQUEST @ 9c26b66e: haluna_h07_chapel_court,haluna_h01_village_from_sea,haluna_h02_tidewall_lane,haluna_h04_dock,haluna_h10_dock_night; why: M3-ENV-705, the chapel's articulation (H07 read a plain box), plus the palms request (ab58f891) folded in. Supersedes ab58f891.
 RENDER-REQUEST @ 5d53f98c: battle_arena_iskarra_spire_crown; why: M3-ENV-726, Ch19's Lamp Spire crown with the anchor-engine and the city below (new shot).
+ANSWERED: lead/gate-render-env-art-191e5e8 (battle_arena_bridal_barge_night) and c990e2c (battle_arena_ossa_fen_roots): viewed and approved as first baselines.
+ANSWERED: lead/gate-render-env-art-ab58f89: haluna_h01, h02 and h10 viewed and re-approved (the drift is the density pass's palms and their shadows); h04 identical. causeway_route_afternoon keeps big12's viewed baseline (the arena is unchanged since).
 NOT APPROVED: 95be611 (battle_arena_keth_seep_terrace). The backdrop reads as a wall of stretched white blocks and the seep strips as pale-blue ribbons, not a mountain pass. Rework is queued after the Iskarra fast-track (M3-ENV-717).
 RENDER-REQUEST @ 7f1a0fc7: battle_arena_keth_seep_terrace; why: M3-ENV-717 rework after 95be611 (crisp weathered wall, threads of seep). Supersedes 95be6118.
 
