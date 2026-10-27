@@ -56,3 +56,6 @@ Ch4–Ch9 onward. `m2-slice.md` beside this file is the history up to the 2026-1
     cherry-picked here, so their merge from claude/creatures will be a no-op for those files apart from the shot rows.
   - **For Character (requested_clips.json):** rhen `lie_in_shallows` is new. Rhen's `sit` and `trim_wicks` would
     complete the prologue.
+- **MERGE-READY @ 5ad11bab (FAST-TRACK):** adds 1b366c7f, in which H06 aims at the kneeling pair's faces while Rhen's lying
+  clip is a stand-in (both heads clipped the top). It also merges the integration branch's Lead docs (492651da).
+  Checks: haluna 54 and key_light 9, 0 failed. Skipped: everything else (no other code changed since 51e73a22).
