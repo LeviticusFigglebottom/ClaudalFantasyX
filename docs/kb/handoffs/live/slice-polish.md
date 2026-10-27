@@ -263,6 +263,16 @@ Ch4–Ch9 onward. `m2-slice.md` beside this file is the history up to the 2026-1
   - **Checks skipped:** coverage (game/battle and game/progression untouched) and Blender.
   - **PC, FYI:** the shutdown "cast a freed object" error is creatures' (known, Lead).
 
+- **MERGE-READY @ ca7c8ede** (viewed gpu/render-m2-slice-8b25b3b).
+  - **Approved and baselined:** slice_causeway_head, slice_causeway_harrier_view, slice_haluna_villagers_village.
+  - **H06 fix (haluna.md: Asha in profile, her face must read).** H06 showed her back, so her actor turns 40°
+    toward the camera, which sits to the north.
+  - **Not approved:**
+    - slice_beach_h05_asha and slice_beach_h06_toma: both landed on H06 with Asha's back to the lens;
+    - slice_dock_night_yes: it predates the ec3ba50a E-scene correction and still shows the letterbox;
+    - slice_verse_steps: it predates M2-FP-116 and still shows the CSG set.
+  - **Checks:** haluna 57, fp_ 29, 0 failed.
+
 - **Correction (ec3ba50a):** my first B11 pass (4f616566) added a letterbox and three scripted camera setups.
   vertical_slice.md defines B11 (and B02) as **E** scenes: in-engine, no letterbox, and the player keeps the camera
   rail. Those cues are out. B11 keeps Rhen's walk out to Asha and the turns between them. Lead: take ec3ba50a with
@@ -288,3 +298,4 @@ RENDER-REQUEST @ 05f6abc9: ch01_underway_crown, ch01_underway_gallery, ch01_oruv
 RENDER-REQUEST @ 9ba01356: slice_verse_hall, slice_verse_steps, ch01_underway_crown, ch01_underway_gallery, ch01_oruvel_dressed; why: M2-FP-116 moves the First Verse from the CSG set into the real shrine (slice_verse_hall is new: S07, Asha going in from the portal; slice_verse_steps is S06 on the outer steps), plus the 05f6abc9 Ch1 shots. This one supersedes 05f6abc9 and ba49617a. Please push every out PNG, even a bad frame.
 RENDER-REQUEST @ b35e17c1: ch01_oruvel_dressed, ch01_o07_name_board, ch01_o10_gull, ch01_underway_crown, ch01_underway_gallery, slice_verse_hall, slice_verse_steps; why: M3-C01-100's second pass (the Seventh Terrace, the lintel-gulls; the two inserts are new shots), plus everything from the 9ba01356 request, which this supersedes. Push every out PNG, even a bad frame.
 RENDER-REQUEST @ 17b0601f: ch01_underway_crown, ch01_underway_gallery, ch01_oruvel_dressed, ch01_o07_name_board, ch01_o10_gull, slice_verse_hall, slice_verse_steps; why: the same set as b35e17c1 plus the Underway's podium (the gallery shot looks out over it). Supersedes b35e17c1. Push every out PNG, even a bad frame.
+RENDER-REQUEST @ ca7c8ede: slice_beach_h05_asha, slice_beach_h06_toma, slice_dock_night_yes, slice_verse_hall, slice_verse_steps, ch01_oruvel_dressed, ch01_o07_name_board, ch01_o10_gull, ch01_underway_crown, ch01_underway_gallery; why: Asha's H06 facing; dock-night without the letterbox (ec3ba50a); the First Verse in the real shrine (M2-FP-116); the Ch1 kit zones (M3-C01-100/101). The cutscene turns are now 0.9 s (M2-HER-1113), so cutscene frames may land differently. Supersedes every earlier open request from this track. Push every out PNG.
