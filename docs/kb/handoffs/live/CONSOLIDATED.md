@@ -67,11 +67,12 @@
 
 ## 2a. Merge state (new account)
 - **10-27: big9 MERGED** (integration 3b7cbf5e). PC gate: Godot 2561/0, coverage and boot OK, Blender 40 identical + 11 M2-CHR-11 DIFFs (rhen, toma, 9 villagers), 281 shots with 48 re-approved after the Lead viewed them. The results are on `gpu/gate-big9-shots`.
-- **big10** (`lead/gate-big10` @ 181708a7: big9 plus every track head from 10-25 ~00:15) is gating on the PC. The 48 big9 drifts will reappear there; the big10 merge must keep the integration branch's re-approved PNGs.
+- **10-27: big10 MERGED** (integration f5ec3bda). PC gate: Godot 2637/0, coverage and boot OK, Blender 20 identical + rhen/toma, 292 shots with 51 re-approved (37 identical to big9's; 14 viewed). It includes M3-BPR-404: the Hullgnaw, Drownbell and Matron intros now fit the boss.
+- **big12** is being pre-built locally on top of gate-big11 (pipelining) and gates right after big11.
+- **big11** `lead/gate-big11` @ 23ea8c6f (every track head as of 10-27 ~15:30 + integration f5ec3bda) is gating on the PC with the full manifest. Cloud: Godot 2738/0. Known tools failures, owned by the tracks: test_audio_loudness (audio) and test_shrine_gi_bake (the stale shrine bake; slice-polish M3-ENV-704). Open: the duplicate Haluna villager systems (creatures' VillagerLayer vs slice-polish's HalunaVillagers); one owner to be picked.
 - **Open from viewing big9:**
   - Ysolde is still a capsule in battle → hero-integration (FAST-TRACK).
-  - A capsule foe in battle_arena_camp → creatures.
-  - Hullgnaw's intro is framed close → battle-presentation M3-BPR-404 (FAST-TRACK).
+  - Inquisitor Hadric Moll is a capsule (battle_arena_camp, battle_boss_intro_inquisitor) → characters (a human foe).
   - No manifest shot covers the prologue's "everyone is still here" colour → slice-polish.
 
 ## 2b. Rendering is PC-only (human directive, 10-27)
@@ -92,7 +93,7 @@ No cloud session captures screenshots. Tracks post `RENDER-REQUEST @ sha: ids` l
 | env-art | session_01YbaV2c8yquRHqj6afQYg89 | claude/env-art | env-art.md | 700–799, ADR 0160–0169 |
 | audio | session_01Wmj8xaLtwcqiS3qwC6PciW | claude/audio | audio.md | 800–899, ADR 0170–0179 |
 
-The common brief is [`TRACK-RULES.md`](TRACK-RULES.md). The gate runners are retired.
+**No combat, progression or systems track exists in this account:** ui-menus owns their UI-adjacent tasks (M3-RBL-201, M2-MNU-306, the shrine teleport list). The common brief is [`TRACK-RULES.md`](TRACK-RULES.md). The gate runners are retired.
 
 ## 4. Process rules that work: keep them
 - **Never idle** (the human, 2026-10-24).
