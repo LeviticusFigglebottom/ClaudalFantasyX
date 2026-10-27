@@ -106,6 +106,21 @@ Ch4–Ch9 onward. `m2-slice.md` beside this file is the history up to the 2026-1
     memory 6, shell_shrine 15, slice_shots 1, all 0 failed.
   - **Checks skipped:** coverage and Blender (nothing they cover).
 
+- **Lead's relays (15:17, 15:34):**
+  - **The prologue's "everyone is still here" shot:** `slice_prologue_vigil_line` (fdec3cc6, in the render request)
+    is that moment: the line up, the lantern lit, the P02 two-shot. No second shot is needed.
+  - **Creatures' VillagerLayer (M3-CRE-613, still only on claude/creatures):**
+    - It does what my M2-FP-102 `HalunaVillagers` does for the seven M2-CHR-03 villagers, and more: routes, chat
+      partners, work focus, storms.
+    - The two can't double up: VillagerLayer only acts once its node is added to `haluna.tscn` (mine).
+    - **Plan when it reaches the integration branch:**
+      - add the VillagerLayer node (`zone_id ch02/haluna`);
+      - cut `game/data/flow/haluna_villagers.json` down to the three shop stand-ins (shopkeeper, smith, innkeeper,
+        until M2-CHR-100), or hand those rows to creatures' data;
+      - keep CutsceneNpcTalk (M2-FP-106) and `freeze_player` (M2-FP-107), which work on any FieldNpc and complement
+        it;
+      - re-run test_haluna_villagers against it.
+
 ### Render requests
 RENDER-REQUEST @ fdec3cc6: slice_prologue_vigil_line, slice_beach_h05_asha, slice_beach_h06_toma, slice_haluna_villagers_village, slice_causeway_head, slice_causeway_harrier_view, haluna_h01_village_from_sea, haluna_h02_tidewall_lane, haluna_h04_dock, haluna_h07_chapel_court, haluna_h10_dock_night, shrine_s01_approach, shrine_s02_threshold, shrine_s03_overview, shrine_s04_lip, shrine_s05_side_pool, drownbell_flood, battle_boss_intro_drownbell, battle_arena_causeway, field_causeway_dolly, boot_title; why: M2-FP-102..109, the human's playtest round (real cast and held poses in the prologue and Cutscene A, live villagers and wildlife, the final causeway), plus the greyscale audit of every slice beat. The six slice_* shots are new (no baseline yet).
 - **Known red until the render lands:** the six new `slice_*` shots have no baseline yet, so the tools test
