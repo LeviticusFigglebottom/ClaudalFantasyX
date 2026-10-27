@@ -155,6 +155,7 @@ RENDER-REQUEST @ ba16d48b: haluna_h01_village_from_sea,haluna_h04_dock,haluna_h1
 RENDER-REQUEST @ 179069de: battle_arena_causeway_route_afternoon; why: M3-ENV-705 its ground takes the zone's tidal-mud material
 ANSWERED: 71f19fbc (gpu/render-env-art-71f19fb) and a0d2549f (gpu/render-env-art-a0d2549), all eight non-passing shots viewed and re-approved in 0f19d868.
 RENDER-REQUEST @ 24bf927a: iskarra_p01_plaza_dusk,iskarra_i02_gate_from_the_plaza,iskarra_i03_broken_tower; why: M3-ENV-710 Iskarra kit for the Prologue under its dusk (new shots, no baseline yet)
+RENDER-REQUEST @ fa67bfee: battle_arena_shoals,battle_arena_camp,battle_boss_intro_inquisitor; why: M3-ENV-706 density pass after viewing 71f19fb (the shoals read as bare sand, the camp's hard as one pebble repeat)
 
 ## STATE AT HANDOVER (2026-10-25)
 
