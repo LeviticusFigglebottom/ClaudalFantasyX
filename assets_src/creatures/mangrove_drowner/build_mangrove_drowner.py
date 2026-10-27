@@ -27,6 +27,7 @@ import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "common"))
 import creature_kit as ck  # noqa: E402
+import grounding as gr  # noqa: E402
 
 SEED = 6210
 PAL = {k: ck.hexrgb(v) for k, v in {
@@ -35,34 +36,41 @@ PAL = {k: ck.hexrgb(v) for k, v in {
 }.items()}
 
 N_ROOTS = 12
-# Each root, by index: (azimuth in degrees from +Z toward +X, the height it leaves the trunk (its tier), the radius
-# its foot plants at, its girth, its sideways curl in metres at the foot, its skew in degrees: how far round the
-# trunk from its own heading it leaves, so its line in the top view misses the trunk's centre). Four clusters with
-# wide gaps (the widest at the front, where the core shows); the bank side's (-x, 7-10) reach furthest. Neighbours
-# curl and skew opposite ways, so they cross in the top view: a tangle, not a ring.
+# Four root clusters: (azimuth in degrees from +Z toward +X of the bundle's heading). The widest gap is at the front,
+# where the core shows; the bank cluster (-x) reaches furthest. A cluster's roots leave the trunk spread round it and
+# at different tiers, then converge on the bundle's heading, so from the top it is four uneven bundles, never rays.
+CLUSTERS = {"front_right": 58.0, "back": 176.0, "bank": 263.0, "front_left": 328.0}
+# Each root, by index: (its cluster, how far round the trunk from the bundle's heading it leaves (degrees), the
+# height it leaves the trunk (its tier), the radius its foot plants at, its girth, its foot's sideways offset from
+# the heading in metres, its skew in degrees: how far round the trunk from its own heading it leaves, so its line in
+# the top view misses the trunk's centre). Neighbours leave on opposite sides and cross as they converge: a tangle.
 ROOTS = (
-    (322, 1.72, 2.6, 1.0, 0.55, -30),    # 0  front-left, mid   (the drag)
-    (61, 2.18, 2.5, 1.05, -0.95, 34),    # 1  front-right, high
-    (70, 1.58, 2.15, 0.95, 0.45, -28),   # 2  front-right, mid
-    (83, 1.12, 1.7, 1.15, -0.25, 22),    # 3  front-right, low
-    (167, 1.18, 1.85, 1.12, 0.5, -26),   # 4  back, low
-    (178, 2.26, 2.75, 1.05, -0.75, 36),  # 5  back, high
-    (191, 1.64, 2.4, 0.95, 0.85, -32),   # 6  back, mid
-    (254, 1.08, 2.45, 1.2, -0.45, 24),   # 7  bank, low
-    (261, 2.3, 3.85, 1.15, 1.05, -38),   # 8  bank, high
-    (272, 1.8, 3.35, 1.05, -0.95, 30),   # 9  bank, mid
-    (283, 2.08, 3.6, 1.0, 0.6, -26),     # 10 bank, high
-    (335, 1.2, 1.9, 1.1, -0.65, 28),     # 11 front-left, low (the drag)
+    ("front_left", 8.0, 1.72, 2.45, 1.0, 0.22, -30),      # 0  mid   (the drag)
+    ("front_right", -12.0, 2.18, 2.55, 1.05, 0.3, 32),    # 1  high
+    ("front_right", 3.0, 1.58, 2.2, 0.95, -0.28, -28),    # 2  mid
+    ("front_right", 14.0, 1.12, 1.8, 1.15, 0.05, 24),     # 3  low
+    ("back", -13.0, 1.18, 1.95, 1.12, -0.12, -26),        # 4  low
+    ("back", 2.0, 2.26, 2.75, 1.05, 0.32, 34),            # 5  high
+    ("back", 12.0, 1.64, 2.35, 0.95, -0.3, -30),          # 6  mid
+    ("bank", -16.0, 1.08, 2.7, 1.2, 0.18, 26),            # 7  low
+    ("bank", -5.0, 2.3, 3.85, 1.15, -0.38, -36),          # 8  high
+    ("bank", 6.0, 1.8, 3.3, 1.05, 0.36, 30),              # 9  mid
+    ("bank", 16.0, 2.08, 3.6, 1.0, -0.16, -26),           # 10 high
+    ("front_left", -10.0, 1.2, 2.0, 1.1, -0.26, 28),      # 11 low (the drag)
 )
-# risen: three planted clusters of two (front-right, back, bank), unevenly placed under the forward lean
-LEGS = (1, 2, 5, 6, 7, 9)
+CONVERGE = 1.6  # the power of a root's swing onto its bundle's heading along its length (late: it leaves on its own)
+# risen: three planted clusters of two (front-right, front-left, bank), unevenly placed under the forward lean
+LEGS = (1, 3, 5, 6, 7, 9)
 FRONT = (0, 11)  # the drag: they reach along the water (and hang forward once risen)
 TRAIL = (8, 10)  # the bank's longest: they drag out along the water once risen
-FOOT_Y = -0.1  # a foot's planted height (rest and risen): the roots go into the water
+FOOT_Y = 0.0  # the water (the floor): a planted foot rests on it, flattened where it meets it
+FOOT_LINE = 0.05  # a root's centre line ends this far over the water; its underside is flattened onto it
+FOOT_REST = FOOT_Y + FOOT_LINE  # a planted foot joint's height
+FLOOR_CLEAR = 0.003  # no vertex at rest goes under this height (M3-CRE-622: every clip stays on or over the water)
 WATER_Y = 0.7  # the high-water line on the roots: lacquer black and wet below, barnacle band across it
 BLEACH = (1.5, 2.8)  # timber drying to bone between these heights
 RISE = (0.02, 0.2)  # how far a root climbs past where it leaves the trunk before it comes down (a low shoulder)
-CURL_EARLY = 0.6  # the share of a root's curl taken in its first 40%
+CURL_EARLY = 0.6  # the share of a root's sideways foot offset taken in its first 40%
 KNUCKLE_STEP = (0.4, 0.7)  # metres of root between two gnarls
 KNUCKLE_FIRST = (0.32, 0.55)  # the first gnarl's distance from the trunk
 KNUCKLE_KINK = (0.06, 0.05)  # a gnarl's kink (in the root's plane, across it), metres either way
@@ -81,21 +89,28 @@ FORK_REACH = (0.55, 0.35)  # a fork's foot: sideways, outward of its root's foot
 LIFT = 0.8  # the risen body's lift (the trunk's foot comes out of the water)
 RISEN_TILT = (48.0, 10.0, 5.0)  # the risen lean (degrees): tipped forward like a felled tree, turned and canted
 # (radius, y) of each root's tip once risen: the legs plant in pairs (each wherever in RISEN_LEG_BAND of its radius
-# it comes down straightest); TRAIL drag along the water; FRONT reach forward and hang; 3 and 4 curl in under the
+# it comes down straightest); TRAIL drag along the water; FRONT reach forward and hang; 2 and 4 curl in under the
 # root ball, their frayed tips hanging
-RISEN = {1: (1.9, FOOT_Y), 2: (1.75, FOOT_Y), 5: (1.9, FOOT_Y), 6: (1.6, FOOT_Y), 7: (1.8, FOOT_Y),
-         9: (2.2, FOOT_Y), 8: (3.1, 0.38), 10: (2.9, 0.4), 0: (2.5, 0.75), 11: (2.2, 0.6), 3: (1.0, 0.55),
+RISEN = {1: (1.9, FOOT_REST), 3: (1.8, FOOT_REST), 5: (1.9, FOOT_REST), 6: (1.6, FOOT_REST), 7: (1.8, FOOT_REST),
+         9: (2.2, FOOT_REST), 8: (3.1, 0.38), 10: (2.9, 0.4), 0: (2.5, 0.75), 11: (2.2, 0.6), 2: (1.0, 0.55),
          4: (1.1, 0.7)}
 RISEN_LEG_BAND = 0.35
+RISEN_LEG_SPAN = 55.0  # a leg's middle and foot bends stay within this (degrees): a stilt, not a hooked claw
 PHASE_SOLVE = tuple(round(0.7 + 0.05 * k, 2) for k in range(30))  # 0.7 .. 2.15 s
 CHAIN_STICK = 2e-3  # phase_change: how strongly a root keeps to its last bend (vs 1e-4 for a lone pose)
 PHASE_RISE = (0.6, 2.0)  # phase_change: the roots ease from where they stood to the stance over these seconds  # phase_change: the moments the roots are solved for the rising body
-LEG_ROLL = 0.6  # how much of the way a leg's plane turns back upright (all the way splays them like knees)
+# each root's plane turned about its own heading once risen (degrees): it steers the foot round the trunk, so the
+# stance gathers into three clusters of two planted roots (front-right: 1 and 3; front-left: 5 and 6, with the drag's 0
+# and 11 and 4 hanging over them; the bank: 7 and 9, with 8 and 10 trailing), the wide gap behind, under the torn-up
+# trunk's foot
+RISEN_ROLL = {1: -9.0, 3: -18.0, 5: 9.0, 6: 40.0, 7: 9.0, 9: 9.0, 8: 10.0, 10: 10.0}
 RISEN_CORE = ((-34.0, 0.0, 0.0), (0.0, 0.1, -0.15))  # the mass's swing back under the tipped trunk
 RISEN_DROOP = (20.0, 50.0)  # the range of a risen root's first-bone bend (degrees, out and down)
-KO_SINK = 0.45  # the KO's sink into the water (the body; the roots splay out on the bottom)
-KO_SPLAY = 0.35  # how much further out a let-go root's foot slides than where it stood
-KO_KEEL = (-10.0, 0.0, 9.0)  # the KO's keel (degrees): the dead tree goes over backward, toward the bank
+KO_SLUMP = (0.35, 0.3)  # the KO: the mass slumps down (to the water) and slides out forward this far (metres)
+KO_SPLAY = 0.35  # how much further out a let-go root's foot slides along its bundle than where it stood
+KO_KEEL = (-15.0, 0.0, 10.0)  # the KO's keel (degrees): the dead tree goes over backward, toward the bank
+KO_KEEL_KEYS = ((0.0, 0.0), (0.8, 0.1), (1.8, 0.45), (2.6, 0.9), (3.2, 1.0))  # (s, share of the keel)
+TRUNK_FOOT_R = 1.25  # the trunk's foot's widest reach (buttresses and furrows): it pivots on its edge as it keels
 
 
 # ---------------------------------------------------------------------------------------------
@@ -121,17 +136,19 @@ def _resample(P: np.ndarray, u: np.ndarray) -> np.ndarray:
 def root_specs() -> list[dict]:
     rng = np.random.default_rng(SEED)
     out = []
-    for i, (az_deg, y0, foot, girth, curl, skew) in enumerate(ROOTS):
-        az = math.radians(az_deg + rng.uniform(-2.0, 2.0))
+    for i, (cluster, off, y0, foot, girth, across, skew) in enumerate(ROOTS):
+        az = math.radians(CLUSTERS[cluster] + off + rng.uniform(-2.0, 2.0))
         y0 = y0 + rng.uniform(-0.04, 0.04)
-        rf = foot + rng.uniform(-0.06, 0.06)
+        foot = foot + rng.uniform(-0.06, 0.06)
+        rf = foot * math.cos(math.radians(off))  # in its own plane; the rest of the way is its swing onto the bundle
+        converge = -foot * math.sin(math.radians(off))
         rt = float(trunk_radius(np.array([y0]))[0]) - 0.12
         r0 = rt * math.cos(math.radians(skew))  # it leaves the trunk's side, off its own heading
         top = y0 + rng.uniform(*RISE)
         lean = rng.uniform(0.1, 0.35)  # how far in of the foot the root starts down: the lower limb leans out
         reach = rng.uniform(0.3, 0.45)  # where along its reach the shoulder peaks
         # out and a little up off the trunk, over a low shoulder, then down to the mud, the lower limb leaning out
-        ctrl = [(r0, y0), (r0 + reach * (rf - r0), top + 0.15), (rf - lean, 0.55 * top), (rf, FOOT_Y - 0.05)]
+        ctrl = [(r0, y0), (r0 + reach * (rf - r0), top + 0.15), (rf - lean, 0.55 * top), (rf, FOOT_Y + FOOT_LINE)]
         base = ck.bezier([(r, y, 0.0) for r, y in ctrl], 240)
         outd, tan = _dirs(az)
         length = float(np.sum(np.linalg.norm(np.diff(base, axis=0), axis=1)))
@@ -159,9 +176,10 @@ def root_specs() -> list[dict]:
             line = np.asarray(cut)
         dense = _resample(line, np.linspace(0.0, 1.0, 401))
         s = np.linspace(0.0, 1.0, 401)
-        # it sets off half sideways (the curl comes early), then bends outward: no ray from the trunk's centre
-        side = (rt * math.sin(math.radians(skew)) * (1.0 - s)
-                + curl * (CURL_EARLY * ck.smoothstep(0.0, 0.4, s) + (1.0 - CURL_EARLY) * s ** 1.2) + dense[:, 2])
+        # it sets off a little sideways (its curl comes early), then swings onto its bundle's heading late: no ray
+        # from the trunk's centre, and a cluster's roots braid together toward their feet
+        side = (rt * math.sin(math.radians(skew)) * (1.0 - s) + converge * s ** CONVERGE
+                + across * (CURL_EARLY * ck.smoothstep(0.0, 0.4, s) + (1.0 - CURL_EARLY) * s ** 1.2) + dense[:, 2])
         world = dense[:, 0:1] * outd + dense[:, 1:2] * np.array([0.0, 1.0, 0.0]) + side[:, None] * tan
         # each gnarl's place along the final line: where the rounded line passes nearest its kinked knot
         acc = _arc(world)
@@ -253,7 +271,7 @@ def roots(mesh: ck.Mesh, rig: ck.Rig, specs: list[dict]) -> None:
         # bark: lumps and burls, and long furrows that turn a little from one segment to the next
         lumps = 0.035 * ck.fbm(P * 2.2, SEED + 10 + i) + 0.01 * ck.fbm(P * 7.0, SEED + 11 + i)
         furrow = 0.09 * rad_v * np.cos(3.0 * around + 0.6 * seg_v + i)
-        P = P + radial * (lumps + furrow)[:, None]
+        P = on_water(P + radial * (lumps + furrow)[:, None])
         col, wet, cav = bark_colour(P, around + 0.4 * seg_v, radial[:, 1], SEED + 20)
         col = col * spec["tint"][seg_v][:, None] ** (1.0 - wet[:, None])
         cav = np.clip(cav + 0.3 * crease_v, 0.0, 1.0)
@@ -285,11 +303,12 @@ def forks(mesh: ck.Mesh, rig: ck.Rig, specs: list[dict]) -> None:
         foot = spec["line"][-1]
         out, tan = _dirs(spec["az"])
         p3 = foot + tan * side_sgn * FORK_REACH[0] + out * FORK_REACH[1]
-        p3[1] = FOOT_Y - 0.05
+        p3[1] = FOOT_REST
         d = _resample(spec["line"], np.array([min(u0 + 0.05, 1.0)]))[0] - p0
         path = ck.bezier([p0, p0 + d * 3.0 + tan * side_sgn * 0.2, p3 + np.array([0.0, 0.6, 0.0]), p3], 9)
         r0 = float(_taper(spec, np.array([u0]))[0]) * 0.62
         P, T = ck.tube(path, np.linspace(r0, 0.07, 9), 7, cap_start=False)
+        P = on_water(P)
         around = np.concatenate([np.tile(np.arange(7) * 2 * math.pi / 7, 9), [0.0]])
         col, wet, cav = bark_colour(P, around, np.zeros(len(P)), SEED + 33 + i)
         ck.finish(mesh, P, T, "bark", col, rig.rigid(f"root{i}_c"), wet=wet, cavity=cav)
@@ -316,8 +335,14 @@ def rootlets(mesh: ck.Mesh, rig: ck.Rig, specs: list[dict]) -> None:
             p3 = p0 + d * ln * 0.3 + spread * ln * 0.8 + np.array([0.0, -0.1, 0.0])
             path = ck.bezier([p0, p0 + d * ln * 0.4, p3 - spread * 0.1 + np.array([0.0, 0.06, 0.0]), p3], 5)
             P, T = ck.tube(path, np.linspace(r0 * 0.45, 0.012, 5), 4, cap_start=False)
+            P = on_water(P)
             col, wet, cav = bark_colour(P, np.zeros(len(P)), np.zeros(len(P)), SEED + 31)
             ck.finish(mesh, P, T, "bark", col, rig.rigid(f"root{i}_c"), wet=wet, cavity=cav)
+
+
+def on_water(P: np.ndarray) -> np.ndarray:
+    """P with nothing under the water: a foot's underside flattens where it meets it."""
+    return np.column_stack([P[:, 0], np.maximum(P[:, 1], FOOT_Y + FLOOR_CLEAR), P[:, 2]])
 
 
 def _align_y(d: np.ndarray) -> np.ndarray:
@@ -340,11 +365,12 @@ TRUNK_TOP = 3.7  # the torn top's mean height (inside the snapped top while it s
 TRUNK_SEGS = 40
 TRUNK_FURROWS = 11  # long bark ridges round the trunk
 # limb stubs: (azimuth degrees, height, length, rise): broken-off branches, bare and short
-LIMBS = ((128.0, 3.05, 0.95, 0.18), (305.0, 2.8, 1.1, 0.12), (32.0, 3.25, 0.7, 0.22))
+LIMBS = ((118.0, 3.05, 0.95, 0.18), (222.0, 2.8, 1.1, 0.12), (298.0, 3.25, 0.75, 0.22))  # in the clusters' gaps
 # aerial roots: (limb, fraction along it): thin, straight, hanging plumb from the stub to the water
 AERIAL = ((0, 0.95), (0, 0.55), (1, 0.97), (1, 0.62), (2, 0.92))
 AERIAL_R = (0.045, 0.03)  # radius at the stub, at the tip
 AERIAL_CLEAR = 0.04  # a trailing aerial root's tip stays this far over the water
+AERIAL_TIP = 0.14  # an aerial root hangs to this height: it has not reached the water yet
 
 
 def trunk_radius(y: np.ndarray) -> np.ndarray:
@@ -385,6 +411,15 @@ def trunk(mesh: ck.Mesh, rig: ck.Rig, specs: list[dict]) -> None:
     ck.finish(mesh, P, T, "bark", col, rig.rigid("root"), wet=0.0, cavity=cav)
 
 
+def trunk_keel_lift(rot) -> float:
+    """How far the body must rise, turned by `rot` (degrees), for the trunk's foot to pivot on its edge on the water
+    rather than go through it."""
+    a = np.linspace(0.0, 2 * math.pi, 48, endpoint=False)
+    y0 = TRUNK[0][0]
+    ring = np.column_stack([TRUNK_FOOT_R * np.sin(a), np.full(len(a), y0), TRUNK_FOOT_R * np.cos(a)])
+    return max(0.0, FOOT_Y + FLOOR_CLEAR - float((ring @ ck.euler(*rot).T)[:, 1].min()))
+
+
 def limb_path(k: int, n: int) -> np.ndarray:
     az, y, ln, rise = LIMBS[k]
     out = np.array([math.sin(math.radians(az)), 0.0, math.cos(math.radians(az))])
@@ -413,7 +448,7 @@ def aerial_roots(mesh: ck.Mesh, rig: ck.Rig) -> None:
     rng = np.random.default_rng(SEED + 8)
     for k in range(len(AERIAL)):
         p0 = aerial_top(k)
-        p1 = np.array([p0[0], FOOT_Y, p0[2]])
+        p1 = np.array([p0[0], FOOT_Y + AERIAL_TIP, p0[2]])
         n = 12
         s = np.linspace(0.0, 1.0, n)
         path = p0 + (p1 - p0) * s[:, None]
@@ -431,8 +466,8 @@ def aerial_roots(mesh: ck.Mesh, rig: ck.Rig) -> None:
 # ---------------------------------------------------------------------------------------------
 CORE_C = np.array([0.05, 0.0, 0.42])  # its centre: pushed to the front of the trunk's foot, at the water
 # wider than tall, its top under 1.3 m: wedged, not carried
-CORE_PROFILE = [(0.0, 1.22), (0.42, 1.19), (0.7, 1.08), (0.9, 0.9), (1.02, 0.68), (1.05, 0.45), (0.98, 0.22),
-                (0.8, 0.03), (0.5, -0.1), (0.0, -0.14)]
+CORE_PROFILE = [(0.0, 1.22), (0.42, 1.19), (0.7, 1.08), (0.9, 0.9), (1.02, 0.68), (1.05, 0.45), (0.98, 0.24),
+                (0.84, 0.09), (0.55, 0.03), (0.0, 0.02)]  # its underside rests on the water
 CORE_SEGS = 64
 CORE_STEPS = 3  # rows between two profile points
 CORE_FRONT = 0.2  # how much further it bulges toward the front (+z) than behind
@@ -505,7 +540,7 @@ def core(mesh: ck.Mesh, rig: ck.Rig, feat: dict, specs: list[dict]) -> None:
     P, T = ck.lathe(prof, CORE_SEGS)
     az = np.arctan2(P[:, 0], P[:, 2])
     y = P[:, 1]
-    P = core_point(y, az, feat, specs)
+    P = on_water(core_point(y, az, feat, specs))
     n = ck.fbm(P * 2.2, SEED + 42)
     R = np.maximum(core_radius(y), 0.3)
     crease = np.zeros(len(P))
@@ -661,7 +696,7 @@ def build_rig(specs: list[dict]) -> ck.Rig:
         rig.add(f"shard{k}", b, b + np.array([0.0, h, 0.0]), "stump")
     for k in range(len(AERIAL)):
         p0 = aerial_top(k)
-        rig.add(f"aerial{k}", p0, (p0[0], FOOT_Y, p0[2]), "root")
+        rig.add(f"aerial{k}", p0, (p0[0], FOOT_Y + AERIAL_TIP, p0[2]), "root")
     return rig
 
 
@@ -700,14 +735,6 @@ def bend(clip: ck.Clip, i: int, spec: dict, t: float, a: float, b: float, c: flo
         clip.key(f"root{i}_{s}", t, axis_euler(tan, deg))
 
 
-def leg_roll(spec: dict, tilt) -> float:
-    """The roll (degrees, about the root's heading) that turns its plane back upright under a body turned by
-    `tilt`, so a leg can come straight down to the water whichever way the trunk leans."""
-    out, tan = _dirs(spec["az"])
-    R = ck.euler(*tilt)
-    return math.degrees(math.atan2(-float((R @ tan)[1]), float((R @ np.array([0.0, 1.0, 0.0]))[1])))
-
-
 def plumb(clip: ck.Clip, t: float, body_rot, lift: float = 0.0) -> None:
     """Every aerial root hangs plumb under a body turned by `body_rot` (the root bone's (rx, ry, rz)) and lifted by
     `lift`; one whose stub has come down nearer the water than its length trails back along it instead of going
@@ -715,7 +742,7 @@ def plumb(clip: ck.Clip, t: float, body_rot, lift: float = 0.0) -> None:
     R = ck.euler(*body_rot)
     for k in range(len(AERIAL)):
         top = R @ aerial_top(k) + np.array([0.0, lift, 0.0])
-        length = float(aerial_top(k)[1] - FOOT_Y)
+        length = float(aerial_top(k)[1] - FOOT_Y - AERIAL_TIP)
         room = float(top[1]) - AERIAL_CLEAR
         swing = 0.0 if room >= length else math.degrees(math.acos(max(room, 0.0) / length))
         clip.key(f"aerial{k}", t, mat_euler(R.T @ ck.rot_x(swing)))
@@ -774,20 +801,21 @@ def risen_bends(specs: list[dict], rot, lift: float, near: dict | None = None, w
     bends, is preferred among equally good fits, so a clip keyed from them doesn't jump between solutions."""
     out = {}
     for i, spec in enumerate(specs):
-        stood = (float(_plane(spec)[3][0]), FOOT_Y)
+        stood = (float(_plane(spec)[3][0]), FOOT_REST)
         target = (stood[0] + w * (RISEN[i][0] - stood[0]), stood[1] + w * (RISEN[i][1] - stood[1]))
         lo = RISEN_DROOP[0] * w
 
         def pref(default: tuple) -> tuple:
             return tuple(near[i][:3]) if near else default
         st = CHAIN_STICK if near else 1e-4
-        if i in LEGS:  # its plane turned part-way upright, so it comes down to the water like a stilt
-            roll = LEG_ROLL * w * leg_roll(spec, rot)
-            out[i] = solve_bend(spec, lift, target, pref((RISEN_DROOP[0], 0.0, 0.0)), rot, 90.0,
+        if i in LEGS:  # its plane turned toward its cluster, it comes down to the water like a stilt
+            roll = w * RISEN_ROLL.get(i, 0.0)
+            out[i] = solve_bend(spec, lift, target, pref((RISEN_DROOP[0], 0.0, 0.0)), rot, RISEN_LEG_SPAN,
                                 (lo, RISEN_DROOP[1] + 30.0), RISEN_LEG_BAND, roll, st) + (roll,)
-        elif i in TRAIL:  # down off the root ball and out along the water
+        elif i in TRAIL:  # down off the root ball and out along the water, alongside its cluster's legs
+            roll = w * RISEN_ROLL.get(i, 0.0)
             out[i] = solve_bend(spec, lift, target, pref((RISEN_DROOP[1], 0.0, -20.0)), rot, 90.0,
-                                (lo, RISEN_DROOP[1] + 20.0), 0.5, 0.0, st) + (0.0,)
+                                (lo, RISEN_DROOP[1] + 20.0), 0.5, roll, st) + (roll,)
         elif i in FRONT:  # reaching forward over the water
             out[i] = solve_bend(spec, lift, target, pref((RISEN_DROOP[0], 0.0, 0.0)), rot, 90.0,
                                 (-10.0, RISEN_DROOP[1]), 0.3, 0.0, st) + (0.0,)
@@ -879,24 +907,34 @@ def build_clips(specs: list[dict]) -> list[ck.Clip]:
         for k in range(len(AERIAL)):
             hit.key(f"aerial{k}", t, (4.0 * s, 0.0, -3.0 * s * (1 if k % 2 else -1)))
 
-    ko = ck.Clip("ko", 3.2)  # the roots let go one by one, splaying, and it sinks into the water
+    # the roots let go one by one and slide out along their bundles; the dead tree keels over backward, pivoting on
+    # its foot's edge on the water, and the mass slumps out of the roots onto the water (M3-CRE-622: nothing goes
+    # under the floor; the water's VFX takes the sinking)
+    ko = ck.Clip("ko", 3.2)
+
+    def keel(t: float) -> tuple[tuple, float]:
+        rot = tuple(np.asarray(KO_KEEL) * float(np.interp(t, *zip(*KO_KEEL_KEYS))))
+        return rot, trunk_keel_lift(rot)
     order = rng.permutation(N_ROOTS)
     for k, i in enumerate(order):
         spec = specs[int(i)]
         t0 = 0.2 + 0.13 * k
-        down = float(np.interp(t0 + 0.4, (0.0, 0.8, 1.8, 2.6), (0.0, 0.05, 0.22, 0.42))) - 0.08
-        r0 = float(_plane(spec)[3][0])
-        slack = solve_bend(spec, -max(down, 0.0), (r0 + KO_SPLAY * 0.45, FOOT_Y), (-10.0, 10.0, 8.0))
-        flat = solve_bend(spec, -KO_SINK, (r0 + KO_SPLAY, FOOT_Y), (-14.0, 14.0, 12.0))
+        foot = root_joints(spec)[3]
+        r0 = float(np.hypot(foot[0], foot[2]))
+        rot1, lift1 = keel(t0 + 0.4)
+        rot2, lift2 = keel(ko.length)
+        slack = solve_bend(spec, lift1, (r0 + KO_SPLAY * 0.45, FOOT_REST), (-10.0, 10.0, 8.0), rot1, r_free=0.1)
+        flat = solve_bend(spec, lift2, (r0 + KO_SPLAY, FOOT_REST), (-14.0, 14.0, 12.0), rot2, r_free=0.1)
         bend(ko, int(i), spec, 0.0, 0.0, 0.0, 0.0)
         bend(ko, int(i), spec, t0, 0.0, 0.0, 0.0)
         bend(ko, int(i), spec, t0 + 0.4, *slack)
-        bend(ko, int(i), spec, 3.2, *flat)
-    for t, drop, k in ((0.0, 0.0, 0.0), (0.8, 0.05, 0.1), (1.8, 0.22, 0.45), (2.6, 0.42, 0.9), (3.2, KO_SINK, 1.0)):
-        ko.key("root", t, tuple(np.asarray(KO_KEEL) * k), (0.0, -drop, 0.0))
-        plumb(ko, t, tuple(np.asarray(KO_KEEL) * k))
-    for t, sink in ((0.0, 0.0), (1.2, 0.08), (2.4, 0.3), (3.2, 0.4)):
-        ko.key("core0", t, (0.0, 0.0, 0.0), (0.0, -sink, 0.0))
+        bend(ko, int(i), spec, ko.length, *flat)
+    for t, _k in KO_KEEL_KEYS:
+        rot, lift = keel(t)
+        ko.key("root", t, rot, (0.0, lift, 0.0))
+        plumb(ko, t, rot, lift)
+    for t, sink in ((0.0, 0.0), (1.2, 0.2), (2.4, 0.75), (3.2, 1.0)):
+        ko.key("core0", t, (8.0 * sink, 0.0, -5.0 * sink), (0.0, -KO_SLUMP[0] * sink, KO_SLUMP[1] * sink))
         ko.key("core1", t, (6.0 * sink, 0.0, -4.0 * sink))
 
     phase = ck.Clip("phase_change", 2.2)  # `uprooted`: it wrenches free, the top splinters off, it tips and plants
@@ -964,6 +1002,87 @@ def build_clips(specs: list[dict]) -> list[ck.Clip]:
 
 
 # ---------------------------------------------------------------------------------------------
+# On the water (M3-CRE-622): every vertex of every frame of every clip stays on or over y 0 (GroundedClipsTest)
+# ---------------------------------------------------------------------------------------------
+GROUND_FLOOR = 0.002  # the corrected clips' lowest vertex (the test allows 5 mm under 0)
+GROUND_ROOT_LIMIT = (35.0, 45.0, 60.0)  # the most a root's foot, middle and first bone turn up to clear the water
+GROUND_LIFT_LIMIT = {"core0": 0.6, "aerial": 0.5}  # the most the mass or an aerial root lifts to clear it
+GROUND_STEPS = (16, 28)  # the search's coarse steps over a limit, then bisections down to the least that clears
+
+
+def _least(low, limit: float) -> float:
+    """The least c in [0, limit] with low(c) >= GROUND_FLOOR (the closest when none clears); leaves low at it."""
+    if low(0.0) >= GROUND_FLOOR:
+        return 0.0
+    best, best_low, hi = 0.0, low(0.0), None
+    for k in range(1, GROUND_STEPS[0] + 1):
+        c = limit * k / GROUND_STEPS[0]
+        y = low(c)
+        if y >= GROUND_FLOOR:
+            hi = c
+            break
+        if y > best_low + 1e-9:
+            best, best_low = c, y
+    if hi is None:
+        low(best)
+        return best
+    lo = hi - limit / GROUND_STEPS[0]
+    for _ in range(GROUND_STEPS[1]):
+        mid = 0.5 * (lo + hi)
+        if low(mid) >= GROUND_FLOOR:
+            hi = mid
+        else:
+            lo = mid
+    low(hi)
+    return hi
+
+
+def grounded_clips(rig: ck.Rig, meshes: list[ck.Mesh], specs: list[dict], clips: list[ck.Clip]) -> list[ck.Clip]:
+    """The clips (with the kit's hit_b and idle_b) re-keyed at every baked frame so nothing goes under the water:
+    the mass lifts the least it takes, each root curls up out of it, foot bone first, then its middle and its first
+    (a turn about its own plane's tangent, after its authored bend, so a planted foot stays on the water as the body
+    bobs over it), and each aerial root lifts the least it takes. Frames already clear keep their authored pose."""
+    poser = gr.Poser(rig, meshes)
+    lifts = ["core0"] + [f"aerial{k}" for k in range(len(AERIAL))]
+    turns = [(f"root{i}_{s}", _dirs(spec["az"])[1], lim) for i, spec in enumerate(specs)
+             for s, lim in zip("cba", GROUND_ROOT_LIMIT)]
+    names = lifts + [b for b, _a, _l in turns]
+    subs = {b: poser.subtree(b) for b in names}
+    masks = {b: (np.isin(poser.J, subs[b]) & (poser.W > 1e-6)).any(axis=1) for b in names}
+    out = []
+    for clip in ck.with_variety(clips):
+        fixed = ck.Clip(clip.name, clip.length, loop=clip.loop)
+        for b, ks in clip.keys.items():
+            if b not in subs:
+                fixed.keys[b] = list(ks)
+        for t in gr.frame_times(clip):
+            pose = gr.pose_at(clip, poser.names, t)
+            mats = poser.matrices(pose)
+
+            def low_of(b: str, rot, loc) -> float:
+                pose[b] = (tuple(float(v) for v in rot), tuple(float(v) for v in loc))
+                poser.resolve(mats, pose, subs[b])
+                return float(poser.vertices(mats, masks[b])[:, 1].min())
+
+            for b in lifts:
+                rot0, loc0 = pose[b]
+                limit = GROUND_LIFT_LIMIT["core0" if b == "core0" else "aerial"]
+                _least(lambda c, b=b, r=rot0, l0=loc0: low_of(b, r, (l0[0], l0[1] + c, l0[2])), limit)
+            for b, tan, limit in turns:
+                R0, loc0 = ck.euler(*pose[b][0]), pose[b][1]
+                _least(lambda c, b=b, R0=R0, l0=loc0, tan=tan: low_of(b, mat_euler(axis_mat(tan, -c) @ R0), l0),
+                       limit)
+            for b in names:
+                fixed.key(b, t, *pose[b])
+        out.append(fixed)
+    return out
+
+
+def export_clips(rig: ck.Rig, meshes: list[ck.Mesh], specs: list[dict]) -> list[ck.Clip]:
+    return grounded_clips(rig, meshes, specs, build_clips(specs))
+
+
+# ---------------------------------------------------------------------------------------------
 # A numpy forward-kinematics check (no Blender): where the feet land in a clip
 # ---------------------------------------------------------------------------------------------
 def fk(rig: ck.Rig, clip: ck.Clip, t: float) -> dict:
@@ -985,6 +1104,9 @@ def fk(rig: ck.Rig, clip: ck.Clip, t: float) -> dict:
 def report(specs: list[dict], rig: ck.Rig, mesh: ck.Mesh, extra: list[ck.Mesh], clips: list[ck.Clip]) -> None:
     tris = mesh.triangle_count + sum(m.triangle_count for m in extra)
     print(f"triangles: {tris} (body {mesh.triangle_count}, stump {extra[0].triangle_count}); bones {len(rig.bones)}")
+    poser = gr.Poser(rig, [mesh] + extra)
+    for c in clips:
+        print(f"{c.name}: lowest vertex {min(gr.lowest(poser, c)):+.4f} m")
     for c in clips:
         if c.name not in ("idle_risen", "phase_change", "attack", "ko", "idle"):
             continue
@@ -1024,7 +1146,7 @@ def main() -> None:
     specs = root_specs()
     rig = build_rig(specs)
     mesh, *extra = build_meshes(specs, rig)
-    clips = build_clips(specs)
+    clips = export_clips(rig, [mesh] + extra, specs)
     if args.report or not args.out:
         report(specs, rig, mesh, extra, clips)
         return
