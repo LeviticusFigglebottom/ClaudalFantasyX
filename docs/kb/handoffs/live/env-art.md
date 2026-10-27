@@ -587,6 +587,16 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
+- **2026-10-28 ~00:20: state.** Session handoff `2026-10-27-art-env-art-2.md`.
+  - **Audit fixes since MERGE-READY a733e5e7, each with its own scoped checks:**
+    - the Choir's moon and the Spire crown's afterglow (both tested against singer and engine shadows);
+    - Ashcrown's pillars and tiers; the Pemakar stelae; Iskarra I02 without Ysolde's capsule;
+    - the Hollowmere/Kite preview (M3-ENV-731) and the Act II kit rows (M3-ENV-732).
+  - **Waiting on renders** (requests below). Next: view and approve them as they land, and fix what the new previews show.
+  - **BACKLOG EMPTY until renders land:**
+    - every todo or request task for my role is answered (kit side done; placement belongs to act1-chapters or slice-polish);
+    - next-act content is complete through the Ending;
+    - every audit fix and new preview is waiting on its render.
 - **MERGE-READY @ 01bf31c2** (claude/env-art; it includes the integration branch at d2fb94c4). Since 0958af1a:
   - **New content:** M3-ENV-726 the Spire crown, M3-ENV-727 the Cage, M3-ENV-728 the Heart (two arenas), M3-ENV-729 the Ending's grades and M3-ENV-730 Oruvel rebuilt.
   - **Requests answered:** M2-ENV-14 (the helper bones) and the Ch8 repoint (M3-BPR-407).
