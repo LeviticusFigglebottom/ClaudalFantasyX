@@ -300,6 +300,9 @@ ACT2_FINALS: list[tuple] = [
     ("assets_src/music/act2/lowlight.py", "assets/audio/music/act2", ["lowlight.ogg", "lowlight.loop.json"], "music_loop"),
     ("assets_src/music/act2/keth_pass.py", "assets/audio/music/act2", ["keth_pass.ogg", "keth_pass.loop.json"], "music_loop"),
     ("assets_src/music/act2/quellan.py", "assets/audio/music/act2", ["quellan.ogg", "quellan.loop.json"], "music_loop"),
+    ("assets_src/music/act2/unlamped.py", "assets/audio/music/act2", ["unlamped.ogg", "unlamped.loop.json"], "music_loop"),
+    ("assets_src/music/act2/pale_rim.py", "assets/audio/music/act2", ["pale_rim.ogg", "pale_rim.loop.json"], "music_loop"),
+    ("assets_src/music/act2/drowned_choir.py", "assets/audio/music/act2", ["drowned_choir.ogg", "drowned_choir.loop.json"], "music_loop"),
 ]
 ACT2_DIR = "assets/audio/music/act2"
 
