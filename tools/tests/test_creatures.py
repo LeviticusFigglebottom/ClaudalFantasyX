@@ -107,6 +107,34 @@ class ValidatorTest(unittest.TestCase):
         cr["creatures"]["ilun"]["vowbound"] = False
         self.assertEqual(errs(cr), [], "false is a plain creature row")
 
+    def test_a_vowbound_may_wait_for_its_game_row(self) -> None:
+        """M3-CRE-642: Nhoa is built ahead of her vowbound.json row (Combat's); `vowbound_pending` names the task and
+        lets the row be missing, and becomes an error once the row exists."""
+        vb = _load(vc.VOWBOUND_FILE)
+
+        def errs(cr, table=vb) -> list[str]:
+            return vc.creature_errors(cr, self.enemies, self.skills, lambda p: True, table)
+
+        nhoa = self.creatures["creatures"]["nhoa"]
+        self.assertTrue(nhoa["vowbound"])
+        self.assertEqual(errs(self.creatures), [])
+        cr = copy.deepcopy(self.creatures)
+        del cr["creatures"]["nhoa"]["vowbound_pending"]
+        self.assertTrue(any("no game/data/battle/vowbound.json row 'nhoa'" in x for x in errs(cr)))
+        cr = copy.deepcopy(self.creatures)
+        cr["creatures"]["ilun"]["vowbound_pending"] = "M0-X-01"
+        self.assertTrue(any("ilun.vowbound_pending: game/data/battle/vowbound.json has the row 'ilun' now" in x
+                            for x in errs(cr)))
+        cr = copy.deepcopy(self.creatures)
+        cr["creatures"]["nhoa"]["vowbound_pending"] = " "
+        self.assertTrue(any("nhoa.vowbound_pending: must name the task" in x for x in errs(cr)))
+        cr = copy.deepcopy(self.creatures)
+        cr["creatures"]["nhoa"]["vowbound"] = False
+        self.assertTrue(any("nhoa.vowbound_pending: only on a row with vowbound true" in x for x in errs(cr)))
+        cr = copy.deepcopy(self.creatures)
+        del cr["creatures"]["nhoa"]["vowbound"]
+        self.assertTrue(any("nhoa.vowbound_pending: only on a row with vowbound true" in x for x in errs(cr)))
+
     def test_a_stand_in_may_give_its_height_and_radius(self) -> None:
         """M3-CRE-640: Kahre has no battle_sandbox.json row, so his creatures.json stand_in gives the height the VFX
         anchors are fractions of, and the ring's radius."""
