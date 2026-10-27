@@ -1,0 +1,43 @@
+keys,en
+RBL_HUD_STAKES_TIDECUP_OPENING,"Played for the dead. A win brings home the Oruvel Float; win or lose, Oruvel goes home after."
+RBL_HUD_STROKES,{n} strokes left
+RBL_HUD_OVERTIME,Overtime {p}: next float up wins · {n} strokes left
+RBL_HUD_CONTACT_YOURS,Your contact: {name} holds the float in {band}
+RBL_HUD_CONTACT_THEIRS,Their contact ({side}): {name} holds the float in {band}
+RBL_HUD_FETCHED,Fetched: it may come up through the ring
+RBL_HUD_UNFETCHED,Not fetched: take it down to {band} before it can score
+RBL_HUD_COMMANDS_TITLE,Contact
+RBL_HUD_PASS_TO,Pass to {name}
+RBL_HUD_ODDS,{odds}%
+RBL_HUD_PREVIEW_ODDS,Odds {odds}%
+RBL_HUD_PREVIEW_SURE,Sure: it cannot miss
+RBL_HUD_PREVIEW_COST,"Costs {strokes} on the clock, {breath} breath"
+RBL_HUD_PREVIEW_ENDS,Ends in {band}
+RBL_HUD_PREVIEW_SCORES,A success brings the float up: a score
+RBL_HUD_PREVIEW_MISS,On a miss: {taker} takes the float
+RBL_HUD_PREVIEW_WINDED,{name} is winded: the odds already count it
+RBL_HUD_RESULT_RISE,{actor} rises to {band}
+RBL_HUD_RESULT_DIVE,{actor} dives to {band}
+RBL_HUD_RESULT_PASS,{actor} passes to {target}
+RBL_HUD_RESULT_SCORE,{actor} brings the float up
+RBL_HUD_RESULT_RISE_MISS,{taker} strips {actor} on the rise
+RBL_HUD_RESULT_PASS_MISS,{taker} cuts out the pass to {target}
+RBL_HUD_RESULT_LOFT_MISS,{taker} catches {actor}'s loft
+RBL_HUD_RESULT_AT,(at {odds}%)
+RBL_HUD_GOAL_TITLE,Float up
+RBL_HUD_GOAL_LINE,{side} score · {a} to {b}
+RBL_HUD_FINAL_TITLE,The round is over
+RBL_HUD_FINAL_WIN,{side} win · {a} to {b}
+RBL_HUD_FINAL_LOSS,{side} win · {a} to {b}
+RBL_HUD_FINAL_DRAW,Drawn · {a} to {b}
+RBL_HUD_READ_TITLE,Read: {side}
+RBL_HUD_READ_BOLD,"They play bold: they never fear a turnover, loft early, and sometimes take the second-best choice."
+RBL_HUD_READ_CAREFUL,They play the odds: they weigh every turnover before they move.
+RBL_HUD_SIDE_TITLE,{side}
+RBL_HUD_BREATH,{b}/{max}
+RBL_HUD_TAG_FLOAT,Float
+RBL_HUD_TAG_WINDED,Winded
+RBL_HUD_TAG_RESTING,Resting
+RBL_HUD_TAG_TAKER,On a miss
+RBL_HUD_TAG_TARGET,Receives
+RBL_HUD_SCORE_DASH,–

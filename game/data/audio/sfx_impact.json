@@ -1,0 +1,48 @@
+{
+  "version": 1,
+  "doc": "Battle impact weight (M3-AUD-816): the tiers under a blow by its weight and the KO slow-motion swell, flat on Combat. impact_audio.json says when each plays; ImpactAudio plays them. The files come from assets_src/sfx/impact_sfx.py (assets/audio/sfx/battle/). Same row format as sfx.json; AudioData.sfx_rows merges this file in.",
+  "sfx": {
+    "impact_medium": {
+      "files": [
+        "res://assets/audio/sfx/battle/impact_medium_1.ogg",
+        "res://assets/audio/sfx/battle/impact_medium_2.ogg",
+        "res://assets/audio/sfx/battle/impact_medium_3.ogg"
+      ],
+      "bus": "Combat",
+      "pitch_jitter": 0.04,
+      "cooldown_ms": 60,
+      "voices": 3
+    },
+    "impact_heavy": {
+      "files": [
+        "res://assets/audio/sfx/battle/impact_heavy_1.ogg",
+        "res://assets/audio/sfx/battle/impact_heavy_2.ogg",
+        "res://assets/audio/sfx/battle/impact_heavy_3.ogg"
+      ],
+      "bus": "Combat",
+      "pitch_jitter": 0.03,
+      "cooldown_ms": 80,
+      "voices": 2
+    },
+    "impact_crushing": {
+      "files": [
+        "res://assets/audio/sfx/battle/impact_crushing_1.ogg",
+        "res://assets/audio/sfx/battle/impact_crushing_2.ogg"
+      ],
+      "bus": "Combat",
+      "pitch_jitter": 0.02,
+      "cooldown_ms": 120,
+      "voices": 2
+    },
+    "ko_slowmo": {
+      "files": [
+        "res://assets/audio/sfx/battle/ko_slowmo_1.ogg",
+        "res://assets/audio/sfx/battle/ko_slowmo_2.ogg"
+      ],
+      "bus": "Combat",
+      "pitch_jitter": 0.0,
+      "cooldown_ms": 1000,
+      "voices": 1
+    }
+  }
+}

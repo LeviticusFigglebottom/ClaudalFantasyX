@@ -303,7 +303,7 @@ func _child_open() -> bool:
 
 
 func _open_map() -> void:
-	map_menu = ZoneMapMenu.open_in(self, model.map)
+	map_menu = ZoneMapMenu.open_in(self, model.map, true)  # over this menu: only its content moves
 	visible = false
 	map_menu.closed.connect(_on_map_closed)
 
@@ -351,7 +351,7 @@ func _open_quit() -> void:
 
 
 func _open_settings() -> void:
-	settings_menu = SettingsMenu.open_in(self)
+	settings_menu = SettingsMenu.open_in(self, true)
 	visible = false
 	settings_menu.closed.connect(_on_settings_closed)
 
@@ -364,7 +364,7 @@ func _on_settings_closed() -> void:
 
 
 func _open_bestiary() -> void:
-	bestiary = BestiaryMenu.open_in(self)
+	bestiary = BestiaryMenu.open_in(self, null, true)
 	visible = false
 	bestiary.closed.connect(_on_bestiary_closed)
 
@@ -375,7 +375,7 @@ func _on_bestiary_closed() -> void:
 
 
 func _open_codex() -> void:
-	codex_menu = CodexMenu.open_in(self, model.codex)
+	codex_menu = CodexMenu.open_in(self, model.codex, true)
 	visible = false
 	codex_menu.closed.connect(_on_codex_closed)
 
