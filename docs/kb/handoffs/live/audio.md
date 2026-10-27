@@ -3,6 +3,20 @@
 ## NEW ACCOUNT (from 2026-10-25)
 Session `session_01Wmj8xaLtwcqiS3qwC6PciW`. Integration branch `claude/undertow-lead-handoff-ze8rrn`. Newest first.
 
+- **MERGE-READY: M3-AUD-857, Kahre's and Virel's voices** (backlog: the creatures' newest designs). claude/creatures
+  has built both Vowbound, and until now they had only the shared rows.
+  - vowbound_sfx.py now voices them. Kahre: a hornbill's boom, the mane's sparks, thunder off the anvil, and the
+    hammer on the anvil (A4) as his keepsake. Virel: sailcloth luffing, the seams' fire, and the brass key's ping.
+  - Each has five battle events, layers on the call, rise and sink, and `virel` in `no_steps`.
+  - Ilun's files are byte-identical. All files are deterministic and within their rules.
+  - test_vowbound_sfx.py checks every vowbound.json id. Godot `--filter=audio`: 171 run, 0 failed.
+  - **Budget:** shipped audio is 71.52 of 72 MiB, about 0.48 MiB left. Everything large from here waits for LFS.
+  - Review: combat.
+- **MERGE-READY: M3-AUD-853, the_kite (142 s loop, D major, 108 BPM) and kite_maiden_flight (47 s, its D dorian → D
+  major lift lands at about 8.3 s).** Sources only: four ACT3_FINALS rows, nothing tracked under act3/, and the
+  intended music.json rows are in the task file. Review: design. The Iskarra pair (iskarra_ruins and iskarra_spire,
+  M3-AUD-856) is with a composer.
+
 - **Self-directed backlog (TRACK-RULES, from 22:50):**
   1. **Renders:** none for audio (no shots).
   2. **Todo tasks:** none on claude/audio.
