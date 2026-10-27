@@ -135,3 +135,4 @@ RENDER-REQUEST @ 121362b3: battle_ch08_stair_hold, battle_hud_preview; why: the 
 - the stair meter moved below the two-line help (from the 6454c06 render).
 
 Lead decisions open: an accessory slot (the Oruvel Float, the sailmaker's needle, the Reefball outfitter). Requests open: M3-UI-204 (act1-chapters: shrine payloads, Tamsule's trader, inn and shrine). Renders pending: 17325e00 (minus battle_ch08_stair_hold), 99623a0c portraits, a195cd39 codex, 121362b3 stair hold.
+- 2026-10-27: **Viewed PC render `gpu/render-ui-99623a0`** (the five black-creature portraits). hullgnaw, scuttler, tide_crawler and undertows_reach are byte-identical to the committed PNGs. squall_wing differs only in its wing-edge glints (rmse 0.00835), the same image to the eye side by side. **Approved:** the PC's squall_wing.png replaces the cloud render, since the PC is the rendering authority. The portraits request is closed.
