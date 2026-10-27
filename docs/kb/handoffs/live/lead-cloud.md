@@ -62,3 +62,4 @@
 
 ## Cloud renders (PC paused)
 - RENDERED @ 7a8bff79d15491fe5f03f5ebdaa8211b184eaf5b: lead/gate-render-hero-integration-7a8bff7; 0 pass, 7 drift (cloud)
+- RENDERED @ 60cbb212cec3781e32e8ac0f96303b895d54f01e: lead/gate-render-battle-presentation-60cbb21; 0 pass, 1 drift (cloud)
