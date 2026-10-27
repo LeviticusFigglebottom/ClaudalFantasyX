@@ -15,7 +15,8 @@ const SCENES: Array[String] = [
 ]
 ## Path prefixes (from the scene root) still allowed, and why.
 const KNOWN: Dictionary = {
-	"City/": "the Prologue's Iskarra set (M3-ENV-100)",
+	"City/Water": "the Prologue's sea, a plane until it gets a WaterSurface",
+	"City/Vigils/": "Kerrid, Pell and Liss as dusk silhouettes until their hero models exist",
 	"HalunaMood/SaveShrine/Visual/": "the save shrine's model (M3-ENV-101)",
 	"NPCs/Neme/Bag": "Neme's bag, a creatures prop",
 	"Set/ChamberPassage": "env-art's passage behind the shrine's east door (part of its dressing)",

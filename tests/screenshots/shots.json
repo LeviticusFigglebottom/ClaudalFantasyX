@@ -4154,6 +4154,31 @@
           "screen_space_aa": 1
         }
       }
+    },
+    {
+      "id": "slice_prologue_p01",
+      "scene": "res://game/levels/_tests/slice_shots/slice_cutscene_shot.tscn",
+      "camera": "default",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 45,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        },
+        "nodes": {
+          ".": {
+            "level_path": "res://game/levels/prologue/prologue.tscn",
+            "scene_id": "prologue_dead_city"
+          }
+        }
+      }
     }
   ]
 }
