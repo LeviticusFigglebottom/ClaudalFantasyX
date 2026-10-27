@@ -377,7 +377,7 @@ RENDER-REQUEST @ b99be560: creature_wakefin; why: M3-CRE-626 new Act II boss, ne
   - Every hit peaks at 0.10 s; checked from the GLBs; none is dark, so default portrait lights.
   - **Checks run:** Godot creature 33/0, Blender verify identical ×4, validate_data, taskboard, dlgc, manifest, lint, format.
   - **Lead, a rule conflict (ADR 0150, request M3-CRE-629 routed to you for art direction):**
-    - palette.json forbids  as a non-Undertow creature's weak point;
+    - palette.json forbids `spawn_wound` as a non-Undertow creature's weak point;
     - the creature README and every shipped beast use it (reef crab, lantern eel, gull harrier, shoal skipper, ashwing, slag tortoise).
     - Proposal: one weak-point colour for every foe (pillar 4). The spawn keep the wound language: open seams and motes. Nothing shipped changes.
 RENDER-REQUEST @ 44080e1e: creature_tannin_archer, creature_gallery_ray, creature_rime_urchin, creature_conduit_crawler; why: M3-CRE-627 new Act II regulars, never rendered (no baselines).
