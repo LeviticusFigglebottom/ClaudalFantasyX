@@ -31,6 +31,7 @@ import arenas  # noqa: E402
 import kit_common as kc  # noqa: E402
 
 sys.path.append(str(HERE.parent / "pemakar"))  # the Pemakar kit's town layout, read-only (ash_terrace_lanternfall)
+sys.path.append(str(HERE.parent / "brine_shoals"))  # the Brine Shoals arena grounds, read-only (M3-ENV-706)
 
 OUT_DIR = ROOT / "assets" / "environments" / "arenas"
 KIT = "res://assets/environments/kits/haluna/"
@@ -95,6 +96,12 @@ def _ground_fn(name: str):
         return arenas.beach_height(kc.Noise3(kc.rng_for("arena_tideline_ground", 211)))
     if name == "flats":
         return arenas.flats_height(kc.Noise3(kc.rng_for("arena_causeway_flats", 231)))
+    if name in ("shoals", "camp"):  # M3-ENV-706: the Brine Shoals kit's arena grounds (bs_arenas.py, read-only)
+        import bs_arenas  # noqa: PLC0415
+
+        key, seed, fn = (("arena_shoals_ground", 741, bs_arenas.shoals_height) if name == "shoals"
+                         else ("arena_camp_ground", 742, bs_arenas.camp_height))
+        return fn(kc.Noise3(kc.rng_for(key, seed)))
     return None
 
 
@@ -830,8 +837,125 @@ RAFT_MORNING = {
 }
 
 
+# ---------------------------------------------------------------------------------------------
+# M3-ENV-706: Ch6's two arenas from the Brine Shoals kit (M3-BPR-03's greybox ids)
+# ---------------------------------------------------------------------------------------------
+SILTED_FLATS = {  # the colour script's validated `silted_flats` look (brine_shoals_water_material.tres's values)
+    "name": "arena_silted_flats", "shader": "res://game/shaders/water/water_ocean.gdshader",
+    "params": [("col_deep", "#4A5A50"), ("col_scatter_shallow", "#6E7A62"),
+               ("absorption_per_m", "Vector3(2, 0.6, 0.546)"), ("absorption_scale", 3.5), ("scatter_energy", 0.25),
+               ("caustic_strength", 0.0), ("col_foam", "#EEF6F4"), ("col_sss", "#7A8A6A"),
+               ("foam_crest_threshold", 0.95), ("use_foam", "false"), ("use_sss", "false"), ("glint_strength", 0.35)],
+}
+CH06_LIGHT = {  # color_script.md ch06 (15:30, haze and smoke): sun 35 / 240, key, fill, sky, fog, exposure, sat
+    "sub_frame": "ch06",
+    "sun": {"elev": 35.0, "az": 240.0, "color": "#FFD5B3", "energy": 2.4},
+    "fill": {"color": "#A8B8B0", "energy": 0.55},
+    "exposure": 0.7,
+    "saturation": 0.9,
+    "fog": {"color": "#B8A890", "density": 0.0022, "sky_affect": 0.12, "height": 0.0, "height_density": 0.0},
+    "sky": {"col_zenith": "#7FA3C0", "col_horizon_sun": "#E8C9A0", "col_horizon_away": "#D8C8A8",
+            "col_mid": "#C8B8A0", "mid_strength": 0.35, "mid_height": 0.1, "mid_width": 0.1,
+            "col_ground": "#5A5A50", "col_band": "#E8C090", "band_energy": 0.4, "band_height": 0.05,
+            "col_glow": "#FFD5B3", "glow_energy": 1.0, "glow_power": 5.0, "halo_energy": 2.0,
+            "col_cloud_lit": "#E8D0B0", "col_cloud_shadow": "#7A7E84", "cloud_coverage": 0.55,
+            "cloud_sun_energy": 2.0, "cloud_ambient_energy": 0.8, "cloud_wind_deg": 240.0, "horizon_curve": 0.5,
+            "azimuth_power": 1.0},
+}
+SMOKE_TINT = "#3C3C3A"
+
+SHOALS = {
+    "id": "brine_shoals_afternoon",
+    **CH06_LIGHT,
+    "ground": "shoals",
+    "ground_glb": BS + "arena_shoals_ground.glb",
+    "lut": "res://assets/environments/arenas/brine_shoals_afternoon/lut_ch06_smoke.png",
+    "sea": {"y": -0.15, "tide_line_y": -0.15, "sea_glow": 0.0, "material": SILTED_FLATS},
+    "pieces": [
+        # The wreck-ridges either side: black hulls stranded on their grit, a fallen mast across the left one.
+        (BS + "wreck_bow.glb", -27.0, -26.0, 55.0, 1.0, 0.1),
+        (BS + "wreck_mast_fallen.glb", -19.0, -19.0, 20.0, 1.0, 0.05),
+        (BS + "wreck_hull_section.glb", 30.0, -36.0, 205.0, 1.0, 0.1),
+        (BS + "wreck_ribs_large.glb", 17.0, -22.0, 140.0, 1.0, 0.15),
+        (BS + "wreck_mast_standing.glb", 34.0, -42.0, 15.0, 1.0, 0.0),
+        # The route goes on north between them: the plank walk, a wrack line, a drowned lamp, chalk on a hull.
+        (BS + "plank_walk.glb", 1.5, -16.0, 8.0, 1.0, 0.0),
+        (BS + "plank_walk.glb", 2.2, -20.0, 12.0, 1.0, 0.0),
+        (BS + "plank_walk.glb", 3.0, -24.0, 6.0, 1.0, 0.0),
+        (BS + "tideline_wrack.glb", -12.0, -13.0, 75.0, 1.0, 0.0),
+        (BS + "tideline_wrack.glb", 13.5, -10.0, 110.0, 1.0, 0.0),
+        (BS + "lamp_burial.glb", -15.0, -6.0, 30.0, 1.0, 0.0),
+        # Far off: more wrecks out on the flats, and the burning camp's smoke leaning away.
+        (BS + "wreck_ribs_large.glb", -60.0, -80.0, 30.0, 1.2, 0.3),
+        (BS + "wreck_bow.glb", 52.0, -95.0, 250.0, 1.1, 0.3),
+        (BS + "wreck_mast_standing.glb", -8.0, -120.0, 70.0, 1.0, 0.1),
+        (BS + "smoke_plume.glb", 26.0, -140.0, 0.0, 1.4, 0.0),
+        (BS + "smoke_plume.glb", 36.0, -150.0, 20.0, 1.1, 0.0),
+    ],
+    "scatters": [],
+    "hints": {
+        "wide_high": ((-1.5, 8.0, 14.0), (0.0, 0.3, -3.0)),
+        "party_side": ((7.0, 1.6, 5.0), (-1.5, 1.0, -0.5)),
+        "foe_side": ((-7.5, 1.6, 5.0), (1.5, 1.0, 0.0)),
+        "from_the_ridge": ((-14.0, 2.6, -16.0), (2.0, 0.8, 1.0)),
+    },
+}
+
+CAMP_FIRE_COLOR = "#E0702E"  # ember_orange: the fire's rim (color_script ch06 Rim)
+CAMP = {
+    "id": "salvage_camp_burning",
+    **CH06_LIGHT,
+    "ground": "camp",
+    "ground_glb": BS + "arena_camp_ground.glb",
+    "lut": "res://assets/environments/arenas/salvage_camp_burning/lut_ch06_smoke.png",
+    "sea": {"y": -1.3, "tide_line_y": -1.3, "sea_glow": 0.0, "material": SILTED_FLATS},
+    "glow": (0.55, 0.06, 1.0),
+    "pieces": [
+        # The camp burning round the fight: the hulk's tide-wheel collapsing behind the foes, tents gone to
+        # frames on the flanks, one still catching, the salvage pile and the vats, the Order's brazier.
+        (BS + "tide_wheel_burned.glb", -3.0, -14.5, 20.0, 1.0, 0.0),
+        (BS + "camp_tent_burned.glb", -12.0, -9.0, 70.0, 1.0, 0.0),
+        (BS + "camp_tent.glb", 11.5, -11.5, -60.0, 1.0, 0.0),
+        (BS + "salvage_rack_burned.glb", 6.0, -14.0, 10.0, 1.0, 0.0),
+        (BS + "salvage_pile_burned.glb", -9.5, -15.0, 35.0, 1.0, 0.0),
+        (BS + "brine_vat_burned.glb", 12.0, -4.0, 0.0, 1.0, 0.0),
+        (BS + "brine_vat.glb", 13.5, -6.5, 40.0, 1.0, 0.0),
+        (BS + "crate_stack_burned.glb", -12.5, -2.0, 110.0, 1.0, 0.0),
+        (BS + "branding_brazier.glb", 9.0, 1.5, 0.0, 1.0, 0.0),
+        (BS + "chalk_mark_heavy.glb", -27.0, -26.0, 0.0, 1.0, 0.0),
+        # The hulk the camp was built against, beyond, and the smoke over it all.
+        (BS + "wreck_hull_section.glb", 2.0, -26.0, 175.0, 1.1, 0.4),
+        (BS + "wreck_mast_standing.glb", -6.0, -24.0, 5.0, 1.0, 0.2),
+        (BS + "smoke_plume.glb", 2.0, -24.0, 0.0, 1.0, 0.0),
+        (BS + "smoke_plume.glb", -12.0, -12.0, 15.0, 0.6, 0.0),
+        (BS + "smoke_plume.glb", 12.0, -14.0, -10.0, 0.7, 0.0),
+        # Out on the flats: the wreck-ridges the party came over, the channel to the west.
+        (BS + "wreck_bow.glb", -45.0, -40.0, 60.0, 1.0, 0.2),
+        (BS + "wreck_ribs_large.glb", 40.0, -50.0, 150.0, 1.1, 0.2),
+    ],
+    "scatters": [],
+    "lamp_parent": ".",
+    "lamp_name": "FireLight",
+    "lamp_spec": {"color": CAMP_FIRE_COLOR, "energy": 2.4, "range_m": 10.0, "attenuation": 1.4,
+                  "flame_radius_m": 0.08, "flame_energy": 6.0},
+    "lamps": [
+        # The fires: the tide-wheel's foot, the burned tent's ash bed, the salvage pile, the brazier.
+        {"at": (-3.0, 0.6, -14.0), "flame": False, "energy": 3.2, "range": 12.0},
+        {"at": (-12.0, 0.4, -9.0), "flame": False},
+        {"at": (-9.5, 0.6, -15.0), "flame": False},
+        {"at": (9.0, 1.0, 1.5), "flame": False, "energy": 1.6, "range": 6.0, "shadow": True},
+    ],
+    "hints": {
+        "wide_high": ((-1.5, 8.0, 14.0), (0.0, 0.3, -3.0)),
+        "party_side": ((7.0, 1.6, 5.0), (-1.5, 1.0, -0.5)),
+        "foe_side": ((-7.5, 1.6, 5.0), (1.5, 1.0, 0.0)),
+        "past_the_brazier": ((10.5, 1.4, 4.0), (-2.0, 1.0, -3.0)),
+    },
+}
+
+
 ARENAS = {a["id"]: a for a in (TIDELINE, CAUSEWAY, CAUSEWAY_ROUTE, DERELICT_DECK, ASH_TERRACE, UNDERWAY_TOWER,
-                               RAFT_MORNING)}
+                               RAFT_MORNING, SHOALS, CAMP)}
 
 
 # ---------------------------------------------------------------------------------------------
@@ -1013,7 +1137,11 @@ def _write_lamps(sc: Scene, a: dict) -> None:
         sc.sub.append("\n".join([
             '[sub_resource type="SphereMesh" id="FlameMesh"]', 'material = SubResource("FlameMat")',
             f"radius = {r}", f"height = {round(r * 2.4, 4)}", "radial_segments = 12", "rings = 6"]))
-    sc.node("Lamps", "Node3D", ".", {})
+    # `lamp_parent` "." with a `lamp_name` writes the lights at the arena's root under that name (the burning
+    # camp's FireLight<k>, M3-BPR-03's contract), else they go under a Lamps node as Lamp<k>.
+    parent, name = a.get("lamp_parent", "Lamps"), a.get("lamp_name", "Lamp")
+    if parent == "Lamps":
+        sc.node("Lamps", "Node3D", ".", {})
     scale = spec.get("scale", 1.0)  # the arena's lamp scale (a mood's lamp_scale)
     for k, lp in enumerate(lamps):
         at = tuple(round(float(v), 3) for v in lp["at"])
@@ -1029,9 +1157,9 @@ def _write_lamps(sc: Scene, a: dict) -> None:
             props["shadow_enabled"] = "true"
             props["shadow_bias"] = 0.05
         if lp.get("light", True):  # a votive's flame alone (`light` false) has no light of its own
-            sc.node(f"Lamp{k}", "OmniLight3D", "Lamps", props)
+            sc.node(f"{name}{k}", "OmniLight3D", parent, props)
         if lp.get("flame", False):
-            sc.node(f"Flame{k}", "MeshInstance3D", "Lamps", {"transform": _xyz(at), "cast_shadow": 0,
+            sc.node(f"Flame{k}", "MeshInstance3D", parent, {"transform": _xyz(at), "cast_shadow": 0,
                                                              "mesh": 'SubResource("FlameMesh")'})
 
 
