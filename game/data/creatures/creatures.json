@@ -118,6 +118,13 @@
                    "clips": {"attack": "attack_opened", "cast": "cast_opened", "hit": "hit_opened"}}
       },
       "portrait": {"clip": "idle", "clip_time": 0.0}
+    },
+    "avalanche_ram": {
+      "scene": "res://game/creatures/avalanche_ram/avalanche_ram_battle.tscn",
+      "contact": {"attack": 0.75, "cast": 0.9},
+      "ko_fade_sec": 1.2,
+      "stand_in": {"yaw_deg": 60.0},
+      "portrait": {"yaw_deg": 40.0, "pitch_deg": 10.0}
     }
   }
 }

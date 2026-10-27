@@ -12,6 +12,12 @@ const REACH := "res://game/creatures/undertows_reach/undertows_reach_battle.tscn
 const WRAITH := "res://game/creatures/spar_wraith/spar_wraith_battle.tscn"
 const DROWNER := "res://game/creatures/mangrove_drowner/mangrove_drowner_battle.tscn"
 const ENGINE := "res://game/creatures/lamp_engine/lamp_engine_battle.tscn"
+const RAM := "res://game/creatures/avalanche_ram/avalanche_ram_battle.tscn"
+## The Avalanche Ram's checks: how far before a clip's end its pose is read, how far a planted hoof may have moved,
+## and how low its head lies at the end of the KO.
+const RAM_END_SEC := 0.001
+const RAM_FOOT_TOL_M := 0.01
+const RAM_KO_HEAD_MAX_Y := 1.0
 const RING := {"radius_factor": 1.4, "inner_soft_m": 0.25, "notches": 6}
 const SANDBOX := "res://game/battle/scene/battle_sandbox.tscn"
 const SEED := 20261024
@@ -317,6 +323,43 @@ func test_the_lamp_engine_opens_its_rings_and_strikes_open() -> void:
 	assert_true(is_equal_approx(e.contact_time(&"attack"), 0.6), "the trim lands at 0.6 s")
 	assert_true(e.play_hit())
 	assert_eq(e.current_clip, &"hit_opened", "the open hit wins over the variants")
+
+
+func test_the_avalanche_ram_charges_bellows_and_lies_down() -> void:
+	var r := _actor(RAM)
+	assert_eq(r.current_clip, &"idle")
+	assert_false(r.enter_phase(&"uprooted"), "a boss without phases: its sheet asks for none")
+	assert_true(r.play_action(&"", &"physical"))
+	assert_eq(r.current_clip, &"attack", "the charge")
+	assert_true(is_equal_approx(r.contact_time(&"attack"), 0.75), "the charge lands at 0.75 s")
+	assert_true(r.play_action(&"", &"magical"))
+	assert_eq(r.current_clip, &"cast", "the bellow")
+	var skel := r.find_children("*", "Skeleton3D", true, false)[0] as Skeleton3D
+	var bones: Array[String] = ["root", "body", "head", "jaw"]
+	for k in 5:
+		bones.append_array(["spine%d" % k, "neck%d" % k])
+	for k in 6:
+		bones.append_array(["lock%d_a" % k, "lock%d_b" % k])
+	for leg in ["fl", "fr", "bl", "br"]:
+		bones.append_array(["%s_upper" % leg, "%s_lower" % leg, "%s_foot" % leg])
+	for b in bones:
+		assert_true(skel.find_bone(b) >= 0, "the rig has %s" % b)
+	assert_eq(skel.get_bone_count(), bones.size(), "spine 5, neck 5, head, jaw, four legs of 3, six lock chains of 2")
+	var player := r.find_children("*", "AnimationPlayer", true, false)[0] as AnimationPlayer
+	for clip: StringName in [&"idle", &"attack", &"cast", &"hit", &"hit_b"]:
+		player.play(clip)
+		player.seek(player.get_animation(clip).length - RAM_END_SEC, true)
+		for leg in ["fl", "fr", "bl", "br"]:
+			var b := skel.find_bone("%s_foot" % leg)
+			var moved := skel.get_bone_global_pose(b).origin.distance_to(skel.get_bone_global_rest(b).origin)
+			assert_true(moved < RAM_FOOT_TOL_M, "%s ends with the %s hoof where it stood" % [clip, leg])
+	player.play(&"ko")
+	player.seek(player.get_animation(&"ko").length - RAM_END_SEC, true)
+	var head := skel.global_transform * skel.get_bone_global_pose(skel.find_bone("head"))
+	assert_true(head.origin.y < RAM_KO_HEAD_MAX_Y, "it lies down and lays its head on the ground")
+	for b in skel.get_bone_count():
+		var y := (skel.global_transform * skel.get_bone_global_pose(b)).origin.y
+		assert_true(y > -RAM_FOOT_TOL_M, "%s stays above the ground in the KO" % skel.get_bone_name(b))
 
 
 func test_hits_rotate_their_variants_and_a_phase_keeps_its_own() -> void:
