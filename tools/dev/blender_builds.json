@@ -662,6 +662,16 @@
       ]
     },
     {
+      "id": "creature_glass_skate",
+      "owner": "character",
+      "sources": ["assets_src/creatures/glass_skate/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/glass_skate/*.glb", "assets/creatures/glass_skate/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/glass_skate/build_glass_skate.py", "--", "--out", "assets/creatures/glass_skate/glass_skate.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "glass_skate"]
+      ]
+    },
+    {
       "id": "wildlife_gull",
       "owner": "character",
       "sources": ["assets_src/wildlife/gull/**", "assets_src/wildlife/common/**", "assets_src/creatures/common/creature_kit.py"],

@@ -37,6 +37,11 @@ const MOTH := "res://game/creatures/cord_moth/cord_moth_battle.tscn"
 ## The cord moth hovers this high (its stand-in lifts it) and its KO comes down by exactly that, within the band.
 const MOTH_HOVER_M := 1.25
 const MOTH_BAND_M := 0.02
+const SKATE := "res://game/creatures/glass_skate/glass_skate_battle.tscn"
+## The glass skate lies flat (every bone under FLAT_MAX_M at rest and after the KO) and erupts above ERUPT_MIN_M.
+const SKATE_FLAT_MAX_M := 0.2
+const SKATE_ERUPT_SEC := 0.36
+const SKATE_ERUPT_MIN_M := 0.4
 const RING := {"radius_factor": 1.4, "inner_soft_m": 0.25, "notches": 6}
 const SANDBOX := "res://game/battle/scene/battle_sandbox.tscn"
 const SEED := 20261024
@@ -501,6 +506,28 @@ func test_the_cord_moth_hovers_opens_its_knots_and_drifts_down() -> void:
 		assert_true(
 			y > -MOTH_BAND_M and y < MOTH_BAND_M * 10.0, "%s lies on the floor (y %.3f)" % [skel.get_bone_name(b), y]
 		)
+
+
+func test_the_glass_skate_lies_flat_erupts_and_flattens() -> void:
+	var s := _actor(SKATE)
+	assert_true(s.play_action(&"", &"physical"))
+	assert_true(is_equal_approx(s.contact_time(&"attack"), 0.5), "the slap at 0.5 s")
+	var skel := _skeleton(s)
+	var bones: Array[String] = ["root", "body", "eye_l", "eye_r"]
+	for k in 3:
+		bones.append_array(["disc_l%d" % k, "disc_r%d" % k])
+	for k in 4:
+		bones.append("tail%d" % k)
+	for b in bones:
+		assert_true(skel.find_bone(b) >= 0, "the rig has %s" % b)
+	assert_eq(skel.get_bone_count(), bones.size(), "disc chains of 3 a side, a tail of 4, the eyes")
+	var player := _player(s)
+	_seek(player, &"attack", SKATE_ERUPT_SEC)
+	assert_true(_bone_y(skel, skel.find_bone("root")) > SKATE_ERUPT_MIN_M, "it erupts from the sand")
+	_seek(player, &"ko", player.get_animation(&"ko").length - RAM_END_SEC)
+	for b in skel.get_bone_count():
+		var y := _bone_y(skel, b)
+		assert_true(y > -RAM_FOOT_TOL_M and y < SKATE_FLAT_MAX_M, "%s lies flat (y %.3f)" % [skel.get_bone_name(b), y])
 
 
 func test_hits_rotate_their_variants_and_a_phase_keeps_its_own() -> void:

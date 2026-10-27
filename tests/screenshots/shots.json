@@ -3262,6 +3262,14 @@
         960,
         720
       ]
+    },
+    {
+      "id": "creature_glass_skate",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_glass_skate.tscn",
+      "resolution": [
+        960,
+        720
+      ]
     }
   ]
 }
