@@ -424,6 +424,24 @@ Ch4–Ch9 onward. `m2-slice.md` beside this file is the history up to the 2026-1
      bell-room air pocket (Rendering), Ilun's chamber (env-art), and Oruvel's named cast (M3-CHR-100).
   - I pick up again at the next render branch, a review, or a message.
 
+- **Viewed lead/gate-render-m2-slice-ead04ba (13 drift). MERGE-READY @ e24d05f1.**
+  - **Approved:** ch01_oruvel_dressed and ch01_underway_crown. ch01_o10_gull was unchanged.
+  - **Fixed:**
+    - **The beach shots:** h05 caught Rhen's 004 under H06, so both frames were H06. The rig now takes
+      `hold_line`, and h05 holds Asha's 002, h06 Toma's 003.
+    - **H05 and H06** look a little higher: heads were under the top letterbox.
+    - **C07's harrier:** the gull harrier now circles in C07's sky until it is beaten (`CausewayHarrier`, tested
+      against C07's frame), and the shot no longer sets `ch03_harrier_won`.
+    - **O07** caught the wide before the cut; it now holds Sadi's 003.
+  - **My own bug, fixed:** b2659dd0 had turned S07's real `walk_to_chamber` into a jump. The S08 placement now
+    rides `idle_shift`, and a test guards it.
+  - **Not approved, since they changed after ead04ba:** verse_steps, underway_gallery and the prologue pair
+    (8b5c92fc, the water, the fog), verse_hall (the offerings), and dock_night (env-art's Haluna dressing merge).
+  - **The GI rebake on that branch is stale:** shell_shrine.tscn gained the offering steps at 416fcf64, so it
+    is re-requested below.
+  - **Checks:** slice_ 16, causeway 16 (2 new), first_verse 3, haluna 65, slice_primitives 1, all 0 failed;
+    test_hero_clips, test_scene_refs and dlgc OK.
+
 ### Render requests
 RENDER-REQUEST @ fdec3cc6: slice_prologue_vigil_line, slice_beach_h05_asha, slice_beach_h06_toma, slice_haluna_villagers_village, slice_causeway_head, slice_causeway_harrier_view, haluna_h01_village_from_sea, haluna_h02_tidewall_lane, haluna_h04_dock, haluna_h07_chapel_court, haluna_h10_dock_night, shrine_s01_approach, shrine_s02_threshold, shrine_s03_overview, shrine_s04_lip, shrine_s05_side_pool, drownbell_flood, battle_boss_intro_drownbell, battle_arena_causeway, field_causeway_dolly, boot_title; why: M2-FP-102..109, the human's playtest round (real cast and held poses in the prologue and Cutscene A, live villagers and wildlife, the final causeway), plus the greyscale audit of every slice beat. The six slice_* shots are new (no baseline yet).
 - **Known red until the render lands:** the six new `slice_*` shots have no baseline yet, so the tools test
@@ -452,3 +470,4 @@ RENDER-REQUEST @ 8b5c92fc: slice_verse_steps, ch01_underway_gallery, ch01_o07_na
 RENDER-REQUEST @ b2659dd0: slice_beach_h05_asha, slice_beach_h06_toma, slice_verse_steps, slice_verse_hall, slice_prologue_p01, slice_prologue_vigil_line, slice_causeway_harrier_view, slice_dock_night_yes, ch01_underway_gallery, ch01_o07_name_board, gi_bake:shell_shrine; why: the 8b5c92fc set, plus the Prologue's real ocean and Kerrid on the paving, and the First Verse's restored offerings (verse_hall added). Same priority order as the note above, with slice_verse_hall in group 1. Supersedes 8b5c92fc.
 RENDER-REQUEST @ 416fcf64: slice_beach_h05_asha, slice_beach_h06_toma, slice_verse_steps, slice_verse_hall, slice_prologue_p01, slice_prologue_vigil_line, shrine_s01_approach, shrine_s02_threshold, shrine_s03_overview, slice_causeway_harrier_view, slice_dock_night_yes, ch01_underway_gallery, ch01_o07_name_board, gi_bake:shell_shrine; why: the b2659dd0 set, plus M3-ENV-704's offering steps (S01-S03). The shrine scene is a GI input, so bake before the shrine shots. Supersedes b2659dd0.
 RENDER-REQUEST @ b04c62cc: slice_beach_h05_asha, slice_beach_h06_toma, slice_verse_steps, slice_verse_hall, slice_prologue_p01, slice_prologue_vigil_line, shrine_s01_approach, shrine_s02_threshold, shrine_s03_overview, slice_causeway_harrier_view, slice_dock_night_yes, ch01_underway_gallery, ch01_o07_name_board, gi_bake:shell_shrine; why: the 416fcf64 set, plus the Prologue on env-art's newest Iskarra (M3-ENV-724: the far skyline, textures, the fog from 70 m). Bake before the shrine shots. Supersedes 416fcf64.
+RENDER-REQUEST @ e24d05f1: slice_beach_h05_asha, slice_beach_h06_toma, slice_causeway_harrier_view, slice_verse_hall, slice_verse_steps, slice_prologue_p01, slice_prologue_vigil_line, slice_dock_night_yes, ch01_o07_name_board, ch01_underway_gallery, shrine_s01_approach, shrine_s02_threshold, shrine_s03_overview, gi_bake:shell_shrine; why: the fixes after viewing ead04ba (hold_line on the beach and O07, H05/H06, C07's harrier), plus everything changed since (Iskarra and the prologue's water, the offering steps, the First Verse's offerings and S07/S08). Bake before the shrine shots. Supersedes 37f8bb9b.
