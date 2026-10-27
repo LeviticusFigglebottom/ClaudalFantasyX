@@ -335,4 +335,15 @@ Merge the three creature worktrees as they finish (they append to creatures.json
 
 ### Render requests
 RENDER-REQUEST @ b5e05d2f: creature_drownbell, creature_drownbell_toll, creature_cinder_matron, creature_tower_limpet, creature_undertows_reach, creature_portraits, battle_choreo_melee, battle_choreo_hit, battle_choreo_cast, battle_choreo_support, battle_choreo_read, battle_choreo_ko, battle_choreo_swap, battle_choreo_lamp_dive, battle_choreo_toll, battle_choreo_vowbound_rise, battle_choreo_summon, creature_mangrove_drowner, creature_mangrove_drowner_risen, wildlife_stage, wildlife_zone_brine_flats, wildlife_zone_brine_wrecks, wildlife_zone_underway_crown, npc_haluna_dock, npc_haluna_market, npc_haluna_chapel, npc_haluna_lane, npc_stage_field, npc_wake_feast; why: M3-CRE-617 hit snap and rebuilt boss hits, M3-CRE-618 portrait lights, M3-CRE-621 new boss, M3-CRE-616 insects, M3-CRE-613/615 villager and wildlife review stages (every shot but npc_wake_feast was cloud-rendered, viewed and approved or compared before the directive; this pass confirms PC parity; npc_wake_feast has no baseline yet).
+- **Merged big9 (integration 7cccb551) at d435d939.**
+  - Append-only unions: ownership, asset_import, blender_builds (60 jobs), test_post_import, shots, baselines.
+  - creature_portraits.png keeps this branch's version (it's in the render request).
+  - **Checks run:** validate_data, taskboard, manifest, lint, format, tools tests; Godot creature 26/0, villager_routines 12/0, field_npc 10/0, wildlife 14/0, post_import 21/0, battle_ko_once 6/0 (big9's fix is in).
+- **Lead's capsule item (battle_arena_camp):** the white capsule beside the raid hound is **`stillguard_inquisitor`** (Inquisitor Hadric Moll), a person, so it belongs to the characters track.
+  - **Request filed:** M3-CRE-625 (role character, request-from creatures). It asks for a GLB with idle, attack, cast, hit and a kneeling yield `ko`. Creatures then wires the battle side (actor scene, creatures.json row).
+  - characters' own M3-C06-06 (todo, unowned) lists him among a dozen Ch6 assets.
+- **Capsule sweep** (enemies.json and encounters.json on the integration branch, act1-chapters, m2-slice, battle-presentation and characters; plus every skill summon and every set-piece entry):
+  - **the only foe without a model is `stillguard_inquisitor`** (encounter ch06_inquisitor);
+  - summons (spawn_polyp, squall_wing, tide_crawler) all have models;
+  - set-piece entries (the_climb, the_surge, the_kirru) are timeline-only and never seated on the stage, so they draw no capsule.
 
