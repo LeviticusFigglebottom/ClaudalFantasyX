@@ -1051,3 +1051,8 @@ HUD_SCRIPTED_ESCAPE_SUB,There was no winning it. Only getting them out.
 CHAR_PELL_UNNAMED,The Kirru
 ACT_CARD_2_LABEL,Act II
 ACT_CARD_2_TITLE,The Truth
+SET_SCREEN_SHAKE,Screen shake
+SET_SCREEN_SHAKE_HELP,"How hard the battle camera shakes when a blow lands. Reduced motion turns it off."
+SET_SCREEN_SHAKE_FULL,Full
+SET_SCREEN_SHAKE_HALF,Half
+SET_SCREEN_SHAKE_OFF,Off
