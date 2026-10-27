@@ -111,3 +111,9 @@ Checks are as listed in the line above. Skipped: coverage (no change in game/bat
   - The sailmaker's needle is **blocked** on the same accessory-slot ruling as the Oruvel Float.
   - **M3-UI-203 is done:** M3-C08-02 already raises `ch08_stair_groups_up` after every set-piece fight. The Reach's objective now carries the flag too.
   - **Checks:** battle_barks 4/0, set_piece 35/0, ch08 14/0, validate_data 0/0, gdlint and gdformat clean. The battle filter and coverage results follow (game/battle/scene changed).
+- 2026-10-27: **Viewed PC render `gpu/render-ui-6454c06`** (07f1a2e8; compare.txt: battle_hud_preview and battle_swap_menu PASS; battle_ch08_stair_hold has no baseline).
+  - **The out PNG is NOT approved.** The stair meter sits on top of Wave 1's wrapped two-line tutorial; the help line grows to about y 155 at 1080p.
+  - **Fixed in 121362b3:** the meter moves to y 164, with a test against the real node rects (set_piece 36/0, aspect 15/0, pseudo 23/0).
+  - battle_ch08_stair_hold's first baseline comes from the 17325e00 request, which must now be re-rendered at or after 121362b3. **RENDER-REQUEST @ 121362b3 below supersedes the shot in 17325e00.**
+  - **Known overlap:** the opening banner ([560,156,800,120], shown for a moment at battle start) overlaps the meter's first second. It is transient, and is listed here for the Lead's eye on the render.
+RENDER-REQUEST @ 121362b3: battle_ch08_stair_hold, battle_hud_preview; why: the stair meter moved below the two-line help line (the 6454c06 render showed it over the tutorial); first baseline for battle_ch08_stair_hold; battle_hud_preview confirms a normal fight is unchanged.
