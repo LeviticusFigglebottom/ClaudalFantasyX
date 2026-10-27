@@ -34,6 +34,7 @@ const KNOWN: Array[String] = [
 	"ch08_cut_rope:officer",
 	"ch08_cut_rope:toma",
 	"ch08_first_down:hobb",
+	"ch08_keeping_flame:asha",
 	"ch08_keeping_flame:fenn",
 	"ch08_landfall:kerrid",
 	"ch09_the_ebbing:asha",
