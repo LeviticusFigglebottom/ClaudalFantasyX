@@ -8,6 +8,15 @@ The old **ui** and **menus** tracks merged into one (Lead, 2026-10-25). `claude/
 
 ## NEW ACCOUNT (from 2026-10-25)
 
+### ANSWER TO THE LEAD'S 17:14 LIST (2026-10-27 17:20) — all six are DONE or BLOCKED; nothing is left for this track
+1. **M2-MNU-305 menu motion — DONE** (30378725, on origin/claude/ui since 10-25; `test_screen_motion` 7/0; bestiary, codex, map, save and Settings all fade).
+2. **Creature rim light in `creature_stage` — DONE** (3ffe83bd: per-creature `light_scale` and `stage_environment` for the five black creatures; viewed before/after). PC parity render requested (RENDER-REQUEST line below).
+3. **Duplicate M2-UI-26 id — DONE** (the portrait task is M2-UI-1000, your big9 id; one file).
+4. **Bestiary portrait-path ADR — DONE**: `docs/kb/decisions/0110-bestiary-uses-baked-portraits.md` (baked PNGs per ADR 0120, silhouette kept).
+5. **Reefball menus — BLOCKED, not this track's:** M3-RBL-201 is `todo` for **combat** (engine fields in `game/minigames/reefball/**`, combat's files; the HUD holds no rules by design). M3-MNU-201 no longer exists: commit 4 of the Reefball patch closed it (the TextFitProbe fix, ef5dcd9f). The Reefball HUD itself (M3-UI-01) is in: reefball 67/0 on today's head.
+6. **Every `todo` for ui/menus — DONE:** M2-UI-100 (d526ca72) and M3-UI-100 (6454c06c) were the only ones; the board shows no other `todo` with role ui, and it has no `menus` role.
+**PC render gpu/render-ui-5317c0e: viewed, 25 battle shots re-approved (99623a0c).** Remaining waits are other tracks' or the PC's (see the queue line below). Route new ui-menus work here.
+
 ### STATUS FOR THE LEAD (2026-10-27 15:55; every sha below is on origin/claude/ui)
 1. **M3-UI-01 Reefball HUD patch: DONE** (00f91c6c..ef5dcd9f, applied 10-25; reefball 67/0 then, battle 687/0 now). Do not re-apply: it is in.
 2. **M2-MNU-305 menu motion: DONE** (30378725; screen_motion 7/0).
