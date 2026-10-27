@@ -220,6 +220,38 @@ class WakeTests(unittest.TestCase):
             self.assertNotIn("bs_wake", mb.materials)
 
 
+class TidelineTests(unittest.TestCase):
+    """M3-C06-03: B09's diggable patch (two states) and hand-print, and the Stillguard's torch."""
+
+    def _y_at(self, mb, x: float, z: float) -> float:
+        p = np.asarray(mb.pos)
+        return float(p[np.argmin(np.hypot(p[:, 0] - x, p[:, 2] - z)), 1])
+
+    def test_the_patches_lie_flush_with_the_flats_at_their_edges(self) -> None:
+        for name in ("lamp_hole_open", "lamp_hole_covered", "hand_print"):
+            mb = built(name)[0]
+            lo, hi = mb.bounds()
+            with self.subTest(piece=name):
+                for x, z in ((lo[0], lo[2]), (hi[0], hi[2]), (lo[0], hi[2]), (hi[0], lo[2])):
+                    self.assertAlmostEqual(self._y_at(mb, x, z), 0.004, delta=1e-4)
+
+    def test_the_hole_is_open_and_the_cover_closes_it(self) -> None:
+        self.assertLess(self._y_at(built("lamp_hole_open")[0], 0.0, 0.0), -0.25, "a pit for the lamp")
+        self.assertGreater(self._y_at(built("lamp_hole_covered")[0], 0.0, 0.25), 0.004, "filled back, mounded")
+
+    def test_the_hand_is_pressed_into_the_sand(self) -> None:
+        mb = built("hand_print")[0]
+        self.assertLess(self._y_at(mb, 0.0, 0.03), -0.008, "the palm")
+        self.assertLess(self._y_at(mb, -0.014, 0.155), -0.004, "a finger")
+        self.assertAlmostEqual(self._y_at(mb, 0.15, -0.15), 0.004, delta=1e-4, msg="clear sand beside it")
+
+    def test_the_torch_wears_the_orders_colours(self) -> None:
+        mb = built("stillguard_torch")[0]
+        for slot in ("bs_iron", "bs_lacquer_red", "bs_brass", "bs_ember"):
+            self.assertIn(slot, mb.materials)
+        self.assertAlmostEqual(float(mb.bounds()[0][1]), 0.0, delta=1e-6, msg="origin at the foot")
+
+
 class CommittedAssetTests(unittest.TestCase):
     def test_one_glb_per_target_inside_its_budget(self) -> None:
         glbs = sorted(ASSETS.glob("*.glb"))
