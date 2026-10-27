@@ -7,13 +7,24 @@ extends Ch01Zone
 ##   place_actor(id, mark)       cuts a stage actor onto a mark and shows it.
 ##   apply_variant()             re-reads the layout's "variants" (below); the step after a flag a
 ##                               variant reads is set (Kerrid joining, the day after the binding).
-## The layout's "variants" is a list of {when, sun?, environment?, hide?: [ids], show?: [ids]} (block
+## The layout's "variants" is a list of {when, sun?, environment?, environment_res?, hide?: [ids], show?: [ids]} (block
 ## or stage actor ids; `when` as ZoneStory's). Every row whose `when` holds applies, in order, over
 ## the layout's own light, so a later row wins: Pemakar's festival night is the layout, the day after
 ## the binding is a variant. A zone entered with the flags already set (a return from a battle, a
 ## load) comes up in its variant at once.
 
 const KEY_VARIANTS := "variants"
+const KEY_ENVIRONMENT_RES := "environment_res"
+
+var _base_environment: Environment
+var _environment_res := ""
+
+
+## Kit collision (ADR 0200): the layout's "collision_path" and "ramps" (KitCollision).
+func _build_blocks() -> void:
+	KitCollision.merge(self)
+	super()
+	KitCollision.build_ramps(self)
 
 
 func _ready() -> void:
@@ -43,6 +54,19 @@ func place_actor(id: String, mark: String) -> bool:
 	return true
 
 
+## A copy of `res` on the zone's WorldEnvironment, or its base one back for "" (ADR 0200: a kit's grade for a
+## variant, Ch9's dawn after the night); nothing when it is already up.
+func _swap_environment(res: String) -> void:
+	var we := get_node(^"WorldEnvironment") as WorldEnvironment
+	if _base_environment == null:
+		_base_environment = we.environment
+	if res == _environment_res:
+		return
+	_environment_res = res
+	var env := load(res) as Environment if res != "" else null
+	we.environment = env.duplicate() if env != null else _base_environment
+
+
 ## Applies every "variants" row whose `when` holds (see the class comment).
 func apply_variant() -> void:
 	var sun_row: Dictionary = _merged("sun")
@@ -51,9 +75,12 @@ func apply_variant() -> void:
 	for r: Variant in layout.get(KEY_VARIANTS, []):
 		if ZoneStory.holds((r as Dictionary).get("when", {})):
 			rows.append(r)
+	var res := ""
 	for r: Dictionary in rows:
 		sun_row.merge(r.get("sun", {}), true)
 		env_row.merge(r.get("environment", {}), true)
+		res = str(r.get(KEY_ENVIRONMENT_RES, res))
+	_swap_environment(res)
 	sun.light_energy = float(sun_row.get("energy", 1.0))
 	sun.light_color = Color.html(str(sun_row.get("color", "#ffffff")))
 	sun.rotation_degrees = Vector3(float(sun_row.get("pitch_deg", 0.0)), float(sun_row.get("yaw_deg", 0.0)), 0.0)

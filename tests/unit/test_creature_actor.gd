@@ -10,6 +10,21 @@ const GNAW := "res://game/creatures/hullgnaw/hullgnaw_battle.tscn"
 const MATRON := "res://game/creatures/cinder_matron/cinder_matron_battle.tscn"
 const REACH := "res://game/creatures/undertows_reach/undertows_reach_battle.tscn"
 const WRAITH := "res://game/creatures/spar_wraith/spar_wraith_battle.tscn"
+const DROWNER := "res://game/creatures/mangrove_drowner/mangrove_drowner_battle.tscn"
+const ENGINE := "res://game/creatures/lamp_engine/lamp_engine_battle.tscn"
+const RAM := "res://game/creatures/avalanche_ram/avalanche_ram_battle.tscn"
+## The Avalanche Ram's checks: how far before a clip's end its pose is read, how far a planted hoof may have moved,
+## and how low its head lies at the end of the KO.
+const RAM_END_SEC := 0.001
+const RAM_FOOT_TOL_M := 0.01
+const RAM_KO_HEAD_MAX_Y := 1.0
+const WAKEFIN := "res://game/creatures/wakefin/wakefin_battle.tscn"
+## The Wakefin's checks (y 0 is the water): the blade's upper bone stands above this in the idle, the dive takes it
+## under at its deepest second, and at the end of the KO every bone lies within this band round the surface.
+const FIN_IDLE_MIN_Y := 1.3
+const FIN_DIVE_SEC := 1.13
+const FIN_KO_BAND_M := 0.6
+const FIN_BELLY_UP := -0.8
 const RING := {"radius_factor": 1.4, "inner_soft_m": 0.25, "notches": 6}
 const SANDBOX := "res://game/battle/scene/battle_sandbox.tscn"
 const SEED := 20261024
@@ -275,6 +290,123 @@ func test_a_phase_plays_its_own_strikes() -> void:
 	assert_true(a.play_action(&"", &"magical"))
 	assert_eq(a.current_clip, &"cast_breach")
 	assert_eq(a.phase_clip(&"hit"), &"hit", "the Breach has no hit of its own")
+
+
+func test_the_mangrove_drowner_uproots_and_strikes_risen() -> void:
+	var d := _actor(DROWNER)
+	var stump := d.find_child("Stump", true, false) as Node3D
+	assert_true(stump != null and stump.visible, "it starts rooted under its trunk stump")
+	assert_true(d.enter_phase(&"uprooted"))
+	assert_eq(d.current_clip, &"phase_change")
+	assert_true(stump.visible, "the stump is seen splintering first")
+	d.settle()
+	assert_false(stump.visible, "hide_after: the stump is gone once it has torn free")
+	assert_eq(d.current_clip, &"idle_risen", "it idles risen on its legs")
+	assert_true(d.play_clip(&"attack"))
+	assert_eq(d.current_clip, &"attack_risen", "it drags from the risen pose")
+	assert_true(is_equal_approx(d.contact_time(&"attack"), 0.7), "the drag lands at 0.7 s")
+	assert_true(d.play_hit())
+	assert_eq(d.current_clip, &"hit_risen", "the risen hit wins over the variants")
+
+
+func test_the_lamp_engine_opens_its_rings_and_strikes_open() -> void:
+	var e := _actor(ENGINE)
+	var player := e.find_children("*", "AnimationPlayer", true, false)[0] as AnimationPlayer
+	var skel := e.find_children("*", "Skeleton3D", true, false)[0] as Skeleton3D
+	var petal := skel.find_bone("petal1_0")
+	assert_true(petal >= 0, "the middle ring's petals are bones")
+	assert_true(e.enter_phase(&"opened"))
+	assert_eq(e.current_clip, &"phase_change", "the rings fold back first")
+	e.settle()
+	assert_eq(e.current_clip, &"idle_opened", "it idles open, the core showing")
+	assert_eq(player.get_animation(&"idle_opened").loop_mode, Animation.LOOP_LINEAR, "the open idle loops")
+	player.advance(0.5)  # past the cross-fade from the phase clip (this first step only starts the queued clip)
+	player.advance(0.0)  # and this one applies its pose
+	var rest := skel.get_bone_rest(petal).basis.get_rotation_quaternion()
+	var fold := rad_to_deg(rest.angle_to(skel.get_bone_pose_rotation(petal)))
+	assert_between(fold, 60.0, 76.0, "the middle ring stands folded back like a petal (%.1f deg)" % fold)
+	assert_true(e.play_clip(&"attack"))
+	assert_eq(e.current_clip, &"attack_opened", "it trims from the open pose")
+	assert_true(is_equal_approx(e.contact_time(&"attack"), 0.6), "the trim lands at 0.6 s")
+	assert_true(e.play_hit())
+	assert_eq(e.current_clip, &"hit_opened", "the open hit wins over the variants")
+
+
+func test_the_avalanche_ram_charges_bellows_and_lies_down() -> void:
+	var r := _actor(RAM)
+	assert_eq(r.current_clip, &"idle")
+	assert_false(r.enter_phase(&"uprooted"), "a boss without phases: its sheet asks for none")
+	assert_true(r.play_action(&"", &"physical"))
+	assert_eq(r.current_clip, &"attack", "the charge")
+	assert_true(is_equal_approx(r.contact_time(&"attack"), 0.75), "the charge lands at 0.75 s")
+	assert_true(r.play_action(&"", &"magical"))
+	assert_eq(r.current_clip, &"cast", "the bellow")
+	var skel := r.find_children("*", "Skeleton3D", true, false)[0] as Skeleton3D
+	var bones: Array[String] = ["root", "body", "head", "jaw"]
+	for k in 5:
+		bones.append_array(["spine%d" % k, "neck%d" % k])
+	for k in 6:
+		bones.append_array(["lock%d_a" % k, "lock%d_b" % k])
+	for leg in ["fl", "fr", "bl", "br"]:
+		bones.append_array(["%s_upper" % leg, "%s_lower" % leg, "%s_foot" % leg])
+	for b in bones:
+		assert_true(skel.find_bone(b) >= 0, "the rig has %s" % b)
+	assert_eq(skel.get_bone_count(), bones.size(), "spine 5, neck 5, head, jaw, four legs of 3, six lock chains of 2")
+	var player := r.find_children("*", "AnimationPlayer", true, false)[0] as AnimationPlayer
+	for clip: StringName in [&"idle", &"attack", &"cast", &"hit", &"hit_b"]:
+		player.play(clip)
+		player.seek(player.get_animation(clip).length - RAM_END_SEC, true)
+		for leg in ["fl", "fr", "bl", "br"]:
+			var b := skel.find_bone("%s_foot" % leg)
+			var moved := skel.get_bone_global_pose(b).origin.distance_to(skel.get_bone_global_rest(b).origin)
+			assert_true(moved < RAM_FOOT_TOL_M, "%s ends with the %s hoof where it stood" % [clip, leg])
+	player.play(&"ko")
+	player.seek(player.get_animation(&"ko").length - RAM_END_SEC, true)
+	var head := skel.global_transform * skel.get_bone_global_pose(skel.find_bone("head"))
+	assert_true(head.origin.y < RAM_KO_HEAD_MAX_Y, "it lies down and lays its head on the ground")
+	for b in skel.get_bone_count():
+		var y := (skel.global_transform * skel.get_bone_global_pose(b)).origin.y
+		assert_true(y > -RAM_FOOT_TOL_M, "%s stays above the ground in the KO" % skel.get_bone_name(b))
+
+
+func test_the_wakefin_circles_cuts_dives_and_floats_belly_up() -> void:
+	var w := _actor(WAKEFIN)
+	assert_eq(w.current_clip, &"idle")
+	assert_false(w.enter_phase(&"uprooted"), "a boss without phases: its sheet asks for none")
+	assert_true(w.play_action(&"", &"physical"))
+	assert_eq(w.current_clip, &"attack", "the cut")
+	assert_true(is_equal_approx(w.contact_time(&"attack"), 0.8), "the blade sweeps the deck at 0.8 s")
+	assert_true(w.play_action(&"", &"magical"))
+	assert_eq(w.current_clip, &"cast", "the dive")
+	var skel := w.find_children("*", "Skeleton3D", true, false)[0] as Skeleton3D
+	var bones: Array[String] = ["root", "head", "bill", "fin_0", "fin_1", "fin_2", "pec_l", "pec_r"]
+	bones.append_array(["tail_upper", "tail_lower"])
+	for k in 10:
+		bones.append("spine_%d" % k)
+	for b in bones:
+		assert_true(skel.find_bone(b) >= 0, "the rig has %s" % b)
+	assert_eq(skel.get_bone_count(), bones.size(), "spine 10, the bill, a blade of 3, pectorals, tail lobes")
+	var player := w.find_children("*", "AnimationPlayer", true, false)[0] as AnimationPlayer
+	var fin := skel.find_bone("fin_2")
+	player.play(&"idle")
+	player.seek(0.0, true)
+	assert_true(_bone_y(skel, fin) > FIN_IDLE_MIN_Y, "the blade stands high out of the water as it circles")
+	player.play(&"cast")
+	player.seek(FIN_DIVE_SEC, true)
+	assert_true(_bone_y(skel, fin) < 0.0, "the dive takes the blade under")
+	player.play(&"ko")
+	player.seek(player.get_animation(&"ko").length - RAM_END_SEC, true)
+	var root := skel.global_transform.basis * skel.get_bone_global_pose(skel.find_bone("root")).basis
+	assert_true(root.y.normalized().y < FIN_BELLY_UP, "it ends rolled belly-up")
+	for b in skel.get_bone_count():
+		var y := _bone_y(skel, b)
+		assert_true(
+			absf(y) < FIN_KO_BAND_M, "%s lies at the surface after the KO (y %.2f)" % [skel.get_bone_name(b), y]
+		)
+
+
+func _bone_y(skel: Skeleton3D, bone: int) -> float:
+	return (skel.global_transform * skel.get_bone_global_pose(bone)).origin.y
 
 
 func test_hits_rotate_their_variants_and_a_phase_keeps_its_own() -> void:

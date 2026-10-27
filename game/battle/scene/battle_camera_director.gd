@@ -87,7 +87,24 @@ func rest() -> void:
 	shot_ids = {}
 	if camera != null:
 		camera.transform = default_transform
-		camera.fov = default_fov
+		camera.fov = rest_fov()
+
+
+## The resting frame's fov: the default, narrowed while a foe gathers a telegraphed skill named in camera.pressure
+## ({skill: {turns, max_fov_deg}}), a step a turn as its charge counts down (M3-BPR-406: the Reach's Breach, read
+## as a closing clock). The plain default under reduced motion or skipped animations.
+func rest_fov() -> float:
+	if still() or _ctl == null or _ctl.engine == null:
+		return default_fov
+	var pressure := data.get("pressure", {}) as Dictionary
+	var most := 0.0
+	for e in _ctl.engine.enemies:
+		if e.is_alive() and e.is_charging() and pressure.has(String(e.charge_skill)):
+			var row := pressure[String(e.charge_skill)] as Dictionary
+			var turns := maxf(float(row.get("turns", 1)), 1.0)
+			var k := clampf((turns - float(e.charge_left) + 1.0) / turns, 0.0, 1.0)
+			most = maxf(most, float(row.get("max_fov_deg", 0.0)) * k)
+	return default_fov - most
 
 
 ## True when the camera stands on the default frame.
@@ -95,7 +112,7 @@ func at_default() -> bool:
 	return (
 		camera != null
 		and camera.transform.is_equal_approx(default_transform)
-		and is_equal_approx(camera.fov, default_fov)
+		and is_equal_approx(camera.fov, rest_fov())
 	)
 
 
@@ -118,7 +135,7 @@ func _on_posed(t: float) -> void:
 
 ## The camera's {transform, fov} at plan time `t` of the current sequence (the default when none plays).
 func frame_at(t: float) -> Dictionary:
-	var rest_frame := {"transform": default_transform, "fov": default_fov}
+	var rest_frame := {"transform": default_transform, "fov": rest_fov()}
 	if _plan.is_empty() or still() or (_lead.is_empty() and _contact.is_empty()):
 		return rest_frame
 	var w_out := _weight(t, _out_start, _out_end)
@@ -298,7 +315,7 @@ func _parent_inverse() -> Transform3D:
 func _default_pose() -> Dictionary:
 	var pos := default_transform.origin
 	var look := pos - default_transform.basis.z.normalized() * float(data.get("default_look_m", 1.0))
-	return {"pos": pos, "look": look, "fov": default_fov}
+	return {"pos": pos, "look": look, "fov": rest_fov()}
 
 
 static func _mix(a: Dictionary, b: Dictionary, w: float) -> Dictionary:

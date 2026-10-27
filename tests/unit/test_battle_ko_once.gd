@@ -134,10 +134,6 @@ func _start(encounter: StringName) -> void:
 	ctl.stage.choreo.live = false
 
 
-## An encounter whose first foe has no `model` in enemies.json (a primitive stand-in) and that has a second foe, so
-## the battle goes on after the first falls. The creatures track keeps giving foes models (the Wickfry has one now),
-## so the test looks one up instead of naming it (at big9 the Stillguard Inquisitor, who yields rather than falls:
-## BattleStage.refresh_ko treats both alike).
 func _first_foe() -> BattleCombatant:
 	return ctl.engine.enemies[0]
 

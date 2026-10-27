@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://dnhgbtp5dhp64"
-path="res://.godot/imported/shrine_offering.glb-cf38ead9ce2d9353e48fc780b5ef50ff.scn"
+uid="uid://dd0s8wfq7lion"
+path="res://.godot/imported/hoist_rope.glb-3415164bf1a3af63cce67072845142b9.scn"
 
 [deps]
 
-source_file="res://assets/environments/kits/haluna/shrine_offering.glb"
-dest_files=["res://.godot/imported/shrine_offering.glb-cf38ead9ce2d9353e48fc780b5ef50ff.scn"]
+source_file="res://assets/environments/kits/corrow/hoist_rope.glb"
+dest_files=["res://.godot/imported/hoist_rope.glb-3415164bf1a3af63cce67072845142b9.scn"]
 
 [params]
 
@@ -33,7 +33,7 @@ animation/fps=30
 animation/trimming=false
 animation/remove_immutable_tracks=true
 animation/import_rest_as_RESET=false
-import_script/path="res://game/core/import/haluna_kit_post_import.gd"
+import_script/path="res://game/core/import/corrow_kit_post_import.gd"
 materials/extract=0
 materials/extract_format=0
 materials/extract_path=""

@@ -78,8 +78,49 @@ def parse_args() -> argparse.Namespace:
     return ap.parse_args(argv)
 
 
+HOOK_BONE = "DEF-hook."  # M2-CHR-513: a reef-hook, on the hips (sheathed at the back) unless a clip puts it in hand
+HOOK_GRIP = "hook_grip."  # a marker on each hand (not deforming): where its hook sits when held
+HOOK_GRIP_LEN = 0.12  # m (at s = 1): the wrapped grip, rhen_props.reef_hooks
+HOOK_GRIP_OUT = 0.016  # m (at s = 1): the grip sits this far out from the fist's centre line (as Asha's staff)
+
+
+def add_hook_bones(skel: bpy.types.Object, lm, hooks: list) -> None:
+    """M2-CHR-513: DEF-hook.<side> runs along each hook's grip (from the pommel end) with its z axis to the back (the
+    blade's flat normal; the curl runs along -x); hook_grip.<side>, on that hand, is the same frame held: the grip
+    across the fist, where Asha holds her staff (hand.wrist + 0.30 of the hand, into the palm), running out of the
+    thumb side (forward, for the hanging hand) with the blade's curl down, the way it bites when he hammers it down.
+    A clip that keys the hook onto the marker puts it in the hand."""
+    S = lm.S
+    up, back = np.array([0.0, 0.0, 1.0]), np.array([0.0, 1.0, 0.0])
+    fwd = -back
+    bpy.ops.object.select_all(action="DESELECT")
+    bpy.context.view_layer.objects.active = skel
+    skel.select_set(True)
+    bpy.ops.object.mode_set(mode="EDIT")
+    eb = skel.data.edit_bones
+    for side, _part, end, d in hooks:
+        e = eb.new(f"{HOOK_BONE}{side}")
+        e.head = tuple(map(float, end))
+        e.tail = tuple(map(float, end + d * HOOK_GRIP_LEN * S))
+        e.align_roll(tuple(map(float, back)))
+        e.use_deform = True
+        e.parent = eb[HIP_BONE]
+        hand = lm.hands[side]
+        out = np.array([1.0 if side == "L" else -1.0, 0.0, 0.0])
+        grip = (hand.wrist + hand.axis * hand.length * 0.30 - hand.dorsal * hand.thickness * 0.55
+                + out * HOOK_GRIP_OUT * S)
+        pommel = grip - fwd * HOOK_GRIP_LEN * S * 0.5
+        m = eb.new(f"{HOOK_GRIP}{side}")
+        m.head = tuple(map(float, pommel))
+        m.tail = tuple(map(float, pommel + fwd * HOOK_GRIP_LEN * S))
+        m.align_roll((1.0, 0.0, 0.0))  # z (the blade's flat normal) across; x = y cross z, the curl, then points down
+        m.use_deform = False
+        m.parent = eb[f"DEF-hand.{side}"]
+    bpy.ops.object.mode_set(mode="OBJECT")
+
+
 def rigid_part(part: Part, bone: str, wnames: list, skel: bpy.types.Object) -> bpy.types.Object:
-    ob = hb.part_object(part)
+    ob = hb.part_object_snapped(part)
     W = np.zeros((len(part.V), len(wnames)), dtype=np.float32)
     W[:, wnames.index(bone)] = 1.0
     hb.apply_weights(ob, W, wnames, skel)
@@ -95,7 +136,7 @@ def main() -> int:
     res = bb_donor.generate(params, log=log, subdiv_face=True)
     lm, body = res["lm"], res["body"]
     face = body.face
-    V, F = res["V"], np.asarray(res["F"])
+    V, F = hb.snap_positions(res["V"]), np.asarray(res["F"])  # M1-CHR-15: host-independent positions
     reg = np.array(res["reg"])
     freg = np.array(res["freg"])
     UVc = np.asarray(res["uv"])
@@ -110,11 +151,13 @@ def main() -> int:
     Nw = bb_donor.face_normals_vertex(V, F)
     log(f"rig: {len(skel.data.bones)} deform bones, donor weights on {len(wnames)} bones, dropped {dropped} "
         f"({time.time() - t0:.1f}s)")
+    W, wnames, arms = hb.armpit_helpers(skel, V, W, wnames)  # M1-CHR-15: the shoulder correctives
 
     # ---- head (same construction as Asha's) ----------------------------------------------------
     is_head = np.isin(freg, ["head", "scalp", "mouth"])
     used_h, Fh, remap_h, Sh = hb.submesh(V, F, is_head, res["seams"])
     Vh = V[used_h]
+    Vh[np.abs(Vh) < hb.MIDLINE_SNAP] = 0.0  # M1-CHR-15: host-independent midline (as build_asha)
     fh_reg = freg[is_head]
     inner_v = hb.inner_lip_vertices(Vh, Nw[used_h], res["lip_dz"][used_h], face.mouth_half,
                                     lm.h / 0.222)
@@ -146,7 +189,7 @@ def main() -> int:
     extras.append(asha_mouth.mouth_interior(lm, res["fit"].lip_line_y + 0.0015 * lm.S))
     for ex in extras:
         head.extend(ex)
-    Vhead = head.varr()
+    Vhead = hb.snap_positions(head.varr())  # M1-CHR-15
     ob_head = hb.make_object("Head", Vhead, head.F, head.UV, head.M)
     me = ob_head.data
     auto = np.zeros((len(me.vertices), 3))
@@ -157,6 +200,7 @@ def main() -> int:
                                                        np.where(fh_reg == "mouth", 4, 2)))
     hb.unwrap_faces(ob_head, {"skin_head", "mouth"}, hb.head_seams(Fh, cat, Vh, lm),
                     shrink=(np.nonzero(cat != 1)[0], 0.45))
+    hb.quantize_uvs(ob_head)  # M1-CHR-15: host-independent UVs (as build_asha)
     pad = np.zeros(len(Vhead) - n_skin)
     masks = {"lower": np.concatenate([res["lower"][used_h], pad]), "lip": np.concatenate([res["lip_w"][used_h], pad])}
     lip_frame = {k: np.concatenate([res[n][used_h], pad]) for k, n in (("contact", "lip_contact"), ("dz", "lip_dz"),
@@ -182,6 +226,8 @@ def main() -> int:
     covered = rhen_costume.coverage(body, cparams, V, reg)
     hidden = np.where(F >= 0, covered[np.maximum(F, 0)], True).all(axis=1) & ~is_head
     costume, anchors = ({}, None) if args.no_costume else rhen_costume.build_costume(body, cparams)
+    for p in costume.values():
+        hb.snap_part(p)  # M1-CHR-15
     costume_tris = sum(p.tris() for p in costume.values())
     log(f"costume: {costume_tris} tris, hidden body quads {int(hidden.sum())} ({time.time() - t0:.1f}s)")
     head_i = wnames.index(HEAD_BONE)
@@ -194,23 +240,31 @@ def main() -> int:
             opaque.extend(p)
         Pc = opaque.varr()
         Wc = hb.transfer_weights(Pc, V[src_mask], W[src_mask])
-        ob = hb.part_object(opaque)
+        # M1-CHR-15: the shirt over the underarm turns with the skin under it (the shoulder correctives)
+        Wc = hb.helper_bones.armpit_cloth_weights(Pc, Wc, wnames, V, W, arms, lm.S)
+        ob = hb.part_object_snapped(opaque)
         hb.apply_weights(ob, Wc, wnames, skel)
         garment_objs.append(ob)
         S = lm.S
         props = Part("Props")
         lan = rhen_props.lantern(anchors["lantern_strap"], anchors["lantern_normal"], lm,
                                  float(cparams["lantern_height_m"]) * S)
-        hooks = rhen_props.reef_hooks(anchors["back_small"], anchors["hip_x"], lm, float(cparams["hook_length_m"]))
+        hooks = rhen_props.reef_hook_parts(anchors["back_small"], anchors["hip_x"], lm,
+                                           float(cparams["hook_length_m"]))
         ob_l = rigid_part(lan, CHEST_BONE, wnames, skel)
         ob_l.name = "Lantern"
-        ob_h = rigid_part(hooks, HIP_BONE, wnames, skel)
-        ob_h.name = "ReefHooks"
-        props_tris = lan.tris() + hooks.tris()
-        # one LOD-able object: join the two rigid props
+        add_hook_bones(skel, lm, hooks)  # M2-CHR-513: each hook on its own bone, so the battle clips can draw it
+        hook_obs = []
+        for side, part, _end, _d in hooks:
+            ob_h = hb.part_object_snapped(part)
+            hb.rigid(ob_h, f"{HOOK_BONE}{side}", skel)
+            hook_obs.append(ob_h)
+        props_tris = lan.tris() + sum(p.tris() for _s, p, _e, _d in hooks)
+        # one LOD-able object: join the rigid props
         bpy.ops.object.select_all(action="DESELECT")
         ob_l.select_set(True)
-        ob_h.select_set(True)
+        for ob_h in hook_obs:
+            ob_h.select_set(True)
         bpy.context.view_layer.objects.active = ob_l
         bpy.ops.object.join()
         ob_l.name = "Props"
@@ -224,7 +278,7 @@ def main() -> int:
         rigid_parts = Part("HairHead")
         for p in hair.values():
             rigid_parts.extend(p)
-        ob = hb.part_object(rigid_parts)
+        ob = hb.part_object_snapped(rigid_parts)
         Wr = np.zeros((len(rigid_parts.V), len(wnames)), dtype=np.float32)
         Wr[:, head_i] = 1.0
         hb.apply_weights(ob, Wr, wnames, skel)
@@ -240,6 +294,7 @@ def main() -> int:
     ob_body = hb.make_object("Body", V[used_b], Fb_l, UVb, ["skin_body"] * len(Fb), normals=Nw[used_b])
     hb.apply_weights(ob_body, W[used_b], wnames, skel)
     hb.unwrap_faces(ob_body, {"skin_body"}, hb.uv_seams(Fb_l, UVb))
+    hb.quantize_uvs(ob_body)  # M1-CHR-15
     dense = np.isin(reg[used_b], ["hand_L", "hand_R", "foot_L", "foot_R"])
     t_all = sum(len(f) - 2 for f in Fb_l)
     t_dense = sum(len(f) - 2 for f in Fb_l if dense[list(f)].all())
@@ -254,7 +309,7 @@ def main() -> int:
     for sd in ("L", "R"):
         fr = face.eyes[sd]
         for part in (asha_eyes.eyeball(fr), asha_eyes.cornea(fr), asha_eyes.occlusion(fr), asha_eyes.tear_line(fr)):
-            ob = hb.part_object(part)
+            ob = hb.part_object_snapped(part)
             hb.attach_to_bone(ob, skel, f"DEF-eye.{sd}", fr.E)
             eye_objs.append(ob)
             eye_tris += part.tris()
@@ -267,6 +322,8 @@ def main() -> int:
         "seconds": 0.0,
     }
     report["triangles"]["total_lod0"] = sum(report["triangles"].values())
+    for ob in export_objs:
+        hb.snap_shape_noise(ob)  # M1-CHR-15: host-independent morph targets (as build_asha)
     if args.bake_dir:
         lip_terms = {k: np.concatenate([res[n][used_h], pad]) for k, n in (("CONTACT", "lip_contact"),
                                                                             ("CORNER", "lip_corner"),

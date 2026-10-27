@@ -360,6 +360,8 @@ func _line(step: DialogueStep) -> void:
 	overlay.box.show_line(step)
 	line_shown.emit(step)
 	var speaker := _stage.actor(step.speaker) if _stage != null and step.speaker != &"" else null
+	if speaker != null and not speaker.is_visible_in_tree():
+		speaker = CutsceneNpcTalk.follower(_stage.get_parent(), step.speaker)  # M2-FP-110: the follower talks
 	if speaker == null and _stage != null:
 		_npc_talk.speak(_stage.get_parent(), step.speaker, _player)  # M2-FP-106: a villager turns and talks
 	if speaker != null:
@@ -580,7 +582,7 @@ func _cue_anim(step: DialogueStep) -> void:
 		return
 	_held.erase(actor)
 	var hold := String(clip) in (config.get("hold_clips", []) as Array)
-	clip = _built_clip(StringName(str(step.args[0])), actor, clip)
+	clip = CutsceneClips.built(config, StringName(str(step.args[0])), actor, clip)
 	var body := HeroMotion.body_of(actor)
 	if body != null:
 		body.call(&"play_clip", clip, _clip_blend(), hold)  # M2-HER-1104: the hero body's AnimationTree
@@ -787,24 +789,6 @@ func _breathe(delta: float) -> void:
 		_breath.reset()
 		return
 	_breath.apply(_director.camera, delta)
-
-
-## M2-FP-103: `clip`, or the built clip sequencer.json clip_stand_ins names for "<actor>/<clip>" while the
-## actor's rig lacks it (a requested clip on Character's list); the real clip plays once it is built.
-func _built_clip(id: StringName, actor: Node3D, clip: StringName) -> StringName:
-	var stand_in := str((config.get("clip_stand_ins", {}) as Dictionary).get("%s/%s" % [id, clip], ""))
-	if stand_in == "" or _has_clip(actor, clip):
-		return clip
-	return StringName(stand_in)
-
-
-func _has_clip(actor: Node3D, clip: StringName) -> bool:
-	var body := HeroMotion.body_of(actor)
-	var tree := body.get(&"tree") as AnimationMixer if body != null else null
-	if tree != null:
-		return tree.has_animation(clip)
-	var ap := HeroMotion.player_of(actor)
-	return ap != null and ap.has_animation(clip)
 
 
 ## M2-HER-1104: tells a hero body how fast its root walks (`metres` covered at `now` seconds into the

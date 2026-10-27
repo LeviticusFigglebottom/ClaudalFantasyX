@@ -153,6 +153,33 @@ STANDARD: dict[str, dict] = {
     # The beacon fire: ember_orange, the frame's warm accent at 480 m (colour script ch08).
     "cw_beacon": {"albedo_color": hexc("#E0702E"), "emission_enabled": "true", "emission": hexc("#E0702E"),
                   "emission_energy_multiplier": 6.0, "roughness": 0.9},
+    # M3-ENV-707 (cw_story.py): the watch's red (gate leaves, barracks doors and shutters, shield rims), painted on
+    # timber and salt-faded; the festival kites in four cloth dyes (double-sided, glowing against the noon sky);
+    # sail-cloth; the hoist basket's wicker; Marra's net and its glass floats (the Haluna kit's net texture).
+    "cw_watch_red": {"albedo_color": hexc("#A8302A"), "roughness": 0.7},
+    "cw_kite_ochre": {"albedo_color": hexc("#E0A040"), "roughness": 0.8, "cull_mode": 2,
+                      "backlight_enabled": "true", "backlight": "Color(0.5, 0.35, 0.12, 1)"},
+    "cw_kite_red": {"albedo_color": hexc("#C8503A"), "roughness": 0.8, "cull_mode": 2,
+                    "backlight_enabled": "true", "backlight": "Color(0.45, 0.15, 0.1, 1)"},
+    "cw_kite_teal": {"albedo_color": hexc("#3C8C88"), "roughness": 0.8, "cull_mode": 2,
+                     "backlight_enabled": "true", "backlight": "Color(0.12, 0.3, 0.28, 1)"},
+    "cw_kite_white": {"albedo_color": hexc("#E8E2D4"), "roughness": 0.8, "cull_mode": 2,
+                      "backlight_enabled": "true", "backlight": "Color(0.45, 0.42, 0.36, 1)"},
+    "cw_sail": {"albedo_color": hexc("#CBBFA6"), "roughness": 0.9},
+    "cw_wicker": {"albedo_color": hexc("#9C7E5A"), "roughness": 0.95},
+    "cw_net": {"transparency": 3, "cull_mode": 2, "roughness": 0.9, "texture_filter": 5,
+               "albedo_texture": ("tex", "res://assets/environments/kits/haluna/textures/net_albedo.png"),
+               "uv1_scale": "Vector3(2.5, 2.5, 1)"},
+    # M3-ENV-708 (cw_night.py): the Stillguard's red lacquer (shields), the Ebbing raft's dark lacquer, the strand
+    # lamps' clay and their flame.
+    "cw_lacquer_red": {"albedo_color": hexc("#B3261E"), "roughness": 0.25, "clearcoat_enabled": "true",
+                       "clearcoat": 0.6},
+    "cw_lacquer_dark": {"albedo_color": hexc("#2A1F1A"), "roughness": 0.2, "clearcoat_enabled": "true",
+                        "clearcoat": 0.7},
+    "cw_earthenware": {"albedo_color": hexc("#A8573A"), "roughness": 0.85},
+    "cw_lamp_flame": {"albedo_color": hexc("#FFB16E"), "emission_enabled": "true", "emission": hexc("#FFB16E"),
+                      "emission_energy_multiplier": 4.0, "roughness": 1.0},
+    "cw_glass": {"transparency": 1, "albedo_color": hexc("#BFE6E0", 0.55), "roughness": 0.06, "metallic_specular": 0.7},
 }
 
 

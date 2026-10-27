@@ -348,3 +348,20 @@ func test_a_body_beside_the_path_turns_the_run_instead_of_stopping_it() -> void:
 	var open := BattleChoreoPlan.melee_approach(choreo.data, st, from, aim, [target], [target], 0.3)
 	assert_eq(open["dir"], Vector3.LEFT, "an open path stays straight")
 	_free()
+
+
+func test_the_struck_creature_stays_frozen_through_the_hit_stop() -> void:
+	# The creatures track's report: the reaction beat restarted the target's clip at full speed inside the hold.
+	var foe := _heavy_foe()
+	var player := BattleClips.player_of(ctl.stage.stand_in(foe.id))
+	assert_true(player != null, "the sandbox's foes are creature models")
+	_to_turn_of(&"rhen")
+	ctl.pacing_scale = 1.0
+	ctl.act(&"attack", [foe.id])
+	choreo.advance(float(choreo.current()["contact"]) + EPS)
+	assert_eq(choreo.impact.stops, 1, "a hit-stop on the contact")
+	assert_eq(player.speed_scale, 0.0, "its hit clip holds with everyone else")
+	choreo.impact.finish()
+	assert_eq(player.speed_scale, choreo.speed, "and plays on at the battle speed after")
+	assert_false(player.has_meta(BattleClips.HELD_META), "the hold is released")
+	_free()

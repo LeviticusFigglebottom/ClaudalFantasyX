@@ -62,9 +62,13 @@
       "miss": {"sec": 0.3, "dodge_m": 0.32, "clip": "dodge"}
     },
     "ko": {"delay_sec": 0.12, "collapse_sec": 0.5, "tilt_deg": 62.0, "drop_m": 0.18, "clip": "ko"},
+    "counter": {"doc": "M3-BPR-406 (ADR 0100): a counter stance answers a landed physical hit at once: the hero's attack clip starts delay_sec after the blow's strike ends, and the attacker's reaction lands on that clip's contact frame (clip only: the attacker keeps its run). Felled by it, the attacker collapses once it is home.", "delay_sec": 0.08},
+    "withdraw": {"doc": "M3-BPR-406 (ADR 0100): a withdrawn foe is not felled: it backs away from the party by back_m over sec (eased in, at the battle speed) and is hidden; reduced motion hides it in place.", "back_m": 1.4, "sec": 0.7},
     "spacing": {
       "doc": "M3-BPR-402: a melee run stops so the actor, at the end of its lunge, keeps its radius + each body's radius + clearance_m from everyone in its path: heroes and creatures never interpenetrate. A radius is the model's footprint (the mean of its meshes' half-width and half-depth about the stand-in's origin, times footprint_k), else battle_sandbox.json stand_ins radius for a primitive.",
       "clearance_m": 0.12, "footprint_k": 1.0,
+      "lineup_doc": "M3-BPR-403 BattleLineup: at spawn each side is pushed apart on the ground until every pair keeps both footprints + clearance_m, each fighter at most lineup_max_shift_m off its mark (lineup_iters passes).",
+      "lineup_max_shift_m": 0.6, "lineup_iters": 16,
       "detour_doc": "M3-BPR-402: a melee run that a body beside its path stops short turns by detour_step_deg each way, up to detour_max_deg, taking the smallest turn that ends within detour_reach_m of where an unobstructed run would (it comes at the target from a little to one side).",
       "detour_step_deg": 5.0, "detour_max_deg": 50.0, "detour_reach_m": 0.15
     },
@@ -118,6 +122,8 @@
     "camera": {
       "doc": "M2-BPR-03: the battle camera director (docs/kb/tech/battle_presentation.md, Camera director). Every shot is framed off the battle axis (party to foes, from the camera's authored default) so the party stays screen-right and the foes screen-left: the line is never crossed and the camera never rolls. anchor 'actor' is the actor's mark, 'strike' its strike point, 'target' the targets' middle, 'default' the authored default. A placed shot sits back_m behind the anchor along the axis, side_m toward the default camera's side and up_m above it, and looks at the point look_at of the way from the actor's mark to the targets, raised look_up_m. A 'default' shot moves push of the way from the default toward the raised targets and turns look_at of the way to them. fov (degrees) is optional: none keeps the default's. Blends: in over blend_in_sec from the sequence start, to the contact shot over to_contact_sec ending on the contact, out over blend_out_sec ending exactly on the sequence end (held at least hold_contact_sec after the contact). A shot that would put a target outside safe_frame (fractions of the screen kept clear for the HUD, at the design aspect) or the actor's head at its strike point off screen falls back to the default. by_style: a party action's lead and contact shots per style ('' holds the lead); enemy: every enemy action.",
       "blend_in_sec": 0.24,
+      "pressure": {"doc": "M3-BPR-406: while a foe gathers one of these telegraphed skills the resting frame narrows by up to max_fov_deg, a step each turn its charge counts down (turns: the charge's length). None under reduced motion.",
+                   "breach": {"turns": 4, "max_fov_deg": 5.0}, "hand_closes": {"turns": 2, "max_fov_deg": 2.5}},
       "to_contact_sec": 0.2,
       "hold_contact_sec": 0.18,
       "blend_out_sec": 0.36,
@@ -346,7 +352,10 @@
                             "title_key": "BOSS_TITLE_INQUISITOR", "epithet_key": "BOSS_EPITHET_INQUISITOR",
                             "on_retry": false},
         "drownbell": {"enemy": "drownbell", "shot": "boss_tall", "hold_sec": 2.2, "title_key": "BOSS_TITLE_DROWNBELL",
-                      "epithet_key": "BOSS_EPITHET_DROWNBELL", "on_retry": false}
+                      "epithet_key": "BOSS_EPITHET_DROWNBELL", "on_retry": false},
+        "undertows_reach": {"enemy": "undertows_reach", "shot": "boss_skyward", "hold_sec": 2.4,
+                            "title_key": "BOSS_TITLE_UNDERTOWS_REACH", "epithet_key": "BOSS_EPITHET_UNDERTOWS_REACH",
+                            "on_retry": false}
       }
     }
   }

@@ -50,7 +50,7 @@ def _tracks(sub: str) -> dict:
     for ti, kind in re.findall(r'tracks/(\d+)/type = "(\w+)"', sub):
         path = re.search(rf'tracks/{ti}/path = NodePath\("([^"]+)"\)', sub).group(1)
         vals = re.search(rf"tracks/{ti}/keys = PackedFloat32Array\(([^)]*)\)", sub).group(1).split(", ")
-        width = {"position_3d": 5, "rotation_3d": 6, "blend_shape": 3}[kind]
+        width = {"position_3d": 5, "rotation_3d": 6, "scale_3d": 5, "blend_shape": 3}[kind]
         out[(kind, path)] = [tuple(vals[i + 2:i + width]) for i in range(0, len(vals), width)]
     return out
 
@@ -139,13 +139,17 @@ class TestHeroLocomotion(unittest.TestCase):
                     self.assertEqual(keys[0], keys[-1], f"{hero} {clip} {track}")
 
     def test_no_root_translation(self):
-        """Only the hips carry a position track, and only by centimetres; cycles never move them forward."""
+        """Only the hips carry a position track (and Rhen's sheathed hooks, which hold still), and only by
+        centimetres; cycles never move them forward."""
         for hero in HEROES:
             sk = self.sk[hero]
             rest = sk.rest_t[hero_clips.HIPS]
             for clip in REQUIRED:
                 tracks = _tracks(self.subs[hero][clip])
-                pos = [k for k in tracks if k[0] == "position_3d"]
+                hooks = {("position_3d", f"{sk.root_name}/Skeleton3D:{hero_clips.HOOK_BONE}{s}") for s in sk.hooks}
+                for k in hooks:  # M2-CHR-513: Rhen's reef-hooks stay sheathed (one place) in the field
+                    self.assertEqual(len(set(tracks[k])), 1, f"{hero} {clip} {k[1]}")
+                pos = [k for k in tracks if k[0] == "position_3d" and k not in hooks]
                 self.assertEqual(pos, [("position_3d", f"{sk.root_name}/Skeleton3D:{hero_clips.HIPS}")],
                                  f"{hero} {clip}")
                 for path in (p for _k, p in tracks):

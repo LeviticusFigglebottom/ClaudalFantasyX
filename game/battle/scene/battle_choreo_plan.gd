@@ -42,11 +42,13 @@ static func plan_for(data: Dictionary, engine: BattleEngine, result: ActionResul
 	var kos: Array[StringName] = []
 	var peak := 0.0
 	var stagger := float(st.get("stagger_sec", 0.0))
+	var riposte := a + s + float((data.get("counter", {}) as Dictionary).get("delay_sec", 0.0))
 	for hit: Dictionary in result.hits:
 		var tid := StringName(str(hit.get("target_id", "")))
-		if not targets.has(tid):
+		var by := StringName(str(hit.get("counter_by", "")))  # M3-BPR-406: a counter stance answers the actor
+		if not targets.has(tid) and by == &"":
 			targets.append(tid)
-		if tid == result.actor_id:
+		if tid == result.actor_id and by == &"":
 			continue
 		var amount := int(hit.get("amount", 0))
 		var kind := (
@@ -60,7 +62,8 @@ static func plan_for(data: Dictionary, engine: BattleEngine, result: ActionResul
 		peak = maxf(peak, blow)
 		if kind != "":
 			var w := BattleImpact.recoil_weight(data, blow) if kind == BattleChoreo.REACT_DAMAGE else 1.0
-			reactions.append({"target": tid, "kind": kind, "at": c + stagger * reactions.size(), "weight": w})
+			var at := riposte if by != &"" else c + stagger * reactions.size()
+			reactions.append({"target": tid, "kind": kind, "at": at, "weight": w, "counter_by": by})
 		var t := engine.find(tid) if engine != null else null
 		if amount > 0 and t != null and t.hp <= 0 and not kos.has(tid):
 			kos.append(tid)
@@ -94,6 +97,8 @@ static func retime(data: Dictionary, plan: Dictionary) -> void:
 		react_end = maxf(react_end, at + float((reaction.get(r["kind"], {}) as Dictionary).get("sec", 0.0)))
 		if kos.has(r["target"]):
 			ko_from = maxf(ko_from, at)
+	if kos.has(plan["actor"]):  # felled by a counter: it falls once it is home (M3-BPR-406)
+		ko_from = maxf(ko_from, float(plan["return_end"]))
 	var ko := data.get("ko", {}) as Dictionary
 	plan["ko_at"] = ko_from + float(ko.get("delay_sec", 0.0))
 	var total := maxf(float(plan["return_end"]), react_end)

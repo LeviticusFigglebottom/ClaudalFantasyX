@@ -52,6 +52,11 @@ func set_identity(cid: StringName, label: String, tint: Color) -> void:
 	_identity[cid] = {"label": label, "tint": tint}
 
 
+## A scripted entry (a set piece's Climb or Surge, M3-UI-100): its chip is drawn apart from fighters.
+func set_entry_identity(cid: StringName, label: String, tint: Color) -> void:
+	_identity[cid] = {"label": label, "tint": tint, "entry": true}
+
+
 ## Call once each time `cid` finishes a turn, before showing the new order.
 func note_turn_taken(cid: StringName) -> void:
 	_offsets[cid] = int(_offsets.get(cid, 0)) + 1

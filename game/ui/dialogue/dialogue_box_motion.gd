@@ -115,6 +115,16 @@ func play_name() -> void:
 	_name_tween.tween_method(_apply_name, 0.0, 1.0, seconds("name_sec")).set_ease(Tween.EASE_OUT)
 
 
+## Moves where the panel rests (offsets from the screen's bottom edge): a running transition lands there, and a
+## panel at rest moves there at once.
+func set_rest(top: float, bottom: float) -> void:
+	_rest_top = top
+	_rest_bottom = bottom
+	_measured = true
+	if not is_moving():
+		_apply(progress)
+
+
 ## Drives every running transition to its end now (tests).
 func finish() -> void:
 	if is_moving():

@@ -1,0 +1,379 @@
+From 269054a3397c92126e2a724aa8a78b57661e24c9 Mon Sep 17 00:00:00 2001
+From: Claude <noreply@anthropic.com>
+Date: Sun, 25 Oct 2026 00:13:19 +0000
+Subject: [PATCH] WIP: M3-BPR-404: boss-intro camera fits each boss's model
+ bounds (Hullgnaw framing bug)
+
+The intro shot keeps its angle and fov; its distance fits a sphere around the boss's visible meshes in the
+narrower field of view (choreo.json boss_intro.fit: margin, look_drop, min_m, max_m, widen_max), widening until
+the boss's top and bottom pass the safe frame; rows may override fit_margin (the Inquisitor 1.6) or set fit
+false. boss_intro tests 14/0. Viewed: Hullgnaw, Matron, Hermit, Wraith, Drownbell read well; the Inquisitor
+with fit_margin 1.6 not yet viewed. Baselines NOT re-approved yet.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_014EcW9e5tEmjDi5S2HmCECd
+---
+ game/battle/scene/battle_boss_intro.gd | 44 ++++++++++++++++++++++++++
+ game/data/battle/choreo.json           |  4 ++-
+ 2 files changed, 47 insertions(+), 1 deletion(-)
+
+diff --git a/game/battle/scene/battle_boss_intro.gd b/game/battle/scene/battle_boss_intro.gd
+index ff0b5e84..93eb7dc6 100644
+--- a/game/battle/scene/battle_boss_intro.gd
++++ b/game/battle/scene/battle_boss_intro.gd
+@@ -254,13 +254,57 @@ func _frame_boss() -> void:
+ 	var id := str(row.get("shot", ""))
+ 	var pose := director.shot_pose(id, slot, slot, slot)
+ 	var pts: Array[Vector3] = [slot, head]
++	var bounds := _bounds(f)
+ 	var none: Array[Vector3] = []
++	if not pose.is_empty() and bounds.size != Vector3.ZERO and row.get("fit", true) != false:
++		var mid := bounds.get_center()  # M3-BPR-404: framed on the model's real size, inside the safe frame
++		pts = [Vector3(mid.x, bounds.position.y, mid.z), Vector3(mid.x, bounds.end.y, mid.z)]
++		var shot := pose
++		var k := 1.0
++		pose = _fit(shot, bounds, k)
++		while (
++			not director._frames(pose, pts, none)
++			and k < float((cfg.get("fit", {}) as Dictionary).get("widen_max", 1.0))
++		):
++			k *= 1.1
++			pose = _fit(shot, bounds, k)
+ 	if pose.is_empty() or not director._frames(pose, pts, none):
+ 		return
+ 	_pose = pose
+ 	shot_id = id
+ 
+ 
++## The boss's visible meshes' bounds, in the camera's parent space (an empty AABB when it has none).
++func _bounds(f: Node3D) -> AABB:
++	var inv := _choreo.camera._parent_inverse()
++	var out := AABB()
++	var first := true
++	for n in f.find_children("*", "VisualInstance3D", true, false):
++		var vi := n as VisualInstance3D
++		if not vi.is_visible_in_tree() or vi is Light3D or vi is GPUParticles3D:
++			continue
++		var box := (inv * vi.global_transform) * vi.get_aabb()
++		out = box if first else out.merge(box)
++		first = false
++	return out
++
++
++## `pose` moved along its own line of sight so the bounds' sphere fits the narrower field of view at `fit.margin`
++## (the row's fit_margin overrides it) times `k` (widened until the safe frame holds), aimed fit.look_drop of its
++## radius below the centre (the boss sits above the title card).
++func _fit(pose: Dictionary, bounds: AABB, k: float) -> Dictionary:
++	var fc := cfg.get("fit", {}) as Dictionary
++	var margin := float(row.get("fit_margin", fc.get("margin", 1.0)))
++	var r := bounds.size.length() * 0.5
++	var half := deg_to_rad(float(pose["fov"])) * 0.5
++	var aspect := _choreo.camera._aspect()
++	var narrow := minf(half, atan(tan(half) * aspect)) if aspect >= 1.0 else atan(tan(half) * aspect)
++	var look := bounds.get_center() - Vector3.UP * r * float(fc.get("look_drop", 0.0))
++	var dir := ((pose["pos"] as Vector3) - (pose["look"] as Vector3)).normalized()
++	var dist := clampf(r * margin * k / sin(narrow), float(fc.get("min_m", 0.0)), float(fc.get("max_m", 1000.0)))
++	return {"pos": look + dir * dist, "look": look, "fov": pose["fov"]}
++
++
+ ## Default -> the boss's shot over camera_in_sec, held, home over the last camera_out_sec. Reduced motion and skip
+ ## animations keep the default.
+ func _camera_at(t: float) -> void:
+diff --git a/game/data/battle/choreo.json b/game/data/battle/choreo.json
+index 5fedc517..1625ea7b 100644
+--- a/game/data/battle/choreo.json
++++ b/game/data/battle/choreo.json
+@@ -319,6 +319,8 @@
+       "doc": "M3-BPR-02 BattleBossIntro (docs/kb/tech/battle_presentation.md, Boss intros): at a boss encounter's first turn, once the screen is uncovered and any opening banner is done (at most reveal_wait_max_sec), the camera eases from the default to the row's shot (camera.shots, framed on the row's enemy; a shot that fails the safe frame keeps the default) over camera_in_sec, holds hold_sec, and eases home over camera_out_sec. The title card (title_key over epithet_key, the UI theme) fades in over card_in_sec from card_at_sec and out over card_out_sec, ending as the camera turns home; it rises rise_px as it fades in (none under reduced motion, which also keeps the camera on the default). card: its CanvasLayer layer, its rect at the 1920x1080 reference (clear of the timeline), the label variations, the title's height, the gold rule under the name (rule_y, rule_length, rule_px) and the dark band behind it (band_alpha, band_fade). The first turn waits for it (BattleHud.holds_battle). Confirm or cancel skips it. on_retry: whether Fight again plays it again (default false). Instant pacing and skip animations play none.",
+       "camera_in_sec": 1.1,
+       "camera_out_sec": 0.8,
++      "fit": {"doc": "M3-BPR-404: the shot keeps its angle and fov but its distance fits the boss model's bounds (a sphere around its visible meshes) in the narrower field of view at margin; look_drop (of the radius) aims below the centre so the boss sits above the card; min_m and max_m clamp the distance; it widens (x1.1 steps, up to widen_max) until the boss's top and bottom are inside the safe frame. A row's fit_margin overrides margin; fit false keeps the shot's own offsets.",
++              "margin": 1.05, "look_drop": 0.3, "min_m": 2.2, "max_m": 18.0, "widen_max": 2.5},
+       "card_at_sec": 0.7,
+       "card_in_sec": 0.5,
+       "card_out_sec": 0.45,
+@@ -337,7 +339,7 @@
+         "ch05_cinder_matron": {"enemy": "cinder_matron", "shot": "boss_skyward", "hold_sec": 2.2,
+                                "title_key": "BOSS_TITLE_CINDER_MATRON", "epithet_key": "BOSS_EPITHET_CINDER_MATRON",
+                                "on_retry": false},
+-        "ch06_inquisitor": {"enemy": "stillguard_inquisitor", "shot": "boss", "hold_sec": 2.0,
++        "ch06_inquisitor": {"enemy": "stillguard_inquisitor", "shot": "boss", "fit_margin": 1.6, "hold_sec": 2.0,
+                             "title_key": "BOSS_TITLE_INQUISITOR", "epithet_key": "BOSS_EPITHET_INQUISITOR",
+                             "on_retry": false},
+         "drownbell": {"enemy": "drownbell", "shot": "boss_tall", "hold_sec": 2.2, "title_key": "BOSS_TITLE_DROWNBELL",
+-- 
+2.43.0
+
+From 4e89c967468c40e97ec92d10dfb8ab84e277ce60 Mon Sep 17 00:00:00 2001
+From: Claude <noreply@anthropic.com>
+Date: Sun, 25 Oct 2026 02:08:19 +0000
+Subject: [PATCH] M3-BPR-404: boss intros clear the title card; fit search,
+ tests, six baselines (FAST-TRACK)
+
+The fitted shot must keep the boss's feet above the title card's top edge (fit.card_clear_px): it aims lower
+first (drop_step to drop_max), then widens the clamped distance (widen_step to widen_max). The Inquisitor's
+fit_margin 1.6 is gone; the general rule frames him. Tests: the fit follows the model size and keeps the angle,
+fit_margin overrides, every boss clears the card. All six battle_boss_intro_* shots viewed and re-approved.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_015hKkhtpX67kS4yZeA8AAhv
+---
+ docs/kb/tasks/M3/M3-BPR-404-boss-intro-fit.md | 45 ++++++++++++++
+ docs/kb/tech/battle_presentation.md           |  9 +++
+ game/battle/scene/battle_boss_intro.gd        | 60 ++++++++++++++-----
+ game/data/battle/choreo.json                  |  7 ++-
+ tests/unit/test_battle_boss_intro.gd          | 55 +++++++++++++++++
+ 5 files changed, 159 insertions(+), 17 deletions(-)
+ create mode 100644 docs/kb/tasks/M3/M3-BPR-404-boss-intro-fit.md
+
+diff --git a/docs/kb/tasks/M3/M3-BPR-404-boss-intro-fit.md b/docs/kb/tasks/M3/M3-BPR-404-boss-intro-fit.md
+new file mode 100644
+index 00000000..f0b81b6a
+--- /dev/null
++++ b/docs/kb/tasks/M3/M3-BPR-404-boss-intro-fit.md
+@@ -0,0 +1,45 @@
++---
++id: M3-BPR-404
++title: "Boss intros: fit the camera to the boss model's bounds (Hullgnaw framed too close)"
++role: combat
++status: review
++owner_session: claude/battle-presentation
++depends_on: [M3-BPR-02]
++milestone: M3
++request-from: lead
++reviewer: lead
++---
++## Goal
++The human's playtest: the Hullgnaw boss intro is framed too close. The intro shots (camera.shots `boss`,
++`boss_tall`, `boss_skyward`) used fixed offsets tuned on primitive stand-ins, and the real creature models are
++much bigger. FAST-TRACK playtest fix.
++
++## Design
++- BattleBossIntro keeps each shot's angle and fov but moves the camera along its line of sight, so a sphere around
++  the boss's visible meshes (its world AABB in camera-parent space) fits the narrower field of view at
++  `boss_intro.fit.margin`, clamped to `min_m`..`max_m`, aimed `look_drop` of the radius below the centre.
++- The bounds' top and bottom must pass the safe frame, and the feet must clear the title card's top edge by
++  `card_clear_px`. A first pass with only the widening let the Inquisitor's small capsule (pinned at min_m) and the
++  Matron's base sink behind the card.
++- The search aims lower first (`drop_step` to `drop_max`, which lifts the boss), then widens (× `widen_step` to
++  `widen_max`); the closest pose that holds wins. With none clearing the card it takes the closest that passes the
++  safe frame; with none at all, the default camera (as before).
++- A row may set `fit_margin` or `fit: false` (the old offsets). No row needs either today.
++- Data: `game/data/battle/choreo.json` `boss_intro.fit`. Code: `game/battle/scene/battle_boss_intro.gd`
++  (`_bounds`, `_fit`, `_fit_search`, `_clears_card`). Tests: `tests/unit/test_battle_boss_intro.gd`.
++
++## Acceptance criteria
++- [x] Every boss intro still frames its boss inside the safe frame (test_each_row_frames_its_boss).
++- [x] The distance follows the model size and keeps the shot's angle and fov; a row's fit_margin overrides the
++      margin; every boss's feet clear the title card (new tests).
++- [x] All six battle_boss_intro_* shots captured and viewed; the boss reads whole above the card.
++- [ ] The Lead views the moved baselines on the PC gate and merges.
++
++## Moved shots
++All six, re-approved after viewing (captured on the integration branch + 404 only):
++- battle_boss_intro_hullgnaw (rmse 0.253): whole serpent and ribs above the card; the old shot showed a leg and a jaw.
++- battle_boss_intro_matron (0.109) and battle_boss_intro_drownbell (0.104): their bases now clear the card.
++- battle_boss_intro_inquisitor (0.053): his capsule whole above the card, a little closer.
++- battle_boss_intro_hermit (0.039) and battle_boss_intro_wraith (0.039): small reframes.
++
++## Review log
+diff --git a/docs/kb/tech/battle_presentation.md b/docs/kb/tech/battle_presentation.md
+index a33fae31..dd6c99d9 100644
+--- a/docs/kb/tech/battle_presentation.md
++++ b/docs/kb/tech/battle_presentation.md
+@@ -503,6 +503,15 @@ Hadric Moll (`ch06_inquisitor`, M3-BPR-03) and the Drownbell (`drownbell`). Once
+ 
+ - **The shot is checked**: the boss's feet and head must sit in the camera's `safe_frame` (as every director shot);
+   a shot that fails keeps the default for the intro and only the card plays. A test checks every row passes.
++- **Fit to the model (M3-BPR-404; the human's playtest: Hullgnaw framed too close).** The shot keeps its angle and
++  fov, but its distance fits a sphere around the boss's visible meshes (their AABB in camera-parent space) in the
++  narrower field of view at `boss_intro.fit.margin` (1.05), clamped to `min_m`..`max_m`, aimed `look_drop` (0.3)
++  of the radius below the centre. The boss's top and bottom must pass the safe frame **and its feet must clear the
++  title card's top edge** by `card_clear_px` (a small boss framed close, the Inquisitor's capsule, and the Matron's
++  base sank behind the card). To get there it first aims lower (`drop_step` up to `drop_max`, which lifts the boss
++  in the frame), then widens (× `widen_step` up to `widen_max`); the closest pose that holds wins. If none clears
++  the card, the closest that passes the safe frame; if none passes, the default camera. A row's `fit_margin`
++  overrides the margin; `fit: false` keeps the shot's own offsets.
+ - **The title card** is its own `CanvasLayer` (`card.layer` 2, above the HUD, below the router's fade) in the HUD's
+   current theme: the name in `TitleLabel` over a thin `focus_gold` rule and the epithet in `FlavorLabel`, on a dark
+   band that fades at both ends (art/ui.md §9 contrast). It sits centre-low (`card.rect` 560, 616, 800 × 140 at the
+diff --git a/game/battle/scene/battle_boss_intro.gd b/game/battle/scene/battle_boss_intro.gd
+index 93eb7dc6..5c5f6af2 100644
+--- a/game/battle/scene/battle_boss_intro.gd
++++ b/game/battle/scene/battle_boss_intro.gd
+@@ -259,15 +259,7 @@ func _frame_boss() -> void:
+ 	if not pose.is_empty() and bounds.size != Vector3.ZERO and row.get("fit", true) != false:
+ 		var mid := bounds.get_center()  # M3-BPR-404: framed on the model's real size, inside the safe frame
+ 		pts = [Vector3(mid.x, bounds.position.y, mid.z), Vector3(mid.x, bounds.end.y, mid.z)]
+-		var shot := pose
+-		var k := 1.0
+-		pose = _fit(shot, bounds, k)
+-		while (
+-			not director._frames(pose, pts, none)
+-			and k < float((cfg.get("fit", {}) as Dictionary).get("widen_max", 1.0))
+-		):
+-			k *= 1.1
+-			pose = _fit(shot, bounds, k)
++		pose = _fit_search(pose, bounds, pts)
+ 	if pose.is_empty() or not director._frames(pose, pts, none):
+ 		return
+ 	_pose = pose
+@@ -289,19 +281,59 @@ func _bounds(f: Node3D) -> AABB:
+ 	return out
+ 
+ 
++## True when `feet` (camera parent space) projects above the title card's top edge, less fit.card_clear_px (the
++## card is under the boss, M3-BPR-404: a small boss framed close sank behind it).
++func _clears_card(pose: Dictionary, feet: Vector3) -> bool:
++	var rect := (cfg.get("card", {}) as Dictionary).get("rect", []) as Array
++	if rect.size() < 2:
++		return true
++	var ref_h := float(ProjectSettings.get_setting("display/window/size/viewport_height", 1))
++	var clear := float((cfg.get("fit", {}) as Dictionary).get("card_clear_px", 0.0))
++	var bottom := clampf(1.0 - (float(rect[1]) - clear) / maxf(ref_h, 1.0), 0.0, 1.0)
++	var pos: Vector3 = pose["pos"]
++	var xform := Transform3D(Basis.looking_at((pose["look"] as Vector3) - pos, Vector3.UP), pos)
++	return _choreo.camera.in_frame(xform, float(pose["fov"]), feet, {"bottom": bottom})
++
++
++## The closest fitted pose whose bounds pass the safe frame with the feet clear of the card: each widening step
++## (x fit.widen_step up to widen_max) tries aiming lower first (look_drop up by drop_step to drop_max, which lifts the
++## boss in the frame). Failing the card everywhere, the closest pose that passes the safe frame; failing that, {}.
++func _fit_search(shot: Dictionary, bounds: AABB, pts: Array[Vector3]) -> Dictionary:
++	var fc := cfg.get("fit", {}) as Dictionary
++	var none: Array[Vector3] = []
++	var base := float(fc.get("look_drop", 0.0))
++	var step := maxf(float(fc.get("drop_step", 1.0)), 0.01)
++	var widen := maxf(float(fc.get("widen_step", 1.1)), 1.01)
++	var fallback := {}
++	var k := 1.0
++	while k <= float(fc.get("widen_max", 1.0)) + 0.0001:
++		var drop := base
++		while drop <= float(fc.get("drop_max", base)) + 0.0001:
++			var pose := _fit(shot, bounds, k, drop)
++			if _choreo.camera._frames(pose, pts, none):
++				if _clears_card(pose, pts[0]):
++					return pose
++				if fallback.is_empty() and is_equal_approx(drop, base):
++					fallback = pose
++			drop += step
++		k *= widen
++	return fallback
++
++
+ ## `pose` moved along its own line of sight so the bounds' sphere fits the narrower field of view at `fit.margin`
+-## (the row's fit_margin overrides it) times `k` (widened until the safe frame holds), aimed fit.look_drop of its
+-## radius below the centre (the boss sits above the title card).
+-func _fit(pose: Dictionary, bounds: AABB, k: float) -> Dictionary:
++## (the row's fit_margin overrides it), clamped, times `k`, aimed `drop` (fit.look_drop when negative) of its radius
++## below the centre (the boss sits above the title card).
++func _fit(pose: Dictionary, bounds: AABB, k: float, drop: float = -1.0) -> Dictionary:
+ 	var fc := cfg.get("fit", {}) as Dictionary
+ 	var margin := float(row.get("fit_margin", fc.get("margin", 1.0)))
+ 	var r := bounds.size.length() * 0.5
+ 	var half := deg_to_rad(float(pose["fov"])) * 0.5
+ 	var aspect := _choreo.camera._aspect()
+ 	var narrow := minf(half, atan(tan(half) * aspect)) if aspect >= 1.0 else atan(tan(half) * aspect)
+-	var look := bounds.get_center() - Vector3.UP * r * float(fc.get("look_drop", 0.0))
++	var look := bounds.get_center() - Vector3.UP * r * (drop if drop >= 0.0 else float(fc.get("look_drop", 0.0)))
+ 	var dir := ((pose["pos"] as Vector3) - (pose["look"] as Vector3)).normalized()
+-	var dist := clampf(r * margin * k / sin(narrow), float(fc.get("min_m", 0.0)), float(fc.get("max_m", 1000.0)))
++	var dist := clampf(r * margin / sin(narrow), float(fc.get("min_m", 0.0)), float(fc.get("max_m", 1000.0)))
++	dist *= k
+ 	return {"pos": look + dir * dist, "look": look, "fov": pose["fov"]}
+ 
+ 
+diff --git a/game/data/battle/choreo.json b/game/data/battle/choreo.json
+index 1625ea7b..26246c48 100644
+--- a/game/data/battle/choreo.json
++++ b/game/data/battle/choreo.json
+@@ -319,8 +319,9 @@
+       "doc": "M3-BPR-02 BattleBossIntro (docs/kb/tech/battle_presentation.md, Boss intros): at a boss encounter's first turn, once the screen is uncovered and any opening banner is done (at most reveal_wait_max_sec), the camera eases from the default to the row's shot (camera.shots, framed on the row's enemy; a shot that fails the safe frame keeps the default) over camera_in_sec, holds hold_sec, and eases home over camera_out_sec. The title card (title_key over epithet_key, the UI theme) fades in over card_in_sec from card_at_sec and out over card_out_sec, ending as the camera turns home; it rises rise_px as it fades in (none under reduced motion, which also keeps the camera on the default). card: its CanvasLayer layer, its rect at the 1920x1080 reference (clear of the timeline), the label variations, the title's height, the gold rule under the name (rule_y, rule_length, rule_px) and the dark band behind it (band_alpha, band_fade). The first turn waits for it (BattleHud.holds_battle). Confirm or cancel skips it. on_retry: whether Fight again plays it again (default false). Instant pacing and skip animations play none.",
+       "camera_in_sec": 1.1,
+       "camera_out_sec": 0.8,
+-      "fit": {"doc": "M3-BPR-404: the shot keeps its angle and fov but its distance fits the boss model's bounds (a sphere around its visible meshes) in the narrower field of view at margin; look_drop (of the radius) aims below the centre so the boss sits above the card; min_m and max_m clamp the distance; it widens (x1.1 steps, up to widen_max) until the boss's top and bottom are inside the safe frame. A row's fit_margin overrides margin; fit false keeps the shot's own offsets.",
+-              "margin": 1.05, "look_drop": 0.3, "min_m": 2.2, "max_m": 18.0, "widen_max": 2.5},
++      "fit": {"doc": "M3-BPR-404: the shot keeps its angle and fov but its distance fits the boss model's bounds (a sphere around its visible meshes) in the narrower field of view at margin; look_drop (of the radius) aims below the centre so the boss sits above the card; min_m and max_m clamp the distance; until the boss's top and bottom are inside the safe frame and its feet clear the title card's top edge by card_clear_px (1080 reference), it first aims lower (look_drop + drop_step steps up to drop_max) and then widens (x widen_step on the clamped distance, up to widen_max); the closest pose that holds wins (none clearing the card: the closest that passes the safe frame). A row's fit_margin overrides margin; fit false keeps the shot's own offsets.",
++              "margin": 1.05, "look_drop": 0.3, "min_m": 2.2, "max_m": 18.0, "widen_max": 2.5, "widen_step": 1.1,
++              "drop_step": 0.1, "drop_max": 1.2, "card_clear_px": 12},
+       "card_at_sec": 0.7,
+       "card_in_sec": 0.5,
+       "card_out_sec": 0.45,
+@@ -339,7 +340,7 @@
+         "ch05_cinder_matron": {"enemy": "cinder_matron", "shot": "boss_skyward", "hold_sec": 2.2,
+                                "title_key": "BOSS_TITLE_CINDER_MATRON", "epithet_key": "BOSS_EPITHET_CINDER_MATRON",
+                                "on_retry": false},
+-        "ch06_inquisitor": {"enemy": "stillguard_inquisitor", "shot": "boss", "fit_margin": 1.6, "hold_sec": 2.0,
++        "ch06_inquisitor": {"enemy": "stillguard_inquisitor", "shot": "boss", "hold_sec": 2.0,
+                             "title_key": "BOSS_TITLE_INQUISITOR", "epithet_key": "BOSS_EPITHET_INQUISITOR",
+                             "on_retry": false},
+         "drownbell": {"enemy": "drownbell", "shot": "boss_tall", "hold_sec": 2.2, "title_key": "BOSS_TITLE_DROWNBELL",
+diff --git a/tests/unit/test_battle_boss_intro.gd b/tests/unit/test_battle_boss_intro.gd
+index 19304896..3febc53c 100644
+--- a/tests/unit/test_battle_boss_intro.gd
++++ b/tests/unit/test_battle_boss_intro.gd
+@@ -214,6 +214,61 @@ func test_the_camera_frames_the_boss_and_comes_home() -> void:
+ 	_free()
+ 
+ 
++func test_the_shot_fits_the_boss_model_size() -> void:
++	# M3-BPR-404: the distance follows the model's bounds, so a big boss is never framed too close.
++	var intro := _start(&"ch01_hullgnaw", 0.0)
++	intro.force_play = true
++	intro.play()
++	var pose := intro._pose
++	assert_false(pose.is_empty(), "Hullgnaw has a fitted shot")
++	var small := intro._fit(pose, AABB(Vector3(-0.5, 0.0, -0.5), Vector3.ONE), 1.0)
++	var big := intro._fit(pose, AABB(Vector3(-1.5, 0.0, -1.5), Vector3.ONE * 3.0), 1.0)
++	var d_small := (small["pos"] as Vector3).distance_to(small["look"] as Vector3)
++	var d_big := (big["pos"] as Vector3).distance_to(big["look"] as Vector3)
++	assert_true(d_big > d_small, "a bigger model is framed from farther away")
++	var dir := ((pose["pos"] as Vector3) - (pose["look"] as Vector3)).normalized()
++	var dir_big := ((big["pos"] as Vector3) - (big["look"] as Vector3)).normalized()
++	assert_between(dir.dot(dir_big), 1.0 - EPS, 1.0 + EPS, "the fit keeps the shot's angle")
++	assert_eq(big["fov"], pose["fov"], "and its field of view")
++	var fc := cfg["fit"] as Dictionary
++	var r := Vector3.ONE.length() * 1.5
++	var half := deg_to_rad(float(pose["fov"])) * 0.5
++	var need := r * float(fc["margin"]) / sin(half)
++	assert_true(d_big >= minf(need, float(fc["max_m"])) - EPS, "the whole bounding sphere fits the frame")
++	intro.skip()
++	_free()
++
++
++func test_a_row_can_widen_the_fit() -> void:
++	var intro := _start(&"ch06_inquisitor", 0.0)
++	intro.force_play = true
++	intro.play()
++	var box := AABB(Vector3(-2.0, 0.0, -2.0), Vector3.ONE * 4.0)
++	var plain := intro._fit(intro._pose, box, 1.0)
++	intro.row = intro.row.duplicate()
++	intro.row["fit_margin"] = float((cfg["fit"] as Dictionary)["margin"]) * 1.5
++	var wide := intro._fit(intro._pose, box, 1.0)
++	var d_wide := (wide["pos"] as Vector3).distance_to(wide["look"] as Vector3)
++	var d_plain := (plain["pos"] as Vector3).distance_to(plain["look"] as Vector3)
++	assert_true(d_wide > d_plain, "fit_margin overrides the default margin")
++	intro.skip()
++	_free()
++
++
++func test_every_boss_stands_clear_of_the_title_card() -> void:
++	# M3-BPR-404: a small boss framed close sank behind the card (the Inquisitor's capsule).
++	for enc: StringName in BOSSES:
++		var intro := _start(enc, 0.0)
++		intro.force_play = true
++		intro.play()
++		var f := ctl.stage.stand_in(intro.boss_id)
++		var b := intro._bounds(f)
++		var feet := Vector3(b.get_center().x, b.position.y, b.get_center().z)
++		assert_true(intro._clears_card(intro._pose, feet), "%s: its feet are above the card" % enc)
++		intro.skip()
++	_free()
++
++
+ func test_a_retry_skips_it_unless_the_row_says_so() -> void:
+ 	var intro := _start(&"ch01_hullgnaw", 1.0)
+ 	assert_true(intro.playing())
+-- 
+2.43.0
+

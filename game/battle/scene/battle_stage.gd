@@ -7,6 +7,7 @@ extends Node3D
 
 const CONFIG_PATH := "res://game/data/ui/battle_sandbox.json"
 const SETTING_SHAKE := &"screen_shake"  # M3-BPR-401: accessibility.json
+const WITHDRAWN_META := &"hymn_withdrawn"  # M3-BPR-406: the retreat started
 
 static var _config: Dictionary = {}
 
@@ -87,6 +88,19 @@ func spawn(engine: BattleEngine) -> void:
 	_enemy_slot_of.clear()
 	for i in engine.enemies.size():
 		_seat_enemy(engine.enemies[i].id, mini(i, _enemy_slots.size() - 1))
+	if is_inside_tree():  # M3-BPR-403: the opening line-up keeps the real models' footprints apart
+		var data := BattleChoreo.load_data()
+		var axis := camera.global_basis.x if camera != null else Vector3.RIGHT  # sideways on screen
+		BattleLineup.apply(_side(engine.party_active), data, axis)
+		BattleLineup.apply(_side(engine.enemies), data, axis)
+
+
+func _side(cs: Array[BattleCombatant]) -> Array:
+	var out: Array = []
+	for c in cs:
+		if _fighters.has(c.id):
+			out.append(_fighters[c.id])
+	return out
 
 
 ## Seats an enemy that joined mid-battle (BossMechanics spawns and summons) in the first enemy
@@ -148,6 +162,9 @@ func refresh_ko(engine: BattleEngine) -> void:
 		f.set_stone(
 			c.is_petrified(), Color.html(str(stone.get("color", "#FFFFFF"))), float(stone.get("roughness", 1.0))
 		)
+		if c.withdrawn:  # M3-BPR-406: it leaves the field, not felled: it backs away and is gone, no collapse
+			_withdraw(f)
+			continue
 		var ko := c.hp <= 0 or c.yielded  # a foe that yielded or ran has left the fight
 		var alpha := float(cfg.get("ko_alpha", 1.0))
 		if engine.enemies.has(c):  # a fallen foe fades out and is hidden (M2-BPR-11); the party stays to be revived
@@ -155,6 +172,23 @@ func refresh_ko(engine: BattleEngine) -> void:
 		f.set_ko(ko, float(cfg.get("ko_sink_m", 0.0)), alpha)
 		if choreo != null:
 			choreo.on_ko_state(c.id, ko)
+
+
+## A withdrawn foe (ADR 0100: Pell's Storm-Call, a set piece's end) backs away from the party by choreo.json
+## withdraw.back_m over withdraw.sec, then is hidden. Reduced motion or instant pacing hide it at once. Once only.
+func _withdraw(f: FighterStandIn) -> void:
+	if f.has_meta(WITHDRAWN_META):
+		return
+	f.set_meta(WITHDRAWN_META, true)
+	var cfg := BattleChoreo.load_data().get("withdraw", {}) as Dictionary
+	var sec := float(cfg.get("sec", 0.0)) / maxf(battle_speed(), 0.01)
+	if choreo == null or choreo.reduced_motion or not choreo.animating() or sec <= 0.0 or not is_inside_tree():
+		f.visible = false
+		return
+	var away := -choreo.facing(f.combatant_id) * float(cfg.get("back_m", 0.0))
+	var tw := create_tween().set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
+	tw.tween_property(f, "position", f.position + away, sec)
+	tw.tween_callback(f.hide)
 
 
 ## How long the result panel waits after the battle ends: `base`, or longer for the victory pose or the escape.
