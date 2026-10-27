@@ -1,6 +1,6 @@
 # 0172 — Build-time audio render from a committed checksum manifest (the fallback to Git LFS)
 
-- **Status:** proposed (a prototype only; nothing has switched over. The storage decision is the human's.)
+- **Status:** proposed, **parked** (2026-10-27: the human approved Git LFS, ADR 0039; this stays a fallback study, and the prototype stays a tool)
 - **Date:** 2026-10-27
 - **Roles affected:** audio, tech, Lead, the PC runner (CI), everyone who runs the game from a checkout
 - **Author role:** audio

@@ -3,6 +3,16 @@
 ## NEW ACCOUNT (from 2026-10-25)
 Session `session_01Wmj8xaLtwcqiS3qwC6PciW`. Integration branch `claude/undertow-lead-handoff-ze8rrn`. Newest first.
 
+- **LFS (ADR 0039) taken in, 10-27 ~19:20.**
+  - **ADR 0172 is parked** as a fallback study (its status line says so).
+  - **M3-AUD-839:** docs/kb/audio/act2_finals.md lists Act II's 30 final cues with estimates (about 72 MB, all for
+    LFS). render_all.py has `ACT2_FINALS` and `--act2`, into assets/audio/music/act2/ and outside the default run,
+    the budget and the tests. tools/tests/test_act2_finals.py fails if anything there is committed before
+    .gitattributes routes the path to LFS. I have not touched .gitattributes.
+  - **In progress:** four composer agents are writing the 12 zone finals from the sketches (M3-AUD-840..843). Their
+    sources commit now; the audio stays uncommitted until you announce LFS is live, and then lands in one commit with
+    the music.json rows, PROVENANCE rows and .import files.
+
 - **MERGE-READY @ d8cdf928** (big11 merged in). Checks run:
   - **Godot suite on 1ec56d7b: 2758 run, 0 failed.** Since 1ec56d7b, M3-AUD-838 only: `--filter=battle_audio` 21/0,
     `choreo` 56/0, `audio` 160/0.
