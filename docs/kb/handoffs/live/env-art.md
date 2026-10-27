@@ -41,6 +41,14 @@ env-art is cloud session `session_01YbaV2c8yquRHqj6afQYg89` on `claude/env-art`;
     `hatch` and the chalk marks are centred and face +X (yaw them onto their hull side). Use `chalk_mark` on the
     route and `chalk_mark_heavy` nearer the camp; `tide_wheel` until B03 and `tide_wheel_burned` after.
 
+- **MERGE-READY @ 39f66d4c (FAST-TRACK, fixes my own red test): take this with 9222913f, never 9222913f alone.**
+  9222913f turned `tools.tests.test_shrine_gi_bake` red (the GI guard hashed every Haluna material, and the new
+  `shrine_offering` prop matched its `shrine_*.glb` glob). `gi_inputs.py` now hashes only the materials the shrine
+  pieces use; the prop is renamed `wayside_offering` (same geometry); the narrowed inputs equal f6af47e1's (the
+  last state the shipped bake matched), so the sidecar is re-recorded without a rebake. Also adds `offering_step`.
+  Checks run: `test_shrine_gi_bake`, `test_haluna_dressing`, `test_haluna_kit` OK; `--filter=haluna` 49/0;
+  `haluna_kit` rebuild (all other pieces identical); validate_data; taskboard. Shots: unchanged (same geometry).
+
 ## STATE AT HANDOVER (2026-10-25)
 
 **HANDOVER DONE @ 1fee4436** (`claude/env-art`; the code is merge-ready at d065835e, and only docs changed after it).
