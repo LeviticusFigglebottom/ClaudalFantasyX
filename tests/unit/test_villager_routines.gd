@@ -248,6 +248,8 @@ func _stage() -> Node3D:
 
 
 func test_the_layer_turns_stand_ins_into_villagers() -> void:
+	var was: Variant = Game.get_flag(STORM_FLAG)  # an earlier test may leave the story flag set: a storm stops the walk
+	Game.set_flag(STORM_FLAG, false)
 	var zone := _stage()
 	var layer := VillagerLayer.new()
 	layer.data_path = STAGE_DATA
@@ -272,6 +274,7 @@ func test_the_layer_turns_stand_ins_into_villagers() -> void:
 	assert_true(body.position.distance_to(Vector3(1.0, 0.0, 0.0)) > 0.5, "the body walked with the villager")
 	_near(body.global_position.distance_to(walker.global_position), 0.0, 0.001, "on its feet")
 	_near((talk.global_position - body.global_position).length(), offset.length(), 0.001, "the talk spot rides along")
+	Game.set_flag(STORM_FLAG, was)
 	_done()
 
 
