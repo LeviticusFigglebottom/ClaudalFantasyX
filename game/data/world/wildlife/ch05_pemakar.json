@@ -1,0 +1,22 @@
+{
+  "_doc": "Pemakar at Lanternfall night: crabs on the harbour quay at the water's edge, away from the lamps. Gulls roost at night (the day variant has none yet). The sea is a greybox slab, so no fish. Placed on the greybox layout (M3-CRE-615); move the coordinates when env-art's kit replaces the blocks (same keys as ch02_haluna.json).",
+  "zone": "ch05/pemakar",
+  "flocks": [],
+  "beaches": [
+    {
+      "id": "quay_edge",
+      "center": [
+        -6.0,
+        9.5
+      ],
+      "half_extents": [
+        5.0,
+        1.2
+      ],
+      "yaw_deg": 0.0,
+      "y": 0.0,
+      "count": 5
+    }
+  ],
+  "shoals": []
+}

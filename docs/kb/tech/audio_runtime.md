@@ -153,6 +153,12 @@ foley. Everything it reads is by name, guarded, and listen-only:
   `audio_surface_<surface>`, whose `CollisionShape3D` boxes, spheres, cylinders or capsules hold the feet. Otherwise
   it is the scene's. The surfaces are `sand`, `stone`, `wood` and `water` (shallow wading). No level marks an area
   yet; M3-AUD-810 asks for them.
+- **Ground without level marks (M3-AUD-812):** before the scene's surface, two listen-only reads. First
+  `mesh_surfaces`: a `MeshInstance3D` whose own or parent's name matches a rule's globs (`dock_*` is wood;
+  `Tidepool*` and `*PoolWater` are water) and whose bounds, grown `up_m` over the top and `down_m` under the
+  bottom, hold the feet. LOD meshes are skipped and the walker's zone is rescanned every `rescan_sec`. Then
+  `water_level`: feet under the rest plane of the zone sea (group `hymn_water_level_publishers`, WaterSurface's
+  publishers) by up to `wade_m` wade. A level's own area still wins over both.
 - Followers (`HeroFieldParty`) take no steps: only the leader's controller has a listener.
 
 **Menus (M2-AUD-05).** `UiAudio` watches each node whose script's global class (or a base class) has a hook in
@@ -184,8 +190,8 @@ classes, signals or expressions are never read as sfx ids.
 - The cutscene sequencer keeps its own music player and plays it at `music_volume_db` −8 dB (its stand-in
   setting). A request task asks m2-slice to call `Audio.play_music` instead (M2-AUD-07).
 - The area reverb is per zone, not per position inside a zone (see "Area reverb" below).
-- Footstep surfaces are per scene until a level marks its areas (M3-AUD-802's reader is in; M2-AUD-09 and M3-AUD-810
-  ask Haluna's owners for the dock, the jetty and the shallows).
+- Footstep surfaces come from kit mesh names and the sea level until a level marks its areas (M3-AUD-812). Mesh
+  bounds are coarse: under the Haluna dock the sand also reads as wood. M3-AUD-811 asks the level owners for areas.
 - UI hooks that read a menu's state through `watch` depend on public names (`level`, `root_page()`,
   `model.cursor`). Renaming one silences that sound, which is why `tests/unit/test_field_audio.gd` drives the real
   CommandMenu and FieldMenu.
@@ -559,3 +565,25 @@ data_check `muffle_errors` checks both blocks.
 Test note: the reefball tests name their stand-ins (the `audio_class` meta) after `add_child`, so the game's own
 Audio autoload, which tests never advance, does not hook them. The director test records its beds instead of playing
 them. A real playback started in a headless test is still held when the run quits ("resources still in use").
+
+## Life (M3-AUD-814)
+`LifeAudio` (`life_audio.gd`, owned by the director) gives creatures' villagers and wildlife near, positional sound,
+by listening. `game/data/audio/life.json` names every hook class and every member it reads, and the rows are in
+`sfx_life.json` (`assets_src/sfx/life_sfx.py`). The hooks stay `pending` until claude/creatures merges.
+- **Villagers (`FieldNpc`):** a chat turn that starts plays one murmur turn (wordless, low or high voice per
+  `voices`) at the head. Work (`working()`) plays the villager's `work.rows` row at `work_point()` every
+  `work.every_sec`. The player's own talk with a villager is the dialogue box's blips, not this.
+- **Wildlife (`WildlifeLayer`, layer space):** each flock calls from one of its gulls every `call_every_sec`; a gull
+  entering TAKEOFF claps off; a crab entering FLEE scuttles (`cooldown_sec` per beach); a shoal's startle darts.
+- Only nodes within `hear_m` of the camera are read. Randomness is a RandomNumberGenerator on `seed`.
+- Two reads are private fields until creatures adds public ones (M3-AUD-815): `_chat_speaker` and `_startle`.
+  `chat_speaking()` and `startled()` win the moment they exist.
+
+## Impact (M3-AUD-816)
+`ImpactAudio` (`impact_audio.gd`) hears battle-presentation's `BattleImpact` (M3-BPR-401) by name, through
+`game/data/audio/impact_audio.json`, pending until that track merges. On `landed(target_id, strength, stop_sec)`
+the highest `tiers` row the blow reaches plays flat on Combat, under BattleVfx's element hit (it never replaces
+it). A hit-stop ducks `impact` (mix.json) for its length plus `hold_sec`. On
+`slowmo_planned(from_sec, sec, factor)`, `ko_slowmo` plays when the slow-mo starts (from_sec of plan time over the
+choreography's `speed`), and the `ko_slowmo` duck holds through the slowed time (sec / factor) plus `hold_sec`.
+Reduced audio skips `reduced_skip`.

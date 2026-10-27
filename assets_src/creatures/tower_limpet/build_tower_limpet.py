@@ -113,9 +113,9 @@ def build_clips() -> list[ck.Clip]:
         cast.key("shell", t, (tilt, 0, 0), (0, lift, 0))
     cast.wave("foot", amp_rot=(0.0, 0.0, 2.0), cycles=3)
 
-    hit = ck.Clip("hit", 0.4)
-    for t, d in ((0.0, 0.0), (0.08, -0.03), (0.4, 0.0)):
-        hit.key("shell", t, (0, 0, 0), (0, d, 0))
+    hit = ck.Clip("hit", 0.4)  # M3-CRE-617: it clamps hard and the shell rocks on its foot, then settles
+    for t, d, rz in ((0.0, 0.0, 0.0), (0.08, -0.045, 7.0), (0.18, -0.03, -3.5), (0.28, -0.012, 1.2), (0.4, 0.0, 0.0)):
+        hit.key("shell", t, (0, 0, rz), (0, d, 0))
 
     ko = ck.Clip("ko", 1.6)  # the shell lifts off the foot and tips over its rim onto its side
     pivot = np.array([R_BASE, 0.10, 0.0])
