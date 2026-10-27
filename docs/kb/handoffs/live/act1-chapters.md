@@ -178,6 +178,7 @@ cutscene sequencer (`game/cutscene/**`), `game/flow/**` and the playtest fixes.
   Hollowmere → Rim → Choir, each arrival setting its chapter. A shared test base (`tests/integration/
   act2_greybox_case.gd`); `--filter=ch14_16` 5/0, validate_data, the chapter/location/map/loc tools tests. Beat sheets
   requested M4-C14-01 .. M4-C16-01. **Act II now has a walkable greybox end to end (Ch10-16), story to come.**
+  Full Godot suite @ a4410fd9: 2854 run, 2 failed, the same two big12 failures as above (not act1-chapters').
 - **Lead queue (21:23), status:**
   1. Ch9 road capsule: it is **Kerrid** at the milestone (no model yet: M3-CHR-505, characters); so are the two on
      ch06_brine_road (Ysolde, no field body yet: M3-HER-1219; Kerrid). They go when those land; no villager body on a
