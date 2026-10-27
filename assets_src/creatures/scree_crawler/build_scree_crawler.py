@@ -75,7 +75,7 @@ def main() -> None:
     args = ap.parse_args(argv)
     rig = base.build_rig()
     mesh = build_mesh(rig)
-    info = ck.export_creature(mesh, rig, base.build_clips(), args.out, extras={"hymn_creature": "scree_crawler"})
+    info = ck.export_creature(mesh, rig, base.export_clips(rig, mesh), args.out, extras={"hymn_creature": "scree_crawler"})
     print(f"scree_crawler: {info}")
 
 

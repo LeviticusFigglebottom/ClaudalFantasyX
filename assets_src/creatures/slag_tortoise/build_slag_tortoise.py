@@ -19,6 +19,7 @@ import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "common"))
 import creature_kit as ck  # noqa: E402
+import grounding as gr  # noqa: E402
 
 SEED = 5203
 PAL = {k: ck.hexrgb(v) for k, v in {
@@ -34,6 +35,9 @@ SHELL_CELLS = 22
 SHELL_LUMP = 0.06
 SHELL_FLAT = False
 SKIN_SHAG = 0.0
+# The KO (M3-CRE-631): how far the legs tuck in (degrees) and the body rises (metres) by the end of the roll.
+KO_TUCK = 40.0
+KO_RISE = 0.04
 
 
 def build_rig() -> ck.Rig:
@@ -91,6 +95,7 @@ def limbs(mesh: ck.Mesh, rig: ck.Rig) -> None:
         P, T = ck.tube(ck.bezier([h0, (h0 + h1) / 2 + np.array([0, 0, 0.02]), h1], 6), np.array(
             [0.11, 0.12, 0.11, 0.1, 0.1, 0.11]), 10)
         P = shag(P, T, SEED + 20)
+        P[:, 1] = np.maximum(P[:, 1], 0.0)  # M3-CRE-631: a flat sole on the floor (the foot's end sank 4.5 cm under it)
         wr = 0.5 + 0.5 * np.sin(P[:, 1] * 80.0)
         col = ck.mix(PAL["laterite"], PAL["sand_dry"], (0.3 * wr)[:, None])
         ck.finish(mesh, P, T, "skin", col, rig.rigid(f"leg_{tag}"), cavity=0.4 * (1 - wr))
@@ -145,16 +150,28 @@ def build_clips() -> list[ck.Clip]:
     for t, s in ((0.0, 0.0), (0.1, 1.0), (0.5, 0.0)):
         hit.key("neck", t, (0, 0, 0), (0, 0, -0.15 * s))
         hit.key("shell", t, (4.0 * s, 0, 0))
-    ko = ck.Clip("ko", 1.6)  # it rolls onto its side about the right edge
+    # it rolls onto its side about the right edge. M3-CRE-631: it draws its legs in toward the plastron as it tips
+    # (a left leg tucks with -z, a right one with +z), and rides up by the crust's overhang past the pivot, so the
+    # crust and the legs underneath stay on the floor (they sank 8.5 cm)
+    ko = ck.Clip("ko", 1.6)
     pivot = np.array([-0.55, 0.0, 0.0])
     for t, roll in ((0.0, 0.0), (0.6, -20.0), (1.2, -78.0), (1.6, -84.0)):
         R = ck.euler(0.0, 0.0, -roll)
-        off = pivot - R @ pivot
+        off = pivot - R @ pivot + np.array([0.0, KO_RISE * abs(roll) / 84.0, 0.0])
         ko.key("root", t, (0, 0, -roll), tuple(off))
-        for tag in ("fl", "fr", "bl", "br"):
-            ko.key(f"leg_{tag}", t, (abs(roll) * 0.3, 0, 0))
+        for tag, sx in (("fl", 1), ("fr", -1), ("bl", 1), ("br", -1)):
+            ko.key(f"leg_{tag}", t, (abs(roll) * 0.3, 0, -sx * KO_TUCK * abs(roll) / 84.0))
         ko.key("neck", t, (25.0 * abs(roll) / 84.0, 0, 0))
     return [idle, attack, cast, hit, ko]
+
+
+# The limbs kept on the floor (M3-CRE-631, common/grounding.py): a stubby leg is pushed up into the shell, by at most
+# 0.2 m, wherever the shell's bob, pitch or roll would press its sole through the floor.
+GROUNDED_LIMBS = [(f"leg_{tag}", gr.LIFT, 1.0, 0.2) for tag in ("fl", "fr", "bl", "br")]
+
+
+def export_clips(rig: ck.Rig, mesh: ck.Mesh) -> list[ck.Clip]:
+    return gr.grounded(rig, mesh, build_clips(), GROUNDED_LIMBS)
 
 
 def main() -> None:
@@ -164,7 +181,7 @@ def main() -> None:
     args = ap.parse_args(argv)
     rig = build_rig()
     mesh = build_mesh(rig)
-    info = ck.export_creature(mesh, rig, build_clips(), args.out, extras={"hymn_creature": "slag_tortoise"})
+    info = ck.export_creature(mesh, rig, export_clips(rig, mesh), args.out, extras={"hymn_creature": "slag_tortoise"})
     print(f"slag_tortoise: {info}")
 
 
