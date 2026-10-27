@@ -24,7 +24,7 @@ It should also let the player search the chart for hidden places.
 - [x] Pseudo-loc walk and aspect audit (list, question, search).
 - [x] Shot `kite_map`: its RENDER-REQUEST is in the live log.
 - [ ] Baseline approved once the render server renders it.
-- [ ] Mounted by the Kite itself (Act III, not built yet): its owner calls `KiteMapMenu.open_in(host, KiteMapModel.from_game())`.
+- [x] Wired into the field menu behind `kite_flying` (the Lead, 2026-10-27 23:37): a row after Map, the panel a row taller while it shows, a flight closing the menu; `test_field_menu_kite.gd`; shot `field_menu_kite` (RENDER-REQUEST in the live log).
 - [ ] Design places Act III's secret places in `secrets` and its later destinations (Ansedra, Lowlight, the rest) once those zones exist.
 
 ## Notes

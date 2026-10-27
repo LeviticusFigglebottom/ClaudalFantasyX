@@ -25,6 +25,8 @@ var level := Level.LIST
 var model: KiteMapModel
 ## The destination being confirmed (&"" on the list).
 var picked: StringName = &""
+## Where the Kite flew (&"" until a flight goes; the page closes then).
+var flown: StringName = &""
 ## The cell being searched ([column, row]).
 var cell := Vector2i.ZERO
 
@@ -126,6 +128,7 @@ func back() -> void:
 func fly(destination: StringName) -> bool:
 	flight_chosen.emit(destination)
 	if model.fly(destination):
+		flown = destination
 		close()
 		return true
 	level = Level.LIST

@@ -155,6 +155,21 @@ func _kite_map() -> Node:
 	return KiteMapMenu.open_in(host, KiteMapShot.fixed_model())
 
 
+## M3-UI-205: the field menu a row taller once the Kite flies (FieldMenu.grown_for).
+func test_field_menu_with_the_kite() -> void:
+	_sweep("field menu with the Kite", _field_menu_kite, _framed)
+
+
+func _field_menu_kite() -> Node:
+	var m := FieldMenuModel.new(_state(), ParityHost.HEROES, ParityHost.NAMES)
+	m.kite = KiteMapShot.fixed_model()
+	var menu := (load(FieldMenu.SCENE_PATH) as PackedScene).instantiate() as FieldMenu
+	menu.pause_tree = false
+	menu.configure(m)
+	ParityHost.scene_root().add_child(menu)
+	return menu
+
+
 ## M3-UI-01: the Reefball HUD on a pass choice (menu and preview open) and just after a goal (banner).
 func test_reefball_hud() -> void:
 	for driver: String in [REEFBALL_CHOICE, REEFBALL_GOAL]:

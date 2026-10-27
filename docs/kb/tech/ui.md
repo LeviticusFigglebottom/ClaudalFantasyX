@@ -761,7 +761,11 @@ SPEC §6.6's late-game airship-equivalent (act_outline.md Ch18) gets its menu ah
 - **Choosing a place** asks first (Stay under the cursor). Fly closes the page and goes through `ShrineNetwork.travel_to` (the SceneRouter, through the location registry). A refused trip says so and keeps the list.
 - **Search** names a square. Left and Right change the column, Up and Down the row; with the mouse, the pointer over the chart names it and a click searches. Confirm searches it.
 
-**Not mounted yet.** Nothing in the game opens the page, because the Kite itself (Act III) doesn't exist. Its owner calls `KiteMapMenu.open_in(host, KiteMapModel.from_game())`.
+**In the field menu.** Once `kite_flying` is set, the field menu lists **The Kite** after Map. Before that the row isn't there at all, because it would name Act III's ship early.
+- It is kept out of `FieldMenuModel.ROOT_IDS`, so every other row keeps its index there. `root_ids()` adds it.
+- While it shows, `FieldMenu.grown_for` makes the panel a row taller, using field_menu.json `extra_rows`. The panel and root grow by a pitch and move up by half; Objective and Last saved move down by half. All thirteen rows show (MenuPage would otherwise scroll Close out of sight without a mark).
+- The map opens over the menu. Cancel comes back, and a flight (`KiteMapMenu.flown`) closes the menu too.
+- The Kite vehicle (Act III) only has to set the flag. Tests: `test_field_menu_kite.gd`; the shot is `field_menu_kite`.
 
 Tests: `test_kite_map.gd`, `test_input_parity_kite_map.gd`; validator `check_kite` (`tools/tests/test_kite_validate.py`). The shot is `kite_map` (KiteMapShot's fixed flags, the party in Haluna, the cursor on Tamsule). It is in the pseudo-loc walk and the aspect audit.
 

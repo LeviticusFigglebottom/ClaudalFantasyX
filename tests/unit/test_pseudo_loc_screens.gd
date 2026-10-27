@@ -16,6 +16,7 @@ const TEST_DIR := "user://test_pseudo_loc_screens"
 const TITLE_SETTINGS_DRIVERS: Array[String] = ["res://game/ui/menus/memories/shots/memories_menu.tscn"]
 const FIELD_MENU_DRIVERS: Array[String] = [
 	"res://game/ui/field_menu/shots/field_menu.tscn",
+	"res://game/ui/field_menu/shots/field_menu_kite.tscn",
 	"res://game/ui/field_menu/shots/field_menu_swell_modes.tscn",
 ]
 const PARTY_PAGE_DRIVERS: Array[String] = [
@@ -423,6 +424,22 @@ func test_kite_map_fits() -> void:
 		_probe(menu, "kite map search")
 		_clear()
 	_done("kite map")
+
+
+## M3-UI-205: the field menu a row taller once the Kite flies, on the Kite row (its line).
+func test_field_menu_with_the_kite_fits() -> void:
+	for scale in _scales():
+		_settings_at(scale)
+		var m := FieldMenuModel.new(GameStateData.new(), ParityHost.HEROES, ParityHost.NAMES)
+		m.kite = KiteMapShot.fixed_model()
+		var menu := (load(FieldMenu.SCENE_PATH) as PackedScene).instantiate() as FieldMenu
+		menu.pause_tree = false
+		menu.configure(m)
+		_host(menu)
+		menu.root_page().set_cursor(ParityHost.row_of(menu.root_page(), FieldMenuModel.ROW_KITE), false)
+		_probe(menu, "field menu with the Kite")
+		ParityHost.free_field_menu(menu)
+	_done("field menu with the Kite")
 
 
 ## M3-UI-01: the Reefball HUD on a pass choice (menu, preview, the read's marks) and just after a
