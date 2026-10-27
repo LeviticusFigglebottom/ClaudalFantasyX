@@ -2,7 +2,7 @@
   "version": 1,
   "doc": "Battle hero actors (M2-HER-1103, ADR 0190): how a hero's battle model crossfades between the clip contract's clips (docs/kb/tech/battle_presentation.md 'Clip contract'). Read by HeroBattleActor (game/hero_motion/hero_battle_actor.gd), the root of game/hero_motion/battle/<hero>_battle_actor.tscn. Seconds, at battle speed 1 (the AnimationPlayer's speed_scale scales them with the battle speed).",
   "blend": {
-    "doc": "default_sec: any change no row names (the import rule's 0.3). rows: [from, to, sec]; '*' is every clip the model has. Rows apply in order, so a named pair after a '*' row overrides it. A strike clip blends in fast so its anticipation is not swallowed (attack's contact is at 0.33 s); hit, dodge and ko blend in fast so the reaction reads on the contact; a revive (ko -> idle) stands up over a longer blend instead of springing up; victory eases in and out.",
+    "doc": "default_sec: any change no row names (the import rule's 0.3). rows: [from, to, sec]; '*' is every clip the model has. Rows apply in order, so a named pair after a '*' row overrides it. A strike clip blends in fast so its anticipation is not swallowed (attack's contact is at 0.33 s); hit, dodge and ko blend in fast so the reaction reads on the contact; a revive (ko -> idle) stands up over a longer blend instead of springing up; victory eases in and out. A model with characters' optional revive clip (M2-CHR-513) stands up through it: it starts on the ko's last frame, so it blends in fast and out at the default.",
     "default_sec": 0.3,
     "rows": [
       ["*", "attack", 0.12],
@@ -18,6 +18,9 @@
       ["ready", "attack", 0.08],
       ["ko", "idle", 0.9],
       ["ko", "ready", 0.9],
+      ["ko", "revive", 0.15],
+      ["revive", "idle", 0.3],
+      ["revive", "ready", 0.3],
       ["victory", "idle", 0.5]
     ]
   },

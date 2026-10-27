@@ -1,11 +1,11 @@
 {
-  "doc": "M3-C06-02 greybox: ch06/brine_shoals (act1_ch06.md B01-B10). North is -z. From the south edge (Entry, the road from Pemakar's harbour) a line of wreck-ridges runs north: the Lit Age wreck (W01, banter 1), the midday hull (W02), the chalk-marked hull (W03, banter 3), then the last ridge and the hulk with the hold (W04, W08). West of the ridges lie the mud-flats, the slower short-cut. North of the last ridge is the Saltwright salvage camp (tents, lamp racks, the brazier, the burning hulk, the tide-wheel), and west of the camp the shoal channel, wide enough for the Warden's barge (W10-W13). East of the camp, the high hull where the party camps at dusk (W15: the fire, the Level-stone shrine in a wreck's bow, the vendor's boat), and below it the tideline (W16, B09). The channel runs out north (B10, to Tamsule). Everything is flat for the controller; ridges and the channel are painted slabs. Random fights (encounters) run only on the road, between ch06_arrived and ch06_sheltered_liss: the camp has none. states (Ch04Zone): the barge, Sefir and the Reeds hidden until the Inquisitor yields; Liss from her run; the raid's cast gone once she has joined; the party at the fire and Liss on the tideline at dusk. lights (Ch06Zone): the dusk after ch06_camp_made. Env-art's Brine Shoals and Saltwright camp kit (M3-C06-03) replaces the blocks.",
+  "doc": "M3-C06-02 greybox: ch06/brine_shoals (act1_ch06.md B01-B10). North is -z. From the south edge (Entry, the road from Pemakar's harbour) a line of wreck-ridges runs north: the Lit Age wreck (W01, banter 1), the midday hull (W02), the chalk-marked hull (W03, banter 3), then the last ridge and the hulk with the hold (W04, W08). West of the ridges lie the mud-flats, the slower short-cut. North of the last ridge is the Saltwright salvage camp (tents, lamp racks, the brazier, the burning hulk, the tide-wheel), and west of the camp the shoal channel, wide enough for the Warden's barge (W10-W13). East of the camp, the high hull where the party camps at dusk (W15: the fire, the Level-stone shrine in a wreck's bow, the vendor's boat), and below it the tideline (W16, B09). The channel runs out north (B10, to Tamsule). Everything is flat for the controller; ridges and the channel are painted slabs. Random fights (encounters) run only on the road, between ch06_arrived and ch06_sheltered_liss: the camp has none. states (Ch04Zone): the barge, Sefir and the Reeds hidden until the Inquisitor yields; Liss from her run; the raid's cast gone once she has joined; the party at the fire and Liss on the tideline at dusk. lights (Ch06Zone): the dusk after ch06_camp_made. Env-art's Brine Shoals kit (M3-ENV-02) dresses it: brine_shoals_dressing.json (tools/act1/ch06_brine_shoals_dressing.py, ZoneKitDressing, ADR 0200) hides the block meshes and keeps their collision; ChannelWater keeps Rhen out of the channel's water; the sun is the colour script's ch06 frame (35 deg, azimuth 240).",
   "block_color": "#6b6a55",
-  "sun": {"pitch_deg": -42.0, "yaw_deg": 200.0, "energy": 1.1, "color": "#f2e2c4"},
-  "environment": {"background": "#9aa6a2", "ambient_color": "#c4c2b4", "ambient_energy": 0.6},
+  "sun": {"pitch_deg": -35.0, "yaw_deg": -60.0, "energy": 2.4, "color": "#ffd5b3"},
+  "environment": {"background": "#9aa6a2", "ambient_color": "#a8b8b0", "ambient_energy": 0.55},
   "lights": [
-    {"flag": "ch06_camp_made", "sun": {"pitch_deg": -4.0, "yaw_deg": 250.0, "energy": 0.7, "color": "#d8603a"},
-     "environment": {"background": "#5a3a34", "ambient_color": "#8a6050", "ambient_energy": 0.4}}
+    {"flag": "ch06_camp_made", "sun": {"pitch_deg": -6.0, "yaw_deg": -85.0, "energy": 1.5, "color": "#e8875a"},
+     "environment": {"background": "#5a3a34", "ambient_color": "#8a6050", "ambient_energy": 0.3}}
   ],
   "blocks": [
     {"id": "Mud", "pos": [0, -0.5, -5], "size": [120, 1, 170], "color": "#6b6a55"},
@@ -31,6 +31,7 @@
     {"id": "BurningHulk", "pos": [11, 1.5, -46], "size": [6, 3, 4], "color": "#2a1a14", "emission": "#c8401c", "emission_energy": 0.9},
     {"id": "TideWheel", "pos": [9, 2, -36], "size": [0.4, 4, 4], "color": "#3a2a20", "emission": "#c8401c", "emission_energy": 0.5},
     {"id": "Channel", "pos": [-22, -0.02, -55], "size": [12, 0.06, 70], "color": "#3f5f5a", "solid": false},
+    {"id": "ChannelWater", "pos": [-24, 1, -60], "size": [7, 2, 72], "color": "#3f5f5a"},
     {"id": "Barge", "pos": [-22, 0.6, -44], "size": [3, 1.2, 12], "color": "#f2efe6", "solid": false},
     {"id": "PapersTable", "pos": [-8, 0.4, -27], "size": [1.2, 0.8, 0.8], "color": "#6a5a40"},
     {"id": "CampHull", "pos": [24, -0.02, -40], "size": [12, 0.06, 12], "color": "#3a3028", "solid": false},
@@ -46,7 +47,7 @@
     "LastRidge": [0, 0, -12, 0],
     "CampWaterline": [-12, 0, -40, 90],
     "RidgeCamp": [20, 0, -38, 0],
-    "Channel": [-22, 0, -70, 0]
+    "Channel": [-17, 0, -70, 0]
   },
   "marks": {
     "kerrid_share": [-5, 0, 23, 0],

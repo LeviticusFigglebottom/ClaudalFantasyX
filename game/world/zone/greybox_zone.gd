@@ -69,6 +69,7 @@ func build() -> void:
 	_build_markers(SPAWNS, spawns)
 	_build_player()
 	_build_stage()
+	_build_wildlife()
 	_build_triggers()
 	_build_camera_volumes()
 	story = ZoneStory.new()
@@ -217,6 +218,16 @@ func _build_markers(folder: StringName, points: Dictionary, parent: Node = self)
 		m.position = Vector3(float(p[0]), float(p[1]), float(p[2]))
 		m.rotation_degrees.y = float(p[3]) if p.size() > 3 else 0.0
 		root.add_child(m)
+
+
+## M2-FP-102: ambient gulls, crabs and fish (M3-CRE-611) for any location with a wildlife file.
+func _build_wildlife() -> void:
+	if location_id == &"" or not FileAccess.file_exists(WildlifeConfig.zone_path(location_id)):
+		return
+	var w := WildlifeLayer.new()
+	w.name = "WildlifeLayer"
+	w.zone_id = location_id
+	add_child(w)
 
 
 func _build_player() -> void:

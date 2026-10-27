@@ -135,7 +135,13 @@ func _on_trigger(_id: StringName, payload: Dictionary) -> void:
 func _bark(scene_id: StringName) -> void:
 	busy = true
 	_hush()
+	# M2-FP-107: a bark freezes Rhen but is no staged scene, so Asha and Toma stay beside him.
+	sequencer.hold_player = false
+	sequencer.freeze_player = true
 	await sequencer.play(scene_id, _stage())
+	sequencer.hold_player = true
+	sequencer.freeze_player = false
+	HalunaVillagers.end_talks(_zone)  # M2-FP-102: the villager turns back to its work
 	busy = false
 
 

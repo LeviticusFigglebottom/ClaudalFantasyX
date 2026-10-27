@@ -13,6 +13,9 @@ extends Control
 ## and the bestiary's); it pauses the tree while open unless the opener already has.
 
 signal closed
+## The close transition has finished (at once under Reduced motion): open_in's layer frees itself
+## (M2-MNU-305, MenuMotion).
+signal gone
 
 const SCENE_PATH := "res://game/ui/map/zone_map_menu.tscn"
 const SCRIM_SHADER := preload("res://game/ui/shaders/scrim.gdshader")
@@ -20,6 +23,9 @@ const PAGE_ID := &"zone_map"
 const PLAYER_GROUP := &"player"
 
 @export var pause_tree := true
+## Opened over the field menu, whose scrim and caustics are the same: the backdrop stays still and
+## only the content moves (MenuMotion's static backdrop). Set before it enters the tree.
+var over_menu := false
 
 var model: MapModel
 
@@ -37,18 +43,20 @@ var _help: Label
 var _title: Label
 var _owns_pause := false
 var _is_closed := false
+var _motion: MenuMotion
 
 
 ## Instances the page on its own CanvasLayer under `host` and opens it; the layer frees itself
 ## when the page closes.
-static func open_in(host: Node, with_model: MapModel) -> ZoneMapMenu:
+static func open_in(host: Node, with_model: MapModel, over: bool = false) -> ZoneMapMenu:
 	var menu := (load(SCENE_PATH) as PackedScene).instantiate() as ZoneMapMenu
 	menu.configure(with_model)
+	menu.over_menu = over
 	var layer := CanvasLayer.new()
 	layer.layer = int(MapModel.load_data().get("canvas_layer", 1))
 	layer.process_mode = Node.PROCESS_MODE_ALWAYS
 	layer.add_child(menu)
-	menu.closed.connect(layer.queue_free)
+	menu.gone.connect(layer.queue_free)
 	host.add_child(layer)
 	return menu
 
@@ -88,6 +96,10 @@ func _ready() -> void:
 	if pause_tree and not get_tree().paused:
 		get_tree().paused = true
 		_owns_pause = true
+	MenuMotion.follow_reduced_motion(self)
+	_motion = MenuMotion.new(self)
+	_motion.gone.connect(gone.emit)
+	_motion.play_in(over_menu)
 
 
 func _exit_tree() -> void:
@@ -103,7 +115,22 @@ func close() -> void:
 		return
 	_is_closed = true
 	_restore_pause()
+	_fade_out()
 	closed.emit()
+
+
+## The open and close transitions (null before _ready). Tests drive them with motion().finish().
+func motion() -> MenuMotion:
+	return _motion
+
+
+## Fades the screen out; `gone` follows (at once without a transition). It never takes the pointer again.
+func _fade_out() -> void:
+	if _motion != null:
+		_motion.play_out(over_menu)
+	else:
+		visible = false
+		gone.emit()
 
 
 func _unhandled_input(event: InputEvent) -> void:

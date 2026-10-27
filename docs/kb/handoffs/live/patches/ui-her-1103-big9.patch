@@ -1,0 +1,37 @@
+From 15983dcd2eb0db5ae53e862f77ee192b821917b3 Mon Sep 17 00:00:00 2001
+From: Claude <noreply@anthropic.com>
+Date: Sun, 25 Oct 2026 02:21:32 +0000
+Subject: [PATCH] M2-HER-1103 (FAST-TRACK): battle stand-ins for Rhen, Asha and
+ Toma use hero-integration's battle actors
+
+battle_sandbox.json stand_ins scene -> game/hero_motion/battle/<hero>_battle_actor.tscn, as agreed
+with hero-integration (docs/kb/tech/hero_battle_proposed.patch; its set_ko and test hunks are in big9).
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01KGBUwbYgXe9JS6D8jXw6ZG
+---
+ game/data/ui/battle_sandbox.json | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/game/data/ui/battle_sandbox.json b/game/data/ui/battle_sandbox.json
+index 7c11fe50..99e99b52 100644
+--- a/game/data/ui/battle_sandbox.json
++++ b/game/data/ui/battle_sandbox.json
+@@ -16,11 +16,11 @@
+     "shake": {"amplitude_m": 0.05, "sec": 0.24, "steps": 6},
+     "stand_ins": {
+       "rhen": {"shape": "capsule", "color": "#5E9A96", "radius": 0.32, "height": 1.77, "tint": "#5E9A96",
+-               "scene": "res://game/characters/heroes/rhen_battle.tscn", "yaw_deg": -90.0},
++               "scene": "res://game/hero_motion/battle/rhen_battle_actor.tscn", "yaw_deg": -90.0},
+       "asha": {"shape": "capsule", "color": "#3C78A8", "radius": 0.28, "height": 1.63, "tint": "#3C78A8",
+-               "scene": "res://game/characters/heroes/asha_battle.tscn", "yaw_deg": -90.0},
++               "scene": "res://game/hero_motion/battle/asha_battle_actor.tscn", "yaw_deg": -90.0},
+       "toma": {"shape": "capsule", "color": "#2B3A6B", "radius": 0.42, "height": 1.89, "tint": "#5B6FB0",
+-               "scene": "res://game/characters/heroes/toma_battle.tscn", "yaw_deg": -90.0},
++               "scene": "res://game/hero_motion/battle/toma_battle_actor.tscn", "yaw_deg": -90.0},
+       "ysolde": {"shape": "capsule", "color": "#B08A52", "radius": 0.27, "height": 1.66, "tint": "#B08A52"},
+       "reef_crab": {"shape": "box", "color": "#B5523A", "radius": 0.62, "height": 0.62, "tint": "#B5523A"},
+       "lantern_eel": {"shape": "cylinder", "color": "#1C6B78", "radius": 0.24, "height": 2.1, "tint": "#3FA9B5",
+-- 
+2.43.0
+

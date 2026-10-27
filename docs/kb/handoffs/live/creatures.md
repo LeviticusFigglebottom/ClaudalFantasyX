@@ -245,3 +245,65 @@ Merge the three creature worktrees as they finish (they append to creatures.json
 ## Setup notes
 - `fetch_blender.py` failed twice on truncated debs from the proxy (`dpkg-deb ... unexpected end of file`). Delete the named `.deb` under `~/.cache/hymn/blender-*/debs/` and rerun; it finished on the third pass.
 - `ln -s ~/.cache/hymn/godot-4.6.3+ds-2/godot ~/.local/bin/godot` (and `godot-render`, and `~/.cache/hymn/blender-5.0.1+dfsg-5/blender`).
+
+## NEW ACCOUNT (from 2026-10-25)
+- **MERGE-READY @ 52c2d19c: integration -ze8rrn (de93e79e) merged; item 1 triage, no code change needed.**
+  - `test_post_import.gd` (3 FAIL at handover): **21/0 on a fresh import.** It was a stale `.godot` import cache,
+    not code.
+  - `test_battle_ko_once.gd::test_a_primitive_foe_falls_once_and_is_hidden`: **it fails on the integration head too**
+    (wickfry has glassfry's model since big8). It's **already fixed in lead/gate-big9 by 2e956d3f** (the test now
+    picks any encounter led by a model-less foe), so it clears when big9 lands. Nothing to file.
+  - **Lead, note:** big9 took claude/creatures @ 23f94ed5 (612 only). **611 wildlife and 610 FieldNpc are not in
+    big9**; take this head in big10. The zone wiring (slice-polish) waits on them.
+  - Checks run: validate_data 0/0, taskboard, Godot post_import 21/0, field_npc 10/0, wildlife 10/0, creature 24/0,
+    hero 68/0, battle_ko_once 4/1 (the known one above). Skipped: lint and format (no code change), shots, Blender
+    (nothing changed).
+- **MERGE-READY @ 78b8a992: M3-CRE-613, villagers alive (FAST-TRACK candidate: the human's "placeholder villagers").**
+  - **What it adds:**
+    - NpcLook head modifier;
+    - FieldNpc attention (a glance at a party that comes near, look-arounds), chat pairs in bouts, work, storm (shelter, brace, sky looks, home again), and a talk that ends on its own;
+    - **VillagerLayer**: one node per zone turns the stand-ins into the real M2-CHR-03 villagers from `game/data/world/npc/zones/<zone>.json`. Haluna's file places all seven.
+  - Four shots of the real Haluna zone with the layer (npc_haluna_dock/market/chapel/lane), each viewed and approved. The dock shows the netmender and the fisher facing each other in a chat.
+  - Also restored the llvmpipe metadata of save_shrine_field and settings_accessibility (the "?" the Lead flagged).
+  - **Checks run:** validate_data 0/0 (the new validate_npc included), taskboard, gdlint, gdformat, tools test_npc 8 OK, screenshot manifest valid; Godot villager_routines 11/0, field_npc 10/0, hero 68/0.
+  - **Checks skipped:** other shots (no shared scene or shader touched; the layer only exists in my review stage until a zone adds it), coverage (no game/battle or game/progression change), Blender (no asset change).
+  - **Lead:** 610 (FieldNpc) and 611 (wildlife) are not in big9. They ride with this head.
+
+### For other tracks (relay, please)
+- **slice-polish:** Haluna's villagers are still capsules. Add ONE node to `haluna.tscn` at the root:
+  `[node name="VillagerLayer" type="Node3D" parent="."]`, script `res://game/world/npc/villager_layer.gd`,
+  `zone_id = &"ch02/haluna"`.
+  - It hides only the stand-ins' StandIn and Facing (plus Reed's Broom and Osu's Bowl), and keeps the collision and the Talk Interactables, so ids, payloads and dialogue are unchanged.
+  - It puts each villager beside its stand-in, so night_hide still works.
+  - Talks end by themselves when the player gets control back.
+  - For GreyboxZone.build(): add a VillagerLayer when `FileAccess.file_exists(VillagerLayer.path_for(location_id))`, as with WildlifeLayer.
+  - Also add the WildlifeLayer node.
+  - Tell me (via your log) the stand-in paths in the causeway and shrine zones, if they have any.
+  - Docs: docs/kb/tech/field_npc.md, "VillagerLayer".
+- **act1-chapters:** VillagerLayer has a `storm_flag`. Oruvel with `ch01_gulls_cried` sends its villagers to shelter when the storm rises, with no zone call needed (or call `FieldNpc.set_storm_all(get_tree(), on)` from OruvelZone.set_storm). List the Act I villager stand-in paths in your log and I'll write the data files.
+- **characters:** request task M3-CRE-614: villager work clips (mend_net, tend_stall, sweep, hold_bowl), an optional `brace` loop, hand props (broom, bowl, net), and bodies for Haluna's Shopkeeper, Smith and Innkeeper.
+- **hero-integration (FYI):** NpcLook is a SkeletonModifier3D added after HeroIdleMicro on villager skeletons; it turns DEF-spine.004/.005/.006. Tell me if the idle_micro bones or the modifier order change.
+- **MERGE-READY @ ee52f218: M3-CRE-615, ambient wildlife in the Act I zones (queue item 3).**
+  - Data on the greybox layouts:
+    - gulls over Oruvel, the Brightwater ferry and Tamsule;
+    - crabs on Brine Shoals' flats and tideline, the Haluna wake-night shore and Pemakar's quay;
+    - fish shoals in the drowned tower (oruvel_underway).
+  - Corrow's strand, Ashcrown and the bell galleries are empty on purpose (docs/kb/art/wildlife.md, "Act I zones").
+  - Three shots of the real greybox zones, each viewed and approved (wildlife_zone_brine_flats/brine_wrecks/underway_crown).
+  - **Checks run:** validate_data, validate_wildlife, Godot wildlife 10/0, taskboard. **Checks skipped:** coverage and Blender (no code or asset change).
+  - **Zone owners (act1-chapters):** add the one WildlifeLayer node, or have GreyboxZone add it for any location with a file.
+- **In progress: M3-CRE-616, insects** (moths at lamps, dragonflies over flats and paddies) as a fourth wildlife kind,
+  built in a worktree agent. It lands as its own MERGE-READY.
+- **MERGE-READY @ 9bf973cc: M3-CRE-617, hits land on the contact frame (queue item 4, syncs with M3-BPR-401).**
+  - Every creature's hit peaks 0.13–0.20 s in, so the hit-stop used to freeze the pre-hit idle pose. A hit now cuts in at 0.1 s with no blend (creatures.json `hit_snap`).
+  - The Drownbell, Matron, limpet and Reach hits barely moved; they are rebuilt with real recoils (Blender verify identical; hit frames viewed before and after).
+  - **Checks run:** validate_data, lint, format; Godot creature 25/0 and battle 619/1 (the 1 is the known test_battle_ko_once primitive-foe test that battle-presentation is fixing); 11 battle_choreo shots all pass (battle_choreo_hit rmse 0.006, which is the struck crab now mid-recoil, viewed).
+  - The creature stage shots of the four rebuilt bosses and creature_portraits are re-rendering; I'll report any drift.
+
+### For other tracks (relay, please)
+- **battle-presentation (M3-BPR-401 bug, your files):** the struck target's clip is NOT held during the hit-stop.
+  - `_step_beats` fires contact, so BattleImpact._hold sets every involved AnimationPlayer's speed_scale to 0.
+  - Then the react beat calls `BattleClips.play`, which sets `p.speed_scale = speed` again. So the target's hit clip runs through the hold while the attacker and the procedural recoil stay frozen.
+  - Suggested fix: BattleImpact holds the targets again after their reactions start (or BattleClips.play leaves a held player at 0 and BattleImpact restores `speed` on release).
+  - My side is done: creature hits now start on a struck pose (M3-CRE-617), so once the hold works the frozen frame shows the blow.
+

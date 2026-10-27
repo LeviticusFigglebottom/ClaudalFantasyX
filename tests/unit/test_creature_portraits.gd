@@ -3,7 +3,7 @@ extends TestCase
 ## (tools/portraits/portraits.json) has its PNG and a PROVENANCE row and names its creatures.json scene; every
 ## creatures.json row and every enemy with a model is in the manifest (a new model fails here until it is
 ## rendered); CreaturePortraits finds an enemy's picture through its model; and CreaturePortraitFrame shows the
-## picture, a silhouette or nothing. (The bestiary page itself uses the UI track's live BestiaryPortraitSlot.)
+## picture, a silhouette or nothing. (The bestiary page shows them through BestiaryPortraitSlot, ADR 0110.)
 
 const MANIFEST := "res://tools/portraits/portraits.json"
 const PROVENANCE := "res://assets/PROVENANCE.md"

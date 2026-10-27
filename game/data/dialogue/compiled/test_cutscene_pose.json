@@ -1,0 +1,19 @@
+{
+ "format": 1,
+ "scene": "test_cutscene_pose",
+ "source": "game/data/dialogue/test/test_cutscene_pose.dlg",
+ "start": "test_cutscene_pose",
+ "nodes": {
+  "test_cutscene_pose": {
+   "headers": {},
+   "ops": [
+    {"op": "cue", "cue": "light", "args": ["Lamp", "off"], "kwargs": {}, "src": 5},
+    {"op": "cue", "cue": "anim", "args": ["asha", "kneel_over_rhen"], "kwargs": {}, "src": 6},
+    {"op": "line", "id": "test_cutscene_pose_001", "key": "DLG_TEST_CUTSCENE_POSE_001", "speaker": "asha", "emotion": "neutral", "voice": "", "src": 7},
+    {"op": "cue", "cue": "anim", "args": ["asha", "sit_up"], "kwargs": {}, "src": 8},
+    {"op": "cue", "cue": "light", "args": ["Lamp", "on", 1.0], "kwargs": {}, "src": 9},
+    {"op": "line", "id": "test_cutscene_pose_002", "key": "DLG_TEST_CUTSCENE_POSE_002", "speaker": "asha", "emotion": "neutral", "voice": "", "src": 10}
+   ]
+  }
+ }
+}

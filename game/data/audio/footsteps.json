@@ -39,9 +39,20 @@
     "water": {"walk": "hero_step_water_walk", "run": "hero_step_water_run", "stop": "hero_stop_water", "turn": "hero_turn_water"}
   },
   "surface_areas": {"group": "footstep_surface", "meta": "surface", "group_prefix": "audio_surface_", "priority_meta": "surface_priority"},
+  "mesh_surfaces": {
+    "_note": "M3-AUD-812: listen-only ground for levels that mark none. A MeshInstance3D whose own or parent's name matches a pattern (glob, any case) plays the rule's surface when its bounds, grown up_m over the top and down_m under the bottom, hold the feet. Level areas (surface_areas) win over these; among these the highest priority wins. LOD meshes (skip_suffix) are skipped; the zone is rescanned every rescan_sec.",
+    "rules": [
+      {"match": ["dock_*", "*_dock", "*pier*", "*jetty*", "*boardwalk*", "*plank*", "*gangway*"], "surface": "wood", "priority": 2, "up_m": 0.35, "down_m": 0.1},
+      {"match": ["Tidepool*", "*PoolWater", "*shallows*", "*ford*"], "surface": "water", "priority": 1, "up_m": 0.05, "down_m": 0.8}
+    ],
+    "skip_suffix": "-lod1",
+    "rescan_sec": 10.0
+  },
+  "water_level": {"_note": "M3-AUD-812: wading. Feet under the rest plane of a sea in `group` (WaterSurface's publishers: the zone sea) by up to wade_m, with above_m of slack, step in `surface`.", "group": "hymn_water_level_publishers", "surface": "water", "wade_m": 1.2, "above_m": 0.05},
   "default": "stone",
   "scenes": {
     "res://game/levels/ch02/haluna/haluna.tscn": "sand",
-    "res://game/levels/ch03/shell_shrine/shell_shrine.tscn": "stone"
+    "res://game/levels/ch03/shell_shrine/shell_shrine.tscn": "stone",
+    "res://game/levels/ch03/saltgrass_causeway/saltgrass_causeway.tscn": "stone"
   }
 }
