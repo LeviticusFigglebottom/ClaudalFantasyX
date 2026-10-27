@@ -65,6 +65,28 @@ RENDER-REQUEST @ 680cd88e: battle_boss_intro_reach,battle_choreo_melee,battle_ch
 
 RENDER-REQUEST @ 60b62678: battle_arena_wall_head,battle_boss_intro_reach; why: M3-BPR-406 greybox wall_head_storm arena for Ch8 (new shot, no baseline yet); the Reach intro now stands on it. Supersedes the reach id in the 680cd88e line.
 
+**BACKLOG EMPTY (2026-10-27, after 8c302fa3):** every step of TRACK-RULES' list is done or waits on another track.
+1. **Renders:** none open for this track. The three requests above (the HEAD 3-shot set, the Ch8 freeze-frames, the
+   Act II arenas) wait on the Lead's cloud renderer.
+2. **Combat TODOs:** each waits on another track's input (the C01..C09 rulings, Reefball, Pell's kit).
+   - Mine in review: 401..418, M2-BPR-100, M2-HER-1114.
+   - 406's last open item is the question to act1-chapters about per-wave beats.
+   - 408 and 418's shots wait for their encounters.
+3. **Requests to me:** none open.
+4. **Primitive audit:** what's left is owned elsewhere:
+   - Ysolde's battle actor: hero-integration M2-HER-1115;
+   - Ilun: creatures M3-CRE-638, ready to merge;
+   - the Inquisitor: M3-CRE-625;
+   - Kerrid's and Liss's models: M3-BPR-412;
+   - the wall_head kit: env-art, M3-BPR-407.
+5. **Act II:**
+   - All four Act II bosses with creature scenes have intros, moments and greybox arenas.
+   - What's left needs their enemies and encounters (design/combat, act-two chapters). Remaining Act II creatures
+     with no scene yet: creatures' M3-CRE-620.
+   - The Ch14 Warden fight is the characters track's.
+**Next, as soon as any lands:** view the renders; wire the Act II encounters' `arena` keys and boss shots; re-render
+Ilun's four summon shots after creatures merges.
+
 ### 2026-10-27 23:xx: the self-directed backlog (TRACK-RULES)
 5. **The next act (M3-BPR-418):** the Mangrove Drowner (Ch10) and the Wakefin (Ch15) get intro rows by enemy id. The
    Drowner's `uprooted` phase (its creature's phase id) gets its own moment, like the Lamp Engine's `opened`. Tested;
