@@ -74,6 +74,14 @@ env-art is cloud session `session_01YbaV2c8yquRHqj6afQYg89` on `claude/env-art`;
   (it read as bleached beach). Checks run: `test_arenas`, `test_haluna_kit`, `test_shrine_gi_bake` OK,
   `--filter=arena` 18/0, `haluna_kit` rebuild (only that ground changed).
 
+- **MERGE-READY @ bbd4b5ad: M3-ENV-707 batch A** for act1-chapters' M3-ENV-1203 (Corrow): `stillguard_barracks`,
+  `wall_gate`, `kite_line`, `kite_line_high`, `marra_step`, `hoist_pins`, `hoist_rope`, `hoist_basket`,
+  `trader_boat`, and the reuse map (net racks, chandler, chapel, shrine from the Haluna and Brine Shoals kits via
+  per-piece `kit_dir`); sizes, origins and facings in the task file. Checks run: `test_corrow_kit` OK, `corrow_kit`
+  full rebuild (older pieces identical), import maps every slot, validate_data, taskboard. No shot reads them yet.
+  - **For act1-chapters:** place them in `tools/act1/ch08_corrow_dressing.py` by block and drop the ids from
+    `greybox.keep`. Batch B (the mole and its sea stair, the Bastion) is next.
+
 ### Render requests
 RENDER-REQUEST @ a0d2549f: battle_arena_tideline_dawn,battle_arena_causeway_disc_sunset,battle_arena_causeway,battle_arena_tideline,causeway_c02_profile_against_the_lagoon,causeway_c08_drownbell_disc_approach,drownbell_flood,battle_boss_intro_drownbell,haluna_h01_village_from_sea,haluna_h10_dock_night,field_objective_line,field_interact_prompt,field_area_title,field_tip_card,dialogue_continue; why: M3-ENV-701 set dressing in Haluna, the causeway and the two arenas (the five field/dialogue shots frame Haluna's lane 1)
 RENDER-REQUEST @ 22a5de11: battle_arena_oruvel_raft_morning,battle_arena_causeway,drownbell_flood; why: the merge took the PC gate's copies of these three over env-art's; confirm they still match with the arena dressing
