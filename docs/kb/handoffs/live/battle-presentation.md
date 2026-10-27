@@ -93,6 +93,34 @@ RENDER-REQUEST @ 60b62678: battle_arena_wall_head,battle_boss_intro_reach; why: 
   next stays on screen. Every new impact or motion respects reduced motion and the shake setting (tested): no
   shake, no withdrawal motion, no Breach push-in, and a dimmer flash.
 
+RENDER-REQUEST @ dcc68922: battle_hud_preview,battle_player_preview,battle_choreo_toll,drownbell_flood,battle_swell_ring,battle_read_panel; why: M3-BPR-409. The target ring now draws over ground VFX (render_priority 10); view the ring over the toll's wave and the flood.
+
+### 2026-10-27 late: the Lead's queue items 3–7
+- **3, M3-BPR-408 (a433b3b3): the Act II bosses' camera language, by enemy id.**
+  - The Lamp Engine opens: a phase moment where the core rises and the party steadies in turn.
+  - The Avalanche Ram's physical moves play a low, side-on `charge` run (style_by_actor, enemy_by_style).
+  - Any charge the Ram gathers paws the ground and closes the camera in (pressure.by_enemy).
+  - Intros come from by_enemy rows.
+  - The Ch10–11 regulars need nothing bespoke: the model fit, the footprint spacing and the line-up all work from
+    their models.
+  - Tests: act2_bosses 3/0; tools test_choreo_validate 21/0.
+  - **Ask** whoever writes the Act II enemies: keep the ids `lamp_engine`, `avalanche_ram` and the phase `opened`.
+- **4, Ysolde (a433b3b3):** `test_battle_ysolde` puts characters' ysolde_battle.tscn on her stand-in.
+  - Every contract clip plays (placeholders) and her footprint is sane.
+  - Ember and Read play to the end (2/0).
+  - Her shots wait on ui-menus' repoint (M2-HER-1108).
+- **5, M3-BPR-409 (71ec1234): the Pillar 4 pass.**
+  - The timeline and party panel stay on screen through the boss intro and the C10 summon (tested).
+  - The target ring now draws over ground VFX.
+  - Reduced motion and the shake setting cover every new impact or motion (tested).
+- **6, the Ch8 staging:**
+  - the greybox wall_head_storm arena with EntryMarker_ward;
+  - the intercept staged by geometry (the stair is behind the party line);
+  - withdrawals, counters, barks, the Breach push-in and the Reach intro.
+  - M3-BPR-407 now points env-art at the corrow seawall kit and act1-chapters' corrow_frame for the final arena.
+- **7, the board:** the combat `todo` tasks are engine and design rulings (M3-C01-03 … M3-C09-07), not presentation.
+  I took M3-C08-100's barks; the needle is an item, so not mine.
+
 ### FAST-TRACK M3-BPR-404 on the post-big9 integration branch (updated 2026-10-27)
 - **Cherry-picking 269054a3 and 4e89c967 now conflicts on the six baseline PNGs.** big9 re-approved them with the
   real heroes, and the PNGs in my commits were rendered with primitive heroes.
