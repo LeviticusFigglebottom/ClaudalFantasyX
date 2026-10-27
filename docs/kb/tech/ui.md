@@ -732,6 +732,14 @@ Ch8's set pieces (M3-CMB-01, ADR 0100) need the HUD to say what is not a normal 
 
 SPEC §6.6's teleport network (`ShrineNetwork`, M1-ARC-06: attunement in `Game.state.attuned_shrines`, destinations, travel through the location registry) had no menu. `ShrineTravelMenu` (game/ui/save/, a `FieldSubmenu`; layout `game/data/ui/shrine_travel.json`, strings `game/data/loc/shrine_travel.csv`) is it. After a rest's save menu closes (any outcome but a load), `SaveShrine.open_travel()` offers the other attuned shrines, by their location's name (`ShrineNetwork.name_key_of`), in attunement order, with "Stay here" last. Choosing a place asks first (Stay under the cursor); Go travels through `SaveShrine.request_teleport` (the SceneRouter's own fade; the destination becomes the respawn point) and closes the page; a refused trip says so and keeps the list. It moves like every menu page (MenuMotion) and honours Reduced motion. Tests: `test_shrine_travel.gd`.
 
+## "Parts look primitive": the pass of 2026-10-27
+
+The human's playtest note, the Lead's item 5. Everything below honours Reduced motion and ends inside its shot's settle frames.
+- **Title reveal** (`TitleReveal`, title_menu.json `reveal`): the logo fades in, the choices rise into place, then the help line (0.75 s). The menu takes input from the first frame. `boot_title` now settles 72 frames so it captures the title at rest. Test: `test_title_reveal.gd`.
+- **Save rows show the saved party's faces**: `SaveSystem.slot_info` reads the record's `party_ids` (old records too), and `SaveSlotRow` draws up to three baked head crops (`HeroPortraits.face`) under the slot name (save_menu.json rows `face_px`, `face_gap`, `faces_max`). Test: `test_save_menu.gd` `test_a_record_shows_its_party_s_faces`.
+- **Battle result pacing**: after the panel opens, each fighter's row arrives in turn, then the choices (battle_hud.json `panel_open` `rows_delay_sec`, `row_stagger_sec`, `row_sec`). Test: `test_battle_result_motion.gd`.
+- **No hard cuts left**: the shop and the inn (`TownMenu`) move like every other menu (MenuMotion; the layer frees on `gone`). With M2-MNU-305 (screens), M2-UI-202 (the dialogue box) and the HUD pieces' own fades, no UI screen opens or closes with a cut.
+
 ## Ch9: the held-input prompt, the act card, and names not yet learned (M3-C09-05)
 
 - **`HoldPrompt`** (`game/ui/prompts/hold_prompt.gd`; data `game/data/ui/hold_prompt.json`) is the no-fail held input's prompt: the Ebbing's "Hold to raise the staff", and act3_ending E4's later. It is one small plate at the bottom centre, holding a keycap and a verb. The keycap names the held action's binding for the device used last (`InputNames`; it follows UiInput's shared tracking, M2-UI-26).

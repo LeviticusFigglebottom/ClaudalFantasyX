@@ -20,6 +20,7 @@ var _title: Label
 var _subtitle: Label
 var _list: VBoxContainer
 var _choices: MenuPage
+var _open_tween: Tween
 
 
 func _ready() -> void:
@@ -173,3 +174,30 @@ func _animate_open() -> void:
 	tw.tween_property(_panel, "position:y", y, dur)
 	_scrim.modulate.a = 0.0
 	tw.tween_property(_scrim, "modulate:a", 1.0, dur)
+	if UiSettings.shared().reduced_motion():
+		return
+	# The "parts look primitive" pass: each fighter's row arrives in turn, then the choices (panel_open).
+	var row_sec := HudLayout.num(_open_m, "row_sec")
+	var at := HudLayout.num(_open_m, "rows_delay_sec")
+	for row in _list.get_children():
+		var c := row as CanvasItem
+		c.modulate.a = 0.0
+		tw.tween_property(c, "modulate:a", 1.0, row_sec).set_delay(at)
+		at += HudLayout.num(_open_m, "row_stagger_sec")
+	if _choices != null:
+		_choices.modulate.a = 0.0
+		tw.tween_property(_choices, "modulate:a", 1.0, row_sec).set_delay(at)
+	_open_tween = tw
+
+
+## The whole open's length (the panel, then the rows in turn, then the choices).
+func open_duration() -> float:
+	var rows := _list.get_child_count()
+	var stagger := HudLayout.num(_open_m, "rows_delay_sec") + rows * HudLayout.num(_open_m, "row_stagger_sec")
+	return maxf(HudLayout.num(_open_m, "sec"), stagger + HudLayout.num(_open_m, "row_sec"))
+
+
+## Ends the open at rest now (tests).
+func finish_open() -> void:
+	if _open_tween != null and _open_tween.is_valid() and _open_tween.is_running():
+		_open_tween.custom_step(open_duration() + 1.0)

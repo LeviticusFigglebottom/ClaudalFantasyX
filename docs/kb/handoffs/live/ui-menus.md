@@ -74,7 +74,7 @@ RENDER-REQUEST @ 99623a0c: portraits:hullgnaw,scuttler,squall_wing,tide_crawler,
 | 2 | M2-MNU-306 Formation role word (characters.json role_key, loc, validator, Formation) | **done** (89ff0d23): six role words, validator rule + test, on Formation's place line; formation 18/0, pseudo 22/0 |
 | 3 | Shrine teleport list (visited shrines, confirm, fade) | **done** (f1b22523): ShrineTravelMenu after the save menu; shrine 43/0 (6 new), save_menu 20/0 |
 | 4 | M3-UI-100 running total (`ch08_stair_groups_up` flag + request to act1-chapters) | **done**: flag declared, `objective.carry_flag` on the stair waves (validated), the meter shows "· N in all" (read only: a view never writes game state); M3-UI-203 asks act1-chapters to raise it in the flow; set_piece 35/0, pseudo 22/0, aspect 14/0, ch08 8/0 |
-| 5 | "Parts look primitive" pass: title life, save slots with place/playtime/party portraits, battle result pacing, eased transitions | doing |
+| 5 | "Parts look primitive" pass: title life, save slots with place/playtime/party portraits, battle result pacing, eased transitions | **done**: title reveal (84c5c37e), save rows' party faces (1f54fe28), result stagger, shop/inn motion; title 40/0, save 195/0, battle 689/0, shop 27/0, inn 10/0, pseudo 22/0, aspect 14/0; render requested |
 | 6 | Accessibility sweep (100/130 %, colour vision, reduced motion; aspect + pseudo-loc for every new screen) | queued |
 | 7 | Controller and keyboard prompt audit | queued |
 | 8 | Act I UI: area maps Ch4–Ch9, codex and bestiary for the 27 Act I creatures and NPCs | queued |

@@ -8,6 +8,8 @@ extends Control
 ## Subclasses: ShopMenu, InnMenu. Layout: game/data/ui/shop_menu.json (1920 x 1080 reference).
 
 signal closed
+## The close transition has finished (at once under Reduced motion): host_in's layer frees itself (MenuMotion).
+signal gone
 
 const DATA_PATH := "res://game/data/ui/shop_menu.json"
 const SCRIM_SHADER := preload("res://game/ui/shaders/scrim.gdshader")
@@ -24,6 +26,7 @@ var _help: Label
 var _owns_pause := false
 var _is_closed := false
 var _refused := false
+var _motion: MenuMotion
 
 
 ## Puts `menu` on its own CanvasLayer under `host`; the layer frees itself when the menu closes.
@@ -32,7 +35,7 @@ static func host_in(host: Node, menu: TownMenu, section: String) -> void:
 	layer.layer = int(load_data(section).get("canvas_layer", 1))
 	layer.process_mode = Node.PROCESS_MODE_ALWAYS
 	layer.add_child(menu)
-	menu.closed.connect(layer.queue_free)
+	menu.gone.connect(layer.queue_free)
 	host.add_child(layer)
 
 
@@ -57,6 +60,11 @@ func _ready() -> void:
 	if pause_tree and not get_tree().paused:
 		get_tree().paused = true
 		_owns_pause = true
+	# The shop and the inn move like every other menu (the "parts look primitive" pass): over the open world.
+	MenuMotion.follow_reduced_motion(self)
+	_motion = MenuMotion.new(self)
+	_motion.gone.connect(gone.emit)
+	_motion.play_in()
 
 
 func _exit_tree() -> void:
@@ -72,7 +80,17 @@ func close() -> void:
 		return
 	_is_closed = true
 	_restore_pause()
+	if _motion != null:
+		_motion.play_out()
+	else:
+		visible = false
+		gone.emit()
 	closed.emit()
+
+
+## The open and close transitions (null before _ready). Tests drive them with motion().finish().
+func motion() -> MenuMotion:
+	return _motion
 
 
 func _unhandled_input(event: InputEvent) -> void:
