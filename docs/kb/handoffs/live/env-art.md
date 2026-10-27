@@ -437,6 +437,7 @@ ANSWERED: 854e6a9: field_tip_card passed. Camp, shoals and the inquisitor intro 
 ANSWERED: lead/gate-render-env-art-60eee2f (cloud): brine_b01_arrival and brine_b05_barge_channel were viewed and re-approved (the blue zenith; the vendor boat). The Iskarra outs are superseded by the FAST-TRACK request.
 RENDER-REQUEST @ b7182ba1: brine_b05_barge_channel,brine_b01_arrival; why: M3-ENV-705, the white barge's Order trim (B05 read it flat white).
 RENDER-REQUEST @ 9c26b66e: haluna_h07_chapel_court,haluna_h01_village_from_sea,haluna_h02_tidewall_lane,haluna_h04_dock,haluna_h10_dock_night; why: M3-ENV-705, the chapel's articulation (H07 read a plain box), plus the palms request (ab58f891) folded in. Supersedes ab58f891.
+RENDER-REQUEST @ 5d53f98c: battle_arena_iskarra_spire_crown; why: M3-ENV-726, Ch19's Lamp Spire crown with the anchor-engine and the city below (new shot).
 NOT APPROVED: 95be611 (battle_arena_keth_seep_terrace). The backdrop reads as a wall of stretched white blocks and the seep strips as pale-blue ribbons, not a mountain pass. Rework is queued after the Iskarra fast-track (M3-ENV-717).
 RENDER-REQUEST @ 7f1a0fc7: battle_arena_keth_seep_terrace; why: M3-ENV-717 rework after 95be611 (crisp weathered wall, threads of seep). Supersedes 95be6118.
 
@@ -581,6 +582,8 @@ Read this section first; everything below it is history. The branch is `claude/e
     - **M3-ENV-723 Hollowmere** (8cf1e66b, review): the sheet, a 6-piece kit, and the `act3_dusk` grade in
       `zones/ch17/`. No shot yet; act1-chapters places it.
     - The Ansedra zone pieces (afa5b0bb).
+    - M3-ENV-725 the Kite (02c3075d, Story review); M3-ENV-726 the Lamp Spire's crown and arena (`5d53f98c`); the
+      Iskarra sheet; the white barge's trim and the chapel's articulation (M3-ENV-705); M3-ENV-1203 to review.
 - **Id blocks (the Lead, CONSOLIDATED §4):** env-art's new task ids are 700–799 (e.g. M3-ENV-710), its ADRs
   0160–0169, and its handoffs are named `<date>-<role>-env-art-<n>.md`. Existing ids stay. The big8 renumbering
   is applied here too: the shell shrine shaft-lamps task is now **M3-ARC-04** (was M3-ARC-02), and the Tidecup
