@@ -58,6 +58,14 @@ game/data/battle/enemies.json  "model": "res://game/creatures/<id>/<id>_battle.t
   contract's other names (`dodge`, `defend`, `ready`, `victory`) are optional; a creature without them gets the
   sequencer's procedural fallback. Audit of all 27 creatures (2026-10-24): each has `idle`, `attack`, `cast`, `hit`
   and `ko`, and no strike clip keeps horizontal root travel.
+- **On the floor (M3-CRE-631).** No vertex of any baked frame of any clip goes under y 0 (5 mm tolerance), checked
+  by skinning the GLB (tools/tests/test_creatures.py `GroundedClipsTest`, for the creatures it lists; a flier under
+  its `hover` and the Wakefin are exempt by design). For legs planted at rest, `common/grounding.py` does it:
+  `grounded(rig, mesh, clips, limbs)` poses the mesh at every frame as the export does and turns (or lifts) each
+  listed limb by the least amount that keeps it on the floor, so a foot stays planted while the body bobs over it. It
+  derives `hit_b` and `idle_b` first, so a correction is never mirrored. The reef crab, the tide crawler and the slag
+  tortoise (and their variants) export through it (`export_clips(rig, mesh)`). Author a KO that lies on the floor;
+  the grounding only trims what is left.
 - **Determinism.** No randomness except a seeded `np.random.default_rng(SEED)` and the kit's hash noise; no
   exported tangents (Godot makes them on import). Two runs are byte-identical, which the gate checks.
 - **Budgets** are in each sheet (5k to 16k triangles). Keep each GLB well under 5 MB (the crab is about 0.8 MB).
