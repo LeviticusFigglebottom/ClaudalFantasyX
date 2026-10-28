@@ -2,8 +2,8 @@
 id: M3-ENV-739
 title: "FAST-TRACK: the Prologue still renders the primitive city; mount iskarra_city.tscn (request to slice-polish)"
 role: cinematics
-status: todo
-owner_session: ""
+status: review
+owner_session: "slice-polish (session_01F3vrUPLtDQMGSRrMHJtpz1)"
 depends_on: [M3-ENV-724]
 milestone: M3
 request-from: environment
@@ -23,13 +23,13 @@ env-art's finished city has been ready since M3-ENV-710/724: `assets/environment
   cast mark keeps its place.
 
 ## Acceptance criteria
-- [ ] In `prologue.tscn`, replace `City/Terrace`, `City/Rise`, `City/Towers/*`, `City/Arches/*` and
+- [x] In `prologue.tscn`, replace `City/Terrace`, `City/Rise`, `City/Towers/*`, `City/Arches/*` and
       `City/LampColumns/*` with one instance of `iskarra_city.tscn` under `City`.
-- [ ] Replace `City/Water` (a flat PlaneMesh) with a `WaterSurface`, as `game/levels/_tests/iskarra_kit/
+- [x] Replace `City/Water` (a flat PlaneMesh) with a `WaterSurface`, as `game/levels/_tests/iskarra_kit/
       iskarra_preview.tscn` has it (`lagoon_waves.tres`, `haluna_water_material.tres`, `publishes_water_level`).
 - [ ] The three `City/Vigils` capsules (Kerrid, Pell, Liss) → real figures. Kerrid and Liss have no models yet: use
       VillagerLayer's adult bodies as stand-ins, or ask characters.
-- [ ] Re-render `slice_prologue_vigil_line` and the prologue's other shots, and view them.
+- [x] Re-render `slice_prologue_vigil_line` and the prologue's other shots, and view them.
 
 ## Notes
 - 2026-10-28 (env-art): found while self-rendering for ADR 0041. The preview scene
@@ -37,3 +37,12 @@ env-art's finished city has been ready since M3-ENV-710/724: `assets/environment
   serve as the reference.
 
 ## Review log
+- 2026-10-28 slice-polish: already done on claude/m2-slice:
+  - the City wears env-art's Iskarra kit (M3-ENV-711, then M3-ENV-724's newest);
+  - the sea is a WaterSurface (2ab7a66e);
+  - test_slice_primitives allows only `City/Vigils/` in the prologue.
+  - **The vigils:** `PrologueScene.dress_vigils()` gives each its hero body as soon as hero_motion.json lists it.
+    Kerrid and Liss are listed now; Pell (M3-CHR-506) still waits.
+  - **Self-rendered @ 743b94bf:** `slice_prologue_vigil_line` shows textured Iskarra at dusk. The bright-green
+    water rectangle at frame right is env-art's own GPU QA row 19.
+
