@@ -806,6 +806,9 @@ class Probe:
         g = rig.globals()
         G_b, G_h = g[b], g[h]
         rel0 = np.linalg.inv(G_h) @ G_b
+        bind = rel0.copy()  # the prop as the GLB binds it: no clip or stage solve has placed it (the bind pose)
+        # M2-CHR-544: the grip moves the prop's bone (in the hand's frame) so its shaft runs through the closed fist
+        rel0[:3, 3] += np.asarray(entry.get("offset", (0.0, 0.0, 0.0)), dtype=float)
         # the shaft: the prop vertices skinned to its bone, in the bone's frame (its local y runs up the shaft)
         loc = []
         for part in self.props:
@@ -816,7 +819,7 @@ class Probe:
             raise ValueError(f"{self.hero}: no prop vertex skinned to {entry['bone']}")
         loc = np.concatenate(loc)
         radial = np.hypot(loc[:, 0], loc[:, 2])
-        return {"bone": b, "hand": h, "rel0": rel0, "y": (float(loc[:, 1].min()), float(loc[:, 1].max())),
+        return {"bone": b, "hand": h, "rel0": rel0, "bind": bind, "y": (float(loc[:, 1].min()), float(loc[:, 1].max())),
                 "r": float(np.median(radial)) * float(gc["surface_lines_at"]),
                 "clear": float(gc["grip_clear_mm"]) / 1000.0, "name": entry["bone"]}
 
@@ -832,7 +835,8 @@ class Probe:
         o, d = G_b[:3, 3], G_b[:3, 1] / np.linalg.norm(G_b[:3, 1])
         v = grip - o
         offset = float(np.linalg.norm(v - (v @ d) * d))
-        rows = [] if pose.down > 0.0 else [{"pose": pose.label, "kind": "grip", "group": gr["name"],
+        unposed = np.allclose(rel, gr["bind"], atol=1e-6)  # the bind pose: nothing places the prop there
+        rows = [] if pose.down > 0.0 or unposed else [{"pose": pose.label, "kind": "grip", "group": gr["name"],
                                               "turn_deg": round(turn, 3), "offset_mm": _mm(offset)}]
         if self.cloth is not None:
             if cloth_P is None:

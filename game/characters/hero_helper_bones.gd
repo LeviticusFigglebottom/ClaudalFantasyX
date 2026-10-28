@@ -78,8 +78,10 @@ static func _drive_prop(skel: Skeleton3D) -> void:
 			skel.set_bone_pose_rotation(f, _quat(fingers[name]).normalized())
 	skel.force_update_all_bone_transforms()
 	var rest_local := skel.get_bone_rest(bone)
+	var off: Array = e.get("offset", [0.0, 0.0, 0.0])  # M2-CHR-544: the shaft through the closed fist
+	var origin := rest_local.origin + Vector3(float(off[0]), float(off[1]), float(off[2]))
 	skel.set_bone_pose_rotation(bone, rest_local.basis.get_rotation_quaternion())
-	skel.set_bone_pose_position(bone, rest_local.origin)
+	skel.set_bone_pose_position(bone, origin)
 	skel.force_update_all_bone_transforms()
 	var pose := skel.get_bone_global_pose(bone)
 	var axis := pose.basis.y.normalized()
@@ -94,9 +96,7 @@ static func _drive_prop(skel: Skeleton3D) -> void:
 		if foot_y + slide * axis.y < float(g["floor_m"]):
 			slide = to_floor
 		slide = clampf(slide, -float(g["slide_max_m"]), float(g["slide_max_m"]))
-	skel.set_bone_pose_position(
-		bone, rest_local.origin + rest_local.basis.get_rotation_quaternion() * Vector3(0.0, slide, 0.0)
-	)
+	skel.set_bone_pose_position(bone, origin + rest_local.basis.get_rotation_quaternion() * Vector3(0.0, slide, 0.0))
 
 
 ## True when the skeleton has any helper bone.

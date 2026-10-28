@@ -3259,6 +3259,18 @@ GRIP_ALWAYS = {"asha", "toma"}  # the prop never leaves the hand; Rhen's hooks o
 GRIP_FINGERS = ("f_index", "f_middle", "f_ring", "f_pinky")
 GRIP_MID, GRIP_TIP = 1.1, 0.8
 GRIP_PAD = 0.009  # m: a finger joint's centre this far outside the shaft (the finger's own half-thickness)
+# M2-CHR-544 (the PC's M1-QA-09 again on big15: open hands): the GLB builds the shaft through the open rest hand's
+# fingers, so no curl could wrap it and the solve bent them clear. Now the fingers close to a fist first (one curl for
+# all four, searched over GRIP_FIST_CURLS degrees), the circle of radius (shaft + GRIP_PAD) best fitting their knuckles
+# and joints across the shaft is the fist's hole, and the prop's bone moves (in the hand's frame) so its shaft runs
+# through that hole; each finger and the thumb are then solved round the moved shaft as before.
+GRIP_FIST_CURLS = range(30, 112, 2)
+GRIP_FIT_ITERS = 40  # fixed-point steps of the circle fit
+GRIP_JOINT_COARSE = range(0, 121, 10)  # degrees: each finger joint's own curl, coarse
+GRIP_LEVEL_W = 0.5  # the weight on a finger joint's drift along the shaft from its knuckle's level
+GRIP_THUMB_TURN = range(-90, 91, 6)  # degrees: the thumb's .01 turn about its x and z
+GRIP_THUMB_CURL = range(0, 92, 6)  # and its .02/.03 curl
+GRIP_JOINT_FINE = (8, 2)  # then +-8 degrees round the best in steps of 2
 GRIP_HOOK_RADIUS = 0.0135  # m: the wrapped hook grip (rhen_props.reef_hooks)
 GRIP_SHAFT_MAX = 0.03  # m: prop vertices nearer the shaft's axis than this are the shaft (its radius is their median)
 GRIP_DATA = ROOT / "game" / "data" / "characters" / "grips.json"
@@ -3540,6 +3552,14 @@ def grips_init(sk: "Skeleton", glb: Path, js: dict, nodes: list, parent: dict) -
             _FORE[hero] = fd / np.linalg.norm(fd)
         palm = gt[idx[f"DEF-f_middle.01.{side}"]]
         c = c + d * float((palm - c) @ d)  # the shaft point level with the palm
+        if kind == "mesh":  # M2-CHR-544: move the shaft into the closed fist's hole
+            hole = _fist_hole([[f"DEF-{f}.0{k}.{side}" for k in (1, 2, 3)] for f in GRIP_FINGERS], nodes, parent,
+                              idx, gq, gt, c, d, r)
+            if hole is not None:
+                hand_i = parent[idx[b]]
+                sk.prop["offset"] = qrot(qinv(gq[hand_i]), hole - c)  # in the hand's frame
+                sk.rest_t[b] = sk.rest_t[b] + sk.prop["offset"]
+                c = hole
         out = {}
         for f in GRIP_FINGERS + ("thumb",):
             chain = [f"DEF-{f}.0{k}.{side}" for k in (1, 2, 3)]
@@ -3550,6 +3570,43 @@ def grips_init(sk: "Skeleton", glb: Path, js: dict, nodes: list, parent: dict) -
         for name in out:
             sk.rest_q[name] = np.array(nodes[idx[name]].get("rotation", [0.0, 0.0, 0.0, 1.0]), dtype=float)
     sk.grip_hero = hero
+
+
+def _fist_hole(chains: list, nodes: list, parent: dict, idx: dict, gq: dict, gt: dict, c: np.ndarray, d: np.ndarray,
+               r: float):
+    """M2-CHR-544: the closed fist's hole for a shaft along `d` of radius `r`: the four fingers curled by one angle
+    (GRIP_FIST_CURLS; the .02 and .03 by GRIP_MID and GRIP_TIP of it, the sign that curls toward the palm), and the
+    centre of the circle of radius r + GRIP_PAD that best fits their knuckles, joints and tips across `d`, level with
+    `c`. None when no finger chain is present."""
+    chains = [ch for ch in chains if all(n in idx for n in ch)]
+    if not chains:
+        return None
+    x = np.array([1.0, 0.0, 0.0])
+    want = r + GRIP_PAD
+
+    def flat(p: np.ndarray) -> np.ndarray:  # across the shaft, level with c
+        v = p - c
+        return c + v - d * float(v @ d)
+
+    best = None
+    for sgn in (1.0, -1.0):
+        for a in GRIP_FIST_CURLS:
+            rots = [qaxis(x, sgn * a), qaxis(x, sgn * a * GRIP_MID), qaxis(x, sgn * a * GRIP_TIP)]
+            P = []
+            for ch in chains:
+                P.append(flat(gt[idx[ch[0]]]))  # the knuckle
+                P += [flat(p) for p in _chain_points(ch, rots, nodes, parent, idx, gq, gt)]
+            P = np.array(P)
+            o = P.mean(axis=0)
+            for _ in range(GRIP_FIT_ITERS):  # the centre whose distance to every point is nearest `want`
+                v = P - o
+                n = np.maximum(np.sqrt((v * v).sum(axis=1)), 1e-9)
+                o = (P - v / n[:, None] * want).mean(axis=0)
+            v = P - o
+            e = float(((np.sqrt((v * v).sum(axis=1)) - want) ** 2).sum())
+            if best is None or e < best[0] - 1e-12:
+                best = (e, o)
+    return best[1]
 
 
 def _chain_points(chain: list, rots: list, nodes: list, parent: dict, idx: dict, gq: dict, gt: dict) -> list:
@@ -3573,28 +3630,42 @@ def _solve_finger(chain: list, thumb: bool, nodes: list, parent: dict, idx: dict
     x = np.array([1.0, 0.0, 0.0])
     z = np.array([0.0, 0.0, 1.0])
 
+    level = float((gt[idx[chain[0]]] - c) @ d)  # the knuckle's height along the shaft
+
     def cost(rots: list) -> float:
         e = 0.0
         for p in _chain_points(chain, rots, nodes, parent, idx, gq, gt):
             dist = _axis_dist(p, c, d)
             e += (dist - (r + GRIP_PAD)) ** 2 + (25.0 * (r + 0.5 * GRIP_PAD - dist)) ** 2 * (dist < r + 0.5 * GRIP_PAD)
+            # M2-CHR-544: and round the shaft, not along it (a finger hanging down beside it met the distance alone)
+            e += (GRIP_LEVEL_W * (float((p - c) @ d) - level)) ** 2
         return e
 
     best, best_rots = None, None
-    curls = range(0, 112, 2)
-    if not thumb:
+    if not thumb:  # M2-CHR-544: each joint its own curl (one ratio for all three bulged the middle joints out of the
+        # fist), on a coarse grid, then a fine one round the best; the sign is the one that curls toward the shaft
         for sgn in (1.0, -1.0):
-            for a in curls:
-                rots = [qaxis(x, sgn * a), qaxis(x, sgn * a * GRIP_MID), qaxis(x, sgn * a * GRIP_TIP)]
-                e = cost(rots)
-                if best is None or e < best - 1e-12:
-                    best, best_rots = e, rots
+            for a in GRIP_JOINT_COARSE:
+                for b2 in GRIP_JOINT_COARSE:
+                    for b3 in GRIP_JOINT_COARSE:
+                        rots = [qaxis(x, sgn * a), qaxis(x, sgn * b2), qaxis(x, sgn * b3)]
+                        e = cost(rots)
+                        if best is None or e < best - 1e-12:
+                            best, best_rots, best_abc = e, rots, (sgn, a, b2, b3)
+        sgn, a0, b0, c0 = best_abc
+        for a in range(a0 - GRIP_JOINT_FINE[0], a0 + GRIP_JOINT_FINE[0] + 1, GRIP_JOINT_FINE[1]):
+            for b2 in range(b0 - GRIP_JOINT_FINE[0], b0 + GRIP_JOINT_FINE[0] + 1, GRIP_JOINT_FINE[1]):
+                for b3 in range(c0 - GRIP_JOINT_FINE[0], c0 + GRIP_JOINT_FINE[0] + 1, GRIP_JOINT_FINE[1]):
+                    rots = [qaxis(x, sgn * a), qaxis(x, sgn * b2), qaxis(x, sgn * b3)]
+                    e = cost(rots)
+                    if e < best - 1e-12:
+                        best, best_rots = e, rots
     else:
-        for ax in range(-60, 61, 6):
-            for az in range(-60, 61, 6):
+        for ax in GRIP_THUMB_TURN:  # M2-CHR-544: wide enough to bring the thumb round the moved shaft
+            for az in GRIP_THUMB_TURN:
                 q1 = qmul(qaxis(x, ax), qaxis(z, az))
                 for sgn in (1.0, -1.0):
-                    for a in range(0, 62, 6):
+                    for a in GRIP_THUMB_CURL:
                         rots = [q1, qaxis(x, sgn * a), qaxis(x, sgn * a)]
                         e = cost(rots)
                         if best is None or e < best - 1e-12:
@@ -3629,7 +3700,9 @@ def write_grip_data() -> None:
     """The always-held grips, for poses set outside a clip (HeroHelperBones.drive)."""
     data = {"_doc": "M2-CHR-515: for a hero whose hand never lets go of its prop, keyed by the skeleton node's name: "
                     "`hand`, the prop's `bone` (its local y runs up the shaft; `foot`, m along it, is the shaft's "
-                    "foot), `hold` (x, y, z, w: the hand's world turn from rest that stands the prop upright) and "
+                    "foot), `hold` (x, y, z, w: the hand's world turn from rest that stands the prop upright), `offset` (m, the "
+                    "hand's frame: where the prop's bone moves from its GLB rest so its shaft runs through the closed "
+                    "fist, M2-CHR-544) and "
                     "`fingers` (local rotations that close the hand round it). `floor_m` and `upright_deg` as in "
                     "hero_clips.prop_pose. Written by assets_src/characters/asha/hero_clips.py from the GLBs.",
             "floor_m": PROP_FLOOR, "upright_deg": list(PROP_UPRIGHT), "slide_max_m": PROP_SLIDE_MAX, "skeletons": {}}
@@ -3638,7 +3711,7 @@ def write_grip_data() -> None:
         sk = Skeleton(ROOT / "assets" / "characters" / hero / f"{hero}.glb")
         data["skeletons"][sk.root_name] = {
             "hand": sk.prop["hand"], "bone": sk.prop["bone"], "foot": round(sk.prop["foot"], 6),
-            "hold": rnd(sk.prop["hold"]),
+            "hold": rnd(sk.prop["hold"]), "offset": rnd(sk.prop.get("offset", (0.0, 0.0, 0.0))),
             "fingers": {n: rnd(q) for side in sorted(sk.grips) for n, q in sk.grips[side].items()}}
     GRIP_DATA.write_text(json.dumps(data, indent=1) + "\n", encoding="utf-8")
 
