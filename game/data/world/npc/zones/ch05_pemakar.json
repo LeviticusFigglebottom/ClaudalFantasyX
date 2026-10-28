@@ -1,0 +1,67 @@
+{
+  "version": 1,
+  "doc": "Pemakar's terraces before Lanternfall (M3-CRE-659, ADR 0152): leaf-boat folders and the boat seller, a lacquerer, a sweeper at the graves, the ferryman's mate and a boat fisher, and four children, each a crowd person (game/data/world/npc/crowd.json) inside its stage actor (attach child). Garo, the elder and the ferryman are named speakers.",
+  "zone": "ch05/pemakar",
+  "villagers": [
+    {
+      "npc_id": "pemakar_boat_fisher",
+      "crowd": "pemakar_boat_fisher",
+      "stand_in": "CutsceneStage/Actors/boat_fisher",
+      "attach": "child"
+    },
+    {
+      "npc_id": "pemakar_boat_seller",
+      "crowd": "pemakar_boat_seller",
+      "stand_in": "CutsceneStage/Actors/boat_seller",
+      "attach": "child"
+    },
+    {
+      "npc_id": "pemakar_ferryman_mate",
+      "crowd": "pemakar_ferryman_mate",
+      "stand_in": "CutsceneStage/Actors/ferryman_mate",
+      "attach": "child"
+    },
+    {
+      "npc_id": "pemakar_folder",
+      "crowd": "pemakar_folder",
+      "stand_in": "CutsceneStage/Actors/folder",
+      "attach": "child"
+    },
+    {
+      "npc_id": "pemakar_folder_2",
+      "crowd": "pemakar_folder_2",
+      "stand_in": "CutsceneStage/Actors/folder_2",
+      "attach": "child"
+    },
+    {
+      "npc_id": "pemakar_forge_child",
+      "crowd": "pemakar_forge_child",
+      "stand_in": "CutsceneStage/Actors/forge_child",
+      "attach": "child"
+    },
+    {
+      "npc_id": "pemakar_grave_child",
+      "crowd": "pemakar_grave_child",
+      "stand_in": "CutsceneStage/Actors/grave_child",
+      "attach": "child"
+    },
+    {
+      "npc_id": "pemakar_lacquerer",
+      "crowd": "pemakar_lacquerer",
+      "stand_in": "CutsceneStage/Actors/lacquerer",
+      "attach": "child"
+    },
+    {
+      "npc_id": "pemakar_sweeper",
+      "crowd": "pemakar_sweeper",
+      "stand_in": "CutsceneStage/Actors/sweeper",
+      "attach": "child"
+    },
+    {
+      "npc_id": "pemakar_weir_child",
+      "crowd": "pemakar_weir_child",
+      "stand_in": "CutsceneStage/Actors/weir_child",
+      "attach": "child"
+    }
+  ]
+}

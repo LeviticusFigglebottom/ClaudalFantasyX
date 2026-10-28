@@ -1,0 +1,14 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://game/levels/_tests/npc/haluna_villagers.gd" id="stage"]
+
+[node name="CrowdCorrowNight" type="Node3D"]
+script = ExtResource("stage")
+zone_scene = "res://game/levels/ch09/corrow_night/corrow_night.tscn"
+zone_id = &"ch09/corrow_night"
+
+[node name="Cameras" type="Node3D" parent="."]
+
+[node name="Crowd" type="Camera3D" parent="Cameras"]
+transform = Transform3D(0.985939, -0.0275432, 0.164823, 0, 0.986323, 0.164823, -0.167108, -0.162505, 0.972454, -25, 1.7, 33.5)
+fov = 55.0

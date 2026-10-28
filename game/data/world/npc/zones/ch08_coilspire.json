@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "doc": "Coilspire's beacon tender (M3-CRE-659, ADR 0152): a crowd person (game/data/world/npc/crowd.json) inside its stage actor (attach child), standing vigil. Fenn is a named speaker.",
+  "zone": "ch08/coilspire",
+  "villagers": [
+    {
+      "npc_id": "coilspire_tender",
+      "crowd": "coilspire_tender",
+      "stand_in": "CutsceneStage/Actors/tender",
+      "attach": "child"
+    }
+  ]
+}
