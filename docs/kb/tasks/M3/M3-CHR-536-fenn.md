@@ -24,6 +24,6 @@ pipeline, with the clips their dialogue calls.
 ## Notes
 - Who: Old Fenn, who has kept Coilspire's low flame for forty-one years (Ch8-9, speaker `fenn`; act1_ch08.md: 'Shut the door, Lady. She doesn't like a draught'; feeds the fire, hands Asha the driftwood and the key), about 74. Lean, stooped, cheerful; thin white hair cropped and receding, a white stubble; a soot-dark slate long-sleeved coat-shirt with the sleeves pushed to the forearm, storm-grey shin trousers, a long scorched hide apron over them, a faded copper-green sash, sandals. Soot-dark fingertips. Reach-bands left 4, right 3 (fisher years before the flame). (M3-CHR-536.)
 - Budget: LOD0 27,870 tris, 1.80 MB GLB; LOD1 12,966 tris, 0.66 MB.
-- Rendered: lean old man, white crop over a bare scalp, soot-dark slate shirt, scorched apron.  crouches to a low hearth (0.2 m drop).
+- Rendered: lean old man, white crop over a bare scalp, soot-dark slate shirt, scorched apron. `feed_fire` crouches to a low hearth (0.2 m drop).
 
 ## Review log

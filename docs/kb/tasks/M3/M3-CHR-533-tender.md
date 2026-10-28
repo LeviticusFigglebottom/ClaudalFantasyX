@@ -24,6 +24,6 @@ pipeline, with the clips their dialogue calls.
 ## Notes
 - Who: Tender Ruwen, the Tender of Ashcrown (Ch5, speaker `tender` shown as 'Tender Ruwen': opens the crown pavilion, paints the gilt line, opens Kahre's chamber, hands Asha the key; the same speaker id serves the later temples' Tenders, Coilspire's in Ch8-9), about 52, a woman. Composed, tired, kind; grey-streaked black hair in a low knot; the Order's ivory robe (a long-sleeved wrap top over an ankle skirt) with the skirt's cloth greyed with ash (soot on the hems, act1_ch05.md), a gold-leaf sash wound twice, a lacquer-black stole panel to the shin, sandals. No reach-bands. (M3-CHR-533.)
 - Budget: LOD0 35,436 tris, 2.16 MB GLB; LOD1 16,748 tris, 0.83 MB.
-- Rendered: ivory Order robe, ash-grey skirt for the sooted hem, gold sash, black stole. One model serves the  speaker in Ch5 (Ruwen), Ch8 and Ch9 (Coilspire's Tender); if Coilspire's Tender is meant to be a different person, file a second params file (an hour's work on this pipeline).
+- Rendered: ivory Order robe, ash-grey skirt for the sooted hem, gold sash, black stole. One model serves the `tender` speaker in Ch5 (Ruwen), Ch8 and Ch9 (Coilspire's Tender); if Coilspire's Tender is meant to be a different person, file a second params file (an hour's work on this pipeline).
 
 ## Review log

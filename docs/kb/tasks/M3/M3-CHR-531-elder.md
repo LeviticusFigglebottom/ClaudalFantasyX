@@ -24,6 +24,6 @@ pipeline, with the clips their dialogue calls.
 ## Notes
 - Who: The Pemakar elder who puts a folded leaf-boat with a pinch of rice in it into Asha's hands (Ch5 B04, `@anim elder give_boat asha`), about 74, a woman. Small and upright; white hair in a low knot; a lacquer-black long-sleeved wrap top, an ash-grey ankle skirt, a gold-ochre sash wound twice, a lacquer-red narrow apron panel (a festival cloth), sandals. Reach-bands left 3, right 3 (Pemakar is a harbour). (M3-CHR-531.)
 - Budget: LOD0 35,158 tris, 2.13 MB GLB; LOD1 16,608 tris, 0.81 MB.
-- Rendered: small, upright, white knot; lacquer-black top with a lacquer-red panel and gold sash. The rice and the boat are props for  (two hands).
+- Rendered: small, upright, white knot; lacquer-black top with a lacquer-red panel and gold sash. The rice and the boat are props for `give_boat` (two hands).
 
 ## Review log
