@@ -231,6 +231,14 @@ func _segment(seg: Array, preset: String) -> void:
 		"place":
 			WorldReturn.place_player(get_tree().current_scene, spawn)
 			visible = await _frames(VISIBLE_FRAMES)
+		"run":
+			# Play as a player would (Act I real-GPU QA): from the spawn (if named), hold the arg's input actions
+			# ("+"-joined, e.g. field_move_forward+field_camera_left) through the dwell; released after it.
+			if spawn != &"":
+				WorldReturn.place_player(get_tree().current_scene, spawn)
+			for action in str(seg[2]).split("+", false):
+				Input.action_press(StringName(action))
+			visible = await _frames(VISIBLE_FRAMES)
 		"flood":
 			var ctl := get_tree().current_scene as BattleController
 			if ctl != null and ctl.engine != null and not ctl.engine.enemies.is_empty():
@@ -287,6 +295,9 @@ func _segment(seg: Array, preset: String) -> void:
 			next_still += still_every_us
 			skip = true
 		prev = Time.get_ticks_usec()
+	if kind == "run":
+		for action in str(seg[2]).split("+", false):
+			Input.action_release(StringName(action))
 	var hitches := 0
 	for w in walls:
 		if w > HITCH_MS:
@@ -445,7 +456,8 @@ func _trace_pipelines(window: String, i: int, ms: float) -> void:
 ## --walk=<res://...json>: the segments from a file instead of SEGMENTS (tools/gpu_bench/act1_walk.json). Each row
 ## {id, kind, arg, spawn, dwell, return}; kinds as SEGMENTS plus newgame (New Game: a fresh game, then arg's location),
 ## chapter (an F8 chapter-select start by id), location (go to a locations.json id) and spawns (every spawn of the
-## current scene in turn, each a place segment named <id>.<spawn>).
+## current scene in turn, each a place segment named <id>.<spawn>) and run (hold arg's "+"-joined input actions
+## through the dwell, from spawn if named).
 func _walk_segments(path: String) -> Array:
 	var out: Array = []
 	var data: Variant = JSON.parse_string(FileAccess.get_file_as_string(path))
