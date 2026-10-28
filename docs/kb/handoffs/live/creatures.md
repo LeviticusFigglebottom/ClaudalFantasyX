@@ -722,3 +722,12 @@ SUPERSEDED RENDER-REQUEST @ db895430: battle_choreo_hit, battle_choreo_ko, battl
   - **GOTCHA for every checkout (Lead, gates):** the post-import changed but Godot doesn't re-import unchanged GLBs. Run `rm -f .godot/imported/crowd_*.glb-*` and re-import, or the shared libraries don't apply.
   - **Checks run:** Blender verify identical ×22 (by the agent); tools test_npc and test_blender_builds; gen_crowd --check; Godot crowd 6/0, villager 33/0, field_npc 10/0, life_audio 12/0; validate_data, taskboard.
 - SELF-RENDERED (the agent; viewed here): crowd_lineup_a/b/c, crowd_market, crowd_work, crowd_mourners, crowd_zone_brine_shoals and crowd_zone_bell_galleries. No cloth reads as skin; kneelers' knees are on the floor; children and elders stand at their own heights.
+- **Waiting (everything open is blocked on another track or on the Lead):**
+  - **M3-CRE-657 (slice-polish):** GreyboxZone adds the VillagerLayer. Without it the 56 crowd people and Kell's life don't appear in game. **This is the critical one.**
+  - **M3-CRE-660 (Lead):** confirm "pumice_crawler" (scree_crawler?) and whether avalanche_ram (Act II) is in scope. The raid hound and slag tortoise are already rebuilt.
+  - **M3-CRE-658 (act1-chapters):** the hound's model line in Brine Shoals.
+  - **M3-CRE-661 (characters):** Saltwright line-marks and the brand for the crowd's wrights.
+  - **M3-CRE-653 (battle VFX):** effects at the creature anchors.
+  - **M3-CRE-634 (ui):** limit the portrait test to enemies.
+  - **M3-CRE-633 (audio):** the shutdown cast.
+- **BACKLOG EMPTY (for now):** every creatures item is merged and every open item waits on the tracks above. The handoff is docs/kb/handoffs/2026-10-28-art-creatures-9.md.
