@@ -32,6 +32,25 @@ CreatureActor and the validator are theirs too (kit or tool changes go to them a
   are cropped by the stage's lone-boss seat (EnemySlots/Slot0), filed as **M3-CRB-011**. Idle motion was checked clip
   by clip in each model pass.
 
+- **11:40, the Lead's 10:55 queue:**
+  1. **M3-CRB-011 fixed (052d69a2), MERGE-READY:** `boss_seats` in battle_sandbox.json + `BattleStage._seat_lone_boss`
+     (a lone boss stands on its mark at spawn, before the line-up). Reach [-2.6,0,-2.4], Matron [-2.6,0,-1.2],
+     Spar-wraith [-2.0,0,-1.4]. SELF-RENDERED (scratch default-camera fixture, never committed; plus
+     battle_boss_intro_wraith/_matron/_reach), viewed: the Reach's hand grips the wall-head and reads; the Matron is
+     whole, hood clear, intro unoccluded; the Wraith's body and shroud are in frame but its mast tops still leave the
+     frame. Further-back Wraith seats broke test_battle_boss_camera (its big-move shots), so the rest is a home-camera
+     fit for a tall boss: noted on M3-CRB-011 for battle-presentation. New test_battle_boss_seat 2/0.
+  2. **Arena pass:** hullgnaw, drownbell, bottle_hermit read whole and well scaled at the default camera (no seat
+     needed); the three above are fixed as far as a seat can. Phase-change motion was checked per model in each pass.
+  3. **Clips the choreo calls:** none missing. `dodge` is declared but never played; `item` and `read` are hero menu
+     actions (the Vowbound menu has neither); `victory` plays on the party side (the Vowbound have it); creature strikes
+     resolve through clip_by_skill/clip_by_kind. Pinned: test_creature_bosses_act1 now checks every Act I Vowbound
+     skill and Swell finisher resolves to a clip its model has (5/0).
+  - **Checks:** validate_data 0/0; gdlint, gdformat; Godot boss 75/0, choreo 58/0, battle_lineup 5/0, vowbound 87/0,
+    creature_bosses 5/0, battle_boss_seat 2/0; the full battle filter is running. **Pre-existing, not mine:**
+    test_battle_act1_ability_vfx fails on tannin_archer, root_crab and fen_leech (Act II creatures; it fails without my
+    change too).
+
 ## Scope (from game/data, 2026-10-28)
 - **Bosses** (enemies.json rows with phases, or a choreo.json `boss_intro` row): `hullgnaw` (Ch1), `drownbell`
   (the slice, Ch3), `bottle_hermit` and `spar_wraith` (Ch4), `cinder_matron` (Ch5), `undertows_reach` (Ch8).
