@@ -254,6 +254,15 @@ func busy_sec() -> float:
 	return maxf(left / speed, summon.remaining_sec() if summon != null else 0.0)
 
 
+## M3-CRE-639: an entrance's or exit's clip: its `clip_own` when the fighter's model has that clip (Ilun's `rise`,
+## `dismiss`), else its contract `clip`.
+static func spec_clip(f: Node, spec: Dictionary) -> StringName:
+	var own := StringName(str(spec.get("clip_own", "")))
+	if own != &"" and BattleClips.has_clip(f, own):
+		return own
+	return StringName(str(spec.get("clip", "")))
+
+
 ## Runs `cb` once the current sequence has finished (at once when none plays).
 func after_sequence(cb: Callable) -> void:
 	if _plan.is_empty():
@@ -766,7 +775,7 @@ func _advance_entering(delta: float) -> void:
 		f.visible = t >= 0.0
 		if t >= 0.0 and not bool(e["clip"]):
 			e["clip"] = true
-			BattleClips.play(f, StringName(str(spec.get("clip", ""))), speed)
+			BattleClips.play(f, spec_clip(f, spec), speed)
 		var k := 1.0 - _ease(maxf(t, 0.0) / maxf(sec, 0.0001))
 		var fwd: Vector3 = e["fwd"]
 		var off := -fwd * float(spec.get("back_m", 0.0)) * travel + Vector3.DOWN * float(spec.get("depth_m", 0.0))
@@ -815,7 +824,7 @@ func _advance_leaving(delta: float) -> void:
 			continue  # still on the field: the sequence (and an accent) pose it
 		if not bool(e["clip"]):
 			e["clip"] = true
-			BattleClips.play(f, StringName(str(spec.get("clip", ""))), speed)
+			BattleClips.play(f, spec_clip(f, spec), speed)
 		var u := _ease(float(e["t"]) / sec)
 		var back := -(e["fwd"] as Vector3)
 		var off := back * float(spec.get("back_m", 0.0)) * travel + Vector3.DOWN * float(spec.get("depth_m", 0.0))

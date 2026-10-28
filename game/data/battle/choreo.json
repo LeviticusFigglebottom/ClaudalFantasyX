@@ -139,13 +139,13 @@
       }
     },
     "vowbound": {
-      "doc": "M2-BPR-04 BattleVowboundChoreo. call: the caller's accent as it calls; step_off: the party walks back off the field in slot order (delay_sec + stagger_sec x slot); entry: the Vowbound rises depth_m out of the water at its slot after delay_sec, tipped lean_deg forward and straightening (longer than a swap's walk-in); dismiss: it sinks back (after the action playing, a battle won included); fall: struck down, it takes the blow, then tips back tilt_deg and is drawn under, slower; return: the party walks back in (choreo enter) once share of the exit has played, stagger_sec apart.",
+      "doc": "M2-BPR-04 BattleVowboundChoreo. call: the caller's accent as it calls; step_off: the party walks back off the field in slot order (delay_sec + stagger_sec x slot); entry: the Vowbound rises depth_m out of the water at its slot after delay_sec, tipped lean_deg forward and straightening (longer than a swap's walk-in); dismiss: it sinks back (after the action playing, a battle won included); fall: struck down, it takes the blow, then tips back tilt_deg and is drawn under, slower; return: the party walks back in (choreo enter) once share of the exit has played, stagger_sec apart. clip_own (M3-CRE-639): the clip the Vowbound's own model plays instead of clip when it has it (Ilun's rise and dismiss).",
       "call": {"sec": 0.55, "lift_m": 0.14, "crouch_m": 0.0, "recoil_m": 0.0, "tilt_deg": 7.0, "sway_deg": 0.0,
                "sways": 0.0, "clip": "cast"},
       "step_off": {"delay_sec": 0.5, "stagger_sec": 0.12, "sec": 0.5, "back_m": 2.8, "depth_m": 0.0, "tilt_deg": 0.0,
                    "clip": "ready"},
-      "entry": {"delay_sec": 0.95, "sec": 1.3, "back_m": 0.0, "depth_m": 2.6, "lean_deg": 14.0, "clip": "ready"},
-      "dismiss": {"delay_sec": 0.0, "sec": 0.9, "back_m": 0.0, "depth_m": 2.6, "tilt_deg": 0.0, "clip": "ready"},
+      "entry": {"delay_sec": 0.95, "sec": 1.3, "back_m": 0.0, "depth_m": 2.6, "lean_deg": 14.0, "clip": "ready", "clip_own": "rise"},
+      "dismiss": {"delay_sec": 0.0, "sec": 0.9, "back_m": 0.0, "depth_m": 2.6, "tilt_deg": 0.0, "clip": "ready", "clip_own": "dismiss"},
       "fall": {"delay_sec": 0.0, "sec": 1.5, "back_m": 0.5, "depth_m": 2.6, "tilt_deg": 38.0, "clip": "ko"},
       "return": {"share": 0.5, "stagger_sec": 0.12}
     },
@@ -242,7 +242,7 @@
       "doc": "M2-BPR-08 C10, BattleSummonCinematic: a Vowbound's first call in a live story battle (first_call_flags: its seen-flag, declared in flags.tres) under UiSettings summon_cinematic (the UI track's row): 'short' (default) = the first call only, 'full' = every call, 'off' = off_entry (no rise). entry replaces vowbound.entry: the water stills for delay_sec after the party steps off, then the Vowbound rises depth_m over sec, tipped lean_deg; hold_sec more after it stands. Bound light (color script C10: glimmer_bound, steady): an OmniLight3D light_height_m above its slot, light_energy reached over light_in_sec from light_at_sec, light_range_m. Camera: the 'summon' shot (camera.shots), in over camera_in_sec, back to the default over the last camera_out_sec.",
       "first_call_flags": {"ilun": "ch03_ilun_first_call_seen", "kahre": "ch05_kahre_first_call_seen",
                            "virel": "ch08_virel_first_call_seen"},
-      "entry": {"delay_sec": 1.4, "sec": 2.6, "back_m": 0.0, "depth_m": 2.6, "lean_deg": 6.0, "clip": "ready"},
+      "entry": {"delay_sec": 1.4, "sec": 2.6, "back_m": 0.0, "depth_m": 2.6, "lean_deg": 6.0, "clip": "ready", "clip_own": "rise"},
       "off_entry": {"delay_sec": 0.0, "sec": 0.0, "back_m": 0.0, "depth_m": 0.0, "lean_deg": 0.0, "clip": "idle"},
       "hold_sec": 0.9,
       "light_color": "#4FB3B0",
