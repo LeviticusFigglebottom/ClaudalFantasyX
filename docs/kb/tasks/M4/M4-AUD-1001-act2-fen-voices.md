@@ -2,7 +2,8 @@
 id: M4-AUD-1001
 title: "Request (act1-chapters): creature voices for Ch10's tannin archer, root crab and fen leech"
 role: audio
-status: todo
+status: blocked
+blocked-by: ADR 0041
 owner_session: ""
 depends_on: [M4-C10-03]
 milestone: M4

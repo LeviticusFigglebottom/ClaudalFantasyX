@@ -186,6 +186,12 @@ cutscene sequencer (`game/cutscene/**`), `game/flow/**` and the playtest fixes.
   54.0/97.3, roots 33.8/93.9/99.9, leeches 48.5/99.9 (two role_answer bands report only, reasons in targets.json).
   Request M4-CMB-1001 (Combat): a drain on enemy skills for the leech. `--filter=battle` 720/0, `ch10` 3/0, balance
   and creatures tools tests.
+- **MERGE-READY @ 52e5ee37: M4-C11-03, Ch11, Ch12 and Ch16's field fights** (Lead queue 00:13 item 3): seven regulars
+  (`gallery_ray`, `rime_urchin`, `ridge_lynx`, `cord_moth`, `scree_crawler`, `glass_skate`, `rim_crawler`), five skills
+  (skills.json, its own commit 2424ce9e **for Combat's review**), seven encounters, tables on Sunken Vey, Keth Pass and
+  the Pale Rim (none in towns, the court or open sea); silent voices (6aa50b19, audio's file). All ten Act II suites
+  `--check` clean at 1000 seeds (figures in the task file); four role_answer bands report only, reasons in targets.json.
+  `validate_data` 0/0, balance and creatures tools tests, `--filter=battle` 720/0, `ch11`/`ch12` thread tests.
 - **Lead queue (21:23), status:**
   1. Ch9 road capsule: it is **Kerrid** at the milestone (no model yet: M3-CHR-505, characters); so are the two on
      ch06_brine_road (Ysolde, no field body yet: M3-HER-1219; Kerrid). They go when those land; no villager body on a
@@ -227,5 +233,8 @@ RENDER-REQUEST @ 760a0e4c: ch05_pemakar_harbour, ch06_brine_road, ch06_brine_cam
    (M3-C08-1210), Ch7's galleries (M3-C07-1211), Ch5 Pemakar (M3-C05-1213) and the casts (M3-CIN-1217).
 2. Queue item 6, the cutscene quality bar, on the Act I scripts (easing, HeroMotion, no snapping, no greyscale
    frames, villagers alive), now that the stage actors are real models.
-3. Blocked or waiting: Ashcrown (M3-ARC-1216), `haluna_wake` (Haluna's ZoneStory move), Ch7's port (env-art's
+3. Act II is PAUSED (ADR 0041): M4-C10-02 .. M4-C14-02, M4-C10-03, M4-C11-03 and the requests I filed for it
+   (M4-C10-01 .. M4-C16-01, M4-CMB-1001, M4-AUD-1001) are `status: blocked`, `blocked-by: ADR 0041`. All of it is
+   committed and pushed; nothing reverted. Resume with the bosses once the pause lifts and the beat sheets land.
+4. Blocked or waiting: Ashcrown (M3-ARC-1216), `haluna_wake` (Haluna's ZoneStory move), Ch7's port (env-art's
    kit, M3-C07-04), the Reefball HUD (M3-UI-01: TidecupMatch loads it by path when it lands).

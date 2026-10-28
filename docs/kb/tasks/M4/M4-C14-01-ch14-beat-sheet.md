@@ -2,7 +2,8 @@
 id: M4-C14-01
 title: Ch14 "The Peace Wedding" beat sheet
 role: narrative
-status: todo
+status: blocked
+blocked-by: ADR 0041
 owner_session: ""
 depends_on: [M4-C13-01]
 reviewer: cinematics

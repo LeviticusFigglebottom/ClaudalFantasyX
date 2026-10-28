@@ -2,7 +2,8 @@
 id: M4-C15-01
 title: Ch15 "Unlamped" beat sheet
 role: narrative
-status: todo
+status: blocked
+blocked-by: ADR 0041
 owner_session: ""
 depends_on: [M4-C14-01]
 reviewer: cinematics

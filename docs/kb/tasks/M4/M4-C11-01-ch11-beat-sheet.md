@@ -2,7 +2,8 @@
 id: M4-C11-01
 title: Ch11 "Lowlight" beat sheet
 role: narrative
-status: todo
+status: blocked
+blocked-by: ADR 0041
 owner_session: ""
 depends_on: [M4-C10-01]
 reviewer: cinematics
