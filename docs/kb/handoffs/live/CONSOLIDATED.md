@@ -177,7 +177,7 @@ No cloud session captures screenshots. Tracks post `RENDER-REQUEST @ sha: ids` l
 - The M2 slice review (blocking; play the integration branch).
 - Music: the listening verdict (docs/kb/audio/listening_notes.md), which blocks M1-LEAD-01.
 - The Asha face direction (ADR 0019's stronger stylisation, or keep).
-- ~~Git LFS~~: APPROVED by the human on 10-27 (ADR 0039). Activation waits on the cloud environment allowing `lfs.github.com` (the egress proxy refuses it). GitHub Actions never leave "queued"; check the repo settings.
+- ~~Git LFS~~: approved on 10-27 and **LIVE from 10-28** (ADR 0039): upload and download are verified from the cloud. The LFS paths are `assets/audio/music/actN/` and `assets/lfs/`. GitHub Actions never leave "queued"; check the repo settings.
 - M3-RND-02: OK to cap the PC GPU's clocks or power for the min-spec proxy?
 
 ## 7. Toolchain and gotchas
