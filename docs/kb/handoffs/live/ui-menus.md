@@ -334,3 +334,14 @@ SELF-RENDERED @ 5f9c71fd: battle_ch08_stair_hold, kite_map, field_menu_kite, fie
 - **kite_map (new), fixed after viewing:** the grid's 1 px lines vanished when scaled down; the labels sat off-centre; the gems were pushed into the next square; the line read "Tamsule, in Tamsule". The panel now grows so ten rows show.
 SELF-RENDERED @ e2852192: kite_map, field_menu_map_keth_pass, field_menu_map_lowlight, field_menu_map_ansedra. Re-rendered after the fixes: the grid whole and the labels centred, the idle line general. Still to land: the baselines, at the Lead's gate. No open render request.
 
+SELF-RENDERED @ (the Kite ring tweak) kite_map: re-rendered after the last tweak. Tamsule shows only its ring under the region label. Clean.
+- 2026-10-28 02:25, **BACKLOG EMPTY:**
+  1. No ui render branch is unviewed. My own shots are self-rendered and viewed (above).
+  2. No `todo` ui task: M3-CRE-634 and M3-HER-1120 were already done and are now in review.
+  3. No open request to ui.
+  4. Audit: the Kite chart and the idle objective line were fixed today, the Lattice overview's initials yesterday.
+  5. Act II UI is done as far as content allows. What's left waits on other tracks:
+     - **M3-UI-208 (Combat):** Act II enemy rows, so the bestiary lists them. Their portraits are already baked.
+     - **M3-UI-209 and M3-UI-204 (act1-chapters):** the shop, inn and shrine triggers.
+     - **The Act II beat sheets (M4-C10-01 onward):** objectives, story codex entries, the farewell-tide and the Ch16 act card call.
+  - **For the Lead:** the two non-ui failures in the full suite are `test_hero_field_snaps` (hero-integration and act1-chapters) and `test_qa_capsules` (Pell in Ossa Fen).
