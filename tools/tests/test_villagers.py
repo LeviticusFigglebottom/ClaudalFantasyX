@@ -453,5 +453,61 @@ class TestWickProps(unittest.TestCase):
         self.assertLess(float(max(ext[0], ext[2])), 0.006)  # about 4 mm thick
 
 
+class TestDialoguePolish(unittest.TestCase):
+    """The dialogue-distance polish of the named Act I villagers (M3-CHR-526..539): optional keys whose defaults leave
+    every other villager as it was."""
+
+    def test_grey_strands_are_opt_in_and_draw_no_rng(self):
+        import numpy as np
+        import villager_hair
+
+        w = np.array([0.004, 0.005, 0.006])
+        slots = np.array([1, 2, 3])
+        mats = ["hair", "hair_grey", "hair"]
+        plain = villager_hair.style({"kind": "short"})
+        self.assertEqual(plain._grey_strands(w, slots, mats, (0.1, 0.9)), (w, slots, (0.1, 0.9)))
+        st = villager_hair.style({"kind": "short", "grey_strands": True, "grey_width_k": 0.5})
+        w2, s2, u2 = st._grey_strands(w, slots, mats, (0.1, 0.9))
+        self.assertEqual(list(w2), [0.004, 0.0025, 0.006])
+        self.assertIn(int(s2[1]), villager_hair.SLOTS_SPARSE)
+        self.assertEqual((int(s2[0]), int(s2[2])), (1, 3))
+        self.assertEqual(u2, [(0.1, 0.9), villager_hair.GREY_U, (0.1, 0.9)])
+
+    def test_cord_knots_and_narrow_tails(self):
+        import numpy as np
+        import villager_costume as C
+        from asha_mesh import Part
+
+        rows, cols = 6, 5
+
+        def sash() -> Part:
+            p = Part("Sash")
+            for i in range(C.WAIST_KNOT_VERTS):
+                p.add_v((0.05 + 0.001 * (i % 3), -0.15, 1.0))
+            p.tail_first = len(p.V)
+            p.tail_rows = [(0, rows, cols, 1)]
+            for j in range(rows):
+                for i in range(cols):
+                    p.add_v((0.04 + 0.01 * i, -0.16, 0.98 - 0.05 * j))
+            return p
+
+        p = sash()
+        before = [v.copy() for v in p.V]
+        self.assertIsNone(C._cord_shape(p, {"mat": "cloth_a", "width_m": 0.03}, 0.6, 1.0))
+        self.assertTrue(all((a == b).all() for a, b in zip(before, p.V)))
+        knots = C._cord_shape(p, {"tail_w_k": 0.5, "knot_k": 0.5, "cord_knots": 3}, 0.6, 1.0)
+        first = p.tail_first
+        width = np.linalg.norm(p.V[first + cols - 1] - p.V[first])
+        self.assertAlmostEqual(float(width), 0.02, places=9)
+        self.assertEqual(len(knots.V), 3 * (10 * 5 + 2))  # three 10 x 6 knots
+        z = sorted({round(float(v[2]), 3) for v in knots.varr()[::52]})
+        self.assertEqual(len(knots.varr()[::52]), 3)
+        self.assertTrue(all(0.6 < q < 1.0 for q in z))
+
+    def test_hobbs_cord_has_three_knots(self):
+        # act1_ch08.md: the three-knot watch-red captain's cord
+        self.assertEqual(params("hobb")["_costume"]["sash"]["cord_knots"], 3)
+
+
 if __name__ == "__main__":
     unittest.main()

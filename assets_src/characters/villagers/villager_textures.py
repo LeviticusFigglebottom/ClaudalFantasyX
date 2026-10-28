@@ -60,6 +60,8 @@ BODY_SIZE = (512, 512)
 AGE_FOLD_DARKEN = 0.10  # albedo darkening in a full-depth fold at age 1
 AGE_DESAT = 0.10  # saturation lost at age 1
 STUBBLE_DENSITY = 0.42
+STUBBLE_SHADOW_TINT = (0.62, 0.64, 0.66)  # `stubble_shadow`: the beard region at full shadow (darker, a touch cool)
+STUBBLE_SHADOW_RAMP = (-0.01, 0.06)  # head heights into the beard (toma_hair.beard_v) over which the shadow fades in
 OIL_WARM = (1.04, 0.94, 0.80)  # fingertip_oil: lamp oil darkens the pads toward a warm brown (M3-CHR-03, Kell)
 OIL_PAD_R = 1.7  # x the finger's tip radius: how far round the last phalanx the stain reaches
 
@@ -236,7 +238,12 @@ def _albedo_villager(orig, sk: dict, hstyle, hair_hex: str):
             cover = smoothstep(0.35, 0.65, streak) * smoothstep(-0.006, 0.010, bv)
             grey = (at.noise3(Ph, 0.001 * s, 182) > 0.55).astype(float) * float(sk.get("stubble_grey", 0.0))
             hcol = hexc(hair_hex) * (1 - grey[:, None]) + hexc(sk.get("stubble_grey_hex", "#9A948A")) * grey[:, None]
-            dens = STUBBLE_DENSITY * stub * cover
+            shadow = float(sk.get("stubble_shadow", 0.0))
+            if shadow > 0.0:  # M3-CHR-529 (optional): the cut hairs under the skin, a cool shadow over the beard region
+                region = smoothstep(*STUBBLE_SHADOW_RAMP, bv) * shadow
+                cool = col * np.array(STUBBLE_SHADOW_TINT)
+                col = col + (cool - col) * region[:, None]
+            dens = float(sk.get("stubble_density", STUBBLE_DENSITY)) * stub * cover  # M3-CHR-529: optional
             col = col * (1 - dens[:, None]) + hcol * dens[:, None]
         if lm_spec:
             col = _ink_marks(col, Ph, lm, lm_spec, marks_state)

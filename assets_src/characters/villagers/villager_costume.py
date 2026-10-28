@@ -65,6 +65,9 @@ APRON_EXTRA = 0.008  # over the skirt
 APRON_FLARE = 0.16  # an apron over trousers (no skirt to take the flare from) hangs as the default skirt does
 CUFF_ROLL_SPAN = 0.14  # of the sleeve's length: the rolled band at a pushed-up sleeve's end (`cuff_roll_m`)
 WRAP_OFF = 0.0055
+WAIST_KNOT_VERTS = 14 * 7 + 2  # toma_costume.sash's knot: a 14 x 8 uv_sphere, just before the tails
+CORD_KNOT_CLEAR = 0.03  # m at S = 1: the lowest cord knot stays this far above the cropped tail's end
+CORD_KNOT_SPAN = (0.25, 0.85)  # the cord knots' spread down the kept tail (share of its length)
 TOP_MARGIN = 0.012  # m at S = 1: body hidden this far inside the top's neckline and armholes
 ARMHOLE_DROP = 0.085  # m at S = 1 below the shoulder joint: a sleeveless top's armhole (the M2-CHR-03 default)
 KEEP_ABOVE_KNEE = 0.16  # m at S = 1 of thigh kept above the knee under a skirt with keep_legs (asha_costume's)
@@ -104,6 +107,60 @@ def _crop_tails(p: Part, z_cut: float) -> Part:
             out.UV.append(uv)
             out.M.append(m)
     return out
+
+
+def _cord_shape(p: Part, sash: dict, z_cut: float, S: float) -> Part | None:
+    """M3-CHR-538 (optional keys; a sash without them is untouched): a narrow sash worn as a cord. `tail_w_k` narrows
+    both tails about their centre column, `knot_k` shrinks the waist knot, and `cord_knots` ties that many small
+    knots down the front tail (`cord_knot_m` across; spaced over the tail's kept length). Edits `p` in place (the
+    tail grids are TC.sash's: per tail and layer, rows x columns, row-major) and returns the knots as a Part to add
+    after the tails are cropped (their faces are not in the tails' island, so the crop would keep them anyway)."""
+    w_k = float(sash.get("tail_w_k", 1.0))
+    k_k = float(sash.get("knot_k", 1.0))
+    n_knots = int(sash.get("cord_knots", 0))
+    if w_k == 1.0 and k_k == 1.0 and not n_knots:
+        return None
+    first = p.tail_first
+    if k_k != 1.0:
+        ids = range(first - WAIST_KNOT_VERTS, first)
+        c = np.mean([p.V[i] for i in ids], axis=0)
+        for i in ids:
+            p.V[i] = c + (np.asarray(p.V[i]) - c) * k_k
+    centre_lines = []
+    for t0, rows, cols, layers in p.tail_rows:
+        mid = cols // 2
+        line = np.array([p.V[first + t0 + j * cols + mid] for j in range(rows)])
+        side = np.array([np.asarray(p.V[first + t0 + j * cols + cols - 1]) - p.V[first + t0 + j * cols]
+                         for j in range(rows)])
+        centre_lines.append((line, side))
+        for layer in range(layers):
+            base = first + t0 + layer * rows * cols
+            for j in range(rows):
+                c = np.asarray(p.V[base + j * cols + mid])
+                for i in range(cols):
+                    q = base + j * cols + i
+                    p.V[q] = c + (np.asarray(p.V[q]) - c) * w_k
+    if not n_knots:
+        return None
+    line, side = centre_lines[0]
+    keep = line[:, 2] > z_cut + CORD_KNOT_CLEAR * S
+    kept, side = line[keep], side[keep]
+    knots = Part("CordKnots")
+    r = float(sash.get("cord_knot_m", 0.016)) * S
+    u0, v0, u1, v1 = ATLAS["wrap_knot"]
+    seg = np.cumsum(np.r_[0.0, np.linalg.norm(np.diff(kept, axis=0), axis=1)])
+    for k in range(n_knots):
+        s = seg[-1] * (CORD_KNOT_SPAN[0] + (CORD_KNOT_SPAN[1] - CORD_KNOT_SPAN[0]) * k / max(n_knots - 1, 1))
+        c = np.array([np.interp(s, seg, kept[:, a]) for a in range(3)])
+        j = min(int(np.searchsorted(seg, s)), len(kept) - 1)
+        down = kept[min(j + 1, len(kept) - 1)] - kept[max(j - 1, 0)]
+        out_d = np.cross(side[j], down)  # the tail's own face normal there, turned away from the waist axis
+        out_d *= np.sign(out_d @ np.array([c[0], c[1] - 0.01 * S, 0.0]))
+        out_d /= np.linalg.norm(out_d)
+        uv_sphere(knots, c + out_d * 0.3 * r, np.array([0.5, 0.42, 0.62]) * r, 10, 6, "cloth", axis_fwd=out_d,
+                  uv_rect=(u0, v0, u1, v1), tags=TAG_CLOTH)
+    knots.C = [(0.0, 0.0, 0.0, 0.0)] * len(knots.V)
+    return knots
 
 
 def _pad(p: Part) -> Part:
@@ -357,7 +414,12 @@ def build_costume(body, params: dict) -> dict[str, Part]:
         z_c = z_waist - 0.01 * S
         p = TC.sash(fields, outer, z_c, float(sash["width_m"]) * S, int(sash.get("turns", 2)), ATLAS["sash"],
                     ATLAS["sash_tails"])
-        out["Sash"] = _mat(_crop_tails(p, z_c - (0.04 + float(sash.get("tails_m", 0.24))) * S), sash["mat"])
+        z_cut = z_c - (0.04 + float(sash.get("tails_m", 0.24))) * S
+        knots = _cord_shape(p, sash, z_cut, S)
+        p = _crop_tails(p, z_cut)
+        if knots is not None:
+            p.extend(knots)
+        out["Sash"] = _mat(p, sash["mat"])
     if params.get("headwrap"):
         out.update(build_headwrap(fields, params["headwrap"]))
     wr = params.get("wraps")
