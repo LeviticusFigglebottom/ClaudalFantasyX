@@ -243,3 +243,34 @@ RENDER-REQUEST @ 469851f6: kite_map; why: a new screen (the Kite's world map, M3
      - The Ansedra and Lowlight maps wait on their zone layouts.
 
   Merged the integration branch (5720fa26). Handoff: `2026-10-27-ui-ui-menus-2.md`. **Lead: route the next item, or ping when Act II enemies or zones land.**
+- 2026-10-28 00:40, **the Lead's 23:37 list:**
+  1. **The Kite row in the field menu, behind `kite_flying` (abbb8476):**
+     - The row isn't there until the Kite flies. Then it sits after Map, and the panel grows by one row (field_menu.json `extra_rows`, `FieldMenu.grown_for`), so Close never scrolls away unseen.
+     - The row stays out of `ROOT_IDS`, so every other row keeps its index (tests and shots use it).
+     - Cancel comes back to the menu; a flight closes the menu too.
+     - **Checks:** test_field_menu_kite 4/0, aspect 18/0, pseudo-loc 26/0; shot `field_menu_kite`.
+  2. **Renders viewed:** `lead/gate-render-ui-da7891c` **approved** (892334f2).
+     - `reefball_outfitter` reads cleanly.
+     - The `reefball_hud_choice` drift is the intended refused Loft row (M3-RBL-201). Nothing reefball changed since.
+  3. **Merged `claude/act1-chapters` into claude/ui (4d2e25cf)** to build Act II UI against its Ch10–16 zones, flags and names. The shared files are a union (flags 190 + 174 = 205, none lost; shots, baselines, translations). env-art and creatures are not merged: nothing here needs them yet. **Lead: merge act1-chapters before or with claude/ui.**
+  4. **M3-UI-206, Act II area maps (3e787f14):**
+     - All 15 Ch10–16 greybox zones are in `zone_maps.json`.
+     - The route runs on to the Drowned Choir (30 stops).
+     - A layout's own `ramps` now draw as pads.
+     - Strings: `maps_act2.csv`.
+     - test_zone_map checks every greybox zone (27). Three shots.
+  5. **M3-UI-207, Act II codex (ce258864):**
+     - 14 places and 2 peoples (the Kirru, the Ullari), each on its chapter's arrival flag.
+     - Spoiler-safe, per M3-NAR-01. Review: narrative.
+  6. **The bestiary:** no branch has an Act II row in `enemies.json` (creatures added only the actors), so **M3-UI-208 asks Combat for them**. The bestiary lists them with no UI change.
+  7. **Shops and inns (4d32a621):**
+     - Shops: `quellan_trader`, `ansedra_purveyor`, `hollowmere_chandler`.
+     - Inns: `quellan_inn`, `hollowmere_inn`.
+     - Strings: `towns_act2.csv`.
+     - The layouts have no such triggers yet, so **M3-UI-209 asks act1-chapters** for the triggers, the `Shrine` spawns and the shrines rows.
+  - **Correction to 23:55:** the Act II zones and Ansedra/Lowlight do exist (on act1-chapters). The BACKLOG EMPTY line is withdrawn.
+RENDER-REQUEST @ 4d32a621: kite_map, field_menu_kite, field_menu_map_keth_pass, field_menu_map_lowlight, field_menu_map_ansedra, field_menu_codex; why:
+- the Kite's map;
+- the field menu a row taller with the Kite;
+- three Act II maps (the raised landings and flights, the drowned shaft, the domes on the lagoon);
+- the codex counts move (34 → 50 entries).
