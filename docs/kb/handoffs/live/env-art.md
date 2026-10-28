@@ -589,7 +589,7 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
-- **MERGE-READY @ (this push): the big14 gate's `test_zone_dressing_ch01` and walk-through batches 1–2.**
+- **MERGE-READY @ f6141df80: the big14 gate's `test_zone_dressing_ch01` and walk-through batches 1–2.**
   - **The gate failure is fixed.** I merged `origin/gpu/gate-big14-shots`; there were no conflicts.
     - `ov_zone_dressing.py`'s stale layout was regenerated at 9f4d11ab.
     - `ou_zone_dressing.py`'s stair is guarded.
