@@ -71,7 +71,7 @@ func test_a_colossus_fight_rests_farther_back() -> void:
 	# M3-BPR-425 (GPU QA row 36): the Reach's arm filled most of the frame and passed over the party all fight. Its
 	# fight rests farther back and higher, the whole party inside the safe frame; another fight keeps the authored rest.
 	var frames: Dictionary = {}
-	for enc: StringName in [&"undertows_reach", &"ch04_spar_wraith"]:
+	for enc: StringName in [&"undertows_reach", &"ch05_cinder_matron"]:
 		ctl = (load(SANDBOX) as PackedScene).instantiate() as BattleController
 		ctl.auto_start = false
 		ctl.pacing_scale = 0.0
@@ -96,4 +96,4 @@ func test_a_colossus_fight_rests_farther_back() -> void:
 		ctl.get_parent().remove_child(ctl)
 		ctl.free()
 	assert_true(float(frames[&"undertows_reach"]) > 2.0, "the Reach's fight rests farther back")
-	assert_eq(float(frames[&"ch04_spar_wraith"]), 0.0, "another fight keeps the authored rest")
+	assert_eq(float(frames[&"ch05_cinder_matron"]), 0.0, "a fight with no row keeps the authored rest")
