@@ -260,3 +260,31 @@ descriptions above are history where this section differs.
 
 **Not done:** no portrait (test_creature_portraits fails on the missing Vowbound portrait PNGs, before and after this
 pass). A real alpha shader for the spectral read is still a kit change (another track's).
+
+## Polish (M3-CRB-008, 2026-10-28)
+
+Two flaws seen in the final-pass render; nothing else is redone.
+
+- **The hammer is fused, not perched.** It stood on a 0.2 m stick over the casque like a hat ornament. Now the
+  handle (thicker: radius 5.2 cm, worn ash) is sunk into the casque at z 1.40, in the saddle in front of its hump,
+  raked back 16°. The head lies along the crest, face forward and tilted up with the horn's sweep, with its underside
+  resting on the hump behind the handle (2 to 9 cm over the crest along its length), so the casque and hammer read
+  as one silhouette. Only 8 cm of handle shows. The casque's keratin has grown up round its lower half (to 4.8 cm) in
+  three layered ridges. Each ridge is a shelf whose lip overhangs the one below and wanders round the handle, higher
+  on one side. The growth is long along the crest and narrower than the casque across it, so it sinks into the
+  flanks, and a dark crack splits it up the front where it tore round the wood. A leather wrap (2.6 turns) covers the
+  wood between the growth and the head. The forged head is unchanged. **`vfx_keepsake`** moves with it, to
+  (0, 3.065, 1.349) on `head`.
+- **Forearm plates with a clean lip.** The three scutes down each forearm sank into the hide, where the hide's bumps
+  cut a ragged line. They are now laid onto the arm's own surface: their five columns land on the arm grid's
+  segments, so the sheet never chords under a bulge. Each is a domed sheet standing proudest at its wrist edge, longer
+  than before so that each tucks under the free edge of the one above. All round it runs a bevelled lip, raised a
+  little and worn pale, with a doubled outline so the edge stays crisp. The lip turns down over the hide to 4 mm
+  under it, and its foot is a dark seam (cavity 1). 64 triangles a plate instead of 24.
+- **Last Strike:** the hammer's face now sits lower and further forward, so the blow's hips come down 0.245 m
+  instead of 0.31 m (0.215 m instead of 0.28 m on the held brace). This keeps the face landing *on* the water
+  (lowest vertex −0.002 m) and not 6.7 cm through it. Contact second unchanged.
+
+**As built:** 17,830 triangles (≤ 18k): plates 1,248, collar 448, handle 160, leather 126, hammer head 320, the rest
+as above. 13,162 vertices, 24 bones, the same 14 clips. Rest bounds y 0 to 3.25 m: the hammer is 10 cm lower, so the
+creature is now shorter than its 3.3 m stand-in.

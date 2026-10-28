@@ -90,10 +90,12 @@ EYE_AT = (0.134, 2.725, 1.16)
 BILL = ((0.0, 2.64, 1.16), (0.0, 2.64, 1.50), (0.0, 2.50, 1.80), (0.0, 2.24, 1.95))
 MANDIBLE = ((0.0, 2.55, 1.15), (0.0, 2.52, 1.45), (0.0, 2.40, 1.72), (0.0, 2.22, 1.90))
 CASQUE_Z = (0.86, 1.7)  # the casque runs from the brow to past mid-bill
-HAMMER_Z = 1.13  # where the handle leaves the casque
-HANDLE_RAKE = 10.0  # degrees back from upright: the face looks forward and leads every nose-down swing
-HANDLE_VIS = 0.3  # the handle's length above the casque, to the head's centre
-HANDLE_R = 0.042
+HAMMER_Z = 1.4  # where the handle is sunk into the casque (in the saddle in front of its hump)
+HANDLE_RAKE = 16.0  # degrees back from upright: the head lies along the crest, its face forward and tilted up with
+# the horn's sweep (it leads every nose-down swing), its underside resting on the casque's hump behind the handle
+HANDLE_VIS = 0.185  # the handle's length out of the casque, to the head's centre
+HANDLE_R = 0.052
+GROWTH = 0.048  # how far the casque's growth has climbed the handle
 HEAD_FACE, HEAD_PEEN = 0.31, -0.34  # along its length from the handle: the face forward, the peen back
 
 # ---- the anvil (the sternum) ---------------------------------------------------------------------
@@ -393,6 +395,51 @@ def plate(mesh: ck.Mesh, at, n, fwd, half, bones, rng, *, lift: float = 1.0, cur
     ck.finish(mesh, P, T, "body", col, bones, wet=0.1, cavity=cav, N=N)
 
 
+def armour_plate(mesh: ck.Mesh, g: Grid, r: float, s: float, half, bones, rng) -> None:
+    """A forearm scute laid onto g's own surface around ring r and segment s (so its outline never meets the hide in
+    a ragged line): a domed sheet that stands proudest at its rear (wrist) edge, then all round a clean bevelled lip,
+    a little raised and worn pale, turning down over the hide to just under it, its foot a dark seam (cavity 1).
+    `half` = (thickness, along) in metres; across, it spans two of g's segments each side of s, rounded to a whole
+    segment, so its columns land on the hide's own vertices and it never chords under a bulge. 64 triangles."""
+    h, ln = half
+    s = float(round(s))
+    hr, hs = ln / g.spacing(r, s)[0], 2.0  # the half extents in rings and segments
+    X, Z = (a.ravel() for a in np.meshgrid(np.linspace(-1.0, 1.0, 5), np.linspace(-1.0, 1.0, 3)))  # Z -1: the rear
+    ring = [0, 1, 2, 3, 4, 9, 14, 13, 12, 11, 10, 5]  # the top grid's outline, in order
+
+    def lift(x, z):
+        return h * (0.85 + 0.3 * (1.0 - x * x) + 0.8 * np.clip(-z, 0.0, 1.0))
+
+    def on(x, z, up):  # the outline rounded: the ends bowed
+        p, n = g.at(r - z * hr * (1.0 + 0.16 * (1.0 - x * x)), s + x * hs)
+        return p + n * up
+
+    top = np.array([on(x, z, lift(x, z)) for x, z in zip(X, Z)])
+    xo, zo = X[ring], Z[ring]
+    lip = np.array([on(x * 1.07, z * 1.1, lift(x, z) + 0.22 * h) for x, z in zip(xo, zo)])
+    foot = np.array([on(x * 1.16, z * 1.22, -0.004) for x, z in zip(xo, zo)])
+    m = len(ring)
+    P = np.vstack([top, top[ring], lip, foot])  # the outline doubled, so the bevel keeps a crisp edge
+    e, li, fo = 15, 15 + m, 15 + 2 * m
+    band = []
+    for k in range(m):
+        k1 = (k + 1) % m
+        for a0, a1, b0, b1 in ((e + k, e + k1, li + k, li + k1), (li + k, li + k1, fo + k, fo + k1)):
+            band += [(a0, b0, a1), (a1, b0, b1)]
+    T = np.vstack([ck.grid_tris(3, 5, False), np.asarray(band, dtype=np.int64)])
+    T = oriented(P, T, g.at(r, s)[0][None] - g.at(r, s)[1][None] * 0.15)
+    N = ck.vertex_normals(P, T)
+    free = np.r_[ck.smoothstep(-0.4, -1.0, Z), ck.smoothstep(-0.4, -1.0, zo), ck.smoothstep(-0.4, -1.0, zo),
+                 np.zeros(m)]
+    col = ck.mix(ck.mix(HORN, CHAR, 0.35), ck.mix(HORN, STONE, 0.5), float(rng.uniform(0.0, 0.6)))
+    col = np.tile(col, (len(P), 1))
+    col = ck.mix(col, ck.mix(HORN, ASH, 0.4), (0.4 * free)[:, None])  # the free edge, worn
+    col[li:fo] = ck.mix(col[li:fo], ck.mix(HORN, ASH, 0.55), 0.6)  # the lip, worn pale all round
+    col[fo:] = ck.mix(PAL["lacquer_black"], PAL["tortoiseshell"], 0.25)  # the seam under it
+    cav = np.r_[np.full(15 + m, 0.1), np.zeros(m), np.ones(m)]
+    ck.finish(mesh, P, T, "body", col, bones, wet=0.1, cavity=cav, N=N)
+
+
 # ---------------------------------------------------------------------------------------------
 # Rig
 # ---------------------------------------------------------------------------------------------
@@ -482,7 +529,7 @@ def hammer_axes():
     r = math.radians(HANDLE_RAKE)
     up = np.array([0.0, math.cos(r), -math.sin(r)])
     fwd = np.array([0.0, math.sin(r), math.cos(r)])
-    base = np.array([0.0, casque_top(HAMMER_Z) - 0.03, HAMMER_Z])
+    base = np.array([0.0, casque_top(HAMMER_Z), HAMMER_Z])
     return base, up, fwd
 
 
@@ -737,66 +784,88 @@ def casque(mesh: ck.Mesh, rig: ck.Rig) -> None:
 
 
 def hammer(mesh: ck.Mesh, rig: ck.Rig) -> None:
-    """The keepsake: a cross-peen hammer standing in the casque. Its handle's foot is grown over by the casque (a
-    lumpy collar with three tendrils climbing the wood), a leather strap is wound over the grip, worn ash above it,
-    and the octagonal forged head sits across the top, face forward, peen back, its face worn bright."""
+    """The keepsake, fused into the casque: the handle is sunk into it at a slant, the casque's keratin has grown up
+    round the handle's lower half in layered ridges (growth lines, split by a crack where it grew), a leather wrap
+    over the worn ash above that, and the octagonal forged head lies along the crest, face forward, its underside
+    resting on the casque's hump, its face worn bright."""
     hb = rig.rigid("head")
     base, up, fwd = hammer_axes()
     side = np.array([1.0, 0.0, 0.0])
     centre = hammer_centre()
     before = mesh.triangle_count
-    # the handle: ash, a little swelled at the grip, through the head's eye
-    K = 14
-    span = HANDLE_VIS + 0.18
-    path = np.array([base - up * 0.1 + up * span * f for f in np.linspace(0.0, 1.0, K)])
+    # the handle: thick, worn ash, from deep in the casque up through the head's eye
+    K = 8
+    path = np.array([base + up * f for f in np.linspace(-0.1, HANDLE_VIS + 0.09, K)])
     t = np.linspace(0.0, 1.0, K)
-    r = HANDLE_R * (1.0 + 0.12 * np.sin(math.pi * np.clip(t * 1.6, 0, 1)) - 0.12 * ck.smoothstep(0.6, 0.85, t))
-    g = Grid(path, r, r * 0.85, 10, up_hint=(0.0, 0.0, 1.0))
-    grain = ck.fbm(g.P * np.array([60.0, 4.0, 60.0]), SEED + 43)
+    r = HANDLE_R * (1.0 - 0.08 * ck.smoothstep(0.6, 0.8, t))
+    g = Grid(path, r, r * 0.88, 10, up_hint=(0.0, 0.0, 1.0))
+    g.sculpt(noise=0.002, seed=SEED + 41)
+    grain = ck.fbm(g.P * np.array([70.0, 5.0, 70.0]), SEED + 43)
     col = ck.mix(PAL["timber_weathered"], ck.mix(PAL["timber_weathered"], PAL["lacquer_black"], 0.45),
                  ck.smoothstep(-0.1, 0.4, grain)[:, None])
+    col = ck.mix(col, ck.mix(PAL["timber_weathered"], PAL["sand_cloth"], 0.4),  # worn pale where it is gripped
+                 (0.5 * ck.smoothstep(0.1, 0.6, -grain))[:, None])
     ck.finish(mesh, g.P, g.T, "hammer", col, hb, wet=0.05, cavity=0.15, N=g.N)
     count("handle", mesh, before)
-    # the leather strap, wound over the grip
+    # the leather wrap, wound over the handle between the growth and the head
     before = mesh.triangle_count
-    n_steps, turns, h0, h1 = 42, 6.0, 0.05, 0.2
+    n_steps, turns, h0, h1 = 22, 2.6, GROWTH - 0.004, HANDLE_VIS - 0.098
     ph = np.linspace(0.0, 2.0 * math.pi * turns, n_steps)
     h = np.linspace(h0, h1, n_steps)
-    tt = np.clip((h + 0.1) / span, 0.0, 1.0)
-    rad = HANDLE_R * 1.08 * (1.0 + 0.12 * np.sin(math.pi * np.clip(tt * 1.6, 0, 1)))
-    radial = np.outer(np.cos(ph), side) + np.outer(np.sin(ph), fwd)
+    rad = np.full(n_steps, HANDLE_R * 1.05)
+    radial = np.outer(np.cos(ph), side) * 1.0 + np.outer(np.sin(ph), fwd) * 0.88
     axis = base + np.outer(h, up)
     rows = [axis + radial * (rad + dr)[:, None] + up * dh
-            for dr, dh in ((0.0, -0.016), (0.006, -0.012), (0.006, 0.012), (0.0, 0.016))]
+            for dr, dh in ((-0.002, -0.011), (0.005, -0.008), (0.005, 0.009), (-0.002, 0.012))]
     P = np.stack(rows, axis=1).reshape(-1, 3)
     T = ck.grid_tris(n_steps, 4, False)
     Nn = np.repeat(radial, 4, axis=0) + np.tile(np.array([[-1.0], [0.0], [0.0], [1.0]]), (n_steps, 1)) * up * 0.6
     T = facing(P, T, Nn)
     worn = ck.smoothstep(0.0, 0.5, ck.fbm(P * 40.0, SEED + 45))
     col = ck.mix(LEATHER, ck.mix(LEATHER, PAL["sand_cloth"], 0.35), worn[:, None])
-    ck.finish(mesh, P, T, "hammer", col, hb, wet=0.1, cavity=np.tile([0.5, 0.0, 0.0, 0.5], n_steps))
+    ck.finish(mesh, P, T, "hammer", col, hb, wet=0.1, cavity=np.tile([0.6, 0.0, 0.0, 0.6], n_steps))
     count("leather", mesh, before)
-    # the casque grown over the handle's foot: a lumpy collar flaring into the casque, three tendrils climbing
+    # the growth: the casque's keratin grown up round the handle's foot in three layered ridges, each a shelf whose
+    # lip overhangs the one below and wanders round it (higher on one side, as growth lines do), flaring into the
+    # casque's flanks (long along the crest, flat across it like the casque), split up its front by a crack where
+    # the growth tore round the wood
     before = mesh.triangle_count
-    K = 8
-    path = np.array([base - up * 0.05 + up * 0.11 * f for f in np.linspace(0.0, 1.0, K)])
+    K, S, top = 16, 14, GROWTH
+    path = np.array([base + up * f for f in np.linspace(-0.05, top, K)])
     t = np.linspace(0.0, 1.0, K)
-    rc = HANDLE_R * 1.05 + 0.055 * (1.0 - t) ** 2.2
-    g = Grid(path, rc * 0.8, rc * 1.25, 12, up_hint=(0.0, 0.0, 1.0),
-             mod=lambda tt, a: 1.0 + 0.12 * np.sin(5.0 * a + 1.0) * (1.0 - tt))
-    g.sculpt(noise=0.006, seed=SEED + 47)
-    k = np.clip((g.P - base) @ up / 0.11, 0.0, 1.0)
-    col = ck.mix(PAL["brass"], IVORY, (0.4 + 0.5 * k)[:, None])
-    col = ck.mix(col, ck.mix(PAL["brass"], HORN, 0.5), ck.smoothstep(0.02, 0.2, concavity(g.P, g.T, g.N))[:, None])
-    ck.finish(mesh, g.P, g.T, "beak", col, hb, wet=0.3, cavity=0.2, N=g.N)
-    for k3 in range(3):
-        a0 = 2.0 * math.pi * k3 / 3.0 + 0.4
-        aa = a0 + np.linspace(0, 0.5, 6)
-        rr = np.outer(np.cos(aa), side) + np.outer(np.sin(aa), fwd)
-        hh = np.linspace(0.05, 0.1 + 0.025 * k3, 6)
-        pts = base + np.outer(hh, up) + rr * (HANDLE_R * 1.02)
-        Pt, Tt = ck.tube(pts, np.linspace(0.012, 0.003, 6), 4, cap_start=False, up_hint=tuple(up))
-        ck.finish(mesh, Pt, Tt, "beak", ck.mix(PAL["brass"], IVORY, 0.6), hb, wet=0.3)
+    layers = 3.0
+    rc = HANDLE_R * 1.04 + 0.075 * (1.0 - t) ** 1.7
+    rc[-1] = HANDLE_R * 1.0
+    crack_a = 0.35  # round from the front
+
+    def layer(tt, a):  # where in its growth layer a point is (0 at a layer's foot .. 1 at its lip)
+        return (tt * layers + 0.22 * np.sin(2.0 * a + 0.7) + 0.12 * np.sin(3.0 * a + 2.0)) % 1.0
+
+    def crack(a, w):
+        return np.exp(-(((a - crack_a + math.pi) % (2 * math.pi) - math.pi) / w) ** 2)
+
+    def grown(tt, a):
+        u = layer(tt, a)
+        shelf = 0.14 * ck.smoothstep(0.5, 0.92, u) * (1.0 - ck.smoothstep(0.93, 1.0, u))  # each ridge's lip
+        climb = 1.0 + 0.12 * np.cos(a - 1.2) * tt  # it has climbed further up one side
+        return (1.0 + shelf * (1.0 - ck.smoothstep(0.85, 1.0, tt))) * (1.0 - 0.3 * crack(a, 0.14)) * climb
+
+    flat = np.minimum(rc * 0.82, casque_shape((HAMMER_Z - CASQUE_Z[0]) / (CASQUE_Z[1] - CASQUE_Z[0]))[3] * 0.92)
+    g = Grid(path, np.maximum(flat, HANDLE_R * 1.0), rc * 1.3, S, up_hint=tuple(fwd), mod=grown)
+    g.sculpt(noise=0.006, fine=0.003, seed=SEED + 47)
+    conc = concavity(g.P, g.T, g.N)
+    k = np.clip((g.P - base) @ up / top, 0.0, 1.0)
+    av = np.r_[np.tile(g.a, K), 0.0, 0.0]
+    tv = np.r_[np.repeat(t, S), 0.0, 1.0]
+    uv_ = layer(tv, av)
+    split = crack(av, 0.09) * (1.0 - 0.5 * tv)
+    col = ck.mix(PAL["brass"], IVORY, (0.35 + 0.45 * k)[:, None])  # the casque's ivory over brass, paler new growth
+    col = ck.mix(col, ck.mix(PAL["brass"], HORN, 0.8), (0.75 * ck.smoothstep(0.35, 0.6, uv_)
+                                                       * (1.0 - ck.smoothstep(0.6, 0.9, uv_)))[:, None])  # under a lip
+    col = ck.mix(col, ck.mix(PAL["brass"], HORN, 0.7), ck.smoothstep(0.02, 0.2, conc)[:, None])
+    col = ck.mix(col, ck.mix(PAL["lacquer_black"], PAL["tortoiseshell"], 0.4), (0.9 * split)[:, None])  # the crack
+    cav = np.clip(0.2 + 2.5 * np.clip(conc, 0.0, None) + split, 0.0, 1.0)
+    ck.finish(mesh, g.P, g.T, "beak", col, hb, wet=0.3, cavity=cav, N=g.N)
     count("collar", mesh, before)
     # the head: an octagonal forged bar, the face end chamfered and slightly domed, the peen a cross wedge
     before = mesh.triangle_count
@@ -1041,10 +1110,8 @@ def fore_limb(mesh: ck.Mesh, rig: ck.Rig, leg: str) -> None:
     count("cracks", mesh, before)
     before = mesh.triangle_count
     a_pl = front - s * 0.6
-    for tt, half in ((0.63, (0.15, 0.032, 0.08)), (0.74, (0.145, 0.03, 0.075)), (0.85, (0.125, 0.028, 0.07))):
-        p, n = g.at(tt * (g.K - 1), a_pl / (2 * math.pi) * S)
-        k = int(round(tt * (g.K - 1)))
-        plate(mesh, p, n, -(path[min(k + 1, g.K - 1)] - path[max(k - 1, 0)]), half, skin, rng, lift=1.3, curve=2.6)
+    for tt, half in ((0.63, (0.022, 0.085)), (0.74, (0.021, 0.082)), (0.85, (0.02, 0.075))):
+        armour_plate(mesh, g, tt * (g.K - 1), a_pl / (2 * math.pi) * S, half, skin, rng)
     count("plates", mesh, before)
 
 
@@ -1523,7 +1590,9 @@ def build_dismiss() -> ck.Clip:
 REAR = dict(body=(-18.0, 0.0, 0.0), lift=0.04, chest=-6.0, neck=(-8.0, -12.0, -14.0), head=-30.0, jaw=10.0,
             tail=10.0)
 ARMS_UP = (-40.0, -70.0, 30.0)  # the forearms drawn up under him as he rears: (upper, lower, foot) rx
-BLOW = dict(body=(20.0, 0.0, 0.0), lift=-0.31, slide=0.12, chest=10.0, neck=(35.0, 30.0, 15.0), head=20.0, tail=-8.0)
+# M3-CRB-008 polish: the hammer now lies along the casque, so the blow comes down 6.5 cm less to land its face
+# on the water (not through it)
+BLOW = dict(body=(20.0, 0.0, 0.0), lift=-0.245, slide=0.12, chest=10.0, neck=(35.0, 30.0, 15.0), head=20.0, tail=-8.0)
 
 
 def build_special() -> ck.Clip:
@@ -1531,7 +1600,7 @@ def build_special() -> ck.Clip:
     overhead blow, the forearms planting and the hammer's face landing on the water in front of him."""
     c = ck.Clip("special", SPECIAL_SEC)
     for t, kw in ((0.0, {}), (0.9, REAR), (1.25, dict(REAR, head=-34.0, neck=(-9.0, -14.0, -16.0))),
-                  (SPECIAL_CONTACT, BLOW), (1.95, dict(BLOW, head=17.0, lift=-0.28)), (SPECIAL_SEC, {})):
+                  (SPECIAL_CONTACT, BLOW), (1.95, dict(BLOW, head=17.0, lift=-0.215)), (SPECIAL_SEC, {})):
         pose(c, t, **kw)
     for leg in ("hind_l", "hind_r"):
         for t in (0.0, SPECIAL_SEC):
