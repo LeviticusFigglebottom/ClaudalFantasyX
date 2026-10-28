@@ -141,6 +141,28 @@ def fringe_regions(lm, P: np.ndarray, N: np.ndarray, reg: np.ndarray, fp: dict) 
         dorsal = N @ np.array([0.0, 0.6, 0.8]) > 0.3
         m = (reg == f"arm_{sd}") & (t > 0.08) & (t < float(fp["fringe_forearm_to"])) & dorsal
         out = np.maximum(out, m.astype(float))
+    # look-dev review: the outlines that read as bare skin (the outer upper arms, the hips and buttocks, the outer and
+    # back thighs, the left side under the arm), so he does not read as a bald mannequin
+    for sd in ("L", "R"):
+        sg = 1.0 if sd == "L" else -1.0
+        sh, el = lm.side_pt("shoulder", sd), lm.side_pt("elbow", sd)
+        ax = el - sh
+        t = (P - sh) @ ax / float(ax @ ax)
+        outer = (N @ np.array([sg, 0.3, 0.0])) > 0.45
+        m = (reg == f"arm_{sd}") & (t > 0.3) & (t < 0.95) & outer
+        out = np.maximum(out, m.astype(float))
+        hp, kn = lm.side_pt("hip", sd), lm.side_pt("knee", sd)
+        ax = kn - hp
+        t = (P - hp) @ ax / float(ax @ ax)
+        lat = (N @ np.array([sg, 0.5, 0.0])) > 0.5
+        m = (reg == f"leg_{sd}") & (t > -0.1) & (t < 0.75) & lat
+        out = np.maximum(out, m.astype(float))
+    hz = float(lm.side_pt("hip", "L")[2])
+    hips = np.isin(reg, ["torso"]) & (P[:, 2] < hz + 0.12 * S) & (P[:, 2] > hz - 0.12 * S)
+    hips &= (np.abs(N[:, 0]) > 0.55) | (N[:, 1] > 0.5)
+    out = np.maximum(out, hips.astype(float))
+    side = np.isin(reg, ["torso"]) & (N[:, 0] > 0.6) & (P[:, 2] > hz + 0.12 * S) & (P[:, 2] < sh_z - 0.12 * S)
+    out = np.maximum(out, side.astype(float))
     # the calves
     for sd in ("L", "R"):
         kn, an = lm.side_pt("knee", sd), lm.side_pt("ankle", sd)
@@ -165,16 +187,17 @@ def fringe_cards(lm, fp: dict, surface, roots: np.ndarray, rng) -> tuple[Part, n
     D = flow_dir(lm, roots, N, segs)
     n = len(roots)
     L = rng.uniform(lo, hi, n)
-    rise = rng.uniform(0.25, 0.55, n)
+    rise = rng.uniform(0.4, 0.8, n)
     ids_root = []
     for c in range(n):
         a = roots[c]
         b = surface.project(a + D[c] * L[c], lift)[0] + N[c] * L[c] * rise[c]
         pts = np.array([a, b])
-        nrm = np.array([N[c], N[c]])
-        twist = rng.uniform(-0.3, 0.3)
+        # the card stands on the skin (its plane holds the flow and the normal), so at the outline it is seen
+        # face-on and breaks the silhouette (look-dev review); a random lean off upright
+        twist = rng.uniform(-0.5, 0.5)
         side = _unit(np.cross(D[c], N[c]))
-        nrm = nrm * math.cos(twist) - side * math.sin(twist)
+        nrm = np.array([side, side]) * math.cos(twist) + np.array([N[c], N[c]]) * math.sin(twist)
         first = len(part.V)
         _card(part, pts, nrm, float(rng.uniform(wlo, whi)), _fur_u(int(rng.choice(FUR_TUFT_COLS))), "fur",
               TAG_FUR, 0.5)

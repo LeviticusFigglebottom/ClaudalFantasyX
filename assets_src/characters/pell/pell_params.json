@@ -180,7 +180,16 @@
     "mantle_back_hem_deg": -150.0,
     "mantle_hang_slope": 0.25,
     "mantle_hem_at": 0.75,
-    "mantle_relax": 6
+    "mantle_relax": 6,
+    "girdle_len_m": 0.22,
+    "girdle_off_m": 0.012,
+    "girdle_flare_m": 0.03,
+    "girdle_front_deg": [3.0, 80.0],
+    "girdle_back_deg": [100.0, 177.0],
+    "girdle_rows": 7,
+    "girdle_cols": 9,
+    "girdle_top_below_belt_m": 0.004,
+    "girdle_hang_slope": 0.15
   },
   "_staff": {
     "_about": "pell.md \u00a73, \u00a74.1 #7: the fishing-staff, held in the left hand (pell_props.py).",
@@ -234,14 +243,14 @@
     "dark_roughness": 0.35,
     "wet_roughness_drop": 0.15,
     "wet_darken": 0.1,
-    "fringe_cards": 1800,
+    "fringe_cards": 4200,
     "fringe_length_m": [
-      0.008,
-      0.014
+      0.02,
+      0.035
     ],
     "fringe_width_m": [
-      0.004,
-      0.007
+      0.006,
+      0.011
     ],
     "fringe_lift_m": 0.0008,
     "fringe_forearm_to": 0.45,

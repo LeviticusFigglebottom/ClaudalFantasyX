@@ -64,7 +64,7 @@ OUT = ROOT / "assets" / "characters" / "pell" / "textures"
 PARAMS = HERE / "pell_params.json"
 HEAD = (2048, 2048)
 BODY = (2048, 2048)  # pell.md §8.2: the body 2K x 4
-ROUGH = (0.4, 0.9)  # the skin materials' roughness_min / roughness_max (write_materials.py): ORM G is remapped
+ROUGH = (0.5, 0.95)  # the skin materials' roughness_min / roughness_max (write_materials.py): ORM G is remapped
 REED = "#B3A062"  # reed_plait (proposed)
 REED_SHADE = "#8A7A48"  # the plait's shaded faces
 ROPE = "#7A6A52"  # rope_old (proposed in kerrid.md)
@@ -83,13 +83,13 @@ MOUTH = "#3A1E1C"  # the mouth's inside: dark, not a human pink
 TONE = {"bone": BONE, "reed": REED, "dark": SHELL_DARK, "nacre": NACRE}
 TONE_ROUGH = {"bone": 0.35, "reed": 0.35, "dark": 0.35, "nacre": 0.2}
 STRIPE_TOP_W = 0.07  # replaced by `stripe_width_m` (pell_params)
-CLUMP_M = (0.005, 0.028)  # m: the body fur's clumps across and along the flow
-STRAND_STRETCH = 9.0  # the face's strand streaks: this much longer along the flow than across
-FUR_STREAK = 0.32  # the albedo's strand streaks (+/- half this): the fur reads as fur, not skin, at dialogue range
-FUR_CLUMP = 0.22  # and its clumps and partings
+CLUMP_M = (0.0025, 0.008)  # m: the body fur's clumps across and along the flow (short, dense: look-dev review)
+STRAND_STRETCH = 4.0  # the strand streaks: this much longer along the flow than across (short fur, not grain)
+FUR_STREAK = 0.08  # the albedo's strand streaks (+/- half this): fine and soft (the review: 0.32 read as wood grain)
+FUR_CLUMP = 0.06  # and its clumps
 FEATHER_BARBS = 2.0  # the crest feathers' barbs per texel row: a full vane that reads at dialogue range
 LIP_DARK = 0.55  # how far the lips take the nose pad's dark: an otter's lip line
-FUR_RELIEF = (0.00035, 0.0006)  # m: the face's strand relief, the body's clump relief
+FUR_RELIEF = (0.00025, 0.0003)  # m: the face's strand relief, the body's clump relief
 FUR_SIZE = (1024, 512)  # pell_fur.png: pell_fur.FUR_COLS columns, V root (row 0) -> tip
 FEATHER_SIZE = 1024
 CLOTH_SIZE = 2048
@@ -251,8 +251,7 @@ def fur_maps(key: str, npz: dict, size: int, lm, face, fp: dict) -> None:
     dark, mid, pale = hexc(fp["dark"]), hexc(fp["mid"]), hexc(fp["pale"])
     col = mid[None, :] * (1.0 - reg["saddle"][:, None]) + dark[None, :] * reg["saddle"][:, None]
     col = col * (1.0 - reg["pale"][:, None]) + pale[None, :] * reg["pale"][:, None]
-    streak = at.aniso_noise(P, D, (float(fp["strand_m"]) * 2.0 if key == "head" else CLUMP_M[0]) * S,
-                            STRAND_STRETCH, 405)
+    streak = at.aniso_noise(P, D, float(fp["strand_m"]) * 2.0 * S, STRAND_STRETCH, 405)
     clump = at.aniso_noise(P, D, CLUMP_M[1] * S, STRAND_STRETCH * 0.5, 409)  # the wet fur's partings, down the flow
     tone = 1.0 + FUR_STREAK * (streak - 0.5) + FUR_CLUMP * (clump - 0.5) + 0.06 * (at.fbm3(P, 0.02 * S, 406,
                                                                                           octaves=3) - 0.5)

@@ -431,6 +431,55 @@ def forearm_wrap(fields: Fields, cp: dict, side: str, motifs: dict) -> tuple[Par
     return part, np.array(along)
 
 
+GIRDLE_PANELS = ("FL", "FR", "BL", "BR")
+
+
+def girdle(fields: Fields, cp: dict, z_belt: float) -> tuple[Part, list]:
+    """The short reed-fibre girdle (pell.md §4.2's fallback, taken on review: the bare lower body read as nudity). Four
+    panels hung from the belt cord, split at the front, the back and both sides, so each one follows one thigh
+    (M1-CHR-14: nothing tube-like below the hips): front-left, front-right, back-left, back-right. Each panel's rows
+    run from the belt down `girdle_len_m`, on the hips' and thighs' surface `girdle_off_m` out, flaring to
+    `girdle_flare_m` at the hem and hanging plumb where the body falls away (between the legs). Returns (the part,
+    per vertex: (panel, row fraction))."""
+    lm = fields.lm
+    S = lm.S
+    part = Part("Girdle")
+    part._mat = "cloth"
+    L = float(cp["girdle_len_m"])
+    off = float(cp["girdle_off_m"])
+    flare = float(cp["girdle_flare_m"])
+    rows, cols = int(cp["girdle_rows"]), int(cp["girdle_cols"])
+    slope = float(cp["girdle_hang_slope"])
+    z0 = z_belt - float(cp["girdle_top_below_belt_m"])
+    u0, v0, u1, v1 = ATLAS["mantle"]
+    tags = []
+    for name in GIRDLE_PANELS:
+        a0, a1 = (float(x) for x in cp["girdle_front_deg" if name[0] == "F" else "girdle_back_deg"])
+        sg = 1.0 if name[1] == "L" else -1.0
+        th = np.radians(sg * np.linspace(a0, a1, cols))
+        D = dir_theta(th)
+        P = np.zeros((rows, cols, 3))
+        prev = None
+        for j in range(rows):
+            t = j / (rows - 1)
+            z = z0 - L * t
+            O = np.stack([np.zeros(cols), np.full(cols, 0.01 * S), np.full(cols, z)], axis=-1)
+            o = off + flare * t * t
+            r = cast_last(lambda Q: fields.lower(Q) - o, O, D, 0.5 * S)  # noqa: B023
+            if prev is not None:  # it hangs: it comes in toward the body no faster than `slope` of its drop
+                r = np.maximum(r, prev - slope * (L / (rows - 1)))
+            prev = r
+            P[j] = O + D * r[:, None]
+        rect = (u0 + (u1 - u0) * (0.5 if name[1] == "R" else 0.0), v0 + (v1 - v0) * (0.5 if name[0] == "B" else 0.0),
+                u0 + (u1 - u0) * (1.0 if name[1] == "R" else 0.5), v0 + (v1 - v0) * (1.0 if name[0] == "B" else 0.5))
+        n0 = len(part.V)
+        _panel(part, P, rect, None, False, MANTLE_BACK * S, np.array([0.0, 0.01 * S, z0 - 0.5 * L]))
+        tt = np.tile(np.repeat(np.linspace(0.0, 1.0, rows), cols), 2)
+        tags += [(name, float(x)) for x in tt[:len(part.V) - n0]]
+    part.C = [(0.0, 0.0, 0.0, 0.0)] * len(part.V)
+    return part, tags
+
+
 def ankle_cord(fields: Fields, cp: dict, motifs: dict) -> Part:
     """One turn of cord round the right shin, `ankle_cord_above_m` above the ankle bone, with three tiles."""
     lm = fields.lm
@@ -481,11 +530,12 @@ def build_costume(body, cp: dict) -> tuple[dict[str, Part], dict]:
     out["Pouch"], pouch_info = pouch(fields, cp, ring, z_belt)
     out["LineCoil"], coil_info = line_coil(fields, cp, ring, z_belt)
     out["AnkleCord"] = ankle_cord(fields, cp, motifs)
+    out["Girdle"], girdle_tags = girdle(fields, cp, z_belt)
     along = {}
     for sd in ("L", "R"):
         out[f"Wrap{sd}"], along[sd] = forearm_wrap(fields, cp, sd, motifs)
     info = {"chart": chart, "fields": fields, "cord_line": cord_line, "belt_ring": ring, "z_belt": z_belt,
-            "pouch": pouch_info, "coil": coil_info, "wrap_along": along}
+            "pouch": pouch_info, "coil": coil_info, "wrap_along": along, "girdle": girdle_tags}
     return out, info
 
 

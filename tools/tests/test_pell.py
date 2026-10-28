@@ -309,6 +309,24 @@ class TestRigRules(unittest.TestCase):
         self.assertIn("DEF-upper_arm.R", bones)  # §4.1 #1: the arm band
         self.assertNotIn("DEF-upper_arm.L", bones)  # the left arm is bare (the cord passes under it)
 
+    def test_the_girdle_panels_each_follow_one_thigh(self):
+        """pell.md §4.2's fallback (look-dev review): the girdle's four panels are split, so no vertex takes both
+        thighs (nothing tube-like below the hips, M1-CHR-14), and its hem rides the thighs."""
+        cost = self.rig.part("Costume")
+        low = (cost.P[:, 1] < 1.08) & (cost.P[:, 1] > 0.5)  # under the belt, above the ankle cord
+        self.assertGreater(int(low.sum()), 100)
+        for i in np.nonzero(low)[0]:
+            on = {self.names[j] for j, w in zip(cost.J[i], cost.W[i]) if w > 1e-4}
+            self.assertFalse(any(b.endswith(".L") for b in on) and any(b.endswith(".R") for b in on), on)
+        hem = low & (cost.P[:, 1] < float(np.percentile(cost.P[low, 1], 20)))
+        for i in np.nonzero(hem)[0]:
+            dom = self.names[cost.J[i][int(np.argmax(cost.W[i]))]]
+            self.assertTrue(dom.startswith("DEF-thigh"), dom)
+
+    def test_the_crest_rides_the_head(self):
+        """The Crest is skinned rigidly to the head bone (it was once exported unskinned and floated in the clips)."""
+        self.assertEqual(self.bones_of(self.rig.part("Crest")), {"DEF-spine.006"})
+
     def test_the_crest_stays_outside_the_head_in_both_keys(self):
         import asha_glb
         import rig_probe

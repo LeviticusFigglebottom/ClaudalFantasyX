@@ -95,9 +95,10 @@ MANTLE_YOKE_BONES = ("DEF-spine.003", "DEF-spine.004", "DEF-shoulder.R")
 MANTLE_FALL_BONES = ("DEF-spine", "DEF-spine.001", "DEF-spine.002", "DEF-spine.003", "DEF-spine.004", "DEF-shoulder.R")
 MANTLE_YOKE_BELOW = 0.10  # m (at s = 1) below the shoulder joint: above this the mantle is the yoke (YOKE bones only)
 HIP_BONES = ("DEF-spine", "DEF-spine.001")
+GIRDLE_HIP_ROWS = 0.15  # of the girdle's length: the rows under the belt that stay on the hips
 CARD_MIN_DELTA = bt.BEARD_MIN_DELTA  # m: card deltas under this are zeroed (the sparse morph accessors stay small)
 SKIN_CLEAR = {"mantle": 0.006, "cord": 0.004, "belt": 0.004, "ankle": 0.003, "wrap": 0.003,
-              "shell_cord": 0.008}  # m: least gap over skin (at s = 1)
+              "shell_cord": 0.008, "girdle": 0.008}  # m: least gap over skin (at s = 1)
 WEB_ROWS = 5
 WEB_COLS = 4
 
@@ -113,7 +114,7 @@ hb.MATERIALS.update({
 # name-shell disc, the long fingers and feet; cut detail: the fringe's inner rows, the tiles' bevels, the whiskers,
 # the net round the stone). The crest and the shell keep every triangle (they are a few hundred).
 hb.LOD1_RATIO.clear()
-hb.LOD1_RATIO.update({"Head": 0.5, "Body": 0.8, "Costume": 0.6, "Wraps": 0.5, "Fur": 0.6, "Staff": 0.6,
+hb.LOD1_RATIO.update({"Head": 0.5, "Body": 0.8, "Costume": 0.6, "Wraps": 0.5, "Fur": 0.2, "Staff": 0.6,
                       "Webs": 0.5})
 hb.LOD1_DROP_MATS.update({"whisker", "fur_brow"})
 
@@ -400,6 +401,7 @@ def main() -> int:
         Q[np.abs(Q) < MIDLINE_SNAP] = 0.0
         kb.data.foreach_set("co", Q.ravel())
     ob_crest.data.shape_keys.use_relative = True
+    hb.apply_weights(ob_crest, Wcr, wnames, skel)  # rigid on the head (it was left unskinned: it floated in the clips)
     log(f"crest: {crest.tris()} tris, tips at {crest_info['tips'][:, 2].max():.3f} m, raised "
         f"{crest_info['tips_raised'][:, 2].max():.3f} m")
 
@@ -411,7 +413,8 @@ def main() -> int:
     for name, regs, clear in (("Mantle", ("torso", "arm_R", "torso"), SKIN_CLEAR["mantle"]),
                               ("MantleCord", ("torso", "arm_L", "torso"), SKIN_CLEAR["cord"]),
                               ("BeltCord", ("torso", "leg_L", "leg_R", "torso"), SKIN_CLEAR["belt"]),
-                              ("AnkleCord", ("leg_R",), SKIN_CLEAR["ankle"])):
+                              ("AnkleCord", ("leg_R",), SKIN_CLEAR["ankle"]),
+                              ("Girdle", ("torso", "leg_L", "leg_R", "torso"), SKIN_CLEAR["girdle"])):
         Q = costume[name].varr()
         for rn in regs:
             Q = by.push_out(Q, V, F, freg == rn, clear * S)
@@ -427,7 +430,7 @@ def main() -> int:
         costume[f"Wrap{sd}"].V = list(Q)
     for p in costume.values():
         snap_part(p)
-    cost_names = ("Mantle", "MantleCord", "BeltCord", "Pouch", "LineCoil", "AnkleCord")
+    cost_names = ("Mantle", "MantleCord", "BeltCord", "Pouch", "LineCoil", "AnkleCord", "Girdle")
     opaque = Part("Costume")
     offs = {}
     for name in cost_names:
@@ -474,6 +477,21 @@ def main() -> int:
     leg_r = reg == "leg_R"
     Wc[sl("AnkleCord")] = restrict(hb.transfer_weights(Pc[sl("AnkleCord")], V[leg_r], W[leg_r]), wnames,
                                    ("DEF-shin.R", "DEF-shin.R.001"), "DEF-shin.R.001")
+    # the girdle (look-dev review, pell.md §4.2's fallback): each panel from the hips at the belt onto its own thigh
+    # by its hem, so the four split panels follow the legs apart
+    Pg = Pc[sl("Girdle")]
+    Wg_hip = restrict(hb.transfer_weights(Pg, V[torso], W[torso]), wnames, HIP_BONES, HIPS_BONE)
+    gt = np.array([t for _n, t in info["girdle"]])
+    gside = np.array([n[1] for n, _t in info["girdle"]])
+    Wg = np.zeros_like(Wg_hip)
+    for sd in ("L", "R"):
+        leg = reg == f"leg_{sd}"
+        on = gside == sd
+        Wl = restrict(hb.transfer_weights(Pg[on], V[leg], W[leg]), wnames, (f"DEF-thigh.{sd}", f"DEF-thigh.{sd}.001"),
+                      f"DEF-thigh.{sd}")
+        b = smooth01((gt[on] - GIRDLE_HIP_ROWS) / (1.0 - GIRDLE_HIP_ROWS))[:, None]
+        Wg[on] = Wg_hip[on] * (1.0 - b) + Wl * b
+    Wc[sl("Girdle")] = hb.limit4(Wg)
     Wc = pad_cols(Wc, nX)
     # the mantle's panel chains: two bones down a column of each fall, from the chest's height to the hem, on the
     # chest; a vertex near the hem gives `mantle_panel_share` of its weight to its chain
