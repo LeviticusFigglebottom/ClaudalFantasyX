@@ -100,11 +100,21 @@ static func retime(data: Dictionary, plan: Dictionary) -> void:
 	var kos: Array = plan["kos"]
 	var react_end := float(plan["contact"])
 	var ko_from := react_end
+	var riposte_end := -1.0
 	for r: Dictionary in plan["reactions"]:
 		var at := float(r["at"])
-		react_end = maxf(react_end, at + float((reaction.get(r["kind"], {}) as Dictionary).get("sec", 0.0)))
+		var end := at + float((reaction.get(r["kind"], {}) as Dictionary).get("sec", 0.0))
+		react_end = maxf(react_end, end)
+		if str(r.get("counter_by", "")) != "":
+			riposte_end = maxf(riposte_end, end)
 		if kos.has(r["target"]):
 			ko_from = maxf(ko_from, at)
+	# The attacker stays where it struck until the riposte has landed on it and played out, then goes home (the
+	# self-rendered battle_ch08_counter showed it already back on its mark when the answer landed).
+	var hold := riposte_end - float(plan["recover_end"])
+	if hold > 0.0:
+		plan["recover_end"] = float(plan["recover_end"]) + hold
+		plan["return_end"] = float(plan["return_end"]) + hold
 	if kos.has(plan["actor"]):  # felled by a counter: it falls once it is home (M3-BPR-406)
 		ko_from = maxf(ko_from, float(plan["return_end"]))
 	var ko := data.get("ko", {}) as Dictionary

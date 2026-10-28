@@ -112,6 +112,8 @@ func test_a_counter_is_answered_after_the_blow_by_the_hero_it_struck() -> void:
 	assert_false(answer.is_empty(), "the struck foe reacts to the riposte")
 	assert_eq(answer["counter_by"], &"rhen")
 	assert_true(float(answer["at"]) > float(plan["strike_end"]), "after its own blow")
+	var answered := float(answer["at"]) + float((data["reaction"] as Dictionary)["damage"]["sec"])
+	assert_true(float(plan["recover_end"]) >= answered - 0.001, "it stays where it struck until the answer lands")
 	foe.hp = 0
 	plan = BattleChoreoPlan.plan_for(data, ctl.engine, r)
 	assert_true((plan["kos"] as Array).has(foe.id), "a riposte can fell it")

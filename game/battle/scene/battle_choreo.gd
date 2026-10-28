@@ -406,6 +406,7 @@ func seek(t: float) -> void:
 	if _plan.is_empty():
 		return
 	_t = clampf(t, 0.0, float(_plan["total"]))
+	_apply()  # everyone where they stand at `t` first: a beat's VFX lands there, not on a mark left long ago
 	_step_beats()
 	if impact != null:
 		impact.finish()  # a freeze-frame jump carries no hit-stop

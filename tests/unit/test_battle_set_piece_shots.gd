@@ -5,6 +5,7 @@ extends TestCase
 
 const SHOTS := "res://game/battle/scene/shots/battle_ch08_%s.tscn"
 const EPS := 0.01
+const SetPieceBeatShotScript := preload("res://game/battle/scene/shots/set_piece_beat_shot.gd")
 
 var ctl: BattleController
 var shot: Node
@@ -53,6 +54,37 @@ func test_the_withdrawal_holds_half_way() -> void:
 	var back := float(ctl.stage.choreo.data["withdraw"]["back_m"])
 	assert_true(f.visible, "still on stage")
 	assert_true(moved > 0.05 and moved < back - 0.05, "part of the way back (%.2f of %.2f m)" % [moved, back])
+	_free()
+
+
+func test_a_frozen_riposte_lands_its_vfx_where_the_attacker_stands() -> void:
+	# Self-rendered battle_ch08_counter: seek() fired the contact before posing anyone, so the riposte's hit dust
+	# spawned on the attacker's empty mark. Now the frame is posed at `t` first.
+	ctl = (load(SHOTS % "counter") as PackedScene).instantiate() as BattleController
+	var tree := Engine.get_main_loop() as SceneTree
+	(tree.current_scene if tree.current_scene != null else tree.root).add_child(ctl)
+	ctl.auto_start = false
+	ctl.set_meta(BattleBossIntro.META_PLAYED, "ch08_stair_hold_1")
+	ctl.start_battle([&"rhen", &"asha", &"toma"] as Array[StringName], [], &"ch08_stair_hold_1", 20261027)
+	ctl.pacing_scale = 1.0
+	var choreo := ctl.stage.choreo
+	choreo.force_play = true
+	choreo.live = false
+	choreo.frozen = true
+	var foe := ctl.engine.enemies[0].id
+	var spots: Array[Vector3] = []
+	var vfx := ctl.stage.get_node(^"BattleVfx") as BattleVfx
+	vfx.effect_played.connect(func(_id: StringName, at: Vector3) -> void: spots.append(at))
+	var home := ctl.stage.stand_in(foe).global_position
+	ctl.engine.action_resolved.emit(SetPieceBeatShotScript.result(&"counter", foe))
+	var plan := choreo.current()
+	choreo.seek(SetPieceBeatShotScript.moment(plan, &"counter") + 0.04)
+	var now := ctl.stage.stand_in(foe).global_position
+	assert_true(now.distance_to(home) > 0.5, "the attacker is away from its mark when the answer lands")
+	var near_now := false
+	for at in spots:
+		near_now = near_now or Vector2(at.x - now.x, at.z - now.z).length() < 0.6
+	assert_true(near_now, "an effect lands where it stands now, not on its mark")
 	_free()
 
 
