@@ -470,6 +470,30 @@ Ch4–Ch9 onward. `m2-slice.md` beside this file is the history up to the 2026-1
     gone. `save_shrine` 10/0, slice_primitives 1/0, haluna 65/0.
   - **Next:** 2, the Ch1–Ch3 dialogue and narration pass, then 3, the cutscene timing against audio's cues.
 
+- **The Lead's no-render list, items 2 and 3. MERGE-READY @ c08e4612.**
+  - **The dialogue pass (Prologue, Ch1–Ch3, 237 lines):**
+    - Toma's lines keep his voice: no contractions in formal speech.
+    - No meta or modern words, and no line over the word limit.
+    - One tutorial line named a control in plain words, Ch1's tether line ("Press interact"). It now reads
+      `{field_interact}`, and `test_tutorial_bindings` guards every `*_tut_*` line.
+    - **Bark pacing:** overheard barks ran at the reveal plus a flat 2.4 s, so the long ones raced (Rhen's ring
+      bark at 20.5 cps). With `overheard_read_cps` 15 (Haluna, the causeway, Ch1), a line now stays up until it can
+      be read (`CutsceneMotion.read_hold`, tested). The causeway also gets the 2.4 s hold; it had fallen back to 1.5.
+  - **Cutscene timing against audio's cues:** the non-looping cues are the place to drift.
+    - **The first verse:** its four sung lines waited for a button, so the words drifted against
+      `hush_first_verse`. A `#timed` line now shows and the scene goes on. The verse's waits put each line on its
+      phrase (4.0, 11.19, 18.39 and 25.58 s, from audio's own `verse_notes()`).
+    - **The current shaft (Ch1):** it crossfades in the hum's breath, as audio wrote it.
+    - **going_under** was fixed in M3-AUD-829.
+    - `test_cutscene_music_sync` pins all three against audio's source (mutation-checked).
+  - **Checks:**
+    - Godot, all 0 failed: cutscene 80, read_hold 3, first_verse 3, dialogue_vs_scenes 3, haluna 65, ch01 21,
+      causeway 16, zone_story 15.
+    - The tools suite has 1250 tests. The only reds are the known two (test_screenshots and test_shrine_gi_bake,
+      both pending the render).
+    - dlgc and validate_data are clean.
+  - **No new render:** none of this changes a frame (the steps shot is captured before the verse).
+
 ### Render requests
 SUPERSEDED RENDER-REQUEST @ fdec3cc6: slice_prologue_vigil_line, slice_beach_h05_asha, slice_beach_h06_toma, slice_haluna_villagers_village, slice_causeway_head, slice_causeway_harrier_view, haluna_h01_village_from_sea, haluna_h02_tidewall_lane, haluna_h04_dock, haluna_h07_chapel_court, haluna_h10_dock_night, shrine_s01_approach, shrine_s02_threshold, shrine_s03_overview, shrine_s04_lip, shrine_s05_side_pool, drownbell_flood, battle_boss_intro_drownbell, battle_arena_causeway, field_causeway_dolly, boot_title; why: M2-FP-102..109, the human's playtest round (real cast and held poses in the prologue and Cutscene A, live villagers and wildlife, the final causeway), plus the greyscale audit of every slice beat. The six slice_* shots are new (no baseline yet).
 - **Known red until the render lands:** the six new `slice_*` shots have no baseline yet, so the tools test
