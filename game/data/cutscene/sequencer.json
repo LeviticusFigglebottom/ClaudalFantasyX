@@ -76,6 +76,7 @@
       "color": "#7FC6D9",
       "energy": 3.0,
       "size_m": 0.05,
+      "amount_multiplier": 0.15,
       "center_y_m": 0.4,
       "spread_m": 1.2,
       "life_sec": 9.0,

@@ -720,7 +720,7 @@ Ch4–Ch9 onward. `m2-slice.md` beside this file is the history up to the 2026-1
 - **SELF-RENDERED (viewed):** slice_verse_threshold (Asha in the doorway with her released light),
   slice_verse_recognition, ch01_o07_name_board, ch01_bell_room on env-art's dressing. slice_beach_h06_toma holds
   line 017, before its held-motes cue, as authored.
-- **MERGE-READY @ HEAD** (everything since 743b94bf):
+- **MERGE-READY @ 47f7707b** (everything since 743b94bf; plus the held rows' density in the next commit):
   - the cutscene VFX at final quality;
   - Oruvel and the Underway on env-art's dressings, with the cutscene side re-staged (M3-ENV-739/740/742 to review,
     M3-ENV-751 done);
