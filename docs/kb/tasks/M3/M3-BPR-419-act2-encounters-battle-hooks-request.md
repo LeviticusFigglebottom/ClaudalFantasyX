@@ -2,7 +2,8 @@
 id: M3-BPR-419
 title: "Request: Act II boss encounters, use the staged ids (arena, enemy and phase), so their battle presentation is live on day one"
 role: combat
-status: todo
+status: blocked
+blocked-by: ADR 0041
 owner_session: ""
 depends_on: [M3-BPR-418]
 milestone: M4

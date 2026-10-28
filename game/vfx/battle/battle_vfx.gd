@@ -105,17 +105,43 @@ func attach(controller: BattleController, engine: BattleEngine) -> void:
 ## the Drownbell's polyp_rise put a 35-44 ms frame into the Flood (79 ms on a fresh install). attach() calls
 ## it in the frame the battle scene enters, under the router's opaque fade (about 45 ms in all on the RX
 ## 9070 XT). A staged prewarm didn't help: the cost is the emitter's, in this tree. Returns the emitters built.
+## ADR 0041: with an engine, a skill's own effect is built only when someone in this battle can use that skill (Act I
+## gave every ability its own); one that joins later (a summon's) is built on its first play.
 func prebuild() -> int:
 	var count := 0
+	var unused := _unused_specials()
 	for effect_id: String in data.get("effects", {}):
 		var def := (data["effects"] as Dictionary)[effect_id] as Dictionary
-		if str(def.get("kind", "")) != KIND_PARTICLES:
+		if str(def.get("kind", "")) != KIND_PARTICLES or unused.has(effect_id):
 			continue
 		var layers: Array = def.get("layers", [{}])
 		for i in layers.size():
 			_emitter(StringName("%s#%d" % [effect_id, i]), def.merged(layers[i] as Dictionary, true))
 			count += 1
 	return count
+
+
+## The skills-map effects nobody in this battle can use: every `map.skills` effect but those of the fighters' own
+## skills, the Swell techniques and the Vowbound's. {} without an engine (everything is built).
+func _unused_specials() -> Dictionary:
+	if _engine == null:
+		return {}
+	var by_skill := (data.get("map", {}) as Dictionary).get("skills", {}) as Dictionary
+	var wanted: Dictionary = {}
+	for c in _engine.party_active + _engine.party_reserve + _engine.enemies + _engine.entries:
+		for sid: StringName in c.skills:
+			wanted[str(by_skill.get(String(sid), ""))] = true
+	for sid: String in by_skill:
+		if bool(_engine.db.skill(StringName(sid)).get("swell", false)):
+			wanted[str(by_skill[sid])] = true
+	for row: Dictionary in BattleVowbound.load_config():
+		for sid: Variant in row.get("skills", []):
+			wanted[str(by_skill.get(str(sid), ""))] = true
+	var unused: Dictionary = {}
+	for sid: String in by_skill:
+		if not wanted.has(str(by_skill[sid])):
+			unused[str(by_skill[sid])] = true
+	return unused
 
 
 ## What an action plays: [{"effect": id, "target": combatant id}], in order. No nodes: tests call it.

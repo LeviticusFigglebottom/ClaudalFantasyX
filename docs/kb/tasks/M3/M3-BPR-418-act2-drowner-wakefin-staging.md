@@ -2,7 +2,8 @@
 id: M3-BPR-418
 title: "Act II battle presentation, next bosses: the Mangrove Drowner (Ch10) and the Wakefin (Ch15)"
 role: combat
-status: review
+status: blocked
+blocked-by: ADR 0041
 owner_session: claude/battle-presentation
 reviewer: lead
 depends_on: [M3-BPR-408]
