@@ -563,6 +563,8 @@ RENDER-REQUEST @ 1c9bf8bd: battle_choreo_cast, battle_choreo_read, battle_choreo
   file the list.
 - M2-HER-1106 and M1-QA-07 are in review.
 
-MERGE-READY @ eaefe445: everything above. Checks run: hero_ 109/0, qa_ 6/0, hero_followers 12/0, gdlint and
+MERGE-READY @ eaefe445 (superseded below: take the next one, which reports leaks instead of failing them): everything above. Checks run: hero_ 109/0, qa_ 6/0, hero_followers 12/0, gdlint and
 gdformat, taskboard --check, validate_data, a full suite on this branch and on the integration head (the
 attribution above). Skipped: screenshots (no rendered change since the approved 1c9bf8b render).
+
+MERGE-READY @ 44295d79: as above, and the runner's leak check reports (LEAK lines) and frees, without failing (M3-HER-1130), so no other track goes red. Checks: the leak probe (a leak is freed and reported; the summary still parses for ci_local.sh and run_coverage.py), gdlint.
