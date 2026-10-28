@@ -606,5 +606,87 @@ class TestDialoguePolish(unittest.TestCase):
         self.assertEqual(params("hobb")["_costume"]["sash"]["cord_knots"], 3)
 
 
+class TestDialoguePolish2(unittest.TestCase):
+    """The second dialogue-range pass (M3-CHR-526/534/538/536/539/519): the tank cut, the feathered hairline and the
+    old villagers' brow hairs, each an optional key whose default leaves every other villager as it was."""
+
+    TANK = {"sabe", "ione"}
+    FEATHER = {"sabe", "ione", "hobb"}
+    BROWS = {"fenn", "marra", "osu", "sabe"}
+
+    def test_tank_cut_puts_straps_over_the_shoulders(self):
+        # the default sleeveless line is unchanged without the key; with it, a strap per side crosses the shoulder
+        # crest (over the shoulder pivot, inside the acromion) and the panel keeps the default armhole floor
+        import numpy as np
+        import villager_costume as C
+
+        lm, _body, fields, chart = TestDialoguePolish._fitted("sabe")
+        top = dict(params("sabe")["_costume"]["top"])
+        th = np.linspace(0.0, 360.0, 52, endpoint=False)
+        plain = dict(top)
+        plain.pop("armhole_cut")
+        self.assertNotIn("TopStrapL", C.build_top(fields, chart, plain))
+        tank_line = C.top_line(lm, chart, th, top, fields)
+        plain_line = C.top_line(lm, chart, th, plain)
+        a = np.abs(((th + 180.0) % 360.0) - 180.0)
+        floor = (a >= C.TANK_ARM_FLOOR[0]) & (a <= C.TANK_ARM_FLOOR[1])
+        self.assertTrue(np.allclose(tank_line[floor], plain_line[(a >= 76.0) & (a <= 92.0)].min()))
+        parts = C.build_top(fields, chart, top)
+        for sd, sg in (("L", 1.0), ("R", -1.0)):
+            S = parts[f"TopStrap{sd}"].varr()
+            self.assertEqual(set(parts[f"TopStrap{sd}"].M), {top["mat"]})
+            self.assertGreater(float(S[:, 2].max()), float(lm.P("notch")[2]))  # over the crest, not beside it
+            x = S[:, 0] * sg
+            self.assertTrue((x > 0.0).all() and (x < float(lm.P("acromion")[0])).all())
+            self.assertGreater(float(np.ptp(S[:, 1])), 0.1 * lm.S)  # from the front of the chest to the back
+        self.assertEqual(len(C.build_top(fields, chart, top)["Top"].V), len(parts["Top"].V))  # deterministic
+
+    def test_hairline_feather_is_off_for_the_heroes(self):
+        import asha_textures as at
+        import villager_textures  # noqa: F401  (imports asha_textures the way the villager build does)
+
+        self.assertEqual(at.HAIRLINE_FEATHER, 0.0)
+
+    def test_brow_hairs_follow_the_brow_cards(self):
+        import numpy as np
+        import villager_textures as vt
+
+        sk = params("sabe")["_skin"]
+        lm, body, _fields, _chart = TestDialoguePolish._fitted("sabe")
+        face = body.face
+        B = vt.brow_frame(face, "L")
+        self.assertEqual(B.shape[0], 3)
+        self.assertTrue((B[0, :, 1] < B[1, :, 1]).all() and (B[1, :, 1] < B[2, :, 1]).all())  # bottom, centre, top
+        rng = np.random.default_rng(3)
+        mid = B[1, B.shape[1] // 2]
+        y_front = float(lm.P("head_c")[1]) - 0.5 * lm.h
+        near = np.stack([mid[0] + rng.normal(0, 0.008, 3000), np.full(3000, y_front), mid[1] + rng.normal(0, 0.004, 3000)],
+                        axis=1)
+        far = near + np.array([0.0, 0.0, -0.06])  # on the cheek
+        P = np.concatenate([near, far])
+        col = np.full((len(P), 3), 0.5)
+        out = vt._brow_strands(col.copy(), P, face, lm, sk["brow_strands"], int(sk["seed"]))
+        changed = np.abs(out - col).sum(axis=1) > 1e-6
+        self.assertGreater(int(changed[:3000].sum()), 100)
+        self.assertFalse(changed[3000:].any())
+        self.assertTrue(np.array_equal(out, vt._brow_strands(col.copy(), P, face, lm, sk["brow_strands"],
+                                                             int(sk["seed"]))))
+
+    def test_brow_params_reach_only_the_brow_material(self):
+        import importlib.util
+
+        spec = importlib.util.spec_from_file_location("villager_write_materials", SRC / "write_materials.py")
+        wm = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(wm)
+        p = params("sabe")
+        shader, _std, _tex = wm.tables("sabe", p)
+        for k, v in p["_hair"]["brow_params"].items():
+            self.assertEqual(shader["brow"][2][k], v)
+        plain = dict(p, _hair={k: v for k, v in p["_hair"].items() if k != "brow_params"})
+        base, _s, _t = wm.tables("sabe", plain)
+        self.assertEqual(base["brow"][2]["alpha_boost"], "1.6")
+        self.assertEqual({k: v for k, v in shader.items() if k != "brow"}, {k: v for k, v in base.items() if k != "brow"})
+
+
 if __name__ == "__main__":
     unittest.main()

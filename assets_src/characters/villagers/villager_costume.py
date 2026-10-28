@@ -78,6 +78,23 @@ EDGE_CORD_K = 1.4  # a netting shawl's edge cords against its mesh cords
 WRIST_CORD_RING = 16  # segments round a wrist cord  # the cord knots' spread down the kept tail (share of its length)
 TOP_MARGIN = 0.012  # m at S = 1: body hidden this far inside the top's neckline and armholes
 ARMHOLE_DROP = 0.085  # m at S = 1 below the shoulder joint: a sleeveless top's armhole (the M2-CHR-03 default)
+# `armhole_cut: "tank"` (M3-CHR-526/534, optional): an ordinary sleeveless top. The default sleeveless line runs from
+# the V up to a point at the side of the neck and straight down to the armpit, front and back, with nothing over the
+# shoulder: at dialogue range a halter. One torso chart cannot hold a strap over the shoulder (the crest and the
+# armpit lie on the same azimuths), so the tank cut is two pieces: the body panel with a scoop neck and the armhole
+# floor unchanged, rising at the front and back to a strap foot under each strap, and a strap per side laid over the
+# shoulder crest from foot to foot (its own grid, cast over the crest in the side plane).
+TANK_STRAP_X = (0.40, 0.60)  # the strap's inner and outer edges, as shares of the acromion's half-width
+TANK_STRAP_PSI = (-20.0, 200.0)  # degrees in the side plane from the front (0) over the crest (90) to the back (180)
+TANK_STRAP_ROWS = 19  # along the strap
+TANK_STRAP_COLS = 4  # across it
+TANK_STRAP_LIFT = 0.0015  # m at S = 1 over the panel's offset: where they overlap the strap lies on the panel
+TANK_STRAP_ORIGIN_DZ = -0.01  # m at S = 1 off the chart's shoulder pivot height: the casts' centre in the shoulder
+TANK_FOOT_ROWS = (6, 2)  # strap rows the panel's foot runs up under (the overlap) at its inner and outer edges
+TANK_FOOT_FLARE = 6.0  # degrees inside the front foot where the scoop neck starts down to the V
+TANK_SCOOP = 0.15  # how far down toward the V's point the neckline is there (share of the foot's height over it)
+TANK_ARM_FLOOR = (76.0, 92.0)  # |azimuth| span of the armhole's floor (the default line's 74-92, as the arm swings)
+TANK_COLUMNS = 104  # the panel's azimuth columns (the default top has 52): the feet are a few degrees wide
 KEEP_ABOVE_KNEE = 0.16  # m at S = 1 of thigh kept above the knee under a skirt with keep_legs (asha_costume's)
 HEADWRAP_OFF = 0.010  # over the scalp (hair is flattened under the wrap)
 HEADWRAP_EDGE = 0.006  # extra roll at the edge
@@ -184,9 +201,9 @@ def _pad(p: Part) -> Part:
 # ---------------------------------------------------------------------------------------------
 # Lines
 # ---------------------------------------------------------------------------------------------
-def top_line(lm, chart: TorsoChart, th_deg: np.ndarray, top: dict) -> np.ndarray:
+def top_line(lm, chart: TorsoChart, th_deg: np.ndarray, top: dict, fields: Fields | None = None) -> np.ndarray:
     """The top's upper edge: the neckline (V of `neck_v_m` below the notch, or round), plus armholes
-    under the shoulders when it is sleeveless."""
+    under the shoulders when it is sleeveless (the tank cut needs `fields`: its feet sit under the straps)."""
     S = lm.S
     neck = chart.z_sh + math.radians(55) * chart.k
     v = float(lm.P("notch")[2] - float(top.get("neck_v_m", 0.06)) * S)
@@ -195,9 +212,52 @@ def top_line(lm, chart: TorsoChart, th_deg: np.ndarray, top: dict) -> np.ndarray
     # `armhole_drop_m` below the shoulder joint (M3-CHR-03: 0.115 as M1-CHR-14's vest and tunic; 0.085 sits at the
     # armpit, where a lowered arm cuts it)
     arm = float(lm.P("shoulder")[2] - float(top.get("armhole_drop_m", ARMHOLE_DROP)) * S)
+    if top.get("armhole_cut") == "tank":  # M3-CHR-526/534 (optional): straps on the shoulders, not up the neck
+        return _tank_line(fields, chart, th_deg, top, arm, v)
     strap = chart.z_sh + math.radians(24) * chart.k
     return RC._sym_interp(th_deg, [0, 12, 28, 50, 74, 92, 112, 132, 150, 180],
                           [v, v + 0.025 * S, neck - 0.015 * S, strap, arm, arm, strap, neck, neck, neck])
+
+
+def tank_straps(fields: Fields, chart: TorsoChart, top: dict) -> dict[str, np.ndarray]:
+    """The tank cut's strap grids, side -> P[row along (front -> back), column across (inner -> outer)]: rays from a
+    centre in the shoulder (at the strap's x) swept in the side plane over the crest, cast onto the fitting surface at
+    the panel's offset plus TANK_STRAP_LIFT."""
+    lm = fields.lm
+    S = lm.S
+    off = (float(top.get("off_m", TOP_OFF)) + TANK_STRAP_LIFT) * S
+    xs = float(lm.P("acromion")[0]) * np.linspace(TANK_STRAP_X[0], TANK_STRAP_X[1], TANK_STRAP_COLS)
+    psi = np.radians(np.linspace(TANK_STRAP_PSI[0], TANK_STRAP_PSI[1], TANK_STRAP_ROWS))
+    y0 = float(lm.P("shoulder")[1])
+    z0 = chart.z_sh + TANK_STRAP_ORIGIN_DZ * S
+    out = {}
+    for sd, sg in (("L", 1.0), ("R", -1.0)):
+        P = np.zeros((TANK_STRAP_ROWS, TANK_STRAP_COLS, 3))
+        for i, x in enumerate(xs):
+            O = np.tile(np.array([sg * x, y0, z0]), (TANK_STRAP_ROWS, 1))
+            D = np.stack([np.zeros_like(psi), -np.cos(psi), np.sin(psi)], axis=-1)
+            r = cast_last(lambda Q: fields.upper(Q) - off, O, D, 0.3 * S)
+            P[:, i] = O + D * r[:, None]
+        out[sd] = P
+    return out
+
+
+def _tank_line(fields: Fields, chart: TorsoChart, th_deg: np.ndarray, top: dict, arm: float, v: float) -> np.ndarray:
+    """The tank cut's panel line by |azimuth|: the V, a scoop up to the front foot under the strap (as high as the
+    strap's TANK_FOOT_ROWS-th row, so the strap's end lies over the panel), the armhole's front falling to the default
+    floor, and the same at the back, where the line runs on level across the back of the neck."""
+    S = fields.lm.S
+    P = tank_straps(fields, chart, top)["L"]
+    k_in, k_out = TANK_FOOT_ROWS
+    f_in, hf_in = (float(q[0]) for q in chart.H_of(P[k_in, :1]))
+    f_out, hf_out = (float(q[0]) for q in chart.H_of(P[k_out, -1:]))
+    b_in, hb_in = (float(q[0]) for q in chart.H_of(P[-1 - k_in, :1]))
+    b_out, hb_out = (float(q[0]) for q in chart.H_of(P[-1 - k_out, -1:]))
+    f_in, f_out, b_in, b_out = (math.degrees(a) for a in (f_in, f_out, b_in, b_out))
+    lo, hi = TANK_ARM_FLOOR
+    xs = [0.0, 12.0, f_in - TANK_FOOT_FLARE, f_in, min(f_out, lo - 1.0), lo, hi, max(b_out, hi + 1.0), b_in, 180.0]
+    vs = [v, v + 0.025 * S, hf_in - TANK_SCOOP * (hf_in - v), hf_in, hf_out, arm, arm, hb_out, hb_in, hb_in]
+    return RC._sym_interp(th_deg, xs, vs)
 
 
 def hem_z(lm, where) -> float:
@@ -231,12 +291,20 @@ def build_top(fields: Fields, chart: TorsoChart, top: dict) -> dict[str, Part]:
         th = np.linspace(open_deg, 360.0 - open_deg, 50)
         closed = False
     else:
-        th = np.linspace(0.0, 360.0, 52, endpoint=False)
+        tank = top.get("armhole_cut") == "tank"
+        th = np.linspace(0.0, 360.0, TANK_COLUMNS if tank else 52, endpoint=False)
         closed = True
-    body = RC.torso_sheet(fields, chart, "Top", ATLAS["top"], th, top_line(lm, chart, th, top), hem,
+    body = RC.torso_sheet(fields, chart, "Top", ATLAS["top"], th, top_line(lm, chart, th, top, fields), hem,
                           float(top.get("off_m", TOP_OFF)) * S, 13, 0.0015 * S, closed,
                           wind_amp=float(top.get("wind", 0.06)))
     out["Top"] = _mat(body, top["mat"])
+    if top.get("armhole_cut") == "tank":
+        centre = np.array([0.0, chart.y_axis, chart.z_sh])
+        for sd, P in tank_straps(fields, chart, top).items():
+            strap = Part(f"TopStrap{sd}")
+            strap._mat = "cloth"
+            AC._panel(strap, P, ATLAS[f"sleeve_{sd}"], None, False, 0.0015 * S, centre)  # a sleeveless top's free island
+            out[f"TopStrap{sd}"] = _mat(_pad(strap), top["mat"])
     sleeve = float(top.get("sleeve", 0.0))
     roll = float(top.get("cuff_roll_m", 0.0))
     if roll > 0.0:  # M3-CHR-516: a pushed-up sleeve, rolled: the cloth thickens over the last CUFF_ROLL_SPAN
@@ -650,7 +718,8 @@ def coverage(body, params: dict, V: np.ndarray, reg: np.ndarray, keep_legs: bool
     if top:
         hem = hem_z(lm, top.get("hem", "hip"))
         margin = float(top.get("cover_margin_m", TOP_MARGIN))  # M3-CHR-03: deeper armholes want a wider margin
-        under = torso & (H < top_line(lm, chart, th_deg, top) - margin * S) & (V[:, 2] > hem + m)
+        fit = Fields(body) if top.get("armhole_cut") == "tank" else None
+        under = torso & (H < top_line(lm, chart, th_deg, top, fit) - margin * S) & (V[:, 2] > hem + m)
         od = float(top.get("open_deg", 0.0))
         if od > 0.0:
             a = np.abs(((th_deg + 180.0) % 360.0) - 180.0)
