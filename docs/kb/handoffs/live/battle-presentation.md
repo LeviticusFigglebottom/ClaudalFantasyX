@@ -26,6 +26,20 @@ both fixed and pushed. The branch head also carries:
   - any battle shot with an Act I creature, since the heights and the near-face anchor move its effects. I am
     self-rendering those next.
 
+**12:xx: GPU QA row 36 (the Reach's arm over the party) and the full suite.**
+- **Row 36 (mine, with creatures-b):** the Reach's fight now rests farther back and higher (`camera.rest_by_enemy`,
+  M3-BPR-425, 4078fc0f).
+  - SELF-RENDERED on the seawall hoist arena: the hand takes the left-centre third, reaching toward the party, with
+    the parapet and the party readable. Before, it covered half the frame or more.
+  - Test: test_battle_boss_camera 3/0.
+  - **PC: please re-check row 36 on the GPU.** creatures-b's `boss_seats` (M3-CRB-011) also moves the Reach. I'm
+    merging it now and will retune so the two don't compound (next entry).
+- **Full Godot suite on the head before the Reach change:** 3167 run, 12 failed.
+  - 11 of the failures are in files already red on the big14 gate list, so not this branch's: act1_cutscene_walks,
+    creature_portraits, field_audio, fp_prologue, hero_field_snaps, qa_capsules, qa_save_shrines and
+    villager_routines.
+  - The 12th, test_battle_boss_intro, was the suite loading the test mid-edit. On the head it is 21/0.
+
 **2026-10-28 11:xx: big14 gate fixes, and the Lead's 09:35/10:55 list.**
 - **Merged origin/gpu/gate-big14-shots** at 94da590d.
   - battle_sandbox.json takes Kerrid's and Liss's landed actors.
