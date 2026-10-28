@@ -454,3 +454,33 @@ Checks:
 - Shots self-rendered and viewed (see the SELF-RENDERED lines above).
 Expected baseline moves at the Lead's gate: field_tip_card (the card sits lower), and the four new field_hud_over_* shots.
 Skipped: coverage (no game/battle or game/progression change).
+- 2026-10-28 10:40, **the Lead's big14 list and 09:35 item 1:**
+  - **big14 gate merged** (7b5fe9304). The UI items:
+    1. **test_creature_portraits:** the six Act II creatures were baked, plain and held, with PROVENANCE rows (bff8f1388). I viewed the contact sheet.
+    2. **test_title_reveal and test_battle_result_motion:** these pass on the merged tree. The gate's shots.json had boot_title at settle_frames 10 and had dropped battle_victory's 90. Claude/ui keeps 72 and 90, and **the integration merge must keep them too**.
+    3. **test_zone_map_pois:** every Ch4 wake POI already sat on its source. The wake now draws Haluna's shapes, so the test looked in the wrong layout. The entry now names its own layout in `points` (dd52da357).
+    4. **test_field_audio:** the outfitter's hook is no longer pending (574aed47b). Its watch expressions were checked against the class first.
+  - **Portraits:**
+    - Toma, Kerrid, Moll and the net-mender were rebaked for characters' short-hair and beard look-dev (M2-CHR-524, eb78f07e9). I viewed them before and after.
+    - Liss was rebaked for her softer fringe (296ceb696).
+  - **Scene-change hitches (ADR 0111, 5702d5d3a; proposed, for the Systems Architect and hero-motion to accept):**
+    - **Cause.** The hidden 1.3–3 s frames were mostly `HeroFieldActor.attach` reading the hero scenes from disk on the main thread, inside the swap frame. Measured headless (no renderer): 1.6–2.6 s, against 6–15 ms once cached. FieldHud.attach is 15–19 ms.
+    - **Fix.** SceneRouter emits `change_started`. `ResidentLoads` threaded-loads the field bodies and the party's battle actors there, holds the swap until they are in, and keeps them. The title starts them as it shows.
+    - **Headless, cloud box:** Ch1 1911 → 251 ms, Haluna 3386 → 964 ms.
+    - **Left for others:**
+      - Haluna's own build, haluna_zone.gd plus the Dresser, at about 0.9 s each: first-playable and env-art.
+      - The first fight's arena and creature loads (not measured).
+    - **The PC's next walk is the real measurement.**
+  - **Housekeeping, for the Lead:** every `godot --import` regenerates about 500 `.import` files: `valid=false` for the LFS audio not fetched here, and new ones for docs/kb/qa/gate-runs images. I revert them each time. A `.gdignore` in docs/ would stop the second set.
+MERGE-READY @ 5702d5d3a: the big14 UI fixes, the portrait rebakes and ADR 0111.
+Checks:
+- **Full suite at eb78f07e9:** 3168 run, 11 failed. None is this track's, and all appear in the gate's list:
+  - act1 ability VFX, Liss's battle tint, hero snaps, villager routines, cutscene walks, fp_prologue Liss, capsules, save shrines;
+  - Godot aborted at exit after reporting, the same segfault at exit as the gate.
+- **5702d5d3a only adds ResidentLoads.** Its own tests, plus scene_router, title and boot, are 0 failed.
+- **Tools suite:** 175 units, 5 failing units: audio_loudness (LFS audio not fetched), arenas, pemakar_kit, zone_dressing_ch01, and test_screenshots.
+  - test_screenshots fails because 168 manifest shots have no baseline. Baselines are the Lead's gate.
+- validate_data has 0 errors, dlgc is clean, taskboard --check passed, and lint is clean.
+Skipped:
+- The coverage step: no game/battle or game/progression change.
+- Screenshots: no changed shots this batch. The portraits were viewed directly.
