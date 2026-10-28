@@ -589,7 +589,7 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
-- **MERGE-READY @ (this push): M3-ENV-1316's Coilspire headland ground (the last of 1316 that is env-art's).**
+- **MERGE-READY @ c9dbf9631: M3-ENV-1316's Coilspire headland ground (the last of 1316 that is env-art's).**
   - **Diagnosis:** I re-rendered the arena with one piece hidden at a time. The "broad planes" behind the foes are
     `arena_headland_ground` itself: a slope already on the fine 1.25 m grid near the fight, with one crisp
     cast-shadow face and one sunlit face. That is lighting on real relief, not a faceted mesh.
