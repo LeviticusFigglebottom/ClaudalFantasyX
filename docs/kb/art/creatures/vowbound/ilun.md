@@ -21,16 +21,16 @@ him threatens.
 
 | | |
 |---|---|
-| Wingspan | **4.6 m** (half span 2.3 m), the wings swept back to pointed tips (z −0.75) with a falcate (concave) trailing edge |
-| Disc length | 1.85 m from the blunt head (z +0.85) to the rear of the body (z −1.0) |
-| The mantle | the wings rise from the body (+0.08 m at mid-span) and arch down to the tips (0.80 m above the water): a canopy, as a heron **mantles**, spreading its wings over the water like a roof. It reads protective, and it turns the near wing's back (and its net) toward the default battle camera, which otherwise sees a flat manta edge-on |
-| Tail | a whip 1.3 m long, drooping to z −2.05 and 0.8 m above the water, so the float hangs low under him instead of reaching toward the summon camera |
+| Wingspan | **5.1 m** (half span 2.55 m), the wings swept back to pointed tips (z −0.15) with a falcate (concave) trailing edge (M3-CRB-008; was 4.6 m) |
+| Disc length | 1.98 m from the blunt head (z +1.85) to the rear of the body (z −0.13): the disc sits **forward of the origin** (its centre at z +0.87) so the tail and the float stay inside the battle HUD's safe frame (M3-CRB-008) |
+| The mantle | the wings rise from the body (+0.1 m at mid-span) and arch down to the tips (0.95 m above the water): a canopy, as a heron **mantles**, spreading its wings over the water like a roof. It reads protective, and it turns the near wing's back (and its net) toward the default battle camera, which otherwise sees a flat manta edge-on |
+| Tail | a whip about 1.6 m long, back and then down in one arc to z −0.95 and 0.67 m above the water, so the float hangs plumb under it instead of reaching toward the summon camera, with a small dorsal fin at its root |
 | Hover | the disc's mid-plane at **1.35 m** above the water (the origin, y 0) |
-| Crest | three long heron plumes (1.1–1.25 m) from the crown, swept back and up over the back, with two short ones, to 1.92 m |
-| The float | a 19 cm glass sphere in a cord net, on a 16 cm cord from the tail tip, its bottom 0.44 m above the water |
-| Head | a blunt, rounded front with two small **rolled** cephalic lobes curled down and in (scrolls, not horns) and two soft glowing eyes on the head's front corners |
+| Crest | three long heron plumes (1.3–1.5 m) from the crown, lanceolate vanes on a bright shaft, swept back and up over the back, with two short ones, to 2.16 m |
+| The float | a 22 cm glass sphere in a cord net, on a 17 cm cord from the tail tip, its bottom 0.27 m above the water |
+| Head | a broad, flat-fronted, rounded head with a wide mouth slit under its front edge, two **rolled** cephalic lobes from its corners, curling forward and down into scrolls (not horns), two soft glowing eyes in dark sockets under a brow ridge, and five gill slits a side on the belly |
 
-As built: x ±2.30, y 0.44–1.92, z −2.15 to +0.85 at rest.
+As built (M3-CRB-008): x ±2.55, y 0.26–2.16, z −1.07 to +2.10 at rest.
 
 **Why 4.6 m.** The camera `summon` shot (choreo.json camera.shots) sits 4.2 m back and 2.6 m to the side of his
 mark, 0.35 m up, looking at a point 1.6 m above it with a 46° vertical FOV: about 4.9 m away, so it holds ±2.1 m
@@ -159,3 +159,65 @@ The foe form for the Ch20 release fight (act3_roster.md, "The Vowbound as foes")
 - **`release`** (3.3 s, its KO as a foe; the only clip added, every other clip samples identically): the first release, gentle: the wings rise and open wide, the crest up, he lifts a little (to 1.85 s); then one slow stroke carries him 1.5 m up and 0.45 m back, level and unhurried, the float hanging. He ends open and calm, not fallen.
   Lowest vertex over every frame +0.31 m. GLB 1.29 → 1.37 MB.
 - Scene `game/creatures/ilun/ilun_held_battle.tscn` (the same GLB; `CreatureActor.material_dir` puts on `assets/creatures/ilun/materials_held/`, written by write_materials.py from the `held` block in materials.json: 5 emissive slots glimmer_bound to glimmer_held `#7FC6D9` at the same energy, steady; the rest as they are). creatures.json row `ilun_held`: no `vowbound` key, `ko` = `release`, `phases.release` = {clip `release`, `hold` true}, `stand_in.yaw_deg` 90 (facing the party). Review shot `creature_ilun_held` (not rendered yet). No enemies.json row (Combat's, with the chapter designer). The turn to `glimmer_lift` and the rising motes are presentation (battle VFX), not the model.
+
+## Final pass (M3-CRB-008, 2026-10-28)
+
+ADR 0041 (Act I at final quality). The critique of the M3-CRE-638 render: he read as a flat, thin paper cut-out with a
+crude grid of white tick marks, small and weightless. What changed (build_ilun.py rewritten on the same kit; every
+clip name kept; the held form, `materials_held/` and `release` unchanged in kind):
+
+- **Body with weight and anatomy.** A domed disc (0.27 m above and 0.15 m below the mid-plane at the core, rounded at
+  the head's front), a spine ridge, two shoulder humps and a brow ridge, fine skin relief that fades out over the
+  membrane, and a broad flat-fronted head. The wing root is thicker (0.08 / 0.05 m) and the membrane thins to a 4 mm
+  trailing edge frozen in a soft ripple (3.5 waves along the span, up to 7 cm). The span stations bunch over the body.
+- **Head detail.** Cephalic lobes built as lofted, rolled sheets (a stem from the head's corner into a forward scroll
+  curling down and back, 1.45 turns of π); a mouth slit under the front edge and five gill slits a side on the belly,
+  dark (`deep_teal_shadow` toward `lacquer_black`) with a little of his light inside them (mask 0.3); eyes in dark
+  sockets.
+- **The net of light**, rebuilt: continuous cords laid in the wing's own span-and-chord coordinates (two families of
+  diagonals, 4 diamonds across the chord and 7 along the span, about 0.25 m), so every cord follows the wing's
+  curvature and narrows with its chord toward the tip; the lattice is warped smoothly (hand-knotted) so crossings stay
+  crossings; a heavier head-rope round the net's three inner edges; a flat bead at every crossing on the back. Cords
+  are 4.2 cm wide, 7 mm off the membrane, sampled every 5.5 cm on the back and 10 cm on the belly (beads on the back
+  only). Emission masks: cords 0.72, head-rope 0.85, knots 1.0 (brightest at the knots); all `glimmer_bound` at 1.2,
+  steady. 20 cords, 3 ropes and 46 knots a wing.
+- **Colour (layered, spectral).** Back: a `deep_teal_shadow` core and spine, `sea_glow` across the mid-wing,
+  `lagoon_teal` toward the tips, `reef_blue` and darker mottling for depth, pale `salt_glass` shoulder chevrons, a
+  darker band just inside a thin pale rim (margins measured in metres now, so the outer wing is not washed pale), and
+  the trailing edge palest (`salt_glass` with `foam_white`). Belly: `foam_white`/`salt_glass` with `sea_glow` spots,
+  dark margins; the flanks keep the back's tones (by normal), so a thick body seen from the side has no belly band.
+  The inner light is a low mask (0.05) pooling in the wings and rising to about 0.37 along the thin margins.
+  materials.json: rim sheen body 0.6 → 0.45, membrane 0.85 → 0.55 (at the battle camera's grazing angle the near wing
+  went flat white).
+- **Crest:** three long lanceolate plumes (1.3–1.5 m) and two short ones as thin vanes on a raised shaft, fringed
+  (alternate barbs parted), `deep_teal_shadow` root to `salt_glass` with a `foam_white` shaft; the shaft and tips
+  glow (0.2–0.45).
+- **Tail:** a long whip in one arc, darker above and pale beneath, with pale rings toward the tip and a light that rises
+  toward it, and a small dorsal fin at its root.
+- **The keepsake:** the float is 22 cm, its glass deeper `lagoon_teal` toward the bottom (thick old glass), a
+  `gauze_white` glint high on the camera side, a glass seal on top under a `sand_wet` knot, six meridians and two rings
+  of `sand_cloth` cord. No emission (it is the one thing about him that is not light).
+- **Scale and framing.** At the default battle camera he is the largest thing on the field (about 340 × 240 px at
+  720p) and his rest pose stays left of the turn-order column and above the party panel (the safe frame,
+  choreo.json camera.safe_frame); a wing in a hit or the KO's tip-back crosses it for a few frames. The VFX anchors
+  still land on him: chest (1.38 m at the origin) on the disc's rear half, head (2.3 m) just over the crest.
+- **Rig (20 bones):** a fourth wing segment each side (`wing_l3`, `wing_r3`, the tips; the clips key it at 1.15× the
+  third's flap) and two unweighted VFX anchors: **`vfx_core`** (on `body`, the disc's centre, 5 cm over the mid-plane)
+  and **`vfx_keepsake`** (on `float`, the float's centre).
+- **Idle:** a travelling wave: each wing segment flaps (5°, 8°, 10°, 12°) 0.85 rad behind the one inside it, and twists
+  (1.5°–6.5°) a quarter beat behind its flap, so the wave runs out to the tip and the soft trailing edge ripples after
+  the leading edge. Other clips keep their keys, with small changes for the new size: attack's wind-up banks 11° and
+  lifts 0.17 m (the far wingtip stayed above the water), the contact lifts 0.08 m; `rise` lifts the tail more
+  (the float stays clear of the water while he starts nose-up); `FOLDED` tip 22°; `ko` curls the tail up 24°.
+  Contacts unchanged (attack 0.55 s, cast 0.8 s, special 1.45 s).
+
+**As built:** 15,561 triangles (≤ 18k): membrane 5,060, net 3,172, body 2,392, crest 1,440, cord 1,105, lobes 864,
+tail 672, glass 496, eyes 240, gill slits and mouth 120; 9,934 vertices, 20 bones, 14 clips (with hit_b and idle_b),
+GLB 1.61 MB. Lowest vertex per clip (numpy poser): idle 0.18 m, ready 0.26, attack 0.24, cast 0.24, hit 0.11, hit_b
+0.06, defend 0.15, ko 0.12, victory 0.26, rise 0.25, dismiss 0.16, special 0.26, release 0.19, idle_b 0.25. The
+"Silhouette and size" table above is updated; the M3-CRE-638 budget and lowest-vertex lines are history.
+
+**Not done (follow-ups):** a real alpha (`creature_spectral`) shader is still a kit change (common/write_materials.py,
+another track's); he reads spectral through value, the bright net and the glowing margins. No portrait yet
+(assets/ui/portraits/creatures/ilun.png, the portrait manifest's; test_creature_portraits fails on it and the other
+missing Vowbound portraits, before and after this pass).
