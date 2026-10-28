@@ -3,6 +3,13 @@
 ## NEW ACCOUNT (from 2026-10-25)
 Session `session_01Wmj8xaLtwcqiS3qwC6PciW`. Integration branch `claude/undertow-lead-handoff-ze8rrn`. Newest first.
 
+- **MERGE-READY: M3-AUD-862, the prologue's score** (`prologue_dusk`, Git LFS).
+  - The prologue zone's cue: MEL_A on a breath flute over a drone on A.
+  - A 30.5 s intro timed to the scene: the lantern's chord at 12.5 s, and the voice band held 21 dB down under the line.
+  - Then a quiet 24 s loop. −16.00 LUFS, byte-identical to the composer's render.
+  - **The audit's Zones section is at 0.** Review: design.
+  - Next: Ysolde's theme final (M3-AUD-863), with a composer. It replaces the sketch at the same path, because the sequencer reads `<music_dir>ysolde_theme.ogg`. It has to stay under 0.90 MB to fit plain git's remaining budget.
+
 - **M3-AUD-861 progress: the Act I audit is down from 46 items to 9.** Everything below is pushed; the new audio is in Git LFS under `assets/lfs/audio/` (ADR 0173).
   - **Zones:**
     - Music rows: the causeway, the Tidecup match, Corrow and Coilspire.
