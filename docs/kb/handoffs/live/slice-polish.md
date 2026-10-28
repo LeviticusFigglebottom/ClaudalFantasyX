@@ -619,6 +619,31 @@ Ch4–Ch9 onward. `m2-slice.md` beside this file is the history up to the 2026-1
   claude/creatures, not pushed (render below).
   - `test_villager_routines` shows 3 failures and an abort identically with and without the patch on this tree.
     They are creatures' tests; their branch carries the fixes.
+  - **Scratch merge with claude/creatures @ 958ad402 (not pushed):** villager 35/0. Self-rendered and viewed:
+    - crowd_zone_oruvel: two crowd villagers at the net racks, through the patched GreyboxZone path;
+    - npc_haluna_market: Haluna's market lane, peopled.
+- **SELF-RENDERED @ 743b94bf** (viewed; no baselines written). Each passes and reads right, with the drift intended:
+  - slice_beach_standing (new): all three heads in frame on line 031, the beach behind;
+  - slice_neme_table: Neme in her apron facing Rhen, close, Asha gone;
+  - ch01_scale_hull, ch01_kell_stall, ch01_bell_room, ch01_o10_gull, ch01_net_pen: as described above;
+  - slice_causeway_harrier_view: the harrier in C07's sky;
+  - slice_prologue_vigil_line: textured Iskarra at dusk. The bright-green water rectangle at frame right is
+    env-art's row 19.
+  - **Side effect:** slice_haluna_villagers_village (the field view at the Village spawn) now shows B02's close
+    framing: the spawn is Neme's door, inside the new volume. The crowd is covered by creatures' npc_haluna_* shots.
+- **Filed: M3-ENV-103** (env-art). Asha's packed bag in B02 is a box primitive, now visible in the close camera.
+- **MERGE-READY @ 743b94bf** (everything since 02e49acf).
+  - **Checks run:**
+    - Godot: ch01 21, haluna 65, haluna_zone 7, dialogue_vs 3, zone_cast 3, zone_story 15, slice_shots 1,
+      slice_primitives 1, ch01_oruvel_kit 3, zone_map 21, kit_dressing 9, all 0 failed;
+    - tools test_ch01_oruvel_dressing, plus `ch01_oruvel_dressing.py --check`;
+    - dlgc --check, validate_data, taskboard --check, gdlint, gdformat and ruff on what changed.
+  - **Known reds, not mine:** test_villager_routines (above); test_act1_cutscene_walks (Ch4). test_screenshots is
+    red for my new ids (slice_verse_threshold, slice_verse_recognition, slice_beach_standing) until the Lead
+    baselines them.
+  - **Checks skipped:** coverage and Blender (nothing they cover).
+- **Next:** the beat audit goes on: the dock at night (B11), the end card, the Drownbell, the shrine's trial shots,
+  then Ch1's Underway galleries and the Hullgnaw fight.
 
 ### Render requests
 SUPERSEDED RENDER-REQUEST @ fdec3cc6: slice_prologue_vigil_line, slice_beach_h05_asha, slice_beach_h06_toma, slice_haluna_villagers_village, slice_causeway_head, slice_causeway_harrier_view, haluna_h01_village_from_sea, haluna_h02_tidewall_lane, haluna_h04_dock, haluna_h07_chapel_court, haluna_h10_dock_night, shrine_s01_approach, shrine_s02_threshold, shrine_s03_overview, shrine_s04_lip, shrine_s05_side_pool, drownbell_flood, battle_boss_intro_drownbell, battle_arena_causeway, field_causeway_dolly, boot_title; why: M2-FP-102..109, the human's playtest round (real cast and held poses in the prologue and Cutscene A, live villagers and wildlife, the final causeway), plus the greyscale audit of every slice beat. The six slice_* shots are new (no baseline yet).
