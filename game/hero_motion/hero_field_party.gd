@@ -283,8 +283,10 @@ func should_hide() -> bool:
 	if not controller.is_visible_in_tree():
 		return true
 	for s in _sequencers:
+		if not is_instance_valid(s):  # checked before the cast: casting a freed object is a script error
+			continue
 		var seq := s as CutsceneSequencer
-		if is_instance_valid(seq) and seq.hold_player and seq.is_playing():
+		if seq.hold_player and seq.is_playing():
 			return true
 	return false
 

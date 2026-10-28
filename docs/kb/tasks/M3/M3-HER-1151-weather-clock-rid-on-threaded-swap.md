@@ -36,3 +36,5 @@ error on a fight entry.
 ## Notes
 Owners: Systems Architect (`game/core/**`; SceneRouter, ShaderGlobals, WeatherClock). It reproduced once in two
 ch1–3 runs, so it's intermittent. Filed rather than fixed because the files belong to another track.
+
+## Review log

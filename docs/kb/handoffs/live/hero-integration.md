@@ -918,3 +918,21 @@ MERGE-READY (+ this log): **the real-frame battle entry probe, every Act I chapt
 - Scripted fights that don't end by attack (reported as before): ch06_inquisitor, ch08_stair_hold_1–3,
   undertows_reach. ch04_sail_leeches only needed the probe's frame budget (fixed), and is clean.
 - Gates: gdlint/gdformat, validate_data, taskboard --check. No Godot test touched.
+
+MERGE-READY (+ this log): **reproduced the human's "Trying to cast a freed object"; my own case fixed; a lint for the rest.**
+- **Cause:** a stored node is cast before its `is_instance_valid` check. `var x := stored as T` errors on the cast
+  itself when the node is freed. My own `HeroFieldParty.should_hide` did this with the cutscene sequencers it watches
+  (the FAST-TRACK hand-off code). A watched sequencer freed before the party (a cutscene's temporary sequencer, or a
+  teardown order) gives exactly the human's message, every frame.
+  - Fixed: check first, then cast.
+  - New test `test_qa_party_spawns::test_a_freed_sequencer_is_not_cast` frees Haluna's sequencers and runs the
+    party's frame. The old code logs "SCRIPT ERROR: Trying to cast a freed object." twice and fails; the fix passes
+    (3/3 qa_party).
+- **New: `tools/freed_cast_lint.py`** (+ `tools/tests/test_freed_cast_lint.py`, 5 tests). It finds the pattern
+  across `game/`. A new hit fails the tools suite; known hits are listed with their request task:
+  - `footstep_audio.gd:590` → M3-HER-1150 (audio; added to the unbind task);
+  - `revenant_tells.gd:162` → **M3-HER-1152** (rendering);
+  - `battle_choreo.gd:801` → **M3-HER-1153** (ui/battle-presentation).
+  Each fix is one line. The owner removes the KNOWN row when it lands.
+- **Lead:** the lint belongs in `tools/ci_local.sh` (it runs through the tools suite already, via
+  test_freed_cast_lint).

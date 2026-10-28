@@ -1,6 +1,6 @@
 ---
 id: M3-HER-1150
-title: "AshcrownAudio._connect calls unbind(0) for a three-argument signal (an engine error on every Ashcrown entry)"
+title: "AshcrownAudio._connect calls unbind(0) (an engine error on every Ashcrown entry); FootstepAudio casts a freed mesh before checking it"
 role: audio
 status: todo
 owner_session: ""
@@ -24,5 +24,15 @@ on a normal zone entry, and the QA guards fail on engine errors. The sibling hel
 - [ ] `ashcrown_audio.gd` unbinds only when `argc > 3`.
 - [ ] Entering Ashcrown logs no unbind error (the probe's ch05 line is clean).
 
+## Also: FootstepAudio.mesh_surface_at casts before it checks (the human's "Trying to cast a freed object")
+`game/audio/footstep_audio.gd:590`: `var mi := c[0] as MeshInstance3D` comes before `is_instance_valid(mi)`. A
+surface candidate freed while it's still listed (a zone torn down by the router's swap into a fight, a despawned
+prop) is a script error on the cast. Check `c[0]` first: `if not is_instance_valid(c[0]): continue`, then cast.
+`tools/freed_cast_lint.py` lists this hit under this task. Drop its KNOWN row when it's fixed.
+
+- [ ] footstep_audio.gd checks `c[0]` before the cast, and freed_cast_lint's KNOWN row for it is removed.
+
 ## Notes
 Owner: Audio (`game/audio/**`, ownership.md). Filed rather than fixed because the file belongs to another track.
+
+## Review log
