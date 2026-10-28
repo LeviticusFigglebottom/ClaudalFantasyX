@@ -715,3 +715,10 @@ SUPERSEDED RENDER-REQUEST @ db895430: battle_choreo_hit, battle_choreo_ko, battl
   - **Lead: the 14 new crowd_* shots need baselines from your gate.**
 - **What still keeps them off the player's screen:** GreyboxZone adding the VillagerLayer (**slice-polish, M3-CRE-657**, one `if`). Until then only the review stages attach one.
 - **For characters (M3-CRE-661):** four small asks of the villager pipeline. The first, Saltwright line-marks and the brine-brand for the wrights, is the one that matters.
+- **MERGE-READY @ aceedf4a: M3-CRE-662, the crowd follow-up.**
+  - **Cloth never near skin:** a perceptual metric (CIELAB with lightness and hue down-weighted, floor 18.5), calibrated on the renders. There's no silent fallback any more: a draw widens to other sets, then errors. The validator uses the same function.
+    - 35 of 66 body defaults and 88 of 168 person tints changed; none is under the floor now.
+  - **Smaller:** four shared clip libraries (adult, elder, child, child_small) replace 22 per-body copies (clips 12.0 → 2.8 MB; assets/crowd 43 → 34 MB). Worst bone error is 1 cm against the per-body clips; feet still plant.
+  - **GOTCHA for every checkout (Lead, gates):** the post-import changed but Godot doesn't re-import unchanged GLBs. Run `rm -f .godot/imported/crowd_*.glb-*` and re-import, or the shared libraries don't apply.
+  - **Checks run:** Blender verify identical ×22 (by the agent); tools test_npc and test_blender_builds; gen_crowd --check; Godot crowd 6/0, villager 33/0, field_npc 10/0, life_audio 12/0; validate_data, taskboard.
+- SELF-RENDERED (the agent; viewed here): crowd_lineup_a/b/c, crowd_market, crowd_work, crowd_mourners, crowd_zone_brine_shoals and crowd_zone_bell_galleries. No cloth reads as skin; kneelers' knees are on the floor; children and elders stand at their own heights.
