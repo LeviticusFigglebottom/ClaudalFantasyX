@@ -101,6 +101,16 @@
       "camera": {}
     },
     {
+      "id": "ivo",
+      "stage": "res://game/levels/_tests/characters/stillguard/ivo_stage.tscn",
+      "model": "res://assets/characters/ivo/ivo.glb",
+      "materials": "res://assets/characters/ivo/materials/",
+      "face_poses": "",
+      "out_dir": "res://assets/ui/portraits/heroes",
+      "emotions": ["neutral"],
+      "camera": {}
+    },
+    {
       "id": "tavi",
       "stage": "res://game/levels/_tests/characters/villagers/tavi_stage.tscn",
       "model": "res://assets/characters/villagers/tavi/tavi.glb",
