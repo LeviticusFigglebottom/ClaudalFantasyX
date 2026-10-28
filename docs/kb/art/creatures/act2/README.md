@@ -89,11 +89,13 @@ first PC render. None has phases or an enemies.json row yet (no Act II encounter
   the fen's water), the fish 0.02..0.58 m. Six `lacquer_black` bars on `sand_cloth` flanks, a dark teal back, a `bone`
   belly, a `dusk_gold` eye, the gill slit the `spawn_wound` weak point. Contacts: the spit 0.55 s, the long jet 0.9 s.
   The KO rolls it off the root onto its side at the water. The jet is VFX.
-- **Gallery ray** (`gallery_ray/`): 4,104 triangles (budget 5k), 12 bones (root, body, wing chains of 3, tail of 4).
+- **Gallery ray** (`gallery_ray/`): 4,504 triangles (budget 5k; 4,104 before the M3-CRE-645 polish), 12 bones (root,
+  body, wing chains of 3, tail of 4).
   A flier: the origin is its hover point and creatures.json's `stand_in.hover` is 1.4 m (head height); the KO drops
-  the root by that and lays it flat on the floor. A `margin` slot carries its faint `sea_glow`; the spiracles are the
-  `spawn_wound` weak points. Contacts: the wing sweep 0.6 s, the pool 0.9 s (the cast settles it onto the floor). The
-  pool's flare is VFX.
+  the root by that and lays it flat on the floor. A `margin` slot carries its faint `sea_glow`; the camera-side
+  spiracle's shut valve is the weak point, one small closed `spawn_wound` mark (ADR 0151; M3-CRE-645 added the keel,
+  pectorals, brow ridges, rimmed spiracles, the barbed whip tail and the idle's tip curl). Contacts: the wing sweep
+  0.6 s, the pool 0.9 s (the cast settles it onto the floor). The pool's flare is VFX.
 - **Rime urchin** (`rime_urchin/`): 8,822 triangles (budget 9k), 10 bones (root with the ice plinth, body, eight
   spine-field sectors). 184 rimed spines up to 0.9 m on a 0.9 m test, 1.79 m to the top spine. The mouth underneath is
   the weak point. Contacts: the roll 0.5 s, the aimed spines 0.8 s. The frost bloom and the melting rime are VFX.
@@ -106,8 +108,9 @@ first PC render. None has phases or an enemies.json row yet (no Act II encounter
 docs/kb/tasks/M3/M3-CRE-628-act2-regulars-ch12-16-and-variants.md). Their review shots `creature_<id>` (three-quarter,
 idle) wait for the first PC render. None has an enemies.json row or phases yet.
 
-- **The ridge lynx** (`assets_src/creatures/ridge_lynx/`): 6,988 triangles (budget 8k), 27 bones (the sheet's
-  quadruped on a `body` carrier, plus two ear bones).
+- **The ridge lynx** (`assets_src/creatures/ridge_lynx/`): 7,304 triangles (budget 8k; 6,988 before M3-CRE-645's
+  wedge muzzle, nose leather, whisker pads and whiskers), 27 bones (the sheet's quadruped on a `body` carrier, plus
+  two ear bones).
   - The legs are posed by a planar two-bone solve, so its paws stay planted through the crouch and the landing.
   - The pounce is the crouch (the telegraph), a 0.64 m leap and the strike on the back row (contact 0.7 s). The yowl,
     a twist aside on the hit (peak 0.1 s), and a KO that limps two steps and lies down on its side.
@@ -118,8 +121,8 @@ idle) wait for the first PC render. None has an enemies.json row or phases yet.
   - The cast tips it up toward the party with its wings open full, so the rows catch the light. The KO drifts down
     the hover height like a dropped scarf.
   - Its weak point is a thorax crack.
-- **The glass skate** (`glass_skate/`): 2,624 triangles (budget 4k), 14 bones (disc chains of 3 a side, a tail of 4,
-  two eye bones).
+- **The glass skate** (`glass_skate/`): 3,638 triangles (budget 4k; 2,624 before M3-CRE-645's thornback rows,
+  `sand_wet` margin rim and taller turrets), 14 bones (disc chains of 3 a side, a tail of 4, two eye bones).
   - A flat disc on the sand with eyes on turrets. Its nearly clear back is pale and glassy on a glossy, rim-lit
     material.
   - It erupts and slaps (contact 0.5 s), hides by rippling its edges, buckles on a hit (its own `hit_b`), and
