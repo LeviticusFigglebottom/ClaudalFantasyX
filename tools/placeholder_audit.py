@@ -383,7 +383,7 @@ def find_godot() -> str | None:
     return shutil.which("godot") or shutil.which("godot4")
 
 
-def run_scan(godot: str, root: Path = ROOT) -> list[dict]:
+def run_scan(godot: str, root: Path = ROOT) -> dict:
     with tempfile.TemporaryDirectory(prefix="placeholder_scan_") as tmp:
         out = Path(tmp) / "scan.json"
         env = dict(os.environ, XDG_DATA_HOME=str(Path(tmp) / "xdg"))
@@ -396,7 +396,7 @@ def run_scan(godot: str, root: Path = ROOT) -> list[dict]:
         )
         if not out.exists():
             raise RuntimeError("the Godot scan wrote nothing (run `godot --headless --path . --import` first?)")
-        return json.loads(out.read_text(encoding="utf-8")).get("items", [])
+        return json.loads(out.read_text(encoding="utf-8"))
 
 
 def from_scan(scan: list[dict], root: Path = ROOT) -> list[Item]:
@@ -460,7 +460,7 @@ def audit(scan: list[dict] | None, root: Path = ROOT) -> list[Item]:
     return items
 
 
-def render(items: list[Item], source: str) -> str:
+def render(items: list[Item], source: str, scanned: list[str] | None = None) -> str:
     by_owner: dict[str, list[Item]] = collections.defaultdict(list)
     for i in items:
         by_owner[i.owner].append(i)
@@ -481,7 +481,13 @@ def render(items: list[Item], source: str) -> str:
         "icon field and status glyphs are drawn); battle VFX beyond the bosses' set pieces (every hit falls back to "
         "its element's effect, so whether a skill needs a signature effect is battle-presentation's call).",
         "- **Source:** %s." % source,
-        "",
+    ]
+    if scanned:
+        lines += [
+            "- **Scenes the runtime scan loaded (%d):** %s." % (len(scanned), ", ".join("`%s`" % Path(s).stem for s in scanned)),
+            "",
+        ]
+    lines += [
         "## Summary: %d items (%d high, %d medium, %d low)" % (len(items), sev["high"], sev["medium"], sev["low"]),
         "",
         "| Owner | High | Medium | Low | Task |",
@@ -552,18 +558,20 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--write", action="store_true", help="write docs/kb/qa/act1_final_inventory.md")
     ap.add_argument("--check", action="store_true", help="exit 1 while any item is left")
     args = ap.parse_args(argv)
-    scan: list[dict] | None = None
+    raw: dict | None = None
     source = "static checks only"
     if args.scan_json:
-        scan = json.loads(Path(args.scan_json).read_text(encoding="utf-8")).get("items", [])
-        source = "the runtime scan (%s) and the static checks" % Path(args.scan_json).name
+        raw = json.loads(Path(args.scan_json).read_text(encoding="utf-8"))
+        source = "the runtime scan and the static checks"
     elif not args.static_only:
         godot = find_godot()
         if godot is None:
             print("no godot on PATH: static checks only (python3 tools/dev/fetch_godot.py)", file=sys.stderr)
         else:
-            scan = run_scan(godot)
+            raw = run_scan(godot)
             source = "the runtime scan and the static checks"
+    scan = raw.get("items", []) if raw is not None else None
+    scanned = raw.get("scanned", []) if raw is not None else []
     items = audit(scan)
     sev = collections.Counter(i.severity for i in items)
     owners = collections.Counter(i.owner for i in items)
@@ -571,7 +579,7 @@ def main(argv: list[str] | None = None) -> int:
     for o, n in sorted(owners.items()):
         print("  %-20s %d" % (o, n))
     if args.write:
-        INVENTORY.write_text(render(items, source), encoding="utf-8")
+        INVENTORY.write_text(render(items, source, scanned), encoding="utf-8")
         print("wrote %s" % INVENTORY.relative_to(ROOT))
     return 1 if args.check and items else 0
 

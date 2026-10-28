@@ -8,18 +8,26 @@ extends Node
 ##   greybox    a visible primitive mesh (box, capsule, cylinder, sphere, prism, torus) with a flat, untextured
 ##              material, or a visible CSG shape: greybox geometry (grouped by its top node under the zone)
 ##   named      a visible node whose name says placeholder, temp, greybox or proxy
-## Then quits. One JSON object: {"items": [{"scene", "kind", "node", "group", "detail"}...]}.
+## Then quits. One JSON object: {"items": [{"scene", "kind", "node", "group", "detail"}...], "scanned": [scene...]}.
 
 const LOCATIONS := "res://game/data/world/locations.json"
 const FIRST_PLAYABLE := "res://game/data/flow/first_playable.json"
 const ARENAS := "res://game/data/battle/arenas.json"
 const ENCOUNTERS := "res://game/data/battle/encounters.json"
 const TEST_DIR := "res://game/levels/_tests/"
+const CHAPTERS_DIR := "res://game/data/flow/chapters"
+const REEFBALL_DIR := "res://game/data/reefball"
+## Act I ends with Ch9 (ADR 0041).
+const LAST_CHAPTER := 9
+## Scenes a data file names that are part of the playable game: levels, and env-art's sets.
+const SCENE_ROOTS: Array[String] = ["res://game/levels/", "res://assets/environments/"]
 const STANDIN := "StandIn"
 const PRIMITIVES: Array[String] = ["BoxMesh", "CapsuleMesh", "CylinderMesh", "SphereMesh", "PrismMesh", "TorusMesh"]
 const NAME_RE := "(?i)(placeholder|(^|[_\\W])temp([_\\W]|$)|greybox|graybox|proxy)"
 
 var items: Array[Dictionary] = []
+## Every scene loaded, so the inventory can say what it covered.
+var scanned: Array[String] = []
 var _name_re := RegEx.new()
 
 
@@ -36,7 +44,7 @@ func _ready() -> void:
 		_scan_scene(path)
 	Game.state = state_was
 	var f := FileAccess.open(out, FileAccess.WRITE) if out != "" else null
-	var text := JSON.stringify({"items": items}, " ", true)
+	var text := JSON.stringify({"items": items, "scanned": scanned}, " ", true)
 	if f != null:
 		f.store_string(text)
 		f.close()
@@ -54,6 +62,12 @@ static func zone_scenes() -> Array[String]:
 		if p != "" and not p.begins_with(TEST_DIR) and not out.has(p):
 			out.append(p)
 	_collect_scenes(_json(FIRST_PLAYABLE), out)
+	for file in DirAccess.get_files_at(CHAPTERS_DIR):  # a chapter's `scene` steps (Ch7's Tidecup match)
+		if file.ends_with(".json") and int(file.trim_prefix("ch").get_slice(".", 0)) <= LAST_CHAPTER:
+			_collect_scenes(_json(CHAPTERS_DIR.path_join(file)), out)
+	for file in DirAccess.get_files_at(REEFBALL_DIR):  # the Tidecup's own arena
+		if file.ends_with(".json"):
+			_collect_scenes(_json(REEFBALL_DIR.path_join(file)), out)
 	return out
 
 
@@ -79,12 +93,14 @@ static func _collect_scenes(v: Variant, out: Array[String]) -> void:
 			_collect_scenes(x, out)
 	elif v is String:
 		var s := v as String
-		if s.begins_with("res://game/levels/") and s.ends_with(".tscn") and not s.begins_with(TEST_DIR):
+		var rooted := SCENE_ROOTS.any(func(r: String) -> bool: return s.begins_with(r))
+		if rooted and s.ends_with(".tscn") and not s.begins_with(TEST_DIR) and not s.contains("/shots/"):
 			if not out.has(s):
 				out.append(s)
 
 
 func _scan_zone(path: String) -> void:
+	scanned.append(path)
 	if not ResourceLoader.exists(path):
 		_add(path, "missing", "", "", "the scene file does not exist")
 		return
@@ -113,6 +129,7 @@ func _scan_zone(path: String) -> void:
 
 
 func _scan_scene(path: String) -> void:
+	scanned.append(path)
 	if not ResourceLoader.exists(path):
 		_add(path, "missing", "", "", "the scene file does not exist")
 		return
