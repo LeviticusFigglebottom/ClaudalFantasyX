@@ -14,6 +14,10 @@ extends RefCounted
 ## One with a party member in frame is preferred (the Drownbell's intro had lost the party). None holding: {}.
 
 const SIGHT_FRACS: Array[float] = [0.3, 0.55, 0.8]
+## Nothing may stand this far straight over the lens (a lens under the Wraith's deck saw its edge blot half the frame).
+const HEADROOM_M := 4.0
+## How far either side of its middle (of the body's narrower width) the sight lines across the boss reach.
+const SIGHT_SPREAD := 0.35
 
 ## Mesh -> its TriangleMesh, built once (the arena's meshes repeat across intros and retries).
 static var _tri_cache: Dictionary = {}
@@ -77,10 +81,26 @@ static func _holds(intro: BattleBossIntro, pose: Dictionary, bounds: AABB, occlu
 	var chest := Vector3(mid.x, bounds.position.y + bounds.size.y * float(hc.get("head_frac", 0.7)), mid.z)
 	if not intro._clears_card(pose, chest) or not _party_small(intro, pose):
 		return false
-	for f in SIGHT_FRACS:  # last: the dearest test
-		if sight_blocked(occluders, pos, Vector3(mid.x, bounds.position.y + bounds.size.y * f, mid.z)):
+	if sight_blocked(occluders, pos, pos + Vector3.UP * HEADROOM_M):
+		return false  # under a deck or an overhang
+	for p in sight_points(bounds, xform):  # last: the dearest test
+		if sight_blocked(occluders, pos, p):
 			return false
 	return true
+
+
+## The points of the boss a hero shot must see: up its middle, and across its body at mid-height (Toma's shield
+## stood before the Matron, off her middle). `xform` is the lens.
+static func sight_points(bounds: AABB, xform: Transform3D) -> Array[Vector3]:
+	var mid := bounds.get_center()
+	var out: Array[Vector3] = []
+	for f in SIGHT_FRACS:
+		out.append(Vector3(mid.x, bounds.position.y + bounds.size.y * f, mid.z))
+	var across := BattleChoreo._flat(xform.basis.x) * minf(bounds.size.x, bounds.size.z) * SIGHT_SPREAD
+	var waist := Vector3(mid.x, bounds.position.y + bounds.size.y * 0.55, mid.z)
+	out.append(waist - across)
+	out.append(waist + across)
+	return out
 
 
 ## True when some occluder's surface crosses the segment `from`..`to` (camera parent space). Each occluder's bounds

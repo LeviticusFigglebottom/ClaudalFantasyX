@@ -288,8 +288,12 @@ func test_a_hero_shot_has_nobody_in_front_of_the_boss() -> void:
 		var b := intro._bounds(ctl.stage.stand_in(intro.boss_id))
 		var pos: Vector3 = intro._pose["pos"]
 		var occluders := BattleBossHeroShot._occluders(intro, b)
-		for f: float in BattleBossHeroShot.SIGHT_FRACS:  # the arena's and the party's own surfaces, not their bounds
-			var p := Vector3(b.get_center().x, b.position.y + b.size.y * f, b.get_center().z)
+		assert_false(
+			BattleBossHeroShot.sight_blocked(occluders, pos, pos + Vector3.UP * BattleBossHeroShot.HEADROOM_M),
+			"%s: the lens is under nothing" % enc
+		)
+		var lens := Transform3D(Basis.looking_at((intro._pose["look"] as Vector3) - pos, Vector3.UP), pos)
+		for p in BattleBossHeroShot.sight_points(b, lens):  # the arena's and the party's own surfaces, not bounds
 			assert_false(
 				BattleBossHeroShot.sight_blocked(occluders, pos, p),
 				"%s: nothing stands between the lens and the boss" % enc
