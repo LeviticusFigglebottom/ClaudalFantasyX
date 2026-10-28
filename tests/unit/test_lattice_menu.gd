@@ -539,6 +539,31 @@ func test_the_overview_names_who_woke_each_node() -> void:
 	assert_true(InputMap.has_action(LatticeMenu.OVERVIEW_ACTION) or _ensured(), "the action exists")
 
 
+## The overview's name tags: one per hero, the hero on show framed in gold, none overlapping (tags on a
+## shared node stack); initials that would touch a tag are left off in _draw_overview_words.
+func test_the_overview_tags_name_every_hero_apart() -> void:
+	_open({})
+	menu.toggle_overview(false)
+	var tags := menu.board_view().overview_tags()
+	assert_eq(tags.size(), menu.model.heroes().size())
+	var gold := 0
+	for i in tags.size():
+		gold += (
+			1
+			if (tags[i]["edge"] as Color).is_equal_approx(
+				menu.get_theme_color(&"focus_gold", HymnThemeBuilder.PALETTE_TYPE)
+			)
+			else 0
+		)
+		for j in range(i + 1, tags.size()):
+			assert_false(
+				(tags[i]["box"] as Rect2).intersects(tags[j]["box"] as Rect2),
+				"%s and %s apart" % [tags[i]["text"], tags[j]["text"]]
+			)
+	assert_eq(gold, 1, "only the hero on show in gold")
+	_teardown()
+
+
 func _ensured() -> bool:
 	LatticeMenu.ensure_action()
 	return InputMap.has_action(LatticeMenu.OVERVIEW_ACTION)

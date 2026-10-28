@@ -275,10 +275,15 @@ func _draw() -> void:
 
 ## M3-MNU-04, in view space (the words keep their size at any zoom): each hero's name in a tag
 ## under their node (the hero on show framed in gold, others dim; tags on one node stack), and the
-## initials of who woke each woken node beside it.
+## initials of who woke each woken node beside it. Initials that would touch a name tag or other
+## initials are left off (the node's fill still says it is woken), so the tags always read.
 func _draw_overview_words() -> void:
 	var font := get_theme_font(&"font", &"SmallLabel")
 	var fs := get_theme_font_size(&"font_size", &"SmallLabel")
+	var tags := _overview_tags(font, fs)
+	var taken: Array[Rect2] = []
+	for t: Dictionary in tags:
+		taken.append(t["box"] as Rect2)
 	var off := _ovec("initials_offset")
 	for nid: StringName in model.board().nodes:
 		var who := model.woken_initials(nid)
@@ -286,7 +291,36 @@ func _draw_overview_words() -> void:
 			continue
 		var n := model.board().lattice_node(nid)
 		var at := screen_point(nid) + Vector2(_half_size(n).x * zoom + off.x, font.get_ascent(fs) + off.y)
+		var r := Rect2(
+			at - Vector2(0.0, font.get_ascent(fs)), font.get_string_size(who, HORIZONTAL_ALIGNMENT_LEFT, -1.0, fs)
+		)
+		if taken.any(func(o: Rect2) -> bool: return o.intersects(r)):
+			continue
+		taken.append(r)
 		draw_string(font, at, who, HORIZONTAL_ALIGNMENT_LEFT, -1.0, fs, _role(&"text_dim"))
+	var pad := _ovec("name_pad")
+	for t: Dictionary in tags:
+		var box := t["box"] as Rect2
+		draw_rect(box, _role(&"panel_deep"))
+		draw_rect(box, t["edge"] as Color, false, _num("outline_px"))
+		draw_string(
+			font,
+			box.position + Vector2(pad.x, pad.y + font.get_ascent(fs)),
+			str(t["text"]),
+			0,
+			-1.0,
+			fs,
+			_role(&"text")
+		)
+
+
+## The overview's name tags: [{box, text, edge}], one per hero under their node (stacked on a shared node).
+func overview_tags() -> Array[Dictionary]:
+	return _overview_tags(get_theme_font(&"font", &"SmallLabel"), get_theme_font_size(&"font_size", &"SmallLabel"))
+
+
+func _overview_tags(font: Font, fs: int) -> Array[Dictionary]:
+	var out: Array[Dictionary] = []
 	var stacked: Dictionary = {}
 	var pad := _ovec("name_pad")
 	for cid: StringName in model.heroes():
@@ -301,9 +335,8 @@ func _draw_overview_words() -> void:
 		var top := _half_size(n).y * zoom + HudLayout.num(_o, "name_gap_px") + HudLayout.num(_o, "name_step_px") * k
 		var box := Rect2(screen_point(nid) + Vector2(-ts.x * 0.5 - pad.x, top), ts + pad * 2.0)
 		var edge := _role(&"focus_gold") if cid == model.hero() else _role(&"text_dim")
-		draw_rect(box, _role(&"panel_deep"))
-		draw_rect(box, edge, false, _num("outline_px"))
-		draw_string(font, box.position + Vector2(pad.x, pad.y + font.get_ascent(fs)), text, 0, -1.0, fs, _role(&"text"))
+		out.append({"box": box, "text": text, "edge": edge})
+	return out
 
 
 ## Each region's faint ribbon of colour along its own edges.
