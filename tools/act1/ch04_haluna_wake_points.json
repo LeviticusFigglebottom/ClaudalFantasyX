@@ -19,6 +19,10 @@
   -12.5,
   -118.0
  ],
+ "spawn:Shrine": [
+  -67.0,
+  44.3
+ ],
  "mark:table_lane": [
   -0.5,
   -102.5
@@ -66,6 +70,14 @@
  "mark:dock_shore": [
   -3.54,
   58.28
+ ],
+ "mark:dock_asha_from": [
+  -5.34,
+  59.54
+ ],
+ "mark:dock_toma_from": [
+  -8.05,
+  61.43
  ],
  "mark:wall_away": [
   -8.5,
@@ -120,8 +132,8 @@
   -103.3
  ],
  "actor:vendor": [
-  1.6,
-  -105.2
+  3.4,
+  -104.6
  ],
  "actor:fisher": [
   8.3,

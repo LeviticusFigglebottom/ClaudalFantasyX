@@ -40,6 +40,8 @@
       {"set": "ch04_shell_set"},
       {"zone": "refresh_states"},
       {"place": "DockEnd"},
+      {"zone": "place_actor", "args": ["asha", "dock_asha_from"]},
+      {"zone": "place_actor", "args": ["toma", "dock_toma_from"]},
       {"play": "ch04_dock_in_the_dark"},
       {"set": "ch04_dock_comforted"},
       {"zone": "refresh_states"},

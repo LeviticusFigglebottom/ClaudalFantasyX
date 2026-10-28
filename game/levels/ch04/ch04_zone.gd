@@ -60,6 +60,9 @@ func _build_dressing() -> void:
 	var dresser := dressing.get_node_or_null(^"Dresser") as HalunaDresser
 	if terrain == null or dresser == null:
 		return
+	for shrine in dressing.find_children("*", "", true, false):  # the dressing's shrine rests the party here
+		if shrine is SaveShrine:
+			(shrine as SaveShrine).location_id = location_id
 	haluna_collision = HalunaCollision.new()
 	haluna_collision.name = "HalunaCollision"
 	_copy_haluna_collision_exports(haluna_collision)
