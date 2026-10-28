@@ -85,3 +85,87 @@ Undertow's, and the Undertow mends). Hooks for that are in [`pipeline.md`](pipel
 - Bones: `root`, `bell` (the hood), `rim`, `mass`, six legs × 2, `rope` × 3 (19).
 - Budget: ≤ 20k triangles in the file (the boss's allowance; the hero battle models are 27–30k). As built: 19.4k, of which the two rim variants are about 3.4k each and only one draws, so about 16k on screen.
 - Battle VFX anchors (fractions of 2.4 m): feet 0.12 m, **rim 0.29 m**, chest 1.44 m, **hood 2.04 m**, head 2.4 m.
+
+## Final pass (M3-CRB-003)
+
+ADR 0041 (Act I at final quality). The model now builds the sheet's forms instead of primitives
+(`assets_src/creatures/drownbell/build_drownbell.py`); the silhouette, the rim (lip at 0.29 m, radius 0.85 m) and
+the anchor heights are unchanged.
+
+- **The bell is cast work.** It has double beads at the sound bow (0.60 / 0.645 m) and the shoulder (1.95 / 1.985 m),
+  plus a single bead at the waist. Between two beads runs a band of raised inscription in an invented script: glyphs
+  of three to six strokes on a 3×5 node grid, a lozenge between every seventh, and no real script. Above it, a frieze
+  of twelve running waves curls under eleven cast **fan-shells**, each a domed wedge from a hinge with five raised
+  ribs and a scalloped edge. The twelfth slot, on the face, holds the **shrine sigil**, a roundel with a notched
+  border: a fan of five rays rising from a pearl over two arcs of the swell. All of these are cast pieces conforming
+  to the surface, raised 4–13 mm with sunk edges.
+- **Worn and doomed.** Brass shows on every high point. Verdigris sits in the hollows with a pale bloom over brown
+  run-streaks, and a salt tide line rings it at 0.83 m with weed and wet below. The bell carries eleven dents and fine
+  pitting (in the material's detail bump). A petalled **strike seat** on the waist (azimuth −42°) is worn bright and
+  scored where the shrine's beam struck it. An **old mend** (azimuth 50°) is a darker, browner riveted plate with a
+  chipped corner, over a closed, unlit crack that runs out from under it.
+- **The wounds** (ADR 0151) are open seams. Torn bronze lips peel outward, bright at the tear, over dark walls, with
+  the `spawn_wound` light along the floor. They branch upward from the rim. The biggest is at azimuth 8°, with a chip
+  out of the lip under it. Four more run at −66°, 100°, 148° and −150°, and three short ones sit on the rim only. The
+  weak point stays the rim: its seams are the widest and brightest, on a material with more emission, and they spill
+  light on the crusted lip.
+- **Facing the cameras.** The battle and boss-intro cameras see the model from about azimuth −20° (measured from the
+  old shots), the review stage from +35°, and the party stands at +90°. The face therefore carries the biggest wound,
+  the sigil above it and the strike seat. The rope hangs down the left flank at −95°, framing the silhouette.
+- **The crown** is a cast plate with a moulded edge carrying the central hanging loop. Four canons stand round it;
+  the one toward the party is snapped short and bright at the break. A stub of rusted chain (three links and a
+  broken-open fourth) hangs off the loop.
+- **The rope** is three-strand hemp. Its lay twists down it, bleached over the crown and dark and slimed below the
+  tide line. It has a knot round its canon, a popped strand and weed clinging along its lower run. Its end lies on the
+  ground and unravels into three strands and loose fibres.
+- **The rim** is darker, wetter bronze crusted with barnacle colonies (three to five packed together, one big in
+  each) and weed at the lip. `RimBroken` loses 105° of the lip round the biggest wound (azimuth −44° to 61°). Its
+  fractures are jagged faces of raw bright bronze, and its light is out (the remaining seams glow at 0.3).
+- **The mass** is wet black flesh, folded underneath, plated where the legs leave it. Wound slits glow between the
+  folds, and a puckered maw at the underside, ringed by curved plates, glows where the flood pours out.
+- **The legs** are jointed Undertow-spawn carapace. Each femur is two telescoping, keeled plates that dip under the
+  lip (clear of it by about 3 cm) and rise to a spurred knee outside the rim. A glossy deep-teal joint membrane
+  follows, then a cuffed tibia with a spine, another membrane, and a hooked tarsus curling in to grip the ground. The
+  femurs carry barnacles where they leave the mouth. The feet now stand at a radius of 1.1 m (was 0.92 m).
+- **Materials:** `bronze` `detail_scale` 18 → 26, `detail_albedo` 0.16 → 0.2, `detail_bump` 0.3 → 0.6 (the pitting).
+  The slots are unchanged (`bronze`, `rim`, `carapace`, `rope`).
+
+**Clips:** every first-pass clip is kept by name. `idle`, `attack` (contact 0.8 s; it now rears 0.42 m on legs
+extended to the ground), `cast` (the toll, contact 1.0 s unchanged; the rope's trailing end drags), `hit`,
+`phase_change` and `idle_flood` (the legs let go and splay; the stage's sink and tilt in creatures.json are
+unchanged), and `ko`. The kit adds `hit_b` and `idle_b`. Two clips are new:
+
+- `ready`, a 2.0 s loop: lifted 5 cm on braced legs, leaning 2.5° toward its foe, the rim shivering and the rope
+  swinging quicker.
+- `intro`, 2.8 s: it starts low and sprawled on splayed legs, tilted, with the mass drawn up. The legs unfold and
+  plant, it pushes up to full height (1.3 s), draws back and tolls once, softly (the ring at about 2.08 s; the
+  strike-ring VFX is battle-presentation's), and settles on idle's first frame.
+
+No creatures.json change. Every baked frame of every clip stays on the floor (`common/grounding.py`: the legs, the
+rope's end and, for `ko` and `intro`, the root).
+
+**VFX anchors** (unweighted bones):
+- `vfx_wound`: in the rim's biggest wound (azimuth 8°, 0.40 m), under `rim`.
+- `vfx_core`: the bell's centre (1.15 m), under `bell`.
+- `vfx_phase`: the mouth at the lip's height (0.29 m), pointing down where the flood pours, under `bell`.
+
+**Budget:** 23,811 triangles (≤ 24k), with about 22.3k drawn at once since only one rim variant shows:
+
+| Part | Triangles |
+|---|---|
+| Bell bands and inside | 8.0k |
+| Inscription | 0.6k |
+| Waves | 0.6k |
+| Sigil | 0.8k |
+| Fan-shells | 1.2k |
+| Strike seat | 0.4k |
+| Mend | 0.5k |
+| Hood wounds | 1.5k |
+| Crown | 1.1k |
+| Rope | 1.4k |
+| Mass | 0.9k |
+| Legs | 2.8k |
+| `Rim` | 2.4k |
+| `RimBroken` | 1.5k |
+
+22 bones; the GLB is 2.6 MB.

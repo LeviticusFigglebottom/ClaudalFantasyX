@@ -7,6 +7,19 @@ extends TestCase
 const SHOALS := "res://game/levels/ch06/brine_shoals/brine_shoals.tscn"
 const DRESSING := "res://game/levels/ch06/brine_shoals/brine_shoals_dressing.json"
 
+## ADR 0041: no greybox on Act I's played path. Each dressed zone may keep only the blocks that wait on another track's
+## asset (the request named), and every piece it places, from any kit, exists.
+const ACT1_DRESSINGS := {
+	"res://game/levels/ch04/brightwater_ferry/brightwater_ferry_dressing.json": [],
+	"res://game/levels/ch05/pemakar/pemakar_dressing.json": [],
+	"res://game/levels/ch06/brine_shoals/brine_shoals_dressing.json": [],
+	"res://game/levels/ch07/tamsule/tamsule_dressing.json": [],
+	"res://game/levels/ch07/tamsule_bell_galleries/tamsule_bell_galleries_dressing.json": ["Column"],  # M3-RND-27
+	"res://game/levels/ch08/corrow/corrow_dressing.json": [],
+	"res://game/levels/ch08/coilspire/coilspire_dressing.json": ["Virel"],  # M3-CRE-627
+	"res://game/levels/ch09/corrow_night/corrow_night_dressing.json": [],
+}
+
 var zone: Ch06Zone
 
 
@@ -45,11 +58,10 @@ func test_every_kit_piece_and_every_block_id_exists() -> void:
 	var kit := String(layout["kit_dir"])
 	var seen: Dictionary = {}
 	for spec: Dictionary in layout["pieces"]:
-		var piece := String(spec["piece"])
-		if not seen.has(piece):
-			seen[piece] = true
-			var dir := String(spec.get("kit_dir", kit))  # a row may name its own kit (ZoneKitDressing._place_from_kit)
-			assert_true(ResourceLoader.exists(dir + piece + ".glb"), "%s is a kit piece" % piece)
+		var glb := String(spec.get("kit_dir", kit)) + String(spec["piece"]) + ".glb"
+		if not seen.has(glb):
+			seen[glb] = true
+			assert_true(ResourceLoader.exists(glb), "%s is a kit piece" % glb)
 		if spec.has("block"):
 			assert_true(_dressing().block(String(spec["block"])) != null, "block %s exists" % spec["block"])
 	assert_eq(_dressing().placed.get("plank_walk", 0) > 10, true, "the plank walk runs up the road")
@@ -152,3 +164,19 @@ static func _area(faces: PackedVector3Array) -> float:
 	for i in range(0, faces.size(), 3):
 		total += (faces[i + 1] - faces[i]).cross(faces[i + 2] - faces[i]).length() * 0.5
 	return total
+
+
+func test_act1_dressings_keep_only_blocks_that_wait_on_a_request() -> void:
+	_close()
+	for path: String in ACT1_DRESSINGS:
+		var layout := HalunaDresser._load_json(path)
+		var keep: Array = (layout.get("greybox", {}) as Dictionary).get("keep", [])
+		for id: Variant in keep:
+			assert_true((ACT1_DRESSINGS[path] as Array).has(id), "%s keeps %s, which waits on no request" % [path, id])
+		var kit := String(layout["kit_dir"])
+		var seen: Dictionary = {}
+		for spec: Dictionary in layout["pieces"]:
+			var glb := String(spec.get("kit_dir", kit)) + String(spec["piece"]) + ".glb"
+			if not seen.has(glb):
+				seen[glb] = true
+				assert_true(ResourceLoader.exists(glb), "%s: %s exists" % [path, glb])

@@ -54,6 +54,7 @@ M_CORE_EXPOSED = "kit_coral_concrete"
 M_GRASS = "kit_keth_grass"  # pale salt-grass, two-sided (the Keth seep's; read-only)  # the cast core where the cladding has spalled (M3-ENV-724)
 M_PAVING = "kit_iskarra_paving"
 M_BRONZE = "kit_iskarra_bronze"
+M_GILT = "kit_gold_leaf"  # the white towers' domes and finials (the human's playtest: "greyscale"; M3-ENV-752)
 M_GLASS = "kit_salt_glass"
 M_DARK = "kit_interior_dark"
 
@@ -226,8 +227,9 @@ def _damage(mb: kc.MeshBuilder, rng, y_lo: float, y_hi: float, r_at, n: int, lod
 
 
 def _dome(mb: kc.MeshBuilder, y: float, r: float, h: float, rng, noise, lod: bool, finial: bool = True,
-          mat: str = M_CERAMIC) -> None:
-    """A domed cap from radius r at y, rising h, with a ribbed surface and a bronze finial."""
+          mat: str = M_GILT) -> None:
+    """A domed cap from radius r at y, rising h, with a ribbed surface and a gilt finial (gold leaf, or reef-blue
+    glaze on the stepped towers): "white and gold at dusk" (iskarra.md §1)."""
     n = 9 if not lod else 3
     t = np.linspace(0.0, 1.0, n)
     prof = [(max(r * math.cos(tt * math.pi * 0.5) ** 0.8, 0.05), y + h * math.sin(tt * math.pi * 0.5)) for tt in t]
@@ -239,10 +241,10 @@ def _dome(mb: kc.MeshBuilder, y: float, r: float, h: float, rng, noise, lod: boo
     mb.merge(tmp)
     if finial and not lod:
         kc.tube(mb, np.array([[0.0, y + h - 0.1, 0.0], [0.0, y + h + 3.2, 0.0]]),
-                np.array([0.22, 0.05]), 8, mb.material(M_BRONZE), cap_end=True)
+                np.array([0.22, 0.05]), 8, mb.material(M_GILT), cap_end=True)
         a = np.linspace(0.0, 2 * math.pi, 13)
         ring = np.stack([np.cos(a) * 0.5, np.full_like(a, y + h + 1.4), np.sin(a) * 0.5], axis=-1)
-        kc.tube(mb, ring, 0.06, 5, mb.material(M_BRONZE))
+        kc.tube(mb, ring, 0.06, 5, mb.material(M_GILT))
 
 
 def build_tower(kind: str, seed: int) -> list[kc.MeshBuilder]:

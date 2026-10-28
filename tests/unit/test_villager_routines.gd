@@ -12,6 +12,8 @@ const NETMENDER := "res://assets/characters/villagers/netmender/netmender_actor.
 const STAGE_DATA := "res://game/levels/_tests/npc/villager_layer_stage.json"
 const ADOPT_DATA := "res://game/levels/_tests/npc/villager_layer_adopt.json"
 const HALUNA := "res://game/levels/ch02/haluna/haluna.tscn"
+const KELL := "res://assets/characters/villagers/kell/kell_actor.tscn"
+const ORUVEL := "res://game/levels/ch01/oruvel/oruvel.tscn"
 const DT := 1.0 / 60.0
 const STORM_FLAG := &"ch01_gulls_cried"
 
@@ -398,4 +400,93 @@ func test_the_layer_survives_its_villagers_being_freed_first() -> void:
 	assert_eq(layer.villager(&"child"), null, "a freed villager is simply gone")
 	assert_eq(layer.live_villagers().size(), 1, "the other one stays")
 	assert_false(mate.chatting(), "and it stops chatting with nobody")
+	_done()
+
+
+## M3-CRE-100: a row's `actor` dresses it in another villager's model; its own id stays for talk and tuning.
+func test_a_row_can_wear_another_villagers_model() -> void:
+	var data := VillagerLayer.load_data(STAGE_DATA)
+	(data["villagers"] as Array)[1]["actor"] = "fisher"
+	var path := "user://villager_layer_actor_test.json"
+	var f := FileAccess.open(path, FileAccess.WRITE)
+	f.store_string(JSON.stringify(data))
+	f.close()
+	var zone := _stage()
+	var layer := VillagerLayer.new()
+	layer.data_path = path
+	layer.auto_build = false
+	zone.add_child(layer)
+	layer.build()
+	var neme := layer.villager(&"neme")
+	assert_true(neme != null, "the row keeps its own id")
+	assert_eq(neme.actor_scene.resource_path, FISHER, "and wears the fisher's model")
+	DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
+	_done()
+
+
+## M3-CRE-100: Haluna adds its layer in its own _ready, then HalunaVillagers places the shop bodies' villagers;
+## the layer builds after that and adopts them, so each villager shows once (not one from each system).
+func test_a_layer_added_in_the_zones_ready_adopts_what_the_zone_places_after() -> void:
+	var zone := (load(HALUNA) as PackedScene).instantiate() as Node3D
+	_holder().add_child(zone)  # not prebuilt: the zone adds its VillagerLayer in its _ready
+	await (Engine.get_main_loop() as SceneTree).process_frame
+	var ids: Array[StringName] = []
+	for n: Node in zone.find_children("*", "FieldNpc", true, false):
+		var id := (n as FieldNpc).npc_id
+		assert_false(id in ids, "%s shows once" % id)
+		ids.append(id)
+	for id: StringName in [&"shopkeeper", &"smith", &"innkeeper", &"vendor"]:
+		assert_true(id in ids, "%s is in the village" % id)
+	var layer := zone.get_node(^"VillagerLayer") as VillagerLayer
+	assert_true(layer.villager(&"shopkeeper") != null, "the layer owns the shop rows too (adopted)")
+	_done()
+
+
+## M3-CRE-656: a GreyboxZone stage actor that already wears a villager model (a layout row's `model`, M2-FP-111)
+## becomes a FieldNpc carrying that very model, inside the stage actor node the cutscenes find.
+func test_a_greybox_actor_model_is_adopted_into_a_villager() -> void:
+	var zone := _holder()
+	var actors := Node3D.new()
+	actors.name = &"Actors"
+	var stage := Node3D.new()
+	stage.name = &"CutsceneStage"
+	zone.add_child(stage)
+	stage.add_child(actors)
+	var kell := Node3D.new()
+	kell.name = &"kell"
+	actors.add_child(kell)
+	var model := (load(KELL) as PackedScene).instantiate() as Node3D
+	model.name = &"Model"
+	kell.add_child(model)
+	var triggers := Node3D.new()
+	triggers.name = &"Triggers"
+	zone.add_child(triggers)
+	var talk := Interactable.new()
+	talk.name = &"kell_stall"
+	talk.id = &"test_kell_stall"
+	triggers.add_child(talk)
+	var layer := VillagerLayer.new()
+	layer.zone_id = &"ch01/oruvel"
+	layer.auto_build = false
+	zone.add_child(layer)
+	assert_eq(layer.build(), 1, "Kell's row finds her stage actor")
+	var npc := layer.villager(&"kell")
+	assert_true(npc != null and npc.get_parent() == kell, "the villager rides inside the stage actor")
+	assert_true(npc.actor == model, "it carries the greybox model itself, not a second one")
+	assert_eq(kell.find_children("*", "FieldNpc", true, false).size(), 1, "one villager")
+	assert_true(npc.anim != null and npc.anim.has_animation(&"idle"), "the model's clips drive it")
+	talk.used.emit(talk)
+	assert_true(npc.is_talking(), "her stall's talk spot starts her talk")
+	_done()
+
+
+## M3-CRE-656 in the real Oruvel (a GreyboxZone): wiring a layer after the zone is built adopts Kell's model.
+func test_oruvels_kell_comes_alive_in_the_real_zone() -> void:
+	var zone := (load(ORUVEL) as PackedScene).instantiate() as Node3D
+	_holder().add_child(zone)
+	var layer := VillagerLayer.wire(zone, &"ch01/oruvel")
+	await (Engine.get_main_loop() as SceneTree).process_frame
+	var kell := layer.villager(&"kell")
+	assert_true(kell != null, "Kell is a villager")
+	assert_true(kell != null and kell.actor != null and kell.actor.name == FieldNpc.ACTOR_NAME, "wearing her model")
 	_done()

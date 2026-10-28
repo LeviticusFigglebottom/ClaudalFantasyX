@@ -94,6 +94,12 @@ func attach(controller: BattleController, engine: BattleEngine) -> void:
 		settings.changed.connect(func(_key: StringName) -> void: reduced_motion = settings.reduced_motion())
 	_build_flash_layer(controller)
 	boss = BattleBossVfx.attached_if_boss(self, controller, engine)
+	BattleBossSetPiece.attach_all(self, controller, engine)  # M3-BPR-420: the other Act I bosses' set pieces
+	if engine.vowbound != null:  # M3-BPR-420: a Vowbound's call, dismissal and fall play in bound light
+		engine.vowbound.called.connect(
+			func(vb: BattleCombatant) -> void: play_event.call_deferred(&"vowbound_call", vb.id)
+		)
+		engine.vowbound.departed.connect(_on_vowbound_departed)
 	prebuild()
 	var opening_event := _opening_event(engine.opening)
 	if opening_event != &"":
@@ -105,17 +111,67 @@ func attach(controller: BattleController, engine: BattleEngine) -> void:
 ## the Drownbell's polyp_rise put a 35-44 ms frame into the Flood (79 ms on a fresh install). attach() calls
 ## it in the frame the battle scene enters, under the router's opaque fade (about 45 ms in all on the RX
 ## 9070 XT). A staged prewarm didn't help: the cost is the emitter's, in this tree. Returns the emitters built.
+## ADR 0041: with an engine, a skill's own effect is built only when someone in this battle can use that skill (Act I
+## gave every ability its own); one that joins later (a summon's) is built on its first play.
 func prebuild() -> int:
 	var count := 0
+	var unused := _unused_specials()
 	for effect_id: String in data.get("effects", {}):
 		var def := (data["effects"] as Dictionary)[effect_id] as Dictionary
-		if str(def.get("kind", "")) != KIND_PARTICLES:
+		if str(def.get("kind", "")) != KIND_PARTICLES or unused.has(effect_id):
 			continue
 		var layers: Array = def.get("layers", [{}])
 		for i in layers.size():
 			_emitter(StringName("%s#%d" % [effect_id, i]), def.merged(layers[i] as Dictionary, true))
 			count += 1
 	return count
+
+
+func _on_vowbound_departed(vb: BattleCombatant, fell: bool) -> void:
+	play_event(&"vowbound_fell" if fell else &"vowbound_dismiss", vb.id)
+
+
+## The effects nobody in this battle can use: every `map.skills` effect but those of the fighters' own skills, the
+## Swell techniques and the Vowbound's, the Swell finishers (`map.swell_by_hero`) of heroes not in the party, and the
+## set pieces of bosses not in this fight. {} without an engine.
+func _unused_specials() -> Dictionary:
+	if _engine == null:
+		return {}
+	var by_skill := (data.get("map", {}) as Dictionary).get("skills", {}) as Dictionary
+	var wanted: Dictionary = {}
+	for c in _engine.party_active + _engine.party_reserve + _engine.enemies + _engine.entries:
+		for sid: StringName in c.skills:
+			wanted[str(by_skill.get(String(sid), ""))] = true
+	for sid: String in by_skill:
+		if bool(_engine.db.skill(StringName(sid)).get("swell", false)):
+			wanted[str(by_skill[sid])] = true
+	for row: Dictionary in BattleVowbound.load_config():
+		for sid: Variant in row.get("skills", []):
+			wanted[str(by_skill.get(str(sid), ""))] = true
+	var unused: Dictionary = {}
+	for sid: String in by_skill:
+		if not wanted.has(str(by_skill[sid])):
+			unused[str(by_skill[sid])] = true
+	var heroes: Dictionary = {}
+	for c in _engine.party_active + _engine.party_reserve:
+		heroes[base_id(c.id)] = true
+	var swells := (data.get("map", {}) as Dictionary).get("swell_by_hero", {}) as Dictionary
+	for hero: String in swells:  # a Swell finisher waits for its hero (M3-BPR-422)
+		if not heroes.has(hero):
+			unused[str(swells[hero])] = true
+	var here: Dictionary = {}
+	for c in _engine.enemies:
+		here[base_id(c.id)] = true
+	var rows := BattleBossVfx.load_data().get("bosses", {}) as Dictionary
+	for bid: String in rows:  # a set-piece boss's effects wait for that boss
+		var row := rows[bid] as Dictionary
+		if str(row.get("kind", "")) != BattleBossSetPiece.KIND or here.has(bid):
+			continue
+		var ids: Array = [row.get("gather", ""), row.get("ko", "")] + (row.get("phases", {}) as Dictionary).values()
+		for eid: Variant in ids:
+			if str(eid) != "" and not wanted.has(str(eid)):
+				unused[str(eid)] = true
+	return unused
 
 
 ## What an action plays: [{"effect": id, "target": combatant id}], in order. No nodes: tests call it.
@@ -131,6 +187,8 @@ func effects_for(result: ActionResult) -> Array[Dictionary]:
 		special = str((map.get("items", {}) as Dictionary).get(String(result.item_id), ""))
 	elif result.skill_id != &"":
 		special = str((map.get("skills", {}) as Dictionary).get(String(result.skill_id), ""))
+		if special == "" and _engine != null and bool(_engine.db.skill(result.skill_id).get("swell", false)):
+			special = str((map.get("swell_by_hero", {}) as Dictionary).get(base_id(result.actor_id), ""))  # M3-BPR-422
 		if _engine != null:
 			element = str(_engine.db.skill(result.skill_id).get("element", "none"))
 	var elements := map.get("elements", {}) as Dictionary
@@ -240,8 +298,10 @@ func anchor(target: StringName, at: String) -> Vector3:
 	if _ctl == null or not _ctl.stage.has_fighter(target):
 		return global_position
 	var f := _ctl.stage.stand_in(target)
-	var height := float(BattleStage.stand_in_spec(target).get("height", 1.7))
-	return f.global_position + Vector3.UP * height * frac
+	var spec := BattleStage.stand_in_spec(target)
+	var height := float(spec.get("height", 1.7))
+	# M3-BPR-420: a flier stands at its hover (the gulls, the squall wings): its hit lands on it, not on the sand below.
+	return f.global_position + Vector3.UP * (float(spec.get("hover", 0.0)) + height * frac)
 
 
 func _emitter(effect_id: StringName, def: Dictionary) -> GPUParticles3D:

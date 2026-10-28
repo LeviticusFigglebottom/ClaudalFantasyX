@@ -46,6 +46,8 @@ const META_LIGHT_ENERGY := &"cutscene_authored_energy"
 ## Process after the FieldCameraDirector (priority 0), so the breath turns the pose it just set.
 const PROCESS_AFTER_DIRECTOR := 10
 ## cues.json keys this sequencer accepts but does not perform yet; each warns once per scene.
+## A line tagged #timed shows and the scene goes on: its @waits pace it (a sung verse in time with its cue).
+const TAG_TIMED := "timed"
 const UNSUPPORTED_KWARGS := {
 	&"camera": ["grade"],
 	&"anim": ["loop"],
@@ -54,9 +56,11 @@ const UNSUPPORTED_KWARGS := {
 
 ## Tests and captures: no waits, no typewriter, lines and options answer themselves.
 var instant := false
-## Lines advance by themselves once revealed (autoplay, captures), after `auto_advance_hold_sec`.
+## Lines advance by themselves once revealed (autoplay, captures), after `auto_advance_hold_sec`, or longer when
+## `auto_advance_read_cps` > 0: a line stays up until it could be read at that pace (overheard barks).
 var auto_advance := false
 var auto_advance_hold_sec := 1.5
+var auto_advance_read_cps := 0.0
 ## The option index chosen when `instant` or `auto_advance`.
 var auto_choice := 0
 ## When a scene ends faded out, fade back in. A host that changes scene right after sets false.
@@ -383,10 +387,12 @@ func _line(step: DialogueStep) -> void:
 	if _fast():
 		overlay.box.skip_reveal()
 		return
+	if TAG_TIMED in step.tags:
+		return  # held by the script's own @wait, in time with its music (the first verse), not by input
 	if auto_advance:
 		if overlay.box.is_revealing():
 			await _await_on(&"line", overlay.box.reveal_finished, _on_awaited_plain)
-		await _wait_for(auto_advance_hold_sec)
+		await _wait_for(CutsceneMotion.read_hold(overlay.box, auto_advance_read_cps, auto_advance_hold_sec))
 		return
 	await _await_on(&"line", overlay.box.advance_requested, _on_awaited_plain)
 	if speaker != null and is_instance_valid(speaker):
@@ -624,7 +630,7 @@ func _cue_music(step: DialogueStep) -> void:
 		_fade_music(silent, fade, true)
 		return
 	var track := StringName(str(step.args[0]))
-	music_by_audio = CutsceneSound.music(track, fade)  # M2-AUD-07; music_track stays "" (Audio holds its bed for it)
+	music_by_audio = CutsceneSound.music(track, fade, int(step.kwargs.get("stem", -1)))  # M2-AUD-07, M3-AUD-829
 	if music_by_audio:
 		music_track = &""
 		_fade_music(silent, fade, true)

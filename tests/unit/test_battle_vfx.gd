@@ -57,7 +57,8 @@ func test_data_names_real_skills_elements_and_swatches() -> void:
 
 func test_damage_plays_the_skill_elements_hit() -> void:
 	var r := _result(&"ember", [{"target_id": _foe(), "hit": true, "amount": 12, "statuses_added": []}])
-	assert_eq(_ids(vfx.effects_for(r)), [&"hit_fire"])
+	# ADR 0041: every Act I skill plays its own effect first (tools/vfx/gen_act1_ability_vfx.py), then its element's.
+	assert_eq(_ids(vfx.effects_for(r)), [&"ember", &"hit_fire"])
 	r = _result(&"attack", [{"target_id": _foe(), "hit": true, "amount": 5, "statuses_added": []}])
 	assert_eq(_ids(vfx.effects_for(r)), [&"hit_none"])
 	vfx.free()
@@ -66,9 +67,9 @@ func test_damage_plays_the_skill_elements_hit() -> void:
 func test_heal_status_and_ko() -> void:
 	var ally := engine.party_active[1].id
 	var r := _result(&"mend", [{"target_id": ally, "hit": true, "amount": -9, "statuses_added": []}])
-	assert_eq(_ids(vfx.effects_for(r)), [&"heal"])
+	assert_eq(_ids(vfx.effects_for(r)), [&"mend", &"heal"])
 	r = _result(&"frost", [{"target_id": _foe(), "hit": true, "amount": 3, "statuses_added": [&"slow"]}])
-	assert_eq(_ids(vfx.effects_for(r)), [&"hit_ice", &"status_apply"])
+	assert_eq(_ids(vfx.effects_for(r)), [&"frost", &"hit_ice", &"status_apply"])
 	engine.find(_foe()).hp = 0
 	r = _result(&"attack", [{"target_id": _foe(), "hit": true, "amount": 30, "statuses_added": []}])
 	assert_eq(_ids(vfx.effects_for(r)), [&"hit_none", &"ko_release"], "a KO dissolves into released glimmer")
@@ -155,9 +156,11 @@ func test_reduced_motion_thins_and_slows_particles() -> void:
 func test_prebuild_makes_every_particle_emitter_without_playing() -> void:
 	_host().add_child(vfx)
 	var layers := 0
+	var unused := vfx._unused_specials()  # ADR 0041: skills' own effects nobody in this battle can use wait
+	assert_false(unused.is_empty(), "an Act I fight leaves other fights' abilities unbuilt")
 	for id: String in vfx.data["effects"]:
 		var def := (vfx.data["effects"] as Dictionary)[id] as Dictionary
-		if str(def.get("kind", "")) == BattleVfx.KIND_PARTICLES:
+		if str(def.get("kind", "")) == BattleVfx.KIND_PARTICLES and not unused.has(id):
 			layers += (def.get("layers", [{}]) as Array).size()
 	assert_eq(vfx.prebuild(), layers, "one emitter per particle layer")
 	assert_true(vfx.played.is_empty(), "prebuilding plays nothing")

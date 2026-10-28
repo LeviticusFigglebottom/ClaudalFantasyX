@@ -41,6 +41,15 @@ func test_act_two_is_loc_keyed_on_black() -> void:
 	_done()
 
 
+## Act II's end (act_outline Ch16, "Act break"; M3-UI-210): the same card names Act III.
+func test_act_three_closes_act_two() -> void:
+	var card := _card()
+	assert_true(card.show_act(3))
+	assert_eq("%s: %s" % [card.label_text(), card.title_text()], "Act III: The Unbinding", "act_outline's words")
+	assert_true(card.is_black())
+	_done()
+
+
 func test_an_unknown_act_shows_nothing() -> void:
 	var card := _card()
 	assert_false(card.show_act(99))

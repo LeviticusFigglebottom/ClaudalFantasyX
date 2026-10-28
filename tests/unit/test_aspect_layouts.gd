@@ -116,6 +116,18 @@ func test_battle_panels_and_pause() -> void:
 
 
 ## The shrine travel list: a framed page, centred, its covers full screen.
+## The options pass: the Accessibility page with its speed preview showing (the text speed row).
+func test_speed_preview() -> void:
+	_sweep("speed preview", _speed_preview, _framed)
+
+
+func _speed_preview() -> Node:
+	var page := AccessibilityMenu.new(UiSettings.shared(), "")
+	ParityHost.scene_root().add_child(page)
+	page.model.set_cursor(page.model.row_ids().find(UiSettings.TEXT_SPEED))
+	return page
+
+
 func test_shrine_travel() -> void:
 	var saved_state := Game.state
 	_sweep("shrine travel", _shrine_travel, _framed)
@@ -130,6 +142,32 @@ func _shrine_travel() -> Node:
 	here.opens_menu = false
 	ParityHost.scene_root().add_child(here)
 	return here.open_travel()
+
+
+## M3-UI-205: the Kite's world map (list, chart and line in one centred frame).
+func test_kite_map() -> void:
+	_sweep("kite map", _kite_map, _framed)
+
+
+func _kite_map() -> Node:
+	var host := Node.new()
+	ParityHost.scene_root().add_child(host)
+	return KiteMapMenu.open_in(host, KiteMapShot.fixed_model())
+
+
+## M3-UI-205: the field menu a row taller once the Kite flies (FieldMenu.grown_for).
+func test_field_menu_with_the_kite() -> void:
+	_sweep("field menu with the Kite", _field_menu_kite, _framed)
+
+
+func _field_menu_kite() -> Node:
+	var m := FieldMenuModel.new(_state(), ParityHost.HEROES, ParityHost.NAMES)
+	m.kite = KiteMapShot.fixed_model()
+	var menu := (load(FieldMenu.SCENE_PATH) as PackedScene).instantiate() as FieldMenu
+	menu.pause_tree = false
+	menu.configure(m)
+	ParityHost.scene_root().add_child(menu)
+	return menu
 
 
 ## M3-UI-01: the Reefball HUD on a pass choice (menu and preview open) and just after a goal (banner).

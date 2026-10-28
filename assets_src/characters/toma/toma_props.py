@@ -19,6 +19,7 @@ import math
 import numpy as np
 
 from asha_mesh import Part, grid, tube
+from asha_staff import held_frame, to_held
 
 TAG_PROP = 62
 SHIELD_RINGS = 22
@@ -29,9 +30,6 @@ SCUTE_GROOVE = 0.0025  # m
 SCUTE_GROOVE_W = 0.012  # m, half-width of the groove along a scute border
 BOSS_RINGS = 7
 SPEAR_SHAFT_R = 0.016
-SPEAR_SPLAY_DEG = 1.5  # the shaft's foot out from his side, its head in (M1-CHR-14)
-SPEAR_RAKE_DEG = -1.2  # M1-CHR-15: the shaft's foot forward, its head back (the foot stood in his right toes)
-SPEAR_OUT = 0.034  # m: the shaft's offset out from his right side of the grip point (M1-CHR-14; M1-CHR-15: 1.2 -> 3.4 cm, clear of the wrist and of his right toes)
 SPEAR_HEAD_L = 0.26  # blade, socket included
 SHIELD_ATLAS_DISC = (0.0, 0.0, 1.0, 1.0)  # the disc fills the square; the back uses the free corner
 SHIELD_ATLAS_BACK = (0.0, 0.0, 0.12, 0.12)
@@ -88,8 +86,10 @@ def shield_profile(params: dict, r: np.ndarray) -> np.ndarray:
     return dome + lip
 
 
-def shield(centre: np.ndarray, out: np.ndarray, up: np.ndarray, params: dict) -> Part:
-    """The shield with its rim plane centred at `centre`, the dome bulging toward `out`, `up` its top."""
+def shield(centre: np.ndarray, out: np.ndarray, up: np.ndarray, params: dict, rings: int = SHIELD_RINGS,
+           segs: int = SHIELD_SEGS) -> Part:
+    """The shield with its rim plane centred at `centre`, the dome bulging toward `out`, `up` its top. M3-CHR-507:
+    `rings` and `segs` set the disc's resolution (Moll's smaller, smooth round shield); the defaults are Toma's."""
     part = Part("Shield")
     R = 0.5 * float(params["shield_diameter_m"])
     rim = float(params["shield_rim_m"])
@@ -99,7 +99,7 @@ def shield(centre: np.ndarray, out: np.ndarray, up: np.ndarray, params: dict) ->
     right = np.cross(up, out)
     seeds = scute_seeds(params)
     boss_r = 0.5 * float(params["shield_boss_m"])
-    nr, ns = SHIELD_RINGS, SHIELD_SEGS
+    nr, ns = rings, segs
     rr = boss_r * 0.85 + (R - boss_r * 0.85) * (np.linspace(0.0, 1.0, nr) ** 0.9)
     ang = 2 * math.pi * np.arange(ns) / ns
     X = rr[:, None] * np.cos(ang)[None, :]
@@ -186,21 +186,23 @@ def _blade_section(c: np.ndarray, side: np.ndarray, nrm: np.ndarray, w: float, t
 
 
 def spear_grip(lm) -> np.ndarray:
-    """Where the right hand closes on the shaft (the spear's prop bone sits here, build_toma)."""
-    hand = lm.hands["R"]
-    return hand.wrist + hand.axis * hand.length * 0.32 - hand.dorsal * hand.thickness * 0.55
+    """Where the right hand closes on the shaft (the spear's prop bone sits here, build_toma): the fist's hole."""
+    return held_frame(lm, "R", SPEAR_SHAFT_R)[0]
+
+
+def spear_axis(lm) -> np.ndarray:
+    """M2-CHR-515: the held shaft's line at rest (through the fist, towards the thumb), towards the blade."""
+    return held_frame(lm, "R", SPEAR_SHAFT_R)[1] @ np.array([0.0, 0.0, 1.0])
 
 
 def spear(lm, params: dict, cord_rect) -> Part:
-    """Grounded at the right hand's grip, vertical; the hook faces away from his body (-X)."""
+    """Built upright through the right fist's hole and grounded, the hook facing away from his body (-X), then turned
+    into the held line (M2-CHR-515, asha_staff.held_frame: the clips pitch his hand to stand it upright; held on the
+    bent arm it stands forward of his feet, so the M1-CHR-14/15 splay and rake are gone)."""
     part = Part("Spear")
-    # M1-CHR-14: the shaft sits out from his side of the fist's centre line (centred, it ran into the forearm)
-    grip = spear_grip(lm) + np.array([-SPEAR_OUT, 0.0, 0.0])
+    grip, R = held_frame(lm, "R", SPEAR_SHAFT_R)
     L = float(params["spear_length_m"])
-    # the foot of the shaft splays out from his right foot (wide stance: upright, it stood in his toes)
-    lean, rake = math.radians(SPEAR_SPLAY_DEG), math.radians(SPEAR_RAKE_DEG)
-    upv = np.array([math.sin(lean), -math.sin(rake), math.cos(lean) * math.cos(rake)])
-    upv /= np.linalg.norm(upv)
+    upv = np.array([0.0, 0.0, 1.0])
     base = grip - upv * ((grip[2] - 0.006) / upv[2])
     fwd = np.array([0.0, -1.0, 0.0])
     side = np.array([-1.0, 0.0, 0.0])  # the hook and the blade's flats face out from his right side
@@ -244,4 +246,4 @@ def spear(lm, params: dict, cord_rect) -> Part:
     pts = np.array(pts)
     tube(part, pts, np.linspace(0.0085, 0.0025, len(pts)), 8, "steel", fwd, tags=TAG_PROP)
     part.C = [(0.0, 0.0, 0.0, 0.0)] * len(part.V)
-    return part
+    return to_held(part, grip, R)

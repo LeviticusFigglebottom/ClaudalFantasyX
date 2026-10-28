@@ -48,6 +48,7 @@ import shrine  # noqa: E402
 import shrine_interior  # noqa: E402
 import trees  # noqa: E402
 import village  # noqa: E402
+import wake_ground  # noqa: E402
 import walls  # noqa: E402
 import waterfront  # noqa: E402
 
@@ -66,7 +67,7 @@ def targets() -> dict:
         "storehouse_stilt": ("storehouse_stilt", v, v.build_storehouse),
         "stilt_house": ("stilt_house", v, v.build_stilt_house),
     }
-    for name in sorted(v.HOUSES):
+    for name in sorted(v.HOUSES) + sorted(v.LANE_HOUSES):
         out[name] = ("house_tile", v, lambda name=name: v.build_house(name))
     for name in sorted(v.GULLS):
         out[name] = ("lintel_gull", v, lambda name=name: v.build_gull(name))
@@ -116,6 +117,8 @@ def targets() -> dict:
         out[name] = (name, kite, fn)
     for name, fn in sorted(iskarra_spire.TARGETS.items()):  # M3-ENV-726 the Iskarra Lamp Spire's crown (Ch19)
         out[name] = (name, iskarra_spire, fn)
+    for name, fn in sorted(wake_ground.TARGETS.items()):  # M3-ENV-743 Ch4's wake-night ground
+        out[name] = (name, wake_ground, fn)
     for name, fn in sorted(undertow_layers.TARGETS.items()):  # M3-ENV-727 the Undertow's layers (Ch20)
         out[name] = (name, undertow_layers, fn)
     for name, fn in sorted(undertow_heart.TARGETS.items()):  # M3-ENV-728 the Heart of the Undertow (Ch21)

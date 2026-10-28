@@ -2,7 +2,7 @@
 id: M3-CRE-622
 title: "The Mangrove Drowner, polish: knuckled tapering prop-roots, a folded core, less spider in the risen stance"
 role: character
-status: doing
+status: done
 owner_session: "creatures (worktree agent, redesign pass)"
 reviewer: art
 depends_on: [M3-CRE-621]
@@ -55,6 +55,38 @@ featureless sphere.
   spider). The PC render has to decide.
 - Sheet updated: five legs (was six), and model notes.
 
+## Notes (worktree agent, redesign pass, 2026-10-27)
+Built to the amended sheet's silhouette rules (5eb244f8); the WIP (cc81201a) had the trunk, aerial roots and leaning
+stance; this pass finished the plan, the clusters and the grounding.
+- **Four bundles, not rays** (`CLUSTERS`, `ROOTS`, `CONVERGE`): front-right 58 deg, back 176, bank 263, front-left
+  328 (the widest gap in front, where the core shows). Each root leaves the trunk up to 16 deg round from its bundle's
+  heading, at its tier (1.08-2.3 m) and skewed off its own heading, then swings onto the heading late (power 1.6),
+  feet staggered 1.8-3.85 m along it and +-0.4 m across, so a bundle's roots braid. The bank bundle reaches 2.7-3.85 m,
+  the others 1.8-2.75 m. Limb stubs moved into the gaps (118, 222, 298 deg; one used to drop its aerial root through
+  the core).
+- **Risen in three clusters** (`RISEN_ROLL`, `RISEN_LEG_SPAN`): each leg's plane is turned about its heading to steer
+  its foot: front-right 1 and 3 (az 68-93), front-left 5 and 6 (az 352-18, under the drag's 0 and 11 and the hanging
+  4), the bank 7 and 9 (az 277) with the trails 8 and 10 rolled in alongside (az 269-271). `LEGS` is 1, 3, 5, 6, 7, 9
+  (2 now curls in; 3 plants, as it comes down straight). Leg bends are capped at 55 deg (no hooked claws). The
+  48-degree lean, lift and torn-up trunk are kept as reviewed.
+- **On the water, every frame** (`grounded_clips`, uses `common/grounding.py`'s Poser): roots end 5 cm over y 0 and
+  everything is flattened onto the water at rest (`on_water`); the core's underside rests on it. Each exported clip
+  (with hit_b and idle_b) is re-keyed per frame: the mass lifts the least it takes, each root curls up (foot, middle,
+  then first bone, about its own plane's tangent after its authored bend), each aerial root lifts. The KO no longer
+  sinks: the roots let go and slide out along their bundles, the trunk keels back 15 deg pivoting on its foot's edge
+  (`trunk_keel_lift`) and the mass slumps out onto the water (the water VFX takes the sinking). Aerial roots hang to
+  0.14 m. **The GroundedClipsTest allow-list entry is removed.**
+- **Measured** (numpy from the build, and the test from the GLB): triangles **14,700** (body 13,881, stump 819), 53
+  bones, budget 18k. Lowest vertex per clip: idle +0.002, attack +0.002, cast +0.003, hit +0.002, ko +0.002,
+  phase_change +0.002, idle_risen +0.002, attack_risen +0.002, cast_risen +0.002, hit_risen +0.002, hit_b +0.002,
+  idle_b +0.003 (m). Kept: bone names, every clip, contacts, the spawn_wound seams (ADR 0151), creatures.json.
+- **Flat silhouettes** (scratch, not committed: final_sheet.png, before = the first pass vs after; rooted, KO end,
+  phase_change 1.2 s, risen): every top view is now lopsided bundles, never a sunburst; rooted reads as a tree over a
+  root tangle. **Residual risk:** the risen front view is still a dark dome on roots splayed both ways (a crab/tick
+  more than a spider), and the rooted top view keeps a few short pale spokes at the centre (limb stubs and the high
+  roots' bleached shoulders). The PC render decides.
+- Blender verify: 3 identical.
+
 ## Review log
 - 2026-10-27, creatures (review of the first pass's silhouettes, side/front/top, rooted and risen): **still reads as a
   spider (a tarantula)** in every view, the top view most of all (a sunburst). The detail is better (knuckles, taper,
@@ -68,3 +100,9 @@ featureless sphere.
   - risen: it tears the trunk up with it and **leans**, walking on three or four root-clusters, the trunk tipping
     forward like a felled tree that walks; no even leg ring;
   - amend the sheet (docs/kb/art/creatures/act2/mangrove_drowner.md) first, then build; PC render to judge.
+- 2026-10-27, creatures (review of the redesign's silhouette sheet): **no longer a spider.** Rooted reads as a tall
+  stump over a tangle; every top view is lopsided bundles, not a sunburst. The risen front view (a dark dome on splayed
+  roots) is the one remaining risk: the PC render judges it. Grounded in every clip with no allow-list (+0.002 m).
+  14,700 triangles. Stays in review until the render is approved; then amend the sheet's lean (it says ~30°, the
+  build leans 48°) to whatever the render keeps.
+- 2026-10-28, art (creatures): **approved on the cloud render** (lead/gate-render-creatures-3b0e44b; baselines dc524c0c, portrait 41493382). Rooted, it reads as a tall bleached stump over a tangle of roots with the dark core wedged low. Risen, it is a tilted trunk on three root clusters. Neither reads as a spider. The sheet's "about 30°" lean stays at the built 48°; the sheet is amended to match.

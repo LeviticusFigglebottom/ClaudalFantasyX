@@ -277,9 +277,11 @@ static func landed(result: ActionResult) -> bool:
 # --------------------------------------------------------------------------- the engine
 
 
-func _on_called(_v: BattleCombatant) -> void:
+func _on_called(v: BattleCombatant) -> void:
 	if _animating():
 		_play(StringName(str((data.get("vowbound", {}) as Dictionary).get("call", ""))))
+		if v != null:
+			_layer(v.id, "call")
 
 
 func _on_departed(v: BattleCombatant, fell: bool) -> void:
@@ -365,6 +367,7 @@ func _on_entered(cid: StringName, move: Dictionary) -> void:
 	if _is_vowbound(cid):
 		var vb := data.get("vowbound", {}) as Dictionary
 		_play(StringName(str(vb.get("rise_long" if sec >= float(vb.get("long_sec", INF)) else "rise", ""))))
+		_layer(cid, "rise")
 		return
 	var row := data.get("enter", {}) as Dictionary
 	_steps(str(row.get("sfx", "")), int(row.get("steps", 0)), sec / _speed(), cid)
@@ -373,7 +376,9 @@ func _on_entered(cid: StringName, move: Dictionary) -> void:
 func _on_left(cid: StringName, move: Dictionary) -> void:
 	if _is_vowbound(cid):
 		var vb := data.get("vowbound", {}) as Dictionary
-		_play(StringName(str(vb.get("fall" if bool(_fell.get(cid, false)) else "sink", ""))))
+		var fell := bool(_fell.get(cid, false))
+		_play(StringName(str(vb.get("fall" if fell else "sink", ""))))
+		_layer(cid, "fall" if fell else "sink")
 		return
 	var row := data.get("step_off", {}) as Dictionary
 	var sec := float((move.get("spec", {}) as Dictionary).get("sec", 0.0))
@@ -392,6 +397,14 @@ func _ids() -> Array[StringName]:
 		if not out.has(StringName(str(vid))):
 			out.append(StringName(str(vid)))
 	return out
+
+
+## A Vowbound's own sound over the shared row for `moment` (call, rise, sink, fall): choreo_sfx.json
+## `vowbound.layers.<id>` (M3-AUD-846: Ilun's net-float and wings). A missing key plays nothing.
+func _layer(cid: StringName, moment: String) -> void:
+	var layers := (data.get("vowbound", {}) as Dictionary).get("layers", {}) as Dictionary
+	var row := layers.get(String(cid), {}) as Dictionary
+	_play(StringName(str(row.get(moment, ""))))
 
 
 func _is_vowbound(cid: StringName) -> bool:

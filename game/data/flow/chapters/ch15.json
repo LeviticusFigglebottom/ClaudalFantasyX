@@ -1,0 +1,95 @@
+{
+ "doc": "M4-C15-02 (docs/kb/tech/chapter_flow.md): Ch15 'Unlamped' as a greybox before the beat sheet (M4-C15-01): the party adrift on the bridal barge at night (the chapter becomes 15), then at dawn into Hollowmere (its first visit; Act III's zone) and on to the Rim aboard a Hollowmere ship (Ch16). The Wakefin, Kerrid's reveal at sea, Liss's current-song, Toma's confession and the supper on the dock come with the beat sheet.",
+ "chapter": "ch15",
+ "zones": {
+  "ch15/open_sea": {
+   "party": {
+    "party": [
+     "rhen",
+     "asha",
+     "toma"
+    ],
+    "reserve": [
+     "ysolde",
+     "kerrid",
+     "liss"
+    ]
+   },
+   "arrive": [
+    {
+     "when": {
+      "unset": [
+       "ch15_started"
+      ]
+     },
+     "steps": [
+      {
+       "place": "Deck"
+      },
+      {
+       "chapter": 15
+      },
+      {
+       "set": "ch15_started"
+      }
+     ]
+    }
+   ],
+   "beats": {
+    "to_hollowmere": {
+     "steps": [
+      {
+       "go": {
+        "location": "ch17/hollowmere",
+        "spawn": "Dock"
+       }
+      }
+     ]
+    }
+   }
+  },
+  "ch17/hollowmere": {
+   "party": {
+    "party": [
+     "rhen",
+     "asha",
+     "toma"
+    ],
+    "reserve": [
+     "ysolde",
+     "kerrid",
+     "liss"
+    ]
+   },
+   "arrive": [
+    {
+     "when": {
+      "unset": [
+       "ch15_reached_hollowmere"
+      ]
+     },
+     "steps": [
+      {
+       "place": "Dock"
+      },
+      {
+       "set": "ch15_reached_hollowmere"
+      }
+     ]
+    }
+   ],
+   "beats": {
+    "to_rim": {
+     "steps": [
+      {
+       "go": {
+        "location": "ch16/pale_rim",
+        "spawn": "Rim"
+       }
+      }
+     ]
+    }
+   }
+  }
+ }
+}

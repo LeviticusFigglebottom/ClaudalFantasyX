@@ -8,7 +8,10 @@ extends Control
 ##   - "shrine": the Shell Shrine trial (the objective: the inner pool), the player by the
 ##     entrance facing in, the side pool drained (its errand listed);
 ##   - "underway" (M3-UI-04): Ch1's Underway after the glassfry shoal, the player in the galleries
-##     facing north, the objective the stairwell lip, the bell-room hinge left as an errand.
+##     facing north, the objective the stairwell lip, the bell-room hinge left as an errand;
+##   - "keth_pass", "lowlight", "ansedra" (M3-UI-206): Act II's greyboxes where the map reads hardest (the
+##     pass's raised landings and flights, the temple's drowned shaft, the city's domes on the lagoon), the
+##     player at each zone's way in.
 
 const HEROES: Array[StringName] = [&"rhen", &"asha", &"toma"]
 const NAMES := {&"rhen": "CHAR_RHEN", &"asha": "CHAR_ASHA", &"toma": "CHAR_TOMA"}
@@ -34,9 +37,12 @@ const VIEWS := {
 		"yaw": 0.0,
 		"flags": [&"ch01_started", &"ch01_saw_bell_room", &"ch01_wickfry_won"],
 	},
+	&"keth_pass": {"zone": &"ch12/keth_pass", "at": Vector3(0.0, 0.0, 3.0), "yaw": 0.0, "flags": [&"ch12_started"]},
+	&"lowlight": {"zone": &"ch11/lowlight", "at": Vector3(2.0, 0.0, 0.0), "yaw": -PI * 0.5, "flags": [&"ch11_started"]},
+	&"ansedra": {"zone": &"ch13/ansedra", "at": Vector3(0.0, 0.0, 12.0), "yaw": 0.0, "flags": [&"ch13_started"]},
 }
 
-## Which view to stage: &"haluna", &"shrine" or &"underway".
+## Which view to stage: a VIEWS key.
 @export var view: StringName = &"haluna"
 
 var menu: FieldMenu

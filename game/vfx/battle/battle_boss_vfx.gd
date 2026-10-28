@@ -68,7 +68,8 @@ static func load_data() -> Dictionary:
 static func boss_of(engine: BattleEngine) -> BattleCombatant:
 	var bosses := load_data().get("bosses", {}) as Dictionary
 	for c: BattleCombatant in engine.enemies:
-		if bosses.has(BattleVfx.base_id(c.id)):
+		var row: Variant = bosses.get(BattleVfx.base_id(c.id), null)
+		if row != null and str((row as Dictionary).get("kind", "")) != BattleBossSetPiece.KIND:  # M3-BPR-420
 			return c
 	return null
 

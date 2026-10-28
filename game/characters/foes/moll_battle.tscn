@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" path="res://assets/characters/moll/moll_lod1.glb" id="model"]
+
+[node name="MollBattle" type="Node3D"]
+metadata/hymn_battle_actor = &"moll"
+
+[node name="Model" parent="." instance=ExtResource("model")]

@@ -589,6 +589,112 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
+- **2026-10-28 ~10:30: FAST-TRACK M3-ENV-752, the opening cinematic read GREYSCALE (the human's playtest).**
+  - **Cause 1, for the Lead to merge:** the integration build's `prologue.tscn` (7855d016) still builds the city from
+    primitives. slice-polish's mount of the final city and its WaterSurface is on `claude/m2-slice` (ead04bab, 2ab7a66e,
+    c2c9b802, 28b0f97a) and is not on integration yet. **Merge it in big14.**
+  - **Cause 2, fixed (d2ae3cb2):**
+    - The final city, rendered through m2-slice's mount in a worktree, read near-monochrome: the cool lit_ceramic
+      and the paving went grey under the teal dusk fill, and the glaze went slate.
+    - It now has warm whites (towards sand_dry), gilt domes and finials (gold_leaf), and a bluer reef glaze. It still
+      reads "white and gold at dusk" (iskarra.md); the sheet is updated.
+  - **SELF-RENDERED @ d2ae3cb2:**
+    - with m2-slice's prologue: slice_prologue_p01 and slice_prologue_vigil_line — cream towers, gold domes, blue
+      bands, no grey left;
+    - iskarra_p01/i02/i03 viewed.
+    - All five drift on purpose. Re-approve them after merging m2-slice.
+- **2026-10-28 ~09:00: the Lead's queue (inventory M3-HER-1140, the shrine, weak views, storm/night); MERGE-READY.**
+  - **Inventory, the 15 rows (task M3-ENV-746):**
+    - **Fixed by env-art:**
+      - the derelict arena's sphere flames are now the kit's `lamp_flame` (also the Ch5 ash terrace);
+      - the shrine's ChamberPassage box is now `shrine_chamber_passage`, and the shrine GI was rebaked here;
+      - the Ch4 ferry's four kept blocks are now `islet_landing`, `gangplank`, `stern_gate` and
+        `terrace_name_board_wrapped`, placed in `tools/act1/ch04_ferry_dressing.py` under the Lead's 02:40 split,
+        so the keep list is empty;
+      - the Ch1 storm's `StormWall` is no longer kept (below).
+    - **Built, waiting on the owner:**
+      - the First Verse's set, `assets/environments/zones/shell_shrine/first_verse_stage.tscn` (the final shrine,
+        sea, shore, and the marks at their real places; M3-ENV-745);
+      - the trees under real names, `banyan_hero` / `windbreak_tree` (M3-ENV-750, then the old names go).
+    - **Requests:**
+      - M3-ENV-747: the save shrine's primitives (Systems; the kit pieces have been ready since M3-ENV-101);
+      - M3-ENV-748: Neme's stand-in (slice-polish);
+      - the earlier mounts: M3-ENV-739, 740, 742, 744.
+    - **Noted:** the Reefball drop proxy is placed in no Act I scene (pc-gpu's R&D).
+  - **Weak views reframed:**
+    - O10: the lintel gull with the town behind;
+    - B07: the stem-gull's silhouette ahead of the hulk, as its sheet intends;
+    - H10: back along the dock to the lamp-lit village. The sheet row is updated.
+  - **Storm and night:**
+    - Oruvel's storm is in the dressing: debris, a capsized hull, the dive bridge adrift and Kell's beacon, all
+      following `StormWall`, plus the storm frame (`storm_environment`).
+    - The preview `oruvel_dressed_storm.tscn` stands Rendering's UndertowStorm where the wall was.
+    - M3-ENV-751 asks slice-polish to do the same in `set_storm`.
+    - The nights (the Haluna dock, the Ch4 wake, the ferry) are in place.
+  - **SELF-RENDERED @ 538d5eda:**
+    - battle_arena_derelict / _deck_night / _ash_terrace_lanternfall, shrine_s02–s05, drownbell_flood,
+      ch04_ferry_deck/derelict: pass (rmse ≤ 0.0074).
+    - first_verse_stage_v01/v02, brightwater_landing_f01/f06, zone_oruvel_storm_o12/o16: new, viewed.
+    - haluna_h10_dock_night: reframed, intended drift (re-approve).
+    - The kit previews O10 and B07 were viewed through their own manifests.
+  - **Gates:**
+    - tools suite 117 units: only test_screenshots red, for new shots' first baselines;
+    - Godot haluna 62, import 21, zone_kit 6, environment 11, shrine 37, brightwater 6, oruvel 14, arena 18, all pass;
+    - gdlint and gdformat clean; validate_data; taskboard.
+  - **MERGE-READY @ 538d5eda** (integration 8d03e6d1 merged in).
+- **2026-10-28 ~06:00: Batch B viewed; First Verse found primitive.**
+  - SELF-RENDERED @ 7a115247: shrine_s02/s03/s04/s05, battle_arena_derelict, brightwater_b03,
+    ch04_ferry_deck/derelict, causeway_c08, haluna_h03 — pass (rmse ≤ 0.0068). Viewed: final. In ch04_ferry_deck
+    an orange capsule (a model-less actor) fills the lower left (act1-chapters').
+  - SELF-RENDERED @ 7a115247: brightwater_b02_awning — drift 0.0107, intended: the passengers' bundles fold and
+    bind (d4967aee, 10-27) since its 10-24 baseline. Re-approve on the next gate.
+  - SELF-RENDERED @ a7dca885: slice_haluna_villagers_village, slice_causeway_head, slice_causeway_harrier_view —
+    pass (rmse 0). slice_beach_h05_asha / h06_toma — drift 0.049 / 0.048, only on the palms and the drying rack's
+    poles (their wind sway's phase over a 270–375-frame cutscene capture); the frames are otherwise identical, no
+    dressing change. Flag for the Lead: those two may need a fixed wind time in their setup.
+  - **M3-ENV-745 (FAST-TRACK to slice-polish):** Ch3's First Verse cutscene (`first_verse.tscn`, shot
+    `slice_verse_steps`) is CSG primitives (island, dome, steps, pillars, flat plane sea) under the real heroes.
+    Stage it on env-art's final shrine; the task maps the marks onto the real steps.
+- **2026-10-28 ~05:00: Ch4's wake night dressed (M3-ENV-743); MERGE-READY.**
+  - **New Haluna kit pieces:**
+    - `wake_ground`: the terrace level at y 0 inside the rails, the beach and flats past them, the island behind;
+      lane, turf, seagrass and rubble masks.
+    - `house_lane_a/b/c`: the houses with no shade deck, at the greybox's sizes.
+    - `dock_haluna_short`: 14.4 m.
+    - `wake_shell_set`: a named shell for the wall, no stand.
+    - The existing houses, dock and single shell rebuild byte-identical.
+  - `assets_src/environments/kits/haluna/wake_zone_dressing.py` → `assets/environments/zones/ch04/` (the JSON, the
+    night Environment, the night sea) and the preview `game/levels/_tests/haluna_wake_dressing/`.
+  - The mount request is M3-ENV-744 to act1-chapters (Water at -0.9, the glimmer global, the capsule actors).
+  - SELF-RENDERED @ 2f5d51c9: zone_wake_h02/h04/h07/h09/h12/h13/h08/c01 (new) — the moonlit lane and houses, the
+    shut market and inn, the chapel door, the dark dock (no lamps) from the shore and from under it, the feast and
+    the lamp-lit wall, Asha's inked and Imra's faded shells set in the wall. Two shot notes for act1-chapters: H02's
+    camera is 0.5 m from Neme's house front; C01's is behind the wall and below its top.
+  - Gates: tools suite 117 units (only test_screenshots red, for the new shots' missing first baselines);
+    Godot haluna 62, import 21, zone_kit 6, environment 11, all pass; validate_data; taskboard --check.
+  - **MERGE-READY @ 2f5d51c9** (integration bd3ab5b4 merged in). New shots needing first approval (never write
+    baselines here): zone_oruvel_o01/o07/o09/o12/o16, zone_underway_u01/u03/u06/u07/u08, zone_wake_h02/h04/h07/
+    h09/h12/h13/h08/c01; haluna_h07_chapel_court re-approval (intended drift).
+  - **Next:** Brightwater ferry (B-shots, the Ch4 ferry deck and derelict), the Shell Shrine interior (S02–S05),
+    then the prologue city if slice-polish wants env-art to mount it.
+- **2026-10-28 ~03:00: Ch1 zones dressed; renders viewed.**
+  - SELF-RENDERED @ 9cced155: slice_prologue_vigil_line, haluna_h01/h02/h04/h10, causeway_c02, shrine_s01,
+    drownbell_flood, battle_arena_tideline_dawn/causeway_disc_sunset/causeway_route_afternoon/derelict_deck_night/
+    oruvel_raft_morning/underway_tower — pass (rmse ≤ 0.0055). Viewed: all final; the prologue city is still
+    primitives (the zone's, M3-ENV-739 FAST-TRACK to slice-polish).
+  - SELF-RENDERED @ 9cced155: haluna_h07_chapel_court — drift 0.0265, intended: the chapel's pilasters, dentils
+    and arched heads (9c26b66e) postdate its baseline. Re-approve on the next gate.
+  - SELF-RENDERED @ b82d8df1: zone_oruvel_o01/o07/o09/o12/o16 (new, M3-ENV-738) — the decks, the *Seventh
+    Terrace*'s name-board, Kell's chandlery and the pen read final. The green and pink capsules are the zone's
+    actors with no `model` (netmenders, pen child; M3-ENV-740 asks slice-polish for bodies).
+  - SELF-RENDERED @ e8d3e151+: zone_underway_u01/u03/u06/u07/u08 (new, M3-ENV-741) — the crown under Oruvel's
+    hulls, the sealed bell-room, the wheel, the shaft; U06's stairwell lined a storey down after the first render
+    showed the murk through it.
+  - The ruin column's LOD1 now keeps its broken top (H04's far columns read as plain tubes).
+  - Requests: M3-ENV-740 and M3-ENV-742 (mount the two dressings, slice-polish), M3-ENV-739 (the prologue city).
+  - Every capture logs `SCRIPT ERROR: Trying to cast a freed object` at shutdown from `life_audio.gd:124` (audio's;
+    known since big12). It makes capture.sh exit 1 though every shot is written.
+  - **Next:** Ch4 `haluna_wake` (41 greybox blocks): a ground piece and a ZoneKitDressing from the Haluna kit.
 - **2026-10-28 ~01:30: REFOCUS (ADR 0041, the human's directive via the Lead).**
   - **Scope:** the Prologue through Ch4, plus the shared kits. env-art-b takes Ch5–Ch9.
   - **Paused:** my 19 later-act tasks (M3-ENV-716–718, 720–723 and 725–736) are `blocked` with `blocked-by: ADR 0041`. Their work stays committed and pushed as is.

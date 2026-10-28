@@ -19,5 +19,6 @@ location: ch08/coilspire
 @camera F08
 Toma [determined]: Down. Now. The stair. #line:ch08_beacon_opened_001
 @mark toma gallery_out run
+@wait 0.6
 @fade out 0.6
 ===

@@ -462,6 +462,13 @@ def cutscene_foley_errors(doc: object, ids: set[str]) -> list[str]:
         for state, rid in row.items():
             if rid not in ids:
                 errs.append(f"{CUTSCENE_FOLEY} light.{k}.{state}: {rid} is not an sfx row")
+    lamps = doc.get("lamps")  # M3-AUD-847: lit lamps crackle at the lamp
+    if lamps is not None:
+        if not isinstance(lamps, dict) or lamps.get("row") not in ids or not lamps.get("match"):
+            errs.append(f"{CUTSCENE_FOLEY} lamps: needs match (light names) and row (an sfx row)")
+        gap = lamps.get("every_sec") if isinstance(lamps, dict) else None
+        if not (isinstance(gap, list) and len(gap) == 2 and all(_num(v) and v > 0 for v in gap) and gap[0] <= gap[1]):
+            errs.append(f"{CUTSCENE_FOLEY} lamps.every_sec: [min, max] seconds > 0")
     return errs
 
 
@@ -938,6 +945,13 @@ def choreo_errors(doc: object, rows: dict, classes: dict[str, list[str]] | None,
     vb = doc.get("vowbound") or {}
     for k in ("call", "rise", "rise_long", "sink", "fall"):
         row(vb.get(k), f"{w0} vowbound.{k}", blank=False)
+    for vid, lay in (vb.get("layers") or {}).items():  # M3-AUD-846: a Vowbound's own sound over each moment
+        for k, sid in (lay or {}).items():
+            if k.startswith("_"):
+                continue
+            if k not in ("call", "rise", "sink", "fall"):
+                errs.append(f"{w0} vowbound.layers.{vid}.{k}: one of call, rise, sink, fall")
+            row(sid, f"{w0} vowbound.layers.{vid}.{k}")
     if not _num(vb.get("long_sec")) or vb["long_sec"] <= 0:
         errs.append(f"{w0} vowbound.long_sec: seconds > 0")
     flood = doc.get("flood") or {}
