@@ -106,7 +106,8 @@ def gulls(rows: list[dict]) -> list[dict]:
             out.append(gull(rng, *_xyz(local(x, z, yaw, -1.85, 0.0), y + 3.12)))
         elif r["piece"] == "chandlery":
             ridge = oh.CHANDLERY_DECK_Y + 2.22 + oh.CHANDLERY_ROOF[2] + 0.08
-            out.append(gull(rng, *_xyz(local(x, z, yaw, 0.0, 0.9), y + ridge)))  # y: the chandlery's origin
+            # y: the chandlery's origin. The gull sits at the ridge's east end, where O10 frames it past the masts.
+            out.append(gull(rng, *_xyz(local(x, z, yaw, 0.0, -0.9), y + ridge)))
         elif r["piece"] == "keel_hull":
             out.append(gull(rng, *_xyz(local(x, z, yaw, 0.0, 6.7), y + oh.KEEL_HULL_RIDGE), scale=1.35))
     return out
