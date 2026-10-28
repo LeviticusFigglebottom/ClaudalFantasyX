@@ -2,8 +2,8 @@
 id: M3-CHR-540
 title: "Request: Ivo Brannick (Ch8-9) as a Stillguard variant with his face uncovered"
 role: character
-status: todo
-owner_session: ""
+status: doing
+owner_session: "chr-ivo-wip"
 depends_on: [M3-CHR-507]
 milestone: M3
 request-from: character
