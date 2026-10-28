@@ -696,3 +696,10 @@ SUPERSEDED RENDER-REQUEST @ db895430: battle_choreo_hit, battle_choreo_ko, battl
   - **Checks run:** Blender verify identical ×6; tools test_creatures; Godot creature 79/1 (the known portrait red); validate_data.
 - SELF-RENDERED (the agent rendered the four review shots, drift 0.04–0.10, all intended; I viewed before/after here) plus the four portraits, re-baked and committed. **Lead: creature_shoal_skipper, creature_slag_tortoise, creature_sail_leech and creature_oil_slug need your re-render** (and the Act II scree_crawler and fen_leech, if you gate them).
 - **The 20 Act I regulars are now all final in my review:** every one has its mesh, rig, full clips, a weak point and vfx_anchors, and has been viewed at the review shot and in its portrait. What's left is the Lead's baseline re-render, and battle VFX using the anchors (M3-CRE-653).
+- **big13 merged in @ 89e381ba** (integration 90ecee18).
+  - Unions: ownership, blender_builds (the six Vowbound jobs kept), PROVENANCE, shots, baselines. The drowner and creature_portraits baselines are the gate's.
+  - Checks run: Godot creature 79/1 (the known portrait red), vowbound 83/0, villager 27/0, vfx_anchors 4/0, field_npc 10/0; tools test_creatures, test_blender_builds, test_npc; the manifest (414 valid); validate_data, taskboard, lint, format.
+- **Lead's 03:41 primitive list, queued as M3-CRE-660 (after the crowd generator):**
+  - **Already done:** raid_hound (M3-CRE-655) and slag_tortoise (M3-CRE-654) were both re-modelled after the sheets you viewed. Please look at their new renders (creature_raid_hound, creature_slag_tortoise and their portraits) on your next gate.
+  - **"pumice_crawler" doesn't exist in the repo.** Did you mean scree_crawler (Act II, the tortoise's variant, already rebuilt with it)?
+  - **avalanche_ram is Act II, paused by ADR 0041.** Say if it's back in scope.
