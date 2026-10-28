@@ -21,6 +21,8 @@ const HIDDEN_STALL_MS := 1200.0
 ## A fake-clock frame time is FRAME_USEC exactly; this only absorbs the usec -> ms float conversion.
 const STEP_EPS_MS := 0.001
 const BOOT_SCENE := "res://game/core/boot.tscn"
+## The shell's "command not found": the child probe never ran (the runner's PATH or GODOT), so no stats.
+const EXIT_NOT_FOUND := 127
 
 
 func test_budget_data_has_headroom_below_the_spec_budget() -> void:
@@ -294,6 +296,9 @@ func _run_probe(probe_scene: String, user_args: Array[String], target: String) -
 				var parsed: Variant = JSON.parse_string(line.trim_prefix(PROBE_TAG))
 				if parsed is Dictionary:
 					return parsed as Dictionary
+	if code == EXIT_NOT_FOUND:  # the runner's environment, not the router: say so (big15's cloud suite)
+		fail("probe for %s: the Godot binary was not found (exit 127, %s); not a budget failure" % [target, _godot()])
+		return {}
 	fail("probe for %s printed no stats (exit %d)" % [target, code])
 	return {}
 
