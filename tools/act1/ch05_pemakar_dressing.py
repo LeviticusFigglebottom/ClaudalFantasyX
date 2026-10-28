@@ -7,9 +7,10 @@ axis (x 0), each descending 4.2 m out on to the tier below; the massif's slope r
 z 29. Tier kinds: 0 market (and the smithy, x 23), 1-2 houses, 3 and 6 paddies, 4-5 and 7-9 graves.
 
 The story's places, each on its tier (the greybox ran them north up a flat slope in the same order):
-  the harbour        a quay of the kit's wall and tread modules at the shore (front z 27, top y 1.2), the
-                     Brightwater ferry (the Ch4 kit's) alongside; the wake-wall and the sea-cut weir's lip (in the
-                     water off the quay's east end) stay greybox stand-ins until env-art's pieces (M3-ENV-1214)
+  the harbour        env-art's harbour_quay at the shore (front z 27, top y 1.2; M3-ENV-1214), the Brightwater
+                     ferry (the Ch4 kit's) alongside, the wake-wall at the quay's back, and the sea-cut weir at the
+                     quay's east end (WEIR_AT: the preview sets it at the bottom channel's outlet, x -39, but B05's
+                     weir folk stand at the quay's east end, so the weir comes to them; --weir-relayout moved them)
   the market         tier 0 about the stair head (the kit keeps |x| < 3.4 clear of all but the stair and lamps)
   the forge lane     tier 0 at the smithy, which trades places with the house_b by the stair (x 6.3): the kit's
                      tiers are dressing, not lanes (house_b's veranda and house_a's plinth close the lane at
@@ -28,7 +29,7 @@ Writes next to the zone (game/levels/ch05/pemakar/):
                           edge, the town's bounds and the shore.
 and copies the preview's night and dusk grades and the sea. With --relayout it also moves the story points (once).
 
-    python3 tools/act1/ch05_pemakar_dressing.py [--relayout]
+    python3 tools/act1/ch05_pemakar_dressing.py [--relayout] [--weir-relayout]
 """
 from __future__ import annotations
 
@@ -66,6 +67,21 @@ QUAY_BACK_Z = float(MASSIF_ROWS[9])  # where the slope comes down to the quay's 
 ROAD_HALF_X = 5.0
 FERRY_AT = (-2.0, -bf.WATERLINE_Y, QUAY_FRONT_Z + 3.4 + 0.6)  # alongside, port side to the quay, bow west
 FERRY_YAW = 90.0
+# env-art's sea_cut_weir (pemakar_harbour.py): its west cheek's outer face (WEIR_HALF_M + 0.8 from its axis) against the
+# quay's east end; its cheek tops (0.5 over the crest) flush with the quay's deck, so the crest stands 0.7 over the sea
+WEIR_CHEEK_OUT_M = 4.0
+WEIR_CHEEK_TOP_M = 0.5
+WEIR_AT = (QUAY_HALF_X + 0.2 + WEIR_CHEEK_OUT_M, QUAY_Y - WEIR_CHEEK_TOP_M, QUAY_FRONT_Z + 0.6)
+# B05's light at the weir (P11: "the lamplight ends here"): a lamp pillar at the quay's east end (the kit's lamp
+# 1.35 m up it, as the preview lights its pillars) and the boats' fires going over the spill; both follow the Lamps
+# block, so the day has neither
+WEIR_LAMP_AT = (QUAY_HALF_X - 0.6, QUAY_Y, QUAY_BACK_Z + 0.8)  # clear of the weir folk's marks
+WEIR_LIGHTS = [
+    {"at": [WEIR_LAMP_AT[0], WEIR_LAMP_AT[1] + 1.35, WEIR_LAMP_AT[2]], "color": "#FFA757", "energy": 1.6, "range": 7.0},
+    {"at": [WEIR_AT[0], WEIR_AT[1] + 0.3, WEIR_AT[2] + 0.5], "color": "#FF9A4A", "energy": 1.1, "range": 5.0},
+]
+# The story pieces env-art built for the greybox's stand-ins (M3-ENV-1214): each follows its block
+STORY_PIECES = {"wake_wall": "WakeWall", "sea_cut_weir": "SeaCutWeir", "crown_bell": "CrownBell"}
 TOWN_HALF_X = 44.0
 SHORE_Z = 29.0
 STAIR_RUN = pt.STEP_RUN_M * round(pc.WALL_H_M / pt.STEP_RISE_M)  # 4.2 m out on to the tier below
@@ -156,17 +172,6 @@ def preview() -> dict:
 
 def modules(kind: str) -> list[dict]:
     return [p for p in preview()["pieces"] if p["piece"] == kind]
-
-
-def quay() -> list[dict]:
-    """The quay's wall and tread modules (anchored at the front edge, local +Z out to sea)."""
-    n = int(round(2 * QUAY_HALF_X / pc.MODULE_M))
-    out = []
-    for i in range(n):
-        x = -QUAY_HALF_X + pc.MODULE_M * (i + 0.5)
-        for kind in ("terrace_wall_4m", "terrace_tread_4m"):
-            out.append({"piece": kind, "at": [r3(x), QUAY_FRONT_Z], "y": QUAY_Y, "yaw_deg": 0.0})
-    return out
 
 
 # --- collision ---------------------------------------------------------------------------------------------------
@@ -266,6 +271,10 @@ def dressing() -> dict:
         p = swapped(p)
         row = {k: v for k, v in p.items() if k != "at"}
         row.update(at=[r3(p["at"][0]), r3(p["at"][2])], y=r3(p["at"][1]))
+        if p["piece"] == "sea_cut_weir":
+            row.update(at=[r3(WEIR_AT[0]), r3(WEIR_AT[2])], y=r3(WEIR_AT[1]))
+        if p["piece"] in STORY_PIECES:
+            row["block"] = STORY_PIECES[p["piece"]]
         if p["piece"] == "mountain_massif":
             row["collide"] = "trimesh_lod0"
         elif p["piece"] in COLLIDE_BOX:
@@ -277,9 +286,11 @@ def dressing() -> dict:
         pieces.append({"piece": p["plant"], "kit_dir": VEG, "materials_dir": VEG + "materials/",
                        "at": [r3(p["at"][0]), r3(p["at"][2])], "y": r3(p["at"][1]), "yaw_deg": p["yaw_deg"],
                        "scale": p["scale"], "collide": True})
-    pieces += quay() + ferry()
+    pieces += ferry()
+    pieces.append({"piece": "lamp_pillar", "at": [r3(WEIR_LAMP_AT[0]), r3(WEIR_LAMP_AT[2])], "y": WEIR_LAMP_AT[1],
+                   "yaw_deg": 0.0, "block": NIGHT_BLOCK, "collide": True})
     lights = [dict({k: v for k, v in light.items() if k != "at"}, at=light["at"], block=NIGHT_BLOCK)
-              for light in pv["lights"]]
+              for light in pv["lights"] + WEIR_LIGHTS]
     boats = pv["boats"]
     far = [dict(pv[k], name=n, block=NIGHT_BLOCK) for k, n in (("far_lights", "FarLights"), ("sea_lights",
                                                                                             "SeaLights"))]
@@ -295,7 +306,7 @@ def dressing() -> dict:
         "lod_margin_m": pv["lod_margin_m"],
         "environment": RES_ZONE + "pemakar_night_environment.tres",
         "time_of_day_h": 20.0,
-        "greybox": {"hide_all": True, "keep": ["WakeWall", "SeaCutWeir", "CrownBell"]},
+        "greybox": {"hide_all": True, "keep": []},
         "fire_light_color": "#FFA757",
         "fire_lights": lights,
         "multimeshes": [{"name": "LeafBoats", "piece": boats["piece"], "transforms": boats["transforms"],
@@ -306,7 +317,8 @@ def dressing() -> dict:
 
 
 def copy_grades() -> None:
-    for name in ("pemakar_night_environment.tres", "pemakar_dusk_environment.tres", "pemakar_sea_material.tres"):
+    for name in ("pemakar_night_environment.tres", "pemakar_dusk_environment.tres", "pemakar_day_environment.tres",
+                 "pemakar_sea_material.tres"):
         text = (PREVIEW / name).read_text(encoding="utf-8").replace(RES_PREVIEW, RES_ZONE)
         (ZONE / name).write_text(text, encoding="utf-8")
 
@@ -448,10 +460,48 @@ def relayout() -> None:
     LAYOUT.write_text(dump(g), encoding="utf-8")
 
 
+# --weir-relayout (once, after M3-ENV-1214): B05's weir folk move east with the weir to the quay's east end, keeping
+# their spacing and facings (WEIR_DX), with the cameras that frame them; the dawn variant takes env-art's day grade.
+WEIR_DX = 4.6
+WEIR_MARKS = ("weir_step", "weir_guard", "weir_asha_in", "dawn_kerrid_in")
+WEIR_ACTORS = ("kerrid", "weir_child", "boat_fisher")
+WEIR_SHOTS = {
+    "P11": {"pos": [21.0, 1.5, 31.5], "look_at": [15.0, 1.9, 26.6], "fov": 40},  # from the sea side, low
+    "P12": {"pos": [17.1, 2.8, 25.425], "look_at": [14.6, 2.6, 26.5], "fov": 36},
+    "P02D": {"pos": [3.0, 2.977, 22.05], "look_at": [12.6, 1.8, 26.5], "fov": 40},
+}
+DAY_SUN = {"pitch_deg": -24.0, "yaw_deg": -72.0, "energy": 2.4, "color": "#ffd9b0"}  # env-art's day: 24 deg / az 252
+
+
+def weir_relayout() -> None:
+    from ch08_corrow_relayout import dump
+
+    g = json.loads(LAYOUT.read_text(encoding="utf-8"))
+
+    def east(p: list) -> list:
+        return [r3(min(p[0] + WEIR_DX, QUAY_HALF_X - 0.4))] + p[1:]
+
+    for k in WEIR_MARKS:
+        g["marks"][k] = east(g["marks"][k])
+    for k in WEIR_ACTORS:
+        g["actors"][k]["at"] = east(g["actors"][k]["at"])
+    g["spawns"]["Weir"] = east(g["spawns"]["Weir"])
+    g["shots"].update(WEIR_SHOTS)
+    for b in g["blocks"]:
+        if b["id"] == "SeaCutWeir":
+            b.update(pos=[r3(WEIR_AT[0]), r3(WEIR_AT[1] + 0.2), r3(WEIR_AT[2])], size=[8.0, 0.4, 1.2])
+    for v in g.get("variants", []):
+        v["environment_res"] = RES_ZONE + "pemakar_day_environment.tres"
+        v["sun"] = DAY_SUN
+    LAYOUT.write_text(dump(g), encoding="utf-8")
+
+
 def main() -> None:
     copy_grades()
     if "--relayout" in sys.argv:
         relayout()
+    if "--weir-relayout" in sys.argv:
+        weir_relayout()
     (ZONE / "pemakar_collision.json").write_text(json.dumps(collision(), indent=1) + "\n", encoding="utf-8")
     (ZONE / "pemakar_dressing.json").write_text(json.dumps(dressing(), indent=1) + "\n", encoding="utf-8")
 
