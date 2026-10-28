@@ -1,6 +1,7 @@
 ---
 id: M3-ENV-105
-title: "The Underway: the cut gauge wheel's hub, and a check against the retired M3-C01-101 layout"
+title: "The Underway: walls off the greybox's wall lines (walk-through), the cut gauge wheel's hub, a check"
+priority: high
 role: environment
 status: todo
 owner_session: ""
@@ -16,6 +17,17 @@ The Lead's ruling (10-28): env-art's zone dressings win the zone. Slice-polish m
 - The Underway's `test_ch01_underway_kit` passes on your layout.
 
 ## Asks
+- [ ] **The walls stand inside the rooms' collision (walk-through; fix first).** ADR 0200: the greybox keeps the
+      gameplay, and the kit follows it. Your bays stand inset from the greybox walls. In the crown:
+      - your walls are at x +-8.175 and z -2.175 / 18.175;
+      - `CrownWallW/E/N/S` are at x +-9 and z -4 / 20 (0.6 m thick).
+      So Rhen walks about 1 m into a visible wall before its collider stops him, and the field camera behind him
+      (orbit 6.5 m at 4.5 m) sits outside the visible room (self-rendered `ch01_underway_crown`: a wall fills two
+      thirds of the frame, Rhen through a doorway).
+      - Put each bay's inner face on its greybox wall's inner face, as the retired layout did. The rule it was
+        tested to: every wall piece on a wall line; see test_ch01_underway_kit's dropped
+        `test_the_kit_sits_on_the_rooms_grid` in git history (claude/m2-slice, before 85fa08fc).
+      - Please check every room: bell-room, galleries, gauge room. They come from the same generator.
 - [ ] **The cut gauge wheel (C1-05's salvage).** The layout swaps `GaugeWheel` for `GaugeWheelCut` on
       `ch01_cut_gauge_wheel`. Yours has a piece on `GaugeWheel` but none on `GaugeWheelCut`, so after the cut the
       wheel simply vanishes. The old layout left its hub on the plinth.

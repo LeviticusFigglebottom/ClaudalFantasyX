@@ -24,6 +24,8 @@ O02 and O10 now follow your hulls. Three things the old layout carried are missi
       ferry kit's lantern at (32, 3.0, -9) on the `KellBeacon` block.
 - [ ] **The low hull's load.** C1-13 cuts it loose across the run's planks. The old layout piled a `salvage_heap`
       on the outrigger (both on `LowHull`), so it read as cargo blocking the way, not a canoe.
+- [ ] **The storm's sky:** the self-rendered `ch01_oruvel_storm` (O11, the storm flag) shows the Undertow under a
+      clear day-blue sky with your storm frame applied. The colour script's storm grade should darken it.
 - Also: `assets/environments/zones/ch01/oruvel_dressing.json` is stale for its generator (test_zone_dressing_ch01). The
   Seventh Terrace moves to (-37.1, ..., y 0.7). Running the generator rewrites
   `game/levels/_tests/oruvel_zone_dressing/oruvel_dressed.tscn` too. O07's aim (-36.6, 1.65, -5.8) frames the
