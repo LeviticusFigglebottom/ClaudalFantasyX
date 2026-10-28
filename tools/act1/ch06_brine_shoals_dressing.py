@@ -142,6 +142,16 @@ AFTERMATH = (("net_heap", HALUNA, 0.05, False), ("tide_debris", HALUNA, 0.0, Fal
 AFTERMATH_CLEAR_M = 2.5  # off every story point (marks, actors, spawns, triggers)
 
 
+# The raid's flames (M3-ENV-1313, B02-B04 "by the burning hulk"): the kit's b_fire.py pieces at the burning hulk and
+# the tide-wheel's foot, on the Smoke block, so they go out with the smoke when the evening camp is made
+RAID_FIRES = (("camp_fire_large", 11.0, -46.0, 30.0), ("camp_fire_small", 13.6, -44.6, 200.0),
+              ("camp_fire_small", 8.4, -45.4, 110.0), ("camp_fire_large", 9.6, -35.2, 300.0))
+
+
+def raid_fires() -> list[dict]:
+    return [piece(name, x, z, yaw=yaw, block="Smoke") for name, x, z, yaw in RAID_FIRES]
+
+
 def road_aftermath() -> list[dict]:
     import random
 
@@ -193,7 +203,8 @@ def layout() -> dict:
             {"at": [9.0, 2.4, -35.0], "energy": 1.4, "range": 7.0, "block": "TideWheel"},  # the burning wheel
             {"at": [27.0, 1.2, -44.0], "energy": 0.6, "range": 3.0, "color": "#9fd8e0", "block": "Shrine"},  # rest
         ],
-        "pieces": ground() + road() + wrecks() + camp() + dusk_camp() + story_marks() + road_aftermath(),
+        "pieces": ground() + road() + wrecks() + camp() + dusk_camp() + story_marks() + road_aftermath()
+        + raid_fires(),
     }
 
 
