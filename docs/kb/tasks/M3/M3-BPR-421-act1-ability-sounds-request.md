@@ -20,3 +20,9 @@ yours.
 - [ ] test_battle_audio's fire-hit expectation goes back to one play if Ember gets its own sound.
 
 ## Review log
+
+## Added 2026-10-28 (M3-BPR-422)
+- Two new choreography styles, `swing` (Kerrid's Swell, the weighted swing) and `reel` (Liss's Swell, the reel-stop),
+  have stand-in rows at the end of `choreo_sfx.json` `styles`, borrowing the finisher's and the item throw's sounds.
+  Each wants its own Swell contact sound, as `swell_rhen` … `swell_ysolde` are for the other four.
+- Their effects `swell_weighted_swing` and `swell_reel_stop` borrow `hit_none` and `status_apply` in `battle_sfx.json`.

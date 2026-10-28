@@ -70,3 +70,14 @@ its element's generic hit, and supports, stances, gathers, summons and items pla
   - Tests: `test_battle_boss_camera` (each boss's big moves get their lead shot, live in their own fight);
     `tools/validate_choreo.py` checks enemy_by_skill pairs (`EnemyBySkillTests`).
   - Viewing: `tools/vfx/boss_camera_sheet.tscn` renders each move at its lead shot and at the contact.
+- 2026-10-28, battle-presentation: **the Lead's item 2, the VFX checked at battle distance on the dressed arenas**
+  (env-art and env-art-b merged into a scratch worktree, not pushed; `act1_vfx_sheet --enemy_set`).
+  - Most Act I creatures had no stand-in height, so they used the 1.7 m default. Hits floated a metre over the Oil
+    Slug and struck the Spar-Wraith's shins. `battle_sandbox.json` `stand_ins` now has a measured `height` row for
+    21 Act I creatures (the top of the battle model's bounds; fliers keep their hover). The Reach is left out: its
+    model's bounds run 16.5 m tall.
+  - On the dark Ch1 tower, Oil Slap (black oil) vanished, so lamp-lit glints now ride on it, and on Smother. Lure Glow
+    was a faint fleck on the beaches, so it is larger and brighter.
+  - The boss shots were retuned for the real heights (`boss_blow`: strike, back -3.6, side 6.6, up 2.6, fov 56;
+    `boss_sweep`: actor, back -4.6, side 6.6, up 2.6, fov 50). A grid probe checked all 13 big moves against the safe
+    frame, and the neighbouring settings pass too.

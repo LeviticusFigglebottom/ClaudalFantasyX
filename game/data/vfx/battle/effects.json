@@ -3422,6 +3422,39 @@
             1,
             0
           ]
+        },
+        {
+          "color": "#FFB16E",
+          "color_end": "#F2A64A",
+          "swatches": [
+            "oil_lamp",
+            "dusk_gold"
+          ],
+          "amount": 34,
+          "lifetime_s": 0.4,
+          "explosiveness": 0.95,
+          "velocity_m_s": [
+            2.0,
+            3.6
+          ],
+          "spread_deg": 18,
+          "gravity": [
+            0,
+            -2.0,
+            0
+          ],
+          "size_m": [
+            0.12,
+            0.26
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.15,
+          "turbulence": 0.0,
+          "direction": [
+            1.0,
+            0.25,
+            0
+          ]
         }
       ],
       "note": "An oil slug slaps: black oil."
@@ -3594,8 +3627,8 @@
             "sea_glow",
             "glimmer_held"
           ],
-          "amount": 30,
-          "lifetime_s": 0.8,
+          "amount": 56,
+          "lifetime_s": 0.9,
           "explosiveness": 0.5,
           "velocity_m_s": [
             0.2,
@@ -3608,11 +3641,11 @@
             0
           ],
           "size_m": [
-            0.1,
-            0.2
+            0.16,
+            0.32
           ],
-          "energy": 1.15,
-          "emission_radius_m": 0.4,
+          "energy": 1.6,
+          "emission_radius_m": 0.45,
           "turbulence": 0.0,
           "direction": [
             0,
@@ -3759,6 +3792,39 @@
             "volcanic_stone"
           ],
           "amount": 34,
+          "lifetime_s": 1.0,
+          "explosiveness": 0.4,
+          "velocity_m_s": [
+            0.2,
+            0.5
+          ],
+          "spread_deg": 30,
+          "gravity": [
+            0,
+            -1.4,
+            0
+          ],
+          "size_m": [
+            0.16,
+            0.32
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.35,
+          "turbulence": 0.2,
+          "direction": [
+            0,
+            -1,
+            0
+          ]
+        },
+        {
+          "color": "#FFB16E",
+          "color_end": "#F2A64A",
+          "swatches": [
+            "oil_lamp",
+            "dusk_gold"
+          ],
+          "amount": 14,
           "lifetime_s": 1.0,
           "explosiveness": 0.4,
           "velocity_m_s": [
