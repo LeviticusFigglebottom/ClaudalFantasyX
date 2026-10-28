@@ -219,6 +219,9 @@ STANDARD["kit_brass"] = {"albedo_color": hexc("#B08D57"), "metallic": 0.9, "roug
 STANDARD["kit_dried_fish"] = {"albedo_color": hexc("#7A6550"), "roughness": 0.55, "metallic_specular": 0.6}  # sun-dried, tannin-dark
 STANDARD["kit_lamp_flame"] = {"albedo_color": hexc("#FFB16E"), "emission_enabled": "true",  # oil_lamp
                               "emission": hexc("#FFB16E"), "emission_energy_multiplier": 0.6, "roughness": 1.0}
+# M3-ENV-746: an arena lamp's flame (lamp_flame) at the practicals' flame energy (arena_scenes lamp_spec, 8.0).
+STANDARD["kit_lamp_flame_hot"] = {"albedo_color": hexc("#FFB16E"), "shading_mode": 0, "emission_enabled": "true",
+                                  "emission": hexc("#FFB16E"), "emission_energy_multiplier": 8.0}
 # haluna.md §2.2: the Lit Age ring's crack glints glimmer_bound at emission 0.6, steady (bound light).
 STANDARD["kit_glimmer_glint"] = {"albedo_color": hexc("#4FB3B0"), "emission_enabled": "true",
                                  "emission": hexc("#4FB3B0"), "emission_energy_multiplier": 0.6, "roughness": 0.3}
@@ -230,6 +233,7 @@ def _value(v) -> str:
     if isinstance(v, (int, float)):
         return f"{v:g}"
     return str(v)
+
 
 
 def write_shader_material(path: Path, name: str, spec: dict) -> None:
@@ -262,6 +266,7 @@ def write_standard_material(path: Path, name: str, spec: dict) -> None:
 
 def ExtResource(i: str) -> str:  # noqa: N802 (mirrors the .tres syntax)
     return f'ExtResource("{i}")'
+
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -497,5 +502,16 @@ MATERIALS["kit_iskarra_paving"] = stone("iskarra_flag_albedo.png", "iskarra_flag
 STANDARD["kit_glimmer_held"] = {"albedo_color": hexc("#7FC6D9"), "emission_enabled": "true",
                                 "emission": hexc("#7FC6D9"), "emission_energy_multiplier": 2.2, "roughness": 0.4}
 
+# ---- M3-ENV-752 (appended by env-art): FAST-TRACK, the human's playtest found the Prologue "greyscale" ------------
+# "White and gold at dusk, with one saturated note" (iskarra.md §1): the cool lit_ceramic read grey under the dusk's
+# teal fill, so the city's whites go warm (towards sand_dry, palette), its domes and finials gilt (gold_leaf, iskarra.py
+# M_GILT; small in frame, inside gold_max_frame_fraction), and the reef-blue glaze lifts so it reads blue, not slate.
+MATERIALS["kit_iskarra_ceramic"]["params"]["col_paint"] = hexc("#EEE3CB")
+MATERIALS["kit_iskarra_cladding"]["params"]["col_tint"] = hexc("#F4E7C9")
+MATERIALS["kit_iskarra_glaze"]["params"]["col_tint"] = hexc("#1F7FC2")
+MATERIALS["kit_iskarra_paving"]["params"]["col_tint"] = hexc("#EFDDB4")
+
+
 if __name__ == "__main__":
     sys.exit(main())
+

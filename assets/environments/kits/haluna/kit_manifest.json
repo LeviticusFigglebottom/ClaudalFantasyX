@@ -112,6 +112,17 @@
         "awning_cloth-lod1": 56
       }
     },
+    "banyan_hero": {
+      "budget": [
+        60000,
+        10000
+      ],
+      "bytes": 3375736,
+      "lods": {
+        "banyan_hero": 54651,
+        "banyan_hero-lod1": 7351
+      }
+    },
     "banyan_placeholder": {
       "budget": [
         60000,
@@ -365,6 +376,17 @@
         "dock_haluna-lod1": 152
       }
     },
+    "dock_haluna_short": {
+      "budget": [
+        12000,
+        800
+      ],
+      "bytes": 250408,
+      "lods": {
+        "dock_haluna_short": 5215,
+        "dock_haluna_short-lod1": 72
+      }
+    },
     "engine_hall": {
       "budget": [
         34000,
@@ -563,6 +585,39 @@
         "hm_windmill-lod1": 208
       }
     },
+    "house_lane_a": {
+      "budget": [
+        22000,
+        1600
+      ],
+      "bytes": 612160,
+      "lods": {
+        "house_lane_a": 14304,
+        "house_lane_a-lod1": 304
+      }
+    },
+    "house_lane_b": {
+      "budget": [
+        22000,
+        1600
+      ],
+      "bytes": 598164,
+      "lods": {
+        "house_lane_b": 13552,
+        "house_lane_b-lod1": 372
+      }
+    },
+    "house_lane_c": {
+      "budget": [
+        22000,
+        1600
+      ],
+      "bytes": 692332,
+      "lods": {
+        "house_lane_c": 16214,
+        "house_lane_c-lod1": 380
+      }
+    },
     "house_tile_a": {
       "budget": [
         22000,
@@ -645,7 +700,7 @@
         4000,
         300
       ],
-      "bytes": 98460,
+      "bytes": 99480,
       "lods": {
         "iskarra_crown_fallen": 1904,
         "iskarra_crown_fallen-lod1": 160
@@ -667,7 +722,7 @@
         9000,
         400
       ],
-      "bytes": 131624,
+      "bytes": 131620,
       "lods": {
         "iskarra_drowned_dome": 1860,
         "iskarra_drowned_dome-lod1": 172
@@ -733,7 +788,7 @@
         36000,
         2400
       ],
-      "bytes": 311408,
+      "bytes": 312408,
       "lods": {
         "iskarra_tower_small": 5600,
         "iskarra_tower_small-lod1": 280
@@ -755,7 +810,7 @@
         36000,
         2400
       ],
-      "bytes": 1337364,
+      "bytes": 1338372,
       "lods": {
         "iskarra_tower_spire": 22544,
         "iskarra_tower_spire-lod1": 664
@@ -766,7 +821,7 @@
         36000,
         2400
       ],
-      "bytes": 662008,
+      "bytes": 662004,
       "lods": {
         "iskarra_tower_stepped": 11688,
         "iskarra_tower_stepped-lod1": 424
@@ -902,6 +957,17 @@
       "lods": {
         "lacquer_hall": 900,
         "lacquer_hall-lod1": 264
+      }
+    },
+    "lamp_flame": {
+      "budget": [
+        200,
+        40
+      ],
+      "bytes": 9300,
+      "lods": {
+        "lamp_flame": 130,
+        "lamp_flame-lod1": 35
       }
     },
     "lamp_niche_tier": {
@@ -1393,10 +1459,10 @@
         7000,
         700
       ],
-      "bytes": 87544,
+      "bytes": 89076,
       "lods": {
         "ruin_column_broken": 2403,
-        "ruin_column_broken-lod1": 36
+        "ruin_column_broken-lod1": 84
       }
     },
     "ruin_slab": {
@@ -1511,6 +1577,17 @@
       "lods": {
         "shrine_basin_pedestal": 3072,
         "shrine_basin_pedestal-lod1": 210
+      }
+    },
+    "shrine_chamber_passage": {
+      "budget": [
+        9000,
+        400
+      ],
+      "bytes": 350460,
+      "lods": {
+        "shrine_chamber_passage": 3060,
+        "shrine_chamber_passage-lod1": 60
       }
     },
     "shrine_channel_sluice": {
@@ -1868,6 +1945,28 @@
         "shell_scatter": 540
       }
     },
+    "wake_ground": {
+      "budget": [
+        48000,
+        6000
+      ],
+      "bytes": 1425428,
+      "lods": {
+        "wake_ground": 45288,
+        "wake_ground-lod1": 1566
+      }
+    },
+    "wake_shell_set": {
+      "budget": [
+        300,
+        60
+      ],
+      "bytes": 5844,
+      "lods": {
+        "wake_shell_set": 42,
+        "wake_shell_set-lod1": 42
+      }
+    },
     "wake_shell_single": {
       "budget": [
         600,
@@ -1932,6 +2031,17 @@
       "lods": {
         "windbreak_placeholder": 5785,
         "windbreak_placeholder-lod1": 430
+      }
+    },
+    "windbreak_tree": {
+      "budget": [
+        6500,
+        1000
+      ],
+      "bytes": 443236,
+      "lods": {
+        "windbreak_tree": 5785,
+        "windbreak_tree-lod1": 430
       }
     },
     "woodpile": {

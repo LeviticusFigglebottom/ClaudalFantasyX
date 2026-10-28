@@ -1,0 +1,25 @@
+{
+  "_doc": "Kahre's surfaces (docs/kb/art/creatures/vowbound/kahre.md). Slots are the glTF material names; write_materials.py writes assets/creatures/kahre/materials/<slot>.tres on game/shaders/creature/creature.gdshader. He is bound light (color_script.md rule 2): every emissive slot is glimmer_bound #4FB3B0 at energy 1.2 with no pulse (steady: no flicker, no drift, no particles). body is the hide, neck, legs and tail feathers: dark stone and old iron by vertex colour (charcoal to volcanic_stone, ash-dusted, ember-warm tortoiseshell down in the cavities and cracks), pitted by the detail bump, with a rim sheen and no light of its own (M3-CRB-008: the hide is never teal). anvil is the iron sternum (worn bright on the face, where the wet channel marks the polish: no wet darkening), not lit. strike is the struck star on its flanks (emission mask 1). mane is the filaments of running sparks (salt_glass to foam_white, emission mask 0.55 at the root to 1 at the tip). beak is the bill, casque, keratin scutes and claws (horn, bone and brass), not lit. eye is soft and glowing. hammer is the keepsake, forged iron (its face worn bright, marked by the wet channel), ash wood and a leather strap, and not lit (the one part of him that is an object). Colours are palette.json swatches.",
+  "held": {"_doc": "M3-CRE-647, the held form for the Ch20 release fight (act3_roster.md, The Vowbound as foes): write_materials.py writes materials_held/, every emissive slot's glimmer_bound (#4FB3B0) as glimmer_held (#7FC6D9) at the same energy, steady (color_script.md rule 1: held light is cool cyan); the other slots as they are. The held battle scene wears it; the release turns it to glimmer_lift (presentation).",
+           "emission_from": "#4FB3B0", "emission_to": "#7FC6D9"},
+  "slots": {
+    "body": {"roughness_dry": 0.88, "roughness_wet": 0.55, "specular": 0.28, "wet_darken": 0.9, "clearcoat_wet": 0.1,
+             "detail_scale": 28.0, "detail_albedo": 0.35, "detail_bump": 2.0, "cavity_albedo": 0.5, "rim_sheen": 0.25,
+             "emission_color": "#4FB3B0", "emission_energy": 1.2},
+    "anvil": {"roughness_dry": 0.55, "roughness_wet": 0.22, "metallic": 0.7, "specular": 0.5, "wet_darken": 1.0,
+              "clearcoat_wet": 0.3, "detail_scale": 18.0, "detail_albedo": 0.1, "detail_bump": 0.22,
+              "cavity_albedo": 0.45, "emission_energy": 0.0},
+    "strike": {"roughness_dry": 0.4, "roughness_wet": 0.2, "specular": 0.3, "detail_albedo": 0.0, "detail_bump": 0.0,
+               "emission_color": "#4FB3B0", "emission_energy": 1.2},
+    "mane": {"roughness_dry": 0.4, "roughness_wet": 0.2, "specular": 0.3, "detail_albedo": 0.0, "detail_bump": 0.0,
+             "rim_sheen": 0.4, "emission_color": "#4FB3B0", "emission_energy": 1.2},
+    "beak": {"roughness_dry": 0.35, "roughness_wet": 0.2, "specular": 0.5, "wet_darken": 0.85, "clearcoat_wet": 0.4,
+             "detail_scale": 24.0, "detail_albedo": 0.08, "detail_bump": 0.1, "rim_sheen": 0.2,
+             "emission_energy": 0.0},
+    "eye": {"roughness_dry": 0.12, "roughness_wet": 0.06, "specular": 0.7, "clearcoat_wet": 1.0, "detail_albedo": 0.0,
+            "detail_bump": 0.0, "emission_color": "#4FB3B0", "emission_energy": 1.2},
+    "hammer": {"roughness_dry": 0.6, "roughness_wet": 0.3, "metallic": 0.25, "specular": 0.45, "wet_darken": 1.0,
+               "detail_scale": 40.0, "detail_albedo": 0.12, "detail_bump": 0.25, "cavity_albedo": 0.45,
+               "emission_energy": 0.0}
+  }
+}

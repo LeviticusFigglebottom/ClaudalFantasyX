@@ -2,7 +2,8 @@
 id: M3-CRE-637
 title: "Build the flat-engine (Act II, Ch14 boss part) from its design sheet"
 role: character
-status: review
+status: blocked
+blocked-by: ADR 0041
 owner_session: "worktree-agent-a619fe5cfc69108f9 (creatures, cloud session_01EbDaRQ5n7hpvwuRG6jEDQY)"
 reviewer: art
 depends_on: [M3-CRE-620]
@@ -112,3 +113,4 @@ linear blend skinning) for each mesh. Clips are on time (M3-CRE-630), so GLB tim
   and kick only if the drum reads as a hole).
 
 ## Review log
+- 2026-10-28, creatures: **paused by ADR 0041** (Act I at final quality first; the human's directive). The work done so far is merged on claude/creatures as is; nothing reverted. Resume when a new ADR lifts the pause.

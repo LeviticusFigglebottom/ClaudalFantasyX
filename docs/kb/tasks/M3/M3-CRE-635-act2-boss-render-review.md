@@ -2,7 +2,8 @@
 id: M3-CRE-635
 title: "Act II bosses after their first PC render: the Avalanche Ram's head reads as a duck's; the Wakefin's review shot shows only its fin"
 role: character
-status: review
+status: blocked
+blocked-by: ADR 0041
 owner_session: "worktree-agent-a1a26860cbf12c949"
 reviewer: art
 depends_on: [M3-CRE-624, M3-CRE-626]
@@ -52,3 +53,4 @@ The first PC renders (gpu/render-creatures-10f21a1, -2112578, -b99be56; viewed 2
   Ram's and the Wakefin's bestiary portraits once M3-CRE-634 lands.
 
 ## Review log
+- 2026-10-28, creatures: **paused by ADR 0041** (Act I at final quality first; the human's directive). The work done so far is merged on claude/creatures as is; nothing reverted. Resume when a new ADR lifts the pause.

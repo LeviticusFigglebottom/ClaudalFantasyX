@@ -2,12 +2,13 @@
 id: M3-AUD-831
 title: "Act II creature voices: the Ch10-12 bosses, the Wakefin and the Ch10-11 regulars"
 role: audio
-status: review
+status: blocked
 owner_session: "audio (cloud session_01Wmj8xaLtwcqiS3qwC6PciW, branch claude/audio)"
 reviewer: design
 depends_on: [M3-AUD-14]
 milestone: M3
 request-from: lead
+blocked-by: ADR 0041
 ---
 ## Goal
 The Lead's queue item 1 (2026-10-27): idle, attack, hit and KO sounds for the creatures the creatures track built

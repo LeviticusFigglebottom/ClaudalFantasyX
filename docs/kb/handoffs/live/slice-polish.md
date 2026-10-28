@@ -319,13 +319,224 @@ Ch4–Ch9 onward. `m2-slice.md` beside this file is the history up to the 2026-1
   - **Checks red:** test_shrine_gi_bake (stale, above) and test_audio_loudness (audio's, known).
   - **Checks skipped:** coverage and Blender.
 
+- **MERGE-READY @ ead04bab** (big12 merged, and the Lead's big12 review).
+  - **big12 merged** (3b63123b): big12's GI rebake and baselines taken; music.json keeps audio's zone rows plus the
+    causeway's.
+  - **(1) H05/H06 above the dialogue box.** H06 aims lower from a little higher (camera (−0.4, 1.3, 4.2), aim
+    (−0.4, 0.4, 8.2)), so the ground sits just above the box and the faces at about 80% of the frame. It stays a
+    keyed close shot. H05's aim drops so Asha's face is in the upper third.
+  - **(2) C07 levelled** (`slice_causeway_harrier_view`): 1.2 m up, looking along the route at the harrier's flats
+    under the cumulus (`build_causeway_gameplay.py`).
+  - **(3) Iskarra.** Env-art's M3-ENV-710 kit is swapped into the prologue (M3-ENV-711); my M3-ENV-100 is closed
+    as superseded. The cast's marks and heights are unchanged. Env-art: please view `slice_prologue_p01` and
+    `slice_prologue_vigil_line` when the PC renders them.
+  - **Checks:** cutscene 76, fp_ 29, haluna 60, causeway 14, ch01 21, slice_ 16, shrine 38, audio 152, zone_map
+    20, objective 15, prologue 7, _thread 34, all 0 failed; validate_data, dlgc, lint and taskboard clean.
+  - **Red:** test_shrine_gi_bake, stale on M2-FP-24's hook; the 68e110ff rebake request stands.
+
+- **MERGE-READY @ 8b5c92fc** (viewed gpu/render-m2-slice-17b0601).
+  - **Approved and baselined:** slice_verse_hall (S07 in the real shrine), ch01_oruvel_dressed, ch01_o10_gull,
+    ch01_underway_crown.
+  - **Fixed, not approved:**
+    - **slice_verse_steps:** Toma's back filled S06, so Toma sits a step lower and further along and the camera
+      moved;
+    - **ch01_underway_gallery:** the orbit camera sat outside the south wall, so the Gallery spawn moved 6 m in;
+    - **ch01_o07_name_board:** the frame came before the insert; the shot now lands at frame 96.
+  - **Checks:** first_verse 3, ch01 21, zone_map 20, slice_ 16, all 0 failed; zone_map_pois OK.
+
+- **First-battle clarity (the Lead's repeated item): verified, no change.** The tideline opens on
+  `TUT_TIDELINE_TIMELINE`, which checks against the real UI: the timeline is pinned top-right with slot 0 at the top,
+  and a hovered command ghosts the actor's next turn and marks shifted chips ▲/▼. Rhen's first turn then shows the
+  command tip. An *in-character* version (Asha or Toma saying it) would need a speaker on the battle HUD's prompt
+  (`battle_boss_hud.gd`, battle-presentation's). Lead: say if you want it, and I'll file the request with the lines.
+
 - **Correction (ec3ba50a):** my first B11 pass (4f616566) added a letterbox and three scripted camera setups.
   vertical_slice.md defines B11 (and B02) as **E** scenes: in-engine, no letterbox, and the player keeps the camera
   rail. Those cues are out. B11 keeps Rhen's walk out to Asha and the turns between them. Lead: take ec3ba50a with
   4f616566, or skip both.
 
+- **Primitives re-audit (queue item 6), MERGE-READY @ b2659dd0.**
+  - **The Prologue's sea is a WaterSurface:** Haluna's ocean (lagoon_waves, haluna_water_material, the same deep
+    colour), and the prologue joins the four ocean prewarm entries. `City/Water` is off the allowlist.
+  - **The arenas:** `test_slice_primitives` also loads the five Ch1–Ch3 arenas from arenas.json (env-art's kits).
+    All five are clean; the greybox scenes under `game/battle/arenas/` only feed preview shots.
+  - **A broken reference:** env-art's rename (shrine_offering → wayside_offering, 39f66d4c) had left the First
+    Verse's two offerings loading as nothing. They are fixed, and the new `tools/tests/test_scene_refs.py` fails on
+    any .tscn/.tres that loads a missing res:// path. It takes 0.1 s.
+  - **Two tools reds from my own staging, fixed:** Kerrid stood over a gap in Iskarra's plaza (moved 1.5 m onto a
+    slab); the First Verse's `stand_at_pool` wasn't a real Asha clip (now `walk_to_chamber` with the same stand-in
+    mark).
+  - **For env-art (Lead, please relay):** `test_iskarra::test_the_vigils_stand_on_the_paving` asserts 7 or more
+    vigils. The prologue has had 3 (Kerrid, Pell, Liss) since M2-FP-103 put the real cast in, so it is red on the
+    integration branch too. All three stand on paving now, so `>= 3` passes.
+  - **Still allowed, each with its reason:** the Vigils (hero models), the save shrine (M3-ENV-101), Neme's bag,
+    env-art's ChamberPassage, the inner pool's water, Ch1's LowHull, and the UnderwaterRig's post quads.
+  - **Checks run:** validate_data, taskboard --check, dlgc --check, gdlint/gdformat on the touched tests, and Godot
+    filters slice_primitives, prologue, first_verse, slice_, prewarm and water (all 0 failed).
+  - **Tools suite** (`run_tool_tests -j 4`): failing are test_screenshots (baselines pending render),
+    test_shrine_gi_bake (rebake pending) and test_iskarra (above). test_hero_clips now passes.
+
+- **M3-ENV-704, MERGE-READY @ 416fcf64 (to review: environment).** The six `offering_step`s are placed: two at the
+  islet's west steps, four between the hall's whorl pairs, each with a box collider. They are mirrored on the First
+  Verse's set. `shrine` 38 and `first_verse` 3 pass, both 0 failed (reachability included); test_scene_refs OK.
+
+- **The Lead's answers, done. MERGE-READY @ b04c62cc.**
+  - **Merged env-art's 0958af1a (M3-ENV-724).** shots.json and baselines.json were merged as JSON by id; in the
+    M3-ENV-711 task, my ticks were kept and env-art's notes added. test_iskarra passes.
+  - **Kerrid is back at (9.5, -5.5).** Env-art pulled the plaza's corner clear of it, so my earlier 1.5 m move is
+    reverted.
+  - **The Prologue's fog matches the Iskarra preview:** from 70 m, density 0.2.
+  - **The vigils:** the water swap was already in (2ab7a66e). `PrologueScene.dress_vigils()` gives a City/Vigils
+    figure its hero's field body as soon as `hero_motion.json` field.heroes lists that hero, and drops its
+    capsule. Kerrid is M3-CHR-505; Pell is M3-CHR-506; Liss is on claude/characters.
+    - **For characters:** add `field.heroes.liss` (and later kerrid and pell), and the Prologue picks them up
+      with no change on my side.
+    - No villager stand-ins: Pell is a 2.3 m Kirru, and a human mesh would misstate him.
+  - **The first battle (M2-FP-105):** the tideline opens on Toma's line, "Be level, Rhen. Watch who moves next.
+    Every blow costs you time." Rhen's first turn still names the command flow. `TUT_TIDELINE_TIMELINE` stays in
+    strings.csv (append-only) but is unused.
+  - **Checks:** prologue 8, slice_primitives 1, slice_first_battle 1, battle_boss_prompts 1, all 0 failed;
+    test_iskarra, test_scene_refs and test_banned_scan OK; validate_data 0/0; lint and format clean.
+
+- **Self-directed backlog (TRACK-RULES), MERGE-READY @ 723ca6fd.** Four board tasks are done and in review:
+  - **M2-HER-1113 (to the hero track):** the no-snap patch was already in; the task file was stale. The snap guard
+    `hero_cutscene_snaps` passes 1/0.
+  - **M3-ENV-702 (to environment):** Haluna's ten no-collision rules, plus `test_haluna_walk_paths`. Every lane keeps
+    a 3 m corridor past the clutter, every door path keeps a 1.8 m gap through the fences, and the dock keeps a 0.8 m
+    walkway out to the end platform. All three are mutation-checked.
+  - **M3-AUD-829 (to audio):**
+    - `@music` takes `stem=N`, so `ch01_the_rising` brings undertow_rising's pulse in for the run.
+    - `ch01_going_under` holds U11 for 17.4 s.
+    - Ch8 should skip the cue's intro. Audio adds the offset; act1-chapters uses it.
+  - **M3-ARC-03 (to audio):** DialogueBox gains `blip(voice)`, `line_started(step)` and `external_voice`. It is
+    additive, and the UI track's code is untouched.
+  - **Checks:** cutscene 77, dialogue_box 24, voice_audio 12, audio 152, haluna 65 and ch01 21, all 0 failed;
+    dlgc and validate_data clean; lint and format clean. No new render: none of this changes a frame.
+  - **Not mine, left:** M3-AUD-830 (Ch5) and M3-ENV-714 (Ch8) belong to act1-chapters; M3-C09-201 is still blocked.
+
+- **BACKLOG EMPTY (2026-10-27 late), for now. The reasons, by TRACK-RULES step:**
+  1. No render branch for this track has posted since 17b0601. The open request is @ 37f8bb9b.
+  2. and 3. Every todo task for my roles is blocked or belongs to another track: M3-C09-201 (blocked), M3-AUD-830
+     and M3-ENV-714 (act1-chapters).
+  4. The primitives audit is done (2ab7a66e..28b0f97a). What remains on the allowlist waits on others: the vigils
+     on the character track, the save shrine on M3-ENV-101, LowHull on a kit piece.
+  5. The open Ch1–Ch3 items need eyes on renders or other tracks first: the Underway's room lighting and the
+     bell-room air pocket (Rendering), Ilun's chamber (env-art), and Oruvel's named cast (M3-CHR-100).
+  - I pick up again at the next render branch, a review, or a message.
+
+- **Viewed lead/gate-render-m2-slice-ead04ba (13 drift). MERGE-READY @ e24d05f1.**
+  - **Approved:** ch01_oruvel_dressed and ch01_underway_crown. ch01_o10_gull was unchanged.
+  - **Fixed:**
+    - **The beach shots:** h05 caught Rhen's 004 under H06, so both frames were H06. The rig now takes
+      `hold_line`, and h05 holds Asha's 002, h06 Toma's 003.
+    - **H05 and H06** look a little higher: heads were under the top letterbox.
+    - **C07's harrier:** the gull harrier now circles in C07's sky until it is beaten (`CausewayHarrier`, tested
+      against C07's frame), and the shot no longer sets `ch03_harrier_won`.
+    - **O07** caught the wide before the cut; it now holds Sadi's 003.
+  - **My own bug, fixed:** b2659dd0 had turned S07's real `walk_to_chamber` into a jump. The S08 placement now
+    rides `idle_shift`, and a test guards it.
+  - **Not approved, since they changed after ead04ba:** verse_steps, underway_gallery and the prologue pair
+    (8b5c92fc, the water, the fog), verse_hall (the offerings), and dock_night (env-art's Haluna dressing merge).
+  - **The GI rebake on that branch is stale:** shell_shrine.tscn gained the offering steps at 416fcf64, so it
+    is re-requested below.
+  - **Checks:** slice_ 16, causeway 16 (2 new), first_verse 3, haluna 65, slice_primitives 1, all 0 failed;
+    test_hero_clips, test_scene_refs and dlgc OK.
+
+- **The capture errors on gate-render ead04ba (the Lead's ask), fixed. MERGE-READY @ a615b844.**
+  - **Mine, from slice_dock_night_yes:** 365 "previously freed instance" errors from `VillagerLayer.tick`. Haluna's
+    `set_night` freed the night_hide nodes (the dock stand-ins, Osu, the shops), which creatures' layer still
+    carries since M2-FP-113. They are now hidden and disabled instead: no prompts, nothing drawn.
+  - **How it was checked:** I re-ran each shot's rig headless, one process per shot, with the dummy renderer (no
+    capture). dock_night has 0 script errors now, and the other eight shots had none before or after.
+  - **Not mine:** the engine's exit leaks ("never freed", "Pages in use") come from lavapipe shutdown.
+  - **Checks:** haluna 65 and slice_ 16, both 0 failed; lint and format clean.
+- **Render requests:** per TRACK-RULES' limit, every older line is now SUPERSEDED. The one open request is the line
+  at the bottom.
+
+- **To the Lead's repeated list (00:13):**
+  - **Done:** 1 (Toma's line, M2-FP-105), 3 (the beach and C07, fd5cedbd), and 5 (the re-audit). For 2, the
+    Prologue already stands on the approved Iskarra with the lagoon WaterSurface (2ab7a66e) and env-art's fog
+    (28b0f97a).
+  - **Waiting on others:** the three vigils' bodies. No body exists yet: Liss's model is only on claude/characters,
+    Kerrid's is M3-CHR-505 and Pell's M3-CHR-506, and their battle stand-ins are capsules too.
+    `dress_vigils()` swaps each one in when hero_motion.json lists it. Filed **M3-HER-100** (the hero track) to add
+    `field.heroes.liss`, then kerrid and pell.
+  - **Ch1–Ch3 polish:** continuing as renders return. The one open request is @ a615b844.
+
+- **The Lead's no-render list (00:20), MERGE-READY @ 186848eb:**
+  - **1. The M2 review guide** is at `docs/kb/qa/m2_review_guide.md`. It covers how to launch, the route beat by
+    beat with what to look at, each playtest complaint and its fix, the known issues with owners, and a short form.
+  - **Also done: M3-ENV-101.** The save shrine wears env-art's kit pieces, so the slice's last field primitive is
+    gone. `save_shrine` 10/0, slice_primitives 1/0, haluna 65/0.
+  - **Next:** 2, the Ch1–Ch3 dialogue and narration pass, then 3, the cutscene timing against audio's cues.
+
+- **The Lead's no-render list, items 2 and 3. MERGE-READY @ c08e4612.**
+  - **The dialogue pass (Prologue, Ch1–Ch3, 237 lines):**
+    - Toma's lines keep his voice: no contractions in formal speech.
+    - No meta or modern words, and no line over the word limit.
+    - One tutorial line named a control in plain words, Ch1's tether line ("Press interact"). It now reads
+      `{field_interact}`, and `test_tutorial_bindings` guards every `*_tut_*` line.
+    - **Bark pacing:** overheard barks ran at the reveal plus a flat 2.4 s, so the long ones raced (Rhen's ring
+      bark at 20.5 cps). With `overheard_read_cps` 15 (Haluna, the causeway, Ch1), a line now stays up until it can
+      be read (`CutsceneMotion.read_hold`, tested). The causeway also gets the 2.4 s hold; it had fallen back to 1.5.
+  - **Cutscene timing against audio's cues:** the non-looping cues are the place to drift.
+    - **The first verse:** its four sung lines waited for a button, so the words drifted against
+      `hush_first_verse`. A `#timed` line now shows and the scene goes on. The verse's waits put each line on its
+      phrase (4.0, 11.19, 18.39 and 25.58 s, from audio's own `verse_notes()`).
+    - **The current shaft (Ch1):** it crossfades in the hum's breath, as audio wrote it.
+    - **going_under** was fixed in M3-AUD-829.
+    - `test_cutscene_music_sync` pins all three against audio's source (mutation-checked).
+  - **Checks:**
+    - Godot, all 0 failed: cutscene 80, read_hold 3, first_verse 3, dialogue_vs_scenes 3, haluna 65, ch01 21,
+      causeway 16, zone_story 15.
+    - The tools suite has 1250 tests. The only reds are the known two (test_screenshots and test_shrine_gi_bake,
+      both pending the render).
+    - dlgc and validate_data are clean.
+  - **No new render:** none of this changes a frame (the steps shot is captured before the verse).
+
+- **SELF-RENDERED @ 13137039** (lavapipe in this container, TRACK-RULES 01:00; no baselines written).
+  - **Shrine GI rebaked here** (58d25969); test_shrine_gi_bake passes.
+  - **Pass (viewed, reads right):**
+    - slice_beach_h05_asha: Asha close, her face above the box, on her own line;
+    - slice_beach_h06_toma: reframed; Toma and his level spear at right, Asha left;
+    - slice_causeway_harrier_view: the harrier in C07's sky;
+    - slice_verse_hall;
+    - slice_verse_steps: S06 reframed twice; both faces now, sunset-lit;
+    - slice_prologue_p01: retimed past the fade; textured Iskarra at dusk;
+    - slice_prologue_vigil_line;
+    - ch01_o07_name_board: the insert on Sadi's line;
+    - ch01_underway_gallery;
+    - shrine_s01_approach (the offering steps), shrine_s02_threshold, shrine_s03_overview;
+    - save_shrine_field: the kit shrine model;
+    - ch01_oruvel_storm (new): the real Undertow on O11.
+  - **Drift, as expected:** slice_dock_night_yes (env-art's Haluna dressing and the night hide). It reads, but
+    Asha is small at the dock end, since B11 is the rail camera.
+  - **Seen in the renders, and not mine:**
+    - Rhen's stand-in poses on the beach and the steps (his clips; requested_clips.json, M3-CHR-1000);
+    - the LifeAudio freed-cast error at every scene exit (filed **M3-AUD-101**).
+  - **Lead:** the drifted and new shots above need your viewing and baselines.
+
+- **ADR 0041 beat audit, checkpoint 1. MERGE-READY @ 03c2711f.**
+  - **Viewed (self-rendered):** Haluna (H01, H02, H04, H07), the market villager, the villagers, the causeway head,
+    the tideline arena, the Drownbell intro and arena, and the title.
+  - **Mine, fixed earlier today:** the Ch1 storm slab is now the real Undertow (and the camera reaches it); H06; S06;
+    P01's timing; O07's timing.
+  - **Filed to the owners:**
+    - **M3-HER-101** (hero track): the reserve walks with the party. Toma vanishes on every slice walk, though he
+      talks in the banters.
+    - **M3-ENV-102** (env-art): Haluna's Order chapel is a plain white box.
+    - **M3-UI-101** (ui): the battle HUD's timeline chips and party rows still show initials. The menus have
+      portraits.
+    - **M3-AUD-101** (audio): LifeAudio's freed-cast error at every scene exit.
+  - **Noted, not filed:**
+    - The title's "Development build (bootstrap)" label is `debug_only`, so release builds hide it. The human plays
+      editor builds, so they see it. UI, say if it should go.
+    - The bay's grey ruined columns are env-art's Lit Age ruins, as intended.
+  - **Next:** Neme's table (rendering now), then the Ch1 batch: seven scene stills plus the raft, the Underway tower,
+    the Hullgnaw intro, and the causeway route and disc arenas.
+
 ### Render requests
-RENDER-REQUEST @ fdec3cc6: slice_prologue_vigil_line, slice_beach_h05_asha, slice_beach_h06_toma, slice_haluna_villagers_village, slice_causeway_head, slice_causeway_harrier_view, haluna_h01_village_from_sea, haluna_h02_tidewall_lane, haluna_h04_dock, haluna_h07_chapel_court, haluna_h10_dock_night, shrine_s01_approach, shrine_s02_threshold, shrine_s03_overview, shrine_s04_lip, shrine_s05_side_pool, drownbell_flood, battle_boss_intro_drownbell, battle_arena_causeway, field_causeway_dolly, boot_title; why: M2-FP-102..109, the human's playtest round (real cast and held poses in the prologue and Cutscene A, live villagers and wildlife, the final causeway), plus the greyscale audit of every slice beat. The six slice_* shots are new (no baseline yet).
+SUPERSEDED RENDER-REQUEST @ fdec3cc6: slice_prologue_vigil_line, slice_beach_h05_asha, slice_beach_h06_toma, slice_haluna_villagers_village, slice_causeway_head, slice_causeway_harrier_view, haluna_h01_village_from_sea, haluna_h02_tidewall_lane, haluna_h04_dock, haluna_h07_chapel_court, haluna_h10_dock_night, shrine_s01_approach, shrine_s02_threshold, shrine_s03_overview, shrine_s04_lip, shrine_s05_side_pool, drownbell_flood, battle_boss_intro_drownbell, battle_arena_causeway, field_causeway_dolly, boot_title; why: M2-FP-102..109, the human's playtest round (real cast and held poses in the prologue and Cutscene A, live villagers and wildlife, the final causeway), plus the greyscale audit of every slice beat. The six slice_* shots are new (no baseline yet).
 - **Known red until the render lands:** the six new `slice_*` shots have no baseline yet, so the tools test
   `test_screenshots::test_repo_manifest_is_valid_and_baselined` fails on this branch from fdec3cc6 on.
   - The render protocol adds the shot before its baseline exists, and the test has no pending mechanism.
@@ -333,16 +544,25 @@ RENDER-REQUEST @ fdec3cc6: slice_prologue_vigil_line, slice_beach_h05_asha, slic
     my approval commit, which follows the PC's `gpu/render-slice-polish-fdec3cc` (or e1e63f4).
   - **Suggestion for the Lead (TRACK-RULES):** allow a `"pending_baseline": true` key on a new shot until its first
     approval.
-RENDER-REQUEST @ 44a7d65c: shrine_s01_approach, shrine_s02_threshold, shrine_s03_overview, shrine_s04_lip, shrine_s05_side_pool; why: M3-ARC-04 sets the shrine's shaft lamps' volumetric fog energy to 0 (the fog should read from the shader and the sun, not lamp scatter). If the e1e63f43 request is not rendered yet, render this one instead for those five shots.
-RENDER-REQUEST @ 5a3f9a37: slice_verse_steps; why: M2-FP-112, the first verse with Rhen and Toma on their real bodies (a new shot; it also covers the e1e63f43 and 44a7d65c requests if they are still unanswered).
-RENDER-REQUEST @ 4ce8a48a: gi_bake:shell_shrine, shrine_s01_approach, shrine_s02_threshold, shrine_s03_overview, shrine_s04_lip, shrine_s05_side_pool, npc_haluna_market, npc_haluna_dock, slice_haluna_villagers_village; why: M3-ENV-704 dresses the islet and the entrance (bake both GI states with tools/shrine/bake_shrine_gi.tscn under godot-render, then python3 tools/shrine/gi_inputs.py --write, and push the VoxelGIData and inputs file too). M2-FP-113 moves Haluna's villagers to VillagerLayer. This supersedes the 44a7d65c request for the five shrine shots.
-RENDER-REQUEST @ faa61872: slice_beach_h05_asha, slice_beach_h06_toma, slice_haluna_villagers_village, slice_causeway_head, slice_causeway_harrier_view, slice_verse_steps; why: these didn't capture in gpu/render-m2-slice-fdec3cc ("no capture"). The cutscene shots now run at time_scale 4 (h05 270, h06 375, verse 630 frames), in case the 600 s per-shot timeout killed them. PC: please push the capture log lines for any shot that fails again (the 90-frame causeway and village shots shouldn't have timed out).
-RENDER-REQUEST @ 3fddb67b: slice_beach_h05_asha, slice_beach_h06_toma, slice_haluna_villagers_village, slice_causeway_head, slice_causeway_harrier_view, slice_verse_steps; why: found the cause of "no capture". These shots set `flags`, which CaptureSetup refused as a PackedStringArray; it is a plain Array now, and test_slice_shots goes through CaptureSetup. Render this sha instead of 87d04cea's.
-RENDER-REQUEST @ 8b25b3b4: slice_beach_h05_asha, slice_beach_h06_toma, slice_haluna_villagers_village, slice_causeway_head, slice_causeway_harrier_view, slice_verse_steps, slice_dock_night_yes, haluna_h10_dock_night; why: the rig fix (3fddb67b), B11 staged (M2-FP-115), and the causeway pacing (M2-FP-114). This supersedes the 87d04cea and a2eb22c4 requests.
-RENDER-REQUEST @ ba49617a: ch01_oruvel_dressed; why: M3-C01-100 dresses Ch1's Oruvel with the raft-town kit (a new shot from the ScaleHull spawn looking north over the town; no baseline yet). If the dressed town reads wrong (decks floating or sunk, grey blocks showing through), push the out PNG anyway so I can fix the placement.
-RENDER-REQUEST @ 05f6abc9: ch01_underway_crown, ch01_underway_gallery, ch01_oruvel_dressed; why: M3-C01-101 dresses Ch1's Underway with the drowned-tower kit, the sea and the UnderwaterRig (the first zone with the rig; new shots, no baselines). Also renders the Oruvel shot from the ba49617a request, so render this one instead. Please push the out PNGs even if a frame reads wrong (black, a grey box, the camera above the water), so I can fix the placement or the lighting.
-RENDER-REQUEST @ 9ba01356: slice_verse_hall, slice_verse_steps, ch01_underway_crown, ch01_underway_gallery, ch01_oruvel_dressed; why: M2-FP-116 moves the First Verse from the CSG set into the real shrine (slice_verse_hall is new: S07, Asha going in from the portal; slice_verse_steps is S06 on the outer steps), plus the 05f6abc9 Ch1 shots. This one supersedes 05f6abc9 and ba49617a. Please push every out PNG, even a bad frame.
-RENDER-REQUEST @ b35e17c1: ch01_oruvel_dressed, ch01_o07_name_board, ch01_o10_gull, ch01_underway_crown, ch01_underway_gallery, slice_verse_hall, slice_verse_steps; why: M3-C01-100's second pass (the Seventh Terrace, the lintel-gulls; the two inserts are new shots), plus everything from the 9ba01356 request, which this supersedes. Push every out PNG, even a bad frame.
-RENDER-REQUEST @ 17b0601f: ch01_underway_crown, ch01_underway_gallery, ch01_oruvel_dressed, ch01_o07_name_board, ch01_o10_gull, slice_verse_hall, slice_verse_steps; why: the same set as b35e17c1 plus the Underway's podium (the gallery shot looks out over it). Supersedes b35e17c1. Push every out PNG, even a bad frame.
-RENDER-REQUEST @ ca7c8ede: slice_beach_h05_asha, slice_beach_h06_toma, slice_dock_night_yes, slice_verse_hall, slice_verse_steps, ch01_oruvel_dressed, ch01_o07_name_board, ch01_o10_gull, ch01_underway_crown, ch01_underway_gallery; why: Asha's H06 facing; dock-night without the letterbox (ec3ba50a); the First Verse in the real shrine (M2-FP-116); the Ch1 kit zones (M3-C01-100/101). The cutscene turns are now 0.9 s (M2-HER-1113), so cutscene frames may land differently. Supersedes every earlier open request from this track. Push every out PNG.
-RENDER-REQUEST @ 68e110ff: gi_bake:shell_shrine; why: M2-FP-24's curb collision hook is in shell_shrine_level.gd, a GI input (collision only, so the light should come out identical). Bake both states with tools/shrine/bake_shrine_gi.tscn under godot-render, then python3 tools/shrine/gi_inputs.py --write, and push the .res pair and the sidecar. The ca7c8ede shot request still stands.
+SUPERSEDED RENDER-REQUEST @ 44a7d65c: shrine_s01_approach, shrine_s02_threshold, shrine_s03_overview, shrine_s04_lip, shrine_s05_side_pool; why: M3-ARC-04 sets the shrine's shaft lamps' volumetric fog energy to 0 (the fog should read from the shader and the sun, not lamp scatter). If the e1e63f43 request is not rendered yet, render this one instead for those five shots.
+SUPERSEDED RENDER-REQUEST @ 5a3f9a37: slice_verse_steps; why: M2-FP-112, the first verse with Rhen and Toma on their real bodies (a new shot; it also covers the e1e63f43 and 44a7d65c requests if they are still unanswered).
+SUPERSEDED RENDER-REQUEST @ 4ce8a48a: gi_bake:shell_shrine, shrine_s01_approach, shrine_s02_threshold, shrine_s03_overview, shrine_s04_lip, shrine_s05_side_pool, npc_haluna_market, npc_haluna_dock, slice_haluna_villagers_village; why: M3-ENV-704 dresses the islet and the entrance (bake both GI states with tools/shrine/bake_shrine_gi.tscn under godot-render, then python3 tools/shrine/gi_inputs.py --write, and push the VoxelGIData and inputs file too). M2-FP-113 moves Haluna's villagers to VillagerLayer. This supersedes the 44a7d65c request for the five shrine shots.
+SUPERSEDED RENDER-REQUEST @ faa61872: slice_beach_h05_asha, slice_beach_h06_toma, slice_haluna_villagers_village, slice_causeway_head, slice_causeway_harrier_view, slice_verse_steps; why: these didn't capture in gpu/render-m2-slice-fdec3cc ("no capture"). The cutscene shots now run at time_scale 4 (h05 270, h06 375, verse 630 frames), in case the 600 s per-shot timeout killed them. PC: please push the capture log lines for any shot that fails again (the 90-frame causeway and village shots shouldn't have timed out).
+SUPERSEDED RENDER-REQUEST @ 3fddb67b: slice_beach_h05_asha, slice_beach_h06_toma, slice_haluna_villagers_village, slice_causeway_head, slice_causeway_harrier_view, slice_verse_steps; why: found the cause of "no capture". These shots set `flags`, which CaptureSetup refused as a PackedStringArray; it is a plain Array now, and test_slice_shots goes through CaptureSetup. Render this sha instead of 87d04cea's.
+SUPERSEDED RENDER-REQUEST @ 8b25b3b4: slice_beach_h05_asha, slice_beach_h06_toma, slice_haluna_villagers_village, slice_causeway_head, slice_causeway_harrier_view, slice_verse_steps, slice_dock_night_yes, haluna_h10_dock_night; why: the rig fix (3fddb67b), B11 staged (M2-FP-115), and the causeway pacing (M2-FP-114). This supersedes the 87d04cea and a2eb22c4 requests.
+SUPERSEDED RENDER-REQUEST @ ba49617a: ch01_oruvel_dressed; why: M3-C01-100 dresses Ch1's Oruvel with the raft-town kit (a new shot from the ScaleHull spawn looking north over the town; no baseline yet). If the dressed town reads wrong (decks floating or sunk, grey blocks showing through), push the out PNG anyway so I can fix the placement.
+SUPERSEDED RENDER-REQUEST @ 05f6abc9: ch01_underway_crown, ch01_underway_gallery, ch01_oruvel_dressed; why: M3-C01-101 dresses Ch1's Underway with the drowned-tower kit, the sea and the UnderwaterRig (the first zone with the rig; new shots, no baselines). Also renders the Oruvel shot from the ba49617a request, so render this one instead. Please push the out PNGs even if a frame reads wrong (black, a grey box, the camera above the water), so I can fix the placement or the lighting.
+SUPERSEDED RENDER-REQUEST @ 9ba01356: slice_verse_hall, slice_verse_steps, ch01_underway_crown, ch01_underway_gallery, ch01_oruvel_dressed; why: M2-FP-116 moves the First Verse from the CSG set into the real shrine (slice_verse_hall is new: S07, Asha going in from the portal; slice_verse_steps is S06 on the outer steps), plus the 05f6abc9 Ch1 shots. This one supersedes 05f6abc9 and ba49617a. Please push every out PNG, even a bad frame.
+SUPERSEDED RENDER-REQUEST @ b35e17c1: ch01_oruvel_dressed, ch01_o07_name_board, ch01_o10_gull, ch01_underway_crown, ch01_underway_gallery, slice_verse_hall, slice_verse_steps; why: M3-C01-100's second pass (the Seventh Terrace, the lintel-gulls; the two inserts are new shots), plus everything from the 9ba01356 request, which this supersedes. Push every out PNG, even a bad frame.
+SUPERSEDED RENDER-REQUEST @ 17b0601f: ch01_underway_crown, ch01_underway_gallery, ch01_oruvel_dressed, ch01_o07_name_board, ch01_o10_gull, slice_verse_hall, slice_verse_steps; why: the same set as b35e17c1 plus the Underway's podium (the gallery shot looks out over it). Supersedes b35e17c1. Push every out PNG, even a bad frame.
+SUPERSEDED RENDER-REQUEST @ ca7c8ede: slice_beach_h05_asha, slice_beach_h06_toma, slice_dock_night_yes, slice_verse_hall, slice_verse_steps, ch01_oruvel_dressed, ch01_o07_name_board, ch01_o10_gull, ch01_underway_crown, ch01_underway_gallery; why: Asha's H06 facing; dock-night without the letterbox (ec3ba50a); the First Verse in the real shrine (M2-FP-116); the Ch1 kit zones (M3-C01-100/101). The cutscene turns are now 0.9 s (M2-HER-1113), so cutscene frames may land differently. Supersedes every earlier open request from this track. Push every out PNG.
+SUPERSEDED RENDER-REQUEST @ 68e110ff: gi_bake:shell_shrine; why: M2-FP-24's curb collision hook is in shell_shrine_level.gd, a GI input (collision only, so the light should come out identical). Bake both states with tools/shrine/bake_shrine_gi.tscn under godot-render, then python3 tools/shrine/gi_inputs.py --write, and push the .res pair and the sidecar. The ca7c8ede shot request still stands.
+SUPERSEDED RENDER-REQUEST @ ead04bab: slice_beach_h05_asha, slice_beach_h06_toma, slice_causeway_harrier_view, slice_prologue_p01, slice_prologue_vigil_line, slice_dock_night_yes, slice_verse_hall, slice_verse_steps, ch01_oruvel_dressed, ch01_o07_name_board, ch01_o10_gull, ch01_underway_crown, ch01_underway_gallery, gi_bake:shell_shrine; why: the Lead's big12 framing review (H05/H06 above the box, C07 levelled), the prologue on env-art's Iskarra (M3-ENV-711; env-art views it), and every earlier open request from this track (the shrine GI rebake for M2-FP-24's hook included). Supersedes ca7c8ede and 68e110ff.
+SUPERSEDED RENDER-REQUEST @ 8b5c92fc: slice_verse_steps, ch01_underway_gallery, ch01_o07_name_board, slice_beach_h05_asha, slice_beach_h06_toma, slice_causeway_harrier_view, slice_prologue_p01, slice_prologue_vigil_line, slice_dock_night_yes, gi_bake:shell_shrine; why: the fixes after viewing 17b0601, plus the ead04bab set (beach framing, C07, Iskarra, B11 without the letterbox, the shrine rebake). Supersedes ead04bab.
+- Note for the cloud renderer (the PC is paused): the 8b5c92fc request lists only changed, unviewed shots. If it must be split, the priority is: 1) slice_beach_h05_asha, slice_beach_h06_toma, slice_verse_steps (the slice's cutscene framing, the human's notes); 2) slice_prologue_p01, slice_prologue_vigil_line (Iskarra); 3) slice_causeway_harrier_view, slice_dock_night_yes; 4) the Ch1 shots and gi_bake:shell_shrine.
+SUPERSEDED RENDER-REQUEST @ b2659dd0: slice_beach_h05_asha, slice_beach_h06_toma, slice_verse_steps, slice_verse_hall, slice_prologue_p01, slice_prologue_vigil_line, slice_causeway_harrier_view, slice_dock_night_yes, ch01_underway_gallery, ch01_o07_name_board, gi_bake:shell_shrine; why: the 8b5c92fc set, plus the Prologue's real ocean and Kerrid on the paving, and the First Verse's restored offerings (verse_hall added). Same priority order as the note above, with slice_verse_hall in group 1. Supersedes 8b5c92fc.
+SUPERSEDED RENDER-REQUEST @ 416fcf64: slice_beach_h05_asha, slice_beach_h06_toma, slice_verse_steps, slice_verse_hall, slice_prologue_p01, slice_prologue_vigil_line, shrine_s01_approach, shrine_s02_threshold, shrine_s03_overview, slice_causeway_harrier_view, slice_dock_night_yes, ch01_underway_gallery, ch01_o07_name_board, gi_bake:shell_shrine; why: the b2659dd0 set, plus M3-ENV-704's offering steps (S01-S03). The shrine scene is a GI input, so bake before the shrine shots. Supersedes b2659dd0.
+SUPERSEDED RENDER-REQUEST @ b04c62cc: slice_beach_h05_asha, slice_beach_h06_toma, slice_verse_steps, slice_verse_hall, slice_prologue_p01, slice_prologue_vigil_line, shrine_s01_approach, shrine_s02_threshold, shrine_s03_overview, slice_causeway_harrier_view, slice_dock_night_yes, ch01_underway_gallery, ch01_o07_name_board, gi_bake:shell_shrine; why: the 416fcf64 set, plus the Prologue on env-art's newest Iskarra (M3-ENV-724: the far skyline, textures, the fog from 70 m). Bake before the shrine shots. Supersedes 416fcf64.
+SUPERSEDED RENDER-REQUEST @ e24d05f1: slice_beach_h05_asha, slice_beach_h06_toma, slice_causeway_harrier_view, slice_verse_hall, slice_verse_steps, slice_prologue_p01, slice_prologue_vigil_line, slice_dock_night_yes, ch01_o07_name_board, ch01_underway_gallery, shrine_s01_approach, shrine_s02_threshold, shrine_s03_overview, gi_bake:shell_shrine; why: the fixes after viewing ead04ba (hold_line on the beach and O07, H05/H06, C07's harrier), plus everything changed since (Iskarra and the prologue's water, the offering steps, the First Verse's offerings and S07/S08). Bake before the shrine shots. Supersedes 37f8bb9b.
+SUPERSEDED RENDER-REQUEST @ a615b844: slice_beach_h05_asha, slice_beach_h06_toma, slice_causeway_harrier_view, slice_verse_hall, slice_verse_steps, slice_prologue_p01, slice_prologue_vigil_line, slice_dock_night_yes, ch01_o07_name_board, ch01_underway_gallery, shrine_s01_approach, shrine_s02_threshold, shrine_s03_overview, gi_bake:shell_shrine; why: the e24d05f1 set (the shots changed since my last approved render: hold_line, H05/H06, C07's harrier, Iskarra and the prologue water, the offering steps, the First Verse), plus dock_night without the freed-villager errors. Bake before the shrine shots. This is the only open request.
+SUPERSEDED RENDER-REQUEST @ 186848eb: slice_beach_h05_asha, slice_beach_h06_toma, slice_causeway_harrier_view, slice_verse_hall, slice_verse_steps, slice_prologue_p01, slice_prologue_vigil_line, slice_dock_night_yes, ch01_o07_name_board, ch01_underway_gallery, shrine_s01_approach, shrine_s02_threshold, shrine_s03_overview, save_shrine_field, gi_bake:shell_shrine; why: the a615b844 set plus the save shrine's kit model (M3-ENV-101). Bake before the shrine shots. The only open request.

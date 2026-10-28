@@ -61,7 +61,7 @@ func test_the_flight_profile_steps_and_from_row_builds_it() -> void:
 	var tread := 1.0 - float(f.tuning["riser_share"])
 	assert_true(flat > n * tread * 0.75, "treads hold flat between the risers (%d of %d samples)" % [flat, n])
 	f.free()
-	_done()
+	_done()  # before_each's zone: left in the tree, it broke ~30 later tests (big13, 9f98ccf6)
 
 
 func test_rhen_climbs_a_48_degree_flight_step_by_step() -> void:

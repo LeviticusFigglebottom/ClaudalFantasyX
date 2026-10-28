@@ -55,3 +55,20 @@ func test_the_waters_follow_the_story() -> void:
 	zone.hide_block("Flood")
 	assert_false(flood.is_visible_in_tree(), "and goes with it")
 	_close()
+
+
+func test_a_shown_storm_is_inside_the_camera_far_plane() -> void:
+	# The Undertow stands 10-14 km out and a Camera3D's default far is 4 km: the dressing raises the current camera's
+	# far plane past every shown storm, so the field and cutscene cameras see it.
+	var dressing := zone.get_node(^"Dressing") as ZoneKitDressing
+	var storm: UndertowStorm = null
+	for n: Node3D in dressing.followers("Storm"):
+		if n is UndertowStorm:
+			storm = n as UndertowStorm
+	assert_true(storm != null, "Corrow's storm follows the Storm block")
+	var cam := zone.get_viewport().get_camera_3d()
+	assert_true(cam != null, "the zone has a current camera")
+	cam.far = 4000.0
+	storm.visible = true
+	dressing._process(0.0)
+	assert_true(cam.far > storm.approach_distance_m + storm.state.bound_radius(), "far %.0f m" % cam.far)

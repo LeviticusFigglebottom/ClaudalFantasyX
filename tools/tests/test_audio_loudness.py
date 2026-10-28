@@ -16,6 +16,7 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -33,6 +34,17 @@ from synth.loudness import integrated_lufs, momentary_max_lufs, true_peak_dbtp  
 from synth.mixer import read_audio  # noqa: E402
 
 AUDIO = ROOT / "assets" / "audio"
+LFS_MUSIC = re.compile(r"^(music/act[0-9]+|sfx/act3)/")  # Git LFS paths, as validate_data.LFS_MUSIC_RE and .gitattributes
+LFS_AUDIO = ROOT / "assets" / "lfs" / "audio"  # ADR 0173: new Act I audio, the same layout and rules as AUDIO
+
+
+def rel(p: Path) -> str:
+    """A file's path for targets.rule_for: relative to assets/audio/ or to assets/lfs/audio/ (ADR 0173)."""
+    return (p.relative_to(LFS_AUDIO) if p.is_relative_to(LFS_AUDIO) else p.relative_to(AUDIO)).as_posix()
+
+
+def in_lfs(p: Path) -> bool:
+    return p.is_relative_to(LFS_AUDIO) or bool(LFS_MUSIC.match(rel(p)))
 MAX_DEFAULT_JOBS = 4  # each worker can hold ~1 GB while it oversamples a long music bed
 
 
@@ -123,15 +135,17 @@ def measure_all(jobs: list[tuple]) -> list[dict]:
 class AudioLoudnessTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
-        cls.files = sorted(AUDIO.rglob("*.ogg"))
+        cls.files = sorted(AUDIO.rglob("*.ogg")) + sorted(LFS_AUDIO.rglob("*.ogg"))
 
     def test_every_file_has_a_target(self) -> None:
-        missing = [str(p.relative_to(AUDIO)) for p in self.files if targets.rule_for(str(p.relative_to(AUDIO))) is None]
+        missing = [rel(p) for p in self.files if targets.rule_for(rel(p)) is None]
         self.assertEqual(missing, [], "add a rule to tools/audio/targets.py")
 
     def test_sizes(self) -> None:
         total = 0
         for p in self.files + sorted(AUDIO.rglob("*.json")):
+            if in_lfs(p):
+                continue  # Git LFS (ADR 0039): outside the plain-git budget and the 5 MB limit
             size = p.stat().st_size
             total += size
             self.assertLessEqual(size, targets.FILE_LIMIT, f"{p} is over 5 MB")
@@ -141,11 +155,11 @@ class AudioLoudnessTest(unittest.TestCase):
         ruled = []                       # (rel, rule) in file order, as before M2-NIT-06
         stems: dict[str, list[Path]] = {}  # one stack per "stem" rule (one boss cue each), in file order: p1, p2, ...
         for p in self.files:
-            rel = str(p.relative_to(AUDIO))
-            rule = targets.rule_for(rel)
+            rel_path = rel(p)
+            rule = targets.rule_for(rel_path)
             if rule is None:
                 continue
-            ruled.append((p, rel, rule))
+            ruled.append((p, rel_path, rule))
             if rule[1] == "stem":
                 stems.setdefault(rule[0], []).append(p)
         file_jobs = [(measure_file, (str(p), rule[1]), [p], "file", rule[1]) for p, _, rule in ruled]
@@ -155,16 +169,16 @@ class AudioLoudnessTest(unittest.TestCase):
         per_stack = dict(zip(stems, results[len(file_jobs):]))
 
         bad = []
-        for p, rel, rule in ruled:
+        for p, rel_path, rule in ruled:
             _, metric, target, tol, ceiling, _ = rule
             tp = per_file[str(p)]["tp"]
             if tp > ceiling + 0.05:
-                bad.append(f"{rel}: true peak {tp:.2f} dBTP over {ceiling}")
+                bad.append(f"{rel_path}: true peak {tp:.2f} dBTP over {ceiling}")
             if metric == "stem":
                 continue
             lv = per_file[str(p)]["lv"]
             if abs(lv - target) > tol:
-                bad.append(f"{rel}: {metric} {lv:.2f} LUFS, target {target} +- {tol}")
+                bad.append(f"{rel_path}: {metric} {lv:.2f} LUFS, target {target} +- {tol}")
         for glob, r in per_stack.items():
             _, _, target, tol, ceiling, _ = targets.rule_for(glob.replace("*", "1"))
             if abs(r["full"] - target) > tol:

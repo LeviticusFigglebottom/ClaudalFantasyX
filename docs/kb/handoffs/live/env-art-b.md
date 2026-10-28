@@ -23,7 +23,10 @@ dialogue, casts). Claims: the last row of `docs/kb/ownership.md`.
   seawall/coilspire arenas). It is theirs, and the Lead applies it after env-art. Until then the Ch8 fights still
   load `wall_head_storm` (the greybox).
 
-## LEAD DECISION NEEDED: act1-chapters dressed the same zones in parallel (found 2026-10-28)
+## RESOLVED (Lead, 2026-10-28): env-art-b's Ch5–Ch9 dressing wins; act1-chapters keeps Ch4 and merges this branch
+The ownership row says so (8240c0e0). The table below is kept for the merge.
+
+### Was: act1-chapters dressed the same zones in parallel (found 2026-10-28)
 `claude/act1-chapters` (up to 0737523e, 02:16 UTC) dressed Ch5–Ch9 zones on 10-28 under its older ownership row
 (`tools/act1/**`, `game/levels/act1/**`, 2026-10-25), at the same time as this branch under the Lead's 10-28 row:
 | Zone | act1-chapters | env-art-b |
@@ -38,8 +41,7 @@ The two touch the same generated files (`*_dressing.json`, `*_collision.json`, `
 and both add a `waters` row type to `zone_kit_dressing.gd`, so they cannot both merge. **Recommendation:** take
 env-art-b for Ch5–Ch9 dressing (the 10-28 row, and it has the Undertow, Ashcrown, the arenas and the Ch6 road that
 build on it). Keep act1-chapters' Ch4 work and its "dressings keep only blocks waiting on a request" test, and re-point
-that test at this branch's zones. I stopped new Ch5–Ch9 dressing until this is settled, to avoid a third copy.
-
+that test at this branch's zones. 
 ## NEW ACCOUNT (from 2026-10-25)
 
 ### 2026-10-28
@@ -118,8 +120,49 @@ that test at this branch's zones. I stopped new Ch5–Ch9 dressing until this is
     written by a Python scene writer).
   - **Known, not mine:** Toma, Liss and Kerrid are capsules in the field (no field bodies yet).
 
+- **Act I inventory (M3-HER-1141), my 11 rows:** an audit of this branch (hero-integration's
+  `tools/placeholder_audit.py`, not committed here) left 3 of them, and the rest were already fixed by M3-ENV-1300..1304.
+  - `ash_terrace_lanternfall` writer sphere flames: **fixed** (M3-ENV-1305: a Pemakar kit `votive_lamp` under each votive;
+    `b_lanternfall.py` writes the arena; **request M3-ENV-1306 to env-art** to fold that into `arena_scenes.py`, or the
+    next all-arena write brings the spheres back).
+  - `tamsule_bell_galleries` Greybox/Column: **blocked** on Rendering's M3-RND-26 (the weep column), still `todo`.
+  - `coilspire` Greybox/Virel: **not mine.** It is the Vowbound's body (creatures-b, M3-CRE-627). integration-qa,
+    please move the row.
+- **M3-ENV-1307:** Pemakar's weir is fed by a stepped leat (new kit piece `weir_leat`) from a culvert in tier 0's wall.
+- **Weakest views (the Lead's list):**
+  - **M3-ENV-1308, a bug:** the Undertow never drew in Ch8's zones. A camera's default far plane is 4 km and the storm
+    stands 10–14 km out. `ZoneKitDressing` now raises the current camera's far plane past every shown storm.
+    **For Rendering:** other scenes that place an UndertowStorm under a default camera have the same clipping.
+  - **M3-ENV-1309:** Ch9's moon comes from the sea (yaw 200 to 60, `--moon-relayout`). The sea face (C03's
+    counterpart), Pell's rocks and the strand read now.
+  - **M3-ENV-1310:** Ashcrown's loggia (A08): the near plume is 0.75 across, standing back over its vent, with a vent
+    glow. **For env-art:** the kit preview's A08 has the same cause.
+- **FAST-TRACK for act1-chapters (e0ff695c):** `test_zone_kit_dressing` checked every piece against the zone's
+  `kit_dir`, so Ch6's borrowed Haluna pieces failed it; it now honours a row's own `kit_dir`.
+- **MERGE-READY @ 749bfc48** (everything after 4081127f, listed above, plus the ownership commit 8240c0e0).
+  - **Checks run:** Godot `--filter=` zone_kit 11/0, battle_arenas 10/0, pemakar 10/0, ch09 12/0, ashcrown 22/0;
+    gdlint/gdformat on the changed GDScript, validate_data, taskboard --check. Pemakar kit rebuilt `--all` in Blender
+    5.0.1 twice: every older piece is byte-identical.
+  - **Checks skipped:** the tools suite (the only tools change since its last full run is two generators, whose output
+    is checked by the Godot tests above); coverage (no battle/progression code).
+
+- **For act1-chapters:** in `ch05_pemakar_harbour` (your rig `ch05_pemakar_shots`, view Harbour), the two big orbs in
+  the foreground are Asha's and Toma's hand lanterns, 2.5 m in front of the camera. Moving the view up or past them
+  would let the town read.
+- **BACKLOG EMPTY @ 749bfc48**, with reasons:
+  - My inventory rows: 9 of 11 done. `Column` waits on Rendering's M3-RND-26; `Virel` is creatures-b's body.
+  - The weir's channel: done (M3-ENV-1307).
+  - The weakest views: done. Contact sheet of all 25 Ch5–Ch9 zone shots; fixed the Undertow (not drawn), Ch9's sea
+    face and rocks (black), and Ashcrown's loggia (a flat wall of plume). What's left is the Pemakar harbour orbs
+    (act1-chapters' rig and props, above).
+  - Open requests: M3-ENV-1306 (env-art, the arena table), M3-BPR-1305 (combat, the Ch5 arenas), M3-RND-26
+    (rendering).
+  - **Next for a fresh env-art-b:** re-run the audit (`tools/placeholder_audit.py`, on hero-integration) after the
+    Lead's merge; take any new Ch5–Ch9 rows; the galleries' `Column` when M3-RND-26 lands.
+
 ### Render requests
 (Self-rendered per TRACK-RULES; lines are SELF-RENDERED notes.)
 SELF-RENDERED @ ea946ec8: ch07_tamsule_mouth, ch07_tamsule_market, ch07_tamsule_gantry — new shots, read final (Liss and Kerrid are capsules: no field body yet).
 SELF-RENDERED @ 00e15816: ch05_pemakar_weir, ch05_pemakar_harbour_day, ch08_corrow_storm, ch08_coilspire_storm, ch08_coilspire_gate, ch08_corrow_flood, ch08_corrow_lake, ch09_corrow_landing, ch09_corrow_rocks, ch09_corrow_strand — new shots (the strand is an existing baseline: no longer dark); viewed after fixes (re-aimed cameras, the flood lifted, the rocks' lamp). ch05_pemakar_harbour drifts by the new quay (the party's lanterns are the two glows).
 SELF-RENDERED @ 4081127f: ch05_ashcrown_causeway, ch05_ashcrown_forecourt, ch05_ashcrown_crown, ch05_ashcrown_tiers, ch05_ashcrown_court, battle_arena_ashcrown_forecourt_day, battle_arena_ashcrown_anvil_court, ch06_brine_road, ch06_brine_camp — all new shots or a changed zone, all viewed. The anvil court arena was re-lit after viewing (interior fill 1.4, exposure 1.35, plus a forge-spill lamp over the fight floor); its first render had a black near half.
+SELF-RENDERED @ 749bfc48: battle_arena_ash_terrace_lanternfall (votive lamps), ch05_pemakar_harbour_day and ch05_pemakar_weir (the leat), ch08_coilspire_storm and ch08_corrow_storm (the Undertow now drawn), ch09_corrow_rocks, ch09_corrow_strand and ch09_corrow_landing (the moon from the sea), ch05_ashcrown_court, _causeway and _crown (the loggia plume). All viewed, with before/after sheets for the moon and the plume. Plus a full contact sheet of the 25 Ch5–Ch9 zone shots to pick the weakest views.

@@ -315,6 +315,7 @@ func _new_overhear(instant: bool) -> CutsceneSequencer:
 	seq.hold_player = false
 	seq.auto_advance = true
 	seq.auto_advance_hold_sec = float(cfg.get("overheard_hold_sec", seq.auto_advance_hold_sec))
+	seq.auto_advance_read_cps = float(cfg.get("overheard_read_cps", 0.0))
 	seq.instant = instant
 	add_child(seq)
 	return seq

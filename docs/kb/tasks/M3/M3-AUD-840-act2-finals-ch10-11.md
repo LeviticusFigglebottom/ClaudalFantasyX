@@ -2,12 +2,13 @@
 id: M3-AUD-840
 title: "Act II zone finals, Ch10-11: ossa_fen, reedhollow, sunken_vey"
 role: audio
-status: review
+status: blocked
 owner_session: "audio worktree agent"
 reviewer: design
 depends_on: [M3-AUD-839]
 milestone: M3
 request-from: lead
+blocked-by: ADR 0041
 ---
 ## Goal
 Grow the three M3-AUD-804 sketches for Ch10-11 (`ossa_fen`, `reedhollow`, `sunken_vey`, about 60 s each) into
