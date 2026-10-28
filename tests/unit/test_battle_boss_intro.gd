@@ -276,7 +276,8 @@ func test_every_boss_stands_clear_of_the_title_card() -> void:
 
 
 func test_a_hero_shot_has_nobody_in_front_of_the_boss() -> void:
-	# M3-BPR-423 (the Lead, 03:41): the Hullgnaw raft's rail cut its intro in half; a hero stood in the lens.
+	# M3-BPR-423 (the Lead, 03:41): the Hullgnaw raft's rail cut its intro in half; a hero stood in the lens. big14's
+	# merged raft and deck meshes slipped a bounds-only test: the surfaces decide.
 	for enc: StringName in BOSSES:
 		var intro := _start(enc, 0.0)
 		intro.force_play = true
@@ -286,11 +287,12 @@ func test_a_hero_shot_has_nobody_in_front_of_the_boss() -> void:
 			continue
 		var b := intro._bounds(ctl.stage.stand_in(intro.boss_id))
 		var pos: Vector3 = intro._pose["pos"]
-		for box in BattleBossHeroShot._occluders(intro, b):
-			assert_false(box.has_point(pos), "%s: the lens is inside nothing" % enc)
-			var mid := Vector3(b.get_center().x, b.position.y + b.size.y * 0.55, b.get_center().z)
-			assert_true(
-				box.intersects_segment(pos, mid) == null, "%s: nothing stands between the lens and the boss" % enc
+		var occluders := BattleBossHeroShot._occluders(intro, b)
+		for f: float in BattleBossHeroShot.SIGHT_FRACS:  # the arena's and the party's own surfaces, not their bounds
+			var p := Vector3(b.get_center().x, b.position.y + b.size.y * f, b.get_center().z)
+			assert_false(
+				BattleBossHeroShot.sight_blocked(occluders, pos, p),
+				"%s: nothing stands between the lens and the boss" % enc
 			)
 		assert_true(BattleBossHeroShot._party_small(intro, intro._pose), "%s: no hero crowds the frame" % enc)
 		intro.skip()

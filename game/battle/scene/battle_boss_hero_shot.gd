@@ -15,6 +15,9 @@ extends RefCounted
 
 const SIGHT_FRACS: Array[float] = [0.3, 0.55, 0.8]
 
+## Mesh -> its TriangleMesh, built once (the arena's meshes repeat across intros and retries).
+static var _tri_cache: Dictionary = {}
+
 
 ## The hero pose {pos, look, fov} for `intro`'s boss, whose bounds (camera parent space) are `bounds`, standing on
 ## `slot`. {} when no candidate holds (the intro then falls back to the fitted shot).
@@ -57,7 +60,7 @@ static func _toward_viewer(director: BattleCameraDirector, yaw: float) -> float:
 	return deg_to_rad(absf(yaw)) * (side if side != 0.0 else 1.0)
 
 
-static func _holds(intro: BattleBossIntro, pose: Dictionary, bounds: AABB, occluders: Array[AABB]) -> bool:
+static func _holds(intro: BattleBossIntro, pose: Dictionary, bounds: AABB, occluders: Array[Dictionary]) -> bool:
 	var director := intro._choreo.camera
 	var hc := intro.cfg.get("hero", {}) as Dictionary
 	var pos: Vector3 = pose["pos"]
@@ -74,14 +77,31 @@ static func _holds(intro: BattleBossIntro, pose: Dictionary, bounds: AABB, occlu
 	var chest := Vector3(mid.x, bounds.position.y + bounds.size.y * float(hc.get("head_frac", 0.7)), mid.z)
 	if not intro._clears_card(pose, chest) or not _party_small(intro, pose):
 		return false
-	for box in occluders:  # last: the dearest test
-		if box.has_point(pos):
+	for f in SIGHT_FRACS:  # last: the dearest test
+		if sight_blocked(occluders, pos, Vector3(mid.x, bounds.position.y + bounds.size.y * f, mid.z)):
 			return false
-		for f in SIGHT_FRACS:
-			var p := Vector3(mid.x, bounds.position.y + bounds.size.y * f, mid.z)
-			if box.intersects_segment(pos, p):
-				return false
 	return true
+
+
+## True when some occluder's surface crosses the segment `from`..`to` (camera parent space). Each occluder's bounds
+## filter first; then its mesh's triangles decide (big14's raft and deck are merged meshes whose bounds take in the
+## boss: bounds alone had to skip them, and the rail and the deck's edge came back into the frame).
+static func sight_blocked(occluders: Array[Dictionary], from: Vector3, to: Vector3) -> bool:
+	for o in occluders:
+		var box: AABB = o["box"]
+		if not box.has_point(from) and box.intersects_segment(from, to) == null:
+			continue
+		var inv := (o["xform"] as Transform3D).affine_inverse()
+		var tm := _triangles(o["mesh"] as Mesh)
+		if tm != null and not tm.intersect_segment(inv * from, inv * to).is_empty():
+			return true
+	return false
+
+
+static func _triangles(mesh: Mesh) -> TriangleMesh:
+	if not _tri_cache.has(mesh):
+		_tri_cache[mesh] = mesh.generate_triangle_mesh()
+	return _tri_cache[mesh] as TriangleMesh
 
 
 ## True when each party member (its body, _body) is off screen, or inside the safe frame's top and sides (clear of
@@ -155,38 +175,39 @@ static func _party_in_frame(intro: BattleBossIntro, pose: Dictionary) -> bool:
 	return false
 
 
-## The arena's meshes' bounds (camera parent space) that could stand between the lens and the boss: every visible
-## mesh (and each multimesh instance) under the battle's Arena node, less those wrapping the boss (the ground, the sea)
-## or lying below its feet, and every party member's bounds.
-static func _occluders(intro: BattleBossIntro, boss: AABB) -> Array[AABB]:
-	var out: Array[AABB] = []
-	for c in intro._engine.party_active:  # a hero between the lens and the boss blocks it too
-		var hero := intro._ctl.stage.stand_in(c.id)
-		if hero != null and hero.is_visible_in_tree():
-			out.append(_body(intro, hero))
-	var arena := intro._ctl.get_node_or_null(NodePath(String(BattleArena.ARENA_NODE))) as Node3D
-	if arena == null:
-		return out
+## What could stand between the lens and the boss, as {box, xform, mesh} in the camera's parent space: every visible
+## mesh (and each multimesh instance) under the battle's Arena node, and each party member's meshes (Toma's shield
+## counts). Bounds lying wholly below the boss's feet are left out.
+static func _occluders(intro: BattleBossIntro, boss: AABB) -> Array[Dictionary]:
+	var out: Array[Dictionary] = []
 	var inv := intro._choreo.camera._parent_inverse()
 	var feet := boss.position.y + 0.05
-	for n in arena.find_children("*", "GeometryInstance3D", true, false):
-		var gi := n as GeometryInstance3D
-		if not gi.is_visible_in_tree() or gi is GPUParticles3D or gi is CPUParticles3D:
-			continue
-		var boxes: Array[AABB] = []
-		var mmi := gi as MultiMeshInstance3D
-		if mmi != null and mmi.multimesh != null and mmi.multimesh.mesh != null:
-			var mesh_box := mmi.multimesh.mesh.get_aabb()
-			for i in (
-				mmi.multimesh.visible_instance_count
-				if mmi.multimesh.visible_instance_count >= 0
-				else mmi.multimesh.instance_count
-			):
-				boxes.append((inv * mmi.global_transform * mmi.multimesh.get_instance_transform(i)) * mesh_box)
-		else:
-			boxes.append((inv * gi.global_transform) * gi.get_aabb())
-		for box in boxes:
-			if box.end.y <= feet or box.intersects(boss):
+	var roots: Array[Node] = []
+	for c in intro._engine.party_active:
+		var hero := intro._ctl.stage.stand_in(c.id)
+		if hero != null and hero.is_visible_in_tree():
+			roots.append(hero)
+	var arena := intro._ctl.get_node_or_null(NodePath(String(BattleArena.ARENA_NODE)))
+	if arena != null:
+		roots.append(arena)
+	for root in roots:
+		for n in root.find_children("*", "GeometryInstance3D", true, false):
+			var gi := n as GeometryInstance3D
+			if not gi.is_visible_in_tree():
 				continue
-			out.append(box)
+			var mmi := gi as MultiMeshInstance3D
+			var mi := gi as MeshInstance3D
+			if mmi != null and mmi.multimesh != null and mmi.multimesh.mesh != null:
+				var count := mmi.multimesh.visible_instance_count
+				for i in count if count >= 0 else mmi.multimesh.instance_count:
+					var x := inv * mmi.global_transform * mmi.multimesh.get_instance_transform(i)
+					_add(out, x, mmi.multimesh.mesh, feet)
+			elif mi != null and mi.mesh != null:
+				_add(out, inv * mi.global_transform, mi.mesh, feet)
 	return out
+
+
+static func _add(out: Array[Dictionary], xform: Transform3D, mesh: Mesh, feet: float) -> void:
+	var box := xform * mesh.get_aabb()
+	if box.end.y > feet:
+		out.append({"box": box, "xform": xform, "mesh": mesh})
