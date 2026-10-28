@@ -119,6 +119,42 @@ def fitted_weights(key: str, P: np.ndarray, V: np.ndarray, W: np.ndarray, reg: n
     return Wc
 
 
+TEETH_CLEAR_MARGIN = 0.005  # UV units kept between the packed skin islands and the teeth strip
+
+
+def clear_teeth_strip(ob) -> bool:
+    """M3-CHR-527: the head's skin islands are packed over the whole square, but the teeth keep their authored strip of
+    the head atlas (asha_mouth; asha_textures paints them there), so a pack that happens to put a scalp island on that
+    strip shows the teeth on the temple. When any packed face centre falls inside the strip, scale the packed islands
+    toward the opposite corner until they clear it. A pack that already clears it (every villager before M3-CHR-526)
+    is left exactly as it was."""
+    me = ob.data
+    names = [m.name for m in me.materials]
+    uvl = me.uv_layers.active.data
+    teeth = [li for p in me.polygons if names[p.material_index] == "teeth" for li in p.loop_indices]
+    if not teeth:
+        return False
+    T = np.array([uvl[li].uv[:] for li in teeth])
+    lo, hi = T.min(axis=0), T.max(axis=0)
+    packed = [p for p in me.polygons if names[p.material_index] in ("skin_head", "mouth")]
+    # only the skin samples the atlas there (the mouth interior's material reads no albedo, and its faces may sit on
+    # the strip harmlessly, as on several M2 villagers)
+    skin = [p for p in packed if names[p.material_index] == "skin_head"]
+    cents = np.array([np.mean([uvl[li].uv[:] for li in p.loop_indices], axis=0) for p in skin])
+    if not ((cents >= lo) & (cents <= hi)).all(axis=1).any():
+        return False
+    # the strip sits in one corner of the square; scale about the opposite corner so the islands end short of it
+    corner = np.array([0.0 if lo[0] > 0.5 else 1.0, 0.0 if lo[1] > 0.5 else 1.0])
+    k = min(abs(lo[0] - corner[0]) if corner[0] == 0.0 else abs(corner[0] - hi[0]),
+            abs(lo[1] - corner[1]) if corner[1] == 0.0 else abs(corner[1] - hi[1])) - TEETH_CLEAR_MARGIN
+    for p in packed:
+        for li in p.loop_indices:
+            q = corner + (np.array(uvl[li].uv[:]) - corner) * k
+            uvl[li].uv = (float(q[0]), float(q[1]))
+    log(f"head skin islands scaled by {k:.3f} to clear the teeth strip")
+    return True
+
+
 def kept_shapes(shapes: dict, build: dict) -> dict:
     """The shapes this villager ships: `_build.shapes` ("all", or a list of API names; a paired base
     name keeps both sides)."""
@@ -219,6 +255,7 @@ def main() -> int:
                                                        np.where(fh_reg == "mouth", 4, 2)))
     hb.unwrap_faces(ob_head, {"skin_head", "mouth"}, hb.head_seams(Fh, cat, Vh, lm),
                     shrink=(np.nonzero(cat != 1)[0], 0.45))
+    clear_teeth_strip(ob_head)
     if snaps:
         hb.quantize_uvs(ob_head)
     pad = np.zeros(len(Vhead) - n_skin)
