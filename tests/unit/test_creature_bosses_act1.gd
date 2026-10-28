@@ -13,6 +13,8 @@ const VOWBOUND_CLIPS: Array[StringName] = [&"idle", &"ready", &"rise", &"attack"
 const BOSS_ANCHORS: Array[StringName] = [&"vfx_wound", &"vfx_core", &"vfx_phase"]
 const VOWBOUND_ANCHORS: Array[StringName] = [&"vfx_core", &"vfx_keepsake"]
 ## The intro is a display for the camera's hold (choreo.json boss_intro hold_sec 1.6–2.4 plus its ease-in).
+const SKILLS_PATH := "res://game/data/battle/skills.json"
+const VOWBOUND_PATH := "res://game/data/battle/vowbound.json"
 const INTRO_MIN_SEC := 1.5
 const INTRO_MAX_SEC := 3.5
 
@@ -51,6 +53,28 @@ func test_every_act1_vowbound_has_its_clips_and_anchor_bones() -> void:
 		for clip in VOWBOUND_CLIPS:
 			assert_true(a.has_clip(clip), "%s has %s" % [id, clip])
 		_assert_anchors(id, VOWBOUND_ANCHORS)
+
+
+func test_every_act1_vowbound_skill_and_finisher_has_its_clip() -> void:
+	var skills := {}
+	for row: Dictionary in _json(SKILLS_PATH).get("skills", []) as Array:
+		skills[str(row.get("id", ""))] = row
+	for row: Dictionary in _json(VOWBOUND_PATH).get("vowbound", []) as Array:
+		var id := StringName(str(row.get("id", "")))
+		if not VOWBOUND.has(id):
+			continue
+		var a := _actor(id)
+		var ids: Array = (row.get("skills", []) as Array).duplicate()
+		ids.append(str((row.get("swell", {}) as Dictionary).get("technique", "")))
+		for sid: Variant in ids:
+			var kind := StringName(str((skills.get(str(sid), {}) as Dictionary).get("kind", "")))
+			var clip := a.clip_for(StringName(str(sid)), kind)
+			assert_true(a.has_clip(clip), "%s's %s plays a clip it has (%s)" % [id, sid, clip])
+
+
+func _json(path: String) -> Dictionary:
+	var parsed: Variant = JSON.parse_string(FileAccess.get_file_as_string(path))
+	return parsed as Dictionary if parsed is Dictionary else {}
 
 
 func _assert_anchors(id: StringName, anchors: Array[StringName]) -> void:
