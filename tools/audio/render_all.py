@@ -324,6 +324,7 @@ ACT3_FINALS: list[tuple] = [
     ("assets_src/music/act3/kite_maiden_flight.py", "assets/audio/music/act3", ["kite_maiden_flight.ogg"], "music"),
     ("assets_src/music/act3/hesper_and_ilsabet.py", "assets/audio/music/act3",
      [f"hesper_and_ilsabet_s{i}{ext}" for i in (0, 1) for ext in (".ogg", ".loop.json")], "music_loop"),
+    ("assets_src/music/act3/kerrid_last_night.py", "assets/audio/music/act3", ["kerrid_last_night.ogg"], "music"),
 ]
 ACT3_DIR = "assets/audio/music/act3"
 
