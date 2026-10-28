@@ -10,7 +10,36 @@ const MANIFEST := "res://tools/portraits/portraits.json"
 const PROVENANCE := "res://assets/PROVENANCE.md"
 const EMOTIONS := "res://game/data/dialogue/emotions.json"
 const HEROES: Array[StringName] = [
-	&"rhen", &"asha", &"toma", &"ysolde", &"liss", &"kerrid", &"moll", &"sefir", &"stillguard"
+	&"rhen",
+	&"asha",
+	&"toma",
+	&"ysolde",
+	&"liss",
+	&"kerrid",
+	&"moll",
+	&"sefir",
+	&"stillguard",
+	# The Act I townsfolk who speak (claude/characters' villager stages; dialogue speaker ids).
+	&"tavi",
+	&"kell",
+	&"garo",
+	&"neme",
+	&"osu",
+	&"fenn",
+	&"hobb",
+	&"marra",
+	&"sabe",
+	&"ione",
+	&"skipper_sadi",
+	&"poolkeeper",
+	&"scaleman",
+	&"ferrymaster",
+	&"tender",
+	&"reed",
+	&"netmender",
+	&"fisher",
+	&"vendor",
+	&"child"
 ]
 ## The six party heroes (the pages below stand them up).
 const PARTY: Array[StringName] = [&"rhen", &"asha", &"toma", &"ysolde", &"liss", &"kerrid"]
@@ -34,7 +63,7 @@ func test_every_manifest_portrait_exists_with_a_provenance_row() -> void:
 	assert_eq(
 		heroes.size(),
 		HEROES.size(),
-		"the party, and the people who speak or fight with a face (Moll, Sefir, the Stillguard)"
+		"the party, and the people who speak or fight with a face (Moll, Sefir, the Stillguard, the townsfolk)"
 	)
 	assert_true(manifest.get("creatures") is Array, "room for the bestiary's creatures")
 	var provenance := FileAccess.get_file_as_string(PROVENANCE)
