@@ -60,6 +60,28 @@ def _xform(x: float, y: float, z: float, yaw_deg: float, sxz: float, sy: float) 
     return "Transform3D(" + ", ".join(f"{round(v, 5):g}" for v in vals) + ")"
 
 
+# The vigil's lights (the Lead, 10-28: the Prologue's lamps and offerings burn): an omni in each lamp column's globe
+# and a small one at each offering saucer, warm, shadowless, no fog energy (the fog-lamp rule).
+LAMP_LIGHT = {"color": "Color(1, 0.69, 0.43, 1)", "energy": 1.4, "range": 9.0, "y": 5.78}
+OFFERING_LIGHT = {"color": "Color(1, 0.69, 0.43, 1)", "energy": 0.35, "range": 2.2, "y": 0.12}
+
+
+def _lights() -> list[tuple[str, tuple[float, float, float], dict]]:
+    import iskarra as isk  # noqa: PLC0415
+
+    out = []
+    for node, piece, x, y, z, *_ in PIECES:
+        if piece == "iskarra_lamp_column":
+            out.append((f"{node}Light", (x, y + LAMP_LIGHT["y"], z), LAMP_LIGHT))
+    plaza = next(p for p in PIECES if p[0] == "VigilDressing")
+    hz = 9.0
+    for k, sx in enumerate(isk.OFFERING_SHELLS_X):
+        at = (plaza[2] + sx + isk.OFFERING_LAMP_DX, plaza[3] + OFFERING_LIGHT["y"],
+              plaza[4] + hz - isk.OFFERING_Z_FROM_BACK)
+        out.append((f"Offering{k}Light", at, OFFERING_LIGHT))
+    return out
+
+
 def scene_text() -> str:
     glbs = sorted({p[1] for p in PIECES})
     ids = {g: f"{i + 1}_{g}" for i, g in enumerate(glbs)}
@@ -70,6 +92,12 @@ def scene_text() -> str:
     for node, piece, x, y, z, yaw, sxz, sy in PIECES:
         lines += ["", f'[node name="{node}" parent="." instance=ExtResource("{ids[piece]}")]',
                   f"transform = {_xform(x, y, z, yaw, sxz, sy)}"]
+    lines += ["", '[node name="VigilLights" type="Node3D" parent="."]']
+    for name, (x, y, z), spec in _lights():
+        lines += ["", f'[node name="{name}" type="OmniLight3D" parent="VigilLights"]',
+                  f"transform = {_xform(x, y, z, 0.0, 1.0, 1.0)}", f"light_color = {spec['color']}",
+                  f"light_energy = {spec['energy']:g}", "light_volumetric_fog_energy = 0.0",
+                  f"omni_range = {spec['range']:g}"]
     return "\n".join(lines) + "\n"
 
 

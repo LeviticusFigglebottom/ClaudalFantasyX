@@ -777,10 +777,10 @@
         1500,
         100
       ],
-      "bytes": 47128,
+      "bytes": 56060,
       "lods": {
-        "iskarra_lamp_column": 818,
-        "iskarra_lamp_column-lod1": 60
+        "iskarra_lamp_column": 948,
+        "iskarra_lamp_column-lod1": 95
       }
     },
     "iskarra_plaza": {
@@ -865,9 +865,9 @@
         9000,
         500
       ],
-      "bytes": 301552,
+      "bytes": 356088,
       "lods": {
-        "iskarra_vigil_dressing": 4440,
+        "iskarra_vigil_dressing": 5786,
         "iskarra_vigil_dressing-lod1": 60
       }
     },

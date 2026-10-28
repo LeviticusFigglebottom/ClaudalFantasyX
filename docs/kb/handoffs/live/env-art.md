@@ -589,6 +589,21 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
+- **MERGE-READY @ (this push): the Prologue's vigil lit (the Lead overruled "nothing burns"); M2-ENV-09 and
+  M2-ENV-06 finished.**
+  - **Vigil lighting:**
+    - The four lamp columns hold an oil flame in a warm, emissive lit-glass globe (new material
+      `kit_lamp_glass_lit`).
+    - Each of the seven offering shells has a lit clay saucer beside it.
+    - `iskarra_city.py` writes `VigilLights`: an omni in each globe (1.4, 9 m) and a small one at each saucer, all
+      shadowless with no fog energy.
+    - Viewed `iskarra_p01_plaza_dusk` and `slice_prologue_vigil_line`: the globes glow warm across the plaza at dusk.
+      The saucers are too small to read at these ranges.
+  - **M2-ENV-09:** the islet's wet band follows the shrine sea's published water level (viewed in S01). The channel
+    bends are not needed by the trial's layout.
+  - **M2-ENV-06:** `haluna_h10_dock_night` viewed on this tree; re-approve its drift.
+  - **Gates:** `test_iskarra` and `test_haluna_kit` pass (29 OK); taskboard --check.
+  - **Drift:** iskarra_p01/i02/i03, slice_prologue_*, shrine_s01_approach (re-approve).
 - **MERGE-READY @ 4c85ffb7b: the PC's GPU QA rows (`docs/kb/qa/act1_gpu_qa.md` on `origin/gpu/act1-qa-2`).**
   Each row self-rendered here and VIEWED.
   - **Rows 1–2 (Iskarra greybox; the vigil set untextured):** Pass A ran on integration 048b0a7f. That build lacked
