@@ -99,3 +99,16 @@ CreatureActor and the validator are theirs too (kit or tool changes go to them a
     (a set-piece target, a placeholder in Act I): added to M3-CRB-009 for battle-presentation.
 - **In progress:** spar_wraith, virel, drownbell (worktree agents). Then cinder_matron, then my polish queue
   (Kahre's hammer and forearm plates, the Reach's close-range facets, the hermit's glossy shell).
+- **MERGE-READY @ 04db1e70: M3-CRB-005, the Spar-wraith to final quality** (worktree agent f92f50d8, viewed by me).
+  - Hewn eight-sided spars (salt-silvered, tarred low, iron bands, cleats, a fid hole, splintered tops, a lashed
+    broken yard); three-strand rigging of varied thickness with sag, deadeyes, ratlines, a stay and a block-and-
+    tackle; three monkey's-fist element knots; eight telescoping chitin plates with jointed hooked limbs; four open
+    spawn_wound seams; an eyeless split mask with a glowing mouth-seam; a torn two-sided shroud with seams, grommets
+    and reef points; the Sheath follows the plates. 18.0k triangles (sheet budget raised to ≤18k). New `ready`
+    (loop; added to the row's `loop`) and `intro` (2.8 s); `vfx_wound`, `vfx_core`, `vfx_phase`. Contacts unchanged.
+  - **Checks run:** Blender verify identical; validate_data 0 errors; tools tests 48 OK (incl. grounding: the KO head
+    was 12 cm under the deck, fixed); Godot creature 74/1 (known portraits), ch04 11/0; taskboard.
+  - SELF-RENDERED @ f92f50d8: creature_spar_wraith, battle_boss_intro_wraith — drift (new model); viewed: at night a
+    broken A-frame of masts with a hanging plated body, pale knots and a glowing seam. Mild: plates a little clean at
+    noon close range.
+- **In progress:** virel, drownbell, cinder_matron (worktree agents).
