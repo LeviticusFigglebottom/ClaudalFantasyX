@@ -303,3 +303,18 @@ RENDER-REQUEST @ a8558176: battle_ch08_stair_hold, kite_map, field_menu_kite, fi
 - the codex counts (34 → 50);
 - four dark creatures relit.
 - the Lattice overview's initials no longer crowd the name tags (own audit; a8558176; the request above now names this head).
+- 2026-10-28 01:45, **for the Lead's 00:20 message ("you're idle"):** all four items were already done and pushed by then (see 00:40 and 01:20 above).
+  - **Why big13 fails Ch8:** big13 merged claude/ui @ 6ea4998f. The Ch8 kit-frame maps came later, at 50182f0e.
+  - **The fix is merged:** **claude/ui now contains lead/gate-big13 (e010d0f1)**, so merging claude/ui at e010d0f1 or later is conflict-free.
+  - **How the conflicts were resolved:**
+    - **`zone_maps.json`:** keeps M2-FP-1000's causeway map and adds Act II's fifteen zones. `test_zone_map` now counts 28 greybox zones.
+    - **`battle_sandbox.json`:** keeps Liss's wrapper row.
+    - **`test_battle_choreo.gd`:** takes big13's version.
+    - **`test_ch08_flow.py` and the docs:** union.
+    - **`ownership.md`:** keeps the newer ui-menus row, which adds `kite.json`.
+    - **M2-HER-1108:** stays done, as big13 marked it.
+    - **flags:** union, none lost.
+  - **Checks on the merged tree:**
+    - `test_zone_map_pois`, `test_ch08_flow`, codex, kite and loc: OK.
+    - The tools suite: 1302 tests. The only failure is `test_screenshots`, the baselines waiting on the open render request.
+  - **In progress:** a full Godot suite on the merged tree.
