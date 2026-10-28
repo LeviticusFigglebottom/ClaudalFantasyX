@@ -22,6 +22,9 @@ dressing is ready (M3-ENV-738).
 - [ ] A `WaterSurface` at y -0.8 (the raft decks' draught) and the `Tide` weathering node, as the preview has them.
 - [ ] Check the *Seventh Terrace* deck: the `SeventhTerrace` greybox block's top is 1.5 m, the ferry's walkable deck
       0.25 m. Either drop the block's top to the deck or keep the party off its edge.
+- [ ] The actors with no `model` are capsules in every shot (self-render 10-28: the two netmenders read as green
+      capsules on the commons in O01/O12; the scaleman, cook, Sadi, Sabe and the pen children likewise). Give them
+      VillagerLayer bodies, or ask characters.
 - [ ] Re-render the zone's shots and view them.
 
 ## Review log

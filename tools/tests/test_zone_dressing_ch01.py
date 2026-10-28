@@ -22,6 +22,7 @@ PROVENANCE = (ROOT / "assets" / "PROVENANCE.md").read_text(encoding="utf-8")
 ZONES = [
     (ROOT / "assets_src" / "environments" / "kits" / "oruvel" / "ov_zone_dressing.py",
      {("cabin_keelroof", "actors:roof_child")}),  # the child sits on the cabin's roof (C1-01)
+    (ROOT / "assets_src" / "environments" / "kits" / "oruvel_underway" / "ou_zone_dressing.py", set()),
 ]
 
 

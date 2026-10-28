@@ -4682,6 +4682,101 @@
           "screen_space_aa": 1
         }
       }
+    },
+    {
+      "id": "zone_underway_u01",
+      "scene": "res://game/levels/_tests/oruvel_underway_zone_dressing/oruvel_underway_dressed.tscn",
+      "camera": "Cameras/U01",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "zone_underway_u03",
+      "scene": "res://game/levels/_tests/oruvel_underway_zone_dressing/oruvel_underway_dressed.tscn",
+      "camera": "Cameras/U03",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "zone_underway_u06",
+      "scene": "res://game/levels/_tests/oruvel_underway_zone_dressing/oruvel_underway_dressed.tscn",
+      "camera": "Cameras/U06",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "zone_underway_u07",
+      "scene": "res://game/levels/_tests/oruvel_underway_zone_dressing/oruvel_underway_dressed.tscn",
+      "camera": "Cameras/U07",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "zone_underway_u08",
+      "scene": "res://game/levels/_tests/oruvel_underway_zone_dressing/oruvel_underway_dressed.tscn",
+      "camera": "Cameras/U08",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
     }
   ]
 }

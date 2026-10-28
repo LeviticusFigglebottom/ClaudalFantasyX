@@ -24,7 +24,7 @@ zone's own frame, so the greybox keeps collision and gameplay.
       cabin roof and the net frame 2.6 m off).
 - [x] Preview `game/levels/_tests/oruvel_zone_dressing/oruvel_dressed.tscn` loads headless with no errors; shots
       `zone_oruvel_o01/o07/o09/o12/o16`.
-- [ ] Self-rendered and viewed.
+- [x] Self-rendered and viewed (10-28, O01/O07/O09/O12/O16): the decks, the Terrace's name-board, the chandlery and the pen read final; the capsules are the zone's model-less actors (M3-ENV-740).
 - [ ] Mounted by slice-polish (M3-ENV-740).
 
 ## Notes
