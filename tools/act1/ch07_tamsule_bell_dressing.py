@@ -36,6 +36,7 @@ ROOT = Path(__file__).resolve().parents[2]
 KIT_SRC = ROOT / "assets_src" / "environments" / "kits" / "tamsule_bell"
 sys.path.insert(0, str(KIT_SRC))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+import bell as tb_bell  # noqa: E402
 import gallery as tg  # noqa: E402
 import port as tp  # noqa: E402
 import preview_scene as tps  # noqa: E402
@@ -227,8 +228,9 @@ def collision() -> dict:
 # (b_column.py) on the Column block's foot, its slots dressed with this zone's own still water, lit from within
 # (WEEP_MATERIALS, written here; the port's column uses the same files).
 WEEP_MATERIALS = {
-    "weep_column_water_material": {"albedo": "Color(0.749, 0.918, 0.949, 0.55)", "emission": "Color(0.875, 0.973, 1, 1)",
-                                   "energy": 0.9},
+    # turquoise_shallow under turquoise_shallow's +1 on-screen glow: the drop's own cyan (M3-RND-26)
+    "weep_column_water_material": {"albedo": "Color(0.247, 0.816, 0.788, 0.5)", "emission": "Color(0.612, 0.831, 0.824, 1)",
+                                   "energy": 0.6},
     "weep_spray_water_material": {"albedo": "Color(0.918, 0.973, 0.98, 0.4)", "emission": "Color(0.875, 0.973, 1, 1)",
                                   "energy": 0.35},
 }
@@ -245,9 +247,18 @@ def write_weep_materials() -> None:
 
 
 def weep_row(piece: str, block: dict) -> dict:
+    # Its foot on the catch-pool's water (the kit's pool; the block's foot is the river datum)
     return {"piece": piece, "at": [r3(block["pos"][0]), r3(block["pos"][2])],
-            "y": r3(block["pos"][1] - block["size"][1] * 0.5), "yaw_deg": 0.0, "kit_dir": KIT,
+            "y": r3(block["pos"][1] - block["size"][1] * 0.5 + tb_bell.POOL_WATER_Y), "yaw_deg": 0.0, "kit_dir": KIT,
             "materials": dict(WEEP_SLOTS), "materials_dir": RES_ZONE, "block": block["id"]}
+
+
+# The held drop itself (M3-RND-26): Rendering's WaterSphereRig on the kit's SphereAnchor (the contract's centre).
+DROP_PROFILE = "tamsule_drop"
+
+
+def drop_rows() -> list[dict]:
+    return [{"name": "Drop", "at": [r3(v) for v in tb_bell.DROP_CENTER], "profile": DROP_PROFILE}]
 
 
 def dressing() -> dict:
@@ -287,6 +298,7 @@ def dressing() -> dict:
         "time_of_day_h": 12.25,
         "greybox": {"hide_all": True, "keep": []},
         "pieces": pieces,
+        "drops": drop_rows(),
     }
 
 

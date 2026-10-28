@@ -298,10 +298,10 @@
         6000,
         600
       ],
-      "bytes": 96280,
+      "bytes": 105952,
       "lods": {
-        "weep_column": 2057,
-        "weep_column-lod1": 364
+        "weep_column": 2399,
+        "weep_column-lod1": 355
       }
     }
   },

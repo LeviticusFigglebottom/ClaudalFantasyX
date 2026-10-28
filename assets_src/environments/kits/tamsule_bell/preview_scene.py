@@ -4,7 +4,7 @@ manifest (M3-ENV-01). Deterministic: the layout below is the only source; rerun 
     python3 assets_src/environments/kits/tamsule_bell/preview_scene.py
 
 Outputs (game/levels/_tests/tamsule_bell_kit/, Environment-owned):
-  tamsule_bell_kit.tscn         the arena composed from the kit around the drop placeholder, the port edge,
+  tamsule_bell_kit.tscn         the arena composed from the kit around the held drop, the port edge,
                                 the river, eight composed cameras (tamsule_bell.md §4, T01-T08)
   tamsule_noon_environment.tres the `ch07` sub-frame: sky, AgX, exposure 0.65, lut_ch07_festival, haze
   tamsule_water_material.tres   the `lagoon_clear` x1.5 water look (colour script ch07 row)
@@ -239,11 +239,12 @@ def write_scene(path: Path) -> None:
         ("Material", RES_DIR + "tamsule_water_material.tres", "water_mat"),
         ("Environment", RES_DIR + "tamsule_noon_environment.tres", "env"),
         ("Texture2D", HALUNA_TEX + "sand_albedo.png", "sand"),
-        ("PackedScene", KIT + "reefball_drop_proxy.glb", "drop"),
+        ("Script", "res://game/world/water/sphere/water_sphere_rig.gd", "drop"),
     ]
     kinds = sorted({p[1] for p in pieces})
     ext += [("PackedScene", KIT + f"{k}.glb", k) for k in kinds]
     ext += [("PackedScene", VEG + f"{k}.glb", k) for k in sorted({t[1] for t in trees})]
+    ext.append(("PackedScene", KIT + "weep_column.glb", "weep_column"))  # env-art-b's (b_column.py), M3-RND-26
     ids = {key: f"{i + 1}_{key}" for i, (_t, _p, key) in enumerate(ext)}
     lines = ["[gd_scene format=3]", ""]
     lines += [f'[ext_resource type="{t}" path="{p}" id="{ids[k]}"]' for t, p, k in ext]
@@ -300,10 +301,14 @@ def write_scene(path: Path) -> None:
         lines += [f'[node name="{name}" parent="Palms" instance=ExtResource("{ids[piece]}")]',
                   f"position = {vec3(pos)}", f"rotation = Vector3(0, {math.radians(yaw):.6f}, 0)",
                   f"scale = {vec3((scale, scale, scale))}", ""]
-    # The water-drop contract (tamsule_bell.md §1): the anchor, the placeholder, and two markers.
+    # The water-drop contract (tamsule_bell.md §1): the anchor, the drop (WaterSphereRig's "tamsule_drop", M3-RND-26),
+    # and two markers.
     lines += ['[node name="SphereAnchor" type="Marker3D" parent="."]', f"position = {vec3(bell.DROP_CENTER)}",
               "gizmo_extents = 14.0", "",
-              f'[node name="Drop" parent="SphereAnchor" instance=ExtResource("{ids["drop"]}")]', "",
+              '[node name="Drop" type="Node3D" parent="SphereAnchor"]', f'script = ExtResource("{ids["drop"]}")',
+              'profile = "tamsule_drop"', "",
+              f'[node name="WeepColumn" parent="SphereAnchor" instance=ExtResource("{ids["weep_column"]}")]',
+              f"position = Vector3(0, {bell.POOL_WATER_Y - bell.DROP_CENTER[1]:g}, 0)", "",
               '[node name="ColumnAnchor" type="Marker3D" parent="."]', f"position = Vector3(0, {bell.DROP_BOTTOM_Y:g}, 0)",
               "", '[node name="GoalRingAnchor" type="Marker3D" parent="."]',
               f"position = Vector3(0, {bell.DROP_TOP_Y:g}, 0)", "", '[node name="Cameras" type="Node3D" parent="."]', ""]

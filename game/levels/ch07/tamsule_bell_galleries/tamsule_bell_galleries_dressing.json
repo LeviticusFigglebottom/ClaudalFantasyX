@@ -1916,7 +1916,7 @@
     0.0,
     0.0
    ],
-   "y": 0.0,
+   "y": 0.35,
    "yaw_deg": 0.0,
    "kit_dir": "res://assets/environments/kits/tamsule_bell/",
    "materials": {
@@ -1925,6 +1925,17 @@
    },
    "materials_dir": "res://game/levels/ch07/tamsule_bell_galleries/",
    "block": "Column"
+  }
+ ],
+ "drops": [
+  {
+   "name": "Drop",
+   "at": [
+    0.0,
+    31.5,
+    0.0
+   ],
+   "profile": "tamsule_drop"
   }
  ]
 }
