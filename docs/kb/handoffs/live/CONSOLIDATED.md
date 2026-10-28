@@ -80,6 +80,10 @@
 - The account's seven-day usage is at its warning level, so no more sessions unless one is clearly the bottleneck.
 
 ## 2a. Merge state (new account)
+- **10-28 ~09:10:**
+  - ADR 0042: the human delegated the open items, and the Lead decided them. M2 is approved; the music stays self-synthesized and keeps iterating; Asha's face keeps its current direction; no GPU clock cap; `main` fast-forwards after each fully green PC-gated batch, big15 first.
+  - **slice-polish is replaced** by `session_01F3vrUPLtDQMGSRrMHJtpz1` (slice-polish-2, the same branch claude/m2-slice). The old session refused the Lead's messages as instructions.
+  - **big14 FAILED its PC gate:** Godot 3161/15 plus a segfault at exit, 6 tools failures, 2 Blender DIFFs, and 302 shots (121 new). Every failure is routed to its track to fix on its own branch. big15 is rebuilt from the fixed heads plus lead/gate-ft-beach (the beach re-stage, 93d0741e).
 - **big13 MERGED 10-28 ~04:00 (90ecee18).**
   - Cloud gate: 402 shots, 250 pass, and 152 re-approved after the Lead viewed every one (98 drifted, 54 new); the Shell Shrine GI rebake.
   - Also on the integration branch: the human's playtest crash fix (M3-AUD-814, de5fdc6c).
