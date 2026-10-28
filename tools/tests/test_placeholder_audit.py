@@ -59,6 +59,7 @@ class Repo:
         _write(r, "assets/audio/music/temple.ogg", "x")
         _write(r, "game/data/dialogue/ch01/ch01_raft.dlg", "@sfx splash\n@music silence\n")
         _write(r, "assets/audio/sfx/splash.ogg", "x")
+        _write(r, "game/data/vfx/battle/boss_vfx.json", {"bosses": {"bell": {}}})
 
     def close(self) -> None:
         self.tmp.cleanup()
@@ -108,6 +109,16 @@ class BattleTests(unittest.TestCase):
         self.assertTrue(any("Vowbound ilun" in w for w in whats))
         self.assertTrue(any("asha has no battle actor" in w for w in whats))
         self.assertFalse(any("rhen has no battle actor" in w for w in whats))
+
+
+class VfxTests(unittest.TestCase):
+    def test_an_act1_boss_without_set_piece_vfx_is_battle_presentations(self) -> None:
+        repo = Repo()
+        try:
+            items = pa.check_vfx(repo.root)
+        finally:
+            repo.close()
+        self.assertEqual([(i.what.split()[1], i.owner, i.chapter) for i in items], [("reach", pa.OWNER_VFX, 8)])
 
 
 class AudioTests(unittest.TestCase):

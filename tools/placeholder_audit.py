@@ -238,6 +238,34 @@ def check_battle(root: Path = ROOT) -> list[Item]:
     return out
 
 
+def check_vfx(root: Path = ROOT) -> list[Item]:
+    """Every Act I boss has its set-piece VFX (boss_vfx.json `bosses`, BattleBossVfx); a boss with none fights with
+    only the generic hit effects."""
+    out: list[Item] = []
+    rows = (_json(root / "game/data/vfx/battle/boss_vfx.json").get("bosses", {})) or {}
+    encounters = {str(e.get("id", "")): e for e in _json(root / "game/data/battle/encounters.json").get("encounters", [])}
+    enemies = {str(e.get("id", "")): e for e in _json(root / "game/data/battle/enemies.json").get("enemies", [])}
+    seen: set[str] = set()
+    for enc_id, ch in sorted(act1_encounters(root).items(), key=lambda kv: kv[1]):
+        for fid in encounters.get(enc_id, {}).get("enemies", []):
+            fid = str(fid)
+            if fid in seen or "phases" not in enemies.get(fid, {}):
+                continue
+            seen.add(fid)
+            if fid not in rows:
+                out.append(
+                    Item(
+                        "game/data/vfx/battle/boss_vfx.json#%s" % fid,
+                        "boss %s has no set-piece VFX (generic hit effects only)" % fid,
+                        ch,
+                        OWNER_VFX,
+                        "medium",
+                        "vfx",
+                    )
+                )
+    return out
+
+
 def check_portraits(root: Path = ROOT) -> list[Item]:
     out: list[Item] = []
     heroes = (_json(root / "game/data/ui/hero_portraits.json").get("hero_portraits", {})) or {}
@@ -423,6 +451,7 @@ def from_scan(scan: list[dict], root: Path = ROOT) -> list[Item]:
 
 def audit(scan: list[dict] | None, root: Path = ROOT) -> list[Item]:
     items = (from_scan(scan, root) if scan is not None else []) + check_battle(root) + check_portraits(root)
+    items += check_vfx(root)
     items += check_audio(root) + check_named_files(root)
     items = [i for i in items if i.chapter is None or i.chapter <= LAST_CHAPTER]
     items.sort(key=lambda i: (i.owner, SEVERITY_ORDER[i.severity], i.chapter if i.chapter is not None else 99, i.path))
@@ -446,6 +475,9 @@ def render(items: list[Item], source: str) -> str:
         "bodies, arenas, portraits, audio cues and files, and placeholder-named assets.",
         "- **Severity:** high = on screen in play or battle; medium = heard, or seen in a menu or in passing; low = "
         "a name only.",
+        "- **Not audited yet, with the reason:** item and skill icons (the Act I menus have none: items carry no "
+        "icon field and status glyphs are drawn); battle VFX beyond the bosses' set pieces (every hit falls back to "
+        "its element's effect, so whether a skill needs a signature effect is battle-presentation's call).",
         "- **Source:** %s." % source,
         "",
         "## Summary: %d items (%d high, %d medium, %d low)" % (len(items), sev["high"], sev["medium"], sev["low"]),
