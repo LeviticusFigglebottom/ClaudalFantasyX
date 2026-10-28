@@ -94,6 +94,7 @@ func attach(controller: BattleController, engine: BattleEngine) -> void:
 		settings.changed.connect(func(_key: StringName) -> void: reduced_motion = settings.reduced_motion())
 	_build_flash_layer(controller)
 	boss = BattleBossVfx.attached_if_boss(self, controller, engine)
+	BattleBossSetPiece.attach_all(self, controller, engine)  # M3-BPR-420: the other Act I bosses' set pieces
 	if engine.vowbound != null:  # M3-BPR-420: a Vowbound's call, dismissal and fall play in bound light
 		engine.vowbound.called.connect(
 			func(vb: BattleCombatant) -> void: play_event.call_deferred(&"vowbound_call", vb.id)
@@ -130,8 +131,8 @@ func _on_vowbound_departed(vb: BattleCombatant, fell: bool) -> void:
 	play_event(&"vowbound_fell" if fell else &"vowbound_dismiss", vb.id)
 
 
-## The skills-map effects nobody in this battle can use: every `map.skills` effect but those of the fighters' own
-## skills, the Swell techniques and the Vowbound's. {} without an engine (everything is built).
+## The effects nobody in this battle can use: every `map.skills` effect but those of the fighters' own skills, the
+## Swell techniques and the Vowbound's, and the set pieces of bosses not in this fight. {} without an engine.
 func _unused_specials() -> Dictionary:
 	if _engine == null:
 		return {}
@@ -150,6 +151,18 @@ func _unused_specials() -> Dictionary:
 	for sid: String in by_skill:
 		if not wanted.has(str(by_skill[sid])):
 			unused[str(by_skill[sid])] = true
+	var here: Dictionary = {}
+	for c in _engine.enemies:
+		here[base_id(c.id)] = true
+	var rows := BattleBossVfx.load_data().get("bosses", {}) as Dictionary
+	for bid: String in rows:  # a set-piece boss's effects wait for that boss
+		var row := rows[bid] as Dictionary
+		if str(row.get("kind", "")) != BattleBossSetPiece.KIND or here.has(bid):
+			continue
+		var ids: Array = [row.get("gather", ""), row.get("ko", "")] + (row.get("phases", {}) as Dictionary).values()
+		for eid: Variant in ids:
+			if str(eid) != "" and not wanted.has(str(eid)):
+				unused[str(eid)] = true
 	return unused
 
 

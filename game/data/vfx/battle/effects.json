@@ -5164,6 +5164,1164 @@
         }
       ],
       "note": "A Vowbound falls: its bound light sinks (not a release)."
+    },
+    "thrash": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#3FE0C8",
+          "color_end": "#0E4A55",
+          "swatches": [
+            "spawn_wound",
+            "deep_teal_shadow"
+          ],
+          "amount": 50,
+          "lifetime_s": 0.6,
+          "explosiveness": 0.95,
+          "velocity_m_s": [
+            1.4,
+            3.0
+          ],
+          "spread_deg": 70,
+          "gravity": [
+            0,
+            -7.0,
+            0
+          ],
+          "size_m": [
+            0.14,
+            0.3
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.2,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        },
+        {
+          "color": "#B59D74",
+          "color_end": "#7E6A55",
+          "swatches": [
+            "sand_wet",
+            "timber_weathered"
+          ],
+          "amount": 30,
+          "lifetime_s": 0.9,
+          "explosiveness": 0.9,
+          "velocity_m_s": [
+            0.8,
+            1.6
+          ],
+          "spread_deg": 85,
+          "gravity": [
+            0,
+            -0.6,
+            0
+          ],
+          "size_m": [
+            0.22,
+            0.46
+          ],
+          "energy": 1.15,
+          "emission_radius_m": 0.3,
+          "turbulence": 0.3,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "Hullgnaw thrashes in its ribs."
+    },
+    "haul": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#7E6A55",
+          "color_end": "#E6DAC0",
+          "swatches": [
+            "timber_weathered",
+            "bone"
+          ],
+          "amount": 60,
+          "lifetime_s": 0.6,
+          "explosiveness": 0.95,
+          "velocity_m_s": [
+            1.4,
+            3.0
+          ],
+          "spread_deg": 70,
+          "gravity": [
+            0,
+            -7.0,
+            0
+          ],
+          "size_m": [
+            0.14,
+            0.3
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.2,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        },
+        {
+          "color": "#C9B48E",
+          "color_end": "#7E6A55",
+          "swatches": [
+            "sand_cloth",
+            "timber_weathered"
+          ],
+          "amount": 30,
+          "lifetime_s": 0.9,
+          "explosiveness": 0.9,
+          "velocity_m_s": [
+            0.8,
+            1.6
+          ],
+          "spread_deg": 85,
+          "gravity": [
+            0,
+            -0.6,
+            0
+          ],
+          "size_m": [
+            0.22,
+            0.46
+          ],
+          "energy": 1.15,
+          "emission_radius_m": 0.3,
+          "turbulence": 0.3,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "The Spar-Wraith hauls its spar down on a foe."
+    },
+    "sea_lash": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#1FA3A6",
+          "color_end": "#EEF6F4",
+          "swatches": [
+            "lagoon_teal",
+            "foam_white"
+          ],
+          "amount": 60,
+          "lifetime_s": 0.7,
+          "explosiveness": 0.9,
+          "velocity_m_s": [
+            1.5,
+            3.0
+          ],
+          "spread_deg": 50,
+          "gravity": [
+            0,
+            -6.0,
+            0
+          ],
+          "size_m": [
+            0.12,
+            0.26
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.2,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "The Spar-Wraith lashes the party with the sea."
+    },
+    "slag_pour": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#E0702E",
+          "color_end": "#F2A64A",
+          "swatches": [
+            "ember_orange",
+            "dusk_gold"
+          ],
+          "amount": 70,
+          "lifetime_s": 0.7,
+          "explosiveness": 0.9,
+          "velocity_m_s": [
+            1.5,
+            3.0
+          ],
+          "spread_deg": 50,
+          "gravity": [
+            0,
+            -6.0,
+            0
+          ],
+          "size_m": [
+            0.12,
+            0.26
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.2,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        },
+        {
+          "color": "#3A3A3F",
+          "color_end": "#3E4A57",
+          "swatches": [
+            "volcanic_stone",
+            "storm_slate"
+          ],
+          "amount": 20,
+          "lifetime_s": 1.0,
+          "explosiveness": 0.4,
+          "velocity_m_s": [
+            0.2,
+            0.5
+          ],
+          "spread_deg": 30,
+          "gravity": [
+            0,
+            -1.4,
+            0
+          ],
+          "size_m": [
+            0.16,
+            0.32
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.35,
+          "turbulence": 0.2,
+          "direction": [
+            0,
+            -1,
+            0
+          ]
+        }
+      ],
+      "note": "The Cinder Matron pours slag over the party."
+    },
+    "torch_hulk": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "head",
+      "layers": [
+        {
+          "color": "#3A3A3F",
+          "color_end": "#1D1916",
+          "swatches": [
+            "volcanic_stone",
+            "lacquer_black"
+          ],
+          "amount": 40,
+          "lifetime_s": 1.0,
+          "explosiveness": 0.4,
+          "velocity_m_s": [
+            0.2,
+            0.5
+          ],
+          "spread_deg": 30,
+          "gravity": [
+            0,
+            -1.4,
+            0
+          ],
+          "size_m": [
+            0.16,
+            0.32
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.35,
+          "turbulence": 0.2,
+          "direction": [
+            0,
+            -1,
+            0
+          ]
+        }
+      ],
+      "note": "The Inquisitor torches the hulk: smoke over each foe."
+    },
+    "breach": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#3FE0C8",
+          "color_end": "#7FC6D9",
+          "swatches": [
+            "spawn_wound",
+            "glimmer_held"
+          ],
+          "amount": 70,
+          "lifetime_s": 0.6,
+          "explosiveness": 0.95,
+          "velocity_m_s": [
+            1.4,
+            3.0
+          ],
+          "spread_deg": 70,
+          "gravity": [
+            0,
+            -7.0,
+            0
+          ],
+          "size_m": [
+            0.14,
+            0.3
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.2,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        },
+        {
+          "color": "#0E4A55",
+          "color_end": "#061A2B",
+          "swatches": [
+            "deep_teal_shadow",
+            "abyss_navy"
+          ],
+          "amount": 30,
+          "lifetime_s": 0.9,
+          "explosiveness": 0.9,
+          "velocity_m_s": [
+            0.8,
+            1.6
+          ],
+          "spread_deg": 85,
+          "gravity": [
+            0,
+            -0.6,
+            0
+          ],
+          "size_m": [
+            0.22,
+            0.46
+          ],
+          "energy": 1.15,
+          "emission_radius_m": 0.3,
+          "turbulence": 0.3,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "The Breach: the wall gives under the Reach."
+    },
+    "recrust": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "feet",
+      "layers": [
+        {
+          "color": "#3A3A3F",
+          "color_end": "#E0702E",
+          "swatches": [
+            "volcanic_stone",
+            "ember_orange"
+          ],
+          "amount": 44,
+          "lifetime_s": 0.9,
+          "explosiveness": 0.85,
+          "velocity_m_s": [
+            0.05,
+            0.15
+          ],
+          "spread_deg": 5,
+          "gravity": [
+            0,
+            0.5,
+            0
+          ],
+          "size_m": [
+            0.16,
+            0.3
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.75,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "The Cinder Matron's crust closes over her."
+    },
+    "boss_hullgnaw_coil": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#3FE0C8",
+          "color_end": "#0E4A55",
+          "swatches": [
+            "spawn_wound",
+            "deep_teal_shadow"
+          ],
+          "amount": 60,
+          "lifetime_s": 1.0,
+          "explosiveness": 0.0,
+          "velocity_m_s": [
+            0.1,
+            0.3
+          ],
+          "spread_deg": 40,
+          "gravity": [
+            0,
+            1.0,
+            0
+          ],
+          "size_m": [
+            0.13,
+            0.26
+          ],
+          "energy": 1.3,
+          "emission_radius_m": 1.0,
+          "turbulence": 0.4,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "Hullgnaw draws itself in: its wound-light gathers."
+    },
+    "boss_hullgnaw_breaking": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#E6DAC0",
+          "color_end": "#7E6A55",
+          "swatches": [
+            "bone",
+            "timber_weathered"
+          ],
+          "amount": 46,
+          "lifetime_s": 0.8,
+          "explosiveness": 0.95,
+          "velocity_m_s": [
+            1.2,
+            2.4
+          ],
+          "spread_deg": 60,
+          "gravity": [
+            0,
+            -6.5,
+            0
+          ],
+          "size_m": [
+            0.18,
+            0.36
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.15,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        },
+        {
+          "color": "#3FE0C8",
+          "color_end": "#7FC6D9",
+          "swatches": [
+            "spawn_wound",
+            "glimmer_held"
+          ],
+          "amount": 50,
+          "lifetime_s": 0.4,
+          "explosiveness": 0.95,
+          "velocity_m_s": [
+            2.0,
+            3.6
+          ],
+          "spread_deg": 18,
+          "gravity": [
+            0,
+            -2.0,
+            0
+          ],
+          "size_m": [
+            0.12,
+            0.26
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.15,
+          "turbulence": 0.0,
+          "direction": [
+            1.0,
+            0.25,
+            0
+          ]
+        }
+      ],
+      "note": "Hullgnaw's ribs break: bone and timber fall, the wound-light leaks out sideways."
+    },
+    "boss_spawn_release": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#FFE9B8",
+          "color_end": "#F4F8FF",
+          "swatches": [
+            "glimmer_lift",
+            "glimmer_lift_hi"
+          ],
+          "amount": 80,
+          "lifetime_s": 2.2,
+          "explosiveness": 0.4,
+          "velocity_m_s": [
+            0.4,
+            1.0
+          ],
+          "spread_deg": 30,
+          "gravity": [
+            0,
+            0.6,
+            0
+          ],
+          "size_m": [
+            0.12,
+            0.24
+          ],
+          "energy": 1.15,
+          "emission_radius_m": 0.8,
+          "turbulence": 0.4,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "A spawn falls: the dead it held are let go, rising (released glimmer, color_script rule 1)."
+    },
+    "boss_wraith_lines": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#C9B48E",
+          "color_end": "#8FA7C4",
+          "swatches": [
+            "sand_cloth",
+            "cumulus_shadow"
+          ],
+          "amount": 50,
+          "lifetime_s": 1.0,
+          "explosiveness": 0.0,
+          "velocity_m_s": [
+            0.1,
+            0.3
+          ],
+          "spread_deg": 40,
+          "gravity": [
+            0,
+            1.0,
+            0
+          ],
+          "size_m": [
+            0.13,
+            0.26
+          ],
+          "energy": 1.3,
+          "emission_radius_m": 1.0,
+          "turbulence": 0.4,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "The Spar-Wraith's lines draw taut."
+    },
+    "boss_wraith_hauled": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#7E6A55",
+          "color_end": "#C9B48E",
+          "swatches": [
+            "timber_weathered",
+            "sand_cloth"
+          ],
+          "amount": 46,
+          "lifetime_s": 0.8,
+          "explosiveness": 0.95,
+          "velocity_m_s": [
+            1.2,
+            2.4
+          ],
+          "spread_deg": 60,
+          "gravity": [
+            0,
+            -6.5,
+            0
+          ],
+          "size_m": [
+            0.18,
+            0.36
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.15,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        },
+        {
+          "color": "#EBE7DF",
+          "color_end": "#8FA7C4",
+          "swatches": [
+            "gauze_white",
+            "cumulus_shadow"
+          ],
+          "amount": 30,
+          "lifetime_s": 1.0,
+          "explosiveness": 0.4,
+          "velocity_m_s": [
+            0.2,
+            0.5
+          ],
+          "spread_deg": 30,
+          "gravity": [
+            0,
+            -1.4,
+            0
+          ],
+          "size_m": [
+            0.16,
+            0.32
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.35,
+          "turbulence": 0.2,
+          "direction": [
+            0,
+            -1,
+            0
+          ]
+        }
+      ],
+      "note": "The Spar-Wraith is hauled down: spars fall, its shroud tears and settles."
+    },
+    "boss_matron_recrust": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#3A3A3F",
+          "color_end": "#E0702E",
+          "swatches": [
+            "volcanic_stone",
+            "ember_orange"
+          ],
+          "amount": 50,
+          "lifetime_s": 1.0,
+          "explosiveness": 0.0,
+          "velocity_m_s": [
+            0.1,
+            0.3
+          ],
+          "spread_deg": 40,
+          "gravity": [
+            0,
+            1.0,
+            0
+          ],
+          "size_m": [
+            0.13,
+            0.26
+          ],
+          "energy": 1.3,
+          "emission_radius_m": 1.0,
+          "turbulence": 0.4,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "The Cinder Matron's crust re-forms."
+    },
+    "boss_matron_pour": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#E0702E",
+          "color_end": "#F2A64A",
+          "swatches": [
+            "ember_orange",
+            "dusk_gold"
+          ],
+          "amount": 80,
+          "lifetime_s": 0.6,
+          "explosiveness": 0.9,
+          "velocity_m_s": [
+            2.5,
+            4.5
+          ],
+          "spread_deg": 8,
+          "gravity": [
+            0,
+            -1.0,
+            0
+          ],
+          "size_m": [
+            0.13,
+            0.28
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.15,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        },
+        {
+          "color": "#3A3A3F",
+          "color_end": "#3E4A57",
+          "swatches": [
+            "volcanic_stone",
+            "storm_slate"
+          ],
+          "amount": 30,
+          "lifetime_s": 1.1,
+          "explosiveness": 0.3,
+          "velocity_m_s": [
+            0.4,
+            0.9
+          ],
+          "spread_deg": 25,
+          "gravity": [
+            0,
+            0.4,
+            0
+          ],
+          "size_m": [
+            0.15,
+            0.3
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.35,
+          "turbulence": 0.3,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "The Matron turns to pouring: the ladle runs molten, smoke climbs."
+    },
+    "boss_matron_fall": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#E0702E",
+          "color_end": "#3A3A3F",
+          "swatches": [
+            "ember_orange",
+            "volcanic_stone"
+          ],
+          "amount": 60,
+          "lifetime_s": 1.0,
+          "explosiveness": 0.4,
+          "velocity_m_s": [
+            0.2,
+            0.5
+          ],
+          "spread_deg": 30,
+          "gravity": [
+            0,
+            -1.4,
+            0
+          ],
+          "size_m": [
+            0.16,
+            0.32
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.35,
+          "turbulence": 0.2,
+          "direction": [
+            0,
+            -1,
+            0
+          ]
+        }
+      ],
+      "note": "The Cinder Matron's fire banks for good: embers settle."
+    },
+    "boss_inquisitor_torch": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#FFB16E",
+          "color_end": "#E0702E",
+          "swatches": [
+            "oil_lamp",
+            "ember_orange"
+          ],
+          "amount": 60,
+          "lifetime_s": 0.6,
+          "explosiveness": 0.9,
+          "velocity_m_s": [
+            2.5,
+            4.5
+          ],
+          "spread_deg": 8,
+          "gravity": [
+            0,
+            -1.0,
+            0
+          ],
+          "size_m": [
+            0.13,
+            0.28
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.15,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        },
+        {
+          "color": "#3A3A3F",
+          "color_end": "#1D1916",
+          "swatches": [
+            "volcanic_stone",
+            "lacquer_black"
+          ],
+          "amount": 40,
+          "lifetime_s": 1.1,
+          "explosiveness": 0.3,
+          "velocity_m_s": [
+            0.4,
+            0.9
+          ],
+          "spread_deg": 25,
+          "gravity": [
+            0,
+            0.4,
+            0
+          ],
+          "size_m": [
+            0.15,
+            0.3
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.35,
+          "turbulence": 0.3,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "The Inquisitor torches the hulk: flame and smoke at his side."
+    },
+    "boss_reach_gather": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#3FE0C8",
+          "color_end": "#061A2B",
+          "swatches": [
+            "spawn_wound",
+            "abyss_navy"
+          ],
+          "amount": 70,
+          "lifetime_s": 1.0,
+          "explosiveness": 0.0,
+          "velocity_m_s": [
+            0.1,
+            0.3
+          ],
+          "spread_deg": 40,
+          "gravity": [
+            0,
+            1.0,
+            0
+          ],
+          "size_m": [
+            0.13,
+            0.26
+          ],
+          "energy": 1.3,
+          "emission_radius_m": 1.0,
+          "turbulence": 0.4,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "The Reach gathers itself against the wall."
+    },
+    "boss_reach_dark": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "head",
+      "layers": [
+        {
+          "color": "#3E4A57",
+          "color_end": "#050A14",
+          "swatches": [
+            "storm_slate",
+            "night_sky"
+          ],
+          "amount": 80,
+          "lifetime_s": 1.0,
+          "explosiveness": 0.4,
+          "velocity_m_s": [
+            0.2,
+            0.5
+          ],
+          "spread_deg": 30,
+          "gravity": [
+            0,
+            -1.4,
+            0
+          ],
+          "size_m": [
+            0.16,
+            0.32
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.35,
+          "turbulence": 0.2,
+          "direction": [
+            0,
+            -1,
+            0
+          ]
+        }
+      ],
+      "note": "The storm-dark comes down over the wall-head."
+    },
+    "boss_reach_breach": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#3FE0C8",
+          "color_end": "#7FC6D9",
+          "swatches": [
+            "spawn_wound",
+            "glimmer_held"
+          ],
+          "amount": 80,
+          "lifetime_s": 0.4,
+          "explosiveness": 0.95,
+          "velocity_m_s": [
+            2.0,
+            3.6
+          ],
+          "spread_deg": 18,
+          "gravity": [
+            0,
+            -2.0,
+            0
+          ],
+          "size_m": [
+            0.12,
+            0.26
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.15,
+          "turbulence": 0.0,
+          "direction": [
+            1.0,
+            0.25,
+            0
+          ]
+        },
+        {
+          "color": "#061A2B",
+          "color_end": "#0E4A55",
+          "swatches": [
+            "abyss_navy",
+            "deep_teal_shadow"
+          ],
+          "amount": 50,
+          "lifetime_s": 0.55,
+          "explosiveness": 0.92,
+          "velocity_m_s": [
+            1.0,
+            2.2
+          ],
+          "spread_deg": 180,
+          "gravity": [
+            0,
+            -1.0,
+            0
+          ],
+          "size_m": [
+            0.13,
+            0.29
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.15,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "The Breach: the Reach's crust parts and its wound-light floods out sideways."
+    },
+    "flood_surge": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#3FD0C9",
+          "color_end": "#1FA3A6",
+          "swatches": [
+            "turquoise_shallow",
+            "lagoon_teal"
+          ],
+          "amount": 70,
+          "lifetime_s": 0.7,
+          "explosiveness": 0.9,
+          "velocity_m_s": [
+            1.5,
+            3.0
+          ],
+          "spread_deg": 50,
+          "gravity": [
+            0,
+            -6.0,
+            0
+          ],
+          "size_m": [
+            0.12,
+            0.26
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.2,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "The Drownbell's flood surges over each foe."
+    },
+    "undertow_surge": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "feet",
+      "layers": [
+        {
+          "color": "#0E4A55",
+          "color_end": "#061A2B",
+          "swatches": [
+            "deep_teal_shadow",
+            "abyss_navy"
+          ],
+          "amount": 40,
+          "lifetime_s": 1.0,
+          "explosiveness": 0.4,
+          "velocity_m_s": [
+            0.2,
+            0.5
+          ],
+          "spread_deg": 30,
+          "gravity": [
+            0,
+            -1.4,
+            0
+          ],
+          "size_m": [
+            0.16,
+            0.32
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.35,
+          "turbulence": 0.2,
+          "direction": [
+            0,
+            -1,
+            0
+          ]
+        }
+      ],
+      "note": "The Drownbell's undertow drags at each foe's feet."
     }
   },
   "map": {
@@ -5256,7 +6414,16 @@
       "surge_crawler": "surge_crawler",
       "surge_wing": "surge_wing",
       "storm_call_sound": "storm_call_sound",
-      "storm_call": "storm_call"
+      "storm_call": "storm_call",
+      "thrash": "thrash",
+      "haul": "haul",
+      "sea_lash": "sea_lash",
+      "slag_pour": "slag_pour",
+      "torch_hulk": "torch_hulk",
+      "breach": "breach",
+      "recrust": "recrust",
+      "flood_surge": "flood_surge",
+      "undertow_surge": "undertow_surge"
     },
     "items": {
       "bitterleaf": "bitterleaf",

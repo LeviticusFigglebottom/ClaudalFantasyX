@@ -44,3 +44,16 @@ its element's generic hit, and supports, stances, gathers, summons and items pla
 - Viewed: `tools/vfx/act1_vfx_sheet.tscn` renders every effect on the battle stage, six per sheet, labelled.
 
 ## Review log
+- 2026-10-28, battle-presentation: **M3-HER-1148's five rows** (integration-qa's inventory: Act I bosses with no
+  set-piece VFX) are filled.
+  - `boss_vfx.json` `bosses` gets kind-`set_piece` rows, played by the new `BattleBossSetPiece`: a gather on each turn
+    of a charge, a moment per phase, and the fall.
+    - Hullgnaw: coil; ribs breaking; release.
+    - The Spar-Wraith: lines; hauled down; release.
+    - The Cinder Matron: recrust; the pour; embers settling.
+    - The Inquisitor: torching the hulk.
+    - The Reach: its gathers; the storm-dark; the Breach.
+  - The Drownbell keeps its own rig (`BattleBossVfx.boss_of` skips set-piece rows).
+  - The bosses' phase skills (Thrash, Haul, Sea Lash, Slag Pour, Torch the Hulk, the Breach, Recrust, Flood Surge,
+    Undertow Surge) got their own effects too. The coverage test now walks phase skills.
+  - Tests: `test_battle_boss_set_piece` (each boss plays its moments in order, once; the Drownbell isn't doubled).

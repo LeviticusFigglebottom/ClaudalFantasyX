@@ -36,8 +36,12 @@ func test_every_act_one_skill_has_its_own_effect() -> void:
 		for sid: Variant in row.get("skills", []):
 			ids[str(sid)] = str(row["id"])
 	for eid: StringName in db.enemies:
-		for sid: Variant in (db.enemies[eid] as Dictionary).get("skills", []):
+		var row := db.enemies[eid] as Dictionary
+		for sid: Variant in row.get("skills", []):
 			ids[str(sid)] = String(eid)
+		for phase: Dictionary in row.get("phases", []):  # a boss's phase skills (Thrash, Slag Pour, the Breach)
+			for sid: Variant in phase.get("skills", []):
+				ids[str(sid)] = String(eid)
 	var checked := 0
 	for sid: String in ids:
 		if sid == "attack" or BOSS_OWN.has(sid) or str(db.skill(StringName(sid)).get("target", "")) == WARD:

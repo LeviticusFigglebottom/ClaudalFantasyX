@@ -180,7 +180,52 @@ SKILLS = {
     "surge_wing": fx("feet", spray("storm_slate", "sea_glow", 30), "The Surge throws up a squall wing."),
     "storm_call_sound": fx("head", charge("moon_blue", "storm_slate", 30), "Pell sounds the storm-call."),
     "storm_call": fx("chest", column("starlight", "moon_blue", 40), "Pell's storm-call strikes and drives a foe off."),
+    # The Act I bosses' phase skills (enemies.json phase rows).
+    "thrash": fx("chest", heavy("spawn_wound", "deep_teal_shadow", "sand_wet", "timber_weathered", 40), "Hullgnaw thrashes in its ribs."),
+    "haul": fx("chest", heavy("timber_weathered", "bone", "sand_cloth", "timber_weathered", 50), "The Spar-Wraith hauls its spar down on a foe."),
+    "sea_lash": fx("chest", spray("lagoon_teal", "foam_white", 50), "The Spar-Wraith lashes the party with the sea."),
+    "slag_pour": fx("chest", spray("ember_orange", "dusk_gold", 60) + sink("volcanic_stone", "storm_slate", 20),
+                    "The Cinder Matron pours slag over the party."),
+    "torch_hulk": fx("head", sink("volcanic_stone", "lacquer_black", 40), "The Inquisitor torches the hulk: smoke over each foe."),
+    "breach": fx("chest", heavy("spawn_wound", "glimmer_held", "deep_teal_shadow", "abyss_navy", 60), "The Breach: the wall gives under the Reach."),
+    "recrust": fx("feet", ring("volcanic_stone", "ember_orange", 44), "The Cinder Matron's crust closes over her."),
+    "flood_surge": fx("chest", spray("turquoise_shallow", "lagoon_teal", 60), "The Drownbell's flood surges over each foe."),
+    "undertow_surge": fx("feet", sink("deep_teal_shadow", "abyss_navy", 40), "The Drownbell's undertow drags at each foe's feet."),
 }
+
+# The Act I bosses' set pieces (boss_vfx.json `bosses`, kind set_piece; BattleBossSetPiece plays them on the boss):
+# `gather` each turn of a charge it gathers, `phases` on a phase change, `ko` when it falls. The Drownbell keeps its own
+# rig (BattleBossVfx). Spawns release the dead they held when they fall: glimmer_lift rising (color_script rule 1).
+BOSS_EFFECTS = {
+    "boss_hullgnaw_coil": fx("chest", charge("spawn_wound", "deep_teal_shadow", 60), "Hullgnaw draws itself in: its wound-light gathers."),
+    "boss_hullgnaw_breaking": fx("chest", shards("bone", "timber_weathered", 40) + slash("spawn_wound", "glimmer_held", 40),
+                                 "Hullgnaw's ribs break: bone and timber fall, the wound-light leaks out sideways."),
+    "boss_spawn_release": fx("chest", [layer("glimmer_lift", "glimmer_lift_hi", 80, 2.2, 0.4, (0.4, 1.0), 30, (0, 0.6, 0),
+                                             (0.12, 0.24), radius=0.8, turb=0.4)],
+                             "A spawn falls: the dead it held are let go, rising (released glimmer, color_script rule 1)."),
+    "boss_wraith_lines": fx("chest", charge("sand_cloth", "cumulus_shadow", 50), "The Spar-Wraith's lines draw taut."),
+    "boss_wraith_hauled": fx("chest", shards("timber_weathered", "sand_cloth", 40) + sink("gauze_white", "cumulus_shadow", 30),
+                             "The Spar-Wraith is hauled down: spars fall, its shroud tears and settles."),
+    "boss_matron_recrust": fx("chest", charge("volcanic_stone", "ember_orange", 50), "The Cinder Matron's crust re-forms."),
+    "boss_matron_pour": fx("chest", column("ember_orange", "dusk_gold", 70) + rise("volcanic_stone", "storm_slate", 30),
+                           "The Matron turns to pouring: the ladle runs molten, smoke climbs."),
+    "boss_matron_fall": fx("chest", sink("ember_orange", "volcanic_stone", 60), "The Cinder Matron's fire banks for good: embers settle."),
+    "boss_inquisitor_torch": fx("chest", column("oil_lamp", "ember_orange", 50) + rise("volcanic_stone", "lacquer_black", 40),
+                                "The Inquisitor torches the hulk: flame and smoke at his side."),
+    "boss_reach_gather": fx("chest", charge("spawn_wound", "abyss_navy", 70), "The Reach gathers itself against the wall."),
+    "boss_reach_dark": fx("head", sink("storm_slate", "night_sky", 80), "The storm-dark comes down over the wall-head."),
+    "boss_reach_breach": fx("chest", slash("spawn_wound", "glimmer_held", 70) + burst("abyss_navy", "deep_teal_shadow", 40, -1.0),
+                            "The Breach: the Reach's crust parts and its wound-light floods out sideways."),
+}
+BOSS_ROWS = {
+    "hullgnaw": {"gather": "boss_hullgnaw_coil", "phases": {"breaking": "boss_hullgnaw_breaking"}, "ko": "boss_spawn_release"},
+    "spar_wraith": {"gather": "boss_wraith_lines", "phases": {"hauled_down": "boss_wraith_hauled"}, "ko": "boss_spawn_release"},
+    "cinder_matron": {"gather": "boss_matron_recrust", "phases": {"pour": "boss_matron_pour"}, "ko": "boss_matron_fall"},
+    "stillguard_inquisitor": {"phases": {"torch_the_hulk": "boss_inquisitor_torch"}},
+    "undertows_reach": {"gather": "boss_reach_gather", "phases": {"dark": "boss_reach_dark", "breach": "boss_reach_breach"}},
+}
+BOSS_VFX = ROOT / "game/data/vfx/battle/boss_vfx.json"
+BOSS_SOUNDS = {"boss_spawn_release": "ko_release", "boss_matron_fall": "ko_release"}
 
 ITEMS = {
     "bitterleaf": fx("chest", rise("palm_green", "saltgrass", 24), "Bitterleaf: a clean green lift (cleanse)."),
@@ -255,17 +300,29 @@ def main() -> int:
     for eid, eff in EVENTS.items():
         data["effects"][eid] = eff
         data["map"]["events"][eid] = eid
+    for eid, eff in BOSS_EFFECTS.items():
+        data["effects"][eid] = eff
     out = json.dumps(data, indent=2) + "\n"
+    boss_text = BOSS_VFX.read_text()
+    boss = json.loads(boss_text)
+    for bid, row in BOSS_ROWS.items():
+        boss["bosses"][bid] = dict({"kind": "set_piece", "_note": "M3-BPR-420/M3-HER-1148 (ADR 0041): "
+                                    "BattleBossSetPiece plays gather (each turn of a charge), phases and ko on the boss; "
+                                    "effects.json ids (tools/vfx/gen_act1_ability_vfx.py)."}, **row)
+    boss_out = json.dumps(boss, indent=2) + "\n"
     sfx_text = SFX.read_text()
     sfx = json.loads(sfx_text)
     _stand_in_sounds(data, sfx)
     for eid, key in EVENT_SOUNDS.items():
         sfx["vfx"].setdefault(eid, sfx["events"][key])
+    for eid in BOSS_EFFECTS:
+        sfx["vfx"].setdefault(eid, sfx["vfx"][BOSS_SOUNDS.get(eid, "status_apply")])
     sfx_out = json.dumps(sfx, indent=2) + "\n"
     if "--check" in sys.argv:
-        return 0 if out == text and sfx_out == sfx_text else 1
+        return 0 if out == text and sfx_out == sfx_text and boss_out == boss_text else 1
     EFFECTS.write_text(out)
     SFX.write_text(sfx_out)
+    BOSS_VFX.write_text(boss_out)
     print("effects.json: %d skills, %d items" % (len(SKILLS), len(ITEMS)))
     return 0
 

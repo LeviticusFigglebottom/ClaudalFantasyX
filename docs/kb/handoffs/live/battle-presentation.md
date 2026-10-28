@@ -65,6 +65,15 @@ RENDER-REQUEST @ 680cd88e: battle_boss_intro_reach,battle_choreo_melee,battle_ch
 
 RENDER-REQUEST @ 60b62678: battle_arena_wall_head,battle_boss_intro_reach; why: M3-BPR-406 greybox wall_head_storm arena for Ch8 (new shot, no baseline yet); the Reach intro now stands on it. Supersedes the reach id in the 680cd88e line.
 
+### 2026-10-28 02:3x: the Lead's 02:14 list
+1. **M3-HER-1148, this track's five inventory rows: done.**
+   - Hullgnaw, the Spar-Wraith, the Cinder Matron, the Inquisitor and the Reach have set-piece rows in boss_vfx.json
+     (kind `set_piece`): a gather each turn of a charge, a moment per phase, and the fall.
+   - The new `BattleBossSetPiece` plays them. The Drownbell's rig is unchanged.
+   - Their phase skills, and the Drownbell's Flood Surge and Undertow Surge, have their own effects too.
+   - integration-qa's `check_vfx` reads `bosses` keys, so it should list nothing for this track once merged.
+   - **For integration-qa:** close M3-HER-1148 on your branch after the merge.
+
 ### 2026-10-28 01:xx: ADR 0041, Act I at final quality first (the Lead's 01:12 refocus)
 - **Act II paused:** M3-BPR-408, 418 and 419 are `status: blocked`, `blocked-by: ADR 0041`. Nothing reverted.
 - **Self-render rule (TRACK-RULES cd23f612):** this track now renders its own shots; open render requests are retired.
