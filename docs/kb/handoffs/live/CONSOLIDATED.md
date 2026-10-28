@@ -143,6 +143,8 @@ The previous version is `CONSOLIDATED-history-2026-10-28.md`. It has the deep hi
 - Known: big14-era coverage fails while the suite has reds. The suite takes ~45 min, so use HYMN_STEP_TIMEOUT=10800 (branch `gpu/ci-step-timeout-3h` makes that the default; merge it).
 
 ## 6. Tools (`tools/dev/lead/`)
+- **Branch hygiene:** `STALE-BRANCHES.md` lists ~79 merged or retired branches that are safe to delete. Cloud sessions get a 403 on deletes, so do it from the PC or in the GitHub UI.
+
 - `leadask.sh`: scans the tracks' live logs for `LEAD-ASK:` lines.
 - `contact_grid.py`: six contact sheets per image, for fast viewing.
 - `approve_shots.py`: copies the out PNGs and writes the real baseline metadata.
