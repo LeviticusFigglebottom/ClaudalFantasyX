@@ -37,10 +37,6 @@ Tavi [neutral]: I'll hang a lamp. #line:ch07_after_006
 @mark oruvel_diver_1 divers_boat walk
 @mark oruvel_diver_2 divers_boat walk
 @wait 3.0
-@mark asha asha_rim walk
-@mark toma toma_rim walk
-@mark liss liss_rim walk
-@mark ysolde ysolde_rim walk
 @wait 1.5
 @anim asha hand_jacket rhen
 @wait 1.5

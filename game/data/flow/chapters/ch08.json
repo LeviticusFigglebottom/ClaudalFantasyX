@@ -115,6 +115,7 @@
           {"play": "ch08_keeping_flame"}
         ]},
         "door": {"when": {"unset": ["ch08_entered_coilspire"]}, "steps": [
+          {"zone": "place_actor", "args": ["asha", "way_forecourt_e"]},
           {"play": "ch08_spire_door"},
           {"set": "ch08_entered_coilspire"},
           {"zone": "refresh_states"},

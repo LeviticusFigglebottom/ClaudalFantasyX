@@ -36,6 +36,8 @@ Asha [tender]: Toma. #line:ch06_raid_002
 @sfx hatch_burst
 @mark liss ridge_run run via=way_hull_sw
 @sfx raid_hound_bay
+@mark inquisitor inq_halt walk via=way_pile_e
+@mark hound hound_halt walk via=way_pile_e
 @anim liss collide rhen
 Liss [determined]: Move or hide me, pick one. #line:ch06_raid_003
 Asha [determined]: Here. #line:ch06_raid_004
@@ -51,8 +53,6 @@ Rhen [worried]: Not now. #line:ch06_raid_006 #whisper
 <<set $ch06_sheltered_liss = true>>
 @wait 1.0
 @sfx sail_pulled
-@mark inquisitor hatch walk via=way_pile_e
-@mark hound hatch_side walk via=way_pile_e
 @camera W08_hatch
 Inquisitor [neutral]: Lady Cantor. Step away from the hold. #line:ch06_raid_007
 Asha [determined]: No. #line:ch06_raid_008

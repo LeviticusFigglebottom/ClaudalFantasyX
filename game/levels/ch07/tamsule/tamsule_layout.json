@@ -46,6 +46,8 @@
     "bell_moorings": [7.0, 0.0, -53.3, 0],
     "east_water": [60, 0, -10, 90],
     "way_quay_bridge_s": [0, 0, 16.4, 180],
+    "drift_liss": [-0.4, 0, 16.6, 180],
+    "drift_ysolde": [0.7, 0, 17.6, 180],
     "way_quay_bridge_n": [0, 0, 11.6, 180],
     "way_gantry_bridge_s": [0, 0, -3.6, 180],
     "way_gantry_bridge_n": [0, 0, -8.4, 180]

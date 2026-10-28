@@ -9,7 +9,9 @@
           {"place": "RiverMouth"},
           {"chapter": 7},
           {"set": "ch07_arrived"},
-          {"play": "ch07_into_tamsule"}
+          {"play": "ch07_into_tamsule"},
+          {"zone": "place_actor", "args": ["liss", "liss_stall"]},
+          {"zone": "place_actor", "args": ["ysolde", "ysolde_gantry"]}
         ]}
       ],
       "beats": {
@@ -38,6 +40,10 @@
       "arrive": [
         {"when": {"set": ["ch07_tidecup_played"], "unset": ["ch07_tavi_withdrew"]}, "steps": [
           {"place": "CatchPool"},
+          {"zone": "place_actor", "args": ["asha", "asha_rim"]},
+          {"zone": "place_actor", "args": ["toma", "toma_rim"]},
+          {"zone": "place_actor", "args": ["liss", "liss_rim"]},
+          {"zone": "place_actor", "args": ["ysolde", "ysolde_rim"]},
           {"play": "ch07_after_the_bell"},
           {"zone": "stand", "args": ["tavi", "tavi_boat"]},
           {"set": "ch07_tavi_withdrew"}

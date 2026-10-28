@@ -41,6 +41,7 @@ func _run() -> void:
 func _visit(visit: Dictionary, out: String, n: int) -> int:
 	var zone: Node3D = null
 	var seq: CutsceneSequencer = null
+	var opened := false
 	for g: Dictionary in visit["groups"]:
 		var stale := zone == null or bool(g.get("arrive", false))  # an arrive row is the zone loading
 		for f: Variant in g.get("unset", []):
@@ -49,7 +50,8 @@ func _visit(visit: Dictionary, out: String, n: int) -> int:
 			if zone != null:
 				zone.queue_free()
 				await get_tree().process_frame
-			if zone == null:  # the visit's start; later loads keep the story's flags so far (the plan is in story order)
+			if not opened:  # the visit's start; later loads keep the story's flags so far (the plan is in story order)
+				opened = true
 				Game.state = GameStateData.new()
 				Game.state.party_ids = PARTY.duplicate()
 			for f: Variant in g.get("unset", []):

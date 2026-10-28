@@ -15,7 +15,7 @@ location: ch08/coilspire
 @wait 1.0
 Tender [cold]: The Lady Cantor's guardians may attend her. #line:ch08_spire_door_001
 @sfx spire_door
-@mark asha door_asha walk via=way_hut_door_in,way_hut_door_out,way_forecourt_e
+@mark asha door_asha walk
 @mark liss door_liss walk
 @wait 0.8
 ===

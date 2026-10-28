@@ -23,7 +23,7 @@ location: ch04/haluna_wake
 @music hearer_hum fade=2.0
 @camera H13
 @anim rhen sit_dock_edge
-@mark asha dock_end walk via=dock_shore
+@mark asha dock_end walk
 @anim asha sit_beside rhen
 @mark toma dock_shore walk
 Rhen [angry]: Don't. Don't be kind about it. Just let me be angry for a minute. #line:ch04_dock_001

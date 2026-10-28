@@ -77,7 +77,7 @@ MARKS = {
     "dock_end": dock(35.5) + (DOCK_OUT_YAW,),
     "dock_shore": dock(3.0) + (DOCK_IN_YAW,),
     # C4-06: Asha and Toma come down to the dock after the shell (the flow stands them here before the scene)
-    "dock_asha_from": dock(0.8) + (DOCK_OUT_YAW,),
+    "dock_asha_from": dock(27.5) + (DOCK_OUT_YAW,),  # C4-06: 8 m short of the end, so she reaches Rhen in H13
     "dock_toma_from": dock(-2.5) + (DOCK_OUT_YAW,),
     "wall_away": (-8.5, -123.0, 90.0),
     "dawn_neme": (-15.4, -117.6, -37.0),  # C4-08: beside Asha at her shell, out of H08's line, watching her
