@@ -71,9 +71,32 @@ func attach(controller: BattleController, choreo: BattleChoreo) -> void:
 		camera.set_meta(META_FOV, camera.fov)
 	default_transform = camera.get_meta(META_DEFAULT) as Transform3D
 	default_fov = float(camera.get_meta(META_FOV))
+	_fit_rest_to_the_fight()
 	rest()
 	choreo.posed.connect(_on_posed)
 	choreo.sequence_finished.connect(func(_actor: StringName) -> void: rest())
+
+
+## M3-BPR-425 (the PC's GPU QA row 36): a foe too big for the authored frame (camera.rest_by_enemy, by its enemy id)
+## moves this fight's rest frame back_m along the view and up_m higher, still looking at the authored look point, at
+## its own fov. The authored frame stays the camera's meta, so the next fight starts from it.
+func _fit_rest_to_the_fight() -> void:
+	var rows := data.get("rest_by_enemy", {}) as Dictionary
+	if _ctl.engine == null or rows.is_empty():
+		return
+	for e in _ctl.engine.enemies:
+		var row := rows.get(String(e.id).get_slice("#", 0), {}) as Dictionary
+		if row.is_empty():
+			continue
+		var look := _default_pose()["look"] as Vector3
+		var pos := (
+			default_transform.origin
+			+ default_transform.basis.z * float(row.get("back_m", 0.0))
+			+ Vector3.UP * float(row.get("up_m", 0.0))
+		)
+		default_transform = Transform3D(Basis.looking_at(look - pos, Vector3.UP), pos)
+		default_fov = float(row.get("fov", default_fov))
+		return
 
 
 ## True when the camera keeps to the default whatever plays (reduced motion, skip animations).

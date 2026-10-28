@@ -211,6 +211,8 @@
                          "slag_pour": {"lead": "boss_sweep", "contact": ""},
                          "brine_iron": {"lead": "boss_blow", "contact": "target"},
                          "torch_hulk": {"lead": "boss_sweep", "contact": ""}},
+      "rest_by_enemy": {"doc": "M3-BPR-425 (the PC's GPU QA row 36: the Reach's arm filled most of the frame and passed over the party all fight): a foe too big for the authored frame moves its fight's rest frame back_m along the view and up_m higher, still on the authored look point, at fov. The Reach: 40% of the screen and the party outside the safe frame at the authored rest; 16% and the party inside here.",
+                        "undertows_reach": {"back_m": 3.0, "up_m": 2.0, "fov": 48.0}},
       "enemy_by_actor": {"doc": "M3-BPR-408: a foe whose actions get their own framing, by its enemy id (otherwise enemy). The Avalanche Ram's charge rides low and side-on.",
                          "avalanche_ram": {"lead": "charge_side", "contact": ""}},
       "by_style": {
