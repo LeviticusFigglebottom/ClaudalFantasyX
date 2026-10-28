@@ -221,6 +221,11 @@ that test at this branch's zones.
 - **Queue state:** arenas for the remaining Ch5–Ch9 encounters are done (above). The player-height walk-through
   (M3-ENV-1317) and the interactable props are done; their findings and requests are above (M3-ENV-1316 to env-art).
 
+- **big14 gate, test_pemakar_kit (34 targets, expected 32):** already fixed on this branch by e8944d6c (the count
+  is 34 for `votive_lamp` M3-ENV-1305 and `weir_leat` M3-ENV-1307, both with their LOD chains, which the same test
+  checks). big14 took an earlier commit. Any head from e8944d6c on is green (`test_pemakar_kit` OK at 5c077662).
+  **MERGE-READY @ 5c077662** (it holds every earlier MERGE-READY item).
+
 ### Render requests
 (Self-rendered per TRACK-RULES; lines are SELF-RENDERED notes.)
 SELF-RENDERED @ ea946ec8: ch07_tamsule_mouth, ch07_tamsule_market, ch07_tamsule_gantry — new shots, read final (Liss and Kerrid are capsules: no field body yet).
