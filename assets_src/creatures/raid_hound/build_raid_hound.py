@@ -26,7 +26,7 @@ SEED = 6203
 PAL = {k: ck.hexrgb(v) for k, v in {
     "overcast_slate": "#6F7E8E", "storm_slate": "#3E4A57", "bone": "#E6DAC0", "tortoiseshell": "#6B3A1E",
     "order_marble": "#E4DED3", "lacquer_black": "#1D1916", "brass": "#B08D57", "sand_wet": "#B59D74",
-    "lacquer_red": "#B3261E",
+    "lacquer_red": "#B3261E", "spawn_wound": "#3FE0C8",
 }.items()}
 
 HIP = np.array([0.0, 0.72, -0.42])
@@ -37,6 +37,15 @@ LEGS = {  # name: (attach, x side, front?)
     "fl": (SHOULDER + np.array([0.11, -0.12, 0.02]), 1.0, True), "fr": (SHOULDER + np.array([-0.11, -0.12, 0.02]), -1.0, True),
     "bl": (HIP + np.array([0.12, -0.08, 0.0]), 1.0, False), "br": (HIP + np.array([-0.12, -0.08, 0.0]), -1.0, False),
 }
+# The weak point (ADR 0151, M3-CRE-650): one small closed mark, an old gaff scar healed shut on the breast below the
+# throat, toward its near side (its right, -x: the battle camera's side once the stage turns it to the party). There
+# the chest faces forward and a little to that side, so the battle camera and the review three-quarter (+x front)
+# both see it.
+SCAR_AT = SHOULDER + np.array([-0.11, -0.07, 0.13])  # projected onto the chest's surface
+SCAR_ALONG = np.array([0.35, -1.0, 0.0])  # it slants down across the breast toward the midline
+SCAR_HALF = (0.055, 0.012)  # the glowing seam's half length and half width (m)
+SCAR_LIP = (1.3, 2.4, 0.006)  # the dark healed lip round it: x the seam's length, x its width, raised (m)
+SCAR_BEND_R = 0.22  # the chest's curvature along the scar (m): the mark bends to lie on it
 
 
 def leg_points(name: str) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
@@ -93,6 +102,7 @@ def body(mesh: ck.Mesh, rig: ck.Rig) -> None:
     col = ck.mix(coat(P, SEED), PAL["sand_wet"], (0.5 * under)[:, None])
     skin = rig.chain(["hips", "chest"], [HIP, HIP + np.array([0, 0, 0.3]), SHOULDER])
     ck.finish(mesh, P, T, "coat", col, skin, cavity=0.2)
+    old_scar(mesh, rig, P, T)
     # neck and head: a long narrow head
     npath = ck.bezier([SHOULDER + np.array([0, 0.0, 0.0]), SHOULDER + np.array([0, 0.12, 0.12]),
                        SHOULDER + np.array([0, 0.2, 0.24])], 8)
@@ -121,6 +131,37 @@ def body(mesh: ck.Mesh, rig: ck.Rig) -> None:
                     rig.bones[rig.index("tail1")].tail], 10)
     Pt, Tt = ck.tube(tp, np.linspace(0.035, 0.01, 10), 7)
     ck.finish(mesh, Pt, Tt, "coat", coat(Pt, SEED + 3), rig.chain(["tail0", "tail1"], [tp[0], tp[5], tp[-1]]))
+
+
+def on_surface(P: np.ndarray, T: np.ndarray, q: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+    """The point of the part (P, T) nearest q, and its face's outward normal: q projected onto each triangle's plane,
+    kept where it falls inside the triangle, the nearest of those (degenerate triangles, as at a pole, are skipped)."""
+    a, b, c = P[T[:, 0]], P[T[:, 1]], P[T[:, 2]]
+    fn = np.cross(b - a, c - a)
+    area = np.linalg.norm(fn, axis=1)
+    fn /= np.maximum(area, 1e-12)[:, None]
+    d = ((q - a) * fn).sum(axis=1)
+    p = q - d[:, None] * fn
+    inside = area > 1e-12
+    for u, v in ((a, b), (b, c), (c, a)):
+        inside &= (np.cross(v - u, p - u) * fn).sum(axis=1) >= 0.0
+    k = int(np.argmin(np.where(inside, np.abs(d), np.inf)))
+    return p[k], fn[k]
+
+
+def old_scar(mesh: ck.Mesh, rig: ck.Rig, P: np.ndarray, T: np.ndarray) -> None:
+    """The weak point (ADR 0151): a closed seam of spawn_wound light in a raised dark lip, laid on the chest at SCAR_AT
+    and bent to its curve. Never open, never shedding motes: it is a dog, and this is an old wound."""
+    at, n = on_surface(P, T, SCAR_AT)
+    a = SCAR_ALONG - n * (SCAR_ALONG @ n)
+    a /= np.linalg.norm(a)
+    R = np.column_stack([a, n, np.cross(a, n)])  # local x along the scar, y out of the skin, z across it
+    (hl, hw), (gl, gw, rise) = SCAR_HALF, SCAR_LIP
+    for radii, lift, col, glow in (((hl * gl, rise, hw * gw), 0.0, ck.mix(PAL["tortoiseshell"], PAL["lacquer_black"], 0.5), 0.0),
+                                   ((hl, rise * 0.75, hw), rise * 0.5, PAL["spawn_wound"] * 0.65, 1.0)):
+        Pl, Tl = ck.ellipsoid((0.0, lift, 0.0), radii, 4, 10)
+        Pl[:, 1] -= Pl[:, 0] ** 2 / (2.0 * SCAR_BEND_R)
+        ck.finish(mesh, at + Pl @ R.T, Tl, "coat", col, rig.rigid("chest"), cavity=0.4 * (1.0 - glow), emission=glow)
 
 
 def legs(mesh: ck.Mesh, rig: ck.Rig) -> None:
@@ -226,17 +267,23 @@ def export_clips(rig: ck.Rig, mesh: ck.Mesh) -> list[ck.Clip]:
     return gr.grounded(rig, mesh, build_clips(), GROUNDED_LIMBS)
 
 
-def main() -> None:
-    argv = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else []
-    ap = argparse.ArgumentParser()
-    ap.add_argument("--out", required=True)
-    args = ap.parse_args(argv)
+def build_mesh() -> tuple[ck.Rig, ck.Mesh]:
+    """The rig and the skinned mesh, without Blender (M3-CRE-650: the preview sheets build from this too)."""
     rig = build_rig()
     mesh = ck.Mesh("raid_hound")
     body(mesh, rig)
     legs(mesh, rig)
     harness(mesh, rig)
     muzzle_cage(mesh, rig)
+    return rig, mesh
+
+
+def main() -> None:
+    argv = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else []
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--out", required=True)
+    args = ap.parse_args(argv)
+    rig, mesh = build_mesh()
     info = ck.export_creature(mesh, rig, export_clips(rig, mesh), args.out, extras={"hymn_creature": "raid_hound"})
     print(f"raid_hound: {info}")
 
