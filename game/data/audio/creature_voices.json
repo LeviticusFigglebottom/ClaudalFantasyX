@@ -314,6 +314,9 @@
         "move": "cre_glassfry_shimmer"
       }
     },
-    "stillguard_inquisitor": "silent"
+    "stillguard_inquisitor": "silent",
+    "tannin_archer": "silent",
+    "root_crab": "silent",
+    "fen_leech": "silent"
   }
 }
