@@ -2,7 +2,7 @@
 id: M3-CRE-650
 title: "Act I regulars: audit to final quality; weak-point marks for flue_moth, raid_hound and vein_sparker"
 role: character
-status: doing
+status: review
 owner_session: "creatures (worktree agent)"
 reviewer: art
 depends_on: []
