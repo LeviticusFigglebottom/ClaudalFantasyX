@@ -922,5 +922,29 @@
    },
    "yaw": 0.0
   }
- ]
+ ],
+ "encounters": {
+  "table": [
+   {
+    "encounter": "ch12_pass_lynxes",
+    "weight": 2
+   },
+   {
+    "encounter": "ch12_pass_moths",
+    "weight": 1
+   },
+   {
+    "encounter": "ch12_pass_scree",
+    "weight": 1
+   }
+  ],
+  "min_m": 30,
+  "max_m": 50,
+  "when": {
+   "set": [
+    "ch12_started"
+   ]
+  },
+  "seed": 12
+ }
 }
