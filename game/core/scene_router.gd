@@ -93,6 +93,10 @@ const VISIBLE_MEASURE_FRAMES := 60
 ## Upper bound on frames a swap waits for its holders (hold_swap), e.g. a time-sliced ShaderPrewarm
 ## stage (M1-RND-15).
 const PREWARM_WAIT_MAX_FRAMES := 120
+## ADR 0111: past PREWARM_WAIT_MAX_FRAMES a held swap waits on while its holders make progress, until they stall this
+## many frames or the wait reaches SWAP_WAIT_CAP_FRAMES (the hidden loading time stays in short frames).
+const SWAP_STALL_FRAMES := 30
+const SWAP_WAIT_CAP_FRAMES := 900
 const USEC_PER_MSEC := 1000.0
 const LOG_PREFIX := "SceneRouter"
 
@@ -322,7 +326,14 @@ func _swap(
 		push_error("SceneRouter: failed to instantiate %s" % scene_path)
 		return
 	var waited := 0
-	while waited < PREWARM_WAIT_MAX_FRAMES and not swap_holders().is_empty():
+	var stalled := 0
+	var progress := holders_progress(swap_holders())
+	while not swap_holders().is_empty():
+		var now := holders_progress(swap_holders())
+		stalled = 0 if now != progress else stalled + 1
+		progress = now
+		if not swap_wait_continues(waited, stalled):
+			break
 		await get_tree().process_frame
 		waited += 1
 	stats["prewarm_wait_frames"] = waited
@@ -353,6 +364,15 @@ func _swap(
 	if entry_start_usec >= 0:
 		judge_entry(stats, _ms_since(entry_start_usec))
 	_record(stats, frames)
+
+
+## Whether a swap held by its holders (hold_swap) waits another frame: always up to PREWARM_WAIT_MAX_FRAMES; past
+## that only while the holders still make progress (their wait_progress() rose within SWAP_STALL_FRAMES; ADR 0111:
+## a zone's threaded loads, ResidentLoads), and never past SWAP_WAIT_CAP_FRAMES.
+static func swap_wait_continues(waited: int, stalled: int) -> bool:
+	if waited < PREWARM_WAIT_MAX_FRAMES:
+		return true
+	return waited < SWAP_WAIT_CAP_FRAMES and stalled < SWAP_STALL_FRAMES
 
 
 ## Without split_swap, where the first measured frame starts: at the swap's start, unless frames were

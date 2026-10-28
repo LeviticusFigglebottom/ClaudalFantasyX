@@ -37,6 +37,7 @@ var _scene_loads: Dictionary = {}
 var _scene_wanted: Dictionary = {}
 ## The paths requested from the loader and not in yet (at most max_in_flight).
 var _in_flight: PackedStringArray = []
+var _done_count := 0
 ## The resident paths warm() asked for (a path both lists name stays resident).
 var _resident_wanted: Dictionary = {}
 
@@ -155,6 +156,11 @@ static func battle_paths(encounter: StringName) -> PackedStringArray:
 	return out
 
 
+## Loads finished so far (SceneRouter.holders_progress: a held swap waits on while this rises, ADR 0111).
+func wait_progress() -> int:
+	return _done_count
+
+
 ## True when every resident path is in.
 func is_ready() -> bool:
 	return pending.is_empty()
@@ -222,6 +228,7 @@ func _pump() -> void:
 
 
 func _done_with(path: String) -> void:
+	_done_count += 1
 	if pending.has(path):
 		pending.remove_at(pending.find(path))
 	if _in_flight.has(path):
