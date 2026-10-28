@@ -57,3 +57,15 @@ CreatureActor and the validator are theirs too (kit or tool changes go to them a
     distance: a black arch caged in broken ship's timbers with cyan seams. Mild: the neck is a little glossy in sun.
   - **For ui-menus:** the hullgnaw bestiary portrait is stale (re-bake `tools/portraits/render.sh --only hullgnaw`).
 - **In progress:** bottle_hermit, kahre, spar_wraith (worktree agents).
+- **MERGE-READY @ c5774622: M3-CRB-004, the Bottle hermit to final quality** (worktree agent 0bd7293a, viewed by me).
+  - Scaled to a boss: 1.2 m to the antennae (creatures.json stand_in height 1.2, radius 0.75). A thick, chipped,
+    salt-frosted deck-lantern chimney with barnacles, draped weed, a riveted green-bronze band and bail ring, lit
+    from inside (sea_glow) round a backlit banded abdomen; a granular-shelled crab with segmented spined legs,
+    compound eyes, antennae and a heavy lumpy claw; one small closed spawn_wound mark on the abdomen (ADR 0151).
+    15.2k triangles. New clips `ready` (loop) and `intro` (2.6 s); bones `vfx_wound`, `vfx_core`, `vfx_phase`.
+  - **Checks run:** Blender verify identical; validate_data 0 errors; tools tests 48 OK; Godot creature 74/1 (the
+    known portraits), boss_intro 17/0, ch04_battles 5/0; taskboard.
+  - SELF-RENDERED @ 0bd7293a: creature_bottle_hermit, battle_boss_intro_hermit — drift (new model); viewed at battle
+    distance: a giant hermit in a glowing old lamp glass. Polish note: the crab's shell is still a little glossy.
+  - **For ui-menus:** re-bake the bottle_hermit portrait.
+- **In progress:** kahre, spar_wraith, undertows_reach (worktree agents).
