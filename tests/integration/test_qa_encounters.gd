@@ -4,8 +4,9 @@ extends TestCase
 ## builds the request the field builds (BattleRequest.make: the party, the zone and spawn to return to), opens the
 ## FieldBattle, wins it (every foe brought to 1 HP, then attacked), accepts the result, and loads the zone it returns
 ## to at its spawn, the party walking a few frames there. A QaLogger listens throughout: any engine error or script
-## error (a freed object, a missing resource, a bad cast) fails it, unless qa_known.json "known" explains it. A fight
-## that can't end by attack within MAX_TURNS (a scripted set piece) is reported, not failed.
+## error (a freed object, a missing resource, a bad cast) fails it, unless qa_known.json "known" explains it. The party
+## attacks, and where a set piece refuses that (Toma won't strike, the stair is held) uses a skill it accepts. Every
+## fight, set pieces included, must be won (or end in its scripted escape) within MAX_TURNS.
 
 const BATTLE := "res://game/flow/field_battle.tscn"
 const ENCOUNTERS := "res://game/data/battle/encounters.json"
@@ -40,8 +41,7 @@ func test_every_act1_fight_is_entered_won_and_left_clean() -> void:
 		var home: Array = homes[enc_id]
 		qa.take()
 		var result := _fight(StringName(enc_id), StringName(str(home[0])), StringName(str(home[1])))
-		if result != "":
-			print("  NOTE %s: %s" % [enc_id, result])
+		assert_eq(result, "", "%s is won" % enc_id)
 		_return_to(str(home[2]), StringName(str(home[1])))
 		for e in qa.take():
 			if _match(known, str(e["text"])) != "" or e["kind"] == QaLogger.KIND_WARNING:
@@ -77,19 +77,50 @@ func _fight(enc: StringName, location: StringName, spawn: StringName) -> String:
 		for _i in MAX_TURNS:
 			if ctl.state == BattleController.STATE_RESULT:
 				break
-			for foe in ctl.engine.enemies:
-				foe.hp = mini(foe.hp, 1)
-			var foes := ctl.engine.living_foes_of(ctl.engine.current) if ctl.engine.current != null else []
-			if foes.is_empty():
+			rig(ctl.engine)
+			if ctl.engine.current == null or not _take_turn(ctl):
 				break
-			ctl.act(&"attack", [foes[0].id])
 		if ctl.state == BattleController.STATE_RESULT:
+			if ctl.engine.outcome == BattleEngine.OUTCOME_DEFEAT:
+				note = "lost (the party fell)"
 			ctl.hud.result.accept()
 		else:
 			note = "did not end by attack within %d turns (outcome '%s')" % [MAX_TURNS, ctl.engine.outcome]
 	_host().remove_child(ctl)
 	ctl.free()
 	return note
+
+
+## Tips each turn the drivers' way: every foe at 1 HP, every standing party member at full (a set piece's tide must
+## not win before its objective is met).
+static func rig(engine: BattleEngine) -> void:
+	for foe in engine.enemies:
+		foe.hp = mini(foe.hp, 1)
+	for hero in engine.party_active:
+		if hero.hp > 0:
+			hero.hp = hero.max_hp
+
+
+## The current party member acts: Attack on the first foe that takes it, else (a set piece refuses it: Toma won't
+## strike, a stair is held) its first skill the engine accepts, on a foe, the ward, itself or no one. False if none.
+static func _take_turn(ctl: FieldBattle) -> bool:
+	var actor := ctl.engine.current
+	var foes := ctl.engine.living_foes_of(actor)
+	var targets: Array = []
+	for f in foes:
+		targets.append([f.id] as Array[StringName])
+	var ward := ctl.engine.ward()
+	if ward != null:
+		targets.append([ward.id] as Array[StringName])
+	targets.append([actor.id] as Array[StringName])
+	targets.append([] as Array[StringName])
+	var tries: Array[StringName] = [&"attack"]
+	tries.append_array(actor.skills)
+	for skill in tries:
+		for t: Array[StringName] in targets:
+			if ctl.act(skill, t).ok:
+				return true
+	return false
 
 
 ## Loads the zone the fight returns to at `spawn` and lets the party walk a few frames there.

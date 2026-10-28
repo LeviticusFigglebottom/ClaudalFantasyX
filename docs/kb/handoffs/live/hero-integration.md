@@ -953,3 +953,20 @@ TRIAL MERGE @ integration 6b89f4a6: env-art 62409951, env-art-b 6edde924, creatu
   needs an import of the merged tree, so it waits for the next full one. The 05:00 inventory (39, runtime included)
   stands.
 - **freed_cast_lint on the merged tree:** 0 new hits (only the three filed ones).
+
+MERGE-READY (+ this log): **the encounter guard now wins every Act I fight, set pieces included.**
+- `test_qa_encounters`:
+  - Each turn the party attacks. Where a set piece refuses that (Toma won't strike the Inquisitor, the stair is
+    held), it uses the first skill the engine accepts, on a foe, the ward, itself or no one (`_take_turn`).
+  - `rig()` keeps foes at 1 HP and standing heroes at full, so the tide can't win before the objective is met.
+  - Every fight **must** now be won or end in its scripted escape. A defeat or a fight that never ends fails it.
+    Before, ch06_inquisitor, ch08_stair_hold_1–3 and undertows_reach were only reported, and undertows_reach was
+    actually a party wipe: its "result" was Retry.
+  - Result: 33/33 won and left, 0 failed.
+- `tools/dev/battle_entry_probe`:
+  - Uses the same turn driver and rig.
+  - Waits by wall clock (90 s): headless frames run uncapped, but the router's loads take real time.
+  - Accepts only once the result panel shows.
+  - Adds `--only=<encounter>`.
+  - Ch6 and Ch8 with real frames, set pieces included: clean.
+- Gates: gdlint/gdformat, qa_encounters 1/0, the probe on ch6, ch8 and undertows_reach.
