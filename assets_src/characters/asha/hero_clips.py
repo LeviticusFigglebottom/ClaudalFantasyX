@@ -3509,10 +3509,14 @@ def write_grip_data() -> None:
 # ---------------------------------------------------------------------------------------------
 PERSONA["moll"] = {"sway": 0.4, "lean": 0.0, "staff": True, "arms_down": 38.0, "inquisitor": True}
 MOLL_HEAD_DOWN = 3.0  # degrees: the chin a little down
+MOLL_KNEEL_HIPS_LAG = 0.07  # m: on the way down to the yield the hips lag the knees by this at the midpoint
 MOLL_SHIELD_ARM = 12.0  # degrees the shield arm hangs further out than the stand's: the shield's back clears the thigh
 MOLL_WALK = (17.0, 30.0, 9.0, 0.012, 1.0)  # stride, knee, arm swing (degrees), bob (m), lean: measured, not quick
 MOLL_LOOK = (30.0, 14.0)  # look_at: the turn to his left and the drop of the head (degrees)
 MOLL_YIELD_AT = 0.85  # ko: the yield is reached here and held to the end (the last keys hold)
+MOLL_KNEEL_DOWN = {"hips": (0.0, MOLL_KNEEL_HIPS_LAG, 0.0), "DEF-foot.R": (-25.0, 0.0, 0.0)}
+MOLL_YIELD_TOE = (-40.0, 0.0, 0.0)  # the right toes' bend in the yield (deeper presses them through the sandal)
+MOLL_YIELD_LIFT = 0.025  # m: the yield's hips over the kneel's (both feet rest on the floor, not in it)
 # arm turns (upper arm, forearm[, hand]; world axes) searched numerically on his skeleton: the yield's iron upright
 # before him, its haft clear of both legs, the left hand on it 12 cm over the right fist with the shield on that
 # forearm clear of his body (skinned, signed distance); the kneel's left wrist resting on the raised knee; the thrust's
@@ -3550,7 +3554,9 @@ def moll_yield(sk: Skeleton, persona: dict) -> dict:
     right knee in the right fist, the left hand over the right on the haft, the shoulders dropped, the head bowed."""
     k = kneel(sk, persona)
     p = {b: v for b, v in k.items() if b == "hips" or "thigh" in b or "shin" in b or "foot" in b or "toe" in b}
-    return add(p, {"DEF-spine.001": (8.0, 0.0, 0.0), "DEF-spine.002": (6.0, 0.0, 0.0), "DEF-spine.003": (4.0, 0.0, 0.0),
+    p["DEF-toe.R"] = MOLL_YIELD_TOE
+    return add(p, {"hips": (0.0, MOLL_YIELD_LIFT, 0.0),
+                   "DEF-spine.001": (8.0, 0.0, 0.0), "DEF-spine.002": (6.0, 0.0, 0.0), "DEF-spine.003": (4.0, 0.0, 0.0),
                    "DEF-spine.005": (8.0, 0.0, 0.0), "DEF-spine.006": (24.0, 0.0, 0.0),
                    "DEF-shoulder.L": (0.0, 0.0, -3.0), "DEF-shoulder.R": (0.0, 0.0, 3.0),
                    "DEF-upper_arm.R": MOLL_YIELD_ARM_R[0], "DEF-forearm.R": MOLL_YIELD_ARM_R[1],
@@ -3646,9 +3652,10 @@ def _moll_keys(clip: str, sk: Skeleton, persona: dict, base: dict) -> list:
             "DEF-upper_arm.L": (-60.0, 0.0, 26.0), "DEF-forearm.L": (-50.0, -30.0, 0.0)})
         drive = add(_legs(sk, persona, 0.1, 0.2, -0.1), {
             "DEF-spine.001": (16.0, 8.0, 0.0), "DEF-spine.002": (6.0, 4.0, 0.0), "DEF-spine.006": (-10.0, -8.0, 0.0),
-            "DEF-upper_arm.R": (-58.0, 0.0, -28.0), "DEF-forearm.R": (-10.0, 0.0, 0.0), "DEF-hand.R": (110.0, 16.0, 0.0),
+            "DEF-upper_arm.R": (-46.0, 0.0, -28.0), "DEF-forearm.R": (-10.0, 0.0, 0.0), "DEF-hand.R": (110.0, 16.0, 0.0),
             "DEF-upper_arm.L": (20.0, 0.0, 14.0), "DEF-forearm.L": (-40.0, 0.0, 0.0)})
-        return [(0.0, {}), (0.16, early), (0.42, lift), (0.62, drive), (0.84, _scale(drive, 0.5)), (1.0, {})]
+        settle = add(_scale(drive, 0.5), {"DEF-upper_arm.R": (24.0, 0.0, 0.0)})  # the arm draws back off the blow
+        return [(0.0, {}), (0.16, early), (0.42, lift), (0.62, drive), (0.74, settle), (1.0, {})]
     if clip == "hit":
         # a step back on the left foot, the shield coming up late
         jolt = add(_legs(sk, persona, 0.03, -0.08, 0.0), {
@@ -3662,9 +3669,12 @@ def _moll_keys(clip: str, sk: Skeleton, persona: dict, base: dict) -> list:
     if clip == "ko":
         # the yield: the knees go, then down onto the right knee, both hands on the grounded haft, the head bowed;
         # he holds it
-        buckle = add(_legs(sk, persona, 0.08), {"DEF-spine.001": (6.0, 0.0, 0.0), "DEF-spine.006": (10.0, 0.0, 0.0)})
+        buckle = add(_flat_legs(sk, persona, 0.08), {"DEF-spine.001": (6.0, 0.0, 0.0),
+                                                      "DEF-spine.006": (10.0, 0.0, 0.0)})
         down = _minus(moll_yield(sk, persona), base)
-        return [(0.0, {}), (0.3, buckle), (MOLL_YIELD_AT, down), (1.0, down)]
+        # on the way down the right knee bends ahead of the hips' drop, the foot pointed (the toes clear the floor)
+        mid = add(blend(buckle, down, 0.5), MOLL_KNEEL_DOWN)
+        return [(0.0, {}), (0.3, buckle), (0.55, mid), (MOLL_YIELD_AT, down), (1.0, down)]
     raise KeyError(clip)
 
 
