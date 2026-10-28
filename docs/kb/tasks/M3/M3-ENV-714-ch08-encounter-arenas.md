@@ -32,3 +32,9 @@ arenas, which are in arenas.json `scenes`; no encounter names them yet.
   - All three carry `EntryMarker_ward` for the Fisher Stair. Please map each fight to its state as above.
   - The headland and flue-moth encounters don't exist in encounters.json yet. Point them at `coilspire_headland_path`
     and `coilspire_tier_landing` when they're added.
+- **2026-10-28 (env-art-b, which owns the Ch5–Ch9 arenas since the Lead's 10-28 decision), for battle-presentation
+  and act1-chapters:** `ch08_headland_gulls`, `ch08_headland_crabs` and `ch08_flue_moths` now exist in
+  encounters.json with no `arena`, so they fight on the sandbox's set (Act I inventory, M3-HER-1145). The ids above
+  stand: the two headland fights go to `coilspire_headland_path` and the flue moths to `coilspire_tier_landing`. Both
+  scenes are in arenas.json `scenes` and render final. The Ch5 repoint is M3-BPR-1305 (`ashcrown_forecourt_day` for
+  the four stair fights, `ashcrown_anvil_court` for `ch05_cinder_matron`).
