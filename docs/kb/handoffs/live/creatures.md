@@ -682,3 +682,8 @@ SUPERSEDED RENDER-REQUEST @ db895430: battle_choreo_hit, battle_choreo_ko, battl
     - Paths claimed in ownership.md: assets_src/crowd/**, assets/crowd/**, game/data/world/npc/crowd.json.
     - **slice-polish:** M3-CRE-657 (GreyboxZone adds the VillagerLayer) is now what lets those rows show.
   - Checks run: Godot creature 79/1 (the known portrait red), battle 720/0, vfx_anchors 4/0; validate_data, taskboard, lint, format.
+- **MERGE-READY: M3-CRE-655, the raid hound re-modelled.**
+  - It's now a lean, deep-chested greyhound: real joints, paws, a wedge head with a moving jaw and folded ears. The Order's harness is leather with a lacquered plate, and the muzzle cage is red lacquer.
+  - 7,424 triangles (the budget raised to the regulars' 8k ceiling). The rig, clips, contacts, vfx_anchors and the breast scar are kept, and grounding holds.
+- SELF-RENDERED (by the agent; viewed here): creature_raid_hound and battle_boss_intro_inquisitor (the hound beside Moll's capsule) both read as a real hound; the portrait is re-baked and committed. **Lead: both baselines need your re-render.**
+  - Minor issues left (in the handoff): the KO's ears lift slightly; a small gap between the breast strap and the neck ring at the howl's peak.
