@@ -1516,26 +1516,30 @@ _WALK = {"beta": 0.6, "c": 0.0, "width": 0.0, "hs": 14.0, "to": 24.0, "rh": 0.12
          "peak": 0.4, "bump": 6.0, "drop": 0.02, "bob": 0.02, "run": False, "sway": 0.02, "yaw": 5.0, "tilt": 3.0,
          "chest": 4.0, "lean": 2.0, "flex": 1.5, "nod": 1.0, "arm": 15.0, "elbow": 14.0, "fore": 0.0, "fore_s": 0.0,
          "abd": 0.0, "lag": 0.04, "head": 0.8, "staff": 3.0}
-_RUN = dict(_WALK, beta=0.36, c=-0.08, hs=5.0, to=30.0, rh=0.06, rb=0.26, clear=0.12, peak=0.36, bump=10.0, drop=0.06,
-            bob=0.03, run=True, sway=0.012, yaw=7.0, tilt=2.0, chest=7.0, lean=9.0, flex=3.0, nod=2.0, arm=30.0,
-            elbow=24.0, fore=60.0, fore_s=35.0, abd=12.0, lag=0.05, staff=5.0)
+# the human's playtest (FAST-TRACK): the run "flopped" (the free arm swung out wide and straightened into a reach, the
+# hips and chest wrung, the knee kicked high, the staff whipped). A grounded run: the elbow held bent near the body and
+# folding more as the arm comes forward (the `fwd` terms of M2-CHR-513), little abduction, less follow-through lag, a
+# smaller hip and chest counter-turn, a lower swing-foot lift and a steadier staff
+_RUN = dict(_WALK, beta=0.36, c=-0.08, hs=5.0, to=26.0, rh=0.06, rb=0.26, clear=0.09, peak=0.4, bump=6.0, drop=0.06,
+            bob=0.025, run=True, sway=0.012, yaw=4.5, tilt=1.5, chest=4.0, lean=8.0, flex=2.5, nod=1.2, arm=20.0,
+            elbow=16.0, fore=68.0, fore_s=40.0, abd=6.0, lag=0.025, staff=2.5, fwd=0.55, fwd_elbow=28.0, fwd_abd=3.0)
 LOCO_GAIT = {
     # asha.md §1: stillness (sway 0.4): a short, level, quiet walk, the staff carried upright in the right hand
     "asha": {"walk": dict(_WALK, S=1.0, c=-0.02, sway=0.014, yaw=3.5, tilt=0.5, chest=3.0, lean=1.5, arm=13.0,
                           bob=0.016, drop=0.035, abd=7.0, clear=0.04),  # abd: the verse sleeve's bag clears the thigh
-             "run": dict(_RUN, S=1.9, sway=0.008, lean=8.0, arm=26.0)},
+             "run": dict(_RUN, S=1.9, sway=0.008, lean=7.0, arm=18.0, abd=7.0)},  # abd: as the walk's
     # rhen.md §1: light and quick (sway 1.3, the 4 degree lean): springier, leaning, a bigger arm swing, a shorter
     # stride for his legs, so the controller plays him at a quicker cadence for the same ground speed
     "rhen": {"walk": dict(_WALK, S=1.05, c=-0.02, sway=0.022, yaw=4.0, tilt=1.0, chest=1.5, lean=4.0, arm=17.0, abd=5.0, back_r=0.35, bob=0.026,
                           drop=0.03, clear=0.065, hs=16.0, to=28.0),
-             "run": dict(_RUN, S=2.0, c=-0.13, sway=0.014, lean=13.0, arm=36.0, bob=0.04, hs=0.0, to=34.0,
-                         clear=0.14, fwd=0.7, fwd_elbow=45.0,
+             "run": dict(_RUN, S=2.0, c=-0.13, sway=0.014, lean=12.0, arm=30.0, bob=0.035, hs=0.0, to=32.0,
+                         clear=0.12, fwd=0.7, fwd_elbow=45.0,
                          fwd_abd=10.0)},  # M2-CHR-513: a sprinter's arm, not a reach
     # toma.md §1: broad, the weight low, the spear held like the staff: a long, heavy, rolling stride, the feet
     # tracking wide, a lower body and a big side-to-side transfer, little bounce
     "toma": {"walk": dict(_WALK, S=1.25, sway=0.03, yaw=4.0, tilt=2.0, chest=3.0, lean=2.0, arm=11.0,
                           bob=0.012, drop=0.045, clear=0.05),
-             "run": dict(_RUN, S=2.1, width=0.12, sway=0.018, lean=8.0, arm=22.0, bob=0.025, drop=0.07)},
+             "run": dict(_RUN, S=2.1, width=0.12, sway=0.018, lean=8.0, arm=18.0, bob=0.02, drop=0.07)},
 }
 SUPPORT_K = {"asha": 0.45, "rhen": 0.5, "toma": 0.35}  # how far the hips follow the weight-bearing foot
 
