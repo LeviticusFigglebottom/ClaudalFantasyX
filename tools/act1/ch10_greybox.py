@@ -138,6 +138,10 @@ def ossa_fen() -> dict:
         "shots": {"F01": {"pos": [-14.0, 2.2, 6.0], "look_at": [20.0, 1.0, 0.0], "fov": 40}},
         "triggers": [{"id": "to_reedhollow", "activation": "touch", "at": [138.0, 0.0, 0.0], "size": [2.0, 0, WALK_W],
                       "payload": {"beat": "to_reedhollow"}, "yaw": 0.0}],
+        # M4-C10-03: the root-walks' random fights (act2_roster.md Ch10); none in Reedhollow (the roster's proposal)
+        "encounters": {"table": [{"encounter": "ch10_fen_archers", "weight": 2}, {"encounter": "ch10_fen_roots", "weight": 1},
+                                 {"encounter": "ch10_fen_leeches", "weight": 1}],
+                       "min_m": 30, "max_m": 50, "when": {"set": ["ch10_started"]}, "seed": 10},
     }
 
 

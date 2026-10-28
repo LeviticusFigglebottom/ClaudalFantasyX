@@ -1145,6 +1145,102 @@
       "p90_turns_max": 35,
       "loadout": "ch08_seawall",
       "swell": "good"
+    },
+    {
+      "id": "ch10_fen_archers",
+      "chapter": "Ch10 route (Ossa Fen's root-walks): two tannin archers (role_answer report only: lightning is Kahre's, no hero's role answers them; a logged exception as for ch06_ridge_gulls)",
+      "kind": "regular",
+      "encounter": "ch10_fen_archers",
+      "active": [
+        "rhen",
+        "asha",
+        "toma"
+      ],
+      "reserve": [
+        "ysolde",
+        "liss"
+      ],
+      "bands": {
+        "naive": [
+          20,
+          60
+        ],
+        "naive_swell": null,
+        "role_answer": null,
+        "smart": [
+          97,
+          100
+        ],
+        "ward_guard": null
+      },
+      "p90_turns_max": 35,
+      "loadout": "ch08_seawall",
+      "swell": "good"
+    },
+    {
+      "id": "ch10_fen_roots",
+      "chapter": "Ch10 route: two root crabs (Toma cracks them)",
+      "kind": "regular",
+      "encounter": "ch10_fen_roots",
+      "active": [
+        "rhen",
+        "asha",
+        "toma"
+      ],
+      "reserve": [
+        "ysolde",
+        "liss"
+      ],
+      "bands": {
+        "naive": [
+          20,
+          60
+        ],
+        "naive_swell": null,
+        "role_answer": [
+          92,
+          100
+        ],
+        "smart": [
+          97,
+          100
+        ],
+        "ward_guard": null
+      },
+      "p90_turns_max": 35,
+      "loadout": "ch08_seawall",
+      "swell": "good"
+    },
+    {
+      "id": "ch10_fen_leeches",
+      "chapter": "Ch10 route: two fen leeches (role_answer report only: the role play focuses and never heals, and the leeches' poison is a healing lesson; a logged exception until their drain lands, M4-CMB-1001)",
+      "kind": "regular",
+      "encounter": "ch10_fen_leeches",
+      "active": [
+        "rhen",
+        "asha",
+        "toma"
+      ],
+      "reserve": [
+        "ysolde",
+        "liss"
+      ],
+      "bands": {
+        "naive": [
+          20,
+          60
+        ],
+        "naive_swell": null,
+        "role_answer": null,
+        "smart": [
+          97,
+          100
+        ],
+        "ward_guard": null
+      },
+      "p90_turns_max": 35,
+      "loadout": "ch08_seawall",
+      "swell": "good"
     }
   ]
 }

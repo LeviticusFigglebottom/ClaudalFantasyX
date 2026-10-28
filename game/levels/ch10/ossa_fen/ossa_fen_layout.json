@@ -1301,5 +1301,29 @@
    },
    "yaw": 0.0
   }
- ]
+ ],
+ "encounters": {
+  "table": [
+   {
+    "encounter": "ch10_fen_archers",
+    "weight": 2
+   },
+   {
+    "encounter": "ch10_fen_roots",
+    "weight": 1
+   },
+   {
+    "encounter": "ch10_fen_leeches",
+    "weight": 1
+   }
+  ],
+  "min_m": 30,
+  "max_m": 50,
+  "when": {
+   "set": [
+    "ch10_started"
+   ]
+  },
+  "seed": 10
+ }
 }
