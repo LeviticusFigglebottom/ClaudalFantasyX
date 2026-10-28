@@ -6689,6 +6689,39 @@
             -1,
             0
           ]
+        },
+        {
+          "color": "#9DB4D9",
+          "color_end": "#050A14",
+          "swatches": [
+            "moon_blue",
+            "night_sky"
+          ],
+          "amount": 10,
+          "lifetime_s": 1.0,
+          "explosiveness": 0.4,
+          "velocity_m_s": [
+            0.2,
+            0.5
+          ],
+          "spread_deg": 30,
+          "gravity": [
+            0,
+            -1.4,
+            0
+          ],
+          "size_m": [
+            0.16,
+            0.32
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.35,
+          "turbulence": 0.2,
+          "direction": [
+            0,
+            -1,
+            0
+          ]
         }
       ],
       "note": "A Doom count falls: a little dark settling."
@@ -6723,7 +6756,40 @@
             0.32
           ],
           "energy": 1.4,
-          "emission_radius_m": 0.35,
+          "emission_radius_m": 0.5,
+          "turbulence": 0.2,
+          "direction": [
+            0,
+            -1,
+            0
+          ]
+        },
+        {
+          "color": "#9DB4D9",
+          "color_end": "#3E4A57",
+          "swatches": [
+            "moon_blue",
+            "storm_slate"
+          ],
+          "amount": 26,
+          "lifetime_s": 1.0,
+          "explosiveness": 0.4,
+          "velocity_m_s": [
+            0.2,
+            0.5
+          ],
+          "spread_deg": 30,
+          "gravity": [
+            0,
+            -1.4,
+            0
+          ],
+          "size_m": [
+            0.16,
+            0.32
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.5,
           "turbulence": 0.2,
           "direction": [
             0,
@@ -6787,7 +6853,7 @@
             "salt_glass",
             "cold_blue_stone"
           ],
-          "amount": 30,
+          "amount": 48,
           "lifetime_s": 0.9,
           "explosiveness": 0.85,
           "velocity_m_s": [
@@ -6805,7 +6871,7 @@
             0.3
           ],
           "energy": 1.4,
-          "emission_radius_m": 0.75,
+          "emission_radius_m": 1.05,
           "turbulence": 0.0,
           "direction": [
             0,

@@ -269,12 +269,16 @@ TICKS = {
                                  "Poison takes its turn's toll: sick green welling out of the fighter.")),
     "regen": ("tick_regen", fx("chest", rise("turquoise_shallow", "foam_white", 24, 0.9),
                                "Regen mends a little: shallow water lifting off (water, not glimmer).")),
-    "doom_tick": ("tick_doom", fx("head", sink("night_sky", "abyss_navy", 20), "A Doom count falls: a little dark settling.")),
-    "doom": ("tick_doom_fall", fx("chest", sink("abyss_navy", "night_sky", 64), "Doom comes due: the dark comes down whole.")),
+    # The dark alone vanished on the night terrace (self-render): cold pale motes fall with it, so it reads on any arena.
+    "doom_tick": ("tick_doom", fx("head", sink("night_sky", "abyss_navy", 20) + sink("moon_blue", "night_sky", 10),
+                                  "A Doom count falls: a little dark settling.")),
+    "doom": ("tick_doom_fall", fx("chest", sink("abyss_navy", "night_sky", 64, 0.5) + sink("moon_blue", "storm_slate", 26, 0.5),
+                                  "Doom comes due: the dark comes down whole.")),
     "sleep": ("tick_sleep", fx("head", [layer("moon_blue", "starlight", 14, 1.4, 0.2, (0.1, 0.3), 30, (0, 0.25, 0),
                                               (0.08, 0.16), radius=0.25, turb=0.2, energy=1.3)],
                                "A turn lost to Sleep: slow pale motes drifting over the sleeper.")),
-    "stop": ("tick_stop", fx("feet", ring("salt_glass", "cold_blue_stone", 30), "A turn lost to Stop: a still ring of salt-glass.")),
+    "stop": ("tick_stop", fx("feet", ring("salt_glass", "cold_blue_stone", 48, 1.05),
+                             "A turn lost to Stop: a still ring of salt-glass.")),
 }
 TICK_SOUNDS = {"tick_poison": "status_apply", "tick_regen": "heal", "tick_doom": "status_apply",
                "tick_doom_fall": "ko_release", "tick_sleep": "status_apply", "tick_stop": "status_apply"}
