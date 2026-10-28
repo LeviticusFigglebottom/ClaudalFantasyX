@@ -589,6 +589,33 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
+- **MERGE-READY @ (this push): Haluna's night-lamp flames are the kit's flame; the Prologue walked; the inventory
+  re-run.**
+  - **The placeholder audit** (`tools/placeholder_audit.py`, re-run on this tree; the inventory file restored) puts
+    env-art's open rows at 11. Of those:
+    - **Fixed here:** the wake's "38 SphereMesh under Dressing/Dresser". These were `HalunaDresser`'s night-lamp
+      flames. They are now the kit's `lamp_flame` teardrop at the lamp's radius (a sphere only if the kit lacks the
+      piece). This also applies to Haluna's own night.
+    - **Already fixed** since the last trial merge: Oruvel's LowHull, the shrine's ChamberPassage and the derelict's
+      flames.
+    - **Not env-art's to finish:**
+      - Prologue `City/Vigils`: one capsule, the vigil without a hero body (Pell). Characters/integration-qa, as their
+        Ch9 Pell row.
+      - Haluna `NPCs/*` (11): the NPC stand-in bodies, plus Reed's broom, Neme's bag and Osu's bowl. These are in
+        slice-polish's `haluna.tscn`. The bodies are characters' and creatures' villager work.
+      - `banyan_placeholder` / `windbreak_placeholder`: the real pieces `banyan_hero` / `windbreak_tree` exist. The
+        rename waits on M3-ENV-750 (slice-polish), because `haluna.tscn`'s collision rules key on the old names.
+      - `reefball_drop_proxy` / `tb_drop_proxy`: PC GPU's agreed drop volume (M3-RND-26, open). Never shown in play.
+        Rename only with M3-RND-26.
+  - **The Prologue walk-through:** 9 player-eye frames through Iskarra: the arrival line, the plaza, the vigil line.
+    The final city reads in colour (cream, gold, blue bands), with no grey left. One frame looked from inside a
+    tower wall, an artefact of my path. The causeway and the Shell Shrine were walked and viewed in batch 1, and
+    both were fine.
+  - **SELF-RENDERED:**
+    - `haluna_h10_dock_night` drifts on purpose (the H10 reframe and the flames).
+    - `ch04_haluna_wake_lane` and `ch04_haluna_wake_feast` are new (no baseline); viewed. The lamp pools are warm and
+      no spheres show.
+  - **Gates:** Godot `--filter=haluna` 65 run, 0 failed; gdlint/gdformat clean.
 - **MERGE-READY @ 216c8ee5c: the touchable props in Haluna (the Lead's item 3), and the walk-through findings.**
   - **Haluna's shops were the gap:**
     - The `haluna_forge` smith stood by a boat on the beach with no forge.
