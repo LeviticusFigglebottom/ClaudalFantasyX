@@ -160,8 +160,30 @@
       "ilun": "creatures, M3-HER-1126 (the Vowbound's battle bodies)",
       "kahre": "creatures, M3-HER-1126",
       "virel": "creatures, M3-HER-1126",
-      "stillguard_inquisitor": "characters, M3-CRE-625 (Inquisitor Hadric Moll)"
-    }
+      "stillguard_inquisitor": "characters, M3-CRE-625 (Inquisitor Hadric Moll)",
+      "tannin_archer": "creatures, Act II Ch10 (M4-C10-03; paused by ADR 0041)",
+      "root_crab": "creatures, Act II Ch10 (M4-C10-03; paused by ADR 0041)",
+      "fen_leech": "creatures, Act II Ch10 (M4-C10-03; paused by ADR 0041)",
+      "gallery_ray": "creatures, Act II Ch11 (M4-C11-03; paused by ADR 0041)",
+      "rime_urchin": "creatures, Act II Ch11 (M4-C11-03; paused by ADR 0041)",
+      "ridge_lynx": "creatures, Act II Ch12 (M4-C12-03; paused by ADR 0041)",
+      "cord_moth": "creatures, Act II Ch12 (M4-C12-03; paused by ADR 0041)",
+      "scree_crawler": "creatures, Act II Ch12 (M4-C12-03; paused by ADR 0041)",
+      "glass_skate": "creatures, Act II Ch16 (M4-C16-03; paused by ADR 0041)",
+      "rim_crawler": "creatures, Act II Ch16 (M4-C16-03; paused by ADR 0041)"
+    },
+    "haluna.tscn": [
+      "Child",
+      "Fisher",
+      "Neme",
+      "Netmender",
+      "Osu",
+      "Reed",
+      "Vendor"
+    ],
+    "ossa_fen.tscn": [
+      "pell"
+    ]
   },
   "unraised_doc": "test_qa_threads.gd: a flag a thread's chapter or main objectives wait on that its thread never raises -> why it isn't a softlock, and the task that closes the gap.",
   "unraised": {

@@ -11,8 +11,8 @@ extends Node
 ## floor (the player excluded) sets its feet, but only a floor within step_m of the height the leader
 ## walked at that trail point (a rail above, a gap at a pier's edge below is not his floor; his height
 ## stands), and the feet ease toward it at vertical_mps, so a stair or a slope never pops. After a
-## teleport of the leader, a long gap (catch_up_m) or a hide, the trail is laid straight behind the
-## leader and the followers are put on it at once.
+## teleport of the leader (a step over teleport_m, or faster than jump_mps), a long gap (catch_up_m) or a hide, the
+## trail is laid straight behind the leader and the followers are put on it at once.
 ##
 ## They hide while a cutscene that holds the player plays (CutsceneSequencer.is_playing() with
 ## hold_player), while the zone's CutsceneStage shows the same hero as a visible Actors/<id>, and
@@ -22,8 +22,11 @@ extends Node
 ## after Cutscene A the stage Asha and Toma stood still inside Rhen and Asha's follower stayed hidden). A later held
 ## cutscene that cues one of them shows it again. Field staging that no cutscene left by the leader (Asha waiting at
 ## Ch8's stair-head) stays as the zone set it. The party is re-read every frame, so a join (PartyJoins on
-## EventBus.flag_changed, or a zone writing party_ids) adds a follower at once. Tuning:
-## game/data/hero_motion/hero_motion.json "field.followers". Added by HeroFieldActor.attach.
+## EventBus.flag_changed, or a zone writing party_ids) adds a follower at once. A follower never stands in the line of
+## sight from the field camera to the leader: a trail point within sight_clear_m of that line, between the camera and
+## him, moves aside off it (the side it is on, kept until it is clear, the other side if a wall is there), so a camera
+## trailing him from behind never shows a follower covering him (the big14 playtest: Asha hid Rhen at the start).
+## Tuning: game/data/hero_motion/hero_motion.json "field.followers". Added by HeroFieldActor.attach.
 
 const NAME := &"HeroParty"
 ## Nearer than this to the speaker (flat metres), a follower keeps its heading: the direction would be noise.
@@ -53,6 +56,9 @@ var _handed: Array[Node3D] = []
 ## Sequencers whose signals this node listens to, by instance id; and per sequencer the actor ids its scene cued.
 var _watched: Dictionary = {}
 var _cued: Dictionary = {}
+## Per follower, the side (+1 or -1 along the sight line's right) it stepped to off the camera's line to the leader;
+## 0 while its trail point is clear of the line.
+var _sight_side: Array[int] = []
 ## Set when the leader talks to someone (FieldController.interacted): stopped followers turn to face `_face_at`
 ## until the leader walks on.
 var _facing := false
@@ -112,8 +118,12 @@ func advance(delta: float) -> void:
 		_started = true
 		_last_leader = lead
 		catch_up()
-	var jumped := lead.distance_to(_last_leader) > (leader.loco.teleport_m if leader != null else 0.0)
 	var leader_speed := Vector2(lead.x - _last_leader.x, lead.z - _last_leader.z).length() / maxf(delta, 1e-6)
+	# a step no walk makes (a place_at a few metres off, under the body's own teleport_m) is a jump too
+	var jumped := (
+		lead.distance_to(_last_leader) > (leader.loco.teleport_m if leader != null else 0.0)
+		or leader_speed > float(_cfg.get("jump_mps", INF))
+	)
 	var travel := Vector3(lead.x - _last_leader.x, 0.0, lead.z - _last_leader.z)
 	_lead_dir = travel.normalized() if leader_speed > float(_cfg.get("face_release_mps", 0.0)) else Vector3.ZERO
 	if leader_speed > float(_cfg.get("face_release_mps", 0.0)):
@@ -135,7 +145,7 @@ func advance(delta: float) -> void:
 	_record(lead)
 	var catch := float(_cfg.get("catch_up_m", 0.0))
 	for i in followers.size():
-		var target := trail_point((i + 1) * float(_cfg.get("spacing_m", 0.0)))
+		var target := follow_point(i)
 		if (
 			Vector2(target.x - followers[i].global_position.x, target.z - followers[i].global_position.z).length()
 			> catch
@@ -327,6 +337,7 @@ func catch_up() -> void:
 			break
 	_lay_trail(lead, best_dir, sample, count)
 	_last_leader = lead
+	_sight_side.clear()  # a new layout picks its sides afresh
 	var placed: Array[Vector3] = [lead]
 	for i in followers.size():
 		var at := _formation_spot(i, placed)
@@ -349,7 +360,7 @@ func _formation_spot(i: int, placed: Array[Vector3]) -> Vector3:
 	var lead := controller.global_position
 	var steps := int(_cfg.get("spawn_search_steps", 0))
 	for k in steps + 1:
-		var at := trail_point((i + 1) * spacing + k * gap)
+		var at := sight_clear(i, trail_point((i + 1) * spacing + k * gap))
 		if _clear_of(at, placed, gap) and not blocked(at):
 			return at
 	for ring in range(1, steps + 1):
@@ -434,6 +445,48 @@ func _record(lead: Vector3) -> void:
 			trail = trail.slice(trail.size() - cap)
 
 
+## Where follower `i` heads: its trail point, moved off the camera's line of sight to the leader (sight_clear).
+func follow_point(i: int) -> Vector3:
+	return sight_clear(i, trail_point((i + 1) * float(_cfg.get("spacing_m", 0.0))))
+
+
+## `at`, or, when it lies between the field camera and the leader (at least sight_clear_m short of him) within
+## sight_clear_m of the line between them (flat), `at` moved square to that line until it is sight_clear_m off it: to
+## the side follower `i` took since the last catch_up, else the side `at` is on; the other side when a wall stands
+## there or it would come nearer the leader than min_gap_m. Unchanged with no camera, or when neither side will do.
+func sight_clear(i: int, at: Vector3) -> Vector3:
+	while _sight_side.size() <= i:
+		_sight_side.append(0)
+	var clear := float(_cfg.get("sight_clear_m", 0.0))
+	var cam := controller.get_viewport().get_camera_3d() if controller.is_inside_tree() else null
+	if clear <= 0.0 or cam == null:
+		_sight_side[i] = 0
+		return at
+	var lead := controller.global_position
+	var line := Vector3(lead.x - cam.global_position.x, 0.0, lead.z - cam.global_position.z)
+	var length := line.length()
+	if length < 1e-3:
+		_sight_side[i] = 0
+		return at
+	var dir := line / length
+	var rel := Vector3(at.x - cam.global_position.x, 0.0, at.z - cam.global_position.z)
+	var along := rel.dot(dir)
+	var right := dir.cross(Vector3.UP)
+	var off := rel.dot(right)
+	if along <= 0.0 or along >= length - clear or absf(off) >= clear:  # level with him, it's beside him: no cover
+		_sight_side[i] = 0
+		return at
+	if _sight_side[i] == 0:
+		_sight_side[i] = 1 if off >= 0.0 else -1
+	var gap := float(_cfg.get("min_gap_m", 0.0))
+	for side: int in [_sight_side[i], -_sight_side[i]]:
+		var moved := at + right * (side * clear - off)
+		if Vector2(moved.x - lead.x, moved.z - lead.z).length() >= gap and not blocked(moved):
+			_sight_side[i] = side
+			return moved
+	return at
+
+
 ## The point `dist` metres of trail behind the leader (along the leader, then the crumbs, newest
 ## first); past the oldest crumb it extends the last segment.
 func trail_point(dist: float) -> Vector3:
@@ -456,7 +509,7 @@ func trail_point(dist: float) -> Vector3:
 
 func _move(i: int, leader_speed: float, delta: float) -> void:
 	var f := followers[i]
-	var target := trail_point((i + 1) * float(_cfg.get("spacing_m", 0.0)))
+	var target := follow_point(i)
 	var gap := Vector3(target.x - f.global_position.x, 0.0, target.z - f.global_position.z)
 	var dist := gap.length()
 	var want := Vector3.ZERO
