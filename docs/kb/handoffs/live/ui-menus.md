@@ -296,7 +296,7 @@ RENDER-REQUEST @ 51f1a58d: portraits for flue_moth, oil_slug, spawn_polyp, wall_
     - **Noted for my audit:** in `lattice_overview`, the heroes' small initials crowd their name tags (R R R next to "Rhen"). This predates the render.
   - **`lead/gate-render-ui-da7891c`:** approved earlier (892334f2).
   - **Render requests consolidated (TRACK-RULES: one open per track).** The requests @ 50182f0e, 469851f6, 4d32a621 and 51f1a58d are superseded by the single request below.
-RENDER-REQUEST @ a8558176: battle_ch08_stair_hold, kite_map, field_menu_kite, field_menu_map_keth_pass, field_menu_map_lowlight, field_menu_map_ansedra, field_menu_codex, lattice_overview, plus the bestiary portraits for flue_moth, oil_slug, spawn_polyp and wall_polyp (tools/portraits/render.sh). Why:
+SUPERSEDED (self-rendered below, TRACK-RULES 2026-10-28 01:00): RENDER-REQUEST @ a8558176: battle_ch08_stair_hold, kite_map, field_menu_kite, field_menu_map_keth_pass, field_menu_map_lowlight, field_menu_map_ansedra, field_menu_codex, lattice_overview, plus the bestiary portraits for flue_moth, oil_slug, spawn_polyp and wall_polyp (tools/portraits/render.sh). Why:
 - the stair meter clear of the tutorial on the wall_head_storm arena;
 - the Kite's map, and the field menu a row taller with it;
 - three Act II maps;
@@ -318,3 +318,19 @@ RENDER-REQUEST @ a8558176: battle_ch08_stair_hold, kite_map, field_menu_kite, fi
     - `test_zone_map_pois`, `test_ch08_flow`, codex, kite and loc: OK.
     - The tools suite: 1302 tests. The only failure is `test_screenshots`, the baselines waiting on the open render request.
   - **In progress:** a full Godot suite on the merged tree.
+- 2026-10-28 02:10, **the Lead's 01:00 message (render your own):**
+  - **The full Godot suite on the merged tree (e010d0f1): 3026 tests, 3 failing cases.**
+    - `test_creature_portraits` was ui's: the Act II creatures were in the portrait manifest without their PNGs. Now **fixed:** 16 Act II creature and boss portraits baked with `tools/portraits/render.sh`, viewed, and given PROVENANCE rows. The four dark ones are relit for M3-CRE-618.
+    - `test_hero_field_snaps` (the Bell Galleries, Coilspire, the Drowned Choir) is not ui's: hero-integration and act1-chapters.
+    - `test_qa_capsules` (Pell as a capsule in Ossa Fen) is not ui's: act1-chapters and character.
+  - **The 5317c0e request is superseded.** Every one of its 25 drifts has a newer baseline the Lead approved since. a8558176's request is superseded by the renders below.
+SELF-RENDERED @ 5f9c71fd: battle_ch08_stair_hold, kite_map, field_menu_kite, field_menu_map_keth_pass, field_menu_map_lowlight, field_menu_map_ansedra, field_menu_codex, lattice_overview. What I saw:
+- battle_ch08_stair_hold (drift): the meter clears the two-line tutorial on the wall_head_storm arena.
+- field_menu_codex (drift): "9 of 50"; Places "3 of 27".
+- lattice_overview: pass.
+- field_menu_kite (new): the Kite row after Map, and all 13 rows show.
+- The three Act II maps (new) read: Keth Pass's landings and flights, Lowlight's waterline over the shaft, Ansedra's domes on the lagoon.
+- **Fixed after viewing:** every map said "Haluna's lanes are yours to walk". OBJ_NONE is now general; Haluna keeps its line through `idle_keys`.
+- **kite_map (new), fixed after viewing:** the grid's 1 px lines vanished when scaled down; the labels sat off-centre; the gems were pushed into the next square; the line read "Tamsule, in Tamsule". The panel now grows so ten rows show.
+SELF-RENDERED @ e2852192: kite_map, field_menu_map_keth_pass, field_menu_map_lowlight, field_menu_map_ansedra. Re-rendered after the fixes: the grid whole and the labels centred, the idle line general. Still to land: the baselines, at the Lead's gate. No open render request.
+
