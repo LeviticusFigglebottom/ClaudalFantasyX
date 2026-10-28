@@ -37,12 +37,15 @@ var default_fov := 0.0
 ## The shots framing the current sequence: {"lead": id, "contact": id}; "" where it stays on the default
 ## (none in the data, or a shot that failed the safe frame).
 var shot_ids: Dictionary = {}
+## Camera moments played (shot ids, in order; tests and tools). M3-BPR-426.
+var moments_played: Array[StringName] = []
 
 var _choreo: BattleChoreo
 var _ctl: BattleController
 var _plan: Dictionary = {}
 var _lead: Dictionary = {}
 var _contact: Dictionary = {}
+var _moment: Dictionary = {}
 var _in_end := 0.0
 var _contact_start := 0.0
 var _contact_end := 0.0
@@ -99,6 +102,47 @@ func _fit_rest_to_the_fight() -> void:
 		return
 
 
+## M3-BPR-426: a camera moment outside a sequence (a boss's phase change, its fall): `pose` ({pos, look, fov}, the
+## camera's parent space), in over in_sec from the rest frame, held hold_sec, home over out_sec; `tag` names it in
+## moments_played. BattleChoreo.busy_sec waits for it, so the next turn's menu finds the camera home. None under
+## reduced motion or skipped animations, or for an empty pose; a sequence that starts takes the camera over. Returns
+## whether it plays.
+func play_moment(tag: StringName, pose: Dictionary, in_sec: float, hold_sec: float, out_sec: float) -> bool:
+	_moment = {}
+	if camera == null or still() or pose.is_empty():
+		return false
+	_moment = {"pose": pose, "in": in_sec, "hold": hold_sec, "out": out_sec, "t": 0.0}
+	moments_played.append(tag)
+	return true
+
+
+## Seconds (battle speed applied by the caller) the camera moment still needs; 0 when none plays.
+func moment_left() -> float:
+	if _moment.is_empty():
+		return 0.0
+	return maxf(float(_moment["in"]) + float(_moment["hold"]) + float(_moment["out"]) - float(_moment["t"]), 0.0)
+
+
+## Steps the camera moment (BattleChoreo.advance, while no sequence plays).
+func advance_moment(delta: float) -> void:
+	if _moment.is_empty():
+		return
+	_moment["t"] = float(_moment["t"]) + delta
+	var t := float(_moment["t"])
+	var total := float(_moment["in"]) + float(_moment["hold"]) + float(_moment["out"])
+	if t >= total:
+		_moment = {}
+		rest()
+		return
+	var home := _default_pose()
+	var w_in := _weight(t, 0.0, float(_moment["in"]))
+	var w_out := _weight(t, total - float(_moment["out"]), total)
+	var pose := _mix(_mix(home, _moment["pose"] as Dictionary, w_in), home, w_out)
+	var pos: Vector3 = pose["pos"]
+	camera.transform = Transform3D(Basis.looking_at((pose["look"] as Vector3) - pos, Vector3.UP), pos)
+	camera.fov = float(pose["fov"])
+
+
 ## True when the camera keeps to the default whatever plays (reduced motion, skip animations).
 func still() -> bool:
 	return _choreo == null or _choreo.reduced_motion or _choreo.skip
@@ -144,6 +188,7 @@ func _on_posed(t: float) -> void:
 	var plan := _choreo.current()
 	if camera == null or plan.is_empty():
 		return
+	_moment = {}  # a sequence takes the camera over
 	if still():
 		rest()
 		return

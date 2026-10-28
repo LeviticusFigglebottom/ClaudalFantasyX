@@ -254,14 +254,15 @@ func _screen_busy() -> bool:
 
 
 ## The boss's hero shot (M3-BPR-423), else the row's shot fitted to it and checked against the safe frame (its feet
-## and head); {} keeps the default. A row's hero false (or fit false) skips the hero shot.
-func _frame_boss() -> void:
+## and head); {} keeps the default. A row's hero false (or fit false) skips the hero shot. `fallen_ok` frames a
+## boss that has just fallen (BattleBossCamera's fall moment).
+func _frame_boss(fallen_ok: bool = false) -> void:
 	_pose = {}
 	shot_id = ""
 	boss_id = &""
 	var base := str(row.get("enemy", ""))
 	for e in _engine.enemies:
-		if String(e.id).get_slice("#", 0) == base and e.is_alive():
+		if String(e.id).get_slice("#", 0) == base and (e.is_alive() or fallen_ok):  # M3-BPR-426: a fall's moment
 			boss_id = e.id
 			break
 	var director := _choreo.camera

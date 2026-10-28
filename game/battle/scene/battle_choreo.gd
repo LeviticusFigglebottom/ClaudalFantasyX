@@ -134,6 +134,7 @@ static func attached(controller: BattleController, engine: BattleEngine) -> Batt
 	c.impact = BattleImpact.attached(c, controller, engine)  # M3-BPR-401: battle feel
 	BattleBossIntro.attached(c, controller, engine)  # M3-BPR-02: a boss's intro at the first turn
 	BattlePhaseLooks.attached(c, controller, engine)  # M3-BPR-406: an untargetable phase shows it
+	BattleBossCamera.attached(c, engine)  # M3-BPR-426: a boss's phase change and fall get a shot
 	return c
 
 
@@ -249,6 +250,7 @@ func busy_sec() -> float:
 	var left := 0.0
 	for e: Dictionary in _entering.values() + _leaving + _accents.values():
 		left = maxf(left, float((e["spec"] as Dictionary).get("sec", 0.0)) - float(e["t"]))
+	left = maxf(left, camera.moment_left() if camera != null else 0.0)  # M3-BPR-426: a boss's camera moment
 	return maxf(left / speed, summon.remaining_sec() if summon != null else 0.0)
 
 
@@ -387,6 +389,8 @@ func _start(result: ActionResult, plan: Dictionary) -> void:
 ## Moves the current sequence (and any accent, exit or entrance) on by `delta` real seconds.
 func advance(delta: float) -> void:
 	_advance_accents(delta)
+	if _plan.is_empty() and camera != null:
+		camera.advance_moment(delta * speed)
 	_advance_leaving(delta)
 	_advance_entering(delta)
 	if _plan.is_empty():
