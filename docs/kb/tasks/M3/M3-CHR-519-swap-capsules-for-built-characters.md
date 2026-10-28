@@ -23,5 +23,17 @@ villager scenes) in place of each capsule, with their field idle.
 
 ## Notes
 - Filed 2026-10-27 by the characters track. Not ours to edit (the M2 slice owns game/levels/prologue, ch02, ch03); the Lead routes it.
+- 2026-10-28, M3-CHR-508: the Stillguard soldiers are built, six variants `stillguard_a`..`stillguard_f`, each at
+  `assets/characters/stillguard_<v>/stillguard_<v>.glb` (+ `_lod1.glb`, `materials/`, `anim/stillguard_<v>_clips.tres`
+  with idle, walk, stand_watch_seaward, shield_up, level_spear). Stage wrappers to copy (materials and the field idle
+  already set): `game/levels/_tests/characters/stillguard/stillguard_{a,b,c,d}_stage.tscn` (a, b, c map 1:1 to the capsules), and
+  `stillguard_lineup.tscn` for all six. Capsules they replace (actor id = variant id, so the dialogue's
+  `@anim stillguard_a level_spear` cues resolve): `game/levels/ch06/brine_shoals/brine_shoals_layout.json` actors
+  `stillguard_a`, `stillguard_b`, `stillguard_c`; `game/levels/ch08/corrow/corrow_layout.json` actors `stillguard_a`,
+  `stillguard_b`; `game/levels/ch09/corrow_night/corrow_night_layout.json` actor `stillguard` (any variant, e.g. d).
+  The other cues on these actors (ch06 `walk_torch`, `hold_arm`, `kneel_palms_flat`, `let_go`; ch08 `shake_head`) are
+  not in the M3-CHR-508 clip set: they need a `role: character` clip request.
+  The scenes that build those capsules (act1_final_inventory.md): `game/levels/ch06/brine_shoals/brine_shoals.tscn`
+  (a, b, c) and `game/levels/ch08/corrow/corrow.tscn` (a, b).
 
 ## Review log
