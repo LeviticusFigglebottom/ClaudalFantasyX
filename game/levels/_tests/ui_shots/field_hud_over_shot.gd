@@ -13,8 +13,9 @@ extends Node3D
 @export var location: StringName = &""
 ## Scratch story flags that pick the objective line.
 @export var flags: Array[StringName] = []
-## Where the scratch interactable stands, in the camera's frame (metres: right, up, ahead).
-@export var spot := Vector3(0.6, -1.5, 9.0)
+## Where the scratch interactable stands, in the camera's frame (metres: right, up, ahead): left of
+## centre, so its plate does not cover the destination cue over Haluna's lane or Corrow's strand.
+@export var spot := Vector3(-2.4, -1.5, 9.0)
 
 var objective: ObjectiveHud
 var title: AreaTitleCard
