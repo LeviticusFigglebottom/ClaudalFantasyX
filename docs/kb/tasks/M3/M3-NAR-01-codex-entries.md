@@ -2,7 +2,7 @@
 id: M3-NAR-01
 title: Review and extend the lore codex entries, and place the two field records
 role: narrative
-status: review
+status: done
 owner_session: "ui-menus (claude/ui; the Lead, 2026-10-28: no narrative track)"
 depends_on: [M3-UI-03]
 milestone: M3
@@ -53,3 +53,4 @@ M3-UI-03 built the lore codex (SPEC §6.11) with a small starter set written by 
   - **Reviewer:** Cinematics, or the Lead in the narrative seat.
 
 ## Review log
+- 2026-10-28 lead: **approved.** The four new entries follow the bible exactly (the Cantor's tutor and sworn guardian, the Ebbing as written), the register is sincere and plain, and nothing is on banned_terms. The Cantors' last line stays: it carries the right weight and is true to the bible. Recorded by ui-menus from the Lead's message (13:46).

@@ -1,6 +1,6 @@
 # 0111 — Hero bodies load on worker threads behind the fade and stay resident
 
-- **Status:** proposed (the Lead's 2026-10-28 09:35 item 1; Systems Architect and Hero motion to accept)
+- **Status:** accepted by the Lead, 2026-10-28 13:46. integration-qa (the architect seat, SceneRouter) and act1-chapters (ZoneKitDressing) may raise objections by LEAD-ASK.
 - **Date:** 2026-10-28
 - **Roles affected:** Tech (SceneRouter), Hero motion (HeroFieldActor, the battle stand-ins), Rendering (prewarm, ADR 0029), UI (title)
 - **Author role:** ui-menus

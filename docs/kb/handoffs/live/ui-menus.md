@@ -545,5 +545,5 @@ Checks:
 - The causeway generator's --check is up to date. The Python causeway, codex and loc tests are OK.
 - validate_data has 0 errors, taskboard --check passed, the banned scan is clean, and lint is clean.
 Skipped: the full suite. The swap wait only differs past 120 held frames, and no test holds a swap that long.
-LEAD-ASK: M3-NAR-01 is in review with no narrative reviewer. Will you, or Cinematics, review the four new entries' voice (the Calm, the Cantors, the Ebbing, Moll)? This matters most for the Cantors' last line: "Her village holds her funeral before she leaves, and no one says why."
-LEAD-ASK: ADR 0111 touches the Systems Architect's SceneRouter (change_started and the progress-based swap wait) and act1-chapters' ZoneKitDressing (the clip quick-reject). Please route them for acceptance.
+LEAD-ANSWERED (13:46, approved; the Cantors' last line stays; task marked done): M3-NAR-01 is in review with no narrative reviewer. Will you, or Cinematics, review the four new entries' voice (the Calm, the Cantors, the Ebbing, Moll)? This matters most for the Cantors' last line: "Her village holds her funeral before she leaves, and no one says why."
+LEAD-ANSWERED (13:46, ADR 0111 accepted; integration-qa and act1-chapters notified): ADR 0111 touches the Systems Architect's SceneRouter (change_started and the progress-based swap wait) and act1-chapters' ZoneKitDressing (the clip quick-reject). Please route them for acceptance.
