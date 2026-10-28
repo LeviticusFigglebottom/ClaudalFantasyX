@@ -196,3 +196,20 @@ CreatureActor and the validator are theirs too (kit or tool changes go to them a
   the hook contract pinned. What remains is other tracks': M3-CRB-009 (battle-presentation), M3-CRB-010 (creatures),
   the portraits (ui-menus), Moll (characters, M3-CHR-507), the Ch5 arena edge (env-art). Next for me: merge the
   integration branch when the Lead lands creatures + creatures-b, and check the intro clips once M3-CRB-009 lands.
+- **Lead's 04:44 message, answered:**
+  1. **Ilun is not a capsule on big14.** Rendered battle_vowbound_out and battle_choreo_vowbound_rise on a worktree
+     of lead/gate-big14 @ 8707ff90 (fresh import): both show the manta model (net wings, plumes, float). His
+     call/dismiss/idle clips are `rise`, `dismiss`, `idle` (plus ready, attack, cast, hit, defend, ko, victory, special,
+     release). A capsule in your view must come from older baselines (big13's) or a tree without claude/creatures.
+     Polish 2 (b4ee2492: Ilun's net reads further out on the near wing) is after big14's cut.
+     **Seen there, for ui:** Ilun's turn-order and party-panel icon is a blank tile (no portrait yet).
+  2. **Every Act I boss and Vowbound on my rows** (hullgnaw, drownbell, bottle_hermit, spar_wraith, cinder_matron,
+     undertows_reach, ilun, kahre, virel) is at final quality; nothing else is on my inventory.
+  3. **Arena pass at the default battle camera, done** (scratch fixture, big14 tree, chapter parties, real arenas):
+     hullgnaw, drownbell and bottle_hermit read whole and well scaled against the party; idle motion was checked
+     clip by clip in each pass (no new idle needed). **The Spar-wraith (mostly out of frame), the Matron (hood
+     under the phase label) and the Reach (fills the camera)** are cropped by the stage, not the models: a lone boss
+     sits on EnemySlots/Slot0 (-2.4, 0, 0.9), close and to the left. **Filed M3-CRB-011** (combat /
+     battle-presentation): a boss mark further back and central, or the intro's bounds fit applied to the home
+     camera. Not done model-side on purpose: moving a model inside its scene would pull it off its ring and VFX
+     anchors. I re-render the six when it lands.
