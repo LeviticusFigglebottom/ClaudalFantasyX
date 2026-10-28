@@ -710,6 +710,28 @@ Ch4–Ch9 onward. `m2-slice.md` beside this file is the history up to the 2026-1
   (`CutsceneVfx`). M2-FP-01's placeholder `CutsceneMotes` is deleted. Checks: cutscene_sequencer 17, fp_ 30,
   prologue 8, haluna 65, first_verse 3, _thread 40, all 0 failed.
 - **O07's still** holds Sadi's line 003 again (the hold was lost in a merge).
+- **The glimmer, after viewing:**
+  - **Fields followed the zone's `hymn_glimmer.a` (0 where nobody writes it), so they were invisible.** A cue's field
+    now uses glimmer.json's per-mode energy and stands at its row's `center_y_m` (1.1 m on a body).
+  - **Uncounted fields take the row's `amount_multiplier`.** S09's released light filled the frame at 450 motes;
+    it is now a sparse rising scatter, within haluna.md's 10%.
+  - **S08's bound Ilun ends with its shot** (`end_after_sec` 4.5); it had bled into S09 as a cyan streak.
+  - O07 now aims at the carved name-board, which fills the insert.
+- **SELF-RENDERED (viewed):** slice_verse_threshold (Asha in the doorway with her released light),
+  slice_verse_recognition, ch01_o07_name_board, ch01_bell_room on env-art's dressing. slice_beach_h06_toma holds
+  line 017, before its held-motes cue, as authored.
+- **MERGE-READY @ HEAD** (everything since 743b94bf):
+  - the cutscene VFX at final quality;
+  - Oruvel and the Underway on env-art's dressings, with the cutscene side re-staged (M3-ENV-739/740/742 to review,
+    M3-ENV-751 done);
+  - M3-ENV-103/104/105 and M3-CHR-102 filed;
+  - the beach POI;
+  - the footsteps test.
+  - **Checks:** ch01 20, underway 9, zone_map 21, slice_primitives 1, cutscene_sequencer 17, fp_ 30, prologue 8,
+    haluna 65, first_verse 3, _thread 40, cutscene 84, all 0 failed apart from the known Ch4 walks red. Tools:
+    test_zone_map_pois' Ch1 rows, test_ch01_zone_copies, test_screenshots' pending logic; validate_data 0/0;
+    taskboard --check; gdlint and gdformat on the changed scripts.
+  - **Skipped:** coverage and Blender (nothing they cover).
 - **SELF-RENDERED on env-art's dressings (viewed):**
   - **read right:** ch01_scale_hull (across the counter), ch01_kell_stall (before her lamp racks), ch01_o10_gull (the
     carved gull fills the insert), ch01_oruvel_dressed, ch01_net_pen, ch01_underway_gallery;
