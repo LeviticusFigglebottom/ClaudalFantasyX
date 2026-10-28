@@ -102,6 +102,22 @@ RENDER-REQUEST @ 60b62678: battle_arena_wall_head,battle_boss_intro_reach; why: 
     in 15 sheets, at 0.12 s and again at 0.5 s for the slow ones. Each is distinct and on its target. Known limit: the
     palest (Tidewash Salve, Climb Up) read softly on the noon beach.
 - **Merged the integration branch** at 8bb52fec: clean, re-imported, validate_data 0/0.
+- SELF-RENDERED @ 8bb52fec (integration merged, M3-BPR-420 VFX): 15 shots, viewed side by side with their baselines.
+  - battle_choreo_melee, _cast and _lamp_dive pass (the cast freezes before contact). drownbell_flood passes (0.005).
+  - **Drift, all intended:**
+    - battle_choreo_support (0.011): Mend's teal motes rise around Asha;
+    - battle_choreo_hit (0.013): Undertow Cut's teal spray, faint;
+    - battle_choreo_ko (0.018): the gull's KO dust now on the gull, not on the sand under it (the hover fix);
+    - battle_choreo_summon (0.009): bound motes over Ilun;
+    - battle_choreo_toll (0.017): a light dust at Toma;
+    - the reach, wall_head and stair_hold drifts as before.
+  - The three new battle_ch08_* shots are as viewed above. Nothing reads wrong. Baselines are the Lead's gate's.
+- **Vowbound summons (the Lead's list):** a call, a dismissal and a fall now play their own VFX in bound light
+  (`vowbound_call`, `vowbound_dismiss`, `vowbound_fell`; never rising gold). The sounds are audio's own Vowbound rows.
+  Tested (6db94e85).
+- **Boss intros (the Lead's list):** every scripted Act I boss fight has one: Hullgnaw, the Bottle Hermit, the
+  Spar-Wraith, the Cinder Matron, the Inquisitor, the Drownbell and the Reach. ch04_derelict_glass is a random roll
+  that reuses the Hermit as an ordinary foe (no intro, by design).
 
 ### 2026-10-28 00:3x: the Lead's 00:13 list
 - **Ch10–12 fights:** act1-chapters' a4410fd9 / d0ec6878 has the Act II field greyboxes and flows, but no enemies.json
