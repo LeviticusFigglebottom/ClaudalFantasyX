@@ -68,6 +68,7 @@ hb.MATERIALS.update({
     "cloth_b": ((0.10, 0.15, 0.35), 0.7),
     "cloth_c": ((0.20, 0.40, 0.55), 0.7),
     "leather": ((0.12, 0.07, 0.04), 0.6),
+    "cloth_d": ((0.30, 0.20, 0.12), 0.6),  # M3-CHR-516: the fifth (optional) cloth slot
     "hair_grey": ((0.35, 0.33, 0.31), 0.5),
 })
 hb.LOD1_RATIO.clear()

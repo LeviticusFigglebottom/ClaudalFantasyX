@@ -11,7 +11,8 @@ instanced villager GLB is already dressed. Text resources, deterministic.
 
 Per villager: the skin maps from villager_textures.py; the shared villager cloth atlas tinted per
 material from `_tints` (cloth_a/b/c; leather untinted); hair, grey hair, lash and brow colours from
-`_hair`; the iris from `_eyes`. Generic atlases (eyes, hair, lashes, brows, detail normals) are
+`_hair`; the iris from `_eyes`; optional per-material cloth shader parameters from `_cloth_params` (M3-CHR-516: the
+smith's leather apron is the cloth shader, less sheen, smoother). Generic atlases (eyes, hair, lashes, brows, detail normals) are
 Asha's.
 """
 from __future__ import annotations
@@ -109,8 +110,10 @@ def tables(npc: str, extra: dict) -> tuple[dict, dict, dict]:
     }
     cloth_tex = {"tex_albedo": CLOTH + "albedo.png", "tex_normal": CLOTH + "normal.png", "tex_orm": CLOTH + "orm.png",
                  "tex_cloth_mask": CLOTH + "clothmask.png", "tex_detail_normal": A + "asha_thread_detail_normal.png"}
+    tuned = extra.get("_cloth_params", {})  # M3-CHR-516 (optional): extra cloth shader parameters per material
     for name, hex_ in extra["_tints"].items():
-        shader[name] = ("character_cloth", 0, {"detail_tiling": "150.0", "col_albedo": colour(hex_)}, cloth_tex)
+        shader[name] = ("character_cloth", 0, {"detail_tiling": "150.0", "col_albedo": colour(hex_),
+                                               **tuned.get(name, {})}, cloth_tex)
     return shader, {}, {}
 
 

@@ -18,6 +18,12 @@ sleeves; or an open vest), `skirt` (a closed wrap skirt from the waist, flared o
 (asha-like band turns with a knot and tails, toma_costume.sash), `headwrap` (a cloth cap over the
 scalp with a rolled edge and a knot at the back; or a narrow headband), `sandals` and `wraps`.
 `coverage()` says which body vertices are hidden (deleted, asha.md §8.1). Deterministic.
+
+M3-CHR-509..517 add optional keys whose defaults leave every earlier villager byte-identical: `top.cuff_roll_m` (a
+sleeve pushed up and rolled: a thicker band of cloth at its end, the smith and the wrights), `apron.over_trousers`
+(an apron with no skirt under it: the smith's and the shopkeeper's over their trousers, `apron.flare` its hang) and
+`apron.extra_m` (the apron's offset over what it covers), and a fifth cloth material, `cloth_d` (the smith's leather
+apron, the clerk's tabard), tinted like the other three.
 """
 from __future__ import annotations
 
@@ -50,12 +56,14 @@ ATLAS = {
     "sandals": (0.5, 0.62, 0.75, 0.76),
     "headband": (0.5, 0.76, 0.75, 0.82),
 }
-CLOTH_MATS = ("cloth_a", "cloth_b", "cloth_c", "leather")
+CLOTH_MATS = ("cloth_a", "cloth_b", "cloth_c", "leather", "cloth_d")  # cloth_d: M3-CHR-516 (optional)
 TOP_OFF = 0.0065  # m at S = 1, over the skin (the donor bust sits up to a few mm outside the field)
 SLEEVE_OFF = 0.009
 SKIRT_OFF = 0.010
 TROUSER_OFF = 0.009
 APRON_EXTRA = 0.008  # over the skirt
+APRON_FLARE = 0.16  # an apron over trousers (no skirt to take the flare from) hangs as the default skirt does
+CUFF_ROLL_SPAN = 0.14  # of the sleeve's length: the rolled band at a pushed-up sleeve's end (`cuff_roll_m`)
 WRAP_OFF = 0.0055
 TOP_MARGIN = 0.012  # m at S = 1: body hidden this far inside the top's neckline and armholes
 ARMHOLE_DROP = 0.085  # m at S = 1 below the shoulder joint: a sleeveless top's armhole (the M2-CHR-03 default)
@@ -161,10 +169,18 @@ def build_top(fields: Fields, chart: TorsoChart, top: dict) -> dict[str, Part]:
                           wind_amp=float(top.get("wind", 0.06)))
     out["Top"] = _mat(body, top["mat"])
     sleeve = float(top.get("sleeve", 0.0))
+    roll = float(top.get("cuff_roll_m", 0.0))
+    if roll > 0.0:  # M3-CHR-516: a pushed-up sleeve, rolled: the cloth thickens over the last CUFF_ROLL_SPAN
+        def radius(t: float) -> float:
+            k = min(max((t - (1.0 - CUFF_ROLL_SPAN)) / CUFF_ROLL_SPAN, 0.0), 1.0)
+            return (SLEEVE_OFF + 0.006 * t + roll * math.sin(math.pi * min(k * 1.6, 1.0)) ** 0.5) * S
+    else:
+        def radius(t: float) -> float:
+            return (SLEEVE_OFF + 0.006 * t) * S
     if sleeve > 0.0:
         for sd in ("L", "R"):
             path = RC.arm_path(lm, sd, 0.03, sleeve, 8)
-            p = RC.limb_tube(fields, f"arm_{sd}", path, lambda t: (SLEEVE_OFF + 0.006 * t) * S, ATLAS[f"sleeve_{sd}"],
+            p = RC.limb_tube(fields, f"arm_{sd}", path, radius, ATLAS[f"sleeve_{sd}"],
                              f"Sleeve{sd}", n_around=18, rows=8, back_inset=0.0018 * S, wind_amp=0.05,
                              min_r=0.036 * S)
             out[f"Sleeve{sd}"] = _mat(p, top["mat"])
@@ -218,7 +234,8 @@ def build_apron(fields: Fields, ap: dict, z_top: float, skirt_flare: float) -> P
     half = float(ap.get("half_deg", 50.0))
     th = np.linspace(-half, half, 22)
     p = TC.skirt_open(fields, "Apron", ATLAS["apron"], z_top, hem_z(lm, ap.get("hem", "knee")), th,
-                      (SKIRT_OFF + APRON_EXTRA) * S, 10, skirt_flare, 3, 0.002, int(ap.get("seed", 5)))
+                      (SKIRT_OFF + float(ap.get("extra_m", APRON_EXTRA))) * S, 10, skirt_flare, 3, 0.002,
+                      int(ap.get("seed", 5)))
     return _mat(p, ap["mat"])
 
 
@@ -326,8 +343,11 @@ def build_costume(body, params: dict) -> dict[str, Part]:
     sk = params.get("skirt")
     if sk:
         out["Skirt"] = build_skirt(fields, sk, z_waist - 0.02 * S)
-    if params.get("apron") and sk:
-        out["Apron"] = build_apron(fields, params["apron"], z_waist - 0.015 * S, float(sk.get("flare", 0.16)))
+    ap = params.get("apron")
+    if ap and sk:
+        out["Apron"] = build_apron(fields, ap, z_waist - 0.015 * S, float(sk.get("flare", 0.16)))
+    elif ap and ap.get("over_trousers"):  # M3-CHR-512/516: an apron straight over the trousers
+        out["Apron"] = build_apron(fields, ap, z_waist - 0.015 * S, float(ap.get("flare", APRON_FLARE)))
     sash = params.get("sash")
     if sash:
         # the band sits over the outermost cloth at the waist: never the sleeves (in the A-pose a long

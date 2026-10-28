@@ -772,6 +772,160 @@
         ["{python}", "assets_src/characters/moll/moll_textures.py", "--bake-dir", "{scratch}/moll_bake"],
         ["{python}", "assets_src/characters/moll/write_materials.py"]
       ]
+    },
+    {
+      "id": "villager_shopkeeper",
+      "threads": 4,
+      "owner": "character",
+      "_note": "M3-CHR-512: the Haluna shopkeeper (haluna.tscn NPCs/Town/Shopkeeper) on the villager build, host_snaps and garment_fit as Tavi; an apron over trousers (villager_costume apron.over_trousers) and the fifth cloth slot (cloth_d). His clips add offer_goods (villager_story_clips.json).",
+      "sources": ["assets_src/characters/villagers/**", "assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**", "game/data/characters/helper_bones.json"],
+      "outputs": ["assets/characters/villagers/shopkeeper/*.glb", "assets/characters/villagers/shopkeeper/textures/*.png", "assets/characters/villagers/shopkeeper/materials/*.tres", "assets/characters/villagers/shopkeeper/*.tscn", "assets/characters/villagers/shopkeeper/anim/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/characters/villagers/build_villager.py", "--", "--npc", "shopkeeper", "--bake-dir", "{scratch}/shopkeeper_bake"],
+        ["{python}", "assets_src/characters/villagers/villager_textures.py", "--npc", "shopkeeper", "--bake-dir", "{scratch}/shopkeeper_bake"],
+        ["{python}", "assets_src/characters/villagers/write_materials.py", "shopkeeper"],
+        ["{python}", "assets_src/characters/villagers/villager_clips.py", "shopkeeper"]
+      ]
+    },
+    {
+      "id": "villager_smith",
+      "threads": 4,
+      "owner": "character",
+      "_note": "M3-CHR-516: the Haluna smith (haluna.tscn NPCs/Town/Smith) on the villager build, host_snaps and garment_fit; rolled sleeves (top.cuff_roll_m), the hide apron over trousers in cloth_d with its own cloth shader parameters (_cloth_params). His clips add hammer_strike.",
+      "sources": ["assets_src/characters/villagers/**", "assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**", "game/data/characters/helper_bones.json"],
+      "outputs": ["assets/characters/villagers/smith/*.glb", "assets/characters/villagers/smith/textures/*.png", "assets/characters/villagers/smith/materials/*.tres", "assets/characters/villagers/smith/*.tscn", "assets/characters/villagers/smith/anim/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/characters/villagers/build_villager.py", "--", "--npc", "smith", "--bake-dir", "{scratch}/smith_bake"],
+        ["{python}", "assets_src/characters/villagers/villager_textures.py", "--npc", "smith", "--bake-dir", "{scratch}/smith_bake"],
+        ["{python}", "assets_src/characters/villagers/write_materials.py", "smith"],
+        ["{python}", "assets_src/characters/villagers/villager_clips.py", "smith"]
+      ]
+    },
+    {
+      "id": "villager_innkeeper",
+      "threads": 4,
+      "owner": "character",
+      "_note": "M3-CHR-517: the Haluna innkeeper (haluna.tscn NPCs/Town/Innkeeper) on the villager build, host_snaps and garment_fit. Her clips add welcome_bow.",
+      "sources": ["assets_src/characters/villagers/**", "assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**", "game/data/characters/helper_bones.json"],
+      "outputs": ["assets/characters/villagers/innkeeper/*.glb", "assets/characters/villagers/innkeeper/textures/*.png", "assets/characters/villagers/innkeeper/materials/*.tres", "assets/characters/villagers/innkeeper/*.tscn", "assets/characters/villagers/innkeeper/anim/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/characters/villagers/build_villager.py", "--", "--npc", "innkeeper", "--bake-dir", "{scratch}/innkeeper_bake"],
+        ["{python}", "assets_src/characters/villagers/villager_textures.py", "--npc", "innkeeper", "--bake-dir", "{scratch}/innkeeper_bake"],
+        ["{python}", "assets_src/characters/villagers/write_materials.py", "innkeeper"],
+        ["{python}", "assets_src/characters/villagers/villager_clips.py", "innkeeper"]
+      ]
+    },
+    {
+      "id": "villager_clerk",
+      "threads": 4,
+      "owner": "character",
+      "_note": "M3-CHR-509: the Order clerk (Ch6, speaker clerk) on the villager build, host_snaps and garment_fit: the Order's colours, no armour. His clips add heat_iron, iron_into_water and hand_over (the brine-iron is a scene prop).",
+      "sources": ["assets_src/characters/villagers/**", "assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**", "game/data/characters/helper_bones.json"],
+      "outputs": ["assets/characters/villagers/clerk/*.glb", "assets/characters/villagers/clerk/textures/*.png", "assets/characters/villagers/clerk/materials/*.tres", "assets/characters/villagers/clerk/*.tscn", "assets/characters/villagers/clerk/anim/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/characters/villagers/build_villager.py", "--", "--npc", "clerk", "--bake-dir", "{scratch}/clerk_bake"],
+        ["{python}", "assets_src/characters/villagers/villager_textures.py", "--npc", "clerk", "--bake-dir", "{scratch}/clerk_bake"],
+        ["{python}", "assets_src/characters/villagers/write_materials.py", "clerk"],
+        ["{python}", "assets_src/characters/villagers/villager_clips.py", "clerk"]
+      ]
+    },
+    {
+      "id": "villager_reed_a",
+      "threads": 4,
+      "owner": "character",
+      "_note": "M3-CHR-510: Reed A, one of the four barge polers (Ch6, a variant of villager_reed), host_snaps and garment_fit. Clips add pole_barge and bow_from_barge (the pole is a scene prop).",
+      "sources": ["assets_src/characters/villagers/**", "assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**", "game/data/characters/helper_bones.json"],
+      "outputs": ["assets/characters/villagers/reed_a/*.glb", "assets/characters/villagers/reed_a/textures/*.png", "assets/characters/villagers/reed_a/materials/*.tres", "assets/characters/villagers/reed_a/*.tscn", "assets/characters/villagers/reed_a/anim/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/characters/villagers/build_villager.py", "--", "--npc", "reed_a", "--bake-dir", "{scratch}/reed_a_bake"],
+        ["{python}", "assets_src/characters/villagers/villager_textures.py", "--npc", "reed_a", "--bake-dir", "{scratch}/reed_a_bake"],
+        ["{python}", "assets_src/characters/villagers/write_materials.py", "reed_a"],
+        ["{python}", "assets_src/characters/villagers/villager_clips.py", "reed_a"]
+      ]
+    },
+    {
+      "id": "villager_reed_b",
+      "threads": 4,
+      "owner": "character",
+      "_note": "M3-CHR-510: Reed B, a barge poler (variant of villager_reed), host_snaps and garment_fit; pole_barge and bow_from_barge.",
+      "sources": ["assets_src/characters/villagers/**", "assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**", "game/data/characters/helper_bones.json"],
+      "outputs": ["assets/characters/villagers/reed_b/*.glb", "assets/characters/villagers/reed_b/textures/*.png", "assets/characters/villagers/reed_b/materials/*.tres", "assets/characters/villagers/reed_b/*.tscn", "assets/characters/villagers/reed_b/anim/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/characters/villagers/build_villager.py", "--", "--npc", "reed_b", "--bake-dir", "{scratch}/reed_b_bake"],
+        ["{python}", "assets_src/characters/villagers/villager_textures.py", "--npc", "reed_b", "--bake-dir", "{scratch}/reed_b_bake"],
+        ["{python}", "assets_src/characters/villagers/write_materials.py", "reed_b"],
+        ["{python}", "assets_src/characters/villagers/villager_clips.py", "reed_b"]
+      ]
+    },
+    {
+      "id": "villager_reed_c",
+      "threads": 4,
+      "owner": "character",
+      "_note": "M3-CHR-510: Reed C, a barge poler (variant of villager_reed), host_snaps and garment_fit; pole_barge and bow_from_barge.",
+      "sources": ["assets_src/characters/villagers/**", "assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**", "game/data/characters/helper_bones.json"],
+      "outputs": ["assets/characters/villagers/reed_c/*.glb", "assets/characters/villagers/reed_c/textures/*.png", "assets/characters/villagers/reed_c/materials/*.tres", "assets/characters/villagers/reed_c/*.tscn", "assets/characters/villagers/reed_c/anim/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/characters/villagers/build_villager.py", "--", "--npc", "reed_c", "--bake-dir", "{scratch}/reed_c_bake"],
+        ["{python}", "assets_src/characters/villagers/villager_textures.py", "--npc", "reed_c", "--bake-dir", "{scratch}/reed_c_bake"],
+        ["{python}", "assets_src/characters/villagers/write_materials.py", "reed_c"],
+        ["{python}", "assets_src/characters/villagers/villager_clips.py", "reed_c"]
+      ]
+    },
+    {
+      "id": "villager_reed_d",
+      "threads": 4,
+      "owner": "character",
+      "_note": "M3-CHR-510: Reed D, a barge poler (variant of villager_reed), host_snaps and garment_fit; pole_barge and bow_from_barge.",
+      "sources": ["assets_src/characters/villagers/**", "assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**", "game/data/characters/helper_bones.json"],
+      "outputs": ["assets/characters/villagers/reed_d/*.glb", "assets/characters/villagers/reed_d/textures/*.png", "assets/characters/villagers/reed_d/materials/*.tres", "assets/characters/villagers/reed_d/*.tscn", "assets/characters/villagers/reed_d/anim/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/characters/villagers/build_villager.py", "--", "--npc", "reed_d", "--bake-dir", "{scratch}/reed_d_bake"],
+        ["{python}", "assets_src/characters/villagers/villager_textures.py", "--npc", "reed_d", "--bake-dir", "{scratch}/reed_d_bake"],
+        ["{python}", "assets_src/characters/villagers/write_materials.py", "reed_d"],
+        ["{python}", "assets_src/characters/villagers/villager_clips.py", "reed_d"]
+      ]
+    },
+    {
+      "id": "villager_wright_girl",
+      "threads": 4,
+      "owner": "character",
+      "_note": "M3-CHR-511: the Saltwright girl at the brazier (Ch6 W06) on the villager build, host_snaps and garment_fit; her line-marks are liss_textures' generator (villager_textures _skin.line_marks, its own seed and placement) on 2K body maps, so Liss's sources are hers too. Clips add arm_held_out, kneel_wait, dig_sand, flatten_sand and set_in_hole.",
+      "sources": ["assets_src/characters/villagers/**", "assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**", "game/data/characters/helper_bones.json", "assets_src/characters/liss/**"],
+      "outputs": ["assets/characters/villagers/wright_girl/*.glb", "assets/characters/villagers/wright_girl/textures/*.png", "assets/characters/villagers/wright_girl/materials/*.tres", "assets/characters/villagers/wright_girl/*.tscn", "assets/characters/villagers/wright_girl/anim/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/characters/villagers/build_villager.py", "--", "--npc", "wright_girl", "--bake-dir", "{scratch}/wright_girl_bake"],
+        ["{python}", "assets_src/characters/villagers/villager_textures.py", "--npc", "wright_girl", "--bake-dir", "{scratch}/wright_girl_bake"],
+        ["{python}", "assets_src/characters/villagers/write_materials.py", "wright_girl"],
+        ["{python}", "assets_src/characters/villagers/villager_clips.py", "wright_girl"]
+      ]
+    },
+    {
+      "id": "villager_wright_child_a",
+      "threads": 4,
+      "owner": "character",
+      "_note": "M3-CHR-511: the older Saltwright child (Ch6 B05, wright_child_a), child proportions as villager_child, host_snaps and garment_fit; one line-mark (liss_textures). Clips add crawl_out and kneel_wait.",
+      "sources": ["assets_src/characters/villagers/**", "assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**", "game/data/characters/helper_bones.json", "assets_src/characters/liss/**"],
+      "outputs": ["assets/characters/villagers/wright_child_a/*.glb", "assets/characters/villagers/wright_child_a/textures/*.png", "assets/characters/villagers/wright_child_a/materials/*.tres", "assets/characters/villagers/wright_child_a/*.tscn", "assets/characters/villagers/wright_child_a/anim/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/characters/villagers/build_villager.py", "--", "--npc", "wright_child_a", "--bake-dir", "{scratch}/wright_child_a_bake"],
+        ["{python}", "assets_src/characters/villagers/villager_textures.py", "--npc", "wright_child_a", "--bake-dir", "{scratch}/wright_child_a_bake"],
+        ["{python}", "assets_src/characters/villagers/write_materials.py", "wright_child_a"],
+        ["{python}", "assets_src/characters/villagers/villager_clips.py", "wright_child_a"]
+      ]
+    },
+    {
+      "id": "villager_wright_child_b",
+      "threads": 4,
+      "owner": "character",
+      "_note": "M3-CHR-511: the younger Saltwright child (Ch6 B05, wright_child_b), host_snaps and garment_fit; one line-mark (liss_textures). Clips add crawl_out and kneel_wait.",
+      "sources": ["assets_src/characters/villagers/**", "assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**", "game/data/characters/helper_bones.json", "assets_src/characters/liss/**"],
+      "outputs": ["assets/characters/villagers/wright_child_b/*.glb", "assets/characters/villagers/wright_child_b/textures/*.png", "assets/characters/villagers/wright_child_b/materials/*.tres", "assets/characters/villagers/wright_child_b/*.tscn", "assets/characters/villagers/wright_child_b/anim/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/characters/villagers/build_villager.py", "--", "--npc", "wright_child_b", "--bake-dir", "{scratch}/wright_child_b_bake"],
+        ["{python}", "assets_src/characters/villagers/villager_textures.py", "--npc", "wright_child_b", "--bake-dir", "{scratch}/wright_child_b_bake"],
+        ["{python}", "assets_src/characters/villagers/write_materials.py", "wright_child_b"],
+        ["{python}", "assets_src/characters/villagers/villager_clips.py", "wright_child_b"]
+      ]
     }
   ]
 }
