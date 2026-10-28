@@ -1,0 +1,23 @@
+SLICE_SWEEP title high gpu med 0.067 mean 0.068 p99 0.125 | frame med 2.345 p99 3.314 max 19.4 | hidden max 385.3 total 3609 (73) | visible max 3.7 (203) | hitches>33ms 0 | scene res://game/core/boot.tscn
+SLICE_BUDGET title ok | first-run hidden max 0.0 / 1700 (0) | hidden max 385.3 / 1000 | visible max 3.7 / 50
+SLICE_SWEEP newgame high gpu med 1.960 mean 2.290 p99 3.654 | frame med 3.129 p99 5.631 max 2153.4 | hidden max 3025.3 total 4480 (324) | visible max 9.5 (175) | hitches>33ms 24 | scene res://game/levels/ch02/haluna/haluna.tscn
+SLICE_BUDGET newgame OVER | first-run hidden max 0.0 / 1700 (0) | hidden max 3025.3 / 1000 | visible max 9.5 / 50
+SLICE_SWEEP prologue_run high gpu med 2.921 mean 2.664 p99 3.117 | frame med 4.970 p99 11.332 max 31.2 | hidden max 0.0 total 0 (0) | visible max 48.7 (60) | hitches>33ms 0 | scene res://game/levels/ch02/haluna/haluna.tscn
+SLICE_BUDGET prologue_run ok | first-run hidden max 0.0 / 1700 (0) | hidden max 0.0 / 1000 | visible max 48.7 / 50
+SLICE_SWEEP prologue_run_side high gpu med 3.186 mean 3.178 p99 3.513 | frame med 5.046 p99 11.573 max 39.0 | hidden max 0.0 total 0 (0) | visible max 11.3 (60) | hitches>33ms 1 | scene res://game/levels/ch02/haluna/haluna.tscn
+SLICE_BUDGET prologue_run_side ok | first-run hidden max 0.0 / 1700 (0) | hidden max 0.0 / 1000 | visible max 11.3 / 50
+SLICE_SWEEP ch01 high gpu med 2.131 mean 2.129 p99 2.293 | frame med 2.415 p99 3.251 max 51.1 | hidden max 1276.4 total 1916 (73) | visible max 5.8 (205) | hitches>33ms 13 | scene res://game/levels/ch01/oruvel_underway/oruvel_underway.tscn
+SLICE_BUDGET ch01 OVER | first-run hidden max 0.0 / 1700 (0) | hidden max 1276.4 / 1000 | visible max 5.8 / 50
+SLICE_SWEEP ch01_run high gpu med 1.913 mean 1.937 p99 2.253 | frame med 2.234 p99 2.961 max 45.3 | hidden max 0.0 total 0 (0) | visible max 3.0 (60) | hitches>33ms 3 | scene res://game/levels/ch01/oruvel_underway/oruvel_underway.tscn
+SLICE_BUDGET ch01_run ok | first-run hidden max 0.0 / 1700 (0) | hidden max 0.0 / 1000 | visible max 3.0 / 50
+SLICE_SWEEP ch01_run_side high gpu med 2.495 mean 2.369 p99 2.742 | frame med 2.699 p99 3.926 max 1283.6 | hidden max 0.0 total 0 (0) | visible max 2.7 (60) | hitches>33ms 5 | scene res://game/flow/field_battle.tscn
+SLICE_BUDGET ch01_run_side ok | first-run hidden max 0.0 / 1700 (0) | hidden max 0.0 / 1000 | visible max 2.7 / 50
+SLICE_SWEEP ch02 high gpu med 2.969 mean 2.746 p99 3.672 | frame med 3.849 p99 9.132 max 56.2 | hidden max 2016.8 total 4127 (315) | visible max 11.0 (142) | hitches>33ms 16 | scene res://game/levels/ch02/haluna/haluna.tscn
+SLICE_BUDGET ch02 OVER | first-run hidden max 0.0 / 1700 (0) | hidden max 2016.8 / 1000 | visible max 11.0 / 50
+SLICE_SWEEP ch02_run high gpu med 3.265 mean 3.262 p99 3.612 | frame med 4.941 p99 12.229 max 1666.7 | hidden max 0.0 total 0 (0) | visible max 27.9 (60) | hitches>33ms 7 | scene res://game/flow/field_battle.tscn
+SLICE_BUDGET ch02_run ok | first-run hidden max 0.0 / 1700 (0) | hidden max 0.0 / 1000 | visible max 27.9 / 50
+SLICE_SWEEP ch02_run_side high gpu med 2.084 mean 2.104 p99 2.293 | frame med 2.385 p99 2.857 max 53.7 | hidden max 0.0 total 0 (0) | visible max 10.5 (60) | hitches>33ms 3 | scene res://game/flow/field_battle.tscn
+SLICE_BUDGET ch02_run_side ok | first-run hidden max 0.0 / 1700 (0) | hidden max 0.0 / 1000 | visible max 10.5 / 50
+SLICE_SWEEP ch02_first_fight high gpu med 2.091 mean 2.112 p99 2.255 | frame med 2.391 p99 2.785 max 55.0 | hidden max 1668.9 total 2919 (448) | visible max 11.4 (199) | hitches>33ms 8 | scene res://game/flow/field_battle.tscn
+SLICE_BUDGET ch02_first_fight OVER | first-run hidden max 0.0 / 1700 (0) | hidden max 1668.9 / 1000 | visible max 11.4 / 50
+SLICE_BUDGET over in: newgame, ch01, ch02, ch02_first_fight

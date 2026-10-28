@@ -43,6 +43,39 @@ test_battle_act1_ability_vfx (every Act I skill has its own effect), test_battle
 - `assets/environments/kits/haluna/kirru_roost.glb`: kirru_roost-lod1.POSITION (committed 06403c78 vs rebuilt cbda5fa9). Owner: env-art.
 - `assets/creatures/avalanche_ram/avalanche_ram.glb`: avalanche_ram.POSITION (committed 6549c8a9 vs rebuilt 8d990e15). The same on claude/creatures and creatures-b heads; the rebuild is the same on all three. The committed .glb no longer matches its source (maybe built on a CPU without AVX2, as in M2-CHR-11). Owner: creatures.
 
+## The human's four FAST-TRACKS on the real GPU (RX 9070 XT, High, 2560×1440)
+
+How it was run:
+- big14 + the rebake, imported on Windows. `slice_sweep --walk=res://tools/gpu_bench/playtest_walk.json` (gpu/act1-qa-1), stills every 3 s, `ui_accept` tapped every 1.5 s to take dialogue as a player would.
+- The walk: New Game → the Prologue → its hand-off to Haluna; then Ch1 and Ch2 as F8 starts them; runs from behind and from the side; then the first fight.
+- `gpu_playtest/` has the sheets, the walk's CSV and its budget lines.
+
+1. **The Prologue's opening buildings in colour: yes.** Domes, blue bands and banners are in colour on the GPU (walk_p01). Still to fix: a hard-edged, bright-green rectangle in the water next to the vigil terrace.
+2. **The beach scene (Rhen in the shallows, Asha at his side): partly.**
+   - The close-up on Asha reads well.
+   - The wide shots show Asha kneeling at the left and Toma standing, but **Rhen is not in frame**.
+   - Four lines ("I'm Asha. That's Toma…", "Toma Okeru,", "To Asha. Who is very glad…", "Later. You're shaking.") are framed on **empty sky**. Probably meant as Rhen's view lying on his back, but no face enters it; an orange blur touches one frame edge.
+   - Owners: slice-polish and hero-integration (walk_p03).
+3. **The party following, spaced, at the start: partly.**
+   - After the cutscene the objective is "Follow Asha and Toma up the beach", and they walk ahead, spaced, to the village gate.
+   - **Rhen himself is not on screen**: the field camera starts over the shallows facing the beach, with no player in frame, also from the Village spawn (haluna_start_no_rhen.jpg). He may still be lying in the shallows pose, or the camera may be framing the wrong target.
+   - Owner: hero-integration.
+4. **The run (no arm or leg flop): looks grounded in the stills I could check.**
+   - In Ch1, Rhen runs on the Underway floor with feet planted and arms down (ch01_run_frame.jpg).
+   - The run carried him into the Glassfry fight, as the zone intends.
+   - Stills can't prove the gait: a moving capture is the next step.
+
+**Frame-time budget (ADR 0029/0037), warm second run:** every scene change is over its 1000 ms hidden-frame budget:
+
+| Scene change | Worst hidden frame |
+|---|---|
+| New Game → the Prologue | 3025 ms (4058 ms on the first run) |
+| Ch2 / Haluna | 2017 ms |
+| the first fight | 1669 ms |
+| Ch1 | 1276 ms |
+
+The title passed warm (385 ms; 1718 ms on the first run). Visible frames are all within 50 ms. Hitches over 33 ms in the dwells: 9 in the Prologue, 14 in Ch1 and 8 in the first fight on the first run. The rows are in act1_gpu_qa.md.
+
 ## What the PC saw in the drifts and new shots (lavapipe; the GPU look is in act1_gpu_qa.md)
 
 - **Fixed since big12 (my pass-A findings):**
