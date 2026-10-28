@@ -516,6 +516,25 @@ Ch4–Ch9 onward. `m2-slice.md` beside this file is the history up to the 2026-1
     - the LifeAudio freed-cast error at every scene exit (filed **M3-AUD-101**).
   - **Lead:** the drifted and new shots above need your viewing and baselines.
 
+- **ADR 0041 beat audit, checkpoint 1. MERGE-READY @ 03c2711f.**
+  - **Viewed (self-rendered):** Haluna (H01, H02, H04, H07), the market villager, the villagers, the causeway head,
+    the tideline arena, the Drownbell intro and arena, and the title.
+  - **Mine, fixed earlier today:** the Ch1 storm slab is now the real Undertow (and the camera reaches it); H06; S06;
+    P01's timing; O07's timing.
+  - **Filed to the owners:**
+    - **M3-HER-101** (hero track): the reserve walks with the party. Toma vanishes on every slice walk, though he
+      talks in the banters.
+    - **M3-ENV-102** (env-art): Haluna's Order chapel is a plain white box.
+    - **M3-UI-101** (ui): the battle HUD's timeline chips and party rows still show initials. The menus have
+      portraits.
+    - **M3-AUD-101** (audio): LifeAudio's freed-cast error at every scene exit.
+  - **Noted, not filed:**
+    - The title's "Development build (bootstrap)" label is `debug_only`, so release builds hide it. The human plays
+      editor builds, so they see it. UI, say if it should go.
+    - The bay's grey ruined columns are env-art's Lit Age ruins, as intended.
+  - **Next:** Neme's table (rendering now), then the Ch1 batch: seven scene stills plus the raft, the Underway tower,
+    the Hullgnaw intro, and the causeway route and disc arenas.
+
 ### Render requests
 SUPERSEDED RENDER-REQUEST @ fdec3cc6: slice_prologue_vigil_line, slice_beach_h05_asha, slice_beach_h06_toma, slice_haluna_villagers_village, slice_causeway_head, slice_causeway_harrier_view, haluna_h01_village_from_sea, haluna_h02_tidewall_lane, haluna_h04_dock, haluna_h07_chapel_court, haluna_h10_dock_night, shrine_s01_approach, shrine_s02_threshold, shrine_s03_overview, shrine_s04_lip, shrine_s05_side_pool, drownbell_flood, battle_boss_intro_drownbell, battle_arena_causeway, field_causeway_dolly, boot_title; why: M2-FP-102..109, the human's playtest round (real cast and held poses in the prologue and Cutscene A, live villagers and wildlife, the final causeway), plus the greyscale audit of every slice beat. The six slice_* shots are new (no baseline yet).
 - **Known red until the render lands:** the six new `slice_*` shots have no baseline yet, so the tools test
