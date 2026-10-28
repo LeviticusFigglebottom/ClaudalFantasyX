@@ -15,6 +15,12 @@ extends RefCounted
 ## value. `ShaderGlobals.install(SceneRouter)` connects that reset to SceneRouter.scene_swapping (fired
 ## under the opaque fade, just before the new scene enters), so the router names no system that owns
 ## a global. Add a global here when a zone sets it and the next zone must not see it.
+##
+## Threaded loads (M3-HER-1151): while SceneRouter instantiates a zone on a WorkerThreadPool thread (hold_writes() ..
+## release_writes()), set_value() and reset() keep the copy as always but hold the RenderingServer write and send the
+## last value per global when the load ends. A global write walks the materials that use the global buffer while
+## the worker thread is creating the new zone's materials ("Attempting to initialize the wrong RID" from
+## WeatherClock's per-frame hymn_wind_time on the return into the Saltgrass Causeway).
 
 ## The per-zone globals: the zone night sea-glow (GlimmerField.set_scene_sea_glow) and the water level
 ## (the zone sea's WaterSurface, or a WeatheringTide without one), and the still actors (RevenantTells,
@@ -37,15 +43,46 @@ const LISTENERS_GROUP := &"shader_globals_listeners"
 const LISTENER_METHOD := &"_on_shader_global_changed"
 
 static var _values: Dictionary = {}
+## Nested holds of the RenderingServer writes (threaded loads), and the writes held: name -> value.
+static var _write_holds := 0
+static var _held_writes: Dictionary = {}
 
 
 ## Sets the global uniform `name` for every shader and remembers the value.
 static func set_value(name: StringName, value: Variant) -> void:
-	RenderingServer.global_shader_parameter_set(name, value)
+	_write(name, value)
 	var changed := not _same(get_value(name), value)
 	_values[name] = value
 	if changed:
 		_notify(name, value)
+
+
+## Holds the RenderingServer writes until release_writes() (SceneRouter, around a threaded instantiate). Nests.
+static func hold_writes() -> void:
+	_write_holds += 1
+
+
+## Ends one hold; the last one sends every held global's last value.
+static func release_writes() -> void:
+	_write_holds = maxi(_write_holds - 1, 0)
+	if _write_holds > 0:
+		return
+	var held := _held_writes
+	_held_writes = {}
+	for name: StringName in held:
+		RenderingServer.global_shader_parameter_set(name, held[name])
+
+
+## True while the RenderingServer writes are held.
+static func writes_held() -> bool:
+	return _write_holds > 0
+
+
+static func _write(name: StringName, value: Variant) -> void:
+	if _write_holds > 0:
+		_held_writes[name] = value
+	else:
+		RenderingServer.global_shader_parameter_set(name, value)
 
 
 ## Restores the global uniform `name` to its project.godot default and forgets the written value.
@@ -53,7 +90,7 @@ static func reset(name: StringName) -> void:
 	var value: Variant = default_value(name)
 	if value == null:
 		return
-	RenderingServer.global_shader_parameter_set(name, value)
+	_write(name, value)
 	var changed := not _same(get_value(name), value)
 	_values.erase(name)
 	if changed:

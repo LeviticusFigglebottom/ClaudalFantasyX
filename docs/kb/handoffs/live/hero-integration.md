@@ -1037,3 +1037,48 @@ TRIAL MERGE @ integration 2d6a25a7 (big15): env-art 5d81885c, env-art-b 697bc32d
 - **integration-qa's 2 are Pell and vigil_pell (Ch9, ch09_pell_joined).** They wait on characters' Pell model,
   **M3-CHR-506, still todo**; nothing in my lane can make them real (no model, no AI art). The wiring is ready: the
   `vigil_` prefix and HeroFieldActor.hero_of take his body the moment hero_motion.json gets a `pell` row.
+
+MERGE-READY (+ this log): **the party start, take two (the big15 GPU playtest), merge_union three-way, the threaded-load RID race.**
+- **(1) Party start** (pc-gpu.md big15: "camera opens ~15 m back over the shallows, Toma isn't in frame, the lane turn
+  swings into the walls"):
+  - **Toma walks too.** HeroFieldParty `followers.include_reserve`: the reserve follows after the active party, up to
+    `max` (the slice's Toma is in reserve).
+  - **A FOLLOW camera** (new CameraShot.Mode.FOLLOW, ADR 0194): it rides `follow_distance` (7 m) back along the shot's
+    authored heading and `follow_height` (4 m) up, smoothed, aimed at him. Haluna's beach_shallows, beach_path and the
+    lane's H09 use it now (beach_shallows takes beach_path's heading, so the handover doesn't jump). The party stays
+    the same size on screen and the camera never swings.
+  - **Followers judged in 3D:** a follower only covers him if the camera's line down to his chest passes under her
+    head (`head_m` 1.8). Otherwise she steps aside (`sight_clear_m` 1.1, falling back through
+    `sight_clear_shares` near walls, the side she stands on). Bodies level with him (`sight_depth_m`) don't count.
+  - **Occlusion is judged by drawn meshes, not collision** (Coilspire's shell collider missed the wall the player
+    sees): the director's `view_blocker` tests visible meshes of at least `min_size_m` by their triangles.
+  - **New guard** `test_qa_field_camera::test_the_walk_from_the_beach_to_the_village_keeps_the_party_in_view`: from
+    Cutscene A's mark up the beach, through the gap and down the lane to the Village. Every frame he's seen and
+    every follower is in frame. A follower may only cross his line for under 20 frames, rounding a corner. **2/0**
+    with the 106-spawn guard.
+  - **SELF-RENDERED** (lavapipe 960x540, the walk at frame 90): Rhen, Asha and Toma close together in frame, the
+    camera just behind and above. Viewed.
+- **(2) tools/dev/merge_union.py merges every keyed file three-way** (shots.json by id, baselines.json,
+  prewarm_materials by path, flags.tres):
+  - a key only theirs changed takes theirs in place, a key one side deleted is deleted, both-changed keeps ours and
+    is reported;
+  - big15 lost battle-presentation's `settle_frames` edits this way;
+  - test_merge_union 12/0, including an end-to-end git merge that fails on the old code (settle 30, not 90).
+- **(3) Architect role:**
+  - **M3-HER-1151 FIXED (the RID race):** ShaderGlobals holds its RenderingServer writes while SceneRouter
+    instantiates on a worker thread and sends the last value per global after. test_shader_globals_hold 3/0;
+    weather_clock 11/0, scene_router 15/0, haluna_weather 3/0. Three ch3 probe runs follow.
+  - **M3-ENV-747 → review:** already done by M3-ENV-101 (186848eb8); the inventory lists no save-shrine item.
+  - M3-ARC-1216 (my own steep stairs) waits on its cinematics review and on act1-chapters placing Ashcrown's flights.
+- Tests: hero_ 110/1 → the 1 is Asha in haluna_wake's NemeDoor fall (KNOWN now, M3-HER-1154); qa_party 3/0,
+  hero_followers 12/0, camera 54/0, haluna_zone 7/0.
+- LEAD-ASK: M3-C05-1215 (act1-chapters, Ashcrown on the kit) still says "blocked on M3-ARC-1216". The walkable stair
+  mode is on integration (HeroStairFlight, or a zone layout `"stairs"` row, see M3-ARC-1216's notes). Please tell
+  act1-chapters it can unblock and place the 48° flying stair and the 60° vein stairs.
+- LEAD-ASK: haluna.tscn's camera shots (M2-FP-109's) now use the FOLLOW mode on the beach and the lane. Slice-polish
+  should know before re-composing them.
+- LEAD-ASK (urgent, the human's error class): **big15 brings a freed-object cast at every fight's end.**
+  `BattleResultPanel._set_count` (battle_result_panel.gd:266) logs "Trying to cast a freed object" ~930 times in one
+  real-frame ch3 probe run. FieldBattle re-shows the result panel, which frees the old rows but leaves the old open
+  tween counting into them. Filed as **M3-HER-1158 (ui / battle-presentation, FAST-TRACK)** with a 3-line patch.
+  Please have battle-presentation take it, or give me the word to apply it myself.
