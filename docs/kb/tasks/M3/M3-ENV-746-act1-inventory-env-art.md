@@ -16,7 +16,8 @@ ADR 0041: clear env-art's rows of `docs/kb/qa/act1_final_inventory.md` (integrat
 - [ ] Prologue `prologue.tscn`, 37 primitives (City): `iskarra_city.tscn` is ready; slice-polish mounts it (M3-ENV-739).
 - [ ] Ch1 `oruvel.tscn`, 26: dressed (M3-ENV-738); slice-polish mounts it (M3-ENV-740).
 - [ ] Ch1 `oruvel_underway.tscn`, 36: dressed (M3-ENV-741); slice-polish mounts it (M3-ENV-742).
-- [ ] Ch2 `haluna.tscn`, 11 (HalunaMood/SaveShrine 10, NPCs/Neme 1).
+- [ ] Ch2 `haluna.tscn`, 11: the save shrine's 10 are Systems' scene `game/world/save_shrine/save_shrine.tscn`; the
+      kit pieces are ready (M3-ENV-101), so request M3-ENV-747. Neme's stand-in has a model, so request M3-ENV-748.
 - [ ] Ch3 `first_verse.tscn`, 15 CSG: the stage on the final shrine (M3-ENV-745).
 - [ ] Ch3 `shell_shrine.tscn`, 1 (Dressing/ChamberPassage BoxMesh).
 - [x] Ch4 `derelict_deck_night.tscn`, 7 SphereMesh flames → the kit's `lamp_flame` (a teardrop on
