@@ -837,22 +837,39 @@
    "yaw_deg": 90.0
   },
   {
-   "piece": "tower_bay",
+   "piece": "tower_bay_broken",
    "at": [
     77.0,
-    20
+    20.0
    ],
    "y": 0.0,
-   "yaw_deg": 0.0
+   "yaw_deg": 0.0,
+   "tilt_deg": [
+    84.0,
+    0.0
+   ]
   },
   {
-   "piece": "tower_bay",
+   "piece": "tower_bay_broken",
    "at": [
     83.0,
-    20
+    20.2
    ],
    "y": 0.0,
-   "yaw_deg": 0.0
+   "yaw_deg": 180.0,
+   "tilt_deg": [
+    -82.0,
+    4.0
+   ]
+  },
+  {
+   "piece": "lit_fragments",
+   "at": [
+    79.5,
+    23.0
+   ],
+   "y": -0.25,
+   "yaw_deg": 120.0
   },
   {
    "piece": "tower_bay_solid",

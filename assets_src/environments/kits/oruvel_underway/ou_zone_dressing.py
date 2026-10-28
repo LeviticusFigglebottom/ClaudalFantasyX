@@ -187,7 +187,7 @@ def stairwell(b: dict) -> list[dict]:
     x = cord["pos"][0]
     strip = -34.0 - lip  # the floor's last full row ends at z -34; the strip from there to the cord
     out = [put("floor_slab", 74.0 + strip * (k + 0.5), 0.0, -34.0 - strip * 0.5, 0.0, scale=round(strip / SLAB, 4))
-           for k in range(round(12.0 / strip))]
+           for k in range(round(12.0 / strip))] if strip > 0.01 else []  # none once the cord is on z -34
     side = (cord["size"][0] - ot.STAIR_W) * 0.5 + (cord["pos"][0] - cord["size"][0] * 0.5 - 74.0)  # 74 .. the flight
     s = side / 2.0
     for k in range(2):

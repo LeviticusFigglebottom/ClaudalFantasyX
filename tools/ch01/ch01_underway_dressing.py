@@ -118,7 +118,11 @@ def galleries() -> list[dict]:
     r = floor(74, -40, 86, 20, skip=((83.0, -37.0),))
     r += wall("w", 74, -40, 86, 20, "b", skip=(6,)) + wall("e", 74, -22, 86, 20, "bbs", skip=(5,))
     r.append(piece("tower_bay_broken", 86.0, 11.0, 90.0))  # the breach: the sand drift comes in through it
-    r += wall("s", 74, -40, 86, 20, "b") + wall("n", 74, -40, 86, 20, "s")
+    # The south wall fell outward onto the terrace (the view in from the bell-room's side stays open, C1 gallery).
+    r += [piece("tower_bay_broken", 77.0, 20.0, 0.0, tilt_deg=[84.0, 0.0]),
+          piece("tower_bay_broken", 83.0, 20.2, 180.0, tilt_deg=[-82.0, 4.0]),
+          piece("lit_fragments", 79.5, 23.0, 120.0, y=SILT_Y)]
+    r += wall("n", 74, -40, 86, 20, "s")
     r += [piece("tower_pier", 74.0, 20.0), piece("tower_pier", 86.0, 20.0), piece("tower_pier", 74.0, -40.0),
           piece("tower_pier", 74.0, -4.0), piece("tower_pier", 74.0, 2.0), piece("tower_pier", 86.0, -22.0)]
     for i, (x, z, yaw) in enumerate(((75.5, 10.0, 280.0), (84.5, 2.0, 24.0), (75.5, -8.0, 139.0), (84.5, -16.0, 251.0))):

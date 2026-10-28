@@ -16,6 +16,18 @@
    "StormWall"
   ]
  },
+ "fire_lights": [
+  {
+   "at": [
+    36.2,
+    1.35,
+    -7.4
+   ],
+   "energy": 6.0,
+   "range": 6.0,
+   "color": "#FFE6C8"
+  }
+ ],
  "pieces": [
   {
    "piece": "raft_deck",
@@ -394,7 +406,7 @@
     -8.6
    ],
    "y": 3.25,
-   "yaw_deg": -73.92
+   "yaw_deg": 240.0
   }
  ]
 }
