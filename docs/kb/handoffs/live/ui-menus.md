@@ -411,3 +411,4 @@ SELF-RENDERED @ f6db67f0f:
 - **battle_statuses:** the petrified face shows grey under the strata.
 - **battle_boss_intro_drownbell and battle_hud_preview:** faces on every hero chip and row, and each foe's picture in its diamond.
 - **field_objective_line, save_shrine_field, field_hero_party:** clean.
+MERGE-READY @ 588faa1a: M3-UI-101 (a foe's picture fills its timeline diamond; a petrified face greys under the strata) and the field HUD audit (no stand-ins). Checks: battle 765/0, battle_portraits 3/0, party 30/0, status 51/0; lint clean; shots self-rendered and viewed. Skipped: coverage (game/ui only, no battle core change).
