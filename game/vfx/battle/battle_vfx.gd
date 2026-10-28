@@ -49,6 +49,7 @@ var _last_flash_ms := -1000000
 var _process_cache: Dictionary = {}
 var _pool: Dictionary = {}
 var _draw_mesh: QuadMesh
+var _depth_cache: Dictionary = {}
 
 
 static func load_data() -> Dictionary:
@@ -301,7 +302,32 @@ func anchor(target: StringName, at: String) -> Vector3:
 	var spec := BattleStage.stand_in_spec(target)
 	var height := float(spec.get("height", 1.7))
 	# M3-BPR-420: a flier stands at its hover (the gulls, the squall wings): its hit lands on it, not on the sand below.
-	return f.global_position + Vector3.UP * (float(spec.get("hover", 0.0)) + height * frac)
+	var p := f.global_position + Vector3.UP * (float(spec.get("hover", 0.0)) + height * frac)
+	var cam := get_viewport().get_camera_3d() if is_inside_tree() else null
+	if at == "feet" or cam == null:
+		return p
+	# M3-BPR-420: on the body's near face, not its middle: inside the Cinder Matron's 2.9 m bulk a hit was hidden.
+	var to_cam := Vector3(cam.global_position.x - p.x, 0.0, cam.global_position.z - p.z)
+	return p + to_cam.normalized() * _half_depth(target, f) if to_cam.length() > 0.01 else p
+
+
+## Half the fighter's smaller horizontal extent (its actor's visible meshes, or its primitive's radius), measured once.
+func _half_depth(target: StringName, f: FighterStandIn) -> float:
+	if _depth_cache.has(target):
+		return float(_depth_cache[target])
+	var r := float(f.spec.get("radius", 0.0))
+	if f.has_actor():
+		var box := AABB()
+		var first := true
+		for n in f.actor().find_children("*", "MeshInstance3D", true, false):
+			var mi := n as MeshInstance3D
+			if mi.mesh != null and mi.is_visible_in_tree():
+				var b := mi.global_transform * mi.get_aabb()
+				box = b if first else box.merge(b)
+				first = false
+		r = 0.0 if first else minf(box.size.x, box.size.z) * 0.5
+	_depth_cache[target] = r
+	return r
 
 
 func _emitter(effect_id: StringName, def: Dictionary) -> GPUParticles3D:

@@ -717,8 +717,8 @@
             0
           ],
           "size_m": [
-            1.8,
-            2.2
+            0.9,
+            1.15
           ],
           "energy": 0.9,
           "emission_radius_m": 0.02,
@@ -758,7 +758,7 @@
           ]
         }
       ],
-      "note": "KO: the fighter dissolves into released glimmer rising in slow spirals, 0.15-0.4 m/s (color_script.md rule 1)."
+      "note": "KO: the fighter dissolves into released glimmer rising in slow spirals, 0.15-0.4 m/s (color_script.md rule 1). M3-BPR-420 (ADR 0041, arena self-render): the core flash trimmed from 1.8-2.2 m to 0.9-1.15 m; at battle distance it had bleached the fighters beside the fallen one."
     },
     "flash_preemptive": {
       "kind": "flash",
