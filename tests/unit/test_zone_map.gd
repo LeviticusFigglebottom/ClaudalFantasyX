@@ -213,7 +213,11 @@ func test_every_greybox_zone_builds_a_map() -> void:
 		for r: Variant in maps.route():
 			on_route = on_route or StringName(str((r as Dictionary)["id"])) == id
 		assert_true(on_route, "%s is on the route" % id)
-	assert_eq(seen, 27, "Act I's twelve (Ch1, Ch4 to Ch9) and Act II's fifteen (Ch10 to Ch16)")
+	assert_eq(
+		seen,
+		28,
+		"Act I's thirteen (Ch1, Ch3's causeway (M2-FP-1000), Ch4 to Ch9) and Act II's fifteen (Ch10 to Ch16, M3-UI-206)"
+	)
 
 
 func test_greybox_blocks_sort_by_height_and_hints() -> void:

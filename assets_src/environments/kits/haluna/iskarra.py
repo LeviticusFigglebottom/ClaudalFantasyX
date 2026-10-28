@@ -40,6 +40,8 @@ M_DARK = "kit_interior_dark"
 WATERLINE_M = 3.0  # the tower's foot is this far under the sea (the Prologue's water is at y 0, feet at -3)
 FLUTES = 18
 
+CHANNEL_HALF_W = 0.11  # the paving's inlaid ceramic channel strips
+
 TRI_BUDGET = {
     "iskarra_tower": (16000, 1200),
     "iskarra_crown_fallen": (4000, 300),
@@ -192,7 +194,8 @@ def build_crown_fallen(seed: int = 721) -> list[kc.MeshBuilder]:
 def _paving(mb: kc.MeshBuilder, x0: float, x1: float, z0: float, z1: float, y: float, rng, noise, lod: bool,
             keep=None, slab: float = 1.5) -> None:
     """Paving slabs on a grid, each a separate block with a joint around it, a few sunk or lifted; `keep(x, z)`
-    drops slabs (the broken corner). Every fourth row an inlaid ceramic channel."""
+    drops slabs (the broken corner). Every fourth row carries an inlaid ceramic channel: a narrow strip along the
+    middle of each slab, flush with it, so the rows read as lines across the plaza (not a checkerboard)."""
     if lod:
         return  # the podium's top stands in for the slabs
     for i, x in enumerate(np.arange(x0 + slab * 0.5, x1, slab)):
@@ -200,10 +203,14 @@ def _paving(mb: kc.MeshBuilder, x0: float, x1: float, z0: float, z1: float, y: f
             if keep is not None and not keep(x, z):
                 continue
             dy = rng.normal(0.0, 0.02) - (0.08 if rng.random() < 0.06 else 0.0)
-            mat = mb.material(M_CERAMIC) if j % 4 == 1 and i % 2 == 0 else mb.material(M_PAVING)
-            kc.rounded_block(mb, (x, y - 0.15 + dy, z), (slab * 0.5 - 0.03, 0.15, slab * 0.5 - 0.03), mat,
-                             rot=kc.rot_y(rng.normal(0.0, 0.01)), radius=0.03, seg=1, noise=noise, disp_m=0.008,
-                             weather=WORN, variation=float(rng.random()))
+            yaw = rng.normal(0.0, 0.01)
+            kc.rounded_block(mb, (x, y - 0.15 + dy, z), (slab * 0.5 - 0.03, 0.15, slab * 0.5 - 0.03),
+                             mb.material(M_PAVING), rot=kc.rot_y(yaw), radius=0.03, seg=1, noise=noise,
+                             disp_m=0.008, weather=WORN, variation=float(rng.random()))
+            if j % 4 == 1:
+                kc.rounded_block(mb, (x, y - 0.02 + dy + 0.003, z), (slab * 0.5 - 0.03, 0.02, CHANNEL_HALF_W),
+                                 mb.material(M_CERAMIC), rot=kc.rot_y(yaw), radius=0.01, seg=1,
+                                 weather=WORN, variation=float(rng.random()))
 
 
 def build_plaza(seed: int = 722, *, w: float = 34.0, d: float = 18.0) -> list[kc.MeshBuilder]:
@@ -214,8 +221,8 @@ def build_plaza(seed: int = 722, *, w: float = 34.0, d: float = 18.0) -> list[kc
         noise = kc.Noise3(rng)
         mb = kc.MeshBuilder("iskarra_plaza" + ("-lod1" if lod else ""))
 
-        def keep(x, z):  # the back-right corner has fallen into the sea along a ragged line
-            return (x - hx * 0.25) * 0.55 + (-z - hz * 0.2) < 6.0 + 1.5 * math.sin(x * 0.9)
+        def keep(x, z):  # the back-right corner has fallen into the sea along a ragged line (clear of Kerrid's vigil)
+            return (x - hx * 0.25) * 0.55 + (-z - hz * 0.2) < 7.5 + 1.5 * math.sin(x * 0.9)
 
         _paving(mb, -hx, hx, -hz, hz - 2.4, 0.0, rng, noise, lod, keep=keep)
         # The plaza's body: a massive ceramic-faced podium down into the water, in 3 m bays whose back ends follow

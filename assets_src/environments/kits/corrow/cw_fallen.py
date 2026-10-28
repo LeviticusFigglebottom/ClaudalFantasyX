@@ -37,7 +37,7 @@ import cw_stair
 import cw_watchers as cwh
 from cw_common import kc
 
-TRI_BUDGET = {"watcher_head": (8000, 500), "watcher_head_broken": (9000, 600), "fisher_stair_broken": (12000, 900),
+TRI_BUDGET = {"watcher_head": (10500, 500), "watcher_head_broken": (11000, 600), "fisher_stair_broken": (12000, 900),
               "liss_hoist_cut": (3000, 300)}
 BUDGET_KEY = {"watcher_head_b": "watcher_head", "watcher_head_fallen": "watcher_head_broken",
               "watcher_head_cracked": "watcher_head_broken"}

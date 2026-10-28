@@ -1,0 +1,1281 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://game/levels/ch02/haluna/haluna_mood.gd" id="1_rig"]
+[ext_resource type="Script" path="res://game/levels/ch02/haluna/haluna_shot_camera.gd" id="2_cam"]
+[ext_resource type="Script" path="res://game/world/camera_shot.gd" id="3_shot"]
+[ext_resource type="Script" path="res://game/world/water/water_surface.gd" id="4_water"]
+[ext_resource type="Resource" path="res://game/world/water/lagoon_waves.tres" id="5_waves"]
+[ext_resource type="Material" path="res://game/levels/_tests/tamsule_bell_kit/tamsule_water_material.tres" id="6_water_mat"]
+[ext_resource type="Environment" path="res://game/levels/_tests/tamsule_bell_kit/tamsule_noon_environment.tres" id="7_env"]
+[ext_resource type="Texture2D" path="res://assets/environments/kits/haluna/textures/sand_albedo.png" id="8_sand"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/tamsule_bell/boardwalk_8m.glb" id="9_boardwalk_8m"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/tamsule_bell/bunting_12m.glb" id="10_bunting_12m"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/tamsule_bell/captain_platform.glb" id="11_captain_platform"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/tamsule_bell/catch_pool.glb" id="12_catch_pool"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/tamsule_bell/gallery_segment_a.glb" id="13_gallery_segment_a"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/tamsule_bell/gallery_segment_b.glb" id="14_gallery_segment_b"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/tamsule_bell/gallery_segment_c.glb" id="15_gallery_segment_c"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/tamsule_bell/gantry_head.glb" id="16_gantry_head"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/tamsule_bell/gantry_leg.glb" id="17_gantry_leg"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/tamsule_bell/goal_ring.glb" id="18_goal_ring"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/tamsule_bell/market_boat_a.glb" id="19_market_boat_a"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/tamsule_bell/market_boat_b.glb" id="20_market_boat_b"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/tamsule_bell/market_stall.glb" id="21_market_stall"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/tamsule_bell/mooring_post.glb" id="22_mooring_post"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/tamsule_bell/oruvel_moorings.glb" id="23_oruvel_moorings"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/tamsule_bell/pennant_line.glb" id="24_pennant_line"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/tamsule_bell/plank_bridge_4m.glb" id="25_plank_bridge_4m"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/tamsule_bell/port_deck_8m.glb" id="26_port_deck_8m"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/tamsule_bell/port_deck_8m_rail.glb" id="27_port_deck_8m_rail"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/tamsule_bell/shophouse_a.glb" id="28_shophouse_a"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/tamsule_bell/shophouse_b.glb" id="29_shophouse_b"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/tamsule_bell/signboard_gilded.glb" id="30_signboard_gilded"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/tamsule_bell/tamsule_bell.glb" id="31_tamsule_bell"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/corrow/trader_boat.glb" id="32_trader_boat"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/tamsule_bell/watch_boat.glb" id="33_watch_boat"]
+
+[sub_resource type="Resource" id="ShotTP01"]
+script = ExtResource("3_shot")
+id = &"TP01"
+position = Vector3(0, 1.2, 80)
+look_at = Vector3(0, 22, -60)
+fov_deg = 53.1
+
+[sub_resource type="Resource" id="ShotTP02"]
+script = ExtResource("3_shot")
+id = &"TP02"
+position = Vector3(3, 1.6, 22)
+look_at = Vector3(-9, 0.6, 18)
+fov_deg = 37.8
+
+[sub_resource type="Resource" id="ShotTP03"]
+script = ExtResource("3_shot")
+id = &"TP03"
+position = Vector3(6, 1.6, 10)
+look_at = Vector3(-6, 0.8, 0)
+fov_deg = 37.8
+
+[sub_resource type="Resource" id="ShotTP04"]
+script = ExtResource("3_shot")
+id = &"TP04"
+position = Vector3(-14, 1.6, 6)
+look_at = Vector3(-30, 2.4, 3.5)
+fov_deg = 46.4
+
+[sub_resource type="Resource" id="ShotTP05"]
+script = ExtResource("3_shot")
+id = &"TP05"
+position = Vector3(0, 1.4, -8)
+look_at = Vector3(0, 9.5, -40)
+fov_deg = 53.1
+
+[sub_resource type="Resource" id="ShotTP06"]
+script = ExtResource("3_shot")
+id = &"TP06"
+position = Vector3(4, 1.7, -8)
+look_at = Vector3(16, 0.6, -12)
+fov_deg = 37.8
+
+[sub_resource type="Resource" id="ShotTP07"]
+script = ExtResource("3_shot")
+id = &"TP07"
+position = Vector3(11, 1.6, -12.4)
+look_at = Vector3(16, 1.5, -12.4)
+fov_deg = 27.0
+
+[sub_resource type="Resource" id="ShotTP08"]
+script = ExtResource("3_shot")
+id = &"TP08"
+position = Vector3(31, 2.2, 14)
+look_at = Vector3(0, 6, -10)
+fov_deg = 37.8
+
+[sub_resource type="Resource" id="ShotTP09"]
+script = ExtResource("3_shot")
+id = &"TP09"
+position = Vector3(31, 2.2, 14)
+look_at = Vector3(14, 0.5, -57)
+fov_deg = 20.9
+
+[sub_resource type="PlaneMesh" id="RiverbedMesh"]
+size = Vector2(2400, 2400)
+
+[sub_resource type="StandardMaterial3D" id="RiverbedMat"]
+albedo_color = Color(0.6118, 0.5569, 0.4627, 1)
+albedo_texture = ExtResource("8_sand")
+roughness = 0.95
+uv1_triplanar = true
+uv1_scale = Vector3(0.5, 0.5, 0.5)
+
+[node name="TamsulePortKit" type="Node3D" node_paths=PackedStringArray("sun", "water", "world_environment")]
+script = ExtResource("1_rig")
+sun = NodePath("Sun")
+water = NodePath("Water")
+world_environment = NodePath("WorldEnvironment")
+sun_elevation_deg = 78.0
+sun_azimuth_deg = 180.0
+time_of_day_h = 12.25
+wind_azimuth_deg = 0.0
+wind_speed_m_s = 4.0
+wind_gust = 0.25
+water_height_m = -1.6
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = ExtResource("7_env")
+
+[node name="Sun" type="DirectionalLight3D" parent="."]
+light_color = Color(1, 0.9529, 0.9059, 1)
+light_energy = 3.2
+shadow_enabled = true
+shadow_bias = 0.03
+shadow_normal_bias = 1.0
+shadow_blur = 1.2
+sky_mode = 1
+directional_shadow_mode = 2
+directional_shadow_split_1 = 0.05
+directional_shadow_split_2 = 0.15
+directional_shadow_split_3 = 0.4
+directional_shadow_max_distance = 400.0
+
+[node name="Water" type="Node3D" parent="."]
+position = Vector3(0, -1.6, 0)
+script = ExtResource("4_water")
+publishes_water_level = true
+wave_set = ExtResource("5_waves")
+material = ExtResource("6_water_mat")
+
+[node name="Riverbed" type="MeshInstance3D" parent="."]
+position = Vector3(0, -5.1, 0)
+mesh = SubResource("RiverbedMesh")
+surface_material_override/0 = SubResource("RiverbedMat")
+
+[node name="Port" type="Node3D" parent="."]
+
+[node name="QuayDeckW" parent="Port" instance=ExtResource("26_port_deck_8m")]
+position = Vector3(-3.5, 0, 18.5)
+
+[node name="QuayDeckE" parent="Port" instance=ExtResource("26_port_deck_8m")]
+position = Vector3(3.5, 0, 18.5)
+
+[node name="QuayEdgeW" parent="Port" instance=ExtResource("27_port_deck_8m_rail")]
+position = Vector3(-3.5, 0, 21.5)
+
+[node name="QuayEdgeE" parent="Port" instance=ExtResource("27_port_deck_8m_rail")]
+position = Vector3(3.5, 0, 21.5)
+
+[node name="QuayPostW" parent="Port" instance=ExtResource("22_mooring_post")]
+position = Vector3(-7.6, -1.6, 24.8)
+
+[node name="QuayPostE" parent="Port" instance=ExtResource("22_mooring_post")]
+position = Vector3(7.6, -1.6, 24.8)
+
+[node name="Barge" parent="Port" instance=ExtResource("33_watch_boat")]
+position = Vector3(-10.5, -1.6, 21)
+rotation = Vector3(0, 1.570796, 0)
+
+[node name="QuayBridge" parent="Port" instance=ExtResource("25_plank_bridge_4m")]
+position = Vector3(0, 0, 14)
+rotation = Vector3(0, 1.570796, 0)
+
+[node name="MarketDeck0" parent="Port" instance=ExtResource("26_port_deck_8m")]
+position = Vector3(-8, 0, 0.5)
+
+[node name="MarketDeck1" parent="Port" instance=ExtResource("26_port_deck_8m")]
+position = Vector3(0, 0, 0.5)
+
+[node name="MarketDeck2" parent="Port" instance=ExtResource("26_port_deck_8m")]
+position = Vector3(8, 0, 0.5)
+
+[node name="MarketDeck3" parent="Port" instance=ExtResource("26_port_deck_8m")]
+position = Vector3(-8, 0, 7.5)
+
+[node name="MarketDeck4" parent="Port" instance=ExtResource("26_port_deck_8m")]
+position = Vector3(0, 0, 7.5)
+
+[node name="MarketDeck5" parent="Port" instance=ExtResource("26_port_deck_8m")]
+position = Vector3(8, 0, 7.5)
+
+[node name="StallA" parent="Port" instance=ExtResource("21_market_stall")]
+position = Vector3(-6, 0, 6)
+
+[node name="StallB" parent="Port" instance=ExtResource("21_market_stall")]
+position = Vector3(6, 0, 2)
+rotation = Vector3(0, 3.141593, 0)
+
+[node name="StallC" parent="Port" instance=ExtResource("21_market_stall")]
+position = Vector3(-1.5, 0, 9.5)
+
+[node name="StallD" parent="Port" instance=ExtResource("21_market_stall")]
+position = Vector3(2.5, 0, -1.5)
+rotation = Vector3(0, 3.141593, 0)
+
+[node name="StallE" parent="Port" instance=ExtResource("21_market_stall")]
+position = Vector3(-9.5, 0, -1)
+rotation = Vector3(0, 3.141593, 0)
+
+[node name="StallF" parent="Port" instance=ExtResource("21_market_stall")]
+position = Vector3(9, 0, 9.5)
+
+[node name="MarketBoatW0" parent="Port" instance=ExtResource("19_market_boat_a")]
+position = Vector3(-13.6, -1.6, -0.5)
+rotation = Vector3(0, 1.605703, 0)
+
+[node name="MarketBoatW1" parent="Port" instance=ExtResource("20_market_boat_b")]
+position = Vector3(-13.4, -1.6, 9)
+rotation = Vector3(0, 1.500983, 0)
+
+[node name="MarketBoatE0" parent="Port" instance=ExtResource("20_market_boat_b")]
+position = Vector3(13.4, -1.6, -1)
+rotation = Vector3(0, 1.640609, 0)
+
+[node name="MarketBoatS0" parent="Port" instance=ExtResource("19_market_boat_a")]
+position = Vector3(-5, -1.6, 12.8)
+rotation = Vector3(0, 0.034907, 0)
+
+[node name="MarketBoatS1" parent="Port" instance=ExtResource("20_market_boat_b")]
+position = Vector3(6, -1.6, 12.6)
+rotation = Vector3(0, 3.106686, 0)
+
+[node name="BuntingMarket0" parent="Port" instance=ExtResource("10_bunting_12m")]
+position = Vector3(-4, 0, 4)
+
+[node name="BuntingMarket1" parent="Port" instance=ExtResource("10_bunting_12m")]
+position = Vector3(6, 0, 4)
+rotation = Vector3(0, 1.570796, 0)
+
+[node name="LaneBridge" parent="Port" instance=ExtResource("25_plank_bridge_4m")]
+position = Vector3(-13, 0, 4)
+
+[node name="LaneWalk0" parent="Port" instance=ExtResource("9_boardwalk_8m")]
+position = Vector3(-18, -1.6, 2.5)
+rotation = Vector3(0, 3.141593, 0)
+
+[node name="LaneWalk1" parent="Port" instance=ExtResource("9_boardwalk_8m")]
+position = Vector3(-26, -1.6, 2.5)
+rotation = Vector3(0, 3.141593, 0)
+
+[node name="LaneWalk2" parent="Port" instance=ExtResource("9_boardwalk_8m")]
+position = Vector3(-18, -1.6, 5.5)
+
+[node name="LaneWalk3" parent="Port" instance=ExtResource("9_boardwalk_8m")]
+position = Vector3(-26, -1.6, 5.5)
+
+[node name="LaneHouseN0" parent="Port" instance=ExtResource("28_shophouse_a")]
+position = Vector3(-17.5, -1.6, -4.2)
+
+[node name="LaneHouseN1" parent="Port" instance=ExtResource("29_shophouse_b")]
+position = Vector3(-26, -1.6, -3.8)
+
+[node name="LaneHouseS0" parent="Port" instance=ExtResource("29_shophouse_b")]
+position = Vector3(-17, -1.6, 12)
+rotation = Vector3(0, 3.141593, 0)
+
+[node name="LaneHouseS1" parent="Port" instance=ExtResource("28_shophouse_a")]
+position = Vector3(-25.5, -1.6, 12.4)
+rotation = Vector3(0, 3.141593, 0)
+
+[node name="BuntingLane" parent="Port" instance=ExtResource("10_bunting_12m")]
+position = Vector3(-22, 0, 4)
+
+[node name="GantryBridge" parent="Port" instance=ExtResource("25_plank_bridge_4m")]
+position = Vector3(0, 0, -6)
+rotation = Vector3(0, 1.570796, 0)
+
+[node name="GantryDeck0" parent="Port" instance=ExtResource("26_port_deck_8m")]
+position = Vector3(-4, 0, -11)
+
+[node name="GantryDeck1" parent="Port" instance=ExtResource("26_port_deck_8m")]
+position = Vector3(4, 0, -11)
+
+[node name="GantryDeck2" parent="Port" instance=ExtResource("27_port_deck_8m_rail")]
+position = Vector3(-4, 0, -17)
+rotation = Vector3(0, 3.141593, 0)
+
+[node name="GantryDeck3" parent="Port" instance=ExtResource("27_port_deck_8m_rail")]
+position = Vector3(4, 0, -17)
+rotation = Vector3(0, 3.141593, 0)
+
+[node name="GantryBoardW" parent="Port" instance=ExtResource("30_signboard_gilded")]
+position = Vector3(-3.2, 0, -18.6)
+
+[node name="GantryBoardE" parent="Port" instance=ExtResource("30_signboard_gilded")]
+position = Vector3(3.2, 0, -18.6)
+
+[node name="BuntingGantry" parent="Port" instance=ExtResource("10_bunting_12m")]
+position = Vector3(0, 0, -13)
+
+[node name="BoatBridge" parent="Port" instance=ExtResource("25_plank_bridge_4m")]
+position = Vector3(8.5, 0, -12)
+
+[node name="PackedBoat0" parent="Port" instance=ExtResource("19_market_boat_a")]
+position = Vector3(14, -1.6, -14.6)
+
+[node name="PackedBoat1" parent="Port" instance=ExtResource("19_market_boat_a")]
+position = Vector3(14.4, -1.6, -12.5)
+rotation = Vector3(0, 3.141593, 0)
+
+[node name="PackedBoat2" parent="Port" instance=ExtResource("20_market_boat_b")]
+position = Vector3(13.6, -1.6, -10.4)
+
+[node name="PackedBoat3" parent="Port" instance=ExtResource("20_market_boat_b")]
+position = Vector3(15, -1.6, -8.6)
+rotation = Vector3(0, 3.141593, 0)
+
+[node name="PackedBoat4" parent="Port" instance=ExtResource("33_watch_boat")]
+position = Vector3(18.6, -1.6, -16.4)
+rotation = Vector3(0, 0.069813, 0)
+
+[node name="HarbourBridge0" parent="Port" instance=ExtResource("25_plank_bridge_4m")]
+position = Vector3(14, 0, 8)
+
+[node name="HarbourBridge1" parent="Port" instance=ExtResource("25_plank_bridge_4m")]
+position = Vector3(18, 0, 8)
+
+[node name="HarbourDeck0" parent="Port" instance=ExtResource("27_port_deck_8m_rail")]
+position = Vector3(24, 0, 6)
+rotation = Vector3(0, 4.712389, 0)
+
+[node name="HarbourDeck1" parent="Port" instance=ExtResource("27_port_deck_8m_rail")]
+position = Vector3(24, 0, 13)
+rotation = Vector3(0, 4.712389, 0)
+
+[node name="HarbourPost0" parent="Port" instance=ExtResource("22_mooring_post")]
+position = Vector3(27.6, -1.6, 4.5)
+
+[node name="HarbourPost1" parent="Port" instance=ExtResource("22_mooring_post")]
+position = Vector3(27.6, -1.6, 15.5)
+
+[node name="Trader" parent="Port" instance=ExtResource("32_trader_boat")]
+position = Vector3(30.6, -1.6, 10)
+
+[node name="ReachBell" parent="Port" instance=ExtResource("31_tamsule_bell")]
+position = Vector3(0, -1.6, -75)
+
+[node name="ReachGoalRing" parent="Port" instance=ExtResource("18_goal_ring")]
+position = Vector3(0, -1.6, -75)
+
+[node name="ReachGantryHead" parent="Port" instance=ExtResource("16_gantry_head")]
+position = Vector3(0, -1.6, -75)
+
+[node name="ReachGantryLeg0" parent="Port" instance=ExtResource("17_gantry_leg")]
+position = Vector3(0, -1.6, -75)
+
+[node name="ReachGantryLeg1" parent="Port" instance=ExtResource("17_gantry_leg")]
+position = Vector3(0, -1.6, -75)
+rotation = Vector3(0, -1.047198, 0)
+
+[node name="ReachGantryLeg2" parent="Port" instance=ExtResource("17_gantry_leg")]
+position = Vector3(0, -1.6, -75)
+rotation = Vector3(0, -2.094395, 0)
+
+[node name="ReachGantryLeg3" parent="Port" instance=ExtResource("17_gantry_leg")]
+position = Vector3(0, -1.6, -75)
+rotation = Vector3(0, -3.141593, 0)
+
+[node name="ReachGantryLeg4" parent="Port" instance=ExtResource("17_gantry_leg")]
+position = Vector3(0, -1.6, -75)
+rotation = Vector3(0, -4.188790, 0)
+
+[node name="ReachGantryLeg5" parent="Port" instance=ExtResource("17_gantry_leg")]
+position = Vector3(0, -1.6, -75)
+rotation = Vector3(0, -5.235988, 0)
+
+[node name="ReachCatchPool" parent="Port" instance=ExtResource("12_catch_pool")]
+position = Vector3(0, -1.6, -75)
+
+[node name="ReachGallery040" parent="Port" instance=ExtResource("13_gallery_segment_a")]
+position = Vector3(0, -1.6, -75)
+rotation = Vector3(0, -0.698132, 0)
+
+[node name="ReachGallery090" parent="Port" instance=ExtResource("14_gallery_segment_b")]
+position = Vector3(0, -1.6, -75)
+rotation = Vector3(0, -1.570796, 0)
+
+[node name="ReachGallery140" parent="Port" instance=ExtResource("13_gallery_segment_a")]
+position = Vector3(0, -1.6, -75)
+rotation = Vector3(0, -2.443461, 0)
+
+[node name="ReachGallery220" parent="Port" instance=ExtResource("14_gallery_segment_b")]
+position = Vector3(0, -1.6, -75)
+rotation = Vector3(0, -3.839724, 0)
+
+[node name="ReachGallery270" parent="Port" instance=ExtResource("15_gallery_segment_c")]
+position = Vector3(0, -1.6, -75)
+rotation = Vector3(0, -4.712389, 0)
+
+[node name="ReachGallery320" parent="Port" instance=ExtResource("13_gallery_segment_a")]
+position = Vector3(0, -1.6, -75)
+rotation = Vector3(0, -5.585054, 0)
+
+[node name="ReachPlatformEast" parent="Port" instance=ExtResource("11_captain_platform")]
+position = Vector3(0, -1.6, -75)
+rotation = Vector3(0, -1.570796, 0)
+
+[node name="ReachPlatformWest" parent="Port" instance=ExtResource("11_captain_platform")]
+position = Vector3(0, -1.6, -75)
+rotation = Vector3(0, -4.712389, 0)
+
+[node name="ReachOruvelMoorings" parent="Port" instance=ExtResource("23_oruvel_moorings")]
+position = Vector3(12.045, -1.6, -92.202)
+rotation = Vector3(0, -0.610865, 0)
+
+[node name="ReachMooring00" parent="Port" instance=ExtResource("22_mooring_post")]
+position = Vector3(19.471, -1.6, -67.133)
+rotation = Vector3(0, 1.607797, 0)
+
+[node name="ReachMooring01" parent="Port" instance=ExtResource("22_mooring_post")]
+position = Vector3(17.907, -1.6, -62.921)
+rotation = Vector3(0, 5.575786, 0)
+
+[node name="ReachMooring02" parent="Port" instance=ExtResource("22_mooring_post")]
+position = Vector3(7.867, -1.6, -55.529)
+rotation = Vector3(0, 5.936633, 0)
+
+[node name="ReachMooring03" parent="Port" instance=ExtResource("22_mooring_post")]
+position = Vector3(5.226, -1.6, -54.042)
+rotation = Vector3(0, 6.043953, 0)
+
+[node name="ReachMooring04" parent="Port" instance=ExtResource("22_mooring_post")]
+position = Vector3(-5.788, -1.6, -54.814)
+rotation = Vector3(0, 2.622636, 0)
+
+[node name="ReachMooring05" parent="Port" instance=ExtResource("22_mooring_post")]
+position = Vector3(-8.786, -1.6, -55.267)
+rotation = Vector3(0, 3.470116, 0)
+
+[node name="ReachMooring06" parent="Port" instance=ExtResource("22_mooring_post")]
+position = Vector3(-16.989, -1.6, -62.657)
+rotation = Vector3(0, 3.660933, 0)
+
+[node name="ReachMooring07" parent="Port" instance=ExtResource("22_mooring_post")]
+position = Vector3(-19.733, -1.6, -66.214)
+rotation = Vector3(0, 2.254791, 0)
+
+[node name="ReachMooring08" parent="Port" instance=ExtResource("22_mooring_post")]
+position = Vector3(-18.875, -1.6, -84.206)
+rotation = Vector3(0, 0.656157, 0)
+
+[node name="ReachMooring09" parent="Port" instance=ExtResource("22_mooring_post")]
+position = Vector3(-17.907, -1.6, -87.079)
+rotation = Vector3(0, 2.872061, 0)
+
+[node name="ReachMooring10" parent="Port" instance=ExtResource("22_mooring_post")]
+position = Vector3(-12.929, -1.6, -91.548)
+rotation = Vector3(0, 4.940242, 0)
+
+[node name="ReachMooring11" parent="Port" instance=ExtResource("22_mooring_post")]
+position = Vector3(-9.469, -1.6, -94.414)
+rotation = Vector3(0, 1.779276, 0)
+
+[node name="ReachBoat0" parent="Port" instance=ExtResource("33_watch_boat")]
+position = Vector3(20.131, -1.6, -64.296)
+rotation = Vector3(0, 1.044405, 0)
+
+[node name="ReachBoat1" parent="Port" instance=ExtResource("33_watch_boat")]
+position = Vector3(7.046, -1.6, -53.316)
+rotation = Vector3(0, 0.338576, 0)
+
+[node name="ReachBoat2" parent="Port" instance=ExtResource("33_watch_boat")]
+position = Vector3(-19.572, -1.6, -63.7)
+rotation = Vector3(0, -1.092035, 0)
+
+[node name="ReachBoat3" parent="Port" instance=ExtResource("33_watch_boat")]
+position = Vector3(-19.919, -1.6, -86.5)
+rotation = Vector3(0, -2.157593, 0)
+
+[node name="ReachBoat4" parent="Port" instance=ExtResource("33_watch_boat")]
+position = Vector3(-11.923, -1.6, -94.081)
+rotation = Vector3(0, -2.628867, 0)
+
+[node name="ReachBoatLane0" parent="Port" instance=ExtResource("33_watch_boat")]
+position = Vector3(-3.209, -1.6, -120.888)
+rotation = Vector3(0, 1.658063, 0)
+
+[node name="ReachBoatLane1" parent="Port" instance=ExtResource("33_watch_boat")]
+position = Vector3(6.063, -1.6, -132.682)
+rotation = Vector3(0, 1.396263, 0)
+
+[node name="ReachPennants060" parent="Port" instance=ExtResource("24_pennant_line")]
+position = Vector3(0, -1.6, -75)
+rotation = Vector3(0, -1.047198, 0)
+
+[node name="ReachPennants120" parent="Port" instance=ExtResource("24_pennant_line")]
+position = Vector3(0, -1.6, -75)
+rotation = Vector3(0, -2.094395, 0)
+
+[node name="ReachPennants240" parent="Port" instance=ExtResource("24_pennant_line")]
+position = Vector3(0, -1.6, -75)
+rotation = Vector3(0, -4.188790, 0)
+
+[node name="ReachPennants300" parent="Port" instance=ExtResource("24_pennant_line")]
+position = Vector3(0, -1.6, -75)
+rotation = Vector3(0, -5.235988, 0)
+
+[node name="ReachLaneSign0" parent="Port" instance=ExtResource("30_signboard_gilded")]
+position = Vector3(-4.849, 0.8, -105.618)
+rotation = Vector3(0, 3.298672, 0)
+
+[node name="ReachLaneSign1" parent="Port" instance=ExtResource("30_signboard_gilded")]
+position = Vector3(4.849, 0.8, -105.618)
+rotation = Vector3(0, 2.984513, 0)
+
+[node name="ReachHouse000" parent="Port" instance=ExtResource("28_shophouse_a")]
+position = Vector3(83.746, -1.6, -127.33)
+rotation = Vector3(0, -1.067984, 0)
+scale = Vector3(1.121, 1.121, 1.121)
+
+[node name="ReachHouse001" parent="Port" instance=ExtResource("29_shophouse_b")]
+position = Vector3(88.072, -1.6, -118.036)
+rotation = Vector3(0, -1.048157, 0)
+scale = Vector3(1.18, 1.18, 1.18)
+
+[node name="ReachHouse002" parent="Port" instance=ExtResource("29_shophouse_b")]
+position = Vector3(93.774, -1.6, -109.362)
+rotation = Vector3(0, -1.157502, 0)
+scale = Vector3(1.248, 1.248, 1.248)
+
+[node name="ReachHouse003" parent="Port" instance=ExtResource("29_shophouse_b")]
+position = Vector3(96.008, -1.6, -98.961)
+rotation = Vector3(0, -1.305960, 0)
+scale = Vector3(0.91, 0.91, 0.91)
+
+[node name="ReachHouse004" parent="Port" instance=ExtResource("28_shophouse_a")]
+position = Vector3(98.096, -1.6, -89.14)
+rotation = Vector3(0, -1.437628, 0)
+scale = Vector3(1.222, 1.222, 1.222)
+
+[node name="ReachHouse005" parent="Port" instance=ExtResource("29_shophouse_b")]
+position = Vector3(100.681, -1.6, -78.306)
+rotation = Vector3(0, -1.559626, 0)
+scale = Vector3(1.09, 1.09, 1.09)
+
+[node name="ReachHouse006" parent="Port" instance=ExtResource("29_shophouse_b")]
+position = Vector3(98.977, -1.6, -67.352)
+rotation = Vector3(0, -1.591007, 0)
+scale = Vector3(1.293, 1.293, 1.293)
+
+[node name="ReachHouse007" parent="Port" instance=ExtResource("28_shophouse_a")]
+position = Vector3(96.668, -1.6, -55.997)
+rotation = Vector3(0, -1.829594, 0)
+scale = Vector3(1.072, 1.072, 1.072)
+
+[node name="ReachHouse008" parent="Port" instance=ExtResource("29_shophouse_b")]
+position = Vector3(96.33, -1.6, -43.781)
+rotation = Vector3(0, -1.885322, 0)
+scale = Vector3(1.257, 1.257, 1.257)
+
+[node name="ReachHouse009" parent="Port" instance=ExtResource("28_shophouse_a")]
+position = Vector3(88.779, -1.6, -33.376)
+rotation = Vector3(0, -2.042419, 0)
+scale = Vector3(1.223, 1.223, 1.223)
+
+[node name="ReachHouse010" parent="Port" instance=ExtResource("29_shophouse_b")]
+position = Vector3(85.894, -1.6, -20.968)
+rotation = Vector3(0, -2.135690, 0)
+scale = Vector3(1.166, 1.166, 1.166)
+
+[node name="ReachHouse011" parent="Port" instance=ExtResource("28_shophouse_a")]
+position = Vector3(77.809, -1.6, -11.448)
+rotation = Vector3(0, -2.223497, 0)
+scale = Vector3(0.983, 0.983, 0.983)
+
+[node name="ReachHouse012" parent="Port" instance=ExtResource("29_shophouse_b")]
+position = Vector3(100.394, -1.6, -130.649)
+rotation = Vector3(0, -1.089155, 0)
+scale = Vector3(1.2, 1.2, 1.2)
+
+[node name="ReachHouse013" parent="Port" instance=ExtResource("29_shophouse_b")]
+position = Vector3(107.207, -1.6, -120.284)
+rotation = Vector3(0, -1.203370, 0)
+scale = Vector3(0.935, 0.935, 0.935)
+
+[node name="ReachHouse014" parent="Port" instance=ExtResource("28_shophouse_a")]
+position = Vector3(108.717, -1.6, -109.186)
+rotation = Vector3(0, -1.241749, 0)
+scale = Vector3(1.284, 1.284, 1.284)
+
+[node name="ReachHouse015" parent="Port" instance=ExtResource("28_shophouse_a")]
+position = Vector3(109.283, -1.6, -97.74)
+rotation = Vector3(0, -1.354445, 0)
+scale = Vector3(0.967, 0.967, 0.967)
+
+[node name="ReachHouse016" parent="Port" instance=ExtResource("29_shophouse_b")]
+position = Vector3(113.203, -1.6, -86.825)
+rotation = Vector3(0, -1.535261, 0)
+scale = Vector3(1.065, 1.065, 1.065)
+
+[node name="ReachHouse017" parent="Port" instance=ExtResource("28_shophouse_a")]
+position = Vector3(113.574, -1.6, -76.276)
+rotation = Vector3(0, -1.622912, 0)
+scale = Vector3(1.151, 1.151, 1.151)
+
+[node name="ReachHouse018" parent="Port" instance=ExtResource("29_shophouse_b")]
+position = Vector3(111.608, -1.6, -65.043)
+rotation = Vector3(0, -1.609874, 0)
+scale = Vector3(0.886, 0.886, 0.886)
+
+[node name="ReachHouse019" parent="Port" instance=ExtResource("29_shophouse_b")]
+position = Vector3(110.492, -1.6, -54.651)
+rotation = Vector3(0, -1.800604, 0)
+scale = Vector3(0.936, 0.936, 0.936)
+
+[node name="ReachHouse020" parent="Port" instance=ExtResource("29_shophouse_b")]
+position = Vector3(109.617, -1.6, -41.573)
+rotation = Vector3(0, -1.810866, 0)
+scale = Vector3(1.015, 1.015, 1.015)
+
+[node name="ReachHouse021" parent="Port" instance=ExtResource("28_shophouse_a")]
+position = Vector3(105.21, -1.6, -30.005)
+rotation = Vector3(0, -1.947194, 0)
+scale = Vector3(1.078, 1.078, 1.078)
+
+[node name="ReachHouse022" parent="Port" instance=ExtResource("29_shophouse_b")]
+position = Vector3(101.762, -1.6, -18.435)
+rotation = Vector3(0, -2.089683, 0)
+scale = Vector3(0.974, 0.974, 0.974)
+
+[node name="ReachHouse023" parent="Port" instance=ExtResource("28_shophouse_a")]
+position = Vector3(95.364, -1.6, -8.379)
+rotation = Vector3(0, -2.165849, 0)
+scale = Vector3(1.079, 1.079, 1.079)
+
+[node name="ReachHouse024" parent="Port" instance=ExtResource("29_shophouse_b")]
+position = Vector3(88.267, -1.6, 0.457)
+rotation = Vector3(0, -2.324360, 0)
+scale = Vector3(1.197, 1.197, 1.197)
+
+[node name="ReachHouse025" parent="Port" instance=ExtResource("28_shophouse_a")]
+position = Vector3(112.414, -1, -141.217)
+rotation = Vector3(0, -0.980282, 0)
+scale = Vector3(1.194, 1.194, 1.194)
+
+[node name="ReachHouse026" parent="Port" instance=ExtResource("28_shophouse_a")]
+position = Vector3(120.951, -1, -127.19)
+rotation = Vector3(0, -1.099051, 0)
+scale = Vector3(0.924, 0.924, 0.924)
+
+[node name="ReachHouse027" parent="Port" instance=ExtResource("29_shophouse_b")]
+position = Vector3(126.079, -1, -113.101)
+rotation = Vector3(0, -1.288664, 0)
+scale = Vector3(1.003, 1.003, 1.003)
+
+[node name="ReachHouse028" parent="Port" instance=ExtResource("29_shophouse_b")]
+position = Vector3(130.524, -1, -98.388)
+rotation = Vector3(0, -1.437366, 0)
+scale = Vector3(1.057, 1.057, 1.057)
+
+[node name="ReachHouse029" parent="Port" instance=ExtResource("28_shophouse_a")]
+position = Vector3(131.859, -1, -84.468)
+rotation = Vector3(0, -1.564461, 0)
+scale = Vector3(1.025, 1.025, 1.025)
+
+[node name="ReachHouse030" parent="Port" instance=ExtResource("29_shophouse_b")]
+position = Vector3(133.021, -1, -68.449)
+rotation = Vector3(0, -1.567672, 0)
+scale = Vector3(1.187, 1.187, 1.187)
+
+[node name="ReachHouse031" parent="Port" instance=ExtResource("28_shophouse_a")]
+position = Vector3(128.047, -1, -53.507)
+rotation = Vector3(0, -1.791319, 0)
+scale = Vector3(1.082, 1.082, 1.082)
+
+[node name="ReachHouse032" parent="Port" instance=ExtResource("29_shophouse_b")]
+position = Vector3(129.072, -1, -37.258)
+rotation = Vector3(0, -1.890837, 0)
+scale = Vector3(1.26, 1.26, 1.26)
+
+[node name="ReachHouse033" parent="Port" instance=ExtResource("29_shophouse_b")]
+position = Vector3(123.53, -1, -24.834)
+rotation = Vector3(0, -1.915638, 0)
+scale = Vector3(1.094, 1.094, 1.094)
+
+[node name="ReachHouse034" parent="Port" instance=ExtResource("28_shophouse_a")]
+position = Vector3(114.844, -1, -11.153)
+rotation = Vector3(0, -2.070851, 0)
+scale = Vector3(1.015, 1.015, 1.015)
+
+[node name="ReachHouse035" parent="Port" instance=ExtResource("28_shophouse_a")]
+position = Vector3(107.185, -1, 3.686)
+rotation = Vector3(0, -2.162376, 0)
+scale = Vector3(1.173, 1.173, 1.173)
+
+[node name="ReachBoardwalk036" parent="Port" instance=ExtResource("9_boardwalk_8m")]
+position = Vector3(77.596, -1.6, -123.488)
+rotation = Vector3(0, 0.558505, 0)
+
+[node name="ReachBoardwalk037" parent="Port" instance=ExtResource("9_boardwalk_8m")]
+position = Vector3(81.534, -1.6, -116.527)
+rotation = Vector3(0, 0.471082, 0)
+
+[node name="ReachBoardwalk038" parent="Port" instance=ExtResource("9_boardwalk_8m")]
+position = Vector3(84.849, -1.6, -109.248)
+rotation = Vector3(0, 0.383641, 0)
+
+[node name="ReachBoardwalk039" parent="Port" instance=ExtResource("9_boardwalk_8m")]
+position = Vector3(87.515, -1.6, -101.709)
+rotation = Vector3(0, 0.296217, 0)
+
+[node name="ReachBoardwalk040" parent="Port" instance=ExtResource("9_boardwalk_8m")]
+position = Vector3(89.513, -1.6, -93.965)
+rotation = Vector3(0, 0.208776, 0)
+
+[node name="ReachBoardwalk041" parent="Port" instance=ExtResource("9_boardwalk_8m")]
+position = Vector3(90.827, -1.6, -86.076)
+rotation = Vector3(0, 0.121353, 0)
+
+[node name="ReachBoardwalk042" parent="Port" instance=ExtResource("9_boardwalk_8m")]
+position = Vector3(91.447, -1.6, -78.103)
+rotation = Vector3(0, 0.033912, 0)
+
+[node name="ReachBoardwalk043" parent="Port" instance=ExtResource("9_boardwalk_8m")]
+position = Vector3(91.369, -1.6, -70.106)
+rotation = Vector3(0, -0.053512, 0)
+
+[node name="ReachBoardwalk044" parent="Port" instance=ExtResource("9_boardwalk_8m")]
+position = Vector3(90.593, -1.6, -62.146)
+rotation = Vector3(0, -0.140953, 0)
+
+[node name="ReachBoardwalk045" parent="Port" instance=ExtResource("9_boardwalk_8m")]
+position = Vector3(89.124, -1.6, -54.284)
+rotation = Vector3(0, -0.228376, 0)
+
+[node name="ReachBoardwalk046" parent="Port" instance=ExtResource("9_boardwalk_8m")]
+position = Vector3(86.975, -1.6, -46.581)
+rotation = Vector3(0, -0.315817, 0)
+
+[node name="ReachBoardwalk047" parent="Port" instance=ExtResource("9_boardwalk_8m")]
+position = Vector3(84.161, -1.6, -39.095)
+rotation = Vector3(0, -0.403241, 0)
+
+[node name="ReachBoardwalk048" parent="Port" instance=ExtResource("9_boardwalk_8m")]
+position = Vector3(80.704, -1.6, -31.883)
+rotation = Vector3(0, -0.490682, 0)
+
+[node name="ReachBoardwalk049" parent="Port" instance=ExtResource("9_boardwalk_8m")]
+position = Vector3(76.631, -1.6, -25.001)
+rotation = Vector3(0, -0.578105, 0)
+
+[node name="ReachBoardwalk050" parent="Port" instance=ExtResource("9_boardwalk_8m")]
+position = Vector3(71.972, -1.6, -18.5)
+rotation = Vector3(0, -0.665546, 0)
+
+[node name="ReachHouse051" parent="Port" instance=ExtResource("29_shophouse_b")]
+position = Vector3(-75.097, -1.6, -7.382)
+rotation = Vector3(0, 2.308809, 0)
+scale = Vector3(1.221, 1.221, 1.221)
+
+[node name="ReachHouse052" parent="Port" instance=ExtResource("29_shophouse_b")]
+position = Vector3(-81.993, -1.6, -16.628)
+rotation = Vector3(0, 2.187404, 0)
+scale = Vector3(1.271, 1.271, 1.271)
+
+[node name="ReachHouse053" parent="Port" instance=ExtResource("28_shophouse_a")]
+position = Vector3(-85.445, -1.6, -26.485)
+rotation = Vector3(0, 2.146563, 0)
+scale = Vector3(1.025, 1.025, 1.025)
+
+[node name="ReachHouse054" parent="Port" instance=ExtResource("29_shophouse_b")]
+position = Vector3(-90.407, -1.6, -35.562)
+rotation = Vector3(0, 1.965258, 0)
+scale = Vector3(0.852, 0.852, 0.852)
+
+[node name="ReachHouse055" parent="Port" instance=ExtResource("28_shophouse_a")]
+position = Vector3(-95.211, -1.6, -44.983)
+rotation = Vector3(0, 1.817150, 0)
+scale = Vector3(1.239, 1.239, 1.239)
+
+[node name="ReachHouse056" parent="Port" instance=ExtResource("28_shophouse_a")]
+position = Vector3(-99.679, -1.6, -55.978)
+rotation = Vector3(0, 1.819174, 0)
+scale = Vector3(1.279, 1.279, 1.279)
+
+[node name="ReachHouse057" parent="Port" instance=ExtResource("29_shophouse_b")]
+position = Vector3(-102.231, -1.6, -67.783)
+rotation = Vector3(0, 1.608530, 0)
+scale = Vector3(1.254, 1.254, 1.254)
+
+[node name="ReachHouse058" parent="Port" instance=ExtResource("29_shophouse_b")]
+position = Vector3(-100.515, -1.6, -80.298)
+rotation = Vector3(0, 1.578546, 0)
+scale = Vector3(1.156, 1.156, 1.156)
+
+[node name="ReachHouse059" parent="Port" instance=ExtResource("28_shophouse_a")]
+position = Vector3(-96.672, -1.6, -90.895)
+rotation = Vector3(0, 1.339540, 0)
+scale = Vector3(1.27, 1.27, 1.27)
+
+[node name="ReachHouse060" parent="Port" instance=ExtResource("28_shophouse_a")]
+position = Vector3(-94.643, -1.6, -101.252)
+rotation = Vector3(0, 1.306361, 0)
+scale = Vector3(1.135, 1.135, 1.135)
+
+[node name="ReachHouse061" parent="Port" instance=ExtResource("29_shophouse_b")]
+position = Vector3(-90.912, -1.6, -111.413)
+rotation = Vector3(0, 1.218729, 0)
+scale = Vector3(1.054, 1.054, 1.054)
+
+[node name="ReachHouse062" parent="Port" instance=ExtResource("29_shophouse_b")]
+position = Vector3(-87.138, -1.6, -120.776)
+rotation = Vector3(0, 1.053708, 0)
+scale = Vector3(1.175, 1.175, 1.175)
+
+[node name="ReachHouse063" parent="Port" instance=ExtResource("28_shophouse_a")]
+position = Vector3(-86.864, -1.6, -4.659)
+rotation = Vector3(0, 2.286137, 0)
+scale = Vector3(1.266, 1.266, 1.266)
+
+[node name="ReachHouse064" parent="Port" instance=ExtResource("29_shophouse_b")]
+position = Vector3(-96.515, -1.6, -13.726)
+rotation = Vector3(0, 2.169619, 0)
+scale = Vector3(1.287, 1.287, 1.287)
+
+[node name="ReachHouse065" parent="Port" instance=ExtResource("28_shophouse_a")]
+position = Vector3(-102.588, -1.6, -23.424)
+rotation = Vector3(0, 2.041773, 0)
+scale = Vector3(1.232, 1.232, 1.232)
+
+[node name="ReachHouse066" parent="Port" instance=ExtResource("28_shophouse_a")]
+position = Vector3(-107.422, -1.6, -34.914)
+rotation = Vector3(0, 1.890122, 0)
+scale = Vector3(1.296, 1.296, 1.296)
+
+[node name="ReachHouse067" parent="Port" instance=ExtResource("28_shophouse_a")]
+position = Vector3(-108.93, -1.6, -46.49)
+rotation = Vector3(0, 1.761561, 0)
+scale = Vector3(0.878, 0.878, 0.878)
+
+[node name="ReachHouse068" parent="Port" instance=ExtResource("29_shophouse_b")]
+position = Vector3(-112.147, -1.6, -57.557)
+rotation = Vector3(0, 1.674382, 0)
+scale = Vector3(0.984, 0.984, 0.984)
+
+[node name="ReachHouse069" parent="Port" instance=ExtResource("28_shophouse_a")]
+position = Vector3(-115.37, -1.6, -70.76)
+rotation = Vector3(0, 1.622947, 0)
+scale = Vector3(0.986, 0.986, 0.986)
+
+[node name="ReachHouse070" parent="Port" instance=ExtResource("28_shophouse_a")]
+position = Vector3(-113.695, -1.6, -83.669)
+rotation = Vector3(0, 1.514597, 0)
+scale = Vector3(1.044, 1.044, 1.044)
+
+[node name="ReachHouse071" parent="Port" instance=ExtResource("28_shophouse_a")]
+position = Vector3(-113.024, -1.6, -94.131)
+rotation = Vector3(0, 1.364429, 0)
+scale = Vector3(1.219, 1.219, 1.219)
+
+[node name="ReachHouse072" parent="Port" instance=ExtResource("29_shophouse_b")]
+position = Vector3(-108.605, -1.6, -106.882)
+rotation = Vector3(0, 1.229235, 0)
+scale = Vector3(1.09, 1.09, 1.09)
+
+[node name="ReachHouse073" parent="Port" instance=ExtResource("29_shophouse_b")]
+position = Vector3(-105.124, -1.6, -118.237)
+rotation = Vector3(0, 1.183578, 0)
+scale = Vector3(1.011, 1.011, 1.011)
+
+[node name="ReachHouse074" parent="Port" instance=ExtResource("28_shophouse_a")]
+position = Vector3(-99.9, -1.6, -127.717)
+rotation = Vector3(0, 1.067461, 0)
+scale = Vector3(1.204, 1.204, 1.204)
+
+[node name="ReachHouse075" parent="Port" instance=ExtResource("28_shophouse_a")]
+position = Vector3(-100.947, -1, 11.217)
+rotation = Vector3(0, 2.316384, 0)
+scale = Vector3(1.297, 1.297, 1.297)
+
+[node name="ReachHouse076" parent="Port" instance=ExtResource("28_shophouse_a")]
+position = Vector3(-107.88, -1, -1.585)
+rotation = Vector3(0, 2.173179, 0)
+scale = Vector3(1.137, 1.137, 1.137)
+
+[node name="ReachHouse077" parent="Port" instance=ExtResource("29_shophouse_b")]
+position = Vector3(-115.783, -1, -12.803)
+rotation = Vector3(0, 2.123786, 0)
+scale = Vector3(1.235, 1.235, 1.235)
+
+[node name="ReachHouse078" parent="Port" instance=ExtResource("29_shophouse_b")]
+position = Vector3(-120.255, -1, -25.639)
+rotation = Vector3(0, 1.972013, 0)
+scale = Vector3(1.283, 1.283, 1.283)
+
+[node name="ReachHouse079" parent="Port" instance=ExtResource("28_shophouse_a")]
+position = Vector3(-128.348, -1, -39.451)
+rotation = Vector3(0, 1.771771, 0)
+scale = Vector3(0.896, 0.896, 0.896)
+
+[node name="ReachHouse080" parent="Port" instance=ExtResource("28_shophouse_a")]
+position = Vector3(-128.537, -1, -55.411)
+rotation = Vector3(0, 1.766849, 0)
+scale = Vector3(1.214, 1.214, 1.214)
+
+[node name="ReachHouse081" parent="Port" instance=ExtResource("28_shophouse_a")]
+position = Vector3(-131.045, -1, -68.739)
+rotation = Vector3(0, 1.570761, 0)
+scale = Vector3(1.234, 1.234, 1.234)
+
+[node name="ReachHouse082" parent="Port" instance=ExtResource("29_shophouse_b")]
+position = Vector3(-132.923, -1, -84.314)
+rotation = Vector3(0, 1.508209, 0)
+scale = Vector3(1.076, 1.076, 1.076)
+
+[node name="ReachHouse083" parent="Port" instance=ExtResource("29_shophouse_b")]
+position = Vector3(-128.091, -1, -100.205)
+rotation = Vector3(0, 1.364446, 0)
+scale = Vector3(1.032, 1.032, 1.032)
+
+[node name="ReachHouse084" parent="Port" instance=ExtResource("29_shophouse_b")]
+position = Vector3(-126.678, -1, -114.75)
+rotation = Vector3(0, 1.269029, 0)
+scale = Vector3(1.216, 1.216, 1.216)
+
+[node name="ReachHouse085" parent="Port" instance=ExtResource("28_shophouse_a")]
+position = Vector3(-123.01, -1, -128.85)
+rotation = Vector3(0, 1.223406, 0)
+scale = Vector3(1.206, 1.206, 1.206)
+
+[node name="ReachHouse086" parent="Port" instance=ExtResource("29_shophouse_b")]
+position = Vector3(-115.875, -1, -140.79)
+rotation = Vector3(0, 1.114393, 0)
+scale = Vector3(0.909, 0.909, 0.909)
+
+[node name="ReachBoardwalk087" parent="Port" instance=ExtResource("9_boardwalk_8m")]
+position = Vector3(-67.998, -1.6, -13.775)
+rotation = Vector3(0, -2.408554, 0)
+
+[node name="ReachBoardwalk088" parent="Port" instance=ExtResource("9_boardwalk_8m")]
+position = Vector3(-73.084, -1.6, -19.946)
+rotation = Vector3(0, -2.495978, 0)
+
+[node name="ReachBoardwalk089" parent="Port" instance=ExtResource("9_boardwalk_8m")]
+position = Vector3(-77.612, -1.6, -26.538)
+rotation = Vector3(0, -2.583419, 0)
+
+[node name="ReachBoardwalk090" parent="Port" instance=ExtResource("9_boardwalk_8m")]
+position = Vector3(-81.548, -1.6, -33.5)
+rotation = Vector3(0, -2.670842, 0)
+
+[node name="ReachBoardwalk091" parent="Port" instance=ExtResource("9_boardwalk_8m")]
+position = Vector3(-84.86, -1.6, -40.78)
+rotation = Vector3(0, -2.758283, 0)
+
+[node name="ReachBoardwalk092" parent="Port" instance=ExtResource("9_boardwalk_8m")]
+position = Vector3(-87.524, -1.6, -48.32)
+rotation = Vector3(0, -2.845707, 0)
+
+[node name="ReachBoardwalk093" parent="Port" instance=ExtResource("9_boardwalk_8m")]
+position = Vector3(-89.519, -1.6, -56.065)
+rotation = Vector3(0, -2.933148, 0)
+
+[node name="ReachBoardwalk094" parent="Port" instance=ExtResource("9_boardwalk_8m")]
+position = Vector3(-90.831, -1.6, -63.954)
+rotation = Vector3(0, -3.020572, 0)
+
+[node name="ReachBoardwalk095" parent="Port" instance=ExtResource("9_boardwalk_8m")]
+position = Vector3(-91.448, -1.6, -71.928)
+rotation = Vector3(0, -3.108013, 0)
+
+[node name="ReachBoardwalk096" parent="Port" instance=ExtResource("9_boardwalk_8m")]
+position = Vector3(-91.367, -1.6, -79.925)
+rotation = Vector3(0, -3.195436, 0)
+
+[node name="ReachBoardwalk097" parent="Port" instance=ExtResource("9_boardwalk_8m")]
+position = Vector3(-90.588, -1.6, -87.884)
+rotation = Vector3(0, -3.282877, 0)
+
+[node name="ReachBoardwalk098" parent="Port" instance=ExtResource("9_boardwalk_8m")]
+position = Vector3(-89.117, -1.6, -95.745)
+rotation = Vector3(0, -3.370301, 0)
+
+[node name="ReachBoardwalk099" parent="Port" instance=ExtResource("9_boardwalk_8m")]
+position = Vector3(-86.965, -1.6, -103.448)
+rotation = Vector3(0, -3.457742, 0)
+
+[node name="ReachBoardwalk100" parent="Port" instance=ExtResource("9_boardwalk_8m")]
+position = Vector3(-84.149, -1.6, -110.933)
+rotation = Vector3(0, -3.545165, 0)
+
+[node name="ReachBoardwalk101" parent="Port" instance=ExtResource("9_boardwalk_8m")]
+position = Vector3(-80.69, -1.6, -118.143)
+rotation = Vector3(0, -3.632606, 0)
+
+[node name="ReachHouse102" parent="Port" instance=ExtResource("28_shophouse_a")]
+position = Vector3(-56.862, -1.6, -159.301)
+rotation = Vector3(0, 0.525292, 0)
+scale = Vector3(1.118, 1.118, 1.118)
+
+[node name="ReachHouse103" parent="Port" instance=ExtResource("28_shophouse_a")]
+position = Vector3(-48.24, -1.6, -165.406)
+rotation = Vector3(0, 0.430800, 0)
+scale = Vector3(1.016, 1.016, 1.016)
+
+[node name="ReachHouse104" parent="Port" instance=ExtResource("28_shophouse_a")]
+position = Vector3(-36.248, -1.6, -168.794)
+rotation = Vector3(0, 0.382890, 0)
+scale = Vector3(0.918, 0.918, 0.918)
+
+[node name="ReachHouse105" parent="Port" instance=ExtResource("28_shophouse_a")]
+position = Vector3(-24.347, -1.6, -170.958)
+rotation = Vector3(0, 0.187501, 0)
+scale = Vector3(1.091, 1.091, 1.091)
+
+[node name="ReachHouse106" parent="Port" instance=ExtResource("28_shophouse_a")]
+position = Vector3(-12.256, -1.6, -172.462)
+rotation = Vector3(0, 0.155614, 0)
+scale = Vector3(0.91, 0.91, 0.91)
+
+[node name="ReachHouse107" parent="Port" instance=ExtResource("28_shophouse_a")]
+position = Vector3(-0.043, -1.6, -172.586)
+rotation = Vector3(0, 0.052150, 0)
+scale = Vector3(1.121, 1.121, 1.121)
+
+[node name="ReachHouse108" parent="Port" instance=ExtResource("29_shophouse_b")]
+position = Vector3(11.38, -1.6, -173.629)
+rotation = Vector3(0, -0.057421, 0)
+scale = Vector3(1.006, 1.006, 1.006)
+
+[node name="ReachHouse109" parent="Port" instance=ExtResource("28_shophouse_a")]
+position = Vector3(22.826, -1.6, -170.489)
+rotation = Vector3(0, -0.208514, 0)
+scale = Vector3(1.121, 1.121, 1.121)
+
+[node name="ReachHouse110" parent="Port" instance=ExtResource("29_shophouse_b")]
+position = Vector3(32.357, -1.6, -167.354)
+rotation = Vector3(0, -0.293041, 0)
+scale = Vector3(0.945, 0.945, 0.945)
+
+[node name="ReachHouse111" parent="Port" instance=ExtResource("28_shophouse_a")]
+position = Vector3(43.013, -1.6, -163.213)
+rotation = Vector3(0, -0.480838, 0)
+scale = Vector3(0.942, 0.942, 0.942)
+
+[node name="ReachHouse112" parent="Port" instance=ExtResource("29_shophouse_b")]
+position = Vector3(54.741, -1.6, -160.592)
+rotation = Vector3(0, -0.535484, 0)
+scale = Vector3(0.93, 0.93, 0.93)
+
+[node name="ReachHouse113" parent="Port" instance=ExtResource("28_shophouse_a")]
+position = Vector3(-59.026, -1.6, -173.236)
+rotation = Vector3(0, 0.546899, 0)
+scale = Vector3(1.195, 1.195, 1.195)
+
+[node name="ReachHouse114" parent="Port" instance=ExtResource("29_shophouse_b")]
+position = Vector3(-49.79, -1.6, -178.915)
+rotation = Vector3(0, 0.382402, 0)
+scale = Vector3(0.973, 0.973, 0.973)
+
+[node name="ReachHouse115" parent="Port" instance=ExtResource("28_shophouse_a")]
+position = Vector3(-39.841, -1.6, -184.381)
+rotation = Vector3(0, 0.287037, 0)
+scale = Vector3(1.08, 1.08, 1.08)
+
+[node name="ReachHouse116" parent="Port" instance=ExtResource("28_shophouse_a")]
+position = Vector3(-26.675, -1.6, -186.281)
+rotation = Vector3(0, 0.266006, 0)
+
+[node name="ReachHouse117" parent="Port" instance=ExtResource("29_shophouse_b")]
+position = Vector3(-16.345, -1.6, -188.812)
+rotation = Vector3(0, 0.149173, 0)
+scale = Vector3(1.193, 1.193, 1.193)
+
+[node name="ReachHouse118" parent="Port" instance=ExtResource("28_shophouse_a")]
+position = Vector3(-5.814, -1.6, -188.712)
+rotation = Vector3(0, 0.023649, 0)
+scale = Vector3(1.02, 1.02, 1.02)
+
+[node name="ReachHouse119" parent="Port" instance=ExtResource("28_shophouse_a")]
+position = Vector3(6.559, -1.6, -187.82)
+rotation = Vector3(0, -0.074176, 0)
+scale = Vector3(1.134, 1.134, 1.134)
+
+[node name="ReachHouse120" parent="Port" instance=ExtResource("29_shophouse_b")]
+position = Vector3(19.566, -1.6, -189.841)
+rotation = Vector3(0, -0.167604, 0)
+scale = Vector3(1.103, 1.103, 1.103)
+
+[node name="ReachHouse121" parent="Port" instance=ExtResource("29_shophouse_b")]
+position = Vector3(30.448, -1.6, -184.333)
+rotation = Vector3(0, -0.310023, 0)
+scale = Vector3(1.065, 1.065, 1.065)
+
+[node name="ReachHouse122" parent="Port" instance=ExtResource("28_shophouse_a")]
+position = Vector3(41.48, -1.6, -183.139)
+rotation = Vector3(0, -0.429752, 0)
+scale = Vector3(0.949, 0.949, 0.949)
+
+[node name="ReachHouse123" parent="Port" instance=ExtResource("28_shophouse_a")]
+position = Vector3(50.815, -1.6, -175.694)
+rotation = Vector3(0, -0.464764, 0)
+scale = Vector3(0.913, 0.913, 0.913)
+
+[node name="ReachHouse124" parent="Port" instance=ExtResource("28_shophouse_a")]
+position = Vector3(63.99, -1.6, -171.606)
+rotation = Vector3(0, -0.591318, 0)
+scale = Vector3(0.975, 0.975, 0.975)
+
+[node name="ReachHouse125" parent="Port" instance=ExtResource("28_shophouse_a")]
+position = Vector3(-70.029, -1, -184.923)
+rotation = Vector3(0, 0.557563, 0)
+scale = Vector3(1.276, 1.276, 1.276)
+
+[node name="ReachHouse126" parent="Port" instance=ExtResource("28_shophouse_a")]
+position = Vector3(-57.485, -1, -193.02)
+rotation = Vector3(0, 0.492235, 0)
+scale = Vector3(0.976, 0.976, 0.976)
+
+[node name="ReachHouse127" parent="Port" instance=ExtResource("29_shophouse_b")]
+position = Vector3(-44.14, -1, -196.99)
+rotation = Vector3(0, 0.292360, 0)
+scale = Vector3(1.033, 1.033, 1.033)
+
+[node name="ReachHouse128" parent="Port" instance=ExtResource("28_shophouse_a")]
+position = Vector3(-31.824, -1, -203.462)
+rotation = Vector3(0, 0.212476, 0)
+scale = Vector3(1.175, 1.175, 1.175)
+
+[node name="ReachHouse129" parent="Port" instance=ExtResource("28_shophouse_a")]
+position = Vector3(-16.514, -1, -204.341)
+rotation = Vector3(0, 0.094126, 0)
+scale = Vector3(1.018, 1.018, 1.018)
+
+[node name="ReachHouse130" parent="Port" instance=ExtResource("28_shophouse_a")]
+position = Vector3(-2.204, -1, -206.632)
+rotation = Vector3(0, 0.072501, 0)
+scale = Vector3(1.291, 1.291, 1.291)
+
+[node name="ReachHouse131" parent="Port" instance=ExtResource("29_shophouse_b")]
+position = Vector3(14.498, -1, -206.757)
+rotation = Vector3(0, -0.170693, 0)
+scale = Vector3(1.001, 1.001, 1.001)
+
+[node name="ReachHouse132" parent="Port" instance=ExtResource("29_shophouse_b")]
+position = Vector3(28.341, -1, -205.42)
+rotation = Vector3(0, -0.204204, 0)
+scale = Vector3(1.053, 1.053, 1.053)
+
+[node name="ReachHouse133" parent="Port" instance=ExtResource("28_shophouse_a")]
+position = Vector3(42.293, -1, -200.886)
+rotation = Vector3(0, -0.376310, 0)
+scale = Vector3(1.09, 1.09, 1.09)
+
+[node name="ReachHouse134" parent="Port" instance=ExtResource("28_shophouse_a")]
+position = Vector3(56.537, -1, -196.842)
+rotation = Vector3(0, -0.439718, 0)
+scale = Vector3(1.231, 1.231, 1.231)
+
+[node name="ReachHouse135" parent="Port" instance=ExtResource("28_shophouse_a")]
+position = Vector3(69.673, -1, -189.013)
+rotation = Vector3(0, -0.581142, 0)
+scale = Vector3(1.288, 1.288, 1.288)
+
+[node name="ReachBoardwalk136" parent="Port" instance=ExtResource("9_boardwalk_8m")]
+position = Vector3(-51.166, -1.6, -150.857)
+rotation = Vector3(0, -4.118977, 0)
+
+[node name="ReachBoardwalk137" parent="Port" instance=ExtResource("9_boardwalk_8m")]
+position = Vector3(-44.347, -1.6, -155.035)
+rotation = Vector3(0, -4.206401, 0)
+
+[node name="ReachBoardwalk138" parent="Port" instance=ExtResource("9_boardwalk_8m")]
+position = Vector3(-37.189, -1.6, -158.602)
+rotation = Vector3(0, -4.293842, 0)
+
+[node name="ReachBoardwalk139" parent="Port" instance=ExtResource("9_boardwalk_8m")]
+position = Vector3(-29.747, -1.6, -161.53)
+rotation = Vector3(0, -4.381265, 0)
+
+[node name="ReachBoardwalk140" parent="Port" instance=ExtResource("9_boardwalk_8m")]
+position = Vector3(-22.077, -1.6, -163.797)
+rotation = Vector3(0, -4.468706, 0)
+
+[node name="ReachBoardwalk141" parent="Port" instance=ExtResource("9_boardwalk_8m")]
+position = Vector3(-14.239, -1.6, -165.385)
+rotation = Vector3(0, -4.556130, 0)
+
+[node name="ReachBoardwalk142" parent="Port" instance=ExtResource("9_boardwalk_8m")]
+position = Vector3(-6.292, -1.6, -166.283)
+rotation = Vector3(0, -4.643571, 0)
+
+[node name="ReachBoardwalk143" parent="Port" instance=ExtResource("9_boardwalk_8m")]
+position = Vector3(1.703, -1.6, -166.484)
+rotation = Vector3(0, -4.730994, 0)
+
+[node name="ReachBoardwalk144" parent="Port" instance=ExtResource("9_boardwalk_8m")]
+position = Vector3(9.685, -1.6, -165.986)
+rotation = Vector3(0, -4.818435, 0)
+
+[node name="ReachBoardwalk145" parent="Port" instance=ExtResource("9_boardwalk_8m")]
+position = Vector3(17.593, -1.6, -164.793)
+rotation = Vector3(0, -4.905859, 0)
+
+[node name="ReachBoardwalk146" parent="Port" instance=ExtResource("9_boardwalk_8m")]
+position = Vector3(25.366, -1.6, -162.914)
+rotation = Vector3(0, -4.993300, 0)
+
+[node name="ReachBoardwalk147" parent="Port" instance=ExtResource("9_boardwalk_8m")]
+position = Vector3(32.946, -1.6, -160.363)
+rotation = Vector3(0, -5.080723, 0)
+
+[node name="ReachBoardwalk148" parent="Port" instance=ExtResource("9_boardwalk_8m")]
+position = Vector3(40.274, -1.6, -157.16)
+rotation = Vector3(0, -5.168164, 0)
+
+[node name="ReachBoardwalk149" parent="Port" instance=ExtResource("9_boardwalk_8m")]
+position = Vector3(47.294, -1.6, -153.329)
+rotation = Vector3(0, -5.255588, 0)
+
+[node name="Cameras" type="Node3D" parent="."]
+
+[node name="TP01" type="Camera3D" parent="Cameras"]
+near = 0.05
+far = 4000.0
+script = ExtResource("2_cam")
+shot = SubResource("ShotTP01")
+
+[node name="TP02" type="Camera3D" parent="Cameras"]
+near = 0.05
+far = 4000.0
+script = ExtResource("2_cam")
+shot = SubResource("ShotTP02")
+
+[node name="TP03" type="Camera3D" parent="Cameras"]
+near = 0.05
+far = 4000.0
+script = ExtResource("2_cam")
+shot = SubResource("ShotTP03")
+
+[node name="TP04" type="Camera3D" parent="Cameras"]
+near = 0.05
+far = 4000.0
+script = ExtResource("2_cam")
+shot = SubResource("ShotTP04")
+
+[node name="TP05" type="Camera3D" parent="Cameras"]
+near = 0.05
+far = 4000.0
+script = ExtResource("2_cam")
+shot = SubResource("ShotTP05")
+
+[node name="TP06" type="Camera3D" parent="Cameras"]
+near = 0.05
+far = 4000.0
+script = ExtResource("2_cam")
+shot = SubResource("ShotTP06")
+
+[node name="TP07" type="Camera3D" parent="Cameras"]
+near = 0.05
+far = 4000.0
+script = ExtResource("2_cam")
+shot = SubResource("ShotTP07")
+
+[node name="TP08" type="Camera3D" parent="Cameras"]
+near = 0.05
+far = 4000.0
+script = ExtResource("2_cam")
+shot = SubResource("ShotTP08")
+
+[node name="TP09" type="Camera3D" parent="Cameras"]
+near = 0.05
+far = 4000.0
+script = ExtResource("2_cam")
+shot = SubResource("ShotTP09")

@@ -19,6 +19,19 @@ too big.
 - The fleece hangs in heavy frozen locks to the knees; ice beards it at the jaw and belly.
 - The herd-cord at its neck, with its knots: the small, human detail.
 
+## The head (M3-CRE-635)
+
+The first PC render read the head as a duck's: a dark, flattened muzzle on a white face is a bill. The head is a
+camelid's now (a llama's or an alpaca's proportions, not a copy of either):
+- long and narrow (0.75 m, 0.29 m wide), deepest at the cheeks, the nose a little down;
+- a soft, rounded muzzle in the coat's colour, `laterite` darkened **only at the nose and the lips** (slit nostrils,
+  a split upper lip), a slim lower jaw frosted underneath (the ice beard);
+- eyes at the sides under a soft brow; long upright ears, their tips drooping a little out; the woolly cap kept;
+- the neck slimmer under its fleece.
+
+The icicles are few and uneven: one to three per lock chain, longest at the lock tips (up to 0.32 m, sheathing the
+strand's end), two clumps under the belly and one under the jaw. Never a row of even spikes: that reads as teeth.
+
 ## Palette
 
 Fleece `sand_cloth` (undyed wool) gone grey (`overcast_slate` in the shadows), ice `salt_glass` on the locks; muzzle and legs

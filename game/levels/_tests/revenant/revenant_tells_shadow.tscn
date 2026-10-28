@@ -1,0 +1,18 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="PackedScene" path="res://game/levels/_tests/characters/sefir/sefir_stage.tscn" id="stage"]
+[ext_resource type="PackedScene" path="res://assets/characters/asha/asha.glb" id="asha"]
+[ext_resource type="Script" path="res://game/vfx/revenant/revenant_tells.gd" id="tells"]
+
+[node name="RevenantTellsShadow" instance=ExtResource("stage")]
+
+[node name="Asha" parent="." instance=ExtResource("asha")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.6, 0, 0)
+
+[node name="RevenantTells" type="Node3D" parent="."]
+script = ExtResource("tells")
+actor_path = NodePath("../Turntable/Sefir")
+
+[node name="Shadows" type="Camera3D" parent="Cameras"]
+transform = Transform3D(0.999822, -0.012364, 0.014248, 0, 0.755276, 0.655406, -0.018865, -0.65529, 0.755142, 0.2, 4.6, 4.4)
+fov = 40.0

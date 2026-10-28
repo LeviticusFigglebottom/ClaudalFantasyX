@@ -235,7 +235,22 @@ def barge() -> list[dict]:
     slope = (channel_x(z + 0.5) - channel_x(z - 0.5))  # dx per metre of z
     e = {"piece": "white_barge", "at": [round(channel_x(z), 3), z], "y": bg.WATER_Y,
          "yaw_deg": round(yaw_toward(-slope, -1.0), 2)}
-    return [e]
+    return [e] + boat_underway()
+
+
+def boat_underway() -> list[dict]:
+    """M3-ENV-1000: a vendor boat poled up the channel ahead of the barge (beyond it in B05), its wake trailing
+    back toward the barge's bow; the barge has none."""
+    z = 6.0
+    slope = channel_x(z + 0.5) - channel_x(z - 0.5)
+    norm = math.hypot(slope, 1.0)
+    dx, dz = -slope / norm, -1.0 / norm  # heading north up the channel
+    x = channel_x(z)
+    yaw = yaw_toward(dx, dz)
+    stern = 1.9  # the vendor boat's stern is local +Z, 1.9 m behind its origin (bow -Z)
+    return [{"piece": "vendor_boat", "at": [round(x, 3), z], "y": bg.WATER_Y, "yaw_deg": round(yaw - 90.0, 2)},
+            {"piece": "boat_wake", "at": [round(x - dx * stern, 3), round(z - dz * stern, 3)], "y": bg.WATER_Y,
+             "yaw_deg": round(yaw, 2)}]
 
 
 def kit_sheet() -> list[dict]:
@@ -268,6 +283,7 @@ def main() -> int:
         "lod_margin_m": 2.0,
         "fire_lights": [[round(v, 3) for v in L] for L in lights],
         "fire_light_color": "#E0702E",
+        "prop_no_shadow": ["boat_wake"],
         "pieces": pieces,
     }
     OUT.parent.mkdir(parents=True, exist_ok=True)

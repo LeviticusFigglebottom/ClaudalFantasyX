@@ -206,6 +206,91 @@
       "scene": "res://game/creatures/wreck_crab/wreck_crab_battle.tscn",
       "out_dir": "res://assets/ui/portraits/creatures",
       "portrait": {"margin": 0.95}
+    },
+    {
+      "id": "mangrove_drowner",
+      "scene": "res://game/creatures/mangrove_drowner/mangrove_drowner_battle.tscn",
+      "out_dir": "res://assets/ui/portraits/creatures",
+      "light_scale": {"key": 3.0, "rim": 3.0, "fill": 3.0}
+    },
+    {
+      "id": "lamp_engine",
+      "scene": "res://game/creatures/lamp_engine/lamp_engine_battle.tscn",
+      "out_dir": "res://assets/ui/portraits/creatures"
+    },
+    {
+      "id": "avalanche_ram",
+      "scene": "res://game/creatures/avalanche_ram/avalanche_ram_battle.tscn",
+      "out_dir": "res://assets/ui/portraits/creatures"
+    },
+    {
+      "id": "wakefin",
+      "scene": "res://game/creatures/wakefin/wakefin_battle.tscn",
+      "out_dir": "res://assets/ui/portraits/creatures",
+      "light_scale": {"key": 3.0, "rim": 3.0, "fill": 3.0}
+    },
+    {
+      "id": "tannin_archer",
+      "scene": "res://game/creatures/tannin_archer/tannin_archer_battle.tscn",
+      "out_dir": "res://assets/ui/portraits/creatures"
+    },
+    {
+      "id": "gallery_ray",
+      "scene": "res://game/creatures/gallery_ray/gallery_ray_battle.tscn",
+      "out_dir": "res://assets/ui/portraits/creatures"
+    },
+    {
+      "id": "rime_urchin",
+      "scene": "res://game/creatures/rime_urchin/rime_urchin_battle.tscn",
+      "out_dir": "res://assets/ui/portraits/creatures"
+    },
+    {
+      "id": "conduit_crawler",
+      "scene": "res://game/creatures/conduit_crawler/conduit_crawler_battle.tscn",
+      "out_dir": "res://assets/ui/portraits/creatures"
+    },
+    {
+      "id": "ridge_lynx",
+      "scene": "res://game/creatures/ridge_lynx/ridge_lynx_battle.tscn",
+      "out_dir": "res://assets/ui/portraits/creatures"
+    },
+    {
+      "id": "cord_moth",
+      "scene": "res://game/creatures/cord_moth/cord_moth_battle.tscn",
+      "out_dir": "res://assets/ui/portraits/creatures"
+    },
+    {
+      "id": "glass_skate",
+      "scene": "res://game/creatures/glass_skate/glass_skate_battle.tscn",
+      "out_dir": "res://assets/ui/portraits/creatures"
+    },
+    {
+      "id": "root_crab",
+      "scene": "res://game/creatures/root_crab/root_crab_battle.tscn",
+      "out_dir": "res://assets/ui/portraits/creatures",
+      "light_scale": {"key": 3.0, "rim": 3.0, "fill": 3.0}
+    },
+    {
+      "id": "fen_leech",
+      "scene": "res://game/creatures/fen_leech/fen_leech_battle.tscn",
+      "out_dir": "res://assets/ui/portraits/creatures",
+      "light_scale": {"key": 3.0, "rim": 3.0, "fill": 3.0}
+    },
+    {
+      "id": "scree_crawler",
+      "scene": "res://game/creatures/scree_crawler/scree_crawler_battle.tscn",
+      "out_dir": "res://assets/ui/portraits/creatures",
+      "light_scale": {"key": 3.0, "rim": 3.0, "fill": 3.0}
+    },
+    {
+      "id": "rim_crawler",
+      "scene": "res://game/creatures/rim_crawler/rim_crawler_battle.tscn",
+      "out_dir": "res://assets/ui/portraits/creatures"
+    },
+    {
+      "id": "flat_engine",
+      "scene": "res://game/creatures/flat_engine/flat_engine_battle.tscn",
+      "out_dir": "res://assets/ui/portraits/creatures"
     }
   ],
   "creature_stage": {

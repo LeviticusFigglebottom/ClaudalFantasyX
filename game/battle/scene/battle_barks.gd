@@ -8,7 +8,10 @@ extends Node
 ##   vowbound.json "call_bark_key"  spoken by the caller as the Vowbound is called (Asha: "Virel.").
 ## A skill or Vowbound without one stays silent (Flare Line; Virel has no line). A view: it listens to
 ## the engine and never writes combat state. The controller only attaches it (one line); it lives as a
-## node under the HUD, so a retry's new attach replaces it.
+## node under the HUD, so a retry's new attach replaces it. `barked` fires for audio's voice blips.
+
+## A bark was said: who said it and its loc key.
+signal barked(speaker: StringName, key: String)
 
 const NODE_NAME := &"BattleBarks"
 
@@ -41,31 +44,41 @@ func attach(engine: BattleEngine) -> void:
 
 ## The bark a skill's user says, translated ("" when it has none).
 func skill_bark(skill_id: StringName) -> String:
-	return _text(str(_engine.db.skill(skill_id).get("bark_key", ""))) if _engine.db.skills.has(skill_id) else ""
+	return _text(_skill_key(skill_id))
 
 
 ## The bark a Vowbound's caller says as it comes ("" when it has none).
 func call_bark(vowbound_id: StringName) -> String:
-	return _text(str(_vowbound_row(vowbound_id).get("call_bark_key", "")))
+	return _text(_call_key(vowbound_id))
 
 
 func _on_action_resolved(result: ActionResult) -> void:
 	if result.ok:
-		_say(result.actor_id, skill_bark(result.skill_id))
+		_say(result.actor_id, _skill_key(result.skill_id))
 
 
 func _on_called(vowbound: BattleCombatant) -> void:
 	var caller := StringName(str(_vowbound_row(vowbound.id).get("caller", "")))
 	var speaker := caller if ctl.stage.has_fighter(caller) else vowbound.id
-	_say(speaker, call_bark(vowbound.id))
+	_say(speaker, _call_key(vowbound.id))
 
 
-func _say(speaker: StringName, text: String) -> void:
+func _say(speaker: StringName, key: String) -> void:
+	var text := _text(key)
 	if text == "":
 		return
 	said.append({"speaker": speaker, "text": text})
 	if ctl.stage.has_fighter(speaker):
 		ctl.hud.pop_info(text, ctl.head_pos(speaker, &"damage"), &"text")
+	barked.emit(speaker, key)
+
+
+func _skill_key(skill_id: StringName) -> String:
+	return str(_engine.db.skill(skill_id).get("bark_key", "")) if _engine.db.skills.has(skill_id) else ""
+
+
+func _call_key(vowbound_id: StringName) -> String:
+	return str(_vowbound_row(vowbound_id).get("call_bark_key", ""))
 
 
 func _vowbound_row(vowbound_id: StringName) -> Dictionary:

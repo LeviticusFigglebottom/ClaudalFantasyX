@@ -84,3 +84,16 @@ Not covered then (no Blender involved): the numpy/Pillow texture scripts (`asha_
 1. Add an entry to `tools/dev/blender_builds.json`. Make the build deterministic: fixed seeds, sorted iteration, and no exported tangents unless they're needed (see `docs/kb/tech/character_shading.md` on tangents). A build that does export tangents needs `"threads": 1` (the unit test fails otherwise). Build the committed files with the same thread count as the job.
 2. Run `python3 tools/dev/verify_blender_builds.py --job <id>` twice. Both runs must be `identical`; run them concurrently once, too, because a thread race shows up only sometimes. Pin `threads` before you consider any tolerance. Never tolerate anything to hide a real change; rebuild and commit instead.
 3. `python3 -m unittest tools/tests/test_blender_builds.py` checks that the scripts exist and that the outputs are committed.
+
+## Host determinism: character builds opt in to the host snaps (M2-CHR-11)
+numpy picks its SIMD path at runtime (AVX-512 on the cloud, AVX2 on the PC's i9-12900K, baseline elsewhere), and
+the last bits of a sum or a dot product move with it. Every character build therefore snaps what it hands on:
+donor and part positions to a 1 µm grid, the head's midline coordinates under 1e-9 to 0, shape-key deltas to a 1 µm
+grid (`snap_shape_noise`), UVs to 2^-16 (`quantize_uvs`), the float images before 8-bit rounding
+(`asha_textures.PRE_ROUND`), and the hair and LOD1-decimate inputs on the grid. Asha, Rhen, Toma, base_body, the
+nine villagers, Sefir and Ysolde all do (villagers via `host_snaps: true`). **A new character build opts in from its
+first commit**, and its author proves it the way M2-CHR-11 did: `verify_blender_builds.py --job <id>` natively,
+with `NPY_DISABLE_CPU_FEATURES="X86_V4"` (the AVX2 path) and with `"X86_V3 X86_V4"` (baseline), all identical.
+Pin `"threads": 4` per job. A job whose build imports a module that reads game data (the villagers import
+hero_clips, which reads game/data/characters/helper_bones.json) needs that folder in `copy_into_sandbox` and the
+file in its `sources`.

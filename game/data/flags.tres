@@ -225,5 +225,7 @@ flags = {
 "codex_lacquer_court_read": "Codex (ui-menus Act II set, game/data/lore/codex.json): the entry 'lacquer_court' has been opened in the Codex (clears its New marker).",
 "codex_hollowmere_read": "Codex (ui-menus Act II set, game/data/lore/codex.json): the entry 'hollowmere' has been opened in the Codex (clears its New marker).",
 "codex_pale_rim_read": "Codex (ui-menus Act II set, game/data/lore/codex.json): the entry 'pale_rim' has been opened in the Codex (clears its New marker).",
-"codex_drowned_choir_read": "Codex (ui-menus Act II set, game/data/lore/codex.json): the entry 'drowned_choir' has been opened in the Codex (clears its New marker)."
+"codex_drowned_choir_read": "Codex (ui-menus Act II set, game/data/lore/codex.json): the entry 'drowned_choir' has been opened in the Codex (clears its New marker).",
+"ch05_kahre_first_call_seen": "Kahre's first call in battle (C10) has played in full; later calls play the short entry (M3-BPR-414).",
+"ch08_virel_first_call_seen": "Virel's first call in battle (C10) has played in full; later calls play the short entry (M3-BPR-414)."
 }

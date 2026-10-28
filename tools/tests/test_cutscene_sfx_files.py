@@ -1,4 +1,5 @@
-"""Every `@sfx <id>` a cutscene names has its file (M3-AUD-818), and every `@music <id>` a cue (M3-AUD-823). The CutsceneSequencer plays
+"""Every `@sfx <id>` a cutscene names has its file (M3-AUD-818), and every `@music <id>` a cue (M3-AUD-823) that the
+sequencer can play (M3-AUD-833). The CutsceneSequencer plays
 `<sequencer.json sfx_dir><id>.ogg` and only warns "no sound" when it is missing, so a cue with no file is silent and
 nothing fails. This test fails instead, naming the cue and its .dlg. Audio's sources are assets_src/sfx/act1_cutscene_sfx.py
 and the older battle_sfx.py (drownbell_toll). Run: python3 -m unittest discover -s tools/tests"""
@@ -55,6 +56,16 @@ class CutsceneSfxFilesTest(unittest.TestCase):
     def test_every_music_cue_resolves_or_is_on_the_todo_list(self) -> None:
         unknown = sorted(music_ids() - known_music() - MUSIC_TODO)
         self.assertEqual(unknown, [], "a script names a cue nobody is making: add it to music.json, or to MUSIC_TODO")
+
+    def test_every_music_cue_plays_as_the_sequencer_finds_it(self) -> None:
+        """M3-AUD-833: the sequencer plays <music_dir><id>.ogg or its stand-in's file and never reads music.json, so an
+        alias row or a cue made of stems is silent in a cutscene unless music_stand_ins names a file for it."""
+        seq = json.loads((ROOT / "game/data/cutscene/sequencer.json").read_text(encoding="utf-8"))
+        base = ROOT / str(seq["music_dir"]).removeprefix("res://")
+        stand_ins = seq.get("music_stand_ins", {})
+        silent = sorted(i for i in music_ids() - MUSIC_TODO
+                        if not any(n and (base / f"{n}.ogg").is_file() for n in (i, stand_ins.get(i, ""))))
+        self.assertEqual(silent, [], "add a music_stand_ins row naming the cue's file (a stem cue: its first stem)")
 
     def test_the_todo_list_only_holds_missing_cues(self) -> None:
         done = sorted(MUSIC_TODO & known_music())

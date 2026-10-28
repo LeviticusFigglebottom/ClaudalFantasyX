@@ -1,0 +1,46 @@
+{
+  "_doc": "Cord moth (act2/cord_moth.md): wing (the pale scaled membrane, a soft rim sheen), knot (the knot rows' dyed cord, a little glossier so the rows catch the light in the cast), body (the furred slate body, the antennae, and the thorax crack's spawn_wound on its emission mask) and eye. write_materials.py on game/shaders/creature/creature.gdshader.",
+  "slots": {
+    "wing": {
+      "roughness_dry": 0.85,
+      "roughness_wet": 0.5,
+      "specular": 0.3,
+      "detail_scale": 90.0,
+      "detail_albedo": 0.1,
+      "detail_bump": 0.15,
+      "cavity_albedo": 0.3,
+      "rim_sheen": 0.35
+    },
+    "knot": {
+      "roughness_dry": 0.6,
+      "roughness_wet": 0.4,
+      "specular": 0.45,
+      "detail_scale": 160.0,
+      "detail_albedo": 0.12,
+      "detail_bump": 0.4,
+      "cavity_albedo": 0.45,
+      "rim_sheen": 0.25
+    },
+    "body": {
+      "roughness_dry": 0.92,
+      "roughness_wet": 0.6,
+      "specular": 0.3,
+      "detail_scale": 140.0,
+      "detail_albedo": 0.2,
+      "detail_bump": 0.7,
+      "cavity_albedo": 0.4,
+      "emission_color": "#3FE0C8",
+      "emission_energy": 1.6,
+      "emission_pulse_hz": 0.3,
+      "emission_pulse_depth": 0.4
+    },
+    "eye": {
+      "roughness_dry": 0.12,
+      "roughness_wet": 0.06,
+      "specular": 0.7,
+      "clearcoat_wet": 1.0,
+      "detail_albedo": 0.0,
+      "detail_bump": 0.0
+    }
+  }
+}

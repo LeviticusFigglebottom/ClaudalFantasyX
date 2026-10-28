@@ -5,7 +5,7 @@
       {"id": "ch01/oruvel_underway", "name_key": "MAP_ROUTE_UNDERWAY"},
       {"id": "ch01/oruvel", "name_key": "MAP_ROUTE_ORUVEL"},
       {"id": "ch02/haluna", "name_key": "MAP_ROUTE_HALUNA"},
-      {"id": "causeway", "name_key": "MAP_ROUTE_CAUSEWAY"},
+      {"id": "ch03/saltgrass_causeway", "name_key": "MAP_ROUTE_CAUSEWAY"},
       {"id": "ch03/shell_shrine", "name_key": "MAP_ROUTE_SHELL_SHRINE"},
       {"id": "ch04/haluna_wake", "name_key": "MAP_ROUTE_HALUNA_WAKE"},
       {"id": "ch04/brightwater_ferry", "name_key": "MAP_ROUTE_BRIGHTWATER"},
@@ -514,7 +514,8 @@
           {"id": "approach", "name_key": "MAP_POI_CHOIR_WAY_IN", "kind": "path", "at": [0.0, 27.0], "source": "spawn:Approach"},
           {"id": "head", "name_key": "MAP_POI_CHOIR_HEAD", "kind": "path", "at": [0.0, -20.0], "source": "mark:kesh"}
         ]
-      }
+      },
+      {"id": "ch03/saltgrass_causeway", "scene": "res://game/levels/ch03/saltgrass_causeway/saltgrass_causeway.tscn", "name_key": "LOCATION_CH03_SALTGRASS_CAUSEWAY", "shapes": "res://game/levels/ch03/saltgrass_causeway/saltgrass_causeway_layout.json", "shape_kind": "greybox_layout", "bounds": [-14.0, -196.0, 264.0, 210.0], "pois": [{"id": "causeway_head", "name_key": "MAP_POI_CAUSEWAY_HEAD", "kind": "path", "at": [1.35, -0.65], "source": "spawn:FromHaluna"}, {"id": "posts", "name_key": "MAP_POI_SC_POSTS", "kind": "talk", "at": [28.59, -14.4], "source": "trigger:banter_posts"}, {"id": "tidepools", "name_key": "MAP_POI_SC_TIDEPOOLS", "kind": "pool", "at": [58.67, -37.73], "source": "trigger:banter_tidepool"}, {"id": "harrier", "name_key": "MAP_POI_SC_HARRIER", "kind": "path", "at": [75.97, -47.42], "source": "trigger:harrier"}, {"id": "ring", "name_key": "MAP_POI_SC_RING", "kind": "talk", "at": [111.04, -70.05], "source": "trigger:banter_ring"}, {"id": "shrine_steps", "name_key": "MAP_POI_SC_SHRINE_STEPS", "kind": "shrine", "at": [233.87, -181.16], "source": "trigger:to_shrine"}]}
     ]
   }
 }

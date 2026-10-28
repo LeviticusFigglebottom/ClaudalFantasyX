@@ -234,12 +234,27 @@ func catch_up() -> void:
 	var sample := maxf(float(_cfg.get("trail_sample_m", 0.0)), 0.01)
 	var reach := (followers.size() + 1) * float(_cfg.get("spacing_m", 0.0))
 	var count := mini(int(ceil(reach / sample)) + 1, int(_cfg.get("trail_max_points", 0)))
-	trail = PackedVector3Array()
-	for k in range(count, 0, -1):
-		trail.append(lead + back * (k * sample))
+	# The trail goes straight back, else turned to the first side where every follower stands clear of the walls
+	# (arriving with his back to one), else to the side where most do; one still blocked starts on his own spot.
+	var best_dir := back
+	var best := -1
+	for turn_deg: Variant in _cfg.get("catch_up_turns_deg", [0.0]):
+		var dir := back.rotated(Vector3.UP, deg_to_rad(float(turn_deg)))
+		_lay_trail(lead, dir, sample, count)
+		var n := 0
+		for i in followers.size():
+			n += 0 if blocked(trail_point((i + 1) * float(_cfg.get("spacing_m", 0.0)))) else 1
+		if n > best:
+			best = n
+			best_dir = dir
+		if n == followers.size():
+			break
+	_lay_trail(lead, best_dir, sample, count)
 	_last_leader = lead
 	for i in followers.size():
 		var at := trail_point((i + 1) * float(_cfg.get("spacing_m", 0.0)))
+		if blocked(at):
+			at = lead  # no clear spot on any side: start on his own and spread as he walks on
 		followers[i].global_position = _grounded(at, at.y)
 		followers[i].rotation.y = yaw
 		_velocities[i] = Vector3.ZERO
@@ -247,6 +262,50 @@ func catch_up() -> void:
 		if body != null:
 			body.snap()
 	_apply_staged()
+
+
+func _lay_trail(lead: Vector3, back: Vector3, sample: float, count: int) -> void:
+	trail = PackedVector3Array()
+	for k in range(count, 0, -1):
+		trail.append(lead + back * (k * sample))
+
+
+## True when a follower standing at `at` (its feet) would overlap a wall: a body_radius_m sphere at body_height_m
+## over its feet against the world's colliders (the player's own capsule aside). Steps and curbs lower than that
+## don't count.
+func blocked(at: Vector3) -> bool:
+	var world := controller.get_world_3d()
+	if world == null:
+		return false
+	var q := PhysicsShapeQueryParameters3D.new()
+	var ball := SphereShape3D.new()
+	ball.radius = float(_cfg.get("body_radius_m", 0.0))
+	q.shape = ball
+	q.transform = Transform3D(Basis.IDENTITY, at + Vector3.UP * float(_cfg.get("body_height_m", 0.0)))
+	q.exclude = [controller.get_rid()]
+	return not world.direct_space_state.intersect_shape(q, 1).is_empty()
+
+
+## The step from `from` by `step`, kept out of walls: slid along the wall it would enter (its surface normal), or
+## no step when that is blocked too.
+func _clear_step(from: Vector3, step: Vector3) -> Vector3:
+	if HeroStairs.near_flight(controller, from + step) or not blocked(from + step):
+		return step  # a steep flight's blocking collision is not a wall to a follower climbing its steps
+	var world := controller.get_world_3d()
+	var q := PhysicsShapeQueryParameters3D.new()
+	var ball := SphereShape3D.new()
+	ball.radius = float(_cfg.get("body_radius_m", 0.0))
+	q.shape = ball
+	q.transform = Transform3D(Basis.IDENTITY, from + step + Vector3.UP * float(_cfg.get("body_height_m", 0.0)))
+	q.exclude = [controller.get_rid()]
+	var rest := world.direct_space_state.get_rest_info(q)
+	if not rest.is_empty():
+		var n := rest["normal"] as Vector3
+		n = Vector3(n.x, 0.0, n.z).normalized()
+		var slid := step - n * minf(step.dot(n), 0.0)
+		if n.length_squared() > 0.0 and not blocked(from + slid):
+			return slid
+	return Vector3.ZERO
 
 
 func _record(lead: Vector3) -> void:
@@ -288,6 +347,7 @@ func _move(i: int, leader_speed: float, delta: float) -> void:
 		var speed := minf(
 			leader_speed + dist * float(_cfg.get("follow_gain", 0.0)), float(_cfg.get("max_speed_mps", 0.0))
 		)
+		speed = minf(speed, HeroStairs.speed_cap_at(controller, f.global_position))  # a steep flight is taken slowly
 		want = gap / dist * minf(speed, dist / delta)
 	var v := _velocities[i]
 	var rate := (
@@ -301,11 +361,20 @@ func _move(i: int, leader_speed: float, delta: float) -> void:
 	var gap_min := float(_cfg.get("min_gap_m", 0.0))
 	if off.length() < gap_min:
 		var away := off.normalized() if off.length_squared() > 0.0 else -gap.normalized()
-		p = Vector3(ahead.x, p.y, ahead.z) + away * gap_min
+		var spot := Vector3(ahead.x, p.y, ahead.z) + away * gap_min
+		# eased back at most its top speed a frame: a follower held by a wall would otherwise be shoved in one jump
+		p = p.move_toward(spot, float(_cfg.get("gap_push_mps", 0.0)) * delta)
 		v -= away * minf(v.dot(away), 0.0)
+	var moved := _clear_step(f.global_position, Vector3(p.x - f.global_position.x, 0.0, p.z - f.global_position.z))
+	if moved.length_squared() < Vector3(p.x - f.global_position.x, 0.0, p.z - f.global_position.z).length_squared():
+		v = moved / delta  # a wall took part of the step: the speed is what was left
+	p = Vector3(f.global_position.x + moved.x, p.y, f.global_position.z + moved.z)
 	_velocities[i] = v
 	var floor_at := _grounded(p, target.y)
-	p.y = move_toward(f.global_position.y, floor_at.y, float(_cfg.get("vertical_mps", INF)) * delta)
+	if is_nan(HeroStairs.height_at(controller, p)):
+		p.y = move_toward(f.global_position.y, floor_at.y, float(_cfg.get("vertical_mps", INF)) * delta)
+	else:
+		p.y = floor_at.y  # a flight's profile is already eased, step by step
 	f.global_position = p
 	var to := Vector3(_face_at.x - f.global_position.x, 0.0, _face_at.z - f.global_position.z)
 	if _facing and v.length() <= float(_cfg.get("face_release_mps", 0.0)) and to.length() > FACE_MIN_M:
@@ -323,6 +392,9 @@ func _apply_staged() -> void:
 ## `p` with its height on the floor under it (the player excluded) when that floor is within step_m of
 ## `ref_y` (the leader's height on the trail there; NAN: his height now), else at `ref_y`.
 func _grounded(p: Vector3, ref_y: float = NAN) -> Vector3:
+	var stair_y := HeroStairs.height_at(controller, p)  # M3-ARC-1216: on a steep flight, its steps are the floor
+	if not is_nan(stair_y):
+		return Vector3(p.x, stair_y, p.z)
 	var ref := controller.global_position.y if is_nan(ref_y) else ref_y
 	var up := float(_cfg.get("ray_up_m", 0.0))
 	var down := float(_cfg.get("ray_down_m", 0.0))

@@ -15,9 +15,7 @@ KEY_NAME = re.compile(
 )
 # Known gaps with their own task (the controls page's "(Escape: cancel)" lines name the hard-wired listen cancel
 # and do not match).
-ALLOWED = {
-    "DLG_CH01_TUT_003": "M2-FP-30 (cinematics): the Ch1 tutorial lines move to {action} names",
-}
+ALLOWED: dict[str, str] = {}  # M2-FP-30 moved the Ch1 tutorial lines to {action} names (DLG_CH01_TUT_003 was here)
 
 
 def _rows():

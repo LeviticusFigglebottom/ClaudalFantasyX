@@ -26,7 +26,7 @@ sys.path.insert(0, str(ROOT / "assets_src" / "characters" / "asha"))
 
 import hero_clips  # noqa: E402
 
-HEROES = ("asha", "rhen", "toma")
+HEROES = ("asha", "rhen", "toma", "liss")  # M3-CHR-03: Liss, a party member from Ch6
 # the contract (battle_presentation.md § Clip contract)
 LOOPING = {"idle", "victory"}
 ONE_SHOT = {"ready", "attack", "cast", "item", "read", "defend", "finisher", "hit", "dodge"}
@@ -57,6 +57,8 @@ EXISTING = {  # the clips before M2-CHR-07; their sub-resources must stay byte-i
     "rhen": ["idle", "walk", "run", "talk", "kneel_over_rhen", "rise_to_stand", "take_hand"],
     "toma": ["idle", "walk", "run", "talk", "spear_level", "lower_spear", "palms_level", "catch_rhen", "sit_steps",
              "turn_seaward"],
+    "liss": ["idle", "walk", "run", "talk", "crouch_shelter", "carry_crate", "bury_lamp", "clock_lantern", "point_up",
+             "haul_rope"],  # M3-CHR-03: her own clips, then the contract
 }
 
 
@@ -209,9 +211,12 @@ class TestHeroBattleClips(unittest.TestCase):
         return math.degrees(2.0 * math.acos(min(1.0, abs(float(np.dot(a / np.linalg.norm(a), b / np.linalg.norm(b)))))))
 
     def test_revive_is_last_and_short(self):
-        """revive comes after every other clip (their sub-resource ids stay put) and lasts about 0.8 s."""
+        """revive comes after every clip before it (their sub-resource ids stay put; only M3-CHR-05's story clips
+        follow it) and lasts about 0.8 s."""
         for hero in HEROES:
-            self.assertEqual(hero_clips.CLIPS[hero][-1], "revive", hero)
+            story = list(hero_clips.STORY.get(hero, {}))
+            clips = hero_clips.CLIPS[hero]
+            self.assertEqual(clips[len(clips) - len(story) - 1:], ["revive"] + story, hero)
             self.assertIn("revive", self.subs[hero], hero)
             self.assertNotIn("markers", self.subs[hero]["revive"], hero)
         self.assertAlmostEqual(hero_clips.LENGTHS["revive"], REVIVE_SEC, places=6)

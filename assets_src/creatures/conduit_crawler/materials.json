@@ -1,0 +1,13 @@
+{
+  "_doc": "The conduit crawler's surfaces (docs/kb/art/creatures/act2/conduit_crawler.md). Slots are the glTF material names; write_materials.py writes assets/creatures/conduit_crawler/materials/<slot>.tres on game/shaders/creature/creature.gdshader. shell is the salt-glass dome, glossy, whose emission mask is the glow of the bound light inside showing through its crown: glimmer_bound, steady, never pulsing (a Lit Age construct, creatures README rule 3; color_script.md rule 2); seam is the raised bead down its back where the shell's halves meet, the spawn_wound weak point with its slow weak-point pulse; frame is the brass going bronze_patina (the rim, the ribs, the belly plate, the legs and arms, by vertex colour), the lacquer_black joints and feet, the brush's sand_cloth bristles and the wiper's black blade, no emission. Colours are palette.json swatches.",
+  "slots": {
+    "shell": {"roughness_dry": 0.12, "roughness_wet": 0.06, "specular": 0.7, "wet_darken": 0.2, "clearcoat_wet": 0.8,
+              "detail_scale": 26.0, "detail_albedo": 0.04, "detail_bump": 0.08, "cavity_albedo": 0.2,
+              "emission_color": "#4FB3B0", "emission_energy": 1.2},
+    "seam": {"roughness_dry": 0.3, "specular": 0.6, "detail_albedo": 0.0, "detail_bump": 0.0,
+             "emission_color": "#3FE0C8", "emission_energy": 2.2, "emission_pulse_hz": 0.3, "emission_pulse_depth": 0.35},
+    "frame": {"metallic": 0.55, "roughness_dry": 0.42, "roughness_wet": 0.25, "specular": 0.6, "wet_darken": 0.5,
+              "clearcoat_wet": 0.3, "detail_scale": 30.0, "detail_albedo": 0.12, "detail_bump": 0.35, "cavity_albedo": 0.5,
+              "emission_energy": 0.0}
+  }
+}

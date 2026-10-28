@@ -4,6 +4,7 @@ extends TestCase
 ## title, which opens the gallery on that memory. Instant sequencer, synchronous stage load; the
 ## change back to the title is recorded (FlowRouting.record).
 
+const RHEN_BY_ASHA := Vector3(19.2, 1.4, 42.3)  # first_playable.json night marks (B11)
 const SCENE := "res://game/ui/menus/memories/memory_replay.tscn"
 
 var replay: MemoryReplay
@@ -75,7 +76,8 @@ func _on_line(step: DialogueStep) -> void:
 			var z := replay.zone as HalunaZone
 			at_first_line["night"] = z.is_night
 			at_first_line["asha"] = z.stage.actor(&"asha").global_position
-			at_first_line["rhen"] = z.player.global_position.distance_to(z.spawn_marker(&"DockNight").global_position)
+			# M2-FP-115: Rhen walks out to Asha at the dock end before the first line
+			at_first_line["rhen"] = z.player.global_position.distance_to(RHEN_BY_ASHA)
 		at_first_line["stories"] = replay.zone.find_children("*", "FieldEncounters", true, false).size()
 		at_first_line["hud"] = _hud_shown()
 
@@ -130,7 +132,7 @@ func test_the_dock_at_night_replays_at_night_on_the_dock() -> void:
 	assert_true(replay.played)
 	assert_true(bool(at_first_line.get("night", false)), "Haluna's night (the memory's night field)")
 	assert_true((at_first_line.get("asha", Vector3.ZERO) as Vector3).distance_to(Vector3(20.6, 1.4, 41.3)) < 0.1)
-	assert_true(float(at_first_line.get("rhen", 99.0)) < 0.5, "Rhen on the dock (spawn)")
+	assert_true(float(at_first_line.get("rhen", 99.0)) < 0.5, "Rhen on the dock, beside Asha")
 	assert_eq(at_first_line.get("stories"), 0, "no field encounters on the stage")
 	assert_true(replay.hud_freed >= 5, "Rhen's field HUD was there (%d pieces) and is gone" % replay.hud_freed)
 	assert_eq(at_first_line.get("hud"), [] as Array[String], "no HUD element over the memory")

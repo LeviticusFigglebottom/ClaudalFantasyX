@@ -3,6 +3,9 @@
 [ext_resource type="PackedScene" path="res://assets/environments/zones/iskarra/iskarra_city.tscn" id="1_city"]
 [ext_resource type="Script" path="res://game/world/camera_shot.gd" id="2_shot"]
 [ext_resource type="Script" path="res://game/levels/ch02/haluna/haluna_shot_camera.gd" id="3_cam"]
+[ext_resource type="Script" path="res://game/world/water/water_surface.gd" id="4_water"]
+[ext_resource type="Resource" path="res://game/world/water/lagoon_waves.tres" id="5_waves"]
+[ext_resource type="Material" path="res://game/levels/ch02/haluna/haluna_water_material.tres" id="6_water_mat"]
 
 [sub_resource type="Resource" id="ShotP01"]
 script = ExtResource("2_shot")
@@ -60,9 +63,9 @@ glow_bloom = 0.08
 fog_enabled = true
 fog_mode = 1
 fog_light_color = Color(0.788, 0.541, 0.353, 1)
-fog_density = 0.3
+fog_density = 0.2
 fog_sky_affect = 0.2
-fog_depth_begin = 30.0
+fog_depth_begin = 70.0
 fog_depth_end = 220.0
 adjustment_enabled = true
 adjustment_saturation = 1.05
@@ -83,15 +86,6 @@ roughness = 0.9
 [sub_resource type="StandardMaterial3D" id="Mat_cloth_indigo"]
 albedo_color = Color(0.169, 0.227, 0.42, 1)
 roughness = 0.9
-
-[sub_resource type="StandardMaterial3D" id="Mat_water"]
-albedo_color = Color(0.055, 0.29, 0.333, 1)
-roughness = 0.08
-metallic_specular = 0.9
-
-[sub_resource type="PlaneMesh" id="Mesh_0"]
-material = SubResource("Mat_water")
-size = Vector2(600, 600)
 
 [sub_resource type="CapsuleMesh" id="Mesh_25"]
 material = SubResource("Mat_cloth_sand")
@@ -122,10 +116,11 @@ transform = Transform3D(0.6402, 0, -0.7682, -0.5497, 0.6986, -0.4581, 0.5367, 0.
 light_color = Color(0.353, 0.498, 0.659, 1)
 light_energy = 0.35
 
-[node name="Water" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
-cast_shadow = 0
-mesh = SubResource("Mesh_0")
+[node name="Water" type="Node3D" parent="."]
+script = ExtResource("4_water")
+publishes_water_level = true
+wave_set = ExtResource("5_waves")
+material = ExtResource("6_water_mat")
 
 [node name="City" parent="." instance=ExtResource("1_city")]
 

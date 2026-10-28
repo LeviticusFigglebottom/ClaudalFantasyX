@@ -155,7 +155,7 @@
       }
     },
     "sefir": {
-      "_garments": "act1_npcs.md \u00a71.10: the long hair is a garment (HairBack), so hair passing through the mantle or the shoulders in a head turn shows up in garment_in_body and is fixed by weights, not hidden",
+      "_garments": "act1_npcs.md §1.10: the long hair is a garment (HairBack), so hair passing through the mantle or the shoulders in a head turn shows up in garment_in_body and is fixed by weights, not hidden",
       "garments": [
         "Costume",
         "Mantle",
@@ -252,6 +252,59 @@
       },
       "seams": {
         "max_exposed": 6
+      }
+    },
+    "liss": {
+      "garments": [
+        "Costume",
+        "WorkSleeve"
+      ],
+      "props": [
+        "Launcher"
+      ],
+      "braid": {
+        "mesh": "HairTail:hair",
+        "scalp": [
+          "HairHead:hair",
+          "Head:skin_head"
+        ],
+        "head_bone": "DEF-spine.006",
+        "_min_strand_verts": "connected pieces of the braid mesh at least this big are the woven strands (the rest are flyaways and tail cards)",
+        "min_strand_verts": 300,
+        "_root_ring_mm": "a strand's root ring: its open-end vertices within this of the end vertex nearest the scalp at rest",
+        "root_ring_mm": 30.0,
+        "_max_gap_mm": "the root ring must touch the hair cap or scalp (closest ring vertex, signed: inside counts as 0)",
+        "max_gap_mm": 2.6,
+        "_max_drift_mm": "how far a root vertex may move in the head bone's frame (0 when skinned to the head)",
+        "max_drift_mm": 2.0
+      },
+      "seams": {
+        "groups": [
+          [
+            "Body",
+            "Head:skin_head"
+          ],
+          [
+            "Costume"
+          ],
+          [
+            "WorkSleeve"
+          ]
+        ],
+        "max_exposed": 2
+      },
+      "_allowances": "M3-CHR-03 (every-frame worst in brackets, cloud probe; renders on the PC). Costume 43/6 (42.8): the trouser knee folds into the shin in her 112-degree crouch_shelter squat (39) and in the ko/revive kneel (41-43), inside the leg, as Rhen's kneel. WorkSleeve 12/6 (11.6, haul_rope): the copper-mesh sleeve is an offset shell of the left arm's skin, and at the armpit crease it sits inside the torso as the arm comes forward. Body 70/32 (68.7, haul_rope; point_up 65.9): both arms raised past 90 degrees take the upper arm's front past the top's armhole edge (linear skinning, as Rhen's item toss). max_exposed 2: two left-armpit boundary verts under 2 mm in haul_rope. Braid gap 2.6 (2.55, point_up): the tail root (raised to 0.40 h) parts from the cap by half a millimetre more than the default as the head tips back.",
+      "penetration": {
+        "limits_mm": {
+          "Costume": 43.0,
+          "WorkSleeve": 12.0,
+          "Body": 70.0
+        },
+        "limits_count": {
+          "Costume": 6,
+          "WorkSleeve": 6,
+          "Body": 32
+        }
       }
     }
   }

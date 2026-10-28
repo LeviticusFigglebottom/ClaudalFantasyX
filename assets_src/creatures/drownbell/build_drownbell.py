@@ -20,6 +20,7 @@ import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "common"))
 import creature_kit as ck  # noqa: E402
+import grounding as gr  # noqa: E402
 
 SEED = 9311
 PAL = {k: ck.hexrgb(v) for k, v in {
@@ -31,6 +32,7 @@ PAL = {k: ck.hexrgb(v) for k, v in {
 LIP_Y = 0.29  # the rim's lowest edge: the VFX `rim` anchor (0.12 x 2.4 m)
 RIM_TOP = 0.50  # where the rim band meets the bell body
 RIM_R = 0.85
+ROPE_AZ = -145.0  # the rope's azimuth (degrees; 0 = +Z, the face)
 SEGS = 72
 WET_LINE = 0.75
 BREAK_ARC = (math.radians(-80.0), math.radians(25.0))  # azimuth span of the lip lost in RimBroken (camera side)
@@ -83,7 +85,7 @@ def build_rig() -> ck.Rig:
 
 
 def rope_path() -> np.ndarray:
-    a = math.radians(-145.0)  # back-left, so it frames the silhouette without crossing the face
+    a = math.radians(ROPE_AZ)  # back-left, so it frames the silhouette without crossing the face
     s, c = math.sin(a), math.cos(a)
     pts = [(0.10 * s, 2.40, 0.10 * c), (0.45 * s, 2.25, 0.45 * c), (0.75 * s, 1.55, 0.75 * c),
            (0.95 * s, 0.25, 0.95 * c), (1.25 * s, 0.02, 1.25 * c)]
@@ -395,6 +397,29 @@ def build_clips() -> list[ck.Clip]:
     return [idle, attack, cast, hit, ko, phase, flood]
 
 
+def _outward(i: int) -> tuple[float, float, float]:
+    """The Euler weights of a turn that swings leg i up about its own outward axis (as `_leg_out` keys it)."""
+    return _leg_out(i, 1.0)
+
+
+def _rope_up() -> tuple[float, float, float]:
+    """The same for the rope: a turn that lifts its trailing end, about the horizontal axis across its azimuth."""
+    a = math.radians(ROPE_AZ)
+    return (-math.cos(a), 0.0, math.sin(a))
+
+
+# Kept off the floor (M3-CRE-632, common/grounding.py): where the bell's swing (the toll, the slam, the blow) would
+# press a foot through the floor, that leg swings up about its outward axis the least it takes, so its foot stays
+# planted; the rope's trailing end rides up over the floor as the bell sways; and the KO, which tips it about its lip,
+# lifts the bell the least it takes to lie on the floor (the rim is an extra mesh, measured with the body).
+GROUNDED_LIMBS = [(f"{leg}_a", _outward(i), 1.0, 45.0) for i, leg in enumerate(LEGS)] + [
+    ("rope2", _rope_up(), 1.0, 30.0), ("root", gr.LIFT, 1.0, 0.2, ("ko",))]
+
+
+def export_clips(rig: ck.Rig, meshes: list[ck.Mesh]) -> list[ck.Clip]:
+    return gr.grounded(rig, meshes, build_clips(), GROUNDED_LIMBS)
+
+
 def main() -> None:
     argv = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else []
     ap = argparse.ArgumentParser()
@@ -402,7 +427,7 @@ def main() -> None:
     args = ap.parse_args(argv)
     rig = build_rig()
     mesh, extra = build_meshes(rig)
-    info = ck.export_creature(mesh, rig, build_clips(), args.out, extra_meshes=extra,
+    info = ck.export_creature(mesh, rig, export_clips(rig, [mesh] + extra), args.out, extra_meshes=extra,
                               extras={"hymn_creature": "drownbell"})
     print(f"drownbell: {info}")
 

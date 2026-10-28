@@ -24,13 +24,14 @@ sys.path.insert(0, str(HERE))
 import bell  # noqa: E402
 import gallery  # noqa: E402
 import gantry  # noqa: E402
+import market  # noqa: E402
 import port  # noqa: E402
 import tb_common as tb  # noqa: E402
 import waterline  # noqa: E402
 
 kc = tb.kc
 MAX_GLB_BYTES = 5 * 1024 * 1024  # ADR 0005
-MODULES = (bell, gantry, gallery, waterline, port)
+MODULES = (bell, gantry, gallery, waterline, port, market)  # market: M3-C07-04 the port
 
 
 def targets() -> dict:
