@@ -589,6 +589,15 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
+- **2026-10-28 ~01:30: REFOCUS (ADR 0041, the human's directive via the Lead).**
+  - **Scope:** the Prologue through Ch4, plus the shared kits. env-art-b takes Ch5–Ch9.
+  - **Paused:** my 19 later-act tasks (M3-ENV-716–718, 720–723 and 725–736) are `blocked` with `blocked-by: ADR 0041`. Their work stays committed and pushed as is.
+  - **"The 10 game/battle/arenas scenes":** every id in arenas.json already plays env-art's final arena, and the arena preview shots load encounters, so they render the final arenas too. The 10 greybox scenes are dead files owned by battle-presentation. M3-ENV-737 asks them to delete them.
+  - **Self-rendering** per TRACK-RULES cd23f612, with the human's OK in this session.
+    - The Act II/III batch was stopped.
+    - Iskarra I02 and P01 were captured first: the Ysolde capsule is gone and the frames read clean.
+    - Batch A (15 Act I shots: the prologue vigil, Haluna ×5, the causeway, the shrine, the Drownbell flood, five Act I arenas) is running.
+  - **Next:** view Batch A and fix what reads primitive. Then Batch B: the Oruvel O-shots, the Underway, the Brightwater B-shots and the Ch4 ferry, then the shrine interior.
 - **2026-10-28 ~00:50: the Lead's list of 10-28 00:13.**
   - **(1) and (2):** were already done (8be2adcd dressed the wall-head and the Reach backdrop; `wall_head_storm` plays the final seawall). The per-fight mapping, M3-ENV-714, is re-routed to combat (battle-presentation) with the current state.
   - **(3):** every env-art todo is answered (see the 23:50 entry).
