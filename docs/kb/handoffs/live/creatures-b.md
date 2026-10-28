@@ -32,6 +32,38 @@ CreatureActor and the validator are theirs too (kit or tool changes go to them a
   are cropped by the stage's lone-boss seat (EnemySlots/Slot0), filed as **M3-CRB-011**. Idle motion was checked clip
   by clip in each model pass.
 
+- **11:40, the Lead's 10:55 queue:**
+  1. **M3-CRB-011 fixed (052d69a2), MERGE-READY:** `boss_seats` in battle_sandbox.json + `BattleStage._seat_lone_boss`
+     (a lone boss stands on its mark at spawn, before the line-up). Reach [-2.6,0,-2.4], Matron [-2.6,0,-1.2],
+     Spar-wraith [-2.0,0,-1.4]. SELF-RENDERED (scratch default-camera fixture, never committed; plus
+     battle_boss_intro_wraith/_matron/_reach), viewed: the Reach's hand grips the wall-head and reads; the Matron is
+     whole, hood clear, intro unoccluded; the Wraith's body and shroud are in frame but its mast tops still leave the
+     frame. Further-back Wraith seats broke test_battle_boss_camera (its big-move shots), so the rest is a home-camera
+     fit for a tall boss: noted on M3-CRB-011 for battle-presentation. New test_battle_boss_seat 2/0.
+  2. **Arena pass:** hullgnaw, drownbell, bottle_hermit read whole and well scaled at the default camera (no seat
+     needed); the three above are fixed as far as a seat can. Phase-change motion was checked per model in each pass.
+  3. **Clips the choreo calls:** none missing. `dodge` is declared but never played; `item` and `read` are hero menu
+     actions (the Vowbound menu has neither); `victory` plays on the party side (the Vowbound have it); creature strikes
+     resolve through clip_by_skill/clip_by_kind. Pinned: test_creature_bosses_act1 now checks every Act I Vowbound
+     skill and Swell finisher resolves to a clip its model has (5/0).
+  - **Checks:** validate_data 0/0; gdlint, gdformat; Godot boss 75/0, choreo 58/0, battle_lineup 5/0, vowbound 87/0,
+    creature_bosses 5/0, battle_boss_seat 2/0; the full battle filter is running. **Pre-existing, not mine:**
+    test_battle_act1_ability_vfx fails on tannin_archer, root_crab and fen_leech (Act II creatures; it fails without my
+    change too).
+
+- **12:40, the Lead's 12:11 rows (act1_gpu_qa.md on gpu/act1-qa-2), MERGE-READY @ 066cc8b9:**
+  - **Row 12 (Moll a grey capsule): fixed.** His actor (characters' M3-CHR-507) is wired as a battle_sandbox.json
+    stand-in `scene` (enemies.json `model` only takes creature scenes), yaw 90, height 1.86; the Ch6 intro row gets
+    `fit_margin` 1.1 so the party stays clear of the HUD. SELF-RENDERED battle_boss_intro_inquisitor and
+    battle_arena_camp — viewed: Moll and the hound facing the party, no capsule. M3-CHR-523 to review.
+  - **Row 30 (capsules in drowned_choir_ring, iskarra_spire_crown, undertow_cage, undertow_heart(_letting),
+    keth_seep_terrace): record only.** No encounter at all uses those arenas yet (later acts, paused by ADR 0041).
+  - **The placeholder audit now lists nothing for creatures-b.** Ilun, Kahre and Virel also carry their actor scenes
+    as battle_sandbox.json stand-in `scene` keys (redundant with creatures.json; the audit reads only those), so the
+    false positive is gone without touching qa's tool; M3-CRB-012 stays as the proper fix.
+  - **Checks:** validate_data 0/0; gdlint, gdformat; Godot boss 76/0, creature_bosses 6/0 (new: every Act I boss,
+    Moll included, and Vowbound draws a real body), ch06 5/0, vowbound 87/0.
+
 ## Scope (from game/data, 2026-10-28)
 - **Bosses** (enemies.json rows with phases, or a choreo.json `boss_intro` row): `hullgnaw` (Ch1), `drownbell`
   (the slice, Ch3), `bottle_hermit` and `spar_wraith` (Ch4), `cinder_matron` (Ch5), `undertows_reach` (Ch8).
@@ -259,3 +291,9 @@ CreatureActor and the validator are theirs too (kit or tool changes go to them a
   - **Checks:** validate_data 0/0; Godot creature_portraits 4/1 (the six Act II PNGs only), creature_bosses 4/0,
     vowbound 87/0.
 - **Housekeeping @ 00c836b6:** added `docs/kb/qa/gate-runs/.gdignore` (the big14 merge brought ~390 gate PNGs and JPGs that Godot otherwise imports into .import files; same as docs/kb/qa/gpu/.gdignore; QA's path, flagged here for the Lead), and committed six .uid sidecars Godot generated for other tracks' new scripts.
+- **BACKLOG EMPTY (12:50):** every creatures-b row is closed — the six Act I bosses, Moll's battle wiring and the three
+  Act I Vowbound are at final quality and draw real bodies; the placeholder audit lists nothing for creatures-b; GPU QA
+  rows 12 (fixed) and 30 (later-act arenas, record only) are answered. Open items are other tracks': M3-CRB-009 (intro
+  clip playback), the Spar-wraith's home-camera fit (M3-CRB-011 note), M3-CRB-010, M3-CRB-012, and the Act II Vowbound
+  portraits (creatures, paused). The one full battle run on 052d69a2 showed only the pre-existing Act II
+  test_battle_act1_ability_vfx failures.

@@ -2,8 +2,8 @@
 id: M3-CRB-011
 title: "Request (creatures-b): seat or frame a lone Act I boss so the default battle camera shows all of it"
 role: combat
-status: todo
-owner_session: ""
+status: review
+owner_session: "creatures-b (the Lead assigned it back, 2026-10-28 10:55)"
 reviewer: art
 depends_on: []
 milestone: M3
@@ -29,5 +29,20 @@ Reach), or apply the intro's `fit` logic (M3-BPR-404: fit the model's bounds in 
 **home** camera for that encounter. The models cannot do this themselves: moving a model inside its own scene would
 pull it off its target ring and the stand-in's VFX anchor heights, and creatures.json `stand_in` has no offset key.
 creatures-b re-renders the six encounters at the home camera when it lands.
+
+## Done (creatures-b @ 052d69a2, the Lead's assignment)
+- `game/data/ui/battle_sandbox.json` `boss_seats` (enemy id -> a mark in EnemySlots space) and
+  `BattleStage._seat_lone_boss`: when the boss is the only foe at spawn it stands on its mark before the line-up;
+  a foe joining later uses the slots as before. Test: tests/unit/test_battle_boss_seat.gd (seated and unseated).
+- Seats, each chosen by self-rendering the default camera and the boss intro in the real arena and viewing them:
+  - **undertows_reach [-2.6, 0, -2.4]:** the hand grips the wall-head beside the party, the fingers read, the forearm
+    rises out of frame (the limb is colossal by design); the intro shows it on the real wall-head.
+  - **cinder_matron [-2.6, 0, -1.2]:** her whole figure, hood clear of the phase label; the intro is unoccluded.
+  - **spar_wraith [-2.0, 0, -1.4]:** the body and shroud are in frame; the mast tops still leave the top of the frame.
+    Every seat further back that showed more of it broke test_battle_boss_camera (its big-move shots fail their frame
+    checks), so this is the furthest that keeps M3-BPR-420's shots.
+- **Left for battle-presentation:** a tall lone boss (the Spar-wraith, ~5 m with its spars) needs the home camera to
+  fit its bounds (the intro's M3-BPR-404 fit applied to the default framing for that encounter); a seat alone can't
+  do it without breaking the big-move shots. hullgnaw, drownbell and bottle_hermit need no seat.
 
 ## Review log
