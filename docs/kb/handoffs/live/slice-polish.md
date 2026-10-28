@@ -644,6 +644,26 @@ Ch4–Ch9 onward. `m2-slice.md` beside this file is the history up to the 2026-1
   - **Checks skipped:** coverage and Blender (nothing they cover).
 - **Next:** the beat audit goes on: the dock at night (B11), the end card, the Drownbell, the shrine's trial shots,
   then Ch1's Underway galleries and the Hullgnaw fight.
+- **The Lead's 13:25 items:**
+  - **`pending_baseline`, done.**
+    - A shot may carry `"pending_baseline": true` until the gate approves it.
+    - compare.py reports it PENDING, not FAIL, while it has no baseline, and compares it once it has one.
+    - test_screenshots skips its baseline check, but fails if a pending shot already has a baseline, so the key is
+      dropped on approval.
+    - A unit test covers it.
+    - My 13 unbaselined shots are marked. 108 other tracks' shots still have no baseline and no key (kerrid_*,
+      moll_*, stillguard_*, zone_oruvel_*, zone_underway_*, zone_wake_*, creature_ilun, …), so test_screenshots
+      stays red until their owners mark them.
+  - **Row 32:** done at a3f0e6f9..743b94bf (H05_up; slice_beach_standing viewed).
+  - **Row 31:** filed **M3-CHR-102** to characters. It is the baked skirt solve: kneeling pools the cloth and flares
+    it, and the solve clears only her own legs. The marks stay, since the PC confirmed both faces. If the cloth can't
+    clear him, I move her mark by the amount they name.
+  - Merged the integration branch @ 8870ea9c (TRACK-RULES' LEAD-ASK lines).
+- LEAD-ASK: the gate's baselines for my pending shots (slice_verse_threshold, slice_verse_recognition,
+  slice_beach_standing, slice_neme_table, the seven ch01_* scene stills, ch01_oruvel_storm, slice_prologue_p01).
+  Approve them and drop their `pending_baseline` keys; all are viewed above.
+- LEAD-ASK: should other tracks mark their 108 unbaselined shots `pending_baseline`, or should the gate baseline
+  them? My default: each owner marks its own. I'm not editing their rows.
 
 ### Render requests
 SUPERSEDED RENDER-REQUEST @ fdec3cc6: slice_prologue_vigil_line, slice_beach_h05_asha, slice_beach_h06_toma, slice_haluna_villagers_village, slice_causeway_head, slice_causeway_harrier_view, haluna_h01_village_from_sea, haluna_h02_tidewall_lane, haluna_h04_dock, haluna_h07_chapel_court, haluna_h10_dock_night, shrine_s01_approach, shrine_s02_threshold, shrine_s03_overview, shrine_s04_lip, shrine_s05_side_pool, drownbell_flood, battle_boss_intro_drownbell, battle_arena_causeway, field_causeway_dolly, boot_title; why: M2-FP-102..109, the human's playtest round (real cast and held poses in the prologue and Cutscene A, live villagers and wildlife, the final causeway), plus the greyscale audit of every slice beat. The six slice_* shots are new (no baseline yet).
