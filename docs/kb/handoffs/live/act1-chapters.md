@@ -212,6 +212,24 @@ cutscene sequencer (`game/cutscene/**`), `game/flow/**` and the playtest fixes.
   still todo. The galleries part of M3-C07-04 is done by M3-C07-1211. I'll compose the port from the Bell kit's port
   pieces and Oruvel's rafts only if the Lead wants it before env-art gets to it.
 
+- **MERGE-READY @ adf680fa1: big14's gate failures in act1-chapters' lane fixed** (merged gpu/gate-big14-shots @ 36c5f5ec7):
+  - test_act1_cutscene_walks: Asha and Toma staged at the dock before C4-06; three wake walks clean and off the known
+    list; the lamps walk was fixed before the gate (712bc98a).
+  - test_qa_save_shrines: the wake has a `Shrine` spawn, and Ch04Zone points the dressing's SaveShrine at the wake.
+  - test_hero_field_snaps (haluna_wake): the floor probe put NemeDoor on a tree canopy 18 m up; it now takes the
+    ground or a deck within 3.5 m of it, never a roof, a tree or the player. The drowned_choir pop (Act II) is the
+    body, not the floor: request M3-HER-1230.
+  - test_villager_routines (wake): the vendor within Osu's chat range.
+  - test_battle_act1_ability_vfx: my ten Act II foes are `"act": 2` in enemies.json, and **battle-presentation: I
+    added a one-line skip of act > 1 rows to your test** (its title and doc are Act I; Act II effects come with Act II).
+  - test_qa_capsules: Pell in Ossa Fen and the Act II regulars listed known (ADR 0041). Haluna's own villager
+    capsules (ch02/haluna) are slice-polish's.
+  - Checks on the merged tree: act1_cutscene_walks, qa_save_shrines, zone_map, ability_vfx, ch04-ch09, hero_cutscene_snaps
+    green; villager_routines' two Oruvel/layer await failures and the Haluna capsules are other tracks'.
+- **Playthrough (Lead brief 10-28):** `docs/kb/qa/act1_playthrough_ch04_ch09.md` (181 stills of every Ch4-Ch9 cutscene
+  played in flow order, `tools/act1/cutscene_stills`; camera solver `tools/act1/shot_check`). Two passes fixed: the
+  wake staging, Coilspire's cameras, 16 blocked shots, ch08_captain staged at the flooded stair foot (ADR 0022 (c)),
+  Garo/Kerrid/Toma/Tavi framings, the dawn road. Open rows are listed there with owners and requests.
 - **MERGE-READY @ 91f21337: the Act I chapter threads and cutscenes are clean.** All 39 `_thread` tests pass;
   `hero_cutscene_snaps` (ADR 0192, the merged suite) went from 6 new failures to 0: the wake's feast villagers face
   the wall's gap, Coilspire's tender and Liss face where they first turn, Liss stands 0.6 m back from the seized key
