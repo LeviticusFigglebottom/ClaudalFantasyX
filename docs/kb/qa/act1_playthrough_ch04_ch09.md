@@ -16,15 +16,16 @@ Owner per row: **act1-chapters** fixes cameras, staging, flow and encounters; th
   the water (R09), N12 off the moon onto the raft, the wall-walk shots W12/W13 on the party; **ch08_captain staged as
   ADR 0022 (c) pins it** (Kerrid, Marra and the climbers at the flooded stair foot before the scene; W15 above the
   flood's water, W16 on Marra); Ch9's road D03 moved onto the road behind the line (it stood beyond the parapet).
+- Third pass: R08 lifted off the waterline onto the moorings and the people on them; W07 and W07_storm moved
+  west of the gate (the old views sat inside the gate leaves, which have no collision) so the party is front-lit
+  with the gate behind; F08_key from the north, the side the great key is turned from, and Asha placed at the
+  wheel (`great_key_asha`) before ch08_beacon_opened; N09 frames the mourner whole until the kneel exists.
 
 ## Open, act1-chapters (cameras and staging)
 | Ch | Scene / shot | What reads wrong |
 |---|---|---|
-| 4 | ch04_name_board D06, ch04_seventh_terrace D01, F05; ch04_spar_wraith D05 | the derelict at night: dark frames with no subject (sea, rigging); the wraith reads only as its motes |
-| 7 | ch07_empty_moorings R08 | at the waterline, the posts fill the frame |
-| 8 | ch08_wall_gate W07; ch08_run_back W07_storm | the gate as a black silhouette, no one in frame |
-| 8 | ch08_storm_against_wind / ch08_beacon_opened F08_key | the wheel half behind the dark flue wall |
-| 9 | ch09_the_ebbing N09 | the mourner's open hand (as written) frames a body: needs a mourner posed on the shingle |
+| 4 | ch04_name_board D06, ch04_seventh_terrace D01, F05; ch04_spar_wraith D05 | waits on the grade (M3-ENV-1228): re-previewed 2026-10-28, every view of the stern reads near-black, so framing can't be judged. F05, D01 and D05 have their subject (the hull, the wraith's motes); D06 aims at y 1.7 above the kit's name-board (it hangs on the transom at -9.24, 0.85, 21.04): re-aim it once the grade lands |
+| 9 | ch09_the_ebbing N09 | framed on the standing mourner; the open hand on the shingle needs the kneeling mourners (character, M3-C09-08 §5: no villager cast has a kneel clip yet, only Toma's `kneel_palms_flat`) |
 
 ## Open, other owners (filed)
 | Ch | What | Owner / task |

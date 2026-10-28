@@ -136,6 +136,7 @@
           {"play": "ch08_storm_against_wind"}
         ]},
         "open_beacon": {"when": {"set": ["ch08_virel_bound"], "unset": ["ch08_beacon_opened"]}, "steps": [
+          {"zone": "place_actor", "args": ["asha", "great_key_asha"]},
           {"play": "ch08_beacon_opened"},
           {"go": {"location": "ch08/corrow", "spawn": "WallGate"}}
         ]}
