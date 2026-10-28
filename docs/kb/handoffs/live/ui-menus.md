@@ -363,3 +363,4 @@ SELF-RENDERED @ 2b0a5ffb: battle_hud_preview, battle_statuses, battle_swap_menu,
 - **Items, shop and equip rows:** an icon before every label. The first render had the icons under the labels, because the cursor's nudge reset the label's x. Fixed and re-rendered.
 - **battle_victory:** fighter faces, drop icons and the lume's coin.
 - **menu_glyphs (new review sheet):** all 44 icons distinct. Flask, scale and sword were redrawn after the first view.
+SELF-RENDERED @ d9bc59fc: reefball_hud_choice, reefball_outfitter, cutscene_act_card, save_menu, dialogue_continue. The first four pass. dialogue_continue drifts only in the palms' wind (environment); the box is unchanged. The audit's Act I screen list is done.

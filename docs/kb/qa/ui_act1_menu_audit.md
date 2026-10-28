@@ -43,5 +43,6 @@ Task: M3-UI-211. Last updated 2026-10-28.
 | **Kerrid** (Ch5 to Ch9 party): no model. His battle body is the default primitive, and his menus and battle slots show "K". | character, M3-CHR-505 (doing) | Add him to the portraits manifest, bake, and view. The letter falls back automatically until then. |
 | **The Stillguard Inquisitor** (Ch6 boss): no model. Capsule in battle, no bestiary picture. | character, M3-C06-06 (Inquisitor Hadric Moll) | Bake his bestiary portrait once his battle actor exists. |
 
-## Still to check
-- **Remaining Act I screens to self-render:** the Reefball menus (HUD, outfitter), the dialogue and cutscene captions, and the set-piece HUD. All passed their last renders before this pass.
+## Re-rendered after the fixes
+- **Pass:** reefball_hud_choice, reefball_outfitter, cutscene_act_card and save_menu all pass with no change.
+- **dialogue_continue:** only the palms' wind moved, an environment change outside ui. The box is unchanged and has no stand-in.
