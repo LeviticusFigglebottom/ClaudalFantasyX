@@ -934,5 +934,22 @@ MERGE-READY (+ this log): **reproduced the human's "Trying to cast a freed objec
   - `revenant_tells.gd:162` → **M3-HER-1152** (rendering);
   - `battle_choreo.gd:801` → **M3-HER-1153** (ui/battle-presentation).
   Each fix is one line. The owner removes the KNOWN row when it lands.
+- Gates: hero_ 110/0, qa_party 3/0, freed_cast_lint unittest 5/0, gdlint/gdformat, validate_data, taskboard.
 - **Lead:** the lint belongs in `tools/ci_local.sh` (it runs through the tools suite already, via
   test_freed_cast_lint).
+
+### TRIAL MERGE, 2026-10-28 ~05:45
+TRIAL MERGE @ integration 6b89f4a6: env-art 62409951, env-art-b 6edde924, creatures 0d50432b, creatures-b 557a9ea5, characters 73917b03, ui 296ceb69, battle-presentation 1c1f89b3, act1-chapters 0d19e1f4, m2-slice 9f31066b, audio 5061e0fa, hero-integration 41c277d2
+- **New since 05:00, the one that matters: env-art vs env-art-b on the Haluna kit, 10 files.** These don't union:
+  `assets/environments/kits/haluna/kit_manifest.json`, `assets_src/environments/kits/haluna/build.py` and
+  `materials.py`, `game/data/ui/zone_maps.json`, `tools/tests/test_ch08_flow.py` (+ ownership.md). env-art (M3-ENV-743,
+  Ch4 wake-night dressing) and env-art-b (M3-ENV-721, Ansedra) both grew the shared Haluna kit build. **Lead:** one of
+  them should merge the other before the next batch, since a by-hand merge of build.py decides the kit's geometry.
+- As at 05:00: `blender_builds.json` (characters, ui vs env-art/creatures), `battle_sandbox.json`, ownership.md, and
+  act1-chapters' `project.godot`/`creature_voices.json`/`test_zone_map.gd`/`test_ch08_flow.py`.
+- **hero-integration:** `test_hero_stairs.gd` clashed only on integration's one-line comment on `_done()`. I took
+  integration's file, so my branch no longer clashes.
+- **Audit on the merged tree (static half only, 20 items: audio 12, creatures-b 4, env-art 4).** The runtime scan
+  needs an import of the merged tree, so it waits for the next full one. The 05:00 inventory (39, runtime included)
+  stands.
+- **freed_cast_lint on the merged tree:** 0 new hits (only the three filed ones).
