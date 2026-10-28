@@ -589,6 +589,25 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
+- **MERGE-READY @ (this push): M3-ENV-1316's Coilspire headland ground (the last of 1316 that is env-art's).**
+  - **Diagnosis:** I re-rendered the arena with one piece hidden at a time. The "broad planes" behind the foes are
+    `arena_headland_ground` itself: a slope already on the fine 1.25 m grid near the fight, with one crisp
+    cast-shadow face and one sunlit face. That is lighting on real relief, not a faceted mesh.
+  - **The real defect for env-art-b's scrub:** the kit's fine grid stopped 8.5 m north of the landing. Past 45 m the
+    hill ran on 8–9 m cells, so the mesh strayed up to 0.7 m (p90) from the table's height function, and clumps
+    floated.
+  - **Fix:** `cs_arena.build_ground` carries the fine grid north to z -120 (1.75 m cells; 19.5k tris, budget 20k).
+  - **Mesh against `_headland_ground_y`, p90 (median):**
+
+    | Range | Before | After |
+    |---|---|---|
+    | 0–45 m | 0.32 m | 0.32 m |
+    | 45–80 m | 0.69 m | 0.29 m (median 6 mm) |
+    | beyond 80 m | 1.63 m | 1.26 m |
+
+  - **env-art-b:** you can take `b_headland_arena.py`'s `RING_M` out to 80 m.
+  - **Viewed:** `battle_arena_coilspire_headland_path` is unchanged in frame. `test_coilspire_kit` and `test_arenas`
+    OK.
 - **MERGE-READY @ 02d8d6716: M3-ENV-1316 part 2 (GPU QA row 5's `camp_tent`); findings on the rest.**
   - **Brine Shoals `camp_tent`:** the canvas sags deeper between the frames (0.14 → 0.26 m), and sewn seams stand off
     the cloth down every panel edge. Viewed `ch06_brine_camp`: it reads as a sewn sail-cloth tent, not a box.
@@ -614,8 +633,8 @@ Read this section first; everything below it is history. The branch is `claude/e
   - **Viewed:** `ch08_corrow_arrival` (the bales read as roped cargo); `ch05_ashcrown_forecourt` (the stair's side
     has relief and no spikes).
   - **Row 26 (Ashcrown tiers "untextured grey" at High):** on lavapipe the tiers render textured (ashlar coursing,
-    buttresses, veins). That points at the PC's texture or import state at High, not the meshes. **LEAD-ASK:** have
-    the PC re-check row 26 on a fresh import.
+    buttresses, veins). That points at the PC's texture or import state at High, not the meshes. **LEAD-ANSWERED (10-28):** the Lead agrees; the PC re-checks it on a fresh import after big15. (Was: have
+    the PC re-check row 26 on a fresh import.)
   - **Next:** 1316's Coilspire far headland ground, and row 5 (the Brine Shoals mudflat and `camp_tent`).
 - **MERGE-READY @ cbd7f5600: M3-ENV-1323 (env-art-b's request; GPU QA rows 15 and 40), the Underway arenas'
   hard-edged lit rectangles.**
