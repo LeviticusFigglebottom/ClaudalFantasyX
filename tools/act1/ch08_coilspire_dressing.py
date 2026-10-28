@@ -43,13 +43,16 @@ KIT = "res://assets/environments/kits/coilspire/"
 FLIGHTS, LANDINGS = cs.plan()
 SEG_TREADS = 4  # treads per straight ramp along a winding flight (its chord sags < 0.15 m)
 GATE_TREAD = 3  # the gate across each flight stands over its third tread
+THRESHOLD_IN_M = 0.35  # the gallery threshold starts this far past the crown stair's top (its corners clear the stair)
+GUARD_CLEAR_M = 1.2  # a well guard stops this far short of the wall at each end
 VERGE_M = 1.6  # the path's verges, out from its edge
 PATH_STEP_M = 3.0
+HUT_SIDE_OPEN = 1  # path segments at its top with no verge on the hut's side
 # The trial's keys (game/data/flow/ch08_field.json) on the kit's flue-keys: the kit's angle where it has one,
 # else a free angle on the same landing's arc (deg). The side flue's niche stands beside its key.
 KEY_ANGLES = {"t1_a": 0.0, "t1_b": 88.0, "t1_c": 240.0, "t2_a": 204.0, "t2_b": 260.0, "t2_c": 285.0,
               "t2_side": 180.0, "t3_a": 106.0, "t3_seized": 188.0, "t3_b": 140.0, "t4_a": 291.0, "t4_b": 17.0,
-              "t4_c": 320.0, "t4_d": 40.0}
+              "t4_c": 320.0, "t4_d": 345.0}  # t4_d clear of flight 3's head (55)
 TIER_FLOOR = {"t1": cs.TIER_Y[0], "t2": cs.TIER_Y[1], "t3": cs.TIER_Y[2], "t4": cs.TIER_Y[3]}
 NICHE_DA = 9.0
 
@@ -113,6 +116,8 @@ def path_ramps_and_verges() -> tuple[list[dict], list[dict]]:
         ramps.append({"id": f"Path{k}", "from": [r3(v) for v in a], "to": [r3(v) for v in b], "width": cs.PATH_W + 0.4})
         n = np.array([-t0[1], t0[0]])
         for side in (-1.0, 1.0):
+            if side < 0 and k >= len(s_list) - 1 - HUT_SIDE_OPEN:
+                continue  # the path's top opens on to the forecourt toward the keeper's hut (B03)
             off = n * side * (cs.PATH_W * 0.5 + VERGE_M)
             c0 = cs.world_from_headland(p0[0] + off[0], 0.0, p0[1] + off[1])
             c1 = cs.world_from_headland(p1[0] + off[0], 0.0, p1[1] + off[1])
@@ -131,18 +136,65 @@ def well_guards() -> list[dict]:
         r = float(cs.inner_r(ln.y))
         d = cs.dir_of(ln.centre)
         c = d * (-cs.LANDING_CHORD * r)
-        half = math.sqrt(max(r * r - (cs.LANDING_CHORD * r) ** 2, 0.0))
+        # short of the wall at each end by a flight's width: the flights arrive and leave there (the kit's balustrade
+        # keeps the well's edge along their treads)
+        half = math.sqrt(max(r * r - (cs.LANDING_CHORD * r) ** 2, 0.0)) - GUARD_CLEAR_M
         p = world(c + np.array([0.0, ln.y + 0.5, 0.0]))
         out.append({"id": f"WellGuard_t{ln.tier}", "pos": p, "size": [r3(2 * half), 1.0, 0.25],
                     "yaw": cpl.wall_yaw(ln.centre, inward=True)})
     return out
 
 
+def gallery_threshold() -> dict:
+    """The crown stair tops out inside the spire's wall: a level slab from its last tread out through the gallery door
+    on to the gallery deck (the kit's trimesh has no floor in the doorway)."""
+    top = np.array(flight_ramps_of(5)[-1]["to"])  # already in the world frame
+    out = np.array(world(spire_point(cs.gallery_door_a(), float(cs.outer_r(cs.GALLERY_Y)) + 0.4, cs.GALLERY_Y)))
+    start = top + (out - top) / np.linalg.norm(out - top) * THRESHOLD_IN_M
+    return {"id": "GalleryThreshold", "from": [r3(v) for v in start], "to": [r3(v) for v in out], "width": 0.9}
+
+
+def door_sill() -> dict:
+    """The spire's door: the hall floor stands 0.35 m above the forecourt at the sill (the controller has no step-up),
+    so a short ramp runs over it from the forecourt into the doorway."""
+    ro = float(cs.outer_r(0.0))
+    return ramp("DoorSill", spire_point(cs.DOOR_A, ro + 1.9, cs.FORECOURT_DY), spire_point(cs.DOOR_A, ro + 0.1, 0.0), 1.4)
+
+
+def door_reveal() -> dict:
+    """The door's reveal through the wall: the ground runs on under it at the forecourt's height, and the hall's floor
+    stops at the wall's inner face with a riser, so a level slab carries the sill's height through into the hall."""
+    ro, ri = float(cs.outer_r(0.0)), float(cs.inner_r(0.0))
+    return ramp("DoorReveal", spire_point(cs.DOOR_A, ro + 0.1, 0.0), spire_point(cs.DOOR_A, ri - 0.3, 0.0), 1.4)
+
+
+HUT_SILL_DY = (-0.885, -0.235, -0.295)  # the ground outside the hut's door, its sill, its floor (from the spire's base;
+# measured on the kit's meshes): the floor is raised 0.6 m above the ground, so a ramp runs up through the door
+
+
+def hut_point(x: float, z: float, y: float) -> list[float]:
+    """A point in the keeper's hut's frame (cs_hut): x along the spire's wall (+x toward the spire's door), z out."""
+    return world(spire_point(cs.HEARTH_A - math.degrees(math.atan2(x, z)), math.hypot(x, z), y))
+
+
+def hut_door_sill() -> list[dict]:
+    import cs_hut
+    z = cs_hut.DOOR[0]
+    out, sill, floor = HUT_SILL_DY
+    a, b, c = hut_point(cs_hut.HALF_X + 1.8, z, out), hut_point(cs_hut.HALF_X, z, sill), hut_point(cs_hut.HALF_X - 0.8, z, floor)
+    return [{"id": "HutSillOut", "from": a, "to": b, "width": 0.8}, {"id": "HutSillIn", "from": b, "to": c, "width": 0.8}]
+
+
+def flight_ramps_of(index: int) -> list[dict]:
+    rows = [r for r in flight_ramps() if r["id"].startswith(f"Flight{index}_")]
+    return sorted(rows, key=lambda r: int(r["id"].split("_")[1]))
+
+
 def collision() -> dict:
     pr, pv = path_ramps_and_verges()
     return {"_about": "Generated by tools/act1/ch08_coilspire_dressing.py (ADR 0200); do not edit by hand. The kit's "
             "trimesh is in the dressing (collide: trimesh); these are the ramps, gates, verges and guards.",
-            "blocks": gates() + pv + well_guards(), "ramps": flight_ramps() + pr}
+            "blocks": gates() + pv + well_guards(), "ramps": flight_ramps() + pr + [gallery_threshold(), door_sill(), door_reveal()] + hut_door_sill()}
 
 
 # --- dressing ----------------------------------------------------------------------------------------------------
@@ -162,6 +214,25 @@ def key_pieces() -> list[dict]:
     return out
 
 
+DOOR_BOX_SILL_M = 0.15  # a doorway's box starts this far above its sill, so the floor's triangles stay LOD1
+DOOR_BOX_REACH_M = 0.4  # and reaches this far past the wall's faces, in and out
+
+
+def door_boxes() -> list[dict]:
+    """The spire's door and the gallery door, which the shell's and the tiers' LOD1 (closed shells) seal: boxes in the
+    world frame where their trimesh collides from LOD0 (ZoneKitDressing "collide_lod0_in")."""
+    import cs_spire
+    out = []
+    for a, half, y0, y1 in (cs_spire.DOOR, (cs.gallery_door_a(), cs_spire.GALLERY_DOOR_HALF, cs.GALLERY_Y,
+                                            cs.GALLERY_Y + cs_spire.GALLERY_DOOR_H)):
+        y = (y0 + DOOR_BOX_SILL_M + y1) * 0.5
+        ro, wt = float(cs.outer_r(y)), float(cs.wall_t(y))
+        out.append({"pos": world(spire_point(a, ro - wt * 0.5, y)),
+                    "size": [r3(2 * half), r3(y1 - y0 - DOOR_BOX_SILL_M), r3(wt + 2 * DOOR_BOX_REACH_M)],
+                    "yaw": cpl.wall_yaw(a, inward=True)})
+    return out
+
+
 def dressing() -> dict:
     preview = json.loads((PREVIEW / "coilspire_layout.json").read_text(encoding="utf-8"))
     pieces = []
@@ -173,8 +244,13 @@ def dressing() -> dict:
         if p["piece"] == "tier_brazier":
             pieces.append(dict(p, block=f"Flame_t{p['tag'][-1]}"))
             continue
-        if p["piece"] in ("coilspire_shell", "coilspire_tiers", "coilspire_ground", "keepers_hut"):
-            pieces.append(dict(p, collide="trimesh"))
+        if p["piece"] in ("coilspire_ground", "keepers_hut"):
+            # LOD0: the hut's LOD1 is a closed shell (no door, no room) and would seal the hearth away
+            pieces.append(dict(p, collide="trimesh_lod0"))
+            continue
+        if p["piece"] in ("coilspire_shell", "coilspire_tiers"):
+            # LOD1 (LOD0's stonework grazes a body on the flights' treads), with the doorways from LOD0
+            pieces.append(dict(p, collide="trimesh", collide_lod0_in=door_boxes()))
             continue
         pieces.append(p)
     pieces += key_pieces()

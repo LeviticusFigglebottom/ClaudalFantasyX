@@ -125,9 +125,12 @@ func viseme_track() -> Array[Dictionary]:
 	return _lip.segments() if _lip != null else ([] as Array[Dictionary])
 
 
-## Turns blinks on: `cfg` is sequencer.json "blink"; `rng_seed` keeps each actor's timing fixed.
-func configure_blink(cfg: Dictionary, rng_seed: int) -> void:
-	_blink = cfg
+## Turns blinks on: `cfg` is sequencer.json "blink"; `rng_seed` keeps each actor's timing fixed. Its
+## "per_actor" row for `actor_id` overrides any key (M3-CIN-01: Sefir's slow blink, one every 10-14 s, and no
+## blink on an expression change).
+func configure_blink(cfg: Dictionary, rng_seed: int, actor_id: StringName = &"") -> void:
+	_blink = cfg.duplicate()
+	_blink.merge((cfg.get("per_actor", {}) as Dictionary).get(String(actor_id), {}) as Dictionary, true)
 	_blink_shapes = expand(_list_pose(cfg.get("shapes", []), float(cfg.get("weight", 1.0))))
 	_rng.seed = rng_seed
 	_blink_wait = _next_wait()

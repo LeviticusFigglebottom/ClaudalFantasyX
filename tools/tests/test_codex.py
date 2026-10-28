@@ -59,7 +59,7 @@ class CodexValidateTest(unittest.TestCase):
         loc = vd.load_loc_keys(root, vd.Report())
         self.assertEqual([k for k in keys if k not in loc], [])
         entries = doc["codex"]["entries"]
-        self.assertTrue(6 <= len(entries) <= 10, "a small starter set (Narrative extends it)")
+        self.assertGreaterEqual(len(entries), 32, "the starter set and Act I's entries (Narrative reviews them)")
 
 
 if __name__ == "__main__":

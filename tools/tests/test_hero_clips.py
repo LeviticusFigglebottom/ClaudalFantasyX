@@ -13,6 +13,8 @@ import sys
 import unittest
 from pathlib import Path
 
+import numpy as np
+
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "assets_src" / "characters" / "asha"))
 
@@ -20,7 +22,9 @@ import hero_clips  # noqa: E402
 
 REQUESTED = {"idle", "walk", "run", "talk", "kneel_over_rhen", "laugh", "rise_to_stand", "offer_hand",
              "walk_to_chamber", "emerge_doorway", "face_west"}  # docs/kb/tasks/M2/M2-FP-07-asha-clips-request.md
-MAX_BYTES = 2 * 1024 * 1024
+# M3-CHR-05: 2 -> 3 MB with the Act I story clips (Rhen alone calls 46); they carry only the keys a straight line
+# between neighbours does not give. A text sanity bound, well under the repo's 5 MB file cap.
+MAX_BYTES = 3 * 1024 * 1024
 # Act I clips requested but not built yet (M3-CHR-1000): the dialogue may call them, nothing else.
 PENDING = {
     hero: set(clips)
@@ -31,16 +35,17 @@ PENDING = {
 
 
 
-## The first playable's dialogue (the prologue and Ch1-Ch3): the clips these scripts call must exist. The Act I
-## chapters past the slice (Ch4-Ch9, m2-slice's greybox) call clips the character track has not built yet; they are
-## listed in M3-CHR-05 and the chapter character tasks (M3-C0x), and the sequencer skips a missing clip until then.
-SLICE_DIALOGUE = ("prologue", "ch01", "ch02", "ch03")
+## Every chapter's dialogue: the clips these scripts call must exist (M3-CHR-05 built the Act I calls past the first
+## playable, from assets_src/characters/requested_clips.json).
+SLICE_DIALOGUE = tuple(sorted(p.name for p in (ROOT / "game" / "data" / "dialogue").iterdir() if p.is_dir()))
 
 
 def slice_calls(hero: str) -> set:
     called = set()
     for chapter in SLICE_DIALOGUE:
         for dlg in (ROOT / "game" / "data" / "dialogue" / chapter).rglob("*.dlg"):
+            if "test" in dlg.parts:  # the sequencer's own test scripts
+                continue
             called |= set(re.findall(rf"@anim {hero} ([a-z_]+)", dlg.read_text(encoding="utf-8")))
     return called
 
@@ -56,6 +61,7 @@ class TestHeroClips(unittest.TestCase):
         expected = REQUESTED | set(hero_clips.BATTLE_CLIPS)  # M2-CHR-07: plus the battle clip contract
         expected |= set(hero_clips.LOCO_NEW)  # M2-CHR-12: plus the field locomotion clips
         expected |= {"revive"}  # M2-CHR-513: and the battle's optional revive
+        expected |= set(hero_clips.STORY["asha"])  # M3-CHR-05: and the story clips the chapters call
         self.assertEqual(set(hero_clips.CLIPS["asha"]), expected)
         text = hero_clips.out_path("asha").read_text(encoding="utf-8")
         names = set(re.findall(r'resource_name = &"([a-z_0-9]+)"', text))
@@ -63,18 +69,33 @@ class TestHeroClips(unittest.TestCase):
         self.assertIn("take_hand", hero_clips.CLIPS["rhen"])  # the request lists Rhen's clip for the shared rig
 
     def test_scripts_call_only_existing_clips(self):
-        """Every `@anim asha <clip>` in the dialogue has a clip (look_at is the sequencer's own turn).
+        """Every `@anim <hero> <clip>` in the dialogue has a clip (look_at is the sequencer's own turn), or is still
+        on the requested list (PENDING, M3-CHR-1000): Asha, Toma, and Rhen and Ysolde, who had no such check before
+        M3-CHR-05."""
+        for hero in ("asha", "rhen", "toma", "ysolde", "liss"):  # M3-CHR-03: Liss, with her library
+            called = slice_calls(hero)
+            self.assertTrue(called, hero)
+            missing = called - set(hero_clips.CLIPS[hero]) - {"look_at"} - PENDING.get(hero, set())
+            self.assertEqual(missing, set(), hero)
 
-        The slice's dialogue (the prologue and Ch1-Ch3) must be fully built; past the slice a clip may still be on
-        the requested list (PENDING, M3-CHR-1000)."""
-        called = slice_calls("asha")
-        self.assertEqual(called - set(hero_clips.CLIPS["asha"]) - {"look_at"}, set())
-        called = set()
-        for dlg in (ROOT / "game" / "data" / "dialogue").rglob("*.dlg"):
-            if "test" in dlg.parts:
-                continue
-            called |= set(re.findall(r"@anim asha ([a-z_]+)", dlg.read_text(encoding="utf-8")))
-        self.assertEqual(called - set(hero_clips.CLIPS["asha"]) - {"look_at"} - PENDING.get("asha", set()), set())
+    def test_story_clips(self):
+        """M3-CHR-05: every requested clip is in its hero's library, ends on a pose (one-shots hold), and a gesture
+        clip that starts standing starts on the idle's first frame, so it joins the idle without a pop."""
+        for hero, clips in hero_clips.STORY.items():
+            text = hero_clips.out_path(hero).read_text(encoding="utf-8")
+            names = set(re.findall(r'resource_name = &"([a-z_0-9]+)"', text))
+            sk = hero_clips.Skeleton(ROOT / "assets" / "characters" / hero / f"{hero}.glb")
+            persona = hero_clips.PERSONA[hero]
+            idle0 = hero_clips.pose_at("idle", 0.0, hero_clips.LENGTHS["idle"], sk, persona)
+            for clip, spec in clips.items():
+                self.assertIn(clip, names, f"{hero} {clip}")
+                if "alias" in spec or spec.get("from", "stand") != "stand" or spec["keys"][0][1]:
+                    continue
+                first = hero_clips.pose_at(clip, 0.0, hero_clips.clip_length(hero, clip), sk, persona)
+                for bone in set(first) | set(idle0):
+                    a = np.asarray(first.get(bone, (0.0, 0.0, 0.0)))
+                    b = np.asarray(idle0.get(bone, (0.0, 0.0, 0.0)))
+                    self.assertLess(float(np.abs(a - b).max()), 1e-9, f"{hero} {clip} {bone}")
 
     def test_kneel_drops_the_hips_and_the_staff_stays_upright(self):
         import numpy as np
@@ -205,7 +226,7 @@ class TestSefirClips(unittest.TestCase):
         self.assertEqual(self.persona, {"sway": 0.0, "lean": 0.0, "staff": False, "arms_down": 30.0, "breath": 0.0,
                                         "hands_joined": True})
         self.assertEqual(hero_clips.CLIPS["sefir"], ["idle", "talk", "raise_palm", "incline_head", "glance", "pivot",
-                                                     "walk_glide"])
+                                                     "walk_glide"] + list(hero_clips.STORY["sefir"]))  # M3-CHR-05
         names = set(re.findall(r'resource_name = &"([a-z_0-9]+)"', hero_clips.out_path("sefir").read_text(encoding="utf-8")))
         self.assertEqual(names, set(hero_clips.CLIPS["sefir"]))
         called = set()
@@ -296,7 +317,8 @@ class TestYsoldeClips(unittest.TestCase):
         self.assertEqual(self.persona, {"sway": 0.3, "lean": -1.0, "staff": False, "arms_down": 34.0, "book": True,
                                         "breath": 1.0})
         self.assertEqual(hero_clips.CLIPS["ysolde"], ["idle", "walk", "run", "talk", "board_step", "vigil_book_shut",
-                                                      "reink_shell", "stand_apart", "book_fan", "cast_glyph"])
+                                                      "reink_shell", "stand_apart", "book_fan", "cast_glyph"]
+                         + list(hero_clips.STORY["ysolde"]))  # M3-CHR-05: then the story clips
         text = hero_clips.out_path("ysolde").read_text(encoding="utf-8")
         self.assertEqual(set(re.findall(r'resource_name = &"([a-z_0-9]+)"', text)), set(hero_clips.CLIPS["ysolde"]))
         for hero in ("asha", "rhen", "toma"):  # the new keys are off by default

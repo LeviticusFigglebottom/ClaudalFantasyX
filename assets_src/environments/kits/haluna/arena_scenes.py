@@ -967,8 +967,568 @@ CAMP = {
 }
 
 
+
+# ---------------------------------------------------------------------------------------------
+# M3-ENV-713: Ch8's set-piece arena, the wall-head at the Fisher Stair (Corrow kit), in its three states
+# ---------------------------------------------------------------------------------------------
+CW = "res://assets/environments/kits/corrow/"
+CW_LAYOUT = ROOT / "game" / "levels" / "_tests" / "corrow_kit" / "corrow_layout.json"  # the kit preview's, read-only
+CW_WALK_Y = 12.0  # cw_common.WALK_Y: the walk's paving, the arena's floor
+CW_ARC_R = 300.0  # cw_common.ARC_R_M
+WALLHEAD_S = -30.0  # the arena's segment (a segment centre): the stair foot at s -40 is 10 m to the party's right
+WALLHEAD_Z = 0.7  # the walk's centre line in the arena: parapet from z -2.3, inner kerb from +3.1 (slots + 1 m clear)
+WALLHEAD_RADIUS_M = 170.0  # the preview's wall, town and far pieces kept within this of the arena (the far land always)
+WALLHEAD_ALWAYS = ("corrow_far", "coilspire_headland")
+WALLHEAD_SKIP = ("watcher_relief",)  # the sea face's carvings: below the parapet, never in a battle frame
+CORROW_SKY = {  # game/levels/_tests/corrow_kit/corrow_ch08_environment.tres (the kit's ch08 sky)
+    "col_zenith": "#3E4A57", "col_horizon_sun": "#B89A7A", "col_horizon_away": "#5E6670", "col_ground": "#2A3640",
+    "sky_energy": 1.9, "horizon_curve": 0.25, "azimuth_power": 2.0, "col_band": "#FFD2A8", "band_energy": 0.5,
+    "band_height": 0.04, "mid_strength": 0.0, "col_glow": "#FFE4CE", "glow_energy": 0.8, "glow_power": 6.0,
+    "halo_energy": 1.5, "halo_power": 200.0, "sun_disc_energy": 10.0, "col_cloud_lit": "#E8B890",
+    "col_cloud_shadow": "#34404C", "cloud_coverage": 0.72, "cloud_softness": 0.22, "cloud_opacity": 0.96,
+    "cloud_height_m": 1800.0, "cloud_scale_m": 5000.0, "cloud_stretch": "Vector2(1, 2.5)", "cloud_wind_deg": 135.0,
+    "cloud_sun_energy": 2.6, "cloud_ambient_energy": 1.35, "cloud_horizon_fade": 0.08}
+CORROW_SEA = {  # the colour script's `storm_grey` look (ch08), the Corrow kit preview's corrow_water_material.tres values
+    "name": "arena_storm_grey", "shader": "res://game/shaders/water/water_ocean.gdshader",
+    "params": [("col_deep", "#0E4A55"), ("col_scatter_shallow", "#1F7F86"), ("absorption_per_m", "Vector3(2, 0.5, 0.42)"),
+               ("absorption_scale", 2.25), ("scatter_energy", 0.14), ("caustic_strength", 0.0), ("col_foam", "#EEF6F4"),
+               ("col_sss", "#1F7F86"), ("foam_crest_threshold", 0.5), ("roughness_far", 0.18), ("use_caustics", "false"),
+               ("use_ssr", "false"), ("use_sss", "false")]}
+
+
+def wallhead_pose() -> tuple[float, float, float]:
+    """World (x, z) and yaw (deg) of the arena's segment centre on the walk (cw_common.bend_points' arc)."""
+    th = WALLHEAD_S / CW_ARC_R
+    return CW_ARC_R * math.sin(th), CW_ARC_R - CW_ARC_R * math.cos(th), -math.degrees(th)
+
+
+def wallhead_from_world(x: float, y: float, z: float, yaw: float) -> tuple[tuple[float, float, float], float]:
+    """The Corrow preview's world -> the arena: unbend at the segment, then turn half round so the sea (+Z in the
+    world) is behind the enemy line (-Z) and the town is behind the camera (+Z); the walk at y 0."""
+    x0, z0, yaw0 = wallhead_pose()
+    a = math.radians(-yaw0)
+    dx, dz = x - x0, z - z0
+    lx, lz = dx * math.cos(a) + dz * math.sin(a), -dx * math.sin(a) + dz * math.cos(a)
+    return (round(-lx, 3), round(y - CW_WALK_Y, 3), round(WALLHEAD_Z - lz, 3)), round(yaw - yaw0 + 180.0, 3)
+
+
+def _wallhead_pieces(hoist: bool) -> list:
+    """The kit preview's wall (segments, aprons, the parapet's heads), the stair, the low town and the far land,
+    re-based on the arena's segment. Its own segment is the arena's Ground. Liss's hoist only once it is rigged
+    (B11: waves 2 and 3, the boss)."""
+    rows = []
+    for p in json.loads(CW_LAYOUT.read_text(encoding="utf-8"))["pieces"]:
+        name = p["piece"]
+        if name in WALLHEAD_SKIP or (name == "liss_hoist" and not hoist):
+            continue
+        at, yaw = wallhead_from_world(p["at"][0], p["y"], p["at"][1], p["yaw_deg"])
+        if name not in WALLHEAD_ALWAYS and math.hypot(at[0], at[2]) > WALLHEAD_RADIUS_M:
+            continue
+        if name == "seawall_curve" and abs(at[0]) < 0.5 and abs(at[2] - WALLHEAD_Z) < 0.5:
+            continue  # the Ground
+        rows.append({"glb": CW + name + ".glb", "at": at, "yaw": yaw})
+    return rows
+
+
+# The wall-head's own clutter, beyond the slots: the stair-watch's shields stacked by the stair head (party side),
+# a rope coil and the salvage the watch dragged up, a lifting basket by the hoist (when rigged).
+WALLHEAD_DRESSING = [
+    {"glb": CW + "round_shield.glb", "at": (6.4, 0.0, 2.4), "yaw": 20.0},
+    {"glb": CW + "round_shield.glb", "at": (7.1, 0.0, 2.1), "yaw": -35.0},
+    {"glb": CW + "round_shield.glb", "at": (7.6, 0.0, -1.6), "yaw": 70.0},
+    {"glb": KIT + "rope_coil.glb", "at": (-6.2, 0.0, 2.3), "yaw": 0.0},
+    {"glb": BS + "crate_stack.glb", "at": (-7.7, 0.0, -1.3), "yaw": 95.0},
+    {"glb": KIT + "cargo_sacks.glb", "at": (8.8, 0.0, 0.4), "yaw": 160.0},
+]
+WALLHEAD_HOIST_DRESSING = [
+    {"glb": CW + "hoist_basket.glb", "at": (-11.6, 0.0, 2.2), "yaw": 30.0},
+    {"glb": KIT + "rope_coil.glb", "at": (-12.4, 0.0, 1.0), "yaw": 40.0},
+]
+# The kites still up over the wall in the afternoon (they come down on the run back, B08): along the parapet.
+WALLHEAD_KITES = [{"glb": CW + "kite_line.glb", "at": (0.0, 0.0, -2.9), "yaw": 180.0, "structure": True}]
+
+
+def _wallhead_arena(arena_id: str, *, hoist: bool, surge: bool) -> dict:
+    """Ch8's stair-head (act1_ch08.md W09-W11; set_piece_battles.md): the waves (B10 `ch08` 16:00, B12 and B14 the
+    storm coming in) and the boss (B16, `ch08_surge`: the sun a smear behind the front, near-night)."""
+    pieces = WALLHEAD_DRESSING + (WALLHEAD_HOIST_DRESSING if hoist else []) + ([] if surge else WALLHEAD_KITES)
+    _x0, _z0, yaw0 = wallhead_pose()
+    sun_az = round(70.0 - yaw0, 1)  # the world's 250 deg turned with the arena: over the sea, frame right
+    if surge:
+        # corrow.md `ch08_surge`: 22 deg / 255 deg behind the front, #FFE4CE at 0.35; ambient #5E6E80 0.6; spray
+        # haze thick; the sky closed down.
+        light = {"sun": {"elev": 22.0, "az": round(sun_az + 5.0, 1), "color": "#FFE4CE", "energy": 0.35},
+                 "fill": {"color": "#5E6E80", "energy": 0.6}, "exposure": 0.95,
+                 "fog": {"color": "#5E6670", "light_energy": 0.6, "aerial": 0.6, "density": 0.006, "sky_affect": 0.5,
+                         "height": 0.0, "height_density": 0.0},
+                 "sky": dict(CORROW_SKY, sky_energy=0.9, cloud_coverage=0.9, sun_disc_energy=0.0, glow_energy=0.2,
+                             halo_energy=0.3, band_energy=0.15)}
+    else:
+        # Colour script ch08 (16:00): sun 30 deg / 250 deg, key #FFE4CE 2.0 (1.4 as the storm comes in for waves 2
+        # and 3), ambient the kit's sky-tinted #7A8A9C, fog #5E6670, exposure 0.80.
+        key = 1.4 if hoist else 2.0
+        light = {"sun": {"elev": 30.0, "az": sun_az, "color": "#FFE4CE", "energy": key},
+                 "fill": {"color": "#7A8A9C", "energy": 0.85 if hoist else 1.0}, "exposure": 0.8,
+                 "fog": {"color": "#5E6670", "aerial": 0.5, "density": 0.003 if hoist else 0.0022,
+                         "sky_affect": 0.3, "height": 0.0, "height_density": 0.0},
+                 "sky": dict(CORROW_SKY, cloud_coverage=0.82) if hoist else dict(CORROW_SKY)}
+    return {
+        "id": arena_id,
+        "sub_frame": "ch08_surge" if surge else "ch08",
+        "ground": "deck",
+        "ground_glb": CW + "seawall_curve.glb",
+        "ground_at": (0.0, -CW_WALK_Y, WALLHEAD_Z),
+        "ground_yaw": 180.0,
+        "lut": f"res://assets/environments/arenas/{arena_id}/lut_ch08_storm.png",
+        **light,
+        "sky_shader": LOW_SUN_SKY,
+        "sea": {"y": -CW_WALK_Y, "tide_line_y": -CW_WALK_Y, "sea_glow": 0.06 if surge else 0.0,
+                "material": CORROW_SEA},
+        "pieces": pieces + _wallhead_pieces(hoist),
+        "scatters": [],
+        "hints": {
+            "wide_high": ((-1.5, 7.5, 13.5), (0.0, 0.3, -3.0)),
+            "party_side": ((5.6, 1.7, 4.5), (-1.5, 1.0, -0.5)),
+            "foe_side": ((-5.6, 1.7, 4.0), (1.5, 1.0, 0.0)),
+            "along_the_walk": ((-9.5, 1.8, 1.4), (3.0, 1.0, -0.2)),
+            "the_storm_wall": ((2.0, 0.7, 5.0), (-3.0, 3.5, -14.0)),
+        },
+        "anchors": {"BossAnchor": (-6.0, 0.9, -3.4)} if surge else {},
+    }
+
+
+WALLHEAD_STORM = _wallhead_arena("seawall_stairhead_storm", hoist=False, surge=False)
+WALLHEAD_HOIST = _wallhead_arena("seawall_stairhead_hoist", hoist=True, surge=False)
+WALLHEAD_SURGE = _wallhead_arena("seawall_stairhead_surge", hoist=True, surge=True)
+
+
+# ---------------------------------------------------------------------------------------------
+# M3-ENV-713: the Coilspire headland path's landing (the Coilspire kit; act1_ch08.md B04)
+# ---------------------------------------------------------------------------------------------
+CS = "res://assets/environments/kits/coilspire/"
+CS_LAYOUT = ROOT / "game" / "levels" / "_tests" / "coilspire_kit" / "coilspire_layout.json"  # read-only
+CS_BACKDROP = ROOT / "game" / "levels" / "_tests" / "coilspire_kit" / "coilspire_backdrop.json"  # Corrow, read-only
+HEADLAND_SPIRE_BEARING = -30.0  # the spire stands back-left of the fight (deg, clockwise from the frame's -Z)
+HEADLAND_REPLACED = ("coilspire_ground", "headland_path")  # the arena's own levelled copies stand in for these
+HEADLAND_SCRUB_CLEAR_M = 9.0  # scrub this near the landing's centre is left out (the landing is 15 x 11 m)
+HEADLAND_SKIP = ("watcher_relief",)
+
+
+def _coilspire():
+    sys.path.append(str(HERE.parent / "coilspire"))  # the Coilspire kit's frames and its arena landing, read-only
+    import cs_arena  # noqa: PLC0415
+    import cs_common  # noqa: PLC0415
+
+    return cs_arena, cs_common
+
+
+def headland_pose() -> tuple[tuple[float, float, float], float]:
+    """The landing's centre in Corrow's world (x, y, z) and the turn (deg, clockwise seen from above) that puts the
+    spire at HEADLAND_SPIRE_BEARING."""
+    ca, cs = _coilspire()
+    p, y, _t = ca.landing()
+    pw = cs.world_from_headland(float(p[0]), y, float(p[1]))
+    sw = cs.world_from_spire(0.0, 0.0, 0.0)
+    bearing = math.degrees(math.atan2(sw[0] - pw[0], -(sw[2] - pw[2])))
+    return pw, HEADLAND_SPIRE_BEARING - bearing
+
+
+def headland_from_world(x: float, y: float, z: float, yaw: float) -> tuple[tuple[float, float, float], float]:
+    (x0, y0, z0), psi = headland_pose()
+    a = math.radians(psi)
+    bx, by = x - x0, -(z - z0)  # (east, north)
+    rx, ry = bx * math.cos(a) + by * math.sin(a), -bx * math.sin(a) + by * math.cos(a)
+    return (round(rx, 3), round(y - y0, 3), round(-ry, 3)), round(yaw - psi, 3)
+
+
+def _headland_pieces() -> list:
+    rows = []
+    for path in (CS_LAYOUT, CS_BACKDROP):
+        for p in json.loads(path.read_text(encoding="utf-8"))["pieces"]:
+            name = p["piece"]
+            if name in HEADLAND_REPLACED or name in HEADLAND_SKIP:
+                continue
+            at, yaw = headland_from_world(p["at"][0], p["y"], p["at"][1], p["yaw_deg"])
+            if name.startswith("scrub_clump"):
+                if math.hypot(at[0], at[2]) < HEADLAND_SCRUB_CLEAR_M:
+                    continue
+                at = (at[0], round(_headland_ground_y(p["at"][0], p["at"][1]) + at[1] - p["y"], 3), at[2])
+            kit = CS if path == CS_LAYOUT else CW
+            rows.append({"glb": kit + name + ".glb", "at": at, "yaw": yaw})
+    at, yaw = headland_from_world(*_headland_frame())
+    rows.append({"glb": CS + "arena_headland_path.glb", "at": at, "yaw": yaw, "floor": True})
+    return rows
+
+
+def _headland_ground_y(wx: float, wz: float) -> float:
+    """The arena ground's height (Corrow's world y) under a world point: the kit's grading with the levelled path
+    and the landing (cs_arena), so the scrub stands on the ground the arena has, not the kit's."""
+    ca, cs = _coilspire()
+    hx, hz, yaw = cs.HEADLAND
+    a = math.radians(yaw)
+    dx, dz = wx - hx, wz - hz
+    lx, lz = dx * math.cos(a) - dz * math.sin(a), dx * math.sin(a) + dz * math.cos(a)  # world_from_headland, inverted
+    with ca._Levelled():
+        return float(ca._height(np.array([lx]), np.array([lz]), cs.headland_noise())[0])
+
+
+def _headland_frame() -> tuple[float, float, float, float]:
+    """The headland frame's origin in Corrow's world (x, y, z) and its yaw: where the kit's ground and path go."""
+    _ca, cs = _coilspire()
+    hx, hz, yaw = cs.HEADLAND
+    return hx, 0.0, hz, yaw
+
+
+def _headland_arena() -> dict:
+    ground_at, ground_yaw = headland_from_world(*_headland_frame())
+    (_x0, _y0, _z0), psi = headland_pose()
+    return {
+        "id": "coilspire_headland_path",
+        "sub_frame": "ch08",
+        "ground": "deck",
+        "ground_glb": CS + "arena_headland_ground.glb",
+        "ground_at": ground_at,
+        "ground_yaw": ground_yaw,
+        "lut": "res://assets/environments/arenas/coilspire_headland_path/lut_ch08_storm.png",
+        # coilspire.md `ch08` on the headland (Corrow's storm sky; the beat sheet's `ch08_day` has no colour-script
+        # row yet): sun 30 deg / 250 deg turned with the arena, key #FFE4CE 2.0, ambient #7A8A9C, exposure 0.80.
+        "sun": {"elev": 30.0, "az": round((250.0 + psi) % 360.0, 1), "color": "#FFE4CE", "energy": 2.0},
+        "fill": {"color": "#7A8A9C", "energy": 1.0},
+        "exposure": 0.8,
+        "fog": {"color": "#5E6670", "aerial": 0.5, "density": 0.0018, "sky_affect": 0.3, "height": 0.0,
+                "height_density": 0.0},
+        "sky_shader": LOW_SUN_SKY,
+        "sky": dict(CORROW_SKY, cloud_coverage=0.6),
+        "sea": {"y": round(-_y0, 3), "tide_line_y": round(-_y0, 3), "sea_glow": 0.0, "material": CORROW_SEA},
+        "pieces": _headland_pieces(),
+        "scatters": [],
+        "hints": {
+            "wide_high": ((-1.5, 7.5, 13.5), (0.0, 0.3, -3.0)),
+            "party_side": ((5.6, 1.7, 4.5), (-1.5, 1.0, -0.5)),
+            "foe_side": ((-5.6, 1.7, 4.0), (1.5, 1.0, 0.0)),
+            "to_the_spire": ((4.5, 1.4, 6.5), (-8.0, 8.0, -40.0)),
+        },
+    }
+
+
+HEADLAND = _headland_arena()
+
+
+# ---------------------------------------------------------------------------------------------
+# M3-ENV-713: a tier of the Coilspire's well (the Coilspire kit's arena_tier_hall; act1_ch08.md B05's placed fights)
+# ---------------------------------------------------------------------------------------------
+COILSPIRE_FIRE = "#FFB16E"  # coilspire.md `ch08_coilspire_int`: the braziers' oil fire (~2,900 K)
+TIER_HALL_SEA_Y = -48.3  # tier 2 stands 9 m over the spire's base, 39.3 m over the sea
+
+
+def _tier_hall_arena() -> dict:
+    ca, _cs = _coilspire()
+    fittings, fires = ca.hall_fittings()
+    return {
+        "id": "coilspire_tier_landing",
+        "sub_frame": "ch08_coilspire_int",
+        "ground": "deck",
+        "ground_glb": CS + "arena_tier_hall.glb",
+        "lut": "res://assets/environments/arenas/coilspire_tier_landing/lut_ch08_coilspire_int.png",
+        # coilspire.md `ch08_coilspire_int`: the braziers #FFB16E 2.0, range 8 m; ambient #5A7E78 (bronze_patina,
+        # lifted) 2.0, the copper green-cyan; fog #24443F 0.006; exposure 1.5; the sky through the openings at 0.45.
+        # The one directional is the afternoon sun down the shaft (ch08: 30 deg is too low to reach the floor; the
+        # shaft's light is the crown opening's, steep).
+        "sun": {"elev": 64.0, "az": 200.0, "color": "#FFE4CE", "energy": 0.9, "max_distance": 60.0},
+        "fill": {"color": "#5A7E78", "energy": 2.0},
+        "exposure": 1.5,
+        "glow": (0.6, 0.04, 1.0),
+        "fog": {"color": "#24443F", "aerial": 0.3, "density": 0.006, "sky_affect": 0.0, "height": 0.0,
+                "height_density": 0.0},
+        "sky_shader": LOW_SUN_SKY,
+        "sky": dict(CORROW_SKY, sky_energy=0.85),
+        "sea": {"y": TIER_HALL_SEA_Y, "tide_line_y": TIER_HALL_SEA_Y, "sea_glow": 0.0, "material": CORROW_SEA},
+        "pieces": [{"glb": CS + name + ".glb", "at": at, "yaw": yaw, "structure": True} for name, at, yaw in fittings],
+        "scatters": [],
+        "lamp_spec": {"color": COILSPIRE_FIRE, "energy": 2.0, "range_m": 8.0, "attenuation": 1.2,
+                      "flame_radius_m": 0.06, "flame_energy": 6.0},
+        "lamps": [{"at": f, "flame": False, "shadow": k == 0} for k, f in enumerate(fires)],
+        "hints": {
+            "wide_high": ((-1.5, 7.5, 13.5), (0.0, 0.8, -3.0)),
+            "party_side": ((5.6, 1.7, 4.5), (-1.5, 1.0, -0.5)),
+            "foe_side": ((-5.6, 1.7, 4.0), (1.5, 1.0, 0.0)),
+            "up_the_well": ((1.0, 0.8, 4.5), (-1.0, 9.0, -5.0)),
+        },
+    }
+
+
+TIER_HALL = _tier_hall_arena()
+
+
+# ---------------------------------------------------------------------------------------------
+# M3-ENV-717: the Avalanche Ram's terrace under the seeping Lit Age wall, Keth Pass (keth.py; keth_pass.md §2)
+# ---------------------------------------------------------------------------------------------
+def _keth():
+    import keth  # noqa: PLC0415
+
+    return keth
+
+
+KETH_ARENA = {
+    "id": "keth_seep_terrace",
+    "sub_frame": "ch12",
+    "ground": "deck",
+    "ground_glb": KIT + "keth_terrace_ground.glb",
+    "lut": "res://assets/environments/arenas/keth_seep_terrace/lut_ch12_heights.png",
+    # Colour script ch12 (09:00, thin air, hard sun between cloud banks): sun 30 deg / 140 deg, key #FAF6FF 2.8,
+    # fill #7FA6DC 0.8, sky #1E5BB8 / #C8D8E8, fog #D0DCE8 thin, exposure 0.65, lut_ch12_heights.
+    "sun": {"elev": 30.0, "az": 140.0, "color": "#FAF6FF", "energy": 2.8},
+    "fill": {"color": "#7FA6DC", "energy": 0.8},
+    "exposure": 0.65,
+    "fog": {"color": "#D0DCE8", "aerial": 0.5, "density": 0.0012, "sky_affect": 0.15, "height": 0.0,
+            "height_density": 0.0},
+    "sky_shader": LOW_SUN_SKY,
+    "sky": {"col_zenith": "#1E5BB8", "col_horizon_sun": "#E8EEF5", "col_horizon_away": "#C8D8E8", "col_ground": "#5A6470",
+            "sky_energy": 1.6, "horizon_curve": 0.3, "azimuth_power": 1.5, "col_band": "#F4F6FA", "band_energy": 0.2,
+            "band_height": 0.05, "mid_strength": 0.0, "col_glow": "#FFFFFF", "glow_energy": 0.6, "glow_power": 6.0,
+            "halo_energy": 1.0, "halo_power": 120.0, "sun_disc_energy": 8.0, "col_cloud_lit": "#F6F8FC",
+            "col_cloud_shadow": "#8C98A8", "cloud_coverage": 0.45, "cloud_softness": 0.3, "cloud_opacity": 0.85,
+            "cloud_height_m": 1400.0, "cloud_scale_m": 3500.0, "cloud_stretch": "Vector2(1, 1.6)",
+            "cloud_wind_deg": 300.0, "cloud_sun_energy": 2.0, "cloud_ambient_energy": 1.2, "cloud_horizon_fade": 0.1},
+    # No sea on the pass: the arena's Sea (the contract's water publisher) lies far down the valley, out of frame.
+    "sea": {"y": -160.0, "tide_line_y": -160.0, "sea_glow": 0.0, "material": CORROW_SEA},
+    "pieces": [
+        {"glb": KIT + "lit_terrace_wall.glb", "at": (x, 0.0, _keth().WALL_Z), "yaw": 0.0, "structure": True}
+        for x in (-12.0, 0.0, 12.0)
+    ] + [
+        {"glb": KIT + "seep_pool.glb", "at": (_keth().SEEP_POOL_AT[0], 0.0, _keth().SEEP_POOL_AT[1]), "yaw": 20.0},
+        {"glb": KIT + "pass_cord.glb", "at": (0.0, 0.0, -4.0), "yaw": 0.0, "structure": True},
+        {"glb": KIT + "cairn.glb", "at": (-8.6, 0.0, 3.6), "yaw": 30.0},
+        {"glb": KIT + "cairn.glb", "at": (8.8, 0.0, 3.4), "yaw": 200.0},
+        {"glb": KIT + "keth_far_ridges.glb", "at": (0.0, -20.0, 0.0), "yaw": 0.0},
+    ],
+    "scatters": [],
+    "hints": {
+        "wide_high": ((-1.5, 7.5, 13.5), (0.0, 0.8, -3.0)),
+        "party_side": ((5.6, 1.7, 4.5), (-1.5, 1.0, -0.5)),
+        "foe_side": ((-5.6, 1.7, 4.0), (1.5, 1.0, 0.0)),
+        "under_the_wall": ((3.0, 0.9, 3.5), (-6.0, 4.5, -6.0)),
+        "the_pass_below": ((-2.0, 1.6, -3.5), (3.0, -4.0, 20.0)),
+    },
+    "anchors": {"BossAnchor": (-7.5, 0.0, -3.0)},
+}
+
+# ---------------------------------------------------------------------------------------------
+# M3-ENV-716: the Lamp Engine's flooded hall under Lowlight's sanctum (lowlight.py; lowlight.md §2)
+# ---------------------------------------------------------------------------------------------
+def _lowlight():
+    import lowlight  # noqa: PLC0415
+
+    return lowlight
+
+
+BOUND_TEAL = "#4FB3B0"  # palette glimmer_bound: the Engine's trimmed lamps and the conduits, steady
+OVERCAST_LAGOON = {  # the colour script's `overcast_lagoon` look (ch11): the Act I water under a grey sky, muted
+    "name": "arena_overcast_lagoon", "shader": "res://game/shaders/water/water_ocean.gdshader",
+    "params": [("col_deep", "#0E4A55"), ("col_scatter_shallow", "#1FA3A6"), ("absorption_per_m", "Vector3(2, 0.5, 0.42)"),
+               ("absorption_scale", 1.5), ("scatter_energy", 0.1), ("caustic_strength", 0.0), ("col_foam", "#EEF6F4"),
+               ("col_sss", "#3FD0C9"), ("foam_crest_threshold", 0.9), ("roughness_far", 0.04), ("use_caustics", "false"),
+               ("use_ssr", "true"), ("use_sss", "false")]}
+
+
+def _lowlight_arena() -> dict:
+    ll = _lowlight()
+    h = ll.HALL_HALF - 0.6
+    lamps = [(x, ll.RAIL_Y + 0.45, -h) for x in (-9.0, -5.4, -1.8, 1.8, 5.4, 9.0)]
+    lamps += [(sx * h, ll.RAIL_Y + 0.45, z) for sx in (-1.0, 1.0) for z in (-7.0, -1.0, 5.0)]
+    return {
+        "id": "lowlight_engine_hall",
+        "sub_frame": "ch11",
+        "ground": "deck",
+        "ground_glb": KIT + "engine_hall.glb",
+        "lut": "res://assets/environments/arenas/lowlight_engine_hall/lut_ch11_vey.png",
+        # Colour script ch11 (12:30 overcast): key #F3F2FF 1.4 from 65 deg / 200 deg, through the fallen vault bay (the
+        # grey shaft); fill #7FA3A8 0.7; fog #8A9A98; exposure 0.75; lut_ch11_vey. Inside, the Engine's twelve trimmed
+        # lamps on the rail are the key (lowlight.md §0): bound teal, steady, no flame flicker.
+        "sun": {"elev": 65.0, "az": 200.0, "color": "#F3F2FF", "energy": 1.4, "max_distance": 60.0},
+        "fill": {"color": "#7FA3A8", "energy": 0.7},
+        "exposure": 0.75,
+        "fog": {"color": "#8A9A98", "aerial": 0.3, "density": 0.008, "sky_affect": 0.0, "height": 0.0,
+                "height_density": 0.0},
+        "sky_shader": LOW_SUN_SKY,
+        "sky": dict(CORROW_SKY, col_zenith="#7A8896", col_horizon_sun="#A8B4B8", col_horizon_away="#A8B4B8",
+                    sky_energy=0.9, sun_disc_energy=0.0, halo_energy=0.0, glow_energy=0.0, cloud_coverage=0.95),
+        # The hall's still water over the flooded floor: no wind reaches it (lowlight.md §0).
+        "sea": {"y": ll.WATER_Y, "tide_line_y": ll.WATER_Y, "sea_glow": 0.0, "material": OVERCAST_LAGOON,
+                "waves": [(20.0, 3.0, 0.004, 0.05), (140.0, 1.7, 0.002, 0.05)]},
+        "pieces": [
+            {"glb": KIT + "conduit_run.glb", "at": (x, 1.6, -ll.HALL_HALF + 0.05), "yaw": 0.0, "structure": True}
+            for x in (-8.0, 8.0)
+        ],
+        "scatters": [],
+        "lamp_spec": {"color": BOUND_TEAL, "energy": 1.6, "range_m": 9.0, "attenuation": 1.0,
+                      "flame_radius_m": 0.08, "flame_energy": 3.0},
+        "lamps": [{"at": p, "flame": True, "shadow": k == 2} for k, p in enumerate(lamps)],
+        "hints": {
+            "wide_high": ((-1.5, 7.5, 13.5), (0.0, 0.8, -3.0)),
+            "party_side": ((5.6, 1.7, 4.5), (-1.5, 1.0, -0.5)),
+            "foe_side": ((-5.6, 1.7, 4.0), (1.5, 1.0, 0.0)),
+            "under_the_shaft": ((2.5, 1.2, 4.0), (-3.0, 3.5, -8.0)),
+            "the_lamps": ((4.0, 2.4, 2.0), (-6.0, 4.0, -11.0)),
+        },
+        "anchors": {"BossAnchor": ll.ENGINE_AT},
+    }
+
+
+LOWLIGHT_ARENA = _lowlight_arena()
+
+# ---------------------------------------------------------------------------------------------
+# M3-ENV-718: the Mangrove Drowner's mudbank under the dead tree, Ossa Fen (ossa_fen.py; ossa_fen.md §2)
+# ---------------------------------------------------------------------------------------------
+def _fen():
+    import ossa_fen  # noqa: PLC0415
+
+    return ossa_fen
+
+
+TANNIN_FEN = {  # the colour script's `tannin_fen` look (ch10): brown-black tea water, its own sigma, caustics off
+    "name": "arena_tannin_fen", "shader": "res://game/shaders/water/water_ocean.gdshader",
+    "params": [("col_deep", "#3A2A18"), ("col_scatter_shallow", "#4A3A22"), ("absorption_per_m", "Vector3(0.6, 1.4, 4)"),
+               ("absorption_scale", 1.0), ("scatter_energy", 0.08), ("caustic_strength", 0.0), ("col_foam", "#C8C4B4"),
+               ("col_sss", "#6A4A26"), ("foam_crest_threshold", 0.9), ("roughness_far", 0.06), ("use_caustics", "false"),
+               ("use_ssr", "true"), ("use_sss", "false")]}
+
+
+def _fen_arena() -> dict:
+    fen = _fen()
+    trees = [{"glb": KIT + "mangrove_tree.glb", "at": (x, 0.0, z), "yaw": yaw, "scale": sc, "structure": True}
+             for x, z, yaw, sc in fen.MANGROVES]
+    reeds = [{"glb": KIT + "reed_bed.glb", "at": at, "yaw": yaw}
+             for at, yaw in (((-10.0, 0.0, 4.0), 20.0), ((9.0, 0.0, -3.0), 110.0), ((5.5, 0.0, -9.5), 60.0),
+                             ((-15.5, 0.0, -4.0), 150.0), ((16.0, 0.0, 6.0), 80.0))]
+    return {
+        "id": "ossa_fen_roots",
+        "sub_frame": "ch10",
+        "ground": "deck",
+        "ground_glb": KIT + "fen_bank_ground.glb",
+        "lut": "res://assets/environments/arenas/ossa_fen_roots/lut_ch10_fen.png",
+        # Colour script ch10 (18:20 overcast dusk): sun 2 deg / 275 deg, key #FFFEFA 0.9, fill #6F7E8E 0.5, sky
+        # #4A5868 / #9A9488, fog #5A6A62 dense, exposure 0.9, lut_ch10_fen.
+        "sun": {"elev": 2.0, "az": 275.0, "color": "#FFFEFA", "energy": 0.9, "max_distance": 80.0},
+        "fill": {"color": "#6F7E8E", "energy": 0.5},
+        "exposure": 0.9,
+        "fog": {"color": "#5A6A62", "aerial": 0.5, "density": 0.012, "sky_affect": 0.3, "height": 0.0,
+                "height_density": 0.0},
+        "sky_shader": LOW_SUN_SKY,
+        "sky": dict(CORROW_SKY, col_zenith="#4A5868", col_horizon_sun="#B8AE9C", col_horizon_away="#9A9488",
+                    col_ground="#3A3A34", sky_energy=0.9, sun_disc_energy=0.0, halo_energy=0.4, glow_energy=0.3,
+                    cloud_coverage=0.85),
+        # The slack channels: still tea-dark water, a breath of ripple.
+        "sea": {"y": fen.WATER_Y, "tide_line_y": fen.WATER_Y, "sea_glow": 0.0, "material": TANNIN_FEN,
+                "waves": [(240.0, 6.0, 0.008, 0.08), (300.0, 2.5, 0.003, 0.05)]},
+        "pieces": [
+            {"glb": KIT + "mangrove_dead.glb", "at": (fen.DEAD_AT[0], 0.0, fen.DEAD_AT[1]), "yaw": 0.0, "structure": True},
+        ] + trees + reeds,
+        "extra_glbs": [KIT + "fen_far_mangroves.glb"],  # the far tree-line ring (r 70-110 m), centred on the arena
+        "scatters": [],
+        "hints": {
+            "wide_high": ((-1.5, 7.5, 13.5), (0.0, 0.8, -3.0)),
+            "party_side": ((5.6, 1.7, 4.5), (-1.5, 1.0, -0.5)),
+            "foe_side": ((-5.6, 1.7, 4.0), (1.5, 1.0, 0.0)),
+            "the_dead_crown": ((-1.0, 1.0, 2.5), (-7.0, 11.0, -6.0)),
+            "the_channel": ((-2.0, 1.6, -2.0), (2.0, 0.6, 20.0)),
+        },
+        "anchors": {"BossAnchor": fen.DROWNER_AT},
+    }
+
+
+FEN_ARENA = _fen_arena()
+
+# ---------------------------------------------------------------------------------------------
+# M3-ENV-720: the Wakefin on Merel's drifting bridal barge, the open sea at night (bridal_barge.py; open_sea_ch15.md)
+# ---------------------------------------------------------------------------------------------
+def _bridal():
+    import bridal_barge  # noqa: PLC0415
+
+    return bridal_barge
+
+
+BRIDAL_ARENA = {
+    "id": "bridal_barge_night",
+    "sub_frame": "ch15",
+    "ground": "deck",
+    "ground_glb": KIT + "bridal_barge.glb",
+    "lut": "res://assets/environments/arenas/bridal_barge_night/lut_ch15_unlamped.png",
+    # Colour script ch15 (01:00, unlamped): the moon #D2DFFF 0.25 (rule 3b: <= 2.5 x the sea-glow 0.12), fill
+    # #0B1630 0.15, fog #1C3A4A 0.004, exposure 1.10, night_sea, lut_ch15_unlamped. No lamp: nothing warm lights it.
+    "sun": {"elev": 38.0, "az": 150.0, "color": "#D2DFFF", "energy": 0.25, "max_distance": 60.0, "moon": True},
+    "fill": {"color": "#0B1630", "energy": 0.15},
+    "exposure": 1.1,
+    "glow": (0.6, 0.08, 0.9),
+    "fog": {"color": "#1C3A4A", "density": 0.004, "sky_affect": 0.0, "height": 0.0, "height_density": 0.0},
+    "sky_shader": "res://game/shaders/environment/env_sky_night.gdshader",
+    "sky": {"col_zenith": "#050A14", "col_horizon": "#0B1630", "col_ground": "#061A2B"},
+    "sea": {"y": _bridal().WATERLINE_Y, "tide_line_y": _bridal().WATERLINE_Y, "sea_glow": 0.12, "material": NIGHT_SEA},
+    "pieces": [],
+    "scatters": [],
+    "hints": {
+        "wide_high": ((-1.5, 7.5, 13.5), (0.0, 0.8, -3.0)),
+        "party_side": ((5.6, 1.7, 4.5), (-1.5, 1.0, -0.5)),
+        "foe_side": ((-5.6, 1.7, 4.0), (1.5, 1.0, 0.0)),
+        "the_bier": ((3.0, 1.4, 2.8), (6.2, 0.6, 0.0)),
+        "the_dark_water": ((-2.0, 0.9, -2.0), (-14.0, -0.6, -6.0)),
+    },
+    "anchors": {"BossAnchor": (-10.0, _bridal().WATERLINE_Y, -1.5)},
+}
+
+# ---------------------------------------------------------------------------------------------
+# M3-ENV-721: Warden Malcor Venn's pursuit on Ansedra's lagoon at the wedding's dusk (ansedra.py; ansedra.md §2)
+# ---------------------------------------------------------------------------------------------
+PURSUIT_AT = (-2.0, -7.6)  # the pursuit barge's waterline centre, alongside behind the enemy line
+LACQUER_LAGOON = {  # the colour script's `overcast_lagoon` look under ch14 (deep #2E3448): the still mirror, breaking
+    "name": "arena_lacquer_lagoon", "shader": "res://game/shaders/water/water_ocean.gdshader",
+    "params": [("col_deep", "#2E3448"), ("col_scatter_shallow", "#3A5A66"), ("absorption_per_m", "Vector3(2, 0.5, 0.42)"),
+               ("absorption_scale", 1.5), ("scatter_energy", 0.06), ("caustic_strength", 0.0), ("col_foam", "#E8E4E0"),
+               ("col_sss", "#3A5A66"), ("foam_crest_threshold", 0.95), ("roughness_far", 0.02), ("use_caustics", "false"),
+               ("use_ssr", "true"), ("use_sss", "false")]}
+
+ANSEDRA_ESCAPE = {
+    "id": "ansedra_lagoon_escape",
+    "sub_frame": "ch14",
+    "ground": "deck",
+    "ground_glb": KIT + "bridal_barge.glb",
+    "lut": "res://assets/environments/arenas/ansedra_lagoon_escape/lut_ch14_wedding.png",
+    # Colour script ch14 (18:30): sun 1 deg / 270 deg, key #FFAA5F 1.4, fill #4A5A78 0.4, sky #2E3448 / #B85A3A, fog
+    # #4A3A3A, exposure 0.90, lut_ch14_wedding. The city's windows lit far off; no lamp on the barges.
+    "sun": {"elev": 1.0, "az": 270.0, "color": "#FFAA5F", "energy": 1.4, "max_distance": 80.0},
+    "fill": {"color": "#4A5A78", "energy": 0.4},
+    "exposure": 0.9,
+    "glow": (0.5, 0.06, 1.0),
+    "fog": {"color": "#4A3A3A", "aerial": 0.5, "density": 0.002, "sky_affect": 0.2, "height": 0.0, "height_density": 0.0},
+    "sky_shader": LOW_SUN_SKY,
+    "sky": dict(CORROW_SKY, col_zenith="#2E3448", col_horizon_sun="#B85A3A", col_horizon_away="#4A4A5E",
+                col_ground="#1E2230", sky_energy=0.9, sun_disc_energy=2.0, halo_energy=0.8, glow_energy=0.6,
+                cloud_coverage=0.85, col_cloud_lit="#C8704A", col_cloud_shadow="#3A3A4C"),
+    # The lagoon: still, then the escape's first ripples round the barges (low, short waves).
+    "sea": {"y": -0.6, "tide_line_y": -0.6, "sea_glow": 0.08, "material": LACQUER_LAGOON,
+            "waves": [(200.0, 2.2, 0.02, 0.15), (250.0, 1.3, 0.012, 0.12)]},
+    "pieces": [
+        {"glb": KIT + "pursuit_barge.glb", "at": (PURSUIT_AT[0], -0.6, PURSUIT_AT[1]), "yaw": 0.0, "structure": True},
+        {"glb": KIT + "bowl_dome.glb", "at": (-38.0, -0.6, -62.0), "yaw": 15.0, "scale": 1.6},
+        {"glb": KIT + "bowl_dome.glb", "at": (12.0, -0.6, -95.0), "yaw": 40.0, "scale": 2.2},
+        {"glb": KIT + "bowl_dome.glb", "at": (-85.0, -0.6, -110.0), "yaw": 70.0, "scale": 1.9},
+        {"glb": KIT + "bowl_dome.glb", "at": (58.0, -0.6, -70.0), "yaw": 5.0, "scale": 1.4},
+    ],
+    "extra_glbs": [KIT + "ansedra_far_domes_lit.glb"],
+    "scatters": [],
+    "hints": {
+        "wide_high": ((-1.5, 7.5, 13.5), (0.0, 0.8, -3.0)),
+        "party_side": ((5.6, 1.7, 4.5), (-1.5, 1.0, -0.5)),
+        "foe_side": ((-5.6, 1.7, 4.0), (1.5, 1.0, 0.0)),
+        "the_engine": ((0.5, 2.0, -2.0), (PURSUIT_AT[0] + 5.0, 1.6, PURSUIT_AT[1])),
+        "the_city_watching": ((2.0, 1.2, 3.0), (-20.0, 8.0, -80.0)),
+    },
+    "anchors": {"BossAnchor": (PURSUIT_AT[0] - 2.5, -0.2, PURSUIT_AT[1] + 0.6)},
+}
+
 ARENAS = {a["id"]: a for a in (TIDELINE, CAUSEWAY, CAUSEWAY_ROUTE, DERELICT_DECK, ASH_TERRACE, UNDERWAY_TOWER,
-                               RAFT_MORNING, SHOALS, CAMP)}
+                               RAFT_MORNING, SHOALS, CAMP, WALLHEAD_STORM, WALLHEAD_HOIST, WALLHEAD_SURGE, HEADLAND, TIER_HALL, KETH_ARENA,
+                               LOWLIGHT_ARENA, FEN_ARENA, BRIDAL_ARENA, ANSEDRA_ESCAPE)}
 
 
 # ---------------------------------------------------------------------------------------------
@@ -1023,9 +1583,8 @@ def _xyz(p) -> str:
     return f"Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, {p[0]}, {p[1]}, {p[2]})"
 
 
-def write_arena(a: dict) -> Path:
-    sc = Scene()
-    script = sc.res("Script", "res://game/world/arenas/battle_arena_root.gd")
+def _env_props(sc: Scene, a: dict, name: str) -> list[str]:
+    """The arena's (or a zone grade's) sky as sub-resources in `sc`, and its Environment's property lines."""
     sky_shader = sc.res("Shader", a.get("sky_shader", LOW_SUN_SKY))
     lut = sc.res("Texture3D", a["lut"])
     sky_params = "\n".join(f"shader_parameter/{k} = {_value(sc, v)}" for k, v in sorted(a["sky"].items()))
@@ -1041,9 +1600,8 @@ def write_arena(a: dict) -> Path:
                    f"ambient_light_energy = {a['fill']['energy']}"]
     fog_extra = [f"fog_light_energy = {fog['light_energy']}"] if "light_energy" in fog else []
     fog_extra += [f"fog_aerial_perspective = {fog['aerial']}"] if "aerial" in fog else []
-    sc.sub.append("\n".join([
-        '[sub_resource type="Environment" id="Env"]',
-        f'resource_name = "{a["id"]}_{a["sub_frame"]}"',
+    return [
+        f'resource_name = "{name}"',
         "background_mode = 2", 'sky = SubResource("Sky")',
         *ambient, "reflected_light_source = 2",
         "tonemap_mode = 4", f"tonemap_exposure = {a['exposure']}", "tonemap_agx_white = 12.0",
@@ -1056,7 +1614,26 @@ def write_arena(a: dict) -> Path:
         f"fog_height = {fog['height']}", f"fog_height_density = {fog['height_density']}",
         "adjustment_enabled = true", f'adjustment_color_correction = ExtResource("{lut}")',
         *([f"adjustment_saturation = {a['saturation']}"] if "saturation" in a else []),
-    ]))
+    ]
+
+
+def write_environment(a: dict, out: Path) -> Path:
+    """A zone grade's Environment as a standalone .tres (the same sky, fog, tonemap and LUT as an arena's)."""
+    sc = Scene()
+    props = _env_props(sc, a, a["sub_frame"])
+    lines = [f"[gd_resource type=\"Environment\" load_steps={len(sc.ext) + len(sc.sub) + 1} format=3]", ""]
+    lines += [f'[ext_resource type="{kind}" path="{path}" id="{rid}"]' for path, (kind, rid) in sc.ext.items()]
+    lines += [""] + [s + "\n" for s in sc.sub] + ["[resource]"] + props
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    return out
+
+
+def write_arena(a: dict) -> Path:
+    sc = Scene()
+    script = sc.res("Script", "res://game/world/arenas/battle_arena_root.gd")
+    props = _env_props(sc, a, f"{a['id']}_{a['sub_frame']}")
+    sc.sub.append("\n".join(['[sub_resource type="Environment" id="Env"]', *props]))
     sc.node(a["id"].title().replace("_", ""), "Node3D", None,
             {"script": f'ExtResource("{script}")', "arena_id": f'&"{a["id"]}"', "sub_frame": f'&"{a["sub_frame"]}"'})
     sc.node("WorldEnvironment", "WorldEnvironment", ".", {"environment": 'SubResource("Env")'})
@@ -1069,8 +1646,20 @@ def write_arena(a: dict) -> Path:
     sea = a["sea"]
     sea_props = {
         "transform": f"Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, {sea['y']}, 0)",
-        "script": f'ExtResource("{sc.res("Script", "res://game/world/arenas/arena_sea.gd")}")',
-        "wave_set": f'ExtResource("{sc.res("Resource", WAVES)}")'}
+        "script": f'ExtResource("{sc.res("Script", "res://game/world/arenas/arena_sea.gd")}")'}
+    if "waves" not in sea:
+        sea_props["wave_set"] = f'ExtResource("{sc.res("Resource", WAVES)}")'
+    else:  # M3-ENV-716: an arena's own still water (an interior), [(direction_deg, wavelength_m, amplitude_m, steepness)]
+        comp = sc.res("Script", "res://game/world/water/wave_component.gd")
+        ids = []
+        for k, (d, wl, amp, st) in enumerate(sea["waves"]):
+            sc.sub.append(f'[sub_resource type="Resource" id="SeaWave{k}"]\nscript = ExtResource("{comp}")\n'
+                          f"direction_deg = {d}\nwavelength_m = {wl}\namplitude_m = {amp}\nsteepness = {st}")
+            ids.append(f'SubResource("SeaWave{k}")')
+        sc.sub.append(f'[sub_resource type="Resource" id="SeaWaves"]\n'
+                      f'script = ExtResource("{sc.res("Script", "res://game/world/water/wave_set.gd")}")\n'
+                      f'components = Array[ExtResource("{comp}")]([{", ".join(ids)}])\namplitude_scale = 1.0')
+        sea_props["wave_set"] = 'SubResource("SeaWaves")'
     if "material" in sea:  # the arena's own water look: the shared ocean shader with this table's values
         m = sea["material"]
         params = "\n".join(f"shader_parameter/{k} = {_value(sc, v)}" for k, v in m["params"])
@@ -1082,8 +1671,9 @@ def write_arena(a: dict) -> Path:
     sea_props.update({"sea_glow_energy": sea["sea_glow"], "tide_line_y": sea["tide_line_y"]})
     sc.node("Sea", "Node3D", ".", sea_props)
     ground_props = {}
-    if "ground_at" in a:  # the ground glb placed off the origin (the Underway's terrace apron)
-        ground_props["transform"] = _xyz(a["ground_at"])
+    if "ground_at" in a:  # the ground glb placed off the origin (the Underway's terrace apron), turned (the wall-head)
+        ground_props["transform"] = (yaw_xform(a["ground_yaw"], a["ground_at"]) if "ground_yaw" in a
+                                     else _xyz(a["ground_at"]))
     sc.node("Ground", None, ".", ground_props, instance=sc.res("PackedScene", a["ground_glb"]))
     if "disc" in a:
         cx, cz = a["disc"]["center"]

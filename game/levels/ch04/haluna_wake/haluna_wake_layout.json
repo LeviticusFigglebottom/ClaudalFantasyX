@@ -63,18 +63,23 @@
     "wall_away": [14, 0, -36, 90],
     "causeway_toma": [0, -1.1, -60, 0],
     "causeway_asha": [0, -1.1, -58, 0],
-    "causeway_rhen": [0, -1.1, -56, 0]
+    "causeway_rhen": [0, -1.1, -56, 0],
+    "way_feast_s": [8.5, 0, -34, 90],
+    "way_lane_n": [1, 0, -22, 0],
+    "way_wall_east": [9, 0, -40.3, 270],
+    "way_rail_gap": [4, 0, -40.3, 0],
+    "way_flats": [4, -1.2, -46, 0]
   },
   "actors": {
     "asha": {"at": [-1, 0, -34, 180], "color": "#d9c3a0"},
     "toma": {"at": [1.5, 0, 7, 0], "color": "#6f7f8f", "radius": 0.36, "height": 1.9},
-    "neme": {"at": [-1.5, 0, 7.5, 0], "color": "#8f6f5f"},
-    "osu": {"at": [-2, 0, -32, 0], "color": "#9a8a7a"},
-    "vendor": {"at": [-6, 0, -32, 0], "color": "#7a8a5a"},
-    "fisher": {"at": [2, 0, -32, 0], "color": "#5a7a8a"},
-    "child": {"at": [-3, 0, -3, 90], "color": "#d4b07a", "radius": 0.2, "height": 1.1},
-    "netmender": {"at": [33, 0, -21, 0], "color": "#8a9a7a"},
-    "reed": {"at": [16, 0, -6, 270], "color": "#b8b2a8"},
+    "neme": {"cast": "neme", "at": [-1.5, 0, 7.5, 0], "color": "#8f6f5f"},
+    "osu": {"cast": "osu", "at": [-2, 0, -32, 0], "color": "#9a8a7a"},
+    "vendor": {"cast": "vendor", "at": [-6, 0, -32, 0], "color": "#7a8a5a"},
+    "fisher": {"cast": "fisher", "at": [2, 0, -32, 0], "color": "#5a7a8a"},
+    "child": {"cast": "child", "at": [-3, 0, -3, 90], "color": "#d4b07a", "radius": 0.2, "height": 1.1},
+    "netmender": {"cast": "netmender", "at": [33, 0, -21, 0], "color": "#8a9a7a"},
+    "reed": {"cast": "reed", "at": [16, 0, -6, 270], "color": "#b8b2a8"},
     "ysolde_edge": {"at": [12, 0, -34, 270], "color": "#2a2440", "radius": 0.26, "height": 1.85},
     "ysolde": {"at": [1.4, 0, -37.1, 180], "color": "#2a2440", "radius": 0.26, "height": 1.0, "hidden": true}
   },
@@ -112,5 +117,8 @@
     {"flag": "ch04_shell_set", "show": ["AshaShell"], "hide": ["ysolde_edge"]},
     {"flag": "ch04_dock_comforted", "hide": ["vendor", "fisher", "osu", "child", "netmender", "reed", "WallLamps", "GrassLamps"], "show": ["WallLampsLow", "InkLamp", "ysolde"]},
     {"flag": "ch04_saw_ysolde_ink", "hide": ["ysolde", "InkLamp"]}
+  ],
+  "ramps": [
+    {"id": "CausewayDown", "from": [4.0, 0.0, -41.3], "to": [4.0, -1.2, -45.5], "width": 6.0, "color": "#3e4048"}
   ]
 }

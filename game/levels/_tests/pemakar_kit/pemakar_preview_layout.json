@@ -10072,6 +10072,42 @@
    "yaw_deg": 31.46
   },
   {
+   "piece": "harbour_quay",
+   "at": [
+    0.0,
+    1.2,
+    27.0
+   ],
+   "yaw_deg": 0.0
+  },
+  {
+   "piece": "wake_wall",
+   "at": [
+    8.0,
+    1.2,
+    22.7
+   ],
+   "yaw_deg": 0.0
+  },
+  {
+   "piece": "sea_cut_weir",
+   "at": [
+    -39.298,
+    0.4,
+    28.6
+   ],
+   "yaw_deg": 0.0
+  },
+  {
+   "piece": "crown_bell",
+   "at": [
+    3.0,
+    29.68,
+    -67.054
+   ],
+   "yaw_deg": 0.0
+  },
+  {
    "piece": "mountain_massif",
    "at": [
     0.0,

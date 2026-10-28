@@ -98,7 +98,7 @@
     "pointer": {"doc": "M2-UI-26 mouse aiming (BattlePointer): a candidate fighter's box runs from its marker point down to its feet, half_width_of_height of that height to each side (at least min_half_px); a Swell input's figure takes a click within swell_centre_px of its centre as Confirm, elsewhere as the direction it lies in.",
                 "half_width_of_height": 0.3, "min_half_px": 48, "swell_centre_px": 60},
     "float_text": {"lift_px": 40, "rise_px": 28, "rise_sec": 0.9, "fade_sec": 0.3},
-    "panel_open": {"sec": 0.18, "close_sec": 0.12, "rise_px": 8, "scale_from": 0.98},
+    "panel_open": {"sec": 0.18, "close_sec": 0.12, "rise_px": 8, "scale_from": 0.98, "rows_delay_sec": 0.1, "row_stagger_sec": 0.06, "row_sec": 0.12},
     "pacing": {"enemy_think_sec": 0.55, "action_hold_sec": 0.8, "result_delay_sec": 0.6, "message_sec": 1.2,
                "auto_announce_sec": 1.1, "auto_hold_sec": 1.0},
     "swell_ring": {"rect": [48, 700, 480, 332], "pin": "bottom_left", "title_height": 44, "hint_height": 36, "pad": 14,
@@ -118,7 +118,7 @@
                        "rule_length": 320, "rule_px": 1, "mark_px": 10, "chevron_px": 2, "rise_px": 8,
                        "fade_in_sec": 0.3, "hold_sec": 1.8, "fade_out_sec": 0.5, "band_alpha": 0.72,
                        "band_fade": 0.22, "reveal_wait_max_sec": 3.0},
-    "objective_meter": {"doc": "M3-UI-100: a set piece's objective (ObjectiveMeter): top centre under the help line, clear of the timeline and boss_status. title_width for the words, then one pip_px pip per group of the quota (pip_gap apart; filled in pip_on_role, open in pip_off_role with a pip_line_px ring), the count right-aligned in count_width.", "rect": [760, 104, 400, 56], "pin": "top", "pad": 16, "title_width": 200, "count_width": 72, "pip_px": 16, "pip_gap": 8, "pip_line_px": 2, "pip_on_role": "focus_gold", "pip_off_role": "text_dim"},
+    "objective_meter": {"doc": "M3-UI-100: a set piece's objective (ObjectiveMeter): top centre under the help line at its two lines (help_line max_lines: a wrapped tutorial reaches about y 153; the PC render of 6454c06 showed the meter over it), clear of the timeline and boss_status. title_width for the words, then one pip_px pip per group of the quota (pip_gap apart; filled in pip_on_role, open in pip_off_role with a pip_line_px ring), the count right-aligned in count_width.", "rect": [699, 164, 522, 56], "pin": "top", "pad": 16, "title_width": 200, "count_width": 168, "pip_px": 16, "pip_gap": 8, "pip_line_px": 2, "pip_on_role": "focus_gold", "pip_off_role": "text_dim"},
     "boss_status": {"rect": [48, 156, 480, 0], "line_gap": 2}
   }
 }

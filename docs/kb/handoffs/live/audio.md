@@ -3,6 +3,95 @@
 ## NEW ACCOUNT (from 2026-10-25)
 Session `session_01Wmj8xaLtwcqiS3qwC6PciW`. Integration branch `claude/undertow-lead-handoff-ze8rrn`. Newest first.
 
+- **TO THE LEAD: big12 merged in (integration e930595c, a clean merge). MERGE-READY @ 3b9324c4, with the life_audio
+  teardown fix (3224c1d8) on top.** Take this head to clear the capture shards' exit 1. Checks on the merged head:
+  validate_data 0/0, `--filter=audio` 162/0.
+
+- **TO THE LEAD (TOP item): life_audio.gd:124's shutdown error is fixed. MERGE-READY @ 3224c1d8.**
+  - **Cause:** `LifeAudio.advance` cast each watched node (`w["node"] as Node3D`) *before* checking it was alive. A
+    zone freed at shutdown therefore raised "Trying to cast a freed object", and the error aborted the step, so the
+    dead entries stayed and fired again every frame. There are no signals or timers in LifeAudio.
+  - **Fix:**
+    - validity is checked before the cast;
+    - `_exit_tree` drops every watched node and frees the villagers' step children;
+    - ReefballAudio's sphere scan gets the same guard (`is` on a possibly freed reference).
+    - I checked the other listeners' casts: they're behind validity checks already, or use `instance_from_id`.
+  - **Tests (test_life_audio.gd):** a stand-in villager and layer freed under the listener, and **the real Haluna
+    zone** loaded, watched, freed and advanced. On the old code both fail with the exact SCRIPT ERROR; they pass now.
+    `--filter=life_audio` 12/0, `audio` 162/0, `reefball` 68/0, with no "freed object" line in any log.
+
+- **Act II: the 12 zone finals' sources are merged (M3-AUD-840..843; claude/audio, pushed).** They are ossa_fen,
+  reedhollow, sunken_vey, lowlight, keth_pass, quellan, ansedra, lamp_archive, peace_wedding, unlamped, pale_rim and
+  drowned_choir. Each is a 125–157 s seamless loop built on its sketch; the sketches are unchanged.
+  - **Numbers:** 17.4 MB measured in all, every file under 2.2 MB and none near 5 MB; −16 ±0.1 LUFS; seams clean;
+    byte-identical on re-render (the table is in docs/kb/audio/act2_finals.md).
+  - **No audio is committed.** It renders with `render_all.py --act2`. **When LFS is live:** one commit adds the 24
+    files, their .import files, music.json rows (swapping each zone row from the sketch to `act2/<cue>`) and
+    PROVENANCE rows.
+  - **Next:** the four modelled bosses' music (drowner, Lamp Engine, Ram, Wakefin).
+
+- **TO THE LEAD: the big12 causeway test is fixed. MERGE-READY @ befc79be** (lead/gate-big12 merged in, dc10c187).
+  - **What changed:** M2-FP-108's final causeway has no tidepool. Its ground is now stone slabs over sand flats with the
+    sea below y −0.7. In footsteps.json the causeway's scene ground is `sand` (the flats), and a mesh rule makes
+    `causeway_slab*`, `causeway_disc*` and `offering_step*` stone; under the sea's rest plane is water (the existing
+    wading rule). The test is renamed `test_the_causeway_is_stone_slabs_over_sand_flats_and_the_sea` and checks the
+    real dressed slabs.
+  - **Checks:** `--filter=footsteps` 5/0, `footstep` 21/0, `audio` 160/0, `causeway` 13/0; validate_data 0/0.
+  - **Full Godot suite on befc79be: 2828 run, 1 failed, and the failure is not audio's.** test_creature_portraits:
+    creatures.json's mangrove_drowner, lamp_engine, avalanche_ram and wakefin have no portrait in
+    game/data/ui/creature_portraits.json. It comes in with big12 (my branch is identical to gate-big12 in those
+    paths). It belongs to the UI or creatures track, and the portraits need a PC render.
+
+- **LFS (ADR 0039) taken in, 10-27 ~19:20.**
+  - **ADR 0172 is parked** as a fallback study (its status line says so).
+  - **M3-AUD-839:** docs/kb/audio/act2_finals.md lists Act II's 30 final cues with estimates (about 72 MB, all for
+    LFS). render_all.py has `ACT2_FINALS` and `--act2`, into assets/audio/music/act2/ and outside the default run,
+    the budget and the tests. tools/tests/test_act2_finals.py fails if anything there is committed before
+    .gitattributes routes the path to LFS. I have not touched .gitattributes.
+  - **In progress:** four composer agents are writing the 12 zone finals from the sketches (M3-AUD-840..843). Their
+    sources commit now; the audio stays uncommitted until you announce LFS is live, and then lands in one commit with
+    the music.json rows, PROVENANCE rows and .import files.
+
+- **MERGE-READY @ d8cdf928** (big11 merged in). Checks run:
+  - **Godot suite on 1ec56d7b: 2758 run, 0 failed.** Since 1ec56d7b, M3-AUD-838 only: `--filter=battle_audio` 21/0,
+    `choreo` 56/0, `audio` 160/0.
+  - Tools: 1172 tests, and the only failure is test_shrine_gi_bake (slice-polish, M3-ENV-704).
+  - Loudness and audio data tests OK; validate_data shows 0 errors (1 warning, env-art's missing offering_step.glb);
+    lint and format are clean.
+  - **No render request:** nothing here can change a shot.
+- **M3-BPR-410 answered (M3-AUD-838):** choreo_sfx.json has a `charge` row (Ram hoofbeats in and out, `whoosh_charge`,
+  the weapon contact), marked `pending`, so the checker and test_battle_audio_live accept it before choreo.json has
+  the style. **Battle-presentation:** add the style and drop `"pending": true` from `styles.charge` in the same
+  commit.
+- **The Tamsule shops (M3-C07-05)** use the existing ShopMenu and InnMenu hooks, so nothing new is needed. The
+  Tidecup rewards are data only: a sound waits for a reward screen. Ask audio when one exists.
+
+- **TO THE LEAD (10-27 ~19:00): the queue's status, all pushed on claude/audio @ 1ec56d7b.** The full Godot suite is
+  running on that head, and its result follows here as MERGE-READY.
+  1. **big11 is merged** (a3d138a0). The FieldNpc, WildlifeLayer, BattleImpact and ReefballHud hooks are live
+     (a6cec0e7; a smoke test on the real ReefballHud). Tools: 1172 tests, and the only failure is test_shrine_gi_bake
+     (slice-polish's, M3-ENV-704). Lint and format are clean.
+  2. **The UI screens, M3-AUD-832:** menu motion whooshes (silent under Reduced motion), the title reveal, the save and
+     load slots, shrine travel, and the Reefball choices with a scoring glint. ShrineTravelMenu and TitleReveal are
+     still `pending` (not in big11). **Next: the Tamsule shops.**
+  3. **M3-BPR-410:** next after the shops.
+  4. **ADR 0172 prototype, M3-AUD-837:** `tools/audio/build_render.py`.
+     - A cold build of 94 jobs takes 26.8 min on 4 CPUs; a warm check takes 1.9 s.
+     - 895 of 896 files were byte-identical.
+     - The ADR sets out LFS, the render and a hybrid, and asks for a PC render against a cloud manifest before
+       deciding. Nothing is switched over.
+  5. **Act III planning, M3-AUD-836:** docs/kb/audio/act3_plan.md (the motif map and about 30 cues). It comes to about
+     76 MB, so Act III can't ship committed.
+  - **Also done:**
+    - M3-AUD-831: voices for the Act II creatures.
+    - M3-AUD-833: a bug fix. Nine Act I `@music` ids were silent in cutscenes; they have stand-ins now, and a request
+      is out (M3-AUD-834: `@music` through the MusicDeck, `@stem`, markers).
+    - M3-AUD-835: tamsule_bell's loop click.
+    - Six chapter audio tasks moved to review.
+
+- **Full gate at 248dfa76 (all four composer batches merged): Godot suite 2676 run, 0 failed; tools suite 1145
+  tests OK.** Since then only the impact_medium re-render (the loudness test is OK) and the mix report. Take
+  6a4842eb or later.
 - **TO THE LEAD: test_audio_loudness is fixed and pushed. MERGE-READY @ ff064071 (take this head; big11's older audio
   sha predates the fix).**
   - **`sfx/life/*`:** rules in targets.py since c5eeb302 (murmur −26, work −25, gull calls −22, takeoffs −26,

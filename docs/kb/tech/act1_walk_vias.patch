@@ -1,0 +1,639 @@
+diff --git a/game/data/dialogue/ch04/ch04_dock_in_the_dark.dlg b/game/data/dialogue/ch04/ch04_dock_in_the_dark.dlg
+index 3e00825a..08d58840 100644
+--- a/game/data/dialogue/ch04/ch04_dock_in_the_dark.dlg
++++ b/game/data/dialogue/ch04/ch04_dock_in_the_dark.dlg
+@@ -23,7 +23,7 @@ location: ch04/haluna_wake
+ @music hearer_hum fade=2.0
+ @camera H13
+ @anim rhen sit_dock_edge
+-@mark asha dock_end walk
++@mark asha dock_end walk via=dock_shore
+ @anim asha sit_beside rhen
+ @mark toma dock_shore walk
+ Rhen [angry]: Don't. Don't be kind about it. Just let me be angry for a minute. #line:ch04_dock_001
+diff --git a/game/data/dialogue/ch04/ch04_long_way_round.dlg b/game/data/dialogue/ch04/ch04_long_way_round.dlg
+index b87cd683..ca2411ca 100644
+--- a/game/data/dialogue/ch04/ch04_long_way_round.dlg
++++ b/game/data/dialogue/ch04/ch04_long_way_round.dlg
+@@ -32,8 +32,8 @@ Neme [sad]: Eat when they feed you. #line:ch04_dawn_001
+ Asha [soft_smile]: I will. #line:ch04_dawn_002
+ @wait 1.0
+ @camera C01 grade=ch02
+-@mark toma causeway_toma walk
+-@mark asha causeway_asha walk
++@mark toma causeway_toma walk via=wall_away,way_wall_east,way_rail_gap,way_flats
++@mark asha causeway_asha walk via=dock_shore,wall_away,way_wall_east,way_rail_gap,way_flats
+ @mark rhen causeway_rhen walk
+ @wait 6.0
+ @anim rhen look_back
+diff --git a/game/data/dialogue/ch04/ch04_shell_is_set.dlg b/game/data/dialogue/ch04/ch04_shell_is_set.dlg
+index 36a0a31f..44a9b054 100644
+--- a/game/data/dialogue/ch04/ch04_shell_is_set.dlg
++++ b/game/data/dialogue/ch04/ch04_shell_is_set.dlg
+@@ -81,9 +81,9 @@ Come round the long way, love, come round the long way, on the tide. #line:ch04_
+ Asha [tender]: Let me. #line:ch04_shell_022
+ Toma [worried]: It is your wake. #line:ch04_shell_023
+ Asha [soft_smile]: Then I can leave it if I like. #line:ch04_shell_024
+-@mark asha feast_edge walk
++@mark asha feast_edge walk via=way_feast_s
+ @wait 1.5
+-@mark toma feast_edge walk
++@mark toma feast_edge walk via=way_lane_n
+ @fade out 1.0
+ @letterbox off
+ ===
+diff --git a/game/data/dialogue/ch06/ch06_after_barge.dlg b/game/data/dialogue/ch06/ch06_after_barge.dlg
+index 328e9a1e..3f34e70f 100644
+--- a/game/data/dialogue/ch06/ch06_after_barge.dlg
++++ b/game/data/dialogue/ch06/ch06_after_barge.dlg
+@@ -9,7 +9,7 @@ location: ch06/brine_shoals
+ ---
+ @camera W06_after
+ @music liss_theme fade=2.0
+-@mark wrights escort_road walk
++@mark wrights escort_road walk via=way_wrights_n,way_tents_s,way_tents_e
+ @face toma tender 0.5
+ Toma [smile]: You saw him. That is the Order. That is what it is for. #line:ch06_after_001
+ @anim liss look_at wrights
+@@ -22,7 +22,7 @@ Liss [neutral]: Your papers get me past the Corrow checkpoints. I'll pull my wei
+ Toma [neutral]: You are written in, Mistress Varrow. You are under my papers now. #line:ch06_after_004
+ Liss [neutral]: Lucky me. #line:ch06_after_005
+ Ysolde [soft_smile]: Welcome to the Lady Cantor's party. #line:ch06_after_006
+-@mark asha toma_apart walk
++@mark asha toma_apart walk via=way_camp_e
+ @anim asha look_at toma
+ Asha [tender]: Are you all right? #line:ch06_after_007
+ Toma [smile]: I am better than all right. #line:ch06_after_008
+diff --git a/game/data/dialogue/ch06/ch06_barge.dlg b/game/data/dialogue/ch06/ch06_barge.dlg
+index e04e08b5..bef733b2 100644
+--- a/game/data/dialogue/ch06/ch06_barge.dlg
++++ b/game/data/dialogue/ch06/ch06_barge.dlg
+@@ -29,11 +29,11 @@ location: ch06/brine_shoals
+ @music silence
+ @anim inquisitor kneel
+ Inquisitor [exhausted]: ...Enough. Enough. #line:ch06_barge_001
+-@mark stillguard_a impasse_a run
++@mark stillguard_a impasse_a run via=way_tents_s,way_camp_s
+ @mark stillguard_b impasse_b run
+ @anim stillguard_a level_spear
+ @anim stillguard_b level_spear
+-@mark toma shield_line walk
++@mark toma shield_line walk via=way_tents_e
+ @anim toma shield_up
+ @wait 1.5
+ // 3. Kerrid, before the barge arrives: at the burning hulk, a smouldering hull-rib on his shoulder
+diff --git a/game/data/dialogue/ch06/ch06_liss_lantern.dlg b/game/data/dialogue/ch06/ch06_liss_lantern.dlg
+index 63604d30..0dcf8355 100644
+--- a/game/data/dialogue/ch06/ch06_liss_lantern.dlg
++++ b/game/data/dialogue/ch06/ch06_liss_lantern.dlg
+@@ -7,7 +7,7 @@
+ title: ch06_liss_lantern
+ location: ch06/brine_shoals
+ ---
+-@mark asha papers_table walk
++@mark asha papers_table walk via=way_camp_e,way_tents_e,way_tents_ne
+ @camera W14
+ @music liss_theme
+ @anim liss look_at rhen
+diff --git a/game/data/dialogue/ch06/ch06_raid.dlg b/game/data/dialogue/ch06/ch06_raid.dlg
+index dd14b495..2c5b43ac 100644
+--- a/game/data/dialogue/ch06/ch06_raid.dlg
++++ b/game/data/dialogue/ch06/ch06_raid.dlg
+@@ -34,13 +34,13 @@ Asha [tender]: Toma. #line:ch06_raid_002
+ @wait 2.0
+ @camera W05
+ @sfx hatch_burst
+-@mark liss ridge_run run
++@mark liss ridge_run run via=way_hull_sw
+ @sfx raid_hound_bay
+ @anim liss collide rhen
+ Liss [determined]: Move or hide me, pick one. #line:ch06_raid_003
+ Asha [determined]: Here. #line:ch06_raid_004
+-@mark asha hold_asha walk
+-@mark liss hold_liss walk
++@mark asha hold_asha walk via=way_hull_ne
++@mark liss hold_liss walk via=way_hull_ne
+ @anim rhen throw_sail hatch
+ @mark rhen hold_rhen walk
+ @camera W08
+@@ -51,8 +51,8 @@ Rhen [worried]: Not now. #line:ch06_raid_006 #whisper
+ <<set $ch06_sheltered_liss = true>>
+ @wait 1.0
+ @sfx sail_pulled
+-@mark inquisitor hatch walk
+-@mark hound hatch_side walk
++@mark inquisitor hatch walk via=way_pile_e
++@mark hound hatch_side walk via=way_pile_e
+ @camera W08_hatch
+ Inquisitor [neutral]: Lady Cantor. Step away from the hold. #line:ch06_raid_007
+ Asha [determined]: No. #line:ch06_raid_008
+@@ -63,7 +63,7 @@ Ysolde [cold]: —does not give you a Cantor's party, Inquisitor. #line:ch06_rai
+ Inquisitor [exhausted]: Loose. #line:ch06_raid_011
+ @sfx raid_hound_bay
+ @mark hound hold_mouth run
+-@mark toma shield_line run
++@mark toma shield_line run via=way_tents_e
+ @anim toma shield_up
+ Toma [determined]: On my shield. #line:ch06_raid_012
+ Ysolde [cold]: They have raised a hand to a Cantor. The Edict does not cover that. #line:ch06_raid_013
+diff --git a/game/data/dialogue/ch07/ch07_into_tamsule.dlg b/game/data/dialogue/ch07/ch07_into_tamsule.dlg
+index 6f2572e6..21f838af 100644
+--- a/game/data/dialogue/ch07/ch07_into_tamsule.dlg
++++ b/game/data/dialogue/ch07/ch07_into_tamsule.dlg
+@@ -18,8 +18,8 @@ Liss [cold]: Tidecup week. Every purse-cutter on the coast is here. #line:ch07_i
+ Ysolde [neutral]: Then hold on to yours, Mistress Varrow. #line:ch07_into_002
+ @wait 0.8
+ Rhen [tender]: ...Oruvel always came up for this. #line:ch07_into_003
+-@mark liss liss_stall walk
+-@mark ysolde ysolde_gantry walk
++@mark liss liss_stall walk via=way_quay_bridge_s,way_quay_bridge_n
++@mark ysolde ysolde_gantry walk via=way_quay_bridge_s,way_quay_bridge_n,way_gantry_bridge_s,way_gantry_bridge_n
+ @letterbox off
+ @camera release
+ ===
+diff --git a/game/data/dialogue/ch08/ch08_beacon_opened.dlg b/game/data/dialogue/ch08/ch08_beacon_opened.dlg
+index b0babe96..6912ccad 100644
+--- a/game/data/dialogue/ch08/ch08_beacon_opened.dlg
++++ b/game/data/dialogue/ch08/ch08_beacon_opened.dlg
+@@ -18,6 +18,6 @@ location: ch08/coilspire
+ <<set $ch08_beacon_opened = true>>
+ @camera F08
+ Toma [determined]: Down. Now. The stair. #line:ch08_beacon_opened_001
+-@mark toma gallery_out run
++@mark toma gallery_out run via=way_gallery_door
+ @fade out 0.6
+ ===
+diff --git a/game/data/dialogue/ch08/ch08_binding.dlg b/game/data/dialogue/ch08/ch08_binding.dlg
+index d2fc94ea..55cffbfc 100644
+--- a/game/data/dialogue/ch08/ch08_binding.dlg
++++ b/game/data/dialogue/ch08/ch08_binding.dlg
+@@ -13,7 +13,7 @@ location: ch08/coilspire
+ ---
+ @letterbox on
+ @camera F06
+-@mark asha crown_door walk
++@mark asha crown_door walk via=way_f4_1,way_f4_2,way_f4_3,way_f4_4,way_f4_5,way_f4_6,way_f4_7,way_f4_8,way_f4_9,way_f4_10
+ @wait 1.5
+ @fade out 0.4
+ @camera F07
+diff --git a/game/data/dialogue/ch08/ch08_cut_rope.dlg b/game/data/dialogue/ch08/ch08_cut_rope.dlg
+index 64190314..11e0f8a4 100644
+--- a/game/data/dialogue/ch08/ch08_cut_rope.dlg
++++ b/game/data/dialogue/ch08/ch08_cut_rope.dlg
+@@ -39,7 +39,7 @@ Toma [worried]: Brannick? Has anyone seen Ivo Brannick? #line:ch08_cut_rope_005
+ @anim stillguard_a shake_head
+ @wait 1.0
+ @mark toma shield_line_end walk
+-@mark kerrid kerrid_gone walk
++@mark kerrid kerrid_gone walk via=way_approach_top,way_stair_head_w,way_stair_flight2_foot,way_stair_landing_w,way_stair_flight1_foot,way_stair_foot
+ @wait 2.0
+ @anim rhen look_at drowned_stair
+ @camera W25_empty
+diff --git a/game/data/dialogue/ch08/ch08_first_down.dlg b/game/data/dialogue/ch08/ch08_first_down.dlg
+index f62db30d..a90ff5ba 100644
+--- a/game/data/dialogue/ch08/ch08_first_down.dlg
++++ b/game/data/dialogue/ch08/ch08_first_down.dlg
+@@ -11,9 +11,9 @@ location: ch08/corrow
+ @camera W09
+ @sfx crowd_on_stair
+ Hobb [determined]: First down! #line:ch08_first_down_001
+-@mark watch_a stair_down_a run
+-@mark watch_b stair_down_b run
+-@mark hobb stair_down_hobb run
++@mark watch_a stair_down_a run via=way_stair_head_w
++@mark watch_b stair_down_b run via=way_stair_head_w
++@mark hobb stair_down_hobb run via=way_stair_head_w
+ @wait 2.0
+ @camera W10
+ @mark toma shield_line_toma walk
+diff --git a/game/data/dialogue/ch08/ch08_hoist.dlg b/game/data/dialogue/ch08/ch08_hoist.dlg
+index 42c2cc80..86ef5268 100644
+--- a/game/data/dialogue/ch08/ch08_hoist.dlg
++++ b/game/data/dialogue/ch08/ch08_hoist.dlg
+@@ -32,7 +32,7 @@ Liss [determined]: Seat the pin. Seat it. She'll hold. #line:ch08_hoist_003
+ @wait 1.0
+ @anim toma look_at watchers_mouths
+ @wait 1.0
+-@mark toma hoist_toma walk
++@mark toma hoist_toma walk via=way_approach_east,way_approach_foot
+ @anim toma haul_rope
+ @wait 1.0
+ ===
+diff --git a/game/data/dialogue/ch08/ch08_keeping_flame.dlg b/game/data/dialogue/ch08/ch08_keeping_flame.dlg
+index 0931b7d7..81c856d4 100644
+--- a/game/data/dialogue/ch08/ch08_keeping_flame.dlg
++++ b/game/data/dialogue/ch08/ch08_keeping_flame.dlg
+@@ -17,7 +17,7 @@ location: ch08/coilspire
+ @anim fenn feed_fire
+ @wait 1.5
+ Fenn [neutral]: Shut the door, Lady. She doesn't like a draught she didn't ask for. #line:ch08_flame_001
+-@mark asha hearth_asha walk
++@mark asha hearth_asha walk via=way_forecourt_e,way_hut_door_out,way_hut_door_in
+ @wait 0.8
+ Asha [soft_smile]: May I? #line:ch08_flame_002
+ @camera F01_hands
+diff --git a/game/data/dialogue/ch08/ch08_landfall.dlg b/game/data/dialogue/ch08/ch08_landfall.dlg
+index c0321f4b..1874145a 100644
+--- a/game/data/dialogue/ch08/ch08_landfall.dlg
++++ b/game/data/dialogue/ch08/ch08_landfall.dlg
+@@ -16,17 +16,17 @@ location: ch08/corrow
+ @sfx gulls_far
+ @wait 3.0
+ @camera W02
+-@mark townsfolk_a mole_greet_a walk
+-@mark townsfolk_b mole_greet_b walk
++@mark townsfolk_a mole_greet_a walk via=way_mole_parapet
++@mark townsfolk_b mole_greet_b walk via=way_mole_parapet
+ @face asha smile 0.4
+ Townsfolk [smile]: The Cantor! Look up, look, they've put every kite out for you. #line:ch08_landfall_001
+ Asha [smile]: They're beautiful. Thank you. Are they all for the Watchers? #line:ch08_landfall_002
+ Townsfolk [soft_smile]: So they've got something to look up at, Lady. Their eyes are shut all year. #line:ch08_landfall_003
+-@mark asha mole_steps_asha walk
+-@mark toma mole_steps_toma walk
++@mark asha mole_steps_asha walk via=way_mole_ramp_foot
++@mark toma mole_steps_toma walk via=way_mole_ramp_foot
+ @wait 0.8
+ Kerrid [neutral]: Later. #line:ch08_landfall_004
+-@mark kerrid wall_foot walk
++@mark kerrid wall_foot walk via=way_mole_ramp_foot,way_mole_parapet
+ @wait 1.5
+ Rhen [neutral]: Where's he— #line:ch08_landfall_005
+ Toma [neutral]: He does that. #line:ch08_landfall_006
+diff --git a/game/data/dialogue/ch08/ch08_spire_door.dlg b/game/data/dialogue/ch08/ch08_spire_door.dlg
+index 01e48d13..292e48c0 100644
+--- a/game/data/dialogue/ch08/ch08_spire_door.dlg
++++ b/game/data/dialogue/ch08/ch08_spire_door.dlg
+@@ -15,7 +15,7 @@ location: ch08/coilspire
+ @wait 1.0
+ Tender [cold]: The Lady Cantor's guardians may attend her. #line:ch08_spire_door_001
+ @sfx spire_door
+-@mark asha door_asha walk
++@mark asha door_asha walk via=way_hut_door_in,way_hut_door_out,way_forecourt_e
+ @mark liss door_liss walk
+ @wait 0.8
+ ===
+diff --git a/game/data/dialogue/ch08/ch08_stair_look.dlg b/game/data/dialogue/ch08/ch08_stair_look.dlg
+index ca80a2ba..3a6f1f7f 100644
+--- a/game/data/dialogue/ch08/ch08_stair_look.dlg
++++ b/game/data/dialogue/ch08/ch08_stair_look.dlg
+@@ -11,5 +11,5 @@ location: ch08/corrow
+ @face asha neutral
+ @wait 1.0
+ @wait 1.5
+-@mark asha stair_head_on walk
++@mark asha stair_head_on walk via=way_approach_top
+ ===
+diff --git a/game/data/dialogue/ch08/ch08_stranger_on_wall.dlg b/game/data/dialogue/ch08/ch08_stranger_on_wall.dlg
+index 49abf3d4..0bf207c4 100644
+--- a/game/data/dialogue/ch08/ch08_stranger_on_wall.dlg
++++ b/game/data/dialogue/ch08/ch08_stranger_on_wall.dlg
+@@ -22,13 +22,13 @@ Asha [afraid]: They're going out. Toma. They're going out— #line:ch08_stranger
+ Toma [determined]: I know. Stay on my shield. #line:ch08_stranger_002
+ @wait 1.0
+ @camera W13_boy
+-@mark boy boy_stair_top walk
++@mark boy boy_stair_top walk via=way_stair_head_w
+ @wait 1.0
+ @mark asha boy_kneel walk
+ @anim asha kneel_hum boy
+ @sfx asha_hum_lullaby
+ @wait 3.0
+-@mark boy boy_climbed walk
++@mark boy boy_climbed walk via=way_approach_top,way_approach_foot
+ @anim rhen look_at asha
+ @face rhen surprised 0.4
+ @wait 1.5
+diff --git a/game/data/dialogue/ch09/ch09_the_ebbing.dlg b/game/data/dialogue/ch09/ch09_the_ebbing.dlg
+index fa670932..f038542f 100644
+--- a/game/data/dialogue/ch09/ch09_the_ebbing.dlg
++++ b/game/data/dialogue/ch09/ch09_the_ebbing.dlg
+@@ -152,7 +152,7 @@ Asha [worried]: They didn't want to go, Rhen. I had to keep asking them. #line:c
+ <<set $ch09_asha_said_they_hung_back = true>>
+ @wait 1.5
+ @camera N17
+-@mark pell rocks_foot walk
++@mark pell rocks_foot walk via=way_rocks_top,way_rocks_down,way_rocks_turn
+ @wait 3.0
+ @anim toma hand_on_spear
+ @wait 2.5
+diff --git a/game/data/dialogue/compiled/ch04_dock_in_the_dark.json b/game/data/dialogue/compiled/ch04_dock_in_the_dark.json
+index c0c98883..4efba709 100644
+--- a/game/data/dialogue/compiled/ch04_dock_in_the_dark.json
++++ b/game/data/dialogue/compiled/ch04_dock_in_the_dark.json
+@@ -11,7 +11,7 @@
+     {"op": "cue", "cue": "music", "args": ["hearer_hum"], "kwargs": {"fade": 2.0}, "src": 23},
+     {"op": "cue", "cue": "camera", "args": ["H13"], "kwargs": {}, "src": 24},
+     {"op": "cue", "cue": "anim", "args": ["rhen", "sit_dock_edge"], "kwargs": {}, "src": 25},
+-    {"op": "cue", "cue": "mark", "args": ["asha", "dock_end", "walk"], "kwargs": {}, "src": 26},
++    {"op": "cue", "cue": "mark", "args": ["asha", "dock_end", "walk"], "kwargs": {"via": "dock_shore"}, "src": 26},
+     {"op": "cue", "cue": "anim", "args": ["asha", "sit_beside", "rhen"], "kwargs": {}, "src": 27},
+     {"op": "cue", "cue": "mark", "args": ["toma", "dock_shore", "walk"], "kwargs": {}, "src": 28},
+     {"op": "line", "id": "ch04_dock_001", "key": "DLG_CH04_DOCK_001", "speaker": "rhen", "emotion": "angry", "voice": "", "src": 29},
+diff --git a/game/data/dialogue/compiled/ch04_long_way_round.json b/game/data/dialogue/compiled/ch04_long_way_round.json
+index 8d7b96a3..25432a3d 100644
+--- a/game/data/dialogue/compiled/ch04_long_way_round.json
++++ b/game/data/dialogue/compiled/ch04_long_way_round.json
+@@ -25,8 +25,8 @@
+     {"op": "line", "id": "ch04_dawn_002", "key": "DLG_CH04_DAWN_002", "speaker": "asha", "emotion": "soft_smile", "voice": "", "src": 32},
+     {"op": "cue", "cue": "wait", "args": [1.0], "kwargs": {}, "src": 33},
+     {"op": "cue", "cue": "camera", "args": ["C01"], "kwargs": {"grade": "ch02"}, "src": 34},
+-    {"op": "cue", "cue": "mark", "args": ["toma", "causeway_toma", "walk"], "kwargs": {}, "src": 35},
+-    {"op": "cue", "cue": "mark", "args": ["asha", "causeway_asha", "walk"], "kwargs": {}, "src": 36},
++    {"op": "cue", "cue": "mark", "args": ["toma", "causeway_toma", "walk"], "kwargs": {"via": "wall_away,way_wall_east,way_rail_gap,way_flats"}, "src": 35},
++    {"op": "cue", "cue": "mark", "args": ["asha", "causeway_asha", "walk"], "kwargs": {"via": "dock_shore,wall_away,way_wall_east,way_rail_gap,way_flats"}, "src": 36},
+     {"op": "cue", "cue": "mark", "args": ["rhen", "causeway_rhen", "walk"], "kwargs": {}, "src": 37},
+     {"op": "cue", "cue": "wait", "args": [6.0], "kwargs": {}, "src": 38},
+     {"op": "cue", "cue": "anim", "args": ["rhen", "look_back"], "kwargs": {}, "src": 39},
+diff --git a/game/data/dialogue/compiled/ch04_shell_is_set.json b/game/data/dialogue/compiled/ch04_shell_is_set.json
+index 06d62d3e..85253a8b 100644
+--- a/game/data/dialogue/compiled/ch04_shell_is_set.json
++++ b/game/data/dialogue/compiled/ch04_shell_is_set.json
+@@ -68,9 +68,9 @@
+     {"op": "line", "id": "ch04_shell_022", "key": "DLG_CH04_SHELL_022", "speaker": "asha", "emotion": "tender", "voice": "", "src": 81},
+     {"op": "line", "id": "ch04_shell_023", "key": "DLG_CH04_SHELL_023", "speaker": "toma", "emotion": "worried", "voice": "", "src": 82},
+     {"op": "line", "id": "ch04_shell_024", "key": "DLG_CH04_SHELL_024", "speaker": "asha", "emotion": "soft_smile", "voice": "", "src": 83},
+-    {"op": "cue", "cue": "mark", "args": ["asha", "feast_edge", "walk"], "kwargs": {}, "src": 84},
++    {"op": "cue", "cue": "mark", "args": ["asha", "feast_edge", "walk"], "kwargs": {"via": "way_feast_s"}, "src": 84},
+     {"op": "cue", "cue": "wait", "args": [1.5], "kwargs": {}, "src": 85},
+-    {"op": "cue", "cue": "mark", "args": ["toma", "feast_edge", "walk"], "kwargs": {}, "src": 86},
++    {"op": "cue", "cue": "mark", "args": ["toma", "feast_edge", "walk"], "kwargs": {"via": "way_lane_n"}, "src": 86},
+     {"op": "cue", "cue": "fade", "args": ["out", 1.0], "kwargs": {}, "src": 87},
+     {"op": "cue", "cue": "letterbox", "args": ["off"], "kwargs": {}, "src": 88}
+    ]
+diff --git a/game/data/dialogue/compiled/ch06_after_barge.json b/game/data/dialogue/compiled/ch06_after_barge.json
+index db4e0e96..191f38dc 100644
+--- a/game/data/dialogue/compiled/ch06_after_barge.json
++++ b/game/data/dialogue/compiled/ch06_after_barge.json
+@@ -9,7 +9,7 @@
+    "ops": [
+     {"op": "cue", "cue": "camera", "args": ["W06_after"], "kwargs": {}, "src": 10},
+     {"op": "cue", "cue": "music", "args": ["liss_theme"], "kwargs": {"fade": 2.0}, "src": 11},
+-    {"op": "cue", "cue": "mark", "args": ["wrights", "escort_road", "walk"], "kwargs": {}, "src": 12},
++    {"op": "cue", "cue": "mark", "args": ["wrights", "escort_road", "walk"], "kwargs": {"via": "way_wrights_n,way_tents_s,way_tents_e"}, "src": 12},
+     {"op": "cue", "cue": "face", "args": ["toma", "tender", 0.5], "kwargs": {}, "src": 13},
+     {"op": "line", "id": "ch06_after_001", "key": "DLG_CH06_AFTER_001", "speaker": "toma", "emotion": "smile", "voice": "", "src": 14},
+     {"op": "cue", "cue": "anim", "args": ["liss", "look_at", "wrights"], "kwargs": {}, "src": 15},
+@@ -22,7 +22,7 @@
+     {"op": "line", "id": "ch06_after_004", "key": "DLG_CH06_AFTER_004", "speaker": "toma", "emotion": "neutral", "voice": "", "src": 22},
+     {"op": "line", "id": "ch06_after_005", "key": "DLG_CH06_AFTER_005", "speaker": "liss", "emotion": "neutral", "voice": "", "src": 23},
+     {"op": "line", "id": "ch06_after_006", "key": "DLG_CH06_AFTER_006", "speaker": "ysolde", "emotion": "soft_smile", "voice": "", "src": 24},
+-    {"op": "cue", "cue": "mark", "args": ["asha", "toma_apart", "walk"], "kwargs": {}, "src": 25},
++    {"op": "cue", "cue": "mark", "args": ["asha", "toma_apart", "walk"], "kwargs": {"via": "way_camp_e"}, "src": 25},
+     {"op": "cue", "cue": "anim", "args": ["asha", "look_at", "toma"], "kwargs": {}, "src": 26},
+     {"op": "line", "id": "ch06_after_007", "key": "DLG_CH06_AFTER_007", "speaker": "asha", "emotion": "tender", "voice": "", "src": 27},
+     {"op": "line", "id": "ch06_after_008", "key": "DLG_CH06_AFTER_008", "speaker": "toma", "emotion": "smile", "voice": "", "src": 28},
+diff --git a/game/data/dialogue/compiled/ch06_barge.json b/game/data/dialogue/compiled/ch06_barge.json
+index 62fb12ca..34819dcb 100644
+--- a/game/data/dialogue/compiled/ch06_barge.json
++++ b/game/data/dialogue/compiled/ch06_barge.json
+@@ -12,11 +12,11 @@
+     {"op": "cue", "cue": "music", "args": ["silence"], "kwargs": {}, "src": 29},
+     {"op": "cue", "cue": "anim", "args": ["inquisitor", "kneel"], "kwargs": {}, "src": 30},
+     {"op": "line", "id": "ch06_barge_001", "key": "DLG_CH06_BARGE_001", "speaker": "inquisitor", "emotion": "exhausted", "voice": "", "src": 31},
+-    {"op": "cue", "cue": "mark", "args": ["stillguard_a", "impasse_a", "run"], "kwargs": {}, "src": 32},
++    {"op": "cue", "cue": "mark", "args": ["stillguard_a", "impasse_a", "run"], "kwargs": {"via": "way_tents_s,way_camp_s"}, "src": 32},
+     {"op": "cue", "cue": "mark", "args": ["stillguard_b", "impasse_b", "run"], "kwargs": {}, "src": 33},
+     {"op": "cue", "cue": "anim", "args": ["stillguard_a", "level_spear"], "kwargs": {}, "src": 34},
+     {"op": "cue", "cue": "anim", "args": ["stillguard_b", "level_spear"], "kwargs": {}, "src": 35},
+-    {"op": "cue", "cue": "mark", "args": ["toma", "shield_line", "walk"], "kwargs": {}, "src": 36},
++    {"op": "cue", "cue": "mark", "args": ["toma", "shield_line", "walk"], "kwargs": {"via": "way_tents_e"}, "src": 36},
+     {"op": "cue", "cue": "anim", "args": ["toma", "shield_up"], "kwargs": {}, "src": 37},
+     {"op": "cue", "cue": "wait", "args": [1.5], "kwargs": {}, "src": 38},
+     {"op": "cue", "cue": "mark", "args": ["kerrid", "hulk_rib", "walk"], "kwargs": {}, "src": 41},
+diff --git a/game/data/dialogue/compiled/ch06_liss_lantern.json b/game/data/dialogue/compiled/ch06_liss_lantern.json
+index 0ae1d732..46c93cdf 100644
+--- a/game/data/dialogue/compiled/ch06_liss_lantern.json
++++ b/game/data/dialogue/compiled/ch06_liss_lantern.json
+@@ -7,7 +7,7 @@
+   "ch06_liss_lantern": {
+    "headers": {"location": "ch06/brine_shoals"},
+    "ops": [
+-    {"op": "cue", "cue": "mark", "args": ["asha", "papers_table", "walk"], "kwargs": {}, "src": 10},
++    {"op": "cue", "cue": "mark", "args": ["asha", "papers_table", "walk"], "kwargs": {"via": "way_camp_e,way_tents_e,way_tents_ne"}, "src": 10},
+     {"op": "cue", "cue": "camera", "args": ["W14"], "kwargs": {}, "src": 11},
+     {"op": "cue", "cue": "music", "args": ["liss_theme"], "kwargs": {}, "src": 12},
+     {"op": "cue", "cue": "anim", "args": ["liss", "look_at", "rhen"], "kwargs": {}, "src": 13},
+diff --git a/game/data/dialogue/compiled/ch06_raid.json b/game/data/dialogue/compiled/ch06_raid.json
+index bd1ff99d..c1b81f8a 100644
+--- a/game/data/dialogue/compiled/ch06_raid.json
++++ b/game/data/dialogue/compiled/ch06_raid.json
+@@ -27,13 +27,13 @@
+     {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 34},
+     {"op": "cue", "cue": "camera", "args": ["W05"], "kwargs": {}, "src": 35},
+     {"op": "cue", "cue": "sfx", "args": ["hatch_burst"], "kwargs": {}, "src": 36},
+-    {"op": "cue", "cue": "mark", "args": ["liss", "ridge_run", "run"], "kwargs": {}, "src": 37},
++    {"op": "cue", "cue": "mark", "args": ["liss", "ridge_run", "run"], "kwargs": {"via": "way_hull_sw"}, "src": 37},
+     {"op": "cue", "cue": "sfx", "args": ["raid_hound_bay"], "kwargs": {}, "src": 38},
+     {"op": "cue", "cue": "anim", "args": ["liss", "collide", "rhen"], "kwargs": {}, "src": 39},
+     {"op": "line", "id": "ch06_raid_003", "key": "DLG_CH06_RAID_003", "speaker": "liss", "emotion": "determined", "voice": "", "src": 40},
+     {"op": "line", "id": "ch06_raid_004", "key": "DLG_CH06_RAID_004", "speaker": "asha", "emotion": "determined", "voice": "", "src": 41},
+-    {"op": "cue", "cue": "mark", "args": ["asha", "hold_asha", "walk"], "kwargs": {}, "src": 42},
+-    {"op": "cue", "cue": "mark", "args": ["liss", "hold_liss", "walk"], "kwargs": {}, "src": 43},
++    {"op": "cue", "cue": "mark", "args": ["asha", "hold_asha", "walk"], "kwargs": {"via": "way_hull_ne"}, "src": 42},
++    {"op": "cue", "cue": "mark", "args": ["liss", "hold_liss", "walk"], "kwargs": {"via": "way_hull_ne"}, "src": 43},
+     {"op": "cue", "cue": "anim", "args": ["rhen", "throw_sail", "hatch"], "kwargs": {}, "src": 44},
+     {"op": "cue", "cue": "mark", "args": ["rhen", "hold_rhen", "walk"], "kwargs": {}, "src": 45},
+     {"op": "cue", "cue": "camera", "args": ["W08"], "kwargs": {}, "src": 46},
+@@ -44,8 +44,8 @@
+     {"op": "set", "flag": "ch06_sheltered_liss", "value": ["lit", true], "src": 51},
+     {"op": "cue", "cue": "wait", "args": [1.0], "kwargs": {}, "src": 52},
+     {"op": "cue", "cue": "sfx", "args": ["sail_pulled"], "kwargs": {}, "src": 53},
+-    {"op": "cue", "cue": "mark", "args": ["inquisitor", "hatch", "walk"], "kwargs": {}, "src": 54},
+-    {"op": "cue", "cue": "mark", "args": ["hound", "hatch_side", "walk"], "kwargs": {}, "src": 55},
++    {"op": "cue", "cue": "mark", "args": ["inquisitor", "hatch", "walk"], "kwargs": {"via": "way_pile_e"}, "src": 54},
++    {"op": "cue", "cue": "mark", "args": ["hound", "hatch_side", "walk"], "kwargs": {"via": "way_pile_e"}, "src": 55},
+     {"op": "cue", "cue": "camera", "args": ["W08_hatch"], "kwargs": {}, "src": 56},
+     {"op": "line", "id": "ch06_raid_007", "key": "DLG_CH06_RAID_007", "speaker": "inquisitor", "emotion": "neutral", "voice": "", "src": 57},
+     {"op": "line", "id": "ch06_raid_008", "key": "DLG_CH06_RAID_008", "speaker": "asha", "emotion": "determined", "voice": "", "src": 58},
+@@ -56,7 +56,7 @@
+     {"op": "line", "id": "ch06_raid_011", "key": "DLG_CH06_RAID_011", "speaker": "inquisitor", "emotion": "exhausted", "voice": "", "src": 63},
+     {"op": "cue", "cue": "sfx", "args": ["raid_hound_bay"], "kwargs": {}, "src": 64},
+     {"op": "cue", "cue": "mark", "args": ["hound", "hold_mouth", "run"], "kwargs": {}, "src": 65},
+-    {"op": "cue", "cue": "mark", "args": ["toma", "shield_line", "run"], "kwargs": {}, "src": 66},
++    {"op": "cue", "cue": "mark", "args": ["toma", "shield_line", "run"], "kwargs": {"via": "way_tents_e"}, "src": 66},
+     {"op": "cue", "cue": "anim", "args": ["toma", "shield_up"], "kwargs": {}, "src": 67},
+     {"op": "line", "id": "ch06_raid_012", "key": "DLG_CH06_RAID_012", "speaker": "toma", "emotion": "determined", "voice": "", "src": 68},
+     {"op": "line", "id": "ch06_raid_013", "key": "DLG_CH06_RAID_013", "speaker": "ysolde", "emotion": "cold", "voice": "", "src": 69},
+diff --git a/game/data/dialogue/compiled/ch07_into_tamsule.json b/game/data/dialogue/compiled/ch07_into_tamsule.json
+index b1b841e4..d788e8f3 100644
+--- a/game/data/dialogue/compiled/ch07_into_tamsule.json
++++ b/game/data/dialogue/compiled/ch07_into_tamsule.json
+@@ -17,8 +17,8 @@
+     {"op": "line", "id": "ch07_into_002", "key": "DLG_CH07_INTO_002", "speaker": "ysolde", "emotion": "neutral", "voice": "", "src": 18},
+     {"op": "cue", "cue": "wait", "args": [0.8], "kwargs": {}, "src": 19},
+     {"op": "line", "id": "ch07_into_003", "key": "DLG_CH07_INTO_003", "speaker": "rhen", "emotion": "tender", "voice": "", "src": 20},
+-    {"op": "cue", "cue": "mark", "args": ["liss", "liss_stall", "walk"], "kwargs": {}, "src": 21},
+-    {"op": "cue", "cue": "mark", "args": ["ysolde", "ysolde_gantry", "walk"], "kwargs": {}, "src": 22},
++    {"op": "cue", "cue": "mark", "args": ["liss", "liss_stall", "walk"], "kwargs": {"via": "way_quay_bridge_s,way_quay_bridge_n"}, "src": 21},
++    {"op": "cue", "cue": "mark", "args": ["ysolde", "ysolde_gantry", "walk"], "kwargs": {"via": "way_quay_bridge_s,way_quay_bridge_n,way_gantry_bridge_s,way_gantry_bridge_n"}, "src": 22},
+     {"op": "cue", "cue": "letterbox", "args": ["off"], "kwargs": {}, "src": 23},
+     {"op": "cue", "cue": "camera", "args": ["release"], "kwargs": {}, "src": 24}
+    ]
+diff --git a/game/data/dialogue/compiled/ch08_beacon_opened.json b/game/data/dialogue/compiled/ch08_beacon_opened.json
+index 8e963b1c..a0bb8f35 100644
+--- a/game/data/dialogue/compiled/ch08_beacon_opened.json
++++ b/game/data/dialogue/compiled/ch08_beacon_opened.json
+@@ -19,7 +19,7 @@
+     {"op": "set", "flag": "ch08_beacon_opened", "value": ["lit", true], "src": 18},
+     {"op": "cue", "cue": "camera", "args": ["F08"], "kwargs": {}, "src": 19},
+     {"op": "line", "id": "ch08_beacon_opened_001", "key": "DLG_CH08_BEACON_OPENED_001", "speaker": "toma", "emotion": "determined", "voice": "", "src": 20},
+-    {"op": "cue", "cue": "mark", "args": ["toma", "gallery_out", "run"], "kwargs": {}, "src": 21},
++    {"op": "cue", "cue": "mark", "args": ["toma", "gallery_out", "run"], "kwargs": {"via": "way_gallery_door"}, "src": 21},
+     {"op": "cue", "cue": "fade", "args": ["out", 0.6], "kwargs": {}, "src": 22}
+    ]
+   }
+diff --git a/game/data/dialogue/compiled/ch08_binding.json b/game/data/dialogue/compiled/ch08_binding.json
+index aa72407c..b6bef857 100644
+--- a/game/data/dialogue/compiled/ch08_binding.json
++++ b/game/data/dialogue/compiled/ch08_binding.json
+@@ -9,7 +9,7 @@
+    "ops": [
+     {"op": "cue", "cue": "letterbox", "args": ["on"], "kwargs": {}, "src": 14},
+     {"op": "cue", "cue": "camera", "args": ["F06"], "kwargs": {}, "src": 15},
+-    {"op": "cue", "cue": "mark", "args": ["asha", "crown_door", "walk"], "kwargs": {}, "src": 16},
++    {"op": "cue", "cue": "mark", "args": ["asha", "crown_door", "walk"], "kwargs": {"via": "way_f4_1,way_f4_2,way_f4_3,way_f4_4,way_f4_5,way_f4_6,way_f4_7,way_f4_8,way_f4_9,way_f4_10"}, "src": 16},
+     {"op": "cue", "cue": "wait", "args": [1.5], "kwargs": {}, "src": 17},
+     {"op": "cue", "cue": "fade", "args": ["out", 0.4], "kwargs": {}, "src": 18},
+     {"op": "cue", "cue": "camera", "args": ["F07"], "kwargs": {}, "src": 19},
+diff --git a/game/data/dialogue/compiled/ch08_cut_rope.json b/game/data/dialogue/compiled/ch08_cut_rope.json
+index 1dfc812a..36548a98 100644
+--- a/game/data/dialogue/compiled/ch08_cut_rope.json
++++ b/game/data/dialogue/compiled/ch08_cut_rope.json
+@@ -34,7 +34,7 @@
+     {"op": "cue", "cue": "anim", "args": ["stillguard_a", "shake_head"], "kwargs": {}, "src": 39},
+     {"op": "cue", "cue": "wait", "args": [1.0], "kwargs": {}, "src": 40},
+     {"op": "cue", "cue": "mark", "args": ["toma", "shield_line_end", "walk"], "kwargs": {}, "src": 41},
+-    {"op": "cue", "cue": "mark", "args": ["kerrid", "kerrid_gone", "walk"], "kwargs": {}, "src": 42},
++    {"op": "cue", "cue": "mark", "args": ["kerrid", "kerrid_gone", "walk"], "kwargs": {"via": "way_approach_top,way_stair_head_w,way_stair_flight2_foot,way_stair_landing_w,way_stair_flight1_foot,way_stair_foot"}, "src": 42},
+     {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 43},
+     {"op": "cue", "cue": "anim", "args": ["rhen", "look_at", "drowned_stair"], "kwargs": {}, "src": 44},
+     {"op": "cue", "cue": "camera", "args": ["W25_empty"], "kwargs": {}, "src": 45},
+diff --git a/game/data/dialogue/compiled/ch08_first_down.json b/game/data/dialogue/compiled/ch08_first_down.json
+index 11d6a692..c34705a4 100644
+--- a/game/data/dialogue/compiled/ch08_first_down.json
++++ b/game/data/dialogue/compiled/ch08_first_down.json
+@@ -10,9 +10,9 @@
+     {"op": "cue", "cue": "camera", "args": ["W09"], "kwargs": {}, "src": 11},
+     {"op": "cue", "cue": "sfx", "args": ["crowd_on_stair"], "kwargs": {}, "src": 12},
+     {"op": "line", "id": "ch08_first_down_001", "key": "DLG_CH08_FIRST_DOWN_001", "speaker": "hobb", "emotion": "determined", "voice": "", "src": 13},
+-    {"op": "cue", "cue": "mark", "args": ["watch_a", "stair_down_a", "run"], "kwargs": {}, "src": 14},
+-    {"op": "cue", "cue": "mark", "args": ["watch_b", "stair_down_b", "run"], "kwargs": {}, "src": 15},
+-    {"op": "cue", "cue": "mark", "args": ["hobb", "stair_down_hobb", "run"], "kwargs": {}, "src": 16},
++    {"op": "cue", "cue": "mark", "args": ["watch_a", "stair_down_a", "run"], "kwargs": {"via": "way_stair_head_w"}, "src": 14},
++    {"op": "cue", "cue": "mark", "args": ["watch_b", "stair_down_b", "run"], "kwargs": {"via": "way_stair_head_w"}, "src": 15},
++    {"op": "cue", "cue": "mark", "args": ["hobb", "stair_down_hobb", "run"], "kwargs": {"via": "way_stair_head_w"}, "src": 16},
+     {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 17},
+     {"op": "cue", "cue": "camera", "args": ["W10"], "kwargs": {}, "src": 18},
+     {"op": "cue", "cue": "mark", "args": ["toma", "shield_line_toma", "walk"], "kwargs": {}, "src": 19},
+diff --git a/game/data/dialogue/compiled/ch08_hoist.json b/game/data/dialogue/compiled/ch08_hoist.json
+index 9f3f4ff0..319f3be8 100644
+--- a/game/data/dialogue/compiled/ch08_hoist.json
++++ b/game/data/dialogue/compiled/ch08_hoist.json
+@@ -29,7 +29,7 @@
+     {"op": "cue", "cue": "wait", "args": [1.0], "kwargs": {}, "src": 32},
+     {"op": "cue", "cue": "anim", "args": ["toma", "look_at", "watchers_mouths"], "kwargs": {}, "src": 33},
+     {"op": "cue", "cue": "wait", "args": [1.0], "kwargs": {}, "src": 34},
+-    {"op": "cue", "cue": "mark", "args": ["toma", "hoist_toma", "walk"], "kwargs": {}, "src": 35},
++    {"op": "cue", "cue": "mark", "args": ["toma", "hoist_toma", "walk"], "kwargs": {"via": "way_approach_east,way_approach_foot"}, "src": 35},
+     {"op": "cue", "cue": "anim", "args": ["toma", "haul_rope"], "kwargs": {}, "src": 36},
+     {"op": "cue", "cue": "wait", "args": [1.0], "kwargs": {}, "src": 37}
+    ]
+diff --git a/game/data/dialogue/compiled/ch08_keeping_flame.json b/game/data/dialogue/compiled/ch08_keeping_flame.json
+index b7c64694..e1ff9e69 100644
+--- a/game/data/dialogue/compiled/ch08_keeping_flame.json
++++ b/game/data/dialogue/compiled/ch08_keeping_flame.json
+@@ -13,7 +13,7 @@
+     {"op": "cue", "cue": "anim", "args": ["fenn", "feed_fire"], "kwargs": {}, "src": 17},
+     {"op": "cue", "cue": "wait", "args": [1.5], "kwargs": {}, "src": 18},
+     {"op": "line", "id": "ch08_flame_001", "key": "DLG_CH08_FLAME_001", "speaker": "fenn", "emotion": "neutral", "voice": "", "src": 19},
+-    {"op": "cue", "cue": "mark", "args": ["asha", "hearth_asha", "walk"], "kwargs": {}, "src": 20},
++    {"op": "cue", "cue": "mark", "args": ["asha", "hearth_asha", "walk"], "kwargs": {"via": "way_forecourt_e,way_hut_door_out,way_hut_door_in"}, "src": 20},
+     {"op": "cue", "cue": "wait", "args": [0.8], "kwargs": {}, "src": 21},
+     {"op": "line", "id": "ch08_flame_002", "key": "DLG_CH08_FLAME_002", "speaker": "asha", "emotion": "soft_smile", "voice": "", "src": 22},
+     {"op": "cue", "cue": "camera", "args": ["F01_hands"], "kwargs": {}, "src": 23},
+diff --git a/game/data/dialogue/compiled/ch08_landfall.json b/game/data/dialogue/compiled/ch08_landfall.json
+index 6c918578..ffff0b2d 100644
+--- a/game/data/dialogue/compiled/ch08_landfall.json
++++ b/game/data/dialogue/compiled/ch08_landfall.json
+@@ -12,17 +12,17 @@
+     {"op": "cue", "cue": "sfx", "args": ["gulls_far"], "kwargs": {}, "src": 16},
+     {"op": "cue", "cue": "wait", "args": [3.0], "kwargs": {}, "src": 17},
+     {"op": "cue", "cue": "camera", "args": ["W02"], "kwargs": {}, "src": 18},
+-    {"op": "cue", "cue": "mark", "args": ["townsfolk_a", "mole_greet_a", "walk"], "kwargs": {}, "src": 19},
+-    {"op": "cue", "cue": "mark", "args": ["townsfolk_b", "mole_greet_b", "walk"], "kwargs": {}, "src": 20},
++    {"op": "cue", "cue": "mark", "args": ["townsfolk_a", "mole_greet_a", "walk"], "kwargs": {"via": "way_mole_parapet"}, "src": 19},
++    {"op": "cue", "cue": "mark", "args": ["townsfolk_b", "mole_greet_b", "walk"], "kwargs": {"via": "way_mole_parapet"}, "src": 20},
+     {"op": "cue", "cue": "face", "args": ["asha", "smile", 0.4], "kwargs": {}, "src": 21},
+     {"op": "line", "id": "ch08_landfall_001", "key": "DLG_CH08_LANDFALL_001", "speaker": "townsfolk", "emotion": "smile", "voice": "", "src": 22},
+     {"op": "line", "id": "ch08_landfall_002", "key": "DLG_CH08_LANDFALL_002", "speaker": "asha", "emotion": "smile", "voice": "", "src": 23},
+     {"op": "line", "id": "ch08_landfall_003", "key": "DLG_CH08_LANDFALL_003", "speaker": "townsfolk", "emotion": "soft_smile", "voice": "", "src": 24},
+-    {"op": "cue", "cue": "mark", "args": ["asha", "mole_steps_asha", "walk"], "kwargs": {}, "src": 25},
+-    {"op": "cue", "cue": "mark", "args": ["toma", "mole_steps_toma", "walk"], "kwargs": {}, "src": 26},
++    {"op": "cue", "cue": "mark", "args": ["asha", "mole_steps_asha", "walk"], "kwargs": {"via": "way_mole_ramp_foot"}, "src": 25},
++    {"op": "cue", "cue": "mark", "args": ["toma", "mole_steps_toma", "walk"], "kwargs": {"via": "way_mole_ramp_foot"}, "src": 26},
+     {"op": "cue", "cue": "wait", "args": [0.8], "kwargs": {}, "src": 27},
+     {"op": "line", "id": "ch08_landfall_004", "key": "DLG_CH08_LANDFALL_004", "speaker": "kerrid", "emotion": "neutral", "voice": "", "src": 28},
+-    {"op": "cue", "cue": "mark", "args": ["kerrid", "wall_foot", "walk"], "kwargs": {}, "src": 29},
++    {"op": "cue", "cue": "mark", "args": ["kerrid", "wall_foot", "walk"], "kwargs": {"via": "way_mole_ramp_foot,way_mole_parapet"}, "src": 29},
+     {"op": "cue", "cue": "wait", "args": [1.5], "kwargs": {}, "src": 30},
+     {"op": "line", "id": "ch08_landfall_005", "key": "DLG_CH08_LANDFALL_005", "speaker": "rhen", "emotion": "neutral", "voice": "", "src": 31},
+     {"op": "line", "id": "ch08_landfall_006", "key": "DLG_CH08_LANDFALL_006", "speaker": "toma", "emotion": "neutral", "voice": "", "src": 32},
+diff --git a/game/data/dialogue/compiled/ch08_spire_door.json b/game/data/dialogue/compiled/ch08_spire_door.json
+index eb98b734..9d53db06 100644
+--- a/game/data/dialogue/compiled/ch08_spire_door.json
++++ b/game/data/dialogue/compiled/ch08_spire_door.json
+@@ -16,7 +16,7 @@
+     {"op": "cue", "cue": "wait", "args": [1.0], "kwargs": {}, "src": 15},
+     {"op": "line", "id": "ch08_spire_door_001", "key": "DLG_CH08_SPIRE_DOOR_001", "speaker": "tender", "emotion": "cold", "voice": "", "src": 16},
+     {"op": "cue", "cue": "sfx", "args": ["spire_door"], "kwargs": {}, "src": 17},
+-    {"op": "cue", "cue": "mark", "args": ["asha", "door_asha", "walk"], "kwargs": {}, "src": 18},
++    {"op": "cue", "cue": "mark", "args": ["asha", "door_asha", "walk"], "kwargs": {"via": "way_hut_door_in,way_hut_door_out,way_forecourt_e"}, "src": 18},
+     {"op": "cue", "cue": "mark", "args": ["liss", "door_liss", "walk"], "kwargs": {}, "src": 19},
+     {"op": "cue", "cue": "wait", "args": [0.8], "kwargs": {}, "src": 20}
+    ]
+diff --git a/game/data/dialogue/compiled/ch08_stair_look.json b/game/data/dialogue/compiled/ch08_stair_look.json
+index 24180f43..e98fb677 100644
+--- a/game/data/dialogue/compiled/ch08_stair_look.json
++++ b/game/data/dialogue/compiled/ch08_stair_look.json
+@@ -12,7 +12,7 @@
+     {"op": "cue", "cue": "face", "args": ["asha", "neutral"], "kwargs": {}, "src": 11},
+     {"op": "cue", "cue": "wait", "args": [1.0], "kwargs": {}, "src": 12},
+     {"op": "cue", "cue": "wait", "args": [1.5], "kwargs": {}, "src": 13},
+-    {"op": "cue", "cue": "mark", "args": ["asha", "stair_head_on", "walk"], "kwargs": {}, "src": 14}
++    {"op": "cue", "cue": "mark", "args": ["asha", "stair_head_on", "walk"], "kwargs": {"via": "way_approach_top"}, "src": 14}
+    ]
+   }
+  }
+diff --git a/game/data/dialogue/compiled/ch08_stranger_on_wall.json b/game/data/dialogue/compiled/ch08_stranger_on_wall.json
+index ca385f7f..00316dd1 100644
+--- a/game/data/dialogue/compiled/ch08_stranger_on_wall.json
++++ b/game/data/dialogue/compiled/ch08_stranger_on_wall.json
+@@ -15,13 +15,13 @@
+     {"op": "line", "id": "ch08_stranger_002", "key": "DLG_CH08_STRANGER_002", "speaker": "toma", "emotion": "determined", "voice": "", "src": 22},
+     {"op": "cue", "cue": "wait", "args": [1.0], "kwargs": {}, "src": 23},
+     {"op": "cue", "cue": "camera", "args": ["W13_boy"], "kwargs": {}, "src": 24},
+-    {"op": "cue", "cue": "mark", "args": ["boy", "boy_stair_top", "walk"], "kwargs": {}, "src": 25},
++    {"op": "cue", "cue": "mark", "args": ["boy", "boy_stair_top", "walk"], "kwargs": {"via": "way_stair_head_w"}, "src": 25},
+     {"op": "cue", "cue": "wait", "args": [1.0], "kwargs": {}, "src": 26},
+     {"op": "cue", "cue": "mark", "args": ["asha", "boy_kneel", "walk"], "kwargs": {}, "src": 27},
+     {"op": "cue", "cue": "anim", "args": ["asha", "kneel_hum", "boy"], "kwargs": {}, "src": 28},
+     {"op": "cue", "cue": "sfx", "args": ["asha_hum_lullaby"], "kwargs": {}, "src": 29},
+     {"op": "cue", "cue": "wait", "args": [3.0], "kwargs": {}, "src": 30},
+-    {"op": "cue", "cue": "mark", "args": ["boy", "boy_climbed", "walk"], "kwargs": {}, "src": 31},
++    {"op": "cue", "cue": "mark", "args": ["boy", "boy_climbed", "walk"], "kwargs": {"via": "way_approach_top,way_approach_foot"}, "src": 31},
+     {"op": "cue", "cue": "anim", "args": ["rhen", "look_at", "asha"], "kwargs": {}, "src": 32},
+     {"op": "cue", "cue": "face", "args": ["rhen", "surprised", 0.4], "kwargs": {}, "src": 33},
+     {"op": "cue", "cue": "wait", "args": [1.5], "kwargs": {}, "src": 34},
+diff --git a/game/data/dialogue/compiled/ch09_the_ebbing.json b/game/data/dialogue/compiled/ch09_the_ebbing.json
+index 642f49ca..35f055cf 100644
+--- a/game/data/dialogue/compiled/ch09_the_ebbing.json
++++ b/game/data/dialogue/compiled/ch09_the_ebbing.json
+@@ -115,7 +115,7 @@
+     {"op": "set", "flag": "ch09_asha_said_they_hung_back", "value": ["lit", true], "src": 152},
+     {"op": "cue", "cue": "wait", "args": [1.5], "kwargs": {}, "src": 153},
+     {"op": "cue", "cue": "camera", "args": ["N17"], "kwargs": {}, "src": 154},
+-    {"op": "cue", "cue": "mark", "args": ["pell", "rocks_foot", "walk"], "kwargs": {}, "src": 155},
++    {"op": "cue", "cue": "mark", "args": ["pell", "rocks_foot", "walk"], "kwargs": {"via": "way_rocks_top,way_rocks_down,way_rocks_turn"}, "src": 155},
+     {"op": "cue", "cue": "wait", "args": [3.0], "kwargs": {}, "src": 156},
+     {"op": "cue", "cue": "anim", "args": ["toma", "hand_on_spear"], "kwargs": {}, "src": 157},
+     {"op": "cue", "cue": "wait", "args": [2.5], "kwargs": {}, "src": 158},

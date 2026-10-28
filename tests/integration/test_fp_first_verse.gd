@@ -1,6 +1,6 @@
 extends TestCase
-## M2-FP-04: Cutscene B on the placeholder Shell Shrine set. Every shot, actor and mark the script
-## names exists on the stage (the only soft failure allowed is the Drownbell toll, which Audio has
+## M2-FP-04: Cutscene B on the Shell Shrine set (M2-FP-116: the real shrine, not CSG). Every shot, actor and mark
+## the script names exists on the stage (the only soft failure allowed is the Drownbell toll, which Audio has
 ## not made yet), every branch plays to its end, and the end card follows.
 
 const SCENE := "res://game/levels/ch03/first_verse/first_verse.tscn"
@@ -68,6 +68,18 @@ func test_the_stage_resolves_the_script_ids() -> void:
 	assert_true(stage.clip_mark(&"asha", &"emerge_doorway") != null, "Asha's doorway stand-in")
 	assert_true(stage.director() != null)
 	assert_true(scene.place_at(&"Start"))
+	_free()
+
+
+## M2-FP-116: the human's "primitive moments": the set is env-art's shrine and the kit's pieces, with no CSG left,
+## and Asha stands at the inner pool for Ilun (S08) by its stand-in mark.
+func test_the_set_is_the_real_shrine() -> void:
+	assert_eq(scene.find_children("*", "CSGShape3D", true, false).size(), 0, "no CSG on the set")
+	assert_true(scene.get_node_or_null(^"Set/Hall/Floor") != null, "env-art's shrine hall")
+	var pool := scene.stage.clip_mark(&"asha", &"stand_at_pool")
+	assert_true(pool != null, "the S08 stand-in mark")
+	var ilun := scene.stage.mark(&"ilun_chamber")
+	assert_true(pool.global_position.distance_to(ilun.global_position) < 4.5, "Asha at the pool under Ilun")
 	_free()
 
 

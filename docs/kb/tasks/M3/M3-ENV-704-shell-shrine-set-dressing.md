@@ -24,9 +24,12 @@ kit now has the pieces (M3-ENV-701, all in `assets/environments/kits/haluna/`, o
       10 m runs (four in all, on `z = ±8.3`, set back to the wall foot, facing into the hall), clear of the
       channels, basins, pools and grates. Optionally a `wayside_offering` (with its tide-post) either side of the
       entrance inside, if S02's threshold frame takes it.
-- [ ] Collision: `none` for `rope_coil`, `tide_debris`, `net_heap`; boxes for the offerings are fine.
-- [ ] Rebake the two GI states (`tools/shrine/bake_shrine_gi.tscn`, `tools/shrine/gi_inputs.py --write`) and
-      re-approve S01–S05 after viewing them.
+- [x] Collision: `none` for `rope_coil`, `tide_debris`, `net_heap`; boxes for the offerings are fine.
+- [x] Rebake the two GI states (`tools/shrine/bake_shrine_gi.tscn`, `tools/shrine/gi_inputs.py --write`) and
+      re-approve S01–S05 after viewing them. → The PC rebaked both states on lavapipe
+      (gpu/render-m2-slice-4ce8a48); test_shrine_gi_bake passes. S02–S05 pass against it. S01's drift is the islet
+      dressing (the debris, rope and net heap read as tide wrack, and the door and steps still read): viewed and
+      re-approved, along with npc_haluna_dock and npc_haluna_market (idle micro-motion only).
 
 ## Notes (env-art, 2026-10-27)
 - If the shrine would rather take one instanced sub-scene than nodes in `shell_shrine_dressing.tscn`, ask in the

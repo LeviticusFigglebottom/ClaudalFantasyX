@@ -545,6 +545,11 @@ func partner_offset() -> Vector3:
 # --- chat pairs ---------------------------------------------------------------------------------------
 
 
+## True while this villager speaks its turn of a chat (read by audio's LifeAudio, M3-AUD-815).
+func chat_speaking() -> bool:
+	return _chat_speaker == npc_id and chatting()
+
+
 ## True while it rests near its partner and both are free to chat (no talk with the player, no storm).
 func chatting() -> bool:
 	if partner == null or not is_instance_valid(partner) or _storm_on or partner._storm_on:
@@ -559,7 +564,7 @@ func chatting() -> bool:
 
 ## Advances the lead's bouts: chat.bout_sec of chatting, then chat.quiet_sec back at their own business.
 func _step_bouts() -> void:
-	if partner == null or not _chat_lead():
+	if not is_instance_valid(partner) or not _chat_lead():
 		return
 	if not _section("chat").has("bout_sec"):
 		_bout_on = true
@@ -572,7 +577,7 @@ func _step_bouts() -> void:
 
 ## The pair's lead: the partner whose id sorts first runs the turn schedule; the other reads it.
 func _chat_lead() -> bool:
-	return partner != null and String(npc_id) < String(partner.npc_id)
+	return is_instance_valid(partner) and String(npc_id) < String(partner.npc_id)
 
 
 ## Who speaks now (&"" in a pause): turns of chat.turn_sec, alternating, with a pause now and then.

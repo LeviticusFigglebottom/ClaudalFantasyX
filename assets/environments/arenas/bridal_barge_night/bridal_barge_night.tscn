@@ -1,0 +1,115 @@
+[gd_scene load_steps=12 format=3]
+
+[ext_resource type="Script" path="res://game/world/arenas/battle_arena_root.gd" id="1_r"]
+[ext_resource type="Shader" path="res://game/shaders/environment/env_sky_night.gdshader" id="2_r"]
+[ext_resource type="Texture3D" path="res://assets/environments/arenas/bridal_barge_night/lut_ch15_unlamped.png" id="3_r"]
+[ext_resource type="Script" path="res://game/world/arenas/arena_sea.gd" id="4_r"]
+[ext_resource type="Resource" path="res://game/world/water/lagoon_waves.tres" id="5_r"]
+[ext_resource type="Shader" path="res://game/shaders/water/water_ocean.gdshader" id="6_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/bridal_barge.glb" id="7_r"]
+
+[sub_resource type="ShaderMaterial" id="SkyMat"]
+shader = ExtResource("2_r")
+shader_parameter/col_ground = Color(0.02353, 0.102, 0.1686, 1)
+shader_parameter/col_horizon = Color(0.04314, 0.08627, 0.1882, 1)
+shader_parameter/col_zenith = Color(0.01961, 0.03922, 0.07843, 1)
+
+[sub_resource type="Sky" id="Sky"]
+sky_material = SubResource("SkyMat")
+process_mode = 2
+
+[sub_resource type="Environment" id="Env"]
+resource_name = "bridal_barge_night_ch15"
+background_mode = 2
+sky = SubResource("Sky")
+ambient_light_source = 2
+ambient_light_color = Color(0.04314, 0.08627, 0.1882, 1)
+ambient_light_energy = 0.15
+reflected_light_source = 2
+tonemap_mode = 4
+tonemap_exposure = 1.1
+tonemap_agx_white = 12.0
+ssao_enabled = true
+ssao_radius = 1.2
+ssao_intensity = 1.2
+glow_enabled = true
+glow_intensity = 0.6
+glow_bloom = 0.08
+glow_hdr_threshold = 0.9
+fog_enabled = true
+fog_mode = 0
+fog_light_color = Color(0.1098, 0.2275, 0.2902, 1)
+fog_density = 0.004
+fog_sky_affect = 0.0
+fog_height = 0.0
+fog_height_density = 0.0
+adjustment_enabled = true
+adjustment_color_correction = ExtResource("3_r")
+
+[sub_resource type="ShaderMaterial" id="SeaMat"]
+resource_name = "arena_night_sea"
+render_priority = 0
+shader = ExtResource("6_r")
+shader_parameter/col_deep = Color(0.02353, 0.102, 0.1686, 1)
+shader_parameter/col_scatter_shallow = Color(0.1216, 0.6392, 0.651, 1)
+shader_parameter/absorption_per_m = Vector3(2, 0.5, 0.42)
+shader_parameter/absorption_scale = 1.0
+shader_parameter/scatter_energy = 0.25
+shader_parameter/caustic_strength = 0.25
+shader_parameter/col_foam = Color(0.9333, 0.9647, 0.9569, 1)
+shader_parameter/col_sss = Color(0.2471, 0.8157, 0.7882, 1)
+shader_parameter/foam_crest_threshold = 0.62
+
+[node name="BridalBargeNight" type="Node3D"]
+script = ExtResource("1_r")
+arena_id = &"bridal_barge_night"
+sub_frame = &"ch15"
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Env")
+
+[node name="Sun" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.866025, -0.307831, 0.394005, 0, 0.788011, 0.615661, -0.5, -0.533178, 0.682437, 0, 30, 0)
+light_color = Color(0.8235, 0.8745, 1, 1)
+light_energy = 0.25
+shadow_enabled = true
+shadow_bias = 0.03
+shadow_normal_bias = 1.0
+shadow_blur = 1.0
+directional_shadow_mode = 2
+directional_shadow_split_1 = 0.06
+directional_shadow_split_2 = 0.18
+directional_shadow_split_3 = 0.45
+directional_shadow_max_distance = 60.0
+
+[node name="Sea" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.6, 0)
+script = ExtResource("4_r")
+wave_set = ExtResource("5_r")
+material = SubResource("SeaMat")
+sea_glow_energy = 0.12
+tide_line_y = -0.6
+
+[node name="Ground" parent="." instance=ExtResource("7_r")]
+
+[node name="Dressing" type="Node3D" parent="."]
+
+[node name="CameraHints" type="Node3D" parent="."]
+
+[node name="wide_high" type="Marker3D" parent="CameraHints"]
+transform = Transform3D(0.995893, 0.0339417, -0.0839326, -0, 0.927066, 0.374899, 0.0905357, -0.373359, 0.923258, -1.5, 7.5, 13.5)
+
+[node name="party_side" type="Marker3D" parent="CameraHints"]
+transform = Transform3D(0.575779, -0.0656933, 0.814962, 0, 0.996767, 0.0803484, -0.817606, -0.0462629, 0.573917, 5.6, 1.7, 4.5)
+
+[node name="foe_side" type="Marker3D" parent="CameraHints"]
+transform = Transform3D(0.490844, 0.0745636, -0.868051, -0, 0.996331, 0.0855825, 0.871248, -0.0420076, 0.489043, -5.6, 1.7, 4)
+
+[node name="the_bier" type="Marker3D" parent="CameraHints"]
+transform = Transform3D(0.658505, 0.139151, -0.7396, -0, 0.982757, 0.1849, 0.752577, -0.121758, 0.64715, 3, 1.4, 2.8)
+
+[node name="the_dark_water" type="Marker3D" parent="CameraHints"]
+transform = Transform3D(0.316228, -0.111717, 0.942082, 0, 0.993042, 0.11776, -0.948683, -0.0372391, 0.314027, -2, 0.9, -2)
+
+[node name="BossAnchor" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10.0, -0.6, -1.5)

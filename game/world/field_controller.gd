@@ -50,6 +50,9 @@ func _ready() -> void:
 	var services := TownServices.new()  # M2-UI-06: {"shop": id} / {"inn": id} payloads open a town menu
 	services.name = &"TownServices"
 	add_child(services)
+	var shrines := ShrineServices.new()  # M3-C07-05: {"save_shrine": id} payloads rest, save and offer the road
+	shrines.name = &"ShrineServices"
+	add_child(shrines)
 	FieldHud.attach(self)  # M2-UI-17/19/20: the objective line, the destination cue, the interaction prompt
 	HeroFieldActor.attach(self)  # M2-HER-1101/1102: the real hero body, the stage heroes and the followers
 

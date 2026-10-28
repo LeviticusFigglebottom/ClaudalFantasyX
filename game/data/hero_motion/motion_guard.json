@@ -3,10 +3,13 @@
   "doc": "The no-snapping guards (M2-HER-1110, ADR 0190): limits HeroMotionGuard (game/hero_motion/hero_motion_guard.gd) checks sampled hero and villager motion against, in the field, in cutscenes and in battle. Metres, seconds, degrees; per frame at frame_hz.",
   "frame_hz": 60.0,
   "transform": {
-    "doc": "A visible body's root, sampled every frame. A step faster than max_speed_mps (field run 3.6 m/s, ADR 0191, plus headroom for a cutscene dash) or a turn faster than max_yaw_rate_deg_per_sec (HeroLocomotion turns at most 400 deg/s) is a snap. A step of cut_m or more is a deliberate cut (a teleport or a scene jump): reported, not a snap.",
+    "doc": "A visible body's root, sampled every frame. A step faster than max_speed_mps (field run 3.6 m/s, ADR 0191, plus headroom for a cutscene dash) or a turn faster than max_yaw_rate_deg_per_sec (HeroLocomotion turns at most 400 deg/s) is a snap. A step of cut_m or more is a deliberate cut (a teleport or a scene jump): reported, not a snap. Walks stay on the floor: a moving body's feet within floor_tolerance_m of the floor a ray finds under them (from floor_probe_up_m above to floor_probe_down_m below); more is floating, less is sunk or passing under something (a rail, a table).",
     "max_speed_mps": 6.0,
     "max_yaw_rate_deg_per_sec": 480.0,
-    "cut_m": 2.5
+    "cut_m": 2.5,
+    "floor_probe_up_m": 0.6,
+    "floor_probe_down_m": 1.5,
+    "floor_tolerance_m": 0.15
   },
   "clips": {
     "doc": "A clip change, sampled on every bone. The largest per-frame bone step across a change may be at most step_ratio times (the larger of the two clips' own largest steps, plus the change's pose gap spread over its blend: gap * dt / blend), plus slack_m: more is a pop. A blend under one frame earns no gap share, so a cut between different poses always pops. window_sec is how long after the change is watched; min_blend_sec is the smallest cross-fade a clip pair may have (0 is a cut).",

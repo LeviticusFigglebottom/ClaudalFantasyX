@@ -163,6 +163,10 @@ static func attach(controller: FieldController) -> HeroFieldActor:
 			return null
 		controller.add_child(body)
 		body.bind(controller)
+	if controller.get_node_or_null(NodePath(String(HeroStairs.NAME))) == null:  # M3-ARC-1216: steep flights
+		var stairs := HeroStairs.new()
+		stairs.controller = controller
+		controller.add_child(stairs)
 	if controller.get_node_or_null(NodePath(String(HeroFieldParty.NAME))) == null:
 		var party := HeroFieldParty.new()
 		party.controller = controller

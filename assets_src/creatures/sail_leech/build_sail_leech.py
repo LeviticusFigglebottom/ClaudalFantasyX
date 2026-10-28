@@ -29,6 +29,17 @@ PAL = {k: ck.hexrgb(v) for k, v in {
 HALF_W = 0.7
 HALF_L = 0.5
 WING = 3  # bones per wing
+# A variant's parameters (the fen leech is longer and ribbon-flat, M3-CRE-628); these values are the sail leech's.
+THICK = 0.07  # the body's thickness over its middle (the underside is 0.6 of it)
+DOME = 0.04  # the back's camber across the span
+FRILL = 0.022  # the edge frill's ripple (the sail-like canvas edge)
+FRILL_WAVES = 14.0
+SLIT_Z = (0.18, 0.11)  # the first wound slit's z and the step back to the next (four slits)
+EYE = (0.09, 0.29, 0.38)  # x, y and z of the eyes
+TAIL_Z0, TAIL_STEP = -0.3, 0.3  # the tail bones' first joint and their length
+TAIL_PATH = ((0, 0.2, -0.3), (0, 0.18, -0.6), (0.05, 0.12, -0.9), (0.0, 0.1, -1.2))  # the tail's curve
+TAIL_R = (0.04, 0.006)  # its radius at the root and the tip
+TAIL_CHAIN = ((0, 0.2, -0.3), (0, 0.2, -0.6), (0, 0.2, -0.9), (0, 0.2, -1.2))  # the tail's skinning spans
 
 
 def build_rig() -> ck.Rig:
@@ -40,7 +51,8 @@ def build_rig() -> ck.Rig:
             x0, x1 = s * (0.12 + k * 0.19), s * (0.12 + (k + 1) * 0.19)
             rig.add(f"wing_{tag}{k}", (x0, 0.2, 0.0), (x1, 0.2, 0.0), "body" if k == 0 else f"wing_{tag}{k - 1}")
     for k in range(3):
-        rig.add(f"tail{k}", (0, 0.2, -0.3 - k * 0.3), (0, 0.2, -0.6 - k * 0.3), "body" if k == 0 else f"tail{k - 1}")
+        rig.add(f"tail{k}", (0, 0.2, TAIL_Z0 - k * TAIL_STEP), (0, 0.2, (TAIL_Z0 - TAIL_STEP) - k * TAIL_STEP),
+                "body" if k == 0 else f"tail{k - 1}")
     return rig
 
 
@@ -91,9 +103,9 @@ def wing_body(mesh: ck.Mesh, rig: ck.Rig) -> None:
         for k in range(rings + 1):
             r = k / rings
             ring = edge * r
-            frill = 0.022 * np.sin(ang * 14.0) * ck.smoothstep(0.75, 1.0, r)
-            dome = 0.04 * (1.0 - (ring[:, 0] / HALF_W) ** 2)
-            thick = (0.07 * np.sqrt(max(1.0 - r, 0.0)) + 0.004) * (1.0 if top else -0.6)
+            frill = FRILL * np.sin(ang * FRILL_WAVES) * ck.smoothstep(0.75, 1.0, r)
+            dome = DOME * (1.0 - (ring[:, 0] / HALF_W) ** 2)
+            thick = (THICK * np.sqrt(max(1.0 - r, 0.0)) + 0.004) * (1.0 if top else -0.6)
             ring[:, 1] = 0.2 + dome + frill + thick
             pts.append(ring)
         P = np.vstack(pts)
@@ -108,7 +120,7 @@ def wing_body(mesh: ck.Mesh, rig: ck.Rig) -> None:
         slits = np.zeros(len(P))
         if top:
             for k in range(4):
-                zc = 0.18 - k * 0.11
+                zc = SLIT_Z[0] - k * SLIT_Z[1]
                 slits = np.maximum(slits, np.exp(-((P[:, 2] - zc) / 0.014) ** 2) * ck.smoothstep(0.34, 0.1, np.abs(P[:, 0])))
             col = ck.mix(PAL["lacquer_black"], PAL["abyss_navy"], ck.smoothstep(-0.2, 0.4, n)[:, None])
         else:
@@ -116,15 +128,22 @@ def wing_body(mesh: ck.Mesh, rig: ck.Rig) -> None:
         col = ck.mix(col, PAL["spawn_wound"] * 0.55, slits[:, None])
         ck.finish(mesh, P, T, "carapace", col, skin, wet=1.0, cavity=0.2 * (1 - slits), emission=slits)
     for s in (-1.0, 1.0):
-        Pe, Te = ck.ellipsoid((s * 0.09, 0.29, 0.38), (0.025, 0.02, 0.025), 5, 8)
+        Pe, Te = ck.ellipsoid((s * EYE[0], EYE[1], EYE[2]), (0.025, 0.02, 0.025), 5, 8)
         ck.finish(mesh, Pe, Te, "carapace", PAL["spawn_wound"], rig.rigid("body"), wet=1.0, emission=1.0)
 
 
 def tail(mesh: ck.Mesh, rig: ck.Rig) -> None:
-    path = ck.bezier([(0, 0.2, -0.3), (0, 0.18, -0.6), (0.05, 0.12, -0.9), (0.0, 0.1, -1.2)], 16)
-    P, T = ck.tube(path, np.linspace(0.04, 0.006, 16), 6)
-    skin = rig.chain(["tail0", "tail1", "tail2"], [(0, 0.2, -0.3), (0, 0.2, -0.6), (0, 0.2, -0.9), (0, 0.2, -1.2)])
+    path = ck.bezier(list(TAIL_PATH), 16)
+    P, T = ck.tube(path, np.linspace(TAIL_R[0], TAIL_R[1], 16), 6)
+    skin = rig.chain(["tail0", "tail1", "tail2"], list(TAIL_CHAIN))
     ck.finish(mesh, P, T, "carapace", PAL["lacquer_black"], skin, wet=1.0)
+
+
+def build_mesh(rig: ck.Rig, name: str = "sail_leech") -> ck.Mesh:
+    mesh = ck.Mesh(name)
+    wing_body(mesh, rig)
+    tail(mesh, rig)
+    return mesh
 
 
 def build_clips() -> list[ck.Clip]:
@@ -167,9 +186,7 @@ def main() -> None:
     ap.add_argument("--out", required=True)
     args = ap.parse_args(argv)
     rig = build_rig()
-    mesh = ck.Mesh("sail_leech")
-    wing_body(mesh, rig)
-    tail(mesh, rig)
+    mesh = build_mesh(rig)
     info = ck.export_creature(mesh, rig, build_clips(), args.out, extras={"hymn_creature": "sail_leech"})
     print(f"sail_leech: {info}")
 
