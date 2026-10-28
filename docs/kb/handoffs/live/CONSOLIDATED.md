@@ -50,6 +50,10 @@ The previous version is `CONSOLIDATED-history-2026-10-28.md`. It has the deep hi
   Estimate: two or three batches.
 
 ## LIVE STATUS (kept current by the outgoing Lead; newest at top)
+- **19:40 UTC:**
+  - The human's 4th fix (the PARTY START) is fixed on claude/hero-integration @ 5c11d034, re-rendered and viewed on big16. Fold that head into big16.
+  - big16 cloud gate: 282/~600 shots.
+  - characters is still on Pell.
 - **19:20 UTC:**
   - big16 cloud gate: 238/~600 shots.
   - battle-presentation is MERGE-READY @ e641579e (the Ch8 Climb's camera cut with stair effects) and its backlog is empty.
