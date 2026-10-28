@@ -3,6 +3,18 @@
 ## NEW ACCOUNT (from 2026-10-25)
 Session `session_01Wmj8xaLtwcqiS3qwC6PciW`. Integration branch `claude/undertow-lead-handoff-ze8rrn`. Newest first.
 
+- **MERGE-READY (claude/audio @ fbede303b, gpu/gate-big14-shots merged): the Lead's 08:59 asks.**
+  - **test_field_audio::test_change_rows_and_live_hooks:** the gate ran on a commit before my 9c6fea374, which made ReefballOutfitterMenu live. On this branch the test passes (22 run, 0 failed).
+  - **The @music seam (M3-HER-1146, 12 items):** the sequencer has resolved through music.json since M2-AUD-07 (CutsceneSound.music plays the cue on Audio's deck, stems and LFS files included). It was the inventory's scanner that still read only `music_dir/<id>.ogg` plus `music_stand_ins`.
+    - `tools/placeholder_audit.check_audio` now tries the music.json cue first, as the runtime does. Its audio items went from 12 to 0, and test_placeholder_audit still passes.
+    - **For integration-qa:** please regenerate docs/kb/qa/act1_final_inventory.md, which I didn't edit.
+    - New test, `tests/unit/test_cutscene_music_resolves.gd`: every Act I `@music` id is a music.json cue whose files exist, and none falls back to a stand-in. 2 run, 0 failed.
+  - **The new Act I creatures and boss intros, and the loop/loudness pass, are already done** (posted above):
+    - Every Act I creature model has its own voice set.
+    - The six boss intros have their own stings (b7b31ec65).
+    - The 86 abilities and the swing/reel Swell styles have their own sounds (5c31931bc).
+    - act1_loop_check found 41 files and 0 problems (937b9bf8f).
+
 - **MERGE-READY: M3-BPR-421, every Act I ability heard as itself (claude/audio @ 5c31931bc). The Act I audio audit is at 0 in every section.**
   - **73 new ability sounds** (Git LFS), each made from its effect's note:
     - Rhen's cuts; Asha's mend, haste and ward; Toma's shell breaker, challenge and stair.
