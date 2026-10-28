@@ -2,12 +2,13 @@
 id: M3-AUD-844
 title: "Act II boss music, Ch10-11: mangrove_drowner and lamp_engine (two stems each)"
 role: audio
-status: review
+status: blocked
 owner_session: "audio worktree agent"
 reviewer: design
 depends_on: [M3-AUD-839]
 milestone: M3
 request-from: lead
+blocked-by: ADR 0041
 ---
 ## Goal
 Write two of the six Act II boss cues in docs/kb/audio/act2_finals.md: the Mangrove Drowner (Ch10, phase 2

@@ -2,12 +2,13 @@
 id: M3-AUD-853
 title: "Act III: the Kite's cues (the_kite, the Ch18 hub loop; kite_maiden_flight, the first lift-off)"
 role: audio
-status: review
+status: blocked
 owner_session: "audio worktree agent"
 reviewer: design
 depends_on: [M3-AUD-836]
 milestone: M3
 request-from: lead
+blocked-by: ADR 0041
 ---
 ## Goal
 Two of act3_plan.md §2's Ch18 rows. `the_kite` is the hub loop for the Saltwright airship (`ch18/kite`): the

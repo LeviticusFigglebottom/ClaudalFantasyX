@@ -2,12 +2,13 @@
 id: M3-AUD-852
 title: "Act III, Ch17: compose hollowmere (the flotilla's zone loop) and dace_ledger (the reading bed)"
 role: audio
-status: review
+status: blocked
 owner_session: "audio worktree agent"
 reviewer: design
 depends_on: [M3-AUD-836]
 milestone: M3
 request-from: lead
+blocked-by: ADR 0041
 ---
 ## Goal
 The first two Act III cues from act3_plan.md §2, for Ch17 "Hollowmere": the Saltwright flotilla's zone loop, and

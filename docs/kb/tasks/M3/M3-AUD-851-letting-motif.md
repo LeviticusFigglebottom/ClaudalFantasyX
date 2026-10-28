@@ -2,12 +2,13 @@
 id: M3-AUD-851
 title: "Act III planning: write the Letting (the Eighth Verse) down in motifs.py"
 role: audio
-status: review
+status: blocked
 owner_session: "audio (cloud session_01Wmj8xaLtwcqiS3qwC6PciW, branch claude/audio)"
 reviewer: story
 depends_on: [M3-AUD-836]
 milestone: M3
 request-from: lead
+blocked-by: ADR 0041
 ---
 ## Goal
 The Lead's item 6 (Act III planning). act3_plan.md named one new motif, the Letting, still unwritten. Every later cue

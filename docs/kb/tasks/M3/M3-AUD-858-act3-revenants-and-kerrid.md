@@ -2,12 +2,13 @@
 id: M3-AUD-858
 title: "Act III: Ch19's revenant pair and Kerrid's last night (hesper_and_ilsabet, two boss stems; kerrid_last_night)"
 role: audio
-status: review
+status: blocked
 owner_session: "audio worktree agent"
 reviewer: design
 depends_on: [M3-AUD-836]
 milestone: M3
 request-from: lead
+blocked-by: ADR 0041
 ---
 ## Goal
 Two of act3_plan.md §2's Ch19 rows. `hesper_and_ilsabet` is the boss on the Iskarra Lamp Spire's crown

@@ -2,12 +2,13 @@
 id: M3-AUD-845
 title: "Act II boss music, Ch12 and Ch15: avalanche_ram and wakefin"
 role: audio
-status: review
+status: blocked
 owner_session: "audio worktree agent"
 reviewer: design
 depends_on: [M3-AUD-839]
 milestone: M3
 request-from: lead
+blocked-by: ADR 0041
 ---
 ## Goal
 Two of the six Act II boss cues in docs/kb/audio/act2_finals.md, each two synchronized stems mastered as the Cinder

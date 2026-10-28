@@ -2,12 +2,13 @@
 id: M3-AUD-856
 title: "Act III, Ch19: compose iskarra_ruins (the drowned capital's zone loop) and iskarra_spire (the Lamp Spire climb)"
 role: audio
-status: review
+status: blocked
 owner_session: "audio worktree agent"
 reviewer: design
 depends_on: [M3-AUD-836]
 milestone: M3
 request-from: lead
+blocked-by: ADR 0041
 ---
 ## Goal
 The two Ch19 "Iskarra" loops from act3_plan.md §2. `iskarra_ruins` is the prologue's place seen in full: the

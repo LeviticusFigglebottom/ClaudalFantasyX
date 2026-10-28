@@ -2,12 +2,13 @@
 id: M3-AUD-859
 title: "The Kite's foley: the deck beds in flight and after H09, the engines' stopping, and E4's landing by hand"
 role: audio
-status: review
+status: blocked
 owner_session: "audio (cloud session_01Wmj8xaLtwcqiS3qwC6PciW, branch claude/audio)"
 reviewer: env-art
 depends_on: [M3-AUD-836]
 milestone: M3
 request-from: lead
+blocked-by: ADR 0041
 ---
 ## Goal
 This is the backlog's next-act step: the Act III SFX listed in act3_plan.md §2, for the Kite (M3-ENV-725,

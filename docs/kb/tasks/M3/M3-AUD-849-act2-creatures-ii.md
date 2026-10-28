@@ -2,12 +2,13 @@
 id: M3-AUD-849
 title: "Act II creatures, part 2: the ridge lynx, cord moth, glass skate, flat-engine and the four variants"
 role: audio
-status: review
+status: blocked
 owner_session: "audio (cloud session_01Wmj8xaLtwcqiS3qwC6PciW, branch claude/audio)"
 reviewer: design
 depends_on: [M3-AUD-831]
 milestone: M3
 request-from: lead
+blocked-by: ADR 0041
 ---
 ## Goal
 The Lead (10-27, 21:42), item 4: creature and boss sets for anything the creatures track adds. The creatures branch

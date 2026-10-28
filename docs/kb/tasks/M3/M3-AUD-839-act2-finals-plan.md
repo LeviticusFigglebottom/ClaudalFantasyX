@@ -2,12 +2,13 @@
 id: M3-AUD-839
 title: "Act II final cues: the list, sizes, and the LFS-pending render path"
 role: audio
-status: doing
+status: blocked
 owner_session: "audio (cloud session_01Wmj8xaLtwcqiS3qwC6PciW, branch claude/audio)"
 reviewer: lead
 depends_on: []
 milestone: M3
 request-from: lead
+blocked-by: ADR 0041
 ---
 ## Goal
 The Lead (10-27, after ADR 0039): write the Act II final cues' render scripts and sizes now, so they land the
