@@ -5,8 +5,8 @@ blender --background --factory-startup --python assets_src/creatures/raid_hound/
     --out assets/creatures/raid_hound/raid_hound.glb
 
 The Order raid's coursing dog: lean, long-legged, deep-chested, salt-grey with pale underparts, in a branded leather
-harness with the Order's mark. Not a monster, which is the fight's point: no weak-point glow, and its KO is lying
-down, beaten, not dead.
+harness with the Order's mark. Not a monster, which is the fight's point: its weak point is only an old scar, one small
+closed mark (ADR 0151, M3-CRE-650), and its KO is lying down, beaten, not dead.
 """
 
 from __future__ import annotations
