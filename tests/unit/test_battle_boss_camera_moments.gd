@@ -17,6 +17,7 @@ func _start(enc: StringName) -> BattleChoreo:
 	ctl.set_meta(BattleBossIntro.META_PLAYED, String(enc))
 	ctl.start_battle([&"rhen", &"asha", &"toma"] as Array[StringName], [], enc, 20261028)
 	var choreo := ctl.stage.choreo
+	choreo.force_play = true  # the battle runs at instant pacing here; a moment plays only while choreography does
 	choreo.reduced_motion = false
 	choreo.skip = false
 	choreo.speed = 1.0
@@ -59,6 +60,16 @@ func test_the_boss_falling_holds_on_it_once() -> void:
 	choreo.contact.emit(r)
 	choreo.contact.emit(r)
 	assert_eq(d.moments_played, [&"fall"] as Array[StringName], "the fall's moment, once")
+	_free()
+
+
+func test_instant_pacing_plays_no_moment() -> void:
+	# test_ch08_thread: at instant pacing nothing advances a moment, so the next turn must not wait on one.
+	var choreo := _start(&"ch05_cinder_matron")
+	choreo.force_play = false
+	ctl.engine.phase_changed.emit(_boss("cinder_matron"), &"pour")
+	assert_true(choreo.camera.moments_played.is_empty())
+	assert_eq(choreo.busy_sec(), 0.0)
 	_free()
 
 

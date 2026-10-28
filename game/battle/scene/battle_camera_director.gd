@@ -105,12 +105,12 @@ func _fit_rest_to_the_fight() -> void:
 ## M3-BPR-426: a camera moment outside a sequence (a boss's phase change, its fall): `pose` ({pos, look, fov}, the
 ## camera's parent space), in over in_sec from the rest frame, held hold_sec, home over out_sec; `tag` names it in
 ## moments_played. BattleChoreo.busy_sec waits for it, so the next turn's menu finds the camera home. None under
-## reduced motion or skipped animations, or for an empty pose; a sequence that starts takes the camera over. Returns
-## whether it plays.
+## reduced motion, skipped animations or instant pacing (nothing would advance it), or for an empty pose; a sequence
+## that starts takes the camera over. Returns whether it plays.
 func play_moment(tag: StringName, pose: Dictionary, in_sec: float, hold_sec: float, out_sec: float) -> bool:
 	_moment = {}
-	if camera == null or still() or pose.is_empty():
-		return false
+	if camera == null or still() or pose.is_empty() or not _choreo.animating():
+		return false  # instant pacing plays no moment: the turn must not wait on one
 	_moment = {"pose": pose, "in": in_sec, "hold": hold_sec, "out": out_sec, "t": 0.0}
 	moments_played.append(tag)
 	return true
