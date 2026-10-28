@@ -201,8 +201,14 @@ static func _drive_skirt(skel: Skeleton3D, s: Dictionary) -> void:
 		var dp := inv_dp.inverse()
 		var base_y := hips_pose.origin.y
 		var sg := _gather(c_lo, head, axis, axes[k], a_lo, tip - head, dp, base_y, sc, s)
+		var pool := minf(1.0, (1.0 - sg) / (1.0 - float(s["gather_min"])))  # how far the plain gather would shorten it
 		if sg < float(s["drape_below_gather"]):
 			a_lo = _drape(c_lo, head, axis, axes[k], a_lo, tip - head, dp, base_y, sc, s)
+			angs[k][last] = a_lo
+			sg = _gather(c_lo, head, axis, axes[k], a_lo, tip - head, dp, base_y, sc, s)
+		# odd-numbered panels' hems lie further out (by the panel's number round the skirt): the pooled hem folds
+		if int(names[k].substr(prefix.length())) % 2 == 1 and pool > 0.0:
+			a_lo = minf(a_lo + deg_to_rad(float(s["flute_deg"])) * smoothstep(0.0, 1.0, pool), top_swing)
 			angs[k][last] = a_lo
 			sg = _gather(c_lo, head, axis, axes[k], a_lo, tip - head, dp, base_y, sc, s)
 		sc = sg

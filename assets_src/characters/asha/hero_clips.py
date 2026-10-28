@@ -2436,6 +2436,7 @@ SKIRT_SUPPORT_STEPS = int(_SK["support_samples"])
 SKIRT_LEVELS = tuple(_SK["levels"])  # M2-CHR-522: a panel's bones' suffixes, from the hips down (the last gathers)
 SKIRT_DRAPE_MAX = math.radians(float(_SK["drape_max_deg"]))  # the lowest bone's furthest swing out onto the floor
 SKIRT_DRAPE_BELOW = float(_SK["drape_below_gather"])  # it drapes only cloth that would gather shorter than this
+SKIRT_FLUTE = math.radians(float(_SK["flute_deg"]))  # pooled cloth folds: every other panel's lowest bone swings out
 SCALE_KEY = "_scale"  # local_pose's entry for the helper bones' scales: {bone: (x, y, z)}
 
 
@@ -2742,10 +2743,16 @@ def skirt_solve(sk: "Skeleton", g: dict, hips=None) -> dict:
             return lo_s
 
         sg = gather(sc, x2)
+        pool = min(1.0, (1.0 - sg) / (1.0 - SKIRT_GATHER_MIN))  # how far the plain gather would shorten it
         if sg < SKIRT_DRAPE_BELOW and x2 < SKIRT_DRAPE_MAX:
             # big13's review (a stiff white bell in the kneels): cloth that would be crushed into a short wall first
             # swings out onto the floor (the least swing, up to SKIRT_DRAPE_MAX, that lays it there), then gathers
             x2 = _least_up(lambda ang, sc=sc: low(sc, ang) >= SKIRT_FLOOR, x2, SKIRT_DRAPE_MAX)
+            an[-1] = x2
+            sg = gather(sc, x2)
+        if int(h[len(SKIRT_BONE):]) % 2 and pool > 0.0:  # odd-numbered panels' hems lie further out: the pooled
+        # hem folds, not a clean circle (by the panel's number round the skirt, not the sorted names' order)
+            x2 = min(x2 + SKIRT_FLUTE * smooth(pool), math.radians(SKIRT_MAX_SWING))
             an[-1] = x2
             sg = gather(sc, x2)
         gathers.append(sg)
