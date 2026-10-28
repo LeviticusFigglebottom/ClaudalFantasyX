@@ -409,6 +409,23 @@ def walk_pose(t: float, persona: dict, stride: float, knee: float, arm: float, b
 
 
 def pose_at(clip: str, t: float, length: float, sk: Skeleton, persona: dict) -> dict:
+    """_pose_at, with a battle library's stance on the idle (BATTLE_STANCE, while build_battle runs)."""
+    pose = _pose_at(clip, t, length, sk, persona)
+    if clip == "idle" and _STANCE_ACTIVE:
+        hero = _hero_of(persona)
+        if hero in _STANCE_ACTIVE:
+            pose = add(pose, BATTLE_STANCE[hero])
+    return pose
+
+
+# A hero whose battle stance is not the field idle (Kerrid holds the cleaver low in both hands; in the field it rides
+# his back) gets a second library, anim/<hero>_battle_clips.tres, that its battle actor plays: the idle with the stance
+# added, and the battle clips built on that idle. Filled per hero below; empty, so no other library changes.
+BATTLE_STANCE: dict = {}
+_STANCE_ACTIVE: set = set()
+
+
+def _pose_at(clip: str, t: float, length: float, sk: Skeleton, persona: dict) -> dict:
     story = _story_spec(persona, clip)  # M3-CHR-05: the story clips the chapters call, from requested_clips.json
     if story is not None:
         return story_pose_at(story, clip, t, length, sk, persona)
@@ -422,6 +439,8 @@ def pose_at(clip: str, t: float, length: float, sk: Skeleton, persona: dict) -> 
         return kerrid_pose_at(clip, t, length, sk, persona)
     if persona.get("inquisitor"):  # M3-CHR-507: Moll's clips (moll_pose_at, below)
         return moll_pose_at(clip, t, length, sk, persona)
+    if persona.get("stillguard"):  # M3-CHR-508: the Stillguard soldiers' clips (sg_pose_at, below)
+        return sg_pose_at(clip, t, length, sk, persona)
     sway = persona["sway"]
     u = t / length
     if clip == "idle":
@@ -1497,26 +1516,30 @@ _WALK = {"beta": 0.6, "c": 0.0, "width": 0.0, "hs": 14.0, "to": 24.0, "rh": 0.12
          "peak": 0.4, "bump": 6.0, "drop": 0.02, "bob": 0.02, "run": False, "sway": 0.02, "yaw": 5.0, "tilt": 3.0,
          "chest": 4.0, "lean": 2.0, "flex": 1.5, "nod": 1.0, "arm": 15.0, "elbow": 14.0, "fore": 0.0, "fore_s": 0.0,
          "abd": 0.0, "lag": 0.04, "head": 0.8, "staff": 3.0}
-_RUN = dict(_WALK, beta=0.36, c=-0.08, hs=5.0, to=30.0, rh=0.06, rb=0.26, clear=0.12, peak=0.36, bump=10.0, drop=0.06,
-            bob=0.03, run=True, sway=0.012, yaw=7.0, tilt=2.0, chest=7.0, lean=9.0, flex=3.0, nod=2.0, arm=30.0,
-            elbow=24.0, fore=60.0, fore_s=35.0, abd=12.0, lag=0.05, staff=5.0)
+# the human's playtest (FAST-TRACK): the run "flopped" (the free arm swung out wide and straightened into a reach, the
+# hips and chest wrung, the knee kicked high, the staff whipped). A grounded run: the elbow held bent near the body and
+# folding more as the arm comes forward (the `fwd` terms of M2-CHR-513), little abduction, less follow-through lag, a
+# smaller hip and chest counter-turn, a lower swing-foot lift and a steadier staff
+_RUN = dict(_WALK, beta=0.36, c=-0.08, hs=5.0, to=26.0, rh=0.06, rb=0.26, clear=0.09, peak=0.4, bump=6.0, drop=0.06,
+            bob=0.025, run=True, sway=0.012, yaw=4.5, tilt=1.5, chest=4.0, lean=8.0, flex=2.5, nod=1.2, arm=20.0,
+            elbow=16.0, fore=68.0, fore_s=40.0, abd=6.0, lag=0.025, staff=2.5, fwd=0.55, fwd_elbow=28.0, fwd_abd=3.0)
 LOCO_GAIT = {
     # asha.md §1: stillness (sway 0.4): a short, level, quiet walk, the staff carried upright in the right hand
     "asha": {"walk": dict(_WALK, S=1.0, c=-0.02, sway=0.014, yaw=3.5, tilt=0.5, chest=3.0, lean=1.5, arm=13.0,
                           bob=0.016, drop=0.035, abd=7.0, clear=0.04),  # abd: the verse sleeve's bag clears the thigh
-             "run": dict(_RUN, S=1.9, sway=0.008, lean=8.0, arm=26.0)},
+             "run": dict(_RUN, S=1.9, sway=0.008, lean=7.0, arm=18.0, abd=7.0)},  # abd: as the walk's
     # rhen.md §1: light and quick (sway 1.3, the 4 degree lean): springier, leaning, a bigger arm swing, a shorter
     # stride for his legs, so the controller plays him at a quicker cadence for the same ground speed
     "rhen": {"walk": dict(_WALK, S=1.05, c=-0.02, sway=0.022, yaw=4.0, tilt=1.0, chest=1.5, lean=4.0, arm=17.0, abd=5.0, back_r=0.35, bob=0.026,
                           drop=0.03, clear=0.065, hs=16.0, to=28.0),
-             "run": dict(_RUN, S=2.0, c=-0.13, sway=0.014, lean=13.0, arm=36.0, bob=0.04, hs=0.0, to=34.0,
-                         clear=0.14, fwd=0.7, fwd_elbow=45.0,
+             "run": dict(_RUN, S=2.0, c=-0.13, sway=0.014, lean=12.0, arm=30.0, bob=0.035, hs=0.0, to=32.0,
+                         clear=0.12, fwd=0.7, fwd_elbow=45.0,
                          fwd_abd=10.0)},  # M2-CHR-513: a sprinter's arm, not a reach
     # toma.md §1: broad, the weight low, the spear held like the staff: a long, heavy, rolling stride, the feet
     # tracking wide, a lower body and a big side-to-side transfer, little bounce
     "toma": {"walk": dict(_WALK, S=1.25, sway=0.03, yaw=4.0, tilt=2.0, chest=3.0, lean=2.0, arm=11.0,
                           bob=0.012, drop=0.045, clear=0.05),
-             "run": dict(_RUN, S=2.1, width=0.12, sway=0.018, lean=8.0, arm=22.0, bob=0.025, drop=0.07)},
+             "run": dict(_RUN, S=2.1, width=0.12, sway=0.018, lean=8.0, arm=18.0, bob=0.02, drop=0.07)},
 }
 SUPPORT_K = {"asha": 0.45, "rhen": 0.5, "toma": 0.35}  # how far the hips follow the weight-bearing foot
 
@@ -3583,8 +3606,15 @@ KO_ARMS_OUT["kerrid"] = 8.0
 STANCE_DORSI["kerrid"] = 10.0  # the hem's limit, as Toma's
 # both hands on the haft, the cleaver low across the body, the fluke near the right foot (the battle idle's hands);
 # the strike poses build on it
-K_GRIP = {"DEF-upper_arm.R": (-14.0, 0.0, 6.0), "DEF-forearm.R": (-34.0, 0.0, 0.0),
-          "DEF-upper_arm.L": (-30.0, -10.0, 28.0), "DEF-forearm.L": (-58.0, -30.0, 0.0), "DEF-hand.L": (0.0, -20.0, 0.0)}
+# The strike keys below were authored and probed on this grip (their arm paths); K_GRIP is the battle stance itself.
+K_GRIP_STRIKE = {"DEF-upper_arm.R": (-14.0, 0.0, 6.0), "DEF-forearm.R": (-34.0, 0.0, 0.0),
+                 "DEF-upper_arm.L": (-30.0, -10.0, 28.0), "DEF-forearm.L": (-58.0, -30.0, 0.0),
+                 "DEF-hand.L": (0.0, -20.0, 0.0)}
+# (solved against kerrid_battle.tscn's hand cleaver: the fluke 30 cm before the right foot and 12 cm up, the left palm
+# on the haft 26 cm above the right fist; ADR 0041 self-render: the old grip left the left hand 63 cm off the haft)
+K_GRIP = {"DEF-upper_arm.R": (-14.6, -2.8, 22.4), "DEF-forearm.R": (-13.0, 0.0, 0.0), "DEF-hand.R": (-16.5, 5.3, 19.8),
+          "DEF-upper_arm.L": (-21.9, -3.6, -16.7), "DEF-forearm.L": (-54.2, -19.8, 0.0), "DEF-hand.L": (-15.5, -6.2, -8.4)}
+BATTLE_STANCE["kerrid"] = K_GRIP  # kerrid.md §10.3: the battle idle holds the cleaver (his battle actor's library)
 
 
 def hunch_pose(h: float, p: dict) -> dict:
@@ -3781,7 +3811,8 @@ def _kerrid_keys(clip: str, sk: Skeleton, persona: dict, base: dict) -> list:
     """Kerrid (kerrid.md §10.3: weight and hauling): the cleaver held low in both hands like a hauling tool, every
     blow slow to start; never shouldered or twirled. Deltas on the idle's first frame (base)."""
     a = persona["arms_down"]
-    grip = _minus(add(base, K_GRIP), base)
+    # the strike keys build on K_GRIP_STRIKE; on the battle library's idle (which has K_GRIP) they carry the difference
+    grip = _minus(add(base, K_GRIP_STRIKE), add(base, K_GRIP) if "kerrid" in _STANCE_ACTIVE else base)
     if clip == "ready":
         k = add(add(grip, _legs(sk, persona, 0.03)), {
             "DEF-spine.003": (1.5, 0.0, 0.0), "DEF-spine.004": (1.5, 0.0, 0.0),
@@ -3810,7 +3841,10 @@ def _kerrid_keys(clip: str, sk: Skeleton, persona: dict, base: dict) -> list:
         throw = add(_legs(sk, persona, 0.04, 0.08, -0.04), {
             "DEF-upper_arm.L": (-92.0, 0.0, a * 0.55), "DEF-forearm.L": (-6.0, 0.0, 0.0), "DEF-hand.L": (0.0, 70.0, 0.0),
             "DEF-spine.001": (6.0, -8.0, 0.0), "DEF-spine.006": (-4.0, 0.0, 0.0)})
-        return [(0.0, {}), (0.4, fist), (0.55, fist), (0.8, throw), (1.0, {})]
+        free = _left_free(persona)
+        if "kerrid" in _STANCE_ACTIVE:  # the cleaver hangs in the right hand as the line is thrown (arm off the side)
+            free = add(free, {"DEF-upper_arm.R": (0.0, 0.0, -K_GRIP["DEF-upper_arm.R"][2])})
+        return [(0.0, {}), (0.4, add(fist, free)), (0.55, add(fist, free)), (0.8, add(throw, free)), (1.0, {})]
     if clip == "item":
         # the left hand reaches forward and down, low, as if handing something to someone a step below
         reach = add(_legs(sk, persona, 0.03), {"DEF-upper_arm.L": (-20.0, 0.0, a * 0.4), "DEF-forearm.L": (-40.0, 0.0, 0.0),
@@ -3889,7 +3923,15 @@ def kerrid_victory(u: float, sk: Skeleton, persona: dict) -> dict:
             "DEF-spine.005": (0.0, -7.0 * turn, 0.0),
             "DEF-spine.006": (KERRID_VICTORY_NOD * math.sin(2.0 * math.pi * u), -18.0 * turn, 0.0)}
     sway = _sway(sk, persona, KERRID_VICTORY_SWAY * math.sin(2.0 * math.pi * u), KERRID_VICTORY_SWAY * 0.6)
-    return add(add(held, sway), _kerrid_idle_terms(u, persona["sway"]))
+    return add(add(add(held, sway), _kerrid_idle_terms(u, persona["sway"])), _left_free(persona))
+
+
+def _left_free(persona: dict) -> dict:
+    """On the battle library (the stance has both hands on the haft), the turns that let the left hand go: the clips
+    that use it alone (cast's thrown line, the victory's free hand) are authored from the hands-down idle."""
+    if "kerrid" not in _STANCE_ACTIVE:
+        return {}
+    return {k: tuple(-np.asarray(v, dtype=float)) for k, v in K_GRIP.items() if k.endswith(".L")}
 
 
 KERRID_VICTORY_SWAY = 0.012  # m: the weight rocking slowly over the loop (the planted feet stay), as a hauler waits
@@ -4108,6 +4150,75 @@ IDLE_GROUNDED.add("moll")  # hadric_moll.md §9: the idle stands the iron on the
 PROP_DOWN["moll"] = {"kneel": (0.0, 0.45, 2.0, 2.0)}
 
 
+# ---------------------------------------------------------------------------------------------
+# The Stillguard soldiers (M3-CHR-508): six variants of the standard Stillguard on Moll's kit
+# (assets_src/characters/stillguard/stillguard_variants.json), one persona each (their skeletons differ by height). A
+# persona with `stillguard` takes these clips (pose_at dispatches): upright like Moll (his carry: the chin down, the
+# shield arm out from the thigh), Toma's spear held like the staff (the M2-CHR-515 grip on DEF-spear, grounded in the
+# idle), and the Ch6 proposals: `stand_watch_seaward` (the idle with the head and chest turned out to his left, a
+# loop), `shield_up` (the shield brought up across the chest, held) and `level_spear` (Toma's spear_level path: both
+# hands on the shaft, the spear levelled forward and a little down, held). None of them fights (enemies.json has no
+# Stillguard soldier), so there is no battle contract. The other libraries do not change.
+# ---------------------------------------------------------------------------------------------
+SG_TABLE = ROOT / "assets_src" / "characters" / "stillguard" / "stillguard_variants.json"
+SG_VARIANTS = sorted(json.loads(SG_TABLE.read_text(encoding="utf-8"))["variants"])
+SG_SWAY = (0.4, 0.7)  # the idle sway, spread over the variants (a squad does not breathe in step)
+SG_WATCH = (24.0, -3.0)  # stand_watch_seaward: the turn to his left and the lift of the head (degrees)
+SG_WALK = (20.0, 34.0, 10.0, 0.014, 1.5)  # stride, knee, arm swing (degrees), bob (m), lean
+SG_SHIELD_UP = {"DEF-spine.001": (4.0, -12.0, 0.0), "DEF-spine.006": (-2.0, 12.0, 0.0),
+                "DEF-upper_arm.L": (-50.0, 0.0, 22.0), "DEF-forearm.L": (-50.0, -70.0, -30.0)}  # Moll's guard, lower
+SG_RAISE = 0.45  # shield_up reaches its guard over this share of the clip
+SG_SHIELD_ARM = 10.0  # degrees the shield arm hangs further out than Moll's: the shield's rim clear of the armpit (probed)
+SG_LEVEL_GUARD = 0.6  # level_spear: the share of shield_up's guard the shield arm takes (the spear is one-handed)
+SG_ARM_L = ("DEF-upper_arm.L", "DEF-forearm.L", "DEF-hand.L")
+SG_CLIPS = ["idle", "walk", "stand_watch_seaward", "shield_up", "level_spear"]
+LENGTHS.update({"stand_watch_seaward": 6.0, "shield_up": 1.2, "level_spear": 1.6})
+LOOPS.add("stand_watch_seaward")
+for _i, _v in enumerate(SG_VARIANTS):
+    _h = f"stillguard_{_v}"
+    PERSONA[_h] = {"sway": SG_SWAY[0] + (SG_SWAY[1] - SG_SWAY[0]) * _i / max(len(SG_VARIANTS) - 1, 1), "lean": 0.0,
+                   "staff": True, "arms_down": 38.0, "stillguard": True}
+    CLIPS[_h] = list(SG_CLIPS)
+    GRIP[_h] = {"R": ("mesh", "Spear", "DEF-spear")}
+    GRIP_ALWAYS.add(_h)
+    IDLE_GROUNDED.add(_h)
+
+
+def sg_pose_at(clip: str, t: float, length: float, sk: Skeleton, persona: dict) -> dict:
+    shared = {k: v for k, v in persona.items() if k != "stillguard"}
+    carry = add(moll_carry(persona), {"DEF-upper_arm.L": (0.0, 0.0, SG_SHIELD_ARM)})
+    u = t / length
+    if clip == "idle":
+        return add(pose_at("idle", t, length, sk, shared), carry)
+    if clip == "walk":
+        return add(walk_pose(u, shared, *SG_WALK), carry)
+    if clip == "stand_watch_seaward":  # the idle, the head and chest turned out to sea (his left), held
+        turn, lift = SG_WATCH
+        return add(add(pose_at("idle", t, length, sk, shared), carry), {
+            "DEF-spine.002": (0.0, 0.2 * turn, 0.0), "DEF-spine.003": (0.0, 0.2 * turn, 0.0),
+            "DEF-spine.005": (0.4 * lift, 0.25 * turn, 0.0), "DEF-spine.006": (0.6 * lift - MOLL_HEAD_DOWN, 0.35 * turn,
+                                                                             0.0)})
+    if clip == "shield_up":  # the shield brought up across the chest, the shoulder into it; held
+        return sg_guard(planted(sk, shared), carry, smooth(u / SG_RAISE))
+    if clip == "level_spear":  # Toma's path for the spear arm (one-handed); the shield arm comes up into a low guard
+        v = min(u / SPEAR_MOVE, 1.0)
+        base = planted(sk, shared)
+        pose = dict(spear_path(sk, shared, v))
+        for b in SG_ARM_L:  # the left hand stays on the shield, not on the shaft (Toma's two-handed grip)
+            pose[b] = base.get(b, (0.0, 0.0, 0.0))
+        return sg_guard(pose, carry, SG_LEVEL_GUARD * smooth(v), arm_only=True)
+    raise KeyError(clip)
+
+
+def sg_guard(base: dict, carry: dict, s: float, arm_only: bool = False) -> dict:
+    """`base` with the carry, plus `s` of shield_up's guard (Moll's defend arm); the carry's shield arm hangs out from
+    the thigh, which the guard brings in across the body, so its outward turn goes as the guard comes in."""
+    guard = {b: v for b, v in SG_SHIELD_UP.items() if not arm_only or b in SG_ARM_L}
+    out = carry["DEF-upper_arm.L"]
+    return add(add(add(base, carry), _scale(guard, s)), {"DEF-upper_arm.L": tuple(-x * s for x in out)})
+    raise KeyError(clip)
+
+
 # M3-CHR-05: the story clips go after each hero's own (every hero's block above has set its list by now)
 for _h, _clips in STORY.items():
     CLIPS[_h] = CLIPS[_h] + [c for c in _clips if c not in CLIPS[_h]]
@@ -4124,12 +4235,12 @@ def fmt(x: float) -> str:
     return "0" if s in ("-0", "0") else s
 
 
-def build(hero: str) -> str:
+def build(hero: str, names: list | None = None) -> str:
     persona = PERSONA[hero]
     sk = Skeleton(ROOT / "assets" / "characters" / hero / f"{hero}.glb")
     base = f"{sk.root_name}/Skeleton3D:"
     subs = []
-    names = CLIPS[hero]
+    names = names or CLIPS[hero]
     for ci, clip in enumerate(names):
         length = clip_length(hero, clip)  # M2-CHR-12: LENGTHS, but the three heroes' own cycles
         loop = clip in LOOPS
@@ -4198,6 +4309,19 @@ def build(hero: str) -> str:
     return head + "\n\n".join(subs) + f"\n\n[resource]\n_data = {{\n{data}\n}}\n"
 
 
+def build_battle(hero: str) -> tuple:
+    """The battle library (BATTLE_STANCE): the idle with the stance, then the battle clips built on it."""
+    names = ["idle"] + [c for c in CLIPS[hero] if c in BATTLE_FRAMES or c == "revive"]
+    _STANCE_ACTIVE.add(hero)
+    try:
+        text = build(hero, names)
+    finally:
+        _STANCE_ACTIVE.discard(hero)
+    p = out_path(hero).with_name(f"{hero}_battle_clips.tres")
+    p.write_text(text, encoding="utf-8")
+    return p, len(names)
+
+
 def out_path(hero: str) -> Path:
     return ROOT / "assets" / "characters" / hero / "anim" / f"{hero}_clips.tres"
 
@@ -4212,6 +4336,9 @@ def main() -> int:
         text = build(hero)
         p.write_text(text, encoding="utf-8")
         print(f"wrote {p.relative_to(ROOT)} ({len(text) / 1e6:.2f} MB, {len(CLIPS[hero])} clips)")
+        if hero in BATTLE_STANCE:
+            bp, n = build_battle(hero)
+            print(f"wrote {bp.relative_to(ROOT)} ({n} clips)")
     if set(args.hero or PERSONA) & set(LOCO_HEROES):  # M2-CHR-12: the controller's stride and speed table
         write_locomotion_data()
         print(f"wrote {LOCO_DATA.relative_to(ROOT)}")

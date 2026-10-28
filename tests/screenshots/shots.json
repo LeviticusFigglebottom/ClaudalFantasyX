@@ -5043,6 +5043,136 @@
           "screen_space_aa": 1
         }
       }
+    },
+    {
+      "id": "kerrid_battle_idle",
+      "scene": "res://game/levels/_tests/characters/kerrid/kerrid_battle_idle.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "kerrid_battle_attack",
+      "scene": "res://game/levels/_tests/characters/kerrid/kerrid_battle_attack.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "stillguard_a_front",
+      "scene": "res://game/levels/_tests/characters/stillguard/stillguard_a_stage.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "stillguard_a_three_quarter",
+      "scene": "res://game/levels/_tests/characters/stillguard/stillguard_a_stage.tscn",
+      "camera": "Cameras/ThreeQuarter",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "stillguard_a_face",
+      "scene": "res://game/levels/_tests/characters/stillguard/stillguard_a_stage.tscn",
+      "camera": "Cameras/Face",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "stillguard_b_front",
+      "scene": "res://game/levels/_tests/characters/stillguard/stillguard_b_stage.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "stillguard_b_clip_level_spear",
+      "scene": "res://game/levels/_tests/characters/stillguard/stillguard_b_clip_level_spear.tscn",
+      "camera": "Cameras/ThreeQuarter",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "stillguard_d_three_quarter",
+      "scene": "res://game/levels/_tests/characters/stillguard/stillguard_d_stage.tscn",
+      "camera": "Cameras/ThreeQuarter",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "stillguard_d_clip_shield_up",
+      "scene": "res://game/levels/_tests/characters/stillguard/stillguard_d_clip_shield_up.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "stillguard_lineup",
+      "scene": "res://game/levels/_tests/characters/stillguard/stillguard_lineup.tscn",
+      "camera": "Cameras/Lineup",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "stillguard_b_face",
+      "scene": "res://game/levels/_tests/characters/stillguard/stillguard_b_stage.tscn",
+      "camera": "Cameras/Face",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "stillguard_c_front",
+      "scene": "res://game/levels/_tests/characters/stillguard/stillguard_c_stage.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "stillguard_c_face",
+      "scene": "res://game/levels/_tests/characters/stillguard/stillguard_c_stage.tscn",
+      "camera": "Cameras/Face",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
     }
   ]
 }

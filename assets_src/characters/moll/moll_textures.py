@@ -76,6 +76,9 @@ EMBER_DULL = "#7A2A12"  # ember_dull (proposed): the dull heat-tint's colour, th
 TIMBER = "#7E6A55"
 EMBLEM_SOFT_M = 0.0008  # m: the painted Level's edge on the pauldrons
 SHIELD_LEVEL = (0.62, 0.075, 0.24)  # the shield's painted Level: ring radius, stroke, bar past the ring (x R)
+WEAR_GRIME = 0.22  # M3-CHR-508's weathered atlases: the grime's most, ...
+WEAR_GRIME_HEX = "#4A4036"  # ... its colour (salt-mud and smoke), ...
+WEAR_ROUGH = 0.15  # ... and how much rougher the worn lacquer and cloth are
 LAME_PIPING_V = 0.06  # of a row's island height: the gold piping along the top row's upper rim (about 5 mm)
 
 
@@ -93,30 +96,34 @@ def _orm_small(orm: np.ndarray, size: int) -> np.ndarray:
 # ---------------------------------------------------------------------------------------------
 # Skin
 # ---------------------------------------------------------------------------------------------
-def skin(bake_dir: Path, extra: dict) -> None:
+def skin(bake_dir: Path, extra: dict, out: Path | None = None, prefix: str = "moll", sizes=None,
+         hair_mod=None, params: dict | None = None) -> None:
+    """M3-CHR-508: `out`, `prefix`, `sizes` ((head, body) as HEAD_SIZE), `hair_mod` and `params` (a merged bb table)
+    let the Stillguard variants paint their own skins this way; the defaults are Moll's."""
     import bb_anatomy
     import bb_donor
     import bb_params
     import moll_hair
     import villager_textures as vt
 
+    hair_mod = hair_mod or moll_hair
     sk = dict(extra["_skin"], scalp_density=SCALP_DENSITY)
     hp = extra["_hair"]
-    at.OUT = OUT
-    at.PREFIX = "moll"
+    at.OUT = out or OUT
+    at.PREFIX = prefix
     at.SKIN_HEX = extra["skin_hex"]
     at.FRECKLES = 0
     at.HAIR_UNDERPAINT = hp["underpaint"]
     orig_albedo, orig_detail = at.albedo, at.detail_height
-    at.albedo = vt._albedo_villager(orig_albedo, sk, moll_hair, hp["colour"])
+    at.albedo = vt._albedo_villager(orig_albedo, sk, hair_mod, hp["colour"])
     at.detail_height = vt._detail_with_age(orig_detail, float(sk["age"]))
     try:
-        params = bb_params.load_params(path=str(PARAMS))
-        lm = bb_donor.fit(params).lm
+        bb = bb_params.load_params(overrides=params) if params else bb_params.load_params(path=str(PARAMS))
+        lm = bb_donor.fit(bb).lm
         body = bb_anatomy.Body(lm)
-        for key, (size, small) in (("head", HEAD_SIZE), ("body", BODY_SIZE)):
+        for key, (size, small) in zip(("head", "body"), sizes or (HEAD_SIZE, BODY_SIZE)):
             npz = dict(np.load(bake_dir / f"{key}.npz"))
-            at.skin_maps(key, npz, size, small, body, body.face, lm, moll_hair)
+            at.skin_maps(key, npz, size, small, body, body.face, lm, hair_mod)
     finally:
         at.albedo, at.detail_height = orig_albedo, orig_detail
 
@@ -124,13 +131,35 @@ def skin(bake_dir: Path, extra: dict) -> None:
 # ---------------------------------------------------------------------------------------------
 # Costume atlas
 # ---------------------------------------------------------------------------------------------
-def cloth_atlas(extra: dict, size: int = 2048) -> None:
+def weather(alb: np.ndarray, orm: np.ndarray, lacquer: np.ndarray, worn: float, seed: int) -> None:
+    """M3-CHR-508: a campaign's wear on an atlas, in place: the lacquer chipped through to its black under-layer at
+    random flecks, grime gathered in the low frequencies, everything a little rougher. `lacquer` (0..1) is where the
+    lacquer is; `worn` 0 leaves the atlas as it is."""
+    if worn <= 0.0:
+        return
+    size = alb.shape[0]
+    rng = np.random.default_rng(seed)
+    chips = smoothstep(0.82, 0.9, periodic_noise(size, size, 90, 90, rng)) * smoothstep(0.4, 0.7, periodic_noise(
+        size, size, 8, 8, rng)) * lacquer * worn
+    grime = smoothstep(0.35, 0.9, periodic_noise(size, size, 12, 12, rng)) * WEAR_GRIME * worn
+    alb[:] = alb * (1 - chips[..., None]) + hexc(LACQUER_BLACK) * chips[..., None]
+    alb[:] = alb * (1 - grime[..., None]) + hexc(WEAR_GRIME_HEX) * grime[..., None]
+    orm[..., 1] = np.clip(orm[..., 1] + WEAR_ROUGH * worn * (0.5 + 0.5 * lacquer), 0.0, 1.0)
+
+
+ALL_MAPS = ("albedo", "clothmask", "normal", "orm")
+
+
+def cloth_atlas(extra: dict, size: int = 2048, out: Path | None = None, prefix: str = "moll", worn: float = 0.0,
+                maps: tuple = ALL_MAPS) -> None:
+    """M3-CHR-508: `out`, `prefix`, `worn` (weather) and `maps` (the ones to write: weathering changes only the albedo
+    and the ORM) for the Stillguard's weathered atlas; the defaults are Moll's."""
     import moll_costume as C
     import toma_costume as TC
     import toma_textures as tt
 
     cp = extra["_costume"]
-    at.OUT = OUT
+    at.OUT = out or OUT
     rng = np.random.default_rng(131)
     alb = np.zeros((size, size, 3))
     mask = np.zeros((size, size, 4))
@@ -260,21 +289,28 @@ def cloth_atlas(extra: dict, size: int = 2048) -> None:
     alb[m] = (hexc(BRONZE) * (0.85 + 0.2 * mottle[..., None]))[m]
     orm[m, 1] = 0.4
     orm[m, 2] = 1.0
+    weather(alb, orm, mask[..., 2], worn, 139)
     alb = np.clip(alb, at.FLOOR, at.CEIL)
-    at.write("moll_cloth_albedo.png", alb)
-    at.write("moll_cloth_clothmask.png", blur(mask, 1))
-    at.write("moll_cloth_normal.png", height_to_normal(blur(hgt, 1), 2.5, wrap=False))
-    at.write("moll_cloth_orm.png", _orm_small(orm, size))
+    if "albedo" in maps:
+        at.write(f"{prefix}_cloth_albedo.png", alb)
+    if "clothmask" in maps:
+        at.write(f"{prefix}_cloth_clothmask.png", blur(mask, 1))
+    if "normal" in maps:
+        at.write(f"{prefix}_cloth_normal.png", height_to_normal(blur(hgt, 1), 2.5, wrap=False))
+    if "orm" in maps:
+        at.write(f"{prefix}_cloth_orm.png", _orm_small(orm, size))
 
 
 # ---------------------------------------------------------------------------------------------
 # Shield
 # ---------------------------------------------------------------------------------------------
-def shield_atlas(extra: dict, size: int = 1024) -> None:
+def shield_atlas(extra: dict, size: int = 1024, out: Path | None = None, prefix: str = "moll",
+                 worn: float = 0.0, maps: tuple = ALL_MAPS) -> None:
+    """M3-CHR-508: `out`, `prefix`, `worn` and `maps` as cloth_atlas's."""
     import toma_props as TP
 
     cp = extra["_costume"]
-    at.OUT = OUT
+    at.OUT = out or OUT
     rng = np.random.default_rng(133)
     R = 0.5 * float(cp["shield_diameter_m"])
     rim = float(cp["shield_rim_m"])
@@ -314,10 +350,16 @@ def shield_atlas(extra: dict, size: int = 1024) -> None:
     mask[back] = 0.0
     rough[back] = 0.8
     metal[back] = 0.0
-    at.write("moll_shield_albedo.png", np.clip(col, at.FLOOR, at.CEIL))
-    at.write("moll_shield_clothmask.png", blur(mask, 1))
-    at.write("moll_shield_normal.png", height_to_normal(blur(h, 1), 3.0, wrap=False))
-    at.write("moll_shield_orm.png", _orm_small(np.stack([np.ones((size, size)), rough, metal], axis=-1), size))
+    orm = np.stack([np.ones((size, size)), rough, metal], axis=-1)
+    weather(col, orm, mask[..., 2], worn, 141)
+    if "albedo" in maps:
+        at.write(f"{prefix}_shield_albedo.png", np.clip(col, at.FLOOR, at.CEIL))
+    if "clothmask" in maps:
+        at.write(f"{prefix}_shield_clothmask.png", blur(mask, 1))
+    if "normal" in maps:
+        at.write(f"{prefix}_shield_normal.png", height_to_normal(blur(h, 1), 3.0, wrap=False))
+    if "orm" in maps:
+        at.write(f"{prefix}_shield_orm.png", _orm_small(orm, size))
 
 
 # ---------------------------------------------------------------------------------------------

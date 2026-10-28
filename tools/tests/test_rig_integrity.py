@@ -162,7 +162,7 @@ class _HeroGuards:
     # the probe covered what it should
     def test_poses_sampled(self):
         cfg, result, _ = run_probe(self.hero)
-        clips = {p.split("@")[0] for p in result["poses"] if "@" in p}
+        clips = {p.split("@")[0] for p in result["poses"] if "@" in p and not p.startswith(rig_probe.BATTLE_LIB_PREFIX)}
         self.assertEqual(clips, set(rig_probe.clip_names(self.hero)))
         self.assertIn("rest", result["poses"])
         for label in cfg["stage_poses"]:
@@ -247,6 +247,31 @@ class TestRigIntegrityKerrid(_HeroGuards, unittest.TestCase):  # M3-CHR-505
 
 class TestRigIntegrityMoll(_HeroGuards, unittest.TestCase):  # M3-CHR-507
     hero = "moll"
+
+
+# M3-CHR-508: the Ch6 Stillguard soldiers, six variants on Moll's build (assets_src/characters/stillguard/)
+class TestRigIntegrityStillguardA(_HeroGuards, unittest.TestCase):
+    hero = "stillguard_a"
+
+
+class TestRigIntegrityStillguardB(_HeroGuards, unittest.TestCase):
+    hero = "stillguard_b"
+
+
+class TestRigIntegrityStillguardC(_HeroGuards, unittest.TestCase):
+    hero = "stillguard_c"
+
+
+class TestRigIntegrityStillguardD(_HeroGuards, unittest.TestCase):
+    hero = "stillguard_d"
+
+
+class TestRigIntegrityStillguardE(_HeroGuards, unittest.TestCase):
+    hero = "stillguard_e"
+
+
+class TestRigIntegrityStillguardF(_HeroGuards, unittest.TestCase):
+    hero = "stillguard_f"
 
 
 # M3-CHR-03: villager builds with a `"villager": true` entry in rig_checks.json (GLB under assets/characters/villagers/,

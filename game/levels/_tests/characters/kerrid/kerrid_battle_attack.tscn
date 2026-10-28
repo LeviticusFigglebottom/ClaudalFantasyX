@@ -1,0 +1,9 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="PackedScene" path="res://game/levels/_tests/characters/kerrid/kerrid_stage.tscn" id="stage"]
+[ext_resource type="PackedScene" path="res://game/characters/heroes/kerrid_battle.tscn" id="battle"]
+
+[node name="KerridStage" instance=ExtResource("stage")]
+character_scene = ExtResource("battle")
+clip = &"attack"
+clip_time = 0.33
