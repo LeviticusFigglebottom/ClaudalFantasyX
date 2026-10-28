@@ -16,7 +16,7 @@
     {"op": "cue", "cue": "wait", "args": [1.0], "kwargs": {}, "src": 15},
     {"op": "line", "id": "ch08_spire_door_001", "key": "DLG_CH08_SPIRE_DOOR_001", "speaker": "tender", "emotion": "cold", "voice": "", "src": 16},
     {"op": "cue", "cue": "sfx", "args": ["spire_door"], "kwargs": {}, "src": 17},
-    {"op": "cue", "cue": "mark", "args": ["asha", "door_asha", "walk"], "kwargs": {}, "src": 18},
+    {"op": "cue", "cue": "mark", "args": ["asha", "door_asha", "walk"], "kwargs": {"via": "way_hut_door_in,way_hut_door_out,way_forecourt_e"}, "src": 18},
     {"op": "cue", "cue": "mark", "args": ["liss", "door_liss", "walk"], "kwargs": {}, "src": 19},
     {"op": "cue", "cue": "wait", "args": [0.8], "kwargs": {}, "src": 20}
    ]

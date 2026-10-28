@@ -17,7 +17,7 @@ location: ch08/coilspire
 @anim fenn feed_fire
 @wait 1.5
 Fenn [neutral]: Shut the door, Lady. She doesn't like a draught she didn't ask for. #line:ch08_flame_001
-@mark asha hearth_asha walk
+@mark asha hearth_asha walk via=way_forecourt_e,way_hut_door_out,way_hut_door_in
 @wait 0.8
 Asha [soft_smile]: May I? #line:ch08_flame_002
 @camera F01_hands

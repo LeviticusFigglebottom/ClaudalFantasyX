@@ -11,7 +11,7 @@
     {"op": "cue", "cue": "music", "args": ["hearer_hum"], "kwargs": {"fade": 2.0}, "src": 23},
     {"op": "cue", "cue": "camera", "args": ["H13"], "kwargs": {}, "src": 24},
     {"op": "cue", "cue": "anim", "args": ["rhen", "sit_dock_edge"], "kwargs": {}, "src": 25},
-    {"op": "cue", "cue": "mark", "args": ["asha", "dock_end", "walk"], "kwargs": {}, "src": 26},
+    {"op": "cue", "cue": "mark", "args": ["asha", "dock_end", "walk"], "kwargs": {"via": "dock_shore"}, "src": 26},
     {"op": "cue", "cue": "anim", "args": ["asha", "sit_beside", "rhen"], "kwargs": {}, "src": 27},
     {"op": "cue", "cue": "mark", "args": ["toma", "dock_shore", "walk"], "kwargs": {}, "src": 28},
     {"op": "line", "id": "ch04_dock_001", "key": "DLG_CH04_DOCK_001", "speaker": "rhen", "emotion": "angry", "voice": "", "src": 29},

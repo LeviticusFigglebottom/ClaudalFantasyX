@@ -2,8 +2,9 @@ extends Node
 ## ADR 0041's playthrough stills (act1-chapters): walks each zone visit of a plan
 ## (tools/act1/cutscene_stills_plan.py) on one zone instance, running the flow's steps in order (set, zone calls,
 ## place, party, play), plays each cutscene in driven time and saves a still a moment after every camera cue, so the
-## staging is viewed as the player meets it. Run it under the render wrapper (a scene, so the autoloads run):
-##   STILLS_PLAN=<plan.json> STILLS_OUT=<dir> [STILLS_ONLY=<locations, comma-separated>] \
+## staging is viewed as the player meets it (STILLS_EVERY adds one every s seconds: how a long hold plays). Run it
+## under the render wrapper (a scene, so the autoloads run):
+##   STILLS_PLAN=<plan.json> STILLS_OUT=<dir> [STILLS_ONLY=<locations, comma-separated>] [STILLS_EVERY=<s>] \
 ##     godot-render --path . res://tools/act1/cutscene_stills.tscn
 
 const DT := 1.0 / 30.0
@@ -99,8 +100,11 @@ func _play(zone: Node3D, seq: CutsceneSequencer, scene_id: StringName, out: Stri
 			)
 	var due: Array[Array] = []  # [frame to capture, shot name]
 	var frame := [0]
+	var shot_now := [""]
+	var every := int(float(OS.get_environment("STILLS_EVERY")) / DT) if OS.get_environment("STILLS_EVERY") != "" else 0
 	var on_cue := func(cue: StringName, args: Array, _kw: Dictionary) -> void:
 		if cue == &"camera" and not args.is_empty():
+			shot_now[0] = str(args[0])
 			due.append([frame[0] + int(SETTLE_SEC / DT), str(args[0])])
 	seq.cue_played.connect(on_cue)
 	seq.play(scene_id, stage)
@@ -112,12 +116,23 @@ func _play(zone: Node3D, seq: CutsceneSequencer, scene_id: StringName, out: Stri
 			director.update(DT)
 		seq.advance(DT)
 		frame[0] += 1
+		if every > 0 and frame[0] % every == 0 and shot_now[0] != "":
+			due.append([frame[0], "%s_t%03d" % [shot_now[0], roundi(frame[0] * DT)]])
 		while not due.is_empty() and frame[0] >= int(due[0][0]):
 			var shot: String = due.pop_front()[1]
 			for i in RENDER_FRAMES:
 				await get_tree().process_frame
 			var img := get_viewport().get_texture().get_image()
 			img.save_png("%s/%04d_%s__%s.png" % [out, n, scene_id, shot])
+			if OS.get_environment("STILLS_DEBUG") != "":
+				for actor in stage.get_node("Actors").get_children():
+					if (actor as Node3D).is_visible_in_tree():
+						print(
+							(
+								"  %04d %s at %s"
+								% [n, actor.name, (actor as Node3D).global_position.snapped(Vector3.ONE * 0.1)]
+							)
+						)
 			n += 1
 			count += 1
 	print("STILLS %s: %d stills, %.0f s%s" % [scene_id, count, frame[0] * DT, " (cap)" if seq.is_playing() else ""])

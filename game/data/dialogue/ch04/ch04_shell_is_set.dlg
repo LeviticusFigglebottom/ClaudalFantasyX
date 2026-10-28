@@ -81,9 +81,9 @@ Come round the long way, love, come round the long way, on the tide. #line:ch04_
 Asha [tender]: Let me. #line:ch04_shell_022
 Toma [worried]: It is your wake. #line:ch04_shell_023
 Asha [soft_smile]: Then I can leave it if I like. #line:ch04_shell_024
-@mark asha feast_edge walk
+@mark asha feast_edge walk via=way_feast_s
 @wait 1.5
-@mark toma feast_edge walk
+@mark toma feast_edge walk via=way_lane_n
 @fade out 1.0
 @letterbox off
 ===

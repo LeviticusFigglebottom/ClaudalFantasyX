@@ -80,6 +80,7 @@ MARKS = {
     "dock_asha_from": dock(0.8) + (DOCK_OUT_YAW,),
     "dock_toma_from": dock(-2.5) + (DOCK_OUT_YAW,),
     "wall_away": (-8.5, -123.0, 90.0),
+    "dawn_neme": (-15.4, -117.6, -37.0),  # C4-08: beside Asha at her shell, out of H08's line, watching her
     "causeway_toma": (12.55, -130.0, CAUSEWAY_YAW),
     "causeway_asha": (10.4, -128.5, CAUSEWAY_YAW),
     "causeway_rhen": (8.6, -127.2, CAUSEWAY_YAW),
@@ -150,8 +151,8 @@ SHOTS = {  # id: (pos, look_at, fov[, "abs"]); heights over Haluna's ground (pro
     "H15": ((-12.6, 1.0, -118.8), (-13.9, 1.2, -120.2), 18),
     "H16": ((-15.05, 1.55, -117.82), (-14.61, 1.55, -116.28), 22),  # Neme at the wall, close, from the wall's side
     "H17": ((-9.7, 1.55, -114.1), (-10.2, 1.55, -115.8), 24),  # Asha at the wall, close (C4-04's smile)
-    "C01": ((2.0, 2.0, -118.0), (30.0, -0.5, -140.0), 40),
-    "C02": ((16.0, 1.4, -128.0), (10.0, 0.2, -129.0), 30),
+    "C01": ((-12.0, 5.5, -113.0), (8.0, 0.5, -127.0), 45, "abs"),  # behind the three: the path leading away
+    "C02": ((6.0, 6.5, -112.0), (14.0, 0.5, -136.0), 50, "abs"),  # nearer: the causeway's first slabs, the islet
 }
 # Field camera volumes over Haluna's own (Ch04Zone copies ch02/haluna's CameraVolumes): where those leave only the
 # hub orbit and the orbit's default side is a roof. Absolute coordinates.

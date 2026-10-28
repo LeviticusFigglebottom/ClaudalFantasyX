@@ -2,7 +2,7 @@
 id: M3-CIN-1220
 title: Act I cutscene walks stay on the floor (the quality bar on the kit zones): waypoints, marks, off-screen places
 role: cinematics
-status: doing
+status: review
 owner_session: act1-chapters (claude/act1-chapters)
 depends_on: [M3-CIN-1221]
 milestone: M3
@@ -35,7 +35,15 @@ in `tests/integration/act1_cutscene_walks_known.json` (the test fails on any oth
   (a 4 cm crack swallowed a walk on Ch9's road). Ch9: a path down Pell's rocks (`RocksDown`). Ch5: the scene changes
   stand the walker near the scene first (`place_actor` steps in ch05.json); Ashcrown's chamber door is open.
 
+## Done (act1-chapters, 2026-10-28)
+- M3-CIN-1221 landed in b2d39f8cc. `act1_walk_vias.patch`'s 36 `via=` cues are applied (the .dlg hunks; the compiled
+  JSON from dlgc; ch08_beacon_opened keeps its 0.6 s hold after Toma's run). 28 of the 30 known walks came clean.
+- The last two (ch04_long_way_round's causeway) started from the dock on the old greybox: the dawn now stands Asha
+  at her shell, Toma by the wall and Neme beside them (`dawn_neme`) before the scene, Ysolde (the night's stranger)
+  is hidden at dawn, Asha's via no longer starts at `dock_shore`, C01 looks down the path from behind the three and
+  the holds fit the 36 s walk (C01 14 s, C02 18 s; the scene no longer runs on in black). Known list: empty.
+
 ## Acceptance criteria
-- [ ] The known list is empty; the test stays in the suite.
+- [x] The known list is empty; the test stays in the suite.
 
 ## Review log

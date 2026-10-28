@@ -34,7 +34,7 @@
     {"op": "cue", "cue": "anim", "args": ["stillguard_a", "shake_head"], "kwargs": {}, "src": 39},
     {"op": "cue", "cue": "wait", "args": [1.0], "kwargs": {}, "src": 40},
     {"op": "cue", "cue": "mark", "args": ["toma", "shield_line_end", "walk"], "kwargs": {}, "src": 41},
-    {"op": "cue", "cue": "mark", "args": ["kerrid", "kerrid_gone", "walk"], "kwargs": {}, "src": 42},
+    {"op": "cue", "cue": "mark", "args": ["kerrid", "kerrid_gone", "walk"], "kwargs": {"via": "way_approach_top,way_stair_head_w,way_stair_flight2_foot,way_stair_landing_w,way_stair_flight1_foot,way_stair_foot"}, "src": 42},
     {"op": "cue", "cue": "wait", "args": [2.0], "kwargs": {}, "src": 43},
     {"op": "cue", "cue": "anim", "args": ["rhen", "look_at", "drowned_stair"], "kwargs": {}, "src": 44},
     {"op": "cue", "cue": "camera", "args": ["W25_empty"], "kwargs": {}, "src": 45},

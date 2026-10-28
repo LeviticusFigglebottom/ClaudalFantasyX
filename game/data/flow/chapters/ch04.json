@@ -56,6 +56,10 @@
      "when": {"set": ["ch04_dock_comforted"], "unset": ["ch04_left_haluna"]},
      "steps": [
       {"place": "WallDawn"},
+      {"zone": "place_actor", "args": ["asha", "wall_gap"]},
+      {"zone": "place_actor", "args": ["toma", "wall_toma"]},
+      {"zone": "place_actor", "args": ["neme", "dawn_neme"]},
+      {"zone": "show_actor", "args": ["ysolde", false]},
       {"play": "ch04_long_way_round"},
       {"set": "ch04_left_haluna"},
       {"go": {"location": "ch04/brightwater_ferry", "spawn": "Landing"}}

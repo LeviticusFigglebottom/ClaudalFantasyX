@@ -68,9 +68,9 @@
     {"op": "line", "id": "ch04_shell_022", "key": "DLG_CH04_SHELL_022", "speaker": "asha", "emotion": "tender", "voice": "", "src": 81},
     {"op": "line", "id": "ch04_shell_023", "key": "DLG_CH04_SHELL_023", "speaker": "toma", "emotion": "worried", "voice": "", "src": 82},
     {"op": "line", "id": "ch04_shell_024", "key": "DLG_CH04_SHELL_024", "speaker": "asha", "emotion": "soft_smile", "voice": "", "src": 83},
-    {"op": "cue", "cue": "mark", "args": ["asha", "feast_edge", "walk"], "kwargs": {}, "src": 84},
+    {"op": "cue", "cue": "mark", "args": ["asha", "feast_edge", "walk"], "kwargs": {"via": "way_feast_s"}, "src": 84},
     {"op": "cue", "cue": "wait", "args": [1.5], "kwargs": {}, "src": 85},
-    {"op": "cue", "cue": "mark", "args": ["toma", "feast_edge", "walk"], "kwargs": {}, "src": 86},
+    {"op": "cue", "cue": "mark", "args": ["toma", "feast_edge", "walk"], "kwargs": {"via": "way_lane_n"}, "src": 86},
     {"op": "cue", "cue": "fade", "args": ["out", 1.0], "kwargs": {}, "src": 87},
     {"op": "cue", "cue": "letterbox", "args": ["off"], "kwargs": {}, "src": 88}
    ]
