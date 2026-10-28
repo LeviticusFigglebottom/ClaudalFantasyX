@@ -52,6 +52,7 @@ static func glyphs() -> Array[Dictionary]:
 		add.call(str(d["equipment_types"][t]), str(d.get("equipment_role", "text")))
 	for k: Variant in d.get("skill_kinds", {}):
 		add.call(str(d["skill_kinds"][k]), str((d.get("skill_roles", {}) as Dictionary).get(k, "text")))
+	add.call(str(d.get("currency", "")), str(d.get("currency_role", "text")))
 	for el: Variant in d.get("skill_elements", {}):
 		add.call(str(d["skill_elements"][el]), "focus")
 	return out

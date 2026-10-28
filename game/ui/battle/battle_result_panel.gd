@@ -145,6 +145,8 @@ func _row(r: Dictionary) -> Control:
 	var h := HBoxContainer.new()
 	h.custom_minimum_size = Vector2(0.0, HudLayout.num(_m, "row_height"))
 	h.alignment = BoxContainer.ALIGNMENT_CENTER
+	h.add_theme_constant_override(&"separation", int(HudLayout.num(_m, "picture_gap")))
+	h.add_child(_picture(r))
 	var label := _cell(str(r.get("label", "")), &"HudName", HORIZONTAL_ALIGNMENT_LEFT)
 	h.add_child(label)
 	var xp := _cell(str(r.get("xp_text", "")), &"HudNumber", HORIZONTAL_ALIGNMENT_RIGHT)
@@ -160,6 +162,32 @@ func _row(r: Dictionary) -> Control:
 		label.add_theme_color_override(&"font_color", get_theme_color(&"text_dim", HymnThemeBuilder.PALETTE_TYPE))
 	h.add_child(moves)
 	return h
+
+
+## The row's picture: a fighter's face (worried when they fell) or a drop's icon; an empty cell of the same
+## width otherwise (the lume), so every name starts in one column.
+func _picture(r: Dictionary) -> Control:
+	var px := HudLayout.num(_m, "picture_px")
+	var holder := Control.new()
+	holder.custom_minimum_size = Vector2(px, px)
+	holder.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var fighter := StringName(str(r.get("fighter", "")))
+	var tex := BattlePortraits.texture(fighter, bool(r.get("fell", false))) if fighter != &"" else null
+	if tex != null:
+		var face := TextureRect.new()
+		face.texture = tex
+		face.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		face.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		face.size = Vector2(px, px)
+		face.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		holder.add_child(face)
+	elif r.has("glyph"):
+		var g := MenuGlyph.for_row(r["glyph"] as Dictionary, 0.0, px)
+		if g != null:
+			g.position.y = 0.0
+			g.size = Vector2(px, px)
+			holder.add_child(g)
+	return holder
 
 
 func _cell(text: String, variation: StringName, align: HorizontalAlignment) -> Label:

@@ -91,7 +91,7 @@
       "rank_width": 46
     },
     "reserve": {"rect": [552, 760, 560, 272]},
-    "result": {"rect": [560, 200, 800, 680], "row_height": 52, "gap": 20, "pad": 28},
+    "result": {"rect": [560, 200, 800, 680], "row_height": 52, "gap": 20, "pad": 28, "picture_px": 40, "picture_gap": 12},
     "damage": {"rise_px": 36, "rise_sec": 0.7, "fade_sec": 0.25, "pop_scale": 1.06, "pop_sec": 0.08, "head_offset_m": 0.35,
                "stack_px": 30},
     "actor_marker": {"size_px": 34, "mote_px": 96, "head_offset_m": 0.3, "lift_px": 30, "stem_px": 18, "frame_px": 2,

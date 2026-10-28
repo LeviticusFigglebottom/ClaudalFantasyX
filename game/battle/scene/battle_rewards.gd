@@ -31,7 +31,9 @@ func award_victory(ctl: BattleController) -> Array[Dictionary]:
 			continue
 		var label := ctl.menus.display_name(c)
 		if not awards.has(c.id):
-			rows.append({"label": label, "xp_text": "", "moves_text": tr("HUD_RESULT_FELL"), "fell": true})
+			rows.append(
+				{"label": label, "xp_text": "", "moves_text": tr("HUD_RESULT_FELL"), "fell": true, "fighter": c.id}
+			)
 			continue
 		var xp := int(awards[c.id])
 		var moves := -1
@@ -47,6 +49,7 @@ func award_victory(ctl: BattleController) -> Array[Dictionary]:
 			. append(
 				{
 					"label": label,
+					"fighter": c.id,
 					"xp_text": tr("HUD_RESULT_XP_FMT").format({"xp": xp}),
 					"moves_text": moves_text,
 					"count": count,
@@ -100,6 +103,7 @@ func spoil_rows(spoils: Dictionary, item_db: ItemDB) -> Array[Dictionary]:
 			. append(
 				{
 					"label": tr("HUD_RESULT_LUME"),
+					"glyph": MenuGlyph.for_currency(),
 					"xp_text": tr("HUD_RESULT_LUME_FMT").format({"n": lume}),
 					"moves_text": purse,
 					"count": [{"cell": "xp", "key": "HUD_RESULT_LUME_FMT", "arg": "n", "n": lume}],
@@ -117,6 +121,7 @@ func spoil_rows(spoils: Dictionary, item_db: ItemDB) -> Array[Dictionary]:
 			. append(
 				{
 					"label": tr(str(item_db.item(iid).get("name_key", iid))),
+					"glyph": MenuGlyph.for_goods(iid),
 					"xp_text": tr("HUD_RESULT_DROP_FMT").format({"n": n}),
 					"count": [{"cell": "xp", "key": "HUD_RESULT_DROP_FMT", "arg": "n", "n": n}],
 					"moves_text": tr("HUD_RESULT_BAG_FULL") if full else "",

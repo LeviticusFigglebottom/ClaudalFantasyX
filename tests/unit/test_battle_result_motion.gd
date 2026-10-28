@@ -75,7 +75,7 @@ func test_reduced_motion_shows_the_final_numbers_at_once() -> void:
 
 
 func _xp_cell(row: int) -> Label:
-	return _list().get_child(row).get_child(1) as Label
+	return _list().get_child(row).get_child(2) as Label  # after the picture and the name
 
 
 func _ev(action: StringName) -> InputEventAction:

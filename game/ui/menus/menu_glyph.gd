@@ -37,6 +37,7 @@ const DRAWN: Array[StringName] = [
 	&"lantern",
 	&"launcher",
 	&"leaf",
+	&"lume",
 	&"mote",
 	&"needle",
 	&"net",
@@ -117,6 +118,11 @@ static func for_goods(id: StringName) -> Dictionary:
 	if g.is_empty():
 		return {}
 	return for_equipment(str(g[1])) if g[0] == "equipment" else for_item(id, str(g[1]))
+
+
+## {glyph, role} for the currency (the result panel's lume).
+static func for_currency() -> Dictionary:
+	return _entry(str(data().get("currency", "")), str(data().get("currency_role", "text")))
 
 
 ## {glyph, role} for skill row `skill` (a skills.json row).
@@ -261,6 +267,9 @@ func _draw_item(p: Callable, col: Color, w: float, s: float) -> bool:
 			_gem(p, col, w)
 			draw_circle(p.call(24, 25), 2.2 * s, col)
 			draw_line(p.call(24, 26), p.call(24, 31), col, w)
+		&"lume":  # the currency: a coin with a small flame inside
+			draw_arc(p.call(24, 24), 12 * s, 0.0, TAU, ARC_STEPS * 2, col, w)
+			_flame(p, col, w, Vector2(24, 25), 0.55)
 		&"key":
 			draw_arc(p.call(17, 19), 6 * s, 0.0, TAU, ARC_STEPS, col, w)
 			draw_line(p.call(21, 23), p.call(35, 37), col, w)
