@@ -1067,7 +1067,8 @@ MERGE-READY (+ this log): **the party start, take two (the big15 GPU playtest), 
 - **(3) Architect role:**
   - **M3-HER-1151 FIXED (the RID race):** ShaderGlobals holds its RenderingServer writes while SceneRouter
     instantiates on a worker thread and sends the last value per global after. test_shader_globals_hold 3/0;
-    weather_clock 11/0, scene_router 15/0, haluna_weather 3/0. Three ch3 probe runs follow.
+    weather_clock 11/0, scene_router 15/0, haluna_weather 3/0. **Three ch3 probe runs: 0, 0, 0 RID errors** (1 in 2
+    runs before). Their 2,708 other errors are all M3-HER-1158, battle_result_panel.gd:266.
   - **M3-ENV-747 → review:** already done by M3-ENV-101 (186848eb8); the inventory lists no save-shrine item.
   - M3-ARC-1216 (my own steep stairs) waits on its cinematics review and on act1-chapters placing Ashcrown's flights.
 - Tests: hero_ 110/1 → the 1 is Asha in haluna_wake's NemeDoor fall (KNOWN now, M3-HER-1154); qa_party 3/0,
