@@ -650,3 +650,12 @@ MERGE-READY @ ee41e2bd: **first pass of tools/placeholder_audit.py and docs/kb/q
   - the battle VFX check (battle-presentation);
   - Act I cutscene-only actors (from the motion audit);
   - a recurring re-run on each merge batch.
+MERGE-READY @ 7378b38b: **inventory refined.**
+- **Boss set-piece VFX:** 5 Act I bosses have none (Hullgnaw, Spar Wraith, Cinder Matron, Moll, the Undertow's
+  Reach). Filed M3-HER-1148 (battle-presentation).
+- **Clearer rows:** the greybox rows now name what is greybox, e.g. Haluna's **SaveShrine is built from
+  primitives**, Neme's bag is a box, and the Ch4/Ch5 arenas' **lamp flames are flat spheres**.
+- **Not audited, with the reason:** icons (the Act I menus have none) and per-skill VFX (every hit falls back to
+  its element's effect).
+- **Now 164 items** (138 high, 22 medium, 4 low). Checks: tools test 8/0, taskboard --check.
+- The Lead's item (1), self-render the hero shots: done earlier (SELF-RENDERED @ b04a188a above).
