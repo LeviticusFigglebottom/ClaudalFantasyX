@@ -61,6 +61,17 @@ Branch `claude/characters` (this environment; cloud session_01JqzzxgJU9Dmu7fRhmC
 - **send_message to the Lead's session** is refused ("trusted device"), so this file is the channel. The battle-presentation and hero-integration sessions do accept messages.
 
 ## Now (2026-10-28)
+- **Act I inventory scope (M3-HER-1144, the Lead's split, 10-28 01:54).** Mine: the named story NPCs, in story order:
+  - Ch1: sabe, scaleman, skipper_sadi.
+  - Ch4: ferrymaster, purser.
+  - Ch5: tender, elder, garo.
+  - Ch6: clerk, stillguard_a, stillguard_b, stillguard_c.
+  - Ch7: ione, poolkeeper.
+  - Ch8/9: fenn, gatekeeper, hobb, ivo, marra.
+  - Agents are on them: one on the villager pipeline (the NPCs), one on Moll's kit (the Stillguard).
+  - neme, osu, reed and tavi already have models; their capsules are the level owners' swap (M3-CHR-519).
+  - Kerrid's battle actor is mine and done; it now holds the cleaver (b815df60).
+  - Liss's battle actor and the party capsules are integration-qa's; generic villagers are the creatures track's.
 - **The Lead's big12 review:**
   - (1) "Asha's staff is gone from her static views" does not reproduce. In `gpu/gate-big12-shots`, asha_front,
     asha_q34 and asha_sleeve_s0 all show the staff (beside the open hand: the grip is M2-CHR-515, not in big12). Headless
