@@ -662,6 +662,13 @@ Ch4–Ch9 onward. `m2-slice.md` beside this file is the history up to the 2026-1
 - LEAD-ASK: the gate's baselines for my pending shots (slice_verse_threshold, slice_verse_recognition,
   slice_beach_standing, slice_neme_table, the seven ch01_* scene stills, ch01_oruvel_storm, slice_prologue_p01).
   Approve them and drop their `pending_baseline` keys; all are viewed above.
+- **Beat audit, batch 3 (self-rendered and viewed).**
+  - **Read right:** haluna_h10_dock_night, shrine_s04_lip, shrine_s05_side_pool, battle_boss_intro_hullgnaw (the
+    long timeline is M3-UI-101), ch01_underway_gallery, zone_underway_u06, zone_underway_u07.
+  - **Fixed: slice_dock_night_yes (B11, the slice's climax).** The rail's H04 left Asha and Rhen tiny, 29 m down the
+    dock. A new `DockEnd` volume (priority 2, the last 8 m of the pier) tracks with `B11`: from just past the end,
+    at eye height, looking back at them three-quarter front with the village lights behind. The walk out from
+    DockNight still starts on H04. Re-rendering now.
 - LEAD-ASK: should other tracks mark their 108 unbaselined shots `pending_baseline`, or should the gate baseline
   them? My default: each owner marks its own. I'm not editing their rows.
 
