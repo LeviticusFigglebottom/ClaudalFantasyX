@@ -26,6 +26,26 @@ both fixed and pushed. The branch head also carries:
   - any battle shot with an Act I creature, since the heights and the near-face anchor move its effects. I am
     self-rendering those next.
 
+**MERGE-READY @ 98aa030d (07:xx), the branch head.** It carries M3-BPR-420/422/423 and the big13 merge, plus a merge
+fix.
+- **Full Godot suite on 4a19f707: 2997 run, 5 failed.** Now accounted for:
+  - test_battle_set_piece_shots: mine, fixed at 98aa030d (the riposte effect steps to the attacker's near face).
+  - test_title_reveal: **a merge loss**, fixed at 98aa030d.
+    - `tools/dev/merge_union.py` keeps *our* copy of a shot both sides list, so big13's `boot_title` settle_frames
+      change was dropped. I rebuilt shots.json from the merge base; only boot_title differed. baselines.json lost
+      nothing.
+    - **Lead: the tool silently reverts the other side's edits to shared shots. Worth a fix: take the side that
+      changed against the base.**
+  - test_hero_field_snaps and test_zone_map (ch08/corrow, coilspire): **red on clean big13 90ecee18 too** (checked
+    in a scratch checkout). Not this branch's.
+  - test_creature_portraits: the Act II creature portraits, a known red (Act II is paused, ADR 0041).
+- Re-run since the fixes: set_piece_shots 4/0 and title_reveal 3/0. test_screenshots (tools) fails only on my three
+  un-baselined battle_ch08_* shots.
+- Shots for the gate to re-approve after viewing (all viewed here; drifts listed below):
+  - the six battle_boss_intro_*;
+  - battle_choreo_hit, _ko, _toll, _support and _summon, battle_heroes_hit and battle_vowbound_call;
+  - new: battle_ch08_intercept, _counter and _withdraw.
+
 **2026-10-28 06:xx: the Lead's items 2–4 (VFX on the real arenas, boss camera, Swell finishers), self-rendered @ 4a19f707.**
 - SELF-RENDERED (tool, scratch worktree with env-art and env-art-b merged plus the seawall patch; never pushed):
   `act1_vfx_sheet --enemy_set` on 14 Act I arenas. Viewed: ch01 oil slug and Hullgnaw, ch02 tideline, ch03 causeway,
