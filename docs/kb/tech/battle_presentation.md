@@ -645,3 +645,49 @@ Ch8's evacuation battles (docs/kb/design/set_piece_battles.md) add things the st
   plain default.
 - **Still to do** (task M3-BPR-406): the intercept step-in, which needs EntryMarker_ward on the Ch8 arena
   (request M3-BPR-407 to env-art); a look for untargetable or damage-immune phases; freeze-frame shots.
+
+## Barks (M3-C08-100)
+A few skills and calls say one short line over the speaker's head. `BattleBarks` (`game/battle/scene/battle_barks.gd`,
+listen-only, a node under the battle HUD that the controller attaches; see ui.md "Battle barks") reads the rows:
+- skills.json `bark_key`: the skill's user says it as the skill resolves.
+- vowbound.json `call_bark_key`: the caller says it as the Vowbound is called.
+
+The line pops as a float (BattleHud.pop_info) at the speaker's head, and `barked(speaker, key)` fires for audio's
+voice blips. Ch8's (act1_ch08.md B05): Toma's "Hold." on Hold the Stair, Liss's "Pull!" on Haul, Asha's "Virel." on
+the call. Flare Line and Virel say nothing. Keep them rare: a bark marks a moment, not every swing. (big13: the
+battle-presentation and ui-menus tracks both built this; the merge kept ui-menus' data-on-the-rows version and
+battle-presentation's `barked` signal, and dropped choreo.json `barks` and its BARK_CH08_* keys.)
+
+## Act II boss intros by enemy id (M3-BPR-408)
+`boss_intro.by_enemy` gives a boss its intro wherever it first appears, for bosses whose encounters are not written
+yet (the Lamp Engine `boss_tall`, the Avalanche Ram `boss`). An encounter's own `rows` entry wins
+(`BattleBossIntro.row_for`).
+
+## Filling the staging audit (M3-BPR-416)
+- **Foes stage their blows by their reach.** In `style_by_skill`, a ranged or whole-party blow (Brine Spit, Shroud
+  Sweep, Undertow Pull) plays `cast`, so the foe stays in place instead of running at one hero. The heaviest blows
+  (Gnaw, Ladle Swing, Pounce) play `finisher`. A creature plays its own clip by kind either way; the style sets the
+  travel, timing and shot.
+- **`reaction.push`.** A landed hit with no HP change and `delay_ticks > 0` staggers its target back (recoil and a
+  small tilt, the hit clip at `clip_recoil_k`). Damage still wins. The ward now visibly takes Rope Dive.
+- **Summoned foes walk in.** `BattleStage.add_enemy` plays the `enter` walk for every foe that joins mid-battle.
+- **`tools/battle_vfx_coverage.py`** lists, for each skill or item with no effect, its stage answer (`staged`). The
+  particle itself is rendering's (request M3-BPR-411).
+
+## Phase looks and set-piece freeze-frames (M3-BPR-406)
+- **BattlePhaseLooks** (a node under the sequencer): on each phase change and turn, a living foe that is untargetable
+  fades every surface (GeometryInstance3D.transparency, model or primitive) to `phase_looks.untargetable.alpha`, and
+  comes back when the phase ends. The Reach's Breach reads as out of reach.
+- **`reaction.immune`**: a blow (physical or magical, with power) on a damage-immune foe stops dead: a sideways
+  shudder, no recoil, no tilt, and still under reduced motion.
+- **Freeze-frames** (`shots/set_piece_beat_shot.gd`, the real Ch8 wave): `battle_ch08_intercept` (the crawler's grip
+  lands on Toma, who covers the stair), `battle_ch08_counter` (Rhen's riposte lands), and `battle_ch08_withdraw` (a
+  crawler half-way back). The stage keeps a withdrawal's tween on the stand-in (`WITHDRAW_TWEEN_META`) so a capture
+  can hold it.
+
+## Act II, next bosses (M3-BPR-418)
+- `boss_intro.by_enemy` also has the Mangrove Drowner (`boss_tall`) and the Wakefin (`boss`).
+- `bosses.mangrove_drowner.phases.uprooted`: the Drowner tears free of its tree and stands on its roots (a lift and a
+  rock while its own clip plays; the party braces in turn). Same machinery as the Lamp Engine's `opened`.
+- The Act II boss arenas are env-art's final kits (`ossa_fen_roots`, `lowlight_engine_hall`, `keth_seep_terrace`,
+  `bridal_barge_night`). Encounters name them in `arena` (request M3-BPR-419).

@@ -88,5 +88,55 @@ criteria below are already separate.
     fisher's). Kell's short grey crop is still card-flaky up close (villagers_review.md §4). Kell's face reads broad and
     a little masculine (the donor's adult face, age in the textures). No props sit in the GLBs; the wick, bundle and
     shears are scene props for BoneAttachment3Ds.
+- **2026-10-24, Liss WIP (character-15, worktree subagent; paused by the Lead for the playtest).** Committed as a
+  WIP, task stays `doing`. **In:** `assets_src/characters/liss/` (build_liss, liss_params with every §2.1/§2.10
+  number, liss_costume: top + coat with two leg-following tails on 2x3 bones + harness X with 6 pouches + trousers +
+  boots + sleeve strap; liss_hair: crop + two-strand beaded tail on a 6-bone chain, root seated, cards stop 12 mm;
+  liss_props: launcher on DEF-launcher 20.5 mm off the thigh with a sling; liss_textures with the shared
+  `line_marks`/`paint_marks` generator, 11 marks right side only, PRE_ROUND; write_materials; build.sh). The
+  work-sleeve and glove are an offset shell of the shipped left arm/hand skin with the skin's weights. Outputs in
+  `assets/characters/liss/` (LOD0 55,820, LOD1 ~25.6k, GLB ~4.1 MB), job `liss` (threads 4), import rule,
+  `liss` in rig_checks.json (garments Costume+WorkSleeve, props Launcher, braid HairTail:hair; **no ratchets yet**),
+  the hero_clips Liss block (persona + `launcher` dispatch key, 10 clips + the 11 battle-contract clips; one
+  `elif hero == "liss"` line in `_victory`); other heroes' libraries regenerate byte-identical. Stage scenes, face
+  poses (15 tags), battle actor, `tools/tests/test_liss.py`.
+  - **Not in sync:** the last two source edits (tail root raised to 0.40 h: `TAIL_ROOT_H`; armpit-crease arm skin
+    kept under the sleeve: `SLEEVE_KEEP_NEAR_TORSO`) are **not yet built** into the committed GLB/textures.
+  - **Probe at the committed GLB (p5):** launcher 0, drift 0, seams 0, weights clean. Open: braid gap 4.1 mm
+    (point_up; the root-height edit targets it), boundary_exposed 5 verts ~5 mm at the left armpit (the keep edit
+    targets it), garment_in_body WorkSleeve ~25 mm and Body-through-cloth ~35-46 mm at both armpits (LBS armpit:
+    to pin as ratchets after viewing), trouser knee fold 26 mm (run) / 39 mm (crouch_shelter, 112-degree squat).
+  - **Exact next step:** run `assets_src/characters/liss/build.sh` (Blender ~45 s + textures ~6 min), then
+    `python3 tools/dev/rig_probe.py --hero liss --report`; view the armpit/knee poses, pin the ratchets with
+    reasons in rig_checks.json; add `TestRigIntegrityLiss` to test_rig_integrity.py, `TestLissClips` to
+    test_hero_clips.py, liss to test_hero_battle_clips.py HEROES/EXISTING; add the 7 `liss_*` shots to shots.json
+    (front, back, three_quarter, face, face_stylized, silhouette_vs_rhen, clip_haul_rope: removed from this WIP
+    because they have no baselines yet), capture, view, approve; PROVENANCE rows; verify_blender_builds `--job liss`
+    twice (plain and NPY_DISABLE_CPU_FEATURES="X86_V3 X86_V4"); liss_review.md and the handoff. Visual notes from
+    the first renders: the coat now carries a rust binding so it separates from the top; launcher sling added; side
+    hairline lowered for the crop; freckles strengthened (all built into the committed files except the two edits
+    above).
+
+- **2026-10-27, Liss's hero half resumed and built (characters, new account).** The saved WIP patch is applied onto
+  M1-CHR-15, M2-CHR-513 and M3-CHR-05.
+  - **Build brought up to date:** M1-CHR-15's conventions (the donor, head and every part on the 1 µm grid; the
+    shoulder correctives `DEF-armpit.L/.R`), on top of the WIP's M1-CHR-14 snaps and PRE_ROUND. The two unbuilt
+    edits (`TAIL_ROOT_H`, `SLEEVE_KEEP_NEAR_TORSO`) are now built. LOD0 GLB 4.19 MB, LOD1 26,076 tris / 1.19 MB.
+    `verify --job liss` identical natively, with X86_V4 off and with X86_V3+V4 off.
+  - **Clips:** her 10 own clips, the battle contract and `revive`. The WIP's ko called `_ko_kneel`, which M2-CHR-513
+    removed, so she now takes the shared fall and rise, with her own rows in the KO tables (her mid-calf trousers
+    leave the ankle free, so she kneels with the toes half tucked). Victory is her own loop on top of the shared sway.
+    Her 10 dialogue calls (Ch6-Ch8: collide, dig_sand, flatten_sand, hand_over, set_in_hole, stand,
+    charcoal_rubbing, coil_rope, drive_pin, ease_key) are built from requested_clips.json. Her right hand works and
+    talks; nothing crosses the launcher at her right hip.
+  - **Probe ratchets** (rig_checks.json, with reasons): Costume 43/6 (trouser knee folds in the 112-degree squat and
+    the kneel), WorkSleeve 12/6 (the sleeve shell at the armpit crease), Body 70/32 (both arms raised past 90
+    degrees in haul_rope and point_up), max_exposed 2, braid gap 2.6 (the WIP measured 4.1; the raised tail root
+    brought it to 2.55).
+  - **Tests:** TestRigIntegrityLiss; Liss in test_hero_battle_clips' HEROES (ko and revive stay above the floor);
+    her dialogue calls in test_hero_clips; test_liss (77 standard bones with the correctives).
+  - **Shots:** the 7 liss_* shots are in shots.json, requested from the PC; not seen yet.
+  - **Remaining for review:** view the PC render, approve the baselines, write liss_review.md and the handoff.
 
 ## Review log
+- 2026-10-27 characters: viewed the render lead/gate-render-characters-ee3bd33 (cloud lavapipe). Approved liss_front, liss_back, liss_three_quarter, liss_face, liss_face_stylized, liss_silhouette_vs_rhen and liss_clip_haul_rope as baselines. Notes in docs/kb/art/characters/liss_review.md (hair fringe follow-up). Over to Rendering for the review.

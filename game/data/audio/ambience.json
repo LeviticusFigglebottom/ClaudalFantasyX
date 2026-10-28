@@ -177,12 +177,6 @@
       "wind": true,
       "_note": "M3-AUD-16: Corrow's shoreline on the night of the Ebbing (claude/m2-slice); the seawall bed under the_ebbing"
     },
-    "res://game/levels/ch01/oruvel_underway/oruvel_underway.tscn": {
-      "day": [
-        "drowned_tower"
-      ],
-      "_note": "M3-AUD-861: inside Ch1's drowned tower (the scene has landed)"
-    },
     "res://game/levels/ch03/saltgrass_causeway/saltgrass_causeway.tscn": {
       "day": [
         "causeway_wind",
@@ -190,6 +184,12 @@
       ],
       "wind": true,
       "_note": "M3-AUD-861: B06, saltgrass, gusts and the tidepools at low tide (the scene has landed)"
+    },
+    "res://game/levels/ch01/oruvel_underway/oruvel_underway.tscn": {
+      "day": [
+        "drowned_tower"
+      ],
+      "_note": "M3-AUD-861: inside Ch1's drowned tower (the scene has landed)"
     },
     "res://game/levels/ch03/first_verse/first_verse.tscn": {
       "day": [

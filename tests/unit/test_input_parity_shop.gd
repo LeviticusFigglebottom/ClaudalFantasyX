@@ -82,6 +82,37 @@ func test_the_inn_rests_and_leaves_with_each_device() -> void:
 	_done()
 
 
+## ADR 0040: the Reefball outfitter, bought from and left with each device.
+func test_the_outfitter_buys_and_leaves_with_each_device() -> void:
+	for kind in InputDriver.KINDS:
+		var d := InputDriver.new(kind)
+		state = GameStateData.new()
+		state.currency = 500
+		var bag: Dictionary = {}
+		var model := ReefballOutfitterModel.new(
+			ReefballDB.load_default(),
+			PartyGoods.from_state(db, state).wallet,
+			func(f: StringName) -> Variant: return bag.get(f, ""),
+			func(f: StringName, v: Variant) -> void: bag[f] = v
+		)
+		var menu := (load(ReefballOutfitterMenu.SCENE_PATH) as PackedScene).instantiate() as ReefballOutfitterMenu
+		menu.pause_tree = false
+		menu.configure(model)
+		_add(menu)
+		_accept(d, menu.root_page(), 0)
+		assert_true(model.is_owned(&"brass_thread_band"), "%s: Confirm buys the first piece" % d.label())
+		assert_true(model.is_worn(&"brass_thread_band"), "%s: and the side wears it" % d.label())
+		if kind == InputDriver.Kind.MOUSE:
+			InputDriver.wheel(menu.root_page().row_node(0), 1)
+		else:
+			d.press(&"ui_down")
+		assert_eq(menu.root_page().cursor, 1, "%s: the cursor moves on" % d.label())
+		_cancel(d, menu)
+		assert_false(menu.is_open(), "%s: Cancel leaves" % d.label())
+		_free()
+	_done()
+
+
 func _shop() -> ShopMenu:
 	var menu := (load(ShopMenu.SCENE_PATH) as PackedScene).instantiate() as ShopMenu
 	menu.pause_tree = false

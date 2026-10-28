@@ -16,6 +16,7 @@ const TEST_DIR := "user://test_pseudo_loc_screens"
 const TITLE_SETTINGS_DRIVERS: Array[String] = ["res://game/ui/menus/memories/shots/memories_menu.tscn"]
 const FIELD_MENU_DRIVERS: Array[String] = [
 	"res://game/ui/field_menu/shots/field_menu.tscn",
+	"res://game/ui/field_menu/shots/field_menu_kite.tscn",
 	"res://game/ui/field_menu/shots/field_menu_swell_modes.tscn",
 ]
 const PARTY_PAGE_DRIVERS: Array[String] = [
@@ -31,6 +32,9 @@ const PARTY_PAGE_DRIVERS: Array[String] = [
 const MAP_BOOK_DRIVERS: Array[String] = [
 	"res://game/ui/map/shots/field_menu_map_haluna.tscn",
 	"res://game/ui/map/shots/field_menu_map_shrine.tscn",
+	"res://game/ui/map/shots/field_menu_map_keth_pass.tscn",
+	"res://game/ui/map/shots/field_menu_map_lowlight.tscn",
+	"res://game/ui/map/shots/field_menu_map_ansedra.tscn",
 	"res://game/ui/bestiary/shots/bestiary_menu.tscn",
 	"res://game/ui/codex/shots/field_menu_codex.tscn",
 ]
@@ -38,6 +42,7 @@ const TOWN_DRIVERS: Array[String] = [
 	"res://game/ui/shop/shots/shop_buy.tscn",
 	"res://game/ui/shop/shots/shop_sell.tscn",
 	"res://game/ui/shop/shots/inn.tscn",
+	"res://game/ui/reefball/shots/reefball_outfitter.tscn",
 ]
 const REEFBALL_CHOICE := "res://game/ui/reefball/shots/reefball_hud_choice.tscn"
 const REEFBALL_GOAL := "res://game/ui/reefball/shots/reefball_hud_goal.tscn"
@@ -99,6 +104,19 @@ func test_title_and_settings_fit() -> void:
 			_clear()
 		_drivers(TITLE_SETTINGS_DRIVERS)
 	_done("title and settings")
+
+
+## The options pass: the Accessibility page's speed previews (SpeedPreview) with the cursor on each speed row.
+func test_speed_previews_fit() -> void:
+	for scale in _scales():
+		var s := _settings_at(scale)
+		for row: StringName in [UiSettings.TEXT_SPEED, UiSettings.BATTLE_SPEED]:
+			var page := AccessibilityMenu.new(s, "")
+			_host(page)
+			page.model.set_cursor(page.model.row_ids().find(row))
+			_probe(page, "speed preview " + String(row))
+			_clear()
+	_done("speed previews")
 
 
 func test_field_menu_fits() -> void:
@@ -354,6 +372,77 @@ func test_set_piece_fits() -> void:
 		_probe(ctl.hud, "battle set piece")
 		_clear()
 	_done("set piece")
+
+
+## The shrine travel list (the teleport network's menu): the list with a long place name, then the question.
+func test_shrine_travel_fits() -> void:
+	var saved_state := Game.state
+	var saved_registry := ShrineNetwork.registry
+	ShrineNetwork.registry = (
+		LocationRegistry
+		. from_dict(
+			{
+				"default_location": "a",
+				"locations":
+				[
+					{"id": "a", "scene": SANDBOX, "spawn": "S", "name_key": "LOCATION_CH04_BRIGHTWATER_FERRY"},
+					{"id": "b", "scene": SANDBOX, "spawn": "S", "name_key": "LOCATION_CH04_HALUNA_WAKE"},
+				],
+				"shrines": [{"id": "a_shrine", "location_id": "a"}, {"id": "b_shrine", "location_id": "b"}],
+			}
+		)
+	)
+	for scale in _scales():
+		_settings_at(scale)
+		Game.state = GameStateData.new()
+		Game.state.attuned_shrines = [&"a_shrine", &"b_shrine"] as Array[StringName]
+		var here := SaveShrine.new()
+		here.network_id = &"a_shrine"
+		here.opens_menu = false
+		_host(here)
+		var menu := here.open_travel()
+		_probe(menu, "shrine travel list")
+		menu.accept()
+		_probe(menu, "shrine travel question")
+		_clear()
+	Game.state = saved_state
+	ShrineNetwork.registry = saved_registry
+	_done("shrine travel")
+
+
+## M3-UI-205: the Kite's world map: the list (a long place name), the question, then a square's search.
+func test_kite_map_fits() -> void:
+	for scale in _scales():
+		_settings_at(scale)
+		var host := Node.new()
+		_host(host)
+		var menu := KiteMapMenu.open_in(host, KiteMapShot.fixed_model())
+		menu.rows_page().set_cursor(menu.model.ids().find(KiteMapShot.CURSOR), false)
+		_probe(menu, "kite map list")
+		menu.accept()
+		_probe(menu, "kite map question")
+		menu.back()
+		menu.rows_page().set_cursor(menu.rows_page().rows.size() - 2, false)
+		menu.accept()
+		_probe(menu, "kite map search")
+		_clear()
+	_done("kite map")
+
+
+## M3-UI-205: the field menu a row taller once the Kite flies, on the Kite row (its line).
+func test_field_menu_with_the_kite_fits() -> void:
+	for scale in _scales():
+		_settings_at(scale)
+		var m := FieldMenuModel.new(GameStateData.new(), ParityHost.HEROES, ParityHost.NAMES)
+		m.kite = KiteMapShot.fixed_model()
+		var menu := (load(FieldMenu.SCENE_PATH) as PackedScene).instantiate() as FieldMenu
+		menu.pause_tree = false
+		menu.configure(m)
+		_host(menu)
+		menu.root_page().set_cursor(ParityHost.row_of(menu.root_page(), FieldMenuModel.ROW_KITE), false)
+		_probe(menu, "field menu with the Kite")
+		ParityHost.free_field_menu(menu)
+	_done("field menu with the Kite")
 
 
 ## M3-UI-01: the Reefball HUD on a pass choice (menu, preview, the read's marks) and just after a

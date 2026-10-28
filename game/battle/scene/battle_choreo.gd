@@ -38,6 +38,8 @@ const BEAT_KO := &"ko"
 const REACT_DAMAGE := "damage"
 const REACT_HEAL := "heal"
 const REACT_MISS := "miss"
+const REACT_IMMUNE := "immune"  # M3-BPR-406: a blow on a damage-immune foe: a hard stop, no recoil
+const REACT_PUSH := "push"  # M3-BPR-411: a landed push down the timeline with no damage (the ward shoved back)
 const FALLBACK_STYLE := "melee"
 const SETTING_SPEED := &"battle_speed"
 const SETTING_ANIMATIONS := &"battle_animations"
@@ -74,6 +76,8 @@ var summon: BattleSummonCinematic
 var boss: BattleBossChoreo
 ## M3-BPR-401: hit-stop, shake, flash and KO slow-mo on the contact (BattleImpact).
 var impact: BattleImpact
+## Every foe's gathering charge on stage (M3-BPR-413).
+var telegraph: BattleTelegraph
 
 var _ctl: BattleController
 var _engine: BattleEngine
@@ -125,9 +129,11 @@ static func attached(controller: BattleController, engine: BattleEngine) -> Batt
 	c.camera = BattleCameraDirector.attached(controller, c)
 	c.vow = BattleVowboundChoreo.new(c, engine)  # M2-BPR-04: listen-only, like the sequencer
 	c.boss = BattleBossChoreo.attached_if_boss(c, engine)
+	c.telegraph = BattleTelegraph.new(c, engine)  # M3-BPR-413: any foe's gathering charge reads on stage
 	c.summon = BattleSummonCinematic.attached(c, controller, engine)  # M2-BPR-08: C10
 	c.impact = BattleImpact.attached(c, controller, engine)  # M3-BPR-401: battle feel
 	BattleBossIntro.attached(c, controller, engine)  # M3-BPR-02: a boss's intro at the first turn
+	BattlePhaseLooks.attached(c, controller, engine)  # M3-BPR-406: an untargetable phase shows it
 	return c
 
 
@@ -399,6 +405,7 @@ func seek(t: float) -> void:
 	if _plan.is_empty():
 		return
 	_t = clampf(t, 0.0, float(_plan["total"]))
+	_apply()  # everyone where they stand at `t` first: a beat's VFX lands there, not on a mark left long ago
 	_step_beats()
 	if impact != null:
 		impact.finish()  # a freeze-frame jump carries no hit-stop
@@ -596,37 +603,16 @@ func _apply() -> void:
 	for r: Dictionary in p["reactions"]:
 		var tid := StringName(str(r["target"]))
 		if not _ko_pose.has(tid) and tid != actor_id:  # an answered actor keeps its run (a counter: clip only)
-			poses[tid] = _reaction_pose(r)
+			var react_k := float(style(str(p["style"])).get("react_scale", 1.0))
+			poses[tid] = BattleChoreoPlan.reaction_pose(
+				data, r, _t, float(p["contact"]), react_k, _rm("tilt_scale") if reduced_motion else 1.0
+			)
 	if _fired.has(BEAT_KO) and not _fired.has(&"ko_end"):
 		_add_collapse(poses)
 	for tid: StringName in poses:
 		var q: Array = poses[tid]
 		_pose(tid, q[0] as Vector3, q[1] as Vector3, float(q[2]))
 	posed.emit(_t)
-
-
-## [offset, toward, lean_deg] for a target's reaction at the current time (home when it has a clip).
-func _reaction_pose(r: Dictionary) -> Array:
-	var away: Vector3 = r["dir"]
-	var def := (data.get("reaction", {}) as Dictionary).get(r["kind"], {}) as Dictionary
-	var sec := float(def.get("sec", 0.0))
-	var c := float(r.get("at", _plan["contact"]))
-	var clip_k := float(def.get("clip_recoil_k", 0.0)) if str(r["kind"]) == REACT_DAMAGE else 0.0
-	if (bool(r["clip"]) and clip_k <= 0.0) or _t < c or sec <= 0.0:
-		return [Vector3.ZERO, away, 0.0]
-	var w := sin(PI * clampf((_t - c) / sec, 0.0, 1.0)) * float(r.get("weight", 1.0))  # M3-BPR-401
-	if bool(r["clip"]):
-		w *= clip_k  # its own hit clip plays in place: a smaller root push under it
-	var tilt_k := _rm("tilt_scale") if reduced_motion else 1.0
-	match str(r["kind"]):
-		REACT_DAMAGE:
-			w *= float(style(str(_plan["style"])).get("react_scale", 1.0))  # a heavy blow (the toll) recoils harder
-			return [away * float(def.get("recoil_m", 0.0)) * w, away, float(def.get("tilt_deg", 0.0)) * w * tilt_k]
-		REACT_HEAL:
-			return [Vector3.UP * float(def.get("lift_m", 0.0)) * w, away, 0.0]
-		REACT_MISS:
-			return [Vector3.UP.cross(away).normalized() * float(def.get("dodge_m", 0.0)) * w, away, 0.0]
-	return [Vector3.ZERO, away, 0.0]
 
 
 ## A held KO (a stand-in with no KO clip) drops and tips away from the actor on top of its reaction.

@@ -1,8 +1,45 @@
-[gd_scene format=3]
+[gd_scene load_steps=8 format=3]
 
 [ext_resource type="Script" path="res://game/levels/ch01/oruvel_underway/underway_zone.gd" id="1_zone"]
+[ext_resource type="Script" path="res://game/levels/act1/zone_kit_dressing.gd" id="2_dressing"]
+[ext_resource type="Script" path="res://game/levels/ch02/haluna/weathering_tide.gd" id="3_tide"]
+[ext_resource type="Script" path="res://game/world/water/water_surface.gd" id="4_water"]
+[ext_resource type="Resource" path="res://game/world/water/lagoon_waves.tres" id="5_waves"]
+[ext_resource type="Material" path="res://game/levels/ch02/haluna/haluna_water_material.tres" id="6_water_mat"]
+[ext_resource type="Script" path="res://game/world/water/underwater/underwater_rig.gd" id="7_rig"]
+[ext_resource type="Script" path="res://game/vfx/glimmer/glimmer_field.gd" id="8_glimmer"]
 
 [node name="OruvelUnderway" type="Node3D"]
 script = ExtResource("1_zone")
 location_id = &"ch01/oruvel_underway"
 layout_path = "res://game/levels/ch01/oruvel_underway/oruvel_underway_layout.json"
+
+[node name="Water" type="Node3D" parent="."]
+script = ExtResource("4_water")
+publishes_water_level = true
+wave_set = ExtResource("5_waves")
+material = ExtResource("6_water_mat")
+
+[node name="Tide" type="Node" parent="." node_paths=PackedStringArray("water")]
+script = ExtResource("3_tide")
+water_height_y = 10.0
+water = NodePath("../Water")
+
+[node name="Dressing" type="Node3D" parent="." node_paths=PackedStringArray("tide")]
+script = ExtResource("2_dressing")
+layout_path = "res://game/levels/ch01/oruvel_underway/oruvel_underway_dressing.json"
+tide = NodePath("../Tide")
+
+[node name="Underwater" type="Node3D" parent="." node_paths=PackedStringArray("water")]
+script = ExtResource("7_rig")
+water = NodePath("../Water")
+
+[node name="LowLights" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 83, -2.6, -38.5)
+script = ExtResource("8_glimmer")
+mode = 0
+emission_extents_m = Vector3(1, 1.5, 2.2)
+amount_multiplier = 0.45
+water_height_m = 10.0
+use_fixed_seed = true
+fixed_seed = 105

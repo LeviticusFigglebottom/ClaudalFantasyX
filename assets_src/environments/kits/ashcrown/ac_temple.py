@@ -167,6 +167,49 @@ def _vein_stair(mb, k: int, noise) -> None:
             del ya
 
 
+
+BUTTRESS_STEP_M = 5.0  # the buttresses' spacing along a face
+BUTTRESS_HALF_W = 0.45
+BUTTRESS_PROUD = 0.45
+
+
+def _buttresses(mb, k: int, t: dict) -> None:
+    """Stepped buttresses up the front and side faces (M3-ENV-705: A01 read each tier as one flat block face): a
+    pier proud of the face from the plinth to the parapet, its upper third set back a step. Clear of the door, the
+    flying stair and its piers, the copper veins and the vein stairs that climb the face."""
+    m = mb.material(ac.M_ASHLAR)
+    hw = t["w"] * 0.5
+    y0, y1 = t["base"] + 0.4, t["top"] - 0.05
+    ym = y0 + (y1 - y0) * 0.66
+    keep_out = [(-ac.STAIR_HALF_W - 1.6, ac.STAIR_HALF_W + 1.6)]
+    for sx in (-1.0, 1.0):
+        vx = sx * t["vein_x"]
+        keep_out.append((vx - 1.2, vx + 1.2))
+        if k > 0:
+            a, b = vein_stair_x(k - 1)
+            keep_out.append((min(sx * a, sx * b) - 0.6, max(sx * a, sx * b) + 0.6))
+    if k == 0:
+        keep_out.append((-ac.DOOR_HALF_W - 1.0, ac.DOOR_HALF_W + 1.0))
+    n = int(t["w"] // BUTTRESS_STEP_M)
+    for x in np.linspace(-hw + 1.5, hw - 1.5, max(n, 2)):
+        if any(a < x < b for a, b in keep_out):
+            continue
+        f = t["front"]
+        ac.plain_box(mb, (x - BUTTRESS_HALF_W, y0, f), (x + BUTTRESS_HALF_W, ym, f + BUTTRESS_PROUD), m,
+                     faces="+x-x+y+z", col=(0.0, 0.6, 0.0, 0.4))
+        ac.plain_box(mb, (x - BUTTRESS_HALF_W + 0.1, ym, f), (x + BUTTRESS_HALF_W - 0.1, y1, f + BUTTRESS_PROUD * 0.5),
+                     m, faces="+x-x+y+z", col=(0.0, 0.6, 0.0, 0.4))
+    n = int(t["d"] // BUTTRESS_STEP_M)
+    for z in np.linspace(t["back"] + 1.5, t["front"] - 1.5, max(n, 2)):
+        for sx in (-1.0, 1.0):
+            xo = sx * hw
+            lo, hi = sorted((xo, xo + sx * BUTTRESS_PROUD))
+            ac.plain_box(mb, (lo, y0, z - BUTTRESS_HALF_W), (hi, ym, z + BUTTRESS_HALF_W), m,
+                         faces="+x-x+y+z-z".replace("-x" if sx > 0 else "+x", ""), col=(0.0, 0.6, 0.0, 0.4))
+            lo, hi = sorted((xo, xo + sx * BUTTRESS_PROUD * 0.5))
+            ac.plain_box(mb, (lo, ym, z - BUTTRESS_HALF_W + 0.1), (hi, y1, z + BUTTRESS_HALF_W - 0.1), m,
+                         faces="+x-x+y+z-z".replace("-x" if sx > 0 else "+x", ""), col=(0.0, 0.6, 0.0, 0.4))
+
 def tiers(name: str, seed: int, *, lod: bool = False) -> kc.MeshBuilder:
     rng = kc.rng_for(name, seed)
     noise = kc.Noise3(rng)
@@ -218,6 +261,7 @@ def tiers(name: str, seed: int, *, lod: bool = False) -> kc.MeshBuilder:
         if k == ac.TIERS - 1:
             gaps.append((-ac.STAIR_HALF_W, ac.STAIR_HALF_W))  # the flying stair's landing
         _parapet(mb, t, rng, noise, gaps)
+        _buttresses(mb, k, t)
         _plinth(mb, t, noise, skip_x=[door] if k == 0 else [])
         _veins(mb, k, rng, noise)
         if k + 1 < ac.TIERS:

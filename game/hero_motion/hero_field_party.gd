@@ -16,7 +16,12 @@ extends Node
 ##
 ## They hide while a cutscene that holds the player plays (CutsceneSequencer.is_playing() with
 ## hold_player), while the zone's CutsceneStage shows the same hero as a visible Actors/<id>, and
-## while the player is hidden. The party is re-read every frame, so a join (PartyJoins on
+## while the player is hidden. When a held cutscene finishes, the party members it staged (cued) and left within
+## hand_off_radius_m of the leader are handed back to the field: their stage actors hide, so the followers (spaced
+## behind the leader by catch_up) take over, and a reserve member stops standing on the spawn (the human's playtest:
+## after Cutscene A the stage Asha and Toma stood still inside Rhen and Asha's follower stayed hidden). A later held
+## cutscene that cues one of them shows it again. Field staging that no cutscene left by the leader (Asha waiting at
+## Ch8's stair-head) stays as the zone set it. The party is re-read every frame, so a join (PartyJoins on
 ## EventBus.flag_changed, or a zone writing party_ids) adds a follower at once. Tuning:
 ## game/data/hero_motion/hero_motion.json "field.followers". Added by HeroFieldActor.attach.
 
@@ -41,6 +46,13 @@ var _rescan_left := 0.0
 var _stages: Array[Node] = []
 var _sequencers: Array[Node] = []
 var _started := false
+## The leader's travel direction this frame (flat, unit), or zero while he stands.
+var _lead_dir := Vector3.ZERO
+## Stage actors handed back to the field after a cutscene (hidden by this node; shown again when a cutscene cues them).
+var _handed: Array[Node3D] = []
+## Sequencers whose signals this node listens to, by instance id; and per sequencer the actor ids its scene cued.
+var _watched: Dictionary = {}
+var _cued: Dictionary = {}
 ## Set when the leader talks to someone (FieldController.interacted): stopped followers turn to face `_face_at`
 ## until the leader walks on.
 var _facing := false
@@ -102,6 +114,8 @@ func advance(delta: float) -> void:
 		catch_up()
 	var jumped := lead.distance_to(_last_leader) > (leader.loco.teleport_m if leader != null else 0.0)
 	var leader_speed := Vector2(lead.x - _last_leader.x, lead.z - _last_leader.z).length() / maxf(delta, 1e-6)
+	var travel := Vector3(lead.x - _last_leader.x, 0.0, lead.z - _last_leader.z)
+	_lead_dir = travel.normalized() if leader_speed > float(_cfg.get("face_release_mps", 0.0)) else Vector3.ZERO
 	if leader_speed > float(_cfg.get("face_release_mps", 0.0)):
 		_facing = false
 	_last_leader = lead
@@ -200,8 +214,68 @@ func rescan() -> void:
 		return
 	_stages = find_scripted(root, &"CutsceneStage")
 	_sequencers = find_scripted(root, &"CutsceneSequencer")
+	for s in _sequencers:
+		_watch(s as CutsceneSequencer)
 	for s in _stages:
 		HeroFieldActor.attach_stage(s as CutsceneStage)
+
+
+func _watch(seq: CutsceneSequencer) -> void:
+	var key := seq.get_instance_id()
+	if _watched.has(key):
+		return
+	_watched[key] = true
+	seq.cue_played.connect(_on_cue.bind(seq))
+	seq.finished.connect(_on_finished.bind(seq))
+
+
+func _on_cue(_cue: StringName, args: Array, _kwargs: Dictionary, seq: CutsceneSequencer) -> void:
+	if not seq.hold_player or args.is_empty():
+		return
+	var id := StringName(str(args[0]))
+	var cued: Array = _cued.get(seq.get_instance_id(), [])
+	if not cued.has(id):
+		cued.append(id)
+	_cued[seq.get_instance_id()] = cued
+	for a in _handed.duplicate():
+		if is_instance_valid(a) and StringName(a.name) == id:
+			a.visible = true  # the scene stages it again
+			_handed.erase(a)
+
+
+func _on_finished(_scene_id: StringName, seq: CutsceneSequencer) -> void:
+	var cued: Array = _cued.get(seq.get_instance_id(), [])
+	_cued.erase(seq.get_instance_id())
+	if seq.hold_player:
+		hand_off(cued)
+
+
+## Hides the stage actors among `actor_ids` that play a party member (not the leader) and stand within
+## hand_off_radius_m of the leader, so the followers take over (see the class notes). Returns how many it hid.
+func hand_off(actor_ids: Array) -> int:
+	if controller == null or not is_instance_valid(controller):
+		return 0
+	var lead := controller.global_position
+	var lead_id := leader.hero_id if leader != null else HeroFieldActor.leader_id()
+	var radius := float(_cfg.get("hand_off_radius_m", 0.0))
+	var n := 0
+	for s in find_scripted(controller.get_parent(), &"CutsceneStage") if controller.get_parent() != null else []:
+		var folder := (s as CutsceneStage).get_node_or_null(CutsceneStage.ACTORS)
+		if folder == null:
+			continue
+		for c in folder.get_children():
+			var a := c as Node3D
+			if a == null or a is FieldController or not a.is_visible_in_tree() or not actor_ids.has(StringName(a.name)):
+				continue
+			var hero := HeroFieldActor.hero_of(StringName(a.name))
+			if hero == lead_id or not (hero in Game.state.party_ids or hero in Game.state.reserve_ids):
+				continue
+			if Vector2(a.global_position.x - lead.x, a.global_position.z - lead.z).length() > radius:
+				continue
+			a.visible = false
+			_handed.append(a)
+			n += 1
+	return n
 
 
 ## True while the followers should not show (see the class notes).
@@ -234,12 +308,27 @@ func catch_up() -> void:
 	var sample := maxf(float(_cfg.get("trail_sample_m", 0.0)), 0.01)
 	var reach := (followers.size() + 1) * float(_cfg.get("spacing_m", 0.0))
 	var count := mini(int(ceil(reach / sample)) + 1, int(_cfg.get("trail_max_points", 0)))
-	trail = PackedVector3Array()
-	for k in range(count, 0, -1):
-		trail.append(lead + back * (k * sample))
+	# The trail goes straight back, else turned to the first side where every follower stands clear of the walls
+	# (arriving with his back to one), else to the side where most do; one still blocked starts on his own spot.
+	var best_dir := back
+	var best := -1
+	for turn_deg: Variant in _cfg.get("catch_up_turns_deg", [0.0]):
+		var dir := back.rotated(Vector3.UP, deg_to_rad(float(turn_deg)))
+		_lay_trail(lead, dir, sample, count)
+		var n := 0
+		for i in followers.size():
+			n += 0 if blocked(trail_point((i + 1) * float(_cfg.get("spacing_m", 0.0)))) else 1
+		if n > best:
+			best = n
+			best_dir = dir
+		if n == followers.size():
+			break
+	_lay_trail(lead, best_dir, sample, count)
 	_last_leader = lead
+	var placed: Array[Vector3] = [lead]
 	for i in followers.size():
-		var at := trail_point((i + 1) * float(_cfg.get("spacing_m", 0.0)))
+		var at := _formation_spot(i, placed)
+		placed.append(at)
 		followers[i].global_position = _grounded(at, at.y)
 		followers[i].rotation.y = yaw
 		_velocities[i] = Vector3.ZERO
@@ -247,6 +336,91 @@ func catch_up() -> void:
 		if body != null:
 			body.snap()
 	_apply_staged()
+
+
+## Follower i's place when the party is laid out: its trail point if that is clear (no wall, at least min_gap_m
+## from every body in `placed`), else further back along the trail, else a ring around the leader; never on top
+## of another body (the human's playtest: followers stacked inside each other at a spawn).
+func _formation_spot(i: int, placed: Array[Vector3]) -> Vector3:
+	var spacing := float(_cfg.get("spacing_m", 0.0))
+	var gap := float(_cfg.get("min_gap_m", 0.0))
+	var lead := controller.global_position
+	var steps := int(_cfg.get("spawn_search_steps", 0))
+	for k in steps + 1:
+		var at := trail_point((i + 1) * spacing + k * gap)
+		if _clear_of(at, placed, gap) and not blocked(at):
+			return at
+	for ring in range(1, steps + 1):
+		for turn in 12:
+			var dir := Vector3.FORWARD.rotated(Vector3.UP, TAU * turn / 12.0)
+			var at := lead + dir * (spacing * ring)
+			if _clear_of(at, placed, gap) and not blocked(at):
+				return at
+	for ring in range(1, steps + 1):  # walls everywhere: at least never on top of another body
+		for turn in 12:
+			var at := lead + Vector3.FORWARD.rotated(Vector3.UP, TAU * turn / 12.0) * (gap * ring)
+			if _clear_of(at, placed, gap):
+				return at
+	return trail_point((i + 1) * spacing)
+
+
+static func _clear_of(at: Vector3, placed: Array[Vector3], gap: float) -> bool:
+	for q in placed:
+		if Vector2(at.x - q.x, at.z - q.z).length() < gap - 1e-3:
+			return false
+	return true
+
+
+func _lay_trail(lead: Vector3, back: Vector3, sample: float, count: int) -> void:
+	trail = PackedVector3Array()
+	for k in range(count, 0, -1):
+		trail.append(lead + back * (k * sample))
+
+
+## True when a follower standing at `at` (its feet) would overlap a wall: a body_radius_m sphere at body_height_m
+## over its feet against the world's colliders (the player's own capsule aside). Steps and curbs lower than that
+## don't count.
+func blocked(at: Vector3) -> bool:
+	var world := controller.get_world_3d()
+	if world == null:
+		return false
+	var q := PhysicsShapeQueryParameters3D.new()
+	var ball := SphereShape3D.new()
+	ball.radius = float(_cfg.get("body_radius_m", 0.0))
+	q.shape = ball
+	q.transform = Transform3D(Basis.IDENTITY, at + Vector3.UP * float(_cfg.get("body_height_m", 0.0)))
+	q.exclude = [controller.get_rid()]
+	return not world.direct_space_state.intersect_shape(q, 1).is_empty()
+
+
+## The step from `from` by `step`, kept out of walls: slid along the wall it would enter (its surface normal), or
+## no step when that is blocked too.
+func _clear_step(from: Vector3, step: Vector3) -> Vector3:
+	if HeroStairs.near_flight(controller, from + step) or not blocked(from + step):
+		return step  # a steep flight's blocking collision is not a wall to a follower climbing its steps
+	var world := controller.get_world_3d()
+	var q := PhysicsShapeQueryParameters3D.new()
+	var ball := SphereShape3D.new()
+	ball.radius = float(_cfg.get("body_radius_m", 0.0))
+	q.shape = ball
+	q.transform = Transform3D(Basis.IDENTITY, from + step + Vector3.UP * float(_cfg.get("body_height_m", 0.0)))
+	q.exclude = [controller.get_rid()]
+	var rest := world.direct_space_state.get_rest_info(q)
+	if not rest.is_empty():
+		var n := rest["normal"] as Vector3
+		n = Vector3(n.x, 0.0, n.z).normalized()
+		var slid := step - n * minf(step.dot(n), 0.0)
+		# a slide that keeps almost nothing of the step (straight into a post) is no way on: steer instead
+		var kept := slid.length() >= step.length() * float(_cfg.get("slide_min_share", 0.0))
+		if n.length_squared() > 0.0 and kept and not blocked(from + slid):
+			return slid
+	# Still blocked (a post or a rail end the slide catches on): steer around it, the smallest turn first, so a
+	# follower never freezes against it (the human's playtest: followers "sit still" at the causeway's rail posts).
+	for turn_deg: Variant in _cfg.get("steer_turns_deg", []):
+		var turned := step.rotated(Vector3.UP, deg_to_rad(float(turn_deg)))
+		if not blocked(from + turned):
+			return turned
+	return Vector3.ZERO
 
 
 func _record(lead: Vector3) -> void:
@@ -288,6 +462,7 @@ func _move(i: int, leader_speed: float, delta: float) -> void:
 		var speed := minf(
 			leader_speed + dist * float(_cfg.get("follow_gain", 0.0)), float(_cfg.get("max_speed_mps", 0.0))
 		)
+		speed = minf(speed, HeroStairs.speed_cap_at(controller, f.global_position))  # a steep flight is taken slowly
 		want = gap / dist * minf(speed, dist / delta)
 	var v := _velocities[i]
 	var rate := (
@@ -301,11 +476,32 @@ func _move(i: int, leader_speed: float, delta: float) -> void:
 	var gap_min := float(_cfg.get("min_gap_m", 0.0))
 	if off.length() < gap_min:
 		var away := off.normalized() if off.length_squared() > 0.0 else -gap.normalized()
-		p = Vector3(ahead.x, p.y, ahead.z) + away * gap_min
+		if _lead_dir != Vector3.ZERO and away.dot(_lead_dir) > 0.0:
+			# It stands in the leader's way: it steps aside and lets him pass, then falls in behind, rather than
+			# being shoved ahead of him (the human's playtest: walking back past the spawn left them stuck).
+			var side := away - _lead_dir * away.dot(_lead_dir)
+			if side.length_squared() < 1e-4:
+				side = _lead_dir.cross(Vector3.UP)
+			away = side.normalized()
+		var spot := Vector3(ahead.x, p.y, ahead.z) + away * gap_min
+		# eased back at most its top speed a frame: a follower held by a wall would otherwise be shoved in one jump
+		p = p.move_toward(spot, float(_cfg.get("gap_push_mps", 0.0)) * delta)
 		v -= away * minf(v.dot(away), 0.0)
+	# the push rides on the step, so the step as a whole keeps the top speed (Ch7's galleries: 6.9 m/s without this)
+	var step := Vector3(p.x - f.global_position.x, 0.0, p.z - f.global_position.z).limit_length(
+		float(_cfg.get("max_speed_mps", INF)) * delta
+	)
+	p = Vector3(f.global_position.x + step.x, p.y, f.global_position.z + step.z)
+	var moved := _clear_step(f.global_position, Vector3(p.x - f.global_position.x, 0.0, p.z - f.global_position.z))
+	if moved.length_squared() < Vector3(p.x - f.global_position.x, 0.0, p.z - f.global_position.z).length_squared():
+		v = moved / delta  # a wall took part of the step: the speed is what was left
+	p = Vector3(f.global_position.x + moved.x, p.y, f.global_position.z + moved.z)
 	_velocities[i] = v
 	var floor_at := _grounded(p, target.y)
-	p.y = move_toward(f.global_position.y, floor_at.y, float(_cfg.get("vertical_mps", INF)) * delta)
+	if is_nan(HeroStairs.height_at(controller, p)):
+		p.y = move_toward(f.global_position.y, floor_at.y, float(_cfg.get("vertical_mps", INF)) * delta)
+	else:
+		p.y = floor_at.y  # a flight's profile is already eased, step by step
 	f.global_position = p
 	var to := Vector3(_face_at.x - f.global_position.x, 0.0, _face_at.z - f.global_position.z)
 	if _facing and v.length() <= float(_cfg.get("face_release_mps", 0.0)) and to.length() > FACE_MIN_M:
@@ -323,6 +519,9 @@ func _apply_staged() -> void:
 ## `p` with its height on the floor under it (the player excluded) when that floor is within step_m of
 ## `ref_y` (the leader's height on the trail there; NAN: his height now), else at `ref_y`.
 func _grounded(p: Vector3, ref_y: float = NAN) -> Vector3:
+	var stair_y := HeroStairs.height_at(controller, p)  # M3-ARC-1216: on a steep flight, its steps are the floor
+	if not is_nan(stair_y):
+		return Vector3(p.x, stair_y, p.z)
 	var ref := controller.global_position.y if is_nan(ref_y) else ref_y
 	var up := float(_cfg.get("ray_up_m", 0.0))
 	var down := float(_cfg.get("ray_down_m", 0.0))

@@ -1,17 +1,17 @@
 {
-  "_doc": "Spar-Wraith surfaces (docs/kb/art/creatures/act1/spar_wraith.md): carapace (the spawn body, spawn_wound wounds and eyes), timber (the spars and the block), rope (the tarred rigging; its three glowing knots are the weak points). write_materials.py on game/shaders/creature/creature.gdshader; sail (the phase-1 shroud), water (the phase-2 sheath).",
+  "_doc": "Spar-Wraith surfaces (docs/kb/art/creatures/act1/spar_wraith.md; final pass M3-CRB-005): carapace (the spawn body, limbs and head: wet lacquer plates, salt-crusted lips, the pale face mask, spawn_wound seams), timber (the spars, the yard stub, deadeyes, blocks, iron bands and straps, brass pins), rope (the rigging, the monkey's-fist knots with their faint spawn_wound hearts), sail (the phase-1 shroud, its grommets and lashings), water (the phase-2 sheath). Rim sheen on the pale surfaces keeps the read on the night deck. write_materials.py on game/shaders/creature/creature.gdshader.",
   "slots": {
     "carapace": {
-      "roughness_dry": 0.3,
-      "roughness_wet": 0.12,
-      "specular": 0.6,
-      "clearcoat_wet": 0.9,
-      "detail_scale": 16.0,
-      "detail_albedo": 0.1,
-      "detail_bump": 0.35,
-      "cavity_albedo": 0.3,
+      "roughness_dry": 0.38,
+      "roughness_wet": 0.2,
+      "specular": 0.5,
+      "clearcoat_wet": 0.55,
+      "detail_scale": 26.0,
+      "detail_albedo": 0.16,
+      "detail_bump": 0.8,
+      "cavity_albedo": 0.45,
       "emission_color": "#3FE0C8",
-      "emission_energy": 2.2,
+      "emission_energy": 2.8,
       "emission_pulse_hz": 0.3,
       "emission_pulse_depth": 0.45
     },
@@ -23,7 +23,8 @@
       "detail_scale": 30.0,
       "detail_albedo": 0.22,
       "detail_bump": 0.6,
-      "cavity_albedo": 0.5
+      "cavity_albedo": 0.5,
+      "rim_sheen": 0.3
     },
     "rope": {
       "roughness_dry": 0.9,
@@ -32,9 +33,10 @@
       "detail_albedo": 0.2,
       "detail_bump": 0.4,
       "emission_color": "#3FE0C8",
-      "emission_energy": 2.8,
+      "emission_energy": 2.4,
       "emission_pulse_hz": 0.5,
-      "emission_pulse_depth": 0.4
+      "emission_pulse_depth": 0.4,
+      "rim_sheen": 0.5
     },
     "sail": {
       "roughness_dry": 0.85,
@@ -44,7 +46,7 @@
       "detail_albedo": 0.2,
       "detail_bump": 0.4,
       "cavity_albedo": 0.4,
-      "rim_sheen": 0.4
+      "rim_sheen": 0.6
     },
     "water": {
       "roughness_dry": 0.08,

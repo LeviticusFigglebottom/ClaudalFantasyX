@@ -17,7 +17,8 @@
     {"op": "line", "id": "ch02_low_tide_001", "key": "DLG_CH02_LOW_TIDE_001", "speaker": "toma", "emotion": "neutral", "voice": "", "src": 15},
     {"op": "line", "id": "ch02_low_tide_002", "key": "DLG_CH02_LOW_TIDE_002", "speaker": "asha", "emotion": "smile", "voice": "", "src": 16},
     {"op": "line", "id": "ch02_low_tide_003", "key": "DLG_CH02_LOW_TIDE_003", "speaker": "toma", "emotion": "worried", "voice": "", "src": 17},
-    {"op": "line", "id": "ch02_low_tide_004", "key": "DLG_CH02_LOW_TIDE_004", "speaker": "asha", "emotion": "soft_smile", "voice": "", "src": 18}
+    {"op": "line", "id": "ch02_low_tide_004", "key": "DLG_CH02_LOW_TIDE_004", "speaker": "asha", "emotion": "soft_smile", "voice": "", "src": 18},
+    {"op": "cue", "cue": "music", "args": ["saltgrass_causeway"], "kwargs": {"fade": 4.0}, "src": 20}
    ]
   }
  }

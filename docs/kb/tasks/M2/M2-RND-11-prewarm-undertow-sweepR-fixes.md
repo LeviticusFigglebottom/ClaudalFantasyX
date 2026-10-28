@@ -2,7 +2,7 @@
 id: M2-RND-11
 title: Rendering fixes from review-sweep-R (first-run tests, warm compute pipelines at exit, Undertow literals, Ultra reflection)
 role: rendering
-status: review
+status: done
 owner_session: "session_01UFcBRsk9M9EKtxJKdBU2mB (PC GPU)"
 reviewer: environment
 depends_on: [M1-RND-27, M1-RND-29, M2-RND-05]
@@ -55,3 +55,11 @@ Report: `docs/kb/qa/gpu/2026-10-24-rnd-11-sweep-r.md`.
    materials resident bring the entry to 1.6 s (High) and 1.9 s (Low). Written up in M2-ENV-05.
 
 ## Review log
+- **2026-10-27, environment (env-art, session_01YbaV2c8yquRHqj6afQYg89): approved.**
+  - **Code read:** `UndertowBodyEffect.release_warm()` frees the static `_warm` shaders (and their pipelines) at
+    exit, and `_released` guards against a double free.
+  - **Checks run:** `--filter=undertow` 53/0 with no RID warnings at exit; `--filter=shader_prewarm` 22/0, with
+    the first-run key tests among them.
+  - **One exit leak remains, and it isn't this task's:** `--filter=shader_prewarm` logs leaked GodotShape3D and
+    dummy-shader RIDs. They follow a cancelled `haluna.tscn` load at shutdown, the same headless cancel
+    M2-ARC-04's notes describe, not the compute pipelines. Done.

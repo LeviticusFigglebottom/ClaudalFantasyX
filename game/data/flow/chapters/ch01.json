@@ -3,6 +3,8 @@
   "chapter": "ch01",
   "zones": {
     "ch01/oruvel_underway": {
+      "overheard_hold_sec": 2.4,
+      "overheard_read_cps": 15.0,
       "party": {"party": ["rhen"], "reserve": []},
       "arrive": [
         {"when": {"unset": ["ch01_started"]}, "steps": [
@@ -56,6 +58,8 @@
       }
     },
     "ch01/oruvel": {
+      "overheard_hold_sec": 2.4,
+      "overheard_read_cps": 15.0,
       "party": {"party": ["rhen"], "reserve": []},
       "arrive": [
         {"when": {"set": ["ch01_hullgnaw_defeated"], "unset": ["ch01_went_under"]}, "steps": [

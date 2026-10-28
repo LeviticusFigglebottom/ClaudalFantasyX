@@ -382,7 +382,7 @@ def main() -> None:
     args = ap.parse_args(argv)
     rig = rc.build_rig()
     mesh = build_mesh(rig)
-    info = ck.export_creature(mesh, rig, rc.build_clips(), args.out, extras={"hymn_creature": "wreck_crab"})
+    info = ck.export_creature(mesh, rig, rc.export_clips(rig, mesh), args.out, extras={"hymn_creature": "wreck_crab"})
     print(f"wreck_crab: {info}")
 
 

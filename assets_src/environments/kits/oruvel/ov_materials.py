@@ -131,6 +131,11 @@ MATERIALS: dict[str, dict] = {
                         normal_strength=0.8, roughness_base=0.75, specular_base=0.35, cavity_darken=0.5,
                         erosion_pit_darken=0.4, variation_value=0.14, wet_darken=0.6, wet_roughness=0.12,
                         use_salt=False),
+    # M3-ENV-730 (post_credits): new timber among the old on the rebuilt moorings: the same grain, not yet silvered
+    # (a warm pale #D9B98C), crisp edges, little salt.
+    "ov_timber_new": weather(*TIMBER, base_triplanar=False, col_tint=hexc("#D9B98C"), normal_strength=1.1,
+                             roughness_base=0.78, specular_base=0.3, cavity_darken=0.35, variation_value=0.12,
+                             variation_warmth=0.05, erosion_lighten=0.02, wet_darken=0.55, wet_roughness=0.14),
 }
 
 STANDARD: dict[str, dict] = {

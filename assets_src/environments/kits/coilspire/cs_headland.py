@@ -7,7 +7,7 @@
   headland_path     (headland frame) laterite treads on the path's profile, a tread at every 0.18 m of rise and
                     long flags on the level, two or three slabs across 2.2 m; kerb stones on both edges.
   scrub_clump_a/b   wind-bent shrubs: gnarled stems leaning to local -Z (inland), a low canopy combed the same
-                    way. Origin on the ground at the root.
+                    way, in clumps of small leaf clusters with bare twig tips. Origin on the ground at the root.
 """
 
 from __future__ import annotations
@@ -174,6 +174,7 @@ def build_path(name: str = "headland_path", seed: int = 1111) -> list[kc.MeshBui
 # ---------------------------------------------------------------------------------------------
 # Scrub
 # ---------------------------------------------------------------------------------------------
+SCRUB_CLUSTERS = 7  # leaf clusters per canopy lobe (LOD0)
 SCRUB = {"scrub_clump_a": (1.6, 1.0, 0.75, 1121), "scrub_clump_b": (2.4, 1.3, 1.0, 1122)}  # length, width, height
 
 
@@ -202,10 +203,25 @@ def build_scrub(name: str) -> list[kc.MeshBuilder]:
             half = np.array([length / n_lobes * 0.75, height * rng.uniform(0.32, 0.42), width * 0.48])
             # Combed by the wind: sheared toward -Z with height, flattened on the windward (+Z) side.
             v0, t0 = mb.vertex_count, mb.triangle_count
-            kc.rounded_block(mb, c, half, i_leaf, radius=min(half) * 0.95, seg=1 if lod else 4, noise=None if lod else noise,
-                             disp_m=0.12, disp_period_m=0.25,
-                             weather=kc.Weathering(moss=0.2, salt=0.5, wet=0.0, erosion=0.5),
-                             variation=float(rng.random()))
+            leaf_w = kc.Weathering(moss=0.2, salt=0.5, wet=0.0, erosion=0.5)
+            if lod:
+                kc.rounded_block(mb, c, half, i_leaf, radius=min(half) * 0.95, seg=1, weather=leaf_w,
+                                 variation=float(rng.random()))
+            else:  # M3-ENV-705: a clump of small leaf clusters with gaps between them, not one smooth lobe
+                for _j in range(SCRUB_CLUSTERS):
+                    d = rng.normal(0.0, 1.0, 3)
+                    d = d / np.linalg.norm(d) * rng.uniform(0.25, 0.7) ** 0.5
+                    cc = c + d * half * np.array([0.8, 0.7, 0.8])
+                    r = min(half) * rng.uniform(0.38, 0.6)
+                    kc.rounded_block(mb, cc, (r * rng.uniform(1.0, 1.4), r * rng.uniform(0.7, 0.95), r), i_leaf,
+                                     radius=r * 0.9, seg=2, noise=noise, disp_m=r * 0.45, disp_period_m=r * 0.7,
+                                     rot=kc.rot_y(rng.uniform(0, 3.14)), weather=leaf_w, variation=float(rng.random()))
+                for _j in range(3):  # bare twig tips through the leaves
+                    a = rng.uniform(0, 2 * np.pi)
+                    tip = c + np.array([np.cos(a) * half[0] * 1.15, rng.uniform(0.2, 1.0) * half[1],
+                                        np.sin(a) * half[2] * 1.15])
+                    kc.tube(mb, np.array([c + (tip - c) * 0.4, tip]), [0.012, 0.004], 3, i_wood, cap_end=True,
+                            weather=kc.Weathering(moss=0.0, salt=0.6, wet=0.0, erosion=0.7), variation=0.3)
             p = np.asarray(mb.pos[v0:])
             p[:, 2] -= 0.35 * np.clip(p[:, 1] / height, 0, 1) * width * 0.5
             p[:, 1] = np.maximum(p[:, 1], -0.05)

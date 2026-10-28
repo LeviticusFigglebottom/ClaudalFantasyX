@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" path="res://game/levels/_tests/characters/stillguard/stillguard_d_stage.tscn" id="stage"]
+
+[node name="StillguardDStage" instance=ExtResource("stage")]
+clip = &"shield_up"
+clip_time = 1.2

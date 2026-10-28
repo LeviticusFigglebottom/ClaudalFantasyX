@@ -235,11 +235,42 @@ func test_stage_hero_capsules_get_bodies_and_others_keep_theirs() -> void:
 	_done()
 
 
+## ADR 0041: an actor that plays a hero under another name (vigil_asha, ysolde_edge) takes that hero's body; one
+## whose hero has no model yet (vigil_pell) keeps its capsule.
+func test_aliased_stage_actors_get_their_heroes_bodies() -> void:
+	assert_eq(HeroFieldActor.hero_of(&"vigil_asha"), &"asha", "a prefix")
+	assert_eq(HeroFieldActor.hero_of(&"ysolde_edge"), &"ysolde", "an alias")
+	assert_eq(HeroFieldActor.hero_of(&"toma"), &"toma", "a hero id is itself")
+	assert_eq(HeroFieldActor.hero_of(&"neme"), &"neme", "anyone else is left as is")
+	var stage := CutsceneStage.new()
+	stage.name = "CutsceneStage"
+	var actors := Node3D.new()
+	actors.name = "Actors"
+	stage.add_child(actors)
+	var vigil := _capsule_actor("vigil_asha")
+	var edge := _capsule_actor("ysolde_edge")
+	var pell := _capsule_actor("vigil_pell")
+	for a in [vigil, edge, pell]:
+		actors.add_child(a)
+	zone.add_child(stage)
+	var bodies := HeroFieldActor.attach_stage(stage)
+	var ids: Array[String] = []
+	for b in bodies:
+		ids.append(String(b.hero_id))
+	ids.sort()
+	assert_eq(ids, ["asha", "ysolde"] as Array[String], "Asha's vigil and Ysolde at the edge get bodies")
+	assert_false((vigil.get_node("StandIn") as Node3D).visible, "the vigil's capsule hides")
+	assert_true((pell.get_node("StandIn") as Node3D).visible, "Pell (no model yet) keeps his")
+	_done()
+
+
 ## The speeds the body actually uses (locomotion.json's once M2-CHR-12 is in, else hero_motion.json's)
 ## against HeroClipGait's own measure of whichever clips the model has.
 func test_the_clip_speeds_match_the_measured_foot_plant() -> void:
 	var f := HeroFieldActor.field_data()
 	for id: String in (f["heroes"] as Dictionary).keys():
+		if HeroFieldActor.scene_path(StringName(id)) == "":
+			continue  # a hero whose model has not reached this branch yet (it gets no body until it does)
 		var row := (f["heroes"] as Dictionary)[id] as Dictionary
 		var speeds := HeroFieldActor.gait_speeds(StringName(id))
 		var cfg := HeroFieldActor.measure_config(StringName(id))

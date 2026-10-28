@@ -46,18 +46,21 @@ const META_LIGHT_ENERGY := &"cutscene_authored_energy"
 ## Process after the FieldCameraDirector (priority 0), so the breath turns the pose it just set.
 const PROCESS_AFTER_DIRECTOR := 10
 ## cues.json keys this sequencer accepts but does not perform yet; each warns once per scene.
+## A line tagged #timed shows and the scene goes on: its @waits pace it (a sung verse in time with its cue).
+const TAG_TIMED := "timed"
 const UNSUPPORTED_KWARGS := {
 	&"camera": ["grade"],
 	&"anim": ["loop"],
-	&"sfx": ["at"],
 	&"vfx": ["drift", "motion", "rate", "form"],
 }
 
 ## Tests and captures: no waits, no typewriter, lines and options answer themselves.
 var instant := false
-## Lines advance by themselves once revealed (autoplay, captures), after `auto_advance_hold_sec`.
+## Lines advance by themselves once revealed (autoplay, captures), after `auto_advance_hold_sec`, or longer when
+## `auto_advance_read_cps` > 0: a line stays up until it could be read at that pace (overheard barks).
 var auto_advance := false
 var auto_advance_hold_sec := 1.5
+var auto_advance_read_cps := 0.0
 ## The option index chosen when `instant` or `auto_advance`.
 var auto_choice := 0
 ## When a scene ends faded out, fade back in. A host that changes scene right after sets false.
@@ -85,6 +88,8 @@ var overlay: CutsceneOverlay
 var runner: DialogueRunner
 var music: AudioStreamPlayer
 var music_track: StringName = &""
+## True while this scene's music is Audio's (a music.json cue, M2-AUD-07): music_track is then "".
+var music_by_audio := false
 
 var _playing := false
 var _aborted := false
@@ -320,13 +325,16 @@ func _begin(scene_id: StringName, stage: CutsceneStage) -> void:
 
 
 func _finish() -> void:
+	var skipped := _skipping
 	_skipping = false
 	_awaiting = &""
 	set_skip_held(false)
+	if not skipped and not _aborted:  # M2-HER-1113: a running walk or turn plays out rather than jump to its end
+		await _wait_for(CutsceneMotion.actor_motion_left(_motions))
 	_complete_motions()
 	_key_off()
 	if overlay != null:
-		overlay.box.visible = false
+		overlay.box.dismiss()  # M2-UI-202: the box fades out at the end of a scene
 		overlay.choices.clear()
 	if not _aborted and _director_alive() and _director.is_scripted():
 		_director.release()
@@ -379,10 +387,12 @@ func _line(step: DialogueStep) -> void:
 	if _fast():
 		overlay.box.skip_reveal()
 		return
+	if TAG_TIMED in step.tags:
+		return  # held by the script's own @wait, in time with its music (the first verse), not by input
 	if auto_advance:
 		if overlay.box.is_revealing():
 			await _await_on(&"line", overlay.box.reveal_finished, _on_awaited_plain)
-		await _wait_for(auto_advance_hold_sec)
+		await _wait_for(CutsceneMotion.read_hold(overlay.box, auto_advance_read_cps, auto_advance_hold_sec))
 		return
 	await _await_on(&"line", overlay.box.advance_requested, _on_awaited_plain)
 	if speaker != null and is_instance_valid(speaker):
@@ -503,7 +513,8 @@ func _cue_fade(step: DialogueStep) -> void:
 
 
 func _cue_mark(step: DialogueStep) -> void:
-	var actor := _actor(StringName(str(step.args[0])))
+	var id := StringName(str(step.args[0]))
+	var actor := _actor(id)
 	var target_id := StringName(str(step.args[1]))
 	var target := _stage.mark(target_id) if _stage != null else null
 	if actor == null:
@@ -514,22 +525,30 @@ func _cue_mark(step: DialogueStep) -> void:
 	_held.erase(actor)  # a walk ends any held pose
 	var gait := StringName(str(step.args[2])) if step.args.size() > 2 else &"walk"
 	var speed := maxf(float(config.get("run_mps" if gait == GAIT_RUN else "walk_mps", 1.0)), 0.01)
-	var from := actor.global_position
-	var to := target.global_position
-	var flat := Vector3(to.x - from.x, 0.0, to.z - from.z)
+	# M3-CIN-1221: the way runs from where the actor stands through the `via` marks in order to the mark (round a
+	# rail, down a stair, along a deck): one walk over the whole way, its turns eased at each corner.
+	var path := PackedVector3Array([actor.global_position])
+	for via_id in str(step.kwargs.get("via", "")).split(",", false):
+		var via := _stage.mark(StringName(via_id.strip_edges())) if _stage != null else null
+		if via == null:
+			_warn("no via mark '%s' on the stage" % via_id.strip_edges())
+			continue
+		path.append(via.global_position)
+	path.append(target.global_position)
+	var flat := CutsceneMotion.flat_dir(path, 0)
 	if flat.length() > 0.01:
-		_turn_to(StringName(str(step.args[0])), actor, flat)  # turns into the walk, never snaps
+		_turn_to(id, actor, flat)  # turns into the walk, never snaps
 	# M2-FP-29: a beat of anticipation, then the walk speeds up, cruises and slows to a stop; the
 	# walk clip cross-fades in as it sets off and back to idle as it settles.
-	var dist := from.distance_to(to)
+	var dist := CutsceneMotion.path_length(path)
 	var accel := float(config.get("walk_accel_sec", 0.0))
 	var decel := float(config.get("walk_decel_sec", 0.0))
 	var lead := float(config.get("walk_anticipation_sec", 0.0))
 	var walk := CutsceneMotion.walk_duration(dist, speed, accel, decel)
 	var dur := lead + walk
-	var state := {"walking": false, "m": 0.0, "sec": 0.0}
+	var state := {"walking": false, "m": 0.0, "sec": 0.0, "leg": 0}
 	_start_motion(
-		&"move:%s" % step.args[0],
+		&"move:%s" % id,
 		dur,
 		func(t: float) -> void:
 			if not is_instance_valid(actor):
@@ -540,9 +559,15 @@ func _cue_mark(step: DialogueStep) -> void:
 				_play_clip(actor, gait)
 				if gait == GAIT_RUN:
 					HeroMotion.set_locomotion_speed(actor, speed)  # M2-HER-1104: a run sets off as a run
-			var frac := CutsceneMotion.walk_fraction(sec, dist, speed, accel, decel)
-			_place(actor, from.lerp(to, frac))
-			_locomotion(actor, state, frac * dist, t * dur)
+			var s := CutsceneMotion.walk_fraction(sec, dist, speed, accel, decel) * dist
+			var leg := CutsceneMotion.path_leg(path, s)
+			if leg > int(state["leg"]) and t < 1.0:
+				state["leg"] = leg
+				var turn := CutsceneMotion.flat_dir(path, leg)
+				if turn.length() > 0.01:
+					_turn_to(id, actor, turn)  # the corner, eased like the first turn
+			_place(actor, CutsceneMotion.path_point(path, s))
+			_locomotion(actor, state, s, t * dur)
 			if t >= 1.0:
 				if not state["walking"]:
 					_play_clip(actor, gait)  # instant or skipped: the walk still happened
@@ -563,7 +588,9 @@ func _cue_anim(step: DialogueStep) -> void:
 		_motions.erase(&"move:%s" % step.args[0])
 		var start := actor.global_position
 		var end := standin.global_position
-		var glide := float(config.get("standin_glide_sec", 0.0)) if start.distance_to(end) > 0.01 else 0.0
+		# M2-HER-1113: a mark farther than standin_cut_m is a cut (the shot changes with it), not a glide across it.
+		var far := start.distance_to(end)
+		var glide := float(config.get("standin_glide_sec", 0.0)) if far > 0.01 and far <= _standin_cut_m() else 0.0
 		var curve := float(config.get("turn_ease", 1.0))
 		_start_motion(
 			&"move:%s" % step.args[0],
@@ -597,10 +624,18 @@ func _cue_music(step: DialogueStep) -> void:
 	var silent := float(config.get("silent_db", 0.0))
 	if step.is_music_silence():
 		music_track = &""
+		if music_by_audio:
+			CutsceneSound.music(AudioData.SILENCE, fade)
+		music_by_audio = false
 		_fade_music(silent, fade, true)
 		return
 	var track := StringName(str(step.args[0]))
-	var stream := _music_stream(track)
+	music_by_audio = CutsceneSound.music(track, fade, int(step.kwargs.get("stem", -1)))  # M2-AUD-07, M3-AUD-829
+	if music_by_audio:
+		music_track = &""
+		_fade_music(silent, fade, true)
+		return
+	var stream := CutsceneSound.music_stream(config, track)
 	music_track = track
 	if stream == null:
 		_warn("no music for '%s' (and no stand-in)" % track)
@@ -614,16 +649,11 @@ func _cue_music(step: DialogueStep) -> void:
 
 
 func _cue_sfx(step: DialogueStep) -> void:
-	var path := "%s%s.ogg" % [config.get("sfx_dir", ""), step.args[0]]
-	if not ResourceLoader.exists(path):
+	var at_id := StringName(str(step.kwargs.get("at", "")))
+	var at := _stage.place(at_id) if _stage != null and at_id != &"" else null
+	var vol := float(step.kwargs.get("vol", 1.0))
+	if not CutsceneSound.play(self, str(config.get("sfx_dir", "")), StringName(str(step.args[0])), vol, at):
 		_warn("no sound '%s'" % step.args[0])
-		return
-	var p := AudioStreamPlayer.new()
-	p.stream = load(path)
-	p.volume_db = linear_to_db(float(step.kwargs.get("vol", 1.0)))
-	p.finished.connect(p.queue_free)
-	add_child(p)
-	p.play()
 
 
 func _cue_vfx(step: DialogueStep) -> void:
@@ -756,7 +786,7 @@ func _face_of(actor_id: StringName) -> CutsceneFace:
 		if _lipsync.is_empty():
 			_lipsync = LipSync.load_config()
 		rig = CutsceneFace.new(actor, config.get("lip_flap", {}), _lipsync)
-		rig.configure_blink(config.get("blink", {}), DEFAULT_SEED + hash(actor_id))
+		rig.configure_blink(config.get("blink", {}), DEFAULT_SEED + hash(actor_id), actor_id)
 		if not rig.has_shapes():
 			rig = null
 	_face_rigs[actor_id] = rig
@@ -864,6 +894,10 @@ func _start_motion(key: StringName, duration: float, apply: Callable) -> void:
 	_motions[key] = {"elapsed": 0.0, "duration": duration, "apply": apply}
 
 
+func _standin_cut_m() -> float:
+	return float(config.get("standin_cut_m", INF))
+
+
 func _complete_motions() -> void:
 	for key: StringName in _motions.keys():
 		((_motions[key] as Dictionary)["apply"] as Callable).call(1.0)
@@ -902,16 +936,6 @@ func _fade_music(to_db: float, sec: float, stop_after: bool) -> void:
 			if t >= 1.0 and stop_after:
 				player.stop()
 	)
-
-
-func _music_stream(track: StringName) -> AudioStream:
-	var dir := str(config.get("music_dir", ""))
-	var stand_ins: Dictionary = config.get("music_stand_ins", {})
-	for name_id: String in [String(track), str(stand_ins.get(String(track), ""))]:
-		var path := "%s%s.ogg" % [dir, name_id]
-		if name_id != "" and ResourceLoader.exists(path):
-			return load(path) as AudioStream
-	return null
 
 
 func _face(actor: Node3D, dir: Vector3) -> void:

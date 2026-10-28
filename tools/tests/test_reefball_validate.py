@@ -96,11 +96,75 @@ class ReefballValidateTest(unittest.TestCase):
         m["sides"] = ["oruvel", "nowhere"]
         self.assertTrue(any("unknown side 'nowhere'" in e for e in self.errs()))
 
+    def test_stakes_key(self) -> None:
+        # M3-RBL-201: optional, but a present stakes_key is a non-empty loc key, collected for the loc check.
+        files = {vd.REEFBALL_RULES: self.rules, vd.REEFBALL_SIDES: self.sides, vd.REEFBALL_MATCHES: self.matches}
+        self.assertIn("RBL_HUD_STAKES_TIDECUP_OPENING", vd.check_reefball(files, vd.Report()))
+        m = self.matches["matches"][0]
+        m["stakes_key"] = ""
+        self.assertTrue(any("stakes_key" in e for e in self.errs()))
+        del m["stakes_key"]
+        self.assertEqual(self.errs(), [])
+
+    def test_rewards(self) -> None:
+        # M3-C07-05: optional rewards per outcome (lume, and items that exist in items.json).
+        m = self.matches["matches"][0]
+        m["rewards"] = {"win": {"lume": 300, "items": {"salt_tonic": 1}}, "loss": {"lume": 120}}
+        self.assertEqual(vd.reefball_errors(self.rules, self.sides, self.matches, {"salt_tonic"}), [])
+        m["rewards"] = {"win": {"items": {"no_such_item": 1}}}
+        errs = vd.reefball_errors(self.rules, self.sides, self.matches, {"salt_tonic"})
+        self.assertTrue(any("unknown item 'no_such_item'" in e for e in errs))
+        for bad, says in (({"tie": {"lume": 1}}, "outcome must be one of"), ({"win": {"lume": -1}}, "lume must be"),
+                          ({"win": {"items": {"salt_tonic": 0}}}, "count must be"), ({"win": {"gold": 1}}, "only lume"),
+                          ([], "must be an object")):
+            m["rewards"] = bad
+            self.assertTrue(any(says in e for e in self.errs()), (bad, self.errs()))
+        del m["rewards"]
+        self.assertEqual(self.errs(), [])
+
+    def test_requires_item(self) -> None:
+        # ADR 0040: a match may be gated on a key item the party holds (the Oruvel Float in the Act III league).
+        m = self.matches["matches"][0]
+        m["requires_item"] = "oruvel_float"
+        self.assertEqual(vd.reefball_errors(self.rules, self.sides, self.matches, {"oruvel_float"}), [])
+        m["requires_item"] = "no_such_item"
+        errs = vd.reefball_errors(self.rules, self.sides, self.matches, {"oruvel_float"})
+        self.assertTrue(any("requires_item 'no_such_item'" in e for e in errs))
+
     def test_bad_top_level(self) -> None:
         self.assertTrue(vd.reefball_errors({}, {}, {}))
         self.rules["rules"]["bands"] = [{"id": "ring", "name_key": "K"}]
         self.assertTrue(any("bands must list" in e for e in self.errs()))
 
+
+
+class ReefballGearValidateTest(unittest.TestCase):
+    """ADR 0040: Reefball-only gear rows and their owned and worn flags."""
+
+    FLAGS = {"rbl_gear_band_a_owned", "rbl_worn_band", "rbl_worn_float"}
+
+    def doc(self, **row: object) -> dict:
+        base = {"id": "band_a", "kind": "band", "name_key": "K", "desc_key": "D", "price": 10, "bonus": {"grip": 1}}
+        base.update(row)
+        return {"gear": [base]}
+
+    def test_a_good_row_passes_and_the_shipped_file_too(self) -> None:
+        self.assertEqual(vd.reefball_gear_errors(self.doc(), self.FLAGS), [])
+        shipped = json.loads((ROOT / vd.REEFBALL_GEAR).read_text(encoding="utf-8"))
+        self.assertEqual(vd.reefball_gear_errors(shipped, vd.declared_flags_quiet(ROOT)), [])
+
+    def test_bad_rows_are_named(self) -> None:
+        for row, says in (({"kind": "hat"}, "kind must be"), ({"price": -1}, "price must be"),
+                          ({"bonus": {}}, "at least one stat"), ({"bonus": {"luck": 1}}, "not a Reefball stat"),
+                          ({"bonus": {"grip": 0}}, "must be an int >= 1")):
+            errs = vd.reefball_gear_errors(self.doc(**row), self.FLAGS)
+            self.assertTrue(any(says in e for e in errs), (row, errs))
+
+    def test_the_flags_must_be_declared(self) -> None:
+        errs = vd.reefball_gear_errors(self.doc(), {"rbl_worn_band"})
+        self.assertTrue(any("rbl_gear_band_a_owned" in e for e in errs))
+        self.assertTrue(any("rbl_worn_float" in e for e in errs))
+        self.assertEqual(vd.reefball_gear_errors(self.doc(), None), [], "None: flags not checked")
 
 class ReefballSimHelpersTest(unittest.TestCase):
     SUITE = {"id": "s", "match": "m", "bands": {"naive": [10, 30], "smart": [55, 80], "other": None},

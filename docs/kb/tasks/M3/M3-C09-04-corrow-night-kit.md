@@ -34,4 +34,9 @@ Ch9 plays on one greybox zone, `ch09/corrow_night` (M3-C09-02; `game/levels/ch09
 - The layout's `doc` describes each block. `tests/integration/test_ch09_thread.gd` names the spawns, marks, shots and triggers it depends on.
 - In the greybox, +Z is south, out to sea; the placeholder held motes drift that way. On the real Corrow the sea is south-west (act1_ch09.md §9 Rendering 2).
 
+- **env-art, 2026-10-27 (B01 and B10):**
+  - **B01's save shrine:** M3-ENV-101's `save_shrine` / `save_shrine_core` (swap note in env-art's live log).
+  - **B10, the Iskarra vigil:** dress the stand-in plaza with `assets/environments/zones/iskarra/iskarra_city.tscn`
+    (M3-ENV-710). It instances as one node, so the x 300 stand-in can take it as is.
+
 ## Review log

@@ -271,7 +271,8 @@ def main() -> None:
     args = ap.parse_args(argv)
     rig = build_rig()
     mesh = build_mesh(rig)
-    info = ck.export_creature(mesh, rig, sp.build_clips(), args.out, extras={"hymn_creature": "wall_polyp"})
+    # the spawn polyp's clips, kept off the floor the same way (M3-CRE-632): the stone the base carries never sinks
+    info = ck.export_creature(mesh, rig, sp.export_clips(rig, mesh), args.out, extras={"hymn_creature": "wall_polyp"})
     print(f"wall_polyp: {info}")
 
 

@@ -367,3 +367,468 @@ RENDER-REQUEST @ 1b84b89c: field_hero_rhen_walk, field_hero_party, field_hero_ga
      - M2-HER-1113 cutscene patch → I empty the cutscene guard's KNOWN list;
      - M2-HER-1114 placeholder crash and arm flip → I empty the battle guard's KNOWN entry;
      - M2-CHR-513 → I re-check KO, victory and revive (the pop test picks them up by itself).
+- **Approved after viewing @ d036076d:** battle_heroes_idle, _attack, _hit, _ko, _victory, _cast, _finisher (PC render
+  gpu/render-hero-integration-b2453cf); the rows are back in shots.json. What the shots show:
+  - real models, grounded and facing the foes; attack contact, hit recoil, cast and finisher all read;
+  - victory is nearly idle, and Rhen strikes empty-handed (both waiting on M2-CHR-513);
+  - **a felled hero (Toma) dissolves away** in the KO shot: the felled-foe fade applies to the party too. Added to
+    M2-HER-1114 for battle-presentation.
+- **MERGE-READY @ d4430397 (FAST-TRACK, the Lead's Ysolde item):** Ysolde is her real model in battle, not a tan capsule.
+  - Her wrapper (`ysolde_battle_actor.tscn`, placeholder contract clips tuned) is wired in battle_sandbox.json's
+    `stand_ins.ysolde`. That's one row of UI's file, changed on the Lead's instruction.
+  - Two battle-presentation tests stopped assuming she's a capsule (test-only).
+  - The same change is in `docs/kb/tech/ysolde_battle_fasttrack.patch` for the owners (noted in M2-HER-1108).
+  - Her field and cutscene body landed earlier (hero_motion.json @ 549afe82).
+  - Real battle clips: request M2-HER-1115 (characters).
+  - **Shots this changes (not re-approved by me):** battle_choreo_cast, battle_choreo_read, battle_choreo_toll,
+    battle_statuses, battle_swell_glyph, battle_read_panel, plus any other battle shot with Ysolde in the party.
+  - Checks run: battle 703/0, hero_ 97/0, fighter 5/0, clips 7/0, validate_data, gdlint and gdformat; the six shot
+    scenes load headless with 0 errors.
+  - Skipped: rendering (the PC's job), Blender, coverage (no game/battle code change).
+
+### Render requests
+RENDER-REQUEST @ d4430397: battle_choreo_cast, battle_choreo_read, battle_choreo_toll, battle_statuses, battle_swell_glyph, battle_read_panel; why: Ysolde's real model replaces her capsule (FAST-TRACK); for the Lead to view and approve (the field and hero set @ 1b84b89c still stands)
+- **@ e8b43b5d + the M2-HER-1113 re-cut (Act I hero checks, for act1-chapters and slice-polish):**
+  - The guards now read their zones and scenes from the game's data: field over **15 zones** (Ch8's Coilspire and
+    Corrow included), cutscenes over **79 scenes** (every chapter-file `play` step, the prologue, HalunaStory's
+    scenes).
+  - **Field: every zone clean.**
+  - **Cutscenes:** 30 actor/scene pairs snap on this branch. All of them are fixed by the re-cut
+    `cutscene_no_snap.patch` (against claude/m2-slice d4921946), now with a third fix: a stand-in clip mark farther
+    than 2.5 m is a cut, not a glide. Ch9's `@anim asha pole_out` glided Asha 30 m across the harbour at 120 m/s;
+    ch09_zone.gd says it should cut.
+  - Verified on m2-slice + the patch: the guard is clean on all 79; cutscene 61/0, fp_ 28/0, haluna 57/0, prologue
+    7/0, _thread 34/0, ch09 7/0.
+  - ch0 62/1: test_ch01_oruvel_kit's storm swap fails only inside the ch0 sweep. It passes alone with the patch and
+    without it, so it depends on test order and isn't the patch.
+  - The 30 pairs are KNOWN in the test until the patch lands.
+- **Merge note for the Lead:** claude/ui's 80d358bf and my d4430397 both edit game/data/ui/battle_sandbox.json's
+  stand_ins, on adjacent rows. Resolve by keeping both: UI's Rhen, Asha and Toma rows, and my Ysolde row with her
+  scene and yaw_deg.
+- **MERGE-READY @ bccce923**
+  - **M3-ARC-1216, steep stairs (ADR 0193).** HeroStairFlight and HeroStairs: Rhen climbs 48° and descends 60°
+    flights on their profile, step by step, eased, at slope_speed_mps 1.0. Standing still doesn't slide; pushing
+    sideways keeps him inside the edges; walking under a flying stair doesn't climb it. Asha and Toma follow up the
+    steps (test_hero_stairs, 7).
+  - **M2-HER-1116 followers:** never inside a wall (slide along it; a clear catch-up side; an eased min-gap push);
+    take steep flights; Ysolde follows when she joins (test_hero_followers, 11). Foot IK on/off switch.
+  - Checks run: hero_ 107/0, field 147/0, zone 51/0, haluna 50/0, hero_stairs 7/0, hero_followers 11/0, gdlint and
+    gdformat, validate_data, taskboard --check.
+  - Skipped: shots (no scene or shader touched; followers only differ next to walls), Blender, coverage.
+- **For act1-chapters (unblocks M3-C05-1215, the Ashcrown swap): how to place a steep flight.** Full notes are in
+  M3-ARC-1216.
+  - Mark it with a `HeroStairFlight` node (origin = the centre of the foot on the lower floor; it climbs along the
+    node's -Z; run_m, rise_m, width_m), **or** a row in the zone layout's `"stairs"` list:
+    `{"id": "FlyingStair", "foot": [x, y, z], "head": [x, y, z], "width_m": 2.0}`. No code change on your side:
+    HeroStairs builds the rows when the zone loads.
+  - Keep the flight's blocking collision, and give each end a landing floor.
+  - Cutscene walks across a flight need M3-HER-1119 (slice-polish), and villagers need M3-HER-1118 (creatures).
+- **For slice-polish (relay, please): ONE patch now,** `docs/kb/tech/cutscene_walks_combined.patch`.
+  - It replaces both `cutscene_no_snap.patch` (M2-HER-1113) and act1-chapters' `cutscene_mark_via.patch`
+    (M3-CIN-1221). Those two overlap in `_cue_mark`, and the via patch no longer applied to claude/m2-slice.
+  - Cut against claude/m2-slice d4921946. The sequencer ends at 999 lines.
+  - Verified there with my hero layer overlaid: the cutscene guard over all 79 scenes, mark_via 3/0, sequencer 17/0,
+    cutscene 64/0, fp_ 28/0, haluna 57/0, prologue 7/0, _thread 34/0, ch09 7/0.
+  - Once it lands, act1-chapters can write `via=` (M3-CIN-1220) and I empty my guard's KNOWN list (queue item 6).
+- **Merge note:** M3-ARC-1216's task file was on act1-chapters only. My branch adds it with my claim (the Lead
+  reassigned it). On an add/add conflict, keep mine.
+
+### Perf requests
+PERF-REQUEST @ bccce923: foot IK frame cost on hardware. Haluna, the party running the beach-to-court loop, 60 s each with game/data/hero_motion/foot_ik.json "enabled": true and then false; report the mean and p99 frame times and the delta. Cloud CPU estimate: 18 us per hero per frame.
+- **Queue item 2 (M3-CIN-1220 support), prepared:**
+  - The cutscene guard now measures every walking actor's floor gap with `HeroMotionGuard.floor_gap`: a ray under
+    the feet, the cast's own colliders ignored, a tolerance of 0.15 m. It prints `OFF-FLOOR <scene> <actor>: <worst
+    gap>` and doesn't fail yet.
+  - Today: 17 actor/scene pairs, in ch04_long_way_round, ch06_liss_lantern, ch07_leaving_tamsule,
+    ch07_after_the_bell, ch07_empty_moorings and ch09_the_ebbing. The 0.60 m gaps are walks passing under or through
+    something at about waist height.
+  - Once the combined patch is on the integration branch and act1-chapters has written its via= paths, I turn this
+    into a failure, with a KNOWN list for whatever is left.
+- **MERGE-READY @ 97fbd608: big11 merged in (0a10af32).**
+  - battle_sandbox.json resolved: UI's three repointed rows plus Ysolde's wrapper row.
+  - **Pop guard on the merged tree (UI's repoint in):** hero_battle 8/0, battle 710/0, fighter 5/0, clips 7/0. The
+    only report is Ysolde's placeholder finisher (KNOWN, M2-HER-1114). M2-HER-1108 is done.
+  - **Villager guard now runs for real** (creatures' VillagerLayer came with big11): all 7 Haluna villagers clean
+    through their routines and visits. Haluna itself still doesn't place the layer: M2-HER-1112, slice-polish's top
+    item.
+  - New from big11: ch08_keeping_flame's Asha jumps 0.34 m on the scene's last frame. That's the end-of-scene
+    completion the combined patch fixes, so it's KNOWN under M2-HER-1113 (31 pairs).
+  - Checks run: hero_ 107/0 (with that entry), field 147/0, zone 60/0, haluna 56/0, villager 19/0, tools
+    test_screenshots, gdlint.
+- **MERGE-READY @ 7a8bff79**
+  - **Ysolde FAST-TRACK, done.** Her battle actor has been wired since d4430397. Now her placeholder clips no longer
+    flip an arm: HeroBattleActor gives them short-path keys and caps fades into fast placeholders at 0.06 s. The pop
+    guard's KNOWN list is empty: hero_battle 8/0, battle 710/0.
+  - **Liss on the hero layer:** her field body row (walk 0.97 and run 2.19 m/s, measured on her model) and her
+    battle wrapper (the model by path; her stand-in's capsule until characters' model merges). Checked on a scratch
+    worktree with her assets: all 26 battle changes clean, her revive included; hero_field_actor 13/0. Her
+    battle_sandbox row: request **M3-HER-1120** (ui-menus).
+  - Kerrid has no model anywhere yet; Sefir isn't a party member.
+  - **Fold-into-characters handoff:**
+    `docs/kb/handoffs/2026-10-27-tech-hero-integration-fold-into-characters.md`.
+  - Items 3 (stairs) and 4 (face the speaker, narrow lanes) were done earlier (5091eb81, 0b15b4f6).
+  - Checks run: hero_ 107/0, battle 710/0, fighter 5/0, clips 7/0, gdlint, validate_data, taskboard.
+
+### Render requests
+RENDER-REQUEST @ 7a8bff79: battle_choreo_cast, battle_choreo_read, battle_choreo_toll, battle_statuses, battle_swell_glyph, battle_read_panel, battle_heroes_idle; why: Ysolde's real model replaces her capsule (FAST-TRACK, same as the request @ d4430397 if it's still unanswered), and her placeholder clips' new fades; for the Lead to view and approve
+
+## INTEGRATION-QA (from 2026-10-27 20:20; the same track and branch, repurposed by the Lead)
+The aim: the human's next playtest finds nothing broken between tracks. Task M3-HER-1121 (status doing).
+
+### The guards (all on this branch; run `--filter=qa_` plus `python3 -m unittest tools.tests.test_qa_flag_reach`)
+| Guard | What fails it |
+|---|---|
+| `tests/integration/test_qa_threads.gd` | Every story-thread test (the slice's first-playable thread, Ch1 and Ch4–Ch9) is re-driven under a QaLogger. It fails on an engine error, a script error, an unexplained warning (a freed object, a missing clip or cue) or the thread's own failure. Known kinds: qa_known.json "known" (missing audio M3-HER-1122, placeholder cue features M3-HER-1123). |
+| `tests/integration/test_qa_capsules.gd` | A visible StandIn capsule in a real zone (the prologue and every chapter location, each layout variant too: Ch9's dawn road); a party member with no battle actor; an encounter enemy, spawn, summon or Vowbound with no actor scene. Known: qa_known.json "capsules" (zone actors M3-HER-1125; battle_foes with owners). |
+| `tools/tests/test_qa_flag_reach.py` | A softlock: a beat's `when`, a prompt's `requires_flag` or an objective's `requires` waits on a flag that nothing sets. |
+| `tests/integration/test_qa_save_shrines.gd` | At every SaveShrine (Haluna) and every Act I rest beat (8: Ch1 bell rests, Ch4 ferry, Ch6 and Ch8 shrines with checkpoints): the flag, the respawn spawn exists and lies in this zone, and a save and load round trip keeps every GameStateData field. A zone step that names a method the zone lacks fails (ZoneStory skips it silently). |
+
+### Runs, 2026-10-27
+- **Integration big12** (e930595c, merged here at 0d19142a): qa_ 5/0 (now 6/0 with the foe check), flag reach 3/0.
+- **Big12 plus each track head** (trial merges, nothing pushed): act1-chapters, audio, battle-presentation, characters,
+  creatures, env-art and ui are clean (qa_ 5/0 and the new capsule guard 3/0). **m2-slice @ 2103aeca fails the
+  first-playable thread:** its First Verse instances `kits/haluna/shrine_offering.glb`, which env-art renamed to
+  `wayside_offering.glb` (39f66d4c, on the integration branch). Filed **M2-HER-1127** (slice-polish).
+- **Capsules the Lead listed, now KNOWN with owners:**
+  - Ilun, Kahre and Virel (the Vowbound): **M3-HER-1126** (creatures, filed);
+  - Inquisitor Moll: M3-CRE-625 (characters);
+  - the Ch9 road capsule: Kerrid at the milestone in corrow_night's dawn variant (M3-CHR-505; act1-chapters stages
+    it), plus Pemakar's boat_fisher (variant). Any new capsule now fails.
+- **Ysolde in battle:** big12 merged this branch at 91b92dda, before her FAST-TRACK row (d4430397). The integration
+  branch still draws her as a capsule, and its baselines are capsule renders. The PC render
+  gpu/render-hero-integration-d443039 shows her real model, and I viewed all six shots: no breakage. In Toll, at
+  13 HP, she leans back hard in the placeholder weak pose (M2-HER-1115, characters). **Not approved,** because that
+  render predates big12, and copying it would undo big12's approved changes in the same shots (the gripped spear,
+  stances). I've asked for a re-render at this head below and will approve that one.
+
+MERGE-READY @ 1c9bf8bd: big12 merged in; M3-HER-1121's save round-trip guard (shrines and Act I rest beats); the capsule guard
+covers foes, summons, the Vowbound and layout variants; requests M3-HER-1126 and M2-HER-1127. Checks run: qa_ 6/0,
+test_qa_flag_reach 3/0, gdlint, gdformat, validate_data, taskboard --check, and the guards on big12 plus all 8 track heads.
+Checks skipped: screenshots (PC-only) and the hero_ suite (no hero-layer code changed since 7a8bff79's 107/0).
+
+### Render requests
+RENDER-REQUEST @ 1c9bf8bd: battle_choreo_cast, battle_choreo_read, battle_choreo_toll, battle_statuses, battle_swell_glyph, battle_read_panel, battle_heroes_idle; why: Ysolde's real battle model replaces her capsule (FAST-TRACK), now on big12's tree (d443039's render predates big12); for this track to view and approve
+
+### Exact next step
+- Approve the RENDER-REQUEST above when it lands, after viewing it.
+- Re-run `--filter=qa_` on each new integration batch and track head; file failures as request tasks.
+- Kerrid: when claude/characters exports kerrid_lod1.glb (M3-CHR-505), do the fold-into-characters handoff's §2 steps
+  1–4.
+- M3-ARC-1216 is in review; its last box is act1-chapters'.
+
+### Render review, 2026-10-27 ~21:50
+- **`lead/gate-render-hero-integration-7a8bff7` viewed (7 drift), NOT approved.** Ysolde's model is right in all
+  of them, with no breakage. But 7a8bff79 predates big12, and against this branch's baselines (big12's approved ones)
+  the drift also covers big12's own changes: the reef crab's and harrier's new models and poses, Toma and the
+  tutorial text in battle_heroes_idle (which has no Ysolde in it). Copying these would revert big12's approvals.
+- **Still needed:** the RENDER-REQUEST above, at a sha with big12 in (4d351143 or later on claude/hero-integration).
+  Same 7 ids. Only Ysolde should drift.
+- **`lead/gate-render-hero-integration-1c9bf8b` viewed and APPROVED (7 shots).** It was rendered on big12's tree, so
+  against big12's baselines:
+  - **The six Ysolde shots** (battle_statuses, battle_read_panel, battle_choreo_cast, battle_choreo_read,
+    battle_choreo_toll, battle_swell_glyph) differ only where she stands: her real model replaces the capsule. In Toll
+    she leans back hard at 13 HP (the placeholder weak pose; M2-HER-1115, characters).
+  - **battle_heroes_idle:** big12's first-battle tutorial prompt now shows, and Toma and Asha are at another phase of
+    their idle. Nothing is broken.
+  - 7a8bff7's render is superseded (not approved; it predates big12).
+
+## INTEGRATION-QA STATUS, 2026-10-28 00:15 (answers the Lead's backlog list, item by item)
+1. **Field-snap clash: DONE.**
+   - **Asha in the Ch7 galleries:** my bug. HeroFieldParty's min-gap push rode on top of the capped step (6.9 m/s).
+     The whole step is now held to max_speed_mps (7b47e387).
+   - **Rhen at Coilspire:** act1-chapters' geometry. He walks off a 2 m drop beside the PathFoot spawn and lands
+     with a 0.31 m pop. Filed **M3-HER-1129** (act1-chapters) and KNOWN in the guard.
+   - **Four new cutscene turn snaps** (ch08_spire_door liss/tender, ch08_stuck_key liss, ch09_the_ebbing
+     kerrid_stair): verified clean with cutscene_walks_combined.patch applied, so they're KNOWN under M2-HER-1113.
+   - hero_ is 109/0.
+2. **Slice-thread playthrough guard: DONE** (test_qa_threads re-drives test_fp_thread: New Game → prologue → Haluna
+   → B06 causeway → Shell Shrine → Drownbell → end card, battles forced won).
+   - It fails on errors, unexplained warnings, missing cues and suspended awaits, and (new) on any flag the
+     chapter or a main objective waits on that the thread never raises.
+   - One flag is unraised: ch02_ate_at_nemes. The thread skips B02; the game plays it. Filed **M2-HER-1128**
+     (slice-polish).
+3. **Act I thread guards: DONE.** The same guard over test_ch01, ch04–ch09 threads. All of their chapter and
+   objective flags are raised.
+4. **Save/load at every shrine: DONE** (test_qa_save_shrines: Haluna's SaveShrine and Act I's 8 rest beats).
+5. **Kerrid's actors: BLOCKED.** claude/characters @ 24dca3d1 has no assets/characters/kerrid yet (only the
+   M3-CHR-505 WIP patch). I'll start the moment kerrid_lod1.glb is pushed (fold-into-characters handoff §2).
+
+**Also done (self-directed backlog):**
+- **M2-HER-1111 and M2-QA-100 are in review.** The runner fails a parse-error file and a test suspended on an
+  await. Across the full suite this adds one failure: test_slice_shots, already fixed on m2-slice.
+- **My test_hero_stairs leaked a zone.** That leak caused the ~30 cascading failures (the same fix as the Lead's
+  9f98ccf6, in eaefe445). Attribution: the integration head gives 2820/2, and every extra failure on this branch
+  was that cascade. The runner now also fails and frees any node a test leaves in the tree. A full run is
+  measuring how many other tests leave nodes; if it's many, the check will report rather than fail, and I'll
+  file the list.
+- M2-HER-1106 and M1-QA-07 are in review.
+
+MERGE-READY @ eaefe445 (superseded below: take the next one, which reports leaks instead of failing them): everything above. Checks run: hero_ 109/0, qa_ 6/0, hero_followers 12/0, gdlint and
+gdformat, taskboard --check, validate_data, a full suite on this branch and on the integration head (the
+attribution above). Skipped: screenshots (no rendered change since the approved 1c9bf8b render).
+
+MERGE-READY @ 44295d79: as above, and the runner's leak check reports (LEAK lines) and frees, without failing (M3-HER-1130), so no other track goes red. Checks: the leak probe (a leak is freed and reported; the summary still parses for ci_local.sh and run_coverage.py), gdlint.
+
+### M3-HER-100 (slice-polish: vigil field bodies), 2026-10-28 ~00:45
+- **Liss: DONE on this branch** (`field.heroes.liss` since 1f190eb8). On a scratch merge of this branch, claude/characters
+  @ 24dca3d1 and claude/m2-slice, `dress_vigils()` gives Liss her body and her capsule goes. Checks: prologue 7/0
+  without m2-slice, hero_field_actor 13/0.
+- **The seam that merge shows:** slice-polish's `test_a_vigil_takes_its_body_when_its_hero_has_one` asserts Liss's
+  capsule stays. Filed **M3-HER-1131** (one line: erase liss and pell from the test's private data).
+- **Kerrid, Pell: BLOCKED.** No models yet (M3-CHR-505, M3-CHR-506). Each is one row the day they land.
+
+### Full suite after the stairs fix, 2026-10-28 ~01:10
+- **2837 run.** The ~30-failure cascade is gone. What's left is the integration's two known failures (creature
+  portraits: creatures; causeway footsteps: audio) and **test_slice_shots**, which the new runner fails as
+  suspended (fixed on m2-slice, M2-QA-100).
+- **Leaks (M3-HER-1130):** 76 tests left nodes in the tree. The runner now frees and reports them (LEAK lines), so
+  none can cascade. The hero layer's 12 are fixed. The other 64 are listed in the task by owner: creatures 18, ui-menus 34,
+  act1-chapters 8 (the act card, hold prompt and names), battle-presentation 4. When the list is empty, one line
+  makes the runner fail a leak.
+
+MERGE-READY @ c9cb7dc9: the stairs leak, the runner's leak report, the hero tests' cleanup, M3-HER-1131 (the Liss vigil
+seam). Checks: full suite (above), hero_foot_ik 5/0, hero_battle_actor 5/0, hero_battle_pops 3/0, gdlint, taskboard.
+
+BACKLOG EMPTY (2026-10-28 ~01:15): what's left waits on other tracks.
+- Kerrid's and Pell's field and battle bodies: no models on claude/characters yet (M3-CHR-505, M3-CHR-506).
+- Taking KNOWN entries out as their owners land fixes: M2-HER-1113 (the cutscene patch), M2-HER-1127, M2-HER-1128,
+  M3-HER-1126, M3-HER-1129, M3-HER-1131.
+- Switching the leak report to a failure once M3-HER-1130's list is empty.
+- M3-ARC-1216: act1-chapters places the stair flights.
+On every new integration batch or track head, I re-run qa_ and hero_ and file what fails.
+
+### The Lead's 01:00 list, 2026-10-28 ~02:00
+1. **SELF-RENDERED @ b04a188a** (a scratch merge: this branch e7d6e7a6+, claude/characters 24dca3d1 and
+   claude/m2-slice; nothing committed from it): slice_prologue_p01, slice_prologue_vigil_line, field_hero_party,
+   field_hero_rhen_walk.
+   - **P01: Liss's vigil is her real body** (M3-HER-100 works): feet on the paving, no clipping. Kerrid's and Pell's
+     vigils are still capsules (no models). The capsule behind Ysolde is Kerrid's vigil, 6.5 m behind her (checked
+     positions), not clipping.
+   - **vigil_line:** Asha and Rhen in frame, clean.
+   - **field_hero_party:** the party's spacing is the same as the baseline (the follower push cap changes nothing
+     here). The drift is characters' new grips: Toma's spear and Asha's staff now in hand. No sliding or clipping.
+   - **field_hero_rhen_walk:** 156 px of drift at the lantern. The capsule beside him is the rig's size reference,
+     also in the baseline.
+   - No baselines written.
+2. **Integration @ cd23f612, full suite: 2820 run, 2 failed.** Both already have owners:
+   - **test_creature_portraits:** M3-CRE-634 (creatures → ui-menus, todo, with a verified patch).
+   - **test_footsteps_slice_zones:** M3-AUD-812 (audio, review). Audio's head (5a4c8470, which contains the
+     integration branch) passes it (5/0), so it's fixed once audio merges.
+   - No new tasks were needed.
+3. **Act I hero-motion audit: docs/kb/qa/act1_hero_motion_audit.md** (M3-HER-1132, review; re-run with
+   --filter=qa_cutscene_motion_audit).
+   - 171 of 244 @anim cues do nothing yet. The heroes' clips are requested in M3-CHR-1000 (except Liss's haul_rope
+     and Pell's storm_call).
+   - Filed: **M3-HER-1133** (characters: Act I's people's clips and those two), **M3-HER-1134** (creatures: the
+     Matron's two).
+   - Placeholder cue features: added to M3-HER-1123.
+
+MERGE-READY @ 6c4e9d1e: the audit test and doc, and tasks M3-HER-1132–1134. Checks: qa_cutscene_motion_audit 1/0 (0 left
+nodes), gdlint, taskboard, validate_data. No game code changed.
+
+## ADR 0041: THE ACT I INVENTORY (integration-qa owns it, from 2026-10-28 ~02:40)
+MERGE-READY @ ee41e2bd: **first pass of tools/placeholder_audit.py and docs/kb/qa/act1_final_inventory.md.**
+- **159 items** (138 high, 17 medium, 4 low). One task per owner:
+  - characters **107**, M3-HER-1144: the zones' capsule people and NPCs, plus Kerrid's and Liss's battle actors;
+  - env-art 15, M3-HER-1140: greybox in the prologue city, Oruvel and the Underway, Haluna's dressing, the
+    First Verse set, the Wake and the ferry; Haluna's banyan_placeholder and windbreak_placeholder meshes;
+  - env-art-b 11, M3-HER-1141: greybox in Pemakar, Ashcrown, Tamsule, the Ch8/Ch9 Corrows and Coilspire; the Ch8
+    **wall_head_storm arena is still game/battle/arenas' greybox**;
+  - audio 12, M3-HER-1146: Act I music cues that are silent or play a stand-in. **Seam:** music.json has cue rows
+    (oruvel_raft and others) that CutsceneSequencer never reads; it plays music_dir/<id>.ogg only;
+  - creatures-b 6, M3-HER-1143: Moll, Ilun, Kahre and Virel as primitives, and the Matron and Spar Wraith
+    capsules on stage;
+  - act1-chapters 3, M3-HER-1145: Ch8's headland and flue fights have no arena (the sandbox's set);
+  - ui-menus 3, M3-HER-1147: no menu portraits for Ysolde, Liss or Kerrid;
+  - creatures 2, M3-HER-1142.
+- Run it: `python3 tools/placeholder_audit.py --write` (Godot on PATH runs the zone scan itself, ~10 min).
+  `--check` exits 1 while any item is left (ADR 0041's "done").
+- Checks: tools.tests.test_placeholder_audit 7/0, taskboard --check, validate_data, gdlint on the scan script.
+- **Next, refining:**
+  - icons (items have no icon field yet);
+  - NPC and wildlife scenes outside zones;
+  - the battle VFX check (battle-presentation);
+  - Act I cutscene-only actors (from the motion audit);
+  - a recurring re-run on each merge batch.
+MERGE-READY @ 7378b38b: **inventory refined.**
+- **Boss set-piece VFX:** 5 Act I bosses have none (Hullgnaw, Spar Wraith, Cinder Matron, Moll, the Undertow's
+  Reach). Filed M3-HER-1148 (battle-presentation).
+- **Clearer rows:** the greybox rows now name what is greybox, e.g. Haluna's **SaveShrine is built from
+  primitives**, Neme's bag is a box, and the Ch4/Ch5 arenas' **lamp flames are flat spheres**.
+- **Not audited, with the reason:** icons (the Act I menus have none) and per-skill VFX (every hit falls back to
+  its element's effect).
+- **Now 164 items** (138 high, 22 medium, 4 low). Checks: tools test 8/0, taskboard --check.
+- The Lead's item (1), self-render the hero shots: done earlier (SELF-RENDERED @ b04a188a above).
+MERGE-READY @ 4a88c28d: **the inventory now lists its coverage.** The scan follows the Act I chapters' `scene` steps
+(Ch7's Tidecup match: clean) and names the 28 scenes it loaded (17 zones, 11 arenas) at the top of the
+inventory. Still 164 items. Checks: tools test 8/0, gdlint.
+- **Next for the inventory:** re-run on each merge batch (`python3 tools/placeholder_audit.py --write`); move each
+  owner's fixed rows out as they land. `--check` is the ADR 0041 "done" gate.
+
+### The party's share of the inventory (M3-HER-1149, the Lead's split, 2026-10-28 ~03:30)
+MERGE-READY @ 8fdf266d:
+- **Stage actors that play a hero under another name now take the hero's body.** This uses hero_motion.json's
+  actor_aliases (ysolde_edge, kerrid_stair) and actor_prefixes (vigil_).
+  - Real bodies now: Ysolde at the Wake's edge; Ch9's vigil_asha, vigil_rhen, vigil_toma and vigil_ysolde.
+  - Still waiting on models: Kerrid's, Liss's and Pell's (Liss's model is on claude/characters).
+  - The vigils are staged kneeling, so the bodies stand until the scene plays a kneel (noted in the task).
+- **Liss's battle row** (battle_sandbox.json → liss_battle_actor.tscn; M3-HER-1120 is in review, ui-menus has
+  nothing to do).
+- **The inventory's people rows are re-split:**
+  - integration-qa 17: Kerrid, Liss and Pell everywhere, all waiting on models;
+  - characters 33: named story NPCs, plus Liss's battle model;
+  - creatures 54: background folk.
+  - Total 159 items (133 high).
+- **SELF-RENDERED @ 8fdf266d:**
+  - ch09_corrow_road and ch09_corrow_strand: pixel-identical to their baselines. No manifest shot frames the
+    vigils.
+  - A probe view of the vigil set (temporary, not committed), viewed: Asha, Rhen, Toma and Ysolde are bodies, feet
+    on the floor, no clipping. Liss and Kerrid are still capsules.
+- **Checks:** hero_ 110/0, qa_capsules 3/0, tools test 9/0, validate_data, taskboard.
+- **Next:** Liss in the field and battle the moment characters' liss_lod1.glb merges (nothing to change). Kerrid
+  and Pell once M3-CHR-505 and 506 land.
+MERGE-READY @ 9deaedce: **Kerrid on the hero layer** (M3-HER-1149):
+- **Field row:** walk 0.71 and run 1.80 m/s, measured on kerrid_lod1.
+- **Battle:** a wrapper on characters' kerrid_battle.tscn by path, his idle phase and his battle_sandbox row.
+- Until claude/characters merges, he has no field body and his wrapper draws its own capsule. After it merges,
+  he's real with no further change.
+- **Checks:** hero_ 110/0 on this branch; on a scratch merge with claude/characters 24dca3d1, hero_ green (the pop
+  guard over his real battle clips too) and hero_field 29/0.
+- **SELF-RENDERED @ 9deaedce** (the scratch merge): ch09_corrow_road shows **Kerrid at the milestone as his real
+  body** (the capsule in the baseline is gone), feet on the road, no clipping.
+- **Left for the party:** Pell (no model yet: M3-CHR-506) and Liss's and Kerrid's models reaching the
+  integration branch.
+
+## TRIAL MERGE
+Run with `python3 tools/dev/trial_merge.py --keep` (tools/dev/trial_merge.py: a throwaway worktree, never pushed). Each conflict names the files and the merged tracks holding a different version of each (tracks that merged each other share a "+"). The trial resolves the append-only files by union and keeps the merged side for the rest, so later tracks still go in.
+
+### 2026-10-28 ~04:30
+TRIAL MERGE @ integration 8d03e6d1: env-art ba895bee, env-art-b 8240c0e0, creatures 1514bd69, creatures-b 134251ef, characters fc74c29c, ui 8964614e, battle-presentation c832a740, act1-chapters 0737523e, m2-slice c536ade7, audio 29d5982b, hero-integration bf5749ea
+- **env-art-b** (8240c0e0): 3 conflicted file(s); 2 resolved by union (append-only files):
+  - `docs/kb/ownership.md`: env-art-b vs env-art (the trial keeps the merged side)
+- **creatures** (1514bd69): 4 conflicted file(s); 3 resolved by union (append-only files):
+  - `docs/kb/ownership.md`: creatures vs env-art vs env-art-b (the trial keeps the merged side)
+- **creatures-b** (134251ef): 2 conflicted file(s); 0 resolved by union (append-only files):
+  - `docs/kb/ownership.md`: creatures-b vs env-art vs env-art-b vs creatures (the trial keeps the merged side)
+  - `game/data/creatures/creatures.json`: creatures-b vs creatures (the trial keeps the merged side)
+- **characters** (fc74c29c): 4 conflicted file(s); 3 resolved by union (append-only files):
+  - `tools/dev/blender_builds.json`: characters vs creatures+creatures-b (the trial keeps the merged side)
+- **ui** (8964614e): 15 conflicted file(s); 4 resolved by union (append-only files):
+  - `assets/ui/portraits/creatures/flue_moth.png`: ui vs creatures (the trial keeps the merged side)
+  - `assets/ui/portraits/creatures/mangrove_drowner.png`: ui vs creatures+creatures-b (the trial keeps the merged side)
+  - `assets/ui/portraits/creatures/mangrove_drowner.png.import`: ui vs creatures+creatures-b (the trial keeps the merged side)
+  - `assets/ui/portraits/creatures/oil_slug.png`: ui vs creatures (the trial keeps the merged side)
+  - `assets_src/characters/requested_clips.json`: ui vs characters (the trial keeps the merged side)
+  - `docs/kb/ownership.md`: ui vs env-art vs env-art-b vs creatures vs creatures-b (the trial keeps the merged side)
+  - `docs/kb/tasks/M3/M3-CRE-634-portrait-test-enemies-only.md`: ui vs creatures+creatures-b (the trial keeps the merged side)
+  - `docs/kb/tasks/M3/M3-ENV-1214-pemakar-story-pieces.md`: ui vs env-art+env-art-b (the trial keeps the merged side)
+  - `game/data/battle/arenas.json`: ui vs env-art vs env-art-b (the trial keeps the merged side)
+  - `game/data/ui/battle_sandbox.json`: ui vs env-art-b (the trial keeps the merged side)
+  - `tools/dev/blender_builds.json`: ui vs creatures+creatures-b vs characters (the trial keeps the merged side)
+- **battle-presentation** (c832a740): 6 conflicted file(s); 3 resolved by union (append-only files):
+  - `docs/kb/ownership.md`: battle-presentation vs env-art vs env-art-b vs creatures vs creatures-b vs ui (the trial keeps the merged side)
+  - `game/battle/scene/battle_choreo.gd`: battle-presentation vs ui (the trial keeps the merged side)
+  - `game/data/ui/battle_sandbox.json`: battle-presentation vs env-art-b vs ui (the trial keeps the merged side)
+- **act1-chapters** (0737523e): 15 conflicted file(s); 1 resolved by union (append-only files):
+  - `game/data/audio/creature_voices.json`: act1-chapters vs ui (the trial keeps the merged side)
+  - `game/levels/_tests/act1_zones/ch07_tamsule_shots.tscn`: act1-chapters vs env-art-b (the trial keeps the merged side)
+  - `game/levels/act1/zone_kit_dressing.gd`: act1-chapters vs env-art-b vs ui (the trial keeps the merged side)
+  - `game/levels/ch05/pemakar/pemakar_dressing.json`: act1-chapters vs env-art-b vs ui (the trial keeps the merged side)
+  - `game/levels/ch07/tamsule/tamsule.tscn`: act1-chapters vs env-art-b vs ui (the trial keeps the merged side)
+  - `game/levels/ch07/tamsule/tamsule_dressing.json`: act1-chapters vs env-art-b (the trial keeps the merged side)
+  - `game/levels/ch08/coilspire/coilspire_dressing.json`: act1-chapters vs env-art-b vs ui (the trial keeps the merged side)
+  - `game/levels/ch08/corrow/corrow_dressing.json`: act1-chapters vs env-art-b vs ui (the trial keeps the merged side)
+  - `game/levels/ch09/corrow_night/corrow_night_dressing.json`: act1-chapters vs env-art-b vs ui (the trial keeps the merged side)
+  - `tools/act1/ch05_pemakar_dressing.py`: act1-chapters vs env-art-b vs ui (the trial keeps the merged side)
+  - `tools/act1/ch07_tamsule_port_dressing.py`: act1-chapters vs env-art-b (the trial keeps the merged side)
+  - `tools/act1/ch08_coilspire_dressing.py`: act1-chapters vs env-art-b vs ui (the trial keeps the merged side)
+  - `tools/act1/ch08_corrow_dressing.py`: act1-chapters vs env-art-b vs ui (the trial keeps the merged side)
+  - `tools/act1/ch09_corrow_night.py`: act1-chapters vs env-art-b vs ui (the trial keeps the merged side)
+- **m2-slice** (c536ade7): 9 conflicted file(s); 3 resolved by union (append-only files):
+  - `assets/levels/ch03/shell_shrine/shrine_gi_closed.res`: m2-slice vs ui (the trial keeps the merged side)
+  - `assets/levels/ch03/shell_shrine/shrine_gi_inputs.json`: m2-slice vs ui (the trial keeps the merged side)
+  - `assets/levels/ch03/shell_shrine/shrine_gi_open.res`: m2-slice vs ui (the trial keeps the merged side)
+  - `docs/kb/tasks/M2/M2-HER-1113-cutscene-turns-and-end-jumps.md`: m2-slice vs env-art-b+ui (the trial keeps the merged side)
+  - `game/levels/ch03/first_verse/first_verse.tscn`: m2-slice vs ui (the trial keeps the merged side)
+  - `tests/integration/test_slice_primitives.gd`: m2-slice vs ui (the trial keeps the merged side)
+- **hero-integration** (bf5749ea): 4 conflicted file(s); 0 resolved by union (append-only files):
+  - `docs/kb/tasks/M2/M2-QA-100-runner-suspended-tests.md`: hero-integration vs ui+m2-slice (the trial keeps the merged side)
+  - `docs/kb/tasks/M3/M3-HER-1120-liss-battle-stand-in.md`: hero-integration vs ui (the trial keeps the merged side)
+  - `tests/integration/test_qa_capsules.gd.uid`: hero-integration vs ui (the trial keeps the merged side)
+  - `tests/unit/test_hero_stairs.gd`: hero-integration vs env-art-b vs ui (the trial keeps the merged side)
+**What needs an owner's eye (the Lead's call):**
+1. **act1-chapters vs env-art-b: both are dressing Ch5/Ch7/Ch8/Ch9.** The clashing files:
+   - pemakar_dressing.json, tamsule_dressing.json, coilspire_dressing.json, corrow_dressing.json and
+     corrow_night_dressing.json;
+   - their generators in tools/act1/;
+   - game/levels/act1/zone_kit_dressing.gd;
+   - tamsule.tscn and the Ch7 shot rig.
+
+   Exactly the "two tracks dressing the same zones" case. One owner per zone, per ADR 0041's split
+   (env-art-b: Ch5–Ch9 zones; act1-chapters: placement and flow).
+2. **ui carries its own versions of other tracks' files:** act1-chapters' dressing generators, m2-slice's shrine GI
+   bake and first_verse.tscn, creatures' portraits (flue_moth, mangrove_drowner, oil_slug), characters'
+   requested_clips.json, arenas.json and battle_choreo.gd. Most likely ui merged older heads of those tracks; its
+   next integration merge should take theirs.
+3. **creatures vs creatures-b on game/data/creatures/creatures.json:** both write rows (the regulars/bosses split).
+4. **battle_sandbox.json differs between env-art-b, ui and battle-presentation;** this branch's Liss and Kerrid rows
+   are in it too.
+5. **blender_builds.json:** characters vs creatures (both add jobs). A union-style resolve is likely right.
+6. **docs/kb/ownership.md conflicts on every merge,** and tools/dev/merge_union.py doesn't union it although
+   TRACK-RULES lists it as append-only. A one-line addition to merge_union.py would end that (QA & Tools' file;
+   not edited here).
+- hero-integration's own clashes are task files and the Lead's test_hero_stairs fix (taking theirs is right).
+- I can't self-schedule while send_later is off, so I'll re-run this trial at each wake, about hourly.
+**The placeholder audit on the trial-merged tree** (inventory rewritten from it @ 8b8cb3f0; its Source line says so):
+- **45 items** (26 high, 15 medium, 4 low), against 159 on this branch alone: the tracks' unmerged work clears most
+  of Act I. By owner:
+
+  | Owner | Items |
+  |---|---|
+  | env-art | 13 |
+  | audio | 12 |
+  | creatures | 4 |
+  | creatures-b | 4 |
+  | act1-chapters | 3 |
+  | characters | 3 |
+  | env-art-b | 3 |
+  | integration-qa | 2 (Pell) |
+  | ui-menus | 1 (Kerrid's portrait) |
+- **Seen only on the merged tree. Check these at the real merge:**
+  - **Haluna's 7 villagers are capsules again** (Child, Fisher, Neme, Netmender, Osu, Reed, Vendor). Neither branch
+    alone shows them as capsules, so this is likely the duplicate villager systems (creatures' VillagerLayer vs
+    slice-polish's HalunaVillagers) meeting.
+  - **The merged tree has a parse error:** BattleChoreo.REACT_IMMUNE is missing. battle-presentation's code uses
+    it and ui's battle_choreo.gd lacks it; the trial kept ui's side, but the real merge must take
+    battle-presentation's.
+- **Audio:** every Act I music cue now plays at least a stand-in on audio's head. The music.json-vs-sequencer seam
+  stands: the cue rows' own files are never played.
+
+### FAST-TRACK @ b66981e9: the party sits still inside each other when the game begins (the human's playtest)
+**Cherry-pick b66981e9 alone.** It touches game/hero_motion/hero_field_party.gd, hero_motion.json (field.followers:
+hand_off_radius_m, spawn_search_steps, steer_turns_deg, slide_min_share) and a new test.
+- **Cause 1, the opening.** Cutscene A ends with Asha and Toma walked onto Rhen's spot, and nothing handed them
+  back. Their stage bodies stood still inside him, and Asha's follower stayed hidden behind her stage double.
+  - **Fix:** when a held cutscene ends, the party members it cued that stand by the leader hide, and the
+    followers take over.
+  - A later cutscene that cues them shows them again. Field staging that no cutscene left by the leader stays as
+    the zone set it.
+- **Cause 2, stacked spawns.** A follower whose trail spot was blocked was put on the leader's own spot (the Bell
+  galleries' Entrance: two bodies 0.11 m apart). Now every follower is placed at least min_gap_m from every
+  other body.
+- **Cause 3, frozen followers.** A step into a rail post slid to nearly nothing and was accepted, so the follower
+  froze (the causeway at FromHaluna). Now the slide must keep a share of the step, else the follower steers
+  around the post. A follower in the leader's way also steps aside instead of being shoved ahead.
+- **Checked:**
+  - Every spawn in the slice and Ch1 (Haluna, causeway, Underway, Oruvel) with real physics: all followers end
+    behind Rhen and walk.
+  - The Prologue hands off to Haluna's Beach, which is covered by the start test.
+  - **tests/integration/test_qa_party_spawns.gd:** every Act I spawn (no overlap; each follower moves within 30
+    frames) plus the real game start. On the old code it fails all three ways.
+  - qa_ 9/0, hero_ 110/0.
+- **SELF-RENDERED @ b66981e9** (a temporary shot, not committed: New Game, Cutscene A, the beach, side view). Asha and
+  Rhen stand apart on the sand with no stacked figure, and Toma (in reserve) no longer stands on the spawn.
+  - Seen in passing: Asha holds no staff, and a stick lies on the sand. Her staff not showing in static views is
+    characters' known item (M1-QA-09); the stick may be beach dressing.
+- **Not mine, seen while probing:** LifeAudio.advance (life_audio.gd:124) casts a freed object when a zone is
+  freed. That's the audio item already in CONSOLIDATED.

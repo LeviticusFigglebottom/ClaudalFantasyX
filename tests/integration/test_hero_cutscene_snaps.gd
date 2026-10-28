@@ -1,64 +1,80 @@
 extends TestCase
-## M2-HER-1110: no snapping in cutscenes. Every in-engine cutscene the slice and Act I zones play (the prologue,
-## the chapter files' "play" steps and the slice's HalunaStory scenes) is played in driven time on its zone's stage,
+## M2-HER-1110: no snapping in cutscenes. Every in-engine cutscene the game plays (HeroGuardSources.cutscenes(): the
+## prologue, the slice's HalunaStory scenes, the chapter files' "play" steps) is played in driven time on its stage,
 ## and each stage actor's visible body (its HeroBody when it has one) is sampled every frame. A step or a turn
 ## faster than motion_guard.json's limits is a snap, unless the camera cut on that frame (a reposition hidden by
 ## a cut is staging, not a snap) or it is a deliberate jump of cut_m or more.
 
-const SCENES := {
-	"res://game/levels/prologue/prologue.tscn": ["prologue_dead_city"],
-	"res://game/levels/ch02/haluna/haluna.tscn": ["ch02_girl_on_the_beach", "ch02_nemes_table", "ch03_dock_at_night"],
-	"res://game/levels/ch01/oruvel/oruvel.tscn": ["ch01_the_rising", "ch01_kell_stall", "ch01_hullgnaw_rises"],
-	"res://game/levels/ch01/oruvel_underway/oruvel_underway.tscn": ["ch01_bell_room", "ch01_the_drop"],
-	"res://game/levels/ch04/haluna_wake/haluna_wake.tscn": ["ch04_the_wake", "ch04_wake_neme", "ch04_shell_is_set"],
-	"res://game/levels/ch04/brightwater_ferry/brightwater_ferry.tscn": ["ch04_gangplank", "ch04_under_way"],
-	"res://game/levels/ch05/pemakar/pemakar.tscn": ["ch05_ferry_comes_in", "ch05_smiths_question"],
-	"res://game/levels/ch05/ashcrown/ashcrown.tscn": ["ch05_crown_pavilion", "ch05_kerrid_steps_up"],
-	"res://game/levels/ch06/brine_shoals/brine_shoals.tscn": ["ch06_ridge_camp", "ch06_raid", "ch06_barge"],
-	"res://game/levels/ch07/tamsule/tamsule.tscn": ["ch07_into_tamsule", "ch07_tavi"],
-	"res://game/levels/ch07/tamsule_bell_galleries/tamsule_bell_galleries.tscn": ["ch07_galleries", "ch07_naming"],
-	"res://game/levels/ch09/corrow_night/corrow_night.tscn": ["ch09_strand", "ch09_the_road_out"],
-}
 ## Snaps already handed to their owner, as "<scene>:<actor>": reported, not failed, until the fix lands. M2-HER-1113
-## (slice-polish, docs/kb/tech/cutscene_no_snap.patch): stage-actor turns peaking near 800 deg/s, and a walk jumped
-## to its mark when the scene ends. Remove each entry once the patch is on this branch; the test then holds them.
+## (slice-polish, docs/kb/tech/cutscene_no_snap.patch): stage-actor turns peaking near 800 deg/s, a walk jumped to its
+## mark when the scene ends, and a far stand-in clip mark glided across (Ch9's pole_out, 30 m). Remove each entry
+## once the patch is on this branch; the test then holds them.
 const KNOWN: Array[String] = [
+	"ch01_net_pen:pen_child",
 	"ch04_gangplank:ysolde",
+	"ch05_kahre:kerrid",
+	"ch05_matron_wakes:kerrid",
+	"ch06_after_barge:wrights",
 	"ch06_barge:stillguard_a",
 	"ch06_barge:stillguard_b",
 	"ch06_barge:wrights",
 	"ch06_raid:hound",
-	"ch06_raid:inquisitor",
+	"ch07_after_the_bell:liss",
+	"ch07_after_the_bell:oruvel_diver_1",
+	"ch07_after_the_bell:oruvel_diver_2",
+	"ch07_after_the_bell:poolkeeper",
+	"ch07_after_the_bell:tavi",
+	"ch07_empty_moorings:Player",
+	"ch07_empty_moorings:asha",
+	"ch07_empty_moorings:kerrid",
+	"ch07_empty_moorings:tavi",
 	"ch07_galleries:liss",
 	"ch07_tavi:tavi",
-	"ch09_the_road_out:liss",
+	"ch08_cut_rope:liss",
+	"ch08_cut_rope:officer",
+	"ch08_cut_rope:toma",
+	"ch08_first_down:hobb",
+	"ch08_keeping_flame:asha",
+	"ch08_keeping_flame:fenn",
+	"ch08_landfall:kerrid",
+	"ch08_spire_door:liss",
+	"ch08_spire_door:tender",
+	"ch08_stuck_key:liss",
+	"ch09_the_ebbing:asha",
+	"ch09_the_ebbing:kerrid_stair",
+	"ch09_the_ebbing:pell",
+	"ch09_the_road_out:kerrid",
 	"ch09_the_road_out:pell",
 ]
 ## A scene that has not ended by then is stopped (driven time; seconds).
 const MAX_SEC := 240.0
 ## Lines advance after this hold (driven: nobody reads them).
 const LINE_HOLD_SEC := 0.25
+## A body that moves more than this in a frame is walking (its floor is checked).
+const MOVING_M := 0.01
 ## A camera step at or over this (metres or degrees in a frame) is a cut.
 const CAMERA_CUT_M := 0.75
 const CAMERA_CUT_DEG := 20.0
 
-var _party_was: Array[StringName] = []
+## The game state before the test: the guard runs on a fresh one (no flags left by earlier tests: a zone's variants and
+## a scene's staging follow the flags) and puts this back.
+var _state_was: GameStateData
 
 
 func before_each() -> void:
-	_party_was = Game.state.party_ids.duplicate()
+	_state_was = Game.state
 
 
 func test_no_actor_snaps_in_any_cutscene() -> void:
 	var data := HeroMotionGuard.load_data()
 	var limits := data.get("transform", {}) as Dictionary
 	var dt := HeroMotionGuard.frame_sec(data)
+	Game.state = GameStateData.new()
 	Game.state.party_ids = [&"rhen", &"asha", &"toma"] as Array[StringName]
 	var played := 0
-	for path: String in SCENES:
-		if not ResourceLoader.exists(path):
-			continue
-		for scene_id: String in SCENES[path]:
+	var scenes := HeroGuardSources.cutscenes()
+	for path: String in scenes:
+		for scene_id: String in scenes[path]:
 			var zone := (load(path) as PackedScene).instantiate() as Node3D
 			if "autoplay" in zone:
 				zone.set(&"autoplay", false)  # the prologue set plays itself when it is the current scene
@@ -68,6 +84,8 @@ func test_no_actor_snaps_in_any_cutscene() -> void:
 			if result.is_empty():
 				continue
 			played += 1
+			for who: String in result["off_floor"]:  # report-only until M3-CIN-1220's via= paths land (then it fails)
+				print("  OFF-FLOOR %s %s: %.2f m" % [scene_id, who, result["off_floor"][who]])
 			var cuts := result["cuts"] as Dictionary
 			for who: String in result["tracks"]:
 				var samples := (result["tracks"] as Dictionary)[who] as Array[Transform3D]
@@ -80,7 +98,7 @@ func test_no_actor_snaps_in_any_cutscene() -> void:
 						print("  KNOWN (M2-HER-1113): %s %s, %d snaps" % [scene_id, who, snaps.size()])
 					continue
 				assert_true(snaps.is_empty(), "%s: %s never snaps (%d)" % [scene_id, who, snaps.size()])
-	Game.state.party_ids = _party_was
+	Game.state = _state_was
 	assert_true(played > 0, "at least one cutscene played")
 
 
@@ -124,6 +142,12 @@ func _play(zone: Node3D, scene_id: StringName, dt: float) -> Dictionary:
 		return {}
 	var tracks := {}
 	var cuts := {}
+	var off_floor := {}  # actor -> its worst floor gap while walking (metres)
+	var limits := HeroMotionGuard.load_data().get("transform", {}) as Dictionary
+	var exclude: Array[RID] = []  # the cast's own colliders and the field player's capsule are not the floor
+	for n in zone.find_children("*", "CollisionObject3D", true, false):
+		if stage.is_ancestor_of(n) or n is FieldController:
+			exclude.append((n as CollisionObject3D).get_rid())
 	var cam_was := Transform3D()
 	var has_cam := false
 	var frame := 0
@@ -153,12 +177,17 @@ func _play(zone: Node3D, scene_id: StringName, dt: float) -> Dictionary:
 			if not tracks.has(who):
 				tracks[who] = [] as Array[Transform3D]
 			var t := body.global_transform if body != null else actor.global_transform
-			(tracks[who] as Array[Transform3D]).append(t)
+			var prev := tracks[who] as Array[Transform3D]
+			if not prev.is_empty() and prev[-1].origin.distance_to(t.origin) > MOVING_M:
+				var gap := HeroMotionGuard.floor_gap(zone.get_world_3d(), t.origin, exclude, limits)
+				if not is_nan(gap) and absf(gap) > float(limits.get("floor_tolerance_m", INF)):
+					off_floor[who] = maxf(float(off_floor.get(who, 0.0)), absf(gap))
+			prev.append(t)
 		frame += 1
 	if seq.is_playing():
 		print("  %s: still playing after %.0f s, stopped" % [scene_id, MAX_SEC])
 	print("  %s: %d frames, %d actors sampled" % [scene_id, frame, tracks.size()])
-	return {"tracks": tracks, "cuts": cuts}
+	return {"tracks": tracks, "cuts": cuts, "off_floor": off_floor}
 
 
 func _camera_cut(a: Transform3D, b: Transform3D) -> bool:

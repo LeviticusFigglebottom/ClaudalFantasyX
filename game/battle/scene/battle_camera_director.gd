@@ -99,8 +99,9 @@ func rest_fov() -> float:
 	var pressure := data.get("pressure", {}) as Dictionary
 	var most := 0.0
 	for e in _ctl.engine.enemies:
-		if e.is_alive() and e.is_charging() and pressure.has(String(e.charge_skill)):
-			var row := pressure[String(e.charge_skill)] as Dictionary
+		var by := (pressure.get("by_enemy", {}) as Dictionary).get(String(e.id).get_slice("#", 0), {}) as Dictionary
+		if e.is_alive() and e.is_charging() and (pressure.has(String(e.charge_skill)) or not by.is_empty()):
+			var row := by if not by.is_empty() else pressure[String(e.charge_skill)] as Dictionary
 			var turns := maxf(float(row.get("turns", 1)), 1.0)
 			var k := clampf((turns - float(e.charge_left) + 1.0) / turns, 0.0, 1.0)
 			most = maxf(most, float(row.get("max_fov_deg", 0.0)) * k)
@@ -164,6 +165,10 @@ func _setup(plan: Dictionary) -> void:
 	if actor != null and actor.team == BattleCombatant.TEAM_PARTY:
 		var by_style := data.get("by_style", {}) as Dictionary
 		pair = by_style.get(str(plan["style"]), by_style.get(FALLBACK_STYLE, {})) as Dictionary
+	elif (data.get("enemy_by_skill", {}) as Dictionary).has(str(plan.get("skill", ""))):  # M3-BPR-420: big moves
+		pair = (data["enemy_by_skill"] as Dictionary)[str(plan["skill"])] as Dictionary
+	elif (data.get("enemy_by_actor", {}) as Dictionary).has(String(actor_id).get_slice("#", 0)):  # M3-BPR-408
+		pair = (data["enemy_by_actor"] as Dictionary)[String(actor_id).get_slice("#", 0)] as Dictionary  # the Ram
 	var space := _space(actor_id)
 	var from: Vector3 = space * (plan["from"] as Vector3)
 	var to: Vector3 = space * (plan["to"] as Vector3)

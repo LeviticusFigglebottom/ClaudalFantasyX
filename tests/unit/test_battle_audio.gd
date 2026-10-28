@@ -78,7 +78,10 @@ func test_a_fire_hit_plays_the_fire_sound() -> void:
 	var r := _result(&"ember", [{"target_id": _foe(), "hit": true, "amount": 12, "statuses_added": []}])
 	_view_plays(r)
 	engine.action_resolved.emit(r)
-	assert_eq(audio.played, [&"hit_fire"] as Array[StringName])
+	# ADR 0041: Ember plays its own effect too, which borrows the fire hit until audio gives it its own sound
+	# (request M3-BPR-420); the repeat inside repeat_ms is the softer layer, so the fire hit is still the sound.
+	assert_eq(audio.played[0], &"hit_fire")
+	assert_true(audio.played.all(func(id: StringName) -> bool: return id == &"hit_fire"), "only the fire sound")
 	var last: Array = dir.sfx.history[dir.sfx.history.size() - 1]
 	assert_eq(last[0], &"hit_fire")
 	assert_true(str(last[1]).contains("/battle/hit_fire_"), "one of the fire variants: %s" % last[1])

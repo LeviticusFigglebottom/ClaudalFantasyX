@@ -121,6 +121,16 @@ class ChoreoValidateTest(unittest.TestCase):
         self.assertTrue(self._errs(lambda c: c["bosses"]["drownbell"]["flood"].pop("phase")))
         self.assertTrue(self._errs(lambda c: c["bosses"]["drownbell"]["flood"]["accent"].update(tilt_deg="x")))
 
+    def test_act_two_boss_rows(self) -> None:
+        """M3-BPR-408: '*' charges, phase moments, actor styles and a foe's own framing."""
+        self.assertFalse(self._errs(lambda c: None), "the shipped rows are valid")
+        self.assertTrue(self._errs(lambda c: c["bosses"]["avalanche_ram"].pop("gather")))
+        self.assertTrue(self._errs(lambda c: c["bosses"]["lamp_engine"]["phases"]["opened"]["boss"].update(sec=0)))
+        self.assertTrue(self._errs(lambda c: c["bosses"]["lamp_engine"]["phases"].update(opened={})))
+        self.assertTrue(self._errs(lambda c: c["style_by_actor"].update(avalanche_ram={"physical": "no_style"})))
+        self.assertTrue(self._errs(lambda c: c["camera"]["enemy_by_actor"]["avalanche_ram"].update(lead="no_shot")))
+        self.assertTrue(self._errs(lambda c: c["telegraph"]["gather"].update(sec=0)), "M3-BPR-413: the telegraph")
+
     def test_vowbound_block(self) -> None:
         self.assertTrue(self._errs(lambda c: c["vowbound"]["call"].update(sec=-1)))
         self.assertTrue(self._errs(lambda c: c["vowbound"]["step_off"].update(back_m=-1)))
@@ -187,6 +197,29 @@ class ArenaValidateTest(unittest.TestCase):
         doc["arenas"]["staging"]["underway_tower"]["tempo"] = 0
         self.assertEqual(len(vc.arena_errors(doc, self.ENC, self._exists)), 2)
 
+
+
+class EnemyBySkillTests(unittest.TestCase):
+    def test_a_big_move_must_name_real_shots(self) -> None:
+        import copy
+        import json
+        doc = json.loads((ROOT / "game/data/battle/choreo.json").read_text())
+        bad = copy.deepcopy(doc)
+        bad["choreo"]["camera"]["enemy_by_skill"]["gnaw"] = {"lead": "nope", "contact": ""}
+        skills = json.loads((ROOT / "game/data/battle/skills.json").read_text())
+        errs = vc.choreo_errors(bad, skills)
+        self.assertTrue(any("enemy_by_skill.gnaw.lead" in e for e in errs), errs)
+        self.assertFalse(any("enemy_by_skill" in e for e in vc.choreo_errors(doc, skills)))
+
+    def test_a_swell_finisher_must_name_a_style(self) -> None:  # M3-BPR-422
+        import copy
+        import json
+        doc = json.loads((ROOT / "game/data/battle/choreo.json").read_text())
+        bad = copy.deepcopy(doc)
+        bad["choreo"]["swell_style_by_hero"]["kerrid"] = "nope"
+        skills = json.loads((ROOT / "game/data/battle/skills.json").read_text())
+        self.assertTrue(any("swell_style_by_hero.kerrid" in e for e in vc.choreo_errors(bad, skills)))
+        self.assertFalse(any("swell_style_by_hero" in e for e in vc.choreo_errors(doc, skills)))
 
 if __name__ == "__main__":
     unittest.main()

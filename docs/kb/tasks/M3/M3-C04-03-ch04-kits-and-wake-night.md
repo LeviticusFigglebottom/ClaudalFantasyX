@@ -23,4 +23,17 @@ Keep every spawn, mark, trigger, shot and `states` id (Ch04Zone hides and shows 
 
 ## Notes
 
+- **env-art, 2026-10-27 (the kit side is done; the rest is placement):**
+  - **The ferry and the derelict:** the Brightwater ferry kit (M3-ENV-08; sheet `brightwater_ferry.md`, shots F/D),
+    including the Seventh Terrace and the transom winding (M3-ENV-700).
+  - **Haluna's wake night:** M3-ENV-709, in the dresser's story sets: the causeway-head feast lamps; Asha's shell
+    beside Imra's, faded and re-inked; the night lamps per house (M2-ENV-02, `set_night_lamp`).
+  - **What's left is placement,** which is act1-chapters' under ADR 0200 (ZoneKitDressing), as for Ch5–Ch9.
+    act1-chapters' log keeps `haluna_wake` on the real Haluna once it is ZoneStory (slice-polish). For the Lead:
+    re-route this task, or close it into act1-chapters' swap task.
+
+- **env-art, 2026-10-28 (ADR 0041):** the wake night is dressed on the greybox stand-in itself
+  (M3-ENV-743, mount request M3-ENV-744 to act1-chapters), so Ch4 needn't wait for Haluna's ZoneStory move.
+  The ferry zone is dressed (`brightwater_ferry_dressing.json`, mounted).
+
 ## Review log

@@ -8,6 +8,6 @@ script = ExtResource("1_rig")
 zone_scene = ExtResource("2_zone")
 flags = PackedStringArray("ch04_started")
 views = {
-"Deck": [[0.6, 2.7, 21.6], [0.0, 1.6, 2.0], 55.0],
+"Deck": [[0.9, 3.6, 23.4], [0.0, 1.8, 6.0], 55.0],
 "Derelict": [[2.6, 2.3, 13.5], [-9.2, 3.0, 8.0], 55.0]
 }

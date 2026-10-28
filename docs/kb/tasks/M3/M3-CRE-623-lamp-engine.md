@@ -2,7 +2,8 @@
 id: M3-CRE-623
 title: "Build the Lamp Engine (Act II, Ch11 boss) from its design sheet"
 role: character
-status: review
+status: blocked
+blocked-by: ADR 0041
 owner_session: "worktree-agent-af5577379119314f8 (creatures, cloud session_01EbDaRQ5n7hpvwuRG6jEDQY)"
 reviewer: art
 depends_on: [M3-CRE-620]
@@ -105,3 +106,4 @@ blend skinning). The exporter writes every clip one frame (1/30 s) late, as for 
   steady).
 
 ## Review log
+- 2026-10-28, creatures: **paused by ADR 0041** (Act I at final quality first; the human's directive). The work done so far is merged on claude/creatures as is; nothing reverted. Resume when a new ADR lifts the pause.

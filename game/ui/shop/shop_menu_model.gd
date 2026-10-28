@@ -35,7 +35,6 @@ const BOUGHT_KEY := "SHOP_MENU_BOUGHT_FMT"
 const SOLD_KEY := "SHOP_MENU_SOLD_FMT"
 const PURSE_FULL_KEY := "SHOP_MENU_PURSE_FULL_FMT"
 const FOR_HERO_KEY := "SHOP_MENU_FOR_FMT"
-const WORN_BY_KEY := "SHOP_MENU_WORN_BY_FMT"
 const UNKNOWN_SHOP_TITLE_KEY := "SHOP_MENU_UNKNOWN_TITLE"
 ## Shop ERR_* -> the loc key that says it ({name}, {count}, {price}, {purse}, {room}, {held},
 ## {wearer} are filled in where the line uses them).
@@ -138,6 +137,7 @@ func buy_rows() -> Array[Dictionary]:
 				{
 					"id": gid,
 					"goods": gid,
+					"glyph": MenuGlyph.for_goods(gid),
 					"uid": NO_PIECE,
 					"label": goods_name(gid),
 					"mp": _tr(HELD_KEY).format({"count": held(gid)}),
@@ -162,6 +162,7 @@ func sell_rows() -> Array[Dictionary]:
 				{
 					"id": StringName("item:%s" % iid),
 					"goods": iid,
+					"glyph": MenuGlyph.for_goods(iid),
 					"uid": NO_PIECE,
 					"label": goods_name(iid),
 					"mp": _tr(HELD_KEY).format({"count": party.inventory.count(iid)}),
@@ -181,6 +182,7 @@ func sell_rows() -> Array[Dictionary]:
 				{
 					"id": StringName("piece:%d" % uid),
 					"goods": base,
+					"glyph": MenuGlyph.for_goods(base),
 					"uid": uid,
 					"label": goods_name(base),
 					"mp": hero_name(wearer) if wearer != &"" else "",

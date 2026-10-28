@@ -30,7 +30,12 @@
               "needs_hit": false},
     "glyph": {"approach": "choreo_step", "approach_steps": 1, "strike": "whoosh_cast", "contact": "swell_ysolde",
               "needs_hit": false},
-    "toll": {"strike": "", "contact": "toll_wave", "needs_hit": false}
+    "toll": {"strike": "", "contact": "toll_wave", "needs_hit": false},
+    "swing": {"_note": "M3-BPR-422 stand-in (Kerrid's weighted swing): the finisher's sounds until audio's own (M3-BPR-421).",
+              "approach": "choreo_step", "approach_steps": 3, "strike": "whoosh_heavy", "contact": "@weapon",
+              "return": "choreo_step", "return_steps": 3},
+    "reel": {"_note": "M3-BPR-422 stand-in (Liss's reel-stop): the item throw's sounds until audio's own (M3-BPR-421).",
+             "approach": "choreo_step", "approach_steps": 1, "strike": "whoosh_throw", "contact": ""}
   },
   "skills": {
     "flood_surge": "flood_surge",

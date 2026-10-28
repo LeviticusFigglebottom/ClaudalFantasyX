@@ -721,6 +721,19 @@
       ]
     },
     {
+      "id": "liss",
+      "threads": 4,
+      "owner": "character",
+      "_note": "M3-CHR-03: Liss reuses Asha's modules (build_asha as a helper library, asha_textures with per-hero knobs, PRE_ROUND set) and Rhen's, Toma's and Ysolde's costume helpers (rhen_costume, toma_costume, ysolde_costume, build_toma's rig-extra helpers), so all their sources are hers too. Her texture run holds the Saltwright line-mark generator other builds import (liss_textures.line_marks).",
+      "sources": ["assets_src/characters/liss/**", "assets_src/characters/ysolde/**", "assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**"],
+      "outputs": ["assets/characters/liss/*.glb", "assets/characters/liss/textures/*.png", "assets/characters/liss/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/characters/liss/build_liss.py", "--", "--out", "assets/characters/liss/liss.glb", "--bake-dir", "{scratch}/liss_bake"],
+        ["{python}", "assets_src/characters/liss/liss_textures.py", "--bake-dir", "{scratch}/liss_bake"],
+        ["{python}", "assets_src/characters/liss/write_materials.py"]
+      ]
+    },
+    {
       "id": "wildlife_insect",
       "owner": "character",
       "sources": ["assets_src/wildlife/insect/**", "assets_src/wildlife/common/**", "assets_src/creatures/common/creature_kit.py"],
@@ -729,6 +742,266 @@
         ["{blender}", "--python", "assets_src/wildlife/insect/build_insect.py", "--", "--out", "assets/wildlife/insect/insect.glb"],
         ["{python}", "assets_src/wildlife/common/write_materials.py", "--wildlife", "insect"]
       ]
+    },
+    {
+      "id": "kerrid",
+      "threads": 4,
+      "owner": "character",
+      "_note": "M3-CHR-505: Old Kerrid reuses Asha's modules (build_asha as a helper library, asha_textures with per-hero knobs, PRE_ROUND set, Asha's write_materials), Rhen's, Toma's and Ysolde's costume and rig helpers (rhen_costume, toma_costume, toma_hair, build_toma, ysolde_costume, build_ysolde) and the villagers' age terms (villager_textures), so all their sources are his too. One build writes kerrid.glb, kerrid_lod1.glb and kerrid_cleaver.glb (the battle actor's hand instance).",
+      "sources": ["assets_src/characters/kerrid/**", "assets_src/characters/ysolde/**", "assets_src/characters/villagers/**", "assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**"],
+      "outputs": ["assets/characters/kerrid/*.glb", "assets/characters/kerrid/textures/*.png", "assets/characters/kerrid/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/characters/kerrid/build_kerrid.py", "--", "--out", "assets/characters/kerrid/kerrid.glb", "--bake-dir", "{scratch}/kerrid_bake"],
+        ["{python}", "assets_src/characters/kerrid/kerrid_textures.py", "--bake-dir", "{scratch}/kerrid_bake"],
+        ["{python}", "assets_src/characters/kerrid/write_materials.py"]
+      ]
+    },
+    {
+      "id": "moll",
+      "threads": 4,
+      "owner": "character",
+      "_note": "M3-CHR-507: Inquisitor Hadric Moll on the hero path. Reuses Asha's modules (build_asha as a helper library, asha_textures with per-hero knobs, PRE_ROUND set), Toma's (the pauldron, the shield, the short-hair cards, the sandals, build_toma's rig-extra helpers) and Rhen's costume helpers, and the villagers' skin age terms (villager_textures), so all their sources are his too.",
+      "sources": ["assets_src/characters/moll/**", "assets_src/characters/villagers/**", "assets_src/characters/toma/**",
+                  "assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**",
+                  "assets_src/third_party/mpfb2/**"],
+      "outputs": ["assets/characters/moll/*.glb", "assets/characters/moll/textures/*.png",
+                  "assets/characters/moll/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/characters/moll/build_moll.py", "--", "--out",
+         "assets/characters/moll/moll.glb", "--bake-dir", "{scratch}/moll_bake"],
+        ["{python}", "assets_src/characters/moll/moll_textures.py", "--bake-dir", "{scratch}/moll_bake"],
+        ["{python}", "assets_src/characters/moll/write_materials.py"]
+      ]
+    },
+    {
+      "id": "stillguard",
+      "threads": 4,
+      "owner": "character",
+      "_note": "M3-CHR-508: the six Ch6 Stillguard soldiers on Moll's build (build_moll.build, moll_costume, moll_props, moll_textures, moll_hair, Moll's write_materials), with Toma's spear, shield, hair and pauldron builders, Rhen's costume helpers, the villagers' skin age terms and Asha's modules, so all their sources are theirs too.",
+      "sources": ["assets_src/characters/stillguard/**", "assets_src/characters/moll/**", "assets_src/characters/villagers/**",
+                  "assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**",
+                  "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**"],
+      "outputs": ["assets/characters/stillguard_a/*.glb", "assets/characters/stillguard_a/textures/*.png",
+                  "assets/characters/stillguard_a/materials/*.tres",
+                  "assets/characters/stillguard_b/*.glb", "assets/characters/stillguard_b/textures/*.png",
+                  "assets/characters/stillguard_b/materials/*.tres",
+                  "assets/characters/stillguard_c/*.glb", "assets/characters/stillguard_c/textures/*.png",
+                  "assets/characters/stillguard_c/materials/*.tres",
+                  "assets/characters/stillguard_d/*.glb", "assets/characters/stillguard_d/textures/*.png",
+                  "assets/characters/stillguard_d/materials/*.tres",
+                  "assets/characters/stillguard_e/*.glb", "assets/characters/stillguard_e/textures/*.png",
+                  "assets/characters/stillguard_e/materials/*.tres",
+                  "assets/characters/stillguard_f/*.glb", "assets/characters/stillguard_f/textures/*.png",
+                  "assets/characters/stillguard_f/materials/*.tres",
+                  "assets/characters/stillguard/textures/*.png"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/characters/stillguard/build_stillguard.py", "--", "--variant", "a",
+         "--bake-dir", "{scratch}/sg_a_bake"],
+        ["{python}", "assets_src/characters/stillguard/sg_textures.py", "--variant", "a", "--bake-dir",
+         "{scratch}/sg_a_bake"],
+        ["{python}", "assets_src/characters/stillguard/sg_textures.py", "--shared"],
+        ["{blender}", "--python", "assets_src/characters/stillguard/build_stillguard.py", "--", "--variant", "b",
+         "--bake-dir", "{scratch}/sg_b_bake"],
+        ["{python}", "assets_src/characters/stillguard/sg_textures.py", "--variant", "b", "--bake-dir",
+         "{scratch}/sg_b_bake"],
+        ["{blender}", "--python", "assets_src/characters/stillguard/build_stillguard.py", "--", "--variant", "c",
+         "--bake-dir", "{scratch}/sg_c_bake"],
+        ["{python}", "assets_src/characters/stillguard/sg_textures.py", "--variant", "c", "--bake-dir",
+         "{scratch}/sg_c_bake"],
+        ["{blender}", "--python", "assets_src/characters/stillguard/build_stillguard.py", "--", "--variant", "d",
+         "--bake-dir", "{scratch}/sg_d_bake"],
+        ["{python}", "assets_src/characters/stillguard/sg_textures.py", "--variant", "d", "--bake-dir",
+         "{scratch}/sg_d_bake"],
+        ["{blender}", "--python", "assets_src/characters/stillguard/build_stillguard.py", "--", "--variant", "e",
+         "--bake-dir", "{scratch}/sg_e_bake"],
+        ["{python}", "assets_src/characters/stillguard/sg_textures.py", "--variant", "e", "--bake-dir",
+         "{scratch}/sg_e_bake"],
+        ["{blender}", "--python", "assets_src/characters/stillguard/build_stillguard.py", "--", "--variant", "f",
+         "--bake-dir", "{scratch}/sg_f_bake"],
+        ["{python}", "assets_src/characters/stillguard/sg_textures.py", "--variant", "f", "--bake-dir",
+         "{scratch}/sg_f_bake"],
+        ["{python}", "assets_src/characters/stillguard/write_materials.py"]
+      ]
+    },
+    {
+      "id": "creature_tannin_archer",
+      "owner": "character",
+      "sources": ["assets_src/creatures/tannin_archer/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/tannin_archer/*.glb", "assets/creatures/tannin_archer/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/tannin_archer/build_tannin_archer.py", "--", "--out", "assets/creatures/tannin_archer/tannin_archer.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "tannin_archer"]
+      ]
+    },
+    {
+      "id": "creature_gallery_ray",
+      "owner": "character",
+      "sources": ["assets_src/creatures/gallery_ray/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/gallery_ray/*.glb", "assets/creatures/gallery_ray/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/gallery_ray/build_gallery_ray.py", "--", "--out", "assets/creatures/gallery_ray/gallery_ray.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "gallery_ray"]
+      ]
+    },
+    {
+      "id": "creature_rime_urchin",
+      "owner": "character",
+      "sources": ["assets_src/creatures/rime_urchin/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/rime_urchin/*.glb", "assets/creatures/rime_urchin/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/rime_urchin/build_rime_urchin.py", "--", "--out", "assets/creatures/rime_urchin/rime_urchin.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "rime_urchin"]
+      ]
+    },
+    {
+      "id": "creature_conduit_crawler",
+      "owner": "character",
+      "sources": ["assets_src/creatures/conduit_crawler/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/conduit_crawler/*.glb", "assets/creatures/conduit_crawler/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/conduit_crawler/build_conduit_crawler.py", "--", "--out", "assets/creatures/conduit_crawler/conduit_crawler.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "conduit_crawler"]
+      ]
+    },
+    {
+      "id": "creature_ridge_lynx",
+      "owner": "character",
+      "sources": ["assets_src/creatures/ridge_lynx/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/ridge_lynx/*.glb", "assets/creatures/ridge_lynx/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/ridge_lynx/build_ridge_lynx.py", "--", "--out", "assets/creatures/ridge_lynx/ridge_lynx.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "ridge_lynx"]
+      ]
+    },
+    {
+      "id": "creature_cord_moth",
+      "owner": "character",
+      "sources": ["assets_src/creatures/cord_moth/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/cord_moth/*.glb", "assets/creatures/cord_moth/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/cord_moth/build_cord_moth.py", "--", "--out", "assets/creatures/cord_moth/cord_moth.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "cord_moth"]
+      ]
+    },
+    {
+      "id": "creature_glass_skate",
+      "owner": "character",
+      "sources": ["assets_src/creatures/glass_skate/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/glass_skate/*.glb", "assets/creatures/glass_skate/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/glass_skate/build_glass_skate.py", "--", "--out", "assets/creatures/glass_skate/glass_skate.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "glass_skate"]
+      ]
+    },
+    {
+      "id": "creature_root_crab",
+      "owner": "character",
+      "sources": ["assets_src/creatures/root_crab/**", "assets_src/creatures/reef_crab/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/root_crab/*.glb", "assets/creatures/root_crab/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/root_crab/build_root_crab.py", "--", "--out", "assets/creatures/root_crab/root_crab.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "root_crab"]
+      ]
+    },
+    {
+      "id": "creature_fen_leech",
+      "owner": "character",
+      "sources": ["assets_src/creatures/fen_leech/**", "assets_src/creatures/sail_leech/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/fen_leech/*.glb", "assets/creatures/fen_leech/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/fen_leech/build_fen_leech.py", "--", "--out", "assets/creatures/fen_leech/fen_leech.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "fen_leech"]
+      ]
+    },
+    {
+      "id": "creature_scree_crawler",
+      "owner": "character",
+      "sources": ["assets_src/creatures/scree_crawler/**", "assets_src/creatures/slag_tortoise/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/scree_crawler/*.glb", "assets/creatures/scree_crawler/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/scree_crawler/build_scree_crawler.py", "--", "--out", "assets/creatures/scree_crawler/scree_crawler.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "scree_crawler"]
+      ]
+    },
+    {
+      "id": "creature_rim_crawler",
+      "owner": "character",
+      "sources": ["assets_src/creatures/rim_crawler/**", "assets_src/creatures/tide_crawler/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/rim_crawler/*.glb", "assets/creatures/rim_crawler/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/rim_crawler/build_rim_crawler.py", "--", "--out", "assets/creatures/rim_crawler/rim_crawler.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "rim_crawler"]
+      ]
+    },
+    {
+      "id": "creature_flat_engine",
+      "owner": "character",
+      "sources": ["assets_src/creatures/flat_engine/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/flat_engine/*.glb", "assets/creatures/flat_engine/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/flat_engine/build_flat_engine.py", "--", "--out", "assets/creatures/flat_engine/flat_engine.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "flat_engine"]
+      ]
+    },
+    {
+      "id": "creature_ilun",
+      "owner": "character",
+      "sources": ["assets_src/creatures/ilun/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/ilun/*.glb", "assets/creatures/ilun/materials/*.tres", "assets/creatures/ilun/materials_held/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/ilun/build_ilun.py", "--", "--out", "assets/creatures/ilun/ilun.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "ilun"]
+      ]
+    },
+    {
+      "id": "creature_kahre",
+      "owner": "character",
+      "sources": ["assets_src/creatures/kahre/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/kahre/*.glb", "assets/creatures/kahre/materials/*.tres", "assets/creatures/kahre/materials_held/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/kahre/build_kahre.py", "--", "--out", "assets/creatures/kahre/kahre.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "kahre"]
+      ]
+    },
+    {
+      "id": "creature_virel",
+      "owner": "character",
+      "sources": ["assets_src/creatures/virel/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/virel/*.glb", "assets/creatures/virel/materials/*.tres", "assets/creatures/virel/materials_held/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/virel/build_virel.py", "--", "--out", "assets/creatures/virel/virel.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "virel"]
+      ]
+    },
+    {
+      "id": "creature_nhoa",
+      "owner": "character",
+      "sources": ["assets_src/creatures/nhoa/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/nhoa/*.glb", "assets/creatures/nhoa/materials/*.tres", "assets/creatures/nhoa/materials_held/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/nhoa/build_nhoa.py", "--", "--out", "assets/creatures/nhoa/nhoa.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "nhoa"]
+      ]
+    },
+    {
+      "id": "creature_hesk",
+      "owner": "character",
+      "sources": ["assets_src/creatures/hesk/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/hesk/*.glb", "assets/creatures/hesk/materials/*.tres", "assets/creatures/hesk/materials_held/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/hesk/build_hesk.py", "--", "--out", "assets/creatures/hesk/hesk.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "hesk"]
+      ]
+    },
+    {
+      "id": "creature_ethren",
+      "owner": "character",
+      "sources": ["assets_src/creatures/ethren/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/ethren/*.glb", "assets/creatures/ethren/materials/*.tres", "assets/creatures/ethren/materials_held/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/ethren/build_ethren.py", "--", "--out", "assets/creatures/ethren/ethren.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "ethren"]
+      ]
     }
-  ]
+]
 }

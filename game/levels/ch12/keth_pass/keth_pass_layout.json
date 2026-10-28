@@ -1,0 +1,950 @@
+{
+ "doc": "M4-C12-02 greybox (tools/act1/ch12_greybox.py; do not edit by hand): Keth Pass on a 09:00 morning (colour script ch12). From the pass foot (PassFoot) up switchback flights (ramps) along the cliff, the pass-cords on the drop side, the first landing's knotted cord post (knot_post), the terrace shelf under the Lit Age wall seeping drowned glimmer (RamArena: the Avalanche Ram), and the saddle (cold_ledge: Kerrid's breath against the cliff), on to Quellan (to_quellan). The story waits on the beat sheet (M4-C12-01).",
+ "sun": {
+  "pitch_deg": -30.0,
+  "yaw_deg": 40.0,
+  "energy": 2.0,
+  "color": "#faf6ff"
+ },
+ "environment": {
+  "background": "#c8d8e8",
+  "ambient_color": "#7fa6dc",
+  "ambient_energy": 0.8
+ },
+ "block_color": "#8a8478",
+ "blocks": [
+  {
+   "id": "Foot",
+   "pos": [
+    0.0,
+    -0.25,
+    0.0
+   ],
+   "size": [
+    12.0,
+    0.5,
+    12.0
+   ],
+   "color": "#8a8478"
+  },
+  {
+   "id": "FootWallN0",
+   "pos": [
+    -4.1,
+    0.55,
+    -6.0
+   ],
+   "size": [
+    3.8,
+    1.1,
+    0.5
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "FootWallN1",
+   "pos": [
+    4.1,
+    0.55,
+    -6.0
+   ],
+   "size": [
+    3.8,
+    1.1,
+    0.5
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "FootWallS0",
+   "pos": [
+    0.0,
+    0.55,
+    6.0
+   ],
+   "size": [
+    12.0,
+    1.1,
+    0.5
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "FootWallW0",
+   "pos": [
+    -6.0,
+    0.55,
+    0.0
+   ],
+   "size": [
+    0.5,
+    1.1,
+    12.0
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "FootWallE0",
+   "pos": [
+    6.0,
+    0.55,
+    0.0
+   ],
+   "size": [
+    0.5,
+    1.1,
+    12.0
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "Flight1Cliff",
+   "pos": [
+    2.25,
+    7.75,
+    -20.0
+   ],
+   "size": [
+    28.0,
+    16.5,
+    0.5
+   ],
+   "yaw": 90.0,
+   "color": "#6a6e74"
+  },
+  {
+   "id": "Flight1Parapet",
+   "pos": [
+    -2.25,
+    3.3,
+    -20.0
+   ],
+   "size": [
+    28.0,
+    7.6,
+    0.5
+   ],
+   "yaw": 90.0,
+   "color": "#4a4038"
+  },
+  {
+   "id": "Flight1CordPost0",
+   "pos": [
+    -2.65,
+    0.9,
+    -6.0
+   ],
+   "size": [
+    0.15,
+    1.8,
+    0.15
+   ],
+   "color": "#4a4038",
+   "solid": false
+  },
+  {
+   "id": "Flight1CordPost1",
+   "pos": [
+    -2.65,
+    2.9,
+    -15.333
+   ],
+   "size": [
+    0.15,
+    1.8,
+    0.15
+   ],
+   "color": "#4a4038",
+   "solid": false
+  },
+  {
+   "id": "Flight1CordPost2",
+   "pos": [
+    -2.65,
+    4.9,
+    -24.667
+   ],
+   "size": [
+    0.15,
+    1.8,
+    0.15
+   ],
+   "color": "#4a4038",
+   "solid": false
+  },
+  {
+   "id": "Flight1CordPost3",
+   "pos": [
+    -2.65,
+    6.9,
+    -34.0
+   ],
+   "size": [
+    0.15,
+    1.8,
+    0.15
+   ],
+   "color": "#4a4038",
+   "solid": false
+  },
+  {
+   "id": "Flight1Cord",
+   "pos": [
+    -2.65,
+    4.6,
+    -20.0
+   ],
+   "size": [
+    28.0,
+    0.04,
+    0.04
+   ],
+   "yaw": 90.0,
+   "color": "#b0302a",
+   "solid": false
+  },
+  {
+   "id": "Flight2Cliff",
+   "pos": [
+    20.0,
+    13.75,
+    -37.75
+   ],
+   "size": [
+    28.0,
+    16.5,
+    0.5
+   ],
+   "color": "#6a6e74"
+  },
+  {
+   "id": "Flight2Parapet",
+   "pos": [
+    20.0,
+    9.3,
+    -42.25
+   ],
+   "size": [
+    28.0,
+    7.6,
+    0.5
+   ],
+   "color": "#4a4038"
+  },
+  {
+   "id": "Flight2CordPost0",
+   "pos": [
+    6.0,
+    6.9,
+    -42.65
+   ],
+   "size": [
+    0.15,
+    1.8,
+    0.15
+   ],
+   "color": "#4a4038",
+   "solid": false
+  },
+  {
+   "id": "Flight2CordPost1",
+   "pos": [
+    15.333,
+    8.9,
+    -42.65
+   ],
+   "size": [
+    0.15,
+    1.8,
+    0.15
+   ],
+   "color": "#4a4038",
+   "solid": false
+  },
+  {
+   "id": "Flight2CordPost2",
+   "pos": [
+    24.667,
+    10.9,
+    -42.65
+   ],
+   "size": [
+    0.15,
+    1.8,
+    0.15
+   ],
+   "color": "#4a4038",
+   "solid": false
+  },
+  {
+   "id": "Flight2CordPost3",
+   "pos": [
+    34.0,
+    12.9,
+    -42.65
+   ],
+   "size": [
+    0.15,
+    1.8,
+    0.15
+   ],
+   "color": "#4a4038",
+   "solid": false
+  },
+  {
+   "id": "Flight2Cord",
+   "pos": [
+    20.0,
+    10.6,
+    -42.65
+   ],
+   "size": [
+    28.0,
+    0.04,
+    0.04
+   ],
+   "color": "#b0302a",
+   "solid": false
+  },
+  {
+   "id": "Flight3Cliff",
+   "pos": [
+    70.0,
+    19.75,
+    -37.75
+   ],
+   "size": [
+    28.0,
+    16.5,
+    0.5
+   ],
+   "color": "#6a6e74"
+  },
+  {
+   "id": "Flight3Parapet",
+   "pos": [
+    70.0,
+    15.3,
+    -42.25
+   ],
+   "size": [
+    28.0,
+    7.6,
+    0.5
+   ],
+   "color": "#4a4038"
+  },
+  {
+   "id": "Flight3CordPost0",
+   "pos": [
+    56.0,
+    12.9,
+    -42.65
+   ],
+   "size": [
+    0.15,
+    1.8,
+    0.15
+   ],
+   "color": "#4a4038",
+   "solid": false
+  },
+  {
+   "id": "Flight3CordPost1",
+   "pos": [
+    65.333,
+    14.9,
+    -42.65
+   ],
+   "size": [
+    0.15,
+    1.8,
+    0.15
+   ],
+   "color": "#4a4038",
+   "solid": false
+  },
+  {
+   "id": "Flight3CordPost2",
+   "pos": [
+    74.667,
+    16.9,
+    -42.65
+   ],
+   "size": [
+    0.15,
+    1.8,
+    0.15
+   ],
+   "color": "#4a4038",
+   "solid": false
+  },
+  {
+   "id": "Flight3CordPost3",
+   "pos": [
+    84.0,
+    18.9,
+    -42.65
+   ],
+   "size": [
+    0.15,
+    1.8,
+    0.15
+   ],
+   "color": "#4a4038",
+   "solid": false
+  },
+  {
+   "id": "Flight3Cord",
+   "pos": [
+    70.0,
+    16.6,
+    -42.65
+   ],
+   "size": [
+    28.0,
+    0.04,
+    0.04
+   ],
+   "color": "#b0302a",
+   "solid": false
+  },
+  {
+   "id": "Landing1",
+   "pos": [
+    0.0,
+    5.75,
+    -40.0
+   ],
+   "size": [
+    12.0,
+    0.5,
+    12.0
+   ],
+   "color": "#8a8478"
+  },
+  {
+   "id": "Landing1WallN0",
+   "pos": [
+    0.0,
+    6.55,
+    -46.0
+   ],
+   "size": [
+    12.0,
+    1.1,
+    0.5
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "Landing1WallS0",
+   "pos": [
+    -4.1,
+    6.55,
+    -34.0
+   ],
+   "size": [
+    3.8,
+    1.1,
+    0.5
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "Landing1WallS1",
+   "pos": [
+    4.1,
+    6.55,
+    -34.0
+   ],
+   "size": [
+    3.8,
+    1.1,
+    0.5
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "Landing1WallW0",
+   "pos": [
+    -6.0,
+    6.55,
+    -40.0
+   ],
+   "size": [
+    0.5,
+    1.1,
+    12.0
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "Landing1WallE0",
+   "pos": [
+    6.0,
+    6.55,
+    -44.1
+   ],
+   "size": [
+    0.5,
+    1.1,
+    3.8
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "Landing1WallE1",
+   "pos": [
+    6.0,
+    6.55,
+    -35.9
+   ],
+   "size": [
+    0.5,
+    1.1,
+    3.8
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "KnotPost",
+   "pos": [
+    -3.0,
+    7.0,
+    -44.5
+   ],
+   "size": [
+    0.3,
+    2.0,
+    0.3
+   ],
+   "color": "#4a4038"
+  },
+  {
+   "id": "Knots",
+   "pos": [
+    -3.0,
+    7.6,
+    -44.2
+   ],
+   "size": [
+    0.5,
+    0.6,
+    0.12
+   ],
+   "color": "#b0302a",
+   "solid": false
+  },
+  {
+   "id": "RamArena",
+   "pos": [
+    45.0,
+    11.75,
+    -40.0
+   ],
+   "size": [
+    22.0,
+    0.5,
+    20.0
+   ],
+   "color": "#8a8478"
+  },
+  {
+   "id": "RamArenaWallN0",
+   "pos": [
+    45.0,
+    12.55,
+    -50.0
+   ],
+   "size": [
+    22.0,
+    1.1,
+    0.5
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "RamArenaWallS0",
+   "pos": [
+    45.0,
+    12.55,
+    -30.0
+   ],
+   "size": [
+    22.0,
+    1.1,
+    0.5
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "RamArenaWallW0",
+   "pos": [
+    34.0,
+    12.55,
+    -46.1
+   ],
+   "size": [
+    0.5,
+    1.1,
+    7.8
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "RamArenaWallW1",
+   "pos": [
+    34.0,
+    12.55,
+    -33.9
+   ],
+   "size": [
+    0.5,
+    1.1,
+    7.8
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "RamArenaWallE0",
+   "pos": [
+    56.0,
+    12.55,
+    -46.1
+   ],
+   "size": [
+    0.5,
+    1.1,
+    7.8
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "RamArenaWallE1",
+   "pos": [
+    56.0,
+    12.55,
+    -33.9
+   ],
+   "size": [
+    0.5,
+    1.1,
+    7.8
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "TerraceWall",
+   "pos": [
+    45.0,
+    15.0,
+    -50.5
+   ],
+   "size": [
+    22.0,
+    6.0,
+    1.0
+   ],
+   "color": "#7a7060",
+   "emission": "#e8d8a0",
+   "emission_energy": 0.5
+  },
+  {
+   "id": "Saddle",
+   "pos": [
+    95.0,
+    17.75,
+    -40.0
+   ],
+   "size": [
+    22.0,
+    0.5,
+    20.0
+   ],
+   "color": "#8a8478"
+  },
+  {
+   "id": "SaddleWallN0",
+   "pos": [
+    95.0,
+    18.55,
+    -50.0
+   ],
+   "size": [
+    22.0,
+    1.1,
+    0.5
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "SaddleWallS0",
+   "pos": [
+    95.0,
+    18.55,
+    -30.0
+   ],
+   "size": [
+    22.0,
+    1.1,
+    0.5
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "SaddleWallW0",
+   "pos": [
+    84.0,
+    18.55,
+    -46.1
+   ],
+   "size": [
+    0.5,
+    1.1,
+    7.8
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "SaddleWallW1",
+   "pos": [
+    84.0,
+    18.55,
+    -33.9
+   ],
+   "size": [
+    0.5,
+    1.1,
+    7.8
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "SaddleWallE0",
+   "pos": [
+    106.0,
+    18.55,
+    -46.1
+   ],
+   "size": [
+    0.5,
+    1.1,
+    7.8
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "SaddleWallE1",
+   "pos": [
+    106.0,
+    18.55,
+    -33.9
+   ],
+   "size": [
+    0.5,
+    1.1,
+    7.8
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "SaddleCliff",
+   "pos": [
+    95.0,
+    23.0,
+    -51.0
+   ],
+   "size": [
+    24.0,
+    10.0,
+    1.0
+   ],
+   "color": "#6a6e74"
+  },
+  {
+   "id": "Snowfield",
+   "pos": [
+    40.0,
+    -2.0,
+    -40.0
+   ],
+   "size": [
+    160.0,
+    1.0,
+    120.0
+   ],
+   "color": "#e8eef4",
+   "solid": false
+  },
+  {
+   "id": "ExitStep",
+   "pos": [
+    108.0,
+    17.75,
+    -40.0
+   ],
+   "size": [
+    4.0,
+    0.5,
+    4.4
+   ],
+   "color": "#8a8478"
+  },
+  {
+   "id": "ExitBound",
+   "pos": [
+    110.25,
+    19.0,
+    -40.0
+   ],
+   "size": [
+    0.5,
+    2.0,
+    4.4
+   ],
+   "color": "#4a4038"
+  }
+ ],
+ "ramps": [
+  {
+   "id": "Flight1",
+   "from": [
+    0.0,
+    0.0,
+    -6.0
+   ],
+   "to": [
+    0.0,
+    6.0,
+    -34.0
+   ],
+   "width": 4.0,
+   "color": "#8a8478"
+  },
+  {
+   "id": "Flight2",
+   "from": [
+    6.0,
+    6.0,
+    -40.0
+   ],
+   "to": [
+    34.0,
+    12.0,
+    -40.0
+   ],
+   "width": 4.0,
+   "color": "#8a8478"
+  },
+  {
+   "id": "Flight3",
+   "from": [
+    56.0,
+    12.0,
+    -40.0
+   ],
+   "to": [
+    84.0,
+    18.0,
+    -40.0
+   ],
+   "width": 4.0,
+   "color": "#8a8478"
+  }
+ ],
+ "spawns": {
+  "PassFoot": [
+   0.0,
+   0.0,
+   3.0,
+   0.0
+  ],
+  "RamArena": [
+   40.0,
+   12.0,
+   -40.0,
+   270.0
+  ],
+  "FromQuellan": [
+   102.0,
+   18.0,
+   -40.0,
+   90.0
+  ]
+ },
+ "marks": {
+  "knot_post": [
+   -1.6,
+   6.0,
+   -43.6,
+   90.0
+  ],
+  "cold_ledge": [
+   95.0,
+   18.0,
+   -47.0,
+   0.0
+  ]
+ },
+ "actors": {},
+ "shots": {
+  "K01": {
+   "pos": [
+    91.0,
+    19.7,
+    -36.0
+   ],
+   "look_at": [
+    95.0,
+    19.6,
+    -47.0
+   ],
+   "fov": 35
+  }
+ },
+ "triggers": [
+  {
+   "id": "to_quellan",
+   "activation": "touch",
+   "at": [
+    108.5,
+    18.0,
+    -40.0
+   ],
+   "size": [
+    1.5,
+    0,
+    4.0
+   ],
+   "payload": {
+    "beat": "to_quellan"
+   },
+   "yaw": 0.0
+  }
+ ],
+ "encounters": {
+  "table": [
+   {
+    "encounter": "ch12_pass_lynxes",
+    "weight": 2
+   },
+   {
+    "encounter": "ch12_pass_moths",
+    "weight": 1
+   },
+   {
+    "encounter": "ch12_pass_scree",
+    "weight": 1
+   }
+  ],
+  "min_m": 30,
+  "max_m": 50,
+  "when": {
+   "set": [
+    "ch12_started"
+   ]
+  },
+  "seed": 12
+ }
+}

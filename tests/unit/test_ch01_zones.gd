@@ -43,6 +43,9 @@ func test_a_prompt_plays_once_by_its_seen_flag() -> void:
 	assert_true(zone.prompt("shutter"))
 	assert_true(bool(Game.get_flag(&"tut_shutter_seen")))
 	assert_eq(shown, [&"ch01_tut_003"] as Array[StringName])
+	# M2-FP-30: the line names the shutter's binding, so it follows a rebind and the last device.
+	var filled := InputNames.fill(tr("DLG_CH01_TUT_003"), false)
+	assert_false(filled.contains("{"), "the shutter's action is named: %s" % filled)
 	assert_false(zone.prompt("shutter"), "only once")
 	assert_false(zone.prompt("no_such_prompt"))
 	assert_eq(shown.size(), 1)
@@ -93,7 +96,9 @@ func test_oruvel_comes_up_in_the_storm_once_the_gulls_have_cried() -> void:
 	town.set_storm(true)
 	assert_true(town.sun.light_energy < day_energy, "the storm light")
 	assert_false(town.block_shown("SeventhTerrace") or town.block_shown("cook") or town.block_shown("DiveBridge"))
-	assert_true(town.block_shown("StormWall") and town.block_shown("pen_child_2"))
+	var undertow := town.get_node_or_null(^"Undertow") as Node3D
+	var wall := town.block_shown("StormWall") or (undertow != null and undertow.visible)
+	assert_true(wall and town.block_shown("pen_child_2"), "the storm stands up (the Undertow, or its greybox wall)")
 	_done()
 	Game.set_flag(&"ch01_gulls_cried")
 	_open(ORUVEL)

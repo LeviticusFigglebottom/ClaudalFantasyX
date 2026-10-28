@@ -199,8 +199,10 @@ kits replace the blocks.
 | `ch05/pemakar` | – | 5 (the quay's edge, away from the lamps) | – | Lanternfall night; insects (M3-CRE-616): moths at two lamps, dragonflies over the paddies |
 | `ch06/brine_shoals` | 6 (the wrecks, the tide-wheel) | 18 (clusters on the flats, the tideline) | – | Mud-flats and wrecks |
 | `ch07/tamsule` | 6 (the stilt house, the market stalls) | – | – | The floating market; the river is a greybox slab |
+| `ch08/corrow` | 7 (the seawall, the mole; perched on the Watchers' parapet) | 9 (the shingle at the wall's foot) | – | Seawall town by day; the gulls stay through the storm states (M3-CRE-636) |
+| `ch08/coilspire` | 3 (the headland, the keeper's hut) | – | – | A windswept path; nothing inside the sealed spire (M3-CRE-636) |
 
-**No wildlife on purpose:** `ch09/corrow_night` (the strand of the drowned at night), `ch05/ashcrown` (ash and
+**No wildlife on purpose:** `ch09/corrow_night` (the strand of the drowned at night: crabs among the shrouds would read as carrion, against pillar 1), `ch05/ashcrown` (ash and
 lightning), `ch07/tamsule_bell_galleries` (story staging under the Bell), the prologue and the First Verse set.
 
 Review: `game/levels/_tests/wildlife/zone_wildlife.gd` instances a zone scene with its layer;

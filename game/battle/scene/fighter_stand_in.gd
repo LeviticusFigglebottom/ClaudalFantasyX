@@ -248,6 +248,7 @@ func _build_ring() -> void:
 	_ring_mat.set_shader_parameter(&"line_width", float(_ring_cfg.get("line_width_m", 0.06)))
 	_ring_mat.set_shader_parameter(&"inner_soft", soft)
 	_ring_mat.set_shader_parameter(&"notches", float(_ring_cfg.get("notches", 6)))
+	_ring_mat.render_priority = int(_ring_cfg.get("render_priority", 0))  # drawn over ground VFX (Pillar 4, M3-BPR-409)
 	_ring.material_override = _ring_mat
 	_ring.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	_ring.position = Vector3(0.0, float(_ring_cfg.get("lift_m", 0.02)), 0.0)

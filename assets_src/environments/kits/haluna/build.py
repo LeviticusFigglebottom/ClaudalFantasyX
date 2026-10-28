@@ -28,6 +28,19 @@ import causeway_zone  # noqa: E402
 import dressing  # noqa: E402
 import festival  # noqa: E402
 import iskarra  # noqa: E402
+import keth  # noqa: E402
+import lowlight  # noqa: E402
+import ossa_fen  # noqa: E402
+import save_shrine  # noqa: E402
+import bridal_barge  # noqa: E402
+import ansedra  # noqa: E402
+import drowned_choir  # noqa: E402
+import hollowmere  # noqa: E402
+import kite  # noqa: E402
+import iskarra_spire  # noqa: E402
+import undertow_layers  # noqa: E402
+import undertow_heart  # noqa: E402
+import reedhollow  # noqa: E402
 import kit_common as kc  # noqa: E402
 import props  # noqa: E402
 import ruins  # noqa: E402
@@ -35,6 +48,7 @@ import shrine  # noqa: E402
 import shrine_interior  # noqa: E402
 import trees  # noqa: E402
 import village  # noqa: E402
+import wake_ground  # noqa: E402
 import walls  # noqa: E402
 import waterfront  # noqa: E402
 
@@ -53,7 +67,7 @@ def targets() -> dict:
         "storehouse_stilt": ("storehouse_stilt", v, v.build_storehouse),
         "stilt_house": ("stilt_house", v, v.build_stilt_house),
     }
-    for name in sorted(v.HOUSES):
+    for name in sorted(v.HOUSES) + sorted(v.LANE_HOUSES):
         out[name] = ("house_tile", v, lambda name=name: v.build_house(name))
     for name in sorted(v.GULLS):
         out[name] = ("lintel_gull", v, lambda name=name: v.build_gull(name))
@@ -83,6 +97,34 @@ def targets() -> dict:
         out[name] = (name, dressing, fn)
     for name, fn in sorted(iskarra.TARGETS.items()):  # M3-ENV-710 the Prologue's Iskarra
         out[name] = (iskarra.BUDGET_KEY.get(name, name), iskarra, fn)
+    for name, fn in sorted(keth.TARGETS.items()):  # M3-ENV-717 Keth Pass (Ch12)
+        out[name] = (name, keth, fn)
+    for name, fn in sorted(lowlight.TARGETS.items()):  # M3-ENV-716 Lowlight's engine hall (Ch11)
+        out[name] = (lowlight.BUDGET_KEY.get(name, name), lowlight, fn)
+    for name, fn in sorted(ossa_fen.TARGETS.items()):  # M3-ENV-718 Ossa Fen (Ch10)
+        out[name] = (name, ossa_fen, fn)
+    for name, fn in sorted(save_shrine.TARGETS.items()):  # M3-ENV-101 the save shrine
+        out[name] = (name, save_shrine, fn)
+    for name, fn in sorted(bridal_barge.TARGETS.items()):  # M3-ENV-720 the Ch15 bridal barge
+        out[name] = (name, bridal_barge, fn)
+    for name, fn in sorted(ansedra.TARGETS.items()):  # M3-ENV-721 Ansedra (Ch13-14)
+        out[name] = (ansedra.BUDGET_KEY.get(name, name), ansedra, fn)
+    for name, fn in sorted(drowned_choir.TARGETS.items()):  # M3-ENV-722 the Pale Rim and the Drowned Choir (Ch16)
+        out[name] = (name, drowned_choir, fn)
+    for name, fn in sorted(hollowmere.TARGETS.items()):  # M3-ENV-723 Hollowmere, the Saltwright raft-city (Ch17)
+        out[name] = (name, hollowmere, fn)
+    for name, fn in sorted(kite.TARGETS.items()):  # M3-ENV-725 the Kite, the party's hub from Ch18
+        out[name] = (name, kite, fn)
+    for name, fn in sorted(iskarra_spire.TARGETS.items()):  # M3-ENV-726 the Iskarra Lamp Spire's crown (Ch19)
+        out[name] = (name, iskarra_spire, fn)
+    for name, fn in sorted(wake_ground.TARGETS.items()):  # M3-ENV-743 Ch4's wake-night ground
+        out[name] = (name, wake_ground, fn)
+    for name, fn in sorted(undertow_layers.TARGETS.items()):  # M3-ENV-727 the Undertow's layers (Ch20)
+        out[name] = (name, undertow_layers, fn)
+    for name, fn in sorted(undertow_heart.TARGETS.items()):  # M3-ENV-728 the Heart of the Undertow (Ch21)
+        out[name] = (name, undertow_heart, fn)
+    for name, fn in sorted(reedhollow.TARGETS.items()):  # M3-ENV-733 Ossa Fen's root-walks and Reedhollow's reed walks
+        out[name] = (name, reedhollow, fn)
     return out
 
 

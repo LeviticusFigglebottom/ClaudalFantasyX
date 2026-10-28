@@ -337,3 +337,52 @@ func test_ch06_the_intro_and_the_first_turn_prompts_do_not_collide() -> void:
 func _free() -> void:
 	ctl.get_parent().remove_child(ctl)
 	ctl.free()
+
+
+func test_an_act_two_boss_gets_its_intro_wherever_it_appears() -> void:
+	# M3-BPR-408: the Lamp Engine and the Avalanche Ram have no encounters yet; their rows are by enemy id.
+	var by := cfg["by_enemy"] as Dictionary
+	for boss: String in ["lamp_engine", "avalanche_ram", "mangrove_drowner", "wakefin"]:  # M3-BPR-418: two more
+		assert_true(by.has(boss), "%s has an intro row" % boss)
+		var ids: Array[StringName] = [StringName("%s#1" % boss)]
+		var r := BattleBossIntro.row_for(cfg, &"some_future_encounter", ids)
+		assert_eq(str(r.get("enemy", "")), boss, "%s: framed on itself" % boss)
+		for key: String in ["title_key", "epithet_key"]:
+			assert_ne(TranslationServer.translate(str(r[key])), str(r[key]), "%s %s is translated" % [boss, key])
+		assert_true((BattleChoreo.load_data()["camera"]["shots"] as Dictionary).has(str(r["shot"])), "a real shot")
+	var none: Array[StringName] = [&"reef_crab#1"]
+	assert_true(BattleBossIntro.row_for(cfg, &"sandbox_reef", none).is_empty(), "a regular fight has none")
+	var own: Array[StringName] = [&"hullgnaw#1"]
+	assert_eq(BattleBossIntro.row_for(cfg, &"ch01_hullgnaw", own), cfg["rows"]["ch01_hullgnaw"], "its own row wins")
+	_free()
+
+
+func test_no_party_member_crowds_a_boss_intro() -> void:
+	# M3-BPR-404 (big11 playtest): the real Toma stood huge over the timeline in the Drownbell's intro.
+	for enc: StringName in BOSSES:
+		var intro := _start(enc, 0.0)
+		intro.force_play = true
+		intro.play()
+		assert_false(intro._pose.is_empty(), "%s has a fitted shot" % enc)
+		assert_true(intro._party_clear(intro._pose), "%s: the party is off screen or small and clear of the HUD" % enc)
+		intro.skip()
+	_free()
+
+
+func test_the_party_rule_widens_a_shot_only_when_the_party_crowds_it() -> void:
+	# PC render c1d1e3e: at party_max_h 0.3 Rhen (0.35 of the screen, inside the safe frame at Hullgnaw's side) pushed
+	# the camera out past the raft's rope rail, which then cut across the serpent. Hullgnaw keeps the frame it has
+	# with no party rule at all; the Drownbell (Toma over the timeline) still orbits.
+	var intro := _start(&"ch01_hullgnaw", 0.0)
+	intro.force_play = true
+	intro.play()
+	var ruled := intro._pose.duplicate()
+	intro.skip()
+	intro.cfg = intro.cfg.duplicate(true)
+	(intro.cfg["fit"] as Dictionary)["party_max_h"] = 100.0
+	intro.play()
+	assert_true(
+		(ruled["pos"] as Vector3).is_equal_approx(intro._pose["pos"] as Vector3), "Hullgnaw: the same frame as unruled"
+	)
+	intro.skip()
+	_free()

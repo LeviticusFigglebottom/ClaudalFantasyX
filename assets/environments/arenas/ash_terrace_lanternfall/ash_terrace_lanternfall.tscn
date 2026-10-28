@@ -22,17 +22,19 @@
 [ext_resource type="PackedScene" path="res://assets/environments/kits/pemakar/terrace_spill_r.glb" id="20_r"]
 [ext_resource type="PackedScene" path="res://assets/environments/kits/pemakar/terrace_channel_inlet_l.glb" id="21_r"]
 [ext_resource type="PackedScene" path="res://assets/environments/kits/pemakar/terrace_spill_l.glb" id="22_r"]
-[ext_resource type="PackedScene" path="res://assets/environments/kits/pemakar/mountain_massif.glb" id="23_r"]
-[ext_resource type="PackedScene" path="res://assets/environments/kits/ashcrown/ashcrown_tiers.glb" id="24_r"]
-[ext_resource type="PackedScene" path="res://assets/environments/kits/ashcrown/flying_stair.glb" id="25_r"]
-[ext_resource type="PackedScene" path="res://assets/environments/kits/ashcrown/crown_pavilion.glb" id="26_r"]
-[ext_resource type="PackedScene" path="res://assets/environments/kits/ashcrown/forecourt.glb" id="27_r"]
-[ext_resource type="PackedScene" path="res://assets/environments/kits/ashcrown/pilgrim_causeway.glb" id="28_r"]
-[ext_resource type="PackedScene" path="res://assets/environments/kits/pemakar/ash_plume.glb" id="29_r"]
-[ext_resource type="PackedScene" path="res://assets/environments/vegetation/frangipani_a.glb" id="30_r"]
-[ext_resource type="PackedScene" path="res://assets/environments/vegetation/frangipani_b.glb" id="31_r"]
-[ext_resource type="PackedScene" path="res://assets/environments/kits/pemakar/leaf_boat_lit.glb" id="32_r"]
-[ext_resource type="Shader" path="res://game/shaders/environment/env_far_lights.gdshader" id="33_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/pemakar/crown_bell.glb" id="23_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/pemakar/mountain_massif.glb" id="24_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/ashcrown/ashcrown_tiers.glb" id="25_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/ashcrown/flying_stair.glb" id="26_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/ashcrown/crown_pavilion.glb" id="27_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/ashcrown/forecourt.glb" id="28_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/ashcrown/pilgrim_causeway.glb" id="29_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/pemakar/ash_plume.glb" id="30_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/vegetation/frangipani_a.glb" id="31_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/vegetation/frangipani_b.glb" id="32_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/pemakar/leaf_boat_lit.glb" id="33_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/pemakar/votive_lamp.glb" id="34_r"]
+[ext_resource type="Shader" path="res://game/shaders/environment/env_far_lights.gdshader" id="35_r"]
 
 [sub_resource type="ShaderMaterial" id="SkyMat"]
 shader = ExtResource("2_r")
@@ -91,22 +93,8 @@ shader_parameter/col_foam = Color(0.9333, 0.9647, 0.9569, 1)
 shader_parameter/col_sss = Color(0.2471, 0.8157, 0.7882, 1)
 shader_parameter/foam_crest_threshold = 0.62
 
-[sub_resource type="StandardMaterial3D" id="FlameMat"]
-shading_mode = 0
-albedo_color = Color(1, 0.6549, 0.3412, 1)
-emission_enabled = true
-emission = Color(1, 0.6549, 0.3412, 1)
-emission_energy_multiplier = 6.0
-
-[sub_resource type="SphereMesh" id="FlameMesh"]
-material = SubResource("FlameMat")
-radius = 0.035
-height = 0.084
-radial_segments = 12
-rings = 6
-
 [sub_resource type="ShaderMaterial" id="FarLightMat"]
-shader = ExtResource("33_r")
+shader = ExtResource("35_r")
 shader_parameter/col_light = Color(1, 0.6549, 0.3412, 1)
 shader_parameter/energy = 3.0
 
@@ -1063,446 +1051,491 @@ transform = Transform3D(0.815229, 0, 0.579139, 0, 1, 0, -0.579139, 0, 0.815229, 
 [node name="grave_stele_a_87" parent="Dressing" instance=ExtResource("8_r")]
 transform = Transform3D(0.814875, 0, 0.579637, 0, 1, 0, -0.579637, 0, 0.814875, 44.292, 4.901, -29.309)
 
-[node name="mountain_massif_1" parent="Dressing" instance=ExtResource("23_r")]
+[node name="crown_bell_1" parent="Dressing" instance=ExtResource("23_r")]
+transform = Transform3D(0.997606, 0, 0.0691471, 0, 1, 0, -0.0691471, 0, 0.997606, 8.728, 4.88, -15.61)
+
+[node name="mountain_massif_1" parent="Dressing" instance=ExtResource("24_r")]
 transform = Transform3D(0.997606, 0, 0.0691471, 0, 1, 0, -0.0691471, 0, 0.997606, 10.372, -24.8, 51.491)
 
-[node name="ashcrown_tiers_1" parent="Dressing" instance=ExtResource("24_r")]
+[node name="ashcrown_tiers_1" parent="Dressing" instance=ExtResource("25_r")]
 transform = Transform3D(0.997606, 0, 0.0691471, 0, 1, 0, -0.0691471, 0, 0.997606, -36.787, 281.917, -628.877)
 
-[node name="flying_stair_1" parent="Dressing" instance=ExtResource("25_r")]
+[node name="flying_stair_1" parent="Dressing" instance=ExtResource("26_r")]
 transform = Transform3D(0.997606, 0, 0.0691471, 0, 1, 0, -0.0691471, 0, 0.997606, -36.787, 281.917, -628.877)
 
-[node name="crown_pavilion_1" parent="Dressing" instance=ExtResource("26_r")]
+[node name="crown_pavilion_1" parent="Dressing" instance=ExtResource("27_r")]
 transform = Transform3D(0.997606, 0, 0.0691471, 0, 1, 0, -0.0691471, 0, 0.997606, -36.787, 281.917, -628.877)
 
-[node name="forecourt_1" parent="Dressing" instance=ExtResource("27_r")]
+[node name="forecourt_1" parent="Dressing" instance=ExtResource("28_r")]
 transform = Transform3D(0.997606, 0, 0.0691471, 0, 1, 0, -0.0691471, 0, 0.997606, -36.787, 281.917, -628.877)
 
-[node name="pilgrim_causeway_1" parent="Dressing" instance=ExtResource("28_r")]
+[node name="pilgrim_causeway_1" parent="Dressing" instance=ExtResource("29_r")]
 transform = Transform3D(0.997606, 0, 0.0691471, 0, 1, 0, -0.0691471, 0, 0.997606, -36.787, 281.917, -628.877)
 
-[node name="ash_plume_1" parent="Dressing" instance=ExtResource("29_r")]
+[node name="ash_plume_1" parent="Dressing" instance=ExtResource("30_r")]
 transform = Transform3D(0.997606, 0, 0.0691471, 0, 1, 0, -0.0691471, 0, 0.997606, -42.181, 225.2, -706.69)
 
-[node name="frangipani_a_1" parent="Dressing" instance=ExtResource("30_r")]
+[node name="frangipani_a_1" parent="Dressing" instance=ExtResource("31_r")]
 transform = Transform3D(0.924776, 0, 0.150858, 0, 0.937, 0, -0.150858, 0, 0.924776, -32.495, 2.53, -16.477)
 
-[node name="frangipani_a_2" parent="Dressing" instance=ExtResource("30_r")]
+[node name="frangipani_a_2" parent="Dressing" instance=ExtResource("31_r")]
 transform = Transform3D(0.749476, 0, -0.361262, 0, 0.832, 0, 0.361262, 0, 0.749476, -23.762, 2.53, -13.522)
 
-[node name="frangipani_b_1" parent="Dressing" instance=ExtResource("31_r")]
+[node name="frangipani_b_1" parent="Dressing" instance=ExtResource("32_r")]
 transform = Transform3D(0.728125, 0, -0.368361, 0, 0.816, 0, 0.368361, 0, 0.728125, -15.259, 2.53, -11.585)
 
-[node name="frangipani_b_2" parent="Dressing" instance=ExtResource("31_r")]
+[node name="frangipani_b_2" parent="Dressing" instance=ExtResource("32_r")]
 transform = Transform3D(0.919124, 0, -0.154386, 0, 0.932, 0, 0.154386, 0, 0.919124, -4.423, 2.53, -10.361)
 
-[node name="frangipani_a_3" parent="Dressing" instance=ExtResource("30_r")]
+[node name="frangipani_a_3" parent="Dressing" instance=ExtResource("31_r")]
 transform = Transform3D(0.00053634, 0, 0.878, 0, 0.878, 0, -0.878, 0, 0.00053634, 16.044, 2.53, -11.727)
 
-[node name="frangipani_a_4" parent="Dressing" instance=ExtResource("30_r")]
+[node name="frangipani_a_4" parent="Dressing" instance=ExtResource("31_r")]
 transform = Transform3D(-0.268954, 0, -0.923638, 0, 0.962, 0, 0.923638, 0, -0.268954, 26.671, 2.53, -14.394)
 
-[node name="frangipani_b_3" parent="Dressing" instance=ExtResource("31_r")]
+[node name="frangipani_b_3" parent="Dressing" instance=ExtResource("32_r")]
 transform = Transform3D(0.724381, 0, 0.549138, 0, 0.909, 0, -0.549138, 0, 0.724381, 36.415, 2.53, -18.148)
 
-[node name="frangipani_b_4" parent="Dressing" instance=ExtResource("31_r")]
+[node name="frangipani_b_4" parent="Dressing" instance=ExtResource("32_r")]
 transform = Transform3D(0.164325, 0, 0.978295, 0, 0.992, 0, -0.978295, 0, 0.164325, -32.854, 4.93, -24.221)
 
-[node name="frangipani_b_5" parent="Dressing" instance=ExtResource("31_r")]
+[node name="frangipani_b_5" parent="Dressing" instance=ExtResource("32_r")]
 transform = Transform3D(-0.855512, 0, -0.0773308, 0, 0.859, 0, 0.0773308, 0, -0.855512, -24.81, 4.93, -21.148)
 
-[node name="frangipani_a_5" parent="Dressing" instance=ExtResource("30_r")]
+[node name="frangipani_a_5" parent="Dressing" instance=ExtResource("31_r")]
 transform = Transform3D(0.917302, 0, -0.0358004, 0, 0.918, 0, 0.0358004, 0, 0.917302, -16.134, 4.93, -18.876)
 
-[node name="frangipani_b_6" parent="Dressing" instance=ExtResource("31_r")]
+[node name="frangipani_b_6" parent="Dressing" instance=ExtResource("32_r")]
 transform = Transform3D(0.239451, 0, -0.865487, 0, 0.898, 0, 0.865487, 0, 0.239451, -7.557, 4.93, -17.604)
 
-[node name="frangipani_a_6" parent="Dressing" instance=ExtResource("30_r")]
+[node name="frangipani_a_6" parent="Dressing" instance=ExtResource("31_r")]
 transform = Transform3D(-0.741731, 0, 0.714657, 0, 1.03, 0, -0.714657, 0, -0.741731, 10.516, 4.93, -17.936)
 
-[node name="frangipani_a_7" parent="Dressing" instance=ExtResource("30_r")]
+[node name="frangipani_a_7" parent="Dressing" instance=ExtResource("31_r")]
 transform = Transform3D(-0.0439322, 0, -0.856875, 0, 0.858, 0, 0.856875, 0, -0.0439322, 19.792, 4.93, -19.708)
 
-[node name="frangipani_b_7" parent="Dressing" instance=ExtResource("31_r")]
+[node name="frangipani_b_7" parent="Dressing" instance=ExtResource("32_r")]
 transform = Transform3D(0.137053, 0, -0.780052, 0, 0.792, 0, 0.780052, 0, 0.137053, 29.646, 4.93, -22.878)
 
-[node name="frangipani_b_8" parent="Dressing" instance=ExtResource("31_r")]
+[node name="frangipani_b_8" parent="Dressing" instance=ExtResource("32_r")]
 transform = Transform3D(-0.817403, 0, -0.0767636, 0, 0.821, 0, 0.0767636, 0, -0.817403, 37.682, 4.93, -26.562)
 
-[node name="leaf_boat_lit_1" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_1" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(-0.56165, 0, 0.827375, 0, 1, 0, -0.827375, 0, -0.56165, -29.217, 4.904, -16.964)
 
-[node name="leaf_boat_lit_2" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_2" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(-0.0673188, 0, 0.997732, 0, 1, 0, -0.997732, 0, -0.0673188, -28.001, 4.904, -16.549)
 
-[node name="leaf_boat_lit_3" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_3" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(-0.280667, 0, 0.959805, 0, 1, 0, -0.959805, 0, -0.280667, -26.742, 4.904, -16.103)
 
-[node name="leaf_boat_lit_4" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_4" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(-0.404503, 0, 0.914537, 0, 1, 0, -0.914537, 0, -0.404503, -26.189, 4.904, -15.931)
 
-[node name="leaf_boat_lit_5" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_5" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(-0.14988, 0, 0.988704, 0, 1, 0, -0.988704, 0, -0.14988, -25.078, 4.904, -15.576)
 
-[node name="leaf_boat_lit_6" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_6" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(-0.184294, 0, 0.982871, 0, 1, 0, -0.982871, 0, -0.184294, -23.835, 4.904, -15.132)
 
-[node name="leaf_boat_lit_7" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_7" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(-0.739514, 0, 0.673142, 0, 1, 0, -0.673142, 0, -0.739514, -23.395, 4.904, -15)
 
-[node name="leaf_boat_lit_8" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_8" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(-0.361136, 0, 0.932513, 0, 1, 0, -0.932513, 0, -0.361136, -22.271, 4.904, -14.773)
 
-[node name="leaf_boat_lit_9" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_9" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(-0.603069, 0, 0.797689, 0, 1, 0, -0.797689, 0, -0.603069, -21.636, 4.904, -14.593)
 
-[node name="leaf_boat_lit_10" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_10" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(-0.0144857, 0, 0.999895, 0, 1, 0, -0.999895, 0, -0.0144857, -20.951, 4.904, -14.404)
 
-[node name="leaf_boat_lit_11" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_11" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(-0.202958, 0, 0.979187, 0, 1, 0, -0.979187, 0, -0.202958, -20.258, 4.904, -14.267)
 
-[node name="leaf_boat_lit_12" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_12" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(-0.928161, 0, 0.372178, 0, 1, 0, -0.372178, 0, -0.928161, -19.405, 4.904, -14.079)
 
-[node name="leaf_boat_lit_13" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_13" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(-0.390731, 0, 0.920505, 0, 1, 0, -0.920505, 0, -0.390731, -18.479, 4.904, -13.89)
 
-[node name="leaf_boat_lit_14" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_14" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(-0.254602, 0, 0.967046, 0, 1, 0, -0.967046, 0, -0.254602, -17.151, 4.904, -13.618)
 
-[node name="leaf_boat_lit_15" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_15" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(-0.347099, 0, 0.937828, 0, 1, 0, -0.937828, 0, -0.347099, -16.311, 4.904, -13.424)
 
-[node name="leaf_boat_lit_16" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_16" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(-0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, -0.707107, -15.574, 4.904, -13.283)
 
-[node name="leaf_boat_lit_17" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_17" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(0.503472, 0, 0.864011, 0, 1, 0, -0.864011, 0, 0.503472, -14.988, 4.904, -13.133)
 
-[node name="leaf_boat_lit_18" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_18" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(0.300872, 0, 0.953664, 0, 1, 0, -0.953664, 0, 0.300872, -14.337, 4.904, -13.078)
 
-[node name="leaf_boat_lit_19" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_19" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(0.245984, 0, 0.969274, 0, 1, 0, -0.969274, 0, 0.245984, -13.005, 4.904, -12.786)
 
-[node name="leaf_boat_lit_20" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_20" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(-0.244969, 0, 0.969531, 0, 1, 0, -0.969531, 0, -0.244969, -12.151, 4.904, -12.742)
 
-[node name="leaf_boat_lit_21" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_21" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(-0.231239, 0, 0.972897, 0, 1, 0, -0.972897, 0, -0.231239, -10.758, 4.904, -12.583)
 
-[node name="leaf_boat_lit_22" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_22" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(-0.856447, 0, 0.516234, 0, 1, 0, -0.516234, 0, -0.856447, -9.995, 4.904, -12.484)
 
-[node name="leaf_boat_lit_23" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_23" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(-0.803026, 0, 0.595945, 0, 1, 0, -0.595945, 0, -0.803026, -9.55, 4.904, -12.383)
 
-[node name="leaf_boat_lit_24" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_24" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(-0.085243, 0, 0.99636, 0, 1, 0, -0.99636, 0, -0.085243, -8.949, 4.904, -12.252)
 
-[node name="leaf_boat_lit_25" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_25" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(-0.999978, 0, -0.0066322, 0, 1, 0, 0.0066322, 0, -0.999978, -7.866, 4.904, -12.227)
 
-[node name="leaf_boat_lit_26" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_26" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(0.213883, 0, 0.976859, 0, 1, 0, -0.976859, 0, 0.213883, -6.844, 4.904, -12.063)
 
-[node name="leaf_boat_lit_27" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_27" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(-0.0953246, 0, 0.995446, 0, 1, 0, -0.995446, 0, -0.0953246, -5.643, 4.904, -11.964)
 
-[node name="leaf_boat_lit_28" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_28" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(-0.206887, 0, 0.978365, 0, 1, 0, -0.978365, 0, -0.206887, -4.693, 4.904, -11.915)
 
-[node name="leaf_boat_lit_29" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_29" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(-0.262358, 0, 0.964971, 0, 1, 0, -0.964971, 0, -0.262358, -3.649, 4.904, -11.849)
 
-[node name="leaf_boat_lit_30" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_30" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(-0.506786, 0, 0.862072, 0, 1, 0, -0.862072, 0, -0.506786, -2.732, 4.904, -11.851)
 
-[node name="leaf_boat_lit_31" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_31" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(-0.0593064, 0, 0.99824, 0, 1, 0, -0.99824, 0, -0.0593064, -1.907, 4.904, -11.901)
 
-[node name="leaf_boat_lit_32" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_32" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(-0.240059, 0, 0.970758, 0, 1, 0, -0.970758, 0, -0.240059, -0.762, 4.904, -11.896)
 
-[node name="leaf_boat_lit_33" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_33" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(-0.562516, 0, 0.826786, 0, 1, 0, -0.826786, 0, -0.562516, -0.11, 4.904, -11.898)
 
-[node name="leaf_boat_lit_34" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_34" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(0.275973, 0, 0.961165, 0, 1, 0, -0.961165, 0, 0.275973, 0.849, 4.904, -11.81)
 
-[node name="leaf_boat_lit_35" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_35" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(-0.844421, 0, 0.535679, 0, 1, 0, -0.535679, 0, -0.844421, 2.01, 4.904, -11.91)
 
-[node name="leaf_boat_lit_36" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_36" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(-0.341364, 0, 0.939931, 0, 1, 0, -0.939931, 0, -0.341364, 3.4, 4.904, -11.865)
 
-[node name="leaf_boat_lit_37" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_37" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(-0.0782851, 0, 0.996931, 0, 1, 0, -0.996931, 0, -0.0782851, 3.929, 4.904, -11.922)
 
-[node name="leaf_boat_lit_38" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_38" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(0.698665, 0, 0.715449, 0, 1, 0, -0.715449, 0, 0.698665, 4.501, 4.904, -11.978)
 
-[node name="leaf_boat_lit_39" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_39" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(-0.613459, 0, 0.789727, 0, 1, 0, -0.789727, 0, -0.613459, 5.944, 4.904, -11.983)
 
-[node name="leaf_boat_lit_40" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_40" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(0.0674929, 0, 0.99772, 0, 1, 0, -0.99772, 0, 0.0674929, 6.631, 4.904, -12.134)
 
-[node name="leaf_boat_lit_41" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_41" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(-0.937889, 0, 0.346936, 0, 1, 0, -0.346936, 0, -0.937889, 7.106, 4.904, -12.151)
 
-[node name="leaf_boat_lit_42" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_42" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(-0.633786, 0, 0.773508, 0, 1, 0, -0.773508, 0, -0.633786, 7.732, 4.904, -12.213)
 
-[node name="leaf_boat_lit_43" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_43" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(-0.441662, 0, 0.897181, 0, 1, 0, -0.897181, 0, -0.441662, 8.257, 4.904, -12.168)
 
-[node name="leaf_boat_lit_44" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_44" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(-0.249704, 0, 0.968322, 0, 1, 0, -0.968322, 0, -0.249704, 9.095, 4.904, -12.358)
 
-[node name="leaf_boat_lit_45" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_45" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(0.0655773, 0, 0.997847, 0, 1, 0, -0.997847, 0, 0.0655773, 10.469, 4.904, -12.477)
 
-[node name="leaf_boat_lit_46" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_46" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(0.684293, 0, 0.729208, 0, 1, 0, -0.729208, 0, 0.684293, 11.573, 4.904, -12.576)
 
-[node name="leaf_boat_lit_47" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_47" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(0.282676, 0, 0.959215, 0, 1, 0, -0.959215, 0, 0.282676, 12.567, 4.904, -12.739)
 
-[node name="leaf_boat_lit_48" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_48" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(-0.404503, 0, 0.914537, 0, 1, 0, -0.914537, 0, -0.404503, 13.526, 4.904, -12.916)
 
-[node name="leaf_boat_lit_49" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_49" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(0.0066322, 0, 0.999978, 0, 1, 0, -0.999978, 0, 0.0066322, 14.275, 4.904, -12.979)
 
-[node name="leaf_boat_lit_50" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_50" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(0.180519, 0, 0.983571, 0, 1, 0, -0.983571, 0, 0.180519, 15.66, 4.904, -13.337)
 
-[node name="leaf_boat_lit_51" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_51" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(0.168833, 0, 0.985645, 0, 1, 0, -0.985645, 0, 0.168833, 16.526, 4.904, -13.439)
 
-[node name="leaf_boat_lit_52" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_52" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(0.476392, 0, 0.879233, 0, 1, 0, -0.879233, 0, 0.476392, 17.458, 4.904, -13.655)
 
-[node name="leaf_boat_lit_53" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_53" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(0.22376, 0, 0.974644, 0, 1, 0, -0.974644, 0, 0.22376, 18.269, 4.904, -13.805)
 
-[node name="leaf_boat_lit_54" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_54" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(-0.685564, 0, 0.728012, 0, 1, 0, -0.728012, 0, -0.685564, 19.152, 4.904, -13.967)
 
-[node name="leaf_boat_lit_55" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_55" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(0.671721, 0, 0.740805, 0, 1, 0, -0.740805, 0, 0.671721, 20.152, 4.904, -14.274)
 
-[node name="leaf_boat_lit_56" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_56" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(-0.337588, 0, 0.941294, 0, 1, 0, -0.941294, 0, -0.337588, 21.101, 4.904, -14.416)
 
-[node name="leaf_boat_lit_57" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_57" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(0.308519, 0, 0.951218, 0, 1, 0, -0.951218, 0, 0.308519, 22.057, 4.904, -14.765)
 
-[node name="leaf_boat_lit_58" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_58" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(0.365852, 0, 0.930673, 0, 1, 0, -0.930673, 0, 0.365852, 22.887, 4.904, -14.967)
 
-[node name="leaf_boat_lit_59" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_59" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(0.104355, 0, 0.99454, 0, 1, 0, -0.99454, 0, 0.104355, 23.424, 4.904, -15.032)
 
-[node name="leaf_boat_lit_60" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_60" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(-0.052336, 0, 0.99863, 0, 1, 0, -0.99863, 0, -0.052336, 24.323, 4.904, -15.293)
 
-[node name="leaf_boat_lit_61" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_61" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(-0.585382, 0, 0.810757, 0, 1, 0, -0.810757, 0, -0.585382, 24.952, 4.904, -15.478)
 
-[node name="leaf_boat_lit_62" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_62" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(0.333149, 0, 0.942874, 0, 1, 0, -0.942874, 0, 0.333149, 26.072, 4.904, -15.878)
 
-[node name="leaf_boat_lit_63" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_63" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(0.477312, 0, 0.878734, 0, 1, 0, -0.878734, 0, 0.477312, 26.656, 4.904, -16.017)
 
-[node name="leaf_boat_lit_64" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_64" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(-0.2632, 0, 0.964741, 0, 1, 0, -0.964741, 0, -0.2632, 28.007, 4.904, -16.45)
 
-[node name="leaf_boat_lit_65" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_65" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(0.493031, 0, 0.870012, 0, 1, 0, -0.870012, 0, 0.493031, 28.872, 4.904, -16.881)
 
-[node name="leaf_boat_lit_66" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_66" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(0.727414, 0, 0.686199, 0, 1, 0, -0.686199, 0, 0.727414, 29.93, 4.904, -17.16)
 
-[node name="leaf_boat_lit_67" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_67" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(0.877983, 0, 0.478692, 0, 1, 0, -0.478692, 0, 0.877983, 29.518, 2.504, -9.569)
 
-[node name="leaf_boat_lit_68" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_68" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(-0.438057, 0, 0.898947, 0, 1, 0, -0.898947, 0, -0.438057, 28.685, 2.504, -9.309)
 
-[node name="leaf_boat_lit_69" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_69" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(0.682764, 0, 0.730639, 0, 1, 0, -0.730639, 0, 0.682764, 27.551, 2.504, -8.94)
 
-[node name="leaf_boat_lit_70" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_70" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(0.675462, 0, 0.737395, 0, 1, 0, -0.737395, 0, 0.675462, 26.607, 2.504, -8.674)
 
-[node name="leaf_boat_lit_71" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_71" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(-0.37315, 0, 0.927771, 0, 1, 0, -0.927771, 0, -0.37315, 25.491, 2.504, -8.337)
 
-[node name="leaf_boat_lit_72" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_72" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(-0.245815, 0, 0.969317, 0, 1, 0, -0.969317, 0, -0.245815, 24.533, 2.504, -8.099)
 
-[node name="leaf_boat_lit_73" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_73" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(0.0235598, 0, 0.999722, 0, 1, 0, -0.999722, 0, 0.0235598, 24.067, 2.504, -7.944)
 
-[node name="leaf_boat_lit_74" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_74" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(0.118231, 0, 0.992986, 0, 1, 0, -0.992986, 0, 0.118231, 22.893, 2.504, -7.764)
 
-[node name="leaf_boat_lit_75" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_75" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(0.472858, 0, 0.881138, 0, 1, 0, -0.881138, 0, 0.472858, 21.519, 2.504, -7.374)
 
-[node name="leaf_boat_lit_76" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_76" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(-0.209789, 0, 0.977747, 0, 1, 0, -0.977747, 0, -0.209789, 20.418, 2.504, -7.161)
 
-[node name="leaf_boat_lit_77" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_77" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(-0.556731, 0, 0.830693, 0, 1, 0, -0.830693, 0, -0.556731, 19.258, 2.504, -6.852)
 
-[node name="leaf_boat_lit_78" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_78" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(-0.829623, 0, 0.558324, 0, 1, 0, -0.558324, 0, -0.829623, 18.441, 2.504, -6.717)
 
-[node name="leaf_boat_lit_79" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_79" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(0.37234, 0, 0.928096, 0, 1, 0, -0.928096, 0, 0.37234, 17.783, 2.504, -6.58)
 
-[node name="leaf_boat_lit_80" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_80" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(-0.582123, 0, 0.813101, 0, 1, 0, -0.813101, 0, -0.582123, 16.346, 2.504, -6.23)
 
-[node name="leaf_boat_lit_81" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_81" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(-0.28435, 0, 0.958721, 0, 1, 0, -0.958721, 0, -0.28435, 15.519, 2.504, -6.197)
 
-[node name="leaf_boat_lit_82" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_82" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(0.263368, 0, 0.964695, 0, 1, 0, -0.964695, 0, 0.263368, 14.548, 2.504, -5.991)
 
-[node name="leaf_boat_lit_83" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_83" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(-0.577288, 0, 0.816541, 0, 1, 0, -0.816541, 0, -0.577288, 13.197, 2.504, -5.76)
 
-[node name="leaf_boat_lit_84" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_84" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(0.0286195, 0, 0.99959, 0, 1, 0, -0.99959, 0, 0.0286195, 12.23, 2.504, -5.587)
 
-[node name="leaf_boat_lit_85" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_85" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(0.553537, 0, 0.832825, 0, 1, 0, -0.832825, 0, 0.553537, 11.286, 2.504, -5.589)
 
-[node name="leaf_boat_lit_86" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_86" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(0.269256, 0, 0.963069, 0, 1, 0, -0.963069, 0, 0.269256, 10.41, 2.504, -5.427)
 
-[node name="leaf_boat_lit_87" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_87" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(0.356575, 0, 0.934267, 0, 1, 0, -0.934267, 0, 0.356575, 9.407, 2.504, -5.38)
 
-[node name="leaf_boat_lit_88" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_88" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(0.446198, 0, 0.894934, 0, 1, 0, -0.894934, 0, 0.446198, 8.722, 2.504, -5.209)
 
-[node name="leaf_boat_lit_89" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_89" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(-0.322596, 0, 0.946537, 0, 1, 0, -0.946537, 0, -0.322596, 7.493, 2.504, -5.121)
 
-[node name="leaf_boat_lit_90" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_90" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(0.45958, 0, 0.888136, 0, 1, 0, -0.888136, 0, 0.45958, 6.507, 2.504, -5.13)
 
-[node name="leaf_boat_lit_91" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_91" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(-0.303534, 0, 0.952821, 0, 1, 0, -0.952821, 0, -0.303534, 5.07, 2.504, -4.948)
 
-[node name="leaf_boat_lit_92" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_92" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(0.439939, 0, 0.898028, 0, 1, 0, -0.898028, 0, 0.439939, 4.11, 2.504, -4.892)
 
-[node name="leaf_boat_lit_93" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_93" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(-0.0293173, 0, 0.99957, 0, 1, 0, -0.99957, 0, -0.0293173, 2.89, 2.504, -4.876)
 
-[node name="leaf_boat_lit_94" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_94" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(0.0366437, 0, 0.999328, 0, 1, 0, -0.999328, 0, 0.0366437, 2.225, 2.504, -4.918)
 
-[node name="leaf_boat_lit_95" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_95" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(-0.37315, 0, 0.927771, 0, 1, 0, -0.927771, 0, -0.37315, 0.985, 2.504, -4.821)
 
-[node name="leaf_boat_lit_96" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_96" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(-0.4272, 0, 0.904157, 0, 1, 0, -0.904157, 0, -0.4272, -0.281, 2.504, -4.82)
 
-[node name="leaf_boat_lit_97" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_97" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(0.529179, 0, 0.84851, 0, 1, 0, -0.84851, 0, 0.529179, -1.082, 2.504, -4.815)
 
-[node name="leaf_boat_lit_98" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_98" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(0.0605259, 0, 0.998167, 0, 1, 0, -0.998167, 0, 0.0605259, -1.568, 2.504, -4.876)
 
-[node name="leaf_boat_lit_99" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_99" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(-0.234294, 0, 0.972166, 0, 1, 0, -0.972166, 0, -0.234294, -2.499, 2.504, -4.859)
 
-[node name="leaf_boat_lit_100" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_100" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(0.309349, 0, 0.950949, 0, 1, 0, -0.950949, 0, 0.309349, -3.685, 2.504, -4.958)
 
-[node name="leaf_boat_lit_101" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_101" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(-0.516982, 0, 0.855997, 0, 1, 0, -0.855997, 0, -0.516982, -5.036, 2.504, -4.984)
 
-[node name="leaf_boat_lit_102" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_102" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(-0.126026, 0, 0.992027, 0, 1, 0, -0.992027, 0, -0.126026, -5.816, 2.504, -4.982)
 
-[node name="leaf_boat_lit_103" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_103" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(-0.189267, 0, 0.981926, 0, 1, 0, -0.981926, 0, -0.189267, -6.875, 2.504, -5.08)
 
-[node name="leaf_boat_lit_104" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_104" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(-0.328207, 0, 0.944606, 0, 1, 0, -0.944606, 0, -0.328207, -7.831, 2.504, -5.169)
 
-[node name="leaf_boat_lit_105" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_105" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(-0.670168, 0, 0.74221, 0, 1, 0, -0.74221, 0, -0.670168, -9.011, 2.504, -5.32)
 
-[node name="leaf_boat_lit_106" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_106" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(-0.162637, 0, 0.986686, 0, 1, 0, -0.986686, 0, -0.162637, -9.779, 2.504, -5.291)
 
-[node name="leaf_boat_lit_107" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_107" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(-0.504226, 0, 0.863572, 0, 1, 0, -0.863572, 0, -0.504226, -10.746, 2.504, -5.481)
 
-[node name="leaf_boat_lit_108" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_108" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(0.147119, 0, 0.989119, 0, 1, 0, -0.989119, 0, 0.147119, -11.875, 2.504, -5.573)
 
-[node name="leaf_boat_lit_109" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_109" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(-0.0654031, 0, 0.997859, 0, 1, 0, -0.997859, 0, -0.0654031, -12.877, 2.504, -5.735)
 
-[node name="leaf_boat_lit_110" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_110" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(-0.26707, 0, 0.963677, 0, 1, 0, -0.963677, 0, -0.26707, -14.026, 2.504, -5.845)
 
-[node name="leaf_boat_lit_111" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_111" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(0.0165799, 0, 0.999863, 0, 1, 0, -0.999863, 0, 0.0165799, -15.392, 2.504, -6.122)
 
-[node name="leaf_boat_lit_112" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_112" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(-0.168661, 0, 0.985674, 0, 1, 0, -0.985674, 0, -0.168661, -16.188, 2.504, -6.296)
 
-[node name="leaf_boat_lit_113" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_113" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(0.0465834, 0, 0.998914, 0, 1, 0, -0.998914, 0, 0.0465834, -17.469, 2.504, -6.543)
 
-[node name="leaf_boat_lit_114" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_114" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(-0.615799, 0, 0.787903, 0, 1, 0, -0.787903, 0, -0.615799, -18.78, 2.504, -6.785)
 
-[node name="leaf_boat_lit_115" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_115" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(-0.362926, 0, 0.931818, 0, 1, 0, -0.931818, 0, -0.362926, -20.044, 2.504, -7.015)
 
-[node name="leaf_boat_lit_116" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_116" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(-0.423567, 0, 0.905865, 0, 1, 0, -0.905865, 0, -0.423567, -21.46, 2.504, -7.337)
 
-[node name="leaf_boat_lit_117" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_117" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(-0.528142, 0, 0.849156, 0, 1, 0, -0.849156, 0, -0.528142, -22.411, 2.504, -7.501)
 
-[node name="leaf_boat_lit_118" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_118" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(0.0963669, 0, 0.995346, 0, 1, 0, -0.995346, 0, 0.0963669, -22.897, 2.504, -7.665)
 
-[node name="leaf_boat_lit_119" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_119" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(-0.847585, 0, 0.530659, 0, 1, 0, -0.530659, 0, -0.847585, -23.532, 2.504, -7.834)
 
-[node name="leaf_boat_lit_120" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_120" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(-0.167629, 0, 0.98585, 0, 1, 0, -0.98585, 0, -0.167629, -24.837, 2.504, -8.187)
 
-[node name="leaf_boat_lit_121" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_121" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(0.108346, 0, 0.994113, 0, 1, 0, -0.994113, 0, 0.108346, -25.768, 2.504, -8.52)
 
-[node name="leaf_boat_lit_122" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_122" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(-0.447915, 0, 0.894076, 0, 1, 0, -0.894076, 0, -0.447915, -26.428, 2.504, -8.694)
 
-[node name="leaf_boat_lit_123" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_123" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(-0.130007, 0, 0.991513, 0, 1, 0, -0.991513, 0, -0.130007, -27.779, 2.504, -9.114)
 
-[node name="leaf_boat_lit_124" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_124" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(-0.63527, 0, 0.77229, 0, 1, 0, -0.77229, 0, -0.63527, -28.623, 2.504, -9.392)
 
-[node name="leaf_boat_lit_125" parent="Dressing" instance=ExtResource("32_r")]
+[node name="leaf_boat_lit_125" parent="Dressing" instance=ExtResource("33_r")]
 transform = Transform3D(-0.836764, 0, 0.547563, 0, 1, 0, -0.547563, 0, -0.836764, -29.515, 2.504, -9.634)
+
+[node name="votive_lamp_1" parent="Dressing" instance=ExtResource("34_r")]
+transform = Transform3D(0.970842, 0, 0.23972, 0, 1, 0, -0.23972, 0, 0.970842, -11.5, 0, -4.36)
+
+[node name="votive_lamp_2" parent="Dressing" instance=ExtResource("34_r")]
+transform = Transform3D(0.997708, 0, 0.067667, 0, 1, 0, -0.067667, 0, 0.997708, -9.817, 0, -3.968)
+
+[node name="votive_lamp_3" parent="Dressing" instance=ExtResource("34_r")]
+transform = Transform3D(0.952926, 0, 0.303202, 0, 1, 0, -0.303202, 0, 0.952926, -8.5, 0, -3.924)
+
+[node name="votive_lamp_4" parent="Dressing" instance=ExtResource("34_r")]
+transform = Transform3D(0.980375, 0, -0.197144, 0, 1, 0, 0.197144, 0, 0.980375, -7.198, 0, -3.836)
+
+[node name="votive_lamp_5" parent="Dressing" instance=ExtResource("34_r")]
+transform = Transform3D(0.910395, 0, -0.41374, 0, 1, 0, 0.41374, 0, 0.910395, -5.528, 0, -3.674)
+
+[node name="votive_lamp_6" parent="Dressing" instance=ExtResource("34_r")]
+transform = Transform3D(0.950407, 0, 0.311008, 0, 1, 0, -0.311008, 0, 0.950407, -4.137, 0, -3.787)
+
+[node name="votive_lamp_7" parent="Dressing" instance=ExtResource("34_r")]
+transform = Transform3D(0.949096, 0, 0.314987, 0, 1, 0, -0.314987, 0, 0.949096, -2.423, 0, -3.58)
+
+[node name="votive_lamp_8" parent="Dressing" instance=ExtResource("34_r")]
+transform = Transform3D(0.954553, 0, -0.298041, 0, 1, 0, 0.298041, 0, 0.954553, -0.8, 0, -3.572)
+
+[node name="votive_lamp_9" parent="Dressing" instance=ExtResource("34_r")]
+transform = Transform3D(0.92166, 0, 0.387998, 0, 1, 0, -0.387998, 0, 0.92166, 0.532, 0, -3.699)
+
+[node name="votive_lamp_10" parent="Dressing" instance=ExtResource("34_r")]
+transform = Transform3D(0.996862, 0, -0.0791551, 0, 1, 0, 0.0791551, 0, 0.996862, 1.853, 0, -3.573)
+
+[node name="votive_lamp_11" parent="Dressing" instance=ExtResource("34_r")]
+transform = Transform3D(0.986515, 0, 0.16367, 0, 1, 0, -0.16367, 0, 0.986515, 3.017, 0, -3.519)
+
+[node name="votive_lamp_12" parent="Dressing" instance=ExtResource("34_r")]
+transform = Transform3D(0.995627, 0, -0.0934133, 0, 1, 0, 0.0934133, 0, 0.995627, 4.757, 0, -3.68)
+
+[node name="votive_lamp_13" parent="Dressing" instance=ExtResource("34_r")]
+transform = Transform3D(0.954501, 0, 0.298208, 0, 1, 0, -0.298208, 0, 0.954501, 9.021, 0, -3.976)
+
+[node name="votive_lamp_14" parent="Dressing" instance=ExtResource("34_r")]
+transform = Transform3D(0.956712, 0, 0.291036, 0, 1, 0, -0.291036, 0, 0.956712, 10.65, 0, -4.231)
 
 [node name="Lamps" type="Node3D" parent="."]
 
@@ -1556,16 +1589,6 @@ omni_range = 3.4
 omni_attenuation = 1.0
 light_volumetric_fog_energy = 0.0
 
-[node name="Flame5" type="MeshInstance3D" parent="Lamps"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -11.5, 0.1, -4.36)
-cast_shadow = 0
-mesh = SubResource("FlameMesh")
-
-[node name="Flame6" type="MeshInstance3D" parent="Lamps"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.817, 0.1, -3.968)
-cast_shadow = 0
-mesh = SubResource("FlameMesh")
-
 [node name="Lamp7" type="OmniLight3D" parent="Lamps"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.5, 0.1, -3.924)
 light_color = Color(1, 0.6549, 0.3412, 1)
@@ -1573,16 +1596,6 @@ light_energy = 1.1
 omni_range = 3.4
 omni_attenuation = 1.0
 light_volumetric_fog_energy = 0.0
-
-[node name="Flame7" type="MeshInstance3D" parent="Lamps"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.5, 0.1, -3.924)
-cast_shadow = 0
-mesh = SubResource("FlameMesh")
-
-[node name="Flame8" type="MeshInstance3D" parent="Lamps"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.198, 0.1, -3.836)
-cast_shadow = 0
-mesh = SubResource("FlameMesh")
 
 [node name="Lamp9" type="OmniLight3D" parent="Lamps"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.528, 0.1, -3.674)
@@ -1592,16 +1605,6 @@ omni_range = 3.4
 omni_attenuation = 1.0
 light_volumetric_fog_energy = 0.0
 
-[node name="Flame9" type="MeshInstance3D" parent="Lamps"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.528, 0.1, -3.674)
-cast_shadow = 0
-mesh = SubResource("FlameMesh")
-
-[node name="Flame10" type="MeshInstance3D" parent="Lamps"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.137, 0.1, -3.787)
-cast_shadow = 0
-mesh = SubResource("FlameMesh")
-
 [node name="Lamp11" type="OmniLight3D" parent="Lamps"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.423, 0.1, -3.58)
 light_color = Color(1, 0.6549, 0.3412, 1)
@@ -1609,16 +1612,6 @@ light_energy = 1.1
 omni_range = 3.4
 omni_attenuation = 1.0
 light_volumetric_fog_energy = 0.0
-
-[node name="Flame11" type="MeshInstance3D" parent="Lamps"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.423, 0.1, -3.58)
-cast_shadow = 0
-mesh = SubResource("FlameMesh")
-
-[node name="Flame12" type="MeshInstance3D" parent="Lamps"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.8, 0.1, -3.572)
-cast_shadow = 0
-mesh = SubResource("FlameMesh")
 
 [node name="Lamp13" type="OmniLight3D" parent="Lamps"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.532, 0.1, -3.699)
@@ -1628,16 +1621,6 @@ omni_range = 3.4
 omni_attenuation = 1.0
 light_volumetric_fog_energy = 0.0
 
-[node name="Flame13" type="MeshInstance3D" parent="Lamps"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.532, 0.1, -3.699)
-cast_shadow = 0
-mesh = SubResource("FlameMesh")
-
-[node name="Flame14" type="MeshInstance3D" parent="Lamps"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.853, 0.1, -3.573)
-cast_shadow = 0
-mesh = SubResource("FlameMesh")
-
 [node name="Lamp15" type="OmniLight3D" parent="Lamps"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.017, 0.1, -3.519)
 light_color = Color(1, 0.6549, 0.3412, 1)
@@ -1646,16 +1629,6 @@ omni_range = 3.4
 omni_attenuation = 1.0
 light_volumetric_fog_energy = 0.0
 
-[node name="Flame15" type="MeshInstance3D" parent="Lamps"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.017, 0.1, -3.519)
-cast_shadow = 0
-mesh = SubResource("FlameMesh")
-
-[node name="Flame16" type="MeshInstance3D" parent="Lamps"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.757, 0.1, -3.68)
-cast_shadow = 0
-mesh = SubResource("FlameMesh")
-
 [node name="Lamp17" type="OmniLight3D" parent="Lamps"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.021, 0.1, -3.976)
 light_color = Color(1, 0.6549, 0.3412, 1)
@@ -1663,16 +1636,6 @@ light_energy = 1.1
 omni_range = 3.4
 omni_attenuation = 1.0
 light_volumetric_fog_energy = 0.0
-
-[node name="Flame17" type="MeshInstance3D" parent="Lamps"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.021, 0.1, -3.976)
-cast_shadow = 0
-mesh = SubResource("FlameMesh")
-
-[node name="Flame18" type="MeshInstance3D" parent="Lamps"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.65, 0.1, -4.231)
-cast_shadow = 0
-mesh = SubResource("FlameMesh")
 
 [node name="Lamp19" type="OmniLight3D" parent="Lamps"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.098, 3.75, -5.762)
