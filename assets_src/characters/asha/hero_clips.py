@@ -4126,9 +4126,11 @@ SG_SWAY = (0.4, 0.7)  # the idle sway, spread over the variants (a squad does no
 SG_WATCH = (24.0, -3.0)  # stand_watch_seaward: the turn to his left and the lift of the head (degrees)
 SG_WALK = (20.0, 34.0, 10.0, 0.014, 1.5)  # stride, knee, arm swing (degrees), bob (m), lean
 SG_SHIELD_UP = {"DEF-spine.001": (4.0, -12.0, 0.0), "DEF-spine.006": (-2.0, 12.0, 0.0),
-                "DEF-upper_arm.L": (-70.0, 0.0, 22.0), "DEF-forearm.L": (-50.0, -70.0, -30.0)}  # Moll's guard's arm
+                "DEF-upper_arm.L": (-50.0, 0.0, 22.0), "DEF-forearm.L": (-50.0, -70.0, -30.0)}  # Moll's guard, lower
 SG_RAISE = 0.45  # shield_up reaches its guard over this share of the clip
 SG_SHIELD_ARM = 10.0  # degrees the shield arm hangs further out than Moll's: the shield's rim clear of the armpit (probed)
+SG_LEVEL_GUARD = 0.6  # level_spear: the share of shield_up's guard the shield arm takes (the spear is one-handed)
+SG_ARM_L = ("DEF-upper_arm.L", "DEF-forearm.L", "DEF-hand.L")
 SG_CLIPS = ["idle", "walk", "stand_watch_seaward", "shield_up", "level_spear"]
 LENGTHS.update({"stand_watch_seaward": 6.0, "shield_up": 1.2, "level_spear": 1.6})
 LOOPS.add("stand_watch_seaward")
@@ -4157,9 +4159,23 @@ def sg_pose_at(clip: str, t: float, length: float, sk: Skeleton, persona: dict) 
             "DEF-spine.005": (0.4 * lift, 0.25 * turn, 0.0), "DEF-spine.006": (0.6 * lift - MOLL_HEAD_DOWN, 0.35 * turn,
                                                                              0.0)})
     if clip == "shield_up":  # the shield brought up across the chest, the shoulder into it; held
-        return add(add(planted(sk, shared), carry), _scale(SG_SHIELD_UP, smooth(u / SG_RAISE)))
-    if clip == "level_spear":  # Toma's path: the arm swings out while the hand turns the spear level; held
-        return add(spear_path(sk, shared, min(u / SPEAR_MOVE, 1.0)), carry)
+        return sg_guard(planted(sk, shared), carry, smooth(u / SG_RAISE))
+    if clip == "level_spear":  # Toma's path for the spear arm (one-handed); the shield arm comes up into a low guard
+        v = min(u / SPEAR_MOVE, 1.0)
+        base = planted(sk, shared)
+        pose = dict(spear_path(sk, shared, v))
+        for b in SG_ARM_L:  # the left hand stays on the shield, not on the shaft (Toma's two-handed grip)
+            pose[b] = base.get(b, (0.0, 0.0, 0.0))
+        return sg_guard(pose, carry, SG_LEVEL_GUARD * smooth(v), arm_only=True)
+    raise KeyError(clip)
+
+
+def sg_guard(base: dict, carry: dict, s: float, arm_only: bool = False) -> dict:
+    """`base` with the carry, plus `s` of shield_up's guard (Moll's defend arm); the carry's shield arm hangs out from
+    the thigh, which the guard brings in across the body, so its outward turn goes as the guard comes in."""
+    guard = {b: v for b, v in SG_SHIELD_UP.items() if not arm_only or b in SG_ARM_L}
+    out = carry["DEF-upper_arm.L"]
+    return add(add(add(base, carry), _scale(guard, s)), {"DEF-upper_arm.L": tuple(-x * s for x in out)})
     raise KeyError(clip)
 
 
