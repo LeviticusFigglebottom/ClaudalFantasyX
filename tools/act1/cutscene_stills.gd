@@ -1,7 +1,8 @@
 extends Node
-## ADR 0041's playthrough stills (act1-chapters): walks each zone visit of a plan (tools/act1/cutscene_stills_plan.py) on
-## one zone instance, running the flow's steps in order (set, zone calls, place, party, play), plays each cutscene in
-## driven time and saves a still a moment after every camera cue, so the staging is viewed as the player meets it. Run it under the render wrapper (a scene, so the autoloads run):
+## ADR 0041's playthrough stills (act1-chapters): walks each zone visit of a plan
+## (tools/act1/cutscene_stills_plan.py) on one zone instance, running the flow's steps in order (set, zone calls,
+## place, party, play), plays each cutscene in driven time and saves a still a moment after every camera cue, so the
+## staging is viewed as the player meets it. Run it under the render wrapper (a scene, so the autoloads run):
 ##   STILLS_PLAN=<plan.json> STILLS_OUT=<dir> [STILLS_ONLY=<locations, comma-separated>] \
 ##     godot-render --path . res://tools/act1/cutscene_stills.tscn
 
@@ -28,6 +29,7 @@ func _run() -> void:
 		if not only.is_empty() and not only.has(str(visit["location"])):
 			continue
 		n = await _visit(visit, out, n)
+		n = (n / 1000 + 1) * 1000  # each visit's stills sort together
 	get_tree().quit()
 
 
@@ -67,7 +69,8 @@ func _visit(visit: Dictionary, out: String, n: int) -> int:
 				zone.call(&"place_at", StringName(str(step["place"])))
 			elif step.has("party"):
 				var ids: Array[StringName] = []
-				for id: Variant in (step["party"] as Dictionary).get("party", []):
+				var party: Variant = step["party"]  # {party, reserve} or a bare list
+				for id: Variant in (party as Dictionary).get("party", []) if party is Dictionary else party:
 					ids.append(StringName(str(id)))
 				Game.state.party_ids = ids
 			elif step.has("play"):
@@ -114,7 +117,7 @@ func _play(zone: Node3D, seq: CutsceneSequencer, scene_id: StringName, out: Stri
 			for i in RENDER_FRAMES:
 				await get_tree().process_frame
 			var img := get_viewport().get_texture().get_image()
-			img.save_png("%s/%03d_%s__%s.png" % [out, n, scene_id, shot])
+			img.save_png("%s/%04d_%s__%s.png" % [out, n, scene_id, shot])
 			n += 1
 			count += 1
 	print("STILLS %s: %d stills, %.0f s%s" % [scene_id, count, frame[0] * DT, " (cap)" if seq.is_playing() else ""])
