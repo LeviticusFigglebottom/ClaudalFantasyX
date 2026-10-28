@@ -4127,6 +4127,37 @@
       }
     },
     {
+      "id": "slice_verse_c08",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/slice_shots/slice_cutscene_shot.tscn",
+      "camera": "default",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 900,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        },
+        "nodes": {
+          ".": {
+            "level_path": "res://game/levels/ch03/first_verse/first_verse.tscn",
+            "scene_id": "ch03_the_first_verse",
+            "flags": [
+              "ch02_met_asha"
+            ],
+            "hold_line": "ch03_verse_060"
+          }
+        },
+        "time_scale": 16.0
+      }
+    },
+    {
       "id": "iskarra_p01_plaza_dusk",
       "scene": "res://game/levels/_tests/iskarra_kit/iskarra_preview.tscn",
       "camera": "Cameras/P01",
