@@ -242,6 +242,14 @@ that test at this branch's zones.
   placeholder capsules (characters). Interactable props: unchanged since M3-ENV-1311/1317, and every one is final.
   **Backlog:** only the galleries' `Column`, blocked on Rendering's M3-RND-26.
 
+- **M3-ENV-1321, the Bell's weeping column (taken at the Lead's ask under ADR 0041):** a kit piece with zone water
+  materials, so no new shader. It stands in the galleries (on the Column block) and at the port (under the kit's Bell).
+  **env-art-b's Act I inventory rows are now all closed.** Rendering keeps M3-RND-26's sphere-rig sizing and an
+  optional flowing column shader.
+- **Walk-through and interactable props:** done on the merged tree (above); nothing new.
+- **MERGE-READY @ 8c535d1e. BACKLOG EMPTY:** no inventory rows left; requests out to env-art (M3-ENV-1306, 1316),
+  battle-presentation (M3-BPR-1305, M3-ENV-714 review) and Rendering (M3-RND-26 rig, M3-RND-1315 fire).
+
 ### Render requests
 (Self-rendered per TRACK-RULES; lines are SELF-RENDERED notes.)
 SELF-RENDERED @ ea946ec8: ch07_tamsule_mouth, ch07_tamsule_market, ch07_tamsule_gantry — new shots, read final (Liss and Kerrid are capsules: no field body yet).
@@ -252,3 +260,4 @@ SELF-RENDERED @ 8d198f1e: 53 arena angles (scratch hint rig) before and 30 after
 SELF-RENDERED @ 6cd17ce3: battle_boss_intro_reach, battle_ch08_stair_hold, ch09_corrow_strand, ch05_pemakar_harbour, ch05_pemakar_crown (after the big13 merge), all viewed; the Lead's three gate notes are fixed.
 SELF-RENDERED @ f51f81f2: battle_boss_intro_matron (the anvil court), battle_boss_intro_reach (the surge state, landfall storm), battle_ch08_stair_hold (the storm state), all viewed.
 SELF-RENDERED @ 22b289bf: Virel in the Coilspire crown chamber (three scratch views) and ch08_coilspire_storm/_hall (unchanged), viewed.
+SELF-RENDERED @ 8c535d1e: ch07_bell_galleries, ch07_bell_moorings (the weeping column reads), ch07_tamsule_gantry, ch07_tamsule_mouth (the column sits behind the gantry leg head-on), all viewed.
