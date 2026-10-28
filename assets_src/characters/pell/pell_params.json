@@ -1,5 +1,5 @@
 {
-  "_about": "Pell, the Kirru party hero (docs/kb/art/characters/pell.md). Body block and face sliders from §1 and §9, relative to the MakeHuman donor's own form (ADR 0021: 1.0 / 0.0 = unchanged). Keys starting with '_' are read by build_pell.py and the pell_* modules, not by bb_params.",
+  "_about": "Pell, the Kirru party hero (docs/kb/art/characters/pell.md). Body block and face sliders from \u00a71 and \u00a79, relative to the MakeHuman donor's own form (ADR 0021: 1.0 / 0.0 = unchanged). Keys starting with '_' are read by build_pell.py and the pell_* modules, not by bb_params.",
   "name": "pell",
   "height_m": 2.3,
   "heads_tall": 8.36,
@@ -41,7 +41,7 @@
   "donor_mix_asian": 0.33,
   "donor_mix_caucasian": 0.33,
   "_proportions": {
-    "_about": "pell.md §1 numbers that are not bb_params inputs (the stand, the crest heights, the age read).",
+    "_about": "pell.md \u00a71 numbers that are not bb_params inputs (the stand, the crest heights, the age read).",
     "crest_tip_height_m": 2.36,
     "crest_raised_height_m": 2.43,
     "head_height_m": 0.275,
@@ -53,20 +53,226 @@
     "grey_guard_hair_share": 0.08
   },
   "_kirru": {
-    "_about": "pell.md §9: the Kirru head warp (pell_head.kirru_warp), read only by build_pell.py and the pell_* modules (the shared bb_params reader is unchanged). Starting values; the as-built values are these.",
+    "_about": "pell.md \u00a79: the Kirru head warp (pell_head.kirru_warp), read only by build_pell.py and the pell_* modules (the shared bb_params reader is unchanged). Starting values; the as-built values are these.",
     "muzzle_m": 0.055,
     "nose_pad_width_m": 0.032,
     "whisker_pad": 1.0,
     "ear_scale": 0.55,
-    "ear_offset_m": [0.0, 0.025, -0.025],
+    "ear_offset_m": [
+      0.0,
+      0.025,
+      -0.025
+    ],
     "cranium_length": 1.08,
     "eye_fissure_m": 0.032,
     "eye_roundness": 0.7,
-    "neck_s_deg": [20.0, -15.0],
+    "neck_s_deg": [
+      20.0,
+      -15.0
+    ],
     "web_depth": 0.5,
-    "ear_notch": {"side": "L", "depth_m": 0.008},
-    "crest": {"count": 14, "line_m": 0.09, "length_m": 0.22, "raised_deg": 35.0},
-    "whiskers": {"per_side": 11, "length_m": [0.06, 0.11]},
+    "ear_notch": {
+      "side": "L",
+      "depth_m": 0.008
+    },
+    "crest": {
+      "count": 14,
+      "line_m": 0.09,
+      "length_m": 0.22,
+      "raised_deg": 35.0
+    },
+    "whiskers": {
+      "per_side": 11,
+      "length_m": [
+        0.06,
+        0.11
+      ]
+    },
     "seed": 43
+  },
+  "_costume": {
+    "_about": "pell.md \u00a73-\u00a74 (pell_costume.py): sheet measures are his own (metres, not scaled). M1-CHR-14 lines: the mantle's arm edge `mantle_arm_drop_m` below the shoulder joint with a `mantle_arm_band_m` blend band (`mantle_arm_share` on the upper arm), the cord under the left arm `cord_underarm_drop_m` below the joint, the neck edge `mantle_neck_clear_m` off the neck.",
+    "mantle_front_deg": 8.0,
+    "mantle_back_deg": -172.0,
+    "mantle_cap_m": 0.17,
+    "mantle_arm_drop_m": 0.12,
+    "mantle_arm_band_deg": [
+      58.0,
+      72.0,
+      108.0,
+      122.0
+    ],
+    "mantle_neck_elev_deg": [
+      16.0,
+      28.0
+    ],
+    "mantle_off_m": 0.008,
+    "mantle_neck_clear_m": 0.02,
+    "mantle_arm_band_m": 0.05,
+    "mantle_arm_share": 0.5,
+    "mantle_panel_bones": 2,
+    "mantle_panel_share": 0.25,
+    "mantle_corner_row": 0.35,
+    "mantle_cut_in_m": 0.04,
+    "mantle_size_m": [
+      0.7,
+      1.05
+    ],
+    "mantle_plait_m": 0.009,
+    "mantle_cord_m": 0.005,
+    "cord_underarm_drop_m": 0.13,
+    "cord_off_m": 0.004,
+    "toggle_deg": 14.0,
+    "toggle_m": 0.07,
+    "toggle_r_m": 0.006,
+    "belt_cord_m": 0.008,
+    "belt_at": 1.05,
+    "pouch_m": [
+      0.12,
+      0.09,
+      0.04
+    ],
+    "pouch_deg": 72.0,
+    "hip_gear_off_m": 0.015,
+    "coil_turns": 8,
+    "coil_m": 0.12,
+    "coil_line_m": 0.004,
+    "coil_deg": -78.0,
+    "wrap_turns": 6,
+    "wrap_above_wrist_m": 0.02,
+    "wrap_from": 0.5,
+    "wrap_cord_m": 0.004,
+    "tile_m": 0.012,
+    "tile_thick_m": 0.003,
+    "tile_off_m": 0.003,
+    "tile_count": [
+      5,
+      7
+    ],
+    "ankle_cord_above_m": 0.04,
+    "seed": 47,
+    "mantle_front_hem_deg": -30.0,
+    "mantle_back_hem_deg": -150.0,
+    "mantle_hang_slope": 0.25,
+    "mantle_hem_at": 0.75,
+    "mantle_relax": 6
+  },
+  "_staff": {
+    "_about": "pell.md \u00a73, \u00a74.1 #7: the fishing-staff, held in the left hand (pell_props.py).",
+    "staff_m": 2.6,
+    "foot_m": 0.024,
+    "tip_m": 0.015,
+    "nodes": 5,
+    "bone_tip_m": 0.14,
+    "tip_socket_m": 0.03,
+    "barbs": 3,
+    "lash_m": 0.06,
+    "stone_m": 0.09,
+    "stone_above_m": 0.3,
+    "floor_m": 0.006,
+    "grip_clear_m": 0.06,
+    "grip_out_m": 0.012,
+    "plant_out_m": 0.12,
+    "lean_out_deg": 4.0,
+    "above_crest_m": 0.24,
+    "foot_splay_deg": 4.0
+  },
+  "_shell": {
+    "_about": "pell.md \u00a73, \u00a74.1 #3: the name-shell on its throat cord, rigid to DEF-spine.004 (pell_props.py).",
+    "shell_m": 0.05,
+    "shell_depth_m": 0.006,
+    "shell_clear_m": 0.008,
+    "cord_m": 0.004,
+    "cord_clear_m": 0.016,
+    "cord_above_notch_m": 0.07,
+    "cord_sag_m": 0.012,
+    "roughness": [
+      0.55,
+      0.3
+    ]
+  },
+  "_fur": {
+    "_about": "pell.md \u00a75 (pell_fur.py, pell_textures.py): the fur colours and its flow, the silhouette fringe.",
+    "dark": "#3B2B22",
+    "mid": "#5A4434",
+    "pale": "#D9CDB4",
+    "bare": "#2E2420",
+    "nose_pad": "#2A201C",
+    "stripe_width_m": [
+      0.07,
+      0.03
+    ],
+    "grey_guard_share": 0.08,
+    "strand_m": 0.0015,
+    "detail_normal_weight": 1.0,
+    "sss_thickness": 0.25,
+    "dark_roughness": 0.35,
+    "wet_roughness_drop": 0.15,
+    "wet_darken": 0.1,
+    "fringe_cards": 1800,
+    "fringe_length_m": [
+      0.008,
+      0.014
+    ],
+    "fringe_width_m": [
+      0.004,
+      0.007
+    ],
+    "fringe_lift_m": 0.0008,
+    "fringe_forearm_to": 0.45,
+    "mantle_clear_x_m": 0.05,
+    "seed": 53
+  },
+  "_crest": {
+    "_about": "pell.md \u00a75: the crest of fine heron feathers (pell_fur.crest), head-rigid, two shape keys.",
+    "count": 14,
+    "line_m": 0.09,
+    "line_front_m": 0.02,
+    "length_m": 0.22,
+    "raised_deg": 35.0,
+    "root_off_m": 0.003,
+    "width_m": 0.022,
+    "splay_deg": 9.0,
+    "colour": "#B8B6AE",
+    "tips": "#5A5650",
+    "seed": 59,
+    "root_elev_deg": 40.0,
+    "tip_elev_deg": -22.0,
+    "flat_root_elev_deg": 12.0,
+    "flat_tip_elev_deg": -40.0
+  },
+  "_whiskers": {
+    "_about": "pell.md \u00a75: whiskers on the pads, in the Head object (pell_fur.whiskers).",
+    "per_side": 11,
+    "length_m": [
+      0.06,
+      0.11
+    ],
+    "width_m": 0.0016,
+    "droop": 0.12,
+    "colour": "#D8D0C0",
+    "smile_push_m": 0.006,
+    "frown_droop_m": 0.008,
+    "seed": 61
+  },
+  "_brow": {
+    "_about": "pell.md \u00a75: the brow tufts, in the Head object (pell_fur.brow_tufts).",
+    "count": 60,
+    "length_m": [
+      0.012,
+      0.02
+    ],
+    "width_m": [
+      0.004,
+      0.0065
+    ],
+    "lift_m": 0.0006,
+    "seed": 67
+  },
+  "_webs": {
+    "_about": "pell.md \u00a73: the webbing between the fingers to the middle knuckle, blended between the two neighbouring finger bones (build_pell.webs).",
+    "depth": 0.5,
+    "thickness_m": 0.0012,
+    "sss_thickness": 0.1
   }
 }
