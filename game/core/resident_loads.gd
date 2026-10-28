@@ -17,6 +17,8 @@ const ENCOUNTERS_PATH := "res://game/data/battle/encounters.json"
 const SCENE_LOADS_PATH := "res://game/data/ui/scene_loads.json"
 const NAME := &"ResidentLoads"
 const ROUTER_SIGNAL := &"change_started"
+## wait_progress() counts a finished load as this many units, an in-flight one by its fraction of it.
+const PROGRESS_SCALE := 1000
 
 ## Off in a headless run (the test suite: nothing draws, and every test's change_scene would wait on the heroes);
 ## tests of this class turn it on.
@@ -156,9 +158,16 @@ static func battle_paths(encounter: StringName) -> PackedStringArray:
 	return out
 
 
-## Loads finished so far (SceneRouter.holders_progress: a held swap waits on while this rises, ADR 0111).
+## How far the loads have got, in thousandths of a load: finished loads plus each one in flight's own progress
+## (SceneRouter.holders_progress: a held swap waits on while this rises, ADR 0111). One big scene can take longer
+## than the router's stall window, so its fraction counts, not only finished loads.
 func wait_progress() -> int:
-	return _done_count
+	var total := _done_count * PROGRESS_SCALE
+	var frac := []
+	for path in _in_flight:
+		if ResourceLoader.load_threaded_get_status(path, frac) == ResourceLoader.THREAD_LOAD_IN_PROGRESS:
+			total += int(float(frac[0]) * PROGRESS_SCALE)
+	return total
 
 
 ## True when every resident path is in.

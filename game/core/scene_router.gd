@@ -94,9 +94,9 @@ const VISIBLE_MEASURE_FRAMES := 60
 ## stage (M1-RND-15).
 const PREWARM_WAIT_MAX_FRAMES := 120
 ## ADR 0111: past PREWARM_WAIT_MAX_FRAMES a held swap waits on while its holders make progress, until they stall this
-## many frames or the wait reaches SWAP_WAIT_CAP_FRAMES (the hidden loading time stays in short frames).
-const SWAP_STALL_FRAMES := 30
-const SWAP_WAIT_CAP_FRAMES := 900
+## long (ms of wall time) or the wait reaches SWAP_WAIT_CAP_MS (the hidden loading time stays in short frames).
+const SWAP_STALL_MS := 3000.0
+const SWAP_WAIT_CAP_MS := 15000.0
 const USEC_PER_MSEC := 1000.0
 const LOG_PREFIX := "SceneRouter"
 
@@ -326,13 +326,16 @@ func _swap(
 		push_error("SceneRouter: failed to instantiate %s" % scene_path)
 		return
 	var waited := 0
-	var stalled := 0
+	var wait_start := _now_usec()
+	var last_move := wait_start
 	var progress := holders_progress(swap_holders())
 	while not swap_holders().is_empty():
 		var now := holders_progress(swap_holders())
-		stalled = 0 if now != progress else stalled + 1
-		progress = now
-		if not swap_wait_continues(waited, stalled):
+		var clock := _now_usec()
+		if now != progress:
+			progress = now
+			last_move = clock
+		if not swap_wait_continues(waited, (clock - last_move) / USEC_PER_MSEC, (clock - wait_start) / USEC_PER_MSEC):
 			break
 		await get_tree().process_frame
 		waited += 1
@@ -367,12 +370,13 @@ func _swap(
 
 
 ## Whether a swap held by its holders (hold_swap) waits another frame: always up to PREWARM_WAIT_MAX_FRAMES; past
-## that only while the holders still make progress (their wait_progress() rose within SWAP_STALL_FRAMES; ADR 0111:
-## a zone's threaded loads, ResidentLoads), and never past SWAP_WAIT_CAP_FRAMES.
-static func swap_wait_continues(waited: int, stalled: int) -> bool:
+## that only while the holders still make progress (their wait_progress() moved within the last SWAP_STALL_MS of
+## wall time; ADR 0111: a zone's threaded loads, ResidentLoads, where one model can take a second and more), and
+## never past SWAP_WAIT_CAP_MS in all. Wall time, not frames: frames under the fade are short and uncapped.
+static func swap_wait_continues(waited: int, stalled_ms: float, waited_ms: float) -> bool:
 	if waited < PREWARM_WAIT_MAX_FRAMES:
 		return true
-	return waited < SWAP_WAIT_CAP_FRAMES and stalled < SWAP_STALL_FRAMES
+	return waited_ms < SWAP_WAIT_CAP_MS and stalled_ms < SWAP_STALL_MS
 
 
 ## Without split_swap, where the first measured frame starts: at the swap's start, unless frames were
