@@ -519,3 +519,7 @@ Skipped:
 - Screenshots: nothing visual changed. Loading is behind the opaque fade, and the result panel's look is unchanged.
 - A full suite: ResidentLoads is off in headless runs unless a test opts in, so the suite would not exercise it.
 **The PC's next walk on this head is the real measurement.**
+- 2026-10-28 12:15, **for big15:** rows 22 and 33 are both pushed on origin/claude/ui at 9190b833c.
+  - **Row 22:** the loads already run behind SceneRouter's opaque fade and its ShaderPrewarm stage. ADR 0111 adds the threaded loads behind that fade: the hero bodies (resident), each zone's own runtime loads (scene_loads.json) and a battle's arena and enemies. The router holds the swap until they are in.
+  - **Row 33:** the result panel's freed-row count-up is fixed (503b99839).
+  - **MERGE-READY @ 045348c44**, as posted above. The PC's next walk on it is the measurement for row 22.
