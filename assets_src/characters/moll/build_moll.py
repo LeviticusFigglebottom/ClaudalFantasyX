@@ -109,10 +109,10 @@ hb.LOD1_RATIO.update({"Head": 0.42, "Body": 0.5, "Costume": 0.45, SLEEVES: 0.45,
 
 LOG_TAG = ["moll"]  # build() sets it to the build's name (M3-CHR-508: the Stillguard variants)
 # M3-CHR-508: build() is parametric for the Stillguard soldiers (build_stillguard), whose kit Moll's derives from: the
-# spec names the params file and the skeleton, the face's subdivision (off: an NPC's head, the villagers' brows seated
-# on the shipped skin), the hair, the held prop (`prop`: None for Moll's brine-iron, else a function returning
-# (part, mesh name, bone name, (head, tail))) and an optional helm (a function returning a head-rigid Part). The
-# defaults (MOLL) build Moll exactly as before.
+# spec names the params file (or `extra`, the merged table itself) and the skeleton, the face's subdivision (off: an
+# NPC's head, the villagers' brows seated on the shipped skin), the hair, the held prop (`prop`: None for Moll's
+# brine-iron, else a function returning (part, mesh name, bone name, (head, tail))) and an optional helm (a function
+# returning a head-rigid Part). The defaults (MOLL) build Moll exactly as before.
 MOLL = {"name": "moll", "params": PARAMS, "subdiv_face": True, "hair": True, "prop": None, "helm": None}
 BROW_SEAT = 0.0003  # m at S = 1: without the face subdivision the brow cards sit on the shipped skin (build_villager)
 
@@ -339,8 +339,12 @@ def build(args: argparse.Namespace, spec: dict) -> int:
     LOG_TAG[0] = spec["name"]
     t0 = time.time()
     bpy.ops.wm.read_factory_settings(use_empty=True)
-    params = bb_params.load_params(path=str(spec["params"]))
-    extra = json.loads(Path(spec["params"]).read_text(encoding="utf-8"))
+    if spec.get("extra"):  # M3-CHR-508: a variant's merged table (build_stillguard.variant_params)
+        extra = spec["extra"]
+        params = bb_params.load_params(overrides=extra)
+    else:
+        params = bb_params.load_params(path=str(spec["params"]))
+        extra = json.loads(Path(spec["params"]).read_text(encoding="utf-8"))
     cparams = extra["_costume"]
     hparams = extra.get("_hair")
     res = bb_donor.generate(params, log=log, subdiv_face=spec["subdiv_face"])
