@@ -2,7 +2,7 @@
 id: M3-CRE-659
 title: "Act I background villagers: a crowd generator (ADR 0152) and the capsules swapped for it (about 51 people in 10 zones)"
 role: character
-status: doing
+status: review
 owner_session: "creatures (session_01EbDaRQ5n7hpvwuRG6jEDQY)"
 reviewer: art
 depends_on: [M3-CRE-656]
@@ -63,6 +63,20 @@ ADR 0041 and ADR 0152. The Lead moved every generic background person shown as a
 - **Variety**: no body twice in a zone; a body's wearers dress ≥ 40 sRGB apart (validated ≥ 24); cloth ≥ 55 from
   the wearer's skin; tints are palette swatches or two-swatch mixes (validated).
 - Docs: `docs/kb/art/creatures/crowd.md`, `docs/kb/tech/field_npc.md` "Crowd rows".
+
+## Self-render (2026-10-28, lavapipe, no baselines written)
+Shots `crowd_lineup_a/b/c`, `crowd_lineup_back`, `crowd_market`, `crowd_work`, `crowd_mourners`, `crowd_zone_*`
+(pemakar, brine_shoals, tamsule, corrow_night, corrow, oruvel, bell_galleries). Iterations: the lineup first faced
+away (yaw); `mend` spread the hands out sideways (now together over the lap); `vigil` and `fold` hands sat at the
+chest (lowered); a laterite-sand trouser read as bare legs (the generator now keeps every cloth ≥ 85 sRGB from the
+wearer's skin); the wrights' leg-wrap span was drawn as one number (fixed in ranges.json); two Corrow cameras
+reframed. Final: no two people read as clones in the lineups or the market; kneeling mourners and wrights, the
+mending pair and the chatting townsfolk read at walking distance. **The Lead writes the baselines** (13 new shots).
+
+## Gates
+verify_blender_builds for the 22 crowd jobs: all identical; `tools.tests.test_npc` + `test_blender_builds` 47 OK;
+validate_data 0 errors (1 pre-existing warning, haluna shrine_offering); taskboard --check; gdlint and gdformat
+clean; Godot `--filter=crowd` 5/0, `villager` 32/0, `field_npc` 10/0.
 
 ## Requests to characters (what the crowd could not do without a change in `assets_src/characters/**`)
 1. **Saltwright line-marks and the brine-brand** (bible §7; act1_ch06 W06, item 13 "visible line-marks on their
