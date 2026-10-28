@@ -6,7 +6,8 @@
 - game/data/battle/enemies.json: an enemy's optional `model` is a res://game/creatures/...tscn that exists and that
   a creatures.json row names as its `scene`.
 - A row with `vowbound` true (M3-CRE-638) is a Vowbound's actor: its id is a game/data/battle/vowbound.json row (the
-  stand-in CreatureModels gives that Vowbound), and no enemy uses its scene as a `model`.
+  stand-in CreatureModels gives that Vowbound), and no enemy uses its scene as a `model`. `vowbound_pending` (the task
+  that waits on Combat's row) excuses a missing row, and is an error once the row exists.
 - `stand_in` may also carry `height` and `radius` (M3-CRE-640, numbers > 0): a Vowbound with no battle_sandbox.json
   stand-in row (UI's) gives its own, so the VFX anchors and the ring fit the model.
 """
@@ -25,7 +26,7 @@ SCENE_PREFIX = "res://game/creatures/"
 DEFAULT_KEYS = {"idle", "hit", "ko", "loop", "blend_sec", "clip_by_kind", "clip_by_skill", "ko_fade_sec",
                 "stand_in", "phases", "break_parts", "portrait", "contact", "hit_variants", "idle_variety",
                 "hit_snap"}
-ROW_KEYS = DEFAULT_KEYS | {"scene", "vowbound"}
+ROW_KEYS = DEFAULT_KEYS | {"scene", "vowbound", "vowbound_pending"}
 STAND_IN_KEYS = {"yaw_deg", "hover", "height", "radius"}
 PHASE_KEYS = {"clip", "idle", "offset_m", "tilt_deg", "sec", "show", "hide", "hide_after", "show_after", "clips"}
 PART_KEYS = {"whole", "broken"}
@@ -192,7 +193,7 @@ def creature_errors(creatures: object, enemies: object, skills: object, scene_ex
         used = isinstance(scene, str) and any(e.get("model") == scene for e in enemy_rows)
         errs += _row_errors(w, row, skill_ids, phase_ids if used else None)
         if "vowbound" in row:
-            errs += _vowbound_errors(w, cid, row["vowbound"], used, vowbound)
+            errs += _vowbound_errors(w, cid, row["vowbound"], used, vowbound, row.get("vowbound_pending"))
     for e in enemy_rows:
         if "model" not in e:
             continue
@@ -208,7 +209,7 @@ def creature_errors(creatures: object, enemies: object, skills: object, scene_ex
     return errs
 
 
-def _vowbound_errors(w: str, cid: str, flag: object, used: bool, vowbound: object) -> list[str]:
+def _vowbound_errors(w: str, cid: str, flag: object, used: bool, vowbound: object, pending: object = None) -> list[str]:
     if not isinstance(flag, bool):
         return [f"{w}.vowbound: must be true or false"]
     if not flag:
@@ -218,7 +219,10 @@ def _vowbound_errors(w: str, cid: str, flag: object, used: bool, vowbound: objec
         errs.append(f"{w}.vowbound: a Vowbound's scene may not be an enemy's model")
     if vowbound is not None:
         rows = vowbound.get("vowbound", []) if isinstance(vowbound, dict) else []
-        if cid not in {v.get("id") for v in rows if isinstance(v, dict)}:
+        has_row = cid in {v.get("id") for v in rows if isinstance(v, dict)}
+        if pending is not None and has_row:
+            errs.append(f"{w}.vowbound_pending: {VOWBOUND_FILE} has the row '{cid}' now; drop the key")
+        elif pending is None and not has_row:
             errs.append(f"{w}.vowbound: no {VOWBOUND_FILE} row '{cid}'")
     return errs
 

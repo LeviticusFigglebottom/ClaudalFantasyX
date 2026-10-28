@@ -120,6 +120,23 @@ class ValidatorTest(unittest.TestCase):
         self.assertTrue(any("kahre.stand_in.height: must be a number > 0" in x for x in got), got)
         self.assertTrue(any("kahre.stand_in.radius: must be a number > 0" in x for x in got), got)
 
+    def test_a_vowbound_row_may_wait_on_its_combat_row(self) -> None:
+        """M3-CRE-644: Ethren's model is built before Combat writes his vowbound.json row; `vowbound_pending` (the task
+        that waits on it) excuses the missing row, and is an error once the row exists."""
+        vb = _load(vc.VOWBOUND_FILE)
+
+        def errs(cr) -> list[str]:
+            return vc.creature_errors(cr, self.enemies, self.skills, lambda p: True, vb)
+
+        self.assertEqual(errs(self.creatures), [])
+        cr = copy.deepcopy(self.creatures)
+        cr["creatures"]["ethren"].pop("vowbound_pending", None)
+        if "ethren" not in {r.get("id") for r in vb["vowbound"]}:
+            self.assertTrue(any("no game/data/battle/vowbound.json row 'ethren'" in x for x in errs(cr)))
+        cr = copy.deepcopy(self.creatures)
+        cr["creatures"]["ilun"]["vowbound_pending"] = "M3-CRE-638"
+        self.assertTrue(any("ilun.vowbound_pending" in x for x in errs(cr)))
+
     def test_two_rows_cannot_share_a_scene(self) -> None:
         cr = copy.deepcopy(self.creatures)
         first = next(iter(cr["creatures"].values()))
