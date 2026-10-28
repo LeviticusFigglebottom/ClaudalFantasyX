@@ -589,7 +589,7 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
-- **MERGE-READY @ (this push): M3-ENV-1316 part 2 (GPU QA row 5's `camp_tent`); findings on the rest.**
+- **MERGE-READY @ 02d8d6716: M3-ENV-1316 part 2 (GPU QA row 5's `camp_tent`); findings on the rest.**
   - **Brine Shoals `camp_tent`:** the canvas sags deeper between the frames (0.14 → 0.26 m), and sewn seams stand off
     the cloth down every panel edge. Viewed `ch06_brine_camp`: it reads as a sewn sail-cloth tent, not a box.
   - **Row 5's "flat mudflat" and the hard brown band on the horizon:** that is the Ch6 zone's ground and its far edge,
