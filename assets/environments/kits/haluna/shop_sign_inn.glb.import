@@ -3,10 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
+uid="uid://dux14hl40k55v"
+path="res://.godot/imported/shop_sign_inn.glb-e53fd23dd62beb91d566c68c42044b9f.scn"
 
 [deps]
 
 source_file="res://assets/environments/kits/haluna/shop_sign_inn.glb"
+dest_files=["res://.godot/imported/shop_sign_inn.glb-e53fd23dd62beb91d566c68c42044b9f.scn"]
 
 [params]
 

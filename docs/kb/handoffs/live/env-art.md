@@ -589,6 +589,32 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
+- **MERGE-READY @ (this push): the touchable props in Haluna (the Lead's item 3), and the walk-through findings.**
+  - **Haluna's shops were the gap:**
+    - The `haluna_forge` smith stood by a boat on the beach with no forge.
+    - The goods shop and the inn had only an awning cloth each.
+  - **New kit pieces** (props.py; Blender built, manifest and PROVENANCE rows):
+    - `beach_forge`: a coral-stone hearth with an ember bed, a clay chimney cowl, goatskin bellows, an anvil on a
+      driftwood stump, a quench trough and a tool rack.
+    - `shop_sign_goods`, `shop_sign_forge`, `shop_sign_inn`: post-and-arm hanging boards painted with the trade's
+      mark (a jar, an anvil, a steaming bowl).
+  - **Placed in `haluna_layout.json`:**
+    - The forge stands behind the smith.
+    - The existing `market_stall` stands behind the goods-shop keeper. Each keeper's talk sphere is 1.7 m, so nothing
+      stands between the keeper and the customer.
+    - The three signs stand beside their keepers, off the walking lines. They take the default box collider, because
+      `haluna.tscn`'s collision rules are slice-polish's.
+  - **SELF-RENDERED** (`ch02_haluna_touch`, from the customer's side):
+    - The shop reads as a stall with wares under its blue awning, with the jar sign.
+    - The forge reads as hearth, chimney, anvil and rack, with the anvil sign.
+    - The inn's sign hangs by its awning.
+    - The save shrine is unchanged.
+  - **Gates:**
+    - `test_haluna_kit` and `test_haluna_dressing` pass (31 OK).
+    - The full tools suite ran (1,527 tests). Its only failures are the gate README's other owners: screenshots,
+      `test_pemakar_kit`, `test_zone_map_pois` and `test_hero_clips`.
+  - **Drift:** shots that see the market, the forge beach or the inn will drift on purpose, mainly `haluna_*`
+    and `npc_haluna_*`.
 - **MERGE-READY @ f6141df80: the big14 gate's `test_zone_dressing_ch01` and walk-through batches 1–2.**
   - **The gate failure is fixed.** I merged `origin/gpu/gate-big14-shots`; there were no conflicts.
     - `ov_zone_dressing.py`'s stale layout was regenerated at 9f4d11ab.

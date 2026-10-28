@@ -3,10 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
+uid="uid://c2d4n05ibqyjh"
+path="res://.godot/imported/beach_forge.glb-eb5d4261656d1ef8e5f55926db67dcd9.scn"
 
 [deps]
 
 source_file="res://assets/environments/kits/haluna/beach_forge.glb"
+dest_files=["res://.godot/imported/beach_forge.glb-eb5d4261656d1ef8e5f55926db67dcd9.scn"]
 
 [params]
 
