@@ -3,6 +3,27 @@
 ## NEW ACCOUNT (from 2026-10-25)
 Session `session_01Wmj8xaLtwcqiS3qwC6PciW`. Integration branch `claude/undertow-lead-handoff-ze8rrn`. Newest first.
 
+- **M3-AUD-861 progress: the Act I audit is down from 46 items to 9.** Everything below is pushed; the new audio is in Git LFS under `assets/lfs/audio/` (ADR 0173).
+  - **Zones:**
+    - Music rows: the causeway, the Tidecup match, Corrow and Coilspire.
+    - Beds: the drowned tower, the causeway, the first verse, Haluna's wake and Corrow.
+    - **New beds:** `oruvel_raft`, `brightwater_deck` and `coilspire_flues`.
+    - `coilspire_flues` now plays coilspire (it was the temple_trial prototype), and `corrow_day` is an alias of corrow_seawall.
+  - **Enemies (0 left):**
+    - The Ch6 **Inquisitor** has a voice: armour, haft, shield and breath, and his yield rather than a death.
+    - wreck_crab (its brass housing), wallcrab (laterite), wall_polyp (the Watcher's hum) and stormgull (static) have their own sets.
+    - wickfry owns glassfry's set, since they are the same creature.
+  - **Skills (0 left):** 16 boss and set-piece skills now have sounds, including Pell's Storm-Call in his own voice.
+  - **UI:** CodexMenu, SettingsMenu, ReadPanel and ObjectiveHud are hooked and tested on the real classes. Godot `--filter=audio`: 173 run, 0 failed.
+  - **The 9 that are left:**
+    - **The prologue's score** (`prologue_dusk`, M3-AUD-862): with a composer now.
+    - **Ysolde's theme is still a sketch** (61 s): its final comes next, through a composer, after the prologue.
+    - **Blocked on others:**
+      - The three cutscenes playing only one stem, on the cutscene owner (M3-AUD-834).
+      - ShrineTravelMenu and ReefballOutfitterMenu, until claude/ui merges.
+    - Stale notes (housekeeping).
+  - **For the Lead:** a fresh clone needs `git lfs pull` to hear the new Act I files.
+
 - **REFOCUS (ADR 0041; the Lead's 01:12 message, read at 02:55): Act I as played.** Act II/III audio has stopped.
   - The M3-AUD-860 composer (cloudloom, undertow_layers) was stopped before it wrote anything.
   - 19 Act II/III audio tasks are now `blocked` with `blocked-by: ADR 0041`: 804, 805, 831, 836, 837, 839–845, 849, 851, 852, 853, 856, 858 and 859.
