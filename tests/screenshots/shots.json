@@ -3599,6 +3599,38 @@
       }
     },
     {
+      "id": "ch01_oruvel_storm",
+      "scene": "res://game/levels/_tests/slice_shots/slice_cutscene_shot.tscn",
+      "camera": "default",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 600,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        },
+        "nodes": {
+          ".": {
+            "level_path": "res://game/levels/ch01/oruvel/oruvel.tscn",
+            "spawn": "ScaleHull",
+            "flags": [
+              "ch01_started",
+              "ch01_gulls_cried"
+            ],
+            "scene_id": "ch01_the_rising",
+            "hold_line": "ch01_rising_001"
+          }
+        },
+        "time_scale": 4.0
+      }
+    },
+    {
       "id": "ch01_underway_crown",
       "scene": "res://game/levels/_tests/slice_shots/slice_cutscene_shot.tscn",
       "camera": "default",

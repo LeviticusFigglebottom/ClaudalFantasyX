@@ -79,6 +79,8 @@ func test_the_seventh_terrace_and_the_gulls() -> void:
 	var undertow := zone.get_node_or_null(^"Undertow") as UndertowStorm
 	assert_true(undertow != null and undertow.visible, "the real Undertow stands up on the horizon")
 	assert_false(zone.block_shown("StormWall"), "in place of its greybox wall")
+	var reach := undertow.storm_center().distance_to(zone.field_camera.global_position)
+	assert_true(zone.field_camera.far > reach, "and the camera reaches it (%.0f m)" % reach)
 	zone.set_storm(false)
 	_done()
 

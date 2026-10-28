@@ -93,7 +93,7 @@
     "environment": {"background": "#5d84a6", "ambient_color": "#6f8294", "ambient_energy": 0.45},
     "hide": ["scaleman", "cook", "netmender", "netmender_2", "roof_child", "skipper_sadi", "sabe", "SeventhTerrace", "NameBoard", "DiveBridge"],
     "show": ["StormWall", "pen_child_2", "pen_child_3"],
-    "undertow": {"preset": "ch01_arrival", "azimuth_deg": 0.0, "quality": "high", "time_s": 205.0, "ambient": 0.6, "replaces": "StormWall"},
+    "undertow": {"preset": "ch01_arrival", "azimuth_deg": 0.0, "quality": "high", "time_s": 205.0, "ambient": 0.6, "replaces": "StormWall", "camera_far_m": 40000.0},
     "lashings": {"flags": ["ch01_cut_lashing_a", "ch01_cut_lashing_b"], "frees": "LowHull"}
   }
 }

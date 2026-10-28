@@ -69,6 +69,8 @@ func _set_undertow(on: bool, we: WorldEnvironment) -> void:
 		return
 	if on:
 		_set_block(str(u.get("replaces", "")), false)
+		if field_camera != null:  # the storm stands kilometres out: past the camera's default far plane
+			field_camera.far = maxf(field_camera.far, float(u.get("camera_far_m", field_camera.far)))
 	if _undertow == null and on:
 		_undertow = UndertowStorm.new()
 		_undertow.name = "Undertow"
