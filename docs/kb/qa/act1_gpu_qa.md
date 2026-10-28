@@ -83,5 +83,46 @@ every zone, one battle per arena and every Act I boss intro. Contact sheets go o
 
 ## Frame-time budget per zone (ADR 0029/0037, the walk with --budget)
 
+The run (2026-10-28) is a warm, budget-only walk on lead/gate-ft-beach: High 2560×1440, dwell 4 s, nothing else on the box. **Every scene entry and every battle start is OVER ADR 0029's 1000 ms hidden-frame budget**. The overrun grows through the act, from ~1.1–1.3 s (Ch1) and ~1.8–2.2 s (Ch3) to **4.1–4.5 s from Ch5 on**. Video memory climbs with it (to ~1.9 GB), so this may be accumulation, not scene weight; the owner should check whether a fresh launch into Ch5 is as slow. **Every visible frame is within 50 ms**: no hitch shows after the fade lifts. GPU time stays far under 16.7 ms everywhere (the RX 9070 XT has headroom at High 1440p). Rows 22 and 41 track this (owner tech / ui, loading).
+
 | Segment | gpu med / p99 ms | frame p99 / max ms | hitches > 33 ms | hidden max ms | visible max ms | Budget |
 |---|---|---|---|---|---|---|
+| launch | 0.07 / 0.13 | 2.8 / 5.6 | 0 | 460.6 | 2.8 | ok |
+| title | 0.07 / 0.13 | 3.3 / 6.2 | 0 | 80.3 | 3.2 | ok (505 MB video) |
+| prologue | 1.74 / 3.55 | 5.1 / 2053.6 | 10 | 2957.1 | 10.8 | OVER (1876 MB video) |
+| ch01 | 2.11 / 2.30 | 3.0 / 7.6 | 0 | 1225.2 | 6.7 | OVER (1195 MB video) |
+| ch01_b_ch01_wickfry | 2.56 / 2.76 | 4.8 / 18.6 | 0 | 1217.6 | 15.3 | OVER (1263 MB video) |
+| ch01_b_ch01_oil_slug | 2.49 / 2.69 | 3.2 / 9.4 | 0 | 1131.4 | 13.8 | OVER (1264 MB video) |
+| oruvel | 2.16 / 2.35 | 3.8 / 7.9 | 0 | 1310.0 | 9.0 | OVER (1368 MB video) |
+| oruvel_b_ch01_scuttlers | 2.54 / 2.77 | 3.3 / 10.2 | 0 | 1186.1 | 13.0 | OVER (1209 MB video) |
+| oruvel_b_ch01_hullgnaw | 2.56 / 2.78 | 3.3 / 10.6 | 0 | 1169.7 | 15.0 | OVER (1211 MB video) |
+| ch02 | 3.30 / 3.74 | 8.2 / 38.9 | 2 | 1925.8 | 9.9 | OVER (1661 MB video) |
+| ch02_b_ch02_tideline | 2.07 / 2.32 | 2.8 / 10.0 | 0 | 1313.9 | 14.8 | OVER (1211 MB video) |
+| ch03 | 2.34 / 2.52 | 3.4 / 5.0 | 0 | 1805.6 | 8.8 | OVER (1404 MB video) |
+| ch03_b_ch03_causeway_shore | 2.68 / 2.90 | 3.4 / 11.3 | 0 | 1909.6 | 14.5 | OVER (1402 MB video) |
+| shell_shrine | 2.61 / 2.77 | 3.4 / 4.0 | 0 | 1541.1 | 6.9 | OVER (1610 MB video) |
+| shell_shrine_b_drownbell | 2.47 / 2.75 | 3.3 / 11.1 | 0 | 2240.8 | 21.8 | OVER (1422 MB video) |
+| first_verse | 1.63 / 1.80 | 2.4 / 33.5 | 1 | 1207.1 | 5.5 | OVER (1428 MB video) |
+| ch04 | 0.04 / 2.81 | 4.7 / 1900.8 | 14 | 2885.7 | 9.8 | OVER (1848 MB video) |
+| brightwater_ferry | 2.17 / 2.34 | 4.2 / 8.3 | 0 | 3065.3 | 8.3 | OVER (1752 MB video) |
+| brightwater_ferry_b_ch04_sail_leeches | 2.42 / 2.68 | 3.2 / 12.7 | 0 | 1421.9 | 18.8 | OVER (1224 MB video) |
+| brightwater_ferry_b_ch04_bottle_hermit | 2.35 / 2.60 | 3.1 / 13.8 | 0 | 1387.1 | 13.9 | OVER (1227 MB video) |
+| brightwater_ferry_b_ch04_spar_wraith | 2.39 / 2.56 | 3.1 / 9.6 | 0 | 1465.9 | 17.4 | OVER (1228 MB video) |
+| ch05 | 2.15 / 2.81 | 14.0 / 26.6 | 0 | 4497.8 | 16.0 | OVER (1954 MB video) |
+| ashcrown | 1.93 / 2.10 | 4.2 / 6.1 | 0 | 3301.3 | 6.8 | OVER (1892 MB video) |
+| ashcrown_b_ch05_stair_tortoises | 2.57 / 2.81 | 3.3 / 12.9 | 0 | 2152.2 | 16.1 | OVER (1461 MB video) |
+| ashcrown_b_ch05_cinder_matron | 2.56 / 2.74 | 3.3 / 9.8 | 0 | 2120.3 | 26.7 | OVER (1461 MB video) |
+| ch06 | 2.17 / 2.34 | 6.4 / 9.3 | 0 | 4484.3 | 9.6 | OVER (2238 MB video) |
+| ch06_b_ch06_ridge_skippers | 1.03 / 1.27 | 2.5 / 1200.5 | 2 | 1976.9 | 21.6 | OVER (1492 MB video) |
+| ch06_b_ch06_inquisitor | 2.37 / 2.60 | 3.1 / 9.7 | 0 | 2062.4 | 15.5 | OVER (1454 MB video) |
+| ch07 | 2.28 / 2.64 | 6.1 / 13.4 | 0 | 4241.0 | 10.0 | OVER (2182 MB video) |
+| tamsule_bell_galleries | 2.26 / 2.44 | 5.0 / 8.0 | 0 | 4084.9 | 11.4 | OVER (2180 MB video) |
+| tidecup_match | 0.05 / 0.09 | 0.9 / 10.0 | 0 | 58.3 | 2.5 | ok (1079 MB video) |
+| ch08 | 1.70 / 2.04 | 7.9 / 20.0 | 0 | 4465.3 | 8.6 | OVER (2169 MB video) |
+| ch08_b_ch08_headland_gulls | 2.12 / 2.33 | 2.8 / 10.4 | 0 | 2003.5 | 14.1 | OVER (1459 MB video) |
+| ch08_b_ch08_stair_hold_1 | 2.10 / 2.40 | 2.9 / 10.6 | 0 | 1986.3 | 15.2 | OVER (1455 MB video) |
+| ch08_b_undertows_reach | 1.92 / 2.27 | 2.7 / 10.1 | 0 | 1994.9 | 14.7 | OVER (1457 MB video) |
+| coilspire | 1.92 / 2.10 | 3.7 / 7.2 | 0 | 4312.7 | 12.3 | OVER (1932 MB video) |
+| ch09 | 2.57 / 3.08 | 9.9 / 38.8 | 1 | 4158.3 | 16.8 | OVER (2195 MB video) |
+
+Spawn segments (85, every spawn of every zone): all within budget; worst GPU p99 3.63 ms, worst visible frame 27.0 ms, 3 dwell hitches over 33 ms in all.

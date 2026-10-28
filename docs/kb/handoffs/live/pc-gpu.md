@@ -119,6 +119,23 @@ No job of this session is running. WSL `hymn` is idle: the batch (PIDs 302 and 2
 
 ## Gate results (newest first)
 
+- **GATE lead/gate-big14@8707ff90 (+ the shrine GI rebake 8f6fd29f): FAIL (Lead to view).** The suite and the manifest finished at 2026-10-28 ~04:30. Coverage (3 h limit, 2809 s): FAIL with no numbers, "suite did not pass under instrumentation (exit -6)": the 15 failures plus the crash at exit.
+  - Shrine GI rebaked first; test_shrine_gi_bake passes.
+  - Tools: 6 failing units: test_arenas (known), test_screenshots, test_pemakar_kit, test_zone_dressing_ch01, test_zone_map_pois, test_hero_clips.
+  - Godot: 3161 run, 15 failed. Then a **segfault at exit** in test_villager_routines.gd:489 (creatures), which stops ci_local's pipefail on its own.
+  - The suite now takes ~45 min. ci_local's default 600 s step and run_coverage's 600 s both time out; HYMN_STEP_TIMEOUT has to be raised.
+  - Boot smoke ok. Coverage re-running with 3 h.
+  - Blender: 77 changed jobs, 2 DIFF (kirru_roost.glb, avalanche_ram.glb).
+  - Shots: 523 compared, 302 failed (121 new + 181 drift), no shutdown SCRIPT ERROR.
+  - The human's four FAST-TRACKS on the GPU:
+    - the Prologue colour: yes;
+    - the run: grounded in the stills;
+    - the beach: Rhen not in frame, and 4 lines on empty sky;
+    - the party start: Asha and Toma walk ahead, but Rhen is not on screen.
+  - Every scene change is over the 1000 ms hidden-frame budget (New Game 3.0 s, Ch2 2.0 s, the first fight 1.7 s, Ch1 1.3 s).
+  - On lead/gate-ft-beach @ 93d0741e the beach works: Rhen in the shallows, Asha kneeling beside him. Still open there: Asha's skirt passes through him, two lines are framed on his waist, and the field camera starts underwater.
+  - `docs/kb/qa/gate-runs/big14/` on `gpu/gate-big14-shots`.
+  - **`gpu/ci-step-timeout-3h` @ 75e14190: MERGE-READY.** HYMN_STEP_TIMEOUT now defaults to 3 h in ci_local.sh, run_coverage.py and gate.sh.
 - **GATE lead/gate-big12@8a28be17: FAIL (2 Godot failures = the cloud's, 3 tools failures, drift + 31 new shots; Lead to view).**
   Godot 2820/2: test_creature_portraits (the 4 new creatures "have a portrait in the manifest") and
   test_footsteps_slice_zones causeway tidepool (water expected, stone got). Coverage and boot not reached (ci_local stops
@@ -149,15 +166,28 @@ No job of this session is running. WSL `hymn` is idle: the batch (PIDs 302 and 2
 
 ## Hardware queue results (newest first)
 
+- **Heavy builds (2026-10-28 ~00:30, Blender 5.0.1 on the i9 (AVX2), changed jobs vs integration 608db549):**
+  - characters @ 68ca13c9: 18/18 identical.
+  - creatures @ cabcf669: 49 jobs, 1 DIFF. creatures-b @ 2b2efdf7: 53 jobs, the same 1 DIFF.
+  - The DIFF: `assets/creatures/avalanche_ram/avalanche_ram.glb` (committed 6549c8a9… vs rebuilt 8d990e15…; POSITION data). The rebuild is the same on both branches, so the committed .glb no longer matches its source; it may have been built on a CPU without AVX2 (as in M2-CHR-11). Owner: creatures. Rebuild it from source, or say which machine built it.
 - **M3-RND-03 lavapipe check (2026-10-27):** gpu/m3-rnd-03-sefir-tells @ 02d1fa52, 4 shots without baselines,
   `docs/kb/qa/gpu/2026-10-27-m3-rnd-03-lavapipe/`. With the tells on, Sefir's shadow edges are crisper and a tighter contact
   line runs along his hem. There's no double lighting and no black shadow. His reflection holds its outline (subtle with this
   test wave). Asha is unchanged. Rendering, env-art and art should view the shots and approve the baselines.
 - **M2-CHR-11 verify (2026-10-27):** claude/characters @ 3723f3eb (incl. 20773234), AVX2 i9-12900K: base_body, rhen, toma
   and 9 villagers 12/12 identical (664 s). Reported to the Lead and characters.
-- **Was in progress before the pause (2026-10-27 ~17:00):** render queue 4 (22 jobs: the fast-tracks c1d1e3e6 and d4430397 are rendered and
-  being published, then the RND-03 lavapipe check 02d1fa52, then oldest first). Next: the slice `--budget` re-sweep, then
-  the Act I playthrough (never during a render).
+- **Act I real-GPU QA, passes A and B and the budget (2026-10-28):** `docs/kb/qa/act1_gpu_qa.md` on `gpu/act1-qa-2`, 41 rows with owners, plus sheets under docs/kb/qa/gpu/act1/.
+  - Pass B walked Act I on lead/gate-ft-beach: 122 segments, 401 stills.
+  - New in pass B:
+    - the BattleResultPanel freed-object error (506×);
+    - ch06_ridge_skippers fought on the test stage;
+    - Moll still a capsule in battle;
+    - the Reach's arm fills the frame;
+    - followers between the camera and Rhen (Ch3);
+    - the camera against the Coilspire wall;
+    - Ch9 without Asha and Toma.
+  - **Budget:** every scene entry and battle start is OVER the 1000 ms hidden-frame budget. It grows from ~1.2 s (Ch1) to 4.1–4.5 s (Ch5–Ch9) as video memory climbs, so it may be accumulation. Visible frames are all within 50 ms, and GPU p99 is ≤ 3.6 ms everywhere. Owner: tech / ui (loading).
+- **Next:** gate big15 when the Lead posts it.
 - **M1-QA-09 on hardware (heroes, 2026-10-27):** 49 shots at High 2× and Ultra on ze8rrn@f580e756, `gpu/m1-qa-09-heroes`
   `docs/kb/qa/gpu/2026-10-27-m1-qa-09-heroes/`. Asha's staff and Toma's spear aren't gripped (open hands; they float upright
   in run/walk_cycle/offer_hand). The staff goes through the skirt when kneeling. Asha's underskirt is a rigid tube in
