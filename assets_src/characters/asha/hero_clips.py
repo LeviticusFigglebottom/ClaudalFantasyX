@@ -4128,6 +4128,7 @@ SG_WALK = (20.0, 34.0, 10.0, 0.014, 1.5)  # stride, knee, arm swing (degrees), b
 SG_SHIELD_UP = {"DEF-spine.001": (4.0, -12.0, 0.0), "DEF-spine.006": (-2.0, 12.0, 0.0),
                 "DEF-upper_arm.L": (-70.0, 0.0, 22.0), "DEF-forearm.L": (-50.0, -70.0, -30.0)}  # Moll's guard's arm
 SG_RAISE = 0.45  # shield_up reaches its guard over this share of the clip
+SG_SHIELD_ARM = 10.0  # degrees the shield arm hangs further out than Moll's: the shield's rim clear of the armpit (probed)
 SG_CLIPS = ["idle", "walk", "stand_watch_seaward", "shield_up", "level_spear"]
 LENGTHS.update({"stand_watch_seaward": 6.0, "shield_up": 1.2, "level_spear": 1.6})
 LOOPS.add("stand_watch_seaward")
@@ -4143,7 +4144,7 @@ for _i, _v in enumerate(SG_VARIANTS):
 
 def sg_pose_at(clip: str, t: float, length: float, sk: Skeleton, persona: dict) -> dict:
     shared = {k: v for k, v in persona.items() if k != "stillguard"}
-    carry = moll_carry(persona)
+    carry = add(moll_carry(persona), {"DEF-upper_arm.L": (0.0, 0.0, SG_SHIELD_ARM)})
     u = t / length
     if clip == "idle":
         return add(pose_at("idle", t, length, sk, shared), carry)

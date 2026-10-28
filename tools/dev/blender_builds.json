@@ -784,11 +784,11 @@
       "outputs": ["assets/characters/stillguard_*/*.glb", "assets/characters/stillguard_*/textures/*.png",
                   "assets/characters/stillguard_*/materials/*.tres", "assets/characters/stillguard/textures/*.png"],
       "runs": [
-        ["{python}", "assets_src/characters/stillguard/sg_textures.py", "--shared"],
         ["{blender}", "--python", "assets_src/characters/stillguard/build_stillguard.py", "--", "--variant", "a",
          "--bake-dir", "{scratch}/sg_a_bake"],
         ["{python}", "assets_src/characters/stillguard/sg_textures.py", "--variant", "a", "--bake-dir",
          "{scratch}/sg_a_bake"],
+        ["{python}", "assets_src/characters/stillguard/sg_textures.py", "--shared"],
         ["{blender}", "--python", "assets_src/characters/stillguard/build_stillguard.py", "--", "--variant", "b",
          "--bake-dir", "{scratch}/sg_b_bake"],
         ["{python}", "assets_src/characters/stillguard/sg_textures.py", "--variant", "b", "--bake-dir",
