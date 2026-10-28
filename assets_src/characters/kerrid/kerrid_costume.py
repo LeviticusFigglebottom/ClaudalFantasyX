@@ -72,6 +72,8 @@ WRAP_HAND = (0.16, 0.34, 0.52)  # shares of the hand's length the wrap runs over
 WRAP_FROM_T = 0.53  # along the arm (0.5 = the elbow): the half-hitch under the elbow
 WRAP_CUT_IN = 0.07  # the forearm skin is cut under the wrap from this far past its top edge (the edge stays covered)
 BELT_OFF = 0.005
+ROPE_DIP_FROM = 0.5  # |sin| of the azimuth (0 front, 1 the side) where a turn starts to dip under the arm
+ROPE_DIP_FULL = 0.8  # and where it reaches the underarm line (kerrid.md §4.1 #8: 14 cm below the shoulder joint)
 ROPE_OFF_SKIN = 0.008  # under the arms, the rope's surface over the smock (kerrid.md: 6 mm) plus a margin
 CORD_ROWS = 16
 SMOCK_ROWS = 12
@@ -169,7 +171,8 @@ def chest_rope(fields: Fields, chart: TorsoChart, params: dict, outer: np.ndarra
     for k, below in enumerate(params["chest_rope_below_clavicle_m"]):
         z_front = z_cl - float(below) * S
         # the turn dips under the arms to the 14 cm line (the lower turn sits that low already)
-        side = np.abs(np.sin(th)) ** 4
+        t = np.clip((np.abs(np.sin(th)) - ROPE_DIP_FROM) / (ROPE_DIP_FULL - ROPE_DIP_FROM), 0.0, 1.0)
+        side = t * t * (3.0 - 2.0 * t)  # the full dip across the whole underarm, easing in toward the front and back
         z = z_front + (np.minimum(z_front, under - 0.05 * S * k) - z_front) * side
         r = np.array([_ring_at(outer, float(zz), np.array([a]), S, rc + float(params["chest_rope_off_m"]) * S)[0]
                       for zz, a in zip(z, th)])

@@ -3442,13 +3442,13 @@ LENGTHS.update({"collar_catch": 2.4, "go_still": 1.6, "turn_at_name": 2.8, "set_
 # the battle contract (the M2-CHR-07 block): his strikers, his trouser hem's foot flattening, his keys
 BATTLE_HEROES = BATTLE_HEROES + ("kerrid",)
 BATTLE_STRIKER["kerrid"] = {"attack": ("DEF-hand.R", (0.0, -0.6, 0.8)), "cast": ("DEF-hand.L", (0.0, 0.3, 0.95)),
-                            "finisher": ("DEF-hand.R", (0.0, 0.0, 1.0)), "item": ("DEF-hand.L", (0.0, -0.4, 0.92)),
+                            "finisher": ("DEF-hand.R", (0.7071, 0.0, 0.7071)), "item": ("DEF-hand.L", (0.0, -0.4, 0.92)),
                             "read": ("DEF-spine.006", (0.0, 0.0, 1.0)), "defend": ("DEF-spine", (0.0, -1.0, 0.0))}
 FOOT_FLAT["kerrid"] = 0.5
 # M2-CHR-513's ko and revive: his mid-calf wading trousers take no flexed ankle (as Toma's hems), so he kneels and lies
 # on his bent toes
-KO_LEGS["kerrid"] = {"kneel": (10.0, 84.0, -10.0, -20.0), "lie": (4.0, -10.0, 0.0)}
-KO_REST["kerrid"] = (-0.86, -0.2)
+KO_LEGS["kerrid"] = {"kneel": (4.0, 101.0, -10.0, -20.0), "lie": (18.0, -10.0, 0.0)}
+KO_REST["kerrid"] = (-0.845, -0.2)  # his hunched, heavier body lies a little higher than Toma's
 KO_DROP["kerrid"] = (0.04, 0.06)
 KO_ARMS_OUT["kerrid"] = 8.0
 STANCE_DORSI["kerrid"] = 10.0  # the hem's limit, as Toma's
@@ -3756,8 +3756,15 @@ def kerrid_victory(u: float, sk: Skeleton, persona: dict) -> dict:
     head turns 25 degrees over the right shoulder to look back down the line (is everyone up?) and back. No breath."""
     turn = math.sin(math.pi * min(max((u - 0.2) / 0.6, 0.0), 1.0)) ** 2
     held = {"DEF-upper_arm.R": (-10.0, 0.0, 4.0), "DEF-forearm.R": (-20.0, 0.0, 0.0),
-            "DEF-spine.005": (0.0, -7.0 * turn, 0.0), "DEF-spine.006": (0.0, -18.0 * turn, 0.0)}
-    return add(held, _kerrid_idle_terms(u, persona["sway"]))
+            "DEF-spine.002": (0.0, -3.0 * turn, 0.0), "DEF-spine.003": (0.0, -4.0 * turn, 0.0),
+            "DEF-spine.005": (0.0, -7.0 * turn, 0.0),
+            "DEF-spine.006": (KERRID_VICTORY_NOD * math.sin(2.0 * math.pi * u), -18.0 * turn, 0.0)}
+    sway = _sway(sk, persona, KERRID_VICTORY_SWAY * math.sin(2.0 * math.pi * u), KERRID_VICTORY_SWAY * 0.6)
+    return add(add(held, sway), _kerrid_idle_terms(u, persona["sway"]))
+
+
+KERRID_VICTORY_SWAY = 0.012  # m: the weight rocking slowly over the loop (the planted feet stay), as a hauler waits
+KERRID_VICTORY_NOD = 1.5  # degrees: a slow nod over the loop, so the head never stands still between the looks back
 
 
 _BATTLE_KEYS["kerrid"] = _kerrid_keys
