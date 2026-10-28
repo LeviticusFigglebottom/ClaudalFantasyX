@@ -34,6 +34,10 @@ playing when the battle first looks it up will.
 - [ ] The hero track's pop test then passes for `ysolde ready -> finisher`. The hero track removes that KNOWN entry
       once the fix reaches its branch.
 
+**Seen in the PC render of battle_heroes_ko (2026-10-27):** a felled *hero* (Toma) dissolves away in a dust puff. M2-BPR-11's felled-foe
+fade-and-hide seems to apply to party members too. A KO'd hero should stay down on the ground (its KO clip holds the
+last frame) so it can be revived. Please limit the fade to foes, or confirm the party fade is intended.
+
 ## Notes
 - Measured 2026-10-27 on claude/hero-integration after big9: the other 25 placeholder changes on Ysolde are inside the
   limit; idle -> victory is close (0.087 m/frame against 0.090 allowed).

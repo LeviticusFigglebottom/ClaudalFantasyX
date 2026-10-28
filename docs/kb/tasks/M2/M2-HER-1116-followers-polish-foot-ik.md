@@ -41,4 +41,18 @@ The standing queue's item 6: the party should behave like people around Rhen, an
   about 55 µs a frame (0.3% of a 60 fps frame). Only the PC's GPU-side check is left (skinning is unchanged; the IK
   only rewrites bone poses).
 
+### 2026-10-27: walls, narrow lanes, Ysolde
+- **Followers never stand inside a wall** (found by two new tests in field_test's lane; the old backlog note about
+  "after a teleport next to a wall"):
+  - a step that would put a follower's body (body_radius_m 0.25 at body_height_m 0.9) inside a collider slides along
+    its surface, or waits;
+  - `catch_up()` lays the trail straight back, else turned to the first side where everyone stands clear, else to the
+    side where most do; a follower still blocked starts on Rhen's spot;
+  - the min-gap push is eased at gap_push_mps 2.0, never shoved (a wall-held Toma had jumped 0.76 m in a frame in
+    Corrow Night).
+- A steep flight's blocking collision isn't a wall to a follower climbing it (M3-ARC-1216).
+- **Ysolde follows when she joins:** her own model, walking after him (test).
+- Foot IK has an on/off switch (`foot_ik.json` `enabled`) for the PC's frame-time comparison; see the PERF-REQUEST in
+  the live log.
+
 ## Review log

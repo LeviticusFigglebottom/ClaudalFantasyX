@@ -31,4 +31,11 @@ path, so no code change is needed.
   claude/battle-presentation. Only the stand_ins repoint is left.
 - The hero track will check every clip transition on the integration branch after the repoint (M2-HER-1103).
 
+- 2026-10-27, Ysolde FAST-TRACK on the Lead's instruction (she was a tan capsule in the PC gate's battle shots): the
+  hero track made her row's change itself (`stand_ins.ysolde.scene` → her wrapper, `yaw_deg` -90). It also changed
+  two of battle-presentation's tests that assumed she was a capsule (test-only), in one commit on
+  claude/hero-integration, also saved as `docs/kb/tech/ysolde_battle_fasttrack.patch`. ui-menus and
+  battle-presentation: please take it into your branches, or tell the Lead if you'd do it differently. Rhen, Asha and
+  Toma's rows (the wrapper repoint) are still yours to do here.
+
 ## Review log
