@@ -62,16 +62,16 @@ def shards(a, b, n=24):  # few, larger pieces falling
     return [layer(a, b, n + 6, 0.8, 0.95, (1.2, 2.4), 60, (0, -6.5, 0), (0.18, 0.36), radius=0.15, energy=1.4)]
 
 
-def rise(a, b, n=36, life=1.1):  # slow upward motes (a blessing, a stance)
-    return [layer(a, b, n, life, 0.3, (0.4, 0.9), 25, (0, 0.4, 0), (0.15, 0.3), radius=0.35, turb=0.3, energy=1.4)]
+def rise(a, b, n=36, life=1.1, radius=0.35):  # slow upward motes (a blessing, a stance)
+    return [layer(a, b, n, life, 0.3, (0.4, 0.9), 25, (0, 0.4, 0), (0.15, 0.3), radius=radius, turb=0.3, energy=1.4)]
 
 
-def sink(a, b, n=32):  # motes settling down over the target (a hex, a smother)
-    return [layer(a, b, n, 1.0, 0.4, (0.2, 0.5), 30, (0, -1.4, 0), (0.16, 0.32), (0, -1, 0), 0.35, 0.2, energy=1.4)]
+def sink(a, b, n=32, radius=0.35):  # motes settling down over the target (a hex, a smother)
+    return [layer(a, b, n, 1.0, 0.4, (0.2, 0.5), 30, (0, -1.4, 0), (0.16, 0.32), (0, -1, 0), radius, 0.2, energy=1.4)]
 
 
-def ring(a, b, n=40):  # a ring lifting from the feet (a guard, a ward)
-    return [layer(a, b, n, 0.9, 0.85, (0.05, 0.15), 5, (0, 0.5, 0), (0.16, 0.3), radius=0.75, energy=1.4)]
+def ring(a, b, n=40, radius=0.75):  # a ring lifting from the feet (a guard, a ward)
+    return [layer(a, b, n, 0.9, 0.85, (0.05, 0.15), 5, (0, 0.5, 0), (0.16, 0.3), radius=radius, energy=1.4)]
 
 
 def charge(a, b, n=40):  # gathering: motes drawn in and up around the body
@@ -307,10 +307,12 @@ def _stand_in_sounds(data: dict, sfx: dict) -> None:
 # A Vowbound taking and leaving the field (BattleVfx plays these on BattleVowbound.called / departed). Bound light is
 # steady: glimmer_bound, no drift; a fall is not a release, so nothing rises gold.
 EVENTS = {
-    "vowbound_call": fx("feet", ring("glimmer_bound", "lagoon_teal", 60) + rise("glimmer_bound", "salt_glass", 30, 1.4),
+    # Sized for the Vowbound's real bodies (Ilun 5.1 x 3.2 m, Virel 2.4 x 3.6, Kahre 1.6 x 2.8; M3-BPR-424's self-render):
+    # at a capsule's 0.75 m the ring hid under Ilun's middle and the rising motes bunched into a blob over its back.
+    "vowbound_call": fx("feet", ring("glimmer_bound", "lagoon_teal", 90, 1.6) + rise("glimmer_bound", "salt_glass", 44, 1.4, 1.1),
                         "A Vowbound answers: a steady ring of bound light lifting around it."),
-    "vowbound_dismiss": fx("chest", sink("glimmer_bound", "deep_teal_shadow", 40), "A Vowbound leaves: its bound light settles."),
-    "vowbound_fell": fx("chest", sink("glimmer_bound", "abyss_navy", 60), "A Vowbound falls: its bound light sinks (not a release)."),
+    "vowbound_dismiss": fx("chest", sink("glimmer_bound", "deep_teal_shadow", 56, 0.9), "A Vowbound leaves: its bound light settles."),
+    "vowbound_fell": fx("chest", sink("glimmer_bound", "abyss_navy", 80, 0.9), "A Vowbound falls: its bound light sinks (not a release)."),
 }
 # Each event's sound: audio's own Vowbound rows (the same sounds its `events` fallbacks play).
 EVENT_SOUNDS = {"vowbound_call": "vowbound_call", "vowbound_dismiss": "vowbound_dismiss", "vowbound_fell": "vowbound_fell"}

@@ -5087,7 +5087,7 @@
             "glimmer_bound",
             "lagoon_teal"
           ],
-          "amount": 60,
+          "amount": 90,
           "lifetime_s": 0.9,
           "explosiveness": 0.85,
           "velocity_m_s": [
@@ -5105,7 +5105,7 @@
             0.3
           ],
           "energy": 1.4,
-          "emission_radius_m": 0.75,
+          "emission_radius_m": 1.6,
           "turbulence": 0.0,
           "direction": [
             0,
@@ -5120,7 +5120,7 @@
             "glimmer_bound",
             "salt_glass"
           ],
-          "amount": 30,
+          "amount": 44,
           "lifetime_s": 1.4,
           "explosiveness": 0.3,
           "velocity_m_s": [
@@ -5138,7 +5138,7 @@
             0.3
           ],
           "energy": 1.4,
-          "emission_radius_m": 0.35,
+          "emission_radius_m": 1.1,
           "turbulence": 0.3,
           "direction": [
             0,
@@ -5161,7 +5161,7 @@
             "glimmer_bound",
             "deep_teal_shadow"
           ],
-          "amount": 40,
+          "amount": 56,
           "lifetime_s": 1.0,
           "explosiveness": 0.4,
           "velocity_m_s": [
@@ -5179,7 +5179,7 @@
             0.32
           ],
           "energy": 1.4,
-          "emission_radius_m": 0.35,
+          "emission_radius_m": 0.9,
           "turbulence": 0.2,
           "direction": [
             0,
@@ -5202,7 +5202,7 @@
             "glimmer_bound",
             "abyss_navy"
           ],
-          "amount": 60,
+          "amount": 80,
           "lifetime_s": 1.0,
           "explosiveness": 0.4,
           "velocity_m_s": [
@@ -5220,7 +5220,7 @@
             0.32
           ],
           "energy": 1.4,
-          "emission_radius_m": 0.35,
+          "emission_radius_m": 0.9,
           "turbulence": 0.2,
           "direction": [
             0,
