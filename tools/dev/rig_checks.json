@@ -351,10 +351,10 @@
       "hidden_props": {
         "Cleaver": "battle"
       },
-      "_allowances": "M3-CHR-505 (cloud probe at the default stride; renders on the PC). Costume 40/6 (39.4, collar_haul; 32-35 in walk, run, set_bowl_on_post): Ysolde's dropped-shoulder smock sleeve takes the hanging upper arm into its side at mid-arm under linear skinning, and collar_haul lifts the right arm to haul a man up by the collar. Wrap 17/6 (16.8, hold_rib_on_shoulder): the wrap's top turn folds into the upper arm's crease with the left elbow bent past 120 degrees under the beam. Body 39/64 (38.2, collar_haul; 29-34 in finisher, hold_rib_on_shoulder, unsling_cleaver): the raised right arm's front passes the sleeve's mouth (as Rhen's item toss, Toma's run). max_exposed 11: under the dropped sleeve's mouth the cut edge of the upper arm's skin shows as the arm hangs (up to 20 mm from the cloth, seen only from under the armpit); keeping that skin instead made it poke through the sleeve at 80-150 mm in every clip. The back cleaver is hidden in battle (kerrid.md §4.1 #11), so it is not checked there (hidden_props).",
+      "_allowances": "M3-CHR-505 (cloud probe at the default stride; renders on the PC). Costume 45/6 (44.0, the battle library's idle: kerrid.md §10.3's stance, both hands on the haft, takes the left arm across the chest and its dropped-shoulder sleeve into the torso on the armpit side, out of sight; 39.4 in collar_haul; 32-35 in walk, run, set_bowl_on_post): Ysolde's dropped-shoulder smock sleeve takes the hanging upper arm into its side at mid-arm under linear skinning, and collar_haul lifts the right arm to haul a man up by the collar. Wrap 17/6 (16.8, hold_rib_on_shoulder): the wrap's top turn folds into the upper arm's crease with the left elbow bent past 120 degrees under the beam. Body 39/64 (38.2, collar_haul; 29-34 in finisher, hold_rib_on_shoulder, unsling_cleaver): the raised right arm's front passes the sleeve's mouth (as Rhen's item toss, Toma's run). max_exposed 11: under the dropped sleeve's mouth the cut edge of the upper arm's skin shows as the arm hangs (up to 20 mm from the cloth, seen only from under the armpit); keeping that skin instead made it poke through the sleeve at 80-150 mm in every clip. The back cleaver is hidden in battle (kerrid.md §4.1 #11), so it is not checked there (hidden_props).",
       "penetration": {
         "limits_mm": {
-          "Costume": 40.0,
+          "Costume": 45.0,
           "Wrap": 17.0,
           "Body": 39.0
         },

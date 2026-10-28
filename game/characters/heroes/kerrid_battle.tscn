@@ -1,12 +1,18 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene load_steps=4 format=3]
 
 [ext_resource type="PackedScene" path="res://assets/characters/kerrid/kerrid_lod1.glb" id="model"]
 [ext_resource type="PackedScene" path="res://assets/characters/kerrid/kerrid_cleaver.glb" id="cleaver"]
+[ext_resource type="AnimationLibrary" path="res://assets/characters/kerrid/anim/kerrid_battle_clips.tres" id="battle_clips"]
 
 [node name="KerridBattle" type="Node3D"]
 metadata/hymn_battle_actor = &"kerrid"
 
 [node name="Model" parent="." instance=ExtResource("model")]
+
+[node name="AnimationPlayer" parent="Model"]
+libraries = {
+&"": ExtResource("battle_clips")
+}
 
 [node name="Cleaver" parent="Model/kerrid_skeleton/Skeleton3D"]
 visible = false

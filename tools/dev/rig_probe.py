@@ -74,6 +74,7 @@ VILLAGERS_DIR = ROOT / "assets_src" / "characters" / "villagers"
 # the main checkout while this code runs from a worktree). Everything else comes from this checkout.
 ROOT_ENV = "HYMN_RIG_ROOT"
 GRID_CELLS = (0.012, 0.025)  # nearest-vertex grids (m), finer first: most queries resolve in the first
+BATTLE_LIB_PREFIX = "battle:"  # pose labels sampled from a hero's battle library (hero_clips.BATTLE_STANCE)
 CONFIRM_BATCH = 6  # penetration candidates confirmed by winding number per batch, deepest first
 
 
@@ -500,6 +501,15 @@ def clip_poses(rig: Rig, every: int, clips: list | None = None, max_samples: int
         is_loop, pose_fn = hero_clips.LOOPS.__contains__, hero_clips.pose_at
     sk = rig.skeleton
     out = []
+    if not clips and not is_villager(rig.hero) and rig.hero in hero_clips.BATTLE_STANCE:
+        # the battle actor's own library (hero_clips.build_battle): its idle has the stance, its strikes build on it
+        hero_clips._STANCE_ACTIVE.add(rig.hero)
+        try:
+            names = ["idle"] + [c for c in clip_names(rig.hero) if c in hero_clips.BATTLE_FRAMES or c == "revive"]
+            out += [Pose(BATTLE_LIB_PREFIX + p.label, p.local_q, p.hips_t, p.kind, p.down)
+                    for p in clip_poses(rig, every, names, max_samples)]
+        finally:
+            hero_clips._STANCE_ACTIVE.discard(rig.hero)
     for clip in clips or clip_names(rig.hero):
         length = length_of(clip)
         loop = is_loop(clip)
@@ -742,6 +752,7 @@ class Probe:
         # which his battle actor hides for the instance in his hand) or a list of clip names
         battle = set(hero_clips.BATTLE_CLIPS) | {"revive"}
         self.hidden = {m: (battle if v == "battle" else set(v)) for m, v in self.cfg.get("hidden_props", {}).items()}
+        self.hidden_in_battle = {m for m, v in self.cfg.get("hidden_props", {}).items() if v == "battle"}
         grip = re.compile(pen["grip_bones"])
         self.grip_vertex = np.array([bool(grip.search(dominant_bone(rig, self.skin, i)))
                                      for i in range(len(self.skin.P))])
@@ -911,8 +922,11 @@ class Probe:
         confirm, wmin = int(pen["confirm_deepest"]), float(pen["winding_min"])
         rows = []
         clip = pose.label.split("@")[0]
+        in_battle_lib = clip.startswith(BATTLE_LIB_PREFIX)  # the battle actor's own library: its scene hides these
+        clip = clip[len(BATTLE_LIB_PREFIX):] if in_battle_lib else clip
         for part, is_prop in self.groups:
-            if is_prop and clip in self.hidden.get(part.name, ()):  # hidden in this clip (a battle actor's back prop)
+            hidden = clip in self.hidden.get(part.name, ()) or (in_battle_lib and part.name in self.hidden_in_battle)
+            if is_prop and hidden:  # hidden in this clip (a battle actor's back prop)
                 continue
             P = rig.skin(part, mats)
             h = skin_surf.query(P, k, reach)

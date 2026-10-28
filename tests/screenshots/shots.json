@@ -4210,6 +4210,26 @@
         540
       ],
       "settle_frames": 30
+    },
+    {
+      "id": "kerrid_battle_idle",
+      "scene": "res://game/levels/_tests/characters/kerrid/kerrid_battle_idle.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "kerrid_battle_attack",
+      "scene": "res://game/levels/_tests/characters/kerrid/kerrid_battle_attack.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
     }
   ]
 }

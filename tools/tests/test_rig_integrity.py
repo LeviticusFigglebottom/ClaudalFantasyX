@@ -162,7 +162,7 @@ class _HeroGuards:
     # the probe covered what it should
     def test_poses_sampled(self):
         cfg, result, _ = run_probe(self.hero)
-        clips = {p.split("@")[0] for p in result["poses"] if "@" in p}
+        clips = {p.split("@")[0] for p in result["poses"] if "@" in p and not p.startswith(rig_probe.BATTLE_LIB_PREFIX)}
         self.assertEqual(clips, set(rig_probe.clip_names(self.hero)))
         self.assertIn("rest", result["poses"])
         for label in cfg["stage_poses"]:

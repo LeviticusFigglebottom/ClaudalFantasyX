@@ -409,6 +409,23 @@ def walk_pose(t: float, persona: dict, stride: float, knee: float, arm: float, b
 
 
 def pose_at(clip: str, t: float, length: float, sk: Skeleton, persona: dict) -> dict:
+    """_pose_at, with a battle library's stance on the idle (BATTLE_STANCE, while build_battle runs)."""
+    pose = _pose_at(clip, t, length, sk, persona)
+    if clip == "idle" and _STANCE_ACTIVE:
+        hero = _hero_of(persona)
+        if hero in _STANCE_ACTIVE:
+            pose = add(pose, BATTLE_STANCE[hero])
+    return pose
+
+
+# A hero whose battle stance is not the field idle (Kerrid holds the cleaver low in both hands; in the field it rides
+# his back) gets a second library, anim/<hero>_battle_clips.tres, that its battle actor plays: the idle with the stance
+# added, and the battle clips built on that idle. Filled per hero below; empty, so no other library changes.
+BATTLE_STANCE: dict = {}
+_STANCE_ACTIVE: set = set()
+
+
+def _pose_at(clip: str, t: float, length: float, sk: Skeleton, persona: dict) -> dict:
     story = _story_spec(persona, clip)  # M3-CHR-05: the story clips the chapters call, from requested_clips.json
     if story is not None:
         return story_pose_at(story, clip, t, length, sk, persona)
@@ -3583,8 +3600,15 @@ KO_ARMS_OUT["kerrid"] = 8.0
 STANCE_DORSI["kerrid"] = 10.0  # the hem's limit, as Toma's
 # both hands on the haft, the cleaver low across the body, the fluke near the right foot (the battle idle's hands);
 # the strike poses build on it
-K_GRIP = {"DEF-upper_arm.R": (-14.0, 0.0, 6.0), "DEF-forearm.R": (-34.0, 0.0, 0.0),
-          "DEF-upper_arm.L": (-30.0, -10.0, 28.0), "DEF-forearm.L": (-58.0, -30.0, 0.0), "DEF-hand.L": (0.0, -20.0, 0.0)}
+# The strike keys below were authored and probed on this grip (their arm paths); K_GRIP is the battle stance itself.
+K_GRIP_STRIKE = {"DEF-upper_arm.R": (-14.0, 0.0, 6.0), "DEF-forearm.R": (-34.0, 0.0, 0.0),
+                 "DEF-upper_arm.L": (-30.0, -10.0, 28.0), "DEF-forearm.L": (-58.0, -30.0, 0.0),
+                 "DEF-hand.L": (0.0, -20.0, 0.0)}
+# (solved against kerrid_battle.tscn's hand cleaver: the fluke 30 cm before the right foot and 12 cm up, the left palm
+# on the haft 26 cm above the right fist; ADR 0041 self-render: the old grip left the left hand 63 cm off the haft)
+K_GRIP = {"DEF-upper_arm.R": (-14.6, -2.8, 22.4), "DEF-forearm.R": (-13.0, 0.0, 0.0), "DEF-hand.R": (-16.5, 5.3, 19.8),
+          "DEF-upper_arm.L": (-21.9, -3.6, -16.7), "DEF-forearm.L": (-54.2, -19.8, 0.0), "DEF-hand.L": (-15.5, -6.2, -8.4)}
+BATTLE_STANCE["kerrid"] = K_GRIP  # kerrid.md §10.3: the battle idle holds the cleaver (his battle actor's library)
 
 
 def hunch_pose(h: float, p: dict) -> dict:
@@ -3781,7 +3805,8 @@ def _kerrid_keys(clip: str, sk: Skeleton, persona: dict, base: dict) -> list:
     """Kerrid (kerrid.md §10.3: weight and hauling): the cleaver held low in both hands like a hauling tool, every
     blow slow to start; never shouldered or twirled. Deltas on the idle's first frame (base)."""
     a = persona["arms_down"]
-    grip = _minus(add(base, K_GRIP), base)
+    # the strike keys build on K_GRIP_STRIKE; on the battle library's idle (which has K_GRIP) they carry the difference
+    grip = _minus(add(base, K_GRIP_STRIKE), add(base, K_GRIP) if "kerrid" in _STANCE_ACTIVE else base)
     if clip == "ready":
         k = add(add(grip, _legs(sk, persona, 0.03)), {
             "DEF-spine.003": (1.5, 0.0, 0.0), "DEF-spine.004": (1.5, 0.0, 0.0),
@@ -3810,7 +3835,10 @@ def _kerrid_keys(clip: str, sk: Skeleton, persona: dict, base: dict) -> list:
         throw = add(_legs(sk, persona, 0.04, 0.08, -0.04), {
             "DEF-upper_arm.L": (-92.0, 0.0, a * 0.55), "DEF-forearm.L": (-6.0, 0.0, 0.0), "DEF-hand.L": (0.0, 70.0, 0.0),
             "DEF-spine.001": (6.0, -8.0, 0.0), "DEF-spine.006": (-4.0, 0.0, 0.0)})
-        return [(0.0, {}), (0.4, fist), (0.55, fist), (0.8, throw), (1.0, {})]
+        free = _left_free(persona)
+        if "kerrid" in _STANCE_ACTIVE:  # the cleaver hangs in the right hand as the line is thrown (arm off the side)
+            free = add(free, {"DEF-upper_arm.R": (0.0, 0.0, -K_GRIP["DEF-upper_arm.R"][2])})
+        return [(0.0, {}), (0.4, add(fist, free)), (0.55, add(fist, free)), (0.8, add(throw, free)), (1.0, {})]
     if clip == "item":
         # the left hand reaches forward and down, low, as if handing something to someone a step below
         reach = add(_legs(sk, persona, 0.03), {"DEF-upper_arm.L": (-20.0, 0.0, a * 0.4), "DEF-forearm.L": (-40.0, 0.0, 0.0),
@@ -3889,7 +3917,15 @@ def kerrid_victory(u: float, sk: Skeleton, persona: dict) -> dict:
             "DEF-spine.005": (0.0, -7.0 * turn, 0.0),
             "DEF-spine.006": (KERRID_VICTORY_NOD * math.sin(2.0 * math.pi * u), -18.0 * turn, 0.0)}
     sway = _sway(sk, persona, KERRID_VICTORY_SWAY * math.sin(2.0 * math.pi * u), KERRID_VICTORY_SWAY * 0.6)
-    return add(add(held, sway), _kerrid_idle_terms(u, persona["sway"]))
+    return add(add(add(held, sway), _kerrid_idle_terms(u, persona["sway"])), _left_free(persona))
+
+
+def _left_free(persona: dict) -> dict:
+    """On the battle library (the stance has both hands on the haft), the turns that let the left hand go: the clips
+    that use it alone (cast's thrown line, the victory's free hand) are authored from the hands-down idle."""
+    if "kerrid" not in _STANCE_ACTIVE:
+        return {}
+    return {k: tuple(-np.asarray(v, dtype=float)) for k, v in K_GRIP.items() if k.endswith(".L")}
 
 
 KERRID_VICTORY_SWAY = 0.012  # m: the weight rocking slowly over the loop (the planted feet stay), as a hauler waits
@@ -4124,12 +4160,12 @@ def fmt(x: float) -> str:
     return "0" if s in ("-0", "0") else s
 
 
-def build(hero: str) -> str:
+def build(hero: str, names: list | None = None) -> str:
     persona = PERSONA[hero]
     sk = Skeleton(ROOT / "assets" / "characters" / hero / f"{hero}.glb")
     base = f"{sk.root_name}/Skeleton3D:"
     subs = []
-    names = CLIPS[hero]
+    names = names or CLIPS[hero]
     for ci, clip in enumerate(names):
         length = clip_length(hero, clip)  # M2-CHR-12: LENGTHS, but the three heroes' own cycles
         loop = clip in LOOPS
@@ -4198,6 +4234,19 @@ def build(hero: str) -> str:
     return head + "\n\n".join(subs) + f"\n\n[resource]\n_data = {{\n{data}\n}}\n"
 
 
+def build_battle(hero: str) -> tuple:
+    """The battle library (BATTLE_STANCE): the idle with the stance, then the battle clips built on it."""
+    names = ["idle"] + [c for c in CLIPS[hero] if c in BATTLE_FRAMES or c == "revive"]
+    _STANCE_ACTIVE.add(hero)
+    try:
+        text = build(hero, names)
+    finally:
+        _STANCE_ACTIVE.discard(hero)
+    p = out_path(hero).with_name(f"{hero}_battle_clips.tres")
+    p.write_text(text, encoding="utf-8")
+    return p, len(names)
+
+
 def out_path(hero: str) -> Path:
     return ROOT / "assets" / "characters" / hero / "anim" / f"{hero}_clips.tres"
 
@@ -4212,6 +4261,9 @@ def main() -> int:
         text = build(hero)
         p.write_text(text, encoding="utf-8")
         print(f"wrote {p.relative_to(ROOT)} ({len(text) / 1e6:.2f} MB, {len(CLIPS[hero])} clips)")
+        if hero in BATTLE_STANCE:
+            bp, n = build_battle(hero)
+            print(f"wrote {bp.relative_to(ROOT)} ({n} clips)")
     if set(args.hero or PERSONA) & set(LOCO_HEROES):  # M2-CHR-12: the controller's stride and speed table
         write_locomotion_data()
         print(f"wrote {LOCO_DATA.relative_to(ROOT)}")
