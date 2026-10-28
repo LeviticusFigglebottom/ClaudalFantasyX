@@ -1,5 +1,5 @@
 {
-  "doc": "Menu portrait manifest (M2-MNU-301, ADR 0120). tools/portraits/render.sh renders every entry with tools/portraits/portrait_renderer.tscn on the lavapipe wrapper, one Godot process per entry. 'heroes': each hero's review stage (the characters track's AshaStage scene: model, hero materials, shader tier, face-pose table, lights) posed once per emotion tag of game/data/dialogue/emotions.json and seen through the stage's Face camera with this file's framing (camera keys override the defaults'); the nodes in hide_nodes and the sky are dropped for a transparent background. 'model', 'materials' and 'face_poses' name the sources the stage uses (tests check they agree; the PROVENANCE rows cite them). Output: <out_dir>/<id>_<emotion>.png at 'size', drawn at size x supersample and Lanczos-reduced, after 'settle_frames' frames (deterministic: pinned wind, no TAA). 'creatures' is the bestiary's list (M2-MNU-302): one entry per creatures.json row (its id and its battle actor 'scene', which enemies.json's `model` names), rendered alone in a small world built from 'creature_stage' (environment keys set on a new Environment, colours as [r, g, b(, a)]; directional 'lights' with yaw_deg relative to the camera's yaw, 0 = from the camera's side, 180 = from behind; dark-blue panels want the cool rims; an entry's 'light_scale' multiplies the energy of the lights whose names start with each key (e.g. {\"rim\": 4.0}) for the glossy black creatures, which otherwise sink into the panel), held and framed from creatures.json's `portrait` block (CreatureFraming.hold and frame_fit); an entry's own 'portrait' keys override that block where a framing reads badly at menu size (wide fliers and tall shapes cropped, flat ones seen edge-on). Output <out_dir>/<id>.png, same size and supersample; the bestiary finds an enemy's picture through its model's creature id (CreaturePortraits).",
+  "doc": "Menu portrait manifest (M2-MNU-301, ADR 0120). tools/portraits/render.sh renders every entry with tools/portraits/portrait_renderer.tscn on the lavapipe wrapper, one Godot process per entry. 'heroes': each hero's review stage (the characters track's AshaStage scene: model, hero materials, shader tier, face-pose table, lights) posed once per emotion tag of game/data/dialogue/emotions.json (a speaking extra whose stage has no face-pose table, such as the Stillguard, has 'face_poses' \"\" and the neutral portrait alone) and seen through the stage's Face camera with this file's framing (camera keys override the defaults'); the nodes in hide_nodes and the sky are dropped for a transparent background. 'model', 'materials' and 'face_poses' name the sources the stage uses (tests check they agree; the PROVENANCE rows cite them). Output: <out_dir>/<id>_<emotion>.png at 'size', drawn at size x supersample and Lanczos-reduced, after 'settle_frames' frames (deterministic: pinned wind, no TAA). 'creatures' is the bestiary's list (M2-MNU-302): one entry per creatures.json row (its id and its battle actor 'scene', which enemies.json's `model` names), rendered alone in a small world built from 'creature_stage' (environment keys set on a new Environment, colours as [r, g, b(, a)]; directional 'lights' with yaw_deg relative to the camera's yaw, 0 = from the camera's side, 180 = from behind; dark-blue panels want the cool rims; an entry's 'light_scale' multiplies the energy of the lights whose names start with each key (e.g. {\"rim\": 4.0}) for the glossy black creatures, which otherwise sink into the panel), held and framed from creatures.json's `portrait` block (CreatureFraming.hold and frame_fit); an entry's own 'portrait' keys override that block where a framing reads badly at menu size (wide fliers and tall shapes cropped, flat ones seen edge-on). Output <out_dir>/<id>.png, same size and supersample; the bestiary finds an enemy's picture through its model's creature id (CreaturePortraits).",
   "defaults": {
     "size": [256, 256],
     "supersample": 2,
@@ -88,6 +88,16 @@
       "face_poses": "res://game/levels/_tests/characters/sefir/sefir_face_poses.json",
       "out_dir": "res://assets/ui/portraits/heroes",
       "emotions": ["neutral", "smile", "determined", "worried", "grief"],
+      "camera": {}
+    },
+    {
+      "id": "stillguard",
+      "stage": "res://game/levels/_tests/characters/stillguard/stillguard_a_stage.tscn",
+      "model": "res://assets/characters/stillguard_a/stillguard_a.glb",
+      "materials": "res://assets/characters/stillguard_a/materials/",
+      "face_poses": "",
+      "out_dir": "res://assets/ui/portraits/heroes",
+      "emotions": ["neutral"],
       "camera": {}
     }
   ],
