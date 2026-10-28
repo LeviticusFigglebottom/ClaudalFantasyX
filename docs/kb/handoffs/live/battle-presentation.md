@@ -26,6 +26,24 @@ both fixed and pushed. The branch head also carries:
   - any battle shot with an Act I creature, since the heights and the near-face anchor move its effects. I am
     self-rendering those next.
 
+**MERGE-READY @ the branch head (14:xx): the Lead's 13:25 list.**
+- **M3-BPR-411 closed.** Battle VFX coverage has 0 unexplained gaps; the 5 left are kept on purpose (`INTENDED`).
+- **M3-CHR-523:** the Inquisitor stands in as Moll's battle actor (battle_sandbox.json `stand_ins`).
+  `enemies.json` `model` is reserved for creature scenes, and he is a person. His intro is now a hero shot.
+  - SELF-RENDERED and viewed: battle_boss_intro_inquisitor (Moll with the hound, the card under him) and
+    battle_arena_camp (Moll and the hound face the party). Closes GPU QA row 35's battle side.
+- **M3-BPR-1305:** Ch5's stair fights play on ashcrown_forecourt_day and the Matron on ashcrown_anvil_court.
+  battle_boss_intro_matron is viewed on the court.
+- **M3-ENV-737:** the 10 greybox arenas are retired. `--filter=battle` 802/0.
+- **M3-CRB-009:** the boss model's `intro` clip plays (6 bosses have one), and set pieces play at the model's anchor
+  bones when they are named.
+  - SELF-RENDERED: the Reach's hand rises over the wall; the Hermit emerges.
+  - Hullgnaw's clip turns its head away from the camera; noted to creatures-b on the task.
+- **Shots for the gate to re-approve:** battle_boss_intro_* (all seven move: clips, Moll, the court) and
+  battle_arena_camp.
+- LEAD-ASK: none. The Fisher Stair's capsule (CRB-009 ask 4) needs a prop from env-art. Should I file the request, or
+  is M3-BPR-407 carrying it?
+
 **BACKLOG EMPTY (2026-10-28 13:xx, @ the branch head, MERGE-READY):** the Lead's 09:35, 10:55, 11:46, 12:11 and
 12:37 lists:
 - **The boss-fight camera on the real models:** done, self-rendered and viewed (entry below).
