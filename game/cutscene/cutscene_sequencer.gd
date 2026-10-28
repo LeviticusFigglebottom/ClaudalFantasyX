@@ -21,7 +21,7 @@ extends Node
 ## `instant` (tests) makes every wait, fade and move take no time and lines advance by themselves.
 ## Cues the first playable has no content for are placeholders: `@face` only records, `@anim`
 ## turns the actor for `look_at` and otherwise plays a same-named AnimationPlayer clip when the
-## actor has one, `@vfx` spawns CutsceneMotes, `@music` falls back to music_stand_ins.
+## actor has one, `@vfx` spawns a GlimmerField (CutsceneVfx), `@music` falls back to music_stand_ins.
 
 signal finished(scene_id: StringName)
 signal event_requested(event_name: StringName, args: Array)
@@ -51,7 +51,7 @@ const TAG_TIMED := "timed"
 const UNSUPPORTED_KWARGS := {
 	&"camera": ["grade"],
 	&"anim": ["loop"],
-	&"vfx": ["drift", "motion", "rate", "form"],
+	&"vfx": ["form"],
 }
 
 ## Tests and captures: no waits, no typewriter, lines and options answer themselves.
@@ -668,13 +668,8 @@ func _cue_vfx(step: DialogueStep) -> void:
 	var host: Node3D = at if at != null else _stage
 	if host == null:
 		return
-	var motes := CutsceneMotes.new()
-	motes.name = "Vfx_%s_%d" % [effect, _vfx_count]
+	CutsceneVfx.spawn(rows[effect], effect, step.kwargs, host, "Vfx_%s_%d" % [effect, _vfx_count], finished)
 	_vfx_count += 1
-	host.add_child(motes)
-	motes.build(
-		rows[effect], int(step.kwargs.get("count", config.get("vfx_default_count", 1))), DEFAULT_SEED + _vfx_count
-	)
 
 
 ## M2-FP-102: `@light <name> on|off [sec]` eases a stage practical's energy (a Light3D found by name under

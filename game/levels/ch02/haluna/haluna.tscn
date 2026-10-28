@@ -221,6 +221,14 @@ look_at = Vector3(-4.25, 0.53, 7.8)
 fov_deg = 37.8
 hard_cut = true
 
+[sub_resource type="Resource" id="Shot_cut_H05_up"]
+script = ExtResource("7_shot")
+id = &"H05_up"
+position = Vector3(-4.4, 1.55, 4.3)
+look_at = Vector3(-4.55, 1.47, 7.95)
+fov_deg = 30.0
+hard_cut = true
+
 [sub_resource type="Resource" id="Shot_cut_H06"]
 script = ExtResource("7_shot")
 id = &"H06"
@@ -326,6 +334,34 @@ size = Vector3(16, 6, 10)
 
 [sub_resource type="BoxShape3D" id="Box_Hub"]
 size = Vector3(230, 60, 280)
+
+[sub_resource type="BoxShape3D" id="Box_DockEnd"]
+size = Vector3(8, 6, 5)
+
+[sub_resource type="Resource" id="Shot_B11"]
+script = ExtResource("7_shot")
+id = &"B11"
+mode = 1
+position = Vector3(24.5, 2.9, 43.3)
+look_at = Vector3(19.9, 2.8, 41.8)
+target_offset = Vector3(0, 1, 0)
+fov_deg = 37.8
+follow_weight = 0.35
+max_pan_deg = 20.0
+
+[sub_resource type="BoxShape3D" id="Box_NemeTable"]
+size = Vector3(7, 8, 6)
+
+[sub_resource type="Resource" id="Shot_B02"]
+script = ExtResource("7_shot")
+id = &"B02"
+mode = 1
+position = Vector3(-47.8, 3.4, -1.6)
+look_at = Vector3(-53.6, 2.9, -2.1)
+target_offset = Vector3(0, 1, 0)
+fov_deg = 37.8
+follow_weight = 0.35
+max_pan_deg = 20.0
 
 [sub_resource type="BoxShape3D" id="Box_strip0"]
 size = Vector3(42.823836, 5, 3.5)
@@ -533,6 +569,24 @@ shot_priority = 0
 
 [node name="Shape" type="CollisionShape3D" parent="CameraVolumes/Hub"]
 shape = SubResource("Box_Hub")
+
+[node name="DockEnd" type="Area3D" parent="CameraVolumes"]
+script = ExtResource("6_vol")
+transform = Transform3D(0.819152, 0, 0.573576, 0, 1, 0, -0.573576, 0, 0.819152, 19.0, 2, 42.5)
+shot = SubResource("Shot_B11")
+shot_priority = 2
+
+[node name="Shape" type="CollisionShape3D" parent="CameraVolumes/DockEnd"]
+shape = SubResource("Box_DockEnd")
+
+[node name="NemeTable" type="Area3D" parent="CameraVolumes"]
+script = ExtResource("6_vol")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -52.5, 3, -2.2)
+shot = SubResource("Shot_B02")
+shot_priority = 2
+
+[node name="Shape" type="CollisionShape3D" parent="CameraVolumes/NemeTable"]
+shape = SubResource("Box_NemeTable")
 
 [node name="Spawns" type="Node3D" parent="."]
 
@@ -982,6 +1036,11 @@ player_path = NodePath("../Player")
 [node name="H05" type="Node" parent="CutsceneStage/Shots"]
 script = ExtResource("10_shotnode")
 shot = SubResource("Shot_cut_H05")
+key_pitch_deg = 30.0
+
+[node name="H05_up" type="Node" parent="CutsceneStage/Shots"]
+script = ExtResource("10_shotnode")
+shot = SubResource("Shot_cut_H05_up")
 key_pitch_deg = 30.0
 
 [node name="H06" type="Node" parent="CutsceneStage/Shots"]

@@ -21,7 +21,7 @@ const NPCS := {
 	&"npc_lane": "ch02_bark_lane",
 }
 const BARKS: Array[StringName] = [&"ch02_bark_market", &"ch02_bark_chapel", &"ch02_bark_dock", &"ch02_bark_lane"]
-const STAGE_SHOTS: Array[StringName] = [&"H05", &"H06", &"H01", &"H08", &"H08_hand", &"H03", &"B02_bag"]
+const STAGE_SHOTS: Array[StringName] = [&"H05", &"H05_up", &"H06", &"H01", &"H08", &"H08_hand", &"H03", &"B02_bag"]
 ## In front of the chapel door (order_chapel at (-118, 27.5), 9.25 m deep: its south face is z 32.1).
 const CHAPEL_FRONT := Vector3(-119.5, 0.0, 35.0)
 const CHAPEL_SOUTH_WALL_Z := 32.0

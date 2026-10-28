@@ -71,7 +71,9 @@ func start() -> void:
 	sequencer.auto_advance = true
 	sequencer.auto_choice = choice
 	_hold(sequencer)
-	add_child(sequencer)
+	# Under the level, as a zone's own sequencer is: HeroFieldParty finds it there and hides the followers while
+	# a held scene plays (B02 showed Asha at Neme's table, who is "at the market").
+	level.add_child(sequencer)
 	sequencer.play(scene_id, stage)
 
 

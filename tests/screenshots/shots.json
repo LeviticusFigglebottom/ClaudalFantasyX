@@ -21,6 +21,22 @@
       "threshold_rmse": 0.004
     },
     {
+      "id": "slice_end_card_voice",
+      "pending_baseline": true,
+      "scene": "res://game/flow/end_card.tscn",
+      "resolution": [1920, 1080],
+      "settle_frames": 180,
+      "threshold_rmse": 0.004
+    },
+    {
+      "id": "slice_end_card",
+      "pending_baseline": true,
+      "scene": "res://game/flow/end_card.tscn",
+      "resolution": [1920, 1080],
+      "settle_frames": 1000,
+      "threshold_rmse": 0.004
+    },
+    {
       "id": "lighting_probe",
       "scene": "res://tests/screenshots/scenes/lighting_probe.tscn",
       "camera": "ShotCamera"
@@ -4327,6 +4343,38 @@
       }
     },
     {
+      "id": "slice_beach_standing",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/slice_shots/slice_cutscene_shot.tscn",
+      "camera": "default",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 400,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        },
+        "nodes": {
+          ".": {
+            "level_path": "res://game/levels/ch02/haluna/haluna.tscn",
+            "spawn": "Beach",
+            "flags": [
+              "prologue_seen"
+            ],
+            "scene_id": "ch02_girl_on_the_beach",
+            "hold_line": "ch02_beach_031"
+          }
+        },
+        "time_scale": 14.0
+      }
+    },
+    {
       "id": "slice_haluna_villagers_village",
       "scene": "res://game/levels/_tests/slice_shots/slice_cutscene_shot.tscn",
       "camera": "default",
@@ -4411,8 +4459,7 @@
               "prologue_seen",
               "ch02_met_asha",
               "ch02_tideline_won",
-              "ch02_ate_at_nemes",
-              "ch03_harrier_won"
+              "ch02_ate_at_nemes"
             ]
           }
         }
@@ -4450,6 +4497,7 @@
     },
     {
       "id": "slice_verse_threshold",
+      "pending_baseline": true,
       "scene": "res://game/levels/_tests/slice_shots/slice_cutscene_shot.tscn",
       "camera": "default",
       "resolution": [
@@ -4480,6 +4528,7 @@
     },
     {
       "id": "slice_verse_recognition",
+      "pending_baseline": true,
       "scene": "res://game/levels/_tests/slice_shots/slice_cutscene_shot.tscn",
       "camera": "default",
       "resolution": [
@@ -4506,6 +4555,37 @@
           }
         },
         "time_scale": 8.0
+      }
+    },
+    {
+      "id": "slice_verse_c08",
+      "pending_baseline": true,
+      "scene": "res://game/levels/_tests/slice_shots/slice_cutscene_shot.tscn",
+      "camera": "default",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 900,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        },
+        "nodes": {
+          ".": {
+            "level_path": "res://game/levels/ch03/first_verse/first_verse.tscn",
+            "scene_id": "ch03_the_first_verse",
+            "flags": [
+              "ch02_met_asha"
+            ],
+            "hold_line": "ch03_verse_060"
+          }
+        },
+        "time_scale": 16.0
       }
     },
     {
@@ -5231,7 +5311,7 @@
         960,
         540
       ],
-      "settle_frames": 60,
+      "settle_frames": 240,
       "setup": {
         "globals": {
           "hymn_wind_time": 40.0
@@ -5245,6 +5325,7 @@
             "level_path": "res://game/levels/ch01/oruvel/oruvel.tscn",
             "spawn": "ScaleHull",
             "scene_id": "ch01_bark_outer_mooring",
+            "hold_line": "ch01_bark_sadi_003",
             "flags": [
               "ch01_started"
             ]
@@ -6821,6 +6902,7 @@
     },
     {
       "id": "slice_neme_table",
+      "pending_baseline": true,
       "scene": "res://game/levels/_tests/slice_shots/slice_cutscene_shot.tscn",
       "camera": "default",
       "resolution": [
@@ -6854,6 +6936,7 @@
     },
     {
       "id": "ch01_oruvel_storm",
+      "pending_baseline": true,
       "scene": "res://game/levels/_tests/slice_shots/slice_cutscene_shot.tscn",
       "camera": "default",
       "resolution": [
@@ -6886,6 +6969,7 @@
     },
     {
       "id": "ch01_drop",
+      "pending_baseline": true,
       "scene": "res://game/levels/_tests/slice_shots/slice_cutscene_shot.tscn",
       "camera": "default",
       "resolution": [
@@ -6917,6 +7001,7 @@
     },
     {
       "id": "ch01_bell_room",
+      "pending_baseline": true,
       "scene": "res://game/levels/_tests/slice_shots/slice_cutscene_shot.tscn",
       "camera": "default",
       "resolution": [
@@ -6948,6 +7033,7 @@
     },
     {
       "id": "ch01_scale_hull",
+      "pending_baseline": true,
       "scene": "res://game/levels/_tests/slice_shots/slice_cutscene_shot.tscn",
       "camera": "default",
       "resolution": [
@@ -6979,6 +7065,7 @@
     },
     {
       "id": "ch01_kell_stall",
+      "pending_baseline": true,
       "scene": "res://game/levels/_tests/slice_shots/slice_cutscene_shot.tscn",
       "camera": "default",
       "resolution": [
@@ -7010,6 +7097,7 @@
     },
     {
       "id": "ch01_net_pen",
+      "pending_baseline": true,
       "scene": "res://game/levels/_tests/slice_shots/slice_cutscene_shot.tscn",
       "camera": "default",
       "resolution": [
@@ -7042,6 +7130,7 @@
     },
     {
       "id": "ch01_hullgnaw_rises",
+      "pending_baseline": true,
       "scene": "res://game/levels/_tests/slice_shots/slice_cutscene_shot.tscn",
       "camera": "default",
       "resolution": [
@@ -7074,6 +7163,7 @@
     },
     {
       "id": "ch01_going_under",
+      "pending_baseline": true,
       "scene": "res://game/levels/_tests/slice_shots/slice_cutscene_shot.tscn",
       "camera": "default",
       "resolution": [
@@ -7106,6 +7196,7 @@
     },
     {
       "id": "slice_prologue_p01",
+      "pending_baseline": true,
       "scene": "res://game/levels/_tests/slice_shots/slice_cutscene_shot.tscn",
       "camera": "default",
       "resolution": [

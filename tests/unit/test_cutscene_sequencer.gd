@@ -131,11 +131,14 @@ func test_leaving_mid_line_returns_to_the_host() -> void:
 	_free()
 
 
-func test_placeholder_cue_args_warn_once() -> void:
+func test_a_glimmer_cue_is_a_real_field_with_its_drift() -> void:
 	seq.instant = true
 	_start(FIXTURE)
-	var w := seq.warnings.filter(func(x: String) -> bool: return x.contains("@vfx drift= is not performed yet"))
-	assert_eq(w.size(), 1, str(seq.warnings))
+	var w := seq.warnings.filter(func(x: String) -> bool: return x.contains("not performed yet"))
+	assert_eq(w, [], "drift, motion and rate are performed now (CutsceneVfx)")
+	var field := stage.get_node("Marks/spot").get_child(0) as GlimmerField
+	assert_true(field != null and field.get_mode() == GlimmerState.Mode.HELD, "a held GlimmerField at the mark")
+	assert_eq(field.fixed_count, 4, "count=4 is its fixed count")
 	_free()
 
 
