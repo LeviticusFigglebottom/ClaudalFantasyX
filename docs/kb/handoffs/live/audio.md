@@ -3,6 +3,33 @@
 ## NEW ACCOUNT (from 2026-10-25)
 Session `session_01Wmj8xaLtwcqiS3qwC6PciW`. Integration branch `claude/undertow-lead-handoff-ze8rrn`. Newest first.
 
+- **REFOCUS (ADR 0041; the Lead's 01:12 message, read at 02:55): Act I as played.** Act II/III audio has stopped.
+  - The M3-AUD-860 composer (cloudloom, undertow_layers) was stopped before it wrote anything.
+  - 19 Act II/III audio tasks are now `blocked` with `blocked-by: ADR 0041`: 804, 805, 831, 836, 837, 839–845, 849, 851, 852, 853, 856, 858 and 859.
+  - What had already landed in LFS stays.
+  - Ilun, Kahre and Virel are Act I (Ch3, Ch5, Ch8), so their tasks stay open.
+  - **The Act I audio audit, M3-AUD-861** (`tools/audio/act1_audio_audit.py`, title→Ch9; 46 items). I'm working through it in this order:
+    1. **Wiring only, no renders:**
+       - **Unwired ambience beds:** oruvel_underway → `drowned_tower`; saltgrass_causeway → `causeway_wind` + `tidepools`;
+         first_verse → `shrine_interior`; haluna_wake → the Haluna night set; corrow → `corrow_seawall`.
+       - **Zone music:** saltgrass_causeway, coilspire, corrow (`corrow_seawall`) and tidecup_match all have cues but no zone row.
+       - **Cutscenes:** `coilspire_flues` plays the old `temple_trial` prototype; its stand-in should be `coilspire`. `corrow_day` needs a same-piece alias for `corrow_seawall`.
+    2. **Enemies:**
+       - The Ch6 boss **stillguard_inquisitor is `silent`**. It needs a real voice, hit and death set.
+       - Five enemies borrow another creature's voice at a different pitch (reused): wickfry (from glassfry), wreck_crab and wallcrab (from reef_crab), wall_polyp (from spawn_polyp), stormgull (from gull_harrier). Each gets its own set.
+    3. **16 silent boss and support skills** (power 0, no hit, heal or status, so only the choreography's accents): rouse_polyp,
+       gnaw_coil, recrust_gather, lines_taut, reach_for_stair, grip_the_stair, rope_dive, climb_up, surge_crawler,
+       surge_wing, surge_ebb, storm_call(_sound), close_the_hand, hand_closes, breach_gather. Each gets a `battle_sfx.skills` row.
+    4. **New beds:** oruvel (the raft town), brightwater_ferry (on the ferry) and coilspire (the flues).
+    5. **The prologue has no score**, only the iskarra_dusk room tone under "Listen. This might be the last time I tell it."
+       It needs its own cue (`iskarra_vigil` is Ch9's echo of it, so it isn't reused here).
+    6. **Blocked on the cutscene owner (slice-polish, `game/cutscene/**`): M3-AUD-834.** Three cutscenes play only the
+       first stem of a stem cue: undertow_rising (ch01_the_rising), seawall_hold (ch08_first_down) and undertow_reach
+       (ch08_the_reach). `@music` has to go through the MusicDeck so stems play, or the sequencer needs an `@stem` cue.
+       **This is an Act I blocker now.**
+    7. **Waiting on claude/ui:** the UI hooks ShrineTravelMenu and ReefballOutfitterMenu stay `pending` until their classes land.
+  - **Budget:** plain git has about 0.48 MiB left, so new Act I audio goes to `assets/lfs/audio/`, which is already routed (ADR 0173).
+
 - **MERGE-READY: the Act III cues are in Git LFS: 9 objects, 9.65 MiB** (a3a21cce).
   - hollowmere, dace_ledger, the_kite, kite_maiden_flight, iskarra_ruins and iskarra_spire.
   - hesper_and_ilsabet's s0 and s1, stacked at −16.03 (a new stem rule).
