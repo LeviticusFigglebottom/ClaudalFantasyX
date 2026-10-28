@@ -27,6 +27,12 @@ every zone, one battle per arena and every Act I boss intro. Contact sheets go o
 
 **Pass A, 2026-10-28:** all 341 manifest shots captured at High ×2.667 on integration 048b0a7f (1074 s). The 31 shots with a node or time_scale setup were re-captured with capture_preset's new `--setup`; without it the slice cutscene shots render navy and haluna_h10_dock_night renders in daylight. Read well on the GPU: Haluna, the Shell Shrine, the Tamsule galleries and moorings, the Coilspire path, and the tideline, causeway, raft, route, shoals, derelict and matron arenas. The other boss intros read well too. Contact sheets: `docs/kb/qa/gpu/act1/pass_a/`.
 
+**Pass B, 2026-10-28:** the Act I walk on lead/gate-ft-beach on the RX 9070 XT at High 2560×1440.
+- It covers the title, New Game, Ch1–Ch9 by chapter start, every spawn, the zones a chapter doesn't start in, one battle per arena and every boss, with stills every 5 s and dialogue tapped.
+- 122 segments, 401 stills in 1666 s. The sheets are in `docs/kb/qa/gpu/act1/pass_b/`, a selection; all 401 stills are on the PC.
+- Read well on the GPU: Oruvel, the Hullgnaw, Drownbell, Bottle Hermit and Spar-Wraith fights, Tamsule's galleries and the Tidecup UI, the Coilspire path, the Ch8 stair hold.
+- The walk's "spawns" right after New Game moved Rhen around Haluna during the beach cutscene. That is a walk artefact, not a finding.
+
 **Status:** each row is `open` until the owner fixes it, then `fixed @ <sha>` once the PC has seen the fix on the GPU.
 
 ## Findings
@@ -65,6 +71,15 @@ every zone, one battle per arena and every Act I boss intro. Contact sheets go o
 | 30 | battle_arena_drowned_choir_ring, _iskarra_spire_crown, _undertow_cage, _undertow_heart(_letting); battle_arena_keth_seep_terrace | Capsule stand-ins. If these arenas are later-act (paused under ADR 0041), this row is for the record only. | creatures-b | open | pass A, big14's new shots (2026-10-28) |
 | 31 | Ch2 beach (ft-beach), newgame_13–17 | Asha's skirt balloons into a large blue mass over Rhen's chest and passes through him while she kneels. | characters | open | big14 playtest on lead/gate-ft-beach (2026-10-28) |
 | 32 | Ch2 beach (ft-beach), newgame_28–29 | When Rhen stands, "Toma Okeru," and "To Asha. Who is very glad…" are framed on his waist and legs; no heads in frame. | slice-polish | open | big14 playtest on lead/gate-ft-beach (2026-10-28) |
+| 33 | Every battle's result screen (pass B: 506 times in 122 segments) | `SCRIPT ERROR: Trying to cast a freed object` at `BattleResultPanel._set_count` (battle_result_panel.gd:266): the count-up runs on after the panel is freed when the result is left quickly (a fast player does the same). | ui-menus | open | pass B (2026-10-28, lead/gate-ft-beach @ 93d0741e) |
+| 34 | ch06_ridge_skippers (BattleRequest with return ch06/brine_shoals) | The fight plays on the blank test stage against Lantern Eel, Reef Crab and Gull Harrier, not its arena (brine_shoals_afternoon) and Shoal Skippers. The encounter or its arena falls back to the battle sandbox. | act1-chapters (encounters), env-art-b (arena) | open | pass B (2026-10-28, lead/gate-ft-beach @ 93d0741e) |
+| 35 | ch06_inquisitor (in battle) | Inquisitor Moll is still a grey capsule in his fight; moll_* has his model since big14, but the battle doesn't use it (row 12). | creatures-b | open | pass B (2026-10-28, lead/gate-ft-beach @ 93d0741e) |
+| 36 | ch08 undertows_reach (in battle) | The Reach's arm fills most of the frame and passes over the party and the parapet for the whole fight. | battle-presentation (camera), creatures-b | open | pass B (2026-10-28, lead/gate-ft-beach @ 93d0741e) |
+| 37 | ch03 spawns AfterHarrier, Encounter, BeforeHarrier (the causeway) | A follower stands between the camera and Rhen: Toma's shield fills the frame centre; at BeforeHarrier Rhen isn't in frame at all. | hero-integration (party spawn and follow) | open | pass B (2026-10-28, lead/gate-ft-beach @ 93d0741e) |
+| 38 | coilspire spawns SpireBase, Tier2, Tier4 | The field camera is pressed against the spire wall with Rhen out of view: the camera doesn't pull in when the tower blocks it. | hero-integration (field camera), env-art-b (spawns) | open | pass B (2026-10-28, lead/gate-ft-beach @ 93d0741e) |
+| 39 | ch09 spawns RoadGate; Ch9 start | At RoadGate the camera sits behind the gate rocks with Rhen barely visible. In Ch9 Rhen walks alone though Asha and Toma are in the chapter's party (also no Toma in Ch4's field and battles). | act1-chapters | open | pass B (2026-10-28, lead/gate-ft-beach @ 93d0741e) |
+| 40 | ch01 underway arenas (ch01_wickfry, ch01_oil_slug, in battle) | Row 15's hard rectangular lit floor patches show in live play. The Oil Slug is a small dark shape, hard to see against the floor. | env-art-b; creatures (the slug's read) | open | pass B (2026-10-28, lead/gate-ft-beach @ 93d0741e) |
+| 41 | Scene entries (pass B timings, not budget-grade) | Coilspire's entry has a 4324 ms hidden frame, the worst in Act I; field battles about 1.9 s. The budget run gives the per-zone table below. | tech / ui (loading) | open | pass B (2026-10-28, lead/gate-ft-beach @ 93d0741e) |
 
 ## Frame-time budget per zone (ADR 0029/0037, the walk with --budget)
 
