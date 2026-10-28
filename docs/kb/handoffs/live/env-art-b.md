@@ -278,8 +278,12 @@ that test at this branch's zones.
 
 - **M3-C09-10** (→ review): the colour script has `ch09_dawn` and the act-break vigil frame. The dawn variant now has its own grade, `corrow_ch09_dawn_environment.tres`, in place of the borrowed Ch8 storm grade. The vigil's own light waits on M3-C09-04. Checks run: Godot `ch09` (12), validate_data, taskboard --check. **MERGE-READY @ f11aca7d.**
 
+- **M3-RND-21** (→ review): a volumetric smoke column (`SmokeColumn`, `game/vfx/smoke/`, docs `tech/smoke.md`), raymarched in a bounding box and clipped by depth, so no shells show up close. It replaces the kit's shells in `ch06/brine_shoals` (ZoneKitDressing `smokes` rows, on the Smoke block). Requests: **M3-ENV-1324** (env-art: the kit preview and the camp arenas' shells) and **M3-ARC-1324** (integration-qa: `apply_system_tiers` should also tier WaterSphereRig and SmokeColumn). Checks run: gdlint/gdformat, validate_data, taskboard --check, Godot `smoke_column` (3, new), `zone_kit` (12), `ch06` (5). **MERGE-READY @ 3eaa64a5.**
+  LEAD-ASK: M3-C09-03 (the Ebbing's motes: GlimmerField fields, staff and mourner attractors, and a `.dlg` cue vocabulary with Systems and the Architect) is rendering's, but it's cutscene VFX, not a zone or kit look. Is it env-art-b's under your owners split? Meanwhile I'm leaving it and taking my own Ch5–Ch9 audit. Also: the cost criteria of M3-RND-21 (four columns under 0.3 ms at High 1440p) and M3-RND-1315 go to the PC's QA pass, as M3-RND-26's did.
+
 ### Render requests
 (Self-rendered per TRACK-RULES; lines are SELF-RENDERED notes.)
+SELF-RENDERED @ 3eaa64a5: ch06_brine_camp (clocks 40 and 44), ch06_brine_road. Viewed: grey-brown columns that lean downwind with lit tops, read at range, and billow between the clocks. The foot's grain is gone with the gradient-noise offset.
 SELF-RENDERED @ f11aca7d: ch09_corrow_road. Viewed: the dawn road is a washed low gold looking east into the sun, slightly warmer than before.
 SELF-RENDERED @ 51f5185c: ch06_brine_camp at clocks 40.0 and 40.37 (scratch). Viewed: the fires read golden-orange with torn tips that move between the clocks. It drifts from its baseline, which predates the fires.
 SELF-RENDERED @ ce10e96a: tamsule_t01_bell_from_the_mouth, tamsule_t03_oruvel_moorings (drift by design: the cyan drop, the 0.8 m column), preview T02 and T05 (scratch), ch07_bell_galleries, ch07_bell_moorings, ch07_tamsule_gantry, ch07_tamsule_mouth — all viewed: the drop reads as held cyan water in every view, still, its light streaks the pool's coping white under it.
