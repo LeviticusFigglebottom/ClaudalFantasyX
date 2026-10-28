@@ -772,6 +772,45 @@
         ["{python}", "assets_src/characters/moll/moll_textures.py", "--bake-dir", "{scratch}/moll_bake"],
         ["{python}", "assets_src/characters/moll/write_materials.py"]
       ]
+    },
+    {
+      "id": "stillguard",
+      "threads": 4,
+      "owner": "character",
+      "_note": "M3-CHR-508: the six Ch6 Stillguard soldiers on Moll's build (build_moll.build, moll_costume, moll_props, moll_textures, moll_hair, Moll's write_materials), with Toma's spear, shield, hair and pauldron builders, Rhen's costume helpers, the villagers' skin age terms and Asha's modules, so all their sources are theirs too.",
+      "sources": ["assets_src/characters/stillguard/**", "assets_src/characters/moll/**", "assets_src/characters/villagers/**",
+                  "assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**",
+                  "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**"],
+      "outputs": ["assets/characters/stillguard_*/*.glb", "assets/characters/stillguard_*/textures/*.png",
+                  "assets/characters/stillguard_*/materials/*.tres", "assets/characters/stillguard/textures/*.png"],
+      "runs": [
+        ["{python}", "assets_src/characters/stillguard/sg_textures.py", "--shared"],
+        ["{blender}", "--python", "assets_src/characters/stillguard/build_stillguard.py", "--", "--variant", "a",
+         "--bake-dir", "{scratch}/sg_a_bake"],
+        ["{python}", "assets_src/characters/stillguard/sg_textures.py", "--variant", "a", "--bake-dir",
+         "{scratch}/sg_a_bake"],
+        ["{blender}", "--python", "assets_src/characters/stillguard/build_stillguard.py", "--", "--variant", "b",
+         "--bake-dir", "{scratch}/sg_b_bake"],
+        ["{python}", "assets_src/characters/stillguard/sg_textures.py", "--variant", "b", "--bake-dir",
+         "{scratch}/sg_b_bake"],
+        ["{blender}", "--python", "assets_src/characters/stillguard/build_stillguard.py", "--", "--variant", "c",
+         "--bake-dir", "{scratch}/sg_c_bake"],
+        ["{python}", "assets_src/characters/stillguard/sg_textures.py", "--variant", "c", "--bake-dir",
+         "{scratch}/sg_c_bake"],
+        ["{blender}", "--python", "assets_src/characters/stillguard/build_stillguard.py", "--", "--variant", "d",
+         "--bake-dir", "{scratch}/sg_d_bake"],
+        ["{python}", "assets_src/characters/stillguard/sg_textures.py", "--variant", "d", "--bake-dir",
+         "{scratch}/sg_d_bake"],
+        ["{blender}", "--python", "assets_src/characters/stillguard/build_stillguard.py", "--", "--variant", "e",
+         "--bake-dir", "{scratch}/sg_e_bake"],
+        ["{python}", "assets_src/characters/stillguard/sg_textures.py", "--variant", "e", "--bake-dir",
+         "{scratch}/sg_e_bake"],
+        ["{blender}", "--python", "assets_src/characters/stillguard/build_stillguard.py", "--", "--variant", "f",
+         "--bake-dir", "{scratch}/sg_f_bake"],
+        ["{python}", "assets_src/characters/stillguard/sg_textures.py", "--variant", "f", "--bake-dir",
+         "{scratch}/sg_f_bake"],
+        ["{python}", "assets_src/characters/stillguard/write_materials.py"]
+      ]
     }
   ]
 }
