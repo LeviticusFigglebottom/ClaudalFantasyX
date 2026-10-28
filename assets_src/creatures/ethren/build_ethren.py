@@ -162,17 +162,13 @@ def slab(G: np.ndarray, N: np.ndarray, th: float, gold: str = "lrtb", wrap: bool
         k = len(loop)
         a, b = front[loop], back[loop]
         P = np.vstack([a, b])
-        closed = wrap
-        n_seg = k if closed else k - 1
+        n_seg = k if wrap else k - 1
         tris = []
         for i in range(n_seg):
             j = (i + 1) % k
             tris += [(i, j, k + i), (j, k + j, k + i)]
         out_dir = G.reshape(-1, 3)[loop] - cen
         out_dir = out_dir - (out_dir * Nf[loop]).sum(axis=1, keepdims=True) * Nf[loop]
-        if wrap:  # a closed band's rims face along its rows: up at the top, down at the bottom
-            rows = np.array(loop) // C
-            out_dir = Nf[loop] * 0.0 + (G.reshape(-1, 3)[loop] - G.reshape(-1, 3)[loop - (C if rows[0] else -C)])
         wallP.append(P)
         wallT.append(np.asarray(tris, dtype=np.int64))
         wallN.append(np.vstack([out_dir, out_dir]))
@@ -198,12 +194,12 @@ def perimeter(R: int, C: int, wrap: bool) -> list[list[int]]:
 
 
 def put_slab(mesh: ck.Mesh, name: str, parts: dict, field_slot: str, field_col, back_col, bones,
-             back_slot: str | None = None, field_em=0.0) -> None:
+             back_slot: str | None = None) -> None:
     P, T, W = parts["face"]
     if len(T):
         Ps, Ts, Ws = subset(P, T, (W,))[0:3]
         cols = field_col(Ps) if callable(field_col) else field_col
-        put(mesh, name, Ps, Ts, field_slot, cols, bones, want=Ws, emission=field_em)
+        put(mesh, name, Ps, Ts, field_slot, cols, bones, want=Ws)
     P, T, W = parts["back"]
     Ps, Ts, Ws = subset(P, T, (W,))[0:3]
     put(mesh, name, Ps, Ts, back_slot or field_slot, back_col, bones, want=Ws)
@@ -447,8 +443,6 @@ def pauldron(mesh: ck.Mesh, rig: ck.Rig, side: float, tag: str, s: np.ndarray) -
                 d = outward * math.cos(a) + fwd * math.sin(a)
                 G[i, j] = origin + axis * sv + d * r
                 N[i, j] = unit(d - axis * 0.35)
-        if k == 0:  # the top lame domes over the shoulder
-            G[-1] = G[-1]
         parts = slab(G, N, TH, gold="b")
         put_slab(mesh, "pauldrons", parts, "lacquer_red" if k != 1 else "lacquer",
                  PAL["lacquer_red_deep"] if k != 1 else PAL["lacquer_black"], PAL["lacquer_black"],
