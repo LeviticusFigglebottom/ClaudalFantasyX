@@ -353,7 +353,7 @@
 ,
     "ysolde_theme": {
       "file": "res://assets/audio/music/ysolde_theme.ogg",
-      "_note": "Ysolde's theme, the final (M3-AUD-863; the sketch was M3-AUD-820): Ch4 C4-07 The Ink (ch04_the_ink.dlg) and C4-09 the gangplank (ch04_gangplank.dlg); a 91.4 s loop; the sequencer plays it by name"
+      "_note": "Ysolde's theme, the final (M3-AUD-863, grown from M3-AUD-820's first version): Ch4 C4-07 The Ink (ch04_the_ink.dlg) and C4-09 the gangplank (ch04_gangplank.dlg); a 91.4 s loop; the sequencer plays it by name"
     }
 ,
     "name_board_home": {

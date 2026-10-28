@@ -3,6 +3,16 @@
 ## NEW ACCOUNT (from 2026-10-25)
 Session `session_01Wmj8xaLtwcqiS3qwC6PciW`. Integration branch `claude/undertow-lead-handoff-ze8rrn`. Newest first.
 
+- **MERGE-READY: M3-AUD-861 and M3-AUD-863. The Act I audio audit is down to 5 items, all of them other tracks' blockers.**
+  - **Ysolde's theme final:** a 91.4 s loop with a lower zither answering her held notes. It replaces the sketch
+    at the same path so her Ch4 cutscenes play it. 802 KB, within budget, and byte-identical to the composer's
+    render. dace_ledger, which borrows her zither, still renders byte-identical.
+  - **Still blocked:**
+    1. **M3-AUD-834 (cutscene owner, `game/cutscene/**`):** three cutscenes play only stem 1 (ch01_the_rising,
+       ch08_first_down, ch08_the_reach). **This is the one Act I audio gap I can't close from audio's files.**
+    2. **claude/ui:** ShrineTravelMenu and ReefballOutfitterMenu go live when it merges. Their hooks are written.
+  - Rerun the audit at any time with `python3 tools/audio/act1_audio_audit.py`. Reviews: integration-qa for 861, design for 862 and 863.
+
 - **MERGE-READY: M3-AUD-862, the prologue's score** (`prologue_dusk`, Git LFS).
   - The prologue zone's cue: MEL_A on a breath flute over a drone on A.
   - A 30.5 s intro timed to the scene: the lantern's chord at 12.5 s, and the voice band held 21 dB down under the line.

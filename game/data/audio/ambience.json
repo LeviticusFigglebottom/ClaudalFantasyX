@@ -36,7 +36,7 @@
       "file": "res://assets/audio/ambience/underwater_deep.ogg",
       "volume_db": 0.0,
       "bus": "Ambience",
-      "_note": "M3-AUD-06: open deep water; no zone yet"
+      "_note": "M3-AUD-06: open deep water. Act I has no open-water zone (Ch1's dive is the drowned tower, with its own bed): kept for Act II"
     },
     "drowned_tower": {
       "file": "res://assets/audio/ambience/drowned_tower.ogg",

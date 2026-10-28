@@ -50,8 +50,6 @@ BY_DESIGN = {
         "a model (SettingsPageModel), not a node: ControlsMenu, a SettingsPage, is what is hooked",
     "ui class `TownMenu` (game/ui/shop/town_menu.gd) takes input and has no hook on it or a base class":
         "a base class only: ShopMenu and InnMenu extend it, and each has its own hook",
-    "ambience bed `underwater_deep` is unwired: M3-AUD-06: open deep water; no zone yet":
-        "Act I has no open deep-water zone (Ch1's dive is the drowned tower, which has its own bed)",
 }
 TEMP_WORDS = re.compile(r"\b(stand-in|stand in|temp|temporary|placeholder|sketch|no scene yet|no zone yet)\b", re.I)
 
