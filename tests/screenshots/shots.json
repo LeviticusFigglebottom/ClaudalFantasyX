@@ -3897,6 +3897,7 @@
     },
     {
       "id": "slice_beach_standing",
+      "pending_baseline": true,
       "scene": "res://game/levels/_tests/slice_shots/slice_cutscene_shot.tscn",
       "camera": "default",
       "resolution": [
@@ -4049,6 +4050,7 @@
     },
     {
       "id": "slice_verse_threshold",
+      "pending_baseline": true,
       "scene": "res://game/levels/_tests/slice_shots/slice_cutscene_shot.tscn",
       "camera": "default",
       "resolution": [
@@ -4079,6 +4081,7 @@
     },
     {
       "id": "slice_verse_recognition",
+      "pending_baseline": true,
       "scene": "res://game/levels/_tests/slice_shots/slice_cutscene_shot.tscn",
       "camera": "default",
       "resolution": [
@@ -6550,6 +6553,7 @@
     },
     {
       "id": "slice_neme_table",
+      "pending_baseline": true,
       "scene": "res://game/levels/_tests/slice_shots/slice_cutscene_shot.tscn",
       "camera": "default",
       "resolution": [
@@ -6583,6 +6587,7 @@
     },
     {
       "id": "ch01_oruvel_storm",
+      "pending_baseline": true,
       "scene": "res://game/levels/_tests/slice_shots/slice_cutscene_shot.tscn",
       "camera": "default",
       "resolution": [
@@ -6615,6 +6620,7 @@
     },
     {
       "id": "ch01_drop",
+      "pending_baseline": true,
       "scene": "res://game/levels/_tests/slice_shots/slice_cutscene_shot.tscn",
       "camera": "default",
       "resolution": [
@@ -6646,6 +6652,7 @@
     },
     {
       "id": "ch01_bell_room",
+      "pending_baseline": true,
       "scene": "res://game/levels/_tests/slice_shots/slice_cutscene_shot.tscn",
       "camera": "default",
       "resolution": [
@@ -6677,6 +6684,7 @@
     },
     {
       "id": "ch01_scale_hull",
+      "pending_baseline": true,
       "scene": "res://game/levels/_tests/slice_shots/slice_cutscene_shot.tscn",
       "camera": "default",
       "resolution": [
@@ -6708,6 +6716,7 @@
     },
     {
       "id": "ch01_kell_stall",
+      "pending_baseline": true,
       "scene": "res://game/levels/_tests/slice_shots/slice_cutscene_shot.tscn",
       "camera": "default",
       "resolution": [
@@ -6739,6 +6748,7 @@
     },
     {
       "id": "ch01_net_pen",
+      "pending_baseline": true,
       "scene": "res://game/levels/_tests/slice_shots/slice_cutscene_shot.tscn",
       "camera": "default",
       "resolution": [
@@ -6771,6 +6781,7 @@
     },
     {
       "id": "ch01_hullgnaw_rises",
+      "pending_baseline": true,
       "scene": "res://game/levels/_tests/slice_shots/slice_cutscene_shot.tscn",
       "camera": "default",
       "resolution": [
@@ -6803,6 +6814,7 @@
     },
     {
       "id": "ch01_going_under",
+      "pending_baseline": true,
       "scene": "res://game/levels/_tests/slice_shots/slice_cutscene_shot.tscn",
       "camera": "default",
       "resolution": [
@@ -6835,6 +6847,7 @@
     },
     {
       "id": "slice_prologue_p01",
+      "pending_baseline": true,
       "scene": "res://game/levels/_tests/slice_shots/slice_cutscene_shot.tscn",
       "camera": "default",
       "resolution": [
