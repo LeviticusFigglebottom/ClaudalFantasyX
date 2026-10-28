@@ -21,4 +21,10 @@ well and stays.
       as a chop at contact; the contract tests and the rig probe pass.
 - [ ] Self-rendered and viewed: kerrid_battle_idle, kerrid_battle_attack, and a finisher frame.
 
+## Notes
+- 2026-10-28 (characters): a numeric solve of the held and hit poses (both hands on the haft, the fluke over the right
+  shoulder or at knee height forward-left, edge down, with elbow and wrist limits), reusing the K_GRIP solver in the
+  scratch notes. It misses by 20-30 cm. The hand cleaver's fixed turn in the fist (kerrid_battle.tscn, set for the old
+  attack's contact) is the constraint, so re-tune it together with the strike keys, render by render.
+
 ## Review log
