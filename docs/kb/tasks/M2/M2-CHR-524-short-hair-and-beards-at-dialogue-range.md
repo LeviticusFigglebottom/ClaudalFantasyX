@@ -72,7 +72,7 @@ closest-triangle probe on toma.glb: 0.1% of card vertices under the skin, median
 ### Checks
 - verify_blender_builds --job toma/kerrid/moll/villager_netmender: native all identical (38/43/40/30 files);
   NPY_DISABLE_CPU_FEATURES=X86_V4 all identical. X86_V3+X86_V4 all identical. The other jobs
-  that import the changed modules (villager_* and ysolde, native): VERIFY_OTHERS.
+  that import the changed modules (villager_neme, osu, child, vendor, reed, fisher, tavi, kell and ysolde, native): all identical.
 - Python: test_toma, test_kerrid, test_moll, test_hero_clips, test_short_hair_dialogue, test_character_id_maps,
   TestRigIntegrity{Toma,Kerrid,Moll}: 106 run, OK (8 skips: no braid / no held prop).
 - Godot `--filter=post_import` 21/0, `hero_stage` 10/0, `character_shading` 17/0. gdlint, gdformat --check,
