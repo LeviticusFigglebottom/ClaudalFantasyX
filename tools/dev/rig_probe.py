@@ -738,6 +738,10 @@ class Probe:
         self.garments = [p for p in (rig.part(s, s) for s in self.cfg["garments"]) if p is not None]
         self.props = [p for p in (rig.part(s, s) for s in self.cfg["props"]) if p is not None]
         self.groups = [(p, False) for p in self.garments] + [(p, True) for p in self.props]
+        # props a scene hides in some clips: {mesh: "battle"} (the battle clip contract, e.g. Kerrid's back cleaver,
+        # which his battle actor hides for the instance in his hand) or a list of clip names
+        battle = set(hero_clips.BATTLE_CLIPS) | {"revive"}
+        self.hidden = {m: (battle if v == "battle" else set(v)) for m, v in self.cfg.get("hidden_props", {}).items()}
         grip = re.compile(pen["grip_bones"])
         self.grip_vertex = np.array([bool(grip.search(dominant_bone(rig, self.skin, i)))
                                      for i in range(len(self.skin.P))])
@@ -906,7 +910,10 @@ class Probe:
         reach = max_depth + float(pen["reach_margin_mm"]) / 1000.0
         confirm, wmin = int(pen["confirm_deepest"]), float(pen["winding_min"])
         rows = []
+        clip = pose.label.split("@")[0]
         for part, is_prop in self.groups:
+            if is_prop and clip in self.hidden.get(part.name, ()):  # hidden in this clip (a battle actor's back prop)
+                continue
             P = rig.skin(part, mats)
             h = skin_surf.query(P, k, reach)
             valid = (h.facing >= fmin) & (h.sd >= -max_depth)
