@@ -715,6 +715,9 @@ LENGTHS = {"idle": 6.0, "walk": 1.1, "run": 0.7, "talk": 3.2, "kneel_over_rhen":
 # start and end on the idle's first frame, so the idle the hero actor queues after them picks up where they stop; `ko`
 # holds its last frame; `victory` loops. Lengths are whole keys at FPS.
 BATTLE_HEROES = ("asha", "rhen", "toma")
+# M3-CHR-540: heroes who do not fight but whose story clips use the legs' solvers (_legs, _kneel_both: FOOT_FLAT and
+# KO_LEGS by hero); filled where each is set up
+STORY_LEG_HEROES: tuple = ()
 BATTLE_CLIPS = ["ready", "attack", "cast", "item", "read", "defend", "finisher", "hit", "dodge", "ko", "victory"]
 BATTLE_FRAMES = {"ready": 9, "attack": 9, "cast": 15, "item": 10, "read": 15, "defend": 10, "finisher": 21,
                  "hit": 9, "dodge": 9, "ko": 18, "victory": 36,
@@ -754,7 +757,7 @@ def battle_markers(clip: str, length: float) -> list:
 
 
 def _battle_hero(persona: dict) -> str:
-    for hero in BATTLE_HEROES:
+    for hero in BATTLE_HEROES + STORY_LEG_HEROES:
         if PERSONA[hero] is persona:
             return hero
     raise KeyError("battle clips are authored for " + ", ".join(BATTLE_HEROES))
@@ -4239,6 +4242,24 @@ def sg_pose_at(clip: str, t: float, length: float, sk: Skeleton, persona: dict) 
         for b in SG_ARM_L:  # the left hand stays on the shield, not on the shaft (Toma's two-handed grip)
             pose[b] = base.get(b, (0.0, 0.0, 0.0))
         return sg_guard(pose, carry, SG_LEVEL_GUARD * smooth(v), arm_only=True)
+    return sg_named_pose_at(clip, t, length, sk, shared, carry)
+
+
+def sg_named_pose_at(clip: str, t: float, length: float, sk: Skeleton, shared: dict, carry: dict) -> dict:
+    """M3-CHR-540: the clips a named Stillguard has past the squad's (Ivo: no spear, the right hand free)."""
+    u = t / length
+    if clip == "run":  # the shared run, the shield arm carried out from the body
+        return add(pose_at("run", t, length, sk, shared), carry)
+    if clip == "talk":  # the shared talk mirrored onto the free right hand, broader: he talks with his hands
+        ph = 2 * math.pi * u
+        g = 0.5 - 0.5 * math.cos(ph)  # the hand rises and falls once per loop
+        up, out, elbow, wrist = IVO_TALK_HAND
+        return add(add(planted(sk, shared), carry), {
+            "hips": (0.006 * shared["sway"] * math.sin(ph), 0.0, 0.0),
+            "DEF-spine.002": (0.0, -3.0 * math.sin(ph), 0.0),
+            "DEF-spine.006": (2.0 * math.sin(2 * ph), 3.0 * math.sin(ph), -1.5 * math.sin(ph + 1.0)),
+            "DEF-upper_arm.R": (-up * g, 0.0, -out * g), "DEF-forearm.R": (-elbow * g, 0.0, 0.0),
+            "DEF-hand.R": (0.0, wrist * g, 0.0)})
     raise KeyError(clip)
 
 
@@ -4249,6 +4270,25 @@ def sg_guard(base: dict, carry: dict, s: float, arm_only: bool = False) -> dict:
     out = carry["DEF-upper_arm.L"]
     return add(add(add(base, carry), _scale(guard, s)), {"DEF-upper_arm.L": tuple(-x * s for x in out)})
     raise KeyError(clip)
+
+
+# ---------------------------------------------------------------------------------------------
+# Ivo Brannick (M3-CHR-540, act1_ch08.md B02, act1_ch09.md B02): a named Stillguard of the Corrow garrison on the
+# squad's build (assets_src/characters/stillguard/stillguard_variants.json `named`), his face bare, the shield on his
+# left arm and no spear. Warm and loud: a looser idle than the squad's, and he talks with his free right hand. He takes
+# the squad's idle and walk (sg_pose_at), the shared run and a mirrored talk (sg_named_pose_at), and the story clips his
+# Ch8 insert calls (requested_clips.json `heroes.ivo`): `hug_lift` (Toma lifted off his feet, held) and the shared
+# `kneel_palms_flat`. `look_at` is the sequencer's own turn. He does not fight: no battle contract, but his kneel uses
+# the legs' solvers (STORY_LEG_HEROES), on Moll's trousers and wraps (FOOT_FLAT) and Toma's kneel. The other libraries
+# do not change.
+# ---------------------------------------------------------------------------------------------
+IVO_SWAY = 0.75  # the idle sway (the squad's run 0.4-0.7): a big man at ease
+IVO_TALK_HAND = (22.0, 14.0, 46.0, 24.0)  # talk: the right upper arm forward and out, the elbow, the palm turned up
+PERSONA["ivo"] = {"sway": IVO_SWAY, "lean": 0.0, "staff": False, "arms_down": 38.0, "stillguard": True}
+CLIPS["ivo"] = ["idle", "walk", "run", "talk"]
+STORY_LEG_HEROES = STORY_LEG_HEROES + ("ivo",)
+FOOT_FLAT["ivo"] = FOOT_FLAT["moll"]  # the trousers gathered into the shin wraps (Moll's kit)
+KO_LEGS["ivo"] = dict(KO_LEGS["toma"])  # on both knees, up on the bent toes (the hems take no flexed ankle)
 
 
 # M3-CHR-05: the story clips go after each hero's own (every hero's block above has set its list by now)

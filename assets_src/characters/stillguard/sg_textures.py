@@ -27,7 +27,7 @@ sys.path.insert(0, str(HERE.parent / "moll"))
 
 import moll_textures as mt  # noqa: E402  (sets up the shared module path)
 import asha_textures as at  # noqa: E402
-from sg_table import variant_params  # noqa: E402
+from sg_table import name as sg_name, variant_params  # noqa: E402
 
 SIZES = ((1024, 512), (512, 512))  # head (albedo / normal, ORM / mask), body: the villagers' NPC sizes
 WORN = 1.0
@@ -40,7 +40,7 @@ def skin(v: str, bake_dir: Path) -> None:
     import toma_textures as tt
 
     extra = variant_params(v)
-    name = f"stillguard_{v}"
+    name = sg_name(v)  # M3-CHR-540: a named Stillguard's own id
     hair = None if extra["_variant"]["hair"] == "crop" else tt._Bald
     mt.skin(bake_dir, extra, out=ROOT / "assets" / "characters" / name / "textures", prefix=name, sizes=SIZES,
             hair_mod=hair, params=extra)

@@ -637,6 +637,43 @@
         }
       }
     },
+    "ivo": {
+      "garments": [
+        "Costume",
+        "Sleeves"
+      ],
+      "props": [
+        "Shield"
+      ],
+      "seams": {
+        "groups": [
+          [
+            "Body",
+            "Head:skin_head"
+          ],
+          [
+            "Costume"
+          ],
+          [
+            "Sleeves"
+          ]
+        ],
+        "max_exposed": 4
+      },
+      "_allowances": "M3-CHR-540 (probe at the default stride; Ivo is the squad's kit on a broader build, shoulder_width_heads 1.9 as stillguard_b's: at 1.94 the jack's neck edge left the body boundary at the front of the shoulder uncovered, 17 mm even at rest). No spear: the Shield's prop_in_body passes with no allowance. Costume 16/6 and Sleeves 7/6: the squad's (M3-CHR-508) -- the dropped armhole edge takes the hanging left arm into it at the side in the idle and walk (15.1, walk), the sleeve shells sit inside the torso at the armpit crease as the arm comes forward (6.95, hug_lift's open arms), and in kneel_palms_flat the trouser's knee folds into the thigh (8.0, as Liss's and Moll's kneels); hug_lift's wrap stays under 8 mm because its arms come forward less as he leans back with Toma (the reach is in world axes). Body 19/35: in kneel_palms_flat (Toma's two-knee kneel, KO_LEGS) the calf presses up into the back of the trouser's knee fold (18.1, 35 vertices, hidden behind the thigh); everywhere else the squad's arm-under-armhole depth is at most 14 mm.",
+      "penetration": {
+        "limits_mm": {
+          "Costume": 16.0,
+          "Sleeves": 7.0,
+          "Body": 19.0
+        },
+        "limits_count": {
+          "Costume": 6,
+          "Sleeves": 6,
+          "Body": 35
+        }
+      }
+    },
     "shopkeeper": {
       "_villager": "M3-CHR-509..517: a villager build (assets/characters/villagers/shopkeeper/shopkeeper.glb, clips from villager_clips.py and villager_story_clips.json). No props in a villager GLB: the pole, the brine-iron, the hammer and the lamp are scene props.",
       "villager": true,
