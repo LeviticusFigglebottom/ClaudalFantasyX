@@ -1,0 +1,34 @@
+{
+ "version": 1,
+ "doc": "The party's run on the real GPU as a filmstrip (pc-gpu): slice_sweep --walk=res://tools/gpu_bench/run_cycle_walk.json --stills=<dir> --still-every=30. Ch1's Underway (the field camera frames Rhen there; in Haluna it does not, row 21), then runs from behind and from each side with a still every 0.12 s.",
+ "segments": [
+  {
+   "id": "ch01",
+   "kind": "chapter",
+   "arg": "ch01",
+   "dwell": 40,
+   "press": "ui_accept"
+  },
+  {
+   "id": "run_back",
+   "kind": "run",
+   "arg": "field_move_forward",
+   "dwell": 3,
+   "still_every": 0.12
+  },
+  {
+   "id": "run_left",
+   "kind": "run",
+   "arg": "field_move_forward+field_camera_left",
+   "dwell": 3,
+   "still_every": 0.12
+  },
+  {
+   "id": "run_side",
+   "kind": "run",
+   "arg": "field_move_left",
+   "dwell": 2,
+   "still_every": 0.12
+  }
+ ]
+}

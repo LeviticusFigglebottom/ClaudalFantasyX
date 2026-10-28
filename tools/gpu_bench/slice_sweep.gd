@@ -275,6 +275,9 @@ func _segment(seg: Array, preset: String) -> void:
 	# seconds. Saving reads the frame back, so the frame after each still is left out of the timings.
 	var stills := str(_opts.get("stills", ""))
 	var still_every_us := float(_opts.get("still-every", STILL_EVERY_S)) * 1e6
+	# A --walk row's own still_every (e.g. 0.12 s: a filmstrip of a run cycle) overrides --still-every.
+	if seg.size() > 7 and float(seg[7]) > 0.0:
+		still_every_us = float(seg[7]) * 1e6
 	var next_still := 0.0
 	var still_n := 0
 	var skip := false
@@ -463,10 +466,11 @@ func _trace_pipelines(window: String, i: int, ms: float) -> void:
 
 
 ## --walk=<res://...json>: the segments from a file instead of SEGMENTS (tools/gpu_bench/act1_walk.json). Each row
-## {id, kind, arg, spawn, dwell, return, press}; kinds as SEGMENTS plus newgame (New Game: a fresh game, then arg's
-## location), chapter (an F8 chapter-select start by id), location (go to a locations.json id), spawns (every spawn
-## of the current scene in turn, each a place segment named <id>.<spawn>) and run (hold arg's "+"-joined input
-## actions through the dwell, from spawn if named). press: an action tapped through the dwell (PRESS_EVERY_S).
+## {id, kind, arg, spawn, dwell, return, press, still_every}; kinds as SEGMENTS plus newgame (New Game: a fresh
+## game, then arg's location), chapter (an F8 chapter-select start by id), location (go to a locations.json id),
+## spawns (every spawn of the current scene in turn, each a place segment named <id>.<spawn>) and run (hold arg's
+## "+"-joined input actions through the dwell, from spawn if named). press: an action tapped through the dwell
+## (PRESS_EVERY_S); still_every: this row's seconds between stills.
 func _walk_segments(path: String) -> Array:
 	var out: Array = []
 	var data: Variant = JSON.parse_string(FileAccess.get_file_as_string(path))
@@ -485,6 +489,7 @@ func _walk_segments(path: String) -> Array:
 					float(row.get("dwell", 0.0)),
 					str(row.get("return", "")),
 					str(row.get("press", "")),
+					float(row.get("still_every", 0.0)),
 				]
 			)
 		)

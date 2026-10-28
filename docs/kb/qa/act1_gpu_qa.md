@@ -33,6 +33,10 @@ every zone, one battle per arena and every Act I boss intro. Contact sheets go o
 - Read well on the GPU: Oruvel, the Hullgnaw, Drownbell, Bottle Hermit and Spar-Wraith fights, Tamsule's galleries and the Tidecup UI, the Coilspire path, the Ch8 stair hold.
 - The walk's "spawns" right after New Game moved Rhen around Haluna during the beach cutscene. That is a walk artefact, not a finding.
 
+**The human's run fix (M2-CHR-513), filmstrip:** `pass_b/run_cycle_ch01.jpg` is Rhen running in Ch1 at High, a still every 0.12 s, from behind and from the side (`run_cycle_walk.json`).
+- The legs alternate with a full stride, the feet plant, and the arms swing close at the sides. There's no arm or leg flop: **the run reads grounded**.
+- In Haluna the same filmstrip never shows Rhen: the field camera at the Village spawn looks down an empty lane (row 21).
+
 **Status:** each row is `open` until the owner fixes it, then `fixed @ <sha>` once the PC has seen the fix on the GPU.
 
 ## Findings
