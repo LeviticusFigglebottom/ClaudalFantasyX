@@ -1,0 +1,71 @@
+keys,en
+MAP_ROUTE_OSSA_FEN,Ossa Fen
+MAP_POI_FEN_EDGE,The fen's edge
+MAP_POI_FEN_PELL,Where Pell waits
+MAP_POI_FEN_POCKET,The side channel's end
+MAP_POI_FEN_CLEARING,The root clearing
+MAP_POI_FEN_TO_REEDHOLLOW,The walk to Reedhollow
+MAP_ROUTE_REEDHOLLOW,Reedhollow
+MAP_POI_REED_GATE,The reed causeway
+MAP_POI_REED_SHORE,The shore
+MAP_POI_REED_CLUTCH,The clutch's stone
+MAP_ROUTE_SUNKEN_VEY,Sunken Vey
+MAP_POI_VEY_LANDING,The landing
+MAP_POI_VEY_CONDUIT,The conduit court
+MAP_POI_VEY_FIG,The fig gallery
+MAP_POI_VEY_TO_LOWLIGHT,The way to Lowlight
+MAP_ROUTE_LOWLIGHT,Lowlight
+MAP_POI_LOW_GATE,The temple gate
+MAP_POI_LOW_LAMP_BENCH,The lamp bench
+MAP_POI_LOW_HALL,The north hall
+MAP_POI_LOW_SANCTUM,The drowned sanctum
+MAP_ROUTE_KETH_PASS,Keth Pass
+MAP_POI_KETH_FOOT,The pass foot
+MAP_POI_KETH_KNOT_POST,The knotted post
+MAP_POI_KETH_TERRACE,The terrace shelf
+MAP_POI_KETH_SADDLE,The saddle
+MAP_POI_KETH_TO_QUELLAN,The road to Quellan
+MAP_ROUTE_QUELLAN,Quellan
+MAP_POI_QUEL_ROAD_IN,The road from the pass
+MAP_POI_QUEL_INN,The inn
+MAP_POI_QUEL_WELL,The well
+MAP_POI_QUEL_ROAD_UP,The road up to Cloudloom
+MAP_ROUTE_CLOUDLOOM,Cloudloom
+MAP_POI_LOOM_STAIR,The stair foot
+MAP_POI_LOOM_HALL,The weaving-hall
+MAP_POI_LOOM_DAIS,The dais
+MAP_ROUTE_ANSEDRA,Ansedra
+MAP_POI_ANS_MOORINGS,The outer moorings
+MAP_POI_ANS_SEFIR,Sefir's house
+MAP_POI_ANS_CORRAN,Corran's old house
+MAP_POI_ANS_ARCHIVE,The Lamp Archive
+MAP_POI_ANS_SANCTUM,The Sanctum
+MAP_ROUTE_SANCTUM,The Sanctum
+MAP_POI_SANC_GATE,The vestibule
+MAP_POI_SANC_LEDGE,The pilgrims' ledge
+MAP_POI_SANC_HEAD,The head of the basin
+MAP_ROUTE_LAMP_ARCHIVE,The Lamp Archive
+MAP_POI_ARCH_DOOR,The door
+MAP_POI_ARCH_LEDGERS,The ledger table
+MAP_POI_ARCH_ROLL,The roll table
+MAP_ROUTE_LACQUER_COURT,The Lacquer Court
+MAP_POI_COURT_ENTRY,The court's door
+MAP_POI_COURT_DAIS,The wedding dais
+MAP_POI_COURT_STEPS,The water-steps
+MAP_POI_COURT_BARGE,The bridal barge
+MAP_POI_COURT_GATE,The water-gate
+MAP_ROUTE_OPEN_SEA,The open sea
+MAP_POI_SEA_STERN,The stern
+MAP_POI_SEA_BIER,The bier
+MAP_POI_SEA_BOW,The bow
+MAP_ROUTE_HOLLOWMERE,Hollowmere
+MAP_POI_HOLL_DOCK,The landing
+MAP_POI_HOLL_HOUSE,Liss's family's hull-house
+MAP_POI_HOLL_SHIP,The Hollowmere ship
+MAP_POI_HOLL_PYRE,The pyre-raft
+MAP_ROUTE_PALE_RIM,The Pale Rim
+MAP_POI_RIM_SHIP,The ship at the Rim
+MAP_POI_RIM_CHOIR_EDGE,The Choir's edge
+MAP_ROUTE_DROWNED_CHOIR,The Drowned Choir
+MAP_POI_CHOIR_WAY_IN,The way in
+MAP_POI_CHOIR_HEAD,The ring's head

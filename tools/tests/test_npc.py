@@ -29,7 +29,8 @@ class CommittedData(unittest.TestCase):
 
     def test_haluna_places_the_seven_villagers(self) -> None:
         ids = {r["npc_id"] for r in _load(HALUNA)["villagers"]}
-        self.assertEqual(ids, {"child", "fisher", "neme", "netmender", "osu", "reed", "vendor"})
+        self.assertEqual(ids, {"child", "fisher", "neme", "netmender", "osu", "reed", "vendor",
+                               "shopkeeper", "smith", "innkeeper"})
 
 
 class ZoneMistakes(unittest.TestCase):
@@ -65,6 +66,15 @@ class ZoneMistakes(unittest.TestCase):
         d = self._haluna()
         d["villagers"].append(copy.deepcopy(d["villagers"][0]))
         self.assertTrue(any("appears twice" in e for e in self._errors(d)))
+
+    def test_a_worn_actor_must_exist(self) -> None:
+        d = self._haluna()
+        d["villagers"][0]["actor"] = "stranger"
+        self.assertTrue(any("actor 'stranger'" in e for e in self._errors(d)))
+        d = self._haluna()
+        d["villagers"][0]["npc_id"] = "shop_hand"
+        d["villagers"][0]["actor"] = "vendor"
+        self.assertEqual(self._errors(d), [], "an id without its own model passes while it wears one")
 
     def test_chat_partners_must_chat_back(self) -> None:
         d = self._haluna()

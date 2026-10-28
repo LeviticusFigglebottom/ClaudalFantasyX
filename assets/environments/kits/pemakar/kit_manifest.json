@@ -343,6 +343,17 @@
         "terrace_wall_copper-lod1": 206
       }
     },
+    "votive_lamp": {
+      "budget": [
+        900,
+        160
+      ],
+      "bytes": 30732,
+      "lods": {
+        "votive_lamp": 260,
+        "votive_lamp-lod1": 124
+      }
+    },
     "wake_wall": {
       "budget": [
         12000,
@@ -352,6 +363,17 @@
       "lods": {
         "wake_wall": 3600,
         "wake_wall-lod1": 24
+      }
+    },
+    "weir_leat": {
+      "budget": [
+        6000,
+        900
+      ],
+      "bytes": 298992,
+      "lods": {
+        "weir_leat": 3482,
+        "weir_leat-lod1": 696
       }
     }
   },

@@ -214,8 +214,9 @@ func _apply_pose(root: Node) -> void:
 		return
 	_apply_local_pose(skel)
 	_apply_world_pose(skel)
-	if not (test_pose.is_empty() and world_pose.is_empty()):
+	if not (test_pose.is_empty() and world_pose.is_empty()) or not HeroHelperBones.prop_entry(skel).is_empty():
 		HeroHelperBones.drive(skel)  # M1-CHR-15: the skirt panels and shoulder correctives follow a hand-set pose
+		# (M2-CHR-515: and a staff or spear is held in the fist, at rest too)
 
 
 func _apply_world_pose(skel: Skeleton3D) -> void:

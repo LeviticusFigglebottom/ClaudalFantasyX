@@ -1,0 +1,18 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" path="res://game/levels/_tests/characters/kerrid/kerrid_stage.tscn" id="stage"]
+
+[node name="KerridStage" instance=ExtResource("stage")]
+emotion = "smile"
+compare_offset = Vector3(0.46, 0, 0)
+compare_skin = {
+"painterly": 0.6,
+"painterly_form": 0.3,
+"detail_strength": 0.35,
+"normal_strength": 0.8
+}
+
+[node name="Compare" type="Camera3D" parent="Cameras"]
+transform = Transform3D(1, 0, 0, 0, 0.9986, 0.0523, 0, -0.0523, 0.9986, 0.23, 1.71, 1.07)
+fov = 25.0
+near = 0.02

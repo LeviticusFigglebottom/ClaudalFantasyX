@@ -1,0 +1,148 @@
+{
+ "doc": "M4-C12-02 (docs/kb/tech/chapter_flow.md): Ch12 'The Cold Road' as a greybox walk before the beat sheet (M4-C12-01): the party arrives at the foot of Keth Pass (the chapter becomes 12), climbs to the saddle and on to Quellan, and up the road north to Cloudloom; every way back too. The pass-cords, the breath that doesn't fog, Hesk's binding, the Avalanche Ram and the knot side scene come with the beat sheet; Pell joins the formation when his kit lands (M3-C09-07).",
+ "chapter": "ch12",
+ "zones": {
+  "ch12/keth_pass": {
+   "party": {
+    "party": [
+     "rhen",
+     "asha",
+     "toma"
+    ],
+    "reserve": [
+     "ysolde",
+     "kerrid",
+     "liss"
+    ]
+   },
+   "arrive": [
+    {
+     "when": {
+      "unset": [
+       "ch12_started"
+      ]
+     },
+     "steps": [
+      {
+       "place": "PassFoot"
+      },
+      {
+       "chapter": 12
+      },
+      {
+       "set": "ch12_started"
+      }
+     ]
+    }
+   ],
+   "beats": {
+    "to_quellan": {
+     "steps": [
+      {
+       "go": {
+        "location": "ch12/quellan",
+        "spawn": "FromPass"
+       }
+      }
+     ]
+    }
+   }
+  },
+  "ch12/quellan": {
+   "party": {
+    "party": [
+     "rhen",
+     "asha",
+     "toma"
+    ],
+    "reserve": [
+     "ysolde",
+     "kerrid",
+     "liss"
+    ]
+   },
+   "arrive": [
+    {
+     "when": {
+      "unset": [
+       "ch12_reached_quellan"
+      ]
+     },
+     "steps": [
+      {
+       "place": "FromPass"
+      },
+      {
+       "set": "ch12_reached_quellan"
+      }
+     ]
+    }
+   ],
+   "beats": {
+    "to_pass": {
+     "steps": [
+      {
+       "go": {
+        "location": "ch12/keth_pass",
+        "spawn": "FromQuellan"
+       }
+      }
+     ]
+    },
+    "to_cloudloom": {
+     "steps": [
+      {
+       "go": {
+        "location": "ch12/cloudloom",
+        "spawn": "Approach"
+       }
+      }
+     ]
+    }
+   }
+  },
+  "ch12/cloudloom": {
+   "party": {
+    "party": [
+     "rhen",
+     "asha",
+     "toma"
+    ],
+    "reserve": [
+     "ysolde",
+     "kerrid",
+     "liss"
+    ]
+   },
+   "arrive": [
+    {
+     "when": {
+      "unset": [
+       "ch12_reached_cloudloom"
+      ]
+     },
+     "steps": [
+      {
+       "place": "Approach"
+      },
+      {
+       "set": "ch12_reached_cloudloom"
+      }
+     ]
+    }
+   ],
+   "beats": {
+    "to_quellan": {
+     "steps": [
+      {
+       "go": {
+        "location": "ch12/quellan",
+        "spawn": "FromCloudloom"
+       }
+      }
+     ]
+    }
+   }
+  }
+ }
+}

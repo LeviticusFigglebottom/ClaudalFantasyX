@@ -22,6 +22,15 @@ stair for a very long time. Written for this project (SPEC §2); it quotes and d
 notes a fourth apart, chosen for their weight, not taken from any tune). `kerrid_stair` (Ch5) states it steady as he
 falls in at the back of the line; E3's `goodbye_kerrid` must play these same two notes and slow the tempo from
 KERRID_STAIR_BPM to a stop (KERRID_STAIR_STRIDE beats a note, so each slowing stride is one note).
+
+LETTING (M3-AUD-851; act3_plan.md §1, bible §6): the Eighth Verse, the Letting, which lifts glimmer instead of
+gathering it. The bible's rule is that it is "the first verse's phrase turned upward", so it is written here as
+exactly that: the Hush's first cell (hush_theme_v2.py MEL_A, its first six notes, E D C | A G A) inverted diatonically
+in A minor around its first note E5, so every step the Hush falls, the Letting rises (E F G | B C B), with the
+Hush's own rhythm. Its close climbs on to the E an octave above where it began and holds there, open, on *tash*
+(let go): the last step rises, as everything after it does. Only `the_letting` (Act III
+H07) states it whole. Reedhollow's farewell-tide is to carry its first cell (act3_plan.md §4 Q2), once Story agrees.
+`letting()` derives it from MEL_A at call time, so a change to the Hush changes the Letting with it.
 """
 from __future__ import annotations
 
@@ -59,3 +68,34 @@ def kerrid_stair_in_seconds(bpm: float = KERRID_STAIR_BPM) -> list[tuple[float, 
     """KERRID_STAIR as [(midi, seconds)] (one statement of the two notes)."""
     beat = 60.0 / bpm
     return [(float(m), b * beat) for m, b in KERRID_STAIR]
+
+
+LETTING_FROM = 6                  # MEL_A's first six notes: the cell the Letting turns upward
+LETTING_TASH = ("E6", 3.0)        # the close: up to the E above, held open, on *tash*
+A_MINOR = ["A", "B", "C", "D", "E", "F", "G"]
+
+
+def _degree(note: str) -> int:
+    """A note name like 'E5' as a diatonic step count in A minor (A0 = 0)."""
+    letter, octave = note[0], int(note[1:])
+    step = A_MINOR.index(letter)
+    return (octave - (1 if letter in "CDEFG" else 0)) * 7 + step
+
+
+def _note(degree: int) -> str:
+    octave, step = divmod(degree, 7)
+    letter = A_MINOR[step]
+    return f"{letter}{octave + (1 if letter in 'CDEFG' else 0)}"
+
+
+def letting() -> list[tuple[str, float]]:
+    """The Letting as [(note name, beats)]: MEL_A's first cell inverted around its first note, then the close."""
+    import importlib.util
+    import os
+    here = os.path.dirname(os.path.abspath(__file__))
+    spec = importlib.util.spec_from_file_location("hush_theme_v2", os.path.join(here, "hush_theme_v2.py"))
+    hush = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(hush)
+    cell = [(n, float(b)) for n, b, *_ in hush.MEL_A[:LETTING_FROM]]
+    axis = _degree(cell[0][0])
+    return [(_note(2 * axis - _degree(n)), b) for n, b in cell] + [LETTING_TASH]

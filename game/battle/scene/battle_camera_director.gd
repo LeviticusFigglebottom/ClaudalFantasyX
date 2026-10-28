@@ -165,6 +165,8 @@ func _setup(plan: Dictionary) -> void:
 	if actor != null and actor.team == BattleCombatant.TEAM_PARTY:
 		var by_style := data.get("by_style", {}) as Dictionary
 		pair = by_style.get(str(plan["style"]), by_style.get(FALLBACK_STYLE, {})) as Dictionary
+	elif (data.get("enemy_by_skill", {}) as Dictionary).has(str(plan.get("skill", ""))):  # M3-BPR-420: big moves
+		pair = (data["enemy_by_skill"] as Dictionary)[str(plan["skill"])] as Dictionary
 	elif (data.get("enemy_by_actor", {}) as Dictionary).has(String(actor_id).get_slice("#", 0)):  # M3-BPR-408
 		pair = (data["enemy_by_actor"] as Dictionary)[String(actor_id).get_slice("#", 0)] as Dictionary  # the Ram
 	var space := _space(actor_id)

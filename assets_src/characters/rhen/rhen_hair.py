@@ -31,6 +31,7 @@ from asha_mesh import Part
 TAG_HAIR = asha_hair.TAG_HAIR
 WIND_OUTER = 0.25  # rhen.md §5: the outer layer's wind response
 FRINGE_SPILL = 0.07  # head heights a strand may run past the hairline (the fringe falls ~1.5 cm onto the brow)
+FRINGE_STAGGER = (0.2, 1.6)  # each crop card's own share of FRINGE_SPILL: the fringe's ends stagger (liss_review.md)
 
 
 def hairline_v(lm, P: np.ndarray) -> np.ndarray:
@@ -85,6 +86,16 @@ def _trace(scalp, lm, roots: np.ndarray, length: np.ndarray, lift: float, G: np.
            rise: np.ndarray | None = None) -> np.ndarray:
     """Paths of `seg` steps along the flow; `rise` (per root, m) lifts the outer part of each path
     off the scalp (the ruffle), growing with the square of the distance along it."""
+    return _trace_kept(scalp, lm, roots, length, lift, G, seg, rise)[0]
+
+
+def _trace_kept(scalp, lm, roots: np.ndarray, length: np.ndarray, lift: float, G: np.ndarray, seg: int,
+                rise: np.ndarray | None = None, spill: np.ndarray | None = None) -> tuple[np.ndarray, np.ndarray]:
+    """_trace, plus how many points each path keeps: a path ends where it would pass the hairline by more than its
+    own `spill` (head heights at the front; default FRINGE_SPILL), so the fringe's ends stagger instead of piling up
+    on one line (liss_review.md: the hard fringe edge)."""
+    spill = np.full(len(roots), FRINGE_SPILL) if spill is None else spill
+    keep = np.full(len(roots), seg + 1)
     step = length / seg
     paths = [scalp.project(roots, lift)]
     for k in range(seg):
@@ -95,15 +106,29 @@ def _trace(scalp, lm, roots: np.ndarray, length: np.ndarray, lift: float, G: np.
         yc = lm.P("head_c")[1]
         front = np.clip(-(nxt[:, 1] - yc) / (0.3 * lm.h), 0.0, 1.0) ** 2  # the spill is for the fringe only
         zc = lm.P("chin")[2]
-        ok = (nxt[:, 2] - zc) / lm.h > hairline_v(lm, nxt) - FRINGE_SPILL * front - 0.01
+        ok = (nxt[:, 2] - zc) / lm.h > hairline_v(lm, nxt) - spill * front - 0.01
         nxt = np.where(ok[:, None], nxt, cur)
+        stopped = ~ok & (keep > k + 1)
+        keep[stopped] = k + 1
         paths.append(nxt)
     out = np.stack(paths, axis=1)
     if rise is not None:
         t = (np.arange(seg + 1) / seg) ** 2
         N = scalp.normal(out.reshape(-1, 3)).reshape(out.shape)
         out = out + N * (rise[:, None] * t[None, :])[..., None]
-    return out
+    return out, keep
+
+
+def _emit_kept(part: Part, scalp, paths: np.ndarray, keep: np.ndarray, widths, slots, rng, taper: float, v_range,
+               wind: float, twist: float = 0.0) -> None:
+    """_emit for the paths that keep at least two points, each cut where it stopped (its V range cut with it)."""
+    for c in range(len(paths)):
+        k = int(keep[c])
+        if k < 2:
+            rng.random()  # keep the stream aligned whether or not a card is emitted
+            continue
+        _emit(part, scalp, paths[c:c + 1, :k], widths[c:c + 1], slots[c:c + 1], rng, taper,
+              (v_range[0], v_range[0] + (v_range[1] - v_range[0]) * (k - 1) / (paths.shape[1] - 1)), wind, twist)
 
 
 def _roots_inside(scalp, lm, rng, n: int, margin: float, G: np.ndarray) -> np.ndarray:
@@ -159,9 +184,10 @@ def scalp_cards(lm, params: dict, rng: np.random.Generator, scalp) -> Part:
         phi = np.linspace(-lim, lim, n_hl) + rng.uniform(-0.4, 0.4, n_hl) * (2 * lim / n_hl)
         roots = _hairline_roots(scalp, lm, np.sort(phi), rng.uniform(-0.001, 0.007, n_hl))
         length = rng.uniform(0.6 * lo, lo, n_hl) * s
-        paths = _trace(scalp, lm, roots, length, 0.0009 * s, G, 4, rng.uniform(0.0, 0.002, n_hl) * s)
-        _emit(part, scalp, paths, rng.uniform(0.004, 0.007, n_hl) * s, rng.choice(SLOTS_HAIRLINE, n_hl), rng, 0.3,
-              (0.0, 0.75), 0.0)
+        paths, keep = _trace_kept(scalp, lm, roots, length, 0.0009 * s, G, 4, rng.uniform(0.0, 0.002, n_hl) * s,
+                                  rng.uniform(*FRINGE_STAGGER, n_hl) * FRINGE_SPILL)
+        _emit_kept(part, scalp, paths, keep, rng.uniform(0.004, 0.007, n_hl) * s, rng.choice(SLOTS_HAIRLINE, n_hl),
+                   rng, 0.3, (0.0, 0.75), 0.0)
     layers = [(0.0012 * s, params["scalp_cards"][0], (0.010, 0.017), 0.002, 0.0),
               (0.0026 * s, params["scalp_cards"][1], (0.007, 0.012), 0.004, 0.5 * WIND_OUTER),
               (0.0042 * s, params["scalp_cards"][2], (0.005, 0.009), 0.007, WIND_OUTER)]
@@ -171,12 +197,13 @@ def scalp_cards(lm, params: dict, rng: np.random.Generator, scalp) -> Part:
         roots = _roots_inside(scalp, lm, rng, count, 0.012 + 0.01 * li, G)
         n = len(roots)
         length = rng.uniform(lo, hi, n) * s
-        paths = _trace(scalp, lm, roots, length, lift, G, seg, rng.uniform(0.3, 1.0, n) * rise * s)
+        paths, keep = _trace_kept(scalp, lm, roots, length, lift, G, seg, rng.uniform(0.3, 1.0, n) * rise * s,
+                                  rng.uniform(*FRINGE_STAGGER, n) * FRINGE_SPILL)
         if li == 2:
             slots = np.where(rng.random(n) < 0.5, rng.choice(SLOTS_SPARSE, n), rng.integers(SLOTS_FULL, size=n))
         else:
             slots = rng.integers(SLOTS_FULL, size=n)
-        _emit(part, scalp, paths, rng.uniform(*wr, n) * s, slots, rng, 0.4, (0.0, 0.85), wind, 0.25 * li)
+        _emit_kept(part, scalp, paths, keep, rng.uniform(*wr, n) * s, slots, rng, 0.4, (0.0, 0.85), wind, 0.25 * li)
     return part
 
 

@@ -27,3 +27,16 @@ func test_a_table_row_plays_through_audio() -> void:
 
 func test_an_unknown_sound_reports_false() -> void:
 	assert_false(CutsceneSound.play(_host(), "res://assets/audio/sfx/", &"no_such_sound_anywhere", 1.0, null))
+
+
+## M3-AUD-829: `@music undertow_rising stem=1` brings the run's pulse in on the cue already playing (the cue starts
+## on its first stem only); a second `@music` of the same cue without stem= leaves it as it is.
+func test_a_music_stem_comes_in_on_the_playing_cue() -> void:
+	var cue := &"undertow_rising"
+	assert_true(CutsceneSound.music(cue, 0.0))
+	assert_eq(Audio.music.current, cue)
+	assert_eq(Audio.music.stem_gain(1), 0.0, "the pulse is out at the start")
+	assert_true(CutsceneSound.music(cue, 0.0, 1))
+	assert_eq(Audio.music.current, cue, "the cue carries on")
+	assert_eq(Audio.music.stem_gain(1), 1.0, "the pulse is in")
+	CutsceneSound.music(AudioData.SILENCE, 0.0)

@@ -9,6 +9,8 @@ extends HalunaDresser
 ##                    drive it with the story's block;
 ##                  "spin_with": <id>  the piece turns about its own Z as Greybox/<id> turns about Y (a flue-key's
 ##                    wheel with the trial's Key block);
+##                  "turn_with": <id>  the piece turns about Y as Greybox/<id> does (Ashcrown's vein-gates, which
+##                    the trial view turns in 90° steps);
 ##                  "collide": true  a box collider from the piece's LOD0 bounds (decor off the route);
 ##                    "trimesh": the piece's LOD1 (else LOD0) mesh as a static trimesh, for a kit's walk
 ##                    surfaces (treads, walls) whose shape is the gameplay. Never for stepped flights: the
@@ -16,6 +18,8 @@ extends HalunaDresser
 ##                    "trimesh_lod0": the same from LOD0 (a terrain whose LOD1 is too coarse to walk on).
 ##                  "collide_lod0_in": [{"pos", "size", "yaw"?}]  boxes in the layout's frame where a "trimesh"
 ##                    collides from LOD0 (a doorway a closed LOD1 shell would seal).
+##                  "scale_y": the piece's vertical scale, over HalunaDresser's uniform "scale" (env-art's Iskarra
+##                    towers are squat or tall copies of one tower);
 ##                  "kit_dir" (+ "materials_dir", default <kit_dir>materials/)  a piece from another kit
 ##                    (Corrow's trader is the ferry kit's hull); each kit keeps its own material cache.
 ##   greybox      {"hide_all": bool, "keep": [ids]}: hides the greybox meshes (collision stays), except
@@ -28,6 +32,14 @@ extends HalunaDresser
 ##   far_lights   [{"name", "points": [[x, y, z]], "size_m": [near, far], "color", "energy", "block"?}]: lights
 ##                  too small to model at their range, as camera-facing quads (env_far_lights), larger with
 ##                  distance from the origin out to FAR_SIZE_RANGE_M.
+##   waters       [{"name", "pos": [x, y, z], "size": [x, z], "material", "wave_set"?, "sea_glow"?, "block"?}]: still
+##                  water a story shows (a flood, a drowned lane) as a WaterSurface over a plane of that size, centred
+##                  at pos (the node stays unrotated at y, the plane offset to x, z); it never publishes the water
+##                  level (the zone's sea does), and a "block" water follows its block.
+##   storms       [{"name", "at": [x, y, z], "preset", "azimuth_deg", "block"?}]: Rendering's Undertow
+##                  (UndertowStorm, game/data/vfx/undertow.json "presets") marking the point it approaches from
+##                  `azimuth_deg`, on the zone's Water, sun and WorldEnvironment; a "block" storm follows its block
+##                  and stops processing while hidden (no rain, shadow or flash before the story brings it).
 ##   environment  a res:// Environment: the zone's WorldEnvironment takes a copy (sky, grade, fog).
 ##   time_of_day_h  the hymn_time_of_day the sky reads.
 ## It writes hymn_sun_direction from the zone's sun every frame, so the sky's sun follows the story's
@@ -37,12 +49,27 @@ const KEY_BLOCK := "block"
 const KEY_COLLIDE := "collide"
 const KEY_COLLIDE_LOD0_IN := "collide_lod0_in"
 const KEY_SPIN := "spin_with"
+const KEY_TURN := "turn_with"
+const GLOW := &"Glow"
+## glow(): the light a lit story piece casts (a charged bowl), shadowless and never in the fog (test_fog_lamps).
+const GLOW_ENERGY := 2.2
+const GLOW_RANGE_M := 5.0
+const GLOW_HEIGHT_M := 1.2
 const KEY_KIT_DIR := "kit_dir"
+const KEY_SCALE_Y := "scale_y"
 const KEY_MATERIALS_DIR := "materials_dir"
 const COLLIDE_TRIMESH := "trimesh"
 const COLLIDE_TRIMESH_LOD0 := "trimesh_lod0"
 const KEY_MULTIMESHES := "multimeshes"
 const KEY_FAR_LIGHTS := "far_lights"
+const KEY_WATERS := "waters"
+const KEY_STORMS := "storms"
+## Past a shown storm's far side (m): the current camera's far plane is raised to its distance plus its bound plus this,
+## since the Undertow stands 10-14 km out (undertow.json presets) and a Camera3D's default far is 4 km.
+const STORM_FAR_MARGIN_M := 2000.0
+const DEFAULT_WAVES := "res://game/world/water/lagoon_waves.tres"
+## The waters' plane cells (m): fine enough for the wave field's short waves to read on a still lake.
+const WATER_CELL_M := 2.0
 const FAR_LIGHT_SHADER := "res://game/shaders/environment/env_far_lights.gdshader"
 const FAR_SIZE_RANGE_M := 700.0
 const KEY_GREYBOX := "greybox"
@@ -61,6 +88,8 @@ var _sun_written := Vector3.ZERO
 var _followers: Dictionary = {}  ## block id -> Array of kit nodes
 var _kit_caches: Dictionary = {}  ## materials dir -> that kit's material cache
 var _spinners: Array[Array] = []  ## [piece, block, the piece's own basis]
+var _turners: Array[Array] = []  ## [piece, block, the piece's own basis]
+var _storms: Array[UndertowStorm] = []
 
 
 func dress() -> void:
@@ -74,6 +103,9 @@ func dress() -> void:
 		var piece := _place_from_kit(spec)
 		if piece == null:
 			continue
+		if spec.has(KEY_SCALE_Y):
+			var s := float(spec.get("scale", 1.0))
+			piece.basis = piece.basis.scaled(Vector3(1.0, float(spec[KEY_SCALE_Y]) / s, 1.0))
 		var collide: Variant = spec.get(KEY_COLLIDE, false)
 		if collide is String and collide == COLLIDE_TRIMESH:
 			piece.add_child(trimesh_collider(piece, true, lod0_boxes(spec.get(KEY_COLLIDE_LOD0_IN, []))))
@@ -85,9 +117,14 @@ func dress() -> void:
 		var spin := block(str(spec.get(KEY_SPIN, "")))
 		if spin != null:
 			_spinners.append([piece, spin, piece.basis])
+		var turn := block(str(spec.get(KEY_TURN, "")))
+		if turn != null:
+			_turners.append([piece, turn, piece.basis])
 	_place_fire_lights()
 	_place_multimeshes()
 	_place_far_lights()
+	_place_waters()
+	_place_storms()
 	_hide_greybox()
 	_apply_environment()
 	if layout.has(KEY_TIME_OF_DAY):
@@ -99,6 +136,9 @@ func _process(_delta: float) -> void:
 	for sp: Array in _spinners:
 		var turn := deg_to_rad((sp[1] as Node3D).rotation_degrees.y)
 		(sp[0] as Node3D).basis = (sp[2] as Basis) * Basis(Vector3.BACK, turn)
+	for tp: Array in _turners:
+		(tp[0] as Node3D).basis = Basis(Vector3.UP, (tp[1] as Node3D).rotation.y) * (tp[2] as Basis)
+	_keep_storms_in_view()
 	if zone == null or zone.sun == null or not zone.sun.is_inside_tree():
 		return
 	var toward := zone.sun.global_basis.z.normalized()  # a light shines down its -Z
@@ -277,6 +317,36 @@ func followers(block_id: String) -> Array[Node3D]:
 	return out
 
 
+## Lights or darkens the kit pieces that follow `block_id` (a story piece holding a charge): an OmniLight in `color`
+## over each, and the colour as an emission overlay on its meshes. Returns how many pieces it touched.
+func glow(block_id: String, on: bool, color: Color) -> int:
+	var n := 0
+	for piece: Node3D in followers(block_id):
+		var light := piece.get_node_or_null(NodePath(String(GLOW))) as OmniLight3D
+		if light == null and on:
+			light = OmniLight3D.new()
+			light.name = GLOW
+			light.position = Vector3(0.0, GLOW_HEIGHT_M, 0.0)
+			light.omni_range = GLOW_RANGE_M
+			light.light_volumetric_fog_energy = 0.0  # the fog-lamp rule
+			piece.add_child(light)
+		if light != null:
+			light.light_color = color
+			light.light_energy = GLOW_ENERGY
+			light.visible = on
+		var overlay: StandardMaterial3D = null
+		if on:
+			overlay = StandardMaterial3D.new()
+			overlay.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+			overlay.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+			overlay.blend_mode = BaseMaterial3D.BLEND_MODE_ADD
+			overlay.albedo_color = Color(color, 0.35)
+		for mi: Node in piece.find_children("*", "MeshInstance3D", true, false):
+			(mi as MeshInstance3D).material_overlay = overlay
+		n += 1
+	return n
+
+
 func _attach(node: Node3D, block_id: String) -> void:
 	if block_id == "":
 		return
@@ -295,6 +365,7 @@ func _follow(block_id: String) -> void:
 	var shown := block(block_id).visible
 	for n: Node3D in followers(block_id):
 		n.visible = shown
+		_pause_hidden(n)
 
 
 func _place_fire_lights() -> void:
@@ -397,6 +468,64 @@ func _place_far_lights() -> void:
 		mmi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 		add_child(mmi)
 		_attach(mmi, str(row.get(KEY_BLOCK, "")))
+
+
+func _place_waters() -> void:
+	for r: Variant in layout.get(KEY_WATERS, []):
+		var row: Dictionary = r
+		var at := GreyboxZone._vec3(row.get("pos", [0.0, 0.0, 0.0]))
+		var size: Array = row.get("size", [10.0, 10.0])
+		var plane := PlaneMesh.new()
+		plane.size = Vector2(float(size[0]), float(size[1]))
+		plane.subdivide_width = maxi(0, int(plane.size.x / WATER_CELL_M) - 1)
+		plane.subdivide_depth = maxi(0, int(plane.size.y / WATER_CELL_M) - 1)
+		plane.center_offset = Vector3(at.x, 0.0, at.z)
+		var water := WaterSurface.new()
+		water.name = str(row.get("name", "Water"))
+		water.position = Vector3(0.0, at.y, 0.0)
+		water.wave_set = load(str(row.get("wave_set", DEFAULT_WAVES))) as WaveSet
+		water.material = load(str(row["material"])) as ShaderMaterial
+		water.sea_glow_energy = float(row.get("sea_glow", 0.0))
+		water.tide_line_y = at.y
+		water.surface_mesh = plane
+		add_child(water)
+		_attach(water, str(row.get(KEY_BLOCK, "")))
+
+
+func _place_storms() -> void:
+	for r: Variant in layout.get(KEY_STORMS, []):
+		var row: Dictionary = r
+		var storm := UndertowStorm.new()
+		storm.name = str(row.get("name", "Storm"))
+		storm.position = GreyboxZone._vec3(row.get("at", [0.0, 0.0, 0.0]))
+		storm.approach_azimuth_deg = float(row.get("azimuth_deg", 0.0))
+		if zone != null:
+			storm.water = zone.get_node_or_null(^"Water") as WaterSurface
+			storm.sun = zone.sun
+			storm.world_environment = zone.get_node_or_null(^"WorldEnvironment") as WorldEnvironment
+		storm.preset = str(row.get("preset", ""))
+		add_child(storm)
+		_attach(storm, str(row.get(KEY_BLOCK, "")))
+		_pause_hidden(storm)
+		_storms.append(storm)
+
+
+## Whichever camera is current (the field's, a cutscene's) reaches past every shown storm.
+func _keep_storms_in_view() -> void:
+	if _storms.is_empty() or not is_inside_tree():
+		return
+	var cam := get_viewport().get_camera_3d()
+	if cam == null:
+		return
+	for storm: UndertowStorm in _storms:
+		if storm.is_visible_in_tree():
+			cam.far = maxf(cam.far, storm.approach_distance_m + storm.state.bound_radius() + STORM_FAR_MARGIN_M)
+
+
+## A hidden storm stops processing (its rain, zone shadow and flashes act on the zone's light).
+static func _pause_hidden(node: Node3D) -> void:
+	if node is UndertowStorm:
+		node.process_mode = Node.PROCESS_MODE_INHERIT if node.visible else Node.PROCESS_MODE_DISABLED
 
 
 func _hide_greybox() -> void:

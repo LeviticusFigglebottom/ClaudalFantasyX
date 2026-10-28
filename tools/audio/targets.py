@@ -16,8 +16,22 @@ RULES = [
     ("music/undertows_reach_p*.ogg", "stem", -16.0, 0.5, -1.0, "the Undertow's Reach's three stems, stacked at -16"),
     ("music/seawall_hold_p*.ogg", "stem", -16.0, 0.5, -1.0, "the seawall waves' three stems, stacked at -16 (M3-AUD-822)"),
     ("music/undertow_rising_p*.ogg", "stem", -16.0, 0.5, -1.0, "the Undertow rising's two stems, stacked at -16"),
+    ("music/act2/mangrove_drowner_p*.ogg", "stem", -16.0, 0.5, -1.0, "the Mangrove Drowner's two stems, stacked at -16 (Git LFS, M3-AUD-844/845)"),
+    ("music/act2/lamp_engine_p*.ogg", "stem", -16.0, 0.5, -1.0, "the Lamp Engine's two stems, stacked at -16 (Git LFS, M3-AUD-844/845)"),
+    ("music/act2/avalanche_ram_p*.ogg", "stem", -16.0, 0.5, -1.0, "the Avalanche Ram's two stems, stacked at -16 (Git LFS, M3-AUD-844/845)"),
+    ("music/act2/wakefin_p*.ogg", "stem", -16.0, 0.5, -1.0, "the Wakefin's two stems, stacked at -16 (Git LFS, M3-AUD-844/845)"),
+    ("music/act3/hesper_and_ilsabet_s*.ogg", "stem", -16.0, 0.5, -1.0, "the revenant pair's two stems, stacked at -16 (Git LFS, M3-AUD-858)"),
     ("music/*.ogg", "integrated", -16.0, 0.5, -1.0, "music beds, themes and cutscene cues"),
     ("ambience/*.ogg", "integrated", -26.0, 0.5, -5.0, "ambience beds (mix.md: -26, peaks well down)"),
+    # M3-AUD-859 (assets_src/sfx/act3/kite_foley.py; Git LFS): the Kite's deck beds and foley
+    ("sfx/act3/kite_deck*.ogg", "integrated", -26.0, 0.5, -5.0, "the Kite's deck beds (as the ambience beds)"),
+    ("sfx/act3/kite_engine_stop.ogg", "momentary", -20.0, 1.0, -1.0, "H09: the lift engines winding down"),
+    ("sfx/act3/kite_lantern_out_*.ogg", "momentary", -24.0, 1.0, -2.0, "H09: a lantern's light leaving its glass"),
+    ("sfx/act3/kite_sail_fill_*.ogg", "momentary", -21.0, 1.0, -1.0, "a wing filling"),
+    ("sfx/act3/kite_rope_strain_*.ogg", "momentary", -21.0, 1.0, -1.0, "E4: the strain on a sheet"),
+    ("sfx/act3/kite_landing.ogg", "momentary", -18.0, 1.0, -1.0, "E4: the hull meeting the water"),
+    ("sfx/act3/kite_tiller_*.ogg", "momentary", -24.0, 1.0, -2.0, "the tiller"),
+    ("sfx/act3/kite_chest_open.ogg", "momentary", -22.0, 1.0, -2.0, "the ledger chest"),
     ("sfx/ilun_summon.ogg", "integrated", -16.0, 0.5, -1.0, "a music sting (Music bus)"),
     ("sfx/virel_summon.ogg", "integrated", -16.0, 0.5, -1.0, "Virel's music sting (Music bus; M3-AUD-822)"),
     ("sfx/kahre_summon.ogg", "integrated", -16.0, 0.5, -1.0, "a music sting (Music bus; M3-AUD-821)"),
@@ -61,12 +75,16 @@ RULES = [
     ("sfx/choreo/swell_*.ogg", "momentary", -19.0, 1.0, -1.0, "Swell finisher accents, over their own VFX sound"),
     ("sfx/choreo/vowbound_beckon.ogg", "momentary", -19.0, 1.0, -1.0, "the caller's call, under vowbound_call"),
     ("sfx/choreo/vowbound_sink.ogg", "momentary", -20.0, 1.0, -1.0, "the Vowbound's dismissal"),
+    ("sfx/choreo/ilun_*.ogg", "momentary", -22.0, 1.0, -1.0, "Ilun's layers under the shared Vowbound rows (M3-AUD-846)"),
+    ("sfx/choreo/kahre_*.ogg", "momentary", -22.0, 1.0, -1.0, "Kahre's layers under the shared Vowbound rows (M3-AUD-857)"),
+    ("sfx/choreo/virel_*.ogg", "momentary", -22.0, 1.0, -1.0, "Virel's layers under the shared Vowbound rows (M3-AUD-857)"),
     ("sfx/choreo/*.ogg", "momentary", -18.0, 1.0, -1.0, "KO collapse, toll wave, surge, the Vowbound's rise and fall"),
     # M3-AUD-14 (assets_src/sfx/creature_sfx.py): movement repeats on every action, idles sit under the battle
     *[(f"sfx/creatures/*_{w}_*.ogg", "momentary", -21.0, 1.0, -1.0, f"creature movement ({w})")
       for w in ("skitter", "slither", "wingbeat", "flutter", "squelch", "flap", "shift", "creak", "surge", "grind",
                 "plod", "scurry", "shimmer", "hop", "pad",
-                "heave", "clank", "trudge", "cut", "scull", "glide", "rattle", "tick")],  # M3-AUD-831: Act II
+                "heave", "clank", "trudge", "cut", "scull", "glide", "rattle", "tick",  # M3-AUD-831: Act II
+                "step", "drift")],  # M3-AUD-857: Kahre's knuckle-walk, Virel's cloth
     ("sfx/creatures/*_idle_*.ogg", "momentary", -20.0, 1.0, -1.0, "a creature's idle voice (under the battle)"),
     ("sfx/creatures/*.ogg", "momentary", -18.0, 1.0, -1.0, "creature voices: attack, hurt, death"),
     # M3-AUD-802 (assets_src/sfx/hero_foley.py): the field heroes' steps (played at walk_db), scuffs and foley layers
@@ -97,6 +115,7 @@ RULES = [
     ("sfx/cutscene/cs_shield_up_*.ogg", "momentary", -22.0, 1.0, -2.0, "cutscene foley"),
     ("sfx/cutscene/cs_unsling_*.ogg", "momentary", -22.0, 1.0, -2.0, "cutscene foley"),
     ("sfx/cutscene/cs_untie_*.ogg", "momentary", -25.0, 1.0, -2.0, "cutscene foley"),
+    ("sfx/cutscene/cs_lamp_crackle_*.ogg", "momentary", -30.0, 1.0, -2.0, "a lit lamp's wick, at the lamp (M3-AUD-847)"),
     ("sfx/cutscene/cs_feed_fire_*.ogg", "momentary", -23.0, 1.0, -2.0, "cutscene foley"),
     ("sfx/cutscene/cs_trim_wicks_*.ogg", "momentary", -26.0, 1.0, -2.0, "cutscene foley"),
     ("sfx/cutscene/cs_pole_water_*.ogg", "momentary", -23.0, 1.0, -2.0, "cutscene foley"),

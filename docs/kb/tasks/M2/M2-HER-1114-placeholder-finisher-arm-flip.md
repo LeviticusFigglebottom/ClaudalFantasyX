@@ -2,8 +2,8 @@
 id: M2-HER-1114
 title: "Placeholder clips: a crash when installed under a playing player, and a finisher arm flip (request to battle-presentation)"
 role: combat
-status: todo
-owner_session: ""
+status: review
+owner_session: claude/battle-presentation
 depends_on: [M2-BPR-10]
 milestone: M2
 request-from: combat
@@ -24,14 +24,14 @@ every contract clip, so nothing is ever installed on them. Any hero with missing
 playing when the battle first looks it up will.
 
 ## Acceptance criteria
-- [ ] `_install`: `if playing: player.stop()` before the swap. The re-play and seek after it already exist. Verified
+- [x] (56921688) `_install`: `if playing: player.stop()` before the swap. The re-play and seek after it already exist. Verified
       locally: the repro is clean, and hero_ 91/0 twice. (The hero track's wrapper now stops the player and installs the
       placeholders itself before idle starts, so the wrappers are safe either way. The fix protects every other
       caller.)
-- [ ] In `game/battle/scene/battle_placeholder_clips.gd`, no rotation track has consecutive keys more than ~90° apart.
+- [x] (56921688; `placeholder_clips.max_key_deg` 60, test_battle_placeholder_clips fails without it) In `game/battle/scene/battle_placeholder_clips.gd`, no rotation track has consecutive keys more than ~90° apart.
       For example, insert slerped midpoint keys when `abs(q0.dot(q1)) < cos(45°)` (half-angle), and keep each key on
       the same hemisphere as the one before it (`q1.dot(q0) >= 0`).
-- [ ] The hero track's pop test then passes for `ysolde ready -> finisher`. The hero track removes that KNOWN entry
+- [ ] (hero-integration's step) The hero track's pop test then passes for `ysolde ready -> finisher`. The hero track removes that KNOWN entry
       once the fix reaches its branch.
 
 **Seen in the PC render of battle_heroes_ko (2026-10-27):** a felled *hero* (Toma) dissolves away in a dust puff. M2-BPR-11's felled-foe

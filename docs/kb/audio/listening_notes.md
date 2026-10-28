@@ -1149,3 +1149,26 @@ Also listen for:
   them apart without looking?
 - **Shrine travel:** a slow glass arpeggio over a rising wash, under the router's fade. Is it long enough to cover
   the fade, and short enough not to linger into the new place?
+
+## M3: the Iskarra prologue soundscape (M3-AUD-847)
+
+`ambience/iskarra_dusk.ogg` now carries the vigil. Now and then, far across the plaza, someone murmurs a few words to
+themselves, never close enough to follow (about three times in each 44 s loop, about 15 dB under the wind). Rhen's
+lamp crackles at the lamp itself (`cs_lamp_crackle`, heard only near it). Listen at the prologue's own level:
+- Do the murmurs make the plaza feel kept by people apart, or do they read as a crowd?
+- Does the wick's crackle sit under the dialogue without ticking like a clock?
+
+## The three beds the notes had missed (M3-AUD-855, the listening-note sweep)
+
+A sweep of every music.json cue and every bed in assets/audio/ambience/ against these notes found three beds with
+no note. Every cue now has one. Listen at the level they play: −26 LUFS, under the zone's music.
+- **`ambience/haluna_day.ogg`** (48 s; Haluna, B02 to B05): village life far off. Palm rustle in the trade wind,
+  gull-like calls, distant mallet work on a hull, rope creak, a few people murmuring with no words. Does it read
+  as a lived-in village heard from the beach? Now that the villagers have their own positional murmurs and work
+  sounds (M3-AUD-814), does the bed's far murmur double them when you stand among them?
+- **`ambience/underwater_deep.ogg`** (46 s; Ch1's dive): open deep water. A pressure hum, distant creaks of
+  something old and large settling, slow bubble trains from far below, a faint ticking of particles. Is it heavy
+  without being muddy on small speakers?
+- **`ambience/drowned_tower.ogg`** (42 s; Ch1 inside the drowned tower): the stone shaft resonating in the current,
+  surges through the openings, stones ticking down, air leaking in short trains, and the tower now and then
+  groaning. Does the groan come too often for a 42 s loop?

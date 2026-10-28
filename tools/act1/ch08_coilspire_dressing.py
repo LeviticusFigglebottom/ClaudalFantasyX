@@ -233,6 +233,30 @@ def door_boxes() -> list[dict]:
     return out
 
 
+# The Undertow seen from the beacon gallery (B07, "the storm against the wind"): Rendering's UndertowStorm at the
+# beacon, from the south (corrow.md §0: it comes in from the south-east; from the headland that is south), on the
+# StormWall block (shown when Virel is bound).
+STORM = {"name": "Undertow", "at": [308.745, 77.285, 159.418], "preset": "ch08_seawall", "azimuth_deg": 170.0,
+         "block": "StormWall"}
+# env-art-b's flue-trial pieces (the Coilspire kit's b_trial.py, M3-ENV-1222) on their blocks: (block, piece, origin)
+TRIAL_PIECES = (("Gate_t1", "flue_gate", "foot"), ("Gate_t2", "flue_gate", "foot"), ("Gate_t3", "flue_gate", "foot"),
+                ("Gate_t4", "flue_gate", "foot"), ("NicheSeal", "niche_seal", "foot"), ("Niche", "lamp_niche", "foot"),
+                ("WrightMark", "wright_mark", "centre"))
+
+
+def trial_pieces() -> list[dict]:
+    layout = json.loads(LAYOUT.read_text(encoding="utf-8"))
+    rows = {b["id"]: b for b in layout["blocks"]}
+    rows.update({b["id"]: b for b in json.loads((ZONE / "coilspire_collision.json").read_text(encoding="utf-8"))["blocks"]})
+    out = []
+    for bid, piece, origin in TRIAL_PIECES:
+        b = rows[bid]
+        y = b["pos"][1] - (b["size"][1] * 0.5 if origin == "foot" else 0.0)
+        out.append({"piece": piece, "at": [b["pos"][0], b["pos"][2]], "y": round(y, 3), "yaw_deg": b.get("yaw", 0.0),
+                    "block": bid})
+    return out
+
+
 def dressing() -> dict:
     preview = json.loads((PREVIEW / "coilspire_layout.json").read_text(encoding="utf-8"))
     pieces = []
@@ -253,7 +277,7 @@ def dressing() -> dict:
             pieces.append(dict(p, collide="trimesh", collide_lod0_in=door_boxes()))
             continue
         pieces.append(p)
-    pieces += key_pieces()
+    pieces += key_pieces() + trial_pieces()
     backdrop = json.loads((PREVIEW / "coilspire_backdrop.json").read_text(encoding="utf-8"))
     corrow = "res://assets/environments/kits/corrow/"
     for p in backdrop.get("pieces", []):
@@ -274,8 +298,8 @@ def dressing() -> dict:
         "lod_margin_m": float(preview.get("lod_margin_m", 2.0)),
         "environment": RES_ZONE + "coilspire_ch08_environment.tres",
         "time_of_day_h": 12.0,
-        "greybox": {"hide_all": True, "keep": ["Gate_t1", "Gate_t2", "Gate_t3", "Gate_t4", "NicheSeal", "WrightMark",
-                                               "Virel", "StormWall"]},
+        "greybox": {"hide_all": True, "keep": ["Virel"]},  # Virel: the Vowbound's own body (creatures-b)
+        "storms": [STORM],
         "fire_light_color": preview.get("hearth_light_color", "#FFB16E"),
         "fire_lights": lights,
         "pieces": pieces,
