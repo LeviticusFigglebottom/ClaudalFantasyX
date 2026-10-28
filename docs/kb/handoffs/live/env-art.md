@@ -589,6 +589,26 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
+- **BACKLOG EMPTY (2026-10-28 ~11:45).** Everything the Lead asked for is done and MERGE-READY above:
+  - M3-ENV-753;
+  - the Prologue, Ch3, Ch1, Ch2 and Ch4 walk-throughs;
+  - save shrines, chests (Act I has none), doors and signs;
+  - M3-ENV-101 and M3-ENV-102.
+
+  **What is left on env-art's board, and why it is not mine to move now:**
+  - **Inventory rows (M3-HER-1140):**
+    - The Prologue vigil capsule (Pell's hero body) is characters'.
+    - The Haluna NPC stand-in bodies are villager/characters'.
+    - The `*_placeholder` tree names wait on M3-ENV-750 (slice-polish's `haluna.tscn` collision rules).
+    - `reefball_drop_proxy` waits on M3-RND-26 (PC GPU's drop look).
+  - **M3-ENV-724 and M3-ENV-705:** the PC renders to view and approve (the gate).
+  - **M3-ENV-1000:** waits on M3-RND-03 reaching integration. It is Ch6, env-art-b's now.
+  - **M2-ENV-12:** waits on M2-RND-17.
+  - **M2-HER-1127:** slice-polish's request (First Verse offerings).
+  - **The swap-in tasks M3-C01-04 and M3-C04-03:** wait on their greybox tasks. The dressings are mounted already.
+  - **M3-C05/C08/C09:** env-art-b's chapters.
+  - **Retirement, waiting on the Lead's word:** M3-ENV-743/744 and the `zone_wake_*` preview shots (superseded by
+    the wake on the real Haluna).
 - **MERGE-READY @ 2bbf6cd4d: M3-ENV-102, the Order chapel at the kit's level; M3-ENV-101 viewed. Both to review.**
   - **`order_chapel`**, same footprint and door position:
     - a bare coral-stone base course;
