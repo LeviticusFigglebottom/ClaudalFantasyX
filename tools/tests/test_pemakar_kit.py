@@ -68,7 +68,8 @@ def read_glb(path: Path) -> dict:
 
 class KitGeometryTests(unittest.TestCase):
     def test_every_target_is_inside_its_budget_with_a_lod_chain(self) -> None:
-        self.assertEqual(len(TARGETS), 27)  # 25 kit pieces + M3-ENV-06's arena_ash_tread + M3-ENV-11's ash_plume_near
+        self.assertEqual(len(TARGETS), 31)  # 25 kit pieces + M3-ENV-06's arena_ash_tread + M3-ENV-11's ash_plume_near
+        # + M3-ENV-1214's harbour_quay, sea_cut_weir, wake_wall, crown_bell
         for name, (key, module, _fn) in TARGETS.items():
             with self.subTest(target=name):
                 builders = built(name)
@@ -271,3 +272,22 @@ class CommittedAssetTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class Ch05GradeTests(unittest.TestCase):
+    """M3-C05-03: Ch5's sub-frame grades (pemakar_grades.py): committed, each on its LUT, the suns in the zones'
+    convention."""
+
+    def test_the_grades_are_committed_and_point_at_their_luts(self) -> None:
+        import json
+
+        zone = Path(__file__).resolve().parents[2] / "assets" / "environments" / "zones" / "ch05"
+        rows = json.loads((zone / "ch05_grades.json").read_text())
+        for name, lut in (("ch05_harbour_dusk", "lut_ch05_harbour_dusk.png"),
+                          ("ch05_ashcrown_day", "lut_ch05_ashcrown.png")):
+            with self.subTest(grade=name):
+                env = zone.parents[3] / rows[name]["environment"].removeprefix("res://")
+                self.assertIn(lut, env.read_text())
+                self.assertTrue((zone / lut).exists())
+        self.assertAlmostEqual(rows["ch05_ashcrown_day"]["sun"]["yaw_deg"], -45.0, msg="az 225")
+        self.assertAlmostEqual(rows["ch05_ashcrown_day"]["sun"]["pitch_deg"], -58.0)

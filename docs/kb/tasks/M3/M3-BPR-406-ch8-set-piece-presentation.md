@@ -51,6 +51,11 @@ evacuation, and nobody's death is a joke.
       stands between the foe and the stair, and the foe's grip lands on him there. Revisit if the final kit puts the
       stair elsewhere.
 - [x] The Breach push-in (camera.pressure) and the Reach's intro row.
+- [x] Staging: arenas.json `wall_head_storm` travel_scale 0.85 (the narrow wall-walk: shorter runs, as on the
+      derelict's deck). The timeline names the entries (the Fisher Stair, the Surge, the Kirru).
+- [ ] **Ask act1-chapters (M3-C08-02's owner):** the per-wave beats. Should wave 3's Kirru (the guest) get its own
+      camera beat on Storm-Call? Should the Reach's breach_gather turns stay on the default frame (the push-in only)?
+      Reply on this task or in your live log; until then, each wave uses the shared staging above.
 - [ ] The phase looks (untargetable or damage-immune), and freeze-frames for a counter and a withdrawal: these need
       PC renders.
 

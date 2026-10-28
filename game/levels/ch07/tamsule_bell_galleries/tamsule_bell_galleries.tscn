@@ -7,6 +7,7 @@
 [ext_resource type="Resource" path="res://game/world/water/lagoon_waves.tres" id="5_waves"]
 [ext_resource type="Material" path="res://game/levels/ch07/tamsule_bell_galleries/tamsule_water_material.tres" id="6_water_mat"]
 [ext_resource type="Texture2D" path="res://assets/environments/kits/haluna/textures/sand_albedo.png" id="7_sand"]
+[ext_resource type="Script" path="res://game/levels/act1/zone_cast.gd" id="90_cast"]
 
 [sub_resource type="CylinderMesh" id="PoolWaterMesh"]
 top_radius = 12.02
@@ -58,3 +59,6 @@ water = NodePath("../Water")
 script = ExtResource("2_dressing")
 layout_path = "res://game/levels/ch07/tamsule_bell_galleries/tamsule_bell_galleries_dressing.json"
 tide = NodePath("../Tide")
+
+[node name="Cast" type="Node" parent="."]
+script = ExtResource("90_cast")

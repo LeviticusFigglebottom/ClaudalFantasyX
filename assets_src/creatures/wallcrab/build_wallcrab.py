@@ -38,7 +38,7 @@ def main() -> None:
     rig = base.build_rig()
     mesh = base.build_mesh(rig)
     mesh.name = "wallcrab"
-    info = ck.export_creature(mesh, rig, base.build_clips(), args.out, extras={"hymn_creature": "wallcrab"})
+    info = ck.export_creature(mesh, rig, base.export_clips(rig, mesh), args.out, extras={"hymn_creature": "wallcrab"})
     print(f"wallcrab: {info}")
 
 

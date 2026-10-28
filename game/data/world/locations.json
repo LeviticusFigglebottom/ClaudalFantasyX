@@ -124,6 +124,7 @@
   ],
   "shrines": [
     {"id": "save_shrine_test", "location_id": "field_test", "spawn": "Shrine"},
-    {"id": "haluna_shrine", "location_id": "ch02/haluna", "spawn": "Shrine"}
+    {"id": "haluna_shrine", "location_id": "ch02/haluna", "spawn": "Shrine"},
+    {"id": "brine_shoals_camp", "location_id": "ch06/brine_shoals", "spawn": "RidgeCamp"}
   ]
 }

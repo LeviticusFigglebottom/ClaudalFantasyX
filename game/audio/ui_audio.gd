@@ -12,6 +12,11 @@ extends Node
 ## One frame plays at most one UI row: the first of `priority` among those asked for (a pop that also moves the
 ## cursor plays the cancel, not both). The director steps it once a frame, paused tree or not (the field menu
 ## pauses the tree).
+## M3-AUD-832: a watch row with `layer` plays beside that row instead of competing with it (a glint under the cursor),
+## and one with `initial` may play on its first read (a reveal already running when the menu is watched). `motion`:
+## a watched node whose `accessor` method returns a menu motion (MenuMotion: `progress`, is_moving()) layers `in`
+## when it rises into place and `out` when it sinks away. Reduced motion makes those transitions instant, so the
+## whoosh follows the screen and stays silent.
 
 ## The meta a node may carry to name its hook instead of its script's class (tests' stand-ins; M3-AUD-15).
 const META_CLASS := &"audio_class"
@@ -24,7 +29,11 @@ var hooks: Dictionary = {}
 var priority: Array[StringName] = []
 ## Each watched node: {node, hook, watch: [{expr: Expression, row: Dictionary, last: Variant, seen: bool}]}.
 var watched: Array[Dictionary] = []
+## ui_sfx.json's `motion` ({accessor, in, out}; {} for none).
+var motion: Dictionary = {}
 var _pending: Array[StringName] = []
+## Rows asked for this frame that play beside the chosen one (watch rows with `layer`, the motion whooshes).
+var _layers: Array[StringName] = []
 ## pans()'s memory: view instance id -> {origin, scale, count} (M2-AUD-14).
 var _pans: Dictionary = {}
 
@@ -42,6 +51,7 @@ func configure(table: Dictionary) -> void:
 	priority.clear()
 	for p: Variant in table.get("priority", []):
 		priority.append(StringName(str(p)))
+	motion = (table.get("motion", {}) as Dictionary) if table.get("motion", {}) is Dictionary else {}
 
 
 ## The hook row for `node` ({} when its class has none).
@@ -85,7 +95,7 @@ func watch(node: Node) -> void:
 		var e := Expression.new()
 		if row is Dictionary and e.parse(str((row as Dictionary).get("expr", "")), ["node"]) == OK:
 			exprs.append({"expr": e, "row": row, "last": null, "seen": false})
-	watched.append({"node": node, "hook": hook, "watch": exprs})
+	watched.append({"node": node, "hook": hook, "watch": exprs, "motion_last": null, "motion_moves": 0})
 	_read(watched[-1], false)
 	if hook.has("on_enter"):
 		request(StringName(str(hook["on_enter"])))
@@ -103,11 +113,20 @@ func step() -> void:
 	for w in watched:
 		if is_instance_valid(w["node"]) and (w["node"] as Node).is_inside_tree():
 			_read(w, true)
+			_read_motion(w)
 			alive.append(w)
 	watched = alive
 	for id: Variant in _pans.keys():
 		if not is_instance_id_valid(int(id)):
 			_pans.erase(id)
+	var layers := _layers.duplicate()
+	_layers.clear()
+	if player.is_valid():
+		var heard: Array[StringName] = []
+		for id in layers:
+			if not heard.has(id):
+				heard.append(id)
+				player.call(id)
 	if _pending.is_empty():
 		return
 	var best := _pending[0]
@@ -119,20 +138,57 @@ func step() -> void:
 		player.call(best)
 
 
+## Asks for row `id` beside this frame's chosen row (it does not compete for the frame).
+func layer(id: StringName) -> void:
+	if id != &"":
+		_layers.append(id)
+
+
 func _read(w: Dictionary, play: bool) -> void:
 	for x: Dictionary in w["watch"]:
 		var e := x["expr"] as Expression
 		var v: Variant = e.execute([w["node"]], self, false)
 		if e.has_execute_failed():
 			continue
+		var row := x["row"] as Dictionary
+		var id: StringName = &""
 		if x["seen"] and play and typeof(v) == typeof(x["last"]) and v != x["last"]:
-			var id := change_row(x["row"], x["last"], v)
-			if id != &"":
-				request(id)
+			id = change_row(row, x["last"], v)
 		elif x["seen"] and play and typeof(v) != typeof(x["last"]):
-			request(change_row(x["row"], null, v))
+			id = change_row(row, null, v)
+		elif not x["seen"] and bool(row.get("initial", false)):
+			id = change_row(row, null, v)
+		if id != &"":
+			if bool(row.get("layer", false)):
+				layer(id)
+			else:
+				request(id)
 		x["last"] = v
 		x["seen"] = true
+
+
+## The motion whooshes (M3-AUD-832). A transition writes nothing until its tween's first step, so the first change
+## after it starts can be the jump to its starting value; the direction is read from the second change.
+func _read_motion(w: Dictionary) -> void:
+	var accessor := StringName(str(motion.get("accessor", "")))
+	var node := w["node"] as Node
+	if accessor == &"" or not node.has_method(accessor):
+		return
+	var m: Variant = node.call(accessor)
+	if not m is Object or not is_instance_valid(m) or not (m as Object).has_method(&"is_moving"):
+		return
+	var p := float((m as Object).get(&"progress"))
+	if not bool((m as Object).call(&"is_moving")):
+		w["motion_moves"] = 0
+		w["motion_last"] = p
+		return
+	var last: Variant = w["motion_last"]
+	w["motion_last"] = p
+	if last == null or is_equal_approx(float(last), p):
+		return
+	w["motion_moves"] = int(w["motion_moves"]) + 1
+	if int(w["motion_moves"]) == 2:
+		layer(StringName(str(motion.get("in" if p > float(last) else "out", ""))))
 
 
 ## The row a watch plays when its value goes from `old` to `now` (&"" for none).

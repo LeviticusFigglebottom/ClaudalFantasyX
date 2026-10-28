@@ -39,6 +39,7 @@
         {"when": {"set": ["ch07_tidecup_played"], "unset": ["ch07_tavi_withdrew"]}, "steps": [
           {"place": "CatchPool"},
           {"play": "ch07_after_the_bell"},
+          {"zone": "stand", "args": ["tavi", "tavi_boat"]},
           {"set": "ch07_tavi_withdrew"}
         ]},
         {"when": {"set": ["ch07_met_tavi"], "unset": ["ch07_saw_galleries"]}, "steps": [
@@ -68,8 +69,12 @@
           {"scene": "res://game/levels/ch07/tidecup_match/tidecup_match.tscn"}
         ]},
         "moorings": {"when": {"set": ["ch07_tavi_withdrew"], "unset": ["ch07_blessed_moorings"]}, "steps": [
+          {"zone": "stand", "args": ["asha", "asha_staging"]},
           {"play": "ch07_empty_moorings"},
-          {"zone": "give", "args": [{"pio_side_band": -1, "pemakar_leaf_boat": -1}, 0]}
+          {"zone": "give", "args": [{"pio_side_band": -1, "pemakar_leaf_boat": -1}, 0]},
+          {"zone": "hide_block", "args": ["tavi"]},
+          {"zone": "hide_block", "args": ["oruvel_diver_1"]},
+          {"zone": "hide_block", "args": ["oruvel_diver_2"]}
         ]},
         "to_port": {"when": {"set": ["ch07_tavi_withdrew"]}, "steps": [
           {"go": {"location": "ch07/tamsule", "spawn": "FromBell"}}

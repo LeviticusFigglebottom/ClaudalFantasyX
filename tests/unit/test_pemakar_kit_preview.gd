@@ -25,6 +25,22 @@ func test_night_mood_is_the_colour_script_frame() -> void:
 	assert_true(float(dusk["sea_glow"]) < float(night["sea_glow"]), "the sea-glow grows into the night")
 
 
+## M3-ENV-1214: B11's afternoon after the festival, the day grade the Ch5 zone takes.
+func test_day_mood_is_lit_by_the_sun_with_the_festival_out() -> void:
+	var day: Dictionary = PemakarKitPreview.load_json(MOODS)["moods"]["day"]
+	assert_true(load(String(day["environment"])) is Environment, "the day environment loads")
+	assert_true(float(day["sun"]["elevation_deg"]) > 10.0, "the sun is up")
+	assert_true(bool(day["lights"]["Sun"]["visible"]), "the sun light is on")
+	assert_eq(float(day["lamp_scale"]), 0.0, "the festival's lamps are out")
+	assert_eq(float(day["sea_glow"]), 0.0, "no sea-glow by day")
+	var scene := (load(SCENE) as PackedScene).instantiate()
+	var sun := scene.get_node_or_null("Lights/Sun") as DirectionalLight3D
+	assert_true(sun != null and sun.shadow_enabled, "the preview has a shadowing sun")
+	if sun != null:
+		assert_false(sun.visible, "hidden until the day mood shows it")
+	scene.free()
+
+
 func test_direction_from_angles_uses_compass_bearings() -> void:
 	var north := PemakarKitPreview.direction_from_angles(0.0, 0.0)
 	assert_between(north.z, -1.0001, -0.9999, "azimuth 0 is north (-Z)")
@@ -78,7 +94,7 @@ func test_kit_materials_load_on_their_shaders() -> void:
 func test_preview_cameras_are_camera_shots() -> void:
 	var scene := (load(SCENE) as PackedScene).instantiate()
 	var cams := scene.get_node("Cameras").get_children()
-	assert_eq(cams.size(), 7, "the design notes' preview shots (pemakar.md §5 ◆)")
+	assert_eq(cams.size(), 9, "the design notes' preview shots (pemakar.md §5 ◆), and M3-ENV-1214's P04 and P11 by day")
 	for c: Node in cams:
 		var sc := c as HalunaShotCamera
 		assert_true(sc != null and sc.shot != null, "%s is driven by a CameraShot" % c.name)

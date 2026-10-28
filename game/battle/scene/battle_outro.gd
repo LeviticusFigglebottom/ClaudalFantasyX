@@ -39,11 +39,11 @@ func cfg(kind: StringName) -> Dictionary:
 
 
 func _on_battle_finished(outcome: StringName) -> void:
-	var kind := (
-		VICTORY
-		if outcome == BattleEngine.OUTCOME_VICTORY
-		else (ESCAPE if outcome == BattleEngine.OUTCOME_ESCAPED else &"")
-	)
+	var kind := &""
+	if outcome == BattleEngine.OUTCOME_VICTORY:
+		kind = VICTORY
+	elif outcome in [BattleEngine.OUTCOME_ESCAPED, BattleEngine.OUTCOME_SCRIPTED_ESCAPE]:
+		kind = ESCAPE  # M3-BPR-415: the Reach survived, the last of them up: the party goes (ADR 0100)
 	if kind == &"" or not _choreo.animating():
 		return
 	_pending = kind
@@ -67,9 +67,24 @@ func duration(kind: StringName) -> float:
 	var c := cfg(kind)
 	return (
 		float(c.get("delay_sec", 0.0))
-		+ float(c.get("sec", 0.0))
+		+ maxf(float(c.get("sec", 0.0)), clip_sec(kind))
 		+ float(c.get("stagger_sec", 0.0)) * maxi(_ids.size() - 1, 0)
 	)
+
+
+## The longest one-shot clip of `kind` (its cfg clip) among the standing party's models, capped at clip_max_sec: the
+## result panel waits for a real hero's victory pose to finish (M3-BPR-415). 0 for stand-ins and looping clips.
+func clip_sec(kind: StringName) -> float:
+	var c := cfg(kind)
+	var clip := StringName(str(c.get("clip", "")))
+	var longest := 0.0
+	for p in _engine.party_active:
+		var player := BattleClips.player_of(_choreo.stand_in(p.id)) if p.is_alive() else null
+		if player != null and player.has_animation(clip):
+			var a := player.get_animation(clip)
+			if a.loop_mode == Animation.LOOP_NONE:
+				longest = maxf(longest, a.length)
+	return minf(longest, float(c.get("clip_max_sec", longest)))
 
 
 ## Real seconds left (0 when none plays).
