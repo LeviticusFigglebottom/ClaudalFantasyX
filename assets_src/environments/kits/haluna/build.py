@@ -40,6 +40,7 @@ import kite  # noqa: E402
 import iskarra_spire  # noqa: E402
 import undertow_layers  # noqa: E402
 import undertow_heart  # noqa: E402
+import reedhollow  # noqa: E402
 import kit_common as kc  # noqa: E402
 import props  # noqa: E402
 import ruins  # noqa: E402
@@ -119,6 +120,8 @@ def targets() -> dict:
         out[name] = (name, undertow_layers, fn)
     for name, fn in sorted(undertow_heart.TARGETS.items()):  # M3-ENV-728 the Heart of the Undertow (Ch21)
         out[name] = (name, undertow_heart, fn)
+    for name, fn in sorted(reedhollow.TARGETS.items()):  # M3-ENV-733 Ossa Fen's root-walks and Reedhollow's reed walks
+        out[name] = (name, reedhollow, fn)
     return out
 
 

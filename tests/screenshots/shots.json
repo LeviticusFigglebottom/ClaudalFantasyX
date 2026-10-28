@@ -4530,6 +4530,25 @@
           "screen_space_aa": 1
         }
       }
+    },
+    {
+      "id": "kitrow_fen_reedhollow_walks",
+      "scene": "res://game/levels/_tests/late_kit_rows/late_kit_rows.tscn",
+      "camera": "Cameras/F2",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
     }
   ]
 }

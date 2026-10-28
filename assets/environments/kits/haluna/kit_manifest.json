@@ -266,6 +266,17 @@
         "cloudloom_hall-lod1": 292
       }
     },
+    "clutch_stone": {
+      "budget": [
+        1500,
+        100
+      ],
+      "bytes": 14700,
+      "lods": {
+        "clutch_stone": 210,
+        "clutch_stone-lod1": 12
+      }
+    },
     "conduit_housing": {
       "budget": [
         3000,
@@ -1256,6 +1267,28 @@
         "reed_bed-lod1": 80
       }
     },
+    "reed_causeway_6m": {
+      "budget": [
+        6000,
+        300
+      ],
+      "bytes": 114184,
+      "lods": {
+        "reed_causeway_6m": 1872,
+        "reed_causeway_6m-lod1": 164
+      }
+    },
+    "reed_platform_6m": {
+      "budget": [
+        8000,
+        300
+      ],
+      "bytes": 122440,
+      "lods": {
+        "reed_platform_6m": 2190,
+        "reed_platform_6m-lod1": 120
+      }
+    },
     "roof_fan_shell": {
       "budget": [
         18000,
@@ -1287,6 +1320,17 @@
       "lods": {
         "roof_tile_hip": 8176,
         "roof_tile_hip-lod1": 344
+      }
+    },
+    "root_walk_6m": {
+      "budget": [
+        6000,
+        300
+      ],
+      "bytes": 150100,
+      "lods": {
+        "root_walk_6m": 2784,
+        "root_walk_6m-lod1": 284
       }
     },
     "rope_coil": {

@@ -38,6 +38,10 @@ PIECES = [
     ("lamp_niche_tier", 100.0, 0.0, -160.0, 0.0), ("conduit_housing", 106.0, 1.0, -160.0, 0.0),
     ("well_shaft", 118.0, 0.0, -160.0, 0.0),
     ("kirru_roost", 0.0, 0.6, -220.0, 0.0), ("name_shell_cord", 8.0, 0.5, -220.0, 0.0),
+    # M3-ENV-733: the Ch10 walks, a house platform with a roost on it, and the clutch's stone.
+    ("root_walk_6m", 18.0, 0.6, -220.0, 0.0), ("reed_causeway_6m", 25.0, 0.6, -220.0, 0.0),
+    ("reed_platform_6m", 34.0, 0.6, -220.0, 0.0), ("kirru_roost", 34.0, 0.6, -220.0, 0.0),
+    ("clutch_stone", 41.0, 0.0, -220.0, 0.0),
 ]
 # (id, eye, look, fov)
 SHOTS = [
@@ -48,6 +52,7 @@ SHOTS = [
     ("L1", (22.0, 8.0, -138.0), (22.0, 6.0, -162.0), 60.0),  # the nave bays, whole and broken
     ("L2", (88.0, 6.0, -146.0), (92.0, 3.0, -162.0), 60.0),  # the arcade, the fig, the bridge, the niches, the well
     ("F1", (4.0, 2.4, -212.0), (4.0, 1.5, -220.0), 50.0),  # the Kirru roost and a name-shell cord
+    ("F2", (30.0, 4.5, -206.0), (29.0, 0.8, -220.0), 55.0),  # the root-walk, the reed causeway, a house, the stone
 ]
 
 
@@ -78,9 +83,12 @@ def main() -> int:
               '[node name="Ground" type="MeshInstance3D" parent="."]',
               "transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 60, -0.02, -110)", 'mesh = SubResource("GroundMesh")',
               "", '[node name="Pieces" type="Node3D" parent="."]', ""]
+    count: dict[str, int] = {}
     for name, x, y, z, yaw in PIECES:
         rid = f"{4 + glbs.index(name)}_{name}"
         node = "".join(w.title() for w in name.split("_"))
+        count[node] = count.get(node, 0) + 1
+        node += str(count[node]) if count[node] > 1 else ""
         lines += [f'[node name="{node}" parent="Pieces" instance=ExtResource("{rid}")]',
                   f"transform = {ar.yaw_xform(yaw, (x, y, z))}", ""]
     lines += ['[node name="Cameras" type="Node3D" parent="."]', ""]
