@@ -2,8 +2,8 @@
 id: M3-CHR-506
 title: "Pell, the Kirru party hero, on the MPFB2 hero path with a Kirru head warp (build, face poses, story and battle clips, shots)"
 role: character
-status: todo
-owner_session: ""
+status: doing
+owner_session: "characters worktree chr-pell-wip (/home/user/pell-wt)"
 depends_on: [M2-CHR-01, M2-CHR-02, M1-CHR-14, M2-CHR-07, M3-CHR-01]
 milestone: M3
 request-from: lead
