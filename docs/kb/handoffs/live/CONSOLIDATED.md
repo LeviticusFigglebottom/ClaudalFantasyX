@@ -49,6 +49,19 @@ The previous version is `CONSOLIDATED-history-2026-10-28.md`. It has the deep hi
 
   Estimate: two or three batches.
 
+## LIVE STATUS (kept current by the outgoing Lead; newest at top)
+- **18:45 UTC:**
+  - The cloud gate of big16 (/home/user/wt/gate16 in the old Lead's container) had 171/~600 shots captured. Expect `lead/gate-big16-shots` around 22:00 UTC if the container survives. If that branch doesn't exist, re-gate big16 on the PC.
+  - Every track is idle, with its Act I list done or waiting, except three just nudged: characters (Pell's model), integration-qa (verify or fix the party-start camera), battle-presentation (hook the Fisher Stair).
+  - Track heads to fold into big16 before merging (all MERGE-READY):
+    - creatures f6846325;
+    - hero-integration a6e9d548 or newer;
+    - env-art b68d1920;
+    - env-art-b a5e650bd;
+    - ui b2118f76;
+    - m2-slice 595be6eb.
+  - Any newer heads at your start supersede these.
+
 ## 2. In flight at handover: big16 (the next merge)
 - **`lead/gate-big16` @ ff82858c** = big15 (`lead/gate-big15` @ 6466a6f5) plus every track head as of about 16:30, plus the Shell Shrine GI inputs re-recorded (no rebake needed; the new codex spot has no mesh or light).
 - **big15 will not be merged separately.** big16 contains it. big15's cloud suite ran 3189 tests with 6 failures:
