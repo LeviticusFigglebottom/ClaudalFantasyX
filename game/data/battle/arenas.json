@@ -39,6 +39,22 @@
       "derelict_deck_night": {
         "travel_scale": 0.85,
         "tempo": 1.0
+      },
+      "wall_head_storm": {
+        "travel_scale": 0.85,
+        "tempo": 1.0
+      },
+      "seawall_stairhead_storm": {
+        "travel_scale": 0.85,
+        "tempo": 1.0
+      },
+      "seawall_stairhead_hoist": {
+        "travel_scale": 0.85,
+        "tempo": 1.0
+      },
+      "seawall_stairhead_surge": {
+        "travel_scale": 0.85,
+        "tempo": 1.0
       }
     }
   }

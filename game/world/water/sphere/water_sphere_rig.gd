@@ -10,6 +10,9 @@ extends Node3D
 ## - caustic light on what's inside the ball, in the multiply pass, projected along the sun (tiers with "caustics",
 ##   M3-RND-04).
 ## Tiers: set_quality(preset id) picks a row of the data's "quality" (Low: no refraction, a tinted Fresnel shell).
+## A `profile` (a row of the data's "profiles", M3-RND-26) overrides sections key by key for one use: the Tamsule
+## Bell's held drop is a flattened, still, cyan "tamsule_drop" that glows with its bound light and throws its caustic
+## web on the catch-pool, the posts and the bell's underside.
 
 const DATA_PATH := "res://game/data/vfx/water_sphere.json"
 const SURFACE_SHADER := "res://game/shaders/water/sphere/water_sphere_surface.gdshader"
@@ -25,6 +28,10 @@ const OPTICS_POST: Array[String] = ["scatter_strength", "depth_falloff_m", "down
 ## The data's caustics keys, the multiply pass's "caustic_<key>" uniforms (M3-RND-04).
 const CAUSTIC_KEYS: Array[String] = [
 	"strength", "scale_per_m", "speed", "width", "blur_per_m", "fade_in_m", "falloff_m", "view_fade_m", "wall_soft_m"
+]
+## The data's "under" keys, both passes' "under_<key>" uniforms (the light through the drop under it, M3-RND-26).
+const UNDER_KEYS: Array[String] = [
+	"strength", "reach_m", "lens_m", "reflect", "reflect_radius_m", "top_m", "floor_m", "scale_per_m"
 ]
 const OPTICS_SURFACE: Array[String] = [
 	"ior",
@@ -47,6 +54,9 @@ static var _data_cache: Dictionary = {}
 		sea_glow_energy = value
 		if post_add_material != null:
 			post_add_material.set_shader_parameter(&"sea_glow_energy", value)
+
+## A row of the data's "profiles" (empty: the Reefball arena's ball). Set before the rig enters the tree.
+@export var profile: String = ""
 
 ## A preset id (low, medium, high, ultra).
 @export var quality: String = "high":
@@ -90,6 +100,24 @@ func get_quality() -> String:
 	return quality
 
 
+## The data with a profile's sections laid over it key by key (the base for an unknown or empty profile).
+static func profile_data(profile_id: String) -> Dictionary:
+	var base := load_data()
+	var over := (base.get("profiles", {}) as Dictionary).get(profile_id, {}) as Dictionary
+	if over.is_empty():
+		return base
+	var out := base.duplicate(true)
+	for section: String in over:
+		if section.begins_with("_"):
+			continue
+		var row: Variant = over[section]
+		if typeof(row) == TYPE_DICTIONARY and typeof(out.get(section)) == TYPE_DICTIONARY:
+			(out[section] as Dictionary).merge(row as Dictionary, true)
+		else:
+			out[section] = row
+	return out
+
+
 func plan() -> Dictionary:
 	return (data.get("quality", {}) as Dictionary).get(quality, {}) as Dictionary
 
@@ -98,8 +126,15 @@ func radius_m() -> float:
 	return float((data.get("sphere", {}) as Dictionary).get("radius_m", 16.0))
 
 
+## The vertical semi-axis (the radius for a ball).
+func semi_axis_y_m() -> float:
+	return float((data.get("sphere", {}) as Dictionary).get("semi_axis_y_m", radius_m()))
+
+
 func _ready() -> void:
-	data = load_data()
+	if not profile.is_empty() and not (load_data().get("profiles", {}) as Dictionary).has(profile):
+		push_warning("WaterSphereRig: no profile %s in %s" % [profile, DATA_PATH])
+	data = profile_data(profile)
 	_build()
 	_apply_quality()
 	var root := _scene_root()
@@ -140,10 +175,11 @@ func _process(_delta: float) -> void:
 	for m: ShaderMaterial in [surface_material, post_mul_material, post_add_material]:
 		m.set_shader_parameter(&"sphere_center", c)
 		m.set_shader_parameter(&"light_level", level)
-	shafts_material.set_shader_parameter(&"water_rest_y", c.y + radius_m())
+	shafts_material.set_shader_parameter(&"water_rest_y", c.y + semi_axis_y_m())
 	var sun := _sun()
 	if sun != null:
 		post_mul_material.set_shader_parameter(&"sun_dir", sun.global_basis.z.normalized())
+		post_add_material.set_shader_parameter(&"sun_dir", sun.global_basis.z.normalized())
 
 
 ## The scene's first visible DirectionalLight3D, the sun the caustics fall along (null when there's none).
@@ -168,6 +204,7 @@ func _build() -> void:
 	post_add_material = _material(POST_ADD_SHADER, PRIORITY_ADD)
 	for m: ShaderMaterial in [surface_material, post_mul_material, post_add_material]:
 		m.set_shader_parameter(&"sphere_radius_m", radius_m())
+		m.set_shader_parameter(&"sphere_flatten", semi_axis_y_m() / radius_m())
 		m.set_shader_parameter(&"sigma", sigma)
 		m.set_shader_parameter(&"col_scatter", Color(str(colors.get("scatter", "#1FA3A6"))))
 		m.set_shader_parameter(&"col_deep", Color(str(colors.get("deep", "#0E4A55"))))
@@ -179,8 +216,16 @@ func _build() -> void:
 	post_add_material.set_shader_parameter(&"sea_glow_energy", sea_glow_energy)
 	post_add_material.set_shader_parameter(&"sea_glow_strength", float(optics.get("sea_glow_strength", 1.0)))
 	var caustics := data.get("caustics", {}) as Dictionary
-	for key in CAUSTIC_KEYS:
-		post_mul_material.set_shader_parameter(StringName("caustic_" + key), float(caustics.get(key, 0.0)))
+	var under := data.get("under", {}) as Dictionary
+	for m: ShaderMaterial in [post_mul_material, post_add_material]:
+		for key in CAUSTIC_KEYS:
+			m.set_shader_parameter(StringName("caustic_" + key), float(caustics.get(key, 0.0)))
+		for key in UNDER_KEYS:
+			m.set_shader_parameter(StringName("under_" + key), float(under.get(key, 0.0)))
+		m.set_shader_parameter(&"under_color", Color(str(colors.get("under", "#FFFFFF"))))
+	var bound := data.get("bound_glow", {}) as Dictionary
+	post_add_material.set_shader_parameter(&"bound_glow_color", Color(str(colors.get("bound", "#000000"))))
+	post_add_material.set_shader_parameter(&"bound_glow_energy", float(bound.get("energy", 0.0)))
 	var mesh := SphereMesh.new()
 	mesh.radial_segments = int(sp.get("radial_segments", 64))
 	mesh.rings = int(sp.get("rings", 32))
@@ -189,7 +234,7 @@ func _build() -> void:
 	var sag := radius_m() * (1.0 - cos(PI / float(mini(mesh.radial_segments, 2 * mesh.rings))))
 	var grow := float(optics.get("swell_m", 0.0)) + sag
 	mesh.radius = radius_m() + grow
-	mesh.height = 2.0 * mesh.radius
+	mesh.height = 2.0 * (semi_axis_y_m() + grow)
 	surface = MeshInstance3D.new()
 	surface.name = "SphereSurface"
 	surface.mesh = mesh
@@ -234,7 +279,7 @@ func _build_fog(colors: Dictionary) -> void:
 	)
 	fog = FogVolume.new()
 	fog.name = "SphereShafts"
-	fog.size = Vector3.ONE * (2.0 * radius_m())
+	fog.size = 2.0 * Vector3(radius_m(), semi_axis_y_m(), radius_m())
 	fog.shape = RenderingServer.FOG_VOLUME_SHAPE_ELLIPSOID
 	fog.material = shafts_material
 	add_child(fog)
@@ -246,6 +291,7 @@ func _apply_quality() -> void:
 	var p := plan()
 	surface_material.set_shader_parameter(&"use_refraction", bool(p.get("refraction", true)))
 	post_mul_material.set_shader_parameter(&"use_caustics", bool(p.get("caustics", false)))
+	post_add_material.set_shader_parameter(&"use_caustics", bool(p.get("caustics", false)))
 	fog.visible = bool(p.get("god_rays", false))
 	if _fog_env != null:
 		GraphicsSettings.set_authored(_fog_env, "volumetric_fog_enabled", bool(p.get("god_rays", false)))

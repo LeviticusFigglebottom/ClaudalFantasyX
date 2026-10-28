@@ -175,7 +175,7 @@
         "shapes": "res://game/levels/ch05/ashcrown/ashcrown_layout.json",
         "shape_kind": "greybox_layout",
         "shape_hints": {"structures": ["g1", "g2a", "g2b", "g3a", "g3b", "g3c", "g4a", "g4b"], "pads": ["TenderGraves"]},
-        "bounds": [-33.0, -21.0, 66.0, 177.0],
+        "bounds": [-25.0, -37.8, 66.3, 213.6],
         "pois": [
           {"id": "stair_foot", "name_key": "MAP_POI_A_STAIR_FOOT", "kind": "path", "at": [0.0, 150.8], "source": "spawn:StairFoot"},
           {"id": "grave_tier", "name_key": "MAP_POI_A_GRAVE_TIER", "kind": "talk", "at": [0.0, 100.9], "source": "trigger:banter_grave_tier"},

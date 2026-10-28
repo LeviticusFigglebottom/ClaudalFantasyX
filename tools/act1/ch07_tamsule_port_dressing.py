@@ -28,6 +28,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 KIT_SRC = ROOT / "assets_src" / "environments" / "kits" / "tamsule_bell"
 sys.path.insert(0, str(KIT_SRC))
+import bell  # noqa: E402
 import port_preview as pp  # noqa: E402
 
 ZONE = ROOT / "game" / "levels" / "ch07" / "tamsule"
@@ -70,6 +71,25 @@ def rows() -> list[dict]:
     return out
 
 
+# The Bell's weeping column seen from the port (M3-ENV-1321): the kit's weep_column (the galleries' piece) under the
+# kit's Bell at BELL_AXIS, as the galleries stand it under theirs, dressed with the galleries' column materials
+# (tools/act1/ch07_tamsule_bell_dressing.py writes them). The layout's BellColumn block is the greybox's (z -40, before
+# the Bell moved to its ring); the column follows it only for show/hide.
+WEEP_SLOTS = {"tb_drop_proxy": "weep_column_water_material", "tb_salt_glass": "weep_spray_water_material"}
+
+
+def weep_rows() -> list[dict]:
+    return [{"name": "WeepColumn", "piece": "weep_column", "at": [r3(BELL_AXIS[0]), r3(BELL_AXIS[2])],
+             "y": r3(BELL_AXIS[1] + bell.POOL_WATER_Y), "yaw_deg": 0.0, "kit_dir": KIT, "materials": dict(WEEP_SLOTS),
+             "materials_dir": RES_GALLERIES}]
+
+
+# The held drop over it (M3-RND-26): the galleries' WaterSphereRig profile on the kit's SphereAnchor under this Bell.
+def drop_rows() -> list[dict]:
+    return [{"name": "Drop", "at": [r3(a + c) for a, c in zip(BELL_AXIS, bell.DROP_CENTER)],
+             "profile": "tamsule_drop"}]
+
+
 def galleries_env() -> tuple[str, float]:
     d = json.loads((ROOT / "game" / "levels" / "ch07" / "tamsule_bell_galleries"
                     / "tamsule_bell_galleries_dressing.json").read_text(encoding="utf-8"))
@@ -91,7 +111,8 @@ def layout() -> dict:
         "environment": env,
         "time_of_day_h": tod,
         "greybox": {"hide_all": True, "keep": []},
-        "pieces": rows(),
+        "pieces": rows() + weep_rows(),
+        "drops": drop_rows(),
     }
 
 

@@ -77,7 +77,9 @@ func test_story_pieces_follow_their_blocks() -> void:
 	assert_true(kit_barge.is_visible_in_tree(), "shown with the block")
 	zone.hide_block("Barge")
 	assert_false(kit_barge.is_visible_in_tree(), "hidden with the block")
-	assert_eq(_dressing().followers("Smoke").size(), 4, "three plumes and the hulk's fire")
+	assert_eq(
+		_dressing().followers("Smoke").size(), 8, "three plumes, the hulk's fire light and the raid's four flames"
+	)
 	zone.hide_block("Smoke")
 	for n: Node3D in _dressing().followers("Smoke"):
 		assert_false(n.visible, "%s goes out with the Smoke block at dusk" % n.name)
