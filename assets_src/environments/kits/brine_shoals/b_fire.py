@@ -4,10 +4,11 @@
                     downwind (-X), the camp's main burning (the tide-wheel's foot, the hulk)
   camp_fire_small   the same at 1.6 m across with six tongues up to 1.2 m (a tent's ash bed, the salvage pile)
 
-Static sculpted flames over `bs_char` timbers, an ember bed (`bs_ember`) and an ash ring, so the burning reads at
-battle and story distance. The tongues take this module's own two unshaded materials (`bs_fire_outer`, a deep
-ember_orange, and `bs_fire_core`, a yellow heart), since `bs_ember`'s emission blooms to white in the ch06 daylight.
-Animated fire is Rendering's (request M3-RND-1315). Origin at the bed's centre on the ground.
+Sculpted flames over `bs_char` timbers, an ember bed (`bs_ember`) and an ash ring, so the burning reads at battle and
+story distance. The tongues take this module's own two materials (`bs_fire_outer`, a deep ember_orange, and
+`bs_fire_core`, a yellow heart), since `bs_ember`'s emission blooms to white in the ch06 daylight: ShaderMaterials on
+`game/vfx/fire/flame_tongue.gdshader` (M3-RND-1315), which licks, tears and flickers the tongues on the held weather
+clock. Origin at the bed's centre on the ground.
 
     python3 assets_src/environments/kits/brine_shoals/b_fire.py     # writes the two materials
 """
@@ -23,9 +24,13 @@ from bs_common import kc
 
 M_OUTER = "bs_fire_outer"
 M_CORE = "bs_fire_core"
-MATERIALS = {  # unshaded: the flame is its own light; a little emission so the scene's glow catches the hearts
-    M_OUTER: {"albedo": (0.784, 0.251, 0.086), "emission": 0.35},
-    M_CORE: {"albedo": (0.949, 0.635, 0.227), "emission": 0.7},
+SHADER = "res://game/vfx/fire/flame_tongue.gdshader"
+# Unshaded: the flame is its own light. Palette swatches: the tongues dusk_gold at the foot to ember_orange at the tip,
+# the heart sun_gold to dusk_gold (an ember_orange foot went flat red under the ch06 grade, an oil_lamp one peach). The
+# heart is short, so it tears less.
+MATERIALS = {
+    M_OUTER: {"base_color": (0.949, 0.651, 0.29), "tip_color": (0.878, 0.439, 0.18), "emission": 0.0, "tear": 0.55},
+    M_CORE: {"base_color": (1.0, 0.824, 0.478), "tip_color": (0.949, 0.651, 0.29), "emission": 0.0, "tear": 0.3},
 }
 TRI_BUDGET = {"camp_fire_large": (9000, 1200), "camp_fire_small": (5000, 700)}
 
@@ -83,12 +88,15 @@ def write_materials() -> None:
 
     out = Path(__file__).resolve().parents[4] / "assets" / "environments" / "kits" / "brine_shoals" / "materials"
     for name, m in MATERIALS.items():
-        r, g, b = m["albedo"]
-        col = f"Color({r}, {g}, {b}, 1)"
-        (out / f"{name}.tres").write_text(
-            '[gd_resource type="StandardMaterial3D" load_steps=1 format=3]\n\n[resource]\n'
-            f'resource_name = "{name}"\nshading_mode = 0\nalbedo_color = {col}\nemission_enabled = true\n'
-            f"emission = {col}\nemission_energy_multiplier = {m['emission']}\n", encoding="utf-8")
+        lines = ['[gd_resource type="ShaderMaterial" load_steps=2 format=3]', "",
+                 f'[ext_resource type="Shader" path="{SHADER}" id="1_flame"]', "", "[resource]",
+                 f'resource_name = "{name}"', 'shader = ExtResource("1_flame")']
+        for key in ("base_color", "tip_color"):
+            r, g, b = m[key]
+            lines.append(f"shader_parameter/{key} = Color({r}, {g}, {b}, 1)")
+        for key in ("emission", "tear"):
+            lines.append(f"shader_parameter/{key} = {m[key]}")
+        (out / f"{name}.tres").write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
 TARGETS = {
