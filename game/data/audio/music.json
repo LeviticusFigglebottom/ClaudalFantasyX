@@ -10,7 +10,7 @@
     "ashcrown_trial": {"file": "res://assets/audio/music/ashcrown.ogg", "resume": true, "_note": "M3-AUD-823: the scripts' id for `ashcrown`: Ch5's Ashcrown temple trial. Same file, so the cue is composed once."},
     "tamsule_port": {"file": "res://assets/audio/music/tamsule.ogg", "resume": true, "_note": "M3-AUD-823: the scripts' id for `tamsule`: Ch7's Tamsule port. Same file, so the cue is composed once."},
     "corrow_day": {"file": "res://assets/audio/music/corrow_seawall.ogg", "_note": "M3-AUD-861: the scripts' id for `corrow_seawall` (ch08_landfall.dlg): Corrow by day before the storm. Same file, so the cue is composed once."},
-    "coilspire_flues": {"file": "res://assets/audio/music/coilspire.ogg", "resume": true, "_note": "M3-AUD-823: the scripts' id for `coilspire`: Ch8's Coilspire flues (replaces the sequencer's temple_trial stand-in). Same file, so the cue is composed once."},
+    "coilspire_flues": {"file": "res://assets/audio/music/coilspire.ogg", "resume": true, "_note": "M3-AUD-823/861: the scripts' id for `coilspire`: Ch8's Coilspire flues (ch08_spire_door.dlg). Same file, so the cue is composed once."},
     "battle_standard": {
       "file": "res://assets/audio/music/battle_standard.ogg",
       "_note": "the M1-AUD-02 prototype (v1), kept for A/B; battles play v2"

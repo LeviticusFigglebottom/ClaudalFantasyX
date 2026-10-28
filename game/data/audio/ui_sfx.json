@@ -369,7 +369,11 @@
         {"expr": "node._notice.get('ok', true) == false", "on_true": true, "sfx": "ui_error", "_note": "can't afford it: the line says why"}
       ],
       "_note": "M3-AUD-848: the UI track's Reefball outfitter (claude/ui, ADR 0040, M3-C07-05). Pending until it merges"
-    }
+    },
+    {"class": "CodexMenu", "on_enter": "ui_page", "signals": {"closed": "ui_page"}, "watch": [{"expr": "node.column", "rise": "ui_confirm", "fall": "ui_cancel", "_note": "CodexMenu.Column CATEGORIES 0, ENTRIES 1, TEXT 2: in is a confirm, back is a cancel"}, {"expr": "node.categories_page().cursor", "sfx": "ui_cursor"}, {"expr": "node.entries_page().cursor", "sfx": "ui_cursor"}], "_note": "M3-AUD-861: the codex (the Bestiary's sibling: it opens and closes as a page)"},
+    {"class": "SettingsMenu", "on_enter": "ui_menu_open", "signals": {"closed": "ui_menu_close"}, "watch": [{"expr": "node.current()", "sfx": "ui_cursor"}, {"expr": "node.is_page_open()", "values": {"true": "ui_confirm"}, "_note": "a settings page opened (a bool: `values`, as rise/fall read numbers only); its close is SettingsPage's row"}], "_note": "M3-AUD-861: the settings list that opens Audio, Graphics, Accessibility and Controls"},
+    {"class": "ReadPanel", "watch": [{"expr": "node.is_open()", "sfx": "ui_page", "_note": "a bool: any change turns the page"}], "_note": "M3-AUD-861: the battle's Read panel (the Read itself is battle_sfx's `read`): the page turning in and out"},
+    {"class": "ObjectiveHud", "watch": [{"expr": "node.phase", "values": {"1": "ui_tip"}, "_note": "ObjectiveHud.Phase.IN: the objective fades in"}], "_note": "M3-AUD-861: the field objective card, heard as the tip card is"}
   ],
   "motion": {
     "doc": "M3-AUD-832: menu motion whooshes. A watched node whose `accessor` method returns its MenuMotion layers `in` as it rises into place and `out` as it sinks away (FieldMenu, every FieldSubmenu page, and SaveMenu once claude/ui gives it one). Reduced motion makes the transitions instant: nothing moves, so nothing plays. Their rows' volume_db keep them about 12 dB under the open and close sounds.",

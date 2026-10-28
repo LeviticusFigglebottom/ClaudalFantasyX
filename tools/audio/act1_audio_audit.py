@@ -32,6 +32,24 @@ BY_DESIGN = {
         "Cutscene B's own @music (shell_shrine_interior, hush_first_verse) scores it; a zone cue would fight it",
     "game/levels/ch07/tidecup_match/tidecup_match.tscn: no ambience bed":
         "ReefballAudio plays the crowd beds (reefball_hooks.json murmur/excited) with the match's state",
+    "ui class `BattlePause` (game/ui/menus/battle_pause/battle_pause.gd) takes input and has no hook on it or a base class":
+        "the pause controller (a Node); what the player sees and moves is BattlePauseMenu, which has its hook",
+    "ui class `DialogueAssist` (game/ui/dialogue_assist/dialogue_assist.gd) takes input and has no hook on it or a base class":
+        "the dialogue assist overlay; its Backlog page is a FieldSubmenu (hooked), and its lines are VoiceAudio's",
+    "ui class `DialogueBox` (game/ui/dialogue/dialogue_box.gd) takes input and has no hook on it or a base class":
+        "VoiceAudio voices every DialogueBox (the speaker's blips and recorded lines; audio_director.gd)",
+    "ui class `MenuPage` (game/ui/battle/menu_page.gd) takes input and has no hook on it or a base class":
+        "a page inside CommandMenu, LatticeMenu and the rest: their hooks watch its cursor",
+    "ui class `SaveSlotRow` (game/ui/save/save_slot_row.gd) takes input and has no hook on it or a base class":
+        "a row of SaveMenu, whose hook plays the slot sounds",
+    "ui class `SwellRingView` (game/ui/battle/swell_ring_view.gd) takes input and has no hook on it or a base class":
+        "a display inside CommandMenu (the Swell ring); the Swell's sounds are battle and choreo rows",
+    "ui class `LatticeBoardView` (game/ui/menus/lattice/lattice_board_view.gd) takes input and has no hook on it or a base class":
+        "the board inside LatticeMenu, whose hook plays its node, unlock and step sounds",
+    "ui class `ControlsModel` (game/ui/settings/controls_model.gd) takes input and has no hook on it or a base class":
+        "a model (SettingsPageModel), not a node: ControlsMenu, a SettingsPage, is what is hooked",
+    "ui class `TownMenu` (game/ui/shop/town_menu.gd) takes input and has no hook on it or a base class":
+        "a base class only: ShopMenu and InnMenu extend it, and each has its own hook",
     "ambience bed `underwater_deep` is unwired: M3-AUD-06: open deep water; no zone yet":
         "Act I has no open deep-water zone (Ch1's dive is the drowned tower, which has its own bed)",
 }
@@ -187,9 +205,33 @@ def audit_cutscenes() -> list[str]:
     return out
 
 
+def _ui_classes() -> dict[str, tuple[str, str, bool]]:
+    """class_name -> (file, the class it extends, whether it takes input) for every game/ui script."""
+    out = {}
+    for p in sorted((ROOT / "game" / "ui").rglob("*.gd")):
+        t = p.read_text(encoding="utf-8")
+        m = re.search(r"^class_name\s+(\w+)", t, re.M)
+        e = re.search(r"^extends\s+(\w+)", t, re.M)
+        if m:
+            takes = bool(re.search(r"Button|pressed|ui_accept|_gui_input|_unhandled_input|handle_input", t))
+            out[m.group(1)] = (p.relative_to(ROOT).as_posix(), e.group(1) if e else "", takes)
+    return out
+
+
 def audit_ui() -> list[str]:
     ui = _json(AUDIO / "ui_sfx.json")
+    hooked = {h.get("class") for h in ui.get("hooks") or []}
+    classes = _ui_classes()
     out = []
+    for cls, (path, _, takes) in classes.items():
+        if not takes or cls.endswith("Shot"):
+            continue  # display-only, or a screenshot harness
+        c, seen = cls, set()
+        while c in classes and c not in hooked and c not in seen:  # UiAudio.hook_for walks the base scripts
+            seen.add(c)
+            c = classes[c][1]
+        if c not in hooked and classes[cls][1] not in ("RefCounted", "Resource", "Object"):
+            out.append(f"ui class `{cls}` ({path}) takes input and has no hook on it or a base class")
     for row in ui.get("hooks") or []:
         if row.get("pending"):
             out.append(f"ui hook `{row.get('class')}` is pending (its class has not landed: silent until it does)")
