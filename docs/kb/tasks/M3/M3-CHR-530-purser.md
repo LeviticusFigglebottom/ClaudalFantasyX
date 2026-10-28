@@ -25,5 +25,6 @@ pipeline, with the clips their dialogue calls.
 - Who: The Brightwater ferry's purser (Ch4, the ferry shop; act1_ch04.md: sells Pemakar-bound supplies), about 34, a woman. Brisk, precise; black hair under a sand head wrap, a sea-blue short-sleeved wrap top, a sand calf skirt with an indigo apron (the purse and tally are props), sandals. Reach-bands left 2, right 2. (M3-CHR-530.)
 - Budget: LOD0 31,062 tris, 1.77 MB GLB; LOD1 14,563 tris, 0.61 MB.
 - Rendered: fine; the head wrap and apron read. Shop gesture `offer_goods`.
+- Dialogue polish (chr-npc-polish): before, the head wrap's edge stood a little off the brow with a dark line of hair in its shadow. After: the edge drawn in to the skin (`headwrap.edge_off_m`) and a dimmer hair specular (`_hair.spec`) on the black hair that shows at the temples.
 
 ## Review log

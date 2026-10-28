@@ -1,5 +1,5 @@
 {
-  "_about": "The Tamsule pool-keeper (Ch7, speaker `poolkeeper`; act1_ch07.md: an old Tamsule woman with chalk on her fingers and the draw-slate; keeps Oruvel's name on the roll), about 70. Thin, straight-backed; white hair under an undyed head wrap; a bronze-green long-sleeved wrap top (the Bell's civic green), a dark slate ankle skirt, an undyed apron, a sand sash, sandals. Few reach-bands (2/2). Chalk-pale fingertips are not painted (villager_textures' fingertip term only darkens); the slate and chalk are props. (M3-CHR-535.) Face sliders relative to the MakeHuman donor (ADR 0021: 1.0 / 0.0 = unchanged). Keys starting with '_' are read by the villager_* modules (villager_hair, villager_costume, villager_textures, write_materials, villager_clips), not by bb_params.",
+  "_about": "The Tamsule pool-keeper (Ch7, speaker `poolkeeper`; act1_ch07.md: an old Tamsule woman with chalk on her fingers and the draw-slate; keeps Oruvel's name on the roll), about 70. Thin, straight-backed; white hair under an undyed head wrap; a bronze-green long-sleeved wrap top (the Bell's civic green), a dark slate ankle skirt, an undyed apron, a sand sash, sandals. Few reach-bands (2/2). Chalk-pale fingertips (`_skin.fingertip_chalk`); the slate and chalk are props. (M3-CHR-535.) Face sliders relative to the MakeHuman donor (ADR 0021: 1.0 / 0.0 = unchanged). Keys starting with '_' are read by the villager_* modules (villager_hair, villager_costume, villager_textures, write_materials, villager_clips), not by bb_params.",
   "name": "poolkeeper",
   "height_m": 1.58,
   "heads_tall": 7.1,
@@ -49,7 +49,8 @@
     },
     "ink_opacity": 0.42,
     "seed": 135,
-    "lip": "#86544A"
+    "lip": "#86544A",
+    "fingertip_chalk": 0.8
   },
   "_hair": {
     "kind": "wrap",
@@ -102,7 +103,8 @@
       "edge_lift": 0.015,
       "puff_m": 0.009,
       "knot_m": 0.028,
-      "seed": 163
+      "seed": 163,
+      "edge_off_m": 0.002
     },
     "sandals": "leather"
   },

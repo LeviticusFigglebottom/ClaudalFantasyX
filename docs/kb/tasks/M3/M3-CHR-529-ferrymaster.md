@@ -25,5 +25,6 @@ pipeline, with the clips their dialogue calls.
 - Who: Imbe, master of the Brightwater ferry (Ch4, speaker `ferrymaster`; act1_ch04.md: the first stranger to name Rhen's loss aloud, 'Salt and stone. I'm sorry, lad'; keeps sea-law and will not send his crew aboard a moving drowned hull), about 58. Big, slow, weathered; grey-black short hair and a grey beard-stubble; a faded teal long-sleeved wrap coat-shirt with the sleeves pushed to mid-forearm, sand shin trousers, a sea-blue sash (the ferry's reef band), sandals. Reach-bands left 9, right 8. (M3-CHR-529.)
 - Budget: LOD0 29,254 tris, 1.85 MB GLB; LOD1 13,657 tris, 0.66 MB.
 - Rendered: big, grave, grey stubble faint at dialogue distance. Only `nod` beyond the shared clips: the dialogue calls none.
+- Dialogue polish (chr-npc-polish): before, the grey beard-stubble was faint at dialogue distance and the grey share of his hair read as white chips (the head albedo was also stale against M2-CHR-524's beard lens, so the job failed its verify). After: a denser stubble over a soft cool beard shadow (`_skin.stubble_density`, `stubble_shadow`) and grey cards as thin strands (`_hair.grey_strands`); rebuilt, the job verifies again.
 
 ## Review log

@@ -1,5 +1,5 @@
 {
-  "_about": "Old Marra, a Corrow fishwife (Ch8-9, speaker `marra`; act1_ch08.md: about 70, mends nets on a doorstep in the low town; one of the 1001 stair-watch, a faded watch-red cord with one knot on her wrist; the only climber who looks back down; in Ch9 holds Toma's hands among the shrouds). Small, round-shouldered, warm; grey hair under a storm-grey head wrap; a faded indigo long-sleeved top, a wrapped storm-grey ankle skirt, an undyed apron, a faded watch-red sash. The netting shawl and the wrist cord are not modelled (no shawl or bracelet piece in villager_costume). Reach-bands left 6, right 6. (M3-CHR-539.) Face sliders relative to the MakeHuman donor (ADR 0021: 1.0 / 0.0 = unchanged). Keys starting with '_' are read by the villager_* modules (villager_hair, villager_costume, villager_textures, write_materials, villager_clips), not by bb_params.",
+  "_about": "Old Marra, a Corrow fishwife (Ch8-9, speaker `marra`; act1_ch08.md: about 70, mends nets on a doorstep in the low town; one of the 1001 stair-watch, a faded watch-red cord with one knot on her wrist; the only climber who looks back down; in Ch9 holds Toma's hands among the shrouds). Small, round-shouldered, warm; grey hair under a storm-grey head wrap; a faded indigo long-sleeved top, a wrapped storm-grey ankle skirt, an undyed apron, a faded watch-red sash. A grey twine netting shawl over the shoulders (`shawl`) and the faded watch-red cord with one knot on her left wrist (`wrist_cord`). Reach-bands left 6, right 6. (M3-CHR-539.) Face sliders relative to the MakeHuman donor (ADR 0021: 1.0 / 0.0 = unchanged). Keys starting with '_' are read by the villager_* modules (villager_hair, villager_costume, villager_textures, write_materials, villager_clips), not by bb_params.",
   "name": "marra",
   "height_m": 1.52,
   "heads_tall": 6.9,
@@ -101,9 +101,24 @@
       "edge_lift": 0.012,
       "puff_m": 0.011,
       "knot_m": 0.032,
-      "seed": 193
+      "seed": 193,
+      "edge_off_m": 0.002
     },
-    "sandals": "leather"
+    "sandals": "leather",
+    "shawl": {
+      "mat": "cloth_c",
+      "mesh_m": 0.08,
+      "cord_mm": 3.0,
+      "open_deg": 24.0,
+      "off_m": 0.011,
+      "drop_k": 1.35
+    },
+    "wrist_cord": {
+      "mat": "cloth_d",
+      "side": "L",
+      "cord_mm": 5.0,
+      "knot_m": 0.014
+    }
   },
   "_tints": {
     "cloth_a": "#D2C6AC",

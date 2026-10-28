@@ -67,7 +67,8 @@
     "hairline_cards": 40,
     "rise": 0.6,
     "colour": "#141417",
-    "underpaint": "#16161A"
+    "underpaint": "#16161A",
+    "spec": "#6A6460"
   },
   "_eyes": {
     "iris": "#2A1A10"
@@ -97,7 +98,9 @@
       "edge_lift": -0.03,
       "band_m": 0.032,
       "seed": 79,
-      "off_m": 0.006
+      "off_m": 0.004,
+      "edge_off_m": 0.0015,
+      "press_hair": 0.002
     }
   },
   "_tints": {

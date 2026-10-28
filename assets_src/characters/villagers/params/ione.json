@@ -67,7 +67,8 @@
     "hairline_cards": 50,
     "rise": 0.8,
     "colour": "#141417",
-    "underpaint": "#16161A"
+    "underpaint": "#16161A",
+    "spec": "#6A6460"
   },
   "_eyes": {
     "iris": "#22160E"
