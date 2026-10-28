@@ -1,5 +1,5 @@
 {
-  "_about": "Ione Sabe, captain of the Sorrin side at the Tidecup (Ch7, speaker `ione`; act1_ch07.md: a stocky atoll woman with reach-bands to the elbow; names her drowned brother Aldo at the naming), about 34. Broad, strong, short; black hair cropped short for the pool; the Sorrin side kit: a deep-green sleeveless top, slate knee trousers, a coral sash (a coral top read as bare skin against hers); barefoot. Reach-bands left 11, right 10, to the elbow. (M3-CHR-534.) Face sliders relative to the MakeHuman donor (ADR 0021: 1.0 / 0.0 = unchanged). Keys starting with '_' are read by the villager_* modules (villager_hair, villager_costume, villager_textures, write_materials, villager_clips), not by bb_params.",
+  "_about": "Ione Sabe, captain of the Sorrin side at the Tidecup (Ch7, speaker `ione`; act1_ch07.md: a stocky atoll woman with reach-bands to the elbow; names her drowned brother Aldo at the naming), about 34. Broad, strong, short; black hair cropped short for the pool; the Sorrin side kit: a deep-green top cut off at the shoulder points (the shortest cap sleeve, `top.sleeve` 0.1), slate knee trousers, a coral sash (a coral top read as bare skin against hers); barefoot. Reach-bands left 11, right 10, to the elbow. (M3-CHR-534.) Face sliders relative to the MakeHuman donor (ADR 0021: 1.0 / 0.0 = unchanged). Keys starting with '_' are read by the villager_* modules (villager_hair, villager_costume, villager_textures, write_materials, villager_clips), not by bb_params.",
   "name": "ione",
   "height_m": 1.6,
   "heads_tall": 7.0,
@@ -67,7 +67,8 @@
     "hairline_cards": 50,
     "rise": 0.8,
     "colour": "#141417",
-    "underpaint": "#16161A"
+    "underpaint": "#16161A",
+    "spec": "#6A6460"
   },
   "_eyes": {
     "iris": "#22160E"
@@ -76,7 +77,7 @@
     "top": {
       "mat": "cloth_c",
       "hem": "hip",
-      "sleeve": 0.0,
+      "sleeve": 0.1,
       "neck_v_m": 0.04,
       "armhole_drop_m": 0.115,
       "cover_margin_m": 0.02

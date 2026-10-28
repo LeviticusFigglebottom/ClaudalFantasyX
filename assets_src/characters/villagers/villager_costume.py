@@ -27,9 +27,9 @@ apron, the clerk's tabard), tinted like the other three.
 
 M3-CHR-526..539's dialogue polish adds more optional keys, again leaving every other villager byte-identical:
 `sash.tail_w_k`, `sash.knot_k` and `sash.cord_knots` (a narrow knotted cord: Hobb's captain's cord),
-`headwrap.edge_off_m` (a wrap's or headband's edge drawn in tight to the skin), `top.strap_deg` and
-`top.armhole_deg` (a sleeveless tunic's broad straps instead of a halter-like cut), and two pieces: `shawl` (a
-knotted netting shawl built as twine) and `wrist_cord` (a cord tied round one wrist).
+`headwrap.edge_off_m` (a wrap's or headband's edge drawn in tight to the skin), `headwrap.press_hair` (the hair under
+a headband drawn inside it, build_villager), and two pieces: `shawl` (a knotted netting shawl built as twine) and
+`wrist_cord` (a cord tied round one wrist).
 """
 from __future__ import annotations
 
@@ -196,11 +196,6 @@ def top_line(lm, chart: TorsoChart, th_deg: np.ndarray, top: dict) -> np.ndarray
     # armpit, where a lowered arm cuts it)
     arm = float(lm.P("shoulder")[2] - float(top.get("armhole_drop_m", ARMHOLE_DROP)) * S)
     strap = chart.z_sh + math.radians(24) * chart.k
-    if "strap_deg" in top:  # M3-CHR-526 (optional): a tunic's broad straps, [front start, front end, back start, end]
-        f0, f1, b0, b1 = (float(x) for x in top["strap_deg"])
-        a0, a1 = (float(x) for x in top.get("armhole_deg", (f1 + 14.0, b0 - 12.0)))
-        return RC._sym_interp(th_deg, [0, 12, 28, f0, f1, a0, a1, b0, b1, max(b1 + 18.0, 150.0), 180],
-                              [v, v + 0.025 * S, neck - 0.015 * S, strap, strap, arm, arm, strap, strap, neck, neck])
     return RC._sym_interp(th_deg, [0, 12, 28, 50, 74, 92, 112, 132, 150, 180],
                           [v, v + 0.025 * S, neck - 0.015 * S, strap, arm, arm, strap, neck, neck, neck])
 

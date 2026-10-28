@@ -25,5 +25,6 @@ pipeline, with the clips their dialogue calls.
 - Who: Ione Sabe, captain of the Sorrin side at the Tidecup (Ch7, speaker `ione`; act1_ch07.md: a stocky atoll woman with reach-bands to the elbow; names her drowned brother Aldo at the naming), about 34. Broad, strong, short; black hair cropped short for the pool; the Sorrin side kit: a deep-green sleeveless top, slate knee trousers, a coral sash (a coral top read as bare skin against hers); barefoot. Reach-bands left 11, right 10, to the elbow. (M3-CHR-534.)
 - Budget: LOD0 30,438 tris, 1.88 MB GLB; LOD1 14,251 tris, 0.68 MB.
 - Rendered: the first tint (a coral top) read as a bare torso; re-tinted deep green and slate with a coral sash and re-rendered. Reach-bands to the elbow (11/10).
+- Dialogue polish (chr-npc-polish): before, the sleeveless top's halter-like cut left her shoulders and the base of her neck bare, so at dialogue distance she read as bare-chested, and her black hair showed warm yellow-brown highlight chips. After: the top is cut off at the shoulder points (the shortest cap sleeve, `top.sleeve` 0.1), covering the shoulders to the neck, and a dimmer, cooler hair specular (`_hair.spec`). Reach-bands still show to the elbow.
 
 ## Review log
