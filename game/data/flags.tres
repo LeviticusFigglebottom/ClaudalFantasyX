@@ -227,5 +227,9 @@ flags = {
 "codex_lacquer_court_read": "Codex (ui-menus Act II set, game/data/lore/codex.json): the entry 'lacquer_court' has been opened in the Codex (clears its New marker).",
 "codex_hollowmere_read": "Codex (ui-menus Act II set, game/data/lore/codex.json): the entry 'hollowmere' has been opened in the Codex (clears its New marker).",
 "codex_pale_rim_read": "Codex (ui-menus Act II set, game/data/lore/codex.json): the entry 'pale_rim' has been opened in the Codex (clears its New marker).",
-"codex_drowned_choir_read": "Codex (ui-menus Act II set, game/data/lore/codex.json): the entry 'drowned_choir' has been opened in the Codex (clears its New marker)."
+"codex_drowned_choir_read": "Codex (ui-menus Act II set, game/data/lore/codex.json): the entry 'drowned_choir' has been opened in the Codex (clears its New marker).",
+"codex_the_calm_read": "Codex (ui-menus, M3-NAR-01 Act I additions, game/data/lore/codex.json): the entry 'the_calm' has been opened in the Codex (clears its New marker).",
+"codex_cantors_read": "Codex (ui-menus, M3-NAR-01 Act I additions, game/data/lore/codex.json): the entry 'cantors' has been opened in the Codex (clears its New marker).",
+"codex_ebbing_read": "Codex (ui-menus, M3-NAR-01 Act I additions, game/data/lore/codex.json): the entry 'ebbing' has been opened in the Codex (clears its New marker).",
+"codex_moll_read": "Codex (ui-menus, M3-NAR-01 Act I additions, game/data/lore/codex.json): the entry 'moll' has been opened in the Codex (clears its New marker)."
 }

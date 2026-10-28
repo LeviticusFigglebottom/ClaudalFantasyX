@@ -308,3 +308,17 @@ static func _godot() -> String:
 	if exe.get_file().to_lower().contains(GODOT_NAME_HINT):
 		return exe
 	return GODOT_ON_PATH
+
+
+## ADR 0111: a held swap always waits PREWARM_WAIT_MAX_FRAMES; past that only while its holders make progress, and
+## never past SWAP_WAIT_CAP_FRAMES.
+func test_a_held_swap_waits_on_while_its_holders_make_progress() -> void:
+	var cap := SceneRouter.PREWARM_WAIT_MAX_FRAMES
+	assert_true(SceneRouter.swap_wait_continues(0, 99999.0, 99999.0), "the first frames always wait")
+	assert_true(SceneRouter.swap_wait_continues(cap - 1, 99999.0, 99999.0))
+	assert_true(SceneRouter.swap_wait_continues(cap, 0.0, 100.0), "past the cap while the loads come in")
+	assert_true(
+		SceneRouter.swap_wait_continues(cap, SceneRouter.SWAP_STALL_MS - 1.0, 100.0), "one slow model is not a stall"
+	)
+	assert_false(SceneRouter.swap_wait_continues(cap, SceneRouter.SWAP_STALL_MS, 100.0), "a stalled holder ends it")
+	assert_false(SceneRouter.swap_wait_continues(cap, 0.0, SceneRouter.SWAP_WAIT_CAP_MS), "never past the hard cap")

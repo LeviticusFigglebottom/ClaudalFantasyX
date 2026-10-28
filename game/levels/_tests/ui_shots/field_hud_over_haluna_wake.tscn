@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://game/levels/_tests/ui_shots/field_hud_over_shot.gd" id="1_drv"]
+
+[node name="FieldHudOver" type="Node3D"]
+script = ExtResource("1_drv")
+backdrop = "res://game/levels/_tests/haluna_wake_dressing/haluna_wake_dressed.tscn"
+location = &"ch04/haluna_wake"
+flags = Array[StringName]([&"ch04_started"])

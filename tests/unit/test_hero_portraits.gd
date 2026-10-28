@@ -19,6 +19,7 @@ const HEROES: Array[StringName] = [
 	&"moll",
 	&"sefir",
 	&"stillguard",
+	&"ivo",
 	# The Act I townsfolk who speak (claude/characters' villager stages; dialogue speaker ids).
 	&"tavi",
 	&"kell",

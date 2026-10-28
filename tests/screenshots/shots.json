@@ -7476,6 +7476,101 @@
           "screen_space_aa": 1
         }
       }
+    },
+    {
+      "id": "field_hud_over_pemakar",
+      "scene": "res://game/levels/_tests/ui_shots/field_hud_over_pemakar.tscn",
+      "camera": "Backdrop/Cameras/Harbour",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "field_hud_over_ashcrown",
+      "scene": "res://game/levels/_tests/ui_shots/field_hud_over_ashcrown.tscn",
+      "camera": "Backdrop/Cameras/A01",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "field_hud_over_brine_shoals",
+      "scene": "res://game/levels/_tests/ui_shots/field_hud_over_brine_shoals.tscn",
+      "camera": "Backdrop/Cameras/Road",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "field_hud_over_coilspire",
+      "scene": "res://game/levels/_tests/ui_shots/field_hud_over_coilspire.tscn",
+      "camera": "Backdrop/Cameras/Path",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "field_hud_over_haluna_wake",
+      "scene": "res://game/levels/_tests/ui_shots/field_hud_over_haluna_wake.tscn",
+      "camera": "Backdrop/Cameras/H02",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
     }
   ]
 }
