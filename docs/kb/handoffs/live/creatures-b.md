@@ -126,3 +126,18 @@ CreatureActor and the validator are theirs too (kit or tool changes go to them a
     forge-machine, the sight-glass a clear teal point in the intro. Mild: the biggest belly cells are smooth up close.
   - **For env-art / battle-presentation (seen in battle_boss_intro_matron):** the Ch5 terrace arena's front edge
     shows stretched vertical texture streaks (orange stripes) across the lower third of the frame.
+- **MERGE-READY @ (this merge): M3-CRB-008 part 3, Virel to final quality** (worktree agent bfd23910, viewed by me).
+  - An open S in flight (head raised toward the foes, a kite-tail of bows and a tassel), never a closed loop;
+    15 varied trapezoid sail panels on a cane spine and battens with lashings, hems, grommets, stains and Saltwright
+    patches; each seam a sewn raised line with a narrow bound-light core, a charred ring and scorched cloth, with
+    small frozen flame tongues; a framed cloth kite-dragon head (cane ridge, open glowing jaw, lantern-eyes, cord
+    whiskers, pennant); a 0.37 m brass tuning key. 17.8k triangles; body 4.85 m (was 5.5) so the S fits the safe
+    frame; her test's Flare Line length check 5.0 → 4.5 m (the line reaches 4.75). creatures.json: `virel` and
+    `virel_held` get stand_in height 2.6 / radius 0.8 (as ui's note asked: effect anchors land on her).
+  - **Colour decision (documented in virel.md):** her light stays glimmer_bound; ember_orange is for flames and
+    fire VFX (palette.json), the held swap requires bound slots, so the fire reads through scorch and flame shapes and
+    her battle VFX carries the flame colour. **For battle VFX:** Kite Flare and Flare Line should add the fire.
+  - **Checks run:** Blender verify identical; validate_data 0 errors; tools tests 48 OK; gdlint/gdformat on her test;
+    Godot virel 6/0, vowbound 83/0, creature 74/1 (known portraits).
+  - SELF-RENDERED @ bfd23910: creature_virel, creature_virel_held — drift (new model); viewed: a kite-serpent riding
+    the wind. Mild: from the held shot's near front-on view the S is nearly edge-on.
