@@ -678,7 +678,34 @@ Ch4–Ch9 onward. `m2-slice.md` beside this file is the history up to the 2026-1
   puts `scale_hull` at (-7.4, 10.5) and `chandlery` at (32, -11.7), off the scaleman's and Kell's marks. That would
   undo O02's "Rhen across the counter" and O09. I asked for the story pieces on the story actors (the exact placements
   are in the task), then I swap to their layout and retire my generator. Mine stays mounted meanwhile.
-- LEAD-ASK: M3-ENV-740 has two Oruvel dressings (env-art's M3-ENV-738 and my M3-C01-100). My default: keep mine
+- **After the Lead's ruling (14:47; env-art's dressings win the zones): both Ch1 zones mount env-art's.**
+  - **Oruvel (M3-ENV-740, to review):** `Dressing` reads `assets/environments/zones/ch01/oruvel_dressing.json`.
+    - Retired: my generator `tools/ch01/ch01_oruvel_dressing.py`, its two layouts, its tools test, `TerraceDressing`
+      and the two environment copies.
+    - The cutscene side follows env-art's hulls:
+      - the scaleman stands behind their scale_hull's counter at (-7.2, -0.4, 10.5), facing east;
+      - the ScaleHull spawn is on the deck across it, and O02 is over Rhen's shoulder;
+      - the ScaleCounter collider is under the booth;
+      - Kell stands before the chandlery as the greybox had her (their generator places it from KellStall, so
+        KellStall stays);
+      - O10 frames the dive raft's gull;
+      - the storm takes their storm frame;
+      - the map POI follows the spawn.
+    - My StormWall work (M3-ENV-751) carries over: their storm set already follows StormWall.
+  - **The Underway (M3-ENV-742, to review):** `Dressing` reads their layout. My generator, its layout and its test
+    are retired.
+    - The kit's ch01 Environment stays through the layout's new `environment_res` (underway_zone.gd), and the rooms'
+      depth lighting tints it.
+    - `tools/tests/test_ch01_zone_copies.py` keeps the two zone copies of preview resources in sync.
+    - test_ch01_underway_kit's grid check (my generator's rules) is dropped.
+  - **Filed to env-art:**
+    - **M3-ENV-104:** the gulls on every roof (C1-11), Kell's beacon lamp mesh, the low hull's load; their Oruvel
+      layout is stale for their generator;
+    - **M3-ENV-105:** the cut gauge wheel's hub, and a check against my retired Underway layout.
+  - **M3-ENV-739 (Iskarra), to review:** already done here.
+  - **Checks:** ch01 20, underway 9, zone_map 21, slice_primitives 1, all 0 failed; tools test_zone_map_pois
+    (Ch1 rows), test_ch01_zone_copies; gdlint and gdformat clean. Self-rendering the Ch1 set on their dressings next.
+- LEAD-ANSWERED (14:47, env-art's dressing wins the zone; mine keeps the cutscene side; done above): M3-ENV-740 has two Oruvel dressings (env-art's M3-ENV-738 and my M3-C01-100). My default: keep mine
   mounted until env-art moves its scale_hull and chandlery onto the story actors, then mount theirs (it has the storm
   state). Overrule if you'd rather mount theirs now and re-stage the actors to it.
 - LEAD-ANSWERED (13:35, the gate baselines them at big15 or big16 after viewing): the gate's baselines for my pending shots (slice_verse_threshold, slice_verse_recognition,
