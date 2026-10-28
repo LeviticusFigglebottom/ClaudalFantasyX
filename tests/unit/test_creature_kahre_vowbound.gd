@@ -71,6 +71,7 @@ func test_the_vowbound_stand_in_resolves_to_the_model() -> void:
 	assert_true(is_equal_approx(float(spec["radius"]), RADIUS_M), "and his ring fits his footprint")
 	assert_false(CreatureModels.models().has("kahre"), "he is no enemy")
 	assert_eq(CreatureModels.stand_in_overrides("ilun").get("scene", ""), "res://game/creatures/ilun/ilun_battle.tscn")
+	before_each()
 
 
 func test_the_scene_loads_headless_with_its_clips() -> void:
@@ -87,6 +88,7 @@ func test_the_scene_loads_headless_with_its_clips() -> void:
 		assert_true(t > 0.0 and t < a.clip_length(clip), "%s lands inside the clip" % clip)
 	var skel := _pose(a, &"idle", 0.0)
 	assert_true(absf(_bone_at(skel, "body").y - HIP_Y) < HIP_TOL_M, "he stands on the water at his rest height")
+	before_each()
 
 
 func test_the_stand_in_plays_the_stage_clips_on_the_model() -> void:
@@ -101,6 +103,7 @@ func test_the_stand_in_plays_the_stage_clips_on_the_model() -> void:
 	assert_true(BattleClips.play(f, &"ko"), "the fall's clip")
 	f.set_ko(true, 0.25, 0.35)
 	assert_true(f.creature().is_ko())
+	before_each()
 
 
 func test_the_clips_follow_the_sheet() -> void:
@@ -128,6 +131,7 @@ func test_the_clips_follow_the_sheet() -> void:
 	var struck := _bone_at(skel, "head").y
 	assert_true(held - struck > SPECIAL_FALL_M, "Last Strike brings the hammer down from high over his back")
 	assert_true(struck < SPECIAL_HEAD_MAX_Y, "onto the water in front of him")
+	before_each()
 
 
 func _actor() -> CreatureActor:

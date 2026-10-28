@@ -46,6 +46,7 @@ func test_each_held_scene_loads_with_the_release_clip() -> void:
 		assert_true(is_equal_approx(float(row["stand_in"]["yaw_deg"]), FOE_YAW_DEG), "%s faces the party" % id)
 		for clip: StringName in [&"attack", &"cast", &"hit", &"ko"]:
 			assert_true(a.has_clip(clip), "%s_held plays %s" % [id, clip])
+	before_each()
 
 
 func test_the_held_scene_wears_glimmer_held_and_the_ally_keeps_glimmer_bound() -> void:
@@ -62,6 +63,7 @@ func test_the_held_scene_wears_glimmer_held_and_the_ally_keeps_glimmer_bound() -
 		var he := _emissive_energies(_actor(HELD_SCENE % [id, id]))
 		var ae := _emissive_energies(_actor(ALLY_SCENE % [id, id]))
 		assert_eq(he, ae, "%s: the same energies (steady, as bound)" % id)
+	before_each()
 
 
 func test_the_release_lifts_up_and_away() -> void:
@@ -71,6 +73,7 @@ func test_the_release_lifts_up_and_away() -> void:
 		var end := _bone_at(_pose(a, &"release", a.clip_length(&"release")), "root")
 		assert_true(end.y - start.y > MIN_LIFT_M, "%s rises (%.2f m)" % [id, end.y - start.y])
 		assert_true(start.z - end.z > MIN_BACK_M, "%s goes back, away from the party" % id)
+	before_each()
 
 
 func test_the_release_phase_holds_and_the_ko_does_not_replay_it() -> void:
@@ -92,6 +95,7 @@ func test_the_release_phase_holds_and_the_ko_does_not_replay_it() -> void:
 	var c := _actor(HELD_SCENE % [&"hesk", &"hesk"])
 	c.set_ko(true, 0.0)
 	assert_eq(c.current_clip, &"release", "a plain KO plays the release")
+	before_each()
 
 
 func _actor(path: String) -> CreatureActor:
