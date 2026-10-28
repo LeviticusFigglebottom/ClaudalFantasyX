@@ -49,7 +49,7 @@ COPIES = {  # preview file -> zone file (the kit's grade and water look)
 DECK = {"raft_deck": 0.80, "raft_deck_small": 0.70, "dive_raft": 0.75, "net_pen": 0.60, "keel_hull": 1.0,
         "chandlery": 0.5, "scale_hull": 0.4, "cookboat": 0.6, "hull_outrigger": 0.3, "hull_cabin": 0.5}
 SEA_Y = -0.8  # the raft decks' waterline once sunk; the greybox's solid sea floor is at -1.0
-KEEP = ["LowHull", "StormWall"]
+KEEP = ["StormWall"]
 GULL_YAW = -70.0  # the carving's +X out to sea (the kit preview's GULL_YAW)
 GULL_JITTER = 8.0
 # Kell's chandlery gull, the one C1-11 (O10) frames from the dive mooring below it: turned side-on to that camera,
@@ -160,6 +160,9 @@ def pieces() -> list[dict]:
     rows += bridge(46.0, -17.0, 34.0, -17.0)
     rows.append(piece("net_pen", 30.0, -22.0))
     rows += bridge(18.0, -22.0, 24.0, -22.0)
+    # The low hull thrown across the run's bridge, lashed to the two cut points; it goes with the block once both
+    # lashings are cut (the zone hides it).
+    rows.append(piece("hull_lashed", 39.0, -17.0, 0.0, block="LowHull"))
     # Moored hulls between the rafts, and the far town on the horizon.
     rows.append(piece("hull_outrigger", 8.0, 2.5, 90.0))
     rows.append(piece("hull_cabin", -9.0, 6.0, 0.0))

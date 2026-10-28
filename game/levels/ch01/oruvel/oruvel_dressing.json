@@ -12,7 +12,6 @@
  "greybox": {
   "hide_all": true,
   "keep": [
-   "LowHull",
    "StormWall"
   ]
  },
@@ -325,6 +324,16 @@
    ],
    "y": 0.0,
    "yaw_deg": 90.0
+  },
+  {
+   "piece": "hull_lashed",
+   "at": [
+    39.0,
+    -17.0
+   ],
+   "y": 0.0,
+   "yaw_deg": 0.0,
+   "block": "LowHull"
   },
   {
    "piece": "hull_outrigger",

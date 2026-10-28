@@ -522,6 +522,90 @@
    "yaw_deg": 300.0
   },
   {
+   "piece": "pipe_run",
+   "at": [
+    34.2,
+    8.0
+   ],
+   "y": 0.0,
+   "yaw_deg": 90.0
+  },
+  {
+   "piece": "pipe_run",
+   "at": [
+    38.0,
+    2.2
+   ],
+   "y": 0.0,
+   "yaw_deg": 0.0
+  },
+  {
+   "piece": "coral_head_a",
+   "at": [
+    35.3,
+    13.0
+   ],
+   "y": 0.0,
+   "yaw_deg": 75.0,
+   "scale": 0.8
+  },
+  {
+   "piece": "coral_head_b",
+   "at": [
+    45.0,
+    13.1
+   ],
+   "y": 0.0,
+   "yaw_deg": 210.0,
+   "scale": 0.7
+  },
+  {
+   "piece": "coral_head_b",
+   "at": [
+    35.2,
+    2.9
+   ],
+   "y": 0.0,
+   "yaw_deg": 20.0,
+   "scale": 0.6
+  },
+  {
+   "piece": "lamp_column_fallen",
+   "at": [
+    43.0,
+    8.5
+   ],
+   "y": 0.0,
+   "yaw_deg": 160.0
+  },
+  {
+   "piece": "seagrass_patch",
+   "at": [
+    37.0,
+    12.6
+   ],
+   "y": 0.0,
+   "yaw_deg": 40.0
+  },
+  {
+   "piece": "diver_lantern",
+   "at": [
+    41.8,
+    13.2
+   ],
+   "y": 0.0,
+   "yaw_deg": 200.0
+  },
+  {
+   "piece": "lit_fragments",
+   "at": [
+    36.2,
+    6.0
+   ],
+   "y": 0.0,
+   "yaw_deg": 120.0
+  },
+  {
    "piece": "floor_slab",
    "at": [
     77.0,
@@ -835,6 +919,24 @@
    ],
    "y": 0.0,
    "yaw_deg": 90.0
+  },
+  {
+   "piece": "tower_pier",
+   "at": [
+    86.0,
+    8.0
+   ],
+   "y": 0.0,
+   "yaw_deg": 0.0
+  },
+  {
+   "piece": "tower_pier",
+   "at": [
+    86.0,
+    14.0
+   ],
+   "y": 0.0,
+   "yaw_deg": 0.0
   },
   {
    "piece": "tower_bay_broken",
