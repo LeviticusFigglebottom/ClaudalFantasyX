@@ -402,6 +402,156 @@
           "Body": 48
         }
       }
+    },
+    "stillguard_a": {
+      "garments": [
+        "Costume",
+        "Sleeves",
+        "Helm"
+      ],
+      "props": [
+        "Spear",
+        "Shield"
+      ],
+      "seams": {
+        "groups": [
+          [
+            "Body",
+            "Head:skin_head"
+          ],
+          [
+            "Costume"
+          ],
+          [
+            "Sleeves"
+          ]
+        ]
+      }
+    },
+    "stillguard_b": {
+      "garments": [
+        "Costume",
+        "Sleeves",
+        "Helm"
+      ],
+      "props": [
+        "Spear",
+        "Shield"
+      ],
+      "seams": {
+        "groups": [
+          [
+            "Body",
+            "Head:skin_head"
+          ],
+          [
+            "Costume"
+          ],
+          [
+            "Sleeves"
+          ]
+        ]
+      }
+    },
+    "stillguard_c": {
+      "garments": [
+        "Costume",
+        "Sleeves",
+        "Helm"
+      ],
+      "props": [
+        "Spear",
+        "Shield"
+      ],
+      "seams": {
+        "groups": [
+          [
+            "Body",
+            "Head:skin_head"
+          ],
+          [
+            "Costume"
+          ],
+          [
+            "Sleeves"
+          ]
+        ]
+      }
+    },
+    "stillguard_d": {
+      "garments": [
+        "Costume",
+        "Sleeves",
+        "Helm"
+      ],
+      "props": [
+        "Spear",
+        "Shield"
+      ],
+      "seams": {
+        "groups": [
+          [
+            "Body",
+            "Head:skin_head"
+          ],
+          [
+            "Costume"
+          ],
+          [
+            "Sleeves"
+          ]
+        ]
+      }
+    },
+    "stillguard_e": {
+      "garments": [
+        "Costume",
+        "Sleeves",
+        "Helm"
+      ],
+      "props": [
+        "Spear",
+        "Shield"
+      ],
+      "seams": {
+        "groups": [
+          [
+            "Body",
+            "Head:skin_head"
+          ],
+          [
+            "Costume"
+          ],
+          [
+            "Sleeves"
+          ]
+        ]
+      }
+    },
+    "stillguard_f": {
+      "garments": [
+        "Costume",
+        "Sleeves",
+        "Helm"
+      ],
+      "props": [
+        "Spear",
+        "Shield"
+      ],
+      "seams": {
+        "groups": [
+          [
+            "Body",
+            "Head:skin_head"
+          ],
+          [
+            "Costume"
+          ],
+          [
+            "Sleeves"
+          ]
+        ]
+      }
     }
   }
 }
