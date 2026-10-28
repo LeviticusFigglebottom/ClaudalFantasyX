@@ -659,6 +659,28 @@ Ch4–Ch9 onward. `m2-slice.md` beside this file is the history up to the 2026-1
     it, and the solve clears only her own legs. The marks stay, since the PC confirmed both faces. If the cloth can't
     clear him, I move her mark by the amount they name.
   - Merged the integration branch @ 8870ea9c (TRACK-RULES' LEAD-ASK lines).
+- **End card (B12):** two new pending stills, `slice_end_card_voice` and `slice_end_card`, both viewed. The credits'
+  "Original music, in prototype" now reads "Original music" (ADR 0042 keeps the score).
+- **Broad run on the current tree:**
+  - Godot: fp_ 30, prologue 8, first_verse 3, slice_ 16, end_card 5, cutscene 84. Two reds: the Ch4 walks (not
+    mine), and `test_footsteps_slice_zones`, now fixed: the beach re-stage put Rhen's mark on wet sand, so the
+    test samples the shallows instead.
+  - Tools suite, 1528 tests:
+    - **fixed:** test_zone_map_pois' beach POI, at the spawn's new (-4, 8) (one coordinate in ui-menus'
+      zone_maps.json; the spawn is mine);
+    - **not mine:**
+      - test_zone_map_pois' Ch4 `neme_house`, test_arenas (ash_terrace_lanternfall), test_pemakar_kit, test_hero_clips;
+      - test_zone_dressing_ch01: env-art's `assets/environments/zones/ch01/oruvel_dressing.json` is stale for its
+        generator;
+      - test_shrine_gi_bake: stale on 93d0741e too; none of its inputs changed here. The gate's rebake;
+      - test_screenshots (other tracks' new shots, for the gate).
+- **M3-ENV-740 (env-art's request to mount their Oruvel dressing): blocked, answered in the task.** Their layout
+  puts `scale_hull` at (-7.4, 10.5) and `chandlery` at (32, -11.7), off the scaleman's and Kell's marks. That would
+  undo O02's "Rhen across the counter" and O09. I asked for the story pieces on the story actors (the exact placements
+  are in the task), then I swap to their layout and retire my generator. Mine stays mounted meanwhile.
+- LEAD-ASK: M3-ENV-740 has two Oruvel dressings (env-art's M3-ENV-738 and my M3-C01-100). My default: keep mine
+  mounted until env-art moves its scale_hull and chandlery onto the story actors, then mount theirs (it has the storm
+  state). Overrule if you'd rather mount theirs now and re-stage the actors to it.
 - LEAD-ANSWERED (13:35, the gate baselines them at big15 or big16 after viewing): the gate's baselines for my pending shots (slice_verse_threshold, slice_verse_recognition,
   slice_beach_standing, slice_neme_table, the seven ch01_* scene stills, ch01_oruvel_storm, slice_prologue_p01).
   Approve them and drop their `pending_baseline` keys; all are viewed above.

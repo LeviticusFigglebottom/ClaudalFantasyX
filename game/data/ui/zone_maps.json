@@ -42,7 +42,7 @@
         "shape_kind": "haluna_layout",
         "bounds": [-150.0, -150.0, 210.0, 230.0],
         "pois": [
-          {"id": "beach", "name_key": "MAP_POI_BEACH", "kind": "path", "at": [-1.0, 8.0], "source": "node:Spawns/Beach"},
+          {"id": "beach", "name_key": "MAP_POI_BEACH", "kind": "path", "at": [-4.0, 8.0], "source": "node:Spawns/Beach"},
           {"id": "village", "name_key": "MAP_POI_NEMES_HOUSE", "kind": "home", "at": [-54.1, -1.9], "source": "node:NPCs/Neme/Neme"},
           {"id": "market", "name_key": "MAP_POI_MARKET", "kind": "talk", "at": [-40.0, 1.5], "source": "node:NPCs/Market/Vendor"},
           {"id": "shop", "name_key": "MAP_POI_SHOP", "kind": "shop", "at": [-35.5, -0.6], "source": "node:NPCs/Town/Shopkeeper"},
