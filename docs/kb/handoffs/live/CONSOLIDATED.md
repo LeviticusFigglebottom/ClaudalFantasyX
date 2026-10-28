@@ -50,6 +50,9 @@ The previous version is `CONSOLIDATED-history-2026-10-28.md`. It has the deep hi
   Estimate: two or three batches.
 
 ## LIVE STATUS (kept current by the outgoing Lead; newest at top)
+- **22:50 UTC:**
+  - PELL is MERGE-READY (claude/characters @ 3346484b; a second look-dev pass follows). Fold it in with big16, or with big17 if big16 is already gating.
+  - big16 cloud gate: 533/~600 shots; the published results are expected within ~1 h.
 - **21:30 UTC:**
   - PELL is built (claude/characters @ b51dcc3d) and in a look-dev pass before MERGE-READY.
   - big16 cloud gate: 396/~600 shots; the slow beach and Haluna crowd shots take 6–10 min each.
