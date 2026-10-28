@@ -453,6 +453,16 @@ Ch4–Ch9 onward. `m2-slice.md` beside this file is the history up to the 2026-1
 - **Render requests:** per TRACK-RULES' limit, every older line is now SUPERSEDED. The one open request is the line
   at the bottom.
 
+- **To the Lead's repeated list (00:13):**
+  - **Done:** 1 (Toma's line, M2-FP-105), 3 (the beach and C07, fd5cedbd), and 5 (the re-audit). For 2, the
+    Prologue already stands on the approved Iskarra with the lagoon WaterSurface (2ab7a66e) and env-art's fog
+    (28b0f97a).
+  - **Waiting on others:** the three vigils' bodies. No body exists yet: Liss's model is only on claude/characters,
+    Kerrid's is M3-CHR-505 and Pell's M3-CHR-506, and their battle stand-ins are capsules too.
+    `dress_vigils()` swaps each one in when hero_motion.json lists it. Filed **M3-HER-100** (the hero track) to add
+    `field.heroes.liss`, then kerrid and pell.
+  - **Ch1–Ch3 polish:** continuing as renders return. The one open request is @ a615b844.
+
 ### Render requests
 SUPERSEDED RENDER-REQUEST @ fdec3cc6: slice_prologue_vigil_line, slice_beach_h05_asha, slice_beach_h06_toma, slice_haluna_villagers_village, slice_causeway_head, slice_causeway_harrier_view, haluna_h01_village_from_sea, haluna_h02_tidewall_lane, haluna_h04_dock, haluna_h07_chapel_court, haluna_h10_dock_night, shrine_s01_approach, shrine_s02_threshold, shrine_s03_overview, shrine_s04_lip, shrine_s05_side_pool, drownbell_flood, battle_boss_intro_drownbell, battle_arena_causeway, field_causeway_dolly, boot_title; why: M2-FP-102..109, the human's playtest round (real cast and held poses in the prologue and Cutscene A, live villagers and wildlife, the final causeway), plus the greyscale audit of every slice beat. The six slice_* shots are new (no baseline yet).
 - **Known red until the render lands:** the six new `slice_*` shots have no baseline yet, so the tools test
