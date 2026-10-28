@@ -1012,3 +1012,28 @@ without the 391 gate-run PNGs, 131 MB).
   there would load in Ch2). Both are in M3-HER-1154 (act1-chapters), KNOWN in the test. 2/0.
 - Still running at the time of this line: the full `--filter=hero / party / fp_ / qa_` on the merged tree. Results
   follow in the next line.
+
+MERGE-READY @ a7e4f4f78 (+ this log): **big15 merged in (integration 2d6a25a7), plus the hero tests after the sight-line step.**
+- `--filter` results on the big14 tree before the follow-up commit 94c6f1d4: hero 110/2, party 35/1, fp_ 30/0. All
+  three failures are fixed in 94c6f1d4:
+  - test_hero_followers "facing her walk again" now measures against her follow point (she walks to her stepped-aside
+    spot, not straight at him);
+  - test_battle_party_stand_ins checks Liss's tint against her own capsule colour, not a literal (the data changed
+    to #7A8C5A);
+  - Toma's 3 wake snaps are the same NemeDoor fall (KNOWN, M3-HER-1154).
+  - hero_followers 12/0, party_stand_ins 3/0.
+- qa_ is still running; its result follows.
+
+### TRIAL MERGE, 2026-10-28 ~11:10
+TRIAL MERGE @ integration 2d6a25a7 (big15): env-art 5d81885c, env-art-b 697bc32d, creatures a6eada94, creatures-b 3bf1fa2b, characters 4ab59bc1, ui 115f20b2, battle-presentation c358c481, act1-chapters e66297f9, m2-slice 7dba5bc2, audio 6adbda62, hero-integration 94c6f1d4
+- **creatures vs creatures-b: the Vowbound portraits** (`assets/ui/portraits/creatures/ilun*.png`, `kahre*.png` and
+  their .import). Both tracks drew them, and binary files can't union. **Lead:** pick one.
+- `ui_sfx.json` (audio vs ui) and ownership.md (several tracks) need hand merges.
+- hero-integration's 3 "clashes" (qa_known.json, test_fp_prologue, test_battle_party_stand_ins) are only tracks still
+  on pre-big15 versions. My branch has merged big15 cleanly.
+- **The Env-art vs env-art-b Haluna kit clash is gone.**
+- **Audit on the merged tree, full (import + runtime scan): 17 items, down from 44.** `act1_final_inventory.md` is
+  rewritten. env-art 10, creatures-b 4, env-art-b 1, integration-qa 2. Audio, characters and creatures are all clear.
+- **integration-qa's 2 are Pell and vigil_pell (Ch9, ch09_pell_joined).** They wait on characters' Pell model,
+  **M3-CHR-506, still todo**; nothing in my lane can make them real (no model, no AI art). The wiring is ready: the
+  `vigil_` prefix and HeroFieldActor.hero_of take his body the moment hero_motion.json gets a `pell` row.
