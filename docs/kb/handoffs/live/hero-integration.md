@@ -832,3 +832,12 @@ hand_off_radius_m, spawn_search_steps, steer_turns_deg, slide_min_share) and a n
     characters' known item (M1-QA-09); the stick may be beach dressing.
 - **Not mine, seen while probing:** LifeAudio.advance (life_audio.gd:124) casts a freed object when a zone is
   freed. That's the audio item already in CONSOLIDATED.
+
+### The FAST-TRACK cherry-pick failure (the Lead, 04:03): found
+- **b66981e9 alone doesn't compile on the integration branch.** The hand-off calls `HeroFieldActor.hero_of`, which
+  8fdf266d (M3-HER-1149) added together with hero_motion.json's actor_aliases and actor_prefixes. 608db549 has
+  neither. So hero_field_party.gd fails to parse, and every `HeroFieldParty.new()` fails with it
+  (hero_field_actor.gd:171).
+- **To cherry-pick:** take 8fdf266d, then b66981e9. Or take the whole branch (big14).
+- **On this branch merged with big13 (003fb560):** hero_ is 110/0 (compiles). The qa_ run, including the two
+  party-spawn tests and the new encounter guard, is still going.
