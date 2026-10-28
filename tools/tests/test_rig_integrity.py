@@ -303,11 +303,69 @@ class TestRigIntegrityWrightChildB(_HeroGuards, unittest.TestCase):  # M3-CHR-50
     hero = "wright_child_b"
 
 
+class TestRigIntegritySabe(_HeroGuards, unittest.TestCase):  # M3-CHR-526..539
+    hero = "sabe"
+
+
+class TestRigIntegrityScaleman(_HeroGuards, unittest.TestCase):  # M3-CHR-526..539
+    hero = "scaleman"
+
+
+class TestRigIntegritySkipperSadi(_HeroGuards, unittest.TestCase):  # M3-CHR-526..539
+    hero = "skipper_sadi"
+
+
+class TestRigIntegrityFerrymaster(_HeroGuards, unittest.TestCase):  # M3-CHR-526..539
+    hero = "ferrymaster"
+
+
+class TestRigIntegrityPurser(_HeroGuards, unittest.TestCase):  # M3-CHR-526..539
+    hero = "purser"
+
+
+class TestRigIntegrityElder(_HeroGuards, unittest.TestCase):  # M3-CHR-526..539
+    hero = "elder"
+
+
+class TestRigIntegrityGaro(_HeroGuards, unittest.TestCase):  # M3-CHR-526..539
+    hero = "garo"
+
+
+class TestRigIntegrityTender(_HeroGuards, unittest.TestCase):  # M3-CHR-526..539
+    hero = "tender"
+
+
+class TestRigIntegrityIone(_HeroGuards, unittest.TestCase):  # M3-CHR-526..539
+    hero = "ione"
+
+
+class TestRigIntegrityPoolkeeper(_HeroGuards, unittest.TestCase):  # M3-CHR-526..539
+    hero = "poolkeeper"
+
+
+class TestRigIntegrityFenn(_HeroGuards, unittest.TestCase):  # M3-CHR-526..539
+    hero = "fenn"
+
+
+class TestRigIntegrityGatekeeper(_HeroGuards, unittest.TestCase):  # M3-CHR-526..539
+    hero = "gatekeeper"
+
+
+class TestRigIntegrityHobb(_HeroGuards, unittest.TestCase):  # M3-CHR-526..539
+    hero = "hobb"
+
+
+class TestRigIntegrityMarra(_HeroGuards, unittest.TestCase):  # M3-CHR-526..539
+    hero = "marra"
+
+
 class TestVillagerProbeWiring(unittest.TestCase):
     def test_villagers_read_their_own_glb_and_clips(self):
         self.assertEqual(rig_probe.villagers(), sorted(["kell", "tavi", "shopkeeper", "smith", "innkeeper", "clerk", "reed_a",
                                                        "reed_b", "reed_c", "reed_d", "wright_girl", "wright_child_a",
-                                                       "wright_child_b"]))
+                                                       "wright_child_b", "sabe", "scaleman", "skipper_sadi",
+                                                       "ferrymaster", "purser", "elder", "garo", "tender", "ione",
+                                                       "poolkeeper", "fenn", "gatekeeper", "hobb", "marra"]))
         self.assertIn("pole_barge", rig_probe.clip_names("reed_a"))
         self.assertIn("villagers/kell/kell.glb", rig_probe.hero_glb("kell").as_posix())
         self.assertIn("press_wick", rig_probe.clip_names("kell"))
