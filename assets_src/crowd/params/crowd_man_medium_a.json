@@ -108,5 +108,9 @@
     "sway": 1.23,
     "lean": 1.2,
     "arms_down": 40.2
-  }
+  },
+  "_work": [
+    "haul",
+    "kneel_mourn"
+  ]
 }

@@ -111,5 +111,9 @@
     "sway": 0.65,
     "lean": 4.13,
     "arms_down": 39.0
-  }
+  },
+  "_work": [
+    "kneel_mourn",
+    "mend"
+  ]
 }

@@ -107,5 +107,9 @@
     "sway": 0.92,
     "lean": 0.02,
     "arms_down": 41.1
-  }
+  },
+  "_work": [
+    "carry",
+    "mend"
+  ]
 }

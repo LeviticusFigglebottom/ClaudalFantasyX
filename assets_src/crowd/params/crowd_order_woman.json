@@ -108,5 +108,8 @@
     "sway": 0.7,
     "lean": 0.81,
     "arms_down": 40.5
-  }
+  },
+  "_work": [
+    "vigil"
+  ]
 }

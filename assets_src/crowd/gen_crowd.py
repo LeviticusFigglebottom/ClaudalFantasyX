@@ -11,7 +11,7 @@ the villager_costume pieces). Outputs:
 
 * `assets_src/crowd/params/<body>.json`, one per planned body, in the characters' villager schema
   (assets_src/characters/villagers/params: the bb_params block plus `_skin`, `_hair`, `_eyes`, `_costume`,
-  `_tints`, `_build`, `_persona`), which build_crowd.py feeds to the characters' modules unchanged. Each face is
+  `_tints`, `_build`, `_persona`; plus `_work`, the work clips its wearers play), which build_crowd.py feeds to the characters' modules unchanged. Each face is
   rejection-sampled away from every Haluna villager's (M3-CHR-100: crowd bodies are new people) and from the other
   crowd faces of its age band.
 * In crowd.json, each person's `island` (from the community), `body` (assign), `tints` (cloth_a/b/c and hair) and
@@ -435,8 +435,12 @@ def generate() -> tuple[dict[str, str], str]:
     roster = load_json(ROSTER)
     pal = Palette()
     bodies = all_bodies(ranges, roster, pal)
-    files = {f"{bid}.json": dump(p) for bid, (p, _m) in bodies.items()}
     roster["people"] = people(ranges, roster, pal, {bid: m for bid, (_p, m) in bodies.items()})
+    files = {}
+    for bid, (params, _m) in bodies.items():
+        # the work clips its wearers play (crowd_clips.py), so the build needs nothing outside assets_src
+        params["_work"] = sorted({p["work"] for p in roster["people"] if p["body"] == bid and p["work"]})
+        files[f"{bid}.json"] = dump(params)
     return files, dump(roster)
 
 

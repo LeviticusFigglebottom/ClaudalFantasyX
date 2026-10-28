@@ -117,5 +117,9 @@
     "sway": 1.08,
     "lean": 2.31,
     "arms_down": 40.9
-  }
+  },
+  "_work": [
+    "carry",
+    "fold"
+  ]
 }

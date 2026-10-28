@@ -112,5 +112,9 @@
     "sway": 1.15,
     "lean": 1.28,
     "arms_down": 42.7
-  }
+  },
+  "_work": [
+    "carry",
+    "kneel_mourn"
+  ]
 }

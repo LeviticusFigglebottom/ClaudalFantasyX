@@ -115,5 +115,9 @@
     "sway": 0.92,
     "lean": 1.84,
     "arms_down": 42.0
-  }
+  },
+  "_work": [
+    "haul",
+    "vigil"
+  ]
 }

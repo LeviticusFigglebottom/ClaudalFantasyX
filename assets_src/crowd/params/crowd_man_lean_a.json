@@ -109,5 +109,9 @@
     "sway": 0.73,
     "lean": 0.45,
     "arms_down": 39.9
-  }
+  },
+  "_work": [
+    "kneel_mourn",
+    "vigil"
+  ]
 }

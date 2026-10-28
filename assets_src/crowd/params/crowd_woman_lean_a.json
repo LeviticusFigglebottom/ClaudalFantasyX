@@ -106,5 +106,10 @@
     "sway": 0.98,
     "lean": 0.04,
     "arms_down": 42.3
-  }
+  },
+  "_work": [
+    "fold",
+    "mend",
+    "vigil"
+  ]
 }
