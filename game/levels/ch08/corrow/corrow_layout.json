@@ -7,7 +7,7 @@
     {"flag": "ch08_beacon_opened", "sun": {"pitch_deg": -22.0, "yaw_deg": -75.0, "energy": 0.35, "color": "#ffe4ce"}, "environment": {"background": "#2c3640", "ambient_color": "#4a6070", "ambient_energy": 0.3}},
     {"flag": "ch08_wall_fell", "sun": {"pitch_deg": -11.0, "yaw_deg": 68.0, "energy": 0.6, "color": "#e2e6ec"}, "environment": {"background": "#141c2a", "ambient_color": "#33415a", "ambient_energy": 0.3}, "environment_res": "res://game/levels/ch08/corrow/corrow_fallen_environment.tres"}
   ],
-  "start_hidden": ["Flood", "Lake", "Breach", "HoistPins", "HoistRope", "Basket", "RopeCoil"],
+  "start_hidden": ["Flood", "Lake", "Breach", "HoistPins", "HoistRope", "Basket", "RopeCoil", "Storm"],
   "blocks": [
     {"id": "Trader", "pos": [7.909, 1.9, 36.454], "size": [3.6, 2.4, 12], "color": "#6a5038", "solid": false, "yaw": -1.72},
     {"id": "Kites", "pos": [-14.919, 25.0, 1.873], "size": [80, 2, 0.2], "color": "#e0a040", "emission": "#e0a040", "emission_energy": 0.2, "solid": false, "yaw": 2.86},
@@ -25,7 +25,8 @@
     {"id": "Chapel", "pos": [-77.101, 13.5, -10.573], "size": [6, 3, 6], "color": "#cfc8b8", "yaw": 13.94},
     {"id": "Shrine", "pos": [-66.685, 12.8, -2.947], "size": [1, 1.6, 0.6], "color": "#cfd8dc", "emission": "#9fd8e0", "emission_energy": 0.6, "yaw": 12.41},
     {"id": "Chandler", "pos": [-78.747, 13.0, -0.038], "size": [3, 2, 3], "color": "#7a6040", "yaw": 14.71},
-    {"id": "WallGate", "pos": [34.921, 14.0, 2.039], "size": [0.6, 4, 6], "color": "#a8302a", "solid": false, "yaw": -6.68}
+    {"id": "WallGate", "pos": [34.921, 14.0, 2.039], "size": [0.6, 4, 6], "color": "#a8302a", "solid": false, "yaw": -6.68},
+    {"id": "Storm", "pos": [-19.985, 12.0, 0.666], "size": [0.2, 0.2, 0.2], "color": "#2fb8c8", "solid": false}
   ],
   "spawns": {
     "Mole": [12.988, 1.2, 40.46, -2.86],
@@ -197,7 +198,7 @@
   ],
   "states": [
     {"flag": "ch08_arrived_corrow", "hide": ["kerrid"], "place": {"asha": "day_asha", "toma": "day_toma", "ysolde": "day_ysolde", "liss": "day_liss", "townsfolk_a": "mole_greet_a", "townsfolk_b": "mole_greet_b"}},
-    {"flag": "ch08_beacon_opened", "hide": ["Kites", "KitesHigh", "townsfolk_a", "townsfolk_b", "child_a", "child_b", "child_c", "netmender", "fisher_a", "gatekeeper"], "show": ["watch_a", "watch_b", "climber_a", "climber_b", "climber_c"], "place": {"asha": "storm_asha", "toma": "storm_toma", "ysolde": "storm_ysolde", "liss": "storm_liss", "ivo": "shield_line_ivo", "hobb": "stair_head_hobb", "stillguard_a": "shield_line_a", "stillguard_b": "shield_line_b", "marra": "stair_crowd_marra", "boy": "stair_crowd_boy", "climber_a": "stair_crowd_a", "climber_b": "stair_crowd_b", "climber_c": "stair_crowd_c"}},
+    {"flag": "ch08_beacon_opened", "hide": ["Kites", "KitesHigh", "townsfolk_a", "townsfolk_b", "child_a", "child_b", "child_c", "netmender", "fisher_a", "gatekeeper"], "show": ["watch_a", "watch_b", "climber_a", "climber_b", "climber_c", "Storm"], "place": {"asha": "storm_asha", "toma": "storm_toma", "ysolde": "storm_ysolde", "liss": "storm_liss", "ivo": "shield_line_ivo", "hobb": "stair_head_hobb", "stillguard_a": "shield_line_a", "stillguard_b": "shield_line_b", "marra": "stair_crowd_marra", "boy": "stair_crowd_boy", "climber_a": "stair_crowd_a", "climber_b": "stair_crowd_b", "climber_c": "stair_crowd_c"}},
     {"flag": "ch08_wave1_held", "hide": ["hobb", "watch_a", "watch_b"], "show": ["child_a", "child_b", "child_c"], "place": {"asha": "wh_asha", "toma": "shield_line_toma", "ysolde": "wh_ysolde", "liss": "wh_liss", "child_a": "basket_low_a", "child_b": "basket_low_b", "child_c": "basket_low_c"}},
     {"flag": "ch08_hoist_rigged", "show": ["HoistPins", "HoistRope", "Basket"], "place": {"child_a": "basket_top_a", "child_b": "basket_top_b", "child_c": "basket_top_c", "liss": "hoist_liss", "toma": "shield_line_toma"}},
     {"flag": "ch08_wave2_held", "show": ["pell"], "place": {"pell": "parapet_pell", "boy": "boy_stair"}},
@@ -206,7 +207,7 @@
     {"flag": "ch08_fishwife_called", "place": {"marra": "marra_up", "kerrid": "foot_kerrid_deeper"}},
     {"flag": "ch08_reach_survived", "show": ["figure"], "hide": ["climber_a", "climber_b", "climber_c"], "place": {"kerrid": "stair_up_kerrid", "figure": "figure_storm"}},
     {"flag": "ch08_wall_fell", "hide": ["WallSection", "WatchersSection", "PaleBlocks", "Flood", "figure", "pell", "ivo", "marra", "boy", "child_a", "child_b", "child_c", "WallSectionParapet", "WallSectionKerb", "StairFlight1Upper", "StairLanding", "StairFlight2"], "show": ["Lake", "Breach", "officer", "hobb"], "place": {"hobb": "hobb_after", "officer": "officer_post", "kerrid": "kerrid_drowned_stair", "toma": "aft_toma", "liss": "aft_liss", "asha": "aft_asha", "ysolde": "aft_ysolde"}},
-    {"flag": "ch08_hoist_cut_down", "hide": ["HoistRope", "Basket", "kerrid"], "show": ["RopeCoil"], "place": {"liss": "liss_coil"}}
+    {"flag": "ch08_hoist_cut_down", "hide": ["HoistRope", "Basket", "kerrid", "Storm"], "show": ["RopeCoil"], "place": {"liss": "liss_coil"}}
   ],
   "collision_path": "res://game/levels/ch08/corrow/corrow_collision.json"
 }

@@ -30,6 +30,14 @@ extends HalunaDresser
 ##   far_lights   [{"name", "points": [[x, y, z]], "size_m": [near, far], "color", "energy", "block"?}]: lights
 ##                  too small to model at their range, as camera-facing quads (env_far_lights), larger with
 ##                  distance from the origin out to FAR_SIZE_RANGE_M.
+##   waters       [{"name", "pos": [x, y, z], "size": [x, z], "material", "wave_set"?, "sea_glow"?, "block"?}]: still
+##                  water a story shows (a flood, a drowned lane) as a WaterSurface over a plane of that size, centred
+##                  at pos (the node stays unrotated at y, the plane offset to x, z); it never publishes the water
+##                  level (the zone's sea does), and a "block" water follows its block.
+##   storms       [{"name", "at": [x, y, z], "preset", "azimuth_deg", "block"?}]: Rendering's Undertow
+##                  (UndertowStorm, game/data/vfx/undertow.json "presets") marking the point it approaches from
+##                  `azimuth_deg`, on the zone's Water, sun and WorldEnvironment; a "block" storm follows its block
+##                  and stops processing while hidden (no rain, shadow or flash before the story brings it).
 ##   environment  a res:// Environment: the zone's WorldEnvironment takes a copy (sky, grade, fog).
 ##   time_of_day_h  the hymn_time_of_day the sky reads.
 ## It writes hymn_sun_direction from the zone's sun every frame, so the sky's sun follows the story's
@@ -46,6 +54,11 @@ const COLLIDE_TRIMESH := "trimesh"
 const COLLIDE_TRIMESH_LOD0 := "trimesh_lod0"
 const KEY_MULTIMESHES := "multimeshes"
 const KEY_FAR_LIGHTS := "far_lights"
+const KEY_WATERS := "waters"
+const KEY_STORMS := "storms"
+const DEFAULT_WAVES := "res://game/world/water/lagoon_waves.tres"
+## The waters' plane cells (m): fine enough for the wave field's short waves to read on a still lake.
+const WATER_CELL_M := 2.0
 const FAR_LIGHT_SHADER := "res://game/shaders/environment/env_far_lights.gdshader"
 const FAR_SIZE_RANGE_M := 700.0
 const KEY_GREYBOX := "greybox"
@@ -94,6 +107,8 @@ func dress() -> void:
 	_place_fire_lights()
 	_place_multimeshes()
 	_place_far_lights()
+	_place_waters()
+	_place_storms()
 	_hide_greybox()
 	_apply_environment()
 	if layout.has(KEY_TIME_OF_DAY):
@@ -301,6 +316,7 @@ func _follow(block_id: String) -> void:
 	var shown := block(block_id).visible
 	for n: Node3D in followers(block_id):
 		n.visible = shown
+		_pause_hidden(n)
 
 
 func _place_fire_lights() -> void:
@@ -403,6 +419,51 @@ func _place_far_lights() -> void:
 		mmi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 		add_child(mmi)
 		_attach(mmi, str(row.get(KEY_BLOCK, "")))
+
+
+func _place_waters() -> void:
+	for r: Variant in layout.get(KEY_WATERS, []):
+		var row: Dictionary = r
+		var at := GreyboxZone._vec3(row.get("pos", [0.0, 0.0, 0.0]))
+		var size: Array = row.get("size", [10.0, 10.0])
+		var plane := PlaneMesh.new()
+		plane.size = Vector2(float(size[0]), float(size[1]))
+		plane.subdivide_width = maxi(0, int(plane.size.x / WATER_CELL_M) - 1)
+		plane.subdivide_depth = maxi(0, int(plane.size.y / WATER_CELL_M) - 1)
+		plane.center_offset = Vector3(at.x, 0.0, at.z)
+		var water := WaterSurface.new()
+		water.name = str(row.get("name", "Water"))
+		water.position = Vector3(0.0, at.y, 0.0)
+		water.wave_set = load(str(row.get("wave_set", DEFAULT_WAVES))) as WaveSet
+		water.material = load(str(row["material"])) as ShaderMaterial
+		water.sea_glow_energy = float(row.get("sea_glow", 0.0))
+		water.tide_line_y = at.y
+		water.surface_mesh = plane
+		add_child(water)
+		_attach(water, str(row.get(KEY_BLOCK, "")))
+
+
+func _place_storms() -> void:
+	for r: Variant in layout.get(KEY_STORMS, []):
+		var row: Dictionary = r
+		var storm := UndertowStorm.new()
+		storm.name = str(row.get("name", "Storm"))
+		storm.position = GreyboxZone._vec3(row.get("at", [0.0, 0.0, 0.0]))
+		storm.approach_azimuth_deg = float(row.get("azimuth_deg", 0.0))
+		if zone != null:
+			storm.water = zone.get_node_or_null(^"Water") as WaterSurface
+			storm.sun = zone.sun
+			storm.world_environment = zone.get_node_or_null(^"WorldEnvironment") as WorldEnvironment
+		storm.preset = str(row.get("preset", ""))
+		add_child(storm)
+		_attach(storm, str(row.get(KEY_BLOCK, "")))
+		_pause_hidden(storm)
+
+
+## A hidden storm stops processing (its rain, zone shadow and flashes act on the zone's light).
+static func _pause_hidden(node: Node3D) -> void:
+	if node is UndertowStorm:
+		node.process_mode = Node.PROCESS_MODE_INHERIT if node.visible else Node.PROCESS_MODE_DISABLED
 
 
 func _hide_greybox() -> void:

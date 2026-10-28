@@ -11,19 +11,39 @@
  "time_of_day_h": 22.0,
  "greybox": {
   "hide_all": true,
-  "keep": [
-   "Landing",
-   "LandingEnd",
-   "LandingW",
-   "LandingE",
-   "Rocks",
-   "RocksDown",
-   "LowTownLake",
-   "MoleBridge",
-   "IskarraWater",
-   "VigilBurner"
-  ]
+  "keep": []
  },
+ "waters": [
+  {
+   "name": "LowTownLakeWater",
+   "pos": [
+    -49.016,
+    3.5,
+    -24.317
+   ],
+   "size": [
+    120.0,
+    56.0
+   ],
+   "material": "res://game/levels/ch08/corrow/corrow_water_material.tres",
+   "block": "LowTownLake"
+  },
+  {
+   "name": "IskarraWaterWater",
+   "pos": [
+    2000.0,
+    -1.1,
+    30.0
+   ],
+   "size": [
+    200,
+    60
+   ],
+   "material": "res://game/levels/ch08/corrow/corrow_water_material.tres",
+   "block": "IskarraWater"
+  }
+ ],
+ "storms": [],
  "fire_light_color": "#E0702E",
  "fire_lights": [
   {
@@ -362,6 +382,17 @@
    ],
    "energy": 0.9,
    "range": 8.0,
+   "color": "#FFB46B",
+   "block": "LampD"
+  },
+  {
+   "at": [
+    -4.235,
+    1.5,
+    23.832
+   ],
+   "energy": 1.1,
+   "range": 9.0,
    "color": "#FFB46B",
    "block": "LampD"
   }
@@ -4455,6 +4486,16 @@
   {
    "piece": "strand_lamp",
    "at": [
+    -4.235,
+    23.832
+   ],
+   "y": 0.6,
+   "yaw_deg": 0.0,
+   "block": "LampD"
+  },
+  {
+   "piece": "strand_lamp",
+   "at": [
     -46.161,
     25.606
    ],
@@ -4552,6 +4593,17 @@
     -4.0
    ],
    "y": -0.2,
+   "yaw_deg": 0.0,
+   "block": "IskarraPlaza"
+  },
+  {
+   "piece": "iskarra_vigil_dressing",
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "at": [
+    2000.0,
+    0.0
+   ],
+   "y": 0.0,
    "yaw_deg": 0.0,
    "block": "IskarraPlaza"
   },
@@ -4753,6 +4805,115 @@
    "y": 0.0,
    "yaw_deg": -90.0,
    "block": "IskarraPlaza"
+  },
+  {
+   "piece": "iskarra_drowned_block",
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "at": [
+    1970.0,
+    -32.0
+   ],
+   "y": -0.4,
+   "yaw_deg": 12.0,
+   "block": "IskarraPlaza"
+  },
+  {
+   "piece": "iskarra_drowned_block",
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "at": [
+    2044.0,
+    -48.0
+   ],
+   "y": -0.4,
+   "yaw_deg": -25.0,
+   "block": "IskarraPlaza",
+   "scale": 1.1,
+   "scale_y": 1.0
+  },
+  {
+   "piece": "iskarra_drowned_dome",
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "at": [
+    1942.0,
+    -54.0
+   ],
+   "y": -0.4,
+   "yaw_deg": 30.0,
+   "block": "IskarraPlaza"
+  },
+  {
+   "piece": "iskarra_drowned_dome",
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "at": [
+    2038.0,
+    -26.0
+   ],
+   "y": -0.4,
+   "yaw_deg": 8.0,
+   "block": "IskarraPlaza",
+   "scale": 0.9
+  },
+  {
+   "piece": "iskarra_arcade_sunk",
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "at": [
+    1960.0,
+    -22.0
+   ],
+   "y": -0.4,
+   "yaw_deg": 75.0,
+   "block": "IskarraPlaza"
+  },
+  {
+   "piece": "iskarra_far_towers",
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "at": [
+    2000.0,
+    -2.0
+   ],
+   "y": -0.4,
+   "yaw_deg": 0.0,
+   "block": "IskarraPlaza"
+  },
+  {
+   "piece": "strand_landing",
+   "at": [
+    -26.855,
+    32.344
+   ],
+   "y": 0.6,
+   "yaw_deg": 5.73,
+   "block": "Landing"
+  },
+  {
+   "piece": "strand_rocks",
+   "at": [
+    5.6,
+    20.056
+   ],
+   "y": 0.0,
+   "yaw_deg": -1.15,
+   "block": "Rocks"
+  },
+  {
+   "piece": "ground_lamp",
+   "at": [
+    2001.2,
+    -4.6
+   ],
+   "y": 0.8,
+   "yaw_deg": 0.0,
+   "block": "VigilBurner",
+   "kit_dir": "res://assets/environments/kits/haluna/"
+  },
+  {
+   "piece": "mole_bridge",
+   "at": [
+    0.0,
+    28.0
+   ],
+   "y": 0.6,
+   "yaw_deg": -1.25
   }
  ]
 }
