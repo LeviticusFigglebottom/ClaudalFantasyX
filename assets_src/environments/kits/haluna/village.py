@@ -7,6 +7,7 @@ Pieces (each is a target in build.py; LOD1 is a cheap stand-in for > 60 m):
   roof_thatch_hip     a hipped thatch roof module for a 4 x 5 m footprint (25 deg, 0.9 m eaves)
   roof_tile_hip       a hipped red tile roof for a 5 x 6 m footprint: corrugated cover-tile columns
                       at 0.25 m, white lime mortar on the ridge, hips and every seam (the texture)
+  house_lane_a/b/c    6 x 6, 8 x 5 and 6 x 8 m houses with no shade deck (M3-ENV-743, Ch4's wake-night lane)
   house_tile_a/b/c    5 x 6, 4 x 5 and 6 x 8 m houses: coral base wall (0.9 m), 0.15 m post frame,
                       woven infill, shutters, a 1.8 m shade deck, the tile roof
   storehouse_stilt    a 3 x 4 m granary on 6 stilts (1.2 m) with a thatch roof
@@ -429,9 +430,10 @@ def coral_base(mb: kc.MeshBuilder, w: float, d: float, rng, noise, *, door_w: fl
                              weather=weather, variation=float(rng.random()))
 
 
-def house(name: str, w: float, d: float, seed: int, *, lod: bool = False) -> kc.MeshBuilder:
-    """A Haluna house: coral base, post frame, woven infill with shutters, a front shade deck, and the
-    red tile hip roof over house + deck (+ eaves)."""
+def house(name: str, w: float, d: float, seed: int, *, lod: bool = False,
+          deck_m: float = DECK_DEPTH_M) -> kc.MeshBuilder:
+    """A Haluna house: coral base, post frame, woven infill with shutters, a front shade deck (`deck_m` deep; 0 for
+    a house whose door gives straight onto the lane), and the red tile hip roof over house + deck (+ eaves)."""
     rng = kc.rng_for(name, seed)
     noise = kc.Noise3(rng)
     mb = kc.MeshBuilder(name + ("-lod1" if lod else ""))
@@ -439,10 +441,11 @@ def house(name: str, w: float, d: float, seed: int, *, lod: bool = False) -> kc.
     if lod:
         kc.rounded_block(mb, (0, WALL_TOP_M * 0.5, 0), (hw, WALL_TOP_M * 0.5, hd), mb.material(M_STONE), seg=1,
                          radius=0.05)
-        kc.rounded_block(mb, (0, DECK_HEIGHT_M * 0.5, hd + DECK_DEPTH_M * 0.5),
-                         (hw, DECK_HEIGHT_M * 0.5, DECK_DEPTH_M * 0.5), mb.material(M_TIMBER), seg=1, radius=0.02)
-        hip_roof(mb, w + 2 * EAVE_M, d + DECK_DEPTH_M + 2 * EAVE_M, WALL_TOP_M - 0.1, rng, noise, kind="tile",
-                 lod=True, center=(0.0, DECK_DEPTH_M * 0.5))
+        if deck_m > 0.0:
+            kc.rounded_block(mb, (0, DECK_HEIGHT_M * 0.5, hd + deck_m * 0.5),
+                             (hw, DECK_HEIGHT_M * 0.5, deck_m * 0.5), mb.material(M_TIMBER), seg=1, radius=0.02)
+        hip_roof(mb, w + 2 * EAVE_M, d + deck_m + 2 * EAVE_M, WALL_TOP_M - 0.1, rng, noise, kind="tile",
+                 lod=True, center=(0.0, deck_m * 0.5))
         return mb
     coral_base(mb, w, d, rng, noise)
     frame_rng = kc.rng_for(name + "_frame", seed)
@@ -452,14 +455,16 @@ def house(name: str, w: float, d: float, seed: int, *, lod: bool = False) -> kc.
     ring = [(x, -hd) for x in xs] + [(x, hd) for x in xs] + [(-hw, z) for z in zs[1:-1]] + [(hw, z) for z in zs[1:-1]]
     for x, z in ring:
         post(mb, (x, BASE_WALL_M - 0.05, z), (x, WALL_TOP_M + 0.05, z), POST_M * 0.5, rng, noise, lash=False)
-    for x in xs:
-        post(mb, (x, 0.0, hd + DECK_DEPTH_M - 0.1), (x, WALL_TOP_M - 0.05, hd + DECK_DEPTH_M - 0.1), POST_M * 0.5,
+    for x in xs if deck_m > 0.0 else ():
+        post(mb, (x, 0.0, hd + deck_m - 0.1), (x, WALL_TOP_M - 0.05, hd + deck_m - 0.1), POST_M * 0.5,
              rng, noise, lash=True)
     # Top plates.
     tm = mb.material(M_TIMBER)
     for (a, b) in (((-hw - 0.1, -hd), (hw + 0.1, -hd)), ((-hw - 0.1, hd), (hw + 0.1, hd)),
-                   ((-hw, -hd - 0.1), (-hw, hd + DECK_DEPTH_M)), ((hw, -hd - 0.1), (hw, hd + DECK_DEPTH_M)),
-                   ((-hw - 0.1, hd + DECK_DEPTH_M - 0.1), (hw + 0.1, hd + DECK_DEPTH_M - 0.1))):
+                   ((-hw, -hd - 0.1), (-hw, hd + max(deck_m, 0.1))), ((hw, -hd - 0.1), (hw, hd + max(deck_m, 0.1))),
+                   ((-hw - 0.1, hd + deck_m - 0.1), (hw + 0.1, hd + deck_m - 0.1))):
+        if deck_m <= 0.0 and a[1] == b[1] and a[1] > hd - 0.05:
+            continue  # no deck: the front plate is the front wall's own (already laid)
         kc.plank(mb, (a[0], WALL_TOP_M, a[1]), (b[0], WALL_TOP_M, b[1]), 0.14, 0.16, tm, variation=float(rng.random()),
                  noise=noise)
     # Infill between posts: woven mat, with shutters (timber) on some bays and a door on the front.
@@ -514,17 +519,24 @@ def house(name: str, w: float, d: float, seed: int, *, lod: bool = False) -> kc.
                     kc.rounded_block(mb, c3, (ln * 0.5, 0.34, 0.015), tm, rot=tilt, radius=0.008, seg=1,
                                      variation=float(rng.random()))
     # Shade deck.
-    deck(mb, -hw, hw, hd + 0.05, hd + DECK_DEPTH_M, DECK_HEIGHT_M, rng, noise, along_x=True)
+    if deck_m > 0.0:
+        deck(mb, -hw, hw, hd + 0.05, hd + deck_m, DECK_HEIGHT_M, rng, noise, along_x=True)
     # Roof over house + deck.
-    hip_roof(mb, w + 2 * EAVE_M, d + DECK_DEPTH_M + 2 * EAVE_M, WALL_TOP_M - 0.1, rng, noise, kind="tile",
-             center=(0.0, DECK_DEPTH_M * 0.5))
+    hip_roof(mb, w + 2 * EAVE_M, d + deck_m + 2 * EAVE_M, WALL_TOP_M - 0.1, rng, noise, kind="tile",
+             center=(0.0, deck_m * 0.5))
     return mb
 
 
 HOUSES = {"house_tile_a": (5.0, 6.0, 11), "house_tile_b": (4.0, 5.0, 12), "house_tile_c": (6.0, 8.0, 13)}
+# M3-ENV-743: the houses with no shade deck, their doors straight onto the lane, at the sizes of Ch4's wake-night
+# blocks (6 x 6 along the lane, Neme's 8 x 5, the inn's 6 x 8): the greybox's collision is their walls.
+LANE_HOUSES = {"house_lane_a": (6.0, 6.0, 14), "house_lane_b": (8.0, 5.0, 15), "house_lane_c": (6.0, 8.0, 16)}
 
 
 def build_house(name: str) -> list[kc.MeshBuilder]:
+    if name in LANE_HOUSES:
+        w, d, seed = LANE_HOUSES[name]
+        return [house(name, w, d, seed, deck_m=0.0), house(name, w, d, seed, lod=True, deck_m=0.0)]
     w, d, seed = HOUSES[name]
     return [house(name, w, d, seed), house(name, w, d, seed, lod=True)]
 

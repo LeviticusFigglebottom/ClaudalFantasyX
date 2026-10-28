@@ -1,5 +1,5 @@
-"""Tests for env-art's Ch1 zone dressings (M3-ENV-738 and on; ADR 0041, ADR 0200). Run: python3 -m unittest
-discover -s tools/tests
+"""Tests for env-art's Act I zone dressings (Ch1: M3-ENV-738, 741; Ch4: M3-ENV-743; ADR 0041, ADR 0200).
+Run: python3 -m unittest discover -s tools/tests
 
 For each generator: the committed JSON is current; every piece has its .glb in its kit; every "block" a piece follows
 is a greybox block; decor (a piece with a collider) stands clear of every actor, mark, spawn and trigger, except the
@@ -23,6 +23,11 @@ ZONES = [
     (ROOT / "assets_src" / "environments" / "kits" / "oruvel" / "ov_zone_dressing.py",
      {("cabin_keelroof", "actors:roof_child")}),  # the child sits on the cabin's roof (C1-01)
     (ROOT / "assets_src" / "environments" / "kits" / "oruvel_underway" / "ou_zone_dressing.py", set()),
+    # Ch4's wake night: the wall's pieces collide as the wall and stand where its scene is played (the gap's mark,
+    # Ysolde at the gap, the wall's trigger strip in front of it; each is clear of the pieces' faces by 0.5 m).
+    (ROOT / "assets_src" / "environments" / "kits" / "haluna" / "wake_zone_dressing.py",
+     {("wakeshell_wall", "actors:ysolde"), ("wakeshell_wall", "marks:wall_gap"), ("wakeshell_wall", "trigger:wall"),
+      ("tidewall_straight", "trigger:wall")}),
 ]
 
 
@@ -64,7 +69,7 @@ class ZoneDressingTests(unittest.TestCase):
                     continue
                 d = math.hypot(p["at"][0] - x, p["at"][1] - z)
                 self.assertGreaterEqual(d, r, f"{p['piece']} at {p['at']} is {d:.2f} m from {what}")
-        shipped = [mod.OUT] + ([mod.ENV_OUT] if hasattr(mod, "ENV_OUT") else [])
+        shipped = [mod.OUT] + [getattr(mod, k) for k in ("ENV_OUT", "WATER_OUT") if hasattr(mod, k)]
         if "environment" in layout:
             self.assertTrue(_res(layout["environment"]).is_file())
         for f in shipped:

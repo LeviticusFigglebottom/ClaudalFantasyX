@@ -365,6 +365,17 @@
         "dock_haluna-lod1": 152
       }
     },
+    "dock_haluna_short": {
+      "budget": [
+        12000,
+        800
+      ],
+      "bytes": 250408,
+      "lods": {
+        "dock_haluna_short": 5215,
+        "dock_haluna_short-lod1": 72
+      }
+    },
     "engine_hall": {
       "budget": [
         34000,
@@ -561,6 +572,39 @@
       "lods": {
         "hm_windmill": 296,
         "hm_windmill-lod1": 208
+      }
+    },
+    "house_lane_a": {
+      "budget": [
+        22000,
+        1600
+      ],
+      "bytes": 612160,
+      "lods": {
+        "house_lane_a": 14304,
+        "house_lane_a-lod1": 304
+      }
+    },
+    "house_lane_b": {
+      "budget": [
+        22000,
+        1600
+      ],
+      "bytes": 598164,
+      "lods": {
+        "house_lane_b": 13552,
+        "house_lane_b-lod1": 372
+      }
+    },
+    "house_lane_c": {
+      "budget": [
+        22000,
+        1600
+      ],
+      "bytes": 692332,
+      "lods": {
+        "house_lane_c": 16214,
+        "house_lane_c-lod1": 380
       }
     },
     "house_tile_a": {
@@ -1866,6 +1910,28 @@
         "frond_dry-lod1": 24,
         "pebble_cluster": 288,
         "shell_scatter": 540
+      }
+    },
+    "wake_ground": {
+      "budget": [
+        48000,
+        6000
+      ],
+      "bytes": 1425428,
+      "lods": {
+        "wake_ground": 45288,
+        "wake_ground-lod1": 1566
+      }
+    },
+    "wake_shell_set": {
+      "budget": [
+        300,
+        60
+      ],
+      "bytes": 5844,
+      "lods": {
+        "wake_shell_set": 42,
+        "wake_shell_set-lod1": 42
       }
     },
     "wake_shell_single": {

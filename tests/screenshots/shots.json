@@ -4777,6 +4777,206 @@
           "screen_space_aa": 1
         }
       }
+    },
+    {
+      "id": "zone_wake_h02",
+      "scene": "res://game/levels/_tests/haluna_wake_dressing/haluna_wake_dressed.tscn",
+      "camera": "Cameras/H02",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0,
+          "hymn_glimmer": [
+            0.2122,
+            0.5647,
+            0.6939,
+            0.6
+          ]
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "zone_wake_h04",
+      "scene": "res://game/levels/_tests/haluna_wake_dressing/haluna_wake_dressed.tscn",
+      "camera": "Cameras/H04",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0,
+          "hymn_glimmer": [
+            0.2122,
+            0.5647,
+            0.6939,
+            0.6
+          ]
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "zone_wake_h07",
+      "scene": "res://game/levels/_tests/haluna_wake_dressing/haluna_wake_dressed.tscn",
+      "camera": "Cameras/H07",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0,
+          "hymn_glimmer": [
+            0.2122,
+            0.5647,
+            0.6939,
+            0.6
+          ]
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "zone_wake_h09",
+      "scene": "res://game/levels/_tests/haluna_wake_dressing/haluna_wake_dressed.tscn",
+      "camera": "Cameras/H09",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0,
+          "hymn_glimmer": [
+            0.2122,
+            0.5647,
+            0.6939,
+            0.6
+          ]
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "zone_wake_h12",
+      "scene": "res://game/levels/_tests/haluna_wake_dressing/haluna_wake_dressed.tscn",
+      "camera": "Cameras/H12",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0,
+          "hymn_glimmer": [
+            0.2122,
+            0.5647,
+            0.6939,
+            0.6
+          ]
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "zone_wake_h13",
+      "scene": "res://game/levels/_tests/haluna_wake_dressing/haluna_wake_dressed.tscn",
+      "camera": "Cameras/H13",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0,
+          "hymn_glimmer": [
+            0.2122,
+            0.5647,
+            0.6939,
+            0.6
+          ]
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "zone_wake_h08",
+      "scene": "res://game/levels/_tests/haluna_wake_dressing/haluna_wake_dressed.tscn",
+      "camera": "Cameras/H08",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0,
+          "hymn_glimmer": [
+            0.2122,
+            0.5647,
+            0.6939,
+            0.6
+          ]
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "zone_wake_c01",
+      "scene": "res://game/levels/_tests/haluna_wake_dressing/haluna_wake_dressed.tscn",
+      "camera": "Cameras/C01",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0,
+          "hymn_glimmer": [
+            0.2122,
+            0.5647,
+            0.6939,
+            0.6
+          ]
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
     }
   ]
 }
