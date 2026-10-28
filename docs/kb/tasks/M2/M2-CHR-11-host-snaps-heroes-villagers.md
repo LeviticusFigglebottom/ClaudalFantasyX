@@ -2,9 +2,9 @@
 id: M2-CHR-11
 title: "Heroes and villagers opt into M1-CHR-14's host snaps (their Blender builds differ on an AVX2 host)"
 role: character
-status: review
+status: done
 owner_session: "characters (new account, branch claude/characters)"
-reviewer: qa
+reviewer: pc-gpu
 depends_on: [M1-CHR-14]
 milestone: M2
 request-from: "rendering (PC GPU gate runner)"
@@ -83,3 +83,4 @@ The PC can run the cross-host check on request: push the branch, and the Lead or
   - blender_builds.md has the opt-in rule for new character builds.
 
 ## Review log
+- 2026-10-27 (pc-gpu, via the Lead): VERIFIED on the PC's AVX2 i9-12900K. claude/characters @ 3723f3eb: base_body, rhen, toma and the 9 villagers rebuild identical to the committed assets (12/12). Done; merges with big12.

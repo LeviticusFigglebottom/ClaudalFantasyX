@@ -57,7 +57,17 @@
       "max_exposed": 0,
       "weight_sum_tol": 0.001
     },
-    "_allowances": "Per-hero limits_mm / limits_count / max_exposed are RATCHETS (M1-CHR-14): each pins a known linear-blend-skinning limit, viewed in the clip shots, at about today's worst. Lower them when a fix lands; never raise one without a reason in the hero's '_allowances' note."
+    "_allowances": "Per-hero limits_mm / limits_count / max_exposed are RATCHETS (M1-CHR-14): each pins a known linear-blend-skinning limit, viewed in the clip shots, at about today's worst. Lower them when a fix lands; never raise one without a reason in the hero's '_allowances' note.",
+    "_prop_grip": "M2-CHR-515 (M1-QA-09): a hero in game/data/characters/grips.json keeps its prop in the fist in every pose: the fist's grip point stays on the shaft's axis (max_offset_mm; sliding along the shaft is free) and the prop turns in the hand's frame by no more than hero_clips.prop_pivot's cap (max_turn_deg: it pivots in the fist to clear the skirt and legs), and no line along the shaft (its centre and four lines at surface_lines_at x its median radius) crosses a garment outside grip_clear_mm of the fist",
+    "prop_grip": {
+      "max_turn_deg": 30.5,
+      "max_offset_mm": 2.0,
+      "grip_clear_mm": 60.0,
+      "surface_lines_at": 0.8,
+      "allow_clips": []
+    },
+    "_hidden_props": "mesh -> \"battle\" (or a list of clips): a prop the scene hides in those clips is not checked there",
+    "hidden_props": {}
   },
   "heroes": {
     "asha": {
@@ -114,6 +124,14 @@
           "VerseSleeve": 6,
           "Body": 24
         }
+      },
+      "_prop_grip": "M2-CHR-515/520: Asha sets the staff down on the floor beside her where she kneels, sits or crouches (hero_clips.prop_down), so it no longer crosses her pooled skirt there. Still allowed: pole_in and pole_out, which pole the raft with the staff in both hands (the shaft passes the skirt's front; re-authoring the arms is a follow-up), and attack (one line through her own sleeve at the strike's wind-up).",
+      "prop_grip": {
+        "allow_clips": [
+          "attack",
+          "pole_in",
+          "pole_out"
+        ]
       }
     },
     "rhen": {
@@ -304,6 +322,84 @@
           "Costume": 6,
           "WorkSleeve": 6,
           "Body": 32
+        }
+      }
+    },
+    "kerrid": {
+      "garments": [
+        "Costume",
+        "Wrap"
+      ],
+      "props": [
+        "Cleaver"
+      ],
+      "seams": {
+        "groups": [
+          [
+            "Body",
+            "Head:skin_head"
+          ],
+          [
+            "Costume"
+          ],
+          [
+            "Wrap"
+          ]
+        ],
+        "max_exposed": 11
+      },
+      "hidden_props": {
+        "Cleaver": "battle"
+      },
+      "_allowances": "M3-CHR-505 (cloud probe at the default stride; renders on the PC). Costume 40/6 (39.4, collar_haul; 32-35 in walk, run, set_bowl_on_post): Ysolde's dropped-shoulder smock sleeve takes the hanging upper arm into its side at mid-arm under linear skinning, and collar_haul lifts the right arm to haul a man up by the collar. Wrap 17/6 (16.8, hold_rib_on_shoulder): the wrap's top turn folds into the upper arm's crease with the left elbow bent past 120 degrees under the beam. Body 39/64 (38.2, collar_haul; 29-34 in finisher, hold_rib_on_shoulder, unsling_cleaver): the raised right arm's front passes the sleeve's mouth (as Rhen's item toss, Toma's run). max_exposed 11: under the dropped sleeve's mouth the cut edge of the upper arm's skin shows as the arm hangs (up to 20 mm from the cloth, seen only from under the armpit); keeping that skin instead made it poke through the sleeve at 80-150 mm in every clip. The back cleaver is hidden in battle (kerrid.md §4.1 #11), so it is not checked there (hidden_props).",
+      "penetration": {
+        "limits_mm": {
+          "Costume": 40.0,
+          "Wrap": 17.0,
+          "Body": 39.0
+        },
+        "limits_count": {
+          "Costume": 6,
+          "Wrap": 6,
+          "Body": 64
+        }
+      }
+    },
+    "moll": {
+      "garments": [
+        "Costume",
+        "Sleeves"
+      ],
+      "props": [
+        "Iron",
+        "Shield"
+      ],
+      "seams": {
+        "groups": [
+          [
+            "Body",
+            "Head:skin_head"
+          ],
+          [
+            "Costume"
+          ],
+          [
+            "Sleeves"
+          ]
+        ],
+        "max_exposed": 4
+      },
+      "_allowances": "M3-CHR-507 (cloud probe at the default stride). Costume 18/6 (17.9, finisher; 16.6, hit; 16.1 in kneel, ko and yield): the jack's armhole edge, dropped 11.5 cm under the shoulder (M1-CHR-14), takes the lowered left upper arm into it at the side (linear skinning, as Toma's tunic and Liss's top), and the trouser's knee folds into the thigh in the 96-degree kneel (as Liss's kneel). Sleeves 7/6 (6.8, finisher): the sleeves are offset shells of the arm skin, and at the armpit crease they sit inside the torso as the arm comes forward (Liss's work-sleeve, 12). Body 19/48 (18.4, ko and yield; 16.9, kneel): in the yield the right arm comes across the body to the planted iron and the torso's side passes the sleeve's inner face at the armpit; in the kneel the tucked right toes press through the sandal's strap. max_exposed 4: the underarm skin is cut under the hanging arm (it passed through the sleeves), and with the arm raised in the finisher's lift up to four of its edge vertices (under 8 mm) and one at the back of the left shoulder's cap edge (about 2.5 mm, every pose) have no cloth over them. The prop guards (grip, through_garment) and both props' prop_in_body pass with no allowance.",
+      "penetration": {
+        "limits_mm": {
+          "Costume": 18.0,
+          "Sleeves": 7.0,
+          "Body": 19.0
+        },
+        "limits_count": {
+          "Costume": 6,
+          "Sleeves": 6,
+          "Body": 48
         }
       }
     }

@@ -2,7 +2,7 @@
 id: M3-CHR-505
 title: "Old Kerrid, the fifth party hero, on the MPFB2 hero path (build, face poses, story and battle clips, shots)"
 role: character
-status: doing
+status: review
 owner_session: "characters (cloud session_01JqzzxgJU9Dmu7fRhmCG9aQ, branch claude/characters)"
 depends_on: [M2-CHR-01, M2-CHR-02, M1-CHR-14, M2-CHR-07, M3-CHR-01]
 milestone: M3

@@ -191,6 +191,18 @@ class _HeroGuards:
             self.skipTest(f"{self.hero} has no props")
         self.assert_verdicts("penetration prop_in_body")
 
+    # M2-CHR-515 (M1-QA-09): a held prop stays in its fist and out of the clothes
+    def test_prop_follows_its_hand(self):
+        if not self.verdict("prop grip"):
+            self.skipTest(f"{self.hero} holds no prop for good (game/data/characters/grips.json)")
+        self.assert_verdicts("prop grip turn")
+        self.assert_verdicts("prop grip offset")
+
+    def test_prop_stays_out_of_the_garments(self):
+        if not self.verdict("prop grip"):
+            self.skipTest(f"{self.hero} holds no prop for good (game/data/characters/grips.json)")
+        self.assert_verdicts("prop through_garment")
+
     def test_skin_stays_under_the_garments(self):
         self.assert_verdicts("penetration skin_through_garment")
 
@@ -227,6 +239,14 @@ class TestRigIntegrityYsolde(_HeroGuards, unittest.TestCase):
 
 class TestRigIntegrityLiss(_HeroGuards, unittest.TestCase):  # M3-CHR-03
     hero = "liss"
+
+
+class TestRigIntegrityKerrid(_HeroGuards, unittest.TestCase):  # M3-CHR-505
+    hero = "kerrid"
+
+
+class TestRigIntegrityMoll(_HeroGuards, unittest.TestCase):  # M3-CHR-507
+    hero = "moll"
 
 
 # M3-CHR-03: villager builds with a `"villager": true` entry in rig_checks.json (GLB under assets/characters/villagers/,

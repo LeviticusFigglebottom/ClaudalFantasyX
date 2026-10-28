@@ -201,7 +201,7 @@ func test_smile_variant_is_opt_in_data() -> void:
 
 
 ## M1-CHR-15: HeroHelperBones (the stages' solve for hand-set poses) matches the helper keys the clips bake
-## (hero_clips.py's solve): the skirt panels and the shoulder correctives, within a degree, and the lower panels'
+## (hero_clips.py's solve): the skirt panels and the shoulder correctives, within a degree, and the lowest panel bones'
 ## floor gathers (scales) within 0.03.
 ## Sampled on 15 fps keys: between keys the baked helpers interpolate while the solve sees the interpolated body.
 func test_helper_bones_match_the_baked_clips() -> void:
