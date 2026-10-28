@@ -14,7 +14,7 @@ const SCENES: Array[String] = [
 	"res://game/levels/ch01/oruvel_underway/oruvel_underway.tscn",
 ]
 ## The battle arenas these zones fight in, by their arenas.json id (env-art's kits; the greybox ones under
-## game/battle/arenas/ only feed their preview shots).
+## game/battle/arenas/ were retired, M3-ENV-737).
 const ARENAS: Array[StringName] = [
 	&"tideline_dawn",
 	&"causeway_route_afternoon",

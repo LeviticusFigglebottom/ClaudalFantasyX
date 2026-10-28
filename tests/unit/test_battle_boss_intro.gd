@@ -430,3 +430,20 @@ func test_the_party_rule_widens_a_shot_only_when_the_party_crowds_it() -> void:
 	)
 	intro.skip()
 	_free()
+
+
+func test_a_boss_model_plays_its_intro_clip() -> void:
+	# M3-CRB-009: a boss model with an `intro` clip plays it while the camera holds on it; one without just idles.
+	var with_clip := 0
+	for enc: StringName in BOSSES:
+		var intro := _start(enc, 0.0)
+		intro.force_play = true
+		intro.play()
+		var f := ctl.stage.stand_in(intro.boss_id)
+		var actor := f.creature() if f != null else null
+		if actor != null and actor.has_clip(BattleBossIntro.INTRO_CLIP):
+			assert_eq(actor.current_clip, BattleBossIntro.INTRO_CLIP, "%s plays its intro clip" % enc)
+			with_clip += 1
+		intro.skip()
+	print("bosses with an intro clip: %d" % with_clip)
+	_free()
