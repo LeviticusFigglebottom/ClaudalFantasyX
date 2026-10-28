@@ -129,11 +129,34 @@ def beard_v(lm, face, P: np.ndarray) -> np.ndarray:
     inside = beard_top_v(lm, phi) - v
     side = (98.0 - a) / 60.0  # fades out behind the ear line
     # the lips themselves (the beard frames them; the lower lip is mostly hidden by it, toma.md §6)
-    W = face.mouth_half / lm.h
-    vm = face.vm
-    lips = np.minimum((1.08 * W - np.abs(u)) / 0.04, np.minimum((vm + 0.040 - v) / 0.02, (v - (vm - 0.034)) / 0.02))
-    lips = np.where(a < 40.0, lips, -1.0)
+    lips = mouth_clear(lm, face, u, v, phi, LIP_HALF_W, 0.0)
     return np.minimum(np.minimum(inside, side), -lips)
+
+
+# M2-CHR-524: the clear skin round the mouth is a lens measured in true head heights. Before, it was a box whose
+# distance was divided by 0.02-0.04 (25-50x too steep), so the cards and the skin's beard shadow both stopped dead at
+# it: Kerrid's trimmed lip read as a hard rectangular notch. The lens's upper and lower edges meet at the mouth corners
+# along (1 - (u/a)^2)^LIP_LENS_POW, so the moustache curves down into the chin beard, and the beard shadow (whose ramp
+# is in head heights) now fades over a few millimetres into the lip skin.
+LIP_HALF_W = 1.08  # of the mouth half-width: the lens reaches a little past the corners
+LIP_TOP = 0.040  # head heights above the mouth line, at the centre
+LIP_BOTTOM = 0.034  # head heights below it
+LIP_LENS_POW = 0.5  # 0.5 = an ellipse; nearer 1 the corners grow pointed
+LIP_WANDER = (0.0025, 23.0, 0.7)  # head heights, radians per head height, phase: a trimmed edge is not ruled
+LIP_AZIMUTH = 40.0  # degrees: no mouth clearing further round the head than this
+
+
+def mouth_clear(lm, face, u: np.ndarray, v: np.ndarray, phi: np.ndarray, half_w: float, top_extra: float) -> np.ndarray:
+    """Signed distance in head heights into the clear lens round the mouth (> 0 inside). `half_w`: the lens's
+    half-width in mouth half-widths; `top_extra`: head heights added to its upper edge (Kerrid's trimmed moustache)."""
+    hw = half_w * face.mouth_half / lm.h
+    vm = face.vm
+    s = np.clip(1.0 - (u / hw) ** 2, 0.0, 1.0) ** LIP_LENS_POW
+    amp, freq, ph = LIP_WANDER
+    top = vm + (LIP_TOP + top_extra) * s + amp * np.sin(freq * u + ph) * s
+    bottom = vm - LIP_BOTTOM * s
+    d = np.minimum(hw - np.abs(u), np.minimum(top - v, v - bottom))
+    return np.where(np.abs(phi) < LIP_AZIMUTH, d, -1.0)
 
 
 def in_beard(lm, face, P: np.ndarray, margin_h: float = 0.0) -> np.ndarray:
