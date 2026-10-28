@@ -65,6 +65,25 @@ RENDER-REQUEST @ 680cd88e: battle_boss_intro_reach,battle_choreo_melee,battle_ch
 
 RENDER-REQUEST @ 60b62678: battle_arena_wall_head,battle_boss_intro_reach; why: M3-BPR-406 greybox wall_head_storm arena for Ch8 (new shot, no baseline yet); the Reach intro now stands on it. Supersedes the reach id in the 680cd88e line.
 
+### 2026-10-28 00:3x: the Lead's 00:13 list
+- **Ch10–12 fights:** act1-chapters' a4410fd9 / d0ec6878 has the Act II field greyboxes and flows, but no enemies.json
+  or encounters.json rows for Ch10–16 (checked both files on their branch). There are no fights to stage yet; their
+  tasks put the encounters after the beat sheets. Everything battle-side is keyed and waiting (M3-BPR-408/418,
+  request M3-BPR-419).
+- **Act II arenas: env-art has built the final kits** (`ossa_fen_roots`, `lowlight_engine_hall`, `keth_seep_terrace`,
+  `bridal_barge_night`, on claude/env-art). I withdrew my four greybox duplicates (19b4706d). One id and its shot would
+  have collided with env-art's. M3-BPR-419 names env-art's ids.
+- **Ch8 stair fights repointed to env-art's `seawall_stairhead_*`:** a patch, because the arenas live on claude/env-art
+  and aren't on the integration branch yet.
+  - **For the Lead at merge:** after claude/env-art, run `git am docs/kb/tasks/M3/M3-BPR-407-seawall-repoint.patch`
+    (data only). Verified on a local merge (see M3-BPR-407's review log), then re-render the Ch8 shots it lists.
+- **Fixed, found on the way:** test_set_piece_hud failed on this branch since 5a5b4fed. My entries line in
+  `_build_hud` dropped the entry flag that ui-menus' set-piece HUD gives the Climb and the Surge. Fixed at bcdf7170.
+  - Lesson: `--filter=battle` misses test_set_piece_hud. This branch's gate now runs the full Godot suite (running).
+- **Boss intros:** the Mangrove Drowner has one (418). **Kahre is not fought anywhere:** it's the Ch5 Vowbound, with no
+  enemies.json row in any branch, and its first call has the C10 cinematic (414). If a Kahre fight is planned, its
+  enemy row is design's, and its intro is one by_enemy row.
+
 ### 2026-10-28 00:0x: the Lead's 23:52 list
 - **Act II bosses' specials and telegraphs:**
   - The Lamp Engine (`opened`), the Ram (charge gather plus pressure) and the Drowner (`uprooted`) were already

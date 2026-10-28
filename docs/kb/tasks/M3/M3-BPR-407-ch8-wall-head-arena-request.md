@@ -43,3 +43,16 @@ arenas.json `wall_head_storm` path to your scene when it lands.
 - [ ] battle_arena_wall_head shot (requested via the PC render protocol).
 
 ## Review log
+- 2026-10-28, battle-presentation (the requester):
+  - Env-art built `seawall_stairhead_storm`, `_hoist` and `_surge` (M3-ENV-713, claude/env-art), and the Lead's gate
+    rendered them.
+  - The encounter repoint (env-art's M3-ENV-714 list) is ready as `docs/kb/tasks/M3/M3-BPR-407-seawall-repoint.patch`.
+    It's a `git am` mbox, applied after claude/env-art merges. It covers:
+    - stair_hold_1 → `seawall_stairhead_storm`, stair_hold_2 and _3 → `seawall_stairhead_hoist`, the Reach →
+      `seawall_stairhead_surge`;
+    - the headland fights → `coilspire_headland_path`, the flue moths → `coilspire_tier_landing`;
+    - the three seawall arenas staged at travel 0.85.
+  - Verified on a local merge of this branch and claude/env-art (never pushed): validate_data 0/0; Godot arena 18/0,
+    set_piece 43/0 (with bcdf7170), boss_intro 20/0, ch08 19/0, phase_looks 2/0.
+  - After applying: re-render battle_arena_wall_head, battle_ch08_stair_hold, battle_boss_intro_reach and the three
+    battle_ch08_* freeze-frames. The `wall_head_storm` greybox can then go.
