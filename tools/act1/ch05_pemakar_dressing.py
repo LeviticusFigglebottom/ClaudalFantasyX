@@ -277,7 +277,7 @@ def dressing() -> dict:
         pieces.append({"piece": p["plant"], "kit_dir": VEG, "materials_dir": VEG + "materials/",
                        "at": [r3(p["at"][0]), r3(p["at"][2])], "y": r3(p["at"][1]), "yaw_deg": p["yaw_deg"],
                        "scale": p["scale"], "collide": True})
-    pieces += quay() + ferry()
+    pieces += quay() + ferry() + stand_in_pieces()
     lights = [dict({k: v for k, v in light.items() if k != "at"}, at=light["at"], block=NIGHT_BLOCK)
               for light in pv["lights"]]
     boats = pv["boats"]
@@ -295,7 +295,7 @@ def dressing() -> dict:
         "lod_margin_m": pv["lod_margin_m"],
         "environment": RES_ZONE + "pemakar_night_environment.tres",
         "time_of_day_h": 20.0,
-        "greybox": {"hide_all": True, "keep": ["WakeWall", "SeaCutWeir", "CrownBell"]},
+        "greybox": {"hide_all": True, "keep": []},  # ADR 0041: the last three are stand_in_pieces()
         "fire_light_color": "#FFA757",
         "fire_lights": lights,
         "multimeshes": [{"name": "LeafBoats", "piece": boats["piece"], "transforms": boats["transforms"],
@@ -303,6 +303,35 @@ def dressing() -> dict:
         "far_lights": far,
         "pieces": pieces,
     }
+
+
+BELL_KIT = "res://assets/environments/kits/tamsule_bell/"
+WALL_M = (4.0, 2.44)  # terrace_wall_4m: length, height (its top at the origin)
+CHANNEL_M = (4.0, 0.09)  # terrace_channel_4m: length, its floor under the origin
+BELL_M = (36.65, 26.92)  # tamsule_bell: width, its bottom over the origin
+
+
+def stand_in_pieces() -> list[dict]:
+    """ADR 0041: the wake's wall, the sea-cut's weir and Ashcrown's crown bell, the last story blocks drawn as boxes,
+    in kit pieces: the kit's terrace wall and channel at the blocks' size, and the Bell kit's bell at the crown's.
+    Each follows its block."""
+    rows = {b["id"]: b for b in json.loads(LAYOUT.read_text(encoding="utf-8"))["blocks"]}
+    out = []
+    w = rows["WakeWall"]
+    out.append({"piece": "terrace_wall_4m", "at": [w["pos"][0], w["pos"][2]],
+                "y": round(w["pos"][1] + w["size"][1] * 0.5, 3), "yaw_deg": w.get("yaw", 0.0),
+                "scale": round(w["size"][0] / WALL_M[0], 3), "block": "WakeWall"})
+    c = rows["SeaCutWeir"]
+    s = c["size"][0] / CHANNEL_M[0]
+    out.append({"piece": "terrace_channel_4m", "at": [c["pos"][0], c["pos"][2]],
+                "y": round(c["pos"][1] - c["size"][1] * 0.5 + CHANNEL_M[1] * s, 3), "yaw_deg": c.get("yaw", 0.0),
+                "scale": round(s, 3), "block": "SeaCutWeir"})
+    b = rows["CrownBell"]
+    s = b["size"][0] / BELL_M[0]
+    out.append({"piece": "tamsule_bell", "kit_dir": BELL_KIT,
+                "at": [b["pos"][0], b["pos"][2]], "y": round(b["pos"][1] - b["size"][1] * 0.5 - BELL_M[1] * s, 3),
+                "yaw_deg": 0.0, "scale": round(s, 4), "block": "CrownBell"})
+    return out
 
 
 def copy_grades() -> None:

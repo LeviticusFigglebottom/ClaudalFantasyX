@@ -113,12 +113,7 @@
  ],
  "greybox": {
   "hide_all": true,
-  "keep": [
-   "IsletRock",
-   "NameBoardWrapped",
-   "Gangplank",
-   "SternGate"
-  ]
+  "keep": []
  },
  "pieces": [
   {
@@ -581,6 +576,122 @@
    "y": 0.85,
    "yaw_deg": 0.0,
    "block": "NameBoard"
+  },
+  {
+   "piece": "coral_boulder_c",
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "at": [
+    9.6,
+    2.1
+   ],
+   "yaw_deg": 10.0,
+   "block": "IsletRock",
+   "scale": 2.2,
+   "scale_y": 0.5,
+   "y": -1.9
+  },
+  {
+   "piece": "coral_boulder_c",
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "at": [
+    14.6,
+    2.7
+   ],
+   "yaw_deg": 200.0,
+   "block": "IsletRock",
+   "scale": 2.2,
+   "scale_y": 0.5,
+   "y": -1.9
+  },
+  {
+   "piece": "coral_boulder_c",
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "at": [
+    9.4,
+    8.2
+   ],
+   "yaw_deg": 130.0,
+   "block": "IsletRock",
+   "scale": 2.2,
+   "scale_y": 0.5,
+   "y": -1.9
+  },
+  {
+   "piece": "coral_boulder_c",
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "at": [
+    14.3,
+    7.9
+   ],
+   "yaw_deg": 300.0,
+   "block": "IsletRock",
+   "scale": 2.2,
+   "scale_y": 0.5,
+   "y": -1.9
+  },
+  {
+   "piece": "coral_boulder_c",
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "at": [
+    9.8,
+    13.8
+   ],
+   "yaw_deg": 250.0,
+   "block": "IsletRock",
+   "scale": 2.2,
+   "scale_y": 0.5,
+   "y": -1.9
+  },
+  {
+   "piece": "coral_boulder_c",
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "at": [
+    14.7,
+    13.5
+   ],
+   "yaw_deg": 70.0,
+   "block": "IsletRock",
+   "scale": 2.2,
+   "scale_y": 0.5,
+   "y": -1.9
+  },
+  {
+   "piece": "plank_walk",
+   "kit_dir": "res://assets/environments/kits/brine_shoals/",
+   "at": [
+    5.2,
+    7.9
+   ],
+   "y": -0.12,
+   "yaw_deg": 90.0,
+   "block": "Gangplank"
+  },
+  {
+   "piece": "hatch",
+   "kit_dir": "res://assets/environments/kits/brine_shoals/",
+   "at": [
+    3.45,
+    7.9
+   ],
+   "y": 0.45,
+   "yaw_deg": 0.0,
+   "scale": 0.75,
+   "block": "SternGate"
+  },
+  {
+   "piece": "terrace_name_board",
+   "at": [
+    -0.3,
+    7.7
+   ],
+   "y": 0.0,
+   "yaw_deg": 0.0,
+   "tilt_deg": [
+    -90.0,
+    0.0
+   ],
+   "scale": 0.772,
+   "block": "NameBoardWrapped"
   }
  ]
 }

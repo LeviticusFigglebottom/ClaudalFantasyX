@@ -11,11 +11,7 @@
  "time_of_day_h": 20.0,
  "greybox": {
   "hide_all": true,
-  "keep": [
-   "WakeWall",
-   "SeaCutWeir",
-   "CrownBell"
-  ]
+  "keep": []
  },
  "fire_light_color": "#FFA757",
  "fire_lights": [
@@ -43304,6 +43300,40 @@
    "y": 1.6,
    "yaw_deg": 90.0,
    "block": "Ferry"
+  },
+  {
+   "piece": "terrace_wall_4m",
+   "at": [
+    8.0,
+    22.725
+   ],
+   "y": 3.127,
+   "yaw_deg": 0.0,
+   "scale": 1.25,
+   "block": "WakeWall"
+  },
+  {
+   "piece": "terrace_channel_4m",
+   "at": [
+    10.0,
+    27.7
+   ],
+   "y": 0.135,
+   "yaw_deg": 0.0,
+   "scale": 1.5,
+   "block": "SeaCutWeir"
+  },
+  {
+   "piece": "tamsule_bell",
+   "kit_dir": "res://assets/environments/kits/tamsule_bell/",
+   "at": [
+    3.0,
+    -67.054
+   ],
+   "y": 29.09,
+   "yaw_deg": 0.0,
+   "scale": 0.0218,
+   "block": "CrownBell"
   }
  ]
 }
