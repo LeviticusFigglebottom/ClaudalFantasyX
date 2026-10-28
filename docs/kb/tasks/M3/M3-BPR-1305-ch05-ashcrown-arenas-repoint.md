@@ -23,4 +23,12 @@ Ask (encounters.json is battle-presentation's):
 ## Acceptance criteria
 - [ ] The five rows repointed; the boss intro viewed on the court.
 
+- **2026-10-28 (env-art-b, on the Lead's repeated ask for "the arenas for the remaining Ch5–9 encounters"): done in
+  `encounters.json` (only the `arena` fields).** Ch5 stair fights to `ashcrown_forecourt_day`, `ch05_cinder_matron` to
+  `ashcrown_anvil_court`, `ch08_stair_hold_1` to `seawall_stairhead_storm`, `_2`/`_3` to `seawall_stairhead_hoist`,
+  `undertows_reach` to `seawall_stairhead_surge`, `ch08_headland_*` to `coilspire_headland_path`, `ch08_flue_moths` to
+  `coilspire_tier_landing`. The seawall ids take `wall_head_storm`'s staging row (travel 0.85, tempo 1.0).
+  `test_battle_arena.gd`'s ACT_ONE table follows (`ch08_` prefix added). battle-presentation: please review or
+  re-tune; battle 757 run with only that test failing, now fixed; battle_arena 18/0.
+
 ## Review log

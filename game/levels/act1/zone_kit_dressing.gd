@@ -64,9 +64,6 @@ const KEY_MULTIMESHES := "multimeshes"
 const KEY_FAR_LIGHTS := "far_lights"
 const KEY_WATERS := "waters"
 const KEY_STORMS := "storms"
-## Past a shown storm's far side (m): the current camera's far plane is raised to its distance plus its bound plus this,
-## since the Undertow stands 10-14 km out (undertow.json presets) and a Camera3D's default far is 4 km.
-const STORM_FAR_MARGIN_M := 2000.0
 const DEFAULT_WAVES := "res://game/world/water/lagoon_waves.tres"
 ## The waters' plane cells (m): fine enough for the wave field's short waves to read on a still lake.
 const WATER_CELL_M := 2.0
@@ -89,7 +86,6 @@ var _followers: Dictionary = {}  ## block id -> Array of kit nodes
 var _kit_caches: Dictionary = {}  ## materials dir -> that kit's material cache
 var _spinners: Array[Array] = []  ## [piece, block, the piece's own basis]
 var _turners: Array[Array] = []  ## [piece, block, the piece's own basis]
-var _storms: Array[UndertowStorm] = []
 
 
 func dress() -> void:
@@ -138,7 +134,6 @@ func _process(_delta: float) -> void:
 		(sp[0] as Node3D).basis = (sp[2] as Basis) * Basis(Vector3.BACK, turn)
 	for tp: Array in _turners:
 		(tp[0] as Node3D).basis = Basis(Vector3.UP, (tp[1] as Node3D).rotation.y) * (tp[2] as Basis)
-	_keep_storms_in_view()
 	if zone == null or zone.sun == null or not zone.sun.is_inside_tree():
 		return
 	var toward := zone.sun.global_basis.z.normalized()  # a light shines down its -Z
@@ -507,19 +502,9 @@ func _place_storms() -> void:
 		add_child(storm)
 		_attach(storm, str(row.get(KEY_BLOCK, "")))
 		_pause_hidden(storm)
-		_storms.append(storm)
-
-
-## Whichever camera is current (the field's, a cutscene's) reaches past every shown storm.
-func _keep_storms_in_view() -> void:
-	if _storms.is_empty() or not is_inside_tree():
-		return
-	var cam := get_viewport().get_camera_3d()
-	if cam == null:
-		return
-	for storm: UndertowStorm in _storms:
-		if storm.is_visible_in_tree():
-			cam.far = maxf(cam.far, storm.approach_distance_m + storm.state.bound_radius() + STORM_FAR_MARGIN_M)
+		var far := StormFarPlane.new()
+		far.name = "FarPlane"
+		storm.add_child(far)  # the current camera reaches past the storm while it shows (M3-ENV-1308)
 
 
 ## A hidden storm stops processing (its rain, zone shadow and flashes act on the zone's light).

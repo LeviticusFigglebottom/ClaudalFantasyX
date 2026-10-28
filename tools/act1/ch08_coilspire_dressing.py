@@ -244,6 +244,20 @@ TRIAL_PIECES = (("Gate_t1", "flue_gate", "foot"), ("Gate_t2", "flue_gate", "foot
                 ("WrightMark", "wright_mark", "centre"))
 
 
+# Virel at rest in the crown chamber (B06 F07: "a long ribbon-serpent of sailcloth panels ... perfectly still"):
+# creatures-b's model (assets/creatures/virel, its own slot materials) on the Virel block's foot, held still (a
+# dressing piece, so no idle plays). It was the zone's last greybox stand-in (Act I inventory, M3-HER-1141).
+VIREL = {"piece": "virel", "kit_dir": "res://assets/creatures/virel/",
+         "materials_dir": "res://assets/creatures/virel/materials/", "block": "Virel", "yaw_deg": 0.0}
+
+
+def virel_piece() -> list[dict]:
+    g = json.loads(LAYOUT.read_text(encoding="utf-8"))
+    b = next(b for b in g["blocks"] if b["id"] == VIREL["block"])
+    foot = b["pos"][1] - b["size"][1] * 0.5
+    return [dict(VIREL, at=[r3(b["pos"][0]), r3(b["pos"][2])], y=r3(foot))]
+
+
 def trial_pieces() -> list[dict]:
     layout = json.loads(LAYOUT.read_text(encoding="utf-8"))
     rows = {b["id"]: b for b in layout["blocks"]}
@@ -277,7 +291,7 @@ def dressing() -> dict:
             pieces.append(dict(p, collide="trimesh", collide_lod0_in=door_boxes()))
             continue
         pieces.append(p)
-    pieces += key_pieces() + trial_pieces()
+    pieces += key_pieces() + trial_pieces() + virel_piece()
     backdrop = json.loads((PREVIEW / "coilspire_backdrop.json").read_text(encoding="utf-8"))
     corrow = "res://assets/environments/kits/corrow/"
     for p in backdrop.get("pieces", []):
@@ -298,7 +312,7 @@ def dressing() -> dict:
         "lod_margin_m": float(preview.get("lod_margin_m", 2.0)),
         "environment": RES_ZONE + "coilspire_ch08_environment.tres",
         "time_of_day_h": 12.0,
-        "greybox": {"hide_all": True, "keep": ["Virel"]},  # Virel: the Vowbound's own body (creatures-b)
+        "greybox": {"hide_all": True, "keep": []},
         "storms": [STORM],
         "fire_light_color": preview.get("hearth_light_color", "#FFB16E"),
         "fire_lights": lights,

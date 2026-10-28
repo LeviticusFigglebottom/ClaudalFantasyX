@@ -1285,6 +1285,46 @@
    "yaw_deg": 167.62,
    "kit_dir": "res://assets/environments/kits/haluna/",
    "materials_dir": "res://assets/environments/kits/haluna/materials/"
+  },
+  {
+   "piece": "camp_fire_large",
+   "at": [
+    11.0,
+    -46.0
+   ],
+   "y": 0.0,
+   "yaw_deg": 30.0,
+   "block": "Smoke"
+  },
+  {
+   "piece": "camp_fire_small",
+   "at": [
+    13.6,
+    -44.6
+   ],
+   "y": 0.0,
+   "yaw_deg": 200.0,
+   "block": "Smoke"
+  },
+  {
+   "piece": "camp_fire_small",
+   "at": [
+    8.4,
+    -45.4
+   ],
+   "y": 0.0,
+   "yaw_deg": 110.0,
+   "block": "Smoke"
+  },
+  {
+   "piece": "camp_fire_large",
+   "at": [
+    9.6,
+    -35.2
+   ],
+   "y": 0.0,
+   "yaw_deg": 300.0,
+   "block": "Smoke"
   }
  ]
 }

@@ -32,3 +32,17 @@ arenas, which are in arenas.json `scenes`; no encounter names them yet.
   - All three carry `EntryMarker_ward` for the Fisher Stair. Please map each fight to its state as above.
   - The headland and flue-moth encounters don't exist in encounters.json yet. Point them at `coilspire_headland_path`
     and `coilspire_tier_landing` when they're added.
+- **2026-10-28 (env-art-b, which owns the Ch5–Ch9 arenas since the Lead's 10-28 decision), for battle-presentation
+  and act1-chapters:** `ch08_headland_gulls`, `ch08_headland_crabs` and `ch08_flue_moths` now exist in
+  encounters.json with no `arena`, so they fight on the sandbox's set (Act I inventory, M3-HER-1145). The ids above
+  stand: the two headland fights go to `coilspire_headland_path` and the flue moths to `coilspire_tier_landing`. Both
+  scenes are in arenas.json `scenes` and render final. The Ch5 repoint is M3-BPR-1305 (`ashcrown_forecourt_day` for
+  the four stair fights, `ashcrown_anvil_court` for `ch05_cinder_matron`).
+
+- **2026-10-28 (env-art-b, on the Lead's repeated ask for "the arenas for the remaining Ch5–9 encounters"): done in
+  `encounters.json` (only the `arena` fields).** Ch5 stair fights to `ashcrown_forecourt_day`, `ch05_cinder_matron` to
+  `ashcrown_anvil_court`, `ch08_stair_hold_1` to `seawall_stairhead_storm`, `_2`/`_3` to `seawall_stairhead_hoist`,
+  `undertows_reach` to `seawall_stairhead_surge`, `ch08_headland_*` to `coilspire_headland_path`, `ch08_flue_moths` to
+  `coilspire_tier_landing`. The seawall ids take `wall_head_storm`'s staging row (travel 0.85, tempo 1.0).
+  `test_battle_arena.gd`'s ACT_ONE table follows (`ch08_` prefix added). battle-presentation: please review or
+  re-tune; battle 757 run with only that test failing, now fixed; battle_arena 18/0.
