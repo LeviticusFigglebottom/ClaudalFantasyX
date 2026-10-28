@@ -29,8 +29,12 @@ ADR 0041: clear env-art's rows of `docs/kb/qa/act1_final_inventory.md` (integrat
       and `terrace_name_board_wrapped` (bf_landing.py), previewed in `game/levels/_tests/brightwater_landing/`;
       act1-chapters places them (M3-ENV-749).
 - [ ] Ch4 `haluna_wake.tscn`, 41: dressed (M3-ENV-743); act1-chapters mounts it (M3-ENV-744).
-- [ ] Ch2 `banyan_placeholder` / `windbreak_placeholder` (medium, low): real trees under their old names.
-- [ ] `tamsule_bell` drop proxy (low): see Notes.
+- [ ] Ch2 `banyan_placeholder` / `windbreak_placeholder` (medium, low): real trees under their old names. The same
+      trees are built as `banyan_hero` / `windbreak_tree`; slice-polish switches the zone (M3-ENV-750), then env-art
+      drops the old pieces.
+- [ ] `tamsule_bell` drop proxy (low): `reefball_drop_proxy` is the contract shape for the Reefball water drop,
+      which is PC GPU's R&D (pc-gpu.md). No Act I scene places it (`tools/act1/ch07_tamsule_bell_dressing.py` skips
+      it), so nothing is on screen. The row clears when the real drop lands (Ch7, env-art-b's chapter, and pc-gpu).
 
 ## Notes
 - 2026-10-28 (env-art): the derelict arena's flames self-rendered (battle_arena_derelict, _deck_night,

@@ -112,6 +112,17 @@
         "awning_cloth-lod1": 56
       }
     },
+    "banyan_hero": {
+      "budget": [
+        60000,
+        10000
+      ],
+      "bytes": 3375736,
+      "lods": {
+        "banyan_hero": 54651,
+        "banyan_hero-lod1": 7351
+      }
+    },
     "banyan_placeholder": {
       "budget": [
         60000,
@@ -2020,6 +2031,17 @@
       "lods": {
         "windbreak_placeholder": 5785,
         "windbreak_placeholder-lod1": 430
+      }
+    },
+    "windbreak_tree": {
+      "budget": [
+        6500,
+        1000
+      ],
+      "bytes": 443236,
+      "lods": {
+        "windbreak_tree": 5785,
+        "windbreak_tree-lod1": 430
       }
     },
     "woodpile": {
