@@ -3896,6 +3896,37 @@
       }
     },
     {
+      "id": "slice_beach_standing",
+      "scene": "res://game/levels/_tests/slice_shots/slice_cutscene_shot.tscn",
+      "camera": "default",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 720,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        },
+        "nodes": {
+          ".": {
+            "level_path": "res://game/levels/ch02/haluna/haluna.tscn",
+            "spawn": "Beach",
+            "flags": [
+              "prologue_seen"
+            ],
+            "scene_id": "ch02_girl_on_the_beach",
+            "hold_line": "ch02_beach_031"
+          }
+        },
+        "time_scale": 8.0
+      }
+    },
+    {
       "id": "slice_haluna_villagers_village",
       "scene": "res://game/levels/_tests/slice_shots/slice_cutscene_shot.tscn",
       "camera": "default",

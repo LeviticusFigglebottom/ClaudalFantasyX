@@ -227,6 +227,14 @@ look_at = Vector3(-4.25, 0.53, 7.8)
 fov_deg = 37.8
 hard_cut = true
 
+[sub_resource type="Resource" id="Shot_cut_H05_up"]
+script = ExtResource("7_shot")
+id = &"H05_up"
+position = Vector3(-4.4, 1.55, 4.3)
+look_at = Vector3(-4.55, 1.47, 7.95)
+fov_deg = 30.0
+hard_cut = true
+
 [sub_resource type="Resource" id="Shot_cut_H06"]
 script = ExtResource("7_shot")
 id = &"H06"
@@ -1042,6 +1050,11 @@ player_path = NodePath("../Player")
 [node name="H05" type="Node" parent="CutsceneStage/Shots"]
 script = ExtResource("10_shotnode")
 shot = SubResource("Shot_cut_H05")
+key_pitch_deg = 30.0
+
+[node name="H05_up" type="Node" parent="CutsceneStage/Shots"]
+script = ExtResource("10_shotnode")
+shot = SubResource("Shot_cut_H05_up")
 key_pitch_deg = 30.0
 
 [node name="H06" type="Node" parent="CutsceneStage/Shots"]
