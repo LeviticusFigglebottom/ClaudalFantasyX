@@ -184,3 +184,15 @@ CreatureActor and the validator are theirs too (kit or tool changes go to them a
   battle_boss_intro_wraith, battle_boss_intro_matron, battle_boss_intro_drownbell, battle_boss_intro_reach,
   drownbell_flood, battle_vowbound_out, battle_choreo_vowbound_rise, battle_choreo_summon, battle_vowbound_call,
   creature_portraits, and any battle shot that seats these models.
+- **MERGE-READY @ 397f0da8: polish 2** (worktree agent fdf0b665, fb334ace, b89d95a9, 5587e970; viewed by me): the
+  Hullgnaw's neck dull and folded (carapace roughness_dry 0.35 → 0.62; wet glints only in slime streaks); the
+  Matron's five biggest front slag cells bubbled, pitted and cracked (24,988 tris); Ilun's net cords thin toward the
+  wing tip and the membrane darkens to the trailing edge, so the near wing reads as net over dark diamonds; Kahre's
+  wrists get a cuff of hide folds (17,990 tris). Bones, clips, contacts and anchors unchanged. Blender verify
+  identical (×4); tools tests 48 OK; validate_data; Godot creature 79/1 (known portraits), boss 61/0, vowbound 83/0,
+  creature_bosses 4/0. SELF-RENDERED: creature_hullgnaw, battle_boss_intro_hullgnaw, creature_cinder_matron,
+  battle_boss_intro_matron, creature_ilun, battle_vowbound_out, battle_choreo_vowbound_rise, creature_kahre — viewed.
+- **BACKLOG EMPTY (this track's Act I scope):** all six Act I bosses and three Act I Vowbound are at final quality with
+  the hook contract pinned. What remains is other tracks': M3-CRB-009 (battle-presentation), M3-CRB-010 (creatures),
+  the portraits (ui-menus), Moll (characters, M3-CHR-507), the Ch5 arena edge (env-art). Next for me: merge the
+  integration branch when the Lead lands creatures + creatures-b, and check the intro clips once M3-CRB-009 lands.
