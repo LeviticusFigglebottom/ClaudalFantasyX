@@ -283,6 +283,66 @@
       "id": "flat_engine",
       "scene": "res://game/creatures/flat_engine/flat_engine_battle.tscn",
       "out_dir": "res://assets/ui/portraits/creatures"
+    },
+    {
+      "id": "ilun",
+      "scene": "res://game/creatures/ilun/ilun_battle.tscn",
+      "out_dir": "res://assets/ui/portraits/creatures"
+    },
+    {
+      "id": "kahre",
+      "scene": "res://game/creatures/kahre/kahre_battle.tscn",
+      "out_dir": "res://assets/ui/portraits/creatures"
+    },
+    {
+      "id": "virel",
+      "scene": "res://game/creatures/virel/virel_battle.tscn",
+      "out_dir": "res://assets/ui/portraits/creatures"
+    },
+    {
+      "id": "nhoa",
+      "scene": "res://game/creatures/nhoa/nhoa_battle.tscn",
+      "out_dir": "res://assets/ui/portraits/creatures"
+    },
+    {
+      "id": "hesk",
+      "scene": "res://game/creatures/hesk/hesk_battle.tscn",
+      "out_dir": "res://assets/ui/portraits/creatures"
+    },
+    {
+      "id": "ethren",
+      "scene": "res://game/creatures/ethren/ethren_battle.tscn",
+      "out_dir": "res://assets/ui/portraits/creatures"
+    },
+    {
+      "id": "ilun_held",
+      "scene": "res://game/creatures/ilun/ilun_held_battle.tscn",
+      "out_dir": "res://assets/ui/portraits/creatures"
+    },
+    {
+      "id": "kahre_held",
+      "scene": "res://game/creatures/kahre/kahre_held_battle.tscn",
+      "out_dir": "res://assets/ui/portraits/creatures"
+    },
+    {
+      "id": "virel_held",
+      "scene": "res://game/creatures/virel/virel_held_battle.tscn",
+      "out_dir": "res://assets/ui/portraits/creatures"
+    },
+    {
+      "id": "hesk_held",
+      "scene": "res://game/creatures/hesk/hesk_held_battle.tscn",
+      "out_dir": "res://assets/ui/portraits/creatures"
+    },
+    {
+      "id": "nhoa_held",
+      "scene": "res://game/creatures/nhoa/nhoa_held_battle.tscn",
+      "out_dir": "res://assets/ui/portraits/creatures"
+    },
+    {
+      "id": "ethren_held",
+      "scene": "res://game/creatures/ethren/ethren_held_battle.tscn",
+      "out_dir": "res://assets/ui/portraits/creatures"
     }
   ],
   "creature_stage": {

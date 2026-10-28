@@ -40,6 +40,19 @@ TAIL_Z0, TAIL_STEP = -0.3, 0.3  # the tail bones' first joint and their length
 TAIL_PATH = ((0, 0.2, -0.3), (0, 0.18, -0.6), (0.05, 0.12, -0.9), (0.0, 0.1, -1.2))  # the tail's curve
 TAIL_R = (0.04, 0.006)  # its radius at the root and the tip
 TAIL_CHAIN = ((0, 0.2, -0.3), (0, 0.2, -0.6), (0, 0.2, -0.9), (0, 0.2, -1.2))  # the tail's skinning spans
+# The leech's own body and suckers (M3-CRE-654): the sails' resolution, the body's half-width and its top and belly
+# heights over its middle, the annulus (one segment's length; three loft stations each), the oral and caudal suckers'
+# radii and their segments round.
+SAIL_SEGS, SAIL_RINGS = 64, 9
+BODY_W = 0.12
+BODY_H = (0.075, 0.045)
+BODY_ANGLES = 14
+ANNULUS = 0.065
+ORAL_R = 0.05
+SUCKER_R = 0.1
+SUCKER_SEGS = 16
+BATTENS = 16  # ribs round the sail
+DROOP = 0.11  # how far the sail tips hang under the body's line (m)
 
 
 def build_rig() -> ck.Rig:
@@ -94,19 +107,24 @@ def outline(a: np.ndarray) -> np.ndarray:
 
 
 def wing_body(mesh: ck.Mesh, rig: ck.Rig) -> None:
-    segs, rings = 96, 14
+    """The sails: a thin membrane over the whole outline (its middle hidden in the body), ribbed by battens that
+    carry the body's segments out to a ruffled, canvas-pale frilled edge (M3-CRE-654)."""
+    segs, rings = SAIL_SEGS, SAIL_RINGS
     ang = np.linspace(0, 2 * math.pi, segs, endpoint=False)
     edge = outline(ang)
     skin = _skin(rig)
+    canvas = min(FRILL / 0.022, 1.0)  # how much of the pale canvas edge a variant keeps
     for top in (True, False):
         pts = []
         for k in range(rings + 1):
             r = k / rings
             ring = edge * r
-            frill = FRILL * np.sin(ang * FRILL_WAVES) * ck.smoothstep(0.75, 1.0, r)
+            rim = ck.smoothstep(0.7, 1.0, r)
+            frill = FRILL * (np.sin(ang * FRILL_WAVES) + 0.35 * np.sin(ang * FRILL_WAVES * 2.3 + 1.0)) * rim
             dome = DOME * (1.0 - (ring[:, 0] / HALF_W) ** 2)
-            thick = (THICK * np.sqrt(max(1.0 - r, 0.0)) + 0.004) * (1.0 if top else -0.6)
-            ring[:, 1] = 0.2 + dome + frill + thick
+            droop = -DROOP * ck.smoothstep(0.15, 1.0, np.abs(ring[:, 0]) / HALF_W) ** 1.5
+            thick = (THICK * 0.3 * np.sqrt(max(1.0 - r, 0.0)) + 0.003) * (1.0 if top else -0.8)
+            ring[:, 1] = 0.2 + dome + droop + frill + thick
             pts.append(ring)
         P = np.vstack(pts)
         P[:segs, 0] = 0.0
@@ -116,32 +134,136 @@ def wing_body(mesh: ck.Mesh, rig: ck.Rig) -> None:
         want = 1.0 if top else -1.0
         if float((fn[:, 1] * want).sum()) < 0:
             T = ck.flip(T)
+        R = np.repeat(np.arange(rings + 1) / rings, segs)
         n = ck.fbm(P * 6.0, SEED + (0 if top else 1))
-        slits = np.zeros(len(P))
+        # battens: ribs radiating from the body out to the edge, the sail pleated between them
+        A = np.tile(ang, rings + 1)
+        batten = ck.smoothstep(0.55, 0.95, np.cos(A * BATTENS)) * ck.smoothstep(0.12, 0.3, R)
+        batten = batten * (1 - ck.smoothstep(0.88, 0.99, R))
+        P[:, 1] += (0.009 if top else -0.004) * batten
+        rim = ck.smoothstep(0.82, 0.98, R)
         if top:
-            for k in range(4):
-                zc = SLIT_Z[0] - k * SLIT_Z[1]
-                slits = np.maximum(slits, np.exp(-((P[:, 2] - zc) / 0.014) ** 2) * ck.smoothstep(0.34, 0.1, np.abs(P[:, 0])))
             col = ck.mix(PAL["lacquer_black"], PAL["abyss_navy"], ck.smoothstep(-0.2, 0.4, n)[:, None])
+            col = ck.mix(col, PAL["storm_slate"], (0.5 * batten)[:, None])
         else:
             col = np.tile(ck.mix(PAL["storm_slate"], PAL["deep_teal_shadow"], 0.4), (len(P), 1))
-        col = ck.mix(col, PAL["spawn_wound"] * 0.55, slits[:, None])
-        ck.finish(mesh, P, T, "carapace", col, skin, wet=1.0, cavity=0.2 * (1 - slits), emission=slits)
+            col = ck.mix(col, PAL["lacquer_black"], (0.4 * batten)[:, None])
+        col = ck.mix(col, PAL["storm_slate"] * 1.5, (0.85 * canvas * rim)[:, None])  # the canvas-pale frill
+        col = ck.mix(col, PAL["lacquer_black"], (canvas * ck.smoothstep(0.97, 1.0, R))[:, None])  # a dark hem
+        ck.finish(mesh, P, T, "carapace", col, skin, wet=1.0 - 0.8 * canvas * rim, cavity=0.25 * batten + 0.1)
+
+
+def _body_profile(z: np.ndarray, z0: float, z1: float) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+    """The body's half-width, top and belly (m) at z, rear z0 to front z1: full through the middle, rounding to the
+    oral end and narrowing to the tail; each annulus swells between two grooves."""
+    u = (z - z0) / (z1 - z0)
+    taper = np.sqrt(np.clip(1.0 - ((u - 0.45) / 0.58) ** 2, 0.0, 1.0)) ** 0.7
+    ring = 0.5 + 0.5 * np.cos(2 * math.pi * (z - z1) / ANNULUS)
+    swell = 1.0 + 0.14 * ring
+    w = (0.03 + (BODY_W - 0.03) * taper) * swell
+    t = (0.012 + (BODY_H[0] - 0.012) * taper) * swell
+    b = (0.01 + (BODY_H[1] - 0.01) * taper) * swell
+    return w, t, b
+
+
+def body(mesh: ck.Mesh, rig: ck.Rig) -> None:
+    """The leech: a flattened, annulated body down the sails' middle, the spawn's wound slits open seams between
+    its segments, an oral sucker under the eyes (M3-CRE-654)."""
+    z0, z1 = TAIL_Z0, HALF_L + 0.06
+    z = np.linspace(z0, z1, int(round((z1 - z0) / (ANNULUS / 3.0))) + 1)  # three stations an annulus
+    for zc in (SLIT_Z[0] - k * SLIT_Z[1] for k in range(4)):  # stations on each slit, so each opens crisply
+        z = np.concatenate([z, [zc - 0.012, zc, zc + 0.012]])
+    z = np.unique(np.clip(z, z0, z1))[::-1]  # front to rear
+    w, t, b = _body_profile(z, z0, z1)
+    ang = np.linspace(0.0, 2 * math.pi, BODY_ANGLES, endpoint=False)
+    sa, ca = np.sin(ang), np.cos(ang)
+    rows = []
+    for k in range(len(z)):
+        dome = DOME
+        x = w[k] * np.sign(sa) * np.abs(sa) ** 0.8
+        y = 0.2 + dome + np.where(ca > 0, t[k], b[k]) * np.sign(ca) * np.abs(ca) ** 0.8
+        rows.append(np.column_stack([x, y, np.full(len(ang), z[k])]))
+    P = np.vstack(rows)
+    T = ck.grid_tris(len(z), len(ang), True)
+    fn = np.cross(P[T[:, 1]] - P[T[:, 0]], P[T[:, 2]] - P[T[:, 0]])
+    if float((fn[:, 0] * P[T[:, 0], 0]).sum()) < 0:
+        T = ck.flip(T)
+    Z = P[:, 2]
+    CA = np.tile(ca, len(z))
+    back = ck.smoothstep(0.0, 0.6, CA)
+    groove = ck.smoothstep(0.7, 0.98, np.cos(2 * math.pi * (Z - z1) / ANNULUS + math.pi))
+    slits = np.zeros(len(P))
+    for k in range(4):
+        zc = SLIT_Z[0] - k * SLIT_Z[1]
+        slits = np.maximum(slits, np.exp(-((Z - zc) / 0.009) ** 2) * ck.smoothstep(0.3, 0.7, CA))
+    slits = ck.smoothstep(0.2, 0.8, slits)
+    P[:, 1] -= 0.008 * slits  # the seam is open: sunk under the segments either side
+    n = ck.fbm(P * 9.0, SEED + 3)
+    col = ck.mix(PAL["lacquer_black"], PAL["abyss_navy"], (0.35 + 0.4 * ck.smoothstep(-0.2, 0.4, n))[:, None])
+    col = ck.mix(col, ck.mix(PAL["storm_slate"], PAL["deep_teal_shadow"], 0.4), (1 - back)[:, None] * 0.8)
+    crown = ck.smoothstep(0.2, 0.9, 0.5 + 0.5 * np.cos(2 * math.pi * (Z - z1) / ANNULUS)) * back
+    col = ck.mix(col, PAL["storm_slate"], (0.3 * crown)[:, None])  # each segment's crown catches the light
+    col = ck.mix(col, PAL["lacquer_black"], (0.8 * groove)[:, None])
+    stripe = np.exp(-(P[:, 0] / 0.012) ** 2) * back  # a faint dorsal stripe down the segments
+    col = ck.mix(col, PAL["storm_slate"], (0.35 * stripe * (1 - groove))[:, None])
+    col = ck.mix(col, PAL["spawn_wound"] * 0.55, slits[:, None])
+    ck.finish(mesh, P, T, "carapace", col, _skin(rig), wet=1.0, cavity=np.clip(0.55 * groove + 0.15, 0, 1) * (1 - slits),
+              emission=slits)
+    # the oral sucker: a ribbed cup under the front, open forward and down
+    front = np.array([0.0, 0.2 + DOME - 0.01, z1 - 0.01])
+    _sucker(mesh, ORAL_R, front, np.array([0.0, -0.55, 1.0]), rig.rigid("body"))
     for s in (-1.0, 1.0):
         Pe, Te = ck.ellipsoid((s * EYE[0], EYE[1], EYE[2]), (0.025, 0.02, 0.025), 5, 8)
         ck.finish(mesh, Pe, Te, "carapace", PAL["spawn_wound"], rig.rigid("body"), wet=1.0, emission=1.0)
+        for k in range(2):  # smaller dark eyespots in an arc behind each eye
+            c = (s * (EYE[0] + 0.012 + 0.015 * k), EYE[1] - 0.006 - 0.006 * k, EYE[2] - 0.045 - 0.04 * k)
+            Ps, Ts = ck.ellipsoid(c, (0.009, 0.006, 0.009), 3, 5)
+            ck.finish(mesh, Ps, Ts, "carapace", PAL["lacquer_black"], rig.rigid("body"), wet=1.0, cavity=1.0)
+
+
+def _sucker(mesh: ck.Mesh, radius: float, centre: np.ndarray, facing: np.ndarray, bone) -> None:
+    """A leech's sucker: a muscular disc with a thick rim, its cup ribbed and pale, opening along `facing`."""
+    f = facing / np.linalg.norm(facing)
+    x = np.cross(np.array([0.0, 1.0, 0.0]) if abs(f[1]) < 0.9 else np.array([1.0, 0.0, 0.0]), f)
+    x /= np.linalg.norm(x)
+    R = np.column_stack([x, -f, np.cross(x, -f)])  # the lathe's +y is the disc's back
+    prof = [(0.0, 0.22), (0.45, 0.17), (0.8, 0.07), (1.0, 0.0), (1.08, 0.12), (0.95, 0.32), (0.55, 0.45), (0.0, 0.5)]
+    P, T = ck.lathe([(r * radius, y * radius) for r, y in prof], SUCKER_SEGS)
+    fn = np.cross(P[T[:, 1]] - P[T[:, 0]], P[T[:, 2]] - P[T[:, 0]])
+    if float((fn * (P[T[:, 0]] - P.mean(axis=0))).sum()) < 0:  # outward: the cup's face forward, its back behind
+        T = ck.flip(T)
+    rib = 0.5 + 0.5 * np.cos(np.tile(np.arange(SUCKER_SEGS) * (2 * math.pi / SUCKER_SEGS), len(prof)) * 7)
+    row = np.repeat(np.arange(len(prof)), SUCKER_SEGS)
+    inside = row <= 2
+    col = np.where(inside[:, None], ck.mix(PAL["storm_slate"], PAL["deep_teal_shadow"], 0.5 + 0.3 * rib[:, None]),
+                   ck.mix(PAL["lacquer_black"], PAL["abyss_navy"], 0.4))
+    col = np.where((row == 0)[:, None], PAL["lacquer_black"], col)
+    P = ck.transform(P, R, centre)
+    ck.finish(mesh, P, T, "carapace", col, bone, wet=1.0, cavity=np.where(inside, 0.3 + 0.4 * rib, 0.15))
 
 
 def tail(mesh: ck.Mesh, rig: ck.Rig) -> None:
-    path = ck.bezier(list(TAIL_PATH), 16)
-    P, T = ck.tube(path, np.linspace(TAIL_R[0], TAIL_R[1], 16), 6)
+    """The tail: the body narrowing to a ringed ribbon, ending in the caudal sucker it clings with (M3-CRE-654)."""
+    n = 22
+    path = ck.bezier(list(TAIL_PATH), n)
+    rad = np.linspace(TAIL_R[0] * 1.25, TAIL_R[0] * 0.75, n)  # a fleshy ribbon all the way to the sucker
+    seg_len = np.concatenate([[0.0], np.cumsum(np.linalg.norm(np.diff(path, axis=0), axis=1))])
+    ring = 0.5 + 0.5 * np.cos(2 * math.pi * seg_len / (ANNULUS * 0.7))
+    P, T = ck.tube(path, rad * (1.0 + 0.12 * ring), 8, squash=1.7, cap_end=False)
     skin = rig.chain(["tail0", "tail1", "tail2"], list(TAIL_CHAIN))
-    ck.finish(mesh, P, T, "carapace", PAL["lacquer_black"], skin, wet=1.0)
+    rr = np.concatenate([np.repeat(ring, 8), [1.0]])[: len(P)]
+    col = ck.mix(ck.mix(PAL["lacquer_black"], PAL["abyss_navy"], 0.4), PAL["lacquer_black"], (1 - rr)[:, None] * 0.7)
+    ck.finish(mesh, P, T, "carapace", col, skin, wet=1.0, cavity=0.4 * (1 - rr))
+    tip = path[-1]
+    tdir = (path[-1] - path[-3]) / np.linalg.norm(path[-1] - path[-3])
+    _sucker(mesh, SUCKER_R, tip + tdir * SUCKER_R * 0.15, tdir + np.array([0.0, -1.2, 0.0]),
+            rig.rigid("tail2"))
 
 
 def build_mesh(rig: ck.Rig, name: str = "sail_leech") -> ck.Mesh:
     mesh = ck.Mesh(name)
     wing_body(mesh, rig)
+    body(mesh, rig)
     tail(mesh, rig)
     return mesh
 

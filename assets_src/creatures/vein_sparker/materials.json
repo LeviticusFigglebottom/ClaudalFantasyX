@@ -1,5 +1,5 @@
 {
-  "_doc": "Vein sparker (act1/vein_sparker.md): scale (copper-green, the charged coil tip), copper (the ridge spines and their charged tips), eye. Charge glows starlight, never a glimmer hue. write_materials.py on game/shaders/creature/creature.gdshader.",
+  "_doc": "Vein sparker (act1/vein_sparker.md): scale (copper-green, the coil's last third bare copper; its emission mask is the one small closed spawn_wound mark, the old break healed over on the tail's root: the weak point, ADR 0151), copper (the ridge spines; their tips and the coil's sparks are the stored charge, starlight in points only, palette.json's point-source rule; M3-CRE-650), eye. Charge glows starlight, never a glimmer hue. write_materials.py on game/shaders/creature/creature.gdshader.",
   "slots": {
     "scale": {
       "roughness_dry": 0.55,
@@ -9,10 +9,10 @@
       "detail_albedo": 0.18,
       "detail_bump": 0.5,
       "cavity_albedo": 0.45,
-      "emission_color": "#DCE6FF",
-      "emission_energy": 2.5,
-      "emission_pulse_hz": 3.0,
-      "emission_pulse_depth": 0.5
+      "emission_color": "#3FE0C8",
+      "emission_energy": 1.4,
+      "emission_pulse_hz": 0.35,
+      "emission_pulse_depth": 0.35
     },
     "copper": {
       "roughness_dry": 0.35,
