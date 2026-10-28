@@ -824,6 +824,24 @@
       ]
     },
     {
+      "id": "ivo",
+      "threads": 4,
+      "owner": "character",
+      "_note": "M3-CHR-540: Ivo Brannick, a named Stillguard on the squad's build (stillguard_variants.json `named`, build_stillguard.py --variant ivo, build_moll.build with no_prop), so the stillguard job's sources are his too. His weathered cloth and shield maps are the stillguard job's shared atlases (assets/characters/stillguard/textures/), which his materials only point at.",
+      "sources": ["assets_src/characters/stillguard/**", "assets_src/characters/moll/**", "assets_src/characters/villagers/**",
+                  "assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**",
+                  "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**"],
+      "outputs": ["assets/characters/ivo/*.glb", "assets/characters/ivo/textures/*.png",
+                  "assets/characters/ivo/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/characters/stillguard/build_stillguard.py", "--", "--variant", "ivo",
+         "--bake-dir", "{scratch}/ivo_bake"],
+        ["{python}", "assets_src/characters/stillguard/sg_textures.py", "--variant", "ivo", "--bake-dir",
+         "{scratch}/ivo_bake"],
+        ["{python}", "assets_src/characters/stillguard/write_materials.py", "--variant", "ivo"]
+      ]
+    },
+    {
       "id": "creature_tannin_archer",
       "owner": "character",
       "sources": ["assets_src/creatures/tannin_archer/**", "assets_src/creatures/common/**"],
