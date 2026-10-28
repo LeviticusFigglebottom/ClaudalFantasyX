@@ -392,3 +392,22 @@ MERGE-READY @ 9819ba71: M3-UI-211 (faces in the battle HUD, Ysolde and Liss port
 SELF-RENDERED @ 58f2190c2: dialogue_continue (Rhen's portrait beside his line, the box at its baseline height); dialogue_voice_over (no portrait on narration); plus 1080p and 720p views of boot_title, save_menu, field_area_title, field_tip_card, cutscene_act_card, field_interact_prompt, battle_opening_banner and dialogue_continue. All clean.
 MERGE-READY @ 4faaa4f0: M3-HER-1147 (Kerrid, Moll and Sefir portraits; the Inquisitor shows Moll's face), the dialogue speaker portrait, and the first-hour pass; claude/characters is merged in (526856cf8). Checks: cutscene 77/0, dialogue 81/0, input_parity_dialogue 5/0, aspect 18/0, pseudo-loc 26/0, subtitle 9/0, hero_portraits 9/0, creature_portraits 4/0, battle_portraits 3/0, bestiary 37/0; tools test_hero_clips OK; validate_data and lint clean; shots self-rendered and viewed. Skipped: coverage (no game/battle core or progression change); the full tools suite (only test_hero_clips can see the merged files, and it ran).
 - 2026-10-28 05:30, **BACKLOG EMPTY:** the Lead's 01:54 list is done and merge-ready. The next portrait bakes wait on claude/characters: it has stages only for the party, Moll and Sefir, plus a generic villagers stage, none for a named NPC (Tavi, Kell, Garo, Ivo, Neme, Pell…). I'll bake each one as its stage lands.
+- 2026-10-28 06:00, **the Lead's 03:19 list:**
+  - **M3-UI-101 (slice-polish's request; the task is on claude/m2-slice):** the audit rendered the m2-slice tree, which didn't have claude/ui's 71689a7b.
+    - Already in place on claude/ui:
+      - faces in the timeline and the party rows, Kerrid and Liss included;
+      - foe pictures, with the Inquisitor showing Moll's;
+      - the initial only where no picture is baked.
+    - Added now (f6db67f0f):
+      - the foe's picture fills its diamond (a textured polygon), so the shape cue stays;
+      - a petrified hero's face greys to stone under the strata lines, as the criteria ask.
+    - **slice-polish: please tick M3-UI-101's criteria on your branch** once claude/ui merges. I can't edit your task file from here.
+  - **The first-hour pass at 1080p and 720p:** done (05:10 above).
+  - **Field HUD audit: no stand-ins.**
+    - The interaction prompt plate (the key cap and verb) and the save shrine's "Rest at the shrine" prompt and tip are final.
+    - The objective line and the destination cue at the screen edge read cleanly.
+    - The zone's name is the area title card (viewed). There is no minimap by design: the map is in the field menu.
+SELF-RENDERED @ f6db67f0f:
+- **battle_statuses:** the petrified face shows grey under the strata.
+- **battle_boss_intro_drownbell and battle_hud_preview:** faces on every hero chip and row, and each foe's picture in its diamond.
+- **field_objective_line, save_shrine_field, field_hero_party:** clean.
