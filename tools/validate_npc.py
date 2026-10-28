@@ -9,6 +9,14 @@
   unique in the zone and has a stand_in path; chat_with names another row that chats back; route entries are
   points or {at, pause_sec, activity} with a known activity; shelter and work_at are [x, y, z] or
   [x, y, z, yaw_deg]; storm_flag (when set) is a declared flag.
+* Crowd rows (M3-CRE-659, ADR 0152): a row's `crowd` names a person in game/data/world/npc/crowd.json who stands
+  in this zone at this stage actor (stand_in CutsceneStage/Actors/<stage_actor>, attach child); their body's actor
+  scene exists; `offset` is [x, y, z] or [x, y, z, yaw_deg], inside the stand-in only.
+* game/data/world/npc/crowd.json: ids unique; each person's zone is a location, their body a planned body with an
+  actor scene whose age band and sex are theirs, their work a crowd work clip (or none), their tints exactly
+  cloth_a, cloth_b, cloth_c and hair, each a palette.json swatch or a two-swatch mix of the cloth, earth, stone,
+  accent, material, vegetation and hair families; every person has exactly one row in their zone's file. Variety:
+  no body twice in one zone, and two people anywhere on one body dress at least VARIETY_MIN apart.
 """
 
 from __future__ import annotations
@@ -27,6 +35,16 @@ ACTOR = "assets/characters/villagers/{id}/{id}_actor.tscn"
 TEST_ZONE_PREFIX = "_tests/"
 ACTIVITIES = {"", "work"}
 ATTACH = {"beside", "child"}
+CROWD_FILE = "game/data/world/npc/crowd.json"
+CROWD_ACTOR = "assets/crowd/{id}/{id}_actor.tscn"
+STAGE_ACTORS = "CutsceneStage/Actors/"
+PALETTE_FILE = "docs/kb/art/palette.json"
+TINT_SLOTS = {"cloth_a", "cloth_b", "cloth_c", "hair"}
+CLOTH_SLOTS = ("cloth_a", "cloth_b", "cloth_c")
+TINT_FAMILIES = {"cloth", "earth", "stone", "accent", "material", "vegetation", "hair"}
+TINT_TOLERANCE = 1.5  # sRGB 0-255 units off the nearest two-swatch mix (hex rounding)
+VARIETY_MIN = 24.0  # sRGB 0-255 distance: two people on one body differ by at least this in some cloth slot
+PERSON_KEYS = ("id", "zone", "stage_actor", "role", "community", "age_band", "sex", "build", "body", "tints", "work")
 ROUTINE_SECTIONS = {
     "look": {"bones", "max_yaw_deg", "max_pitch_up_deg", "max_pitch_down_deg", "smoothing_sec",
              "max_rate_deg_per_sec", "max_substep_sec", "head_height_m", "player_eye_height_m"},
@@ -98,12 +116,40 @@ def _location_ids(root: Path) -> set[str]:
     return {str(x.get("id")) for x in locs if isinstance(x, dict)}
 
 
-def zone_errors(root: Path, rel: str, locations: set[str], flags: set[str]) -> list[str]:
+def crowd_people(root: Path) -> dict[str, dict]:
+    """crowd.json's people by id ({} without the file)."""
+    if not (root / CROWD_FILE).exists():
+        return {}
+    data = _load(root / CROWD_FILE, [])
+    return {str(p.get("id")): p for p in data.get("people", []) if isinstance(p, dict)}
+
+
+def _crowd_row_errors(root: Path, where: str, zone: str, row: dict, people: dict[str, dict]) -> list[str]:
+    errs: list[str] = []
+    pid = str(row.get("crowd", ""))
+    person = people.get(pid)
+    if person is None:
+        return [f"{where}: crowd {pid!r} is not a person in {CROWD_FILE}"]
+    if str(person.get("zone")) != zone:
+        errs.append(f"{where}: crowd {pid!r} stands in {person.get('zone')!r}, not {zone!r}")
+    if str(row.get("stand_in", "")) != STAGE_ACTORS + str(person.get("stage_actor", "")):
+        errs.append(f"{where}: crowd {pid!r} stands at stage actor {person.get('stage_actor')!r}, "
+                    f"not {row.get('stand_in')!r}")
+    body = str(person.get("body", ""))
+    if not (root / CROWD_ACTOR.format(id=body)).exists():
+        errs.append(f"{where}: crowd {pid!r} wears body {body!r}, which has no actor scene")
+    return errs
+
+
+def zone_errors(root: Path, rel: str, locations: set[str], flags: set[str],
+                people: dict[str, dict] | None = None) -> list[str]:
     errs: list[str] = []
     path = root / rel
     data = _load(path, errs)
     if not data:
         return errs
+    if people is None:
+        people = crowd_people(root)
     zone = str(data.get("zone", ""))
     if not zone.startswith(TEST_ZONE_PREFIX):
         if path.name != zone.replace("/", "_") + ".json":
@@ -124,10 +170,18 @@ def zone_errors(root: Path, rel: str, locations: set[str], flags: set[str]) -> l
         if vid in by_id:
             errs.append(f"{where}: npc_id {vid!r} appears twice")
         by_id[vid] = row
-        actor = str(row.get("actor", vid))
-        if not (root / ACTOR.format(id=actor)).exists():
-            errs.append(f"{where}: npc_id {vid!r} has no actor scene" if actor == vid
-                        else f"{where}: actor {actor!r} (worn by {vid!r}) has no actor scene")
+        if "crowd" in row:
+            errs += _crowd_row_errors(root, where, zone, row, people)
+        else:
+            actor = str(row.get("actor", vid))
+            if not (root / ACTOR.format(id=actor)).exists():
+                errs.append(f"{where}: npc_id {vid!r} has no actor scene" if actor == vid
+                            else f"{where}: actor {actor!r} (worn by {vid!r}) has no actor scene")
+        if "offset" in row:
+            if not _point(row["offset"]):
+                errs.append(f"{where}: offset is not [x, y, z] or [x, y, z, yaw_deg]")
+            elif str(row.get("attach", "beside")) != "child":
+                errs.append(f"{where}: an offset places a villager inside its stand-in (attach child) only")
         if not str(row.get("stand_in", "")):
             errs.append(f"{where}: no stand_in")
         for key in ("shelter", "work_at"):
@@ -157,10 +211,124 @@ def zone_errors(root: Path, rel: str, locations: set[str], flags: set[str]) -> l
     return errs
 
 
+def _rgb(hex_: str) -> tuple[float, float, float] | None:
+    if not re.fullmatch(r"#[0-9A-Fa-f]{6}", str(hex_)):
+        return None
+    return tuple(float(int(hex_[i:i + 2], 16)) for i in (1, 3, 5))  # type: ignore[return-value]
+
+
+def tint_swatches(root: Path) -> list[tuple[float, float, float]]:
+    """The palette.json swatches a tint may be (or mix two of)."""
+    data = _load(root / PALETTE_FILE, [])
+    out = []
+    for s in data.get("swatches", {}).values():
+        if isinstance(s, dict) and s.get("family") in TINT_FAMILIES and _rgb(str(s.get("hex"))):
+            out.append(_rgb(str(s["hex"])))
+    return out
+
+
+def mix_distance(c: tuple, swatches: list[tuple]) -> float:
+    """How far `c` lies (sRGB units) from the nearest swatch or straight mix of two swatches."""
+    best = float("inf")
+    for i, a in enumerate(swatches):
+        for b in swatches[i:]:
+            ab = [b[k] - a[k] for k in range(3)]
+            ac = [c[k] - a[k] for k in range(3)]
+            n = sum(x * x for x in ab)
+            t = 0.0 if n == 0.0 else min(1.0, max(0.0, sum(ab[k] * ac[k] for k in range(3)) / n))
+            d = sum((ac[k] - t * ab[k]) ** 2 for k in range(3)) ** 0.5
+            best = min(best, d)
+    return best
+
+
+def tint_distance(a: dict, b: dict) -> float:
+    """The largest sRGB distance over the cloth slots: how far apart two people on one body dress."""
+    out = 0.0
+    for s in CLOTH_SLOTS:
+        ca, cb = _rgb(str(a.get(s, ""))), _rgb(str(b.get(s, "")))
+        if ca and cb:
+            out = max(out, sum((ca[k] - cb[k]) ** 2 for k in range(3)) ** 0.5)
+    return out
+
+
+def variety_errors(people: list[dict]) -> list[str]:
+    """No body twice in one zone; people on one body anywhere dress at least VARIETY_MIN apart."""
+    errs: list[str] = []
+    seen: dict[tuple[str, str], str] = {}
+    by_body: dict[str, list[dict]] = {}
+    for p in people:
+        key = (str(p.get("zone")), str(p.get("body")))
+        if key in seen:
+            errs.append(f"{CROWD_FILE}: {p.get('id')} and {seen[key]} both wear {key[1]} in {key[0]}")
+        seen[key] = str(p.get("id"))
+        for q in by_body.get(key[1], []):
+            d = tint_distance(p.get("tints", {}), q.get("tints", {}))
+            if d < VARIETY_MIN:
+                errs.append(f"{CROWD_FILE}: {p.get('id')} and {q.get('id')} wear {key[1]} in near-identical tints "
+                            f"({d:.0f} < {VARIETY_MIN:.0f})")
+        by_body.setdefault(key[1], []).append(p)
+    return errs
+
+
+def crowd_errors(root: Path, locations: set[str]) -> list[str]:
+    if not (root / CROWD_FILE).exists():
+        return []
+    errs: list[str] = []
+    data = _load(root / CROWD_FILE, errs)
+    bodies = data.get("bodies", {})
+    works = set(data.get("work_tuning", {})) - {"doc"}
+    swatches = tint_swatches(root)
+    people = [p for p in data.get("people", []) if isinstance(p, dict)]
+    ids: set[str] = set()
+    for p in people:
+        pid = str(p.get("id", ""))
+        where = f"{CROWD_FILE}: {pid or '<no id>'}"
+        missing = [k for k in PERSON_KEYS if k not in p]
+        if missing:
+            errs.append(f"{where}: lacks {', '.join(missing)}")
+            continue
+        if pid in ids:
+            errs.append(f"{where}: id appears twice")
+        ids.add(pid)
+        if p["zone"] not in locations:
+            errs.append(f"{where}: zone {p['zone']!r} is not a location")
+        plan = bodies.get(p["body"])
+        if plan is None:
+            errs.append(f"{where}: body {p['body']!r} is not planned in `bodies`")
+        else:
+            for k in ("age_band", "sex"):
+                if plan.get(k) != p[k]:
+                    errs.append(f"{where}: {k} {p[k]!r} but body {p['body']} is {plan.get(k)!r}")
+            if not (root / CROWD_ACTOR.format(id=p["body"])).exists():
+                errs.append(f"{where}: body {p['body']!r} has no actor scene")
+        if p["work"] and p["work"] not in works:
+            errs.append(f"{where}: work {p['work']!r} is not a crowd work clip ({sorted(works)})")
+        tints = p["tints"] if isinstance(p["tints"], dict) else {}
+        if set(tints) != TINT_SLOTS:
+            errs.append(f"{where}: tints must be exactly {sorted(TINT_SLOTS)}")
+        for slot, hex_ in sorted(tints.items()):
+            c = _rgb(str(hex_))
+            if c is None:
+                errs.append(f"{where}: tints.{slot} {hex_!r} is not #RRGGBB")
+            elif swatches and mix_distance(c, swatches) > TINT_TOLERANCE:
+                errs.append(f"{where}: tints.{slot} {hex_} is not a palette swatch or a mix of two")
+    rows: dict[str, int] = {}
+    zone_files = sorted((root / ZONES_DIR).glob("*.json")) if (root / ZONES_DIR).is_dir() else []
+    for f in zone_files:
+        for r in _load(f, []).get("villagers", []):
+            if isinstance(r, dict) and "crowd" in r:
+                rows[str(r["crowd"])] = rows.get(str(r["crowd"]), 0) + 1
+    for pid in sorted(ids):
+        if rows.get(pid, 0) != 1:
+            errs.append(f"{CROWD_FILE}: {pid} has {rows.get(pid, 0)} zone rows (needs exactly 1)")
+    return errs + variety_errors(people)
+
+
 def npc_errors(root: Path) -> list[str]:
     errs = tuning_errors(root)
     locations = _location_ids(root)
     flags = _declared_flags(root)
+    errs += crowd_errors(root, locations)
     zone_files = sorted((root / ZONES_DIR).glob("*.json")) if (root / ZONES_DIR).is_dir() else []
     for f in zone_files:
         errs += zone_errors(root, str(f.relative_to(root)), locations, flags)

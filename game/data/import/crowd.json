@@ -1,0 +1,28 @@
+{
+  "_about": "M3-CRE-659 post-import rules for Act I's crowd bodies (game/core/import/crowd_post_import.gd, AssetImportRules; ADR 0152): assets/crowd/<body>/<body>.glb, the LOD1 build of the characters' villager pipeline (assets_src/crowd/build_crowd.py). The same rules as the characters' villager folders (game/data/import/characters.json): each glTF material slot maps to <asset dir>/materials/<slot>.tres, Godot's auto LODs, no collision, and the body clips (anim/<body>_clips.tres: idle, talk, walk and its work clips) on an AnimationPlayer at the asset root. FieldNpc and VillagerLayer tint cloth and hair per person on top (NpcTints).",
+  "kind": "crowd",
+  "script": "res://game/core/import/crowd_post_import.gd",
+  "assets": ["res://assets/crowd/crowd_boy_small/", "res://assets/crowd/crowd_boy_tall/", "res://assets/crowd/crowd_elder_man_a/",
+             "res://assets/crowd/crowd_elder_man_b/", "res://assets/crowd/crowd_elder_woman_a/", "res://assets/crowd/crowd_elder_woman_b/",
+             "res://assets/crowd/crowd_girl_small/", "res://assets/crowd/crowd_girl_tall/", "res://assets/crowd/crowd_girl_teen/",
+             "res://assets/crowd/crowd_man_heavy/", "res://assets/crowd/crowd_man_heavy_b/", "res://assets/crowd/crowd_man_lean_a/",
+             "res://assets/crowd/crowd_man_lean_b/", "res://assets/crowd/crowd_man_medium_a/", "res://assets/crowd/crowd_man_medium_b/",
+             "res://assets/crowd/crowd_order_man/", "res://assets/crowd/crowd_order_woman/", "res://assets/crowd/crowd_woman_heavy/",
+             "res://assets/crowd/crowd_woman_lean_a/", "res://assets/crowd/crowd_woman_lean_b/", "res://assets/crowd/crowd_woman_medium/",
+             "res://assets/crowd/crowd_woman_medium_b/"],
+  "adoption_pending": {},
+  "generate_lods": true,
+  "materials": {
+    "slot_dir": "{asset_dir}/materials/",
+    "by_node": {},
+    "warn_unmapped": true
+  },
+  "lods": {},
+  "animations": {
+    "_about": "As the characters' rule: the body's clip library on an AnimationPlayer at the asset root, 0.3 s default blend.",
+    "library": "{asset_dir}/anim/{asset_stem}_clips.tres",
+    "strip_suffixes": [],
+    "default_blend_s": 0.3
+  },
+  "collision": {}
+}
