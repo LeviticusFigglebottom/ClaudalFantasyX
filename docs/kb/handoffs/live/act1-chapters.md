@@ -212,6 +212,15 @@ cutscene sequencer (`game/cutscene/**`), `game/flow/**` and the playtest fixes.
   still todo. The galleries part of M3-C07-04 is done by M3-C07-1211. I'll compose the port from the Bell kit's port
   pieces and Oruvel's rafts only if the Lead wants it before env-art gets to it.
 
+- **MERGE-READY @ 91f21337: the Act I chapter threads and cutscenes are clean.** All 39 `_thread` tests pass;
+  `hero_cutscene_snaps` (ADR 0192, the merged suite) went from 6 new failures to 0: the wake's feast villagers face
+  the wall's gap, Coilspire's tender and Liss face where they first turn, Liss stands 0.6 m back from the seized key
+  (she stood on it), Ch9's Kerrid climbs the broken stair up instead of stepping down backwards, and Toma's run in
+  ch08_beacon_opened ends before the fade (a 0.6 s hold). **For env-art-b:** those are NPC-placement yaw/point
+  edits in `coilspire_layout.json` (tender, liss, t3_liss_wait, seized_key_liss) and `corrow_night_layout.json`
+  (kerrid_stair, stair_climb); keep them if you regenerate. Known snaps (M2-HER-1113, the via walks) unchanged.
+- **M3-HER-1145 done @ 41bc33e7** (the inventory's three act1-chapters rows): ch08_headland_gulls/crabs on
+  `coilspire_headland_path`, ch08_flue_moths on `coilspire_tier_landing`; the static audit lists nothing for us.
 - **Lead DECISION (10-28 02:35): env-art-b's Ch5–Ch9 dressing wins; dressing is env-art's (Prologue–Ch4) and
   env-art-b's (Ch5–Ch9) from now on.** Merged origin/claude/env-art-b, every conflict in tools/act1/ch0[5-9]_*, their
   generated json, `zone_kit_dressing.gd` (`waters`) and the Ch7 port's scene and rig taken from env-art-b; my Ch9 Lake
