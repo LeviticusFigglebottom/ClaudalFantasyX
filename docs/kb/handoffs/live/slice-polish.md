@@ -705,6 +705,22 @@ Ch4–Ch9 onward. `m2-slice.md` beside this file is the history up to the 2026-1
   - **M3-ENV-739 (Iskarra), to review:** already done here.
   - **Checks:** ch01 20, underway 9, zone_map 21, slice_primitives 1, all 0 failed; tools test_zone_map_pois
     (Ch1 rows), test_ch01_zone_copies; gdlint and gdformat clean. Self-rendering the Ch1 set on their dressings next.
+- **ADR 0041: the cutscene VFX are final.** `@vfx glimmer_*` builds Rendering's GlimmerField through `apply_cue`
+  (count, drift, motion and rate performed), sized from the row's spread_m and freed at the scene's end
+  (`CutsceneVfx`). M2-FP-01's placeholder `CutsceneMotes` is deleted. Checks: cutscene_sequencer 17, fp_ 30,
+  prologue 8, haluna 65, first_verse 3, _thread 40, all 0 failed.
+- **O07's still** holds Sadi's line 003 again (the hold was lost in a merge).
+- **SELF-RENDERED on env-art's dressings (viewed):**
+  - **read right:** ch01_scale_hull (across the counter), ch01_kell_stall (before her lamp racks), ch01_o10_gull (the
+    carved gull fills the insert), ch01_oruvel_dressed, ch01_net_pen, ch01_underway_gallery;
+  - **ch01_oruvel_storm:** the Undertow and env-art's storm set, but the sky stays clear day-blue. Asked in
+    M3-ENV-104;
+  - **ch01_underway_crown: broken by their layout.** Their walls stand inside the greybox collision (x +-8.175, z
+    -2.175/18.175 against +-9, -4/20), so Rhen walks about 1 m into a visible wall, and the orbit camera sits outside
+    the visible room. Filed **M3-ENV-105, high**.
+- LEAD-ASK: M3-ENV-105. Mounting env-art's Underway dressing brings a walk-into-the-walls regression (their bays stand
+  about 1 m inside the greybox walls). My default: keep theirs mounted per your ruling, with the fix requested high.
+  Say if I should mount my retired layout again until they fix it (it's one layout_path line plus restoring two files).
 - LEAD-ANSWERED (14:47, env-art's dressing wins the zone; mine keeps the cutscene side; done above): M3-ENV-740 has two Oruvel dressings (env-art's M3-ENV-738 and my M3-C01-100). My default: keep mine
   mounted until env-art moves its scale_hull and chandlery onto the story actors, then mount theirs (it has the storm
   state). Overrule if you'd rather mount theirs now and re-stage the actors to it.
