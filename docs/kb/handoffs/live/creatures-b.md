@@ -148,3 +148,22 @@ CreatureActor and the validator are theirs too (kit or tool changes go to them a
   height 3.25 m (stand-in 3.3 kept). Checks: Blender verify identical; tools tests 48 OK; validate_data; Godot kahre
   6/0, vowbound 83/0. SELF-RENDERED @ 6150705d: creature_kahre, creature_kahre_held — viewed: the hammer reads as part
   of the casque. Left: the wrist seam is ragged up close.
+- **MERGE-READY @ (this push): M3-CRB-003, the Drownbell to final quality** (worktree agent 66d6f5c0, viewed by me),
+  **and the contract test.**
+  - The Drownbell: double beads, an invented-script inscription band, waves under eleven cast fan-shells, the shrine
+    sigil roundel; a bright strike seat, a riveted old mend, dents, pitting, verdigris and a tide line; open rim seams
+    with torn bright lips branching up (the rim stays the weak point; `RimBroken` loses 105° of lip round the biggest
+    wound and its light goes out); cast crown lugs (one snapped) with a chain stub; three-strand hemp rope; jointed
+    plated legs with hooked tips, feet at 1.1 m. Relaid so the biggest wound faces the battle cameras (they see it
+    from about −20°). 23.8k triangles, 22 bones. New `ready`, `intro` (2.8 s); `vfx_wound`, `vfx_core`, `vfx_phase`.
+    Contacts and the flood offset unchanged.
+  - **tests/unit/test_creature_bosses_act1.gd (new):** every Act I boss has idle, ready, intro (1.5–3.5 s), attack,
+    cast, hit, hit_b, ko and unweighted `vfx_wound`/`vfx_core`/`vfx_phase`; every Act I Vowbound has its clips and
+    unweighted `vfx_core`/`vfx_keepsake` (weights read from the vertex arrays). 4/0.
+  - **Checks run:** Blender verify identical (drownbell); validate_data; tools tests 48 OK; gdlint/gdformat; Godot
+    creature 79/1 on the combined tree (the known portraits), drownbell 6/0, boss 57/0, creature_bosses 4/0.
+  - SELF-RENDERED @ 66d6f5c0: creature_drownbell, creature_drownbell_toll, creature_drownbell_rim_broken,
+    battle_boss_intro_drownbell, drownbell_flood — drift (new model); viewed: a finished, doomed bell; the glowing
+    seams face the intro camera at sunset.
+- **All nine Act I bosses and Vowbound have had their final pass.** In progress: the Reach's close-range facets and the
+  hermit's gloss (polish agent).
