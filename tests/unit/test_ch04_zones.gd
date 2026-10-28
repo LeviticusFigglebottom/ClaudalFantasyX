@@ -55,6 +55,19 @@ func test_the_wake_is_the_real_haluna_at_night() -> void:
 	_done()
 
 
+func test_the_wakes_field_camera_is_halunas() -> void:
+	Game.set_flag(&"ch03_rhen_sworn_guardian")
+	_open(WAKE)
+	var vols := zone.get_node(^"HalunaCameraVolumes")
+	assert_eq(vols.get_child_count(), 8, "ch02/haluna's eight volumes")
+	var market := vols.get_node(^"Market") as CameraVolume
+	assert_eq(market.shot.id, &"H09", "with their shots")
+	assert_true(market.contains_point(Vector3(-46.5, 3.0, -0.5)), "and their shapes, where Haluna has them")
+	zone.director.collect_volumes()
+	assert_true(zone.director.volumes.has(market), "the director picks them up")
+	_done()
+
+
 func test_placing_an_actor_needs_the_actor_and_the_mark() -> void:
 	_open(FERRY)
 	assert_true(zone.place_actor("toma", "ferry_toma"))

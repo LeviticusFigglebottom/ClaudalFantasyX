@@ -208,7 +208,7 @@ func _corrow_by_day() -> void:
 	assert_eq(Game.state.reserve_ids, CH8_RESERVE)
 	assert_false(zone.block_shown("kerrid"), "and isn't on the wall")
 	assert_false(zone.block_shown("Lake") or zone.block_shown("Breach"), "the wall stands")
-	assert_true(_at(&"Mole"))
+	assert_true(_at(&"MoleStair"), "on the mole stair with the townsfolk (B01 is played there, after W01's arrival)")
 	assert_false(_trigger(&"gate").is_available(), "not through the gate before Ivo")
 	assert_true(_trigger(&"ivo").on_touched())
 	assert_true(bool(Game.get_flag(&"ch08_met_ivo")), "B02: 'Okeru!'")

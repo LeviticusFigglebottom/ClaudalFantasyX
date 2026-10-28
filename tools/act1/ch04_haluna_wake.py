@@ -77,9 +77,15 @@ MARKS = {
     "dock_end": dock(35.5) + (DOCK_OUT_YAW,),
     "dock_shore": dock(3.0) + (DOCK_IN_YAW,),
     # C4-06: Asha and Toma come down to the dock after the shell (the flow stands them here before the scene)
-    "dock_asha_from": dock(0.8) + (DOCK_OUT_YAW,),
+    "dock_asha_from": dock(27.5) + (DOCK_OUT_YAW,),  # C4-06: 8 m short of the end, so she reaches Rhen in H13
     "dock_toma_from": dock(-2.5) + (DOCK_OUT_YAW,),
     "wall_away": (-8.5, -123.0, 90.0),
+    "dawn_neme": (-15.4, -117.6, -37.0),  # C4-08: beside Asha at her shell, out of H08's line, watching her
+    # C4-05: Rhen, then Asha and Toma, walk a few metres from the wall toward the feast before the fade (the dock
+    # scene places them after; a walk to the feast's edge ran on 45 s in black).
+    "leave_rhen": (-7.07, -116.25, -115.0),
+    "leave_asha": (-6.92, -114.56, -111.0),
+    "leave_toma": (-9.51, -115.81, -111.0),
     "causeway_toma": (12.55, -130.0, CAUSEWAY_YAW),
     "causeway_asha": (10.4, -128.5, CAUSEWAY_YAW),
     "causeway_rhen": (8.6, -127.2, CAUSEWAY_YAW),
@@ -150,9 +156,16 @@ SHOTS = {  # id: (pos, look_at, fov[, "abs"]); heights over Haluna's ground (pro
     "H15": ((-12.6, 1.0, -118.8), (-13.9, 1.2, -120.2), 18),
     "H16": ((-15.05, 1.55, -117.82), (-14.61, 1.55, -116.28), 22),  # Neme at the wall, close, from the wall's side
     "H17": ((-9.7, 1.55, -114.1), (-10.2, 1.55, -115.8), 24),  # Asha at the wall, close (C4-04's smile)
-    "C01": ((2.0, 2.0, -118.0), (30.0, -0.5, -140.0), 40),
-    "C02": ((16.0, 1.4, -128.0), (10.0, 0.2, -129.0), 30),
+    "C01": ((-12.0, 5.5, -113.0), (8.0, 0.5, -127.0), 45, "abs"),  # behind the three: the path leading away
+    "C02": ((6.0, 6.5, -112.0), (14.0, 0.5, -136.0), 50, "abs"),  # nearer: the causeway's first slabs, the islet
 }
+# Field camera volumes over Haluna's own (Ch04Zone copies ch02/haluna's CameraVolumes): where those leave only the
+# hub orbit and the orbit's default side is a roof. Absolute coordinates.
+CAMERA_VOLUMES = [
+    # Neme's door, deep in the tidewall lane's roofs: from the lane's north-west end, over the gate.
+    {"id": "NemeDoor", "mode": "pan_follow", "at": [-58.0, 3.0, -3.6], "size": [10.0, 6.0, 10.0],
+     "pos": [-64.0, 5.5, -11.0], "look_at": [-58.0, 2.4, -3.6], "fov": 46.4, "priority": 1},
+]
 STATES = [
     {"flag": "ch03_rhen_sworn_guardian", "show_sets": ["ch04_wake", "ch04_shell_imra_faded"]},
     {"flag": "ch04_shell_set", "show_sets": ["ch04_shell_asha"], "hide": ["ysolde_edge"]},
@@ -220,6 +233,7 @@ def layout() -> dict:
         "actors": actors,
         "shots": shots,
         "triggers": triggers,
+        "camera_volumes": CAMERA_VOLUMES,
         "states": STATES,
     }
 

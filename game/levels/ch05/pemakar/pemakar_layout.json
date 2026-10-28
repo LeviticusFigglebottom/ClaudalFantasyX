@@ -178,6 +178,9 @@
     "P12": {"pos": [17.1, 2.8, 25.425], "look_at": [14.6, 2.6, 26.5], "fov": 36},
     "P02D": {"pos": [3.0, 2.977, 22.05], "look_at": [12.6, 1.8, 26.5], "fov": 40}
   },
+  "camera_volumes": [
+    {"id": "Harbour", "mode": "pan_follow", "at": [0.0, 2.0, 26.0], "size": [12.0, 5.0, 8.0], "pos": [-4.5, 5.0, 29.5], "look_at": [0.0, 1.8, 23.5], "fov": 46.4, "priority": 1}
+  ],
   "triggers": [
     {"id": "bark_ferryman", "at": [5.0, 1.2, 24.75], "size": [3, 0, 3], "once": true, "blocked_by_flag": "ch05_met_kerrid", "sets_flag": "ch05_heard_straw_cape_tale", "payload": {"dialogue": "ch05_bark_ferryman", "overheard": true}, "yaw": 0.0},
     {"id": "bark_boat_folders", "at": [-1.68, 8.028, -1.61], "size": [5, 0, 3], "once": true, "blocked_by_flag": "ch05_met_kerrid", "payload": {"dialogue": "ch05_bark_boat_folders", "overheard": true}, "yaw": -0.649},

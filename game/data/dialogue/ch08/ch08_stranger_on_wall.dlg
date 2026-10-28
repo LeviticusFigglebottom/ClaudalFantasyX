@@ -22,13 +22,13 @@ Asha [afraid]: They're going out. Toma. They're going out— #line:ch08_stranger
 Toma [determined]: I know. Stay on my shield. #line:ch08_stranger_002
 @wait 1.0
 @camera W13_boy
-@mark boy boy_stair_top walk
+@mark boy boy_stair_top walk via=way_stair_head_w
 @wait 1.0
 @mark asha boy_kneel walk
 @anim asha kneel_hum boy
 @sfx asha_hum_lullaby
 @wait 3.0
-@mark boy boy_climbed walk
+@mark boy boy_climbed walk via=way_approach_top,way_approach_foot
 @anim rhen look_at asha
 @face rhen surprised 0.4
 @wait 1.5

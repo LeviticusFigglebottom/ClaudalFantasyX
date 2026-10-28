@@ -9,7 +9,7 @@ location: ch06/brine_shoals
 ---
 @camera W06_after
 @music liss_theme fade=2.0
-@mark wrights escort_road walk
+@mark wrights way_tents_s walk via=way_wrights_n
 @face toma tender 0.5
 Toma [smile]: You saw him. That is the Order. That is what it is for. #line:ch06_after_001
 @anim liss look_at wrights
@@ -22,7 +22,7 @@ Liss [neutral]: Your papers get me past the Corrow checkpoints. I'll pull my wei
 Toma [neutral]: You are written in, Mistress Varrow. You are under my papers now. #line:ch06_after_004
 Liss [neutral]: Lucky me. #line:ch06_after_005
 Ysolde [soft_smile]: Welcome to the Lady Cantor's party. #line:ch06_after_006
-@mark asha toma_apart walk
+@mark asha toma_apart walk via=way_camp_e
 @anim asha look_at toma
 Asha [tender]: Are you all right? #line:ch06_after_007
 Toma [smile]: I am better than all right. #line:ch06_after_008
