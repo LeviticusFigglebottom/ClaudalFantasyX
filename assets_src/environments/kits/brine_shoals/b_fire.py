@@ -29,8 +29,10 @@ SHADER = "res://game/vfx/fire/flame_tongue.gdshader"
 # the heart sun_gold to dusk_gold (an ember_orange foot went flat red under the ch06 grade, an oil_lamp one peach). The
 # heart is short, so it tears less.
 MATERIALS = {
-    M_OUTER: {"base_color": (0.949, 0.651, 0.29), "tip_color": (0.878, 0.439, 0.18), "emission": 0.0, "tear": 0.55},
-    M_CORE: {"base_color": (1.0, 0.824, 0.478), "tip_color": (0.949, 0.651, 0.29), "emission": 0.0, "tear": 0.3},
+    M_OUTER: {"base_color": (0.949, 0.651, 0.29), "tip_color": (0.878, 0.439, 0.18), "emission": 0.0, "tear": 0.55,
+              "heart_gain": 1.2},
+    M_CORE: {"base_color": (1.0, 0.824, 0.478), "tip_color": (0.949, 0.651, 0.29), "emission": 0.0, "tear": 0.3,
+             "heart_gain": 0.95},  # sun_gold already: a heart gain over it went cream up close
 }
 TRI_BUDGET = {"camp_fire_large": (9000, 1200), "camp_fire_small": (5000, 700)}
 
@@ -53,21 +55,29 @@ def _tongue(mb: kc.MeshBuilder, base, height: float, radius: float, rng, *, lod:
             cap_start=True, cap_end=True, weather=STILL)
 
 
+def _ragged_disc(radius: float, n: int, rng) -> np.ndarray:
+    """A round outline (x, z) with a little ragged edge, kept convex (polygon_prism's outline)."""
+    a = np.linspace(0.0, 2.0 * math.pi, n, endpoint=False)
+    rr = radius * (1.0 - 0.06 * rng.uniform(0.0, 1.0, n))
+    return np.stack([np.cos(a) * rr, np.sin(a) * rr], axis=-1)
+
+
 def fire(name: str, seed: int, *, size: float, tongues: int, lod: bool = False) -> kc.MeshBuilder:
     rng = kc.rng_for(name, seed)
     mb = kc.MeshBuilder(name + ("-lod1" if lod else ""))
     r = size * 0.5
-    # The ash ring and the char bed: crossed timbers burned black, embers between them.
-    kc.rounded_block(mb, (0.0, 0.02, 0.0), (r * 1.15, 0.03, r * 1.15), mb.material(bc.M_ASH), radius=0.02, seg=1,
-                     weather=STILL)
+    # The ash ring and the char bed: crossed timbers burned black, embers between them. The ash is a low, ragged
+    # round bed (a square block read as a tray under the fire up close).
+    kc.polygon_prism(mb, _ragged_disc(r * 1.1, 10 if lod else 18, rng), 0.0, 0.04, mb.material(bc.M_ASH),
+                     col=np.zeros(4), uv2=np.zeros(2))
     for k in range(3 if lod else 6):
         a = rng.uniform(0.0, math.pi)
         ln = r * rng.uniform(1.2, 1.9)
         kc.rounded_block(mb, (rng.uniform(-r, r) * 0.3, 0.09 + 0.05 * k, rng.uniform(-r, r) * 0.3),
                          (ln * 0.5, 0.07, 0.09), mb.material(bc.M_CHAR), rot=kc.rot_y(a), radius=0.04, seg=1,
                          weather=STILL)
-    kc.rounded_block(mb, (0.0, 0.12, 0.0), (r * 0.7, 0.06, r * 0.7), mb.material(bc.M_EMBER), radius=0.05, seg=1,
-                     weather=STILL)
+    kc.polygon_prism(mb, _ragged_disc(r * 0.7, 8 if lod else 14, rng), 0.06, 0.16, mb.material(bc.M_EMBER),
+                     col=np.zeros(4), uv2=np.zeros(2))
     # The tongues: tallest at the heart, shorter to the rim.
     for k in range(tongues):
         a = 2.0 * math.pi * k / tongues + rng.uniform(-0.3, 0.3)
@@ -94,7 +104,7 @@ def write_materials() -> None:
         for key in ("base_color", "tip_color"):
             r, g, b = m[key]
             lines.append(f"shader_parameter/{key} = Color({r}, {g}, {b}, 1)")
-        for key in ("emission", "tear"):
+        for key in ("emission", "tear", "heart_gain"):
             lines.append(f"shader_parameter/{key} = {m[key]}")
         (out / f"{name}.tres").write_text("\n".join(lines) + "\n", encoding="utf-8")
 

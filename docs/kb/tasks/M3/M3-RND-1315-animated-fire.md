@@ -26,6 +26,6 @@ slots, written by `b_fire.py` as ShaderMaterials. The tongues sway and stretch m
 tears their tips, and each fire flickers on its own phase. All of it runs on `hymn_wind_time`. The colours are palette
 swatches: dusk_gold → ember_orange, with a sun_gold heart. There is no emission over the unshaded colour, because it
 clipped the ch06 grade to flat red. Viewed: `ch06_brine_camp` at two clocks (40.0 and 40.37), and the tips change
-between them. Test: `tests/unit/test_flame_tongue.gd`.
+between them. Test: `tests/unit/test_flame_tongue.gd`. Up close (`battle_arena_camp`) each tongue has volume: its heart faces the camera brighter, and its rim runs to the tip colour. The fires sit on round, ragged ash beds instead of square trays (`b_fire.py`, rebuilt).
 
 ## Review log

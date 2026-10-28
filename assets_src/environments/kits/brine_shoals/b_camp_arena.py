@@ -2,8 +2,8 @@
 env-art's table (`CAMP` in `assets_src/environments/kits/haluna/arena_scenes.py`, read-only) lit the camp's fires
 (FireLight rows at the tide-wheel's foot, the burned tent, the salvage pile) but drew no flame, so every angle showed
 a grey, smoking, unburning camp. This writes the table through the same `write_arena` with b_fire.py's flames at those
-lights and on the hulk beyond. Re-run after the table or the pieces change, instead of `arena_scenes.py`'s own write
-of this arena:
+lights and on the hulk beyond, and its smoke as Rendering's volumetric columns (b_smoke_columns.py, M3-RND-21). Re-run
+after the table or the pieces change, instead of `arena_scenes.py`'s own write of this arena:
 
     python3 assets_src/environments/kits/brine_shoals/b_camp_arena.py
 """
@@ -41,10 +41,14 @@ def arena(AS) -> dict:
 
 
 def main(out_dir: Path | None = None) -> int:
+    sys.path.insert(0, str(HERE))
+    import b_smoke_columns
+
     AS = _arena_scenes()
     if out_dir is not None:  # tools/tests/test_b_arenas.py writes to a scratch dir
         AS.OUT_DIR = out_dir
-    print(f"ARENA {AS.write_arena(arena(AS)).name}")
+    out = AS.write_arena(arena(AS))
+    print(f"ARENA {out.name} ({b_smoke_columns.swap(out)} smoke columns)")
     return 0
 
 

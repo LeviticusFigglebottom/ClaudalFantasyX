@@ -1,6 +1,6 @@
 ---
 id: M3-ENV-1324
-title: "Request: the Brine Shoals kit preview's and the camp arenas' smoke_plume shells onto SmokeColumn (M3-RND-21)"
+title: "Request: the Brine Shoals kit preview's smoke_plume shells onto SmokeColumn (M3-RND-21)"
 role: environment
 status: todo
 owner_session: ""
@@ -16,8 +16,9 @@ is. Two places are env-art's:
 - The kit preview (`game/levels/_tests/brine_shoals_kit/`, `bs_preview_layout.py`): four plumes and the two lying
   bands. The bands are tilted 74° about Z, and a SmokeColumn takes that tilt too, since the march runs in its own frame.
   The shots are `brine_b01_arrival` and `brine_b05_barge_channel`.
-- `arena_scenes.py`'s camp arenas: the five `smoke_plume.glb` rows at lines 907–946. `write_arena` writes .glb
-  instances only, so this needs a node row (a Node3D with `smoke_column.gd`, `profile`, `seed`).
+- ~~`arena_scenes.py`'s camp arenas~~: **done by env-art-b**, since the two Ch6 arenas are env-art-b's.
+  `b_smoke_columns.py` swaps the written plume instances for SmokeColumn nodes after the wrappers `b_camp_arena.py`
+  and the new `b_shoals_arena.py` write the tables unchanged. If `write_arena` grows a node row, the swap can retire.
 
 ## Acceptance criteria
 - [ ] No `smoke_plume` shell is left on the Ch6 path. After that, the piece and `env_smoke_plume.gdshader` can retire,

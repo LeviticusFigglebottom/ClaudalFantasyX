@@ -19,6 +19,10 @@ uniform float emission = 0.0;
 // The foot burns brighter than the tip.
 uniform float foot_gain = 1.15;
 uniform float tip_gain = 0.72;
+// Volume: a tongue's heart (facing the camera) is brighter than its silhouette, which runs to the tip colour (up close
+// a flat colour read as a paper cutout).
+uniform float heart_gain = 1.2;
+uniform float rim_power = 0.7;
 // The tallest tongue (the large fire's); the sway and the tearing scale with height over it.
 uniform float height_m = 2.6;
 uniform float sway_m = 0.22;
@@ -56,7 +60,9 @@ void fragment() {
 		discard;
 	}
 	float f = hymn_value_noise3(vec3(t * 4.0, v_phase, v_phase * 0.5)) * 2.0 - 1.0;
-	vec3 c = mix(base_color, tip_color, smoothstep(0.25, 1.0, v_h)) * (1.0 + flicker * f) * (0.85 + 0.3 * n)
+	float facing = pow(clamp(abs(dot(NORMAL, VIEW)), 0.0, 1.0), rim_power);
+	vec3 body = mix(base_color, tip_color, smoothstep(0.25, 1.0, v_h));
+	vec3 c = mix(tip_color * 0.8, body * heart_gain, facing) * (1.0 + flicker * f) * (0.85 + 0.3 * n)
 			* mix(foot_gain, tip_gain, v_h);
 	ALBEDO = c;
 	EMISSION = c * emission;

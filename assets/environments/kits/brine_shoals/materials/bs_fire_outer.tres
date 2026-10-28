@@ -9,3 +9,4 @@ shader_parameter/base_color = Color(0.949, 0.651, 0.29, 1)
 shader_parameter/tip_color = Color(0.878, 0.439, 0.18, 1)
 shader_parameter/emission = 0.0
 shader_parameter/tear = 0.55
+shader_parameter/heart_gain = 1.2
