@@ -199,3 +199,12 @@ sandbox's noon light, holds a clip at a time, frames the camera from a named vie
 7. Shots (CreatureStage) and the battle shots it changes, viewed and re-approved.
 8. Gates: `validate_data.py`, `python3 -m unittest discover -s tools/tests -p "test_creatures.py"` (and
    `test_post_import.py`), gdlint/gdformat, Godot `--filter=creature`, `--filter=post_import`, `--filter=battle`.
+
+## VFX anchors (M3-CRE-651, ADR 0041)
+
+A creatures.json row may name `vfx_anchors`: `{"core": "<bone>", "wound": "<bone>"}`. **core** is the body's centre
+(a thorax, a chest, a shell), **wound** the bone that carries its `spawn_wound` weak point (ADR 0151): the bone
+with the most masked vertices (`TEXCOORD_1.y`). `CreatureActor.vfx_anchor(&"core" | &"wound")` returns that bone's
+world position as the clip has posed it this frame; a row without a wound uses its core, and a row without anchors
+answers `Vector3.INF` (the caller falls back to the stand-in's `anchor_heights`). Every Act I regular has them
+(tools/tests/test_creatures.py `ACT1_REGULARS`). Battle VFX starts the spawn effect and the KO effect there.

@@ -9,6 +9,9 @@ extends Node3D
 const DATA_PATH := "res://game/data/creatures/creatures.json"
 ## Buckets a path hash is cut into for the fidget interval.
 const FIDGET_BUCKETS := 10007
+## The `vfx_anchors` keys (M3-CRE-651).
+const ANCHOR_WOUND := &"wound"
+const ANCHOR_CORE := &"core"
 
 static var _data: Dictionary = {}
 
@@ -365,6 +368,26 @@ func _show_part(skill_id: StringName, broken: bool) -> void:
 		var node := find_child(str(n), true, false) as Node3D
 		if node != null:
 			node.visible = broken
+
+
+## M3-CRE-651: where on this body a spawn or death effect starts. `anchor` is a key of the row's `vfx_anchors`
+## (`wound`: the weak point, ADR 0151; `core`: the body's centre), each naming a bone. A row without a `wound` uses
+## its `core`. Returns the bone's world position now (it follows the clip playing), or Vector3.INF when the row names
+## no bone (the caller falls back to the stand-in's anchor heights, effects.json `anchor_heights`).
+func vfx_anchor(anchor: StringName) -> Vector3:
+	var anchors: Dictionary = _row.get("vfx_anchors", {})
+	var bone := str(anchors.get(String(anchor), ""))
+	if bone == "" and anchor == ANCHOR_WOUND:
+		bone = str(anchors.get(String(ANCHOR_CORE), ""))
+	if bone == "":
+		return Vector3.INF
+	for n in find_children("*", "Skeleton3D", true, false):
+		var sk := n as Skeleton3D
+		var i := sk.find_bone(bone)
+		if i >= 0:
+			sk.force_update_all_bone_transforms()  # the pose the clip set this frame, not last frame's cache
+			return sk.global_transform * sk.get_bone_global_pose(i).origin
+	return Vector3.INF
 
 
 func _model() -> Node3D:

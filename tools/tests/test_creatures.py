@@ -191,10 +191,26 @@ class ValidatorTest(unittest.TestCase):
         self.assertTrue(any("release.hold: holds the phase's clip" in x for x in self.errs(creatures=cr)))
 
 
+## The regular enemies a player fights in Act I (ADR 0041; encounters.json Ch1-Ch8 and the slice; the bosses are
+## creatures-b's). wickfry fights as the glassfry model.
+ACT1_REGULARS = ("ashwing", "flue_moth", "gull_harrier", "lantern_eel", "oil_slug", "raid_hound", "reef_crab",
+                 "sail_leech", "scuttler", "shoal_skipper", "slag_tortoise", "squall_wing", "stormgull", "tide_crawler",
+                 "tower_limpet", "vein_sparker", "wall_polyp", "wallcrab", "glassfry", "wreck_crab")
+
+
 def model_rows(rows: dict) -> dict:
     """The rows that own a model: a row whose scene lives in game/creatures/<its id>/. A second row on the same model
     (a Vowbound's `<id>_held` foe form, M3-CRE-647) shares that row's GLB, job and materials."""
     return {cid: row for cid, row in rows.items() if row["scene"].split("/")[-2] == cid}
+
+
+class VfxAnchorShapeTest(unittest.TestCase):
+    def test_anchor_keys_and_a_core(self) -> None:
+        errs = vc._row_errors("w", {"vfx_anchors": {"wound": "body", "tail": "x"}}, set(), None)
+        self.assertTrue(any("unknown anchor 'tail'" in e for e in errs), errs)
+        self.assertTrue(any("needs a core" in e for e in errs), errs)
+        self.assertTrue(any("must map" in e for e in vc._row_errors("w", {"vfx_anchors": {"core": 3}}, set(), None)))
+        self.assertEqual(vc._row_errors("w", {"vfx_anchors": {"core": "body"}}, set(), None), [])
 
 
 class PipelineTest(unittest.TestCase):
@@ -246,6 +262,28 @@ class PipelineTest(unittest.TestCase):
             self.assertIn("release", {a["name"] for a in js["animations"]}, cid)
             for m in {m["name"] for m in js["materials"]}:
                 self.assertTrue((ROOT / "assets/creatures" / cid / "materials_held" / f"{m}.tres").is_file(), (cid, m))
+
+    def test_vfx_anchors_name_bones_in_the_model(self) -> None:
+        """M3-CRE-651: each `vfx_anchors` bone is a joint of the creature's GLB (the one its battle scene instances),
+        and every Act I regular (ADR 0041) has a core."""
+        import re  # noqa: PLC0415
+
+        sys.path.insert(0, str(ROOT / "tools" / "tests"))
+        from test_post_import import read_glb  # noqa: PLC0415
+
+        for cid, row in self.all_rows.items():
+            anchors = row.get("vfx_anchors")
+            if not anchors:
+                continue
+            scene = (ROOT / row["scene"].replace("res://", "")).read_text(encoding="utf-8")
+            glb = re.search(r'path="res://(assets/creatures/[^"]+\.glb)"', scene)
+            self.assertIsNotNone(glb, cid)
+            js = read_glb(ROOT / glb.group(1))
+            joints = {js["nodes"][i]["name"] for skin in js.get("skins", []) for i in skin["joints"]}
+            for name, bone in anchors.items():
+                self.assertIn(bone, joints, f"{cid}.vfx_anchors.{name}")
+        for cid in ACT1_REGULARS:
+            self.assertIn("core", self.all_rows[cid].get("vfx_anchors", {}), cid)
 
     def test_materials_rebuild_byte_for_byte(self) -> None:
         w = _writer()
