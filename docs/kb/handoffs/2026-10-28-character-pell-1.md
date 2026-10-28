@@ -24,7 +24,9 @@ merges it). Task status: `review`, reviewer `rendering`.
   face poses).
 
 ## In progress
-- Nothing half-done in the tree. The art is not final (see Known issues).
+- Nothing half-done in the tree. A look-dev pass followed the coordinator's review (head reshaped onto an otter-like
+  Kirru head surface, soft fur with standing outline fur, the split reed girdle, the crest skinned, stronger face
+  shapes, storm_call's palm on the throat); see the task notes and pell_review.md. The art is closer, not final.
 
 ## Exact next step
 1. The characters session merges `chr-pell-wip` into `claude/characters` and asks the PC/Lead to render and view the
@@ -36,8 +38,8 @@ merges it). Task status: `review`, reviewer `rendering`.
    Then a look-dev pass on the face and fur, re-rendering the face and front shots.
 
 ## Known issues
-- At dialogue range the face reads as a muzzled human and the fur as a varnished carving at full figure; he reads
-  unclothed (no lower garment, carried with the sheet's default). Not final art (pell_review.md items 1-3).
+- After the look-dev pass: the eyes keep the donor's almond lids, the ears are small human ears, the fur is soft but
+  uniform at full figure, the right hand is open in storm_call, and the nape has a soft ridge (pell_review.md).
 - Rig allowances are large in the ko/revive squat and with the right arm across the chest (cast, storm_call); see
   `_allowances` in `rig_checks.json`.
 - The finisher's staff leans about 30° (staff_hold's wrist limit), so its sweep runs a hand above the floor, not at

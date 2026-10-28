@@ -102,6 +102,11 @@ Branch `claude/characters` (this environment; cloud session_01JqzzxgJU9Dmu7fRhmC
   allowances; job `pell` verified natively and on the two numpy paths (see the task notes). Not final art: the face reads
   as a muzzled human and the fur as a carving at full figure (`docs/kb/art/characters/pell_review.md`). Next: merge it,
   render the 14 `pell_*` shots, Rendering decides the face/fur pass. Handoff `2026-10-28-character-pell-1.md`.
+  **Look-dev pass done (same branch, 4 commits after the coordinator's review):** an otter-like head (the warp now
+  reshapes the donor head onto a Kirru head surface; no ADR needed), short soft fur with standing outline fur, the split
+  reed girdle (§12 Q3's default overridden: it read as nudity), the crest skinned (it floated), stronger face shapes,
+  storm_call's palm on the throat. Verified on three numpy paths, rig probe and tests green. Left: the almond lids,
+  human ears, uniform fur at full figure (pell_review.md).
 
 ## Queue
 1. ~~M2-CHR-01 Rhen~~ (review) → 2. ~~M2-CHR-02 Toma~~ (review) → 3. ~~M2-FP-07 clips~~ (review) → 4. ~~M1-CHR-12~~ (review;

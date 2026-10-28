@@ -122,4 +122,37 @@ face and the 15 face poses, before the rest) → build → face poses → clips 
     `--import`, then run_tests `--filter=post_import` 21/0 failed, `--filter=hero_stage` 11/0, `--filter=pell` 3/0.
     validate_data, taskboard --check, dlgc --check, gdlint, gdformat --check: clean.
 
+- 2026-10-28 (later), **look-dev pass after the coordinator's review of out3** ("not at Kerrid's bar": a deformed
+  human with a snout, wood-grain fur, reads unclothed). Same worktree and branch, four commits:
+  1. **Head (5256844e):** `pell_head.KirruWarp` rewritten. The donor head's skin now goes onto a Kirru head surface
+     (`_kirru.otter_head`: a broad, low cranium, crown 7 cm lower; a short broad muzzle flowing out of the skull line
+     with the nose pad and whisker pads on it; jowls and a small chin; a neck thickened under the jaw) along rays from
+     a centre in the skull (one-to-one, so nothing folds), the move smoothed and only 25% of the donor's own relief
+     kept away from the eyes and mouth. The eyes (with their lids and frames, eye_scale 0.85), the mouth (with its bag,
+     teeth and tongue, drawn in to a short line) and the ears (scaled, low and back) ride rigidly. Still the donor
+     topology and all 40 shapes, so **no ADR 0141** was needed. `neck_width_ratio` 0.55 and `eye_scale` 0.85 changed
+     from the sheet on review (test_pell updated).
+  2. **Fur (5e71217c):** fine, low-contrast strands and clumps (the 0.32 streaks read as wood grain), Asha's thread
+     detail normal at a finer tiling and lower strength, a rougher, less specular response; the silhouette fringe
+     stands on the skin (cards face-on at the outline) and runs along the upper arms, hips, thighs and left flank too
+     (4,200 cards, 2-3.5 cm).
+  3. **Girdle (5e71217c): pell.md §12 Q3's default ("no lower garment") is overridden on review**, because the default
+     read as nudity, against the Sincerity pillar. §4.2's fallback is built: a reed-fibre girdle of four split panels
+     (front-left, front-right, back-left, back-right) from the belt cord down 22 cm, each weighted from the hips onto
+     its own thigh by the hem, so nothing tube-like hangs below the hips (M1-CHR-14; test_pell checks no vertex takes
+     both thighs). Found on the way: the Crest was exported unskinned and floated off the head in every clip; it is
+     now rigid on the head bone (and rig_probe now checks it).
+  4. **Smaller items (7ccfd2af):** the shared shapes scaled on the Kirru head (`_kirru.shape_gain`: brows 1.6-1.8,
+     lids 1.4, cheeks 1.4, frown 1.5, smile 1.3); the face shot frames the crest; whiskers 3.6 mm; storm_call's palm
+     lies up the throat (the elbow tucked 22 cm under the shoulder). The fingers stay open (no free-hand finger poses
+     on the right), so the palm reads as a spread hand on the throat.
+  Budgets after it: LOD0 52,328 tris, `pell.glb` 4,720,100 B; LOD1 27,190 tris, `pell_lod1.glb` 1,310,416 B (the fur
+  fringe kept at 20% in the LOD1). Rig allowances re-pinned with reasons (`_allowances`).
+  **Checks after the pass (on 7ccfd2af):** `verify_blender_builds.py --job pell` 37/37 identical natively, with
+  `X86_V4` and with `X86_V3 X86_V4`; test_pell 20, test_hero_clips + test_hero_battle_clips + test_hero_locomotion 42
+  (every other hero's library byte-identical), test_blender_builds + TestRigIntegrityPell OK; rig_probe OK; Godot
+  `post_import` 21/0, `hero_stage` 11/0, `pell` 3/0; validate_data, taskboard, dlgc, gdlint, gdformat clean.
+  `pell_review.md` is rewritten with before/after notes and what still does not read (the almond human lids, the small
+  human ears, the uniform fur at full figure, the open right hand, a ridge at the nape).
+
 ## Review log
