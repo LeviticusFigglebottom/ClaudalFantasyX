@@ -291,3 +291,9 @@ CreatureActor and the validator are theirs too (kit or tool changes go to them a
   - **Checks:** validate_data 0/0; Godot creature_portraits 4/1 (the six Act II PNGs only), creature_bosses 4/0,
     vowbound 87/0.
 - **Housekeeping @ 00c836b6:** added `docs/kb/qa/gate-runs/.gdignore` (the big14 merge brought ~390 gate PNGs and JPGs that Godot otherwise imports into .import files; same as docs/kb/qa/gpu/.gdignore; QA's path, flagged here for the Lead), and committed six .uid sidecars Godot generated for other tracks' new scripts.
+- **BACKLOG EMPTY (12:50):** every creatures-b row is closed — the six Act I bosses, Moll's battle wiring and the three
+  Act I Vowbound are at final quality and draw real bodies; the placeholder audit lists nothing for creatures-b; GPU QA
+  rows 12 (fixed) and 30 (later-act arenas, record only) are answered. Open items are other tracks': M3-CRB-009 (intro
+  clip playback), the Spar-wraith's home-camera fit (M3-CRB-011 note), M3-CRB-010, M3-CRB-012, and the Act II Vowbound
+  portraits (creatures, paused). The one full battle run on 052d69a2 showed only the pre-existing Act II
+  test_battle_act1_ability_vfx failures.
