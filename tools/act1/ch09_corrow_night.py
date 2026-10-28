@@ -355,11 +355,48 @@ def moon_relayout() -> None:
     LAYOUT.write_text(text, encoding="utf-8")
 
 
+# The `ch09_dawn` frame (M3-C09-10, act1_ch09.md §9; the colour script's ch09_dawn): B09 at 05:50, a washed low gold
+# dawn after the storm, the last warm light of Act I. The zone's own grade, derived from the Ch8 day grade (the same
+# sky shader and warm-laterite LUT) with the storm cleared: a pale clearing zenith over a gold eastern horizon, broken
+# cloud lit gold from beneath, warm ambient, a lighter exposure. The layout's dawn variant (ch09_pell_joined) loads it.
+DAWN_GRADE = "corrow_ch09_dawn_environment.tres"
+DAWN_SET = {
+    "resource_name": '"corrow_ch09_dawn"',
+    "shader_parameter/col_zenith": "Color(0.4706, 0.5569, 0.6353, 1)",
+    "shader_parameter/col_horizon_sun": "Color(1, 0.7843, 0.5216, 1)",
+    "shader_parameter/col_horizon_away": "Color(0.6431, 0.6314, 0.6392, 1)",
+    "shader_parameter/col_ground": "Color(0.2588, 0.2706, 0.2941, 1)",
+    "shader_parameter/col_cloud_lit": "Color(1, 0.8, 0.6, 1)",
+    "shader_parameter/col_cloud_shadow": "Color(0.4392, 0.4392, 0.502, 1)",
+    "shader_parameter/cloud_coverage": "0.45",
+    "ambient_light_color": "Color(0.7216, 0.6588, 0.6, 1)",
+    "ambient_light_energy": "0.9",
+    "tonemap_exposure": "0.9",
+    "fog_light_color": "Color(0.7843, 0.6784, 0.5804, 1)",
+    "volumetric_fog_albedo": "Color(0.7843, 0.6784, 0.5804, 1)",
+}
+
+
+def write_dawn_grade() -> None:
+    import re
+    text = (c8.ZONE / "corrow_ch08_environment.tres").read_text(encoding="utf-8")
+    for key, value in DAWN_SET.items():
+        text, n = re.subn(rf"^{re.escape(key)} = .*$", f"{key} = {value}", text, flags=re.M)
+        assert n == 1, key
+    (c8.ZONE / DAWN_GRADE).write_text(text, encoding="utf-8")
+    layout = LAYOUT.read_text(encoding="utf-8")
+    layout, n = re.subn(r'"environment_res": "res://game/levels/ch08/corrow/[a-z0-9_]+\.tres"',
+                        f'"environment_res": "{RES_C8}{DAWN_GRADE}"', layout)
+    assert n == 1, "the dawn variant's grade row"
+    LAYOUT.write_text(layout, encoding="utf-8")
+
+
 def main() -> None:
     if "--relayout" in sys.argv:
         relayout()
     if "--moon-relayout" in sys.argv:
         moon_relayout()
+    write_dawn_grade()
     (ZONE / "corrow_night_collision.json").write_text(json.dumps(collision(), indent=1) + "\n", encoding="utf-8")
     (ZONE / "corrow_night_dressing.json").write_text(json.dumps(dressing(), indent=1) + "\n", encoding="utf-8")
 
