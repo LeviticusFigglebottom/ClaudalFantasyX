@@ -589,6 +589,15 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
+- **2026-10-28 ~06:00: Batch B viewed; First Verse found primitive.**
+  - SELF-RENDERED @ 7a115247: shrine_s02/s03/s04/s05, battle_arena_derelict, brightwater_b03,
+    ch04_ferry_deck/derelict, causeway_c08, haluna_h03 — pass (rmse ≤ 0.0068). Viewed: final. In ch04_ferry_deck
+    an orange capsule (a model-less actor) fills the lower left (act1-chapters').
+  - SELF-RENDERED @ 7a115247: brightwater_b02_awning — drift 0.0107, intended: the passengers' bundles fold and
+    bind (d4967aee, 10-27) since its 10-24 baseline. Re-approve on the next gate.
+  - **M3-ENV-745 (FAST-TRACK to slice-polish):** Ch3's First Verse cutscene (`first_verse.tscn`, shot
+    `slice_verse_steps`) is CSG primitives (island, dome, steps, pillars, flat plane sea) under the real heroes.
+    Stage it on env-art's final shrine; the task maps the marks onto the real steps.
 - **2026-10-28 ~05:00: Ch4's wake night dressed (M3-ENV-743); MERGE-READY.**
   - **New Haluna kit pieces:**
     - `wake_ground`: the terrace level at y 0 inside the rails, the beach and flats past them, the island behind;
