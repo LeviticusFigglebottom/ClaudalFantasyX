@@ -160,9 +160,40 @@ that test at this branch's zones.
   - **Next for a fresh env-art-b:** re-run the audit (`tools/placeholder_audit.py`, on hero-integration) after the
     Lead's merge; take any new Ch5–Ch9 rows; the galleries' `Column` when M3-RND-26 lands.
 
+- **Lead's second pass (10-28): arenas, a walk-through, touched props.**
+  - **Arenas, the weakest angle at battle distance (M3-ENV-1312..1314):** all 10 Ch5–Ch9 arenas from every
+    CameraHint plus the battle camera (53 angles). Fixed:
+    - Lanternfall's side angles ran into black: its terrace now continues past both ends.
+    - The salvage camp had no fire: new kit fires (`camp_fire_large`/`_small`), with **request M3-RND-1315** to Rendering
+      for animated fire.
+    - **The Undertow was in no battle:** the three wall-head arenas get it, with `StormFarPlane`, a new node the zones
+      now use too.
+    - The headland's slopes get scrub.
+    - Ashcrown's plume now uses its day material.
+    - Wrapper writers over env-art's tables; `tools/tests/test_b_arenas.py` reproduces them.
+  - **Ch8 arena ids:** the note on M3-ENV-714 says `ch08_headland_*` go to `coilspire_headland_path` and
+    `ch08_flue_moths` to `coilspire_tier_landing`. That task is battle-presentation's. Ch5 is M3-BPR-1305.
+  - **Walk-through (M3-ENV-1317):** 44 player-height views on the critical paths. Fixed: Ch6's camp burns in the
+    zone too (until the evening camp). **Request M3-ENV-1316 to env-art:** the trader boat's white bales, Ashcrown's flat
+    stair and tier faces, and the headland's far facets.
+  - **Touched props:** every Ch5–Ch9 door, gate, lever, key, shrine and marker already wears a final kit model. Ch7's
+    Signboard block is the shophouses' own hung boards (M3-ENV-1311, nothing to add). There are no chests or
+    SaveShrine nodes in Ch5–Ch9.
+  - **FAST-TRACKs:** `test_arenas.py` skips the wrapped arena ids and `test_pemakar_kit.py` counts 34 targets (for
+    env-art); `test_zone_kit_dressing.gd` counts the Smoke block's eight followers (for act1-chapters).
+  - **Correction:** MERGE-READY @ 749bfc48 was NOT tools-green. `test_arenas` (Lanternfall) and `test_pemakar_kit`
+    (the count) were red because I skipped the tools suite there wrongly. Both are fixed in this push.
+- **MERGE-READY @ 8d198f1e.**
+  - **Checks run:** full tools suite (`run_tool_tests -j 4`): only `test_screenshots` red (baselines).
+    Godot `--filter=` battle_arenas 10/0, battle_arena 18/0, zone_kit 11/0, ch06 5/0, ch07 18/0, cutscene_walks 1/0.
+    gdlint/gdformat, validate_data, taskboard --check. Brine Shoals kit rebuilt `--all` in Blender: older pieces
+    byte-identical.
+  - **Checks skipped:** coverage (no battle/progression code).
+
 ### Render requests
 (Self-rendered per TRACK-RULES; lines are SELF-RENDERED notes.)
 SELF-RENDERED @ ea946ec8: ch07_tamsule_mouth, ch07_tamsule_market, ch07_tamsule_gantry — new shots, read final (Liss and Kerrid are capsules: no field body yet).
 SELF-RENDERED @ 00e15816: ch05_pemakar_weir, ch05_pemakar_harbour_day, ch08_corrow_storm, ch08_coilspire_storm, ch08_coilspire_gate, ch08_corrow_flood, ch08_corrow_lake, ch09_corrow_landing, ch09_corrow_rocks, ch09_corrow_strand — new shots (the strand is an existing baseline: no longer dark); viewed after fixes (re-aimed cameras, the flood lifted, the rocks' lamp). ch05_pemakar_harbour drifts by the new quay (the party's lanterns are the two glows).
 SELF-RENDERED @ 4081127f: ch05_ashcrown_causeway, ch05_ashcrown_forecourt, ch05_ashcrown_crown, ch05_ashcrown_tiers, ch05_ashcrown_court, battle_arena_ashcrown_forecourt_day, battle_arena_ashcrown_anvil_court, ch06_brine_road, ch06_brine_camp — all new shots or a changed zone, all viewed. The anvil court arena was re-lit after viewing (interior fill 1.4, exposure 1.35, plus a forge-spill lamp over the fight floor); its first render had a black near half.
 SELF-RENDERED @ 749bfc48: battle_arena_ash_terrace_lanternfall (votive lamps), ch05_pemakar_harbour_day and ch05_pemakar_weir (the leat), ch08_coilspire_storm and ch08_corrow_storm (the Undertow now drawn), ch09_corrow_rocks, ch09_corrow_strand and ch09_corrow_landing (the moon from the sea), ch05_ashcrown_court, _causeway and _crown (the loggia plume). All viewed, with before/after sheets for the moon and the plume. Plus a full contact sheet of the 25 Ch5–Ch9 zone shots to pick the weakest views.
+SELF-RENDERED @ 8d198f1e: 53 arena angles (scratch hint rig) before and 30 after the fixes, all viewed: ash_terrace_lanternfall, salvage_camp_burning, seawall_stairhead_storm/hoist/surge, coilspire_headland_path, ashcrown_forecourt_day, ashcrown_anvil_court; 44 player-height walk views across the 8 zones; ch06_brine_camp (the zone burns), ch07_tamsule_market/mouth. A headland scrub ring out to 90 m was viewed and reverted (clumps floated).
