@@ -220,6 +220,18 @@ def _stand_in_sounds(data: dict, sfx: dict) -> None:
             sfx["vfx"][eid] = borrowed
 
 
+# A Vowbound taking and leaving the field (BattleVfx plays these on BattleVowbound.called / departed). Bound light is
+# steady: glimmer_bound, no drift; a fall is not a release, so nothing rises gold.
+EVENTS = {
+    "vowbound_call": fx("feet", ring("glimmer_bound", "lagoon_teal", 60) + rise("glimmer_bound", "salt_glass", 30, 1.4),
+                        "A Vowbound answers: a steady ring of bound light lifting around it."),
+    "vowbound_dismiss": fx("chest", sink("glimmer_bound", "deep_teal_shadow", 40), "A Vowbound leaves: its bound light settles."),
+    "vowbound_fell": fx("chest", sink("glimmer_bound", "abyss_navy", 60), "A Vowbound falls: its bound light sinks (not a release)."),
+}
+# Each event's sound: audio's own Vowbound rows (the same sounds its `events` fallbacks play).
+EVENT_SOUNDS = {"vowbound_call": "vowbound_call", "vowbound_dismiss": "vowbound_dismiss", "vowbound_fell": "vowbound_fell"}
+
+
 def main() -> int:
     text = EFFECTS.read_text()
     data = json.loads(text)
@@ -240,10 +252,15 @@ def main() -> int:
             eid = sid if own is None or own.get("note") == eff["note"] else sid + "_hit"
             data["effects"][eid] = eff
             data["map"][table][sid] = eid
+    for eid, eff in EVENTS.items():
+        data["effects"][eid] = eff
+        data["map"]["events"][eid] = eid
     out = json.dumps(data, indent=2) + "\n"
     sfx_text = SFX.read_text()
     sfx = json.loads(sfx_text)
     _stand_in_sounds(data, sfx)
+    for eid, key in EVENT_SOUNDS.items():
+        sfx["vfx"].setdefault(eid, sfx["events"][key])
     sfx_out = json.dumps(sfx, indent=2) + "\n"
     if "--check" in sys.argv:
         return 0 if out == text and sfx_out == sfx_text else 1

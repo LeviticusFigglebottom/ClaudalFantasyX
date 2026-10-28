@@ -94,6 +94,11 @@ func attach(controller: BattleController, engine: BattleEngine) -> void:
 		settings.changed.connect(func(_key: StringName) -> void: reduced_motion = settings.reduced_motion())
 	_build_flash_layer(controller)
 	boss = BattleBossVfx.attached_if_boss(self, controller, engine)
+	if engine.vowbound != null:  # M3-BPR-420: a Vowbound's call, dismissal and fall play in bound light
+		engine.vowbound.called.connect(
+			func(vb: BattleCombatant) -> void: play_event.call_deferred(&"vowbound_call", vb.id)
+		)
+		engine.vowbound.departed.connect(_on_vowbound_departed)
 	prebuild()
 	var opening_event := _opening_event(engine.opening)
 	if opening_event != &"":
@@ -119,6 +124,10 @@ func prebuild() -> int:
 			_emitter(StringName("%s#%d" % [effect_id, i]), def.merged(layers[i] as Dictionary, true))
 			count += 1
 	return count
+
+
+func _on_vowbound_departed(vb: BattleCombatant, fell: bool) -> void:
+	play_event(&"vowbound_fell" if fell else &"vowbound_dismiss", vb.id)
 
 
 ## The skills-map effects nobody in this battle can use: every `map.skills` effect but those of the fighters' own

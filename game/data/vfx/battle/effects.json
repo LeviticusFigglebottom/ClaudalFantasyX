@@ -5008,6 +5008,162 @@
         }
       ],
       "note": "Tidewash salve (cleanse)."
+    },
+    "vowbound_call": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "feet",
+      "layers": [
+        {
+          "color": "#4FB3B0",
+          "color_end": "#1FA3A6",
+          "swatches": [
+            "glimmer_bound",
+            "lagoon_teal"
+          ],
+          "amount": 60,
+          "lifetime_s": 0.9,
+          "explosiveness": 0.85,
+          "velocity_m_s": [
+            0.05,
+            0.15
+          ],
+          "spread_deg": 5,
+          "gravity": [
+            0,
+            0.5,
+            0
+          ],
+          "size_m": [
+            0.16,
+            0.3
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.75,
+          "turbulence": 0.0,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        },
+        {
+          "color": "#4FB3B0",
+          "color_end": "#BFE6E0",
+          "swatches": [
+            "glimmer_bound",
+            "salt_glass"
+          ],
+          "amount": 30,
+          "lifetime_s": 1.4,
+          "explosiveness": 0.3,
+          "velocity_m_s": [
+            0.4,
+            0.9
+          ],
+          "spread_deg": 25,
+          "gravity": [
+            0,
+            0.4,
+            0
+          ],
+          "size_m": [
+            0.15,
+            0.3
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.35,
+          "turbulence": 0.3,
+          "direction": [
+            0,
+            1,
+            0
+          ]
+        }
+      ],
+      "note": "A Vowbound answers: a steady ring of bound light lifting around it."
+    },
+    "vowbound_dismiss": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#4FB3B0",
+          "color_end": "#0E4A55",
+          "swatches": [
+            "glimmer_bound",
+            "deep_teal_shadow"
+          ],
+          "amount": 40,
+          "lifetime_s": 1.0,
+          "explosiveness": 0.4,
+          "velocity_m_s": [
+            0.2,
+            0.5
+          ],
+          "spread_deg": 30,
+          "gravity": [
+            0,
+            -1.4,
+            0
+          ],
+          "size_m": [
+            0.16,
+            0.32
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.35,
+          "turbulence": 0.2,
+          "direction": [
+            0,
+            -1,
+            0
+          ]
+        }
+      ],
+      "note": "A Vowbound leaves: its bound light settles."
+    },
+    "vowbound_fell": {
+      "kind": "particles",
+      "anchor": "target",
+      "at": "chest",
+      "layers": [
+        {
+          "color": "#4FB3B0",
+          "color_end": "#061A2B",
+          "swatches": [
+            "glimmer_bound",
+            "abyss_navy"
+          ],
+          "amount": 60,
+          "lifetime_s": 1.0,
+          "explosiveness": 0.4,
+          "velocity_m_s": [
+            0.2,
+            0.5
+          ],
+          "spread_deg": 30,
+          "gravity": [
+            0,
+            -1.4,
+            0
+          ],
+          "size_m": [
+            0.16,
+            0.32
+          ],
+          "energy": 1.4,
+          "emission_radius_m": 0.35,
+          "turbulence": 0.2,
+          "direction": [
+            0,
+            -1,
+            0
+          ]
+        }
+      ],
+      "note": "A Vowbound falls: its bound light sinks (not a release)."
     }
   },
   "map": {
@@ -5117,7 +5273,10 @@
       "status": "status_apply",
       "ko": "ko_release",
       "ambush": "flash_ambush",
-      "preemptive": "flash_preemptive"
+      "preemptive": "flash_preemptive",
+      "vowbound_call": "vowbound_call",
+      "vowbound_dismiss": "vowbound_dismiss",
+      "vowbound_fell": "vowbound_fell"
     },
     "ko_overrides": {
       "drownbell": "bell_release"

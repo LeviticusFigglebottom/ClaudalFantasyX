@@ -85,3 +85,31 @@ func test_a_battle_prebuilds_only_the_effects_it_can_play() -> void:
 	assert_true(vfx.has_node(^"hit_fire#0_0"), "every element hit is built")
 	ctl.get_parent().remove_child(ctl)
 	ctl.free()
+
+
+func test_a_vowbound_plays_its_call_dismissal_and_fall() -> void:
+	# The Lead (ADR 0041): Vowbound summons have their real VFX. Bound light, never a release.
+	var ctl := (load("res://game/battle/scene/battle_sandbox.tscn") as PackedScene).instantiate() as BattleController
+	ctl.auto_start = false
+	ctl.pacing_scale = 0.0
+	ctl.persist_progress = false
+	var tree := Engine.get_main_loop() as SceneTree
+	(tree.current_scene if tree.current_scene != null else tree.root).add_child(ctl)
+	ctl.start_battle([&"rhen", &"asha"] as Array[StringName], [], &"sandbox_reef", 20261028)
+	var vfx := ctl.stage.get_node(^"BattleVfx") as BattleVfx
+	for ev: String in ["vowbound_call", "vowbound_dismiss", "vowbound_fell"]:
+		assert_eq(str((_map["events"] as Dictionary).get(ev, "")), ev, "%s is an event" % ev)
+		var def := (_fx["effects"] as Dictionary)[ev] as Dictionary
+		for l: Dictionary in def["layers"]:
+			assert_false((l["swatches"] as Array).has("glimmer_lift"), "%s never rises gold (not a release)" % ev)
+	var linked := ctl.engine.vowbound.called.get_connections().any(
+		func(c: Dictionary) -> bool: return (c["callable"] as Callable).get_object() == vfx
+	)
+	assert_true(linked, "the call plays its effect (deferred, once the stage has seated it)")
+	var vb := ctl.engine.party_active[0]
+	ctl.engine.vowbound.departed.emit(vb, false)
+	assert_true(vfx.played.has(&"vowbound_dismiss"), "a dismissal settles")
+	ctl.engine.vowbound.departed.emit(vb, true)
+	assert_true(vfx.played.has(&"vowbound_fell"), "a fall sinks")
+	ctl.get_parent().remove_child(ctl)
+	ctl.free()

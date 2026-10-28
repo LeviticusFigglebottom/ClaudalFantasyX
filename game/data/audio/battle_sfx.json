@@ -107,7 +107,10 @@
     "relighting_wick": "heal",
     "smelling_salts": "heal",
     "throat_honey": "heal",
-    "tidewash_salve": "heal"
+    "tidewash_salve": "heal",
+    "vowbound_call": "vowbound_call",
+    "vowbound_dismiss": "vowbound_dismiss",
+    "vowbound_fell": "ko_release"
   },
   "skills": {
     "toll": "drownbell_toll"
