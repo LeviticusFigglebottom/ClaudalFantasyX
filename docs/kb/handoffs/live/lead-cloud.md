@@ -87,3 +87,8 @@
 - **Rebake the Shell Shrine GI** (`tools/shrine/bake_shrine_gi.tscn`, then `gi_inputs.py --write`). Two branches each rebaked it, so the merged inputs match neither bake.
 - **Known red:** `test_arenas` reproducibility for `ash_terrace_lanternfall` (red on env-art-b too; needs env-art's M3-ENV-1306).
 - Baseline PNG conflicts kept the integration side; I re-approve after viewing.
+
+## GATE-REQUEST lead/gate-big15 @ a44fec70 (10-28 ~10:35)
+- big14 plus every track's big14 fixes, plus lead/gate-ft-beach (the beach re-stage). hero-integration is at b7526686: its party-camera fix (Rhen off screen) is not in yet.
+- validate, taskboard, dlgc, lint and format all pass. The shrine GI inputs are unchanged (gi_inputs --check is up to date), so no rebake.
+- Run with HYMN_STEP_TIMEOUT at 3 h.

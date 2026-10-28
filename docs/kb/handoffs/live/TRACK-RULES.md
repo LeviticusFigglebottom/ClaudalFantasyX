@@ -58,6 +58,18 @@ Batch requests: one line per push, covering every shot your recent items can aff
 - **Portrait renders:** post `RENDER-REQUEST @ <sha>: portraits:<id>[,portraits:<id>...]; tool: tools/portraits/render.sh --only <id>`. The PC runs render.sh and pushes the PNGs on the same kind of branch. Shot ids must exist in `tests/screenshots/shots.json` at the requested sha; anything else is skipped.
 - **PC import crashes:** if Godot's import aborts, the PC retries it up to 3 times on a fresh `.godot` and never publishes black captures.
 
+## TALKING TO THE LEAD (10-28 13:30): `LEAD-ASK:` lines
+Tracks can't message the Lead directly: send_message and send_later are blocked by permission prompts. So:
+- **To ask the Lead anything** (a decision, a blocker, a merge, a baseline to view), add one line to your live log that starts with `LEAD-ASK:`, then push.
+  - Example: `LEAD-ASK: M2-CHR-542 skirt: option a, b or c?`
+- The Lead scans every track's live log for `LEAD-ASK:` lines every ~20 min and answers by message.
+- **Don't stop and wait for the answer.** Pick the most reasonable option, note it, and keep going. The Lead can overrule.
+- When an ask is answered, change it to `LEAD-ANSWERED:` in your log.
+- **Owners for roles with no track (Lead decision, 10-28):**
+  - rendering tasks: battle-presentation for battle VFX and `effects.json` (M3-BPR-411); env-art-b for zone and kit looks (M3-RND-26, the Reefball drop);
+  - narrative tasks: ui-menus for the codex and field records (M3-NAR-01);
+  - architect and tech: integration-qa.
+
 ## ACT I AT FINAL QUALITY FIRST (ADR 0041, the human's directive, 2026-10-28): THIS OVERRIDES EVERYTHING BELOW
 - **Scope:** the game as it is played, from the title through the end of Act I (Prologue, the slice, Ch1–Ch9, the Reefball match). Every zone, prop, NPC, enemy, boss, Vowbound, cutscene, VFX, sound and menu on that path reaches final quality. **No greybox, no capsules or box stand-ins, no placeholder art or sound.**
 - **Act II and later are PAUSED** (Ch10+, the Act III ending, later-act music, foley, creatures, kits, menus, balance). Commit and push what's in flight, set the task to `status: blocked` with `blocked-by: ADR 0041`, and stop. Don't revert anything.
