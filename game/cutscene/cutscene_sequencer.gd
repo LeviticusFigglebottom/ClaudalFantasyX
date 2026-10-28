@@ -583,7 +583,7 @@ func _cue_anim(step: DialogueStep) -> void:
 	var clip := StringName(str(step.args[1]))
 	var standin := _stage.clip_mark(StringName(str(step.args[0])), clip) if _stage != null else null
 	if standin != null:
-		# A placeholder clip: stand on its mark, facing the mark's -Z (CutsceneStage.clip_marks).
+		# Stand on the clip's mark, facing its -Z (CutsceneStage.clip_marks); a built clip then plays there too.
 		# M2-FP-29: glide onto it and turn, eased, rather than appear there.
 		_motions.erase(&"move:%s" % step.args[0])
 		var start := actor.global_position
@@ -598,7 +598,8 @@ func _cue_anim(step: DialogueStep) -> void:
 			func(t: float) -> void: _place(actor, start.lerp(end, CutsceneMotion.eased(t, curve)))
 		)
 		_turn_to(StringName(str(step.args[0])), actor, -standin.global_basis.z)
-		return
+		if not CutsceneClips.has_clip(actor, clip):
+			return
 	if clip == ANIM_LOOK_AT and step.args.size() > 2:
 		var tid := StringName(str(step.args[2]))
 		var target := _stage.place(tid) if _stage != null else null

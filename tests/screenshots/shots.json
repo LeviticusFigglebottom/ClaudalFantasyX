@@ -4426,7 +4426,7 @@
         960,
         540
       ],
-      "settle_frames": 630,
+      "settle_frames": 720,
       "setup": {
         "globals": {
           "hymn_wind_time": 40.0
@@ -4441,10 +4441,71 @@
             "scene_id": "ch03_the_first_verse",
             "flags": [
               "ch02_met_asha"
-            ]
+            ],
+            "hold_line": "ch03_verse_014"
           }
         },
         "time_scale": 4.0
+      }
+    },
+    {
+      "id": "slice_verse_threshold",
+      "scene": "res://game/levels/_tests/slice_shots/slice_cutscene_shot.tscn",
+      "camera": "default",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 720,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        },
+        "nodes": {
+          ".": {
+            "level_path": "res://game/levels/ch03/first_verse/first_verse.tscn",
+            "scene_id": "ch03_the_first_verse",
+            "flags": [
+              "ch02_met_asha"
+            ],
+            "hold_line": "ch03_verse_030"
+          }
+        },
+        "time_scale": 8.0
+      }
+    },
+    {
+      "id": "slice_verse_recognition",
+      "scene": "res://game/levels/_tests/slice_shots/slice_cutscene_shot.tscn",
+      "camera": "default",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 720,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        },
+        "nodes": {
+          ".": {
+            "level_path": "res://game/levels/ch03/first_verse/first_verse.tscn",
+            "scene_id": "ch03_the_first_verse",
+            "flags": [
+              "ch02_met_asha"
+            ],
+            "hold_line": "ch03_verse_031"
+          }
+        },
+        "time_scale": 8.0
       }
     },
     {
