@@ -425,7 +425,9 @@ func test_a_layer_added_in_the_zones_ready_adopts_what_the_zone_places_after() -
 	var zone := (load(HALUNA) as PackedScene).instantiate() as Node3D
 	_holder().add_child(zone)  # not prebuilt: the zone adds its VillagerLayer in its _ready, then places the shop bodies
 	var layer := zone.get_node(^"VillagerLayer") as VillagerLayer
-	assert_true(layer.villagers.is_empty(), "added in the zone's _ready, the layer waits (deferred) instead of building")
+	assert_true(
+		layer.villagers.is_empty(), "added in the zone's _ready, the layer waits (deferred) instead of building"
+	)
 	layer.build()  # what the deferred call does; the runner steps no frames, so the test makes it (build is idempotent)
 	var ids: Array[StringName] = []
 	for n: Node in zone.find_children("*", "FieldNpc", true, false):
