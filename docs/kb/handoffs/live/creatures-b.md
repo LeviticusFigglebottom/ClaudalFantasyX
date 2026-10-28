@@ -231,3 +231,4 @@ CreatureActor and the validator are theirs too (kit or tool changes go to them a
      the Reach waits on **M3-CRB-011** (battle-presentation).
   - **Checks:** validate_data 0/0; Godot creature_portraits 4/1 (the six Act II PNGs only), creature_bosses 4/0,
     vowbound 87/0.
+- **Housekeeping @ 00c836b6:** added `docs/kb/qa/gate-runs/.gdignore` (the big14 merge brought ~390 gate PNGs and JPGs that Godot otherwise imports into .import files; same as docs/kb/qa/gpu/.gdignore; QA's path, flagged here for the Lead), and committed six .uid sidecars Godot generated for other tracks' new scripts.
