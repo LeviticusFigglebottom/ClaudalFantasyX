@@ -484,3 +484,12 @@ Checks:
 Skipped:
 - The coverage step: no game/battle or game/progression change.
 - Screenshots: no changed shots this batch. The portraits were viewed directly.
+- 2026-10-28 11:20: **Ivo Brannick** (M3-CHR-540) and the Stillguard's short-hair rebuild landed on characters. Merged at 7ea66428f.
+  - **Portraits (81301ec34):**
+    - Ivo is baked. His stage has no face-pose table, so it is neutral only.
+    - The Stillguard is rebaked; it is nearly unchanged under the helmet.
+    - I viewed both against the old Stillguard.
+  - **Checks:** test_hero_portraits 9/0 and test_dialogue_box 26/0; validate_data has 0 errors.
+  - **Still missing:** Pell is the last named Act I speaker without a model.
+  - **Merge note:** the merge kept shots.json's boot_title at 72 and battle_victory at 90.
+MERGE-READY @ 81301ec34: Ivo's portrait and the Stillguard rebake, on top of MERGE-READY @ 5702d5d3a.
