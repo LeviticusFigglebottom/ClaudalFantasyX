@@ -141,9 +141,9 @@ fov_deg = 20.9
 [sub_resource type="Resource" id="ShotC08"]
 script = ExtResource("5_shot")
 id = &"C08"
-position = Vector3(-17.0, 6.2, -10.0)
-look_at = Vector3(-56.0, -2.0, -38.0)
-fov_deg = 67.4
+position = Vector3(-15.0, 5.0, -6.0)
+look_at = Vector3(-37.0, -0.5, -25.0)
+fov_deg = 46.4
 
 [node name="FirstVerse" type="Node3D"]
 script = ExtResource("1_root")
@@ -282,7 +282,7 @@ transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, -2.5, 0, 8.5)
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 2.5, 0, 8.5)
 
 [node name="Drownbell" parent="." instance=ExtResource("21_bell")]
-transform = Transform3D(1.6, 0, 1.2, 0, 2, 0, -1.2, 0, 1.6, -56, -5.5, -38)
+transform = Transform3D(1.6, 0, 1.2, 0, 2, 0, -1.2, 0, 1.6, -38, -5.5, -26)
 
 [node name="Spawns" type="Node3D" parent="."]
 
@@ -366,7 +366,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.5, 2.2, 0)
 transform = Transform3D(0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, 0.707107, -21, -1.7, -10)
 
 [node name="drownbell" type="Marker3D" parent="CutsceneStage/Marks"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -56, -0.6, -38)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -38, -0.6, -26)
 
 [node name="causeway" type="Marker3D" parent="CutsceneStage/Marks"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -30, -1.5, 18)
