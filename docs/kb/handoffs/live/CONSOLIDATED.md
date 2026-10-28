@@ -72,6 +72,11 @@
   - env-art-b `session_01F3vrUNt6trAMrjeYavaDNC` (claude/env-art-b): the Ch5–Ch9 zones and their arenas;
   - creatures-b `session_01F3vrUMszfxGn5bonYsSJxK` (claude/creatures-b): the Act I bosses and the Vowbound.
   - env-art keeps the Prologue–Ch4 zones and the shared kits; creatures keeps the regular enemies and the wildlife.
+- **Ownership under ADR 0041 (Lead decision, 10-28 02:40):**
+  - Act I dressing (the generated dressing, collision and layout json and their tools/act1 scripts): env-art for the Prologue–Ch4, env-art-b for Ch5–Ch9.
+  - act1-chapters: encounters, NPC and trigger placement, cutscene staging and flow only. Its parallel Ch5–Ch9 dressing is dropped in favour of env-art-b's; act1-chapters merges env-art-b and keeps Ch4 plus its dressing test.
+  - Inventory capsules: party → integration-qa; generic villagers → creatures (a villager generator); named NPCs → characters.
+  - integration-qa runs an hourly TRIAL MERGE of every track branch and logs the conflicts.
 - The account's seven-day usage is at its warning level, so no more sessions unless one is clearly the bottleneck.
 
 ## 2a. Merge state (new account)
