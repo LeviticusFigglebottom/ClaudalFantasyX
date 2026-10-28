@@ -78,3 +78,23 @@ centreline mid-way, under `arm2`), `vfx_phase` (the wrist, where the grip breaks
 
 **Budget:** 23,966 triangles (≤ 24k): forearm 5.0k, peeling strands 0.6k, palm 1.8k, digits 12.0k, wreckage 2.7k,
 spawn bodies 1.8k. 28 bones.
+
+## Polish (M3-CRB-007, 2026-10-28)
+
+In the default battle camera the hand is right next to the party, and the digit and palm crust plates showed hard,
+flat facets with harsh specular planes. Fixed in `crust_plate` without new triangles:
+
+- **Shading.** Each plate's broad face is one smooth-shaded surface with its own normals (refined from K rings to
+  about 1.5 K, two more columns across, from a smooth Catmull-Rom of the plate's path). The rim is a separate wall
+  from the face's edge down into the part beneath (the old inner shell and end caps are gone), so the edge stays
+  crisp while the face reads as curved shell.
+- **Form.** The face domes across and along (tapering at the ends), the keel is softer, the growth ridges are lower
+  (kept in colour and cavity), the per-vertex random lumps are now a smooth interpolated field, and the face rolls
+  over into the rim. The side edges are notched by angle, so the silhouette breaks without kinking the shading.
+- **Surface.** Two-tone granular mottle (pale grains, black pits), lighter growth bands, a crusted slate lift off
+  the lacquer black, and salt in the grooves. Wetness pools in the grooves and low ground, and the crests, keel, ends
+  and rim are dry. The rim wall is pale and worn at the lip and dark and wet at its foot. `crust` material:
+  roughness 0.8 dry / 0.32 wet, specular 0.35, clearcoat 0.3, detail scale 12 / albedo 0.38 / bump 2.0 (was 0.45 /
+  0.15 / 0.5 / 0.8, 5 / 0.3 / 1.2). Claws, spurs, barnacles and the drowned spawn bodies share the slot.
+- **Budget and bounds.** 23,978 triangles (≤ 24k; palm plates +48, digit plates -36). The bounds are unchanged
+  (min x -3.802 against -3.805), so the boss intro framing and its title-card test are unaffected.

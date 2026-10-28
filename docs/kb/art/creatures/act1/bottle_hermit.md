@@ -45,3 +45,18 @@ ADR 0041 (Act I at final quality) and the creatures-b critique (a toy: smooth tu
   `hit` (retreats into the glass, claw across, peak 0.1 s), `ko` (slumps out of the mouth, legs curled), and the
   kit's `hit_b` / `idle_b`. New bones: `antenna_l/r`, `claw_small_arm`, `claw_small`.
 - **Budget.** 15.2k triangles (was 3.4k; the sheet's 5k is superseded by the boss budget, ≤ 25k).
+
+## Polish (M3-CRB-004, 2026-10-28)
+
+The shell and legs read glossy and plasticky, like a wet toy. Every hard-chitin part (the shield, leg segments and
+spines, dactyls, claw palm, tubercles, fingers and eye stalks) now finishes through `chitin_finish`:
+
+- a fine blotched mottle (sun-faded and darker patches) and granular pits (cavity, slightly darkened);
+- a wetness gradient: dry on top, damp toward the floor and on the down-facing undersides, with damp pooled in the
+  pits (the soft body behind the shield stays damp);
+- pale, chalky, bone-dry salt crusted in broken patches into the joints (each segment's pale joint ends, the dactyl
+  and finger roots, the wrist) and the shield's groove.
+
+`chitin` material: roughness 0.86 dry / 0.42 wet, specular 0.3, clearcoat 0.15, detail albedo 0.2 and bump 0.6 (was
+0.62 / 0.22 / 0.5 / 0.55, 0.12 / 0.45). The weed and the closed wound mark share the slot. Geometry, clips and the
+15,170-triangle budget are unchanged.

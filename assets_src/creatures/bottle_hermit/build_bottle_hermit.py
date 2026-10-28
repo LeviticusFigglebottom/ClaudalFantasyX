@@ -144,6 +144,33 @@ def chitin_color(P: np.ndarray, seed: int, pale: np.ndarray | float = 0.0, dark:
     return ck.mix(c, PAL["lacquer_black"], np.broadcast_to(np.asarray(dark, dtype=np.float64), (len(P),))[:, None])
 
 
+def chitin_finish(mesh: ck.Mesh, P: np.ndarray, T: np.ndarray, col: np.ndarray, bone, seed: int, *, cavity=0.0,
+                  joint=0.0, damp: float = 0.0) -> None:
+    """Finishes a part of the crab's hard chitin as weathered shell, not a wet toy: a fine mottle in the colour,
+    granular pitting in the cavity, a dry top and damp lower parts (the wetness rises toward the floor and on the
+    faces turned down, and pools in the pits), and pale chalky salt dried into the joints (`joint`, 0..1)."""
+    n = len(P)
+    cav = np.broadcast_to(np.asarray(cavity, dtype=np.float64), (n,)).copy()
+    jt = np.broadcast_to(np.asarray(joint, dtype=np.float64), (n,))
+    mott = ck.fbm(P * 26.0, seed + 901)
+    pit = ck.smoothstep(0.55, 0.85, ck.value_noise(P * 150.0, seed + 902))
+    col = col * (1.0 + 0.22 * np.clip(mott * 2.5, -1.0, 1.0))[:, None]  # blotched, sun-faded and darker patches
+    col = ck.mix(col, PAL["tortoiseshell"] * 0.6, (0.3 * pit)[:, None])
+    cav = np.clip(cav + 0.35 * pit, 0.0, 1.0)
+    N = ck.vertex_normals(P, T)
+    low = ck.smoothstep(GY + 0.02, 0.04, P[:, 1])  # 0 at the shield's height, 1 at the floor
+    down = ck.smoothstep(0.1, -0.7, N[:, 1])
+    wet = 0.04 + 0.55 * low ** 1.5 + 0.2 * down + 0.3 * cav + damp
+    # salt: chalky white crusted into the joints and the deepest pits on the dry upper parts, bone-dry
+    salt = np.clip(jt * (0.55 + 0.45 * ck.smoothstep(-0.1, 0.25, mott)) + 0.5 * pit * (1.0 - low), 0.0, 1.0)
+    salt = salt * ck.smoothstep(0.3, 0.65, ck.value_noise(P * 45.0, seed + 903) + 0.15 * jt)  # in broken patches
+    chalk = ck.mix(PAL["coral_stone"], PAL["foam_white"], 0.35)
+    col = ck.mix(col, chalk, (0.8 * salt)[:, None])
+    cav = cav * (1.0 - 0.6 * salt)
+    wet = wet * (1.0 - 0.9 * salt)
+    ck.finish(mesh, P, T, "chitin", col, bone, wet=np.clip(wet, 0.02, 0.85), cavity=cav)
+
+
 def granules(P: np.ndarray, D: np.ndarray, seed: int, freq: float, amp: float):
     """Granular relief: raised grains along the outward direction D; returns (P, cavity between the grains)."""
     g = ck.smoothstep(0.05, 0.6, ck.value_noise(P * freq, seed))
@@ -462,8 +489,8 @@ def shield(mesh: ck.Mesh, rig: ck.Rig) -> None:
     P = P + np.array([0.0, 0.01, 0.035]) * rost[:, None]
     col = chitin_color(P, SEED + 71, pale=(1.0 - hard) * 0.8)
     col = ck.mix(col, PAL["tortoiseshell"], (ridge * 0.6 + groove * 0.4)[:, None])
-    ck.finish(mesh, P, T, "chitin", col, rig.rigid("body"), wet=0.35 + 0.45 * (1.0 - hard),
-              cavity=np.clip(cav * hard + groove * 0.9, 0.0, 1.0))
+    chitin_finish(mesh, P, T, col, rig.rigid("body"), SEED + 75, cavity=np.clip(cav * hard + groove * 0.9, 0.0, 1.0),
+                  joint=groove * 0.7, damp=0.45 * (1.0 - hard))
     # the soft body behind the shield, into the glass, and its pale underside
     Pa, Ta = ck.ellipsoid((0.0, GY - 0.06, MZ - 0.16), (0.24, 0.21, 0.2), 9, 16)
     n = ck.fbm(Pa * 12.0, SEED + 72)
@@ -511,7 +538,7 @@ def segment(mesh: ck.Mesh, bone, p0, p1, r0: float, r1: float, seed: int, *, ben
     col = chitin_color(P, seed + 1, pale=np.clip(pale, 0.0, 1.0), dark=band * 0.4 + dark * tt ** 2)
     ventral = ck.smoothstep(0.0, -0.8, np.cos(aa))
     col = ck.mix(col, PAL["bone"], (ventral * 0.35)[:, None])
-    ck.finish(mesh, P, T, "chitin", col, bone, wet=0.35, cavity=np.clip(cav + pale * 0.3, 0.0, 1.0))
+    chitin_finish(mesh, P, T, col, bone, seed, cavity=np.clip(cav + pale * 0.3, 0.0, 1.0), joint=np.clip(pale, 0.0, 1.0))
     tan, nrm, _ = ck.frames_along(path, up_hint)
     if spines:
         rng = np.random.default_rng(seed + 2)
@@ -522,7 +549,7 @@ def segment(mesh: ck.Mesh, bone, p0, p1, r0: float, r1: float, seed: int, *, ben
             d = nrm[i] * 0.8 + tan[i] * 0.9 + rng.normal(0.0, 0.1, 3)
             Ps, Ts, ts = cone(base, d, rad[i] * 0.9, rad[i] * 0.22, 4)
             col = ck.mix(PAL["laterite"], PAL["lacquer_black"], ts[:, None] * 0.85)
-            ck.finish(mesh, Ps, Ts, "chitin", col, bone, wet=0.3)
+            chitin_finish(mesh, Ps, Ts, col, bone, seed + 3 + k, cavity=0.1)
     return path, rad, tan, nrm
 
 
@@ -547,7 +574,7 @@ def walking_leg(mesh: ck.Mesh, rig: ck.Rig, s: float, tag: str, i: int) -> None:
     P, T, tt, aa, D = sweep(path, rad, 7, up_hint=(s, 0.3, 0.0), squash=0.7)
     P, cav = granules(P, D, sd + 8, 160.0, 0.002)
     col = chitin_color(P, sd + 9, pale=ck.smoothstep(0.15, 0.0, tt), dark=ck.smoothstep(0.45, 0.95, tt))
-    ck.finish(mesh, P, T, "chitin", col, bb, wet=0.3, cavity=cav)
+    chitin_finish(mesh, P, T, col, bb, sd + 9, cavity=cav, joint=ck.smoothstep(0.15, 0.0, tt))
     tuft(mesh, bb, path[1:4], np.array([s * 0.6, 0.6, 0.4]), 0.04, 3, sd + 10)
 
 
@@ -581,7 +608,8 @@ def cheliped(mesh: ck.Mesh, rig: ck.Rig, s: float, k: float, big: bool) -> None:
     col = chitin_color(P, sd + 7, pale=tub * 0.5 + crest * 0.25, dark=ck.smoothstep(0.85, 1.0, tt) * 0.3)
     col = ck.mix(col, PAL["tortoiseshell"], (ck.smoothstep(0.1, -0.3, lump) * 0.5)[:, None])
     col = ck.mix(col, PAL["bone"], (ck.smoothstep(0.0, -0.9, up) * 0.4)[:, None])
-    ck.finish(mesh, P, T, "chitin", col, hand, wet=0.3, cavity=np.clip((1.0 - tub) * 0.45 + 0.1, 0.0, 1.0))
+    chitin_finish(mesh, P, T, col, hand, sd + 7, cavity=np.clip((1.0 - tub) * 0.45 + 0.1, 0.0, 1.0),
+                  joint=ck.smoothstep(0.12, 0.0, tt))
     if big:
         tuft(mesh, hand, path[3:10:3] + np.array([0.0, -rad[6] * 0.55, 0.0]), np.array([s * 0.3, -1.0, 0.2]),
              0.05, 4, sd + 8)
@@ -590,8 +618,8 @@ def cheliped(mesh: ck.Mesh, rig: ck.Rig, s: float, k: float, big: bool) -> None:
         rng = np.random.default_rng(sd + 9)
         for v in rng.choice(cand, size=min(16, len(cand)), replace=False):
             Pc, Tc, tc = cone(P[v] - D[v] * 0.004, D[v] + tan_at(path, tt[v]) * 0.4, 0.022 * k, 0.009 * k, 4)
-            ck.finish(mesh, Pc, Tc, "chitin", ck.mix(PAL["tortoiseshell"], PAL["bone"], tc[:, None] * 0.8), hand,
-                      wet=0.3, cavity=(1.0 - tc) * 0.4)
+            chitin_finish(mesh, Pc, Tc, ck.mix(PAL["tortoiseshell"], PAL["bone"], tc[:, None] * 0.8), hand, sd + 9,
+                          cavity=(1.0 - tc) * 0.4)
     # fixed finger (pollex) from the palm's lower front; movable finger (dactyl) hinged above it
     for kind in ("pollex", "dactyl"):
         if kind == "pollex":
@@ -612,7 +640,7 @@ def cheliped(mesh: ck.Mesh, rig: ck.Rig, s: float, k: float, big: bool) -> None:
         P = P + D * (teeth * 0.012 * k)[:, None]
         P, cav = granules(P, D, sd + 10 + (kind == "dactyl"), 120.0 / k, 0.005 * k)
         col = chitin_color(P, sd + 12, pale=teeth * 0.6, dark=ck.smoothstep(0.35, 0.85, tt))
-        ck.finish(mesh, P, T, "chitin", col, bone, wet=0.3, cavity=cav)
+        chitin_finish(mesh, P, T, col, bone, sd + 12, cavity=cav, joint=ck.smoothstep(0.12, 0.0, tt))
 
 
 def eyes_and_antennae(mesh: ck.Mesh, rig: ck.Rig) -> None:
@@ -626,7 +654,7 @@ def eyes_and_antennae(mesh: ck.Mesh, rig: ck.Rig) -> None:
         P, T, tt, aa, D = sweep(path, rad, 8, up_hint=(0.0, 0.0, 1.0), squash=0.85)
         band = 0.5 + 0.5 * np.cos(tt * 5.0 * 2.0 * math.pi)
         col = chitin_color(P, SEED + 500 + int(s > 0), pale=0.35 + 0.3 * band, dark=0.0)
-        ck.finish(mesh, P, T, "chitin", col, bone, wet=0.45, cavity=0.15 * band)
+        chitin_finish(mesh, P, T, col, bone, SEED + 505 + int(s > 0), cavity=0.15 * band)
         # the compound eye: a faceted cap on a pale ring
         tan = top - path[-2]
         tan = tan / np.linalg.norm(tan)
