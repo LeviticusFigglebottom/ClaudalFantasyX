@@ -257,7 +257,7 @@ func test_brine_shoals_crowd_comes_alive_in_the_real_zone() -> void:
 	var zone := (load(BRINE_SHOALS) as PackedScene).instantiate() as Node3D
 	_holder().add_child(zone)
 	var layer := VillagerLayer.wire(zone, &"ch06/brine_shoals")
-	await (Engine.get_main_loop() as SceneTree).process_frame
+	layer.build()  # wired into a ready zone, the layer builds deferred; the runner steps no frame, so build it now
 	assert_eq(layer.live_villagers().size(), 10, "the girl, the clerk, two children and six wrights")
 	var wrights := zone.get_node_or_null(^"CutsceneStage/Actors/wrights")
 	assert_true(wrights != null, "the group's stage actor")

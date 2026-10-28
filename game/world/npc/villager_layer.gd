@@ -66,14 +66,10 @@ var _built := false
 func _ready() -> void:
 	process_priority = 10  # after the villagers have moved this frame
 	if auto_build:
-		# Added while the zone is already in its own _ready (or later): build once the zone has finished its
-		# set-up, so villagers it places after adding this layer (HalunaVillagers' shop bodies) are adopted, not
-		# doubled. Added with the zone (a prebuilt zone entering the tree): the zone's set-up is done; build now.
-		var zone := get_parent()
-		if zone != null and zone.is_node_ready():
-			build.call_deferred()
-		else:
-			build()
+		# At once, also when added in the zone's own _ready: a zone loaded as the game loads it shows no capsule even
+		# before its first frame (big14 gate). Haluna's shop rows sit inside their bodies under `node_name`
+		# "Villager", where HalunaVillagers.populate (run after) looks, so it skips them instead of doubling them.
+		build()
 	set_process(auto_build)
 
 
@@ -171,8 +167,9 @@ func _make(row: Dictionary) -> FieldNpc:
 		push_warning("VillagerLayer %s: cannot place %s (stand-in %s)" % [zone_id, id, row.get("stand_in", "")])
 		return null
 	var npc := FieldNpc.new()
-	# a crowd person is named for itself: several can stand for one group stand-in
+	# a crowd person is named for itself: several can stand for one group stand-in; a row's `node_name` overrides
 	npc.name = String(stand_in.name) + "Villager" if person.is_empty() else String(crowd_id)
+	npc.name = str(row.get("node_name", npc.name))
 	npc.npc_id = id
 	npc.actor_scene = scene
 	npc.auto_process = auto_build

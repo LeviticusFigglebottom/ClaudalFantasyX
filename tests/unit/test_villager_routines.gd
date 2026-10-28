@@ -419,16 +419,16 @@ func test_a_row_can_wear_another_villagers_model() -> void:
 	_done()
 
 
-## M3-CRE-100: Haluna adds its layer in its own _ready, then HalunaVillagers places the shop bodies' villagers;
-## the layer builds after that and adopts them, so each villager shows once (not one from each system).
+## M3-CRE-100: Haluna adds its layer in its own _ready, then HalunaVillagers places the shop bodies' villagers. The
+## layer builds at once (no capsule before the first frame, big14 gate) and puts the shop rows inside their bodies as
+## `Villager`, so populate skips them: each villager shows once (not one from each system).
 func test_a_layer_added_in_the_zones_ready_adopts_what_the_zone_places_after() -> void:
 	var zone := (load(HALUNA) as PackedScene).instantiate() as Node3D
 	_holder().add_child(zone)  # not prebuilt: the zone adds its VillagerLayer in its _ready, then places the shop bodies
 	var layer := zone.get_node(^"VillagerLayer") as VillagerLayer
-	assert_true(
-		layer.villagers.is_empty(), "added in the zone's _ready, the layer waits (deferred) instead of building"
-	)
-	layer.build()  # what the deferred call does; the runner steps no frames, so the test makes it (build is idempotent)
+	assert_false(layer.villagers.is_empty(), "added in the zone's _ready, the layer builds at once")
+	for n in zone.get_node(^"NPCs").find_children("StandIn", "GeometryInstance3D", true, false):
+		assert_false((n as GeometryInstance3D).is_visible_in_tree(), "%s shows no capsule" % n.get_parent().name)
 	var ids: Array[StringName] = []
 	for n: Node in zone.find_children("*", "FieldNpc", true, false):
 		var id := (n as FieldNpc).npc_id
