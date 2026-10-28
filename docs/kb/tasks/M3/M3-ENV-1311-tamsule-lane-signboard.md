@@ -2,7 +2,7 @@
 id: M3-ENV-1311
 title: Ch7 Tamsule's lane signboard as the kit's gilded board (the Signboard block had no piece)
 role: environment
-status: done
+status: review
 owner_session: "env-art-b (session_01F3vrUNt6trAMrjeYavaDNC)"
 depends_on: [M3-ENV-1300]
 milestone: M3
