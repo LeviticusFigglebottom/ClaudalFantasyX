@@ -659,7 +659,7 @@ Ch4–Ch9 onward. `m2-slice.md` beside this file is the history up to the 2026-1
     it, and the solve clears only her own legs. The marks stay, since the PC confirmed both faces. If the cloth can't
     clear him, I move her mark by the amount they name.
   - Merged the integration branch @ 8870ea9c (TRACK-RULES' LEAD-ASK lines).
-- LEAD-ASK: the gate's baselines for my pending shots (slice_verse_threshold, slice_verse_recognition,
+- LEAD-ANSWERED (13:35, the gate baselines them at big15 or big16 after viewing): the gate's baselines for my pending shots (slice_verse_threshold, slice_verse_recognition,
   slice_beach_standing, slice_neme_table, the seven ch01_* scene stills, ch01_oruvel_storm, slice_prologue_p01).
   Approve them and drop their `pending_baseline` keys; all are viewed above.
 - **Beat audit, batch 3 (self-rendered and viewed).**
@@ -669,7 +669,7 @@ Ch4–Ch9 onward. `m2-slice.md` beside this file is the history up to the 2026-1
     dock. A new `DockEnd` volume (priority 2, the last 8 m of the pier) tracks with `B11`: from just past the end,
     at eye height, looking back at them three-quarter front with the village lights behind. The walk out from
     DockNight still starts on H04. Re-rendering now.
-- LEAD-ASK: should other tracks mark their 108 unbaselined shots `pending_baseline`, or should the gate baseline
+- LEAD-ANSWERED (13:35, no: the gate baselines every new shot; `pending_baseline` is only for a track's own in-flight shots between gates): should other tracks mark their 108 unbaselined shots `pending_baseline`, or should the gate baseline
   them? My default: each owner marks its own. I'm not editing their rows.
 
 ### Render requests
