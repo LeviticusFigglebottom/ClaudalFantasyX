@@ -3514,11 +3514,11 @@ MOLL_WALK = (17.0, 30.0, 9.0, 0.012, 1.0)  # stride, knee, arm swing (degrees), 
 MOLL_LOOK = (30.0, 14.0)  # look_at: the turn to his left and the drop of the head (degrees)
 MOLL_YIELD_AT = 0.85  # ko: the yield is reached here and held to the end (the last keys hold)
 # arm turns (upper arm, forearm[, hand]; world axes) searched numerically on his skeleton: the yield's iron upright
-# before the right knee (inside the raised left one), the left hand on the haft 12 cm over the right fist with the
-# shield on that forearm clear of his body; the kneel's left wrist resting on the raised knee; the thrust's
+# before him, its haft clear of both legs, the left hand on it 12 cm over the right fist with the shield on that
+# forearm clear of his body (skinned, signed distance); the kneel's left wrist resting on the raised knee; the thrust's
 # right arm, which carries the iron's head to chest height (1.3 m) as far forward as the fist's grip allows
-MOLL_YIELD_ARM_R = ((-29.1, 13.8, 53.2), (-90.9, -31.4, 0.0))  # the iron planted before the right knee, inside it
-MOLL_YIELD_ARM_L = ((-62.0, -26.6, -49.5), (-67.6, 3.9, 0.0), (11.3, 14.5, 0.0))  # the shield clear of the body
+MOLL_YIELD_ARM_R = ((-39.8, 33.9, 57.5), (-91.0, -45.3, 0.0))  # the iron planted before him, 13 cm clear of the legs
+MOLL_YIELD_ARM_L = ((-60.0, 29.6, -61.1), (-52.4, -55.2, 0.0), (-12.6, -20.5, 0.0))  # the shield 3.5 cm off his body
 MOLL_KNEEL_ARM_L = ((-54.1, 0.0, -48.3), (-11.2, -24.5, 0.0))
 MOLL_THRUST_ARM_R = ((-23.6, 0.0, 12.9), (45.2, -1.3, 0.0), (90.0, 10.0, 0.0))
 LENGTHS.update({"look_at": 1.6, "kneel": 2.0})
@@ -3642,7 +3642,7 @@ def _moll_keys(clip: str, sk: Skeleton, persona: dict, base: dict) -> list:
         early = {"DEF-upper_arm.R": (-50.0, 0.0, -24.0), "DEF-forearm.R": (-40.0, 0.0, 0.0)}
         lift = add(_legs(sk, persona, 0.0), {
             "DEF-spine.001": (-6.0, -6.0, 0.0), "DEF-spine.006": (-6.0, 0.0, 0.0),
-            "DEF-upper_arm.R": (-140.0, 0.0, -16.0), "DEF-forearm.R": (-24.0, 0.0, 0.0), "DEF-hand.R": (96.0, 14.0, 0.0),
+            "DEF-upper_arm.R": (-112.0, 0.0, -10.0), "DEF-forearm.R": (-40.0, 0.0, 0.0), "DEF-hand.R": (20.0, 14.0, 0.0),
             "DEF-upper_arm.L": (-60.0, 0.0, 26.0), "DEF-forearm.L": (-50.0, -30.0, 0.0)})
         drive = add(_legs(sk, persona, 0.1, 0.2, -0.1), {
             "DEF-spine.001": (16.0, 8.0, 0.0), "DEF-spine.002": (6.0, 4.0, 0.0), "DEF-spine.006": (-10.0, -8.0, 0.0),

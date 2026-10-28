@@ -344,7 +344,21 @@
           [
             "Sleeves"
           ]
-        ]
+        ],
+        "max_exposed": 4
+      },
+      "_allowances": "M3-CHR-507 (cloud probe at the default stride). Costume 17/6 (16.6, hit; 16.1 in kneel, ko and yield): the jack's armhole edge, dropped 11.5 cm under the shoulder (M1-CHR-14), takes the lowered left upper arm into it at the side (linear skinning, as Toma's tunic and Liss's top), and the trouser's knee folds into the thigh in the 96-degree kneel (as Liss's kneel). Sleeves 7/6 (6.8, finisher): the sleeves are offset shells of the arm skin, and at the armpit crease they sit inside the torso as the arm comes forward (Liss's work-sleeve, 12). Body 19/48 (18.4, ko and yield; 16.9, kneel): in the yield the right arm comes across the body to the planted iron and the torso's side passes the sleeve's inner face at the armpit; in the kneel the tucked right toes press through the sandal's strap. max_exposed 4: the underarm skin is cut under the hanging arm (it passed through the sleeves), and with the arm raised in the finisher's lift up to four of its edge vertices (under 8 mm) and one at the back of the left shoulder's cap edge (about 2.5 mm, every pose) have no cloth over them. The prop guards (grip, through_garment) and both props' prop_in_body pass with no allowance.",
+      "penetration": {
+        "limits_mm": {
+          "Costume": 17.0,
+          "Sleeves": 7.0,
+          "Body": 19.0
+        },
+        "limits_count": {
+          "Costume": 6,
+          "Sleeves": 6,
+          "Body": 48
+        }
       }
     }
   }

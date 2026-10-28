@@ -91,7 +91,7 @@ SLEEVE_KEEP_RINGS = 2  # rings of skin kept under each sleeve's cap edge (Liss's
 SLEEVE_KEEP_NEAR_TORSO = 0.03  # m (at s = 1): arm skin this near the uncovered torso skin is kept under the sleeve
 SLEEVE_TORSO_CLEAR = 0.0025  # m: the shells' least distance outside the torso skin (the armpit's crease)
 SLEEVES = "Sleeves"
-GUSSET_REACH = 0.06  # m (at s = 1): bare torso skin this near the arm skin is the sleeves' underarm gusset
+GUSSET_REACH = 0.06  # m (at s = 1): bare torso skin this near the arm skin is cut under the arm
 PUSH_REACH = 0.03  # m: push_out only moves points within this of the skin
 
 # preview colours of the materials the shared table lacks (Godot replaces them by name)
@@ -178,7 +178,7 @@ def push_out(P: np.ndarray, V: np.ndarray, F: np.ndarray, faces: np.ndarray, cle
 def sleeves(V: np.ndarray, F: np.ndarray, Nw: np.ndarray, UVc: np.ndarray, reg: np.ndarray, lm,
             cparams: dict, covered: np.ndarray) -> tuple[Part, np.ndarray, np.ndarray, np.ndarray]:
     """The tunic's long sleeves (hadric_moll.md §4 #1): the shipped arm skin of both arms (shoulder cap to wrist, not
-    the hands) plus the torso skin of each shoulder cap and of the underarm gusset, pushed out along the welded normals (`sleeve_off_m` on the
+    the hands) plus the torso skin of each shoulder cap, pushed out along the welded normals (`sleeve_off_m` on the
     arm, `sleeve_cap_off_m` on the cap, blended over `sleeve_cap_blend_m`): build_liss.work_sleeve for two arms
     without the glove. Returns (part, the donor vertex of each shell vertex, the donor faces it copies, the donor
     faces under it to delete: all but SLEEVE_KEEP_RINGS at the cap's edge and the armpit's crease)."""
@@ -192,13 +192,7 @@ def sleeves(V: np.ndarray, F: np.ndarray, Nw: np.ndarray, UVc: np.ndarray, reg: 
         caps |= (reg == "torso") & (np.linalg.norm(V - sh, axis=1) < cap_r) & (V[:, 0] * np.sign(sh[0]) >
                                                                                 0.55 * abs(sh[0])) & \
             (V[:, 2] > sh[2] - 0.035 * S)
-    # the underarm gusset: the torso skin left bare between the jack's dropped armhole and the arm (M1-CHR-14 keeps
-    # the jack low there); the tunic covers it, so the shell takes it too, on the torso's own weights
-    ids = np.nonzero((reg == "torso") & ~covered & ~caps & (V[:, 2] < lm.side_pt("shoulder", "L")[2]))[0]
-    gusset = np.zeros(len(V), dtype=bool)
-    if len(ids):
-        gusset[ids] = nearest_dist(V[ids], V[arm]) < GUSSET_REACH * S
-    sel = arm | caps | gusset
+    sel = arm | caps
     Fi = np.where(F >= 0, F, 0)
     face_in = np.where(F >= 0, sel[Fi], True).all(axis=1)
     used = np.unique(F[face_in][F[face_in] >= 0])
@@ -212,7 +206,6 @@ def sleeves(V: np.ndarray, F: np.ndarray, Nw: np.ndarray, UVc: np.ndarray, reg: 
     cap_off = float(cparams["sleeve_cap_off_m"]) * S
     off[a_ids] = off[a_ids] + (cap_off - off[a_ids]) * b
     off[caps] = cap_off
-    off[gusset] = float(cparams["sleeve_off_m"]) * S
     P = V[used] + Nw[used] * off[used][:, None]
     part = Part(SLEEVES)
     for p in P:
@@ -240,6 +233,14 @@ def sleeves(V: np.ndarray, F: np.ndarray, Nw: np.ndarray, UVc: np.ndarray, reg: 
     near[ids] = nearest_dist(V[ids], V[rest]) < SLEEVE_KEEP_NEAR_TORSO * S
     keep = bnd | near
     delete = face_in & ~np.where(F >= 0, keep[Fi], False).any(axis=1)
+    # the underarm: the torso skin left bare between the jack's dropped armhole (M1-CHR-14) and the hanging arm
+    # passes through the sleeve's inner side as the arm comes down (linear skinning); it is hidden by the arm, so it
+    # goes, as the skin under the cloth does
+    ids = np.nonzero((reg == "torso") & ~covered & ~caps & (V[:, 2] < lm.side_pt("shoulder", "L")[2]))[0]
+    under = covered.copy()
+    if len(ids):
+        under[ids] = nearest_dist(V[ids], V[arm]) < GUSSET_REACH * S
+    delete |= ~face_in & np.where(F >= 0, under[Fi], True).all(axis=1) & np.where(F >= 0, ~covered[Fi], True).any(axis=1)
     return part, used, face_in, delete
 
 
