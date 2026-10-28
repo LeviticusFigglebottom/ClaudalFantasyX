@@ -8,6 +8,24 @@ The gap (the human's playtest note): battles had no action animation. This track
 Session `session_015hKkhtpX67kS4yZeA8AAhv`. Integration branch `claude/undertow-lead-handoff-ze8rrn` merged in
 (c6a960ab).
 
+**MERGE-READY @ 1daa0fa7 (04:45): M3-BPR-423 boss-intro hero shots.** The Hullgnaw rail and the Drownbell framing are
+both fixed and pushed. The branch head also carries:
+- M3-BPR-420/422: the boss big-move camera, Kerrid's and Liss's Swell finishers, the Act I creatures' stand-in
+  heights, hits on a big body's near face, and the trimmed KO flash.
+- Checks run:
+  - Tests: `--filter=boss_intro` 21/0, `--filter=battle` 776 with 2 fails (both fixed since: the boss-camera refit and
+    the swing/reel sound rows), plus vfx 18/0, act1_ability_vfx 5/0, boss_camera 1/0, swell_finishers 3/0,
+    audio_live 12/0, swell 151/0, camera 52/0 and choreo 56/0.
+  - Static checks: gdlint, gdformat, validate_data, taskboard --check and `gen_act1_ability_vfx --check`, all clean.
+  - Tools: test_choreo_validate OK. test_screenshots fails only on my three battle_ch08_* baselines (the gate's to
+    write). test_iskarra fails on a clean tree too (not mine).
+- **Not yet run: the full Godot suite on the head.** Two runs were stopped because I edited under them. It runs once
+  my arena renders finish, and I will log the result here.
+- Shots the gate should re-approve:
+  - the six moved battle_boss_intro_* (viewed above);
+  - any battle shot with an Act I creature, since the heights and the near-face anchor move its effects. I am
+    self-rendering those next.
+
 **2026-10-28 04:3x: big13 (90ecee18) merged in at 5baf9952. M3-BPR-423 boss-intro hero shots @ 59edc9b9 (the Lead's
 03:41 items, ahead of the rest of the queue).**
 - **Merge notes:**
