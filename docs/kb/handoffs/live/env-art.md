@@ -589,7 +589,7 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
-- **MERGE-READY @ (this push): the Haluna NPCs' held props as kit pieces; the forge's bellows grounded.**
+- **MERGE-READY @ b04753893: the Haluna NPCs' held props as kit pieces; the forge's bellows grounded.**
   - **New Haluna kit pieces:**
     - `hand_broom`: Reed's 1.4 m palm-rib broom.
     - `woven_bag`: Neme's bag.
