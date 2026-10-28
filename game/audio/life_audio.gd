@@ -26,6 +26,9 @@ var step_player: Callable = Callable()
 var footstep_data: Dictionary = {}
 ## The ear's position, or null for none (every node is heard): () -> Variant. Defaults to the viewport camera.
 var ear: Callable = Callable()
+## True while a line of dialogue is on screen: () -> bool (M3-AUD-850). Villagers' chat never murmurs over a line;
+## their work goes on, ducked with the World bus. The director sets it; unset, nothing is held.
+var quiet: Callable = Callable()
 ## life.json.
 var data: Dictionary = {}
 ## Hook kind by class name.
@@ -53,6 +56,7 @@ func configure(table: Dictionary) -> void:
 func bind_director(dir: AudioDirector) -> void:
 	player_at = func(id: StringName, at: Vector3) -> void: dir.play_sfx_at(id, at)
 	step_player = func(id: StringName, at: Vector3, opts: Dictionary) -> void: dir.play_sfx_at(id, at, opts)
+	quiet = func() -> bool: return dir.ducks.has(AudioDirector.REASON_DIALOGUE)
 
 
 ## The hook kind for `node` (&"" when it has none).
@@ -197,7 +201,8 @@ func _villager(npc: Node3D, st: Dictionary, delta: float, near: bool) -> void:
 	var cfg := data.get("villager", {}) as Dictionary
 	var id := str(npc.get(StringName(str(cfg.get("id_prop", "")))))
 	var talking := speaking(npc)
-	if talking and not bool(st.get("talking", false)) and near:
+	var hushed := quiet.is_valid() and bool(quiet.call())
+	if talking and not bool(st.get("talking", false)) and near and not hushed:
 		_play(murmur_row(id), npc.global_position + Vector3.UP * float(cfg.get("head_m", 0.0)))
 	st["talking"] = talking
 	var work := cfg.get("work", {}) as Dictionary

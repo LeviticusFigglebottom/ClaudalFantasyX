@@ -366,3 +366,29 @@ func test_a_real_villager_zone_loads_and_frees_cleanly() -> void:
 	l.get_parent().remove_child(l)
 	assert_eq(l.watched.size(), 0, "and leaving the tree keeps nothing")
 	_done()
+
+
+func test_a_villager_never_murmurs_over_a_line() -> void:
+	var l := _life()
+	var hushed := [true]
+	l.quiet = func() -> bool: return hushed[0]
+	var a := _npc(&"child")
+	l.watch(a)
+	a.chat = true
+	a._chat_speaker = &"child"
+	_run(l, 1.0)
+	assert_eq(played.size(), 0, "a dialogue box is open: the chat is held")
+	a._chat_speaker = &""
+	_run(l, 0.2)
+	hushed[0] = false
+	a._chat_speaker = &"child"
+	_run(l, 0.5)
+	assert_eq(_ids(), ["villager_murmur_high"], "the line is gone: the next turn murmurs")
+	_done()
+
+
+func test_the_dialogue_duck_takes_the_world_bus_down() -> void:
+	var mix := AudioData.table(AudioData.MIX) as Dictionary
+	var buses := ((mix["ducks"] as Dictionary)["dialogue"] as Dictionary)["buses"] as Dictionary
+	assert_true(float(buses.get("World", 0.0)) < 0.0, "footsteps, villagers' work, wildlife and foley sit under a line")
+	assert_true(float(buses.get("World", 0.0)) >= -6.0, "but stay present (a gentle dip)")
