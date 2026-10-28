@@ -22,6 +22,16 @@ CreatureActor and the validator are theirs too (kit or tool changes go to them a
   M3-CRB-011 (battle-presentation: intro clip playback, the boss seat at the default camera), Ilun's blank turn-order
   icon (ui).
 
+- **09:45, why the inventory still says "Vowbound … drawn as a primitive" (M3-HER-1143): an audit false positive.**
+  `tools/placeholder_audit.py` only reads battle_sandbox.json `stand_ins.<id>.scene`; the game resolves a Vowbound
+  through its creatures.json `vowbound: true` row. **M3-CRB-012** (qa) carries a tested 4-line patch: with it the ilun,
+  kahre and virel rows go and the audit's tests stay OK. M3-HER-1143 is in review with the row-by-row status; the
+  Moll row is the characters track's (M3-CHR-507).
+- **The battle-distance arena pass is done** (the 04:57 entry below; scratch fixture on the big14 tree, chapter parties,
+  real arenas): hullgnaw, drownbell and bottle_hermit read whole and well scaled; the Wraith, the Matron and the Reach
+  are cropped by the stage's lone-boss seat (EnemySlots/Slot0), filed as **M3-CRB-011**. Idle motion was checked clip
+  by clip in each model pass.
+
 ## Scope (from game/data, 2026-10-28)
 - **Bosses** (enemies.json rows with phases, or a choreo.json `boss_intro` row): `hullgnaw` (Ch1), `drownbell`
   (the slice, Ch3), `bottle_hermit` and `spar_wraith` (Ch4), `cinder_matron` (Ch5), `undertows_reach` (Ch8).
