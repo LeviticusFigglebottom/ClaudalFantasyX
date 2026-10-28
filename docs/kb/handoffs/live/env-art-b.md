@@ -236,6 +236,12 @@ that test at this branch's zones.
   M3-RND-26 (todo).
 - **MERGE-READY @ 22b289bf.**
 
+- **Walk-through repeated on the merged tree (after big14):** the same 44 player-height views; no new issue in Ch5–Ch9
+  dressing. Today's fixes show (Pemakar's plume reads as lit smoke, Ch6's camp burns). Still open and not mine:
+  Ashcrown's flat flying-stair and tier faces and the trader boat's white bales (env-art, M3-ENV-1316), and the
+  placeholder capsules (characters). Interactable props: unchanged since M3-ENV-1311/1317, and every one is final.
+  **Backlog:** only the galleries' `Column`, blocked on Rendering's M3-RND-26.
+
 ### Render requests
 (Self-rendered per TRACK-RULES; lines are SELF-RENDERED notes.)
 SELF-RENDERED @ ea946ec8: ch07_tamsule_mouth, ch07_tamsule_market, ch07_tamsule_gantry — new shots, read final (Liss and Kerrid are capsules: no field body yet).
