@@ -589,6 +589,17 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
+- **MERGE-READY (M3-ENV-1306, the Lead's item): `test_arenas`' Lanternfall reproducibility test is green again.**
+  - It includes a merge of the Lead's `lead/gate-big14` (8707ff90). The merge had no conflicts. Merge this after big14,
+    or with it.
+  - **The fix:**
+    - `arena_scenes.py` now writes `ash_terrace_lanternfall` with env-art-b's votive lamps (`_with_votive_lamps()`:
+      the same rows, order and seed as `b_lanternfall.py`).
+    - Both writers now give the committed file byte for byte.
+    - The votive pieces are marked `structure`: they stand at the grave wall's foot, where the old sphere flames
+      stood.
+  - **Gates:** `test_arenas` 21 OK; regenerating every arena changes nothing; validate_data; taskboard --check.
+  - Nothing was rendered: the committed scene is unchanged.
 - **MERGE-READY @ 9f4d11ab: the Lead's two Ch1 shots.** It also merges big13 (99a077ef).
   - **The big13 merge (99a077ef):**
     - `arenas.json`: kept ours, the final `wall_head_storm` arena, because integration had reverted it to greybox.
