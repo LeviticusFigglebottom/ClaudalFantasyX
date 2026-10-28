@@ -1393,10 +1393,10 @@
         7000,
         700
       ],
-      "bytes": 87544,
+      "bytes": 89076,
       "lods": {
         "ruin_column_broken": 2403,
-        "ruin_column_broken-lod1": 36
+        "ruin_column_broken-lod1": 84
       }
     },
     "ruin_slab": {
