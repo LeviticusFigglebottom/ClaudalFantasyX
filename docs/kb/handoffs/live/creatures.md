@@ -762,3 +762,20 @@ Merged `origin/gpu/gate-big14-shots` and the integration branch, then fixed on t
   - The villager generator waits on M3-CRE-657 (slice-polish: GreyboxZone adds the VillagerLayer) and M3-CRE-661 (characters).
   - The primitive pass waits on M3-CRE-660 (the Lead: "pumice_crawler" and avalanche_ram scope).
   - The open character-role todos are creatures-b's (M3-HER-1134, M3-HER-1143: Act I bosses) or characters' named people (M3-C07-07, M3-CHR-5xx).
+
+## The Lead's 10:34 orders (2026-10-28)
+- **MERGE-READY @ (this push): M3-CRE-660, the primitive pass on raid_hound and slag_tortoise.** pumice_crawler and avalanche_ram are Act II and skipped, per the Lead.
+  - **Tortoise:** the crust breaks into tilted slag slabs at dark, copper-lipped seams on a 44×112 lathe, with less gloss, 12 clinkers and overlapping leg scutes. The scree crawler is rebuilt from the same build.
+  - **Hound:** the shoulder sits in the chest, and the leg tops blend into the body's shading and colour, so no flat plate shows. Fuller, folded rose ears.
+  - Portraits re-baked.
+  - Blender identical ×3 numpy paths for raid_hound, slag_tortoise and scree_crawler; Godot creature 84/0.
+- **MERGE-READY @ (this push): the crowd in every Act I zone with background people.**
+  - Crowd rows already covered every generic person in Oruvel, Brightwater Ferry, the Ch4 wake, Pemakar, Ashcrown, Tamsule (and the bell galleries), Brine Shoals and Corrow (day and night). The audit's remaining capsules there are named people or heroes (characters, act1-chapters).
+  - **New finding:** cinematics' ZoneCast (M3-CIN-1217) dresses those zones' generic stage actors as Haluna's villagers. A crowd row now replaces that body (ADR 0152: Haluna's faces stand for no other town); a named row adopts its Cast. With both, the Ashcrown tender had two bodies.
+  - `VillagerLayer.wire` reuses a zone's own layer.
+  - **Still needed in game: M3-CRE-657** (slice-polish's GreyboxZone adds the layer). A trialled, ready patch is in `live/patches/m3-cre-657-greybox-villagers.patch`. Apply it with cinematics' test_zone_cast change (in the task).
+  - **For characters and cinematics:** ZoneCast also dresses named people in other towns as Haluna's villagers. That is outside my rows.
+- **SELF-RENDERED (walking distance), all ten viewed:** crowd_zone_oruvel, crowd_zone_brightwater_ferry (new), npc_wake_feast (re-aimed), crowd_zone_pemakar (re-aimed), crowd_zone_ashcrown (new), crowd_zone_tamsule, crowd_zone_bell_galleries, crowd_zone_brine_shoals, crowd_zone_corrow (re-aimed), crowd_zone_corrow_night.
+  - Each shows its people as distinct crowd bodies with one body per actor.
+  - The Corrow children face the sea as staged. **No baselines written:** the Lead's gate does that.
+- **Checks:** villager 35/0, crowd 7/0, zone_cast 3/0, field_npc 10/0, haluna 65/0, creature 84/0; qa_capsules: Pell only (Act II, not ours).
