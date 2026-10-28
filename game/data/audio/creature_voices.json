@@ -317,6 +317,13 @@
     "stillguard_inquisitor": "silent",
     "tannin_archer": "silent",
     "root_crab": "silent",
-    "fen_leech": "silent"
+    "fen_leech": "silent",
+    "gallery_ray": "silent",
+    "rime_urchin": "silent",
+    "ridge_lynx": "silent",
+    "cord_moth": "silent",
+    "scree_crawler": "silent",
+    "glass_skate": "silent",
+    "rim_crawler": "silent"
   }
 }
