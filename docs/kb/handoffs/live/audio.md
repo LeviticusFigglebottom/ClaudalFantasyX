@@ -3,6 +3,20 @@
 ## NEW ACCOUNT (from 2026-10-25)
 Session `session_01Wmj8xaLtwcqiS3qwC6PciW`. Integration branch `claude/undertow-lead-handoff-ze8rrn`. Newest first.
 
+- **MERGE-READY: M3-BPR-421, every Act I ability heard as itself (claude/audio @ 5c31931bc). The Act I audio audit is at 0 in every section.**
+  - **73 new ability sounds** (Git LFS), each made from its effect's note:
+    - Rhen's cuts; Asha's mend, haste and ward; Toma's shell breaker, challenge and stair.
+    - Ysolde's ember, frost, hex and written light; Kerrid's anchor, fluke and line; Liss's lamp flash, reel and hoist.
+    - Every Vowbound ability, and each foe's in its creature's family.
+  - **13 boss and set-piece mechanics** share their skill's own row (deduped to one play).
+  - **The Swell styles:** Kerrid's `swing` (whoosh_swing → swell_kerrid) and Liss's `reel` (reel_whir → swell_liss) have their own sounds, with crest times in `peaks`.
+  - **Tests:**
+    - test_battle_audio was updated: Ember plays `abl_ember`, with the fire hit under it.
+    - Godot `--filter=audio`: 175 run, 0 failed.
+    - The Python loudness, data, audit and choreo tests pass, and validate_data reports 0 errors.
+  - Review: combat (the request's owner).
+  - **Note for the Lead:** six `.gd.uid` files for big14's scripts (tests/integration/test_qa_*.gd, test_battle_boss_camera, test_battle_swell_finishers, tools/placeholder/scan, tools/vfx/boss_camera_sheet) were never committed. My import generated them. I've left them untracked, because they're their owners' and conflicting uids would collide.
+
 - **MERGE-READY (claude/audio @ 937b9bf8f, carrying big14): the Lead's 04:44 asks.**
   - **Blockers big14 lifted, closed:**
     - The three stem cutscenes play whole on the deck: M2-AUD-07, plus the `undertow_reach` alias cue. M3-AUD-834 is done.
