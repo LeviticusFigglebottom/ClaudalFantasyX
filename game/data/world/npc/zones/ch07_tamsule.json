@@ -1,0 +1,55 @@
+{
+  "version": 1,
+  "doc": "Tamsule's market and stilt lanes (M3-CRE-659, ADR 0152): the vendor, the Reefball board-caller (`board` is a person: ch07_bark_board.dlg), a child, a fisher, the lane elder (netmender), the gantry boatman and a trader, each a crowd person (game/data/world/npc/crowd.json) inside its stage actor (attach child), turning to talk at their bark triggers.",
+  "zone": "ch07/tamsule",
+  "villagers": [
+    {
+      "npc_id": "tamsule_board",
+      "crowd": "tamsule_board",
+      "stand_in": "CutsceneStage/Actors/board",
+      "attach": "child",
+      "talk": "Triggers/npc_board"
+    },
+    {
+      "npc_id": "tamsule_boatman",
+      "crowd": "tamsule_boatman",
+      "stand_in": "CutsceneStage/Actors/boatman",
+      "attach": "child",
+      "talk": "Triggers/npc_gantry"
+    },
+    {
+      "npc_id": "tamsule_child",
+      "crowd": "tamsule_child",
+      "stand_in": "CutsceneStage/Actors/child",
+      "attach": "child",
+      "talk": "Triggers/npc_child"
+    },
+    {
+      "npc_id": "tamsule_fisher",
+      "crowd": "tamsule_fisher",
+      "stand_in": "CutsceneStage/Actors/fisher",
+      "attach": "child",
+      "talk": "Triggers/npc_lane"
+    },
+    {
+      "npc_id": "tamsule_netmender",
+      "crowd": "tamsule_netmender",
+      "stand_in": "CutsceneStage/Actors/netmender",
+      "attach": "child",
+      "talk": "Triggers/npc_elder"
+    },
+    {
+      "npc_id": "tamsule_trader_boatman",
+      "crowd": "tamsule_trader_boatman",
+      "stand_in": "CutsceneStage/Actors/trader_boatman",
+      "attach": "child"
+    },
+    {
+      "npc_id": "tamsule_vendor",
+      "crowd": "tamsule_vendor",
+      "stand_in": "CutsceneStage/Actors/vendor",
+      "attach": "child",
+      "talk": "Triggers/npc_market"
+    }
+  ]
+}

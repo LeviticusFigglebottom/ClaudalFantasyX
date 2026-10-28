@@ -1,20 +1,18 @@
 {
   "version": 1,
-  "doc": "Haluna on the Pilgrim's Wake night (ch04/haluna_wake, the Ch4 greybox; VillagerLayer, docs/kb/tech/field_npc.md). The same seven villagers as ch02_haluna.json, in the greybox's cutscene-staged actors (CutsceneStage/Actors/<id>, which Ch4's cutscenes move), so every row rides inside its stand-in (attach child): no routes, and the zone's states that hide an actor hide its villager. At the feast tables Osu and the vendor talk quietly in bouts; the fisher sits with them; Neme waits by her door; the child by the lane; Reed by the chapel; the netmender out on the dark dock. The wake is solemn: no work clips, the look-arounds slow (npc.json rows stay as they are). Move it with the zone when act1-chapters finalises it.",
+  "doc": "Haluna on the Pilgrim's Wake night (ch04/haluna_wake, the Ch4 greybox; VillagerLayer, docs/kb/tech/field_npc.md). The same seven villagers as ch02_haluna.json, in the greybox's cutscene-staged actors (CutsceneStage/Actors/<id>, which Ch4's cutscenes move), so every row rides inside its stand-in (attach child): no routes, and the zone's states that hide an actor hide its villager. At the feast tables Osu and the vendor talk quietly in bouts; the fisher sits with them; Neme waits by her door; the child by the lane; Reed by the chapel; the netmender out on the dark dock. The wake is solemn: no work clips, the look-arounds slow (npc.json rows stay as they are). Move it with the zone when act1-chapters finalises it. No chat pairs here (2026-10-28): the wake is staged by cinematics with the villagers facing the wall (M3-CIN-1220, ADR 0192), so they keep the facing their actors give them; a chat would turn them off it.",
   "zone": "ch04/haluna_wake",
   "storm_flag": "",
   "villagers": [
     {
       "npc_id": "osu",
       "stand_in": "CutsceneStage/Actors/osu",
-      "attach": "child",
-      "chat_with": "vendor"
+      "attach": "child"
     },
     {
       "npc_id": "vendor",
       "stand_in": "CutsceneStage/Actors/vendor",
-      "attach": "child",
-      "chat_with": "osu"
+      "attach": "child"
     },
     {
       "npc_id": "fisher",

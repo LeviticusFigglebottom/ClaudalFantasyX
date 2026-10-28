@@ -64,6 +64,7 @@ func test_the_vowbound_stand_in_resolves_to_the_model() -> void:
 	assert_false(spec.has("hover"), "built hovering: the stand-in adds no hover")
 	assert_false(CreatureModels.models().has("virel"), "she is no enemy")
 	assert_eq(CreatureModels.stand_in_overrides("ilun").get("scene", ""), "res://game/creatures/ilun/ilun_battle.tscn")
+	before_each()
 
 
 func test_the_scene_loads_headless_with_its_clips() -> void:
@@ -80,6 +81,7 @@ func test_the_scene_loads_headless_with_its_clips() -> void:
 		assert_true(t > 0.0 and t < a.clip_length(clip), "%s lands inside the clip" % clip)
 	var skel := _pose(a, &"idle", 0.0)
 	assert_true(_bone_at(skel, "body").y > BODY_MIN_Y, "she flies over the water")
+	before_each()
 
 
 func test_the_stand_in_plays_the_stage_clips_on_the_model() -> void:
@@ -95,6 +97,7 @@ func test_the_stand_in_plays_the_stage_clips_on_the_model() -> void:
 	assert_true(BattleClips.play(f, &"ko"), "the fall's clip")
 	f.set_ko(true, 0.25, 0.35)
 	assert_true(f.creature().is_ko())
+	before_each()
 
 
 func test_the_clips_follow_the_sheet() -> void:
@@ -120,6 +123,7 @@ func test_the_clips_follow_the_sheet() -> void:
 	var tail := _bone_at(skel, "streamer")
 	assert_true(head.distance_to(tail) > LINE_M, "Flare Line pulls the whole kite-string taut")
 	assert_true(head.y > tail.y and head.z > tail.z, "the line rises toward the foes")
+	before_each()
 
 
 func _actor() -> CreatureActor:
