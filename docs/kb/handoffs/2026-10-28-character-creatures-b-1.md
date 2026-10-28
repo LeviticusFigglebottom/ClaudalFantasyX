@@ -16,14 +16,11 @@ Branch `claude/creatures-b` (from integration bd3ab5b, with claude/creatures 851
   `vfx_<name>` bones).
 
 ## In progress
-- A last minor-polish worktree agent: the Hullgnaw's neck gloss, the Matron's big belly cells, Ilun's pale near wing,
-  Kahre's wrist seam. Merge it after viewing its renders.
+- None. (The minor-polish round merged at b4ee2492.)
 
 ## Exact next step
-1. Merge the minor-polish agent's branch (view its renders first), run `--filter=creature_bosses`, `creature`,
-   `boss`, `vowbound`, log MERGE-READY.
-2. When the Lead merges claude/creatures and this branch, merge the integration branch back and re-run those filters.
-3. When battle-presentation answers M3-CRB-009, render battle_boss_intro_* to check the intro clips play.
+1. When the Lead merges claude/creatures and this branch, merge the integration branch back and re-run those filters.
+2. When battle-presentation answers M3-CRB-009, render battle_boss_intro_* to check the intro clips play.
 
 ## Known issues
 - test_creature_portraits fails on unbaked portrait PNGs (ui-menus' bake; every reworked creature's portrait is stale).

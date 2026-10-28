@@ -110,6 +110,7 @@ func spawn(engine: BattleEngine) -> void:
 	_enemy_slot_of.clear()
 	for i in engine.enemies.size():
 		_seat_enemy(engine.enemies[i].id, mini(i, _enemy_slots.size() - 1))
+	_seat_lone_boss(engine)
 	if is_inside_tree():  # M3-BPR-403: the opening line-up keeps the real models' footprints apart
 		var data := BattleChoreo.load_data()
 		var axis := camera.global_basis.x if camera != null else Vector3.RIGHT  # sideways on screen
@@ -146,6 +147,22 @@ func add_enemy(c: BattleCombatant, engine: BattleEngine) -> void:
 	_seat_enemy(c.id, slot)
 	if choreo != null:
 		choreo.enter(c.id)  # M3-BPR-411: a summoned foe walks onto its mark, not just appears
+
+
+## M3-CRB-011: a lone boss with a battle_sandbox.json `boss_seats` mark stands there (EnemySlots space), not on Slot0,
+## so the default camera sees all of it. Only when it is the only foe at spawn; its slot bookkeeping is unchanged.
+func _seat_lone_boss(engine: BattleEngine) -> void:
+	if engine.enemies.size() != 1 or _enemy_slots.is_empty() or not is_inside_tree():
+		return
+	var cid := engine.enemies[0].id
+	var seat: Variant = (config().get("boss_seats", {}) as Dictionary).get(String(cid).get_slice("#", 0))
+	var f := _fighters.get(cid) as FighterStandIn
+	if not (seat is Array and (seat as Array).size() == 3) or f == null:
+		return
+	var v := seat as Array
+	f.global_position = (_enemy_slots[0].get_parent() as Node3D).to_global(
+		Vector3(float(v[0]), float(v[1]), float(v[2]))
+	)
 
 
 func _seat_enemy(cid: StringName, slot: int) -> void:

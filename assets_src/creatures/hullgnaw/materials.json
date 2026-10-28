@@ -1,7 +1,7 @@
 {
   "_doc": "Hullgnaw's surfaces (docs/kb/art/creatures/act1/hullgnaw.md): carapace is the Undertow-spawn body, head, jaw, fin and collar (wet lacquer black, spawn_wound seams and eyes); rib is everything hard or dead: the ship's frames and planking, iron spikes, the nail teeth, barnacles and weed. Written by write_materials.py on game/shaders/creature/creature.gdshader.",
   "slots": {
-    "carapace": {"roughness_dry": 0.35, "roughness_wet": 0.26, "specular": 0.5, "clearcoat_wet": 0.45,
+    "carapace": {"roughness_dry": 0.62, "roughness_wet": 0.26, "specular": 0.5, "clearcoat_wet": 0.45,
                  "detail_scale": 22.0, "detail_albedo": 0.14, "detail_bump": 0.85, "cavity_albedo": 0.45,
                  "emission_color": "#3FE0C8", "emission_energy": 2.2, "emission_pulse_hz": 0.3, "emission_pulse_depth": 0.45},
     "rib": {"roughness_dry": 0.85, "roughness_wet": 0.45, "wet_darken": 0.6, "clearcoat_wet": 0.2,
