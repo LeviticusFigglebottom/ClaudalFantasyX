@@ -425,9 +425,9 @@
         12000,
         1200
       ],
-      "bytes": 151480,
+      "bytes": 280244,
       "lods": {
-        "white_barge": 2544,
+        "white_barge": 4588,
         "white_barge-lod1": 108
       }
     },

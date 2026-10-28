@@ -4,10 +4,10 @@
            "emission_from": "#4FB3B0", "emission_to": "#7FC6D9"},
   "slots": {
     "body": {"roughness_dry": 0.32, "roughness_wet": 0.12, "specular": 0.5, "wet_darken": 0.6, "clearcoat_wet": 0.5,
-             "detail_scale": 6.0, "detail_albedo": 0.05, "detail_bump": 0.05, "rim_sheen": 0.6,
+             "detail_scale": 6.0, "detail_albedo": 0.05, "detail_bump": 0.05, "rim_sheen": 0.45,
              "emission_color": "#4FB3B0", "emission_energy": 1.2},
     "membrane": {"roughness_dry": 0.3, "roughness_wet": 0.12, "specular": 0.5, "wet_darken": 0.6, "clearcoat_wet": 0.5,
-                 "detail_scale": 8.0, "detail_albedo": 0.04, "detail_bump": 0.03, "rim_sheen": 0.85,
+                 "detail_scale": 8.0, "detail_albedo": 0.04, "detail_bump": 0.03, "rim_sheen": 0.55,
                  "emission_color": "#4FB3B0", "emission_energy": 1.2},
     "net": {"roughness_dry": 0.4, "roughness_wet": 0.2, "specular": 0.3, "detail_albedo": 0.0, "detail_bump": 0.0,
             "emission_color": "#4FB3B0", "emission_energy": 1.2},

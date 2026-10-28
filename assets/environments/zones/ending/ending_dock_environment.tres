@@ -1,0 +1,47 @@
+[gd_resource type="Environment" load_steps=5 format=3]
+
+[ext_resource type="Shader" path="res://game/shaders/environment/env_sky_night.gdshader" id="1_r"]
+[ext_resource type="Texture3D" path="res://assets/environments/zones/ending/lut_ending_dock.png" id="2_r"]
+
+[sub_resource type="ShaderMaterial" id="SkyMat"]
+shader = ExtResource("1_r")
+shader_parameter/col_ground = Color(0.01961, 0.03922, 0.07843, 1)
+shader_parameter/col_horizon = Color(0.04314, 0.07843, 0.1569, 1)
+shader_parameter/col_zenith = Color(0.01961, 0.03922, 0.07843, 1)
+shader_parameter/moon_disc_energy = 0.0
+shader_parameter/moon_halo = 0.0
+shader_parameter/star_density = 0.2
+shader_parameter/star_energy = 3.0
+shader_parameter/star_horizon_fade = 0.08
+
+[sub_resource type="Sky" id="Sky"]
+sky_material = SubResource("SkyMat")
+process_mode = 2
+
+[resource]
+resource_name = "ending_dock"
+background_mode = 2
+sky = SubResource("Sky")
+ambient_light_source = 2
+ambient_light_color = Color(0.04314, 0.08627, 0.1882, 1)
+ambient_light_energy = 0.1
+reflected_light_source = 2
+tonemap_mode = 4
+tonemap_exposure = 1.2
+tonemap_agx_white = 12.0
+ssao_enabled = true
+ssao_radius = 1.2
+ssao_intensity = 1.2
+glow_enabled = true
+glow_intensity = 0.6
+glow_bloom = 0.08
+glow_hdr_threshold = 1.0
+fog_enabled = true
+fog_mode = 0
+fog_light_color = Color(0.01961, 0.03922, 0.07843, 1)
+fog_density = 0.0
+fog_sky_affect = 0.0
+fog_height = 0.0
+fog_height_density = 0.0
+adjustment_enabled = true
+adjustment_color_correction = ExtResource("2_r")

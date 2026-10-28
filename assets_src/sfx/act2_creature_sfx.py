@@ -50,11 +50,13 @@ from synth.dsp import SR, bq_bandpass, bq_highpass, bq_lowpass, rng, smooth_nois
 from synth.mixer import measure, write_ogg  # noqa: E402
 from synth.water import drip  # noqa: E402
 from underwater_sfx import _n, _t, bubble_train, muffle, noise, place  # noqa: E402
+from creature_sfx import Moth  # noqa: E402
 
 SEED = 20261831
-BOSSES = ("mangrove_drowner", "lamp_engine", "avalanche_ram", "wakefin")
+BOSSES = ("mangrove_drowner", "lamp_engine", "avalanche_ram", "wakefin", "flat_engine")
 MOVE_WORD = {"drowner": "heave", "engine": "clank", "woolback": "trudge", "sailfin": "cut", "archer": "scull",
-             "ray": "glide", "urchin": "rattle", "crawler": "tick"}
+             "ray": "glide", "urchin": "rattle", "crawler": "tick",
+             "lynx": "pad", "moth": "flutter", "skate": "glide", "flat_engine": "clank"}
 CREATURES: dict[str, dict] = {
     "mangrove_drowner": dict(family="drowner", size=3.0, pitch=1.0, spawn=True),
     "lamp_engine": dict(family="engine", size=2.6, pitch=1.0),
@@ -64,6 +66,12 @@ CREATURES: dict[str, dict] = {
     "gallery_ray": dict(family="ray", size=1.2, pitch=1.0),
     "rime_urchin": dict(family="urchin", size=0.9, pitch=1.0),
     "conduit_crawler": dict(family="crawler", size=0.6, pitch=1.0),
+    # M3-AUD-849: the creatures added since (claude/creatures, M3-CRE-620's later builds); appended, so the first eight
+    # keep their seeds and their bytes
+    "ridge_lynx": dict(family="lynx", size=1.0, pitch=1.0),
+    "cord_moth": dict(family="moth", size=1.0, pitch=1.05, rate=13.0),
+    "glass_skate": dict(family="skate", size=1.1, pitch=1.0),
+    "flat_engine": dict(family="flat_engine", size=2.2, pitch=0.85),
 }
 
 
@@ -684,8 +692,187 @@ class Crawler:
         return x
 
 
+class Lynx:
+    """The ridge lynx (Ch12, Keth Pass): a high-pass cat in its winter coat. Ordinary, hungry, beautiful. Its voice is
+    a throat (a low growl, a hiss, a yowl that shakes snow off the rocks); its feet are snowshoe paws, nearly silent."""
+
+    F = [(700, 180, 1.0), (1700, 300, 0.5), (3100, 500, 0.2)]
+
+    @classmethod
+    def growl(cls, g, dur, f0, amp=1.0):
+        return amp * throat(g, dur, wobble(f0, 0.06, 4.0, g), [(420, 140, 1.0), (1100, 260, 0.5)], rough=0.8, sub=0.6,
+                            breath=0.6, attack=0.06, release=0.12, rough_hz=24.0)
+
+    @staticmethod
+    def hiss(g, sec=0.35, amp=1.0):
+        return amp * burst(g, sec, [bq_bandpass(4200, 0.9), bq_highpass(1800, 0.7)], 0.01, sec * 0.5)
+
+    @classmethod
+    def yowl(cls, g, dur, top, amp=1.0):
+        return amp * throat(g, dur, contour(top * 0.6, top, top * 0.5, 0.35), cls.F, rough=0.2, breath=0.3,
+                            attack=0.04, release=dur * 0.3)
+
+    @staticmethod
+    def paw(g, amp=1.0):
+        x = buf(0.25)
+        place(x, thump(g, 160, 90, 0.025, 0.2, 0.15), 0.0, 0.5)
+        place(x, crackle(g, 0.08, 500, 1400, 0.8, 0.03), 0.0, 0.25)  # powder snow
+        return amp * x
+
+    @classmethod
+    def idle(cls, p, v, g):
+        x = buf(2.6)
+        place(x, cls.growl(g, 1.0, 70, 0.5), 0.2)
+        steam = burst(g, 0.6, [bq_bandpass(900, 0.7)], 0.15, 0.25)  # a breath that steams
+        place(x, steam, 1.5, 0.3)
+        return x
+
+    @classmethod
+    def attack(cls, p, v, g):
+        """The crouch, then the leap over the front row (contact 0.7 s of 1.4 s)."""
+        x = buf(1.8)
+        place(x, cls.growl(g, 0.45, 85 + 6 * v, 0.6), 0.0)
+        place(x, cls.paw(g, 0.9), 0.42)
+        place(x, cls.paw(g, 0.8), 0.46)
+        place(x, whoosh(g, 0.3, 700, 1800, 0.6), 0.45)
+        place(x, cls.hiss(g, 0.18, 0.7), 0.66)
+        place(x, cls.paw(g, 1.0), 0.75)
+        return x
+
+    @classmethod
+    def hurt(cls, p, v, g):
+        x = buf(0.9)
+        place(x, cls.yowl(g, 0.3, 900 + 80 * v, 0.9), 0.0)
+        place(x, cls.paw(g, 0.6), 0.05)
+        return x
+
+    @classmethod
+    def death(cls, p, v, g):
+        """It limps two steps and lies down in the snow."""
+        x = buf(2.6)
+        place(x, cls.yowl(g, 0.6, 750, 0.7), 0.0)
+        place(x, cls.paw(g, 0.6), 0.7)
+        place(x, cls.paw(g, 0.4), 1.15)
+        place(x, thump(g, 110, 60, 0.12, 0.3, 0.5), 1.5, 0.5)
+        place(x, crackle(g, 0.3, 400, 1200, 0.8, 0.1), 1.5, 0.3)
+        place(x, burst(g, 0.8, [bq_bandpass(800, 0.7)], 0.2, 0.3), 1.7, 0.25)  # the last breath
+        return x
+
+    @classmethod
+    def move(cls, p, v, g):
+        x = buf(1.0)
+        for i, at in enumerate((0.0, 0.18, 0.42, 0.6)):
+            place(x, cls.paw(g, float(g.uniform(0.6, 1.0))), at + 0.02 * v)
+        return x
+
+
+class Skate:
+    """The glass skate (Ch16, the Pale Rim): buried in white sand under shin-deep water, nearly clear, an ambusher."""
+
+    @staticmethod
+    def sand(g, sec, amp=1.0):
+        return amp * crackle(g, sec, 900, 2200, 0.7, sec * 0.5)
+
+    @classmethod
+    def idle(cls, p, v, g):
+        x = buf(2.4)
+        place(x, slosh(g, 2.0, 0.3, 0.7), 0.0)  # the breathing back under the water
+        place(x, cls.sand(g, 0.4, 0.25), 0.9)
+        return x
+
+    @classmethod
+    def attack(cls, p, v, g):
+        """It erupts from the sand and slaps (contact 0.5 s of 1.2 s)."""
+        x = buf(1.6)
+        place(x, cls.sand(g, 0.35, 0.6), 0.1)
+        place(x, splash(g, 0.9, 0.8, 2400), 0.3)
+        place(x, Ray.thwack(g, 1.0), 0.5)
+        place(x, splash(g, 0.7, 0.5, 2000), 0.55)
+        return x
+
+    @classmethod
+    def hurt(cls, p, v, g):
+        x = buf(1.0)
+        place(x, Ray.thwack(g, 0.7), 0.0)
+        place(x, slosh(g, 0.6, 0.5, 3.0 + v), 0.02)
+        return x
+
+    @classmethod
+    def death(cls, p, v, g):
+        """It flattens and lies still."""
+        x = buf(2.2)
+        place(x, slosh(g, 1.2, 0.7, 1.2), 0.0)
+        place(x, cls.sand(g, 0.6, 0.4), 0.6)
+        place(x, bubble_train(g, 6, 0.004, 0.008, (0.12, 0.2), 0.3, 0.7), 0.9)
+        return x
+
+    @classmethod
+    def move(cls, p, v, g):
+        x = buf(1.2)
+        place(x, slosh(g, 1.0, 0.7, 1.6 + 0.2 * v), 0.0)
+        place(x, cls.sand(g, 0.3, 0.3), 0.2)
+        return x
+
+
+class FlatEngine:
+    """The flat-engine (Ch14, the stern of Malcor Venn's barge): a bound Lit Age drum, half sunk in the lagoon, whose
+    long paddles press the water flat. Its bound light is steady, so its hum never pulses; iron, not brass."""
+
+    @staticmethod
+    def press(g, sec, amp=1.0):
+        """Paddles laying the water smooth: a broad low hush of water held down, no splash."""
+        n = _n(sec)
+        x = unit(noise(g, n, [bq_lowpass(300, 0.7), bq_highpass(40, 0.7)])) * np.sin(np.pi * np.clip(_t(n) / sec, 0, 1))
+        return amp * x
+
+    @classmethod
+    def idle(cls, p, v, g):
+        x = buf(3.4)
+        place(x, hum(g, 3.3, 73.4, 0.6), 0.0)
+        place(x, cls.press(g, 3.0, 0.5), 0.1)
+        place(x, clang(g, 0.6, 0.25, 0.8), 1.4)
+        return x
+
+    @classmethod
+    def attack(cls, p, v, g):
+        """It bears down: the paddles press harder, the drum groans, the water flattens round the party."""
+        x = buf(2.2)
+        place(x, hum(g, 2.0, 73.4, 0.5, (1.0, 1.06)), 0.0)
+        place(x, creak(g, 0.8, 14, 55, [(f * 0.32, 1.0 / (i + 1)) for i, f in enumerate(BRASS[:3])], 0.7), 0.1)
+        place(x, cls.press(g, 1.4, 1.0), 0.3)
+        place(x, clang(g, 0.55 + 0.03 * v, 0.6, 1.0), 0.9)
+        return x
+
+    @classmethod
+    def hurt(cls, p, v, g):
+        x = buf(1.6)
+        place(x, clang(g, 0.5 + 0.04 * v, 1.0, 1.2), 0.0)
+        place(x, splash(g, 0.8, 0.5, 1600), 0.05)  # a paddle knocked loose from the water
+        place(x, hum(g, 1.2, 73.4, 0.3, (1.0, 0.96)), 0.0)
+        return x
+
+    @classmethod
+    def death(cls, p, v, g):
+        """Liss breaks it: the hum winds down, the paddles drop, and the lagoon ripples for the first time."""
+        x = buf(5.0)
+        place(x, hum(g, 3.4, 73.4, 0.7, (1.0, 0.4)), 0.0)
+        place(x, clang(g, 0.45, 1.0, 1.6), 0.2)
+        for i in range(4):
+            place(x, splash(g, 0.8, 0.5, 1500), 1.0 + 0.35 * i)
+        place(x, slosh(g, 2.0, 0.6, 1.6), 2.4)  # the ripples, at last
+        return x
+
+    @classmethod
+    def move(cls, p, v, g):
+        x = buf(1.6)
+        place(x, cls.press(g, 1.4, 0.8), 0.0)
+        place(x, clang(g, 0.7 + 0.05 * v, 0.3, 0.4), 0.4)
+        return x
+
+
 FAMILIES = {"drowner": Drowner, "engine": Engine, "woolback": Woolback, "sailfin": Sailfin, "archer": Archer,
-            "ray": Ray, "urchin": Urchin, "crawler": Crawler}
+            "ray": Ray, "urchin": Urchin, "crawler": Crawler,
+            "lynx": Lynx, "moth": Moth, "skate": Skate, "flat_engine": FlatEngine}
 
 
 # --------------------------------------------------------------------------- the set

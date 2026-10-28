@@ -1472,6 +1472,572 @@
       "pitch_jitter": 0.04,
       "voices": 3,
       "cooldown_ms": 120
+    },
+    "cre_ilun_idle": {
+      "files": [
+        "res://assets/audio/sfx/creatures/ilun_idle_1.ogg"
+      ],
+      "bus": "Combat",
+      "volume_db": 0.0,
+      "voices": 2
+    },
+    "cre_ilun_attack": {
+      "files": [
+        "res://assets/audio/sfx/creatures/ilun_attack_1.ogg",
+        "res://assets/audio/sfx/creatures/ilun_attack_2.ogg"
+      ],
+      "bus": "Combat",
+      "volume_db": 0.0,
+      "pitch_jitter": 0.04,
+      "voices": 2
+    },
+    "cre_ilun_hurt": {
+      "files": [
+        "res://assets/audio/sfx/creatures/ilun_hurt_1.ogg",
+        "res://assets/audio/sfx/creatures/ilun_hurt_2.ogg"
+      ],
+      "bus": "Combat",
+      "volume_db": 0.0,
+      "pitch_jitter": 0.04,
+      "voices": 3
+    },
+    "cre_ilun_death": {
+      "files": [
+        "res://assets/audio/sfx/creatures/ilun_death_1.ogg"
+      ],
+      "bus": "Combat",
+      "volume_db": 0.0,
+      "voices": 2
+    },
+    "cre_ilun_glide": {
+      "files": [
+        "res://assets/audio/sfx/creatures/ilun_glide_1.ogg",
+        "res://assets/audio/sfx/creatures/ilun_glide_2.ogg"
+      ],
+      "bus": "Combat",
+      "volume_db": 0.0,
+      "pitch_jitter": 0.04,
+      "voices": 3,
+      "cooldown_ms": 120
+    },
+    "cre_kahre_idle": {
+      "files": [
+        "res://assets/audio/sfx/creatures/kahre_idle_1.ogg"
+      ],
+      "bus": "Combat",
+      "volume_db": 0.0,
+      "voices": 2
+    },
+    "cre_kahre_attack": {
+      "files": [
+        "res://assets/audio/sfx/creatures/kahre_attack_1.ogg",
+        "res://assets/audio/sfx/creatures/kahre_attack_2.ogg"
+      ],
+      "bus": "Combat",
+      "volume_db": 0.0,
+      "pitch_jitter": 0.04,
+      "voices": 2
+    },
+    "cre_kahre_hurt": {
+      "files": [
+        "res://assets/audio/sfx/creatures/kahre_hurt_1.ogg",
+        "res://assets/audio/sfx/creatures/kahre_hurt_2.ogg"
+      ],
+      "bus": "Combat",
+      "volume_db": 0.0,
+      "pitch_jitter": 0.04,
+      "voices": 3
+    },
+    "cre_kahre_death": {
+      "files": [
+        "res://assets/audio/sfx/creatures/kahre_death_1.ogg"
+      ],
+      "bus": "Combat",
+      "volume_db": 0.0,
+      "voices": 2
+    },
+    "cre_kahre_step": {
+      "files": [
+        "res://assets/audio/sfx/creatures/kahre_step_1.ogg",
+        "res://assets/audio/sfx/creatures/kahre_step_2.ogg"
+      ],
+      "bus": "Combat",
+      "volume_db": 0.0,
+      "pitch_jitter": 0.04,
+      "voices": 3,
+      "cooldown_ms": 120
+    },
+    "cre_virel_idle": {
+      "files": [
+        "res://assets/audio/sfx/creatures/virel_idle_1.ogg"
+      ],
+      "bus": "Combat",
+      "volume_db": 0.0,
+      "voices": 2
+    },
+    "cre_virel_attack": {
+      "files": [
+        "res://assets/audio/sfx/creatures/virel_attack_1.ogg",
+        "res://assets/audio/sfx/creatures/virel_attack_2.ogg"
+      ],
+      "bus": "Combat",
+      "volume_db": 0.0,
+      "pitch_jitter": 0.04,
+      "voices": 2
+    },
+    "cre_virel_hurt": {
+      "files": [
+        "res://assets/audio/sfx/creatures/virel_hurt_1.ogg",
+        "res://assets/audio/sfx/creatures/virel_hurt_2.ogg"
+      ],
+      "bus": "Combat",
+      "volume_db": 0.0,
+      "pitch_jitter": 0.04,
+      "voices": 3
+    },
+    "cre_virel_death": {
+      "files": [
+        "res://assets/audio/sfx/creatures/virel_death_1.ogg"
+      ],
+      "bus": "Combat",
+      "volume_db": 0.0,
+      "voices": 2
+    },
+    "cre_virel_drift": {
+      "files": [
+        "res://assets/audio/sfx/creatures/virel_drift_1.ogg",
+        "res://assets/audio/sfx/creatures/virel_drift_2.ogg"
+      ],
+      "bus": "Combat",
+      "volume_db": 0.0,
+      "pitch_jitter": 0.04,
+      "voices": 3,
+      "cooldown_ms": 120
+    },
+    "cre_ridge_lynx_idle": {
+      "files": [
+        "res://assets/audio/sfx/creatures/ridge_lynx_idle_1.ogg"
+      ],
+      "bus": "Combat",
+      "volume_db": 0.0,
+      "voices": 2
+    },
+    "cre_ridge_lynx_attack": {
+      "files": [
+        "res://assets/audio/sfx/creatures/ridge_lynx_attack_1.ogg",
+        "res://assets/audio/sfx/creatures/ridge_lynx_attack_2.ogg"
+      ],
+      "bus": "Combat",
+      "volume_db": 0.0,
+      "pitch_jitter": 0.04,
+      "voices": 2
+    },
+    "cre_ridge_lynx_hurt": {
+      "files": [
+        "res://assets/audio/sfx/creatures/ridge_lynx_hurt_1.ogg",
+        "res://assets/audio/sfx/creatures/ridge_lynx_hurt_2.ogg"
+      ],
+      "bus": "Combat",
+      "volume_db": 0.0,
+      "pitch_jitter": 0.04,
+      "voices": 3
+    },
+    "cre_ridge_lynx_death": {
+      "files": [
+        "res://assets/audio/sfx/creatures/ridge_lynx_death_1.ogg"
+      ],
+      "bus": "Combat",
+      "volume_db": 0.0,
+      "voices": 2
+    },
+    "cre_ridge_lynx_pad": {
+      "files": [
+        "res://assets/audio/sfx/creatures/ridge_lynx_pad_1.ogg",
+        "res://assets/audio/sfx/creatures/ridge_lynx_pad_2.ogg"
+      ],
+      "bus": "Combat",
+      "volume_db": 0.0,
+      "pitch_jitter": 0.04,
+      "voices": 3,
+      "cooldown_ms": 120
+    },
+    "cre_cord_moth_idle": {
+      "files": [
+        "res://assets/audio/sfx/creatures/cord_moth_idle_1.ogg"
+      ],
+      "bus": "Combat",
+      "volume_db": 0.0,
+      "voices": 2
+    },
+    "cre_cord_moth_attack": {
+      "files": [
+        "res://assets/audio/sfx/creatures/cord_moth_attack_1.ogg",
+        "res://assets/audio/sfx/creatures/cord_moth_attack_2.ogg"
+      ],
+      "bus": "Combat",
+      "volume_db": 0.0,
+      "pitch_jitter": 0.04,
+      "voices": 2
+    },
+    "cre_cord_moth_hurt": {
+      "files": [
+        "res://assets/audio/sfx/creatures/cord_moth_hurt_1.ogg",
+        "res://assets/audio/sfx/creatures/cord_moth_hurt_2.ogg"
+      ],
+      "bus": "Combat",
+      "volume_db": 0.0,
+      "pitch_jitter": 0.04,
+      "voices": 3
+    },
+    "cre_cord_moth_death": {
+      "files": [
+        "res://assets/audio/sfx/creatures/cord_moth_death_1.ogg"
+      ],
+      "bus": "Combat",
+      "volume_db": 0.0,
+      "voices": 2
+    },
+    "cre_cord_moth_flutter": {
+      "files": [
+        "res://assets/audio/sfx/creatures/cord_moth_flutter_1.ogg",
+        "res://assets/audio/sfx/creatures/cord_moth_flutter_2.ogg"
+      ],
+      "bus": "Combat",
+      "volume_db": 0.0,
+      "pitch_jitter": 0.04,
+      "voices": 3,
+      "cooldown_ms": 120
+    },
+    "cre_glass_skate_idle": {
+      "files": [
+        "res://assets/audio/sfx/creatures/glass_skate_idle_1.ogg"
+      ],
+      "bus": "Combat",
+      "volume_db": 0.0,
+      "voices": 2
+    },
+    "cre_glass_skate_attack": {
+      "files": [
+        "res://assets/audio/sfx/creatures/glass_skate_attack_1.ogg",
+        "res://assets/audio/sfx/creatures/glass_skate_attack_2.ogg"
+      ],
+      "bus": "Combat",
+      "volume_db": 0.0,
+      "pitch_jitter": 0.04,
+      "voices": 2
+    },
+    "cre_glass_skate_hurt": {
+      "files": [
+        "res://assets/audio/sfx/creatures/glass_skate_hurt_1.ogg",
+        "res://assets/audio/sfx/creatures/glass_skate_hurt_2.ogg"
+      ],
+      "bus": "Combat",
+      "volume_db": 0.0,
+      "pitch_jitter": 0.04,
+      "voices": 3
+    },
+    "cre_glass_skate_death": {
+      "files": [
+        "res://assets/audio/sfx/creatures/glass_skate_death_1.ogg"
+      ],
+      "bus": "Combat",
+      "volume_db": 0.0,
+      "voices": 2
+    },
+    "cre_glass_skate_glide": {
+      "files": [
+        "res://assets/audio/sfx/creatures/glass_skate_glide_1.ogg",
+        "res://assets/audio/sfx/creatures/glass_skate_glide_2.ogg"
+      ],
+      "bus": "Combat",
+      "volume_db": 0.0,
+      "pitch_jitter": 0.04,
+      "voices": 3,
+      "cooldown_ms": 120
+    },
+    "cre_flat_engine_idle": {
+      "files": [
+        "res://assets/audio/sfx/creatures/flat_engine_idle_1.ogg"
+      ],
+      "bus": "Combat",
+      "volume_db": 0.0,
+      "voices": 2
+    },
+    "cre_flat_engine_attack": {
+      "files": [
+        "res://assets/audio/sfx/creatures/flat_engine_attack_1.ogg",
+        "res://assets/audio/sfx/creatures/flat_engine_attack_2.ogg"
+      ],
+      "bus": "Combat",
+      "volume_db": 0.0,
+      "pitch_jitter": 0.04,
+      "voices": 2
+    },
+    "cre_flat_engine_hurt": {
+      "files": [
+        "res://assets/audio/sfx/creatures/flat_engine_hurt_1.ogg",
+        "res://assets/audio/sfx/creatures/flat_engine_hurt_2.ogg",
+        "res://assets/audio/sfx/creatures/flat_engine_hurt_3.ogg"
+      ],
+      "bus": "Combat",
+      "volume_db": 0.0,
+      "pitch_jitter": 0.04,
+      "voices": 3
+    },
+    "cre_flat_engine_death": {
+      "files": [
+        "res://assets/audio/sfx/creatures/flat_engine_death_1.ogg"
+      ],
+      "bus": "Combat",
+      "volume_db": 0.0,
+      "voices": 2
+    },
+    "cre_flat_engine_clank": {
+      "files": [
+        "res://assets/audio/sfx/creatures/flat_engine_clank_1.ogg",
+        "res://assets/audio/sfx/creatures/flat_engine_clank_2.ogg"
+      ],
+      "bus": "Combat",
+      "volume_db": 0.0,
+      "pitch_jitter": 0.04,
+      "voices": 3,
+      "cooldown_ms": 120
+    },
+    "cre_wreck_crab_idle": {
+      "files": [
+        "res://assets/lfs/audio/sfx/creatures/wreck_crab_idle_1.ogg"
+      ],
+      "bus": "Combat",
+      "volume_db": 0.0,
+      "voices": 2
+    },
+    "cre_wreck_crab_attack": {
+      "files": [
+        "res://assets/lfs/audio/sfx/creatures/wreck_crab_attack_1.ogg",
+        "res://assets/lfs/audio/sfx/creatures/wreck_crab_attack_2.ogg"
+      ],
+      "bus": "Combat",
+      "volume_db": 0.0,
+      "pitch_jitter": 0.04,
+      "voices": 2
+    },
+    "cre_wreck_crab_hurt": {
+      "files": [
+        "res://assets/lfs/audio/sfx/creatures/wreck_crab_hurt_1.ogg",
+        "res://assets/lfs/audio/sfx/creatures/wreck_crab_hurt_2.ogg"
+      ],
+      "bus": "Combat",
+      "volume_db": 0.0,
+      "pitch_jitter": 0.04,
+      "voices": 3
+    },
+    "cre_wreck_crab_death": {
+      "files": [
+        "res://assets/lfs/audio/sfx/creatures/wreck_crab_death_1.ogg"
+      ],
+      "bus": "Combat",
+      "volume_db": 0.0,
+      "voices": 2
+    },
+    "cre_wreck_crab_skitter": {
+      "files": [
+        "res://assets/lfs/audio/sfx/creatures/wreck_crab_skitter_1.ogg",
+        "res://assets/lfs/audio/sfx/creatures/wreck_crab_skitter_2.ogg"
+      ],
+      "bus": "Combat",
+      "volume_db": 0.0,
+      "pitch_jitter": 0.04,
+      "voices": 3,
+      "cooldown_ms": 120
+    },
+    "cre_wallcrab_idle": {
+      "files": [
+        "res://assets/lfs/audio/sfx/creatures/wallcrab_idle_1.ogg"
+      ],
+      "bus": "Combat",
+      "volume_db": 0.0,
+      "voices": 2
+    },
+    "cre_wallcrab_attack": {
+      "files": [
+        "res://assets/lfs/audio/sfx/creatures/wallcrab_attack_1.ogg",
+        "res://assets/lfs/audio/sfx/creatures/wallcrab_attack_2.ogg"
+      ],
+      "bus": "Combat",
+      "volume_db": 0.0,
+      "pitch_jitter": 0.04,
+      "voices": 2
+    },
+    "cre_wallcrab_hurt": {
+      "files": [
+        "res://assets/lfs/audio/sfx/creatures/wallcrab_hurt_1.ogg",
+        "res://assets/lfs/audio/sfx/creatures/wallcrab_hurt_2.ogg"
+      ],
+      "bus": "Combat",
+      "volume_db": 0.0,
+      "pitch_jitter": 0.04,
+      "voices": 3
+    },
+    "cre_wallcrab_death": {
+      "files": [
+        "res://assets/lfs/audio/sfx/creatures/wallcrab_death_1.ogg"
+      ],
+      "bus": "Combat",
+      "volume_db": 0.0,
+      "voices": 2
+    },
+    "cre_wallcrab_skitter": {
+      "files": [
+        "res://assets/lfs/audio/sfx/creatures/wallcrab_skitter_1.ogg",
+        "res://assets/lfs/audio/sfx/creatures/wallcrab_skitter_2.ogg"
+      ],
+      "bus": "Combat",
+      "volume_db": 0.0,
+      "pitch_jitter": 0.04,
+      "voices": 3,
+      "cooldown_ms": 120
+    },
+    "cre_wall_polyp_idle": {
+      "files": [
+        "res://assets/lfs/audio/sfx/creatures/wall_polyp_idle_1.ogg"
+      ],
+      "bus": "Combat",
+      "volume_db": 0.0,
+      "voices": 2
+    },
+    "cre_wall_polyp_attack": {
+      "files": [
+        "res://assets/lfs/audio/sfx/creatures/wall_polyp_attack_1.ogg",
+        "res://assets/lfs/audio/sfx/creatures/wall_polyp_attack_2.ogg"
+      ],
+      "bus": "Combat",
+      "volume_db": 0.0,
+      "pitch_jitter": 0.04,
+      "voices": 2
+    },
+    "cre_wall_polyp_hurt": {
+      "files": [
+        "res://assets/lfs/audio/sfx/creatures/wall_polyp_hurt_1.ogg",
+        "res://assets/lfs/audio/sfx/creatures/wall_polyp_hurt_2.ogg"
+      ],
+      "bus": "Combat",
+      "volume_db": 0.0,
+      "pitch_jitter": 0.04,
+      "voices": 3
+    },
+    "cre_wall_polyp_death": {
+      "files": [
+        "res://assets/lfs/audio/sfx/creatures/wall_polyp_death_1.ogg"
+      ],
+      "bus": "Combat",
+      "volume_db": 0.0,
+      "voices": 2
+    },
+    "cre_wall_polyp_squelch": {
+      "files": [
+        "res://assets/lfs/audio/sfx/creatures/wall_polyp_squelch_1.ogg",
+        "res://assets/lfs/audio/sfx/creatures/wall_polyp_squelch_2.ogg"
+      ],
+      "bus": "Combat",
+      "volume_db": 0.0,
+      "pitch_jitter": 0.04,
+      "voices": 3,
+      "cooldown_ms": 120
+    },
+    "cre_stormgull_idle": {
+      "files": [
+        "res://assets/lfs/audio/sfx/creatures/stormgull_idle_1.ogg"
+      ],
+      "bus": "Combat",
+      "volume_db": 0.0,
+      "voices": 2
+    },
+    "cre_stormgull_attack": {
+      "files": [
+        "res://assets/lfs/audio/sfx/creatures/stormgull_attack_1.ogg",
+        "res://assets/lfs/audio/sfx/creatures/stormgull_attack_2.ogg"
+      ],
+      "bus": "Combat",
+      "volume_db": 0.0,
+      "pitch_jitter": 0.04,
+      "voices": 2
+    },
+    "cre_stormgull_hurt": {
+      "files": [
+        "res://assets/lfs/audio/sfx/creatures/stormgull_hurt_1.ogg",
+        "res://assets/lfs/audio/sfx/creatures/stormgull_hurt_2.ogg"
+      ],
+      "bus": "Combat",
+      "volume_db": 0.0,
+      "pitch_jitter": 0.04,
+      "voices": 3
+    },
+    "cre_stormgull_death": {
+      "files": [
+        "res://assets/lfs/audio/sfx/creatures/stormgull_death_1.ogg"
+      ],
+      "bus": "Combat",
+      "volume_db": 0.0,
+      "voices": 2
+    },
+    "cre_stormgull_wingbeat": {
+      "files": [
+        "res://assets/lfs/audio/sfx/creatures/stormgull_wingbeat_1.ogg",
+        "res://assets/lfs/audio/sfx/creatures/stormgull_wingbeat_2.ogg"
+      ],
+      "bus": "Combat",
+      "volume_db": 0.0,
+      "pitch_jitter": 0.04,
+      "voices": 3,
+      "cooldown_ms": 120
+    },
+    "cre_stillguard_inquisitor_idle": {
+      "files": [
+        "res://assets/lfs/audio/sfx/creatures/stillguard_inquisitor_idle_1.ogg"
+      ],
+      "bus": "Combat",
+      "volume_db": 0.0,
+      "voices": 2
+    },
+    "cre_stillguard_inquisitor_attack": {
+      "files": [
+        "res://assets/lfs/audio/sfx/creatures/stillguard_inquisitor_attack_1.ogg",
+        "res://assets/lfs/audio/sfx/creatures/stillguard_inquisitor_attack_2.ogg"
+      ],
+      "bus": "Combat",
+      "volume_db": 0.0,
+      "pitch_jitter": 0.04,
+      "voices": 2
+    },
+    "cre_stillguard_inquisitor_hurt": {
+      "files": [
+        "res://assets/lfs/audio/sfx/creatures/stillguard_inquisitor_hurt_1.ogg",
+        "res://assets/lfs/audio/sfx/creatures/stillguard_inquisitor_hurt_2.ogg",
+        "res://assets/lfs/audio/sfx/creatures/stillguard_inquisitor_hurt_3.ogg"
+      ],
+      "bus": "Combat",
+      "volume_db": 0.0,
+      "pitch_jitter": 0.04,
+      "voices": 3
+    },
+    "cre_stillguard_inquisitor_yield": {
+      "files": [
+        "res://assets/lfs/audio/sfx/creatures/stillguard_inquisitor_yield_1.ogg"
+      ],
+      "bus": "Combat",
+      "volume_db": 0.0,
+      "voices": 2
+    },
+    "cre_stillguard_inquisitor_step": {
+      "files": [
+        "res://assets/lfs/audio/sfx/creatures/stillguard_inquisitor_step_1.ogg",
+        "res://assets/lfs/audio/sfx/creatures/stillguard_inquisitor_step_2.ogg"
+      ],
+      "bus": "Combat",
+      "volume_db": 0.0,
+      "pitch_jitter": 0.04,
+      "voices": 3,
+      "cooldown_ms": 120
     }
   }
 }

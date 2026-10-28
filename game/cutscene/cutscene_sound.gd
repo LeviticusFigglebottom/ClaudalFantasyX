@@ -27,11 +27,16 @@ static func play(host: Node, sfx_dir: String, id: StringName, vol: float, at: No
 	return true
 
 
-## Hands music cue `cue` (or AudioData.SILENCE) to Audio; false when music.json has no such cue.
-static func music(cue: StringName, fade: float) -> bool:
+## Hands music cue `cue` (or AudioData.SILENCE) to Audio; false when music.json has no such cue. `stem` >= 0 brings
+## that stem of the cue in over `fade` (M3-AUD-829: `@music undertow_rising stem=1 fade=2.0`, the run's pulse; the
+## cue already playing carries on, since replaying the current cue is a no-op).
+static func music(cue: StringName, fade: float, stem: int = -1) -> bool:
 	if cue != AudioData.SILENCE and AudioData.cue(Audio.music_data, cue).is_empty():
 		return false
-	return Audio.play_music(cue, fade)
+	var played := Audio.play_music(cue, fade)
+	if played and stem >= 0 and Audio.music != null:
+		Audio.music.set_stem(stem, true, fade)
+	return played
 
 
 ## The sequencer's own stream for cue `track`: its file under music_dir, else its stand-in's (null if neither).

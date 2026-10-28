@@ -48,9 +48,9 @@
    "kwargs": {}
   },
   "music": {
-   "doc": "Change the music bed. 'silence' is reserved (see reserved.music).",
+   "doc": "Change the music bed. 'silence' is reserved (see reserved.music). stem= brings that stem of the cue in over the fade (the cue carries on if it is already playing).",
    "args": [{"name": "track", "type": "id"}],
-   "kwargs": {"fade": {"type": "number", "min": 0}}
+   "kwargs": {"fade": {"type": "number", "min": 0}, "stem": {"type": "int", "min": 0}}
   },
   "sfx": {
    "doc": "Play a one-shot sound. vol is a linear gain (1.0 = as authored); at= places it on an actor or mark.",

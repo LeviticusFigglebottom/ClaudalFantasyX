@@ -25,7 +25,7 @@ const CLIPS: Array[StringName] = [
 	&"release",  # M3-CRE-647: the held form's release (its KO as a foe)
 ]
 const YAW_DEG := -90.0
-## Built hovering: the body bone (the loop's lowest station) this high over the water at rest, at least.
+## Built hovering: the body bone (the S's forward swing, mid-body) this high over the water at rest, at least.
 const BODY_MIN_Y := 0.9
 ## The head bone (the back of the head) moves at least this far between the idle's start and its quarter beat.
 const IDLE_SWAY_M := 0.1
@@ -35,9 +35,9 @@ const FURLED_DROP_M := 0.5
 ## The KO lets the head droop at least this far, and the key still hangs (its down axis this close to straight down).
 const KO_DROOP_M := 0.3
 const KEY_HANG_Y := -0.9
-## Flare Line: at the contact the head is at least this far from the tail end (the coil pulled out into a line) and
-## higher than it; while she winds in before it, the two are within the coil.
-const LINE_M := 5.0
+## Flare Line: at the contact the head is at least this far from the tail end (the S pulled out into a line: her body
+## is 4.85 m since M3-CRB-008) and higher than it; while she winds in before it, the two are drawn close.
+const LINE_M := 4.5
 const WOUND_M := 2.5
 const SPECIAL_WOUND_SEC := 1.0
 ## The whipping strike: from the rear to the contact the head lashes at least this far forward and down.
