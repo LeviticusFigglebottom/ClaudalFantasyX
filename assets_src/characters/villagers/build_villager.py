@@ -90,7 +90,7 @@ def parse_args() -> argparse.Namespace:
     return ap.parse_args(argv)
 
 
-TORSO_PIECES = ("Top", "Shawl")  # M3-CHR-539: the netting shawl (optional) rides the torso too  # garment_fit: the torso only (M1-CHR-14: arm weights at the armholes drag the sides out)
+TORSO_PIECES = ("Top", "Shawl", "TopStrapL", "TopStrapR")  # M3-CHR-539: the netting shawl (optional) rides the torso too, as do the tank cut's straps (M3-CHR-526/534)  # garment_fit: the torso only (M1-CHR-14: arm weights at the armholes drag the sides out)
 LOWER_PIECES = ("TrouserTop", "TrouserLegL", "TrouserLegR")  # garment_fit: off the arms (a hanging hand is near)
 LEG_FOLLOW_PIECES = ("Skirt", "Apron")  # garment_fit: below the crotch they follow the legs (build_asha.skirt_weights)
 

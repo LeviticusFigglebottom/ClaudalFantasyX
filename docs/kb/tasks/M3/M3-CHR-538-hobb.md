@@ -26,5 +26,6 @@ pipeline, with the clips their dialogue calls.
 - Budget: LOD0 30,164 tris, 1.84 MB GLB; LOD1 14,114 tris, 0.66 MB.
 - Rendered: open indigo vest over a bare chest, watch-red captain's cord as a narrow sash with long tails. The cord's three knots are not modelled.
 - Dialogue polish (chr-npc-polish): before, the grey share of his short hair read as bright white chips on the dark hair, the grey stubble did not show at dialogue distance, and the captain's cord was a wide sash with no knots. After: grey cards are thin sparse strands (`_hair.grey_strands`), a soft cool beard shadow under the stubble (`_skin.stubble_shadow`, `stubble_density`), and the cord's tails narrowed (`tail_w_k`), its waist knot smaller (`knot_k`) and three knots tied down the front tail (`cord_knots`, `cord_knot_m`); all optional keys, every other villager byte-identical.
+- Dialogue polish 2 (chr-npc-polish2): before, the short hair's painted edge ended in a blunt line across the forehead. After: a broken, feathered painted hairline (`_hair.hairline_feather`: asha_textures' opt-in HAIRLINE_FEATHER); textures only, the GLB unchanged.
 
 ## Review log

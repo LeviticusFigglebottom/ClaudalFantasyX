@@ -26,5 +26,6 @@ pipeline, with the clips their dialogue calls.
 - Budget: LOD0 29,994 tris, 1.75 MB GLB; LOD1 14,029 tris, 0.60 MB.
 - Rendered: small, round-shouldered, storm-grey wrap and skirt, apron, faded watch-red sash. Not modelled: the netting shawl and the one-knot wrist cord (villager_costume has no shawl or bracelet piece); the wrap's underside shows a dark band at the brow at dialogue distance (as Osu's).
 - Dialogue polish (chr-npc-polish): before, a dark blue-black band showed between the wrap's edge and her brow (the wrap stood a centimetre off the skin and the hairline cards in its shadow showed under it), and the netting shawl and wrist cord were not modelled. After: the wrap's edge is drawn in to the skin (`headwrap.edge_off_m`), and two new optional pieces: a grey twine netting shawl over the shoulders in a diamond mesh (`shawl`, about 5.6k tris, LOD0 35,578) and the faded watch-red cord with one knot on her left wrist (`wrist_cord`).
+- Dialogue polish 2 (chr-npc-polish2): before, the brows read as a flat grey zigzag band. After: painted wiry brow hairs under lighter cards (`_skin.brow_strands`, `_hair.brow_params`), as Fenn's and Osu's.
 
 ## Review log

@@ -26,5 +26,6 @@ pipeline, with the clips their dialogue calls.
 - Budget: LOD0 27,870 tris, 1.80 MB GLB; LOD1 12,966 tris, 0.66 MB.
 - Rendered: lean old man, white crop over a bare scalp, soot-dark slate shirt, scorched apron. `feed_fire` crouches to a low hearth (0.2 m drop).
 - Dialogue polish (chr-npc-polish): before, his white crop read as bright white rectangular chips on a flat beige scalp cap with a hard edge. After: every card is a thin sparse strand (`_hair.grey_strands: "all"`, `grey_width_k`), the scalp underpaint warmer and half as dense so the bare scalp shows through, and a light stubble shadow; reads as thin white cropped hair over an old man's scalp.
+- Dialogue polish 2 (chr-npc-polish2): before, the brows read as a flat grey smear. After: single wiry hairs painted on the brow skin in the brow cards' own frame, about a third dark among the white, a few strays (`_skin.brow_strands`), under the cards at a lighter `alpha_boost` with per-strand value jitter (`_hair.brow_params`); reads as an old man's brows.
 
 ## Review log
