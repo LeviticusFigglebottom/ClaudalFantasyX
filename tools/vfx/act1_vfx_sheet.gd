@@ -6,6 +6,7 @@ extends Node
 ## capture (the software renderer or a GPU):
 ##   godot-render --path . --audio-driver Dummy --fixed-fps 60 --disable-vsync --rendering-driver vulkan \
 ##     res://tools/vfx/act1_vfx_sheet.tscn -- --out=<abs dir> [--at=0.12] [--only=id,id]
+##     [--encounter=<id> [--enemy_set]]   (an encounter's own arena; --enemy_set: its foes' effects)
 
 const SCENE := "res://game/battle/scene/battle_sandbox.tscn"
 const SETTLE_FRAMES := 30
@@ -13,6 +14,7 @@ const PARTY: Array[StringName] = [&"rhen", &"asha", &"toma"]
 const CLEAR_FRAMES := 150
 
 var _opts: Dictionary = {}
+var _engine: BattleEngine
 
 
 func _ready() -> void:
@@ -29,7 +31,10 @@ func _run() -> void:
 	scene.persist_progress = false
 	add_child(scene)
 	scene.pacing_scale = 0.0
-	scene.start_battle(PARTY, [], &"sandbox_reef", 20261028)  # held at the first turn: nobody acts
+	# held at the first turn: nobody acts. --encounter fights on that encounter's arena (its own foes).
+	scene.set_meta(BattleBossIntro.META_PLAYED, str(_opts.get("encounter", "sandbox_reef")))
+	scene.start_battle(PARTY, [], StringName(str(_opts.get("encounter", "sandbox_reef"))), 20261028)
+	_engine = scene.engine
 	for i in SETTLE_FRAMES:
 		await get_tree().process_frame
 	var vfx := scene.stage.get_node_or_null(^"BattleVfx") as BattleVfx
@@ -78,6 +83,15 @@ func _effect_ids(vfx: BattleVfx) -> Array[String]:
 			out.append(s)
 		return out
 	var map := vfx.data["map"] as Dictionary
+	if _opts.has("enemy_set"):  # the hit, status and KO effects, then this fight's foes' own skills (an arena check)
+		for e: String in ["hit_none", "status_apply", "ko_release"]:
+			out.append(e)
+		for c in _engine.enemies:
+			for sid: StringName in c.skills:
+				var eid := str((map["skills"] as Dictionary).get(String(sid), ""))
+				if eid != "" and not out.has(eid):
+					out.append(eid)
+		return out
 	for table: String in ["skills", "items"]:
 		for k: String in map[table]:
 			var eid := str((map[table] as Dictionary)[k])
