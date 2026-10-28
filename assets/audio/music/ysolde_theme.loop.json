@@ -1,13 +1,13 @@
 {
   "bar_beats": 4,
-  "beat_count": 64,
+  "beat_count": 96,
   "bpm": 63.0,
   "downbeat_offset_s": 0.23809523809523808,
-  "loop_bars": 16,
-  "loop_length_samples": 2688000,
-  "loop_length_seconds": 60.95238095238095,
+  "loop_bars": 24,
+  "loop_length_samples": 4032000,
+  "loop_length_seconds": 91.42857142857143,
   "loop_offset_seconds": 0.0,
   "loop_start_samples": 0,
   "sample_rate": 44100,
-  "total_samples": 2688000
+  "total_samples": 4032000
 }
