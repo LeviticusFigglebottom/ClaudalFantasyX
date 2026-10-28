@@ -93,6 +93,11 @@ built: the held form" section, and pipeline.md §5 has the mechanism.
 
 Design sheets go in `docs/kb/art/creatures/act3/<id>.md` (README template), each before its build.
 
+**Sheets (M3-CRE-648):** [the_cage](act3/the_cage.md) (the frame; the founders' figures are the characters
+track's), [wick_crawler](act3/wick_crawler.md), [chain_lamp](act3/chain_lamp.md), [spire_moth](act3/spire_moth.md)
+(Ch19), [held_shoal](act3/held_shoal.md) and [drowned_lantern](act3/drowned_lantern.md) (Ch20). Each ends with its
+open questions for Combat and the chapter designer.
+
 ## Open questions (for the chapter designer and Combat, not the human)
 - Ch18: which revisited zones get new foes at all (the "changed towns" may be quieter, not more dangerous)?
 - Ch20: does each release fight happen inside that Vowbound's remembered layer (the Shell Shrine for Ilun, Ashcrown
