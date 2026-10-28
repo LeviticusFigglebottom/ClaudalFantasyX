@@ -26,6 +26,50 @@ both fixed and pushed. The branch head also carries:
   - any battle shot with an Act I creature, since the heights and the near-face anchor move its effects. I am
     self-rendering those next.
 
+**2026-10-28 11:xx: big14 gate fixes, and the Lead's 09:35/10:55 list.**
+- **Merged origin/gpu/gate-big14-shots** at 94da590d.
+  - battle_sandbox.json takes Kerrid's and Liss's landed actors.
+  - `merge_union.py` dropped big14's `boot_title` 72 again, and `battle_victory`'s 90; both restored.
+  - **Lead: that tool keeps "ours" for a shot both sides list, and silently reverts the other side's edit. It has now
+    cost two gates.**
+- **My gate failures, fixed** (0875dc95):
+  - test_battle_act1_ability_vfx now walks Act I foes only. Act II's Ch10+ creatures are out of scope (ADR 0041).
+  - test_battle_party_stand_ins: Liss's tint is her landed row's #7A8C5A.
+  - test_battle_result_motion: battle_victory settles 90 frames again.
+- **Status ticks (M3-BPR-424):** poison, regen, a Doom count, Doom falling, and a turn lost to Sleep or Stop now show
+  on their fighter (BattleVfx on turn_ended/turn_lost; six generated effects).
+  - SELF-RENDERED: the six ticks on the Ch5 terrace at night. All read.
+  - Fixed after the first look: the Doom ticks vanished in the dark (pale motes now fall with them), and Stop's ring
+    hid under a wide shell.
+  - Test: test_battle_status_tick_vfx 3/0.
+- **Ilun's call and dismissal on the new actor (5.1 x 3.2 m):** the ring and motes were sized for a capsule, so they
+  hid under its middle. They are widened for the real bodies.
+  - SELF-RENDERED: battle_vowbound_call, _out, battle_choreo_summon and _vowbound_rise. Viewed: the bound light now
+    rings Ilun's body.
+  - The teal plume above its back in the summon shot is not my effect; it looks like the model's own (creatures-b).
+- **Boss intros on big14's actors and dressing:**
+  - The hero shot judged heroes by their meshes' bounds. Toma's spear and shield span 1.8 m, so the Matron's and the
+    Drownbell's intros fell back to wide shots. Heroes are now judged by their bodies, and may stand at the frame's
+    foot.
+  - The occlusion test used bounds. big14's raft and deck are merged meshes whose bounds take in the boss, so they
+    were skipped, and the rail (Hullgnaw), the deck's edge (the Wraith) and Toma's shield (the Matron) came back.
+    - Sight lines now test the surfaces (a cached TriangleMesh per mesh).
+    - The lens needs 4 m of headroom.
+    - Sight lines also cross the boss's body, not only its middle.
+    - A near wall may not fill the frame's foot (9 rays, at most a third).
+  - SELF-RENDERED @ the head, all viewed:
+    - Hullgnaw: the rail now only crosses the bottom quarter under the card; the boss is clear.
+    - Spar-Wraith: on its lit deck with the party.
+    - Cinder Matron: Toma's shield at the side, she is clear.
+    - Drownbell: fills the frame.
+    - Hermit and Reach: as before.
+    - Inquisitor: the fitted wide shot (no model yet).
+    - **Gate: re-approve the seven battle_boss_intro_*.**
+  - Test: test_battle_boss_intro 21/0, now also checking headroom and the foreground.
+- **Boss camera and Swell finishers:** unchanged since the BACKLOG EMPTY entry below.
+  - Kerrid and Liss have actors now, but their Swell techniques are still combat's to write (M3-C05-06, M3-C06-05).
+  - Their finishers play the moment a `"swell": true` skill exists.
+
 **BACKLOG EMPTY (2026-10-28, @ 7f4fea7f, MERGE-READY):** every item on the Lead's lists (02:14, 03:41, 04:44) is
 done, self-rendered and viewed:
 1. M3-HER-1148's five set-piece rows.
