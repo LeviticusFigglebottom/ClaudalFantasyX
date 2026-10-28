@@ -585,7 +585,29 @@ def _terrace_arena() -> dict:
     }
 
 
-ASH_TERRACE = _terrace_arena()
+PEMAKAR_VOTIVE = "res://assets/environments/kits/pemakar/votive_lamp.glb"
+VOTIVE_YAW_SPREAD_DEG = 25.0  # the spouts face the fight, each set down by hand
+
+
+def _with_votive_lamps(table: dict) -> dict:
+    """env-art-b's votive lamps (M3-ENV-1305/1306; b_lanternfall.py's arena(), the same rows in the same order): each
+    votive row keeps its light but draws no writer flame, and a kit `votive_lamp` (b_votive.py) stands under it.
+    `arena_scenes.py` writes the arena with them, so b_lanternfall.py's write and this one are the same file."""
+    votives = {tuple(v["at"]) for v in _terrace_votives()}
+    rng = np.random.default_rng(np.random.SeedSequence([6006, 51]))
+    lamps, pieces = [], list(table["pieces"])
+    for lp in table["lamps"]:
+        if tuple(lp["at"]) in votives:
+            lp = {**lp, "flame": False}
+            x, _, z = lp["at"]
+            yaw = round(float(rng.uniform(-VOTIVE_YAW_SPREAD_DEG, VOTIVE_YAW_SPREAD_DEG)), 2)
+            # At the grave wall's foot, the floor's edge (the writer's flames stood there): a structure's clearance.
+            pieces.append({"glb": PEMAKAR_VOTIVE, "at": (x, 0.0, z), "yaw": yaw, "structure": True})
+        lamps.append(lp)
+    return {**table, "lamps": lamps, "pieces": pieces}
+
+
+ASH_TERRACE = _with_votive_lamps(_terrace_arena())
 
 
 # ---------------------------------------------------------------------------------------------

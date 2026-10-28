@@ -79,6 +79,17 @@
         "hull_capsized-lod1": 144
       }
     },
+    "hull_lashed": {
+      "budget": [
+        4500,
+        300
+      ],
+      "bytes": 179436,
+      "lods": {
+        "hull_lashed": 4236,
+        "hull_lashed-lod1": 156
+      }
+    },
     "hull_outrigger": {
       "budget": [
         4500,

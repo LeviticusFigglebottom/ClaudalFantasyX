@@ -145,6 +145,17 @@
         "basket_set-lod1": 153
       }
     },
+    "beach_forge": {
+      "budget": [
+        9000,
+        700
+      ],
+      "bytes": 110292,
+      "lods": {
+        "beach_forge": 1249,
+        "beach_forge-lod1": 188
+      }
+    },
     "bowl_dome": {
       "budget": [
         6000,
@@ -264,6 +275,17 @@
       "lods": {
         "choir_singer": 2172,
         "choir_singer-lod1": 274
+      }
+    },
+    "clay_bowl": {
+      "budget": [
+        900,
+        100
+      ],
+      "bytes": 16176,
+      "lods": {
+        "clay_bowl": 320,
+        "clay_bowl-lod1": 64
       }
     },
     "cloudloom_hall": {
@@ -473,6 +495,17 @@
       "lods": {
         "ground_lamp": 96,
         "ground_lamp-lod1": 47
+      }
+    },
+    "hand_broom": {
+      "budget": [
+        1500,
+        120
+      ],
+      "bytes": 27116,
+      "lods": {
+        "hand_broom": 372,
+        "hand_broom-lod1": 36
       }
     },
     "heart_column": {
@@ -1557,6 +1590,39 @@
         "PLACEHOLDER"
       ]
     },
+    "shop_sign_forge": {
+      "budget": [
+        1800,
+        200
+      ],
+      "bytes": 22176,
+      "lods": {
+        "shop_sign_forge": 228,
+        "shop_sign_forge-lod1": 24
+      }
+    },
+    "shop_sign_goods": {
+      "budget": [
+        1800,
+        200
+      ],
+      "bytes": 22704,
+      "lods": {
+        "shop_sign_goods": 234,
+        "shop_sign_goods-lod1": 24
+      }
+    },
+    "shop_sign_inn": {
+      "budget": [
+        1800,
+        200
+      ],
+      "bytes": 26176,
+      "lods": {
+        "shop_sign_inn": 336,
+        "shop_sign_inn-lod1": 24
+      }
+    },
     "shrine_basin_bowl": {
       "budget": [
         8000,
@@ -2075,6 +2141,17 @@
       "lods": {
         "woven_awning": 264,
         "woven_awning-lod1": 64
+      }
+    },
+    "woven_bag": {
+      "budget": [
+        1500,
+        120
+      ],
+      "bytes": 20560,
+      "lods": {
+        "woven_bag": 296,
+        "woven_bag-lod1": 12
       }
     },
     "wreck_rib": {

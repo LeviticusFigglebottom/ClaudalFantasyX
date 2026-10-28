@@ -109,6 +109,13 @@ def bell_room() -> list[dict]:
     r.append(piece("hinge_door", 43.0, 2.0, 180.0))
     r.append(piece("tether_line", 36.0, 3.6, y=-2.8, block="BellTether"))
     r.append(piece("lit_fragments", 42.0, 11.5, 300.0))
+    # Its walls were bare (the walk-through pass): the tower's service runs along two of them, coral in the corners
+    # the current reaches, a lamp-column down across the floor, the divers' lantern left at the air-bell rest.
+    r += [piece("pipe_run", 34.2, 8.0, 90.0), piece("pipe_run", 38.0, 2.2, 0.0),
+          piece("coral_head_a", 35.3, 13.0, 75.0, scale=0.8), piece("coral_head_b", 45.0, 13.1, 210.0, scale=0.7),
+          piece("coral_head_b", 35.2, 2.9, 20.0, scale=0.6), piece("lamp_column_fallen", 43.0, 8.5, 160.0),
+          piece("seagrass_patch", 37.0, 12.6, 40.0), piece("diver_lantern", 41.8, 13.2, 200.0),
+          piece("lit_fragments", 36.2, 6.0, 120.0)]
     return r
 
 
@@ -118,7 +125,12 @@ def galleries() -> list[dict]:
     r = floor(74, -40, 86, 20, skip=((83.0, -37.0),))
     r += wall("w", 74, -40, 86, 20, "b", skip=(6,)) + wall("e", 74, -22, 86, 20, "bbs", skip=(5,))
     r.append(piece("tower_bay_broken", 86.0, 11.0, 90.0))  # the breach: the sand drift comes in through it
-    r += wall("s", 74, -40, 86, 20, "b") + wall("n", 74, -40, 86, 20, "s")
+    r += [piece("tower_pier", 86.0, 8.0), piece("tower_pier", 86.0, 14.0)]  # the breach's jambs (no cut wall ends)
+    # The south wall fell outward onto the terrace (the view in from the bell-room's side stays open, C1 gallery).
+    r += [piece("tower_bay_broken", 77.0, 20.0, 0.0, tilt_deg=[84.0, 0.0]),
+          piece("tower_bay_broken", 83.0, 20.2, 180.0, tilt_deg=[-82.0, 4.0]),
+          piece("lit_fragments", 79.5, 23.0, 120.0, y=SILT_Y)]
+    r += wall("n", 74, -40, 86, 20, "s")
     r += [piece("tower_pier", 74.0, 20.0), piece("tower_pier", 86.0, 20.0), piece("tower_pier", 74.0, -40.0),
           piece("tower_pier", 74.0, -4.0), piece("tower_pier", 74.0, 2.0), piece("tower_pier", 86.0, -22.0)]
     for i, (x, z, yaw) in enumerate(((75.5, 10.0, 280.0), (84.5, 2.0, 24.0), (75.5, -8.0, 139.0), (84.5, -16.0, 251.0))):
