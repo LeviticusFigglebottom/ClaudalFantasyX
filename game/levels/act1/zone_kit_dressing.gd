@@ -45,6 +45,10 @@ extends HalunaDresser
 ##   drops        [{"name", "at": [x, y, z], "profile", "block"?}]: Rendering's held water (WaterSphereRig, a
 ##                  game/data/vfx/water_sphere.json "profiles" row) centred at `at` (the Tamsule Bell's drop,
 ##                  M3-RND-26); a "block" drop follows its block.
+##   smokes       [{"name", "at": [x, y, z], "yaw_deg", "scale"?, "profile"?, "seed"?, "block"?}]: Rendering's
+##                  volumetric columns (SmokeColumn, game/data/vfx/smoke_column.json "columns", M3-RND-21), framed
+##                  as the kit's smoke_plume pieces (yawed so +X is downwind, uniform scale); a "block" one follows
+##                  its block.
 ##   environment  a res:// Environment: the zone's WorldEnvironment takes a copy (sky, grade, fog).
 ##   time_of_day_h  the hymn_time_of_day the sky reads.
 ## It writes hymn_sun_direction from the zone's sun every frame, so the sky's sun follows the story's
@@ -70,6 +74,7 @@ const KEY_FAR_LIGHTS := "far_lights"
 const KEY_WATERS := "waters"
 const KEY_STORMS := "storms"
 const KEY_DROPS := "drops"
+const KEY_SMOKES := "smokes"
 const KEY_MATERIAL_PATHS := "material_paths"
 const DEFAULT_WAVES := "res://game/world/water/lagoon_waves.tres"
 ## The waters' plane cells (m): fine enough for the wave field's short waves to read on a still lake.
@@ -131,6 +136,7 @@ func dress() -> void:
 	_place_waters()
 	_place_storms()
 	_place_drops()
+	_place_smokes()
 	_hide_greybox()
 	_apply_environment()
 	if layout.has(KEY_TIME_OF_DAY):
@@ -539,6 +545,21 @@ func _place_drops() -> void:
 		drop.profile = str(row.get("profile", ""))
 		add_child(drop)
 		_attach(drop, str(row.get(KEY_BLOCK, "")))
+
+
+func _place_smokes() -> void:
+	for r: Variant in layout.get(KEY_SMOKES, []):
+		var row: Dictionary = r
+		var smoke := SmokeColumn.new()
+		smoke.name = str(row.get("name", "Smoke"))
+		smoke.profile = str(row.get("profile", "camp"))
+		smoke.seed = float(row.get("seed", 0.0))
+		var basis := Basis(Vector3.UP, deg_to_rad(float(row.get("yaw_deg", 0.0))))
+		smoke.transform = Transform3D(
+			basis.scaled(Vector3.ONE * float(row.get("scale", 1.0))), GreyboxZone._vec3(row.get("at", [0.0, 0.0, 0.0]))
+		)
+		add_child(smoke)
+		_attach(smoke, str(row.get(KEY_BLOCK, "")))
 
 
 ## A hidden storm stops processing (its rain, zone shadow and flashes act on the zone's light).

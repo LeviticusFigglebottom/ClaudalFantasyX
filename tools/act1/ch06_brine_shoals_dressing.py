@@ -98,11 +98,8 @@ def camp() -> list[dict]:
         piece("brine_vat_burned", -11.0, -45.0, y=0.05, yaw=40.0, collide=True),
         piece("branding_brazier", -6.0, -43.0, y=0.05, block="Brazier"),
         piece("liss_crate", 8.0, -18.0, y=0.05, yaw=12.0),
-        # the burning hulk east of the camp, and its smoke (hidden with the Smoke block at dusk)
+        # the burning hulk east of the camp (its smoke is SMOKES')
         piece("wreck_hull_section", 11.0, -47.0, y=0.0, yaw=0.0, block="BurningHulk"),
-        piece("smoke_plume", 11.5, -45.5, y=1.2, yaw=-150.0, scale=1.0, block="Smoke"),
-        piece("smoke_plume", -11.5, -33.0, y=0.6, yaw=-152.0, scale=0.7, block="Smoke"),
-        piece("smoke_plume", 2.5, -45.0, y=0.6, yaw=-154.0, scale=0.55, block="Smoke"),
         # the Warden's barge in the channel (shown from the Inquisitor's yielding to Sefir's leaving)
         piece("white_barge", -22.5, -44.0, y=-0.15, yaw=90.0, block="Barge"),
     ]
@@ -150,6 +147,18 @@ RAID_FIRES = (("camp_fire_large", 11.0, -46.0, 30.0), ("camp_fire_small", 13.6, 
 
 def raid_fires() -> list[dict]:
     return [piece(name, x, z, yaw=yaw, block="Smoke") for name, x, z, yaw in RAID_FIRES]
+
+
+# The camp's smoke (M3-RND-21): Rendering's volumetric columns (SmokeColumn, the "camp" profile) where the kit's
+# smoke_plume shells stood, in their frame (+X downwind, the same yaw and scale), off the burning hulk and the two
+# burned tents; hidden with the Smoke block at dusk. (name, x, y, z, yaw, scale, seed)
+SMOKES = (("SmokeHulk", 11.5, 1.2, -45.5, -150.0, 1.0, 0.0), ("SmokeTentWest", -11.5, 0.6, -33.0, -152.0, 0.7, 0.37),
+          ("SmokeTentSouth", 2.5, 0.6, -45.0, -154.0, 0.55, 0.71))
+
+
+def smokes() -> list[dict]:
+    return [{"name": n, "at": [x, y, z], "yaw_deg": yaw, "scale": s, "profile": "camp", "seed": sd, "block": "Smoke"}
+            for n, x, y, z, yaw, s, sd in SMOKES]
 
 
 def road_aftermath() -> list[dict]:
@@ -205,6 +214,7 @@ def layout() -> dict:
         ],
         "pieces": ground() + road() + wrecks() + camp() + dusk_camp() + story_marks() + road_aftermath()
         + raid_fires(),
+        "smokes": smokes(),
     }
 
 
