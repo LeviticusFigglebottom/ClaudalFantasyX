@@ -133,6 +133,12 @@ def parse_args() -> argparse.Namespace:
     return ap.parse_args(argv)
 
 
+def shape_grid(d: np.ndarray) -> np.ndarray:
+    """Shape deltas on build_asha's SHAPE_GRID before Blender sees them, rounded in two steps (first to 1 nm) so a
+    delta a float-noise away from a half-grid step lands on the same side on every host's numpy SIMD path."""
+    return np.round(np.round(np.asarray(d, dtype=np.float64), 9), 6)
+
+
 def snap(P: np.ndarray) -> np.ndarray:
     return np.round(np.asarray(P, dtype=np.float64) / POS_GRID) * POS_GRID
 
@@ -363,7 +369,7 @@ def main() -> int:
     flat = Vhead.astype(np.float64)
     for name, d in shapes.items():
         kb = ob_head.shape_key_add(name=name, from_mix=False)
-        kb.data.foreach_set("co", (flat + d).ravel())
+        kb.data.foreach_set("co", (flat + shape_grid(d)).ravel())
     ob_head.data.shape_keys.use_relative = True
     log(f"face shapes: {len(shapes)}; head UVs vs the teeth patch: {teeth_clear} ({time.time() - t0:.1f}s)")
     Wh = np.zeros((len(Vhead), len(wnames)), dtype=np.float32)
@@ -390,7 +396,7 @@ def main() -> int:
     ob_crest.shape_key_add(name="Basis", from_mix=False)
     for key in ("crest_raise", "crest_flat"):
         kb = ob_crest.shape_key_add(name=key, from_mix=False)
-        Q = snap(Vc + crest_keys[key])
+        Q = snap(Vc + shape_grid(crest_keys[key]))
         Q[np.abs(Q) < MIDLINE_SNAP] = 0.0
         kb.data.foreach_set("co", Q.ravel())
     ob_crest.data.shape_keys.use_relative = True
