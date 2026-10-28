@@ -16,6 +16,11 @@ echo "logs: $L"   # no gate may hang forever
 
 step() { printf '\n== %s\n' "$*"; }
 
+# ADR 0039: LFS files arrive as pointers where smudge is skipped (cloud). Fetch them before anything imports.
+if command -v git-lfs >/dev/null 2>&1 && [ -n "$(git lfs ls-files 2>/dev/null)" ]; then
+  step "Git LFS pull";          git lfs pull
+fi
+
 step "Data validators";        python3 tools/validate_data.py
 # Same tests as `python3 -m unittest discover -s tools/tests`, one process per module (M2-NIT-06);
 # HYMN_TEST_JOBS caps the processes, HYMN_TEST_CACHE=off re-measures the audio loudness from scratch.
