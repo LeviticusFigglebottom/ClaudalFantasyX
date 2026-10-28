@@ -2,8 +2,8 @@
 id: M2-CHR-542
 title: "Asha's skirt as cloth: 16 panels so the pooled hem folds"
 role: character
-status: todo
-owner_session: ""
+status: review
+owner_session: "characters (claude/characters, worktree drape-wt)"
 depends_on: [M2-CHR-522]
 milestone: M2
 reviewer: rendering
@@ -14,9 +14,8 @@ standing as a crushed white wall in the kneels. With 8 panels, though, the overs
 clean circle. A fluting pass on 8 panels (every other panel's lowest bone swung out when the cloth pools) changes almost
 nothing: each panel is too wide to fold. With 16 panels the same fluting rolls the pooled hem into visible folds.
 
-## Prototype (do not merge as is)
-- The source diff is `docs/kb/art/characters/asha_skirt16.patch`, against claude/characters @ aa4d7f8b. A local branch
-  `chr-skirt-16` holds it with the rebuilt outputs.
+## Prototype (superseded by the build below)
+- First built on a local branch `chr-skirt-16`; its patch file was removed once the build below merged.
 - What it changes:
   - `helper_bones.SKIRT_SECTORS` 8 → 16 (only Asha's build makes skirt panels).
   - `flute_deg` 14 in `helper_bones.json`: odd-numbered panels' lowest bones swing further out, scaled by how far
@@ -40,11 +39,20 @@ nothing: each panel is too wide to fold. With 16 panels the same fluting rolls t
 3. **turn_in_place_180@9:** the left thigh is 2 mm further through the skirt (Costume 35.95 / 34 and Body 48.83 / 47).
 
 ## Acceptance criteria
-- [ ] One of 1(a)–(c) chosen (an ADR if it is (a) or (b)) and the library within its bound.
-- [ ] The rig probe clean at the existing ratchets (the staff pivot retuned), or any raise reasoned in rig_checks.json.
-- [ ] Self-rendered kneels, walk, run and stand, viewed. Verified on the three numpy paths.
+- [x] The Lead chose (b). Measured, it is about 107 ms per hero (the budget is 0.2), and (c) was 4.62 MB. So it is
+      ADR 0140: the odd panels (over the legs) are baked, and the even ones are derived each frame by HeroSkirtFolds
+      (0.037 ms). The library is 3.82 MB.
+- [x] Rig probe clean: the staff pivot keeps 50 mm from the cloth and stays clear of the head; one ratchet raise,
+      reasoned (Body count 24 -> 25).
+- [x] Self-rendered kneel_over_rhen, bow_palms_flat, float_boat, walk_cycle and run, viewed. Asha verified identical on
+      the three numpy paths.
 
 ## Notes
-- Filed 2026-10-28 by the characters track. Next step: the Lead picks 1(a) or 1(b) (both are cross-track).
+- Filed 2026-10-28 by the characters track.
+- Built 2026-10-28 (ADR 0140, merged @ 67a1b2a0). Things learned:
+  - The first even-derived rule took the mean of the neighbours at every level. It cut into the knee in float_boat,
+    because the knees lie under the odd panels.
+  - Taking the larger swing at the hem, with a 14° fold, folded it into paper-star spikes. So the hem takes the mean, and
+    the fold is 6°.
 
 ## Review log
