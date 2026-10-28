@@ -1107,3 +1107,21 @@ MERGE-READY (+ this log): **M3-ARC-1326 (env-art-b's ask, Ch9's Ebbing): the seq
   ch09_thread 7/0.
 - For env-art-b: M3-ARC-1326's task file is only on your branch, so I haven't copied it (an add/add clash). Please
   tick its boxes and record "vocabulary accepted" when you merge this.
+
+### TRIAL MERGE, 2026-10-28 ~15:50
+TRIAL MERGE @ integration 8870ea9c: env-art 885fba18, env-art-b 6a8f1504, creatures 958ad402, creatures-b d5f7b2b2, characters d0422fdc, ui 249bcafc, battle-presentation 1d4df7bf, act1-chapters d212b041, m2-slice 36d3c958, audio 1cb9654d, hero-integration 5f59e287
+- **Still open:**
+  - creatures vs creatures-b on the Vowbound portraits (ilun*, kahre* .png and .import; binary, pick one);
+  - ui_sfx.json (audio vs ui);
+  - ownership.md (several tracks).
+- **New:**
+  - **m2-slice vs env-art on Ch1's Oruvel and Underway**: 7 files that don't union (both dressing generators
+    `tools/ch01/ch01_*_dressing.py`, the dressing and layout json, the environment .tres). Lead: one should merge the
+    other first.
+  - battle-presentation vs env-art-b on `test_battle_arena.gd`, battle_sandbox.json and two task files;
+  - act1-chapters vs env-art on brightwater_ferry_layout.json.
+- **hero-integration's 3 clashes are gone.** Act1-chapters, m2-slice and battle-presentation fixed the same big14
+  failures in their own files. I took their versions (qa_known.json, test_fp_prologue.gd,
+  test_battle_party_stand_ins.gd): fp_prologue 8/0, party_stand_ins 3/0.
+  - **On my branch alone**, qa_capsules fails on Haluna's 7 villagers, since act1-chapters' qa_known drops them for
+    their fix. It's green on the merged tree.
