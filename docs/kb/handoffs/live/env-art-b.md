@@ -209,6 +209,18 @@ that test at this branch's zones.
      and the crater's ember up its underside. Rendered: it reads as smoke lit from below.
 - **MERGE-READY @ 6cd17ce3.**
 
+- **Merge fix (13c07138):** five files where this branch already held all of integration's commits (env-art's
+  Haluna kit `build.py`, `materials.py` and `kit_manifest.json`, and the Ch4 and Ch6 layouts) went back to this
+  branch's newer versions; `test_haluna_kit` is green again. The other 68 files taken from integration were checked:
+  none of them lost a change from this branch.
+- **M3-ENV-1319, encounter arenas (the Lead asked twice):** every Ch5–Ch9 encounter now names its final arena in
+  `encounters.json` (only the `arena` fields), including the three Ch8 fights that had none. The seawall states take
+  `wall_head_storm`'s staging. battle-presentation, please review (M3-BPR-1305, M3-ENV-714).
+- **MERGE-READY @ f51f81f2.** Checks: Godot battle (757; the one failure was the pinned table, now updated), battle_arena
+  18/0, ch04 11/0, ch06 5/0; tools suite: only test_screenshots red (baselines), test_haluna_kit green after the fix.
+- **Queue state:** arenas for the remaining Ch5–Ch9 encounters are done (above). The player-height walk-through
+  (M3-ENV-1317) and the interactable props are done; their findings and requests are above (M3-ENV-1316 to env-art).
+
 ### Render requests
 (Self-rendered per TRACK-RULES; lines are SELF-RENDERED notes.)
 SELF-RENDERED @ ea946ec8: ch07_tamsule_mouth, ch07_tamsule_market, ch07_tamsule_gantry — new shots, read final (Liss and Kerrid are capsules: no field body yet).
@@ -217,3 +229,4 @@ SELF-RENDERED @ 4081127f: ch05_ashcrown_causeway, ch05_ashcrown_forecourt, ch05_
 SELF-RENDERED @ 749bfc48: battle_arena_ash_terrace_lanternfall (votive lamps), ch05_pemakar_harbour_day and ch05_pemakar_weir (the leat), ch08_coilspire_storm and ch08_corrow_storm (the Undertow now drawn), ch09_corrow_rocks, ch09_corrow_strand and ch09_corrow_landing (the moon from the sea), ch05_ashcrown_court, _causeway and _crown (the loggia plume). All viewed, with before/after sheets for the moon and the plume. Plus a full contact sheet of the 25 Ch5–Ch9 zone shots to pick the weakest views.
 SELF-RENDERED @ 8d198f1e: 53 arena angles (scratch hint rig) before and 30 after the fixes, all viewed: ash_terrace_lanternfall, salvage_camp_burning, seawall_stairhead_storm/hoist/surge, coilspire_headland_path, ashcrown_forecourt_day, ashcrown_anvil_court; 44 player-height walk views across the 8 zones; ch06_brine_camp (the zone burns), ch07_tamsule_market/mouth. A headland scrub ring out to 90 m was viewed and reverted (clumps floated).
 SELF-RENDERED @ 6cd17ce3: battle_boss_intro_reach, battle_ch08_stair_hold, ch09_corrow_strand, ch05_pemakar_harbour, ch05_pemakar_crown (after the big13 merge), all viewed; the Lead's three gate notes are fixed.
+SELF-RENDERED @ f51f81f2: battle_boss_intro_matron (the anvil court), battle_boss_intro_reach (the surge state, landfall storm), battle_ch08_stair_hold (the storm state), all viewed.
