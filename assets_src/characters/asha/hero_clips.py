@@ -422,6 +422,8 @@ def pose_at(clip: str, t: float, length: float, sk: Skeleton, persona: dict) -> 
         return kerrid_pose_at(clip, t, length, sk, persona)
     if persona.get("inquisitor"):  # M3-CHR-507: Moll's clips (moll_pose_at, below)
         return moll_pose_at(clip, t, length, sk, persona)
+    if persona.get("stillguard"):  # M3-CHR-508: the Stillguard soldiers' clips (sg_pose_at, below)
+        return sg_pose_at(clip, t, length, sk, persona)
     sway = persona["sway"]
     u = t / length
     if clip == "idle":
@@ -4106,6 +4108,58 @@ GRIP["moll"] = {"R": ("mesh", "Iron", "DEF-iron")}
 GRIP_ALWAYS.add("moll")
 IDLE_GROUNDED.add("moll")  # hadric_moll.md §9: the idle stands the iron on the ground at his right foot
 PROP_DOWN["moll"] = {"kneel": (0.0, 0.45, 2.0, 2.0)}
+
+
+# ---------------------------------------------------------------------------------------------
+# The Stillguard soldiers (M3-CHR-508): six variants of the standard Stillguard on Moll's kit
+# (assets_src/characters/stillguard/stillguard_variants.json), one persona each (their skeletons differ by height). A
+# persona with `stillguard` takes these clips (pose_at dispatches): upright like Moll (his carry: the chin down, the
+# shield arm out from the thigh), Toma's spear held like the staff (the M2-CHR-515 grip on DEF-spear, grounded in the
+# idle), and the Ch6 proposals: `stand_watch_seaward` (the idle with the head and chest turned out to his left, a
+# loop), `shield_up` (the shield brought up across the chest, held) and `level_spear` (Toma's spear_level path: both
+# hands on the shaft, the spear levelled forward and a little down, held). None of them fights (enemies.json has no
+# Stillguard soldier), so there is no battle contract. The other libraries do not change.
+# ---------------------------------------------------------------------------------------------
+SG_TABLE = ROOT / "assets_src" / "characters" / "stillguard" / "stillguard_variants.json"
+SG_VARIANTS = sorted(json.loads(SG_TABLE.read_text(encoding="utf-8"))["variants"])
+SG_SWAY = (0.4, 0.7)  # the idle sway, spread over the variants (a squad does not breathe in step)
+SG_WATCH = (24.0, -3.0)  # stand_watch_seaward: the turn to his left and the lift of the head (degrees)
+SG_WALK = (20.0, 34.0, 10.0, 0.014, 1.5)  # stride, knee, arm swing (degrees), bob (m), lean
+SG_SHIELD_UP = {"DEF-spine.001": (4.0, -12.0, 0.0), "DEF-spine.006": (-2.0, 12.0, 0.0),
+                "DEF-upper_arm.L": (-70.0, 0.0, 22.0), "DEF-forearm.L": (-50.0, -70.0, -30.0)}  # Moll's guard's arm
+SG_RAISE = 0.45  # shield_up reaches its guard over this share of the clip
+SG_CLIPS = ["idle", "walk", "stand_watch_seaward", "shield_up", "level_spear"]
+LENGTHS.update({"stand_watch_seaward": 6.0, "shield_up": 1.2, "level_spear": 1.6})
+LOOPS.add("stand_watch_seaward")
+for _i, _v in enumerate(SG_VARIANTS):
+    _h = f"stillguard_{_v}"
+    PERSONA[_h] = {"sway": SG_SWAY[0] + (SG_SWAY[1] - SG_SWAY[0]) * _i / max(len(SG_VARIANTS) - 1, 1), "lean": 0.0,
+                   "staff": True, "arms_down": 38.0, "stillguard": True}
+    CLIPS[_h] = list(SG_CLIPS)
+    GRIP[_h] = {"R": ("mesh", "Spear", "DEF-spear")}
+    GRIP_ALWAYS.add(_h)
+    IDLE_GROUNDED.add(_h)
+
+
+def sg_pose_at(clip: str, t: float, length: float, sk: Skeleton, persona: dict) -> dict:
+    shared = {k: v for k, v in persona.items() if k != "stillguard"}
+    carry = moll_carry(persona)
+    u = t / length
+    if clip == "idle":
+        return add(pose_at("idle", t, length, sk, shared), carry)
+    if clip == "walk":
+        return add(walk_pose(u, shared, *SG_WALK), carry)
+    if clip == "stand_watch_seaward":  # the idle, the head and chest turned out to sea (his left), held
+        turn, lift = SG_WATCH
+        return add(add(pose_at("idle", t, length, sk, shared), carry), {
+            "DEF-spine.002": (0.0, 0.2 * turn, 0.0), "DEF-spine.003": (0.0, 0.2 * turn, 0.0),
+            "DEF-spine.005": (0.4 * lift, 0.25 * turn, 0.0), "DEF-spine.006": (0.6 * lift - MOLL_HEAD_DOWN, 0.35 * turn,
+                                                                             0.0)})
+    if clip == "shield_up":  # the shield brought up across the chest, the shoulder into it; held
+        return add(add(planted(sk, shared), carry), _scale(SG_SHIELD_UP, smooth(u / SG_RAISE)))
+    if clip == "level_spear":  # Toma's path: the arm swings out while the hand turns the spear level; held
+        return add(spear_path(sk, shared, min(u / SPEAR_MOVE, 1.0)), carry)
+    raise KeyError(clip)
 
 
 # M3-CHR-05: the story clips go after each hero's own (every hero's block above has set its list by now)

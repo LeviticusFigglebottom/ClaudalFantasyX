@@ -147,8 +147,13 @@ def weather(alb: np.ndarray, orm: np.ndarray, lacquer: np.ndarray, worn: float, 
     orm[..., 1] = np.clip(orm[..., 1] + WEAR_ROUGH * worn * (0.5 + 0.5 * lacquer), 0.0, 1.0)
 
 
-def cloth_atlas(extra: dict, size: int = 2048, out: Path | None = None, prefix: str = "moll", worn: float = 0.0) -> None:
-    """M3-CHR-508: `out`, `prefix` and `worn` (weather) for the Stillguard's weathered atlas; the defaults are Moll's."""
+ALL_MAPS = ("albedo", "clothmask", "normal", "orm")
+
+
+def cloth_atlas(extra: dict, size: int = 2048, out: Path | None = None, prefix: str = "moll", worn: float = 0.0,
+                maps: tuple = ALL_MAPS) -> None:
+    """M3-CHR-508: `out`, `prefix`, `worn` (weather) and `maps` (the ones to write: weathering changes only the albedo
+    and the ORM) for the Stillguard's weathered atlas; the defaults are Moll's."""
     import moll_costume as C
     import toma_costume as TC
     import toma_textures as tt
@@ -286,18 +291,22 @@ def cloth_atlas(extra: dict, size: int = 2048, out: Path | None = None, prefix: 
     orm[m, 2] = 1.0
     weather(alb, orm, mask[..., 2], worn, 139)
     alb = np.clip(alb, at.FLOOR, at.CEIL)
-    at.write(f"{prefix}_cloth_albedo.png", alb)
-    at.write(f"{prefix}_cloth_clothmask.png", blur(mask, 1))
-    at.write(f"{prefix}_cloth_normal.png", height_to_normal(blur(hgt, 1), 2.5, wrap=False))
-    at.write(f"{prefix}_cloth_orm.png", _orm_small(orm, size))
+    if "albedo" in maps:
+        at.write(f"{prefix}_cloth_albedo.png", alb)
+    if "clothmask" in maps:
+        at.write(f"{prefix}_cloth_clothmask.png", blur(mask, 1))
+    if "normal" in maps:
+        at.write(f"{prefix}_cloth_normal.png", height_to_normal(blur(hgt, 1), 2.5, wrap=False))
+    if "orm" in maps:
+        at.write(f"{prefix}_cloth_orm.png", _orm_small(orm, size))
 
 
 # ---------------------------------------------------------------------------------------------
 # Shield
 # ---------------------------------------------------------------------------------------------
 def shield_atlas(extra: dict, size: int = 1024, out: Path | None = None, prefix: str = "moll",
-                 worn: float = 0.0) -> None:
-    """M3-CHR-508: `out`, `prefix` and `worn` as cloth_atlas's."""
+                 worn: float = 0.0, maps: tuple = ALL_MAPS) -> None:
+    """M3-CHR-508: `out`, `prefix`, `worn` and `maps` as cloth_atlas's."""
     import toma_props as TP
 
     cp = extra["_costume"]
@@ -343,10 +352,14 @@ def shield_atlas(extra: dict, size: int = 1024, out: Path | None = None, prefix:
     metal[back] = 0.0
     orm = np.stack([np.ones((size, size)), rough, metal], axis=-1)
     weather(col, orm, mask[..., 2], worn, 141)
-    at.write(f"{prefix}_shield_albedo.png", np.clip(col, at.FLOOR, at.CEIL))
-    at.write(f"{prefix}_shield_clothmask.png", blur(mask, 1))
-    at.write(f"{prefix}_shield_normal.png", height_to_normal(blur(h, 1), 3.0, wrap=False))
-    at.write(f"{prefix}_shield_orm.png", _orm_small(orm, size))
+    if "albedo" in maps:
+        at.write(f"{prefix}_shield_albedo.png", np.clip(col, at.FLOOR, at.CEIL))
+    if "clothmask" in maps:
+        at.write(f"{prefix}_shield_clothmask.png", blur(mask, 1))
+    if "normal" in maps:
+        at.write(f"{prefix}_shield_normal.png", height_to_normal(blur(h, 1), 3.0, wrap=False))
+    if "orm" in maps:
+        at.write(f"{prefix}_shield_orm.png", _orm_small(orm, size))
 
 
 # ---------------------------------------------------------------------------------------------

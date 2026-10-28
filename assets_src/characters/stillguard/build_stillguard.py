@@ -17,8 +17,6 @@ shipped skin); every other step and every host snap (M2-CHR-11) is Moll's. Deter
 from __future__ import annotations
 
 import argparse
-import copy
-import json
 import sys
 from pathlib import Path
 
@@ -30,10 +28,10 @@ sys.path.insert(0, str(HERE.parent / "moll"))
 import build_moll as bm  # noqa: E402  (sets up the shared module path and Moll's tables, replaced below)
 import moll_props  # noqa: E402
 import sg_helm  # noqa: E402
+from sg_table import TABLE, variant_params, variants  # noqa: E402
 import toma_costume  # noqa: E402
 import toma_props  # noqa: E402
 
-TABLE = HERE / "stillguard_variants.json"
 SPEAR_BONE = "DEF-spear"
 SPEAR_BONE_LEN = 0.30  # m, up the shaft from the grip (Toma's)
 SPEAR_MAT = "spear"  # the shaft and its cord on the brine-iron's maps (ash, the red lacquer band)
@@ -43,28 +41,6 @@ bm.hb.MATERIALS.update({SPEAR_MAT: ((0.45, 0.36, 0.25), 0.5), "steel": ((0.10, 0
 bm.hb.LOD1_RATIO.clear()
 bm.hb.LOD1_RATIO.update({"Head": 0.4, "Body": 0.5, "Costume": 0.42, bm.SLEEVES: 0.45, "HairHead": 0.5, "Spear": 0.7,
                          "Shield": 0.6, "Helm": 0.5})
-
-
-def table() -> dict:
-    return json.loads(TABLE.read_text(encoding="utf-8"))
-
-
-def variants() -> list[str]:
-    return sorted(table()["variants"])
-
-
-def variant_params(v: str) -> dict:
-    """The merged table of variant `v`: Moll's bb block, the variant's overrides, `_costume`, `_hair`, `_skin`."""
-    t = table()
-    var = t["variants"][v]
-    out = dict(copy.deepcopy(t["_shared"]), name=f"stillguard_{v}")
-    out.update({k: val for k, val in var.items() if not k.startswith("_")})
-    out["_costume"] = copy.deepcopy(t["_costume"])
-    out["_variant"] = dict(var["_variant"])
-    out["_hair"] = dict(t["_hair_shared"], **var["_hair"])
-    out["_skin"] = dict(t["_skin_shared"], seed=ord(v), **var["_skin"])
-    out["_hair"]["seed"] = int(out["_hair"]["seed"]) + ord(v)
-    return out
 
 
 def spear(lm, cparams: dict):
