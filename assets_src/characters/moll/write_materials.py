@@ -44,7 +44,8 @@ STILL = {"wind_response": "0.0"}  # cropped hair, lashes and brows do not sway
 # so they add strand grain, not dots, and the grey cards are a thin veil (GREY_ALPHA) over the dark: salt-and-pepper
 # reads as a lighter haze, not as pale chips.
 CROP_AO = {"root_occlusion": "0.85", "depth_occlusion": "0.85"}
-GREY_ALPHA = "0.6"  # alpha_boost of the grey cards (the dark ones keep 1.1-1.15)
+GREY_ALPHA = "0.45"  # alpha_boost of the grey cards: lower than Toma's 0.6, Moll's cards are twice as long and the
+# temple grey is painted under them too (moll_textures.TEMPLE_GREY_PAINT)
 FLAT = {"kajiya_diffuse_mix": "0.15", "diffuse_wrap": "0.3"}
 CROP = {"flow_strength": "0.0", "col_spec_primary": HAIR_SPEC, "spec_primary_intensity": "0.07", **FLAT,
         "spec_primary_exponent": "60.0", "spec_secondary_intensity": "0.0", "col_spec_secondary": HAIR_SPEC2,

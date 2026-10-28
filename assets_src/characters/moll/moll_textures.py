@@ -57,6 +57,12 @@ PARAMS = HERE / "moll_params.json"
 HEAD_SIZE = (2048, 1024)  # albedo / normal, ORM / mask (§7: the face at 2K)
 BODY_SIZE = (1024, 1024)
 SCALP_DENSITY = 0.60  # Toma's: the cropped hair's density painted into the scalp under the cards
+# M2-CHR-524: the grey at the temples painted into the scalp under the cards (moll_hair.temple_weight), combed along the
+# flow. The grey cards alone (a veil now, write_materials.GREY_ALPHA) read as pale chips over the dark paint.
+TEMPLE_GREY_PAINT = 0.55  # the painted grey's share where temple_weight is 1 and a painted strand is grey
+TEMPLE_GREY_STREAK = (0.30, 0.70)  # smoothstep of the strand noise: which painted strands are grey
+TEMPLE_GREY_HAIRLINE = (-0.004, 0.012)  # head heights about the hairline: the grey fades in over this
+TEMPLE_GREY_SEED = 191
 # swatches (hadric_moll.md §4; asha.md / toma.md palette)
 LACQUER_RED = "#B3261E"
 LACQUER_RED_DEEP = "#7A1712"
@@ -108,9 +114,10 @@ def skin(bake_dir: Path, extra: dict) -> None:
     at.PREFIX = "moll"
     at.SKIN_HEX = extra["skin_hex"]
     at.FRECKLES = 0
+    at.SCALP_CAVITY = tt.SCALP_CAVITY  # M2-CHR-524: Toma's matte scalp under the cropped cards
     at.HAIR_UNDERPAINT = hp["underpaint"]
     orig_albedo, orig_detail = at.albedo, at.detail_height
-    at.albedo = vt._albedo_villager(orig_albedo, sk, moll_hair, hp["colour"])
+    at.albedo = _grey_temples(vt._albedo_villager(orig_albedo, sk, moll_hair, hp["colour"]), hp["grey_hex"])
     at.detail_height = vt._detail_with_age(orig_detail, float(sk["age"]))
     try:
         params = bb_params.load_params(path=str(PARAMS))
@@ -121,6 +128,27 @@ def skin(bake_dir: Path, extra: dict) -> None:
             at.skin_maps(key, npz, size, small, body, body.face, lm, moll_hair)
     finally:
         at.albedo, at.detail_height = orig_albedo, orig_detail
+
+
+def _grey_temples(inner, grey_hex: str):
+    """The head albedo with the temple grey painted into the scalp paint (M2-CHR-524)."""
+    import moll_hair
+
+    def albedo(Ph, Nh, key, face, lm, hair_mod, r, npz):
+        col = inner(Ph, Nh, key, face, lm, hair_mod, r, npz)
+        if key != "head":
+            return col
+        s = lm.h / 0.222
+        zc = lm.P("chin")[2]
+        dz = (Ph[:, 2] - zc) / lm.h - moll_hair.hairline_v(lm, Ph)
+        flow = moll_hair._flow_dir(lm, Ph, Nh, moll_hair._gather(lm))
+        streak = at.aniso_noise(Ph, flow, 0.0008 * s, 14.0, TEMPLE_GREY_SEED)
+        g = (TEMPLE_GREY_PAINT * moll_hair.temple_weight(lm, Ph) * smoothstep(*TEMPLE_GREY_HAIRLINE, dz)
+             * smoothstep(*TEMPLE_GREY_STREAK, streak))
+        col = col * (1.0 - g[:, None]) + hexc(grey_hex) * g[:, None]
+        return np.clip(col, at.FLOOR, at.CEIL)
+
+    return albedo
 
 
 # ---------------------------------------------------------------------------------------------

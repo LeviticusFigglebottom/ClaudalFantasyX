@@ -59,6 +59,9 @@ SCALP_REGION_DIFF = 0.25  # summed RGB difference (haired vs bare pass) that cou
 SCALP_SHADE = 0.75  # the bare scalp between the hairs, darkened by the hair's shadow ...
 SCALP_COOL = np.array([0.80, 0.92, 1.12])  # ... and cooled (less of the warm key reaches it)
 BEARD_DENSITY = 0.90  # M2-CHR-04: 0.72 left the beard brown between the cards
+# M2-CHR-524: the scalp's skin-mask cavity (asha_textures.SCALP_CAVITY, Asha's 0.45): the cards are a veil now,
+# and the scalp skin's highlight under them (the key and rim at a grazing angle on the crown) read as ochre patches
+SCALP_CAVITY = 0.08
 TATTOO_INK = "#24323A"
 INK_OPACITY = 0.72
 WRIST_LIFT = 0.12  # toma.md §3: the prayer-cord band, skin_toma lifted +12% in value
@@ -205,6 +208,7 @@ def skin(bake_dir: Path, cparams: dict) -> None:
     at.PREFIX = "toma"
     at.SKIN_HEX = SKIN
     at.FRECKLES = 0
+    at.SCALP_CAVITY = SCALP_CAVITY
     at.HAIR_UNDERPAINT = "#151416"  # M2-CHR-04: the cards' cooler black (#1A1512 read warm brown under the key)
     at.albedo = _albedo_toma(at.albedo, cparams)
     params = bb_params.load_params(path=str(PARAMS))

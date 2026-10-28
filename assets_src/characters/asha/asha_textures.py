@@ -77,6 +77,9 @@ SKIN_MOTTLE_SCALE = 0.009  # m (times the head scale): the mottle's base cell
 PREFIX = "asha"  # file prefix of the skin maps
 SKIN_HEX = "#B9876A"  # base skin albedo (asha.md §6.1 skin_asha)
 FRECKLES = 18  # freckles across the nose bridge (asha.md §6.1: 12-20)
+# the skin-mask cavity under the hair (the shader occludes specular by cavity). M2-CHR-524: under translucent
+# cropped cards the scalp's own highlight showed through as lit ochre patches; the cropped heroes set it lower.
+SCALP_CAVITY = 0.45
 
 
 # ---------------------------------------------------------------------------------------------
@@ -390,7 +393,7 @@ def skin_maps(key: str, npz: dict, size: int, size_small: int, body, face, lm, h
         # the skin like varnish); micro-roughness varies at pore scale, pores rougher
         z = r["zones"]
         cav = cav * (1.0 - 0.45 * z["pit"]) * (1.0 - 0.35 * z["line"]) * (1.0 - 0.5 * z["contact"]) * (1.0 - 0.5 * z["corner"])
-        cav = np.where(z["scalp"] > 0.5, np.minimum(cav, 0.45), cav)
+        cav = np.where(z["scalp"] > 0.5, np.minimum(cav, SCALP_CAVITY), cav)
         micro = np.clip(0.5 + 0.5 * (noise3(Ph, 0.0009 * s, 9) - 0.5) + 0.25 * z["pit"], 0.0, 1.0)
     mask = np.stack([thick, cav, micro, np.clip(detail, 0.0, 1.0)], axis=1)
     big = size
