@@ -5923,6 +5923,367 @@
           "screen_space_aa": 1
         }
       }
+    },
+    {
+      "id": "ch07_tamsule_mouth",
+      "scene": "res://game/levels/_tests/act1_zones/ch07_tamsule_shots.tscn",
+      "camera": "Cameras/Mouth",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "ch07_tamsule_market",
+      "scene": "res://game/levels/_tests/act1_zones/ch07_tamsule_shots.tscn",
+      "camera": "Cameras/Market",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "ch07_tamsule_gantry",
+      "scene": "res://game/levels/_tests/act1_zones/ch07_tamsule_shots.tscn",
+      "camera": "Cameras/Gantry",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "ch05_pemakar_weir",
+      "scene": "res://game/levels/_tests/act1_zones/ch05_pemakar_weir_shots.tscn",
+      "camera": "Cameras/Weir",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "ch05_pemakar_harbour_day",
+      "scene": "res://game/levels/_tests/act1_zones/ch05_pemakar_day_shots.tscn",
+      "camera": "Cameras/HarbourDay",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "ch09_corrow_landing",
+      "scene": "res://game/levels/_tests/act1_zones/ch09_corrow_strand_east_shots.tscn",
+      "camera": "Cameras/Landing",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "ch09_corrow_rocks",
+      "scene": "res://game/levels/_tests/act1_zones/ch09_corrow_strand_east_shots.tscn",
+      "camera": "Cameras/Rocks",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "ch08_corrow_flood",
+      "scene": "res://game/levels/_tests/act1_zones/ch08_corrow_flood_shots.tscn",
+      "camera": "Cameras/Flood",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "ch08_corrow_lake",
+      "scene": "res://game/levels/_tests/act1_zones/ch08_corrow_lake_shots.tscn",
+      "camera": "Cameras/Lake",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "ch08_coilspire_gate",
+      "scene": "res://game/levels/_tests/act1_zones/ch08_coilspire_trial_shots.tscn",
+      "camera": "Cameras/Gate",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "ch08_coilspire_storm",
+      "scene": "res://game/levels/_tests/act1_zones/ch08_coilspire_storm_shots.tscn",
+      "camera": "Cameras/Gallery",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "ch08_corrow_storm",
+      "scene": "res://game/levels/_tests/act1_zones/ch08_corrow_storm_shots.tscn",
+      "camera": "Cameras/Storm",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "ch05_ashcrown_causeway",
+      "scene": "res://game/levels/_tests/act1_zones/ch05_ashcrown_shots.tscn",
+      "camera": "Cameras/Causeway",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "ch05_ashcrown_forecourt",
+      "scene": "res://game/levels/_tests/act1_zones/ch05_ashcrown_shots.tscn",
+      "camera": "Cameras/Forecourt",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "ch05_ashcrown_crown",
+      "scene": "res://game/levels/_tests/act1_zones/ch05_ashcrown_shots.tscn",
+      "camera": "Cameras/Crown",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "ch05_ashcrown_tiers",
+      "scene": "res://game/levels/_tests/act1_zones/ch05_ashcrown_shots.tscn",
+      "camera": "Cameras/Tiers",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "ch05_ashcrown_court",
+      "scene": "res://game/levels/_tests/act1_zones/ch05_ashcrown_shots.tscn",
+      "camera": "Cameras/Court",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "battle_arena_ashcrown_forecourt_day",
+      "scene": "res://game/levels/_tests/battle_arenas/preview_ashcrown_forecourt_day.tscn",
+      "camera": "BattleCamera",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "battle_arena_ashcrown_anvil_court",
+      "scene": "res://game/levels/_tests/battle_arenas/preview_ashcrown_anvil_court.tscn",
+      "camera": "BattleCamera",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
     }
   ]
 }

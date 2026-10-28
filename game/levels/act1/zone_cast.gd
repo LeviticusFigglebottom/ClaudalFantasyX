@@ -10,8 +10,15 @@ extends Node
 ## plays `idle` from a phase of its own (a hash of the actor id, as FieldNpc does), with HeroIdleMicro's breathing
 ## and weight shift on top, so two villagers never move in step; the cutscene's `@anim` lines find the same player.
 ## Heroes are not cast here: HeroFieldActor.attach_stage gives the hero actors their bodies (hero-integration).
+## Two prefixes name other bodies: `"cast": "creature:<id>"` puts the creature's model (game/data/creatures/
+## creatures.json `scene`, which faces +Z) on the actor, turned to its -Z, idling (the raid hound, the Cinder
+## Matron); `"cast": "hero:<id>"` gives an actor whose id isn't the hero's own (Ch9's `vigil_asha`) that hero's
+## field body (HeroFieldActor), nothing when the hero has none yet.
 
 const VILLAGER_SCENE := "res://assets/characters/villagers/%s/%s_actor.tscn"
+const CREATURES_PATH := "res://game/data/creatures/creatures.json"
+const PREFIX_CREATURE := "creature:"
+const PREFIX_HERO := "hero:"
 const KEY_CAST := "cast"
 const CAST := &"Cast"
 const STAND_IN := &"StandIn"
@@ -35,15 +42,25 @@ func _ready() -> void:
 			cast_actor(StringName(id), villager)
 
 
-## Puts `villager` on the stage actor `id` and starts its idle; returns the model, or null when either is missing.
+## Puts `villager` (or a "creature:" / "hero:" body) on the stage actor `id` and starts its idle; returns the
+## model, or null when either is missing.
 func cast_actor(id: StringName, villager: String) -> Node3D:
 	var actor := zone.stage.actor(id)
+	if actor != null and villager.begins_with(PREFIX_HERO):
+		var body := HeroFieldActor.attach_actor(actor, StringName(villager.trim_prefix(PREFIX_HERO)))
+		if body != null:
+			cast[id] = body
+		return body
 	var path := scene_path(villager)
 	if actor == null or path == "":
 		push_warning("ZoneCast %s: cannot cast '%s' as %s" % [zone.location_id, villager, id])
 		return null
 	var model := (load(path) as PackedScene).instantiate() as Node3D
 	model.name = CAST
+	if villager.begins_with(PREFIX_CREATURE):
+		model.rotation.y = PI  # a creature's model faces +Z; an actor faces its -Z
+		# the battle root (CreatureActor) answers the battle's play_clip; a cutscene drives the AnimationPlayer
+		model.set_script(null)
 	actor.add_child(model)
 	var stand_in := actor.get_node_or_null(NodePath(String(STAND_IN))) as Node3D
 	if stand_in != null:
@@ -57,7 +74,13 @@ func cast_actor(id: StringName, villager: String) -> Node3D:
 	return model
 
 
-## The villager's actor scene, or "" when there is none.
+## The villager's actor scene (or a "creature:" id's model scene), or "" when there is none. A "hero:" cast has no
+## scene of its own (HeroFieldActor.scene_path).
 static func scene_path(villager: String) -> String:
+	if villager.begins_with(PREFIX_HERO):
+		return HeroFieldActor.scene_path(StringName(villager.trim_prefix(PREFIX_HERO)))
 	var path := VILLAGER_SCENE % [villager, villager]
-	return path if ResourceLoader.exists(path) else ""
+	if villager.begins_with(PREFIX_CREATURE):
+		var rows: Dictionary = GreyboxZone.read_json(CREATURES_PATH).get("creatures", {})
+		path = str((rows.get(villager.trim_prefix(PREFIX_CREATURE), {}) as Dictionary).get("scene", ""))
+	return path if path != "" and ResourceLoader.exists(path) else ""
