@@ -86,8 +86,10 @@ def shield_profile(params: dict, r: np.ndarray) -> np.ndarray:
     return dome + lip
 
 
-def shield(centre: np.ndarray, out: np.ndarray, up: np.ndarray, params: dict) -> Part:
-    """The shield with its rim plane centred at `centre`, the dome bulging toward `out`, `up` its top."""
+def shield(centre: np.ndarray, out: np.ndarray, up: np.ndarray, params: dict, rings: int = SHIELD_RINGS,
+           segs: int = SHIELD_SEGS) -> Part:
+    """The shield with its rim plane centred at `centre`, the dome bulging toward `out`, `up` its top. M3-CHR-507:
+    `rings` and `segs` set the disc's resolution (Moll's smaller, smooth round shield); the defaults are Toma's."""
     part = Part("Shield")
     R = 0.5 * float(params["shield_diameter_m"])
     rim = float(params["shield_rim_m"])
@@ -97,7 +99,7 @@ def shield(centre: np.ndarray, out: np.ndarray, up: np.ndarray, params: dict) ->
     right = np.cross(up, out)
     seeds = scute_seeds(params)
     boss_r = 0.5 * float(params["shield_boss_m"])
-    nr, ns = SHIELD_RINGS, SHIELD_SEGS
+    nr, ns = rings, segs
     rr = boss_r * 0.85 + (R - boss_r * 0.85) * (np.linspace(0.0, 1.0, nr) ** 0.9)
     ang = 2 * math.pi * np.arange(ns) / ns
     X = rr[:, None] * np.cos(ang)[None, :]

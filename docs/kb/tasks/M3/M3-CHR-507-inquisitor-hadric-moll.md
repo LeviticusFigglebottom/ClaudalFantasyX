@@ -29,4 +29,24 @@ brine-iron held upright like a standard. Silhouette: the standard Stillguard plu
 ## Notes
 - Filed 2026-10-27 by the characters track from the Lead's Act I capsule audit (the Act I encounter, boss and level tables).
 
+- 2026-10-28 (worktree chr-moll-wip): built on the hero path (`assets_src/characters/moll/`, job `moll`). Decisions
+  where the sheet could not be met as written, within the §7 budgets:
+  - **Sleeves:** the tunic's long sleeves are offset shells of the shipped arm skin (Liss's work-sleeve method), so
+    they ride the arm exactly; the bare torso skin under the arm, between the jack's dropped armhole (M1-CHR-14) and
+    the arm, is cut (it passed through the sleeves as the arm came down). The tunic otherwise shows as its skirt.
+  - **The yield (`ko`):** the iron is planted before him on the midline, not at his right knee: with the 0.62 m
+    shield on his left forearm, the left hand could only reach a haft at his right side with the shield through his
+    chest. Both hands are on the haft (the left 12 cm over the right), the shield clear of his body, the haft 13 cm
+    clear of his legs (arm turns searched numerically on his skeleton). `yield` is the same clip under its own name.
+  - **Attack:** "two-handed" is read as the right fist driving the levelled iron with the shield arm swinging back
+    (the sheet's own note); the fist's grip (the haft across the palm) cannot level a 2.1 m haft at shoulder height,
+    so the thrust carries the head to chest height (1.3 m) from a fist at the hip, rising 15 degrees.
+  - **Finisher:** the iron's lift stops at the wrist's reach (raised diagonally over his head, not head-forward).
+  - **No revive** (optional in the contract): he is a foe. The battle clip tests skip it for him and check the yield
+    kneeling on the haft instead of lying down (KO_OWN).
+  - **Combat:** `stillguard_inquisitor.model` is not set here (ownership). Point it at a battle actor that instances
+    `res://assets/characters/moll/moll_lod1.glb` (it shares `moll_clips.tres` through the import rule's
+    `strip_suffixes`), e.g. `game/characters/heroes/moll_battle.tscn` built like the heroes' `<hero>_battle.tscn`
+    (M2-CHR-06); the actor plays `ko` for 0 HP (the yield) and `yield` for HUD_CH06_INQUISITOR_YIELDS.
+
 ## Review log

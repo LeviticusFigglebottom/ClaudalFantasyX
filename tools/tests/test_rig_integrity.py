@@ -245,6 +245,10 @@ class TestRigIntegrityKerrid(_HeroGuards, unittest.TestCase):  # M3-CHR-505
     hero = "kerrid"
 
 
+class TestRigIntegrityMoll(_HeroGuards, unittest.TestCase):  # M3-CHR-507
+    hero = "moll"
+
+
 # M3-CHR-03: villager builds with a `"villager": true` entry in rig_checks.json (GLB under assets/characters/villagers/,
 # clips from villager_clips.py)
 class TestRigIntegrityTavi(_HeroGuards, unittest.TestCase):

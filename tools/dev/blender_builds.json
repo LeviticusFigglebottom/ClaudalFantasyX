@@ -755,6 +755,23 @@
         ["{python}", "assets_src/characters/kerrid/kerrid_textures.py", "--bake-dir", "{scratch}/kerrid_bake"],
         ["{python}", "assets_src/characters/kerrid/write_materials.py"]
       ]
+    },
+    {
+      "id": "moll",
+      "threads": 4,
+      "owner": "character",
+      "_note": "M3-CHR-507: Inquisitor Hadric Moll on the hero path. Reuses Asha's modules (build_asha as a helper library, asha_textures with per-hero knobs, PRE_ROUND set), Toma's (the pauldron, the shield, the short-hair cards, the sandals, build_toma's rig-extra helpers) and Rhen's costume helpers, and the villagers' skin age terms (villager_textures), so all their sources are his too.",
+      "sources": ["assets_src/characters/moll/**", "assets_src/characters/villagers/**", "assets_src/characters/toma/**",
+                  "assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**",
+                  "assets_src/third_party/mpfb2/**"],
+      "outputs": ["assets/characters/moll/*.glb", "assets/characters/moll/textures/*.png",
+                  "assets/characters/moll/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/characters/moll/build_moll.py", "--", "--out",
+         "assets/characters/moll/moll.glb", "--bake-dir", "{scratch}/moll_bake"],
+        ["{python}", "assets_src/characters/moll/moll_textures.py", "--bake-dir", "{scratch}/moll_bake"],
+        ["{python}", "assets_src/characters/moll/write_materials.py"]
+      ]
     }
   ]
 }
