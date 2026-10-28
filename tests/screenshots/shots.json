@@ -6964,6 +6964,38 @@
           }
         }
       }
+    },
+    {
+      "id": "crowd_zone_brightwater_ferry",
+      "scene": "res://game/levels/_tests/npc/crowd_brightwater_ferry.tscn",
+      "camera": "Cameras/Crowd",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 180,
+      "setup": {
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "crowd_zone_ashcrown",
+      "scene": "res://game/levels/_tests/npc/crowd_ashcrown.tscn",
+      "camera": "Cameras/Crowd",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 180,
+      "setup": {
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
     }
   ]
 }
