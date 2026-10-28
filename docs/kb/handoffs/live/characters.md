@@ -234,6 +234,15 @@ Branch `claude/characters` (this environment; cloud session_01JqzzxgJU9Dmu7fRhmC
   - **Seen:** self-rendered at 1920×1080 and viewed zoomed in: Toma's and Moll's hands are closed fists round the shaft. Asha's fingers wrap the staff, a looser grip on her small hand.
   - The staff in the kneels was already set down beside her (M2-CHR-520), so nothing crosses the skirt there.
 
+- MERGE-READY @ (this commit): the NPC polish's leftovers.
+  - **Sleeveless tops:** Sabe's and Ione's tops are ordinary tank tops with straps over the shoulders, not halters (new `_costume.top.armhole_cut: "tank"`). Their rig limits went down, not up.
+  - **Hairline:** the painted hairline under cropped hair is feathered into a broken edge for Sabe, Ione and Hobb (opt-in `HAIRLINE_FEATHER`; the heroes are byte-identical, asha verified).
+  - **Brows:** the old villagers' brows (Fenn, Marra, Osu, and Sabe) are wiry painted strands under lighter cards, not a flat smear.
+  - **Checks:** the six changed jobs identical on all three numpy paths; a native verify of the other 28 villager jobs and 10 hero jobs, 38/38 identical; test_villagers 45 (with TestDialoguePolish2), test_blender_builds, test_hero_clips, test_asha, and rig probes Sabe, Ione, Hobb, Fenn and Marra OK; validate_data and taskboard OK.
+  - **Seen:** self-rendered and viewed before and after.
+  - **Left:** Ione's top stands out under the arms like short cap sleeves (it did before); a faint edge where each strap lies over the panel; Ione's fringe shows the card tips as short dark dashes.
+  - **Shots to re-approve:** these six NPCs' face and front shots.
+
 ### Render requests
 RENDERED+APPROVED (gpu/render-characters-dc93a5d) RENDER-REQUEST @ dc93a5de: asha_front,asha_q34,asha_profile,asha_face_neutral,asha_face_smile,asha_face_grief,asha_sleeve_s0,asha_sleeve_s4,asha_extreme_pose,asha_face_stylized_compare,asha_clip_kneel_over_rhen,asha_clip_walk,asha_clip_offer_hand,asha_clip_face_west,asha_clip_laugh,asha_clip_run,asha_smile_variant_compare,asha_battle_idle,rhen_battle_idle,toma_battle_idle,rhen_front,rhen_q34,rhen_profile,rhen_back,rhen_face_neutral,rhen_face_smile,toma_front,toma_q34,toma_profile,toma_back,toma_face_neutral,toma_face_smile,rhen_clip_take_hand,rhen_clip_kneel,toma_clip_walk,toma_clip_talk,asha_battle_attack,rhen_battle_attack,toma_battle_attack,asha_clip_walk_cycle,asha_clip_turn,rhen_clip_walk_cycle,rhen_clip_turn,toma_clip_walk_cycle,toma_clip_turn; why: M1-CHR-15 rebuilt Asha, Rhen and Toma (skirt gathers, shoulder correctives, spear) on top of M2-CHR-12's clips
 SUPERSEDED (by the request @ f5f509ac) RENDER-REQUEST @ 038d5651: rhen_battle_idle,rhen_front,rhen_q34,rhen_profile,rhen_back,rhen_face_neutral,rhen_face_smile,rhen_clip_take_hand,rhen_clip_kneel,rhen_battle_attack,rhen_clip_walk_cycle,rhen_clip_turn,rhen_battle_ko,rhen_battle_victory,rhen_battle_finisher,asha_battle_ko,asha_battle_victory,toma_battle_ko,toma_battle_victory; why: M2-CHR-513 (new ko/victory/revive clips, Rhen rebuilt with hook bones and his hooks in hand in attack and finisher; 7 new shots)
