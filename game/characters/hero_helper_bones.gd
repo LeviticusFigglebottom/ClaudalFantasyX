@@ -130,7 +130,7 @@ static func _drive_armpits(skel: Skeleton3D, a: Dictionary) -> void:
 ## down as hero_clips.skirt_solve does: each bone's least swing from the vertical, about its head where the bones above
 ## put it, then the lag limit at that level. The upper bone clears its own cloth; a middle one its own and all the
 ## cloth below it carried straight; the lowest its own, up to the middle one's swing (it hangs back from the knee). The
-## lowest bone takes the overhang and floor gathers.
+## lowest bone takes the overhang gather, the floor drape, then the floor gather.
 static func _drive_skirt(skel: Skeleton3D, s: Dictionary) -> void:
 	var prefix := String(s["bone_prefix"])
 	var levels: Array = s["levels"]
@@ -191,6 +191,21 @@ static func _drive_skirt(skel: Skeleton3D, s: Dictionary) -> void:
 	var flare := float(s["gather_flare"])
 	var last := levels.size() - 1
 	for k: int in names.size():
+		var lo_name := names[k] + String(levels[last])
+		var head: Vector3 = heads[k][last]
+		var tip := _head_posed(heads[k], axes[k], angs[k], last)
+		var axis: Vector3 = (rests[k][last] as Quaternion) * Vector3.UP
+		var a_lo: float = angs[k][last]
+		var sc := _overhang(cloth[lo_name], head, axis, axes[k], a_lo, tip, legs, s)
+		var c_lo: PackedVector3Array = cloth[lo_name]
+		var dp := inv_dp.inverse()
+		var base_y := hips_pose.origin.y
+		var sg := _gather(c_lo, head, axis, axes[k], a_lo, tip - head, dp, base_y, sc, s)
+		if sg < float(s["drape_below_gather"]):
+			a_lo = _drape(c_lo, head, axis, axes[k], a_lo, tip - head, dp, base_y, sc, s)
+			angs[k][last] = a_lo
+			sg = _gather(c_lo, head, axis, axes[k], a_lo, tip - head, dp, base_y, sc, s)
+		sc = sg
 		var gp := rq_h
 		var prev := 0.0
 		for lv: int in levels.size():
@@ -200,13 +215,6 @@ static func _drive_skirt(skel: Skeleton3D, s: Dictionary) -> void:
 			skel.set_bone_pose_rotation(skel.find_bone(names[k] + String(levels[lv])), loc.normalized())
 			gp = gr
 			prev = ang
-		var lo_name := names[k] + String(levels[last])
-		var head: Vector3 = heads[k][last]
-		var tip := _head_posed(heads[k], axes[k], angs[k], last)
-		var axis: Vector3 = (rests[k][last] as Quaternion) * Vector3.UP
-		var a_lo: float = angs[k][last]
-		var sc := _overhang(cloth[lo_name], head, axis, axes[k], a_lo, tip, legs, s)
-		sc = _gather(cloth[lo_name], head, axis, axes[k], a_lo, tip - head, inv_dp.inverse(), hips_pose.origin.y, sc, s)
 		skel.set_bone_pose_scale(
 			skel.find_bone(lo_name), Vector3(1.0 + flare * (1.0 - sc), sc, 1.0 + flare * (1.0 - sc))
 		)
@@ -218,6 +226,43 @@ static func _head_posed(heads: Array, axis: Vector3, angs: Array, lv: int) -> Ve
 	for i: int in range(1, lv + 1):
 		p += Basis(axis, float(angs[i - 1])) * ((heads[i] as Vector3) - (heads[i - 1] as Vector3))
 	return p
+
+
+## The floor drape (hero_clips.skirt_solve): a lowest bone whose cloth (at length scale `sc`) would gather shorter
+## than drape_below_gather first swings out onto the floor, by the least swing in (ang, drape_max_deg] (grid_deg
+## steps, then `bisect` halvings) at which it stays floor_clear_m above the floor; drape_max_deg when none does.
+static func _drape(
+	cloth: PackedVector3Array,
+	knee: Vector3,
+	along: Vector3,
+	axis: Vector3,
+	ang: float,
+	shift: Vector3,
+	dp: Quaternion,
+	base_y: float,
+	sc: float,
+	s: Dictionary
+) -> float:
+	var floor_y := float(s["floor_clear_m"])
+	var top := deg_to_rad(float(s["drape_max_deg"]))
+	if cloth.is_empty() or ang >= top or _low(cloth, knee, along, axis, ang, shift, dp, base_y, sc) >= floor_y:
+		return ang
+	var step := deg_to_rad(float(s["grid_deg"]))
+	var lo := ang
+	var a := minf(lo + step, top)
+	while _low(cloth, knee, along, axis, a, shift, dp, base_y, sc) < floor_y:
+		if a >= top - 1e-9:
+			return top
+		lo = a
+		a = minf(a + step, top)
+	var hi := a
+	for _i: int in int(s["bisect"]):
+		var mid := 0.5 * (lo + hi)
+		if _low(cloth, knee, along, axis, mid, shift, dp, base_y, sc) >= floor_y:
+			hi = mid
+		else:
+			lo = mid
+	return hi
 
 
 ## The lowest bone's gather: the largest length scale in [gather_min, 1] (`bisect` halvings) at which its cloth (scaled
