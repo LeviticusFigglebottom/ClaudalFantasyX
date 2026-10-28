@@ -16,7 +16,7 @@
 | tools unittests | 1527 run (50 skipped), **6 failing units** (below) |
 | Godot suite | **3161 run, 15 failed, then a segfault at exit** (below). The first run hit the PC's 2400 s step timeout inside `test_qa_threads`, a long playthrough; the re-run with a 3 h timeout took 45 min. |
 | Boot smoke (60 frames) | **ok** (run on its own after the crash) |
-| Coverage gate | **Re-running.** The first try hit run_coverage's 600 s limit (`HYMN_STEP_TIMEOUT`): the instrumented run is the whole suite, which now takes ~45 min. The default limit fails a cloud run too unless `HYMN_STEP_TIMEOUT` is raised. Re-running with 3 h; the result goes in pc-gpu.md. |
+| Coverage gate | **FAIL, no numbers**: with a 3 h limit it ran 2809 s, then refused to report. "test suite did not pass under instrumentation (exit -6)": the same 15 failing tests, plus the crash at exit. It reports again once the suite passes. |
 | Blender (77 jobs changed) | **75 identical, 2 DIFF** (below) |
 | Screenshots | **523 compared, 302 failed** = 121 without a baseline + 181 over the RMSE limit. All 523 captured, **no SCRIPT ERROR at shutdown** (big12's life_audio error is gone) |
 | Wall | lane B 6672 s (523 shots), Blender 1852 s, lane A ~45 min until the timeout |
