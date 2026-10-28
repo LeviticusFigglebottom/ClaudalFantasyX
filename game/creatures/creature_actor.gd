@@ -134,8 +134,9 @@ func play_hit() -> bool:
 ## Plays a one-shot clip, then idles again. Refused while KO'd or petrified. In a phase whose `clips` map names a
 ## stand-in for `clip` (the Undertow's Reach strikes from its lifted or drawn-back pose), that clip plays instead.
 ## A hit rotates through the row's `hit_variants` (the hit, then its mirrored heavier `hit_b`, ...) outside phases
-## that map their own hit.
-func play_clip(clip: StringName) -> bool:
+## that map their own hit. `_blend_sec` is HeroMotion.play's (a field stage plays a creature like a hero body,
+## M3-HER-1142's hound in Brine Shoals); the creature keeps its own blend times.
+func play_clip(clip: StringName, _blend_sec: float = -1.0) -> bool:
 	var mapped := phase_clip(clip)
 	if mapped == clip and clip == StringName(str(_row.get("hit", "hit"))) and not _ko and not _frozen:
 		mapped = _next_hit(clip)

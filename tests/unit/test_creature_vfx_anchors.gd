@@ -83,3 +83,12 @@ func test_the_anchor_follows_the_clip() -> void:
 	var lunge := a.vfx_anchor(CreatureActor.ANCHOR_CORE)
 	assert_true(rest.distance_to(lunge) > MOVED_M, "the hound's chest moves with its lunge")
 	before_each()
+
+
+## M3-HER-1142: a GreyboxZone stage actor's `model` can be a creature (the raid hound in Brine Shoals): the stage
+## plays it through HeroMotion like a villager body, with no script error.
+func test_a_creature_plays_as_a_field_stage_model() -> void:
+	var body := _actor("raid_hound")
+	assert_true(HeroMotion.play(body, &"idle", 0.0), "HeroMotion plays its idle")
+	assert_true(HeroMotion.add_micro_motion(body, &"hound") != null, "and breathes")
+	before_each()
