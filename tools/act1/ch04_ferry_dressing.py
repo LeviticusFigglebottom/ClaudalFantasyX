@@ -252,10 +252,25 @@ def dressing() -> dict:
         "environment": RES_ZONE + "brightwater_ferry_ch04_environment.tres",
         "fire_light_color": preview["lamp_color"],
         "fire_lights": [{"at": [r3(l[0] + off[0]), r3(l[1] + off[1]), r3(l[2] + off[2])], "energy": l[3], "range": l[4],
-                         "shadow": bool(l[5]), "attenuation": preview["lamp_attenuation"]} for l in preview["lamps"]],
+                         "shadow": bool(l[5]), "attenuation": preview["lamp_attenuation"]} for l in preview["lamps"]]
+        + derelict_fill(),
         "greybox": {"hide_all": True, "keep": []},
         "pieces": pieces,
     }
+
+
+# The derelict's deck has no lamp of its own (a dead ship), and at player height under the pre-dawn grade its fights
+# (the leeches, the hermit, the wraith) read near black (the walk-through pass): the sky's cold fill off her pale
+# salt-bleached timber, a few shadowless omnis along her waist and poop, in the moon's colour, not a lamp's.
+DERELICT_FILL = {"color": "#9DB4D6", "energy": 1.4, "range": 7.0, "attenuation": 1.2}
+DERELICT_FILL_AT = ((0.0, 2.5, 6.5), (0.0, 2.5, 1.0), (0.0, 2.5, -5.0))  # in the derelict's frame, as bt's points
+
+
+def derelict_fill() -> list[dict]:
+    dx, dy, dz = DERELICT_AT
+    return [{"at": [r3(dx + x), r3(dy + y), r3(dz + z)], "energy": DERELICT_FILL["energy"],
+             "range": DERELICT_FILL["range"], "shadow": False, "attenuation": DERELICT_FILL["attenuation"],
+             "color": DERELICT_FILL["color"]} for x, y, z in DERELICT_FILL_AT]
 
 
 def landing() -> list[dict]:
