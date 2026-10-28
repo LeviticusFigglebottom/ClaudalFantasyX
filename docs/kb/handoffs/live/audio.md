@@ -3,6 +3,20 @@
 ## NEW ACCOUNT (from 2026-10-25)
 Session `session_01Wmj8xaLtwcqiS3qwC6PciW`. Integration branch `claude/undertow-lead-handoff-ze8rrn`. Newest first.
 
+- **MERGE-READY (claude/audio @ 937b9bf8f, carrying big14): the Lead's 04:44 asks.**
+  - **Blockers big14 lifted, closed:**
+    - The three stem cutscenes play whole on the deck: M2-AUD-07, plus the `undertow_reach` alias cue. M3-AUD-834 is done.
+    - The Reefball outfitter's hook is live, tested on the real class.
+  - **(1) Listening-proxy pass** (`tools/audio/act1_loop_check.py`, report in docs/kb/audio/act1_loop_check.md). It covers every Act I zone's music loop and ambience beds, decoded from the shipped files: **41 files, 0 problems.**
+    - Seams: the worst jump is ×3.68 (limit 10) and the worst flux ×2.84 (limit 3).
+    - Music is at −16.0 ±0.15 LUFS, beds at −26 ±0.3.
+    - Each bed sits 9.7–10.1 LU under its music.
+    - A test, test_act1_loop_check, runs it.
+  - **(2) The new Act I creature models:** every one of the 14 Act I creature shots has its own voice set (audit Enemies 0, scoped to Act I). Ethren, Hesk and Nhoa are Act II, so paused.
+  - **Boss intros:** each of the six bosses that shared `sting_boss` now has its own intro sting, plus a reduced-audio twin, in Git LFS. The audit's Intros section is at 0, and test_battle_stings was updated.
+  - Godot `--filter=audio`: 175 run, 0 failed, 0 left nodes (a CanvasLayer leak in my codex test is fixed).
+  - **Next, in progress:** M3-BPR-421. **86 Act I abilities still borrow a generic hit, heal or status sound**, and the `swing` and `reel` Swell styles are stand-ins. Each gets its own.
+
 - **Big14 (lead/gate-big14) is merged into claude/audio. The blockers it lifted are closed (9c6fea374):**
   - The cutscene sequencer now plays music.json cues on the deck (M2-AUD-07), so the stem cutscenes play whole.
     `undertow_reach` became an alias cue. M3-AUD-834 is done.
