@@ -81,3 +81,16 @@ its element's generic hit, and supports, stances, gathers, summons and items pla
   - The boss shots were retuned for the real heights (`boss_blow`: strike, back -3.6, side 6.6, up 2.6, fov 56;
     `boss_sweep`: actor, back -4.6, side 6.6, up 2.6, fov 50). A grid probe checked all 13 big moves against the safe
     frame, and the neighbouring settings pass too.
+- 2026-10-28, battle-presentation: **the boss-camera sheet, viewed** (`tools/vfx/boss_camera_sheet.tscn`, on the
+  dressed arenas).
+  - These read well, the boss framing its target from the viewer's side with the party in shot: Hullgnaw's Gnaw and
+    Thrash, the Wraith's Haul, Sea Lash and Shroud Sweep, the Matron's Ladle Swing and Slag Pour, the Inquisitor's
+    Brine Iron and Torch the Hulk, and the Drownbell's Hood Slam.
+  - The Reach failed: from behind its lunge the lens saw only its arm, and the low skyward shot dropped under the
+    wall-head.
+    - The director now drops a foe's shot when its body, at the strike point, stands across a sight line to its
+      targets. A target point inside the body's bounds never counts, since a colossus's rest bounds take in the party
+      under its hand.
+    - The Reach keeps the default frame, which already shows its hand over the party.
+  - Tests: test_battle_boss_camera (+ the body check), camera 53/0, choreo 56/0. The four shots with a foe's action
+    (toll, ch08 intercept/counter/withdraw) are unchanged by the check (rmse 0.0000 against the previous capture).

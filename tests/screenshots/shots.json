@@ -17,7 +17,7 @@
         1920,
         1080
       ],
-      "settle_frames": 10,
+      "settle_frames": 72,
       "threshold_rmse": 0.004
     },
     {
@@ -80,7 +80,8 @@
     },
     {
       "id": "battle_victory",
-      "scene": "res://game/battle/scene/shots/battle_victory.tscn"
+      "scene": "res://game/battle/scene/shots/battle_victory.tscn",
+      "settle_frames": 90
     },
     {
       "id": "base_body_slender_front",

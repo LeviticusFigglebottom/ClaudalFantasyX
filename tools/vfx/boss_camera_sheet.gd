@@ -15,7 +15,6 @@ const FIGHTS := {
 	&"ch05_cinder_matron": [&"cinder_matron", [&"ladle_swing", &"slag_pour"]],
 	&"ch06_inquisitor": [&"stillguard_inquisitor", [&"brine_iron", &"torch_hulk"]],
 	&"drownbell": [&"drownbell", [&"hood_slam"]],
-	&"undertows_reach": [&"undertows_reach", [&"crust_slam", &"undertow_pull", &"breach"]],
 }
 
 var _opts: Dictionary = {}
@@ -52,7 +51,7 @@ func _run() -> void:
 			var r := ActionResult.new()
 			r.actor_id = boss.id
 			r.skill_id = sid
-			var hits: Array = []
+			var hits: Array[Dictionary] = []
 			for h in ctl.engine.party_active:
 				hits.append({"target_id": h.id, "hit": true, "crit": false, "amount": 10, "statuses_added": []})
 				if not _sweeps(sid):

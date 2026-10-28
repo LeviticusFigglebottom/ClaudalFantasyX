@@ -133,7 +133,13 @@
     "flood_surge": "hit_water",
     "undertow_surge": "hit_water",
     "swell_weighted_swing": "hit_none",
-    "swell_reel_stop": "status_apply"
+    "swell_reel_stop": "status_apply",
+    "tick_poison": "status_apply",
+    "tick_regen": "heal",
+    "tick_doom": "status_apply",
+    "tick_doom_fall": "ko_release",
+    "tick_sleep": "status_apply",
+    "tick_stop": "status_apply"
   },
   "skills": {
     "toll": "drownbell_toll",

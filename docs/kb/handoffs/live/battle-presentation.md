@@ -8,6 +8,134 @@ The gap (the human's playtest note): battles had no action animation. This track
 Session `session_015hKkhtpX67kS4yZeA8AAhv`. Integration branch `claude/undertow-lead-handoff-ze8rrn` merged in
 (c6a960ab).
 
+**MERGE-READY @ 1daa0fa7 (04:45): M3-BPR-423 boss-intro hero shots.** The Hullgnaw rail and the Drownbell framing are
+both fixed and pushed. The branch head also carries:
+- M3-BPR-420/422: the boss big-move camera, Kerrid's and Liss's Swell finishers, the Act I creatures' stand-in
+  heights, hits on a big body's near face, and the trimmed KO flash.
+- Checks run:
+  - Tests: `--filter=boss_intro` 21/0, `--filter=battle` 776 with 2 fails (both fixed since: the boss-camera refit and
+    the swing/reel sound rows), plus vfx 18/0, act1_ability_vfx 5/0, boss_camera 1/0, swell_finishers 3/0,
+    audio_live 12/0, swell 151/0, camera 52/0 and choreo 56/0.
+  - Static checks: gdlint, gdformat, validate_data, taskboard --check and `gen_act1_ability_vfx --check`, all clean.
+  - Tools: test_choreo_validate OK. test_screenshots fails only on my three battle_ch08_* baselines (the gate's to
+    write). test_iskarra fails on a clean tree too (not mine).
+- **Not yet run: the full Godot suite on the head.** Two runs were stopped because I edited under them. It runs once
+  my arena renders finish, and I will log the result here.
+- Shots the gate should re-approve:
+  - the six moved battle_boss_intro_* (viewed above);
+  - any battle shot with an Act I creature, since the heights and the near-face anchor move its effects. I am
+    self-rendering those next.
+
+**BACKLOG EMPTY (2026-10-28, @ 7f4fea7f, MERGE-READY):** every item on the Lead's lists (02:14, 03:41, 04:44) is
+done, self-rendered and viewed:
+1. M3-HER-1148's five set-piece rows.
+2. The hit, death and status VFX on the dressed arenas, with the fixes listed above.
+3. The boss big-move camera.
+4. The Swell finishers.
+5. The boss-intro hero shots.
+
+What remains waits on other tracks:
+- **The gate:** re-approve the moved baselines and write the three new battle_ch08_* ones (lists above). Fixing
+  `merge_union.py`'s silent revert of the other side's shot edits is suggested.
+- **Combat** (M3-C05-06, M3-C06-05): Kerrid's and Liss's Swell techniques. Their finishers (swing, reel) play as soon as
+  a `"swell": true` skill row exists, with nothing more needed from me. I'll view them in a fight once the techniques
+  and a Kerrid or Liss battle actor are in the sandbox.
+- **Characters:** the Inquisitor's model. Then drop his row's `hero: false` and re-view his intro.
+- **Audio** (M3-BPR-421): their own sounds for the Act I effects and the swing/reel styles (stand-ins for now).
+- **After the env-art merge:** apply docs/kb/tasks/M3/M3-BPR-407-seawall-repoint.patch, then view the Reach's staging
+  in the default frame (it fills the left third there).
+- **Known reds, not this branch's:** test_hero_field_snaps and test_zone_map are red on big13 too;
+  test_creature_portraits is Act II, which is paused.
+
+Next step for whoever resumes: merge the integration branch once the gate takes this, then take any new Lead list.
+
+**08:xx: the boss-camera sheet viewed; the Reach's big moves fixed.** See M3-BPR-420's review log.
+- SELF-RENDERED (tool, scratch worktree): `boss_camera_sheet`, all 13 big moves at the lead and the contact.
+  - Ten read well: Hullgnaw, the Wraith, the Matron, the Inquisitor and the Drownbell.
+  - The Reach's lunge hid the party behind its arm. The director now drops a foe shot whose body blocks the targets,
+    and the Reach keeps the default frame.
+- The four foe-action shots are unchanged (rmse 0).
+- **This entry is MERGE-READY at the branch head.** The branch carries everything listed under MERGE-READY @ 98aa030d
+  below, plus this.
+
+**MERGE-READY @ 98aa030d (07:xx), the branch head.** It carries M3-BPR-420/422/423 and the big13 merge, plus a merge
+fix.
+- **Full Godot suite on 4a19f707: 2997 run, 5 failed.** Now accounted for:
+  - test_battle_set_piece_shots: mine, fixed at 98aa030d (the riposte effect steps to the attacker's near face).
+  - test_title_reveal: **a merge loss**, fixed at 98aa030d.
+    - `tools/dev/merge_union.py` keeps *our* copy of a shot both sides list, so big13's `boot_title` settle_frames
+      change was dropped. I rebuilt shots.json from the merge base; only boot_title differed. baselines.json lost
+      nothing.
+    - **Lead: the tool silently reverts the other side's edits to shared shots. Worth a fix: take the side that
+      changed against the base.**
+  - test_hero_field_snaps and test_zone_map (ch08/corrow, coilspire): **red on clean big13 90ecee18 too** (checked
+    in a scratch checkout). Not this branch's.
+  - test_creature_portraits: the Act II creature portraits, a known red (Act II is paused, ADR 0041).
+- Re-run since the fixes: set_piece_shots 4/0 and title_reveal 3/0. test_screenshots (tools) fails only on my three
+  un-baselined battle_ch08_* shots.
+- Shots for the gate to re-approve after viewing (all viewed here; drifts listed below):
+  - the six battle_boss_intro_*;
+  - battle_choreo_hit, _ko, _toll, _support and _summon, battle_heroes_hit and battle_vowbound_call;
+  - new: battle_ch08_intercept, _counter and _withdraw.
+
+**2026-10-28 06:xx: the Lead's items 2–4 (VFX on the real arenas, boss camera, Swell finishers), self-rendered @ 4a19f707.**
+- SELF-RENDERED (tool, scratch worktree with env-art and env-art-b merged plus the seawall patch; never pushed):
+  `act1_vfx_sheet --enemy_set` on 14 Act I arenas. Viewed: ch01 oil slug and Hullgnaw, ch02 tideline, ch03 causeway,
+  Drownbell, ch04 Spar-Wraith, ch05 Matron and stair tortoise, ch06 ridge gulls and Inquisitor, ch08 stair hold,
+  headland crabs and flue moths, and the Reach.
+  - **Found and fixed:**
+    - 21 Act I creatures had no height, so hits floated over small ones and struck big ones' shins. They now have
+      measured height rows.
+    - Hits on big bodies spawned inside the mesh. They now land on the near face.
+    - Oil Slap vanished on the dark tower; it now carries lamp glints.
+    - Lure Glow was faint on the beaches; it is now larger and brighter.
+    - The KO flash (a 2 m core) bleached the fighters beside it; the core is now about 1 m.
+  - **Read fine after the fixes:** every hit, status and KO, and each foe's own skills, on every arena.
+  - **Noted, not mine to change:**
+    - With the seawall repoint (unmerged), the Reach fills the left third of the default battle frame. That is
+      staging for when the repoint lands.
+    - The flue moths are grounded by design (creatures M3-CRE-631/632).
+    - The hound stands half-behind the Inquisitor's capsule until his model lands.
+- SELF-RENDERED @ 4a19f707, 15 shots (the ones the heights and the near face can move):
+  - **Pass:** melee, cast, lamp_dive, stair_hold, statuses.
+  - **Drift, viewed, intended:**
+    - battle_choreo_hit 0.023: Undertow Cut's spray on the crab's near face;
+    - battle_choreo_ko 0.019: the smaller KO flash, just in front of the falling gull;
+    - battle_choreo_toll 0.018: the dust on Toma's near side;
+    - battle_choreo_support 0.017: Mend over Asha;
+    - battle_choreo_summon 0.014, battle_heroes_hit 0.013 and battle_vowbound_call 0.013: small shifts in the
+      effects.
+  - The three battle_ch08_* shots are new, with no baselines yet (viewed). **Baselines are the gate's.**
+- The boss-camera sheet (`tools/vfx/boss_camera_sheet.tscn`) failed on a typed array, fixed at 4a19f707. It reruns
+  after the full suite.
+
+**2026-10-28 04:3x: big13 (90ecee18) merged in at 5baf9952. M3-BPR-423 boss-intro hero shots @ 59edc9b9 (the Lead's
+03:41 items, ahead of the rest of the queue).**
+- **Merge notes:**
+  - Shared files resolved by union.
+  - Baselines take the gate's.
+  - `battle_choreo.gd` keeps BattlePhaseLooks; the barks are now attached by the controller (ui's).
+  - `battle_sandbox.json` keeps Ysolde's actor plus Kerrid's and Liss's rows.
+- **Hero shots (`BattleBossHeroShot`, choreo.json `boss_intro.hero`):** a low lens on the viewer's side looks up at
+  the boss, at the biggest fill that holds.
+  - The upper body stays clear of the card; the feet may pass behind it.
+  - Nothing may stand between the lens and the boss: no arena mesh, which fixes Hullgnaw's rail, and no hero.
+  - Heroes are off frame or small, and clear of the timeline.
+  - The old corner test let a hero filling the lens pass as "off screen". The hero shot tests the projected rectangle
+    instead.
+  - The Inquisitor keeps the fitted shot (`hero: false`) until his model lands.
+- SELF-RENDERED @ 59edc9b9: the seven battle_boss_intro_* shots, all viewed. Nothing reads wrong.
+  - Hullgnaw: arched above the card, Rhen on the deck, no rail. rmse 0.298.
+  - Drownbell: the bell fills the frame. 0.202.
+  - Matron: three-quarter profile with the party at the right. 0.118.
+  - Hermit: close and low. 0.038.
+  - Reach: towering over a tiny party on the wall-head. 0.089.
+  - Wraith: centred above the card, still thin and dark on its night deck. 0.046.
+  - Inquisitor: PASS at 0.003 (unchanged).
+  - **For the gate: re-approve the six moved baselines.**
+- Checks: `--filter=boss_intro` 21/0 (3 tests updated to the hero contract, 1 new), gdlint, gdformat, validate_data
+  and taskboard clean.
+
 **FAST-TRACK MERGE-READY @ 4e89c967: M3-BPR-404 boss-intro framing (the human's "Hullgnaw framed too close").**
 - **Cherry-pick exactly these two commits, in order:** `269054a3 4e89c967`. They touch only
   battle_boss_intro.gd, choreo.json (boss_intro), test_battle_boss_intro.gd, the 404 task file, one doc section and
