@@ -720,6 +720,10 @@ Ch4–Ch9 onward. `m2-slice.md` beside this file is the history up to the 2026-1
 - **SELF-RENDERED (viewed):** slice_verse_threshold (Asha in the doorway with her released light),
   slice_verse_recognition, ch01_o07_name_board, ch01_bell_room on env-art's dressing. slice_beach_h06_toma holds
   line 017, before its held-motes cue, as authored.
+- **C08 (the Drownbell rises, new pending still `slice_verse_c08`, line 060):** the bell's hood was a speck at
+  50 m on 18 mm. The First Verse set's Drownbell, and its mark for the toll and the motes, came in to about 30 m, and
+  C08 is now 28 mm from 5 m up. Viewed: the bronze hood breaking the surface, the sun's glitter beside it. Uncounted
+  held fields are sparse too (C08's wounds).
 - **MERGE-READY @ 47f7707b** (everything since 743b94bf; plus the held rows' density in the next commit):
   - the cutscene VFX at final quality;
   - Oruvel and the Underway on env-art's dressings, with the cutscene side re-staged (M3-ENV-739/740/742 to review,
