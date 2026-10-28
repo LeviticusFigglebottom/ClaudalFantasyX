@@ -589,7 +589,7 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
-- **MERGE-READY @ (this push): M3-ENV-1316 (env-art-b's request), part 1: the trader boat's cargo and Ashcrown's
+- **MERGE-READY @ 17a746b57: M3-ENV-1316 (env-art-b's request), part 1: the trader boat's cargo and Ashcrown's
   flying stair.**
   - **Corrow `trader_boat`:** the bales were plain sail-white blocks. They are now rounded cloth-wrapped bales (ochre,
     red) and wicker crates, each bound by three rope bands and set down a little askew.
