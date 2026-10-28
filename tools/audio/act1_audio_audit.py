@@ -7,6 +7,8 @@ sound a player can meet from the title through Ch9, from the data the runtime re
   enemies     every enemies.json id: creature_voices.json's five events, each row's files on disk, and rows that
               borrow another creature's files (variant_of, or the same file in two creatures' rows)
   battles     every boss fight (an encounter with a phased foe): its own cue, and a row for each phase of a stem cue
+  abilities   every Act I skill's battle effect: its own sound, not a borrowed generic hit/heal/status row
+  intros      every Act I boss intro (choreo.json boss_intro): its own sting in battle_stings.json by_arg
   skills      every skills.json skill: what BattleVfx plays for it (a skill row, its element, heal, status), and
               so what BattleAudio hears; a skill that does none of those is silent
   cutscenes   every Act I .dlg `@music` / `@sfx` id: a music.json cue, a real file, or a sequencer music_stand_ins
@@ -94,9 +96,21 @@ def audit_zones() -> list[str]:
     return out
 
 
-def audit_enemies() -> list[str]:
+def _act1_enemies() -> list[str]:
+    """Act I's foes: every enemy an Act I encounter fields (Ch10+ encounters are paused, ADR 0041), plus any that no
+    encounter names (summons and set-piece entries)."""
     enemies = _json(DATA / "battle" / "enemies.json")["enemies"]
     ids = list(enemies) if isinstance(enemies, dict) else [r["id"] for r in enemies]
+    fielded: dict[str, set] = {}
+    for e in _json(DATA / "battle" / "encounters.json")["encounters"]:
+        later = bool(re.match(r"ch(1[0-9]|2[0-9])_", e["id"]))
+        for f in e.get("enemies", []):
+            fielded.setdefault(f, set()).add(later)
+    return [i for i in ids if i not in fielded or False in fielded[i]]
+
+
+def audit_enemies() -> list[str]:
+    ids = _act1_enemies()
     voices = _json(AUDIO / "creature_voices.json")["creatures"]
     rows = {}
     for p in [AUDIO / "sfx.json"] + sorted(AUDIO.glob("sfx_*.json")):
@@ -140,9 +154,19 @@ def audit_skills() -> list[str]:
     bsfx = _json(AUDIO / "battle_sfx.json")
     named = "".join(p.read_text(encoding="utf-8") for p in sorted(AUDIO.glob("*.json")))
     named += (DATA / "vfx" / "battle" / "boss_vfx.json").read_text(encoding="utf-8")
+    # a skill only later-act foes use is paused with them (ADR 0041)
+    later = {e for enc in _json(DATA / "battle" / "encounters.json")["encounters"]
+             if re.match(r"ch(1[0-9]|2[0-9])_", enc["id"]) for e in enc.get("enemies", [])}
+    act1_foes = set(_act1_enemies())
+    users: dict[str, set] = {}
+    for f in _json(DATA / "battle" / "enemies.json")["enemies"]:
+        for sid in re.findall(r'"([a-z0-9_]+)"', json.dumps(f)):
+            users.setdefault(sid, set()).add(f["id"])
     out = []
     for r in rows:
         sid = r["id"]
+        if sid in users and not (users[sid] & act1_foes) and users[sid] <= later:
+            continue
         if sid in vmap.get("skills", {}) or sid in bsfx.get("skills", {}) or f'"{sid}"' in named:
             continue  # its own row, or a boss telegraph / choreography row names it
         does = (r.get("power", 0) or 0) > 0 or r.get("heal") or r.get("statuses") or r.get("status") \
@@ -173,6 +197,46 @@ def audit_battles() -> list[str]:
                 for ph in foes[f]["phases"]:
                     if ph.get("id") not in battle.get("phases", {}):
                         out.append(f"`{e['id']}`: {f}'s phase `{ph.get('id')}` has no music row (its stems never change)")
+    return out
+
+
+GENERIC_VFX = {"hit_none", "hit_fire", "hit_ice", "hit_lightning", "hit_water", "hit_holy", "heal", "status_apply",
+               "ko_release"}
+
+
+def audit_abilities() -> list[str]:
+    """Every ability effect BattleVfx plays for an Act I skill (effects.json map.skills) has its own sound, not one of
+    the generic hit / heal / status rows it borrowed when battle-presentation gave it a VFX (M3-BPR-421)."""
+    vmap = _json(DATA / "vfx" / "battle" / "effects.json")["map"].get("skills", {})
+    rows = _json(AUDIO / "battle_sfx.json")["vfx"]
+    later = {e for enc in _json(DATA / "battle" / "encounters.json")["encounters"]
+             if re.match(r"ch(1[0-9]|2[0-9])_", enc["id"]) for e in enc.get("enemies", [])}
+    act1_foes = set(_act1_enemies())
+    users: dict[str, set] = {}
+    for f in _json(DATA / "battle" / "enemies.json")["enemies"]:
+        for sid in re.findall(r'"([a-z0-9_]+)"', json.dumps(f)):
+            users.setdefault(sid, set()).add(f["id"])
+    out = []
+    for sid, effect in sorted(vmap.items()):
+        if sid in users and not (users[sid] & act1_foes) and users[sid] <= later:
+            continue  # a later-act foe's skill
+        row = rows.get(effect)
+        if effect not in GENERIC_VFX and row in GENERIC_VFX:
+            out.append(f"ability `{sid}` (effect `{effect}`) borrows `{row}`")
+    return out
+
+
+def audit_intros() -> list[str]:
+    """Every Act I boss intro (choreo.json boss_intro rows) plays its own sting, not the shared one."""
+    intro = _json(DATA / "battle" / "choreo.json")["choreo"]["boss_intro"]
+    stings = _json(AUDIO / "battle_stings.json")["events"]["boss_intro"]
+    by = stings.get("by_arg", {})
+    out = []
+    for enc, row in intro.get("rows", {}).items():
+        if re.match(r"ch(1[0-9]|2[0-9])_", enc):
+            continue
+        if enc not in by:
+            out.append(f"boss intro `{enc}` ({row.get('enemy')}) plays the shared `{stings.get('sfx')}` sting")
     return out
 
 
@@ -283,7 +347,9 @@ def audit_notes() -> list[str]:
     return out
 
 
-SECTIONS = [("Zones", audit_zones), ("Enemies", audit_enemies), ("Battles", audit_battles), ("Skills", audit_skills),
+SECTIONS = [("Zones", audit_zones), ("Enemies", audit_enemies), ("Battles", audit_battles), ("Intros", audit_intros),
+            ("Abilities", audit_abilities),
+            ("Skills", audit_skills),
             ("Cutscenes", audit_cutscenes), ("UI", audit_ui), ("Notes that say temp", audit_notes)]
 
 

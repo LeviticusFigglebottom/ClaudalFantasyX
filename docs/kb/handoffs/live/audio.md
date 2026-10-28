@@ -3,6 +3,18 @@
 ## NEW ACCOUNT (from 2026-10-25)
 Session `session_01Wmj8xaLtwcqiS3qwC6PciW`. Integration branch `claude/undertow-lead-handoff-ze8rrn`. Newest first.
 
+- **Big14 (lead/gate-big14) is merged into claude/audio. The blockers it lifted are closed (9c6fea374):**
+  - The cutscene sequencer now plays music.json cues on the deck (M2-AUD-07), so the stem cutscenes play whole.
+    `undertow_reach` became an alias cue. M3-AUD-834 is done.
+  - The Reefball outfitter is live, tested on the real class. ShrineTravelMenu was already live.
+  - **The audit was widened** (Act I scope: Ch10+ foes and skills are skipped). It now has **Intros** (each boss its own
+    sting) and **Abilities** (each Act I skill's effect its own sound, M3-BPR-421).
+  - **What it finds now:**
+    1. **6 boss intros share `sting_boss`:** hullgnaw, bottle_hermit, spar_wraith, cinder_matron, inquisitor and the Reach. Only the Drownbell has its own. **Doing now.**
+    2. **86 Act I abilities borrow a generic hit, heal or status row** (M3-BPR-421), plus the `swing` and `reel` Swell styles. **Next, after the Lead's seam pass.**
+  - **The 14 new Act I creature models (big13/creatures-b) all have their own voices.** Hits and deaths come from the
+    engine, and the new idle/hit clip variants need no sound of their own. Ethren, Hesk and Nhoa are Act II, so paused.
+
 - **M3-AUD-861, more Act I gaps closed (pushed):**
   - **The Ch8 boss played the default battle music.** The `undertows_reach` encounter now plays its own three-stem cue: `dark` (60% HP) brings in stem 1 and `breach` (30%) stem 2.
   - **The seawall's three waves** (`ch08_stair_hold_1..3`) play `seawall_hold`, each starting with one more stem (aliases `seawall_hold_rope` and `seawall_hold_last`).
