@@ -87,7 +87,10 @@ class ZoneMapPoiTest(unittest.TestCase):
                 elif kind == "layout":
                     got = tuple(layout[ref]) if ref in layout else None
                 elif kind in GREYBOX_SOURCES:
-                    got = greybox_point(shapes, kind, ref)
+                    # A story zone laid on another zone's map (Ch4's wake on Haluna) keeps its spawns,
+                    # triggers, actors and marks in its own layout: the entry's "points" names it.
+                    points = json.loads(res(z["points"]).read_text(encoding="utf-8")) if "points" in z else shapes
+                    got = greybox_point(points, kind, ref)
                 else:
                     got = None
                 where = f"{z['id']}/{p['id']} ({p['source']})"

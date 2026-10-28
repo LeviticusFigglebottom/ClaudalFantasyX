@@ -412,3 +412,45 @@ SELF-RENDERED @ f6db67f0f:
 - **battle_boss_intro_drownbell and battle_hud_preview:** faces on every hero chip and row, and each foe's picture in its diamond.
 - **field_objective_line, save_shrine_field, field_hero_party:** clean.
 MERGE-READY @ 588faa1a: M3-UI-101 (a foe's picture fills its timeline diamond; a petrified face greys under the strata) and the field HUD audit (no stand-ins). Checks: battle 765/0, battle_portraits 3/0, party 30/0, status 51/0; lint clean; shots self-rendered and viewed. Skipped: coverage (game/ui only, no battle core change).
+- 2026-10-28 04:25, **the Lead's 04:02 list:**
+  - **(1) big13 merged** into claude/ui (d984de2c1, pushed). The full suite is running on it; the result follows in the MERGE-READY line.
+  - **(2) Dialogue portraits as characters lands them.** claude/characters merged at c99275a1f. The **Stillguard** (M3-CHR-508; 4 Act I lines) is baked as `stillguard_neutral.png` (fc13fc1eb). Its stage has no face-pose table, so it gets neutral only; test_hero_portraits allows that for a speaking extra. Characters has no other new named NPC yet (Tavi, Kell, Garo, Ivo, Neme, Pell, Osu and Fenn are not modelled). I check again about every 30 min.
+  - **(3) Field HUD pass over the dressed areas:** new shots `field_hud_over_{haluna,oruvel,tamsule,corrow_night}` hold all four overlays at once. Fixes (721efa2f0):
+    - **Tip card vs area title (a real collision):** both show when the field first takes input. Corrow's long night name, "Corrow, the Night of the Ebbing", ran under the tip card. The tip card's top moved below the title band (y 156 → 396). test_field_hud_legibility keeps them apart at five aspects and checks every Act I name fits the title.
+    - **The cue's distance words** ("A short walk") were illegible over Haluna's bright sky, because they float with no plate. They now carry a 6 px outline (`label_outline_px`).
+    - **The title band** is deeper, at alpha 0.55 → 0.65, for bright clouds.
+    - `field_tip_card`'s baseline moves with the tip card (expected).
+  - **(4) Input pass:** test_input_parity_glyphs now reads every loc row (12349380c):
+    - every `{field_*}`/`{ui_*}` token is a real action;
+    - pad-button actions read as the pad button after a pad press and as the key after a key press;
+    - stick-only actions (movement and camera) must say "stick" in their line;
+    - no Act I row names a binding in plain words;
+    - the interaction and Ch9 hold keycaps and Ch1's shutter follow the device.
+    It caught one: the Ch1 tether tutorial said "Press interact". It now names `{field_interact}` (932916b1d; a one-token .dlg fix, recompiled with dlgc). **narrative: FYI.**
+SELF-RENDERED @ 24bc20e15 (the shots' scratch interactable left of the cue): field_hud_over_haluna, field_hud_over_oruvel, field_hud_over_tamsule, field_hud_over_corrow_night, field_tip_card. What I saw:
+- **Haluna (bright sand and sky):** all four overlays read. The cue's outlined "A short walk" is legible over the clouds.
+- **Oruvel (open water):** clean; the edge arrow sits top right.
+- **Tamsule (water and bright sky):** clean.
+- **Corrow at night:** the long title is clear of the tip card, which sits below the band. The cue and its words read over the dark sea.
+- No baselines written. No open render request.
+- 2026-10-28 05:10, **the named Act I NPCs landed on claude/characters** (M3-CHR-526..539). Merged at a1c155de9.
+  - **Baked dialogue portraits** (a2882374b): 20 speaking townsfolk, five emotions each (neutral, smile, determined, worried, grief), from their villager stages and face-pose tables. PROVENANCE rows added.
+    - Named: Tavi, Kell, Garo, Neme, Osu, Fenn, Hobb, Marra, Sabe, Ione, Skipper Sadi.
+    - By role: the poolkeeper, scale-man, ferrymaster, tender, Reed, net-mender, fisher, vendor and child.
+  - **New guard:** test_dialogue_box fails when an Act I speaker's model lands without a baked portrait.
+  - **Not modelled yet:** Ivo (M3-CHR-540, a Stillguard variant) and Pell. They show no portrait (no initial letter) until they land.
+SELF-RENDERED @ a2882374b: portraits for all 20 NPCs (contact sheets of neutral, plus Tavi's and Marra's five emotions). What I saw: faces centred, hair and headwear inside the frame, and each emotion reads. The child's portrait frames a little smaller (a smaller body), which is acceptable.
+- 2026-10-28 05:15: Liss's soft fringe (M2-CHR-521) merged at 201cde902. Her five portraits were rebaked (296ceb696) and compared with the old ones: the fringe now falls in soft clumps. characters' later skirt floor drape (M2-CHR-522) is a kneel-only change and touches no portrait, so nothing was rebaked for it.
+MERGE-READY @ 296ceb696: the Lead's 04:02 list.
+- big13 merged.
+- Field HUD legibility over Haluna, Oruvel, Tamsule and Corrow at night (four new shots, the tip card below the title band, the cue words outlined).
+- Act I input glyphs (test_input_parity_glyphs covers every prompt; the tether line fixed).
+- Dialogue portraits: the Stillguard, 20 townsfolk, and Liss rebaked.
+Checks:
+- Full suite at 296ceb696: 3040 run, 2 failed, both outside UI and both present before this work:
+  - test_hero_field_snaps (Asha and Rhen snap in tamsule_bell_galleries, coilspire and drowned_choir; hero-motion);
+  - test_qa_capsules (ossa_fen shows Pell as a capsule; Pell is not modelled yet).
+- gdlint and gdformat clean; validate_data 0 errors; dlgc --check clean.
+- Shots self-rendered and viewed (see the SELF-RENDERED lines above).
+Expected baseline moves at the Lead's gate: field_tip_card (the card sits lower), and the four new field_hud_over_* shots.
+Skipped: coverage (no game/battle or game/progression change).

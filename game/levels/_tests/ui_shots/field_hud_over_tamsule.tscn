@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://game/levels/_tests/ui_shots/field_hud_over_shot.gd" id="1_drv"]
+
+[node name="FieldHudOver" type="Node3D"]
+script = ExtResource("1_drv")
+backdrop = "res://game/levels/_tests/tamsule_port_kit/tamsule_port_kit.tscn"
+location = &"ch07/tamsule"
+flags = Array[StringName]([&"ch07_arrived"])

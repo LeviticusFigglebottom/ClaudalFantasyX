@@ -7467,6 +7467,82 @@
         540
       ],
       "settle_frames": 60
+    },
+    {
+      "id": "field_hud_over_haluna",
+      "scene": "res://game/levels/_tests/ui_shots/field_hud_over_haluna.tscn",
+      "camera": "Backdrop/Cameras/H02",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "field_hud_over_oruvel",
+      "scene": "res://game/levels/_tests/ui_shots/field_hud_over_oruvel.tscn",
+      "camera": "Backdrop/Cameras/O19",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "field_hud_over_tamsule",
+      "scene": "res://game/levels/_tests/ui_shots/field_hud_over_tamsule.tscn",
+      "camera": "Backdrop/Cameras/TP03",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "field_hud_over_corrow_night",
+      "scene": "res://game/levels/_tests/ui_shots/field_hud_over_corrow_night.tscn",
+      "camera": "Backdrop/Cameras/Strand",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
     }
   ]
 }
