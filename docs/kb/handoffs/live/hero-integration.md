@@ -588,3 +588,11 @@ MERGE-READY @ 44295d79: as above, and the runner's leak check reports (LEAK line
 
 MERGE-READY @ c9cb7dc9: the stairs leak, the runner's leak report, the hero tests' cleanup, M3-HER-1131 (the Liss vigil
 seam). Checks: full suite (above), hero_foot_ik 5/0, hero_battle_actor 5/0, hero_battle_pops 3/0, gdlint, taskboard.
+
+BACKLOG EMPTY (2026-10-28 ~01:15): what's left waits on other tracks.
+- Kerrid's and Pell's field and battle bodies: no models on claude/characters yet (M3-CHR-505, M3-CHR-506).
+- Taking KNOWN entries out as their owners land fixes: M2-HER-1113 (the cutscene patch), M2-HER-1127, M2-HER-1128,
+  M3-HER-1126, M3-HER-1129, M3-HER-1131.
+- Switching the leak report to a failure once M3-HER-1130's list is empty.
+- M3-ARC-1216: act1-chapters places the stair flights.
+On every new integration batch or track head, I re-run qa_ and hero_ and file what fails.
