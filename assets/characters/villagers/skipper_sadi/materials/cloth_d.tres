@@ -18,3 +18,4 @@ shader_parameter/tex_normal = ExtResource("t3")
 shader_parameter/tex_orm = ExtResource("t4")
 shader_parameter/col_albedo = Color(0.114, 0.098, 0.086, 1)
 shader_parameter/detail_tiling = 150.0
+shader_parameter/sheen_intensity = 0.12

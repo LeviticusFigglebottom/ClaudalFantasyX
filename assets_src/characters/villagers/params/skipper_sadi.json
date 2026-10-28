@@ -63,7 +63,8 @@
     "bun_r_m": 0.034,
     "bun_ribbons": 28,
     "colour": "#141417",
-    "underpaint": "#16161A"
+    "underpaint": "#16161A",
+    "spec": "#6A6460"
   },
   "_eyes": {
     "iris": "#24170E"
@@ -93,7 +94,9 @@
       "edge_lift": -0.02,
       "band_m": 0.024,
       "seed": 129,
-      "off_m": 0.006
+      "off_m": 0.004,
+      "edge_off_m": 0.0015,
+      "press_hair": 0.002
     }
   },
   "_tints": {
@@ -112,5 +115,10 @@
     "sway": 1.2,
     "lean": 1.0,
     "arms_down": 41.0
+  },
+  "_cloth_params": {
+    "cloth_d": {
+      "sheen_intensity": "0.12"
+    }
   }
 }
