@@ -4587,6 +4587,101 @@
           "screen_space_aa": 1
         }
       }
+    },
+    {
+      "id": "zone_oruvel_o01",
+      "scene": "res://game/levels/_tests/oruvel_zone_dressing/oruvel_dressed.tscn",
+      "camera": "Cameras/O01",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "zone_oruvel_o07",
+      "scene": "res://game/levels/_tests/oruvel_zone_dressing/oruvel_dressed.tscn",
+      "camera": "Cameras/O07",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "zone_oruvel_o09",
+      "scene": "res://game/levels/_tests/oruvel_zone_dressing/oruvel_dressed.tscn",
+      "camera": "Cameras/O09",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "zone_oruvel_o12",
+      "scene": "res://game/levels/_tests/oruvel_zone_dressing/oruvel_dressed.tscn",
+      "camera": "Cameras/O12",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "zone_oruvel_o16",
+      "scene": "res://game/levels/_tests/oruvel_zone_dressing/oruvel_dressed.tscn",
+      "camera": "Cameras/O16",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
     }
   ]
 }
