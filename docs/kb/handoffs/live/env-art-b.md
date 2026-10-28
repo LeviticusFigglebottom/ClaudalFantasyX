@@ -308,8 +308,23 @@ that test at this branch's zones.
   - The rendering board's other todos are battle VFX (battle-presentation's, per the owners split), Ch1 underwater (env-art's chapter), or M2 items blocked on others.
   - Next: the `ebbing_*` baselines and M3-ARC-1326. When the hook lands, play Ch9 through its cues and view N08 to N15.
 
+- **Player-height placeholder audit, Ch5–Ch9 (the Lead, 15:33):** 44 walk views at eye height along each zone's path, plus every registered Ch8 and Ch9 Corrow shot, all viewed.
+  - **Fixed @ 26a674f8:**
+    - **The Corrow bastion yard** (the wall's west end, by the Stillguard barracks) was the low town's sand-and-cobble ground raised to walk level: a flat sand pad with hard-edged stone patches. It is now paved in the walk's laterite (`material_paths`) and dressed with ten pieces of stair-watch clutter inside its rims (crates, sacks, shields, rope, nets; two skipped for story-point clearance). This covers Ch8 and Ch9.
+    - **Ch9's rubble at night** (the rip-rap, the breach, the strand rocks, the low-town rubble, the milestone) read as wet black pillows, the look GPU QA row 28 flagged. Its `cw_rubble` slot is now the kit's dry broken laterite.
+  - **Explained, not mine:**
+    - The trader boat's white box bales (Tamsule, Corrow): env-art's piece, request M3-ENV-1316.
+    - Ashcrown's flat mint and red lacquer posts and strips: env-art's kit materials, M3-ENV-1316.
+    - Pell and `kerrid_stair` as capsules: no field body yet, characters' M3-C09-08 (M3-CIN-1217 lists them).
+    - Pemakar's black flank above the town at night: the colour script's ch05 fill of 0.25, so the lamps read.
+  - **Sampling artifacts, not defects:**
+    - Views starting inside the party's heads.
+    - One Coilspire view interpolated through the hill.
+  - **Checks run:** Godot `ch08` (23), `ch09` (12), `zone_kit` (12), validate_data. **MERGE-READY @ 26a674f8.**
+
 ### Render requests
 (Self-rendered per TRACK-RULES; lines are SELF-RENDERED notes.)
+SELF-RENDERED @ 26a674f8: ch08_corrow_arrival, _stair, _flood, _lake, _storm, ch09_corrow_strand, _road, _landing, _rocks, plus 44 scratch walk views and three bastion views. Viewed: the yard is paved and dressed, Ch9's rocks and rubble read as broken laterite, and nothing regressed.
 SELF-RENDERED @ 50db241b: ebbing_n11, ebbing_n08 (new), plus a strand view (scratch). Viewed: cyan held motes over the harbour, mirrored in the still water and sinking seaward. N11's river overhead reads above and below the waterline, and nothing is gold or rising.
 SELF-RENDERED @ 9c8e9c99: battle_ch08_stair_hold. Viewed: no capsule, and the anchors are invisible so the frame is unchanged. Also viewed `undertows_reach` at the default camera and the new `the_stair_head` hint (scratch): the head landing and its down-steps read clearly from the walk.
 SELF-RENDERED @ 9a9c0043: battle_arena_camp, battle_arena_shoals. Viewed: the columns rise behind the camp, and the fires read as fire up close, with round beds and no trays.
