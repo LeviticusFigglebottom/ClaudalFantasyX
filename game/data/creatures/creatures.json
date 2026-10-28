@@ -21,7 +21,7 @@
   "creatures": {
     "stormgull": {"scene": "res://game/creatures/stormgull/stormgull_battle.tscn", "vfx_anchors": {"core": "body", "wound": "neck"}, "contact": {"attack": 0.75}, "stand_in": {"yaw_deg": 60.0, "hover": 1.05}, "portrait": {"yaw_deg": 60.0, "pitch_deg": 20.0}},
     "wallcrab": {"scene": "res://game/creatures/wallcrab/wallcrab_battle.tscn", "vfx_anchors": {"core": "body", "wound": "body"}, "contact": {"attack": 0.5, "cast": 0.7}},
-    "flue_moth": {"scene": "res://game/creatures/flue_moth/flue_moth_battle.tscn", "vfx_anchors": {"core": "thorax"}, "contact": {"attack": 0.5, "cast": 0.6}, "portrait": {"rim_energy": 2.8, "kick_energy": 1.8}},
+    "flue_moth": {"scene": "res://game/creatures/flue_moth/flue_moth_battle.tscn", "vfx_anchors": {"core": "thorax", "wound": "head"}, "contact": {"attack": 0.5, "cast": 0.6}, "portrait": {"rim_energy": 2.8, "kick_energy": 1.8}},
     "undertows_reach": {
       "scene": "res://game/creatures/undertows_reach/undertows_reach_battle.tscn",
       "contact": {"attack": 1.2, "cast": 1.3, "attack_dark": 1.2, "cast_dark": 1.3, "attack_breach": 1.2, "cast_breach": 1.3},
@@ -35,14 +35,14 @@
       },
       "portrait": {"rim_energy": 2.8, "kick_energy": 1.8}
     },
-    "vein_sparker": {"scene": "res://game/creatures/vein_sparker/vein_sparker_battle.tscn", "vfx_anchors": {"core": "spine2"}, "contact": {"attack": 0.42, "cast": 0.7}},
+    "vein_sparker": {"scene": "res://game/creatures/vein_sparker/vein_sparker_battle.tscn", "vfx_anchors": {"core": "spine2", "wound": "tail1"}, "contact": {"attack": 0.42, "cast": 0.7}},
     "wall_polyp": {"scene": "res://game/creatures/wall_polyp/wall_polyp_battle.tscn", "vfx_anchors": {"core": "base", "wound": "base"}, "contact": {"attack": 0.46, "cast": 0.6},
       "portrait": {"rim_energy": 2.8, "kick_energy": 1.8}
     },
     "wreck_crab": {"scene": "res://game/creatures/wreck_crab/wreck_crab_battle.tscn", "vfx_anchors": {"core": "body", "wound": "body"}, "contact": {"attack": 0.5, "cast": 0.7}},
     "squall_wing": {"scene": "res://game/creatures/squall_wing/squall_wing_battle.tscn", "vfx_anchors": {"core": "body", "wound": "body"}, "contact": {"attack": 0.62}, "stand_in": {"yaw_deg": 60.0, "hover": 1.2}, "portrait": {"rim_energy": 2.8, "kick_energy": 1.8}},
     "tide_crawler": {"scene": "res://game/creatures/tide_crawler/tide_crawler_battle.tscn", "vfx_anchors": {"core": "body", "wound": "body"}, "contact": {"attack": 0.55}, "portrait": {"rim_energy": 2.8, "kick_energy": 1.8}},
-    "raid_hound": {"scene": "res://game/creatures/raid_hound/raid_hound_battle.tscn", "vfx_anchors": {"core": "chest"}, "contact": {"attack": 0.5}},
+    "raid_hound": {"scene": "res://game/creatures/raid_hound/raid_hound_battle.tscn", "vfx_anchors": {"core": "chest", "wound": "chest"}, "contact": {"attack": 0.5}},
     "shoal_skipper": {"scene": "res://game/creatures/shoal_skipper/shoal_skipper_battle.tscn", "vfx_anchors": {"core": "spine1", "wound": "spine1"}, "contact": {"attack": 0.5}},
     "cinder_matron": {"scene": "res://game/creatures/cinder_matron/cinder_matron_battle.tscn", "clip_by_skill": {"slag_pour": "attack", "bank_the_fire": "cast", "recrust_gather": "cast", "recrust": "cast"}, "contact": {"attack": 0.85}, "phases": {"pour": {"clip": "phase_change", "idle": "idle", "hide": ["Crust"], "sec": 0.0}}},
     "slag_tortoise": {"scene": "res://game/creatures/slag_tortoise/slag_tortoise_battle.tscn", "vfx_anchors": {"core": "shell", "wound": "shell"}, "contact": {"attack": 0.55}},
