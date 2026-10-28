@@ -494,6 +494,28 @@ Ch4–Ch9 onward. `m2-slice.md` beside this file is the history up to the 2026-1
     - dlgc and validate_data are clean.
   - **No new render:** none of this changes a frame (the steps shot is captured before the verse).
 
+- **SELF-RENDERED @ 13137039** (lavapipe in this container, TRACK-RULES 01:00; no baselines written).
+  - **Shrine GI rebaked here** (58d25969); test_shrine_gi_bake passes.
+  - **Pass (viewed, reads right):**
+    - slice_beach_h05_asha: Asha close, her face above the box, on her own line;
+    - slice_beach_h06_toma: reframed; Toma and his level spear at right, Asha left;
+    - slice_causeway_harrier_view: the harrier in C07's sky;
+    - slice_verse_hall;
+    - slice_verse_steps: S06 reframed twice; both faces now, sunset-lit;
+    - slice_prologue_p01: retimed past the fade; textured Iskarra at dusk;
+    - slice_prologue_vigil_line;
+    - ch01_o07_name_board: the insert on Sadi's line;
+    - ch01_underway_gallery;
+    - shrine_s01_approach (the offering steps), shrine_s02_threshold, shrine_s03_overview;
+    - save_shrine_field: the kit shrine model;
+    - ch01_oruvel_storm (new): the real Undertow on O11.
+  - **Drift, as expected:** slice_dock_night_yes (env-art's Haluna dressing and the night hide). It reads, but
+    Asha is small at the dock end, since B11 is the rail camera.
+  - **Seen in the renders, and not mine:**
+    - Rhen's stand-in poses on the beach and the steps (his clips; requested_clips.json, M3-CHR-1000);
+    - the LifeAudio freed-cast error at every scene exit (filed **M3-AUD-101**).
+  - **Lead:** the drifted and new shots above need your viewing and baselines.
+
 ### Render requests
 SUPERSEDED RENDER-REQUEST @ fdec3cc6: slice_prologue_vigil_line, slice_beach_h05_asha, slice_beach_h06_toma, slice_haluna_villagers_village, slice_causeway_head, slice_causeway_harrier_view, haluna_h01_village_from_sea, haluna_h02_tidewall_lane, haluna_h04_dock, haluna_h07_chapel_court, haluna_h10_dock_night, shrine_s01_approach, shrine_s02_threshold, shrine_s03_overview, shrine_s04_lip, shrine_s05_side_pool, drownbell_flood, battle_boss_intro_drownbell, battle_arena_causeway, field_causeway_dolly, boot_title; why: M2-FP-102..109, the human's playtest round (real cast and held poses in the prologue and Cutscene A, live villagers and wildlife, the final causeway), plus the greyscale audit of every slice beat. The six slice_* shots are new (no baseline yet).
 - **Known red until the render lands:** the six new `slice_*` shots have no baseline yet, so the tools test
@@ -524,4 +546,4 @@ SUPERSEDED RENDER-REQUEST @ 416fcf64: slice_beach_h05_asha, slice_beach_h06_toma
 SUPERSEDED RENDER-REQUEST @ b04c62cc: slice_beach_h05_asha, slice_beach_h06_toma, slice_verse_steps, slice_verse_hall, slice_prologue_p01, slice_prologue_vigil_line, shrine_s01_approach, shrine_s02_threshold, shrine_s03_overview, slice_causeway_harrier_view, slice_dock_night_yes, ch01_underway_gallery, ch01_o07_name_board, gi_bake:shell_shrine; why: the 416fcf64 set, plus the Prologue on env-art's newest Iskarra (M3-ENV-724: the far skyline, textures, the fog from 70 m). Bake before the shrine shots. Supersedes 416fcf64.
 SUPERSEDED RENDER-REQUEST @ e24d05f1: slice_beach_h05_asha, slice_beach_h06_toma, slice_causeway_harrier_view, slice_verse_hall, slice_verse_steps, slice_prologue_p01, slice_prologue_vigil_line, slice_dock_night_yes, ch01_o07_name_board, ch01_underway_gallery, shrine_s01_approach, shrine_s02_threshold, shrine_s03_overview, gi_bake:shell_shrine; why: the fixes after viewing ead04ba (hold_line on the beach and O07, H05/H06, C07's harrier), plus everything changed since (Iskarra and the prologue's water, the offering steps, the First Verse's offerings and S07/S08). Bake before the shrine shots. Supersedes 37f8bb9b.
 SUPERSEDED RENDER-REQUEST @ a615b844: slice_beach_h05_asha, slice_beach_h06_toma, slice_causeway_harrier_view, slice_verse_hall, slice_verse_steps, slice_prologue_p01, slice_prologue_vigil_line, slice_dock_night_yes, ch01_o07_name_board, ch01_underway_gallery, shrine_s01_approach, shrine_s02_threshold, shrine_s03_overview, gi_bake:shell_shrine; why: the e24d05f1 set (the shots changed since my last approved render: hold_line, H05/H06, C07's harrier, Iskarra and the prologue water, the offering steps, the First Verse), plus dock_night without the freed-villager errors. Bake before the shrine shots. This is the only open request.
-RENDER-REQUEST @ 186848eb: slice_beach_h05_asha, slice_beach_h06_toma, slice_causeway_harrier_view, slice_verse_hall, slice_verse_steps, slice_prologue_p01, slice_prologue_vigil_line, slice_dock_night_yes, ch01_o07_name_board, ch01_underway_gallery, shrine_s01_approach, shrine_s02_threshold, shrine_s03_overview, save_shrine_field, gi_bake:shell_shrine; why: the a615b844 set plus the save shrine's kit model (M3-ENV-101). Bake before the shrine shots. The only open request.
+SUPERSEDED RENDER-REQUEST @ 186848eb: slice_beach_h05_asha, slice_beach_h06_toma, slice_causeway_harrier_view, slice_verse_hall, slice_verse_steps, slice_prologue_p01, slice_prologue_vigil_line, slice_dock_night_yes, ch01_o07_name_board, ch01_underway_gallery, shrine_s01_approach, shrine_s02_threshold, shrine_s03_overview, save_shrine_field, gi_bake:shell_shrine; why: the a615b844 set plus the save shrine's kit model (M3-ENV-101). Bake before the shrine shots. The only open request.
