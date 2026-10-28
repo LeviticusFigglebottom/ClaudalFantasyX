@@ -25,7 +25,9 @@ ADR 0041: clear env-art's rows of `docs/kb/qa/act1_final_inventory.md` (integrat
 - [x] Ch4 `derelict_deck_night.tscn`, 7 SphereMesh flames → the kit's `lamp_flame` (a teardrop on
       `kit_lamp_flame_hot`); also `ash_terrace_lanternfall` (Ch5). Lowlight's teal flames (Act II, paused) keep
       the bead until they get a piece of their own.
-- [ ] Ch4 `brightwater_ferry.tscn`, 4 kept greybox blocks (SternGate, NameBoardWrapped, IsletRock, Gangplank).
+- [ ] Ch4 `brightwater_ferry.tscn`, 4 kept greybox blocks: the ferry kit's `islet_landing`, `gangplank`, `stern_gate`
+      and `terrace_name_board_wrapped` (bf_landing.py), previewed in `game/levels/_tests/brightwater_landing/`;
+      act1-chapters places them (M3-ENV-749).
 - [ ] Ch4 `haluna_wake.tscn`, 41: dressed (M3-ENV-743); act1-chapters mounts it (M3-ENV-744).
 - [ ] Ch2 `banyan_placeholder` / `windbreak_placeholder` (medium, low): real trees under their old names.
 - [ ] `tamsule_bell` drop proxy (low): see Notes.
