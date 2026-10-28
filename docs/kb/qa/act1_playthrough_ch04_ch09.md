@@ -11,22 +11,20 @@ Owner per row: **act1-chapters** fixes cameras, staging, flow and encounters; th
   cameras on the derelict, Pemakar, the shoals, the galleries and Corrow moved clear (d150d529).
 - Ch8's three field fights have arenas (41bc33e7).
 
+- Second pass (viewed again in the re-rendered stills): Garo faces the camera in P07 and P09_garo, Kerrid at the inn
+  gate (P06N), Toma's face in the raid (W07) and on the barge (W12_crate), Tavi on the prow (R06), the moorings above
+  the water (R09), N12 off the moon onto the raft, the wall-walk shots W12/W13 on the party; **ch08_captain staged as
+  ADR 0022 (c) pins it** (Kerrid, Marra and the climbers at the flooded stair foot before the scene; W15 above the
+  flood's water, W16 on Marra); Ch9's road D03 moved onto the road behind the line (it stood beyond the parapet).
+
 ## Open, act1-chapters (cameras and staging)
 | Ch | Scene / shot | What reads wrong |
 |---|---|---|
 | 4 | ch04_name_board D06, ch04_seventh_terrace D01, F05; ch04_spar_wraith D05 | the derelict at night: dark frames with no subject (sea, rigging); the wraith reads only as its motes |
-| 5 | ch05_smiths_question P07, release | Garo's back fills the frame; the release frames the ground |
-| 5 | ch05_lanternfall_boats P09_garo | feet only |
-| 5 | ch05_inn_gate P06N | Asha's side, cut at the head |
-| 6 | ch06_barge W12_crate; ch06_raid W07; ch06_midday W02_share | legs only; the back of Toma's shield; a hull from inside |
-| 7 | ch07_after_the_bell R06 | cut through a boat's hull |
-| 7 | ch07_empty_moorings R08, R09 | at the waterline, the posts fill the frame |
-| 8 | ch08_captain W15, W16; ch08_stranger_on_wall W13; ch08_hoist W12 | black or near-black: inside the wall or its shadow |
+| 7 | ch07_empty_moorings R08 | at the waterline, the posts fill the frame |
 | 8 | ch08_wall_gate W07; ch08_run_back W07_storm | the gate as a black silhouette, no one in frame |
 | 8 | ch08_storm_against_wind / ch08_beacon_opened F08_key | the wheel half behind the dark flue wall |
-| 9 | ch09_the_ebbing N09; ch09_the_road_out P04 | feet / the road surface only |
-| 9 | ch09_the_road_out D02, D03 | empty sky; the parapet's barrels only |
-| 9 | ch09_the_ebbing N12 | the moon's bloom whites out the frame (aim off the moon) |
+| 9 | ch09_the_ebbing N09 | the mourner's open hand (as written) frames a body: needs a mourner posed on the shingle |
 
 ## Open, other owners (filed)
 | Ch | What | Owner / task |
