@@ -226,6 +226,28 @@ cutscene sequencer (`game/cutscene/**`), `game/flow/**` and the playtest fixes.
     capsules (ch02/haluna) are slice-polish's.
   - Checks on the merged tree: act1_cutscene_walks, qa_save_shrines, zone_map, ability_vfx, ch04-ch09, hero_cutscene_snaps
     green; villager_routines' two Oruvel/layer await failures and the Haluna capsules are other tracks'.
+- **MERGE-READY @ 81b997807: the playthrough's third pass and the field POI pass** (Lead brief 10-28; details in
+  `docs/kb/qa/act1_playthrough_ch04_ch09.md`).
+  - Cutscene cameras (7000ae2b5): R08 off the waterline; W07 and W07_storm west of the gate (they sat inside the
+    gate leaves, which have no collision); F08_key from the north, with Asha placed at the wheel (`great_key_asha`, a
+    ch08.json `place_actor` before ch08_beacon_opened); N09 frames the standing mourner (the kneel is M3-C09-08 §5).
+  - Field cameras: every Ch4–Ch9 zone map POI (69) rendered at the hub orbit's default view. The wake now uses
+    ch02/haluna's own CameraVolumes (Ch04Zone rebuilds them from that scene's SceneState) plus Neme's door (c48cba476).
+    Pan-follow `camera_volumes` were added where the orbit saw a sail, roof, wall or beacon: the ferry (775a44dd0),
+    Pemakar's harbour (e66297f98), Tamsule's stilt lane, Corrow's wall-gate, the Coilspire (the hut, each tier, the
+    gallery's two halves) and Ch9's road gate, milestone and wall head (3e43e1e71). **For env-art-b:** these are
+    camera entries in the layouts (the act1-chapters lane); keep them if you regenerate.
+  - Pacing scan: only pinned holds (ch08_wall_falls rule 4, ch09_the_stair ADR 0022 (f), the Ebbing). Balance: no spike
+    or trivial fight showed, so no sim run.
+  - Checks: `--filter=` ch0 107/0, zone 74/0, camera 54/0 (new `test_ch08_coilspire_camera` 2/0,
+    `test_the_wakes_field_camera_is_halunas`), ch07 18/0, ch08 23/0, ch09 12/0, hero_cutscene_snaps 1/0,
+    act1_cutscene_walks 1/0; validate_data, dlgc --check, taskboard --check, gdlint, gdformat clean;
+    `tools.tests.test_chapter_flow` and the new `tools.tests.test_act1_poi_views` OK (`tools/act1/poi_views.py`, the
+    POI pass as a tool). Skipped: coverage and sim (no battle or progression code).
+  - SELF-RENDERED @ 81b997807: ch04_ferry_deck PASS 0.0014, ch05_pemakar_crown PASS 0.00002, ch04_haluna_wake_lane
+    (no baseline: the lane at night with the folk under the lamps; approve at the gate), ch04_haluna_wake_feast (no
+    baseline; re-aimed from east of the mats because a palm trunk crossed the old frame; approve at the gate).
+    ch07_tamsule_quay and ch07_tamsule_lane are no longer in shots.json (env-art-b's manifest won the merge).
 - **Playthrough (Lead brief 10-28):** `docs/kb/qa/act1_playthrough_ch04_ch09.md` (181 stills of every Ch4-Ch9 cutscene
   played in flow order, `tools/act1/cutscene_stills`; camera solver `tools/act1/shot_check`). Two passes fixed: the
   wake staging, Coilspire's cameras, 16 blocked shots, ch08_captain staged at the flooded stair foot (ADR 0022 (c)),
@@ -284,11 +306,13 @@ RETIRED (TRACK-RULES 10-28 01:00, tracks self-render; rendered below) @ 760a0e4c
 SELF-RENDERED @ c242d54d: ch05_pemakar_harbour (no baseline: the re-aimed harbour view reads, the stair and lit houses under Ashcrown's lamps; approve at the gate), ch06_brine_road PASS 0.0032 (Kerrid still a capsule, M3-CHR-505), ch06_brine_camp drift 0.0115 (Ch6's kit pieces in place of the last greybox; the Stillguard casts read as red robes at this distance), ch08_corrow_arrival drift 0.072 (the trader boat and the story pieces; the mole's top is flat, env-art's mole_pier), ch08_corrow_stair drift 0.0087 (Kerrid's capsule in the foreground), ch08_coilspire_hall PASS 0, ch09_corrow_strand drift 0.109 (the lit night: shrouds, lamps, the vigil; the landing still greybox, being replaced now), ch09_corrow_road PASS 0.0072 (Kerrid's capsule). For the Lead's gate: all intended.
 
 ## Exact next step
-1. Self-render (TRACK-RULES) the shots this batch changed and view them: ch04_ferry_deck, ch05_pemakar_harbour,
-   ch05_pemakar_crown, ch08_corrow_arrival, ch08_corrow_stair, ch08_coilspire_hall, ch09_corrow_strand,
-   ch09_corrow_road and the four new ones; write SELF-RENDERED lines. (Viewed already as previews; baselines are the
-   Lead's gate's.)
-2. Queue item 6, the cutscene quality bar, on the Act I scripts (easing, HeroMotion, no snapping, no greyscale
-   frames, villagers alive).
+1. Nothing left in my lane on the Ch4–Ch9 playthrough list. Every open row waits on another track, each with its
+   request: the derelict's and Pemakar harbour's night grades (M3-ENV-1228, M3-ENV-1229); Ashcrown's kit and its
+   field volumes after it (M3-ARC-1216); the kneeling mourners for N09 (M3-C09-08 §5); the stand-ins (Virel
+   M3-CRE-627, Kerrid M3-CHR-505, Pell M3-CHR-506, Liss M3-C06-06, Sefir M3-HER-1225, the storm figure M3-RND-28,
+   the column and storm M3-RND-27); drowned_choir's body pop (M3-HER-1230); the freed sequencer cast (M3-HER-1227).
+2. When any of those lands: re-run `tools/act1/cutscene_stills` for that zone's visit and the POI views
+   (`GODOT=<binary> python3 tools/act1/poi_views.py --zones <id> --render <dir>`: each POI's field view, its layout
+   volume's camera or else the hub orbit), and re-aim D06 at the name-board (-9.24, 0.85, 21.04)
+   once the derelict reads.
 3. Act II is PAUSED (ADR 0041): its tasks and my requests for it are `status: blocked`, `blocked-by: ADR 0041`.
-4. Blocked or waiting: Ashcrown (M3-ARC-1216), the stand-ins above (their requests), the Reefball HUD (M3-UI-01).
