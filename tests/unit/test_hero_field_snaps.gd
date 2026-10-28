@@ -19,6 +19,7 @@ const MOVES: Array[Array] = [
 const KNOWN := {
 	"coilspire.tscn:rhen": "M3-HER-1129 (act1-chapters: a 2 m drop beside the PathFoot spawn, and its landing pop)",
 	"haluna_wake.tscn:rhen": "M3-HER-1154 (act1-chapters: the NemeDoor spawn stands 7.8 m above the ground)",
+	"haluna_wake.tscn:toma": "M3-HER-1154 (act1-chapters: the NemeDoor spawn stands 7.8 m above the ground)",
 	"drowned_choir.tscn:rhen": "M4-C14-02 (Act II greybox, paused by ADR 0041: a 9 m/s drop off an edge at frame 310)",
 }
 

@@ -178,7 +178,8 @@ func test_followers_turn_to_face_who_rhen_talks_to() -> void:
 		_step()
 	var asha := party.body_of(&"asha")
 	assert_true(asha.loco.speed > 0.5, "she walks on with him")
-	var heading := HeroLocomotion.yaw_of(player.global_position - party.followers[0].global_position)
+	# her walk heads for her follow point (her trail spot, stepped off the camera's line to him when it falls on it)
+	var heading := HeroLocomotion.yaw_of(party.follow_point(0) - party.followers[0].global_position)
 	assert_between(absf(angle_difference(asha.visible_yaw(), heading)), 0.0, deg_to_rad(30.0), "facing her walk again")
 	_done()
 
