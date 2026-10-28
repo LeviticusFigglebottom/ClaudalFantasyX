@@ -24,7 +24,7 @@ part of it; they stay behind a switch until you sign off.
 | **Prologue** | A drowned white city at dusk, and the people of the story keeping a vigil apart. One line of Rhen's older voice. | Does the city read as beautiful and doomed (Pillar 2)? Does the colour hold through "Everyone I'm going to tell you about is still here tonight"? |
 | **B01 Cutscene A, the girl on the beach** | Rhen wakes in the shallows. Asha smiles first, Toma's spear comes in, and two choices follow. The cyan lights in the water are the drowned. | Asha's face: she goes still for half a beat at the lantern. Does the grief land? Are the faces clear of the dialogue box? |
 | **First battle** | On the beach path: a reef crab and a lantern eel. Toma opens it with one line about the turn order. | Do you always know who acts next and what an action costs (Pillar 4)? The timeline is on the right; a highlighted command shows where your turn will land. |
-| **B02 Neme's table** | Noon. A widow who feeds you too much. | Does Neme turn to Rhen when she talks? |
+| **B02 Neme's table** | Noon. Being fed by strangers; Neme's fear shows in how much food there is. | Does Neme turn to Rhen when she talks? |
 | **B03 Haluna by day** | Free to walk. Four people each say a piece of what a "Cantor" is. There are shops, an inn and a save shrine. | Does the village feel lived in (villagers on routines, gulls on the roofs, birds)? Did you put "Cantor" together, or miss it the way Rhen does? |
 | **B04 Pila's Granddaughter** (optional) | Grandmother Osu at the wake-shell wall by the causeway head. | Tone only: is it sincere and quiet? |
 | **B05 Low tide** | At the causeway head, Asha asks Rhen to come "to see it". | Asha and Toma stay in view, and their lines play on them. |
@@ -43,7 +43,7 @@ part of it; they stay behind a switch until you sign off.
 | New Game went to the wrong place | New Game starts the slice again (Prologue → Haluna beach). Act I waits behind its switch. |
 | The opening was greyscale | The dusk frame has a warm rim and a teal fill now. The Prologue stands in env-art's Iskarra (glazed towers, a broken plaza, a skyline of drowned towers) over a real sea. |
 | "Everyone is still here" was grey | The figures wear colour, and Rhen's lantern is the one warm light. |
-| Heroes were placeholders | Rhen, Asha, Toma and Ysolde are their real models, in the field, in battle and in cutscenes. |
+| Heroes were placeholders | Rhen, Asha and Toma are their real models in the field, in battle and in cutscenes, and Ysolde in the Prologue. |
 | Motion was rigid and snapped | Walks ease in and out on their real gait, turns are eased at a hero's pace, held shots breathe, and fades and the letterbox ease. A scene no longer ends with someone jumping to a mark. |
 | Enemies acted twice; a KO replayed | Fixed in combat (M3-CMB-02) and battle presentation (M2-BPR-11). |
 | Villagers were capsules | Haluna's villagers are modelled people on routines who turn and talk to you. There are birds and other wildlife too. |
@@ -58,7 +58,7 @@ Each of these is a known placeholder or gap, and each has an owner:
 | Issue | Owner |
 |---|---|
 | Kerrid, Pell and Liss stand as coloured silhouettes in the Prologue until their models exist. | character / hero track (M3-HER-100) |
-| Rhen has no lying, sitting or wick-trimming clips yet, so on the beach he kneels and on the steps he stands. | character |
+| Rhen has no lying or sitting clips yet (in the shallows, on the shrine steps), so he holds a stand-in pose there. | character |
 | The shopkeeper, the smith and the innkeeper wear other villagers' models. | character (M2-CHR-100) |
 | Behind the shrine's sunken door there is only a dark passage, so Ilun's chamber shows as light over the inner pool. | environment |
 | The music is still prototypes awaiting your listen (`docs/kb/audio/listening_notes.md`). | audio, and your verdict |
