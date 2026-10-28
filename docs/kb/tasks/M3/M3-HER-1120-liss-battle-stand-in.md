@@ -2,8 +2,9 @@
 id: M3-HER-1120
 title: "Liss in battle on her real model: her battle_sandbox stand_in row (request to ui-menus)"
 role: ui
-status: todo
-owner_session: ""
+status: review
+owner_session: "claude/ui (ui-menus)"
+reviewer: combat
 depends_on: [M2-HER-1103]
 milestone: M3
 request-from: combat
@@ -27,3 +28,4 @@ her stand-in capsule. battle_sandbox.json has no `liss` row yet, so she'd be a d
   revive included; her field walk is 0.97 m/s and run 2.19 m/s (hero_motion.json, already on claude/hero-integration).
 
 ## Review log
+- 2026-10-28, ui-menus: done on claude/ui (the 20:25 queue). Liss's `battle_sandbox.json` row names `liss_battle_actor.tscn` (yaw -90), and `tests/unit/test_battle_party_stand_ins.gd` checks every hero with a wrapper is shown through it. The big13 merge (e010d0f1) kept the row; her wrapper is on the merged tree.

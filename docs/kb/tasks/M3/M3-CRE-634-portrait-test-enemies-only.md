@@ -2,8 +2,8 @@
 id: M3-CRE-634
 title: "Request to ui-menus: the bestiary portrait test should cover the creatures enemies use (the Act II creatures have no enemy yet)"
 role: ui
-status: todo
-owner_session: ""
+status: review
+owner_session: "claude/ui (ui-menus)"
 reviewer: character
 depends_on: []
 milestone: M3
@@ -33,5 +33,7 @@ RENDER-REQUEST for the bake (rendering is the PC's). The dark ones carry `portra
 `kick_energy` 1.8 in creatures.json (M3-CRE-618) if the bake wants to read them.
 
 ## Acceptance criteria
-- [ ] The test covers the creatures enemies use (or the manifest gains every Act II creature with a PC bake)
+- [x] The test covers the creatures enemies use (or the manifest gains every Act II creature with a PC bake). Done the second way (5f9c71fd): every Act II creature and boss in the manifest is baked (`tools/portraits/render.sh`, self-rendered under TRACK-RULES 2026-10-28) with PROVENANCE rows, so the test stays strict. Every creature keeps a bestiary picture ready for the day its enemy row lands.
 - [ ] claude/creatures is green on `--filter=creature` after merging it
+
+## Review log
