@@ -372,3 +372,21 @@ SELF-RENDERED @ d9bc59fc: reefball_hud_choice, reefball_outfitter, cutscene_act_
   2. **Dialogue portraits for every named Act I NPC:** next, after the bakes.
   3. **First-hour polish at 1080p and 720p:** after that.
 MERGE-READY @ 9819ba71: M3-UI-211 (faces in the battle HUD, Ysolde and Liss portraits, icons in every menu row, the victory panel), the Act II pause. Checks: battle 765/0, items 13/0, shop 28/0, equip 66/0, input_parity 61/0, pseudo-loc 26/0, aspect 18/0, menu_glyphs, battle_portraits, hero_portraits, creature_portraits, rewards, result; validate_data, taskboard and lint clean; shots self-rendered and viewed. Skipped: the full tools suite (no tools/ change since the last run) and coverage (no game/battle core change; battle_menus and battle_rewards are scene layer, covered by the battle filter).
+- 2026-10-28 05:10, **the Lead's 01:54 list, done:**
+  1. **M3-HER-1147, all three rows are final.**
+     - Ysolde and Liss: done at 71689a7b.
+     - Kerrid: done at 22ad757e3. claude/characters is merged at 526856cf8 for his model, Moll's and Sefir's.
+     - Two shared-file conflicts were resolved by three-way merge:
+       - `blender_builds.json` adds characters' kerrid and moll jobs;
+       - in `requested_clips.json` the characters track's specs win where both sides changed them, and Rhen's built `lie_in_shallows` leaves the list.
+     - `tools.tests.test_hero_clips` is OK.
+  2. **Portraits for named NPCs:**
+     - Moll and Sefir are baked (Kerrid with them, five emotions each, viewed).
+     - The Inquisitor shows Moll's face in the bestiary and the battle timeline (`creature_portraits.json` people).
+     - **The dialogue box now shows the speaker's portrait** (58f2190c2) in the line's emotion. Untagged lines keep the last emotion. Narration, voice-over and speakers with no portrait yet show none, so no letter ever stands in. Aliases: inquisitor → moll.
+     - Still to bake as characters land them: Tavi, Kell, Garo, Ivo, Neme, Pell, Osu, Fenn and the other named folk. Their stages don't exist yet; I'll watch claude/characters.
+  3. **First-hour pass at 1080p and 720p:** title, save menu, area title, tip card, interact prompt, act card, the first battle's opening banner, the dialogue box.
+     - The 1080p variants were rendered from a temporary manifest that was never committed.
+     - All are legible, with no overflow or clipping. The title's "Development build" label is debug-only (title data `debug_only`), so release exports hide it.
+     - The dialogue portrait's first size (180 px) pushed the box up; 156 px keeps its height. Re-rendered and viewed.
+SELF-RENDERED @ 58f2190c2: dialogue_continue (Rhen's portrait beside his line, the box at its baseline height); dialogue_voice_over (no portrait on narration); plus 1080p and 720p views of boot_title, save_menu, field_area_title, field_tip_card, cutscene_act_card, field_interact_prompt, battle_opening_banner and dialogue_continue. All clean.
