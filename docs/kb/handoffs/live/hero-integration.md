@@ -1128,3 +1128,20 @@ TRIAL MERGE @ integration 8870ea9c: env-art 885fba18, env-art-b 6a8f1504, creatu
 - **Audit on the merged tree, full (import + runtime scan): 11 items, down from 17** (env-art 9, integration-qa 2).
   `act1_final_inventory.md` is rewritten. creatures-b and env-art-b are clear now. integration-qa's 2 are still
   Pell and vigil_pell (Ch9), waiting on M3-CHR-506.
+
+MERGE-READY (+ this log): **architect seat: reviews, Sefir's body, and the audit sees layout states.**
+- Reviews:
+  - **M2-MNU-06 and M2-ARC-12 accepted** (scene_router 15/0, frame_clock 8/0, boot_card 27/0).
+  - **M3-ARC-02 accepted** (chapter select Ch1–Ch9, debug_overlay 14/0), with a caveat: F8 → Ch4 lands on the
+    broken NemeDoor (M3-HER-1154, which now notes it).
+  - M2-ARC-04: its release guard still passes on big15 (4/0); environment reviews and the PC still has to export.
+- **M3-HER-1225 → review: Sefir's field body.**
+  - A hero row can name its own locomotion clips (`clips`). Sefir walks and runs on his `walk_glide` (0.21 m/s,
+    measured), since he has no stepping walk.
+  - New test: his stage actor takes his body and glides. hero_field_actor 15/0, hero_ 110/0.
+- **M3-HER-1219 → review:** Ysolde's row was already in. The audit lists no Ysolde capsule.
+- **The audit and the capsule guard now walk layout `states`** (Ch4/Ch6/Ch8's refresh_states rows, flags set in
+  story order). They found two capsules a playthrough sees but neither tool did:
+  - Ch8 corrow `pell` (from ch08_wave2_held) → M3-CHR-506;
+  - Ch8 corrow `figure`, the stranger on the wall (from ch08_reach_survived) → characters by the people split.
+  - Both are KNOWN in qa_known.json; the next audit lists them.
