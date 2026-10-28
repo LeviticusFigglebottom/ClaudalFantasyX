@@ -477,6 +477,8 @@ RISE_SEC = 2.6
 DISMISS_SEC = 1.0
 SPECIAL_SEC = 2.4
 SPECIAL_CONTACT = 1.45
+RELEASE_SEC = 3.3  # M3-CRE-647: the held form's release (Ch20), its KO
+RELEASE_AWAY = (0.0, 1.5, -0.45)  # where the release carries him (metres: up, and back away from the party)
 FLOAT_LAG = 0.15  # the float swings this far behind the tail's motion
 FLOAT_HANG = 0.85  # and counter-turns this much of it (it hangs, not quite plumb)
 HANG_BONES = ("root", "body", "tail_0", "tail_1", "tail_2", "tail_3", "tail_4")
@@ -664,10 +666,30 @@ def build_special() -> ck.Clip:
     return c
 
 
+def build_release() -> ck.Clip:
+    """M3-CRE-647, the held form's KO (vowbound.md, the final fight: the first release, gentle). He opens one last
+    time, wings wide and the crest raised, hovers there a breath, then one slow stroke carries him up and back,
+    away from the party, level and unhurried: at peace, not fallen."""
+    c = ck.Clip("release", RELEASE_SEC)
+    lx, ly, lz = RELEASE_AWAY
+    for t, up, back, rx, w, cr, tl in ((0.0, 0.0, 0.0, 0.0, (0, 0, 0), 0.0, 0.0),
+                                       (0.7, 0.08, 0.0, -5.0, (20.0, 12.0, 8.0), 14.0, -2.0),
+                                       (1.3, 0.2, 0.0, -7.0, (14.0, 9.0, 6.0), 24.0, -4.0),
+                                       (1.85, 0.24, 0.02, -7.0, (15.0, 10.0, 7.0), 24.0, -4.0),
+                                       (2.5, 0.75, 0.4, -9.0, (-6.0, -4.0, -2.0), 16.0, -6.0),
+                                       (RELEASE_SEC, 1.0, 1.0, -6.0, (12.0, 7.0, 4.0), 16.0, -5.0)):
+        c.key("root", t, (0, 0, 0), (lx * back, ly * up, lz * back))
+        c.key("body", t, (rx, 0, 0))
+        wings(c, t, w)
+        crest_keys(c, t, cr)
+        tail_keys(c, t, rx=tl)
+    return c
+
+
 def build_clips() -> list[ck.Clip]:
     clips = [build_idle(), build_ready(), build_attack(), build_cast(), build_hit(),
              build_hit("hit_b", -1.0, ck.HIT_B["amp"]), build_defend(), build_ko(),
-             build_victory(), build_rise(), build_dismiss(), build_special()]
+             build_victory(), build_rise(), build_dismiss(), build_special(), build_release()]
     return [hang_float(c) for c in clips]
 
 

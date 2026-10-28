@@ -1000,9 +1000,50 @@ def hang_key(c: ck.Clip) -> ck.Clip:
     return c
 
 
+RELEASE_SEC = 3.4  # M3-CRE-647: the held form's release (Ch20), its KO
+RELEASE_ANGLE = 38.0  # the release's line climbs this steeply, away from the party (-z)
+RELEASE_TAIL = np.array([0.0, 0.7, 1.4])  # the line's tail end as it opens, low in front of her mark
+RELEASE_AWAY = np.array([0.0, 1.5, -0.6])  # and where the lift then carries her (metres: up, and back)
+
+
+def build_release() -> ck.Clip:
+    """M3-CRE-647, the held form's KO (vowbound.md, the final fight: giddy and proud). The kite's last flight: the coil
+    draws in once, then unrolls into one long line climbing away from the party, a kite on a fresh wind, and holds
+    there, the panels luffing and the streamers flying; then the line lifts, up and back, still taut and easy. Her
+    string is let go, not cut: it ends flying, not fallen. Like Flare Line, it turns each bone's direction."""
+    c = ck.Clip("release", RELEASE_SEC)
+    th = math.radians(RELEASE_ANGLE)
+    d = np.array([0.0, math.sin(th), -math.cos(th)])
+    line = {n: d for n in FORE + ["head"]}
+    line.update({n: -d for n in AFT})
+    loc = RELEASE_TAIL + d * (SPINE.length - STATIONS[BODY_K]) - SPINE.at(STATIONS[BODY_K])
+    gather = chain_curl(2.5, -2.0, head=-8.0)
+    gather_dirs = world_dirs(gather)
+    open0, open1, lift0 = 0.55, 1.45, 2.0
+    frames = int(round(RELEASE_SEC * ck.FPS))
+    for f in range(frames + 1):
+        t = f / ck.FPS
+        if t <= open0:
+            u = float(ck.smoothstep(0.0, open0, t))
+            pose, body, st = blend_pose({}, gather, u), (0.0, 0.06 * u, 0.0), 14.0 * u
+        else:
+            u = float(ck.smoothstep(open0, open1, t))
+            pose = directions_pose({n: slerp_dir(gather_dirs[n], line[n], u) for n in line})
+            body = tuple(np.array([0.0, 0.06, 0.0]) * (1 - u) + loc * u)
+            st = 14.0 - 34.0 * u
+        k = float(ck.smoothstep(open1 - 0.2, open1 + 0.2, t))  # the luff on the wind, down the line
+        if k > 0.0:
+            pose = compose(pose, {n: local_rot(twist=4.0 * k * math.sin(2.0 * math.pi * 1.2 * t - 0.6 * CHAIN_POS[n]),
+                                               bone=n) for n in SPINE_BONES})
+            st += 12.0 * k * math.sin(2.0 * math.pi * 1.5 * t)
+        root = RELEASE_AWAY * float(ck.smoothstep(lift0, RELEASE_SEC, t))
+        pose_keys(c, t, pose, body=body, root=tuple(float(v) for v in root), streamer=st)
+    return c
+
+
 def build_clips() -> list[ck.Clip]:
     clips = [build_idle(), build_ready(), build_attack(), build_cast(), build_hit(), build_defend(), build_ko(),
-             build_victory(), build_rise(), build_dismiss(), build_special()]
+             build_victory(), build_rise(), build_dismiss(), build_special(), build_release()]
     return [hang_key(c) for c in clips]
 
 
