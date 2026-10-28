@@ -1083,3 +1083,10 @@ MERGE-READY (+ this log): **the party start, take two (the big15 GPU playtest), 
   real-frame ch3 probe run. FieldBattle re-shows the result panel, which frees the old rows but leaves the old open
   tween counting into them. Filed as **M3-HER-1158 (ui / battle-presentation, FAST-TRACK)** with a 3-line patch.
   Please have battle-presentation take it, or give me the word to apply it myself.
+- LEAD-ASK (architect, on ADR 0111 / ResidentLoads): claude/ui's SceneRouter change merges cleanly with mine (a
+  scratch merge shows no conflict). But ResidentLoads loads a zone's models on threads while the router waits frames
+  for them, and each of those frames runs WeatherClock's hymn_wind_time write. That's M3-HER-1151's race: a
+  global-shader write walking the material list while a worker thread creates materials. My fix holds
+  ShaderGlobals' writes only around the router's own threaded instantiate. ResidentLoads should do the same around
+  its loads: `ShaderGlobals.hold_writes()` when a load starts, `release_writes()` when it lands. Holds nest, so
+  overlapping loads are fine. I can add it after ui-menus merges, if you give the word.
