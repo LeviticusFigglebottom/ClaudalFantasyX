@@ -299,6 +299,15 @@ that test at this branch's zones.
   - **Checks run:** Godot `ebbing` (5, new), `ch09` (12), `glimmer` (36), `zone_kit` (12); gdlint/gdformat; validate_data; taskboard --check. `tools.tests.test_screenshots` fails on `kerrid_front` already at HEAD (pre-existing, not this branch's), and the two new shots have no baselines yet. **MERGE-READY @ 50db241b.**
   LEAD-ASK: baselines for the new shots `ebbing_n11` and `ebbing_n08` at your gate. And M3-ARC-1326 needs integration-qa: the one hook that lets Ch9's cues play the real Ebbing. Can you route it?
 
+- **BACKLOG EMPTY (14:58, @ the handoff commit):**
+  - Every env-art-b and rendering zone/kit item is done or waiting on another track:
+    - M3-ARC-1324 and M3-ARC-1326: integration-qa.
+    - M3-ENV-1324, M3-ENV-1306, M3-ENV-1316 and M3-ENV-1323: env-art.
+    - M3-BPR-1325: battle-presentation.
+    - Costs: the PC.
+  - The rendering board's other todos are battle VFX (battle-presentation's, per the owners split), Ch1 underwater (env-art's chapter), or M2 items blocked on others.
+  - Next: the `ebbing_*` baselines and M3-ARC-1326. When the hook lands, play Ch9 through its cues and view N08 to N15.
+
 ### Render requests
 (Self-rendered per TRACK-RULES; lines are SELF-RENDERED notes.)
 SELF-RENDERED @ 50db241b: ebbing_n11, ebbing_n08 (new), plus a strand view (scratch). Viewed: cyan held motes over the harbour, mirrored in the still water and sinking seaward. N11's river overhead reads above and below the waterline, and nothing is gold or rising.
