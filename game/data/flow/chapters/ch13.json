@@ -1,0 +1,166 @@
+{
+ "doc": "M4-C13-02 (docs/kb/tech/chapter_flow.md): Ch13 'Gold and Lacquer' as a greybox walk before the beat sheet (M4-C13-01): the party arrives at Ansedra's outer moorings (the chapter becomes 13) and can walk to the Sanctum and the Lamp Archive and back. Kerrid never enters the Sanctum (ADR 0022 (c)): a party step takes him out on every arrival there and puts him back on the way out (a zone's own party only fills an empty one). Sefir's hosting, Ethren's binding, the peace wedding's announcement, the archive's three days and Ysolde's side scene come with the beat sheet.",
+ "chapter": "ch13",
+ "zones": {
+  "ch13/ansedra": {
+   "party": {
+    "party": [
+     "rhen",
+     "asha",
+     "toma"
+    ],
+    "reserve": [
+     "ysolde",
+     "kerrid",
+     "liss"
+    ]
+   },
+   "arrive": [
+    {
+     "when": {
+      "unset": [
+       "ch13_started"
+      ]
+     },
+     "steps": [
+      {
+       "place": "Moorings"
+      },
+      {
+       "chapter": 13
+      },
+      {
+       "set": "ch13_started"
+      }
+     ]
+    }
+   ],
+   "beats": {
+    "to_sanctum": {
+     "steps": [
+      {
+       "go": {
+        "location": "ch13/sanctum",
+        "spawn": "Gate"
+       }
+      }
+     ]
+    },
+    "to_archive": {
+     "steps": [
+      {
+       "go": {
+        "location": "ch13/lamp_archive",
+        "spawn": "Door"
+       }
+      }
+     ]
+    }
+   }
+  },
+  "ch13/sanctum": {
+   "party": {
+    "party": [
+     "rhen",
+     "asha",
+     "toma"
+    ],
+    "reserve": [
+     "ysolde",
+     "liss"
+    ]
+   },
+   "arrive": [
+    {
+     "steps": [
+      {
+       "party": {
+        "party": [
+         "rhen",
+         "asha",
+         "toma"
+        ],
+        "reserve": [
+         "ysolde",
+         "liss"
+        ]
+       }
+      },
+      {
+       "set": "ch13_entered_sanctum"
+      }
+     ]
+    }
+   ],
+   "beats": {
+    "to_city": {
+     "steps": [
+      {
+       "party": {
+        "party": [
+         "rhen",
+         "asha",
+         "toma"
+        ],
+        "reserve": [
+         "ysolde",
+         "kerrid",
+         "liss"
+        ]
+       }
+      },
+      {
+       "go": {
+        "location": "ch13/ansedra",
+        "spawn": "FromSanctum"
+       }
+      }
+     ]
+    }
+   }
+  },
+  "ch13/lamp_archive": {
+   "party": {
+    "party": [
+     "rhen",
+     "asha",
+     "toma"
+    ],
+    "reserve": [
+     "ysolde",
+     "kerrid",
+     "liss"
+    ]
+   },
+   "arrive": [
+    {
+     "when": {
+      "unset": [
+       "ch13_entered_archive"
+      ]
+     },
+     "steps": [
+      {
+       "place": "Door"
+      },
+      {
+       "set": "ch13_entered_archive"
+      }
+     ]
+    }
+   ],
+   "beats": {
+    "to_city": {
+     "steps": [
+      {
+       "go": {
+        "location": "ch13/ansedra",
+        "spawn": "FromArchive"
+       }
+      }
+     ]
+    }
+   }
+  }
+ }
+}

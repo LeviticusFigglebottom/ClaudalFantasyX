@@ -179,6 +179,41 @@ def collision() -> dict:
             derelict_fittings() + ib, "ramps": fr + dr + ir}
 
 
+HALUNA = "res://assets/environments/kits/haluna/"
+BRINE = "res://assets/environments/kits/brine_shoals/"
+# the islet's rock: Haluna's largest coral boulder, flattened, two across and three along its 10 x 18 m, so the walk
+# (y 0) is rock from edge to edge (x offset, z offset, yaw)
+ISLET_BOULDERS = ((-2.4, -5.8, 10.0), (2.6, -5.2, 200.0), (-2.6, 0.3, 130.0), (2.3, 0.0, 300.0), (-2.2, 5.9, 250.0),
+                  (2.7, 5.6, 70.0))
+ISLET_BOULDER = {"scale": 2.2, "scale_y": 1.1, "y": -1.9}  # half height (scale_y is absolute); crown 0.25 m over the walk
+PLANK_WALK = {"length": 4.0, "top": 0.12}  # the Brine kit's plank_walk, along its z
+GATE = {"scale": 0.75, "half_h": 0.6}  # the Brine kit's hatch (1.4 x 1.2 m, centred) across the 1 m gangway
+
+
+def stand_in_pieces() -> list[dict]:
+    """ADR 0041: the islet landing's story blocks in other kits' pieces until env-art's own land (M3-ENV-1222): the
+    islet's rock in Haluna's coral, the gangplank as the Brine kit's plank walk, the stern gate as its hatch board
+    and the name board laid flat on the deck. Each follows its block."""
+    ix, _iy, iz = ISLET_AT
+    out = [{"piece": "coral_boulder_c", "kit_dir": HALUNA, "at": [r3(ix + ox), r3(iz + oz)], "yaw_deg": yaw,
+            "block": "IsletRock", **ISLET_BOULDER} for ox, oz, yaw in ISLET_BOULDERS]
+    gz = FERRY_AT[2] + sum(bf.GANGWAY_Z) * 0.5
+    hb = float(bf.FERRY.half_beam_at(sum(bf.GANGWAY_Z) * 0.5))
+    mid = (ix - ISLET_HALF[0] + FERRY_AT[0] + hb) * 0.5
+    out.append({"piece": "plank_walk", "kit_dir": BRINE, "at": [r3(mid), r3(gz)], "y": -PLANK_WALK["top"],
+                "yaw_deg": 90.0, "block": "Gangplank"})
+    layout = {b["id"]: b for b in json.loads(LAYOUT.read_text(encoding="utf-8"))["blocks"]}
+    gate = layout["SternGate"]
+    out.append({"piece": "hatch", "kit_dir": BRINE, "at": [gate["pos"][0], gate["pos"][2]],
+                "y": r3(gate["pos"][1] - gate["size"][1] * 0.5 + GATE["half_h"] * GATE["scale"]), "yaw_deg": 0.0,
+                "scale": GATE["scale"], "block": "SternGate"})
+    board = layout["NameBoardWrapped"]
+    out.append({"piece": "terrace_name_board", "at": [board["pos"][0], board["pos"][2]],
+                "y": r3(board["pos"][1] - board["size"][1] * 0.5), "yaw_deg": 0.0, "tilt_deg": [-90.0, 0.0],
+                "scale": r3(board["size"][0] / 2.59), "block": "NameBoardWrapped"})
+    return out
+
+
 def ship(pieces: tuple, at: tuple, **kw) -> list[dict]:
     return [dict({"piece": p, "at": [r3(at[0]), r3(at[2])], "y": r3(at[1]), "yaw_deg": 0.0}, **kw) for p in pieces]
 

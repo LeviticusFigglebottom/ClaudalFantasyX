@@ -211,8 +211,11 @@ func test_every_act_one_greybox_zone_builds_a_map() -> void:
 		assert_true(on_route, "%s is on the route" % id)
 	assert_eq(
 		seen,
-		13,
-		"Ch1's two zones, Ch3's causeway (M2-FP-1000), Ch4's two, Ch5's two, Ch6's, Ch7's two, Ch8's two and Ch9's"
+		12,
+		(
+			"Ch1's two zones, Ch3's causeway (M2-FP-1000), Ch4's ferry (its wake reads Haluna's layout), Ch5's two,"
+			+ " Ch6's, Ch7's two, Ch8's two and Ch9's"
+		)
 	)
 
 

@@ -402,6 +402,13 @@
         "death": "cre_conduit_crawler_death",
         "move": "cre_conduit_crawler_tick"
       }
-    }
+    },
+    "root_crab": "silent",
+    "fen_leech": "silent",
+    "ridge_lynx": "silent",
+    "cord_moth": "silent",
+    "scree_crawler": "silent",
+    "glass_skate": "silent",
+    "rim_crawler": "silent"
   }
 }
