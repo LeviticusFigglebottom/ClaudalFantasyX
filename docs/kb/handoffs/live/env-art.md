@@ -589,6 +589,19 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
+- **MERGE-READY @ (this push): the Haluna NPCs' held props as kit pieces; the forge's bellows grounded.**
+  - **New Haluna kit pieces:**
+    - `hand_broom`: Reed's 1.4 m palm-rib broom.
+    - `woven_bag`: Neme's bag.
+    - `clay_bowl`: Osu's bowl.
+  - Each matches its `haluna.tscn` primitive's size and centre, so it drops in. Built in Blender, with manifest and
+    PROVENANCE rows.
+  - The swap is slice-polish's (`haluna.tscn`): request **M3-ENV-753**.
+  - **Fixed in `beach_forge`:** the bellows floated about 0.4 m up (found on viewing). They now sit on the sand, with
+    the nozzle rising into the hearth.
+  - **SELF-RENDERED:** a scratch preview of the five Haluna props (not committed): the broom, the bag, the bowl, the
+    forge and the inn sign all read as themselves.
+  - **Gates:** `test_haluna_kit` and `test_haluna_dressing` pass; validate_data; taskboard --check.
 - **MERGE-READY @ 5ef018b14: Haluna's night-lamp flames are the kit's flame; the Prologue walked; the inventory
   re-run.**
   - **The placeholder audit** (`tools/placeholder_audit.py`, re-run on this tree; the inventory file restored) puts

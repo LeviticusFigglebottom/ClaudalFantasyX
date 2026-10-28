@@ -277,6 +277,17 @@
         "choir_singer-lod1": 274
       }
     },
+    "clay_bowl": {
+      "budget": [
+        900,
+        100
+      ],
+      "bytes": 16176,
+      "lods": {
+        "clay_bowl": 320,
+        "clay_bowl-lod1": 64
+      }
+    },
     "cloudloom_hall": {
       "budget": [
         16000,
@@ -484,6 +495,17 @@
       "lods": {
         "ground_lamp": 96,
         "ground_lamp-lod1": 47
+      }
+    },
+    "hand_broom": {
+      "budget": [
+        1500,
+        120
+      ],
+      "bytes": 27116,
+      "lods": {
+        "hand_broom": 372,
+        "hand_broom-lod1": 36
       }
     },
     "heart_column": {
@@ -2119,6 +2141,17 @@
       "lods": {
         "woven_awning": 264,
         "woven_awning-lod1": 64
+      }
+    },
+    "woven_bag": {
+      "budget": [
+        1500,
+        120
+      ],
+      "bytes": 20560,
+      "lods": {
+        "woven_bag": 296,
+        "woven_bag-lod1": 12
       }
     },
     "wreck_rib": {
