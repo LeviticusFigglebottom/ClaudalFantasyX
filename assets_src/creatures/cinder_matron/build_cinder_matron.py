@@ -22,6 +22,7 @@ import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "common"))
 import creature_kit as ck  # noqa: E402
+import grounding as gr  # noqa: E402
 
 SEED = 5307
 PAL = {k: ck.hexrgb(v) for k, v in {
@@ -36,7 +37,7 @@ BODY = [(0.0, 0.94), (0.05, 0.97), (0.16, 0.95), (0.45, 0.93), (0.75, 0.98), (0.
         (2.56, 0.4), (2.64, 0.3)]
 SKIRT_COURSES = [0.0, 0.48, 0.95, 1.36]   # overlapping plate courses (root)
 BELLY_COURSES = [1.28, 1.98, 2.34, 2.66]  # between the kiln's iron hoops (torso)
-WAIST, HOOPS = 1.32, (0.05, 1.32, 1.98, 2.34)
+WAIST, HOOPS = 1.32, (0.06, 1.32, 1.98, 2.34)  # M3-CRE-632: the hem hoop (r 0.06) sits on the floor (was 0.05)
 DOOR = (0.38, 1.44, 1.72, 0.14)           # firebox: half-angle (rad), sill y, spring y, arch rise
 HEART = (2.16, 0.14)                      # chest port: centre y, radius (m)
 HEAD_BOW = 8.0                            # degrees the head is bowed forward at rest
@@ -863,6 +864,16 @@ def build_clips() -> list[ck.Clip]:
     return [idle, attack, cast, hit, ko, phase]
 
 
+# Kept off the floor (M3-CRE-632, common/grounding.py): where a tool would go through the floor (the ladle on the
+# pour's wind-back, both tools as she settles in the KO), its hand turns it up the least it takes, so it rests on the
+# floor instead.
+GROUNDED_LIMBS = [(f"hand_{tag}", 0, -1.0, 90.0) for tag in ("l", "r")]
+
+
+def export_clips(rig: ck.Rig, mesh: ck.Mesh) -> list[ck.Clip]:
+    return gr.grounded(rig, mesh, build_clips(), GROUNDED_LIMBS)
+
+
 def main() -> None:
     argv = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else []
     ap = argparse.ArgumentParser()
@@ -872,7 +883,7 @@ def main() -> None:
     mesh = ck.Mesh("cinder_matron")
     body(mesh, rig)
     shell = crust(rig)
-    info = ck.export_creature(mesh, rig, build_clips(), args.out, extra_meshes=[shell],
+    info = ck.export_creature(mesh, rig, export_clips(rig, mesh), args.out, extra_meshes=[shell],
                               extras={"hymn_creature": "cinder_matron"})
     print(f"cinder_matron: {info} body_tris={mesh.triangle_count} crust_tris={shell.triangle_count}")
 

@@ -56,8 +56,10 @@ func test_the_dock_at_night_swears_rhen_in_then_the_end_card() -> void:
 	assert_true(houses != null and houses.visible and houses.get_child_count() > 0, "the oil lamps are lit")
 	assert_true(zone.get_node_or_null("NightLamps") != null and zone.get_node("NightLamps").get_child_count() > 0)
 	assert_true(zone.get_node_or_null("NPCs/Dock") == null, "the dock villagers have gone home")
-	var dock := zone.spawn_marker(&"DockNight")
-	assert_true(zone.player.global_position.distance_to(dock.global_position) < 0.5, "Rhen on the dock")
+	# M2-FP-115: he has walked out from the DockNight spawn to Asha at the dock end.
+	var by_asha := zone.stage.mark(&"rhen_by_asha")
+	assert_true(by_asha != null, "the night's mark beside Asha")
+	assert_true(zone.player.global_position.distance_to(by_asha.global_position) < 0.5, "Rhen beside Asha")
 	var asha := zone.stage.actor(&"asha")
 	assert_true(asha.visible and asha.global_position.distance_to(Vector3(20.6, 1.4, 41.3)) < 0.1, "Asha at the end")
 	var toma := zone.stage.actor(&"toma")

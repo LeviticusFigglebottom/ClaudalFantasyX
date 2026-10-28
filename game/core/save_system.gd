@@ -841,6 +841,7 @@ func slot_info(slot: int) -> Dictionary:
 		"location_key": "",
 		"saved_at": 0,
 		"reason": "",
+		"party": [],
 	}
 	var path := slot_path(slot)
 	if not FileAccess.file_exists(path):
@@ -860,6 +861,7 @@ func _file_info(path: String) -> Dictionary:
 		"location_key": "",
 		"saved_at": int(FileAccess.get_modified_time(path)),
 		"reason": "",
+		"party": [],
 	}
 	var json := JSON.new()
 	if json.parse(FileAccess.get_file_as_string(path)) != OK:
@@ -877,6 +879,8 @@ func _fill_info(info: Dictionary, d: Dictionary, st: Dictionary) -> void:
 	info["play_time_sec"] = float(st.get("play_time_sec", 0.0))
 	info["location_id"] = str(st.get("location_id", ""))
 	info["location_key"] = location_name_key(StringName(str(info["location_id"])))
+	var party: Variant = st.get("party_ids", [])  # the active line, for the save rows' faces
+	info["party"] = (party as Array).map(func(v: Variant) -> String: return str(v)) if party is Array else []
 	var meta: Variant = d.get("meta")
 	if typeof(meta) == TYPE_DICTIONARY:
 		var m := meta as Dictionary

@@ -38,7 +38,7 @@ Option 2.
 - **Watch:** a cloud session that forgets `git lfs pull` imports pointer files, and Godot's import then fails on them. `tools/validate_data.py` should flag an LFS pointer under `assets/` that isn't in the working tree (follow-up task for tech).
 
 ## Activation (2026-10-28)
-- **`.gitattributes` tracks:** `assets/audio/music/act2/**`, `act3/**`, `act4/**` and `assets/lfs/**`. Their `.import` and `.json` sidecars stay plain text.
+- **`.gitattributes` tracks:** `assets/audio/music/act2/**`, `act3/**`, `act4/**`, `assets/audio/sfx/act3/**` (added 10-28 for the Kite foley) and `assets/lfs/**`. Their `.import` and `.json` sidecars stay plain text.
 - **Act II and later final music** goes under `assets/audio/music/actN/`. Any other new binary over 5 MB goes under `assets/lfs/<area>/`.
 - **`tools/validate_data.py`** exempts those paths from the 5 MB plain-git limit. Its error message elsewhere names the LFS paths.
 - **`tools/ci_local.sh`** runs `git lfs pull` when the tree has LFS files, so gates import real files, not pointers.

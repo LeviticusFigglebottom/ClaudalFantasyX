@@ -105,7 +105,7 @@ class IskarraCityTests(unittest.TestCase):
         centres = pos[tris[paving]].mean(axis=1)
         top = centres[centres[:, 1] > -0.1]
         vigils = _vigils()
-        self.assertGreaterEqual(len(vigils), 7)
+        self.assertGreater(len(vigils), 0, "the stand-in vigils left after M2-FP-103's real cast")
         for vx, vz in vigils:
             with self.subTest(vigil=(vx, vz)):
                 d = np.hypot(top[:, 0] - (vx - plaza[2]), top[:, 2] - (vz - plaza[4])).min()

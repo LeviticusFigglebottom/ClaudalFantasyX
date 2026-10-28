@@ -2,8 +2,8 @@
   "version": 1,
   "doc": "Village and wildlife life by listening (M3-AUD-814; ADR 0031; docs/kb/tech/audio_runtime.md \"Life\"). LifeAudio (game/audio/life_audio.gd) watches each node whose script's global class (or its `audio_class` meta) is a `hooks` row and never writes it. pending: the class has not landed on this branch yet (claude/creatures); the checker skips its name until it does. Each frame, every watched node within hear_m of the ear (the viewport's camera) is read. villager (creatures' FieldNpc): a chat turn starting (speaking_method, else the speaker_prop naming id_prop) plays a murmur turn in the villager's voice (voices[npc_id], else low or high by a hash of the id) at head_m over its feet; while working() it plays its work row (work.rows[npc_id]) at work_point() every work.every_sec. wildlife (creatures' WildlifeLayer, positions in the layer's space): each gull flock calls every gull.call_every_sec from one of its gulls; a gull entering takeoff_state claps off; a crab entering flee_state scuttles (crab.cooldown_sec apart per beach); a shoal's startle (startle_method, else startle_prop rising above 0) darts. Randomness is a RandomNumberGenerator on `seed`.",
   "hooks": [
-    {"class": "FieldNpc", "kind": "villager", "pending": true, "_note": "claude/creatures M3-CRE-610/613 (game/world/npc/field_npc.gd)"},
-    {"class": "WildlifeLayer", "kind": "wildlife", "pending": true, "_note": "claude/creatures M3-CRE-611 (game/world/wildlife/wildlife_layer.gd)"}
+    {"class": "FieldNpc", "kind": "villager", "_note": "claude/creatures M3-CRE-610/613 (game/world/npc/field_npc.gd)"},
+    {"class": "WildlifeLayer", "kind": "wildlife", "_note": "claude/creatures M3-CRE-611 (game/world/wildlife/wildlife_layer.gd)"}
   ],
   "seed": 81400,
   "hear_m": 30.0,

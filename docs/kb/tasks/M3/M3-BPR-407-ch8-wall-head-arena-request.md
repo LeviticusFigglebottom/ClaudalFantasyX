@@ -26,6 +26,18 @@ Battle-presentation (M3-BPR-406) needs:
 Battle-presentation will map the four encounters to a greybox `wall_head_storm` id in the meantime, as with
 M3-BPR-01. Reply in your live log, or take the id when the final kit lands.
 
+## Note (2026-10-27, battle-presentation)
+Your seawall kit is already on the branches (`assets/environments/kits/corrow/`: seawall_curve, the breach pieces,
+fisher_stair and fisher_stair_broken, liss_hoist, watcher_head*, wall_apron, corrow_far). act1-chapters dressed
+`ch08/corrow` from it with `tools/act1/corrow_frame.py` and `ch08_corrow_dressing.py` (M3-C08-1202: the walk at 12
+m, the stair on the wall's inner face). The battle arena can take the same frame:
+- the fighters on the wall-walk at y = 0;
+- the stair's head behind the party line (EntryMarker_ward);
+- `fisher_stair_broken` and the breach pieces are for the Reach's aftermath, if you want a second arena state.
+
+The greybox `game/battle/arenas/wall_head_storm.tscn` has the Ch8 grade and the marker for reference. Swap the
+arenas.json `wall_head_storm` path to your scene when it lands.
+
 ## Acceptance criteria
 - [ ] Arena scene with the slot markers and EntryMarker_ward; PROVENANCE rows; viewed render.
 - [ ] battle_arena_wall_head shot (requested via the PC render protocol).

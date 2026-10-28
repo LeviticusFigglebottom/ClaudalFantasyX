@@ -367,3 +367,107 @@ RENDER-REQUEST @ 1b84b89c: field_hero_rhen_walk, field_hero_party, field_hero_ga
      - M2-HER-1113 cutscene patch → I empty the cutscene guard's KNOWN list;
      - M2-HER-1114 placeholder crash and arm flip → I empty the battle guard's KNOWN entry;
      - M2-CHR-513 → I re-check KO, victory and revive (the pop test picks them up by itself).
+- **Approved after viewing @ d036076d:** battle_heroes_idle, _attack, _hit, _ko, _victory, _cast, _finisher (PC render
+  gpu/render-hero-integration-b2453cf); the rows are back in shots.json. What the shots show:
+  - real models, grounded and facing the foes; attack contact, hit recoil, cast and finisher all read;
+  - victory is nearly idle, and Rhen strikes empty-handed (both waiting on M2-CHR-513);
+  - **a felled hero (Toma) dissolves away** in the KO shot: the felled-foe fade applies to the party too. Added to
+    M2-HER-1114 for battle-presentation.
+- **MERGE-READY @ d4430397 (FAST-TRACK, the Lead's Ysolde item):** Ysolde is her real model in battle, not a tan capsule.
+  - Her wrapper (`ysolde_battle_actor.tscn`, placeholder contract clips tuned) is wired in battle_sandbox.json's
+    `stand_ins.ysolde`. That's one row of UI's file, changed on the Lead's instruction.
+  - Two battle-presentation tests stopped assuming she's a capsule (test-only).
+  - The same change is in `docs/kb/tech/ysolde_battle_fasttrack.patch` for the owners (noted in M2-HER-1108).
+  - Her field and cutscene body landed earlier (hero_motion.json @ 549afe82).
+  - Real battle clips: request M2-HER-1115 (characters).
+  - **Shots this changes (not re-approved by me):** battle_choreo_cast, battle_choreo_read, battle_choreo_toll,
+    battle_statuses, battle_swell_glyph, battle_read_panel, plus any other battle shot with Ysolde in the party.
+  - Checks run: battle 703/0, hero_ 97/0, fighter 5/0, clips 7/0, validate_data, gdlint and gdformat; the six shot
+    scenes load headless with 0 errors.
+  - Skipped: rendering (the PC's job), Blender, coverage (no game/battle code change).
+
+### Render requests
+RENDER-REQUEST @ d4430397: battle_choreo_cast, battle_choreo_read, battle_choreo_toll, battle_statuses, battle_swell_glyph, battle_read_panel; why: Ysolde's real model replaces her capsule (FAST-TRACK); for the Lead to view and approve (the field and hero set @ 1b84b89c still stands)
+- **@ e8b43b5d + the M2-HER-1113 re-cut (Act I hero checks, for act1-chapters and slice-polish):**
+  - The guards now read their zones and scenes from the game's data: field over **15 zones** (Ch8's Coilspire and
+    Corrow included), cutscenes over **79 scenes** (every chapter-file `play` step, the prologue, HalunaStory's
+    scenes).
+  - **Field: every zone clean.**
+  - **Cutscenes:** 30 actor/scene pairs snap on this branch. All of them are fixed by the re-cut
+    `cutscene_no_snap.patch` (against claude/m2-slice d4921946), now with a third fix: a stand-in clip mark farther
+    than 2.5 m is a cut, not a glide. Ch9's `@anim asha pole_out` glided Asha 30 m across the harbour at 120 m/s;
+    ch09_zone.gd says it should cut.
+  - Verified on m2-slice + the patch: the guard is clean on all 79; cutscene 61/0, fp_ 28/0, haluna 57/0, prologue
+    7/0, _thread 34/0, ch09 7/0.
+  - ch0 62/1: test_ch01_oruvel_kit's storm swap fails only inside the ch0 sweep. It passes alone with the patch and
+    without it, so it depends on test order and isn't the patch.
+  - The 30 pairs are KNOWN in the test until the patch lands.
+- **Merge note for the Lead:** claude/ui's 80d358bf and my d4430397 both edit game/data/ui/battle_sandbox.json's
+  stand_ins, on adjacent rows. Resolve by keeping both: UI's Rhen, Asha and Toma rows, and my Ysolde row with her
+  scene and yaw_deg.
+- **MERGE-READY @ bccce923**
+  - **M3-ARC-1216, steep stairs (ADR 0193).** HeroStairFlight and HeroStairs: Rhen climbs 48° and descends 60°
+    flights on their profile, step by step, eased, at slope_speed_mps 1.0. Standing still doesn't slide; pushing
+    sideways keeps him inside the edges; walking under a flying stair doesn't climb it. Asha and Toma follow up the
+    steps (test_hero_stairs, 7).
+  - **M2-HER-1116 followers:** never inside a wall (slide along it; a clear catch-up side; an eased min-gap push);
+    take steep flights; Ysolde follows when she joins (test_hero_followers, 11). Foot IK on/off switch.
+  - Checks run: hero_ 107/0, field 147/0, zone 51/0, haluna 50/0, hero_stairs 7/0, hero_followers 11/0, gdlint and
+    gdformat, validate_data, taskboard --check.
+  - Skipped: shots (no scene or shader touched; followers only differ next to walls), Blender, coverage.
+- **For act1-chapters (unblocks M3-C05-1215, the Ashcrown swap): how to place a steep flight.** Full notes are in
+  M3-ARC-1216.
+  - Mark it with a `HeroStairFlight` node (origin = the centre of the foot on the lower floor; it climbs along the
+    node's -Z; run_m, rise_m, width_m), **or** a row in the zone layout's `"stairs"` list:
+    `{"id": "FlyingStair", "foot": [x, y, z], "head": [x, y, z], "width_m": 2.0}`. No code change on your side:
+    HeroStairs builds the rows when the zone loads.
+  - Keep the flight's blocking collision, and give each end a landing floor.
+  - Cutscene walks across a flight need M3-HER-1119 (slice-polish), and villagers need M3-HER-1118 (creatures).
+- **For slice-polish (relay, please): ONE patch now,** `docs/kb/tech/cutscene_walks_combined.patch`.
+  - It replaces both `cutscene_no_snap.patch` (M2-HER-1113) and act1-chapters' `cutscene_mark_via.patch`
+    (M3-CIN-1221). Those two overlap in `_cue_mark`, and the via patch no longer applied to claude/m2-slice.
+  - Cut against claude/m2-slice d4921946. The sequencer ends at 999 lines.
+  - Verified there with my hero layer overlaid: the cutscene guard over all 79 scenes, mark_via 3/0, sequencer 17/0,
+    cutscene 64/0, fp_ 28/0, haluna 57/0, prologue 7/0, _thread 34/0, ch09 7/0.
+  - Once it lands, act1-chapters can write `via=` (M3-CIN-1220) and I empty my guard's KNOWN list (queue item 6).
+- **Merge note:** M3-ARC-1216's task file was on act1-chapters only. My branch adds it with my claim (the Lead
+  reassigned it). On an add/add conflict, keep mine.
+
+### Perf requests
+PERF-REQUEST @ bccce923: foot IK frame cost on hardware. Haluna, the party running the beach-to-court loop, 60 s each with game/data/hero_motion/foot_ik.json "enabled": true and then false; report the mean and p99 frame times and the delta. Cloud CPU estimate: 18 us per hero per frame.
+- **Queue item 2 (M3-CIN-1220 support), prepared:**
+  - The cutscene guard now measures every walking actor's floor gap with `HeroMotionGuard.floor_gap`: a ray under
+    the feet, the cast's own colliders ignored, a tolerance of 0.15 m. It prints `OFF-FLOOR <scene> <actor>: <worst
+    gap>` and doesn't fail yet.
+  - Today: 17 actor/scene pairs, in ch04_long_way_round, ch06_liss_lantern, ch07_leaving_tamsule,
+    ch07_after_the_bell, ch07_empty_moorings and ch09_the_ebbing. The 0.60 m gaps are walks passing under or through
+    something at about waist height.
+  - Once the combined patch is on the integration branch and act1-chapters has written its via= paths, I turn this
+    into a failure, with a KNOWN list for whatever is left.
+- **MERGE-READY @ 97fbd608: big11 merged in (0a10af32).**
+  - battle_sandbox.json resolved: UI's three repointed rows plus Ysolde's wrapper row.
+  - **Pop guard on the merged tree (UI's repoint in):** hero_battle 8/0, battle 710/0, fighter 5/0, clips 7/0. The
+    only report is Ysolde's placeholder finisher (KNOWN, M2-HER-1114). M2-HER-1108 is done.
+  - **Villager guard now runs for real** (creatures' VillagerLayer came with big11): all 7 Haluna villagers clean
+    through their routines and visits. Haluna itself still doesn't place the layer: M2-HER-1112, slice-polish's top
+    item.
+  - New from big11: ch08_keeping_flame's Asha jumps 0.34 m on the scene's last frame. That's the end-of-scene
+    completion the combined patch fixes, so it's KNOWN under M2-HER-1113 (31 pairs).
+  - Checks run: hero_ 107/0 (with that entry), field 147/0, zone 60/0, haluna 56/0, villager 19/0, tools
+    test_screenshots, gdlint.
+- **MERGE-READY @ 7a8bff79**
+  - **Ysolde FAST-TRACK, done.** Her battle actor has been wired since d4430397. Now her placeholder clips no longer
+    flip an arm: HeroBattleActor gives them short-path keys and caps fades into fast placeholders at 0.06 s. The pop
+    guard's KNOWN list is empty: hero_battle 8/0, battle 710/0.
+  - **Liss on the hero layer:** her field body row (walk 0.97 and run 2.19 m/s, measured on her model) and her
+    battle wrapper (the model by path; her stand-in's capsule until characters' model merges). Checked on a scratch
+    worktree with her assets: all 26 battle changes clean, her revive included; hero_field_actor 13/0. Her
+    battle_sandbox row: request **M3-HER-1120** (ui-menus).
+  - Kerrid has no model anywhere yet; Sefir isn't a party member.
+  - **Fold-into-characters handoff:**
+    `docs/kb/handoffs/2026-10-27-tech-hero-integration-fold-into-characters.md`.
+  - Items 3 (stairs) and 4 (face the speaker, narrow lanes) were done earlier (5091eb81, 0b15b4f6).
+  - Checks run: hero_ 107/0, battle 710/0, fighter 5/0, clips 7/0, gdlint, validate_data, taskboard.
+
+### Render requests
+RENDER-REQUEST @ 7a8bff79: battle_choreo_cast, battle_choreo_read, battle_choreo_toll, battle_statuses, battle_swell_glyph, battle_read_panel, battle_heroes_idle; why: Ysolde's real model replaces her capsule (FAST-TRACK, same as the request @ d4430397 if it's still unanswered), and her placeholder clips' new fades; for the Lead to view and approve

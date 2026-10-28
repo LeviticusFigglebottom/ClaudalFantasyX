@@ -1,0 +1,30 @@
+{
+  "_doc": "Ch6's sub-frame grades (M3-C06-03 item 7; colour script `ch06_hold`, `ch06_dusk`, `ch06_dawn`): an Environment each, and the sun each wants, for Ch06Zone's light rows.",
+  "ch06_hold": {
+    "environment": "res://assets/environments/zones/brine_shoals/ch06_hold_environment.tres",
+    "sun": {
+      "pitch_deg": -35.0,
+      "yaw_deg": -60.0,
+      "color": "#FFD5B3",
+      "energy": 0.6
+    }
+  },
+  "ch06_dusk": {
+    "environment": "res://assets/environments/zones/brine_shoals/ch06_dusk_environment.tres",
+    "sun": {
+      "pitch_deg": -2.0,
+      "yaw_deg": -100.0,
+      "color": "#FF8A4A",
+      "energy": 1.2
+    }
+  },
+  "ch06_dawn": {
+    "environment": "res://assets/environments/zones/brine_shoals/ch06_dawn_environment.tres",
+    "sun": {
+      "pitch_deg": -4.0,
+      "yaw_deg": 105.0,
+      "color": "#FFE2C2",
+      "energy": 1.6
+    }
+  }
+}

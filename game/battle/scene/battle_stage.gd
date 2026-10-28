@@ -105,7 +105,7 @@ func _side(cs: Array[BattleCombatant]) -> Array:
 
 ## Seats an enemy that joined mid-battle (BossMechanics spawns and summons) in the first enemy
 ## slot nobody standing holds; a fallen fighter's stand-in there gives way. If every slot is
-## held, it shares the last one.
+## held, it shares the last one. It walks onto its mark (choreo.json enter).
 func add_enemy(c: BattleCombatant, engine: BattleEngine) -> void:
 	var held: Dictionary = {}
 	for e in engine.enemies:
@@ -122,6 +122,8 @@ func add_enemy(c: BattleCombatant, engine: BattleEngine) -> void:
 			_fighters.erase(cid)
 			_enemy_slot_of.erase(cid)
 	_seat_enemy(c.id, slot)
+	if choreo != null:
+		choreo.enter(c.id)  # M3-BPR-411: a summoned foe walks onto its mark, not just appears
 
 
 func _seat_enemy(cid: StringName, slot: int) -> void:

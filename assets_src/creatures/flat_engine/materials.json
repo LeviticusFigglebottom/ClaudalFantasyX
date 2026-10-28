@@ -1,0 +1,15 @@
+{
+  "_doc": "The flat-engine's surfaces (docs/kb/art/creatures/act2/flat_engine.md). Slots are the glTF material names; write_materials.py writes assets/creatures/flat_engine/materials/<slot>.tres on game/shaders/creature/creature.gdshader. iron is the drum, the chimney and the fittings (lacquer_black iron with brass bands going to bronze_patina, wet below the splash line, by vertex colour and wetness; no emission). window is the salt-glass porthole lit from inside by its bound light (glimmer_bound, steady, never pulsing: README rule 3, color_script.md rule 2); the broken mesh's crazed glass has no emission mask, so it is dark. timber is the eight paddles (timber_weathered, darkened wet on the water). hinge is the paddle hinges' marks, the weak points: spawn_wound, its slow weak-point pulse (ADR 0151: one small closed mark each), dark on the broken mesh. Colours are palette.json swatches.",
+  "slots": {
+    "iron": {"metallic": 0.5, "roughness_dry": 0.45, "roughness_wet": 0.22, "specular": 0.6, "wet_darken": 0.6,
+             "clearcoat_wet": 0.6, "detail_scale": 18.0, "detail_albedo": 0.12, "detail_bump": 0.4, "cavity_albedo": 0.5,
+             "emission_energy": 0.0},
+    "window": {"roughness_dry": 0.12, "roughness_wet": 0.06, "specular": 0.7, "clearcoat_wet": 0.8, "wet_darken": 0.3,
+               "detail_scale": 26.0, "detail_albedo": 0.04, "detail_bump": 0.1, "cavity_albedo": 0.3,
+               "emission_color": "#4FB3B0", "emission_energy": 2.2},
+    "timber": {"roughness_dry": 0.85, "roughness_wet": 0.35, "wet_darken": 0.65, "clearcoat_wet": 0.35,
+               "detail_scale": 36.0, "detail_albedo": 0.2, "detail_bump": 0.55, "cavity_albedo": 0.45},
+    "hinge": {"metallic": 0.2, "roughness_dry": 0.3, "specular": 0.6, "detail_albedo": 0.0, "detail_bump": 0.0,
+              "emission_color": "#3FE0C8", "emission_energy": 2.4, "emission_pulse_hz": 0.3, "emission_pulse_depth": 0.3}
+  }
+}

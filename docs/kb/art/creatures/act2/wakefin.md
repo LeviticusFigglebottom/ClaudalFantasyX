@@ -36,3 +36,13 @@ The scene has no other light (pillar 4: the timeline and the sea-glow still say 
 
 Budget ≤ 14k triangles. Rig: a spine chain of 10, the bill, the dorsal fin (3 bones, so it folds and flares),
 pectorals, tail lobes.
+
+## Review shots (M3-CRE-635)
+
+- `creature_wakefin`: the battle read, the creature stage's opaque floor at the waterline, so the blade alone.
+- `creature_wakefin_body`: the same stage with `show_floor = false`, seen from high on its flank (`flank_high`):
+  the whole fish under its waterline, for reviewing the body, the seam and the wounds.
+
+The eight spine wounds are open seams (M3-CRE-635): longer (0.24 to 0.54 m), three section rows wide, wandering
+across the rows like a tear, their lips raised and faintly lit. They lie at the waterline, so in battle they show
+when it breaches.

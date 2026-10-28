@@ -252,6 +252,24 @@ GAINS = {
 }
 
 
+# M3-AUD-835 (the listening note's "check the wrap of tamsule_bell"): the PCM loop is circular, but the Vorbis encoder
+# leaves a small step at the file's two ends, and this quiet humming bed showed it (a decoded wrap 9.7 times an
+# ordinary sample step). The loop is rotated so the file's ends fall at its quietest moment (0.1 times). Rotating a
+# circular loop changes only where it starts; the other beds keep their bytes.
+QUIET_SEAM = ("tamsule_bell",)
+QUIET_STEP = 512      # where to look for the quiet stretch (samples)
+QUIET_WIN = 4096      # the stretch's length: about 0.1 s of energy
+
+
+def quiet_seam(loop: np.ndarray) -> np.ndarray:
+    """loop rotated to start at its quietest sample: the lowest-energy stretch, then its smallest sample there."""
+    energy = np.convolve((loop ** 2).sum(axis=1), np.ones(QUIET_WIN) / QUIET_WIN, mode="same")
+    c = int(np.argmin(energy[::QUIET_STEP])) * QUIET_STEP
+    w = slice(max(0, c - QUIET_WIN // 2), min(len(loop), c + QUIET_WIN // 2))
+    k = w.start + int(np.argmin(np.abs(loop[w]).sum(axis=1)))
+    return np.roll(loop, -k, axis=0)
+
+
 def render_bed(name: str, out_dir: str = OUT_DIR, verbose: bool = True, stats: bool = False) -> dict:
     g = rng(SEED + 101 * (list(BEDS).index(name) + 1))
     mx, verb = BEDS[name](g)
@@ -260,6 +278,8 @@ def render_bed(name: str, out_dir: str = OUT_DIR, verbose: bool = True, stats: b
     _, loop = mx.render(reverb=verb, reverb_return_db=-4.0, hp_hz=30.0)
     rep: dict = {}
     _, loop = master_loop(np.zeros((0, 2)), loop, TARGET_LUFS, ceiling_db=CEILING_DB, report=rep)
+    if name in QUIET_SEAM:
+        loop = quiet_seam(loop)
     L = len(loop)
     path = os.path.join(out_dir, name + ".ogg")
     write_ogg(path, loop, quality=QUALITY, tags={"LOOPSTART": "0", "LOOPLENGTH": str(L)})

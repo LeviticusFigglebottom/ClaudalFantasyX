@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://game/creatures/creature_actor.gd" id="1_actor"]
+[ext_resource type="PackedScene" uid="uid://d1ehjt2k3yfxm" path="res://assets/creatures/conduit_crawler/conduit_crawler.glb" id="2_model"]
+
+[node name="ConduitCrawler" type="Node3D"]
+script = ExtResource("1_actor")
+creature_id = &"conduit_crawler"
+metadata/hymn_battle_actor = true
+
+[node name="Model" parent="." instance=ExtResource("2_model")]

@@ -72,7 +72,7 @@ LATTICE_GLOB = "lattice_*.json"
 MAX_BINARY_BYTES = 5 * 1024 * 1024
 # Git LFS paths (ADR 0039; keep in step with .gitattributes): no plain-git size limit there.
 LFS_PREFIXES = ("assets/lfs/",)
-LFS_MUSIC_RE = re.compile(r"^assets/audio/music/act[0-9]+/")
+LFS_MUSIC_RE = re.compile(r"^assets/audio/(music/act[0-9]+|sfx/act3)/")
 BINARY_EXT = {".png", ".jpg", ".exr", ".wav", ".ogg", ".glb", ".blend", ".ttf", ".otf", ".webp"}
 BANNED_SCAN = ["game", "assets_src", "docs/kb/story", "docs/kb/glossary.md"]
 BANNED_SCAN_EXT = {".gd", ".json", ".tres", ".tscn", ".csv", ".md", ".dlg", ".py", ".txt", ".gdshader"}
@@ -137,6 +137,18 @@ def _check_stats(where: str, stats: object, rep: Report) -> None:
             rep.err(f"{where}: stat '{k}' must be a non-negative int")
 
 
+def character_role_errors(characters: list) -> list[str]:
+    """M2-MNU-306: every hero row names its role word (`role_key`, a loc key the Formation page shows)."""
+    errs: list[str] = []
+    for c in characters:
+        if not isinstance(c, dict):
+            continue
+        k = c.get("role_key")
+        if not isinstance(k, str) or not k:
+            errs.append(f"game/data/battle/characters.json {c.get('id')}: missing role_key (M2-MNU-306)")
+    return errs
+
+
 def check_battle(files: dict[str, object], rep: Report) -> list[str]:
     """Validates battle tables. Returns every *_key value found (for loc checks)."""
     keys: list[str] = []
@@ -148,6 +160,8 @@ def check_battle(files: dict[str, object], rep: Report) -> list[str]:
     skill_ids = {s["id"] for s in skills}
     status_ids = {s["id"] for s in statuses}
     char_ids = {c["id"] for c in characters}
+    for e in character_role_errors(characters):
+        rep.err(e)
     enemy_ids = {e["id"] for e in enemies}
     item_ids = _ids(files, "game/data/items/items.json", "items")
 
@@ -1315,6 +1329,7 @@ def run(root: Path) -> Report:
     data_keys += check_codex(files, declared_flags_quiet(root), rep)  # M3-UI-03
     data_keys += check_memories(root, files, declared_flags_quiet(root), rep)  # M3-MNU-02
     data_keys += check_reefball(files, rep)
+    data_keys += check_reefball_gear(files, declared_flags_quiet(root), rep)  # ADR 0040
     data_keys += check_set_pieces(files, rep)
     check_loc(root, data_keys, load_loc_keys(root, rep), rep)
     check_flags(root, load_flags(root, rep), rep)
@@ -2593,6 +2608,8 @@ def _set_piece_objective_errors(obj: object, w: str, wards: set[str], phases: se
         errs.append(f"{w}: objective.outcome must be one of {sorted(SET_PIECE_OUTCOMES)}")
     if "from_phase" in obj and obj["from_phase"] not in phases:
         errs.append(f"{w}: objective.from_phase '{obj['from_phase']}' is no phase of this encounter's foes")
+    if "carry_flag" in obj and (not isinstance(obj["carry_flag"], str) or not re.fullmatch(r"[a-z0-9_]+", obj["carry_flag"])):
+        errs.append(f"{w}: objective.carry_flag must be a flag name (M3-UI-100's running total)")
     return errs
 
 
@@ -2871,6 +2888,8 @@ REEFBALL_DIR = "game/data/reefball"
 REEFBALL_RULES = f"{REEFBALL_DIR}/rules.json"
 REEFBALL_SIDES = f"{REEFBALL_DIR}/sides.json"
 REEFBALL_MATCHES = f"{REEFBALL_DIR}/matches.json"
+REEFBALL_GEAR = f"{REEFBALL_DIR}/gear.json"
+REEFBALL_GEAR_KINDS = ("band", "float")
 REEFBALL_STATS = ("breath", "stroke", "reach", "grip", "strip", "loft", "ward")
 REEFBALL_ACTIONS = ("rise", "dive", "pass", "loft")
 REEFBALL_COEFFS = {"rise": ("base", "edge_k", "crowd_k"),
@@ -3033,7 +3052,12 @@ def reefball_sides_errors(doc: object, roles: set[str], stat_range: tuple[int, i
     return errs, {s["id"] for s in sides}
 
 
-def reefball_matches_errors(doc: object, sides: set[str], profiles: set[str]) -> list[str]:
+REEFBALL_OUTCOMES = ("win", "loss", "draw")
+
+
+def reefball_matches_errors(
+    doc: object, sides: set[str], profiles: set[str], items: set[str] | None = None
+) -> list[str]:
     errs: list[str] = []
     for m in _rows(doc, "matches", REEFBALL_MATCHES, errs):
         w = f"{REEFBALL_MATCHES} {m['id']}"
@@ -3048,14 +3072,48 @@ def reefball_matches_errors(doc: object, sides: set[str], profiles: set[str]) ->
                 errs.append(f"{w}: {k} must be 0 or 1")
         if m.get("ai_profile") not in profiles:
             errs.append(f"{w}: unknown ai_profile '{m.get('ai_profile')}'")
+        if "stakes_key" in m and (not isinstance(m["stakes_key"], str) or not m["stakes_key"]):
+            errs.append(f"{w}: stakes_key must be a non-empty loc key (M3-RBL-201)")
+        if "rewards" in m:
+            errs += reefball_rewards_errors(m["rewards"], w, items)
+        if "requires_item" in m and items is not None and m["requires_item"] not in items:
+            errs.append(f"{w}: requires_item '{m['requires_item']}' is not an item (ADR 0040: a key item's gate)")
     return errs
 
 
-def reefball_errors(rules: object, sides: object, matches: object) -> list[str]:
-    """Every Reefball data error (rules, then sides, then matches)."""
+def reefball_rewards_errors(rewards: object, w: str, items: set[str] | None) -> list[str]:
+    """M3-C07-05: a match's optional rewards, {outcome: {"lume": int >= 0, "items": {item id: count > 0}}} for
+    the outcomes win, loss and draw. `items` (None: not checked) is items.json's ids."""
+    if not isinstance(rewards, dict):
+        return [f"{w}: rewards must be an object of outcomes"]
+    errs: list[str] = []
+    for outcome, row in rewards.items():
+        rw = f"{w}: rewards.{outcome}"
+        if outcome not in REEFBALL_OUTCOMES:
+            errs.append(f"{rw}: the outcome must be one of {', '.join(REEFBALL_OUTCOMES)}")
+            continue
+        if not isinstance(row, dict) or not set(row) <= {"lume", "items"}:
+            errs.append(f"{rw}: must be an object with only lume and items")
+            continue
+        if "lume" in row and (not _is_int(row["lume"]) or row["lume"] < 0):
+            errs.append(f"{rw}: lume must be an int >= 0")
+        given = row.get("items", {})
+        if not isinstance(given, dict):
+            errs.append(f"{rw}: items must map item ids to counts")
+            continue
+        for iid, n in given.items():
+            if items is not None and iid not in items:
+                errs.append(f"{rw}: unknown item '{iid}'")
+            if not _is_int(n) or n < 1:
+                errs.append(f"{rw}: item '{iid}' count must be an int >= 1")
+    return errs
+
+
+def reefball_errors(rules: object, sides: object, matches: object, items: set[str] | None = None) -> list[str]:
+    """Every Reefball data error (rules, then sides, then matches). `items`: items.json's ids, for rewards."""
     errs, roles, profiles, stat_range = reefball_rules_errors(rules)
     side_errs, side_ids = reefball_sides_errors(sides, roles, stat_range)
-    return errs + side_errs + reefball_matches_errors(matches, side_ids, profiles)
+    return errs + side_errs + reefball_matches_errors(matches, side_ids, profiles, items)
 
 
 def check_reefball(files: dict[str, object], rep: Report) -> list[str]:
@@ -3067,10 +3125,52 @@ def check_reefball(files: dict[str, object], rep: Report) -> list[str]:
         rep.err(f"{p}: missing")
     if missing:
         return []
-    for e in reefball_errors(*docs):
+    item_doc = files.get("game/data/items/items.json")
+    items = _ids(files, "game/data/items/items.json", "items") if item_doc is not None else None
+    for e in reefball_errors(*docs, items=items):
         rep.err(e)
     return collect_keys(docs)
 
+
+
+def reefball_gear_errors(doc: object, flags: set[str] | None) -> list[str]:
+    """ADR 0040: Reefball-only gear rows: id, a kind (REEFBALL_GEAR_KINDS), name and desc keys, a price >= 0
+    and a non-empty bonus of positive ints over REEFBALL_STATS; each piece's owned flag and each kind's worn
+    flag are declared (`flags`, None: not checked)."""
+    errs: list[str] = []
+    for g in _rows(doc, "gear", REEFBALL_GEAR, errs):
+        w = f"{REEFBALL_GEAR} {g['id']}"
+        _need_keys(g, w, ("name_key", "desc_key"), errs)
+        if g.get("kind") not in REEFBALL_GEAR_KINDS:
+            errs.append(f"{w}: kind must be one of {', '.join(REEFBALL_GEAR_KINDS)}")
+        if not _is_int(g.get("price")) or g["price"] < 0:
+            errs.append(f"{w}: price must be an int >= 0")
+        bonus = g.get("bonus")
+        if not isinstance(bonus, dict) or not bonus:
+            errs.append(f"{w}: bonus must name at least one stat")
+        else:
+            for stat, n in bonus.items():
+                if stat not in REEFBALL_STATS:
+                    errs.append(f"{w}: bonus stat '{stat}' is not a Reefball stat")
+                elif not _is_int(n) or n < 1:
+                    errs.append(f"{w}: bonus '{stat}' must be an int >= 1")
+        if flags is not None and f"rbl_gear_{g['id']}_owned" not in flags:
+            errs.append(f"{w}: flag 'rbl_gear_{g['id']}_owned' is not declared in game/data/flags.tres")
+    if flags is not None:
+        errs += [f"{REEFBALL_GEAR}: flag 'rbl_worn_{k}' is not declared in game/data/flags.tres"
+                 for k in REEFBALL_GEAR_KINDS if f"rbl_worn_{k}" not in flags]
+    return errs
+
+
+def check_reefball_gear(files: dict[str, object], flags: set[str], rep: Report) -> list[str]:
+    """Validates game/data/reefball/gear.json (ADR 0040). Returns its *_key values for the loc check."""
+    doc = files.get(REEFBALL_GEAR)
+    if doc is None:
+        rep.err(f"{REEFBALL_GEAR}: missing")
+        return []
+    for e in reefball_gear_errors(doc, flags):
+        rep.err(e)
+    return collect_keys([doc])
 
 if __name__ == "__main__":
     sys.exit(main())

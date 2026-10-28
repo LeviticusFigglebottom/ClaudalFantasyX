@@ -31,4 +31,16 @@ Write `pemakar.md` and `ashcrown.md` mood briefs with the shot table (P01–P12 
 ## Notes
 - The stand-in light for a charged bowl is the layout's `trial_view.charge_color` (white-violet). Lightning VFX is Art's (sheet §9 Art 5): white-violet, never gold, cyan or teal.
 
+- **env-art, 2026-10-27 (the kit side is done; the rest is placement):**
+  - **Pemakar:** the Pemakar kit (M3-ENV-03, M3-ENV-1214), with the harbour, the weir, the wake-wall, the crown bell
+    and a `day` grade.
+  - **Ashcrown:** the Ashcrown kit (M3-ENV-09), with walkable stair variants for the controller (≤ 45°; the flights
+    in `ashcrown_flights.json`, M3-ENV-715) and the leaf-boats.
+  - **Sheets:** `pemakar.md` and `ashcrown.md`, with their shot tables.
+  - **Grades (done, 2026-10-27):** the colour script now has `ch05_harbour_dusk` and `ch05_ashcrown_day`. Each has an
+    Environment, a LUT and a sun row in `assets/environments/zones/ch05/ch05_grades.json` (`pemakar_grades.py`), for
+    the zones' light rows as Ch6's (`environment_res` and the sun row).
+  - **What's left is placement,** which is act1-chapters' (ADR 0200; their Ch5 swap waits on M3-ARC-1216 for the
+    steep stair). For the Lead: re-route or close into act1-chapters' swap.
+
 ## Review log

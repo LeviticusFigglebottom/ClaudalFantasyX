@@ -25,6 +25,65 @@ const FIN_IDLE_MIN_Y := 1.3
 const FIN_DIVE_SEC := 1.13
 const FIN_KO_BAND_M := 0.6
 const FIN_BELLY_UP := -0.8
+## M3-CRE-627, the Act II regulars. The tannin archer: its head rises this far over its idle for the long jet, and at
+## the end of its KO it has rolled at least this far sideways off its root and lies with its head this low.
+const ARCHER := "res://game/creatures/tannin_archer/tannin_archer_battle.tscn"
+const ARCHER_AIM_RISE_M := 0.1
+const ARCHER_KO_OFF_X := 0.2
+const ARCHER_KO_MAX_Y := 0.25
+## The gallery ray flies: its stand-in hover; the cast settles it at least this far down onto the pool, the KO lands its
+## root on the floor (within this much of the hover), and in the idle its outer wing joints rise this far
+## between strokes (over the body's bob).
+const RAY := "res://game/creatures/gallery_ray/gallery_ray_battle.tscn"
+const RAY_HOVER := 1.4
+const RAY_POOL_DROP_M := 1.2
+const RAY_FLOOR_TOL_M := 0.05
+const RAY_STROKE_M := 0.03
+## The rime urchin: on the hit every spine sector clenches at least this far (radians), on the cast every sector
+## turns at least this far toward the target, and the KO settles the test at least this far onto its ice.
+const URCHIN := "res://game/creatures/rime_urchin/rime_urchin_battle.tscn"
+const URCHIN_CLENCH_RAD := 0.15
+const URCHIN_AIM_RAD := 0.3
+const URCHIN_SETTLE_M := 0.03
+## The conduit crawler: its body sinks at least this far between its folded legs in the KO, and stays this high.
+const CRAWLER := "res://game/creatures/conduit_crawler/conduit_crawler_battle.tscn"
+const CRAWLER_KO_DROP_M := 0.12
+const CRAWLER_KO_BODY_MIN_Y := 0.05
+const LYNX := "res://game/creatures/ridge_lynx/ridge_lynx_battle.tscn"
+## The ridge lynx's checks: its crouch (the telegraph, at CROUCH_SEC) lowers the body at least this far with the paws
+## planted, the leap lifts the root above LEAP_MIN_M at its apex, and at the end of the KO it lies with its head low.
+const LYNX_CROUCH_SEC := 0.38
+const LYNX_CROUCH_MIN_M := 0.1
+const LYNX_APEX_SEC := 0.6
+const LYNX_LEAP_MIN_M := 0.5
+const LYNX_KO_HEAD_MAX_Y := 0.4
+const MOTH := "res://game/creatures/cord_moth/cord_moth_battle.tscn"
+## The cord moth hovers this high (its stand-in lifts it) and its KO comes down by exactly that, within the band.
+const MOTH_HOVER_M := 1.25
+const MOTH_BAND_M := 0.02
+const SKATE := "res://game/creatures/glass_skate/glass_skate_battle.tscn"
+## The glass skate lies flat (every bone under FLAT_MAX_M at rest and after the KO) and erupts above ERUPT_MIN_M.
+const SKATE_FLAT_MAX_M := 0.2
+const SKATE_ERUPT_SEC := 0.36
+const SKATE_ERUPT_MIN_M := 0.4
+## M3-CRE-637, the flat-engine (Ch14 boss part): its stilling lifts every paddle at least FLAT_LIFT_MIN_DEG at
+## FLAT_LIFT_SEC and presses them flat (under FLAT_PRESSED_MAX_DEG) at its contact; a hit kicks one paddle up at
+## least FLAT_KICK_MIN_DEG at its 0.1 s peak; the KO tips each drum half apart by FLAT_SPLIT_DEG (min, max).
+const FLAT := "res://game/creatures/flat_engine/flat_engine_battle.tscn"
+const FLAT_CONTACT_SEC := 0.8
+const FLAT_LIFT_SEC := 0.6
+const FLAT_LIFT_MIN_DEG := 8.0
+const FLAT_PRESSED_MAX_DEG := 1.0
+const FLAT_HIT_PEAK_SEC := 0.1
+const FLAT_KICK_MIN_DEG := 15.0
+const FLAT_SPLIT_DEG := [5.0, 9.0]
+## The Act II variants (M3-CRE-628) and their bases: the same rig and clips.
+const VARIANTS := {
+	"root_crab": "reef_crab",
+	"fen_leech": "sail_leech",
+	"scree_crawler": "slag_tortoise",
+	"rim_crawler": "tide_crawler",
+}
 const RING := {"radius_factor": 1.4, "inner_soft_m": 0.25, "notches": 6}
 const SANDBOX := "res://game/battle/scene/battle_sandbox.tscn"
 const SEED := 20261024
@@ -409,6 +468,142 @@ func _bone_y(skel: Skeleton3D, bone: int) -> float:
 	return (skel.global_transform * skel.get_bone_global_pose(bone)).origin.y
 
 
+func _skeleton(a: Node) -> Skeleton3D:
+	return a.find_children("*", "Skeleton3D", true, false)[0] as Skeleton3D
+
+
+func _player(a: Node) -> AnimationPlayer:
+	return a.find_children("*", "AnimationPlayer", true, false)[0] as AnimationPlayer
+
+
+func _seek(player: AnimationPlayer, clip: StringName, sec: float) -> void:
+	player.play(clip)
+	player.seek(sec, true)
+
+
+func test_the_ridge_lynx_crouches_pounces_and_lies_down() -> void:
+	var l := _actor(LYNX)
+	assert_eq(l.current_clip, &"idle")
+	assert_false(l.enter_phase(&"uprooted"), "no phases: its sheet asks for none")
+	assert_true(l.play_action(&"", &"physical"))
+	assert_eq(l.current_clip, &"attack", "the pounce")
+	assert_true(is_equal_approx(l.contact_time(&"attack"), 0.7), "it comes down on the back row at 0.7 s")
+	assert_true(l.play_action(&"", &"magical"))
+	assert_eq(l.current_clip, &"cast", "the yowl")
+	var skel := _skeleton(l)
+	var bones: Array[String] = ["root", "body", "neck0", "neck1", "head", "jaw", "ear_l", "ear_r"]
+	for k in 4:
+		bones.append("spine%d" % k)
+	for k in 3:
+		bones.append("tail%d" % k)
+	for leg in ["fl", "fr", "bl", "br"]:
+		bones.append_array(["%s_upper" % leg, "%s_lower" % leg, "%s_paw" % leg])
+	for b in bones:
+		assert_true(skel.find_bone(b) >= 0, "the rig has %s" % b)
+	assert_eq(skel.get_bone_count(), bones.size(), "spine 4, neck 2, head, jaw, ears, four legs of 3, tail 3")
+	var player := _player(l)
+	var paws: Array[int] = []
+	for leg in ["fl", "fr", "bl", "br"]:
+		paws.append(skel.find_bone("%s_paw" % leg))
+	for clip: StringName in [&"idle", &"attack", &"cast", &"hit", &"hit_b"]:
+		_seek(player, clip, player.get_animation(clip).length - RAM_END_SEC)
+		for p in paws:
+			var moved := skel.get_bone_global_pose(p).origin.distance_to(skel.get_bone_global_rest(p).origin)
+			assert_true(moved < RAM_FOOT_TOL_M, "%s ends with %s where it stood" % [clip, skel.get_bone_name(p)])
+	var body := skel.find_bone("body")
+	_seek(player, &"attack", LYNX_CROUCH_SEC)
+	assert_true(_bone_y(skel, body) < skel.get_bone_global_rest(body).origin.y - LYNX_CROUCH_MIN_M, "the crouch")
+	for p in paws:
+		var moved := skel.get_bone_global_pose(p).origin.distance_to(skel.get_bone_global_rest(p).origin)
+		assert_true(moved < RAM_FOOT_TOL_M, "%s stays planted in the crouch" % skel.get_bone_name(p))
+	_seek(player, &"attack", LYNX_APEX_SEC)
+	assert_true(_bone_y(skel, skel.find_bone("root")) > LYNX_LEAP_MIN_M, "the leap clears the front row")
+	_seek(player, &"ko", player.get_animation(&"ko").length - RAM_END_SEC)
+	assert_true(_bone_y(skel, skel.find_bone("head")) < LYNX_KO_HEAD_MAX_Y, "it lies down with its head low")
+	for b in skel.get_bone_count():
+		assert_true(_bone_y(skel, b) > -RAM_FOOT_TOL_M, "%s stays above the snow in the KO" % skel.get_bone_name(b))
+
+
+func test_the_cord_moth_hovers_opens_its_knots_and_drifts_down() -> void:
+	var m := _actor(MOTH)
+	assert_true(is_equal_approx(float(CreatureActor.row_for(&"cord_moth")["stand_in"]["hover"]), MOTH_HOVER_M))
+	assert_true(m.play_action(&"", &"physical"))
+	assert_true(is_equal_approx(m.contact_time(&"attack"), 0.5), "the wing-strike lands at 0.5 s")
+	assert_true(m.play_action(&"", &"magical"))
+	assert_eq(m.current_clip, &"cast", "the unravel")
+	var skel := _skeleton(m)
+	var bones: Array[String] = ["root", "body", "antenna_l", "antenna_r"]
+	for tag in ["l", "r"]:
+		for wing in ["fore", "hind"]:
+			bones.append_array(["%s_%s0" % [wing, tag], "%s_%s1" % [wing, tag]])
+	for b in bones:
+		assert_true(skel.find_bone(b) >= 0, "the rig has %s" % b)
+	assert_eq(skel.get_bone_count(), bones.size(), "body, four wing bones a side, antennae")
+	var player := _player(m)
+	_seek(player, &"ko", player.get_animation(&"ko").length - RAM_END_SEC)
+	var root_y := _bone_y(skel, skel.find_bone("root"))
+	assert_true(absf(root_y + MOTH_HOVER_M) < MOTH_BAND_M, "it comes down by its hover height (%.3f)" % root_y)
+	for b in skel.get_bone_count():
+		var y := _bone_y(skel, b) + MOTH_HOVER_M
+		assert_true(
+			y > -MOTH_BAND_M and y < MOTH_BAND_M * 10.0, "%s lies on the floor (y %.3f)" % [skel.get_bone_name(b), y]
+		)
+
+
+func test_the_glass_skate_lies_flat_erupts_and_flattens() -> void:
+	var s := _actor(SKATE)
+	assert_true(s.play_action(&"", &"physical"))
+	assert_true(is_equal_approx(s.contact_time(&"attack"), 0.5), "the slap at 0.5 s")
+	var skel := _skeleton(s)
+	var bones: Array[String] = ["root", "body", "eye_l", "eye_r"]
+	for k in 3:
+		bones.append_array(["disc_l%d" % k, "disc_r%d" % k])
+	for k in 4:
+		bones.append("tail%d" % k)
+	for b in bones:
+		assert_true(skel.find_bone(b) >= 0, "the rig has %s" % b)
+	assert_eq(skel.get_bone_count(), bones.size(), "disc chains of 3 a side, a tail of 4, the eyes")
+	var player := _player(s)
+	_seek(player, &"attack", SKATE_ERUPT_SEC)
+	assert_true(_bone_y(skel, skel.find_bone("root")) > SKATE_ERUPT_MIN_M, "it erupts from the sand")
+	_seek(player, &"ko", player.get_animation(&"ko").length - RAM_END_SEC)
+	for b in skel.get_bone_count():
+		var y := _bone_y(skel, b)
+		assert_true(y > -RAM_FOOT_TOL_M and y < SKATE_FLAT_MAX_M, "%s lies flat (y %.3f)" % [skel.get_bone_name(b), y])
+
+
+func test_the_act2_variants_keep_their_bases_rigs_and_clips() -> void:
+	for id: String in VARIANTS:
+		var v := _actor("res://game/creatures/%s/%s_battle.tscn" % [id, id])
+		var b := _actor("res://game/creatures/%s/%s_battle.tscn" % [VARIANTS[id], VARIANTS[id]])
+		var vs := _skeleton(v)
+		var bs := _skeleton(b)
+		assert_eq(vs.get_bone_count(), bs.get_bone_count(), "%s has its base's rig" % id)
+		for k in bs.get_bone_count():
+			assert_true(vs.find_bone(bs.get_bone_name(k)) >= 0, "%s has %s" % [id, bs.get_bone_name(k)])
+		var vp := _player(v)
+		var bp := _player(b)
+		for clip in bp.get_animation_list():
+			assert_true(vp.has_animation(clip), "%s has %s" % [id, clip])
+			assert_true(
+				is_equal_approx(vp.get_animation(clip).length, bp.get_animation(clip).length),
+				"%s's %s is its base's" % [id, clip]
+			)
+	var crab := _skeleton(_actor("res://game/creatures/reef_crab/reef_crab_battle.tscn"))
+	var root_crab := _skeleton(_actor("res://game/creatures/root_crab/root_crab_battle.tscn"))
+	var knee := crab.find_bone("leg_l0_b")
+	assert_true(
+		root_crab.get_bone_global_rest(knee).origin.y > crab.get_bone_global_rest(knee).origin.y,
+		"the root crab climbs on longer legs (a higher knee)"
+	)
+	var leech := _skeleton(_actor("res://game/creatures/sail_leech/sail_leech_battle.tscn"))
+	var fen := _skeleton(_actor("res://game/creatures/fen_leech/fen_leech_battle.tscn"))
+	var tail := leech.find_bone("tail2")
+	assert_true(
+		fen.get_bone_global_rest(tail).origin.z < leech.get_bone_global_rest(tail).origin.z, "the fen leech is longer"
+	)
+
+
 func test_hits_rotate_their_variants_and_a_phase_keeps_its_own() -> void:
 	var a := _actor(CRAB)
 	var played: Array[StringName] = []
@@ -536,3 +731,146 @@ func test_a_hit_snaps_onto_its_struck_pose() -> void:
 	assert_true(a.is_hit_clip(&"hit_b") and not a.is_hit_clip(&"attack"), "hit variants snap, strikes do not")
 	assert_true(a.play_action(&"pinch", &"physical"))
 	assert_between(player.current_animation_position, 0.0, 0.001, "a strike still starts at its beginning")
+
+
+## M3-CRE-627: an Act II regular strikes and casts on its clips, syncs both to its contact seconds and has its
+## sheet's rig (exactly these bones).
+func _act2_regular(path: String, contacts: Array[float], bones: Array[String]) -> CreatureActor:
+	var a := _actor(path)
+	assert_eq(a.current_clip, &"idle")
+	assert_false(a.enter_phase(&"uprooted"), "%s: a regular has no phases" % path)
+	for k in 2:
+		var clip: StringName = [&"attack", &"cast"][k]
+		assert_true(a.play_action(&"", [&"physical", &"magical"][k]))
+		assert_eq(a.current_clip, clip)
+		assert_true(
+			is_equal_approx(a.contact_time(clip), contacts[k]), "%s: %s lands at %.2f s" % [path, clip, contacts[k]]
+		)
+	var skel := a.find_children("*", "Skeleton3D", true, false)[0] as Skeleton3D
+	for b in bones:
+		assert_true(skel.find_bone(b) >= 0, "%s: the rig has %s" % [path, b])
+	assert_eq(skel.get_bone_count(), bones.size(), "%s: the sheet's rig" % path)
+	return a
+
+
+## Poses the actor's model at `sec` into `clip` (clamped to just before its end) and returns its skeleton.
+func _pose(a: CreatureActor, clip: StringName, sec: float) -> Skeleton3D:
+	var player := a.find_children("*", "AnimationPlayer", true, false)[0] as AnimationPlayer
+	player.play(clip)
+	player.seek(minf(sec, player.get_animation(clip).length - RAM_END_SEC), true)
+	return a.find_children("*", "Skeleton3D", true, false)[0] as Skeleton3D
+
+
+func _bone_at(skel: Skeleton3D, bone: String) -> Vector3:
+	return (skel.global_transform * skel.get_bone_global_pose(skel.find_bone(bone))).origin
+
+
+func test_the_tannin_archer_spits_from_its_root_and_rolls_off_it() -> void:
+	var bones: Array[String] = ["root", "tail", "jaw", "pec_l", "pec_r"]
+	for k in 5:
+		bones.append("spine_%d" % k)
+	var a := _act2_regular(ARCHER, [0.55, 0.9], bones)
+	var skel := _pose(a, &"idle", 0.0)
+	var jaw_rest := _bone_at(skel, "jaw")
+	var root_rest := _bone_at(skel, "root")
+	skel = _pose(a, &"cast", 0.9)
+	assert_true(_bone_at(skel, "jaw").y > jaw_rest.y + ARCHER_AIM_RISE_M, "the long jet: it raises its head to aim")
+	skel = _pose(a, &"ko", INF)
+	assert_true(_bone_at(skel, "root").is_equal_approx(root_rest), "the mangrove root it lay on stays put")
+	assert_true(_bone_at(skel, "spine_0").x > ARCHER_KO_OFF_X, "it rolls off the root to the side")
+	assert_true(_bone_at(skel, "jaw").y < ARCHER_KO_MAX_Y, "and lies at the water")
+
+
+func test_the_gallery_ray_glides_settles_into_its_pool_and_falls_flat() -> void:
+	var bones: Array[String] = ["root", "body"]
+	for side in ["l", "r"]:
+		for k in 3:
+			bones.append("wing_%s%d" % [side, k])
+	for k in 4:
+		bones.append("tail_%d" % k)
+	var a := _act2_regular(RAY, [0.6, 0.9], bones)
+	var spec := CreatureActor.row_for(&"gallery_ray")["stand_in"] as Dictionary
+	assert_true(is_equal_approx(float(spec["hover"]), RAY_HOVER), "it flies at head height")
+	var skel := _pose(a, &"idle", 1.5)
+	var up := _bone_at(skel, "wing_l2").y
+	skel = _pose(a, &"idle", 0.0)
+	assert_true(up - _bone_at(skel, "wing_l2").y > RAY_STROKE_M, "the wings undulate as it glides")
+	skel = _pose(a, &"cast", 0.9)
+	assert_true(_bone_at(skel, "root").y < -RAY_POOL_DROP_M, "the cast settles it into the pool")
+	skel = _pose(a, &"ko", INF)
+	assert_true(absf(_bone_at(skel, "root").y + RAY_HOVER) < RAY_FLOOR_TOL_M, "the KO lays it flat on the floor")
+
+
+func test_the_rime_urchin_clenches_aims_its_spines_and_settles_on_its_ice() -> void:
+	var bones: Array[String] = ["root", "body"]
+	for k in 8:
+		bones.append("sector_%d" % k)
+	var a := _act2_regular(URCHIN, [0.5, 0.8], bones)
+	var skel := _pose(a, &"idle", 0.0)
+	var body_rest := _bone_at(skel, "body")
+	var plinth := _bone_at(skel, "root")
+	for clip_at: Array in [[&"hit", 0.1, URCHIN_CLENCH_RAD], [&"cast", 0.8, URCHIN_AIM_RAD]]:
+		skel = _pose(a, clip_at[0], clip_at[1])
+		for k in 8:
+			var b := skel.find_bone("sector_%d" % k)
+			var turned := skel.get_bone_rest(b).basis.get_rotation_quaternion().angle_to(skel.get_bone_pose_rotation(b))
+			assert_true(turned > float(clip_at[2]), "%s: sector %d's spines move (%.2f rad)" % [clip_at[0], k, turned])
+	skel = _pose(a, &"ko", INF)
+	assert_true(_bone_at(skel, "body").y < body_rest.y - URCHIN_SETTLE_M, "the KO settles the test")
+	assert_true(_bone_at(skel, "root").is_equal_approx(plinth), "on the ice plinth, which stays")
+
+
+func test_the_conduit_crawler_scrubs_jabs_and_folds_its_legs() -> void:
+	var bones: Array[String] = ["root", "body"]
+	var legs: Array[String] = []
+	for side in ["l", "r"]:
+		for k in 3:
+			legs.append_array(["leg_%s%d_a" % [side, k], "leg_%s%d_b" % [side, k]])
+		bones.append_array(["arm_%s_a" % side, "arm_%s_b" % side])
+	bones.append_array(legs)
+	var a := _act2_regular(CRAWLER, [0.45, 1.0], bones)
+	var skel := _pose(a, &"idle", 0.0)
+	var body_rest := _bone_at(skel, "body").y
+	for clip: StringName in [&"attack", &"cast", &"hit", &"hit_b"]:
+		skel = _pose(a, clip, INF)
+		for leg in legs:
+			var b := skel.find_bone(leg)
+			var moved := skel.get_bone_global_pose(b).origin.distance_to(skel.get_bone_global_rest(b).origin)
+			assert_true(moved < RAM_FOOT_TOL_M, "%s ends with %s back where it stood" % [clip, leg])
+	skel = _pose(a, &"ko", INF)
+	var body := _bone_at(skel, "body").y
+	assert_true(body < body_rest - CRAWLER_KO_DROP_M, "its legs fold and it sinks")
+	assert_true(body > CRAWLER_KO_BODY_MIN_Y, "onto its belly plate, not through the floor")
+	for leg in legs:
+		assert_true(_bone_at(skel, leg).y > -RAM_FOOT_TOL_M, "%s stays above the floor" % leg)
+
+
+func test_the_flat_engine_presses_the_water_flat_and_splits_on_its_ko() -> void:
+	var bones: Array[String] = ["root", "drum", "half_a", "half_b", "chimney"]
+	for k in 8:
+		bones.append("paddle%d" % k)
+	var e := _act2_regular(FLAT, [FLAT_CONTACT_SEC, FLAT_CONTACT_SEC], bones)
+	var whole := e.find_child("Engine", true, false) as Node3D
+	var broken := e.find_child("EngineBroken", true, false) as Node3D
+	assert_true(whole != null and whole.visible, "it stands whole: the lit window, the fanned paddles")
+	assert_true(broken != null and not broken.visible, "the broken variant waits for its break part")
+	assert_false(e.set_part_broken(&"any_charge", true), "no charge skill names its part yet")
+	var skel := _pose(e, &"cast", FLAT_LIFT_SEC)
+	for k in 8:
+		assert_true(_turn_deg(skel, "paddle%d" % k) > FLAT_LIFT_MIN_DEG, "the stilling lifts paddle %d" % k)
+	skel = _pose(e, &"cast", FLAT_CONTACT_SEC)
+	for k in 8:
+		assert_true(_turn_deg(skel, "paddle%d" % k) < FLAT_PRESSED_MAX_DEG, "and presses paddle %d flat" % k)
+	skel = _pose(e, &"hit", FLAT_HIT_PEAK_SEC)
+	assert_true(_turn_deg(skel, "paddle3") > FLAT_KICK_MIN_DEG, "a hit kicks one paddle up at its peak")
+	skel = _pose(e, &"ko", INF)
+	for h in ["half_a", "half_b"]:
+		assert_between(_turn_deg(skel, h), FLAT_SPLIT_DEG[0], FLAT_SPLIT_DEG[1], "the KO splits the drum: %s" % h)
+	for b in bones:
+		assert_true(_bone_at(skel, b).y > -RAM_FOOT_TOL_M, "%s stays on the water in the KO" % b)
+
+
+## How far a bone is turned from its rest (degrees).
+func _turn_deg(skel: Skeleton3D, bone: String) -> float:
+	var b := skel.find_bone(bone)
+	return rad_to_deg(skel.get_bone_rest(b).basis.get_rotation_quaternion().angle_to(skel.get_bone_pose_rotation(b)))

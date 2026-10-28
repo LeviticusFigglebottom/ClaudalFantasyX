@@ -68,6 +68,17 @@ def t_of(bar: int, beat: float = 0.0) -> float:
     return T0 + (bar - 1) * BAR + beat * BEAT
 
 
+# M3-C09-06: where each movement starts (s from the first sample), for the cutscene's `@wait music=<marker>`. The held
+# input pauses the dance, not the music (decided: the cue runs on through a pause, and the dance re-syncs on the next
+# of these). music.json's `markers` row carries the same numbers (tools/tests/test_music_markers.py).
+MOVEMENTS = {"cantor": 5, "dance": 13, "dance_full": 21, "thinning": 29, "last_chord": 35}
+
+
+def markers() -> dict[str, float]:
+    """Each movement's first downbeat (s)."""
+    return {name: t_of(bar) for name, bar in MOVEMENTS.items()}
+
+
 def lh_for(bar: int) -> str:
     """The piano's chord in bar `bar`: Hush bars 1-2 for the intro, then the theme's bars in order."""
     hush_bar = {**{b: 1 for b in range(1, 5)}, **{b: b - 2 for b in range(5, 13)}, **{b: b - 2 for b in range(13, 21)},

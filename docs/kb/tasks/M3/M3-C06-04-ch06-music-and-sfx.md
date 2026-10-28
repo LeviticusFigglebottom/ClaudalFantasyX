@@ -2,8 +2,9 @@
 id: M3-C06-04
 title: Ch6 music cues and SFX (the Stillguard hum, the silent poles, sefir_theme's first resolution)
 role: audio
-status: todo
-owner_session: ""
+status: review
+reviewer: cinematics
+owner_session: "audio (cloud session_01Wmj8xaLtwcqiS3qwC6PciW, branch claude/audio)"
 depends_on: [M3-C06-02]
 milestone: M3
 request-from: cinematics
@@ -15,10 +16,12 @@ Ch6's scripts (`game/data/dialogue/ch06/`) name these cues; none exist yet, so t
 - The battle cue for the road's fights is `battle_standard`; the boss needs `stillguard_inquisitor` wired to the encounter.
 
 ## Acceptance criteria
-- [ ] Every cue and SFX id above exists and the Ch6 scenes play without sequencer audio warnings.
-- [ ] B05 has no water sound but the iron's hiss, and no sting (`test_ch06_thread` allows only `barge_pole` and `brine_iron_hiss` there).
-- [ ] PROVENANCE rows for every new asset.
+- [x] Every cue and SFX id above exists and the Ch6 scenes play without sequencer audio warnings.
+- [x] B05 has no water sound but the iron's hiss, and no sting (`test_ch06_thread` allows only `barge_pole` and `brine_iron_hiss` there).
+- [x] PROVENANCE rows for every new asset.
 
 ## Notes
+- All Ch6 cues delivered (M3-AUD-11, M3-AUD-20, M3-AUD-821): `brine_shoals`, `raid`, `stillguard_inquisitor` (stems), `sefir_theme`; SFX in act1_cutscene_sfx.py, with `barge_pole` carrying no water and `stillguard_hum` stating motifs.ORDER_HUM. The dawn variant is not made (no B10 time-of-day switch yet).
+- Checked 2026-10-27 (M3-AUD-833's resolution test and the thread runs): `--filter=_thread` (Ch1-Ch9, 34 tests) passes with no "no music" or "no sound" warning from any scene; the only sequencer warnings are other kwargs' placeholders (`@vfx drift=`, `@camera grade=`, `@sfx at=`).
 
 ## Review log

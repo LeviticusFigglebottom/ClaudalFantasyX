@@ -45,7 +45,8 @@ game/data/battle/enemies.json  "model": "res://game/creatures/<id>/<id>_battle.t
   clip, outside phases, playing (never on a portrait's paused pose) and alive; the interval comes from a hash of its
   node path, so a scene replays the same way.
 - **Hits land on the contact frame (M3-CRE-617).** Every `hit` peaks 0.10–0.20 s in (authored so). A hit cuts into
-  its clip at creatures.json `hit_snap.preroll_sec` (0.1 s, about half its recoil) with no cross-fade, so the frame
+  its clip at creatures.json `hit_snap.preroll_sec` (0.067 s since M3-CRE-630 put clips on time: about half its
+  recoil, measured over all 42 hits; a row overrides it for a late peak, as the ashwing's 0.1 s) with no cross-fade, so the frame
   battle-presentation's hit-stop holds (M3-BPR-401) shows the blow landing, not the pose the hit came from; the
   rest of the recoil plays after the hold. Strikes, casts and every other clip still start at 0 with the row's
   blend. A boss's hit has real weight too: the Drownbell rocks back on braced legs with its rim ringing, the Cinder
@@ -58,6 +59,20 @@ game/data/battle/enemies.json  "model": "res://game/creatures/<id>/<id>_battle.t
   contract's other names (`dodge`, `defend`, `ready`, `victory`) are optional; a creature without them gets the
   sequencer's procedural fallback. Audit of all 27 creatures (2026-10-24): each has `idle`, `attack`, `cast`, `hit`
   and `ko`, and no strike clip keeps horizontal root travel.
+- **On the floor (M3-CRE-631, M3-CRE-632).** No vertex of any baked frame of any clip goes under y 0 (5 mm
+  tolerance), checked by skinning the GLB for **every** creature in creatures.json (tools/tests/test_creatures.py
+  `GroundedClipsTest`). A flier is measured with its `stand_in.hover` added (the stand-in lifts it by that much), so
+  its KO must land on the floor. Only a creature whose sheet puts it below the floor is exempt, in the test's
+  `ALLOW` with the sheet cited: the hullgnaw and the lantern eel (out of the water or sand), the Mangrove Drowner
+  (roots in the water), the Undertow's Reach (out of the storm behind the wall), the Wakefin (swims), the tannin
+  archer (half out of the fen's water). For a limb planted at rest, `common/grounding.py` does it:
+  `grounded(rig, mesh, clips, limbs, floor)` poses the mesh at every frame as the export does and turns (or lifts)
+  each listed limb by the least amount that keeps it on the floor, so a foot stays planted while the body bobs over
+  it. It derives `hit_b` and `idle_b` first, so a correction is never mirrored. A limb may turn about a weighted axis
+  (`(wx, wy, wz)`, a leg splayed round a body), be limited to some clips (a fifth item), or be the root (a lift of
+  the whole body, e.g. a KO that rolls about a pivot on the floor); `mesh` may be a list (the body and its extra
+  meshes), and a flier passes `floor=-HOVER`. Most creatures now export through it (`export_clips`). Author a KO
+  that lies on the floor; the grounding only trims what is left.
 - **Determinism.** No randomness except a seeded `np.random.default_rng(SEED)` and the kit's hash noise; no
   exported tangents (Godot makes them on import). Two runs are byte-identical, which the gate checks.
 - **Budgets** are in each sheet (5k to 16k triangles). Keep each GLB well under 5 MB (the crab is about 0.8 MB).

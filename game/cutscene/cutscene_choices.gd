@@ -19,6 +19,11 @@ func _init(cfg: Dictionary = {}) -> void:
 	add_child(_list)
 
 
+## M2-FP-1001: the player's palette and text size, like every menu outside battle (M2-UI-09).
+func _ready() -> void:
+	UiSettings.shared().follow(self)
+
+
 ## Shows `options` and focuses the first. `chosen` fires with the picked DialogueOption.index.
 func show_options(options: Array[DialogueOption]) -> void:
 	clear()
@@ -26,8 +31,8 @@ func show_options(options: Array[DialogueOption]) -> void:
 		var b := Button.new()
 		b.text = tr(opt.text_key)
 		b.alignment = HORIZONTAL_ALIGNMENT_LEFT
-		if _font_size > 0:
-			b.add_theme_font_size_override(&"font_size", _font_size)
+		if _font_size > 0:  # the configured size, at the player's text size (the theme scales only its own)
+			b.add_theme_font_size_override(&"font_size", roundi(_font_size * UiSettings.shared().text_scale()))
 		b.pressed.connect(_on_pressed.bind(opt.index))
 		UiFocus.follow_pointer(b)  # M2-UI-26: hover focuses, the wheel steps (UI-owned)
 		_list.add_child(b)

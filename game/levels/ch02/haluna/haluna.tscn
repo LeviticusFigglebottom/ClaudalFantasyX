@@ -1040,7 +1040,7 @@ shot = SubResource("Shot_cut_B02_bag")
 
 [node name="asha" type="Node3D" parent="CutsceneStage/Actors"]
 script = ExtResource("11_pose")
-transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 0.2, -0.01, 8)
+transform = Transform3D(0.643, 0, 0.766, 0, 1, 0, -0.766, 0, 0.643, 0.2, -0.01, 8)
 world_pose = {
 "DEF-thigh.L": Vector3(88, 0, 0),
 "DEF-shin.L": Vector3(-92, 0, 0),

@@ -1,0 +1,14 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://game/creatures/creature_actor.gd" id="1_actor"]
+[ext_resource type="PackedScene" uid="uid://dnxs6gyxt1ymn" path="res://assets/creatures/flat_engine/flat_engine.glb" id="2_model"]
+
+[node name="FlatEngine" type="Node3D"]
+script = ExtResource("1_actor")
+creature_id = &"flat_engine"
+metadata/hymn_battle_actor = true
+
+[node name="Model" parent="." instance=ExtResource("2_model")]
+
+[node name="EngineBroken" parent="Model/Armature/Skeleton3D" index="1"]
+visible = false

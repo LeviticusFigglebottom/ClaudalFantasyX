@@ -29,7 +29,7 @@ M3-CMB-01 (ADR 0100, `docs/kb/design/set_piece_battles.md`) added scripted timel
 - **Locks** (`BattleMenus`): `swap_lock_text` gives "Toma can't leave the line: Holding the stair."; the swap-out pick's help shows it, and a refused `swap_members` sets it. The reserve page lists `engine.unavailable` heroes greyed with `unavailable_key` ("Not with the party").
 - **Floats** (`BattleFloats`): "Intercepted" over the guard (`ActionResult.intercepted_by`), "Counter" over the one who struck back (`counter_by`), "Withdraws" on a Storm-Call `withdrawn` hit.
 - Strings: `game/data/loc/battle_set_piece.csv` (new translation in project.godot). No new engine API.
-- **Carry across waves:** the engine resets `objective_count` per wave; the flow (M3-C08-02) keeps the total in `ch08_stair_groups_up`. The meter shows this wave's count against its quota; a running total can read that flag when the flow lands.
+- **Carry across waves (2026-10-27):** `ch08_stair_groups_up` is declared in flags.tres and named by the three stair waves' `objective.carry_flag` (validated); the meter reads it (`BattleSetPieceHud.carried_total()`: flag + this wave) and shows "2 / 3 · 7 in all". The HUD never writes the flag: raising it after each wave is the flow's, requested as M3-UI-203 (act1-chapters).
 - Tests: `tests/unit/test_set_piece_hud.gd` (6). Shot `battle_ch08_stair_hold` (new; wave 1, two groups up): render requested from the PC. The Reach's shot waits for M3-C08-02's fight.
 
 ## Review log

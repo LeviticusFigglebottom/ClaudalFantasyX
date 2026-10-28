@@ -19,6 +19,7 @@ import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "common"))
 import creature_kit as ck  # noqa: E402
+import grounding as gr  # noqa: E402
 
 SEED = 4409
 PAL = {k: ck.hexrgb(v) for k, v in {
@@ -125,6 +126,13 @@ def build_clips(pos: np.ndarray) -> list[ck.Clip]:
     return [idle, attack, cast, hit, ko]
 
 
+def export_clips(rig: ck.Rig, mesh: ck.Mesh, pos: np.ndarray) -> list[ck.Clip]:
+    """M3-CRE-632 (common/grounding.py): in the KO each shrimp that lands lifts the least it takes to lie on the floor
+    (they settled at 4 cm and rolled onto their sides, which put the larger ones, the heart most, 8 cm under it)."""
+    limbs = [(f"fry{i}", gr.LIFT, 1.0, 0.2, ("ko",)) for i in range(COUNT)]
+    return gr.grounded(rig, mesh, build_clips(pos), limbs)
+
+
 def main() -> None:
     argv = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else []
     ap = argparse.ArgumentParser()
@@ -135,7 +143,7 @@ def main() -> None:
     mesh = ck.Mesh("glassfry")
     for i in range(COUNT):
         shrimp(mesh, rig, i, pos[i], float(heading[i]), float(size[i]))
-    info = ck.export_creature(mesh, rig, build_clips(pos), args.out, extras={"hymn_creature": "glassfry"})
+    info = ck.export_creature(mesh, rig, export_clips(rig, mesh, pos), args.out, extras={"hymn_creature": "glassfry"})
     print(f"glassfry: {info}")
 
 

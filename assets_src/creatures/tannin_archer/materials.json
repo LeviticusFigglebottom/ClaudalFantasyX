@@ -1,0 +1,14 @@
+{
+  "_doc": "The tannin archer's surfaces (docs/kb/art/creatures/act2/tannin_archer.md). Slots are the glTF material names; write_materials.py writes assets/creatures/tannin_archer/materials/<slot>.tres on game/shaders/creature/creature.gdshader. body is the wet fish (deep_teal_shadow going abyss_navy on the back, sand_cloth flanks with six lacquer_black bars, a bone belly, by vertex colour), whose emission mask is the gill slit, the small spawn_wound weak point; fin is the dorsal, anal, caudal and pectoral fins, with a rim sheen; eye is the dusk_gold iris round a lacquer_black pupil, glossy; root is the mangrove root it lies on, timber_weathered going tortoiseshell where the tannin water stains it. Colours are palette.json swatches.",
+  "slots": {
+    "body": {"roughness_dry": 0.45, "roughness_wet": 0.15, "specular": 0.55, "wet_darken": 0.4, "clearcoat_wet": 0.6,
+             "detail_scale": 60.0, "detail_albedo": 0.06, "detail_bump": 0.15, "cavity_albedo": 0.5,
+             "emission_color": "#3FE0C8", "emission_energy": 1.8, "emission_pulse_hz": 0.3, "emission_pulse_depth": 0.4},
+    "fin": {"roughness_dry": 0.45, "roughness_wet": 0.2, "specular": 0.5, "wet_darken": 0.5, "clearcoat_wet": 0.4,
+            "detail_scale": 70.0, "detail_albedo": 0.08, "detail_bump": 0.08, "cavity_albedo": 0.3, "rim_sheen": 0.5},
+    "eye": {"roughness_dry": 0.12, "roughness_wet": 0.06, "specular": 0.7, "clearcoat_wet": 1.0, "detail_albedo": 0.0,
+            "detail_bump": 0.0},
+    "root": {"roughness_dry": 0.85, "roughness_wet": 0.35, "specular": 0.4, "wet_darken": 0.6, "clearcoat_wet": 0.3,
+             "detail_scale": 22.0, "detail_albedo": 0.18, "detail_bump": 0.6, "cavity_albedo": 0.5}
+  }
+}

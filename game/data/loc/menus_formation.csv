@@ -29,3 +29,10 @@ FORMATION_MENU_ERR_OPEN_PLACE,An open place. Pick a hero first, then choose this
 FORMATION_MENU_ERR_TOO_FEW_FMT,"The active line needs at least {min} in it, so {name} stays."
 FORMATION_MENU_ERR_NONE_STANDING,Nobody left in the active line could fight: the battle would be lost before it began. Keep someone standing there.
 FORMATION_MENU_NAMES_JOIN,", "
+ROLE_RHEN,Swift striker
+ROLE_ASHA,Mender
+ROLE_TOMA,Holds the line
+ROLE_YSOLDE,Hexes and elements
+ROLE_KERRID,Breaks armour
+ROLE_LISS,Tinker and thief
+FORMATION_MENU_ROLE_PLACE_FMT,{role} · {place}

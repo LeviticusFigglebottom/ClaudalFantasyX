@@ -16,7 +16,7 @@ var engine: BattleEngine
 ## The boss's row of choreo.json "bosses".
 var cfg: Dictionary = {}
 var boss_id: StringName = &""
-## Moments played, in order (tests and tools): &"gather", &"rim_break", &"flood".
+## Moments played, in order (tests and tools): &"gather", &"rim_break", &"flood", or a phase id (phases).
 var moments: Array[StringName] = []
 ## Accents that wait for the next contact beat (the action whose resolution raised them): [[cid, spec]].
 var _on_contact: Array[Array] = []
@@ -47,7 +47,7 @@ func attach(sequencer: BattleChoreo, battle: BattleEngine, bell: StringName, row
 
 
 func _on_charge_started(actor: BattleCombatant, skill_id: StringName, _turns: int) -> void:
-	if actor.id == boss_id and str(skill_id) == str(cfg.get("charge_skill", "")):
+	if actor.id == boss_id and _charges(skill_id):
 		_queue(boss_id, _row("gather"))  # the gathering action's own contact
 		moments.append(&"gather")
 
@@ -55,7 +55,7 @@ func _on_charge_started(actor: BattleCombatant, skill_id: StringName, _turns: in
 ## Each later turn of the charge sways again; the turn it fires plays the toll instead.
 func _on_turn_started(actor: BattleCombatant) -> void:
 	if actor.id == boss_id and actor.is_charging() and actor.charge_left > 1:
-		if str(actor.charge_skill) == str(cfg.get("charge_skill", "")):
+		if _charges(actor.charge_skill):
 			choreo.accent(boss_id, _row("gather"))
 			moments.append(&"gather")
 
@@ -67,6 +67,10 @@ func _on_charge_broken(enemy: BattleCombatant, _skill_id: StringName) -> void:
 
 
 func _on_phase_changed(enemy: BattleCombatant, phase_id: StringName) -> void:
+	var moment := (cfg.get("phases", {}) as Dictionary).get(String(phase_id), {}) as Dictionary
+	if enemy.id == boss_id and not moment.is_empty():  # M3-BPR-408: any boss's phase moment (the Lamp Engine opens)
+		moments.append(StringName(phase_id))
+		choreo.after_sequence(_phase_moment.bind(moment))
 	var flood := _row("flood")
 	if enemy.id != boss_id or str(phase_id) != str(flood.get("phase", "")):
 		return
@@ -80,6 +84,22 @@ func _brace() -> void:
 	var spec := flood.get("accent", {}) as Dictionary
 	for i in engine.party_active.size():
 		choreo.accent(engine.party_active[i].id, spec, float(flood.get("stagger_sec", 0.0)) * i)
+
+
+## The boss's accent for a phase change, then the party's in slot order (stagger_sec apart), once the action is done.
+func _phase_moment(moment: Dictionary) -> void:
+	if moment.has("boss"):
+		choreo.accent(boss_id, moment["boss"] as Dictionary)
+	if moment.has("party"):
+		for i in engine.party_active.size():
+			var at := float(moment.get("party_delay_sec", 0.0)) + float(moment.get("stagger_sec", 0.0)) * i
+			choreo.accent(engine.party_active[i].id, moment["party"] as Dictionary, at)
+
+
+## Whether `skill_id` is this boss's gathering charge (charge_skill, or "*" for any telegraph it gathers).
+func _charges(skill_id: StringName) -> bool:
+	var want := str(cfg.get("charge_skill", ""))
+	return want != "" and (want == "*" or want == str(skill_id))
 
 
 func _queue(cid: StringName, spec: Dictionary) -> void:

@@ -263,6 +263,22 @@ func test_rows_show_slot_chapter_location_play_time_and_time() -> void:
 	_done()
 
 
+## The "parts look primitive" pass: a record shows its active line's faces under the slot name (baked
+## portraits); an empty slot shows none.
+func test_a_record_shows_its_party_s_faces() -> void:
+	var st := GameStateData.new()
+	st.chapter = 3
+	st.location_id = &"ch02/haluna"
+	st.party_ids = [&"rhen", &"asha", &"toma"] as Array[StringName]
+	assert_eq(SaveSystem.save_to_slot(5, st), OK)
+	assert_eq(SaveSystem.slot_info(5)["party"], ["rhen", "asha", "toma"], "slot_info reads the saved line")
+	var menu := _open(SaveMenuModel.Mode.LOAD)
+	var r := menu.rows()
+	assert_eq(r[5].faces_shown(), [&"rhen", &"asha", &"toma"] as Array[StringName], "their faces, in order")
+	assert_true(r[4].faces_shown().is_empty(), "an empty slot shows none")
+	_done()
+
+
 func test_keyboard_and_controller_actions_drive_the_menu() -> void:
 	var menu := _open(SaveMenuModel.Mode.SAVE)
 	var tree := menu.get_tree()
