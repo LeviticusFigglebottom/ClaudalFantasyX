@@ -244,6 +244,9 @@ func _draw_portrait() -> void:
 	var r := portrait_rect()
 	if is_stone():
 		draw_rect(r, _c(&"stone"))
+		if _face != null:  # the face turned to stone: greyed under the strata
+			var inset := HudLayout.num(_m, "portrait_inset")
+			draw_texture_rect(_face, r.grow(-inset), false, _c(&"stone"))
 		var crack := _c(&"stone_crack")
 		var third := r.size.y / 3.0
 		draw_line(r.position + Vector2(0, third), r.position + Vector2(r.size.x, third * 0.8), crack, 1.0)
@@ -267,7 +270,7 @@ func _sync_face() -> void:
 	if _face == null or down != _face_down:
 		_face = BattlePortraits.texture(combatant.id, down)
 		_face_down = down
-	_initial.visible = _face == null or is_stone()
+	_initial.visible = _face == null
 
 
 func _c(role: StringName) -> Color:

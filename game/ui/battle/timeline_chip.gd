@@ -221,16 +221,23 @@ func _draw_portrait() -> void:
 		return
 	var pic := r.grow(-HudLayout.num(_metrics, "portrait_inset"))
 	if team == TEAM_ENEMY:
-		# Enemy portrait is a diamond, ally a square: a second shape cue.
+		# Enemy portrait is a diamond, ally a square: a second shape cue. The foe's picture fills the diamond.
 		var c := r.get_center()
 		var hs := side * 0.5
-		draw_colored_polygon(
-			PackedVector2Array([c + Vector2(0, -hs), c + Vector2(hs, 0), c + Vector2(0, hs), c + Vector2(-hs, 0)]), col
+		var diamond := PackedVector2Array(
+			[c + Vector2(0, -hs), c + Vector2(hs, 0), c + Vector2(0, hs), c + Vector2(-hs, 0)]
 		)
-		var inner := side * HudLayout.num(_metrics, "enemy_portrait_frac")
-		pic = Rect2(c - Vector2.ONE * inner * 0.5, Vector2.ONE * inner)
-	else:
-		draw_rect(r, col)
+		draw_colored_polygon(diamond, col)
+		if _face != null:
+			var inner := diamond.duplicate()
+			var uvs := PackedVector2Array()
+			var k := 1.0 - HudLayout.num(_metrics, "portrait_inset") * 2.0 / side
+			for i in inner.size():
+				inner[i] = c + (inner[i] - c) * k
+				uvs.append((inner[i] - (c - Vector2.ONE * hs * k)) / (side * k))
+			draw_colored_polygon(inner, Color(1.0, 1.0, 1.0, col.a), uvs, _face)
+		return
+	draw_rect(r, col)
 	if _face != null:
 		draw_texture_rect(_face, pic, false, Color(1.0, 1.0, 1.0, col.a))
 
