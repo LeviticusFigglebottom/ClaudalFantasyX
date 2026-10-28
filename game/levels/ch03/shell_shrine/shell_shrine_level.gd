@@ -374,6 +374,8 @@ func _build() -> void:
 	side_water = _build_side_pool()
 	_build_door()
 	_build_charm()
+	# M3-NAR-01: the Words at the Basin Steps, on the first step inside the entrance, read on the way in.
+	room.add_child(CodexRecordSpot.make("basin_steps", _xz(&"basin_steps"), float(_g["reach_m"])))
 
 
 func _load_materials() -> void:
