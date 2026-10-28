@@ -205,7 +205,8 @@
       "vowbound": true,
       "clip_by_skill": {"brine_lash": "attack", "tidal_ward": "cast", "floodnet": "special"},
       "contact": {"attack": 0.55, "cast": 0.8, "special": 1.45},
-      "stand_in": {"yaw_deg": -90.0}
+      "stand_in": {"yaw_deg": -90.0},
+      "portrait": {"yaw_deg": 45, "pitch_deg": 32, "margin": 0.95}
     },
     "kahre": {
       "scene": "res://game/creatures/kahre/kahre_battle.tscn",
@@ -248,7 +249,8 @@
       "ko": "release",
       "contact": {"attack": 0.55, "cast": 0.8, "special": 1.45},
       "phases": {"release": {"clip": "release", "hold": true}},
-      "stand_in": {"yaw_deg": 90.0}
+      "stand_in": {"yaw_deg": 90.0},
+      "portrait": {"yaw_deg": 45, "pitch_deg": 32, "margin": 0.95}
     },
     "kahre_held": {
       "scene": "res://game/creatures/kahre/kahre_held_battle.tscn",

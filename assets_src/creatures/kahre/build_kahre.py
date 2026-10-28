@@ -1113,6 +1113,25 @@ def fore_limb(mesh: ck.Mesh, rig: ck.Rig, leg: str) -> None:
     for tt, half in ((0.63, (0.022, 0.085)), (0.74, (0.021, 0.082)), (0.85, (0.02, 0.075))):
         armour_plate(mesh, g, tt * (g.K - 1), a_pl / (2 * math.pi) * S, half, skin, rng)
     count("plates", mesh, before)
+    # Polish 2: the wrist cuff. Where the forearm runs into the back of the hand the two surfaces met in a ragged
+    # line; a thick roll of hide folds now wraps the wrist below the last scute, its upper edge tucked under the
+    # forearm's hide and its lower lip turned down over the hand, so the joint reads as a fold, not a seam.
+    before = mesh.triangle_count
+    tc = np.array([0.88, 0.91, 0.97, 1.0])
+    pc = np.column_stack([np.interp(tc, t, path[:, i]) for i in range(3)])
+    rc = np.interp(tc, t, r) * np.array([0.97, 1.07, 1.07, 0.92]) + np.array([0.0, 0.028, 0.024, 0.0])
+
+    def folds(tt, a):  # the hide bunched in four lobes round the wrist, creased between them
+        return 1.0 + (0.12 * np.clip(np.cos(4.0 * a + 0.7 * s), 0.0, 1.0) ** 2 - 0.05 * np.cos(9.0 * a + 0.3)) \
+            * np.sin(math.pi * np.clip(tt * 1.2, 0.0, 1.0))
+
+    gc = Grid(pc, rc * 1.05, rc * 0.95, 10, up_hint=(1.0, 0.0, 0.0), mod=folds)
+    gc.sculpt(noise=0.006, fine=0.003, seed=SEED + 19 + int(s))
+    colc, cavc = hide(gc, SEED + 19, ash=0.3)
+    lip = np.r_[np.repeat(gc.t, gc.S), 0.0, 1.0]
+    cavc = np.clip(cavc + 0.5 * ck.smoothstep(0.75, 1.0, lip) + 0.35 * ck.smoothstep(0.25, 0.0, lip), 0.0, 1.0)
+    add_grid(mesh, gc, "body", colc, skin, cavity=cavc, seam=out + math.pi)
+    count("cuffs", mesh, before)
 
 
 def fore_hand(mesh: ck.Mesh, rig: ck.Rig, leg: str) -> None:

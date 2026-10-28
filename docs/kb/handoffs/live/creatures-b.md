@@ -5,6 +5,33 @@ started 2026-10-28 from `origin/claude/undertow-lead-handoff-ze8rrn` bd3ab5b. **
 (CLAUDE.md §7a). Regular enemies and wildlife stay with the creatures track (`creatures.md`); the shared creature kit,
 CreatureActor and the validator are theirs too (kit or tool changes go to them as request tasks).
 
+## LEAD: READ FIRST (2026-10-28 09:20) — Ilun is NOT a capsule; your queue items are done
+- **Ilun has a real procedural body, rig and clips** (assets_src/creatures/ilun/build_ilun.py → assets/creatures/ilun/ilun.glb,
+  wired through creatures.json `ilun` `vowbound: true` → CreatureModels / BattleStage.stand_in_spec). Clips: idle,
+  ready, **rise** (the call), **dismiss**, attack, cast, hit, hit_b, defend, ko, victory, special, release, idle_b.
+- **SELF-RENDERED @ 7305540a (this branch's head), viewed: battle_vowbound_out and battle_choreo_vowbound_rise both show
+  the manta, no capsule.** The big14 gate's own out PNG (gpu/gate-big14-shots:
+  docs/kb/qa/gate-runs/big14/out/battle_vowbound_out.png) shows the manta too.
+- **The capsule you see is the OLD BASELINE** `tests/screenshots/baselines/battle_vowbound_out.png` (and
+  `battle_choreo_vowbound_rise.png`), from big13. Those two shots are **drift to re-approve after viewing**; I never
+  write baselines (TRACK-RULES).
+- **Portrait:** `assets/ui/portraits/creatures/ilun.png` is committed (e0300c83) with its PROVENANCE row; so are kahre,
+  virel and the three held forms; the six bosses are re-baked. test_creature_portraits now fails only on Act II's
+  nhoa, hesk, ethren (+ held), the creatures track's, paused.
+- **Every other Act I boss and Vowbound row is done** (MERGE-READY lines below). Open, not mine: M3-CRB-009 and
+  M3-CRB-011 (battle-presentation: intro clip playback, the boss seat at the default camera), Ilun's blank turn-order
+  icon (ui).
+
+- **09:45, why the inventory still says "Vowbound … drawn as a primitive" (M3-HER-1143): an audit false positive.**
+  `tools/placeholder_audit.py` only reads battle_sandbox.json `stand_ins.<id>.scene`; the game resolves a Vowbound
+  through its creatures.json `vowbound: true` row. **M3-CRB-012** (qa) carries a tested 4-line patch: with it the ilun,
+  kahre and virel rows go and the audit's tests stay OK. M3-HER-1143 is in review with the row-by-row status; the
+  Moll row is the characters track's (M3-CHR-507).
+- **The battle-distance arena pass is done** (the 04:57 entry below; scratch fixture on the big14 tree, chapter parties,
+  real arenas): hullgnaw, drownbell and bottle_hermit read whole and well scaled; the Wraith, the Matron and the Reach
+  are cropped by the stage's lone-boss seat (EnemySlots/Slot0), filed as **M3-CRB-011**. Idle motion was checked clip
+  by clip in each model pass.
+
 ## Scope (from game/data, 2026-10-28)
 - **Bosses** (enemies.json rows with phases, or a choreo.json `boss_intro` row): `hullgnaw` (Ch1), `drownbell`
   (the slice, Ch3), `bottle_hermit` and `spar_wraith` (Ch4), `cinder_matron` (Ch5), `undertows_reach` (Ch8).
@@ -184,3 +211,51 @@ CreatureActor and the validator are theirs too (kit or tool changes go to them a
   battle_boss_intro_wraith, battle_boss_intro_matron, battle_boss_intro_drownbell, battle_boss_intro_reach,
   drownbell_flood, battle_vowbound_out, battle_choreo_vowbound_rise, battle_choreo_summon, battle_vowbound_call,
   creature_portraits, and any battle shot that seats these models.
+- **MERGE-READY @ 397f0da8: polish 2** (worktree agent fdf0b665, fb334ace, b89d95a9, 5587e970; viewed by me): the
+  Hullgnaw's neck dull and folded (carapace roughness_dry 0.35 → 0.62; wet glints only in slime streaks); the
+  Matron's five biggest front slag cells bubbled, pitted and cracked (24,988 tris); Ilun's net cords thin toward the
+  wing tip and the membrane darkens to the trailing edge, so the near wing reads as net over dark diamonds; Kahre's
+  wrists get a cuff of hide folds (17,990 tris). Bones, clips, contacts and anchors unchanged. Blender verify
+  identical (×4); tools tests 48 OK; validate_data; Godot creature 79/1 (known portraits), boss 61/0, vowbound 83/0,
+  creature_bosses 4/0. SELF-RENDERED: creature_hullgnaw, battle_boss_intro_hullgnaw, creature_cinder_matron,
+  battle_boss_intro_matron, creature_ilun, battle_vowbound_out, battle_choreo_vowbound_rise, creature_kahre — viewed.
+- **BACKLOG EMPTY (this track's Act I scope):** all six Act I bosses and three Act I Vowbound are at final quality with
+  the hook contract pinned. What remains is other tracks': M3-CRB-009 (battle-presentation), M3-CRB-010 (creatures),
+  the portraits (ui-menus), Moll (characters, M3-CHR-507), the Ch5 arena edge (env-art). Next for me: merge the
+  integration branch when the Lead lands creatures + creatures-b, and check the intro clips once M3-CRB-009 lands.
+- **Lead's 04:44 message, answered:**
+  1. **Ilun is not a capsule on big14.** Rendered battle_vowbound_out and battle_choreo_vowbound_rise on a worktree
+     of lead/gate-big14 @ 8707ff90 (fresh import): both show the manta model (net wings, plumes, float). His
+     call/dismiss/idle clips are `rise`, `dismiss`, `idle` (plus ready, attack, cast, hit, defend, ko, victory, special,
+     release). A capsule in your view must come from older baselines (big13's) or a tree without claude/creatures.
+     Polish 2 (b4ee2492: Ilun's net reads further out on the near wing) is after big14's cut.
+     **Seen there, for ui:** Ilun's turn-order and party-panel icon is a blank tile (no portrait yet).
+  2. **Every Act I boss and Vowbound on my rows** (hullgnaw, drownbell, bottle_hermit, spar_wraith, cinder_matron,
+     undertows_reach, ilun, kahre, virel) is at final quality; nothing else is on my inventory.
+  3. **Arena pass at the default battle camera, done** (scratch fixture, big14 tree, chapter parties, real arenas):
+     hullgnaw, drownbell and bottle_hermit read whole and well scaled against the party; idle motion was checked
+     clip by clip in each pass (no new idle needed). **The Spar-wraith (mostly out of frame), the Matron (hood
+     under the phase label) and the Reach (fills the camera)** are cropped by the stage, not the models: a lone boss
+     sits on EnemySlots/Slot0 (-2.4, 0, 0.9), close and to the left. **Filed M3-CRB-011** (combat /
+     battle-presentation): a boss mark further back and central, or the intro's bounds fit applied to the home
+     camera. Not done model-side on purpose: moving a model inside its scene would pull it off its ring and VFX
+     anchors. I re-render the six when it lands.
+- **Lead's 08:59 message, done @ b7ff479a (merged origin/gpu/gate-big14-shots first, at 4583d3fc):**
+  1. **Ilun is a real model in big14 itself.** The gate's own render
+     `docs/kb/qa/gate-runs/big14/out/battle_vowbound_out.png` (on gpu/gate-big14-shots) shows the manta; the
+     **capsule is only in the old baseline** `tests/screenshots/baselines/battle_vowbound_out.png` (big13), which the
+     out PNG is compared against. Same for battle_choreo_vowbound_rise. **Lead: those two are drift to re-approve
+     after viewing, not a missing model.** His clips: idle, ready, rise (the call), dismiss, attack, cast, hit, hit_b,
+     defend, ko, victory, special, release.
+  2. **Portraits baked** with ui-menus' tool (tools/portraits/render.sh, at your request): **ilun, kahre, virel,
+     ilun_held, kahre_held, virel_held new** (PROVENANCE rows added), and the six Act I bosses **re-baked** on the
+     final models (their old PNGs showed the primitive first passes). Ilun and ilun_held got a portrait framing
+     (yaw 45, pitch 32, margin 0.95: the net wings read). All viewed as a contact sheet.
+     test_creature_portraits now fails only on **nhoa, hesk, ethren and their held forms** (Act II, creatures',
+     paused by ADR 0041); `tools/portraits/render.sh --only nhoa,hesk,ethren,nhoa_held,hesk_held,ethren_held` turns
+     it green if you want it baked anyway.
+  3. Every other Act I boss and Vowbound: done (see above); the default-camera framing of the Wraith, the Matron and
+     the Reach waits on **M3-CRB-011** (battle-presentation).
+  - **Checks:** validate_data 0/0; Godot creature_portraits 4/1 (the six Act II PNGs only), creature_bosses 4/0,
+    vowbound 87/0.
+- **Housekeeping @ 00c836b6:** added `docs/kb/qa/gate-runs/.gdignore` (the big14 merge brought ~390 gate PNGs and JPGs that Godot otherwise imports into .import files; same as docs/kb/qa/gpu/.gdignore; QA's path, flagged here for the Lead), and committed six .uid sidecars Godot generated for other tracks' new scripts.
