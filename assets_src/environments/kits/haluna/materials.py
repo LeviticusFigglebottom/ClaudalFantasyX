@@ -393,9 +393,9 @@ MATERIALS["kit_keth_road"] = _ext_stone(_AC + "paving_slabs_albedo.png", _AC + "
                                         roughness_base=0.85, cavity_darken=0.3, variation_value=0.12, **_DRY)
 # The Lit Age wall: the white ceramic weathered grey-white by the mountain (lit_ceramic under lichen and grime).
 MATERIALS["kit_keth_lit_ceramic"] = stone("coral_concrete_albedo.png", "coral_concrete_normal.png", (2.4, 2.4),
-                                          base_triplanar=True, col_paint=hexc("#CBD0CF"), paint_cover=0.7,
-                                          normal_strength=0.8, roughness_base=0.7, cavity_darken=0.45,
-                                          variation_value=0.14, col_lichen=hexc("#9AA284"), **_DRY)
+                                          base_triplanar=True, col_paint=hexc("#AEB1AB"), paint_cover=0.5,
+                                          normal_strength=1.1, roughness_base=0.78, cavity_darken=0.55,
+                                          variation_value=0.22, col_lichen=hexc("#9AA284"), **_DRY)
 # Undyed wool and the keth red (the frame's only warm notes, kept at full saturation by lut_ch12_heights).
 MATERIALS["kit_keth_wool"] = stone("woven_panel_albedo.png", "woven_panel_normal.png", (0.2, 0.2), base_triplanar=False,
                                    col_paint=hexc("#D9CFBC"), paint_cover=0.9, normal_strength=0.4, roughness_base=0.95,
@@ -404,9 +404,9 @@ MATERIALS["kit_keth_red"] = stone("woven_panel_albedo.png", "woven_panel_normal.
                                   col_paint=hexc("#B3261E"), paint_cover=0.95, normal_strength=0.4, roughness_base=0.92,
                                   use_moss=False, **_DRY)
 # The seep: drowned glimmer running out of the wall, held light (palette glimmer_held #7FC6D9), steady, not ice.
-STANDARD["kit_keth_seep"] = {"albedo_color": hexc("#7FC6D9", 0.55), "transparency": 1, "cull_mode": 2,
+STANDARD["kit_keth_seep"] = {"albedo_color": hexc("#7FC6D9", 0.35), "transparency": 1, "cull_mode": 2,
                              "roughness": 0.15, "emission_enabled": "true", "emission": hexc("#7FC6D9"),
-                             "emission_energy_multiplier": 1.4}
+                             "emission_energy_multiplier": 0.7}
 # Pale grass grown too long by the seep (two-sided blade cards).
 STANDARD["kit_keth_grass"] = {"albedo_color": hexc("#C6CBA4"), "roughness": 0.9, "cull_mode": 2,
                               "backlight_enabled": "true", "backlight": "Color(0.4, 0.42, 0.3, 1)"}
@@ -461,6 +461,41 @@ STANDARD["kit_lacquer_black"] = {"albedo_color": hexc("#16161A"), "roughness": 0
                                  "clearcoat": 0.8, "clearcoat_roughness": 0.1}
 STANDARD["kit_window_lit"] = {"albedo_color": hexc("#FFB16E"), "emission_enabled": "true", "emission": hexc("#FFB16E"),
                               "emission_energy_multiplier": 2.5, "roughness": 0.9}
+
+# ---- M3-ENV-722 (appended by env-art): the Pale Rim (drowned_choir.py; pale_rim.md §1) -------------------------
+# The Rim's white sand under the water: the Haluna beach sand bleached near-white.
+MATERIALS["kit_rim_sand"] = stone("sand_albedo.png", "sand_normal.png", (2.0, 2.0), base_triplanar=True,
+                                  col_tint=hexc("#F2F0EA"), normal_strength=0.6, roughness_base=0.85,
+                                  cavity_darken=0.15, variation_value=0.05, use_moss=False, use_barnacles=False,
+                                  use_algae=False, use_salt=False)
+
+# ---- M3-ENV-724 (appended by env-art): the Iskarra fast-track pass (the Prologue's first frames) ---------------
+# The towers' cladding: Iskarra's own glazed tile (kit_textures iskarra_tile, 0.4 x 0.2 m in running bond) on the
+# shafts' mesh UVs in metres (no triplanar blending of the bond round the curve); the same waterline band.
+MATERIALS["kit_iskarra_cladding"] = stone("iskarra_tile_albedo.png", "iskarra_tile_normal.png", (1.6, 1.6),
+                                          base_triplanar=False, normal_strength=0.8, roughness_base=0.3,
+                                          specular_base=0.6, cavity_darken=0.35, variation_value=0.06,
+                                          barnacle_coverage=0.4, algae_coverage="Vector2(0.5, 0.9)",
+                                          salt_coverage="Vector2(0.2, 0.5)", use_moss=False)
+# The accent glaze (bands under the galleries, window hoods, the paving's inlay): the same tile in reef_blue,
+# glossier; the one saturated colour in the white city, cool against the gold dusk.
+MATERIALS["kit_iskarra_glaze"] = stone("iskarra_tile_albedo.png", "iskarra_tile_normal.png", (1.6, 1.6),
+                                       base_triplanar=True, col_tint=hexc("#1569A0"), normal_strength=0.7,
+                                       roughness_base=0.22, specular_base=0.65, cavity_darken=0.3,
+                                       variation_value=0.08, barnacle_coverage=0.3, algae_coverage="Vector2(0.5, 0.9)",
+                                       salt_coverage="Vector2(0.1, 0.3)", use_moss=False)
+# The paving's flags re-surfaced on Iskarra's own limestone (iskarra_flag, 1.5 m, no grain), salt thinner.
+MATERIALS["kit_iskarra_paving"] = stone("iskarra_flag_albedo.png", "iskarra_flag_normal.png", (1.5, 1.5),
+                                        base_triplanar=True, col_tint=hexc("#EDE6D8"), normal_strength=0.8,
+                                        roughness_base=0.78, cavity_darken=0.35, ao_strength=0.7,
+                                        variation_value=0.16, salt_coverage="Vector2(0.05, 0.2)", use_algae=False,
+                                        use_moss=False)
+
+# ---- M3-ENV-727 (appended by env-art): the Undertow's layers (undertow_layers.py; undertow_layers.md) -----------
+# Held glimmer (palette glimmer_held #7FC6D9): the dead the storm keeps, cold cyan, steady; brighter than the bound
+# teal's glint and never warm (that is glimmer_lift's, at the Letting).
+STANDARD["kit_glimmer_held"] = {"albedo_color": hexc("#7FC6D9"), "emission_enabled": "true",
+                                "emission": hexc("#7FC6D9"), "emission_energy_multiplier": 2.2, "roughness": 0.4}
 
 if __name__ == "__main__":
     sys.exit(main())
