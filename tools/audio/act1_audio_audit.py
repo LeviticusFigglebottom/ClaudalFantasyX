@@ -47,6 +47,8 @@ BY_DESIGN = {
         "a display inside CommandMenu (the Swell ring); the Swell's sounds are battle and choreo rows",
     "ui class `LatticeBoardView` (game/ui/menus/lattice/lattice_board_view.gd) takes input and has no hook on it or a base class":
         "the board inside LatticeMenu, whose hook plays its node, unlock and step sounds",
+    "ui class `KiteChart` (game/ui/kite/kite_chart.gd) takes input and has no hook on it or a base class":
+        "Act III's Kite (Ch18): later-act UI, paused by ADR 0041",
     "ui class `ControlsModel` (game/ui/settings/controls_model.gd) takes input and has no hook on it or a base class":
         "a model (SettingsPageModel), not a node: ControlsMenu, a SettingsPage, is what is hooked",
     "ui class `TownMenu` (game/ui/shop/town_menu.gd) takes input and has no hook on it or a base class":
@@ -207,7 +209,10 @@ def audit_cutscenes() -> list[str]:
                 continue
             seen.add((kind, cid))
             if kind == "music":
-                # CutsceneSequencer._music_stream: <music_dir><id>.ogg first, then the stand-in's file
+                # CutsceneSound.music (M2-AUD-07): a music.json cue plays on Audio's deck, stems and all; only an id
+                # that is not a cue falls back to the sequencer's own stream (<music_dir><id>.ogg, then the stand-in)
+                if cid in cues:
+                    continue
                 if _res(music_dir + cid + ".ogg").is_file():
                     continue
                 if cid not in stand:

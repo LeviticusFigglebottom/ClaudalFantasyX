@@ -184,6 +184,7 @@
     },
     "seawall_hold_rope": {"stems": ["res://assets/audio/music/seawall_hold_p1.ogg", "res://assets/audio/music/seawall_hold_p2.ogg", "res://assets/audio/music/seawall_hold_p3.ogg"], "start_stems": [0, 1], "_note": "M3-AUD-861: wave 2 'The Rope' (ch08_stair_hold_2): seawall_hold's stems, starting with stem 2 already in (the cue's intended wave 2)"},
     "seawall_hold_last": {"stems": ["res://assets/audio/music/seawall_hold_p1.ogg", "res://assets/audio/music/seawall_hold_p2.ogg", "res://assets/audio/music/seawall_hold_p3.ogg"], "start_stems": [0, 1, 2], "_note": "M3-AUD-861: wave 3 'The Last of the Low Town' (ch08_stair_hold_3): all three of seawall_hold's stems from the start"},
+    "undertow_reach": {"stems": ["res://assets/audio/music/undertows_reach_p1.ogg", "res://assets/audio/music/undertows_reach_p2.ogg", "res://assets/audio/music/undertows_reach_p3.ogg"], "start_stems": [0], "_note": "M3-AUD-861: the scripts' id for `undertows_reach` (ch08_the_reach.dlg): the same stems, so the cutscene plays the whole cue on the deck (CutsceneSound.music)"},
     "cinder_matron": {
       "stems": [
         "res://assets/audio/music/cinder_matron_p1.ogg",

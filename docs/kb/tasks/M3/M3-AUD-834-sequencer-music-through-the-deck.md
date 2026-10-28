@@ -2,7 +2,7 @@
 id: M3-AUD-834
 title: "Request (cutscene owner): play @music through the director's MusicDeck, and an @stem cue"
 role: cinematics
-status: todo
+status: done
 owner_session: ""
 depends_on: [M3-AUD-833]
 milestone: M3
@@ -40,3 +40,6 @@ no director is present (the headless tests).
       `@stem 1 on fade=2.0` line to the run (M3-AUD-829).
 
 ## Review log
+- 2026-10-28 (audio, the requester): **satisfied by M2-AUD-07** on lead/gate-big14. CutsceneSound.music plays a
+  music.json cue on Audio's deck, so stems, start_stems and LFS files resolve (and `stem=` brings one in). The Act I
+  audit's Cutscenes section is 0 with `undertow_reach` added as a same-stems alias of `undertows_reach` (M3-AUD-861).
