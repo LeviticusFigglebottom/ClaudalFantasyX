@@ -286,3 +286,19 @@ RENDER-REQUEST @ 4d32a621: kite_map, field_menu_kite, field_menu_map_keth_pass, 
   - **Waiting on others:** M3-UI-208 (Combat: Act II enemy rows), M3-UI-209 and M3-UI-204 (act1-chapters: shop, inn and shrine triggers).
   - **A full Godot suite run** after the act1-chapters merge is in progress.
 RENDER-REQUEST @ 51f1a58d: portraits for flue_moth, oil_slug, spawn_polyp, wall_polyp (tools/portraits/render.sh, the creatures list); why: the dark rows' light_scale and cool backing now apply to them (M3-CRE-618's follow-up). Rebake those four PNGs into assets/ui/portraits/creatures/.
+- 2026-10-28 01:20, **for the Lead's two messages:**
+  - **The Ch8 maps on the big13 tree.** claude/ui already has the fix, so nothing more is needed here. 50182f0e (2026-10-27) moved both Ch8 maps onto the kit frame:
+    - ZoneMapShapes reads a layout's `collision_path`;
+    - the POIs and hints follow the kit pieces.
+
+    claude/ui also contains act1-chapters @ ed4dee69 (merged at 4d2e25cf). At this head, `test_zone_map` is 21/0 and `tools.tests.test_zone_map_pois` is OK. The big13 tree must have taken a claude/ui head from before 50182f0e. **Merge claude/ui at b5136683 or later.**
+  - **`lead/gate-render-ui-34d6e51`: approved** `battle_victory`, `lattice_menu`, `lattice_menu_activate` and `lattice_overview`. `settings_accessibility` passed.
+    - **Noted for my audit:** in `lattice_overview`, the heroes' small initials crowd their name tags (R R R next to "Rhen"). This predates the render.
+  - **`lead/gate-render-ui-da7891c`:** approved earlier (892334f2).
+  - **Render requests consolidated (TRACK-RULES: one open per track).** The requests @ 50182f0e, 469851f6, 4d32a621 and 51f1a58d are superseded by the single request below.
+RENDER-REQUEST @ b5136683: battle_ch08_stair_hold, kite_map, field_menu_kite, field_menu_map_keth_pass, field_menu_map_lowlight, field_menu_map_ansedra, field_menu_codex, plus the bestiary portraits for flue_moth, oil_slug, spawn_polyp and wall_polyp (tools/portraits/render.sh). Why:
+- the stair meter clear of the tutorial on the wall_head_storm arena;
+- the Kite's map, and the field menu a row taller with it;
+- three Act II maps;
+- the codex counts (34 → 50);
+- four dark creatures relit.
