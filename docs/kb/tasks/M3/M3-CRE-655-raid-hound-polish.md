@@ -2,8 +2,8 @@
 id: M3-CRE-655
 title: "Act I regular to final quality: the raid hound reads crude (blocky segmented legs, a horse-like head) in its portrait and review shot"
 role: character
-status: todo
-owner_session: ""
+status: doing
+owner_session: "creatures (worktree agent)"
 reviewer: art
 depends_on: [M3-CRE-650]
 milestone: M3
