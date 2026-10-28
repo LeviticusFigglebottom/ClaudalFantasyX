@@ -3780,6 +3780,226 @@
       }
     },
     {
+      "id": "ch01_drop",
+      "scene": "res://game/levels/_tests/slice_shots/slice_cutscene_shot.tscn",
+      "camera": "default",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 600,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        },
+        "nodes": {
+          ".": {
+            "level_path": "res://game/levels/ch01/oruvel_underway/oruvel_underway.tscn",
+            "spawn": "Drop",
+            "scene_id": "ch01_the_drop",
+            "hold_line": "ch01_drop_001",
+            "flags": [
+              "ch01_started"
+            ]
+          }
+        },
+        "time_scale": 4.0
+      }
+    },
+    {
+      "id": "ch01_bell_room",
+      "scene": "res://game/levels/_tests/slice_shots/slice_cutscene_shot.tscn",
+      "camera": "default",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 600,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        },
+        "nodes": {
+          ".": {
+            "level_path": "res://game/levels/ch01/oruvel_underway/oruvel_underway.tscn",
+            "spawn": "BellRoom1",
+            "scene_id": "ch01_bell_room",
+            "hold_line": "ch01_bell_001",
+            "flags": [
+              "ch01_started"
+            ]
+          }
+        },
+        "time_scale": 4.0
+      }
+    },
+    {
+      "id": "ch01_scale_hull",
+      "scene": "res://game/levels/_tests/slice_shots/slice_cutscene_shot.tscn",
+      "camera": "default",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 600,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        },
+        "nodes": {
+          ".": {
+            "level_path": "res://game/levels/ch01/oruvel/oruvel.tscn",
+            "spawn": "ScaleHull",
+            "scene_id": "ch01_scale_hull",
+            "hold_line": "ch01_scale_001",
+            "flags": [
+              "ch01_started"
+            ]
+          }
+        },
+        "time_scale": 4.0
+      }
+    },
+    {
+      "id": "ch01_kell_stall",
+      "scene": "res://game/levels/_tests/slice_shots/slice_cutscene_shot.tscn",
+      "camera": "default",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 600,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        },
+        "nodes": {
+          ".": {
+            "level_path": "res://game/levels/ch01/oruvel/oruvel.tscn",
+            "spawn": "ScaleHull",
+            "scene_id": "ch01_kell_stall",
+            "hold_line": "ch01_kell_001",
+            "flags": [
+              "ch01_started"
+            ]
+          }
+        },
+        "time_scale": 4.0
+      }
+    },
+    {
+      "id": "ch01_net_pen",
+      "scene": "res://game/levels/_tests/slice_shots/slice_cutscene_shot.tscn",
+      "camera": "default",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 600,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        },
+        "nodes": {
+          ".": {
+            "level_path": "res://game/levels/ch01/oruvel/oruvel.tscn",
+            "spawn": "AfterScuttlers",
+            "scene_id": "ch01_net_pen",
+            "hold_line": "ch01_net_pen_001",
+            "flags": [
+              "ch01_started",
+              "ch01_gulls_cried"
+            ]
+          }
+        },
+        "time_scale": 4.0
+      }
+    },
+    {
+      "id": "ch01_hullgnaw_rises",
+      "scene": "res://game/levels/_tests/slice_shots/slice_cutscene_shot.tscn",
+      "camera": "default",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 600,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        },
+        "nodes": {
+          ".": {
+            "level_path": "res://game/levels/ch01/oruvel/oruvel.tscn",
+            "spawn": "NetPenAfter",
+            "scene_id": "ch01_hullgnaw_rises",
+            "hold_line": "ch01_hullgnaw_001",
+            "flags": [
+              "ch01_started",
+              "ch01_gulls_cried"
+            ]
+          }
+        },
+        "time_scale": 4.0
+      }
+    },
+    {
+      "id": "ch01_going_under",
+      "scene": "res://game/levels/_tests/slice_shots/slice_cutscene_shot.tscn",
+      "camera": "default",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 600,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        },
+        "nodes": {
+          ".": {
+            "level_path": "res://game/levels/ch01/oruvel/oruvel.tscn",
+            "spawn": "NetPenAfter",
+            "scene_id": "ch01_going_under",
+            "hold_line": "ch01_under_001",
+            "flags": [
+              "ch01_started",
+              "ch01_gulls_cried"
+            ]
+          }
+        },
+        "time_scale": 4.0
+      }
+    },
+    {
       "id": "ch01_o10_gull",
       "scene": "res://game/levels/_tests/slice_shots/slice_cutscene_shot.tscn",
       "camera": "default",
