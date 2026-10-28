@@ -1,5 +1,5 @@
 {
-  "_about": "The older of the two Saltwright children Kerrid frees from under the burning hulk (Ch6 B05 item 3, `wright_child_a`; M3-CHR-511): a boy of about nine. Child proportions on the adult donor as the lane child (child.json). Short brown hair, a sleeveless sailcloth tunic, rust canvas knee trousers, a brown cord belt, barefoot. One line-mark on the right forearm, his first. Face sliders relative to the MakeHuman donor (ADR 0021: 1.0 / 0.0 = unchanged). Keys starting with '_' are read by the villager_* modules (villager_hair, villager_costume, villager_textures, write_materials, villager_clips), not by bb_params.",
+  "_about": "The older of the two Saltwright children Kerrid frees from under the burning hulk (Ch6 B05 item 3, `wright_child_a`; M3-CHR-511): a boy of about nine. Child proportions on the adult donor as the lane child (child.json). Short brown hair, a cap-sleeved sailcloth tunic, rust canvas knee trousers, a brown cord belt, barefoot. One line-mark on the right forearm, his first. Face sliders relative to the MakeHuman donor (ADR 0021: 1.0 / 0.0 = unchanged). Keys starting with '_' are read by the villager_* modules (villager_hair, villager_costume, villager_textures, write_materials, villager_clips), not by bb_params.",
   "name": "wright_child_a",
   "height_m": 1.32,
   "heads_tall": 6.3,
@@ -92,10 +92,8 @@
     "top": {
       "mat": "cloth_a",
       "hem": "hip",
-      "sleeve": 0.0,
-      "neck_v_m": 0.035,
-      "armhole_drop_m": 0.1,
-      "cover_margin_m": 0.02
+      "sleeve": 0.12,
+      "neck_v_m": 0.035
     },
     "trousers": {
       "mat": "cloth_b",

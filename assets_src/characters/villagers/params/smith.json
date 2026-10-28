@@ -80,7 +80,7 @@
       "mat": "cloth_a",
       "hem": "hip",
       "sleeve": 0.36,
-      "cuff_roll_m": 0.007,
+      "cuff_roll_m": 0.013,
       "neck_v_m": 0.075
     },
     "trousers": {
