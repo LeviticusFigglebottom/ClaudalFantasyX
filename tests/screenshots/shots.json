@@ -4078,6 +4078,14 @@
         960,
         720
       ]
+    },
+    {
+      "id": "creature_ethren",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_ethren.tscn",
+      "resolution": [
+        960,
+        720
+      ]
     }
   ]
 }
