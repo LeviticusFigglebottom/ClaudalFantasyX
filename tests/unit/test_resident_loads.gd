@@ -108,6 +108,17 @@ func test_a_change_loads_the_zone_s_list_and_drops_the_last() -> void:
 	_done()
 
 
+## A field battle loads its arena and its enemies' actors behind the fade (the PC's ~2 s battle entries).
+func test_a_battle_lists_its_arena_and_its_enemies() -> void:
+	var paths := ResidentLoads.battle_paths(&"ch02_tideline")
+	assert_true(paths.has(BattleArena.scene_of("tideline_dawn")), "the encounter's arena")
+	for e: StringName in [&"reef_crab", &"lantern_eel"]:
+		var s := str(BattleStage.stand_in_spec(e).get("scene", ""))
+		if s != "":
+			assert_true(paths.has(s), "%s's actor" % e)
+	assert_true(ResidentLoads.battle_paths(&"no_such_fight").is_empty())
+
+
 func test_the_router_starts_them_when_a_change_begins() -> void:
 	assert_true(SceneRouter.has_signal(&"change_started"), "SceneRouter.change_started")
 	assert_true(SceneRouter.get_node_or_null(NodePath(String(ResidentLoads.NAME))) is ResidentLoads, "installed")
