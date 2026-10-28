@@ -44,6 +44,20 @@ func test_no_zone_shows_a_capsule_the_owners_do_not_know_of() -> void:
 				if not shown.has(who):
 					shown.append(who)
 			Game.state = default_state
+		if zone.has_method(&"refresh_states") and "layout" in zone:  # each layout state's flag, in story order
+			var default_state := Game.state
+			Game.state = GameStateData.new()
+			Game.state.party_ids = [&"rhen", &"asha", &"toma"] as Array[StringName]
+			for row: Variant in (zone.get(&"layout") as Dictionary).get("states", []):
+				var flag := str((row as Dictionary).get("flag", "")) if row is Dictionary else ""
+				if flag == "":
+					continue
+				Game.set_flag(StringName(flag))
+				zone.call(&"refresh_states")
+				for who in capsules(zone):
+					if not shown.has(who):
+						shown.append(who)
+			Game.state = default_state
 		var listed: Array = known.get(path.get_file(), [])
 		for who in shown:
 			if listed.has(who):
