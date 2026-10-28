@@ -589,7 +589,7 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
-- **MERGE-READY @ (this push): M3-ENV-1323 (env-art-b's request; GPU QA rows 15 and 40), the Underway arenas'
+- **MERGE-READY @ cbd7f5600: M3-ENV-1323 (env-art-b's request; GPU QA rows 15 and 40), the Underway arenas'
   hard-edged lit rectangles.**
   - Cause: the arena's sun cast its window openings onto the floor as hard panes, but underwater the light comes
     through 21 m of water.
