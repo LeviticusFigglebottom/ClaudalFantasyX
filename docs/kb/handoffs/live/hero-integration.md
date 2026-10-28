@@ -803,3 +803,32 @@ TRIAL MERGE @ integration 8d03e6d1: env-art ba895bee, env-art-b 8240c0e0, creatu
     battle-presentation's.
 - **Audio:** every Act I music cue now plays at least a stand-in on audio's head. The music.json-vs-sequencer seam
   stands: the cue rows' own files are never played.
+
+### FAST-TRACK @ b66981e9: the party sits still inside each other when the game begins (the human's playtest)
+**Cherry-pick b66981e9 alone.** It touches game/hero_motion/hero_field_party.gd, hero_motion.json (field.followers:
+hand_off_radius_m, spawn_search_steps, steer_turns_deg, slide_min_share) and a new test.
+- **Cause 1, the opening.** Cutscene A ends with Asha and Toma walked onto Rhen's spot, and nothing handed them
+  back. Their stage bodies stood still inside him, and Asha's follower stayed hidden behind her stage double.
+  - **Fix:** when a held cutscene ends, the party members it cued that stand by the leader hide, and the
+    followers take over.
+  - A later cutscene that cues them shows them again. Field staging that no cutscene left by the leader stays as
+    the zone set it.
+- **Cause 2, stacked spawns.** A follower whose trail spot was blocked was put on the leader's own spot (the Bell
+  galleries' Entrance: two bodies 0.11 m apart). Now every follower is placed at least min_gap_m from every
+  other body.
+- **Cause 3, frozen followers.** A step into a rail post slid to nearly nothing and was accepted, so the follower
+  froze (the causeway at FromHaluna). Now the slide must keep a share of the step, else the follower steers
+  around the post. A follower in the leader's way also steps aside instead of being shoved ahead.
+- **Checked:**
+  - Every spawn in the slice and Ch1 (Haluna, causeway, Underway, Oruvel) with real physics: all followers end
+    behind Rhen and walk.
+  - The Prologue hands off to Haluna's Beach, which is covered by the start test.
+  - **tests/integration/test_qa_party_spawns.gd:** every Act I spawn (no overlap; each follower moves within 30
+    frames) plus the real game start. On the old code it fails all three ways.
+  - qa_ 9/0, hero_ 110/0.
+- **SELF-RENDERED @ b66981e9** (a temporary shot, not committed: New Game, Cutscene A, the beach, side view). Asha and
+  Rhen stand apart on the sand with no stacked figure, and Toma (in reserve) no longer stands on the spawn.
+  - Seen in passing: Asha holds no staff, and a stick lies on the sand. Her staff not showing in static views is
+    characters' known item (M1-QA-09); the stick may be beach dressing.
+- **Not mine, seen while probing:** LifeAudio.advance (life_audio.gd:124) casts a freed object when a zone is
+  freed. That's the audio item already in CONSOLIDATED.
