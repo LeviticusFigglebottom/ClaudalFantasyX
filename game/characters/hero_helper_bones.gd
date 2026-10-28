@@ -201,14 +201,8 @@ static func _drive_skirt(skel: Skeleton3D, s: Dictionary) -> void:
 		var dp := inv_dp.inverse()
 		var base_y := hips_pose.origin.y
 		var sg := _gather(c_lo, head, axis, axes[k], a_lo, tip - head, dp, base_y, sc, s)
-		var pool := minf(1.0, (1.0 - sg) / (1.0 - float(s["gather_min"])))  # how far the plain gather would shorten it
 		if sg < float(s["drape_below_gather"]):
 			a_lo = _drape(c_lo, head, axis, axes[k], a_lo, tip - head, dp, base_y, sc, s)
-			angs[k][last] = a_lo
-			sg = _gather(c_lo, head, axis, axes[k], a_lo, tip - head, dp, base_y, sc, s)
-		# odd-numbered panels' hems lie further out (by the panel's number round the skirt): the pooled hem folds
-		if int(names[k].substr(prefix.length())) % 2 == 1 and pool > 0.0:
-			a_lo = minf(a_lo + deg_to_rad(float(s["flute_deg"])) * smoothstep(0.0, 1.0, pool), top_swing)
 			angs[k][last] = a_lo
 			sg = _gather(c_lo, head, axis, axes[k], a_lo, tip - head, dp, base_y, sc, s)
 		sc = sg
@@ -224,6 +218,101 @@ static func _drive_skirt(skel: Skeleton3D, s: Dictionary) -> void:
 		skel.set_bone_pose_scale(
 			skel.find_bone(lo_name), Vector3(1.0 + flare * (1.0 - sc), sc, 1.0 + flare * (1.0 - sc))
 		)
+	apply_folds(skel, fold_rig(skel))
+
+
+## ADR 0140: what the even-numbered panels need to be derived from their odd neighbours (HeroSkirtFolds caches it):
+## per even panel, its own and its two neighbours' bone indices per level, and each panel's rest rotations (in the
+## pelvis's frame) and swing axis. Empty when the skeleton has no derived panels.
+static func fold_rig(skel: Skeleton3D) -> Dictionary:
+	var s: Dictionary = data().get("skirt", {})
+	if s.is_empty():
+		return {}
+	var prefix := String(s["bone_prefix"])
+	var levels: Array = s["levels"]
+	var panels := {}  # number -> {bones, rests, axis}
+	for i: int in skel.get_bone_count():
+		var n := skel.get_bone_name(i)
+		if not n.begins_with(prefix) or n.contains("."):
+			continue
+		var hips := skel.get_bone_parent(i)
+		var hips_rest := skel.get_bone_global_rest(hips)
+		var g := hips_rest.basis.get_rotation_quaternion()
+		var bones: Array[int] = []
+		var rests: Array[Quaternion] = []
+		for x: Variant in levels:
+			var b := skel.find_bone(n + String(x))
+			bones.append(b)
+			g = g * _rest_q(skel, b)
+			rests.append(g)
+		var h0 := skel.get_bone_global_rest(i).origin - hips_rest.origin
+		var u := Vector3(h0.x, 0.0, h0.z).normalized()
+		panels[int(n.substr(prefix.length()))] = {
+			"bones": bones,
+			"rests": rests,
+			"axis": Vector3(0.0, -1.0, 0.0).cross(u).normalized(),
+			"hips_q": hips_rest.basis.get_rotation_quaternion()
+		}
+	var count := panels.size()
+	var derived: Array = []
+	for k: int in panels:
+		if k % 2 == 0 and panels.has((k + count - 1) % count) and panels.has((k + 1) % count):
+			derived.append([panels[k], panels[(k + count - 1) % count], panels[(k + 1) % count]])
+	if derived.is_empty():
+		return {}
+	return {
+		"derived": derived,
+		"fold": deg_to_rad(float(s["fold_deg"])),
+		"from": deg_to_rad(float(s["fold_from_deg"])),
+		"ease": deg_to_rad(float(s["fold_ease_deg"])),
+		"top": deg_to_rad(float(s["max_swing_deg"]))
+	}
+
+
+## ADR 0140: sets each even-numbered panel from its odd neighbours' current pose: the larger of their swings (read
+## back out of their rotations; at the hem, their mean) and the mean of their gathers (scales), the lowest bone `fold`
+## further out once that lies past `from` (hero_clips.derive_folds, the same rule).
+static func apply_folds(skel: Skeleton3D, rig: Dictionary) -> void:
+	if rig.is_empty():
+		return
+	for trio: Array in rig["derived"]:
+		var own: Dictionary = trio[0]
+		var a := _swings(skel, trio[1])
+		var b := _swings(skel, trio[2])
+		var last := a.size() - 1
+		var gp: Quaternion = own["hips_q"]
+		var prev := 0.0
+		for lv: int in a.size():
+			var ang := maxf(a[lv], b[lv])  # the outer of the two: the mean cut into a thigh between them
+			if lv == last:
+				ang = 0.5 * (a[lv] + b[lv])  # but the hem their mean: the outer of the two folded it into spikes
+				var t := (ang - float(rig["from"])) / float(rig["ease"])
+				ang = minf(ang + float(rig["fold"]) * smoothstep(0.0, 1.0, t), float(rig["top"]))
+			var gr: Quaternion = own["rests"][lv]
+			var loc := gp.inverse() * Quaternion(own["axis"], ang - prev) * gr
+			skel.set_bone_pose_rotation(own["bones"][lv], loc.normalized())
+			gp = gr
+			prev = ang
+		var lo_a := skel.get_bone_pose_scale((trio[1] as Dictionary)["bones"][last])
+		var lo_b := skel.get_bone_pose_scale((trio[2] as Dictionary)["bones"][last])
+		skel.set_bone_pose_scale(own["bones"][last], 0.5 * (lo_a + lo_b))
+
+
+## A panel's cumulative swing from the vertical at each level, read back out of its bones' pose rotations.
+static func _swings(skel: Skeleton3D, panel: Dictionary) -> Array[float]:
+	var out: Array[float] = []
+	var gp: Quaternion = panel["hips_q"]
+	var axis: Vector3 = panel["axis"]
+	var prev := 0.0
+	var rests: Array = panel["rests"]
+	var bones: Array = panel["bones"]
+	for lv: int in bones.size():
+		var gr: Quaternion = rests[lv]
+		var q := gp * skel.get_bone_pose_rotation(bones[lv]) * gr.inverse()
+		prev += 2.0 * atan2(Vector3(q.x, q.y, q.z).dot(axis), q.w)
+		out.append(prev)
+		gp = gr
+	return out
 
 
 ## Where a panel's bones above level `lv` put its head: each bone `i` swung angs[i] about `axis` (from the vertical).

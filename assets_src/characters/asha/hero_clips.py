@@ -2436,7 +2436,11 @@ SKIRT_SUPPORT_STEPS = int(_SK["support_samples"])
 SKIRT_LEVELS = tuple(_SK["levels"])  # M2-CHR-522: a panel's bones' suffixes, from the hips down (the last gathers)
 SKIRT_DRAPE_MAX = math.radians(float(_SK["drape_max_deg"]))  # the lowest bone's furthest swing out onto the floor
 SKIRT_DRAPE_BELOW = float(_SK["drape_below_gather"])  # it drapes only cloth that would gather shorter than this
-SKIRT_FLUTE = math.radians(float(_SK["flute_deg"]))  # pooled cloth folds: every other panel's lowest bone swings out
+# ADR 0140: the even-numbered panels are derived (from their odd neighbours, plus the fold where the hem lies out), not baked;
+# the odd ones lie over the legs at rest (front and back, either side) and are solved
+SKIRT_FOLD = math.radians(float(_SK["fold_deg"]))
+SKIRT_FOLD_FROM = math.radians(float(_SK["fold_from_deg"]))
+SKIRT_FOLD_EASE = math.radians(float(_SK["fold_ease_deg"]))
 SCALE_KEY = "_scale"  # local_pose's entry for the helper bones' scales: {bone: (x, y, z)}
 
 
@@ -2743,20 +2747,41 @@ def skirt_solve(sk: "Skeleton", g: dict, hips=None) -> dict:
             return lo_s
 
         sg = gather(sc, x2)
-        pool = min(1.0, (1.0 - sg) / (1.0 - SKIRT_GATHER_MIN))  # how far the plain gather would shorten it
         if sg < SKIRT_DRAPE_BELOW and x2 < SKIRT_DRAPE_MAX:
             # big13's review (a stiff white bell in the kneels): cloth that would be crushed into a short wall first
             # swings out onto the floor (the least swing, up to SKIRT_DRAPE_MAX, that lays it there), then gathers
             x2 = _least_up(lambda ang, sc=sc: low(sc, ang) >= SKIRT_FLOOR, x2, SKIRT_DRAPE_MAX)
             an[-1] = x2
             sg = gather(sc, x2)
-        if int(h[len(SKIRT_BONE):]) % 2 and pool > 0.0:  # odd-numbered panels' hems lie further out: the pooled
-        # hem folds, not a clean circle (by the panel's number round the skirt, not the sorted names' order)
-            x2 = min(x2 + SKIRT_FLUTE * smooth(pool), math.radians(SKIRT_MAX_SWING))
-            an[-1] = x2
-            sg = gather(sc, x2)
         gathers.append(sg)
-    return {h: (ax, tuple(an), sc) for h, ax, an, sc in zip(sk.skirt, axes, angs, gathers)}
+    return derive_folds({h: (ax, tuple(an), sc) for h, ax, an, sc in zip(sk.skirt, axes, angs, gathers)})
+
+
+def skirt_derived(name: str) -> bool:
+    """ADR 0140: an even-numbered skirt panel's bones are derived at runtime (HeroSkirtFolds), so no clip bakes them."""
+    return name.startswith(SKIRT_BONE) and int(name[len(SKIRT_BONE):].split(".")[0]) % 2 == 0
+
+
+def derive_folds(res: dict) -> dict:
+    """ADR 0140: each even-numbered panel takes the larger of its two odd neighbours' swings (the hem: their mean) and
+    the mean of their gathers; its lowest bone then swings SKIRT_FOLD further out, eased in over SKIRT_FOLD_EASE once that lies
+    past SKIRT_FOLD_FROM (cloth draped out on the floor), so a pooled hem folds. HeroSkirtFolds does the same each
+    frame from the odd panels' baked pose. The odd panels lie over the legs at rest (about 22.5 degrees either side of
+    front and back), so they are solved; a blend of neighbours cannot clear a knee between them."""
+    num = {int(h[len(SKIRT_BONE):]): h for h in res}
+    n = len(num)
+    out = dict(res)
+    for k, h in num.items():
+        if k % 2 == 1:
+            continue
+        _, an_a, sc_a = res[num[(k - 1) % n]]
+        _, an_b, sc_b = res[num[(k + 1) % n]]
+        an = [max(x, y) for x, y in zip(an_a, an_b)]  # the outer of the two: the mean cut into a thigh between them
+        an[-1] = 0.5 * (an_a[-1] + an_b[-1])  # but the hem their mean: the outer of the two folded it into spikes
+        an[-1] = min(an[-1] + SKIRT_FOLD * smooth((an[-1] - SKIRT_FOLD_FROM) / SKIRT_FOLD_EASE),
+                     math.radians(SKIRT_MAX_SWING))
+        out[h] = (res[h][0], tuple(an), 0.5 * (sc_a + sc_b))
+    return out
 
 
 def helper_pose(sk: "Skeleton", g: dict, out: dict, hips=None) -> None:
@@ -3242,7 +3267,12 @@ GRIP_DATA = ROOT / "game" / "data" / "characters" / "grips.json"
 PROP_FLOOR = 0.006  # m: the held prop's foot rests this far above the floor when it stands near upright
 PROP_UPRIGHT = (20.0, 40.0)  # degrees from vertical: resting on the floor fully below the first, not past the second
 PROP_SLIDE_MAX = 0.6  # m: the most the prop slides through the fist either way (the kneel takes about half a metre)
-PROP_SKIRT_CLEAR = 0.035  # m: the shaft's centre line from the nearest skirt cloth point (its radius, the cloth spacing)
+PROP_SKIRT_CLEAR = 0.05  # m: the shaft's centre line from the nearest skirt cloth point (its radius, the cloth spacing;
+# 0.035 until ADR 0140's 16 panels, whose cloth bends more between its points)
+PROP_HEAD_BONE = "DEF-spine.006"
+PROP_HEAD_LEN = 0.2  # m: the head as a segment up the head bone from its joint (neck to crown)
+PROP_HEAD_CLEAR = 0.11  # m: the shaft above the fist from that segment (the head's half-width and the shaft's radius;
+# ADR 0140: a pivot that tipped the foot out could swing the top into the head)
 PROP_SKIRT_FLOOR = 0.03  # m: cloth this near the floor is pooled round the prop's foot, not crossed
 PROP_LEG_CLEAR = 0.095  # m: the shaft's centre line from a leg bone (the thigh's flesh and the cloth over it)
 PROP_GRIP_CLEAR = 0.06  # m: the shaft within this of the fist is the hand's (rig_probe's grip_clear_mm)
@@ -3388,6 +3418,8 @@ def prop_pivot(sk: "Skeleton", g: dict, hips, carry: bool):
     side = np.cross(np.array([0.0, 1.0, 0.0]), fwd)
     side /= np.linalg.norm(side)
     k = np.linspace(0.0, 1.0, PROP_SHAFT_SAMPLES)[:, None]
+    neck = pos[PROP_HEAD_BONE]
+    crown = neck + qrot(g[PROP_HEAD_BONE], np.array([0.0, PROP_HEAD_LEN, 0.0]))
 
     def margin(axis_w: np.ndarray, ang: float) -> float:
         dq = qaxis(axis_w, math.degrees(ang))
@@ -3397,6 +3429,9 @@ def prop_pivot(sk: "Skeleton", g: dict, hips, carry: bool):
         m = float(_seg_dist(foot + (low - foot) * k, A, B).min()) - PROP_LEG_CLEAR
         if len(cloth):
             m = min(m, float(_seg_dist(cloth, foot[None], low[None]).min()) - PROP_SKIRT_CLEAR)
+        high = head + axis * PROP_GRIP_CLEAR  # and from just above the fist to its top, clear of the head
+        top = head + axis * (slide + pr["top"])
+        m = min(m, float(_seg_dist(high + (top - high) * k, neck[None], crown[None]).min()) - PROP_HEAD_CLEAR)
         return m
 
     if margin(fwd, 0.0) >= 0.0:
@@ -3493,6 +3528,7 @@ def grips_init(sk: "Skeleton", glb: Path, js: dict, nodes: list, parent: dict) -
             axis = qrot(gq[bi], np.array([0.0, 1.0, 0.0]))
             sk.prop = {"bone": b, "hand": nodes[parent[bi]]["name"],
                        "foot": float(min((p - gt[bi]) @ axis for p in P)),  # m along the bone's y (< 0)
+                       "top": float(max((p - gt[bi]) @ axis for p in P)),  # and its top (> 0)
                        "hold": _arc(axis, np.array([0.0, 1.0, 0.0]))}
             sk.rest_q[b] = np.array(nodes[bi].get("rotation", [0.0, 0.0, 0.0, 1.0]), dtype=float)
             sk.rest_t[b] = np.array(nodes[bi].get("translation", [0.0, 0.0, 0.0]), dtype=float)
@@ -4361,9 +4397,10 @@ def build(hero: str, names: list | None = None) -> str:
         tracks = [("position_3d", HIPS, [(t, list(p)) for t, p in hips_keys])]
         tracks += [("rotation_3d", b, [(t, list(q)) for t, q in (reduce_keys(keys_q[b]) if story else keys_q[b])])
                    for b in BONES]
-        tracks += [("rotation_3d", b, [(t, list(q)) for t, q in reduce_keys(keys_q[b])]) for b in sk.helpers]
+        tracks += [("rotation_3d", b, [(t, list(q)) for t, q in reduce_keys(keys_q[b])]) for b in sk.helpers
+                   if not skirt_derived(b)]  # ADR 0140: the even panels are HeroSkirtFolds' each frame
         # every clip keys every gather (a still one is two keys), so no clip leaves another's gather on the bone
-        tracks += [("scale_3d", b, _flat_keys(keys_s[b])) for b in sorted(keys_s)]
+        tracks += [("scale_3d", b, _flat_keys(keys_s[b])) for b in sorted(keys_s) if not skirt_derived(b)]
         if keys_pr:
             tracks.append(("position_3d", sk.prop["bone"], [(t, list(p)) for t, p in reduce_positions(keys_pr)]))
             tracks.append(("rotation_3d", sk.prop["bone"], [(t, list(q)) for t, q in reduce_keys(keys_pq)]))
