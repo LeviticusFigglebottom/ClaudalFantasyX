@@ -553,6 +553,24 @@ class TestDialoguePolish(unittest.TestCase):
         edge_l = loose[(rows - 1) * n:rows * n]
         self.assertLess(float(np.median(head.sdf(edge_t))), float(np.median(head.sdf(edge_l))) - 0.004)
 
+    def test_headband_presses_the_hair_under_it(self):
+        # M3-CHR-03/528/537: hair at the band's height is drawn inside it; hair well above it is left alone
+        import numpy as np
+        import villager_costume as C
+
+        _lm, _body, fields, _chart = self._fitted("tavi")
+        hw = params("tavi")["_costume"]["headwrap"]
+        band = C.build_headwrap(fields, hw)["HeadWrap"]
+        B = band.varr()
+        lm = _lm
+        hc = np.array([0.0, float(lm.P("head_c")[1]) + 0.02 * lm.h, float(lm.P("chin")[2]) + 0.55 * lm.h])
+        front = B[np.argmin(B[:, 1])]  # the band's front, on the brow
+        out = hc + (front - hc) * 1.15  # a hair vertex outside the band at its height
+        above = out + np.array([0.0, 0.0, 0.2])
+        P = C.press_under_band(np.stack([out, above]), band, lm, 0.002)
+        self.assertLess(float(np.linalg.norm(P[0] - hc)), float(np.linalg.norm(front - hc)))
+        self.assertTrue(np.allclose(P[1], above))
+
     def test_hobbs_cord_has_three_knots(self):
         # act1_ch08.md: the three-knot watch-red captain's cord
         self.assertEqual(params("hobb")["_costume"]["sash"]["cord_knots"], 3)
