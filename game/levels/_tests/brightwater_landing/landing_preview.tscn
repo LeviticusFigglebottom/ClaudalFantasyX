@@ -82,7 +82,7 @@ water = NodePath("../Water")
 
 [node name="Dressing" type="Node3D" parent="." node_paths=PackedStringArray("tide")]
 script = ExtResource("2_dressing")
-layout_path = "res://game/levels/_tests/brightwater_landing/landing_dressing.json"
+layout_path = "res://game/levels/ch04/brightwater_ferry/brightwater_ferry_dressing.json"
 tide = NodePath("../Tide")
 
 [node name="PreviewCameras" type="Node3D" parent="."]

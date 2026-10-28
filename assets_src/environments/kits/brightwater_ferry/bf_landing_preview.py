@@ -1,11 +1,10 @@
-"""The landing and boarding gear in the Ch4 ferry zone (M3-ENV-746): act1-chapters' zone and dressing as they are, with
-bf_landing's four pieces placed on the four greybox blocks the dressing still keeps (IsletRock, Gangplank, SternGate,
-NameBoardWrapped), for env-art to view before act1-chapters adds them to tools/act1/ch04_ferry_dressing.py
-(M3-ENV-749 lists the same placements).
+"""The Ch4 ferry zone with cameras (M3-ENV-746): act1-chapters' zone scene as it is (its dressing now places bf_landing's
+islet landing, gangplank, stern gate and wrapped name-board: tools/act1/ch04_ferry_dressing.py), plus the layout's F01
+and F06 cameras, for env-art to render and view the zone.
 
     python3 assets_src/environments/kits/brightwater_ferry/bf_landing_preview.py
 
-Writes game/levels/_tests/brightwater_landing/ (landing_dressing.json, landing_preview.tscn with cameras F01, F06).
+Writes game/levels/_tests/brightwater_landing/landing_preview.tscn.
 """
 
 from __future__ import annotations
@@ -22,34 +21,10 @@ OUT = ROOT / "game" / "levels" / "_tests" / "brightwater_landing"
 SHOTS = ("F01", "F06")
 
 
-def placements(layout: dict, collision: dict) -> list[dict]:
-    """The four pieces on their blocks (the islet's rock and the gangplank's ramp are the zone's collision rows):
-    each on its block's walk or foot, following the block (the story's states)."""
-    b = {x["id"]: x for x in layout["blocks"] + collision["blocks"]}
-    rock, plank = b["IsletRock"], next(r for r in collision["ramps"] if r["id"] == "Gangplank")
-    out = [{"piece": "islet_landing", "at": [rock["pos"][0], rock["pos"][2]],
-            "y": round(rock["pos"][1] + rock["size"][1] * 0.5, 3), "yaw_deg": 0.0, "block": "IsletRock"},
-           {"piece": "gangplank", "at": [plank["from"][0], plank["from"][2]], "y": plank["from"][1], "yaw_deg": 0.0,
-            "block": "Gangplank"}]
-    for piece, block in (("stern_gate", "SternGate"), ("terrace_name_board_wrapped", "NameBoardWrapped")):
-        x = b[block]
-        out.append({"piece": piece, "at": [x["pos"][0], x["pos"][2]],
-                    "y": round(x["pos"][1] - x["size"][1] * 0.5, 3), "yaw_deg": 0.0, "block": block})
-    return out
-
-
 def main() -> int:
     layout = json.loads((ZONE / "brightwater_ferry_layout.json").read_text(encoding="utf-8"))
-    dressing = json.loads((ZONE / "brightwater_ferry_dressing.json").read_text(encoding="utf-8"))
-    collision = json.loads((ZONE / "brightwater_ferry_collision.json").read_text(encoding="utf-8"))
-    dressing["greybox"]["keep"] = []
-    dressing["pieces"] += placements(layout, collision)
-    dressing["_about"] = "env-art's preview of M3-ENV-746 on act1-chapters' dressing; generated, not shipped."
     OUT.mkdir(parents=True, exist_ok=True)
-    (OUT / "landing_dressing.json").write_text(json.dumps(dressing, indent=1) + "\n", encoding="utf-8")
     scene = (ZONE / "brightwater_ferry.tscn").read_text(encoding="utf-8")
-    scene = scene.replace("res://game/levels/ch04/brightwater_ferry/brightwater_ferry_dressing.json",
-                          "res://game/levels/_tests/brightwater_landing/landing_dressing.json")
     scene = re.sub(r"^\[gd_scene[^\]]*\]", "[gd_scene format=3]", scene, count=1, flags=re.M)
     shots = layout["shots"]
     ext = ['[ext_resource type="Script" path="res://game/world/camera_shot.gd" id="pv_shot"]',
@@ -71,7 +46,7 @@ def main() -> int:
     text = text[:first_sub] + ext + [""] + subs + text[first_sub:]
     out = "\n".join(text) + '\n\n[node name="BrightwaterFerry"' + nodes.rstrip("\n") + "\n\n" + "\n".join(cams)
     (OUT / "landing_preview.tscn").write_text(out.rstrip("\n") + "\n", encoding="utf-8")
-    print(f"PREVIEW {OUT.relative_to(ROOT)} (+{len(placements(layout, collision))} pieces)")
+    print(f"PREVIEW {OUT.relative_to(ROOT)} ({len(SHOTS)} cameras)")
     return 0
 
 
