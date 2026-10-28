@@ -120,7 +120,7 @@ def pieces() -> list[dict]:
     rows: list[dict] = []
     # The scale-hull deck (south), its counter on the scale_hull, the bridge to the commons.
     rows.append(piece("raft_deck", 0.0, 10.0))
-    rows.append(piece("scale_hull", 0.0, 5.2, 90.0))
+    rows.append(piece("scale_hull", 0.0, 5.2, 270.0))  # the counter faces south, to the deck Rhen comes up on
     rows += bridge(0.0, 0.0, 0.0, 5.0)
     # The commons: six decks lashed in two rows, the cookboats' stall, the net lanes, the roof cabin.
     for x in (-12.0, 0.0, 12.0):
@@ -144,7 +144,7 @@ def pieces() -> list[dict]:
     # Kell's second mooring (east): her chandlery over the greybox stall, the bridges there and on to the dive.
     rows += bridge(18.0, -6.0, 25.0, -6.0)
     rows.append(piece("raft_deck", 30.0, -6.0))
-    rows.append(piece("chandlery", 32.5, -8.6, 90.0))
+    rows.append(piece("chandlery", 32.5, -8.6, 270.0))  # the counter faces south, onto the mooring and Kell
     rows += bridge(35.0, -6.0, 41.0, -6.0)
     rows.append(piece("dive_raft", 45.0, -6.0))
     # The run (C1-12/13): the planks south of the dive mooring to the net-pen, the pen and its bridge.

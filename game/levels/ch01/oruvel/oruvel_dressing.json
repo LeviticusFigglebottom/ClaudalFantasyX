@@ -33,7 +33,7 @@
     5.2
    ],
    "y": -0.4,
-   "yaw_deg": 90.0
+   "yaw_deg": 270.0
   },
   {
    "piece": "plank_bridge",
@@ -249,7 +249,7 @@
     -8.6
    ],
    "y": -0.5,
-   "yaw_deg": 90.0
+   "yaw_deg": 270.0
   },
   {
    "piece": "plank_bridge",
@@ -390,7 +390,7 @@
   {
    "piece": "lintel_gull_open",
    "at": [
-    33.4,
+    31.6,
     -8.6
    ],
    "y": 3.25,
