@@ -1145,3 +1145,19 @@ MERGE-READY (+ this log): **architect seat: reviews, Sefir's body, and the audit
   - Ch8 corrow `pell` (from ch08_wave2_held) → M3-CHR-506;
   - Ch8 corrow `figure`, the stranger on the wall (from ch08_reach_survived) → characters by the people split.
   - Both are KNOWN in qa_known.json; the next audit lists them.
+
+MERGE-READY (+ this log): **lead/gate-big16 (ff82858c) merged in; big15's two cloud failures checked on it.**
+- **test_hero_followers::test_followers_turn_to_face_who_rhen_talks_to:** green on big16 (12/0). big15 had my
+  sight-step follower code without its test follow-up (94c6f1d4, which big16 carries). Nothing more to do.
+- **test_post_import::test_every_glb_import_runs_its_category_script (tech seat):**
+  - The cause: creatures' new **crowd** import category (game/data/import/crowd.json + crowd_post_import.gd,
+    M3-CRE-659; 22 `assets/crowd/*` glbs, whose .import files do run crowd_post_import.gd) was never added to the
+    test's `KINDS` list. Every crowd glb read as "in no import category".
+  - Fixed here: `"crowd"` is in `KINDS`. post_import 21/0 on big16 and on this branch.
+- **TRIAL MERGE ~16:50:** every track head merges clean. The tree is big16 in progress (the Lead's batch already
+  carries everyone's heads).
+- **Audit on that tree, full: 13 items** (env-art 9, creatures 1, integration-qa 3). act1_final_inventory.md is
+  rewritten. The layout-state scan adds two:
+  - Ch8 corrow `pell` → integration-qa (M3-CHR-506);
+  - Ch8 corrow `figure`, the stranger on the wall → creatures.
+  The other two integration-qa rows are Ch9's pell and vigil_pell, also waiting on M3-CHR-506.
