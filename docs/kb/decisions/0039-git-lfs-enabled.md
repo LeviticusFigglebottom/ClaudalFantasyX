@@ -1,6 +1,6 @@
 # 0039 — Git LFS is enabled for large binaries (supersedes ADR 0005 item 7)
 
-- **Status:** accepted (the human approved it, 2026-10-27). Activation waits on the cloud network allowing `lfs.github.com`.
+- **Status:** accepted (the human approved it, 2026-10-27). **LIVE from 2026-10-28:** the network now allows `lfs.github.com`. The Lead re-probed upload from a cloud session and download into a fresh clone, and both work.
 - **Date:** 2026-10-27
 - **Roles affected:** all (audio first), lead, tech
 - **Author role:** lead
@@ -36,3 +36,10 @@ Option 2.
 - Act II and later final audio can land without bloating the plain-git history.
 - **Quota:** GitHub LFS storage and bandwidth count against the owner's account. The audio total is about 72 MiB today, so the free tier's 1 GiB covers several acts, but every clone that pulls LFS uses bandwidth. Pull with `--include` to limit it.
 - **Watch:** a cloud session that forgets `git lfs pull` imports pointer files, and Godot's import then fails on them. `tools/validate_data.py` should flag an LFS pointer under `assets/` that isn't in the working tree (follow-up task for tech).
+
+## Activation (2026-10-28)
+- **`.gitattributes` tracks:** `assets/audio/music/act2/**`, `act3/**`, `act4/**` and `assets/lfs/**`. Their `.import` and `.json` sidecars stay plain text.
+- **Act II and later final music** goes under `assets/audio/music/actN/`. Any other new binary over 5 MB goes under `assets/lfs/<area>/`.
+- **`tools/validate_data.py`** exempts those paths from the 5 MB plain-git limit. Its error message elsewhere names the LFS paths.
+- **`tools/ci_local.sh`** runs `git lfs pull` when the tree has LFS files, so gates import real files, not pointers.
+- **Each session** runs `git lfs install --local` once in its clone, so commits store LFS objects.
