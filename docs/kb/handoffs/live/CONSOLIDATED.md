@@ -99,6 +99,8 @@ No cloud session captures screenshots. Tracks post `RENDER-REQUEST @ sha: ids` l
 ## 2b'. The PC is PAUSED (10-27 ~21:30, the human's instruction)
 - **pc-gpu PAUSED at 10-27 21:29 UTC** (clean; nothing running in WSL). The resume point is pc-gpu.md on `gpu/pc-gpu-paused-1027` @ 1dffdb31. Ready to run on resume: the slice --budget re-sweep (prepared in `hymn_budget`) and the Act I playthrough. Open render requests were handed to the Lead's cloud render server.
 - **Meanwhile the Lead's container takes over** the render requests (`lead/gate-render-*` branches) and the batch gates (big13 and on): the full Godot suite plus the full manifest on cloud lavapipe, about 2–3 h per full gate.
+- **10-28 01:00: tracks self-render (TRACK-RULES).** The shared cloud render queue left six tracks idle, so it is retired. Each track renders its own changed shots in its own container (HYMN_SHOTS ≤15, never baselines) and views them. The Lead's container only runs the batch gates, which re-render everything and approve baselines.
+- **LFS routes** (ADR 0039) also cover `assets/audio/sfx/act3/**` (10e3a7a5, the Kite foley).
 - Deferred until the PC resumes:
   - GPU benchmarks and hardware QA (M1-QA-09 follow-up, the --budget re-sweep, the Act I playthrough);
   - M3-RND-02;
@@ -177,7 +179,7 @@ No cloud session captures screenshots. Tracks post `RENDER-REQUEST @ sha: ids` l
 - The M2 slice review (blocking; play the integration branch).
 - Music: the listening verdict (docs/kb/audio/listening_notes.md), which blocks M1-LEAD-01.
 - The Asha face direction (ADR 0019's stronger stylisation, or keep).
-- ~~Git LFS~~: APPROVED by the human on 10-27 (ADR 0039). Activation waits on the cloud environment allowing `lfs.github.com` (the egress proxy refuses it). GitHub Actions never leave "queued"; check the repo settings.
+- ~~Git LFS~~: approved on 10-27 and **LIVE from 10-28** (ADR 0039): upload and download are verified from the cloud. The LFS paths are `assets/audio/music/actN/` and `assets/lfs/`. GitHub Actions never leave "queued"; check the repo settings.
 - M3-RND-02: OK to cap the PC GPU's clocks or power for the min-spec proxy?
 
 ## 7. Toolchain and gotchas
