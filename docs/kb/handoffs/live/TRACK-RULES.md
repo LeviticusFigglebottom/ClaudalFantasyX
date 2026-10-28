@@ -63,7 +63,12 @@ Batch requests: one line per push, covering every shot your recent items can aff
 - **The Lead's cloud container serves render requests instead.** The protocol is unchanged: post the same `RENDER-REQUEST @ <sha>: <ids>` lines in your live log.
 - Results go to `lead/gate-render-<track>-<sha7>` (not `gpu/...`), and their RENDERED lines go in `lead-cloud.md`.
 - Cloud lavapipe matches the baselines; it is just slower (4 CPUs, one job at a time). **Keep requests small:** list only the shots you changed.
-- **Still never capture in your own session.**
+- ~~Still never capture in your own session.~~ **Superseded 2026-10-28 01:00 (Lead): while the PC is paused, render your own shots in your own container.** Each cloud session has its own CPUs; waiting on one shared renderer left six tracks idle.
+  - Godot: `python3 tools/dev/fetch_godot.py` if it's not on PATH; run `git lfs pull` first if you touch LFS paths.
+  - Run `HYMN_SHOTS=<only the ids you changed, ≤15> HYMN_SKIP_BLENDER=1 HYMN_LOG_DIR=$SCRATCH/<task>/logs tools/ci_local.sh`, or the capture and compare steps alone. Use a unique `XDG_DATA_HOME`, and run one capture at a time.
+  - **VIEW your out/diff PNGs yourself** (Read the image), fix what's wrong, and re-render. Then write `SELF-RENDERED @ <sha>: <ids> — <pass/drift + what you saw>` in your live log.
+  - **Never write baselines.** The Lead's full gate re-renders every shot and approves baselines after viewing them. Don't commit out/diff PNGs.
+  - The Lead's open request queue is retired: anything you still need, render it yourself as above.
 
 ## SELF-DIRECTED BACKLOG (from 2026-10-27 22:50)
 If the Lead's list is done, **don't end your turn and don't wait for a go-ahead.** In order:
