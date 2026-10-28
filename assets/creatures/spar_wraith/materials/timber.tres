@@ -10,6 +10,7 @@ shader_parameter/clearcoat_wet = 0.2
 shader_parameter/detail_albedo = 0.22
 shader_parameter/detail_bump = 0.6
 shader_parameter/detail_scale = 30
+shader_parameter/rim_sheen = 0.3
 shader_parameter/roughness_dry = 0.85
 shader_parameter/roughness_wet = 0.4
 shader_parameter/wet_darken = 0.6
