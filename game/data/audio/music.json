@@ -9,6 +9,7 @@
     "pemakar_terraces": {"file": "res://assets/audio/music/terraces_of_ash.ogg", "resume": true, "_note": "M3-AUD-823: the scripts' id for `terraces_of_ash`: Ch5's Pemakar terraces. Same file, so the cue is composed once."},
     "ashcrown_trial": {"file": "res://assets/audio/music/ashcrown.ogg", "resume": true, "_note": "M3-AUD-823: the scripts' id for `ashcrown`: Ch5's Ashcrown temple trial. Same file, so the cue is composed once."},
     "tamsule_port": {"file": "res://assets/audio/music/tamsule.ogg", "resume": true, "_note": "M3-AUD-823: the scripts' id for `tamsule`: Ch7's Tamsule port. Same file, so the cue is composed once."},
+    "corrow_day": {"file": "res://assets/audio/music/corrow_seawall.ogg", "_note": "M3-AUD-861: the scripts' id for `corrow_seawall` (ch08_landfall.dlg): Corrow by day before the storm. Same file, so the cue is composed once."},
     "coilspire_flues": {"file": "res://assets/audio/music/coilspire.ogg", "resume": true, "_note": "M3-AUD-823: the scripts' id for `coilspire`: Ch8's Coilspire flues (replaces the sequencer's temple_trial stand-in). Same file, so the cue is composed once."},
     "battle_standard": {
       "file": "res://assets/audio/music/battle_standard.ogg",
@@ -429,7 +430,11 @@
     {"scene": "res://game/levels/ch06/brine_shoals/brine_shoals.tscn", "music": "brine_shoals", "_note": "M3-AUD-828: Ch6, the Shoals; the scene has landed"},
     {"scene": "res://game/levels/ch07/tamsule/tamsule.tscn", "music": "tamsule", "_note": "M3-AUD-828: Ch7, the port; the scene has landed"},
     {"scene": "res://game/levels/ch07/tamsule_bell_galleries/tamsule_bell_galleries.tscn", "music": "tamsule_bell_galleries", "_note": "M3-AUD-828: Ch7, the Bell's galleries; the scene has landed"},
-    {"scene": "res://game/levels/ch09/corrow_night/corrow_night.tscn", "music": "corrow_night", "_note": "M3-AUD-819/828: Ch9, Corrow's night strand"}
+    {"scene": "res://game/levels/ch09/corrow_night/corrow_night.tscn", "music": "corrow_night", "_note": "M3-AUD-819/828: Ch9, Corrow's night strand"},
+    {"scene": "res://game/levels/ch03/saltgrass_causeway/saltgrass_causeway.tscn", "music": "saltgrass_causeway", "_note": "M3-AUD-861: Ch3 B06, the causeway walk (the scene has landed)"},
+    {"scene": "res://game/levels/ch07/tidecup_match/tidecup_match.tscn", "music": "tidecup_match", "_note": "M3-AUD-861: Ch7, the story Reefball match (TidecupMatch); the crowd beds come from ReefballAudio"},
+    {"scene": "res://game/levels/ch08/corrow/corrow.tscn", "music": "corrow_seawall", "_note": "M3-AUD-861: Ch8, Corrow Bastion before the storm (the scene has landed)"},
+    {"scene": "res://game/levels/ch08/coilspire/coilspire.tscn", "music": "coilspire", "_note": "M3-AUD-861: Ch8, the Coilspire temple's flues (the scene has landed)"}
   ],
   "battle": {
     "default": "battle_standard_v2",

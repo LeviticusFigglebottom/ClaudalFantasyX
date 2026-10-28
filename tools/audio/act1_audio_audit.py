@@ -26,6 +26,15 @@ ROOT = Path(__file__).resolve().parents[2]
 ACT1_DIRS = ["prologue"] + [f"ch0{i}" for i in range(1, 10)]
 DATA = ROOT / "game" / "data"
 AUDIO = DATA / "audio"
+# Reported cases that are right as they are, each with its reason (printed under "By design", never counted)
+BY_DESIGN = {
+    "game/levels/ch03/first_verse/first_verse.tscn: no music":
+        "Cutscene B's own @music (shell_shrine_interior, hush_first_verse) scores it; a zone cue would fight it",
+    "game/levels/ch07/tidecup_match/tidecup_match.tscn: no ambience bed":
+        "ReefballAudio plays the crowd beds (reefball_hooks.json murmur/excited) with the match's state",
+    "ambience bed `underwater_deep` is unwired: M3-AUD-06: open deep water; no zone yet":
+        "Act I has no open deep-water zone (Ch1's dive is the drowned tower, which has its own bed)",
+}
 TEMP_WORDS = re.compile(r"\b(stand-in|stand in|temp|temporary|placeholder|sketch|no scene yet|no zone yet)\b", re.I)
 
 
@@ -214,12 +223,17 @@ def main() -> int:
     ap.add_argument("--md", action="store_true", help="print as a markdown list")
     args = ap.parse_args()
     total = 0
+    held = []
     for name, fn in SECTIONS:
-        items = fn()
+        items = [i for i in fn() if i not in BY_DESIGN]
+        held += [i for i in fn() if i in BY_DESIGN]
         total += len(items)
         print(f"\n## {name} ({len(items)})" if args.md else f"\n{name}: {len(items)}")
         for it in items:
             print(f"- {it}" if args.md else f"  {it}")
+    print("\n## By design" if args.md else "\nBy design:")
+    for it in held:
+        print(f"- {it}: {BY_DESIGN[it]}" if args.md else f"  {it}: {BY_DESIGN[it]}")
     print(f"\n{total} item(s)")
     return 0
 

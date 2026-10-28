@@ -42,7 +42,7 @@
       "file": "res://assets/audio/ambience/drowned_tower.ogg",
       "volume_db": 0.0,
       "bus": "Ambience",
-      "_note": "M3-AUD-06: inside Ch1's drowned tower (ch01/oruvel_underway); no scene yet"
+      "_note": "M3-AUD-06: inside Ch1's drowned tower (ch01/oruvel_underway; wired by M3-AUD-861)"
     },
     "reefball_crowd_murmur": {
       "file": "res://assets/audio/sfx/reefball/crowd_murmur.ogg",
@@ -173,6 +173,42 @@
       ],
       "wind": true,
       "_note": "M3-AUD-16: Corrow's shoreline on the night of the Ebbing (claude/m2-slice); the seawall bed under the_ebbing"
+    },
+    "res://game/levels/ch01/oruvel_underway/oruvel_underway.tscn": {
+      "day": [
+        "drowned_tower"
+      ],
+      "_note": "M3-AUD-861: inside Ch1's drowned tower (the scene has landed)"
+    },
+    "res://game/levels/ch03/saltgrass_causeway/saltgrass_causeway.tscn": {
+      "day": [
+        "causeway_wind",
+        "tidepools"
+      ],
+      "wind": true,
+      "_note": "M3-AUD-861: B06, saltgrass, gusts and the tidepools at low tide (the scene has landed)"
+    },
+    "res://game/levels/ch03/first_verse/first_verse.tscn": {
+      "day": [
+        "shrine_interior"
+      ],
+      "_note": "M3-AUD-861: Cutscene B in the Shell Shrine: the shrine's room tone under the cutscene's own @music"
+    },
+    "res://game/levels/ch04/haluna_wake/haluna_wake.tscn": {
+      "day": [
+        "haluna_night",
+        "surf",
+        "dock"
+      ],
+      "wind": true,
+      "_note": "M3-AUD-861: Ch4, Haluna by night for Asha's wake: the same place and the same night beds as Ch2's dock"
+    },
+    "res://game/levels/ch08/corrow/corrow.tscn": {
+      "day": [
+        "corrow_seawall"
+      ],
+      "wind": true,
+      "_note": "M3-AUD-861: Ch8, Corrow before the storm: the seawall bed it was made for (M3-AUD-16)"
     }
   },
   "wind": {
