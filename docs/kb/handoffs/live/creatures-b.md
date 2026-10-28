@@ -112,3 +112,17 @@ CreatureActor and the validator are theirs too (kit or tool changes go to them a
     broken A-frame of masts with a hanging plated body, pale knots and a glowing seam. Mild: plates a little clean at
     noon close range.
 - **In progress:** virel, drownbell, cinder_matron (worktree agents).
+- **MERGE-READY @ (this merge): M3-CRB-006, the Cinder Matron to final quality** (worktree agent 387af0af, viewed by me).
+  - Slag crust as irregular cooled runs (pumice tops, glassy downhill lips, drips; a third of the cracks glow);
+    plated riveted arms with hinged elbows and a piston linkage, heat-blue and soot; a scorched stitched leather apron
+    with burn holes and a buckled strap (new `leather` slot); the hood's heat rainbow and soot. **Weak point (ADR
+    0151):** a cracked, sealed sight-glass on her right flank, beside the firebox (new `wound` slot, spawn_wound),
+    distinct from the glimmer_bound heart. 24.8k triangles (budget 25k). New `ready` (loop) and `intro` (2.6 s, the
+    anvil's ring wakes her); `vfx_wound`, `vfx_core` (firebox), `vfx_phase` (behind the heart port). Two PROVENANCE
+    rows added (leather.tres, wound.tres). Contacts and the Crust/recrust cue unchanged.
+  - **Checks run:** Blender verify identical; validate_data 0 errors; tools tests 48 OK; taskboard; Godot creature
+    74/1 (known portraits), ch05 4/0, part_cues 6/0, boss_intro 17/0.
+  - SELF-RENDERED @ 387af0af: creature_cinder_matron, battle_boss_intro_matron — drift (new model); viewed: a plated
+    forge-machine, the sight-glass a clear teal point in the intro. Mild: the biggest belly cells are smooth up close.
+  - **For env-art / battle-presentation (seen in battle_boss_intro_matron):** the Ch5 terrace arena's front edge
+    shows stretched vertical texture streaks (orange stripes) across the lower third of the frame.
