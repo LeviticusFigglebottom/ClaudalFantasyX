@@ -320,7 +320,8 @@ func error_text(code: StringName, ctx: Dictionary = {}) -> String:
 ## What Confirm on `nid` would do for the hero on show, what it costs, and why it can't be done.
 ## {action (ACT_*), error (RESULT_OK or an ERR_* / &"broken" / &"nothing"), ok, path, cost, left,
 ##  text (the line under the node's details), confirm (the confirm row's label); a walk beside a far sealed
-##  gate (M2-MNU-10) also names its end, beside}.
+##  gate (M2-MNU-10) also names its end, beside; a wake or a gate's opening that can be paid also names
+##  its Facet cost, need and facet (the board's cost tag)}.
 func plan(nid: StringName) -> Dictionary:
 	var p := {
 		"action": ACT_NONE,
@@ -456,6 +457,8 @@ func _plan_here(p: Dictionary, n: LatticeNode) -> Dictionary:
 		return _refused(p, err, error_text(err, _facet_ctx(n)))
 	var fid := rules().facet_for(n)
 	var ctx := {"name": hero_name(), "need": rules().facet_cost(n), "facet": facet_name(fid)}
+	p["need"] = ctx["need"]
+	p["facet"] = ctx["facet"]
 	p["ok"] = true
 	p["text"] = tr("LATTICE_MENU_PLAN_WAKE_FMT").format(ctx)
 	p["confirm"] = tr("LATTICE_MENU_CONFIRM_WAKE_FMT").format(ctx)
@@ -470,6 +473,8 @@ func _plan_gate(p: Dictionary, n: LatticeNode) -> Dictionary:
 	if err != LatticeProgress.RESULT_OK:
 		return _refused(p, err, error_text(err, _facet_ctx(n)))
 	var ctx := {"need": rules().facet_cost(n), "facet": facet_name(rules().facet_for(n))}
+	p["need"] = ctx["need"]
+	p["facet"] = ctx["facet"]
 	p["ok"] = true
 	p["text"] = tr("LATTICE_MENU_PLAN_OPEN_FMT").format(ctx)
 	p["confirm"] = tr("LATTICE_MENU_CONFIRM_OPEN_FMT").format(ctx)

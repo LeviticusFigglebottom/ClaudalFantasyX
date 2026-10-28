@@ -1,0 +1,83 @@
+{
+  "menu_glyphs": {
+    "doc": "Act I final pass (ADR 0041): the icons the menus' rows show (MenuGlyph, vector strokes in StatusGlyph's style; original shapes drawn in code). row_px: the glyph's size in a menu row at the 1920 x 1080 reference, gap_px between it and the row's label; tint_alpha: the round backing's alpha. currency: the lume's glyph and role. items: an item's own glyph; item_categories: the glyph for the rest of its category; item_roles: the palette role each category's strokes use. equipment_types: one glyph per equipment.json 'type'. skill_elements: an element's glyph (skills.json element); skill_kinds: the kind's glyph when the element has none; skill_roles: the role per kind.",
+    "row_px": 30,
+    "currency": "lume",
+    "currency_role": "focus_gold",
+    "gap_px": 9,
+    "tint_alpha": 0.22,
+    "items": {
+      "salt_tonic": "bottle",
+      "reef_draught": "flask",
+      "quiet_tea": "cup",
+      "bitterleaf": "leaf",
+      "brine_eyewash": "drop",
+      "throat_honey": "drop",
+      "smelling_salts": "crystals",
+      "tidewash_salve": "jar",
+      "relighting_wick": "wick",
+      "drag_net": "net",
+      "quickwater": "quick",
+      "ember_pot": "pot",
+      "crab_carapace": "shell",
+      "eel_lantern": "lantern",
+      "gull_quill": "feather",
+      "ember_coral": "coral",
+      "tide_pearl": "pearl",
+      "storm_scale": "scale",
+      "rime_shard": "shard",
+      "lit_age_brass": "cog",
+      "salt_glass_shard": "shard",
+      "sailmakers_needle": "needle",
+      "facet_key_1": "gem_key",
+      "facet_key_2": "gem_key",
+      "facet_key_3": "gem_key",
+      "facet_key_4": "gem_key"
+    },
+    "item_categories": {
+      "consumable": "bottle",
+      "material": "shell",
+      "facet": "gem",
+      "key": "key"
+    },
+    "item_roles": {
+      "consumable": "heal",
+      "material": "line_gold",
+      "facet": "focus_gold",
+      "key": "focus_gold"
+    },
+    "equipment_types": {
+      "reef_hooks": "hooks",
+      "lantern_staff": "staff",
+      "boarding_spear": "spear",
+      "tide_shield": "shield",
+      "tether_harness": "harness",
+      "bell_bangle": "bangle",
+      "lacquer_book": "book",
+      "ink_guards": "guards",
+      "anchor_cleaver": "cleaver",
+      "watch_wraps": "wraps",
+      "wright_launcher": "launcher",
+      "mesh_sleeve": "sleeve"
+    },
+    "equipment_role": "text",
+    "skill_elements": {
+      "fire": "flame",
+      "water": "wave",
+      "lightning": "bolt",
+      "ice": "frost"
+    },
+    "skill_kinds": {
+      "physical": "blade",
+      "magical": "spark",
+      "heal": "mote",
+      "support": "ward"
+    },
+    "skill_roles": {
+      "physical": "text",
+      "magical": "focus",
+      "heal": "heal",
+      "support": "focus"
+    }
+  }
+}

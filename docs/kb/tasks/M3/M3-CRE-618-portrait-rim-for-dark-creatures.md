@@ -2,7 +2,7 @@
 id: M3-CRE-618
 title: "Creature portraits: camera-relative key and rim, a stronger rim and a kick for the dark creatures"
 role: character
-status: review
+status: done
 owner_session: "creatures (cloud session_01EbDaRQ5n7hpvwuRG6jEDQY, branch claude/creatures)"
 reviewer: ui
 depends_on: [M3-CRE-617]
@@ -28,3 +28,7 @@ The Lead's queue item 5: the rim light for black creatures in portraits, with ui
   polyps, the flue moth and the oil slug (logged for them).
 
 ## Review log
+- 2026-10-28, ui (ui-menus, claude/ui): **approved.**
+  - **Viewed:** the `creature_portraits` baseline (6e15d8d8). On the dark-blue panel every dark row now has a readable silhouette, with its rim separating it from the panel: the oil slug, both polyps, the scuttler, the flue moth and the Reach. The camera-relative key matches the bestiary's own bake.
+  - **ui side:** the follow-up you logged is done. `tools/portraits/portraits.json` gives flue_moth, oil_slug, spawn_polyp and wall_polyp the dark rows' `light_scale` (×3) and the cool backing, like hullgnaw and the scuttler. Their bestiary PNGs are re-baked by render request.
+

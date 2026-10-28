@@ -785,7 +785,7 @@ OBJ_SHRINE_DOOR,The chamber door stands open. Go through to Asha.
 OBJ_FIND_ASHA_ON_DOCK,Find Asha on the dock.
 OBJ_SIDE_TOWN,"Walk Haluna and listen. The market, the forge and the inn are open."
 OBJ_SIDE_NET_FLOAT,Something glints in the drained side pool.
-OBJ_NONE,No errand calls just now. Haluna's lanes are yours to walk.
+OBJ_NONE,No errand calls just now. The road will keep.
 MAP_ROUTE_HALUNA,Haluna
 MAP_ROUTE_CAUSEWAY,Saltgrass Causeway
 MAP_ROUTE_SHELL_SHRINE,The Shell Shrine
@@ -1105,3 +1105,7 @@ BOSS_TITLE_MANGROVE_DROWNER,The Mangrove Drowner
 BOSS_EPITHET_MANGROVE_DROWNER,It grew into the roots and would not let go
 BOSS_TITLE_WAKEFIN,The Wakefin
 BOSS_EPITHET_WAKEFIN,It followed the first wake out of Ansedra
+MAP_POI_Q_PATH_MID,The headland's turn
+ACT_CARD_3_LABEL,Act III
+ACT_CARD_3_TITLE,The Unbinding
+OBJ_NONE_HALUNA,No errand calls just now. Haluna's lanes are yours to walk.

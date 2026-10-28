@@ -121,6 +121,7 @@ func gear_rows(cid: StringName) -> Array[Dictionary]:
 		row["label"] = slot_name(slot)
 		row["right"] = piece_name(uid) if uid != NO_PIECE else _tr("EQUIP_MENU_NOTHING_WORN")
 		row["right_role"] = &"text" if uid != NO_PIECE else &"text_disabled"
+		row["glyph"] = MenuGlyph.for_goods(bag.base_of(uid)) if uid != NO_PIECE else {}
 		row["enabled"] = true
 		out.append(row)
 		if uid == NO_PIECE:
@@ -173,6 +174,7 @@ func piece_rows(cid: StringName, slot: StringName) -> Array[Dictionary]:
 					"kind": KIND_PIECE,
 					"uid": uid,
 					"label": piece_name(uid),
+					"glyph": MenuGlyph.for_goods(bag.base_of(uid)),
 					"right": mark,
 					"right_role": &"focus_gold" if wearer == cid else &"text_dim",
 					"enabled": true,

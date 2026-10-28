@@ -14,6 +14,9 @@ extends RefCounted
 ##
 ## Codex (M3-UI-03): after Bestiary, it opens the lore codex (CodexMenu) over `codex`, or the
 ## game's codex (CodexModel.from_game) when that is null. Shots and tests set a scratch one.
+##
+## Kite (M3-UI-205): after Map, the Kite's world map (KiteMapMenu over `kite`). The row is not there at
+## all until the Kite flies (`kite` null, or its open flag unset): it would name Act III's ship early.
 
 ## M2-MNU-01..04 (the Menus track) added the party's pages: Items, Equip, Lattice, Status (each a
 ## FieldSubmenu in game/ui/menus/), and Quit to the title behind a confirm.
@@ -27,6 +30,7 @@ const ROW_BESTIARY := &"bestiary"
 const ROW_CODEX := &"codex"
 const ROW_SWELL := &"swell"
 const ROW_MAP := &"map"
+const ROW_KITE := &"kite"
 const ROW_SETTINGS := &"settings"
 const ROW_QUIT := &"quit"
 const ROW_CLOSE := &"close"
@@ -56,6 +60,7 @@ const ROOT_LABEL_KEYS := {
 	ROW_CODEX: "FIELD_MENU_CODEX",
 	ROW_SWELL: "FIELD_MENU_SWELL",
 	ROW_MAP: "FIELD_MENU_MAP",
+	ROW_KITE: "FIELD_MENU_KITE",
 	ROW_SETTINGS: "FIELD_MENU_SETTINGS",
 	ROW_QUIT: "FIELD_MENU_QUIT",
 	ROW_CLOSE: "FIELD_MENU_CLOSE",
@@ -70,6 +75,7 @@ const ROOT_DESC_KEYS := {
 	ROW_CODEX: "FIELD_MENU_CODEX_DESC",
 	ROW_SWELL: "FIELD_MENU_SWELL_DESC",
 	ROW_MAP: "FIELD_MENU_MAP_DESC",
+	ROW_KITE: "FIELD_MENU_KITE_DESC",
 	ROW_SETTINGS: "FIELD_MENU_SETTINGS_DESC",
 	ROW_QUIT: "FIELD_MENU_QUIT_DESC",
 	ROW_CLOSE: "FIELD_MENU_CLOSE_DESC",
@@ -109,6 +115,8 @@ var map: MapModel
 var live_map := false
 ## The lore codex the Codex row opens (null = the game's).
 var codex: CodexModel
+## The Kite's world map the Kite row opens (null: no row; from_game sets the game's).
+var kite: KiteMapModel
 ## M2-MNU-300: the save system the root's Last saved block reads (null: the block is hidden). from_game
 ## sets the SaveSystem autoload. There is no save row: saving stays at shrines and chapter autosaves.
 var save_system: Node
@@ -126,6 +134,7 @@ func _init(with_state: GameStateData = null, hero_ids: Array[StringName] = [], h
 static func from_game() -> FieldMenuModel:
 	var m := FieldMenuModel.new(Game.state, field_heroes(), name_keys_from(BattleDB.load_default().characters))
 	m.live_map = true
+	m.kite = KiteMapModel.from_game()
 	m.save_system = (Engine.get_main_loop() as SceneTree).root.get_node_or_null(^"SaveSystem")
 	m.time_bias_min = int(Time.get_time_zone_from_system().get("bias", 0))
 	return m
@@ -154,7 +163,7 @@ static func name_keys_from(characters: Dictionary) -> Dictionary:
 ## row: a row that is off can't be highlighted to read why).
 func root_rows() -> Array[Dictionary]:
 	var out: Array[Dictionary] = []
-	for id in ROOT_IDS:
+	for id in root_ids():
 		var row := {"id": id, "label": _tr(ROOT_LABEL_KEYS[id]), "enabled": root_enabled(id)}
 		if id == ROW_MAP and not has_map():
 			row["right"] = _tr(NO_MAP_TAG_KEY)
@@ -165,6 +174,20 @@ func root_rows() -> Array[Dictionary]:
 ## True when the zone the party is in has a map.
 func has_map() -> bool:
 	return map != null and map.has_map()
+
+
+## The root's row ids: ROOT_IDS, with Kite after Map once the Kite flies (it is kept out of ROOT_IDS so
+## every other row keeps its place there).
+func root_ids() -> Array[StringName]:
+	var out: Array[StringName] = ROOT_IDS.duplicate()
+	if has_kite():
+		out.insert(out.find(ROW_MAP) + 1, ROW_KITE)
+	return out
+
+
+## True when the Kite flies, so the root lists its row.
+func has_kite() -> bool:
+	return kite != null and kite.is_open()
 
 
 func root_enabled(id: StringName) -> bool:

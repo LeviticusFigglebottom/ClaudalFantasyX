@@ -6430,6 +6430,30 @@
     {
       "id": "battle_ch08_withdraw",
       "scene": "res://game/battle/scene/shots/battle_ch08_withdraw.tscn"
+    },
+    {
+      "id": "kite_map",
+      "scene": "res://game/ui/kite/shots/kite_map.tscn"
+    },
+    {
+      "id": "field_menu_kite",
+      "scene": "res://game/ui/field_menu/shots/field_menu_kite.tscn"
+    },
+    {
+      "id": "menu_glyphs",
+      "scene": "res://game/ui/menus/shots/menu_glyphs.tscn"
+    },
+    {
+      "id": "field_menu_map_keth_pass",
+      "scene": "res://game/ui/map/shots/field_menu_map_keth_pass.tscn"
+    },
+    {
+      "id": "field_menu_map_lowlight",
+      "scene": "res://game/ui/map/shots/field_menu_map_lowlight.tscn"
+    },
+    {
+      "id": "field_menu_map_ansedra",
+      "scene": "res://game/ui/map/shots/field_menu_map_ansedra.tscn"
     }
   ]
 }

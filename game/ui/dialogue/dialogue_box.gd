@@ -22,6 +22,7 @@ const TAG_VO := "vo"
 const SUNG_VARIATION := &"DialogueBodySung"
 ## Float slack when comparing reveal times (a character due at exactly the elapsed time shows).
 const REVEAL_EPSILON_SEC := 0.000001
+const PORTRAIT_DATA := "res://game/data/ui/dialogue_portrait.json"
 
 static var _translation_added: bool = false
 
@@ -49,6 +50,10 @@ var _name_key: StringName = &""
 var _voice_over := false
 var _motion: DialogueBoxMotion
 var _spoken_rest := Vector2.ZERO
+## The speaker's portrait at the box's left (Act I final pass; game/data/ui/dialogue_portrait.json).
+var _portrait: HeroPortraitFrame
+## Each speaker's last emotion tag (an untagged line keeps it).
+var _emotions: Dictionary = {}
 
 @onready var _name_label: Label = %SpeakerName
 @onready var _body_label: Label = %Body
@@ -81,6 +86,7 @@ func _ready() -> void:
 	clear()
 	var panel := get_node(^"Panel") as Control
 	_spoken_rest = Vector2(panel.offset_top, panel.offset_bottom)
+	_build_portrait()
 	_motion = DialogueBoxMotion.new(self, panel, _name_label)
 	DialogueAssist.attach(self)  # M2-UI-25: continue glyph, backlog, auto-advance (UI-owned)
 
@@ -107,7 +113,62 @@ func _unhandled_input(event: InputEvent) -> void:
 
 func show_line(step: DialogueStep) -> void:
 	var vo := step.speaker == &"" or TAG_VO in step.tags
+	if step.emotion != &"":
+		_emotions[step.speaker] = step.emotion
 	show_text(step.speaker, step.text_key, step.name_key, step.is_sung(), step.narrator, vo)
+
+
+## Shows `speaker`'s portrait in `emotion` (hidden for &"" or a speaker with no picture).
+func show_portrait(speaker: StringName, emotion: StringName = &"") -> void:
+	if _portrait == null:
+		return
+	var who := portrait_for(speaker)
+	_portrait.show_hero(who, "", emotion)
+	_portrait.visible = who != &""
+
+
+## The character whose portrait `speaker` shows (dialogue_portrait.json aliases), or &"" when none is baked.
+static func portrait_for(speaker: StringName) -> StringName:
+	if speaker == &"":
+		return &""
+	var d := _portrait_data()
+	var who := StringName(str((d.get("aliases", {}) as Dictionary).get(String(speaker), speaker)))
+	return who if HeroPortraits.texture(who) != null else &""
+
+
+## The portrait on show (null while hidden; tests).
+func portrait() -> HeroPortraitFrame:
+	return _portrait if _portrait != null and _portrait.visible else null
+
+
+static func _portrait_data() -> Dictionary:
+	var parsed: Variant = JSON.parse_string(FileAccess.get_file_as_string(PORTRAIT_DATA))
+	return (parsed as Dictionary).get("dialogue_portrait", {}) as Dictionary if parsed is Dictionary else {}
+
+
+## Puts the portrait to the left of the name and text: Margin > HBox > [portrait, VBox].
+func _build_portrait() -> void:
+	var vbox := _name_label.get_parent()
+	var margin := vbox.get_parent()
+	var d := _portrait_data()
+	var px := HudLayout.num(d, "size_px")
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override(&"separation", int(HudLayout.num(d, "gap_px")))
+	row.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	margin.remove_child(vbox)
+	margin.add_child(row)
+	_portrait = HeroPortraitFrame.new()
+	_portrait.custom_minimum_size = Vector2(px, px)
+	_portrait.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	_portrait.visible = false
+	row.add_child(_portrait)
+	row.add_child(vbox)
+	(vbox as Control).size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	# Moving the column dropped its owner; give it back so %SpeakerName and %Body still resolve.
+	row.owner = self
+	vbox.owner = self
+	for n in vbox.get_children():
+		n.owner = self
 
 
 ## Starts revealing tr(text_key). An empty speaker means narration (no name, no blip by default).
@@ -133,6 +194,7 @@ func show_text(
 		name_key = display_name_key if display_name_key != &"" else own
 	_name_label.text = tr(name_key) if name_key != &"" else ""
 	_name_label.visible = name_key != &""
+	show_portrait(&"" if _voice_over else speaker, StringName(str(_emotions.get(speaker, ""))))
 	if _motion != null:
 		if _motion.is_dismissing():
 			_motion.play_in()  # a line arrived while it was going: it comes back
