@@ -589,6 +589,17 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
+- **MERGE-READY @ (this push): M3-ENV-102, the Order chapel at the kit's level; M3-ENV-101 viewed. Both to review.**
+  - **`order_chapel`**, same footprint and door position:
+    - a bare coral-stone base course;
+    - weathered lime-wash;
+    - an arched lamp niche with the gold Level emblem over the door;
+    - a bell-cote with a gilt bell on the front parapet;
+    - the gilt dome 1.25x larger, on a taller drum.
+  - **SELF-RENDERED** `haluna_h07_chapel_court`: it now reads as the Order's building from the court (an intended
+    drift).
+  - **`save_shrine_field`** viewed: the final shrine reads. It drifts from its baseline; re-approve.
+  - **Gates:** `test_haluna_kit` and `test_haluna_dressing` pass; taskboard --check.
 - **MERGE-READY @ 219b86861: M3-ENV-753, Haluna's NPC props swapped (the Lead assigned it to env-art).**
   - In `haluna.tscn`:
     - Reed's Broom, Neme's Bag and Osu's Bowl are `hand_broom`, `woven_bag` and `clay_bowl`.
