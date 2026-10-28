@@ -213,3 +213,21 @@ CreatureActor and the validator are theirs too (kit or tool changes go to them a
      battle-presentation): a boss mark further back and central, or the intro's bounds fit applied to the home
      camera. Not done model-side on purpose: moving a model inside its scene would pull it off its ring and VFX
      anchors. I re-render the six when it lands.
+- **Lead's 08:59 message, done @ b7ff479a (merged origin/gpu/gate-big14-shots first, at 4583d3fc):**
+  1. **Ilun is a real model in big14 itself.** The gate's own render
+     `docs/kb/qa/gate-runs/big14/out/battle_vowbound_out.png` (on gpu/gate-big14-shots) shows the manta; the
+     **capsule is only in the old baseline** `tests/screenshots/baselines/battle_vowbound_out.png` (big13), which the
+     out PNG is compared against. Same for battle_choreo_vowbound_rise. **Lead: those two are drift to re-approve
+     after viewing, not a missing model.** His clips: idle, ready, rise (the call), dismiss, attack, cast, hit, hit_b,
+     defend, ko, victory, special, release.
+  2. **Portraits baked** with ui-menus' tool (tools/portraits/render.sh, at your request): **ilun, kahre, virel,
+     ilun_held, kahre_held, virel_held new** (PROVENANCE rows added), and the six Act I bosses **re-baked** on the
+     final models (their old PNGs showed the primitive first passes). Ilun and ilun_held got a portrait framing
+     (yaw 45, pitch 32, margin 0.95: the net wings read). All viewed as a contact sheet.
+     test_creature_portraits now fails only on **nhoa, hesk, ethren and their held forms** (Act II, creatures',
+     paused by ADR 0041); `tools/portraits/render.sh --only nhoa,hesk,ethren,nhoa_held,hesk_held,ethren_held` turns
+     it green if you want it baked anyway.
+  3. Every other Act I boss and Vowbound: done (see above); the default-camera framing of the Wraith, the Matron and
+     the Reach waits on **M3-CRB-011** (battle-presentation).
+  - **Checks:** validate_data 0/0; Godot creature_portraits 4/1 (the six Act II PNGs only), creature_bosses 4/0,
+    vowbound 87/0.
