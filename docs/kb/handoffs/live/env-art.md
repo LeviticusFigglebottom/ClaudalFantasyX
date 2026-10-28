@@ -589,6 +589,45 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
+- **2026-10-28 ~09:00: the Lead's queue (inventory M3-HER-1140, the shrine, weak views, storm/night); MERGE-READY.**
+  - **Inventory, the 15 rows (task M3-ENV-746):**
+    - **Fixed by env-art:**
+      - the derelict arena's sphere flames are now the kit's `lamp_flame` (also the Ch5 ash terrace);
+      - the shrine's ChamberPassage box is now `shrine_chamber_passage`, and the shrine GI was rebaked here;
+      - the Ch4 ferry's four kept blocks are now `islet_landing`, `gangplank`, `stern_gate` and
+        `terrace_name_board_wrapped`, placed in `tools/act1/ch04_ferry_dressing.py` under the Lead's 02:40 split,
+        so the keep list is empty;
+      - the Ch1 storm's `StormWall` is no longer kept (below).
+    - **Built, waiting on the owner:**
+      - the First Verse's set, `assets/environments/zones/shell_shrine/first_verse_stage.tscn` (the final shrine,
+        sea, shore, and the marks at their real places; M3-ENV-745);
+      - the trees under real names, `banyan_hero` / `windbreak_tree` (M3-ENV-750, then the old names go).
+    - **Requests:**
+      - M3-ENV-747: the save shrine's primitives (Systems; the kit pieces have been ready since M3-ENV-101);
+      - M3-ENV-748: Neme's stand-in (slice-polish);
+      - the earlier mounts: M3-ENV-739, 740, 742, 744.
+    - **Noted:** the Reefball drop proxy is placed in no Act I scene (pc-gpu's R&D).
+  - **Weak views reframed:**
+    - O10: the lintel gull with the town behind;
+    - B07: the stem-gull's silhouette ahead of the hulk, as its sheet intends;
+    - H10: back along the dock to the lamp-lit village. The sheet row is updated.
+  - **Storm and night:**
+    - Oruvel's storm is in the dressing: debris, a capsized hull, the dive bridge adrift and Kell's beacon, all
+      following `StormWall`, plus the storm frame (`storm_environment`).
+    - The preview `oruvel_dressed_storm.tscn` stands Rendering's UndertowStorm where the wall was.
+    - M3-ENV-751 asks slice-polish to do the same in `set_storm`.
+    - The nights (the Haluna dock, the Ch4 wake, the ferry) are in place.
+  - **SELF-RENDERED @ 538d5eda:**
+    - battle_arena_derelict / _deck_night / _ash_terrace_lanternfall, shrine_s02–s05, drownbell_flood,
+      ch04_ferry_deck/derelict: pass (rmse ≤ 0.0074).
+    - first_verse_stage_v01/v02, brightwater_landing_f01/f06, zone_oruvel_storm_o12/o16: new, viewed.
+    - haluna_h10_dock_night: reframed, intended drift (re-approve).
+    - The kit previews O10 and B07 were viewed through their own manifests.
+  - **Gates:**
+    - tools suite 117 units: only test_screenshots red, for new shots' first baselines;
+    - Godot haluna 62, import 21, zone_kit 6, environment 11, shrine 37, brightwater 6, oruvel 14, arena 18, all pass;
+    - gdlint and gdformat clean; validate_data; taskboard.
+  - **MERGE-READY @ 538d5eda** (integration 8d03e6d1 merged in).
 - **2026-10-28 ~06:00: Batch B viewed; First Verse found primitive.**
   - SELF-RENDERED @ 7a115247: shrine_s02/s03/s04/s05, battle_arena_derelict, brightwater_b03,
     ch04_ferry_deck/derelict, causeway_c08, haluna_h03 — pass (rmse ≤ 0.0068). Viewed: final. In ch04_ferry_deck
