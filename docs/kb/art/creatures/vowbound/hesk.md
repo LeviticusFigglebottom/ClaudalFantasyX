@@ -131,3 +131,11 @@ Vowbound slot (party Slot1, x 3.0, z −1.1), turned by `yaw_deg` −90, 16:9, a
 **The light.** `cord`, `ruff` and `eye` are `glimmer_bound` #4FB3B0 at 1.2, steady. The build's emission mask is 1.0
 on every knot and 0.2 along the cords and the ruff, and 0.55 on the eyes. `plumage`, `head` and `bundle` are not lit:
 the keth bundle is an object and never glows.
+
+## As built: the held form (M3-CRE-647, 2026-10-28)
+
+The foe form for the Ch20 release fight (act3_roster.md, "The Vowbound as foes").
+
+- **`release`** (3.4 s, its KO as a foe; the only clip added, every other clip samples identically): she opens to the full span, cords spread to be read, head raised, held (1.0–1.8 s); one slow down-stroke and she lifts 1.5 m up and 0.5 m back, gliding on open wings, the keth bundle still held. Her planted talon comes off the water only here (her test skips it for this clip).
+  Lowest vertex over every frame +0.005 m. GLB 1.58 → 1.69 MB.
+- Scene `game/creatures/hesk/hesk_held_battle.tscn` (the same GLB; `CreatureActor.material_dir` puts on `assets/creatures/hesk/materials_held/`, written by write_materials.py from the `held` block in materials.json: 3 emissive slots glimmer_bound to glimmer_held `#7FC6D9` at the same energy, steady; the rest as they are). creatures.json row `hesk_held`: no `vowbound` key, `ko` = `release`, `phases.release` = {clip `release`, `hold` true}, `stand_in.yaw_deg` 90 (facing the party), height 2.4 and radius 0.6 kept. Review shot `creature_hesk_held` (not rendered yet). No enemies.json row (Combat's, with the chapter designer). The turn to `glimmer_lift` and the rising motes are presentation (battle VFX), not the model.

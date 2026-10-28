@@ -174,3 +174,10 @@ UI: a `stand_ins.ethren` row (or keep creatures.json's); Combat: his vowbound.js
 `vowbound_pending` and add `clip_by_skill`); battle-presentation: `first_call_flags.ethren` and `rise`/`dismiss` as
 the entry and dismissal clips; battle-vfx: Still Water's stop at the contact; characters: Corran's face for Ch20.
 
+## As built: the held form (M3-CRE-647, 2026-10-28)
+
+The foe form for the Ch20 release fight (act3_roster.md, "The Vowbound as foes").
+
+- **`release`** (3.5 s, its KO as a foe; the only clip added, every other clip samples identically): the screen of wings opens all the way, slowly; his left hand comes forward to chest height, open, the copper ring toward Ysolde (the ring is his most forward point through the hold, z 0.69 m), held (1.5–2.1 s); then he rises 1.4 m up and 0.5 m back, the wings open, the ringed hand still held out, nearest her and last. The veil is not keyed (its fall is the cinematic's).
+  Lowest vertex over every frame +0.10 m. GLB 1.53 → 1.65 MB.
+- Scene `game/creatures/ethren/ethren_held_battle.tscn` (the same GLB; `CreatureActor.material_dir` puts on `assets/creatures/ethren/materials_held/`, written by write_materials.py from the `held` block in materials.json: 3 emissive slots glimmer_bound to glimmer_held `#7FC6D9` at the same energy, steady; the rest as they are). creatures.json row `ethren_held`: no `vowbound` key, `ko` = `release`, `phases.release` = {clip `release`, `hold` true}, `stand_in.yaw_deg` 90 (facing the party), height 2.5 and radius 0.6 kept. Review shot `creature_ethren_held` (not rendered yet). No enemies.json row (Combat's, with the chapter designer). The turn to `glimmer_lift` and the rising motes are presentation (battle VFX), not the model.

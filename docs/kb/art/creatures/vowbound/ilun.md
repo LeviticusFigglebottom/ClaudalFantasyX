@@ -151,3 +151,11 @@ length at 0.5, 1.15 and 1.75 m out), `tail_0..4`, `crest_0`, `crest_1`, `float` 
 
 **As built (M3-CRE-638):** 13,655 triangles (membrane 4,880, net 2,792, body 1,920, crest 1,320, cord 1,191, tail
 544, lobes 448, glass 320, eyes 240), 8,697 vertices, 16 bones, 13 clips, GLB 1.29 MB.
+
+## As built: the held form (M3-CRE-647, 2026-10-28)
+
+The foe form for the Ch20 release fight (act3_roster.md, "The Vowbound as foes").
+
+- **`release`** (3.3 s, its KO as a foe; the only clip added, every other clip samples identically): the first release, gentle: the wings rise and open wide, the crest up, he lifts a little (to 1.85 s); then one slow stroke carries him 1.5 m up and 0.45 m back, level and unhurried, the float hanging. He ends open and calm, not fallen.
+  Lowest vertex over every frame +0.31 m. GLB 1.29 → 1.37 MB.
+- Scene `game/creatures/ilun/ilun_held_battle.tscn` (the same GLB; `CreatureActor.material_dir` puts on `assets/creatures/ilun/materials_held/`, written by write_materials.py from the `held` block in materials.json: 5 emissive slots glimmer_bound to glimmer_held `#7FC6D9` at the same energy, steady; the rest as they are). creatures.json row `ilun_held`: no `vowbound` key, `ko` = `release`, `phases.release` = {clip `release`, `hold` true}, `stand_in.yaw_deg` 90 (facing the party). Review shot `creature_ilun_held` (not rendered yet). No enemies.json row (Combat's, with the chapter designer). The turn to `glimmer_lift` and the rising motes are presentation (battle VFX), not the model.
