@@ -140,7 +140,7 @@ The previous version is `CONSOLIDATED-history-2026-10-28.md`. It has the deep hi
   - slice-polish: the cutscene side of the slice and Ch1;
   - capsules: party → integration-qa, villagers → creatures, named NPCs → characters.
 - Git LFS is LIVE (ADR 0039) for `assets/audio/music/actN/**`, `assets/audio/sfx/act3/**` and `assets/lfs/**`. Run `git lfs pull` before importing.
-- Known: big14-era coverage fails while the suite has reds. The suite takes ~45 min, so use HYMN_STEP_TIMEOUT=10800 (branch `gpu/ci-step-timeout-3h` makes that the default; merge it).
+- Known: big14-era coverage fails while the suite has reds. The suite takes ~45 min, so use HYMN_STEP_TIMEOUT=10800 (the default since 036245a7, merged from gpu/ci-step-timeout-3h).
 
 ## 6. Tools (`tools/dev/lead/`)
 - **Branch hygiene:** `STALE-BRANCHES.md` lists ~79 merged or retired branches that are safe to delete. Cloud sessions get a 403 on deletes, so do it from the PC or in the GitHub UI.
