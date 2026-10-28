@@ -493,3 +493,29 @@ Skipped:
   - **Still missing:** Pell is the last named Act I speaker without a model.
   - **Merge note:** the merge kept shots.json's boot_title at 72 and battle_victory at 90.
 MERGE-READY @ 81301ec34: Ivo's portrait and the Stillguard rebake, on top of MERGE-READY @ 5702d5d3a.
+- 2026-10-28 12:40, **the Lead's 11:46 list: loading and the ui-menus rows in act1_gpu_qa.md** (the file is on gpu/act1-qa-2, so the answers are here, for the PC to copy into its rows):
+  - **Coverage.** Every game scene change already goes through SceneRouter's opaque fade; only the debug swap probe changes scene directly. What froze was the frame inside the fade.
+  - **Row 22 (New Game, Ch1, Ch2, first fight), row 41 (entries up to 4.3 s) and row 42 (Ch5's 6.2 s hidden frame) — FIX PUSHED, needs the PC's walk.** ADR 0111 plus its amendment (5702d5d3a, e65e18653, 045348c44):
+    - **What fills the frame.** Profiled headless, most of the swap frame is runtime `load()`s on the main thread: the hero bodies, the zone's villagers (ZoneCast) and its kit pieces and materials (ZoneKitDressing).
+    - **What ResidentLoads does.** It loads them on worker threads behind the fade (two at a time), and holds the swap until they are in:
+      - the heroes, kept for the session;
+      - the zone's generated list, `game/data/ui/scene_loads.json`, from `tools/loading/scene_loads.gd`;
+      - for a battle, its arena and its enemies' actors.
+    - **Headless worst hidden frame:** Ch1 1671 → 291 ms, Pemakar 7624 → 1128 ms (it reached the router's 120-frame hold cap), Corrow 7571 → 318 ms.
+    - **Left for other tracks:**
+      - Coilspire's dressing build (about 1.7 s of CPU): env-art-b and act1-chapters.
+      - Haluna's zone build and dresser (about 0.9 s each): first-playable and env-art.
+      - Possibly a progress-based hold cap: Systems Architect (ADR 0111 amendment).
+    - **Row 42's 61.6 ms visible frame after the fade** isn't reproducible without the GPU. It may be the last of Pemakar's loads landing after the hold cap; the next walk will tell.
+  - **Row 33 (BattleResultPanel._set_count casting a freed object, 506 times) — FIXED (503b99839).**
+    - Cause: a result shown again, or left, while it still counted kept its tween writing into freed rows.
+    - Fix: show_result kills the last open's tween, and _set_count and is_counting skip a freed row.
+    - test_battle_result_motion reproduces the exact error without the fix and passes with it (5/0).
+MERGE-READY @ 045348c44: ADR 0111's zone and battle loads, and the row 33 fix.
+Checks:
+- resident_loads 7/0, battle_result_motion 5/0, scene_router 15/0, boot 27/0, title 40/0 (3 nodes left in the tree, which predates this change).
+- validate_data has 0 errors; lint and format are clean.
+Skipped:
+- Screenshots: nothing visual changed. Loading is behind the opaque fade, and the result panel's look is unchanged.
+- A full suite: ResidentLoads is off in headless runs unless a test opts in, so the suite would not exercise it.
+**The PC's next walk on this head is the real measurement.**
