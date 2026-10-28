@@ -23,6 +23,23 @@ dialogue, casts). Claims: the last row of `docs/kb/ownership.md`.
   seawall/coilspire arenas). It is theirs, and the Lead applies it after env-art. Until then the Ch8 fights still
   load `wall_head_storm` (the greybox).
 
+## LEAD DECISION NEEDED: act1-chapters dressed the same zones in parallel (found 2026-10-28)
+`claude/act1-chapters` (up to 0737523e, 02:16 UTC) dressed Ch5–Ch9 zones on 10-28 under its older ownership row
+(`tools/act1/**`, `game/levels/act1/**`, 2026-10-25), at the same time as this branch under the Lead's 10-28 row:
+| Zone | act1-chapters | env-art-b |
+|---|---|---|
+| Ch7 port | 0d8f0e2d (M3-C07-1211) | ea946ec8 (M3-ENV-1300) |
+| Ch5 Pemakar's wake wall, weir, crown bell | 6c012aee (M3-C04-1204, with Ch4's) | 70664cd0 (M3-ENV-1301) |
+| Ch8 Corrow flood and lake as water | 0737523e (`waters` in ZoneKitDressing) | 00e15816 (`waters` and `storms`) |
+| Ch8 Coilspire trial pieces | f90e3df1 (M3-C08-1210) | 99063a1e + 00e15816 |
+| Ch9 strand, landing, mole, lake | 778fdd4e (M3-C09-1209) | 99063a1e + 00e15816 |
+| Ch5 Ashcrown + its day arenas, Ch6 road, the Undertow in Ch8 | (Ashcrown blocked, none) | 4081127f and before |
+The two touch the same generated files (`*_dressing.json`, `*_collision.json`, `*_layout.json`, `tools/act1/ch0[5-9]_*.py`)
+and both add a `waters` row type to `zone_kit_dressing.gd`, so they cannot both merge. **Recommendation:** take
+env-art-b for Ch5–Ch9 dressing (the 10-28 row, and it has the Undertow, Ashcrown, the arenas and the Ch6 road that
+build on it). Keep act1-chapters' Ch4 work and its "dressings keep only blocks waiting on a request" test, and re-point
+that test at this branch's zones. I stopped new Ch5–Ch9 dressing until this is settled, to avoid a third copy.
+
 ## NEW ACCOUNT (from 2026-10-25)
 
 ### 2026-10-28
@@ -91,7 +108,7 @@ dialogue, casts). Claims: the last row of `docs/kb/ownership.md`.
 - **Zone map follows** (`game/data/ui/zone_maps.json`, UI's file; only the `at` values of POIs whose sources I moved,
   and Ashcrown's bounds). **For UI:** the map draws a greybox layout's blocks only; Ashcrown's floors are now in its
   `collision_path` file, so its map is sparse. Reading the layout's `collision_path` blocks as floors would fix it.
-- **MERGE-READY @ HEAD of this push** (commits after 4eb5f642: the hero_stairs FAST-TRACK, the ownership claim,
+- **MERGE-READY @ 4081127f** (commits after 4eb5f642: the hero_stairs FAST-TRACK, the ownership claim,
   M3-ENV-1303 zone, its arenas, M3-ENV-1304, the zone-map follow, this log).
   - **Checks run:** Godot `--filter=` ashcrown 22/0, ch05 13/0, cutscene_walks 1/0, hero_stairs 7/0, zone_kit 10/0,
     battle_arenas 10/0, ch06 5/0; the whole tools suite (`run_tool_tests -j 4`): only `test_screenshots` is red, for
@@ -105,4 +122,4 @@ dialogue, casts). Claims: the last row of `docs/kb/ownership.md`.
 (Self-rendered per TRACK-RULES; lines are SELF-RENDERED notes.)
 SELF-RENDERED @ ea946ec8: ch07_tamsule_mouth, ch07_tamsule_market, ch07_tamsule_gantry — new shots, read final (Liss and Kerrid are capsules: no field body yet).
 SELF-RENDERED @ 00e15816: ch05_pemakar_weir, ch05_pemakar_harbour_day, ch08_corrow_storm, ch08_coilspire_storm, ch08_coilspire_gate, ch08_corrow_flood, ch08_corrow_lake, ch09_corrow_landing, ch09_corrow_rocks, ch09_corrow_strand — new shots (the strand is an existing baseline: no longer dark); viewed after fixes (re-aimed cameras, the flood lifted, the rocks' lamp). ch05_pemakar_harbour drifts by the new quay (the party's lanterns are the two glows).
-SELF-RENDERED @ this push: ch05_ashcrown_causeway, ch05_ashcrown_forecourt, ch05_ashcrown_crown, ch05_ashcrown_tiers, ch05_ashcrown_court, battle_arena_ashcrown_forecourt_day, battle_arena_ashcrown_anvil_court, ch06_brine_road, ch06_brine_camp — all new shots or a changed zone, all viewed. The anvil court arena was re-lit after viewing (interior fill 1.4, exposure 1.35, plus a forge-spill lamp over the fight floor); its first render had a black near half.
+SELF-RENDERED @ 4081127f: ch05_ashcrown_causeway, ch05_ashcrown_forecourt, ch05_ashcrown_crown, ch05_ashcrown_tiers, ch05_ashcrown_court, battle_arena_ashcrown_forecourt_day, battle_arena_ashcrown_anvil_court, ch06_brine_road, ch06_brine_camp — all new shots or a changed zone, all viewed. The anvil court arena was re-lit after viewing (interior fill 1.4, exposure 1.35, plus a forge-spill lamp over the fight floor); its first render had a black near half.
