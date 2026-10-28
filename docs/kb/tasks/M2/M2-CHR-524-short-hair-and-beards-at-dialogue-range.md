@@ -20,7 +20,7 @@ the PC's GPU, so it is not only the software capture.
       masks. (Notes, Cause.)
 - [x] Fixed in the character assets and data. A shader change needs Rendering's agreement (ownership.md). No shader
       change: `game/shaders/**` is Rendering's, and none was needed.
-- [ ] Every rebuilt hero verifies identically on the three numpy paths, and the tests pass. (VERIFY_RESULT)
+- [x] Every rebuilt hero verifies identically on the three numpy paths, and the tests pass.
 - [x] Self-rendered and viewed: toma_face_neutral, toma_face_smile, kerrid_face, moll_face and moll_face_yield, plus
       a full-figure shot each.
 
@@ -71,7 +71,8 @@ closest-triangle probe on toma.glb: 0.1% of card vertices under the skin, median
 
 ### Checks
 - verify_blender_builds --job toma/kerrid/moll/villager_netmender: native all identical (38/43/40/30 files);
-  NPY_DISABLE_CPU_FEATURES=X86_V4 all identical. X86_V3+X86_V4: VERIFY_V3V4.
+  NPY_DISABLE_CPU_FEATURES=X86_V4 all identical. X86_V3+X86_V4 all identical. The other jobs
+  that import the changed modules (villager_* and ysolde, native): VERIFY_OTHERS.
 - Python: test_toma, test_kerrid, test_moll, test_hero_clips, test_short_hair_dialogue, test_character_id_maps,
   TestRigIntegrity{Toma,Kerrid,Moll}: 106 run, OK (8 skips: no braid / no held prop).
 - Godot `--filter=post_import` 21/0, `hero_stage` 10/0, `character_shading` 17/0. gdlint, gdformat --check,
