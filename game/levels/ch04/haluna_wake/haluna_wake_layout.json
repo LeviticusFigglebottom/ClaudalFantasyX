@@ -716,6 +716,34 @@
    "yaw": 0.0
   }
  ],
+ "camera_volumes": [
+  {
+   "id": "NemeDoor",
+   "mode": "pan_follow",
+   "at": [
+    -58.0,
+    3.0,
+    -3.6
+   ],
+   "size": [
+    10.0,
+    6.0,
+    10.0
+   ],
+   "pos": [
+    -64.0,
+    5.5,
+    -11.0
+   ],
+   "look_at": [
+    -58.0,
+    2.4,
+    -3.6
+   ],
+   "fov": 46.4,
+   "priority": 1
+  }
+ ],
  "states": [
   {
    "flag": "ch03_rhen_sworn_guardian",

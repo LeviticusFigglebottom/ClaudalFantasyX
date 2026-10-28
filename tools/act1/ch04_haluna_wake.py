@@ -153,6 +153,13 @@ SHOTS = {  # id: (pos, look_at, fov[, "abs"]); heights over Haluna's ground (pro
     "C01": ((2.0, 2.0, -118.0), (30.0, -0.5, -140.0), 40),
     "C02": ((16.0, 1.4, -128.0), (10.0, 0.2, -129.0), 30),
 }
+# Field camera volumes over Haluna's own (Ch04Zone copies ch02/haluna's CameraVolumes): where those leave only the
+# hub orbit and the orbit's default side is a roof. Absolute coordinates.
+CAMERA_VOLUMES = [
+    # Neme's door, deep in the tidewall lane's roofs: from the lane's north-west end, over the gate.
+    {"id": "NemeDoor", "mode": "pan_follow", "at": [-58.0, 3.0, -3.6], "size": [10.0, 6.0, 10.0],
+     "pos": [-64.0, 5.5, -11.0], "look_at": [-58.0, 2.4, -3.6], "fov": 46.4, "priority": 1},
+]
 STATES = [
     {"flag": "ch03_rhen_sworn_guardian", "show_sets": ["ch04_wake", "ch04_shell_imra_faded"]},
     {"flag": "ch04_shell_set", "show_sets": ["ch04_shell_asha"], "hide": ["ysolde_edge"]},
@@ -220,6 +227,7 @@ def layout() -> dict:
         "actors": actors,
         "shots": shots,
         "triggers": triggers,
+        "camera_volumes": CAMERA_VOLUMES,
         "states": STATES,
     }
 
