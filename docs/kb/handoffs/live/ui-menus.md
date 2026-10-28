@@ -557,8 +557,8 @@ LEAD-ANSWERED (13:46, ADR 0111 accepted; integration-qa and act1-chapters notifi
       - Now: 160 ms.
     - **Later battles:** 120–215 ms.
   - **Gotcha:** Godot exits with "double free or corruption" after a scripted run that ends mid-battle, with ResidentLoads off or on. It is the same abort at exit the gate and the full suite show; it is not this change.
-SELF-RENDERED @ (next commit): field_hud_over_pemakar (night), field_hud_over_ashcrown (bright ash sky), field_hud_over_brine_shoals (grey flats, bright), field_hud_over_coilspire (dusk), field_hud_over_haluna_wake (night). What I saw:
+SELF-RENDERED @ 068218034: field_hud_over_pemakar (night), field_hud_over_ashcrown (bright ash sky), field_hud_over_brine_shoals (grey flats, bright), field_hud_over_coilspire (dusk), field_hud_over_haluna_wake (night). What I saw:
 - All four overlays read on every backdrop: the objective line, the area title band, the Listen keycap and the tip card. The cue's outlined "Far" and "A short walk" read over night and over the steps.
 - No contrast fixes were needed this round.
 - The Brine Shoals and Coilspire shots show the idle line, because their one flag starts no errand. That is shot setup, not a bug.
-MERGE-READY @ (next commit): the first-battle and Haluna load measurements, and the second field HUD pass. Checks: scene_router 16/0, resident_loads 7/0; the shots were viewed; nothing visual changed in game code.
+MERGE-READY @ 068218034: the first-battle and Haluna load measurements, and the second field HUD pass. Checks: scene_router 16/0, resident_loads 7/0; the shots were viewed; nothing visual changed in game code.
