@@ -970,3 +970,16 @@ MERGE-READY (+ this log): **the encounter guard now wins every Act I fight, set 
   - Adds `--only=<encounter>`.
   - Ch6 and Ch8 with real frames, set pieces included: clean.
 - Gates: gdlint/gdformat, qa_encounters 1/0, the probe on ch6, ch8 and undertows_reach.
+
+### TRIAL MERGE, 2026-10-28 ~06:45
+TRIAL MERGE @ integration 6b89f4a6: env-art 62409951, env-art-b 6edde924, creatures e1fd27df, creatures-b 557a9ea5, characters 73917b03, ui 296ceb69, battle-presentation bd97051f, act1-chapters d150d529, m2-slice 9f31066b, audio 659ed2d8, hero-integration 29944240
+- Conflicts are the same as at 05:45, **env-art vs env-art-b on the Haluna kit still included** (Lead: still open).
+  hero-integration now merges clean.
+- **Full audit on the merged tree (runtime scan included, after an import): 44 items**, up from 39. Rewritten
+  in `docs/kb/qa/act1_final_inventory.md`.
+  - **New:** act1-chapters' latest stages bring the Ch6 Brine Shoals stage actors as capsules (stillguard_a–c,
+    hound, inquisitor → creatures/characters by the people split), plus Ch4 spar_wraith and the stillguard_inquisitor
+    battle model.
+  - Env-art went from 4 items to 3.
+  - integration-qa's 2 items are Pell and vigil_pell in Ch9's ch09_pell_joined variant, which wait on M3-CHR-506
+    as before.
