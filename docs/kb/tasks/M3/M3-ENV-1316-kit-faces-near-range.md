@@ -20,3 +20,8 @@ These are env-art's kit meshes, so env-art-b can't fix them from the zones:
   that the table's height function no longer matches the visible ground, so a scrub clump placed there floats.
 
 ## Review log
+- **2026-10-28 (env-art-b), from the PC's GPU QA (act1_gpu_qa.md):**
+  - Row 26: Ashcrown's tiers and crest ground read untextured grey at High (the kit's `ac_*` ashlar and crest
+    materials).
+  - Row 5: the Brine Shoals mudflat reads flat at High, and `camp_tent` reads as a box.
+  Same ask as above: these are kit materials and meshes, which env-art-b can't fix from the zones.

@@ -250,6 +250,24 @@ that test at this branch's zones.
 - **MERGE-READY @ 8c535d1e. BACKLOG EMPTY:** no inventory rows left; requests out to env-art (M3-ENV-1306, 1316),
   battle-presentation (M3-BPR-1305, M3-ENV-714 review) and Rendering (M3-RND-26 rig, M3-RND-1315 fire).
 
+- **The PC's Act I GPU QA (docs/kb/qa/act1_gpu_qa.md on gpu/act1-qa-2), env-art-b's rows.** Pass A ran on integration
+  048b0a7f, before this branch merged. Each row was re-rendered on this head:
+  | Row | Shots | Status |
+  |---|---|---|
+  | 5 | ch06_brine_camp, _road | **fixed @ 0981fc15** (the camp burns; the road carries the raid's wreckage, 4081127f). The flat mudflat and the boxy `camp_tent` are kit meshes and materials: added to env-art's M3-ENV-1316. |
+  | 6, 27 | ch08_coilspire_hall, _gate | **fixed @ 3109a2f5**: the green grid was the kit's verdigris gathered in the mortar joints; the zone now uses its own inner material (no grid), and wall-wash lamps on every tier light the well. |
+  | 7 | ch08_corrow_arrival | **fixed @ 00e15816**: the mole is the kit's `mole_pier` and `mole_sea_stair` (integration had the greybox). |
+  | 9 | ch09_corrow_strand | **fixed @ b1ca59b9**: the moon over the sea. |
+  | 10 | battle_arena_wall_head, battle_ch08_stair_hold | fixed in big14 (as the row says). |
+  | 11 | battle_boss_intro_reach | **fixed @ f51f81f2**: the Reach fights on `seawall_stairhead_surge`, with the Undertow. The light wedge is Rendering's, per the row. |
+  | 15, 40 | battle_arena_underway, _underway_tower, the Ch1 fights | **explained: Ch1 is env-art's** (the Lead's split: env-art-b has Ch5–Ch9). Request **M3-ENV-1323**. |
+  | 16 | battle_arena_terrace, _ash_terrace_lanternfall | **fixed @ 3be35a85**: a warm key over the party. The `terrace` shot (`ch05_stair_*`) now fights on `ashcrown_forecourt_day` (f51f81f2). |
+  | 26 | ch05_ashcrown_causeway, _forecourt, _tiers | **explained**: the zone stands on env-art's Ashcrown kit as built, and the grey is its `ac_*` materials. Added to M3-ENV-1316. |
+  | 28 | ch09_corrow_rocks | **fixed @ 47845c69**: the boulders are angular laterite, not glossy black spheres. |
+  | 34 | ch06_ridge_skippers on the test stage | **explained: act1-chapters'.** The encounter names `brine_shoals_afternoon` (validate_data clean). A fight with the sandbox's own enemies means the BattleRequest never found the encounter (its flow). |
+  | 38 | Coilspire spawns, camera against the wall | **explained: hero-integration's field camera**. The spawns stand on the tier landings by design; the camera doesn't pull in. |
+  **MERGE-READY @ 3be35a85.**
+
 ### Render requests
 (Self-rendered per TRACK-RULES; lines are SELF-RENDERED notes.)
 SELF-RENDERED @ ea946ec8: ch07_tamsule_mouth, ch07_tamsule_market, ch07_tamsule_gantry — new shots, read final (Liss and Kerrid are capsules: no field body yet).
@@ -261,3 +279,4 @@ SELF-RENDERED @ 6cd17ce3: battle_boss_intro_reach, battle_ch08_stair_hold, ch09_
 SELF-RENDERED @ f51f81f2: battle_boss_intro_matron (the anvil court), battle_boss_intro_reach (the surge state, landfall storm), battle_ch08_stair_hold (the storm state), all viewed.
 SELF-RENDERED @ 22b289bf: Virel in the Coilspire crown chamber (three scratch views) and ch08_coilspire_storm/_hall (unchanged), viewed.
 SELF-RENDERED @ 8c535d1e: ch07_bell_galleries, ch07_bell_moorings (the weeping column reads), ch07_tamsule_gantry, ch07_tamsule_mouth (the column sits behind the gantry leg head-on), all viewed.
+SELF-RENDERED @ 3be35a85: ch06_brine_camp, _road, ch08_coilspire_hall, _gate, ch08_corrow_arrival, ch09_corrow_strand, _rocks, battle_arena_underway, _underway_tower, _terrace, _ash_terrace_lanternfall, ch05_ashcrown_tiers (the GPU QA rows on this head), all viewed; hall, gate, rocks and Lanternfall re-rendered after the fixes.
