@@ -26,6 +26,27 @@ both fixed and pushed. The branch head also carries:
   - any battle shot with an Act I creature, since the heights and the near-face anchor move its effects. I am
     self-rendering those next.
 
+**BACKLOG EMPTY (2026-10-28 13:xx, @ the branch head, MERGE-READY):** the Lead's 09:35, 10:55, 11:46, 12:11 and
+12:37 lists:
+- **The boss-fight camera on the real models:** done, self-rendered and viewed (entry below).
+  - Intro: the hero shots, refit to big14's actors and dressing.
+  - Phase change and fall: the new moments.
+  - Big moves: unchanged and green on the seats.
+  - Home frames: per fight on creatures-b's seats.
+- **GPU QA row 36** (the Reach): fixed and viewed. It waits on the PC's GPU re-check.
+- **Status ticks for every Act I fighter** (M3-BPR-424): done and viewed on the Ch5 terrace.
+- **Ilun's call and dismissal on the new actor:** done and viewed.
+- **Swell finishers: blocked on combat.** Kerrid's and Liss's finishers are staged (M3-BPR-422) and play as soon as a
+  `"swell": true` technique exists. combat has not written the techniques yet (M3-C05-06, M3-C06-05, still todo).
+  Rhen, Asha, Toma and Ysolde have theirs.
+- **Waiting on others:**
+  - The gate: re-approve the moved baselines (the seven battle_boss_intro_*, the Vowbound and summon shots) and
+    write the three battle_ch08_*.
+  - Fix `merge_union.py`'s silent revert of the other side's shot edits (it cost big13 and big14).
+  - Audio (M3-BPR-421): sounds for the new effects and ticks.
+  - characters/creatures-b: the Inquisitor's battle model (GPU QA row 35); then drop his intro row's `hero: false`.
+- **Next step for whoever resumes:** merge the integration branch once the gate takes this, then the next Lead list.
+
 **MERGE-READY @ the branch head (13:xx): boss-fight camera choreography on the real models, with creatures-b's seats.**
 - **Merged origin/claude/creatures-b** (M3-CRB-011 boss_seats; clean). The seats move the Reach, the Matron and the
   Spar-Wraith when each fights alone.
