@@ -9,6 +9,7 @@ const WRAPPERS := {
 	&"toma": "res://game/hero_motion/battle/toma_battle_actor.tscn",
 	&"ysolde": "res://game/hero_motion/battle/ysolde_battle_actor.tscn",
 	&"liss": "res://game/hero_motion/battle/liss_battle_actor.tscn",
+	&"kerrid": "res://game/hero_motion/battle/kerrid_battle_actor.tscn",
 }
 const RING := {"radius_factor": 1.4, "inner_soft_m": 0.25, "notches": 6}
 ## A clip in the fake player holds the body at this x for its whole length.

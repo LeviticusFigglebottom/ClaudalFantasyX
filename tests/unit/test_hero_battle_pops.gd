@@ -10,6 +10,7 @@ const WRAPPERS := {
 	&"toma": "res://game/hero_motion/battle/toma_battle_actor.tscn",
 	&"ysolde": "res://game/hero_motion/battle/ysolde_battle_actor.tscn",
 	&"liss": "res://game/hero_motion/battle/liss_battle_actor.tscn",
+	&"kerrid": "res://game/hero_motion/battle/kerrid_battle_actor.tscn",
 }
 ## The changes the battle makes: a turn's readying and its action, each one-shot's return to idle, a KO and
 ## its revive, and the outro.
