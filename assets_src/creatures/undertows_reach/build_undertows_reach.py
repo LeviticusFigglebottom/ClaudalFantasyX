@@ -540,61 +540,118 @@ PALM_C = np.array([0.0, 2.15, -0.15])
 PALM_R = np.array([2.75, 1.0, 1.6])
 
 
+def cr_eval(arr: np.ndarray, x: np.ndarray) -> np.ndarray:
+    """Catmull-Rom through the rows of arr (K, d) at fractional row indices x (n,)."""
+    arr = np.asarray(arr, dtype=np.float64)
+    K = len(arr)
+    Q = np.vstack([2 * arr[0] - arr[1], arr, 2 * arr[-1] - arr[-2]])
+    k = np.clip(np.floor(x).astype(np.int64), 0, K - 2)
+    t = (x - k)[:, None]
+    p0, p1, p2, p3 = Q[k], Q[k + 1], Q[k + 2], Q[k + 3]
+    return 0.5 * (2 * p1 + (-p0 + p2) * t + (2 * p0 - 5 * p1 + 4 * p2 - p3) * t * t +
+                  (-p0 + 3 * p1 - 3 * p2 + p3) * t ** 3)
+
+
 def crust_plate(mesh: ck.Mesh, path: np.ndarray, dorsal: np.ndarray, side: np.ndarray, rad: np.ndarray,
                 arc: float, thick: float, skin, rng, wet: float = 0.55, na: int = 8) -> np.ndarray:
-    """A curved crust plate lying over a part: a thick arc round `dorsal` lofted along `path`, keeled down the
-    middle, its leading edge flared up, its trailing edge chipped. Returns the plate's top points (for barnacles)."""
+    """A curved crust plate lying over a part: a domed shell over `dorsal`, lofted along `path` (K rings, refined
+    to half as many again), keeled down the middle, its leading edge flared up, its side edges notched and its
+    trailing edge serrated. The broad face is one smooth-shaded surface (its normals its own); the rim is a separate
+    wall tucked down into the part beneath, so the plate's edge stays crisp while its face reads as curved, crusted
+    shell. Wetness pools in the growth grooves and the low ground, the crests and the worn rim are dry and rough.
+    Returns the plate's top points at the K input rings (for barnacles and spurs)."""
     K = len(path)
-    th = np.linspace(-arc, arc, na)
     lumps = rng.normal(0.0, 1.0, (K, na))
-    rings, tops = [], []
     chip = rng.uniform(0.0, 0.12, na) + 0.26 * (np.arange(na) % 2) * rng.uniform(0.4, 1.0, na)  # serrated
-    for k in range(K):
-        f = k / (K - 1)
-        flare = 1.0 + 0.1 * ck.smoothstep(0.25, 0.0, f)
-        keel = thick * 1.5 * g(th, 0.3) * (1.0 - 0.4 * f)
-        ridge = 0.7 * thick * (0.5 + 0.5 * math.sin(f * 2.0 * math.pi * 3.5 + 0.7)) ** 2
-        scallop = 0.5 * thick * (np.abs(th) > 0.7 * arc) * (np.arange(na) % 2)  # the plate's side edge, notched
-        ro = rad[k] * flare + thick + keel + ridge + 0.2 * thick * lumps[k] - scallop
-        ri = rad[k] * flare * 0.97
-        sh = -chip * ck.smoothstep(0.7, 1.0, f) * rad[k]  # the chipped trailing edge
-        dirn = np.outer(np.cos(th), dorsal[k]) + np.outer(np.sin(th), side[k])
-        outer = path[k] + ro[:, None] * dirn + np.outer(sh, tangents(path)[k])
-        inner = path[k] + ri * dirn[::-1]
-        rings.append(np.vstack([outer, inner]))
-        tops.append(outer[na // 2])
-    P, T, _c = loft(rings, cap_start=path[0] + dorsal[0] * rad[0] * 1.02,
-                    cap_end=path[-1] + dorsal[-1] * rad[-1] * 1.02, centres=list(path))
-    nv = 2 * na
-    col_id = np.concatenate([np.tile(np.arange(nv), K), [0, 0]])
-    # wind the shell by its outer arc alone (the inner arc faces the other way, so a majority vote is a tie)
-    ng = (K - 1) * nv * 2
-    grid = T[:ng]
-    outer = np.all(col_id[grid] < na, axis=1)
-    cen = np.repeat(path, nv, axis=0)
-    a, b, c = P[grid[:, 0]], P[grid[:, 1]], P[grid[:, 2]]
-    fn = np.cross(b - a, c - a)
-    away = (a + b + c) / 3.0 - (cen[grid[:, 0]] + cen[grid[:, 1]] + cen[grid[:, 2]]) / 3.0
-    if np.sum(np.einsum("ij,ij->i", fn[outer], away[outer]) < 0.0) > np.sum(outer) / 2:
-        T = np.vstack([ck.flip(grid), T[ng:]])
-    ring_f = np.concatenate([np.repeat(np.linspace(0, 1, K), nv), [0.0, 1.0]])
-    edge = ((col_id == 0) | (col_id == na - 1) | (col_id == na) | (col_id == nv - 1)).astype(np.float64)
-    endf = np.maximum(ck.smoothstep(0.75, 1.0, ring_f), ck.smoothstep(0.15, 0.0, ring_f))
-    under = (col_id >= na).astype(np.float64)
-    keelm = np.isin(col_id, (na // 2 - 1, na // 2)).astype(np.float64)
-    n1 = ck.fbm(P * 2.2, int(rng.integers(0, 10000)))
+    seed_tone, seed_salt = int(rng.integers(0, 10000)), int(rng.integers(0, 10000))
+    Ko, Na = (3 * K - 1) // 2, na + 2
+    x = np.linspace(0.0, K - 1.0, Ko)
+    u = x / (K - 1.0)
+    pth, dor, sid = cr_eval(path, x), cr_eval(dorsal, x), cr_eval(side, x)
+    dor /= np.linalg.norm(dor, axis=1, keepdims=True)
+    sid /= np.linalg.norm(sid, axis=1, keepdims=True)
+    tan = tangents(pth)
+    rd = np.interp(x, np.arange(K), rad)
+    v = np.linspace(-1.0, 1.0, Na)
+    U, V = np.repeat(u, Na), np.tile(v, Ko)
+    notch = (np.arange(Ko) % 2 == 1) & (np.arange(Ko) > 0) & (np.arange(Ko) < Ko - 1)
+    TH = V * arc * (1.0 - 0.07 * np.repeat(notch, Na) * (np.abs(V) > 0.99))  # the side edge, notched
+    # smooth lumps: the drawn lump grid sampled bilinearly
+    li = np.clip(U * (K - 1), 0, K - 1.0001)
+    lj = np.clip((V + 1.0) * 0.5 * (na - 1), 0, na - 1.0001)
+    i0, j0 = li.astype(np.int64), lj.astype(np.int64)
+    fi, fj = li - i0, lj - j0
+    lump = ((1 - fi) * (1 - fj) * lumps[i0, j0] + fi * (1 - fj) * lumps[i0 + 1, j0] +
+            (1 - fi) * fj * lumps[i0, j0 + 1] + fi * fj * lumps[i0 + 1, j0 + 1])
+    RD = np.repeat(rd, Na)
+    flare = 1.0 + 0.1 * ck.smoothstep(0.25, 0.0, U)
+    dome = 0.8 * thick * (1.0 - V ** 2) * (0.2 + 0.8 * np.sin(math.pi * np.clip(U, 0.0, 1.0)))
+    keel = thick * 1.1 * g(TH, 0.38) * (1.0 - 0.4 * U)
+    growth = 0.5 + 0.5 * np.sin(U * 2.0 * math.pi * 3.5 + 0.7)
+    ridge = 0.22 * thick * growth ** 2
+    roll = 0.6 * thick * ck.smoothstep(0.7, 1.0, np.abs(V))  # the face rolls over into the rim
+    ro = RD * flare + 0.68 * thick + dome + keel + ridge + 0.14 * thick * lump - roll
+    ri = RD * flare * 0.9  # the rim wall tucks down into the part beneath
+    cj = np.clip(np.round(lj).astype(np.int64), 0, na - 1)
+    sh = -chip[cj] * ck.smoothstep(0.7, 1.0, U) * RD  # the chipped trailing edge
+    D = np.cos(TH)[:, None] * np.repeat(dor, Na, axis=0) + np.sin(TH)[:, None] * np.repeat(sid, Na, axis=0)
+    TN = np.repeat(tan, Na, axis=0)
+    PC = np.repeat(pth, Na, axis=0)
+    Po = PC + ro[:, None] * D + sh[:, None] * TN
+    Pi = PC + ri[:, None] * D + sh[:, None] * TN
+    To = orient(Po, ck.grid_tris(Ko, Na, False), PC)
+    No = ck.vertex_normals(Po, To)
+    # the rim: four walls from the face's boundary down to the tucked inner edge, shaded on their own
+    loops = [np.arange(Ko) * Na, np.arange(Ko) * Na + Na - 1, np.arange(Na), (Ko - 1) * Na + np.arange(Na)]
+    mid = pth[Ko // 2] + dor[Ko // 2] * rd[Ko // 2] * 0.5
+    wP, wT, wN, wB, wI = [], [], [], [], []
+    base = len(Po)
+    for w, lp in enumerate(loops):
+        Pw = np.vstack([Po[lp], Pi[lp]])
+        Cw = np.vstack([PC[lp] + D[lp] * RD[lp, None] * 0.5] * 2) if w < 2 else mid
+        Tw = orient(Pw, ck.grid_tris(2, len(lp), False), Cw)
+        wN.append(ck.vertex_normals(Pw, Tw))
+        wT.append(Tw + base)
+        wP.append(Pw)
+        wB.append(np.concatenate([np.zeros(len(lp)), np.ones(len(lp))]))
+        wI.append(np.concatenate([lp, lp]))
+        base += len(Pw)
+    P = np.vstack([Po] + wP)
+    T = np.vstack([To] + wT)
+    N = np.vstack([No] + wN)
+    src = np.concatenate([np.arange(len(Po))] + wI)  # the face vertex each vertex belongs to
+    wall = np.concatenate([np.zeros(len(Po))] + [np.ones(len(p)) for p in wP])
+    deep = np.concatenate([np.zeros(len(Po))] + wB)  # 1 at the wall's tucked foot
+    Us, Vs, gs = U[src], V[src], growth[src]
+    endf = np.maximum(ck.smoothstep(0.75, 1.0, Us), ck.smoothstep(0.15, 0.0, Us))
+    keelm = g(TH[src], 0.3)
+    rimm = np.maximum(ck.smoothstep(0.8, 1.0, np.abs(Vs)), endf * ck.smoothstep(0.5, 1.0, np.abs(Vs) + endf))
+    lowl = ck.smoothstep(0.3, -0.8, lump[src]) * (1 - wall)  # the low ground between the lumps
+    n1 = ck.fbm(P * 2.2, seed_tone)
+    mott = ck.fbm(P * 6.5, seed_tone + 7)  # granular mottle, finer than the tone
     col = ck.mix(PAL["lacquer_black"], PAL["abyss_navy"], ck.smoothstep(-0.25, 0.3, n1)[:, None])
-    growth = 0.5 + 0.5 * np.sin(ring_f * 2.0 * math.pi * 3.5 + 0.7)
-    col = ck.mix(col, PAL["storm_slate"] * 1.2, (0.45 * growth * (1 - under))[:, None])
-    col = ck.mix(col, PAL["storm_slate"] * 1.7, (0.7 * keelm + 0.7 * edge * (1 - under))[:, None])
-    col = ck.mix(col, PAL["overcast_slate"] * 1.2, (0.8 * endf * (1 - under))[:, None])
-    salt = ck.smoothstep(0.05, 0.4, ck.fbm(P * 4.0, int(rng.integers(0, 10000))))
-    col = ck.mix(col, PAL["coral_stone_weathered"] * 0.8, (0.6 * salt * (1 - under) * (1 - keelm))[:, None])
-    col = ck.mix(col, PAL["lacquer_black"] * 0.8, under[:, None])
-    cav = np.clip(0.2 + 0.7 * under + 0.2 * (1 - growth), 0, 1)
-    ck.finish(mesh, P, T, "crust", col, skin, wet=np.clip(wet - 0.45 * endf - 0.3 * keelm - 0.3 * salt, 0.15, 1.0),
-              cavity=cav)
-    return np.array(tops)
+    face = 1 - wall
+    col = ck.mix(col, PAL["storm_slate"], (0.35 * face)[:, None])  # a dull crusted slate, not lacquer
+    col = ck.mix(col, PAL["storm_slate"] * 1.25, (0.5 * ck.smoothstep(0.55, 0.95, gs) * face)[:, None])  # growth bands
+    # granular two-tone mottle: pale crusted grains and black pits
+    col = ck.mix(col, PAL["storm_slate"] * 1.35, (0.6 * ck.smoothstep(0.02, 0.3, mott) * face)[:, None])
+    col = ck.mix(col, PAL["lacquer_black"] * 0.7, (0.6 * ck.smoothstep(-0.08, -0.3, mott) * face)[:, None])
+    col = ck.mix(col, PAL["storm_slate"] * 1.7, (0.6 * keelm + 0.6 * rimm * face)[:, None])
+    col = ck.mix(col, PAL["overcast_slate"] * 1.2, (0.8 * endf * face)[:, None])
+    salt = ck.smoothstep(-0.08, 0.3, ck.fbm(P * 4.0, seed_salt))
+    salt = np.maximum(salt, 0.9 * ck.smoothstep(0.5, 0.0, gs) * ck.smoothstep(-0.05, 0.25, mott))  # salt in grooves
+    col = ck.mix(col, PAL["coral_stone_weathered"] * 0.95, (0.8 * salt * face * (1 - keelm))[:, None])
+    # the broken rim: pale, worn shell at the lip, darkening down to the wet foot
+    col = ck.mix(col, ck.mix(PAL["storm_slate"] * 1.5, PAL["overcast_slate"], 0.4), (wall * (1 - deep))[:, None])
+    col = ck.mix(col, PAL["lacquer_black"] * 0.8, (wall * deep)[:, None])
+    cav = np.clip(0.1 + 0.4 * (1 - gs) * (1 - wall) + 0.35 * lowl + 0.25 * ck.smoothstep(0.0, 0.4, -mott)
+                  + 0.8 * wall * deep, 0, 1)
+    damp = np.clip(0.55 * (1 - gs) + 0.6 * lowl + 0.4 * ck.smoothstep(0.1, -0.3, mott), 0.0, 1.0)
+    wv = wet * (0.25 + 0.9 * damp) - 0.35 * endf - 0.35 * keelm - 0.3 * salt - 0.3 * rimm
+    wv = np.where(wall > 0, 0.1 + 0.8 * deep, wv)
+    ck.finish(mesh, P, T, "crust", col, skin, wet=np.clip(wv, 0.05, 1.0), cavity=cav, N=N)
+    xi = np.round(np.arange(K) * (Ko - 1) / (K - 1.0)).astype(np.int64)
+    return Po[xi * Na + Na // 2]
 
 
 def palm(mesh: ck.Mesh, rig: ck.Rig, bd: dict) -> None:
