@@ -146,16 +146,334 @@ env-art is cloud session `session_01YbaV2c8yquRHqj6afQYg89` on `claude/env-art`;
   - The still reflection is M3-RND-03 (Rendering, todo).
   - No boat in the game draws a wake yet, so "the others leave one" needs a water wake feature first.
 
+- **fa67bfee, 92362494, 8770a067: merge-ready once the PC answers 24bf927a** (the only red is `test_screenshots`,
+  which wants baselines for the three new Iskarra shots).
+  - fa67bfee, **M3-ENV-706 density pass** after viewing the PC render: the shoals arena gets a stranded skiff,
+    dropped salvage, nets, coils, sacks and mud patches; the camp's hard gets damp and dry patches, so its shingle
+    stops reading as one repeat.
+  - 92362494, **M3-ENV-712:** the Corrow Watcher heads' backs are carved (blocks, hair locks, a headband, ears, a
+    domed crown). act1-chapters' `ch09_corrow_road` showed the row as barrels from the parapet walk. LOD0 budget
+    10500; LOD1 unchanged; the faces are unchanged.
+  - 8770a067, **M3-ENV-705:** the Brine Shoals preview sky shows the colour script's blue zenith.
+
+  Checks run:
+  - full tools suite 1156 (only that `test_screenshots` red);
+  - `test_corrow_kit`, `test_arenas`, `test_brine_shoals_kit`;
+  - Godot `--filter=corrow` 8/0 and `--filter=arena` 18/0;
+  - Corrow and Brine Shoals full rebuilds (only the intended pieces changed);
+  - validate_data, taskboard.
+- **For act1-chapters, from viewing your PC renders** (77a6a77, 180510e). Kit pieces exist for all of these;
+  placement is yours.
+  - `ch09_corrow_road`: M3-ENV-712 changes the heads' backs. Please re-render `ch09_corrow_road` and the Ch8
+    Corrow shots after merging env-art.
+  - `ch09_corrow_strand` is near black. The `strand_lamp` pieces show as dots with no light around them. Give a
+    few of them an OmniLight (warm, range 4–6 m, `light_volumetric_fog_energy = 0`, the fog-lamp rule), or raise
+    the night fill, so the shrouds and the strand read.
+  - `ch06_brine_road`: the flats either side of the plank road are bare. Pieces that fit the raid's aftermath:
+    - the Haluna kit's `net_heap`, `tide_debris`, `rope_coil`, `cargo_sacks`;
+    - Brine Shoals' `crate_stack`, `salvage_pile`, `vendor_boat` (stranded, ~25 cm sunk), `wreck_ribs_large`,
+      `mudflat_patch_a/b`.
+
+    The shoals arena (fa67bfee) shows a working mix. The two capsules are character placeholders, not kit.
+
+- **M3-ENV-713, the missing Act I arenas** (the Lead's item 4). All seven Ch8 encounters had no arena and fought on the
+  sandbox's greybox. Five new arenas (merge-ready at 599b2418 once the PC answers; the only red is `test_screenshots`,
+  which wants the new shots' baselines):
+  - `seawall_stairhead_storm`, `_hoist` and `_surge`: the wall-head over the Fisher Stair, from the Corrow kit, in
+    three states. Liss's hoist is rigged from wave 2; the surge has `BossAnchor` for the Undertow's Reach.
+  - `coilspire_headland_path`: a levelled, flagged landing at the path's mid-point, using the Coilspire kit's new
+    `arena_headland_ground` and `arena_headland_path` (`cs_arena.py`).
+  - `coilspire_tier_landing`: a cut-away tier of the well (`arena_tier_hall`).
+
+  Checks run:
+  - full tools suite (1156; only that red);
+  - Godot `--filter=arena` 18/0, with all five in `test_battle_arenas` (floor and camera line);
+  - Coilspire full rebuild (older pieces identical);
+  - validate_data, taskboard.
+
+  The battle_arenas.md sections are in.
+  - **For act1-chapters:** request **M3-ENV-714** sets the Ch8 encounters' `arena` ids. Until then the arenas sit
+    unused in arenas.json.
+
+- **Lead's new queue (18:14).** Items 3 and 5 were already done:
+  - item 3, the 8 arena-less encounters: Ch8's seven are M3-ENV-713; the eighth, `sandbox_reef`, is the sandbox's
+    own fixture;
+  - item 5, `offering_step`: explained above; clean on env-art's head.
+- **For act1-chapters' blocked swaps** (their 17:44 entry). Merge-ready at fd630bb8 once the PC answers; the only
+  red is `test_screenshots`, which wants the new shots' baselines.
+  - **M3-ENV-1214 (Ch5 Pemakar), done:**
+    - pieces `harbour_quay` (32 m), `sea_cut_weir` (the hero mesh), `wake_wall` and `crown_bell`
+      (`pemakar_harbour.py`);
+    - a `day` grade for B11, `pemakar_day_environment.tres`, as the preview's `day` mood.
+    - Placement numbers are in the task file. **One conflict to settle:** your weir stand-in at x 10 lies in front of
+      your 32 m quay, so the weir's cut would run through the quay deck. Shorten the quay or move the weir. The
+      preview puts it where your bottom channel meets the shore (x −39.3).
+  - **Ch5 Ashcrown (M3-ARC-1216):** env-art recommends the traversal (option 1). Re-cutting the flights under 40°
+    would change the temple's massing and its silhouette from Pemakar. **M3-ENV-715** exports every steep flight's
+    path (foot, head, landings, width, angle) as `assets/environments/kits/ashcrown/ashcrown_flights.json`, ready
+    for a traversal.
+  - **Ch7 port (M3-C07-04):** next for env-art: the `tamsule.md` sheet, then the "Tamsule stilt" kit.
+
+  Checks run:
+  - full tools suite (only that red);
+  - `test_pemakar_kit`, `test_ashcrown_kit`, `test_arenas`;
+  - Godot `--filter=pemakar` 6/0;
+  - Pemakar full rebuild (older pieces identical);
+  - validate_data, taskboard.
+
+- **M3-C07-04, the Tamsule port (act1-chapters' blocked Ch7 swap), merge-ready at 94fe8f77.** It has the same
+  `test_screenshots` red as the other new shots.
+  - `docs/kb/art/environments/tamsule.md`. Its shots are TP01–TP09, because the Bell's sheet already uses T01–T09.
+  - The Tamsule Bell kit's new `market.py`: `port_deck_8m(_rail)`, `plank_bridge_4m`, `market_stall`,
+    `market_boat_a/b`, `bunting_12m`.
+  - The preview `game/levels/_tests/tamsule_port_kit/` dresses **every greybox block in your own frame** (decks
+    y 0, river −1.6). `tamsule_port_layout.json` holds the rows, ready to copy into `ch07/tamsule`.
+  - **The Bell's ring stands at (0, −75)**, not your stand-in's z −40: the real galleries reach r 41 and would cover
+    the gantry foot.
+
+  Checks run:
+  - Godot `--filter=tamsule` 7/0;
+  - `test_tamsule_bell_kit`;
+  - full rebuild (older pieces identical);
+  - full tools suite (only that red).
+- **M3-ENV-716/717 (the Lead's item 4), sheets first:**
+  - `lowlight.md`: Ch11, the Lamp Engine's flooded hall, nothing frozen per ADR 0015/0016;
+  - `keth_pass.md`: Ch12, the Avalanche Ram's seeping Lit Age terrace.
+
+  The kits and the two arenas follow.
+  - **For the creatures track:** `avalanche_ram.md` gives the Ram ice-plated fleece, an ice beard, and snow shed by
+    its cast. ADR 0015 bans ice, frost and frozen water in any temple **or set-piece** from Ch12 to Ch15, and the
+    Ch12 boss is a set-piece. keth_pass.md proposes locks matted with seep-crust and silt, and a cast that sheds
+    scree. Please confirm or route to Narrative.
+- **MERGE-READY @ 95be6118: M3-ENV-717**, the Avalanche Ram's arena `keth_seep_terrace` (Ch12), in the Haluna kit
+  (`keth.py`): the terrace ground, the seeping Lit Age wall (emissive seep sheets, nothing frozen), the seep pool and
+  pale grass, a pass-cord with red and undyed keth, cairns, the far ridges; `lut_ch12_heights` from
+  `keth_zone_lut.py`. `BossAnchor` (−7.5, 0, −3) by the pool. Preview fixture `preview_keth_seep_terrace.tscn`.
+  - **For act1/creatures:** set the Ch12 Ram encounter's arena to `keth_seep_terrace`.
+
+  Checks run: haluna_kit full rebuild (older pieces identical), Godot `--filter=arena` 18/0, full tools suite
+  (only `test_screenshots` red: new shots without baselines).
+- **MERGE-READY @ 854e6a95: big11 merged** (integration 3cbcff9e, merge c7f1f83b).
+  - **The merge.** The shot manifests were merged by shot id and PROVENANCE by path. The stale `shrine_offering`
+    row is dropped: that piece was renamed `wayside_offering` in 39f66d4c, and this is the queue's item 5. Of the six
+    contested baselines, big11's PC-gate copies win. `battle_arena_shoals`, `battle_arena_camp`,
+    `battle_boss_intro_inquisitor` and `field_tip_card` need a re-render with env-art's later density pass (request
+    below).
+  - **M3-ENV-1000 (doing): the wake.** The Brine Shoals kit's `boat_wake` (`bs_wake.py`, `bs_wake` on
+    `env_boat_wake.gdshader`) is a Kelvin wake for the boats that move. Sefir's barge never gets one. The preview
+    poles a vendor boat up the channel in B05. Left to do: the `RevenantTells` hookup, once M3-RND-03 reaches the
+    integration branch.
+  - **M3-ENV-710.** M2-FP-103 moved Kerrid's vigil to (9.5, −5.5), over the plaza's fallen corner. I pulled the
+    break back to clear him; the test now checks the three stand-ins that remain.
+  - **For the Lead:** `test_audio_loudness` is red on the integration branch itself. 44 `sfx/life/*` files have no
+    target rule, and `sfx/battle/impact_medium_*` sit at −24 LUFS against −19. Env-art's audio and tools files are
+    identical to the integration's.
+
+  Checks run:
+  - full tools suite (red only on screenshots and audio, as above);
+  - Godot `--filter=arena` 18/0, `brine` 5/0, `shader` 42/0, `iskarra` 1/0;
+  - brine_shoals_kit full rebuild (older pieces identical) and haluna_kit full rebuild (only `iskarra_plaza`
+    changed);
+  - validate_data, taskboard, gdlint.
+- **MERGE-READY @ 43492e80: M3-ENV-716**, the Lamp Engine's arena `lowlight_engine_hall` (Ch11), in the Haluna kit.
+  - **The hall.** The kit's `lowlight.py` makes `engine_hall`, `conduit_run` and `lamp_niche_tier`. In the hall:
+    - a flooded floor at −0.6 with still water at −0.15;
+    - a dry flagged dais at y 0, set off-centre;
+    - eight piers and a ribbed vault, one bay fallen behind the enemy line;
+    - the trimming rail with twelve bound-teal lamps;
+    - the lamp-niche tiers.
+  - **Grade and anchor.** `lut_ch11_vey` comes from `lowlight_zone_lut.py`. The `BossAnchor` is at
+    (−6.4, −0.6, −2.6), knee-deep.
+  - **Arena writer.** `arena_scenes.py` gains an optional sea `waves` key (an arena's own wave set). Every other
+    arena is byte-identical.
+  - **For act1/creatures:** set the Ch11 Engine encounter's arena to `lowlight_engine_hall`.
+
+  Checks run: haluna_kit full rebuild (older pieces identical), `test_lowlight` 7, `test_arenas`, `test_haluna_kit`,
+  `test_fog_lamps`, `test_release_excludes_tests`, Godot `--filter=arena` 18/0, and the full tools suite (red only on
+  screenshots and the integration's audio).
+- **MERGE-READY @ c990e2c2: M3-ENV-718**, the Mangrove Drowner's arena `ossa_fen_roots` (Ch10), with the sheet
+  `ossa_fen.md`.
+  - **The fen.** The Haluna kit's `ossa_fen.py` makes:
+    - `fen_bank_ground`: the mudbank, level at y 0, shelving into tannin water at −0.15;
+    - `mangrove_tree` and `mangrove_dead`: prop-root cages, with crowns of leaf cards from the coastal atlas (the
+      vegetation wind contract) or bare and bleached;
+    - `reed_bed` and `fen_far_mangroves`.
+  - **Grade and anchor.** `lut_ch10_fen` comes from `fen_zone_lut.py`. The `BossAnchor` is at (−8.2, −0.15, −3.8),
+    in the water at the dead tree's foot.
+  - **For act1/creatures:** set the Ch10 Drowner encounter's arena to `ossa_fen_roots`.
+  - **Also:** the wake shader's `.uid`, which Godot generated on import.
+
+  Checks run: haluna_kit full rebuild (older pieces identical; every other arena byte-identical), `test_ossa_fen` 9,
+  `test_arenas`, `test_haluna_kit`, Godot `--filter=arena` 18/0, and the full tools suite (red only on screenshots and
+  the integration's audio).
+- **MERGE-READY @ eeecf13d: M3-ENV-101**, the save shrine's kit pieces (swap note under "Swap-in notes"), and the
+  answers to the Lead's 19:21 note on `test_iskarra`. Both were already fixed in 854e6a95: the plaza's fallen corner
+  is pulled back so Kerrid at (9.5, −5.5) stands on paving, and the test checks the stand-in vigils that remain, with
+  the reason in the assert (M2-FP-103's real cast replaced the rest). Checks run: haluna_kit full rebuild (older
+  pieces identical), `test_save_shrine_kit` 5, `test_haluna_kit`, validate_data.
+- **MERGE-READY @ 85309570: M3-AUD-811** (audio's request, to review): Haluna's footstep surfaces.
+  - HalunaDresser builds Area3Ds in `footstep_surface` from the layout's new `footstep_surfaces` key: the dock is
+    wood (priority 2) and the lagoon below mean sea level is water (priority 1).
+  - The areas sense nothing and sit under a plain `FootstepSurfaces` Node, outside HalunaCollision's pieces.
+  - The causeway's pools are slice-polish's scene (note in the task).
+
+  Checks run: Godot `--filter=haluna` 61/0 (with the new `test_haluna_footstep_surfaces.gd`), `test_haluna_dressing`,
+  gdlint/gdformat, taskboard. No shot shows the areas: they are invisible.
+- **MERGE-READY @ b12f8899: M3-C06-03** (cinematics' Ch6 kit request, to review): what was still open after
+  act1-chapters' M3-C06-1200.
+  - **New pieces** in the Brine Shoals kit (`bs_tideline.py`):
+    - `lamp_hole_open` and `lamp_hole_covered`, the B09 dig in two states;
+    - `hand_print`, for the insert;
+    - `stillguard_torch`, a hand prop or planted (the flames are VFX).
+  - **The grades.** The colour script gains `ch06_hold`, `ch06_dusk` and `ch06_dawn`, each with an Environment, a
+    LUT and a sun row in `assets/environments/zones/brine_shoals/ch06_grades.json`.
+  - **The writer.** `arena_scenes.write_environment` writes a zone grade's Environment with the arenas' own writer.
+    Every arena is byte-identical.
+  - **For act1-chapters:** placement and wiring are in M3-C06-03's notes:
+    - the `LampHole` states by `ch06_saw_lamp_buried`;
+    - the hand-print beside the hole;
+    - the torches at the camp;
+    - a light row's `environment_res` set to the grade's `.tres`, with its sun row.
+
+  Checks run: brine_shoals_kit full rebuild (older pieces identical), `lut_ch06_smoke` regenerated byte-identical,
+  `test_brine_shoals_kit` 31, the Environments and glbs load headless, and the full tools suite (red only on
+  screenshots and the integration's audio). No shot uses the new pieces or grades yet.
+- **MERGE-READY (also in this push): M3-ENV-1201** to review. It was built under M3-ENV-703.
+- **MERGE-READY @ 55cb8501: the Act II zone kits** (the Lead's item 4, "sheets first, then kits"), all in the Haluna kit.
+  - **Lowlight (M3-ENV-716):** `conduit_housing`, with **the Saltwright housing-mark** Liss reads in L03 (a circle
+    crossed by three lines over two seats); `lowlight_nave_bay` and `_broken`; `well_shaft`; `lowlight_sanctum`;
+    `vey_arcade_bay`; `vey_gallery_bridge`; `strangler_fig`.
+    - **For Character:** M3-ENV-719 asks for the same mark on Rhen's lantern, so the Ch11 reveal reads on screen.
+  - **Keth Pass (M3-ENV-717):** `keth_road_switchback` (10 m modules that chain), `keth_scree_slope` and
+    `woolback_trough`. Quellan and Cloudloom follow with their zones.
+  - **Ossa Fen (M3-ENV-718):** `kirru_roost` and `name_shell_cord`. The shells are the living clutch's: the Kirru keep
+    nothing of their dead (bible §8).
+  - **Also:** M3-C04-03, C05-03, C08-102 and C09-04 now note where their kit items were delivered. What's left on
+    them is act1-chapters' placement (ADR 0200), so the Lead may re-route them.
+
+  Checks run: haluna_kit full rebuilds (older pieces byte-identical each time), `test_lowlight` 7,
+  `test_lowlight_housing` 3, `test_ossa_fen` 9, `test_haluna_kit`, validate_data, taskboard. No shot shows these
+  pieces yet (no zone previews for them). Godot import clean.
+- **MERGE-READY @ 53179f05: Ch5's grades** (M3-C05-03 item, act1_ch05.md §9.4).
+  - **What's new.** The colour script gains `ch05_harbour_dusk` (new, with a new `zone_lut.py` grade) and
+    `ch05_ashcrown_day` (ashcrown.md's `ch05_temple` values).
+  - **Where.** Both live in `assets/environments/zones/ch05/` with `ch05_grades.json`, written by
+    `pemakar_grades.py`.
+  - **For act1-chapters:** wire them into Pemakar's and Ashcrown's light rows the way Ch6's are wired.
+
+  Checks run: `lut_ch05_lanternfall` and `lut_ch02_noon` regenerated byte-identical; `test_pemakar_kit`; both
+  Environments load headless; validate_data, taskboard.
+- **MERGE-READY @ 1ffd9dd7: Ch12's Quellan and Cloudloom** (M3-ENV-717; keth_pass.md §5).
+  - **Cloudloom:** `cloudloom_hall`, the rock-cut weaving-hall: open roof, beam lattice, loom-frame. Hang
+    `keth_curtain`s from its beams every 2 m (`BEAM_Y` 8.6) for the noon shadow-writing; it wants hard shadows.
+  - **Quellan:** `quellan_house` and `woven_awning`.
+  - Nothing frozen (ADR 0015).
+
+  Checks run: haluna_kit full rebuild (older pieces identical), `test_haluna_kit`, `test_arenas`, validate_data,
+  Godot import.
+- **MERGE-READY @ 191e5e89: M3-ENV-720**, the Wakefin's arena `bridal_barge_night` (Ch15), with the sheet
+  `open_sea_ch15.md`.
+  - **The barge.** Merel's bridal barge is in the Haluna kit (`bridal_barge.py`): a wedding-red hull with a gilt band,
+    the stern canopy over Tobin's bier, and an empty lamp hook at the bow.
+  - **The grade.** `lut_ch15_unlamped` is a new `zone_lut.py` grade: no warm source anywhere.
+  - **The anchor.** The `BossAnchor` is in the water off the bow.
+  - **For act1/creatures:** set the Ch15 Wakefin encounter's arena to `bridal_barge_night`.
+
+  Checks run: haluna_kit full rebuild (older pieces identical; every other arena byte-identical), `test_bridal_barge`
+  5, Godot `--filter=arena` 18/0, and the full tools suite (red only on screenshots and the integration's audio).
+- **MERGE-READY @ c7703809: M3-ENV-721**, Ansedra (Ch13–14) with the sheet `ansedra.md`.
+  - **New pieces:** `bowl_dome`; the skyline `ansedra_far_domes` and its `_lit` variant (the city's windows lit);
+    the Conclave's `pursuit_barge` with its bound flat-engine.
+  - **Venn's arena:** `ansedra_lagoon_escape`, on the bridal barge with the pursuit barge alongside, at the wedding's
+    dusk.
+  - **The grade:** `lut_ch14_wedding` is a new `zone_lut.py` grade.
+  - **For combat/act1:** set the Ch14 Venn encounter's arena to `ansedra_lagoon_escape` when it exists.
+
+  Checks run: haluna_kit full rebuild (older pieces identical; every other arena byte-identical), `test_ansedra` 6,
+  `test_arenas`, `test_haluna_kit`, Godot `--filter=arena` 18/0.
+- **MERGE-READY @ fca99879: M3-ENV-722**, the Pale Rim and the Drowned Choir (Ch16), with the sheet `pale_rim.md`.
+  - **New pieces:** `choir_singer` (24 m hooded robed singers, heads up, mouths open: singers, not idols),
+    `choir_amphitheatre` and `pale_rim_flats`.
+  - **The arena:** `drowned_choir_ring`, with ten singers round it at moonrise, for Sefir's Abiding guard.
+  - **The grade:** `lut_ch16_choir`.
+  - **For combat/act1:** set the Ch16 guard encounter's arena to `drowned_choir_ring`.
+
+  Checks run: haluna_kit full rebuild (older pieces identical; every other arena byte-identical),
+  `test_drowned_choir` 4, `test_arenas`, `test_haluna_kit`, Godot `--filter=arena` 18/0.
+
 ### Render requests
-RENDER-REQUEST @ a0d2549f: battle_arena_tideline_dawn,battle_arena_causeway_disc_sunset,battle_arena_causeway,battle_arena_tideline,causeway_c02_profile_against_the_lagoon,causeway_c08_drownbell_disc_approach,drownbell_flood,battle_boss_intro_drownbell,haluna_h01_village_from_sea,haluna_h10_dock_night,field_objective_line,field_interact_prompt,field_area_title,field_tip_card,dialogue_continue; why: M3-ENV-701 set dressing in Haluna, the causeway and the two arenas (the five field/dialogue shots frame Haluna's lane 1)
-RENDER-REQUEST @ 22a5de11: battle_arena_oruvel_raft_morning,battle_arena_causeway,drownbell_flood; why: the merge took the PC gate's copies of these three over env-art's; confirm they still match with the arena dressing
-RENDER-REQUEST @ 1a422476: ashcrown_a01_approach,ashcrown_a04_anvil_hall,ashcrown_a10_plume_from_the_rim; why: M3-ENV-705 Ashcrown grade (saturation x1.0, accents +18%) answering the human's greyscale complaint
-RENDER-REQUEST @ 71f19fbc: battle_arena_shoals,battle_arena_camp,battle_boss_intro_inquisitor; why: M3-ENV-706 Ch6 arenas replace the greybox
-RENDER-REQUEST @ ba16d48b: haluna_h01_village_from_sea,haluna_h04_dock,haluna_h10_dock_night,field_menu_map_haluna; why: the lagoon's fish weirs (M3-ENV-701)
-RENDER-REQUEST @ 179069de: battle_arena_causeway_route_afternoon; why: M3-ENV-705 its ground takes the zone's tidal-mud material
+SUPERSEDED (self-rendering from 10-28 01:00, TRACK-RULES cd23f612): RENDER-REQUEST @ e75ce34e: iskarra_i02_gate_from_the_plaza,iskarra_p01_plaza_dusk,battle_arena_ansedra_lagoon_escape,battle_arena_drowned_choir_ring,battle_arena_iskarra_spire_crown,battle_arena_undertow_cage,battle_arena_undertow_heart,battle_arena_undertow_heart_letting,battle_arena_keth_seep_terrace,battle_arena_lowlight_engine_hall,battle_arena_ossa_fen_roots,battle_arena_coilspire_headland_path,battle_arena_coilspire_tier_landing,battle_arena_ash_terrace_lanternfall,battle_arena_underway,battle_arena_underway_tower,battle_boss_intro_reach,ashcrown_a01_approach,ashcrown_a04_anvil_hall,ashcrown_a10_plume_from_the_rim,brightwater_b02_awning,brightwater_b03_rail_drowned,brine_b01_arrival,brine_b05_barge_channel,ch04_ferry_deck,ch04_ferry_derelict,ch08_coilspire_path,ch08_corrow_arrival,ch08_corrow_stair,ch09_corrow_road,ch09_corrow_strand,coilspire_k01_headland_path,corrow_c01_wall_head,corrow_c08_watcher_profile,corrow_c10_breach_fallen,haluna_h01_village_from_sea,haluna_h07_chapel_court,oruvel_o01_surfacing,oruvel_o07_name_board,oruvel_o19_dive_mooring,ou_u04_lamp_gallery,ou_u12_terrace,wildlife_zone_underway_crown,pemakar_p01_waterfall_of_fires,pemakar_p03_among_the_graves,pemakar_p04_harbour_day,pemakar_p11_sea_cut_weir_day,tamsule_tp01_port_and_bell,tamsule_tp03_floating_market,tamsule_tp05_gantry_foot,hollowmere_m01_dace_hull,hollowmere_m02_raft_city_dusk,kite_k01_moored,kitrow_ansedra_court_hall,kitrow_ansedra_basin_stacks,kitrow_keth_cloudloom_house,kitrow_keth_road_details,kitrow_lowlight_nave_bays,kitrow_lowlight_vey_details,kitrow_fen_roost_cord,kitrow_fen_reedhollow_walks,kitrow_quellan_inn_well_dais,kitrow_vey_gallery_walk_bench; why: the one open env-art request (63 ids, priority order as before), moved to this head. It adds the three kit-row shots for the Ch10–12 greybox pieces (M3-ENV-733/734/735). Supersedes 4e5f11ae.
+SUPERSEDED: RENDER-REQUEST @ 4e5f11ae: iskarra_i02_gate_from_the_plaza,iskarra_p01_plaza_dusk,battle_arena_ansedra_lagoon_escape,battle_arena_drowned_choir_ring,battle_arena_iskarra_spire_crown,battle_arena_undertow_cage,battle_arena_undertow_heart,battle_arena_undertow_heart_letting,battle_arena_keth_seep_terrace,battle_arena_lowlight_engine_hall,battle_arena_ossa_fen_roots,battle_arena_coilspire_headland_path,battle_arena_coilspire_tier_landing,battle_arena_ash_terrace_lanternfall,battle_arena_underway,battle_arena_underway_tower,battle_boss_intro_reach,ashcrown_a01_approach,ashcrown_a04_anvil_hall,ashcrown_a10_plume_from_the_rim,brightwater_b02_awning,brightwater_b03_rail_drowned,brine_b01_arrival,brine_b05_barge_channel,ch04_ferry_deck,ch04_ferry_derelict,ch08_coilspire_path,ch08_corrow_arrival,ch08_corrow_stair,ch09_corrow_road,ch09_corrow_strand,coilspire_k01_headland_path,corrow_c01_wall_head,corrow_c08_watcher_profile,corrow_c10_breach_fallen,haluna_h01_village_from_sea,haluna_h07_chapel_court,oruvel_o01_surfacing,oruvel_o07_name_board,oruvel_o19_dive_mooring,ou_u04_lamp_gallery,ou_u12_terrace,wildlife_zone_underway_crown,pemakar_p01_waterfall_of_fires,pemakar_p03_among_the_graves,pemakar_p04_harbour_day,pemakar_p11_sea_cut_weir_day,tamsule_tp01_port_and_bell,tamsule_tp03_floating_market,tamsule_tp05_gantry_foot,hollowmere_m01_dace_hull,hollowmere_m02_raft_city_dusk,kite_k01_moored,kitrow_ansedra_court_hall,kitrow_ansedra_basin_stacks,kitrow_keth_cloudloom_house,kitrow_keth_road_details,kitrow_lowlight_nave_bays,kitrow_lowlight_vey_details,kitrow_fen_roost_cord; why: the one open env-art request (TRACK-RULES limit, 23:45), consolidating every earlier line (60 ids, listed in priority order). These are the shots changed since their last approved render, or never rendered: Iskarra I02/P01 first (FAST-TRACK, Ysolde's capsule out); then the arena fixes (Ansedra's sun, the Choir's and the Spire's shadows) and the new arenas (Cage, Heart ×2, Keth rework, Coilspire ×2, Lowlight and Ossa Fen audits); then the M3-ENV-705 audit fixes; last, the two new shape-review previews (Hollowmere/Kite, Act II kit rows). Every older RENDER-REQUEST line below is SUPERSEDED. Already answered and not re-listed: 8be2adc, f39cdde, 1e14af8, c770380, fca9987.
+SUPERSEDED: RENDER-REQUEST @ b7496714: iskarra_i02_gate_from_the_plaza,iskarra_p01_plaza_dusk; why: M3-ENV-724, the orange capsule at I02's right edge was Ysolde's battle stand-in (stand_ins.ysolde has no scene yet, M2-HER-1108). The preview leaves her out until it does. Supersedes 1e14af8's FAST-TRACK request.
+ANSWERED: lead/gate-render-env-art-1e14af8 (FAST-TRACK Iskarra): P01 and I02 viewed and APPROVED (the slabs shade flat now); I03 and slice_prologue_vigil_line pass. The capsule left in I02 was Ysolde's stand-in, not a pack (fixed in the request above). **For UI/hero-motion:** M2-HER-1108's Ysolde line still stands: `battle_sandbox.json` `stand_ins.ysolde` has no `scene`, so she is a capsule in every battle.
+SUPERSEDED: RENDER-REQUEST @ 1e14af8e FAST-TRACK: iskarra_p01_plaza_dusk,iskarra_i02_gate_from_the_plaza,iskarra_i03_broken_tower,slice_prologue_vigil_line; why: M3-ENV-724 after viewing f39cdde: the plaza slabs no longer read as pillows, the vigil packs no longer read as capsules. FIRST in the queue.
+ANSWERED: lead/gate-render-env-art-f39cdde (FAST-TRACK Iskarra): P01, I02, I03 viewed and APPROVED (towers clad and windowed, galleries, the drowned midground, the heroes at their marks); slice_prologue_vigil_line passes. The two defects seen (pillowed slabs, capsule-like packs) are fixed in the request above.
+SUPERSEDED: RENDER-REQUEST @ f39cdde3 FAST-TRACK: iskarra_p01_plaza_dusk,iskarra_i02_gate_from_the_plaza,iskarra_i03_broken_tower,slice_prologue_vigil_line; why: M3-ENV-724, the Lead's Iskarra fast-track (both passes: the towers faced out, tile cladding and glaze, windowed storeys, galleries, grime and spalling, the plaza inlay, cracked slabs and grass, the vigil gear and shells, banners, the drowned midground and skyline). slice_prologue_vigil_line renders on this branch's prologue; its capsules are slice-polish's. FIRST in the queue. (Moved from f104a0b7 to f39cdde3: the dais's trim, nothing else.)
+SUPERSEDED: RENDER-REQUEST @ 8be2adcd: battle_arena_wall_head,battle_ch08_stair_hold,battle_boss_intro_reach,battle_arena_seawall_stairhead_storm,battle_arena_seawall_stairhead_hoist,battle_arena_seawall_stairhead_surge; why: the Lead's item 2 (big12 found the Ch8 wall arena and the Reach backdrop plain). `wall_head_storm` now plays on env-art's final seawall arena instead of the greybox, and the arenas moved one segment so the Fisher Stair's head (EntryMarker_ward, M3-BPR-407) is on the party's right. Second after the Iskarra FAST-TRACK. Supersedes the seawall ids in 4c0e9732.
+ANSWERED: lead/gate-render-env-art-8be2adc (cloud). All six viewed and APPROVED as baselines: battle_arena_wall_head and battle_ch08_stair_hold now play on the final seawall (Watchers along the parapet, flags, laterite), battle_boss_intro_reach on the real wall, town and headland, and the three seawall_stairhead states are first baselines. Note for Combat/presentation: in the surge preview the Reach's hand at BossAnchor (-6, 0.9, -3.4) fills the fixed preview camera's left half. The arena is right (the hand grips the parapet); the Reach intro frames it properly. The headland in the Reach intro moves again with 44850dce (its own request).
+SUPERSEDED: RENDER-REQUEST @ 9ba3b743: battle_arena_ossa_fen_roots; why: M3-ENV-705 audit, the bank's litter (the floor read bare).
+SUPERSEDED: RENDER-REQUEST @ b1cde0eb: battle_arena_lowlight_engine_hall; why: M3-ENV-705 audit, the hall's piers articulated (panels, copper band, capitals).
+SUPERSEDED: RENDER-REQUEST @ e11a83e4: pemakar_p04_harbour_day,pemakar_p11_sea_cut_weir_day,pemakar_p01_waterfall_of_fires,pemakar_p03_among_the_graves; why: M3-ENV-705 audit, rock patches on the massif's bare lower flank.
+SUPERSEDED: RENDER-REQUEST @ a0d2549f: battle_arena_tideline_dawn,battle_arena_causeway_disc_sunset,battle_arena_causeway,battle_arena_tideline,causeway_c02_profile_against_the_lagoon,causeway_c08_drownbell_disc_approach,drownbell_flood,battle_boss_intro_drownbell,haluna_h01_village_from_sea,haluna_h10_dock_night,field_objective_line,field_interact_prompt,field_area_title,field_tip_card,dialogue_continue; why: M3-ENV-701 set dressing in Haluna, the causeway and the two arenas (the five field/dialogue shots frame Haluna's lane 1)
+SUPERSEDED: RENDER-REQUEST @ 22a5de11: battle_arena_oruvel_raft_morning,battle_arena_causeway,drownbell_flood; why: the merge took the PC gate's copies of these three over env-art's; confirm they still match with the arena dressing
+SUPERSEDED: RENDER-REQUEST @ 1a422476: ashcrown_a01_approach,ashcrown_a04_anvil_hall,ashcrown_a10_plume_from_the_rim; why: M3-ENV-705 Ashcrown grade (saturation x1.0, accents +18%) answering the human's greyscale complaint
+SUPERSEDED: RENDER-REQUEST @ 71f19fbc: battle_arena_shoals,battle_arena_camp,battle_boss_intro_inquisitor; why: M3-ENV-706 Ch6 arenas replace the greybox
+SUPERSEDED: RENDER-REQUEST @ ba16d48b: haluna_h01_village_from_sea,haluna_h04_dock,haluna_h10_dock_night,field_menu_map_haluna; why: the lagoon's fish weirs (M3-ENV-701)
+SUPERSEDED: RENDER-REQUEST @ 179069de: battle_arena_causeway_route_afternoon; why: M3-ENV-705 its ground takes the zone's tidal-mud material
 ANSWERED: 71f19fbc (gpu/render-env-art-71f19fb) and a0d2549f (gpu/render-env-art-a0d2549), all eight non-passing shots viewed and re-approved in 0f19d868.
-RENDER-REQUEST @ 24bf927a: iskarra_p01_plaza_dusk,iskarra_i02_gate_from_the_plaza,iskarra_i03_broken_tower; why: M3-ENV-710 Iskarra kit for the Prologue under its dusk (new shots, no baseline yet)
-RENDER-REQUEST @ fa67bfee: battle_arena_shoals,battle_arena_camp,battle_boss_intro_inquisitor; why: M3-ENV-706 density pass after viewing 71f19fb (the shoals read as bare sand, the camp's hard as one pebble repeat)
+SUPERSEDED: RENDER-REQUEST @ 24bf927a: iskarra_p01_plaza_dusk,iskarra_i02_gate_from_the_plaza,iskarra_i03_broken_tower; why: M3-ENV-710 Iskarra kit for the Prologue under its dusk (new shots, no baseline yet)
+SUPERSEDED: RENDER-REQUEST @ fa67bfee: battle_arena_shoals,battle_arena_camp,battle_boss_intro_inquisitor; why: M3-ENV-706 density pass after viewing 71f19fb (the shoals read as bare sand, the camp's hard as one pebble repeat)
+SUPERSEDED: RENDER-REQUEST @ 8770a067: corrow_c01_wall_head,corrow_c08_watcher_profile,corrow_c10_breach_fallen,brine_b01_arrival,brine_b05_barge_channel,battle_arena_shoals,battle_arena_camp,battle_boss_intro_inquisitor,iskarra_p01_plaza_dusk,iskarra_i02_gate_from_the_plaza,iskarra_i03_broken_tower; why: M3-ENV-712 carved Watcher backs, M3-ENV-705 Brine Shoals zenith, M3-ENV-706 Ch6 arena density, M3-ENV-710 Iskarra (supersedes the 24bf927a and fa67bfee lines)
+SUPERSEDED: RENDER-REQUEST @ 599b2418: battle_arena_seawall_stairhead_storm,battle_arena_seawall_stairhead_hoist,battle_arena_seawall_stairhead_surge,battle_arena_coilspire_headland_path,battle_arena_coilspire_tier_landing; why: M3-ENV-713 Ch8's five new arenas (new shots, no baseline yet)
+SUPERSEDED: RENDER-REQUEST @ fd630bb8: pemakar_p04_harbour_day,pemakar_p11_sea_cut_weir_day,battle_arena_ash_terrace_lanternfall; why: M3-ENV-1214 Pemakar's harbour pieces and day grade (new shots), the crown bell now in the Lanternfall arena's town
+SUPERSEDED: RENDER-REQUEST @ 94fe8f77: tamsule_tp01_port_and_bell,tamsule_tp03_floating_market,tamsule_tp05_gantry_foot; why: M3-C07-04 the Tamsule port kit preview (new shots)
+SUPERSEDED: RENDER-REQUEST @ 95be6118: battle_arena_keth_seep_terrace; why: M3-ENV-717 the Avalanche Ram's arena (new shot)
+SUPERSEDED: RENDER-REQUEST @ 854e6a95: battle_arena_shoals,battle_arena_camp,battle_boss_intro_inquisitor,field_tip_card,brine_b05_barge_channel,iskarra_p01_plaza_dusk,iskarra_i02_gate_from_the_plaza,iskarra_i03_broken_tower,battle_arena_keth_seep_terrace; why: after the big11 merge, big11's copies of the first four lack env-art's Ch6 density pass and Haluna clutter; B05 gains the boat wake (M3-ENV-1000); the Iskarra plaza's corner moved for Kerrid's vigil (supersedes the Iskarra ids in 8770a067)
+SUPERSEDED: RENDER-REQUEST @ 43492e80: battle_arena_lowlight_engine_hall; why: M3-ENV-716 the Lamp Engine's flooded hall (new shot)
+SUPERSEDED: RENDER-REQUEST @ 60eee2f7: iskarra_p01_plaza_dusk,iskarra_i02_gate_from_the_plaza,iskarra_i03_broken_tower,brine_b01_arrival,brine_b05_barge_channel; why: after viewing 8770a06: Iskarra gets real water (reflections) and the paving inlay as channel lines; B01/B05 show the boat wake (supersedes these ids in 854e6a95)
+ANSWERED: 8770a06 (gpu/render-env-art-8770a06): corrow_c01_wall_head and corrow_c08_watcher_profile viewed and re-approved in 895ff7ec; the Ch6 arenas, Iskarra and B01/B05 re-requested (big11's actors, the plaza and the wake changed since). ba16d48 and 179069d predate big11's NPCs and actor stances: re-requested below.
+ANSWERED: 22a5de1 and 1a42247 (3 pass each after the import-crash re-render): nothing to approve.
+SUPERSEDED by the request below for the Haluna ids: RENDER-REQUEST @ 29ddd021: haluna_h01_village_from_sea,haluna_h04_dock,battle_arena_causeway_route_afternoon; why: the fish weirs (ba16d48) and the route arena's tidal mud (179069d), not on the integration branch, now with big11's villagers and stances
+SUPERSEDED by the H07 request: RENDER-REQUEST @ ab58f891: haluna_h01_village_from_sea,haluna_h02_tidewall_lane,haluna_h04_dock,haluna_h10_dock_night,battle_arena_causeway_route_afternoon; why: the beach palms clustered (no longer one even row from the sea) on top of the fish weirs and big11's villagers; the route arena's tidal mud
+SUPERSEDED: RENDER-REQUEST @ c990e2c2: battle_arena_ossa_fen_roots; why: M3-ENV-718 the Mangrove Drowner's fen arena (new shot)
+SUPERSEDED: RENDER-REQUEST @ 191e5e89: battle_arena_bridal_barge_night; why: M3-ENV-720 the Wakefin's unlamped bridal barge (new shot)
+SUPERSEDED: RENDER-REQUEST @ c7703809: battle_arena_ansedra_lagoon_escape; why: M3-ENV-721 Warden Venn's escape on Ansedra's lagoon at dusk (new shot)
+SUPERSEDED: RENDER-REQUEST @ fca99879: battle_arena_drowned_choir_ring; why: M3-ENV-722 the Drowned Choir at moonrise (new shot)
+SUPERSEDED by the FAST-TRACK request below: 4c0e9732
+SUPERSEDED by the FAST-TRACK request at the top: RENDER-REQUEST @ 0958af1a FAST-TRACK: iskarra_p01_plaza_dusk,iskarra_i02_gate_from_the_plaza,iskarra_i03_broken_tower; why: M3-ENV-724, the Lead's Iskarra fast-track for the Prologue. The towers had been inside out since M3-ENV-710; this pass adds tile cladding, blue glaze, windowed storeys, gallery ledges, the plaza inlay, a drowned midground, and hero figures. the far skyline (iskarra_far_towers) too. Supersedes the Iskarra ids in 60eee2f7, 854e6a95 and 4c0e9732.
+SUPERSEDED by 8be2adcd: RENDER-REQUEST @ 4c0e9732: battle_arena_seawall_stairhead_storm,battle_arena_seawall_stairhead_hoist,battle_arena_seawall_stairhead_surge,battle_arena_coilspire_headland_path,battle_arena_coilspire_tier_landing; why: 599b241's outs predate big12's hero stances. The arenas are unchanged, so these are first baselines on the current actors. Supersedes 599b2418.
+ANSWERED: 94fe8f7 (Tamsule TP01/TP03/TP05) and fd630bb (Pemakar P04/P11) were viewed and approved in f2a85a46. In fd630bb, Lanternfall passed.
+ANSWERED: 179069d (causeway_route_afternoon): superseded by big12's viewed baseline (6e15d8d8) at a later head; nothing to approve.
+ANSWERED: 43492e8 (battle_arena_lowlight_engine_hall): viewed and approved as its first baseline. The enemy is a stand-in capsule at that sha; the Lamp Engine model from big12 will drift it.
+ANSWERED: 854e6a9: field_tip_card passed. Camp, shoals and the inquisitor intro all fall within the gull wing-phase, smoke and hound-pose differences of big12's viewed baselines (rmse to big12's 0.012, 0.034 and 0.0), so big12's copies stay. Its Keth out is the version superseded by the rework above.
+ANSWERED: lead/gate-render-env-art-60eee2f (cloud): brine_b01_arrival and brine_b05_barge_channel were viewed and re-approved (the blue zenith; the vendor boat). The Iskarra outs are superseded by the FAST-TRACK request.
+SUPERSEDED: RENDER-REQUEST @ b7182ba1: brine_b05_barge_channel,brine_b01_arrival; why: M3-ENV-705, the white barge's Order trim (B05 read it flat white).
+SUPERSEDED: RENDER-REQUEST @ 9c26b66e: haluna_h07_chapel_court,haluna_h01_village_from_sea,haluna_h02_tidewall_lane,haluna_h04_dock,haluna_h10_dock_night; why: M3-ENV-705, the chapel's articulation (H07 read a plain box), plus the palms request (ab58f891) folded in. Supersedes ab58f891.
+SUPERSEDED: RENDER-REQUEST @ 067bd833: battle_arena_iskarra_spire_crown; why: M3-ENV-726, the Spire crown, with the afterglow behind the party so the engine's 200 m shadow misses the slots. Supersedes 5d53f98c (not rendered yet).
+ANSWERED: lead/gate-render-env-art-191e5e8 (battle_arena_bridal_barge_night) and c990e2c (battle_arena_ossa_fen_roots): viewed and approved as first baselines.
+ANSWERED: lead/gate-render-env-art-ab58f89: haluna_h01, h02 and h10 viewed and re-approved (the drift is the density pass's palms and their shadows); h04 identical. causeway_route_afternoon keeps big12's viewed baseline (the arena is unchanged since).
+ANSWERED (the Lead's item 3): gpu/m3-rnd-03-sefir-tells @ c3fd1eb4. All four `revenant_tells_*` shots (reflection and shadow, each on and off) viewed and APPROVED from env-art's side.
+- **Shadow:** Sefir's shadow and hand shadows are crisper, with the tighter hem line, while Asha's stay soft.
+- **Reflection:** his outline holds where the ripples would break it; the difference is subtle at this framing.
+- Their shots and baselines live only on that branch, so the Lead's merge carries them with its `--update-baselines`. M3-ENV-1000's hookup follows once RevenantTells is on the integration branch.
+SUPERSEDED: RENDER-REQUEST @ 46955a37: battle_arena_undertow_cage; why: M3-ENV-727, Ch20's Cage arena (new shot; after the FAST-TRACK and Ch8 requests).
+NOT APPROVED: 95be611 (battle_arena_keth_seep_terrace). The backdrop reads as a wall of stretched white blocks and the seep strips as pale-blue ribbons, not a mountain pass. Rework is queued after the Iskarra fast-track (M3-ENV-717).
+SUPERSEDED: RENDER-REQUEST @ 7f1a0fc7: battle_arena_keth_seep_terrace; why: M3-ENV-717 rework after 95be611 (crisp weathered wall, threads of seep). Supersedes 95be6118.
+SUPERSEDED: RENDER-REQUEST @ 9c2aaa39: battle_arena_undertow_heart,battle_arena_undertow_heart_letting; why: M3-ENV-728, Ch21's Heart, Sefir's two arena states (held; the Letting), two new shots. After the FAST-TRACK, Ch8 and Cage requests.
+SUPERSEDED: RENDER-REQUEST @ fb0abf9e: kitrow_ansedra_court_hall,kitrow_ansedra_basin_stacks,kitrow_keth_cloudloom_house,kitrow_keth_road_details,kitrow_lowlight_nave_bays,kitrow_lowlight_vey_details,kitrow_fen_roost_cord; why: M3-ENV-732, 22 Act II zone pieces never rendered (new shape-review preview, seven new shots). Low priority, after every other request.
+SUPERSEDED: RENDER-REQUEST @ 5d3202d3: battle_arena_drowned_choir_ring; why: M3-ENV-705 after fca9987 (not approved): the moon between two singers, so the party isn't in a singer's shadow.
+NOT APPROVED: lead/gate-render-env-art-fca9987 (battle_arena_drowned_choir_ring). The whole party stood in a singer's 150 m moon-shadow and read black. Fixed in the request above. The two pale capsules are the enemy stand-ins.
+SUPERSEDED: RENDER-REQUEST @ 86fb7e4c: ashcrown_a01_approach,ashcrown_a04_anvil_hall,ashcrown_a10_plume_from_the_rim; why: M3-ENV-705 audit, the shapes (A04 plain square pillars, A01 flat tier faces): pillar dressing and buttresses. Supersedes 1a422476 (it includes that grade).
+SUPERSEDED: RENDER-REQUEST @ d95ef28b: hollowmere_m01_dace_hull,hollowmere_m02_raft_city_dusk,kite_k01_moored; why: M3-ENV-731, the Ch17-18 kits had never been rendered (new preview, three new shots).
+SUPERSEDED: RENDER-REQUEST @ 31eee89b: battle_arena_ansedra_lagoon_escape; why: M3-ENV-705 after c770380 (not approved): the sun at 5° so the deck reads, the bowl-domes articulated.
+NOT APPROVED: lead/gate-render-env-art-c770380 (battle_arena_ansedra_lagoon_escape). The barge deck read black (the 1° sun put the whole deck in the bow rail's shadow), and the near bowl-domes read as stacked plain cylinders. Both are fixed in the request above. The pale cylinder on the foe side is the preview's enemy stand-in, not a kit piece.
+SUPERSEDED: RENDER-REQUEST @ 65ed0b48: pemakar_p03_among_the_graves,pemakar_p01_waterfall_of_fires,battle_arena_ash_terrace_lanternfall; why: M3-ENV-705 audit, the stelae (P03 read plain stacked blocks): names cut in terrace script. Supersedes the P01/P03 ids in e11a83e4 (it includes that commit).
+SUPERSEDED: RENDER-REQUEST @ f0ebe338: oruvel_o07_name_board,ch04_ferry_derelict,brightwater_b03_rail_drowned; why: M3-ENV-705 audit, the Seventh Terrace's counter (O07 read a flat red wall): plank seams, a black moulding, copper nails.
+SUPERSEDED: RENDER-REQUEST @ 46808c96: coilspire_k01_headland_path,ch08_coilspire_path,battle_arena_coilspire_headland_path; why: M3-ENV-705 audit, the scrub (K01 read smooth green lumps): leaf clusters and twig tips.
+SUPERSEDED: RENDER-REQUEST @ 3711b960: tamsule_tp03_floating_market,tamsule_tp01_port_and_bell,tamsule_tp05_gantry_foot,brightwater_b02_awning,ch04_ferry_deck; why: M3-ENV-705 audit, Tamsule's market counters and bundles (TP03 read plain boxes); the ferry bundles' flap faces fixed. Supersedes the brightwater ids in d4967aee.
+SUPERSEDED: RENDER-REQUEST @ d4967aee: brightwater_b02_awning,brightwater_b03_rail_drowned,ch04_ferry_deck,ch04_ferry_derelict; why: M3-ENV-705 audit, the passengers' bundles (B02 read them as smooth blobs): folds, a cord, a loose corner. Includes the Underway and Coilspire headland requests above.
+SUPERSEDED: RENDER-REQUEST @ 44850dce: corrow_c01_wall_head,corrow_c08_watcher_profile,corrow_c10_breach_fallen,ch08_corrow_arrival,ch08_corrow_stair,ch09_corrow_strand,ch09_corrow_road,battle_arena_wall_head,battle_ch08_stair_hold,battle_boss_intro_reach; why: M3-ENV-705 audit, the Coilspire headland across the bay (C01 read it as a smooth mound): bedding ledges on its sea cliff, sea stacks. Only the far headland changes; shots that don't see it stay put. Includes the Underway request above (9c811e51 is its parent).
+SUPERSEDED: RENDER-REQUEST @ 30c9535b: battle_arena_underway_tower,ou_u04_lamp_gallery,ou_u12_terrace,battle_arena_underway,wildlife_zone_underway_crown,oruvel_o01_surfacing,oruvel_o19_dive_mooring; why: M3-ENV-705 audit, the drowned tower's bays get an articulated inner face (the gallery's walls read as bare slabs). The last five frame the tower from outside or far off and may not move.
 
 ## STATE AT HANDOVER (2026-10-25)
 
@@ -238,6 +556,13 @@ Read this section first; everything below it is history. The branch is `claude/e
 - `haluna_h10_dock_night` sits at rmse 0.00545, within the limit, from older drift.
 
 ### Gotchas (read before touching env-art files)
+- **Winding (2026-10-27, M3-ENV-724).** `kc.quad_strip`'s face normal is cross(column direction, row direction). A
+  lathe-style grid of rows along +Y with columns round the axis faces *inward*, so pass `flip=True` (Iskarra's
+  shafts were inside out for days). Check new pieces numerically, either radially or with the ray audit: rays from
+  outside, where a first hit on a back face means a hole.
+  - **The audit across the Haluna kit found no other visible case.** `outrigger_7m`'s outer and inner shells are
+    swapped, but they read the same from outside. Double-layer sheets (laundry, awnings, roost panels, sails)
+    score as "back" by construction and are fine.
 - **Fog-lamp rule (the Lead):** every OmniLight3D and SpotLight3D in an arena, or near a dense FogVolume, sets
   `light_volumetric_fog_energy = 0`, because Godot's default of 1.0 bands the volume bright. `arena_scenes.py`
   writes it. `tools/tests/test_fog_lamps.py` enforces it, with `KNOWN_EXCEPTIONS` tied to request tasks.
@@ -264,6 +589,106 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
+- **2026-10-28 ~01:30: REFOCUS (ADR 0041, the human's directive via the Lead).**
+  - **Scope:** the Prologue through Ch4, plus the shared kits. env-art-b takes Ch5–Ch9.
+  - **Paused:** my 19 later-act tasks (M3-ENV-716–718, 720–723 and 725–736) are `blocked` with `blocked-by: ADR 0041`. Their work stays committed and pushed as is.
+  - **"The 10 game/battle/arenas scenes":** every id in arenas.json already plays env-art's final arena, and the arena preview shots load encounters, so they render the final arenas too. The 10 greybox scenes are dead files owned by battle-presentation. M3-ENV-737 asks them to delete them.
+  - **Self-rendering** per TRACK-RULES cd23f612, with the human's OK in this session.
+    - The Act II/III batch was stopped.
+    - Iskarra I02 and P01 were captured first: the Ysolde capsule is gone and the frames read clean.
+    - Batch A (15 Act I shots: the prologue vigil, Haluna ×5, the causeway, the shrine, the Drownbell flood, five Act I arenas) is running.
+  - **Next:** view Batch A and fix what reads primitive. Then Batch B: the Oruvel O-shots, the Underway, the Brightwater B-shots and the Ch4 ferry, then the shrine interior.
+- **2026-10-28 ~00:50: the Lead's list of 10-28 00:13.**
+  - **(1) and (2):** were already done (8be2adcd dressed the wall-head and the Reach backdrop; `wall_head_storm` plays the final seawall). The per-fight mapping, M3-ENV-714, is re-routed to combat (battle-presentation) with the current state.
+  - **(3):** every env-art todo is answered (see the 23:50 entry).
+  - **(4), the Ch10–12 greybox kits:**
+    - M3-ENV-733: the root-walk, reed causeway, reed platform and clutch stone;
+    - M3-ENV-734: Quellan's inn and well, Hesk's dais, and a new `test_keth.py`;
+    - M3-ENV-735: the Sunken Vey gallery walk and Lowlight's lamp bench;
+    - block-to-piece swap maps for all seven greybox zones (ossa_fen.md §4, lowlight.md §5, keth_pass.md §6);
+    - the request to act1-chapters, M3-ENV-736.
+  - **Checks:**
+    - tools tests for the touched kits OK, with `quellan_house` byte-identical after the refactor;
+    - the haluna_kit Blender build, where only the 9 new glbs appear;
+    - validate_data, taskboard and godot --import.
+  - The single render request moves to the new head.
+- **2026-10-28 ~00:20: state.** Session handoff `2026-10-27-art-env-art-2.md`.
+  - **Audit fixes since MERGE-READY a733e5e7, each with its own scoped checks:**
+    - the Choir's moon and the Spire crown's afterglow (both tested against singer and engine shadows);
+    - Ashcrown's pillars and tiers; the Pemakar stelae; Iskarra I02 without Ysolde's capsule;
+    - the Hollowmere/Kite preview (M3-ENV-731) and the Act II kit rows (M3-ENV-732).
+  - **Waiting on renders** (requests below). Next: view and approve them as they land, and fix what the new previews show.
+  - **BACKLOG EMPTY until renders land:**
+    - every todo or request task for my role is answered (kit side done; placement belongs to act1-chapters or slice-polish);
+    - next-act content is complete through the Ending;
+    - every audit fix and new preview is waiting on its render.
+- **MERGE-READY @ 01bf31c2** (claude/env-art; it includes the integration branch at d2fb94c4). Since 0958af1a:
+  - **New content:** M3-ENV-726 the Spire crown, M3-ENV-727 the Cage, M3-ENV-728 the Heart (two arenas), M3-ENV-729 the Ending's grades and M3-ENV-730 Oruvel rebuilt.
+  - **Requests answered:** M2-ENV-14 (the helper bones) and the Ch8 repoint (M3-BPR-407).
+  - **The M3-ENV-705 audit fixes:** the Underway walls, the Coilspire headland and scrub, the ferry bundles, Tamsule's market, the Terrace's counter, the Pemakar stelae, Ansedra's escape, and Iskarra's slabs and packs.
+  - **Approved baselines:** 8be2adc (6) and f39cdde (3).
+  - **Checks:**
+    - tools unittests for every touched kit and arena: 234 + 21 + 7 OK;
+    - Godot `--filter=haluna` 62/0, `oruvel` 14/0, `underway` 6/0, `battle_arenas` 10/0;
+    - gdlint/gdformat clean, validate_data 0/0, taskboard --check;
+    - every Blender job touched rebuilt, with only the named glbs changed.
+  - **Skipped:** the full Godot suite (no battle/progression code touched) and every shot (the render requests below list them).
+- **2026-10-27 ~23:50: three more items pushed @ b75b93bc (all review, reviewer rendering unless noted).**
+  - **M2-ENV-14** (request from Character): `HalunaActorPose.apply()` now calls `HeroHelperBones.drive` after the hand-set pose (one line in m2-slice's `haluna_actor_pose.gd`, routed here by the task). `--filter=haluna` 62/0. Character: view Asha's beach kneel on the next H05 render. **M2-ENV-12** was already done by m2-slice; noted on the task for the Lead to close.
+  - **M3-ENV-729, the Ending's grades:** `ending_grades.py` writes `assets/environments/zones/ending/` (three Environments, `lut_ending_lift`, `lut_ending_dock`, `lut_post_credits`, `ending_grades.json` with the key, rim, lamp and E1–E5 sea-glow rows). Sheet `ending.md`. For Cinematics: these are what E1–E7 swap to.
+  - **M3-ENV-730, Oruvel rebuilt (E7):** `ov_rebuilt.py` (`raft_deck_rebuilt`, `lamp_post`), `ov_timber_new`, the Oruvel layout's `states.rebuilt` with `first_lamp`. Every existing Oruvel glb and material is byte-identical; test_oruvel_kit 45 OK, `--filter=oruvel` 14/0.
+  - No new shots (the Ending frames have no stager yet), so no render request for these.
+- **2026-10-27 ~23:15: M3-ENV-728, the Heart (Ch21), pushed @ 9c2aaa39 (review, reviewer rendering).** Kit `undertow_heart.py` (heart_floor, heart_column, heart_eyewall), `lut_ch21_heart`, arenas `undertow_heart` (held) and `undertow_heart_letting` (the Letting). Checks: haluna_kit full rebuild (every existing glb byte-identical, 3 new), arena_scenes (every other arena byte-identical), test_undertow_heart + test_undertow_layers (7 OK), test_arenas (21 OK), validate_data, taskboard --check, godot --import, gdlint/gdformat on the test list. Skipped: Godot tests (only the arena list changed; test_battle_arenas runs at the gate) and the shots (render request posted). M3-ENV-727 (Ch20, the Cage) is at 46955a37. **Next:** view renders as they land; then the Ending's open-sea frame (`ending_unbinding`) and the M3-ENV-705 audit continued.
+- **ISKARRA: both passes pushed; FAST-TRACK render requested @ f39cdde3. Was: in progress (the Lead's direct instruction, 22:29). Act II/III is paused until the Iskarra render is
+  approved.**
+  - **Already pushed** (FAST-TRACK request @ 0958af1a, not yet rendered):
+    - Commits 4c0e9732 and 0958af1a.
+    - The towers were inside out since M3-ENV-710; now fixed.
+    - Glazed tile cladding and a blue glaze; windowed storeys; real gallery ledges.
+    - The plaza inlay and fallen tiles; a drowned midground and the far skyline.
+    - Hero stand-ins in place of the preview's capsules; the cast-on-stone test.
+  - **Now:**
+    - Stone and plaster breakup, damage and decals on the towers, gate and plaza.
+    - Paving under Kerrid (9.5, −5.5).
+    - The vigil count in test_iskarra.
+    - Set dressing at Haluna's density.
+  - **For slice-polish (the Prologue's staging is yours):** the three `City/Vigils` capsules (Kerrid, Pell,
+    Liss) are the last capsules in the frame.
+    - Kerrid and Liss have no character models yet. VillagerLayer's adult bodies (fisher, netmender) cast as
+      stand-ins would read as people.
+    - The preview uses the four hero battle stand-ins at their marks (`iskarra_preview_figures.gd`), if that helps.
+    - Also swap `City/Water` (a flat PlaneMesh) for the lagoon WaterSurface the preview uses.
+  - **Lit candles:** none. ADR 0017 and the act outline say "There is no fire" and Rhen's lantern is the only
+    flame, so the vigils get unlit offerings and the lamp columns stay dead. Lead: say if you want that overruled.
+- **2026-10-27 ~21:40, the Lead's FAST-TRACK: Iskarra (M3-ENV-724), MERGE-READY @ 0958af1a** (4c0e9732 plus the far skyline) (claude/env-art, which
+  includes the integration branch at big12, 7f355a8f).
+  - **Root cause of the greybox read.** Every Iskarra tower shaft and lamp column had been wound inside out since
+    M3-ENV-710, so Godot drew the inside of each far wall. Fixed, and covered by a test.
+  - **Materials.** Glazed tile cladding (new `iskarra_tile` texture), a reef-blue glaze for the bands, domes and
+    paving inlay, and a flagstone texture for the paving.
+  - **Trim.** Arched windows on every storey, real gallery ledges with parapets.
+  - **Dressing.** The plaza sunburst inlay and fallen tiles; a drowned midground of two buildings, two domed
+    blocks and a sunk arcade.
+  - **Preview.** Hero stand-ins at the cast marks replace the capsules.
+  - **Vigil gap.** test_iskarra now checks every Prologue cast mark stands on stone, and all pass.
+  - **For slice-polish (its staging; nothing edited there).** The Prologue's `City/Water` is a flat PlaneMesh.
+    Swap it for the lagoon WaterSurface the preview uses (water_surface.gd + lagoon_waves.tres +
+    haluna_water_material.tres). The three `City/Vigils` capsules are the last greybox in that frame. Please
+    re-render slice_prologue_p01 and slice_prologue_vigil_line after merging this.
+  - **Checks.**
+    - test_iskarra 8 OK and test_haluna_kit OK. Blender: haluna_kit rebuilt; only the Iskarra glbs changed, and
+      the rest are byte-identical. Godot import clean; `--filter=iskarra` 1/1; lint and format clean.
+    - Also on this head: the big12 merge (8339d660), `--filter=haluna` 62/0 and `--filter=battle_arena` 18/0.
+      The tools suite is all OK except test_screenshots, which is red only for the new arena shots awaiting their
+      first PC baselines (seawall/coilspire and the others above).
+  - **Since then, the same branch:**
+    - M3-ENV-717: the Keth wall rework (7f1a0fc7, re-render requested).
+    - M3-ENV-716: the Lowlight baseline (5475b0ac).
+    - **M3-ENV-723 Hollowmere** (8cf1e66b, review): the sheet, a 6-piece kit, and the `act3_dusk` grade in
+      `zones/ch17/`. No shot yet; act1-chapters places it.
+    - The Ansedra zone pieces (afa5b0bb).
+    - M3-ENV-725 the Kite (02c3075d, Story review); M3-ENV-726 the Lamp Spire's crown and arena (`5d53f98c`); the
+      Iskarra sheet; the white barge's trim and the chapel's articulation (M3-ENV-705); M3-ENV-1203 to review.
 - **Id blocks (the Lead, CONSOLIDATED §4):** env-art's new task ids are 700–799 (e.g. M3-ENV-710), its ADRs
   0160–0169, and its handoffs are named `<date>-<role>-env-art-<n>.md`. Existing ids stay. The big8 renumbering
   is applied here too: the shell shrine shaft-lamps task is now **M3-ARC-04** (was M3-ARC-02), and the Tidecup
@@ -508,6 +933,24 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **New standing queue started** (your message): M3-ENV-01 Tidecup, M3-ENV-02 Brine Shoals, M3-ENV-03 Terraces of Ash with worktree agents now; M3-ENV-04 Seawall and M3-ENV-05 the lamp-diver sea floor next.
 
 ## Swap-in notes for m2-slice
+- **M3-ENV-101, the save shrine (for Systems/ui-menus, or cinematics if the Lead prefers; @ eeecf13d):** the Haluna
+  kit's `save_shrine.glb` and `save_shrine_core.glb` replace `game/world/save_shrine/save_shrine.tscn`'s `Visual/*`
+  primitives.
+  - **Body.** Replace `Visual/Base`, `Step`, `Pillar`, `Cradle`, `Conduit`, `PostW`, `PostE`, `Canopy` and
+    `CanopyLip` with one instance of `save_shrine.glb` at `Visual`'s origin. Its niche opens toward +Z, so turn
+    `Visual` if a zone wants the front elsewhere.
+  - **Core.** Swap `Visual/Core`'s mesh for an instance of `save_shrine_core.glb` at the same transform
+    (0, 1.92, 0). It is centred on its origin, so the GlimmerField (`Visual/BoundGlimmer`) still holds on it.
+  - **Unchanged.** The `Shape` (use sphere r 1.6) and the `Body` collider (cylinder r 0.62, 2.2 m) still fit: the
+    body stays within r 1.05 and 2.79 m. Import kind: the Haluna kit's (as every Haluna piece).
+  - **Tests.** `tools/tests/test_save_shrine_kit.py` pins the footprint, the core's seat and the open niche.
+- **M3-ENV-100, the Prologue's Iskarra (cinematics/slice-polish):** this is M3-ENV-710's kit, already built.
+  - **Drop-in.** `assets/environments/zones/iskarra/iskarra_city.tscn` keeps the reviewed staging: the plaza top
+    at 0.4 (the terrace), the rise's top at 1.0, the nine towers at the primitives' feet and heights, the arch at
+    (−18, −18), the fallen pillar, and four unlit lamp columns.
+  - **Swap.** The swap note is M3-ENV-711, and it now adds replacing `City/Water` with the project's `WaterSurface`.
+  - The task files for 100 and 101 are only on `claude/m2-slice`. I'll set them to review when they reach the
+    integration branch.
 - **Fog-lamp rule (the Lead, 2026-10-24):** a light near a dense FogVolume keeps `light_volumetric_fog_energy = 0`.
   In `ch03/shell_shrine/shell_shrine.tscn` I set it on my own `Bounce/Skylight` (the light added under M2-ENV-09;
   no registered baseline shows the shrine). Your three `Bounce/Shaft_*` lights and `_pool_bounce()` in

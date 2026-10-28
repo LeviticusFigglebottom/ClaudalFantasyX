@@ -117,9 +117,9 @@
         8000,
         800
       ],
-      "bytes": 73284,
+      "bytes": 117016,
       "lods": {
-        "passenger_bundles": 1256,
+        "passenger_bundles": 2568,
         "passenger_bundles-lod1": 282
       }
     },
@@ -172,9 +172,9 @@
         40000,
         4000
       ],
-      "bytes": 1493212,
+      "bytes": 1528752,
       "lods": {
-        "terrace_hull": 21714,
+        "terrace_hull": 22146,
         "terrace_hull-lod1": 3616
       }
     },

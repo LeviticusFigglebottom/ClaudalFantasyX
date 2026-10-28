@@ -30,4 +30,12 @@ Replace the blocks of Ch8's two greybox zones (M3-C08-02) with env-art's kits. T
 ## Notes
 - The greybox is flat, because the controller has no step-up. The stair, the wall-head and the tiers are painted slabs or rooms in a row. A kit with real height needs the controller's step-up, or ramps.
 
+- **env-art, 2026-10-27 (the kit side is done; the rest is placement):**
+  - **Kits:** the Corrow kit (M3-ENV-04; the seawall, the Watchers, the breach and the storm pieces), the Corrow
+    story pieces (M3-ENV-707) and the Coilspire kit (M3-ENV-10).
+  - **Ch8's arenas:** M3-ENV-713, five of them.
+  - **Sheets:** `corrow.md` and `coilspire.md`, with their shots.
+  - **What's left is placement,** which is act1-chapters' (ADR 0200), as M3-ENV-1203 did for the mole. For the
+    Lead: re-route or close into act1-chapters' swap.
+
 ## Review log

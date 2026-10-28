@@ -115,6 +115,184 @@ key `#FFD5B3` 2.4, fill `#A8B8B0` 0.55, exposure 0.70, saturation ×0.9, `lut_ch
   Its four fires are `FireLight0`–`3` at the arena's root (`lamp_parent` / `lamp_name`; M3-BPR-03's test reads
   them), `light_volumetric_fog_energy` 0. Hint `past_the_brazier`.
 
+### Ch8's wall-head at the Fisher Stair (M3-ENV-713, the Corrow kit)
+
+Every Ch8 encounter had no arena and fought on the sandbox. The set-piece (act1_ch08.md B10–B16,
+set_piece_battles.md) is the wall-head walk over the Fisher Stair (W09–W11), in three states of one table
+(`_wallhead_arena` in `arena_scenes.py`):
+
+| Arena id | Encounters (to set in encounters.json) | Light |
+|---|---|---|
+| `seawall_stairhead_storm` | `ch08_stair_hold_1` (B10) | `ch08` 16:00: sun 30° (world az 250°, over the sea), key `#FFE4CE` 2.0, ambient `#7A8A9C` 1.0, fog `#5E6670`, exposure 0.80, `lut_ch08_storm`, the kit's storm sky |
+| `seawall_stairhead_hoist` | `ch08_stair_hold_2`, `ch08_stair_hold_3` (B12, B14) | the storm coming in: key 1.4, cloud 0.82, fog 0.003; Liss's hoist rigged (`liss_hoist`, its basket and rope by the kerb) |
+| `seawall_stairhead_surge` | `undertows_reach` (B16) | corrow.md `ch08_surge`: sun 22° behind the front at 0.35, ambient `#5E6E80` 0.6, the sky closed (cloud 0.9, no disc), fog 0.006, exposure 0.95, sea-glow 0.06; `BossAnchor` on the parapet behind the enemy line, where the Reach's hand grips |
+
+The kit preview's layout (`game/levels/_tests/corrow_kit/corrow_layout.json`, read-only) is re-based on the walk
+at arc length s −30 (`wallhead_from_world`). The preview is unbent at that segment and turned half round, so:
+- the sea and the parapet's Watchers stand behind the enemy line (−Z), and the camera sees their carved backs
+  (M3-ENV-712);
+- the low town lies 11 m down behind the camera;
+- the Fisher Stair's foot is 10 m to the party's right, and Liss's hoist 13.3 m to the enemies' left;
+- the walk is at y 0 with its centre line at z 0.7. Parapet from z −2.3 and kerb from +3.1 keep every slot's
+  1 m clear floor; that segment is the `Ground`, turned by `ground_yaw`.
+
+Pieces beyond 170 m are left out, except the far land and the headland. The sea is the colour script's `storm_grey`
+(`CORROW_SEA`, the kit preview's water values) at y −12. Dressing: the stair-watch's red shields by the stair head, coils, salvage and
+sacks; in the afternoon states the kites along the parapet (they come down on the run back, so the surge has
+none). Hints `along_the_walk` and `the_storm_wall`.
+
+### Ch8's headland path (`coilspire_headland_path`, M3-ENV-713, the Coilspire kit)
+
+`ch08_headland_gulls` and `ch08_headland_crabs` (act1_ch08.md B04). The path climbs 0.17–0.3 m per metre and is
+2.2 m wide, so the arena has its own copy of the headland. `cs_arena.py` in the Coilspire kit builds it:
+- `arena_headland_ground` and `arena_headland_path`, in the headland frame like the kit's ground and path;
+- the path's profile is levelled for 7 m either side of its mid-point (s 51 of 99 m), blending back over 9 m;
+- at the mid-point, a flagged landing 15.2 × 10.8 m (an ellipse along the path) with a kerb round its rim, open
+  where the path enters and leaves;
+- the kit's treads and kerbs inside it are dropped, and the ground under the flags sits 4 cm down.
+
+The arena re-bases the Coilspire preview (`coilspire_layout.json` and its Corrow `coilspire_backdrop.json`,
+read-only) on the landing's centre:
+- the spire stands 55 m away, back-left of the fight (bearing −30°);
+- the wall and Corrow are behind the camera's right;
+- the kit's own ground and path are left out;
+- scrub within 9 m is dropped, and the rest is re-seated on the arena's ground.
+
+Light `ch08` (16:00) turned with the arena, `lut_ch08_storm` (the beat sheet's `ch08_day` has no colour-script
+row yet), and Corrow's `storm_grey` sea 27.3 m below. Hint `to_the_spire`.
+
+### Coilspire's tier landing (`coilspire_tier_landing`, M3-ENV-713, the Coilspire kit)
+
+`ch08_flue_moths`: the trial's two placed fights on tiers 2 and 4 (act1_ch08.md B05). The spire's well is 7–9 m
+across, and the battle camera stands 8 m off the slots, so no true tier fits a fight.
+
+`arena_tier_hall` (`cs_arena.build_tier_hall`, arena frame) is the tier as a stage set:
+- the well is widened to r 7 m;
+- the near 80° on the camera's side is open, and the far 280° of the inner face stands 13.5 m high in courses,
+  sooted from 5.5 m up, with four slits through it (reveals);
+- floor: the flagged floor round the well's iron grate;
+- the tier's landing on corbels at 4.8 m and the next at 9.6 m, with flights hugging the wall up to each;
+- copper risers from the three flue-keys.
+
+`hall_fittings()` places the kit's `flue_key`, `flue_key_wheel` and `tier_brazier` pieces; each brazier carries an
+`#FFB16E` light (2.0, 8 m).
+
+Light `ch08_coilspire_int` (coilspire.md): ambient `#5A7E78` 2.0, fog `#24443F`, exposure 1.5,
+`lut_ch08_coilspire_int`, and the sun steep down the shaft (64°, 0.9). Hint `up_the_well`.
+
+### Keth Pass's seeping terrace (`keth_seep_terrace`, M3-ENV-717, the Haluna kit's keth.py)
+
+For the Avalanche Ram (Ch12; the encounter id is the creatures and combat tracks'). The old Lit Age road's level
+top is the floor. Laid stone flags have their tops at y 0, with a kerb along the front edge.
+
+| Where | What |
+|---|---|
+| Behind the enemy line | Three 12 m modules of `lit_terrace_wall` rise 8.5 m; the seep runs down their face in sheets of held light (not ice: ADR 0015) |
+| By the wall's foot | `seep_pool` at (−9, −4.2) in pale grass; the `BossAnchor` beside it |
+| Behind the foes | `pass_cord` across the terrace at z −4 |
+| Front corners | Two cairns |
+| Behind the camera | The scree falls 14 m to the switchback; crags rise either side; `keth_far_ridges` rings the pass |
+
+Light `ch12` (09:00): sun 30° / 140°, key `#FAF6FF` 2.8, ambient `#7FA6DC` 0.8, exposure 0.65, and
+`lut_ch12_heights` (`keth_zone_lut.py`: ×0.9, the keth reds spared, whites slightly blue). There is no sea in
+frame: the contract's `Sea` lies 160 m down the valley. Hints `under_the_wall`, `the_pass_below` (Kerrid's breath
+frame).
+
+### Lowlight's engine hall (`lowlight_engine_hall`, M3-ENV-716, the Haluna kit's lowlight.py)
+
+For the Lamp Engine (Ch11; the encounter id belongs to the creatures and combat tracks). The hall below the sanctum
+is flooded:
+- The floor is −0.6 and the arena's water lies at −0.15, still, on its own wave set (sea `waves`: 4 mm and 2 mm).
+- The battle floor is a dry dais, 10.8 × 8.2 m, of laid flags on a bedding slab with their tops at y 0. It runs from
+  x −4.6 to 6.2 and z −3.4 to 4.8: the slots' metre clear, off-centre toward the party. Two steps go down into the
+  water on every side.
+
+| Where | What |
+|---|---|
+| Behind the enemy line | The back wall: three tiers of empty lamp niches, the Engine's copper trimming rail at 3.5 m with its bound-teal lamps, two `conduit_run`s low on the wall |
+| Behind the foes, left | The fallen vault bay (x −6 to 0, z −10.5 to −4.5): the grey daylight shaft, its rubble in the water |
+| Off the dais, enemy side | The `BossAnchor` (−6.4, −0.6, −2.6): the Engine stands knee-deep in the water |
+| Round the hall | Eight ceramic piers carrying the ribbed vault (9 m; over 6 m clear above the slots), the conduit along the cornice |
+| Behind the camera | The stair down from the sanctum |
+
+Light `ch11` (12:30 overcast):
+- sun 65° / 200°, key `#F3F2FF` 1.4 through the broken bay, ambient `#7FA3A8` 0.7, exposure 0.75;
+- twelve rail lamps in `glimmer_bound` `#4FB3B0`, 1.6 and 9 m each, steady: an emissive globe, no flicker;
+- `lut_ch11_vey` (`lowlight_zone_lut.py`: ×0.85, greens ×0.6, the bound teal spared, the toe toward a teal slate).
+
+The water is the colour script's `overcast_lagoon`, with SSR on (the conduits' long reflections). Hints:
+`under_the_shaft`, `the_lamps`. Nothing is frozen (ADR 0015/0016).
+
+### Ossa Fen's dead mangrove (`ossa_fen_roots`, M3-ENV-718, the Haluna kit's ossa_fen.py)
+
+For the Mangrove Drowner (Ch10; the encounter id belongs to the creatures and combat tracks). The floor is a mudbank
+in the channels, level at y 0 for 1.2 m past the slots' floor. Beyond that it shelves into still tannin water at
+−0.15, then into the channels. A few small surface roots cross the mud outside the slots' floor.
+
+| Where | What |
+|---|---|
+| Behind the enemy line | `mangrove_dead` at (−9.5, −7.5): the great dead tree, bleached and bare, leaning over the Drowner; its prop-roots only on the far side |
+| In the water, enemy side | The `BossAnchor` (−8.2, −0.15, −3.8): the Drowner's own roots stand in the water at the dead tree's foot |
+| Round the bank | Nine living `mangrove_tree`s on their mud mounds, five `reed_bed`s in the slack, the `fen_far_mangroves` ring in the fog |
+| Behind the camera | The channel the party came up, deepening |
+
+Light `ch10` (18:20 overcast dusk):
+- sun 2° / 275°, key `#FFFEFA` 0.9, ambient `#6F7E8E` 0.5, exposure 0.9, dense fog `#5A6A62`;
+- `lut_ch10_fen` (`fen_zone_lut.py`: ×0.85, greens ×0.45 pulled toward grey-teal, the motes' gold kept, the toe toward
+  tannin brown).
+
+The water is the colour script's `tannin_fen` (σ 0.6 / 1.4 / 4.0, deep `#3A2A18`, caustics off, SSR on), on the
+arena's own still wave set. The trees use the vegetation shaders' wind; their roots never sway. Hints:
+`the_dead_crown`, `the_channel`.
+
+### The bridal barge at night (`bridal_barge_night`, M3-ENV-720, the Haluna kit's bridal_barge.py)
+
+For the Wakefin (Ch15; the encounter id belongs to the creatures and combat tracks). The floor is Merel's bridal
+barge, its deck level at y 0 (16 × 7.5 m, along X, the bow toward the enemy side). It drifts on open water at −0.6.
+The near rail (0.35 m) stays under the camera's rays to the slots.
+
+| Where | What |
+|---|---|
+| In the sea, off the bow | The `BossAnchor` (−10, −0.6, −1.5): the Wakefin circles at the waterline; its fin is the read |
+| The stern | The canopy of red bridal cloth on gilt posts; Tobin's bier under Merel's bridal cloth |
+| The bow | An empty gilt lamp hook (wedding barges carry no lamp) |
+| Around | Open water and the sea-glow to the horizon; no land |
+
+Light `ch15` (01:00, unlamped):
+- the moon `#D2DFFF` 0.25 (rule 3b), fill `#0B1630` 0.15, `night_sea` with sea-glow 0.12, exposure 1.10;
+- `lut_ch15_unlamped` (`zone_lut.py`: ×0.85, the warm hues cut, never boosted, the toe at `night_sky`);
+- **no lamps and no flames**: `test_bridal_barge` pins it.
+
+Hints: `the_bier`, `the_dark_water`.
+
+### Ansedra's lagoon at the wedding's dusk (`ansedra_lagoon_escape`, M3-ENV-721, the Haluna kit's ansedra.py)
+
+For Warden Malcor Venn (Ch14). The party stands on Merel's bridal barge (`bridal_barge`, its deck at y 0) out on
+the lagoon (water at −0.6, still and then rippling on its own short wave set).
+
+| Where | What |
+|---|---|
+| Alongside, behind the enemy line | `pursuit_barge` at (−2, −7.6), black lacquer and gilt, the bound flat-engine on its poop; the `BossAnchor` on its deck at the near rail (−4.5, −0.2, −7.0) |
+| Behind it | Four `bowl_dome`s on their islands at 70–140 m, and the skyline ring `ansedra_far_domes_lit` (the windows lit: the city watching the water move) |
+
+Light `ch14`: sun 5° / 270° (the script's 1° let the bow rail's shadow cover the whole deck, so the floor read black in c770380's render), key `#FFAA5F` 1.4, fill `#4A5A78` 0.4, exposure 0.90, `lut_ch14_wedding` (`zone_lut.py`:
+the reds pushed, the rest cooled, S-curve 0.7, the toe navy). No lamp on either barge. Hints: `the_engine`,
+`the_city_watching`.
+
+### The Drowned Choir at moonrise (`drowned_choir_ring`, M3-ENV-722, the Haluna kit's drowned_choir.py)
+
+For Sefir's Abiding guard (Ch16; a group, so no `BossAnchor`). The floor is the singer's dais at the bottom of the
+sunken amphitheatre: laid ceramic flags, r 7.5, level at y 0. The flooded ring channel lies round it (the water at
+−0.25); six broken seat-tiers rise to r 21.5; the white sand flats run under the water to the horizon.
+
+| Where | What |
+|---|---|
+| Round the arena, r 44 | Ten `choir_singer`s (24 m, hooded, the heads tilted up and the mouths open) standing in the sea, all facing the centre; the far side of the ring fills the frame behind the enemy line |
+| The sky | The moon low behind the enemy line (`#D2DFFF` 0.35, 12° at azimuth 306°: in the gap between two singers, so no singer's shadow and not the tiers' rim falls on the dais; tested), the night sky shader's disc |
+
+Light (pale_rim.md §0, the Choir at moonrise): fill `#2A3A4E` 0.25, `pale_rim` water at night, sea-glow 0.1,
+exposure 1.1, `lut_ch16_choir` (`zone_lut.py`: ×0.7, low contrast, the stone cold). Hints: `the_mouths`, `the_ring`.
+
 ### The underwater arena (`underway_tower`)
 
 An arena under the sea carries its own look, because the battle scene has none:
@@ -229,3 +407,49 @@ the encounter row. The first fight (Haluna beach) and the Drownbell get their ar
   deck so the contract's floor tests stay as they were.
 - **The sunset party stands in the bell's shadow:** at 2° the bell stand-in's shadow runs 60 m east over party
   slot 0. It reads (dark figures on lit paving around it) and it is the light the script asks for.
+
+### The Lamp Spire's crown at nightfall (`iskarra_spire_crown`, M3-ENV-726, the Haluna kit's iskarra_spire.py)
+
+For Warden Hesper Oan and Ilsabet Rue (Ch19). Iskarra's Lamp Spire is crowned 112 m over the drowned city.
+
+**The floor** is a round deck of the city's flags (r 12), level at y 0, with flush glazed rings and rays. A
+balustrade runs round its edge, and an arcade of twelve columns carries round arches; two bays have fallen.
+
+| Where | What |
+|---|---|
+| Behind the enemy line, (−7.2, −4.6) | The founders' `anchor_engine`: a salt-glass column round a bound core, caged in three bronze rings; its teal is the one practical light (`Lamp0`, shadowed) |
+| Below, y −112 | `iskarra_far_towers`, the drowned city, set off the origin by `extra_glbs`' new `(glb, (x, y, z))` form |
+
+- **Light** (iskarra.md §3): the afterglow low in the west `#FF9F46` 0.7, set behind the party (azimuth 100° in the arena's frame) so the engine's long shadow falls away from the slots (tested); fill `#5A7FA8` 0.4, exposure 1.0, `lut_ch19_spire`.
+- **Hints:** `the_engine`, `the_city_below`.
+
+### The Cage in the last remembered room (`undertow_cage`, M3-ENV-727, the Haluna kit's undertow_layers.py)
+
+For the Cage (Ch20; the four bound founders, a multi-part boss). The floor is `memory_island`: the founders' Iskarra
+flags on a floating fragment (r 9), level at y 0, with the Lit Age sunburst behind the enemy line.
+
+| Where | What |
+|---|---|
+| Behind the enemy line | Four `held_pillar`s, broken lamp columns threaded with held glimmer, each with a cyan `Lamp` |
+| Round the floor, 25–65 m | The other remembered rooms hanging in the dark (`memory_kitchen`, `memory_market`, `memory_stands`, a bare island) |
+
+- **Light** (undertow_layers.md §0): `#C4D6FF` 0.8 from above, fill `#061A2B`, dense fog `#0E3A48`, exposure 1.1,
+  `lut_ch20_abyss`.
+- **Hints:** `the_rooms`, `the_cage`.
+
+### The Heart, Sefir's fight (`undertow_heart`, `undertow_heart_letting`, M3-ENV-728, the Haluna kit's undertow_heart.py)
+
+For Sefir (Ch21, three phases). The floor is `heart_floor`: a disc (r 11) of salt-glass plates over held glimmer, the
+seams lit, level at y 0, stepping down at its rim to still water at −0.3.
+
+| Where | What |
+|---|---|
+| Behind the enemy line, in the water | `heart_column`, Imra's light: a 40 m column of held glimmer in glass sleeves, with a `Lamp` |
+| Round everything, r 160 m | `heart_eyewall`, the storm's inner wall, dark, banded with held light spiralling down and in |
+
+- **`undertow_heart`** (phases 1–2, held): `#C4D6FF` 0.8 from above, fill `#0E4A55` 0.3, fog `#0E2A3A`, exposure
+  1.05, `lut_ch20_abyss`; the column's lamp cyan `#7FC6D9`.
+- **`undertow_heart_letting`** (phase 3, the Letting): the colour script's warm key `#FFDCBF` 1.2, the column's lamp
+  the rim `#FFE9B8` 2.0, `lut_ch21_heart`. The cross-fade between the two over the countdown is the battle stage's
+  (or Rendering's) to drive; these are its two ends.
+- **Hints:** `the_column`, `the_eyewall`.

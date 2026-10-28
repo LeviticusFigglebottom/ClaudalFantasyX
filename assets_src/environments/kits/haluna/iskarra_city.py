@@ -23,6 +23,7 @@ TOWER_FOOT_Y = -3.0
 PIECES = (
     ("Plaza", "iskarra_plaza", 0.0, 0.4, 2.0, 0.0, 1.0, 1.0),
     ("Rise", "iskarra_plaza_rise", -3.0, 0.2, -2.0, 0.0, 1.0, 1.0),
+    ("VigilDressing", "iskarra_vigil_dressing", 0.0, 0.4, 2.0, 0.0, 1.0, 1.0),  # M3-ENV-724, in the plaza's frame
     ("TowerA", "iskarra_tower_spire", -46.0, TOWER_FOOT_Y, -70.0, 20.0, 1.0, 1.0),
     ("TowerB", "iskarra_tower_stepped", -24.0, TOWER_FOOT_Y, -92.0, 0.0, 0.91, 1.0),
     ("TowerC", "iskarra_tower_broken", -8.0, TOWER_FOOT_Y, -60.0, 140.0, 0.8, 0.6),
@@ -40,6 +41,14 @@ PIECES = (
     ("Lamp1", "iskarra_lamp_column", -5.0, 0.4, -6.2, 90.0, 1.0, 1.0),
     ("Lamp2", "iskarra_lamp_column", 5.0, 0.4, -6.2, 180.0, 1.0, 1.0),
     ("Lamp3", "iskarra_lamp_column", 15.0, 0.4, -6.2, 270.0, 1.0, 1.0),
+    # M3-ENV-724: the drowned midground between the plaza and the towers (the sea at y 0), so the water between them
+    # reads as a flooded city, not an empty plane: two buildings' top storeys, two domed blocks, a sunk arcade.
+    ("DrownedBlockA", "iskarra_drowned_block", -30.0, 0.0, -30.0, 12.0, 1.0, 1.0),
+    ("DrownedBlockB", "iskarra_drowned_block", 44.0, 0.0, -46.0, -25.0, 1.1, 1.0),
+    ("DrownedDomeA", "iskarra_drowned_dome", -58.0, 0.0, -52.0, 30.0, 1.0, 1.0),
+    ("DrownedDomeB", "iskarra_drowned_dome", 38.0, 0.0, -24.0, 8.0, 0.9, 0.9),
+    ("ArcadeSunk", "iskarra_arcade_sunk", -40.0, 0.0, -20.0, 75.0, 1.0, 1.0),
+    ("FarTowers", "iskarra_far_towers", 0.0, 0.0, 0.0, 0.0, 1.0, 1.0),
 )
 
 

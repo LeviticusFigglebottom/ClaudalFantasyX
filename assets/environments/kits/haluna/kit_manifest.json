@@ -2,6 +2,50 @@
   "generator": "assets_src/environments/kits/haluna/build.py",
   "kit": "haluna",
   "pieces": {
+    "anchor_engine": {
+      "budget": [
+        8000,
+        600
+      ],
+      "bytes": 136876,
+      "lods": {
+        "anchor_engine": 2640,
+        "anchor_engine-lod1": 564
+      }
+    },
+    "ansedra_far_domes": {
+      "budget": [
+        8000,
+        3000
+      ],
+      "bytes": 494648,
+      "lods": {
+        "ansedra_far_domes": 5400,
+        "ansedra_far_domes-lod1": 2720
+      }
+    },
+    "ansedra_far_domes_lit": {
+      "budget": [
+        8000,
+        3000
+      ],
+      "bytes": 642788,
+      "lods": {
+        "ansedra_far_domes_lit": 6840,
+        "ansedra_far_domes_lit-lod1": 2720
+      }
+    },
+    "archive_stacks": {
+      "budget": [
+        9000,
+        500
+      ],
+      "bytes": 869628,
+      "lods": {
+        "archive_stacks": 8200,
+        "archive_stacks-lod1": 288
+      }
+    },
     "arena_causeway_arms": {
       "budget": [
         30000,
@@ -90,6 +134,39 @@
         "basket_set-lod1": 153
       }
     },
+    "bowl_dome": {
+      "budget": [
+        6000,
+        400
+      ],
+      "bytes": 229784,
+      "lods": {
+        "bowl_dome": 3242,
+        "bowl_dome-lod1": 150
+      }
+    },
+    "bridal_barge": {
+      "budget": [
+        16000,
+        1200
+      ],
+      "bytes": 217384,
+      "lods": {
+        "bridal_barge": 3754,
+        "bridal_barge-lod1": 648
+      }
+    },
+    "cairn": {
+      "budget": [
+        2500,
+        150
+      ],
+      "bytes": 42812,
+      "lods": {
+        "cairn": 652,
+        "cairn-lod1": 36
+      }
+    },
     "cargo_sacks": {
       "budget": [
         3200,
@@ -156,6 +233,72 @@
         "causeway_slab_steps-lod1": 36
       }
     },
+    "choir_amphitheatre": {
+      "budget": [
+        18000,
+        1400
+      ],
+      "bytes": 516116,
+      "lods": {
+        "choir_amphitheatre": 5044,
+        "choir_amphitheatre-lod1": 304
+      }
+    },
+    "choir_singer": {
+      "budget": [
+        5000,
+        300
+      ],
+      "bytes": 99192,
+      "lods": {
+        "choir_singer": 2172,
+        "choir_singer-lod1": 274
+      }
+    },
+    "cloudloom_hall": {
+      "budget": [
+        16000,
+        1200
+      ],
+      "bytes": 203672,
+      "lods": {
+        "cloudloom_hall": 1778,
+        "cloudloom_hall-lod1": 292
+      }
+    },
+    "clutch_stone": {
+      "budget": [
+        1500,
+        100
+      ],
+      "bytes": 14700,
+      "lods": {
+        "clutch_stone": 210,
+        "clutch_stone-lod1": 12
+      }
+    },
+    "conduit_housing": {
+      "budget": [
+        3000,
+        120
+      ],
+      "bytes": 50616,
+      "lods": {
+        "conduit_housing": 656,
+        "conduit_housing-lod1": 36
+      }
+    },
+    "conduit_run": {
+      "budget": [
+        1500,
+        120
+      ],
+      "bytes": 12208,
+      "lods": {
+        "conduit_run": 68,
+        "conduit_run-lod1": 16
+      }
+    },
     "coral_boulder_a": {
       "budget": [
         3600,
@@ -200,6 +343,17 @@
         "crate_stack-lod1": 36
       }
     },
+    "dace_hull_frame": {
+      "budget": [
+        12000,
+        800
+      ],
+      "bytes": 216052,
+      "lods": {
+        "dace_hull_frame": 3538,
+        "dace_hull_frame-lod1": 608
+      }
+    },
     "dock_haluna": {
       "budget": [
         26000,
@@ -211,6 +365,17 @@
         "dock_haluna-lod1": 152
       }
     },
+    "engine_hall": {
+      "budget": [
+        34000,
+        2400
+      ],
+      "bytes": 748012,
+      "lods": {
+        "engine_hall": 7812,
+        "engine_hall-lod1": 480
+      }
+    },
     "feast_mat": {
       "budget": [
         4000,
@@ -220,6 +385,28 @@
       "lods": {
         "feast_mat": 1046,
         "feast_mat-lod1": 2
+      }
+    },
+    "fen_bank_ground": {
+      "budget": [
+        30000,
+        2400
+      ],
+      "bytes": 601640,
+      "lods": {
+        "fen_bank_ground": 14462,
+        "fen_bank_ground-lod1": 1920
+      }
+    },
+    "fen_far_mangroves": {
+      "budget": [
+        4000,
+        800
+      ],
+      "bytes": 58552,
+      "lods": {
+        "fen_far_mangroves": 1080,
+        "fen_far_mangroves-lod1": 384
       }
     },
     "fish_drying_rack": {
@@ -266,6 +453,116 @@
         "ground_lamp-lod1": 47
       }
     },
+    "heart_column": {
+      "budget": [
+        3000,
+        400
+      ],
+      "bytes": 31336,
+      "lods": {
+        "heart_column": 408,
+        "heart_column-lod1": 150
+      }
+    },
+    "heart_eyewall": {
+      "budget": [
+        6000,
+        1200
+      ],
+      "bytes": 196336,
+      "lods": {
+        "heart_eyewall": 4848,
+        "heart_eyewall-lod1": 544
+      }
+    },
+    "heart_floor": {
+      "budget": [
+        9000,
+        600
+      ],
+      "bytes": 283320,
+      "lods": {
+        "heart_floor": 2964,
+        "heart_floor-lod1": 224
+      }
+    },
+    "held_pillar": {
+      "budget": [
+        3000,
+        200
+      ],
+      "bytes": 65716,
+      "lods": {
+        "held_pillar": 1084,
+        "held_pillar-lod1": 172
+      }
+    },
+    "hesk_dais": {
+      "budget": [
+        3000,
+        200
+      ],
+      "bytes": 18616,
+      "lods": {
+        "hesk_dais": 120,
+        "hesk_dais-lod1": 36
+      }
+    },
+    "hm_far_flotilla": {
+      "budget": [
+        9000,
+        2500
+      ],
+      "bytes": 513276,
+      "lods": {
+        "hm_far_flotilla": 4134,
+        "hm_far_flotilla-lod1": 1386
+      }
+    },
+    "hm_lashed_hulls": {
+      "budget": [
+        9000,
+        700
+      ],
+      "bytes": 206520,
+      "lods": {
+        "hm_lashed_hulls": 3418,
+        "hm_lashed_hulls-lod1": 368
+      }
+    },
+    "hm_signal_lamp": {
+      "budget": [
+        1500,
+        150
+      ],
+      "bytes": 25432,
+      "lods": {
+        "hm_signal_lamp": 136,
+        "hm_signal_lamp-lod1": 68
+      }
+    },
+    "hm_tide_wheel": {
+      "budget": [
+        6000,
+        450
+      ],
+      "bytes": 100488,
+      "lods": {
+        "hm_tide_wheel": 1348,
+        "hm_tide_wheel-lod1": 340
+      }
+    },
+    "hm_windmill": {
+      "budget": [
+        5000,
+        400
+      ],
+      "bytes": 46828,
+      "lods": {
+        "hm_windmill": 296,
+        "hm_windmill-lod1": 208
+      }
+    },
     "house_tile_a": {
       "budget": [
         22000,
@@ -310,15 +607,26 @@
         "ink_kit-lod1": 12
       }
     },
+    "iskarra_arcade_sunk": {
+      "budget": [
+        5000,
+        300
+      ],
+      "bytes": 76508,
+      "lods": {
+        "iskarra_arcade_sunk": 732,
+        "iskarra_arcade_sunk-lod1": 276
+      }
+    },
     "iskarra_arch": {
       "budget": [
         4000,
         200
       ],
-      "bytes": 101320,
+      "bytes": 101152,
       "lods": {
-        "iskarra_arch": 2220,
-        "iskarra_arch-lod1": 108
+        "iskarra_arch": 1924,
+        "iskarra_arch-lod1": 140
       }
     },
     "iskarra_arch_fallen": {
@@ -326,9 +634,9 @@
         4000,
         200
       ],
-      "bytes": 111780,
+      "bytes": 100896,
       "lods": {
-        "iskarra_arch_fallen": 2148,
+        "iskarra_arch_fallen": 1716,
         "iskarra_arch_fallen-lod1": 156
       }
     },
@@ -337,10 +645,43 @@
         4000,
         300
       ],
-      "bytes": 79824,
+      "bytes": 98460,
       "lods": {
-        "iskarra_crown_fallen": 1692,
-        "iskarra_crown_fallen-lod1": 136
+        "iskarra_crown_fallen": 1904,
+        "iskarra_crown_fallen-lod1": 160
+      }
+    },
+    "iskarra_drowned_block": {
+      "budget": [
+        9000,
+        400
+      ],
+      "bytes": 135572,
+      "lods": {
+        "iskarra_drowned_block": 1572,
+        "iskarra_drowned_block-lod1": 132
+      }
+    },
+    "iskarra_drowned_dome": {
+      "budget": [
+        9000,
+        400
+      ],
+      "bytes": 131624,
+      "lods": {
+        "iskarra_drowned_dome": 1860,
+        "iskarra_drowned_dome-lod1": 172
+      }
+    },
+    "iskarra_far_towers": {
+      "budget": [
+        14000,
+        1300
+      ],
+      "bytes": 692348,
+      "lods": {
+        "iskarra_far_towers": 10830,
+        "iskarra_far_towers-lod1": 876
       }
     },
     "iskarra_lamp_column": {
@@ -348,9 +689,9 @@
         1500,
         100
       ],
-      "bytes": 42792,
+      "bytes": 47128,
       "lods": {
-        "iskarra_lamp_column": 822,
+        "iskarra_lamp_column": 818,
         "iskarra_lamp_column-lod1": 60
       }
     },
@@ -359,9 +700,9 @@
         14000,
         600
       ],
-      "bytes": 329688,
+      "bytes": 624296,
       "lods": {
-        "iskarra_plaza": 3384,
+        "iskarra_plaza": 6936,
         "iskarra_plaza-lod1": 144
       }
     },
@@ -370,65 +711,208 @@
         3000,
         120
       ],
-      "bytes": 11664,
+      "bytes": 27592,
       "lods": {
-        "iskarra_plaza_rise": 84,
+        "iskarra_plaza_rise": 216,
         "iskarra_plaza_rise-lod1": 24
       }
     },
     "iskarra_tower_broken": {
       "budget": [
-        16000,
-        1200
+        36000,
+        2400
       ],
-      "bytes": 222536,
+      "bytes": 629500,
       "lods": {
-        "iskarra_tower_broken": 5496,
-        "iskarra_tower_broken-lod1": 312
+        "iskarra_tower_broken": 10784,
+        "iskarra_tower_broken-lod1": 360
       }
     },
     "iskarra_tower_small": {
       "budget": [
-        16000,
-        1200
+        36000,
+        2400
       ],
-      "bytes": 152528,
+      "bytes": 311408,
       "lods": {
-        "iskarra_tower_small": 3660,
-        "iskarra_tower_small-lod1": 232
+        "iskarra_tower_small": 5600,
+        "iskarra_tower_small-lod1": 280
       }
     },
     "iskarra_tower_small_broken": {
       "budget": [
-        16000,
-        1200
+        36000,
+        2400
       ],
-      "bytes": 100332,
+      "bytes": 193300,
       "lods": {
-        "iskarra_tower_small_broken": 2256,
-        "iskarra_tower_small_broken-lod1": 144
+        "iskarra_tower_small_broken": 3304,
+        "iskarra_tower_small_broken-lod1": 168
       }
     },
     "iskarra_tower_spire": {
       "budget": [
-        16000,
-        1200
+        36000,
+        2400
       ],
-      "bytes": 396812,
+      "bytes": 1337364,
       "lods": {
-        "iskarra_tower_spire": 9408,
-        "iskarra_tower_spire-lod1": 544
+        "iskarra_tower_spire": 22544,
+        "iskarra_tower_spire-lod1": 664
       }
     },
     "iskarra_tower_stepped": {
       "budget": [
+        36000,
+        2400
+      ],
+      "bytes": 662008,
+      "lods": {
+        "iskarra_tower_stepped": 11688,
+        "iskarra_tower_stepped-lod1": 424
+      }
+    },
+    "iskarra_vigil_dressing": {
+      "budget": [
+        9000,
+        500
+      ],
+      "bytes": 301552,
+      "lods": {
+        "iskarra_vigil_dressing": 4440,
+        "iskarra_vigil_dressing-lod1": 60
+      }
+    },
+    "keth_curtain": {
+      "budget": [
+        4000,
+        300
+      ],
+      "bytes": 319560,
+      "lods": {
+        "keth_curtain": 2844,
+        "keth_curtain-lod1": 240
+      }
+    },
+    "keth_far_ridges": {
+      "budget": [
+        4000,
+        1500
+      ],
+      "bytes": 33912,
+      "lods": {
+        "keth_far_ridges": 576,
+        "keth_far_ridges-lod1": 240
+      }
+    },
+    "keth_road_switchback": {
+      "budget": [
+        8000,
+        500
+      ],
+      "bytes": 144168,
+      "lods": {
+        "keth_road_switchback": 1152,
+        "keth_road_switchback-lod1": 228
+      }
+    },
+    "keth_scree_slope": {
+      "budget": [
+        12000,
+        1000
+      ],
+      "bytes": 133036,
+      "lods": {
+        "keth_scree_slope": 3200,
+        "keth_scree_slope-lod1": 128
+      }
+    },
+    "keth_terrace_ground": {
+      "budget": [
+        26000,
+        2400
+      ],
+      "bytes": 954248,
+      "lods": {
+        "keth_terrace_ground": 14832,
+        "keth_terrace_ground-lod1": 2048
+      }
+    },
+    "kirru_roost": {
+      "budget": [
+        9000,
+        700
+      ],
+      "bytes": 173332,
+      "lods": {
+        "kirru_roost": 3060,
+        "kirru_roost-lod1": 492
+      }
+    },
+    "kite_engine": {
+      "budget": [
+        4000,
+        300
+      ],
+      "bytes": 45320,
+      "lods": {
+        "kite_engine": 496,
+        "kite_engine-lod1": 96
+      }
+    },
+    "kite_hull": {
+      "budget": [
         16000,
         1200
       ],
-      "bytes": 286268,
+      "bytes": 118664,
       "lods": {
-        "iskarra_tower_stepped": 6912,
-        "iskarra_tower_stepped-lod1": 352
+        "kite_hull": 2174,
+        "kite_hull-lod1": 172
+      }
+    },
+    "kite_rig": {
+      "budget": [
+        10000,
+        800
+      ],
+      "bytes": 49264,
+      "lods": {
+        "kite_rig": 442,
+        "kite_rig-lod1": 170
+      }
+    },
+    "lacquer_court_ground": {
+      "budget": [
+        12000,
+        800
+      ],
+      "bytes": 282476,
+      "lods": {
+        "lacquer_court_ground": 2556,
+        "lacquer_court_ground-lod1": 192
+      }
+    },
+    "lacquer_hall": {
+      "budget": [
+        8000,
+        500
+      ],
+      "bytes": 87052,
+      "lods": {
+        "lacquer_hall": 900,
+        "lacquer_hall-lod1": 264
+      }
+    },
+    "lamp_niche_tier": {
+      "budget": [
+        3000,
+        200
+      ],
+      "bytes": 44212,
+      "lods": {
+        "lamp_niche_tier": 420,
+        "lamp_niche_tier-lod1": 84
       }
     },
     "laundry_line": {
@@ -486,6 +970,83 @@
         "lit_age_ring-lod1": 144
       }
     },
+    "lit_terrace_wall": {
+      "budget": [
+        16000,
+        1200
+      ],
+      "bytes": 65304,
+      "lods": {
+        "lit_terrace_wall": 596,
+        "lit_terrace_wall-lod1": 44
+      }
+    },
+    "lowlight_lamp_bench": {
+      "budget": [
+        2500,
+        150
+      ],
+      "bytes": 27368,
+      "lods": {
+        "lowlight_lamp_bench": 216,
+        "lowlight_lamp_bench-lod1": 60
+      }
+    },
+    "lowlight_nave_bay": {
+      "budget": [
+        24000,
+        1500
+      ],
+      "bytes": 355932,
+      "lods": {
+        "lowlight_nave_bay": 4716,
+        "lowlight_nave_bay-lod1": 412
+      }
+    },
+    "lowlight_nave_bay_broken": {
+      "budget": [
+        24000,
+        1500
+      ],
+      "bytes": 366872,
+      "lods": {
+        "lowlight_nave_bay_broken": 4756,
+        "lowlight_nave_bay_broken-lod1": 406
+      }
+    },
+    "lowlight_sanctum": {
+      "budget": [
+        18000,
+        1200
+      ],
+      "bytes": 236096,
+      "lods": {
+        "lowlight_sanctum": 4024,
+        "lowlight_sanctum-lod1": 288
+      }
+    },
+    "mangrove_dead": {
+      "budget": [
+        12000,
+        900
+      ],
+      "bytes": 191748,
+      "lods": {
+        "mangrove_dead": 4102,
+        "mangrove_dead-lod1": 560
+      }
+    },
+    "mangrove_tree": {
+      "budget": [
+        10000,
+        900
+      ],
+      "bytes": 366848,
+      "lods": {
+        "mangrove_tree": 5946,
+        "mangrove_tree-lod1": 646
+      }
+    },
     "market_stall": {
       "budget": [
         6000,
@@ -495,6 +1056,61 @@
       "lods": {
         "market_stall": 1884,
         "market_stall-lod1": 192
+      }
+    },
+    "memory_island": {
+      "budget": [
+        12000,
+        900
+      ],
+      "bytes": 234288,
+      "lods": {
+        "memory_island": 3948,
+        "memory_island-lod1": 160
+      }
+    },
+    "memory_kitchen": {
+      "budget": [
+        7000,
+        500
+      ],
+      "bytes": 97020,
+      "lods": {
+        "memory_kitchen": 1820,
+        "memory_kitchen-lod1": 208
+      }
+    },
+    "memory_market": {
+      "budget": [
+        7000,
+        500
+      ],
+      "bytes": 109616,
+      "lods": {
+        "memory_market": 1800,
+        "memory_market-lod1": 276
+      }
+    },
+    "memory_stands": {
+      "budget": [
+        7000,
+        500
+      ],
+      "bytes": 91600,
+      "lods": {
+        "memory_stands": 1648,
+        "memory_stands-lod1": 268
+      }
+    },
+    "name_shell_cord": {
+      "budget": [
+        3000,
+        250
+      ],
+      "bytes": 105876,
+      "lods": {
+        "name_shell_cord": 1960,
+        "name_shell_cord-lod1": 240
       }
     },
     "net_float_cluster": {
@@ -557,9 +1173,9 @@
         9000,
         900
       ],
-      "bytes": 199956,
+      "bytes": 401620,
       "lods": {
-        "order_chapel": 3280,
+        "order_chapel": 5528,
         "order_chapel-lod1": 406
       }
     },
@@ -572,6 +1188,28 @@
       "lods": {
         "outrigger_7m": 1940,
         "outrigger_7m-lod1": 300
+      }
+    },
+    "pale_rim_flats": {
+      "budget": [
+        6000,
+        800
+      ],
+      "bytes": 144560,
+      "lods": {
+        "pale_rim_flats": 4032,
+        "pale_rim_flats-lod1": 448
+      }
+    },
+    "pass_cord": {
+      "budget": [
+        7000,
+        400
+      ],
+      "bytes": 347060,
+      "lods": {
+        "pass_cord": 3510,
+        "pass_cord-lod1": 276
       }
     },
     "pilgrim_marker_post": {
@@ -618,6 +1256,83 @@
         "pot_plants-lod1": 198
       }
     },
+    "pursuit_barge": {
+      "budget": [
+        10000,
+        700
+      ],
+      "bytes": 114820,
+      "lods": {
+        "pursuit_barge": 1956,
+        "pursuit_barge-lod1": 484
+      }
+    },
+    "quellan_house": {
+      "budget": [
+        7000,
+        500
+      ],
+      "bytes": 664620,
+      "lods": {
+        "quellan_house": 6456,
+        "quellan_house-lod1": 76
+      }
+    },
+    "quellan_inn": {
+      "budget": [
+        12000,
+        700
+      ],
+      "bytes": 967588,
+      "lods": {
+        "quellan_inn": 9454,
+        "quellan_inn-lod1": 52
+      }
+    },
+    "quellan_well": {
+      "budget": [
+        2500,
+        200
+      ],
+      "bytes": 56908,
+      "lods": {
+        "quellan_well": 528,
+        "quellan_well-lod1": 64
+      }
+    },
+    "reed_bed": {
+      "budget": [
+        3000,
+        300
+      ],
+      "bytes": 63848,
+      "lods": {
+        "reed_bed": 520,
+        "reed_bed-lod1": 80
+      }
+    },
+    "reed_causeway_6m": {
+      "budget": [
+        6000,
+        300
+      ],
+      "bytes": 114184,
+      "lods": {
+        "reed_causeway_6m": 1872,
+        "reed_causeway_6m-lod1": 164
+      }
+    },
+    "reed_platform_6m": {
+      "budget": [
+        8000,
+        300
+      ],
+      "bytes": 122440,
+      "lods": {
+        "reed_platform_6m": 2190,
+        "reed_platform_6m-lod1": 120
+      }
+    },
     "roof_fan_shell": {
       "budget": [
         18000,
@@ -649,6 +1364,17 @@
       "lods": {
         "roof_tile_hip": 8176,
         "roof_tile_hip-lod1": 344
+      }
+    },
+    "root_walk_6m": {
+      "budget": [
+        6000,
+        300
+      ],
+      "bytes": 150100,
+      "lods": {
+        "root_walk_6m": 2784,
+        "root_walk_6m-lod1": 284
       }
     },
     "rope_coil": {
@@ -695,6 +1421,17 @@
         "ruin_wall_sunk-lod1": 12
       }
     },
+    "sanctum_basin": {
+      "budget": [
+        8000,
+        500
+      ],
+      "bytes": 281372,
+      "lods": {
+        "sanctum_basin": 2540,
+        "sanctum_basin-lod1": 168
+      }
+    },
     "sandals": {
       "budget": [
         400,
@@ -704,6 +1441,39 @@
       "lods": {
         "sandals": 108,
         "sandals-lod1": 20
+      }
+    },
+    "save_shrine": {
+      "budget": [
+        9000,
+        700
+      ],
+      "bytes": 188392,
+      "lods": {
+        "save_shrine": 3804,
+        "save_shrine-lod1": 510
+      }
+    },
+    "save_shrine_core": {
+      "budget": [
+        600,
+        80
+      ],
+      "bytes": 15008,
+      "lods": {
+        "save_shrine_core": 196,
+        "save_shrine_core-lod1": 72
+      }
+    },
+    "seep_pool": {
+      "budget": [
+        5000,
+        300
+      ],
+      "bytes": 111576,
+      "lods": {
+        "seep_pool": 1424,
+        "seep_pool-lod1": 24
       }
     },
     "shell_shrine_massing": {
@@ -930,6 +1700,17 @@
         "shrine_wall_straight-lod1": 56
       }
     },
+    "spire_crown_floor": {
+      "budget": [
+        24000,
+        1600
+      ],
+      "bytes": 858568,
+      "lods": {
+        "spire_crown_floor": 11404,
+        "spire_crown_floor-lod1": 1532
+      }
+    },
     "stilt_house": {
       "budget": [
         14000,
@@ -950,6 +1731,17 @@
       "lods": {
         "storehouse_stilt": 4442,
         "storehouse_stilt-lod1": 364
+      }
+    },
+    "strangler_fig": {
+      "budget": [
+        8000,
+        600
+      ],
+      "bytes": 337984,
+      "lods": {
+        "strangler_fig": 6388,
+        "strangler_fig-lod1": 552
       }
     },
     "tide_debris": {
@@ -1029,6 +1821,39 @@
         "timber_stilt_post-lod1": 15
       }
     },
+    "vey_arcade_bay": {
+      "budget": [
+        12000,
+        900
+      ],
+      "bytes": 82148,
+      "lods": {
+        "vey_arcade_bay": 1040,
+        "vey_arcade_bay-lod1": 324
+      }
+    },
+    "vey_gallery_bridge": {
+      "budget": [
+        4000,
+        300
+      ],
+      "bytes": 72488,
+      "lods": {
+        "vey_gallery_bridge": 1032,
+        "vey_gallery_bridge-lod1": 136
+      }
+    },
+    "vey_gallery_walk_6m": {
+      "budget": [
+        6000,
+        300
+      ],
+      "bytes": 72236,
+      "lods": {
+        "vey_gallery_walk_6m": 924,
+        "vey_gallery_walk_6m-lod1": 48
+      }
+    },
     "village_litter": {
       "budget": [
         900,
@@ -1087,6 +1912,17 @@
         "wayside_offering-lod1": 173
       }
     },
+    "well_shaft": {
+      "budget": [
+        14000,
+        900
+      ],
+      "bytes": 362140,
+      "lods": {
+        "well_shaft": 5702,
+        "well_shaft-lod1": 760
+      }
+    },
     "windbreak_placeholder": {
       "budget": [
         6500,
@@ -1107,6 +1943,28 @@
       "lods": {
         "woodpile": 1412,
         "woodpile-lod1": 92
+      }
+    },
+    "woolback_trough": {
+      "budget": [
+        2000,
+        150
+      ],
+      "bytes": 20540,
+      "lods": {
+        "woolback_trough": 118,
+        "woolback_trough-lod1": 60
+      }
+    },
+    "woven_awning": {
+      "budget": [
+        1500,
+        120
+      ],
+      "bytes": 25172,
+      "lods": {
+        "woven_awning": 264,
+        "woven_awning-lod1": 64
       }
     },
     "wreck_rib": {

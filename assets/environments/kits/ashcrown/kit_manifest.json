@@ -18,9 +18,9 @@
         20000,
         1400
       ],
-      "bytes": 286024,
+      "bytes": 594520,
       "lods": {
-        "anvil_hall": 4950,
+        "anvil_hall": 7950,
         "anvil_hall-lod1": 12
       }
     },
@@ -29,9 +29,9 @@
         30000,
         2400
       ],
-      "bytes": 2317336,
+      "bytes": 2454476,
       "lods": {
-        "ashcrown_tiers": 25278,
+        "ashcrown_tiers": 26622,
         "ashcrown_tiers-lod1": 154
       }
     },
