@@ -1064,10 +1064,39 @@ def build_idle_b() -> ck.Clip:
     return c
 
 
+RELEASE_SEC = 3.4  # M3-CRE-647: the held form's release (Ch20), its KO
+RELEASE_AWAY = (0.0, 1.5, -0.5)  # where the release carries her (metres: up, and back away from the party)
+RELEASE_HIGH = dict(body=(-10.0, 0.0, 0.0), lift=0.06, neck=(-8.0, -6.0, -6.0), head=-12.0, tail=6.0, grip=6.0)
+
+
+def build_release() -> ck.Clip:
+    """M3-CRE-647, the held form's KO (vowbound.md, the final fight: the believer who told the truth). She opens to
+    her full span, the knotted cords spread to be read, the head raised, and holds there; then one slow down-stroke
+    and she lifts off the water, up and back, gliding on the open wings, the keth bundle still held: at peace."""
+    c = ck.Clip("release", RELEASE_SEC)
+    for t, kw in ((0.0, {}), (0.5, dict(RELEASE_HIGH, body=(-4.0, 0.0, 0.0), lift=0.03, head=-6.0)),
+                  (1.0, RELEASE_HIGH), (1.8, dict(RELEASE_HIGH, head=-14.0)),
+                  (2.5, dict(RELEASE_HIGH, body=(-4.0, 0.0, 0.0), head=-6.0, tail=2.0)),
+                  (RELEASE_SEC, dict(RELEASE_HIGH, body=(-6.0, 0.0, 0.0), head=-4.0, tail=4.0))):
+        pose(c, t, **kw)
+    wings(c, 0.0, "rest")
+    wings(c, 0.5, "half", sway=(-6.0, -10.0))
+    wings(c, 1.0, "full")
+    wings(c, 1.8, "full", mix_to="raised", u=0.5, sway=(-3.0, -5.0))
+    wings(c, 2.5, "down", sway=(12.0, 16.0))
+    wings(c, RELEASE_SEC, "full", sway=(-2.0, -4.0))
+    lx, ly, lz = RELEASE_AWAY
+    for t, k in ((0.0, 0.0), (1.8, 0.0), (2.5, 0.4), (RELEASE_SEC, 1.0)):
+        c.key("root", t, (0.0, 0.0, 0.0), (lx * k, ly * k, lz * k))
+        hang = 0.08 * min(k / 0.4, 1.0)  # the planted talon comes up off the water with her
+        foot(c, t, ly * k + hang, lz * k - hang * 0.5, 20.0 * hang / 0.08)
+    return c
+
+
 def authored_clips() -> list[ck.Clip]:
     return [build_idle(), build_ready(), build_attack(), build_cast(), build_hit(), build_hit("hit_b", -1.0, 1.35),
             build_defend(), build_ko(), build_victory(), build_rise(), build_dismiss(), build_special(),
-            build_idle_b()]
+            build_idle_b(), build_release()]
 
 
 # Kept off the water where a clip lays them on it: the cords (lifted about the hand's chain), the bundle and the

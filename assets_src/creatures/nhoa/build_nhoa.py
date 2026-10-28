@@ -925,10 +925,39 @@ def build_special() -> ck.Clip:
     return c
 
 
+RELEASE_SEC = 3.4  # M3-CRE-647: the held form's release (Ch20), its KO
+RELEASE_UP, RELEASE_BACK = 1.5, 0.5  # where the release carries her (metres: up, and back away from the party)
+
+
+def release_open(lift: float, back: float, strand_up: float, reach: float) -> dict:
+    """Opened to the light: tall, the face lifted, the arms raised and open, the strands drawn up `strand_up`."""
+    return merge(body(spine=(0.0, -3.0, -3.0), neck=(-3.0, -3.0, -4.0, -3.0), head=-12.0, lift=lift, back=back,
+                      antler=8.0),
+                 arms(upper=(-reach, 0.0, 24.0), fore=(-12.0, 0.0, -4.0), hand=(-6.0, 28.0, 0.0)),
+                 strands(out=(strand_up, 0.31 * strand_up, 0.12 * strand_up)))
+
+
+def build_release() -> ck.Clip:
+    """M3-CRE-647, the held form's KO (vowbound.md, the final fight: Pell turns his back and sings). She straightens
+    and opens her hands, and the hanging strands of motes lift and stream upward round her, the only time her motes
+    rise (her Farewell-Tide's column, made real); she holds there, face lifted, then she rises with them, up and
+    back, open and unhurried."""
+    c = ck.Clip("release", RELEASE_SEC)
+    keyp(c, 0.0, REST)
+    keyp(c, 0.6, merge(body(spine=(0.0, -2.0, -2.0), neck=(-2.0, -2.0, -3.0, -2.0), head=-8.0, lift=0.04, antler=6.0),
+                       arms(upper=(-20.0, 0.0, 30.0), fore=(-20.0, 0.0, 4.0), hand=(0.0, 30.0, 10.0)),
+                       strands(out=(24.0, 12.0, 6.0))))
+    keyp(c, 1.3, release_open(0.1, 0.0, 92.0, 118.0))
+    keyp(c, 1.9, release_open(0.12, 0.0, 100.0, 124.0))
+    keyp(c, 2.6, release_open(0.12 + 0.4 * RELEASE_UP, 0.4 * RELEASE_BACK, 118.0, 130.0))
+    keyp(c, RELEASE_SEC, release_open(0.12 + RELEASE_UP, RELEASE_BACK, 124.0, 132.0))
+    return c
+
+
 def build_clips() -> list[ck.Clip]:
     return [build_idle(), build_ready(), build_attack(), build_cast(), build_hit(),
             build_hit("hit_b", -1.0, ck.HIT_B["amp"]), build_defend(), build_ko(), build_victory(), build_rise(),
-            build_dismiss(), build_special()]
+            build_dismiss(), build_special(), build_release()]
 
 
 # ---------------------------------------------------------------------------------------------
