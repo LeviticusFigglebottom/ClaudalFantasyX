@@ -32,6 +32,16 @@ HALUNA = "res://game/levels/ch02/haluna/"
 # at the causeway head (-14.61, -122.14, -31.1 deg; the shells on its south face) and the causeway's slabs.
 DOCK_AT, DOCK_YAW = (-6.0, 60.0), 35.0
 WALL_FACE_YAW = 16.0  # facing the wall's shells from the village side
+GAP = (-13.9, -119.6)  # where a shell is set, in front of Imra's
+
+
+def at_wall(back_m: float, along_m: float) -> tuple[float, float, float]:
+    """A place facing the wall's gap, back_m behind it (village side) and along_m along the wall."""
+    a = math.radians(WALL_FACE_YAW)
+    dx, dz = -math.sin(a), -math.cos(a)  # the facing
+    tx, tz = -dz, dx  # along the wall
+    return (round(GAP[0] - dx * back_m + tx * along_m, 2), round(GAP[1] - dz * back_m + tz * along_m, 2),
+            WALL_FACE_YAW)
 CAUSEWAY_YAW = 300.0  # walking out along the causeway (north-east)
 
 
@@ -53,8 +63,15 @@ SPAWNS = {
 }
 MARKS = {
     "table_lane": (-0.5, -102.5, 0.0),
+    "lane_toma": (-52.5, -4.5, 270.0),  # C4-01: Toma out along the lane with the table's heavy end (the flow then seats him)
     "neme_table": (4.0, -111.5, 315.0),
-    "wall_gap": (-13.9, -119.6, WALL_FACE_YAW),
+    "wall_gap": GAP + (WALL_FACE_YAW,),
+    # C4-04: the village gathered at the wall when it calls (the flow stands them here before the shell is set)
+    "wall_osu": at_wall(1.4, 0.0),
+    "wall_neme": at_wall(3.0, -1.6),
+    "wall_toma": at_wall(3.0, 0.8),
+    "wall_vendor": at_wall(3.6, -3.2),
+    "wall_fisher": at_wall(3.8, 4.8),
     "feast_edge": (10.5, -108.0, 90.0),
     "dock_end": dock(35.5) + (DOCK_OUT_YAW,),
     "dock_shore": dock(3.0) + (DOCK_IN_YAW,),
@@ -122,12 +139,13 @@ SHOTS = {  # id: (pos, look_at, fov[, "abs"]); heights over Haluna's ground (pro
     "H04": ((-34.0, 3.0, 6.0), (-41.0, 1.0, 0.0), 46),
     "H07": ((-108.0, 2.2, 36.0), (-117.0, 1.6, 32.0), 40),
     "H09": ((-3.5, 2.6, 60.5), (14.0, 0.8, 47.0), 46),
-    "H08": ((-13.6, 1.4, -119.0), (-14.5, 1.2, -120.5), 28),
-    "H12": ((-6.0, 3.0, -97.0), (-8.0, 1.0, -117.0), 62),
+    "H08": ((-13.2, 1.5, -117.2), (-14.4, 1.3, -120.6), 28),  # 2.5 m back from the gap: the hands and the shells
+    "H12": ((16.0, 3.0, -98.0), (-6.0, 1.0, -114.0), 62),  # from east of the feast: the mats, the lamps, the wall
     "H13": ((26.9, 0.9, 44.2), (23.1, 2.1, 39.6), 54, "abs"),  # low, off the dock end's side, over the sea
     "H14": ((19.4, 3.0, 42.2), (23.1, 2.9, 39.6), 16, "abs"),  # down the dock's middle at eye height
     "H15": ((-12.6, 1.0, -118.8), (-13.9, 1.2, -120.2), 18),
-    "H16": ((3.0, 1.6, -110.0), (4.2, 1.4, -112.0), 16),
+    "H16": ((-15.05, 1.55, -117.82), (-14.61, 1.55, -116.28), 22),  # Neme at the wall, close, from the wall's side
+    "H17": ((-9.7, 1.55, -114.1), (-10.2, 1.55, -115.8), 24),  # Asha at the wall, close (C4-04's smile)
     "C01": ((2.0, 2.0, -118.0), (30.0, -0.5, -140.0), 40),
     "C02": ((16.0, 1.4, -128.0), (10.0, 0.2, -129.0), 30),
 }

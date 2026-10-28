@@ -16,7 +16,7 @@ location: ch04/haluna_wake
 @sfx wake_lamps_out
 @wait 1.5
 @anim neme carry_food
-@mark toma table_lane walk
+@mark toma lane_toma walk
 Rhen [neutral]: Where's everyone taking the lamps? #line:ch04_lamps_001
 @wait 0.6
 Toma [neutral]: To her. #line:ch04_lamps_002
