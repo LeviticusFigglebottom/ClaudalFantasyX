@@ -62,7 +62,11 @@ func build_from_layout() -> int:
 	for row: Variant in (zone.get(&"layout") as Dictionary).get(LAYOUT_KEY, []):
 		var f := HeroStairFlight.from_row(row as Dictionary)
 		if f != null and zone.get_node_or_null(NodePath(String(f.name))) == null:
-			zone.add_child(f)
+			# The controller is readied inside the zone's own setup, when the zone can't take children yet.
+			if zone.is_node_ready():
+				zone.add_child(f)
+			else:
+				zone.add_child.call_deferred(f)
 			built += 1
 	return built
 

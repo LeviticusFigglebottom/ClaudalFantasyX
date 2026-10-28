@@ -2,7 +2,8 @@
 id: M4-C13-02
 title: Ch13 "Gold and Lacquer" greybox (ch13/ansedra, ch13/sanctum, ch13/lamp_archive) before the beat sheet
 role: cinematics
-status: doing
+status: blocked
+blocked-by: ADR 0041
 owner_session: act1-chapters (claude/act1-chapters)
 depends_on: [M4-C12-02]
 reviewer: environment

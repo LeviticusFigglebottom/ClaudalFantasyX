@@ -3,6 +3,7 @@
   water_jar           a 0.7 m earthenware water jar (laterite clay, a darker wet band at the foot, a
                       wooden lid) on a coral-stone ring
   basket_set          three woven baskets (a tall carrying basket, a shallow tray, a lidded fish basket)
+  lamp_flame          an oil flame, a teardrop 6 cm across, for an arena lamp with none of its own (M3-ENV-746)
   oil_lamp_post       a 2.2 m timber lamp post with a brass and salt-glass lantern on an arm (the
                       night lamps' daytime body)
   fish_drying_rack    a 2.4 m A-frame rack with split fish drying on cords
@@ -33,11 +34,13 @@ M_STONE = "kit_coral_stone"
 M_NET = "kit_net"
 M_FISH = "kit_dried_fish"
 M_FLAME = "kit_lamp_flame"
+M_FLAME_HOT = "kit_lamp_flame_hot"  # a practical lamp's flame at night (the arenas' flame_energy)
 
 TRI_BUDGET = {
     "water_jar": (2400, 300),
     "basket_set": (3600, 300),
     "oil_lamp_post": (2600, 300),
+    "lamp_flame": (200, 40),
     "fish_drying_rack": (5000, 400),
     "net_float_cluster": (2400, 200),
     "market_stall": (6000, 600),
@@ -287,7 +290,27 @@ def build_sandals(seed: int = 157) -> list[kc.MeshBuilder]:
     return out
 
 
+FLAME_PROFILE = [(0.0, -0.02), (0.6, 0.0), (0.85, 0.22), (0.72, 0.5), (0.42, 0.78), (0.14, 0.95), (0.0, 1.0)]
+
+
+def build_lamp_flame(seed: int = 157, radius: float = 0.06) -> list[kc.MeshBuilder]:
+    """M3-ENV-746: a lantern's oil flame, for an arena's practical lamp whose kit piece has none: a teardrop drawn
+    up off the wick, `radius` its widest, 2.4 radii tall, its base at the origin (`kit_lamp_flame_hot`, emissive at the arenas' flame energy)."""
+    out = []
+    h = radius * 2.4
+    for lod in (False, True):
+        rng = kc.rng_for("lamp_flame", seed)
+        mb = kc.MeshBuilder("lamp_flame" + ("-lod1" if lod else ""))
+        prof = [(r * radius / 0.85, y * h) for r, y in FLAME_PROFILE]
+        if lod:
+            prof = prof[::2]
+        lathe(mb, prof, M_FLAME_HOT, rng, sides=10 if not lod else 5, weather=kc.Weathering(0, 0, 0, 0))
+        out.append(mb)
+    return out
+
+
 TARGETS = {
+    "lamp_flame": build_lamp_flame,
     "water_jar": build_water_jar,
     "basket_set": build_basket_set,
     "oil_lamp_post": build_oil_lamp_post,

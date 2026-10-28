@@ -161,6 +161,9 @@ def pale_rim() -> dict:
         "shots": {"P01": {"pos": [-22.0, 1.8, 3.0], "look_at": [120.0, 1.0, 0.0], "fov": 40}},
         "triggers": [{"id": "to_choir", "activation": "touch", "at": [RIM_LEN + 10.0, 0.0, 0.0], "size": [2.0, 0, 20.0],
                       "payload": {"beat": "to_choir"}, "yaw": 0.0}],
+        # M4-C16-03: the rim's random fights (act2_roster.md Ch16); none in the Drowned Choir
+        "encounters": {"table": [{"encounter": "ch16_rim_skates", "weight": 1}, {"encounter": "ch16_rim_crawlers", "weight": 1}],
+                       "min_m": 30, "max_m": 50, "when": {"set": ["ch16_started"]}, "seed": 16},
     }
 
 

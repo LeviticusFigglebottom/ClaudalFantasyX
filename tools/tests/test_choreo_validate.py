@@ -198,6 +198,29 @@ class ArenaValidateTest(unittest.TestCase):
         self.assertEqual(len(vc.arena_errors(doc, self.ENC, self._exists)), 2)
 
 
+
+class EnemyBySkillTests(unittest.TestCase):
+    def test_a_big_move_must_name_real_shots(self) -> None:
+        import copy
+        import json
+        doc = json.loads((ROOT / "game/data/battle/choreo.json").read_text())
+        bad = copy.deepcopy(doc)
+        bad["choreo"]["camera"]["enemy_by_skill"]["gnaw"] = {"lead": "nope", "contact": ""}
+        skills = json.loads((ROOT / "game/data/battle/skills.json").read_text())
+        errs = vc.choreo_errors(bad, skills)
+        self.assertTrue(any("enemy_by_skill.gnaw.lead" in e for e in errs), errs)
+        self.assertFalse(any("enemy_by_skill" in e for e in vc.choreo_errors(doc, skills)))
+
+    def test_a_swell_finisher_must_name_a_style(self) -> None:  # M3-BPR-422
+        import copy
+        import json
+        doc = json.loads((ROOT / "game/data/battle/choreo.json").read_text())
+        bad = copy.deepcopy(doc)
+        bad["choreo"]["swell_style_by_hero"]["kerrid"] = "nope"
+        skills = json.loads((ROOT / "game/data/battle/skills.json").read_text())
+        self.assertTrue(any("swell_style_by_hero.kerrid" in e for e in vc.choreo_errors(bad, skills)))
+        self.assertFalse(any("swell_style_by_hero" in e for e in vc.choreo_errors(doc, skills)))
+
 if __name__ == "__main__":
     unittest.main()
 

@@ -91,6 +91,29 @@ slots' metre:
 - The water is brown-black tea, never green or blue.
 - The dead tree has no green on it.
 
+## 4. The walks (M3-ENV-733, `reedhollow.py`), and the swap for act1-chapters' Ch10 greybox (M4-C10-02)
+
+| Piece | What it is | Size | Budget |
+|---|---|---|---|
+| `root_walk_6m` | A Kirru root-walk: split mangrove poles laid across two bearer roots and lashed; the rails are prop-roots arching up out of the water along both edges, with a lashed pole along their tops | 6 × 3.6, rails 0.5 | 6k / 300 |
+| `reed_causeway_6m` | Reedhollow's causeway: bound reed fascines laid across, on pole pilings; paired stakes and a twisted reed rope for rails | 6 × 3.6, rails 0.5 | 6k / 300 |
+| `reed_platform_6m` | A 6 × 6 m reed platform on pilings, with a bound edge-roll | 6 × 6 | 8k / 300 |
+| `clutch_stone` | The clutch's stone on the shore, worn flat on top by Kirru feet, three scratched lines where they stand to sing | 1.2 × 0.8 | 1.5k / 100 |
+
+All walking tops are level at y 0, matching the greybox (3.6 m strips with 0.5 m rails at z ±2.0).
+
+**Swap** (the greybox's block ids → pieces; each strip is tiled along its length with a 6 m piece, turned to the
+block's `yaw`):
+- **Ossa Fen:** `Walk*`, `Pocket` and `Exit` → `root_walk_6m`. Their `*Rail*` blocks are in the piece. Their `*Trunk*`
+  blocks → `mangrove_tree`, rooted beside the walk (a trunk 2.5 m or more off the walk's centre line).
+- **Ossa Fen:** `Bank` → `fen_bank_ground`; `Clearing`, `DrownerRoots` → the `ossa_fen_roots` arena's own pieces
+  (`fen_bank_ground`, `mangrove_dead`); `PocketEnd` → `reed_platform_6m`.
+- **Reedhollow:** `Causeway` and `Ring*` → `reed_causeway_6m`; their `*Trunk*` blocks → `mangrove_tree`.
+- **Reedhollow:** `HousePlatform*` → `reed_platform_6m`, and its `House*` → `kirru_roost` set on it.
+- **Reedhollow:** `Shore` → `fen_bank_ground` (or a `reed_platform_6m` pair); `ClutchStone` → `clutch_stone`; the
+  name-shell cords (F02, F04) → `name_shell_cord` at the shore's water edge.
+- **Both zones:** `reed_bed` in the slack water off the walks, and `fen_far_mangroves` round both.
+
 ## Revisions
 
 - 2026-10-27 (env-art, M3-ENV-718): first issue, the sheet before the kit (the Lead's queue item 4: the Ch10 boss).
@@ -100,3 +123,4 @@ slots' metre:
   - **Grade.** `lut_ch10_fen` comes from `fen_zone_lut.py`.
   - **Arena.** `ossa_fen_roots` (battle_arenas.md). The anchor moved to (−8.2, −0.15, −3.8), so it stands in water,
     and the dead tree leans straight at it. `kirru_roost` and `name_shell_cord` follow with the zone.
+- 2026-10-28 (env-art, M3-ENV-733): §4, the walks and the Ch10 greybox swap.

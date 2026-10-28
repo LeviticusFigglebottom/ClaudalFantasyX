@@ -2,7 +2,8 @@
 id: M3-BPR-408
 title: "Act II bosses' camera language: intros by enemy id; the Lamp Engine's opening, the Avalanche Ram's charge"
 role: combat
-status: doing
+status: blocked
+blocked-by: ADR 0041
 owner_session: claude/battle-presentation
 depends_on: [M3-BPR-404]
 milestone: M3

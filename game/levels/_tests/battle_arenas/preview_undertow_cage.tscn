@@ -1,0 +1,13 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://game/levels/_tests/battle_arenas/battle_arena_preview.gd" id="1_preview"]
+[ext_resource type="PackedScene" path="res://assets/environments/arenas/undertow_cage/undertow_cage.tscn" id="2_arena"]
+
+[node name="BattleArenaPreview" type="Node3D"]
+script = ExtResource("1_preview")
+arena_scene = ExtResource("2_arena")
+party = Array[StringName]([&"rhen", &"asha", &"toma"])
+enemies = Array[StringName]([&"the_cage"])
+
+[node name="BattleCamera" type="Camera3D" parent="."]
+current = true

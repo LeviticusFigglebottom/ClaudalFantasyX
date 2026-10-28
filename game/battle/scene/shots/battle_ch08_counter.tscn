@@ -1,0 +1,12 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="PackedScene" path="res://game/battle/scene/battle_sandbox.tscn" id="1_sandbox"]
+[ext_resource type="Script" path="res://game/battle/scene/shots/set_piece_beat_shot.gd" id="2_shot"]
+
+[node name="SetPieceBeatShot" instance=ExtResource("1_sandbox")]
+auto_start = false
+persist_progress = false
+
+[node name="SetPieceBeatShot" type="Node" parent="."]
+script = ExtResource("2_shot")
+beat = &"counter"

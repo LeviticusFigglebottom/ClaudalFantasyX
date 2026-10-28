@@ -2,12 +2,13 @@
 id: M3-AUD-805
 title: Act II music sketches II: Ch13 Ansedra and the Lamp Archive, Ch14 the Peace Wedding, Ch15 Unlamped, Ch16 the Pale Rim and the Drowned Choir
 role: audio
-status: review
+status: blocked
 reviewer: qa
 owner_session: "audio (claude/audio, session_01Wmj8xaLtwcqiS3qwC6PciW)"
 depends_on: [M2-AUD-02]
 milestone: M3
 request-from: lead
+blocked-by: ADR 0041
 ---
 ## Goal
 SPEC §3 and act_outline.md Act II, the second half.

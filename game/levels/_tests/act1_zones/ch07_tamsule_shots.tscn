@@ -1,0 +1,13 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://game/levels/_tests/act1_zones/act1_zone_rig.gd" id="1_rig"]
+[ext_resource type="PackedScene" path="res://game/levels/ch07/tamsule/tamsule.tscn" id="2_zone"]
+
+[node name="Ch07TamsuleShots" type="Node3D"]
+script = ExtResource("1_rig")
+zone_scene = ExtResource("2_zone")
+views = {
+"Mouth": [[2.0, 1.7, 27.0], [0.0, 9.0, -40.0], 58.0],
+"Market": [[3.0, 1.7, 11.2], [-9.0, 0.8, 0.0], 50.0],
+"Gantry": [[-3.0, 1.7, -2.0], [2.0, 10.0, -40.0], 55.0]
+}

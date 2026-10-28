@@ -9,6 +9,10 @@
   order_chapel          the 6 x 9 m Order chapel: whitewashed coral, order_marble plinth, cornice and
                         door surround, a gilded bowl-dome cupola (1.6 m), a red lacquer door with the
                         gold Level emblem. Deliberately crisp (low erosion): it must look imported.
+                        M3-ENV-705 (H07 read it as a plain box): the Order's articulation, still crisp and
+                        straight: marble corner and bay pilasters, a dentil course under the cornice, arched marble
+                        heads on the windows, two marble steps to the door, and four arched openings round the
+                        cupola's drum.
 
 The fan-shell form is original: a shrine roof built from the village's own symbol (the wake-shell).
 """
@@ -212,6 +216,8 @@ def build_chapel(seed: int = 83, *, w: float = 6.0, d: float = 9.0, wall_h: floa
                     kc.rounded_block(mb, (x + s * 0.03, 2.3, z), (0.03, 0.86, 0.06), marble, radius=0.005, seg=1)
                     kc.rounded_block(mb, (x + s * 0.03, 3.12, z), (0.04, 0.06, 0.42), marble, radius=0.005, seg=1)
                     kc.rounded_block(mb, (x + s * 0.03, 1.5, z), (0.05, 0.05, 0.42), marble, radius=0.005, seg=1)
+        if not lod:
+            _chapel_order(mb, rng, hw, hd, wall_h, door_w, marble, crisp)
         # Flat roof slab and the cupola: a drum and an inverted-bowl dome (with a lip), gilded.
         kc.rounded_block(mb, (0.0, wall_h + 0.05, 0.0), (hw - 0.05, 0.08, hd - 0.05), ww, radius=0.01, seg=1,
                          weather=crisp)
@@ -220,6 +226,18 @@ def build_chapel(seed: int = 83, *, w: float = 6.0, d: float = 9.0, wall_h: floa
         ang_n = 24 if not lod else 10
         drum = np.array([[0.0, base, cz], [0.0, base + 0.85, cz]])
         kc.tube(mb, drum, 0.72, ang_n, marble, cap_end=False, weather=crisp, variation=0.2)
+        if not lod:  # four arched openings round the drum (dark, framed in the drum's marble)
+            for k in range(4):
+                th = k * math.pi * 0.5 + math.pi * 0.25
+                n = np.array([math.cos(th), 0.0, math.sin(th)])
+                c = np.array([0.0, base + 0.4, cz]) + n * 0.7
+                kc.rounded_block(mb, c, (0.04, 0.22, 0.14), mb.material(M_DARK), rot=kc.rot_y(-th), radius=0.0,
+                                 seg=1)
+                arc = np.linspace(0.0, math.pi, 7)
+                t = np.array([-math.sin(th), 0.0, math.cos(th)])
+                pts = [c + n * 0.05 + t * math.cos(a) * 0.17 + np.array([0.0, 0.22 + math.sin(a) * 0.17, 0.0])
+                       for a in arc]
+                kc.tube(mb, np.array(pts), 0.03, 4, marble)
         prof_t = np.linspace(0.0, 1.0, 12 if not lod else 5)
         bowl_r = 0.8 * (np.cos(prof_t * math.pi * 0.5) ** 0.85) + 0.05 * np.sin(prof_t * math.pi) * (1 - prof_t)
         base = base + 0.3
@@ -231,6 +249,39 @@ def build_chapel(seed: int = 83, *, w: float = 6.0, d: float = 9.0, wall_h: floa
                 cap_end=True)
         out.append(mb)
     return out
+
+
+def _chapel_order(mb, rng, hw: float, hd: float, wall_h: float, door_w: float, marble: int, crisp) -> None:
+    """The chapel's crisp Order articulation (M3-ENV-705): pilasters, dentils, window heads, the door's steps."""
+    # Pilasters at the corners and one bay pilaster mid-side, standing proud of the whitewash.
+    for sx in (-1.0, 1.0):
+        for sz in (-1.0, 1.0):
+            kc.rounded_block(mb, (sx * (hw + 0.02), wall_h * 0.5, sz * (hd + 0.02)), (0.2, wall_h * 0.5 - 0.1, 0.2),
+                             marble, radius=0.01, seg=1, weather=crisp, variation=0.25)
+        kc.rounded_block(mb, (sx * (hw + 0.04), wall_h * 0.5, -hd * 0.175), (0.06, wall_h * 0.5 - 0.1, 0.16),
+                         marble, radius=0.01, seg=1, weather=crisp, variation=0.25)
+    # The dentil course under the cornice, all round.
+    y = wall_h - 0.32
+    for (axis, half, fixed) in (("x", hw, hd + 0.05), ("x", hw, -hd - 0.05), ("z", hd, hw + 0.05), ("z", hd, -hw - 0.05)):
+        n = int(half * 2 / 0.22)
+        for k in range(n):
+            a = -half + (k + 0.5) * 2 * half / n
+            c = (a, y, fixed) if axis == "x" else (fixed, y, a)
+            hs = (0.05, 0.06, 0.05)
+            kc.rounded_block(mb, c, hs, marble, radius=0.0, seg=1)
+    # Arched marble heads over the side windows (the windows stand at z -0.45 hd and 0.1 hd, 2.3 m centre).
+    for s in (-1.0, 1.0):
+        for z in (-hd * 0.45, hd * 0.1):
+            x = s * (hw + 0.04)
+            arc = np.linspace(0.0, math.pi, 9)
+            pts = np.stack([np.full_like(arc, x), 3.12 + np.sin(arc) * 0.42, z + np.cos(arc) * 0.42], -1)
+            kc.tube(mb, pts, 0.05, 4, marble)
+            kc.rounded_block(mb, (x - s * 0.02, 3.3, z), (0.012, 0.18, 0.3), mb.material(M_DARK), radius=0.0, seg=1)
+    # Two marble steps up to the door (the floor inside is the plinth's top).
+    for k, (dz, hgt) in enumerate(((0.55, 0.15), (0.3, 0.3))):
+        kc.rounded_block(mb, (0.0, hgt * 0.5, hd + dz), (door_w * 0.5 + 0.5 - 0.15 * k, hgt * 0.5, 0.25 if k == 0
+                                                                                              else 0.3),
+                         marble, radius=0.01, seg=1, weather=crisp, variation=0.3)
 
 
 TARGETS = {"roof_fan_shell": build_roof_fan_shell, "shell_shrine_massing": build_shrine_massing,

@@ -1,7 +1,7 @@
 {
   "doc": "M3-C09-02 greybox: ch09/corrow_night, Corrow on the night of the Ebbing and the dawn road after it (act1_ch09.md B01-B10), a stand-in for the `ch08/corrow` night variant until Ch8 lands. +Z is south, out to sea (the placeholder held motes drift that way). The strand of the drowned (rows of shrouds, faces covered, oil lamps, the Stillguard row with its shields and Ivo's shroud at its east end) runs east-west between the broken sea wall (north; the breach a black gap of rubble) and the harbour (south; a floor 1.1 m down, no swimming). The raft's landing goes out from the strand's middle; the raft waits mid-harbour between the moles. The wall-head walk is the strand's west end (Liss on her cut rope); the rocks Pell comes down are its east end. Behind the wall the low town is a lake to the eaves, and the Fisher Stair rises out of it (N13; Kerrid alone on it all night, out of reach). The coast road out of the landward gate (north-east, reached at dawn) has the milestone. Far east (x 300) is a greybox stand-in for the Iskarra plaza, so B09's D03 cuts to P02 inside one scene. The night is the layout's light; dawn is a variant once ch09_pell_joined is set (the party on the road, Kerrid at the milestone). Shot ids are the sheet's (§7) plus N05A/N05B (the side scene's inserts), D02B (the Pell-Kerrid two-shot) and P04 (the burner, the act break's fade). Since M3-C09-1209 (ADR 0200) the zone stands in the Corrow kit's frame and its fallen state: tools/act1/ch09_corrow_night.py moved the story points once and writes the dressing and the collision from Ch8's (the strand of the drowned along the wall's sea foot, s -69..+1, y 0.6; the landing at the breach, s -30; a bridge to Ch8's mole, whose ramp climbs to the walk: Liss at her cut hoist, s -16.5, and the coast road east of the wall-gate, s 36..100; the lake at the eaves behind the wall, Kerrid on the broken stair; Iskarra's set 1700 m east). The dawn variant takes the day grade (environment_res).",
   "block_color": "#8a857c",
-  "sun": {"pitch_deg": -25.0, "yaw_deg": 200.0, "energy": 1.25, "color": "#9fb4d6"},
+  "sun": {"pitch_deg": -25.0, "yaw_deg": 60.0, "energy": 1.25, "color": "#9fb4d6"},
   "environment": {"background": "#060b14", "ambient_color": "#2c3c58", "ambient_energy": 0.8},
   "blocks": [
     {"id": "Landing", "pos": [-26.855, 0.1, 32.344], "size": [6, 1, 8], "color": "#6a5236", "yaw": 5.73},
@@ -61,7 +61,7 @@
     "stream_overhead": [-23.461, 4.6, 66.174],
     "harbour_mouth": [-20.466, 1.6, 96.024],
     "wallhead_motes": [-29.95, 8.0, 1.499],
-    "stair_climb": [-37.519, 2.8, -3.157, -82.94],
+    "stair_climb": [-36.682, 3.4, -3.196, 273.64],
     "road_asha": [37.804, 12.0, 3.147, -97.26],
     "road_toma": [38.955, 12.0, 2.036, -97.45],
     "road_ysolde": [36.501, 12.0, 1.473, -96.97],
@@ -100,13 +100,13 @@
     "mourner_2": {"cast": "netmender", "at": [-32.729, 0.6, 28.566, -173.12], "color": "#6a6a72", "height": 1.1},
     "mourner_3": {"cast": "fisher", "at": [-20.031, 0.6, 27.335, -175.8], "color": "#6a6a72", "height": 1.1},
     "mourner_4": {"cast": "reed", "at": [-14.58, 0.6, 26.889, -176.94], "color": "#6a6a72", "height": 1.1},
-    "kerrid_stair": {"at": [-36.682, 3.4, -3.196, -83.1], "color": "#8a7a52", "radius": 0.38, "height": 2.0},
+    "kerrid_stair": {"at": [-38.557, 2.246, -3.078, 273.64], "color": "#8a7a52", "radius": 0.38, "height": 2.0},
     "kerrid": {"at": [64.331, 12.0, 7.747, 167.59], "color": "#8a7a52", "radius": 0.38, "height": 2.0, "hidden": true},
     "vigil_asha": {"cast": "hero:asha", "at": [2000.5, 0.8, -5.5, 0.0], "color": "#e0c890", "height": 1.2},
     "vigil_rhen": {"cast": "hero:rhen", "at": [2001.3, 0.8, -5.5, 0.0], "color": "#c9b38a", "height": 1.2},
     "vigil_kerrid": {"at": [1992.0, 0.0, 2.0, 180.0], "color": "#8a7a52", "radius": 0.38, "height": 2.0},
     "vigil_pell": {"at": [2009.0, 0.0, 6.0, 0.0], "color": "#5d6b4a", "radius": 0.34, "height": 2.3},
-    "vigil_ysolde": {"at": [1995.0, 0.0, -2.0, 90.0], "color": "#d0d4dc"},
+    "vigil_ysolde": {"cast": "hero:ysolde", "at": [1995.0, 0.0, -2.0, 90.0], "color": "#d0d4dc"},
     "vigil_toma": {"cast": "hero:toma", "at": [2005.0, 0.0, -1.0, -90.0], "color": "#4a5a70", "radius": 0.36, "height": 1.9},
     "vigil_liss": {"at": [1997.0, 0.0, 4.0, 45.0], "color": "#7a8c5a"}
   },

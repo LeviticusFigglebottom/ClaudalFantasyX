@@ -276,5 +276,25 @@
    },
    "yaw": 0.0
   }
- ]
+ ],
+ "encounters": {
+  "table": [
+   {
+    "encounter": "ch16_rim_skates",
+    "weight": 1
+   },
+   {
+    "encounter": "ch16_rim_crawlers",
+    "weight": 1
+   }
+  ],
+  "min_m": 30,
+  "max_m": 50,
+  "when": {
+   "set": [
+    "ch16_started"
+   ]
+  },
+  "seed": 16
+ }
 }

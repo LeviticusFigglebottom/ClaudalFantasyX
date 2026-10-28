@@ -2,6 +2,8 @@
 
 [ext_resource type="Script" path="res://game/world/save_shrine/save_shrine.gd" id="1_shrine"]
 [ext_resource type="Script" path="res://game/vfx/glimmer/glimmer_field.gd" id="2_glimmer"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/save_shrine.glb" id="3_body"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/save_shrine_core.glb" id="4_core"]
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_use"]
 radius = 1.6
@@ -9,92 +11,6 @@ radius = 1.6
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_body"]
 height = 2.2
 radius = 0.62
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_stone"]
-albedo_color = Color(0.83, 0.77, 0.66, 1)
-roughness = 0.92
-
-[sub_resource type="CylinderMesh" id="CylinderMesh_base"]
-material = SubResource("StandardMaterial3D_stone")
-top_radius = 0.95
-bottom_radius = 1.05
-height = 0.24
-radial_segments = 12
-
-[sub_resource type="CylinderMesh" id="CylinderMesh_step"]
-material = SubResource("StandardMaterial3D_stone")
-top_radius = 0.66
-bottom_radius = 0.74
-height = 0.2
-radial_segments = 12
-
-[sub_resource type="CylinderMesh" id="CylinderMesh_pillar"]
-material = SubResource("StandardMaterial3D_stone")
-top_radius = 0.2
-bottom_radius = 0.3
-height = 1.0
-radial_segments = 12
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_bronze"]
-albedo_color = Color(0.29, 0.42, 0.38, 1)
-metallic = 0.6
-roughness = 0.55
-
-[sub_resource type="CylinderMesh" id="CylinderMesh_cradle"]
-material = SubResource("StandardMaterial3D_bronze")
-top_radius = 0.34
-bottom_radius = 0.2
-height = 0.14
-radial_segments = 12
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_salt_glass"]
-transparency = 1
-albedo_color = Color(0.30980393, 0.7019608, 0.6901961, 0.82)
-metallic_specular = 0.8
-roughness = 0.12
-emission_enabled = true
-emission = Color(0.30980393, 0.7019608, 0.6901961, 1)
-emission_energy_multiplier = 4.0
-rim_enabled = true
-rim = 0.4
-
-[sub_resource type="SphereMesh" id="SphereMesh_core"]
-material = SubResource("StandardMaterial3D_salt_glass")
-radius = 0.2
-height = 0.72
-radial_segments = 6
-rings = 2
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_conduit"]
-albedo_color = Color(0.30980393, 0.7019608, 0.6901961, 1)
-emission_enabled = true
-emission = Color(0.30980393, 0.7019608, 0.6901961, 1)
-emission_energy_multiplier = 1.6
-
-[sub_resource type="TorusMesh" id="TorusMesh_conduit"]
-material = SubResource("StandardMaterial3D_conduit")
-inner_radius = 0.42
-outer_radius = 0.46
-rings = 32
-ring_segments = 8
-
-[sub_resource type="BoxMesh" id="BoxMesh_post"]
-material = SubResource("StandardMaterial3D_stone")
-size = Vector3(0.16, 2.3, 0.16)
-
-[sub_resource type="CylinderMesh" id="CylinderMesh_canopy"]
-material = SubResource("StandardMaterial3D_stone")
-top_radius = 0.12
-bottom_radius = 1.0
-height = 0.34
-radial_segments = 9
-
-[sub_resource type="CylinderMesh" id="CylinderMesh_canopy_lip"]
-material = SubResource("StandardMaterial3D_bronze")
-top_radius = 1.04
-bottom_radius = 1.04
-height = 0.05
-radial_segments = 9
 
 [node name="SaveShrine" type="Area3D"]
 script = ExtResource("1_shrine")
@@ -112,45 +28,10 @@ shape = SubResource("CylinderShape3D_body")
 
 [node name="Visual" type="Node3D" parent="."]
 
-[node name="Base" type="MeshInstance3D" parent="Visual"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.12, 0)
-mesh = SubResource("CylinderMesh_base")
+[node name="Shrine" parent="Visual" instance=ExtResource("3_body")]
 
-[node name="Step" type="MeshInstance3D" parent="Visual"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.34, 0)
-mesh = SubResource("CylinderMesh_step")
-
-[node name="Pillar" type="MeshInstance3D" parent="Visual"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.94, 0)
-mesh = SubResource("CylinderMesh_pillar")
-
-[node name="Cradle" type="MeshInstance3D" parent="Visual"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
-mesh = SubResource("CylinderMesh_cradle")
-
-[node name="Core" type="MeshInstance3D" parent="Visual"]
+[node name="Core" parent="Visual" instance=ExtResource("4_core")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.92, 0)
-mesh = SubResource("SphereMesh_core")
-
-[node name="Conduit" type="MeshInstance3D" parent="Visual"]
-transform = Transform3D(1, 0, 0, 0, 0.96592586, -0.25881904, 0, 0.25881904, 0.96592586, 0, 1.92, 0)
-mesh = SubResource("TorusMesh_conduit")
-
-[node name="PostW" type="MeshInstance3D" parent="Visual"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.8, 1.39, 0)
-mesh = SubResource("BoxMesh_post")
-
-[node name="PostE" type="MeshInstance3D" parent="Visual"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.8, 1.39, 0)
-mesh = SubResource("BoxMesh_post")
-
-[node name="Canopy" type="MeshInstance3D" parent="Visual"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.71, 0)
-mesh = SubResource("CylinderMesh_canopy")
-
-[node name="CanopyLip" type="MeshInstance3D" parent="Visual"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.55, 0)
-mesh = SubResource("CylinderMesh_canopy_lip")
 
 [node name="BoundGlimmer" type="Node3D" parent="Visual"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.92, 0)

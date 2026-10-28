@@ -1,0 +1,23 @@
+{
+  "_doc": "Hesk's surfaces (docs/kb/art/creatures/vowbound/hesk.md). Slots are the glTF material names; write_materials.py writes assets/creatures/hesk/materials/<slot>.tres on game/shaders/creature/creature.gdshader. She is bound light (color_script.md rule 2): every emissive slot is glimmer_bound #4FB3B0 at energy 1.2 with no pulse (steady: no flicker, no drift, no particles). Her 'clean white light of the high passes' is the gauze_white of the cords round that light, not a second light colour. plumage is the body, inner wings, thighs and tail (overcast_slate to storm_slate by vertex colour), not lit. cord is the knotted cord primaries (gauze_white rope with a sand_cloth strand) and their knots: the build's emission mask is 1.0 on every knot and 0.2 along the cord, so the knots are what shines. ruff is the collar of soft cords (gauze_white, mask 0.2). head is the bare bone head, the beak, the bare legs and the feet, not lit. eye is soft and glowing (mask 0.55). bundle is the keepsake, the keth bundle of sand_cloth and faded_teal_cloth cords: an object, never lit. Colours are palette.json swatches.",
+  "held": {"_doc": "M3-CRE-647, the held form for the Ch20 release fight (act3_roster.md, The Vowbound as foes): write_materials.py writes materials_held/, every emissive slot's glimmer_bound (#4FB3B0) as glimmer_held (#7FC6D9) at the same energy, steady (color_script.md rule 1: held light is cool cyan); the other slots as they are. The held battle scene wears it; the release turns it to glimmer_lift (presentation).",
+           "emission_from": "#4FB3B0", "emission_to": "#7FC6D9"},
+  "slots": {
+    "plumage": {"roughness_dry": 0.75, "roughness_wet": 0.45, "specular": 0.35, "wet_darken": 0.8, "clearcoat_wet": 0.15,
+                "detail_scale": 28.0, "detail_albedo": 0.1, "detail_bump": 0.18, "rim_sheen": 0.45,
+                "emission_energy": 0.0},
+    "cord": {"roughness_dry": 0.8, "roughness_wet": 0.5, "specular": 0.3, "wet_darken": 0.8, "detail_scale": 120.0,
+             "detail_albedo": 0.12, "detail_bump": 0.3, "cavity_albedo": 0.3, "rim_sheen": 0.4,
+             "emission_color": "#4FB3B0", "emission_energy": 1.2},
+    "ruff": {"roughness_dry": 0.85, "roughness_wet": 0.55, "specular": 0.3, "wet_darken": 0.8, "detail_scale": 90.0,
+             "detail_albedo": 0.12, "detail_bump": 0.3, "cavity_albedo": 0.3, "rim_sheen": 0.5,
+             "emission_color": "#4FB3B0", "emission_energy": 1.2},
+    "head": {"roughness_dry": 0.5, "roughness_wet": 0.3, "specular": 0.4, "wet_darken": 0.85, "clearcoat_wet": 0.3,
+             "detail_scale": 30.0, "detail_albedo": 0.08, "detail_bump": 0.1, "rim_sheen": 0.3,
+             "emission_energy": 0.0},
+    "eye": {"roughness_dry": 0.12, "roughness_wet": 0.06, "specular": 0.7, "clearcoat_wet": 1.0, "detail_albedo": 0.0,
+            "detail_bump": 0.0, "emission_color": "#4FB3B0", "emission_energy": 1.2},
+    "bundle": {"roughness_dry": 0.85, "roughness_wet": 0.55, "specular": 0.3, "wet_darken": 0.75, "detail_scale": 120.0,
+               "detail_albedo": 0.2, "detail_bump": 0.4, "cavity_albedo": 0.4, "emission_energy": 0.0}
+  }
+}

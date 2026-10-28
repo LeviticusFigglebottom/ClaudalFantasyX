@@ -1,0 +1,14 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3]
+
+[ext_resource type="Shader" path="res://game/shaders/creature/creature.gdshader" id="1_shader"]
+
+[resource]
+resource_name = "halo"
+shader = ExtResource("1_shader")
+shader_parameter/detail_albedo = 0
+shader_parameter/detail_bump = 0
+shader_parameter/emission_color = Color(0.498039, 0.776471, 0.85098, 1)
+shader_parameter/emission_energy = 1.2
+shader_parameter/roughness_dry = 0.4
+shader_parameter/roughness_wet = 0.3
+shader_parameter/specular = 0.3

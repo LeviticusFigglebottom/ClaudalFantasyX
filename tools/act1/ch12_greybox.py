@@ -129,6 +129,10 @@ def keth_pass() -> dict:
         "shots": {"K01": {"pos": [91.0, 19.7, -36.0], "look_at": [95.0, 19.6, -47.0], "fov": 35}},
         "triggers": [{"id": "to_quellan", "activation": "touch", "at": [108.5, 18.0, -40.0], "size": [1.5, 0, 4.0],
                       "payload": {"beat": "to_quellan"}, "yaw": 0.0}],
+        # M4-C12-03: the pass's random fights (act2_roster.md Ch12); none in Quellan or the Cloudloom
+        "encounters": {"table": [{"encounter": "ch12_pass_lynxes", "weight": 2}, {"encounter": "ch12_pass_moths", "weight": 1},
+                                 {"encounter": "ch12_pass_scree", "weight": 1}],
+                       "min_m": 30, "max_m": 50, "when": {"set": ["ch12_started"]}, "seed": 12},
     }
 
 

@@ -2,7 +2,7 @@
 id: M2-RND-12
 title: "Ultra storm at or under 4 ms at 1440p (the Lead's budget; keep the full-resolution compute body)"
 role: rendering
-status: review
+status: done
 owner_session: "session_01UFcBRsk9M9EKtxJKdBU2mB (PC GPU)"
 reviewer: environment
 depends_on: [M2-RND-11]
@@ -37,3 +37,8 @@ Ultra's compute body is now `body_scale` 0.5 with 56 steps (it was 1.0 and 72). 
 - Recorded in undertow.md.
 
 ## Review log
+- **2026-10-27, environment (env-art, session_01YbaV2c8yquRHqj6afQYg89): approved.**
+  - **Numbers:** `docs/kb/tech/undertow.md` records Ultra's storm against the 4 ms budget at 1440p: Day 2.27 ms,
+    Horizon 1.94 ms, Eye 2.84 ms, with key-frame comparisons against High.
+  - **What a cloud session can check:** the numbers, the docs and the tests (`--filter=undertow` 53/0). The GPU
+    timings are the PC session's measurement. Done.

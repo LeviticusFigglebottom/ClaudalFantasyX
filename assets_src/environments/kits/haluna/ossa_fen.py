@@ -110,6 +110,58 @@ def _surface_roots(mb, rng, noise) -> None:
         k += 1
 
 
+SLOTS_XZ = ((2.1, 0.7), (3.0, -1.1), (1.4, 2.0), (-2.4, 0.9), (-3.4, -1.2), (-1.2, -0.6))  # battle_arenas.md
+
+
+def _bank_litter(mb, rng) -> None:
+    """The bank top's litter (M3-ENV-705 audit: c990e2c read the battle floor as bare mud): fallen mangrove leaves
+    lying flat, twigs, crab holes and shallow mud puddles, all low (under 4 cm) and 1.3 m clear of every slot."""
+    x0, x1, z0, z1 = BANK
+    leaf, bark, dark = mb.material(M_LEAF), mb.material(M_BARK), mb.material("kit_interior_dark")
+    puddle = mb.material("kit_water_spill")
+
+    def clear(x, z, r=1.3):
+        return all(math.hypot(x - sx, z - sz) > r for sx, sz in SLOTS_XZ)
+
+    for _ in range(260):  # leaves: small flat two-sided cards
+        x, z = rng.uniform(x0, x1), rng.uniform(z0, z1)
+        if not clear(x, z):
+            continue
+        th = rng.uniform(0, math.pi)
+        d = np.array([math.cos(th), 0.0, math.sin(th)]) * rng.uniform(0.05, 0.08)
+        e = np.array([-d[2], 0.0, d[0]]) * 0.45
+        c = np.array([x, 0.006 + rng.uniform(0, 0.006), z])
+        g = np.array([[c - d - e, c - d + e], [c + d - e, c + d + e]])
+        for f in (False, True):
+            kc.quad_strip(mb, g, leaf, uv=np.array([[[0, 0], [1, 0]], [[0, 1], [1, 1]]]), col=(0, 0, 0, 0.5),
+                          uv2=(0.9, float(rng.random())), flip=f, smooth=False)
+    for _ in range(26):  # twigs lying in the mud
+        x, z = rng.uniform(x0, x1), rng.uniform(z0, z1)
+        if not clear(x, z, 1.6):
+            continue
+        th = rng.uniform(0, 2 * math.pi)
+        ln = rng.uniform(0.3, 0.9)
+        a = np.array([x, 0.015, z])
+        b = a + np.array([math.cos(th) * ln, 0.005, math.sin(th) * ln])
+        kc.tube(mb, np.array([a, (a + b) * 0.5 + [0.0, 0.006, 0.0], b]), np.array([0.018, 0.013, 0.008]), 4, bark)
+    for _ in range(30):  # crab holes: a dark mouth in a low rim of spoil
+        x, z = rng.uniform(x0, x1), rng.uniform(z0, z1)
+        if not clear(x, z):
+            continue
+        kc.tube(mb, np.array([[x, 0.0, z], [x, 0.012, z]]), 0.04, 6, dark, cap_end=True)
+    for _ in range(9):  # puddles, standing water in the mud's hollows
+        x, z = rng.uniform(x0, x1), rng.uniform(z0, z1)
+        if not clear(x, z, 2.2):
+            continue
+        a = np.linspace(0.0, 2 * math.pi, 13)
+        rr = rng.uniform(0.4, 1.1) * (1.0 + 0.25 * np.sin(a * 3.0 + rng.uniform(0, 6)))
+        ring = np.stack([x + np.cos(a) * rr, np.full_like(a, 0.004), z + np.sin(a) * rr * 0.7], -1)
+        centre = np.tile(np.array([[x, 0.004, z]]), (13, 1))
+        g = np.stack([centre, ring])
+        kc.quad_strip(mb, g, puddle, uv=g[..., [0, 2]], col=(0, 0, 1, 0.2), uv2=(0.9, 0.5), smooth=False,
+                      flip=bool(np.cross(ring[1] - ring[0], ring[0] - centre[0])[1] < 0))
+
+
 def build_ground(seed: int = 1801) -> list[kc.MeshBuilder]:
     out = []
     for lod in (False, True):
@@ -130,6 +182,7 @@ def build_ground(seed: int = 1801) -> list[kc.MeshBuilder]:
                       flip=True)
         if not lod:
             _surface_roots(mb, rng, noise)
+            _bank_litter(mb, rng)
         out.append(mb)
     return out
 
