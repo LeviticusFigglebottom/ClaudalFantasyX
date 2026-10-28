@@ -106,7 +106,7 @@
     "vigil_rhen": {"cast": "hero:rhen", "at": [2001.3, 0.8, -5.5, 0.0], "color": "#c9b38a", "height": 1.2},
     "vigil_kerrid": {"at": [1992.0, 0.0, 2.0, 180.0], "color": "#8a7a52", "radius": 0.38, "height": 2.0},
     "vigil_pell": {"at": [2009.0, 0.0, 6.0, 0.0], "color": "#5d6b4a", "radius": 0.34, "height": 2.3},
-    "vigil_ysolde": {"at": [1995.0, 0.0, -2.0, 90.0], "color": "#d0d4dc"},
+    "vigil_ysolde": {"cast": "hero:ysolde", "at": [1995.0, 0.0, -2.0, 90.0], "color": "#d0d4dc"},
     "vigil_toma": {"cast": "hero:toma", "at": [2005.0, 0.0, -1.0, -90.0], "color": "#4a5a70", "radius": 0.36, "height": 1.9},
     "vigil_liss": {"at": [1997.0, 0.0, 4.0, 45.0], "color": "#7a8c5a"}
   },

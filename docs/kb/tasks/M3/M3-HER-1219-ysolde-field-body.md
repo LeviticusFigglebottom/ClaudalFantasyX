@@ -19,3 +19,5 @@ Add her row (and her gait clips if the field needs them).
 - [ ] Ysolde's stage actors and follower show her model in the Act I zones.
 
 ## Review log
+- 2026-10-28 act1-chapters (requester): her row is in `field.heroes` on the integration branch; her stage actors show
+  her body in Ch6's shot rig (ysolde: HeroBody). Ch9's `vigil_ysolde` now casts `hero:ysolde`. The criterion holds.
