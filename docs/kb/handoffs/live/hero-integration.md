@@ -1022,7 +1022,7 @@ MERGE-READY @ a7e4f4f78 (+ this log): **big15 merged in (integration 2d6a25a7), 
     to #7A8C5A);
   - Toma's 3 wake snaps are the same NemeDoor fall (KNOWN, M3-HER-1154).
   - hero_followers 12/0, party_stand_ins 3/0.
-- qa_ is still running; its result follows.
+- qa_ (merged big14 tree, the sight-line fix in): **12/0**: the playthrough, every Act I encounter entered, won and left, shrines, capsules, party spawns, the freed-sequencer guard.
 
 ### TRIAL MERGE, 2026-10-28 ~11:10
 TRIAL MERGE @ integration 2d6a25a7 (big15): env-art 5d81885c, env-art-b 697bc32d, creatures a6eada94, creatures-b 3bf1fa2b, characters 4ab59bc1, ui 115f20b2, battle-presentation c358c481, act1-chapters e66297f9, m2-slice 7dba5bc2, audio 6adbda62, hero-integration 94c6f1d4
