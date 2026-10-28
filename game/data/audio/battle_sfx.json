@@ -131,7 +131,9 @@
     "boss_reach_dark": "status_apply",
     "boss_reach_breach": "status_apply",
     "flood_surge": "hit_water",
-    "undertow_surge": "hit_water"
+    "undertow_surge": "hit_water",
+    "swell_weighted_swing": "hit_none",
+    "swell_reel_stop": "status_apply"
   },
   "skills": {
     "toll": "drownbell_toll"

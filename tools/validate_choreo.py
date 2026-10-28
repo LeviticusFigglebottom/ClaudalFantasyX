@@ -215,6 +215,10 @@ def camera_errors(cam: object, styles: dict) -> list[str]:
     for eid, pair in enemy_by_actor.items():
         if eid != "doc":
             pairs.append((f"enemy_by_actor.{eid}", pair))
+    enemy_by_skill = cam.get("enemy_by_skill", {}) if isinstance(cam.get("enemy_by_skill", {}), dict) else {}
+    for sid, pair in enemy_by_skill.items():  # M3-BPR-420: a boss's big moves
+        if sid != "doc":
+            pairs.append((f"enemy_by_skill.{sid}", pair))
     for where, pair in pairs:
         if not isinstance(pair, dict):
             errs.append(f"{w}.{where}: must be an object with lead and contact")
@@ -257,6 +261,10 @@ def choreo_errors(doc: object, skills: object) -> list[str]:
         for kind, sid in (table.items() if isinstance(table, dict) else []):
             if sid not in styles:
                 errs.append(f"{CHOREO_FILE}: style_by_actor.{actor}.{kind} names an unknown style '{sid}'")
+    swells = c.get("swell_style_by_hero", {})
+    for hero, sid in (swells.items() if isinstance(swells, dict) else []):  # M3-BPR-422
+        if hero != "doc" and sid not in styles:
+            errs.append(f"{CHOREO_FILE}: swell_style_by_hero.{hero} names an unknown style '{sid}'")
     by_kind = c.get("style_by_kind") if isinstance(c.get("style_by_kind"), dict) else {}
     for kind in sorted(kinds - set(by_kind)):
         errs.append(f"{CHOREO_FILE}: style_by_kind has no style for skill kind '{kind}'")

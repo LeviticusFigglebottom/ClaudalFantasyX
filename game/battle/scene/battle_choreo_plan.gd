@@ -5,7 +5,8 @@ extends RefCounted
 ## and style_id_for() call these with its data and engine; tests call either.
 
 
-## The style an action plays: item_style for an item, else style_by_skill, style_by_target, style_by_kind.
+## The style an action plays: item_style for an item, else style_by_skill, swell_style_by_hero (a Swell technique),
+## style_by_actor, style_by_target, style_by_kind.
 static func style_id_for(data: Dictionary, engine: BattleEngine, result: ActionResult) -> String:
 	if result.item_id != &"":
 		return str(data.get("item_style", BattleChoreo.FALLBACK_STYLE))
@@ -14,6 +15,10 @@ static func style_id_for(data: Dictionary, engine: BattleEngine, result: ActionR
 	if by_skill.has(sid):
 		return str(by_skill[sid])
 	var row: Dictionary = engine.db.skill(result.skill_id) if engine != null else {}
+	var swells := data.get("swell_style_by_hero", {}) as Dictionary
+	var hero := String(result.actor_id).get_slice("#", 0)
+	if bool(row.get("swell", false)) and swells.has(hero):  # M3-BPR-422: a Swell technique with no row of its own
+		return str(swells[hero])
 	var actors := data.get("style_by_actor", {}) as Dictionary
 	var by_actor := actors.get(String(result.actor_id).get_slice("#", 0), {}) as Dictionary
 	if by_actor.has(str(row.get("kind", ""))):  # M3-BPR-408: the Avalanche Ram's charge
@@ -79,6 +84,7 @@ static func plan_for(data: Dictionary, engine: BattleEngine, result: ActionResul
 		"style": sid,
 		"shot": str(st.get("shot", "")),
 		"actor": result.actor_id,
+		"skill": result.skill_id,  # M3-BPR-420: a boss's big moves get their own shot (camera.enemy_by_skill)
 		"targets": targets,
 		"reactions": reactions,
 		"kos": kos,

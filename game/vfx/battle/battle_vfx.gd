@@ -132,7 +132,8 @@ func _on_vowbound_departed(vb: BattleCombatant, fell: bool) -> void:
 
 
 ## The effects nobody in this battle can use: every `map.skills` effect but those of the fighters' own skills, the
-## Swell techniques and the Vowbound's, and the set pieces of bosses not in this fight. {} without an engine.
+## Swell techniques and the Vowbound's, the Swell finishers (`map.swell_by_hero`) of heroes not in the party, and the
+## set pieces of bosses not in this fight. {} without an engine.
 func _unused_specials() -> Dictionary:
 	if _engine == null:
 		return {}
@@ -151,6 +152,13 @@ func _unused_specials() -> Dictionary:
 	for sid: String in by_skill:
 		if not wanted.has(str(by_skill[sid])):
 			unused[str(by_skill[sid])] = true
+	var heroes: Dictionary = {}
+	for c in _engine.party_active + _engine.party_reserve:
+		heroes[base_id(c.id)] = true
+	var swells := (data.get("map", {}) as Dictionary).get("swell_by_hero", {}) as Dictionary
+	for hero: String in swells:  # a Swell finisher waits for its hero (M3-BPR-422)
+		if not heroes.has(hero):
+			unused[str(swells[hero])] = true
 	var here: Dictionary = {}
 	for c in _engine.enemies:
 		here[base_id(c.id)] = true
@@ -179,6 +187,8 @@ func effects_for(result: ActionResult) -> Array[Dictionary]:
 		special = str((map.get("items", {}) as Dictionary).get(String(result.item_id), ""))
 	elif result.skill_id != &"":
 		special = str((map.get("skills", {}) as Dictionary).get(String(result.skill_id), ""))
+		if special == "" and _engine != null and bool(_engine.db.skill(result.skill_id).get("swell", false)):
+			special = str((map.get("swell_by_hero", {}) as Dictionary).get(base_id(result.actor_id), ""))  # M3-BPR-422
 		if _engine != null:
 			element = str(_engine.db.skill(result.skill_id).get("element", "none"))
 	var elements := map.get("elements", {}) as Dictionary

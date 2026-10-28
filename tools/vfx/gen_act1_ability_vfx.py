@@ -240,6 +240,22 @@ ITEMS = {
     "tidewash_salve": fx("chest", rise("turquoise_shallow", "salt_glass", 24), "Tidewash salve (cleanse)."),
 }
 
+# M3-BPR-422: the Swell finishers of the Act I heroes whose techniques combat has not written yet (Kerrid M3-C05-06,
+# Liss M3-C06-05). BattleVfx plays map.swell_by_hero[hero] for any of that hero's skills marked "swell" with no
+# map.skills row, so they play the moment the technique lands. The motion is BattleChoreo's swing / reel styles.
+SWELL_BY_HERO = {
+    "kerrid": ("swell_weighted_swing", fx("feet", [layer("brass", "cold_blue_stone", 70, 0.55, 0.95, (3.0, 5.0), 22, (0, -3.0, 0),
+                                                         (0.12, 0.26), (-1.0, 0.12, 0), 0.25, energy=1.4)]
+                                       + heavy("sand_wet", "storm_slate", "sand_dry", "cumulus_shadow", 40),
+                                       "Kerrid's Swell (the weighted swing): one flat, low sweep of iron across the "
+                                       "foe at knee height, wet sand thrown out with it; never overhead, so it reads "
+                                       "apart from Toma's blow.")),
+    "liss": ("swell_reel_stop", fx("chest", ring("brass", "glimmer_bound", 36) + burst("salt_glass", "glimmer_bound", 50, -1.0),
+                                   "Liss's Swell (the reel-stop): the gadget's parts lock (a brass ring closing) and "
+                                   "it goes off on the foe in a salt-glass flash; its light is bound glimmer, steady.")),
+}
+SWELL_SOUNDS = {"swell_weighted_swing": "hit_none", "swell_reel_stop": "status_apply"}
+
 
 SFX = ROOT / "game/data/audio/battle_sfx.json"
 
@@ -302,6 +318,10 @@ def main() -> int:
         data["map"]["events"][eid] = eid
     for eid, eff in BOSS_EFFECTS.items():
         data["effects"][eid] = eff
+    data["map"]["swell_by_hero"] = {}
+    for hero, (eid, eff) in SWELL_BY_HERO.items():
+        data["effects"][eid] = eff
+        data["map"]["swell_by_hero"][hero] = eid
     out = json.dumps(data, indent=2) + "\n"
     boss_text = BOSS_VFX.read_text()
     boss = json.loads(boss_text)
@@ -317,6 +337,8 @@ def main() -> int:
         sfx["vfx"].setdefault(eid, sfx["events"][key])
     for eid in BOSS_EFFECTS:
         sfx["vfx"].setdefault(eid, sfx["vfx"][BOSS_SOUNDS.get(eid, "status_apply")])
+    for eid, key in SWELL_SOUNDS.items():
+        sfx["vfx"].setdefault(eid, sfx["vfx"][key])
     sfx_out = json.dumps(sfx, indent=2) + "\n"
     if "--check" in sys.argv:
         return 0 if out == text and sfx_out == sfx_text and boss_out == boss_text else 1

@@ -57,3 +57,16 @@ its element's generic hit, and supports, stances, gathers, summons and items pla
   - The bosses' phase skills (Thrash, Haul, Sea Lash, Slag Pour, Torch the Hulk, the Breach, Recrust, Flood Surge,
     Undertow Surge) got their own effects too. The coverage test now walks phase skills.
   - Tests: `test_battle_boss_set_piece` (each boss plays its moments in order, once; the Drownbell isn't doubled).
+- 2026-10-28, battle-presentation: **the Lead's 02:14 item 3, camera choreography on each Act I boss fight.**
+  - `choreo.json` `camera.enemy_by_skill`: a boss's big moves get a shot of their own instead of the foes' default push.
+    It is checked before `enemy_by_actor`, and the plan now carries `skill`.
+    - A heavy single blow (Hood Slam, Gnaw, Thrash, Haul, Ladle Swing, Brine Iron, Crust Slam) plays `boss_blow`, then
+      `target`.
+    - A move on the whole party (Sea Lash, Shroud Sweep, Slag Pour, Torch the Hulk, Undertow Pull, the Breach) plays
+      `boss_sweep`, then holds wide.
+  - The heroes' `finisher` and `actor` shots sit on the party's side of the actor, so for a boss every one failed the
+    safe frame and fell back to the default. The new `boss_blow` and `boss_sweep` stand behind the boss, on the viewer's
+    side (negative `back_m`), so the line is never crossed. Every move passes the safe frame in its own fight.
+  - Tests: `test_battle_boss_camera` (each boss's big moves get their lead shot, live in their own fight);
+    `tools/validate_choreo.py` checks enemy_by_skill pairs (`EnemyBySkillTests`).
+  - Viewing: `tools/vfx/boss_camera_sheet.tscn` renders each move at its lead shot and at the contact.
