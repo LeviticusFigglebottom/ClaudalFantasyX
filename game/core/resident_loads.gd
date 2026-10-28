@@ -1,0 +1,151 @@
+class_name ResidentLoads
+extends Node
+## Scenes kept loaded for the session, loaded on worker threads behind the fade (ADR 0111, under ADR 0029).
+##
+## A zone's first frame used to read every hero body from disk on the main thread (HeroFieldActor.attach, the
+## battle stand-ins): one hidden frame of 1.3-3 s on the PC. ResidentLoads loads those scenes with
+## ResourceLoader.load_threaded_request when a change starts (SceneRouter.change_started), holds the router's
+## swap (hold_swap) until they are in, and keeps a reference to each, so their load() in the new scene finds
+## them in the cache and every later change pays nothing. warm() starts the loads without a hold (the title).
+## Paths: game/data/ui/resident_loads.json. Hook-up: `ResidentLoads.install(SceneRouter)`, like ShaderPrewarm.
+
+const DATA_PATH := "res://game/data/ui/resident_loads.json"
+const NAME := &"ResidentLoads"
+const ROUTER_SIGNAL := &"change_started"
+
+## Off in a headless run (the test suite: nothing draws, and every test's change_scene would wait on the heroes);
+## tests of this class turn it on.
+static var run_headless := false
+
+## path -> the loaded Resource, kept for the session.
+var resident: Dictionary = {}
+## Paths requested and not in yet.
+var pending: PackedStringArray = []
+## True while this node holds its parent router's swap.
+var holding := false
+
+var _data: Dictionary = {}
+
+
+## Adds a ResidentLoads under `router` and connects it to the router's change_started. Idempotent.
+static func install(router: Node) -> ResidentLoads:
+	var existing := router.get_node_or_null(NodePath(String(NAME))) as ResidentLoads
+	if existing != null:
+		return existing
+	var r := ResidentLoads.new()
+	r.name = NAME
+	router.add_child(r)
+	if router.has_signal(ROUTER_SIGNAL):
+		router.connect(ROUTER_SIGNAL, r._on_change_started)
+	return r
+
+
+## The ResidentLoads under SceneRouter, or null (no router in this tree).
+static func shared() -> ResidentLoads:
+	var tree := Engine.get_main_loop() as SceneTree
+	var router := tree.root.get_node_or_null(^"SceneRouter") if tree != null else null
+	return router.get_node_or_null(NodePath(String(NAME))) as ResidentLoads if router != null else null
+
+
+static func load_data() -> Dictionary:
+	var parsed: Variant = JSON.parse_string(FileAccess.get_file_as_string(DATA_PATH))
+	if not parsed is Dictionary:
+		push_error("ResidentLoads: could not read %s" % DATA_PATH)
+		return {}
+	return (parsed as Dictionary).get("resident_loads", {}) as Dictionary
+
+
+## The scenes to keep resident for a party of `party` (hero ids): every source's rows (party_only sources: the
+## party's and leader_default's), then the fixed paths. Missing files are left out.
+static func paths_for(data: Dictionary, party: Array[StringName]) -> PackedStringArray:
+	var keep: Array[String] = [str(data.get("leader_default", ""))]
+	for id in party:
+		keep.append(String(id))
+	var out := PackedStringArray()
+	for src: Dictionary in data.get("sources", []):
+		var parsed: Variant = JSON.parse_string(FileAccess.get_file_as_string(str(src.get("json", ""))))
+		var table: Variant = parsed
+		for key: Variant in src.get("table", []):
+			table = (table as Dictionary).get(str(key), {}) if table is Dictionary else {}
+		if not table is Dictionary:
+			continue
+		for id: String in table:
+			if bool(src.get("party_only", false)) and not keep.has(id):
+				continue
+			var path := str(((table as Dictionary)[id] as Dictionary).get(str(src.get("key", "")), ""))
+			if path != "" and not out.has(path) and ResourceLoader.exists(path):
+				out.append(path)
+	for p: Variant in data.get("paths", []):
+		if ResourceLoader.exists(str(p)) and not out.has(str(p)):
+			out.append(str(p))
+	return out
+
+
+## Starts loading every resident path not yet loaded or loading, on worker threads. No hold.
+func warm() -> void:
+	_ensure_data()
+	var party: Array[StringName] = []
+	if Game.state != null:
+		party = Game.state.party_ids.duplicate()
+	for path in paths_for(_data, party):
+		if resident.has(path) or pending.has(path):
+			continue
+		if ResourceLoader.load_threaded_request(path) == OK:
+			pending.append(path)
+	set_process(not pending.is_empty())
+
+
+## True when every resident path is in.
+func is_ready() -> bool:
+	return pending.is_empty()
+
+
+## Holds the parent router's swap until the pending loads are in (a no-op when none are).
+func hold() -> void:
+	var router := get_parent()
+	if pending.is_empty() or holding or router == null or not router.has_method(&"hold_swap"):
+		return
+	router.call(&"hold_swap", self)
+	holding = true
+
+
+## Advances the loads: keeps each finished one, drops a failed one, and releases the hold when all are in.
+func poll() -> void:
+	for path in pending.duplicate():
+		var status := ResourceLoader.load_threaded_get_status(path)
+		if status == ResourceLoader.THREAD_LOAD_LOADED:
+			resident[path] = ResourceLoader.load_threaded_get(path)
+			pending.remove_at(pending.find(path))
+		elif status == ResourceLoader.THREAD_LOAD_FAILED or status == ResourceLoader.THREAD_LOAD_INVALID_RESOURCE:
+			push_warning("ResidentLoads: could not load %s" % path)
+			pending.remove_at(pending.find(path))
+	if pending.is_empty():
+		_release()
+		set_process(false)
+
+
+func _process(_delta: float) -> void:
+	poll()
+
+
+func _on_change_started(scene_path: String) -> void:
+	if DisplayServer.get_name() == "headless" and not run_headless:
+		return
+	warm()
+	if not (_data.get("no_hold_scenes", []) as Array).has(scene_path):
+		hold()
+
+
+func _ensure_data() -> void:
+	if _data.is_empty():
+		_data = load_data()
+
+
+func _release() -> void:
+	if holding and get_parent() != null and get_parent().has_method(&"release_swap"):
+		get_parent().call(&"release_swap", self)
+	holding = false
+
+
+func _exit_tree() -> void:
+	_release()

@@ -60,10 +60,15 @@ extends Node
 ##   (game/data/settings/boot_card.json) is fed each frame and holders_progress() (the holders' wait_progress(),
 ##   a BootCard's sums its work); the fade lifts on a stall (stall_timeout_ms with no progress) or the absolute
 ##   cap (max_wait_ms), recorded as reveal_wait_end. font_warm_progress() reports the font warm-up's progress.
+## ADR 0111 (Lead 2026-10-28, the PC's 1.3-3 s hidden frames): signal change_started(scene_path) fires as a change
+##   begins, before the fade; ResidentLoads.install(self) loads the hero bodies there on worker threads and holds the
+##   swap until they are in, so the new scene's first frame finds them cached.
 ## M2-ARC-05: every window's frames are wall time, timed by a FrameClock (Time.get_ticks_usec between
 ## frames), never the process `delta`, which Godot caps at about 150 ms.
 
 signal prewarm_requested(scene_path: String)
+## ADR 0111: emitted when change_scene() starts (before the fade): ResidentLoads starts its threaded loads here.
+signal change_started(scene_path: String)
 ## Emitted under the opaque fade, just before the new scene enters the tree (zone globals reset here).
 signal scene_swapping(scene_path: String)
 ## Emitted after each successful swap with the same dictionary stored in last_swap_stats.
@@ -143,6 +148,7 @@ func _ready() -> void:
 	ShaderPrewarm.install(self)
 	ShaderGlobals.install(self)
 	WeatherClock.install(self)
+	ResidentLoads.install(self)
 	world_return = WorldReturn.new()
 	world_return.name = "WorldReturn"
 	add_child(world_return)
@@ -214,6 +220,7 @@ func change_scene(scene_path: String, spawn: StringName = &"") -> void:
 	var entry_start := _now_usec()
 	var stats := {"scene_path": scene_path, "budget_ms": HIDDEN_FRAME_BUDGET_MS}
 	ResourceLoader.load_threaded_request(scene_path)
+	change_started.emit(scene_path)
 	_start_font_warm(stats)
 	await _fade_to(1.0)
 	while ResourceLoader.load_threaded_get_status(scene_path) == ResourceLoader.THREAD_LOAD_IN_PROGRESS:
