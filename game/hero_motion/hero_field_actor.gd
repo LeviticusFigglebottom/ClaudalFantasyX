@@ -187,10 +187,25 @@ static func attach_stage(stage: CutsceneStage) -> Array[HeroFieldActor]:
 	for child in folder.get_children():
 		var a := child as Node3D
 		if a != null and not a is FieldController:
-			var b := attach_actor(a, StringName(a.name))
+			var b := attach_actor(a, hero_of(StringName(a.name)))
 			if b != null:
 				out.append(b)
 	return out
+
+
+## The hero a stage actor plays: its node name when that is a hero id, else field.actor_aliases[name], else the name
+## with a field.actor_prefixes prefix stripped (vigil_asha -> asha). &"" when it plays no hero.
+static func hero_of(actor_name: StringName) -> StringName:
+	var name := String(actor_name)
+	if (field_data().get("heroes", {}) as Dictionary).has(name):
+		return actor_name
+	var alias := str((field_data().get("actor_aliases", {}) as Dictionary).get(name, ""))
+	if alias != "":
+		return StringName(alias)
+	for prefix: Variant in field_data().get("actor_prefixes", []):
+		if name.begins_with(str(prefix)):
+			return StringName(name.trim_prefix(str(prefix)))
+	return actor_name
 
 
 ## A body on a cutscene actor root `actor` for hero `id`, or null when the hero has no body or the
