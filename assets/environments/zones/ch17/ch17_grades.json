@@ -1,0 +1,12 @@
+{
+  "_doc": "Hollowmere's grade (M3-ENV-723; colour script `ch17`, hollowmere.md \u00a70): the Environment and the sun row for the Ch17 zone's light, at dusk over the raft-city.",
+  "ch17_hollowmere_dusk": {
+    "environment": "res://assets/environments/zones/ch17/ch17_hollowmere_dusk_environment.tres",
+    "sun": {
+      "pitch_deg": -8.0,
+      "yaw_deg": -100.0,
+      "color": "#FFB16E",
+      "energy": 2.4
+    }
+  }
+}

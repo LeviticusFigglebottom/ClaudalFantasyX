@@ -33,3 +33,9 @@ VFX), which stay greybox until those land.
 - [ ] act1-chapters places them and asks for the shots (ch04_ferry_deck, ch08_coilspire_hall).
 
 ## Review log
+
+## Notes (env-art-b, 2026-10-28)
+- **The Coilspire half is done** (ADR 0041 moved Ch5–Ch9 to env-art-b): `flue_gate`, `niche_seal`, `lamp_niche`,
+  `wright_mark` in the Coilspire kit (`b_trial.py`), placed on `Gate_t1..4`, `NicheSeal`, `Niche`, `WrightMark` by
+  `tools/act1/ch08_coilspire_dressing.py`; the StormWall block now carries Rendering's UndertowStorm. Only `Virel` stays
+  greybox in Coilspire (the Vowbound's body: creatures-b). The Ch4 half (the islet landing) is env-art's.

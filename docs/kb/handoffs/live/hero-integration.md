@@ -367,3 +367,41 @@ RENDER-REQUEST @ 1b84b89c: field_hero_rhen_walk, field_hero_party, field_hero_ga
      - M2-HER-1113 cutscene patch → I empty the cutscene guard's KNOWN list;
      - M2-HER-1114 placeholder crash and arm flip → I empty the battle guard's KNOWN entry;
      - M2-CHR-513 → I re-check KO, victory and revive (the pop test picks them up by itself).
+- **Approved after viewing @ d036076d:** battle_heroes_idle, _attack, _hit, _ko, _victory, _cast, _finisher (PC render
+  gpu/render-hero-integration-b2453cf); the rows are back in shots.json. What the shots show:
+  - real models, grounded and facing the foes; attack contact, hit recoil, cast and finisher all read;
+  - victory is nearly idle, and Rhen strikes empty-handed (both waiting on M2-CHR-513);
+  - **a felled hero (Toma) dissolves away** in the KO shot: the felled-foe fade applies to the party too. Added to
+    M2-HER-1114 for battle-presentation.
+- **MERGE-READY @ d4430397 (FAST-TRACK, the Lead's Ysolde item):** Ysolde is her real model in battle, not a tan capsule.
+  - Her wrapper (`ysolde_battle_actor.tscn`, placeholder contract clips tuned) is wired in battle_sandbox.json's
+    `stand_ins.ysolde`. That's one row of UI's file, changed on the Lead's instruction.
+  - Two battle-presentation tests stopped assuming she's a capsule (test-only).
+  - The same change is in `docs/kb/tech/ysolde_battle_fasttrack.patch` for the owners (noted in M2-HER-1108).
+  - Her field and cutscene body landed earlier (hero_motion.json @ 549afe82).
+  - Real battle clips: request M2-HER-1115 (characters).
+  - **Shots this changes (not re-approved by me):** battle_choreo_cast, battle_choreo_read, battle_choreo_toll,
+    battle_statuses, battle_swell_glyph, battle_read_panel, plus any other battle shot with Ysolde in the party.
+  - Checks run: battle 703/0, hero_ 97/0, fighter 5/0, clips 7/0, validate_data, gdlint and gdformat; the six shot
+    scenes load headless with 0 errors.
+  - Skipped: rendering (the PC's job), Blender, coverage (no game/battle code change).
+
+### Render requests
+RENDER-REQUEST @ d4430397: battle_choreo_cast, battle_choreo_read, battle_choreo_toll, battle_statuses, battle_swell_glyph, battle_read_panel; why: Ysolde's real model replaces her capsule (FAST-TRACK); for the Lead to view and approve (the field and hero set @ 1b84b89c still stands)
+- **@ e8b43b5d + the M2-HER-1113 re-cut (Act I hero checks, for act1-chapters and slice-polish):**
+  - The guards now read their zones and scenes from the game's data: field over **15 zones** (Ch8's Coilspire and
+    Corrow included), cutscenes over **79 scenes** (every chapter-file `play` step, the prologue, HalunaStory's
+    scenes).
+  - **Field: every zone clean.**
+  - **Cutscenes:** 30 actor/scene pairs snap on this branch. All of them are fixed by the re-cut
+    `cutscene_no_snap.patch` (against claude/m2-slice d4921946), now with a third fix: a stand-in clip mark farther
+    than 2.5 m is a cut, not a glide. Ch9's `@anim asha pole_out` glided Asha 30 m across the harbour at 120 m/s;
+    ch09_zone.gd says it should cut.
+  - Verified on m2-slice + the patch: the guard is clean on all 79; cutscene 61/0, fp_ 28/0, haluna 57/0, prologue
+    7/0, _thread 34/0, ch09 7/0.
+  - ch0 62/1: test_ch01_oruvel_kit's storm swap fails only inside the ch0 sweep. It passes alone with the patch and
+    without it, so it depends on test order and isn't the patch.
+  - The 30 pairs are KNOWN in the test until the patch lands.
+- **Merge note for the Lead:** claude/ui's 80d358bf and my d4430397 both edit game/data/ui/battle_sandbox.json's
+  stand_ins, on adjacent rows. Resolve by keeping both: UI's Rhen, Asha and Toma rows, and my Ysolde row with her
+  scene and yaw_deg.

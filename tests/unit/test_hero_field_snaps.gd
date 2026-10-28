@@ -1,25 +1,10 @@
 extends TestCase
-## M2-HER-1110: no snapping in the field. In every slice and Act I zone, the party (Rhen leading, Asha and Toma
-## on his trail) runs, reverses, strafes, stops and walks from the zone's first spawn while each visible body's
-## transform is sampled every frame; HeroMotionGuard.transform_snaps flags a step or a turn faster than the
-## limits in motion_guard.json. Deliberate cuts (teleports) are reported apart and allowed.
+## M2-HER-1110: no snapping in the field. In every chapter zone (HeroGuardSources.field_zones(), read from
+## locations.json) the party (Rhen leading, Asha and Toma on his trail) runs, reverses, strafes, stops and walks from
+## the zone's first spawn while each visible body's transform is sampled every frame; HeroMotionGuard.transform_snaps
+## flags a step or a turn faster than the limits in motion_guard.json. Deliberate cuts (teleports) are reported apart
+## and allowed.
 
-const ZONES: Array[String] = [
-	"res://game/levels/ch02/haluna/haluna.tscn",
-	"res://game/levels/ch03/saltgrass_causeway/saltgrass_causeway.tscn",
-	"res://game/levels/ch03/shell_shrine/shell_shrine.tscn",
-	"res://game/levels/ch03/first_verse/first_verse.tscn",
-	"res://game/levels/ch01/oruvel/oruvel.tscn",
-	"res://game/levels/ch01/oruvel_underway/oruvel_underway.tscn",
-	"res://game/levels/ch04/brightwater_ferry/brightwater_ferry.tscn",
-	"res://game/levels/ch04/haluna_wake/haluna_wake.tscn",
-	"res://game/levels/ch05/pemakar/pemakar.tscn",
-	"res://game/levels/ch05/ashcrown/ashcrown.tscn",
-	"res://game/levels/ch06/brine_shoals/brine_shoals.tscn",
-	"res://game/levels/ch07/tamsule/tamsule.tscn",
-	"res://game/levels/ch07/tamsule_bell_galleries/tamsule_bell_galleries.tscn",
-	"res://game/levels/ch09/corrow_night/corrow_night.tscn",
-]
 ## The stick script: [stick, frames, walk]. A run, a reversal, a strafe, a stop, a diagonal walk, a stop.
 const MOVES: Array[Array] = [
 	[Vector2(0, -1), 90, false],
@@ -42,9 +27,7 @@ func test_no_hero_body_snaps_in_any_zone() -> void:
 	var limits := data.get("transform", {}) as Dictionary
 	var dt := HeroMotionGuard.frame_sec(data)
 	Game.state.party_ids = [&"rhen", &"asha", &"toma"] as Array[StringName]
-	for path in ZONES:
-		if not ResourceLoader.exists(path):
-			continue
+	for path in HeroGuardSources.field_zones():
 		var zone := (load(path) as PackedScene).instantiate() as Node3D
 		_host().add_child(zone)
 		var tracks := _run(zone, dt)

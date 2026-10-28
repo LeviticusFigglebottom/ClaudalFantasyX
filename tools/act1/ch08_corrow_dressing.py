@@ -336,6 +336,51 @@ def mole_pieces() -> list[dict]:
 MOLE_LOD1_M = 150.0  # env-art: big pieces keep LOD0 out to 150 m
 
 
+WATER_MATERIAL = RES_ZONE + "corrow_water_material.tres"
+# The Undertow (Rendering's UndertowStorm, preset ch08_seawall) at the stair head, coming from the south-east
+# (corrow.md §0); it follows the layout's Storm block: from the beacon's opening until the hoist is cut down.
+STORM_AT = cf.arc(-20.0, cf.WALK_Y, 0.0)[:3]
+STORM = {"name": "Undertow", "at": [cf.r3(v) for v in STORM_AT], "preset": "ch08_seawall", "azimuth_deg": 135.0}
+
+
+def storm_relayout() -> None:
+    """Once: the layout's Storm block (a non-solid marker, start hidden), shown with the beacon and hidden with the cut
+    rope."""
+    from ch08_corrow_relayout import dump
+
+    g = json.loads(LAYOUT.read_text(encoding="utf-8"))
+    if any(b["id"] == "Storm" for b in g["blocks"]):
+        return
+    g["blocks"].append({"id": "Storm", "pos": STORM["at"], "size": [0.2, 0.2, 0.2], "color": "#2fb8c8",
+                        "solid": False})
+    g["start_hidden"].append("Storm")
+    for s in g["states"]:
+        if s.get("flag") == "ch08_beacon_opened":
+            s.setdefault("show", []).append("Storm")
+        if s.get("flag") == "ch08_hoist_cut_down":
+            s.setdefault("hide", []).append("Storm")
+    LAYOUT.write_text(dump(g), encoding="utf-8")
+
+
+# The storm's flood stands in the low town's lanes "to a man's waist" at the stair foot (act1_ch08.md W15; the
+# greybox's Flood plane lay 4 cm over the lanes, so it only showed in the puddles): its water is lifted over the block.
+WATER_LIFT = {"Flood": 0.55}
+
+
+def story_waters(layout_path: Path, ids: tuple[str, ...], material: str = WATER_MATERIAL) -> list[dict]:
+    """ZoneKitDressing "waters" over the layout's water blocks (their top, their footprint, WATER_LIFT over it),
+    following them: the storm's flood in the lanes, the lake the low town drowns in."""
+    blocks = {b["id"]: b for b in json.loads(layout_path.read_text(encoding="utf-8"))["blocks"]}
+    out = []
+    for bid in ids:
+        b = blocks[bid]
+        assert not b.get("yaw"), bid  # a WaterSurface stays unrotated
+        (x, y, z), (sx, sy, sz) = b["pos"], b["size"]
+        out.append({"name": f"{bid}Water", "pos": [x, cf.r3(y + sy * 0.5 + WATER_LIFT.get(bid, 0.0)), z], "size": [sx, sz],
+                    "material": material, "block": bid})
+    return out
+
+
 def dressing() -> dict:
     head, _beacon = cwl.headland()
     pieces = [{"piece": "corrow_far", "at": [0.0, 0.0], "y": 0.0, "yaw_deg": 0.0, "lod1_from_m": 5000.0}] + head
@@ -363,29 +408,12 @@ def dressing() -> dict:
         "environment": RES_ZONE + "corrow_ch08_environment.tres",
         "time_of_day_h": 16.0,
         "greybox": {"hide_all": True, "keep": []},
-        "waters": flood_waters(layout_blocks()),
+        "waters": story_waters(LAYOUT, ("Flood", "Lake")),
+        "storms": [dict(STORM, block="Storm")],
         "fire_light_color": preview.get("fire_light_color", "#E0702E"),
         "fire_lights": [{"at": f[:3], "energy": f[3], "range": f[4]} for f in preview.get("fire_lights", [])],
         "pieces": pieces,
     }
-
-
-FLOOD_MATERIAL = "res://game/levels/ch09/corrow_night/corrow_lake_material.tres"  # still, dark, no foam
-
-
-def layout_blocks() -> dict:
-    return {b["id"]: b for b in json.loads(LAYOUT.read_text(encoding="utf-8"))["blocks"]}
-
-
-def flood_waters(blocks: dict) -> list[dict]:
-    """ADR 0041: the flood over the low town (from ch08_wave3_held) and the lake it leaves when the wall falls, as
-    still water surfaces on their blocks' tops that show and hide with the blocks."""
-    out = []
-    for bid in ("Flood", "Lake"):
-        b = blocks[bid]
-        out.append({"name": bid, "at": [b["pos"][0], round(b["pos"][1] + b["size"][1] * 0.5, 3), b["pos"][2]],
-                    "size": [b["size"][0], b["size"][2]], "material": FLOOD_MATERIAL, "block": bid})
-    return out
 
 
 # The zone's own lift on env-art's grades: Ch9's strand was near-black in the shots (the Lead, 2026-10-27), so the
@@ -413,6 +441,8 @@ def copy_grades() -> None:
 
 
 def main() -> None:
+    if "--storm-relayout" in sys.argv:
+        storm_relayout()
     (ZONE / "corrow_collision.json").write_text(json.dumps(collision(), indent=1) + "\n", encoding="utf-8")
     (ZONE / "corrow_dressing.json").write_text(json.dumps(dressing(), indent=1) + "\n", encoding="utf-8")
     copy_grades()

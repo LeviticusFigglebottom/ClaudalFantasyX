@@ -15,22 +15,22 @@
  },
  "waters": [
   {
-   "name": "Flood",
-   "at": [
+   "name": "FloodWater",
+   "pos": [
     -40.634,
-    1.04,
+    1.59,
     -22.446
    ],
    "size": [
     60,
     40
    ],
-   "material": "res://game/levels/ch09/corrow_night/corrow_lake_material.tres",
+   "material": "res://game/levels/ch08/corrow/corrow_water_material.tres",
    "block": "Flood"
   },
   {
-   "name": "Lake",
-   "at": [
+   "name": "LakeWater",
+   "pos": [
     -40.634,
     1.62,
     -27.446
@@ -39,8 +39,21 @@
     80,
     50
    ],
-   "material": "res://game/levels/ch09/corrow_night/corrow_lake_material.tres",
+   "material": "res://game/levels/ch08/corrow/corrow_water_material.tres",
    "block": "Lake"
+  }
+ ],
+ "storms": [
+  {
+   "name": "Undertow",
+   "at": [
+    -19.985,
+    12.0,
+    0.666
+   ],
+   "preset": "ch08_seawall",
+   "azimuth_deg": 135.0,
+   "block": "Storm"
   }
  ],
  "fire_light_color": "#E0702E",

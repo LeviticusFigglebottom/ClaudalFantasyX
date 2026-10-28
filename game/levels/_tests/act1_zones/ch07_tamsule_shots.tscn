@@ -6,9 +6,8 @@
 [node name="Ch07TamsuleShots" type="Node3D"]
 script = ExtResource("1_rig")
 zone_scene = ExtResource("2_zone")
-flags = PackedStringArray("ch07_arrived")
 views = {
-"Quay": [[0.0, 2.2, 28.0], [0.0, 22.0, -40.0], 58.0],
-"Market": [[14.0, 3.0, -3.0], [-4.0, 1.0, 6.0], 55.0],
-"Lane": [[-8.0, 2.0, 1.0], [-22.0, 2.0, 6.0], 55.0]
+"Mouth": [[2.0, 1.7, 27.0], [0.0, 9.0, -40.0], 58.0],
+"Market": [[3.0, 1.7, 11.2], [-9.0, 0.8, 0.0], 50.0],
+"Gantry": [[-3.0, 1.7, -2.0], [2.0, 10.0, -40.0], 55.0]
 }

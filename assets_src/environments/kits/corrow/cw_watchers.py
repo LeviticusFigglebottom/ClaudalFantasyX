@@ -24,7 +24,7 @@ import numpy as np
 import cw_common as cw
 from cw_common import kc
 
-TRI_BUDGET = {"watcher_head": (8000, 500), "watcher_relief": (7000, 300), "liss_hoist": (3000, 300)}
+TRI_BUDGET = {"watcher_head": (10500, 500), "watcher_relief": (7000, 300), "liss_hoist": (3000, 300)}
 
 HEAD_H = 2.4
 HEAD_HALF_W = 1.05
@@ -59,6 +59,36 @@ def _joint(v, course: float, depth: float, width: float):
     return -depth * (1.0 - kc.smoothstep(0.0, width, d))
 
 
+BACK_PERIMETER_M = 4.2  # metres round the back, side to side (the back's u)
+BLOCK_M = 0.7  # the laterite blocks' length in a course; alternate courses break joint by half a block
+LOCK_M = 0.42  # the carved hair locks' spacing down the back
+BAND_Y = 1.05  # the carved headband round the back of the head
+EAR_Y = 1.45  # the carved ears' centre height (the face's eye line is about 1.6 m)
+CROWN_RISE_M = 0.12  # M3-ENV-712: the crown domes like a skull, not a barrel's lid
+
+
+def _carved_back(v, u, a, rng) -> np.ndarray:
+    """M3-ENV-712 (act1-chapters' Ch9 road render: from the parapet walk the heads' backs read as smooth barrels):
+    the back as built and carved. Each course's blocks with vertical joints, staggered, each block a little proud
+    or sunk; the hair in heavy vertical locks above the neck, bound by a headband that runs round to the ears; the
+    ears themselves carved proud on both sides. `a` is the squircle angle (back centre at -pi/2). Displacement (m)
+    along the outward normal."""
+    sn, cs = np.sin(a), np.cos(a)
+    course = np.floor(v / HEAD_COURSE).astype(int)
+    stagger = (course % 2) * 0.5 * BLOCK_M
+    block = np.floor((u + stagger) / BLOCK_M).astype(int)
+    proud = rng.normal(0.0, 0.012, (8, 16))[course.clip(0, 7), block.clip(0, 15)]
+    f = (u + stagger) / BLOCK_M - np.floor((u + stagger) / BLOCK_M)
+    vjoint = -0.018 * (1.0 - kc.smoothstep(0.0, 0.03 / BLOCK_M, np.minimum(f, 1.0 - f)))
+    back_w = kc.smoothstep(-0.2, -0.6, sn)  # 0 on the cheeks and ears, 1 across the back
+    lock = 0.5 + 0.5 * np.cos(2.0 * np.pi * u / LOCK_M)
+    hair = back_w * kc.smoothstep(0.5, 0.8, v) * (0.075 * lock ** 1.5 - 0.02)
+    band_v = np.exp(-(((v - BAND_Y) / 0.09) ** 2))
+    band = 0.055 * band_v * kc.smoothstep(0.3, -0.05, sn)
+    ear = 0.11 * np.abs(cs) ** 10 * np.exp(-(((v - EAR_Y) / 0.26) ** 2)) * (1.0 - band_v)
+    return proud + vjoint + np.where(np.abs(v - BAND_Y) < 0.15, 0.0, hair) + band + ear
+
+
 def head(name: str, seed: int, *, lod: bool, carving: cw.FaceCarving = cw.CARVING_A, base=None,
          back_sweep: float = 2.0 * np.pi - 0.52) -> kc.MeshBuilder:
     """One Watcher's head. M3-ENV-04B: `carving` picks the face (cw_common.CARVING_A is the parapet row's);
@@ -73,7 +103,7 @@ def head(name: str, seed: int, *, lod: bool, carving: cw.FaceCarving = cw.CARVIN
     rows = 10 if lod else 61  # 0.04 m: the course joints (every 0.6 m) fall on rows
     vs = np.linspace(0.0, HEAD_H, rows)
     # Front: columns across the face (dense); back: around the sides and back (sparse).
-    nf, nb = (9, 9) if lod else (43, 21)
+    nf, nb = (9, 9) if lod else (43, 41)
     tf = np.linspace(-1.0, 1.0, nf)
     tb = np.linspace(0.0, 1.0, nb)
     start_v, start_t = mb.vertex_count, mb.triangle_count
@@ -116,6 +146,7 @@ def head(name: str, seed: int, *, lod: bool, carving: cw.FaceCarving = cw.CARVIN
     if not lod:
         nrm2 = kc.normalize(np.stack([x2 / w2 ** 2, np.zeros_like(V2), z2 / 0.36], -1))
         disp = _joint(V2, HEAD_COURSE, 0.014, 0.03) + (noise.fbm(back / 0.4, 3) - 0.5) * 0.02
+        disp = disp + _carved_back(V2, TB * BACK_PERIMETER_M, a2, rng)
         back = back + nrm2 * disp[..., None]
     col2 = np.stack([np.zeros_like(V2), np.full_like(V2, 0.3), np.full_like(V2, 0.12),
                      np.clip(0.5 + (noise.fbm(back / 0.6, 2) - 0.5) * 0.6, 0, 1)], axis=-1)
@@ -128,7 +159,7 @@ def head(name: str, seed: int, *, lod: bool, carving: cw.FaceCarving = cw.CARVIN
     ring_f = front[-1]
     ring_b = back[-1][1:-1]
     ring = np.vstack([ring_f, ring_b])
-    c = ring.mean(axis=0) + np.array([0.0, 0.05, 0.0])
+    c = ring.mean(axis=0) + np.array([0.0, 0.05 if lod else CROWN_RISE_M, 0.0])
     cb = mb.add_vertices(np.vstack([ring, c[None]]), np.tile(kc.UP, (len(ring) + 1, 1)),
                          np.vstack([ring[:, [0, 2]], c[None, [0, 2]]]), np.tile([0.85, 0.5], (len(ring) + 1, 1)),
                          np.tile([0.0, 0.35, 0.1, 0.7], (len(ring) + 1, 1)))

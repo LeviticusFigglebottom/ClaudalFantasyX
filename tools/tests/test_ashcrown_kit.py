@@ -276,7 +276,9 @@ class CommittedAssetTests(unittest.TestCase):
     def test_preview_layout_names_only_kit_and_borrowed_pieces(self) -> None:
         layout = json.loads(LAYOUT.read_text())
         self.assertEqual(layout["kit_dir"], "res://assets/environments/kits/ashcrown/")
-        self.assertEqual(sorted(s["piece"] for s in layout["pieces"]), sorted(TARGETS))
+        # The trial's story pieces (b_trial.py, env-art-b) are placed by the zone (ch05/ashcrown), not the preview.
+        story = {n for n, (_k, module, _fn) in TARGETS.items() if module.__name__.endswith("b_trial")}
+        self.assertEqual(sorted(s["piece"] for s in layout["pieces"]), sorted(set(TARGETS) - story))
         for spec in layout["pieces"]:
             self.assertIn("y", spec, "no terrain in the preview: every piece carries its height")
         for spec in layout["borrowed"]:
@@ -287,6 +289,27 @@ class CommittedAssetTests(unittest.TestCase):
         self.assertEqual(sum(s["glb"].endswith("ash_plume_near.glb") for s in layout["borrowed"]), 1)
         self.assertEqual(len([lt for lt in layout["lights"] if lt["color"] == "#FFB16E"]), len(ac_hall.lamp_points()))
 
+
+
+class FlightTests(unittest.TestCase):
+    """M3-ENV-715: the steep flights exported for a traversal (ac_flights.py) match the kit and are committed."""
+
+    def test_flights_are_committed_and_steeper_than_the_controller_walks(self) -> None:
+        spec = importlib.util.spec_from_file_location("ashcrown_flights", SRC / "ac_flights.py")
+        mod = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(mod)
+        doc = mod.document()
+        self.assertEqual(json.loads(mod.OUT.read_text(encoding="utf-8")), doc, "run ac_flights.py")
+        self.assertEqual(len(doc["flights"]), 1 + 2 * 6)
+        for f in doc["flights"]:
+            with self.subTest(flight=f["id"]):
+                rise = f["head"][1] - f["foot"][1]
+                run = float(np.hypot(f["head"][0] - f["foot"][0], f["head"][2] - f["foot"][2]))
+                self.assertGreater(rise, 0.0)
+                self.assertAlmostEqual(float(np.degrees(np.arctan2(rise, run))), f["angle_deg"], delta=1.0)
+                self.assertGreater(f["angle_deg"], 45.0, "steeper than the field controller walks")
+                self.assertEqual(f["head_landing"][1], f["head"][1])
+                self.assertEqual(f["foot_landing"][1], f["foot"][1])
 
 if __name__ == "__main__":
     unittest.main()

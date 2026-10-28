@@ -1,0 +1,172 @@
+[gd_scene load_steps=18 format=3]
+
+[ext_resource type="Script" path="res://game/world/arenas/battle_arena_root.gd" id="1_r"]
+[ext_resource type="Shader" path="res://game/shaders/environment/env_sky_night.gdshader" id="2_r"]
+[ext_resource type="Texture3D" path="res://assets/environments/arenas/drowned_choir_ring/lut_ch16_choir.png" id="3_r"]
+[ext_resource type="Script" path="res://game/world/arenas/arena_sea.gd" id="4_r"]
+[ext_resource type="Script" path="res://game/world/water/wave_component.gd" id="5_r"]
+[ext_resource type="Script" path="res://game/world/water/wave_set.gd" id="6_r"]
+[ext_resource type="Shader" path="res://game/shaders/water/water_ocean.gdshader" id="7_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/choir_amphitheatre.glb" id="8_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/pale_rim_flats.glb" id="9_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/choir_singer.glb" id="10_r"]
+
+[sub_resource type="ShaderMaterial" id="SkyMat"]
+shader = ExtResource("2_r")
+shader_parameter/col_ground = Color(0.1804, 0.298, 0.3137, 1)
+shader_parameter/col_horizon = Color(0.2275, 0.2902, 0.3765, 1)
+shader_parameter/col_moon = Color(0.8235, 0.8745, 1, 1)
+shader_parameter/col_zenith = Color(0.0549, 0.08627, 0.149, 1)
+shader_parameter/moon_disc_energy = 10.0
+
+[sub_resource type="Sky" id="Sky"]
+sky_material = SubResource("SkyMat")
+process_mode = 2
+
+[sub_resource type="Environment" id="Env"]
+resource_name = "drowned_choir_ring_ch16"
+background_mode = 2
+sky = SubResource("Sky")
+ambient_light_source = 2
+ambient_light_color = Color(0.1647, 0.2275, 0.3059, 1)
+ambient_light_energy = 0.25
+reflected_light_source = 2
+tonemap_mode = 4
+tonemap_exposure = 1.1
+tonemap_agx_white = 12.0
+ssao_enabled = true
+ssao_radius = 1.2
+ssao_intensity = 1.2
+glow_enabled = true
+glow_intensity = 0.5
+glow_bloom = 0.06
+glow_hdr_threshold = 1.0
+fog_enabled = true
+fog_mode = 0
+fog_light_color = Color(0.2275, 0.2902, 0.3529, 1)
+fog_density = 0.003
+fog_sky_affect = 0.0
+fog_height = 0.0
+fog_height_density = 0.0
+adjustment_enabled = true
+adjustment_color_correction = ExtResource("3_r")
+
+[sub_resource type="Resource" id="SeaWave0"]
+script = ExtResource("5_r")
+direction_deg = 30.0
+wavelength_m = 4.0
+amplitude_m = 0.006
+steepness = 0.08
+
+[sub_resource type="Resource" id="SeaWave1"]
+script = ExtResource("5_r")
+direction_deg = 110.0
+wavelength_m = 2.0
+amplitude_m = 0.003
+steepness = 0.05
+
+[sub_resource type="Resource" id="SeaWaves"]
+script = ExtResource("6_r")
+components = Array[ExtResource("5_r")]([SubResource("SeaWave0"), SubResource("SeaWave1")])
+amplitude_scale = 1.0
+
+[sub_resource type="ShaderMaterial" id="SeaMat"]
+resource_name = "arena_pale_rim_night"
+render_priority = 0
+shader = ExtResource("7_r")
+shader_parameter/col_deep = Color(0.1804, 0.298, 0.3137, 1)
+shader_parameter/col_scatter_shallow = Color(0.498, 0.7216, 0.7059, 1)
+shader_parameter/absorption_per_m = Vector3(2, 0.5, 0.42)
+shader_parameter/absorption_scale = 0.8
+shader_parameter/scatter_energy = 0.12
+shader_parameter/caustic_strength = 0.0
+shader_parameter/col_foam = Color(0.9333, 0.9569, 0.9569, 1)
+shader_parameter/col_sss = Color(0.498, 0.7216, 0.7059, 1)
+shader_parameter/foam_crest_threshold = 0.95
+shader_parameter/roughness_far = 0.04
+shader_parameter/use_caustics = false
+shader_parameter/use_ssr = true
+shader_parameter/use_sss = false
+
+[node name="DrownedChoirRing" type="Node3D"]
+script = ExtResource("1_r")
+arena_id = &"drowned_choir_ring"
+sub_frame = &"ch16"
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Env")
+
+[node name="Sun" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.587785, 0.168204, -0.791338, 0, 0.978148, 0.207912, 0.809017, 0.122207, -0.574941, 0, 30, 0)
+light_color = Color(0.8235, 0.8745, 1, 1)
+light_energy = 0.35
+shadow_enabled = true
+shadow_bias = 0.03
+shadow_normal_bias = 1.0
+shadow_blur = 1.0
+directional_shadow_mode = 2
+directional_shadow_split_1 = 0.06
+directional_shadow_split_2 = 0.18
+directional_shadow_split_3 = 0.45
+directional_shadow_max_distance = 80.0
+
+[node name="Sea" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.25, 0)
+script = ExtResource("4_r")
+wave_set = SubResource("SeaWaves")
+material = SubResource("SeaMat")
+sea_glow_energy = 0.1
+tide_line_y = -0.25
+
+[node name="Ground" parent="." instance=ExtResource("8_r")]
+
+[node name="Kit0" parent="." instance=ExtResource("9_r")]
+
+[node name="Dressing" type="Node3D" parent="."]
+
+[node name="choir_singer_1" parent="Dressing" instance=ExtResource("10_r")]
+transform = Transform3D(-0.309017, 0, -0.951057, 0, 1, 0, 0.951057, 0, -0.309017, 41.846, -0.6, 13.597)
+
+[node name="choir_singer_2" parent="Dressing" instance=ExtResource("10_r")]
+transform = Transform3D(-0.809017, 0, -0.587785, 0, 1, 0, 0.587785, 0, -0.809017, 25.863, -0.6, 35.597)
+
+[node name="choir_singer_3" parent="Dressing" instance=ExtResource("10_r")]
+transform = Transform3D(-1, 0, -1.22465e-16, 0, 1, 0, 1.22465e-16, 0, -1, 0, -0.6, 44)
+
+[node name="choir_singer_4" parent="Dressing" instance=ExtResource("10_r")]
+transform = Transform3D(-0.809017, 0, 0.587785, 0, 1, 0, -0.587785, 0, -0.809017, -25.863, -0.6, 35.597)
+
+[node name="choir_singer_5" parent="Dressing" instance=ExtResource("10_r")]
+transform = Transform3D(-0.309017, 0, 0.951057, 0, 1, 0, -0.951057, 0, -0.309017, -41.846, -0.6, 13.597)
+
+[node name="choir_singer_6" parent="Dressing" instance=ExtResource("10_r")]
+transform = Transform3D(0.309017, 0, 0.951057, 0, 1, 0, -0.951057, 0, 0.309017, -41.846, -0.6, -13.597)
+
+[node name="choir_singer_7" parent="Dressing" instance=ExtResource("10_r")]
+transform = Transform3D(0.809017, 0, 0.587785, 0, 1, 0, -0.587785, 0, 0.809017, -25.863, -0.6, -35.597)
+
+[node name="choir_singer_8" parent="Dressing" instance=ExtResource("10_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -0, -0.6, -44)
+
+[node name="choir_singer_9" parent="Dressing" instance=ExtResource("10_r")]
+transform = Transform3D(0.809017, 0, -0.587785, 0, 1, 0, 0.587785, 0, 0.809017, 25.863, -0.6, -35.597)
+
+[node name="choir_singer_10" parent="Dressing" instance=ExtResource("10_r")]
+transform = Transform3D(0.309017, 0, -0.951057, 0, 1, 0, 0.951057, 0, 0.309017, 41.846, -0.6, -13.597)
+
+[node name="CameraHints" type="Node3D" parent="."]
+
+[node name="wide_high" type="Marker3D" parent="CameraHints"]
+transform = Transform3D(0.995893, 0.0339417, -0.0839326, -0, 0.927066, 0.374899, 0.0905357, -0.373359, 0.923258, -1.5, 7.5, 13.5)
+
+[node name="party_side" type="Marker3D" parent="CameraHints"]
+transform = Transform3D(0.575779, -0.0656933, 0.814962, 0, 0.996767, 0.0803484, -0.817606, -0.0462629, 0.573917, 5.6, 1.7, 4.5)
+
+[node name="foe_side" type="Marker3D" parent="CameraHints"]
+transform = Transform3D(0.490844, 0.0745636, -0.868051, -0, 0.996331, 0.0855825, 0.871248, -0.0420076, 0.489043, -5.6, 1.7, 4)
+
+[node name="the_mouths" type="Marker3D" parent="CameraHints"]
+transform = Transform3D(0.968803, 0.106816, 0.223633, 0, 0.902351, -0.431001, -0.247833, 0.417555, 0.8742, 1, 0.8, 3)
+
+[node name="the_ring" type="Marker3D" parent="CameraHints"]
+transform = Transform3D(0.951709, 0.0188147, 0.306426, 0, 0.99812, -0.0612851, -0.307003, 0.0583256, 0.94992, 0, 6, 12)

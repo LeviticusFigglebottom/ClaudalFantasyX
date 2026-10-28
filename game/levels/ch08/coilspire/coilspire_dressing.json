@@ -12,10 +12,22 @@
  "greybox": {
   "hide_all": true,
   "keep": [
-   "Virel",
-   "StormWall"
+   "Virel"
   ]
  },
+ "storms": [
+  {
+   "name": "Undertow",
+   "at": [
+    308.745,
+    77.285,
+    159.418
+   ],
+   "preset": "ch08_seawall",
+   "azimuth_deg": 170.0,
+   "block": "StormWall"
+  }
+ ],
  "fire_light_color": "#FFB16E",
  "fire_lights": [
   {
@@ -1250,83 +1262,73 @@
    "spin_with": "Key_t4_d"
   },
   {
-   "piece": "shrine_door_valve",
-   "kit_dir": "res://assets/environments/kits/haluna/",
+   "piece": "flue_gate",
    "at": [
     304.573,
     158.766
    ],
    "y": 39.885,
    "yaw_deg": 92.364,
-   "scale": 0.533,
-   "scale_y": 0.8,
    "block": "Gate_t1"
   },
   {
-   "piece": "shrine_door_valve",
-   "kit_dir": "res://assets/environments/kits/haluna/",
+   "piece": "flue_gate",
    "at": [
     305.567,
     159.619
    ],
    "y": 48.885,
    "yaw_deg": 109.578,
-   "scale": 0.533,
-   "scale_y": 0.8,
    "block": "Gate_t2"
   },
   {
-   "piece": "shrine_door_valve",
-   "kit_dir": "res://assets/environments/kits/haluna/",
+   "piece": "flue_gate",
    "at": [
     308.941,
     160.908
    ],
    "y": 57.885,
    "yaw_deg": -167.049,
-   "scale": 0.483,
-   "scale_y": 0.8,
    "block": "Gate_t3"
   },
   {
-   "piece": "shrine_door_valve",
-   "kit_dir": "res://assets/environments/kits/haluna/",
+   "piece": "flue_gate",
    "at": [
     308.282,
     156.879
    ],
    "y": 66.885,
    "yaw_deg": 4.271,
-   "scale": 0.483,
-   "scale_y": 0.8,
    "block": "Gate_t4"
   },
   {
-   "piece": "ruin_slab",
-   "kit_dir": "res://assets/environments/kits/haluna/",
+   "piece": "niche_seal",
    "at": [
     305.892,
     156.568
    ],
-   "y": 49.785,
+   "y": 49.285,
    "yaw_deg": 51.0,
-   "tilt_deg": [
-    0.0,
-    90.0
-   ],
-   "scale": 0.248,
    "block": "NicheSeal"
   },
   {
-   "piece": "chalk_mark_heavy",
-   "kit_dir": "res://assets/environments/kits/brine_shoals/",
+   "piece": "lamp_niche",
+   "at": [
+    305.776,
+    156.473
+   ],
+   "y": 49.385,
+   "yaw_deg": 51.0,
+   "block": "Niche"
+  },
+  {
+   "piece": "wright_mark",
    "at": [
     306.369,
     156.832
    ],
    "y": 58.535,
-   "yaw_deg": 139.0,
-   "scale": 0.746,
+   "yaw_deg": 49.0,
    "block": "WrightMark"
   },
   {

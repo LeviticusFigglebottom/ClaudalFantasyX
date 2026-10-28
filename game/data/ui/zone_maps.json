@@ -142,7 +142,7 @@
         "bounds": [-48.0, -74.0, 96.0, 108.0],
         "pois": [
           {"id": "harbour", "name_key": "MAP_POI_P_HARBOUR", "kind": "dock", "at": [0.0, 26.5], "source": "trigger:harbour_road"},
-          {"id": "weir", "name_key": "MAP_POI_P_WEIR", "kind": "path", "at": [9.0, 25.2], "source": "spawn:Weir"},
+          {"id": "weir", "name_key": "MAP_POI_P_WEIR", "kind": "path", "at": [13.6, 25.2], "source": "spawn:Weir"},
           {"id": "market", "name_key": "MAP_POI_P_MARKET", "kind": "talk", "at": [-1.7, -1.6], "source": "trigger:bark_boat_folders"},
           {"id": "forge", "name_key": "MAP_POI_P_FORGE", "kind": "shop", "at": [6.3, -1.7], "source": "actor:garo"},
           {"id": "inn", "name_key": "MAP_POI_P_INN", "kind": "inn", "at": [-3.6, -15.6], "source": "spawn:InnGate"},
@@ -157,18 +157,18 @@
         "shapes": "res://game/levels/ch05/ashcrown/ashcrown_layout.json",
         "shape_kind": "greybox_layout",
         "shape_hints": {"structures": ["g1", "g2a", "g2b", "g3a", "g3b", "g3c", "g4a", "g4b"], "pads": ["TenderGraves"]},
-        "bounds": [-9.0, -103.0, 70.0, 122.0],
+        "bounds": [-33.0, -21.0, 66.0, 177.0],
         "pois": [
-          {"id": "stair_foot", "name_key": "MAP_POI_A_STAIR_FOOT", "kind": "path", "at": [0.0, 2.0], "source": "spawn:StairFoot"},
-          {"id": "grave_tier", "name_key": "MAP_POI_A_GRAVE_TIER", "kind": "talk", "at": [0.0, -35.0], "source": "trigger:banter_grave_tier"},
-          {"id": "copper_tier", "name_key": "MAP_POI_A_COPPER_TIER", "kind": "talk", "at": [0.0, -60.0], "source": "trigger:banter_copper_tier"},
-          {"id": "crown", "name_key": "MAP_POI_A_CROWN", "kind": "path", "at": [18.0, -94.0], "source": "trigger:crown"},
-          {"id": "tier_1", "name_key": "MAP_POI_A_TIER_1", "kind": "path", "at": [34.0, -88.0], "source": "trigger:rod_t1"},
-          {"id": "tier_2", "name_key": "MAP_POI_A_TIER_2", "kind": "path", "at": [34.0, -68.0], "source": "trigger:rod_t2"},
-          {"id": "tier_3", "name_key": "MAP_POI_A_TIER_3", "kind": "path", "at": [34.0, -48.0], "source": "trigger:rod_t3"},
-          {"id": "tier_4", "name_key": "MAP_POI_A_TIER_4", "kind": "path", "at": [34.0, -28.0], "source": "trigger:rod_t4"},
-          {"id": "quench", "name_key": "MAP_POI_A_QUENCH", "kind": "pool", "at": [54.0, -46.0], "source": "trigger:quench_charm"},
-          {"id": "anvil_court", "name_key": "MAP_POI_A_ANVIL_COURT", "kind": "door", "at": [41.0, -12.0], "source": "trigger:anvil_court"}
+          {"id": "stair_foot", "name_key": "MAP_POI_A_STAIR_FOOT", "kind": "path", "at": [0.0, 150.8], "source": "spawn:StairFoot"},
+          {"id": "grave_tier", "name_key": "MAP_POI_A_GRAVE_TIER", "kind": "talk", "at": [0.0, 100.9], "source": "trigger:banter_grave_tier"},
+          {"id": "copper_tier", "name_key": "MAP_POI_A_COPPER_TIER", "kind": "talk", "at": [0.0, 30.0], "source": "trigger:banter_copper_tier"},
+          {"id": "crown", "name_key": "MAP_POI_A_CROWN", "kind": "path", "at": [0.0, -2.4], "source": "trigger:crown"},
+          {"id": "tier_1", "name_key": "MAP_POI_A_TIER_1", "kind": "path", "at": [6.0, -10.8], "source": "trigger:rod_t1"},
+          {"id": "tier_2", "name_key": "MAP_POI_A_TIER_2", "kind": "path", "at": [9.5, -12.0], "source": "trigger:rod_t2"},
+          {"id": "tier_3", "name_key": "MAP_POI_A_TIER_3", "kind": "path", "at": [12.9, -10.4], "source": "trigger:rod_t3"},
+          {"id": "tier_4", "name_key": "MAP_POI_A_TIER_4", "kind": "path", "at": [16.3, -9.1], "source": "trigger:rod_t4"},
+          {"id": "quench", "name_key": "MAP_POI_A_QUENCH", "kind": "pool", "at": [12.9, -12.8], "source": "trigger:quench_charm"},
+          {"id": "anvil_court", "name_key": "MAP_POI_A_ANVIL_COURT", "kind": "door", "at": [10.9, 7.7], "source": "trigger:anvil_court"}
         ]
       },
       {

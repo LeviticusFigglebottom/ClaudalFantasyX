@@ -1,0 +1,21 @@
+{
+  "_doc": "Ch5's sub-frame grades (M3-C05-03; act1_ch05.md \u00a79.4; colour script `ch05_harbour_dusk`, `ch05_ashcrown_day`): an Environment each, and the sun each wants, for the Ch5 zones' light rows.",
+  "ch05_harbour_dusk": {
+    "environment": "res://assets/environments/zones/ch05/ch05_harbour_dusk_environment.tres",
+    "sun": {
+      "pitch_deg": -2.0,
+      "yaw_deg": -110.0,
+      "color": "#E08A5A",
+      "energy": 0.35
+    }
+  },
+  "ch05_ashcrown_day": {
+    "environment": "res://assets/environments/zones/ch05/ch05_ashcrown_day_environment.tres",
+    "sun": {
+      "pitch_deg": -58.0,
+      "yaw_deg": -45.0,
+      "color": "#FFF0DC",
+      "energy": 2.8
+    }
+  }
+}

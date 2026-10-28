@@ -212,6 +212,12 @@ cutscene sequencer (`game/cutscene/**`), `game/flow/**` and the playtest fixes.
   still todo. The galleries part of M3-C07-04 is done by M3-C07-1211. I'll compose the port from the Bell kit's port
   pieces and Oruvel's rafts only if the Lead wants it before env-art gets to it.
 
+- **Lead DECISION (10-28 02:35): env-art-b's Ch5–Ch9 dressing wins; dressing is env-art's (Prologue–Ch4) and
+  env-art-b's (Ch5–Ch9) from now on.** Merged origin/claude/env-art-b, every conflict in tools/act1/ch0[5-9]_*, their
+  generated json, `zone_kit_dressing.gd` (`waters`) and the Ch7 port's scene and rig taken from env-art-b; my Ch9 Lake
+  node, lake material and waters test dropped; shots.json is theirs plus my two wake shots. Kept: my Ch4 work and the
+  keep-list guard (re-pointed: Coilspire keeps Virel only). act1-chapters now owns encounters, NPC/trigger placement,
+  cutscene staging and flow only. Superseded below: the Ch5–Ch9 bullets of the ADR 0041 batch.
 - **ADR 0041 (Act I at final quality first), act1-chapters' batch @ f307b8a8, MERGE-READY.** My own audit
   (`<scratch>/a1/audit`: every visible PrimitiveMesh in each Act I zone and shot rig) drove it; tracks self-render now.
   - Ch9 (778fdd4e): the landing and the mole bridge decked in Haluna's timber on piles, the rocks Pell comes down as

@@ -25,20 +25,20 @@ location_id = &"ch07/tamsule"
 layout_path = "res://game/levels/ch07/tamsule/tamsule_layout.json"
 
 [node name="Water" type="Node3D" parent="."]
-position = Vector3(0, -0.45, 0)
+position = Vector3(0, -1.6, 0)
 script = ExtResource("4_water")
 publishes_water_level = true
 wave_set = ExtResource("5_waves")
 material = ExtResource("6_water_mat")
 
 [node name="Riverbed" type="MeshInstance3D" parent="."]
-position = Vector3(0, -1.0, 0)
+position = Vector3(0, -5.1, 0)
 mesh = SubResource("RiverbedMesh")
 surface_material_override/0 = SubResource("RiverbedMat")
 
 [node name="Tide" type="Node" parent="." node_paths=PackedStringArray("water")]
 script = ExtResource("3_tide")
-water_height_y = -0.45
+water_height_y = -1.6
 water = NodePath("../Water")
 
 [node name="Dressing" type="Node3D" parent="." node_paths=PackedStringArray("tide")]
