@@ -55,7 +55,7 @@
     {"op": "cue", "cue": "wait", "args": [1.5], "kwargs": {}, "src": 68},
     {"op": "line", "id": "ch04_shell_020", "key": "DLG_CH04_SHELL_020", "speaker": "toma", "emotion": "sad", "voice": "", "src": 69},
     {"op": "goto", "to": 48, "src": 67},
-    {"op": "cue", "cue": "camera", "args": ["H14"], "kwargs": {}, "src": 71},
+    {"op": "cue", "cue": "camera", "args": ["H17"], "kwargs": {}, "src": 71},
     {"op": "cue", "cue": "face", "args": ["asha", "soft_smile", 0.0], "kwargs": {}, "src": 72},
     {"op": "cue", "cue": "wait", "args": [2.5], "kwargs": {}, "src": 73},
     {"op": "line", "id": "ch04_shell_021", "key": "DLG_CH04_SHELL_021", "speaker": "", "emotion": "", "voice": "", "src": 74, "tags": ["sung"]},

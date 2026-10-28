@@ -37,6 +37,8 @@ func test_every_act_one_skill_has_its_own_effect() -> void:
 			ids[str(sid)] = str(row["id"])
 	for eid: StringName in db.enemies:
 		var row := db.enemies[eid] as Dictionary
+		if int(row.get("act", 1)) > 1:
+			continue  # Act II foes (paused by ADR 0041): their effects come with Act II
 		for sid: Variant in row.get("skills", []):
 			ids[str(sid)] = String(eid)
 		for phase: Dictionary in row.get("phases", []):  # a boss's phase skills (Thrash, Slag Pour, the Breach)

@@ -1,11 +1,8 @@
 {
  "_about": "test_act1_cutscene_walks.gd: the Act I cutscene walks known to leave the floor or pass through a box (zone scene: @mark actor mark), each to be fixed (waypoints via the sequencer's via=, M3-CIN-1220; a mark moved; an off-screen place). The test fails on any walk not listed, and on a listed walk that is now clean (take it off the list).",
  "known": [
-  "ch04/haluna_wake ch04_dock_in_the_dark: @mark asha dock_end",
   "ch04/haluna_wake ch04_long_way_round: @mark asha causeway_asha",
   "ch04/haluna_wake ch04_long_way_round: @mark toma causeway_toma",
-  "ch04/haluna_wake ch04_shell_is_set: @mark asha feast_edge",
-  "ch04/haluna_wake ch04_shell_is_set: @mark toma feast_edge",
   "ch06/brine_shoals ch06_after_barge: @mark asha toma_apart",
   "ch06/brine_shoals ch06_after_barge: @mark wrights escort_road",
   "ch06/brine_shoals ch06_barge: @mark stillguard_a impasse_a",

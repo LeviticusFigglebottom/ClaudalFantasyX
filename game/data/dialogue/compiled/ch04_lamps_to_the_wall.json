@@ -13,7 +13,7 @@
     {"op": "cue", "cue": "sfx", "args": ["wake_lamps_out"], "kwargs": {}, "src": 16},
     {"op": "cue", "cue": "wait", "args": [1.5], "kwargs": {}, "src": 17},
     {"op": "cue", "cue": "anim", "args": ["neme", "carry_food"], "kwargs": {}, "src": 18},
-    {"op": "cue", "cue": "mark", "args": ["toma", "table_lane", "walk"], "kwargs": {}, "src": 19},
+    {"op": "cue", "cue": "mark", "args": ["toma", "lane_toma", "walk"], "kwargs": {}, "src": 19},
     {"op": "line", "id": "ch04_lamps_001", "key": "DLG_CH04_LAMPS_001", "speaker": "rhen", "emotion": "neutral", "voice": "", "src": 20},
     {"op": "cue", "cue": "wait", "args": [0.6], "kwargs": {}, "src": 21},
     {"op": "line", "id": "ch04_lamps_002", "key": "DLG_CH04_LAMPS_002", "speaker": "toma", "emotion": "neutral", "voice": "", "src": 22},
