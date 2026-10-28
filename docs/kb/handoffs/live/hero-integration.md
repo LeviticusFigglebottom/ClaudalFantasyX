@@ -698,3 +698,84 @@ MERGE-READY @ 9deaedce: **Kerrid on the hero layer** (M3-HER-1149):
   body** (the capsule in the baseline is gone), feet on the road, no clipping.
 - **Left for the party:** Pell (no model yet: M3-CHR-506) and Liss's and Kerrid's models reaching the
   integration branch.
+
+## TRIAL MERGE
+Run with `python3 tools/dev/trial_merge.py --keep` (tools/dev/trial_merge.py: a throwaway worktree, never pushed). Each conflict names the files and the merged tracks holding a different version of each (tracks that merged each other share a "+"). The trial resolves the append-only files by union and keeps the merged side for the rest, so later tracks still go in.
+
+### 2026-10-28 ~04:30
+TRIAL MERGE @ integration 8d03e6d1: env-art ba895bee, env-art-b 8240c0e0, creatures 1514bd69, creatures-b 134251ef, characters fc74c29c, ui 8964614e, battle-presentation c832a740, act1-chapters 0737523e, m2-slice c536ade7, audio 29d5982b, hero-integration bf5749ea
+- **env-art-b** (8240c0e0): 3 conflicted file(s); 2 resolved by union (append-only files):
+  - `docs/kb/ownership.md`: env-art-b vs env-art (the trial keeps the merged side)
+- **creatures** (1514bd69): 4 conflicted file(s); 3 resolved by union (append-only files):
+  - `docs/kb/ownership.md`: creatures vs env-art vs env-art-b (the trial keeps the merged side)
+- **creatures-b** (134251ef): 2 conflicted file(s); 0 resolved by union (append-only files):
+  - `docs/kb/ownership.md`: creatures-b vs env-art vs env-art-b vs creatures (the trial keeps the merged side)
+  - `game/data/creatures/creatures.json`: creatures-b vs creatures (the trial keeps the merged side)
+- **characters** (fc74c29c): 4 conflicted file(s); 3 resolved by union (append-only files):
+  - `tools/dev/blender_builds.json`: characters vs creatures+creatures-b (the trial keeps the merged side)
+- **ui** (8964614e): 15 conflicted file(s); 4 resolved by union (append-only files):
+  - `assets/ui/portraits/creatures/flue_moth.png`: ui vs creatures (the trial keeps the merged side)
+  - `assets/ui/portraits/creatures/mangrove_drowner.png`: ui vs creatures+creatures-b (the trial keeps the merged side)
+  - `assets/ui/portraits/creatures/mangrove_drowner.png.import`: ui vs creatures+creatures-b (the trial keeps the merged side)
+  - `assets/ui/portraits/creatures/oil_slug.png`: ui vs creatures (the trial keeps the merged side)
+  - `assets_src/characters/requested_clips.json`: ui vs characters (the trial keeps the merged side)
+  - `docs/kb/ownership.md`: ui vs env-art vs env-art-b vs creatures vs creatures-b (the trial keeps the merged side)
+  - `docs/kb/tasks/M3/M3-CRE-634-portrait-test-enemies-only.md`: ui vs creatures+creatures-b (the trial keeps the merged side)
+  - `docs/kb/tasks/M3/M3-ENV-1214-pemakar-story-pieces.md`: ui vs env-art+env-art-b (the trial keeps the merged side)
+  - `game/data/battle/arenas.json`: ui vs env-art vs env-art-b (the trial keeps the merged side)
+  - `game/data/ui/battle_sandbox.json`: ui vs env-art-b (the trial keeps the merged side)
+  - `tools/dev/blender_builds.json`: ui vs creatures+creatures-b vs characters (the trial keeps the merged side)
+- **battle-presentation** (c832a740): 6 conflicted file(s); 3 resolved by union (append-only files):
+  - `docs/kb/ownership.md`: battle-presentation vs env-art vs env-art-b vs creatures vs creatures-b vs ui (the trial keeps the merged side)
+  - `game/battle/scene/battle_choreo.gd`: battle-presentation vs ui (the trial keeps the merged side)
+  - `game/data/ui/battle_sandbox.json`: battle-presentation vs env-art-b vs ui (the trial keeps the merged side)
+- **act1-chapters** (0737523e): 15 conflicted file(s); 1 resolved by union (append-only files):
+  - `game/data/audio/creature_voices.json`: act1-chapters vs ui (the trial keeps the merged side)
+  - `game/levels/_tests/act1_zones/ch07_tamsule_shots.tscn`: act1-chapters vs env-art-b (the trial keeps the merged side)
+  - `game/levels/act1/zone_kit_dressing.gd`: act1-chapters vs env-art-b vs ui (the trial keeps the merged side)
+  - `game/levels/ch05/pemakar/pemakar_dressing.json`: act1-chapters vs env-art-b vs ui (the trial keeps the merged side)
+  - `game/levels/ch07/tamsule/tamsule.tscn`: act1-chapters vs env-art-b vs ui (the trial keeps the merged side)
+  - `game/levels/ch07/tamsule/tamsule_dressing.json`: act1-chapters vs env-art-b (the trial keeps the merged side)
+  - `game/levels/ch08/coilspire/coilspire_dressing.json`: act1-chapters vs env-art-b vs ui (the trial keeps the merged side)
+  - `game/levels/ch08/corrow/corrow_dressing.json`: act1-chapters vs env-art-b vs ui (the trial keeps the merged side)
+  - `game/levels/ch09/corrow_night/corrow_night_dressing.json`: act1-chapters vs env-art-b vs ui (the trial keeps the merged side)
+  - `tools/act1/ch05_pemakar_dressing.py`: act1-chapters vs env-art-b vs ui (the trial keeps the merged side)
+  - `tools/act1/ch07_tamsule_port_dressing.py`: act1-chapters vs env-art-b (the trial keeps the merged side)
+  - `tools/act1/ch08_coilspire_dressing.py`: act1-chapters vs env-art-b vs ui (the trial keeps the merged side)
+  - `tools/act1/ch08_corrow_dressing.py`: act1-chapters vs env-art-b vs ui (the trial keeps the merged side)
+  - `tools/act1/ch09_corrow_night.py`: act1-chapters vs env-art-b vs ui (the trial keeps the merged side)
+- **m2-slice** (c536ade7): 9 conflicted file(s); 3 resolved by union (append-only files):
+  - `assets/levels/ch03/shell_shrine/shrine_gi_closed.res`: m2-slice vs ui (the trial keeps the merged side)
+  - `assets/levels/ch03/shell_shrine/shrine_gi_inputs.json`: m2-slice vs ui (the trial keeps the merged side)
+  - `assets/levels/ch03/shell_shrine/shrine_gi_open.res`: m2-slice vs ui (the trial keeps the merged side)
+  - `docs/kb/tasks/M2/M2-HER-1113-cutscene-turns-and-end-jumps.md`: m2-slice vs env-art-b+ui (the trial keeps the merged side)
+  - `game/levels/ch03/first_verse/first_verse.tscn`: m2-slice vs ui (the trial keeps the merged side)
+  - `tests/integration/test_slice_primitives.gd`: m2-slice vs ui (the trial keeps the merged side)
+- **hero-integration** (bf5749ea): 4 conflicted file(s); 0 resolved by union (append-only files):
+  - `docs/kb/tasks/M2/M2-QA-100-runner-suspended-tests.md`: hero-integration vs ui+m2-slice (the trial keeps the merged side)
+  - `docs/kb/tasks/M3/M3-HER-1120-liss-battle-stand-in.md`: hero-integration vs ui (the trial keeps the merged side)
+  - `tests/integration/test_qa_capsules.gd.uid`: hero-integration vs ui (the trial keeps the merged side)
+  - `tests/unit/test_hero_stairs.gd`: hero-integration vs env-art-b vs ui (the trial keeps the merged side)
+**What needs an owner's eye (the Lead's call):**
+1. **act1-chapters vs env-art-b: both are dressing Ch5/Ch7/Ch8/Ch9.** The clashing files:
+   - pemakar_dressing.json, tamsule_dressing.json, coilspire_dressing.json, corrow_dressing.json and
+     corrow_night_dressing.json;
+   - their generators in tools/act1/;
+   - game/levels/act1/zone_kit_dressing.gd;
+   - tamsule.tscn and the Ch7 shot rig.
+
+   Exactly the "two tracks dressing the same zones" case. One owner per zone, per ADR 0041's split
+   (env-art-b: Ch5–Ch9 zones; act1-chapters: placement and flow).
+2. **ui carries its own versions of other tracks' files:** act1-chapters' dressing generators, m2-slice's shrine GI
+   bake and first_verse.tscn, creatures' portraits (flue_moth, mangrove_drowner, oil_slug), characters'
+   requested_clips.json, arenas.json and battle_choreo.gd. Most likely ui merged older heads of those tracks; its
+   next integration merge should take theirs.
+3. **creatures vs creatures-b on game/data/creatures/creatures.json:** both write rows (the regulars/bosses split).
+4. **battle_sandbox.json differs between env-art-b, ui and battle-presentation;** this branch's Liss and Kerrid rows
+   are in it too.
+5. **blender_builds.json:** characters vs creatures (both add jobs). A union-style resolve is likely right.
+6. **docs/kb/ownership.md conflicts on every merge,** and tools/dev/merge_union.py doesn't union it although
+   TRACK-RULES lists it as append-only. A one-line addition to merge_union.py would end that (QA & Tools' file;
+   not edited here).
+- hero-integration's own clashes are task files and the Lead's test_hero_stairs fix (taking theirs is right).
+- I can't self-schedule while send_later is off, so I'll re-run this trial at each wake, about hourly.
