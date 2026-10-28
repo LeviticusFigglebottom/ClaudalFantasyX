@@ -596,3 +596,32 @@ BACKLOG EMPTY (2026-10-28 ~01:15): what's left waits on other tracks.
 - Switching the leak report to a failure once M3-HER-1130's list is empty.
 - M3-ARC-1216: act1-chapters places the stair flights.
 On every new integration batch or track head, I re-run qa_ and hero_ and file what fails.
+
+### The Lead's 01:00 list, 2026-10-28 ~02:00
+1. **SELF-RENDERED @ b04a188a** (a scratch merge: this branch e7d6e7a6+, claude/characters 24dca3d1 and
+   claude/m2-slice; nothing committed from it): slice_prologue_p01, slice_prologue_vigil_line, field_hero_party,
+   field_hero_rhen_walk.
+   - **P01: Liss's vigil is her real body** (M3-HER-100 works): feet on the paving, no clipping. Kerrid's and Pell's
+     vigils are still capsules (no models). The capsule behind Ysolde is Kerrid's vigil, 6.5 m behind her (checked
+     positions), not clipping.
+   - **vigil_line:** Asha and Rhen in frame, clean.
+   - **field_hero_party:** the party's spacing is the same as the baseline (the follower push cap changes nothing
+     here). The drift is characters' new grips: Toma's spear and Asha's staff now in hand. No sliding or clipping.
+   - **field_hero_rhen_walk:** 156 px of drift at the lantern. The capsule beside him is the rig's size reference,
+     also in the baseline.
+   - No baselines written.
+2. **Integration @ cd23f612, full suite: 2820 run, 2 failed.** Both already have owners:
+   - **test_creature_portraits:** M3-CRE-634 (creatures → ui-menus, todo, with a verified patch).
+   - **test_footsteps_slice_zones:** M3-AUD-812 (audio, review). Audio's head (5a4c8470, which contains the
+     integration branch) passes it (5/0), so it's fixed once audio merges.
+   - No new tasks were needed.
+3. **Act I hero-motion audit: docs/kb/qa/act1_hero_motion_audit.md** (M3-HER-1132, review; re-run with
+   --filter=qa_cutscene_motion_audit).
+   - 171 of 244 @anim cues do nothing yet. The heroes' clips are requested in M3-CHR-1000 (except Liss's haul_rope
+     and Pell's storm_call).
+   - Filed: **M3-HER-1133** (characters: Act I's people's clips and those two), **M3-HER-1134** (creatures: the
+     Matron's two).
+   - Placeholder cue features: added to M3-HER-1123.
+
+MERGE-READY @ 6c4e9d1e: the audit test and doc, and tasks M3-HER-1132–1134. Checks: qa_cutscene_motion_audit 1/0 (0 left
+nodes), gdlint, taskboard, validate_data. No game code changed.
