@@ -230,9 +230,9 @@ hard_cut = true
 [sub_resource type="Resource" id="Shot_cut_H06"]
 script = ExtResource("7_shot")
 id = &"H06"
-position = Vector3(-0.4, 1.3, 4.2)
-look_at = Vector3(-0.4, 0.58, 8.2)
-fov_deg = 27.0
+position = Vector3(-0.2, 1.35, 4.0)
+look_at = Vector3(-1.0, 0.95, 8.5)
+fov_deg = 34.0
 hard_cut = true
 
 [sub_resource type="Resource" id="Shot_cut_H01"]

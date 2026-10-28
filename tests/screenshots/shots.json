@@ -4165,7 +4165,7 @@
         960,
         540
       ],
-      "settle_frames": 45,
+      "settle_frames": 240,
       "setup": {
         "globals": {
           "hymn_wind_time": 40.0
