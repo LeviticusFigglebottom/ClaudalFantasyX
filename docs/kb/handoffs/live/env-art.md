@@ -589,6 +589,20 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
+- **MERGE-READY @ (this push): the Lead's big16 checks (lead/gate-big16 @ ff82858c, this branch fast-forwarded to it).
+  No code change was needed.**
+  - **U03 on my mounted Underway dressing:** `ch01_bell_room` was rendered and viewed. The camera is in the bell-room
+    behind Rhen's shoulder, with the door and the lantern in frame; it is not in a wall. Row 23's bell-room is fine.
+  - **The booths:** in big16, `ov_zone_dressing` places `scale_hull` at yaw 0 and `chandlery` at -90, and slice-polish
+    staged the actors to them. Rendered and viewed:
+    - `ch01_scale_hull`: the scale-man behind his counter, the brass scales between him and Rhen.
+    - `ch01_kell_stall`: Kell before her lamp racks under the striped awning.
+    - Both counters face their customers. My retired generator's flip (845287999) is moot.
+  - **`ch01_o10_gull`:** the carved gull side-on against the sky. A rigging pole crosses the frame on the left; it
+    reads, but the camera is slice-polish's to trim if wanted.
+  - **`test_ch01_oruvel_kit`:** 3 run, 0 failed on big16. big15 failed because big15 still mounted the old dressing.
+  - **`test_footsteps_slice_zones`:** 5 run, 0 failed on big16, so the Haluna sand, dock and shallows groups read
+    right. Nothing to fix or file.
 - **MERGE-READY @ df2c8384a: M3-ENV-105 (high), the Underway's walls on the walk walls; M3-ENV-740 needs nothing.**
   - **Cause:** `ou_zone_dressing.py` hard-coded the rooms from an older greybox. The layout has since moved its walls
     (the crown to x ±9 and z -4/20, the gauge room's east wall to x 104, the tin alcove to z -4..2).
