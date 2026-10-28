@@ -266,8 +266,10 @@ func anchor(target: StringName, at: String) -> Vector3:
 	if _ctl == null or not _ctl.stage.has_fighter(target):
 		return global_position
 	var f := _ctl.stage.stand_in(target)
-	var height := float(BattleStage.stand_in_spec(target).get("height", 1.7))
-	return f.global_position + Vector3.UP * height * frac
+	var spec := BattleStage.stand_in_spec(target)
+	var height := float(spec.get("height", 1.7))
+	# M3-BPR-420: a flier stands at its hover (the gulls, the squall wings): its hit lands on it, not on the sand below.
+	return f.global_position + Vector3.UP * (float(spec.get("hover", 0.0)) + height * frac)
 
 
 func _emitter(effect_id: StringName, def: Dictionary) -> GPUParticles3D:

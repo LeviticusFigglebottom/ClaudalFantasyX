@@ -39,48 +39,47 @@ def core(a: str, b: str, size: float = 1.0, life: float = 0.18) -> dict:
     return layer(a, b, 2, life, 1.0, (0.0, 0.05), 0, (0, 0, 0), (size, size * 1.3), radius=0.02, energy=1.2)
 
 
-# --- motifs: each returns layers ---------------------------------------------------------------------------------
+# --- motifs: each returns layers. No impact core of their own: the element hit (or the heal, the status) already
+# plays one, and a second stacked on it read as a soft blob in the first self-render. -------------------------------
 def slash(a, b, n=40, side=1.0):  # a quick lateral spray of sparks across the target
-    return [core(a, b, 0.8, 0.14),
-            layer(a, b, n, 0.35, 0.95, (2.0, 3.6), 18, (0, -2.0, 0), (0.06, 0.16), (side, 0.25, 0), 0.12)]
+    return [layer(a, b, n + 10, 0.4, 0.95, (2.0, 3.6), 18, (0, -2.0, 0), (0.12, 0.26), (side, 0.25, 0), 0.15, energy=1.4)]
 
 
 def heavy(a, b, dust_a, dust_b, n=50):  # a heavy blow: a big core, chunks, and dust kicked out low
-    return [core(a, b, 1.5, 0.22),
-            layer(a, b, n, 0.6, 0.95, (1.4, 3.0), 70, (0, -7.0, 0), (0.1, 0.24), radius=0.2),
-            layer(dust_a, dust_b, 30, 0.9, 0.9, (0.8, 1.6), 85, (0, -0.6, 0), (0.18, 0.4), radius=0.3, turb=0.3)]
+    return [layer(a, b, n + 10, 0.6, 0.95, (1.4, 3.0), 70, (0, -7.0, 0), (0.14, 0.3), radius=0.2, energy=1.4),
+            layer(dust_a, dust_b, 30, 0.9, 0.9, (0.8, 1.6), 85, (0, -0.6, 0), (0.22, 0.46), radius=0.3, turb=0.3)]
 
 
 def burst(a, b, n=45, rise=-2.5):  # a round impact
-    return [core(a, b, 1.1), layer(a, b, n, 0.5, 0.92, (1.0, 2.2), 180, (0, rise, 0), (0.1, 0.24))]
+    return [layer(a, b, n + 10, 0.55, 0.92, (1.0, 2.2), 180, (0, rise, 0), (0.13, 0.29), energy=1.4)]
 
 
 def spray(a, b, n=55):  # water thrown up and falling
-    return [core(a, b, 0.9, 0.16), layer(a, b, n, 0.7, 0.9, (1.5, 3.0), 50, (0, -6.0, 0), (0.08, 0.2), radius=0.2)]
+    return [layer(a, b, n + 10, 0.7, 0.9, (1.5, 3.0), 50, (0, -6.0, 0), (0.12, 0.26), radius=0.2, energy=1.4)]
 
 
 def shards(a, b, n=24):  # few, larger pieces falling
-    return [core(a, b, 0.9), layer(a, b, n, 0.8, 0.95, (1.2, 2.4), 60, (0, -6.5, 0), (0.14, 0.3), radius=0.15)]
+    return [layer(a, b, n + 6, 0.8, 0.95, (1.2, 2.4), 60, (0, -6.5, 0), (0.18, 0.36), radius=0.15, energy=1.4)]
 
 
 def rise(a, b, n=36, life=1.1):  # slow upward motes (a blessing, a stance)
-    return [layer(a, b, n, life, 0.3, (0.4, 0.9), 25, (0, 0.4, 0), (0.1, 0.22), radius=0.35, turb=0.3)]
+    return [layer(a, b, n, life, 0.3, (0.4, 0.9), 25, (0, 0.4, 0), (0.15, 0.3), radius=0.35, turb=0.3, energy=1.4)]
 
 
 def sink(a, b, n=32):  # motes settling down over the target (a hex, a smother)
-    return [layer(a, b, n, 1.0, 0.4, (0.2, 0.5), 30, (0, -1.4, 0), (0.12, 0.26), (0, -1, 0), 0.35, 0.2)]
+    return [layer(a, b, n, 1.0, 0.4, (0.2, 0.5), 30, (0, -1.4, 0), (0.16, 0.32), (0, -1, 0), 0.35, 0.2, energy=1.4)]
 
 
 def ring(a, b, n=40):  # a ring lifting from the feet (a guard, a ward)
-    return [layer(a, b, n, 0.9, 0.85, (0.05, 0.15), 5, (0, 0.5, 0), (0.12, 0.22), radius=0.75, energy=1.1)]
+    return [layer(a, b, n, 0.9, 0.85, (0.05, 0.15), 5, (0, 0.5, 0), (0.16, 0.3), radius=0.75, energy=1.4)]
 
 
 def charge(a, b, n=40):  # gathering: motes drawn in and up around the body
-    return [layer(a, b, n, 1.0, 0.0, (0.1, 0.3), 40, (0, 1.0, 0), (0.08, 0.18), radius=1.0, turb=0.4)]
+    return [layer(a, b, n, 1.0, 0.0, (0.1, 0.3), 40, (0, 1.0, 0), (0.13, 0.26), radius=1.0, turb=0.4, energy=1.3)]
 
 
 def column(a, b, n=60):  # a column straight up from the feet (a flame, a bolt)
-    return [core(a, b, 1.2, 0.2), layer(a, b, n, 0.55, 0.9, (2.5, 4.5), 8, (0, -1.0, 0), (0.08, 0.2), radius=0.12)]
+    return [layer(a, b, n + 10, 0.6, 0.9, (2.5, 4.5), 8, (0, -1.0, 0), (0.13, 0.28), radius=0.15, energy=1.4)]
 
 
 def fx(at: str, layers: list, note: str) -> dict:
@@ -90,7 +89,7 @@ def fx(at: str, layers: list, note: str) -> dict:
 # --- the Act I abilities -----------------------------------------------------------------------------------------
 SKILLS = {
     # The party (characters.json kits; Ch8's set-piece skills).
-    "quick_hit": fx("chest", slash("foam_white", "bone", 30), "Rhen: a quick light cut, foam-white."),
+    "quick_hit": fx("chest", slash("foam_white", "cold_blue_stone", 30), "Rhen: a quick light cut, foam-white going slate."),
     "undertow_cut": fx("chest", slash("lagoon_teal", "deep_teal_shadow", 50, -1.0) + sink("deep_teal_shadow", "abyss_navy", 18),
                        "Rhen: a cut that drags down like the undertow: teal spray pulled under."),
     "mend": fx("chest", rise("turquoise_shallow", "foam_white", 30), "Asha: shallow water lifting off the wound (water, not glimmer)."),
@@ -104,7 +103,7 @@ SKILLS = {
     "challenge": fx("head", burst("ember_orange", "dusk_gold", 24, 1.0), "Toma (Ch8): the challenge, a spark at the foe's head."),
     "stand_fast": fx("feet", ring("sand_cloth", "bone", 26), "Ch8: a hero braces on the wall-walk."),
     "ember": fx("chest", column("ember_orange", "dusk_gold", 40), "Ysolde: a small flame climbing the target."),
-    "frost": fx("chest", shards("salt_glass", "starlight", 26), "Ysolde: salt-glass shards of rime falling."),
+    "frost": fx("chest", shards("moon_blue", "salt_glass", 26), "Ysolde: cold blue shards of rime falling."),
     "slow_hex": fx("head", sink("indigo_dye", "tattoo_ink", 34), "Ysolde: ink-dark motes settling over the target."),
     "fluke_cleave": fx("chest", heavy("cold_blue_stone", "bone", "sand_wet", "timber_weathered", 40),
                        "Kerrid: the anchor-fluke bites: iron chips and splinters."),
@@ -130,7 +129,7 @@ SKILLS = {
     "forge_bolt": fx("chest", column("starlight", "ember_orange", 50), "Kahre: a forge-hot bolt."),
     "kite_flare": fx("head", burst("oil_lamp", "ember_orange", 26, -0.8), "Virel: a kite's flare drifting down on the foe."),
     # Act I creatures (enemies.json): by family, tinted by the creature.
-    "pinch": fx("chest", slash("bone", "coral_stone_weathered", 26), "A crab's pinch: shell grit."),
+    "pinch": fx("chest", slash("tortoiseshell", "sand_wet", 26), "A crab's pinch: dark shell grit."),
     "scuttle_claw": fx("chest", slash("coral_stone_weathered", "sand_wet", 26, -1.0), "A scuttler's claw."),
     "tide_claw": fx("chest", slash("spawn_wound", "glimmer_held", 28, -1.0), "A tide crawler's claw: the Undertow's light, sideways."),
     "limpet_clamp": fx("chest", burst("cold_blue_stone", "bone", 22), "A limpet clamps down."),

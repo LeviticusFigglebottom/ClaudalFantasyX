@@ -1074,41 +1074,8 @@
             "foam_white",
             "bone"
           ],
-          "amount": 2,
-          "lifetime_s": 0.14,
-          "explosiveness": 1.0,
-          "velocity_m_s": [
-            0.0,
-            0.05
-          ],
-          "spread_deg": 0,
-          "gravity": [
-            0,
-            0,
-            0
-          ],
-          "size_m": [
-            0.8,
-            1.04
-          ],
-          "energy": 1.2,
-          "emission_radius_m": 0.02,
-          "turbulence": 0.0,
-          "direction": [
-            0,
-            1,
-            0
-          ]
-        },
-        {
-          "color": "#EEF6F4",
-          "color_end": "#E6DAC0",
-          "swatches": [
-            "foam_white",
-            "bone"
-          ],
-          "amount": 30,
-          "lifetime_s": 0.35,
+          "amount": 40,
+          "lifetime_s": 0.4,
           "explosiveness": 0.95,
           "velocity_m_s": [
             2.0,
@@ -1121,11 +1088,11 @@
             0
           ],
           "size_m": [
-            0.06,
-            0.16
+            0.12,
+            0.26
           ],
-          "energy": 1.15,
-          "emission_radius_m": 0.12,
+          "energy": 1.4,
+          "emission_radius_m": 0.15,
           "turbulence": 0.0,
           "direction": [
             1.0,
@@ -1148,41 +1115,8 @@
             "lagoon_teal",
             "deep_teal_shadow"
           ],
-          "amount": 2,
-          "lifetime_s": 0.14,
-          "explosiveness": 1.0,
-          "velocity_m_s": [
-            0.0,
-            0.05
-          ],
-          "spread_deg": 0,
-          "gravity": [
-            0,
-            0,
-            0
-          ],
-          "size_m": [
-            0.8,
-            1.04
-          ],
-          "energy": 1.2,
-          "emission_radius_m": 0.02,
-          "turbulence": 0.0,
-          "direction": [
-            0,
-            1,
-            0
-          ]
-        },
-        {
-          "color": "#1FA3A6",
-          "color_end": "#0E4A55",
-          "swatches": [
-            "lagoon_teal",
-            "deep_teal_shadow"
-          ],
-          "amount": 50,
-          "lifetime_s": 0.35,
+          "amount": 60,
+          "lifetime_s": 0.4,
           "explosiveness": 0.95,
           "velocity_m_s": [
             2.0,
@@ -1195,11 +1129,11 @@
             0
           ],
           "size_m": [
-            0.06,
-            0.16
+            0.12,
+            0.26
           ],
-          "energy": 1.15,
-          "emission_radius_m": 0.12,
+          "energy": 1.4,
+          "emission_radius_m": 0.15,
           "turbulence": 0.0,
           "direction": [
             -1.0,
@@ -1228,10 +1162,10 @@
             0
           ],
           "size_m": [
-            0.12,
-            0.26
+            0.16,
+            0.32
           ],
-          "energy": 1.15,
+          "energy": 1.4,
           "emission_radius_m": 0.35,
           "turbulence": 0.2,
           "direction": [
@@ -1269,10 +1203,10 @@
             0
           ],
           "size_m": [
-            0.1,
-            0.22
+            0.15,
+            0.3
           ],
-          "energy": 1.15,
+          "energy": 1.4,
           "emission_radius_m": 0.35,
           "turbulence": 0.3,
           "direction": [
@@ -1351,10 +1285,10 @@
             0
           ],
           "size_m": [
-            0.12,
-            0.22
+            0.16,
+            0.3
           ],
-          "energy": 1.1,
+          "energy": 1.4,
           "emission_radius_m": 0.75,
           "turbulence": 0.0,
           "direction": [
@@ -1378,40 +1312,7 @@
             "tortoiseshell",
             "bone"
           ],
-          "amount": 2,
-          "lifetime_s": 0.18,
-          "explosiveness": 1.0,
-          "velocity_m_s": [
-            0.0,
-            0.05
-          ],
-          "spread_deg": 0,
-          "gravity": [
-            0,
-            0,
-            0
-          ],
-          "size_m": [
-            0.9,
-            1.1700000000000002
-          ],
-          "energy": 1.2,
-          "emission_radius_m": 0.02,
-          "turbulence": 0.0,
-          "direction": [
-            0,
-            1,
-            0
-          ]
-        },
-        {
-          "color": "#6B3A1E",
-          "color_end": "#E6DAC0",
-          "swatches": [
-            "tortoiseshell",
-            "bone"
-          ],
-          "amount": 26,
+          "amount": 32,
           "lifetime_s": 0.8,
           "explosiveness": 0.95,
           "velocity_m_s": [
@@ -1425,10 +1326,10 @@
             0
           ],
           "size_m": [
-            0.14,
-            0.3
+            0.18,
+            0.36
           ],
-          "energy": 1.15,
+          "energy": 1.4,
           "emission_radius_m": 0.15,
           "turbulence": 0.0,
           "direction": [
@@ -1444,41 +1345,8 @@
             "bone",
             "coral_stone_weathered"
           ],
-          "amount": 2,
-          "lifetime_s": 0.18,
-          "explosiveness": 1.0,
-          "velocity_m_s": [
-            0.0,
-            0.05
-          ],
-          "spread_deg": 0,
-          "gravity": [
-            0,
-            0,
-            0
-          ],
-          "size_m": [
-            1.1,
-            1.4300000000000002
-          ],
-          "energy": 1.2,
-          "emission_radius_m": 0.02,
-          "turbulence": 0.0,
-          "direction": [
-            0,
-            1,
-            0
-          ]
-        },
-        {
-          "color": "#E6DAC0",
-          "color_end": "#B9AE98",
-          "swatches": [
-            "bone",
-            "coral_stone_weathered"
-          ],
-          "amount": 20,
-          "lifetime_s": 0.5,
+          "amount": 30,
+          "lifetime_s": 0.55,
           "explosiveness": 0.92,
           "velocity_m_s": [
             1.0,
@@ -1491,10 +1359,10 @@
             0
           ],
           "size_m": [
-            0.1,
-            0.24
+            0.13,
+            0.29
           ],
-          "energy": 1.15,
+          "energy": 1.4,
           "emission_radius_m": 0.15,
           "turbulence": 0.0,
           "direction": [
@@ -1532,10 +1400,10 @@
             0
           ],
           "size_m": [
-            0.12,
-            0.22
+            0.16,
+            0.3
           ],
-          "energy": 1.1,
+          "energy": 1.4,
           "emission_radius_m": 0.75,
           "turbulence": 0.0,
           "direction": [
@@ -1573,10 +1441,10 @@
             0
           ],
           "size_m": [
-            0.12,
-            0.22
+            0.16,
+            0.3
           ],
-          "energy": 1.1,
+          "energy": 1.4,
           "emission_radius_m": 0.75,
           "turbulence": 0.0,
           "direction": [
@@ -1600,41 +1468,8 @@
             "ember_orange",
             "dusk_gold"
           ],
-          "amount": 2,
-          "lifetime_s": 0.18,
-          "explosiveness": 1.0,
-          "velocity_m_s": [
-            0.0,
-            0.05
-          ],
-          "spread_deg": 0,
-          "gravity": [
-            0,
-            0,
-            0
-          ],
-          "size_m": [
-            1.1,
-            1.4300000000000002
-          ],
-          "energy": 1.2,
-          "emission_radius_m": 0.02,
-          "turbulence": 0.0,
-          "direction": [
-            0,
-            1,
-            0
-          ]
-        },
-        {
-          "color": "#E0702E",
-          "color_end": "#F2A64A",
-          "swatches": [
-            "ember_orange",
-            "dusk_gold"
-          ],
-          "amount": 24,
-          "lifetime_s": 0.5,
+          "amount": 34,
+          "lifetime_s": 0.55,
           "explosiveness": 0.92,
           "velocity_m_s": [
             1.0,
@@ -1647,10 +1482,10 @@
             0
           ],
           "size_m": [
-            0.1,
-            0.24
+            0.13,
+            0.29
           ],
-          "energy": 1.15,
+          "energy": 1.4,
           "emission_radius_m": 0.15,
           "turbulence": 0.0,
           "direction": [
@@ -1688,10 +1523,10 @@
             0
           ],
           "size_m": [
-            0.12,
-            0.22
+            0.16,
+            0.3
           ],
-          "energy": 1.1,
+          "energy": 1.4,
           "emission_radius_m": 0.75,
           "turbulence": 0.0,
           "direction": [
@@ -1715,41 +1550,8 @@
             "ember_orange",
             "dusk_gold"
           ],
-          "amount": 2,
-          "lifetime_s": 0.2,
-          "explosiveness": 1.0,
-          "velocity_m_s": [
-            0.0,
-            0.05
-          ],
-          "spread_deg": 0,
-          "gravity": [
-            0,
-            0,
-            0
-          ],
-          "size_m": [
-            1.2,
-            1.56
-          ],
-          "energy": 1.2,
-          "emission_radius_m": 0.02,
-          "turbulence": 0.0,
-          "direction": [
-            0,
-            1,
-            0
-          ]
-        },
-        {
-          "color": "#E0702E",
-          "color_end": "#F2A64A",
-          "swatches": [
-            "ember_orange",
-            "dusk_gold"
-          ],
-          "amount": 40,
-          "lifetime_s": 0.55,
+          "amount": 50,
+          "lifetime_s": 0.6,
           "explosiveness": 0.9,
           "velocity_m_s": [
             2.5,
@@ -1762,11 +1564,11 @@
             0
           ],
           "size_m": [
-            0.08,
-            0.2
+            0.13,
+            0.28
           ],
-          "energy": 1.15,
-          "emission_radius_m": 0.12,
+          "energy": 1.4,
+          "emission_radius_m": 0.15,
           "turbulence": 0.0,
           "direction": [
             0,
@@ -1789,40 +1591,7 @@
             "salt_glass",
             "starlight"
           ],
-          "amount": 2,
-          "lifetime_s": 0.18,
-          "explosiveness": 1.0,
-          "velocity_m_s": [
-            0.0,
-            0.05
-          ],
-          "spread_deg": 0,
-          "gravity": [
-            0,
-            0,
-            0
-          ],
-          "size_m": [
-            0.9,
-            1.1700000000000002
-          ],
-          "energy": 1.2,
-          "emission_radius_m": 0.02,
-          "turbulence": 0.0,
-          "direction": [
-            0,
-            1,
-            0
-          ]
-        },
-        {
-          "color": "#BFE6E0",
-          "color_end": "#DCE6FF",
-          "swatches": [
-            "salt_glass",
-            "starlight"
-          ],
-          "amount": 26,
+          "amount": 32,
           "lifetime_s": 0.8,
           "explosiveness": 0.95,
           "velocity_m_s": [
@@ -1836,10 +1605,10 @@
             0
           ],
           "size_m": [
-            0.14,
-            0.3
+            0.18,
+            0.36
           ],
-          "energy": 1.15,
+          "energy": 1.4,
           "emission_radius_m": 0.15,
           "turbulence": 0.0,
           "direction": [
@@ -1877,10 +1646,10 @@
             0
           ],
           "size_m": [
-            0.12,
-            0.26
+            0.16,
+            0.32
           ],
-          "energy": 1.15,
+          "energy": 1.4,
           "emission_radius_m": 0.35,
           "turbulence": 0.2,
           "direction": [
@@ -1904,40 +1673,7 @@
             "cold_blue_stone",
             "bone"
           ],
-          "amount": 2,
-          "lifetime_s": 0.22,
-          "explosiveness": 1.0,
-          "velocity_m_s": [
-            0.0,
-            0.05
-          ],
-          "spread_deg": 0,
-          "gravity": [
-            0,
-            0,
-            0
-          ],
-          "size_m": [
-            1.5,
-            1.9500000000000002
-          ],
-          "energy": 1.2,
-          "emission_radius_m": 0.02,
-          "turbulence": 0.0,
-          "direction": [
-            0,
-            1,
-            0
-          ]
-        },
-        {
-          "color": "#5E6E80",
-          "color_end": "#E6DAC0",
-          "swatches": [
-            "cold_blue_stone",
-            "bone"
-          ],
-          "amount": 40,
+          "amount": 50,
           "lifetime_s": 0.6,
           "explosiveness": 0.95,
           "velocity_m_s": [
@@ -1951,10 +1687,10 @@
             0
           ],
           "size_m": [
-            0.1,
-            0.24
+            0.14,
+            0.3
           ],
-          "energy": 1.15,
+          "energy": 1.4,
           "emission_radius_m": 0.2,
           "turbulence": 0.0,
           "direction": [
@@ -1984,8 +1720,8 @@
             0
           ],
           "size_m": [
-            0.18,
-            0.4
+            0.22,
+            0.46
           ],
           "energy": 1.15,
           "emission_radius_m": 0.3,
@@ -2011,41 +1747,8 @@
             "sand_cloth",
             "timber_weathered"
           ],
-          "amount": 2,
-          "lifetime_s": 0.14,
-          "explosiveness": 1.0,
-          "velocity_m_s": [
-            0.0,
-            0.05
-          ],
-          "spread_deg": 0,
-          "gravity": [
-            0,
-            0,
-            0
-          ],
-          "size_m": [
-            0.8,
-            1.04
-          ],
-          "energy": 1.2,
-          "emission_radius_m": 0.02,
-          "turbulence": 0.0,
-          "direction": [
-            0,
-            1,
-            0
-          ]
-        },
-        {
-          "color": "#C9B48E",
-          "color_end": "#7E6A55",
-          "swatches": [
-            "sand_cloth",
-            "timber_weathered"
-          ],
-          "amount": 34,
-          "lifetime_s": 0.35,
+          "amount": 44,
+          "lifetime_s": 0.4,
           "explosiveness": 0.95,
           "velocity_m_s": [
             2.0,
@@ -2058,11 +1761,11 @@
             0
           ],
           "size_m": [
-            0.06,
-            0.16
+            0.12,
+            0.26
           ],
-          "energy": 1.15,
-          "emission_radius_m": 0.12,
+          "energy": 1.4,
+          "emission_radius_m": 0.15,
           "turbulence": 0.0,
           "direction": [
             -1.0,
@@ -2085,40 +1788,7 @@
             "cold_blue_stone",
             "bone"
           ],
-          "amount": 2,
-          "lifetime_s": 0.22,
-          "explosiveness": 1.0,
-          "velocity_m_s": [
-            0.0,
-            0.05
-          ],
-          "spread_deg": 0,
-          "gravity": [
-            0,
-            0,
-            0
-          ],
-          "size_m": [
-            1.5,
-            1.9500000000000002
-          ],
-          "energy": 1.2,
-          "emission_radius_m": 0.02,
-          "turbulence": 0.0,
-          "direction": [
-            0,
-            1,
-            0
-          ]
-        },
-        {
-          "color": "#5E6E80",
-          "color_end": "#E6DAC0",
-          "swatches": [
-            "cold_blue_stone",
-            "bone"
-          ],
-          "amount": 60,
+          "amount": 70,
           "lifetime_s": 0.6,
           "explosiveness": 0.95,
           "velocity_m_s": [
@@ -2132,10 +1802,10 @@
             0
           ],
           "size_m": [
-            0.1,
-            0.24
+            0.14,
+            0.3
           ],
-          "energy": 1.15,
+          "energy": 1.4,
           "emission_radius_m": 0.2,
           "turbulence": 0.0,
           "direction": [
@@ -2165,8 +1835,8 @@
             0
           ],
           "size_m": [
-            0.18,
-            0.4
+            0.22,
+            0.46
           ],
           "energy": 1.15,
           "emission_radius_m": 0.3,
@@ -2192,41 +1862,8 @@
             "brass",
             "foam_white"
           ],
-          "amount": 2,
-          "lifetime_s": 0.14,
-          "explosiveness": 1.0,
-          "velocity_m_s": [
-            0.0,
-            0.05
-          ],
-          "spread_deg": 0,
-          "gravity": [
-            0,
-            0,
-            0
-          ],
-          "size_m": [
-            0.8,
-            1.04
-          ],
-          "energy": 1.2,
-          "emission_radius_m": 0.02,
-          "turbulence": 0.0,
-          "direction": [
-            0,
-            1,
-            0
-          ]
-        },
-        {
-          "color": "#B08D57",
-          "color_end": "#EEF6F4",
-          "swatches": [
-            "brass",
-            "foam_white"
-          ],
-          "amount": 26,
-          "lifetime_s": 0.35,
+          "amount": 36,
+          "lifetime_s": 0.4,
           "explosiveness": 0.95,
           "velocity_m_s": [
             2.0,
@@ -2239,11 +1876,11 @@
             0
           ],
           "size_m": [
-            0.06,
-            0.16
+            0.12,
+            0.26
           ],
-          "energy": 1.15,
-          "emission_radius_m": 0.12,
+          "energy": 1.4,
+          "emission_radius_m": 0.15,
           "turbulence": 0.0,
           "direction": [
             1.0,
@@ -2299,41 +1936,8 @@
             "oil_lamp",
             "dusk_gold"
           ],
-          "amount": 2,
-          "lifetime_s": 0.18,
-          "explosiveness": 1.0,
-          "velocity_m_s": [
-            0.0,
-            0.05
-          ],
-          "spread_deg": 0,
-          "gravity": [
-            0,
-            0,
-            0
-          ],
-          "size_m": [
-            1.1,
-            1.4300000000000002
-          ],
-          "energy": 1.2,
-          "emission_radius_m": 0.02,
-          "turbulence": 0.0,
-          "direction": [
-            0,
-            1,
-            0
-          ]
-        },
-        {
-          "color": "#FFB16E",
-          "color_end": "#F2A64A",
-          "swatches": [
-            "oil_lamp",
-            "dusk_gold"
-          ],
-          "amount": 30,
-          "lifetime_s": 0.5,
+          "amount": 40,
+          "lifetime_s": 0.55,
           "explosiveness": 0.92,
           "velocity_m_s": [
             1.0,
@@ -2346,10 +1950,10 @@
             0
           ],
           "size_m": [
-            0.1,
-            0.24
+            0.13,
+            0.29
           ],
-          "energy": 1.15,
+          "energy": 1.4,
           "emission_radius_m": 0.15,
           "turbulence": 0.0,
           "direction": [
@@ -2387,10 +1991,10 @@
             0
           ],
           "size_m": [
-            0.1,
-            0.22
+            0.15,
+            0.3
           ],
-          "energy": 1.15,
+          "energy": 1.4,
           "emission_radius_m": 0.35,
           "turbulence": 0.3,
           "direction": [
@@ -2414,40 +2018,7 @@
             "turquoise_shallow",
             "foam_white"
           ],
-          "amount": 2,
-          "lifetime_s": 0.16,
-          "explosiveness": 1.0,
-          "velocity_m_s": [
-            0.0,
-            0.05
-          ],
-          "spread_deg": 0,
-          "gravity": [
-            0,
-            0,
-            0
-          ],
-          "size_m": [
-            0.9,
-            1.1700000000000002
-          ],
-          "energy": 1.2,
-          "emission_radius_m": 0.02,
-          "turbulence": 0.0,
-          "direction": [
-            0,
-            1,
-            0
-          ]
-        },
-        {
-          "color": "#3FD0C9",
-          "color_end": "#EEF6F4",
-          "swatches": [
-            "turquoise_shallow",
-            "foam_white"
-          ],
-          "amount": 70,
+          "amount": 80,
           "lifetime_s": 0.7,
           "explosiveness": 0.9,
           "velocity_m_s": [
@@ -2461,10 +2032,10 @@
             0
           ],
           "size_m": [
-            0.08,
-            0.2
+            0.12,
+            0.26
           ],
-          "energy": 1.15,
+          "energy": 1.4,
           "emission_radius_m": 0.2,
           "turbulence": 0.0,
           "direction": [
@@ -2521,41 +2092,8 @@
             "starlight",
             "lit_ceramic"
           ],
-          "amount": 2,
-          "lifetime_s": 0.18,
-          "explosiveness": 1.0,
-          "velocity_m_s": [
-            0.0,
-            0.05
-          ],
-          "spread_deg": 0,
-          "gravity": [
-            0,
-            0,
-            0
-          ],
-          "size_m": [
-            1.1,
-            1.4300000000000002
-          ],
-          "energy": 1.2,
-          "emission_radius_m": 0.02,
-          "turbulence": 0.0,
-          "direction": [
-            0,
-            1,
-            0
-          ]
-        },
-        {
-          "color": "#DCE6FF",
-          "color_end": "#DCE3E0",
-          "swatches": [
-            "starlight",
-            "lit_ceramic"
-          ],
-          "amount": 20,
-          "lifetime_s": 0.5,
+          "amount": 30,
+          "lifetime_s": 0.55,
           "explosiveness": 0.92,
           "velocity_m_s": [
             1.0,
@@ -2568,10 +2106,10 @@
             0
           ],
           "size_m": [
-            0.1,
-            0.24
+            0.13,
+            0.29
           ],
-          "energy": 1.15,
+          "energy": 1.4,
           "emission_radius_m": 0.15,
           "turbulence": 0.0,
           "direction": [
@@ -2636,41 +2174,8 @@
             "starlight",
             "moon_blue"
           ],
-          "amount": 2,
-          "lifetime_s": 0.2,
-          "explosiveness": 1.0,
-          "velocity_m_s": [
-            0.0,
-            0.05
-          ],
-          "spread_deg": 0,
-          "gravity": [
-            0,
-            0,
-            0
-          ],
-          "size_m": [
-            1.2,
-            1.56
-          ],
-          "energy": 1.2,
-          "emission_radius_m": 0.02,
-          "turbulence": 0.0,
-          "direction": [
-            0,
-            1,
-            0
-          ]
-        },
-        {
-          "color": "#DCE6FF",
-          "color_end": "#9DB4D9",
-          "swatches": [
-            "starlight",
-            "moon_blue"
-          ],
-          "amount": 70,
-          "lifetime_s": 0.55,
+          "amount": 80,
+          "lifetime_s": 0.6,
           "explosiveness": 0.9,
           "velocity_m_s": [
             2.5,
@@ -2683,11 +2188,11 @@
             0
           ],
           "size_m": [
-            0.08,
-            0.2
+            0.13,
+            0.28
           ],
-          "energy": 1.15,
-          "emission_radius_m": 0.12,
+          "energy": 1.4,
+          "emission_radius_m": 0.15,
           "turbulence": 0.0,
           "direction": [
             0,
@@ -2710,41 +2215,8 @@
             "ember_orange",
             "dusk_gold"
           ],
-          "amount": 2,
-          "lifetime_s": 0.18,
-          "explosiveness": 1.0,
-          "velocity_m_s": [
-            0.0,
-            0.05
-          ],
-          "spread_deg": 0,
-          "gravity": [
-            0,
-            0,
-            0
-          ],
-          "size_m": [
-            1.1,
-            1.4300000000000002
-          ],
-          "energy": 1.2,
-          "emission_radius_m": 0.02,
-          "turbulence": 0.0,
-          "direction": [
-            0,
-            1,
-            0
-          ]
-        },
-        {
-          "color": "#E0702E",
-          "color_end": "#F2A64A",
-          "swatches": [
-            "ember_orange",
-            "dusk_gold"
-          ],
-          "amount": 40,
-          "lifetime_s": 0.5,
+          "amount": 50,
+          "lifetime_s": 0.55,
           "explosiveness": 0.92,
           "velocity_m_s": [
             1.0,
@@ -2757,10 +2229,10 @@
             0
           ],
           "size_m": [
-            0.1,
-            0.24
+            0.13,
+            0.29
           ],
-          "energy": 1.15,
+          "energy": 1.4,
           "emission_radius_m": 0.15,
           "turbulence": 0.0,
           "direction": [
@@ -2784,40 +2256,7 @@
             "turquoise_shallow",
             "foam_white"
           ],
-          "amount": 2,
-          "lifetime_s": 0.16,
-          "explosiveness": 1.0,
-          "velocity_m_s": [
-            0.0,
-            0.05
-          ],
-          "spread_deg": 0,
-          "gravity": [
-            0,
-            0,
-            0
-          ],
-          "size_m": [
-            0.9,
-            1.1700000000000002
-          ],
-          "energy": 1.2,
-          "emission_radius_m": 0.02,
-          "turbulence": 0.0,
-          "direction": [
-            0,
-            1,
-            0
-          ]
-        },
-        {
-          "color": "#3FD0C9",
-          "color_end": "#EEF6F4",
-          "swatches": [
-            "turquoise_shallow",
-            "foam_white"
-          ],
-          "amount": 60,
+          "amount": 70,
           "lifetime_s": 0.7,
           "explosiveness": 0.9,
           "velocity_m_s": [
@@ -2831,10 +2270,10 @@
             0
           ],
           "size_m": [
-            0.08,
-            0.2
+            0.12,
+            0.26
           ],
-          "energy": 1.15,
+          "energy": 1.4,
           "emission_radius_m": 0.2,
           "turbulence": 0.0,
           "direction": [
@@ -2850,41 +2289,8 @@
             "lagoon_teal",
             "foam_white"
           ],
-          "amount": 2,
-          "lifetime_s": 0.14,
-          "explosiveness": 1.0,
-          "velocity_m_s": [
-            0.0,
-            0.05
-          ],
-          "spread_deg": 0,
-          "gravity": [
-            0,
-            0,
-            0
-          ],
-          "size_m": [
-            0.8,
-            1.04
-          ],
-          "energy": 1.2,
-          "emission_radius_m": 0.02,
-          "turbulence": 0.0,
-          "direction": [
-            0,
-            1,
-            0
-          ]
-        },
-        {
-          "color": "#1FA3A6",
-          "color_end": "#EEF6F4",
-          "swatches": [
-            "lagoon_teal",
-            "foam_white"
-          ],
-          "amount": 30,
-          "lifetime_s": 0.35,
+          "amount": 40,
+          "lifetime_s": 0.4,
           "explosiveness": 0.95,
           "velocity_m_s": [
             2.0,
@@ -2897,11 +2303,11 @@
             0
           ],
           "size_m": [
-            0.06,
-            0.16
+            0.12,
+            0.26
           ],
-          "energy": 1.15,
-          "emission_radius_m": 0.12,
+          "energy": 1.4,
+          "emission_radius_m": 0.15,
           "turbulence": 0.0,
           "direction": [
             1.0,
@@ -2938,10 +2344,10 @@
             0
           ],
           "size_m": [
-            0.12,
-            0.22
+            0.16,
+            0.3
           ],
-          "energy": 1.1,
+          "energy": 1.4,
           "emission_radius_m": 0.75,
           "turbulence": 0.0,
           "direction": [
@@ -2965,41 +2371,8 @@
             "starlight",
             "ember_orange"
           ],
-          "amount": 2,
-          "lifetime_s": 0.2,
-          "explosiveness": 1.0,
-          "velocity_m_s": [
-            0.0,
-            0.05
-          ],
-          "spread_deg": 0,
-          "gravity": [
-            0,
-            0,
-            0
-          ],
-          "size_m": [
-            1.2,
-            1.56
-          ],
-          "energy": 1.2,
-          "emission_radius_m": 0.02,
-          "turbulence": 0.0,
-          "direction": [
-            0,
-            1,
-            0
-          ]
-        },
-        {
-          "color": "#DCE6FF",
-          "color_end": "#E0702E",
-          "swatches": [
-            "starlight",
-            "ember_orange"
-          ],
-          "amount": 50,
-          "lifetime_s": 0.55,
+          "amount": 60,
+          "lifetime_s": 0.6,
           "explosiveness": 0.9,
           "velocity_m_s": [
             2.5,
@@ -3012,11 +2385,11 @@
             0
           ],
           "size_m": [
-            0.08,
-            0.2
+            0.13,
+            0.28
           ],
-          "energy": 1.15,
-          "emission_radius_m": 0.12,
+          "energy": 1.4,
+          "emission_radius_m": 0.15,
           "turbulence": 0.0,
           "direction": [
             0,
@@ -3039,41 +2412,8 @@
             "oil_lamp",
             "ember_orange"
           ],
-          "amount": 2,
-          "lifetime_s": 0.18,
-          "explosiveness": 1.0,
-          "velocity_m_s": [
-            0.0,
-            0.05
-          ],
-          "spread_deg": 0,
-          "gravity": [
-            0,
-            0,
-            0
-          ],
-          "size_m": [
-            1.1,
-            1.4300000000000002
-          ],
-          "energy": 1.2,
-          "emission_radius_m": 0.02,
-          "turbulence": 0.0,
-          "direction": [
-            0,
-            1,
-            0
-          ]
-        },
-        {
-          "color": "#FFB16E",
-          "color_end": "#E0702E",
-          "swatches": [
-            "oil_lamp",
-            "ember_orange"
-          ],
-          "amount": 26,
-          "lifetime_s": 0.5,
+          "amount": 36,
+          "lifetime_s": 0.55,
           "explosiveness": 0.92,
           "velocity_m_s": [
             1.0,
@@ -3086,10 +2426,10 @@
             0
           ],
           "size_m": [
-            0.1,
-            0.24
+            0.13,
+            0.29
           ],
-          "energy": 1.15,
+          "energy": 1.4,
           "emission_radius_m": 0.15,
           "turbulence": 0.0,
           "direction": [
@@ -3113,41 +2453,8 @@
             "bone",
             "coral_stone_weathered"
           ],
-          "amount": 2,
-          "lifetime_s": 0.14,
-          "explosiveness": 1.0,
-          "velocity_m_s": [
-            0.0,
-            0.05
-          ],
-          "spread_deg": 0,
-          "gravity": [
-            0,
-            0,
-            0
-          ],
-          "size_m": [
-            0.8,
-            1.04
-          ],
-          "energy": 1.2,
-          "emission_radius_m": 0.02,
-          "turbulence": 0.0,
-          "direction": [
-            0,
-            1,
-            0
-          ]
-        },
-        {
-          "color": "#E6DAC0",
-          "color_end": "#B9AE98",
-          "swatches": [
-            "bone",
-            "coral_stone_weathered"
-          ],
-          "amount": 26,
-          "lifetime_s": 0.35,
+          "amount": 36,
+          "lifetime_s": 0.4,
           "explosiveness": 0.95,
           "velocity_m_s": [
             2.0,
@@ -3160,11 +2467,11 @@
             0
           ],
           "size_m": [
-            0.06,
-            0.16
+            0.12,
+            0.26
           ],
-          "energy": 1.15,
-          "emission_radius_m": 0.12,
+          "energy": 1.4,
+          "emission_radius_m": 0.15,
           "turbulence": 0.0,
           "direction": [
             1.0,
@@ -3187,41 +2494,8 @@
             "coral_stone_weathered",
             "sand_wet"
           ],
-          "amount": 2,
-          "lifetime_s": 0.14,
-          "explosiveness": 1.0,
-          "velocity_m_s": [
-            0.0,
-            0.05
-          ],
-          "spread_deg": 0,
-          "gravity": [
-            0,
-            0,
-            0
-          ],
-          "size_m": [
-            0.8,
-            1.04
-          ],
-          "energy": 1.2,
-          "emission_radius_m": 0.02,
-          "turbulence": 0.0,
-          "direction": [
-            0,
-            1,
-            0
-          ]
-        },
-        {
-          "color": "#B9AE98",
-          "color_end": "#B59D74",
-          "swatches": [
-            "coral_stone_weathered",
-            "sand_wet"
-          ],
-          "amount": 26,
-          "lifetime_s": 0.35,
+          "amount": 36,
+          "lifetime_s": 0.4,
           "explosiveness": 0.95,
           "velocity_m_s": [
             2.0,
@@ -3234,11 +2508,11 @@
             0
           ],
           "size_m": [
-            0.06,
-            0.16
+            0.12,
+            0.26
           ],
-          "energy": 1.15,
-          "emission_radius_m": 0.12,
+          "energy": 1.4,
+          "emission_radius_m": 0.15,
           "turbulence": 0.0,
           "direction": [
             -1.0,
@@ -3261,41 +2535,8 @@
             "spawn_wound",
             "glimmer_held"
           ],
-          "amount": 2,
-          "lifetime_s": 0.14,
-          "explosiveness": 1.0,
-          "velocity_m_s": [
-            0.0,
-            0.05
-          ],
-          "spread_deg": 0,
-          "gravity": [
-            0,
-            0,
-            0
-          ],
-          "size_m": [
-            0.8,
-            1.04
-          ],
-          "energy": 1.2,
-          "emission_radius_m": 0.02,
-          "turbulence": 0.0,
-          "direction": [
-            0,
-            1,
-            0
-          ]
-        },
-        {
-          "color": "#3FE0C8",
-          "color_end": "#7FC6D9",
-          "swatches": [
-            "spawn_wound",
-            "glimmer_held"
-          ],
-          "amount": 28,
-          "lifetime_s": 0.35,
+          "amount": 38,
+          "lifetime_s": 0.4,
           "explosiveness": 0.95,
           "velocity_m_s": [
             2.0,
@@ -3308,11 +2549,11 @@
             0
           ],
           "size_m": [
-            0.06,
-            0.16
+            0.12,
+            0.26
           ],
-          "energy": 1.15,
-          "emission_radius_m": 0.12,
+          "energy": 1.4,
+          "emission_radius_m": 0.15,
           "turbulence": 0.0,
           "direction": [
             -1.0,
@@ -3335,41 +2576,8 @@
             "cold_blue_stone",
             "bone"
           ],
-          "amount": 2,
-          "lifetime_s": 0.18,
-          "explosiveness": 1.0,
-          "velocity_m_s": [
-            0.0,
-            0.05
-          ],
-          "spread_deg": 0,
-          "gravity": [
-            0,
-            0,
-            0
-          ],
-          "size_m": [
-            1.1,
-            1.4300000000000002
-          ],
-          "energy": 1.2,
-          "emission_radius_m": 0.02,
-          "turbulence": 0.0,
-          "direction": [
-            0,
-            1,
-            0
-          ]
-        },
-        {
-          "color": "#5E6E80",
-          "color_end": "#E6DAC0",
-          "swatches": [
-            "cold_blue_stone",
-            "bone"
-          ],
-          "amount": 22,
-          "lifetime_s": 0.5,
+          "amount": 32,
+          "lifetime_s": 0.55,
           "explosiveness": 0.92,
           "velocity_m_s": [
             1.0,
@@ -3382,10 +2590,10 @@
             0
           ],
           "size_m": [
-            0.1,
-            0.24
+            0.13,
+            0.29
           ],
-          "energy": 1.15,
+          "energy": 1.4,
           "emission_radius_m": 0.15,
           "turbulence": 0.0,
           "direction": [
@@ -3409,40 +2617,7 @@
             "foam_white",
             "turquoise_shallow"
           ],
-          "amount": 2,
-          "lifetime_s": 0.16,
-          "explosiveness": 1.0,
-          "velocity_m_s": [
-            0.0,
-            0.05
-          ],
-          "spread_deg": 0,
-          "gravity": [
-            0,
-            0,
-            0
-          ],
-          "size_m": [
-            0.9,
-            1.1700000000000002
-          ],
-          "energy": 1.2,
-          "emission_radius_m": 0.02,
-          "turbulence": 0.0,
-          "direction": [
-            0,
-            1,
-            0
-          ]
-        },
-        {
-          "color": "#EEF6F4",
-          "color_end": "#3FD0C9",
-          "swatches": [
-            "foam_white",
-            "turquoise_shallow"
-          ],
-          "amount": 30,
+          "amount": 40,
           "lifetime_s": 0.7,
           "explosiveness": 0.9,
           "velocity_m_s": [
@@ -3456,10 +2631,10 @@
             0
           ],
           "size_m": [
-            0.08,
-            0.2
+            0.12,
+            0.26
           ],
-          "energy": 1.15,
+          "energy": 1.4,
           "emission_radius_m": 0.2,
           "turbulence": 0.0,
           "direction": [
@@ -3483,40 +2658,7 @@
             "foam_white",
             "lagoon_teal"
           ],
-          "amount": 2,
-          "lifetime_s": 0.16,
-          "explosiveness": 1.0,
-          "velocity_m_s": [
-            0.0,
-            0.05
-          ],
-          "spread_deg": 0,
-          "gravity": [
-            0,
-            0,
-            0
-          ],
-          "size_m": [
-            0.9,
-            1.1700000000000002
-          ],
-          "energy": 1.2,
-          "emission_radius_m": 0.02,
-          "turbulence": 0.0,
-          "direction": [
-            0,
-            1,
-            0
-          ]
-        },
-        {
-          "color": "#EEF6F4",
-          "color_end": "#1FA3A6",
-          "swatches": [
-            "foam_white",
-            "lagoon_teal"
-          ],
-          "amount": 20,
+          "amount": 30,
           "lifetime_s": 0.7,
           "explosiveness": 0.9,
           "velocity_m_s": [
@@ -3530,10 +2672,10 @@
             0
           ],
           "size_m": [
-            0.08,
-            0.2
+            0.12,
+            0.26
           ],
-          "energy": 1.15,
+          "energy": 1.4,
           "emission_radius_m": 0.2,
           "turbulence": 0.0,
           "direction": [
@@ -3557,41 +2699,8 @@
             "bone",
             "sand_wet"
           ],
-          "amount": 2,
-          "lifetime_s": 0.18,
-          "explosiveness": 1.0,
-          "velocity_m_s": [
-            0.0,
-            0.05
-          ],
-          "spread_deg": 0,
-          "gravity": [
-            0,
-            0,
-            0
-          ],
-          "size_m": [
-            1.1,
-            1.4300000000000002
-          ],
-          "energy": 1.2,
-          "emission_radius_m": 0.02,
-          "turbulence": 0.0,
-          "direction": [
-            0,
-            1,
-            0
-          ]
-        },
-        {
-          "color": "#E6DAC0",
-          "color_end": "#B59D74",
-          "swatches": [
-            "bone",
-            "sand_wet"
-          ],
-          "amount": 26,
-          "lifetime_s": 0.5,
+          "amount": 36,
+          "lifetime_s": 0.55,
           "explosiveness": 0.92,
           "velocity_m_s": [
             1.0,
@@ -3604,10 +2713,10 @@
             0
           ],
           "size_m": [
-            0.1,
-            0.24
+            0.13,
+            0.29
           ],
-          "energy": 1.15,
+          "energy": 1.4,
           "emission_radius_m": 0.15,
           "turbulence": 0.0,
           "direction": [
@@ -3631,40 +2740,7 @@
             "spawn_wound",
             "glimmer_held"
           ],
-          "amount": 2,
-          "lifetime_s": 0.22,
-          "explosiveness": 1.0,
-          "velocity_m_s": [
-            0.0,
-            0.05
-          ],
-          "spread_deg": 0,
-          "gravity": [
-            0,
-            0,
-            0
-          ],
-          "size_m": [
-            1.5,
-            1.9500000000000002
-          ],
-          "energy": 1.2,
-          "emission_radius_m": 0.02,
-          "turbulence": 0.0,
-          "direction": [
-            0,
-            1,
-            0
-          ]
-        },
-        {
-          "color": "#3FE0C8",
-          "color_end": "#7FC6D9",
-          "swatches": [
-            "spawn_wound",
-            "glimmer_held"
-          ],
-          "amount": 50,
+          "amount": 60,
           "lifetime_s": 0.6,
           "explosiveness": 0.95,
           "velocity_m_s": [
@@ -3678,10 +2754,10 @@
             0
           ],
           "size_m": [
-            0.1,
-            0.24
+            0.14,
+            0.3
           ],
-          "energy": 1.15,
+          "energy": 1.4,
           "emission_radius_m": 0.2,
           "turbulence": 0.0,
           "direction": [
@@ -3711,8 +2787,8 @@
             0
           ],
           "size_m": [
-            0.18,
-            0.4
+            0.22,
+            0.46
           ],
           "energy": 1.15,
           "emission_radius_m": 0.3,
@@ -3738,41 +2814,8 @@
             "cumulus_lit",
             "cumulus_shadow"
           ],
-          "amount": 2,
-          "lifetime_s": 0.14,
-          "explosiveness": 1.0,
-          "velocity_m_s": [
-            0.0,
-            0.05
-          ],
-          "spread_deg": 0,
-          "gravity": [
-            0,
-            0,
-            0
-          ],
-          "size_m": [
-            0.8,
-            1.04
-          ],
-          "energy": 1.2,
-          "emission_radius_m": 0.02,
-          "turbulence": 0.0,
-          "direction": [
-            0,
-            1,
-            0
-          ]
-        },
-        {
-          "color": "#FFF8EE",
-          "color_end": "#8FA7C4",
-          "swatches": [
-            "cumulus_lit",
-            "cumulus_shadow"
-          ],
-          "amount": 30,
-          "lifetime_s": 0.35,
+          "amount": 40,
+          "lifetime_s": 0.4,
           "explosiveness": 0.95,
           "velocity_m_s": [
             2.0,
@@ -3785,11 +2828,11 @@
             0
           ],
           "size_m": [
-            0.06,
-            0.16
+            0.12,
+            0.26
           ],
-          "energy": 1.15,
-          "emission_radius_m": 0.12,
+          "energy": 1.4,
+          "emission_radius_m": 0.15,
           "turbulence": 0.0,
           "direction": [
             1.0,
@@ -3812,41 +2855,8 @@
             "cumulus_shadow",
             "storm_slate"
           ],
-          "amount": 2,
-          "lifetime_s": 0.14,
-          "explosiveness": 1.0,
-          "velocity_m_s": [
-            0.0,
-            0.05
-          ],
-          "spread_deg": 0,
-          "gravity": [
-            0,
-            0,
-            0
-          ],
-          "size_m": [
-            0.8,
-            1.04
-          ],
-          "energy": 1.2,
-          "emission_radius_m": 0.02,
-          "turbulence": 0.0,
-          "direction": [
-            0,
-            1,
-            0
-          ]
-        },
-        {
-          "color": "#8FA7C4",
-          "color_end": "#3E4A57",
-          "swatches": [
-            "cumulus_shadow",
-            "storm_slate"
-          ],
-          "amount": 22,
-          "lifetime_s": 0.35,
+          "amount": 32,
+          "lifetime_s": 0.4,
           "explosiveness": 0.95,
           "velocity_m_s": [
             2.0,
@@ -3859,11 +2869,11 @@
             0
           ],
           "size_m": [
-            0.06,
-            0.16
+            0.12,
+            0.26
           ],
-          "energy": 1.15,
-          "emission_radius_m": 0.12,
+          "energy": 1.4,
+          "emission_radius_m": 0.15,
           "turbulence": 0.0,
           "direction": [
             1.0,
@@ -3886,41 +2896,8 @@
             "volcanic_stone",
             "storm_slate"
           ],
-          "amount": 2,
-          "lifetime_s": 0.14,
-          "explosiveness": 1.0,
-          "velocity_m_s": [
-            0.0,
-            0.05
-          ],
-          "spread_deg": 0,
-          "gravity": [
-            0,
-            0,
-            0
-          ],
-          "size_m": [
-            0.8,
-            1.04
-          ],
-          "energy": 1.2,
-          "emission_radius_m": 0.02,
-          "turbulence": 0.0,
-          "direction": [
-            0,
-            1,
-            0
-          ]
-        },
-        {
-          "color": "#3A3A3F",
-          "color_end": "#3E4A57",
-          "swatches": [
-            "volcanic_stone",
-            "storm_slate"
-          ],
-          "amount": 34,
-          "lifetime_s": 0.35,
+          "amount": 44,
+          "lifetime_s": 0.4,
           "explosiveness": 0.95,
           "velocity_m_s": [
             2.0,
@@ -3933,11 +2910,11 @@
             0
           ],
           "size_m": [
-            0.06,
-            0.16
+            0.12,
+            0.26
           ],
-          "energy": 1.15,
-          "emission_radius_m": 0.12,
+          "energy": 1.4,
+          "emission_radius_m": 0.15,
           "turbulence": 0.0,
           "direction": [
             1.0,
@@ -3960,41 +2937,8 @@
             "timber_weathered",
             "bone"
           ],
-          "amount": 2,
-          "lifetime_s": 0.14,
-          "explosiveness": 1.0,
-          "velocity_m_s": [
-            0.0,
-            0.05
-          ],
-          "spread_deg": 0,
-          "gravity": [
-            0,
-            0,
-            0
-          ],
-          "size_m": [
-            0.8,
-            1.04
-          ],
-          "energy": 1.2,
-          "emission_radius_m": 0.02,
-          "turbulence": 0.0,
-          "direction": [
-            0,
-            1,
-            0
-          ]
-        },
-        {
-          "color": "#7E6A55",
-          "color_end": "#E6DAC0",
-          "swatches": [
-            "timber_weathered",
-            "bone"
-          ],
-          "amount": 26,
-          "lifetime_s": 0.35,
+          "amount": 36,
+          "lifetime_s": 0.4,
           "explosiveness": 0.95,
           "velocity_m_s": [
             2.0,
@@ -4007,11 +2951,11 @@
             0
           ],
           "size_m": [
-            0.06,
-            0.16
+            0.12,
+            0.26
           ],
-          "energy": 1.15,
-          "emission_radius_m": 0.12,
+          "energy": 1.4,
+          "emission_radius_m": 0.15,
           "turbulence": 0.0,
           "direction": [
             1.0,
@@ -4034,40 +2978,7 @@
             "salt_glass",
             "lit_ceramic"
           ],
-          "amount": 2,
-          "lifetime_s": 0.18,
-          "explosiveness": 1.0,
-          "velocity_m_s": [
-            0.0,
-            0.05
-          ],
-          "spread_deg": 0,
-          "gravity": [
-            0,
-            0,
-            0
-          ],
-          "size_m": [
-            0.9,
-            1.1700000000000002
-          ],
-          "energy": 1.2,
-          "emission_radius_m": 0.02,
-          "turbulence": 0.0,
-          "direction": [
-            0,
-            1,
-            0
-          ]
-        },
-        {
-          "color": "#BFE6E0",
-          "color_end": "#DCE3E0",
-          "swatches": [
-            "salt_glass",
-            "lit_ceramic"
-          ],
-          "amount": 18,
+          "amount": 24,
           "lifetime_s": 0.8,
           "explosiveness": 0.95,
           "velocity_m_s": [
@@ -4081,10 +2992,10 @@
             0
           ],
           "size_m": [
-            0.14,
-            0.3
+            0.18,
+            0.36
           ],
-          "energy": 1.15,
+          "energy": 1.4,
           "emission_radius_m": 0.15,
           "turbulence": 0.0,
           "direction": [
@@ -4108,41 +3019,8 @@
             "spawn_wound",
             "deep_teal_shadow"
           ],
-          "amount": 2,
-          "lifetime_s": 0.14,
-          "explosiveness": 1.0,
-          "velocity_m_s": [
-            0.0,
-            0.05
-          ],
-          "spread_deg": 0,
-          "gravity": [
-            0,
-            0,
-            0
-          ],
-          "size_m": [
-            0.8,
-            1.04
-          ],
-          "energy": 1.2,
-          "emission_radius_m": 0.02,
-          "turbulence": 0.0,
-          "direction": [
-            0,
-            1,
-            0
-          ]
-        },
-        {
-          "color": "#3FE0C8",
-          "color_end": "#0E4A55",
-          "swatches": [
-            "spawn_wound",
-            "deep_teal_shadow"
-          ],
-          "amount": 30,
-          "lifetime_s": 0.35,
+          "amount": 40,
+          "lifetime_s": 0.4,
           "explosiveness": 0.95,
           "velocity_m_s": [
             2.0,
@@ -4155,11 +3033,11 @@
             0
           ],
           "size_m": [
-            0.06,
-            0.16
+            0.12,
+            0.26
           ],
-          "energy": 1.15,
-          "emission_radius_m": 0.12,
+          "energy": 1.4,
+          "emission_radius_m": 0.15,
           "turbulence": 0.0,
           "direction": [
             1.0,
@@ -4182,41 +3060,8 @@
             "brass",
             "bone"
           ],
-          "amount": 2,
-          "lifetime_s": 0.18,
-          "explosiveness": 1.0,
-          "velocity_m_s": [
-            0.0,
-            0.05
-          ],
-          "spread_deg": 0,
-          "gravity": [
-            0,
-            0,
-            0
-          ],
-          "size_m": [
-            1.1,
-            1.4300000000000002
-          ],
-          "energy": 1.2,
-          "emission_radius_m": 0.02,
-          "turbulence": 0.0,
-          "direction": [
-            0,
-            1,
-            0
-          ]
-        },
-        {
-          "color": "#B08D57",
-          "color_end": "#E6DAC0",
-          "swatches": [
-            "brass",
-            "bone"
-          ],
-          "amount": 22,
-          "lifetime_s": 0.5,
+          "amount": 32,
+          "lifetime_s": 0.55,
           "explosiveness": 0.92,
           "velocity_m_s": [
             1.0,
@@ -4229,10 +3074,10 @@
             0
           ],
           "size_m": [
-            0.1,
-            0.24
+            0.13,
+            0.29
           ],
-          "energy": 1.15,
+          "energy": 1.4,
           "emission_radius_m": 0.15,
           "turbulence": 0.0,
           "direction": [
@@ -4256,40 +3101,7 @@
             "cold_blue_stone",
             "bone"
           ],
-          "amount": 2,
-          "lifetime_s": 0.22,
-          "explosiveness": 1.0,
-          "velocity_m_s": [
-            0.0,
-            0.05
-          ],
-          "spread_deg": 0,
-          "gravity": [
-            0,
-            0,
-            0
-          ],
-          "size_m": [
-            1.5,
-            1.9500000000000002
-          ],
-          "energy": 1.2,
-          "emission_radius_m": 0.02,
-          "turbulence": 0.0,
-          "direction": [
-            0,
-            1,
-            0
-          ]
-        },
-        {
-          "color": "#5E6E80",
-          "color_end": "#E6DAC0",
-          "swatches": [
-            "cold_blue_stone",
-            "bone"
-          ],
-          "amount": 34,
+          "amount": 44,
           "lifetime_s": 0.6,
           "explosiveness": 0.95,
           "velocity_m_s": [
@@ -4303,10 +3115,10 @@
             0
           ],
           "size_m": [
-            0.1,
-            0.24
+            0.14,
+            0.3
           ],
-          "energy": 1.15,
+          "energy": 1.4,
           "emission_radius_m": 0.2,
           "turbulence": 0.0,
           "direction": [
@@ -4336,8 +3148,8 @@
             0
           ],
           "size_m": [
-            0.18,
-            0.4
+            0.22,
+            0.46
           ],
           "energy": 1.15,
           "emission_radius_m": 0.3,
@@ -4363,40 +3175,7 @@
             "ember_orange",
             "dusk_gold"
           ],
-          "amount": 2,
-          "lifetime_s": 0.22,
-          "explosiveness": 1.0,
-          "velocity_m_s": [
-            0.0,
-            0.05
-          ],
-          "spread_deg": 0,
-          "gravity": [
-            0,
-            0,
-            0
-          ],
-          "size_m": [
-            1.5,
-            1.9500000000000002
-          ],
-          "energy": 1.2,
-          "emission_radius_m": 0.02,
-          "turbulence": 0.0,
-          "direction": [
-            0,
-            1,
-            0
-          ]
-        },
-        {
-          "color": "#E0702E",
-          "color_end": "#F2A64A",
-          "swatches": [
-            "ember_orange",
-            "dusk_gold"
-          ],
-          "amount": 46,
+          "amount": 56,
           "lifetime_s": 0.6,
           "explosiveness": 0.95,
           "velocity_m_s": [
@@ -4410,10 +3189,10 @@
             0
           ],
           "size_m": [
-            0.1,
-            0.24
+            0.14,
+            0.3
           ],
-          "energy": 1.15,
+          "energy": 1.4,
           "emission_radius_m": 0.2,
           "turbulence": 0.0,
           "direction": [
@@ -4443,8 +3222,8 @@
             0
           ],
           "size_m": [
-            0.18,
-            0.4
+            0.22,
+            0.46
           ],
           "energy": 1.15,
           "emission_radius_m": 0.3,
@@ -4470,40 +3249,7 @@
             "bronze_patina",
             "brass"
           ],
-          "amount": 2,
-          "lifetime_s": 0.22,
-          "explosiveness": 1.0,
-          "velocity_m_s": [
-            0.0,
-            0.05
-          ],
-          "spread_deg": 0,
-          "gravity": [
-            0,
-            0,
-            0
-          ],
-          "size_m": [
-            1.5,
-            1.9500000000000002
-          ],
-          "energy": 1.2,
-          "emission_radius_m": 0.02,
-          "turbulence": 0.0,
-          "direction": [
-            0,
-            1,
-            0
-          ]
-        },
-        {
-          "color": "#5F8A78",
-          "color_end": "#B08D57",
-          "swatches": [
-            "bronze_patina",
-            "brass"
-          ],
-          "amount": 40,
+          "amount": 50,
           "lifetime_s": 0.6,
           "explosiveness": 0.95,
           "velocity_m_s": [
@@ -4517,10 +3263,10 @@
             0
           ],
           "size_m": [
-            0.1,
-            0.24
+            0.14,
+            0.3
           ],
-          "energy": 1.15,
+          "energy": 1.4,
           "emission_radius_m": 0.2,
           "turbulence": 0.0,
           "direction": [
@@ -4550,8 +3296,8 @@
             0
           ],
           "size_m": [
-            0.18,
-            0.4
+            0.22,
+            0.46
           ],
           "energy": 1.15,
           "emission_radius_m": 0.3,
@@ -4577,40 +3323,7 @@
             "spawn_wound",
             "glimmer_held"
           ],
-          "amount": 2,
-          "lifetime_s": 0.22,
-          "explosiveness": 1.0,
-          "velocity_m_s": [
-            0.0,
-            0.05
-          ],
-          "spread_deg": 0,
-          "gravity": [
-            0,
-            0,
-            0
-          ],
-          "size_m": [
-            1.5,
-            1.9500000000000002
-          ],
-          "energy": 1.2,
-          "emission_radius_m": 0.02,
-          "turbulence": 0.0,
-          "direction": [
-            0,
-            1,
-            0
-          ]
-        },
-        {
-          "color": "#3FE0C8",
-          "color_end": "#7FC6D9",
-          "swatches": [
-            "spawn_wound",
-            "glimmer_held"
-          ],
-          "amount": 50,
+          "amount": 60,
           "lifetime_s": 0.6,
           "explosiveness": 0.95,
           "velocity_m_s": [
@@ -4624,10 +3337,10 @@
             0
           ],
           "size_m": [
-            0.1,
-            0.24
+            0.14,
+            0.3
           ],
-          "energy": 1.15,
+          "energy": 1.4,
           "emission_radius_m": 0.2,
           "turbulence": 0.0,
           "direction": [
@@ -4657,8 +3370,8 @@
             0
           ],
           "size_m": [
-            0.18,
-            0.4
+            0.22,
+            0.46
           ],
           "energy": 1.15,
           "emission_radius_m": 0.3,
@@ -4684,40 +3397,7 @@
             "lacquer_black",
             "volcanic_stone"
           ],
-          "amount": 2,
-          "lifetime_s": 0.16,
-          "explosiveness": 1.0,
-          "velocity_m_s": [
-            0.0,
-            0.05
-          ],
-          "spread_deg": 0,
-          "gravity": [
-            0,
-            0,
-            0
-          ],
-          "size_m": [
-            0.9,
-            1.1700000000000002
-          ],
-          "energy": 1.2,
-          "emission_radius_m": 0.02,
-          "turbulence": 0.0,
-          "direction": [
-            0,
-            1,
-            0
-          ]
-        },
-        {
-          "color": "#1D1916",
-          "color_end": "#3A3A3F",
-          "swatches": [
-            "lacquer_black",
-            "volcanic_stone"
-          ],
-          "amount": 30,
+          "amount": 40,
           "lifetime_s": 0.7,
           "explosiveness": 0.9,
           "velocity_m_s": [
@@ -4731,10 +3411,10 @@
             0
           ],
           "size_m": [
-            0.08,
-            0.2
+            0.12,
+            0.26
           ],
-          "energy": 1.15,
+          "energy": 1.4,
           "emission_radius_m": 0.2,
           "turbulence": 0.0,
           "direction": [
@@ -4772,10 +3452,10 @@
             0
           ],
           "size_m": [
-            0.12,
-            0.26
+            0.16,
+            0.32
           ],
-          "energy": 1.15,
+          "energy": 1.4,
           "emission_radius_m": 0.35,
           "turbulence": 0.2,
           "direction": [
@@ -4799,40 +3479,7 @@
             "bone",
             "sand_wet"
           ],
-          "amount": 2,
-          "lifetime_s": 0.22,
-          "explosiveness": 1.0,
-          "velocity_m_s": [
-            0.0,
-            0.05
-          ],
-          "spread_deg": 0,
-          "gravity": [
-            0,
-            0,
-            0
-          ],
-          "size_m": [
-            1.5,
-            1.9500000000000002
-          ],
-          "energy": 1.2,
-          "emission_radius_m": 0.02,
-          "turbulence": 0.0,
-          "direction": [
-            0,
-            1,
-            0
-          ]
-        },
-        {
-          "color": "#E6DAC0",
-          "color_end": "#B59D74",
-          "swatches": [
-            "bone",
-            "sand_wet"
-          ],
-          "amount": 34,
+          "amount": 44,
           "lifetime_s": 0.6,
           "explosiveness": 0.95,
           "velocity_m_s": [
@@ -4846,10 +3493,10 @@
             0
           ],
           "size_m": [
-            0.1,
-            0.24
+            0.14,
+            0.3
           ],
-          "energy": 1.15,
+          "energy": 1.4,
           "emission_radius_m": 0.2,
           "turbulence": 0.0,
           "direction": [
@@ -4879,8 +3526,8 @@
             0
           ],
           "size_m": [
-            0.18,
-            0.4
+            0.22,
+            0.46
           ],
           "energy": 1.15,
           "emission_radius_m": 0.3,
@@ -4906,40 +3553,7 @@
             "lagoon_teal",
             "foam_white"
           ],
-          "amount": 2,
-          "lifetime_s": 0.16,
-          "explosiveness": 1.0,
-          "velocity_m_s": [
-            0.0,
-            0.05
-          ],
-          "spread_deg": 0,
-          "gravity": [
-            0,
-            0,
-            0
-          ],
-          "size_m": [
-            0.9,
-            1.1700000000000002
-          ],
-          "energy": 1.2,
-          "emission_radius_m": 0.02,
-          "turbulence": 0.0,
-          "direction": [
-            0,
-            1,
-            0
-          ]
-        },
-        {
-          "color": "#1FA3A6",
-          "color_end": "#EEF6F4",
-          "swatches": [
-            "lagoon_teal",
-            "foam_white"
-          ],
-          "amount": 40,
+          "amount": 50,
           "lifetime_s": 0.7,
           "explosiveness": 0.9,
           "velocity_m_s": [
@@ -4953,10 +3567,10 @@
             0
           ],
           "size_m": [
-            0.08,
-            0.2
+            0.12,
+            0.26
           ],
-          "energy": 1.15,
+          "energy": 1.4,
           "emission_radius_m": 0.2,
           "turbulence": 0.0,
           "direction": [
@@ -5021,41 +3635,8 @@
             "starlight",
             "moon_blue"
           ],
-          "amount": 2,
-          "lifetime_s": 0.18,
-          "explosiveness": 1.0,
-          "velocity_m_s": [
-            0.0,
-            0.05
-          ],
-          "spread_deg": 0,
-          "gravity": [
-            0,
-            0,
-            0
-          ],
-          "size_m": [
-            1.1,
-            1.4300000000000002
-          ],
-          "energy": 1.2,
-          "emission_radius_m": 0.02,
-          "turbulence": 0.0,
-          "direction": [
-            0,
-            1,
-            0
-          ]
-        },
-        {
-          "color": "#DCE6FF",
-          "color_end": "#9DB4D9",
-          "swatches": [
-            "starlight",
-            "moon_blue"
-          ],
-          "amount": 30,
-          "lifetime_s": 0.5,
+          "amount": 40,
+          "lifetime_s": 0.55,
           "explosiveness": 0.92,
           "velocity_m_s": [
             1.0,
@@ -5068,10 +3649,10 @@
             0
           ],
           "size_m": [
-            0.1,
-            0.24
+            0.13,
+            0.29
           ],
-          "energy": 1.15,
+          "energy": 1.4,
           "emission_radius_m": 0.15,
           "turbulence": 0.0,
           "direction": [
@@ -5095,41 +3676,8 @@
             "oil_lamp",
             "dusk_gold"
           ],
-          "amount": 2,
-          "lifetime_s": 0.18,
-          "explosiveness": 1.0,
-          "velocity_m_s": [
-            0.0,
-            0.05
-          ],
-          "spread_deg": 0,
-          "gravity": [
-            0,
-            0,
-            0
-          ],
-          "size_m": [
-            1.1,
-            1.4300000000000002
-          ],
-          "energy": 1.2,
-          "emission_radius_m": 0.02,
-          "turbulence": 0.0,
-          "direction": [
-            0,
-            1,
-            0
-          ]
-        },
-        {
-          "color": "#FFB16E",
-          "color_end": "#F2A64A",
-          "swatches": [
-            "oil_lamp",
-            "dusk_gold"
-          ],
-          "amount": 30,
-          "lifetime_s": 0.5,
+          "amount": 40,
+          "lifetime_s": 0.55,
           "explosiveness": 0.92,
           "velocity_m_s": [
             1.0,
@@ -5142,10 +3690,10 @@
             0
           ],
           "size_m": [
-            0.1,
-            0.24
+            0.13,
+            0.29
           ],
-          "energy": 1.15,
+          "energy": 1.4,
           "emission_radius_m": 0.15,
           "turbulence": 0.0,
           "direction": [
@@ -5169,41 +3717,8 @@
             "ember_orange",
             "salt_glass"
           ],
-          "amount": 2,
-          "lifetime_s": 0.18,
-          "explosiveness": 1.0,
-          "velocity_m_s": [
-            0.0,
-            0.05
-          ],
-          "spread_deg": 0,
-          "gravity": [
-            0,
-            0,
-            0
-          ],
-          "size_m": [
-            1.1,
-            1.4300000000000002
-          ],
-          "energy": 1.2,
-          "emission_radius_m": 0.02,
-          "turbulence": 0.0,
-          "direction": [
-            0,
-            1,
-            0
-          ]
-        },
-        {
-          "color": "#E0702E",
-          "color_end": "#BFE6E0",
-          "swatches": [
-            "ember_orange",
-            "salt_glass"
-          ],
-          "amount": 34,
-          "lifetime_s": 0.5,
+          "amount": 44,
+          "lifetime_s": 0.55,
           "explosiveness": 0.92,
           "velocity_m_s": [
             1.0,
@@ -5216,10 +3731,10 @@
             0
           ],
           "size_m": [
-            0.1,
-            0.24
+            0.13,
+            0.29
           ],
-          "energy": 1.15,
+          "energy": 1.4,
           "emission_radius_m": 0.15,
           "turbulence": 0.0,
           "direction": [
@@ -5257,10 +3772,10 @@
             0
           ],
           "size_m": [
-            0.12,
-            0.26
+            0.16,
+            0.32
           ],
-          "energy": 1.15,
+          "energy": 1.4,
           "emission_radius_m": 0.35,
           "turbulence": 0.2,
           "direction": [
@@ -5298,10 +3813,10 @@
             0
           ],
           "size_m": [
-            0.12,
-            0.26
+            0.16,
+            0.32
           ],
-          "energy": 1.15,
+          "energy": 1.4,
           "emission_radius_m": 0.35,
           "turbulence": 0.2,
           "direction": [
@@ -5325,41 +3840,8 @@
             "oil_lamp",
             "sun_noon"
           ],
-          "amount": 2,
-          "lifetime_s": 0.18,
-          "explosiveness": 1.0,
-          "velocity_m_s": [
-            0.0,
-            0.05
-          ],
-          "spread_deg": 0,
-          "gravity": [
-            0,
-            0,
-            0
-          ],
-          "size_m": [
-            1.1,
-            1.4300000000000002
-          ],
-          "energy": 1.2,
-          "emission_radius_m": 0.02,
-          "turbulence": 0.0,
-          "direction": [
-            0,
-            1,
-            0
-          ]
-        },
-        {
-          "color": "#FFB16E",
-          "color_end": "#FFF4E0",
-          "swatches": [
-            "oil_lamp",
-            "sun_noon"
-          ],
-          "amount": 20,
-          "lifetime_s": 0.5,
+          "amount": 30,
+          "lifetime_s": 0.55,
           "explosiveness": 0.92,
           "velocity_m_s": [
             1.0,
@@ -5372,10 +3854,10 @@
             0
           ],
           "size_m": [
-            0.1,
-            0.24
+            0.13,
+            0.29
           ],
-          "energy": 1.15,
+          "energy": 1.4,
           "emission_radius_m": 0.15,
           "turbulence": 0.0,
           "direction": [
@@ -5413,10 +3895,10 @@
             0
           ],
           "size_m": [
-            0.12,
-            0.26
+            0.16,
+            0.32
           ],
-          "energy": 1.15,
+          "energy": 1.4,
           "emission_radius_m": 0.35,
           "turbulence": 0.2,
           "direction": [
@@ -5440,41 +3922,8 @@
             "cumulus_shadow",
             "storm_slate"
           ],
-          "amount": 2,
-          "lifetime_s": 0.14,
-          "explosiveness": 1.0,
-          "velocity_m_s": [
-            0.0,
-            0.05
-          ],
-          "spread_deg": 0,
-          "gravity": [
-            0,
-            0,
-            0
-          ],
-          "size_m": [
-            0.8,
-            1.04
-          ],
-          "energy": 1.2,
-          "emission_radius_m": 0.02,
-          "turbulence": 0.0,
-          "direction": [
-            0,
-            1,
-            0
-          ]
-        },
-        {
-          "color": "#8FA7C4",
-          "color_end": "#3E4A57",
-          "swatches": [
-            "cumulus_shadow",
-            "storm_slate"
-          ],
-          "amount": 30,
-          "lifetime_s": 0.35,
+          "amount": 40,
+          "lifetime_s": 0.4,
           "explosiveness": 0.95,
           "velocity_m_s": [
             2.0,
@@ -5487,11 +3936,11 @@
             0
           ],
           "size_m": [
-            0.06,
-            0.16
+            0.12,
+            0.26
           ],
-          "energy": 1.15,
-          "emission_radius_m": 0.12,
+          "energy": 1.4,
+          "emission_radius_m": 0.15,
           "turbulence": 0.0,
           "direction": [
             -1.0,
@@ -5528,10 +3977,10 @@
             0
           ],
           "size_m": [
-            0.12,
-            0.26
+            0.16,
+            0.32
           ],
-          "energy": 1.15,
+          "energy": 1.4,
           "emission_radius_m": 0.35,
           "turbulence": 0.2,
           "direction": [
@@ -5569,10 +4018,10 @@
             0
           ],
           "size_m": [
-            0.08,
-            0.18
+            0.13,
+            0.26
           ],
-          "energy": 1.15,
+          "energy": 1.3,
           "emission_radius_m": 1.0,
           "turbulence": 0.4,
           "direction": [
@@ -5610,10 +4059,10 @@
             0
           ],
           "size_m": [
-            0.08,
-            0.18
+            0.13,
+            0.26
           ],
-          "energy": 1.15,
+          "energy": 1.3,
           "emission_radius_m": 1.0,
           "turbulence": 0.4,
           "direction": [
@@ -5651,10 +4100,10 @@
             0
           ],
           "size_m": [
-            0.08,
-            0.18
+            0.13,
+            0.26
           ],
-          "energy": 1.15,
+          "energy": 1.3,
           "emission_radius_m": 1.0,
           "turbulence": 0.4,
           "direction": [
@@ -5692,10 +4141,10 @@
             0
           ],
           "size_m": [
-            0.12,
-            0.22
+            0.16,
+            0.3
           ],
-          "energy": 1.1,
+          "energy": 1.4,
           "emission_radius_m": 0.75,
           "turbulence": 0.0,
           "direction": [
@@ -5733,10 +4182,10 @@
             0
           ],
           "size_m": [
-            0.08,
-            0.18
+            0.13,
+            0.26
           ],
-          "energy": 1.15,
+          "energy": 1.3,
           "emission_radius_m": 1.0,
           "turbulence": 0.4,
           "direction": [
@@ -5774,10 +4223,10 @@
             0
           ],
           "size_m": [
-            0.08,
-            0.18
+            0.13,
+            0.26
           ],
-          "energy": 1.15,
+          "energy": 1.3,
           "emission_radius_m": 1.0,
           "turbulence": 0.4,
           "direction": [
@@ -5815,10 +4264,10 @@
             0
           ],
           "size_m": [
-            0.08,
-            0.18
+            0.13,
+            0.26
           ],
-          "energy": 1.15,
+          "energy": 1.3,
           "emission_radius_m": 1.0,
           "turbulence": 0.4,
           "direction": [
@@ -5856,10 +4305,10 @@
             0
           ],
           "size_m": [
-            0.08,
-            0.18
+            0.13,
+            0.26
           ],
-          "energy": 1.15,
+          "energy": 1.3,
           "emission_radius_m": 1.0,
           "turbulence": 0.4,
           "direction": [
@@ -5897,10 +4346,10 @@
             0
           ],
           "size_m": [
-            0.08,
-            0.18
+            0.13,
+            0.26
           ],
-          "energy": 1.15,
+          "energy": 1.3,
           "emission_radius_m": 1.0,
           "turbulence": 0.4,
           "direction": [
@@ -5938,10 +4387,10 @@
             0
           ],
           "size_m": [
-            0.1,
-            0.22
+            0.15,
+            0.3
           ],
-          "energy": 1.15,
+          "energy": 1.4,
           "emission_radius_m": 0.35,
           "turbulence": 0.3,
           "direction": [
@@ -5979,10 +4428,10 @@
             0
           ],
           "size_m": [
-            0.12,
-            0.26
+            0.16,
+            0.32
           ],
-          "energy": 1.15,
+          "energy": 1.4,
           "emission_radius_m": 0.35,
           "turbulence": 0.2,
           "direction": [
@@ -6020,10 +4469,10 @@
             0
           ],
           "size_m": [
-            0.08,
-            0.18
+            0.13,
+            0.26
           ],
-          "energy": 1.15,
+          "energy": 1.3,
           "emission_radius_m": 1.0,
           "turbulence": 0.4,
           "direction": [
@@ -6047,40 +4496,7 @@
             "deep_teal_shadow",
             "sea_glow"
           ],
-          "amount": 2,
-          "lifetime_s": 0.16,
-          "explosiveness": 1.0,
-          "velocity_m_s": [
-            0.0,
-            0.05
-          ],
-          "spread_deg": 0,
-          "gravity": [
-            0,
-            0,
-            0
-          ],
-          "size_m": [
-            0.9,
-            1.1700000000000002
-          ],
-          "energy": 1.2,
-          "emission_radius_m": 0.02,
-          "turbulence": 0.0,
-          "direction": [
-            0,
-            1,
-            0
-          ]
-        },
-        {
-          "color": "#0E4A55",
-          "color_end": "#1C6B78",
-          "swatches": [
-            "deep_teal_shadow",
-            "sea_glow"
-          ],
-          "amount": 30,
+          "amount": 40,
           "lifetime_s": 0.7,
           "explosiveness": 0.9,
           "velocity_m_s": [
@@ -6094,10 +4510,10 @@
             0
           ],
           "size_m": [
-            0.08,
-            0.2
+            0.12,
+            0.26
           ],
-          "energy": 1.15,
+          "energy": 1.4,
           "emission_radius_m": 0.2,
           "turbulence": 0.0,
           "direction": [
@@ -6121,40 +4537,7 @@
             "storm_slate",
             "sea_glow"
           ],
-          "amount": 2,
-          "lifetime_s": 0.16,
-          "explosiveness": 1.0,
-          "velocity_m_s": [
-            0.0,
-            0.05
-          ],
-          "spread_deg": 0,
-          "gravity": [
-            0,
-            0,
-            0
-          ],
-          "size_m": [
-            0.9,
-            1.1700000000000002
-          ],
-          "energy": 1.2,
-          "emission_radius_m": 0.02,
-          "turbulence": 0.0,
-          "direction": [
-            0,
-            1,
-            0
-          ]
-        },
-        {
-          "color": "#3E4A57",
-          "color_end": "#1C6B78",
-          "swatches": [
-            "storm_slate",
-            "sea_glow"
-          ],
-          "amount": 30,
+          "amount": 40,
           "lifetime_s": 0.7,
           "explosiveness": 0.9,
           "velocity_m_s": [
@@ -6168,10 +4551,10 @@
             0
           ],
           "size_m": [
-            0.08,
-            0.2
+            0.12,
+            0.26
           ],
-          "energy": 1.15,
+          "energy": 1.4,
           "emission_radius_m": 0.2,
           "turbulence": 0.0,
           "direction": [
@@ -6209,10 +4592,10 @@
             0
           ],
           "size_m": [
-            0.08,
-            0.18
+            0.13,
+            0.26
           ],
-          "energy": 1.15,
+          "energy": 1.3,
           "emission_radius_m": 1.0,
           "turbulence": 0.4,
           "direction": [
@@ -6236,41 +4619,8 @@
             "starlight",
             "moon_blue"
           ],
-          "amount": 2,
-          "lifetime_s": 0.2,
-          "explosiveness": 1.0,
-          "velocity_m_s": [
-            0.0,
-            0.05
-          ],
-          "spread_deg": 0,
-          "gravity": [
-            0,
-            0,
-            0
-          ],
-          "size_m": [
-            1.2,
-            1.56
-          ],
-          "energy": 1.2,
-          "emission_radius_m": 0.02,
-          "turbulence": 0.0,
-          "direction": [
-            0,
-            1,
-            0
-          ]
-        },
-        {
-          "color": "#DCE6FF",
-          "color_end": "#9DB4D9",
-          "swatches": [
-            "starlight",
-            "moon_blue"
-          ],
-          "amount": 40,
-          "lifetime_s": 0.55,
+          "amount": 50,
+          "lifetime_s": 0.6,
           "explosiveness": 0.9,
           "velocity_m_s": [
             2.5,
@@ -6283,11 +4633,11 @@
             0
           ],
           "size_m": [
-            0.08,
-            0.2
+            0.13,
+            0.28
           ],
-          "energy": 1.15,
-          "emission_radius_m": 0.12,
+          "energy": 1.4,
+          "emission_radius_m": 0.15,
           "turbulence": 0.0,
           "direction": [
             0,
@@ -6324,10 +4674,10 @@
             0
           ],
           "size_m": [
-            0.1,
-            0.22
+            0.15,
+            0.3
           ],
-          "energy": 1.15,
+          "energy": 1.4,
           "emission_radius_m": 0.35,
           "turbulence": 0.3,
           "direction": [
@@ -6365,10 +4715,10 @@
             0
           ],
           "size_m": [
-            0.1,
-            0.22
+            0.15,
+            0.3
           ],
-          "energy": 1.15,
+          "energy": 1.4,
           "emission_radius_m": 0.35,
           "turbulence": 0.3,
           "direction": [
@@ -6447,10 +4797,10 @@
             0
           ],
           "size_m": [
-            0.1,
-            0.22
+            0.15,
+            0.3
           ],
-          "energy": 1.15,
+          "energy": 1.4,
           "emission_radius_m": 0.35,
           "turbulence": 0.3,
           "direction": [
@@ -6521,10 +4871,10 @@
             0
           ],
           "size_m": [
-            0.1,
-            0.22
+            0.15,
+            0.3
           ],
-          "energy": 1.15,
+          "energy": 1.4,
           "emission_radius_m": 0.35,
           "turbulence": 0.3,
           "direction": [
@@ -6548,41 +4898,8 @@
             "salt_glass",
             "foam_white"
           ],
-          "amount": 2,
-          "lifetime_s": 0.18,
-          "explosiveness": 1.0,
-          "velocity_m_s": [
-            0.0,
-            0.05
-          ],
-          "spread_deg": 0,
-          "gravity": [
-            0,
-            0,
-            0
-          ],
-          "size_m": [
-            1.1,
-            1.4300000000000002
-          ],
-          "energy": 1.2,
-          "emission_radius_m": 0.02,
-          "turbulence": 0.0,
-          "direction": [
-            0,
-            1,
-            0
-          ]
-        },
-        {
-          "color": "#BFE6E0",
-          "color_end": "#EEF6F4",
-          "swatches": [
-            "salt_glass",
-            "foam_white"
-          ],
-          "amount": 18,
-          "lifetime_s": 0.5,
+          "amount": 28,
+          "lifetime_s": 0.55,
           "explosiveness": 0.92,
           "velocity_m_s": [
             1.0,
@@ -6595,10 +4912,10 @@
             0
           ],
           "size_m": [
-            0.1,
-            0.24
+            0.13,
+            0.29
           ],
-          "energy": 1.15,
+          "energy": 1.4,
           "emission_radius_m": 0.15,
           "turbulence": 0.0,
           "direction": [
@@ -6636,10 +4953,10 @@
             0
           ],
           "size_m": [
-            0.1,
-            0.22
+            0.15,
+            0.3
           ],
-          "energy": 1.15,
+          "energy": 1.4,
           "emission_radius_m": 0.35,
           "turbulence": 0.3,
           "direction": [
@@ -6677,10 +4994,10 @@
             0
           ],
           "size_m": [
-            0.1,
-            0.22
+            0.15,
+            0.3
           ],
-          "energy": 1.15,
+          "energy": 1.4,
           "emission_radius_m": 0.35,
           "turbulence": 0.3,
           "direction": [
