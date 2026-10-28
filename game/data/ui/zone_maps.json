@@ -99,7 +99,7 @@
         "shape_hints": {"sea": ["Sea"]},
         "bounds": [-40.0, -44.0, 92.0, 62.0],
         "pois": [
-          {"id": "scale_hull", "name_key": "MAP_POI_O_SCALE_HULL", "kind": "shop", "at": [0.0, 8.0], "source": "spawn:ScaleHull"},
+          {"id": "scale_hull", "name_key": "MAP_POI_O_SCALE_HULL", "kind": "shop", "at": [-4.6, 10.5], "source": "spawn:ScaleHull"},
           {"id": "cookboats", "name_key": "MAP_POI_O_COOKBOATS", "kind": "talk", "at": [-12.0, -6.0], "source": "actor:cook"},
           {"id": "net_lanes", "name_key": "MAP_POI_O_NET_LANES", "kind": "talk", "at": [12.0, -6.0], "source": "actor:netmender"},
           {"id": "outer_mooring", "name_key": "MAP_POI_O_OUTER_MOORING", "kind": "dock", "at": [-28.0, -12.0], "source": "actor:skipper_sadi"},
