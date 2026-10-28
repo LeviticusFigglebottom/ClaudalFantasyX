@@ -589,7 +589,7 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
-- **MERGE-READY @ (this push): M3-ENV-753, Haluna's NPC props swapped (the Lead assigned it to env-art).**
+- **MERGE-READY @ 219b86861: M3-ENV-753, Haluna's NPC props swapped (the Lead assigned it to env-art).**
   - In `haluna.tscn`:
     - Reed's Broom, Neme's Bag and Osu's Bowl are `hand_broom`, `woven_bag` and `clay_bowl`.
     - Osu's Shell sphere is a new `wake_shell_loose`: a 0.14 m wake-shell lying in the bowl, since she is washing the
