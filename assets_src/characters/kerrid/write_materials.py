@@ -55,7 +55,11 @@ HAIR_TIP = "Color(0.14, 0.125, 0.12, 1)"
 # so they add strand grain, not dots, and the grey cards are a thin veil (GREY_ALPHA) over the dark: salt-and-pepper
 # reads as a lighter haze, not as pale chips.
 CROP_AO = {"root_occlusion": "0.85", "depth_occlusion": "0.85"}
-GREY_ALPHA = "0.6"  # alpha_boost of the grey cards (the dark ones keep 1.1-1.15)
+GREY_ALPHA = "0.6"  # alpha_boost of the grey cards
+# alpha_boost of the scalp cards (was 1.15): where the key catches the crown, a card renders a little lighter than
+# the scalp paint between cards, so card-sized coverage steps read as mottling. At 0.85 the paint carries the value
+# and the cards the grain. The beard cards keep 1.1 (a full beard, dense over its own paint).
+CROP_ALPHA = "0.85"
 GREY = col("#8A867E")
 BROW_TIP = "Color(0.25, 0.24, 0.23, 1)"  # §6.1: grey-black brows with grey hairs toward the ends
 HAIR_SPEC = col("#D8CCC0")  # §5: the primary highlight tint
@@ -68,7 +72,7 @@ SHORT_HAIR = {"flow_strength": "0.0", "col_root": HAIR_ROOT, "col_tip": HAIR_TIP
               "spec_primary_intensity": "0.07", "spec_primary_exponent": "60.0", "spec_secondary_intensity": "0.0",
               "col_spec_secondary": HAIR_SPEC2, "secondary_sparkle": "0.3", "col_transmission": HAIR_TT, **FLAT,
               "transmission_strength": "0.1", "indirect_specular": "0.05", **CROP_AO,
-              "alpha_boost": "1.15", "strand_value_jitter": "0.12", **STILL}
+              "alpha_boost": CROP_ALPHA, "strand_value_jitter": "0.12", **STILL}
 BEARD = {**SHORT_HAIR, "spec_primary_intensity": "0.06", "indirect_specular": "0.04", "alpha_boost": "1.1"}
 # §4.1 #6, §7: palm_fibre #A08C66, the sun-bleached tips palm_fibre_pale #C2B08A on the outer 30% of each strand; dry
 # fibre: a broad, low highlight, light through the thin strands. Wet (#10): palm_fibre_wet #5E5038, glossier.

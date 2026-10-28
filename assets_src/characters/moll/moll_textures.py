@@ -114,7 +114,6 @@ def skin(bake_dir: Path, extra: dict) -> None:
     at.PREFIX = "moll"
     at.SKIN_HEX = extra["skin_hex"]
     at.FRECKLES = 0
-    at.SCALP_CAVITY = tt.SCALP_CAVITY  # M2-CHR-524: Toma's matte scalp under the cropped cards
     at.HAIR_UNDERPAINT = hp["underpaint"]
     orig_albedo, orig_detail = at.albedo, at.detail_height
     at.albedo = _grey_temples(vt._albedo_villager(orig_albedo, sk, moll_hair, hp["colour"]), hp["grey_hex"])

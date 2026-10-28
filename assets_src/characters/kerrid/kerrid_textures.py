@@ -264,14 +264,12 @@ def skin(bake_dir: Path, extra: dict) -> None:
     import bb_donor
     import bb_params
     import kerrid_hair
-    import toma_textures as tt
 
     kp = extra["_kerrid"]
     at.OUT = OUT
     at.PREFIX = "kerrid"
     at.SKIN_HEX = SKIN
     at.FRECKLES = 0
-    at.SCALP_CAVITY = tt.SCALP_CAVITY  # M2-CHR-524: Toma's matte scalp under the cropped cards
     at.HAIR_UNDERPAINT = HAIR_UNDER
     orig = (at.albedo, at.detail_height, at.rasterise, at.write)
     state: dict = {}

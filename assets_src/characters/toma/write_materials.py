@@ -38,7 +38,11 @@ HAIR_TIP = "Color(0.14, 0.125, 0.12, 1)"  # (was #18161A)
 # so they add strand grain, not dots, and the grey cards are a thin veil (GREY_ALPHA) over the dark: salt-and-pepper
 # reads as a lighter haze, not as pale chips.
 CROP_AO = {"root_occlusion": "0.85", "depth_occlusion": "0.85"}
-GREY_ALPHA = "0.6"  # alpha_boost of the grey cards (the dark ones keep 1.1-1.15)
+GREY_ALPHA = "0.6"  # alpha_boost of the grey cards
+# alpha_boost of the scalp cards (was 1.15): where the key catches the crown, a card renders a little lighter than
+# the scalp paint between cards, so card-sized coverage steps read as mottling. At 0.85 the paint carries the value
+# and the cards the grain. The beard cards keep 1.1 (a full beard, dense over its own paint).
+CROP_ALPHA = "0.85"
 HAIR_SPEC2 = "Color(0.32, 0.30, 0.30, 1)"
 HAIR_TT = "Color(0.20, 0.17, 0.15, 1)"
 GREY = "Color(0.541, 0.518, 0.471, 1)"  # #8A8478, the grey at the chin
@@ -97,7 +101,7 @@ SHADER_MATERIALS: dict[str, tuple[str, int, dict, dict]] = {
                                    "col_spec_secondary": HAIR_SPEC2, "secondary_sparkle": "0.3",
                                    "col_transmission": HAIR_TT, "transmission_strength": "0.1",
                                    "indirect_specular": "0.05", **CROP_AO,
-                                   "alpha_boost": "1.15", "strand_value_jitter": "0.12", **STILL},
+                                   "alpha_boost": CROP_ALPHA, "strand_value_jitter": "0.12", **STILL},
              {"tex_hair": SHORT}),
     "beard": ("character_hair", 0, BEARD, {"tex_hair": SHORT}),
     "beard_grey": ("character_hair", 0, {**BEARD, "col_root": GREY, "col_tip": GREY, "alpha_boost": GREY_ALPHA}, {"tex_hair": SHORT}),
