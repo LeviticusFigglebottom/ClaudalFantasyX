@@ -135,6 +135,7 @@ static func attached(controller: BattleController, engine: BattleEngine) -> Batt
 	BattleBossIntro.attached(c, controller, engine)  # M3-BPR-02: a boss's intro at the first turn
 	BattlePhaseLooks.attached(c, controller, engine)  # M3-BPR-406: an untargetable phase shows it
 	BattleBossCamera.attached(c, engine)  # M3-BPR-426: a boss's phase change and fall get a shot
+	BattleEntryCamera.attached(c, engine)  # M3-BPR-1325: the Climb's turn shows the stair
 	return c
 
 

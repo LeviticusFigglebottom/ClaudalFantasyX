@@ -139,7 +139,10 @@
     "tick_doom": "status_apply",
     "tick_doom_fall": "ko_release",
     "tick_sleep": "status_apply",
-    "tick_stop": "status_apply"
+    "tick_stop": "status_apply",
+    "grip_the_stair": "status_apply",
+    "rope_dive": "status_apply",
+    "hand_closes": "status_apply"
   },
   "skills": {
     "toll": "drownbell_toll",
