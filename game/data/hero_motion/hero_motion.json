@@ -56,6 +56,12 @@
         "walk_clip_mps": 0.97,
         "run_clip_mps": 2.19
       },
+      "sefir": {
+        "scene": "res://assets/characters/sefir/sefir_lod1.glb",
+        "clips": {"walk": "walk_glide", "run": "walk_glide"},
+        "walk_clip_mps": 0.21,
+        "run_clip_mps": 0.21
+      },
       "kerrid": {
         "scene": "res://assets/characters/kerrid/kerrid_lod1.glb",
         "walk_clip_mps": 0.71,
