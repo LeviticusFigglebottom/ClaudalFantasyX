@@ -731,3 +731,24 @@ SUPERSEDED RENDER-REQUEST @ db895430: battle_choreo_hit, battle_choreo_ko, battl
   - **M3-CRE-634 (ui):** limit the portrait test to enemies.
   - **M3-CRE-633 (audio):** the shutdown cast.
 - **BACKLOG EMPTY (for now):** every creatures item is merged and every open item waits on the tracks above. The handoff is docs/kb/handoffs/2026-10-28-art-creatures-9.md.
+
+## big14 gate fixes (2026-10-28, the Lead's top priority)
+Merged `origin/gpu/gate-big14-shots` and the integration branch, then fixed on the merged tree:
+1. **test_villager_routines: no awaits, no crash at exit.** The tests build their layers directly. **test_crowd_villagers** had the same await (Brine Shoals) and was fixed the same way. The creature and Vowbound tests now free their actors at the end of each test: 0 nodes left (was 83).
+2. **Osu and the vendor at the wake:** the chat pair is dropped (cinematics stages them apart: M3-CIN-1220).
+3. **Blender:**
+   - **avalanche_ram.glb** is deterministic. numpy's SIMD path put the head's midline at ±1e-17 on one host and 0 on another; the build snaps |x| < 1e-9 to 0. It is identical natively, under `NPY_DISABLE_CPU_FEATURES="X86_V4"` (the PC's AVX2 path, which reproduced the gate's 8d990e hash) and on baseline. Rebuilt GLB committed.
+   - **kirru_roost.glb** is env-art's (M3-ENV-718): request **M3-CRE-663**, with the same diagnosis.
+4. **cord_moth has its actor:** a foe whose enemies.json row names no `model` uses its same-id creatures.json scene. That also covers the nine Act II foes the gate listed (fen_leech, gallery_ray, glass_skate, ridge_lynx, rim_crawler, rime_urchin, root_crab, scree_crawler, tannin_archer). `test_every_foe_and_vowbound_has_a_body` passes.
+5. **Portraits:** ilun, kahre, virel, nhoa, hesk and ethren, plus their six `_held` forms, are rendered, viewed and committed with PROVENANCE rows. test_creature_portraits passes 21/0.
+6. **Also from the merged tree's QA capsule test:** Haluna's seven villagers showed as capsules, because the layer deferred its build when added in the zone's `_ready` and the test steps no frame.
+   - VillagerLayer now builds at once.
+   - The shop rows sit inside their bodies under a new row key `node_name: "Villager"`, so HalunaVillagers.populate skips them and nothing doubles.
+- **Not ours, left as they are:**
+  - `ossa_fen.tscn shows pell as a capsule`: a named Act II person (env-art and characters).
+  - `test_battle_act1_ability_vfx` cord_moth `unravel` has no effect: battle VFX.
+- **GOTCHA (local checkouts after a disk-full):** a truncated `.godot/imported` file loads as "corrupt" or "Failed loading" (it was 64 KiB-aligned here). Delete it and its `.md5` and re-import.
+- **Checks run:**
+  - Godot: creature 84/0 (0 left), vowbound 87/0 (1 left: test_battle_vowbound, battle UI's), villager 33/0, crowd 6/0, haluna 65/0, field_npc 10/0, portrait 21/0, qa_capsules 2/3 (pell only).
+  - Blender verify for avalanche_ram: identical ×3 paths.
+  - validate_data, lint and format.
