@@ -43,3 +43,26 @@ func test_no_act1_music_id_falls_back_to_a_stand_in() -> void:
 	for id: String in _music_ids():
 		if AudioData.cue(music, StringName(id)).is_empty() and stand_ins.has(id):
 			assert_true(false, "@music %s would play the stand-in %s" % [id, stand_ins[id]])
+
+
+## The runtime path itself: CutsceneSequencer._cue_music calls CutsceneSound.music for each @music step, and that
+## must leave Audio's deck playing the cue with its real file loaded (stems as one synchronized stream).
+func test_every_act1_music_id_plays_its_real_file_on_the_deck() -> void:
+	var music := AudioData.table(AudioData.MUSIC)
+	for id: String in _music_ids():
+		assert_true(CutsceneSound.music(StringName(id), 0.0), "@music %s is handed to Audio" % id)
+		assert_eq(Audio.music.current, StringName(id), "the deck is playing %s" % id)
+		var p := Audio.music.player()
+		assert_true(p != null and p.stream != null and p.playing, "@music %s: a stream is playing" % id)
+		if p == null or p.stream == null:
+			continue
+		var files := AudioData.cue_files(AudioData.cue(music, StringName(id)))
+		if p.stream is AudioStreamSynchronized:
+			var sync := p.stream as AudioStreamSynchronized
+			assert_eq(sync.stream_count, files.size(), "@music %s: all its stems" % id)
+			for i in sync.stream_count:
+				assert_eq(sync.get_sync_stream(i).resource_path, files[i], "@music %s stem %d" % [id, i])
+		else:
+			assert_eq(p.stream.resource_path, files[0], "@music %s loads its own file" % id)
+	CutsceneSound.music(AudioData.SILENCE, 0.0)
+	Audio.stop_all_players()
