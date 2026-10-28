@@ -111,8 +111,30 @@ def build_column(seed: int = 41, *, height: float = 5.4, radius: float = 0.45, b
         root[1] = brk[idx] - 0.1
         out = np.array([math.cos(a) * 0.35, 1.0, math.sin(a) * 0.35])
         _rebar(mb, root, out, rng.uniform(0.25, 0.7), rng, bend=rng.uniform(0.2, 0.8))
+    # LOD1 (Act I's far ruins, M3-ENV-705: H04 read them as plain cylinders): 12 sides, the base drum, LOD0's jagged
+    # fracture as its top and LOD0's weathering in the vertex colours, the wet band dark at the waterline.
     lod = kc.MeshBuilder("ruin_column_broken-lod1")
-    kc.tube(lod, np.array([[0, 0, 0], [0, break_height, 0.0]]), radius, 12, lod.material(M_CONCRETE), cap_end=True)
+    i12 = np.round(np.linspace(0, sides, 13)).astype(int)
+    a12, b12 = ang[i12], brk[i12]
+    rows12 = []
+    for y in (0.0, 0.45, 1.8):
+        r = radius + 0.12 * kc.smoothstep(0.55, 0.35, y)
+        rows12.append(np.stack([np.cos(a12) * r, np.full_like(a12, y), np.sin(a12) * r], -1))
+    rows12.append(np.stack([np.cos(a12) * radius, b12, np.sin(a12) * radius], -1))
+    g = np.asarray(rows12)
+    wet = np.broadcast_to(np.array([1.0, 0.9, 0.3, 0.2])[:, None], g.shape[:2]) * weather.wet
+    col12 = np.stack([np.zeros(g.shape[:2]), np.full(g.shape[:2], weather.salt * 0.6), wet,
+                      np.full(g.shape[:2], weather.erosion * 0.7)], -1)
+    kc.quad_strip(lod, g, lod.material(M_CONCRETE), uv=np.stack([np.tile(a12 * radius, (4, 1)), g[..., 1]], -1),
+                  col=col12, uv2=(0.8, 0.4), flip=True)
+    top = g[-1, :-1]
+    c = np.array([0.0, float(b12.mean()) - 0.1, 0.0])
+    cb = lod.add_vertices(np.vstack([top, c[None]]), np.tile(kc.UP, (len(top) + 1, 1)),
+                          np.vstack([top[:, [0, 2]], c[None, [0, 2]]]), np.tile([0.7, 0.4], (len(top) + 1, 1)),
+                          np.tile([0.0, 0.2, 0.1, 1.0], (len(top) + 1, 1)))
+    for k in range(len(top)):
+        lod.add_tri(cb + len(top), cb + (k + 1) % len(top), cb + k, lod.material(M_CONCRETE))
+    kc.recompute_normals(lod, 0, 0)
     return [mb, lod]
 
 

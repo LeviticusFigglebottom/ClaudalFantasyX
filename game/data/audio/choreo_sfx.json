@@ -75,12 +75,19 @@
     "bell_hood": "accent_bell_hood",
     "none": ""
   },
-  "no_steps": ["gull_harrier", "lantern_eel", "drownbell", "spawn_polyp", "ilun"],
+  "no_steps": ["gull_harrier", "lantern_eel", "drownbell", "spawn_polyp", "ilun", "virel"],
   "ko": "ko_collapse",
   "enter": {"sfx": "choreo_step", "steps": 2},
   "step_off": {"sfx": "choreo_step", "steps": 3},
   "vowbound": {"call": "vowbound_beckon", "rise": "vowbound_rise", "rise_long": "vowbound_rise_long",
-               "long_sec": 2.0, "sink": "vowbound_sink", "fall": "vowbound_fall"},
+               "long_sec": 2.0, "sink": "vowbound_sink", "fall": "vowbound_fall",
+    "layers": {"ilun": {"call": "ilun_call", "rise": "ilun_rise", "sink": "ilun_sink", "fall": "ilun_sink",
+                        "_note": "M3-AUD-846: the net-float and the wings over the shared rows (assets_src/sfx/vowbound_sfx.py)"},
+               "kahre": {"call": "kahre_call", "rise": "kahre_rise", "sink": "kahre_sink", "fall": "kahre_sink",
+                         "_note": "M3-AUD-857: the hammer on the anvil, the sparks and the thunder (vowbound_sfx.py)"},
+               "virel": {"call": "virel_call", "rise": "virel_rise", "sink": "virel_sink", "fall": "virel_sink",
+                         "_note": "M3-AUD-857: the sailcloth filling, the seams' fire, the brass key (vowbound_sfx.py)"}}
+  },
   "flood": {"sfx": "flood_brace"},
   "reduced_skip": ["contact", "steps"]
 }

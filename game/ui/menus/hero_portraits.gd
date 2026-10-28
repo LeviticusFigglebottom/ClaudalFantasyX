@@ -50,7 +50,7 @@ static func face(hero: StringName, emotion: StringName = &"") -> Texture2D:
 	var full := texture(hero, emotion)
 	if full == null:
 		return null
-	var r: Array = data().get("face_region", [])
+	var r: Array = (data().get("face_regions", {}) as Dictionary).get(String(hero), data().get("face_region", []))
 	if r.size() != 4:
 		return full
 	var atlas := AtlasTexture.new()

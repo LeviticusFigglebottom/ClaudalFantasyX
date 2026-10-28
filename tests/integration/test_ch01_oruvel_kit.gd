@@ -76,6 +76,11 @@ func test_the_seventh_terrace_and_the_gulls() -> void:
 	assert_true(int(placed.get("lintel_gull_open", 0)) >= MIN_GULLS, "a lintel-gull on every ridge")
 	zone.set_storm(true)
 	assert_false(board[0].visible or terrace.followers("SeventhTerrace")[0].visible, "the storm takes her")
+	var undertow := zone.get_node_or_null(^"Undertow") as UndertowStorm
+	assert_true(undertow != null and undertow.visible, "the real Undertow stands up on the horizon")
+	assert_false(zone.block_shown("StormWall"), "in place of its greybox wall")
+	var reach := undertow.storm_center().distance_to(zone.field_camera.global_position)
+	assert_true(zone.field_camera.far > reach, "and the camera reaches it (%.0f m)" % reach)
 	zone.set_storm(false)
 	_done()
 

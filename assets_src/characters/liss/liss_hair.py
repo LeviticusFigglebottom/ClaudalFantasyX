@@ -38,6 +38,7 @@ TAIL_ROOT_H = 0.40  # head heights above the chin: the tail's root on the back o
 TAIL_RINGS = 140  # rings per strand tube (each strand >= 300 vertices: the probe's braid strand)
 TAIL_AROUND = 6
 FRINGE_SPILL = 0.05  # head heights a front card may run past the hairline
+FRINGE_STAGGER = (0.2, 1.8)  # each crop card's own share of FRINGE_SPILL: the fringe's ends stagger (liss_review.md)
 BEAD_MATS = {"salt": "bead_salt", "green": "bead_green", "amber": "bead_amber"}
 
 
@@ -93,9 +94,13 @@ def _flow_dir(lm, P: np.ndarray, N: np.ndarray, G: np.ndarray) -> np.ndarray:
 # The crop
 # ---------------------------------------------------------------------------------------------
 def _trace(scalp, lm, roots: np.ndarray, length: np.ndarray, lift: float, G: np.ndarray, seg: int,
-           rise: np.ndarray | None, stop_at: np.ndarray | None, stop_r: float) -> tuple[np.ndarray, np.ndarray]:
+           rise: np.ndarray | None, stop_at: np.ndarray | None, stop_r: float,
+           spill: np.ndarray | None = None) -> tuple[np.ndarray, np.ndarray]:
     """Paths of `seg` steps along the flow (rhen_hair._trace with her hairline), each stopped where it would come
-    within `stop_r` of `stop_at` (the tail root). Returns (paths, points kept per path)."""
+    within `stop_r` of `stop_at` (the tail root), or where it would pass the hairline by more than its own `spill`
+    (head heights, at the front; default FRINGE_SPILL): a stopped card ends there, so the fringe's ends stagger instead
+    of piling up on one line (liss_review.md). Returns (paths, points kept per path)."""
+    spill = np.full(len(roots), FRINGE_SPILL) if spill is None else spill
     step = length / seg
     paths = [scalp.project(roots, lift)]
     keep = np.full(len(roots), seg + 1)
@@ -108,8 +113,10 @@ def _trace(scalp, lm, roots: np.ndarray, length: np.ndarray, lift: float, G: np.
         N = scalp.normal(cur)
         nxt = scalp.project(cur + _flow_dir(lm, cur, N, G) * step[:, None], lift, iters=3)
         front = np.clip(-(nxt[:, 1] - yc) / (0.3 * lm.h), 0.0, 1.0) ** 2
-        ok = (nxt[:, 2] - zc) / lm.h > hairline_v(lm, nxt) - FRINGE_SPILL * front - 0.01
+        ok = (nxt[:, 2] - zc) / lm.h > hairline_v(lm, nxt) - spill * front - 0.01
         nxt = np.where(ok[:, None], nxt, cur)
+        stopped = ~ok & (keep > k + 1)
+        keep[stopped] = k + 1
         if stop_at is not None:
             near = (np.linalg.norm(nxt - stop_at, axis=1) < stop_r) & (keep > k + 1)
             keep[near] = k + 1
@@ -181,7 +188,8 @@ def crop(lm, params: dict, rng: np.random.Generator, scalp, root: np.ndarray | N
         r = _roots_inside(scalp, lm, rng, int(count), 0.012 + 0.01 * li)
         n = len(r)
         length = rng.uniform(lo, hi, n) * s
-        paths, keep = _trace(scalp, lm, r, length, lift, G, seg, rng.uniform(0.3, 1.0, n) * rise * s, root, stop_r)
+        paths, keep = _trace(scalp, lm, r, length, lift, G, seg, rng.uniform(0.3, 1.0, n) * rise * s, root, stop_r,
+                             rng.uniform(*FRINGE_STAGGER, n) * FRINGE_SPILL)
         if li == 2:
             slots = np.where(rng.random(n) < 0.5, rng.choice(SLOTS_SPARSE, n), rng.integers(SLOTS_FULL, size=n))
         else:
@@ -197,7 +205,8 @@ def crop(lm, params: dict, rng: np.random.Generator, scalp, root: np.ndarray | N
     yc = lm.P("head_c")[1]
     front = np.clip(-(r[:, 1] - yc) / (0.3 * lm.h), 0.0, 1.0)
     paths, keep = _trace(scalp, lm, r, rng.uniform(0.9 * lo, 1.05 * hi, m) * s, 0.0048 * s, G, seg,
-                         (0.004 + 0.006 * front) * rng.uniform(0.6, 1.2, m) * s, root, stop_r)
+                         (0.004 + 0.006 * front) * rng.uniform(0.6, 1.2, m) * s, root, stop_r,
+                         rng.uniform(*FRINGE_STAGGER, m) * FRINGE_SPILL)
     slots = np.where(rng.random(m) < 0.4, rng.choice(SLOTS_SPARSE, m), rng.integers(SLOTS_FULL, size=m))
     _emit_kept(part, scalp, paths, keep, rng.uniform(0.004, 0.0065, m) * s, slots, rng, 0.6, (0.05, 0.9),
                WIND_OUTER, 0.4)

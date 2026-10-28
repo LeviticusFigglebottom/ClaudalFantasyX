@@ -98,6 +98,26 @@ The hall is built to the battle contract (battle_arenas.md):
 - The conduits are steady: no flicker, no pulse (color rule 2).
 - No records or text a player could read as the founding truth (that is Ch13's Lamp Archive).
 
+## 5. The walks and the swap for act1-chapters' Ch11 greybox (M4-C11-02; M3-ENV-735)
+
+| Piece | What it is | Size | Budget |
+|---|---|---|---|
+| `vey_gallery_walk_6m` | A gallery walk on the drowned arcades' roofs: ceramic slabs (flat-shaded) on the top course, a cornice, a ceramic balustrade each side (0.5 m at z ±2.0), the arcade's upper arch each side dropping into the lagoon | 6 × 3.6 | 6k / 300 |
+| `lowlight_lamp_bench` | The atrium's bench (Rhen and Liss's side scene): a ceramic seat on stone ends, a back with a ledge of three empty glass lamp housings, the conduit's copper under it | 2.4 × 0.9 × 1.3 | 2.5k / 150 |
+
+**Swap** (the greybox's block ids → pieces; strips tiled with 6 m pieces turned to the block's `yaw`):
+- **Sunken Vey:**
+  - `GalleryIn*`, `GalleryOut*`, `GallerySide` → `vey_gallery_walk_6m`; their `*Rail*` blocks are in the piece.
+  - Their `*Pillar*` blocks → `ruin_column_broken`, or `vey_arcade_bay` where a whole bay should show.
+  - `Landing`, `Court`, `FigEnd` → `vey_arcade_bay` rows round a paved court. Over 12 m those need the court
+    floor; `keth_terrace_ground` is the wrong stone, so use `vey_gallery_walk_6m` side by side.
+  - `Conduit` → `conduit_run` + `conduit_housing` (the mark Liss reads); `Fig` → `strangler_fig`.
+- **Lowlight:**
+  - `Atrium` and `HallWay` → `lowlight_nave_bay` rows (their walls are the bays'); `GateStep` → the bay's floor.
+  - `LampBench` → `lowlight_lamp_bench`, with `lamp_niche_tier` on the wall above it.
+  - `Hall` and `LampEngine` → the `engine_hall` (the arena's own, at the hall's scale).
+  - `ShaftLanding`, `WellShaft` and `Sanctum` → `well_shaft` and `lowlight_sanctum`; `Waterline` → the zone's water.
+
 ## Revisions
 
 - 2026-10-27 (env-art, M3-ENV-716): first issue, the sheet before the kit (the Lead's queue item 4).
@@ -118,3 +138,4 @@ The hall is built to the battle contract (battle_arenas.md):
 
   Then `lowlight_sanctum` (the apse round the well's mouth) and `strangler_fig` (root strands fused round a 1.2 m
   pier; the banyan's bark and leaf). The zone kit is complete.
+- 2026-10-28 (env-art, M3-ENV-735): §5, the gallery walk, the lamp bench and the Ch11 greybox swap.

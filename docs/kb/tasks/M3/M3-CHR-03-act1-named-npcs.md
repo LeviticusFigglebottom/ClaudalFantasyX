@@ -139,3 +139,4 @@ criteria below are already separate.
   - **Remaining for review:** view the PC render, approve the baselines, write liss_review.md and the handoff.
 
 ## Review log
+- 2026-10-27 characters: viewed the render lead/gate-render-characters-ee3bd33 (cloud lavapipe). Approved liss_front, liss_back, liss_three_quarter, liss_face, liss_face_stylized, liss_silhouette_vs_rhen and liss_clip_haul_rope as baselines. Notes in docs/kb/art/characters/liss_review.md (hair fringe follow-up). Over to Rendering for the review.

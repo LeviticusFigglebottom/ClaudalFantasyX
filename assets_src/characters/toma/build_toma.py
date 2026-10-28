@@ -372,7 +372,7 @@ def main() -> int:
         ob_p.name = "Spear"
         grip = toma_props.spear_grip(lm)
         bone_specs += [(SHIELD_BONE, centre, centre + up_d * SHIELD_BONE_LEN, CHEST_BONE),
-                       (SPEAR_BONE, grip, grip + np.array([0.0, 0.0, SPEAR_BONE_LEN]), HAND_BONE)]
+                       (SPEAR_BONE, grip, grip + toma_props.spear_axis(lm) * SPEAR_BONE_LEN, HAND_BONE)]
         add_bones(skel, bone_specs)
         log(f"rig extras: {len(bone_specs)} bones ({', '.join(b[0] for b in bone_specs)}), "
             f"{len(skel.data.bones)} in all")

@@ -19,6 +19,11 @@ var _site := Vector3.ZERO
 func before_each() -> void:
 	_sites += 1
 	_site = Vector3(20.0 * _sites, 0.0, 0.0)
+
+
+## Frees what the test made (each test ends with it: the runner makes a new instance per test, so before_each never
+## sees the last one's nodes).
+func _done() -> void:
 	for n in made:
 		if is_instance_valid(n):
 			n.get_parent().remove_child(n)
@@ -33,6 +38,7 @@ func test_a_floor_inside_the_dead_zone_moves_nothing() -> void:
 	var before := HeroMotionGuard.bone_points(skel)
 	assert_eq(HeroMotion.add_foot_ik(m).apply(skel, 0.0), 0, "no leg bent for noise")
 	assert_eq(HeroMotionGuard.max_bone_step(before, HeroMotionGuard.bone_points(skel)), 0.0)
+	_done()
 
 
 func test_flat_ground_leaves_the_pose_alone() -> void:
@@ -43,6 +49,7 @@ func test_flat_ground_leaves_the_pose_alone() -> void:
 	var before := HeroMotionGuard.bone_points(skel)
 	assert_eq(ik.apply(skel, 0.0), 0, "no leg bent on flat ground")
 	assert_eq(HeroMotionGuard.max_bone_step(before, HeroMotionGuard.bone_points(skel)), 0.0, "not a bone moved")
+	_done()
 
 
 func test_a_step_under_one_foot_lifts_it() -> void:
@@ -65,6 +72,7 @@ func test_a_step_under_one_foot_lifts_it() -> void:
 	var len1 := _lengths(skel, legs[0])
 	for k in 2:
 		assert_between(len1[k], len0[k] - LENGTH_TOL_M, len0[k] + LENGTH_TOL_M, "the leg keeps its length")
+	_done()
 
 
 func test_lower_ground_under_one_foot_drops_the_hips() -> void:
@@ -84,6 +92,7 @@ func test_lower_ground_under_one_foot_drops_the_hips() -> void:
 	assert_between(_at(skel, skel.find_bone("DEF-spine")).y - hips0.y, -lift - TOL_M, -lift + TOL_M, "hips drop")
 	assert_between(_at(skel, legs[1][2]).y - r0.y, -lift - TOL_M, -lift + TOL_M, "the right foot reaches down")
 	assert_between(_at(skel, legs[0][2]).y - l0.y, -TOL_M, TOL_M, "the left foot stays on its floor")
+	_done()
 
 
 func test_crossing_a_step_edge_eases() -> void:
@@ -108,6 +117,7 @@ func test_crossing_a_step_edge_eases() -> void:
 		prev = y
 		reached = reached or y - l0.y >= STEP_M - float(ik.tuning["dead_zone_m"]) - TOL_M
 	assert_true(reached, "and gets onto the step in half a second")
+	_done()
 
 
 func _model() -> Node3D:

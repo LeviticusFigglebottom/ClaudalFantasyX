@@ -3,6 +3,7 @@ extends RefCounted
 ## Which enemies have a creature model (M2-CRE-03). enemies.json's `model` names a creature actor scene; the
 ## battle stage shows it through FighterStandIn's `scene` hook (M2-UI-07), with creatures.json's `stand_in`
 ## overrides (the yaw that turns a +Z-facing model toward the party). Visual only: the engine never reads `model`.
+## A Vowbound (M3-CRE-638) has no enemies.json row: its creatures.json row has its id and `vowbound` true.
 
 const ENEMIES_PATH := "res://game/data/battle/enemies.json"
 
@@ -34,12 +35,30 @@ static func creature_for_scene(scene_path: String) -> StringName:
 	return &""
 
 
-## Stand-in spec keys for enemy `base_id`: {scene, yaw_deg, ...} when it has a model, else {}.
+## The creatures.json row id that is Vowbound `base_id`'s actor (M3-CRE-638): the row with that id when it carries
+## `vowbound` true and a `scene` (&"" otherwise). The Vowbound has no enemies.json row, so its row is found by id.
+static func vowbound_creature(base_id: String) -> StringName:
+	var raw: Variant = (CreatureActor.data().get("creatures", {}) as Dictionary).get(base_id, null)
+	if typeof(raw) != TYPE_DICTIONARY:
+		return &""
+	var row := raw as Dictionary
+	if not bool(row.get("vowbound", false)) or str(row.get("scene", "")) == "":
+		return &""
+	return StringName(base_id)
+
+
+## Stand-in spec keys for combatant `base_id`: {scene, yaw_deg, ...} when it is an enemy with a model or a Vowbound
+## with a creature actor (M3-CRE-638), else {}.
 static func stand_in_overrides(base_id: String) -> Dictionary:
 	var path := str(models().get(base_id, ""))
-	if path == "":
-		return {}
-	var row := CreatureActor.row_for(creature_for_scene(path))
-	var out := (row.get("stand_in", {}) as Dictionary).duplicate()
+	var creature := &""
+	if path != "":
+		creature = creature_for_scene(path)
+	else:
+		creature = vowbound_creature(base_id)
+		if creature == &"":
+			return {}
+		path = str(CreatureActor.row_for(creature)["scene"])
+	var out := (CreatureActor.row_for(creature).get("stand_in", {}) as Dictionary).duplicate()
 	out["scene"] = path
 	return out

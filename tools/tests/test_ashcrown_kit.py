@@ -276,7 +276,9 @@ class CommittedAssetTests(unittest.TestCase):
     def test_preview_layout_names_only_kit_and_borrowed_pieces(self) -> None:
         layout = json.loads(LAYOUT.read_text())
         self.assertEqual(layout["kit_dir"], "res://assets/environments/kits/ashcrown/")
-        self.assertEqual(sorted(s["piece"] for s in layout["pieces"]), sorted(TARGETS))
+        # The trial's story pieces (b_trial.py, env-art-b) are placed by the zone (ch05/ashcrown), not the preview.
+        story = {n for n, (_k, module, _fn) in TARGETS.items() if module.__name__.endswith("b_trial")}
+        self.assertEqual(sorted(s["piece"] for s in layout["pieces"]), sorted(set(TARGETS) - story))
         for spec in layout["pieces"]:
             self.assertIn("y", spec, "no terrain in the preview: every piece carries its height")
         for spec in layout["borrowed"]:
