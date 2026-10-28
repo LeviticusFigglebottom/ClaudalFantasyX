@@ -1,0 +1,14 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://game/levels/_tests/npc/haluna_villagers.gd" id="stage"]
+
+[node name="CrowdAshcrown" type="Node3D"]
+script = ExtResource("stage")
+zone_scene = "res://game/levels/ch05/ashcrown/ashcrown.tscn"
+zone_id = &"ch05/ashcrown"
+
+[node name="Cameras" type="Node3D" parent="."]
+
+[node name="Crowd" type="Camera3D" parent="Cameras"]
+transform = Transform3D(1, 0, -0, -0, 0.986394, 0.164399, 0, -0.164399, 0.986394, -1.6, 43.65, 0.6)
+fov = 45.0

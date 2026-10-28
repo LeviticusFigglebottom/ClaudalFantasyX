@@ -107,11 +107,14 @@ CANINES = ((0.016, 0.951, 0.742, -1.0), (0.013, 0.958, 0.73, 1.0))  # (x, y, z, 
 # the rose ear from its base along a fold: (x, y, z) per station on the left, its width and thickness
 EAR_PATH = ((0.048, 1.058, 0.506), (0.064, 1.07, 0.488), (0.076, 1.064, 0.468), (0.082, 1.046, 0.452),
             (0.084, 1.026, 0.442))  # drooping back at rest, so the clips' ear keys (+25, +40) lift it level
-EAR_W = (0.048, 0.05, 0.044, 0.028, 0.006)
+EAR_W = (0.05, 0.058, 0.054, 0.04, 0.012)
 EAR_T = (0.011, 0.008, 0.006, 0.005, 0.003)
+EAR_STATIONS = 9
 # the legs, sectioned across y: (y, centre z, centre x, half-width, front depth, back depth)
-FORELEG = ((0.78, 0.29, 0.07, 0.035, 0.05, 0.06), (0.7, 0.31, 0.085, 0.05, 0.07, 0.07),
-           (0.62, 0.32, 0.092, 0.052, 0.075, 0.07), (0.54, 0.302, 0.093, 0.048, 0.056, 0.076),
+# M3-CRE-660 (primitive pass): the top three sections sit back and in, inside the chest wall, so the shoulder rises
+# out of the chest as the upper arm's bulge instead of standing proud of it as a flat plate
+FORELEG = ((0.78, 0.27, 0.06, 0.035, 0.045, 0.055), (0.7, 0.29, 0.074, 0.048, 0.055, 0.065),
+           (0.62, 0.305, 0.086, 0.05, 0.062, 0.068), (0.54, 0.3, 0.092, 0.047, 0.054, 0.074),
            (0.46, 0.286, 0.093, 0.041, 0.04, 0.07), (0.4, 0.281, 0.093, 0.035, 0.033, 0.056),
            (0.35, 0.285, 0.093, 0.029, 0.029, 0.034), (0.28, 0.29, 0.093, 0.024, 0.026, 0.025),
            (0.2, 0.293, 0.093, 0.02, 0.021, 0.019), (0.14, 0.296, 0.093, 0.018, 0.018, 0.017),
@@ -125,7 +128,7 @@ HINDLEG = ((0.8, -0.46, 0.06, 0.04, 0.06, 0.07), (0.74, -0.45, 0.075, 0.06, 0.09
            (0.15, -0.424, 0.088, 0.02, 0.019, 0.027), (0.12, -0.438, 0.088, 0.019, 0.02, 0.03),
            (0.09, -0.43, 0.088, 0.016, 0.017, 0.017), (0.06, -0.416, 0.088, 0.018, 0.02, 0.019),
            (0.045, -0.406, 0.088, 0.02, 0.023, 0.021))
-LEG_SEGS = 10
+LEG_SEGS = 14
 LEG_BLEND_Y = {"f": 0.62, "b": 0.64}  # above this a leg's top blends into the chest or hips (half at its top)
 PAW = {"f": 0.33, "b": -0.392}  # the hare foot's centre z: its pad, then four toes ahead of it
 PAW_R = (0.026, 0.023, 0.04)
@@ -433,6 +436,8 @@ def torso(mesh: ck.Mesh, rig: ck.Rig) -> tuple[np.ndarray, np.ndarray]:
     col = ck.mix(col, MUD, (0.35 * under * ck.smoothstep(0.45, 0.7, ck.fbm(P * 14.0, SEED + 3)))[:, None])
     ck.finish(mesh, P, T, "coat", clamp_col(col), torso_skin(rig), cavity=cav, wet=wet)
     old_scar(mesh, rig, P, T)
+    TORSO_LOOK["col"] = clamp_col(col)
+    TORSO_LOOK["N"] = ck.weld_normals(P, ck.vertex_normals(P, T))
     return P, T
 
 
@@ -522,22 +527,25 @@ def jaw(mesh: ck.Mesh, rig: ck.Rig) -> None:
 def ears(mesh: ck.Mesh, rig: ck.Rig) -> None:
     """Rose ears: thin leaves rising from behind the skull and folding back and out at the tip, dark behind."""
     for s, tag in ((1.0, "l"), (-1.0, "r")):
-        path = ck.bezier(np.array(EAR_PATH) * np.array([s, 1.0, 1.0]), 7)
+        path = ck.bezier(np.array(EAR_PATH) * np.array([s, 1.0, 1.0]), EAR_STATIONS)
         tan = np.gradient(path, axis=0)
         tan /= np.linalg.norm(tan, axis=1, keepdims=True)
         face = np.array([s * 1.0, 0.6, 0.35])  # folded back: the leaf lies along the skull, its inside out and up
         broad = np.cross(tan, face)
         broad /= np.linalg.norm(broad, axis=1, keepdims=True)
         thin = np.cross(broad, tan)
-        u = np.linspace(0.0, 1.0, 7)
+        u = np.linspace(0.0, 1.0, EAR_STATIONS)
         w = np.interp(u, np.linspace(0, 1, len(EAR_W)), EAR_W)
         t = np.interp(u, np.linspace(0, 1, len(EAR_T)), EAR_T)
-        segs = 8
+        segs = 12
         th = np.arange(segs) * (2.0 * math.pi / segs)
+        # cupped (the edges curl in) and folded: the rose ear's crease runs down the leaf's middle, deepest mid-ear
+        fold = 0.012 * np.sin(u * math.pi)
         rings = [path[k] + np.outer(np.cos(th) * w[k] * 0.5, broad[k]) + np.outer(np.sin(th) * t[k] * 0.5, thin[k])
-                 + np.outer(-np.abs(np.cos(th)) * t[k] * 0.6, thin[k]) for k in range(7)]  # cupped: the edges curl in
+                 + np.outer(-np.abs(np.cos(th)) * t[k] * 0.6 + fold[k] * (1.0 - np.abs(np.cos(th))) ** 2, thin[k])
+                 for k in range(EAR_STATIONS)]
         P, T = close_loft(rings, axis_push=0.002)
-        inner = np.tile(ck.smoothstep(0.0, 0.8, np.sin(th)), 7)
+        inner = np.tile(ck.smoothstep(0.0, 0.8, np.sin(th)), EAR_STATIONS)
         inner = np.concatenate([inner, np.zeros(len(P) - len(inner))])
         col = ck.mix(ck.mix(PAL["tortoiseshell"], PAL["lacquer_black"], 0.5), PAL["tortoiseshell"] * 0.9, inner[:, None])
         ck.finish(mesh, P, T, "coat", clamp_col(col), rig.rigid(f"ear_{tag}"), cavity=0.45 * inner + 0.1)
@@ -557,7 +565,24 @@ def tail(mesh: ck.Mesh, rig: ck.Rig) -> None:
 # ---------------------------------------------------------------------------------------------
 # The legs and the hare feet
 # ---------------------------------------------------------------------------------------------
-def leg(mesh: ck.Mesh, rig: ck.Rig, name: str) -> None:
+# The torso's colour and normals, kept by torso() for the legs' tops to blend into (M3-CRE-660).
+TORSO_LOOK: dict = {}
+# Where a leg's top blends into the body: from this far under the leg's first section (m), the leg's shading and
+# colour turn to the body's nearest point, wholly at the section, so no seam outlines the shoulder or the thigh.
+LEG_JOIN_M = 0.14
+
+
+def blend_into_body(P: np.ndarray, N: np.ndarray, col: np.ndarray, top_y: float, body: tuple) -> tuple:
+    """The leg's normals and colour near its top turned to the body's nearest vertex's (M3-CRE-660)."""
+    bP = body[0]
+    near = np.argmin(((P[:, None, :] - bP[None, :, :]) ** 2).sum(axis=2), axis=1)
+    k = ck.smoothstep(top_y - LEG_JOIN_M, top_y - 0.02, P[:, 1])[:, None]
+    n = N * (1.0 - k) + TORSO_LOOK["N"][near] * k
+    n /= np.maximum(np.linalg.norm(n, axis=1, keepdims=True), 1e-9)
+    return n, col * (1.0 - k) + TORSO_LOOK["col"][near] * k
+
+
+def leg(mesh: ck.Mesh, rig: ck.Rig, name: str, body: tuple) -> None:
     fb = "f" if LEGS[name][2] else "b"
     side = LEGS[name][1]
     table = FORELEG if fb == "f" else HINDLEG
@@ -577,7 +602,9 @@ def leg(mesh: ck.Mesh, rig: ck.Rig, name: str) -> None:
     # creases: where the leg enters the body, behind the elbow or the stifle
     joint = knee[1] if fb == "f" else 0.38
     crease = ck.smoothstep(LEG_BLEND_Y[fb] - 0.04, table[0][0], P[:, 1]) + 0.4 * np.exp(-((P[:, 1] - joint) / 0.04) ** 2)
-    ck.finish(mesh, P, T, "coat", clamp_col(col), skin, cavity=np.clip(0.12 + 0.5 * crease, 0, 1), wet=0.75 * mud)
+    N, col = blend_into_body(P, ck.weld_normals(P, ck.vertex_normals(P, T)), clamp_col(col), table[0][0], body)
+    ck.finish(mesh, P, T, "coat", clamp_col(col), skin, cavity=np.clip(0.12 + 0.5 * crease, 0, 1), wet=0.75 * mud,
+              N=N)
     foot(mesh, rig, name, side, table[-1][2] * side, PAW[fb])
 
 
@@ -598,9 +625,9 @@ def foot(mesh: ck.Mesh, rig: ck.Rig, name: str, side: float, cx: float, cz: floa
             ck.finish(mesh, Pt, Tt, "coat", col, pb, cavity=0.3 * (1.0 - nail), wet=0.85)
 
 
-def legs(mesh: ck.Mesh, rig: ck.Rig) -> None:
+def legs(mesh: ck.Mesh, rig: ck.Rig, body: tuple) -> None:
     for name in LEGS:
-        leg(mesh, rig, name)
+        leg(mesh, rig, name, body)
 
 
 # ---------------------------------------------------------------------------------------------
@@ -874,7 +901,7 @@ def build_mesh() -> tuple[ck.Rig, ck.Mesh]:
     jaw(mesh, rig)
     ears(mesh, rig)
     tail(mesh, rig)
-    legs(mesh, rig)
+    legs(mesh, rig, body)
     harness(mesh, rig, body, neckm)
     muzzle_cage(mesh, rig, headm)
     return rig, mesh

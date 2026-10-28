@@ -39,6 +39,8 @@ const ATTACH_CHILD := "child"
 const WORK_SUFFIX := "Work"
 ## The child a GreyboxZone stage actor's villager model is named (GreyboxZone `_actor_body`).
 const GREYBOX_MODEL := "Model"
+## ZoneCast's villager model on an Act I stage actor (M3-CIN-1217; game/levels/act1/zone_cast.gd).
+const ZONE_CAST := "Cast"
 
 ## crowd.json, read once (crowd_data) and its people by id.
 static var _crowd: Dictionary = {}
@@ -119,8 +121,12 @@ func build() -> int:
 	return villagers.size()
 
 
-## Adds a layer for `zone_id` under `zone` (after the zone has placed any villagers of its own) and builds it.
+## Adds a layer for `zone_id` under `zone` (after the zone has placed any villagers of its own) and builds it; a zone
+## that already has its layer (one GreyboxZone adds, M3-CRE-657) keeps it, so no villager shows twice.
 static func wire(zone: Node3D, zone_id: StringName) -> VillagerLayer:
+	var existing := zone.get_node_or_null(^"VillagerLayer") as VillagerLayer
+	if existing != null:
+		return existing
 	var layer := VillagerLayer.new()
 	layer.name = "VillagerLayer"
 	layer.zone_id = zone_id
@@ -149,6 +155,14 @@ func _make(row: Dictionary) -> FieldNpc:
 		return null
 	var adopted := placed_on(stand_in) if stand_in != null and person.is_empty() else null
 	var model := stand_in.get_node_or_null(NodePath(GREYBOX_MODEL)) as Node3D if stand_in != null else null
+	var cast := stand_in.get_node_or_null(NodePath(ZONE_CAST)) as Node3D if stand_in != null else null
+	if cast != null and not person.is_empty():
+		# a crowd person replaces ZoneCast's stand-in villager (one of Haluna's, which stand for no other town: ADR
+		# 0152), so one body shows and the cutscenes' clips find the crowd person's player
+		stand_in.remove_child(cast)
+		cast.free()
+	elif model == null and cast != null:
+		model = cast  # a named villager's own model, cast by ZoneCast: adopted as the greybox model is
 	if adopted == null and model != null and not model is FieldNpc:
 		return _adopt_model(row, id, stand_in, model, person)
 	if adopted != null:

@@ -5,6 +5,7 @@ extends TestCase
 ## Brine Shoals zone resolves its crowd rows.
 
 const CROWD := "res://game/data/world/npc/crowd.json"
+const ASHCROWN := "res://game/levels/ch05/ashcrown/ashcrown.tscn"
 const BRINE_SHOALS := "res://game/levels/ch06/brine_shoals/brine_shoals.tscn"
 const TEST_DATA := "user://crowd_layer_test.json"
 const DT := 1.0 / 60.0
@@ -265,4 +266,24 @@ func test_brine_shoals_crowd_comes_alive_in_the_real_zone() -> void:
 		assert_eq(wrights.find_children("*", "FieldNpc", true, false).size(), 6, "six wrights at the group capsule")
 		var capsule := wrights.get_node_or_null(^"StandIn") as Node3D
 		assert_true(capsule != null and not capsule.visible, "its capsule is hidden")
+	_done()
+
+
+## ZoneCast (M3-CIN-1217) dresses Ashcrown's tender as Haluna's Reed; the crowd row replaces that body with the crowd
+## person (ADR 0152: Haluna's faces stand for no other town), so one body shows and the cutscenes' clips find it. (Once
+## GreyboxZone adds its own layer, M3-CRE-657, the zone has done it by the time `wire` returns that layer.)
+func test_a_crowd_person_replaces_the_zone_cast_villager() -> void:
+	var zone := (load(ASHCROWN) as PackedScene).instantiate() as Node3D
+	_holder().add_child(zone)
+	var tender := zone.get_node_or_null(^"CutsceneStage/Actors/tender")
+	assert_true(tender != null, "the tender's stage actor")
+	var layer := VillagerLayer.wire(zone, &"ch05/ashcrown")
+	layer.build()
+	if tender != null:
+		assert_true(tender.get_node_or_null(^"Cast") == null, "the cast villager is gone")
+		assert_eq(tender.find_children("*", "AnimationPlayer", true, false).size(), 1, "one body on the actor")
+		var npc := layer.villager(&"ashcrown_tender")
+		assert_true(
+			npc != null and HeroMotion.player_of(tender) == npc.anim, "the cutscene's clips play the crowd person"
+		)
 	_done()

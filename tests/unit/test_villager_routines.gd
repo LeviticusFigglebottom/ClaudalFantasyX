@@ -488,3 +488,30 @@ func test_oruvels_kell_comes_alive_in_the_real_zone() -> void:
 	assert_true(kell != null, "Kell is a villager")
 	assert_true(kell != null and kell.actor != null and kell.actor.name == FieldNpc.ACTOR_NAME, "wearing her model")
 	_done()
+
+
+## ZoneCast (M3-CIN-1217) puts a villager's model on an Act I stage actor as `Cast`: a named villager's row adopts that
+## model as it does a greybox `Model`, so one body shows and it lives.
+func test_a_zone_cast_model_is_adopted_into_a_villager() -> void:
+	var zone := _holder()
+	var stage := Node3D.new()
+	stage.name = &"CutsceneStage"
+	zone.add_child(stage)
+	var actors := Node3D.new()
+	actors.name = &"Actors"
+	stage.add_child(actors)
+	var kell := Node3D.new()
+	kell.name = &"kell"
+	actors.add_child(kell)
+	var model := (load(KELL) as PackedScene).instantiate() as Node3D
+	model.name = &"Cast"
+	kell.add_child(model)
+	var layer := VillagerLayer.new()
+	layer.zone_id = &"ch01/oruvel"
+	layer.auto_build = false
+	zone.add_child(layer)
+	layer.build()
+	var npc := layer.villager(&"kell")
+	assert_true(npc != null and npc.actor == model, "the cast model itself, not a second body")
+	assert_eq(kell.find_children("*", "AnimationPlayer", true, false).size(), 1, "one body on the actor")
+	_done()
