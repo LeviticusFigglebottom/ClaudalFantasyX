@@ -93,6 +93,8 @@ func _draw() -> void:
 			continue
 		var ring := gem + HudLayout.num(_m, "ring_gap_px")
 		draw_arc(at, ring, 0.0, TAU, 24, _role(&"focus_gold"), HudLayout.num(_m, "cursor_px"), true)
+		if model.place_name(id) == model.region_name(id):
+			continue  # its region's name already stands over it
 		var name_at := at + Vector2(ring + HudLayout.num(_m, "name_gap_px"), mid)
 		draw_string(font, name_at, model.place_name(id), 0, -1, fs, _role(&"focus_gold"))
 
