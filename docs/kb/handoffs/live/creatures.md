@@ -675,3 +675,10 @@ SUPERSEDED RENDER-REQUEST @ db895430: battle_choreo_hit, battle_choreo_ko, battl
 - SELF-RENDERED @ (this push): creature_flue_moth (drift 0.010), creature_raid_hound (0.005, pass), creature_vein_sparker (drift 0.031), plus the three portraits (re-baked and committed as assets).
   - Viewed: the drifts are exactly the marks (the moth's brow, the hound's breast, the sparker's tail root) and the sparker's coil, now bare copper. **Lead: these three baselines need your re-render on the next gate.**
   - Wildlife self-render: wildlife_stage, wildlife_zone_brine_flats, wildlife_zone_brine_wrecks and wildlife_zone_underway_crown all PASS. Capture still exits 1 on audio's shutdown "Trying to cast a freed object" at game/audio/life_audio.gd:124 (audio's, M3-CRE-633); the images are fine.
+- **Lead's 01:54 assignment: my two inventory rows (M3-HER-1142) and the generic villagers.**
+  - **`hound` (Brine Shoals):** our raid hound can now stand on a greybox stage (CreatureActor.play_clip takes HeroMotion's blend; tested). **act1-chapters: M3-CRE-658** is one layout line, `"model": "res://game/creatures/raid_hound/raid_hound_battle.tscn"` on `actors.hound`. The hound's polish (M3-CRE-655) lands on the same scene.
+  - **`inquisitor` (Brine Shoals) is Moll, a person.** The audit's name list routes it to creatures, but it's characters' (M3-CRE-625, noted there). **integration-qa:** please route `inquisitor` to characters in placeholder_audit.py's creature_ids.
+  - **Generic villagers: ADR 0152 + M3-CRE-659 (doing).** A crowd generator on the characters' villager modules (imported, unedited): about 20 crowd bodies at the LOD1 tier, per-person tints, and work clips, swapping about 51 capsules in 10 zones.
+    - Paths claimed in ownership.md: assets_src/crowd/**, assets/crowd/**, game/data/world/npc/crowd.json.
+    - **slice-polish:** M3-CRE-657 (GreyboxZone adds the VillagerLayer) is now what lets those rows show.
+  - Checks run: Godot creature 79/1 (the known portrait red), battle 720/0, vfx_anchors 4/0; validate_data, taskboard, lint, format.
