@@ -319,7 +319,7 @@ func _segment(seg: Array, preset: String) -> void:
 		(
 			(
 				"SLICE_SWEEP %s %s gpu med %s mean %s p99 %s | frame med %s p99 %s max %s"
-				+ " | hidden max %s total %s (%d) | visible max %s (%d) | scene %s"
+				+ " | hidden max %s total %s (%d) | visible max %s (%d) | hitches>33ms %d | scene %s"
 			)
 			% [
 				id,
@@ -469,11 +469,12 @@ func _walk_segments(path: String) -> Array:
 	return out
 
 
-## The current scene's spawn markers: the children of its Spawns node, in order.
+## The current scene's spawn markers: the children of its root's Spawns node, in order.
 func _scene_spawns() -> Array[StringName]:
 	var out: Array[StringName] = []
 	var scene := get_tree().current_scene
-	var spawns := scene.find_child("Spawns", true, false) if scene != null else null
+	# As WorldReturn.place_player resolves them: the scene root's own Spawns node (a nested scene may have one too).
+	var spawns := scene.get_node_or_null(NodePath(WorldReturn.SPAWNS_NODE)) if scene != null else null
 	if spawns != null:
 		for c in spawns.get_children():
 			if c is Node3D:
