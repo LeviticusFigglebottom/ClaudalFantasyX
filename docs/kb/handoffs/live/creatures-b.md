@@ -69,3 +69,15 @@ CreatureActor and the validator are theirs too (kit or tool changes go to them a
     distance: a giant hermit in a glowing old lamp glass. Polish note: the crab's shell is still a little glossy.
   - **For ui-menus:** re-bake the bottle_hermit portrait.
 - **In progress:** kahre, spar_wraith, undertows_reach (worktree agents).
+- **MERGE-READY @ 2a36f12e: M3-CRB-008 part 2, Kahre to final quality** (worktree agent 6c7e72a3, viewed by me).
+  - Real anatomy (hump, shoulder masses, ribs, tendoned forearms, curled digits and claws, scaled hind feet), a
+    charcoal-to-ash stone hide with ember-warm creases and cracks (no teal), 24 keratin back plates, the anvil as his
+    sternum (striking face, hardy and pritchel holes, hammer scars), a bigger grooved casque, a 0.65 m cross-peen
+    hammer, a 240-filament bound-light mane. 17.7k triangles; `vfx_core`, `vfx_keepsake`. Last Strike dips the hips
+    0.31 m (was 0.4) so the new horn stays above the water; contact time unchanged.
+  - **Checks run:** Blender verify identical; validate_data; tools tests 48 OK; Godot kahre 6/0, vowbound 83/0,
+    creature 74/1 (the known portraits).
+  - SELF-RENDERED @ 6c7e72a3: creature_kahre, creature_kahre_held — drift (new model); viewed: a hulking stone beast
+    with a hornbill casque, hammer and anvil chest. **Follow-up polish (mine, queued):** the hammer reads as perched
+    on the casque on a thin handle, not grown into it; the forearm plates' front edges are ragged up close.
+- **In progress:** spar_wraith, undertows_reach, virel (worktree agents).
