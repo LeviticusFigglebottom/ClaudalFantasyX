@@ -8,6 +8,9 @@
     "melee": {"approach": "choreo_step", "approach_steps": 3, "strike": "whoosh_melee", "contact": "@weapon",
               "return": "choreo_step", "return_steps": 3,
               "strike_by_weapon": {"anchor_cleaver": "whoosh_heavy", "bell_hood": "whoosh_heavy"}},
+    "charge": {"pending": true, "approach": "choreo_hoof", "approach_steps": 4, "strike": "whoosh_charge",
+               "contact": "@weapon", "return": "choreo_hoof", "return_steps": 4,
+               "_note": "M3-BPR-410 / M3-AUD-838: the Avalanche Ram's run; pending until battle-presentation adds the style to choreo.json"},
     "finisher": {"approach": "choreo_step", "approach_steps": 3, "strike": "whoosh_heavy", "contact": "@weapon",
                  "return": "choreo_step", "return_steps": 3},
     "cast": {"approach": "choreo_step", "approach_steps": 1, "strike": "whoosh_cast", "contact": "",
@@ -38,6 +41,7 @@
   "peaks": {
     "whoosh_melee": 0.12,
     "whoosh_heavy": 0.22,
+    "whoosh_charge": 0.42,
     "whoosh_cast": 0.3,
     "whoosh_throw": 0.1,
     "whoosh_guard": 0.14

@@ -658,7 +658,7 @@
       "family": "glimmer",
       "input_kind": "emission",
       "role": "Undertow-spawn glimmer wounds and weak points, and the Undertow's own rents.",
-      "usage_limit": "Wound surfaces only: Undertow-spawn creature weak points, and the torn rents of the Undertow storm itself (body, Low shells and the funnel sea), because the storm is the spawn's source and its wounds are the same language (SPEC 7.5, bible 9; M2-ART-03). Never the held light that pours from a rent (glimmer_held), never bound light (glimmer_bound), and never a non-Undertow creature's weak point.",
+      "usage_limit": "Weak points of every foe (ADR 0151: one answer to where to strike, pillar 4), and the Undertow's wounds: Undertow-spawn wound seams and the torn rents of the Undertow storm itself (body, Low shells and the funnel sea), because the storm is the spawn's source and its wounds are the same language (SPEC 7.5, bible 9; M2-ART-03). On a non-Undertow creature or a construct: one small closed mark (a gill slit, a seam, an old scar), never an open seam and never shedding motes. Never the held light that pours from a rent (glimmer_held), never bound light (glimmer_bound).",
       "onscreen_hex": {
         "-1": "#469D90",
         "0": "#77BFB4",

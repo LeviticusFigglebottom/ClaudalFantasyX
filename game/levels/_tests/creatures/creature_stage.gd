@@ -3,7 +3,8 @@ extends Node3D
 ## Review and capture stage for the battle creatures (M2-CRE-09, docs/kb/art/creatures/pipeline.md "Review").
 ## Shows one creature (or a lineup) in the battle sandbox's noon light, holds `clip` at `clip_time`, and frames
 ## the camera on the creatures' bounds from a named view (creature_stage.json). `scale_bars` adds thin bars at
-## the heroes' heights beside the lineup.
+## the heroes' heights beside the lineup. `show_floor` false hides the ground disc, for a creature that lives below
+## y 0 (the Wakefin under its waterline, M3-CRE-635).
 
 const CONFIG_PATH := "res://game/levels/_tests/creatures/creature_stage.json"
 
@@ -18,6 +19,8 @@ const CONFIG_PATH := "res://game/levels/_tests/creatures/creature_stage.json"
 ## A boss phase to show (CreatureActor.enter_phase, applied at once), and breakable parts to show broken.
 @export var phase: StringName = &""
 @export var broken_parts: Array[StringName] = []
+## False hides the opaque ground disc, so what hangs below y 0 shows.
+@export var show_floor := true
 
 var actors: Array[CreatureActor] = []
 var _cfg: Dictionary = {}
@@ -27,6 +30,7 @@ var _cfg: Dictionary = {}
 
 func _ready() -> void:
 	_cfg = JSON.parse_string(FileAccess.get_file_as_string(CONFIG_PATH)) as Dictionary
+	($GroundDisc as Node3D).visible = show_floor
 	var x := 0.0
 	var gap := float(_cfg.get("lineup_gap_m", 0.5))
 	for packed in creatures:

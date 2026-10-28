@@ -61,6 +61,7 @@ func test_the_flight_profile_steps_and_from_row_builds_it() -> void:
 	var tread := 1.0 - float(f.tuning["riser_share"])
 	assert_true(flat > n * tread * 0.75, "treads hold flat between the risers (%d of %d samples)" % [flat, n])
 	f.free()
+	_done()
 
 
 func test_rhen_climbs_a_48_degree_flight_step_by_step() -> void:

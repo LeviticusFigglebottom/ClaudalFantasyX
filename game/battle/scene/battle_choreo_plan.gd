@@ -14,6 +14,10 @@ static func style_id_for(data: Dictionary, engine: BattleEngine, result: ActionR
 	if by_skill.has(sid):
 		return str(by_skill[sid])
 	var row: Dictionary = engine.db.skill(result.skill_id) if engine != null else {}
+	var actors := data.get("style_by_actor", {}) as Dictionary
+	var by_actor := actors.get(String(result.actor_id).get_slice("#", 0), {}) as Dictionary
+	if by_actor.has(str(row.get("kind", ""))):  # M3-BPR-408: the Avalanche Ram's charge
+		return str(by_actor[str(row["kind"])])
 	var by_target := data.get("style_by_target", {}) as Dictionary
 	if by_target.has(str(row.get("target", ""))):
 		return str(by_target[str(row["target"])])
@@ -58,6 +62,8 @@ static func plan_for(data: Dictionary, engine: BattleEngine, result: ActionResul
 		)
 		if kind == "" and amount < 0:
 			kind = BattleChoreo.REACT_HEAL
+		elif kind == "" and int(hit.get("delay_ticks", 0)) > 0:
+			kind = BattleChoreo.REACT_PUSH
 		var blow := BattleImpact.strength(data, engine, hit)  # M3-BPR-401: the blow's weight
 		peak = maxf(peak, blow)
 		if kind != "":
@@ -175,3 +181,33 @@ static func footprint(f: Node3D, data: Dictionary) -> float:
 	var half_x := maxf(-lo.x, hi.x)
 	var half_z := maxf(-lo.z, hi.z)
 	return (half_x + half_z) * 0.5 * float((data.get("spacing", {}) as Dictionary).get("footprint_k", 1.0))
+
+
+## [offset, toward, lean_deg] for a target's reaction `r` at plan time `t` (home when its own clip plays it, except
+## clip_recoil_k of the root push). `react_k` is the style's react_scale (a heavy blow, the toll, recoils harder);
+## `tilt_k` scales the tilt (reduced motion). Moved from BattleChoreo (its line cap).
+static func reaction_pose(
+	data: Dictionary, r: Dictionary, t: float, contact: float, react_k: float, tilt_k: float
+) -> Array:
+	var away: Vector3 = r["dir"]
+	var def := (data.get("reaction", {}) as Dictionary).get(r["kind"], {}) as Dictionary
+	var sec := float(def.get("sec", 0.0))
+	var c := float(r.get("at", contact))
+	var shoved := str(r["kind"]) in [BattleChoreo.REACT_DAMAGE, BattleChoreo.REACT_PUSH]
+	var clip_k := float(def.get("clip_recoil_k", 0.0)) if shoved else 0.0
+	if (bool(r["clip"]) and clip_k <= 0.0) or t < c or sec <= 0.0:
+		return [Vector3.ZERO, away, 0.0]
+	var w := sin(PI * clampf((t - c) / sec, 0.0, 1.0)) * float(r.get("weight", 1.0))  # M3-BPR-401
+	if bool(r["clip"]):
+		w *= clip_k  # its own hit clip plays in place: a smaller root push under it
+	match str(r["kind"]):
+		BattleChoreo.REACT_DAMAGE:
+			w *= react_k
+			return [away * float(def.get("recoil_m", 0.0)) * w, away, float(def.get("tilt_deg", 0.0)) * w * tilt_k]
+		BattleChoreo.REACT_PUSH:  # shoved back down the timeline: a stagger, no blow's weight
+			return [away * float(def.get("recoil_m", 0.0)) * w, away, float(def.get("tilt_deg", 0.0)) * w * tilt_k]
+		BattleChoreo.REACT_HEAL:
+			return [Vector3.UP * float(def.get("lift_m", 0.0)) * w, away, 0.0]
+		BattleChoreo.REACT_MISS:
+			return [Vector3.UP.cross(away).normalized() * float(def.get("dodge_m", 0.0)) * w, away, 0.0]
+	return [Vector3.ZERO, away, 0.0]

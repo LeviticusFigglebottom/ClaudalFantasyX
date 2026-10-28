@@ -899,35 +899,40 @@
     {
       "path": "res://game/shaders/water/underwater_post_mul.gdshader",
       "scenes": [
-        "res://game/levels/_tests/underwater/underwater_test.tscn"
+        "res://game/levels/_tests/underwater/underwater_test.tscn",
+        "res://game/levels/ch01/oruvel_underway/oruvel_underway.tscn"
       ],
       "note": "M2-RND-02 underwater post, multiply pass (built at runtime by UnderwaterRig). Zones with a rig add their scene paths."
     },
     {
       "path": "res://game/shaders/water/underwater_post_add.gdshader",
       "scenes": [
-        "res://game/levels/_tests/underwater/underwater_test.tscn"
+        "res://game/levels/_tests/underwater/underwater_test.tscn",
+        "res://game/levels/ch01/oruvel_underway/oruvel_underway.tscn"
       ],
       "note": "M2-RND-02 underwater post, add pass."
     },
     {
       "path": "res://game/shaders/water/water_underside.gdshader",
       "scenes": [
-        "res://game/levels/_tests/underwater/underwater_test.tscn"
+        "res://game/levels/_tests/underwater/underwater_test.tscn",
+        "res://game/levels/ch01/oruvel_underway/oruvel_underway.tscn"
       ],
       "note": "M2-RND-02 the water surface from below (Snell window)."
     },
     {
       "path": "res://game/shaders/water/underwater_shafts.gdshader",
       "scenes": [
-        "res://game/levels/_tests/underwater/underwater_test.tscn"
+        "res://game/levels/_tests/underwater/underwater_test.tscn",
+        "res://game/levels/ch01/oruvel_underway/oruvel_underway.tscn"
       ],
       "note": "M2-RND-02 god-ray fog shader (FogVolume; High and Ultra)."
     },
     {
       "path": "res://game/world/water/underwater/underwater_snow_draw.tres",
       "scenes": [
-        "res://game/levels/_tests/underwater/underwater_test.tscn"
+        "res://game/levels/_tests/underwater/underwater_test.tscn",
+        "res://game/levels/ch01/oruvel_underway/oruvel_underway.tscn"
       ],
       "note": "M2-RND-02 marine snow draw material."
     },

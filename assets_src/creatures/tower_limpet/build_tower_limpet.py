@@ -18,6 +18,7 @@ import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "common"))
 import creature_kit as ck  # noqa: E402
+import grounding as gr  # noqa: E402
 
 SEED = 2203
 PAL = {k: ck.hexrgb(v) for k, v in {
@@ -27,6 +28,7 @@ PAL = {k: ck.hexrgb(v) for k, v in {
 
 R_BASE = 0.6
 H = 0.55
+TILT = 8.0  # the cone clings to a slope: it leans forward (degrees about x)
 SHUTTER = (math.radians(-10.0), math.radians(75.0))  # the shutter's arc of the cone (camera side, +X..+Z)
 
 
@@ -64,7 +66,7 @@ def shell(mesh: ck.Mesh, rig: ck.Rig) -> None:
     P = P + n_out * disp[:, None]
     P[:, 1] += rim_jag * 0.5
     # the cone clings to a slope: tilt it a little
-    P = ck.transform(P, ck.rot_x(8.0))
+    P = ck.transform(P, ck.rot_x(TILT))
     shell_col = ck.mix(PAL["coral_stone_weathered"], PAL["bone"], (0.35 * growth + 0.2 * ribs)[:, None])
     shell_col *= (0.85 + 0.15 * ck.fbm(P * 5.0, SEED + 1))[:, None]
     wood = ck.mix(PAL["timber_weathered"], PAL["sand_dry"], (0.45 * slat)[:, None])
@@ -79,18 +81,21 @@ def shell(mesh: ck.Mesh, rig: ck.Rig) -> None:
     # the inside of the cone: a thick, dark, wet lining, so it is never paper-thin when it lifts or tips
     inner = [(r * 0.9, y - 0.035) for r, y in prof]
     Pi, Ti = ck.lathe(inner, segs)
-    Pi = ck.transform(Pi, ck.rot_x(8.0))
+    Pi = ck.transform(Pi, ck.rot_x(TILT))
+    Pi[:, 1] = np.maximum(Pi[:, 1], 0.0)  # inside the foot: the lining's front never dips under the floor
     ck.finish(mesh, Pi, ck.flip(Ti), "foot", PAL["tortoiseshell"] * 0.5, rig.rigid("shell"), wet=1.0, cavity=0.4)
     lip_o = [prof[-1]]
     Pl, Tl = ck.lathe([(prof[-1][0] + 0.005, prof[-1][1] + 0.005), (inner[-1][0], inner[-1][1])], segs)
-    Pl = ck.transform(Pl, ck.rot_x(8.0))
+    Pl = ck.transform(Pl, ck.rot_x(TILT))
+    Pl[:, 1] = np.maximum(Pl[:, 1], 0.0)
     ck.finish(mesh, Pl, Tl, "shell", PAL["bone"] * 0.8, rig.rigid("shell"), wet=0.7, cavity=0.2)
 
 
 def foot(mesh: ck.Mesh, rig: ck.Rig) -> None:
     prof = [(0.0, 0.12), (R_BASE * 0.93, 0.12), (R_BASE * 0.97, 0.07), (R_BASE * 0.96, 0.02), (R_BASE * 0.90, 0.0), (0.0, 0.0)]
     P, T = ck.lathe(prof, 64)
-    P = ck.transform(P, ck.rot_x(8.0))
+    P = ck.transform(P, ck.rot_x(TILT))
+    P[:, 1] = np.maximum(P[:, 1], 0.0)  # M3-CRE-632: the sole is flat on the floor (the tilt put its front 7.5 cm under)
     ripple = 0.5 + 0.5 * np.sin(np.arctan2(P[:, 0], P[:, 2]) * 14.0)
     col = ck.mix(PAL["tortoiseshell"], PAL["lacquer_black"], (0.4 * ripple)[:, None])
     ck.finish(mesh, P, T, "foot", col, rig.rigid("foot"), wet=1.0, cavity=0.3 * ripple)
@@ -128,6 +133,15 @@ def build_clips() -> list[ck.Clip]:
     return [idle, attack, cast, hit, ko]
 
 
+# Kept off the floor (M3-CRE-632, common/grounding.py): the foot never sinks (the KO keyed it 3 cm down), and where
+# the shell's clamp or tip would press its rim through the floor it lifts the least it takes, so it rocks on the rim.
+GROUNDED_LIMBS = [("shell", gr.LIFT, 1.0, 0.2), ("foot", gr.LIFT, 1.0, 0.1)]
+
+
+def export_clips(rig: ck.Rig, mesh: ck.Mesh) -> list[ck.Clip]:
+    return gr.grounded(rig, mesh, build_clips(), GROUNDED_LIMBS)
+
+
 def main() -> None:
     argv = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else []
     ap = argparse.ArgumentParser()
@@ -137,7 +151,7 @@ def main() -> None:
     mesh = ck.Mesh("tower_limpet")
     shell(mesh, rig)
     foot(mesh, rig)
-    info = ck.export_creature(mesh, rig, build_clips(), args.out, extras={"hymn_creature": "tower_limpet"})
+    info = ck.export_creature(mesh, rig, export_clips(rig, mesh), args.out, extras={"hymn_creature": "tower_limpet"})
     print(f"tower_limpet: {info}")
 
 

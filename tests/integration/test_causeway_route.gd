@@ -45,17 +45,21 @@ func test_the_route_is_dressed_and_lit_by_its_own_scene() -> void:
 
 func test_every_spawn_stands_on_the_walk_floor() -> void:
 	_load()
-	var space := zone.get_world_3d().direct_space_state
-	for spawn: Node in zone.get_node(^"Spawns").get_children():
+	var space := zone.get_world_3d().direct_space_state  # queried at once: the runner never steps a frame
+	var spawns := zone.get_node(^"Spawns").get_children()
+	var floored := 0
+	for spawn: Node in spawns:
 		var p := (spawn as Node3D).global_position
 		var q := PhysicsRayQueryParameters3D.create(p + Vector3.UP * RAY_UP_M, p + Vector3.DOWN * RAY_DOWN_M)
 		q.exclude = [zone.player.get_rid()]
 		var hit := space.intersect_ray(q)
 		assert_false(hit.is_empty(), "%s has floor under it" % spawn.name)
 		if not hit.is_empty():
+			floored += 1
 			assert_between(
 				(hit["position"] as Vector3).y - p.y, -STAND_TOLERANCE_M, STAND_TOLERANCE_M, "%s on it" % spawn.name
 			)
+	assert_true(not spawns.is_empty() and floored == spawns.size(), "every spawn was checked against a floor")
 	_done()
 
 
@@ -85,3 +89,18 @@ func test_the_route_after_the_harrier_meets_two_or_three_fights() -> void:
 	assert_true(fewest >= MIN_FIGHTS, "at least %d fights (%.0f m walk)" % [MIN_FIGHTS, walk])
 	assert_true(most <= MAX_FIGHTS, "at most %d fights (%.0f m walk)" % [MAX_FIGHTS, walk])
 	_done()
+
+
+## M2-FP-1000: the final causeway is on the map: its path drawn from the walk floor, its stops named, and the
+## objective pointing on to the shrine steps.
+func test_the_causeway_has_a_map_and_an_objective() -> void:
+	var none := func(_f: StringName) -> bool: return false
+	var m := MapModel.new(&"ch03/saltgrass_causeway", Vector3(1.4, 0.0, -0.7), 0.0, none)
+	assert_true(m.has_map(), "the causeway has a map")
+	var data := MapModel.load_data()
+	var s := ZoneMapShapes.build(
+		m.shape_kind(), m.shape_source(), m.bounds(), data["map"], data["pieces"], data["greybox"], m.shape_hints()
+	)
+	assert_true(s.floors.size() > 50, "the walk floor is drawn along the route (%d floors)" % s.floors.size())
+	assert_eq(m.objective_poi(), &"shrine_steps", "the objective points on to the shrine")
+	assert_eq(m.objective_line(), tr("OBJ_CAUSEWAY_TO_SHRINE"))

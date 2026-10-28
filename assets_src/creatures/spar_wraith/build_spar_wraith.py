@@ -19,6 +19,7 @@ import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "common"))
 import creature_kit as ck  # noqa: E402
+import grounding as gr  # noqa: E402
 
 SEED = 4717
 PAL = {k: ck.hexrgb(v) for k, v in {
@@ -38,9 +39,13 @@ def body_joints() -> np.ndarray:
                      N_BODY + 1)
 
 
+# M3-CRE-632: the spar's foot (its tube's end) stands on the deck; at 0.0 its butt went 2.5 cm through it
+SPAR_FOOT_Y = 0.03
+
+
 def spar_ends(side: float) -> tuple[np.ndarray, np.ndarray]:
     top = HUB + np.array([side * 0.35, 0.25, 0.0])
-    foot = np.array([side * 1.45, 0.0, 0.25])
+    foot = np.array([side * 1.45, SPAR_FOOT_Y, 0.25])
     return top, foot
 
 
@@ -199,7 +204,8 @@ def build_clips() -> list[ck.Clip]:
         idle.wave(b, amp_rot=(2.5, 0.0, 3.0), cycles=1, phase=-i * 0.5)
     idle.wave("head", amp_rot=(6.0, 8.0, 0.0), cycles=1, phase=-2.5)
     idle.wave("block", amp_rot=(0.0, 0.0, 10.0), cycles=1, phase=-3.0)
-    idle.wave("hub", amp_rot=(0.0, 0.0, 0.8), cycles=1)
+    # M3-CRE-632: the hub (the web's centre) no longer rocks: the shrouds it carries are made fast to the deck and the
+    # spars planted on it, so its 0.8° sway swung their feet 2 cm through the deck. The body still sways in the web.
 
     attack = ck.Clip("attack", 1.5)  # a spar stabs down at the target
     for t, lift, stab in ((0.0, 0, 0), (0.55, 1.0, -0.4), (0.8, -0.2, 1.0), (1.05, 0.0, 0.8), (1.5, 0, 0)):
@@ -248,6 +254,17 @@ def build_clips() -> list[ck.Clip]:
     return [idle, attack, cast, hit, ko, drop, idle_deck] + variants
 
 
+# Kept off the floor (M3-CRE-632, common/grounding.py): where the body drops to the deck (the KO, `phase_drop` and the
+# deck clips, which held it 1.05 m down and dropped it 1.6 m in the KO, putting it up to 0.9 m through the deck), the
+# head turns up and the body lifts the least it takes to lie on the deck; the shroud and sheath are measured with it.
+DECK_CLIPS = ("ko", "phase_drop", "idle_deck", "attack_deck", "cast_deck", "hit_deck")
+GROUNDED_LIMBS = [("head", 0, -1.0, 30.0, DECK_CLIPS), ("body0", gr.LIFT, 1.0, 1.0, DECK_CLIPS)]
+
+
+def export_clips(rig: ck.Rig, meshes: list[ck.Mesh]) -> list[ck.Clip]:
+    return gr.grounded(rig, meshes, build_clips(), GROUNDED_LIMBS)
+
+
 def main() -> None:
     argv = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else []
     ap = argparse.ArgumentParser()
@@ -259,7 +276,7 @@ def main() -> None:
     body(mesh, rig, j)
     rigging(mesh, rig, j)
     shroud, sheath = wraps(rig, j)
-    info = ck.export_creature(mesh, rig, build_clips(), args.out, extra_meshes=[shroud, sheath],
+    info = ck.export_creature(mesh, rig, export_clips(rig, [mesh, shroud, sheath]), args.out, extra_meshes=[shroud, sheath],
                               extras={"hymn_creature": "spar_wraith"})
     print(f"spar_wraith: {info}")
 

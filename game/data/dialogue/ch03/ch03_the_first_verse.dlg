@@ -29,6 +29,7 @@ Asha [smile]: Toma. #line:ch03_verse_005
 Toma [tender]: ...Asha. #line:ch03_verse_006
 @mark asha chamber_pool walk
 @fade out 0.6
+@anim asha stand_at_pool
 @camera S08 blend=0.0
 @fade in 0.8
 @vfx glimmer_bound at=ilun_chamber form=ilun

@@ -19,6 +19,7 @@ import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "common"))
 import creature_kit as ck  # noqa: E402
+import grounding as gr  # noqa: E402
 
 SEED = 8101
 PAL = {k: ck.hexrgb(v) for k, v in {
@@ -27,6 +28,14 @@ PAL = {k: ck.hexrgb(v) for k, v in {
 
 BODY = np.array([0.0, 0.42, 0.0])
 NLEG = 6
+# The KO (M3-CRE-631): the body's drop (metres) and roll, and each leg's hip and knee turn at the end (degrees, the
+# left side's sign): the knees sink and the shins splay out flat.
+KO_DROP, KO_ROLL = 0.22, 4.0
+KO_LEG = (-10.0, 30.0)
+# The limbs kept on the floor: (bone, rest axis, the side's sign, the most it may turn). A leg turns up about z at
+# its hip, a striking leg up about x.
+GROUNDED_LIMBS = [(f"leg_{t}{i}_a", 2, 1.0 if t == "l" else -1.0, 75.0) for t in "lr" for i in range(NLEG)] + [
+    (f"strike_{t}", 0, -1.0, 60.0) for t in "lr"]
 
 
 def leg_pts(side: float, i: int) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
@@ -100,13 +109,28 @@ def build_clips() -> list[ck.Clip]:
     for t, s in ((0.0, 0.0), (0.1, 1.0), (0.45, 0.0)):
         hit.key("root", t, (0, 0, 0), (0, 0, -0.15 * s))
         hit.key("body", t, (10.0 * s, 0, 0))
-    ko = ck.Clip("ko", 1.3)  # the legs give, it collapses
+    # the legs give, it collapses onto its belly with the legs splayed flat around it. M3-CRE-631: it settles just
+    # clear of the floor (it dropped 0.3 m, its belly and legs through the floor), the shins splaying out
+    ko = ck.Clip("ko", 1.3)
     for t, s in ((0.0, 0.0), (0.4, 0.5), (0.9, 1.0), (1.3, 1.0)):
-        ko.key("body", t, (0, 0, 6.0 * s), (0, -0.3 * s, 0))
+        ko.key("body", t, (0, 0, KO_ROLL * s), (0, -KO_DROP * s, 0))
         for b, sd, i in legs_:
-            ko.key(f"{b}_a", t, (0, 0, -18.0 * s * sd))
-            ko.key(f"{b}_b", t, (0, 0, -40.0 * s * sd))
+            ko.key(f"{b}_a", t, (0, 0, KO_LEG[0] * s * sd))
+            ko.key(f"{b}_b", t, (0, 0, KO_LEG[1] * s * sd))
     return [idle, attack, cast, hit, ko]
+
+
+def build_mesh(rig: ck.Rig, name: str = "tide_crawler") -> ck.Mesh:
+    mesh = ck.Mesh(name)
+    body(mesh, rig)
+    legs(mesh, rig)
+    return mesh
+
+
+def export_clips(rig: ck.Rig, mesh: ck.Mesh) -> list[ck.Clip]:
+    """The clips kept off the floor (M3-CRE-631, common/grounding.py): a planted foot stays on the ground while the
+    body rears, heaves or skitters over it (each leg turns up about its hip), and the striking legs ride over it."""
+    return gr.grounded(rig, mesh, build_clips(), GROUNDED_LIMBS)
 
 
 def main() -> None:
@@ -115,10 +139,8 @@ def main() -> None:
     ap.add_argument("--out", required=True)
     args = ap.parse_args(argv)
     rig = build_rig()
-    mesh = ck.Mesh("tide_crawler")
-    body(mesh, rig)
-    legs(mesh, rig)
-    info = ck.export_creature(mesh, rig, build_clips(), args.out, extras={"hymn_creature": "tide_crawler"})
+    mesh = build_mesh(rig)
+    info = ck.export_creature(mesh, rig, export_clips(rig, mesh), args.out, extras={"hymn_creature": "tide_crawler"})
     print(f"tide_crawler: {info}")
 
 

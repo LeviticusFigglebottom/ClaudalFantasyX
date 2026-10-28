@@ -28,6 +28,7 @@ import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "common"))
 import creature_kit as ck  # noqa: E402
+import grounding as gr  # noqa: E402
 
 SEED = 6230
 PAL = {k: ck.hexrgb(v) for k, v in {
@@ -808,6 +809,11 @@ def report(rig: ck.Rig, mesh: ck.Mesh, clips: list[ck.Clip]) -> None:
                   f"x {out[:, 0].min():6.2f}..{out[:, 0].max():5.2f}  z {out[:, 2].min():6.2f}..{out[:, 2].max():5.2f}")
 
 
+# Kept off the floor (M3-CRE-632, common/grounding.py): as the KO settles the frame on its knees with a 3° pitch, a
+# foot that the pitch would press into the bottom (by up to 6.5 mm) lifts the least it takes.
+GROUNDED_LIMBS = [(f"leg{i}_c", gr.LIFT, 1.0, 0.05, ("ko",)) for i in range(4)]
+
+
 def main() -> None:
     argv = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else sys.argv[1:]
     ap = argparse.ArgumentParser()
@@ -820,7 +826,8 @@ def main() -> None:
     if args.report or not args.out:
         report(rig, mesh, clips)
         return
-    info = ck.export_creature(mesh, rig, clips, args.out, extras={"hymn_creature": "lamp_engine"})
+    info = ck.export_creature(mesh, rig, gr.grounded(rig, mesh, clips, GROUNDED_LIMBS), args.out,
+                              extras={"hymn_creature": "lamp_engine"})
     print(f"lamp_engine: {info}")
 
 

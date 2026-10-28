@@ -18,6 +18,7 @@ import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "common"))
 import creature_kit as ck  # noqa: E402
+import grounding as gr  # noqa: E402
 
 SEED = 4511
 PAL = {k: ck.hexrgb(v) for k, v in {
@@ -107,6 +108,9 @@ def crab(mesh: ck.Mesh, rig: ck.Rig) -> None:
               wet=0.3)
 
 
+KO_CURL = 50.0  # the KO's shin curl (degrees, the left side's sign): the tips draw up and in
+
+
 def build_clips() -> list[ck.Clip]:
     idle = ck.Clip("idle", 2.6, loop=True)
     idle.wave("body", amp_rot=(2.0, 3.0, 0.0), amp_loc=(0.0, 0.0, 0.01), cycles=1)
@@ -134,10 +138,21 @@ def build_clips() -> list[ck.Clip]:
         ko.key("glass", t, (0, 0, -18.0 * s), (0, -0.02 * s, 0))
         for tag, sg in (("l", 1.0), ("r", -1.0)):
             for i in range(2):
-                ko.key(f"leg_{tag}{i}_b", t, (0, 0, -50.0 * s * sg))
+                # M3-CRE-632: the shins curl up (keyed -50, they drove the tips 0.19 m down through the floor)
+                ko.key(f"leg_{tag}{i}_b", t, (0, 0, KO_CURL * s * sg))
             ko.key(f"eye_{tag}", t, (60.0 * s, 0, 0))
         ko.key("claw_arm", t, (25.0 * s, 0, 0))
     return [idle, attack, cast, hit, ko]
+
+
+# Kept off the floor (M3-CRE-632, common/grounding.py): a planted leg turns up at its hip, and the claw up at its
+# shoulder, the least it takes when the body's bob, recoil or slump would press it through the floor; as it slumps
+# in the KO the glass lifts the least it takes to lie on the floor.
+GROUNDED_LIMBS = [(f"leg_{tag}{i}_a", 2, 1.0 if tag == "l" else -1.0, 60.0) for tag in "lr" for i in range(2)] + [("claw_arm", 0, -1.0, 45.0), ("root", gr.LIFT, 1.0, 0.15, ("ko",))]
+
+
+def export_clips(rig: ck.Rig, mesh: ck.Mesh) -> list[ck.Clip]:
+    return gr.grounded(rig, mesh, build_clips(), GROUNDED_LIMBS)
 
 
 def main() -> None:
@@ -149,7 +164,7 @@ def main() -> None:
     mesh = ck.Mesh("bottle_hermit")
     glass(mesh, rig)
     crab(mesh, rig)
-    info = ck.export_creature(mesh, rig, build_clips(), args.out, extras={"hymn_creature": "bottle_hermit"})
+    info = ck.export_creature(mesh, rig, export_clips(rig, mesh), args.out, extras={"hymn_creature": "bottle_hermit"})
     print(f"bottle_hermit: {info}")
 
 

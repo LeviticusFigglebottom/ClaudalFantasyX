@@ -229,3 +229,26 @@ func test_a_hero_model_plays_and_holds_its_ko_then_idles_on_revive() -> void:
 	assert_eq(str(player.current_animation), str(BattleClips.IDLE), "revived: idle again")
 	assert_false(BattleClips.play_ko(_fighter(null, [BattleClips.IDLE])), "no skeleton, no KO clip")
 	_free()
+
+
+func test_no_bone_swings_more_than_max_key_deg_between_keys() -> void:
+	# M2-HER-1114: Ysolde's finisher keyed DEF-upper_arm.L almost antipodal between two keys; a cross-fade flipped it.
+	var f := _fighter(_skeleton(RIG), [BattleClips.IDLE])
+	var player := _player(f)
+	assert_true(BattleClips.has_clip(f, BattleClips.FINISHER), "the placeholders are installed")
+	assert_true(player.is_playing(), "installed under a playing player, which plays on (no library swap mid-play)")
+	var max_deg := float(_cfg()["max_key_deg"])
+	for clip in BattleClips.ALL:
+		var a := player.get_animation(clip)
+		for t in a.get_track_count():
+			if a.track_get_type(t) != Animation.TYPE_ROTATION_3D:
+				continue
+			for k in range(1, a.track_get_key_count(t)):
+				var q0 := a.track_get_key_value(t, k - 1) as Quaternion
+				var q1 := a.track_get_key_value(t, k) as Quaternion
+				assert_true(q0.dot(q1) >= -EPS, "%s %s key %d: same hemisphere" % [clip, a.track_get_path(t), k])
+				assert_true(
+					rad_to_deg(q0.angle_to(q1)) <= max_deg + 0.01,
+					"%s %s key %d: %.1f deg" % [clip, a.track_get_path(t), k, rad_to_deg(q0.angle_to(q1))]
+				)
+	_free()

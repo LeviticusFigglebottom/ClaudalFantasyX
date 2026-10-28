@@ -10,6 +10,7 @@
        "zone": "ch02/haluna", "target": {"zone": "ch02/haluna", "poi": "shrine"}},
       {"id": "to_causeway_head", "line_key": "OBJ_TO_CAUSEWAY_HEAD", "requires": ["ch02_saved_once"], "until": "ch03_shrine_door_open",
        "zone": "ch02/haluna", "target": {"zone": "ch02/haluna", "poi": "causeway_head"}},
+      {"id": "causeway_to_shrine", "line_key": "OBJ_CAUSEWAY_TO_SHRINE", "requires": [], "until": "ch03_shrine_door_open", "zone": "ch03/saltgrass_causeway", "target": {"zone": "ch03/saltgrass_causeway", "poi": "shrine_steps"}},
       {"id": "shrine_trial", "line_key": "OBJ_SHRINE_TRIAL", "requires": [], "until": "ch03_shrine_door_open",
        "zone": "ch03/shell_shrine", "target": {"zone": "ch03/shell_shrine", "poi": "inner_pool"}},
       {"id": "shrine_door", "line_key": "OBJ_SHRINE_DOOR", "requires": ["ch03_shrine_door_open"], "until": "ch03_first_verse_sung",

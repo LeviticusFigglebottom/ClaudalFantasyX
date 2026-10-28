@@ -33,6 +33,7 @@
     {
       "id": "virel",
       "name_key": "VOWBOUND_VIREL",
+      "call_bark_key": "BARK_CALL_VIREL",
       "caller": "asha",
       "bound_flag": "ch08_virel_bound",
       "call_rank": 3,

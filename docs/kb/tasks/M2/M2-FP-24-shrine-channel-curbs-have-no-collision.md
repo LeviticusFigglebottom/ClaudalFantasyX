@@ -2,9 +2,10 @@
 id: M2-FP-24
 title: The Shell Shrine's channel curbs have no collision (Rhen walks through the troughs)
 role: cinematics
-status: todo
-owner_session: ""
+status: review
+owner_session: "slice-polish (claude/m2-slice, session_01KZCgTqxhHKjvMCm1dAosvZ)"
 depends_on: [M2-ENV-03]
+reviewer: lead
 milestone: M2
 request-from: cinematics
 ---
@@ -17,10 +18,26 @@ Collision can't simply be added as-is. The player controller has no step-up, and
 - (c) keep walk-through, but make the curbs read as flush inlays (that's an art change for M2-ENV-09).
 
 ## Acceptance criteria
-- [ ] Rhen can't walk through a curb, or the curbs clearly read as walkable.
-- [ ] Every basin, the side sluice and the door can be reached from the spawn in every trial state. A headless reachability test checks this over the room's collision.
-- [ ] The S01–S05 shots are unchanged, or re-approved with the reason given.
+- [x] Rhen can't walk through a curb, or the curbs clearly read as walkable.
+- [x] Every basin, the side sluice and the door can be reached from the spawn in every trial state. A headless reachability test checks this over the room's collision.
+- [x] The S01–S05 shots are unchanged, or re-approved with the reason given.
 
 ## Notes
+- **Done (slice-polish, 2026-10-27), option (a).**
+  - `ShrineChannelCurbs` puts a static box the trough's width and height (0.7 × 0.3 m) along each trough, with a
+    1.2 m crossing left open at its middle. Shared troughs get theirs once; troughs too short get none.
+  - Data is in `game/data/trials/shell_shrine_curbs.json`. It is kept out of shell_shrine.json because that file
+    feeds the GI bake's staleness digest.
+- **test_shrine_reachability** floods the room's real static collision with Rhen's capsule, overlap done by hand
+  (the runner never steps physics, so the space has no broadphase).
+  - A capsule can't stand on a curb.
+  - From the Entry spawn, the four basins and the charm are in reach with the door shut and open. The exit is in
+    reach only once the door sinks.
+  - Even with no crossings, nothing is walled off: the troughs never enclose a region. The crossings are a
+    shortcut, not a necessity.
+- **The shots are unchanged:** colliders draw nothing.
+- **The GI digest covers shell_shrine_level.gd,** so the three-line hook makes the bake read stale. Curbs are
+  collision only and VoxelGI bakes meshes, so the light can't change, but the PC rebakes rather than anyone
+  rewriting the sidecar by hand. RENDER-REQUEST `gi_bake:shell_shrine` is in the slice-polish live log.
 
 ## Review log

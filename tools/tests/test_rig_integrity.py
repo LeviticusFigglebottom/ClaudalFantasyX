@@ -225,6 +225,10 @@ class TestRigIntegrityYsolde(_HeroGuards, unittest.TestCase):
     hero = "ysolde"
 
 
+class TestRigIntegrityLiss(_HeroGuards, unittest.TestCase):  # M3-CHR-03
+    hero = "liss"
+
+
 # M3-CHR-03: villager builds with a `"villager": true` entry in rig_checks.json (GLB under assets/characters/villagers/,
 # clips from villager_clips.py)
 class TestRigIntegrityTavi(_HeroGuards, unittest.TestCase):

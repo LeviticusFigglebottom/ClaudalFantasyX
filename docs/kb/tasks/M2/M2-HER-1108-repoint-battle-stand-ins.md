@@ -2,7 +2,7 @@
 id: M2-HER-1108
 title: "Repoint the battle hero stand_ins at the HeroBattleActor wrappers (request to ui-menus)"
 role: ui
-status: todo
+status: done
 owner_session: ""
 depends_on: [M2-HER-1103, M2-UI-07]
 milestone: M2
@@ -39,3 +39,6 @@ path, so no code change is needed.
   Toma's rows (the wrapper repoint) are still yours to do here.
 
 ## Review log
+- 2026-10-27 combat (requester): landed in big11 (UI's 80d358bf: Rhen, Asha, Toma; Ysolde's row from the hero track's
+  FAST-TRACK). Merged on claude/hero-integration at f2e4e422. The pop guard on the merged tree: hero_battle 8/0,
+  battle 710/0; the only report is Ysolde's placeholder finisher, KNOWN under M2-HER-1114.

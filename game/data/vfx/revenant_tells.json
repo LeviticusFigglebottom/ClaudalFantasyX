@@ -1,0 +1,7 @@
+{
+  "_doc": "M3-RND-03: a revenant's tells (RevenantTells, game/vfx/revenant/revenant_tells.gd; docs/kb/tech/revenant_tells.md). still_layer: the visual layer (1-based) a still actor's meshes move to (19 is the cutscene key light, 20 UndertowHalfRes). Reflection: the water's SSR uses a flat normal wherever the mirror ray meets the actor's capsule (radius and height from the meshes' AABB, padded by capsule_pad_m; at most max_still_actors at once). Shadow: the key stops casting the actor; a shadowed copy of it (shadow_caster_mask = the still layer, shadow_blur below) and a negative unshadowed copy stand in for it on him alone and cancel everywhere else.",
+  "still_layer": 18,
+  "max_still_actors": 2,
+  "capsule_pad_m": 0.06,
+  "shadow_blur": 0.12
+}

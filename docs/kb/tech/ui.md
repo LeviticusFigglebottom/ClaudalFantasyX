@@ -728,6 +728,34 @@ Narrated (`Narrator(id)`, no speaker) and `#vo` lines no longer sit in the full 
 
 Ch8's set pieces (M3-CMB-01, ADR 0100) need the HUD to say what is not a normal fight. `BattleSetPieceHud` (game/battle/scene/, listen-only) names the scripted entries on the timeline with `TurnTimeline.set_entry_identity`, and `TimelineChip` draws them apart from allies and foes (raised fill, dashed `swell` frame, round portrait: a third shape cue). An `ObjectiveMeter` (game/ui/battle/, battle_hud.json `objective_meter`) shows the objective's count against its quota as pips and "2 / 3", titled with the ward's name. `BattleMenus` names a set piece's lock on the swap-out pick ("Toma can't leave the line: Holding the stair.") and lists unavailable heroes greyed on the reserve page with their reason. `BattleFloats` floats "Intercepted", "Counter" and "Withdraws"; foes still standing at an objective's end float "Withdraws" too. Shot `battle_ch08_stair_hold`; tests `test_set_piece_hud.gd`.
 
+## Shrine travel (the teleport network's menu)
+
+SPEC §6.6's teleport network (`ShrineNetwork`, M1-ARC-06: attunement in `Game.state.attuned_shrines`, destinations, travel through the location registry) had no menu. `ShrineTravelMenu` (game/ui/save/, a `FieldSubmenu`; layout `game/data/ui/shrine_travel.json`, strings `game/data/loc/shrine_travel.csv`) is it. After a rest's save menu closes (any outcome but a load), `SaveShrine.open_travel()` offers the other attuned shrines, by their location's name (`ShrineNetwork.name_key_of`), in attunement order, with "Stay here" last. Choosing a place asks first (Stay under the cursor); Go travels through `SaveShrine.request_teleport` (the SceneRouter's own fade; the destination becomes the respawn point) and closes the page; a refused trip says so and keeps the list. It moves like every menu page (MenuMotion) and honours Reduced motion. Tests: `test_shrine_travel.gd`.
+
+**Greybox shrines (M3-C07-05).** A greybox zone has layout triggers, not SaveShrine nodes, so ShrineServices (`game/world/save_shrine/shrine_services.gd`, mounted by FieldController next to TownServices) answers a `{"save_shrine": "<network id>"}` payload. For a locations.json `shrines` row, it makes one SaveShrine per id under itself (no position: the zone's trigger is what the player uses) and rests there. The party is healed and given a respawn point, the shrine is attuned, the save menu opens, and the travel list follows. Other keys on the same trigger (a `beat`) still run. An id with no row is ignored with a warning. The layouts' payloads are M3-UI-204 (act1-chapters). Tests: `test_shrine_services.gd`.
+
+**Battle barks (M3-C08-100).** BattleBarks (`game/battle/scene/battle_barks.gd`, a node under the battle HUD that the controller attaches in one line) floats a hero's word over them:
+- skills.json `bark_key` as the skill resolves (Toma's "Hold.", Liss's "Pull!");
+- vowbound.json `call_bark_key` as the Vowbound is called (Asha's "Virel."; over the Vowbound if the caller has already stepped off).
+
+It shows even with damage numbers off, because it is speech. `said` keeps the battle's lines for tests and captures.
+
+**The Reefball outfitter (ADR 0040, M3-C07-05).** ReefballOutfitterMenu is a TownMenu over ReefballOutfitterModel. TownServices opens it for a `{"reefball_outfitter": id}` payload; its layout is the `shop_menu.json` "reefball_outfitter" section.
+- **The rows:** each gear piece with its price, or Owned or Worn on the right, then Leave.
+- **The line:** the piece's words, then what it adds ("Grip +1 · Strip +1"). Under it, what choosing it does (buy, put on in place of another, take off), or "the purse is short" in the danger colour.
+- **Buying** wears the piece when nothing of its kind is on.
+- **The match HUD's framing panel** names what the side wears.
+
+Tests: `test_reefball_outfitter.gd`. The shot is `reefball_outfitter`; it is in the pseudo-loc walk and the aspect audit.
+
+## "Parts look primitive": the pass of 2026-10-27
+
+The human's playtest note, the Lead's item 5. Everything below honours Reduced motion and ends inside its shot's settle frames.
+- **Title reveal** (`TitleReveal`, title_menu.json `reveal`): the logo fades in, the choices rise into place, then the help line (0.75 s). The menu takes input from the first frame. `boot_title` now settles 72 frames so it captures the title at rest. Test: `test_title_reveal.gd`.
+- **Save rows show the saved party's faces**: `SaveSystem.slot_info` reads the record's `party_ids` (old records too), and `SaveSlotRow` draws up to three baked head crops (`HeroPortraits.face`) under the slot name (save_menu.json rows `face_px`, `face_gap`, `faces_max`). Test: `test_save_menu.gd` `test_a_record_shows_its_party_s_faces`.
+- **Battle result pacing**: after the panel opens, each fighter's row arrives in turn, then the choices (battle_hud.json `panel_open` `rows_delay_sec`, `row_stagger_sec`, `row_sec`). Test: `test_battle_result_motion.gd`.
+- **No hard cuts left**: the shop and the inn (`TownMenu`) move like every other menu (MenuMotion; the layer frees on `gone`). With M2-MNU-305 (screens), M2-UI-202 (the dialogue box) and the HUD pieces' own fades, no UI screen opens or closes with a cut.
+
 ## Ch9: the held-input prompt, the act card, and names not yet learned (M3-C09-05)
 
 - **`HoldPrompt`** (`game/ui/prompts/hold_prompt.gd`; data `game/data/ui/hold_prompt.json`) is the no-fail held input's prompt: the Ebbing's "Hold to raise the staff", and act3_ending E4's later. It is one small plate at the bottom centre, holding a keycap and a verb. The keycap names the held action's binding for the device used last (`InputNames`; it follows UiInput's shared tracking, M2-UI-26).
@@ -757,4 +785,4 @@ The match HUD for the Ch7 Tidecup (SPEC §6.10; the rules are `docs/kb/design/re
 - **Input parity:** ui_up / ui_down (keys and pad), hover and the wheel move the cursor and the preview follows; ui_accept or a click chooses. There is nothing to cancel on a contact. `tests/unit/test_input_parity_reefball.gd`.
 - **Layout audits:** `test_aspect_layouts.gd` `test_reefball_hud` (both capture states at 16:9, 16:10, 21:9 and 43:18, 100% and 130%), `test_pseudo_loc_screens.gd` `test_reefball_hud_fits` (both states, every option of the choice, and the final banner).
 - **Shots:** `reefball_hud_choice` (seed 7, the player's first contact, cursor on the first pass) and `reefball_hud_goal` (the AI on both sides, just after the first float comes up), drivers in `game/ui/reefball/shots/` over a plain backdrop; the arena look (`game/levels/_tests/reefball/`) is rendering's and untouched.
-- **What the engine does not tell yet** (M3-RBL-201): which opponents contest or mark an option (only who takes a miss), why an action is not legal (the menu shows legal ones only; the fetch line explains the commonest), whether a success fetches the float, and a match's stakes.
+- **M3-RBL-201 (done):** the read tags the opponents counted in an option's odds (`preview().against`) "Contests"; the actions not on offer (`refused_actions()`) are listed greyed after the options with a short reason (`refused_short`); a fetching option's preview says so; the stakes come from the match row's `stakes_key` (the HUD's fallback is gone).

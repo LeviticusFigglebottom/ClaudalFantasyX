@@ -50,6 +50,11 @@
         "scene": "res://assets/characters/ysolde/ysolde_lod1.glb",
         "walk_clip_mps": 1.02,
         "run_clip_mps": 2.11
+      },
+      "liss": {
+        "scene": "res://assets/characters/liss/liss_lod1.glb",
+        "walk_clip_mps": 0.97,
+        "run_clip_mps": 2.19
       }
     },
     "model_yaw_offset_deg": 180.0,
