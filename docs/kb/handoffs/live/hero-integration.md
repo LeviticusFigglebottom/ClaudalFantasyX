@@ -576,3 +576,15 @@ MERGE-READY @ 44295d79: as above, and the runner's leak check reports (LEAK line
 - **The seam that merge shows:** slice-polish's `test_a_vigil_takes_its_body_when_its_hero_has_one` asserts Liss's
   capsule stays. Filed **M3-HER-1131** (one line: erase liss and pell from the test's private data).
 - **Kerrid, Pell: BLOCKED.** No models yet (M3-CHR-505, M3-CHR-506). Each is one row the day they land.
+
+### Full suite after the stairs fix, 2026-10-28 ~01:10
+- **2837 run.** The ~30-failure cascade is gone. What's left is the integration's two known failures (creature
+  portraits: creatures; causeway footsteps: audio) and **test_slice_shots**, which the new runner fails as
+  suspended (fixed on m2-slice, M2-QA-100).
+- **Leaks (M3-HER-1130):** 76 tests left nodes in the tree. The runner now frees and reports them (LEAK lines), so
+  none can cascade. The hero layer's 12 are fixed. The other 64 are listed in the task by owner: creatures 18, ui-menus 34,
+  act1-chapters 8 (the act card, hold prompt and names), battle-presentation 4. When the list is empty, one line
+  makes the runner fail a leak.
+
+MERGE-READY @ c9cb7dc9: the stairs leak, the runner's leak report, the hero tests' cleanup, M3-HER-1131 (the Liss vigil
+seam). Checks: full suite (above), hero_foot_ik 5/0, hero_battle_actor 5/0, hero_battle_pops 3/0, gdlint, taskboard.
