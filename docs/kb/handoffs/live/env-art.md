@@ -589,6 +589,24 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
+- **2026-10-28 ~03:00: Ch1 zones dressed; renders viewed.**
+  - SELF-RENDERED @ 9cced155: slice_prologue_vigil_line, haluna_h01/h02/h04/h10, causeway_c02, shrine_s01,
+    drownbell_flood, battle_arena_tideline_dawn/causeway_disc_sunset/causeway_route_afternoon/derelict_deck_night/
+    oruvel_raft_morning/underway_tower — pass (rmse ≤ 0.0055). Viewed: all final; the prologue city is still
+    primitives (the zone's, M3-ENV-739 FAST-TRACK to slice-polish).
+  - SELF-RENDERED @ 9cced155: haluna_h07_chapel_court — drift 0.0265, intended: the chapel's pilasters, dentils
+    and arched heads (9c26b66e) postdate its baseline. Re-approve on the next gate.
+  - SELF-RENDERED @ b82d8df1: zone_oruvel_o01/o07/o09/o12/o16 (new, M3-ENV-738) — the decks, the *Seventh
+    Terrace*'s name-board, Kell's chandlery and the pen read final. The green and pink capsules are the zone's
+    actors with no `model` (netmenders, pen child; M3-ENV-740 asks slice-polish for bodies).
+  - SELF-RENDERED @ e8d3e151+: zone_underway_u01/u03/u06/u07/u08 (new, M3-ENV-741) — the crown under Oruvel's
+    hulls, the sealed bell-room, the wheel, the shaft; U06's stairwell lined a storey down after the first render
+    showed the murk through it.
+  - The ruin column's LOD1 now keeps its broken top (H04's far columns read as plain tubes).
+  - Requests: M3-ENV-740 and M3-ENV-742 (mount the two dressings, slice-polish), M3-ENV-739 (the prologue city).
+  - Every capture logs `SCRIPT ERROR: Trying to cast a freed object` at shutdown from `life_audio.gd:124` (audio's;
+    known since big12). It makes capture.sh exit 1 though every shot is written.
+  - **Next:** Ch4 `haluna_wake` (41 greybox blocks): a ground piece and a ZoneKitDressing from the Haluna kit.
 - **2026-10-28 ~01:30: REFOCUS (ADR 0041, the human's directive via the Lead).**
   - **Scope:** the Prologue through Ch4, plus the shared kits. env-art-b takes Ch5–Ch9.
   - **Paused:** my 19 later-act tasks (M3-ENV-716–718, 720–723 and 725–736) are `blocked` with `blocked-by: ADR 0041`. Their work stays committed and pushed as is.
