@@ -368,6 +368,20 @@ size = Vector3(16, 6, 10)
 [sub_resource type="BoxShape3D" id="Box_Hub"]
 size = Vector3(230, 60, 280)
 
+[sub_resource type="BoxShape3D" id="Box_DockEnd"]
+size = Vector3(8, 6, 5)
+
+[sub_resource type="Resource" id="Shot_B11"]
+script = ExtResource("7_shot")
+id = &"B11"
+mode = 1
+position = Vector3(24.5, 2.9, 43.3)
+look_at = Vector3(19.9, 2.8, 41.8)
+target_offset = Vector3(0, 1, 0)
+fov_deg = 37.8
+follow_weight = 0.35
+max_pan_deg = 20.0
+
 [sub_resource type="BoxShape3D" id="Box_NemeTable"]
 size = Vector3(7, 8, 6)
 
@@ -588,6 +602,15 @@ shot_priority = 0
 
 [node name="Shape" type="CollisionShape3D" parent="CameraVolumes/Hub"]
 shape = SubResource("Box_Hub")
+
+[node name="DockEnd" type="Area3D" parent="CameraVolumes"]
+script = ExtResource("6_vol")
+transform = Transform3D(0.819152, 0, 0.573576, 0, 1, 0, -0.573576, 0, 0.819152, 19.0, 2, 42.5)
+shot = SubResource("Shot_B11")
+shot_priority = 2
+
+[node name="Shape" type="CollisionShape3D" parent="CameraVolumes/DockEnd"]
+shape = SubResource("Box_DockEnd")
 
 [node name="NemeTable" type="Area3D" parent="CameraVolumes"]
 script = ExtResource("6_vol")
