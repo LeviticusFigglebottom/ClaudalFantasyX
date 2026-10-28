@@ -176,9 +176,10 @@ No job of this session is running. WSL `hymn` is idle: the batch (PIDs 302 and 2
   test wave). Asha is unchanged. Rendering, env-art and art should view the shots and approve the baselines.
 - **M2-CHR-11 verify (2026-10-27):** claude/characters @ 3723f3eb (incl. 20773234), AVX2 i9-12900K: base_body, rhen, toma
   and 9 villagers 12/12 identical (664 s). Reported to the Lead and characters.
-- **Was in progress before the pause (2026-10-27 ~17:00):** render queue 4 (22 jobs: the fast-tracks c1d1e3e6 and d4430397 are rendered and
-  being published, then the RND-03 lavapipe check 02d1fa52, then oldest first). Next: the slice `--budget` re-sweep, then
-  the Act I playthrough (never during a render).
+- **In progress (2026-10-28 05:20 EDT):**
+  - big14 coverage in WSL (single process, 3 h limit; started 04:33).
+  - Act I QA pass B, visual, on lead/gate-ft-beach on the RX 9070 XT: every zone, spawn, battle and boss of Act I, stills every 5 s.
+  - Next: the per-zone budget run (`--budget`, no stills) once coverage ends, since a benchmark never runs during a gate step. Then the rows and sheets go to gpu/act1-qa-*.
 - **M1-QA-09 on hardware (heroes, 2026-10-27):** 49 shots at High 2× and Ultra on ze8rrn@f580e756, `gpu/m1-qa-09-heroes`
   `docs/kb/qa/gpu/2026-10-27-m1-qa-09-heroes/`. Asha's staff and Toma's spear aren't gripped (open hands; they float upright
   in run/walk_cycle/offer_hand). The staff goes through the skirt when kneeling. Asha's underskirt is a rigid tube in
