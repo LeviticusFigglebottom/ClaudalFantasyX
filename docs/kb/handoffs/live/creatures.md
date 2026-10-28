@@ -664,3 +664,4 @@ SUPERSEDED RENDER-REQUEST @ db895430: battle_choreo_hit, battle_choreo_ko, battl
   - **Viewed:** the gull, eel, reef crab, scuttler, tide crawler, stormgull, limpet, wall polyp, ashwing and squall wing read finished.
   - **Unfinished:** shoal_skipper, slag_tortoise, sail_leech and oil_slug read primitive (M3-CRE-654, in a worktree).
   - **Portraits:** all 20 bestiary portraits viewed, all present. The raid hound reads crude (M3-CRE-655, after 650).
+- SELF-RENDERED @ f5ebf9a5: creature_wallcrab, creature_glassfry, creature_wreck_crab — all 3 PASS (RMSE 0) and read finished. That covers all 17 untouched regulars; the other three get rendered after M3-CRE-650 and M3-CRE-654 land.
