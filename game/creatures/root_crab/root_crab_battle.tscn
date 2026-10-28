@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://game/creatures/creature_actor.gd" id="1_actor"]
+[ext_resource type="PackedScene" uid="uid://ds4327gisk472" path="res://assets/creatures/root_crab/root_crab.glb" id="2_model"]
+
+[node name="RootCrab" type="Node3D"]
+script = ExtResource("1_actor")
+creature_id = &"root_crab"
+metadata/hymn_battle_actor = true
+
+[node name="Model" parent="." instance=ExtResource("2_model")]

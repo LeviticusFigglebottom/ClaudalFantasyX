@@ -1798,6 +1798,38 @@
       ]
     },
     {
+      "id": "creature_mangrove_drowner",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_mangrove_drowner.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
+      "id": "creature_mangrove_drowner_risen",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_mangrove_drowner_risen.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
+      "id": "creature_lamp_engine",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_lamp_engine.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
+      "id": "creature_lamp_engine_opened",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_lamp_engine_opened.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
       "id": "creature_tower_limpet",
       "scene": "res://game/levels/_tests/creatures/shots/creature_tower_limpet.tscn",
       "resolution": [
@@ -1984,6 +2016,14 @@
     {
       "id": "creature_wall_polyp",
       "scene": "res://game/levels/_tests/creatures/shots/creature_wall_polyp.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
+      "id": "wildlife_stage",
+      "scene": "res://game/levels/_tests/wildlife/wildlife_stage.tscn",
       "resolution": [
         960,
         720
@@ -2526,44 +2566,6 @@
       "scene": "res://game/battle/scene/shots/battle_boss_intro_drownbell.tscn"
     },
     {
-      "id": "ch06_brine_road",
-      "scene": "res://game/levels/_tests/act1_zones/ch06_brine_shoals_shots.tscn",
-      "camera": "Cameras/Road",
-      "resolution": [
-        960,
-        540
-      ],
-      "settle_frames": 24,
-      "setup": {
-        "globals": {
-          "hymn_wind_time": 40.0
-        },
-        "viewport": {
-          "use_taa": false,
-          "screen_space_aa": 1
-        }
-      }
-    },
-    {
-      "id": "ch06_brine_camp",
-      "scene": "res://game/levels/_tests/act1_zones/ch06_brine_shoals_shots.tscn",
-      "camera": "Cameras/Camp",
-      "resolution": [
-        960,
-        540
-      ],
-      "settle_frames": 24,
-      "setup": {
-        "globals": {
-          "hymn_wind_time": 40.0
-        },
-        "viewport": {
-          "use_taa": false,
-          "screen_space_aa": 1
-        }
-      }
-    },
-    {
       "id": "hero_cutscene_turn_strip",
       "scene": "res://game/levels/_tests/hero_motion/cutscene_turn_strip.tscn",
       "camera": "Camera",
@@ -2592,6 +2594,166 @@
         960,
         540
       ]
+    },
+    {
+      "id": "field_hero_gait_strip",
+      "scene": "res://game/levels/_tests/hero_motion/field_hero_gait_strip.tscn",
+      "camera": "ShotCamera",
+      "settle_frames": 30,
+      "resolution": [
+        1280,
+        720
+      ]
+    },
+    {
+      "id": "npc_stage_field",
+      "scene": "res://game/levels/_tests/npc/npc_stage.tscn",
+      "camera": "Camera",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 150
+    },
+    {
+      "id": "npc_haluna_dock",
+      "scene": "res://game/levels/_tests/npc/haluna_villagers.tscn",
+      "camera": "Cameras/Dock",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 240,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "npc_haluna_market",
+      "scene": "res://game/levels/_tests/npc/haluna_villagers.tscn",
+      "camera": "Cameras/Market",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 240,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "npc_haluna_chapel",
+      "scene": "res://game/levels/_tests/npc/haluna_villagers.tscn",
+      "camera": "Cameras/Chapel",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 240,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "npc_haluna_lane",
+      "scene": "res://game/levels/_tests/npc/haluna_villagers.tscn",
+      "camera": "Cameras/Lane",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 240,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "wildlife_zone_brine_flats",
+      "scene": "res://game/levels/_tests/wildlife/zone_wildlife_brine_shoals.tscn",
+      "camera": "Cameras/Flats",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 60,
+      "setup": {
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "wildlife_zone_brine_wrecks",
+      "scene": "res://game/levels/_tests/wildlife/zone_wildlife_brine_shoals.tscn",
+      "camera": "Cameras/Wrecks",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 60,
+      "setup": {
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "wildlife_zone_underway_crown",
+      "scene": "res://game/levels/_tests/wildlife/zone_wildlife_oruvel_underway.tscn",
+      "camera": "Cameras/Crown",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 60,
+      "setup": {
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "npc_wake_feast",
+      "scene": "res://game/levels/_tests/npc/wake_villagers.tscn",
+      "camera": "Cameras/Feast",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 120,
+      "setup": {
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
     },
     {
       "id": "villager_tavi_front",
@@ -3070,6 +3232,275 @@
       }
     },
     {
+      "id": "creature_avalanche_ram",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_avalanche_ram.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
+      "id": "creature_wakefin",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_wakefin.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
+      "id": "creature_wakefin_body",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_wakefin_body.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
+      "id": "creature_tannin_archer",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_tannin_archer.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
+      "id": "creature_gallery_ray",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_gallery_ray.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
+      "id": "creature_rime_urchin",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_rime_urchin.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
+      "id": "creature_conduit_crawler",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_conduit_crawler.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
+      "id": "creature_ridge_lynx",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_ridge_lynx.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
+      "id": "creature_cord_moth",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_cord_moth.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
+      "id": "creature_glass_skate",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_glass_skate.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
+      "id": "creature_root_crab",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_root_crab.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
+      "id": "creature_fen_leech",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_fen_leech.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
+      "id": "creature_scree_crawler",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_scree_crawler.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
+      "id": "creature_rim_crawler",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_rim_crawler.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
+      "id": "creature_flat_engine",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_flat_engine.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
+      "id": "ch06_brine_road",
+      "scene": "res://game/levels/_tests/act1_zones/ch06_brine_shoals_shots.tscn",
+      "camera": "Cameras/Road",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "ch06_brine_camp",
+      "scene": "res://game/levels/_tests/act1_zones/ch06_brine_shoals_shots.tscn",
+      "camera": "Cameras/Camp",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "asha_clip_walk_cycle",
+      "scene": "res://game/levels/_tests/characters/asha/asha_clip_walk_cycle.tscn",
+      "camera": "Cameras/Profile",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "asha_clip_turn",
+      "scene": "res://game/levels/_tests/characters/asha/asha_clip_turn.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "rhen_clip_walk_cycle",
+      "scene": "res://game/levels/_tests/characters/rhen/rhen_clip_walk_cycle.tscn",
+      "camera": "Cameras/Profile",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "rhen_clip_turn",
+      "scene": "res://game/levels/_tests/characters/rhen/rhen_clip_turn.tscn",
+      "camera": "Cameras/ThreeQuarter",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "toma_clip_walk_cycle",
+      "scene": "res://game/levels/_tests/characters/toma/toma_clip_walk_cycle.tscn",
+      "camera": "Cameras/Profile",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "toma_clip_turn",
+      "scene": "res://game/levels/_tests/characters/toma/toma_clip_turn.tscn",
+      "camera": "Cameras/ThreeQuarter",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "oruvel_o17_pen_split",
+      "scene": "res://game/levels/_tests/oruvel_kit/oruvel_preview.tscn",
+      "camera": "Cameras/O17",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        },
+        "nodes": {
+          ".": {
+            "phase": "ch01_storm"
+          }
+        }
+      }
+    },
+    {
+      "id": "ashcrown_a10_plume_from_the_rim",
+      "scene": "res://game/levels/_tests/ashcrown_kit/ashcrown_preview.tscn",
+      "camera": "Cameras/A10",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "reefball_hud_choice",
+      "scene": "res://game/ui/reefball/shots/reefball_hud_choice.tscn"
+    },
+    {
+      "id": "reefball_hud_goal",
+      "scene": "res://game/ui/reefball/shots/reefball_hud_goal.tscn"
+    },
+    {
       "id": "ch08_corrow_arrival",
       "scene": "res://game/levels/_tests/act1_zones/ch08_corrow_shots.tscn",
       "camera": "Cameras/Arrival",
@@ -3260,269 +3691,6 @@
       }
     },
     {
-      "id": "wildlife_stage",
-      "scene": "res://game/levels/_tests/wildlife/wildlife_stage.tscn",
-      "resolution": [
-        960,
-        720
-      ]
-    },
-    {
-      "id": "field_hero_gait_strip",
-      "scene": "res://game/levels/_tests/hero_motion/field_hero_gait_strip.tscn",
-      "camera": "ShotCamera",
-      "settle_frames": 30,
-      "resolution": [
-        1280,
-        720
-      ]
-    },
-    {
-      "id": "npc_stage_field",
-      "scene": "res://game/levels/_tests/npc/npc_stage.tscn",
-      "camera": "Camera",
-      "resolution": [
-        960,
-        540
-      ],
-      "settle_frames": 150
-    },
-    {
-      "id": "asha_clip_walk_cycle",
-      "scene": "res://game/levels/_tests/characters/asha/asha_clip_walk_cycle.tscn",
-      "camera": "Cameras/Profile",
-      "resolution": [
-        960,
-        540
-      ],
-      "settle_frames": 30
-    },
-    {
-      "id": "asha_clip_turn",
-      "scene": "res://game/levels/_tests/characters/asha/asha_clip_turn.tscn",
-      "camera": "Cameras/Front",
-      "resolution": [
-        960,
-        540
-      ],
-      "settle_frames": 30
-    },
-    {
-      "id": "rhen_clip_walk_cycle",
-      "scene": "res://game/levels/_tests/characters/rhen/rhen_clip_walk_cycle.tscn",
-      "camera": "Cameras/Profile",
-      "resolution": [
-        960,
-        540
-      ],
-      "settle_frames": 30
-    },
-    {
-      "id": "rhen_clip_turn",
-      "scene": "res://game/levels/_tests/characters/rhen/rhen_clip_turn.tscn",
-      "camera": "Cameras/ThreeQuarter",
-      "resolution": [
-        960,
-        540
-      ],
-      "settle_frames": 30
-    },
-    {
-      "id": "toma_clip_walk_cycle",
-      "scene": "res://game/levels/_tests/characters/toma/toma_clip_walk_cycle.tscn",
-      "camera": "Cameras/Profile",
-      "resolution": [
-        960,
-        540
-      ],
-      "settle_frames": 30
-    },
-    {
-      "id": "toma_clip_turn",
-      "scene": "res://game/levels/_tests/characters/toma/toma_clip_turn.tscn",
-      "camera": "Cameras/ThreeQuarter",
-      "resolution": [
-        960,
-        540
-      ],
-      "settle_frames": 30
-    },
-    {
-      "id": "oruvel_o17_pen_split",
-      "scene": "res://game/levels/_tests/oruvel_kit/oruvel_preview.tscn",
-      "camera": "Cameras/O17",
-      "resolution": [
-        960,
-        540
-      ],
-      "settle_frames": 24,
-      "setup": {
-        "globals": {
-          "hymn_wind_time": 40.0
-        },
-        "viewport": {
-          "use_taa": false,
-          "screen_space_aa": 1
-        },
-        "nodes": {
-          ".": {
-            "phase": "ch01_storm"
-          }
-        }
-      }
-    },
-    {
-      "id": "ashcrown_a10_plume_from_the_rim",
-      "scene": "res://game/levels/_tests/ashcrown_kit/ashcrown_preview.tscn",
-      "camera": "Cameras/A10",
-      "resolution": [
-        960,
-        540
-      ],
-      "settle_frames": 24,
-      "setup": {
-        "globals": {
-          "hymn_wind_time": 40.0
-        },
-        "viewport": {
-          "use_taa": false,
-          "screen_space_aa": 1
-        }
-      }
-    },
-    {
-      "id": "reefball_hud_choice",
-      "scene": "res://game/ui/reefball/shots/reefball_hud_choice.tscn"
-    },
-    {
-      "id": "reefball_hud_goal",
-      "scene": "res://game/ui/reefball/shots/reefball_hud_goal.tscn"
-    },
-    {
-      "id": "npc_haluna_dock",
-      "scene": "res://game/levels/_tests/npc/haluna_villagers.tscn",
-      "camera": "Cameras/Dock",
-      "resolution": [
-        960,
-        540
-      ],
-      "settle_frames": 240,
-      "setup": {
-        "globals": {
-          "hymn_wind_time": 40.0
-        },
-        "viewport": {
-          "use_taa": false,
-          "screen_space_aa": 1
-        }
-      }
-    },
-    {
-      "id": "npc_haluna_market",
-      "scene": "res://game/levels/_tests/npc/haluna_villagers.tscn",
-      "camera": "Cameras/Market",
-      "resolution": [
-        960,
-        540
-      ],
-      "settle_frames": 240,
-      "setup": {
-        "globals": {
-          "hymn_wind_time": 40.0
-        },
-        "viewport": {
-          "use_taa": false,
-          "screen_space_aa": 1
-        }
-      }
-    },
-    {
-      "id": "npc_haluna_chapel",
-      "scene": "res://game/levels/_tests/npc/haluna_villagers.tscn",
-      "camera": "Cameras/Chapel",
-      "resolution": [
-        960,
-        540
-      ],
-      "settle_frames": 240,
-      "setup": {
-        "globals": {
-          "hymn_wind_time": 40.0
-        },
-        "viewport": {
-          "use_taa": false,
-          "screen_space_aa": 1
-        }
-      }
-    },
-    {
-      "id": "npc_haluna_lane",
-      "scene": "res://game/levels/_tests/npc/haluna_villagers.tscn",
-      "camera": "Cameras/Lane",
-      "resolution": [
-        960,
-        540
-      ],
-      "settle_frames": 240,
-      "setup": {
-        "globals": {
-          "hymn_wind_time": 40.0
-        },
-        "viewport": {
-          "use_taa": false,
-          "screen_space_aa": 1
-        }
-      }
-    },
-    {
-      "id": "wildlife_zone_brine_flats",
-      "scene": "res://game/levels/_tests/wildlife/zone_wildlife_brine_shoals.tscn",
-      "camera": "Cameras/Flats",
-      "resolution": [
-        960,
-        540
-      ],
-      "settle_frames": 60,
-      "setup": {
-        "viewport": {
-          "use_taa": false,
-          "screen_space_aa": 1
-        }
-      }
-    },
-    {
-      "id": "wildlife_zone_brine_wrecks",
-      "scene": "res://game/levels/_tests/wildlife/zone_wildlife_brine_shoals.tscn",
-      "camera": "Cameras/Wrecks",
-      "resolution": [
-        960,
-        540
-      ],
-      "settle_frames": 60,
-      "setup": {
-        "viewport": {
-          "use_taa": false,
-          "screen_space_aa": 1
-        }
-      }
-    },
-    {
-      "id": "wildlife_zone_underway_crown",
-      "scene": "res://game/levels/_tests/wildlife/zone_wildlife_oruvel_underway.tscn",
-      "camera": "Cameras/Crown",
-      "resolution": [
-        960,
-        540
-      ],
-      "settle_frames": 60,
-      "setup": {
-        "viewport": {
-          "use_taa": false,
-          "screen_space_aa": 1
-        }
-      }
-    },
-    {
       "id": "asha_battle_ko",
       "scene": "res://game/levels/_tests/characters/asha/asha_battle_ko.tscn",
       "camera": "Cameras/ThreeQuarter",
@@ -3623,70 +3791,6 @@
     {
       "id": "battle_ch08_stair_hold",
       "scene": "res://game/battle/scene/shots/battle_ch08_stair_hold.tscn"
-    },
-    {
-      "id": "creature_mangrove_drowner",
-      "scene": "res://game/levels/_tests/creatures/shots/creature_mangrove_drowner.tscn",
-      "resolution": [
-        960,
-        720
-      ]
-    },
-    {
-      "id": "creature_mangrove_drowner_risen",
-      "scene": "res://game/levels/_tests/creatures/shots/creature_mangrove_drowner_risen.tscn",
-      "resolution": [
-        960,
-        720
-      ]
-    },
-    {
-      "id": "creature_lamp_engine",
-      "scene": "res://game/levels/_tests/creatures/shots/creature_lamp_engine.tscn",
-      "resolution": [
-        960,
-        720
-      ]
-    },
-    {
-      "id": "creature_lamp_engine_opened",
-      "scene": "res://game/levels/_tests/creatures/shots/creature_lamp_engine_opened.tscn",
-      "resolution": [
-        960,
-        720
-      ]
-    },
-    {
-      "id": "npc_wake_feast",
-      "scene": "res://game/levels/_tests/npc/wake_villagers.tscn",
-      "camera": "Cameras/Feast",
-      "resolution": [
-        960,
-        540
-      ],
-      "settle_frames": 120,
-      "setup": {
-        "viewport": {
-          "use_taa": false,
-          "screen_space_aa": 1
-        }
-      }
-    },
-    {
-      "id": "creature_avalanche_ram",
-      "scene": "res://game/levels/_tests/creatures/shots/creature_avalanche_ram.tscn",
-      "resolution": [
-        960,
-        720
-      ]
-    },
-    {
-      "id": "creature_wakefin",
-      "scene": "res://game/levels/_tests/creatures/shots/creature_wakefin.tscn",
-      "resolution": [
-        960,
-        720
-      ]
     },
     {
       "id": "slice_prologue_vigil_line",
@@ -3950,6 +4054,102 @@
           "screen_space_aa": 1
         }
       }
+    },
+    {
+      "id": "creature_ilun",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_ilun.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
+      "id": "creature_kahre",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_kahre.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
+      "id": "creature_virel",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_virel.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
+      "id": "creature_nhoa",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_nhoa.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
+      "id": "creature_hesk",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_hesk.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
+      "id": "creature_ethren",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_ethren.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
+      "id": "creature_ilun_held",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_ilun_held.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
+      "id": "creature_kahre_held",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_kahre_held.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
+      "id": "creature_virel_held",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_virel_held.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
+      "id": "creature_hesk_held",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_hesk_held.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
+      "id": "creature_nhoa_held",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_nhoa_held.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
+      "id": "creature_ethren_held",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_ethren_held.tscn",
+      "resolution": [
+        960,
+        720
+      ]
     }
   ]
 }

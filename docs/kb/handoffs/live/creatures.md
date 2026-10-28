@@ -334,7 +334,7 @@ Merge the three creature worktrees as they finish (they append to creatures.json
 - **Note for act1-chapters' Ch6 dressing:** when it merges, the wildlife_zone_brine_* shots will drift (the greybox becomes the kit). Re-approve after viewing; the wildlife data keeps its coordinates.
 
 ### Render requests
-RENDER-REQUEST @ b5e05d2f: creature_drownbell, creature_drownbell_toll, creature_cinder_matron, creature_tower_limpet, creature_undertows_reach, creature_portraits, battle_choreo_melee, battle_choreo_hit, battle_choreo_cast, battle_choreo_support, battle_choreo_read, battle_choreo_ko, battle_choreo_swap, battle_choreo_lamp_dive, battle_choreo_toll, battle_choreo_vowbound_rise, battle_choreo_summon, creature_mangrove_drowner, creature_mangrove_drowner_risen, wildlife_stage, wildlife_zone_brine_flats, wildlife_zone_brine_wrecks, wildlife_zone_underway_crown, npc_haluna_dock, npc_haluna_market, npc_haluna_chapel, npc_haluna_lane, npc_stage_field, npc_wake_feast; why: M3-CRE-617 hit snap and rebuilt boss hits, M3-CRE-618 portrait lights, M3-CRE-621 new boss, M3-CRE-616 insects, M3-CRE-613/615 villager and wildlife review stages (every shot but npc_wake_feast was cloud-rendered, viewed and approved or compared before the directive; this pass confirms PC parity; npc_wake_feast has no baseline yet).
+SUPERSEDED RENDER-REQUEST @ b5e05d2f: creature_drownbell, creature_drownbell_toll, creature_cinder_matron, creature_tower_limpet, creature_undertows_reach, creature_portraits, battle_choreo_melee, battle_choreo_hit, battle_choreo_cast, battle_choreo_support, battle_choreo_read, battle_choreo_ko, battle_choreo_swap, battle_choreo_lamp_dive, battle_choreo_toll, battle_choreo_vowbound_rise, battle_choreo_summon, creature_mangrove_drowner, creature_mangrove_drowner_risen, wildlife_stage, wildlife_zone_brine_flats, wildlife_zone_brine_wrecks, wildlife_zone_underway_crown, npc_haluna_dock, npc_haluna_market, npc_haluna_chapel, npc_haluna_lane, npc_stage_field, npc_wake_feast; why: M3-CRE-617 hit snap and rebuilt boss hits, M3-CRE-618 portrait lights, M3-CRE-621 new boss, M3-CRE-616 insects, M3-CRE-613/615 villager and wildlife review stages (every shot but npc_wake_feast was cloud-rendered, viewed and approved or compared before the directive; this pass confirms PC parity; npc_wake_feast has no baseline yet).
 - **Merged big9 (integration 7cccb551) at d435d939.**
   - Append-only unions: ownership, asset_import, blender_builds (60 jobs), test_post_import, shots, baselines.
   - creature_portraits.png keeps this branch's version (it's in the render request).
@@ -351,12 +351,12 @@ RENDER-REQUEST @ b5e05d2f: creature_drownbell, creature_drownbell_toll, creature
   - Checked by numbers, not renders: feet at y 0, every lamp clear of the frame, the core 1.3% visible closed and 48% open, every colour a palette swatch, no break parts yet (they need a charge skill).
   - **Checks run:** Godot creature 27/0, post_import 21/0, validate_data, taskboard, manifest, Blender verify identical.
 - **Kit-wide finding (to fix later, M3 polish):** every creature GLB's clips play one frame (1/30 s) late in the file; a hit authored to peak at 0.10 s peaks at 0.13 s. The hit snap (0.1 s) still lands near half the recoil, so nothing is broken. Fixing it rebuilds all 29 creatures, so it waits for a batch rebuild.
-RENDER-REQUEST @ 10f21a17: creature_lamp_engine, creature_lamp_engine_opened; why: M3-CRE-623 new Act II boss, never rendered (no baselines); check the battle-distance read, the closed-seam glow, and the hub and lamp teals reading apart.
+SUPERSEDED RENDER-REQUEST @ 10f21a17: creature_lamp_engine, creature_lamp_engine_opened; why: M3-CRE-623 new Act II boss, never rendered (no baselines); check the battle-distance read, the closed-seam glow, and the hub and lamp teals reading apart.
 - **MERGE-READY @ 21125780: M3-CRE-624, the Avalanche Ram (Ch12 boss, worktree agent).**
   - 15.2k triangles; a woolback grown huge, with frozen fleece locks, partings that glow spawn_wound, and the herd-cord.
   - Measured from the GLB: the head at 2.86 m; hooves solved to y 0 in every clip; the KO lies down without going below the floor.
   - **Checks run:** Godot creature 28/0, post_import 21/0, Blender verify identical (and the Lamp Engine's again on the merged tree), validate_data, taskboard, manifest, lint, format.
-RENDER-REQUEST @ 21125780: creature_avalanche_ram; why: M3-CRE-624 new Act II boss, never rendered (no baseline); check the chest's front, the charge's raised foreleg, and the muzzle length at portrait distance.
+SUPERSEDED RENDER-REQUEST @ 21125780: creature_avalanche_ram; why: M3-CRE-624 new Act II boss, never rendered (no baseline); check the chest's front, the charge's raised foreleg, and the muzzle length at portrait distance.
 - **DECISION: one villager runtime, two placements (the Lead's big11 note on the duplicate systems).**
   - **Creatures owns the runtime:** FieldNpc, NpcLook, the routines, npc.json, the zone routine files and VillagerLayer.
   - **Zone owners own placement.** Haluna keeps slice-polish's HalunaVillagers (M2-FP-102: it places a FieldNpc inside each body in HalunaZone.prebuild(), under the fade). That is the right place for it.
@@ -370,6 +370,284 @@ RENDER-REQUEST @ 21125780: creature_avalanche_ram; why: M3-CRE-624 new Act II bo
   - Measured: the blade top is 2.21 m at rest; the body sits below y 0 except in the breach; the KO lies belly-up at the surface.
   - **For the arena owner (Ch15, act1-chapters or whoever builds Act II arenas):** the submerged body stays hidden only if the barge arena has an opaque water surface at y 0. Its portrait shows the whole fish.
   - **Checks run:** Godot creature 29/0, Blender verify identical, validate_data, taskboard, manifest, lint, format, tools test_creatures.
-RENDER-REQUEST @ b99be560: creature_wakefin; why: M3-CRE-626 new Act II boss, never rendered (no baseline); check the fin reads at battle distance and the waterline sits at the blade's base.
+SUPERSEDED RENDER-REQUEST @ b99be560: creature_wakefin; why: M3-CRE-626 new Act II boss, never rendered (no baseline); check the fin reads at battle distance and the waterline sits at the blade's base.
 - **RENDERED @ b5e05d2f (gpu/render-creatures-b5e05d2), viewed:** 28 of 29 pass on the PC (most rmse 0), so every cloud-approved shot in it has pixel parity. npc_wake_feast had no baseline; viewed (Osu and the vendor face each other) and approved. Still open: the Lamp Engine, Avalanche Ram and Wakefin requests.
+- **MERGE-READY @ 44080e1e: M3-CRE-627, Act II regulars for Ch10–11 (worktree agent)**, plus ADR 0150 (proposed).
+  - The four regulars: tannin_archer 4.5k triangles, gallery_ray 4.1k (a flier, hover 1.4), rime_urchin 8.8k, conduit_crawler 4.8k (a construct; its light is glimmer_bound).
+  - Every hit peaks at 0.10 s; checked from the GLBs; none is dark, so default portrait lights.
+  - **Checks run:** Godot creature 33/0, Blender verify identical ×4, validate_data, taskboard, dlgc, manifest, lint, format.
+  - **Lead, a rule conflict (ADR 0150, request M3-CRE-629 routed to you for art direction):**
+    - palette.json forbids `spawn_wound` as a non-Undertow creature's weak point;
+    - the creature README and every shipped beast use it (reef crab, lantern eel, gull harrier, shoal skipper, ashwing, slag tortoise).
+    - Proposal: one weak-point colour for every foe (pillar 4). The spawn keep the wound language: open seams and motes. Nothing shipped changes.
+SUPERSEDED RENDER-REQUEST @ 44080e1e: creature_tannin_archer, creature_gallery_ray, creature_rime_urchin, creature_conduit_crawler; why: M3-CRE-627 new Act II regulars, never rendered (no baselines).
+- **MERGE-READY @ 37e4b4eb: M3-CRE-629 done (Lead-approved).**
+  - ADR 0151 accepts one weak-point colour for every foe; ADR 0150 stays as the proposal.
+  - docs/kb/art/palette.json `spawn_wound.usage_limit` amended: every foe's weak point; on a beast or construct, one small closed mark; the wound seams and motes stay the spawn's.
+  - **M3-CRE-630 filed:** the one-frame-late clips, a kit fix for the next batch rebuild.
+  - Checks: validate_data, taskboard. Nothing else touched.
+- **MERGE-READY @ f21fba5f: M3-CRE-628, the Act II regulars for Ch12/16 and the four variants (worktree agent).** With it, every Act II creature on the roster is built.
+  - **Regulars:** ridge_lynx 7.0k, cord_moth 4.1k (hovers at 1.25 m), glass_skate 2.6k (0.16 m tall, so its encounter row will want a low battle height for damage numbers and VFX anchors).
+  - **Variants:**
+    - root_crab, fen_leech and scree_crawler use new base-build parameters that default to the bases' own values; every base rebuilds identical (reef crab, wallcrab, wreck crab, sail leech, slag tortoise);
+    - rim_crawler is palette only;
+    - root crab, fen leech and scree crawler are dark, so they get rim 2.8 and kick 1.8.
+  - **Checks run:** Godot creature 37/0 (no test lost in the merge), Blender verify identical ×12, validate_data, taskboard, manifest, lint, format, tools test_creatures.
+  - **Filed M3-CRE-631:** shipped base clips that dip under the floor (reef crab family and tide crawler legs in the KO, down to −0.32 m; slag tortoise claws 4.5 cm at rest), the reef crab's faint weak point, and its triangle count over budget. It rides the M3-CRE-630 batch rebuild.
+SUPERSEDED RENDER-REQUEST @ f21fba5f: creature_ridge_lynx, creature_cord_moth, creature_glass_skate, creature_root_crab, creature_fen_leech, creature_scree_crawler, creature_rim_crawler; why: M3-CRE-628 new Act II regulars and variants, never rendered (no baselines); judge whether the moth's knot rows and the skate's near-clear back read at battle distance.
+- **MERGE-READY @ cbd1ce38: M3-CRE-630, creature clips no longer play one frame late.**
+  - The kit keyed frame f+1 for clip time f/FPS, so every clip started and peaked 1/30 s late. Now fixed.
+  - All 46 kit-dependent jobs rebuilt: 42 creature GLBs changed; materials and wildlife are unchanged.
+  - **Checks run:** Blender verify identical ×46; Godot creature 37/0, battle 687/0, post_import 21/0.
+  - **Lead:** the GLBs got heavier in git history (all 42 at once). One batch was on purpose: a kit change rebuilds them all.
+  - **The PC render is held** until M3-CRE-631 (the shipped clips that dip under the floor, in progress in a worktree agent) lands, so one cycle re-approves every creature and battle_choreo shot.
+- **MERGE-READY @ 32f33a75: M3-CRE-631 (worktree agent) and M3-CRE-632 filed.**
+  - Every frame of every clip of the reef crab, tide crawler and slag tortoise families (8 creatures) now stays at or above the floor, through a new `common/grounding.py` that turns or lifts a leg the least it takes.
+  - The reef crab is within budget (7,928 triangles); its weak point reads (mask peak 1.0) as one small closed mark (ADR 0151).
+  - New `GroundedClipsTest` in tools/tests/test_creatures.py.
+  - **Checks run:** Godot creature 37/0, battle 687/0; tools test_creatures and test_blender_builds; Blender verify identical (all 42 creature jobs re-verified by the agent); validate_data, taskboard, lint, format.
+  - **M3-CRE-632 filed:** ground the rest. The worst are the scuttler (−0.37), Matron (−0.35), shoal skipper (−0.32), raid hound and Drownbell (−0.22), and the ashwing (−0.63 even with its hover). It extends the test to every creature.
+- **One render for everything since b5e05d2f** (it supersedes my open Act II requests): M3-CRE-630 shifted every creature clip a frame earlier and M3-CRE-631 re-posed 8 creatures, so any creature or battle shot can move. Expect small drift in the battle and creature shots; the Act II shots are first renders.
+SUPERSEDED RENDER-REQUEST @ 32f33a75: battle_hud_preview, battle_swap_menu, battle_victory, battle_statuses, battle_swell_ring, battle_read_panel, battle_opening_banner, battle_swell_modes, battle_vowbound_call, battle_vowbound_out, battle_choreo_melee, battle_choreo_hit, battle_choreo_cast, battle_choreo_support, battle_choreo_read, battle_choreo_ko, battle_choreo_swap, battle_arena_tideline, battle_arena_causeway, battle_choreo_lamp_dive, battle_choreo_toll, battle_choreo_vowbound_rise, battle_choreo_summon, battle_swell_chant, battle_swell_brace, battle_swell_glyph, battle_statuses_colorblind, battle_pause, creature_reef_crab, creature_reef_crab_attack, creature_drownbell, creature_drownbell_rim_broken, creature_drownbell_toll, creature_portraits, creature_hullgnaw, creature_mangrove_drowner, creature_mangrove_drowner_risen, creature_lamp_engine, creature_lamp_engine_opened, creature_tower_limpet, creature_lantern_eel, creature_oil_slug, creature_spawn_polyp, creature_glassfry, creature_bottle_hermit, creature_gull_harrier, creature_sail_leech, creature_spar_wraith, creature_scuttler, creature_ashwing, creature_slag_tortoise, creature_cinder_matron, creature_shoal_skipper, creature_raid_hound, creature_tide_crawler, creature_vein_sparker, creature_undertows_reach, creature_flue_moth, creature_wallcrab, creature_stormgull, creature_squall_wing, creature_wreck_crab, creature_wall_polyp, battle_arena_raft, battle_arena_underway, battle_arena_route, battle_arena_derelict, battle_arena_terrace, battle_boss_intro_hullgnaw, battle_arena_tideline_dawn, battle_arena_causeway_disc_sunset, battle_arena_causeway_route_afternoon, battle_arena_derelict_deck_night, battle_arena_ash_terrace_lanternfall, battle_arena_oruvel_raft_morning, battle_arena_underway_tower, battle_arena_shoals, battle_arena_camp, battle_boss_intro_inquisitor, battle_boss_intro_matron, battle_boss_intro_hermit, battle_boss_intro_wraith, battle_boss_intro_drownbell, battle_hud_21x9, battle_hud_16x10, creature_avalanche_ram, creature_wakefin, creature_tannin_archer, creature_gallery_ray, creature_rime_urchin, creature_conduit_crawler, creature_ridge_lynx, creature_cord_moth, creature_glass_skate, creature_root_crab, creature_fen_leech, creature_scree_crawler, creature_rim_crawler; why: M3-CRE-630 clip timing (all creature GLBs), M3-CRE-631 grounding (8 creatures), and the never-rendered Act II creatures (M3-CRE-623/624/626/627/628).
+- **TOP ITEM, the big11 gate's shutdown errors ("Trying to cast a freed object"): root-caused. MERGE-READY @ 731beb70 for my part. FAST-TRACK candidate.**
+  - **Reproduced** headless on lead/gate-big11 @ 23ea8c6f with capture.gd's lifecycle (no render: instance, 20 frames, queue_free, next shot): **64 errors, every one at `LifeAudio.advance` (game/audio/life_audio.gd:86)**.
+    - That file is the audio track's (M3-AUD-814).
+    - `var node := w["node"] as Node3D` casts a freed villager or wildlife node one line before its `is_instance_valid` check.
+  - **Verified fix:** check as a Variant first, then cast (5 lines). The same repro then gives **0 errors, exit 0**.
+  - The exact patch is in request **M3-CRE-633** (role audio). Its newest branch (M3-AUD-826) also casts the footstep child it frees, which the task covers too.
+  - **Lead: suggest fast-tracking that patch onto big11.** It's audio's file, so with their OK or yours.
+  - **My side (0a6a0937):** VillagerLayer had the same latent pattern (a typed loop variable over freed keys), now fixed. New test `test_the_layer_survives_its_villagers_being_freed_first`, verified red on the old code with exactly this error.
+  - **Checks run:** Godot villager_routines 14/0, field_npc 10/0, wildlife 14/0, lint, format, taskboard.
+- **Merged big11 (integration f85a361b).**
+  - Unions: blender_builds by job id (74 jobs, the integration's text plus my 16 newer jobs); shared files via merge_union.
+  - **Checks run:** villager_routines 14/0 (includes big11's storm-flag fix), field_npc 10/0, wildlife 14/0, battle 710/0, post_import 21/0, the tools suites, validate_data (1 warning, env-art's: `offering_step.glb` listed in PROVENANCE but missing), lint, format.
+  - **Known red, FAST-TRACK for ui-menus or the Lead:** creature 41/1. ui's test_creature_portraits wants a bestiary portrait for every creatures.json row, and my 15 Act II creatures have no enemy yet (so no bestiary entry).
+    - **Request M3-CRE-634** (role ui) carries a 3-line patch, verified 4/0 here, that limits the rule to the creatures enemies use. I didn't commit it to their file.
+    - The integration branch itself is green: it doesn't have the Act II rows yet.
+  - **The shutdown freed-object error on the integration branch** is fixed only once audio's LifeAudio takes the M3-CRE-633 patch. My VillagerLayer fix doesn't clear it on its own.
+- **RENDERED @ 10f21a1, 2112578, b99be56 (the Lamp Engine ×2, the Avalanche Ram, the Wakefin), viewed: not approved.**
+  - These shas predate M3-CRE-630, which shifted every creature clip by a frame. Baselines come from the 98-shot render at 4214a48e, which covers the same ids.
+  - **Review:**
+    - **The Lamp Engine** reads as its sheet, closed and opened.
+    - **The Ram's head reads as a duck's:** the dark flat muzzle on a white face looks like a bill. It needs a camelid head.
+    - **The Wakefin's review shot** shows only the fin, because the stage floor hides the body; it needs a shot that shows the fish, and stronger wounds.
+  - Filed **M3-CRE-635**.
+- **MERGE-READY @ 5ff54f27: M3-CRE-635 (worktree agent).**
+  - **The Avalanche Ram:** a camelid head (long, narrow, a soft muzzle dark only at the nose, long upright ears); the neck slimmer; the icicles fewer and irregular. 14.9k triangles. Silhouettes viewed: it reads as a llama-like woolback, no longer a duck.
+  - **The Wakefin:** stronger spine wounds, and a new shot `creature_wakefin_body` through a new creature-stage `show_floor` option (existing shots unchanged).
+  - **Checks run:** Godot creature 41/1 (the known M3-CRE-634, ui's), Blender verify identical ×2, tools test_creatures, validate_data, lint.
+  - Note: tools' test_screenshots baseline check stays red for shots that wait on their first PC render (expected under the render protocol).
+SUPERSEDED RENDER-REQUEST @ 5ff54f27: creature_avalanche_ram, creature_wakefin, creature_wakefin_body; why: M3-CRE-635 the Ram's new head, the Wakefin's wounds and its new body shot (these three supersede the same ids in the 4214a48e request).
+- **MERGE-READY @ fce2e82b: M3-CRE-632, every creature grounded (worktree agent).**
+  - 19 creatures re-keyed or grounded. The worst before: spar-wraith −0.91, ashwing −0.63, flue moth −0.62, scuttler −0.38, Matron −0.35. Now every frame of every clip is ≥ −0.005 m, fliers measured with their hover.
+  - GroundedClipsTest covers every creature except six whose sheets put them in water or behind a parapet: hullgnaw, lantern eel, Mangrove Drowner, Undertow's Reach, Wakefin, tannin archer. Each is commented with its sheet.
+  - Contacts and hit peaks are unchanged, except the squall wing's hit_b, which now peaks at 0.20 s instead of 0.27 s.
+  - Noted for review: the oil slug floats 5 cm at rest.
+  - **Checks run:** Blender verify identical (all 42 creature jobs re-verified by the agent; 5 re-verified here after merging with M3-CRE-635); tools test_creatures and test_blender_builds; Godot battle 710/0, creature 41/1 (the known M3-CRE-634, ui's); validate_data, taskboard, lint, format.
+- **One render for everything at fce2e82b.** It supersedes the 4214a48e and dc7b81aa requests: since them, M3-CRE-632 changed 19 creatures and M3-CRE-635 changed the Ram and the Wakefin.
+SUPERSEDED RENDER-REQUEST @ fce2e82b: battle_hud_preview, battle_swap_menu, battle_victory, battle_statuses, battle_swell_ring, battle_read_panel, battle_opening_banner, battle_swell_modes, battle_vowbound_call, battle_vowbound_out, battle_choreo_melee, battle_choreo_hit, battle_choreo_cast, battle_choreo_support, battle_choreo_read, battle_choreo_ko, battle_choreo_swap, battle_arena_tideline, battle_arena_causeway, battle_choreo_lamp_dive, battle_choreo_toll, battle_choreo_vowbound_rise, battle_choreo_summon, battle_swell_chant, battle_swell_brace, battle_swell_glyph, battle_statuses_colorblind, battle_pause, creature_reef_crab, creature_reef_crab_attack, creature_drownbell, creature_drownbell_rim_broken, creature_drownbell_toll, creature_portraits, creature_hullgnaw, creature_mangrove_drowner, creature_mangrove_drowner_risen, creature_lamp_engine, creature_lamp_engine_opened, creature_tower_limpet, creature_lantern_eel, creature_oil_slug, creature_spawn_polyp, creature_glassfry, creature_bottle_hermit, creature_gull_harrier, creature_sail_leech, creature_spar_wraith, creature_scuttler, creature_ashwing, creature_slag_tortoise, creature_cinder_matron, creature_shoal_skipper, creature_raid_hound, creature_tide_crawler, creature_vein_sparker, creature_undertows_reach, creature_flue_moth, creature_wallcrab, creature_stormgull, creature_squall_wing, creature_wreck_crab, creature_wall_polyp, battle_arena_raft, battle_arena_underway, battle_arena_route, battle_arena_derelict, battle_arena_terrace, battle_boss_intro_hullgnaw, battle_arena_tideline_dawn, battle_arena_causeway_disc_sunset, battle_arena_causeway_route_afternoon, battle_arena_derelict_deck_night, battle_arena_ash_terrace_lanternfall, battle_arena_oruvel_raft_morning, battle_arena_underway_tower, battle_arena_shoals, battle_arena_camp, battle_boss_intro_inquisitor, battle_boss_intro_matron, battle_boss_intro_hermit, battle_boss_intro_wraith, battle_boss_intro_drownbell, battle_hud_21x9, battle_hud_16x10, creature_avalanche_ram, creature_wakefin, creature_wakefin_body, creature_tannin_archer, creature_gallery_ray, creature_rime_urchin, creature_conduit_crawler, creature_ridge_lynx, creature_cord_moth, creature_glass_skate, creature_root_crab, creature_fen_leech, creature_scree_crawler, creature_rim_crawler, drownbell_flood, causeway_c08_drownbell_disc_approach; why: M3-CRE-630 clip timing, M3-CRE-631/632 grounding (every creature), M3-CRE-635 the Ram's head and the Wakefin, and the never-rendered Act II creatures (101 shots; supersedes 4214a48e and dc7b81aa).
+- **MERGE-READY @ 95b6daf8: the bestiary portrait manifest (the Lead's big12 note).** All 15 Act II creatures added to tools/portraits/portraits.json (the dark five with light_scale ×3). test_creature_portraits stays red until the bake below lands; I then commit the PNGs and their PROVENANCE rows.
+- **The Wakefin, answering the Lead:**
+  - Yes: in battle, the fin breaking the surface is intended (sheet act2/wakefin.md: "most of the fight: the fin alone"). The body shows when it breaches to attack, and in its KO (belly-up at the surface).
+  - The review stage's opaque floor hid the body. M3-CRE-635 (in this branch) adds `creature_wakefin_body` with the floor off and strengthens the spine wounds.
+  - **For the Ch15 barge arena** (whoever builds the Act II arenas): it needs an opaque water surface at y 0, so the submerged body stays hidden. On a plain floor it reads like the creature stage.
+  - The bestiary portrait has no floor, so it shows the whole fish.
+SUPERSEDED RENDER-REQUEST @ 95b6daf8: portraits:mangrove_drowner,lamp_engine,avalanche_ram,wakefin,tannin_archer,gallery_ray,rime_urchin,conduit_crawler,ridge_lynx,cord_moth,glass_skate,root_crab,fen_leech,scree_crawler,rim_crawler; tool: tools/portraits/render.sh --only mangrove_drowner,lamp_engine,avalanche_ram,wakefin,tannin_archer,gallery_ray,rime_urchin,conduit_crawler,ridge_lynx,cord_moth,glass_skate,root_crab,fen_leech,scree_crawler,rim_crawler
+- **Queue status for the Lead (your 19:34 list):**
+  1. **Portrait manifest and Wakefin:** done before your note. 95b6daf8 has all 15 Act II creatures and the portrait RENDER-REQUEST; the Wakefin answer is above.
+  2. **The one-frame-late clips:** done at cbd1ce38 (M3-CRE-630: 46 jobs rebuilt, verify identical ×46). hit_snap re-tuned now at the push after 27f39bbe: 0.067 s default, the ashwing 0.1 s, measured over all 42 on-time hits. Render: the 101-shot request at 5e46d7dd covers every creature and battle shot. The re-tune can move battle_choreo_hit again, so view that one against this head.
+  3. **Capsule sweep on integration 73cddee1:** still only stillguard_inquisitor (Moll, characters, M3-CRE-625). Summons and set-piece entries are clean.
+  4. **Act II:** the roster's 15 creatures are built. The flat-engine (Ch14 boss part) has its sheet now and is building (M3-CRE-637). The Drowner polish (M3-CRE-622) is building. Both are worktree agents.
+  5. **Wildlife:** Ch8 corrow and coilspire added (M3-CRE-636). Ch5 Ashcrown, Ch7 bell galleries and Ch9 Corrow-night stay empty on purpose (reasons in docs/kb/art/wildlife.md; Corrow-night: crabs among the shrouds would read as carrion). Ch4, Ch5 Pemakar and Ch7 Tamsule have had data since M3-CRE-615/616.
+  6. **Task board, creatures' todos:** M3-AUD-815 done (`chat_speaking()`, `startled()`); M3-CRE-201 closed (the Matron's model had landed); M3-CRE-622 in progress. The rest of the character todos are the characters track's.
 
+- **MERGE-READY @ db3c9507: M3-CRE-637 (the flat-engine, Ch14 boss part) and M3-CRE-622's first pass.**
+  - Flat-engine: 7,620 triangles; a lacquer drum, chimney, salt-glass window and eight paddles flat on the water; 13 bones; `cast` presses the paddles at 0.8 s; `ko` splits the drum. Grounded at 0.000 in every frame; no allow-list.
+  - **Not wired yet:** its `break_parts` entry needs a charge skill that doesn't exist yet. The task file has the exact entry. Until then the window stays lit through the KO.
+  - The Drowner's first polish pass is merged as a step. On review its silhouettes still read as a spider (the top view a sunburst), so M3-CRE-622 is reopened with a redesign direction: a vertical trunk, tiered lopsided roots, and hanging aerial roots.
+  - **Checks run:** Blender verify identical (flat_engine ×5); Godot creature 42/1 (the known portrait red); tools test_creatures and test_blender_builds; validate_data, taskboard, lint, format.
+SUPERSEDED RENDER-REQUEST @ db3c9507: creature_flat_engine, creature_mangrove_drowner, creature_mangrove_drowner_risen; why: M3-CRE-637 first render of the flat-engine (its near-black drum: check it reads on default lights) and M3-CRE-622's first Drowner pass (to compare with the redesign).
+SUPERSEDED RENDER-REQUEST @ db3c9507: portraits:flat_engine; tool: tools/portraits/render.sh --only flat_engine
+- **big12 merged in (integration e930595c).** Conflicts were unioned:
+  - blender_builds.json: the integration's text, with the 12 creature jobs only here appended;
+  - ownership, PROVENANCE, shots and baselines;
+  - creature_portraits.png: the integration's PC-gated baseline.
+- **TOP ITEM (Lead): Ilun, Asha's Vowbound, is building (M3-CRE-638, claimed by creatures, worktree agent).**
+  - The order: a design sheet (docs/kb/art/creatures/vowbound/ilun.md), the model and clips (idle … victory, plus rise, dismiss and special), then the attach.
+  - The attach goes through CreatureModels (a creatures.json row with `"vowbound": true`), so ui's battle_sandbox.json capsule row stays only as the fallback.
+  - **For battle-presentation:** M3-CRE-639 (role combat) asks you to play `rise`, `dismiss` and `special` from choreo.json once the model lands. The existing `ready` and `ko` keep working until then.
+  - **Checks run on the big12 merge:** Godot full 2830/2 (the Lead's known two: creature portraits, ours, waits on the PC bake; the footsteps causeway test, audio's); tools test_creatures, test_blender_builds, test_npc; validate_data, taskboard, lint, format.
+- **MERGE-READY @ 3b0e44b0: M3-CRE-622, the Mangrove Drowner redesigned** (the redesign, after the first pass still read as a spider).
+  - It's a walking mangrove stump now: a tall trunk; twelve roots in four lopsided bundles, the bank side longest; aerial roots.
+  - Risen, it tears the trunk up, leans 48° and walks on three root clusters.
+  - Grounded in every clip at +0.002 m with no allow-list (the old allow-list entry is removed). 14,700 triangles.
+  - Silhouette check (side, front and top for rooted, KO, phase change and risen): every top view is lopsided bundles, no sunburst. The one risk left is the risen front view, a dark dome on splayed roots, so the render decides.
+  - **Checks run:** Blender verify identical ×3; tools test_creatures (the grounding test passes) and test_blender_builds; Godot creature 42/1 (the known portrait red); validate_data, taskboard.
+SUPERSEDED RENDER-REQUEST @ 3b0e44b0: creature_mangrove_drowner, creature_mangrove_drowner_risen, creature_flat_engine; why: M3-CRE-622 redesign (supersedes the db3c9507 Drowner ids; is the risen front still spider-like?) and M3-CRE-637's first flat-engine render (carried over from db3c9507).
+SUPERSEDED RENDER-REQUEST @ 3b0e44b0: portraits:mangrove_drowner,flat_engine; tool: tools/portraits/render.sh --only mangrove_drowner,flat_engine
+- **The PC is paused (Lead, 21:27), so here are my open render requests in priority order, kept small.** Serve them one line at a time; each line stands alone.
+  1. The `aa762dee` portraits line (mangrove_drowner, flat_engine) and the 13 other Act II portraits from `95b6daf8`. These turn test_creature_portraits green, the one red owned by creatures in big12. Split them into batches of five if needed.
+  2. The `aa762dee` shots line: creature_mangrove_drowner, creature_mangrove_drowner_risen, creature_flat_engine.
+  3. A small sample to check the clip-timing and grounding batch: battle_choreo_hit, battle_choreo_ko, creature_reef_crab, creature_ashwing, creature_avalanche_ram, creature_wakefin, creature_wakefin_body.
+  4. The rest of the 101-shot `fce2e82b` request is **deferred, not cancelled.** It waits for the PC to return. Until then those baselines stay as they are; they drift by a frame, not by design.
+SUPERSEDED RENDER-REQUEST @ aa762dee: battle_choreo_hit, battle_choreo_ko, creature_reef_crab, creature_ashwing, creature_avalanche_ram, creature_wakefin, creature_wakefin_body; why: priority 3 above (sample of M3-CRE-630/631/632/635 while the PC is paused).
+- **PC render gpu/render-creatures-fce2e82 viewed (101 shots: 41 passed, 60 drifted). Approved 28 at c69a14de.**
+  - **Approved:** 16 creature shots, which moved only where M3-CRE-630/631/632 meant them to (legs, feet and rims lifted onto the floor), plus 12 first baselines (creature_wakefin_body and 11 Act II creatures).
+  - **Not approved from it (stale):** the 27 battle_* shots that drifted, creature_portraits, creature_lamp_engine(_opened), creature_avalanche_ram and creature_wakefin. big12 changed their baselines or their battle-scene sources after fce2e82b; the integration's PC gate already approved the big12 versions.
+  - **For the art review (no blocker):** at review distance the gallery ray and the glass skate read small and plain (a flat sheet); the ridge lynx's muzzle reads short. They're baselined as built, with possible polish later.
+  - **Supersedes my priority 3 above:** the reef crab, the Ram, both Wakefin shots and the ashwing are settled (the ashwing passed). What's left is the battle sample against this head:
+SUPERSEDED RENDER-REQUEST @ c69a14de: battle_choreo_hit, battle_choreo_ko, battle_choreo_melee, battle_boss_intro_matron; why: M3-CRE-630 clip timing and the hit_snap re-tune, on the big12 tree (small sample while the PC is paused).
+- **MERGE-READY @ 14e26ef6: M3-CRE-638, Ilun, Asha's Vowbound, in place of the battle capsule (the Lead's top item).**
+  - **The model:** a 4.6 m spectral manta with a heron's crest; a net of glimmer_bound light, as geometry on both wing faces; the glass net-float on a drooping tail.
+    - 13,655 triangles; 16 bones; every glow is steady glimmer_bound at 1.2.
+    - Opaque (the creature shader has no alpha). He reads as spectral through a dark core, pale edges and a rim sheen. True alpha is a possible follow-up after the render.
+  - **Clips:**
+    - the stand-in set: idle, ready, attack, cast, hit, defend, ko, victory;
+    - rise (2.6 s), dismiss (1.0 s) and special (Floodnet, contact 1.45 s).
+    - None goes below the water.
+  - **The attach:** CreatureModels.stand_in_overrides now also resolves a creatures.json row with `"vowbound": true`. No ui or battle-presentation file changed; battle_sandbox.json's capsule row is only the fallback.
+  - **For battle-presentation (M3-CRE-639, updated):** a data-only change to play rise and dismiss. Until then ready plays, which works. Framing: in the vertex preview his tail and float cross the right edge of the safe frame, so the render decides.
+  - **For ui (M3-CRE-634, updated):** test_creature_portraits now also flags the ilun row (the bestiary is foes only). The same enemies-only fix covers it.
+  - **Checks run:** Blender verify identical; tools test_creatures and test_blender_builds; Godot creature 46/1 (the known portrait red), vowbound 54/0, battle 720/0; validate_data, taskboard, lint, format.
+SUPERSEDED RENDER-REQUEST @ 14e26ef6: creature_ilun, battle_vowbound_out, battle_choreo_vowbound_rise, battle_choreo_summon; why: M3-CRE-638, Ilun's first renders (the three Vowbound battle shots move from the capsule to the model; creature_ilun has no baseline). Check his framing in the safe frame.
+- **For battle-presentation: Ilun's model is live in the real summon path @ a785a613.**
+  - BattleStage.sync_party → _place → stand_in_spec → CreatureModels gives the called Vowbound the model in battle_vowbound_call and battle_vowbound_out, the short entry (battle_choreo_vowbound_rise) and the full first-call cinematic (battle_choreo_summon).
+  - New integration test tests/integration/test_ilun_summon_path.gd calls him the way the shots do and asserts the stand-in shows the actor, not the capsule.
+  - Your summon choreography already moves the model; only the clip names are left (M3-CRE-639: rise and dismiss in choreo.json).
+- **Portrait manifest complete @ a785a613:** `ilun` added (the Lead's list); mangrove_drowner, lamp_engine, avalanche_ram and wakefin were already there (95b6daf8). test_creature_portraits now fails only on the 17 unbaked PNGs below. **This one bake request supersedes my earlier portrait lines (95b6daf8, aa762dee).** Batches of six:
+SUPERSEDED RENDER-REQUEST @ a785a613: portraits:mangrove_drowner,lamp_engine,avalanche_ram,wakefin,ilun,flat_engine; tool: tools/portraits/render.sh --only mangrove_drowner,lamp_engine,avalanche_ram,wakefin,ilun,flat_engine
+SUPERSEDED RENDER-REQUEST @ a785a613: portraits:tannin_archer,gallery_ray,rime_urchin,conduit_crawler,ridge_lynx,cord_moth; tool: tools/portraits/render.sh --only tannin_archer,gallery_ray,rime_urchin,conduit_crawler,ridge_lynx,cord_moth
+SUPERSEDED RENDER-REQUEST @ a785a613: portraits:glass_skate,root_crab,fen_leech,scree_crawler,rim_crawler; tool: tools/portraits/render.sh --only glass_skate,root_crab,fen_leech,scree_crawler,rim_crawler
+- **Queue status for the Lead (your 22:29 list):**
+  1. **Ilun in the real summon path:** done, with an integration test and a note for battle-presentation above.
+  2. **Portrait manifest:** done, ilun added. One bake request now covers all 17 missing PNGs (above).
+  3. **One-frame clip batch rebuild:** done earlier (M3-CRE-630 @ cbd1ce38, 46 jobs). The kit still keys frame f. The PC render fce2e82 confirmed it, and I approved 28 shots from it.
+  4. **Wildlife Ch4–Ch9:** every zone has data except ch05/ashcrown, ch07/tamsule_bell_galleries and ch09/corrow_night, which are empty on purpose (docs/kb/art/wildlife.md gives the reasons).
+  5. **More creatures:** the Act II roster is fully built (the outline has no other foe fights: Ch13 has none, Ch14's boss is the Warden plus the flat-engine, Ch16's is people). The next gap is the **Vowbound**:
+     - Kahre (Ch5) and Virel (Ch8) are callable in vowbound.json, but a call shows a primitive placeholder, as Ilun did. Now building in parallel: M3-CRE-640 and M3-CRE-641.
+     - After them, Act II's Nhoa (Ch11), Hesk (Ch12) and Ethren (Ch13). They aren't in vowbound.json yet; Combat adds the rows.
+- **Act II Vowbound: design sheets written** (docs/kb/art/creatures/vowbound/nhoa.md, hesk.md, ethren.md). Build tasks M3-CRE-642/643/644 are filed as `todo`; they follow Kahre and Virel.
+  - **For Combat:** none of the three has a vowbound.json row yet. The models don't wait on stats, only their skill-to-clip maps do.
+  - **For the Lead (no human question):** two palette calls are flagged in the sheets, each with a default that stays inside the palette rules:
+    - Hesk's "white light" is drawn as glimmer_bound on gauze-white cords; a true white-gold holy light would need a palette ADR.
+    - Ethren is lacquer with gold only on the edges, to hold gold_leaf's 5%-of-frame budget; a fully gold figure would need a Sanctum exception.
+  - **For rendering:** Nhoa's Farewell-Tide rising column is the one bound-light exception vowbound.md names. color_script.md should say so; it's your file.
+- **MERGE-READY @ e1229633: M3-CRE-640, Kahre, the Forge-Crowned, the Ch5 Lightning Vowbound, in place of the placeholder.**
+  - **The model:** a 3.37 m hornbill-headed smith-beast: an anvil-plate chest, a spark mane of 25 skinned bolt blades (not particles), and the smith's hammer fused into his brass casque (never lit). Every glow is steady glimmer_bound.
+    - 14,080 triangles, 22 bones.
+    - Feet planted at 0.000 m in every clip.
+  - **Clips:** the stand-in set, plus rise, dismiss and special (Last Strike, contact 1.55 s).
+  - **Framing:** projected through the camera director's own math, every frame stays inside the default camera's right safe edge. The cast and the Last Strike's rear-up cross the top margin, but the action's own lead shot plays then.
+  - **The attach:** the same CreatureModels vowbound path as Ilun. His creatures.json stand_in carries height 3.3 and radius 0.75, because ui's battle_sandbox.json has no kahre row and the effect anchors need a height.
+  - **For battle-presentation:** M3-CRE-639's rise and dismiss request covers Kahre too. choreo.json has no first-call flag for kahre, so his first call never plays the summon cinematic; that's for story/your call.
+  - **For ui:** optionally, a battle fixture binding Kahre, so a Vowbound shot can show him.
+  - **Checks run:** Blender verify identical; tools test_creatures and test_blender_builds; Godot creature 50/1 (the known portrait red, now including kahre.png), vowbound 58/0, kahre 6/0, ilun 6/0, battle 720/0 (run by the agent); validate_data, taskboard, lint, format.
+SUPERSEDED RENDER-REQUEST @ e1229633: creature_kahre; why: M3-CRE-640 first render (no baseline). Check that the hide reads as dark stone, not teal, and that the anvil reads as iron.
+SUPERSEDED RENDER-REQUEST @ e1229633: portraits:kahre; tool: tools/portraits/render.sh --only kahre
+- **MERGE-READY @ 3d853298: M3-CRE-641, Virel, the Kite-Serpent, the Ch8 Fire Vowbound, in place of the placeholder.**
+  - **The model:** a 6.25 m ribbon of sailcloth panels on light timber spars, coiled once around an upright loop, hovering 1.7 m up. A three-line bridle carries the brass tuning key.
+    - The seam light is skinned bands of steady glimmer_bound (not particles). There's no warm colour on her form: palette.json keeps ember_orange to flame, and act1_ch08.md F07 says her seams read as bound teal, with the fire in her battle VFX.
+    - 12,158 triangles; 16 bones.
+  - **Clips:** the stand-in set, plus rise, dismiss and special (Flare Line, contact 1.4 s: pulled into one taut 5.4 m line).
+  - **Framing:** the coil keeps her inside the default camera's safe frame. One frame of Flare Line touches the right edge, by under 3 px.
+  - **For ui:** battle_sandbox.json has no `virel` row, so her damage numbers sit at 1.0 m and the chest anchor at 1.7 m (the bottom of her loop). A row with height 2.6 fixes both. (Kahre's height lives in creatures.json for the same reason; either place works, your call.)
+  - **For battle-presentation:**
+    - choreo.json first_call_flags lists only ilun, so Virel's first call at the wall-head (Ch8) needs a `virel` flag to play the cinematic;
+    - M3-CRE-639's rise and dismiss request covers her too.
+  - **For battle VFX:** her fire has to come from the Kite Flare and Flare Line effects; her seams never change colour.
+  - **Checks run:** Blender verify identical (virel, kahre); tools test_creatures and test_blender_builds; the screenshot manifest (357 valid); Godot creature 54/1 (the known portrait red, now 19 PNGs with kahre and virel), vowbound 62/0, kahre, virel and ilun 6/0 each, battle 720/0; validate_data, taskboard, lint, format.
+SUPERSEDED RENDER-REQUEST @ 3d853298: creature_virel, creature_kahre; why: M3-CRE-641 and M3-CRE-640 first renders (no baselines). Supersedes the 25f03f01 kahre line.
+SUPERSEDED RENDER-REQUEST @ 3d853298: portraits:kahre,virel; tool: tools/portraits/render.sh --only kahre,virel
+- **Self-directed backlog (TRACK-RULES 22:50):**
+  - **Render branches:** none for creatures yet (the Lead's server has rendered other tracks so far).
+  - **M3-CRE-100 done (request from cinematics) @ 80027744:**
+    - Haluna's shopkeeper, smith and innkeeper are now VillagerLayer rows, with an optional `actor` override; they wear the netmender's, fisher's and vendor's models until M2-CHR-100.
+    - The review stage reuses the zone's own layer.
+    - A layer added during its zone's `_ready` builds deferred, so it adopts what the zone places after it; nothing doubles while the shim exists.
+    - **Cinematics: you can delete game/data/flow/haluna_villagers.json and the HalunaVillagers placement shim** (keep end_talks).
+    - Checks run: Godot villager 25/0, haluna_villagers (yours) 7/0, field_npc 10/0, life_audio 10/0, fp_thread 2/0; tools test_npc; validate_data, lint, format.
+  - **M3-C05-05, M3-C06-06 and M3-C04-06, the creature parts:** all ten Ch4–Ch6 creatures are seated in battle. The Matron's skills now map to her clips (slag_pour → the ladle pour-swing) @ 842a2b6e. The humans, VFX and rulings stay with their tracks (noted in each task).
+SUPERSEDED RENDER-REQUEST @ 842a2b6e: npc_haluna_dock, npc_haluna_market, npc_haluna_chapel, npc_haluna_lane, npc_wake_feast, battle_boss_intro_matron; why: M3-CRE-100 (the review stage now reuses Haluna's own VillagerLayer, so no doubled villagers, and the three shop villagers appear), and the Matron's skill clips.
+- **test_creature_portraits (Lead, big13): the manifest is complete. The red is unbaked PNGs, not missing manifest rows.**
+  - On `lead/gate-big13` @ 1d83553f, all 43 creatures.json rows have a tools/portraits/portraits.json entry (I checked by script).
+  - On claude/creatures @ 6082090b, all 46 do.
+  - The failures are each portrait's "exists / is imported / has a PROVENANCE row" checks for PNGs nobody has baked yet: 16 on big13, 19 here (plus ilun, kahre and virel, which landed after big13).
+  - The fix is the bake. **ONE request for all of them, superseding my earlier portrait lines (95b6daf8, aa762dee, a41ab41c, 25f03f01, 1f69ca74):**
+SUPERSEDED RENDER-REQUEST @ 6082090b: portraits:avalanche_ram,conduit_crawler,cord_moth,fen_leech,flat_engine,gallery_ray,glass_skate,ilun,kahre,lamp_engine,mangrove_drowner,ridge_lynx,rim_crawler,rime_urchin,root_crab,scree_crawler,tannin_archer,virel,wakefin; tool: tools/portraits/render.sh --only avalanche_ram,conduit_crawler,cord_moth,fen_leech,flat_engine,gallery_ray,glass_skate,ilun,kahre,lamp_engine,mangrove_drowner,ridge_lynx,rim_crawler,rime_urchin,root_crab,scree_crawler,tannin_archer,virel,wakefin
+  - Once the PNGs land (a lead/gate-render-creatures branch), I'll view each one, commit them with their PROVENANCE rows, and the test turns green.
+- **MERGE-READY @ f5025cdb: M3-CRE-642 Nhoa and M3-CRE-643 Hesk, Act II's Ice and Holy Vowbound.**
+  - **Nhoa (Ch11):** a 3.19 m figure of 1,623 bound-light mote beads skinned to her bones (not particles), with mangrove-root antlers. Her carved name-shell never glows; nothing on her is frozen (ADR 0015). 14,820 triangles, 28 bones. Inside the default camera's safe frame in every frame.
+  - **Hesk (Ch12):** a condor whose primaries are knotted cords; the two leading cords read 47 and 7 in keth. Steady glimmer_bound light, strongest at the knots; the keth bundle is unlit. She stands on the water: every frame at y ≥ 0. 13,602 triangles, 25 bones. Inside the default camera's frame in every frame.
+  - **New validator key `vowbound_pending` (tools/validate_creatures.py, ours):** both are modelled ahead of their vowbound.json rows (Combat's). The key names the task asking for the row, allows the missing row, and becomes an error once the row lands.
+  - **For Combat:** vowbound.json rows for nhoa (her copy-the-last-action skill and farewell_tide) and hesk (cleanse and pass_cord), plus their loc keys. We then map their skills to clips and drop the pending keys.
+  - **For battle-presentation:** first_call_flags for nhoa and hesk if their first calls should play the cinematic, plus M3-CRE-639 (rise and dismiss).
+  - **For battle VFX and rendering:** Nhoa's Farewell-Tide rising column (the one bound-light exception) and Hesk's Pass-Cord line of knots.
+  - **Checks run:** Blender verify identical (nhoa, hesk); tools test_creatures and test_blender_builds; the screenshot manifest (359 valid); Godot creature 65/1 (the known portrait red), vowbound 73/0, nhoa 7/0, hesk 8/0, villager 25/0; validate_data, taskboard, lint, format.
+SUPERSEDED RENDER-REQUEST @ f5025cdb: creature_nhoa, creature_hesk, creature_kahre, creature_virel; why: first renders of the four new Vowbound (no baselines). Nhoa: do the beads read as one figure at battle distance? Hesk: do the knots read? Kahre: is the hide stone, not teal?
+SUPERSEDED RENDER-REQUEST @ f5025cdb: portraits:nhoa,hesk; tool: tools/portraits/render.sh --only nhoa,hesk
+- **Cloud render lead/gate-render-creatures-3b0e44b viewed and approved** (dc524c0c, 41493382):
+  - creature_mangrove_drowner and creature_mangrove_drowner_risen: the redesign reads as a walking mangrove stump, no longer a spider, so M3-CRE-622 can close;
+  - creature_flat_engine: first baseline;
+  - the mangrove_drowner and flat_engine portraits are committed with PROVENANCE rows, which leaves test_creature_portraits 19 PNGs short.
+- **ONE open render request (TRACK-RULES limit). Every earlier line above is now SUPERSEDED.** It covers only what changed since my last approved render:
+  - the battle sample for the clip timing and hit_snap (4 shots);
+  - Ilun's three Vowbound battle shots plus creature_ilun;
+  - the Haluna villager stages (M3-CRE-100);
+  - the four new Vowbound review shots;
+  - the 19 unbaked portraits.
+
+  The rest of the old 101-shot set stays deferred until the PC is back.
+SUPERSEDED RENDER-REQUEST @ 41493382: battle_choreo_hit, battle_choreo_ko, battle_choreo_melee, battle_boss_intro_matron, creature_ilun, battle_vowbound_out, battle_choreo_vowbound_rise, battle_choreo_summon, npc_haluna_dock, npc_haluna_market, npc_haluna_chapel, npc_haluna_lane, npc_wake_feast, creature_kahre, creature_virel, creature_nhoa, creature_hesk, portraits:avalanche_ram,portraits:conduit_crawler,portraits:cord_moth,portraits:fen_leech,portraits:gallery_ray,portraits:glass_skate,portraits:ilun,portraits:kahre,portraits:lamp_engine,portraits:ridge_lynx,portraits:rim_crawler,portraits:rime_urchin,portraits:root_crab,portraits:scree_crawler,portraits:tannin_archer,portraits:virel,portraits:wakefin,portraits:nhoa,portraits:hesk; tool: tools/portraits/render.sh --only avalanche_ram,conduit_crawler,cord_moth,fen_leech,gallery_ray,glass_skate,ilun,kahre,lamp_engine,ridge_lynx,rim_crawler,rime_urchin,root_crab,scree_crawler,tannin_archer,virel,wakefin,nhoa,hesk; why: everything owed since my last approved renders (fce2e82, 3b0e44b): hit_snap and clip timing, Ilun, Kahre, Virel, Nhoa and Hesk (first renders), M3-CRE-100's villager stages, and the 19 portraits that turn test_creature_portraits green.
+- **MERGE-READY @ 1b919d27: M3-CRE-644, Ethren, the Level Saint, the Ch13 Glimmer Vowbound.**
+  - **The model:** a lacquer shrine-figure: lacquer_black and lacquer_red_deep, with gold_leaf on the edges only. Steady glimmer_bound shows only at the seams and the halo's inner face.
+    - A still veil on its own bone and mesh (cinematics can drop it for Ch20; no face is modelled).
+    - Four folded two-leaf wings that open only in ready, cast, special and victory.
+    - The copper ring is unlit.
+    - 14,406 triangles, 27 bones; hovers 0.2 m.
+  - **Gold share (projected estimate):** 0.27–0.33% of the default frame and 1.2–1.35% of the summon frame, well under palette.json's 5%. The palette tool should confirm it on the first render.
+  - **Framing:** inside the default camera's safe frame in every frame.
+  - **Requests:**
+    - Combat: his vowbound.json row and skills (his row carries vowbound_pending M3-CRE-644).
+    - Battle-presentation: a first-call flag, and M3-CRE-639.
+    - Battle VFX: Still Water's field stop at 1.45 s.
+    - Characters: Corran's face under the veil for Ch20.
+  - **Checks run:** Blender verify identical; tools test_creatures and test_blender_builds; the manifest (360 valid); Godot creature 71/1 (the known portrait red), vowbound 79/0, ethren 8/0, hesk 8/0, nhoa 7/0; validate_data, taskboard, lint, format.
+- **The one open render request, re-posted to add Ethren** (the fef63392 line is SUPERSEDED):
+SUPERSEDED RENDER-REQUEST @ 1b919d27: battle_choreo_hit, battle_choreo_ko, battle_choreo_melee, battle_boss_intro_matron, creature_ilun, battle_vowbound_out, battle_choreo_vowbound_rise, battle_choreo_summon, npc_haluna_dock, npc_haluna_market, npc_haluna_chapel, npc_haluna_lane, npc_wake_feast, creature_kahre, creature_virel, creature_nhoa, creature_hesk, creature_ethren, portraits:avalanche_ram,portraits:conduit_crawler,portraits:cord_moth,portraits:fen_leech,portraits:gallery_ray,portraits:glass_skate,portraits:ilun,portraits:kahre,portraits:lamp_engine,portraits:ridge_lynx,portraits:rim_crawler,portraits:rime_urchin,portraits:root_crab,portraits:scree_crawler,portraits:tannin_archer,portraits:virel,portraits:wakefin,portraits:nhoa,portraits:hesk,portraits:ethren; tool: tools/portraits/render.sh --only avalanche_ram,conduit_crawler,cord_moth,fen_leech,gallery_ray,glass_skate,ilun,kahre,lamp_engine,ridge_lynx,rim_crawler,rime_urchin,root_crab,scree_crawler,tannin_archer,virel,wakefin,nhoa,hesk,ethren; why: everything owed since my last approved renders (fce2e82, 3b0e44b): hit_snap and clip timing, the five new Vowbound (first renders), M3-CRE-100's villager stages, and the 20 portraits that turn test_creature_portraits green.
+- **Backlog progress:**
+  - **Primitive audit:** the only foe in encounters without a model is stillguard_inquisitor (Moll, a person: characters, M3-CRE-625). The plain reads from the fce2e82 render are now M3-CRE-645, building in a worktree: the gallery ray and glass skate (flat sheets at battle distance) and the ridge lynx's short muzzle.
+  - **Next act (M3-CRE-646, review: Lead):** Act III roster proposal, docs/kb/art/creatures/act3_roster.md.
+    - **Releases first:** the six Vowbound as foes in their Ch20 release fights. Same GLB, a held material set, a `release` clip; no second model, and the validator's "no Vowbound scene as an enemy model" rule holds.
+    - **Then:** the Cage frame, with characters for the four founders; the Lamp Spire's three; two Undertow-layer regulars; the Ch18 revisit set and a secret-coordinates superboss.
+    - **Lead / chapter designer:** confirm or cut ids before I build.
+- **MERGE-READY @ 4320496f: M3-CRE-645, the plain reads polished** (from the primitive audit).
+  - **Gallery ray:** a midline ridge with tubercles, pectoral bulges, brow ridges and spiracles, a barbed banded whip tail, and curling wing tips in idle. Its weak point is now one small closed spawn_wound lens (ADR 0151).
+  - **Glass skate:** thornback rows, a sand_wet rim, and raised eye turrets.
+  - **Ridge lynx:** a longer wedge muzzle with nose leather, whisker pads and whiskers.
+  - Budgets, bones, clips and contacts are unchanged, and grounding holds.
+  - **Checks run:** Blender verify identical (×3); tools test_creatures and test_blender_builds; Godot creature 71/1 (the known portrait red); validate_data, taskboard.
+- **The one open render request, re-posted to add the three polished shots** (the 0276445e line is SUPERSEDED):
+SUPERSEDED RENDER-REQUEST @ 4320496f: battle_choreo_hit, battle_choreo_ko, battle_choreo_melee, battle_boss_intro_matron, creature_ilun, battle_vowbound_out, battle_choreo_vowbound_rise, battle_choreo_summon, npc_haluna_dock, npc_haluna_market, npc_haluna_chapel, npc_haluna_lane, npc_wake_feast, creature_kahre, creature_virel, creature_nhoa, creature_hesk, creature_ethren, creature_gallery_ray, creature_glass_skate, creature_ridge_lynx, portraits:avalanche_ram,portraits:conduit_crawler,portraits:cord_moth,portraits:fen_leech,portraits:gallery_ray,portraits:glass_skate,portraits:ilun,portraits:kahre,portraits:lamp_engine,portraits:ridge_lynx,portraits:rim_crawler,portraits:rime_urchin,portraits:root_crab,portraits:scree_crawler,portraits:tannin_archer,portraits:virel,portraits:wakefin,portraits:nhoa,portraits:hesk,portraits:ethren; tool: tools/portraits/render.sh --only avalanche_ram,conduit_crawler,cord_moth,fen_leech,gallery_ray,glass_skate,ilun,kahre,lamp_engine,ridge_lynx,rim_crawler,rime_urchin,root_crab,scree_crawler,tannin_archer,virel,wakefin,nhoa,hesk,ethren; why: everything owed since my last approved renders (fce2e82, 3b0e44b): hit_snap and clip timing, the five new Vowbound, M3-CRE-100's villager stages, M3-CRE-645's polish, and the 20 portraits that turn test_creature_portraits green.
+- **MERGE-READY @ db895430: M3-CRE-647, the six Vowbound as foes for their Ch20 releases** (Act III roster item 1).
+  - **The models:** each keeps its one GLB.
+    - Held material sets (`materials_held/`, glimmer_held in place of glimmer_bound, steady) come from an optional `held` block in write_materials.py. Every creature job still verifies byte-identical (53 jobs, run by the agent).
+    - A `release` clip each (3.3–3.5 s): the form opens, holds, and lifts away at peace. Ilun gentle; Kahre "setting the tools down"; Ethren's ringed hand toward Ysolde.
+  - **The rows:** a `<id>_held` battle scene and creatures.json row for each, facing the party, with `release` as the KO.
+    - New CreatureActor `material_dir` export and a phase key `hold`, so the release stays on its last frame instead of falling back to idle.
+  - **For Combat and the chapter designer:** the Ch20 enemies.json rows can now name `res://game/creatures/<id>/<id>_held_battle.tscn` as `model`.
+  - **For battle VFX and presentation:** the turn to glimmer_lift and the rising motes at the release are yours. Nhoa's strands are short, so her column moment needs the VFX.
+  - **Checks run:** Blender verify identical (the six plus spot checks here; all 53 by the agent); tools test_creatures and test_blender_builds; the manifest (366 valid); Godot creature 75/1 (the known portrait red, now 26 PNGs), vowbound 83/0, battle 720/0; validate_data, taskboard, lint, format.
+- **The one open render request, re-posted to add the six held shots and their portraits** (the 0af5df49 line is SUPERSEDED):
+RENDER-REQUEST @ db895430: battle_choreo_hit, battle_choreo_ko, battle_choreo_melee, battle_boss_intro_matron, creature_ilun, battle_vowbound_out, battle_choreo_vowbound_rise, battle_choreo_summon, npc_haluna_dock, npc_haluna_market, npc_haluna_chapel, npc_haluna_lane, npc_wake_feast, creature_kahre, creature_virel, creature_nhoa, creature_hesk, creature_ethren, creature_gallery_ray, creature_glass_skate, creature_ridge_lynx, creature_ilun_held, creature_kahre_held, creature_virel_held, creature_hesk_held, creature_nhoa_held, creature_ethren_held, portraits:avalanche_ram,portraits:conduit_crawler,portraits:cord_moth,portraits:fen_leech,portraits:gallery_ray,portraits:glass_skate,portraits:ilun,portraits:kahre,portraits:lamp_engine,portraits:ridge_lynx,portraits:rim_crawler,portraits:rime_urchin,portraits:root_crab,portraits:scree_crawler,portraits:tannin_archer,portraits:virel,portraits:wakefin,portraits:nhoa,portraits:hesk,portraits:ethren,portraits:ilun_held,portraits:kahre_held,portraits:virel_held,portraits:hesk_held,portraits:nhoa_held,portraits:ethren_held; tool: tools/portraits/render.sh --only avalanche_ram,conduit_crawler,cord_moth,fen_leech,gallery_ray,glass_skate,ilun,kahre,lamp_engine,ridge_lynx,rim_crawler,rime_urchin,root_crab,scree_crawler,tannin_archer,virel,wakefin,nhoa,hesk,ethren,ilun_held,kahre_held,virel_held,hesk_held,nhoa_held,ethren_held; why: everything owed since my last approved renders (fce2e82, 3b0e44b): hit_snap and clip timing, the Vowbound and their held forms, M3-CRE-100's villager stages, M3-CRE-645's polish, and the 26 portraits that turn test_creature_portraits green.
+- **M3-CRE-648 merged (docs; review: Lead):** Act III design sheets in docs/kb/art/creatures/act3/.
+  - **the_cage:** the Lit Age lattice of four lamp bays, with the founders standing in it. Wrist rings and a sill bone per quarter for the characters track's figures. The weak point is each quarter's keystone clasp above the founder's head, so the party strikes the lock, never the person. Each break opens the clasp and rings, and the founder's light lifts gold.
+  - **Ch19:** wick_crawler (a lamplighter's pole that walks), chain_lamp (steady light, louvres open on the beat, so the bound-light rule holds), spire_moth (a pale glass-winged flue moth variant).
+  - **Ch20:** held_shoal (24 fish of held light as skinned beads, never rising) and drowned_lantern (a jellyfish-like lamp globe whose light settles downward).
+  - **For Combat / the chapter designer** (the full list is in each sheet):
+    - the Cage as one combatant with phases at 75/50/25% (the board has three enemy slots);
+    - a no-travel style for the Cage and the chain lamp;
+    - the chain lamp's sweep cadence;
+    - what turns the held shoal targetable;
+    - who brightens the room when a drowned lantern falls.
+  - **For Tech:** the Cage's last quarter needs a hide/show at the KO (or a fourth phase).
+  - **Builds wait for the Lead's go on the Act III ids (M3-CRE-646/648).**

@@ -19,6 +19,7 @@ import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "common"))
 import creature_kit as ck  # noqa: E402
+import grounding as gr  # noqa: E402
 
 SEED = 1503
 PAL = {k: ck.hexrgb(v) for k, v in {
@@ -105,6 +106,16 @@ def build_clips() -> list[ck.Clip]:
     return [idle, attack, cast, hit, ko]
 
 
+# Kept off the floor (M3-CRE-632, common/grounding.py): the feelers turn up over the floor first (up to 60°), then the
+# body lifts the least it takes when it curls (its ends come down past its pivot, so the arch rises over them, as a
+# louse's does), and when it tips onto its side in the KO.
+GROUNDED_LIMBS = [("feeler_l", 0, -1.0, 60.0), ("feeler_r", 0, -1.0, 60.0), ("root", gr.LIFT, 1.0, 0.5)]
+
+
+def export_clips(rig: ck.Rig, mesh: ck.Mesh) -> list[ck.Clip]:
+    return gr.grounded(rig, mesh, build_clips(), GROUNDED_LIMBS)
+
+
 def main() -> None:
     argv = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else []
     ap = argparse.ArgumentParser()
@@ -113,7 +124,7 @@ def main() -> None:
     rig = build_rig()
     mesh = ck.Mesh("scuttler")
     plates(mesh, rig)
-    info = ck.export_creature(mesh, rig, build_clips(), args.out, extras={"hymn_creature": "scuttler"})
+    info = ck.export_creature(mesh, rig, export_clips(rig, mesh), args.out, extras={"hymn_creature": "scuttler"})
     print(f"scuttler: {info}")
 
 

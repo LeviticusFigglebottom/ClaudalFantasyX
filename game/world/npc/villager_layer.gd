@@ -17,6 +17,9 @@ extends Node3D
 ## the work and shelter points, the storm flag); placement, hiding and talk stay the zone's. An adopted villager
 ## rides inside its body, so a row's route and follow do not apply to it. `VillagerLayer.wire(zone, zone_id)` is
 ## the one call such a zone makes after placing them.
+##
+## A row's `actor` (a villager id) dresses it in that villager's model while its own doesn't exist yet; its npc_id
+## (talk, tuning, chat) stays its own.
 
 const DATA_DIR := "res://game/data/world/npc/zones/"
 const ACTOR_PATH := "res://assets/characters/villagers/%s/%s_actor.tscn"
@@ -40,7 +43,8 @@ const WORK_SUFFIX := "Work"
 var data: Dictionary = {}
 var villagers: Array[FieldNpc] = []
 var storm := false
-## FieldNpc -> [[Node3D, Transform3D relative to the villager], ...]
+## FieldNpc -> [[Node3D, Transform3D relative to the villager], ...] (keys are checked with is_instance_valid as
+## Variants before any cast: see live_villagers)
 var _followers: Dictionary = {}
 var _storm_flag: StringName = &""
 var _built := false
@@ -49,7 +53,14 @@ var _built := false
 func _ready() -> void:
 	process_priority = 10  # after the villagers have moved this frame
 	if auto_build:
-		build()
+		# Added while the zone is already in its own _ready (or later): build once the zone has finished its
+		# set-up, so villagers it places after adding this layer (HalunaVillagers' shop bodies) are adopted, not
+		# doubled. Added with the zone (a prebuilt zone entering the tree): the zone's set-up is done; build now.
+		var zone := get_parent()
+		if zone != null and zone.is_node_ready():
+			build.call_deferred()
+		else:
+			build()
 	set_process(auto_build)
 
 
@@ -127,7 +138,9 @@ func _make(row: Dictionary) -> FieldNpc:
 		adopted.shelter = _marker(row.get("shelter", null), String(stand_in.name) + "Villager" + SHELTER_SUFFIX)
 		adopted.work_target = _marker(row.get("work_at", null), String(stand_in.name) + "Villager" + WORK_SUFFIX)
 		return adopted
-	var scene := load(ACTOR_PATH % [id, id]) as PackedScene if id != &"" else null
+	# `actor` (optional): wear another villager's model until this one has its own (M3-CRE-100: the shop bodies).
+	var actor_id := str(row.get("actor", id))
+	var scene := load(ACTOR_PATH % [actor_id, actor_id]) as PackedScene if actor_id != "" else null
 	if stand_in == null or scene == null:
 		push_warning("VillagerLayer %s: cannot place %s (stand-in %s)" % [zone_id, id, row.get("stand_in", "")])
 		return null
@@ -209,16 +222,26 @@ static func _vec3(v: Variant) -> Vector3:
 
 ## The villager made for `id`, or null.
 func villager(id: StringName) -> FieldNpc:
-	for n in villagers:
+	for n in live_villagers():
 		if n.npc_id == id:
 			return n
 	return null
 
 
+## The villagers still alive. A zone's teardown can free them before this layer: an object is checked with
+## is_instance_valid while it is still a Variant, because casting a freed object to a type is a script error.
+func live_villagers() -> Array[FieldNpc]:
+	var out: Array[FieldNpc] = []
+	for v: Variant in villagers:
+		if is_instance_valid(v):
+			out.append(v as FieldNpc)
+	return out
+
+
 ## Every villager here braces for (or comes out of) the storm.
 func set_storm(on: bool) -> void:
 	storm = on
-	for n in villagers:
+	for n in live_villagers():
 		n.set_storm(on)
 
 
@@ -233,16 +256,19 @@ func _check_storm() -> void:
 ## One frame: the villagers (when the owner drives them), the storm flag and the riders.
 func tick(delta: float) -> void:
 	if not auto_build:
-		for n in villagers:
+		for n in live_villagers():
 			n.tick(delta)
 	_check_storm()
-	for npc: FieldNpc in _followers:
-		if not is_instance_valid(npc):
+	for key: Variant in _followers.keys():
+		if not is_instance_valid(key):
+			_followers.erase(key)
 			continue
-		var t := npc.global_transform
-		for pair: Array in _followers[npc]:
-			var node := pair[0] as Node3D
-			if is_instance_valid(node):
-				var want := t * (pair[1] as Transform3D)
-				if not node.global_transform.is_equal_approx(want):
-					node.global_transform = want
+		var t := (key as Node3D).global_transform
+		for pair: Array in _followers[key]:
+			var rider: Variant = pair[0]
+			if not is_instance_valid(rider):
+				continue
+			var node := rider as Node3D
+			var want := t * (pair[1] as Transform3D)
+			if not node.global_transform.is_equal_approx(want):
+				node.global_transform = want

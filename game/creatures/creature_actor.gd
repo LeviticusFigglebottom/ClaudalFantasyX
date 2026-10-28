@@ -14,6 +14,10 @@ static var _data: Dictionary = {}
 
 ## The creatures.json row this actor reads.
 @export var creature_id: StringName = &""
+## A material set that replaces the import's (M3-CRE-647, a Vowbound's held form: res://assets/creatures/<id>/
+## materials_held/, written by write_materials.py). Each surface wearing the import's <slot>.tres (its resource_name
+## is the glTF slot) takes <material_dir>/<slot>.tres in its place when that file exists. Empty: the import's set.
+@export_dir var material_dir: String = ""
 
 ## The clip playing now (or the last one), for tests and captures.
 var current_clip: StringName = &""
@@ -31,6 +35,7 @@ var _phase_tween: Tween
 var _phase_pose: Array = []  # [position, rotation] the phase moves the model to
 var _hide_after: Array = []  # nodes a phase hides once its clip has played (hullgnaw's falling frames)
 var _show_after: Array = []  # nodes a phase shows once its clip has played (the spar-wraith's water sheath)
+var _hold_clip: StringName = &""  # a `hold` phase's clip: it stays on its last frame instead of idling (the release)
 ## Hits taken (rotates the row's `hit_variants`).
 var _hits := 0
 ## Seconds idling since the last fidget, and when the next one plays (the row's `idle_variety`).
@@ -66,6 +71,7 @@ static func row_for(id: StringName) -> Dictionary:
 func _ready() -> void:
 	_row = row_for(creature_id)
 	_idle = StringName(str(_row.get("idle", "idle")))
+	_apply_material_dir()
 	for n in find_children("*", "GeometryInstance3D", true, false):
 		_surfaces.append(n as GeometryInstance3D)
 	var players := find_children("*", "AnimationPlayer", true, false)
@@ -83,6 +89,22 @@ func _ready() -> void:
 			if node != null:
 				node.visible = false
 	_play(_idle)
+
+
+func _apply_material_dir() -> void:
+	if material_dir == "":
+		return
+	for n in find_children("*", "MeshInstance3D", true, false):
+		var mi := n as MeshInstance3D
+		if mi.mesh == null:
+			continue
+		for i in mi.mesh.get_surface_count():
+			var cur := mi.get_active_material(i)
+			if cur == null or cur.resource_name == "":
+				continue
+			var path := material_dir.path_join(cur.resource_name + ".tres")
+			if ResourceLoader.exists(path):
+				mi.set_surface_override_material(i, load(path) as Material)
 
 
 func has_clip(clip: StringName) -> bool:
@@ -194,7 +216,11 @@ func set_ko(on: bool, alpha: float) -> void:
 	if on:
 		var clip := StringName(str(_row.get("ko", "ko")))
 		var wait := 0.0
-		if has_clip(clip) and not _frozen:
+		if has_clip(clip) and not _frozen and clip == _hold_clip and current_clip == clip:
+			# the KO is the clip a `hold` phase already played (a Vowbound's release): it isn't played twice
+			if _player.is_playing():
+				wait = maxf(_player.get_animation(clip).length - _player.current_animation_position, 0.0)
+		elif has_clip(clip) and not _frozen:
 			_play(clip)
 			wait = _player.get_animation(clip).length
 		if is_inside_tree():
@@ -230,7 +256,8 @@ func set_frozen(on: bool) -> void:
 ## Matron's crust bursting off), hides its `hide_after` and shows its `show_after` nodes once the clip has played
 ## (the hullgnaw's frames fall first; the spar-wraith's water sheath comes after its drop), moves the model by its
 ## offset and tilt over its time (at once when `instant`, for captures), and idles on the phase's idle clip
-## afterwards. An unknown phase does nothing.
+## afterwards; a phase with `hold` true stays on its clip's last frame instead (M3-CRE-647: a Vowbound's release,
+## which its KO then does not replay). An unknown phase does nothing.
 func enter_phase(phase_id: StringName, instant := false) -> bool:
 	var phases: Dictionary = _row.get("phases", {})
 	if not phases.has(String(phase_id)) or phase_id == _phase:
@@ -266,6 +293,7 @@ func enter_phase(phase_id: StringName, instant := false) -> bool:
 		if node != null:
 			node.visible = true
 	var clip := StringName(str(p.get("clip", "")))
+	_hold_clip = clip if bool(p.get("hold", false)) and has_clip(clip) else &""
 	if not _ko and not _frozen:
 		_play(clip if has_clip(clip) else _idle)
 	_hide_after = p.get("hide_after", [])
@@ -304,7 +332,12 @@ func settle() -> void:
 		model.position = _phase_pose[0]
 		model.rotation = _phase_pose[1]
 	if not _ko and not _frozen and _phase != &"":
-		_play(_idle)
+		if _hold_clip != &"":  # a `hold` phase settles on its clip's last frame
+			current_clip = _hold_clip
+			_player.play(_hold_clip, 0.0)
+			_player.seek(_player.get_animation(_hold_clip).length, true)
+		else:
+			_play(_idle)
 	_apply_hide_after(_phase)
 
 
@@ -376,7 +409,7 @@ func _play(clip: StringName) -> void:
 
 
 func _on_clip_finished(clip: StringName) -> void:
-	if _ko or _frozen or clip != current_clip:
+	if _ko or _frozen or clip != current_clip or clip == _hold_clip:
 		return
 	_play(_idle)
 

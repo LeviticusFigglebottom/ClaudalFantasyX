@@ -18,6 +18,7 @@ import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "common"))
 import creature_kit as ck  # noqa: E402
+import grounding as gr  # noqa: E402
 
 SEED = 6101
 PAL = {k: ck.hexrgb(v) for k, v in {
@@ -26,6 +27,8 @@ PAL = {k: ck.hexrgb(v) for k, v in {
 }.items()}
 
 N = 5
+FIN_TIP_Y = 0.016  # the pectoral fin's tip height: its underside on the floor
+KO_FIN = 120.0  # the KO: the right fin, the side it lands on, tucks in under its belly (degrees)
 
 
 def spine(n: int) -> np.ndarray:
@@ -41,7 +44,8 @@ def build_rig() -> tuple[ck.Rig, np.ndarray]:
     rig.add("jaw", j[0] + np.array([0, -0.08, -0.05]), j[0] + np.array([0, -0.1, 0.12]), "spine0")
     rig.add("dorsal", j[1] + np.array([0, 0.12, 0]), j[3] + np.array([0, 0.2, 0]), "spine1")
     for s, tag in ((1.0, "l"), (-1.0, "r")):
-        rig.add(f"fin_{tag}", j[1] + np.array([s * 0.12, -0.1, 0.05]), np.array([s * 0.28, 0.0, 0.3]), "spine1")
+        # the fin tip rests on the floor (M3-CRE-632: its tube's underside went 1.6 cm under at y 0.0)
+        rig.add(f"fin_{tag}", j[1] + np.array([s * 0.12, -0.1, 0.05]), np.array([s * 0.28, FIN_TIP_Y, 0.3]), "spine1")
         rig.add(f"eye_{tag}", j[0] + np.array([s * 0.07, 0.12, -0.08]), j[0] + np.array([s * 0.08, 0.2, -0.06]),
                 "spine0")
     return rig, j
@@ -129,7 +133,18 @@ def build_clips() -> list[ck.Clip]:
         ko.key("root", t, (0, 0, 80.0 * s), (-0.1 * s, -0.02 * s, 0))
         ko.key("dorsal", t, (0, 0, -20.0 * s))
         ko.key("jaw", t, (-15.0 * s, 0, 0))
+        ko.key("fin_r", t, (0, 0, -KO_FIN * s))  # M3-CRE-632: the fin it falls on tucks under the belly
     return [idle, attack, cast, hit, ko]
+
+
+# Kept off the floor (M3-CRE-632, common/grounding.py): the tail rides up over the floor when the head lifts (the
+# display, the flip back), and in the KO, which rolls it about a pivot on the floor, the body lifts the least it takes
+# to lie on its side.
+GROUNDED_LIMBS = [("spine2", 0, 1.0, 30.0, ("cast", "hit", "hit_b", "idle_b")), ("root", gr.LIFT, 1.0, 0.5)]
+
+
+def export_clips(rig: ck.Rig, mesh: ck.Mesh) -> list[ck.Clip]:
+    return gr.grounded(rig, mesh, build_clips(), GROUNDED_LIMBS)
 
 
 def main() -> None:
@@ -141,7 +156,7 @@ def main() -> None:
     mesh = ck.Mesh("shoal_skipper")
     body(mesh, rig, j)
     fins(mesh, rig, j)
-    info = ck.export_creature(mesh, rig, build_clips(), args.out, extras={"hymn_creature": "shoal_skipper"})
+    info = ck.export_creature(mesh, rig, export_clips(rig, mesh), args.out, extras={"hymn_creature": "shoal_skipper"})
     print(f"shoal_skipper: {info}")
 
 
