@@ -4,7 +4,7 @@ title: Every Ch5–Ch9 encounter fights on its final arena
 role: environment
 status: review
 owner_session: "env-art-b (session_01F3vrUNt6trAMrjeYavaDNC)"
-depends_on: [M3-ENV-1303, M3-ENV-1314]
+depends_on: [M3-ENV-1303, M3-ENV-1312]
 milestone: M3
 reviewer: battle-presentation
 ---
