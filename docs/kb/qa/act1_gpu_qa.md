@@ -51,6 +51,10 @@ every zone, one battle per arena and every Act I boss intro. Contact sheets go o
 | 16 | battle_arena_terrace, _ash_terrace_lanternfall | Very dark at High; the party is barely lit against the terraces. | env-art-b | open | pass A (2026-10-28, integration 048b0a7f) |
 | 17 | undertow_eye (also undertow_night) | Concentric streak rings at the eye's centre, and a grid-like dither over the cloud body. Possibly a still-frame TAA effect: to check in motion in pass B. | rendering (pc-gpu) | open | pass A (2026-10-28, integration 048b0a7f) |
 | 18 | slice_causeway_harrier_view | No harrier in frame (the lavapipe baseline has none either): a framing or timing gap, not a GPU issue. | slice-polish | open | pass A (2026-10-28, integration 048b0a7f) |
+| 19 | Prologue vigil terrace (New Game) | A hard-edged, bright-green rectangle in the water beside the terrace (also on lavapipe in iskarra_p01). | env-art | open | big14 playtest (2026-10-28, gpu/gate-big14-shots) |
+| 20 | Ch2 beach arrival (ch02_girl_on_the_beach) | Rhen is never in frame. Four lines are framed on empty sky (Rhen's view on his back?) with no face in it. | slice-polish, hero-integration | open | big14 playtest (2026-10-28, gpu/gate-big14-shots) |
+| 21 | Haluna field start (after the beach; Village spawn too) | The field camera starts over the shallows with Rhen not on screen; Asha and Toma walk ahead, spaced. | hero-integration | open | big14 playtest (2026-10-28, gpu/gate-big14-shots) |
+| 22 | Scene changes: New Game→Prologue, Ch1, Ch2, the first fight | Hidden frames over ADR 0029's 1000 ms: 3025 / 1276 / 2017 / 1669 ms (warm), up to 4058 ms cold. Dwell hitches > 33 ms: 9 / 14 / 8. | rendering (prewarm), act1-chapters | open | big14 playtest (2026-10-28, gpu/gate-big14-shots) |
 
 ## Frame-time budget per zone (ADR 0029/0037, the walk with --budget)
 

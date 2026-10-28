@@ -66,6 +66,8 @@ const HITCH_MS := 33.3
 ## --stills: seconds between stills in a dwell (--still-every overrides).
 const STILL_EVERY_S := 5.0
 const STILL_JPG_QUALITY := 0.9
+## A --walk row's "press" action is tapped this often (s) through its dwell.
+const PRESS_EVERY_S := 1.5
 ## The F8 chapter select's starts (the walk's "chapter" rows).
 const CHAPTER_SELECT := "res://game/data/debug/chapter_select.json"
 const PIPELINE_MONITORS: Array[Performance.Monitor] = [
@@ -276,6 +278,10 @@ func _segment(seg: Array, preset: String) -> void:
 	var next_still := 0.0
 	var still_n := 0
 	var skip := false
+	# A --walk row's "press" (e.g. ui_accept): tapped every PRESS_EVERY_S through the dwell, as a player taps
+	# through dialogue (the dialogue box reads input events, so the tap is a parsed InputEventAction).
+	var press := str(seg[6]) if seg.size() > 6 else ""
+	var next_press := 0.0
 	var walls := PackedFloat64Array()
 	var gpus := PackedFloat64Array()
 	var cpus := PackedFloat64Array()
@@ -289,6 +295,9 @@ func _segment(seg: Array, preset: String) -> void:
 			gpus.append(RenderingServer.viewport_get_measured_render_time_gpu(_rid))
 			cpus.append(RenderingServer.viewport_get_measured_render_time_cpu(_rid))
 		skip = false
+		if press != "" and float(now - start) >= next_press:
+			_tap(StringName(press))
+			next_press += PRESS_EVERY_S * 1e6
 		if stills != "" and float(now - start) >= next_still:
 			_save_still(stills, id, still_n)
 			still_n += 1
@@ -454,10 +463,10 @@ func _trace_pipelines(window: String, i: int, ms: float) -> void:
 
 
 ## --walk=<res://...json>: the segments from a file instead of SEGMENTS (tools/gpu_bench/act1_walk.json). Each row
-## {id, kind, arg, spawn, dwell, return}; kinds as SEGMENTS plus newgame (New Game: a fresh game, then arg's location),
-## chapter (an F8 chapter-select start by id), location (go to a locations.json id) and spawns (every spawn of the
-## current scene in turn, each a place segment named <id>.<spawn>) and run (hold arg's "+"-joined input actions
-## through the dwell, from spawn if named).
+## {id, kind, arg, spawn, dwell, return, press}; kinds as SEGMENTS plus newgame (New Game: a fresh game, then arg's
+## location), chapter (an F8 chapter-select start by id), location (go to a locations.json id), spawns (every spawn
+## of the current scene in turn, each a place segment named <id>.<spawn>) and run (hold arg's "+"-joined input
+## actions through the dwell, from spawn if named). press: an action tapped through the dwell (PRESS_EVERY_S).
 func _walk_segments(path: String) -> Array:
 	var out: Array = []
 	var data: Variant = JSON.parse_string(FileAccess.get_file_as_string(path))
@@ -475,6 +484,7 @@ func _walk_segments(path: String) -> Array:
 					str(row.get("spawn", "")),
 					float(row.get("dwell", 0.0)),
 					str(row.get("return", "")),
+					str(row.get("press", "")),
 				]
 			)
 		)
@@ -492,6 +502,14 @@ func _scene_spawns() -> Array[StringName]:
 			if c is Node3D:
 				out.append(StringName(c.name))
 	return out
+
+
+func _tap(action: StringName) -> void:
+	for pressed in [true, false]:
+		var ev := InputEventAction.new()
+		ev.action = action
+		ev.pressed = pressed
+		Input.parse_input_event(ev)
 
 
 func _save_still(dir: String, id: String, n: int) -> void:
