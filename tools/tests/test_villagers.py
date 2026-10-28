@@ -24,8 +24,18 @@ STAGE = ROOT / "game" / "levels" / "_tests" / "characters" / "villagers"
 for sub in ("villagers", "toma", "rhen", "asha", "base_body"):
     sys.path.insert(0, str(ROOT / "assets_src" / "characters" / sub))
 
-NPCS = ["neme", "osu", "child", "vendor", "reed", "netmender", "fisher", "tavi", "kell"]
+# M3-CHR-509..517: the Act I villagers that were capsules (the Haluna trades, the Order clerk, the four barge Reeds,
+# the Saltwright girl and two children)
+ACT1 = ["shopkeeper", "smith", "innkeeper", "clerk", "reed_a", "reed_b", "reed_c", "reed_d", "wright_girl",
+        "wright_child_a", "wright_child_b"]
+# M3-CHR-526..539: the named Act I story NPCs, in story order (Ch1 Oruvel, Ch4 the ferry, Ch5 Pemakar and Ashcrown, Ch7
+# Tamsule, Ch8-9 Corrow)
+NAMED = ["sabe", "scaleman", "skipper_sadi", "ferrymaster", "purser", "elder", "garo", "tender", "ione", "poolkeeper",
+         "fenn", "gatekeeper", "hobb", "marra"]
+NPCS = ["neme", "osu", "child", "vendor", "reed", "netmender", "fisher", "tavi", "kell"] + ACT1 + NAMED
 M2_SEVEN = NPCS[:7]  # M2-CHR-03; tavi and kell are M3-CHR-03 (params opt-ins, per-NPC clips)
+REEDS = ["reed_a", "reed_b", "reed_c", "reed_d"]
+WRIGHTS = ["wright_girl", "wright_child_a", "wright_child_b"]
 PROPS = ROOT / "assets" / "characters" / "props" / "wick"
 MAX_BYTES = 5 * 1024 * 1024  # ADR 0005 plain-blob cap
 GLB_MAX = 3 * 1024 * 1024  # M2-CHR-03: "well under" the cap
@@ -116,6 +126,74 @@ class TestParams(unittest.TestCase):
         self.assertEqual(k["_eyes"]["iris"], t["_eyes"]["iris"])
         self.assertGreaterEqual(t["_costume"]["top"]["armhole_drop_m"], 0.115)
         self.assertNotIn("headwrap", k["_costume"])  # no wrap: she must not read as Osu
+
+    def test_act1_villagers_follow_their_briefs(self):
+        # M3-CHR-512/516/517: dressed for the trade; M3-CHR-509: the Order's colours, no armour; M3-CHR-510: variants of
+        # the chapel Reed (white robe, ochre sash), each distinct
+        smith, shop, inn, clerk = (params(n) for n in ("smith", "shopkeeper", "innkeeper", "clerk"))
+        self.assertEqual(smith["_costume"]["apron"]["mat"], "cloth_d")
+        self.assertTrue(smith["_costume"]["apron"]["over_trousers"])
+        self.assertGreater(smith["_costume"]["top"]["cuff_roll_m"], 0.0)  # sleeves rolled
+        self.assertLess(smith["_costume"]["top"]["sleeve"], 0.5)
+        self.assertIn("cloth_d", smith["_cloth_params"])
+        self.assertIn("apron", shop["_costume"])
+        self.assertEqual(inn["_hair"]["kind"], "bun")
+        self.assertTrue({"top", "skirt", "apron", "sash"} <= set(clerk["_costume"]))
+        self.assertGreater(clerk["_costume"]["top"]["sleeve"], 0.9)
+        self.assertEqual(clerk["_costume"]["skirt"]["hem"], "ankle")
+        reed = params("reed")
+        looks = set()
+        for n in REEDS:
+            with self.subTest(reed=n):
+                p = params(n)
+                self.assertEqual(p["_costume"]["top"]["mat"], "cloth_a")
+                self.assertEqual(p["_costume"]["skirt"]["mat"], "cloth_a")
+                self.assertEqual(p["_costume"]["sash"]["mat"], "cloth_c")
+                self.assertGreater(min(int(p["_tints"]["cloth_a"][i:i + 2], 16) for i in (1, 3, 5)), 0xC8)  # white (sea-greyed at most)
+                self.assertEqual(p["_skin"]["reach_bands"], reed["_skin"]["reach_bands"])  # novices, not sailors
+                looks.add((p["height_m"], p["skin_hex"], p["_hair"]["kind"], p["_costume"]["top"]["sleeve"],
+                           p["_costume"]["skirt"]["hem"]))
+        self.assertEqual(len(looks), len(REEDS))
+        skins = [params(n)["skin_hex"] for n in ACT1]
+        self.assertEqual(len(set(skins)), len(skins))
+
+    def test_named_npcs_follow_the_beats(self):
+        # act1_ch05.md §4: Garo's forearms are bare (burn-scarred) and he wears a leather apron; act1_ch08.md: Hobb's
+        # cord and the gatekeeper's colours are watch-red (browner than lacquer red); act1_ch07.md: Ione's reach-bands
+        # run to the elbow; Sabe is Oruvel's old diver (the most bands in Ch1)
+        garo = params("garo")
+        self.assertEqual(garo["_costume"]["apron"]["mat"], "cloth_d")
+        self.assertLess(garo["_costume"]["top"]["sleeve"], 0.4)
+        watch_red = "#8E3B2E"
+        self.assertEqual(params("hobb")["_tints"][params("hobb")["_costume"]["sash"]["mat"]], watch_red)
+        self.assertEqual(params("gatekeeper")["_tints"][params("gatekeeper")["_costume"]["sash"]["mat"]], watch_red)
+        self.assertGreaterEqual(sum(params("ione")["_skin"]["reach_bands"].values()), 20)
+        self.assertGreaterEqual(sum(params("sabe")["_skin"]["reach_bands"].values()), 20)
+        self.assertGreater(params("marra")["_skin"]["age"], 0.8)
+        self.assertGreater(params("fenn")["_skin"]["age"], 0.9)
+
+    def test_wright_line_marks(self):
+        # M3-CHR-511 (act1_npcs.md §2.3): liss_textures' generator with each wright's own seed and placement, on body
+        # maps large enough for the strokes; the regions are the generator's own
+        sys.path.insert(0, str(ROOT / "assets_src" / "characters" / "liss"))
+        import liss_textures
+
+        liss_seed = json.loads((ROOT / "assets_src/characters/liss/liss_params.json").read_text())["_marks"]["seed"]
+        seeds = set()
+        for n in WRIGHTS:
+            with self.subTest(wright=n):
+                sk = params(n)["_skin"]
+                lm = sk["line_marks"]
+                self.assertTrue(set(lm["placement"]) <= set(liss_textures.REGION_ORDER))
+                self.assertGreaterEqual(sum(lm["placement"].values()), 1)
+                self.assertNotEqual(lm["seed"], liss_seed)
+                seeds.add(lm["seed"])
+                self.assertGreaterEqual(min(sk["body_size"]), 1024)
+                self.assertGreaterEqual(params(n)["_costume"]["top"].get("sleeve", 0.0), 0.0)
+                self.assertLessEqual(params(n)["_costume"]["top"].get("sleeve", 0.0), 0.35)  # sleeves pushed up
+        self.assertEqual(len(seeds), len(WRIGHTS))
+        for n in ("wright_child_a", "wright_child_b"):
+            self.assertLess(params(n)["height_m"], 1.4)
 
     def test_the_child_has_child_proportions(self):
         p = params("child")
@@ -252,13 +330,50 @@ class TestClips(unittest.TestCase):
         import villager_clips
 
         want = {"tavi": ["hand_on_shoulder", "hear_news", "name_rite"],
-                "kell": ["press_wick", "trim_wick", "haggle_laugh"]}
+                "kell": ["press_wick", "trim_wick", "haggle_laugh"],
+                # M3-CHR-509..517: the trades' gestures and the Ch6 scripts' calls (villager_story_clips.json)
+                "shopkeeper": ["offer_goods"], "smith": ["hammer_strike"], "innkeeper": ["welcome_bow"],
+                "clerk": ["heat_iron", "iron_into_water", "hand_over"],
+                **{n: ["pole_barge", "bow_from_barge"] for n in REEDS},
+                "wright_girl": ["arm_held_out", "kneel_wait", "dig_sand", "flatten_sand", "set_in_hole"],
+                "wright_child_a": ["crawl_out", "kneel_wait"], "wright_child_b": ["crawl_out", "kneel_wait"],
+                # M3-CHR-526..539: the dialogue's `@anim` calls for the named NPCs, plus a gesture each
+                "sabe": ["sit_watch", "shout_lines"], "scaleman": ["weigh_stamp", "nod"],
+                "skipper_sadi": ["cast_off", "laugh"], "ferrymaster": ["nod"], "purser": ["offer_goods"],
+                "elder": ["give_boat"], "garo": ["fold_boat", "nod", "laugh", "take_boat"],
+                "tender": ["open_pavilion", "palms_level", "paint_gilt", "open_chamber", "hand_key"], "ione": ["nod"],
+                "poolkeeper": ["chalk_slate"], "fenn": ["feed_fire", "hand_driftwood", "hand_key"],
+                "gatekeeper": ["open_gate"], "hobb": ["drill_call"], "marra": ["hold_hands", "look_back"]}
         for npc in NPCS:
             with self.subTest(npc=npc):
                 text = villager_clips.out_path(npc).read_text(encoding="utf-8")
                 self.assertEqual(villager_clips.clips_for(npc), ["idle", "talk", "walk"] + want.get(npc, []))
                 self.assertEqual(text.count('[sub_resource type="Animation"'), 3 + len(want.get(npc, [])))
         self.assertIn("trim_wick", villager_clips.EXTRA_LOOPS)
+        for loop in ("pole_barge", "heat_iron", "hammer_strike", "kneel_wait", "arm_held_out"):
+            self.assertIn(loop, villager_clips.EXTRA_LOOPS)
+
+    def test_every_script_call_has_its_clip(self):
+        # every `@anim <speaker> <clip>` the dialogue makes of an Act I villager (act1_ch06.md: the clerk, the Reeds,
+        # the wright children) names a clip in that villager's library
+        import villager_clips
+
+        for dlg in (ROOT / "game/data/dialogue").rglob("*.dlg"):
+            for line in dlg.read_text(encoding="utf-8").splitlines():
+                m = re.match(r"^\s*@anim (\w+) (\w+)", line)
+                # `look_at` is CutsceneSequencer's own turn, not a clip
+                if m and m.group(1) in ACT1 + NAMED and m.group(2) != "look_at":
+                    with self.subTest(call=f"{dlg.name}: {m.group(1)} {m.group(2)}"):
+                        self.assertIn(m.group(2), villager_clips.clips_for(m.group(1)))
+
+    def test_story_clips_loop_cleanly(self):
+        # a looping story clip's first and last keys are the same pose, so the cycle has no pop
+        import villager_clips
+
+        for clip, spec in villager_clips.STORY_SPECS.items():
+            if spec.get("loop"):
+                with self.subTest(clip=clip):
+                    self.assertEqual(spec["keys"][0][1], spec["keys"][-1][1])
 
     def test_every_villager_has_a_persona(self):
         for npc in NPCS:
@@ -299,6 +414,7 @@ class TestWiring(unittest.TestCase):
             self.assertIn(f"assets/characters/villagers/{npc}/", text)
         self.assertIn("assets/characters/villagers/textures/", text)
         self.assertIn("assets/characters/props/wick/", text)
+        self.assertIn("assets_src/characters/villagers/villager_story_clips.json", text)
 
 
 class TestWickProps(unittest.TestCase):

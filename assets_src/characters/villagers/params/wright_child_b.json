@@ -1,0 +1,130 @@
+{
+  "_about": "The younger Saltwright child from under the hulk (Ch6 B05 item 3, `wright_child_b`; M3-CHR-511): a girl of about seven. Child proportions on the adult donor (child.json). Short sun-browned hair in a girl's crop, a patina-green patched sailcloth top with cap sleeves, a rust knee skirt, a sailcloth sash, barefoot. One small line-mark on the right forearm. Face sliders relative to the MakeHuman donor (ADR 0021: 1.0 / 0.0 = unchanged). Keys starting with '_' are read by the villager_* modules (villager_hair, villager_costume, villager_textures, write_materials, villager_clips), not by bb_params.",
+  "name": "wright_child_b",
+  "height_m": 1.2,
+  "heads_tall": 6.0,
+  "shoulder_width_heads": 1.32,
+  "chest_width_heads": 0.98,
+  "chest_depth_heads": 0.76,
+  "waist_width_heads": 0.98,
+  "hip_width_heads": 1.12,
+  "crotch_height_heads": 2.75,
+  "arm_span_ratio": 0.98,
+  "hand_length_heads": 0.66,
+  "foot_length_ratio": 0.152,
+  "neck_length_heads": 0.3,
+  "neck_width_ratio": 0.46,
+  "head_width_ratio": 0.78,
+  "femininity": 0.4,
+  "muscle": 0.2,
+  "mass": 0.35,
+  "breast": 0.0,
+  "eye_scale": 1.24,
+  "ipd_m": 0.053,
+  "arm_abduction_deg": 47.0,
+  "skin_hex": "#B5835F",
+  "eye_tilt_deg": 2.0,
+  "jaw_width": 0.78,
+  "cheekbone_height": 0.0,
+  "cheekbone_width": 0.92,
+  "chin_size": 0.7,
+  "nose_bridge_width": 0.7,
+  "nose_tip_projection": 0.7,
+  "lip_fullness": 0.88,
+  "lip_close": 0.6,
+  "lip_seal": 0.96,
+  "lip_lower_fullness": 0.8,
+  "mouth_corner_lift": 0.0004,
+  "brow_ridge": 0.15,
+  "donor_mix_african": 0.3,
+  "donor_mix_asian": 0.45,
+  "donor_mix_caucasian": 0.25,
+  "_skin": {
+    "hex": "#B5835F",
+    "age": 0.0,
+    "freckles": 0,
+    "reach_bands": {
+      "L": 0,
+      "R": 0
+    },
+    "seed": 123,
+    "lip": "#9E6252",
+    "body_size": [
+      2048,
+      1024
+    ],
+    "line_marks": {
+      "seed": 5113,
+      "placement": {
+        "forearm": 1
+      },
+      "length_m": [
+        0.025,
+        0.05
+      ],
+      "line_mm": 1.0,
+      "gap_mm": 1.4,
+      "dot_mm": 2.2
+    }
+  },
+  "_hair": {
+    "kind": "short",
+    "hairline": "female",
+    "seed": 43,
+    "length_m": [
+      0.03,
+      0.05
+    ],
+    "scalp_cards": [
+      200,
+      160,
+      110
+    ],
+    "hairline_cards": 50,
+    "rise": 0.9,
+    "colour": "#3A2618",
+    "underpaint": "#2E1E14"
+  },
+  "_eyes": {
+    "iris": "#3A2816"
+  },
+  "_costume": {
+    "top": {
+      "mat": "cloth_c",
+      "hem": "hip",
+      "sleeve": 0.22,
+      "neck_v_m": 0.03
+    },
+    "skirt": {
+      "mat": "cloth_b",
+      "hem": "knee",
+      "folds": 7,
+      "fold_amp": 0.006,
+      "flare": 0.16,
+      "seed": 111,
+      "keep_above_knee_m": 1.0
+    },
+    "sash": {
+      "mat": "cloth_a",
+      "width_m": 0.04,
+      "turns": 1,
+      "tails_m": 0.12
+    }
+  },
+  "_tints": {
+    "cloth_a": "#D8CFBC",
+    "cloth_b": "#8A4A2A",
+    "cloth_c": "#5F8A78",
+    "leather": "#FFFFFF"
+  },
+  "_build": {
+    "shapes": "all",
+    "host_snaps": true,
+    "garment_fit": true
+  },
+  "_persona": {
+    "sway": 1.5,
+    "lean": 1.0,
+    "arms_down": 41.0
+  }
+}

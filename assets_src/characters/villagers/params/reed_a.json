@@ -1,0 +1,114 @@
+{
+  "_about": "One of the four Reeds who pole Sefir's white barge (Ch6 B05 W11, speakers reed_a..reed_d; M3-CHR-510): an Order novice like the Haluna chapel Reed (reed.json), a variant of him: the Order's white robe and a pale-ochre sash. Reed A, about 22: the tallest, long-limbed, close-cropped; his sleeves pushed up and rolled to mid-forearm for the pole, the robe to the shin. Face sliders relative to the MakeHuman donor (ADR 0021: 1.0 / 0.0 = unchanged). Keys starting with '_' are read by the villager_* modules (villager_hair, villager_costume, villager_textures, write_materials, villager_clips), not by bb_params.",
+  "name": "reed_a",
+  "height_m": 1.78,
+  "heads_tall": 7.6,
+  "shoulder_width_heads": 1.68,
+  "chest_width_heads": 1.22,
+  "chest_depth_heads": 0.9,
+  "waist_width_heads": 1.08,
+  "hip_width_heads": 1.36,
+  "crotch_height_heads": 3.55,
+  "arm_span_ratio": 1.03,
+  "hand_length_heads": 0.78,
+  "foot_length_ratio": 0.15,
+  "neck_length_heads": 0.4,
+  "neck_width_ratio": 0.53,
+  "head_width_ratio": 0.64,
+  "femininity": 0.12,
+  "muscle": 0.5,
+  "mass": 0.18,
+  "breast": 0.0,
+  "eye_scale": 1.08,
+  "ipd_m": 0.063,
+  "arm_abduction_deg": 47.0,
+  "skin_hex": "#A87A5C",
+  "eye_tilt_deg": 1.0,
+  "jaw_width": 0.98,
+  "cheekbone_height": 0.001,
+  "cheekbone_width": 1.02,
+  "chin_size": 1.04,
+  "nose_bridge_width": 1.0,
+  "nose_tip_projection": 1.04,
+  "lip_fullness": 0.76,
+  "lip_close": 0.6,
+  "lip_seal": 0.96,
+  "lip_lower_fullness": 0.74,
+  "mouth_corner_lift": 0.0,
+  "brow_ridge": 1.0,
+  "donor_mix_african": 0.35,
+  "donor_mix_asian": 0.45,
+  "donor_mix_caucasian": 0.2,
+  "_skin": {
+    "hex": "#A87A5C",
+    "age": 0.05,
+    "freckles": 0,
+    "reach_bands": {
+      "L": 0,
+      "R": 0
+    },
+    "scalp_density": 0.85,
+    "seed": 117,
+    "lip": "#8A5848"
+  },
+  "_hair": {
+    "kind": "cropped",
+    "hairline": "male",
+    "seed": 37,
+    "length_m": [
+      0.007,
+      0.011
+    ],
+    "scalp_cards": [
+      420,
+      320,
+      200
+    ],
+    "hairline_cards": 0,
+    "colour": "#141417",
+    "underpaint": "#141417"
+  },
+  "_eyes": {
+    "iris": "#2A1A10"
+  },
+  "_costume": {
+    "top": {
+      "mat": "cloth_a",
+      "hem": "hip",
+      "sleeve": 0.64,
+      "cuff_roll_m": 0.005,
+      "neck_v_m": 0.04
+    },
+    "skirt": {
+      "mat": "cloth_a",
+      "hem": "shin",
+      "folds": 7,
+      "fold_amp": 0.006,
+      "flare": 0.14,
+      "seed": 101,
+      "keep_above_knee_m": 1.0
+    },
+    "sash": {
+      "mat": "cloth_c",
+      "width_m": 0.05,
+      "turns": 1
+    },
+    "sandals": "leather"
+  },
+  "_tints": {
+    "cloth_a": "#EEEAE2",
+    "cloth_b": "#EEEAE2",
+    "cloth_c": "#BFA678",
+    "leather": "#FFFFFF"
+  },
+  "_build": {
+    "shapes": "all",
+    "host_snaps": true,
+    "garment_fit": true
+  },
+  "_persona": {
+    "sway": 0.5,
+    "lean": 0.0,
+    "arms_down": 43.0
+  }
+}
