@@ -223,15 +223,15 @@ orbit_height = 6.0
 script = ExtResource("7_shot")
 id = &"H05"
 position = Vector3(-0.85, 0.44, 8)
-look_at = Vector3(0.2, 0.95, 7.79)
+look_at = Vector3(0.2, 0.88, 7.79)
 fov_deg = 37.8
 hard_cut = true
 
 [sub_resource type="Resource" id="Shot_cut_H06"]
 script = ExtResource("7_shot")
 id = &"H06"
-position = Vector3(-0.4, 1.12, 4.5)
-look_at = Vector3(-0.4, 0.8, 8)
+position = Vector3(-0.2, 1.35, 4.0)
+look_at = Vector3(-0.85, 1.1, 8.05)
 fov_deg = 27.0
 hard_cut = true
 
@@ -439,7 +439,17 @@ piece_rules = {
 "palm_coconut_b": {"shape": "cylinder", "radius_m": 0.3, "height_m": 3.0},
 "palm_coconut_c": {"shape": "cylinder", "radius_m": 0.3, "height_m": 3.0},
 "tidewall_gate": {"shape": "none"},
-"windbreak_placeholder": {"shape": "cylinder", "radius_m": 1.0, "height_m": 6.0}
+"windbreak_placeholder": {"shape": "cylinder", "radius_m": 1.0, "height_m": 6.0},
+"rope_coil": {"shape": "none"},
+"sandals": {"shape": "none"},
+"tide_debris": {"shape": "none"},
+"net_heap": {"shape": "none"},
+"net_float_cluster": {"shape": "none"},
+"causeway_slab_flat": {"shape": "none"},
+"causeway_slab_broken": {"shape": "none"},
+"causeway_slab_steps": {"shape": "none"},
+"lit_age_ring": {"shape": "none"},
+"laundry_line": {"shape": "none"}
 }
 
 [node name="Player" type="CharacterBody3D" parent="." groups=["player"]]
@@ -563,7 +573,7 @@ shape = SubResource("Box_Hub")
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -1, 0.04, 8)
 
 [node name="Village" type="Marker3D" parent="Spawns"]
-transform = Transform3D(-0.34202, 0, -0.939693, 0, 1, 0, 0.939693, 0, -0.34202, -52, 1.84, -2.6)
+transform = Transform3D(-0.3363, 0, 0.9417, 0, 1, 0, -0.9417, 0, -0.3363, -52, 1.84, -2.6)
 
 [node name="Shrine" type="Marker3D" parent="Spawns"]
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, -67, 2.02, 44.3)

@@ -32,4 +32,13 @@ for the human's "primitive moments": a headless walk of every slice scene listin
 - [ ] A swap-in note for the save shrine's owner. Systems owns it; in this account that work goes to ui-menus,
   per CONSOLIDATED.md. Cinematics can do the swap if the Lead prefers.
 
+## Notes (slice-polish, 2026-10-28)
+- Swapped in on claude/m2-slice per env-art's note (eeecf13d). `save_shrine.tscn`'s `Visual` is now one
+  `save_shrine.glb` and the `save_shrine_core.glb` at (0, 1.92, 0); BoundGlimmer, `Shape` and `Body` are unchanged.
+  The kit's import puts `kit_bound_core` on the core as a surface override, so it glows `glimmer_bound`.
+  `test_save_shrine` reads it with `get_active_material`.
+- `test_slice_primitives` no longer allows the shrine.
+- **Still to view:** the niche opens toward +Z, and Haluna's `SaveShrine` (env-art's `haluna_dressing.tscn`)
+  keeps its yaw. Check the field shot `save_shrine_field` and Haluna in the next render.
+
 ## Review log

@@ -48,7 +48,7 @@
   "spawns": {
     "Drop": [0, 0, 15, 180],
     "BellRoom1": [40, 0, 12, 180],
-    "Gallery": [80, 0, 18, 180],
+    "Gallery": [80, 0, 12, 180],
     "GalleryAfter": [80, 0, 0, 180],
     "GaugeRoom": [93, 0, -26, 180],
     "ShaftFoot": [94, 0, -35, 90]
@@ -72,7 +72,7 @@
     {"id": "bell_rest_1", "at": [40, 0, 11], "size": [6, 0, 4], "requires_flag": "ch01_saw_bell_room", "payload": {"beat": "bell_rest_1"}},
     {"id": "hinge", "activation": "interact", "at": [44, 0, 3], "size": [2, 0, 1.5], "prompt_key": "FIELD_PROMPT_CUT", "requires_flag": "ch01_saw_bell_room", "sets_flag": "ch01_cut_first_hinge", "once": true, "payload": {"beat": "cut_hinge"}},
     {"id": "tether_bell", "activation": "interact", "at": [36, 0, 3.6], "size": [2, 0, 2], "prompt_key": "FIELD_PROMPT_DROP", "payload": {"beat": "drop_to_galleries"}},
-    {"id": "shutter_hint", "at": [80, 0, 14], "size": [12, 0, 2], "payload": {"beat": "tut_shutter"}},
+    {"id": "shutter_hint", "at": [80, 0, 9], "size": [12, 0, 2], "payload": {"beat": "tut_shutter"}},
     {"id": "wickfry", "at": [80, 0, 5], "size": [12, 0, 2], "payload": {"beat": "wickfry"}},
     {"id": "old_tin", "activation": "interact", "at": [71, 0, -1], "size": [3, 0, 3], "prompt_key": "FIELD_PROMPT_TAKE", "sets_flag": "ch01_found_old_tin", "once": true, "payload": {"beat": "old_tin"}},
     {"id": "bell_rest_2", "at": [80, 0, -20], "size": [12, 0, 3], "payload": {"beat": "bell_rest_2"}},

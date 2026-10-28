@@ -55,7 +55,9 @@ func test_the_dock_at_night_swears_rhen_in_then_the_end_card() -> void:
 	var houses := (zone.mood.get(&"dresser") as HalunaDresser).night_lamps()
 	assert_true(houses != null and houses.visible and houses.get_child_count() > 0, "the oil lamps are lit")
 	assert_true(zone.get_node_or_null("NightLamps") != null and zone.get_node("NightLamps").get_child_count() > 0)
-	assert_true(zone.get_node_or_null("NPCs/Dock") == null, "the dock villagers have gone home")
+	var dock := zone.get_node_or_null("NPCs/Dock") as Node3D
+	assert_true(dock == null or not dock.is_visible_in_tree(), "the dock villagers have gone home")
+	assert_true(dock == null or not dock.can_process(), "and stopped (their talk prompts too)")
 	# M2-FP-115: he has walked out from the DockNight spawn to Asha at the dock end.
 	var by_asha := zone.stage.mark(&"rhen_by_asha")
 	assert_true(by_asha != null, "the night's mark beside Asha")
