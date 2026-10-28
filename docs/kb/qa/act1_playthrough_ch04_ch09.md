@@ -37,6 +37,24 @@ now has a pan-follow camera volume, each camera picked from rendered previews (i
   seven cuts with no word, rule 4; ch09_the_stair's one 15 s shot, ADR 0022 (f); the Ebbing's held inputs).
 - Balance: the playthrough showed no spike or trivial fight, so no sim run (the Lead's brief: only where it does).
 
+## Walks and pacing (2026-10-28)
+- **Walks on their paths (32d59e75d):** M3-CIN-1221's `via=` landed in slice-polish's b2d39f8cc, so
+  `act1_walk_vias.patch`'s 36 cues are in. `act1_cutscene_walks_known.json` is empty. The dawn causeway is staged
+  on the real Haluna: Asha at her shell, Ysolde gone at dawn, C01 down the path behind the three, and holds that
+  fit the walk.
+- **Pacing (d212b0413, 3c3839c84):** the sequencer lets a running walk finish before a scene ends, so a walk longer
+  than its script held a frame, a black screen or a locked field camera. `tools/act1/cutscene_stills` with
+  `STILLS_TIMING=1` (headless) prints each scene's TAIL and the walks it waits on. Its plan now runs in story
+  order, ordered by the flags each group needs and raises; arrive rows and same-zone `go`s reload the zone with
+  the story's flags; a beat's player stands on its trigger. Before the fixes the worst tails were
+  ch04_shell_is_set 45 s in black, ch08_landfall 45 s, ch08_cut_rope's black tail, ch07_into_tamsule 37 s with
+  the camera released, ch08_wall_falls 32 s, ch06_raid, ch06_smoke 65 s and ch04_dock_in_the_dark (Asha
+  arriving after the talk). Every scene now ends within about 11 s of its last step, and the tail is a visible
+  walk ending (Kerrid's exit up the mole stair, Toma's run to the shield line). ch08_stuck_key's 14 s is the
+  harness: its beat fires from the seized key's `flue` payload, so the player isn't stood on it.
+- The galleries' after_the_bell plays first in the plan because its flag comes from the Reefball match, not a
+  flow (a harness limit; the scene itself is staged right).
+
 ## Open, act1-chapters (cameras and staging)
 | Ch | Scene / shot | What reads wrong |
 |---|---|---|
