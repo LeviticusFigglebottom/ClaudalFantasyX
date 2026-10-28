@@ -94,9 +94,9 @@
     "sandals": "leather"
   },
   "_tints": {
-    "cloth_a": "#DFD0B2",
-    "cloth_b": "#525874",
-    "cloth_c": "#2E623A",
+    "cloth_a": "#D8CBB2",
+    "cloth_b": "#595D75",
+    "cloth_c": "#AA241C",
     "leather": "#FFFFFF"
   },
   "_build": {

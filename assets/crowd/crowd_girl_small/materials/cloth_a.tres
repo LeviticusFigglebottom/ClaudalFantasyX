@@ -16,5 +16,5 @@ shader_parameter/tex_cloth_mask = ExtResource("t1")
 shader_parameter/tex_detail_normal = ExtResource("t2")
 shader_parameter/tex_normal = ExtResource("t3")
 shader_parameter/tex_orm = ExtResource("t4")
-shader_parameter/col_albedo = Color(0.875, 0.816, 0.698, 1)
+shader_parameter/col_albedo = Color(0.847, 0.796, 0.698, 1)
 shader_parameter/detail_tiling = 150.0

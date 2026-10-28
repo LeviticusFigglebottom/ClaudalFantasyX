@@ -98,9 +98,9 @@
     }
   },
   "_tints": {
-    "cloth_a": "#8C8F8C",
-    "cloth_b": "#51607A",
-    "cloth_c": "#A1CFC9",
+    "cloth_a": "#94948E",
+    "cloth_b": "#55657C",
+    "cloth_c": "#AAD6D0",
     "leather": "#FFFFFF"
   },
   "_build": {
