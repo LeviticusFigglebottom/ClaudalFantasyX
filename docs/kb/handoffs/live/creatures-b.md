@@ -167,3 +167,20 @@ CreatureActor and the validator are theirs too (kit or tool changes go to them a
     seams face the intro camera at sunset.
 - **All nine Act I bosses and Vowbound have had their final pass.** In progress: the Reach's close-range facets and the
   hermit's gloss (polish agent).
+- **MERGE-READY @ ac2fc33b: polish (M3-CRB-007, M3-CRB-004)** (worktree agent d65ad59e, 85784455, viewed by me): the Reach's
+  digit crust plates smooth-shaded and domed with a crisp rim, matte salted shell (crust roughness up, specular down;
+  23,978 tris, bounds not grown); the Bottle hermit's chitin matte and mottled, dry above and damp below, salt at the
+  joints (geometry unchanged). SELF-RENDERED @ d65ad59e/85784455: creature_undertows_reach, battle_boss_intro_reach,
+  creature_bottle_hermit, battle_boss_intro_hermit (+ a scratch default-camera Reach view) — viewed: the facets and
+  the toy sheen are gone.
+- **Combined-tree checks @ ac2fc33b:** validate_data 0 errors; taskboard; tools test_creatures + test_blender_builds OK;
+  Godot creature 79/1 (test_creature_portraits: unbaked portrait PNGs only), boss 61/0, vowbound 83/0. Blender verify
+  identical for every job changed (each agent ran its own). **Skipped:** coverage (no game/battle or
+  game/progression change), the full manifest (Lead's).
+- **Shots that change** (for the Lead's gate; I wrote no baselines): creature_hullgnaw, creature_drownbell,
+  creature_drownbell_toll, creature_drownbell_rim_broken, creature_bottle_hermit, creature_spar_wraith,
+  creature_cinder_matron, creature_undertows_reach, creature_ilun, creature_kahre, creature_virel, creature_ilun_held,
+  creature_kahre_held, creature_virel_held, battle_boss_intro_hullgnaw, battle_boss_intro_hermit,
+  battle_boss_intro_wraith, battle_boss_intro_matron, battle_boss_intro_drownbell, battle_boss_intro_reach,
+  drownbell_flood, battle_vowbound_out, battle_choreo_vowbound_rise, battle_choreo_summon, battle_vowbound_call,
+  creature_portraits, and any battle shot that seats these models.
