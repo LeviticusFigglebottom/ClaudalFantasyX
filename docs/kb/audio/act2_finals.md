@@ -1,14 +1,11 @@
 # Act II's final cues: the list, the sizes, and how they land (M3-AUD-839)
 
-Git LFS is approved for `assets/audio/music/act2/**` (ADR 0039) but is **not live in the cloud yet**: the network
-blocks `lfs.github.com`. Until the Lead announces it:
-- every final renders from `assets_src/music/act2/<cue>.py` into `assets/audio/music/act2/`, and **only** with
-  `python3 tools/audio/render_all.py --act2` (render_all.py `ACT2_FINALS`). The default run, the 72 MiB budget and
-  the tests don't expect these files.
-- no `.ogg` or `.loop.json` under `assets/audio/music/act2/` is committed (tools/tests/test_act2_finals.py fails if
-  one is tracked before `.gitattributes` routes the path to LFS), and nobody edits `.gitattributes` but the Lead.
-- music.json rows, PROVENANCE rows and the `.import` files land **with** the files, in the LFS commit. Until then
-  this file holds each cue's measured size and loudness.
+**Git LFS is live (ADR 0039, 2026-10-28).** `assets/audio/music/act2/**` is stored in LFS by `.gitattributes`
+(the `.import` and `.loop.json` sidecars stay plain text), and validate_data and test_audio_loudness keep it out of the
+plain-git 5 MB limit and 72 MiB budget. The 16 finals below with a measured size are **committed** (render with
+`python3 tools/audio/render_all.py --act2`, then `godot --headless --path . --import`): 23.65 MiB of LFS objects.
+music.json's 12 zone rows now play `act2/<cue>.ogg`, and the four bosses have stem rows (`start_stems [0]`; their
+encounters and phases wait for the fights). Run `git lfs pull` in a fresh clone (tools/ci_local.sh does it).
 
 The sketches (M3-AUD-804/805: about 60 s loops, `assets/audio/music/<cue>.ogg`, committed) stay as they are and keep
 playing until the finals replace them. A final keeps its sketch's mode, palette and themes (the human hasn't heard

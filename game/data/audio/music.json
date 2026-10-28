@@ -97,6 +97,46 @@
       "file": "res://assets/audio/music/spar_wraith.ogg",
       "_note": "Ch4 boss, the Spar-Wraith on the drowned trader's deck (M3-AUD-08); no battle.encounters row until the encounter exists"
     },
+    "mangrove_drowner": {
+      "stems": [
+        "res://assets/audio/music/act2/mangrove_drowner_p1.ogg",
+        "res://assets/audio/music/act2/mangrove_drowner_p2.ogg"
+      ],
+      "start_stems": [
+        0
+      ],
+      "_note": "Ch10 boss, the Mangrove Drowner (M3-AUD-844; Git LFS). No encounter or phase row until the fight exists; intended: battle.encounters <its id> -> mangrove_drowner, phase `uprooted` -> stems_on [1] over 3 s"
+    },
+    "lamp_engine": {
+      "stems": [
+        "res://assets/audio/music/act2/lamp_engine_p1.ogg",
+        "res://assets/audio/music/act2/lamp_engine_p2.ogg"
+      ],
+      "start_stems": [
+        0
+      ],
+      "_note": "Ch11 boss, the Lamp Engine (M3-AUD-844; Git LFS). No encounter or phase row until the fight exists; intended: phase `opened` (the core exposed) -> stems_on [1] over 3 s"
+    },
+    "avalanche_ram": {
+      "stems": [
+        "res://assets/audio/music/act2/avalanche_ram_p1.ogg",
+        "res://assets/audio/music/act2/avalanche_ram_p2.ogg"
+      ],
+      "start_stems": [
+        0
+      ],
+      "_note": "Ch12 boss, the Avalanche Ram (M3-AUD-845; Git LFS). No phases: stem 2 is the bellow's rage, intended to come in under 50% HP once the fight exists"
+    },
+    "wakefin": {
+      "stems": [
+        "res://assets/audio/music/act2/wakefin_p1.ogg",
+        "res://assets/audio/music/act2/wakefin_p2.ogg"
+      ],
+      "start_stems": [
+        0
+      ],
+      "_note": "Ch15 boss, the Wakefin, in the dark (M3-AUD-845; Git LFS). No encounter or phase row until the fight exists"
+    },
     "cinder_matron": {
       "stems": [
         "res://assets/audio/music/cinder_matron_p1.ogg",
@@ -168,70 +208,70 @@
       "_note": "Ch6 boss, the Stillguard Inquisitor and a raid-hound in the Brine Shoals (M3-AUD-20); no battle.encounters row until the encounter exists; intended: battle.encounters stillguard_inquisitor -> stillguard_inquisitor"
     },
     "ossa_fen": {
-      "file": "res://assets/audio/music/ossa_fen.ogg",
+      "file": "res://assets/audio/music/act2/ossa_fen.ogg",
       "resume": true,
-      "_note": "Ch10, Ossa Fen, the mangrove channels: Act II sketch (M3-AUD-804); no zone row until ch10/ossa_fen exists"
+      "_note": "Ch10, Ossa Fen, the mangrove channels: Act II final (M3-AUD-840; Git LFS; the sketch assets/audio/music/ossa_fen.ogg stays as the fallback); no zone row until ch10/ossa_fen exists"
     },
     "reedhollow": {
-      "file": "res://assets/audio/music/reedhollow.ogg",
+      "file": "res://assets/audio/music/act2/reedhollow.ogg",
       "resume": true,
-      "_note": "Ch10, Reedhollow, the Kirru roost-village: Act II sketch (M3-AUD-804); no zone row until ch10/reedhollow exists"
+      "_note": "Ch10, Reedhollow, the Kirru roost-village: Act II final (M3-AUD-840; Git LFS; the sketch assets/audio/music/reedhollow.ogg stays as the fallback); no zone row until ch10/reedhollow exists"
     },
     "sunken_vey": {
-      "file": "res://assets/audio/music/sunken_vey.ogg",
+      "file": "res://assets/audio/music/act2/sunken_vey.ogg",
       "resume": true,
-      "_note": "Ch11, Sunken Vey, the drowned galleries: Act II sketch (M3-AUD-804); no zone row until ch11/sunken_vey exists"
+      "_note": "Ch11, Sunken Vey, the drowned galleries: Act II final (M3-AUD-841; Git LFS; the sketch assets/audio/music/sunken_vey.ogg stays as the fallback); no zone row until ch11/sunken_vey exists"
     },
     "lowlight": {
-      "file": "res://assets/audio/music/lowlight.ogg",
+      "file": "res://assets/audio/music/act2/lowlight.ogg",
       "resume": true,
-      "_note": "Ch11, the Lowlight temple and the Lamp Engine's pulse: Act II sketch (M3-AUD-804); no zone row until ch11/lowlight exists"
+      "_note": "Ch11, the Lowlight temple and the Lamp Engine's pulse: Act II final (M3-AUD-841; Git LFS; the sketch assets/audio/music/lowlight.ogg stays as the fallback); no zone row until ch11/lowlight exists"
     },
     "keth_pass": {
-      "file": "res://assets/audio/music/keth_pass.ogg",
+      "file": "res://assets/audio/music/act2/keth_pass.ogg",
       "resume": true,
-      "_note": "Ch12, Keth Pass, the mountain route: Act II sketch (M3-AUD-804); no zone row until ch12/keth_pass exists"
+      "_note": "Ch12, Keth Pass, the mountain route: Act II final (M3-AUD-842; Git LFS; the sketch assets/audio/music/keth_pass.ogg stays as the fallback); no zone row until ch12/keth_pass exists"
     },
     "quellan": {
-      "file": "res://assets/audio/music/quellan.ogg",
+      "file": "res://assets/audio/music/act2/quellan.ogg",
       "resume": true,
-      "_note": "Ch12, Quellan, the highland town: Act II sketch (M3-AUD-804); no zone row until ch12/quellan exists"
+      "_note": "Ch12, Quellan, the highland town: Act II final (M3-AUD-842; Git LFS; the sketch assets/audio/music/quellan.ogg stays as the fallback); no zone row until ch12/quellan exists"
     }
 ,
     "ansedra": {
-      "file": "res://assets/audio/music/ansedra.ogg",
+      "file": "res://assets/audio/music/act2/ansedra.ogg",
       "resume": true,
-      "_note": "Ch13, Ansedra, the holy city: gold and lacquer. Act II sketch (M3-AUD-805); no zone row until ch13/ansedra/ansedra.tscn exists"
+      "_note": "Ch13, Ansedra, the holy city: gold and lacquer. Act II final (M3-AUD-843; Git LFS; the sketch assets/audio/music/ansedra.ogg stays as the fallback); no zone row until ch13/ansedra/ansedra.tscn exists"
     }
 ,
     "lamp_archive": {
-      "file": "res://assets/audio/music/lamp_archive.ogg",
+      "file": "res://assets/audio/music/act2/lamp_archive.ogg",
       "resume": true,
-      "_note": "Ch13, the Lamp Archive, the founding truth on paper. Act II sketch (M3-AUD-805); no zone row until ch13/lamp_archive/lamp_archive.tscn exists"
+      "_note": "Ch13, the Lamp Archive, the founding truth on paper. Act II final (M3-AUD-843; Git LFS; the sketch assets/audio/music/lamp_archive.ogg stays as the fallback); no zone row until ch13/lamp_archive/lamp_archive.tscn exists"
     }
 ,
     "peace_wedding": {
-      "file": "res://assets/audio/music/peace_wedding.ogg",
+      "file": "res://assets/audio/music/act2/peace_wedding.ogg",
       "resume": true,
-      "_note": "Ch14, the peace wedding in the Lacquer Court at dusk. Act II sketch (M3-AUD-805); no zone row until ch13/ansedra_lacquer_court/ansedra_lacquer_court.tscn exists"
+      "_note": "Ch14, the peace wedding in the Lacquer Court at dusk. Act II final (M3-AUD-843; Git LFS; the sketch assets/audio/music/peace_wedding.ogg stays as the fallback); no zone row until ch13/ansedra_lacquer_court/ansedra_lacquer_court.tscn exists"
     }
 ,
     "unlamped": {
-      "file": "res://assets/audio/music/unlamped.ogg",
+      "file": "res://assets/audio/music/act2/unlamped.ogg",
       "resume": true,
-      "_note": "Ch15, the open sea at night aboard the bridal barge. Act II sketch (M3-AUD-805); no zone row until ch15/open_sea/open_sea.tscn exists"
+      "_note": "Ch15, the open sea at night aboard the bridal barge. Act II final (M3-AUD-843; Git LFS; the sketch assets/audio/music/unlamped.ogg stays as the fallback); no zone row until ch15/open_sea/open_sea.tscn exists"
     }
 ,
     "pale_rim": {
-      "file": "res://assets/audio/music/pale_rim.ogg",
+      "file": "res://assets/audio/music/act2/pale_rim.ogg",
       "resume": true,
-      "_note": "Ch16, the Pale Rim, the white shallows. Act II sketch (M3-AUD-805); no zone row until ch16/pale_rim/pale_rim.tscn exists"
+      "_note": "Ch16, the Pale Rim, the white shallows. Act II final (M3-AUD-843; Git LFS; the sketch assets/audio/music/pale_rim.ogg stays as the fallback); no zone row until ch16/pale_rim/pale_rim.tscn exists"
     }
 ,
     "drowned_choir": {
-      "file": "res://assets/audio/music/drowned_choir.ogg",
+      "file": "res://assets/audio/music/act2/drowned_choir.ogg",
       "resume": true,
-      "_note": "Ch16, the Drowned Choir. Act II sketch (M3-AUD-805); no zone row until ch16/drowned_choir/drowned_choir.tscn exists"
+      "_note": "Ch16, the Drowned Choir. Act II final (M3-AUD-843; Git LFS; the sketch assets/audio/music/drowned_choir.ogg stays as the fallback); no zone row until ch16/drowned_choir/drowned_choir.tscn exists"
     },
     "tidecup_after": {
       "file": "res://assets/audio/music/tidecup_after.ogg",
