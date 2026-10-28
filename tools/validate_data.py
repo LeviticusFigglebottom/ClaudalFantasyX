@@ -72,7 +72,7 @@ LATTICE_GLOB = "lattice_*.json"
 MAX_BINARY_BYTES = 5 * 1024 * 1024
 # Git LFS paths (ADR 0039; keep in step with .gitattributes): no plain-git size limit there.
 LFS_PREFIXES = ("assets/lfs/",)
-LFS_MUSIC_RE = re.compile(r"^assets/audio/music/act[0-9]+/")
+LFS_MUSIC_RE = re.compile(r"^assets/audio/(music/act[0-9]+|sfx/act3)/")
 BINARY_EXT = {".png", ".jpg", ".exr", ".wav", ".ogg", ".glb", ".blend", ".ttf", ".otf", ".webp"}
 BANNED_SCAN = ["game", "assets_src", "docs/kb/story", "docs/kb/glossary.md"]
 BANNED_SCAN_EXT = {".gd", ".json", ".tres", ".tscn", ".csv", ".md", ".dlg", ".py", ".txt", ".gdshader"}
