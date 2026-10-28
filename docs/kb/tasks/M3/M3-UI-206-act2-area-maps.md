@@ -2,7 +2,8 @@
 id: M3-UI-206
 title: "Act II area maps: every Ch10-16 greybox zone on the field menu's map and the route"
 role: ui
-status: review
+status: blocked
+blocked-by: ADR 0041
 owner_session: claude/ui (ui-menus)
 reviewer: design
 depends_on: [M4-C10-02, M4-C11-02, M4-C12-02, M4-C13-02, M4-C14-02]
@@ -28,3 +29,4 @@ The Lead routed this on 2026-10-27 at 23:37: area maps for act1-chapters' Act II
 - **Rebuilding the data.** It was authored with a one-off script; edit `zone_maps.json` directly from now on.
 
 ## Review log
+- 2026-10-28, ui-menus: **paused (ADR 0041, the human's refocus on Act I at final quality).** What is built stays on claude/ui and merges as is; nothing is reverted. Resume when a new ADR lifts the pause.

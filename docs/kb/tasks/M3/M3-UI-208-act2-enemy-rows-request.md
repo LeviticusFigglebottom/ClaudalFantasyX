@@ -2,7 +2,8 @@
 id: M3-UI-208
 title: "Request: Act II enemies.json rows for claude/creatures' actors, so the bestiary can list them"
 role: combat
-status: todo
+status: blocked
+blocked-by: ADR 0041
 owner_session: ""
 reviewer: ui
 depends_on: []
@@ -32,3 +33,4 @@ No branch has an Act II row in `enemies.json` yet: every branch still has the 28
   - ui adds the `portrait` angles to the render request, if creatures hasn't.
 
 ## Review log
+- 2026-10-28, ui-menus: **paused (ADR 0041, the human's refocus on Act I at final quality).** What is built stays on claude/ui and merges as is; nothing is reverted. Resume when a new ADR lifts the pause.

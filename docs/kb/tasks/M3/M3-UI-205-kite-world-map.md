@@ -2,7 +2,8 @@
 id: M3-UI-205
 title: "The Kite's world map: places by name, a chart, flying with a question first, and searching for secret places"
 role: ui
-status: review
+status: blocked
+blocked-by: ADR 0041
 owner_session: claude/ui (ui-menus)
 reviewer: design
 depends_on: []
@@ -33,3 +34,4 @@ It should also let the player search the chart for hidden places.
 - Docs: `docs/kb/tech/ui.md` "The Kite's world map".
 
 ## Review log
+- 2026-10-28, ui-menus: **paused (ADR 0041, the human's refocus on Act I at final quality).** What is built stays on claude/ui and merges as is; nothing is reverted. Resume when a new ADR lifts the pause.

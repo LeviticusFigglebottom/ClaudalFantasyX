@@ -2,7 +2,8 @@
 id: M3-UI-209
 title: "Request: Act II greybox triggers for the shops, inns and save shrines (Quellan, Ansedra, Hollowmere, and the temple shrines)"
 role: cinematics
-status: todo
+status: blocked
+blocked-by: ADR 0041
 owner_session: ""
 reviewer: ui
 depends_on: [M4-C12-02, M4-C13-02, M4-C14-02]
@@ -46,3 +47,4 @@ The data rows:
   - checks the travel list over the new shrines.
 
 ## Review log
+- 2026-10-28, ui-menus: **paused (ADR 0041, the human's refocus on Act I at final quality).** What is built stays on claude/ui and merges as is; nothing is reverted. Resume when a new ADR lifts the pause.

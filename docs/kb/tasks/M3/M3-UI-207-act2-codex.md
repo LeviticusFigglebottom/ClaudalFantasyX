@@ -2,7 +2,8 @@
 id: M3-UI-207
 title: "Act II codex: the places of Ch10-16 and two peoples, each on its chapter's arrival flag"
 role: ui
-status: review
+status: blocked
+blocked-by: ADR 0041
 owner_session: claude/ui (ui-menus)
 reviewer: narrative
 depends_on: [M4-C10-02, M4-C11-02, M4-C12-02, M4-C13-02, M4-C14-02]
@@ -36,3 +37,4 @@ The story's people (Tobin, Merel, Malcor Venn, the Saints) wait on the beat shee
 - [ ] Story entries for Ch10-16 once the beat sheets (M4-C10-01 onward) add their flags. Examples: the farewell-tide, Tobin and Merel, the wedding.
 
 ## Review log
+- 2026-10-28, ui-menus: **paused (ADR 0041, the human's refocus on Act I at final quality).** What is built stays on claude/ui and merges as is; nothing is reverted. Resume when a new ADR lifts the pause.

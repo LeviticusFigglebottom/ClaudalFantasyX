@@ -2,7 +2,8 @@
 id: M3-UI-210
 title: "The act card names Act III: The Unbinding, for Act II's end (Ch16)"
 role: ui
-status: review
+status: blocked
+blocked-by: ADR 0041
 owner_session: claude/ui (ui-menus)
 reviewer: cinematics
 depends_on: []
@@ -17,3 +18,4 @@ Act II ends at the Drowned Choir with a Rhen voice-over and the act break (act_o
 - [ ] Ch16's `.dlg` calls it (narrative and act1-chapters, with M4-C16-01's beat sheet).
 
 ## Review log
+- 2026-10-28, ui-menus: **paused (ADR 0041, the human's refocus on Act I at final quality).** What is built stays on claude/ui and merges as is; nothing is reverted. Resume when a new ADR lifts the pause.
