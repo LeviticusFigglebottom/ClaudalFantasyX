@@ -276,8 +276,11 @@ that test at this branch's zones.
 - **M3-RND-27** (→ review): already in place. The Ch7 column is the kit piece and the Ch8 storm wall is the Undertow on its block, and no zone keeps a box. **M3-HER-1141** (→ review): `placeholder_audit.py` with its runtime scan lists **nothing for env-art-b** (37 items, all other roles'). **M3-RND-1315** (→ review): the camp fires lick, tear and flicker on `hymn_wind_time` (`game/vfx/fire/flame_tongue.gdshader`, docs `tech/fire.md`), in dusk_gold → ember_orange.
   Checks run: gdlint/gdformat, taskboard --check, Godot `flame` (2, new) and `brine` (5), tools `test_brine_shoals_kit` (31). **MERGE-READY @ 51f5185c.**
 
+- **M3-C09-10** (→ review): the colour script has `ch09_dawn` and the act-break vigil frame. The dawn variant now has its own grade, `corrow_ch09_dawn_environment.tres`, in place of the borrowed Ch8 storm grade. The vigil's own light waits on M3-C09-04. Checks run: Godot `ch09` (12), validate_data, taskboard --check. **MERGE-READY @ f11aca7d.**
+
 ### Render requests
 (Self-rendered per TRACK-RULES; lines are SELF-RENDERED notes.)
+SELF-RENDERED @ f11aca7d: ch09_corrow_road. Viewed: the dawn road is a washed low gold looking east into the sun, slightly warmer than before.
 SELF-RENDERED @ 51f5185c: ch06_brine_camp at clocks 40.0 and 40.37 (scratch). Viewed: the fires read golden-orange with torn tips that move between the clocks. It drifts from its baseline, which predates the fires.
 SELF-RENDERED @ ce10e96a: tamsule_t01_bell_from_the_mouth, tamsule_t03_oruvel_moorings (drift by design: the cyan drop, the 0.8 m column), preview T02 and T05 (scratch), ch07_bell_galleries, ch07_bell_moorings, ch07_tamsule_gantry, ch07_tamsule_mouth — all viewed: the drop reads as held cyan water in every view, still, its light streaks the pool's coping white under it.
 SELF-RENDERED @ ea946ec8: ch07_tamsule_mouth, ch07_tamsule_market, ch07_tamsule_gantry — new shots, read final (Liss and Kerrid are capsules: no field body yet).
