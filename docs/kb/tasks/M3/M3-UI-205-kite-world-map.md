@@ -25,7 +25,8 @@ It should also let the player search the chart for hidden places.
 - [x] Shot `kite_map`: its RENDER-REQUEST is in the live log.
 - [ ] Baseline approved once the render server renders it.
 - [x] Wired into the field menu behind `kite_flying` (the Lead, 2026-10-27 23:37): a row after Map, the panel a row taller while it shows, a flight closing the menu; `test_field_menu_kite.gd`; shot `field_menu_kite` (RENDER-REQUEST in the live log).
-- [ ] Design places Act III's secret places in `secrets` and its later destinations (Ansedra, Lowlight, the rest) once those zones exist.
+- [x] Act II's places (act1-chapters' zones): Reedhollow, Lowlight, Quellan and Hollowmere, each on its arrival flag. Ansedra stays off, since the party are heretics there after Ch14.
+- [ ] Design places Act III's secret places in `secrets`, and Act III's towns as their zones land.
 
 ## Notes
 - The four Act I destinations (Haluna, Pemakar, Tamsule, Corrow) stand in so the page can be tested and shot. Their chart positions are a first guess; Design moves them.
