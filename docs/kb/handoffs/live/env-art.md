@@ -595,6 +595,10 @@ Read this section first; everything below it is history. The branch is `claude/e
     an orange capsule (a model-less actor) fills the lower left (act1-chapters').
   - SELF-RENDERED @ 7a115247: brightwater_b02_awning — drift 0.0107, intended: the passengers' bundles fold and
     bind (d4967aee, 10-27) since its 10-24 baseline. Re-approve on the next gate.
+  - SELF-RENDERED @ a7dca885: slice_haluna_villagers_village, slice_causeway_head, slice_causeway_harrier_view —
+    pass (rmse 0). slice_beach_h05_asha / h06_toma — drift 0.049 / 0.048, only on the palms and the drying rack's
+    poles (their wind sway's phase over a 270–375-frame cutscene capture); the frames are otherwise identical, no
+    dressing change. Flag for the Lead: those two may need a fixed wind time in their setup.
   - **M3-ENV-745 (FAST-TRACK to slice-polish):** Ch3's First Verse cutscene (`first_verse.tscn`, shot
     `slice_verse_steps`) is CSG primitives (island, dome, steps, pillars, flat plane sea) under the real heroes.
     Stage it on env-art's final shrine; the task maps the marks onto the real steps.
