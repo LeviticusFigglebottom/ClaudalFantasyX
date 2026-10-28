@@ -472,6 +472,11 @@ class TestDialoguePolish(unittest.TestCase):
         self.assertIn(int(s2[1]), villager_hair.SLOTS_SPARSE)
         self.assertEqual((int(s2[0]), int(s2[2])), (1, 3))
         self.assertEqual(u2, [(0.1, 0.9), villager_hair.GREY_U, (0.1, 0.9)])
+        every = villager_hair.style({"kind": "cropped", "grey_strands": "all", "grey_width_k": 0.5})
+        w3, s3, u3 = every._grey_strands(w, slots, mats, (0.1, 0.9))
+        self.assertEqual(list(w3), list(w * 0.5))
+        self.assertTrue(all(int(q) in villager_hair.SLOTS_SPARSE for q in s3))
+        self.assertEqual(u3, [villager_hair.GREY_U] * 3)
 
     def test_cord_knots_and_narrow_tails(self):
         import numpy as np

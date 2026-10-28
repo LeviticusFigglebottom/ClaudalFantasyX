@@ -31,7 +31,8 @@ STILL = (0.0, 0.0, 0.0, 0.0)  # no wind on short or tied hair
 CARD_V = (0.62, 0.96)
 CARD_U = (0.22, 0.78)
 GREY_U = (0.0, 1.0)  # `grey_strands`: a grey card takes its whole sparse column, feathered edges and all
-GREY_WIDTH_K = 0.7  # `grey_strands`: a grey card's width against a dark one's
+GREY_WIDTH_K = 0.7
+GREY_V_CROPPED = (0.30, 0.92)  # `grey_strands` on cropped hair: the strand samples more than the tip zone (CARD_V)  # `grey_strands`: a grey card's width against a dark one's
 
 
 def _still(t: float) -> tuple:
@@ -49,7 +50,8 @@ def _emit(part: Part, surface, paths: np.ndarray, widths, slots, rng, taper: flo
         side = np.cross(T, nrm)
         a = rng.uniform(-twist, twist)
         nrm = nrm * math.cos(a) - side * math.sin(a)
-        _ribbon(part, pts, nrm, float(widths[c]), int(slots[c]), _still, taper=taper, v_range=v_range,
+        _ribbon(part, pts, nrm, float(widths[c]), int(slots[c]), _still, taper=taper,
+                v_range=v_range[c] if isinstance(v_range, list) else v_range,
                 mat="hair" if mats is None else mats[c], u_range=u_range[c] if isinstance(u_range, list) else u_range)
 
 
@@ -150,9 +152,11 @@ class HairStyle:
         """M3-CHR-538 (optional `grey_strands`): a grey card samples a sparse atlas column over its whole width and is
         `grey_width_k` as wide, so salt-and-pepper reads as single grey strands through the dark hair, not as solid
         light chips. Draws nothing from the rng, so the cards' layout is unchanged; without the key it is a no-op."""
-        if not self.p.get("grey_strands", False):
+        mode = self.p.get("grey_strands", False)
+        if not mode:
             return widths, slots, u_range
-        g = np.array(mats) == "hair_grey"
+        # "all": every card is a strand (thin white hair over a bare scalp, M3-CHR-536), not only the grey share
+        g = np.ones(len(mats), dtype=bool) if mode == "all" else np.array(mats) == "hair_grey"
         k = float(self.p.get("grey_width_k", GREY_WIDTH_K))
         sparse = np.array([SLOTS_SPARSE[i % len(SLOTS_SPARSE)] for i in range(len(mats))])
         return (np.where(g, widths * k, widths), np.where(g, sparse, slots),
@@ -241,6 +245,8 @@ class HairStyle:
                 mats = self._mats(rng, n)
                 widths, slots, u_rng = self._grey_strands(widths, slots, mats,
                                                           CARD_U if self.kind == "cropped" else (0.1, 0.9))
+                if isinstance(u_rng, list) and self.kind == "cropped":  # a cropped strand: more of the column
+                    v_rng = [GREY_V_CROPPED if u == GREY_U else v_rng for u in u_rng]
                 _emit(part, scalp, paths, widths, slots, rng, 0.45, v_rng, mats, 0.3, u_rng)
         elif self.kind == "bun":
             self.hairline_row(part, scalp, lm, rng, int(p.get("hairline_cards", 70)), (0.03, 0.05))
