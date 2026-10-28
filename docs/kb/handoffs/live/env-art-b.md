@@ -226,6 +226,16 @@ that test at this branch's zones.
   checks). big14 took an earlier commit. Any head from e8944d6c on is green (`test_pemakar_kit` OK at 5c077662).
   **MERGE-READY @ 5c077662** (it holds every earlier MERGE-READY item).
 
+- **Merged lead/gate-big14 (8707ff90), 296c1248.** Each conflict was decided by ancestry (whichever side already
+  held all of the other's commits on that file). For encounters.json, this branch's Ch5–Ch9 arena fields plus
+  integration's Act II rows. The storm far-plane test now frees its zone (the runner's new leak check).
+  `test_zone_map_pois` has 8 ch04/haluna_wake failures that **also fail at 8707ff90** (integration's, act1-chapters'
+  or UI's), not this branch's.
+- **Inventory (M3-HER-1141), re-audited on the merged tree:** 2 rows left. **M3-ENV-1320** fixes `Virel` (creatures-b's
+  model now exists; it is placed in the crown chamber). That leaves `Column` only, still blocked on Rendering's
+  M3-RND-26 (todo).
+- **MERGE-READY @ 22b289bf.**
+
 ### Render requests
 (Self-rendered per TRACK-RULES; lines are SELF-RENDERED notes.)
 SELF-RENDERED @ ea946ec8: ch07_tamsule_mouth, ch07_tamsule_market, ch07_tamsule_gantry — new shots, read final (Liss and Kerrid are capsules: no field body yet).
@@ -235,3 +245,4 @@ SELF-RENDERED @ 749bfc48: battle_arena_ash_terrace_lanternfall (votive lamps), c
 SELF-RENDERED @ 8d198f1e: 53 arena angles (scratch hint rig) before and 30 after the fixes, all viewed: ash_terrace_lanternfall, salvage_camp_burning, seawall_stairhead_storm/hoist/surge, coilspire_headland_path, ashcrown_forecourt_day, ashcrown_anvil_court; 44 player-height walk views across the 8 zones; ch06_brine_camp (the zone burns), ch07_tamsule_market/mouth. A headland scrub ring out to 90 m was viewed and reverted (clumps floated).
 SELF-RENDERED @ 6cd17ce3: battle_boss_intro_reach, battle_ch08_stair_hold, ch09_corrow_strand, ch05_pemakar_harbour, ch05_pemakar_crown (after the big13 merge), all viewed; the Lead's three gate notes are fixed.
 SELF-RENDERED @ f51f81f2: battle_boss_intro_matron (the anvil court), battle_boss_intro_reach (the surge state, landfall storm), battle_ch08_stair_hold (the storm state), all viewed.
+SELF-RENDERED @ 22b289bf: Virel in the Coilspire crown chamber (three scratch views) and ch08_coilspire_storm/_hall (unchanged), viewed.
