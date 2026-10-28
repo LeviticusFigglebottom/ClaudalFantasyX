@@ -51,6 +51,19 @@ CreatureActor and the validator are theirs too (kit or tool changes go to them a
     test_battle_act1_ability_vfx fails on tannin_archer, root_crab and fen_leech (Act II creatures; it fails without my
     change too).
 
+- **12:40, the Lead's 12:11 rows (act1_gpu_qa.md on gpu/act1-qa-2), MERGE-READY @ 066cc8b9:**
+  - **Row 12 (Moll a grey capsule): fixed.** His actor (characters' M3-CHR-507) is wired as a battle_sandbox.json
+    stand-in `scene` (enemies.json `model` only takes creature scenes), yaw 90, height 1.86; the Ch6 intro row gets
+    `fit_margin` 1.1 so the party stays clear of the HUD. SELF-RENDERED battle_boss_intro_inquisitor and
+    battle_arena_camp — viewed: Moll and the hound facing the party, no capsule. M3-CHR-523 to review.
+  - **Row 30 (capsules in drowned_choir_ring, iskarra_spire_crown, undertow_cage, undertow_heart(_letting),
+    keth_seep_terrace): record only.** No encounter at all uses those arenas yet (later acts, paused by ADR 0041).
+  - **The placeholder audit now lists nothing for creatures-b.** Ilun, Kahre and Virel also carry their actor scenes
+    as battle_sandbox.json stand-in `scene` keys (redundant with creatures.json; the audit reads only those), so the
+    false positive is gone without touching qa's tool; M3-CRB-012 stays as the proper fix.
+  - **Checks:** validate_data 0/0; gdlint, gdformat; Godot boss 76/0, creature_bosses 6/0 (new: every Act I boss,
+    Moll included, and Vowbound draws a real body), ch06 5/0, vowbound 87/0.
+
 ## Scope (from game/data, 2026-10-28)
 - **Bosses** (enemies.json rows with phases, or a choreo.json `boss_intro` row): `hullgnaw` (Ch1), `drownbell`
   (the slice, Ch3), `bottle_hermit` and `spar_wraith` (Ch4), `cinder_matron` (Ch5), `undertows_reach` (Ch8).
