@@ -535,6 +535,35 @@ Ch4–Ch9 onward. `m2-slice.md` beside this file is the history up to the 2026-1
   - **Next:** Neme's table (rendering now), then the Ch1 batch: seven scene stills plus the raft, the Underway tower,
     the Hullgnaw intro, and the causeway route and disc arenas.
 
+## NEW SESSION (2026-10-28, session_01F3vrUPLtDQMGSRrMHJtpz1, replacing session_01KZCgTq per ADR 0042)
+- **Merged** `lead/gate-ft-beach` @ 93d0741e (a fast-forward: it already carried this branch and big14), then the
+  integration branch @ eca37107 (ADR 0042 and the Lead's docs). No conflicts, re-imported, and `git lfs pull` run.
+  - **Gotcha:** this container's clone was shallow. A merge then picks a stale base and shows about 48 false
+    conflicts. Run `git fetch --deepen=400 origin <branches>` first.
+  - **Tests on the merged tree:** haluna 65, ch01 21, all 0 failed. fp_ and prologue each had 1 failure, the same
+    stale test (below, fixed).
+- **slice_verse_steps, re-framed (the Lead's queue item 2).**
+  - **Cause 1.** The approved baseline showed Toma's back and shield filling S06. Behind it, a CutsceneStage
+    `clip_marks` entry was a placeholder, so the actor glided to the mark and the clip never played. Rhen's and
+    Toma's `sit_steps` have since been built, but they stood.
+    - **Now:** the mark places the actor, and a built clip plays there (`CutsceneSequencer._cue_anim`).
+    - The QA motion audit counts such a clip as real.
+    - Ch9's layout clip_marks get the same behaviour once their clips are built.
+  - **Cause 2.** S06 looked east into the portal, so Asha showed through the doorway. It is now staged per haluna.md
+    §5.3:
+    - both seated on real treads, Rhen a tread below Toma, facing south-west to the sea;
+    - the camera at the steps' south end;
+    - the sea behind them and the sun frame-left.
+    - Toma's `look_at rhen` (line 013) turns him to the lens. `toma_seaward` moved with him.
+    - S10 now aims at Rhen's seated face from in front of him.
+  - The shot holds line 014. **New stills:** `slice_verse_threshold` (S09, line 030) and `slice_verse_recognition`
+    (S10, line 031), both at time_scale 8.
+- **Stale test fixed:** `test_fp_prologue::test_a_vigil_takes_its_body_when_its_hero_has_one` asserted that Liss
+  waits. Liss has had her body since M3-HER-100, so the test now follows hero_motion.json.
+- **SELF-RENDERED @ 8680df93:** slice_verse_steps: drift (intended). Viewed: the pair seated on the steps, Toma
+  turned to Rhen and facing the lens, Rhen in three-quarter profile, the sea and sunset behind them, nothing through
+  the portal. S09 and S10 are rendering next.
+
 ### Render requests
 SUPERSEDED RENDER-REQUEST @ fdec3cc6: slice_prologue_vigil_line, slice_beach_h05_asha, slice_beach_h06_toma, slice_haluna_villagers_village, slice_causeway_head, slice_causeway_harrier_view, haluna_h01_village_from_sea, haluna_h02_tidewall_lane, haluna_h04_dock, haluna_h07_chapel_court, haluna_h10_dock_night, shrine_s01_approach, shrine_s02_threshold, shrine_s03_overview, shrine_s04_lip, shrine_s05_side_pool, drownbell_flood, battle_boss_intro_drownbell, battle_arena_causeway, field_causeway_dolly, boot_title; why: M2-FP-102..109, the human's playtest round (real cast and held poses in the prologue and Cutscene A, live villagers and wildlife, the final causeway), plus the greyscale audit of every slice beat. The six slice_* shots are new (no baseline yet).
 - **Known red until the render lands:** the six new `slice_*` shots have no baseline yet, so the tools test
