@@ -687,6 +687,5 @@ yet (the Lamp Engine `boss_tall`, the Avalanche Ram `boss`). An encounter's own 
 - `boss_intro.by_enemy` also has the Mangrove Drowner (`boss_tall`) and the Wakefin (`boss`).
 - `bosses.mangrove_drowner.phases.uprooted`: the Drowner tears free of its tree and stands on its roots (a lift and a
   rock while its own clip plays; the party braces in turn). Same machinery as the Lamp Engine's `opened`.
-- **Greybox Act II boss arenas** (`tools/arenas/gen_act2_arenas.py`): `fen_roots_dusk`, `lowlight_engine_hall`,
-  `keth_terrace_wall` and `night_sea_barge`, each in its chapter's colour-script grade. `BattleArena.apply_scene(battle,
-  path)` puts any arena into a battle (a shot's, when no encounter names it yet). Each keeps a `Sea` (the contract).
+- The Act II boss arenas are env-art's final kits (`ossa_fen_roots`, `lowlight_engine_hall`, `keth_seep_terrace`,
+  `bridal_barge_night`). Encounters name them in `arena` (request M3-BPR-419).

@@ -17,15 +17,15 @@ side.
 ## What to keep
 | Boss (creatures' scene) | Enemy id | Phase id | Arena id (encounters.json `arena`) | Staged |
 |---|---|---|---|---|
-| The Mangrove Drowner (Ch10) | `mangrove_drowner` | `uprooted` (its creatures.json phase) | `fen_roots_dusk` | intro (boss_tall), tearing-free moment |
-| The Lamp Engine (Ch11) | `lamp_engine` | `opened` | `lowlight_engine_hall` | intro (boss_tall), the opening moment |
-| The Avalanche Ram (Ch12) | `avalanche_ram` | any | `keth_terrace_wall` (your Keth Pass RamArena: the shelf under the seeping wall) | intro, side-on framing, charge gather plus camera pressure |
-| The Wakefin (Ch15) | `wakefin` | any | `night_sea_barge` | intro, blade-under gather plus camera pressure (no light) |
+| The Mangrove Drowner (Ch10) | `mangrove_drowner` | `uprooted` (its creatures.json phase) | `ossa_fen_roots` (env-art M3-ENV-718) | intro (boss_tall), tearing-free moment |
+| The Lamp Engine (Ch11) | `lamp_engine` | `opened` | `lowlight_engine_hall` (env-art) | intro (boss_tall), the opening moment |
+| The Avalanche Ram (Ch12) | `avalanche_ram` | any | `keth_seep_terrace` (env-art M3-ENV-717; your Keth Pass RamArena: the shelf under the seeping wall) | intro, side-on framing, charge gather plus camera pressure |
+| The Wakefin (Ch15) | `wakefin` | any | `bridal_barge_night` (env-art) | intro, blade-under gather plus camera pressure (no light) |
 
 - A charged skill (a skill row's `charge`) reads on stage automatically (BattleTelegraph or the boss row).
 - The Ch10–12 regulars need nothing: the model fit, spacing and line-up work from their creature models.
-- If a story place needs a different arena, say so here, and battle-presentation adds a greybox for it
-  (tools/arenas/gen_act2_arenas.py).
+- The arenas are env-art's final kits (claude/env-art, rendered on the Lead's gate). If a story place needs a
+  different one, ask env-art.
 
 ## Acceptance criteria
 - [ ] The Act II boss encounters use the enemy, phase and arena ids above (or a reply here naming the new ones).

@@ -55,12 +55,6 @@ static func apply(battle: Node, db: BattleDB, encounter: StringName) -> String:
 	if not ResourceLoader.exists(path):
 		push_warning("BattleArena: %s names a missing arena %s" % [encounter, path])
 		return ""
-	return apply_scene(battle, path)
-
-
-## Puts the arena scene at `path` into `battle` (an encounter's, or a shot's: M3-BPR-418's Act II arenas have no
-## encounters yet). Returns `path`.
-static func apply_scene(battle: Node, path: String) -> String:
 	var arena := (load(path) as PackedScene).instantiate()
 	var holder := Node3D.new()
 	holder.name = String(ARENA_NODE)
