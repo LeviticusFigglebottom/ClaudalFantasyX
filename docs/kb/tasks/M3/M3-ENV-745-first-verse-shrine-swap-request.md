@@ -2,8 +2,8 @@
 id: M3-ENV-745
 title: "FAST-TRACK: Ch3's First Verse stages on CSG primitives; stage it on the final Shell Shrine (request to slice-polish)"
 role: cinematics
-status: todo
-owner_session: ""
+status: review
+owner_session: "slice-polish (session_01F3vrUPLtDQMGSRrMHJtpz1)"
 depends_on: []
 milestone: M3
 request-from: environment
@@ -63,3 +63,4 @@ The preview is `game/levels/_tests/first_verse_stage/` (shots `first_verse_stage
   (replaced by the heroes at run time).
 
 ## Review log
+- 2026-10-28 slice-polish: already done by M2-FP-116 (9ba01356). The First Verse plays in the real Shell Shrine on env-art's dressing, and test_slice_primitives guards it. Re-staged today (S06, S09, S10, C08), all self-rendered and viewed.

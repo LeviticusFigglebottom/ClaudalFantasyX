@@ -61,7 +61,7 @@ func test_the_zone_walks_frames_and_holds_rhen() -> void:
 	var col := zone.collision
 	print("    haluna collision: %d ms, %d shapes" % [col.build_msec, col.shape_count])
 	assert_true(col.build_msec < BUILD_BUDGET_MSEC, "collision built in %d ms" % col.build_msec)
-	for kind: String in ["house_tile_a", "order_chapel", "tidewall_straight", "dock_haluna", "banyan_placeholder"]:
+	for kind: String in ["house_tile_a", "order_chapel", "tidewall_straight", "dock_haluna", "banyan_hero"]:
 		assert_true(int(col.kinds.get(kind, 0)) > 0, "%s has collision" % kind)
 	assert_false(col.kinds.has("tidewall_gate"), "the lane gates stay open")
 
