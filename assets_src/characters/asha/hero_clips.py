@@ -4459,6 +4459,8 @@ PELL_STORM_STRAIGHTEN = 15.0  # degrees: storm_call straightens the neck's S by 
 PELL_LISTEN = (15.0, 10.0, 8.0)  # listen_tilt: the tilt to his right, the turn to his right, the neck's extension
 PELL_BOW = 10.0  # back_to_sea: the head bowed
 PELL_ELBOW_MAX = 155.0  # degrees: the most the reach search bends an elbow
+PELL_THROAT_HAND = (45.0, 90.0, 30.0)  # storm_call's palm: fingers up the throat, the palm (-x) on it (searched)
+PELL_THROAT_FRONT = 0.075  # m: the throat's front off the neck's axis (the thick neck), where the palm lies
 PELL_THROAT_ELBOW = 0.22  # m: storm_call's elbow stays this far under the shoulder, tucked (the mantle's cap stays)
 PELL_STEP_DOWN = (0.30, 0.22)  # descend_rocks: each step's drop and its reach forward (m)
 PELL_CROUCH = 25.0  # defend: the knees' bend
@@ -4633,10 +4635,10 @@ def _pell_throat_hand(sk: Skeleton, persona: dict, pose: dict) -> dict:
     """storm_call's right hand: the wrist below and in front of the throat's base, the palm turned flat onto it."""
     _g, t = _loco_fk(sk, pose)
     n4, n5 = t["DEF-spine.004"], t["DEF-spine.005"]
-    throat = n4 + (n5 - n4) * 0.35 + np.array([0.0, 0.0, 0.055])
-    target = throat + np.array([-0.035, -0.07, 0.035])
+    throat = n4 + (n5 - n4) * 0.35 + np.array([0.0, 0.0, PELL_THROAT_FRONT])
+    target = throat + np.array([0.0, -0.05, -0.008])
     out = dict(_pell_reach(sk, pose, "R", target, "storm_call", PELL_THROAT_ELBOW))
-    out["DEF-hand.R"] = (-20.0, 60.0, 40.0)
+    out["DEF-hand.R"] = PELL_THROAT_HAND
     return out
 
 

@@ -347,6 +347,9 @@ def main() -> int:
     units = asha_face_shapes.donor_unit_shapes(unit_delta, used_h, Vhead, np.array(head.T), masks["lower"],
                                                lip_frame, lm.h / 0.222)
     shapes = asha_face_shapes.build_shapes(face, lm, Vhead, np.array(head.T), masks, units)
+    for name in shapes:  # look-dev review: the shared shapes move little on the Kirru head's flat brow and lids
+        base = name[:-2] if name[-2:] in ("_L", "_R") else name
+        shapes[name] = shapes[name] * float(kp["shape_gain"].get(base, 1.0))
     # the cards ride the skin under them (Toma's method); the whiskers also lever about their roots (pell.md §5)
     near_c = bt.nearest_index(Vhead[ci], Vhead[:n_skin]) if len(ci) else np.zeros(0, dtype=int)
     near_root = bt.nearest_index(whisk_root, Vhead[:n_skin]) if n_whisk else np.zeros(0, dtype=int)

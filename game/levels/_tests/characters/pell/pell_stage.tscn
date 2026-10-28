@@ -94,7 +94,8 @@ face_poses_path = "res://game/levels/_tests/characters/pell/pell_face_poses.json
 hide_nodes = Array[StringName]([&"NameShellCarved"])
 wind = Vector4(2.4, 0, 1.2, 0.3)
 wind_time = 1.7
-face_distance = 0.72
+face_distance = 0.85
+face_aim_drop = -0.035
 face_yaw_degrees = 30.0
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]

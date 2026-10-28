@@ -89,6 +89,17 @@
       ]
     },
     "seed": 43,
+    "shape_gain": {
+      "_about": "Look-dev review: the 40 shared shapes scaled on the Kirru head (its brow and lids are flat, so the shared deltas read faint); unlisted shapes 1.",
+      "brow_inner_up": 1.8,
+      "brow_outer_up": 1.8,
+      "brow_down": 1.6,
+      "lid_wide": 1.4,
+      "cheek_raise": 1.4,
+      "mouth_frown": 1.5,
+      "mouth_smile": 1.3,
+      "nose_sneer": 1.4
+    },
     "otter_head": {
       "_about": "M3-CHR-506 look-dev (review): the Kirru head surface the donor head's skin is projected onto (pell_head.KirruWarp). Centres are metres from the eyes' plane (x left, y back, z up: Blender's frame, the donor eye's y and z as the origin), radii metres. A broad, low cranium; a short broad muzzle flowing out of the skull line with the nose pad and the whisker pads on it; full jowls and a chin under the mouth into a thick neck (`neck_scale`: the neck widened at the notch and under the jaw). The skin moves along rays from `centre` (one-to-one), smoothed over `smooth_m`, keeping `detail_keep` of the donor's own relief away from the eyes and the mouth. The eyes, the mouth and the ears ride rigidly to their spots.",
       "cranium": [[0.0, 0.065, 0.0], [0.095, 0.1, 0.062]],
@@ -284,7 +295,7 @@
       0.06,
       0.11
     ],
-    "width_m": 0.0026,
+    "width_m": 0.0036,
     "droop": 0.12,
     "colour": "#D8D0C0",
     "smile_push_m": 0.006,
