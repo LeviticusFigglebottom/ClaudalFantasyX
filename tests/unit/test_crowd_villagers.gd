@@ -270,12 +270,13 @@ func test_brine_shoals_crowd_comes_alive_in_the_real_zone() -> void:
 
 
 ## ZoneCast (M3-CIN-1217) dresses Ashcrown's tender as Haluna's Reed; the crowd row replaces that body with the crowd
-## person (ADR 0152: Haluna's faces stand for no other town), so one body shows and the cutscenes' clips find it.
+## person (ADR 0152: Haluna's faces stand for no other town), so one body shows and the cutscenes' clips find it. (Once
+## GreyboxZone adds its own layer, M3-CRE-657, the zone has done it by the time `wire` returns that layer.)
 func test_a_crowd_person_replaces_the_zone_cast_villager() -> void:
 	var zone := (load(ASHCROWN) as PackedScene).instantiate() as Node3D
 	_holder().add_child(zone)
 	var tender := zone.get_node_or_null(^"CutsceneStage/Actors/tender")
-	assert_true(tender != null and tender.get_node_or_null(^"Cast") != null, "ZoneCast cast the tender")
+	assert_true(tender != null, "the tender's stage actor")
 	var layer := VillagerLayer.wire(zone, &"ch05/ashcrown")
 	layer.build()
 	if tender != null:

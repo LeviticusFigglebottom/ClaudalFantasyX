@@ -121,8 +121,12 @@ func build() -> int:
 	return villagers.size()
 
 
-## Adds a layer for `zone_id` under `zone` (after the zone has placed any villagers of its own) and builds it.
+## Adds a layer for `zone_id` under `zone` (after the zone has placed any villagers of its own) and builds it; a zone
+## that already has its layer (one GreyboxZone adds, M3-CRE-657) keeps it, so no villager shows twice.
 static func wire(zone: Node3D, zone_id: StringName) -> VillagerLayer:
+	var existing := zone.get_node_or_null(^"VillagerLayer") as VillagerLayer
+	if existing != null:
+		return existing
 	var layer := VillagerLayer.new()
 	layer.name = "VillagerLayer"
 	layer.zone_id = zone_id
