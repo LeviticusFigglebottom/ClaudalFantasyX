@@ -69,7 +69,8 @@
     "grey": "#9C968E",
     "grey_share": 0.4,
     "underpaint": "#36322E",
-    "brow": "#34302C"
+    "brow": "#34302C",
+    "grey_strands": true
   },
   "_eyes": {
     "iris": "#2E1E12"

@@ -51,9 +51,10 @@
     "stubble": 0.7,
     "stubble_grey": 0.9,
     "fingertip_oil": 0.4,
-    "scalp_density": 0.55,
+    "scalp_density": 0.5,
     "seed": 136,
-    "lip": "#7A4A40"
+    "lip": "#7A4A40",
+    "stubble_shadow": 0.2
   },
   "_hair": {
     "kind": "cropped",
@@ -73,9 +74,11 @@
     "colour": "#BDB6AA",
     "grey": "#E2DED6",
     "grey_share": 0.6,
-    "underpaint": "#A49E94",
+    "underpaint": "#B39A86",
     "brow": "#8E877C",
-    "spec": "#CFC8BC"
+    "spec": "#CFC8BC",
+    "grey_strands": "all",
+    "grey_width_k": 1.3
   },
   "_eyes": {
     "iris": "#3A2A1A"
