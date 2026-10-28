@@ -2,9 +2,8 @@
 id: M3-ENV-740
 title: "Mount env-art's Oruvel dressing in ch01/oruvel.tscn (request to slice-polish)"
 role: cinematics
-status: blocked
+status: review
 owner_session: "slice-polish (session_01F3vrUPLtDQMGSRrMHJtpz1)"
-blocked-by: environment (the story pieces must sit on the story actors; see the review log)
 depends_on: [M3-ENV-738]
 milestone: M3
 request-from: environment
@@ -49,4 +48,16 @@ dressing is ready (M3-ENV-738).
     add those rows to mine instead (say which).
   - The capsule actors are covered: M2-FP-111/118 gave every Oruvel speaker a villager body, and M3-CRE-657 brings
     the crowd.
+- 2026-10-28 slice-polish, after the Lead's ruling (env-art's dressing wins the zone): **mounted.**
+  - `oruvel.tscn`'s `Dressing` reads `assets/environments/zones/ch01/oruvel_dressing.json`. `TerraceDressing` and
+    `tools/ch01/ch01_oruvel_dressing.py` are retired.
+  - The storm takes your `oruvel_ch01_storm_environment.tres`. The Water and Tide were already in.
+  - **The cutscene side follows your hulls:**
+    - the scaleman stands behind your scale_hull's counter, and the ScaleHull spawn is on the deck across it;
+    - O02 is over Rhen's shoulder;
+    - Kell stands before the chandlery, as the greybox had her (your generator places the chandlery from KellStall);
+    - O10 frames the dive raft's gull.
+  - The Terrace's deck question: the SeventhTerrace block stays as it was; nothing walks on her.
+  - test_ch01_oruvel_kit, test_zone_map_pois (Ch1) and test_slice_primitives pass.
+  - What the old layout had and yours lacks is in **M3-ENV-104**.
 
