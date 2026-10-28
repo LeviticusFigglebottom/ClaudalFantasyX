@@ -614,6 +614,15 @@ class TestDialoguePolish2(unittest.TestCase):
     FEATHER = {"sabe", "ione", "hobb"}
     BROWS = {"fenn", "marra", "osu", "sabe"}
 
+    def test_opt_ins(self):
+        for npc in NPCS:
+            p = params(npc)
+            with self.subTest(npc=npc):
+                self.assertEqual(p["_costume"].get("top", {}).get("armhole_cut") == "tank", npc in self.TANK)
+                self.assertEqual("hairline_feather" in p["_hair"], npc in self.FEATHER)
+                self.assertEqual("brow_strands" in p["_skin"], npc in self.BROWS)
+                self.assertEqual("brow_params" in p["_hair"], npc in self.BROWS)
+
     def test_tank_cut_puts_straps_over_the_shoulders(self):
         # the default sleeveless line is unchanged without the key; with it, a strap per side crosses the shoulder
         # crest (over the shoulder pivot, inside the acromion) and the panel keeps the default armhole floor
