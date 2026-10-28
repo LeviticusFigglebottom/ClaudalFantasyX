@@ -440,3 +440,17 @@ SELF-RENDERED @ 24bc20e15 (the shots' scratch interactable left of the cue): fie
   - **New guard:** test_dialogue_box fails when an Act I speaker's model lands without a baked portrait.
   - **Not modelled yet:** Ivo (M3-CHR-540, a Stillguard variant) and Pell. They show no portrait (no initial letter) until they land.
 SELF-RENDERED @ a2882374b: portraits for all 20 NPCs (contact sheets of neutral, plus Tavi's and Marra's five emotions). What I saw: faces centred, hair and headwear inside the frame, and each emotion reads. The child's portrait frames a little smaller (a smaller body), which is acceptable.
+- 2026-10-28 05:15: Liss's soft fringe (M2-CHR-521) merged at 201cde902. Her five portraits were rebaked (296ceb696) and compared with the old ones: the fringe now falls in soft clumps. characters' later skirt floor drape (M2-CHR-522) is a kneel-only change and touches no portrait, so nothing was rebaked for it.
+MERGE-READY @ 296ceb696: the Lead's 04:02 list.
+- big13 merged.
+- Field HUD legibility over Haluna, Oruvel, Tamsule and Corrow at night (four new shots, the tip card below the title band, the cue words outlined).
+- Act I input glyphs (test_input_parity_glyphs covers every prompt; the tether line fixed).
+- Dialogue portraits: the Stillguard, 20 townsfolk, and Liss rebaked.
+Checks:
+- Full suite at 296ceb696: 3040 run, 2 failed, both outside UI and both present before this work:
+  - test_hero_field_snaps (Asha and Rhen snap in tamsule_bell_galleries, coilspire and drowned_choir; hero-motion);
+  - test_qa_capsules (ossa_fen shows Pell as a capsule; Pell is not modelled yet).
+- gdlint and gdformat clean; validate_data 0 errors; dlgc --check clean.
+- Shots self-rendered and viewed (see the SELF-RENDERED lines above).
+Expected baseline moves at the Lead's gate: field_tip_card (the card sits lower), and the four new field_hud_over_* shots.
+Skipped: coverage (no game/battle or game/progression change).
