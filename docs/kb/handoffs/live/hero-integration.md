@@ -855,3 +855,48 @@ MERGE-READY @ c47eaa037 (+ this log): **big13 merged (003fb560); the encounter g
     real frames, for the slice and Ch1 fights.
 - **SELF-RENDERED @ 003fb560:** ch07_bell_galleries and ch08_corrow_stair, both pixel-identical to big13's
   approved baselines. No capsule is visible; Liss is too small to read at those distances.
+
+### TRIAL MERGE, 2026-10-28 ~05:00
+TRIAL MERGE @ integration 6b89f4a6: env-art af40b3af, env-art-b ce8d1e3d, creatures 0d50432b, creatures-b 6a48fcb7, characters 9ea8d3d7, ui 4ffa64bd, battle-presentation 1daa0fa7, act1-chapters 4e122798, m2-slice 9f31066b, audio 1e237a01, hero-integration 470e7b5e
+- **env-art-b** (ce8d1e3d): 1 conflicted file(s); 1 resolved by union (append-only files).
+- **creatures** (0d50432b): 2 conflicted file(s); 2 resolved by union (append-only files).
+- **characters** (9ea8d3d7): 2 conflicted file(s); 1 resolved by union (append-only files):
+  - `tools/dev/blender_builds.json`: characters vs env-art vs env-art-b vs creatures vs creatures-b (the trial keeps the merged side)
+- **ui** (4ffa64bd): 4 conflicted file(s); 3 resolved by union (append-only files):
+  - `tools/dev/blender_builds.json`: ui vs env-art vs env-art-b vs creatures vs creatures-b vs characters (the trial keeps the merged side)
+- **battle-presentation** (1daa0fa7): 5 conflicted file(s); 3 resolved by union (append-only files):
+  - `docs/kb/ownership.md`: battle-presentation vs env-art vs env-art-b vs creatures vs creatures-b vs ui (the trial keeps the merged side)
+  - `game/data/ui/battle_sandbox.json`: battle-presentation vs env-art vs env-art-b vs creatures-b vs ui (the trial keeps the merged side)
+- **act1-chapters** (4e122798): 9 conflicted file(s); 4 resolved by union (append-only files):
+  - `docs/kb/ownership.md`: act1-chapters vs env-art vs env-art-b vs creatures vs creatures-b vs ui vs battle-presentation (the trial keeps the merged side)
+  - `game/data/audio/creature_voices.json`: act1-chapters vs env-art vs env-art-b+creatures-b (the trial keeps the merged side)
+  - `project.godot`: act1-chapters vs env-art vs env-art-b+creatures-b vs ui (the trial keeps the merged side)
+  - `tests/unit/test_zone_map.gd`: act1-chapters vs env-art vs env-art-b+creatures-b vs ui (the trial keeps the merged side)
+  - `tools/tests/test_ch08_flow.py`: act1-chapters vs env-art+env-art-b+creatures-b vs ui (the trial keeps the merged side)
+- **hero-integration** (470e7b5e): 1 conflicted file(s); 0 resolved by union (append-only files):
+  - `tests/unit/test_hero_stairs.gd`: hero-integration vs env-art vs env-art-b vs creatures-b+m2-slice+audio (the trial keeps the merged side)
+**Since the last trial:** act1-chapters and env-art-b no longer clash over the Ch5–Ch9 dressing; ui no longer
+carries stale copies of others' files; creatures and creatures-b merge cleanly.
+**New or still open:**
+1. **project.godot `locale/translations`** (act1-chapters, env-art, env-art-b+creatures-b, ui): each appends its
+   own translation files (Act II ch10–16, kite, maps_act2, towns_act2) in a different order. Keeping one side drops
+   the others' strings, which then show as raw keys. Resolve as a union; adding it to merge_union.py would end it.
+2. tools/dev/blender_builds.json (characters, ui and the env-art/creatures tracks all add jobs): union.
+3. battle_sandbox.json (battle-presentation vs env-art, env-art-b+creatures-b and ui).
+4. docs/kb/ownership.md, as every time.
+5. tests/unit/test_hero_stairs.gd: other branches carry the Lead's identical fix; either side is fine.
+
+**The placeholder audit on this merged tree: 39 items** (19 high, 16 medium, 4 low), down from 45. The inventory
+is rewritten from it:
+
+| Owner | Items |
+|---|---|
+| audio | 12 |
+| env-art | 12 |
+| creatures | 4 |
+| creatures-b | 4 |
+| characters | 3 |
+| env-art-b | 2 |
+| integration-qa | 2 (Pell) |
+
+act1-chapters' Ch8 arenas and ui-menus' Kerrid portrait are cleared.
