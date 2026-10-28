@@ -7,6 +7,8 @@ extends TestCase
 const BOSSES: Array[StringName] = [
 	&"hullgnaw", &"drownbell", &"bottle_hermit", &"spar_wraith", &"cinder_matron", &"undertows_reach"
 ]
+## Bosses who are people (the characters track's actors, battle_sandbox.json stand_ins `scene`).
+const PEOPLE_BOSSES: Array[StringName] = [&"stillguard_inquisitor"]
 const VOWBOUND: Array[StringName] = [&"ilun", &"kahre", &"virel"]
 const BOSS_CLIPS: Array[StringName] = [&"idle", &"ready", &"intro", &"attack", &"cast", &"hit", &"hit_b", &"ko"]
 const VOWBOUND_CLIPS: Array[StringName] = [&"idle", &"ready", &"rise", &"attack", &"cast", &"hit", &"special", &"ko"]
@@ -53,6 +55,18 @@ func test_every_act1_vowbound_has_its_clips_and_anchor_bones() -> void:
 		for clip in VOWBOUND_CLIPS:
 			assert_true(a.has_clip(clip), "%s has %s" % [id, clip])
 		_assert_anchors(id, VOWBOUND_ANCHORS)
+
+
+func test_every_act1_boss_and_vowbound_stands_in_as_a_real_body() -> void:
+	var ids: Array[StringName] = []
+	ids.append_array(BOSSES)
+	ids.append_array(PEOPLE_BOSSES)
+	ids.append_array(VOWBOUND)
+	for id in ids:
+		var scene := str(BattleStage.stand_in_spec(id).get("scene", ""))
+		assert_true(
+			scene != "" and ResourceLoader.exists(scene), "%s draws its model (%s), not a capsule" % [id, scene]
+		)
 
 
 func test_every_act1_vowbound_skill_and_finisher_has_its_clip() -> void:
