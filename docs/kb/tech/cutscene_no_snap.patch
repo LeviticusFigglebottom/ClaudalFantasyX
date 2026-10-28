@@ -18,10 +18,10 @@ index 3e0f0080..3263897a 100644
 +			left = maxf(left, float(m["duration"]) - float(m["elapsed"]))
 +	return left
 diff --git a/game/cutscene/cutscene_sequencer.gd b/game/cutscene/cutscene_sequencer.gd
-index 97bc551f..64414fe0 100644
+index 68e7d620..ce6c2b5a 100644
 --- a/game/cutscene/cutscene_sequencer.gd
 +++ b/game/cutscene/cutscene_sequencer.gd
-@@ -317,9 +317,12 @@ func _begin(scene_id: StringName, stage: CutsceneStage) -> void:
+@@ -320,9 +320,12 @@ func _begin(scene_id: StringName, stage: CutsceneStage) -> void:
  
  
  func _finish() -> void:
@@ -34,8 +34,30 @@ index 97bc551f..64414fe0 100644
  	_complete_motions()
  	_key_off()
  	if overlay != null:
+@@ -563,7 +566,9 @@ func _cue_anim(step: DialogueStep) -> void:
+ 		_motions.erase(&"move:%s" % step.args[0])
+ 		var start := actor.global_position
+ 		var end := standin.global_position
+-		var glide := float(config.get("standin_glide_sec", 0.0)) if start.distance_to(end) > 0.01 else 0.0
++		# M2-HER-1113: a mark farther than standin_cut_m is a cut (the shot changes with it), not a glide across it.
++		var far := start.distance_to(end)
++		var glide := float(config.get("standin_glide_sec", 0.0)) if far > 0.01 and far <= _standin_cut_m() else 0.0
+ 		var curve := float(config.get("turn_ease", 1.0))
+ 		_start_motion(
+ 			&"move:%s" % step.args[0],
+@@ -864,6 +869,10 @@ func _start_motion(key: StringName, duration: float, apply: Callable) -> void:
+ 	_motions[key] = {"elapsed": 0.0, "duration": duration, "apply": apply}
+ 
+ 
++func _standin_cut_m() -> float:
++	return float(config.get("standin_cut_m", INF))
++
++
+ func _complete_motions() -> void:
+ 	for key: StringName in _motions.keys():
+ 		((_motions[key] as Dictionary)["apply"] as Callable).call(1.0)
 diff --git a/game/data/cutscene/sequencer.json b/game/data/cutscene/sequencer.json
-index f22a341c..a1e294cd 100644
+index f22a341c..369175d5 100644
 --- a/game/data/cutscene/sequencer.json
 +++ b/game/data/cutscene/sequencer.json
 @@ -5,8 +5,8 @@
@@ -45,7 +67,15 @@ index f22a341c..a1e294cd 100644
 -  "turn_sec": 0.45,
 -  "_motion_note": "M2-FP-29 (the human's playtest: turns snapped, walks started and stopped at once; game/cutscene/cutscene_motion.gd): a turn eases in and out on Godot's ease() curve turn_ease (negative = in-out) over turn_min_sec (no angle) up to turn_sec (a half turn); a walk waits walk_anticipation_sec, speeds up over walk_accel_sec and slows over walk_decel_sec (both shortened together on a short walk); every clip change cross-fades over clip_blend_sec; a stand-in clip mark is glided onto over standin_glide_sec.",
 +  "turn_sec": 0.9,
-+  "_motion_note": "M2-FP-29 (the human's playtest: turns snapped, walks started and stopped at once; game/cutscene/cutscene_motion.gd): a turn eases in and out on Godot's ease() curve turn_ease (negative = in-out) over turn_min_sec (no angle) up to turn_sec (a half turn; M2-HER-1113: 0.9, so the in-out ease peaks near 400 deg/s like a hero's field turn, where 0.45 peaked near 800 and read as a whip); a walk waits walk_anticipation_sec, speeds up over walk_accel_sec and slows over walk_decel_sec (both shortened together on a short walk); every clip change cross-fades over clip_blend_sec; a stand-in clip mark is glided onto over standin_glide_sec.",
++  "_motion_note": "M2-FP-29 (the human's playtest: turns snapped, walks started and stopped at once; game/cutscene/cutscene_motion.gd): a turn eases in and out on Godot's ease() curve turn_ease (negative = in-out) over turn_min_sec (no angle) up to turn_sec (a half turn; M2-HER-1113: 0.9, so the in-out ease peaks near 400 deg/s like a hero's field turn, where 0.45 peaked near 800 and read as a whip); a walk waits walk_anticipation_sec, speeds up over walk_accel_sec and slows over walk_decel_sec (both shortened together on a short walk); every clip change cross-fades over clip_blend_sec; a stand-in clip mark is glided onto over standin_glide_sec, unless it is farther than standin_cut_m: then it is a cut (M2-HER-1113: Ch9's pole_out mark is 30 m out on the harbour, and a glide there crossed it at 120 m/s).",
    "turn_min_sec": 0.25,
    "turn_ease": -2.0,
    "walk_anticipation_sec": 0.15,
+@@ -14,6 +14,7 @@
+   "walk_decel_sec": 0.5,
+   "clip_blend_sec": 0.25,
+   "standin_glide_sec": 0.5,
++  "standin_cut_m": 2.5,
+   "_ease_note": "M2-FP-102 (the human's playtest: abrupt fades): @fade and the letterbox ease in and out on Godot's ease() curve (negative = in-out) instead of a linear ramp.",
+   "fade_ease": -1.8,
+   "letterbox_ease": -2.0,

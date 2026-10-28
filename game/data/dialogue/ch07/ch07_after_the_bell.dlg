@@ -33,7 +33,7 @@ Tavi [tender]: Keep it till he wants it back. #line:ch07_after_004
 Rhen [sad]: If you find anyone— #line:ch07_after_005
 Tavi [neutral]: I'll hang a lamp. #line:ch07_after_006
 @camera R07
-@mark tavi tavi_boat walk
+@mark tavi tavi_leaves walk
 @mark oruvel_diver_1 divers_boat walk
 @mark oruvel_diver_2 divers_boat walk
 @wait 3.0

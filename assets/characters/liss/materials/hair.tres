@@ -1,0 +1,27 @@
+[gd_resource type="ShaderMaterial" load_steps=4 format=3]
+
+[ext_resource type="Shader" path="res://game/shaders/character/character_hair.gdshader" id="sh"]
+[ext_resource type="Texture2D" path="res://assets/characters/asha/textures/asha_hair.png" id="t0"]
+[ext_resource type="Texture2D" path="res://assets/characters/asha/textures/asha_hairflow.png" id="t1"]
+
+[resource]
+resource_name = "hair"
+render_priority = 0
+shader = ExtResource("sh")
+shader_parameter/tex_hair = ExtResource("t0")
+shader_parameter/tex_hairflow = ExtResource("t1")
+shader_parameter/col_root = Color(0.13, 0.09, 0.07, 1)
+shader_parameter/col_spec_primary = Color(0.90, 0.82, 0.72, 1)
+shader_parameter/col_spec_secondary = Color(0.62, 0.38, 0.22, 1)
+shader_parameter/col_tip = Color(0.478, 0.29, 0.165, 1)
+shader_parameter/col_transmission = Color(0.62, 0.38, 0.22, 1)
+shader_parameter/depth_occlusion = 0.7
+shader_parameter/indirect_specular = 0.08
+shader_parameter/kajiya_diffuse_mix = 0.15
+shader_parameter/root_occlusion = 0.6
+shader_parameter/spec_primary_exponent = 260.0
+shader_parameter/spec_primary_intensity = 0.35
+shader_parameter/spec_secondary_intensity = 0.4
+shader_parameter/spec_shift_jitter = 0.3
+shader_parameter/tip_start = 0.75
+shader_parameter/transmission_strength = 0.6

@@ -62,6 +62,9 @@ SEA_ROAD_HALF_M = 150.0
 SEA_ROAD_STEP_M = 5.0
 SEA_LIGHT_COUNT = 200
 SEA_SHORE_Z_M = 29.0  # where the sea meets the massif's foot below the town (massif_height = 0)
+HARBOUR_FRONT_Z = 27.0  # the quay's front edge (the ch05/pemakar zone's QUAY_FRONT_Z), M3-ENV-1214
+HARBOUR_DECK_Y = 1.2
+WEIR_CREST_Y = 0.4  # the sea-cut weir's crest over the sea
 SEA_DRIFT_M = 120.0  # how far out the drift reaches
 SEA_LIGHT_Y_M = 0.35  # just above the swell crests (lagoon_waves, about 0.3 m)
 SEA_LIGHT_SIZE_M = [0.35, 0.35]
@@ -295,6 +298,16 @@ def build(seed: int = SEED) -> dict:
             lamp[1] += tread_rise(-5.4)
             pieces.append(piece("lamp_pillar", lamp, a))
             lights.append(light(lamp + [0, 1.35, 0], 1.6, 6.5))
+
+    # --- the harbour and the crown bell (M3-ENV-1214; the ch05/pemakar zone's coordinates) -------------
+    # The quay at the shore (front z 27, deck 1.2 m over the sea), the wake-wall at its back, the sea-cut weir where
+    # the bottom tier's channel reaches the sea below its outflow, the bell on the top tier.
+    outflow_x = radius(0) * math.sin(math.radians(next(c for c in channels if c["tier"] == 0)["to_deg"])) \
+        + pc.TOWN_CENTRE[0]
+    pieces.append(piece("harbour_quay", np.array([0.0, HARBOUR_DECK_Y, HARBOUR_FRONT_Z]), 0.0))
+    pieces.append(piece("wake_wall", np.array([8.0, HARBOUR_DECK_Y, HARBOUR_FRONT_Z - 4.3]), 0.0))
+    pieces.append(piece("sea_cut_weir", np.array([outflow_x, WEIR_CREST_Y, SEA_SHORE_Z_M - 0.4]), 0.0))
+    pieces.append(piece("crown_bell", np.array([3.0, float(pc.tier_tread_y(pc.TOWN_TIERS - 1)) + 0.08, -67.054]), 0.0))
 
     # --- skyline and far lights -------------------------------------------------------------------
     pieces.append(piece("mountain_massif", np.zeros(3), 0.0))

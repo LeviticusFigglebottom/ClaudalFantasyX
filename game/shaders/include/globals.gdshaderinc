@@ -29,5 +29,12 @@ global uniform float hymn_zone_sea_glow;
 // sea, the one WaterSurface with publishes_water_level on (off by default; M1-RND-08, M1-RND-15),
 // and reset to (0, 0) when that sea leaves the tree and on every zone change.
 global uniform vec2 hymn_water_level;
+// Still actors (M3-RND-03, RevenantTells): xyz = the base of a vertical capsule around a revenant
+// (world), w = its radius in metres (0 = slot free); heights in hymn_still_actor_heights (x = slot 0,
+// y = slot 1). The water's SSR reflects what lies in a capsule with a flat normal: his reflection
+// never ripples. Written every frame by RevenantTells, reset when it leaves and on every zone change.
+global uniform vec4 hymn_still_actor_0;
+global uniform vec4 hymn_still_actor_1;
+global uniform vec2 hymn_still_actor_heights;
 
 #endif

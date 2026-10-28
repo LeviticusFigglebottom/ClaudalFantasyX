@@ -43,7 +43,11 @@
     "asha_step_back": [7.6, 0, -13.4, 90],
     "rhen_stern": [30, 0, 13, 0],
     "bell_moorings": [10, 0, -36, 0],
-    "east_water": [60, 0, -10, 90]
+    "east_water": [60, 0, -10, 90],
+    "way_quay_bridge_s": [0, 0, 16.4, 180],
+    "way_quay_bridge_n": [0, 0, 11.6, 180],
+    "way_gantry_bridge_s": [0, 0, -3.6, 180],
+    "way_gantry_bridge_n": [0, 0, -8.4, 180]
   },
   "actors": {
     "liss": {"at": [-1.5, 0, 21.5, 180], "color": "#7a8c5a"},
@@ -51,14 +55,14 @@
     "asha": {"at": [7.8, 0, -12, 90], "color": "#e0c890"},
     "toma": {"at": [7.6, 0, -10.6, 90], "color": "#4a5a70", "radius": 0.36, "height": 1.9},
     "kerrid": {"at": [-4, 0, -18, 0], "color": "#8a7a52", "radius": 0.38, "height": 2.0},
-    "tavi": {"at": [17, 0, -14, 270], "color": "#2a2420"},
-    "vendor": {"at": [-6, 0, 4.5, 0], "color": "#c48a5a"},
+    "tavi": {"cast": "tavi", "at": [17, 0, -14, 270], "color": "#2a2420"},
+    "vendor": {"cast": "vendor", "at": [-6, 0, 4.5, 0], "color": "#c48a5a"},
     "board": {"at": [6, 0, 0.5, 0], "color": "#8aa070"},
-    "child": {"at": [2, 0, 8, 180], "color": "#d4b07a", "radius": 0.2, "height": 1.1},
-    "fisher": {"at": [-18, 0, 3, 90], "color": "#6e8a9a"},
-    "netmender": {"at": [-23, 0, 3, 90], "color": "#9a8a9a"},
-    "boatman": {"at": [3, 0, -16, 180], "color": "#7a6248"},
-    "trader_boatman": {"at": [28, 0, 13, 90], "color": "#6a5a48"}
+    "child": {"cast": "child", "at": [2, 0, 8, 180], "color": "#d4b07a", "radius": 0.2, "height": 1.1},
+    "fisher": {"cast": "fisher", "at": [-18, 0, 3, 90], "color": "#6e8a9a"},
+    "netmender": {"cast": "netmender", "at": [-23, 0, 3, 90], "color": "#9a8a9a"},
+    "boatman": {"cast": "fisher", "at": [3, 0, -16, 180], "color": "#7a6248"},
+    "trader_boatman": {"cast": "fisher", "at": [28, 0, 13, 90], "color": "#6a5a48"}
   },
   "shots": {
     "T01": {"pos": [0, 0.4, 30], "look_at": [0, 14, -30], "fov": 58},

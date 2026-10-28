@@ -333,3 +333,36 @@ func test_a_villager_walking_its_route_steps_quietly_without_hero_gear() -> void
 	var walk_db := float((steps[ids.find(feet[0])][1] as Dictionary).get("volume_db", 0.0))
 	assert_eq(walk_db, -9.0, "quieter than the heroes")
 	_done()
+
+
+func test_a_freed_zone_is_dropped_without_a_cast_error() -> void:
+	# big12's capture shards: a zone freed at shutdown left LifeAudio casting freed villagers ("Trying to cast a freed
+	# object" at advance). The cast aborted advance, so the dead entries stayed; now they are dropped first.
+	var l := _life()
+	var npc := _npc(&"netmender")
+	var layer := _layer()
+	l.watch(npc)
+	l.watch(layer)
+	assert_eq(l.watched.size(), 2)
+	npc.free()
+	layer.free()
+	l.advance(DT)
+	assert_eq(l.watched.size(), 0, "freed nodes are dropped, not cast")
+	_done()
+
+
+func test_a_real_villager_zone_loads_and_frees_cleanly() -> void:
+	var zone := (load("res://game/levels/ch02/haluna/haluna.tscn") as PackedScene).instantiate() as Node3D
+	_add(zone)
+	var l := _life()
+	for n in zone.find_children("*", "", true, false):
+		if l.wants(n):
+			l.watch(n)
+	assert_true(l.watched.size() > 0, "Haluna's villagers or wildlife are watched (%d)" % l.watched.size())
+	_run(l, 0.5)
+	zone.free()
+	l.advance(DT)
+	assert_eq(l.watched.size(), 0, "the freed zone's villagers and wildlife are all dropped")
+	l.get_parent().remove_child(l)
+	assert_eq(l.watched.size(), 0, "and leaving the tree keeps nothing")
+	_done()

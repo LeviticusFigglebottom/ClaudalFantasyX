@@ -9,6 +9,7 @@ const WRAPPERS := {
 	&"asha": "res://game/hero_motion/battle/asha_battle_actor.tscn",
 	&"toma": "res://game/hero_motion/battle/toma_battle_actor.tscn",
 	&"ysolde": "res://game/hero_motion/battle/ysolde_battle_actor.tscn",
+	&"liss": "res://game/hero_motion/battle/liss_battle_actor.tscn",
 }
 ## The changes the battle makes: a turn's readying and its action, each one-shot's return to idle, a KO and
 ## its revive, and the outro.
@@ -41,10 +42,9 @@ const CHANGES: Array[Array] = [
 	[&"victory", &"idle"],
 ]
 
-## Pops already handed to their owner, as "<hero>:<from>><to>": reported, not failed, until the fix lands.
-## M2-HER-1114 (battle-presentation): the placeholder finisher turns Ysolde's left upper arm ~180 deg between two keys,
-## so a cross-fade into it flips the arm (a hand 1.3 m in a frame). Remove the entry once the fix is on this branch.
-const KNOWN: Array[String] = ["ysolde:ready>finisher"]
+## Pops already handed to their owner, as "<hero>:<from>><to>": reported, not failed, until the fix lands. Empty:
+## Ysolde's placeholder finisher flip (M2-HER-1114) is handled by HeroBattleActor (short-path keys, capped fades).
+const KNOWN: Array[String] = []
 
 var made: Array[Node] = []
 
@@ -64,6 +64,8 @@ func test_no_battle_clip_change_pops_or_cuts() -> void:
 	var checked := 0
 	for hero: StringName in WRAPPERS:
 		var actor := _actor(hero)
+		if actor.player == null:
+			continue  # its model has not reached this branch yet (HeroBattleActor.model_path)
 		BattleClips.player_of(actor)  # as a battle does: placeholder clips for any the model lacks
 		actor.retune()  # what the actor's next frame does
 		var p := actor.player
@@ -95,7 +97,7 @@ func test_no_battle_clip_change_pops_or_cuts() -> void:
 			)
 			if KNOWN.has("%s:%s>%s" % [hero, from, to]):
 				if bool(r["pop"]):
-					print("  KNOWN (M2-HER-1114): %s %s -> %s" % [hero, from, to])
+					print("  KNOWN: %s %s -> %s" % [hero, from, to])
 				continue
 			assert_false(bool(r["cut"]), "%s %s -> %s cross-fades (blend %.2f s)" % [hero, from, to, r["blend"]])
 			assert_false(

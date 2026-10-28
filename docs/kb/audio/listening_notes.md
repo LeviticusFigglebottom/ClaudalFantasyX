@@ -528,6 +528,8 @@ they play. Does each read as its place (a harbour; the inside of a great bell's 
 terrace water at a festival; a mountain under falling ash; a hard sea wall)? **Please check the wrap of
 `tamsule_bell.ogg`** (every 40 s): the Vorbis encoder leaves a tiny step at the file's ends that this quiet, humming
 bed shows more than the others; if you hear a tick, I'll mask it.
+*Masked (M3-AUD-835):* a seam report over all 78 loops found this bed alone near click level (the decoded wrap was 9.7
+times an ordinary sample step). The loop now starts at its quietest moment (0.12 times). Listen for the wrap anyway.
 
 ## M3: the battle's motion (M3-AUD-13)
 
@@ -1118,3 +1120,32 @@ claude/act1-chapters (the F8 chapter select reaches Ch5 and Ch6), or on its own.
   B09 (the burned lamp) cuts it to silence and the `tide_ambience` SFX.
 - **The reed** is act2_voices.py's fen pipe with its nasal edge softened. Lonely, or thin?
 - Is the tide too loud for a night bed? It carries the bed where the reed rests (about 8 LU under the reed).
+
+## M3: the Act II creatures (M3-AUD-831)
+
+`sfx/creatures/` for the Ch10–12 bosses, the Wakefin and the four Ch10–11 regulars (act2_creature_sfx.py). Each needs
+idle, attack, hurt, death and movement. The two that most decide a creature's character:
+- **The Avalanche Ram's bellow** (`avalanche_ram_*`): a long throat's formants under a deep nasal voice. Does it
+  sound like a huge pack animal and not a monster? Is it too close to any real animal's call?
+- **The Mangrove Drowner's moan under its creaking roots** (`mangrove_drowner_*`): does the moan stay under the wood,
+  or does it turn the boss into a ghost?
+
+Also listen for:
+- The Lamp Engine and the conduit crawler are Lit Age constructs. Their hum is steady (bound light does not pulse)
+  until the KO winds it down. Is a steady hum too static over a long boss fight?
+- The Wakefin's voice is water only. Does the blade's hiss read as a cut?
+- The tannin archer's spit is a sharp jet and its droplets. Is it too close to a gunshot's crack?
+
+## M3: the UI track's new screens (M3-AUD-832)
+
+`sfx/ui_whoosh_in`, `ui_whoosh_out`, `ui_title_reveal`, `ui_save_slot`, `ui_load_slot`, `ui_shrine_travel`,
+`ui_reefball_choices`, `ui_reefball_glint` (screen_sfx.py), in the menus' palette.
+- **The whooshes** play on every menu page open and close, about 12 dB under the page's own sound. Are they felt
+  more than heard? If you notice them, they are too loud. Turn Reduced motion on: they should stop, because nothing
+  moves.
+- **The title's reveal** sits under the swell: a low glass bloom, then three rising bars as the choices rise. Does
+  it make the title feel alive without crowding the swell?
+- **Saving and loading:** a stylus mark and a settled bar; the tide drawing back and two falling bars. Can you tell
+  them apart without looking?
+- **Shrine travel:** a slow glass arpeggio over a rising wash, under the router's fade. Is it long enough to cover
+  the fade, and short enough not to linger into the new place?

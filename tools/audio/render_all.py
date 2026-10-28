@@ -197,10 +197,17 @@ JOBS = [
     # M3-AUD-14: creature voices and movement (the file list is the source's own, like battle_sfx's)
     ("assets_src/sfx/creature_sfx.py", "assets/audio/sfx/creatures", _source_files("assets_src/sfx/creature_sfx.py"),
      "sfx"),
+    # M3-AUD-831: the Act II creatures (the Ch10-12 bosses, the Wakefin, the Ch10-11 regulars), into the same folder
+    ("assets_src/sfx/act2_creature_sfx.py", "assets/audio/sfx/creatures",
+     _source_files("assets_src/sfx/act2_creature_sfx.py"), "sfx"),
     # M2-AUD-14: the menus track's pages (Items, Formation, Customize, the zone map's pan)
     ("assets_src/sfx/menu_page_sfx.py", "assets/audio/sfx",
      [f"{u}.ogg" for u in ("ui_item_use", "ui_item_sort", "ui_formation_pick", "ui_formation_swap",
                            "ui_customize_open", "ui_craft", "ui_map_pan")], "sfx"),
+    # M3-AUD-838: the `charge` choreography style (the Avalanche Ram's run, M3-BPR-410)
+    ("assets_src/sfx/charge_sfx.py", "assets/audio/sfx/choreo", _source_files("assets_src/sfx/charge_sfx.py"), "sfx"),
+    # M3-AUD-832: the UI track's new screens (menu motion, the title's reveal, save slots, shrine travel, Reefball HUD)
+    ("assets_src/sfx/screen_sfx.py", "assets/audio/sfx", _source_files("assets_src/sfx/screen_sfx.py"), "sfx"),
     # M3-AUD-19: Act I temple and dungeon music (Ch5 Ashcrown, Ch8 Coilspire, Ch7 the Tamsule Bell's galleries)
     ("assets_src/music/ashcrown.py", "assets/audio/music", ["ashcrown.ogg", "ashcrown.loop.json"], "music_loop"),
     ("assets_src/music/coilspire.py", "assets/audio/music", ["coilspire.ogg", "coilspire.loop.json"], "music_loop"),
@@ -276,6 +283,28 @@ JOBS = [
     ("assets_src/music/shoals_dusk.py", "assets/audio/music", ["shoals_dusk.ogg", "shoals_dusk.loop.json"], "music_loop"),
 ]
 M1_JOBS = 5  # the first JOBS rows are M1's audio (SIZE_BUDGET)
+
+# M3-AUD-839: Act II's final cues (assets_src/music/act2/ -> assets/audio/music/act2/). That path is Git LFS (ADR
+# 0039), and LFS isn't live in the cloud yet, so these render only with --act2 and are never committed until the Lead
+# announces it: the default run, the size budget and the tests don't expect them. Composers append rows here.
+ACT2_FINALS: list[tuple] = [
+    ("assets_src/music/act2/ossa_fen.py", "assets/audio/music/act2", ["ossa_fen.ogg", "ossa_fen.loop.json"],
+     "music_loop"),
+    ("assets_src/music/act2/reedhollow.py", "assets/audio/music/act2", ["reedhollow.ogg", "reedhollow.loop.json"],
+     "music_loop"),
+    ("assets_src/music/act2/sunken_vey.py", "assets/audio/music/act2", ["sunken_vey.ogg", "sunken_vey.loop.json"],
+     "music_loop"),
+    ("assets_src/music/act2/ansedra.py", "assets/audio/music/act2", ["ansedra.ogg", "ansedra.loop.json"], "music_loop"),
+    ("assets_src/music/act2/lamp_archive.py", "assets/audio/music/act2", ["lamp_archive.ogg", "lamp_archive.loop.json"], "music_loop"),
+    ("assets_src/music/act2/peace_wedding.py", "assets/audio/music/act2", ["peace_wedding.ogg", "peace_wedding.loop.json"], "music_loop"),
+    ("assets_src/music/act2/lowlight.py", "assets/audio/music/act2", ["lowlight.ogg", "lowlight.loop.json"], "music_loop"),
+    ("assets_src/music/act2/keth_pass.py", "assets/audio/music/act2", ["keth_pass.ogg", "keth_pass.loop.json"], "music_loop"),
+    ("assets_src/music/act2/quellan.py", "assets/audio/music/act2", ["quellan.ogg", "quellan.loop.json"], "music_loop"),
+    ("assets_src/music/act2/unlamped.py", "assets/audio/music/act2", ["unlamped.ogg", "unlamped.loop.json"], "music_loop"),
+    ("assets_src/music/act2/pale_rim.py", "assets/audio/music/act2", ["pale_rim.ogg", "pale_rim.loop.json"], "music_loop"),
+    ("assets_src/music/act2/drowned_choir.py", "assets/audio/music/act2", ["drowned_choir.ogg", "drowned_choir.loop.json"], "music_loop"),
+]
+ACT2_DIR = "assets/audio/music/act2"
 
 
 def _load(path):
@@ -358,15 +387,16 @@ def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--determinism", action="store_true", help="render twice and compare bytes")
     ap.add_argument("--only", default="", help="only the jobs whose source path contains this text")
+    ap.add_argument("--act2", action="store_true", help="Act II's final cues (ACT2_FINALS, Git LFS) instead of JOBS")
     args = ap.parse_args()
 
     self_test()  # BS.1770 meter sanity (48 kHz coefficients, 997 Hz reference)
 
-    jobs = [j for j in JOBS if not args.only or args.only in j[0]]
+    jobs = [j for j in (ACT2_FINALS if args.act2 else JOBS) if not args.only or args.only in j[0]]
     rows, total, new_total, amb_total, ok = [], 0, 0, 0, True
     amb_jobs: dict = {}
     for src, rel_dir, files, kind in jobs:
-        m1 = JOBS.index((src, rel_dir, files, kind)) < M1_JOBS
+        m1 = not args.act2 and JOBS.index((src, rel_dir, files, kind)) < M1_JOBS
         out_dir = os.path.join(ROOT, rel_dir)
         print(f"rendering {src} ...", flush=True)
         _render_job(src, out_dir, files, kind)
@@ -429,7 +459,10 @@ def main() -> int:
         if size > AMBIENCE_JOB_BUDGETS[src]:
             print(f"FAIL: {src}'s beds over their size budget")
             ok = False
-    if not args.only:
+    if args.act2:
+        act2 = sum(r[1] for r in rows)
+        print(f"Act II finals {act2} bytes ({act2 / 1048576:.2f} MiB): Git LFS (ADR 0039), outside the plain-git budget")
+    elif not args.only:
         print(f"total {total} bytes ({total / 1048576:.2f} MiB), budget {SIZE_BUDGET / 1048576:.0f} MiB; "
               f"M1-AUD-02 cues {new_total / 1048576:.2f} MiB, budget {NEW_AUDIO_BUDGET / 1048576:.0f} MiB")
         if total > SIZE_BUDGET or new_total > NEW_AUDIO_BUDGET:

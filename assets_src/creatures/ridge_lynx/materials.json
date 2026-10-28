@@ -1,0 +1,27 @@
+{
+  "_doc": "Ridge lynx (act2/ridge_lynx.md): coat (the winter coat, its frosted ruff, the black ear tufts and tail tip, and the old sling wound's spawn_wound parting on its emission mask) and eye (dusk_gold, the pupils black). write_materials.py on game/shaders/creature/creature.gdshader.",
+  "slots": {
+    "coat": {
+      "roughness_dry": 0.92,
+      "roughness_wet": 0.6,
+      "specular": 0.3,
+      "detail_scale": 130.0,
+      "detail_albedo": 0.2,
+      "detail_bump": 0.7,
+      "cavity_albedo": 0.4,
+      "rim_sheen": 0.15,
+      "emission_color": "#3FE0C8",
+      "emission_energy": 1.4,
+      "emission_pulse_hz": 0.25,
+      "emission_pulse_depth": 0.35
+    },
+    "eye": {
+      "roughness_dry": 0.12,
+      "roughness_wet": 0.06,
+      "specular": 0.7,
+      "clearcoat_wet": 1.0,
+      "detail_albedo": 0.0,
+      "detail_bump": 0.0
+    }
+  }
+}

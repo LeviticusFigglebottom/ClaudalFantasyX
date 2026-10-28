@@ -8,10 +8,13 @@ record. The newest copy is on the most recently pushed `gpu/*` branch.
 > `session_01DKdurcvrzq9PEvuSu5L2nA`, which died when the PC was switched off mid-gate). The Lead is
 > cloud session `session_018aiGwGLGkxsnMnu8VfCu1m`. The integration branch is now
 > **`claude/undertow-lead-handoff-ze8rrn`** (-423ixt is frozen).
-> **This copy, on `gpu/shrine-gi-big12`, is the newest.**
+> **This copy, on `gpu/render-act1-chapters-c0ee523`, is the newest.**
 
 ## Renders for the tracks (RENDERED lines, newest first)
 
+- RENDERED @ c0ee5230: gpu/render-act1-chapters-c0ee523; 5 pass, 9 drift
+- RENDERED @ d4430397: gpu/render-hero-integration-d443039; 0 pass, 6 drift
+- RENDERED @ c1d1e3e6: gpu/render-battle-presentation-c1d1e3e; 2 pass, 4 drift
 - **Shell Shrine GI rebaked on lead/gate-big12 @ 8a28be17** (the Lead's ask; test_shrine_gi_bake failed there): gpu/shrine-gi-big12,
   both states OK (1.56 s each, ~930 KB), gi_inputs.py --write; test_shrine_gi_bake passes. A first attempt ran on a silently
   aborted import (150 KB bake): the import retry now checks the exit code and the final DONE line (M2-NIT-904).
@@ -52,6 +55,15 @@ record. The newest copy is on the most recently pushed `gpu/*` branch.
 
 ## Gate results (newest first)
 
+- **GATE lead/gate-big12@8a28be17: FAIL (2 Godot failures = the cloud's, 3 tools failures, drift + 31 new shots; Lead to view).**
+  Godot 2820/2: test_creature_portraits (the 4 new creatures "have a portrait in the manifest") and
+  test_footsteps_slice_zones causeway tidepool (water expected, stone got). Coverage and boot not reached (ci_local stops
+  there). Tools: test_screenshots (31 shots without baselines, not 41), test_iskarra (3 vigils on the paving, want >= 7),
+  test_shrine_gi_bake (rebaked: gpu/shrine-gi-big12). Blender: 28/28 identical (asha, rhen, toma, sefir, ysolde, 9 villagers,
+  kits, creatures). Shots: 341 compared, 111 failed = 31 no baseline + 57 newly failing (Asha/Toma/Rhen clips and views,
+  the battle UI shots, strips, creature_portraits, shrine_s01, haluna h01/h04, vigil_line/voice_over) + 23 repeats
+  (arenas camp/shoals re-dressed ~0.1, choreo, inquisitor intro 0.164); 20 of big11's failures pass now. The shutdown
+  `Trying to cast a freed object` (life_audio.gd:124) now follows 19 shots. `docs/kb/qa/gate-runs/big12/` on `gpu/gate-big12-shots`.
 - **GATE lead/gate-big11@23ea8c6f: FAIL (expected drift + a new shutdown script error; Lead to view).** Godot 2738/0,
   coverage and boot ok. Tools: the known test_shrine_gi_bake failure (lane A re-run with it non-fatal). Blender: 13/13
   identical (base ze8rrn). Shots: 303 compared, 43 failed: 7 new shots, 5 Haluna-villager field/dialogue shots,
@@ -73,11 +85,15 @@ record. The newest copy is on the most recently pushed `gpu/*` branch.
 
 ## Hardware queue results (newest first)
 
+- **M3-RND-03 lavapipe check (2026-10-27):** gpu/m3-rnd-03-sefir-tells @ 02d1fa52, 4 shots without baselines,
+  `docs/kb/qa/gpu/2026-10-27-m3-rnd-03-lavapipe/`. With the tells on, Sefir's shadow edges are crisper and a tighter contact
+  line runs along his hem. There's no double lighting and no black shadow. His reflection holds its outline (subtle with this
+  test wave). Asha is unchanged. Rendering, env-art and art should view the shots and approve the baselines.
 - **M2-CHR-11 verify (2026-10-27):** claude/characters @ 3723f3eb (incl. 20773234), AVX2 i9-12900K: base_body, rhen, toma
   and 9 villagers 12/12 identical (664 s). Reported to the Lead and characters.
-- **In progress (2026-10-27 ~15:00):** the render queue (21 jobs: the BPR-404 fast-track, the three black re-renders, then
-  oldest first, then the RND-03 lavapipe check), big12 when pushed
-  (it jumps the queue), the ui portraits @ 99623a0c (render.sh) and m2-slice @ 4ce8a48a (GI bake).
+- **In progress (2026-10-27 ~17:00):** render queue 4 (22 jobs: the fast-tracks c1d1e3e6 and d4430397 are rendered and
+  being published, then the RND-03 lavapipe check 02d1fa52, then oldest first). Next: the slice `--budget` re-sweep, then
+  the Act I playthrough (never during a render).
 - **M1-QA-09 on hardware (heroes, 2026-10-27):** 49 shots at High 2× and Ultra on ze8rrn@f580e756, `gpu/m1-qa-09-heroes`
   `docs/kb/qa/gpu/2026-10-27-m1-qa-09-heroes/`. Asha's staff and Toma's spear aren't gripped (open hands; they float upright
   in run/walk_cycle/offer_hand). The staff goes through the skirt when kneeling. Asha's underskirt is a rigid tube in

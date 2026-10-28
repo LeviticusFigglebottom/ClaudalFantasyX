@@ -26,7 +26,8 @@ func test_the_layout_data_has_every_section_and_pin() -> void:
 		var sec := d.get(key, {}) as Dictionary
 		assert_false(sec.is_empty(), "section %s" % key)
 		assert_true(HudLayout.PINS.has(str(sec.get("pin", ""))), "%s names a known pin" % key)
-	assert_true(d.has("pacing") and d.has("reads") and d.has("stakes"))
+	assert_true(d.has("pacing") and d.has("reads") and d.has("refused_short"))
+	assert_false(d.has("stakes"), "the stakes come from matches.json now (M3-RBL-201)")
 	_done()
 
 
@@ -89,6 +90,9 @@ func test_each_option_shows_the_engines_preview_before_it_is_chosen() -> void:
 			assert_eq(hud.drop_view().target, StringName(p["target"]), "in the drop too")
 		if bool(p["scores"]):
 			assert_true(lines.contains(tr("RBL_HUD_PREVIEW_SCORES")), "a scoring option says so")
+		for who: StringName in p["against"]:
+			if who != taker:
+				assert_eq(hud.read_panel().tag_of(who), tr("RBL_HUD_TAG_AGAINST"), "the read marks who presses")
 	assert_eq(m.snapshot(), before, "looking at the options changes nothing")
 	assert_eq(m.rng.state, roll_state, "and draws no roll")
 	_done()
@@ -183,6 +187,26 @@ func test_an_unfetched_float_says_where_to_take_it() -> void:
 	m.fetched = true
 	hud.refresh()
 	assert_eq(hud.fetch_text(), tr("RBL_HUD_FETCHED"))
+	_done()
+
+
+## M3-RBL-201: the actions not on offer are listed greyed with a short reason, and a fetching option says so.
+func test_refused_actions_are_listed_greyed_and_a_fetch_is_named() -> void:
+	_open()
+	var refused := m.refused_actions()
+	assert_eq(hud.refused, refused, "the controller passes refused_actions()")
+	var rows := hud.page().rows
+	assert_eq(rows.size(), hud.options.size() + refused.size(), "after the legal options")
+	var short := ReefballHud.load_data()["refused_short"] as Dictionary
+	for i in refused.size():
+		var row: Dictionary = rows[hud.options.size() + i]
+		assert_false(bool(row["enabled"]), "greyed: the cursor never lands on it")
+		assert_eq(str(row["right"]), tr(str(short[refused[i]["reason_key"]])), "with why")
+	assert_eq(m.match_row.get("stakes_key"), "RBL_HUD_STAKES_TIDECUP_OPENING", "the stakes from matches.json")
+	for i in hud.options.size():
+		hud.set_cursor(i)
+		if bool(hud.options[i]["fetches"]):
+			assert_true("\n".join(hud.preview_lines()).contains(tr("RBL_HUD_PREVIEW_FETCHES").format({"line": ""})))
 	_done()
 
 

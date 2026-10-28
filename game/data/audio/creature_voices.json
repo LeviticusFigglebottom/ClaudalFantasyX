@@ -314,6 +314,94 @@
         "move": "cre_glassfry_shimmer"
       }
     },
-    "stillguard_inquisitor": "silent"
+    "stillguard_inquisitor": "silent",
+    "mangrove_drowner": {
+      "family": "drowner",
+      "_note": "Ch10 boss (M3-CRE-621): prop-roots creaking, the drag through the water, a low spawn moan; assets_src/sfx/act2_creature_sfx.py (M3-AUD-831)",
+      "events": {
+        "idle": "cre_mangrove_drowner_idle",
+        "attack": "cre_mangrove_drowner_attack",
+        "hurt": "cre_mangrove_drowner_hurt",
+        "death": "cre_mangrove_drowner_death",
+        "move": "cre_mangrove_drowner_heave"
+      }
+    },
+    "lamp_engine": {
+      "family": "engine",
+      "_note": "Ch11 boss (M3-CRE-623), a Lit Age construct: ratcheting brass rings, shears, lamp glass, a steady hum; assets_src/sfx/act2_creature_sfx.py (M3-AUD-831)",
+      "events": {
+        "idle": "cre_lamp_engine_idle",
+        "attack": "cre_lamp_engine_attack",
+        "hurt": "cre_lamp_engine_hurt",
+        "death": "cre_lamp_engine_death",
+        "move": "cre_lamp_engine_clank"
+      }
+    },
+    "avalanche_ram": {
+      "family": "woolback",
+      "_note": "Ch12 boss (M3-CRE-624): a huge woolback's bellow, padded hooves on snow, ice in its locks; assets_src/sfx/act2_creature_sfx.py (M3-AUD-831)",
+      "events": {
+        "idle": "cre_avalanche_ram_idle",
+        "attack": "cre_avalanche_ram_attack",
+        "hurt": "cre_avalanche_ram_hurt",
+        "death": "cre_avalanche_ram_death",
+        "move": "cre_avalanche_ram_trudge"
+      }
+    },
+    "wakefin": {
+      "family": "sailfin",
+      "_note": "Ch15 boss (M3-CRE-626): the blade's hiss through the water, the breach, a sub thrum; assets_src/sfx/act2_creature_sfx.py (M3-AUD-831)",
+      "events": {
+        "idle": "cre_wakefin_idle",
+        "attack": "cre_wakefin_attack",
+        "hurt": "cre_wakefin_hurt",
+        "death": "cre_wakefin_death",
+        "move": "cre_wakefin_cut"
+      }
+    },
+    "tannin_archer": {
+      "family": "archer",
+      "_note": "Ch10 regular (M3-CRE-627): sculling fins, the spit, the tail's slap; assets_src/sfx/act2_creature_sfx.py (M3-AUD-831)",
+      "events": {
+        "idle": "cre_tannin_archer_idle",
+        "attack": "cre_tannin_archer_attack",
+        "hurt": "cre_tannin_archer_hurt",
+        "death": "cre_tannin_archer_death",
+        "move": "cre_tannin_archer_scull"
+      }
+    },
+    "gallery_ray": {
+      "family": "ray",
+      "_note": "Ch11 regular (M3-CRE-627): slow wing air, a faint glassy shimmer, the wing's slap; assets_src/sfx/act2_creature_sfx.py (M3-AUD-831)",
+      "events": {
+        "idle": "cre_gallery_ray_idle",
+        "attack": "cre_gallery_ray_attack",
+        "hurt": "cre_gallery_ray_hurt",
+        "death": "cre_gallery_ray_death",
+        "move": "cre_gallery_ray_glide"
+      }
+    },
+    "rime_urchin": {
+      "family": "urchin",
+      "_note": "Ch11 regular (M3-CRE-627): ice-crusted spines rattling, the stab's crunch; assets_src/sfx/act2_creature_sfx.py (M3-AUD-831)",
+      "events": {
+        "idle": "cre_rime_urchin_idle",
+        "attack": "cre_rime_urchin_attack",
+        "hurt": "cre_rime_urchin_hurt",
+        "death": "cre_rime_urchin_death",
+        "move": "cre_rime_urchin_rattle"
+      }
+    },
+    "conduit_crawler": {
+      "family": "crawler",
+      "_note": "Ch11 regular (M3-CRE-627), a Lit Age construct: ticking brass feet, a brush, a wiper, a faint hum; assets_src/sfx/act2_creature_sfx.py (M3-AUD-831)",
+      "events": {
+        "idle": "cre_conduit_crawler_idle",
+        "attack": "cre_conduit_crawler_attack",
+        "hurt": "cre_conduit_crawler_hurt",
+        "death": "cre_conduit_crawler_death",
+        "move": "cre_conduit_crawler_tick"
+      }
+    }
   }
 }

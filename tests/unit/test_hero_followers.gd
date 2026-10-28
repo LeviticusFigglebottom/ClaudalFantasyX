@@ -165,6 +165,56 @@ func test_followers_turn_to_face_who_rhen_talks_to() -> void:
 	_done()
 
 
+func test_ysolde_follows_when_she_joins() -> void:
+	Game.state.party_ids = [&"rhen", &"ysolde", &"toma"] as Array[StringName]
+	party.advance(DT)
+	assert_eq(_ids(), [&"ysolde", &"toma"] as Array[StringName], "Ysolde follows in party order")
+	var body := party.body_of(&"ysolde")
+	assert_true(body != null and body.model != null, "on her own model")
+	player.input_override = UP
+	for i in 120:
+		_step()
+	assert_true(body.loco.speed > 1.0, "and walks after him")
+	_done()
+
+
+func test_followers_never_stand_inside_a_wall_in_the_lane() -> void:
+	zone.call("place_at", &"Lane")
+	party.advance(DT)
+	var sticks: Array[Vector2] = [
+		Vector2(-0.7, -0.7), UP, Vector2(0.7, -0.7), UP, Vector2(-0.7, 0.7), Vector2(0.7, 0.7)
+	]
+	for stick in sticks:
+		player.input_override = stick
+		for i in 40:
+			_step()
+			for f in party.followers:
+				assert_false(_inside_wall(f.global_position), "%s clear of the walls" % f.get_meta(&"hero_id"))
+	_done()
+
+
+func test_arriving_with_his_back_to_a_wall_puts_no_one_in_it() -> void:
+	zone.call("place_at", &"Lane")
+	player.global_position = Vector3(-2.4, 0.0, 8.0)  # a step off the tide wall (x = -3.2), his back to it
+	player.motor.facing_yaw = -PI * 0.5
+	player.rotation.y = player.motor.facing_yaw
+	party.catch_up()
+	for f in party.followers:
+		assert_false(_inside_wall(f.global_position), "%s is not put in the wall" % f.get_meta(&"hero_id"))
+	_done()
+
+
+## True when a follower's body (a 0.25 m sphere at its waist) overlaps a static collider.
+func _inside_wall(at: Vector3) -> bool:
+	var q := PhysicsShapeQueryParameters3D.new()
+	var ball := SphereShape3D.new()
+	ball.radius = 0.25
+	q.shape = ball
+	q.transform = Transform3D(Basis.IDENTITY, at + Vector3.UP * 0.9)
+	q.exclude = [player.get_rid()]
+	return not player.get_world_3d().direct_space_state.intersect_shape(q, 1).is_empty()
+
+
 func _step() -> void:
 	player.step(DT)
 	party.advance(DT)

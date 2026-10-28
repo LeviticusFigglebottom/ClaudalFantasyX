@@ -24,7 +24,7 @@
       "line_height": 34,
       "mote_px": 10,
       "mote_offset": 14,
-      "separator_inset": 16
+      "separator_inset": 16, "face_px": 34, "face_gap": 6, "faces_max": 3
     },
     "cursor": {
       "sec": 0.09,

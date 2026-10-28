@@ -1,11 +1,12 @@
 {
-  "_doc": "CreatureStage (M2-CRE-09): the review and capture stage for battle creatures. views: camera yaw/pitch (degrees, yaw 0 = looking at the creature's face along -Z), the framing margin and the vertical FOV. The scale bars are the heroes' heights (Asha, Rhen, Toma: character pipeline.md section 14), placed beside the creature.",
+  "_doc": "CreatureStage (M2-CRE-09): the review and capture stage for battle creatures. views: camera yaw/pitch (degrees, yaw 0 = looking at the creature's face along -Z), the framing margin and the vertical FOV. The scale bars are the heroes' heights (Asha, Rhen, Toma: character pipeline.md section 14), placed beside the creature. flank_high (M3-CRE-635) looks down on a long creature's near flank and back (the Wakefin's body shot, its spine wounds).",
   "views": {
     "three_quarter": {"yaw_deg": 35.0, "pitch_deg": 14.0, "fov_deg": 30.0, "margin": 0.95},
     "side": {"yaw_deg": 90.0, "pitch_deg": 6.0, "fov_deg": 30.0, "margin": 0.95},
     "front": {"yaw_deg": 0.0, "pitch_deg": 8.0, "fov_deg": 30.0, "margin": 0.95},
     "top": {"yaw_deg": 20.0, "pitch_deg": 62.0, "fov_deg": 30.0, "margin": 0.95},
-    "back": {"yaw_deg": 200.0, "pitch_deg": 18.0, "fov_deg": 30.0, "margin": 0.95}
+    "back": {"yaw_deg": 200.0, "pitch_deg": 18.0, "fov_deg": 30.0, "margin": 0.95},
+    "flank_high": {"yaw_deg": 68.0, "pitch_deg": 24.0, "fov_deg": 30.0, "margin": 0.95}
   },
   "scale_bars": [{"name": "asha", "height_m": 1.63}, {"name": "rhen", "height_m": 1.77}, {"name": "toma", "height_m": 1.89}],
   "scale_bar_gap_m": 0.45,

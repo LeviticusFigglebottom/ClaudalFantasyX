@@ -184,7 +184,7 @@ func test_fish_count_and_bounds() -> void:
 	for f in 60 * 120:
 		var p := Vector3(3.0 + 2.0 * cos(f * DT * 0.2), 0.0, 2.0) if f % 1200 < 300 else Vector3(50.0, 0.0, 50.0)
 		shoal.step(DT, p, true)
-		startled = startled or shoal._startle > 0.0
+		startled = startled or shoal.startled()
 		for fish in shoal.fish:
 			var h := Vector2(fish.pos.x - shoal.center.x, fish.pos.z - shoal.center.z).length()
 			assert_true(h <= reach, "fish within the shoal's area (%.2f <= %.2f)" % [h, reach])

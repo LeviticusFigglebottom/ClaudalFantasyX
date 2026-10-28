@@ -3962,6 +3962,863 @@
           "screen_space_aa": 1
         }
       }
+    },
+    {
+      "id": "ch05_pemakar_harbour",
+      "scene": "res://game/levels/_tests/act1_zones/ch05_pemakar_shots.tscn",
+      "camera": "Cameras/Harbour",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "ch05_pemakar_crown",
+      "scene": "res://game/levels/_tests/act1_zones/ch05_pemakar_shots.tscn",
+      "camera": "Cameras/Crown",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "asha_clip_bow_palms_flat",
+      "scene": "res://game/levels/_tests/characters/asha/asha_clip_bow_palms_flat.tscn",
+      "camera": "Cameras/Profile",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "rhen_clip_lift_housing",
+      "scene": "res://game/levels/_tests/characters/rhen/rhen_clip_lift_housing.tscn",
+      "camera": "Cameras/ThreeQuarterLeft",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "toma_clip_stack_bowls",
+      "scene": "res://game/levels/_tests/characters/toma/toma_clip_stack_bowls.tscn",
+      "camera": "Cameras/ThreeQuarterLeft",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "ysolde_clip_read_letter",
+      "scene": "res://game/levels/_tests/characters/ysolde/ysolde_clip_read_letter.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "rhen_clip_talk_explain",
+      "scene": "res://game/levels/_tests/characters/rhen/rhen_clip_talk_explain.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "liss_front",
+      "scene": "res://game/levels/_tests/characters/liss/liss_stage.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "liss_back",
+      "scene": "res://game/levels/_tests/characters/liss/liss_stage.tscn",
+      "camera": "Cameras/Back",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "liss_three_quarter",
+      "scene": "res://game/levels/_tests/characters/liss/liss_stage.tscn",
+      "camera": "Cameras/ThreeQuarterLeft",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "liss_face",
+      "scene": "res://game/levels/_tests/characters/liss/liss_stage.tscn",
+      "camera": "Cameras/Face",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "liss_face_stylized",
+      "scene": "res://game/levels/_tests/characters/liss/liss_face_stylized.tscn",
+      "camera": "Cameras/Compare",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "liss_silhouette_vs_rhen",
+      "scene": "res://game/levels/_tests/characters/liss/liss_silhouette_vs_rhen.tscn",
+      "camera": "Cameras/Lineup",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "liss_clip_haul_rope",
+      "scene": "res://game/levels/_tests/characters/liss/liss_clip_haul_rope.tscn",
+      "camera": "Cameras/ThreeQuarterLeft",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "battle_heroes_idle",
+      "scene": "res://game/levels/_tests/hero_motion/battle_heroes_idle.tscn"
+    },
+    {
+      "id": "battle_heroes_attack",
+      "scene": "res://game/levels/_tests/hero_motion/battle_heroes_attack.tscn"
+    },
+    {
+      "id": "battle_heroes_hit",
+      "scene": "res://game/levels/_tests/hero_motion/battle_heroes_hit.tscn"
+    },
+    {
+      "id": "battle_heroes_ko",
+      "scene": "res://game/levels/_tests/hero_motion/battle_heroes_ko.tscn"
+    },
+    {
+      "id": "battle_heroes_victory",
+      "scene": "res://game/levels/_tests/hero_motion/battle_heroes_victory.tscn"
+    },
+    {
+      "id": "battle_heroes_cast",
+      "scene": "res://game/levels/_tests/hero_motion/battle_heroes_cast.tscn"
+    },
+    {
+      "id": "battle_heroes_finisher",
+      "scene": "res://game/levels/_tests/hero_motion/battle_heroes_finisher.tscn"
+    },
+    {
+      "id": "reefball_outfitter",
+      "scene": "res://game/ui/reefball/shots/reefball_outfitter.tscn"
+    },
+    {
+      "id": "creature_wakefin_body",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_wakefin_body.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
+      "id": "creature_tannin_archer",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_tannin_archer.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
+      "id": "creature_gallery_ray",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_gallery_ray.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
+      "id": "creature_rime_urchin",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_rime_urchin.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
+      "id": "creature_conduit_crawler",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_conduit_crawler.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
+      "id": "creature_ridge_lynx",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_ridge_lynx.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
+      "id": "creature_cord_moth",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_cord_moth.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
+      "id": "creature_glass_skate",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_glass_skate.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
+      "id": "creature_root_crab",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_root_crab.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
+      "id": "creature_fen_leech",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_fen_leech.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
+      "id": "creature_scree_crawler",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_scree_crawler.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
+      "id": "creature_rim_crawler",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_rim_crawler.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
+      "id": "creature_flat_engine",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_flat_engine.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
+      "id": "slice_dock_night_yes",
+      "scene": "res://game/levels/_tests/slice_shots/slice_cutscene_shot.tscn",
+      "camera": "default",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 360,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        },
+        "time_scale": 4.0,
+        "nodes": {
+          ".": {
+            "level_path": "res://game/levels/ch02/haluna/haluna.tscn",
+            "story_call": "_night",
+            "flags": [
+              "prologue_seen",
+              "ch02_met_asha",
+              "ch02_tideline_won",
+              "ch02_ate_at_nemes",
+              "ch03_drownbell_defeated"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "ch01_oruvel_dressed",
+      "scene": "res://game/levels/_tests/slice_shots/slice_cutscene_shot.tscn",
+      "camera": "default",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 90,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        },
+        "nodes": {
+          ".": {
+            "level_path": "res://game/levels/ch01/oruvel/oruvel.tscn",
+            "spawn": "ScaleHull",
+            "flags": []
+          }
+        }
+      }
+    },
+    {
+      "id": "ch01_underway_crown",
+      "scene": "res://game/levels/_tests/slice_shots/slice_cutscene_shot.tscn",
+      "camera": "default",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 90,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        },
+        "nodes": {
+          ".": {
+            "level_path": "res://game/levels/ch01/oruvel_underway/oruvel_underway.tscn",
+            "spawn": "Drop",
+            "flags": [
+              "ch01_started"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "ch01_underway_gallery",
+      "scene": "res://game/levels/_tests/slice_shots/slice_cutscene_shot.tscn",
+      "camera": "default",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 90,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        },
+        "nodes": {
+          ".": {
+            "level_path": "res://game/levels/ch01/oruvel_underway/oruvel_underway.tscn",
+            "spawn": "Gallery",
+            "flags": [
+              "ch01_started"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "slice_verse_hall",
+      "scene": "res://game/levels/_tests/slice_shots/slice_cutscene_shot.tscn",
+      "camera": "default",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 60,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        },
+        "nodes": {
+          ".": {
+            "level_path": "res://game/levels/ch03/first_verse/first_verse.tscn",
+            "scene_id": "ch03_the_first_verse",
+            "flags": [
+              "ch02_met_asha"
+            ]
+          }
+        },
+        "time_scale": 4.0
+      }
+    },
+    {
+      "id": "ch01_o07_name_board",
+      "scene": "res://game/levels/_tests/slice_shots/slice_cutscene_shot.tscn",
+      "camera": "default",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 60,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        },
+        "nodes": {
+          ".": {
+            "level_path": "res://game/levels/ch01/oruvel/oruvel.tscn",
+            "spawn": "ScaleHull",
+            "scene_id": "ch01_bark_outer_mooring",
+            "flags": [
+              "ch01_started"
+            ]
+          }
+        },
+        "time_scale": 4.0
+      }
+    },
+    {
+      "id": "ch01_o10_gull",
+      "scene": "res://game/levels/_tests/slice_shots/slice_cutscene_shot.tscn",
+      "camera": "default",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 60,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        },
+        "nodes": {
+          ".": {
+            "level_path": "res://game/levels/ch01/oruvel/oruvel.tscn",
+            "spawn": "KellRun",
+            "scene_id": "ch01_gulls",
+            "flags": [
+              "ch01_started"
+            ]
+          }
+        },
+        "time_scale": 4.0
+      }
+    },
+    {
+      "id": "battle_arena_seawall_stairhead_storm",
+      "scene": "res://game/levels/_tests/battle_arenas/preview_seawall_stairhead_storm.tscn",
+      "camera": "BattleCamera",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "battle_arena_seawall_stairhead_hoist",
+      "scene": "res://game/levels/_tests/battle_arenas/preview_seawall_stairhead_hoist.tscn",
+      "camera": "BattleCamera",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "battle_arena_seawall_stairhead_surge",
+      "scene": "res://game/levels/_tests/battle_arenas/preview_seawall_stairhead_surge.tscn",
+      "camera": "BattleCamera",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "battle_arena_coilspire_headland_path",
+      "scene": "res://game/levels/_tests/battle_arenas/preview_coilspire_headland_path.tscn",
+      "camera": "BattleCamera",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "battle_arena_coilspire_tier_landing",
+      "scene": "res://game/levels/_tests/battle_arenas/preview_coilspire_tier_landing.tscn",
+      "camera": "BattleCamera",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "pemakar_p04_harbour_day",
+      "scene": "res://game/levels/_tests/pemakar_kit/pemakar_kit_preview.tscn",
+      "camera": "Cameras/P04",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        },
+        "nodes": {
+          ".": {
+            "mood": "day"
+          }
+        }
+      }
+    },
+    {
+      "id": "pemakar_p11_sea_cut_weir_day",
+      "scene": "res://game/levels/_tests/pemakar_kit/pemakar_kit_preview.tscn",
+      "camera": "Cameras/P11",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        },
+        "nodes": {
+          ".": {
+            "mood": "day"
+          }
+        }
+      }
+    },
+    {
+      "id": "tamsule_tp01_port_and_bell",
+      "scene": "res://game/levels/_tests/tamsule_port_kit/tamsule_port_kit.tscn",
+      "camera": "Cameras/TP01",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "tamsule_tp03_floating_market",
+      "scene": "res://game/levels/_tests/tamsule_port_kit/tamsule_port_kit.tscn",
+      "camera": "Cameras/TP03",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "tamsule_tp05_gantry_foot",
+      "scene": "res://game/levels/_tests/tamsule_port_kit/tamsule_port_kit.tscn",
+      "camera": "Cameras/TP05",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "battle_arena_keth_seep_terrace",
+      "scene": "res://game/levels/_tests/battle_arenas/preview_keth_seep_terrace.tscn",
+      "camera": "BattleCamera",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "battle_arena_lowlight_engine_hall",
+      "scene": "res://game/levels/_tests/battle_arenas/preview_lowlight_engine_hall.tscn",
+      "camera": "BattleCamera",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "battle_arena_ossa_fen_roots",
+      "scene": "res://game/levels/_tests/battle_arenas/preview_ossa_fen_roots.tscn",
+      "camera": "BattleCamera",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "battle_arena_bridal_barge_night",
+      "scene": "res://game/levels/_tests/battle_arenas/preview_bridal_barge_night.tscn",
+      "camera": "BattleCamera",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "battle_arena_ansedra_lagoon_escape",
+      "scene": "res://game/levels/_tests/battle_arenas/preview_ansedra_lagoon_escape.tscn",
+      "camera": "BattleCamera",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "revenant_tells_reflection",
+      "scene": "res://game/levels/_tests/revenant/revenant_tells_reflection.tscn",
+      "camera": "Cameras/Reflections",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 12.0
+        }
+      }
+    },
+    {
+      "id": "revenant_tells_reflection_off",
+      "scene": "res://game/levels/_tests/revenant/revenant_tells_reflection.tscn",
+      "camera": "Cameras/Reflections",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 12.0
+        },
+        "nodes": {
+          "RevenantTells": {
+            "still_reflection": false,
+            "sharp_shadow": false
+          }
+        }
+      }
+    },
+    {
+      "id": "revenant_tells_shadow",
+      "scene": "res://game/levels/_tests/revenant/revenant_tells_shadow.tscn",
+      "camera": "Cameras/Shadows",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "revenant_tells_shadow_off",
+      "scene": "res://game/levels/_tests/revenant/revenant_tells_shadow.tscn",
+      "camera": "Cameras/Shadows",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30,
+      "setup": {
+        "nodes": {
+          "RevenantTells": {
+            "still_reflection": false,
+            "sharp_shadow": false
+          }
+        }
+      }
     }
   ]
 }

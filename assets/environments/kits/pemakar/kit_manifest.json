@@ -57,6 +57,17 @@
         "copper_outcrop-lod1": 288
       }
     },
+    "crown_bell": {
+      "budget": [
+        5000,
+        500
+      ],
+      "bytes": 53636,
+      "lods": {
+        "crown_bell": 536,
+        "crown_bell-lod1": 214
+      }
+    },
     "grave_cairn": {
       "budget": [
         1400,
@@ -99,6 +110,17 @@
       "lods": {
         "grave_stele_b": 696,
         "grave_stele_b-lod1": 144
+      }
+    },
+    "harbour_quay": {
+      "budget": [
+        26000,
+        1500
+      ],
+      "bytes": 1219684,
+      "lods": {
+        "harbour_quay": 19256,
+        "harbour_quay-lod1": 24
       }
     },
     "house_pemakar_a": {
@@ -176,6 +198,17 @@
       "lods": {
         "paddy_tread_4m": 646,
         "paddy_tread_4m-lod1": 10
+      }
+    },
+    "sea_cut_weir": {
+      "budget": [
+        14000,
+        1000
+      ],
+      "bytes": 305808,
+      "lods": {
+        "sea_cut_weir": 4346,
+        "sea_cut_weir-lod1": 380
       }
     },
     "shrine_box": {
@@ -297,6 +330,17 @@
       "lods": {
         "terrace_wall_copper": 3750,
         "terrace_wall_copper-lod1": 206
+      }
+    },
+    "wake_wall": {
+      "budget": [
+        12000,
+        900
+      ],
+      "bytes": 282704,
+      "lods": {
+        "wake_wall": 3600,
+        "wake_wall-lod1": 24
       }
     }
   },

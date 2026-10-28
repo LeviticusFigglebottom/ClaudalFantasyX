@@ -1,0 +1,175 @@
+[gd_scene load_steps=17 format=3]
+
+[ext_resource type="Script" path="res://game/world/arenas/battle_arena_root.gd" id="1_r"]
+[ext_resource type="Shader" path="res://game/shaders/environment/env_sky_low_sun.gdshader" id="2_r"]
+[ext_resource type="Texture3D" path="res://assets/environments/arenas/keth_seep_terrace/lut_ch12_heights.png" id="3_r"]
+[ext_resource type="Script" path="res://game/world/arenas/arena_sea.gd" id="4_r"]
+[ext_resource type="Resource" path="res://game/world/water/lagoon_waves.tres" id="5_r"]
+[ext_resource type="Shader" path="res://game/shaders/water/water_ocean.gdshader" id="6_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/keth_terrace_ground.glb" id="7_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/lit_terrace_wall.glb" id="8_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/seep_pool.glb" id="9_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/pass_cord.glb" id="10_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/cairn.glb" id="11_r"]
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/keth_far_ridges.glb" id="12_r"]
+
+[sub_resource type="ShaderMaterial" id="SkyMat"]
+shader = ExtResource("2_r")
+shader_parameter/azimuth_power = 1.5
+shader_parameter/band_energy = 0.2
+shader_parameter/band_height = 0.05
+shader_parameter/cloud_ambient_energy = 1.2
+shader_parameter/cloud_coverage = 0.45
+shader_parameter/cloud_height_m = 1400.0
+shader_parameter/cloud_horizon_fade = 0.1
+shader_parameter/cloud_opacity = 0.85
+shader_parameter/cloud_scale_m = 3500.0
+shader_parameter/cloud_softness = 0.3
+shader_parameter/cloud_stretch = Vector2(1, 1.6)
+shader_parameter/cloud_sun_energy = 2.0
+shader_parameter/cloud_wind_deg = 300.0
+shader_parameter/col_band = Color(0.9569, 0.9647, 0.9804, 1)
+shader_parameter/col_cloud_lit = Color(0.9647, 0.9725, 0.9882, 1)
+shader_parameter/col_cloud_shadow = Color(0.549, 0.5961, 0.6588, 1)
+shader_parameter/col_glow = Color(1, 1, 1, 1)
+shader_parameter/col_ground = Color(0.3529, 0.3922, 0.4392, 1)
+shader_parameter/col_horizon_away = Color(0.7843, 0.8471, 0.9098, 1)
+shader_parameter/col_horizon_sun = Color(0.9098, 0.9333, 0.9608, 1)
+shader_parameter/col_zenith = Color(0.1176, 0.3569, 0.7216, 1)
+shader_parameter/glow_energy = 0.6
+shader_parameter/glow_power = 6.0
+shader_parameter/halo_energy = 1.0
+shader_parameter/halo_power = 120.0
+shader_parameter/horizon_curve = 0.3
+shader_parameter/mid_strength = 0.0
+shader_parameter/sky_energy = 1.6
+shader_parameter/sun_disc_energy = 8.0
+
+[sub_resource type="Sky" id="Sky"]
+sky_material = SubResource("SkyMat")
+process_mode = 2
+
+[sub_resource type="Environment" id="Env"]
+resource_name = "keth_seep_terrace_ch12"
+background_mode = 2
+sky = SubResource("Sky")
+ambient_light_source = 2
+ambient_light_color = Color(0.498, 0.651, 0.8627, 1)
+ambient_light_energy = 0.8
+reflected_light_source = 2
+tonemap_mode = 4
+tonemap_exposure = 0.65
+tonemap_agx_white = 12.0
+ssao_enabled = true
+ssao_radius = 1.2
+ssao_intensity = 1.2
+glow_enabled = true
+glow_intensity = 0.35
+glow_bloom = 0.03
+glow_hdr_threshold = 1.2
+fog_enabled = true
+fog_mode = 0
+fog_light_color = Color(0.8157, 0.8627, 0.9098, 1)
+fog_aerial_perspective = 0.5
+fog_density = 0.0012
+fog_sky_affect = 0.15
+fog_height = 0.0
+fog_height_density = 0.0
+adjustment_enabled = true
+adjustment_color_correction = ExtResource("3_r")
+
+[sub_resource type="ShaderMaterial" id="SeaMat"]
+resource_name = "arena_storm_grey"
+render_priority = 0
+shader = ExtResource("6_r")
+shader_parameter/col_deep = Color(0.0549, 0.2902, 0.3333, 1)
+shader_parameter/col_scatter_shallow = Color(0.1216, 0.498, 0.5255, 1)
+shader_parameter/absorption_per_m = Vector3(2, 0.5, 0.42)
+shader_parameter/absorption_scale = 2.25
+shader_parameter/scatter_energy = 0.14
+shader_parameter/caustic_strength = 0.0
+shader_parameter/col_foam = Color(0.9333, 0.9647, 0.9569, 1)
+shader_parameter/col_sss = Color(0.1216, 0.498, 0.5255, 1)
+shader_parameter/foam_crest_threshold = 0.5
+shader_parameter/roughness_far = 0.18
+shader_parameter/use_caustics = false
+shader_parameter/use_ssr = false
+shader_parameter/use_sss = false
+
+[node name="KethSeepTerrace" type="Node3D"]
+script = ExtResource("1_r")
+arena_id = &"keth_seep_terrace"
+sub_frame = &"ch12"
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Env")
+
+[node name="Sun" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.766044, -0.321394, 0.55667, 0, 0.866025, 0.5, -0.642788, -0.383022, 0.663414, 0, 30, 0)
+light_color = Color(0.9804, 0.9647, 1, 1)
+light_energy = 2.8
+shadow_enabled = true
+shadow_bias = 0.03
+shadow_normal_bias = 1.0
+shadow_blur = 1.0
+directional_shadow_mode = 2
+directional_shadow_split_1 = 0.06
+directional_shadow_split_2 = 0.18
+directional_shadow_split_3 = 0.45
+directional_shadow_max_distance = 120.0
+
+[node name="Sea" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -160.0, 0)
+script = ExtResource("4_r")
+wave_set = ExtResource("5_r")
+material = SubResource("SeaMat")
+sea_glow_energy = 0.0
+tide_line_y = -160.0
+
+[node name="Ground" parent="." instance=ExtResource("7_r")]
+
+[node name="Dressing" type="Node3D" parent="."]
+
+[node name="lit_terrace_wall_1" parent="Dressing" instance=ExtResource("8_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -12, 0, -6.6)
+
+[node name="lit_terrace_wall_2" parent="Dressing" instance=ExtResource("8_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 0, 0, -6.6)
+
+[node name="lit_terrace_wall_3" parent="Dressing" instance=ExtResource("8_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 12, 0, -6.6)
+
+[node name="seep_pool_1" parent="Dressing" instance=ExtResource("9_r")]
+transform = Transform3D(0.939693, 0, 0.34202, 0, 1, 0, -0.34202, 0, 0.939693, -9, 0, -4.2)
+
+[node name="pass_cord_1" parent="Dressing" instance=ExtResource("10_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 0, 0, -4)
+
+[node name="cairn_1" parent="Dressing" instance=ExtResource("11_r")]
+transform = Transform3D(0.866025, 0, 0.5, 0, 1, 0, -0.5, 0, 0.866025, -8.6, 0, 3.6)
+
+[node name="cairn_2" parent="Dressing" instance=ExtResource("11_r")]
+transform = Transform3D(-0.939693, 0, -0.34202, 0, 1, 0, 0.34202, 0, -0.939693, 8.8, 0, 3.4)
+
+[node name="keth_far_ridges_1" parent="Dressing" instance=ExtResource("12_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 0, -20, 0)
+
+[node name="CameraHints" type="Node3D" parent="."]
+
+[node name="wide_high" type="Marker3D" parent="CameraHints"]
+transform = Transform3D(0.995893, 0.0339417, -0.0839326, -0, 0.927066, 0.374899, 0.0905357, -0.373359, 0.923258, -1.5, 7.5, 13.5)
+
+[node name="party_side" type="Marker3D" parent="CameraHints"]
+transform = Transform3D(0.575779, -0.0656933, 0.814962, 0, 0.996767, 0.0803484, -0.817606, -0.0462629, 0.573917, 5.6, 1.7, 4.5)
+
+[node name="foe_side" type="Marker3D" parent="CameraHints"]
+transform = Transform3D(0.490844, 0.0745636, -0.868051, -0, 0.996331, 0.0855825, 0.871248, -0.0420076, 0.489043, -5.6, 1.7, 4)
+
+[node name="under_the_wall" type="Marker3D" parent="CameraHints"]
+transform = Transform3D(0.725953, 0.18242, 0.663111, 0, 0.964181, -0.265244, -0.687745, 0.192555, 0.69995, 3, 0.9, 3.5)
+
+[node name="the_pass_below" type="Marker3D" parent="CameraHints"]
+transform = Transform3D(-0.978106, 0.0472396, -0.202675, 0, 0.973896, 0.226996, 0.208108, 0.222026, -0.952573, -2, 1.6, -3.5)
+
+[node name="BossAnchor" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.5, 0.0, -3.0)

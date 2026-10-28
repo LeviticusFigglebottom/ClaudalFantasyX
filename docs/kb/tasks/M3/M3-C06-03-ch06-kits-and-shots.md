@@ -2,8 +2,9 @@
 id: M3-C06-03
 title: Ch6 kits swap-in (Brine Shoals, the Saltwright camp, the white barge) and the W shots, with the no-wake water
 role: environment
-status: todo
-owner_session: ""
+status: review
+owner_session: "env-art (session_01YbaV2c8yquRHqj6afQYg89)"
+reviewer: cinematics
 depends_on: [M3-C06-02]
 milestone: M3
 request-from: cinematics
@@ -25,5 +26,28 @@ Ch6's zone `ch06/brine_shoals` is greybox blocks (`game/levels/ch06/brine_shoals
 - [ ] Every route can be walked on the kit.
 
 ## Notes
+- **env-art, 2026-10-27:** where each item stands. act1-chapters placed the kit under M3-C06-1200 (ADR 0200), which
+  lists what was still open.
+  1. **The Brine Shoals kit (items 1, 2 and 4).** Built: M3-ENV-02 (the flats, wrecks and channel), the camp and its
+     burning states, the white barge, and M3-ENV-703 (the tide-wheel, the Level-stone shrine, the vendor boat, the
+     hatch, and the chalk camp-signs `chalk_mark` / `chalk_mark_heavy`).
+  2. **Order props (item 3).** The brazier and brine-irons are `branding_brazier`. New here: **`stillguard_torch`**,
+     a 2.2 m iron haft in the Order's red bands with a brass cup and a glowing pitch wrap. Its origin is at the foot;
+     the hand grips about 0.9–1.3 m. It is a hand prop for the Stillguard actors (Character), or planted in the sand
+     by the camp's edge. The flames are VFX (Rendering), as `ridge_fire`'s are.
+  3. **The no-wake water (item 5).** M3-ENV-1000 (doing): the moving boats' `boat_wake` is built and the barge has
+     none. Sefir's still reflection is Rendering's M3-RND-03, waiting on the integration branch.
+  4. **The tideline (item 6).** New: **`lamp_hole_open`**, **`lamp_hole_covered`** and **`hand_print`** (1.2 m and
+     0.44 m patches of wet sand, flush with the flats). For act1-chapters: the `LampHole` block becomes
+     `lamp_hole_open` while the lamp is being buried, then `lamp_hole_covered` (the layout's `states`, by
+     `ch06_saw_lamp_buried`). Put `hand_print` beside it for the insert shot.
+  5. **The grades (item 7).** Done. The colour script now has the `ch06_hold`, `ch06_dusk` and `ch06_dawn`
+     sub-frames. Each has an Environment (`assets/environments/zones/brine_shoals/ch06_<grade>_environment.tres`),
+     a LUT (`lut_ch06_<grade>`, from `bs_zone_lut.py --grade`) and a sun row in `ch06_grades.json` (Ch06Zone's
+     fields: pitch = −elevation, yaw = 180 − azimuth). For act1-chapters: a light row takes the grade's sun row and
+     sets the WorldEnvironment's `environment` to the grade's `.tres` (an `environment_res` key, as the 10-25 note
+     planned). The hold's key is Rhen's lantern, so the W08 cutscene adds that light.
+  - **Left after review:** M3-ENV-1000's reflection hookup, waiting on M3-RND-03, and act1-chapters' wiring of the
+    new pieces and grades.
 
 ## Review log

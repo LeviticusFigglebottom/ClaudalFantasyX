@@ -43,6 +43,11 @@ var _cruise := 0.0
 var _startle := 0.0
 
 
+## True while the shoal darts away from a wader (the startle timer runs; read by audio's LifeAudio, M3-AUD-815).
+func startled() -> bool:
+	return _startle > 0.0
+
+
 func _init(row: Dictionary, kind: Dictionary, seed_value: int, count: int, ground_fn: Callable) -> void:
 	_kind = kind
 	_rng.seed = seed_value
