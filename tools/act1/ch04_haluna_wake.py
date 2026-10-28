@@ -68,13 +68,13 @@ MARKS = {
     "way_rail_gap": (4.0, -120.0, 0.0),
     "way_flats": (7.0, -126.0, CAUSEWAY_YAW),
 }
-ACTORS = {  # id: ((x, z, yaw), extra)
+ACTORS = {  # id: ((x, z, yaw), extra); the feast's villagers face the wall's gap, where Osu walks to set the shell
     "asha": ((-10.2, -115.8, 196.0), {"color": "#d9c3a0"}),
     "toma": ((-56.4, -3.4, 0.0), {"color": "#6f7f8f", "radius": 0.36, "height": 1.9}),
     "neme": ((-59.6, -3.3, 0.0), {"cast": "neme", "color": "#8f6f5f"}),
-    "osu": ((6.0, -103.3, 180.0), {"cast": "osu", "color": "#9a8a7a"}),
-    "vendor": ((1.6, -105.2, 180.0), {"cast": "vendor", "color": "#7a8a5a"}),
-    "fisher": ((8.3, -107.6, 120.0), {"cast": "fisher", "color": "#5a7a8a"}),
+    "osu": ((6.0, -103.3, 51.0), {"cast": "osu", "color": "#9a8a7a"}),
+    "vendor": ((1.6, -105.2, 47.0), {"cast": "vendor", "color": "#7a8a5a"}),
+    "fisher": ((8.3, -107.6, 62.0), {"cast": "fisher", "color": "#5a7a8a"}),
     "child": ((-70.0, -9.5, 90.0), {"cast": "child", "color": "#d4b07a", "radius": 0.2, "height": 1.1}),
     "netmender": ((-5.2, 56.4, 0.0), {"cast": "netmender", "color": "#8a9a7a"}),  # on the sand by the dock's foot
     "reed": ((-116.3, 33.6, 270.0), {"cast": "reed", "color": "#b8b2a8"}),
