@@ -12,7 +12,6 @@
  "greybox": {
   "hide_all": true,
   "keep": [
-   "LowHull",
    "StormWall"
   ]
  },

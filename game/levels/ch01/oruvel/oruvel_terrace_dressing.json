@@ -109,6 +109,26 @@
    "y": 3.0,
    "yaw_deg": 0.0,
    "block": "KellBeacon"
+  },
+  {
+   "piece": "hull_outrigger",
+   "at": [
+    39.0,
+    -17.0
+   ],
+   "y": -0.3,
+   "yaw_deg": 90.0,
+   "block": "LowHull"
+  },
+  {
+   "piece": "salvage_heap",
+   "at": [
+    39.0,
+    -17.0
+   ],
+   "y": 0.0,
+   "yaw_deg": 15.0,
+   "block": "LowHull"
   }
  ]
 }
