@@ -9,6 +9,8 @@ const WRAPPERS := {
 	&"asha": "res://game/hero_motion/battle/asha_battle_actor.tscn",
 	&"toma": "res://game/hero_motion/battle/toma_battle_actor.tscn",
 	&"ysolde": "res://game/hero_motion/battle/ysolde_battle_actor.tscn",
+	&"liss": "res://game/hero_motion/battle/liss_battle_actor.tscn",
+	&"kerrid": "res://game/hero_motion/battle/kerrid_battle_actor.tscn",
 }
 ## The changes the battle makes: a turn's readying and its action, each one-shot's return to idle, a KO and
 ## its revive, and the outro.
@@ -41,15 +43,16 @@ const CHANGES: Array[Array] = [
 	[&"victory", &"idle"],
 ]
 
-## Pops already handed to their owner, as "<hero>:<from>><to>": reported, not failed, until the fix lands.
-## M2-HER-1114 (battle-presentation): the placeholder finisher turns Ysolde's left upper arm ~180 deg between two keys,
-## so a cross-fade into it flips the arm (a hand 1.3 m in a frame). Remove the entry once the fix is on this branch.
-const KNOWN: Array[String] = ["ysolde:ready>finisher"]
+## Pops already handed to their owner, as "<hero>:<from>><to>": reported, not failed, until the fix lands. Empty:
+## Ysolde's placeholder finisher flip (M2-HER-1114) is handled by HeroBattleActor (short-path keys, capped fades).
+const KNOWN: Array[String] = []
 
 var made: Array[Node] = []
 
 
-func before_each() -> void:
+## Frees what the test made (each test ends with it: the runner makes a new instance per test, so a before_each
+## never sees the last one's nodes).
+func _done() -> void:
 	for n in made:
 		if is_instance_valid(n):
 			n.get_parent().remove_child(n)
@@ -64,6 +67,8 @@ func test_no_battle_clip_change_pops_or_cuts() -> void:
 	var checked := 0
 	for hero: StringName in WRAPPERS:
 		var actor := _actor(hero)
+		if actor.player == null:
+			continue  # its model has not reached this branch yet (HeroBattleActor.model_path)
 		BattleClips.player_of(actor)  # as a battle does: placeholder clips for any the model lacks
 		actor.retune()  # what the actor's next frame does
 		var p := actor.player
@@ -95,7 +100,7 @@ func test_no_battle_clip_change_pops_or_cuts() -> void:
 			)
 			if KNOWN.has("%s:%s>%s" % [hero, from, to]):
 				if bool(r["pop"]):
-					print("  KNOWN (M2-HER-1114): %s %s -> %s" % [hero, from, to])
+					print("  KNOWN: %s %s -> %s" % [hero, from, to])
 				continue
 			assert_false(bool(r["cut"]), "%s %s -> %s cross-fades (blend %.2f s)" % [hero, from, to, r["blend"]])
 			assert_false(
@@ -103,6 +108,7 @@ func test_no_battle_clip_change_pops_or_cuts() -> void:
 			)
 			checked += 1
 	assert_true(checked > 0, "at least one hero ships the battle clips")
+	_done()
 
 
 func test_the_guard_flags_a_cut_and_passes_a_blend() -> void:
@@ -118,6 +124,7 @@ func test_the_guard_flags_a_cut_and_passes_a_blend() -> void:
 	var eased := HeroMotionGuard.clip_change(p, skel, &"idle", &"far", limits, 1.0 / 60.0)
 	assert_false(bool(eased["cut"]))
 	assert_false(bool(eased["pop"]), "a 0.4 s blend moves it %.3f m a frame" % eased["peak"])
+	_done()
 
 
 func test_a_cut_on_a_real_hero_is_flagged() -> void:
@@ -126,6 +133,7 @@ func test_a_cut_on_a_real_hero_is_flagged() -> void:
 	var actor := _actor(&"rhen")
 	var p := actor.player
 	if not (p.has_animation(&"idle") and p.has_animation(&"victory")):
+		_done()
 		return
 	p.set_blend_time(&"idle", &"victory", 0.0)
 	p.playback_default_blend_time = 0.0
@@ -135,8 +143,10 @@ func test_a_cut_on_a_real_hero_is_flagged() -> void:
 	assert_true(bool(r["cut"]), "no cross-fade is a cut")
 	assert_true(bool(r["pop"]), "Rhen's idle cut into his victory pose pops (%.3f m/frame)" % r["peak"])
 
-
 ## The wrapper, in the tree (its _ready tunes the player and starts idle).
+	_done()
+
+
 func _actor(hero: StringName) -> HeroBattleActor:
 	var a := (load(WRAPPERS[hero]) as PackedScene).instantiate() as HeroBattleActor
 	_add(a)

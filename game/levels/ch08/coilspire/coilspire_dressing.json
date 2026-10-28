@@ -12,16 +12,22 @@
  "greybox": {
   "hide_all": true,
   "keep": [
-   "Gate_t1",
-   "Gate_t2",
-   "Gate_t3",
-   "Gate_t4",
-   "NicheSeal",
-   "WrightMark",
-   "Virel",
-   "StormWall"
+   "Virel"
   ]
  },
+ "storms": [
+  {
+   "name": "Undertow",
+   "at": [
+    308.745,
+    77.285,
+    159.418
+   ],
+   "preset": "ch08_seawall",
+   "azimuth_deg": 170.0,
+   "block": "StormWall"
+  }
+ ],
  "fire_light_color": "#FFB16E",
  "fire_lights": [
   {
@@ -102,7 +108,7 @@
    "y": 0.0,
    "yaw_deg": -30.0,
    "lod1_from_m": 2500.0,
-   "collide": "trimesh"
+   "collide": "trimesh_lod0"
   },
   {
    "piece": "headland_path",
@@ -123,7 +129,35 @@
    "y": 39.285,
    "yaw_deg": -30.0,
    "lod1_from_m": 300.0,
-   "collide": "trimesh"
+   "collide": "trimesh",
+   "collide_lod0_in": [
+    {
+     "pos": [
+      305.025,
+      40.86,
+      155.221
+     ],
+     "size": [
+      1.7,
+      2.85,
+      1.879
+     ],
+     "yaw": 45.0
+    },
+    {
+     "pos": [
+      307.941,
+      82.96,
+      156.984
+     ],
+     "size": [
+      0.9,
+      1.85,
+      1.33
+     ],
+     "yaw": 16.156
+    }
+   ]
   },
   {
    "piece": "coilspire_flues",
@@ -144,7 +178,35 @@
    "y": 39.285,
    "yaw_deg": -30.0,
    "lod1_from_m": 120.0,
-   "collide": "trimesh"
+   "collide": "trimesh",
+   "collide_lod0_in": [
+    {
+     "pos": [
+      305.025,
+      40.86,
+      155.221
+     ],
+     "size": [
+      1.7,
+      2.85,
+      1.879
+     ],
+     "yaw": 45.0
+    },
+    {
+     "pos": [
+      307.941,
+      82.96,
+      156.984
+     ],
+     "size": [
+      0.9,
+      1.85,
+      1.33
+     ],
+     "yaw": 16.156
+    }
+   ]
   },
   {
    "piece": "keepers_hut",
@@ -155,7 +217,7 @@
    "y": 39.285,
    "yaw_deg": -30.0,
    "lod1_from_m": 150.0,
-   "collide": "trimesh"
+   "collide": "trimesh_lod0"
   },
   {
    "piece": "beacon_basket",
@@ -1183,21 +1245,91 @@
   {
    "piece": "flue_key",
    "at": [
-    309.136,
-    160.598
+    310.457,
+    159.156
    ],
    "y": 67.535,
-   "yaw_deg": -160.0
+   "yaw_deg": -105.0
   },
   {
    "piece": "flue_key_wheel",
    "at": [
-    308.924,
-    160.015
+    309.858,
+    158.995
    ],
    "y": 67.535,
-   "yaw_deg": -160.0,
+   "yaw_deg": -105.0,
    "spin_with": "Key_t4_d"
+  },
+  {
+   "piece": "flue_gate",
+   "at": [
+    304.573,
+    158.766
+   ],
+   "y": 39.885,
+   "yaw_deg": 92.364,
+   "block": "Gate_t1"
+  },
+  {
+   "piece": "flue_gate",
+   "at": [
+    305.567,
+    159.619
+   ],
+   "y": 48.885,
+   "yaw_deg": 109.578,
+   "block": "Gate_t2"
+  },
+  {
+   "piece": "flue_gate",
+   "at": [
+    308.941,
+    160.908
+   ],
+   "y": 57.885,
+   "yaw_deg": -167.049,
+   "block": "Gate_t3"
+  },
+  {
+   "piece": "flue_gate",
+   "at": [
+    308.282,
+    156.879
+   ],
+   "y": 66.885,
+   "yaw_deg": 4.271,
+   "block": "Gate_t4"
+  },
+  {
+   "piece": "niche_seal",
+   "at": [
+    305.892,
+    156.568
+   ],
+   "y": 49.285,
+   "yaw_deg": 51.0,
+   "block": "NicheSeal"
+  },
+  {
+   "piece": "lamp_niche",
+   "at": [
+    305.776,
+    156.473
+   ],
+   "y": 49.385,
+   "yaw_deg": 51.0,
+   "block": "Niche"
+  },
+  {
+   "piece": "wright_mark",
+   "at": [
+    306.369,
+    156.832
+   ],
+   "y": 58.535,
+   "yaw_deg": 49.0,
+   "block": "WrightMark"
   },
   {
    "piece": "corrow_far",

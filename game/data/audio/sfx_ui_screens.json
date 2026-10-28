@@ -1,0 +1,112 @@
+{
+  "version": 1,
+  "doc": "UI rows for the UI track's new screens (M3-AUD-832; assets_src/sfx/screen_sfx.py): menu motion, the title's reveal, the save slots, shrine travel and the Reefball HUD. Rendered at the UI rule's -20 LUFS; volume_db brings the quiet ones down (the whooshes sit about 12 dB under the open and close sounds).",
+  "sfx": {
+    "ui_whoosh_in": {
+      "files": [
+        "res://assets/audio/sfx/ui_whoosh_in.ogg"
+      ],
+      "bus": "UI",
+      "volume_db": -12.0,
+      "voices": 2,
+      "cooldown_ms": 60
+    },
+    "ui_whoosh_out": {
+      "files": [
+        "res://assets/audio/sfx/ui_whoosh_out.ogg"
+      ],
+      "bus": "UI",
+      "volume_db": -13.0,
+      "voices": 2,
+      "cooldown_ms": 60
+    },
+    "ui_title_reveal": {
+      "files": [
+        "res://assets/audio/sfx/ui_title_reveal.ogg"
+      ],
+      "bus": "UI",
+      "volume_db": -5.0,
+      "voices": 1
+    },
+    "ui_save_slot": {
+      "files": [
+        "res://assets/audio/sfx/ui_save_slot.ogg"
+      ],
+      "bus": "UI",
+      "volume_db": -1.0,
+      "voices": 1
+    },
+    "ui_load_slot": {
+      "files": [
+        "res://assets/audio/sfx/ui_load_slot.ogg"
+      ],
+      "bus": "UI",
+      "volume_db": -1.0,
+      "voices": 1
+    },
+    "ui_shrine_travel": {
+      "files": [
+        "res://assets/audio/sfx/ui_shrine_travel.ogg"
+      ],
+      "bus": "UI",
+      "volume_db": 0.0,
+      "voices": 1
+    },
+    "ui_reefball_choices": {
+      "files": [
+        "res://assets/audio/sfx/ui_reefball_choices.ogg"
+      ],
+      "bus": "UI",
+      "volume_db": -4.0,
+      "voices": 1
+    },
+    "ui_reefball_glint": {
+      "files": [
+        "res://assets/audio/sfx/ui_reefball_glint.ogg"
+      ],
+      "bus": "UI",
+      "volume_db": -8.0,
+      "voices": 1,
+      "cooldown_ms": 150
+    },
+    "ui_count_run": {
+      "files": [
+        "res://assets/audio/sfx/ui_count_run.ogg"
+      ],
+      "bus": "UI",
+      "volume_db": -8.0,
+      "voices": 1,
+      "cooldown_ms": 400,
+      "_note": "M3-AUD-848: the result's numbers counting up"
+    },
+    "ui_count_done": {
+      "files": [
+        "res://assets/audio/sfx/ui_count_done.ogg"
+      ],
+      "bus": "UI",
+      "volume_db": -4.0,
+      "voices": 1,
+      "_note": "M3-AUD-848: the count settled"
+    },
+    "ui_prompt_in": {
+      "files": [
+        "res://assets/audio/sfx/ui_prompt_in.ogg"
+      ],
+      "bus": "UI",
+      "volume_db": -14.0,
+      "voices": 1,
+      "cooldown_ms": 900,
+      "_note": "M3-AUD-854: the interact prompt appearing; very quiet, at most once in 0.9 s"
+    },
+    "ui_interact": {
+      "files": [
+        "res://assets/audio/sfx/ui_interact.ogg"
+      ],
+      "bus": "UI",
+      "volume_db": -8.0,
+      "voices": 1,
+      "cooldown_ms": 200,
+      "_note": "M3-AUD-854: using an interactable, under whatever it opens"
+    }
+  }
+}

@@ -7,6 +7,8 @@
   a creatures.json row names as its `scene`.
 - A row with `vowbound` true (M3-CRE-638) is a Vowbound's actor: its id is a game/data/battle/vowbound.json row (the
   stand-in CreatureModels gives that Vowbound), and no enemy uses its scene as a `model`.
+- `vfx_anchors` (M3-CRE-651): {"core": bone, "wound": bone} where spawn and death effects start (CreatureActor
+  .vfx_anchor); a non-empty map needs a core. tools/tests/test_creatures.py checks the bones are in the GLB.
 - `stand_in` may also carry `height` and `radius` (M3-CRE-640, numbers > 0): a Vowbound with no battle_sandbox.json
   stand-in row (UI's) gives its own, so the VFX anchors and the ring fit the model.
 - `vowbound_pending` (M3-CRE-642): a Vowbound built ahead of its game row names, as a non-empty string, the task
@@ -30,7 +32,8 @@ SCENE_PREFIX = "res://game/creatures/"
 DEFAULT_KEYS = {"idle", "hit", "ko", "loop", "blend_sec", "clip_by_kind", "clip_by_skill", "ko_fade_sec",
                 "stand_in", "phases", "break_parts", "portrait", "contact", "hit_variants", "idle_variety",
                 "hit_snap"}
-ROW_KEYS = DEFAULT_KEYS | {"scene", "vowbound", "vowbound_pending"}
+ROW_KEYS = DEFAULT_KEYS | {"scene", "vowbound", "vowbound_pending", "vfx_anchors"}
+VFX_ANCHOR_KEYS = {"wound", "core"}
 STAND_IN_KEYS = {"yaw_deg", "hover", "height", "radius"}
 PHASE_KEYS = {"clip", "idle", "offset_m", "tilt_deg", "sec", "show", "hide", "hide_after", "show_after", "clips",
               "hold"}
@@ -64,6 +67,13 @@ def _row_errors(w: str, row: dict, skills: set[str], phase_ids: set[str] | None)
     for sid in row.get("clip_by_skill", {}) if isinstance(row.get("clip_by_skill"), dict) else []:
         if sid not in skills:
             errs.append(f"{w}.clip_by_skill: unknown skill '{sid}'")
+    va = row.get("vfx_anchors", {})
+    if not (isinstance(va, dict) and all(isinstance(v, str) and v for v in va.values())):
+        errs.append(f"{w}.vfx_anchors: must map anchor names to bone names")
+    else:
+        errs += [f"{w}.vfx_anchors: unknown anchor '{k}'" for k in sorted(set(va) - VFX_ANCHOR_KEYS)]
+        if va and "core" not in va:
+            errs.append(f"{w}.vfx_anchors: needs a core (a wound falls back to it)")
     st = row.get("stand_in", {})
     if not isinstance(st, dict):
         errs.append(f"{w}.stand_in: must be an object")

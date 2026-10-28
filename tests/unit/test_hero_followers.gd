@@ -78,6 +78,24 @@ func test_followers_keep_their_spacing_on_the_trail() -> void:
 	_done()
 
 
+## Rhen runs, then turns back through his followers: each is pushed off him while it steers for its trail point,
+## and the push never adds to its top speed (Ch7's galleries: Asha at 6.9 m/s, a snap to the field guard).
+func test_a_follower_pushed_aside_keeps_its_top_speed() -> void:
+	var top := float(party._cfg["max_speed_mps"]) * DT + 1e-4
+	var fastest := 0.0
+	for move: Vector2 in [UP, -UP]:
+		player.input_override = move
+		for i in RUN_FRAMES / 3:
+			var was: Array[Vector3] = []
+			for f in party.followers:
+				was.append(f.global_position)
+			_step()
+			for k in party.followers.size():
+				fastest = maxf(fastest, _flat(was[k], party.followers[k].global_position))
+	assert_true(fastest <= top, "a follower's step is at most max_speed_mps (fastest %.3f m a frame)" % fastest)
+	_done()
+
+
 func test_feet_on_the_floor() -> void:
 	for i in 30:
 		_step()
@@ -163,6 +181,56 @@ func test_followers_turn_to_face_who_rhen_talks_to() -> void:
 	var heading := HeroLocomotion.yaw_of(player.global_position - party.followers[0].global_position)
 	assert_between(absf(angle_difference(asha.visible_yaw(), heading)), 0.0, deg_to_rad(30.0), "facing her walk again")
 	_done()
+
+
+func test_ysolde_follows_when_she_joins() -> void:
+	Game.state.party_ids = [&"rhen", &"ysolde", &"toma"] as Array[StringName]
+	party.advance(DT)
+	assert_eq(_ids(), [&"ysolde", &"toma"] as Array[StringName], "Ysolde follows in party order")
+	var body := party.body_of(&"ysolde")
+	assert_true(body != null and body.model != null, "on her own model")
+	player.input_override = UP
+	for i in 120:
+		_step()
+	assert_true(body.loco.speed > 1.0, "and walks after him")
+	_done()
+
+
+func test_followers_never_stand_inside_a_wall_in_the_lane() -> void:
+	zone.call("place_at", &"Lane")
+	party.advance(DT)
+	var sticks: Array[Vector2] = [
+		Vector2(-0.7, -0.7), UP, Vector2(0.7, -0.7), UP, Vector2(-0.7, 0.7), Vector2(0.7, 0.7)
+	]
+	for stick in sticks:
+		player.input_override = stick
+		for i in 40:
+			_step()
+			for f in party.followers:
+				assert_false(_inside_wall(f.global_position), "%s clear of the walls" % f.get_meta(&"hero_id"))
+	_done()
+
+
+func test_arriving_with_his_back_to_a_wall_puts_no_one_in_it() -> void:
+	zone.call("place_at", &"Lane")
+	player.global_position = Vector3(-2.4, 0.0, 8.0)  # a step off the tide wall (x = -3.2), his back to it
+	player.motor.facing_yaw = -PI * 0.5
+	player.rotation.y = player.motor.facing_yaw
+	party.catch_up()
+	for f in party.followers:
+		assert_false(_inside_wall(f.global_position), "%s is not put in the wall" % f.get_meta(&"hero_id"))
+	_done()
+
+
+## True when a follower's body (a 0.25 m sphere at its waist) overlaps a static collider.
+func _inside_wall(at: Vector3) -> bool:
+	var q := PhysicsShapeQueryParameters3D.new()
+	var ball := SphereShape3D.new()
+	ball.radius = 0.25
+	q.shape = ball
+	q.transform = Transform3D(Basis.IDENTITY, at + Vector3.UP * 0.9)
+	q.exclude = [player.get_rid()]
+	return not player.get_world_3d().direct_space_state.intersect_shape(q, 1).is_empty()
 
 
 func _step() -> void:

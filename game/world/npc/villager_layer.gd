@@ -30,6 +30,8 @@ const SHELTER_SUFFIX := "Shelter"
 const ATTACH_BESIDE := "beside"
 const ATTACH_CHILD := "child"
 const WORK_SUFFIX := "Work"
+## The child a GreyboxZone stage actor's villager model is named (GreyboxZone `_actor_body`).
+const GREYBOX_MODEL := "Model"
 
 ## The zone (a location id such as ch02/haluna); it names the data file.
 @export var zone_id: StringName = &""
@@ -134,6 +136,9 @@ func _make(row: Dictionary) -> FieldNpc:
 	var id := StringName(str(row.get("npc_id", "")))
 	var stand_in := root.get_node_or_null(NodePath(str(row.get("stand_in", "")))) as Node3D
 	var adopted := placed_on(stand_in) if stand_in != null else null
+	var model := stand_in.get_node_or_null(NodePath(GREYBOX_MODEL)) as Node3D if stand_in != null else null
+	if adopted == null and model != null and not model is FieldNpc:
+		return _adopt_model(row, id, stand_in, model)
 	if adopted != null:
 		adopted.shelter = _marker(row.get("shelter", null), String(stand_in.name) + "Villager" + SHELTER_SUFFIX)
 		adopted.work_target = _marker(row.get("work_at", null), String(stand_in.name) + "Villager" + WORK_SUFFIX)
@@ -174,6 +179,27 @@ func _make(row: Dictionary) -> FieldNpc:
 	for n: Node3D in follow:
 		rel.append([n, npc.global_transform.affine_inverse() * n.global_transform])
 	_followers[npc] = rel
+	npc.shelter = _marker(row.get("shelter", null), String(npc.name) + SHELTER_SUFFIX)
+	npc.work_target = _marker(row.get("work_at", null), String(npc.name) + WORK_SUFFIX)
+	return npc
+
+
+## M3-CRE-656: a greybox stage actor that already stands as a villager model (GreyboxZone `_actor_body`, a layout row's
+## `"model"`, M2-FP-111) becomes a FieldNpc carrying that same model, so it glances, turns to talk and keeps its
+## routines instead of only idling. The model moves under the FieldNpc as its `Actor`; the stage actor node stays
+## where the cutscenes find it, and the FieldNpc rides inside it (no route or follow, as `attach: child`).
+func _adopt_model(row: Dictionary, id: StringName, stand_in: Node3D, model: Node3D) -> FieldNpc:
+	var npc := FieldNpc.new()
+	npc.name = String(stand_in.name) + "Villager"
+	npc.npc_id = id
+	npc.auto_process = auto_build
+	npc.transform = model.transform
+	stand_in.remove_child(model)
+	model.transform = Transform3D.IDENTITY
+	model.name = FieldNpc.ACTOR_NAME
+	npc.add_child(model)
+	stand_in.add_child(npc)
+	npc.listen_to(_root().get_node_or_null(NodePath(str(row.get("talk", "")))) as Interactable)
 	npc.shelter = _marker(row.get("shelter", null), String(npc.name) + SHELTER_SUFFIX)
 	npc.work_target = _marker(row.get("work_at", null), String(npc.name) + WORK_SUFFIX)
 	return npc

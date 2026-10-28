@@ -110,14 +110,13 @@ func _slice_end() -> void:
 
 func _wake_night() -> void:
 	_open(WAKE)
-	assert_true(zone.block_shown("WindowLit1"), "the windows are lit before the lamps leave")
-	assert_false(zone.block_shown("AshaShell"), "the gap in the wall is still a gap")
+	assert_true(zone.story_set_shown("ch04_wake"), "the lamps line the way to the wall")
+	assert_false(zone.story_set_shown("ch04_shell_asha"), "the gap in the wall is still a gap")
 	story.begin()
 	assert_true(bool(Game.get_flag(&"ch04_started")), "C4-01")
 	assert_eq(Game.state.chapter, 4, "the chapter step (the chapter autosave follows)")
 	assert_eq(Game.state.party_ids, ACTIVE, "Rhen, Asha and Toma")
 	assert_true(&"ch04_lamps_002" in lines, "Toma: 'To her.'")
-	assert_false(zone.block_shown("WindowLit1"), "the windows go dark behind the lamps")
 	assert_true(_at(&"NemeDoor"))
 
 	assert_false(_trigger(&"neme_door").is_available(), "the night isn't over")
@@ -148,7 +147,7 @@ func _wake_night() -> void:
 	assert_true(&"ch04_shell_017" in lines, "Rhen understands")
 	assert_true(&"ch04_shell_020" in lines, "Toma: 'No. They do not.'")
 	assert_true(&"ch04_shell_024" in lines, "C4-05: 'Then I can leave it if I like.'")
-	assert_true(zone.block_shown("AshaShell"), "her shell is in the wall")
+	assert_true(zone.story_set_shown("ch04_shell_asha"), "her shell is in the wall")
 	assert_false(zone.block_shown("ysolde_edge"), "the figure at the lamplight's edge is gone")
 	assert_true(&"ch04_dock_001" in lines, "C4-06: 'Don't be kind about it.'")
 	assert_true(bool(Game.get_flag(&"ch04_rhen_named_kell")), "'Tell her about Oruvel.' (the first option)")

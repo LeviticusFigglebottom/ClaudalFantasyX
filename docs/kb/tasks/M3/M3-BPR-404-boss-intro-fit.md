@@ -33,7 +33,16 @@ much bigger. FAST-TRACK playtest fix.
 - [x] The distance follows the model size and keeps the shot's angle and fov; a row's fit_margin overrides the
       margin; every boss's feet clear the title card (new tests).
 - [x] All six battle_boss_intro_* shots captured and viewed; the boss reads whole above the card.
-- [ ] The Lead views the moved baselines on the PC gate and merges.
+- [x] PC render gpu/render-battle-presentation-25dcea2 viewed (2026-10-27). hullgnaw, matron, drownbell and wraith
+      were re-approved at 89ffba3c; inquisitor and hermit pass unchanged.
+- [x] **big11 regression** (the Lead's view): the real Toma stood huge at the right edge of the Drownbell's intro,
+      over the timeline.
+  - The fit now also needs the party clear: every party member wholly off screen, or inside the HUD-safe frame and at
+    most `fit.party_max_h` (0.3) of the screen tall.
+  - The search orbits the shot about the boss (`fit.yaw_steps_deg`, its own angle first) to find such a frame.
+  - Test `test_no_party_member_crowds_a_boss_intro` covers every boss intro with its full party. Without the orbit,
+    only the Drownbell fails it, so the other five keep their frames.
+- [x] PC render of all six (FAST-TRACK) viewed: drownbell, matron, wraith at 7aa31b6f; hullgnaw after the 0.36 fix (cloud render 60cbb21). The Lead merges.
 
 ## Moved shots
 All six, re-approved after viewing (captured on the integration branch + 404 only):

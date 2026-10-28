@@ -5,8 +5,8 @@
   "letterbox_sec": 0.6,
   "walk_mps": 1.0,
   "run_mps": 3.2,
-  "turn_sec": 0.45,
-  "_motion_note": "M2-FP-29 (the human's playtest: turns snapped, walks started and stopped at once; game/cutscene/cutscene_motion.gd): a turn eases in and out on Godot's ease() curve turn_ease (negative = in-out) over turn_min_sec (no angle) up to turn_sec (a half turn); a walk waits walk_anticipation_sec, speeds up over walk_accel_sec and slows over walk_decel_sec (both shortened together on a short walk); every clip change cross-fades over clip_blend_sec; a stand-in clip mark is glided onto over standin_glide_sec.",
+  "turn_sec": 0.9,
+  "_motion_note": "M2-FP-29 (the human's playtest: turns snapped, walks started and stopped at once; game/cutscene/cutscene_motion.gd): a turn eases in and out on Godot's ease() curve turn_ease (negative = in-out) over turn_min_sec (no angle) up to turn_sec (a half turn; M2-HER-1113: 0.9, so the in-out ease peaks near 400 deg/s like a hero's field turn, where 0.45 peaked near 800 and read as a whip); a walk waits walk_anticipation_sec, speeds up over walk_accel_sec and slows over walk_decel_sec (both shortened together on a short walk); every clip change cross-fades over clip_blend_sec; a stand-in clip mark is glided onto over standin_glide_sec, unless it is farther than standin_cut_m: then it is a cut (M2-HER-1113: Ch9's pole_out mark is 30 m out on the harbour, and a glide there crossed it at 120 m/s).",
   "turn_min_sec": 0.25,
   "turn_ease": -2.0,
   "walk_anticipation_sec": 0.15,
@@ -14,13 +14,14 @@
   "walk_decel_sec": 0.5,
   "clip_blend_sec": 0.25,
   "standin_glide_sec": 0.5,
+  "standin_cut_m": 2.5,
   "_ease_note": "M2-FP-102 (the human's playtest: abrupt fades): @fade and the letterbox ease in and out on Godot's ease() curve (negative = in-out) instead of a linear ramp.",
   "fade_ease": -1.8,
   "letterbox_ease": -2.0,
   "light_ease": 2.2,
   "_hold_note": "M2-FP-103 (the playtest: a kneeling Asha stood up for her first line): an @anim of one of hold_clips is a pose the actor holds (a hero body's play_clip hold) until its own next @anim or @mark, and its lines don't play the talk or idle clip over it. Any other @anim is a gesture, after which lines play talk and idle again.",
   "hold_clips": ["kneel_over_rhen", "laugh", "offer_hand", "face_west", "sit_in_shallows", "sit_up", "sit_steps", "spear_level", "catch_rhen", "take_hand", "vigil_book_shut", "stand_apart", "kneel", "lie_in_shallows"],
-  "_stand_in_note": "M2-FP-103: clip_stand_ins maps '<actor>/<clip>' to a clip the rig has, played while the requested clip (assets_src/characters/requested_clips.json) is not built yet; the real clip plays as soon as the rig carries it. Rhen's beach clips stand in as his kneel (half risen in the shallows) and his rise.",
+  "_stand_in_note": "M2-FP-103: clip_stand_ins maps '<actor>/<clip>' to a clip the rig has, played while the requested clip (assets_src/characters/requested_clips.json) is not built yet; the real clip plays as soon as the rig carries it. Rhen lies in the shallows as his KO pose (the human's playtest: his kneel twinned Asha's), sits up into his kneel and stands as his rise.",
   "camera_breath": {
     "doc": "M2-FP-104: a landed scripted shot turns by a slow sum of sines (yaw_deg / pitch_deg amplitude, averaged over the periods), easing in over ramp_sec; a cut or blend resets it. Deterministic.",
     "enabled": true,
@@ -31,7 +32,7 @@
     "pitch_periods_sec": [9.1, 13.7]
   },
   "clip_stand_ins": {
-    "rhen/lie_in_shallows": "kneel_over_rhen",
+    "rhen/lie_in_shallows": "ko",
     "rhen/sit_up": "kneel_over_rhen",
     "rhen/sit_in_shallows": "kneel_over_rhen",
     "rhen/stand_unsteady": "rise_to_stand"
@@ -42,7 +43,7 @@
   "music_dir": "res://assets/audio/music/",
   "sfx_dir": "res://assets/audio/sfx/",
   "music_fade_default_sec": 1.0,
-  "music_volume_db": -8.0,
+  "music_volume_db": 0.0,
   "silent_db": -60.0,
   "music_stand_ins": {
     "haluna_dawn": "hush_theme_sketch",
@@ -50,8 +51,17 @@
     "shell_shrine_interior": "temple_trial",
     "hush_first_verse": "hush_theme_v2",
     "corrow_day": "corrow_seawall",
-    "coilspire_flues": "temple_trial",
-    "undertow_reach": "undertows_reach_p1"
+    "coilspire_flues": "coilspire",
+    "undertow_reach": "undertows_reach_p1",
+    "oruvel_raft": "oruvel",
+    "oruvel_underway": "lamp_diver",
+    "haluna_wake": "pilgrims_wake",
+    "brightwater_crossing": "brightwater_ferry",
+    "pemakar_terraces": "terraces_of_ash",
+    "ashcrown_trial": "ashcrown",
+    "tamsule_port": "tamsule",
+    "undertow_rising": "undertow_rising_p1",
+    "seawall_hold": "seawall_hold_p1"
   },
   "choices": {
     "right_px": 200,
@@ -110,7 +120,8 @@
     "font_size": 22
   },
   "face_poses": {
-    "asha": "res://game/data/cutscene/asha_face_poses.json"
+    "asha": "res://game/data/cutscene/asha_face_poses.json",
+    "sefir": "res://game/data/cutscene/sefir_face_poses.json"
   },
   "lip_flap": {
     "vis_aa": 0.55,
@@ -142,6 +153,7 @@
     "close_s": 0.06,
     "hold_s": 0.03,
     "open_s": 0.11,
-    "on_emotion_change": true
+    "on_emotion_change": true,
+    "per_actor": {"sefir": {"interval_s": [10.0, 14.0], "on_emotion_change": false, "_note": "M3-CIN-01: his tell (act1_npcs.md §1.6): a slow blink, one every 10-14 s; a changed expression is no reason for him to blink"}}
   }
 }

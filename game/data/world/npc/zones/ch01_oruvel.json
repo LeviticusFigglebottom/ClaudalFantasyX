@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "doc": "Oruvel's villagers alive (M3-CRE-656; docs/kb/tech/field_npc.md, VillagerLayer). Oruvel is a GreyboxZone: its stage actors stand under CutsceneStage/Actors/<id>, and a layout row's `model` (M2-FP-111) puts a villager actor there in place of the capsule. Each row here names one such actor (`attach: child`): VillagerLayer adopts that model into a FieldNpc, so the villager glances at the party, turns to talk and breathes out of step instead of only idling. Rows for the other Oruvel speakers (the scaleman, the cook, Sabe, Skipper Sadi, the children) are added when M3-CHR-100 gives them bodies and their layout rows a `model`.",
+  "zone": "ch01/oruvel",
+  "villagers": [
+    {
+      "npc_id": "kell",
+      "_note": "Mother Kell at her chandlery stall: the wick scene (B04) talks here.",
+      "stand_in": "CutsceneStage/Actors/kell",
+      "attach": "child",
+      "talk": "Triggers/kell_stall"
+    }
+  ]
+}

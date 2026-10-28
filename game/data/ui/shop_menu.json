@@ -68,5 +68,31 @@
     "detail": {"rect": [852, 360, 582, 0]},
     "desc": {"height": 279, "gap": 0},
     "status": {"height": 87, "gap": 12}
+  },
+  "reefball_outfitter": {
+    "doc": "The Reefball outfitter (ADR 0040, M3-C07-05): the gear rows (price, Owned or Worn on the right) and Leave on the left, wider than the inn's for the longer names; the line about the highlighted piece (its words, then what it adds) in the right column, and under it what choosing it does or why not. Same rules as shop_menu.",
+    "canvas_layer": 60,
+    "panel": {"rect": [459, 261, 1002, 558], "pad": 27, "title_height": 56, "help_height": 40},
+    "purse": {"rect": [1011, 288, 423, 56]},
+    "root": {
+      "rect": [486, 360, 456, 240],
+      "header_height": 0,
+      "row_pitch": 48,
+      "max_rows": 5,
+      "row_inset": 12,
+      "text_indent": 40,
+      "cost_width": 120,
+      "rank_width": 132,
+      "submenu_dim": 0.5,
+      "cursor_sec": 0.09,
+      "mote_lag_sec": 0.03,
+      "mote_px": 10,
+      "mote_offset": 14,
+      "breath_sec": 2.4,
+      "breath_min": 0.75
+    },
+    "detail": {"rect": [969, 360, 465, 0]},
+    "desc": {"height": 279, "gap": 0},
+    "status": {"height": 87, "gap": 12}
   }
 }

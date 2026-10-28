@@ -68,6 +68,12 @@ func hero_name(cid: StringName) -> String:
 	return CharacterNames.display(cid, str(row.get("name_key", "")))  # "The Kirru" until named (M3-C09-05)
 
 
+## Hero `cid`'s role word ("Holds the line"; characters.json role_key, M2-MNU-306), or "" when it has none.
+func hero_role(cid: StringName) -> String:
+	var key := str((battle_db.characters.get(cid, {}) as Dictionary).get("role_key", ""))
+	return tr(key) if key != "" else ""
+
+
 ## Writes the Lattice progress back into `state` (LatticeProgress.save_into: refused, keeping the
 ## save as it was, while the board or rules are broken). Returns true when it wrote.
 func save_lattice() -> bool:

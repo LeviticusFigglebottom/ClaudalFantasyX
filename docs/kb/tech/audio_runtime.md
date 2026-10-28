@@ -597,3 +597,24 @@ Reduced audio skips `reduced_skip`.
   `off`, and `off` only if the light is lit) and an `@vfx` effect to a row, played at the actor (plus
   `at_height_m`), the light or the `at=` place. Nothing plays while `is_skipping()`.
 - **Room tone:** the prologue's `iskarra_dusk` bed is ambience.json's zone row for `prologue.tscn`.
+
+## The UI track's new screens (M3-AUD-832)
+- **Menu motion:** `ui_sfx.json` `motion` (`{accessor, in, out}`). `UiAudio` asks every watched node with a
+  `motion()` method for its `MenuMotion` (FieldMenu, every FieldSubmenu page, and SaveMenu once claude/ui gives it
+  one). When the page rises into place it layers `ui_whoosh_in`; when it sinks away it layers `ui_whoosh_out`.
+  MenuMotion writes nothing until its tween's first step, so the direction is read from the second change of
+  `progress`, about 30 ms in. Reduced motion makes the transitions instant: nothing moves, so nothing plays. The rows
+  sit 12–13 dB under the open and close sounds (`sfx_ui_screens.json` volume_db).
+- **`layer` and `initial` watch rows:** a `layer` row plays beside the frame's chosen row instead of competing for
+  the frame, like the Reefball preview's glint under the cursor or the title's reveal under its swell. An `initial`
+  row may play on its first read; the reveal is already running when the title is watched.
+- **Hooks:** SaveMenu's `saved` and `loaded` play `ui_save_slot` and `ui_load_slot`. TitleMenu's
+  `reveal.is_playing()` plays `ui_title_reveal`; until the reveal lands from claude/ui, the read fails harmlessly.
+  `ShrineTravelMenu` and `ReefballHud` are `pending` until claude/ui merges: the shrine list's cursor, its confirm,
+  a refused trip and `travel_chosen` (`ui_shrine_travel` outranks the page's close); and the HUD's choices rising
+  (`ui_reefball_choices`), its cursor, a scoring preview's glint and `action_chosen`. Sources:
+  `assets_src/sfx/screen_sfx.py`.
+- **Lamps (M3-AUD-847):** `AudioDirector.attach_cast` also hands the stage to `CutsceneAudio.watch_lamps`. Every
+  Light3D whose name matches `cutscene_foley.json` `lamps.match` (Rhen's `LanternLight`, wicks, candles) crackles
+  (`cs_lamp_crackle`) at the lamp at a random gap of `every_sec`, while it is visible and lit. A dark lamp is silent,
+  and a freed one is dropped.

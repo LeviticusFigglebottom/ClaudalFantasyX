@@ -190,6 +190,95 @@ class BargeTests(unittest.TestCase):
         self.assertLess(by_slot["bs_lacquer_red"], 0.08 * by_slot["bs_barge_white"], "red is a sheer line")
 
 
+class WakeTests(unittest.TestCase):
+    """M3-ENV-1000: moving boats leave a Kelvin wake; Sefir's barge never carries one (ADR 0017 (a))."""
+
+    def test_wake_lies_flat_just_over_the_water_behind_the_stern(self) -> None:
+        for mb in built("boat_wake"):
+            lo, hi = mb.bounds()
+            self.assertEqual(mb.materials, ["bs_wake"])
+            self.assertGreater(float(lo[1]), 0.0, "over the surface, never z-fighting it")
+            self.assertLess(float(hi[1]), 0.05)
+            self.assertLess(float(hi[0]), 0.1, "trails aft (-X) of the stern origin")
+            self.assertAlmostEqual(float(-lo[0]), 16.0, delta=1.0)
+
+    def test_arms_open_at_the_kelvin_angle(self) -> None:
+        mb = built("boat_wake")[0]
+        lo, hi = mb.bounds()
+        half_angle = np.degrees(np.arctan2(float(hi[2]), float(-lo[0])))
+        self.assertAlmostEqual(half_angle, 19.5 + 2.0, delta=3.0, msg="the arms' centre at 19.5 deg plus their width")
+
+    def test_uv_runs_along_the_wake(self) -> None:
+        for mb in built("boat_wake"):
+            uv = np.asarray(mb.uv)
+            self.assertAlmostEqual(float(uv[:, 1].min()), 0.0, delta=1e-6)
+            self.assertAlmostEqual(float(uv[:, 1].max()), 1.0, delta=1e-6)
+            self.assertEqual(sorted(set(np.asarray(mb.uv2)[:, 0].round(3))), [0.0, 1.0], "arms 0, centre track 1")
+
+    def test_the_barge_has_no_wake(self) -> None:
+        for mb in built("white_barge"):
+            self.assertNotIn("bs_wake", mb.materials)
+
+
+class TidelineTests(unittest.TestCase):
+    """M3-C06-03: B09's diggable patch (two states) and hand-print, and the Stillguard's torch."""
+
+    def _y_at(self, mb, x: float, z: float) -> float:
+        p = np.asarray(mb.pos)
+        return float(p[np.argmin(np.hypot(p[:, 0] - x, p[:, 2] - z)), 1])
+
+    def test_the_patches_lie_flush_with_the_flats_at_their_edges(self) -> None:
+        for name in ("lamp_hole_open", "lamp_hole_covered", "hand_print"):
+            mb = built(name)[0]
+            lo, hi = mb.bounds()
+            with self.subTest(piece=name):
+                for x, z in ((lo[0], lo[2]), (hi[0], hi[2]), (lo[0], hi[2]), (hi[0], lo[2])):
+                    self.assertAlmostEqual(self._y_at(mb, x, z), 0.004, delta=1e-4)
+
+    def test_the_hole_is_open_and_the_cover_closes_it(self) -> None:
+        self.assertLess(self._y_at(built("lamp_hole_open")[0], 0.0, 0.0), -0.25, "a pit for the lamp")
+        self.assertGreater(self._y_at(built("lamp_hole_covered")[0], 0.0, 0.25), 0.004, "filled back, mounded")
+
+    def test_the_hand_is_pressed_into_the_sand(self) -> None:
+        mb = built("hand_print")[0]
+        self.assertLess(self._y_at(mb, 0.0, 0.03), -0.008, "the palm")
+        self.assertLess(self._y_at(mb, -0.014, 0.155), -0.004, "a finger")
+        self.assertAlmostEqual(self._y_at(mb, 0.15, -0.15), 0.004, delta=1e-4, msg="clear sand beside it")
+
+    def test_the_torch_wears_the_orders_colours(self) -> None:
+        mb = built("stillguard_torch")[0]
+        for slot in ("bs_iron", "bs_lacquer_red", "bs_brass", "bs_ember"):
+            self.assertIn(slot, mb.materials)
+        self.assertAlmostEqual(float(mb.bounds()[0][1]), 0.0, delta=1e-6, msg="origin at the foot")
+
+
+class GradeTests(unittest.TestCase):
+    """M3-C06-03 item 7: the Ch6 sub-frames' Environments, LUTs and sun rows."""
+
+    def test_the_grades_are_committed_and_point_at_their_luts(self) -> None:
+        zone = ROOT / "assets" / "environments" / "zones" / "brine_shoals"
+        rows = json.loads((zone / "ch06_grades.json").read_text())
+        for name in ("ch06_hold", "ch06_dusk", "ch06_dawn"):
+            with self.subTest(grade=name):
+                env = ROOT / rows[name]["environment"].removeprefix("res://")
+                self.assertTrue(env.exists())
+                text = env.read_text()
+                self.assertIn(f"lut_ch06_{name.removeprefix('ch06_')}.png", text)
+                self.assertIn('[gd_resource type="Environment"', text)
+
+    def test_sun_rows_follow_the_layouts_own_convention(self) -> None:
+        grades = _load("bs_grades")
+        layout = json.loads((ROOT / "game" / "levels" / "ch06" / "brine_shoals" / "brine_shoals_layout.json").read_text())
+        self.assertAlmostEqual(grades.sun_yaw(240.0), float(layout["sun"]["yaw_deg"]), msg="ch06's own sun, az 240")
+        self.assertAlmostEqual(grades.sun_yaw(75.0), 105.0)
+        self.assertAlmostEqual(grades.sun_yaw(280.0), -100.0)
+
+    def test_the_smoke_lut_is_unchanged_by_the_sub_frames(self) -> None:
+        lut = _load("bs_zone_lut")
+        self.assertEqual(lut.GRADES["smoke"]["saturation"], 0.90)
+        self.assertEqual(lut.GRADES["smoke"]["toe_hex"], "#0E4A55")
+
+
 class CommittedAssetTests(unittest.TestCase):
     def test_one_glb_per_target_inside_its_budget(self) -> None:
         glbs = sorted(ASSETS.glob("*.glb"))

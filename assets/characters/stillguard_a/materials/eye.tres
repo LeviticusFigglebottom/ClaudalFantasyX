@@ -1,0 +1,16 @@
+[gd_resource type="ShaderMaterial" load_steps=4 format=3]
+
+[ext_resource type="Shader" path="res://game/shaders/character/character_eye.gdshader" id="sh"]
+[ext_resource type="Texture2D" path="res://assets/characters/asha/textures/asha_iris.png" id="t0"]
+[ext_resource type="Texture2D" path="res://assets/characters/asha/textures/asha_sclera.png" id="t1"]
+
+[resource]
+resource_name = "eye"
+render_priority = 0
+shader = ExtResource("sh")
+shader_parameter/tex_iris = ExtResource("t0")
+shader_parameter/tex_sclera = ExtResource("t1")
+shader_parameter/col_iris = Color(0.20, 0.15, 0.10, 1)
+shader_parameter/col_limbal = Color(0.15, 0.14, 0.12, 1)
+shader_parameter/col_sclera = Color(0.78, 0.73, 0.68, 1)
+shader_parameter/limbus_softness = 0.09

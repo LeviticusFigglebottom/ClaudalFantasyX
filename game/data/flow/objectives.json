@@ -1,6 +1,7 @@
 {
   "objectives": {
-    "doc": "M2-UI-16: the objective lines. Rows are in story order. A row applies when every flag in `requires` is set and its `until` flag is not; `zone` (optional) limits it to that zone (game/data/ui/zone_maps.json ids). The current objective is the first main row that applies; `side` rows are optional errands listed under it in the field menu. `target` {zone, poi} is where the line points: the map's objective marker and the field's destination cue. First pass by the UI track for the slice beats (docs/kb/story/beats/vertical_slice.md); m2-slice keeps it current as beats change (M2-FP-28). tools/validate_data.py checks flags, loc keys and targets.",
+    "doc": "M2-UI-16: the objective lines. Rows are in story order. A row applies when every flag in `requires` is set and its `until` flag is not; `zone` (optional) limits it to that zone (game/data/ui/zone_maps.json ids). The current objective is the first main row that applies; `side` rows are optional errands listed under it in the field menu. `target` {zone, poi} is where the line points: the map's objective marker and the field's destination cue. First pass by the UI track for the slice beats (docs/kb/story/beats/vertical_slice.md); m2-slice keeps it current as beats change (M2-FP-28). tools/validate_data.py checks flags, loc keys and targets. `idle_keys` (M3-UI-206): a zone's own line for when nothing calls there (a zone_maps.json id to a loc key); every other zone, and a scene with no map, says OBJ_NONE.",
+    "idle_keys": {"ch02/haluna": "OBJ_NONE_HALUNA"},
     "rows": [
       {"id": "up_the_beach", "line_key": "OBJ_UP_THE_BEACH", "requires": ["ch02_met_asha"], "until": "ch02_tideline_won",
        "zone": "ch02/haluna", "target": {"zone": "ch02/haluna", "poi": "village"}},
@@ -10,6 +11,7 @@
        "zone": "ch02/haluna", "target": {"zone": "ch02/haluna", "poi": "shrine"}},
       {"id": "to_causeway_head", "line_key": "OBJ_TO_CAUSEWAY_HEAD", "requires": ["ch02_saved_once"], "until": "ch03_shrine_door_open",
        "zone": "ch02/haluna", "target": {"zone": "ch02/haluna", "poi": "causeway_head"}},
+      {"id": "causeway_to_shrine", "line_key": "OBJ_CAUSEWAY_TO_SHRINE", "requires": [], "until": "ch03_shrine_door_open", "zone": "ch03/saltgrass_causeway", "target": {"zone": "ch03/saltgrass_causeway", "poi": "shrine_steps"}},
       {"id": "shrine_trial", "line_key": "OBJ_SHRINE_TRIAL", "requires": [], "until": "ch03_shrine_door_open",
        "zone": "ch03/shell_shrine", "target": {"zone": "ch03/shell_shrine", "poi": "inner_pool"}},
       {"id": "shrine_door", "line_key": "OBJ_SHRINE_DOOR", "requires": ["ch03_shrine_door_open"], "until": "ch03_first_verse_sung",

@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://game/hero_motion/hero_battle_actor.gd" id="1_actor"]
+
+[node name="KerridBattleActor" type="Node3D"]
+script = ExtResource("1_actor")
+hero_id = &"kerrid"
+model_path = "res://game/characters/heroes/kerrid_battle.tscn"

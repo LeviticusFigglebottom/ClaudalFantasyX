@@ -1,0 +1,42 @@
+[gd_resource type="Environment" load_steps=3 format=3]
+
+[sub_resource type="ProceduralSkyMaterial" id="SkyMat"]
+sky_top_color = Color(0.180392, 0.498039, 0.839216, 1)
+sky_horizon_color = Color(0.662745, 0.862745, 0.94902, 1)
+sky_curve = 0.12
+ground_bottom_color = Color(0.560784, 0.764706, 0.878431, 1)
+ground_horizon_color = Color(0.662745, 0.862745, 0.94902, 1)
+ground_curve = 0.3
+sun_angle_max = 12.0
+sun_curve = 0.1
+sky_energy_multiplier = 1.0
+
+[sub_resource type="Sky" id="Sky"]
+sky_material = SubResource("SkyMat")
+process_mode = 2
+
+[resource]
+resource_name = "oruvel_underway_ch01"
+background_mode = 2
+sky = SubResource("Sky")
+ambient_light_source = 3
+ambient_light_energy = 0.65
+reflected_light_source = 2
+tonemap_mode = 4
+tonemap_exposure = 0.65
+tonemap_agx_white = 12.0
+ssao_enabled = true
+ssao_radius = 1.0
+ssao_intensity = 1.6
+sdfgi_enabled = false
+glow_enabled = true
+glow_intensity = 0.35
+glow_bloom = 0.03
+glow_hdr_threshold = 1.2
+volumetric_fog_enabled = true
+volumetric_fog_density = 0.0
+volumetric_fog_albedo = Color(1, 1, 1, 1)
+volumetric_fog_length = 64.0
+volumetric_fog_sky_affect = 0.0
+adjustment_enabled = true
+adjustment_saturation = 1.12

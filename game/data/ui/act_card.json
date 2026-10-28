@@ -8,7 +8,8 @@
     "out_sec": 1.2,
     "drift_px": 9,
     "acts": {
-      "2": {"label_key": "ACT_CARD_2_LABEL", "title_key": "ACT_CARD_2_TITLE"}
+      "2": {"label_key": "ACT_CARD_2_LABEL", "title_key": "ACT_CARD_2_TITLE"},
+      "3": {"label_key": "ACT_CARD_3_LABEL", "title_key": "ACT_CARD_3_TITLE"}
     },
     "label": {"rect": [360, 438, 1200, 66], "pin": "center"},
     "rule": {"rect": [720, 516, 480, 12], "pin": "center"},

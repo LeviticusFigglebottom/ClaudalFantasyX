@@ -1,0 +1,24 @@
+{
+  "_about": "Liss's emotion tags -> face blendshape weights (docs/kb/art/characters/act1_npcs.md §2.6). A pair is [L, R]; a scalar sets both sides of a paired shape. Her rest brow_down 0.08 (a resting scowl: the straight brows slant down toward the nose) is added to every row. Her asymmetry is a wry, left-sided smile: mouth_smile L = R x 1.3, with nose_sneer_L 0.10 added once the smile passes 0.3 (Rhen's crooked smile is on the right; theirs mirror each other). Blend 0.10 s, the fastest in the party, with 5% overshoot. Tags: game/data/dialogue/emotions.json. Read by the hero stage for the M3-CHR-03 review shots; the sequencer.json face_poses entry is Cinematics'.",
+  "blend_in_s": 0.10,
+  "rest": {"brow_down": 0.08},
+  "overshoot": {"soft_smile": 0.05, "smile": 0.05, "laugh": 0.05, "worried": 0.05, "sad": 0.05, "grief": 0.05, "angry": 0.05, "cold": 0.05, "surprised": 0.05, "afraid": 0.05, "determined": 0.05, "tender": 0.05, "guilty": 0.05, "exhausted": 0.05},
+  "head_notes": {"neutral": "the head forward and down 4 degrees, as if looking at something in her hands", "laugh": "loud: the head forward, not back", "grief": "Ch15, telling her father about Tobin: the widest stretch of any table; tear layer", "angry": "Ch11, at Rhen", "cold": "Ch6: 'He put the fire out once it had finished'", "afraid": "Ch6, sheltering from the raid", "guilty": "gaze away"},
+  "emotions": {
+    "neutral": {"brow_down": 0.08},
+    "soft_smile": {"mouth_smile": [0.30, 0.23], "brow_down": 0.08},
+    "smile": {"mouth_smile": [0.65, 0.50], "cheek_raise": 0.40, "lid_squint": 0.25, "nose_sneer": [0.10, 0.0], "brow_down": 0.08},
+    "laugh": {"mouth_smile": [0.90, 0.70], "cheek_raise": 0.65, "jaw_open": 0.40, "lid_squint": 0.55, "nose_sneer": [0.10, 0.0], "brow_down": 0.08},
+    "worried": {"brow_inner_up": 0.45, "brow_down": 0.28, "mouth_press": 0.20},
+    "sad": {"brow_inner_up": 0.55, "lid_close": 0.25, "mouth_frown": 0.35, "brow_down": 0.08},
+    "grief": {"brow_inner_up": 1.00, "brow_down": 0.48, "lid_squint": 0.50, "mouth_frown": 0.65, "mouth_stretch": 0.45, "jaw_open": 0.20},
+    "angry": {"brow_down": 0.93, "lid_squint": 0.35, "nose_sneer": 0.35, "lip_upper_up": 0.25, "jaw_clench": 0.35},
+    "cold": {"brow_down": 0.38, "mouth_press": 0.45, "mouth_smile": 0.0},
+    "surprised": {"brow_outer_up": 0.80, "brow_inner_up": 0.45, "lid_wide": 0.55, "jaw_open": 0.30, "brow_down": 0.08},
+    "afraid": {"brow_inner_up": 0.85, "lid_wide": 0.65, "mouth_stretch": 0.45, "jaw_open": 0.15, "brow_down": 0.08},
+    "determined": {"brow_down": 0.63, "jaw_clench": 0.35, "mouth_press": 0.35},
+    "tender": {"brow_inner_up": 0.25, "mouth_smile": [0.18, 0.12], "lid_close": 0.15, "brow_down": 0.08},
+    "guilty": {"brow_inner_up": 0.40, "mouth_press": 0.30, "lid_close": 0.25, "brow_down": 0.08},
+    "exhausted": {"lid_close": 0.40, "jaw_open": 0.10, "brow_inner_up": 0.15, "brow_down": 0.08}
+  }
+}

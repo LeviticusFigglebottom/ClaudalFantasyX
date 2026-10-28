@@ -240,6 +240,7 @@ func _build_engine(
 	BattleChoreo.attached(self, engine)  # M2-BPR-01: listen-only choreography; it lands the floats
 	boss = BattleBossHud.attached(self, engine)
 	set_piece = BattleSetPieceHud.attached(self, engine)
+	BattleBarks.attached(self, engine)  # M3-C08-100: listen-only battle barks (skills/vowbound bark keys)
 	BattleVfx.attached(self, engine)  # M2-RND-03: listen-only battle VFX (docs/kb/tech/battle_vfx.md)
 	stage.spawn(engine)
 	stage.refresh_ko(engine)
@@ -247,7 +248,7 @@ func _build_engine(
 
 ## Step 2: timeline identities and the party panel.
 func _build_hud() -> void:
-	for c in engine.party_active + engine.party_reserve + engine.enemies:
+	for c in engine.party_active + engine.party_reserve + engine.enemies:  # entries: BattleSetPieceHud (M3-UI-100)
 		hud.timeline.set_identity(c.id, menus.display_name(c), _tint(c.id))
 	hud.result.visible = false
 	hud.set_combat_ui_visible(true)

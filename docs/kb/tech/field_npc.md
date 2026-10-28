@@ -217,6 +217,10 @@ Review: `game/levels/_tests/npc/haluna_villagers.tscn` (the real zone with a lay
   builds at once: the zone's own placement has already run. Added while the zone is in its own `_ready`, or later
   (`wire`), it builds one call later (deferred), after the zone has placed its villagers, so it adopts them. Either
   way each villager shows once. Haluna adds its layer itself (M2-FP-113); the review stage reuses that one.
+- **Greybox stage actors (M3-CRE-656).** In a GreyboxZone a layout row's `model` (M2-FP-111) puts a villager actor
+  under `CutsceneStage/Actors/<id>/Model`. A row whose `stand_in` is that actor (`attach: child`) makes the layer
+  wrap that very model in a FieldNpc inside the actor node, so it is alive (glances, talk turns) and cutscenes still
+  find it. Oruvel's Kell is the first (`zones/ch01_oruvel.json`). GreyboxZone adding the layer is M3-CRE-657.
 - **Routes** need a villager beside its stand-in (it carries the body). An adopted villager rides inside its body,
   so its row's `route` and `follow` do not apply; Haluna's routes (Reed's sweep, the child's lane) wait until the
   zone owner places those two beside their bodies (or lets the layer place them).

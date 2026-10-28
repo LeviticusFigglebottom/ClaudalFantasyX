@@ -2,7 +2,7 @@
   "version": 1,
   "doc": "A blow's weight, heard (M3-AUD-816; docs/kb/tech/audio_runtime.md \"Impact\"). ImpactAudio (game/audio/impact_audio.gd) connects battle-presentation's BattleImpact (M3-BPR-401) by name; pending until that class lands on this branch (the checker skips its name). landed(target_id, strength 0..1, stop_sec): the highest tier whose min_strength the blow reaches plays under BattleVfx's element hit (light blows under the lowest tier add nothing); a hit-stop longer than hitstop.min_sec ducks hitstop.duck (mix.json ducks) for its length plus hold_sec. slowmo_planned(from_sec, sec, factor): slowmo.sfx plays at the slow-mo's start and slowmo.duck holds for the slowed time plus hold_sec. reduced_skip: rows not played under Reduced audio.",
   "hooks": [
-    {"class": "BattleImpact", "pending": true, "signals": {"landed": "landed", "slowmo": "slowmo_planned"},
+    {"class": "BattleImpact", "signals": {"landed": "landed", "slowmo": "slowmo_planned"},
      "_note": "claude/battle-presentation game/battle/scene/battle_impact.gd"}
   ],
   "tiers": [

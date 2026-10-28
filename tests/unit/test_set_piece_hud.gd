@@ -35,11 +35,41 @@ func test_the_stair_meter_counts_groups_up_against_the_quota() -> void:
 	assert_true(meter != null and meter.visible, "an objective shows the meter")
 	assert_eq(meter.quota, 3)
 	assert_eq(meter.title_text(), tr("ENTRY_CH08_FISHER_STAIR"), "titled with the ward's name")
-	assert_eq(meter.count_text(), tr("HUD_OBJECTIVE_COUNT_FMT").format({"count": 0, "quota": 3}))
+	assert_true(meter.count_text().begins_with(tr("HUD_OBJECTIVE_COUNT_FMT").format({"count": 0, "quota": 3})))
 	ctl.engine.objective_count = 2
 	ctl.set_piece.refresh()
 	assert_eq(meter.count, 2)
-	assert_eq(meter.count_text(), tr("HUD_OBJECTIVE_COUNT_FMT").format({"count": 2, "quota": 3}), "spelled out too")
+	var line := tr("HUD_OBJECTIVE_COUNT_FMT").format({"count": 2, "quota": 3})
+	assert_true(meter.count_text().begins_with(line), "spelled out too")
+	_free()
+
+
+func test_the_meter_sits_below_a_two_line_tutorial() -> void:
+	_start(WAVE)
+	ctl.hud.set_help(tr("TUT_CH08_WAVE_HOLD") + " " + tr("TUT_CH08_WAVE_HOLD"))
+	assert_true(ctl.hud.help_wraps(), "the help line wraps onto its second line")
+	var help := ctl.hud.get_node("%HelpLine") as Control
+	var bottom := (
+		help.global_position.y + help.get_combined_minimum_size().y * help.get_global_transform().get_scale().y
+	)
+	assert_true(
+		ctl.set_piece.meter.global_position.y >= bottom,
+		"clear of it (%s >= %s)" % [ctl.set_piece.meter.global_position.y, bottom]
+	)
+	_free()
+
+
+func test_the_meter_carries_the_running_total_across_the_waves() -> void:
+	var before: Variant = Game.get_flag(&"ch08_stair_groups_up", 0)
+	Game.set_flag(&"ch08_stair_groups_up", 5)  # the flow's count after the earlier waves
+	_start(WAVE)
+	ctl.engine.objective_count = 2
+	ctl.set_piece.refresh()
+	assert_eq(ctl.set_piece.carried_total(), 7, "the flag plus this wave")
+	assert_eq(ctl.set_piece.meter.total, 7)
+	assert_true(ctl.set_piece.meter.count_text().contains("7"), "spelled out")
+	assert_eq(Game.get_flag(&"ch08_stair_groups_up", 0), 5, "read only: the flow raises it")
+	Game.set_flag(&"ch08_stair_groups_up", before)
 	_free()
 
 

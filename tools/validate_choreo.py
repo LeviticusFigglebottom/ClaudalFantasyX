@@ -13,7 +13,7 @@ CLIPS = {"idle", "ready", "attack", "cast", "item", "read", "defend", "finisher"
 TRAVELS = {"target", "step", "none"}
 STYLE_TIMES = ("approach_sec", "recover_sec", "return_sec")
 STYLE_SHAPES = ("lunge_m", "lift_m", "crouch_m", "lean_deg")
-REACTIONS = ("damage", "heal", "miss")
+REACTIONS = ("damage", "heal", "miss", "push", "immune")
 ## M2-BPR-03: the battle camera director (game/battle/scene/battle_camera_director.gd).
 CAMERA_SHOTS = ("default", "actor", "target", "cast", "finisher")
 CAMERA_ANCHORS = {"actor", "strike", "target", "default"}
@@ -107,10 +107,28 @@ def _boss_errors(bosses: object, skill_ids: set[str]) -> list[str]:
         if not isinstance(b, dict):
             errs.append(f"{w}.{bid}: must be an object")
             continue
-        if b.get("charge_skill") not in skill_ids:
-            errs.append(f"{w}.{bid}.charge_skill: '{b.get('charge_skill')}' is not a skill")
+        charge = b.get("charge_skill")
+        if charge is not None and charge != "*" and charge not in skill_ids:  # "*": any charge (M3-BPR-408)
+            errs.append(f"{w}.{bid}.charge_skill: '{charge}' is not a skill (or '*')")
+        if charge is not None and "gather" not in b:
+            errs.append(f"{w}.{bid}.gather: a boss with a charge_skill needs its gather accent")
         for key in ("gather", "break"):
-            errs += _accent_errors(f"{w}.{bid}.{key}", b.get(key))
+            if key in b:
+                errs += _accent_errors(f"{w}.{bid}.{key}", b.get(key))
+        phases = b.get("phases", {})
+        if not isinstance(phases, dict):
+            errs.append(f"{w}.{bid}.phases: must be an object of phase id -> moment")
+            phases = {}
+        for pid, m in phases.items():
+            if not isinstance(m, dict) or not ("boss" in m or "party" in m):
+                errs.append(f"{w}.{bid}.phases.{pid}: needs a boss or a party accent")
+                continue
+            for who in ("boss", "party"):
+                if who in m:
+                    errs += _accent_errors(f"{w}.{bid}.phases.{pid}.{who}", m[who])
+            for k in ("party_delay_sec", "stagger_sec"):
+                if k in m and (not _num(m[k]) or m[k] < 0):
+                    errs.append(f"{w}.{bid}.phases.{pid}.{k}: must be a number >= 0")
         f = b.get("flood")
         if f is not None:
             if not isinstance(f, dict) or not isinstance(f.get("phase"), str):
@@ -193,6 +211,14 @@ def camera_errors(cam: object, styles: dict) -> list[str]:
     for sid in sorted(set(by_style) - set(styles)):
         errs.append(f"{w}.by_style: '{sid}' is not a style")
     pairs = [(f"by_style.{k}", v) for k, v in by_style.items()] + [("enemy", cam.get("enemy"))]
+    enemy_by_actor = cam.get("enemy_by_actor", {}) if isinstance(cam.get("enemy_by_actor", {}), dict) else {}
+    for eid, pair in enemy_by_actor.items():
+        if eid != "doc":
+            pairs.append((f"enemy_by_actor.{eid}", pair))
+    enemy_by_skill = cam.get("enemy_by_skill", {}) if isinstance(cam.get("enemy_by_skill", {}), dict) else {}
+    for sid, pair in enemy_by_skill.items():  # M3-BPR-420: a boss's big moves
+        if sid != "doc":
+            pairs.append((f"enemy_by_skill.{sid}", pair))
     for where, pair in pairs:
         if not isinstance(pair, dict):
             errs.append(f"{w}.{where}: must be an object with lead and contact")
@@ -228,6 +254,17 @@ def choreo_errors(doc: object, skills: object) -> list[str]:
                 errs.append(f"{CHOREO_FILE}: {section}.{key} names an unknown style '{sid}'")
             if section == "style_by_skill" and key not in skill_ids:
                 errs.append(f"{CHOREO_FILE}: style_by_skill names an unknown skill '{key}'")
+    by_actor = c.get("style_by_actor", {})
+    for actor, table in (by_actor.items() if isinstance(by_actor, dict) else []):
+        if actor == "doc":
+            continue
+        for kind, sid in (table.items() if isinstance(table, dict) else []):
+            if sid not in styles:
+                errs.append(f"{CHOREO_FILE}: style_by_actor.{actor}.{kind} names an unknown style '{sid}'")
+    swells = c.get("swell_style_by_hero", {})
+    for hero, sid in (swells.items() if isinstance(swells, dict) else []):  # M3-BPR-422
+        if hero != "doc" and sid not in styles:
+            errs.append(f"{CHOREO_FILE}: swell_style_by_hero.{hero} names an unknown style '{sid}'")
     by_kind = c.get("style_by_kind") if isinstance(c.get("style_by_kind"), dict) else {}
     for kind in sorted(kinds - set(by_kind)):
         errs.append(f"{CHOREO_FILE}: style_by_kind has no style for skill kind '{kind}'")
@@ -246,6 +283,9 @@ def choreo_errors(doc: object, skills: object) -> list[str]:
             errs.append(f"{CHOREO_FILE}: {block}.clip must be a contract clip")
     if "bosses" in c:
         errs += _boss_errors(c["bosses"], skill_ids)
+    if "telegraph" in c:  # M3-BPR-413
+        t = c["telegraph"]
+        errs += _accent_errors(f"{CHOREO_FILE}: telegraph.gather", t.get("gather") if isinstance(t, dict) else None)
     if "vowbound" in c:
         errs += _vowbound_errors(c["vowbound"])
     if not _num(c.get("settle_sec")) or c["settle_sec"] < 0:

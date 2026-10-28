@@ -162,3 +162,16 @@ func _free() -> void:
 	ctl.persist_progress = false
 	ctl.get_parent().remove_child(ctl)
 	ctl.free()
+
+
+func test_every_vowbound_has_its_first_call() -> void:
+	# M3-BPR-414: Kahre (Ch5) and Virel (Ch8) get their first-call cinematic too, not only Ilun.
+	var rows: Variant = JSON.parse_string(FileAccess.get_file_as_string("res://game/data/battle/vowbound.json"))
+	var list: Array = (rows as Dictionary).get("vowbound", rows) as Array
+	assert_true(list.size() >= 3, "Ilun, Kahre and Virel")
+	for row: Variant in list:
+		var vid := StringName(str((row as Dictionary)["id"]))
+		var flag := choreo.summon.first_call_flag(vid)
+		assert_ne(flag, &"", "%s has a first-call seen-flag" % vid)
+		assert_true(Game.registry.is_declared(flag), "%s's flag %s is declared in flags.tres" % [vid, flag])
+	_free()

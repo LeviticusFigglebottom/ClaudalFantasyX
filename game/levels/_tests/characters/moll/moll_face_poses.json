@@ -1,0 +1,103 @@
+{
+ "_about": "Moll's emotion tags -> face blendshape weights (docs/kb/art/characters/hadric_moll.md \u00a75). His own tags are `level` (the default: a level gaze, the mouth set), `tired` (lids 0.2, brow inner up 0.2), `stern` (Ch6 'Step away from the hold': brow down 0.3, mouth press 0.35) and `yield` ('...Enough. Enough.': lids 0.35, brow inner up 0.5, the mouth slightly open); the shared tags of game/data/dialogue/emotions.json map onto them (neutral = level, determined and cold = stern, exhausted = tired) and the rest are kept small: he is a tired officer, not an expressive man. A pair is [L, R]; a scalar sets both sides. Read by the hero stage for the M3-CHR-507 review shots.",
+ "blend_in_s": 0.2,
+ "rest": {},
+ "emotions": {
+  "neutral": {
+   "mouth_press": 0.1
+  },
+  "level": {
+   "mouth_press": 0.1
+  },
+  "tired": {
+   "lid_close": 0.2,
+   "brow_inner_up": 0.2,
+   "mouth_press": 0.1
+  },
+  "stern": {
+   "brow_down": 0.3,
+   "mouth_press": 0.35
+  },
+  "yield": {
+   "lid_close": 0.35,
+   "brow_inner_up": 0.5,
+   "jaw_open": 0.06
+  },
+  "soft_smile": {
+   "mouth_smile": 0.15,
+   "lid_close": 0.1,
+   "mouth_press": 0.05
+  },
+  "smile": {
+   "mouth_smile": 0.35,
+   "cheek_raise": 0.2,
+   "lid_squint": 0.1
+  },
+  "laugh": {
+   "mouth_smile": 0.55,
+   "cheek_raise": 0.35,
+   "jaw_open": 0.2,
+   "lid_squint": 0.3
+  },
+  "worried": {
+   "brow_inner_up": 0.4,
+   "brow_down": 0.15,
+   "mouth_press": 0.2
+  },
+  "sad": {
+   "brow_inner_up": 0.45,
+   "lid_close": 0.3,
+   "mouth_frown": 0.2
+  },
+  "grief": {
+   "brow_inner_up": 0.8,
+   "brow_down": 0.3,
+   "lid_squint": 0.35,
+   "mouth_frown": 0.45,
+   "mouth_stretch": 0.25,
+   "jaw_open": 0.1
+  },
+  "angry": {
+   "brow_down": 0.6,
+   "lid_squint": 0.25,
+   "mouth_press": 0.4,
+   "jaw_clench": 0.3
+  },
+  "cold": {
+   "brow_down": 0.3,
+   "mouth_press": 0.45
+  },
+  "surprised": {
+   "brow_outer_up": 0.5,
+   "brow_inner_up": 0.35,
+   "lid_wide": 0.35,
+   "jaw_open": 0.15
+  },
+  "afraid": {
+   "brow_inner_up": 0.6,
+   "lid_wide": 0.4,
+   "mouth_stretch": 0.25
+  },
+  "determined": {
+   "brow_down": 0.3,
+   "mouth_press": 0.35,
+   "jaw_clench": 0.2
+  },
+  "tender": {
+   "brow_inner_up": 0.2,
+   "mouth_smile": 0.1,
+   "lid_close": 0.15
+  },
+  "guilty": {
+   "brow_inner_up": 0.4,
+   "mouth_press": 0.3,
+   "lid_close": 0.3
+  },
+  "exhausted": {
+   "lid_close": 0.35,
+   "brow_inner_up": 0.2,
+   "mouth_press": 0.1,
+   "jaw_open": 0.05
+  }
+ }
+}

@@ -39,6 +39,56 @@
       "out_dir": "res://assets/ui/portraits/heroes",
       "emotions": ["neutral", "smile", "determined", "worried", "grief"],
       "camera": {}
+    },
+    {
+      "id": "ysolde",
+      "stage": "res://game/levels/_tests/characters/ysolde/ysolde_stage.tscn",
+      "model": "res://assets/characters/ysolde/ysolde.glb",
+      "materials": "res://assets/characters/ysolde/materials/",
+      "face_poses": "res://game/levels/_tests/characters/ysolde/ysolde_face_poses.json",
+      "out_dir": "res://assets/ui/portraits/heroes",
+      "emotions": ["neutral", "smile", "determined", "worried", "grief"],
+      "camera": {"distance": 1.14, "aim_drop": 0.0}
+    },
+    {
+      "id": "liss",
+      "stage": "res://game/levels/_tests/characters/liss/liss_stage.tscn",
+      "model": "res://assets/characters/liss/liss.glb",
+      "materials": "res://assets/characters/liss/materials/",
+      "face_poses": "res://game/levels/_tests/characters/liss/liss_face_poses.json",
+      "out_dir": "res://assets/ui/portraits/heroes",
+      "emotions": ["neutral", "smile", "determined", "worried", "grief"],
+      "camera": {}
+    },
+    {
+      "id": "kerrid",
+      "stage": "res://game/levels/_tests/characters/kerrid/kerrid_stage.tscn",
+      "model": "res://assets/characters/kerrid/kerrid.glb",
+      "materials": "res://assets/characters/kerrid/materials/",
+      "face_poses": "res://game/levels/_tests/characters/kerrid/kerrid_face_poses.json",
+      "out_dir": "res://assets/ui/portraits/heroes",
+      "emotions": ["neutral", "smile", "determined", "worried", "grief"],
+      "camera": {}
+    },
+    {
+      "id": "moll",
+      "stage": "res://game/levels/_tests/characters/moll/moll_stage.tscn",
+      "model": "res://assets/characters/moll/moll.glb",
+      "materials": "res://assets/characters/moll/materials/",
+      "face_poses": "res://game/levels/_tests/characters/moll/moll_face_poses.json",
+      "out_dir": "res://assets/ui/portraits/heroes",
+      "emotions": ["neutral", "smile", "determined", "worried", "grief"],
+      "camera": {}
+    },
+    {
+      "id": "sefir",
+      "stage": "res://game/levels/_tests/characters/sefir/sefir_stage.tscn",
+      "model": "res://assets/characters/sefir/sefir.glb",
+      "materials": "res://assets/characters/sefir/materials/",
+      "face_poses": "res://game/levels/_tests/characters/sefir/sefir_face_poses.json",
+      "out_dir": "res://assets/ui/portraits/heroes",
+      "emotions": ["neutral", "smile", "determined", "worried", "grief"],
+      "camera": {}
     }
   ],
   "creatures": [
@@ -65,6 +115,8 @@
     },
     {
       "id": "flue_moth",
+      "light_scale": {"key": 3.0, "rim": 3.0, "fill": 3.0},
+      "stage_environment": {"background_color": [0.35, 0.55, 0.65, 0.0]},
       "scene": "res://game/creatures/flue_moth/flue_moth_battle.tscn",
       "out_dir": "res://assets/ui/portraits/creatures"
     },
@@ -94,6 +146,8 @@
     },
     {
       "id": "oil_slug",
+      "light_scale": {"key": 3.0, "rim": 3.0, "fill": 3.0},
+      "stage_environment": {"background_color": [0.35, 0.55, 0.65, 0.0]},
       "scene": "res://game/creatures/oil_slug/oil_slug_battle.tscn",
       "out_dir": "res://assets/ui/portraits/creatures"
     },
@@ -139,6 +193,8 @@
     },
     {
       "id": "spawn_polyp",
+      "light_scale": {"key": 3.0, "rim": 3.0, "fill": 3.0},
+      "stage_environment": {"background_color": [0.35, 0.55, 0.65, 0.0]},
       "scene": "res://game/creatures/spawn_polyp/spawn_polyp_battle.tscn",
       "out_dir": "res://assets/ui/portraits/creatures"
     },
@@ -183,6 +239,8 @@
     },
     {
       "id": "wall_polyp",
+      "light_scale": {"key": 3.0, "rim": 3.0, "fill": 3.0},
+      "stage_environment": {"background_color": [0.35, 0.55, 0.65, 0.0]},
       "scene": "res://game/creatures/wall_polyp/wall_polyp_battle.tscn",
       "out_dir": "res://assets/ui/portraits/creatures",
       "portrait": {"margin": 0.95}

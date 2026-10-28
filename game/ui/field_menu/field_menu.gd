@@ -26,6 +26,8 @@ extends Control
 ## Stay under the cursor, the line saying what is lost) and then returns to the title (boot.tscn)
 ## through FlowRouting. M2-MNU-07 added Formation (FormationMenu, the same way); when it closes the
 ## heroes follow the saved line's order.
+## M3-UI-205: once the Kite flies, Kite (after Map) opens its world map (KiteMapMenu) the same way; a
+## flight closes this menu too, and the panel is a row taller while the row is there (grown_for).
 ## M2-MNU-303: the menu fades and rises in from the field and fades out when it closes (MenuMotion);
 ## a page over it keeps the backdrop still, and the menu's own content fades back in when it closes.
 
@@ -67,6 +69,8 @@ var codex_menu: CodexMenu
 var settings_menu: SettingsMenu
 ## The zone map opened from here (null when closed).
 var map_menu: ZoneMapMenu
+## The Kite's world map opened from here (null when closed).
+var kite_menu: KiteMapMenu
 ## The party page opened from here (Items, Equip, Lattice, Status; null when closed).
 var child: FieldSubmenu
 
@@ -110,6 +114,28 @@ static func load_data() -> Dictionary:
 	return (parsed as Dictionary)["field_menu"] as Dictionary
 
 
+## The layout with `extra` more root rows (the Kite's, M3-UI-205): "extra_rows" grows each "grow" block by a
+## row pitch per row and moves it up by half of that, and moves each "follow" block down by half, so the
+## panel stays centred and the Objective block stays at the foot of the right column.
+static func grown_for(d: Dictionary, extra: int) -> Dictionary:
+	if extra <= 0:
+		return d
+	var out := d.duplicate(true)
+	var em: Dictionary = out.get("extra_rows", {})
+	var grow := HudLayout.num(out.get("root", {}), "row_pitch") * extra
+	for key: Variant in em.get("grow", []):
+		var b := out[key] as Dictionary
+		var r := b["rect"] as Array
+		b["rect"] = [r[0], float(r[1]) - grow * 0.5, r[2], float(r[3]) + grow]
+		if b.has("max_rows"):
+			b["max_rows"] = int(b["max_rows"]) + extra
+	for key: Variant in em.get("follow", []):
+		var b := out[key] as Dictionary
+		var r := b["rect"] as Array
+		b["rect"] = [r[0], float(r[1]) + grow * 0.5, r[2], r[3]]
+	return out
+
+
 ## Sets the model before the menu enters the tree (null = the live game).
 func configure(with_model: FieldMenuModel = null) -> void:
 	model = with_model
@@ -120,7 +146,7 @@ func _ready() -> void:
 		model = FieldMenuModel.from_game()
 	if model.map == null and model.live_map:
 		model.map = ZoneMapMenu.live_model(self)
-	_d = load_data()
+	_d = grown_for(load_data(), model.root_ids().size() - FieldMenuModel.ROOT_IDS.size())
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	set_anchors_preset(Control.PRESET_FULL_RECT)
 	mouse_filter = Control.MOUSE_FILTER_STOP
@@ -213,6 +239,8 @@ func close() -> void:
 		settings_menu.close()
 	if map_menu != null and map_menu.is_open():
 		map_menu.close()
+	if kite_menu != null and kite_menu.is_open():
+		kite_menu.close()
 	if child != null and child.is_open():
 		child.close()
 	_restore_pause()
@@ -279,6 +307,9 @@ func _accept_root(id: StringName) -> void:
 		FieldMenuModel.ROW_MAP:
 			if model.has_map():
 				_open_map()
+		FieldMenuModel.ROW_KITE:
+			if model.has_kite():
+				_open_kite()
 		FieldMenuModel.ROW_SETTINGS:
 			_open_settings()
 		FieldMenuModel.ROW_QUIT:
@@ -298,6 +329,7 @@ func _child_open() -> bool:
 		or (codex_menu != null and codex_menu.is_open())
 		or (settings_menu != null and settings_menu.is_open())
 		or (map_menu != null and map_menu.is_open())
+		or (kite_menu != null and kite_menu.is_open())
 		or (child != null and child.is_open())
 	)
 
@@ -311,6 +343,24 @@ func _open_map() -> void:
 func _on_map_closed() -> void:
 	map_menu = null
 	_come_back()
+
+
+func _open_kite() -> void:
+	var page := KiteMapMenu.create(model.kite)
+	page.over_menu = true  # the same scrim and caustics: only the page's content moves
+	kite_menu = FieldSubmenu.mount(page, self) as KiteMapMenu
+	visible = false
+	kite_menu.closed.connect(_on_kite_closed)
+
+
+## Back from the Kite's map: after a flight this menu closes too (the party is leaving); else it returns.
+func _on_kite_closed() -> void:
+	var flew := kite_menu.flown != &""
+	kite_menu = null
+	if flew:
+		close()
+	else:
+		_come_back()
 
 
 ## Opens the party page for root row `id` (CHILD_PAGES) over a PartySheet of this menu's state.
@@ -575,7 +625,7 @@ func _build_last_save(sm: Dictionary) -> void:
 func _page(metrics: Dictionary, pid: StringName, title: String, rows: int) -> MenuPage:
 	var page := MenuPage.new()
 	HudLayout.place(page, metrics)
-	var count := rows if rows > 0 else FieldMenuModel.ROOT_IDS.size()
+	var count := rows if rows > 0 else model.root_ids().size()
 	page.size.y = MenuPage.height_for(metrics, count, title != "")
 	add_child(page)
 	page.reduced_motion = UiSettings.shared().reduced_motion()

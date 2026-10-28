@@ -80,12 +80,23 @@ def polar(r: float, az: float, y: float = 0.0) -> list[float]:
 
 
 def inward(az: float) -> float:
-    """Yaw (deg) of a node at azimuth `az` facing the Bell's axis (a node's forward is its +Z)."""
+    """Yaw (deg) of a box or piece at azimuth `az` whose local +Z points at the Bell's axis."""
     return wrap(-az)
 
 
 def outward(az: float) -> float:
+    """Yaw (deg) of a box or piece at azimuth `az` whose local +Z points away from the Bell's axis."""
     return wrap(180.0 - az)
+
+
+def facing_in(az: float) -> float:
+    """Yaw (deg) of an actor, mark or spawn at azimuth `az` facing the Bell's axis: they face their -Z (the cutscene
+    sequencer turns an actor's -Z to its target), so it is the yaw whose +Z points out."""
+    return outward(az)
+
+
+def facing_out(az: float) -> float:
+    return inward(az)
 
 
 def moor(x: float, z: float, y: float = 0.0) -> list[float]:
@@ -190,6 +201,10 @@ def collision() -> dict:
         ramps.append(ramp(f"{name}ToWalk", polar(tg.R_FRONT - 1.6, az, DECK), polar(tg.R_FRONT + 0.4, az, tg.DECK_Y),
                           2 * hw))
         ramps.append(ramp(f"{name}ToProw", polar(deck0 + 0.6, az, DECK), polar(deck0 - 0.5, az, PROW_Y), 2 * hw - 0.5))
+    # the pool's coping, where the poolkeeper and the divers stand (the player never reaches it: the prows end in rails)
+    for i, (b0, b1) in enumerate(arcs(0.0, 360.0)):
+        blocks.append(arc_box(f"Coping{i}", b0, b1, tw.POOL_R[0], tw.POOL_R[1], tw.POOL_COPING_Y - 1.0,
+                              tw.POOL_COPING_Y))
     # the moorings: the staging behind the posts and the bridge up to the north-west gallery's walkway
     st0, st1 = STAGING_Z - STAGING_HALF, STAGING_Z + STAGING_HALF
     blocks.append(moor_box("Staging", -8.0, 8.0, st0, st1, BOARD_Y - 1.0, BOARD_Y))
@@ -267,52 +282,56 @@ def _moor(x: float, z: float, y: float, yaw: float) -> list[float]:
     return moor(x, z, y) + [r3(yaw % 360.0)]
 
 
-FACE_POSTS, FACE_OUT = MOOR_YAW, MOOR_YAW + 180.0
+FACE_POSTS, FACE_OUT = MOOR_YAW + 180.0, MOOR_YAW  # the moorings frame's +Z faces the arena; an actor faces its -Z
 SPAWNS = {
-    "Entrance": _on(250.0, WALK_R, tg.DECK_Y, inward(250.0) - 60.0),
-    "Gallery": _on(262.0, WALK_R, tg.DECK_Y, inward(262.0)),
-    "PoolSteps": _on(OURS, 17.6, DECK, inward(OURS)),
-    "CatchPool": _on(OURS, 19.6, DECK, inward(OURS)),
+    "Entrance": _on(250.0, WALK_R, tg.DECK_Y, facing_in(250.0) - 60.0),
+    "Gallery": _on(262.0, WALK_R, tg.DECK_Y, facing_in(262.0)),
+    "PoolSteps": _on(OURS, 17.6, DECK, facing_in(OURS)),
+    "CatchPool": _on(OURS, 19.6, DECK, facing_in(OURS)),
 }
 MARKS = {
-    "divers_boat": _moor(7.5, STAGING_Z - STAGING_HALF - 3.0, 0.0, FACE_OUT),
-    "poolkeeper_rim": _on(279.0, COPING, tw.POOL_COPING_Y, outward(279.0)),
+    "divers_boat": _on(290.0, COPING, tw.POOL_COPING_Y, facing_out(290.0)),  # on the coping, toward their moorings
+    "tavi_leaves": _on(OURS, 30.6, DECK, facing_out(OURS)),  # B07: Tavi walks up his platform, away from the pool
+    "tavi_away": _moor(-7.4, STAGING_Z, BOARD_Y, 90.0 - MOOR_YAW),  # B09: off along the staging (then hidden)
+    "asha_staging": _moor(1.5, STAGING_Z - 0.6, BOARD_Y, FACE_POSTS),  # B09: where Asha waits as the scene opens
+    "poolkeeper_rim": _on(279.0, COPING, tw.POOL_COPING_Y, facing_out(279.0)),
     "bell_ribs": [0.0, 38.0, 0.0],
     "drop": [0.0, 31.5, 0.0],
     "column_foot": [0.0, 0.5, 0.0],
     "tavi_boat": _moor(2.0, STAGING_Z - STAGING_HALF + 0.5, BOARD_Y, FACE_OUT),
-    "asha_rim": _side(OURS, 17.0, DECK, -0.9, inward(OURS)),
-    "toma_rim": _side(OURS, 17.6, DECK, 0.9, inward(OURS)),
-    "liss_rim": _side(OURS, 18.6, DECK, -0.9, inward(OURS)),
-    "ysolde_rim": _side(OURS, 19.2, DECK, 0.9, inward(OURS)),
+    "asha_rim": _side(OURS, 17.0, DECK, -0.9, facing_in(OURS)),
+    "toma_rim": _side(OURS, 17.6, DECK, 0.9, facing_in(OURS)),
+    "liss_rim": _side(OURS, 18.6, DECK, -0.9, facing_in(OURS)),
+    "ysolde_rim": _side(OURS, 19.2, DECK, 0.9, facing_in(OURS)),
     "rhen_moorings": _moor(-4.5, STAGING_Z - 0.3, BOARD_Y, FACE_POSTS),
     "asha_ring_1": _moor(POSTS_X[0] + 0.3, STAGING_Z + 0.9, BOARD_Y, FACE_POSTS),
     "asha_ring_3": _moor(POSTS_X[2], STAGING_Z + 0.9, BOARD_Y, FACE_POSTS),
     "asha_ring_6": _moor(POSTS_X[5] - 0.4, STAGING_Z + 0.9, BOARD_Y, FACE_POSTS),
     "rhen_ring_6": _moor(POSTS_X[5] - 1.2, STAGING_Z + 0.9, BOARD_Y, FACE_POSTS),
-    "kerrid_far": _on(4.0, 52.0, -0.5, inward(4.0)),
+    "kerrid_far": _on(4.0, 52.0, -0.5, facing_in(4.0)),
     "ring_wicklight": ring(3) + [r3(FACE_POSTS % 360.0)],
     "ring_gull": ring(6) + [r3(FACE_POSTS % 360.0)],
-    "river_mouth": _on(185.0, 80.0, 0.0, outward(185.0)),
+    "river_mouth": _on(185.0, 80.0, 0.0, facing_out(185.0)),
 }
 ACTORS = {
-    "asha": _on(276.0, WALK_R, tg.DECK_Y, inward(276.0)),
-    "toma": _on(278.5, WALK_R, tg.DECK_Y, inward(278.5)),
-    "liss": _on(281.0, WALK_R, tg.DECK_Y, inward(281.0)),
-    "ysolde": _on(283.5, WALK_R, tg.DECK_Y, inward(283.5)),
-    "kerrid": _on(0.0, 48.0, -0.5, inward(0.0)),
-    "tavi": _on(OURS, 14.4, PROW_Y, outward(OURS)),
-    "ione": _on(THEIRS, 14.4, PROW_Y, inward(THEIRS)),
-    "poolkeeper": _on(300.0, COPING, tw.POOL_COPING_Y, inward(300.0)),
-    "oruvel_diver_1": _on(264.0, COPING, tw.POOL_COPING_Y, inward(264.0)),
-    "oruvel_diver_2": _on(259.0, COPING, tw.POOL_COPING_Y, inward(259.0)),
-    "sorrin_diver_1": _on(96.0, COPING, tw.POOL_COPING_Y, inward(96.0)),
-    "sorrin_diver_2": _on(101.0, COPING, tw.POOL_COPING_Y, inward(101.0)),
+    # seated at the head of Oruvel's platform, each in line with their rim mark, so B07's walk is straight down it
+    "asha": _side(OURS, 32.4, tg.DECK_Y, -0.9, facing_in(OURS)),
+    "toma": _side(OURS, 32.4, tg.DECK_Y, 0.9, facing_in(OURS)),
+    "liss": _side(OURS, 33.2, tg.DECK_Y, -0.9, facing_in(OURS)),
+    "ysolde": _side(OURS, 33.2, tg.DECK_Y, 0.9, facing_in(OURS)),
+    "kerrid": _on(0.0, 48.0, -0.5, facing_out(0.0)),  # knee-deep, his back to the Bell
+    "tavi": _on(OURS, 14.4, PROW_Y, facing_out(OURS)),
+    "ione": _on(THEIRS, 14.4, PROW_Y, facing_in(THEIRS)),
+    "poolkeeper": _on(300.0, COPING, tw.POOL_COPING_Y, facing_in(300.0)),
+    "oruvel_diver_1": _on(264.0, COPING, tw.POOL_COPING_Y, facing_in(264.0)),
+    "oruvel_diver_2": _on(259.0, COPING, tw.POOL_COPING_Y, facing_in(259.0)),
+    "sorrin_diver_1": _on(96.0, COPING, tw.POOL_COPING_Y, facing_in(96.0)),
+    "sorrin_diver_2": _on(101.0, COPING, tw.POOL_COPING_Y, facing_in(101.0)),
 }
 TRIGGERS = {  # (at, size, yaw); a trigger's size is in its own frame
-    "rim": (_on(OURS, 16.2, DECK), [2 * tg.PLATFORM_HALF_W, 0.0, 1.2], inward(OURS)),
+    "rim": (_on(OURS, 16.2, DECK), [2 * tg.PLATFORM_HALF_W, 0.0, 1.2], facing_in(OURS)),
     "moorings": (moor(2.0, STAGING_Z, BOARD_Y), [3.0, 0.0, 2.6], MOOR_YAW),
-    "to_port": (_on(244.0, WALK_R, tg.DECK_Y), [3.0, 0.0, 2.0], inward(244.0)),
+    "to_port": (_on(244.0, WALK_R, tg.DECK_Y), [3.0, 0.0, 2.0], facing_in(244.0)),
 }
 
 

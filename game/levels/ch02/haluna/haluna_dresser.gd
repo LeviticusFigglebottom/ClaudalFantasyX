@@ -20,6 +20,7 @@ const LAMP_HOUSE_META := &"night_lamp_house"  ## the index (in the layout's piec
 const SEA_NORMAL := Vector2(1.0, 0.0)
 const STORY_SETS := "StorySets"
 const STORY_SET_PREFIX := "StorySet_"
+const FOOTSTEP_SURFACES := "FootstepSurfaces"
 
 @export_file("*.json") var layout_path: String = "res://game/levels/ch02/haluna/haluna_layout.json"
 @export var terrain: HalunaTerrain
@@ -61,7 +62,64 @@ func dress() -> void:
 	_place_night_lamps(pieces, kinds, layout.get("night_lamps", {}))
 	_place_yard_sets(pieces, kinds, layout.get("yard_sets", {}))
 	_place_story_sets(layout.get("story_sets", {}))
+	_place_footstep_surfaces(layout.get("footstep_surfaces", {}))
 	dressed.emit()
+
+
+## M3-AUD-811: the ground FootstepAudio hears as other than the scene's own (Haluna is sand): an Area3D box per
+## "footstep_surfaces" "areas" row, in group `footstep_surface` with the row's `surface` and `priority` as metas
+## (game/data/audio/footsteps.json `surface_areas`). A row's box is `size`, centred at `center` in the frame of
+## `at` (x, y, z) turned by `yaw_deg` (a piece's frame, so a dock's row reads in the dock's own metres). The
+## areas sense nothing (no layers, no monitoring): FootstepAudio tests its shapes. They live under a plain Node
+## (`FootstepSurfaces`), which HalunaCollision skips.
+func _place_footstep_surfaces(cfg: Dictionary) -> void:
+	var rows: Array = cfg.get("areas", [])
+	if rows.is_empty():
+		return
+	var holder := Node.new()
+	holder.name = FOOTSTEP_SURFACES
+	add_child(holder)
+	var meta := StringName(str(cfg.get("meta", "surface")))
+	var prio_meta := StringName(str(cfg.get("priority_meta", "surface_priority")))
+	for k in rows.size():
+		var row: Dictionary = rows[k]
+		var at: Array = row.get("at", [0.0, 0.0, 0.0])
+		var center: Array = row.get("center", [0.0, 0.0, 0.0])
+		var size: Array = row["size"]
+		var basis := Basis(Vector3.UP, deg_to_rad(float(row.get("yaw_deg", 0.0))))
+		var area := Area3D.new()
+		area.name = "%s_%d" % [str(row.get("name", row["surface"])), k]
+		area.collision_layer = 0
+		area.collision_mask = 0
+		area.monitoring = false
+		area.monitorable = false
+		area.transform = Transform3D(
+			basis,
+			(
+				Vector3(float(at[0]), float(at[1]), float(at[2]))
+				+ basis * Vector3(float(center[0]), float(center[1]), float(center[2]))
+			)
+		)
+		area.set_meta(meta, StringName(str(row["surface"])))
+		area.set_meta(prio_meta, int(row.get("priority", 0)))
+		area.add_to_group(StringName(str(cfg.get("group", "footstep_surface"))))
+		var shape := CollisionShape3D.new()
+		var box := BoxShape3D.new()
+		box.size = Vector3(float(size[0]), float(size[1]), float(size[2]))
+		shape.shape = box
+		area.add_child(shape)
+		holder.add_child(area)
+
+
+## The FootstepSurfaces areas the layout made (empty when it has none).
+func footstep_surfaces() -> Array[Area3D]:
+	var out: Array[Area3D] = []
+	var holder := get_node_or_null(NodePath(FOOTSTEP_SURFACES))
+	if holder != null:
+		for c: Node in holder.get_children():
+			if c is Area3D:
+				out.append(c as Area3D)
+	return out
 
 
 ## M3-ENV-709: dressing a chapter shows only in its own state (Ch4's wake night at the causeway head, the wake

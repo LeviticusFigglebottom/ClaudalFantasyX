@@ -2,9 +2,9 @@
 id: M2-CHR-11
 title: "Heroes and villagers opt into M1-CHR-14's host snaps (their Blender builds differ on an AVX2 host)"
 role: character
-status: doing
-owner_session: "characters (cloud session_01JqzzxgJU9Dmu7fRhmCG9aQ, branch claude/characters)"
-reviewer: qa
+status: done
+owner_session: "characters (new account, branch claude/characters)"
+reviewer: pc-gpu
 depends_on: [M1-CHR-14]
 milestone: M2
 request-from: "rendering (PC GPU gate runner)"
@@ -28,11 +28,11 @@ AVX-512) they rebuild differently from their committed assets, which were built 
 - Same pinned Blender 5.0.1+dfsg-5 and numpy 2.5.3 as the container (`tools/dev/fetch_blender.py`, WSL2 Ubuntu 24.04).
 
 ## Acceptance criteria
-- [ ] base_body, Rhen, Toma and the villagers use Asha's host snaps where they share her code paths: `asha_textures.PRE_ROUND`
+- [x] base_body, Rhen, Toma and the villagers use Asha's host snaps where they share her code paths: `asha_textures.PRE_ROUND`
       (round the float image before 8-bit), the head's midline snap, the UV grid and `snap_shape_noise`.
 - [ ] Their committed outputs are rebuilt once with the snaps, then verified identical on **both** the Lead's
       container (AVX-512) and the PC (`HYMN_BLENDER_ALL=1`, tools/dev/gate_runner.md).
-- [ ] blender_builds.md says new character builds opt in from the start.
+- [x] blender_builds.md says new character builds opt in from the start.
 
 ## Notes
 - 2026-10-24 (characters): claimed. rhen and toma are folded into M1-CHR-15, which rebuilds them anyway. base_body and the seven M2 villagers are with a worktree subagent. Both were sent this evidence: hair positions and the LOD1 decimate inputs need a position grid too, beyond Asha's four snaps. Verify is native vs `NPY_DISABLE_CPU_FEATURES="X86_V3 X86_V4"` (the AVX2-only numpy paths). (A duplicate M2-CHR-11 file filed on claude/characters was removed in favour of this one.)
@@ -69,4 +69,18 @@ The PC can run the cross-host check on request: push the branch, and the Lead or
 - **Gates:** validate_data, taskboard --check, `unittest test_villagers test_blender_builds test_base_body` (59 OK),
   test_rig_integrity (71 OK, 14 skipped), Godot `--filter=post_import` (19 run, 0 failed).
 
+- **2026-10-27, proven on the cloud's three numpy paths (characters, new account).** Every character-owned job is
+  byte-identical to its committed outputs natively (AVX-512), with `NPY_DISABLE_CPU_FEATURES="X86_V4"` (the PC's
+  AVX2 path) and with `"X86_V3 X86_V4"` (baseline): asha 44, rhen 31, toma 38 (M1-CHR-15's rebuild with the snaps;
+  rhen again after M2-CHR-513's hook bones), the nine villager jobs, base_body, props_wick, sefir 32, ysolde 37 and
+  the 27 creature jobs: 43 jobs.
+  - **Found on the way:** the villager jobs failed to *build* in verify's sandbox once M1-CHR-15 landed (they import
+    hero_clips, which reads game/data/characters/helper_bones.json, and the sandbox held only assets_src). Fixed:
+    `copy_into_sandbox` gains `game/data/characters`, and the villager jobs list the file as a source. The PC gate
+    would have hit the same failure.
+  - **Left for the PC:** the second criterion's hardware half. Run `verify_blender_builds.py --all` (or
+    `HYMN_BLENDER_ALL=1`) in WSL at this branch's head.
+  - blender_builds.md has the opt-in rule for new character builds.
+
 ## Review log
+- 2026-10-27 (pc-gpu, via the Lead): VERIFIED on the PC's AVX2 i9-12900K. claude/characters @ 3723f3eb: base_body, rhen, toma and the 9 villagers rebuild identical to the committed assets (12/12). Done; merges with big12.

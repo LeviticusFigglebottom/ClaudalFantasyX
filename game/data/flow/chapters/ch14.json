@@ -1,0 +1,52 @@
+{
+ "doc": "M4-C14-02 (docs/kb/tech/chapter_flow.md): Ch14 'The Peace Wedding' as a greybox before the beat sheet (M4-C14-01): the party comes into the Lacquer Court (the chapter becomes 14) and the bridal barge runs the escape out across the water to the open sea (Ch15). The wedding, the trap, Tobin's death, Merel and the gate, and Warden Malcor Venn's two-phase fight on the pursuit barge come with the beat sheet.",
+ "chapter": "ch14",
+ "zones": {
+  "ch13/ansedra_lacquer_court": {
+   "party": {
+    "party": [
+     "rhen",
+     "asha",
+     "toma"
+    ],
+    "reserve": [
+     "ysolde",
+     "kerrid",
+     "liss"
+    ]
+   },
+   "arrive": [
+    {
+     "when": {
+      "unset": [
+       "ch14_started"
+      ]
+     },
+     "steps": [
+      {
+       "place": "CourtEntry"
+      },
+      {
+       "chapter": 14
+      },
+      {
+       "set": "ch14_started"
+      }
+     ]
+    }
+   ],
+   "beats": {
+    "escape": {
+     "steps": [
+      {
+       "go": {
+        "location": "ch15/open_sea",
+        "spawn": "Deck"
+       }
+      }
+     ]
+    }
+   }
+  }
+ }
+}

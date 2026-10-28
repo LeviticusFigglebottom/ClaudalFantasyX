@@ -66,3 +66,63 @@ static func _top_speed(dist: float, speed: float, r: Vector2) -> float:
 	if ramp_m <= dist or r.x + r.y <= 0.0:
 		return speed
 	return 2.0 * dist / (r.x + r.y)
+
+
+## Seconds until every actor walk and turn among a sequencer's running `motions` ("move:<id>" and "turn:<id>"
+## keys, each {elapsed, duration}) has ended (M2-HER-1113: a scene's end waits for them instead of jumping them).
+static func actor_motion_left(motions: Dictionary) -> float:
+	var left := 0.0
+	for key: StringName in motions.keys():
+		if String(key).begins_with("move:") or String(key).begins_with("turn:"):
+			var m: Dictionary = motions[key]
+			left = maxf(left, float(m["duration"]) - float(m["elapsed"]))
+	return left
+
+
+## M3-CIN-1221: the length of a polyline (the sum of its legs).
+static func path_length(path: PackedVector3Array) -> float:
+	var total := 0.0
+	for i in range(1, path.size()):
+		total += path[i - 1].distance_to(path[i])
+	return total
+
+
+## The index of the leg `s` metres along `path` lies on (0 for the first; the last leg past the end).
+static func path_leg(path: PackedVector3Array, s: float) -> int:
+	var run := 0.0
+	for i in range(1, path.size()):
+		run += path[i - 1].distance_to(path[i])
+		if s < run:
+			return i - 1
+	return maxi(path.size() - 2, 0)
+
+
+## The point `s` metres along `path` (clamped to its ends).
+static func path_point(path: PackedVector3Array, s: float) -> Vector3:
+	if path.is_empty():
+		return Vector3.ZERO
+	var left := maxf(s, 0.0)
+	for i in range(1, path.size()):
+		var leg := path[i - 1].distance_to(path[i])
+		if left <= leg and leg > 0.0:
+			return path[i - 1].lerp(path[i], left / leg)
+		left -= leg
+	return path[path.size() - 1]
+
+
+## The level direction of leg `i` of `path` (from point i to point i + 1), or zero.
+static func flat_dir(path: PackedVector3Array, i: int) -> Vector3:
+	if i + 1 >= path.size():
+		return Vector3.ZERO
+	return Vector3(path[i + 1].x - path[i].x, 0.0, path[i + 1].z - path[i].z)
+
+
+## How long an auto-advancing line holds once `box` has revealed it: at least `min_hold`, and long enough that the
+## whole line was up for its length / `read_cps` seconds (no reading pace when `read_cps` <= 0).
+static func read_hold(box: DialogueBox, read_cps: float, min_hold: float) -> float:
+	if read_cps <= 0.0 or box == null:
+		return min_hold
+	var chars := float(box.shown_text().length())
+	var reveal_cps := box.settings.chars_per_sec if box.settings != null else 0.0
+	var revealed := chars / reveal_cps if reveal_cps > 0.0 else 0.0
+	return maxf(min_hold, chars / read_cps - revealed)

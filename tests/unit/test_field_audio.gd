@@ -777,6 +777,65 @@ func _play_steps(ui: UiAudio, steps: Array) -> void:
 
 
 ## Presses each [action, row, note] on a real menu and hears exactly that row (&"" for silence) that frame.
+## M3-AUD-861 (ADR 0041): Act I's last unhooked screens, heard on the real classes.
+func test_ui_hooks_play_the_real_codex_and_settings() -> void:
+	var ui := _ui()
+	FieldInput.ensure_actions()
+	var codex := CodexMenu.open_in(_host())
+	assert_true(ui.wants(codex), "CodexMenu has a hook")
+	played.clear()
+	ui.watch(codex)
+	ui.step()
+	assert_eq(played, [&"ui_page"], "the codex opens as a page")
+	_keys(
+		ui,
+		codex,
+		[[&"ui_down", &"ui_cursor", "a category"], [&"ui_cancel", &"ui_page", "back from the categories closes"]]
+	)
+	ui.step()
+	var settings := SettingsMenu.open_in(_host())
+	assert_true(ui.wants(settings), "SettingsMenu has a hook")
+	played.clear()
+	ui.watch(settings)
+	ui.step()
+	assert_eq(played, [&"ui_menu_open"], "the settings list opens")
+	_keys(ui, settings, [[&"ui_down", &"ui_cursor", "the next settings page in the list"]])
+	played.clear()
+	settings.open_page(settings.row_ids()[0])
+	ui.step()
+	assert_true(played.has(&"ui_confirm"), "a settings page opening is a confirm (a bool watch, by `values`)")
+	settings.close()
+	ui.step()
+	assert_eq(played.back(), &"ui_menu_close", "and closes")
+	(Engine.get_main_loop() as SceneTree).paused = false
+	ui.free()
+
+
+func test_ui_hooks_play_the_real_read_panel_and_objective_card() -> void:
+	var ui := _ui()
+	var panel := ReadPanel.new()
+	_watch_real(ui, panel)
+	panel.visible = false
+	ui.step()
+	played.clear()
+	panel.visible = true
+	ui.step()
+	assert_eq(played, [&"ui_page"], "the Read panel turns in")
+	panel.close()
+	ui.step()
+	assert_eq(played, [&"ui_page", &"ui_page"], "and out")
+	_free_real(panel)
+	played.clear()
+	var hud := ObjectiveHud.new()
+	_watch_real(ui, hud)
+	played.clear()
+	hud.phase = ObjectiveHud.Phase.IN
+	ui.step()
+	assert_eq(played, [&"ui_tip"], "an objective card fades in, heard as a tip")
+	_free_real(hud)
+	ui.free()
+
+
 func _keys(ui: UiAudio, menu: Node, steps: Array) -> void:
 	for step: Array in steps:
 		played.clear()

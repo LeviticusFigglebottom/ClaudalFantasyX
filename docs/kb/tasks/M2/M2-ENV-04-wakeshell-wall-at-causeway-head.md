@@ -2,7 +2,7 @@
 id: M2-ENV-04
 title: Place the wake-shell wall at the causeway head (B04 stages Osu there on a greybox stand-in)
 role: environment
-status: review
+status: done
 owner_session: "m2-slice (session_01DQ9tdk8Uatb8Jr6raAkXiC)"
 depends_on: [M2-FP-14]
 reviewer: environment
@@ -20,3 +20,9 @@ Request from the m2-slice track (M2-FP-14). The beat sheet puts B04 "Pila's Gran
 
 ## Notes
 - The zone's collision builds a box from each kit piece's bounds, so the piece blocks Rhen like the stand-in does.
+
+## Review log
+- **2026-10-27, environment (env-art, session_01YbaV2c8yquRHqj6afQYg89): approved.**
+  - **Check run:** `--filter=haluna_b04` is 8 run, 0 failed. It reads the wall and the Teyo node by path.
+  - **What was checked:** the wall stands at the causeway head in Rhen's reach, the gap at shoulder height and the
+    Teyo shell are named, and N-03 is reconciled. Done.

@@ -172,3 +172,12 @@ A screenshot fixture, `game/levels/_tests/drownbell/drownbell_flood.tscn`, holds
 - **C10's full Ilun cinematic** waits on the Vowbound system (ADR 0026).
 - **Prewarm.** The ocean prewarm entries now list the battle scenes, and the two new shaders are registered.
   Measure battle transitions again once M1-RND-22 merges.
+
+## Act I abilities (M3-BPR-420, ADR 0041)
+- Every Act I ability has its own effect: 77 skills and 8 battle items, written by `tools/vfx/gen_act1_ability_vfx.py`
+  (each `note` says what it shows). It plays once per target on top of the element hit, the heal and the status.
+- The exceptions: the ward-aimed Ch8 skills (no fighter to play on) and the Drownbell's toll (its boss view).
+- Sounds are borrowed rows in `battle_sfx.json` until audio's own (request M3-BPR-421).
+- `prebuild()` builds a skill's own effect only if someone in the battle can use it (headless: 178 emitters took
+  66 ms; the sandbox fight builds 72).
+- Viewing: `tools/vfx/act1_vfx_sheet.tscn` (six per sheet on the battle stage, labelled).

@@ -109,9 +109,9 @@ func test_instant_play_runs_every_cue_and_ends_clean() -> void:
 	var to_rhen := player.global_position - asha.global_position
 	assert_between(angle_difference(asha.rotation.y, atan2(-to_rhen.x, -to_rhen.z)), -0.01, 0.01, "look_at rhen")
 	assert_eq(stage.get_node("Marks/spot").get_child_count(), 1, "@vfx left motes at the mark")
-	assert_eq(seq.music_track, &"hush_first_verse")
-	# M2-AUD-03 shipped the real cue, so the file named after the track wins over music_stand_ins.
-	assert_eq(seq.music.stream.resource_path, "res://assets/audio/music/hush_first_verse.ogg", "the cue's own file")
+	# M2-AUD-07: hush_first_verse is a music.json cue, so Audio's deck plays it (and carries it past the scene).
+	assert_true(seq.music_by_audio and Audio.music.current == &"hush_first_verse", "Audio plays the cue")
+	assert_eq(seq.music_track, &"", "and the sequencer's own player stays out of it")
 	_assert_clean()
 	_free()
 

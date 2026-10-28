@@ -26,6 +26,9 @@ var step_player: Callable = Callable()
 var footstep_data: Dictionary = {}
 ## The ear's position, or null for none (every node is heard): () -> Variant. Defaults to the viewport camera.
 var ear: Callable = Callable()
+## True while a line of dialogue is on screen: () -> bool (M3-AUD-850). Villagers' chat never murmurs over a line;
+## their work goes on, ducked with the World bus. The director sets it; unset, nothing is held.
+var quiet: Callable = Callable()
 ## life.json.
 var data: Dictionary = {}
 ## Hook kind by class name.
@@ -53,6 +56,7 @@ func configure(table: Dictionary) -> void:
 func bind_director(dir: AudioDirector) -> void:
 	player_at = func(id: StringName, at: Vector3) -> void: dir.play_sfx_at(id, at)
 	step_player = func(id: StringName, at: Vector3, opts: Dictionary) -> void: dir.play_sfx_at(id, at, opts)
+	quiet = func() -> bool: return dir.ducks.has(AudioDirector.REASON_DIALOGUE)
 
 
 ## The hook kind for `node` (&"" when it has none).
@@ -116,17 +120,27 @@ func _villager_steps(npc: Node3D) -> FootstepAudio:
 	return f
 
 
+## Leaving the tree (a zone change, the game quitting) drops every watched node, so nothing is read after its
+## zone is freed.
+func _exit_tree() -> void:
+	for w in watched:
+		if is_instance_valid(w.get("steps")):
+			(w["steps"] as Node).queue_free()
+	watched.clear()
+
+
 func advance(delta: float) -> void:
 	var at_ear: Variant = _ear_position()
 	var hear := float(data.get("hear_m", INF))
 	for i in range(watched.size() - 1, -1, -1):
 		var w := watched[i]
-		var node := w["node"] as Node3D
-		if not is_instance_valid(node) or not node.is_inside_tree():
+		# Validity before the cast: a freed villager or layer (a zone torn down at shutdown) can't be cast (big12).
+		if not is_instance_valid(w["node"]) or not (w["node"] as Node3D).is_inside_tree():
 			if is_instance_valid(w.get("steps")):
 				(w["steps"] as Node).queue_free()
 			watched.remove_at(i)
 			continue
+		var node := w["node"] as Node3D
 		if w["kind"] == KIND_VILLAGER:
 			var near := at_ear == null or node.global_position.distance_to(at_ear as Vector3) <= hear
 			_villager(node, w["state"] as Dictionary, delta, near)
@@ -187,7 +201,8 @@ func _villager(npc: Node3D, st: Dictionary, delta: float, near: bool) -> void:
 	var cfg := data.get("villager", {}) as Dictionary
 	var id := str(npc.get(StringName(str(cfg.get("id_prop", "")))))
 	var talking := speaking(npc)
-	if talking and not bool(st.get("talking", false)) and near:
+	var hushed := quiet.is_valid() and bool(quiet.call())
+	if talking and not bool(st.get("talking", false)) and near and not hushed:
 		_play(murmur_row(id), npc.global_position + Vector3.UP * float(cfg.get("head_m", 0.0)))
 	st["talking"] = talking
 	var work := cfg.get("work", {}) as Dictionary

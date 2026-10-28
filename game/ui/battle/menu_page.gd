@@ -209,12 +209,18 @@ func _build_row(row: Dictionary, r: Rect2) -> Control:
 	var cost_w := HudLayout.num(_m, "cost_width")
 	var enabled := bool(row.get("enabled", true))
 	var off := _c(&"text_disabled")
+	# A row may carry an icon (row "glyph": a MenuGlyph entry {glyph, role}); the label moves right of it.
+	var glyph := MenuGlyph.for_row(row.get("glyph", {}) as Dictionary, indent, r.size.y)
+	var text_x := indent
+	if glyph != null:
+		text_x += glyph.size.x + float(MenuGlyph.data().get("gap_px", 0.0))
 	var label := _cell(
-		str(row.get("label", "")), &"MenuLabel", Rect2(indent, 0.0, r.size.x - indent - cost_w, r.size.y)
+		str(row.get("label", "")), &"MenuLabel", Rect2(text_x, 0.0, r.size.x - text_x - cost_w, r.size.y)
 	)
 	label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 	node.add_child(label)
+	node.set_meta(&"label_x", text_x)  # the cursor's nudge starts from here (right of an icon)
 	var mp_text := str(row.get("mp", ""))
 	var rank_w := HudLayout.num(_m, "rank_width") if mp_text != "" else r.size.x - indent * 1.5
 	var right := _cell(
@@ -231,6 +237,9 @@ func _build_row(row: Dictionary, r: Rect2) -> Control:
 	if not enabled:
 		label.add_theme_color_override(&"font_color", off)
 		right.add_theme_color_override(&"font_color", off)
+	if glyph != null:
+		glyph.modulate.a = off.a if not enabled else 1.0
+		node.add_child(glyph)  # last, so a row's labels keep their child order
 	return node
 
 
@@ -331,7 +340,7 @@ func _nudge_rows(animate: bool) -> void:
 		if node.get_child_count() == 0 or node.is_queued_for_deletion():
 			continue
 		var label := node.get_child(0) as Control
-		var x := base + (nudge if i == cursor and _cursor_shown else 0.0)
+		var x := float(node.get_meta(&"label_x", base)) + (nudge if i == cursor and _cursor_shown else 0.0)
 		var old_tw: Tween = _nudge_tweens.get(i)
 		if old_tw != null and old_tw.is_valid():
 			old_tw.kill()

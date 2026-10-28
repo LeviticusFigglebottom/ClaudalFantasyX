@@ -5,6 +5,7 @@ extends RefCounted
 ## GreyboxZone._build_blocks and `build_ramps(self)` after it:
 ##   layout "collision_path": a JSON file whose "blocks" and "ramps" join the layout's own (generated from the
 ##     kit by tools/act1/, so the hand-written layout keeps only the story).
+##   "stairs": HeroStairs' steep flights (ADR 0193), read from the layout by HeroStairs.build_from_layout.
 ##   "ramps": [{"id", "from": [x, y, z], "to": [x, y, z], "width", "thick"?, "color"?}] a solid slab whose top
 ##     runs from `from` to `to` (a stair's flight: the controller has no step-up, so stairs are ramps under
 ##     45 deg). Built under Greybox/<id> like a block, so hide_block works on it.
@@ -12,6 +13,8 @@ extends RefCounted
 const KEY_COLLISION := "collision_path"
 const KEY_RAMPS := "ramps"
 const KEY_BLOCKS := "blocks"
+## HeroStairs' flights (ADR 0193): the collision file's "stairs" rows join the layout's, as its blocks and ramps do.
+const KEY_STAIRS := "stairs"
 const RAMP_THICK_M := 0.4
 
 
@@ -20,7 +23,7 @@ static func merge(zone: GreyboxZone) -> void:
 	if not zone.layout.has(KEY_COLLISION):
 		return
 	var extra := GreyboxZone.read_json(str(zone.layout[KEY_COLLISION]))
-	for key: String in [KEY_BLOCKS, KEY_RAMPS]:
+	for key: String in [KEY_BLOCKS, KEY_RAMPS, KEY_STAIRS]:
 		if extra.has(key):
 			var rows: Array = (zone.layout.get(key, []) as Array).duplicate()
 			rows.append_array(extra[key])

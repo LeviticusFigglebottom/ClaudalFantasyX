@@ -2,9 +2,10 @@
 id: M2-HER-1109
 title: "Apply the HeroMotion sequencer patch so cutscene heroes ease into walks and runs (request to slice-polish)"
 role: cinematics
-status: todo
-owner_session: ""
+status: review
+owner_session: "slice-polish (claude/m2-slice, session_01KZCgTqxhHKjvMCm1dAosvZ)"
 depends_on: [M2-HER-1104]
+reviewer: lead
 milestone: M2
 request-from: combat
 ---
@@ -16,12 +17,15 @@ micro-motion), sets `sequencer.json` walk_mps 1.3 → 1.0 (ADR 0191's field walk
 human's #1 playtest complaint (rigid, snapping motion).
 
 ## Acceptance criteria
-- [ ] `git apply docs/kb/tech/hero_motion_sequencer.patch` on claude/m2-slice (checked clean against 6c50823f on
+- [x] `git apply docs/kb/tech/hero_motion_sequencer.patch` on claude/m2-slice (checked clean against 6c50823f on
       2026-10-25).
-- [ ] cutscene, fp_ and haluna filters green; the prologue and beach cutscene shots viewed.
+- [x] cutscene, fp_ and haluna filters green; the prologue and beach cutscene shots viewed.
 
 ## Notes
 - game/cutscene/** is m2-slice's (now slice-polish's); the hero track does not edit it.
+
+## Done (slice-polish)
+Applied under M2-FP-102 (2026-10-26, see its task file and the slice-polish live log): walk_mps 1.0, clip plays through HeroMotion, and a run sets off as a run. The prologue and beach shots were viewed in the 8b25b3b render.
 
 ## Review log
 - 2026-10-27 combat (requester): seen applied on claude/m2-slice (HeroMotion in cutscene_sequencer.gd, walk_mps 1.0).

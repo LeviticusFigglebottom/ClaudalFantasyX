@@ -65,7 +65,7 @@ static func attached(choreo: BattleChoreo, controller: BattleController, engine:
 	var s := BattleBossIntro.new()
 	s.name = NODE_NAME
 	s.cfg = choreo.data.get(KEY, {}) as Dictionary
-	s.row = (s.cfg.get("rows", {}) as Dictionary).get(String(engine.encounter_id), {}) as Dictionary
+	s.row = row_for(s.cfg, engine.encounter_id, BattleIds.of(engine.enemies))
 	s._choreo = choreo
 	s._ctl = controller
 	s._engine = engine
@@ -75,6 +75,22 @@ static func attached(choreo: BattleChoreo, controller: BattleController, engine:
 	if not s.row.is_empty():
 		engine.turn_started.connect(s._on_first_turn, CONNECT_ONE_SHOT)
 	return s
+
+
+## The encounter's intro row: its own (rows), else the first foe's by enemy id (by_enemy: a boss whose encounters
+## are not written yet, the Act II bosses, gets its intro wherever it appears; M3-BPR-408). {} for none.
+static func row_for(cfg: Dictionary, encounter: StringName, enemy_ids: Array[StringName]) -> Dictionary:
+	var own := (cfg.get("rows", {}) as Dictionary).get(String(encounter), {}) as Dictionary
+	if not own.is_empty():
+		return own
+	var by := cfg.get("by_enemy", {}) as Dictionary
+	for eid in enemy_ids:
+		var base := String(eid).get_slice("#", 0)
+		if by.has(base):
+			var r := (by[base] as Dictionary).duplicate()
+			r["enemy"] = base
+			return r
+	return {}
 
 
 ## The intro under `stage`'s sequencer (null when none).
@@ -295,9 +311,11 @@ func _clears_card(pose: Dictionary, feet: Vector3) -> bool:
 	return _choreo.camera.in_frame(xform, float(pose["fov"]), feet, {"bottom": bottom})
 
 
-## The closest fitted pose whose bounds pass the safe frame with the feet clear of the card: each widening step
-## (x fit.widen_step up to widen_max) tries aiming lower first (look_drop up by drop_step to drop_max, which lifts the
-## boss in the frame). Failing the card everywhere, the closest pose that passes the safe frame; failing that, {}.
+## The closest fitted pose whose bounds pass the safe frame with the feet clear of the card and no party member
+## crowding it: for each orbit (fit.yaw_steps_deg about the boss, the shot's own first), each widening step (x
+## fit.widen_step up to widen_max) tries aiming lower first (look_drop up by drop_step to drop_max, which lifts the
+## boss). Failing the party everywhere, the first that clears the card; failing that, the closest that passes the
+## safe frame; failing that, {}.
 func _fit_search(shot: Dictionary, bounds: AABB, pts: Array[Vector3]) -> Dictionary:
 	var fc := cfg.get("fit", {}) as Dictionary
 	var none: Array[Vector3] = []
@@ -305,19 +323,77 @@ func _fit_search(shot: Dictionary, bounds: AABB, pts: Array[Vector3]) -> Diction
 	var step := maxf(float(fc.get("drop_step", 1.0)), 0.01)
 	var widen := maxf(float(fc.get("widen_step", 1.1)), 1.01)
 	var fallback := {}
-	var k := 1.0
-	while k <= float(fc.get("widen_max", 1.0)) + 0.0001:
-		var drop := base
-		while drop <= float(fc.get("drop_max", base)) + 0.0001:
-			var pose := _fit(shot, bounds, k, drop)
-			if _choreo.camera._frames(pose, pts, none):
-				if _clears_card(pose, pts[0]):
-					return pose
-				if fallback.is_empty() and is_equal_approx(drop, base):
-					fallback = pose
-			drop += step
-		k *= widen
-	return fallback
+	var crowded := {}  # clears the card but a party member crowds the frame
+	for yaw: Variant in fc.get("yaw_steps_deg", [0.0]):
+		var turned := _orbit(shot, float(yaw))
+		var k := 1.0
+		while k <= float(fc.get("widen_max", 1.0)) + 0.0001:
+			var drop := base
+			while drop <= float(fc.get("drop_max", base)) + 0.0001:
+				var pose := _fit(turned, bounds, k, drop)
+				if _choreo.camera._frames(pose, pts, none):
+					if _clears_card(pose, pts[0]):
+						if _party_clear(pose):
+							return pose
+						if crowded.is_empty():
+							crowded = pose
+					if fallback.is_empty() and is_equal_approx(drop, base) and is_zero_approx(float(yaw)):
+						fallback = pose
+				drop += step
+			k *= widen
+	return crowded if not crowded.is_empty() else fallback
+
+
+## `shot` turned `deg` about the vertical through its look point (the same distance and height).
+static func _orbit(shot: Dictionary, deg: float) -> Dictionary:
+	if is_zero_approx(deg):
+		return shot
+	var look := shot["look"] as Vector3
+	var pos := look + ((shot["pos"] as Vector3) - look).rotated(Vector3.UP, deg_to_rad(deg))
+	return {"pos": pos, "look": look, "fov": shot["fov"]}
+
+
+## True when no party member crowds the intro (M3-BPR-404, the playtest's Toma over the timeline): each is either
+## wholly off screen (or behind the camera), or wholly inside the HUD-safe frame and at most fit.party_max_h of the
+## screen's height.
+func _party_clear(pose: Dictionary) -> bool:
+	var pos: Vector3 = pose["pos"]
+	var xform := Transform3D(Basis.looking_at((pose["look"] as Vector3) - pos, Vector3.UP), pos)
+	var inv := xform.affine_inverse()
+	var half := tan(deg_to_rad(float(pose["fov"])) * 0.5)
+	var aspect := _choreo.camera._aspect()
+	var safe := _choreo.camera.data.get("safe_frame", {}) as Dictionary
+	var max_h := float((cfg.get("fit", {}) as Dictionary).get("party_max_h", 1.0))
+	for c in _engine.party_active:
+		var f := _ctl.stage.stand_in(c.id)
+		if f == null or not f.is_visible_in_tree():
+			continue
+		var b := _bounds(f)
+		var on_screen := false
+		var inside := true
+		var lo := INF
+		var hi := -INF
+		for i in 8:
+			var q := inv * b.get_endpoint(i)
+			var depth := -q.z
+			if depth <= 0.05:
+				inside = false  # at or behind the camera: it fills the lens
+				continue
+			var x := q.x / (depth * half * aspect)
+			var y := q.y / (depth * half)
+			lo = minf(lo, y)
+			hi = maxf(hi, y)
+			if absf(x) <= 1.0 and absf(y) <= 1.0:
+				on_screen = true
+			var left := -1.0 + 2.0 * float(safe.get("left", 0.0))
+			var right := 1.0 - 2.0 * float(safe.get("right", 0.0))
+			var bottom := -1.0 + 2.0 * float(safe.get("bottom", 0.0))
+			var top := 1.0 - 2.0 * float(safe.get("top", 0.0))
+			if x < left or x > right or y < bottom or y > top:
+				inside = false
+		if on_screen and (not inside or (hi - lo) * 0.5 > max_h):
+			return false
+	return true
 
 
 ## `pose` moved along its own line of sight so the bounds' sphere fits the narrower field of view at `fit.margin`
