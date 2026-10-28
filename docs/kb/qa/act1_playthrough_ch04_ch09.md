@@ -21,10 +21,28 @@ Owner per row: **act1-chapters** fixes cameras, staging, flow and encounters; th
   with the gate behind; F08_key from the north, the side the great key is turned from, and Asha placed at the
   wheel (`great_key_asha`) before ch08_beacon_opened; N09 frames the mourner whole until the kneel exists.
 
+## Field POIs (2026-10-28)
+Every zone map POI of Ch4–Ch9 (69) rendered at the field's default view (GreyboxZone's hub orbit, orbit_yaw 0,
+7.5 m back, 6 m up) through the zone's shot rig. Where the orbit saw a wall, a roof, a sail or the beacon, the layout
+now has a pan-follow camera volume, each camera picked from rendered previews (interiors placed with
+`tools/act1/shot_check`'s solver):
+- Ch4 wake: Haluna's own CameraVolumes (Ch04Zone rebuilds ch02/haluna's from its scene: the lane, market, dock,
+  chapel) plus Neme's door (c48cba476). The ferry: bow, waist and aft deck off her beam (775a44dd0).
+- Ch5 Pemakar's harbour, clear of the moored sail (e66297f98). Ch7 Tamsule's stilt lane. Ch8 Corrow's wall-gate.
+  Coilspire: the keeper's hut, a volume per tier on the spire's axis, the gallery's two halves. Ch9: the road gate,
+  the milestone and the wall head from the wall's inner side (3e43e1e71; test `test_ch08_coilspire_camera`).
+- Read well as they are: the Brine Shoals' flats, Tamsule's quay, market and galleries, Corrow's town and mole,
+  Ch9's strand, landing and Stillguard row, the Coilspire's headland path, Pemakar's terraces.
+- Pacing: a scan of every Ch4–Ch9 scene for long holds without a line found only holds the beats pin (ch08_wall_falls'
+  seven cuts with no word, rule 4; ch09_the_stair's one 15 s shot, ADR 0022 (f); the Ebbing's held inputs).
+- Balance: the playthrough showed no spike or trivial fight, so no sim run (the Lead's brief: only where it does).
+
 ## Open, act1-chapters (cameras and staging)
 | Ch | Scene / shot | What reads wrong |
 |---|---|---|
 | 4 | ch04_name_board D06, ch04_seventh_terrace D01, F05; ch04_spar_wraith D05 | waits on the grade (M3-ENV-1228): re-previewed 2026-10-28, every view of the stern reads near-black, so framing can't be judged. F05, D01 and D05 have their subject (the hull, the wraith's motes); D06 aims at y 1.7 above the kit's name-board (it hangs on the transom at -9.24, 0.85, 21.04): re-aim it once the grade lands |
+| 5 | Ashcrown's tier POIs (quench, tier_1–4) | the orbit frames a dark shaft (tier_1 sits inside a banner); still greybox, so its volumes wait for its kit (M3-ARC-1216) |
+| 4, 5 | the derelict alongside the ferry; Pemakar's harbour at night | the orbit and the new harbour volume read near-black: the grades (M3-ENV-1228, M3-ENV-1229) |
 | 9 | ch09_the_ebbing N09 | framed on the standing mourner; the open hand on the shingle needs the kneeling mourners (character, M3-C09-08 §5: no villager cast has a kneel clip yet, only Toma's `kneel_palms_flat`) |
 
 ## Open, other owners (filed)
