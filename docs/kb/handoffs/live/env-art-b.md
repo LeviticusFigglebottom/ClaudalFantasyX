@@ -283,8 +283,11 @@ that test at this branch's zones.
 
 - **GPU QA re-check on big15 (6466a6f5, gpu/act1-qa-2 62b2115c):** rows 6, 27 and 28 read "still open" only because their fixes (3109a2f5: the Coilspire grid lines; 47845c69: the Corrow rocks) came after big15. Both are on this branch @ MERGE-READY. Rows 15, 26 and 40 stay explained (env-art's M3-ENV-1323 and M3-ENV-1316). The PC can re-check once this branch is in a batch.
 
+- **M3-RND-21 / M3-RND-1315 follow-up:** both Ch6 camp arenas (`salvage_camp_burning`, and `brine_shoals_afternoon` through a new wrapper, `b_shoals_arena.py`) now draw SmokeColumns instead of shells (`b_smoke_columns.py` swaps the written plume instances). The flames have volume (a brighter heart, an orange rim), and the fires sit on round, ragged ash beds instead of square trays (`b_fire.py`, rebuilt; only the two fire pieces changed). M3-ENV-1324 is narrowed to the kit preview. Checks run: tools `test_b_arenas` + `test_brine_shoals_kit` + `test_arenas` (53), Godot `flame`, `battle_arena`, `brine`, `smoke` (all green), gdlint/gdformat, taskboard --check. **MERGE-READY @ 9a9c0043.**
+
 ### Render requests
 (Self-rendered per TRACK-RULES; lines are SELF-RENDERED notes.)
+SELF-RENDERED @ 9a9c0043: battle_arena_camp, battle_arena_shoals. Viewed: the columns rise behind the camp, and the fires read as fire up close, with round beds and no trays.
 SELF-RENDERED @ 3eaa64a5: ch06_brine_camp (clocks 40 and 44), ch06_brine_road. Viewed: grey-brown columns that lean downwind with lit tops, read at range, and billow between the clocks. The foot's grain is gone with the gradient-noise offset.
 SELF-RENDERED @ f11aca7d: ch09_corrow_road. Viewed: the dawn road is a washed low gold looking east into the sun, slightly warmer than before.
 SELF-RENDERED @ 51f5185c: ch06_brine_camp at clocks 40.0 and 40.37 (scratch). Viewed: the fires read golden-orange with torn tips that move between the clocks. It drifts from its baseline, which predates the fires.
