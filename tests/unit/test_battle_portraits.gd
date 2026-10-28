@@ -4,12 +4,15 @@ extends TestCase
 
 
 func test_heroes_and_foes_have_pictures() -> void:
-	for hero: StringName in [&"rhen", &"asha", &"toma", &"ysolde", &"liss"]:
+	for hero: StringName in [&"rhen", &"asha", &"toma", &"ysolde", &"liss", &"kerrid"]:
 		assert_true(BattlePortraits.texture(hero) != null, "%s has a battle face" % hero)
 	var up := BattlePortraits.texture(&"rhen")
 	var down := BattlePortraits.texture(&"rhen", true)
 	assert_ne((up as AtlasTexture).atlas, (down as AtlasTexture).atlas, "a fallen hero looks worried")
 	assert_true(BattlePortraits.texture(&"tide_crawler#2") != null, "a numbered foe finds its base's picture")
+	assert_true(
+		BattlePortraits.texture(&"stillguard_inquisitor") != null, "a foe who is a person shows his face (Moll)"
+	)
 	assert_eq(BattlePortraits.texture(&"nobody"), null)
 
 

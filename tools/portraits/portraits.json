@@ -59,6 +59,36 @@
       "out_dir": "res://assets/ui/portraits/heroes",
       "emotions": ["neutral", "smile", "determined", "worried", "grief"],
       "camera": {}
+    },
+    {
+      "id": "kerrid",
+      "stage": "res://game/levels/_tests/characters/kerrid/kerrid_stage.tscn",
+      "model": "res://assets/characters/kerrid/kerrid.glb",
+      "materials": "res://assets/characters/kerrid/materials/",
+      "face_poses": "res://game/levels/_tests/characters/kerrid/kerrid_face_poses.json",
+      "out_dir": "res://assets/ui/portraits/heroes",
+      "emotions": ["neutral", "smile", "determined", "worried", "grief"],
+      "camera": {}
+    },
+    {
+      "id": "moll",
+      "stage": "res://game/levels/_tests/characters/moll/moll_stage.tscn",
+      "model": "res://assets/characters/moll/moll.glb",
+      "materials": "res://assets/characters/moll/materials/",
+      "face_poses": "res://game/levels/_tests/characters/moll/moll_face_poses.json",
+      "out_dir": "res://assets/ui/portraits/heroes",
+      "emotions": ["neutral", "smile", "determined", "worried", "grief"],
+      "camera": {}
+    },
+    {
+      "id": "sefir",
+      "stage": "res://game/levels/_tests/characters/sefir/sefir_stage.tscn",
+      "model": "res://assets/characters/sefir/sefir.glb",
+      "materials": "res://assets/characters/sefir/materials/",
+      "face_poses": "res://game/levels/_tests/characters/sefir/sefir_face_poses.json",
+      "out_dir": "res://assets/ui/portraits/heroes",
+      "emotions": ["neutral", "smile", "determined", "worried", "grief"],
+      "camera": {}
     }
   ],
   "creatures": [
