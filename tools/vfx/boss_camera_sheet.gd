@@ -52,7 +52,7 @@ func _run() -> void:
 			var r := ActionResult.new()
 			r.actor_id = boss.id
 			r.skill_id = sid
-			var hits: Array = []
+			var hits: Array[Dictionary] = []
 			for h in ctl.engine.party_active:
 				hits.append({"target_id": h.id, "hit": true, "crit": false, "amount": 10, "statuses_added": []})
 				if not _sweeps(sid):
