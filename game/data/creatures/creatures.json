@@ -1,5 +1,5 @@
 {
-  "_doc": "Battle creature actors (M2-CRE-03, docs/kb/art/creatures/pipeline.md). Presentation only: no combat numbers. enemies.json `model` names a row's `scene`; BattleStage turns it into the FighterStandIn spec's `scene` (the M2-UI-07 hook) and merges `stand_in`. CreatureActor reads the rest: which clip an action plays (clip_by_skill, else clip_by_kind by the skill's kind), which clips loop, the KO fade, the boss's phases and breakable parts, the hit variants it rotates through and the idle fidget it plays now and then (M3-CRE-612). A row with `vowbound` true (M3-CRE-638) is a Vowbound's actor: its id is a game/data/battle/vowbound.json row and no enemy names its scene; CreatureModels gives that Vowbound's stand-in its scene and stand_in.",
+  "_doc": "Battle creature actors (M2-CRE-03, docs/kb/art/creatures/pipeline.md). Presentation only: no combat numbers. enemies.json `model` names a row's `scene`; BattleStage turns it into the FighterStandIn spec's `scene` (the M2-UI-07 hook) and merges `stand_in`. CreatureActor reads the rest: which clip an action plays (clip_by_skill, else clip_by_kind by the skill's kind), which clips loop, the KO fade, the boss's phases and breakable parts, the hit variants it rotates through and the idle fidget it plays now and then (M3-CRE-612). A row with `vowbound` true (M3-CRE-638) is a Vowbound's actor: its id is a game/data/battle/vowbound.json row and no enemy names its scene; CreatureModels gives that Vowbound's stand-in its scene and stand_in. A row `<id>_held` (M3-CRE-647) is that Vowbound as a foe for its Ch20 release: no `vowbound` key, its own scene (the same GLB wearing materials_held/ through CreatureActor.material_dir), its KO the `release` clip, and a `release` phase with `hold` true (it stays on the clip's last frame).",
   "defaults": {
     "idle": "idle",
     "hit": "hit",
@@ -242,6 +242,49 @@
       "vowbound_pending": "M3-CRE-644",
       "contact": {"attack": 0.55, "cast": 0.8, "special": 1.45},
       "stand_in": {"yaw_deg": -90.0, "height": 2.5, "radius": 0.6}
+    },
+    "ilun_held": {
+      "scene": "res://game/creatures/ilun/ilun_held_battle.tscn",
+      "ko": "release",
+      "contact": {"attack": 0.55, "cast": 0.8, "special": 1.45},
+      "phases": {"release": {"clip": "release", "hold": true}},
+      "stand_in": {"yaw_deg": 90.0}
+    },
+    "kahre_held": {
+      "scene": "res://game/creatures/kahre/kahre_held_battle.tscn",
+      "ko": "release",
+      "contact": {"attack": 0.55, "cast": 0.8, "special": 1.55},
+      "phases": {"release": {"clip": "release", "hold": true}},
+      "stand_in": {"yaw_deg": 90.0, "height": 3.3, "radius": 0.75}
+    },
+    "virel_held": {
+      "scene": "res://game/creatures/virel/virel_held_battle.tscn",
+      "ko": "release",
+      "contact": {"attack": 0.5, "cast": 0.6, "special": 1.4},
+      "phases": {"release": {"clip": "release", "hold": true}},
+      "stand_in": {"yaw_deg": 90.0},
+      "portrait": {"yaw_deg": 72.0, "pitch_deg": 14.0}
+    },
+    "hesk_held": {
+      "scene": "res://game/creatures/hesk/hesk_held_battle.tscn",
+      "ko": "release",
+      "contact": {"attack": 0.55, "cast": 0.8, "special": 1.45},
+      "phases": {"release": {"clip": "release", "hold": true}},
+      "stand_in": {"yaw_deg": 90.0, "height": 2.4, "radius": 0.6}
+    },
+    "nhoa_held": {
+      "scene": "res://game/creatures/nhoa/nhoa_held_battle.tscn",
+      "ko": "release",
+      "contact": {"attack": 0.55, "cast": 0.8, "special": 1.45},
+      "phases": {"release": {"clip": "release", "hold": true}},
+      "stand_in": {"yaw_deg": 90.0, "height": 3.2, "radius": 0.5}
+    },
+    "ethren_held": {
+      "scene": "res://game/creatures/ethren/ethren_held_battle.tscn",
+      "ko": "release",
+      "contact": {"attack": 0.55, "cast": 0.8, "special": 1.45},
+      "phases": {"release": {"clip": "release", "hold": true}},
+      "stand_in": {"yaw_deg": 90.0, "height": 2.5, "radius": 0.6}
     }
   }
 }

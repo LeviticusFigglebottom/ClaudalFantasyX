@@ -12,6 +12,8 @@
 - `vowbound_pending` (M3-CRE-642): a Vowbound built ahead of its game row names, as a non-empty string, the task
   that adds its vowbound.json row (Combat's file). While it is set the missing row is allowed; once the row exists it
   is an error, so the key is dropped with the row's arrival. Only on a `vowbound` true row.
+- A phase may carry `hold` (M3-CRE-647, true or false, with a `clip`): the actor stays on the clip's last frame instead
+  of idling (a Vowbound's release, on its `<id>_held` foe row).
 """
 
 from __future__ import annotations
@@ -30,7 +32,8 @@ DEFAULT_KEYS = {"idle", "hit", "ko", "loop", "blend_sec", "clip_by_kind", "clip_
                 "hit_snap"}
 ROW_KEYS = DEFAULT_KEYS | {"scene", "vowbound", "vowbound_pending"}
 STAND_IN_KEYS = {"yaw_deg", "hover", "height", "radius"}
-PHASE_KEYS = {"clip", "idle", "offset_m", "tilt_deg", "sec", "show", "hide", "hide_after", "show_after", "clips"}
+PHASE_KEYS = {"clip", "idle", "offset_m", "tilt_deg", "sec", "show", "hide", "hide_after", "show_after", "clips",
+              "hold"}
 PART_KEYS = {"whole", "broken"}
 HIT_SNAP_KEYS = {"preroll_sec", "blend_sec", "_note"}
 PORTRAIT_KEYS = {"clip", "clip_time", "yaw_deg", "pitch_deg", "fov_deg", "margin", "key_energy", "rim_energy",
@@ -131,6 +134,10 @@ def _row_errors(w: str, row: dict, skills: set[str], phase_ids: set[str] | None)
         if "clips" in p and not (isinstance(p["clips"], dict)
                                  and all(isinstance(a, str) and a and isinstance(b, str) and b for a, b in p["clips"].items())):
             errs.append(f"{pw}.clips: must map clip names to clip names")
+        if "hold" in p and not isinstance(p["hold"], bool):
+            errs.append(f"{pw}.hold: must be true or false")
+        elif p.get("hold") and "clip" not in p:
+            errs.append(f"{pw}.hold: holds the phase's clip, so it needs a `clip`")
         if "sec" in p and not (_num(p["sec"]) and p["sec"] >= 0):
             errs.append(f"{pw}.sec: must be a number >= 0")
     parts = row.get("break_parts", {})
