@@ -1125,3 +1125,6 @@ TRIAL MERGE @ integration 8870ea9c: env-art 885fba18, env-art-b 6a8f1504, creatu
   test_battle_party_stand_ins.gd): fp_prologue 8/0, party_stand_ins 3/0.
   - **On my branch alone**, qa_capsules fails on Haluna's 7 villagers, since act1-chapters' qa_known drops them for
     their fix. It's green on the merged tree.
+- **Audit on the merged tree, full (import + runtime scan): 11 items, down from 17** (env-art 9, integration-qa 2).
+  `act1_final_inventory.md` is rewritten. creatures-b and env-art-b are clear now. integration-qa's 2 are still
+  Pell and vigil_pell (Ch9), waiting on M3-CHR-506.
