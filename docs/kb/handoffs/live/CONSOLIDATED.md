@@ -65,10 +65,27 @@
 
 **Recommended setup for the new account:** Lead (cloud) + pc-gpu (the empty Remote Control session) + slice-polish + act1-chapters + ui-menus + battle-presentation + characters + hero-integration + creatures + env-art + audio. That's 10 sessions plus the Lead. The usage limits were hit several times at this scale; if limits bite, pause creatures and audio first, then act1-chapters.
 
+## 2-FOCUS. ACT I AT FINAL QUALITY FIRST (ADR 0041, the human's directive, 10-28 01:10)
+- Every track works only on the game as played, from the title through Ch9, at final quality: no greybox, no stand-ins, no placeholders. Act II and later are paused, with their tasks blocked by ADR 0041.
+- The work list is `docs/kb/qa/act1_final_inventory.md` plus `tools/placeholder_audit.py` (integration-qa).
+- **New sessions (10-28):**
+  - env-art-b `session_01F3vrUNt6trAMrjeYavaDNC` (claude/env-art-b): the Ch5–Ch9 zones and their arenas;
+  - creatures-b `session_01F3vrUMszfxGn5bonYsSJxK` (claude/creatures-b): the Act I bosses and the Vowbound.
+  - env-art keeps the Prologue–Ch4 zones and the shared kits; creatures keeps the regular enemies and the wildlife.
+- The account's seven-day usage is at its warning level, so no more sessions unless one is clearly the bottleneck.
+
 ## 2a. Merge state (new account)
 - **10-27: big9 MERGED** (integration 3b7cbf5e). PC gate: Godot 2561/0, coverage and boot OK, Blender 40 identical + 11 M2-CHR-11 DIFFs (rhen, toma, 9 villagers), 281 shots with 48 re-approved after the Lead viewed them. The results are on `gpu/gate-big9-shots`.
 - **10-27: big10 MERGED** (integration f5ec3bda). PC gate: Godot 2637/0, coverage and boot OK, Blender 20 identical + rhen/toma, 292 shots with 51 re-approved (37 identical to big9's; 14 viewed). It includes M3-BPR-404: the Hullgnaw, Drownbell and Matron intros now fit the boss.
-- **big12** `lead/gate-big12` @ 8a28be17 (big11 + every track head as of 10-27 ~18:00) is gating on the PC, full manifest, 341 shots. Cloud: Godot 2820/2, both owned by tracks: creature portraits (creatures) and the footsteps causeway test (audio). Tools: 41 new shots without baselines, the shrine GI bake (PC), test_iskarra (env-art).
+- **10-27 ~21:15: big12 MERGED** (integration e930595c): 111 shots approved after viewing; Blender 28/28 identical; the PC's shrine GI rebake folded in. Open from viewing:
+  - Iskarra (the prologue) reads greybox → env-art, FAST-TRACK;
+  - Ilun (the Vowbound) is a teal capsule → creatures;
+  - Asha's staff is missing in static views and her skirt holds a stiff bell → characters;
+  - Ch9 road capsule and the dark strand → act1-chapters;
+  - the dialogue box covers speakers on the beach, and the harrier view is mostly sky → slice-polish;
+  - the Ch8 wall arena and Reach backdrop are plain → env-art;
+  - the life_audio freed-object error → audio.
+- (was) **big12** `lead/gate-big12` @ 8a28be17 (big11 + every track head as of 10-27 ~18:00) is gating on the PC, full manifest, 341 shots. Cloud: Godot 2820/2, both owned by tracks: creature portraits (creatures) and the footsteps causeway test (audio). Tools: 41 new shots without baselines, the shrine GI bake (PC), test_iskarra (env-art).
 - **To fold into the big12 merge:** `gpu/shrine-gi-big12` @ a748e599 (the Shell Shrine GI rebaked on big12's tree; fixes test_shrine_gi_bake).
 - **Unmerged PC branches to merge with a later batch:**
   - `gpu/m2-nit-903-runner-renders`;
@@ -87,6 +104,16 @@
 
 ## 2b. Rendering is PC-only (human directive, 10-27)
 No cloud session captures screenshots. Tracks post `RENDER-REQUEST @ sha: ids` lines in their live logs, and the PC renders them and pushes `gpu/render-<track>-<sha7>`. The protocol is in TRACK-RULES.md. Gates stay on the PC as before.
+
+## 2b'. The PC is PAUSED (10-27 ~21:30, the human's instruction)
+- **pc-gpu PAUSED at 10-27 21:29 UTC** (clean; nothing running in WSL). The resume point is pc-gpu.md on `gpu/pc-gpu-paused-1027` @ 1dffdb31. Ready to run on resume: the slice --budget re-sweep (prepared in `hymn_budget`) and the Act I playthrough. Open render requests were handed to the Lead's cloud render server.
+- **Meanwhile the Lead's container takes over** the render requests (`lead/gate-render-*` branches) and the batch gates (big13 and on): the full Godot suite plus the full manifest on cloud lavapipe, about 2–3 h per full gate.
+- **10-28 01:00: tracks self-render (TRACK-RULES).** The shared cloud render queue left six tracks idle, so it is retired. Each track renders its own changed shots in its own container (HYMN_SHOTS ≤15, never baselines) and views them. The Lead's container only runs the batch gates, which re-render everything and approve baselines.
+- **LFS routes** (ADR 0039) also cover `assets/audio/sfx/act3/**` (10e3a7a5, the Kite foley).
+- Deferred until the PC resumes:
+  - GPU benchmarks and hardware QA (M1-QA-09 follow-up, the --budget re-sweep, the Act I playthrough);
+  - M3-RND-02;
+  - Blender verify on AVX2.
 
 ## 2c. Lead decisions (10-27)
 - ADR 0171 (audio 72 MiB for Act I) accepted.
@@ -161,7 +188,7 @@ No cloud session captures screenshots. Tracks post `RENDER-REQUEST @ sha: ids` l
 - The M2 slice review (blocking; play the integration branch).
 - Music: the listening verdict (docs/kb/audio/listening_notes.md), which blocks M1-LEAD-01.
 - The Asha face direction (ADR 0019's stronger stylisation, or keep).
-- ~~Git LFS~~: APPROVED by the human on 10-27 (ADR 0039). Activation waits on the cloud environment allowing `lfs.github.com` (the egress proxy refuses it). GitHub Actions never leave "queued"; check the repo settings.
+- ~~Git LFS~~: approved on 10-27 and **LIVE from 10-28** (ADR 0039): upload and download are verified from the cloud. The LFS paths are `assets/audio/music/actN/` and `assets/lfs/`. GitHub Actions never leave "queued"; check the repo settings.
 - M3-RND-02: OK to cap the PC GPU's clocks or power for the min-spec proxy?
 
 ## 7. Toolchain and gotchas
