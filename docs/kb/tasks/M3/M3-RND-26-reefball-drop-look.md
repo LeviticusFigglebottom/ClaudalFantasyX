@@ -52,3 +52,4 @@ weep column of radius 0.8 to 0.6 m down to the catch-pool water at y 0.35; >= 2.
   the contract above (a 16 m sphere cuts the bronze), and its post passes intersect the sphere analytically, so the
   node can't simply be scaled. Asks: a per-placement size (radius and vertical semi-axis) or a per-use data row, and
   the weep column. env-art-b places them in both zones the day they land.
+- **2026-10-28 (env-art-b):** the weep column is done as a static kit piece (M3-ENV-1321, at the Lead's ask under ADR 0041). It is on both Ch7 zones, and the galleries keep no greybox. Still yours: the sphere rig sized to the drop contract, and a flowing look for the column if wanted (swap its zone materials).
