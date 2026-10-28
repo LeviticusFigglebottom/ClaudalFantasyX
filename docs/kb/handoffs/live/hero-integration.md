@@ -659,3 +659,8 @@ MERGE-READY @ 7378b38b: **inventory refined.**
   its element's effect).
 - **Now 164 items** (138 high, 22 medium, 4 low). Checks: tools test 8/0, taskboard --check.
 - The Lead's item (1), self-render the hero shots: done earlier (SELF-RENDERED @ b04a188a above).
+MERGE-READY @ 4a88c28d: **the inventory now lists its coverage.** The scan follows the Act I chapters' `scene` steps
+(Ch7's Tidecup match: clean) and names the 28 scenes it loaded (17 zones, 11 arenas) at the top of the
+inventory. Still 164 items. Checks: tools test 8/0, gdlint.
+- **Next for the inventory:** re-run on each merge batch (`python3 tools/placeholder_audit.py --write`); move each
+  owner's fixed rows out as they land. `--check` is the ADR 0041 "done" gate.
