@@ -589,6 +589,16 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
+- **MERGE-READY @ (this push): M3-ENV-753, Haluna's NPC props swapped (the Lead assigned it to env-art).**
+  - In `haluna.tscn`:
+    - Reed's Broom, Neme's Bag and Osu's Bowl are `hand_broom`, `woven_bag` and `clay_bowl`.
+    - Osu's Shell sphere is a new `wake_shell_loose`: a 0.14 m wake-shell lying in the bowl, since she is washing the
+      wake-shells.
+  - The four primitives' sub-resources are gone.
+  - **Gates:** Godot haluna 65/0. The task is at review, with slice-polish to review it.
+  - **VIEWED** with the walk rig: Neme's bag reads beside her. The broom and the bowl sit with their NPCs' stand-in
+    bodies, which the villager layer replaces, so they are not in frame there.
+  - **Drift:** `slice_neme_table` and `npc_haluna_*` may drift slightly.
 - **MERGE-READY @ b04753893: the Haluna NPCs' held props as kit pieces; the forge's bellows grounded.**
   - **New Haluna kit pieces:**
     - `hand_broom`: Reed's 1.4 m palm-rib broom.

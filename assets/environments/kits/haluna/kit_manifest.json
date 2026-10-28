@@ -2022,6 +2022,17 @@
         "wake_ground-lod1": 1566
       }
     },
+    "wake_shell_loose": {
+      "budget": [
+        600,
+        80
+      ],
+      "bytes": 5856,
+      "lods": {
+        "wake_shell_loose": 42,
+        "wake_shell_loose-lod1": 42
+      }
+    },
     "wake_shell_set": {
       "budget": [
         300,
