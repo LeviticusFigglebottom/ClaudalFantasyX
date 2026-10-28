@@ -154,6 +154,16 @@
    "energy": 6.0,
    "range": 40.0,
    "color": "#E0702E"
+  },
+  {
+   "at": [
+    0.0,
+    -40.0,
+    -70.0
+   ],
+   "energy": 8.0,
+   "range": 110.0,
+   "color": "#FF7A3A"
   }
  ],
  "pieces": [
@@ -261,7 +271,9 @@
    "materials": {
     "kit_plume": "ac_plume_day"
    },
-   "materials_dir": "res://assets/environments/kits/ashcrown/materials/"
+   "materials_dir": "res://assets/environments/kits/ashcrown/materials/",
+   "scale": 0.75,
+   "scale_y": 1.0
   },
   {
    "piece": "open_hand_gate",

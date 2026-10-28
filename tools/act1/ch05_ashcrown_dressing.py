@@ -413,6 +413,13 @@ def story_pieces() -> list[dict]:
     return out
 
 
+# The crater loggia (A08, M3-ENV-1310): at the preview's size the near plume's billows reach the loggia's rail, so
+# Kahre's chamber looked into a flat grey wall of ash. Narrowed to 0.75 across (its height kept), the plume stands
+# back over the vent with the crater's far rim and the sky round it, and the vent's glow lights it from below.
+PLUME_SCALE_XZ = 0.75
+VENT_GLOW = {"at": [0.0, -40.0, -70.0], "energy": 8.0, "range": 110.0, "color": "#FF7A3A"}
+
+
 def preview_pieces() -> tuple[list[dict], list[dict]]:
     pv = json.loads((PREVIEW / "ashcrown_layout.json").read_text(encoding="utf-8"))
     pieces = []
@@ -432,11 +439,13 @@ def preview_pieces() -> tuple[list[dict], list[dict]]:
         if "materials" in b:  # an override from this kit's materials (the plume's day look): by slot name, from here
             row["materials"] = {slot: Path(path).stem for slot, path in b["materials"].items()}
             row["materials_dir"] = KIT + "materials/"
+        if row["piece"] == "ash_plume_near":
+            row.update(scale=PLUME_SCALE_XZ * float(row.get("scale", 1.0)), scale_y=1.0)
         if row["piece"] == "open_hand_gate":
             row["block"] = "CrownGate"  # the causeway head's gate (not the Tenders' gate)
             del row["block"]
         pieces.append(row)
-    return pieces, pv["lights"]
+    return pieces, pv["lights"] + [VENT_GLOW]
 
 
 def dressing() -> dict:
