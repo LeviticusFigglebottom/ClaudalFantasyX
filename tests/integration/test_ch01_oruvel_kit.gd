@@ -7,7 +7,7 @@ extends TestCase
 
 const ZONE := "res://game/levels/ch01/oruvel/oruvel.tscn"
 const MIN_PIECES := 30
-const KEPT: Array[StringName] = [&"LowHull"]
+const KEPT: Array[StringName] = []
 ## Every cabin ridge, the chandlery's and the keel-hull's (C1-11: every roof cries).
 const MIN_GULLS := 4
 const NAME_BOARD := Vector3(-36.6, 1.65, -5.8)
@@ -56,8 +56,10 @@ func test_the_town_is_dressed_over_the_greybox() -> void:
 				mesh.visible or not (block as Node3D).visible,
 				"%s (a story block) is not hidden by the kit" % block.name
 			)
-		elif block.name in [&"Commons", &"ScaleHull", &"NetPen"]:
+		elif block.name in [&"Commons", &"ScaleHull", &"NetPen", &"LowHull"]:
 			assert_false(mesh.visible, "%s's greybox mesh hides under the kit" % block.name)
+	# The low hull C1-13 cuts loose is the kit's outrigger and salvage, drifting clear with its block.
+	assert_true((dressing as ZoneKitDressing).followers("LowHull").size() >= 2, "the low hull follows its block")
 	var water := zone.get_node(^"Water") as Node3D
 	assert_between(zone.get_node(^"Tide").get(&"water_height_y"), SEA_Y - TOLERANCE, SEA_Y + TOLERANCE, "the waterline")
 	assert_true(water != null)
