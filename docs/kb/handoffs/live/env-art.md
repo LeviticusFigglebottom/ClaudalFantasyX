@@ -589,6 +589,34 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
+- **MERGE-READY @ (this push): M3-ENV-105 (high), the Underway's walls on the walk walls; M3-ENV-740 needs nothing.**
+  - **Cause:** `ou_zone_dressing.py` hard-coded the rooms from an older greybox. The layout has since moved its walls
+    (the crown to x ±9 and z -4/20, the gauge room's east wall to x 104, the tin alcove to z -4..2).
+  - **Fix:** every wall is now read from its greybox block. Each bay's inner face sits on the block's inner face
+    (`gb_wall`), and the piers stand at the inner corners. Every room was redone: the crown, the bell-room, the
+    galleries, the tin alcove and the gauge room. The stairwell is now read from StairLip.
+  - **The cut gauge wheel:** `gauge_wheel_cut` now stands on GaugeWheelCut, so the hub stays on its plinth after the
+    cut.
+  - **The check:**
+    - The podium is carried over from the retired layout: seafloor cells with the broken lip all round, the open
+      stairwell, 22 seagrass patches, the sand drift through the east breach, and the wreck ribs to the east.
+    - The bell-room is dressed (pipe run, coral, fallen lamp-column, the lantern at the rest).
+  - **Walkability test, `tools/tests/test_underway_walk.py`:**
+    - Every floor-level bay's inner face lies on a greybox wall's inner face (2 cm), within its span.
+    - Every wall block carries bays.
+    - No spawn stands inside a bay's wall.
+    - It passes on this layout and fails (75) on the old one.
+  - **SELF-RENDERED with the dressing mounted as m2-slice mounts it** (a scratch layout_path, not committed):
+    - A 10-frame walk through the crown, the bell-room, the galleries and the gauge room: the walls stand where the
+      walk stops.
+    - `ch01_underway_crown`: Rhen inside the room, the camera over the south wall's top (it was through it).
+    - `ch01_underway_gallery` reads.
+  - **Gates:** test_underway_walk, test_zone_dressing_ch01, test_oruvel_underway_kit (22 OK); validate_data.
+  - **M3-ENV-740:** slice-polish already re-staged Oruvel's actors onto my `ov_zone_dressing` hulls (da5b34e6, their
+    renders "read right"), so my hulls stay where they are.
+  - **For the merge (Lead):** m2-slice deletes `tools/ch01/ch01_oruvel_dressing.py` and `ch01_underway_dressing.py`.
+    My later edits to them on this branch (the lashed hull, the flipped booths, O10) belong to the retired generators.
+    Take m2-slice's deletion. The mounted `ov_`/`ou_zone_dressing` generators are what count.
 - **MERGE-READY @ c9dbf9631: M3-ENV-1316's Coilspire headland ground (the last of 1316 that is env-art's).**
   - **Diagnosis:** I re-rendered the arena with one piece hidden at a time. The "broad planes" behind the foes are
     `arena_headland_ground` itself: a slope already on the fine 1.25 m grid near the fight, with one crisp
