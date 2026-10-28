@@ -22,3 +22,13 @@ CreatureActor and the validator are theirs too (kit or tool changes go to them a
 
 ## NEW ACCOUNT (from 2026-10-25)
 - 2026-10-28: branch made, binding docs read, ownership claimed (339557e6), toolchain set up.
+- **Audit done (M3-CRB-001, 2a4a9db1):** all nine self-rendered on the review stage and viewed; the table is in the
+  task file. Primitive (full rework): hullgnaw, undertows_reach, bottle_hermit, ilun, kahre, virel. Medium:
+  spar_wraith. Light: drownbell, cinder_matron (and the Matron needs a small closed spawn_wound mark, ADR 0151).
+  Every boss lacks `ready` and `intro` clips; nothing has VFX anchor bones yet.
+- **Hooks (the contract, no data key):** every boss GLB gains an `intro` clip and unweighted bones `vfx_wound`,
+  `vfx_core`, `vfx_phase`; every Vowbound `vfx_core` and `vfx_keepsake`. Requests filed: **M3-CRB-009** (combat /
+  battle-presentation: BattleBossIntro plays `intro`; intro and phase VFX start at the anchors) and **M3-CRB-010**
+  (creatures: CreatureActor.vfx_anchor, M3-CRE-651, resolves a bone named `vfx_<name>`).
+- **In progress (worktree agents):** M3-CRB-002 hullgnaw, M3-CRB-004 bottle_hermit, M3-CRB-008 ilun. Next wave:
+  spar_wraith, kahre, undertows_reach, then virel, drownbell, cinder_matron.
