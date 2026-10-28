@@ -2,7 +2,8 @@
 id: M3-ENV-727
 title: "The Undertow's layers (Ch20): sheet, the memory-room kit and the Cage's arena"
 role: environment
-status: review
+status: blocked
+blocked-by: ADR 0041
 owner_session: "env-art (session_01YbaV2c8yquRHqj6afQYg89)"
 depends_on: []
 milestone: M3
@@ -27,5 +28,7 @@ drowned's memories, suspended in dark water (bible §5), down to the Cage's figh
   - **For combat:** the Cage's encounter takes `undertow_cage` when it exists. It isn't in encounters.json yet.
   - **For Story:** the three rooms (a Corrow kitchen, an Oruvel stall, the Reefball stands) follow the act outline's
     examples. Name others if the beat sheet does.
+
+- **2026-10-28 (env-art): paused by ADR 0041** (Act I at final quality first; later-act work stops). The work stays committed and pushed as is; nothing is reverted. Resume when the human lifts the pause.
 
 ## Review log

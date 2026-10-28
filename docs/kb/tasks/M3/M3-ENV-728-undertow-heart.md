@@ -2,7 +2,8 @@
 id: M3-ENV-728
 title: "The Heart of the Undertow (Ch21): the heart kit and Sefir's arenas (held, the Letting)"
 role: environment
-status: review
+status: blocked
+blocked-by: ADR 0041
 owner_session: "env-art (session_01YbaV2c8yquRHqj6afQYg89)"
 depends_on: [M3-ENV-727]
 milestone: M3
@@ -29,5 +30,7 @@ and the Letting turns the held light warm (act3_ending H01–H08; colour script 
     the kit's.
   - The colour script's fog density (0.04, volumetric) would hide the eyewall entirely in the arena's exponential fog,
     so the arena uses 0.008. Rendering may tune it.
+
+- **2026-10-28 (env-art): paused by ADR 0041** (Act I at final quality first; later-act work stops). The work stays committed and pushed as is; nothing is reverted. Resume when the human lifts the pause.
 
 ## Review log

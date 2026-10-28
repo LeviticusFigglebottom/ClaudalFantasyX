@@ -2,7 +2,8 @@
 id: M3-ENV-726
 title: "The Iskarra Lamp Spire (Ch19): the crown, the anchor-engine and the revenant pair's arena; the Iskarra sheet"
 role: environment
-status: review
+status: blocked
+blocked-by: ADR 0041
 owner_session: "env-art (session_01YbaV2c8yquRHqj6afQYg89)"
 depends_on: [M3-ENV-724]
 milestone: M3
@@ -34,4 +35,6 @@ sheet, so this task writes it.
   Choir's party) found the same failure here before the first render. The 2° afterglow came from behind the enemy
   line, so the 7.4 m engine's ~200 m shadow lay across the enemy slots. The afterglow now comes from behind the party,
   as the arena's own note intended (azimuth 100°). `test_the_engines_shadow_misses_the_slots` holds it.
+- **2026-10-28 (env-art): paused by ADR 0041** (Act I at final quality first; later-act work stops). The work stays committed and pushed as is; nothing is reverted. Resume when the human lifts the pause.
+
 ## Review log

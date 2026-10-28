@@ -2,7 +2,8 @@
 id: M3-ENV-717
 title: "Keth Pass (Ch12): sheet, kit and the Avalanche Ram arena"
 role: environment
-status: doing
+status: blocked
+blocked-by: ADR 0041
 owner_session: "env-art (session_01YbaV2c8yquRHqj6afQYg89)"
 depends_on: []
 milestone: M3
@@ -24,5 +25,7 @@ The Lead's queue item 4: the Act II places that the creatures track's Ch10–12 
   - **Material.** `kit_keth_lit_ceramic` is a weathered grey (#AEB1AB, paint 0.5, cavity 0.55).
   - **Seeps.** Threads a third of the old width, with `kit_keth_seep` at alpha 0.35 and emission 0.7.
   - **Still a capsule.** The Avalanche Ram stand-in is a capsule until Character's model lands.
+
+- **2026-10-28 (env-art): paused by ADR 0041** (Act I at final quality first; later-act work stops). The work stays committed and pushed as is; nothing is reverted. Resume when the human lifts the pause.
 
 ## Review log

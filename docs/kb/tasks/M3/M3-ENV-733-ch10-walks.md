@@ -2,7 +2,8 @@
 id: M3-ENV-733
 title: "Ch10's walks: Ossa Fen's root-walks, Reedhollow's reed causeway and platforms, the clutch's stone, and the greybox swap map"
 role: environment
-status: review
+status: blocked
+blocked-by: ADR 0041
 owner_session: "env-art (session_01YbaV2c8yquRHqj6afQYg89)"
 depends_on: [M3-ENV-718]
 milestone: M3
@@ -23,5 +24,7 @@ no walkable pieces for them.
 ## Notes
 - **2026-10-28 (env-art):** built. Ch11 and Ch12 are covered by the Lowlight, Sunken Vey and Keth kits; the gaps
   there are small and listed in the live log.
+
+- **2026-10-28 (env-art): paused by ADR 0041** (Act I at final quality first; later-act work stops). The work stays committed and pushed as is; nothing is reverted. Resume when the human lifts the pause.
 
 ## Review log

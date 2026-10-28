@@ -2,7 +2,8 @@
 id: M3-ENV-723
 title: "Hollowmere, the Saltwright flotilla (Ch17): sheet, kit and grade"
 role: environment
-status: review
+status: blocked
+blocked-by: ADR 0041
 owner_session: "env-art (session_01YbaV2c8yquRHqj6afQYg89)"
 depends_on: []
 milestone: M3
@@ -24,5 +25,7 @@ the zone's grade. No battle is staged in Ch17, so there is no arena.
 - **2026-10-27 (env-art):** built. Placing it is act1-chapters' job: the composition is in hollowmere.md §1.
   There is no screenshot shot yet, because nothing places these pieces; the rendering review comes with the zone's
   first shot.
+
+- **2026-10-28 (env-art): paused by ADR 0041** (Act I at final quality first; later-act work stops). The work stays committed and pushed as is; nothing is reverted. Resume when the human lifts the pause.
 
 ## Review log

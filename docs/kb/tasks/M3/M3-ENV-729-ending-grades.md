@@ -2,7 +2,8 @@
 id: M3-ENV-729
 title: "The Ending's grades: ending_unbinding, ending_dock and post_credits (Environments, LUTs, key rows)"
 role: environment
-status: review
+status: blocked
+blocked-by: ADR 0041
 owner_session: "env-art (session_01YbaV2c8yquRHqj6afQYg89)"
 depends_on: [M3-ENV-728]
 milestone: M3
@@ -22,5 +23,7 @@ E1–E7); each needs its grade before Cinematics can stage it.
 
 ## Notes
 - **2026-10-27 (env-art):** built. E7's set, Oruvel rebuilt, is M3-ENV-730.
+
+- **2026-10-28 (env-art): paused by ADR 0041** (Act I at final quality first; later-act work stops). The work stays committed and pushed as is; nothing is reverted. Resume when the human lifts the pause.
 
 ## Review log

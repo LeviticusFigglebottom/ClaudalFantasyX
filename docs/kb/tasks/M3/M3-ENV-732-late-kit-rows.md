@@ -2,7 +2,8 @@
 id: M3-ENV-732
 title: "Act II zone pieces in review rows: a preview and seven shots, so the unplaced Ansedra, Keth, Lowlight and Ossa Fen pieces are seen rendered"
 role: environment
-status: review
+status: blocked
+blocked-by: ADR 0041
 owner_session: "env-art (session_01YbaV2c8yquRHqj6afQYg89)"
 depends_on: [M3-ENV-716, M3-ENV-717, M3-ENV-718, M3-ENV-721]
 milestone: M3
@@ -22,5 +23,7 @@ the "parts look primitive" audit couldn't see them.
 
 ## Notes
 - **2026-10-27 (env-art):** built. This is shape review only: each zone's own light is its sheet's.
+
+- **2026-10-28 (env-art): paused by ADR 0041** (Act I at final quality first; later-act work stops). The work stays committed and pushed as is; nothing is reverted. Resume when the human lifts the pause.
 
 ## Review log

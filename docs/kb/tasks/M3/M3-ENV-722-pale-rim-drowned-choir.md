@@ -2,7 +2,8 @@
 id: M3-ENV-722
 title: "The Pale Rim and the Drowned Choir (Ch16): sheet, kit and the Choir's arena"
 role: environment
-status: doing
+status: blocked
+blocked-by: ADR 0041
 owner_session: "env-art (session_01YbaV2c8yquRHqj6afQYg89)"
 depends_on: []
 milestone: M3
@@ -26,5 +27,7 @@ Sefir's Abiding guard. The sheet comes first, then the kit.
     `battle_arena_drowned_choir_ring`.
   - **Tests.** `tools/tests/test_drowned_choir.py` (4).
   - **For combat/act1:** set the Ch16 Abiding guard encounter's arena to `drowned_choir_ring`.
+
+- **2026-10-28 (env-art): paused by ADR 0041** (Act I at final quality first; later-act work stops). The work stays committed and pushed as is; nothing is reverted. Resume when the human lifts the pause.
 
 ## Review log

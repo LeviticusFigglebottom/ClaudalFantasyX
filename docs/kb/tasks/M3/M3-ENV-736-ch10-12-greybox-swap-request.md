@@ -2,7 +2,8 @@
 id: M3-ENV-736
 title: "Swap the Ch10–12 greyboxes onto env-art's kits (request to act1-chapters)"
 role: cinematics
-status: todo
+status: blocked
+blocked-by: ADR 0041
 owner_session: ""
 depends_on: [M3-ENV-733, M3-ENV-734, M3-ENV-735]
 milestone: M4
@@ -28,5 +29,7 @@ marks and triggers keep their places.
 ## Notes
 - 2026-10-28 (env-art): filed after the Lead's backlog item 4. The kit pieces render in the Act II kit-row preview
   (M3-ENV-732) so they can be reviewed before the swap.
+
+- **2026-10-28 (env-art): paused by ADR 0041** (Act I at final quality first; later-act work stops). The work stays committed and pushed as is; nothing is reverted. Resume when the human lifts the pause.
 
 ## Review log

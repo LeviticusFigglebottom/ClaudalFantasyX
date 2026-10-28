@@ -2,7 +2,8 @@
 id: M3-ENV-716
 title: "Lowlight and the Sunken Vey (Ch11): sheet, kit and the Lamp Engine arena"
 role: environment
-status: doing
+status: blocked
+blocked-by: ADR 0041
 owner_session: "env-art (session_01YbaV2c8yquRHqj6afQYg89)"
 depends_on: []
 milestone: M3
@@ -30,5 +31,7 @@ The Lead's queue item 4: the Act II places that the creatures track's Ch10–12 
   - **For act1/creatures:** set the Ch11 Engine encounter's arena to `lowlight_engine_hall`.
   - **Next:** the zone pieces (`vey_arcade_bay`, `vey_gallery_bridge`, `lowlight_nave_bay`, `lowlight_sanctum`,
     `well_shaft`, `strangler_fig`, `conduit_housing`).
+
+- **2026-10-28 (env-art): paused by ADR 0041** (Act I at final quality first; later-act work stops). The work stays committed and pushed as is; nothing is reverted. Resume when the human lifts the pause.
 
 ## Review log

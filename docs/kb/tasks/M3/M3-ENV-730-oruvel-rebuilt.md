@@ -2,7 +2,8 @@
 id: M3-ENV-730
 title: "Oruvel rebuilt (E7, post_credits): the rebuilt raft and the first lamp post"
 role: environment
-status: review
+status: blocked
+blocked-by: ADR 0041
 owner_session: "env-art (session_01YbaV2c8yquRHqj6afQYg89)"
 depends_on: [M3-ENV-729]
 milestone: M3
@@ -21,5 +22,7 @@ wick. oruvel.md §7 left the rebuilt variant as a follow-up.
 
 ## Notes
 - **2026-10-27 (env-art):** built.
+
+- **2026-10-28 (env-art): paused by ADR 0041** (Act I at final quality first; later-act work stops). The work stays committed and pushed as is; nothing is reverted. Resume when the human lifts the pause.
 
 ## Review log
