@@ -71,7 +71,7 @@ func test_the_objective_points_at_its_place_and_errands_list() -> void:
 	assert_eq(m.errand_lines(), [tr("OBJ_SIDE_TOWN")] as Array[String])
 	var early := MapModel.new(HALUNA, BEACH, 0.0, _flags([]))
 	assert_eq(early.objective_poi(), &"", "nothing calls before the beach")
-	assert_eq(early.objective_line(), tr("OBJ_NONE"))
+	assert_eq(early.objective_line(), tr("OBJ_NONE_HALUNA"))
 	assert_false(early.objective_at().is_finite())
 	assert_eq(early.errands_text(), tr("MAP_ERRANDS_NONE"))
 	assert_eq(early.first_index(), 0)

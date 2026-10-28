@@ -257,9 +257,10 @@ func _render() -> void:
 				ROW_LEAVE:
 					line = tr("KITE_LEAVE_DESC")
 				_:
-					line = tr("KITE_PLACE_FMT").format(
-						{"place": model.place_name(id), "region": model.region_name(id), "cell": model.cell_of(id)}
-					)
+					var place := model.place_name(id)
+					var region := model.region_name(id)
+					var key := "KITE_PLACE_FMT" if region != "" and region != place else "KITE_PLACE_SHORT_FMT"
+					line = tr(key).format({"place": place, "region": region, "cell": model.cell_of(id)})
 			_desc.text = _notice if _notice != "" else line
 			_help.text = tr("KITE_HELP")
 	var pm: Dictionary = _d.get("panel", {})

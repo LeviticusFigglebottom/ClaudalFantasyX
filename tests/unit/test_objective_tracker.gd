@@ -26,7 +26,9 @@ func before_each() -> void:
 
 func test_the_slice_steps_name_their_objectives() -> void:
 	assert_eq(t.current(HALUNA), {}, "before the beach cutscene nothing calls")
-	assert_eq(t.line(HALUNA), tr("OBJ_NONE"))
+	assert_eq(t.line(HALUNA), tr("OBJ_NONE_HALUNA"), "Haluna's own idle line (idle_keys)")
+	assert_eq(t.line(&"ch12/keth_pass"), tr("OBJ_NONE"), "M3-UI-206: elsewhere it never names Haluna")
+	assert_false(tr("OBJ_NONE").contains(tr("LOCATION_CH02_HALUNA")))
 	var steps := [
 		[&"ch02_met_asha", HALUNA, &"up_the_beach"],
 		[&"ch02_tideline_won", HALUNA, &"to_nemes"],

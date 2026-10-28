@@ -2483,6 +2483,10 @@ def objective_errors(objectives: object, zone_maps: object, declared: set[str]) 
     od = objectives.get("objectives") if isinstance(objectives, dict) else None
     if not isinstance(od, dict):
         return errs + [f"{OBJECTIVES_FILE}: missing the 'objectives' object"], keys
+    for zid, key in (od.get("idle_keys") or {}).items():
+        keys.append(str(key))
+        if zid not in pois:
+            errs.append(f"{OBJECTIVES_FILE}: idle_keys: zone '{zid}' is not in {ZONE_MAPS_FILE}")
     seen: set[str] = set()
     for row in od.get("rows", []):
         rid = str(row.get("id", ""))

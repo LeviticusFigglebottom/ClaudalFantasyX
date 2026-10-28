@@ -771,7 +771,7 @@ OBJ_SHRINE_DOOR,The chamber door stands open. Go through to Asha.
 OBJ_FIND_ASHA_ON_DOCK,Find Asha on the dock.
 OBJ_SIDE_TOWN,"Walk Haluna and listen. The market, the forge and the inn are open."
 OBJ_SIDE_NET_FLOAT,Something glints in the drained side pool.
-OBJ_NONE,No errand calls just now. Haluna's lanes are yours to walk.
+OBJ_NONE,No errand calls just now. The road will keep.
 MAP_ROUTE_HALUNA,Haluna
 MAP_ROUTE_CAUSEWAY,Saltgrass Causeway
 MAP_ROUTE_SHELL_SHRINE,The Shell Shrine
@@ -1104,3 +1104,4 @@ MAP_POI_SC_TIDEPOOLS,The tide pools
 MAP_POI_SC_RING,The Lit Age ring
 MAP_POI_SC_SHRINE_STEPS,The shrine steps
 OBJ_CAUSEWAY_TO_SHRINE,Follow the causeway out to the Shell Shrine while the tide is low.
+OBJ_NONE_HALUNA,No errand calls just now. Haluna's lanes are yours to walk.

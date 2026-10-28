@@ -1,10 +1,11 @@
 class_name KiteChart
 extends Control
 ## The Kite's chart (KiteMapMenu): Maresh's sea in its grid (column letters along the top, row
-## numbers down the side, faint cell lines), each region's name where its people live, a gem for each
-## place the Kite can land, a ring on the one under the cursor, and while searching, the cell being
-## searched outlined. Every position is a kite.json "at" (fractions of the chart). Draw metrics:
-## kite_map.json "chart". The pointer over it names the square under it (cell_pointed).
+## numbers down the side, each centred on its column or row; faint cell lines), each region's name
+## where its people live, a gem on each place the Kite can land, a ring and the place's name on the
+## one under the cursor, and while searching, the cell being searched outlined. Every position is a
+## kite.json "at" (fractions of the chart). Draw metrics: kite_map.json "chart". The pointer over it
+## names the square under it (cell_pointed).
 
 ## The pointer is over chart square `square` ([column, row]); `clicked` when the left button went down there.
 signal cell_pointed(square: Vector2i, clicked: bool)
@@ -52,36 +53,26 @@ func _draw() -> void:
 	draw_rect(Rect2(Vector2.ZERO, size), _role(&"panel_deep"))
 	var cols := model.columns()
 	var rows := model.row_count()
+	var cw := size.x / maxf(cols.size(), 1.0)
+	var ch := size.y / maxf(rows, 1.0)
 	var line := _role(&"line_gold", HudLayout.num(_m, "grid_alpha"))
+	var grid := HudLayout.num(_m, "grid_px")
 	var font := get_theme_font(&"font", &"SmallLabel")
 	var fs := get_theme_font_size(&"font_size", &"SmallLabel")
+	var mid := (font.get_ascent(fs) - font.get_descent(fs)) * 0.5  # baseline offset that centres a line on a point
+	for c in cols.size() + 1:
+		draw_line(Vector2(cw * c, 0.0), Vector2(cw * c, size.y), line, grid)
+	for r in rows + 1:
+		draw_line(Vector2(0.0, ch * r), Vector2(size.x, ch * r), line, grid)
 	for c in cols.size():
-		var x := size.x * c / maxf(cols.size(), 1.0)
-		draw_line(Vector2(x, 0.0), Vector2(x, size.y), line, 1.0)
-		draw_string(
-			font,
-			Vector2(x + HudLayout.num(_m, "label_pad"), -HudLayout.num(_m, "label_pad")),
-			str(cols[c]),
-			0,
-			-1,
-			fs,
-			_role(&"text_dim")
-		)
+		var letter := str(cols[c])
+		var w := font.get_string_size(letter, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x
+		var at := Vector2(cw * (c + 0.5) - w * 0.5, -HudLayout.num(_m, "label_pad") - font.get_descent(fs))
+		draw_string(font, at, letter, 0, -1, fs, _role(&"text_dim"))
 	for r in rows:
-		var y := size.y * r / maxf(rows, 1.0)
-		draw_line(Vector2(0.0, y), Vector2(size.x, y), line, 1.0)
-		draw_string(
-			font,
-			Vector2(-HudLayout.num(_m, "row_label_px"), y + font.get_ascent(fs)),
-			str(r + 1),
-			0,
-			-1,
-			fs,
-			_role(&"text_dim")
-		)
+		var at := Vector2(-HudLayout.num(_m, "row_label_px"), ch * (r + 0.5) + mid)
+		draw_string(font, at, str(r + 1), 0, -1, fs, _role(&"text_dim"))
 	if search_cell.x >= 0:
-		var cw := size.x / maxf(cols.size(), 1.0)
-		var ch := size.y / maxf(rows, 1.0)
 		draw_rect(
 			Rect2(Vector2(cw * search_cell.x, ch * search_cell.y), Vector2(cw, ch)),
 			_role(&"focus_gold"),
@@ -95,20 +86,15 @@ func _draw() -> void:
 		draw_string(font, point(reg["at"]) - Vector2(w * 0.5, 0.0), text, 0, -1, fs, _role(&"text_dim"))
 	var gem := HudLayout.num(_m, "gem_px")
 	for d in model.destinations():
-		var at := point(d["at"]) + Vector2(0.0, HudLayout.num(_m, "gem_offset_px"))
-		var here := model.is_here(StringName(str(d["id"])))
-		draw_circle(at, gem, _role(&"text_dim") if here else _role(&"focus"))
-		if StringName(str(d["id"])) == cursor:
-			draw_arc(
-				at,
-				gem + HudLayout.num(_m, "ring_gap_px"),
-				0.0,
-				TAU,
-				24,
-				_role(&"focus_gold"),
-				HudLayout.num(_m, "cursor_px"),
-				true
-			)
+		var id := StringName(str(d["id"]))
+		var at := point(d["at"])
+		draw_circle(at, gem, _role(&"text_dim") if model.is_here(id) else _role(&"focus"))
+		if id != cursor:
+			continue
+		var ring := gem + HudLayout.num(_m, "ring_gap_px")
+		draw_arc(at, ring, 0.0, TAU, 24, _role(&"focus_gold"), HudLayout.num(_m, "cursor_px"), true)
+		var name_at := at + Vector2(ring + HudLayout.num(_m, "name_gap_px"), mid)
+		draw_string(font, name_at, model.place_name(id), 0, -1, fs, _role(&"focus_gold"))
 
 
 func _role(role: StringName, alpha_scale: float = 1.0) -> Color:
