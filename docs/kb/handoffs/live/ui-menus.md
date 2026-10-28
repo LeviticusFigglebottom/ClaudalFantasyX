@@ -364,3 +364,10 @@ SELF-RENDERED @ 2b0a5ffb: battle_hud_preview, battle_statuses, battle_swap_menu,
 - **battle_victory:** fighter faces, drop icons and the lume's coin.
 - **menu_glyphs (new review sheet):** all 44 icons distinct. Flask, scale and sword were redrawn after the first view.
 SELF-RENDERED @ d9bc59fc: reefball_hud_choice, reefball_outfitter, cutscene_act_card, save_menu, dialogue_continue. The first four pass. dialogue_continue drifts only in the palms' wind (environment); the box is unchanged. The audit's Act I screen list is done.
+- 2026-10-28 04:00, **the Lead's 01:54 list:**
+  1. **M3-HER-1147 (ui-menus' 3 rows in the Act I inventory).** The task and the audit tool are on claude/hero-integration only, so I'm not editing the task file here; this line stands in.
+     - `ysolde_neutral.png` and `liss_neutral.png`: **done** at 71689a7b. Five emotions each, viewed, with PROVENANCE rows.
+     - `kerrid_neutral.png`: his model and stage have **landed on claude/characters** (`game/levels/_tests/characters/kerrid/`). Next I merge claude/characters and bake him, with Moll (the Inquisitor, for his bestiary picture) and Sefir.
+     - The inventory's line about Liss having no battle actor is stale for claude/ui: Liss's `battle_sandbox.json` row names `liss_battle_actor.tscn` (M3-HER-1120).
+  2. **Dialogue portraits for every named Act I NPC:** next, after the bakes.
+  3. **First-hour polish at 1080p and 720p:** after that.
