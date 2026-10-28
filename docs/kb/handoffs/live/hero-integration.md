@@ -687,3 +687,14 @@ MERGE-READY @ 8fdf266d:
 - **Checks:** hero_ 110/0, qa_capsules 3/0, tools test 9/0, validate_data, taskboard.
 - **Next:** Liss in the field and battle the moment characters' liss_lod1.glb merges (nothing to change). Kerrid
   and Pell once M3-CHR-505 and 506 land.
+MERGE-READY @ 9deaedce: **Kerrid on the hero layer** (M3-HER-1149):
+- **Field row:** walk 0.71 and run 1.80 m/s, measured on kerrid_lod1.
+- **Battle:** a wrapper on characters' kerrid_battle.tscn by path, his idle phase and his battle_sandbox row.
+- Until claude/characters merges, he has no field body and his wrapper draws its own capsule. After it merges,
+  he's real with no further change.
+- **Checks:** hero_ 110/0 on this branch; on a scratch merge with claude/characters 24dca3d1, hero_ green (the pop
+  guard over his real battle clips too) and hero_field 29/0.
+- **SELF-RENDERED @ 9deaedce** (the scratch merge): ch09_corrow_road shows **Kerrid at the milestone as his real
+  body** (the capsule in the baseline is gone), feet on the road, no clipping.
+- **Left for the party:** Pell (no model yet: M3-CHR-506) and Liss's and Kerrid's models reaching the
+  integration branch.
