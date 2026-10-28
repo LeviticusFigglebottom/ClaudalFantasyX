@@ -255,57 +255,52 @@
     },
     "wreck_crab": {
       "family": "crab",
-      "variant_of": "reef_crab",
-      "pitch": 0.9,
+      "_note": "M3-AUD-861: Ch6: the reef crab in a broken Saltwright lamp housing: brass knocks and rings, the crazed panes rattle; assets_src/sfx/act1_final_creature_sfx.py (Git LFS, ADR 0173)",
       "events": {
-        "idle": "cre_reef_crab_idle",
-        "attack": "cre_reef_crab_attack",
-        "hurt": "cre_reef_crab_hurt",
-        "death": "cre_reef_crab_death",
-        "move": "cre_reef_crab_skitter"
+        "idle": "cre_wreck_crab_idle",
+        "attack": "cre_wreck_crab_attack",
+        "hurt": "cre_wreck_crab_hurt",
+        "death": "cre_wreck_crab_death",
+        "move": "cre_wreck_crab_skitter"
       }
     },
     "wallcrab": {
       "family": "crab",
-      "variant_of": "reef_crab",
-      "pitch": 1.07,
+      "_note": "M3-AUD-861: Ch8: the laterite seawall's crab: heavier, grit and stone in every step; assets_src/sfx/act1_final_creature_sfx.py (Git LFS, ADR 0173)",
       "events": {
-        "idle": "cre_reef_crab_idle",
-        "attack": "cre_reef_crab_attack",
-        "hurt": "cre_reef_crab_hurt",
-        "death": "cre_reef_crab_death",
-        "move": "cre_reef_crab_skitter"
+        "idle": "cre_wallcrab_idle",
+        "attack": "cre_wallcrab_attack",
+        "hurt": "cre_wallcrab_hurt",
+        "death": "cre_wallcrab_death",
+        "move": "cre_wallcrab_skitter"
       }
     },
     "wall_polyp": {
       "family": "polyp",
-      "variant_of": "spawn_polyp",
-      "pitch": 0.88,
+      "_note": "M3-AUD-861: Ch8: the spawn-polyp on a Watcher: under its wet voice the carved face hums, and stops with a crack when it is burned off; assets_src/sfx/act1_final_creature_sfx.py (Git LFS, ADR 0173)",
       "events": {
-        "idle": "cre_spawn_polyp_idle",
-        "attack": "cre_spawn_polyp_attack",
-        "hurt": "cre_spawn_polyp_hurt",
-        "death": "cre_spawn_polyp_death",
-        "move": "cre_spawn_polyp_squelch"
+        "idle": "cre_wall_polyp_idle",
+        "attack": "cre_wall_polyp_attack",
+        "hurt": "cre_wall_polyp_hurt",
+        "death": "cre_wall_polyp_death",
+        "move": "cre_wall_polyp_squelch"
       }
     },
     "stormgull": {
       "family": "bird",
-      "variant_of": "gull_harrier",
-      "pitch": 1.06,
+      "_note": "M3-AUD-861: Ch8: the gull harrier gone dark with the weather: lower, rougher calls, static on its wings, a spark on the strike; assets_src/sfx/act1_final_creature_sfx.py (Git LFS, ADR 0173)",
       "events": {
-        "idle": "cre_gull_harrier_idle",
-        "attack": "cre_gull_harrier_attack",
-        "hurt": "cre_gull_harrier_hurt",
-        "death": "cre_gull_harrier_death",
-        "move": "cre_gull_harrier_wingbeat"
+        "idle": "cre_stormgull_idle",
+        "attack": "cre_stormgull_attack",
+        "hurt": "cre_stormgull_hurt",
+        "death": "cre_stormgull_death",
+        "move": "cre_stormgull_wingbeat"
       }
     },
     "wickfry": {
       "family": "swarm",
-      "variant_of": "glassfry",
       "pitch": 1.12,
-      "_note": "the integration branch's new shoal enemy (enemies.json): glassfry's swarm, smaller and quicker",
+      "_note": "Ch1's wickfry, the glass-shrimp shoals (act1_ch01.md): its model is the creatures track's `glassfry` (act1_roster.md row 1), so this is its own set, glassfry's rows, a little quicker (M3-AUD-861: no longer marked a borrowed variant)",
       "events": {
         "idle": "cre_glassfry_idle",
         "attack": "cre_glassfry_attack",
@@ -314,7 +309,17 @@
         "move": "cre_glassfry_shimmer"
       }
     },
-    "stillguard_inquisitor": "silent",
+    "stillguard_inquisitor": {
+      "family": "person",
+      "_note": "M3-AUD-861: Ch6 boss, Inquisitor Hadric Moll (a person, no voice): lacquered shell armour, the brine-iron's haft, the round shield, his breath; `death` is his yield (the iron laid down, the kneel); assets_src/sfx/act1_final_creature_sfx.py (Git LFS, ADR 0173)",
+      "events": {
+        "idle": "cre_stillguard_inquisitor_idle",
+        "attack": "cre_stillguard_inquisitor_attack",
+        "hurt": "cre_stillguard_inquisitor_hurt",
+        "death": "cre_stillguard_inquisitor_yield",
+        "move": "cre_stillguard_inquisitor_step"
+      }
+    },
     "mangrove_drowner": {
       "family": "drowner",
       "_note": "Ch10 boss (M3-CRE-621): prop-roots creaking, the drag through the water, a low spawn moan; assets_src/sfx/act2_creature_sfx.py (M3-AUD-831)",
