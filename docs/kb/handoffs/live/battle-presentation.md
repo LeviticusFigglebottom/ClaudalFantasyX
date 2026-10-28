@@ -26,6 +26,28 @@ both fixed and pushed. The branch head also carries:
   - any battle shot with an Act I creature, since the heights and the near-face anchor move its effects. I am
     self-rendering those next.
 
+**MERGE-READY @ the branch head (13:xx): boss-fight camera choreography on the real models, with creatures-b's seats.**
+- **Merged origin/claude/creatures-b** (M3-CRB-011 boss_seats; clean). The seats move the Reach, the Matron and the
+  Spar-Wraith when each fights alone.
+- **Home frame per fight** (`camera.rest_by_enemy`, M3-BPR-425), retuned on the seats. Each SELF-RENDERED in its own
+  arena and viewed:
+  - The Reach: 4 m back and 2 m up. The hand grips the wall beside the party, and the party and the sea read. This
+    is GPU QA row 36; **the PC should re-check it.** The earlier 8 m would have stacked on the seat.
+  - The Spar-Wraith: 3 m back and 1.5 m up. Its masts had left the top of the frame, which is the item creatures-b
+    left me.
+  - The Matron: the seat alone is enough.
+  - The big-move shots (test_battle_boss_camera) still pass on the seats.
+- **Phase change and fall** (`BattleBossCamera`, M3-BPR-426): once the action is done, the camera holds on the boss
+  as its intro frames it (the hero shot). The next turn waits, and there is no moment under reduced motion.
+  - SELF-RENDERED (`boss_camera_sheet --moment=phase|fall`): seven boss fights, both moments, all viewed. The Matron
+    has the party around her; the Wraith's whole A-frame shows with Rhen and Asha in front; the Reach towers over
+    the wall-head; Hullgnaw arches over the raft; the Drownbell fills the frame.
+  - Test: test_battle_boss_camera_moments 3/0.
+- **Checks on the head:** boss_camera 6/0, boss_seat 2/0, boss_intro 21/0, camera_director 47/0, choreo 58/0;
+  gdlint, gdformat, validate_data and validate_choreo clean.
+- **Not rerun:** the full suite since the last account (3167/12, every failure accounted for in the entry below).
+  The changes since are in the battle camera, and its filters are green.
+
 **12:xx: GPU QA row 36 (the Reach's arm over the party) and the full suite.**
 - **Row 36 (mine, with creatures-b):** the Reach's fight now rests farther back and higher (`camera.rest_by_enemy`,
   M3-BPR-425, 4078fc0f).
