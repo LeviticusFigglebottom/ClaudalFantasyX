@@ -345,3 +345,21 @@ SELF-RENDERED @ (the Kite ring tweak) kite_map: re-rendered after the last tweak
      - **M3-UI-209 and M3-UI-204 (act1-chapters):** the shop, inn and shrine triggers.
      - **The Act II beat sheets (M4-C10-01 onward):** objectives, story codex entries, the farewell-tide and the Ch16 act card call.
   - **For the Lead:** the two non-ui failures in the full suite are `test_hero_field_snaps` (hero-integration and act1-chapters) and `test_qa_capsules` (Pell in Ossa Fen).
+- 2026-10-28 03:30, **REFOCUS (ADR 0041, the human's directive): Act I at final quality.**
+  - **Paused, blocked-by ADR 0041** (92a4f777): M3-UI-205 (the Kite), M3-UI-206 and 207 (Act II maps and codex), M3-UI-208 and 209 (the Act II requests) and M3-UI-210 (the Act III card). Everything built stays as is; nothing is reverted.
+  - **M3-UI-211, the Act I menu audit** (full table: `docs/kb/qa/ui_act1_menu_audit.md`):
+    - **Battle HUD:** heroes show their faces and foes their bestiary pictures, where initials and bare shapes stood (71689a7b).
+    - **Ysolde and Liss** have portraits now, so the menus no longer show "Y" and "L" (71689a7b).
+    - **Icons in every menu row:** 43 original vector icons in StatusGlyph's style for items, equipment, abilities and the lume. They show in the bag, shop, equip, battle Skills, Swell and Items, and the victory panel (1a79cdc9, 2b0a5ffb).
+    - **The bestiary** has a portrait for every creature (5f9c71fd).
+    - **The maps** no longer say Haluna's idle line in other zones (5f9c71fd).
+  - **Waiting on others:** Kerrid's model (M3-CHR-505, characters, doing) and the Inquisitor's (M3-C06-06). Until then both show their letter, and the battle shows a primitive.
+  - **Checks:**
+    - test_battle_portraits 3/0, test_menu_glyphs 3/0, hero_portraits 9/0, creature_portraits 4/0;
+    - items 13/0, shop 28/0, equip 66/0, input_parity 61/0, pseudo-loc 26/0, aspect 18/0, rewards and result OK;
+    - the full battle filter is running.
+SELF-RENDERED @ 2b0a5ffb: battle_hud_preview, battle_statuses, battle_swap_menu, battle_opening_banner, battle_ch08_stair_hold, items_menu, shop_menu_buy, equip_menu, battle_victory, menu_glyphs. What I saw:
+- **Battle HUD:** faces in the party rows and timeline; foe pictures in the timeline diamonds; petrified Asha still stone with strata lines.
+- **Items, shop and equip rows:** an icon before every label. The first render had the icons under the labels, because the cursor's nudge reset the label's x. Fixed and re-rendered.
+- **battle_victory:** fighter faces, drop icons and the lume's coin.
+- **menu_glyphs (new review sheet):** all 44 icons distinct. Flask, scale and sword were redrawn after the first view.
