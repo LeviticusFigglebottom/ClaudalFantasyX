@@ -249,6 +249,31 @@ class TestRigIntegrityMoll(_HeroGuards, unittest.TestCase):  # M3-CHR-507
     hero = "moll"
 
 
+# M3-CHR-508: the Ch6 Stillguard soldiers, six variants on Moll's build (assets_src/characters/stillguard/)
+class TestRigIntegrityStillguardA(_HeroGuards, unittest.TestCase):
+    hero = "stillguard_a"
+
+
+class TestRigIntegrityStillguardB(_HeroGuards, unittest.TestCase):
+    hero = "stillguard_b"
+
+
+class TestRigIntegrityStillguardC(_HeroGuards, unittest.TestCase):
+    hero = "stillguard_c"
+
+
+class TestRigIntegrityStillguardD(_HeroGuards, unittest.TestCase):
+    hero = "stillguard_d"
+
+
+class TestRigIntegrityStillguardE(_HeroGuards, unittest.TestCase):
+    hero = "stillguard_e"
+
+
+class TestRigIntegrityStillguardF(_HeroGuards, unittest.TestCase):
+    hero = "stillguard_f"
+
+
 # M3-CHR-03: villager builds with a `"villager": true` entry in rig_checks.json (GLB under assets/characters/villagers/,
 # clips from villager_clips.py)
 class TestRigIntegrityTavi(_HeroGuards, unittest.TestCase):
