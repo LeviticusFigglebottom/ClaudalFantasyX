@@ -141,3 +141,10 @@ CreatureActor and the validator are theirs too (kit or tool changes go to them a
     Godot virel 6/0, vowbound 83/0, creature 74/1 (known portraits).
   - SELF-RENDERED @ bfd23910: creature_virel, creature_virel_held — drift (new model); viewed: a kite-serpent riding
     the wind. Mild: from the held shot's near front-on view the S is nearly edge-on.
+- **MERGE-READY @ (this merge): M3-CRB-008 polish, Kahre** (worktree agent 6150705d, viewed by me): the hammer's
+  handle sunk 16° into the casque with layered keratin growth and a crack round it, the head lying along the crest
+  (`vfx_keepsake` moved with it); forearm plates laid on the arm with a worn raised lip and a dark seam. Last Strike's
+  hip drop 0.31 → 0.245 m so the lower hammer face stays on the water (contact time unchanged). 17.8k triangles; rest
+  height 3.25 m (stand-in 3.3 kept). Checks: Blender verify identical; tools tests 48 OK; validate_data; Godot kahre
+  6/0, vowbound 83/0. SELF-RENDERED @ 6150705d: creature_kahre, creature_kahre_held — viewed: the hammer reads as part
+  of the casque. Left: the wrist seam is ragged up close.
