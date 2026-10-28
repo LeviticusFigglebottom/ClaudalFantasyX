@@ -37,41 +37,56 @@ every zone, one battle per arena and every Act I boss intro. Contact sheets go o
 - The legs alternate with a full stride, the feet plant, and the arms swing close at the sides. There's no arm or leg flop: **the run reads grounded**.
 - In Haluna the same filmstrip never shows Rhen: the field camera at the Village spawn looks down an empty lane (row 21).
 
+**Re-check on big15 (lead/gate-big15 @ 6466a6f5, 2026-10-28):** the 48 shots behind the open rows, at High ×2.667 with `--setup` (`recheck_big15/`).
+- **Fixed (15):**
+  - Iskarra and the vigil set, now in colour (1, 2); the verse steps (3).
+  - The Brine camp and road, dressed (5); Corrow's mole and stair, Ch9's road and strand (7–9).
+  - The Ch8 wall arenas (10); the Reach intro, dressed, with no wedge (11).
+  - Ysolde's model (13) and Ilun's (14) in battle; the terraces, readable (16).
+  - Moll's hair (29); the beach with both faces (20).
+- **Still open (12):**
+  - The ferry deck, too dark (4); the Coilspire grid lines (6, 27).
+  - **Moll, still a capsule in his arena and intro (12)**.
+  - The Underway lit rectangles (15); the Undertow eye rings (17); the green rectangle in the Prologue water (19).
+  - The cameras in walls: Ch1, the wake, Brightwater (23–25).
+  - Ashcrown greybox (26); Corrow's sphere rocks (28).
+- Rows 21–22 and 30–42 need the walk (next).
+
 **Status:** each row is `open` until the owner fixes it, then `fixed @ <sha>` once the PC has seen the fix on the GPU.
 
 ## Findings
 
 | # | Where (shot or walk segment) | What reads wrong on the GPU | Owner | Status | Pass |
 |---|---|---|---|---|---|
-| 1 | iskarra_p01_plaza_dusk, iskarra_i02, iskarra_i03 (the Prologue) | Greybox: untextured white towers and cylinders, grey/green capsule stand-ins, a checkerboard plaza with teal shading, and nothing past the plaza edge (the haze shows through). | env-art | open | pass A (2026-10-28, integration 048b0a7f) |
-| 2 | slice_prologue_vigil_line | The vigil set is untextured: white columns and a flat floor behind dressed heroes. | env-art (set), slice-polish (shot) | open | pass A (2026-10-28, integration 048b0a7f) |
-| 3 | slice_verse_steps (ch03/first_verse) (**fixed in big14**: the textured shrine stage) | Untextured white pillars and steps under flat pastel light. | env-art | open | pass A (2026-10-28, integration 048b0a7f) |
-| 4 | ch04_ferry_deck | Nearly black at High; the deck is unreadable, and a large orange sphere in the foreground reads unlit. | env-art | open | pass A (2026-10-28, integration 048b0a7f) |
-| 5 | ch06_brine_camp, ch06_brine_road | Flat untextured sand under a uniform haze; the camp's tent reads as a box. Nothing breaks up the ground. | env-art-b | open | pass A (2026-10-28, integration 048b0a7f) |
-| 6 | ch08_coilspire_hall | Very dark, with a noisy repeating brick texture. Thin green lines grid the walls (z-fighting or a stray decal). | env-art-b | open | pass A (2026-10-28, integration 048b0a7f) |
-| 7 | ch08_corrow_arrival | The harbour mole is a flat untextured slab. | env-art-b | open | pass A (2026-10-28, integration 048b0a7f) |
-| 8 | ch08_corrow_stair, ch09_corrow_road | A grey capsule stand-in stands in frame (an NPC placeholder). | act1-chapters (placement), creatures (villager) | open | pass A (2026-10-28, integration 048b0a7f) |
-| 9 | ch09_corrow_strand | Nearly black at High; the strand is unreadable. | env-art-b | open | pass A (2026-10-28, integration 048b0a7f) |
-| 10 | battle_arena_wall_head, battle_ch08_stair_hold (**fixed in big14**: textured battlements and sea) | Greybox arena: untextured battlements, a flat floor and a grey wall. | env-art-b | open | pass A (2026-10-28, integration 048b0a7f) |
-| 11 | battle_boss_intro_reach | Greybox backdrop (untextured slabs). A hard-edged bright wedge of light cuts across the frame. | env-art-b; the wedge: rendering | open | pass A (2026-10-28, integration 048b0a7f) |
-| 12 | battle_arena_camp, battle_boss_intro_inquisitor (big14 adds Moll's model, moll_*: check in battle) | Inquisitor Hadric Moll is a grey capsule (a boss without a mesh). | creatures-b | open | pass A (2026-10-28, integration 048b0a7f) |
-| 13 | battle_choreo_cast, _read, _toll | Ysolde is a tan capsule in battle. | characters | open | pass A (2026-10-28, integration 048b0a7f) |
-| 14 | battle_choreo_summon, _vowbound_rise (big14 adds creature_ilun: check in battle) | Ilun (Vowbound) is a teal dome stand-in. | creatures-b | open | pass A (2026-10-28, integration 048b0a7f) |
-| 15 | battle_arena_underway, _underway_tower | Hard-edged rectangular lit patches on the floor (a light or GI leak) in an otherwise dark arena. | env-art-b | open | pass A (2026-10-28, integration 048b0a7f) |
-| 16 | battle_arena_terrace, _ash_terrace_lanternfall | Very dark at High; the party is barely lit against the terraces. | env-art-b | open | pass A (2026-10-28, integration 048b0a7f) |
-| 17 | undertow_eye (also undertow_night) | Concentric streak rings at the eye's centre, and a grid-like dither over the cloud body. Possibly a still-frame TAA effect: to check in motion in pass B. | rendering (pc-gpu) | open | pass A (2026-10-28, integration 048b0a7f) |
+| 1 | iskarra_p01_plaza_dusk, iskarra_i02, iskarra_i03 (the Prologue) | Greybox: untextured white towers and cylinders, grey/green capsule stand-ins, a checkerboard plaza with teal shading, and nothing past the plaza edge (the haze shows through). | env-art | fixed @ 6466a6f5 | pass A (2026-10-28, integration 048b0a7f) |
+| 2 | slice_prologue_vigil_line | The vigil set is untextured: white columns and a flat floor behind dressed heroes. | env-art (set), slice-polish (shot) | fixed @ 6466a6f5 | pass A (2026-10-28, integration 048b0a7f) |
+| 3 | slice_verse_steps (ch03/first_verse) (**fixed in big14**: the textured shrine stage) | Untextured white pillars and steps under flat pastel light. | env-art | fixed @ 6466a6f5 | pass A (2026-10-28, integration 048b0a7f) |
+| 4 | ch04_ferry_deck | Nearly black at High; the deck is unreadable, and a large orange sphere in the foreground reads unlit. | env-art | still open @ 6466a6f5 | pass A (2026-10-28, integration 048b0a7f) |
+| 5 | ch06_brine_camp, ch06_brine_road | Flat untextured sand under a uniform haze; the camp's tent reads as a box. Nothing breaks up the ground. | env-art-b | fixed @ 6466a6f5 | pass A (2026-10-28, integration 048b0a7f) |
+| 6 | ch08_coilspire_hall | Very dark, with a noisy repeating brick texture. Thin green lines grid the walls (z-fighting or a stray decal). | env-art-b | still open @ 6466a6f5 | pass A (2026-10-28, integration 048b0a7f) |
+| 7 | ch08_corrow_arrival | The harbour mole is a flat untextured slab. | env-art-b | fixed @ 6466a6f5 | pass A (2026-10-28, integration 048b0a7f) |
+| 8 | ch08_corrow_stair, ch09_corrow_road | A grey capsule stand-in stands in frame (an NPC placeholder). | act1-chapters (placement), creatures (villager) | fixed @ 6466a6f5 | pass A (2026-10-28, integration 048b0a7f) |
+| 9 | ch09_corrow_strand | Nearly black at High; the strand is unreadable. | env-art-b | fixed @ 6466a6f5 | pass A (2026-10-28, integration 048b0a7f) |
+| 10 | battle_arena_wall_head, battle_ch08_stair_hold (**fixed in big14**: textured battlements and sea) | Greybox arena: untextured battlements, a flat floor and a grey wall. | env-art-b | fixed @ 6466a6f5 | pass A (2026-10-28, integration 048b0a7f) |
+| 11 | battle_boss_intro_reach | Greybox backdrop (untextured slabs). A hard-edged bright wedge of light cuts across the frame. | env-art-b; the wedge: rendering | fixed @ 6466a6f5 | pass A (2026-10-28, integration 048b0a7f) |
+| 12 | battle_arena_camp, battle_boss_intro_inquisitor (big14 adds Moll's model, moll_*: check in battle) | Inquisitor Hadric Moll is a grey capsule (a boss without a mesh). | creatures-b | still open @ 6466a6f5 | pass A (2026-10-28, integration 048b0a7f) |
+| 13 | battle_choreo_cast, _read, _toll | Ysolde is a tan capsule in battle. | characters | fixed @ 6466a6f5 | pass A (2026-10-28, integration 048b0a7f) |
+| 14 | battle_choreo_summon, _vowbound_rise (big14 adds creature_ilun: check in battle) | Ilun (Vowbound) is a teal dome stand-in. | creatures-b | fixed @ 6466a6f5 | pass A (2026-10-28, integration 048b0a7f) |
+| 15 | battle_arena_underway, _underway_tower | Hard-edged rectangular lit patches on the floor (a light or GI leak) in an otherwise dark arena. | env-art-b | still open @ 6466a6f5 | pass A (2026-10-28, integration 048b0a7f) |
+| 16 | battle_arena_terrace, _ash_terrace_lanternfall | Very dark at High; the party is barely lit against the terraces. | env-art-b | fixed @ 6466a6f5 | pass A (2026-10-28, integration 048b0a7f) |
+| 17 | undertow_eye (also undertow_night) | Concentric streak rings at the eye's centre, and a grid-like dither over the cloud body. Possibly a still-frame TAA effect: to check in motion in pass B. | rendering (pc-gpu) | still open @ 6466a6f5 | pass A (2026-10-28, integration 048b0a7f) |
 | 18 | slice_causeway_harrier_view (**reframed in big14**) | No harrier in frame (the lavapipe baseline has none either): a framing or timing gap, not a GPU issue. | slice-polish | open | pass A (2026-10-28, integration 048b0a7f) |
-| 19 | Prologue vigil terrace (New Game) | A hard-edged, bright-green rectangle in the water beside the terrace (also on lavapipe in iskarra_p01). | env-art | open | big14 playtest (2026-10-28, gpu/gate-big14-shots) |
-| 20 | Ch2 beach arrival (ch02_girl_on_the_beach) | Rhen is never in frame. Four lines are framed on empty sky (Rhen's view on his back?) with no face in it. **Fixed on lead/gate-ft-beach @ 93d0741e**: Rhen in the shallows, Asha kneeling beside him, both faces in frame. | slice-polish, hero-integration | fixed @ 93d0741e (to merge) | big14 playtest (2026-10-28, gpu/gate-big14-shots) |
+| 19 | Prologue vigil terrace (New Game) | A hard-edged, bright-green rectangle in the water beside the terrace (also on lavapipe in iskarra_p01). | env-art | still open @ 6466a6f5 | big14 playtest (2026-10-28, gpu/gate-big14-shots) |
+| 20 | Ch2 beach arrival (ch02_girl_on_the_beach) | Rhen is never in frame. Four lines are framed on empty sky (Rhen's view on his back?) with no face in it. **Fixed on lead/gate-ft-beach @ 93d0741e**: Rhen in the shallows, Asha kneeling beside him, both faces in frame. | slice-polish, hero-integration | fixed @ 6466a6f5 | big14 playtest (2026-10-28, gpu/gate-big14-shots) |
 | 21 | Haluna field start (after the beach; Village spawn too) | The field camera starts over the shallows with Rhen not on screen; Asha and Toma walk ahead, spaced. On ft-beach the camera starts below the waterline, looking up through the surface. | hero-integration | open | big14 playtest (2026-10-28, gpu/gate-big14-shots) |
 | 22 | Scene changes: New Game→Prologue, Ch1, Ch2, the first fight | Hidden frames over ADR 0029's 1000 ms: 3025 / 1276 / 2017 / 1669 ms (warm), up to 4058 ms cold. Dwell hitches > 33 ms: 9 / 14 / 8. | tech / ui (loading) | open | big14 playtest (2026-10-28, gpu/gate-big14-shots) |
-| 23 | ch01_bell_room, ch01_kell_stall, ch01_scale_hull | The camera sits in or against a wall: Rhen's "Morning. Don't get up.", Mother Kell's and the Scale-Man's lines play over a wall with no speaker in frame. | act1-chapters (shot cameras), env-art | open | pass A, big14's new shots (2026-10-28) |
-| 24 | zone_wake_h02, zone_wake_h08, zone_wake_c01 | The camera is inside a black wall (h02) or pressed against a shell-covered surface (h08, c01). | env-art | open | pass A, big14's new shots (2026-10-28) |
-| 25 | brightwater_landing_f06 | The camera is pressed against a wooden wall; f01 is very dark. | env-art | open | pass A, big14's new shots (2026-10-28) |
-| 26 | ch05_ashcrown_causeway, _forecourt, _tiers | Greybox: untextured grey stepped tiers and flat grey dunes under a flat sky (the smoke column is the only finished element). | env-art-b | open | pass A, big14's new shots (2026-10-28) |
-| 27 | ch08_coilspire_gate | The green grid lines on the brick walls (row 6) show here too. | env-art-b | open | pass A, big14's new shots (2026-10-28) |
-| 28 | ch09_corrow_rocks | The rocks read as piles of black spheres against the wall. | env-art-b | open | pass A, big14's new shots (2026-10-28) |
-| 29 | moll_face, moll_face_yield, moll_three_quarter | Moll's hair has white blotches through it (alpha or specular on the GPU). | characters | open | pass A, big14's new shots (2026-10-28) |
+| 23 | ch01_bell_room, ch01_kell_stall, ch01_scale_hull | The camera sits in or against a wall: Rhen's "Morning. Don't get up.", Mother Kell's and the Scale-Man's lines play over a wall with no speaker in frame. | act1-chapters (shot cameras), env-art | still open @ 6466a6f5 | pass A, big14's new shots (2026-10-28) |
+| 24 | zone_wake_h02, zone_wake_h08, zone_wake_c01 | The camera is inside a black wall (h02) or pressed against a shell-covered surface (h08, c01). | env-art | still open @ 6466a6f5 | pass A, big14's new shots (2026-10-28) |
+| 25 | brightwater_landing_f06 | The camera is pressed against a wooden wall; f01 is very dark. | env-art | still open @ 6466a6f5 | pass A, big14's new shots (2026-10-28) |
+| 26 | ch05_ashcrown_causeway, _forecourt, _tiers | Greybox: untextured grey stepped tiers and flat grey dunes under a flat sky (the smoke column is the only finished element). | env-art-b | still open @ 6466a6f5 | pass A, big14's new shots (2026-10-28) |
+| 27 | ch08_coilspire_gate | The green grid lines on the brick walls (row 6) show here too. | env-art-b | still open @ 6466a6f5 | pass A, big14's new shots (2026-10-28) |
+| 28 | ch09_corrow_rocks | The rocks read as piles of black spheres against the wall. | env-art-b | still open @ 6466a6f5 | pass A, big14's new shots (2026-10-28) |
+| 29 | moll_face, moll_face_yield, moll_three_quarter | Moll's hair has white blotches through it (alpha or specular on the GPU). | characters | fixed @ 6466a6f5 | pass A, big14's new shots (2026-10-28) |
 | 30 | battle_arena_drowned_choir_ring, _iskarra_spire_crown, _undertow_cage, _undertow_heart(_letting); battle_arena_keth_seep_terrace | Capsule stand-ins. If these arenas are later-act (paused under ADR 0041), this row is for the record only. | creatures-b | open | pass A, big14's new shots (2026-10-28) |
 | 31 | Ch2 beach (ft-beach), newgame_13–17 | Asha's skirt balloons into a large blue mass over Rhen's chest and passes through him while she kneels. | characters | open | big14 playtest on lead/gate-ft-beach (2026-10-28) |
 | 32 | Ch2 beach (ft-beach), newgame_28–29 | When Rhen stands, "Toma Okeru," and "To Asha. Who is very glad…" are framed on his waist and legs; no heads in frame. | slice-polish | open | big14 playtest on lead/gate-ft-beach (2026-10-28) |
