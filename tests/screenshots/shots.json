@@ -3857,7 +3857,8 @@
             "flags": [
               "prologue_seen"
             ],
-            "scene_id": "ch02_girl_on_the_beach"
+            "scene_id": "ch02_girl_on_the_beach",
+            "hold_line": "ch02_beach_002"
           }
         },
         "time_scale": 4.0
@@ -3887,7 +3888,8 @@
             "flags": [
               "prologue_seen"
             ],
-            "scene_id": "ch02_girl_on_the_beach"
+            "scene_id": "ch02_girl_on_the_beach",
+            "hold_line": "ch02_beach_017"
           }
         },
         "time_scale": 4.0
