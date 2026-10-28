@@ -36,6 +36,11 @@ NemeDoor's yaw against the door.
 - [ ] NemeDoor stands on the ground; test_hero_field_snaps passes with its `haluna_wake.tscn:rhen` KNOWN row removed.
 - [ ] The wake has a Shrine spawn and its shrine respawns in the wake; test_qa_save_shrines passes with its `haluna_wake.tscn` KNOWN row removed.
 
+## Also hit by
+- The debug chapter select (F8, M3-ARC-02): its Ch4 start is `ch04/haluna_wake` NemeDoor, so a tester starting Ch4
+  falls through the map.
+- locations.json names NemeDoor as the wake's arrival spawn.
+
 ## Notes
 Filed by integration-qa from the big14 gate. The zone data is act1-chapters', so it's a request rather than an
 edit. Both tests list it as KNOWN (this task) until the fix lands.
