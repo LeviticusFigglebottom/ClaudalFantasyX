@@ -98,9 +98,11 @@ def skin(bake_dir: Path, extra: dict) -> None:
     import bb_donor
     import bb_params
     import moll_hair
+    import toma_textures as tt
     import villager_textures as vt
 
-    sk = dict(extra["_skin"], scalp_density=SCALP_DENSITY)
+    # M2-CHR-524: Toma's shaded scalp under the cards (the lit skin between the painted hairs read ginger)
+    sk = dict(extra["_skin"], scalp_density=SCALP_DENSITY, scalp_shade=tt.SCALP_SHADE)
     hp = extra["_hair"]
     at.OUT = OUT
     at.PREFIX = "moll"

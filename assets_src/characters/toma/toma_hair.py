@@ -346,6 +346,25 @@ def beard_cards(lm, face, params: dict, surface, V: np.ndarray, T: np.ndarray) -
     return part
 
 
+def surface_normals(V: np.ndarray, F: list, surface) -> np.ndarray:
+    """M2-CHR-524: per-vertex shading normals for cropped cards, the skin's normal under each vertex.
+
+    A card lies a few millimetres off the skin, tilted by its rise and rolled by up to TWIST, so with its own face
+    normal each card took its own share of the light: at dialogue range the crown and beard broke into separately lit
+    flakes, card-sized and paler or darker than their neighbours. Shaded with the skin's normal the layer lights as one
+    surface, and the cards only add strand grain. Each normal points to the side the card's winding faces (the hair
+    shader is double-sided and flips the normal on back faces), so the side the camera sees always gets the outward
+    skin normal. `F`: the faces (indices into V) of the part, `surface`: asha_hair.MeshScalp on the head skin."""
+    V = np.asarray(V, dtype=float)
+    N = surface.normal(V)
+    G = np.zeros_like(V)
+    for f in F:
+        a, b, c = V[f[0]], V[f[1]], V[f[2]]
+        G[list(f)] += np.cross(b - a, c - a)
+    s = np.where(np.sum(G * N, axis=1) < 0.0, -1.0, 1.0)
+    return N * s[:, None]
+
+
 def build_hair(lm, body, params: dict, scalp=None) -> dict[str, Part]:
     """`scalp`: MeshScalp on the shipped head (build_toma); the anatomy field when omitted."""
     scalp = scalp or Scalp(body)
