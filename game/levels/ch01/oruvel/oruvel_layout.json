@@ -46,7 +46,7 @@
     "bridge": [21, 0, -22, 270]
   },
   "actors": {
-    "scaleman": {"at": [0, 0, 5.4, 0], "color": "#6e7f8c", "model": "res://assets/characters/villagers/netmender/netmender_actor.tscn"},
+    "scaleman": {"at": [0, 0, 5.4, 180], "color": "#6e7f8c", "model": "res://assets/characters/villagers/netmender/netmender_actor.tscn"},
     "cook": {"at": [-12, 0, -6, 90], "color": "#c48a5a", "model": "res://assets/characters/villagers/vendor/vendor_actor.tscn"},
     "netmender": {"at": [12, 0, -6, 270], "color": "#8a9a7a", "model": "res://assets/characters/villagers/netmender/netmender_actor.tscn"},
     "netmender_2": {"at": [13, 0, -8, 270], "color": "#7a8a6a", "model": "res://assets/characters/villagers/fisher/fisher_actor.tscn"},
