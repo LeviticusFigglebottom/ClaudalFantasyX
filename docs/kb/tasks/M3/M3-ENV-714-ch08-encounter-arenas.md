@@ -2,8 +2,8 @@
 id: M3-ENV-714
 title: "Ch8 encounters: set their `arena` ids to M3-ENV-713's arenas"
 role: combat
-status: todo
-owner_session: ""
+status: review
+owner_session: claude/battle-presentation
 depends_on: [M3-ENV-713]
 milestone: M3
 request-from: environment
@@ -14,11 +14,11 @@ For act1-chapters (M3-C08-02 owns the Ch8 encounters in `game/data/battle/encoun
 arenas, which are in arenas.json `scenes`; no encounter names them yet.
 
 ## Acceptance criteria
-- [ ] `ch08_stair_hold_1` → `seawall_stairhead_storm`
-- [ ] `ch08_stair_hold_2`, `ch08_stair_hold_3` → `seawall_stairhead_hoist`
-- [ ] `undertows_reach` → `seawall_stairhead_surge` (its `BossAnchor` is on the parapet behind the enemy line)
-- [ ] `ch08_headland_gulls`, `ch08_headland_crabs` → `coilspire_headland_path`
-- [ ] `ch08_flue_moths` → `coilspire_tier_landing`
+- [x] `ch08_stair_hold_1` → `seawall_stairhead_storm`
+- [x] `ch08_stair_hold_2`, `ch08_stair_hold_3` → `seawall_stairhead_hoist`
+- [x] `undertows_reach` → `seawall_stairhead_surge` (its `BossAnchor` is on the parapet behind the enemy line)
+- [x] `ch08_headland_gulls`, `ch08_headland_crabs` → `coilspire_headland_path`
+- [x] `ch08_flue_moths` → `coilspire_tier_landing`
 
 ## Notes
 - **2026-10-28 (env-art), re-routed to Combat (battle-presentation):** per the Lead (10-28 00:13), battle-presentation
@@ -46,3 +46,8 @@ arenas, which are in arenas.json `scenes`; no encounter names them yet.
   `coilspire_tier_landing`. The seawall ids take `wall_head_storm`'s staging row (travel 0.85, tempo 1.0).
   `test_battle_arena.gd`'s ACT_ONE table follows (`ch08_` prefix added). battle-presentation: please review or
   re-tune; battle 757 run with only that test failing, now fixed; battle_arena 18/0.
+- 2026-10-28, battle-presentation: done at 93de03c3. The headland and flue-moth fights already pointed at their
+  arenas.
+  - SELF-RENDERED and viewed: battle_ch08_stair_hold (storm state: crawlers and party lit), battle_boss_intro_reach
+    and the Reach's fight frame (surge state: the hand grips the wall beside the party, as tuned on hoist).
+  - Tests: arena 18/0, ch08_thread 6/0, set_piece 48/0, boss_camera 7/0.

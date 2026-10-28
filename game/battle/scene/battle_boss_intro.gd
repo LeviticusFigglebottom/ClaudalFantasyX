@@ -28,6 +28,8 @@ const THEME_PATH := "res://game/ui/theme/hymn_theme.tres"
 const AUDIO_EVENT := &"boss_intro"
 ## shot_id when the intro plays its hero shot (BattleBossHeroShot, choreo.json boss_intro.hero; M3-BPR-423).
 const HERO_SHOT := "hero"
+## The boss model's clip played through its intro (M3-CRB-009; the clip name is the contract).
+const INTRO_CLIP := &"intro"
 const IDLE := 0
 const WAITING := 1
 const PLAYING := 2
@@ -197,11 +199,20 @@ func _begin() -> void:
 	elapsed = 0.0
 	_hold_menu()
 	_frame_boss()
+	_play_intro_clip()
 	_build_card()
 	var bus := get_node_or_null(^"/root/EventBus")
 	if bus != null:
 		bus.emit_signal(&"dialogue_event", AUDIO_EVENT, [_engine.encounter_id, str(row.get("title_key", ""))])
 	advance(0.0)
+
+
+## M3-CRB-009: the boss model's own `intro` clip, its display while the camera holds on it (none: it idles).
+func _play_intro_clip() -> void:
+	var f := _ctl.stage.stand_in(boss_id) if boss_id != &"" else null
+	var actor := f.creature() if f != null else null
+	if actor != null and actor.has_clip(INTRO_CLIP):
+		actor.play_clip(INTRO_CLIP)
 
 
 func _end() -> void:
@@ -254,14 +265,15 @@ func _screen_busy() -> bool:
 
 
 ## The boss's hero shot (M3-BPR-423), else the row's shot fitted to it and checked against the safe frame (its feet
-## and head); {} keeps the default. A row's hero false (or fit false) skips the hero shot.
-func _frame_boss() -> void:
+## and head); {} keeps the default. A row's hero false (or fit false) skips the hero shot. `fallen_ok` frames a
+## boss that has just fallen (BattleBossCamera's fall moment).
+func _frame_boss(fallen_ok: bool = false) -> void:
 	_pose = {}
 	shot_id = ""
 	boss_id = &""
 	var base := str(row.get("enemy", ""))
 	for e in _engine.enemies:
-		if String(e.id).get_slice("#", 0) == base and e.is_alive():
+		if String(e.id).get_slice("#", 0) == base and (e.is_alive() or fallen_ok):  # M3-BPR-426: a fall's moment
 			boss_id = e.id
 			break
 	var director := _choreo.camera

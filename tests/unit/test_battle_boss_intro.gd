@@ -276,7 +276,8 @@ func test_every_boss_stands_clear_of_the_title_card() -> void:
 
 
 func test_a_hero_shot_has_nobody_in_front_of_the_boss() -> void:
-	# M3-BPR-423 (the Lead, 03:41): the Hullgnaw raft's rail cut its intro in half; a hero stood in the lens.
+	# M3-BPR-423 (the Lead, 03:41): the Hullgnaw raft's rail cut its intro in half; a hero stood in the lens. big14's
+	# merged raft and deck meshes slipped a bounds-only test: the surfaces decide.
 	for enc: StringName in BOSSES:
 		var intro := _start(enc, 0.0)
 		intro.force_play = true
@@ -286,11 +287,20 @@ func test_a_hero_shot_has_nobody_in_front_of_the_boss() -> void:
 			continue
 		var b := intro._bounds(ctl.stage.stand_in(intro.boss_id))
 		var pos: Vector3 = intro._pose["pos"]
-		for box in BattleBossHeroShot._occluders(intro, b):
-			assert_false(box.has_point(pos), "%s: the lens is inside nothing" % enc)
-			var mid := Vector3(b.get_center().x, b.position.y + b.size.y * 0.55, b.get_center().z)
-			assert_true(
-				box.intersects_segment(pos, mid) == null, "%s: nothing stands between the lens and the boss" % enc
+		var occluders := BattleBossHeroShot._occluders(intro, b)
+		assert_false(
+			BattleBossHeroShot.sight_blocked(occluders, pos, pos + Vector3.UP * BattleBossHeroShot.HEADROOM_M),
+			"%s: the lens is under nothing" % enc
+		)
+		assert_true(
+			BattleBossHeroShot.foreground_share(occluders, intro._pose, b) <= BattleBossHeroShot.FOREGROUND_MAX,
+			"%s: no near wall fills the frame's foot" % enc
+		)
+		var lens := Transform3D(Basis.looking_at((intro._pose["look"] as Vector3) - pos, Vector3.UP), pos)
+		for p in BattleBossHeroShot.sight_points(b, lens):  # the arena's and the party's own surfaces, not bounds
+			assert_false(
+				BattleBossHeroShot.sight_blocked(occluders, pos, p),
+				"%s: nothing stands between the lens and the boss" % enc
 			)
 		assert_true(BattleBossHeroShot._party_small(intro, intro._pose), "%s: no hero crowds the frame" % enc)
 		intro.skip()
@@ -419,4 +429,21 @@ func test_the_party_rule_widens_a_shot_only_when_the_party_crowds_it() -> void:
 		(ruled["pos"] as Vector3).is_equal_approx(intro._pose["pos"] as Vector3), "Hullgnaw: the same frame as unruled"
 	)
 	intro.skip()
+	_free()
+
+
+func test_a_boss_model_plays_its_intro_clip() -> void:
+	# M3-CRB-009: a boss model with an `intro` clip plays it while the camera holds on it; one without just idles.
+	var with_clip := 0
+	for enc: StringName in BOSSES:
+		var intro := _start(enc, 0.0)
+		intro.force_play = true
+		intro.play()
+		var f := ctl.stage.stand_in(intro.boss_id)
+		var actor := f.creature() if f != null else null
+		if actor != null and actor.has_clip(BattleBossIntro.INTRO_CLIP):
+			assert_eq(actor.current_clip, BattleBossIntro.INTRO_CLIP, "%s plays its intro clip" % enc)
+			with_clip += 1
+		intro.skip()
+	print("bosses with an intro clip: %d" % with_clip)
 	_free()
