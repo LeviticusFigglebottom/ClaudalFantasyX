@@ -1,6 +1,6 @@
 """env-art-b's battle arenas (M3-ENV-1303..1314) are reproducible from their writers. Each wrapper writes env-art's
 arena table (`assets_src/environments/kits/haluna/arena_scenes.py`, read-only) through the same `write_arena`, with
-its own additions (Lanternfall's votives and terrace, the camp's fires, the wall-head's Undertow, the headland's
+its own additions (Lanternfall's votives and terrace, the camp's fires, the Ch6 arenas' smoke columns, the wall-head's Undertow, the headland's
 scrub), or writes its own table (the Ashcrown arenas). test_arenas.py skips the ids in WRAPPERS; this test reproduces
 them instead."""
 
@@ -16,6 +16,7 @@ KITS = ROOT / "assets_src" / "environments" / "kits"
 WRAPPERS = {
     "pemakar/b_lanternfall.py": ("ash_terrace_lanternfall",),
     "brine_shoals/b_camp_arena.py": ("salvage_camp_burning",),
+    "brine_shoals/b_shoals_arena.py": ("brine_shoals_afternoon",),
     "corrow/b_seawall_storm.py": ("seawall_stairhead_storm", "seawall_stairhead_hoist", "seawall_stairhead_surge"),
     "coilspire/b_headland_arena.py": ("coilspire_headland_path",),
     "ashcrown/b_arenas.py": ("ashcrown_forecourt_day", "ashcrown_anvil_court"),

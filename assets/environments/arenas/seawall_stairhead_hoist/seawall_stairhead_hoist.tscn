@@ -822,3 +822,12 @@ sea_level_from_water = false
 
 [node name="FarPlane" type="Node" parent="Undertow"]
 script = ExtResource("storm_far")
+
+[node name="StairHead_ward" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.356, 0, 2.202)
+
+[node name="StairFlight_ward" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13.84, -0.517, 5.092)
+
+[node name="the_stair_head" type="Marker3D" parent="CameraHints"]
+transform = Transform3D(-0.541373, 0.224776, -0.81018, 0, 0.963602, 0.267341, 0.840783, 0.144731, -0.521668, 5, 2.4, -0.6)

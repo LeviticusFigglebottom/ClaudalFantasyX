@@ -24,7 +24,7 @@
 [ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/tide_debris.glb" id="22_r"]
 [ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/rope_coil.glb" id="23_r"]
 [ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/cargo_sacks.glb" id="24_r"]
-[ext_resource type="PackedScene" path="res://assets/environments/kits/brine_shoals/smoke_plume.glb" id="25_r"]
+[ext_resource type="Script" path="res://game/vfx/smoke/smoke_column.gd" id="25_r"]
 
 [sub_resource type="ShaderMaterial" id="SkyMat"]
 shader = ExtResource("2_r")
@@ -211,11 +211,17 @@ transform = Transform3D(-0.376222, 0, -1.03366, 0, 1.1, 0, 1.03366, 0, -0.376222
 [node name="wreck_mast_standing_3" parent="Dressing" instance=ExtResource("12_r")]
 transform = Transform3D(0.34202, 0, 0.939693, 0, 1, 0, -0.939693, 0, 0.34202, -8, -0.646, -120)
 
-[node name="smoke_plume_1" parent="Dressing" instance=ExtResource("25_r")]
+[node name="smoke_plume_1" type="Node3D" parent="Dressing"]
 transform = Transform3D(1.4, 0, 0, 0, 1.4, 0, -0, 0, 1.4, 26, -0.328, -140)
+script = ExtResource("25_r")
+profile = "camp"
+seed = 0.0
 
-[node name="smoke_plume_2" parent="Dressing" instance=ExtResource("25_r")]
+[node name="smoke_plume_2" type="Node3D" parent="Dressing"]
 transform = Transform3D(1.03366, 0, 0.376222, 0, 1.1, 0, -0.376222, 0, 1.03366, 36, -0.483, -150)
+script = ExtResource("25_r")
+profile = "camp"
+seed = 0.37
 
 [node name="CameraHints" type="Node3D" parent="."]
 

@@ -292,6 +292,17 @@
         "watch_boat": 2924,
         "watch_boat-lod1": 160
       }
+    },
+    "weep_column": {
+      "budget": [
+        6000,
+        600
+      ],
+      "bytes": 105952,
+      "lods": {
+        "weep_column": 2399,
+        "weep_column-lod1": 355
+      }
     }
   },
   "schema": "hymn-kit/1"

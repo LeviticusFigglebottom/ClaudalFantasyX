@@ -29,7 +29,8 @@ TRI_BUDGET = {
     "mole_bridge": (9000, 800),
 }
 SOAKED = kc.Weathering(moss=0.2, salt=0.65, wet=0.55, erosion=0.6, noise_scale_m=0.5)
-ROCK_W = kc.Weathering(moss=0.0, salt=0.6, wet=0.6, erosion=0.9, noise_scale_m=0.8)
+ROCK_W = kc.Weathering(moss=0.0, salt=0.6, wet=0.25, erosion=0.9, noise_scale_m=0.8)  # M3-ENV-1322: less wet (they read
+# as glossy black spheres on the GPU)
 
 LANDING_W, LANDING_L = 6.0, 8.0
 LANDING_FLOOR_Y = -1.6  # the piles' feet in the harbour mud (the harbour floor is 1.3 m under the deck)
@@ -168,14 +169,14 @@ def build_rocks(seed: int = 922) -> list:
                 continue
             y = float(_mound_y(noise, np.array(x), np.array(z)))
             size = brng.uniform(0.5, 1.5) * (1.2 if r > 1.2 else 0.9)
-            laterite = brng.random() < 0.3
+            laterite = brng.random() < 0.65  # M3-ENV-1322: mostly the wall's own fallen stone, not dark rubble
             half = np.array([size * brng.uniform(0.7, 1.2), size * brng.uniform(0.4, 0.7), size * brng.uniform(0.5, 0.9)])
             half *= 0.5
             rot = kc.rot_y(brng.uniform(0, math.pi)) @ kc.rot_x(brng.uniform(-0.5, 0.5)) @ kc.rot_z(brng.uniform(-0.4, 0.4))
             kc.rounded_block(mb, (x, y + half[1] * 0.3, z), half, lat if laterite else rub, rot=rot,
-                             radius=size * (0.07 if laterite else 0.2), seg=1 if lod else 2, noise=None if lod else noise,
-                             disp_m=size * 0.07, disp_period_m=size * 0.6, weather=ROCK_W,
-                             variation=float(brng.random()), wet_bias=0.3 if y < 1.0 else 0.0)
+                             radius=size * (0.05 if laterite else 0.09), seg=1 if lod else 2, noise=None if lod else noise,
+                             disp_m=size * 0.1, disp_period_m=size * 0.45, weather=ROCK_W,
+                             variation=float(brng.random()), wet_bias=0.15 if y < 1.0 else 0.0)
             if laterite and not lod and brng.random() < 0.5:  # a fresh break on the wall's stones: the fall
                 kc.rounded_block(mb, (x, y + half[1] * 0.75, z), half * np.array([0.7, 0.3, 0.7]), brk, rot=rot,
                                  radius=size * 0.05, seg=1, weather=ROCK_W, variation=float(brng.random()))
