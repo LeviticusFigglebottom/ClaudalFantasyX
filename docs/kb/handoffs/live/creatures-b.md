@@ -5,6 +5,23 @@ started 2026-10-28 from `origin/claude/undertow-lead-handoff-ze8rrn` bd3ab5b. **
 (CLAUDE.md §7a). Regular enemies and wildlife stay with the creatures track (`creatures.md`); the shared creature kit,
 CreatureActor and the validator are theirs too (kit or tool changes go to them as request tasks).
 
+## LEAD: READ FIRST (2026-10-28 09:20) — Ilun is NOT a capsule; your queue items are done
+- **Ilun has a real procedural body, rig and clips** (assets_src/creatures/ilun/build_ilun.py → assets/creatures/ilun/ilun.glb,
+  wired through creatures.json `ilun` `vowbound: true` → CreatureModels / BattleStage.stand_in_spec). Clips: idle,
+  ready, **rise** (the call), **dismiss**, attack, cast, hit, hit_b, defend, ko, victory, special, release, idle_b.
+- **SELF-RENDERED @ 7305540a (this branch's head), viewed: battle_vowbound_out and battle_choreo_vowbound_rise both show
+  the manta, no capsule.** The big14 gate's own out PNG (gpu/gate-big14-shots:
+  docs/kb/qa/gate-runs/big14/out/battle_vowbound_out.png) shows the manta too.
+- **The capsule you see is the OLD BASELINE** `tests/screenshots/baselines/battle_vowbound_out.png` (and
+  `battle_choreo_vowbound_rise.png`), from big13. Those two shots are **drift to re-approve after viewing**; I never
+  write baselines (TRACK-RULES).
+- **Portrait:** `assets/ui/portraits/creatures/ilun.png` is committed (e0300c83) with its PROVENANCE row; so are kahre,
+  virel and the three held forms; the six bosses are re-baked. test_creature_portraits now fails only on Act II's
+  nhoa, hesk, ethren (+ held), the creatures track's, paused.
+- **Every other Act I boss and Vowbound row is done** (MERGE-READY lines below). Open, not mine: M3-CRB-009 and
+  M3-CRB-011 (battle-presentation: intro clip playback, the boss seat at the default camera), Ilun's blank turn-order
+  icon (ui).
+
 ## Scope (from game/data, 2026-10-28)
 - **Bosses** (enemies.json rows with phases, or a choreo.json `boss_intro` row): `hullgnaw` (Ch1), `drownbell`
   (the slice, Ch3), `bottle_hermit` and `spar_wraith` (Ch4), `cinder_matron` (Ch5), `undertows_reach` (Ch8).
