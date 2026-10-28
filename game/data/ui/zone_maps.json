@@ -98,19 +98,18 @@
         "id": "ch04/haluna_wake",
         "scene": "res://game/levels/ch04/haluna_wake/haluna_wake.tscn",
         "name_key": "LOCATION_CH04_HALUNA_WAKE",
-        "shapes": "res://game/levels/ch04/haluna_wake/haluna_wake_layout.json",
-        "shape_kind": "greybox_layout",
-        "shape_hints": {"sea": ["Sea", "SeaNorth"], "skip": ["GrassLamps"]},
-        "bounds": [-34.0, -46.0, 82.0, 63.0],
+        "shapes": "res://game/levels/ch02/haluna/haluna_layout.json",
+        "shape_kind": "haluna_layout",
+        "bounds": [-150.0, -150.0, 210.0, 230.0],
         "pois": [
-          {"id": "neme_house", "name_key": "MAP_POI_NEMES_HOUSE", "kind": "home", "at": [0.0, 7.0], "source": "spawn:NemeDoor"},
-          {"id": "lane", "name_key": "MAP_POI_W_LANE", "kind": "talk", "at": [-3.0, -3.0], "source": "trigger:npc_child"},
-          {"id": "inn", "name_key": "MAP_POI_W_INN", "kind": "inn", "at": [-15.5, -20.0], "source": "trigger:inn_door"},
-          {"id": "chapel", "name_key": "MAP_POI_CHAPEL_COURT", "kind": "talk", "at": [16.0, -6.0], "source": "actor:reed"},
-          {"id": "dock", "name_key": "MAP_POI_DOCK", "kind": "dock", "at": [32.0, -20.0], "source": "spawn:DockShore"},
-          {"id": "feast", "name_key": "MAP_POI_W_FEAST", "kind": "talk", "at": [0.0, -27.5], "source": "trigger:feast"},
-          {"id": "neme_table", "name_key": "MAP_POI_W_NEME_TABLE", "kind": "talk", "at": [6.0, -30.0], "source": "trigger:table_neme"},
-          {"id": "wall", "name_key": "MAP_POI_W_WALL", "kind": "path", "at": [0.0, -35.5], "source": "trigger:wall"}
+          {"id": "neme_house", "name_key": "MAP_POI_NEMES_HOUSE", "kind": "home", "at": [-58.0, -3.6], "source": "spawn:NemeDoor"},
+          {"id": "lane", "name_key": "MAP_POI_W_LANE", "kind": "talk", "at": [-70.0, -9.5], "source": "trigger:npc_child"},
+          {"id": "inn", "name_key": "MAP_POI_W_INN", "kind": "inn", "at": [-30.0, 57.5], "source": "trigger:inn_door"},
+          {"id": "chapel", "name_key": "MAP_POI_CHAPEL_COURT", "kind": "talk", "at": [-116.3, 33.6], "source": "actor:reed"},
+          {"id": "dock", "name_key": "MAP_POI_DOCK", "kind": "dock", "at": [-2.72, 57.71], "source": "spawn:DockShore"},
+          {"id": "feast", "name_key": "MAP_POI_W_FEAST", "kind": "talk", "at": [-2.5, -101.5], "source": "trigger:feast"},
+          {"id": "neme_table", "name_key": "MAP_POI_W_NEME_TABLE", "kind": "talk", "at": [5.0, -112.5], "source": "trigger:table_neme"},
+          {"id": "wall", "name_key": "MAP_POI_W_WALL", "kind": "path", "at": [-12.5, -118.8], "source": "trigger:wall"}
         ]
       },
       {
