@@ -12,7 +12,7 @@ its deck is at 0 and scaled until its deck covers the block. That puts the sea a
 over the water). Bridges span the greybox's gaps. The story's blocks keep their pieces in step: the Terrace and its
 name-board follow `SeventhTerrace`/`NameBoard`, the dive bridge `DiveBridge` and the run's low hull `LowHull`, so the
 storm state hides them with the blocks. Decor on the decks takes a box collider and stands clear of every actor,
-mark, spawn and trigger (tested in tools/tests/test_oruvel_kit.py).
+mark, spawn and trigger (tested in tools/tests/test_zone_dressing_ch01.py).
 """
 
 from __future__ import annotations
@@ -91,7 +91,8 @@ def pieces() -> list[dict]:
     # north edge; the cabin with the child on its roof, the cook's boat, the menders' nets.
     for i, x in enumerate((-13.5, -4.5, 4.5, 13.5)):
         for j, z in enumerate((-3.5, -10.5, -17.5)):
-            out.append(pl.put("raft_deck", x, WATER_Y + 0.004 * ((i + j) % 2), z, 0.0))
+            # Every other deck turned end for end (the same footprint), so the deck props don't repeat in rows.
+            out.append(pl.put("raft_deck", x, WATER_Y + 0.004 * ((i + j) % 2), z, 180.0 * ((i + j) % 2)))
         out.append(pl.put("raft_deck_small", x - 1.5, -ohl.RAFT_SMALL_Y + 0.008, -22.6, 0.0))
         out.append(pl.put("raft_deck_small", x + 3.0, -ohl.RAFT_SMALL_Y + 0.012, -22.6, 0.0))
     roof = b["CabinRoof"]
