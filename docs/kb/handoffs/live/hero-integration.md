@@ -779,3 +779,27 @@ TRIAL MERGE @ integration 8d03e6d1: env-art ba895bee, env-art-b 8240c0e0, creatu
    not edited here).
 - hero-integration's own clashes are task files and the Lead's test_hero_stairs fix (taking theirs is right).
 - I can't self-schedule while send_later is off, so I'll re-run this trial at each wake, about hourly.
+**The placeholder audit on the trial-merged tree** (inventory rewritten from it @ 8b8cb3f0; its Source line says so):
+- **45 items** (26 high, 15 medium, 4 low), against 159 on this branch alone: the tracks' unmerged work clears most
+  of Act I. By owner:
+
+  | Owner | Items |
+  |---|---|
+  | env-art | 13 |
+  | audio | 12 |
+  | creatures | 4 |
+  | creatures-b | 4 |
+  | act1-chapters | 3 |
+  | characters | 3 |
+  | env-art-b | 3 |
+  | integration-qa | 2 (Pell) |
+  | ui-menus | 1 (Kerrid's portrait) |
+- **Seen only on the merged tree. Check these at the real merge:**
+  - **Haluna's 7 villagers are capsules again** (Child, Fisher, Neme, Netmender, Osu, Reed, Vendor). Neither branch
+    alone shows them as capsules, so this is likely the duplicate villager systems (creatures' VillagerLayer vs
+    slice-polish's HalunaVillagers) meeting.
+  - **The merged tree has a parse error:** BattleChoreo.REACT_IMMUNE is missing. battle-presentation's code uses
+    it and ui's battle_choreo.gd lacks it; the trial kept ui's side, but the real merge must take
+    battle-presentation's.
+- **Audio:** every Act I music cue now plays at least a stand-in on audio's head. The music.json-vs-sequencer seam
+  stands: the cue rows' own files are never played.
