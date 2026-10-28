@@ -392,9 +392,9 @@
         12000,
         900
       ],
-      "bytes": 369044,
+      "bytes": 392132,
       "lods": {
-        "strand_rocks": 7448,
+        "strand_rocks": 7664,
         "strand_rocks-lod1": 208
       }
     },
