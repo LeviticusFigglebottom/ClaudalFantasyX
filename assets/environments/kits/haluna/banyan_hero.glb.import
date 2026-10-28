@@ -3,10 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
+uid="uid://ddu7goup3p0p1"
+path="res://.godot/imported/banyan_hero.glb-e03a68e2bd1943c8df26eb517f4cb107.scn"
 
 [deps]
 
 source_file="res://assets/environments/kits/haluna/banyan_hero.glb"
+dest_files=["res://.godot/imported/banyan_hero.glb-e03a68e2bd1943c8df26eb517f4cb107.scn"]
 
 [params]
 

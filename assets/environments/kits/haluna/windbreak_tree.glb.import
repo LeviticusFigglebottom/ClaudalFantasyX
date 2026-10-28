@@ -3,10 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
+uid="uid://dcacmh8hgc85w"
+path="res://.godot/imported/windbreak_tree.glb-7dd5f54e7e58a332dcf5c7a232018bd6.scn"
 
 [deps]
 
 source_file="res://assets/environments/kits/haluna/windbreak_tree.glb"
+dest_files=["res://.godot/imported/windbreak_tree.glb-7dd5f54e7e58a332dcf5c7a232018bd6.scn"]
 
 [params]
 
