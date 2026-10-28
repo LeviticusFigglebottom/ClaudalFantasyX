@@ -79,7 +79,8 @@ func test_haluna_is_sand_with_a_wooden_dock_and_shallows() -> void:
 	var ground := func(x: float, z: float) -> Vector3: return Vector3(x, float(terrain[0].call("height_at", x, z)), z)
 	assert_eq(String(f._ground(_marker("Village"))), "sand", "the village spawn")
 	assert_eq(String(f._ground(ground.call(-12.0, 8.0))), "sand", "the dry beach above the waterline")
-	assert_eq(String(f._ground(_marker("rhen_shallows"))), "water", "Rhen's mark in the shallows")
+	# The Lead's beach re-stage (93d0741e) moved Rhen's marks 3 m up the beach, where the wash is a film: sand there.
+	assert_eq(String(f._ground(ground.call(2.5, 8.0))), "water", "the shallows")
 	assert_eq(String(f._ground(ground.call(6.0, 8.0))), "water", "knee-deep off the beach")
 	var docks := zone.find_children("dock_haluna", "MeshInstance3D", true, false)
 	assert_false(docks.is_empty(), "the dock kit piece is dressed")
