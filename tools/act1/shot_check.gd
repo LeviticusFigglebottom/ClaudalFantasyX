@@ -4,6 +4,8 @@ extends Node
 ## shot it searches the nearest clear position at the same distance from its target (turning about the target, then
 ## rising), and writes the findings to SHOTS_OUT (JSON). Run as a scene (the autoloads run):
 ##   SHOTS_OUT=<file.json> godot --headless --path . res://tools/act1/shot_check.tscn
+## With SHOTS_SOLVE=<file.json> ({zone path: {shot id: {"look": [x, y, z], "from": [x, y, z], "d": m}}}) it instead
+## places each listed shot: the clear camera nearest the "from" side of its subject at about d metres.
 
 const ZONES: Array[String] = [
 	"res://game/levels/ch04/brightwater_ferry/brightwater_ferry.tscn",
@@ -19,8 +21,8 @@ const ZONES: Array[String] = [
 const CLEAR_FRACTION := 0.9  ## a ray reaching this far toward the target counts as clear
 const ENCLOSED_RAY_M := 2.5
 const ENCLOSED_HITS := 5  ## of the six axis rays
-const TURNS_DEG: Array[float] = [10.0, -10.0, 20.0, -20.0, 35.0, -35.0, 50.0, -50.0, 70.0, -70.0, 90.0, -90.0]
-const RISES_M: Array[float] = [0.0, 0.8, 1.6]
+const TURNS_DEG: Array[float] = [0.0, 10.0, -10.0, 20.0, -20.0, 35.0, -35.0, 50.0, -50.0, 70.0, -70.0, 90.0, -90.0]
+const RISES_M: Array[float] = [0.0, 0.4, 0.8, 1.6]
 const MAX_SKIPS := 8
 
 
@@ -29,8 +31,10 @@ func _ready() -> void:
 
 
 func _run() -> void:
+	var solve_path := OS.get_environment("SHOTS_SOLVE")
+	var solve: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(solve_path)) if solve_path != "" else {}
 	var out := {}
-	for path in ZONES:
+	for path: String in (solve.keys() if not solve.is_empty() else ZONES):
 		var zone := (load(path) as PackedScene).instantiate() as Node3D
 		var story := zone.get(&"story") as ZoneStory if "story" in zone else null
 		if story != null:
@@ -47,6 +51,19 @@ func _run() -> void:
 				exclude.append((n as CollisionObject3D).get_rid())
 		var layout: Dictionary = zone.get(&"layout")
 		var rows := {}
+		for id: String in solve.get(path, {}):
+			var want: Dictionary = solve[path][id]
+			var look := _v(want["look"])
+			var from := _v(want["from"])
+			var off := (from - look).normalized() * float(want["d"])
+			var pos := _search(space, exclude, look + off, look)
+			rows[id] = {"pos": pos, "look_at": want["look"]}
+			print("SOLVED %s %s -> %s" % [path.get_file(), id, pos])
+		if not solve.is_empty():
+			out[path] = rows
+			zone.queue_free()
+			await get_tree().process_frame
+			continue
 		for id: String in layout.get("shots", {}):
 			var shot: Dictionary = layout["shots"][id]
 			var pos := _v(shot["pos"])
@@ -100,3 +117,14 @@ func _fault(space: PhysicsDirectSpaceState3D, exclude: Array[RID], pos: Vector3,
 ## a kit dressing stands for the kit's own geometry).
 static func _seen(body: CollisionObject3D) -> bool:
 	return not String(body.name).contains("Bound")
+
+
+## The nearest clear camera at the same distance from the target: turned about the target's vertical, then risen.
+func _search(space: PhysicsDirectSpaceState3D, exclude: Array[RID], pos: Vector3, look: Vector3) -> Array:
+	var off := pos - look
+	for rise in RISES_M:
+		for turn in TURNS_DEG:
+			var cand := look + off.rotated(Vector3.UP, deg_to_rad(turn)) + Vector3.UP * rise
+			if _fault(space, exclude, cand, look) == "":
+				return [snappedf(cand.x, 0.01), snappedf(cand.y, 0.01), snappedf(cand.z, 0.01)]
+	return []
