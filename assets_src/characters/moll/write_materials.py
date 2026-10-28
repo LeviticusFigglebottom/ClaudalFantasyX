@@ -38,11 +38,19 @@ HAIR_SPEC = "Color(0.80, 0.76, 0.70, 1)"
 HAIR_SPEC2 = "Color(0.32, 0.29, 0.26, 1)"
 HAIR_TT = "Color(0.22, 0.17, 0.13, 1)"
 STILL = {"wind_response": "0.0"}  # cropped hair, lashes and brows do not sway
+# M2-CHR-524: at dialogue range the cards drew as near-black specks over the scalp paint. The paint between them is
+# lit as skin, and the cards were darker in albedo (#111013) and darkened again by root and layer occlusion (0.7 x 0.75)
+# meant for long hair's deep layers; cropped cards lie on the skin. The cards now sit near the paint's rendered value,
+# so they add strand grain, not dots, and the grey cards are a thin veil (GREY_ALPHA) over the dark: salt-and-pepper
+# reads as a lighter haze, not as pale chips.
+CROP_AO = {"root_occlusion": "0.85", "depth_occlusion": "0.85"}
+GREY_ALPHA = "0.45"  # alpha_boost of the grey cards: lower than Toma's 0.6, Moll's cards are twice as long and the
+# temple grey is painted under them too (moll_textures.TEMPLE_GREY_PAINT)
 FLAT = {"kajiya_diffuse_mix": "0.15", "diffuse_wrap": "0.3"}
 CROP = {"flow_strength": "0.0", "col_spec_primary": HAIR_SPEC, "spec_primary_intensity": "0.07", **FLAT,
         "spec_primary_exponent": "60.0", "spec_secondary_intensity": "0.0", "col_spec_secondary": HAIR_SPEC2,
         "secondary_sparkle": "0.3", "col_transmission": HAIR_TT, "transmission_strength": "0.1",
-        "indirect_specular": "0.05", "root_occlusion": "0.7", "depth_occlusion": "0.75", "alpha_boost": "1.15",
+        "indirect_specular": "0.05", **CROP_AO, "alpha_boost": "1.15",
         "strand_value_jitter": "0.12", **STILL}
 SKIN = {"tex_albedo": T + "moll_head_albedo.png", "tex_normal": T + "moll_head_normal.png",
         "tex_orm": T + "moll_head_orm.png", "tex_skin_mask": T + "moll_head_skinmask.png",
@@ -84,7 +92,7 @@ SHADER_MATERIALS: dict[str, tuple[str, int, dict, dict]] = {
                                    "col_root": HAIR, "col_tip": GREY_ROOT, **STILL},
              {"tex_hair": A + "asha_facehair.png"}),
     "hair": ("character_hair", 0, {**CROP, "col_root": HAIR_ROOT, "col_tip": HAIR_TIP}, {"tex_hair": SHORT}),
-    "hair_grey": ("character_hair", 0, {**CROP, "col_root": GREY_ROOT, "col_tip": GREY_TIP}, {"tex_hair": SHORT}),
+    "hair_grey": ("character_hair", 0, {**CROP, "col_root": GREY_ROOT, "col_tip": GREY_TIP, "alpha_boost": GREY_ALPHA}, {"tex_hair": SHORT}),
     # the costume atlas: cotton, leather, linen; lacquer (B) and gold leaf (G) in the mask, bronze metal in the ORM
     "cloth": ("character_cloth", 0, {"detail_tiling": "140.0"},
               {"tex_albedo": T + "moll_cloth_albedo.png", "tex_normal": T + "moll_cloth_normal.png",

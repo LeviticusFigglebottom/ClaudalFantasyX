@@ -164,6 +164,7 @@ def _albedo_villager(orig, sk: dict, hstyle, hair_hex: str):
     ink_op = float(sk.get("ink_opacity", 0.7))
     stub = float(sk.get("stubble", 0.0))
     density = float(sk.get("scalp_density", 0.95))
+    scalp_shade = float(sk.get("scalp_shade", 0.0))  # 0 = the bare skin between painted hairs stays lit (default)
     seed = int(sk.get("seed", 1))
     lip = sk.get("lip")
     oil = float(sk.get("fingertip_oil", 0.0))  # a chandler's oil-dark fingertips (act1_npcs.md §4.2)
@@ -210,6 +211,11 @@ def _albedo_villager(orig, sk: dict, hstyle, hair_hex: str):
         haired = orig(Ph, Nh, key, face, lm, hair_mod, r, npz)
         if density < 0.95:
             bare = orig(Ph, Nh, key, face, lm, tt._Bald, r, npz)
+            if scalp_shade > 0.0:
+                # M2-CHR-524: Toma's scalp, the skin between the painted hairs in the hair's shadow (darker, cooler),
+                # so the gaps between the cropped cards read as hair, not as lit skin
+                region = np.clip(np.abs(haired - bare).sum(axis=1) / tt.SCALP_REGION_DIFF, 0.0, 1.0)[:, None]
+                bare = bare * (1.0 - scalp_shade * region) * (1.0 + (tt.SCALP_COOL - 1.0) * region)
             col = bare + (haired - bare) * (density / tt.SCALP_FULL)
         else:
             col = haired

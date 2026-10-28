@@ -63,6 +63,7 @@ import build_toma as bt  # noqa: E402
 import moll_costume  # noqa: E402
 import moll_hair  # noqa: E402
 import moll_props  # noqa: E402
+import toma_hair  # noqa: E402
 from asha_costume import limb_wrap  # noqa: E402
 from asha_hair import Scalp  # noqa: E402
 from asha_mesh import Part  # noqa: E402
@@ -456,7 +457,7 @@ def build(args: argparse.Namespace, spec: dict) -> int:
         Vr = crop.varr()
         Vr[np.abs(Vr) < MIDLINE_SNAP] = 0.0  # cards rooted on the midline: the same host noise
         crop.V = list(Vr)
-        ob = hb.part_object_snapped(crop)
+        ob = hb.part_object_snapped(crop, toma_hair.surface_normals(Vr, crop.F, surf))  # M2-CHR-524: the scalp's normal
         Wr = np.zeros((len(crop.V), len(wnames)), dtype=np.float32)
         Wr[:, head_i] = 1.0
         hb.apply_weights(ob, Wr, wnames, skel)
