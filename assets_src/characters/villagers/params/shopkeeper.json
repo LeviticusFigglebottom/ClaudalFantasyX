@@ -1,0 +1,126 @@
+{
+  "_about": "The Haluna shopkeeper at the market stall (haluna.tscn NPCs/Town/Shopkeeper, the haluna_market shop), about 56 (M3-CHR-512). A portly, genial trader who has sold the village its rope and lamp oil for thirty years: grey cropped hair receding at the temples, a grey stubble, an indigo wrap shirt with sleeves to the mid-forearm, sand shin trousers, a sea-blue trader's apron straight over the trousers, a madder-red sash (the market's one saturated note), sandals. Reach-bands left 4, right 4 from his young years at sea. Face sliders relative to the MakeHuman donor (ADR 0021: 1.0 / 0.0 = unchanged). Keys starting with '_' are read by the villager_* modules (villager_hair, villager_costume, villager_textures, write_materials, villager_clips), not by bb_params.",
+  "name": "shopkeeper",
+  "height_m": 1.66,
+  "heads_tall": 7.1,
+  "shoulder_width_heads": 1.74,
+  "chest_width_heads": 1.38,
+  "chest_depth_heads": 1.08,
+  "waist_width_heads": 1.36,
+  "hip_width_heads": 1.46,
+  "crotch_height_heads": 3.4,
+  "arm_span_ratio": 1.0,
+  "hand_length_heads": 0.8,
+  "foot_length_ratio": 0.15,
+  "neck_length_heads": 0.4,
+  "neck_width_ratio": 0.6,
+  "head_width_ratio": 0.69,
+  "femininity": 0.0,
+  "muscle": 0.4,
+  "mass": 0.66,
+  "breast": 0.0,
+  "eye_scale": 1.04,
+  "ipd_m": 0.064,
+  "arm_abduction_deg": 47.0,
+  "skin_hex": "#85563A",
+  "eye_tilt_deg": 0.5,
+  "jaw_width": 1.1,
+  "cheekbone_height": 0.0,
+  "cheekbone_width": 1.06,
+  "chin_size": 1.04,
+  "nose_bridge_width": 1.14,
+  "nose_tip_projection": 0.96,
+  "lip_fullness": 0.82,
+  "lip_close": 0.6,
+  "lip_seal": 0.96,
+  "lip_lower_fullness": 0.74,
+  "mouth_corner_lift": 0.0006,
+  "brow_ridge": 1.1,
+  "donor_mix_african": 0.45,
+  "donor_mix_asian": 0.4,
+  "donor_mix_caucasian": 0.15,
+  "_skin": {
+    "hex": "#85563A",
+    "age": 0.6,
+    "freckles": 0,
+    "reach_bands": {
+      "L": 4,
+      "R": 4
+    },
+    "ink_opacity": 0.55,
+    "stubble": 0.6,
+    "stubble_grey": 0.55,
+    "scalp_density": 0.7,
+    "seed": 113,
+    "lip": "#6E4236"
+  },
+  "_hair": {
+    "kind": "cropped",
+    "hairline": "male",
+    "seed": 33,
+    "length_m": [
+      0.009,
+      0.014
+    ],
+    "recede": 0.03,
+    "scalp_cards": [
+      420,
+      320,
+      200
+    ],
+    "hairline_cards": 0,
+    "colour": "#4A453F",
+    "grey": "#A39D94",
+    "grey_share": 0.5,
+    "underpaint": "#3E3A35",
+    "brow": "#3C3833"
+  },
+  "_eyes": {
+    "iris": "#2A1A10"
+  },
+  "_costume": {
+    "top": {
+      "mat": "cloth_b",
+      "hem": "hip",
+      "sleeve": 0.62,
+      "neck_v_m": 0.05
+    },
+    "trousers": {
+      "mat": "cloth_a",
+      "hem": "shin",
+      "loose_m": 0.016
+    },
+    "apron": {
+      "mat": "cloth_c",
+      "hem": "knee",
+      "half_deg": 56,
+      "seed": 81,
+      "over_trousers": true,
+      "flare": 0.14,
+      "extra_m": 0.016
+    },
+    "sash": {
+      "mat": "cloth_d",
+      "width_m": 0.09,
+      "turns": 2
+    },
+    "sandals": "leather"
+  },
+  "_tints": {
+    "cloth_a": "#C9B793",
+    "cloth_b": "#34406E",
+    "cloth_c": "#4F84A8",
+    "leather": "#FFFFFF",
+    "cloth_d": "#8F3B2E"
+  },
+  "_build": {
+    "shapes": "all",
+    "host_snaps": true,
+    "garment_fit": true
+  },
+  "_persona": {
+    "sway": 0.8,
+    "lean": 2.0,
+    "arms_down": 38.0
+  }
+}

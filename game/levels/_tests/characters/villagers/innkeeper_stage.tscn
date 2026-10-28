@@ -1,0 +1,10 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="PackedScene" path="res://game/levels/_tests/characters/villagers/villager_stage.tscn" id="stage"]
+[ext_resource type="PackedScene" path="res://assets/characters/villagers/innkeeper/innkeeper.glb" id="npc"]
+
+[node name="InnkeeperStage" instance=ExtResource("stage")]
+character_scene = ExtResource("npc")
+character_name = &"Innkeeper"
+emotion = "soft_smile"
+face_poses_path = "res://game/levels/_tests/characters/villagers/innkeeper_face_poses.json"

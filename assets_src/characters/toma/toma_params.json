@@ -42,8 +42,8 @@
   "donor_mix_caucasian": 0.25,
   "_hair": {
     "length_m": [0.009, 0.013],
-    "card_width_m": [0.006, 0.009],
-    "scalp_cards": [560, 420, 300],
+    "card_width_m": [0.004, 0.006],
+    "scalp_cards": [980, 740, 520],
     "seed": 7
   },
   "_beard": {
