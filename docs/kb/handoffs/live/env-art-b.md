@@ -60,10 +60,49 @@ dialogue, casts). Claims: the last row of `docs/kb/ownership.md`.
     storms removed too, so it predates this branch.
   - **Known, follow-up:** the weir's cut has no channel feeding it down the flank, so by day its water reads as a pale
     slab; Coilspire's niche and mark have no shot (the flue-key wheels hang in front of them from every interior view).
-- **In progress (M3-ENV-1303): Ch5 Ashcrown on its kit.** Merging hero-integration @ bccce923 (the steep-stair
-  traversal) next; plan in the task file.
+- **Merged hero-integration @ bccce923** (M3-ARC-1216 steep stairs; MERGE-READY on their log since 10-27) because
+  Ashcrown needs it. Conflicts: `battle_sandbox.json` (all four heroes' hero_motion actors, Ysolde's scene from
+  theirs), shot manifests (union), the M3-ARC-1216 task file (theirs, as their log asks).
+  - **FAST-TRACK for hero-integration (fixed here, their file):** `HeroStairs.build_from_layout` added the layout's
+    flights to the zone during the zone's own setup, so in a real zone `add_child()` failed ("Parent node is busy")
+    and no flight was ever built; their tests add flights by hand, so none caught it. Now it defers the add while the
+    zone isn't ready. `--filter=hero_stairs` 7/0.
+- **M3-ENV-1303, Ch5 Ashcrown on its kit:** the zone in the kit's own
+  frame (`tools/act1/ch05_ashcrown_dressing.py`, `--relayout` once): the causeway (HeroStairs rows over walkable
+  ramps), the forecourt, the flying stair (48°, HeroStairs over a blocking slab) to the crown, the trial on the east
+  ambulatories of tiers 6..3 (t1..t4), the vein stairs (60°) chained by `Stair_t<k>` until the strike reaches the tier,
+  the anvil court in the anvil hall (the Matron's alcove, Kahre's door at the loggia). New Ashcrown kit story pieces
+  (`b_trial.py`), env-art's Ch5 day grade. **Edits to act1-chapters' shared code, additive:** `ZoneKitDressing`
+  `turn_with` and `glow()`; `KitCollision` merges the collision file's `stairs`; `Ch05AshcrownZone._glow` lights the
+  kit's bowl. New test `test_ch05_ashcrown_walkable`.
+- **M3-ENV-1303b, Ch5's day arenas:** `ashcrown_forecourt_day` (the stair fights) and `ashcrown_anvil_court` (the
+  Matron; `BossAnchor`) from the Ashcrown kit (`b_arenas.py`, through env-art's `arena_scenes.write_arena`, read-only);
+  in `arenas.json` scenes and `test_battle_arenas`. **Request M3-BPR-1305 (combat):** repoint the five Ch5 encounters
+  (they all fight on the night Pemakar terrace today).
+- **Request noted on M3-RND-26 (rendering):** the Bell's drop in both Ch7 zones needs `WaterSphereRig` sized to the
+  drop contract (14 × 11.5 m, not the 16 m sphere) and the weep column; the galleries' `Column` stays greybox until
+  then.
+- **For act1-chapters:** env-art's `ch05_harbour_dusk` grade (assets/environments/zones/ch05) is waiting for a light row
+  in Pemakar's flow (B01–B03 are at dusk; the zone is night from the start): a flag at the Lanternfall's start plus
+  `apply_variant`. Story flow, so yours.
+
+- **M3-ENV-1304, Ch6's road:** the raid's aftermath along the road (`road_aftermath()` in
+  `ch06_brine_shoals_dressing.py`), clear of story points; the crates, sacks, salvage and boat collide.
+- **Zone map follows** (`game/data/ui/zone_maps.json`, UI's file; only the `at` values of POIs whose sources I moved,
+  and Ashcrown's bounds). **For UI:** the map draws a greybox layout's blocks only; Ashcrown's floors are now in its
+  `collision_path` file, so its map is sparse. Reading the layout's `collision_path` blocks as floors would fix it.
+- **MERGE-READY @ HEAD of this push** (commits after 4eb5f642: the hero_stairs FAST-TRACK, the ownership claim,
+  M3-ENV-1303 zone, its arenas, M3-ENV-1304, the zone-map follow, this log).
+  - **Checks run:** Godot `--filter=` ashcrown 22/0, ch05 13/0, cutscene_walks 1/0, hero_stairs 7/0, zone_kit 10/0,
+    battle_arenas 10/0, ch06 5/0; the whole tools suite (`run_tool_tests -j 4`): only `test_screenshots` is red, for
+    the new shots' missing baselines (the first is ch05_pemakar_harbour, which is older); `test_zone_map_pois` was red
+    and is fixed in this push. gdlint/gdformat, validate_data 0/0, taskboard --check.
+  - **Checks skipped:** coverage (no battle/progression code); Blender (no Blender source touched: the arenas are
+    written by a Python scene writer).
+  - **Known, not mine:** Toma, Liss and Kerrid are capsules in the field (no field bodies yet).
 
 ### Render requests
 (Self-rendered per TRACK-RULES; lines are SELF-RENDERED notes.)
 SELF-RENDERED @ ea946ec8: ch07_tamsule_mouth, ch07_tamsule_market, ch07_tamsule_gantry — new shots, read final (Liss and Kerrid are capsules: no field body yet).
 SELF-RENDERED @ 00e15816: ch05_pemakar_weir, ch05_pemakar_harbour_day, ch08_corrow_storm, ch08_coilspire_storm, ch08_coilspire_gate, ch08_corrow_flood, ch08_corrow_lake, ch09_corrow_landing, ch09_corrow_rocks, ch09_corrow_strand — new shots (the strand is an existing baseline: no longer dark); viewed after fixes (re-aimed cameras, the flood lifted, the rocks' lamp). ch05_pemakar_harbour drifts by the new quay (the party's lanterns are the two glows).
+SELF-RENDERED @ this push: ch05_ashcrown_causeway, ch05_ashcrown_forecourt, ch05_ashcrown_crown, ch05_ashcrown_tiers, ch05_ashcrown_court, battle_arena_ashcrown_forecourt_day, battle_arena_ashcrown_anvil_court, ch06_brine_road, ch06_brine_camp — all new shots or a changed zone, all viewed. The anvil court arena was re-lit after viewing (interior fill 1.4, exposure 1.35, plus a forge-spill lamp over the fight floor); its first render had a black near half.
