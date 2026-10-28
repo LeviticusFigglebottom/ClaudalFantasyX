@@ -26,6 +26,29 @@ both fixed and pushed. The branch head also carries:
   - any battle shot with an Act I creature, since the heights and the near-face anchor move its effects. I am
     self-rendering those next.
 
+**BACKLOG EMPTY (2026-10-28, @ 7f4fea7f, MERGE-READY):** every item on the Lead's lists (02:14, 03:41, 04:44) is
+done, self-rendered and viewed:
+1. M3-HER-1148's five set-piece rows.
+2. The hit, death and status VFX on the dressed arenas, with the fixes listed above.
+3. The boss big-move camera.
+4. The Swell finishers.
+5. The boss-intro hero shots.
+
+What remains waits on other tracks:
+- **The gate:** re-approve the moved baselines and write the three new battle_ch08_* ones (lists above). Fixing
+  `merge_union.py`'s silent revert of the other side's shot edits is suggested.
+- **Combat** (M3-C05-06, M3-C06-05): Kerrid's and Liss's Swell techniques. Their finishers (swing, reel) play as soon as
+  a `"swell": true` skill row exists, with nothing more needed from me. I'll view them in a fight once the techniques
+  and a Kerrid or Liss battle actor are in the sandbox.
+- **Characters:** the Inquisitor's model. Then drop his row's `hero: false` and re-view his intro.
+- **Audio** (M3-BPR-421): their own sounds for the Act I effects and the swing/reel styles (stand-ins for now).
+- **After the env-art merge:** apply docs/kb/tasks/M3/M3-BPR-407-seawall-repoint.patch, then view the Reach's staging
+  in the default frame (it fills the left third there).
+- **Known reds, not this branch's:** test_hero_field_snaps and test_zone_map are red on big13 too;
+  test_creature_portraits is Act II, which is paused.
+
+Next step for whoever resumes: merge the integration branch once the gate takes this, then take any new Lead list.
+
 **08:xx: the boss-camera sheet viewed; the Reach's big moves fixed.** See M3-BPR-420's review log.
 - SELF-RENDERED (tool, scratch worktree): `boss_camera_sheet`, all 13 big moves at the lead and the contact.
   - Ten read well: Hullgnaw, the Wraith, the Matron, the Inquisitor and the Drownbell.
