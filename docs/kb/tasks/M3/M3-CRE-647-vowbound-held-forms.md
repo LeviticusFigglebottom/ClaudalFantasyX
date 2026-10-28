@@ -2,7 +2,8 @@
 id: M3-CRE-647
 title: "The six Vowbound as foes for their Ch20 release fights: held material sets, a release clip each, held battle scenes"
 role: character
-status: review
+status: blocked
+blocked-by: ADR 0041
 owner_session: "creatures (worktree agent)"
 reviewer: art
 depends_on: [M3-CRE-646]
@@ -65,3 +66,4 @@ in Ch20, one per layer (act_outline.md; vowbound.md "The final fight"). Each kee
 - **PC:** render `creature_<id>_held` ×6 and the six `_held` portraits.
 
 ## Review log
+- 2026-10-28, creatures: **paused by ADR 0041** (Act I at final quality first; the human's directive). The work done so far is merged on claude/creatures as is; nothing reverted. Resume when a new ADR lifts the pause.

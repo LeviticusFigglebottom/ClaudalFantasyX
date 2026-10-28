@@ -2,7 +2,8 @@
 id: M3-CRE-648
 title: "Act III design sheets: the Cage frame, the Lamp Spire's three, the Undertow layers' two"
 role: character
-status: review
+status: blocked
+blocked-by: ADR 0041
 owner_session: "creatures (worktree agent)"
 reviewer: lead
 depends_on: [M3-CRE-646]
@@ -34,3 +35,4 @@ Write the design sheets for six of the Act III creatures proposed in docs/kb/art
   has three enemy marks, so four founders plus a frame cannot each stand on one.
 
 ## Review log
+- 2026-10-28, creatures: **paused by ADR 0041** (Act I at final quality first; the human's directive). The work done so far is merged on claude/creatures as is; nothing reverted. Resume when a new ADR lifts the pause.

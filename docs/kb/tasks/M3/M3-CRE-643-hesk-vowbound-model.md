@@ -2,7 +2,8 @@
 id: M3-CRE-643
 title: "Hesk, the Cord-Keeper (Holy, bound Ch12): the Vowbound model (design sheet done; build next)"
 role: character
-status: review
+status: blocked
+blocked-by: ADR 0041
 owner_session: "creatures (worktree-agent-adff7ba4a64aa18db, cloud session_01EbDaRQ5n7hpvwuRG6jEDQY)"
 reviewer: art
 depends_on: [M3-CRE-638]
@@ -94,3 +95,4 @@ choreo.json safe frame; `/tmp/claude-0/-home-user-ClaudalFantasyX/5f90d4d2-2a3d-
 - **PC render:** `creature_hesk` (new, no baseline) and her portrait (joins the PNG bake).
 
 ## Review log
+- 2026-10-28, creatures: **paused by ADR 0041** (Act I at final quality first; the human's directive). The work done so far is merged on claude/creatures as is; nothing reverted. Resume when a new ADR lifts the pause.

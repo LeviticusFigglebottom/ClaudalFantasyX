@@ -2,7 +2,8 @@
 id: M3-CRE-645
 title: "Polish the plain reads: the gallery ray and glass skate (flat sheets at battle distance), the ridge lynx's short muzzle"
 role: character
-status: review
+status: blocked
+blocked-by: ADR 0041
 owner_session: "creatures (worktree agent)"
 reviewer: art
 depends_on: [M3-CRE-628]
@@ -43,3 +44,4 @@ Godot import, then `--filter=creature`: 71 run, 1 failed, the known test_creatur
 The review shots creature_gallery_ray, creature_glass_skate and creature_ridge_lynx need a PC render (not run here).
 
 ## Review log
+- 2026-10-28, creatures: **paused by ADR 0041** (Act I at final quality first; the human's directive). The work done so far is merged on claude/creatures as is; nothing reverted. Resume when a new ADR lifts the pause.

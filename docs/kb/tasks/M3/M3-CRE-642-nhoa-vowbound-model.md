@@ -2,7 +2,8 @@
 id: M3-CRE-642
 title: "Nhoa, the Rootlight (Ice, bound Ch11): the Vowbound model"
 role: character
-status: review
+status: blocked
+blocked-by: ADR 0041
 owner_session: "creatures (worktree-agent-a68ca47506828c52d, cloud session_01EbDaRQ5n7hpvwuRG6jEDQY)"
 reviewer: art
 depends_on: [M3-CRE-638]
@@ -128,3 +129,4 @@ The scripts are beside them: `framing.py` (per-frame margins, with output in `fr
   the Lead keeps one.
 
 ## Review log
+- 2026-10-28, creatures: **paused by ADR 0041** (Act I at final quality first; the human's directive). The work done so far is merged on claude/creatures as is; nothing reverted. Resume when a new ADR lifts the pause.
