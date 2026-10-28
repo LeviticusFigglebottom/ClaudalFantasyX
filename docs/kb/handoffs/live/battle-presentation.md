@@ -26,6 +26,24 @@ both fixed and pushed. The branch head also carries:
   - any battle shot with an Act I creature, since the heights and the near-face anchor move its effects. I am
     self-rendering those next.
 
+**BACKLOG EMPTY (2026-10-28 16:xx, MERGE-READY @ the branch head):** the Lead's 13:25 list and the combat-owned
+presentation tasks are done, self-rendered and viewed:
+- M3-BPR-411 (VFX coverage closed);
+- M3-CHR-523 (Moll in battle);
+- M3-BPR-1305 (Ch5 on Ashcrown);
+- M3-ENV-737 (greybox arenas retired);
+- M3-CRB-009 (boss intro clips, anchor bones);
+- M3-ENV-714 (Ch8 seawall states);
+- M3-CRE-639 (Ilun's rise and dismiss): SELF-RENDERED battle_choreo_summon and _vowbound_rise, Ilun unfurling up.
+
+What is left is not mine:
+- **combat's game design:** M3-C01-03, C04-06, C05-06, C06-05, C09-07, RBL-1208. Kerrid's and Liss's techniques wait
+  there (their finishers are staged).
+- **env-art-b:** the Fisher Stair prop (LEAD-ANSWERED above).
+- **creatures-b:** Hullgnaw's intro clip turns its head away (noted on M3-CRB-009); vfx_anchors rows.
+- **The gate:** re-approve the moved baselines (boss intros, the Vowbound and summon shots, battle_ch08_stair_hold,
+  battle_arena_camp) and write the three battle_ch08_*.
+
 **MERGE-READY @ the branch head (15:xx).**
 - **M3-ENV-714:** the Ch8 wall-head fights play on their seawall states (stair hold 1 on storm, 2 and 3 on hoist, the
   Reach on surge).
