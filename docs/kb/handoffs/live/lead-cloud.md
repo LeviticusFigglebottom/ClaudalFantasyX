@@ -80,3 +80,10 @@
 - RENDERED @ fca9987986697c673d32188af45879f0a2d257b1: lead/gate-render-env-art-fca9987; 0 pass, 1 drift; 1 new without baseline (cloud)
 - RENDERED @ 34d6e51d88b7792c1e109d2773f1eceeeb3ca829: lead/gate-render-ui-34d6e51; 1 pass, 4 drift (cloud)
 - RENDERED @ 3b0e44b0b8c0490ddd92a6c0856d0625e1e2b09d: lead/gate-render-creatures-3b0e44b; 0 pass, 3 drift; 1 new without baseline, 2 portrait PNGs (cloud)
+
+## GATE-REQUEST lead/gate-big14 @ 8707ff90 (10-28 ~04:40)
+- Integration 608db549 plus all 11 track heads, including the human's playtest FAST-TRACKS (the grounded run, the party spawn, the Prologue colour, Rhen's shallows pose).
+- Checks already pass: validate_data, taskboard, dlgc, lint and format.
+- **Rebake the Shell Shrine GI** (`tools/shrine/bake_shrine_gi.tscn`, then `gi_inputs.py --write`). Two branches each rebaked it, so the merged inputs match neither bake.
+- **Known red:** `test_arenas` reproducibility for `ash_terrace_lanternfall` (red on env-art-b too; needs env-art's M3-ENV-1306).
+- Baseline PNG conflicts kept the integration side; I re-approve after viewing.
