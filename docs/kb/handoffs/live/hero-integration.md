@@ -1012,3 +1012,119 @@ without the 391 gate-run PNGs, 131 MB).
   there would load in Ch2). Both are in M3-HER-1154 (act1-chapters), KNOWN in the test. 2/0.
 - Still running at the time of this line: the full `--filter=hero / party / fp_ / qa_` on the merged tree. Results
   follow in the next line.
+
+MERGE-READY @ a7e4f4f78 (+ this log): **big15 merged in (integration 2d6a25a7), plus the hero tests after the sight-line step.**
+- `--filter` results on the big14 tree before the follow-up commit 94c6f1d4: hero 110/2, party 35/1, fp_ 30/0. All
+  three failures are fixed in 94c6f1d4:
+  - test_hero_followers "facing her walk again" now measures against her follow point (she walks to her stepped-aside
+    spot, not straight at him);
+  - test_battle_party_stand_ins checks Liss's tint against her own capsule colour, not a literal (the data changed
+    to #7A8C5A);
+  - Toma's 3 wake snaps are the same NemeDoor fall (KNOWN, M3-HER-1154).
+  - hero_followers 12/0, party_stand_ins 3/0.
+- qa_ (merged big14 tree, the sight-line fix in): **12/0**: the playthrough, every Act I encounter entered, won and left, shrines, capsules, party spawns, the freed-sequencer guard.
+
+### TRIAL MERGE, 2026-10-28 ~11:10
+TRIAL MERGE @ integration 2d6a25a7 (big15): env-art 5d81885c, env-art-b 697bc32d, creatures a6eada94, creatures-b 3bf1fa2b, characters 4ab59bc1, ui 115f20b2, battle-presentation c358c481, act1-chapters e66297f9, m2-slice 7dba5bc2, audio 6adbda62, hero-integration 94c6f1d4
+- **creatures vs creatures-b: the Vowbound portraits** (`assets/ui/portraits/creatures/ilun*.png`, `kahre*.png` and
+  their .import). Both tracks drew them, and binary files can't union. **Lead:** pick one.
+- `ui_sfx.json` (audio vs ui) and ownership.md (several tracks) need hand merges.
+- hero-integration's 3 "clashes" (qa_known.json, test_fp_prologue, test_battle_party_stand_ins) are only tracks still
+  on pre-big15 versions. My branch has merged big15 cleanly.
+- **The Env-art vs env-art-b Haluna kit clash is gone.**
+- **Audit on the merged tree, full (import + runtime scan): 17 items, down from 44.** `act1_final_inventory.md` is
+  rewritten. env-art 10, creatures-b 4, env-art-b 1, integration-qa 2. Audio, characters and creatures are all clear.
+- **integration-qa's 2 are Pell and vigil_pell (Ch9, ch09_pell_joined).** They wait on characters' Pell model,
+  **M3-CHR-506, still todo**; nothing in my lane can make them real (no model, no AI art). The wiring is ready: the
+  `vigil_` prefix and HeroFieldActor.hero_of take his body the moment hero_motion.json gets a `pell` row.
+
+MERGE-READY (+ this log): **the party start, take two (the big15 GPU playtest), merge_union three-way, the threaded-load RID race.**
+- **(1) Party start** (pc-gpu.md big15: "camera opens ~15 m back over the shallows, Toma isn't in frame, the lane turn
+  swings into the walls"):
+  - **Toma walks too.** HeroFieldParty `followers.include_reserve`: the reserve follows after the active party, up to
+    `max` (the slice's Toma is in reserve).
+  - **A FOLLOW camera** (new CameraShot.Mode.FOLLOW, ADR 0194): it rides `follow_distance` (7 m) back along the shot's
+    authored heading and `follow_height` (4 m) up, smoothed, aimed at him. Haluna's beach_shallows, beach_path and the
+    lane's H09 use it now (beach_shallows takes beach_path's heading, so the handover doesn't jump). The party stays
+    the same size on screen and the camera never swings.
+  - **Followers judged in 3D:** a follower only covers him if the camera's line down to his chest passes under her
+    head (`head_m` 1.8). Otherwise she steps aside (`sight_clear_m` 1.1, falling back through
+    `sight_clear_shares` near walls, the side she stands on). Bodies level with him (`sight_depth_m`) don't count.
+  - **Occlusion is judged by drawn meshes, not collision** (Coilspire's shell collider missed the wall the player
+    sees): the director's `view_blocker` tests visible meshes of at least `min_size_m` by their triangles.
+  - **New guard** `test_qa_field_camera::test_the_walk_from_the_beach_to_the_village_keeps_the_party_in_view`: from
+    Cutscene A's mark up the beach, through the gap and down the lane to the Village. Every frame he's seen and
+    every follower is in frame. A follower may only cross his line for under 20 frames, rounding a corner. **2/0**
+    with the 106-spawn guard.
+  - **SELF-RENDERED** (lavapipe 960x540, the walk at frame 90): Rhen, Asha and Toma close together in frame, the
+    camera just behind and above. Viewed.
+- **(2) tools/dev/merge_union.py merges every keyed file three-way** (shots.json by id, baselines.json,
+  prewarm_materials by path, flags.tres):
+  - a key only theirs changed takes theirs in place, a key one side deleted is deleted, both-changed keeps ours and
+    is reported;
+  - big15 lost battle-presentation's `settle_frames` edits this way;
+  - test_merge_union 12/0, including an end-to-end git merge that fails on the old code (settle 30, not 90).
+- **(3) Architect role:**
+  - **M3-HER-1151 FIXED (the RID race):** ShaderGlobals holds its RenderingServer writes while SceneRouter
+    instantiates on a worker thread and sends the last value per global after. test_shader_globals_hold 3/0;
+    weather_clock 11/0, scene_router 15/0, haluna_weather 3/0. **Three ch3 probe runs: 0, 0, 0 RID errors** (1 in 2
+    runs before). Their 2,708 other errors are all M3-HER-1158, battle_result_panel.gd:266.
+  - **M3-ENV-747 → review:** already done by M3-ENV-101 (186848eb8); the inventory lists no save-shrine item.
+  - M3-ARC-1216 (my own steep stairs) waits on its cinematics review and on act1-chapters placing Ashcrown's flights.
+- Tests: hero_ 110/1 → the 1 is Asha in haluna_wake's NemeDoor fall (KNOWN now, M3-HER-1154); qa_party 3/0,
+  hero_followers 12/0, camera 54/0, haluna_zone 7/0.
+- LEAD-ASK: M3-C05-1215 (act1-chapters, Ashcrown on the kit) still says "blocked on M3-ARC-1216". The walkable stair
+  mode is on integration (HeroStairFlight, or a zone layout `"stairs"` row, see M3-ARC-1216's notes). Please tell
+  act1-chapters it can unblock and place the 48° flying stair and the 60° vein stairs.
+- LEAD-ASK: haluna.tscn's camera shots (M2-FP-109's) now use the FOLLOW mode on the beach and the lane. Slice-polish
+  should know before re-composing them.
+- LEAD-ASK (urgent, the human's error class): **big15 brings a freed-object cast at every fight's end.**
+  `BattleResultPanel._set_count` (battle_result_panel.gd:266) logs "Trying to cast a freed object" ~930 times in one
+  real-frame ch3 probe run. FieldBattle re-shows the result panel, which frees the old rows but leaves the old open
+  tween counting into them. Filed as **M3-HER-1158 (ui / battle-presentation, FAST-TRACK)** with a 3-line patch.
+  Please have battle-presentation take it, or give me the word to apply it myself.
+- LEAD-ASK (architect, on ADR 0111 / ResidentLoads): claude/ui's SceneRouter change merges cleanly with mine (a
+  scratch merge shows no conflict). But ResidentLoads loads a zone's models on threads while the router waits frames
+  for them, and each of those frames runs WeatherClock's hymn_wind_time write. That's M3-HER-1151's race: a
+  global-shader write walking the material list while a worker thread creates materials. My fix holds
+  ShaderGlobals' writes only around the router's own threaded instantiate. ResidentLoads should do the same around
+  its loads: `ShaderGlobals.hold_writes()` when a load starts, `release_writes()` when it lands. Holds nest, so
+  overlapping loads are fine. I can add it after ui-menus merges, if you give the word.
+- **SELF-RENDERED** (party start, the whole walk; lavapipe 960x540, viewed):
+  - start: all three close together;
+  - the wall's gap (turn1): Rhen clear, Toma near the camera to the side;
+  - entering the lane (turn2) and the lane turn itself (turn3, where big15's camera swung into the stone walls): the
+    camera looks down the lane over the party, all three in frame between the walls, no clipping.
+
+MERGE-READY (+ this log): **M3-ARC-1326 (env-art-b's ask, Ch9's Ebbing): the sequencer offers `@vfx` cues to the stage's VFX hosts.**
+- New `game/cutscene/cutscene_vfx_hosts.gd` (CutsceneVfxHosts.offer): every node in the `cutscene_vfx_hosts` group
+  with `play_vfx(effect, at_id, kwargs) -> bool`, first taker wins. `CutsceneSequencer._cue_vfx` returns before
+  spawning the CutsceneMotes placeholder when a host takes the cue (one line; the file stays at 999).
+- **Vocabulary: accepted as proposed.** cues.json `vfx` kwargs gain `follow` (`<actor>` or `<actor>_staff`) and
+  `anchors` (`<actor group>`). They reach hosts whole, the placeholder ignores them, and dlgc --check is 0/0.
+- tests/unit/test_cutscene_vfx_hosts.gd **4/0**: a taking host means no placeholder and gets the kwargs; a declining
+  host leaves the placeholder; no host means the placeholder; the vocabulary. It fails 2/4 on the old sequencer.
+  ch09_thread 7/0.
+- For env-art-b: M3-ARC-1326's task file is only on your branch, so I haven't copied it (an add/add clash). Please
+  tick its boxes and record "vocabulary accepted" when you merge this.
+
+### TRIAL MERGE, 2026-10-28 ~15:50
+TRIAL MERGE @ integration 8870ea9c: env-art 885fba18, env-art-b 6a8f1504, creatures 958ad402, creatures-b d5f7b2b2, characters d0422fdc, ui 249bcafc, battle-presentation 1d4df7bf, act1-chapters d212b041, m2-slice 36d3c958, audio 1cb9654d, hero-integration 5f59e287
+- **Still open:**
+  - creatures vs creatures-b on the Vowbound portraits (ilun*, kahre* .png and .import; binary, pick one);
+  - ui_sfx.json (audio vs ui);
+  - ownership.md (several tracks).
+- **New:**
+  - **m2-slice vs env-art on Ch1's Oruvel and Underway**: 7 files that don't union (both dressing generators
+    `tools/ch01/ch01_*_dressing.py`, the dressing and layout json, the environment .tres). Lead: one should merge the
+    other first.
+  - battle-presentation vs env-art-b on `test_battle_arena.gd`, battle_sandbox.json and two task files;
+  - act1-chapters vs env-art on brightwater_ferry_layout.json.
+- **hero-integration's 3 clashes are gone.** Act1-chapters, m2-slice and battle-presentation fixed the same big14
+  failures in their own files. I took their versions (qa_known.json, test_fp_prologue.gd,
+  test_battle_party_stand_ins.gd): fp_prologue 8/0, party_stand_ins 3/0.
+  - **On my branch alone**, qa_capsules fails on Haluna's 7 villagers, since act1-chapters' qa_known drops them for
+    their fix. It's green on the merged tree.
+- **Audit on the merged tree, full (import + runtime scan): 11 items, down from 17** (env-art 9, integration-qa 2).
+  `act1_final_inventory.md` is rewritten. creatures-b and env-art-b are clear now. integration-qa's 2 are still
+  Pell and vigil_pell (Ch9), waiting on M3-CHR-506.

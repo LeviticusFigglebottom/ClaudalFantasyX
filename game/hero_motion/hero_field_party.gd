@@ -1,7 +1,8 @@
 class_name HeroFieldParty
 extends Node
 ## The party's followers in the field (M2-HER-1102, ADR 0190): the joined heroes after the leader
-## (Game.state.party_ids, at most field.followers.max, in party order) walk behind the player on his
+## (Game.state.party_ids, then with include_reserve the reserve_ids, at most field.followers.max, in that order; the
+## big15 playtest: the slice's Toma, in reserve, never walked with Rhen and Asha) walk behind the player on his
 ## breadcrumb trail, each a HeroFieldActor (same gait blend and eased turn) on a plain Node3D anchor:
 ## no physics body, so they never block the player or trip a trigger.
 ##
@@ -160,7 +161,10 @@ func advance(delta: float) -> void:
 func sync_party() -> void:
 	var want: Array[StringName] = []
 	var lead_id := leader.hero_id if leader != null else HeroFieldActor.leader_id()
-	for id: StringName in Game.state.party_ids:
+	var ids: Array[StringName] = Game.state.party_ids.duplicate()
+	if bool(_cfg.get("include_reserve", false)):
+		ids.append_array(Game.state.reserve_ids)  # the reserve walks with the party too (battle swaps them in)
+	for id: StringName in ids:
 		if id != lead_id and not id in want and HeroFieldActor.scene_path(id) != "":
 			want.append(id)
 	want = want.slice(0, int(_cfg.get("max", 0)))
@@ -450,10 +454,12 @@ func follow_point(i: int) -> Vector3:
 	return sight_clear(i, trail_point((i + 1) * float(_cfg.get("spacing_m", 0.0))))
 
 
-## `at`, or, when it lies between the field camera and the leader (at least sight_clear_m short of him) within
+## `at`, or, when it lies between the field camera and the leader (at least sight_depth_m short of him), under the
+## camera's line down to his chest (sight_chest_m: a camera looking down over her head_m sees him), within
 ## sight_clear_m of the line between them (flat), `at` moved square to that line until it is sight_clear_m off it: to
-## the side follower `i` took since the last catch_up, else the side `at` is on; the other side when a wall stands
-## there or it would come nearer the leader than min_gap_m. Unchanged with no camera, or when neither side will do.
+## the side follower `i` took since the last catch_up, else the side it stands on; the other side when a wall stands
+## there or it would come nearer the leader than min_gap_m; then the same at each smaller sight_clear_shares of the
+## clearance. Unchanged with no camera, or when nothing will do.
 func sight_clear(i: int, at: Vector3) -> Vector3:
 	while _sight_side.size() <= i:
 		_sight_side.append(0)
@@ -473,17 +479,28 @@ func sight_clear(i: int, at: Vector3) -> Vector3:
 	var along := rel.dot(dir)
 	var right := dir.cross(Vector3.UP)
 	var off := rel.dot(right)
-	if along <= 0.0 or along >= length - clear or absf(off) >= clear:  # level with him, it's beside him: no cover
+	var depth := float(_cfg.get("sight_depth_m", 0.0))
+	if along <= 0.0 or along >= length - depth or absf(off) >= clear:  # level with him, it's beside him: no cover
 		_sight_side[i] = 0
 		return at
-	if _sight_side[i] == 0:
-		_sight_side[i] = 1 if off >= 0.0 else -1
+	var chest := lead.y + float(_cfg.get("sight_chest_m", 0.0))
+	var line_y := cam.global_position.y + (chest - cam.global_position.y) * (along / length)
+	if line_y > at.y + float(_cfg.get("head_m", 0.0)):  # the camera looks down at him over her head
+		_sight_side[i] = 0
+		return at
+	if _sight_side[i] == 0:  # the side she stands on now, so she never walks across his line to reach her spot
+		var side_off := off
+		if i < followers.size():
+			var cur := followers[i].global_position
+			side_off = Vector3(cur.x - cam.global_position.x, 0.0, cur.z - cam.global_position.z).dot(right)
+		_sight_side[i] = 1 if side_off >= 0.0 else -1
 	var gap := float(_cfg.get("min_gap_m", 0.0))
-	for side: int in [_sight_side[i], -_sight_side[i]]:
-		var moved := at + right * (side * clear - off)
-		if Vector2(moved.x - lead.x, moved.z - lead.z).length() >= gap and not blocked(moved):
-			_sight_side[i] = side
-			return moved
+	for share: Variant in _cfg.get("sight_clear_shares", [1.0]):  # full clearance, else less where walls are near
+		for side: int in [_sight_side[i], -_sight_side[i]]:
+			var moved := at + right * (side * clear * float(share) - off)
+			if Vector2(moved.x - lead.x, moved.z - lead.z).length() >= gap and not blocked(moved):
+				_sight_side[i] = side
+				return moved
 	return at
 
 

@@ -20,9 +20,15 @@ Cause: `ch02_girl_on_the_beach.dlg` cuts to `@camera H05 blend=0.0` (line 84) be
 That framing suits him lying or kneeling. Once he stands, his head is at about 1.7 m, out of the top of the frame,
 and the lines that follow play on sky.
 
+Also (the PC's real-GPU QA, row 21, on lead/gate-ft-beach): "the camera starts below the waterline, looking up
+through the surface". H05 stands at y 0.44 in the shallows. When the tide (weathering_tide.gd's
+`hymn_water_level`) is above that, the low shot is under the water. Keep H05 above the highest water the beach sees
+at that time of day.
+
 ## Acceptance criteria
 - [ ] After `@anim rhen rise_to_stand`, cut to a shot that frames him standing with Asha and Toma (H06 or a new
       one) for lines ch02_beach_029–034.
+- [ ] H05 stays above the water surface at the beach's tide for Cutscene A.
 - [ ] Self-render the cutscene. No line plays on a frame without a face in it.
 
 ## Notes
