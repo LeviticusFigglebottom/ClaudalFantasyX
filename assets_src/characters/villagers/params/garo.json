@@ -53,7 +53,31 @@
     "fingertip_oil": 0.35,
     "scalp_density": 0.7,
     "seed": 132,
-    "lip": "#74443A"
+    "lip": "#74443A",
+    "stubble_shadow": 0.3,
+    "burn_scars": {
+      "count": [
+        8,
+        9
+      ],
+      "size_mm": [
+        22,
+        46
+      ],
+      "aspect": [
+        1.2,
+        2.4
+      ],
+      "span": [
+        0.08,
+        0.92
+      ],
+      "opacity": 1.0
+    },
+    "body_size": [
+      1024,
+      512
+    ]
   },
   "_hair": {
     "kind": "cropped",
@@ -74,7 +98,8 @@
     "grey": "#A9A39A",
     "grey_share": 0.6,
     "underpaint": "#4A443E",
-    "brow": "#4C463F"
+    "brow": "#4C463F",
+    "grey_strands": true
   },
   "_eyes": {
     "iris": "#24170E"

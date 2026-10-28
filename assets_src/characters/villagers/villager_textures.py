@@ -64,6 +64,15 @@ STUBBLE_SHADOW_TINT = (0.62, 0.64, 0.66)  # `stubble_shadow`: the beard region a
 STUBBLE_SHADOW_RAMP = (-0.01, 0.06)  # head heights into the beard (toma_hair.beard_v) over which the shadow fades in
 OIL_WARM = (1.04, 0.94, 0.80)  # fingertip_oil: lamp oil darkens the pads toward a warm brown (M3-CHR-03, Kell)
 OIL_PAD_R = 1.7  # x the finger's tip radius: how far round the last phalanx the stain reaches
+CHALK_HEX = "#E4E0D6"  # `fingertip_chalk`: slate chalk dust (M3-CHR-535, the pool-keeper)
+CHALK_MOTTLE = 0.45  # share of the chalk the dust's unevenness takes away
+# `burn_scars` (M3-CHR-532, Garo's forearms): healed burns as pale, glossy-looking patches with a darker rim
+BURN_FOREARM_R = 0.03  # m at S = 1: the forearm's radius, to measure the patches' width round it
+BURN_PALE = (1.24, 1.06, 1.04)  # the healed skin against the skin round it (paler, pinker)
+BURN_DESAT = 0.35
+BURN_RIM_DARK = 0.12  # the hyperpigmented rim
+BURN_EDGE_NOISE = 0.45  # how ragged a patch's edge is
+BURN_MOTTLE = 0.5  # the scar tissue's unevenness inside a patch (share of its paleness)
 
 
 def load(npc: str) -> dict:
@@ -170,6 +179,8 @@ def _albedo_villager(orig, sk: dict, hstyle, hair_hex: str):
     seed = int(sk.get("seed", 1))
     lip = sk.get("lip")
     oil = float(sk.get("fingertip_oil", 0.0))  # a chandler's oil-dark fingertips (act1_npcs.md §4.2)
+    chalk = float(sk.get("fingertip_chalk", 0.0))  # M3-CHR-535 (optional): the pool-keeper's chalky fingers
+    burns = sk.get("burn_scars")  # M3-CHR-532 (optional): a smith's burned forearms
     lm_spec = sk.get("line_marks")  # M3-CHR-511: Saltwright line-marks (liss_textures' generator)
     marks_state: dict = {}
 
@@ -207,6 +218,11 @@ def _albedo_villager(orig, sk: dict, hstyle, hair_hex: str):
             if oil > 0.0:
                 wt = fingertip_weight(lm, Ph)[:, None]
                 col = col + (col * (1.0 - oil) * np.array(OIL_WARM) - col) * wt
+            if chalk > 0.0:
+                wt = fingertip_weight(lm, Ph) * chalk * (1.0 - CHALK_MOTTLE * at.noise3(Ph, 0.002 * s, 191 + seed))
+                col = col + (hexc(sk.get("chalk_hex", CHALK_HEX)) - col) * wt[:, None]
+            if burns:
+                col = _burn_scars(col, Ph, lm, burns, seed)
             if lm_spec:
                 col = _ink_marks(col, Ph, lm, lm_spec, marks_state)
             return np.clip(col, at.FLOOR, at.CEIL)
@@ -250,6 +266,43 @@ def _albedo_villager(orig, sk: dict, hstyle, hair_hex: str):
         return np.clip(col, at.FLOOR, at.CEIL)
 
     return albedo
+
+
+def _burn_scars(col: np.ndarray, P: np.ndarray, lm, spec: dict, seed: int) -> np.ndarray:
+    """Healed burns on the forearms (M3-CHR-532): `count` [L, R] irregular patches, `size_mm` [lo, hi] across round
+    the arm, stretched along it by `aspect` [lo, hi], over `span` [lo, hi] of the forearm from the wrist; paler, pinker
+    and less saturated than the skin round them, with a darker rim and a ragged edge. Seeded, deterministic."""
+    import toma_textures as tt
+
+    S = lm.S
+    s = lm.h / 0.222
+    opacity = float(spec.get("opacity", 1.0))
+    edge = at.noise3(P, 0.004 * s, 197 + seed)
+    for si, side in enumerate(("L", "R")):
+        n = int(spec["count"][si])
+        if not n:
+            continue
+        d, ang, near = tt._forearm(lm, P, side, S)
+        length = float(np.linalg.norm(lm.side_pt("elbow", side) - lm.side_pt("wrist", side))) / S
+        rng = np.random.default_rng([seed, 61, si])
+        scar = np.zeros(len(P))
+        rim = np.zeros(len(P))
+        for _ in range(n):
+            c_d = rng.uniform(*spec.get("span", (0.15, 0.85))) * length
+            c_a = rng.uniform(0.0, 2.0 * np.pi)
+            size = 0.5e-3 * rng.uniform(*spec["size_mm"])
+            aspect = rng.uniform(*spec.get("aspect", (1.2, 2.2)))
+            da = np.angle(np.exp(1j * (ang - c_a))) * BURN_FOREARM_R
+            q = np.hypot((d - c_d) / aspect, da) / size
+            q = q * (1.0 + BURN_EDGE_NOISE * (edge - 0.5))
+            scar = np.maximum(scar, smoothstep(1.0, 0.7, q) * near)
+            rim = np.maximum(rim, np.exp(-((q - 1.0) / 0.2) ** 2) * near)
+        g = col.mean(axis=1, keepdims=True)
+        pale = (col + (g - col) * BURN_DESAT) * np.array(BURN_PALE)
+        mottle = 1.0 - BURN_MOTTLE * at.noise3(P, 0.0025 * s, 199 + seed)
+        col = col + (pale - col) * (scar * opacity * mottle)[:, None]
+        col = col * (1.0 - BURN_RIM_DARK * opacity * (rim * (1.0 - scar))[:, None])
+    return col
 
 
 def _ink_marks(col: np.ndarray, P: np.ndarray, lm, spec: dict, state: dict) -> np.ndarray:

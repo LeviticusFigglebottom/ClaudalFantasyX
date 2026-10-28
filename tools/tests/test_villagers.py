@@ -571,6 +571,36 @@ class TestDialoguePolish(unittest.TestCase):
         self.assertLess(float(np.linalg.norm(P[0] - hc)), float(np.linalg.norm(front - hc)))
         self.assertTrue(np.allclose(P[1], above))
 
+    def test_garos_burn_scars_sit_on_his_forearms(self):
+        # act1_ch05.md §4: a smith's burn-scarred forearms; the term paints the forearms only and is seeded
+        import numpy as np
+        import villager_textures as vt
+
+        sk = params("garo")["_skin"]
+        lm, _body, _fields, _chart = self._fitted("garo")
+        rng = np.random.default_rng(5)
+        pts = []
+        for sd in ("L", "R"):
+            wr, el = lm.side_pt("wrist", sd), lm.side_pt("elbow", sd)
+            t = rng.uniform(0.0, 1.0, 4000)[:, None]
+            ring = rng.normal(size=(4000, 3)) * 0.02
+            pts.append(wr + (el - wr) * t + ring)
+        P = np.concatenate(pts + [lm.P("notch")[None, :] + rng.normal(size=(500, 3)) * 0.03])
+        col = np.full((len(P), 3), 0.5)
+        out = vt._burn_scars(col.copy(), P, lm, sk["burn_scars"], int(sk["seed"]))
+        changed = np.abs(out - col).sum(axis=1) > 1e-6
+        self.assertGreater(int(changed[:8000].sum()), 100)
+        self.assertFalse(changed[8000:].any())  # nothing on the chest
+        self.assertTrue(np.array_equal(out, vt._burn_scars(col.copy(), P, lm, sk["burn_scars"], int(sk["seed"]))))
+
+    def test_chalk_and_burn_terms_are_opt_in(self):
+        # M3-CHR-532/535: `burn_scars` and `fingertip_chalk` are optional; the villagers without them carry neither
+        for npc in NPCS:
+            sk = params(npc)["_skin"]
+            with self.subTest(npc=npc):
+                self.assertEqual("burn_scars" in sk, npc == "garo")
+                self.assertEqual("fingertip_chalk" in sk, npc == "poolkeeper")
+
     def test_hobbs_cord_has_three_knots(self):
         # act1_ch08.md: the three-knot watch-red captain's cord
         self.assertEqual(params("hobb")["_costume"]["sash"]["cord_knots"], 3)
