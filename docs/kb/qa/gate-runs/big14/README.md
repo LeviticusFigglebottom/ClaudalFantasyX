@@ -16,7 +16,7 @@
 | tools unittests | 1527 run (50 skipped), **6 failing units** (below) |
 | Godot suite | **3161 run, 15 failed, then a segfault at exit** (below). The first run hit the PC's 2400 s step timeout inside `test_qa_threads`, a long playthrough; the re-run with a 3 h timeout took 45 min. |
 | Boot smoke (60 frames) | **ok** (run on its own after the crash) |
-| Coverage gate | **Re-running.** The first try hit run_coverage's 600 s limit (`HYMN_STEP_TIMEOUT`): the instrumented run is the whole suite, which now takes ~45 min. The default limit fails a cloud run too unless `HYMN_STEP_TIMEOUT` is raised. Re-running with 3 h; the result goes in pc-gpu.md. |
+| Coverage gate | **FAIL, no numbers**: with a 3 h limit it ran 2809 s, then refused to report. "test suite did not pass under instrumentation (exit -6)": the same 15 failing tests, plus the crash at exit. It reports again once the suite passes. |
 | Blender (77 jobs changed) | **75 identical, 2 DIFF** (below) |
 | Screenshots | **523 compared, 302 failed** = 121 without a baseline + 181 over the RMSE limit. All 523 captured, **no SCRIPT ERROR at shutdown** (big12's life_audio error is gone) |
 | Wall | lane B 6672 s (523 shots), Blender 1852 s, lane A ~45 min until the timeout |
@@ -76,6 +76,12 @@ How it was run:
    - The wide shots show Asha kneeling at the left and Toma standing, but **Rhen is not in frame**.
    - Four lines ("I'm Asha. That's Toma…", "Toma Okeru,", "To Asha. Who is very glad…", "Later. You're shaking.") are framed on **empty sky**. Probably meant as Rhen's view lying on his back, but no face enters it; an orange blur touches one frame edge.
    - Owners: slice-polish and hero-integration (walk_p03).
+**Re-run on lead/gate-ft-beach @ 93d0741e** (the beach re-stage on top of big14; the same walk, no timing; `gpu_playtest/ft_beach_b0..b2.jpg`):
+- **The beach now works:** Rhen lies in the shallows with Asha kneeling at his side, both faces in frame (H05/H06), then he sits up and stands. Fix 2 is good.
+- **Asha's skirt** balloons into a large blue mass over Rhen's chest and passes through him while she kneels (newgame_13–17). Owner: characters (the M1-CHR-15 skirt).
+- **When Rhen stands**, two lines ("Toma Okeru," and "To Asha. Who is very glad…") are framed on his waist and legs, with no heads. Owner: slice-polish.
+- **After the scene** the field camera starts below the waterline at the shore, looking up through the surface, and Rhen is still not on screen (row 21). Owner: hero-integration.
+
 3. **The party following, spaced, at the start: partly.**
    - After the cutscene the objective is "Follow Asha and Toma up the beach", and they walk ahead, spaced, to the village gate.
    - **Rhen himself is not on screen**: the field camera starts over the shallows facing the beach, with no player in frame, also from the Village spawn (haluna_start_no_rhen.jpg). He may still be lying in the shallows pose, or the camera may be framing the wrong target.
