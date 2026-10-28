@@ -589,7 +589,7 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
-- **MERGE-READY @ (this push): Haluna's night-lamp flames are the kit's flame; the Prologue walked; the inventory
+- **MERGE-READY @ 5ef018b14: Haluna's night-lamp flames are the kit's flame; the Prologue walked; the inventory
   re-run.**
   - **The placeholder audit** (`tools/placeholder_audit.py`, re-run on this tree; the inventory file restored) puts
     env-art's open rows at 11. Of those:
