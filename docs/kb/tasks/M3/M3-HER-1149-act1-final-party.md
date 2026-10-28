@@ -21,8 +21,11 @@ real hero. Kerrid and Liss also need battle actors.
 - [x] Liss's battle row (battle_sandbox.json -> liss_battle_actor.tscn, M3-HER-1120).
 - [ ] Liss everywhere, once claude/characters' liss_lod1.glb merges (her field row and battle wrapper are ready;
       nothing else to do here).
-- [ ] Kerrid's field row and battle wrapper, once his model lands (M3-CHR-505; characters has his battle scene in
-      progress). Pell's, once M3-CHR-506 lands.
+- [x] Kerrid's field row (walk 0.71, run 1.80 m/s, measured on kerrid_lod1 with his own measure config) and battle
+      wrapper (characters' game/characters/heroes/kerrid_battle.tscn by path), plus his battle_sandbox row. He's real
+      everywhere once claude/characters merges. Checked on a scratch merge: hero_ green, the dawn road shows him at
+      the milestone.
+- [ ] Pell's, once M3-CHR-506 lands.
 - [ ] The audit lists no integration-qa rows.
 
 ## Notes

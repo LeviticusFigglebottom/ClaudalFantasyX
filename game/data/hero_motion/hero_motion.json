@@ -58,7 +58,7 @@
       },
       "kerrid": {
         "scene": "res://assets/characters/kerrid/kerrid_lod1.glb",
-        "walk_clip_mps": 0.48,
+        "walk_clip_mps": 0.71,
         "run_clip_mps": 1.8
       }
     },
