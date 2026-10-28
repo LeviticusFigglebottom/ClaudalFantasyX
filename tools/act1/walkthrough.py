@@ -40,9 +40,9 @@ ZONES: dict[str, tuple[str, str, list[str], list[list[tuple[float, ...]]]]] = {
         [(-52.0, -2.6), (-60.0, 20.0), (-67.0, 44.3)],
         [(-52.0, -2.6), (-30.0, -40.0), (-10.0, -80.0), (4.0, -118.0)],
         [(-24.0, 6.5), (0.0, 30.0), (13.7, 46.2)]]),
-    # What the player touches in Haluna (the shop, the smith, the inn, the save shrine), each seen from 5 m.
+    # What the player touches in Haluna (the shop, the smith, the inn, the save shrine), each from the customer's side.
     "ch02_haluna_touch": ("res://game/levels/ch02/haluna/haluna.tscn", "Beach", ["prologue_seen", "ch02_met_asha"], [
-        [(-31.0, -0.6), (-36.0, -0.6)], [(-7.0, 50.0), (-12.0, 50.0)], [(-30.0, 53.5), (-30.0, 58.5)],
+        [(-40.0, 0.4), (-34.0, -1.0)], [(-7.0, 48.0), (-13.5, 51.0)], [(-24.5, 55.5), (-30.0, 59.5)],
         [(-67.0, 41.0), (-67.0, 46.6)]]),
     "ch03_causeway": ("res://game/levels/ch03/saltgrass_causeway/saltgrass_causeway.tscn", "FromHaluna",
                       ["prologue_seen", "ch02_met_asha", "ch02_tideline_won", "ch02_ate_at_nemes"], [

@@ -145,6 +145,17 @@
         "basket_set-lod1": 153
       }
     },
+    "beach_forge": {
+      "budget": [
+        9000,
+        700
+      ],
+      "bytes": 110292,
+      "lods": {
+        "beach_forge": 1249,
+        "beach_forge-lod1": 188
+      }
+    },
     "bowl_dome": {
       "budget": [
         6000,
@@ -1556,6 +1567,39 @@
       "tags": [
         "PLACEHOLDER"
       ]
+    },
+    "shop_sign_forge": {
+      "budget": [
+        1800,
+        200
+      ],
+      "bytes": 22176,
+      "lods": {
+        "shop_sign_forge": 228,
+        "shop_sign_forge-lod1": 24
+      }
+    },
+    "shop_sign_goods": {
+      "budget": [
+        1800,
+        200
+      ],
+      "bytes": 22704,
+      "lods": {
+        "shop_sign_goods": 234,
+        "shop_sign_goods-lod1": 24
+      }
+    },
+    "shop_sign_inn": {
+      "budget": [
+        1800,
+        200
+      ],
+      "bytes": 26176,
+      "lods": {
+        "shop_sign_inn": 336,
+        "shop_sign_inn-lod1": 24
+      }
     },
     "shrine_basin_bowl": {
       "budget": [
