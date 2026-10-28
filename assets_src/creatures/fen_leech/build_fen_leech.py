@@ -44,6 +44,11 @@ base.TAIL_Z0, base.TAIL_STEP = -0.75, 0.25
 base.TAIL_PATH = ((0, 0.2, -0.75), (0, 0.19, -1.0), (0.04, 0.15, -1.25), (0.0, 0.13, -1.5))
 base.TAIL_R = (0.05, 0.012)
 base.TAIL_CHAIN = ((0, 0.2, -0.75), (0, 0.2, -1.0), (0, 0.2, -1.25), (0, 0.2, -1.5))
+# M3-CRE-654 gave the sail leech a leech's own body and suckers: here the body stays ribbon-flat (half the sail
+# leech's) so the eyes sit on it, and the narrow sails hang only a little.
+base.BODY_W = 0.09
+base.BODY_H = (0.035, 0.025)
+base.DROOP = 0.035
 base.PAL = dict(base.PAL)
 base.PAL.update({
     "abyss_navy": ck.mix(SW["lacquer_black"], SW["tortoiseshell"], 0.18),  # the back: lacquer black, a hint of brown
