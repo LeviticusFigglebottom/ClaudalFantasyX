@@ -226,6 +226,25 @@ cutscene sequencer (`game/cutscene/**`), `game/flow/**` and the playtest fixes.
     capsules (ch02/haluna) are slice-polish's.
   - Checks on the merged tree: act1_cutscene_walks, qa_save_shrines, zone_map, ability_vfx, ch04-ch09, hero_cutscene_snaps
     green; villager_routines' two Oruvel/layer await failures and the Haluna capsules are other tracks'.
+- **MERGE-READY @ 548ba5222: Act I walks on their paths, and pacing** (details in
+  `docs/kb/qa/act1_playthrough_ch04_ch09.md`, "Walks and pacing").
+  - M3-CIN-1220 (review): M3-CIN-1221's `via=` landed in b2d39f8cc, `act1_walk_vias.patch` is in, and
+    `act1_cutscene_walks_known.json` is empty. The dawn causeway is re-staged on the real Haluna (32d59e75d).
+  - Pacing (d212b0413, 3c3839c84, 548ba5222): scenes no longer hold a frame, a black screen or a released camera
+    while walks finish. Every Act I scene ends within about 11 s of its last step, on a visible walk; stuck_key's
+    14 s is a harness artefact. Flow, mark and script staging changes: ch04 shell_is_set/dock/dawn, ch06
+    raid/after_barge/liss_lantern, ch07 into_tamsule/after_the_bell/empty_moorings, ch08 landfall (party on the
+    mole stair, MoleStair spawn; `test_ch08_thread` expects it)/spire_door/wall_falls/cut_rope.
+    **For env-art-b:** the new and moved marks (`landfall_kerrid`, `MoleStair`, `figure_gone`, `W02`; Ch6
+    `inq_halt`, `hound_halt`; Ch7 `drift_*`, `tavi_leaves`, `tavi_away`) are hand edits after the one-time
+    relayouts. Keep them if you regenerate.
+  - `tools/act1/cutscene_stills`: `STILLS_TIMING` (headless TAIL report), `STILLS_EVERY`, per-still debug
+    positions; the plan runs in story order (flags needed and raised, trigger flags, reloads, beat triggers).
+  - Request M3-CIN-1231 (slice-polish): an advanced line's box stays up through silent holds.
+  - Checks: `--filter=` act1_cutscene_walks 1/0, hero_cutscene_snaps 1/0, ch0 107/0, ch04 13/0, ch06 5/0,
+    ch07 18/0, ch08 25/0; validate_data, dlgc --check, taskboard --check, gdlint, gdformat clean;
+    `tools.tests.test_chapter_flow` and `test_act1_poi_views` OK. Skipped: coverage and sim (no battle or
+    progression code), shots (no manifest camera changed).
 - **MERGE-READY @ 81b997807: the playthrough's third pass and the field POI pass** (Lead brief 10-28; details in
   `docs/kb/qa/act1_playthrough_ch04_ch09.md`).
   - Cutscene cameras (7000ae2b5): R08 off the waterline; W07 and W07_storm west of the gate (they sat inside the
