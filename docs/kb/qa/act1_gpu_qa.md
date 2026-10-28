@@ -25,12 +25,32 @@ It covers the title, New Game into the Prologue, each chapter as F8 starts it (i
 every zone, one battle per arena and every Act I boss intro. Contact sheets go on `gpu/act1-qa-<n>` under
 `docs/kb/qa/gpu/act1/`.
 
+**Pass A, 2026-10-28:** all 341 manifest shots captured at High ×2.667 on integration 048b0a7f (1074 s). The 31 shots with a node or time_scale setup were re-captured with capture_preset's new `--setup`; without it the slice cutscene shots render navy and haluna_h10_dock_night renders in daylight. Read well on the GPU: Haluna, the Shell Shrine, the Tamsule galleries and moorings, the Coilspire path, and the tideline, causeway, raft, route, shoals, derelict and matron arenas. The other boss intros read well too. Contact sheets: `docs/kb/qa/gpu/act1/pass_a/`.
+
 **Status:** each row is `open` until the owner fixes it, then `fixed @ <sha>` once the PC has seen the fix on the GPU.
 
 ## Findings
 
 | # | Where (shot or walk segment) | What reads wrong on the GPU | Owner | Status | Pass |
 |---|---|---|---|---|---|
+| 1 | iskarra_p01_plaza_dusk, iskarra_i02, iskarra_i03 (the Prologue) | Greybox: untextured white towers and cylinders, grey/green capsule stand-ins, a checkerboard plaza with teal shading, and nothing past the plaza edge (the haze shows through). | env-art | open | pass A (2026-10-28, integration 048b0a7f) |
+| 2 | slice_prologue_vigil_line | The vigil set is untextured: white columns and a flat floor behind dressed heroes. | env-art (set), slice-polish (shot) | open | pass A (2026-10-28, integration 048b0a7f) |
+| 3 | slice_verse_steps (ch03/first_verse) | Untextured white pillars and steps under flat pastel light. | env-art | open | pass A (2026-10-28, integration 048b0a7f) |
+| 4 | ch04_ferry_deck | Nearly black at High; the deck is unreadable, and a large orange sphere in the foreground reads unlit. | env-art | open | pass A (2026-10-28, integration 048b0a7f) |
+| 5 | ch06_brine_camp, ch06_brine_road | Flat untextured sand under a uniform haze; the camp's tent reads as a box. Nothing breaks up the ground. | env-art-b | open | pass A (2026-10-28, integration 048b0a7f) |
+| 6 | ch08_coilspire_hall | Very dark, with a noisy repeating brick texture. Thin green lines grid the walls (z-fighting or a stray decal). | env-art-b | open | pass A (2026-10-28, integration 048b0a7f) |
+| 7 | ch08_corrow_arrival | The harbour mole is a flat untextured slab. | env-art-b | open | pass A (2026-10-28, integration 048b0a7f) |
+| 8 | ch08_corrow_stair, ch09_corrow_road | A grey capsule stand-in stands in frame (an NPC placeholder). | act1-chapters (placement), creatures (villager) | open | pass A (2026-10-28, integration 048b0a7f) |
+| 9 | ch09_corrow_strand | Nearly black at High; the strand is unreadable. | env-art-b | open | pass A (2026-10-28, integration 048b0a7f) |
+| 10 | battle_arena_wall_head, battle_ch08_stair_hold | Greybox arena: untextured battlements, a flat floor and a grey wall. | env-art-b | open | pass A (2026-10-28, integration 048b0a7f) |
+| 11 | battle_boss_intro_reach | Greybox backdrop (untextured slabs). A hard-edged bright wedge of light cuts across the frame. | env-art-b; the wedge: rendering | open | pass A (2026-10-28, integration 048b0a7f) |
+| 12 | battle_arena_camp, battle_boss_intro_inquisitor | Inquisitor Hadric Moll is a grey capsule (a boss without a mesh). | creatures-b | open | pass A (2026-10-28, integration 048b0a7f) |
+| 13 | battle_choreo_cast, _read, _toll | Ysolde is a tan capsule in battle. | characters | open | pass A (2026-10-28, integration 048b0a7f) |
+| 14 | battle_choreo_summon, _vowbound_rise | Ilun (Vowbound) is a teal dome stand-in. | creatures-b | open | pass A (2026-10-28, integration 048b0a7f) |
+| 15 | battle_arena_underway, _underway_tower | Hard-edged rectangular lit patches on the floor (a light or GI leak) in an otherwise dark arena. | env-art-b | open | pass A (2026-10-28, integration 048b0a7f) |
+| 16 | battle_arena_terrace, _ash_terrace_lanternfall | Very dark at High; the party is barely lit against the terraces. | env-art-b | open | pass A (2026-10-28, integration 048b0a7f) |
+| 17 | undertow_eye (also undertow_night) | Concentric streak rings at the eye's centre, and a grid-like dither over the cloud body. Possibly a still-frame TAA effect: to check in motion in pass B. | rendering (pc-gpu) | open | pass A (2026-10-28, integration 048b0a7f) |
+| 18 | slice_causeway_harrier_view | No harrier in frame (the lavapipe baseline has none either): a framing or timing gap, not a GPU issue. | slice-polish | open | pass A (2026-10-28, integration 048b0a7f) |
 
 ## Frame-time budget per zone (ADR 0029/0037, the walk with --budget)
 
