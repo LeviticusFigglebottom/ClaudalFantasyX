@@ -2,7 +2,7 @@
 """env-art's walk-through pass over the Prologue–Ch4 zones (the Lead's 10-28 ask): each zone's critical path as
 legs of waypoints (x, z) on the ground, sampled every WALK_STEP_M (closer on a short zone, so each zone gets at
 least MIN_POINTS), a camera at the player's eye at each sample looking on along the leg. The Prologue has no player
-(its camera is the cinematic's), so it is not walked.
+(its camera is the cinematic's); it is walked at a player's eye anyway.
 
     python3 tools/act1/walkthrough.py --out DIR [--zone ID ...]
 
@@ -26,6 +26,11 @@ LOOK_AHEAD_M = 12.0
 # zone id -> (level, spawn, flags, legs). The legs follow each chapter's beats (spawns and triggers in order); a new
 # leg is a cut in the walk (a drop, a door, a boat).
 ZONES: dict[str, tuple[str, str, list[str], list[list[tuple[float, ...]]]]] = {
+    # The Prologue has no player (its camera is the cinematic's); walked anyway at a player's eye through Iskarra:
+    # the arrival line to the gate, the plaza across, the vigil line.
+    "prologue": ("res://game/levels/prologue/prologue.tscn", "Start", [], [
+        [(1.5, 21.0), (1.0, 6.0), (-4.0, -20.0), (-4.0, -45.0)], [(8.0, 6.5), (24.0, -6.0)],
+        [(-12.0, 1.5), (9.5, -5.5)]]),
     "ch01_oruvel": ("res://game/levels/ch01/oruvel/oruvel.tscn", "ScaleHull", [], [
         [(0.0, 13.0), (0.0, 2.0), (0.0, -6.0), (-12.0, -6.0), (-12.0, -16.5), (0.0, -20.0), (0.0, -34.0)],
         [(0.0, -6.0), (12.5, -7.0), (23.0, -6.0), (35.0, -6.0), (45.0, -5.0), (45.0, -11.5)],
