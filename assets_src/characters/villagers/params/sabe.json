@@ -40,6 +40,7 @@
   "donor_mix_asian": 0.4,
   "donor_mix_caucasian": 0.1,
   "_skin": {
+    "brow_strands": {"count": 70, "dark_share": 0.3, "dark_hex": "#4A4640", "light_hex": "#C9C3B8", "opacity": 0.9},
     "hex": "#875438",
     "age": 0.95,
     "freckles": 0,
@@ -52,6 +53,8 @@
     "lip": "#6E4236"
   },
   "_hair": {
+    "brow_params": {"alpha_boost": "1.0", "strand_value_jitter": "0.4"},
+    "hairline_feather": 1.0,
     "kind": "short",
     "hairline": "female",
     "seed": 46,
@@ -71,7 +74,9 @@
     "grey_share": 0.5,
     "underpaint": "#B0AAA0",
     "brow": "#9A948A",
-    "spec": "#D8D2C8"
+    "spec": "#D8D2C8",
+    "grey_strands": "all",
+    "grey_width_k": 1.2
   },
   "_eyes": {
     "iris": "#2A1A10"
@@ -83,7 +88,8 @@
       "sleeve": 0.0,
       "neck_v_m": 0.05,
       "armhole_drop_m": 0.1,
-      "cover_margin_m": 0.02
+      "cover_margin_m": 0.02,
+      "armhole_cut": "tank"
     },
     "trousers": {
       "mat": "cloth_b",

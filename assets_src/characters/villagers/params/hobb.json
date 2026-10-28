@@ -1,5 +1,5 @@
 {
-  "_about": "Hobb, captain of Corrow's stair-watch (Ch8-9, speaker `hobb`; act1_ch08.md: a fisher of fifty with the three-knot watch-red captain's cord on his hip, the same cord as Kerrid's; drills the young fishers on the stair: 'First down, last up'). Wiry and loud; grey-black short hair, a grey stubble; a faded indigo sleeveless fisher's vest over a bare chest, storm-grey knee trousers, the watch-red captain's cord as a narrow sash with long tails at the hip (its three knots are not modelled), barefoot on the stair. Reach-bands left 8, right 7. (M3-CHR-538.) Face sliders relative to the MakeHuman donor (ADR 0021: 1.0 / 0.0 = unchanged). Keys starting with '_' are read by the villager_* modules (villager_hair, villager_costume, villager_textures, write_materials, villager_clips), not by bb_params.",
+  "_about": "Hobb, captain of Corrow's stair-watch (Ch8-9, speaker `hobb`; act1_ch08.md: a fisher of fifty with the three-knot watch-red captain's cord on his hip, the same cord as Kerrid's; drills the young fishers on the stair: 'First down, last up'). Wiry and loud; grey-black short hair, a grey stubble; a faded indigo sleeveless fisher's vest over a bare chest, storm-grey knee trousers, the watch-red captain's cord as a narrow sash with long tails at the hip tied with its three knots (narrowed tails, `cord_knots`), barefoot on the stair. Reach-bands left 8, right 7. (M3-CHR-538.) Face sliders relative to the MakeHuman donor (ADR 0021: 1.0 / 0.0 = unchanged). Keys starting with '_' are read by the villager_* modules (villager_hair, villager_costume, villager_textures, write_materials, villager_clips), not by bb_params.",
   "name": "hobb",
   "height_m": 1.72,
   "heads_tall": 7.4,
@@ -51,9 +51,12 @@
     "stubble": 0.6,
     "stubble_grey": 0.45,
     "seed": 138,
-    "lip": "#70443A"
+    "lip": "#70443A",
+    "stubble_shadow": 0.3,
+    "stubble_density": 0.6
   },
   "_hair": {
+    "hairline_feather": 1.0,
     "kind": "short",
     "hairline": "male",
     "seed": 58,
@@ -72,7 +75,8 @@
     "grey": "#9C968E",
     "grey_share": 0.35,
     "underpaint": "#34302C",
-    "brow": "#34302C"
+    "brow": "#34302C",
+    "grey_strands": true
   },
   "_eyes": {
     "iris": "#2A1A10"
@@ -94,7 +98,11 @@
       "mat": "cloth_a",
       "width_m": 0.025,
       "turns": 1,
-      "tails_m": 0.3
+      "tails_m": 0.3,
+      "tail_w_k": 0.35,
+      "knot_k": 0.75,
+      "cord_knots": 3,
+      "cord_knot_m": 0.046
     }
   },
   "_tints": {

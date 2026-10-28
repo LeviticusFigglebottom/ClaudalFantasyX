@@ -25,5 +25,6 @@ pipeline, with the clips their dialogue calls.
 - Who: Skipper Sadi Moru of the Seventh Terrace, a red-lacquered Pemakar copper coaster at Oruvel's outer mooring (Ch1 C1-10/11, speaker `skipper_sadi`; act1_ch01.md: bought a lamp-housing off Rhen and paid short; they argue amiably; 'Cast off! Sea room!'), about 40, a woman, Pemakar-born. Quick and strong; black hair in a low knot; a lacquer-red sleeveless wrap top (her ship's colour), ash-grey knee trousers, a gold-ochre sash, a black headband; barefoot on deck. Reach-bands left 5, right 5. (M3-CHR-528.)
 - Budget: LOD0 34,884 tris, 2.14 MB GLB; LOD1 16,472 tris, 0.81 MB.
 - Rendered: reads as a quick, strong Pemakar skipper (lacquer-red top, black headband). The black band sits wide on the brow at dialogue distance.
+- Dialogue polish (chr-npc-polish): before, the black headband stood off the brow, wide and high, with a shadow gap under it, and her black hair showed warm highlight chips. After: the band's edges drawn in to the skin with a rounder face (`headwrap.edge_off_m`, `off_m`), the hair under it pressed inside it (`headwrap.press_hair`), less sheen on the black cloth so it reads black, not grey (`_cloth_params.cloth_d.sheen_intensity`), and a dimmer hair specular (`_hair.spec`).
 
 ## Review log

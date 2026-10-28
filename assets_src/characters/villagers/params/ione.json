@@ -52,6 +52,7 @@
     "lip": "#5E3A30"
   },
   "_hair": {
+    "hairline_feather": 1.0,
     "kind": "short",
     "hairline": "female",
     "seed": 54,
@@ -67,7 +68,8 @@
     "hairline_cards": 50,
     "rise": 0.8,
     "colour": "#141417",
-    "underpaint": "#16161A"
+    "underpaint": "#16161A",
+    "spec": "#6A6460"
   },
   "_eyes": {
     "iris": "#22160E"
@@ -79,7 +81,8 @@
       "sleeve": 0.0,
       "neck_v_m": 0.04,
       "armhole_drop_m": 0.115,
-      "cover_margin_m": 0.02
+      "cover_margin_m": 0.02,
+      "armhole_cut": "tank"
     },
     "trousers": {
       "mat": "cloth_b",

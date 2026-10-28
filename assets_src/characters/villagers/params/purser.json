@@ -57,7 +57,8 @@
     "seed": 50,
     "hairline_cards": 60,
     "colour": "#141417",
-    "underpaint": "#16161A"
+    "underpaint": "#16161A",
+    "spec": "#6A6460"
   },
   "_eyes": {
     "iris": "#2A1A10"
@@ -94,7 +95,8 @@
       "edge_lift": 0.01,
       "puff_m": 0.01,
       "knot_m": 0.03,
-      "seed": 133
+      "seed": 133,
+      "edge_off_m": 0.002
     },
     "sandals": "leather"
   },

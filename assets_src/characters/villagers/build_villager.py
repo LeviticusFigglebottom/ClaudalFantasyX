@@ -90,7 +90,7 @@ def parse_args() -> argparse.Namespace:
     return ap.parse_args(argv)
 
 
-TORSO_PIECES = ("Top",)  # garment_fit: the torso only (M1-CHR-14: arm weights at the armholes drag the sides out)
+TORSO_PIECES = ("Top", "Shawl", "TopStrapL", "TopStrapR")  # M3-CHR-539: the netting shawl (optional) rides the torso too, as do the tank cut's straps (M3-CHR-526/534)  # garment_fit: the torso only (M1-CHR-14: arm weights at the armholes drag the sides out)
 LOWER_PIECES = ("TrouserTop", "TrouserLegL", "TrouserLegR")  # garment_fit: off the arms (a hanging hand is near)
 LEG_FOLLOW_PIECES = ("Skirt", "Apron")  # garment_fit: below the crotch they follow the legs (build_asha.skirt_weights)
 
@@ -313,6 +313,9 @@ def main() -> int:
     # ---- hair and head wrap: one rigid object on the head ----------------------------------------
     hstyle = villager_hair.style(extra["_hair"])
     hair = hstyle.build(lm, surf)
+    hw = cparams.get("headwrap") or {}
+    if headwear is not None and hw.get("press_hair") and hair.V:  # M3-CHR-03/528/537 (optional): under the band
+        hair.V = list(villager_costume.press_under_band(hair.varr(), headwear, lm, float(hw["press_hair"]) * lm.S))
     if snaps and hair.V:  # cards rooted on the midline and traced over the scalp carry the same host noise
         hair.V = list(np.round(hair.varr() / POS_GRID) * POS_GRID)
     hair_tris = hair.tris()
