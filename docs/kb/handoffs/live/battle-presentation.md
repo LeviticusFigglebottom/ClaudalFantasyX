@@ -26,6 +26,37 @@ both fixed and pushed. The branch head also carries:
   - any battle shot with an Act I creature, since the heights and the near-face anchor move its effects. I am
     self-rendering those next.
 
+**2026-10-28 06:xx: the Lead's items 2–4 (VFX on the real arenas, boss camera, Swell finishers), self-rendered @ 4a19f707.**
+- SELF-RENDERED (tool, scratch worktree with env-art and env-art-b merged plus the seawall patch; never pushed):
+  `act1_vfx_sheet --enemy_set` on 14 Act I arenas. Viewed: ch01 oil slug and Hullgnaw, ch02 tideline, ch03 causeway,
+  Drownbell, ch04 Spar-Wraith, ch05 Matron and stair tortoise, ch06 ridge gulls and Inquisitor, ch08 stair hold,
+  headland crabs and flue moths, and the Reach.
+  - **Found and fixed:**
+    - 21 Act I creatures had no height, so hits floated over small ones and struck big ones' shins. They now have
+      measured height rows.
+    - Hits on big bodies spawned inside the mesh. They now land on the near face.
+    - Oil Slap vanished on the dark tower; it now carries lamp glints.
+    - Lure Glow was faint on the beaches; it is now larger and brighter.
+    - The KO flash (a 2 m core) bleached the fighters beside it; the core is now about 1 m.
+  - **Read fine after the fixes:** every hit, status and KO, and each foe's own skills, on every arena.
+  - **Noted, not mine to change:**
+    - With the seawall repoint (unmerged), the Reach fills the left third of the default battle frame. That is
+      staging for when the repoint lands.
+    - The flue moths are grounded by design (creatures M3-CRE-631/632).
+    - The hound stands half-behind the Inquisitor's capsule until his model lands.
+- SELF-RENDERED @ 4a19f707, 15 shots (the ones the heights and the near face can move):
+  - **Pass:** melee, cast, lamp_dive, stair_hold, statuses.
+  - **Drift, viewed, intended:**
+    - battle_choreo_hit 0.023: Undertow Cut's spray on the crab's near face;
+    - battle_choreo_ko 0.019: the smaller KO flash, just in front of the falling gull;
+    - battle_choreo_toll 0.018: the dust on Toma's near side;
+    - battle_choreo_support 0.017: Mend over Asha;
+    - battle_choreo_summon 0.014, battle_heroes_hit 0.013 and battle_vowbound_call 0.013: small shifts in the
+      effects.
+  - The three battle_ch08_* shots are new, with no baselines yet (viewed). **Baselines are the gate's.**
+- The boss-camera sheet (`tools/vfx/boss_camera_sheet.tscn`) failed on a typed array, fixed at 4a19f707. It reruns
+  after the full suite.
+
 **2026-10-28 04:3x: big13 (90ecee18) merged in at 5baf9952. M3-BPR-423 boss-intro hero shots @ 59edc9b9 (the Lead's
 03:41 items, ahead of the rest of the queue).**
 - **Merge notes:**
