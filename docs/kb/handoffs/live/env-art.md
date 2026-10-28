@@ -589,6 +589,28 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
+- **2026-10-28 ~05:00: Ch4's wake night dressed (M3-ENV-743); MERGE-READY.**
+  - **New Haluna kit pieces:**
+    - `wake_ground`: the terrace level at y 0 inside the rails, the beach and flats past them, the island behind;
+      lane, turf, seagrass and rubble masks.
+    - `house_lane_a/b/c`: the houses with no shade deck, at the greybox's sizes.
+    - `dock_haluna_short`: 14.4 m.
+    - `wake_shell_set`: a named shell for the wall, no stand.
+    - The existing houses, dock and single shell rebuild byte-identical.
+  - `assets_src/environments/kits/haluna/wake_zone_dressing.py` → `assets/environments/zones/ch04/` (the JSON, the
+    night Environment, the night sea) and the preview `game/levels/_tests/haluna_wake_dressing/`.
+  - The mount request is M3-ENV-744 to act1-chapters (Water at -0.9, the glimmer global, the capsule actors).
+  - SELF-RENDERED @ 2f5d51c9: zone_wake_h02/h04/h07/h09/h12/h13/h08/c01 (new) — the moonlit lane and houses, the
+    shut market and inn, the chapel door, the dark dock (no lamps) from the shore and from under it, the feast and
+    the lamp-lit wall, Asha's inked and Imra's faded shells set in the wall. Two shot notes for act1-chapters: H02's
+    camera is 0.5 m from Neme's house front; C01's is behind the wall and below its top.
+  - Gates: tools suite 117 units (only test_screenshots red, for the new shots' missing first baselines);
+    Godot haluna 62, import 21, zone_kit 6, environment 11, all pass; validate_data; taskboard --check.
+  - **MERGE-READY @ 2f5d51c9** (integration bd3ab5b4 merged in). New shots needing first approval (never write
+    baselines here): zone_oruvel_o01/o07/o09/o12/o16, zone_underway_u01/u03/u06/u07/u08, zone_wake_h02/h04/h07/
+    h09/h12/h13/h08/c01; haluna_h07_chapel_court re-approval (intended drift).
+  - **Next:** Brightwater ferry (B-shots, the Ch4 ferry deck and derelict), the Shell Shrine interior (S02–S05),
+    then the prologue city if slice-polish wants env-art to mount it.
 - **2026-10-28 ~03:00: Ch1 zones dressed; renders viewed.**
   - SELF-RENDERED @ 9cced155: slice_prologue_vigil_line, haluna_h01/h02/h04/h10, causeway_c02, shrine_s01,
     drownbell_flood, battle_arena_tideline_dawn/causeway_disc_sunset/causeway_route_afternoon/derelict_deck_night/
