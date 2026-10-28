@@ -12,12 +12,6 @@
  "greybox": {
   "hide_all": true,
   "keep": [
-   "Gate_t1",
-   "Gate_t2",
-   "Gate_t3",
-   "Gate_t4",
-   "NicheSeal",
-   "WrightMark",
    "Virel",
    "StormWall"
   ]
@@ -1254,6 +1248,86 @@
    "y": 67.535,
    "yaw_deg": -105.0,
    "spin_with": "Key_t4_d"
+  },
+  {
+   "piece": "shrine_door_valve",
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "at": [
+    304.573,
+    158.766
+   ],
+   "y": 39.885,
+   "yaw_deg": 92.364,
+   "scale": 0.533,
+   "scale_y": 0.8,
+   "block": "Gate_t1"
+  },
+  {
+   "piece": "shrine_door_valve",
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "at": [
+    305.567,
+    159.619
+   ],
+   "y": 48.885,
+   "yaw_deg": 109.578,
+   "scale": 0.533,
+   "scale_y": 0.8,
+   "block": "Gate_t2"
+  },
+  {
+   "piece": "shrine_door_valve",
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "at": [
+    308.941,
+    160.908
+   ],
+   "y": 57.885,
+   "yaw_deg": -167.049,
+   "scale": 0.483,
+   "scale_y": 0.8,
+   "block": "Gate_t3"
+  },
+  {
+   "piece": "shrine_door_valve",
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "at": [
+    308.282,
+    156.879
+   ],
+   "y": 66.885,
+   "yaw_deg": 4.271,
+   "scale": 0.483,
+   "scale_y": 0.8,
+   "block": "Gate_t4"
+  },
+  {
+   "piece": "ruin_slab",
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "at": [
+    305.892,
+    156.568
+   ],
+   "y": 49.785,
+   "yaw_deg": 51.0,
+   "tilt_deg": [
+    0.0,
+    90.0
+   ],
+   "scale": 0.248,
+   "block": "NicheSeal"
+  },
+  {
+   "piece": "chalk_mark_heavy",
+   "kit_dir": "res://assets/environments/kits/brine_shoals/",
+   "at": [
+    306.369,
+    156.832
+   ],
+   "y": 58.535,
+   "yaw_deg": 139.0,
+   "scale": 0.746,
+   "block": "WrightMark"
   },
   {
    "piece": "corrow_far",

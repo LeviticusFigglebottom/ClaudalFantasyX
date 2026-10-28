@@ -233,6 +233,38 @@ def door_boxes() -> list[dict]:
     return out
 
 
+HALUNA = "res://assets/environments/kits/haluna/"
+BRINE = "res://assets/environments/kits/brine_shoals/"
+GATE_PIECE = ("shrine_door_valve", 3.0, 3.5)  # Haluna's valve door: width (its x), height (from its origin)
+SEAL_PIECE = ("ruin_slab", 4.03, 2.81)  # Haluna's slab, stood on edge: its x up, its z across the niche
+MARK_PIECE = ("chalk_mark_heavy", 0.67)  # the Brine kit's scratched mark, flat in its local YZ
+
+
+def stand_in_pieces() -> list[dict]:
+    """ADR 0041: the trial's story blocks in other kits' pieces until env-art's own land (M3-ENV-1222): each flight's
+    gate as Haluna's valve door across the flight (it hides with its block as the flame climbs), the side flue's seal as
+    a stone slab stood in the niche, and the wright's mark as the Brine kit's scratched mark on the flue wall."""
+    blocks = {b["id"]: b for b in gates()}
+    blocks.update({b["id"]: b for b in json.loads(LAYOUT.read_text(encoding="utf-8"))["blocks"]})
+    out = []
+    for i in range(1, 5):
+        g = blocks[f"Gate_t{i}"]
+        s = g["size"][2] / GATE_PIECE[1]
+        out.append({"piece": GATE_PIECE[0], "kit_dir": HALUNA, "at": [r3(g["pos"][0]), r3(g["pos"][2])],
+                    "y": r3(g["pos"][1] - g["size"][1] * 0.5), "yaw_deg": r3(g["yaw"]), "scale": r3(s),
+                    "scale_y": r3(g["size"][1] / GATE_PIECE[2]), "block": g["id"]})
+    seal = blocks["NicheSeal"]
+    s = seal["size"][1] / SEAL_PIECE[1]  # its 4.03 m stood up to the niche's height
+    out.append({"piece": SEAL_PIECE[0], "kit_dir": HALUNA, "at": [seal["pos"][0], seal["pos"][2]],
+                "y": seal["pos"][1], "yaw_deg": seal["yaw"], "tilt_deg": [0.0, 90.0], "scale": r3(s),
+                "block": "NicheSeal"})
+    mark = blocks["WrightMark"]
+    out.append({"piece": MARK_PIECE[0], "kit_dir": BRINE, "at": [mark["pos"][0], mark["pos"][2]], "y": mark["pos"][1],
+                "yaw_deg": r3(mark["yaw"] + 90.0), "scale": r3(mark["size"][0] / MARK_PIECE[1]),
+                "block": "WrightMark"})
+    return out
+
+
 def dressing() -> dict:
     preview = json.loads((PREVIEW / "coilspire_layout.json").read_text(encoding="utf-8"))
     pieces = []
@@ -253,7 +285,7 @@ def dressing() -> dict:
             pieces.append(dict(p, collide="trimesh", collide_lod0_in=door_boxes()))
             continue
         pieces.append(p)
-    pieces += key_pieces()
+    pieces += key_pieces() + stand_in_pieces()
     backdrop = json.loads((PREVIEW / "coilspire_backdrop.json").read_text(encoding="utf-8"))
     corrow = "res://assets/environments/kits/corrow/"
     for p in backdrop.get("pieces", []):
@@ -274,8 +306,9 @@ def dressing() -> dict:
         "lod_margin_m": float(preview.get("lod_margin_m", 2.0)),
         "environment": RES_ZONE + "coilspire_ch08_environment.tres",
         "time_of_day_h": 12.0,
-        "greybox": {"hide_all": True, "keep": ["Gate_t1", "Gate_t2", "Gate_t3", "Gate_t4", "NicheSeal", "WrightMark",
-                                               "Virel", "StormWall"]},
+        # ADR 0041: the gates, the seal and the mark are stand_in_pieces(); Virel (the Vowbound, creatures-b) and the
+        # storm (rendering's VFX) stay blocks until theirs land
+        "greybox": {"hide_all": True, "keep": ["Virel", "StormWall"]},
         "fire_light_color": preview.get("hearth_light_color", "#FFB16E"),
         "fire_lights": lights,
         "pieces": pieces,

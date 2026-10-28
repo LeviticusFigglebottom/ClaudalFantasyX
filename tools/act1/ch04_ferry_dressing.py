@@ -185,7 +185,7 @@ BRINE = "res://assets/environments/kits/brine_shoals/"
 # (y 0) is rock from edge to edge (x offset, z offset, yaw)
 ISLET_BOULDERS = ((-2.4, -5.8, 10.0), (2.6, -5.2, 200.0), (-2.6, 0.3, 130.0), (2.3, 0.0, 300.0), (-2.2, 5.9, 250.0),
                   (2.7, 5.6, 70.0))
-ISLET_BOULDER = {"scale": 2.2, "scale_y": 0.5, "y": -1.9}  # its crown 0.25 m over the walk
+ISLET_BOULDER = {"scale": 2.2, "scale_y": 1.1, "y": -1.9}  # half height (scale_y is absolute); crown 0.25 m over the walk
 PLANK_WALK = {"length": 4.0, "top": 0.12}  # the Brine kit's plank_walk, along its z
 GATE = {"scale": 0.75, "half_h": 0.6}  # the Brine kit's hatch (1.4 x 1.2 m, centred) across the 1 m gangway
 

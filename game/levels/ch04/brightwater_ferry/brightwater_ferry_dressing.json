@@ -587,7 +587,7 @@
    "yaw_deg": 10.0,
    "block": "IsletRock",
    "scale": 2.2,
-   "scale_y": 0.5,
+   "scale_y": 1.1,
    "y": -1.9
   },
   {
@@ -600,7 +600,7 @@
    "yaw_deg": 200.0,
    "block": "IsletRock",
    "scale": 2.2,
-   "scale_y": 0.5,
+   "scale_y": 1.1,
    "y": -1.9
   },
   {
@@ -613,7 +613,7 @@
    "yaw_deg": 130.0,
    "block": "IsletRock",
    "scale": 2.2,
-   "scale_y": 0.5,
+   "scale_y": 1.1,
    "y": -1.9
   },
   {
@@ -626,7 +626,7 @@
    "yaw_deg": 300.0,
    "block": "IsletRock",
    "scale": 2.2,
-   "scale_y": 0.5,
+   "scale_y": 1.1,
    "y": -1.9
   },
   {
@@ -639,7 +639,7 @@
    "yaw_deg": 250.0,
    "block": "IsletRock",
    "scale": 2.2,
-   "scale_y": 0.5,
+   "scale_y": 1.1,
    "y": -1.9
   },
   {
@@ -652,7 +652,7 @@
    "yaw_deg": 70.0,
    "block": "IsletRock",
    "scale": 2.2,
-   "scale_y": 0.5,
+   "scale_y": 1.1,
    "y": -1.9
   },
   {
