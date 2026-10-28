@@ -72,3 +72,4 @@ func test_a_shown_storm_is_inside_the_camera_far_plane() -> void:
 	storm.visible = true
 	(storm.get_node(^"FarPlane") as StormFarPlane)._process(0.0)
 	assert_true(cam.far > storm.approach_distance_m + storm.state.bound_radius(), "far %.0f m" % cam.far)
+	_close()
