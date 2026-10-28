@@ -2431,6 +2431,8 @@ SKIRT_OVER_MARGIN = float(_SK["overhang_margin_m"])
 SKIRT_SUPPORT_SIDE = float(_SK["support_lateral_m"])
 SKIRT_SUPPORT_STEPS = int(_SK["support_samples"])
 SKIRT_LEVELS = tuple(_SK["levels"])  # M2-CHR-522: a panel's bones' suffixes, from the hips down (the last gathers)
+SKIRT_DRAPE_MAX = math.radians(float(_SK["drape_max_deg"]))  # the lowest bone's furthest swing out onto the floor
+SKIRT_DRAPE_BELOW = float(_SK["drape_below_gather"])  # it drapes only cloth that would gather shorter than this
 SCALE_KEY = "_scale"  # local_pose's entry for the helper bones' scales: {bone: (x, y, z)}
 
 
@@ -2616,6 +2618,25 @@ def _skirt_heads_posed(heads: list, ax: np.ndarray, angs) -> list:
     return out
 
 
+def _least_up(ok, lo: float, top: float) -> float:
+    """Least angle in (lo, top] at which ok(angle) holds (steps of SKIRT_GRID, then SKIRT_BISECT halvings); top when
+    none does."""
+    step = math.radians(SKIRT_GRID)
+    ang = min(lo + step, top)
+    while not ok(ang):
+        if ang >= top - 1e-9:
+            return top
+        lo, ang = ang, min(ang + step, top)
+    hi = ang
+    for _ in range(SKIRT_BISECT):
+        mid = 0.5 * (lo + hi)
+        if ok(mid):
+            hi = mid
+        else:
+            lo = mid
+    return hi
+
+
 def skirt_solve(sk: "Skeleton", g: dict, hips=None) -> dict:
     """{upper panel bone: (outward axis, (swing of each of the SKIRT_LEVELS bones), gather)} in the pelvis's frame,
     radians (each swing from the vertical), for the pose's global rotations g and hips offset `hips` (m, from rest;
@@ -2626,7 +2647,9 @@ def skirt_solve(sk: "Skeleton", g: dict, hips=None) -> dict:
     middle one's (it hangs back from the knee as far as the shin lets it, and never flares past the line above). The
     gather is the lowest bone's length scale (SKIRT_GATHER_MIN..1) that keeps its cloth SKIRT_FLOOR above the floor:
     floor-length cloth that cannot hang its full length (kneeling, crouching) pools on the ground rather than fanning
-    out. AshaStage and the cutscene stages run the same solve (game/characters/hero_helper_bones.gd)."""
+    out. Cloth that would gather shorter than SKIRT_DRAPE_BELOW first swings out onto the floor (up to SKIRT_DRAPE_MAX),
+    so it spreads rather than standing as a crushed wall. AshaStage and the cutscene stages run the same solve
+    (game/characters/hero_helper_bones.gd)."""
     rq_h = sk.rest_q[HIPS]
     inv_dp = qinv(qmul(g[HIPS], qinv(rq_h)))  # the pelvis's turn: the skirt is solved in the pelvis's frame
     A, B = _leg_segments(sk, g)
@@ -2676,11 +2699,11 @@ def skirt_solve(sk: "Skeleton", g: dict, hips=None) -> dict:
         V = sk.skirt_cloth[h + last] - k
         # elementwise only (no dot products): the same bits on every numpy SIMD path
         along = (V[:, 0] * bone[0] + V[:, 1] * bone[1] + V[:, 2] * bone[2])[:, None] * bone[None, :]
-        c2, s2 = math.cos(x2), math.sin(x2)
         x, y, z, w = (float(c) for c in dp)
         ry = (2.0 * (x * y + w * z), 1.0 - 2.0 * (x * x + z * z), 2.0 * (y * z - w * x))  # dp's matrix, row y
 
-        def low(sc: float, V=V, along=along, ax=ax, tip=tip, c2=c2, s2=s2, ry=ry) -> float:
+        def low(sc: float, swing: float, V=V, along=along, ax=ax, tip=tip, ry=ry) -> float:
+            c2, s2 = math.cos(swing), math.sin(swing)
             v = V + (sc - 1.0) * along  # Rodrigues about the bone's head, elementwise
             va = v[:, 0] * ax[0] + v[:, 1] * ax[1] + v[:, 2] * ax[2]
             cr = np.stack([ax[1] * v[:, 2] - ax[2] * v[:, 1], ax[2] * v[:, 0] - ax[0] * v[:, 2],
@@ -2701,19 +2724,28 @@ def skirt_solve(sk: "Skeleton", g: dict, hips=None) -> dict:
             full = float((V[:, 0] * bone[0] + V[:, 1] * bone[1] + V[:, 2] * bone[2]).max())  # the bone's cloth length
             want = min(1.0, max(SKIRT_GATHER_MIN, (reach + SKIRT_OVER_MARGIN) / max(full, 1e-6)))
             sc = 1.0 - smooth(float(x2 - SKIRT_OVER_FROM) / SKIRT_OVER_EASE) * (1.0 - want)
-        if len(V) and low(sc) < SKIRT_FLOOR:
+        def gather(sc: float, swing: float, low=low) -> float:
+            if not len(V) or low(sc, swing) >= SKIRT_FLOOR:
+                return sc
             lo_s, hi_s = SKIRT_GATHER_MIN, sc
-            if low(lo_s) < SKIRT_FLOOR:
-                sc = lo_s
-            else:
-                for _ in range(SKIRT_BISECT):
-                    mid = 0.5 * (lo_s + hi_s)
-                    if low(mid) >= SKIRT_FLOOR:
-                        lo_s = mid
-                    else:
-                        hi_s = mid
-                sc = lo_s
-        gathers.append(sc)
+            if low(lo_s, swing) < SKIRT_FLOOR:
+                return lo_s
+            for _ in range(SKIRT_BISECT):
+                mid = 0.5 * (lo_s + hi_s)
+                if low(mid, swing) >= SKIRT_FLOOR:
+                    lo_s = mid
+                else:
+                    hi_s = mid
+            return lo_s
+
+        sg = gather(sc, x2)
+        if sg < SKIRT_DRAPE_BELOW and x2 < SKIRT_DRAPE_MAX:
+            # big13's review (a stiff white bell in the kneels): cloth that would be crushed into a short wall first
+            # swings out onto the floor (the least swing, up to SKIRT_DRAPE_MAX, that lays it there), then gathers
+            x2 = _least_up(lambda ang, sc=sc: low(sc, ang) >= SKIRT_FLOOR, x2, SKIRT_DRAPE_MAX)
+            an[-1] = x2
+            sg = gather(sc, x2)
+        gathers.append(sg)
     return {h: (ax, tuple(an), sc) for h, ax, an, sc in zip(sk.skirt, axes, angs, gathers)}
 
 
