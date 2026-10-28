@@ -5,7 +5,8 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 GODOT="${GODOT:-godot}"
-T="timeout ${HYMN_STEP_TIMEOUT:-600}"
+# 3 h a step: the Godot suite alone takes ~45 min since big14 (test_qa_threads plays every thread through).
+T="timeout ${HYMN_STEP_TIMEOUT:-10800}"
 # Per-run log dir so parallel worktrees never clobber each other's logs.
 export TMPDIR="${HYMN_LOG_DIR:-$(mktemp -d "${TMPDIR:-/tmp}/hymn_ci.XXXXXX")}"
 L="$TMPDIR"
