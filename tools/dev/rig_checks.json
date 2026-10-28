@@ -1004,19 +1004,16 @@
     "ione": {
       "_villager": "M3-CHR-526..539: a villager build (assets/characters/villagers/ione/ione.glb, clips from villager_clips.py and villager_story_clips.json). No props in a villager GLB.",
       "villager": true,
-      "_allowances": "M3-CHR-526..539 ratchets (garment_fit build; probe at the default stride, 2026-10-28): Costume 35/6 (34.03, idle@70: Costume:cloth_c on DEF-spine.002 vs DEF-upper_arm.L.001); Body 59/5 (58.11, walk@9: Body through Costume:cloth_c on DEF-upper_arm.R vs DEF-spine.003); max_exposed 5 (farthest 28.6 mm, talk@30). Linear-blend-skinning limits as Kell's and Tavi's: the top's side and the hanging arm; on the sleeveless tops (armhole 10-11.5 cm under the shoulder) the upper arm passes the armhole edge in the walk's swing and the raised gestures, as Tavi's Body 67. Lower them when a fix lands.",
+      "_allowances": "M3-CHR-526..539 ratchets (garment_fit build; probe at the default stride, 2026-10-28): Costume 35/6 (34.03, idle@70: Costume:cloth_c on DEF-spine.002 vs DEF-upper_arm.L.001). Linear-blend-skinning limits as Kell's and Tavi's: the top's side and the hanging arm; on the sleeveless tops (armhole 10-11.5 cm under the shoulder) the upper arm passes the armhole edge in the walk's swing and the raised gestures, as Tavi's Body 67. M3-CHR-534 polish 2 (the tank cut, villager_costume `armhole_cut`): Body 59/5 -> 58/2 (57.18, walk@0: Body through Costume:cloth_c on DEF-upper_arm.L vs DEF-spine.003; the same armhole floor, so the same swing), max_exposed 5 lowered to the default (none exposed). Lower them when a fix lands.",
       "penetration": {
         "limits_mm": {
           "Costume": 35.0,
-          "Body": 59.0
+          "Body": 58.0
         },
         "limits_count": {
           "Costume": 6,
-          "Body": 5
+          "Body": 2
         }
-      },
-      "seams": {
-        "max_exposed": 5
       }
     },
     "poolkeeper": {
