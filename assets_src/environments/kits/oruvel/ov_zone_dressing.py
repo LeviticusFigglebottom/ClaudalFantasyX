@@ -44,6 +44,13 @@ FERRY_KIT = "res://assets/environments/kits/brightwater_ferry/"
 WATER_Y = -ohl.RAFT_DECK_Y  # the raft decks stand 0.8 m over the sea; the greybox's decks are at 0
 RAFT_DECK = (9.0, 7.0)  # raft_deck's deck, x by z, at scale 1
 CLEAR_M = 1.2  # decor keeps this far from every actor, mark and spawn, and out of every trigger
+STORM_BLOCK = "StormWall"  # shown only in the storm: the storm's pieces and lights follow it
+STORM_ENV_SRC = ROOT / "game" / "levels" / "_tests" / "oruvel_kit" / "oruvel_storm_environment.tres"
+STORM_ENV_OUT = OUT.parent / "oruvel_ch01_storm_environment.tres"  # the stand-in ch01_storm frame (lut_ch01_storm)
+STORM_ENV_RES = "res://assets/environments/zones/ch01/oruvel_ch01_storm_environment.tres"
+PREVIEW_STORM = PREVIEW.parent / "oruvel_dressed_storm.tscn"
+PREVIEW_STORM_SHOTS = ("O12", "O16")
+STORM_FAR_M = pl.STORM_FAR_M
 
 
 def _blocks() -> dict[str, dict]:
@@ -151,7 +158,24 @@ def pieces() -> list[dict]:
     # The rest of the raft-town round the zone, at 90-120 m (the far town's low hulls and roofs).
     for x, z, yaw in ((10.0, -110.0, 0.0), (-95.0, -30.0, 90.0), (115.0, -35.0, -90.0)):
         out.append(pl.put("town_far", x, WATER_Y, z, yaw, lod1_from_m=600.0))
+    return out + storm_pieces()
+
+
+def storm_pieces() -> list[dict]:
+    """The storm (C1-11 to C1-15; M3-ENV-07B's pieces): what the swell tears loose, afloat round the town. They follow
+    `StormWall`, which the zone shows only in the storm (oruvel_zone.gd's layout "storm" "show")."""
+    out = [pl.put("storm_debris", x, WATER_Y, z, yaw, block=STORM_BLOCK)
+           for x, z, yaw in ((-21.5, -17.0, 35.0), (21.0, 1.5, -70.0), (7.0, 7.5, 150.0), (-24.0, -1.5, 200.0))]
+    out.append(pl.put("hull_capsized", -33.0, WATER_Y, -24.0, 60.0, block=STORM_BLOCK))
+    # The dive bridge (gone in the storm) adrift south of where it was.
+    out.append(pl.put("plank_bridge_broken", 38.5, WATER_Y + ohl.RAFT_DECK_Y - 0.65, -10.0, 20.0, block=STORM_BLOCK))
     return out
+
+
+def storm_lights() -> list[dict]:
+    """Kell's beacon (C1-12): lit in the storm, at the greybox's KellBeacon (the chandlery's roof lantern)."""
+    kb = _blocks()["KellBeacon"]
+    return [{"at": kb["pos"], "energy": 3.0, "range": 9.0, "block": STORM_BLOCK}]
 
 
 def clearance_points() -> list[tuple[str, float, float, float]]:
@@ -184,17 +208,25 @@ def layout() -> dict:
         "water_y": WATER_Y,
         "time_of_day_h": 10.5,
         "environment": ENV_RES,
-        "greybox": {"hide_all": True, "keep": ["StormWall"]},
+        # The storm variant's frame: the zone swaps its WorldEnvironment to this in set_storm (M3-ENV-751).
+        "storm_environment": STORM_ENV_RES,
+        "fire_light_color": "#FFB466",
+        "fire_lights": storm_lights(),
+        "greybox": {"hide_all": True, "keep": []},  # StormWall: the zone stands the UndertowStorm there (M3-ENV-751)
         "pieces": pieces(),
     }
 
 
-def write_preview() -> None:
+def write_preview(storm: bool = False) -> None:
     """The zone as slice-polish's .tscn has it (its script and greybox layout), with the Water, the Tide and this
-    Dressing mounted, and the zone's own shot cameras: env-art's render rig for the swap, until the zone mounts it."""
+    Dressing mounted, and the zone's own shot cameras: env-art's render rig for the swap, until the zone mounts it.
+    `storm`: the same brought up in its storm variant (oruvel_storm_preview.gd), as M3-ENV-751 asks of the zone."""
+    script = ("res://game/levels/_tests/oruvel_zone_dressing/oruvel_storm_preview.gd" if storm
+              else "res://game/levels/ch01/oruvel/oruvel_zone.gd")
+    shot_ids = PREVIEW_STORM_SHOTS if storm else PREVIEW_SHOTS
     shots = json.loads(GREYBOX.read_text(encoding="utf-8"))["shots"]
     lines = ["[gd_scene format=3]", "",
-             '[ext_resource type="Script" path="res://game/levels/ch01/oruvel/oruvel_zone.gd" id="1_zone"]',
+             f'[ext_resource type="Script" path="{script}" id="1_zone"]',
              '[ext_resource type="Script" path="res://game/levels/act1/zone_kit_dressing.gd" id="2_dressing"]',
              '[ext_resource type="Script" path="res://game/levels/ch02/haluna/weathering_tide.gd" id="3_tide"]',
              '[ext_resource type="Script" path="res://game/world/water/water_surface.gd" id="4_water"]',
@@ -203,7 +235,7 @@ def write_preview() -> None:
              'id="6_water_mat"]',
              '[ext_resource type="Script" path="res://game/world/camera_shot.gd" id="7_shot"]',
              '[ext_resource type="Script" path="res://game/levels/ch02/haluna/haluna_shot_camera.gd" id="8_cam"]', ""]
-    for sid in PREVIEW_SHOTS:
+    for sid in shot_ids:
         sh = shots[sid]
         e, la = sh["pos"], sh["look_at"]
         lines += [f'[sub_resource type="Resource" id="Shot{sid}"]', 'script = ExtResource("7_shot")', f'id = &"{sid}"',
@@ -220,18 +252,22 @@ def write_preview() -> None:
               '[node name="Dressing" type="Node3D" parent="." node_paths=PackedStringArray("tide")]',
               'script = ExtResource("2_dressing")', 'layout_path = "res://assets/environments/zones/ch01/oruvel_dressing.json"',
               'tide = NodePath("../Tide")', "", '[node name="Cameras" type="Node3D" parent="."]', ""]
-    for sid in PREVIEW_SHOTS:
-        lines += [f'[node name="{sid}" type="Camera3D" parent="Cameras"]', "near = 0.1", "far = 2000.0",
+    far = STORM_FAR_M if storm else 2000.0  # the storm views reach the Undertow, 18 km out (ov_preview_layout's)
+    for sid in shot_ids:
+        lines += [f'[node name="{sid}" type="Camera3D" parent="Cameras"]', "near = 0.1", f"far = {far:.1f}",
                   'script = ExtResource("8_cam")', f'shot = SubResource("Shot{sid}")', ""]
-    PREVIEW.parent.mkdir(parents=True, exist_ok=True)
-    PREVIEW.write_text("\n".join(lines).rstrip("\n") + "\n", encoding="utf-8")
+    out = PREVIEW_STORM if storm else PREVIEW
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text("\n".join(lines).rstrip("\n") + "\n", encoding="utf-8")
 
 
 def main() -> int:
     OUT.parent.mkdir(parents=True, exist_ok=True)
     ENV_OUT.write_bytes(ENV_SRC.read_bytes())
+    STORM_ENV_OUT.write_bytes(STORM_ENV_SRC.read_bytes())
     OUT.write_text(json.dumps(layout(), indent=1) + "\n", encoding="utf-8")
     write_preview()
+    write_preview(storm=True)
     print(f"DRESSING {OUT.relative_to(ROOT)} ({len(layout()['pieces'])} pieces)")
     return 0
 

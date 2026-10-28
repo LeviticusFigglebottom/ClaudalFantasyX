@@ -5053,6 +5053,44 @@
           "screen_space_aa": 1
         }
       }
+    },
+    {
+      "id": "zone_oruvel_storm_o12",
+      "scene": "res://game/levels/_tests/oruvel_zone_dressing/oruvel_dressed_storm.tscn",
+      "camera": "Cameras/O12",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "zone_oruvel_storm_o16",
+      "scene": "res://game/levels/_tests/oruvel_zone_dressing/oruvel_dressed_storm.tscn",
+      "camera": "Cameras/O16",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
     }
   ]
 }

@@ -69,7 +69,7 @@ class ZoneDressingTests(unittest.TestCase):
                     continue
                 d = math.hypot(p["at"][0] - x, p["at"][1] - z)
                 self.assertGreaterEqual(d, r, f"{p['piece']} at {p['at']} is {d:.2f} m from {what}")
-        shipped = [mod.OUT] + [getattr(mod, k) for k in ("ENV_OUT", "WATER_OUT") if hasattr(mod, k)]
+        shipped = [mod.OUT] + [getattr(mod, k) for k in ("ENV_OUT", "WATER_OUT", "STORM_ENV_OUT") if hasattr(mod, k)]
         if "environment" in layout:
             self.assertTrue(_res(layout["environment"]).is_file())
         for f in shipped:
