@@ -11,9 +11,7 @@
  "time_of_day_h": 12.0,
  "greybox": {
   "hide_all": true,
-  "keep": [
-   "Virel"
-  ]
+  "keep": []
  },
  "storms": [
   {
@@ -1330,6 +1328,18 @@
    "y": 58.535,
    "yaw_deg": 49.0,
    "block": "WrightMark"
+  },
+  {
+   "piece": "virel",
+   "kit_dir": "res://assets/creatures/virel/",
+   "materials_dir": "res://assets/creatures/virel/materials/",
+   "block": "Virel",
+   "yaw_deg": 0.0,
+   "at": [
+    308.745,
+    159.418
+   ],
+   "y": 74.285
   },
   {
    "piece": "corrow_far",
