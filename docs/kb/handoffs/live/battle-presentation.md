@@ -26,6 +26,16 @@ both fixed and pushed. The branch head also carries:
   - any battle shot with an Act I creature, since the heights and the near-face anchor move its effects. I am
     self-rendering those next.
 
+**MERGE-READY @ the branch head (15:xx).**
+- **M3-ENV-714:** the Ch8 wall-head fights play on their seawall states (stair hold 1 on storm, 2 and 3 on hoist, the
+  Reach on surge).
+  - SELF-RENDERED and viewed: battle_ch08_stair_hold, battle_boss_intro_reach, and the Reach's fight frame on surge.
+- **Fix for a regression I introduced** (M3-BPR-426's camera moments): at instant pacing a moment could start that
+  nothing advanced, and the turn waited on it, which test_ch08_thread caught.
+  - Moments now play only while the choreography animates. Bisected to 29eef908 and fixed at 93de03c3, with a test.
+  - ch08_thread 6/0, boss_camera 7/0.
+- Shots for the gate: battle_ch08_stair_hold also moves (the storm state).
+
 **MERGE-READY @ the branch head (14:xx): the Lead's 13:25 list.**
 - **M3-BPR-411 closed.** Battle VFX coverage has 0 unexplained gaps; the 5 left are kept on purpose (`INTENDED`).
 - **M3-CHR-523:** the Inquisitor stands in as Moll's battle actor (battle_sandbox.json `stand_ins`).
