@@ -3360,6 +3360,10 @@
       "scene": "res://game/ui/field_menu/shots/field_menu_kite.tscn"
     },
     {
+      "id": "menu_glyphs",
+      "scene": "res://game/ui/menus/shots/menu_glyphs.tscn"
+    },
+    {
       "id": "field_menu_map_keth_pass",
       "scene": "res://game/ui/map/shots/field_menu_map_keth_pass.tscn"
     },

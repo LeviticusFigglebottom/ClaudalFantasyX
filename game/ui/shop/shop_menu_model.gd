@@ -137,6 +137,7 @@ func buy_rows() -> Array[Dictionary]:
 				{
 					"id": gid,
 					"goods": gid,
+					"glyph": MenuGlyph.for_goods(gid),
 					"uid": NO_PIECE,
 					"label": goods_name(gid),
 					"mp": _tr(HELD_KEY).format({"count": held(gid)}),
@@ -161,6 +162,7 @@ func sell_rows() -> Array[Dictionary]:
 				{
 					"id": StringName("item:%s" % iid),
 					"goods": iid,
+					"glyph": MenuGlyph.for_goods(iid),
 					"uid": NO_PIECE,
 					"label": goods_name(iid),
 					"mp": _tr(HELD_KEY).format({"count": party.inventory.count(iid)}),
@@ -180,6 +182,7 @@ func sell_rows() -> Array[Dictionary]:
 				{
 					"id": StringName("piece:%d" % uid),
 					"goods": base,
+					"glyph": MenuGlyph.for_goods(base),
 					"uid": uid,
 					"label": goods_name(base),
 					"mp": hero_name(wearer) if wearer != &"" else "",
