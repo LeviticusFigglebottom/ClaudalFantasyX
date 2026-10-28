@@ -72,10 +72,11 @@ def mend(t: float, sk: hc.Skeleton, pers: dict) -> dict:
     return hc.add(hc.add(p, {
         "DEF-spine.001": (16.0, 0.0, 0.0), "DEF-spine.002": (10.0, 0.0, 0.0), "DEF-spine.003": (4.0, 0.0, 0.0),
         "DEF-spine.006": (18.0 - 4.0 * look, 0.0, 0.0),
-        "DEF-upper_arm.L": (-38.0 - 3.0 * pick_l, -6.0, a * 0.55), "DEF-forearm.L": (-52.0 - 8.0 * pick_l, -30.0, 0.0),
-        "DEF-hand.L": (10.0, 0.0, 6.0 * pick_l),
-        "DEF-upper_arm.R": (-38.0 - 3.0 * pick_r, 6.0, -a * 0.55), "DEF-forearm.R": (-52.0 - 8.0 * pick_r, 30.0, 0.0),
-        "DEF-hand.R": (10.0, 0.0, -6.0 * pick_r)}), _breath(t, 3.0))
+        # both hands together over the net in the lap, working it (the elbows in, the forearms turned in)
+        "DEF-upper_arm.L": (-46.0 - 3.0 * pick_l, 8.0, a * 0.12), "DEF-forearm.L": (-46.0 - 8.0 * pick_l, -48.0, 0.0),
+        "DEF-hand.L": (14.0, 0.0, 6.0 * pick_l),
+        "DEF-upper_arm.R": (-46.0 - 3.0 * pick_r, -8.0, -a * 0.12), "DEF-forearm.R": (-46.0 - 8.0 * pick_r, 48.0, 0.0),
+        "DEF-hand.R": (14.0, 0.0, -6.0 * pick_r)}), _breath(t, 3.0))
 
 
 def sweep(t: float, sk: hc.Skeleton, pers: dict) -> dict:
@@ -115,10 +116,10 @@ def fold(t: float, sk: hc.Skeleton, pers: dict) -> dict:
     p = _base(sk, pers)
     return hc.add(hc.add(p, {
         "DEF-spine.001": (6.0, 0.0, 0.0), "DEF-spine.002": (4.0, 0.0, 0.0), "DEF-spine.006": (16.0 - 4.0 * lift, 0.0, 0.0),
-        "DEF-upper_arm.L": (-24.0 - 8.0 * lift, -8.0 * together, a * (0.62 - 0.12 * together)),
-        "DEF-forearm.L": (-56.0 - 10.0 * lift, -20.0 - 22.0 * together, 0.0), "DEF-hand.L": (0.0, -10.0, 20.0),
-        "DEF-upper_arm.R": (-24.0 - 8.0 * lift, 8.0 * together, -a * (0.62 - 0.12 * together)),
-        "DEF-forearm.R": (-56.0 - 10.0 * lift, 20.0 + 22.0 * together, 0.0), "DEF-hand.R": (0.0, 10.0, -20.0)}),
+        "DEF-upper_arm.L": (-20.0 - 8.0 * lift, -8.0 * together, a * (0.4 - 0.12 * together)),
+        "DEF-forearm.L": (-36.0 - 10.0 * lift, -20.0 - 22.0 * together, 0.0), "DEF-hand.L": (0.0, -10.0, 20.0),
+        "DEF-upper_arm.R": (-20.0 - 8.0 * lift, 8.0 * together, -a * (0.4 - 0.12 * together)),
+        "DEF-forearm.R": (-36.0 - 10.0 * lift, 20.0 + 22.0 * together, 0.0), "DEF-hand.R": (0.0, 10.0, -20.0)}),
         _breath(t, 4.0, 0.6))
 
 
@@ -157,8 +158,9 @@ def vigil(t: float, sk: hc.Skeleton, pers: dict) -> dict:
     a = pers["arms_down"]
     return hc.add(hc.add(_base(sk, pers), {
         "DEF-spine.006": (9.0, 0.0, 0.0),
-        "DEF-upper_arm.L": (-14.0, 8.0, a * 0.22), "DEF-forearm.L": (-46.0, -46.0, 0.0), "DEF-hand.L": (0.0, -8.0, 6.0),
-        "DEF-upper_arm.R": (-14.0, -8.0, -a * 0.22), "DEF-forearm.R": (-46.0, 46.0, 0.0), "DEF-hand.R": (0.0, 8.0, -6.0)}),
+        # the hands joined low in front, at the belly
+        "DEF-upper_arm.L": (-8.0, 6.0, a * 0.1), "DEF-forearm.L": (-30.0, -58.0, 0.0), "DEF-hand.L": (0.0, -8.0, 6.0),
+        "DEF-upper_arm.R": (-8.0, -6.0, -a * 0.1), "DEF-forearm.R": (-30.0, 58.0, 0.0), "DEF-hand.R": (0.0, 8.0, -6.0)}),
         _breath(t, 4.0, 0.8))
 
 

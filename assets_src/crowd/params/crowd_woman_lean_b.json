@@ -70,34 +70,37 @@
     "underpaint": "#362114"
   },
   "_eyes": {
-    "iris": "#2A1B0E"
+    "iris": "#26190E"
   },
   "_costume": {
     "top": {
       "mat": "cloth_a",
       "hem": "hip",
-      "sleeve": 0.4054,
-      "neck_v_m": 0.0336
+      "sleeve": 0.3802,
+      "neck_v_m": 0.0402
     },
     "trousers": {
       "mat": "cloth_b",
       "hem": "shin",
-      "loose_m": 0.0124
+      "loose_m": 0.0141
     },
     "wraps": {
       "mat": "cloth_c",
-      "span": 0.2394
+      "span": [
+        0.0448,
+        0.3924
+      ]
     },
     "sash": {
       "mat": "cloth_c",
-      "width_m": 0.0607,
+      "width_m": 0.0613,
       "turns": 1
     }
   },
   "_tints": {
-    "cloth_a": "#9C9A90",
-    "cloth_b": "#4E5E7A",
-    "cloth_c": "#93C3BE",
+    "cloth_a": "#8C8F8C",
+    "cloth_b": "#775942",
+    "cloth_c": "#A05B44",
     "leather": "#FFFFFF"
   },
   "_build": {
@@ -106,9 +109,9 @@
     "garment_fit": true
   },
   "_persona": {
-    "sway": 1.02,
-    "lean": 1.23,
-    "arms_down": 39.6
+    "sway": 0.7,
+    "lean": 1.57,
+    "arms_down": 42.1
   },
   "_work": [
     "kneel_mourn",

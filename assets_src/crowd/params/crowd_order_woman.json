@@ -68,35 +68,35 @@
     "underpaint": "#1F1812"
   },
   "_eyes": {
-    "iris": "#25180E"
+    "iris": "#2E1F0F"
   },
   "_costume": {
     "top": {
       "mat": "cloth_a",
       "hem": "hip",
-      "sleeve": 0.9116,
-      "neck_v_m": 0.0349
+      "sleeve": 0.9073,
+      "neck_v_m": 0.0392
     },
     "skirt": {
       "mat": "cloth_b",
       "hem": "ankle",
-      "folds": 9,
-      "fold_amp": 0.0053,
-      "flare": 0.1311,
+      "folds": 7,
+      "fold_amp": 0.0056,
+      "flare": 0.1212,
       "keep_above_knee_m": 1.0,
-      "seed": 84
+      "seed": 65
     },
     "sash": {
       "mat": "cloth_c",
-      "width_m": 0.054,
+      "width_m": 0.0487,
       "turns": 1
     },
     "sandals": "leather"
   },
   "_tints": {
-    "cloth_a": "#E9E2D3",
-    "cloth_b": "#E9E4DC",
-    "cloth_c": "#CFAC61",
+    "cloth_a": "#EAE6DD",
+    "cloth_b": "#E0D2B6",
+    "cloth_c": "#35446F",
     "leather": "#FFFFFF"
   },
   "_build": {
@@ -105,9 +105,9 @@
     "garment_fit": true
   },
   "_persona": {
-    "sway": 0.7,
-    "lean": 0.81,
-    "arms_down": 40.5
+    "sway": 0.79,
+    "lean": 2.42,
+    "arms_down": 40.1
   },
   "_work": [
     "vigil"

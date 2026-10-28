@@ -79,30 +79,30 @@
       "hem": "hip",
       "sleeve": 0.0,
       "neck_v_m": 0.06,
-      "open_deg": 27.7875
+      "open_deg": 28.532
     },
     "trousers": {
       "mat": "cloth_b",
       "hem": "knee",
-      "loose_m": 0.0179
+      "loose_m": 0.0144
     },
     "sash": {
       "mat": "cloth_c",
-      "width_m": 0.0582,
+      "width_m": 0.0692,
       "turns": 1
     },
     "headwrap": {
       "mat": "cloth_c",
       "band_only": true,
-      "edge_lift": 0.0025,
-      "band_m": 0.0338,
-      "seed": 51
+      "edge_lift": 0.0093,
+      "band_m": 0.0327,
+      "seed": 50
     }
   },
   "_tints": {
-    "cloth_a": "#D1C0A1",
-    "cloth_b": "#B9664B",
-    "cloth_c": "#6994B6",
+    "cloth_a": "#DDD2BE",
+    "cloth_b": "#323F6C",
+    "cloth_c": "#4C82AD",
     "leather": "#FFFFFF"
   },
   "_build": {
@@ -111,9 +111,9 @@
     "garment_fit": true
   },
   "_persona": {
-    "sway": 0.76,
-    "lean": 2.4,
-    "arms_down": 41.6
+    "sway": 0.93,
+    "lean": 0.22,
+    "arms_down": 39.0
   },
   "_work": [
     "carry",

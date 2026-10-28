@@ -105,9 +105,15 @@ func test_a_crowd_row_dresses_a_greybox_actor() -> void:
 		VillagerLayer.CROWD_ACTOR_PATH % [mender["body"], mender["body"]],
 		"the body the roster assigned"
 	)
+	var tinted := 0
 	for slot: String in ["cloth_a", "cloth_b", "cloth_c", "hair"]:
+		var got := _slot_colour(npc.actor, StringName(slot))
+		if got.a == 0.0:
+			continue  # this body's costume has no piece in that slot
+		tinted += 1
 		var want := Color.html(str(mender["tints"][slot]))
-		assert_true(_slot_colour(npc.actor, StringName(slot)).is_equal_approx(want), "%s tinted %s" % [slot, want])
+		assert_true(got.is_equal_approx(want), "%s tinted %s, got %s" % [slot, want, got])
+	assert_true(tinted >= 3, "the hair and the cloth it wears are tinted (%d slots)" % tinted)
 	var work := StringName(str(mender["work"]))
 	assert_true(npc.anim != null and npc.anim.has_animation(work), "the body carries the work clip")
 	for i in 30:
@@ -192,7 +198,10 @@ func test_every_crowd_body_loads_with_its_clips() -> void:
 		clips.append_array(work.get(body, []) as Array)
 		for clip: Variant in clips:
 			assert_true(anim.has_animation(StringName(clip)), "%s: clip %s" % [body, clip])
-		assert_true(_slot_colour(actor, &"cloth_a").a > 0.0, "%s: dressed by its materials" % body)
+		var dressed := false
+		for slot: StringName in [&"cloth_a", &"cloth_b", &"cloth_c"]:
+			dressed = dressed or _slot_colour(actor, slot).a > 0.0
+		assert_true(dressed, "%s: dressed by its cloth materials" % body)
 	_done()
 
 

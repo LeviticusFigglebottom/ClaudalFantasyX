@@ -11,24 +11,25 @@ const BAND_ORDER: Array[String] = ["child", "adult", "elder"]
 @export var spacing_m := 0.95
 @export var group_gap_m := 3.0
 @export var group_size := 8
-## The market: [person id, x, z, yaw_deg] (z negative is away from the lineup).
+## The market: [person id, x, z, yaw_deg] (z negative is away from the lineup; FieldNpc yaw: 0 faces -Z, 180
+## faces the cameras).
 @export var market: Array = [
-	["tamsule_vendor", -1.6, -9.0, 20.0],
-	["tamsule_board", -0.4, -9.6, -10.0],
-	["pemakar_boat_seller", 1.2, -8.6, -30.0],
-	["corrow_townsfolk_a", 2.6, -10.2, 160.0],
-	["corrow_townsfolk_b", 3.4, -9.4, -110.0],
-	["oruvel_netmender", -3.4, -8.2, 60.0],
-	["oruvel_netmender_2", -4.4, -9.4, 80.0],
-	["pemakar_sweeper", 0.6, -12.0, 0.0],
+	["tamsule_vendor", -1.6, -9.0, 200.0],
+	["tamsule_board", -0.4, -9.6, 165.0],
+	["pemakar_boat_seller", 1.2, -8.6, 150.0],
+	["corrow_townsfolk_a", 2.6, -10.2, 120.0],
+	["corrow_townsfolk_b", 3.4, -9.4, 250.0],
+	["oruvel_netmender", -3.4, -8.2, 225.0],
+	["oruvel_netmender_2", -4.4, -9.4, 205.0],
+	["pemakar_sweeper", 0.6, -12.0, 200.0],
 	["tamsule_child", -2.2, -11.6, 140.0],
-	["corrow_child_a", -1.4, -12.4, -150.0],
-	["brightwater_ferry_trader_a", 4.6, -12.0, -60.0],
+	["corrow_child_a", -1.4, -12.4, 210.0],
+	["brightwater_ferry_trader_a", 4.6, -12.0, 215.0],
 	["corrow_night_mourner_2", -0.6, -14.4, 180.0],
 	["corrow_night_mourner_3", 0.6, -14.6, 180.0],
-	["pemakar_folder", 2.2, -13.6, -20.0],
-	["tamsule_bell_galleries_sorrin_diver_1", -3.8, -13.0, 30.0],
-	["coilspire_tender", 5.4, -14.0, -80.0],
+	["pemakar_folder", 2.2, -13.6, 160.0],
+	["tamsule_bell_galleries_sorrin_diver_1", -3.8, -13.0, 190.0],
+	["coilspire_tender", 5.4, -14.0, 225.0],
 ]
 
 var people: Dictionary = {}
@@ -70,6 +71,7 @@ func _lineup(data: Dictionary) -> void:
 		var x := (k - (group_size - 1) * 0.5) * spacing_m + group * (group_size * spacing_m + group_gap_m)
 		var npc := _person(wearers[i], false)
 		npc.position = Vector3(x, 0.0, 0.0)
+		npc.rotation.y = PI  # FieldNpc faces -Z; the lineup cameras look from +Z
 		row.add_child(npc)
 
 

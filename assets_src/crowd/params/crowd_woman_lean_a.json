@@ -69,32 +69,32 @@
     "underpaint": "#1D1713"
   },
   "_eyes": {
-    "iris": "#281A0E"
+    "iris": "#26180E"
   },
   "_costume": {
     "top": {
       "mat": "cloth_a",
       "hem": "hip",
       "sleeve": 0.0,
-      "neck_v_m": 0.0328,
+      "neck_v_m": 0.0393,
       "armhole_drop_m": 0.115,
       "cover_margin_m": 0.02
     },
     "trousers": {
       "mat": "cloth_b",
       "hem": "knee",
-      "loose_m": 0.0085
+      "loose_m": 0.0081
     },
     "sash": {
       "mat": "cloth_c",
-      "width_m": 0.0794,
+      "width_m": 0.0765,
       "turns": 1
     }
   },
   "_tints": {
-    "cloth_a": "#5186AF",
-    "cloth_b": "#D3C3A5",
-    "cloth_c": "#A84531",
+    "cloth_a": "#4980AC",
+    "cloth_b": "#CAB691",
+    "cloth_c": "#A3402E",
     "leather": "#FFFFFF"
   },
   "_build": {
@@ -103,9 +103,9 @@
     "garment_fit": true
   },
   "_persona": {
-    "sway": 0.98,
-    "lean": 0.04,
-    "arms_down": 42.3
+    "sway": 0.92,
+    "lean": 1.81,
+    "arms_down": 41.2
   },
   "_work": [
     "fold",

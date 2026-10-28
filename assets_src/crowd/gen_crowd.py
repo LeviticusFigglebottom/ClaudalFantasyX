@@ -98,6 +98,23 @@ def draw_mix(pal: Palette, specs: list, rng: np.random.Generator) -> tuple[str, 
     return pal.mix(a, b, t), [a, b, t]
 
 
+SKIN_TRIES = 12
+
+
+def draw_cloth(pal: Palette, specs: list, rng: np.random.Generator, skin: str, min_d: float) -> str:
+    """A cloth mix at least `min_d` (sRGB) from the wearer's skin, so cloth never reads as bare skin (a sand-laterite
+    trouser on a warm brown leg did); else the farthest of SKIN_TRIES draws."""
+    best, best_d = "", -1.0
+    for _ in range(SKIN_TRIES):
+        c = draw_mix(pal, specs, rng)[0]
+        d = float(np.linalg.norm(rgb_of(c) - rgb_of(skin)))
+        if d >= min_d:
+            return c
+        if d > best_d:
+            best, best_d = c, d
+    return best
+
+
 # ---------------------------------------------------------------------------------------------
 # draws
 # ---------------------------------------------------------------------------------------------
@@ -288,7 +305,9 @@ def body_params(ranges: dict, pal: Palette, bid: str, plan: dict, face: dict) ->
     skin["seed"] = seed_of(bid, "skin") % 1000
     hair, hair_mix = hair_block(ranges, pal, bid, plan, comm, rng)
     iris_a, iris_b = ranges["iris"][0]
-    tints = {s: draw_mix(pal, comm["cloth"][CLOTH_KEYS[s]], rng)[0] for s in TINT_SLOTS}
+    skin_d = float(ranges["assign"]["skin_min_distance"])
+    trng = rng_for(bid, "tints")  # its own stream: the default tints never move the body draws
+    tints = {s: draw_cloth(pal, comm["cloth"][CLOTH_KEYS[s]], trng, skin_hex, skin_d) for s in TINT_SLOTS}
     tints["leather"] = LEATHER
     pr = ranges["persona"][band]
     persona = {"sway": round(float(rng.uniform(*pr["sway"])), 2), "lean": round(float(rng.uniform(*pr["lean"])), 2),
@@ -400,10 +419,11 @@ def hair_tint(ranges: dict, pal: Palette, body: dict, rng: np.random.Generator) 
 def person_tints(ranges: dict, pal: Palette, person: dict, body: dict, others: list[dict]) -> dict:
     sets = cloth_sets(ranges, person)
     need = float(ranges["assign"]["tint_min_distance"])
+    skin_d = float(ranges["assign"]["skin_min_distance"])
     best, best_d = None, -1.0
     for attempt in range(int(ranges["assign"]["tint_tries"])):
         rng = rng_for(person["id"], "tints", attempt)
-        t = {s: draw_mix(pal, sets[CLOTH_KEYS[s]], rng)[0] for s in TINT_SLOTS}
+        t = {s: draw_cloth(pal, sets[CLOTH_KEYS[s]], rng, body["skin"], skin_d) for s in TINT_SLOTS}
         t["hair"] = hair_tint(ranges, pal, body, rng)
         d = min([tint_distance(t, o) for o in others], default=1e9)
         if d >= need:
@@ -413,7 +433,8 @@ def person_tints(ranges: dict, pal: Palette, person: dict, body: dict, others: l
     return best
 
 
-def people(ranges: dict, roster: dict, pal: Palette, mixes: dict[str, list]) -> list[dict]:
+def people(ranges: dict, roster: dict, pal: Palette, bodies: dict[str, dict]) -> list[dict]:
+    """`bodies`: per body, its hair mix (`_hair_mix`) and skin (`skin`)."""
     assigned = assign(ranges, roster)
     worn: dict[str, list[dict]] = {}
     out = []
@@ -422,7 +443,7 @@ def people(ranges: dict, roster: dict, pal: Palette, mixes: dict[str, list]) -> 
         bid = assigned[p["id"]]
         q["island"] = ranges["communities"][p["community"]]["island"]
         q["body"] = bid
-        q["tints"] = person_tints(ranges, pal, p, {"_hair_mix": mixes[bid]}, worn.setdefault(bid, []))
+        q["tints"] = person_tints(ranges, pal, p, bodies[bid], worn.setdefault(bid, []))
         worn[bid].append(q["tints"])
         q["work"] = ranges["roles"][p["role"]]["work"]
         out.append({k: q[k] for k in PERSON_KEYS if k in q})
@@ -435,7 +456,8 @@ def generate() -> tuple[dict[str, str], str]:
     roster = load_json(ROSTER)
     pal = Palette()
     bodies = all_bodies(ranges, roster, pal)
-    roster["people"] = people(ranges, roster, pal, {bid: m for bid, (_p, m) in bodies.items()})
+    roster["people"] = people(ranges, roster, pal, {bid: {"_hair_mix": m, "skin": p["skin_hex"]}
+                                                     for bid, (p, m) in bodies.items()})
     files = {}
     for bid, (params, _m) in bodies.items():
         # the work clips its wearers play (crowd_clips.py), so the build needs nothing outside assets_src

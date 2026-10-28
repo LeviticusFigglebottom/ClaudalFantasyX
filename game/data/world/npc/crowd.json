@@ -492,9 +492,9 @@
       "body": "crowd_man_heavy_b",
       "tints": {
         "cloth_a": "#D1C0A1",
-        "cloth_b": "#8B775F",
-        "cloth_c": "#B5935E",
-        "hair": "#201A16"
+        "cloth_b": "#34416D",
+        "cloth_c": "#588AB1",
+        "hair": "#241B15"
       },
       "work": "carry"
     },
@@ -512,8 +512,8 @@
       "tints": {
         "cloth_a": "#DCD1BC",
         "cloth_b": "#33406D",
-        "cloth_c": "#B18B54",
-        "hair": "#291D15"
+        "cloth_c": "#427CAA",
+        "hair": "#261C15"
       },
       "work": "carry"
     },
@@ -570,9 +570,9 @@
       "body": "crowd_boy_small",
       "tints": {
         "cloth_a": "#9A9890",
-        "cloth_b": "#7D6853",
-        "cloth_c": "#A35A43",
-        "hair": "#221A16"
+        "cloth_b": "#6C7C69",
+        "cloth_c": "#AAD6D0",
+        "hair": "#201A16"
       },
       "work": "",
       "about": "One of the two wright children Kerrid lifts the hull-rib off (act1_ch06 B05)."
@@ -589,10 +589,10 @@
       "build": "tall",
       "body": "crowd_girl_tall",
       "tints": {
-        "cloth_a": "#AF9A7A",
-        "cloth_b": "#4A5978",
-        "cloth_c": "#966049",
-        "hair": "#281C15"
+        "cloth_a": "#8F918D",
+        "cloth_b": "#4B5B78",
+        "cloth_c": "#7CB1AD",
+        "hair": "#2E1E14"
       },
       "work": ""
     },
@@ -608,10 +608,10 @@
       "build": "medium",
       "body": "crowd_man_medium_b",
       "tints": {
-        "cloth_a": "#B7AD98",
-        "cloth_b": "#6F7966",
-        "cloth_c": "#98C8C3",
-        "hair": "#492C19"
+        "cloth_a": "#8F908D",
+        "cloth_b": "#4E5E79",
+        "cloth_c": "#AAD5D0",
+        "hair": "#432918"
       },
       "work": "kneel_mourn",
       "about": "The `wrights` stage actor is a group: 'a dozen wrights kneel with their sleeves pushed up' at the waterline (act1_ch06 W06). Six crowd people kneel at it (the capsule's 0.9 m radius holds about six)."
@@ -628,10 +628,10 @@
       "build": "lean",
       "body": "crowd_woman_lean_b",
       "tints": {
-        "cloth_a": "#9A9890",
-        "cloth_b": "#7C6651",
-        "cloth_c": "#965F49",
-        "hair": "#362215"
+        "cloth_a": "#B2A996",
+        "cloth_b": "#7A604A",
+        "cloth_c": "#A35A43",
+        "hair": "#2E1E14"
       },
       "work": "kneel_mourn",
       "about": "The `wrights` stage actor is a group: 'a dozen wrights kneel with their sleeves pushed up' at the waterline (act1_ch06 W06). Six crowd people kneel at it (the capsule's 0.9 m radius holds about six)."
@@ -648,10 +648,10 @@
       "build": "lean",
       "body": "crowd_man_lean_a",
       "tints": {
-        "cloth_a": "#A19D92",
-        "cloth_b": "#6F7A66",
-        "cloth_c": "#A25A43",
-        "hair": "#201A16"
+        "cloth_a": "#A8A294",
+        "cloth_b": "#717763",
+        "cloth_c": "#9A5E47",
+        "hair": "#271C15"
       },
       "work": "kneel_mourn",
       "about": "The `wrights` stage actor is a group: 'a dozen wrights kneel with their sleeves pushed up' at the waterline (act1_ch06 W06). Six crowd people kneel at it (the capsule's 0.9 m radius holds about six)."
@@ -669,9 +669,9 @@
       "body": "crowd_woman_medium_b",
       "tints": {
         "cloth_a": "#AAA394",
-        "cloth_b": "#785A43",
-        "cloth_c": "#A08C5E",
-        "hair": "#221B16"
+        "cloth_b": "#57677D",
+        "cloth_c": "#AAD6D0",
+        "hair": "#241B15"
       },
       "work": "kneel_mourn",
       "about": "The `wrights` stage actor is a group: 'a dozen wrights kneel with their sleeves pushed up' at the waterline (act1_ch06 W06). Six crowd people kneel at it (the capsule's 0.9 m radius holds about six)."
@@ -690,7 +690,7 @@
       "tints": {
         "cloth_a": "#96958F",
         "cloth_b": "#7B634D",
-        "cloth_c": "#A68D5B",
+        "cloth_c": "#87BAB6",
         "hair": "#201A16"
       },
       "work": "kneel_mourn",
@@ -709,9 +709,9 @@
       "body": "crowd_elder_woman_b",
       "tints": {
         "cloth_a": "#A89375",
-        "cloth_b": "#75543C",
-        "cloth_c": "#7DB2AE",
-        "hair": "#66605B"
+        "cloth_b": "#717764",
+        "cloth_c": "#A08C5D",
+        "hair": "#ABA7A0"
       },
       "work": "kneel_mourn",
       "about": "The `wrights` stage actor is a group: 'a dozen wrights kneel with their sleeves pushed up' at the waterline (act1_ch06 W06). Six crowd people kneel at it (the capsule's 0.9 m radius holds about six)."
@@ -768,8 +768,8 @@
       "body": "crowd_girl_small",
       "tints": {
         "cloth_a": "#DAD8D3",
-        "cloth_b": "#B17050",
-        "cloth_c": "#923827",
+        "cloth_b": "#455576",
+        "cloth_c": "#454E71",
         "hair": "#201A16"
       },
       "work": "",
@@ -827,8 +827,8 @@
       "tints": {
         "cloth_a": "#C6C7C6",
         "cloth_b": "#495877",
-        "cloth_c": "#A35036",
-        "hair": "#241B15"
+        "cloth_c": "#9A442E",
+        "hair": "#201A16"
       },
       "work": "haul",
       "about": "A stair-watch fisher by Hobb."
@@ -847,8 +847,8 @@
       "tints": {
         "cloth_a": "#C9CAC8",
         "cloth_b": "#56667D",
-        "cloth_c": "#A35035",
-        "hair": "#5F5A55"
+        "cloth_c": "#38446E",
+        "hair": "#59544E"
       },
       "work": "mend"
     },
@@ -1023,8 +1023,8 @@
       "tints": {
         "cloth_a": "#E9E4DA",
         "cloth_b": "#7CABA6",
-        "cloth_c": "#A18256",
-        "hair": "#261C15"
+        "cloth_c": "#497284",
+        "hair": "#211A16"
       },
       "work": "fold",
       "about": "The cookboat's cook who keeps Rhen's tally in knots (act1_ch01 C1-09)."
@@ -1041,10 +1041,10 @@
       "build": "lean",
       "body": "crowd_elder_man_a",
       "tints": {
-        "cloth_a": "#BCA784",
-        "cloth_b": "#7FACA7",
-        "cloth_c": "#B9664B",
-        "hair": "#86817B"
+        "cloth_a": "#CBB793",
+        "cloth_b": "#4E5573",
+        "cloth_c": "#4D83AD",
+        "hair": "#3D3733"
       },
       "work": "mend",
       "about": "The net lanes' menders, a pair."
@@ -1179,9 +1179,9 @@
       "body": "crowd_elder_woman_a",
       "tints": {
         "cloth_a": "#D9CDB5",
-        "cloth_b": "#6E4126",
-        "cloth_c": "#C29744",
-        "hair": "#413C37"
+        "cloth_b": "#28593A",
+        "cloth_c": "#30653A",
+        "hair": "#87827C"
       },
       "work": "fold",
       "about": "Folding leaf-boats (bible section 4)."
@@ -1199,9 +1199,9 @@
       "body": "crowd_girl_teen",
       "tints": {
         "cloth_a": "#E1D2B5",
-        "cloth_b": "#6D3E23",
-        "cloth_c": "#AE251D",
-        "hair": "#231B16"
+        "cloth_b": "#232638",
+        "cloth_c": "#BC9349",
+        "hair": "#2B1D14"
       },
       "work": "fold"
     },
@@ -1295,9 +1295,9 @@
       "body": "crowd_boy_tall",
       "tints": {
         "cloth_a": "#D2BD98",
-        "cloth_b": "#714A30",
-        "cloth_c": "#31673A",
-        "hair": "#201A16"
+        "cloth_b": "#474F71",
+        "cloth_c": "#9A1F19",
+        "hair": "#231B16"
       },
       "work": ""
     },
@@ -1335,8 +1335,8 @@
       "tints": {
         "cloth_a": "#E8E3D9",
         "cloth_b": "#B35139",
-        "cloth_c": "#BC954C",
-        "hair": "#221B16"
+        "cloth_c": "#B32F24",
+        "hair": "#241B15"
       },
       "work": "haul"
     },
@@ -1353,8 +1353,8 @@
       "body": "crowd_boy_small",
       "tints": {
         "cloth_a": "#E2D9C9",
-        "cloth_b": "#688043",
-        "cloth_c": "#D0A23A",
+        "cloth_b": "#657F42",
+        "cloth_c": "#B18D56",
         "hair": "#201A16"
       },
       "work": ""
@@ -1372,9 +1372,9 @@
       "body": "crowd_man_lean_b",
       "tints": {
         "cloth_a": "#CEBC9B",
-        "cloth_b": "#AA4E36",
-        "cloth_c": "#7099B8",
-        "hair": "#251B15"
+        "cloth_b": "#456A81",
+        "cloth_c": "#5A8BB1",
+        "hair": "#271C15"
       },
       "work": "haul"
     },
@@ -1410,10 +1410,10 @@
       "build": "medium",
       "body": "crowd_man_medium_b",
       "tints": {
-        "cloth_a": "#CAB590",
-        "cloth_b": "#8E452B",
-        "cloth_c": "#427CAA",
-        "hair": "#422818"
+        "cloth_a": "#E7E1D6",
+        "cloth_b": "#A04B32",
+        "cloth_c": "#B32A21",
+        "hair": "#2E1E14"
       },
       "work": "carry"
     },
@@ -1430,8 +1430,8 @@
       "body": "crowd_woman_lean_a",
       "tints": {
         "cloth_a": "#D6C8AE",
-        "cloth_b": "#A74E35",
-        "cloth_c": "#B43C2C",
+        "cloth_b": "#2F497A",
+        "cloth_c": "#B43D2C",
         "hair": "#201A16"
       },
       "work": "fold"
@@ -1470,8 +1470,8 @@
       "tints": {
         "cloth_a": "#649D99",
         "cloth_b": "#1F1D21",
-        "cloth_c": "#B59053",
-        "hair": "#2E1E14"
+        "cloth_c": "#BE964A",
+        "hair": "#62381E"
       },
       "work": "vigil"
     },
@@ -1489,7 +1489,7 @@
       "tints": {
         "cloth_a": "#5588B0",
         "cloth_b": "#D2C2A3",
-        "cloth_c": "#AA4732",
+        "cloth_c": "#9F3C2B",
         "hair": "#211A16"
       },
       "work": "vigil",
