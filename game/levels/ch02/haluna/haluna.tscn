@@ -231,8 +231,8 @@ hard_cut = true
 script = ExtResource("7_shot")
 id = &"H06"
 position = Vector3(-0.2, 1.35, 4.0)
-look_at = Vector3(-1.0, 0.95, 8.5)
-fov_deg = 34.0
+look_at = Vector3(-0.85, 1.1, 8.05)
+fov_deg = 27.0
 hard_cut = true
 
 [sub_resource type="Resource" id="Shot_cut_H01"]
@@ -573,7 +573,7 @@ shape = SubResource("Box_Hub")
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -1, 0.04, 8)
 
 [node name="Village" type="Marker3D" parent="Spawns"]
-transform = Transform3D(-0.34202, 0, -0.939693, 0, 1, 0, 0.939693, 0, -0.34202, -52, 1.84, -2.6)
+transform = Transform3D(-0.3363, 0, 0.9417, 0, 1, 0, -0.9417, 0, -0.3363, -52, 1.84, -2.6)
 
 [node name="Shrine" type="Marker3D" parent="Spawns"]
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, -67, 2.02, 44.3)
