@@ -190,6 +190,25 @@ that test at this branch's zones.
     byte-identical.
   - **Checks skipped:** coverage (no battle/progression code).
 
+- **Merged big13 (90ecee18) at c47cc9a7.** The Ch5 Ashcrown and Ch7 Tamsule scenes and layouts keep env-art-b's kit
+  frames (they already carry act1-chapters' Cast node, marks and casts). In zone_maps.json, UI's new Ch8 Corrow and
+  Coilspire entries are re-pointed to the kit frames (POIs, hints, bounds). ownership, PROVENANCE and shots.json are
+  unions. Everything else is integration's.
+  Checks after the merge: Godot zone_kit, ch05..ch09, battle_arena, cutscene_walks and hero_stairs all pass; tools
+  test_zone_map_pois, test_arenas, test_b_arenas and the kit tests OK; validate_data, gdlint/gdformat.
+- **The Lead's gate notes (10-28):**
+  1. battle_boss_intro_reach / battle_ch08_stair_hold, "the Reach's backdrop is greybox": on integration
+     `wall_head_storm` still maps to the greybox scene. This branch maps it (env-art's fix) to the final
+     `seawall_stairhead_hoist`, now with the Undertow over it. Rendered on the merged tree: the wall, the town's roofs,
+     the headland and the storm; no greybox. Resolved by merging this branch.
+  2. ch09_corrow_strand, "a glowing white bar": the baseline is integration's greybox shroud rows lit by the vigil.
+     On this branch they are the kit's shroud pieces, and the strand is moonlit shingle (M3-ENV-1309). Rendered:
+     no slab. Resolved by merging this branch.
+  3. ch05_pemakar_harbour, "a dark blob in the sky": the far plume in the kit's material read as a hard silhouette.
+     It now uses the zone's own night plume material (`pemakar_plume_night.tres`, M3-ENV-1318): softer, thinner edges
+     and the crater's ember up its underside. Rendered: it reads as smoke lit from below.
+- **MERGE-READY @ 6cd17ce3.**
+
 ### Render requests
 (Self-rendered per TRACK-RULES; lines are SELF-RENDERED notes.)
 SELF-RENDERED @ ea946ec8: ch07_tamsule_mouth, ch07_tamsule_market, ch07_tamsule_gantry — new shots, read final (Liss and Kerrid are capsules: no field body yet).
@@ -197,3 +216,4 @@ SELF-RENDERED @ 00e15816: ch05_pemakar_weir, ch05_pemakar_harbour_day, ch08_corr
 SELF-RENDERED @ 4081127f: ch05_ashcrown_causeway, ch05_ashcrown_forecourt, ch05_ashcrown_crown, ch05_ashcrown_tiers, ch05_ashcrown_court, battle_arena_ashcrown_forecourt_day, battle_arena_ashcrown_anvil_court, ch06_brine_road, ch06_brine_camp — all new shots or a changed zone, all viewed. The anvil court arena was re-lit after viewing (interior fill 1.4, exposure 1.35, plus a forge-spill lamp over the fight floor); its first render had a black near half.
 SELF-RENDERED @ 749bfc48: battle_arena_ash_terrace_lanternfall (votive lamps), ch05_pemakar_harbour_day and ch05_pemakar_weir (the leat), ch08_coilspire_storm and ch08_corrow_storm (the Undertow now drawn), ch09_corrow_rocks, ch09_corrow_strand and ch09_corrow_landing (the moon from the sea), ch05_ashcrown_court, _causeway and _crown (the loggia plume). All viewed, with before/after sheets for the moon and the plume. Plus a full contact sheet of the 25 Ch5–Ch9 zone shots to pick the weakest views.
 SELF-RENDERED @ 8d198f1e: 53 arena angles (scratch hint rig) before and 30 after the fixes, all viewed: ash_terrace_lanternfall, salvage_camp_burning, seawall_stairhead_storm/hoist/surge, coilspire_headland_path, ashcrown_forecourt_day, ashcrown_anvil_court; 44 player-height walk views across the 8 zones; ch06_brine_camp (the zone burns), ch07_tamsule_market/mouth. A headland scrub ring out to 90 m was viewed and reverted (clumps floated).
+SELF-RENDERED @ 6cd17ce3: battle_boss_intro_reach, battle_ch08_stair_hold, ch09_corrow_strand, ch05_pemakar_harbour, ch05_pemakar_crown (after the big13 merge), all viewed; the Lead's three gate notes are fixed.
