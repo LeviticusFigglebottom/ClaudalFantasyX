@@ -42,3 +42,6 @@ assets/lfs/** filter=lfs diff=lfs merge=lfs -text
 assets/audio/music/act*/**/*.import -filter -diff -merge text
 assets/audio/music/act*/**/*.json -filter -diff -merge text
 assets/lfs/**/*.import -filter -diff -merge text
+assets/audio/sfx/act3/** filter=lfs diff=lfs merge=lfs -text
+assets/audio/sfx/act*/**/*.import -filter -diff -merge text
+assets/audio/sfx/act*/**/*.json -filter -diff -merge text
