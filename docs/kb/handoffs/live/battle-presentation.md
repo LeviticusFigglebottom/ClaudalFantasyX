@@ -26,6 +26,15 @@ both fixed and pushed. The branch head also carries:
   - any battle shot with an Act I creature, since the heights and the near-face anchor move its effects. I am
     self-rendering those next.
 
+**08:xx: the boss-camera sheet viewed; the Reach's big moves fixed.** See M3-BPR-420's review log.
+- SELF-RENDERED (tool, scratch worktree): `boss_camera_sheet`, all 13 big moves at the lead and the contact.
+  - Ten read well: Hullgnaw, the Wraith, the Matron, the Inquisitor and the Drownbell.
+  - The Reach's lunge hid the party behind its arm. The director now drops a foe shot whose body blocks the targets,
+    and the Reach keeps the default frame.
+- The four foe-action shots are unchanged (rmse 0).
+- **This entry is MERGE-READY at the branch head.** The branch carries everything listed under MERGE-READY @ 98aa030d
+  below, plus this.
+
 **MERGE-READY @ 98aa030d (07:xx), the branch head.** It carries M3-BPR-420/422/423 and the big13 merge, plus a merge
 fix.
 - **Full Godot suite on 4a19f707: 2997 run, 5 failed.** Now accounted for:

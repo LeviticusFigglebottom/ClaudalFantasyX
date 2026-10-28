@@ -175,11 +175,14 @@ func _setup(plan: Dictionary) -> void:
 	var aim: Vector3 = space * (plan.get("aim", plan["to"]) as Vector3)
 	var targets := _target_points(plan, actor_id)
 	var head := _actor_head(actor_id)
+	# M3-BPR-420: a foe's body at its strike point must not stand between the lens and its targets (the Reach's lunge)
+	var body := _body_box(actor_id) if actor != null and actor.team != BattleCombatant.TEAM_PARTY else AABB()
+	body.position += to - from
 	for slot: String in [LEAD, CONTACT]:
 		var id := str(pair.get(slot, ""))
 		var pose := shot_pose(id, from, to, aim)
 		var actor_pts: Array[Vector3] = [head + to - from]  # the actor at its strike point: who acts
-		if pose.is_empty() or not _frames(pose, targets, actor_pts):
+		if pose.is_empty() or not _frames(pose, targets, actor_pts) or _blocked(pose, body, targets):
 			continue
 		shot_ids[slot] = id
 		if slot == LEAD:
@@ -278,6 +281,34 @@ func _aspect() -> float:
 	var w := float(ProjectSettings.get_setting("display/window/size/viewport_width", 1))
 	var h := float(ProjectSettings.get_setting("display/window/size/viewport_height", 1))
 	return w / maxf(h, 1.0)
+
+
+## The fighter's visible meshes' bounds (camera parent space); an empty AABB for a primitive or a missing fighter.
+func _body_box(actor_id: StringName) -> AABB:
+	var f := _ctl.stage.stand_in(actor_id)
+	if f == null or not f.has_actor():
+		return AABB()
+	var inv := _parent_inverse()
+	var out := AABB()
+	var first := true
+	for n in f.actor().find_children("*", "MeshInstance3D", true, false):
+		var mi := n as MeshInstance3D
+		if mi.mesh != null and mi.is_visible_in_tree():
+			var b := (inv * mi.global_transform) * mi.get_aabb()
+			out = b if first else out.merge(b)
+			first = false
+	return out
+
+
+## True when `body` (non-empty) stands across a sight line from the pose's lens to a target point. A point inside the
+## body's bounds says nothing (a colossus's rest bounds take in the party under its hand) and never blocks.
+static func _blocked(pose: Dictionary, body: AABB, targets: Array[Vector3]) -> bool:
+	if body.size == Vector3.ZERO:
+		return false
+	for p in targets:
+		if not body.has_point(p) and body.intersects_segment(pose["pos"] as Vector3, p) != null:
+			return true
+	return false
 
 
 ## Each target's feet and head (camera parent space), the actor itself left out.

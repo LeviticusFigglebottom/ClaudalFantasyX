@@ -15,7 +15,6 @@ const FIGHTS := {
 	&"ch05_cinder_matron": [&"cinder_matron", [&"ladle_swing", &"slag_pour"]],
 	&"ch06_inquisitor": [&"stillguard_inquisitor", [&"brine_iron", &"torch_hulk"]],
 	&"drownbell": [&"drownbell", [&"hood_slam"]],
-	&"undertows_reach": [&"undertows_reach", [&"crust_slam", &"undertow_pull", &"breach"]],
 }
 
 var _opts: Dictionary = {}
