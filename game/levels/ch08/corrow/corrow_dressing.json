@@ -12,20 +12,8 @@
  "greybox": {
   "hide_all": true,
   "keep": [
-   "NetRacks",
-   "MarraStep",
-   "HoistPins",
-   "HoistRope",
-   "Basket",
-   "RopeCoil",
    "Flood",
-   "Lake",
-   "Shrine",
-   "WallGate",
-   "MolePier",
-   "MoleRamp",
-   "MoleOverParapet",
-   "MoleDown"
+   "Lake"
   ]
  },
  "fire_light_color": "#E0702E",
@@ -3291,81 +3279,159 @@
    "yaw_deg": 13.37
   },
   {
-   "piece": "lowtown_house_a",
+   "piece": "stillguard_barracks",
    "at": [
-    -95.163,
-    -7.008
+    -91.905,
+    -7.98
    ],
    "y": 12.0,
-   "yaw_deg": 106.62,
+   "yaw_deg": 16.62,
    "block": "Barracks"
   },
   {
-   "piece": "lowtown_house_b",
-   "at": [
-    -88.839,
-    -8.895
-   ],
-   "y": 12.0,
-   "yaw_deg": 106.62,
-   "block": "Barracks"
-  },
-  {
-   "piece": "lowtown_house_b",
+   "piece": "order_chapel",
    "at": [
     -77.101,
     -10.573
    ],
    "y": 12.0,
    "yaw_deg": 103.94,
-   "block": "Chapel"
+   "block": "Chapel",
+   "kit_dir": "res://assets/environments/kits/haluna/"
   },
   {
-   "piece": "ferry_hull",
-   "kit_dir": "res://assets/environments/kits/brightwater_ferry/",
-   "at": [
-    7.909,
-    36.454
-   ],
-   "y": 0.5,
-   "yaw_deg": -1.72,
-   "scale": 0.5,
-   "block": "Trader"
-  },
-  {
-   "piece": "ferry_rig",
-   "kit_dir": "res://assets/environments/kits/brightwater_ferry/",
-   "at": [
-    7.909,
-    36.454
-   ],
-   "y": 0.5,
-   "yaw_deg": -1.72,
-   "scale": 0.5,
-   "block": "Trader"
-  },
-  {
-   "piece": "ferry_cargo",
-   "kit_dir": "res://assets/environments/kits/brightwater_ferry/",
-   "at": [
-    7.909,
-    36.454
-   ],
-   "y": 0.5,
-   "yaw_deg": -1.72,
-   "scale": 0.5,
-   "block": "Trader"
-  },
-  {
-   "piece": "crate_stack",
-   "kit_dir": "res://assets/environments/kits/brine_shoals/",
+   "piece": "market_stall",
    "at": [
     -78.747,
     -0.038
    ],
    "y": 12.0,
    "yaw_deg": 14.71,
-   "block": "Chandler"
+   "block": "Chandler",
+   "kit_dir": "res://assets/environments/kits/haluna/"
+  },
+  {
+   "piece": "awning_cloth",
+   "at": [
+    -78.747,
+    -0.038
+   ],
+   "y": 12.0,
+   "yaw_deg": 14.71,
+   "block": "Chandler",
+   "kit_dir": "res://assets/environments/kits/haluna/"
+  },
+  {
+   "piece": "wall_gate",
+   "at": [
+    34.921,
+    2.039
+   ],
+   "y": 12.0,
+   "yaw_deg": -6.68,
+   "block": "WallGate"
+  },
+  {
+   "piece": "kite_line",
+   "at": [
+    -14.919,
+    1.873
+   ],
+   "y": 25.0,
+   "yaw_deg": 2.86,
+   "block": "Kites"
+  },
+  {
+   "piece": "kite_line_high",
+   "at": [
+    -5.008,
+    -0.458
+   ],
+   "y": 28.0,
+   "yaw_deg": 0.95,
+   "block": "KitesHigh"
+  },
+  {
+   "piece": "marra_step",
+   "at": [
+    -48.634,
+    -11.046
+   ],
+   "y": 1.0,
+   "yaw_deg": 0.0,
+   "block": "MarraStep"
+  },
+  {
+   "piece": "hoist_pins",
+   "at": [
+    -16.343,
+    3.15
+   ],
+   "y": 16.6,
+   "yaw_deg": 3.15,
+   "block": "HoistPins"
+  },
+  {
+   "piece": "hoist_basket",
+   "at": [
+    -16.423,
+    1.702
+   ],
+   "y": 12.3,
+   "yaw_deg": 3.15,
+   "block": "Basket"
+  },
+  {
+   "piece": "net_rack",
+   "at": [
+    -34.634,
+    -23.446
+   ],
+   "y": 1.0,
+   "yaw_deg": 0.0,
+   "block": "NetRacks",
+   "kit_dir": "res://assets/environments/kits/haluna/"
+  },
+  {
+   "piece": "level_stone_shrine",
+   "at": [
+    -66.685,
+    -2.947
+   ],
+   "y": 12.0,
+   "yaw_deg": 12.41,
+   "block": "Shrine",
+   "kit_dir": "res://assets/environments/kits/brine_shoals/"
+  },
+  {
+   "piece": "trader_boat",
+   "at": [
+    7.909,
+    36.454
+   ],
+   "y": -0.4,
+   "yaw_deg": -1.72,
+   "block": "Trader"
+  },
+  {
+   "piece": "mole_pier",
+   "at": [
+    13.694,
+    26.342
+   ],
+   "y": 1.2,
+   "yaw_deg": -2.865,
+   "lod1_from_m": 150.0
+  },
+  {
+   "piece": "mole_sea_stair",
+   "at": [
+    13.694,
+    26.342
+   ],
+   "y": 1.2,
+   "yaw_deg": -2.865,
+   "lod1_from_m": 150.0
   }
  ]
 }

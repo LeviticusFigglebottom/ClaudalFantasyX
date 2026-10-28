@@ -102,7 +102,7 @@
    "y": 0.0,
    "yaw_deg": -30.0,
    "lod1_from_m": 2500.0,
-   "collide": "trimesh"
+   "collide": "trimesh_lod0"
   },
   {
    "piece": "headland_path",
@@ -123,7 +123,35 @@
    "y": 39.285,
    "yaw_deg": -30.0,
    "lod1_from_m": 300.0,
-   "collide": "trimesh"
+   "collide": "trimesh",
+   "collide_lod0_in": [
+    {
+     "pos": [
+      305.025,
+      40.86,
+      155.221
+     ],
+     "size": [
+      1.7,
+      2.85,
+      1.879
+     ],
+     "yaw": 45.0
+    },
+    {
+     "pos": [
+      307.941,
+      82.96,
+      156.984
+     ],
+     "size": [
+      0.9,
+      1.85,
+      1.33
+     ],
+     "yaw": 16.156
+    }
+   ]
   },
   {
    "piece": "coilspire_flues",
@@ -144,7 +172,35 @@
    "y": 39.285,
    "yaw_deg": -30.0,
    "lod1_from_m": 120.0,
-   "collide": "trimesh"
+   "collide": "trimesh",
+   "collide_lod0_in": [
+    {
+     "pos": [
+      305.025,
+      40.86,
+      155.221
+     ],
+     "size": [
+      1.7,
+      2.85,
+      1.879
+     ],
+     "yaw": 45.0
+    },
+    {
+     "pos": [
+      307.941,
+      82.96,
+      156.984
+     ],
+     "size": [
+      0.9,
+      1.85,
+      1.33
+     ],
+     "yaw": 16.156
+    }
+   ]
   },
   {
    "piece": "keepers_hut",
@@ -155,7 +211,7 @@
    "y": 39.285,
    "yaw_deg": -30.0,
    "lod1_from_m": 150.0,
-   "collide": "trimesh"
+   "collide": "trimesh_lod0"
   },
   {
    "piece": "beacon_basket",
@@ -1183,20 +1239,20 @@
   {
    "piece": "flue_key",
    "at": [
-    309.136,
-    160.598
+    310.457,
+    159.156
    ],
    "y": 67.535,
-   "yaw_deg": -160.0
+   "yaw_deg": -105.0
   },
   {
    "piece": "flue_key_wheel",
    "at": [
-    308.924,
-    160.015
+    309.858,
+    158.995
    ],
    "y": 67.535,
-   "yaw_deg": -160.0,
+   "yaw_deg": -105.0,
    "spin_with": "Key_t4_d"
   },
   {

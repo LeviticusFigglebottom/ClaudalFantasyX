@@ -87,7 +87,7 @@ func test_the_zone_takes_the_kit_grade_and_lamps_obey_the_fog_rule() -> void:
 	assert_eq(env.background_mode, Environment.BG_SKY, "the kit's sky")
 	assert_true(env.adjustment_enabled and env.adjustment_color_correction != null, "the ch06 LUT")
 	var fires := _dressing().find_children("*", "OmniLight3D", true, false)
-	assert_eq(fires.size(), 3, "the hulk, the brazier and the dusk fire")
+	assert_eq(fires.size(), 5, "the hulk, the brazier, the dusk fire, the burning tide-wheel and the shrine")
 	for l: Node in fires:
 		assert_eq((l as OmniLight3D).light_volumetric_fog_energy, 0.0, "fog-lamp rule")
 	_close()
@@ -104,3 +104,48 @@ func test_a_trimesh_collider_takes_the_lod1_mesh() -> void:
 	body.free()
 	piece.free()
 	_close()
+
+
+func test_a_trimesh_lod0_collider_takes_the_lod0_mesh() -> void:
+	var piece := (
+		(load("res://assets/environments/kits/brine_shoals/camp_hard.glb") as PackedScene).instantiate() as Node3D
+	)
+	var lod1 := ZoneKitDressing.trimesh_collider(piece)
+	var lod0 := ZoneKitDressing.trimesh_collider(piece, false)
+	assert_eq(lod0.get_child_count(), 1, "one shape: the LOD0")
+	var faces0 := ((lod0.get_child(0) as CollisionShape3D).shape as ConcavePolygonShape3D).get_faces().size()
+	var faces1 := ((lod1.get_child(0) as CollisionShape3D).shape as ConcavePolygonShape3D).get_faces().size()
+	assert_true(faces0 > faces1, "the finer mesh (%d faces against %d)" % [faces0, faces1])
+	lod0.free()
+	lod1.free()
+	piece.free()
+	_close()
+
+
+func test_a_lod0_box_clips_lod1_out_and_lod0_in() -> void:
+	# a 2 x 2 m triangle pair (a quad in y = 0) and a box over its middle: the outside and the inside add up to it
+	var quad := PackedVector3Array(
+		[
+			Vector3(-1, 0, -1),
+			Vector3(1, 0, -1),
+			Vector3(1, 0, 1),
+			Vector3(-1, 0, -1),
+			Vector3(1, 0, 1),
+			Vector3(-1, 0, 1)
+		]
+	)
+	var boxes := ZoneKitDressing.lod0_boxes([{"pos": [0.0, 0.0, 0.0], "size": [1.0, 1.0, 1.0], "yaw": 45.0}])
+	var outside := ZoneKitDressing._clip_faces(quad, Transform3D.IDENTITY, boxes, false)
+	var inside := ZoneKitDressing._clip_faces(quad, Transform3D.IDENTITY, boxes, true)
+	assert_true(absf(_area(inside) - 1.0) < 1e-4, "the box's 1 m^2 inside (%.4f)" % _area(inside))
+	assert_true(absf(_area(outside) - 3.0) < 1e-4, "the rest outside (%.4f)" % _area(outside))
+	for p in inside:
+		assert_true(absf(p.rotated(Vector3.UP, deg_to_rad(-45.0)).x) <= 0.5001, "inside stays in the turned box")
+	_close()
+
+
+static func _area(faces: PackedVector3Array) -> float:
+	var total := 0.0
+	for i in range(0, faces.size(), 3):
+		total += (faces[i + 1] - faces[i]).cross(faces[i + 2] - faces[i]).length() * 0.5
+	return total

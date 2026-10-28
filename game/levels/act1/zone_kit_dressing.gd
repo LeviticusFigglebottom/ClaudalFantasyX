@@ -13,12 +13,23 @@ extends HalunaDresser
 ##                    "trimesh": the piece's LOD1 (else LOD0) mesh as a static trimesh, for a kit's walk
 ##                    surfaces (treads, walls) whose shape is the gameplay. Never for stepped flights: the
 ##                    controller has no step-up, so stairs are ramps in the zone's collision.
+##                    "trimesh_lod0": the same from LOD0 (a terrain whose LOD1 is too coarse to walk on).
+##                  "collide_lod0_in": [{"pos", "size", "yaw"?}]  boxes in the layout's frame where a "trimesh"
+##                    collides from LOD0 (a doorway a closed LOD1 shell would seal).
+##                  "scale_y": the piece's vertical scale, over HalunaDresser's uniform "scale" (env-art's Iskarra
+##                    towers are squat or tall copies of one tower);
 ##                  "kit_dir" (+ "materials_dir", default <kit_dir>materials/)  a piece from another kit
 ##                    (Corrow's trader is the ferry kit's hull); each kit keeps its own material cache.
 ##   greybox      {"hide_all": bool, "keep": [ids]}: hides the greybox meshes (collision stays), except
 ##                  the kept ones (story pieces no kit has yet).
-##   fire_lights  [{"at": [x, y, z], "energy", "range", "block"?, "shadow"?, "attenuation"?}] omnis in
-##                  "fire_light_color" (shadowless unless "shadow"); a "block" light follows its block.
+##   fire_lights  [{"at": [x, y, z], "energy", "range", "block"?, "shadow"?, "attenuation"?, "color"?}] omnis
+##                  in "fire_light_color" or their own "color" (shadowless unless "shadow"); a "block" light
+##                  follows its block.
+##   multimeshes  [{"name", "piece", "transforms": [[x, y, z, yaw_rad]], "block"?}]: many copies of one kit
+##                  piece's LOD0 (with its slot materials) as one shadowless MultiMesh (Pemakar's leaf-boats).
+##   far_lights   [{"name", "points": [[x, y, z]], "size_m": [near, far], "color", "energy", "block"?}]: lights
+##                  too small to model at their range, as camera-facing quads (env_far_lights), larger with
+##                  distance from the origin out to FAR_SIZE_RANGE_M.
 ##   environment  a res:// Environment: the zone's WorldEnvironment takes a copy (sky, grade, fog).
 ##   time_of_day_h  the hymn_time_of_day the sky reads.
 ## It writes hymn_sun_direction from the zone's sun every frame, so the sky's sun follows the story's
@@ -26,10 +37,17 @@ extends HalunaDresser
 
 const KEY_BLOCK := "block"
 const KEY_COLLIDE := "collide"
+const KEY_COLLIDE_LOD0_IN := "collide_lod0_in"
 const KEY_SPIN := "spin_with"
 const KEY_KIT_DIR := "kit_dir"
+const KEY_SCALE_Y := "scale_y"
 const KEY_MATERIALS_DIR := "materials_dir"
 const COLLIDE_TRIMESH := "trimesh"
+const COLLIDE_TRIMESH_LOD0 := "trimesh_lod0"
+const KEY_MULTIMESHES := "multimeshes"
+const KEY_FAR_LIGHTS := "far_lights"
+const FAR_LIGHT_SHADER := "res://game/shaders/environment/env_far_lights.gdshader"
+const FAR_SIZE_RANGE_M := 700.0
 const KEY_GREYBOX := "greybox"
 const KEY_FIRE := "fire_lights"
 const KEY_ENVIRONMENT := "environment"
@@ -59,9 +77,14 @@ func dress() -> void:
 		var piece := _place_from_kit(spec)
 		if piece == null:
 			continue
+		if spec.has(KEY_SCALE_Y):
+			var s := float(spec.get("scale", 1.0))
+			piece.basis = piece.basis.scaled(Vector3(1.0, float(spec[KEY_SCALE_Y]) / s, 1.0))
 		var collide: Variant = spec.get(KEY_COLLIDE, false)
 		if collide is String and collide == COLLIDE_TRIMESH:
-			piece.add_child(trimesh_collider(piece))
+			piece.add_child(trimesh_collider(piece, true, lod0_boxes(spec.get(KEY_COLLIDE_LOD0_IN, []))))
+		elif collide is String and collide == COLLIDE_TRIMESH_LOD0:
+			piece.add_child(trimesh_collider(piece, false))
 		elif collide is bool and collide:
 			piece.add_child(box_collider(piece))
 		_attach(piece, str(spec.get(KEY_BLOCK, "")))
@@ -69,6 +92,8 @@ func dress() -> void:
 		if spin != null:
 			_spinners.append([piece, spin, piece.basis])
 	_place_fire_lights()
+	_place_multimeshes()
+	_place_far_lights()
 	_hide_greybox()
 	_apply_environment()
 	if layout.has(KEY_TIME_OF_DAY):
@@ -136,8 +161,20 @@ static func box_collider(piece: Node3D) -> StaticBody3D:
 	return body
 
 
-## A static trimesh of the piece's LOD1 meshes (LOD0 where a mesh has no LOD1), in the piece's frame.
-static func trimesh_collider(piece: Node3D) -> StaticBody3D:
+## A "collide_lod0_in" list as [box's transform, half size] pairs.
+static func lod0_boxes(rows: Array) -> Array[Array]:
+	var out: Array[Array] = []
+	for row: Dictionary in rows:
+		var basis := Basis(Vector3.UP, deg_to_rad(float(row.get("yaw", 0.0))))
+		out.append([Transform3D(basis, GreyboxZone._vec3(row["pos"])), GreyboxZone._vec3(row["size"]) * 0.5])
+	return out
+
+
+## A static trimesh of the piece's LOD1 meshes (LOD0 where a mesh has no LOD1; only LOD0 when not
+## `prefer_lod1`), in the piece's frame. Inside the `lod0_in` boxes (lod0_boxes, in the frame of the piece's parent)
+## it collides from LOD0 instead: the LOD1 triangles are clipped to outside the boxes, LOD0's to inside (a doorway a
+## closed LOD1 shell would seal).
+static func trimesh_collider(piece: Node3D, prefer_lod1: bool = true, lod0_in: Array[Array] = []) -> StaticBody3D:
 	var body := StaticBody3D.new()
 	body.name = COLLIDER
 	var meshes := piece.find_children("*", "MeshInstance3D", true, false)
@@ -145,16 +182,88 @@ static func trimesh_collider(piece: Node3D) -> StaticBody3D:
 	for child: Node in meshes:
 		if String(child.name).ends_with(LOD_SUFFIX):
 			lod1[String(child.name).trim_suffix(LOD_SUFFIX)] = true
+	var patching := prefer_lod1 and not lod0_in.is_empty()
 	for child: Node in meshes:
 		var mi := child as MeshInstance3D
 		var n := String(mi.name)
-		if mi.mesh == null or (not n.ends_with(LOD_SUFFIX) and lod1.has(n)):
+		var skip := n.ends_with(LOD_SUFFIX) if not prefer_lod1 else (not n.ends_with(LOD_SUFFIX) and lod1.has(n))
+		if mi.mesh == null or (skip and not patching):
 			continue
 		var cs := CollisionShape3D.new()
-		cs.shape = mi.mesh.create_trimesh_shape()
 		cs.transform = _relative(piece, mi)
+		if not patching:
+			cs.shape = mi.mesh.create_trimesh_shape()
+		else:
+			var shape := ConcavePolygonShape3D.new()
+			shape.set_faces(_clip_faces(mi.mesh.get_faces(), piece.transform * cs.transform, lod0_in, skip))
+			cs.shape = shape
 		body.add_child(cs)
 	return body
+
+
+## The parts of `faces` (in a mesh's frame, `to_parent` taking it to the boxes' frame) outside every box, or inside
+## one when `inside`, as triangles in the mesh's frame.
+static func _clip_faces(
+	faces: PackedVector3Array, to_parent: Transform3D, boxes: Array[Array], inside: bool
+) -> PackedVector3Array:
+	var out := PackedVector3Array()
+	var back := to_parent.affine_inverse()
+	for i in range(0, faces.size(), 3):
+		var outside: Array[PackedVector3Array] = [
+			PackedVector3Array([to_parent * faces[i], to_parent * faces[i + 1], to_parent * faces[i + 2]])
+		]
+		var kept: Array[PackedVector3Array] = []
+		for box: Array in boxes:
+			var frame: Transform3D = box[0]
+			var to_box := frame.affine_inverse()
+			var rest: Array[PackedVector3Array] = []
+			for poly in outside:
+				var pieces := _cut_by_box(to_box * poly, box[1])
+				for k in pieces.size():
+					var world := frame * pieces[k]
+					if k == 0:
+						if inside and world.size() >= 3:
+							kept.append(world)
+					elif world.size() >= 3:
+						rest.append(world)
+			outside = rest
+		if not inside:
+			kept = outside
+		for poly in kept:
+			for k in range(1, poly.size() - 1):
+				out.append_array([back * poly[0], back * poly[k], back * poly[k + 1]])
+	return out
+
+
+## A convex polygon (in a box's frame) cut by the box of half size `h`: [the part inside, the parts outside...].
+static func _cut_by_box(poly: PackedVector3Array, h: Vector3) -> Array[PackedVector3Array]:
+	var pieces: Array[PackedVector3Array] = [PackedVector3Array()]
+	var rest := poly
+	for axis in 3:
+		for side: float in [-1.0, 1.0]:
+			pieces.append(_clip(rest, axis, side * h[axis], side, false))
+			rest = _clip(rest, axis, side * h[axis], side, true)
+	pieces[0] = rest
+	return pieces
+
+
+## Sutherland-Hodgman: the part of `poly` with side * (p[axis] - limit) <= 0 (inward of the plane), or > 0 when not
+## `inward`.
+static func _clip(poly: PackedVector3Array, axis: int, limit: float, side: float, inward: bool) -> PackedVector3Array:
+	var out := PackedVector3Array()
+	var n := poly.size()
+	for i in n:
+		var a := poly[i]
+		var b := poly[(i + 1) % n]
+		var da := side * (a[axis] - limit)
+		var db := side * (b[axis] - limit)
+		var a_in := da <= 0.0 if inward else da > 0.0
+		var b_in := db <= 0.0 if inward else db > 0.0
+		if a_in:
+			out.append(a)
+		if a_in != b_in:
+			out.append(a.lerp(b, da / (da - db)))
+	return out
 
 
 static func _relative(root: Node3D, node: Node3D) -> Transform3D:
@@ -206,7 +315,7 @@ func _place_fire_lights() -> void:
 		var row: Dictionary = r
 		var at: Array = row.get("at", [0.0, 0.0, 0.0])
 		var light := OmniLight3D.new()
-		light.light_color = color
+		light.light_color = Color.html(str(row["color"])) if row.has("color") else color
 		light.light_energy = float(row.get("energy", 1.0))
 		light.omni_range = float(row.get("range", 5.0))
 		light.shadow_enabled = bool(row.get("shadow", false))
@@ -215,6 +324,85 @@ func _place_fire_lights() -> void:
 		light.position = Vector3(float(at[0]), float(at[1]), float(at[2]))
 		root.add_child(light)
 		_attach(light, str(row.get(KEY_BLOCK, "")))
+
+
+func _place_multimeshes() -> void:
+	for r: Variant in layout.get(KEY_MULTIMESHES, []):
+		var row: Dictionary = r
+		var transforms: Array = row.get("transforms", [])
+		var mesh := kit_mesh(str(row.get("piece", "")))
+		if mesh == null or transforms.is_empty():
+			push_warning("ZoneKitDressing: no multimesh for %s" % row.get("piece", ""))
+			continue
+		var mm := MultiMesh.new()
+		mm.transform_format = MultiMesh.TRANSFORM_3D
+		mm.mesh = mesh
+		mm.instance_count = transforms.size()
+		for i in transforms.size():
+			var t: Array = transforms[i]
+			var at := Vector3(float(t[0]), float(t[1]), float(t[2]))
+			mm.set_instance_transform(i, Transform3D(Basis(Vector3.UP, float(t[3])), at))
+		var mmi := MultiMeshInstance3D.new()
+		mmi.name = str(row.get("name", "MultiMesh"))
+		mmi.multimesh = mm
+		mmi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		add_child(mmi)
+		_attach(mmi, str(row.get(KEY_BLOCK, "")))
+		placed[mmi.name] = transforms.size()
+
+
+## A copy of a kit piece's LOD0 mesh with its slot materials on its surfaces (for a MultiMesh), or null.
+func kit_mesh(piece: String) -> Mesh:
+	var node := instance_piece(piece)
+	if node == null:
+		return null
+	placed[piece] = int(placed[piece]) - 1  # a template, not a placement
+	var mesh: Mesh = null
+	for child: Node in node.find_children("*", "MeshInstance3D", true, false):
+		var mi := child as MeshInstance3D
+		if mi.mesh == null or String(mi.name).ends_with(LOD_SUFFIX):
+			continue
+		mesh = mi.mesh.duplicate() as Mesh
+		for i in mesh.get_surface_count():
+			var mat := mi.get_surface_override_material(i)
+			if mat != null:
+				mesh.surface_set_material(i, mat)
+		break
+	node.free()
+	return mesh
+
+
+func _place_far_lights() -> void:
+	for r: Variant in layout.get(KEY_FAR_LIGHTS, []):
+		var row: Dictionary = r
+		var points: Array = row.get("points", [])
+		if points.is_empty():
+			continue
+		var sizes: Array = row.get("size_m", [1.0, 1.0])
+		var quad := QuadMesh.new()
+		quad.size = Vector2(2.0, 2.0)  # half-size 1, so an instance's scale is its radius
+		var mat := ShaderMaterial.new()
+		mat.shader = load(FAR_LIGHT_SHADER) as Shader
+		mat.set_shader_parameter(&"col_light", Color.html(str(row.get("color", "#FFFFFF"))))
+		mat.set_shader_parameter(&"energy", float(row.get("energy", 1.0)))
+		quad.material = mat
+		var mm := MultiMesh.new()
+		mm.transform_format = MultiMesh.TRANSFORM_3D
+		mm.mesh = quad
+		mm.instance_count = points.size()
+		for i in points.size():
+			var p: Array = points[i]
+			var pos := Vector3(float(p[0]), float(p[1]), float(p[2]))
+			var s := lerpf(
+				float(sizes[0]), float(sizes[1]), clampf(Vector2(pos.x, pos.z).length() / FAR_SIZE_RANGE_M, 0, 1)
+			)
+			mm.set_instance_transform(i, Transform3D(Basis().scaled(Vector3.ONE * s), pos))
+		var mmi := MultiMeshInstance3D.new()
+		mmi.name = str(row.get("name", "FarLights"))
+		mmi.multimesh = mm
+		mmi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		add_child(mmi)
+		_attach(mmi, str(row.get(KEY_BLOCK, "")))
 
 
 func _hide_greybox() -> void:

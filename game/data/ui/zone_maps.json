@@ -139,16 +139,16 @@
         "name_key": "LOCATION_CH05_PEMAKAR",
         "shapes": "res://game/levels/ch05/pemakar/pemakar_layout.json",
         "shape_kind": "greybox_layout",
-        "shape_hints": {"sea": ["Sea"], "water": ["WeirChannel", "CrownChannel"], "pads": ["GraveSteps"], "skip": ["Lamps"]},
-        "bounds": [-31.0, -67.0, 62.0, 88.0],
+        "shape_hints": {"sea": ["MapSea"], "skip": ["Lamps"], "buildings": ["MapHouse0", "MapHouse1", "MapHouse2", "MapHouse3", "MapHouse4", "MapHouse5", "MapHouse6", "MapHouse7", "MapHouse8", "MapHouse9", "MapHouse10", "MapHouse11", "MapHouse12", "MapHouse13", "MapHouse14", "MapHouse15", "MapHouse16", "MapHouse17", "MapHouse18", "MapHouse19", "MapHouse20", "MapHouse21", "MapHouse22", "MapHouse23", "MapHouse24"]},
+        "bounds": [-48.0, -74.0, 96.0, 108.0],
         "pois": [
-          {"id": "harbour", "name_key": "MAP_POI_P_HARBOUR", "kind": "dock", "at": [0.0, 12.0], "source": "trigger:harbour_road"},
-          {"id": "weir", "name_key": "MAP_POI_P_WEIR", "kind": "path", "at": [9.0, 7.0], "source": "spawn:Weir"},
-          {"id": "market", "name_key": "MAP_POI_P_MARKET", "kind": "talk", "at": [-4.0, -14.0], "source": "trigger:bark_boat_folders"},
-          {"id": "forge", "name_key": "MAP_POI_P_FORGE", "kind": "shop", "at": [-13.0, -24.0], "source": "actor:garo"},
-          {"id": "inn", "name_key": "MAP_POI_P_INN", "kind": "inn", "at": [-13.0, -32.0], "source": "spawn:InnGate"},
-          {"id": "graves", "name_key": "MAP_POI_P_GRAVES", "kind": "talk", "at": [12.0, -30.0], "source": "mark:grave_terrace"},
-          {"id": "crown_bell", "name_key": "MAP_POI_P_CROWN_BELL", "kind": "path", "at": [0.0, -46.0], "source": "trigger:crown_bell"}
+          {"id": "harbour", "name_key": "MAP_POI_P_HARBOUR", "kind": "dock", "at": [0.0, 26.5], "source": "trigger:harbour_road"},
+          {"id": "weir", "name_key": "MAP_POI_P_WEIR", "kind": "path", "at": [9.0, 25.2], "source": "spawn:Weir"},
+          {"id": "market", "name_key": "MAP_POI_P_MARKET", "kind": "talk", "at": [-1.7, -1.6], "source": "trigger:bark_boat_folders"},
+          {"id": "forge", "name_key": "MAP_POI_P_FORGE", "kind": "shop", "at": [6.3, -1.7], "source": "actor:garo"},
+          {"id": "inn", "name_key": "MAP_POI_P_INN", "kind": "inn", "at": [-3.6, -15.6], "source": "spawn:InnGate"},
+          {"id": "graves", "name_key": "MAP_POI_P_GRAVES", "kind": "talk", "at": [12.0, -30.2], "source": "mark:grave_terrace"},
+          {"id": "crown_bell", "name_key": "MAP_POI_P_CROWN_BELL", "kind": "path", "at": [0.0, -65.7], "source": "trigger:crown_bell"}
         ]
       },
       {
