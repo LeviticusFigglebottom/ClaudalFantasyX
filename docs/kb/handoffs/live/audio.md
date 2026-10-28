@@ -3,6 +3,19 @@
 ## NEW ACCOUNT (from 2026-10-25)
 Session `session_01Wmj8xaLtwcqiS3qwC6PciW`. Integration branch `claude/undertow-lead-handoff-ze8rrn`. Newest first.
 
+- **MERGE-READY: the Act III cues are in Git LFS: 9 objects, 9.65 MiB** (a3a21cce).
+  - hollowmere, dace_ledger, the_kite, kite_maiden_flight, iskarra_ruins and iskarra_spire.
+  - hesper_and_ilsabet's s0 and s1, stacked at −16.03 (a new stem rule).
+  - kerrid_last_night.
+  - Each file is byte-identical to its composer's own verified render.
+  - Loops are imported with `loop=true`; there are PROVENANCE rows, and music.json has the 8 cue rows from the task files. Zone, encounter and phase rows wait for their scenes and fights; the intended rows are in each note.
+  - Checks:
+    - test_audio_loudness, test_act2_finals and test_audio_data: OK.
+    - Godot `--filter=audio`: 171 run, 0 failed.
+    - validate_data: 0 errors.
+  - **All audio held for LFS is in now: 43 objects, 34.24 MiB.** That is the Act II finals (23.65), the Kite foley (0.94) and Act III (9.65).
+  - Also fixed: three Act II PROVENANCE rows that were missing sources (29d5982b).
+
 - **MERGE-READY: the Act II finals and the Kite foley are in Git LFS: 34 objects, 24.59 MiB** (25.8 MB). Pushed, with
   `git lfs ls-files` checked and the remote blobs confirmed as pointers.
   - `assets/audio/music/act2/`: the 12 zone finals and the four bosses' 2 stems each, 23.65 MiB.
