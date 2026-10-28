@@ -926,6 +926,202 @@
         ["{python}", "assets_src/characters/villagers/write_materials.py", "wright_child_b"],
         ["{python}", "assets_src/characters/villagers/villager_clips.py", "wright_child_b"]
       ]
+    },
+    {
+      "id": "villager_sabe",
+      "threads": 4,
+      "owner": "character",
+      "_note": "M3-CHR-526: Sabe, Oruvel's old diver (Ch1) on the villager build, host_snaps and garment_fit; the story clips the dialogue calls from villager_story_clips.json.",
+      "sources": ["assets_src/characters/villagers/**", "assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**", "game/data/characters/helper_bones.json"],
+      "outputs": ["assets/characters/villagers/sabe/*.glb", "assets/characters/villagers/sabe/textures/*.png", "assets/characters/villagers/sabe/materials/*.tres", "assets/characters/villagers/sabe/*.tscn", "assets/characters/villagers/sabe/anim/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/characters/villagers/build_villager.py", "--", "--npc", "sabe", "--bake-dir", "{scratch}/sabe_bake"],
+        ["{python}", "assets_src/characters/villagers/villager_textures.py", "--npc", "sabe", "--bake-dir", "{scratch}/sabe_bake"],
+        ["{python}", "assets_src/characters/villagers/write_materials.py", "sabe"],
+        ["{python}", "assets_src/characters/villagers/villager_clips.py", "sabe"]
+      ]
+    },
+    {
+      "id": "villager_scaleman",
+      "threads": 4,
+      "owner": "character",
+      "_note": "M3-CHR-527: the Oruvel scale-man (Ch1) on the villager build, host_snaps and garment_fit; the story clips the dialogue calls from villager_story_clips.json.",
+      "sources": ["assets_src/characters/villagers/**", "assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**", "game/data/characters/helper_bones.json"],
+      "outputs": ["assets/characters/villagers/scaleman/*.glb", "assets/characters/villagers/scaleman/textures/*.png", "assets/characters/villagers/scaleman/materials/*.tres", "assets/characters/villagers/scaleman/*.tscn", "assets/characters/villagers/scaleman/anim/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/characters/villagers/build_villager.py", "--", "--npc", "scaleman", "--bake-dir", "{scratch}/scaleman_bake"],
+        ["{python}", "assets_src/characters/villagers/villager_textures.py", "--npc", "scaleman", "--bake-dir", "{scratch}/scaleman_bake"],
+        ["{python}", "assets_src/characters/villagers/write_materials.py", "scaleman"],
+        ["{python}", "assets_src/characters/villagers/villager_clips.py", "scaleman"]
+      ]
+    },
+    {
+      "id": "villager_skipper_sadi",
+      "threads": 4,
+      "owner": "character",
+      "_note": "M3-CHR-528: Skipper Sadi Moru (Ch1) on the villager build, host_snaps and garment_fit; the story clips the dialogue calls from villager_story_clips.json.",
+      "sources": ["assets_src/characters/villagers/**", "assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**", "game/data/characters/helper_bones.json"],
+      "outputs": ["assets/characters/villagers/skipper_sadi/*.glb", "assets/characters/villagers/skipper_sadi/textures/*.png", "assets/characters/villagers/skipper_sadi/materials/*.tres", "assets/characters/villagers/skipper_sadi/*.tscn", "assets/characters/villagers/skipper_sadi/anim/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/characters/villagers/build_villager.py", "--", "--npc", "skipper_sadi", "--bake-dir", "{scratch}/skipper_sadi_bake"],
+        ["{python}", "assets_src/characters/villagers/villager_textures.py", "--npc", "skipper_sadi", "--bake-dir", "{scratch}/skipper_sadi_bake"],
+        ["{python}", "assets_src/characters/villagers/write_materials.py", "skipper_sadi"],
+        ["{python}", "assets_src/characters/villagers/villager_clips.py", "skipper_sadi"]
+      ]
+    },
+    {
+      "id": "villager_ferrymaster",
+      "threads": 4,
+      "owner": "character",
+      "_note": "M3-CHR-529: Imbe, the Brightwater ferry-master (Ch4) on the villager build, host_snaps and garment_fit; the story clips the dialogue calls from villager_story_clips.json.",
+      "sources": ["assets_src/characters/villagers/**", "assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**", "game/data/characters/helper_bones.json"],
+      "outputs": ["assets/characters/villagers/ferrymaster/*.glb", "assets/characters/villagers/ferrymaster/textures/*.png", "assets/characters/villagers/ferrymaster/materials/*.tres", "assets/characters/villagers/ferrymaster/*.tscn", "assets/characters/villagers/ferrymaster/anim/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/characters/villagers/build_villager.py", "--", "--npc", "ferrymaster", "--bake-dir", "{scratch}/ferrymaster_bake"],
+        ["{python}", "assets_src/characters/villagers/villager_textures.py", "--npc", "ferrymaster", "--bake-dir", "{scratch}/ferrymaster_bake"],
+        ["{python}", "assets_src/characters/villagers/write_materials.py", "ferrymaster"],
+        ["{python}", "assets_src/characters/villagers/villager_clips.py", "ferrymaster"]
+      ]
+    },
+    {
+      "id": "villager_purser",
+      "threads": 4,
+      "owner": "character",
+      "_note": "M3-CHR-530: the Brightwater ferry's purser (Ch4) on the villager build, host_snaps and garment_fit; the story clips the dialogue calls from villager_story_clips.json.",
+      "sources": ["assets_src/characters/villagers/**", "assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**", "game/data/characters/helper_bones.json"],
+      "outputs": ["assets/characters/villagers/purser/*.glb", "assets/characters/villagers/purser/textures/*.png", "assets/characters/villagers/purser/materials/*.tres", "assets/characters/villagers/purser/*.tscn", "assets/characters/villagers/purser/anim/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/characters/villagers/build_villager.py", "--", "--npc", "purser", "--bake-dir", "{scratch}/purser_bake"],
+        ["{python}", "assets_src/characters/villagers/villager_textures.py", "--npc", "purser", "--bake-dir", "{scratch}/purser_bake"],
+        ["{python}", "assets_src/characters/villagers/write_materials.py", "purser"],
+        ["{python}", "assets_src/characters/villagers/villager_clips.py", "purser"]
+      ]
+    },
+    {
+      "id": "villager_elder",
+      "threads": 4,
+      "owner": "character",
+      "_note": "M3-CHR-531: the Pemakar elder (Ch5) on the villager build, host_snaps and garment_fit; the story clips the dialogue calls from villager_story_clips.json.",
+      "sources": ["assets_src/characters/villagers/**", "assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**", "game/data/characters/helper_bones.json"],
+      "outputs": ["assets/characters/villagers/elder/*.glb", "assets/characters/villagers/elder/textures/*.png", "assets/characters/villagers/elder/materials/*.tres", "assets/characters/villagers/elder/*.tscn", "assets/characters/villagers/elder/anim/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/characters/villagers/build_villager.py", "--", "--npc", "elder", "--bake-dir", "{scratch}/elder_bake"],
+        ["{python}", "assets_src/characters/villagers/villager_textures.py", "--npc", "elder", "--bake-dir", "{scratch}/elder_bake"],
+        ["{python}", "assets_src/characters/villagers/write_materials.py", "elder"],
+        ["{python}", "assets_src/characters/villagers/villager_clips.py", "elder"]
+      ]
+    },
+    {
+      "id": "villager_garo",
+      "threads": 4,
+      "owner": "character",
+      "_note": "M3-CHR-532: Garo Tenmak, the Pemakar smith (Ch5) on the villager build, host_snaps and garment_fit; the story clips the dialogue calls from villager_story_clips.json.",
+      "sources": ["assets_src/characters/villagers/**", "assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**", "game/data/characters/helper_bones.json"],
+      "outputs": ["assets/characters/villagers/garo/*.glb", "assets/characters/villagers/garo/textures/*.png", "assets/characters/villagers/garo/materials/*.tres", "assets/characters/villagers/garo/*.tscn", "assets/characters/villagers/garo/anim/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/characters/villagers/build_villager.py", "--", "--npc", "garo", "--bake-dir", "{scratch}/garo_bake"],
+        ["{python}", "assets_src/characters/villagers/villager_textures.py", "--npc", "garo", "--bake-dir", "{scratch}/garo_bake"],
+        ["{python}", "assets_src/characters/villagers/write_materials.py", "garo"],
+        ["{python}", "assets_src/characters/villagers/villager_clips.py", "garo"]
+      ]
+    },
+    {
+      "id": "villager_tender",
+      "threads": 4,
+      "owner": "character",
+      "_note": "M3-CHR-533: Tender Ruwen of Ashcrown (Ch5; speaker tender) on the villager build, host_snaps and garment_fit; the story clips the dialogue calls from villager_story_clips.json.",
+      "sources": ["assets_src/characters/villagers/**", "assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**", "game/data/characters/helper_bones.json"],
+      "outputs": ["assets/characters/villagers/tender/*.glb", "assets/characters/villagers/tender/textures/*.png", "assets/characters/villagers/tender/materials/*.tres", "assets/characters/villagers/tender/*.tscn", "assets/characters/villagers/tender/anim/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/characters/villagers/build_villager.py", "--", "--npc", "tender", "--bake-dir", "{scratch}/tender_bake"],
+        ["{python}", "assets_src/characters/villagers/villager_textures.py", "--npc", "tender", "--bake-dir", "{scratch}/tender_bake"],
+        ["{python}", "assets_src/characters/villagers/write_materials.py", "tender"],
+        ["{python}", "assets_src/characters/villagers/villager_clips.py", "tender"]
+      ]
+    },
+    {
+      "id": "villager_ione",
+      "threads": 4,
+      "owner": "character",
+      "_note": "M3-CHR-534: Ione Sabe, Sorrin's captain (Ch7) on the villager build, host_snaps and garment_fit; the story clips the dialogue calls from villager_story_clips.json.",
+      "sources": ["assets_src/characters/villagers/**", "assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**", "game/data/characters/helper_bones.json"],
+      "outputs": ["assets/characters/villagers/ione/*.glb", "assets/characters/villagers/ione/textures/*.png", "assets/characters/villagers/ione/materials/*.tres", "assets/characters/villagers/ione/*.tscn", "assets/characters/villagers/ione/anim/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/characters/villagers/build_villager.py", "--", "--npc", "ione", "--bake-dir", "{scratch}/ione_bake"],
+        ["{python}", "assets_src/characters/villagers/villager_textures.py", "--npc", "ione", "--bake-dir", "{scratch}/ione_bake"],
+        ["{python}", "assets_src/characters/villagers/write_materials.py", "ione"],
+        ["{python}", "assets_src/characters/villagers/villager_clips.py", "ione"]
+      ]
+    },
+    {
+      "id": "villager_poolkeeper",
+      "threads": 4,
+      "owner": "character",
+      "_note": "M3-CHR-535: the Tamsule pool-keeper (Ch7) on the villager build, host_snaps and garment_fit; the story clips the dialogue calls from villager_story_clips.json.",
+      "sources": ["assets_src/characters/villagers/**", "assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**", "game/data/characters/helper_bones.json"],
+      "outputs": ["assets/characters/villagers/poolkeeper/*.glb", "assets/characters/villagers/poolkeeper/textures/*.png", "assets/characters/villagers/poolkeeper/materials/*.tres", "assets/characters/villagers/poolkeeper/*.tscn", "assets/characters/villagers/poolkeeper/anim/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/characters/villagers/build_villager.py", "--", "--npc", "poolkeeper", "--bake-dir", "{scratch}/poolkeeper_bake"],
+        ["{python}", "assets_src/characters/villagers/villager_textures.py", "--npc", "poolkeeper", "--bake-dir", "{scratch}/poolkeeper_bake"],
+        ["{python}", "assets_src/characters/villagers/write_materials.py", "poolkeeper"],
+        ["{python}", "assets_src/characters/villagers/villager_clips.py", "poolkeeper"]
+      ]
+    },
+    {
+      "id": "villager_fenn",
+      "threads": 4,
+      "owner": "character",
+      "_note": "M3-CHR-536: Old Fenn of Coilspire (Ch8-9) on the villager build, host_snaps and garment_fit; the story clips the dialogue calls from villager_story_clips.json.",
+      "sources": ["assets_src/characters/villagers/**", "assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**", "game/data/characters/helper_bones.json"],
+      "outputs": ["assets/characters/villagers/fenn/*.glb", "assets/characters/villagers/fenn/textures/*.png", "assets/characters/villagers/fenn/materials/*.tres", "assets/characters/villagers/fenn/*.tscn", "assets/characters/villagers/fenn/anim/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/characters/villagers/build_villager.py", "--", "--npc", "fenn", "--bake-dir", "{scratch}/fenn_bake"],
+        ["{python}", "assets_src/characters/villagers/villager_textures.py", "--npc", "fenn", "--bake-dir", "{scratch}/fenn_bake"],
+        ["{python}", "assets_src/characters/villagers/write_materials.py", "fenn"],
+        ["{python}", "assets_src/characters/villagers/villager_clips.py", "fenn"]
+      ]
+    },
+    {
+      "id": "villager_gatekeeper",
+      "threads": 4,
+      "owner": "character",
+      "_note": "M3-CHR-537: the Corrow stair-watch gatekeeper (Ch8) on the villager build, host_snaps and garment_fit; the story clips the dialogue calls from villager_story_clips.json.",
+      "sources": ["assets_src/characters/villagers/**", "assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**", "game/data/characters/helper_bones.json"],
+      "outputs": ["assets/characters/villagers/gatekeeper/*.glb", "assets/characters/villagers/gatekeeper/textures/*.png", "assets/characters/villagers/gatekeeper/materials/*.tres", "assets/characters/villagers/gatekeeper/*.tscn", "assets/characters/villagers/gatekeeper/anim/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/characters/villagers/build_villager.py", "--", "--npc", "gatekeeper", "--bake-dir", "{scratch}/gatekeeper_bake"],
+        ["{python}", "assets_src/characters/villagers/villager_textures.py", "--npc", "gatekeeper", "--bake-dir", "{scratch}/gatekeeper_bake"],
+        ["{python}", "assets_src/characters/villagers/write_materials.py", "gatekeeper"],
+        ["{python}", "assets_src/characters/villagers/villager_clips.py", "gatekeeper"]
+      ]
+    },
+    {
+      "id": "villager_hobb",
+      "threads": 4,
+      "owner": "character",
+      "_note": "M3-CHR-538: Hobb, captain of Corrow's stair-watch (Ch8-9) on the villager build, host_snaps and garment_fit; the story clips the dialogue calls from villager_story_clips.json.",
+      "sources": ["assets_src/characters/villagers/**", "assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**", "game/data/characters/helper_bones.json"],
+      "outputs": ["assets/characters/villagers/hobb/*.glb", "assets/characters/villagers/hobb/textures/*.png", "assets/characters/villagers/hobb/materials/*.tres", "assets/characters/villagers/hobb/*.tscn", "assets/characters/villagers/hobb/anim/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/characters/villagers/build_villager.py", "--", "--npc", "hobb", "--bake-dir", "{scratch}/hobb_bake"],
+        ["{python}", "assets_src/characters/villagers/villager_textures.py", "--npc", "hobb", "--bake-dir", "{scratch}/hobb_bake"],
+        ["{python}", "assets_src/characters/villagers/write_materials.py", "hobb"],
+        ["{python}", "assets_src/characters/villagers/villager_clips.py", "hobb"]
+      ]
+    },
+    {
+      "id": "villager_marra",
+      "threads": 4,
+      "owner": "character",
+      "_note": "M3-CHR-539: Old Marra of Corrow (Ch8-9) on the villager build, host_snaps and garment_fit; the story clips the dialogue calls from villager_story_clips.json.",
+      "sources": ["assets_src/characters/villagers/**", "assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**", "game/data/characters/helper_bones.json"],
+      "outputs": ["assets/characters/villagers/marra/*.glb", "assets/characters/villagers/marra/textures/*.png", "assets/characters/villagers/marra/materials/*.tres", "assets/characters/villagers/marra/*.tscn", "assets/characters/villagers/marra/anim/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/characters/villagers/build_villager.py", "--", "--npc", "marra", "--bake-dir", "{scratch}/marra_bake"],
+        ["{python}", "assets_src/characters/villagers/villager_textures.py", "--npc", "marra", "--bake-dir", "{scratch}/marra_bake"],
+        ["{python}", "assets_src/characters/villagers/write_materials.py", "marra"],
+        ["{python}", "assets_src/characters/villagers/villager_clips.py", "marra"]
+      ]
     }
   ]
 }

@@ -28,7 +28,11 @@ for sub in ("villagers", "toma", "rhen", "asha", "base_body"):
 # the Saltwright girl and two children)
 ACT1 = ["shopkeeper", "smith", "innkeeper", "clerk", "reed_a", "reed_b", "reed_c", "reed_d", "wright_girl",
         "wright_child_a", "wright_child_b"]
-NPCS = ["neme", "osu", "child", "vendor", "reed", "netmender", "fisher", "tavi", "kell"] + ACT1
+# M3-CHR-526..539: the named Act I story NPCs, in story order (Ch1 Oruvel, Ch4 the ferry, Ch5 Pemakar and Ashcrown, Ch7
+# Tamsule, Ch8-9 Corrow)
+NAMED = ["sabe", "scaleman", "skipper_sadi", "ferrymaster", "purser", "elder", "garo", "tender", "ione", "poolkeeper",
+         "fenn", "gatekeeper", "hobb", "marra"]
+NPCS = ["neme", "osu", "child", "vendor", "reed", "netmender", "fisher", "tavi", "kell"] + ACT1 + NAMED
 M2_SEVEN = NPCS[:7]  # M2-CHR-03; tavi and kell are M3-CHR-03 (params opt-ins, per-NPC clips)
 REEDS = ["reed_a", "reed_b", "reed_c", "reed_d"]
 WRIGHTS = ["wright_girl", "wright_child_a", "wright_child_b"]
@@ -152,6 +156,21 @@ class TestParams(unittest.TestCase):
         self.assertEqual(len(looks), len(REEDS))
         skins = [params(n)["skin_hex"] for n in ACT1]
         self.assertEqual(len(set(skins)), len(skins))
+
+    def test_named_npcs_follow_the_beats(self):
+        # act1_ch05.md §4: Garo's forearms are bare (burn-scarred) and he wears a leather apron; act1_ch08.md: Hobb's
+        # cord and the gatekeeper's colours are watch-red (browner than lacquer red); act1_ch07.md: Ione's reach-bands
+        # run to the elbow; Sabe is Oruvel's old diver (the most bands in Ch1)
+        garo = params("garo")
+        self.assertEqual(garo["_costume"]["apron"]["mat"], "cloth_d")
+        self.assertLess(garo["_costume"]["top"]["sleeve"], 0.4)
+        watch_red = "#8E3B2E"
+        self.assertEqual(params("hobb")["_tints"][params("hobb")["_costume"]["sash"]["mat"]], watch_red)
+        self.assertEqual(params("gatekeeper")["_tints"][params("gatekeeper")["_costume"]["sash"]["mat"]], watch_red)
+        self.assertGreaterEqual(sum(params("ione")["_skin"]["reach_bands"].values()), 20)
+        self.assertGreaterEqual(sum(params("sabe")["_skin"]["reach_bands"].values()), 20)
+        self.assertGreater(params("marra")["_skin"]["age"], 0.8)
+        self.assertGreater(params("fenn")["_skin"]["age"], 0.9)
 
     def test_wright_line_marks(self):
         # M3-CHR-511 (act1_npcs.md §2.3): liss_textures' generator with each wright's own seed and placement, on body
@@ -317,7 +336,14 @@ class TestClips(unittest.TestCase):
                 "clerk": ["heat_iron", "iron_into_water", "hand_over"],
                 **{n: ["pole_barge", "bow_from_barge"] for n in REEDS},
                 "wright_girl": ["arm_held_out", "kneel_wait", "dig_sand", "flatten_sand", "set_in_hole"],
-                "wright_child_a": ["crawl_out", "kneel_wait"], "wright_child_b": ["crawl_out", "kneel_wait"]}
+                "wright_child_a": ["crawl_out", "kneel_wait"], "wright_child_b": ["crawl_out", "kneel_wait"],
+                # M3-CHR-526..539: the dialogue's `@anim` calls for the named NPCs, plus a gesture each
+                "sabe": ["sit_watch", "shout_lines"], "scaleman": ["weigh_stamp", "nod"],
+                "skipper_sadi": ["cast_off", "laugh"], "ferrymaster": ["nod"], "purser": ["offer_goods"],
+                "elder": ["give_boat"], "garo": ["fold_boat", "nod", "laugh", "take_boat"],
+                "tender": ["open_pavilion", "palms_level", "paint_gilt", "open_chamber", "hand_key"], "ione": ["nod"],
+                "poolkeeper": ["chalk_slate"], "fenn": ["feed_fire", "hand_driftwood", "hand_key"],
+                "gatekeeper": ["open_gate"], "hobb": ["drill_call"], "marra": ["hold_hands", "look_back"]}
         for npc in NPCS:
             with self.subTest(npc=npc):
                 text = villager_clips.out_path(npc).read_text(encoding="utf-8")
@@ -335,7 +361,8 @@ class TestClips(unittest.TestCase):
         for dlg in (ROOT / "game/data/dialogue").rglob("*.dlg"):
             for line in dlg.read_text(encoding="utf-8").splitlines():
                 m = re.match(r"^\s*@anim (\w+) (\w+)", line)
-                if m and m.group(1) in ACT1:
+                # `look_at` is CutsceneSequencer's own turn, not a clip
+                if m and m.group(1) in ACT1 + NAMED and m.group(2) != "look_at":
                     with self.subTest(call=f"{dlg.name}: {m.group(1)} {m.group(2)}"):
                         self.assertIn(m.group(2), villager_clips.clips_for(m.group(1)))
 
