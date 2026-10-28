@@ -563,6 +563,30 @@ Ch4–Ch9 onward. `m2-slice.md` beside this file is the history up to the 2026-1
 - **SELF-RENDERED @ 8680df93:** slice_verse_steps: drift (intended). Viewed: the pair seated on the steps, Toma
   turned to Rhen and facing the lens, Rhen in three-quarter profile, the sea and sunset behind them, nothing through
   the portal. S09 and S10 are rendering next.
+- **S09 and S10 (the new stills) showed two more faults, now fixed:**
+  - In S10, seated Rhen played his recognition to the lens with his back to Asha's doorway.
+    - In the black that ends the `steps` node, Rhen and Toma now walk to standing marks (`rhen_rise`, `toma_rise`).
+      They turn to Asha (`look_at asha`) as she emerges, while S09 frames only her.
+    - S10 is now haluna.md's reverse on Rhen: from beside the portal, Rhen in the left third looking right, the
+      sunset rim behind him.
+    - Toma's marks moved 0.6 m north to stay out of it.
+  - S09's camera rises 0.2 m, so Rhen's head no longer peeks over the dialogue box.
+- **Filed: M3-CHR-101** (character). Rhen's eye whites read red under S10's sunset rim.
+- **Known red, not mine:** `test_act1_cutscene_walks` fails on Ch4's Haluna wake: `ch04_dock_in_the_dark` and
+  `ch04_lamps_to_the_wall` leave the floor, and `ch04_shell_is_set` is stale in the known list. It fails
+  identically on `lead/gate-ft-beach` @ 93d0741e without my changes: big14's Ch4 content (act1-chapters).
+- **MERGE-READY @ 02e49acf** (slice_verse_steps re-framed; the clip-mark fix; S09 and S10; the vigil test).
+  - **Checks run:**
+    - Godot: fp_ 30, prologue 8, first_verse 3, haluna 65, ch01 21, all 0 failed; cutscene 84 with 1 failed (the
+      Ch4 red above);
+    - dlgc --check, validate_data 0/0, taskboard --check, gdlint and gdformat on the changed scripts.
+  - **SELF-RENDERED @ 02e49acf:** slice_verse_steps (drift, intended), plus the new slice_verse_threshold and
+    slice_verse_recognition (no baselines yet), all viewed and reading right.
+  - **Checks skipped:** coverage and Blender (nothing they cover).
+  - **Lead:** the three verse shots need your viewing and baselines. `test_screenshots` is red for the two new ids
+    until then.
+- **Next:** the beat audit, batch 2, is rendering: slice_neme_table (the B02 facing fix) and the seven Ch1 scene
+  stills from 03c2711f.
 
 ### Render requests
 SUPERSEDED RENDER-REQUEST @ fdec3cc6: slice_prologue_vigil_line, slice_beach_h05_asha, slice_beach_h06_toma, slice_haluna_villagers_village, slice_causeway_head, slice_causeway_harrier_view, haluna_h01_village_from_sea, haluna_h02_tidewall_lane, haluna_h04_dock, haluna_h07_chapel_court, haluna_h10_dock_night, shrine_s01_approach, shrine_s02_threshold, shrine_s03_overview, shrine_s04_lip, shrine_s05_side_pool, drownbell_flood, battle_boss_intro_drownbell, battle_arena_causeway, field_causeway_dolly, boot_title; why: M2-FP-102..109, the human's playtest round (real cast and held poses in the prologue and Cutscene A, live villagers and wildlife, the final causeway), plus the greyscale audit of every slice beat. The six slice_* shots are new (no baseline yet).
