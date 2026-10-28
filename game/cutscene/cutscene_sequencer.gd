@@ -46,6 +46,8 @@ const META_LIGHT_ENERGY := &"cutscene_authored_energy"
 ## Process after the FieldCameraDirector (priority 0), so the breath turns the pose it just set.
 const PROCESS_AFTER_DIRECTOR := 10
 ## cues.json keys this sequencer accepts but does not perform yet; each warns once per scene.
+## A line tagged #timed shows and the scene goes on: its @waits pace it (a sung verse in time with its cue).
+const TAG_TIMED := "timed"
 const UNSUPPORTED_KWARGS := {
 	&"camera": ["grade"],
 	&"anim": ["loop"],
@@ -385,6 +387,8 @@ func _line(step: DialogueStep) -> void:
 	if _fast():
 		overlay.box.skip_reveal()
 		return
+	if TAG_TIMED in step.tags:
+		return  # held by the script's own @wait, in time with its music (the first verse), not by input
 	if auto_advance:
 		if overlay.box.is_revealing():
 			await _await_on(&"line", overlay.box.reveal_finished, _on_awaited_plain)
