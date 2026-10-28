@@ -61,8 +61,11 @@
            "return_spawn": "WallHead", "victory_flag": "ch08_wave1_held", "objective_flag": "ch08_stair_groups_up"}
         ]},
         {"when": {"unset": ["ch08_arrived_corrow"]}, "steps": [
-          {"place": "Mole"},
+          {"place": "MoleStair"},
           {"chapter": 8},
+          {"zone": "place_actor", "args": ["asha", "mole_steps_asha"]},
+          {"zone": "place_actor", "args": ["toma", "mole_steps_toma"]},
+          {"zone": "place_actor", "args": ["kerrid", "landfall_kerrid"]},
           {"play": "ch08_landfall"},
           {"set": "ch08_arrived_corrow"},
           {"party": {"party": ["rhen", "asha", "toma"], "reserve": ["ysolde", "liss"]}},

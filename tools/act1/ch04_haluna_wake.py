@@ -81,6 +81,11 @@ MARKS = {
     "dock_toma_from": dock(-2.5) + (DOCK_OUT_YAW,),
     "wall_away": (-8.5, -123.0, 90.0),
     "dawn_neme": (-15.4, -117.6, -37.0),  # C4-08: beside Asha at her shell, out of H08's line, watching her
+    # C4-05: Rhen, then Asha and Toma, walk a few metres from the wall toward the feast before the fade (the dock
+    # scene places them after; a walk to the feast's edge ran on 45 s in black).
+    "leave_rhen": (-7.07, -116.25, -115.0),
+    "leave_asha": (-6.92, -114.56, -111.0),
+    "leave_toma": (-9.51, -115.81, -111.0),
     "causeway_toma": (12.55, -130.0, CAUSEWAY_YAW),
     "causeway_asha": (10.4, -128.5, CAUSEWAY_YAW),
     "causeway_rhen": (8.6, -127.2, CAUSEWAY_YAW),
