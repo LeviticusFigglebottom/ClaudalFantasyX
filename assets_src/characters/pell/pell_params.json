@@ -240,7 +240,8 @@
     "tip_elev_deg": -22.0,
     "flat_root_elev_deg": 12.0,
     "flat_tip_elev_deg": -40.0,
-    "battle_raise": 0.3
+    "battle_raise": 0.3,
+    "root_lift_m": 0.01
   },
   "_whiskers": {
     "_about": "pell.md \u00a75: whiskers on the pads, in the Head object (pell_fur.whiskers).",

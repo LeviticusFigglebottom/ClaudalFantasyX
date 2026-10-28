@@ -379,7 +379,9 @@ def main() -> int:
     # ---- the crest (head-rigid, its two keys) ---------------------------------------------------------------------
     crest, crest_keys, crest_info = pell_fur.crest(lm, extra["_crest"], hsurf,
                                                    np.random.default_rng([int(extra["_crest"]["seed"]), 0]))
-    Vc = snap(crest.varr())
+    Vc = crest.varr()
+    Vc[:, 2] += float(extra["_crest"]["root_lift_m"])  # the shipped scalp sits above the build's head surface here
+    Vc = snap(Vc)
     Vc[np.abs(Vc) < MIDLINE_SNAP] = 0.0
     crest.V = list(Vc)
     ob_crest = hb.part_object(crest)
