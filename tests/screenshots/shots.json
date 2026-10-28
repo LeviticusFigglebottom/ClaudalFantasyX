@@ -4070,6 +4070,76 @@
           "screen_space_aa": 1
         }
       }
+    },
+    {
+      "id": "moll_front",
+      "scene": "res://game/levels/_tests/characters/moll/moll_stage.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "moll_three_quarter",
+      "scene": "res://game/levels/_tests/characters/moll/moll_stage.tscn",
+      "camera": "Cameras/ThreeQuarter",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "moll_profile",
+      "scene": "res://game/levels/_tests/characters/moll/moll_stage.tscn",
+      "camera": "Cameras/Profile",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "moll_face",
+      "scene": "res://game/levels/_tests/characters/moll/moll_stage.tscn",
+      "camera": "Cameras/Face",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "moll_face_yield",
+      "scene": "res://game/levels/_tests/characters/moll/moll_face_yield.tscn",
+      "camera": "Cameras/Face",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "moll_clip_yield",
+      "scene": "res://game/levels/_tests/characters/moll/moll_clip_yield.tscn",
+      "camera": "Cameras/ThreeQuarter",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "moll_silhouette_vs_toma",
+      "scene": "res://game/levels/_tests/characters/moll/moll_silhouette_vs_toma.tscn",
+      "camera": "Cameras/Lineup",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
     }
   ]
 }

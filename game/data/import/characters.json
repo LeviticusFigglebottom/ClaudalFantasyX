@@ -9,7 +9,8 @@
              "res://assets/characters/villagers/fisher/", "res://assets/characters/sefir/",
              "res://assets/characters/ysolde/", "res://assets/characters/villagers/tavi/",
              "res://assets/characters/villagers/kell/", "res://assets/characters/props/wick/",
-             "res://assets/characters/liss/"],
+             "res://assets/characters/liss/",
+             "res://assets/characters/moll/"],
   "adoption_pending": {},
   "generate_lods": true,
   "materials": {
