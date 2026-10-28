@@ -12,7 +12,7 @@ open (s -36 .. -24), the broken stair, the cut hoist, the lake in the low town. 
   - Iskarra's plaza, a separate set far east (greybox x + ISKARRA_DX), for the cut inside one scene.
 Derived from Ch8's generated files (re-run tools/act1/ch08_corrow_dressing.py first):
 
-    python3 tools/act1/ch09_corrow_night.py [--relayout]
+    python3 tools/act1/ch09_corrow_night.py [--relayout] [--moon-relayout]
 
 --relayout moves the greybox layout's story points into the frame once (see relayout()).
 """
@@ -127,8 +127,8 @@ def dressing() -> dict:
     return src
 
 
-# The vigil's last lamp at the strand's east end, at the foot of the path Pell comes down (the rocks stand in the
-# wall's moon-shadow, and read black without it); it goes out at dawn with the nearest Lamp block.
+# The vigil's last lamp at the strand's east end, at the foot of the path Pell comes down (the rocks stood in the
+# wall's moon-shadow before M3-ENV-1309, and it still warms the path); it goes out at dawn with the nearest Lamp block.
 _PATH_FOOT = cf.arc(ROCKS_PATH[0] - ROCKS_PATH_RUN_M - 0.8, 0.0, ROCKS_PATH[2] + 1.4)
 ROCKS_LAMP = {"at": [cf.r3(_PATH_FOOT[0]), 1.5, cf.r3(_PATH_FOOT[2])], "energy": 1.1, "range": 9.0,
               "color": "#FFB46B", "block": "LampD"}
@@ -339,9 +339,27 @@ def relayout() -> None:
     LAYOUT.write_text(dump(g), encoding="utf-8")
 
 
+# --moon-relayout (once, M3-ENV-1309): the moon stood over the town (yaw 200), so the wall's sea face, Pell's rocks and
+# the strand's west end were one black plane in the wall's moon-shadow. From the sea's east (yaw 60) it rakes the
+# sea face's coursing and the Watchers' reliefs, and lays the shadows of the vigil across the shingle; the dawn
+# variant keeps its own sun.
+MOON_YAW_DEG = 60.0
+
+
+def moon_relayout() -> None:
+    import re
+    text = LAYOUT.read_text(encoding="utf-8")
+    text, n = re.subn(r'^(  "sun": \{"pitch_deg": -25\.0, "yaw_deg": )[-0-9.]+', rf"\g<1>{MOON_YAW_DEG}", text, count=1,
+                      flags=re.M)
+    assert n == 1, "the night sun row has moved"
+    LAYOUT.write_text(text, encoding="utf-8")
+
+
 def main() -> None:
     if "--relayout" in sys.argv:
         relayout()
+    if "--moon-relayout" in sys.argv:
+        moon_relayout()
     (ZONE / "corrow_night_collision.json").write_text(json.dumps(collision(), indent=1) + "\n", encoding="utf-8")
     (ZONE / "corrow_night_dressing.json").write_text(json.dumps(dressing(), indent=1) + "\n", encoding="utf-8")
 
