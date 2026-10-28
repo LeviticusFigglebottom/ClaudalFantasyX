@@ -35,6 +35,8 @@ sys.path.append(str(HERE.parent / "brine_shoals"))  # the Brine Shoals arena gro
 
 OUT_DIR = ROOT / "assets" / "environments" / "arenas"
 KIT = "res://assets/environments/kits/haluna/"
+FLAME_KIT_RADIUS_M = 0.06  # props.build_lamp_flame's radius: an arena scales the kit flame to its lamp_spec's
+FLAME_KIT_COLOURS = {"#FFB16E", "#FFA757"}  # the oil flames lamp_flame (kit_lamp_flame_hot) stands in for
 VEG = "res://assets/environments/vegetation/"
 LOW_SUN_SKY = "res://game/shaders/environment/env_sky_low_sun.gdshader"
 WATER_MAT = "res://game/levels/ch02/haluna/haluna_water_material.tres"
@@ -1944,15 +1946,18 @@ def _write_lamps(sc: Scene, a: dict) -> None:
     if not lamps:
         return
     spec = a["lamp_spec"]
+    flame, flame_r = None, spec.get("flame_radius_m", FLAME_KIT_RADIUS_M)
     if any(lp.get("flame", False) for lp in lamps):
-        sc.sub.append("\n".join([
-            '[sub_resource type="StandardMaterial3D" id="FlameMat"]', "shading_mode = 0",
-            f"albedo_color = {hexc(spec['color'])}", "emission_enabled = true", f"emission = {hexc(spec['color'])}",
-            f"emission_energy_multiplier = {spec['flame_energy']}"]))
-        r = spec["flame_radius_m"]
-        sc.sub.append("\n".join([
-            '[sub_resource type="SphereMesh" id="FlameMesh"]', 'material = SubResource("FlameMat")',
-            f"radius = {r}", f"height = {round(r * 2.4, 4)}", "radial_segments = 12", "rings = 6"]))
+        if spec["color"].upper() in FLAME_KIT_COLOURS:
+            flame = sc.res("PackedScene", KIT + "lamp_flame.glb")
+        else:  # a flame the kit has no piece for yet (Lowlight's bound light, Act II): the emissive bead
+            sc.sub.append("\n".join([
+                '[sub_resource type="StandardMaterial3D" id="FlameMat"]', "shading_mode = 0",
+                f"albedo_color = {hexc(spec['color'])}", "emission_enabled = true", f"emission = {hexc(spec['color'])}",
+                f"emission_energy_multiplier = {spec['flame_energy']}"]))
+            sc.sub.append("\n".join([
+                '[sub_resource type="SphereMesh" id="FlameMesh"]', 'material = SubResource("FlameMat")',
+                f"radius = {flame_r}", f"height = {round(flame_r * 2.4, 4)}", "radial_segments = 12", "rings = 6"]))
     # `lamp_parent` "." with a `lamp_name` writes the lights at the arena's root under that name (the burning
     # camp's FireLight<k>, M3-BPR-03's contract), else they go under a Lamps node as Lamp<k>.
     parent, name = a.get("lamp_parent", "Lamps"), a.get("lamp_name", "Lamp")
@@ -1974,9 +1979,16 @@ def _write_lamps(sc: Scene, a: dict) -> None:
             props["shadow_bias"] = 0.05
         if lp.get("light", True):  # a votive's flame alone (`light` false) has no light of its own
             sc.node(f"{name}{k}", "OmniLight3D", parent, props)
-        if lp.get("flame", False):
+        if lp.get("flame", False) and flame is None:
             sc.node(f"Flame{k}", "MeshInstance3D", parent, {"transform": _xyz(at), "cast_shadow": 0,
                                                              "mesh": 'SubResource("FlameMesh")'})
+        elif lp.get("flame", False):
+            # The kit's flame (M3-ENV-746), its base a little under the lamp's point so the flame stands on it.
+            s = flame_r / FLAME_KIT_RADIUS_M
+            base = (at[0], round(at[1] - flame_r * 1.2, 4), at[2])
+            sc.node(f"Flame{k}", None, parent, {"transform": f"Transform3D({s:g}, 0, 0, 0, {s:g}, 0, 0, 0, {s:g}, "
+                                                                f"{base[0]:g}, {base[1]:g}, {base[2]:g})"},
+                    instance=flame)
 
 
 def _write_far_lights(sc: Scene, a: dict) -> None:

@@ -219,6 +219,9 @@ STANDARD["kit_brass"] = {"albedo_color": hexc("#B08D57"), "metallic": 0.9, "roug
 STANDARD["kit_dried_fish"] = {"albedo_color": hexc("#7A6550"), "roughness": 0.55, "metallic_specular": 0.6}  # sun-dried, tannin-dark
 STANDARD["kit_lamp_flame"] = {"albedo_color": hexc("#FFB16E"), "emission_enabled": "true",  # oil_lamp
                               "emission": hexc("#FFB16E"), "emission_energy_multiplier": 0.6, "roughness": 1.0}
+# M3-ENV-746: an arena lamp's flame (lamp_flame) at the practicals' flame energy (arena_scenes lamp_spec, 8.0).
+STANDARD["kit_lamp_flame_hot"] = {"albedo_color": hexc("#FFB16E"), "shading_mode": 0, "emission_enabled": "true",
+                                  "emission": hexc("#FFB16E"), "emission_energy_multiplier": 8.0}
 # haluna.md §2.2: the Lit Age ring's crack glints glimmer_bound at emission 0.6, steady (bound light).
 STANDARD["kit_glimmer_glint"] = {"albedo_color": hexc("#4FB3B0"), "emission_enabled": "true",
                                  "emission": hexc("#4FB3B0"), "emission_energy_multiplier": 0.6, "roughness": 0.3}

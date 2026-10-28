@@ -948,6 +948,17 @@
         "lacquer_hall-lod1": 264
       }
     },
+    "lamp_flame": {
+      "budget": [
+        200,
+        40
+      ],
+      "bytes": 9300,
+      "lods": {
+        "lamp_flame": 130,
+        "lamp_flame-lod1": 35
+      }
+    },
     "lamp_niche_tier": {
       "budget": [
         3000,
