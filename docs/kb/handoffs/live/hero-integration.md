@@ -531,3 +531,38 @@ RENDER-REQUEST @ 1c9bf8bd: battle_choreo_cast, battle_choreo_read, battle_choreo
   - **battle_heroes_idle:** big12's first-battle tutorial prompt now shows, and Toma and Asha are at another phase of
     their idle. Nothing is broken.
   - 7a8bff7's render is superseded (not approved; it predates big12).
+
+## INTEGRATION-QA STATUS, 2026-10-28 00:15 (answers the Lead's backlog list, item by item)
+1. **Field-snap clash: DONE.**
+   - **Asha in the Ch7 galleries:** my bug. HeroFieldParty's min-gap push rode on top of the capped step (6.9 m/s).
+     The whole step is now held to max_speed_mps (7b47e387).
+   - **Rhen at Coilspire:** act1-chapters' geometry. He walks off a 2 m drop beside the PathFoot spawn and lands
+     with a 0.31 m pop. Filed **M3-HER-1129** (act1-chapters) and KNOWN in the guard.
+   - **Four new cutscene turn snaps** (ch08_spire_door liss/tender, ch08_stuck_key liss, ch09_the_ebbing
+     kerrid_stair): verified clean with cutscene_walks_combined.patch applied, so they're KNOWN under M2-HER-1113.
+   - hero_ is 109/0.
+2. **Slice-thread playthrough guard: DONE** (test_qa_threads re-drives test_fp_thread: New Game → prologue → Haluna
+   → B06 causeway → Shell Shrine → Drownbell → end card, battles forced won).
+   - It fails on errors, unexplained warnings, missing cues and suspended awaits, and (new) on any flag the
+     chapter or a main objective waits on that the thread never raises.
+   - One flag is unraised: ch02_ate_at_nemes. The thread skips B02; the game plays it. Filed **M2-HER-1128**
+     (slice-polish).
+3. **Act I thread guards: DONE.** The same guard over test_ch01, ch04–ch09 threads. All of their chapter and
+   objective flags are raised.
+4. **Save/load at every shrine: DONE** (test_qa_save_shrines: Haluna's SaveShrine and Act I's 8 rest beats).
+5. **Kerrid's actors: BLOCKED.** claude/characters @ 24dca3d1 has no assets/characters/kerrid yet (only the
+   M3-CHR-505 WIP patch). I'll start the moment kerrid_lod1.glb is pushed (fold-into-characters handoff §2).
+
+**Also done (self-directed backlog):**
+- **M2-HER-1111 and M2-QA-100 are in review.** The runner fails a parse-error file and a test suspended on an
+  await. Across the full suite this adds one failure: test_slice_shots, already fixed on m2-slice.
+- **My test_hero_stairs leaked a zone.** That leak caused the ~30 cascading failures (the same fix as the Lead's
+  9f98ccf6, in eaefe445). Attribution: the integration head gives 2820/2, and every extra failure on this branch
+  was that cascade. The runner now also fails and frees any node a test leaves in the tree. A full run is
+  measuring how many other tests leave nodes; if it's many, the check will report rather than fail, and I'll
+  file the list.
+- M2-HER-1106 and M1-QA-07 are in review.
+
+MERGE-READY @ eaefe445: everything above. Checks run: hero_ 109/0, qa_ 6/0, hero_followers 12/0, gdlint and
+gdformat, taskboard --check, validate_data, a full suite on this branch and on the integration head (the
+attribution above). Skipped: screenshots (no rendered change since the approved 1c9bf8b render).
