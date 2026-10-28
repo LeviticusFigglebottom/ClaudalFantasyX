@@ -589,7 +589,7 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
-- **MERGE-READY @ (this push): M3-ENV-105 (high), the Underway's walls on the walk walls; M3-ENV-740 needs nothing.**
+- **MERGE-READY @ df2c8384a: M3-ENV-105 (high), the Underway's walls on the walk walls; M3-ENV-740 needs nothing.**
   - **Cause:** `ou_zone_dressing.py` hard-coded the rooms from an older greybox. The layout has since moved its walls
     (the crown to x ±9 and z -4/20, the gauge room's east wall to x 104, the tin alcove to z -4..2).
   - **Fix:** every wall is now read from its greybox block. Each bay's inner face sits on the block's inner face
