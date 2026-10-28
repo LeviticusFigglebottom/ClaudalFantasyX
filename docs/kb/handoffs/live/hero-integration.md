@@ -664,3 +664,26 @@ MERGE-READY @ 4a88c28d: **the inventory now lists its coverage.** The scan follo
 inventory. Still 164 items. Checks: tools test 8/0, gdlint.
 - **Next for the inventory:** re-run on each merge batch (`python3 tools/placeholder_audit.py --write`); move each
   owner's fixed rows out as they land. `--check` is the ADR 0041 "done" gate.
+
+### The party's share of the inventory (M3-HER-1149, the Lead's split, 2026-10-28 ~03:30)
+MERGE-READY @ 8fdf266d:
+- **Stage actors that play a hero under another name now take the hero's body.** This uses hero_motion.json's
+  actor_aliases (ysolde_edge, kerrid_stair) and actor_prefixes (vigil_).
+  - Real bodies now: Ysolde at the Wake's edge; Ch9's vigil_asha, vigil_rhen, vigil_toma and vigil_ysolde.
+  - Still waiting on models: Kerrid's, Liss's and Pell's (Liss's model is on claude/characters).
+  - The vigils are staged kneeling, so the bodies stand until the scene plays a kneel (noted in the task).
+- **Liss's battle row** (battle_sandbox.json → liss_battle_actor.tscn; M3-HER-1120 is in review, ui-menus has
+  nothing to do).
+- **The inventory's people rows are re-split:**
+  - integration-qa 17: Kerrid, Liss and Pell everywhere, all waiting on models;
+  - characters 33: named story NPCs, plus Liss's battle model;
+  - creatures 54: background folk.
+  - Total 159 items (133 high).
+- **SELF-RENDERED @ 8fdf266d:**
+  - ch09_corrow_road and ch09_corrow_strand: pixel-identical to their baselines. No manifest shot frames the
+    vigils.
+  - A probe view of the vigil set (temporary, not committed), viewed: Asha, Rhen, Toma and Ysolde are bodies, feet
+    on the floor, no clipping. Liss and Kerrid are still capsules.
+- **Checks:** hero_ 110/0, qa_capsules 3/0, tools test 9/0, validate_data, taskboard.
+- **Next:** Liss in the field and battle the moment characters' liss_lod1.glb merges (nothing to change). Kerrid
+  and Pell once M3-CHR-505 and 506 land.
