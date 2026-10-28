@@ -32,11 +32,17 @@ PIECES = [
     ("woolback_trough", 40.0, 0.0, -80.0, 0.0), ("woven_awning", 46.0, 0.0, -80.0, 0.0),
     ("keth_curtain", 54.0, 4.2, -80.0, 0.0), ("keth_road_switchback", 62.0, 0.2, -80.0, 0.0),
     ("keth_scree_slope", 100.0, 0.1, -70.0, 0.0),
+    # M3-ENV-734: Quellan's inn and well, Hesk's dais.
+    ("quellan_inn", 140.0, 0.0, -80.0, 0.0), ("quellan_well", 156.0, 0.0, -78.0, 0.0),
+    ("hesk_dais", 166.0, 0.0, -80.0, 0.0),
     ("lowlight_nave_bay", 0.0, 0.8, -160.0, 0.0), ("lowlight_nave_bay_broken", 22.0, 0.8, -160.0, 0.0),
     ("lowlight_sanctum", 45.0, 0.7, -160.0, 0.0), ("vey_arcade_bay", 65.0, 4.0, -160.0, 0.0),
     ("strangler_fig", 80.0, 0.5, -160.0, 0.0), ("vey_gallery_bridge", 92.0, 2.0, -160.0, 0.0),
     ("lamp_niche_tier", 100.0, 0.0, -160.0, 0.0), ("conduit_housing", 106.0, 1.0, -160.0, 0.0),
     ("well_shaft", 118.0, 0.0, -160.0, 0.0),
+    # M3-ENV-735: a Sunken Vey gallery walk (two lengths, a broken column beside it) and Lowlight's lamp bench.
+    ("vey_gallery_walk_6m", 140.0, 2.0, -160.0, 0.0), ("vey_gallery_walk_6m", 146.0, 2.0, -160.0, 0.0),
+    ("ruin_column_broken", 143.0, 0.0, -164.2, 0.0), ("lowlight_lamp_bench", 156.0, 0.0, -160.0, 0.0),
     ("kirru_roost", 0.0, 0.6, -220.0, 0.0), ("name_shell_cord", 8.0, 0.5, -220.0, 0.0),
     # M3-ENV-733: the Ch10 walks, a house platform with a roost on it, and the clutch's stone.
     ("root_walk_6m", 18.0, 0.6, -220.0, 0.0), ("reed_causeway_6m", 25.0, 0.6, -220.0, 0.0),
@@ -49,8 +55,10 @@ SHOTS = [
     ("A2", (76.0, 5.0, 14.0), (78.0, 0.5, 0.0), 50.0),  # the Sanctum basin and the archive stacks
     ("K1", (14.0, 6.0, -56.0), (16.0, 3.0, -82.0), 55.0),  # the Cloudloom hall and a Quellan house
     ("K2", (58.0, 4.0, -66.0), (66.0, 2.0, -84.0), 55.0),  # the trough, awning, curtain and road
+    ("K3", (152.0, 4.0, -64.0), (152.0, 2.5, -80.0), 55.0),  # the inn, the well and Hesk's dais
     ("L1", (22.0, 8.0, -138.0), (22.0, 6.0, -162.0), 60.0),  # the nave bays, whole and broken
     ("L2", (88.0, 6.0, -146.0), (92.0, 3.0, -162.0), 60.0),  # the arcade, the fig, the bridge, the niches, the well
+    ("L3", (150.0, 4.5, -146.0), (147.0, 1.5, -160.0), 55.0),  # the gallery walk and the lamp bench
     ("F1", (4.0, 2.4, -212.0), (4.0, 1.5, -220.0), 50.0),  # the Kirru roost and a name-shell cord
     ("F2", (30.0, 4.5, -206.0), (29.0, 0.8, -220.0), 55.0),  # the root-walk, the reed causeway, a house, the stone
 ]

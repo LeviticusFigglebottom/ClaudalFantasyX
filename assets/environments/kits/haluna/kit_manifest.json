@@ -497,6 +497,17 @@
         "held_pillar-lod1": 172
       }
     },
+    "hesk_dais": {
+      "budget": [
+        3000,
+        200
+      ],
+      "bytes": 18616,
+      "lods": {
+        "hesk_dais": 120,
+        "hesk_dais-lod1": 36
+      }
+    },
     "hm_far_flotilla": {
       "budget": [
         9000,
@@ -970,6 +981,17 @@
         "lit_terrace_wall-lod1": 44
       }
     },
+    "lowlight_lamp_bench": {
+      "budget": [
+        2500,
+        150
+      ],
+      "bytes": 27368,
+      "lods": {
+        "lowlight_lamp_bench": 216,
+        "lowlight_lamp_bench-lod1": 60
+      }
+    },
     "lowlight_nave_bay": {
       "budget": [
         24000,
@@ -1254,6 +1276,28 @@
       "lods": {
         "quellan_house": 6456,
         "quellan_house-lod1": 76
+      }
+    },
+    "quellan_inn": {
+      "budget": [
+        12000,
+        700
+      ],
+      "bytes": 967588,
+      "lods": {
+        "quellan_inn": 9454,
+        "quellan_inn-lod1": 52
+      }
+    },
+    "quellan_well": {
+      "budget": [
+        2500,
+        200
+      ],
+      "bytes": 56908,
+      "lods": {
+        "quellan_well": 528,
+        "quellan_well-lod1": 64
       }
     },
     "reed_bed": {
@@ -1797,6 +1841,17 @@
       "lods": {
         "vey_gallery_bridge": 1032,
         "vey_gallery_bridge-lod1": 136
+      }
+    },
+    "vey_gallery_walk_6m": {
+      "budget": [
+        6000,
+        300
+      ],
+      "bytes": 72236,
+      "lods": {
+        "vey_gallery_walk_6m": 924,
+        "vey_gallery_walk_6m-lod1": 48
       }
     },
     "village_litter": {

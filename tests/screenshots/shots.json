@@ -4549,6 +4549,44 @@
           "screen_space_aa": 1
         }
       }
+    },
+    {
+      "id": "kitrow_quellan_inn_well_dais",
+      "scene": "res://game/levels/_tests/late_kit_rows/late_kit_rows.tscn",
+      "camera": "Cameras/K3",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "kitrow_vey_gallery_walk_bench",
+      "scene": "res://game/levels/_tests/late_kit_rows/late_kit_rows.tscn",
+      "camera": "Cameras/L3",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
     }
   ]
 }
