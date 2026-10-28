@@ -292,6 +292,10 @@ func test_a_hero_shot_has_nobody_in_front_of_the_boss() -> void:
 			BattleBossHeroShot.sight_blocked(occluders, pos, pos + Vector3.UP * BattleBossHeroShot.HEADROOM_M),
 			"%s: the lens is under nothing" % enc
 		)
+		assert_true(
+			BattleBossHeroShot.foreground_share(occluders, intro._pose, b) <= BattleBossHeroShot.FOREGROUND_MAX,
+			"%s: no near wall fills the frame's foot" % enc
+		)
 		var lens := Transform3D(Basis.looking_at((intro._pose["look"] as Vector3) - pos, Vector3.UP), pos)
 		for p in BattleBossHeroShot.sight_points(b, lens):  # the arena's and the party's own surfaces, not bounds
 			assert_false(

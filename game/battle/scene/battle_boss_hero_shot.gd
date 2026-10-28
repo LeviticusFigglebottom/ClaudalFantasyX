@@ -16,6 +16,21 @@ extends RefCounted
 const SIGHT_FRACS: Array[float] = [0.3, 0.55, 0.8]
 ## Nothing may stand this far straight over the lens (a lens under the Wraith's deck saw its edge blot half the frame).
 const HEADROOM_M := 4.0
+## Rays cast across the frame's lower half (NDC x, y; y up): a near surface filling more than FOREGROUND_MAX of them
+## within FOREGROUND_NEAR of the way to the boss rejects the pose.
+const FOREGROUND_RAYS: Array[Vector2] = [
+	Vector2(-0.6, -0.15),
+	Vector2(0.0, -0.15),
+	Vector2(0.6, -0.15),
+	Vector2(-0.6, -0.45),
+	Vector2(0.0, -0.45),
+	Vector2(0.6, -0.45),
+	Vector2(-0.6, -0.75),
+	Vector2(0.0, -0.75),
+	Vector2(0.6, -0.75),
+]
+const FOREGROUND_NEAR := 0.45
+const FOREGROUND_MAX := 0.34
 ## How far either side of its middle (of the body's narrower width) the sight lines across the boss reach.
 const SIGHT_SPREAD := 0.35
 
@@ -83,6 +98,8 @@ static func _holds(intro: BattleBossIntro, pose: Dictionary, bounds: AABB, occlu
 		return false
 	if sight_blocked(occluders, pos, pos + Vector3.UP * HEADROOM_M):
 		return false  # under a deck or an overhang
+	if foreground_share(occluders, pose, bounds) > FOREGROUND_MAX:
+		return false  # a near wall or bulwark fills the frame's foot (the Wraith's deck cut the party at the waist)
 	for p in sight_points(bounds, xform):  # last: the dearest test
 		if sight_blocked(occluders, pos, p):
 			return false
@@ -116,6 +133,24 @@ static func sight_blocked(occluders: Array[Dictionary], from: Vector3, to: Vecto
 		if tm != null and not tm.intersect_segment(inv * from, inv * to).is_empty():
 			return true
 	return false
+
+
+## The share of FOREGROUND_RAYS that meet a surface nearer than FOREGROUND_NEAR of the lens's distance to the boss.
+static func foreground_share(occluders: Array[Dictionary], pose: Dictionary, bounds: AABB) -> float:
+	var pos: Vector3 = pose["pos"]
+	var basis := Basis.looking_at((pose["look"] as Vector3) - pos, Vector3.UP)
+	var half := tan(deg_to_rad(float(pose["fov"])) * 0.5)
+	var aspect := (
+		float(ProjectSettings.get_setting("display/window/size/viewport_width", 16))
+		/ maxf(float(ProjectSettings.get_setting("display/window/size/viewport_height", 9)), 1.0)
+	)
+	var reach := pos.distance_to(bounds.get_center()) * FOREGROUND_NEAR
+	var hits := 0
+	for ndc in FOREGROUND_RAYS:
+		var dir := (basis * Vector3(ndc.x * half * aspect, ndc.y * half, -1.0)).normalized()
+		if sight_blocked(occluders, pos, pos + dir * reach):
+			hits += 1
+	return float(hits) / float(FOREGROUND_RAYS.size())
 
 
 static func _triangles(mesh: Mesh) -> TriangleMesh:
