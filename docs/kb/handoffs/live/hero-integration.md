@@ -832,3 +832,154 @@ hand_off_radius_m, spawn_search_steps, steer_turns_deg, slide_min_share) and a n
     characters' known item (M1-QA-09); the stick may be beach dressing.
 - **Not mine, seen while probing:** LifeAudio.advance (life_audio.gd:124) casts a freed object when a zone is
   freed. That's the audio item already in CONSOLIDATED.
+
+### The FAST-TRACK cherry-pick failure (the Lead, 04:03): found
+- **b66981e9 alone doesn't compile on the integration branch.** The hand-off calls `HeroFieldActor.hero_of`, which
+  8fdf266d (M3-HER-1149) added together with hero_motion.json's actor_aliases and actor_prefixes. 608db549 has
+  neither. So hero_field_party.gd fails to parse, and every `HeroFieldParty.new()` fails with it
+  (hero_field_actor.gd:171).
+- **To cherry-pick:** take 8fdf266d, then b66981e9. Or take the whole branch (big14).
+- **On this branch merged with big13 (003fb560):** hero_ is 110/0 (compiles). The qa_ run, including the two
+  party-spawn tests and the new encounter guard, is still going.
+MERGE-READY @ c47eaa037 (+ this log): **big13 merged (003fb560); the encounter guard.**
+- **Merged tree:** hero_ 110/0 and qa_ 10/0, so HeroFieldParty compiles and both party-spawn tests pass. Liss's
+  model came with big13, so her field body and battle actor are live (the hero guards run on her real model).
+- **New: tests/integration/test_qa_encounters.gd.** Every Act I fight (33) is entered as the field enters it
+  (BattleRequest.make with its return zone and spawn), won, accepted, and left back to its zone. The party walks
+  there under a QaLogger. All 33 are clean: no engine or script error.
+  - Five scripted fights don't end by attack within 80 turns and are reported, not failed: ch06_inquisitor (he
+    yields), ch08_stair_hold_1–3 and undertows_reach (objectives and a scripted escape).
+  - **It didn't reproduce the human's "cast a freed object" entering a fight.** That likely sits in the real
+    scene-change path (SceneRouter fade, BattleStinger, start_battle_staged), which a headless test can't drive
+    without frames. **Next:** a probe scene that runs the real BattleRequest.submit → router → staged build with
+    real frames, for the slice and Ch1 fights.
+- **SELF-RENDERED @ 003fb560:** ch07_bell_galleries and ch08_corrow_stair, both pixel-identical to big13's
+  approved baselines. No capsule is visible; Liss is too small to read at those distances.
+
+### TRIAL MERGE, 2026-10-28 ~05:00
+TRIAL MERGE @ integration 6b89f4a6: env-art af40b3af, env-art-b ce8d1e3d, creatures 0d50432b, creatures-b 6a48fcb7, characters 9ea8d3d7, ui 4ffa64bd, battle-presentation 1daa0fa7, act1-chapters 4e122798, m2-slice 9f31066b, audio 1e237a01, hero-integration 470e7b5e
+- **env-art-b** (ce8d1e3d): 1 conflicted file(s); 1 resolved by union (append-only files).
+- **creatures** (0d50432b): 2 conflicted file(s); 2 resolved by union (append-only files).
+- **characters** (9ea8d3d7): 2 conflicted file(s); 1 resolved by union (append-only files):
+  - `tools/dev/blender_builds.json`: characters vs env-art vs env-art-b vs creatures vs creatures-b (the trial keeps the merged side)
+- **ui** (4ffa64bd): 4 conflicted file(s); 3 resolved by union (append-only files):
+  - `tools/dev/blender_builds.json`: ui vs env-art vs env-art-b vs creatures vs creatures-b vs characters (the trial keeps the merged side)
+- **battle-presentation** (1daa0fa7): 5 conflicted file(s); 3 resolved by union (append-only files):
+  - `docs/kb/ownership.md`: battle-presentation vs env-art vs env-art-b vs creatures vs creatures-b vs ui (the trial keeps the merged side)
+  - `game/data/ui/battle_sandbox.json`: battle-presentation vs env-art vs env-art-b vs creatures-b vs ui (the trial keeps the merged side)
+- **act1-chapters** (4e122798): 9 conflicted file(s); 4 resolved by union (append-only files):
+  - `docs/kb/ownership.md`: act1-chapters vs env-art vs env-art-b vs creatures vs creatures-b vs ui vs battle-presentation (the trial keeps the merged side)
+  - `game/data/audio/creature_voices.json`: act1-chapters vs env-art vs env-art-b+creatures-b (the trial keeps the merged side)
+  - `project.godot`: act1-chapters vs env-art vs env-art-b+creatures-b vs ui (the trial keeps the merged side)
+  - `tests/unit/test_zone_map.gd`: act1-chapters vs env-art vs env-art-b+creatures-b vs ui (the trial keeps the merged side)
+  - `tools/tests/test_ch08_flow.py`: act1-chapters vs env-art+env-art-b+creatures-b vs ui (the trial keeps the merged side)
+- **hero-integration** (470e7b5e): 1 conflicted file(s); 0 resolved by union (append-only files):
+  - `tests/unit/test_hero_stairs.gd`: hero-integration vs env-art vs env-art-b vs creatures-b+m2-slice+audio (the trial keeps the merged side)
+**Since the last trial:** act1-chapters and env-art-b no longer clash over the Ch5–Ch9 dressing; ui no longer
+carries stale copies of others' files; creatures and creatures-b merge cleanly.
+**New or still open:**
+1. **project.godot `locale/translations`** (act1-chapters, env-art, env-art-b+creatures-b, ui): each appends its
+   own translation files (Act II ch10–16, kite, maps_act2, towns_act2) in a different order. Keeping one side drops
+   the others' strings, which then show as raw keys. Resolve as a union; adding it to merge_union.py would end it.
+2. tools/dev/blender_builds.json (characters, ui and the env-art/creatures tracks all add jobs): union.
+3. battle_sandbox.json (battle-presentation vs env-art, env-art-b+creatures-b and ui).
+4. docs/kb/ownership.md, as every time.
+5. tests/unit/test_hero_stairs.gd: other branches carry the Lead's identical fix; either side is fine.
+
+**The placeholder audit on this merged tree: 39 items** (19 high, 16 medium, 4 low), down from 45. The inventory
+is rewritten from it:
+
+| Owner | Items |
+|---|---|
+| audio | 12 |
+| env-art | 12 |
+| creatures | 4 |
+| creatures-b | 4 |
+| characters | 3 |
+| env-art-b | 2 |
+| integration-qa | 2 (Pell) |
+
+act1-chapters' Ch8 arenas and ui-menus' Kerrid portrait are cleared.
+
+MERGE-READY (+ this log): **the real-frame battle entry probe, every Act I chapter** (the Lead's item 4).
+- **New: `tools/dev/battle_entry_probe.tscn`** (`godot --headless --path . res://tools/dev/battle_entry_probe.tscn -- --chapters=1,2,3`).
+  For each Act I fight: New Game, then SceneRouter into its zone at its spawn, `BattleRequest.start` as the zone does
+  it (stinger, router fade, staged build), a win, accept, and the router back to the zone. A QaLogger watches the
+  whole run. It prints one PROBE line per fight and ends with "PROBE done: N error(s)". It's a dev tool, not a test,
+  because one chapter takes minutes of real frames.
+- **Results, chapters 1–9 (33 fights):** no SCRIPT ERROR, no freed-object cast, no missing resource. **Still not
+  reproduced: the human's "cast a freed object".** Two engine errors went to their owners:
+  - **M3-HER-1150 → audio:** `ashcrown_audio.gd:49` calls `unbind(0)` for a three-argument signal, an engine error
+    on every Ashcrown entry. The fix is one line (`unbind(n) if n > 0`, as its siblings do).
+  - **M3-HER-1151 → architect:** "Attempting to initialize the wrong RID" from `ShaderGlobals.set_value` ←
+    `WeatherClock._process`, during a router swap that instantiates on a thread (the return into saltgrass_causeway).
+    It's intermittent (1 in 2 runs) and a race between threads, which is **my best lead for the human's freed-object
+    crash**.
+- Scripted fights that don't end by attack (reported as before): ch06_inquisitor, ch08_stair_hold_1–3,
+  undertows_reach. ch04_sail_leeches only needed the probe's frame budget (fixed), and is clean.
+- Gates: gdlint/gdformat, validate_data, taskboard --check. No Godot test touched.
+
+MERGE-READY (+ this log): **reproduced the human's "Trying to cast a freed object"; my own case fixed; a lint for the rest.**
+- **Cause:** a stored node is cast before its `is_instance_valid` check. `var x := stored as T` errors on the cast
+  itself when the node is freed. My own `HeroFieldParty.should_hide` did this with the cutscene sequencers it watches
+  (the FAST-TRACK hand-off code). A watched sequencer freed before the party (a cutscene's temporary sequencer, or a
+  teardown order) gives exactly the human's message, every frame.
+  - Fixed: check first, then cast.
+  - New test `test_qa_party_spawns::test_a_freed_sequencer_is_not_cast` frees Haluna's sequencers and runs the
+    party's frame. The old code logs "SCRIPT ERROR: Trying to cast a freed object." twice and fails; the fix passes
+    (3/3 qa_party).
+- **New: `tools/freed_cast_lint.py`** (+ `tools/tests/test_freed_cast_lint.py`, 5 tests). It finds the pattern
+  across `game/`. A new hit fails the tools suite; known hits are listed with their request task:
+  - `footstep_audio.gd:590` → M3-HER-1150 (audio; added to the unbind task);
+  - `revenant_tells.gd:162` → **M3-HER-1152** (rendering);
+  - `battle_choreo.gd:801` → **M3-HER-1153** (ui/battle-presentation).
+  Each fix is one line. The owner removes the KNOWN row when it lands.
+- Gates: hero_ 110/0, qa_party 3/0, freed_cast_lint unittest 5/0, gdlint/gdformat, validate_data, taskboard.
+- **Lead:** the lint belongs in `tools/ci_local.sh` (it runs through the tools suite already, via
+  test_freed_cast_lint).
+
+### TRIAL MERGE, 2026-10-28 ~05:45
+TRIAL MERGE @ integration 6b89f4a6: env-art 62409951, env-art-b 6edde924, creatures 0d50432b, creatures-b 557a9ea5, characters 73917b03, ui 296ceb69, battle-presentation 1c1f89b3, act1-chapters 0d19e1f4, m2-slice 9f31066b, audio 5061e0fa, hero-integration 41c277d2
+- **New since 05:00, the one that matters: env-art vs env-art-b on the Haluna kit, 10 files.** These don't union:
+  `assets/environments/kits/haluna/kit_manifest.json`, `assets_src/environments/kits/haluna/build.py` and
+  `materials.py`, `game/data/ui/zone_maps.json`, `tools/tests/test_ch08_flow.py` (+ ownership.md). env-art (M3-ENV-743,
+  Ch4 wake-night dressing) and env-art-b (M3-ENV-721, Ansedra) both grew the shared Haluna kit build. **Lead:** one of
+  them should merge the other before the next batch, since a by-hand merge of build.py decides the kit's geometry.
+- As at 05:00: `blender_builds.json` (characters, ui vs env-art/creatures), `battle_sandbox.json`, ownership.md, and
+  act1-chapters' `project.godot`/`creature_voices.json`/`test_zone_map.gd`/`test_ch08_flow.py`.
+- **hero-integration:** `test_hero_stairs.gd` clashed only on integration's one-line comment on `_done()`. I took
+  integration's file, so my branch no longer clashes.
+- **Audit on the merged tree (static half only, 20 items: audio 12, creatures-b 4, env-art 4).** The runtime scan
+  needs an import of the merged tree, so it waits for the next full one. The 05:00 inventory (39, runtime included)
+  stands.
+- **freed_cast_lint on the merged tree:** 0 new hits (only the three filed ones).
+
+MERGE-READY (+ this log): **the encounter guard now wins every Act I fight, set pieces included.**
+- `test_qa_encounters`:
+  - Each turn the party attacks. Where a set piece refuses that (Toma won't strike the Inquisitor, the stair is
+    held), it uses the first skill the engine accepts, on a foe, the ward, itself or no one (`_take_turn`).
+  - `rig()` keeps foes at 1 HP and standing heroes at full, so the tide can't win before the objective is met.
+  - Every fight **must** now be won or end in its scripted escape. A defeat or a fight that never ends fails it.
+    Before, ch06_inquisitor, ch08_stair_hold_1–3 and undertows_reach were only reported, and undertows_reach was
+    actually a party wipe: its "result" was Retry.
+  - Result: 33/33 won and left, 0 failed.
+- `tools/dev/battle_entry_probe`:
+  - Uses the same turn driver and rig.
+  - Waits by wall clock (90 s): headless frames run uncapped, but the router's loads take real time.
+  - Accepts only once the result panel shows.
+  - Adds `--only=<encounter>`.
+  - Ch6 and Ch8 with real frames, set pieces included: clean.
+- Gates: gdlint/gdformat, qa_encounters 1/0, the probe on ch6, ch8 and undertows_reach.
+
+### TRIAL MERGE, 2026-10-28 ~06:45
+TRIAL MERGE @ integration 6b89f4a6: env-art 62409951, env-art-b 6edde924, creatures e1fd27df, creatures-b 557a9ea5, characters 73917b03, ui 296ceb69, battle-presentation bd97051f, act1-chapters d150d529, m2-slice 9f31066b, audio 659ed2d8, hero-integration 29944240
+- Conflicts are the same as at 05:45, **env-art vs env-art-b on the Haluna kit still included** (Lead: still open).
+  hero-integration now merges clean.
+- **Full audit on the merged tree (runtime scan included, after an import): 44 items**, up from 39. Rewritten
+  in `docs/kb/qa/act1_final_inventory.md`.
+  - **New:** act1-chapters' latest stages bring the Ch6 Brine Shoals stage actors as capsules (stillguard_a–c,
+    hound, inquisitor → creatures/characters by the people split), plus Ch4 spar_wraith and the stillguard_inquisitor
+    battle model.
+  - Env-art went from 4 items to 3.
+  - integration-qa's 2 items are Pell and vigil_pell in Ch9's ch09_pell_joined variant, which wait on M3-CHR-506
+    as before.

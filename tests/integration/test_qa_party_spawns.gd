@@ -97,6 +97,33 @@ func test_the_game_start_hands_the_party_back_after_cutscene_a() -> void:
 	Game.state = _state_was
 
 
+## The human's "Trying to cast a freed object" entering a fight: a sequencer the party watches, freed before the party
+## (a zone's teardown, a stage despawned), must not be cast on the party's next frame.
+func test_a_freed_sequencer_is_not_cast() -> void:
+	Game.new_game()
+	var zone := (load(HALUNA) as PackedScene).instantiate() as Node3D
+	_host().add_child(zone)
+	var player := _controller(zone)
+	player.set_physics_process(false)
+	player.set_process_unhandled_input(false)
+	var party := player.get_node(NodePath(String(HeroFieldParty.NAME))) as HeroFieldParty
+	party.set_physics_process(false)
+	party.rescan()
+	var seqs := HeroFieldParty.find_scripted(zone, &"CutsceneSequencer")
+	assert_true(not seqs.is_empty(), "Haluna has a sequencer to watch")
+	var qa := QaLogger.new()
+	OS.add_logger(qa)
+	for s in seqs:
+		s.free()
+	party.should_hide()
+	party.advance(DT)
+	OS.remove_logger(qa)
+	for e in qa.take():
+		assert_true(e["kind"] == QaLogger.KIND_WARNING, "no error with its sequencers freed: %s" % e["text"])
+	zone.free()
+	Game.state = _state_was
+
+
 ## The leader walks on; every follower must be moving within FOLLOW_FRAMES.
 func _assert_follow(player: FieldController, party: HeroFieldParty, where: String) -> void:
 	var start: Array[Vector3] = []
