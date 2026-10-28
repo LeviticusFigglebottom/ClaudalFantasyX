@@ -587,6 +587,38 @@ Ch4–Ch9 onward. `m2-slice.md` beside this file is the history up to the 2026-1
     until then.
 - **Next:** the beat audit, batch 2, is rendering: slice_neme_table (the B02 facing fix) and the seven Ch1 scene
   stills from 03c2711f.
+- **Beat audit, batch 2 (self-rendered and viewed).** ch01_drop, ch01_hullgnaw_rises and ch01_going_under read
+  right. Fixed:
+  - **ch01_scale_hull and ch01_kell_stall** (also PC GPU QA row 23) played on plank walls.
+    - The kit's `scale_hull` and `chandlery` stood at yaw 90, so their counters faced away from Rhen's decks, and the
+      scaleman and Kell stood in closed booths. Both now stand at yaw 270, and the scaleman stands behind his
+      counter, facing it.
+    - O02 is "Rhen across the counter" over his shoulder. O09 now looks straight in at Kell under her lamp racks.
+    - The chandlery's ridge gull stays where O10 frames it.
+  - **ch01_bell_room (row 23):** U03 sat inside the south wall since the walls moved to the kit grid. It is now
+    in the room, with Rhen and his lantern in the right third and the hinge door beyond.
+  - **ch01_net_pen:** Oruvel's last greybox story block, the LowHull, showed as a grey box. It is now the kit's
+    outrigger piled with salvage, following the block, so it drifts clear when the lashings are cut.
+    `test_slice_primitives` drops it from the allowlist, and `test_ch01_oruvel_kit` checks it.
+  - **slice_neme_table (B02):**
+    - The market's H09 framed Neme and Rhen 23 m away. A new `NemeTable` camera volume (priority 2, the `B02`
+      tracking shot down the lane) frames them close.
+    - The still also showed Asha there, though Neme says "Asha's at the market". In play B02 is held, and
+      HeroFieldParty hides her. The shot rig's sequencer sat outside the level, where the party never saw it; it is
+      now a child of the level, as a zone's own is.
+- **PC GPU QA (`origin/gpu/act1-qa-2`), my rows:**
+  - **Row 18 (no harrier in C07):** the shot set `ch03_harrier_won`, and the harrier only circles until it is
+    beaten. The flag is off the shot again.
+  - **Row 32 (beach, standing lines framed on his waist):** H05 is the Lead's kneeling-height two-shot. Once
+    they stand, both branches now cut to **H05_up**: 45 mm along the beach at 1.55 m, keyed like H05 and H06,
+    Rhen and Asha side by side with Toma beyond. The new still `slice_beach_standing` holds line 031.
+    `test_dialogue_vs_scenes` accepts a stage variant of a haluna.md id.
+  - **Row 23:** above. **Row 2 (the vigil line):** re-rendering with env-art's set to see what is left.
+- **M3-CRE-657 (creatures' request, the Lead's item 1):** the patch is applied (GreyboxZone `_build_villagers()`),
+  and test_zone_cast reads the body through `HeroMotion.player_of`. The crowd is verified in a scratch merge with
+  claude/creatures, not pushed (render below).
+  - `test_villager_routines` shows 3 failures and an abort identically with and without the patch on this tree.
+    They are creatures' tests; their branch carries the fixes.
 
 ### Render requests
 SUPERSEDED RENDER-REQUEST @ fdec3cc6: slice_prologue_vigil_line, slice_beach_h05_asha, slice_beach_h06_toma, slice_haluna_villagers_village, slice_causeway_head, slice_causeway_harrier_view, haluna_h01_village_from_sea, haluna_h02_tidewall_lane, haluna_h04_dock, haluna_h07_chapel_court, haluna_h10_dock_night, shrine_s01_approach, shrine_s02_threshold, shrine_s03_overview, shrine_s04_lip, shrine_s05_side_pool, drownbell_flood, battle_boss_intro_drownbell, battle_arena_causeway, field_causeway_dolly, boot_title; why: M2-FP-102..109, the human's playtest round (real cast and held poses in the prologue and Cutscene A, live villagers and wildlife, the final causeway), plus the greyscale audit of every slice beat. The six slice_* shots are new (no baseline yet).
