@@ -6,6 +6,8 @@ extends Control
 ## (Stop/Sleep) is hatched and dimmed; `moved` draws a ▲/▼ for chips the preview shifts.
 ## A Doomed turn carries an hourglass and its count (TurnEntry.doom). The chip acting now has a
 ## heavier focus frame with an outer glow and a caption ("Acting now", or why it acts alone).
+## The portrait shows the fighter's face or bestiary picture (BattlePortraits) inside its shape (an ally's square,
+## a foe's diamond); the initial stands in only where none is baked yet.
 ## A scripted entry (a set piece's Climb or Surge, M3-UI-100) is neither ally nor foe to the eye: a raised fill,
 ## a dashed frame and a round portrait (battle_hud.json timeline entry_fill_role / entry_frame_role).
 
@@ -36,6 +38,7 @@ var move_tween: Tween
 var _metrics: Dictionary = {}
 var _name: Label
 var _initial: Label
+var _face: Texture2D
 var _caption: Label
 var _doom_glyph: StatusGlyph
 var _doom_label: Label
@@ -95,6 +98,8 @@ func apply(slot: Dictionary, identity: Dictionary, current: bool) -> void:
 	# whose turn it is, and "<name> · <skill>" ran past the chip's width (M2-FP-12).
 	_name.text = label_text if intent_label == "" else intent_label
 	_initial.text = label_text.left(1)
+	_face = null if entry else BattlePortraits.texture(combatant_id)
+	_initial.visible = _face == null
 	_caption.text = caption
 	_doom_label.text = str(doom) if doom > 0 else ""
 	_layout_children()
@@ -214,6 +219,7 @@ func _draw_portrait() -> void:
 	if entry:
 		draw_circle(r.get_center(), side * 0.5, col)  # an entry's portrait is round: a third shape cue
 		return
+	var pic := r.grow(-HudLayout.num(_metrics, "portrait_inset"))
 	if team == TEAM_ENEMY:
 		# Enemy portrait is a diamond, ally a square: a second shape cue.
 		var c := r.get_center()
@@ -221,8 +227,12 @@ func _draw_portrait() -> void:
 		draw_colored_polygon(
 			PackedVector2Array([c + Vector2(0, -hs), c + Vector2(hs, 0), c + Vector2(0, hs), c + Vector2(-hs, 0)]), col
 		)
+		var inner := side * HudLayout.num(_metrics, "enemy_portrait_frac")
+		pic = Rect2(c - Vector2.ONE * inner * 0.5, Vector2.ONE * inner)
 	else:
 		draw_rect(r, col)
+	if _face != null:
+		draw_texture_rect(_face, pic, false, Color(1.0, 1.0, 1.0, col.a))
 
 
 func _draw_hatch() -> void:

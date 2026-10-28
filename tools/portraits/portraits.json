@@ -39,6 +39,26 @@
       "out_dir": "res://assets/ui/portraits/heroes",
       "emotions": ["neutral", "smile", "determined", "worried", "grief"],
       "camera": {}
+    },
+    {
+      "id": "ysolde",
+      "stage": "res://game/levels/_tests/characters/ysolde/ysolde_stage.tscn",
+      "model": "res://assets/characters/ysolde/ysolde.glb",
+      "materials": "res://assets/characters/ysolde/materials/",
+      "face_poses": "res://game/levels/_tests/characters/ysolde/ysolde_face_poses.json",
+      "out_dir": "res://assets/ui/portraits/heroes",
+      "emotions": ["neutral", "smile", "determined", "worried", "grief"],
+      "camera": {"distance": 1.14, "aim_drop": 0.0}
+    },
+    {
+      "id": "liss",
+      "stage": "res://game/levels/_tests/characters/liss/liss_stage.tscn",
+      "model": "res://assets/characters/liss/liss.glb",
+      "materials": "res://assets/characters/liss/materials/",
+      "face_poses": "res://game/levels/_tests/characters/liss/liss_face_poses.json",
+      "out_dir": "res://assets/ui/portraits/heroes",
+      "emotions": ["neutral", "smile", "determined", "worried", "grief"],
+      "camera": {}
     }
   ],
   "creatures": [

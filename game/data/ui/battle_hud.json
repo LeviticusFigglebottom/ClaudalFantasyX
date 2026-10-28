@@ -6,6 +6,8 @@
     "timeline": {
       "rect": [1648, 88, 224, 696],
       "pin": "top_right",
+      "portrait_inset": 2,
+      "enemy_portrait_frac": 0.72,
       "inset": 8,
       "slot0_height": 72,
       "chip_height": 36,
@@ -37,6 +39,7 @@
     "party": {
       "rect": [1272, 800, 600, 232],
       "pin": "bottom_right",
+      "portrait_inset": 2,
       "row_height": 72,
       "row_gap": 8,
       "pad_x": 18,
