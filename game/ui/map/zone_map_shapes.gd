@@ -31,7 +31,7 @@ extends RefCounted
 ##   in "*" names every block whose id starts with what comes before it (a kit's numbered pieces).
 ##   A zone dressed from an env-art kit (ADR 0200) keeps its walkable shape in the layout's
 ##   collision_path file: its blocks are read the same way, and each ramp is a pad (its from-to run,
-##   width wide), so the map follows the kit's frame.
+##   width wide), so the map follows the kit's frame. A layout's own ramps (flights of steps) are pads too.
 ## Every polygon is a PackedVector2Array of world (x, z) points.
 
 const KIND_HALUNA := &"haluna_layout"
@@ -207,7 +207,7 @@ func _greybox(layout: Dictionary, rules: Dictionary, hints: Dictionary) -> void:
 	var thin := float(rules.get("wall_thick_m", 0.0))
 	var post := float(rules.get("post_max_m", 0.0))
 	var collision := _collision_of(layout)
-	for r: Variant in collision.get("ramps", []):
+	for r: Variant in layout.get("ramps", []) + collision.get("ramps", []):  # flights, the layout's own too
 		pads.append(_ramp(r as Dictionary))
 	for b: Variant in layout.get("blocks", []) + collision.get("blocks", []):
 		var row := b as Dictionary

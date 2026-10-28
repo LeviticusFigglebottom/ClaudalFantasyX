@@ -32,6 +32,9 @@ const PARTY_PAGE_DRIVERS: Array[String] = [
 const MAP_BOOK_DRIVERS: Array[String] = [
 	"res://game/ui/map/shots/field_menu_map_haluna.tscn",
 	"res://game/ui/map/shots/field_menu_map_shrine.tscn",
+	"res://game/ui/map/shots/field_menu_map_keth_pass.tscn",
+	"res://game/ui/map/shots/field_menu_map_lowlight.tscn",
+	"res://game/ui/map/shots/field_menu_map_ansedra.tscn",
 	"res://game/ui/bestiary/shots/bestiary_menu.tscn",
 	"res://game/ui/codex/shots/field_menu_codex.tscn",
 ]

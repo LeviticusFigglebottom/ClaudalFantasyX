@@ -109,8 +109,11 @@ func test_the_route_strip_marks_the_current_stop() -> void:
 	var first := MapModel.new(UNDERWAY, Vector3.INF, 0.0, _flags([])).route_stops()
 	assert_eq(first.size(), 3, "at the start of the road: itself and the two ahead")
 	assert_true(first[0]["current"])
-	var last := MapModel.new(&"ch09/corrow_night", Vector3.INF, 0.0, _flags([])).route_stops()
-	assert_eq(last.size(), 3, "at the end of Act I: the two behind and itself")
+	var act_break := MapModel.new(&"ch09/corrow_night", Vector3.INF, 0.0, _flags([])).route_stops()
+	assert_eq(act_break.size(), 5, "M3-UI-206: Act I's end runs on into Act II")
+	assert_eq(StringName(str(act_break[3]["id"])), &"ch10/ossa_fen", "Ossa Fen next")
+	var last := MapModel.new(&"ch16/drowned_choir", Vector3.INF, 0.0, _flags([])).route_stops()
+	assert_eq(last.size(), 3, "at the end of Act II: the two behind and itself")
 	assert_true(last[2]["current"])
 	assert_eq(MapModel.new(&"nowhere").route_stops().size(), 5, "off the route: the first stops")
 	assert_false(MapModel.new(&"nowhere").has_map())
@@ -178,7 +181,8 @@ func test_shrine_shapes_come_from_its_trial() -> void:
 # --- Act I greybox zones (M3-UI-04) --------------------------------------------------------------
 
 
-func test_every_act_one_greybox_zone_builds_a_map() -> void:
+## M3-UI-04, and M3-UI-206 for Act II's fifteen (Ch10 to Ch16).
+func test_every_greybox_zone_builds_a_map() -> void:
 	var maps := ZoneMaps.new()
 	var data := MapModel.load_data()
 	var seen := 0
@@ -209,7 +213,7 @@ func test_every_act_one_greybox_zone_builds_a_map() -> void:
 		for r: Variant in maps.route():
 			on_route = on_route or StringName(str((r as Dictionary)["id"])) == id
 		assert_true(on_route, "%s is on the route" % id)
-	assert_eq(seen, 12, "Ch1's two zones, Ch4's two, Ch5's two, Ch6's, Ch7's two, Ch8's two and Ch9's")
+	assert_eq(seen, 27, "Act I's twelve (Ch1, Ch4 to Ch9) and Act II's fifteen (Ch10 to Ch16)")
 
 
 func test_greybox_blocks_sort_by_height_and_hints() -> void:

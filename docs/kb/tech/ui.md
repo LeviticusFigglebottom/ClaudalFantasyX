@@ -357,6 +357,11 @@ The human's top priority for the playable intro: a map, so the player knows wher
   - **POI sources.** A greybox scene is only its root, so POI sources name layout points: `spawn:`, `trigger:`, `actor:` or `mark:`. `test_zone_map_pois.py` checks them, and that every hint names a block that still exists.
   - **The route.** It runs the whole act (12 stops). `RouteStrip` shows two stops either side of the current one (route `before` / `after`), in a rect widened to fit five names.
   - **Shot:** `field_menu_map_underway` shows the Underway after the glassfry shoal: the objective is the stairwell lip, and the hinge is listed as an errand.
+- **Act II greybox zones (M3-UI-206).** All fifteen act1-chapters greybox zones of Ch10 to Ch16 are mapped and follow Corrow on the route (30 stops). They are Ossa Fen and Reedhollow; Sunken Vey and Lowlight; Keth Pass, Quellan and Cloudloom; Ansedra, the Sanctum, the Lamp Archive and the Lacquer Court; the open sea; Hollowmere; and the Pale Rim and the Drowned Choir.
+  - **Shapes.** Their layouts lay a non-solid `Water` sheet over a solid `Bed`, so `Water` is hinted `sea` and `Bed` `skip`. The pass, the summit hall and Quellan's road top stand high, so their floors and walls are hinted `floors` and `structures`.
+  - **Flights.** A layout's own `ramps` (Keth Pass, Lowlight, Cloudloom, Quellan, the Lacquer Court's water-steps) are now drawn as pads, like a collision file's.
+  - **Names.** They are in `game/data/loc/maps_act2.csv` and say where, not what: "The root clearing" and "The terrace shelf", never a boss's name. Act II has no objectives yet, so there is no marker.
+  - **Shots:** `field_menu_map_keth_pass`, `field_menu_map_lowlight` and `field_menu_map_ansedra`, the three that read hardest. They are in the pseudo-loc walk.
 - **Left as they are:** the causeway has no map of its own yet (a route stop only). The map does not zoom or pan: Haluna's bounds fit at about 2.8 px/m at 1080p, and its houses read as blocks. The glyph shapes' proportions live in `MapGlyphs` (they are the drawing), while their sizes are data.
 
 ## Known gaps
