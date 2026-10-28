@@ -81,3 +81,21 @@ CreatureActor and the validator are theirs too (kit or tool changes go to them a
     with a hornbill casque, hammer and anvil chest. **Follow-up polish (mine, queued):** the hammer reads as perched
     on the casque on a thin handle, not grown into it; the forearm plates' front edges are ragged up close.
 - **In progress:** spar_wraith, undertows_reach, virel (worktree agents).
+- **MERGE-READY @ 2b6b5f8b: M3-CRB-007, the Undertow's Reach to final quality** (worktree agent f2a641cc, viewed by me).
+  - The forearm a rope of six twisting water strands with foam-crested surge folds and flow streaks, narrowing into
+    a storm spout; wreckage (two banded masts, chain, a lashed cross-spar and a drowned lantern, half a ship's wheel,
+    nailed planks, rope); two half-swallowed spawn shells (segments, spines, dead eyes, mandibles); two door-sized
+    recessed wounds with torn lips facing the party; six jointed digits with serrated crust plates, barnacles and
+    hooked claws. 24.0k triangles (budget 24k), 28 bones; `water` slot wet_darken 0.2 → 0.55 so the colour shows.
+    New `ready` and `intro` (2.8 s: comes down from 11 m and slams onto the wall-head); `vfx_wound`, `vfx_core`,
+    `vfx_phase`. Contacts and phase data unchanged. The spout is capped at 19.2 m: taller fails
+    test_every_boss_stands_clear_of_the_title_card.
+  - **Checks run:** Blender verify identical; validate_data; tools tests 48 OK; Godot creature 74/1 (known
+    portraits), ch08 19/0, boss_intro 17/0.
+  - SELF-RENDERED @ f2a641cc: creature_undertows_reach, battle_boss_intro_reach — drift (new model); viewed: the
+    intro reads as the storm's limb of water and wreck on the wall-head.
+  - **Seen at the default battle camera (a scratch render):** the hand crowds the camera beside the party, and its
+    plates show hard facets that close. Facets: my follow-up. Framing, and **a white capsule for "The Fisher Stair"**
+    (a set-piece target, a placeholder in Act I): added to M3-CRB-009 for battle-presentation.
+- **In progress:** spar_wraith, virel, drownbell (worktree agents). Then cinder_matron, then my polish queue
+  (Kahre's hammer and forearm plates, the Reach's close-range facets, the hermit's glossy shell).
