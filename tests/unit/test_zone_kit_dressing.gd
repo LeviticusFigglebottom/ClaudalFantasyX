@@ -48,7 +48,8 @@ func test_every_kit_piece_and_every_block_id_exists() -> void:
 		var piece := String(spec["piece"])
 		if not seen.has(piece):
 			seen[piece] = true
-			assert_true(ResourceLoader.exists(kit + piece + ".glb"), "%s is a kit piece" % piece)
+			var dir := String(spec.get("kit_dir", kit))  # a row may name its own kit (ZoneKitDressing._place_from_kit)
+			assert_true(ResourceLoader.exists(dir + piece + ".glb"), "%s is a kit piece" % piece)
 		if spec.has("block"):
 			assert_true(_dressing().block(String(spec["block"])) != null, "block %s exists" % spec["block"])
 	assert_eq(_dressing().placed.get("plank_walk", 0) > 10, true, "the plank walk runs up the road")
