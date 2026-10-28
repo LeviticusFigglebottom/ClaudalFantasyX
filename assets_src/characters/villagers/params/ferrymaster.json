@@ -51,7 +51,9 @@
     "stubble": 0.75,
     "stubble_grey": 0.6,
     "seed": 129,
-    "lip": "#6E4236"
+    "lip": "#6E4236",
+    "stubble_shadow": 0.35,
+    "stubble_density": 0.6
   },
   "_hair": {
     "kind": "short",
@@ -72,7 +74,8 @@
     "grey": "#A49E96",
     "grey_share": 0.45,
     "underpaint": "#36322E",
-    "brow": "#3A3632"
+    "brow": "#3A3632",
+    "grey_strands": true
   },
   "_eyes": {
     "iris": "#2A1A10"
