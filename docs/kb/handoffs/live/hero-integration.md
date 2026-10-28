@@ -1090,3 +1090,20 @@ MERGE-READY (+ this log): **the party start, take two (the big15 GPU playtest), 
   ShaderGlobals' writes only around the router's own threaded instantiate. ResidentLoads should do the same around
   its loads: `ShaderGlobals.hold_writes()` when a load starts, `release_writes()` when it lands. Holds nest, so
   overlapping loads are fine. I can add it after ui-menus merges, if you give the word.
+- **SELF-RENDERED** (party start, the whole walk; lavapipe 960x540, viewed):
+  - start: all three close together;
+  - the wall's gap (turn1): Rhen clear, Toma near the camera to the side;
+  - entering the lane (turn2) and the lane turn itself (turn3, where big15's camera swung into the stone walls): the
+    camera looks down the lane over the party, all three in frame between the walls, no clipping.
+
+MERGE-READY (+ this log): **M3-ARC-1326 (env-art-b's ask, Ch9's Ebbing): the sequencer offers `@vfx` cues to the stage's VFX hosts.**
+- New `game/cutscene/cutscene_vfx_hosts.gd` (CutsceneVfxHosts.offer): every node in the `cutscene_vfx_hosts` group
+  with `play_vfx(effect, at_id, kwargs) -> bool`, first taker wins. `CutsceneSequencer._cue_vfx` returns before
+  spawning the CutsceneMotes placeholder when a host takes the cue (one line; the file stays at 999).
+- **Vocabulary: accepted as proposed.** cues.json `vfx` kwargs gain `follow` (`<actor>` or `<actor>_staff`) and
+  `anchors` (`<actor group>`). They reach hosts whole, the placeholder ignores them, and dlgc --check is 0/0.
+- tests/unit/test_cutscene_vfx_hosts.gd **4/0**: a taking host means no placeholder and gets the kwargs; a declining
+  host leaves the placeholder; no host means the placeholder; the vocabulary. It fails 2/4 on the old sequencer.
+  ch09_thread 7/0.
+- For env-art-b: M3-ARC-1326's task file is only on your branch, so I haven't copied it (an add/add clash). Please
+  tick its boxes and record "vocabulary accepted" when you merge this.

@@ -665,7 +665,7 @@ func _cue_vfx(step: DialogueStep) -> void:
 		_warn("cannot place @vfx %s at '%s'" % [effect, at_id])
 		return
 	var host: Node3D = at if at != null else _stage
-	if host == null:
+	if host == null or CutsceneVfxHosts.offer(get_tree(), effect, at_id, step.kwargs):  # M3-ARC-1326: a stage host
 		return
 	var motes := CutsceneMotes.new()
 	motes.name = "Vfx_%s_%d" % [effect, _vfx_count]
