@@ -26,6 +26,9 @@ VOTIVE_YAW_SPREAD_DEG = 25.0  # the spouts face the fight, each set down by hand
 TIER_Y_RANGE = (-3.5, 2.0)
 TIER_X_FROM_M = 15.0
 TIER_X_TO_M = 90.0
+# The party's key (M3-ENV-1322, the PC's QA row 16: the party barely lit at High): the festival lamps on the tread
+# behind the camera, one warm shadowless pool over the party's slots
+PARTY_KEY = {"at": (3.2, 2.6, 3.8), "energy": 2.4, "range": 8.0, "own": True}
 TIER_LIGHT_X_TO_M = 32.0  # the tier's own lamps (shrine boxes, lamp pillars) out to here, so its run reads at night
 
 
@@ -82,7 +85,7 @@ def arena(AS) -> dict:
             yaw = round(float(rng.uniform(-VOTIVE_YAW_SPREAD_DEG, VOTIVE_YAW_SPREAD_DEG)), 2)
             pieces.append({"glb": VOTIVE, "at": (x, 0.0, z), "yaw": yaw})
         lamps.append(lp)
-    return {**table, "lamps": lamps + tier_lamps(AS), "pieces": pieces}
+    return {**table, "lamps": lamps + tier_lamps(AS) + [PARTY_KEY], "pieces": pieces}
 
 
 def main(out_dir: Path | None = None) -> int:
