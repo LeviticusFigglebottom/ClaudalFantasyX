@@ -900,3 +900,21 @@ is rewritten from it:
 | integration-qa | 2 (Pell) |
 
 act1-chapters' Ch8 arenas and ui-menus' Kerrid portrait are cleared.
+
+MERGE-READY (+ this log): **the real-frame battle entry probe, every Act I chapter** (the Lead's item 4).
+- **New: `tools/dev/battle_entry_probe.tscn`** (`godot --headless --path . res://tools/dev/battle_entry_probe.tscn -- --chapters=1,2,3`).
+  For each Act I fight: New Game, then SceneRouter into its zone at its spawn, `BattleRequest.start` as the zone does
+  it (stinger, router fade, staged build), a win, accept, and the router back to the zone. A QaLogger watches the
+  whole run. It prints one PROBE line per fight and ends with "PROBE done: N error(s)". It's a dev tool, not a test,
+  because one chapter takes minutes of real frames.
+- **Results, chapters 1–9 (33 fights):** no SCRIPT ERROR, no freed-object cast, no missing resource. **Still not
+  reproduced: the human's "cast a freed object".** Two engine errors went to their owners:
+  - **M3-HER-1150 → audio:** `ashcrown_audio.gd:49` calls `unbind(0)` for a three-argument signal, an engine error
+    on every Ashcrown entry. The fix is one line (`unbind(n) if n > 0`, as its siblings do).
+  - **M3-HER-1151 → architect:** "Attempting to initialize the wrong RID" from `ShaderGlobals.set_value` ←
+    `WeatherClock._process`, during a router swap that instantiates on a thread (the return into saltgrass_causeway).
+    It's intermittent (1 in 2 runs) and a race between threads, which is **my best lead for the human's freed-object
+    crash**.
+- Scripted fights that don't end by attack (reported as before): ch06_inquisitor, ch08_stair_hold_1–3,
+  undertows_reach. ch04_sail_leeches only needed the probe's frame budget (fixed), and is clean.
+- Gates: gdlint/gdformat, validate_data, taskboard --check. No Godot test touched.
