@@ -44,16 +44,20 @@ clips are four shared libraries, 2.85 MB in all (M3-CRE-662, §5).
   scalp underpaint still sits under a near colour. A person's tints are redrawn (24 tries) until they stand 40 sRGB
   units from every other wearer of the body in some cloth slot; the validator holds the line at 24.
 - **Cloth never near skin** (M3-CRE-662): every cloth tint, a person's and a body's default `_tints`, stands at
-  least 24 from the body's skin by `skin_delta_e` (`tools/validate_npc.py`, the one function the generator and the
-  validator share): CIE76 on CIELAB split into lightness, chroma and hue, `sqrt((0.75 dL)^2 + dC^2 + (0.75 dH)^2)`.
-  A cloth of the skin's own warmth reads as skin over a wide band of lightness and hue; a grey or a strong colour
-  clears on chroma or hue. Calibration (`ranges.json` `skin_clearance.calibration`, re-measured by the
-  `SkinClearance` tests): lowest pass the light grey #B0B0B0 on the lightest skin, 25.7; highest fail the cream
-  #D1C0A1 on #AC7A5D, 22.0 (one of the review's two pale tops in M3-CRE-659's crowd_lineup_a; the other, sand
-  #BFAA86 on #A5765A, is 16.3); peach and sand of the skin's hue 4–11. The same cream on the darker #87593D reads
-  as cloth (30.4). Plain CIE76 has no gap between those sets. `draw_cloth` never keeps a miss: the slot's own
-  mixes, then the community's other sets, then a darker or lighter mix of its swatches, then an error naming the
-  person or body.
+  least 18.5 from the body's skin by `skin_delta_e` (`tools/validate_npc.py`, the one function the generator and
+  the validator share). The metric is CIE76 on CIELAB split into lightness, chroma and hue:
+  `sqrt((0.3 dL)^2 + dC^2 + (0.5 dH)^2)`.
+  - A warm low-chroma cloth (cream, sand, peach) reads as skin over a wide band of lightness and hue; a grey,
+    white or strong colour clears on chroma or hue.
+  - Calibration is in `ranges.json` `skin_clearance.calibration` and is re-measured by the `SkinClearance` tests.
+    The fail pairs are what the renders showed as skin: the review's two pale tops in M3-CRE-659's crowd_lineup_a
+    (cream #D1C0A1 on #AC7A5D and sand #BFAA86 on #A5765A), and the lighter cream #D7C9AF that a first pass at
+    k 0.75 / floor 24 gave the same body, which still read as skin.
+  - Lowest pass: order_marble on the lightest skin, 20.6 (greys 25.4 or more). Highest fail: 16.7.
+  - Plain CIE76 can't do this: it ranks that cream (31.3) above the greys (26).
+  - Consequence: creams and beiges fail near any crowd skin and are drawn away to whites, greys and colours.
+  - `draw_cloth` never keeps a miss. It tries the slot's own mixes, then the community's other sets, then a darker
+    or lighter mix of its swatches, and then stops with an error naming the person or body.
 - **Motion**: FieldNpc's per-id idle phase and HeroIdleMicro already keep two wearers out of step; work clips and
   chat pairs vary the silhouettes further.
 
