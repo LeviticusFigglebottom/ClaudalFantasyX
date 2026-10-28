@@ -665,3 +665,9 @@ SUPERSEDED RENDER-REQUEST @ db895430: battle_choreo_hit, battle_choreo_ko, battl
   - **Unfinished:** shoal_skipper, slag_tortoise, sail_leech and oil_slug read primitive (M3-CRE-654, in a worktree).
   - **Portraits:** all 20 bestiary portraits viewed, all present. The raid hound reads crude (M3-CRE-655, after 650).
 - SELF-RENDERED @ f5ebf9a5: creature_wallcrab, creature_glassfry, creature_wreck_crab — all 3 PASS (RMSE 0) and read finished. That covers all 17 untouched regulars; the other three get rendered after M3-CRE-650 and M3-CRE-654 land.
+- **MERGE-READY @ (this push): M3-CRE-656, villager runtime in the Act I greybox zones.**
+  - VillagerLayer adopts a GreyboxZone stage actor's villager `Model` (M2-FP-111) into a FieldNpc inside the actor, so it glances, turns to talk and idles out of step; cutscenes still find it.
+  - Oruvel's Kell is the first (zones/ch01_oruvel.json).
+  - **For slice-polish (M3-CRE-657):** GreyboxZone should `VillagerLayer.wire(self, location_id)` when a zone file exists, as it already adds the WildlifeLayer. One `if` after `_build_stage()`.
+  - **For characters (M3-CHR-100 and the chapter NPC tasks):** about 150 Act I stage actors are still capsules (oruvel 10, brightwater_ferry 7, pemakar 14+, brine_shoals 16+, tamsule 8, corrow 22+, corrow_night 19+, …). The bodies are yours. As each gets a layout `model`, I add its villager row.
+  - **Checks run:** Godot villager 27/0, ch01 14/0, oruvel 14/0, field_npc 10/0; tools test_npc; validate_data, lint, format.
