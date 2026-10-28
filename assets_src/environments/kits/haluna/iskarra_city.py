@@ -73,6 +73,31 @@ def scene_text() -> str:
     return "\n".join(lines) + "\n"
 
 
+WATER_OUT = ROOT / "assets" / "environments" / "zones" / "iskarra" / "iskarra_water_material.tres"
+# The drowned city's sea at dusk (M3-ENV-724, the GPU QA's row 19): Haluna's lagoon water made deep and dark, its
+# shallow scatter muted and its caustics low, so the plaza's drowned steps and the towers' plinths just under the
+# surface read as sea over stone, not as hard-edged bright-green panes.
+WATER_PARAMS = {
+    "col_deep": "Color(0.0314, 0.1333, 0.1647, 1)",
+    "col_scatter_shallow": "Color(0.0863, 0.2745, 0.2941, 1)",
+    "absorption_per_m": "Vector3(2.6, 0.9, 0.75)",
+    "absorption_scale": "2.2",
+    "scatter_energy": "0.08",
+    "caustic_strength": "0.5",
+    "col_foam": "Color(0.86, 0.84, 0.8, 1)",
+    "col_sss": "Color(0.149, 0.42, 0.4, 1)",
+    "foam_crest_threshold": "0.7",
+}
+
+
+def water_text() -> str:
+    lines = ['[gd_resource type="ShaderMaterial" load_steps=2 format=3]', "",
+             '[ext_resource type="Shader" path="res://game/shaders/water/water_ocean.gdshader" id="1_ocean"]', "",
+             "[resource]", 'resource_name = "iskarra_water"', "render_priority = 0", 'shader = ExtResource("1_ocean")']
+    lines += [f"shader_parameter/{k} = {v}" for k, v in WATER_PARAMS.items()]
+    return "\n".join(lines) + "\n"
+
+
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     ap.add_argument("--out", default=str(OUT_DEFAULT))
@@ -81,11 +106,12 @@ def main(argv: list[str] | None = None) -> int:
     out = Path(args.out)
     text = scene_text()
     if args.check:
-        ok = out.is_file() and out.read_text() == text
+        ok = out.is_file() and out.read_text() == text and WATER_OUT.is_file() and WATER_OUT.read_text() == water_text()
         print("ISKARRA_CITY " + ("OK" if ok else f"STALE {out}"))
         return 0 if ok else 1
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(text)
+    WATER_OUT.write_text(water_text())
     print(f"ISKARRA_CITY {len(PIECES)} pieces -> {out}")
     return 0
 

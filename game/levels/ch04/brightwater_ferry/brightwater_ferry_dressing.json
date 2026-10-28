@@ -145,6 +145,42 @@
    "shadow": false,
    "attenuation": 1.2,
    "color": "#9DB4D6"
+  },
+  {
+   "at": [
+    0.0,
+    3.2,
+    2.0
+   ],
+   "energy": 0.9,
+   "range": 8.0,
+   "shadow": false,
+   "attenuation": 1.2,
+   "color": "#9DB4D6"
+  },
+  {
+   "at": [
+    0.0,
+    3.2,
+    10.0
+   ],
+   "energy": 0.9,
+   "range": 8.0,
+   "shadow": false,
+   "attenuation": 1.2,
+   "color": "#9DB4D6"
+  },
+  {
+   "at": [
+    0.0,
+    2.7,
+    18.5
+   ],
+   "energy": 1.5,
+   "range": 8.0,
+   "shadow": false,
+   "attenuation": 1.2,
+   "color": "#9DB4D6"
   }
  ],
  "greybox": {

@@ -7,6 +7,7 @@
 [ext_resource type="Script" path="res://game/world/water/wave_set.gd" id="5_set"]
 [ext_resource type="Script" path="res://game/world/water/wave_component.gd" id="6_comp"]
 [ext_resource type="Material" path="res://game/levels/ch04/brightwater_ferry/brightwater_ferry_water_material.tres" id="7_water_mat"]
+[ext_resource type="Script" path="res://game/levels/act1/zone_cast.gd" id="90_cast"]
 
 [ext_resource type="Script" path="res://game/world/camera_shot.gd" id="pv_shot"]
 [ext_resource type="Script" path="res://game/levels/ch02/haluna/haluna_shot_camera.gd" id="pv_cam"]
@@ -21,9 +22,9 @@ fov_deg = 45
 [sub_resource type="Resource" id="ShotF06"]
 script = ExtResource("pv_shot")
 id = &"F06"
-position = Vector3(-0.51, 1.4, 17.037)
-look_at = Vector3(-2.125, 0.2, 15.7)
-fov_deg = 30
+position = Vector3(1.5, 1.8, 4.7)
+look_at = Vector3(-0.4, 0.35, 7.6)
+fov_deg = 40
 
 [sub_resource type="Resource" id="Swell0"]
 script = ExtResource("6_comp")
@@ -84,6 +85,9 @@ water = NodePath("../Water")
 script = ExtResource("2_dressing")
 layout_path = "res://game/levels/ch04/brightwater_ferry/brightwater_ferry_dressing.json"
 tide = NodePath("../Tide")
+
+[node name="Cast" type="Node" parent="."]
+script = ExtResource("90_cast")
 
 [node name="PreviewCameras" type="Node3D" parent="."]
 
