@@ -212,6 +212,29 @@ cutscene sequencer (`game/cutscene/**`), `game/flow/**` and the playtest fixes.
   still todo. The galleries part of M3-C07-04 is done by M3-C07-1211. I'll compose the port from the Bell kit's port
   pieces and Oruvel's rafts only if the Lead wants it before env-art gets to it.
 
+- **ADR 0041 (Act I at final quality first), act1-chapters' batch @ f307b8a8, MERGE-READY.** My own audit
+  (`<scratch>/a1/audit`: every visible PrimitiveMesh in each Act I zone and shot rig) drove it; tracks self-render now.
+  - Ch9 (778fdd4e): the landing and the mole bridge decked in Haluna's timber on piles, the rocks Pell comes down as
+    coral boulders, the vigil's brazier, the drowned low town as still water (a WaterSurface, not a box).
+  - Ch4/Ch5 (6c012aee, f90e3df1): the islet's coral rock, a plank gangplank, a hatch for the stern gate, the name board
+    laid on open deck (it and shot F06 were inside the kit's deckhouse; the party's marks moved with it); Pemakar's wake
+    wall, weir and crown bell.
+  - Coilspire (f90e3df1): valve doors across the four flights, the niche's slab, the wright's mark.
+  - Ch7's port (0d8f0e2d, `tools/act1/ch07_tamsule_port_dressing.py`): decks on piles over a real river, the stilt
+    lane, market, boats, the trader, the Bell on its gantry and the banks' shophouses (env-art's stilt kit M3-C07-04
+    may replace the pieces later). New shots `ch07_tamsule_quay`, `ch07_tamsule_lane`.
+  - Corrow (0737523e): ZoneKitDressing `waters` (a still WaterSurface following its block); the flood and the lake.
+  - **Ch4's wake on the real Haluna (f307b8a8, M3-C04-1226)**: Haluna's dressing at night via the layout's
+    `dressing` row, its walk collision (tuning read from ch02/haluna's Collision node), env-art's wake sets by flag,
+    every story point and camera re-laid on Haluna; zone map POIs (UI's file, as for the earlier relayouts) and
+    `test_zone_map`'s count (8). New shots `ch04_haluna_wake_feast`, `ch04_haluna_wake_lane`.
+  - Guard: `test_act1_dressings_keep_only_blocks_that_wait_on_a_request` (each dressed zone's keep list names a request).
+  - What still draws as a stand-in, all waiting on other tracks: Virel (M3-CRE-627), the weeping column and the storm
+    (M3-RND-27), Kerrid (M3-CHR-505), Pell (M3-CHR-506), Liss (M3-C06-06 / M3-CHR-03), Sefir (M3-HER-1225); Ashcrown
+    (steep stairs, M3-ARC-1216). Ysolde has her body now (vigil_ysolde cast).
+  - Checks: `--filter=` ch04 12/0, ch05 8/0, ch07 12/0, ch08 23/0, ch09 12/0, kit_dressing 10/0, zone_cast 3/0,
+    zone_map 20/0, battle 720/0; validate_data, taskboard, gdlint, gdformat clean.
+
 ### Render requests
 DONE @ 180510e1 (viewed gpu/render-act1-chapters-180510e): ch04_ferry_derelict approved (df86873f); ch04_ferry_deck re-aimed (the camera stood 0.6 m from the ferrymaster), re-requested below
 DONE @ 77a6a777 (viewed gpu/render-act1-chapters-77a6a77): ch08_corrow_arrival, ch08_corrow_stair, ch06_brine_camp pass (rmse 0); ch06_brine_road re-approved (its drift is the real hero model in front), ch09_corrow_road approved (df86873f); ch09_corrow_strand was near-black: vigil lamps and a brighter moon added, re-requested below
@@ -228,14 +251,11 @@ RETIRED (TRACK-RULES 10-28 01:00, tracks self-render; rendered below) @ 760a0e4c
 SELF-RENDERED @ c242d54d: ch05_pemakar_harbour (no baseline: the re-aimed harbour view reads, the stair and lit houses under Ashcrown's lamps; approve at the gate), ch06_brine_road PASS 0.0032 (Kerrid still a capsule, M3-CHR-505), ch06_brine_camp drift 0.0115 (Ch6's kit pieces in place of the last greybox; the Stillguard casts read as red robes at this distance), ch08_corrow_arrival drift 0.072 (the trader boat and the story pieces; the mole's top is flat, env-art's mole_pier), ch08_corrow_stair drift 0.0087 (Kerrid's capsule in the foreground), ch08_coilspire_hall PASS 0, ch09_corrow_strand drift 0.109 (the lit night: shrouds, lamps, the vigil; the landing still greybox, being replaced now), ch09_corrow_road PASS 0.0072 (Kerrid's capsule). For the Lead's gate: all intended.
 
 ## Exact next step
-1. When the render server answers RENDER-REQUEST @ 760a0e4c (`lead/gate-render-act1-chapters-760a0e4`): view every out/diff PNG;
-   approve what reads (copy to `tests/screenshots/baselines/`, the llvmpipe metadata in baselines.json); fix and
-   re-request what doesn't; then write the MERGE-READY lines for Ch4 (M3-C04-1204), Ch9 (M3-C09-1209), Coilspire
-   (M3-C08-1210), Ch7's galleries (M3-C07-1211), Ch5 Pemakar (M3-C05-1213) and the casts (M3-CIN-1217).
+1. Self-render (TRACK-RULES) the shots this batch changed and view them: ch04_ferry_deck, ch05_pemakar_harbour,
+   ch05_pemakar_crown, ch08_corrow_arrival, ch08_corrow_stair, ch08_coilspire_hall, ch09_corrow_strand,
+   ch09_corrow_road and the four new ones; write SELF-RENDERED lines. (Viewed already as previews; baselines are the
+   Lead's gate's.)
 2. Queue item 6, the cutscene quality bar, on the Act I scripts (easing, HeroMotion, no snapping, no greyscale
-   frames, villagers alive), now that the stage actors are real models.
-3. Act II is PAUSED (ADR 0041): M4-C10-02 .. M4-C14-02, M4-C10-03, M4-C11-03 and the requests I filed for it
-   (M4-C10-01 .. M4-C16-01, M4-CMB-1001, M4-AUD-1001) are `status: blocked`, `blocked-by: ADR 0041`. All of it is
-   committed and pushed; nothing reverted. Resume with the bosses once the pause lifts and the beat sheets land.
-4. Blocked or waiting: Ashcrown (M3-ARC-1216), `haluna_wake` (Haluna's ZoneStory move), Ch7's port (env-art's
-   kit, M3-C07-04), the Reefball HUD (M3-UI-01: TidecupMatch loads it by path when it lands).
+   frames, villagers alive).
+3. Act II is PAUSED (ADR 0041): its tasks and my requests for it are `status: blocked`, `blocked-by: ADR 0041`.
+4. Blocked or waiting: Ashcrown (M3-ARC-1216), the stand-ins above (their requests), the Reefball HUD (M3-UI-01).
