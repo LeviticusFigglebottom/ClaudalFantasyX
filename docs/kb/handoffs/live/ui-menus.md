@@ -274,3 +274,15 @@ RENDER-REQUEST @ 4d32a621: kite_map, field_menu_kite, field_menu_map_keth_pass, 
 - the field menu a row taller with the Kite;
 - three Act II maps (the raised landings and flights, the drowned shaft, the domes on the lagoon);
 - the codex counts move (34 → 50 entries).
+- 2026-10-28 01:10, **item 5 (the board and the next act):**
+  - **M3-UI-210:** the act card names "Act III: The Unbinding", for Ch16's act break (cinematics reviews; Ch16's `.dlg` calls it).
+  - **The Kite** can land at Reedhollow, Lowlight, Quellan and Hollowmere, each on its arrival flag. Ansedra stays off.
+  - **Reviewed M3-CRE-618 (approved, done).** The bestiary bake now gives the flue moth, oil slug and both polyps the dark rows' lighting (51f1a58d).
+  - **Lead:** M2-MNU-306 (the formation role word) names ui as its reviewer, but ui-menus did the work. It needs another reviewer (progression or the Lead).
+  - **Already covered for Act II, no change needed:**
+    - the area title cards (they read `locations.json`);
+    - the save slots' chapter text;
+    - the Memories gallery (it lists chapters with replayable scenes; Act II has none until its beat sheets).
+  - **Waiting on others:** M3-UI-208 (Combat: Act II enemy rows), M3-UI-209 and M3-UI-204 (act1-chapters: shop, inn and shrine triggers).
+  - **A full Godot suite run** after the act1-chapters merge is in progress.
+RENDER-REQUEST @ 51f1a58d: portraits for flue_moth, oil_slug, spawn_polyp, wall_polyp (tools/portraits/render.sh, the creatures list); why: the dark rows' light_scale and cool backing now apply to them (M3-CRE-618's follow-up). Rebake those four PNGs into assets/ui/portraits/creatures/.
