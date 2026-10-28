@@ -209,5 +209,21 @@ flags = {
 "ch15_started": "Ch15 (Act II): the party is adrift on the unlamped bridal barge at night (the chapter becomes 15; M4-C15-02).",
 "ch15_reached_hollowmere": "Ch15: at dawn the barge has come in to Hollowmere, its first visit (M4-C15-02).",
 "ch16_started": "Ch16 (Act II): the Hollowmere ship has left the party at the Pale Rim (the chapter becomes 16; M4-C16-02).",
-"ch16_reached_choir": "Ch16: the party has waded the white shallows to the Drowned Choir (M4-C16-02)."
+"ch16_reached_choir": "Ch16: the party has waded the white shallows to the Drowned Choir (M4-C16-02).",
+"codex_kirru_read": "Codex (ui-menus Act II set, game/data/lore/codex.json): the entry 'kirru' has been opened in the Codex (clears its New marker).",
+"codex_ullari_read": "Codex (ui-menus Act II set, game/data/lore/codex.json): the entry 'ullari' has been opened in the Codex (clears its New marker).",
+"codex_ossa_fen_read": "Codex (ui-menus Act II set, game/data/lore/codex.json): the entry 'ossa_fen' has been opened in the Codex (clears its New marker).",
+"codex_reedhollow_read": "Codex (ui-menus Act II set, game/data/lore/codex.json): the entry 'reedhollow' has been opened in the Codex (clears its New marker).",
+"codex_sunken_vey_read": "Codex (ui-menus Act II set, game/data/lore/codex.json): the entry 'sunken_vey' has been opened in the Codex (clears its New marker).",
+"codex_lowlight_read": "Codex (ui-menus Act II set, game/data/lore/codex.json): the entry 'lowlight' has been opened in the Codex (clears its New marker).",
+"codex_keth_pass_read": "Codex (ui-menus Act II set, game/data/lore/codex.json): the entry 'keth_pass' has been opened in the Codex (clears its New marker).",
+"codex_quellan_read": "Codex (ui-menus Act II set, game/data/lore/codex.json): the entry 'quellan' has been opened in the Codex (clears its New marker).",
+"codex_cloudloom_read": "Codex (ui-menus Act II set, game/data/lore/codex.json): the entry 'cloudloom' has been opened in the Codex (clears its New marker).",
+"codex_ansedra_read": "Codex (ui-menus Act II set, game/data/lore/codex.json): the entry 'ansedra' has been opened in the Codex (clears its New marker).",
+"codex_sanctum_of_the_level_read": "Codex (ui-menus Act II set, game/data/lore/codex.json): the entry 'sanctum_of_the_level' has been opened in the Codex (clears its New marker).",
+"codex_lamp_archive_read": "Codex (ui-menus Act II set, game/data/lore/codex.json): the entry 'lamp_archive' has been opened in the Codex (clears its New marker).",
+"codex_lacquer_court_read": "Codex (ui-menus Act II set, game/data/lore/codex.json): the entry 'lacquer_court' has been opened in the Codex (clears its New marker).",
+"codex_hollowmere_read": "Codex (ui-menus Act II set, game/data/lore/codex.json): the entry 'hollowmere' has been opened in the Codex (clears its New marker).",
+"codex_pale_rim_read": "Codex (ui-menus Act II set, game/data/lore/codex.json): the entry 'pale_rim' has been opened in the Codex (clears its New marker).",
+"codex_drowned_choir_read": "Codex (ui-menus Act II set, game/data/lore/codex.json): the entry 'drowned_choir' has been opened in the Codex (clears its New marker)."
 }
