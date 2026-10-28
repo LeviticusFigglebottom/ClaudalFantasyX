@@ -54,9 +54,11 @@ const UNSUPPORTED_KWARGS := {
 
 ## Tests and captures: no waits, no typewriter, lines and options answer themselves.
 var instant := false
-## Lines advance by themselves once revealed (autoplay, captures), after `auto_advance_hold_sec`.
+## Lines advance by themselves once revealed (autoplay, captures), after `auto_advance_hold_sec`, or longer when
+## `auto_advance_read_cps` > 0: a line stays up until it could be read at that pace (overheard barks).
 var auto_advance := false
 var auto_advance_hold_sec := 1.5
+var auto_advance_read_cps := 0.0
 ## The option index chosen when `instant` or `auto_advance`.
 var auto_choice := 0
 ## When a scene ends faded out, fade back in. A host that changes scene right after sets false.
@@ -386,7 +388,7 @@ func _line(step: DialogueStep) -> void:
 	if auto_advance:
 		if overlay.box.is_revealing():
 			await _await_on(&"line", overlay.box.reveal_finished, _on_awaited_plain)
-		await _wait_for(auto_advance_hold_sec)
+		await _wait_for(CutsceneMotion.read_hold(overlay.box, auto_advance_read_cps, auto_advance_hold_sec))
 		return
 	await _await_on(&"line", overlay.box.advance_requested, _on_awaited_plain)
 	if speaker != null and is_instance_valid(speaker):
