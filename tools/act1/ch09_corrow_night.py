@@ -124,6 +124,7 @@ def dressing() -> dict:
     src["storms"] = []  # the night after: the storm has gone
     src["fire_lights"] = [{"at": l["at"], "energy": l["energy"], "range": l["range"]} for l in src.get("fire_lights", [])]
     src["fire_lights"] += vigil_lights() + [ROCKS_LAMP]
+    src["ebbing"] = {}  # the Ebbing's held fields (EbbingMotes, game/data/vfx/ebbing.json; M3-C09-03)
     return src
 
 

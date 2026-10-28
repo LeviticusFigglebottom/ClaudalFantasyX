@@ -49,6 +49,8 @@ extends HalunaDresser
 ##                  volumetric columns (SmokeColumn, game/data/vfx/smoke_column.json "columns", M3-RND-21), framed
 ##                  as the kit's smoke_plume pieces (yawed so +X is downwind, uniform scale); a "block" one follows
 ##                  its block.
+##   ebbing       {}: Ch9's Ebbing motes (EbbingMotes, game/data/vfx/ebbing.json, M3-C09-03): the held fields
+##                  the chapter's `@vfx glimmer_held` cues play, on the zone's stage.
 ##   environment  a res:// Environment: the zone's WorldEnvironment takes a copy (sky, grade, fog).
 ##   time_of_day_h  the hymn_time_of_day the sky reads.
 ## It writes hymn_sun_direction from the zone's sun every frame, so the sky's sun follows the story's
@@ -75,6 +77,7 @@ const KEY_WATERS := "waters"
 const KEY_STORMS := "storms"
 const KEY_DROPS := "drops"
 const KEY_SMOKES := "smokes"
+const KEY_EBBING := "ebbing"
 const KEY_MATERIAL_PATHS := "material_paths"
 const DEFAULT_WAVES := "res://game/world/water/lagoon_waves.tres"
 ## The waters' plane cells (m): fine enough for the wave field's short waves to read on a still lake.
@@ -137,6 +140,7 @@ func dress() -> void:
 	_place_storms()
 	_place_drops()
 	_place_smokes()
+	_place_ebbing()
 	_hide_greybox()
 	_apply_environment()
 	if layout.has(KEY_TIME_OF_DAY):
@@ -560,6 +564,15 @@ func _place_smokes() -> void:
 		)
 		add_child(smoke)
 		_attach(smoke, str(row.get(KEY_BLOCK, "")))
+
+
+func _place_ebbing() -> void:
+	if not layout.has(KEY_EBBING):
+		return
+	var ebb := EbbingMotes.new()
+	ebb.name = "Ebbing"
+	ebb.zone = zone
+	add_child(ebb)
 
 
 ## A hidden storm stops processing (its rain, zone shadow and flashes act on the zone's light).
