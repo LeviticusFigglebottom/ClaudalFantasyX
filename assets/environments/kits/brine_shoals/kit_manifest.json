@@ -79,6 +79,28 @@
         "brine_vat_burned-lod1": 36
       }
     },
+    "camp_fire_large": {
+      "budget": [
+        9000,
+        1200
+      ],
+      "bytes": 117560,
+      "lods": {
+        "camp_fire_large": 1860,
+        "camp_fire_large-lod1": 510
+      }
+    },
+    "camp_fire_small": {
+      "budget": [
+        5000,
+        700
+      ],
+      "bytes": 80736,
+      "lods": {
+        "camp_fire_small": 1104,
+        "camp_fire_small-lod1": 360
+      }
+    },
     "camp_hard": {
       "budget": [
         4200,
