@@ -73,7 +73,9 @@ func test_each_row_frames_its_boss() -> void:
 		intro.force_play = true
 		intro.play()
 		assert_true(intro.playing(), "%s plays when forced" % enc)
-		assert_eq(intro.shot_id, str(intro.row["shot"]), "%s: the shot frames the boss (safe frame)" % enc)
+		# M3-BPR-423: the boss's hero shot, unless its row keeps the fitted shot (hero false)
+		var want := str(intro.row["shot"]) if intro.row.get("hero", true) == false else BattleBossIntro.HERO_SHOT
+		assert_eq(intro.shot_id, want, "%s: the shot frames the boss" % enc)
 		assert_eq(String(intro.boss_id).get_slice("#", 0), str(intro.row["enemy"]))
 		intro.skip()
 	_free()
@@ -264,8 +266,33 @@ func test_every_boss_stands_clear_of_the_title_card() -> void:
 		intro.play()
 		var f := ctl.stage.stand_in(intro.boss_id)
 		var b := intro._bounds(f)
-		var feet := Vector3(b.get_center().x, b.position.y, b.get_center().z)
-		assert_true(intro._clears_card(intro._pose, feet), "%s: its feet are above the card" % enc)
+		# M3-BPR-423: a hero shot keeps the upper body clear (its feet may pass behind the card, as on a poster)
+		var hero := intro.shot_id == BattleBossIntro.HERO_SHOT
+		var frac := float((cfg["hero"] as Dictionary)["head_frac"]) if hero else 0.0
+		var at := Vector3(b.get_center().x, b.position.y + b.size.y * frac, b.get_center().z)
+		assert_true(intro._clears_card(intro._pose, at), "%s: it stands clear of the card" % enc)
+		intro.skip()
+	_free()
+
+
+func test_a_hero_shot_has_nobody_in_front_of_the_boss() -> void:
+	# M3-BPR-423 (the Lead, 03:41): the Hullgnaw raft's rail cut its intro in half; a hero stood in the lens.
+	for enc: StringName in BOSSES:
+		var intro := _start(enc, 0.0)
+		intro.force_play = true
+		intro.play()
+		if intro.shot_id != BattleBossIntro.HERO_SHOT:
+			intro.skip()
+			continue
+		var b := intro._bounds(ctl.stage.stand_in(intro.boss_id))
+		var pos: Vector3 = intro._pose["pos"]
+		for box in BattleBossHeroShot._occluders(intro, b):
+			assert_false(box.has_point(pos), "%s: the lens is inside nothing" % enc)
+			var mid := Vector3(b.get_center().x, b.position.y + b.size.y * 0.55, b.get_center().z)
+			assert_true(
+				box.intersects_segment(pos, mid) == null, "%s: nothing stands between the lens and the boss" % enc
+			)
+		assert_true(BattleBossHeroShot._party_small(intro, intro._pose), "%s: no hero crowds the frame" % enc)
 		intro.skip()
 	_free()
 
@@ -364,7 +391,12 @@ func test_no_party_member_crowds_a_boss_intro() -> void:
 		intro.force_play = true
 		intro.play()
 		assert_false(intro._pose.is_empty(), "%s has a fitted shot" % enc)
-		assert_true(intro._party_clear(intro._pose), "%s: the party is off screen or small and clear of the HUD" % enc)
+		var clear := (
+			BattleBossHeroShot._party_small(intro, intro._pose)
+			if intro.shot_id == BattleBossIntro.HERO_SHOT
+			else intro._party_clear(intro._pose)
+		)
+		assert_true(clear, "%s: the party is off screen or small and clear of the HUD" % enc)
 		intro.skip()
 	_free()
 
@@ -374,6 +406,8 @@ func test_the_party_rule_widens_a_shot_only_when_the_party_crowds_it() -> void:
 	# the camera out past the raft's rope rail, which then cut across the serpent. Hullgnaw keeps the frame it has
 	# with no party rule at all; the Drownbell (Toma over the timeline) still orbits.
 	var intro := _start(&"ch01_hullgnaw", 0.0)
+	intro.row = intro.row.duplicate()
+	intro.row["hero"] = false  # the fitted shot's own rule (M3-BPR-423's hero shot is tried first otherwise)
 	intro.force_play = true
 	intro.play()
 	var ruled := intro._pose.duplicate()

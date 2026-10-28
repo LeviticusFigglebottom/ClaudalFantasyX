@@ -26,6 +26,8 @@ const HELP_LINE := ^"%HelpLine"
 const THEME_PATH := "res://game/ui/theme/hymn_theme.tres"
 ## Announced on EventBus.dialogue_event as the intro starts ([encounter id, title_key]) so audio can play a sting.
 const AUDIO_EVENT := &"boss_intro"
+## shot_id when the intro plays its hero shot (BattleBossHeroShot, choreo.json boss_intro.hero; M3-BPR-423).
+const HERO_SHOT := "hero"
 const IDLE := 0
 const WAITING := 1
 const PLAYING := 2
@@ -251,7 +253,8 @@ func _screen_busy() -> bool:
 # --- the camera ------------------------------------------------------------------------------
 
 
-## The boss's shot, checked against the safe frame (its feet and head); {} keeps the default.
+## The boss's hero shot (M3-BPR-423), else the row's shot fitted to it and checked against the safe frame (its feet
+## and head); {} keeps the default. A row's hero false (or fit false) skips the hero shot.
 func _frame_boss() -> void:
 	_pose = {}
 	shot_id = ""
@@ -271,6 +274,12 @@ func _frame_boss() -> void:
 	var pose := director.shot_pose(id, slot, slot, slot)
 	var pts: Array[Vector3] = [slot, head]
 	var bounds := _bounds(f)
+	if row.get("hero", true) != false and row.get("fit", true) != false:  # M3-BPR-423: the boss's hero shot first
+		var hero := BattleBossHeroShot.search(self, bounds, slot)
+		if not hero.is_empty():
+			_pose = hero
+			shot_id = HERO_SHOT
+			return
 	var none: Array[Vector3] = []
 	if not pose.is_empty() and bounds.size != Vector3.ZERO and row.get("fit", true) != false:
 		var mid := bounds.get_center()  # M3-BPR-404: framed on the model's real size, inside the safe frame
