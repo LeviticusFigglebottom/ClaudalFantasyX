@@ -6,7 +6,11 @@ Session `session_01Wmj8xaLtwcqiS3qwC6PciW`. Integration branch `claude/undertow-
 - **MERGE-READY: the Lead's 09:15 check. The sequencer really does play the music.json cue.**
   - `CutsceneSequencer._cue_music` calls `CutsceneSound.music` first, which hands the cue to `Audio.play_music` and the deck. Only an id with no cue falls back to `music_dir/<id>.ogg` and its stand-in.
   - New test, `test_every_act1_music_id_plays_its_real_file_on_the_deck`: for each Act I `@music` id it runs that path and asserts that the deck is playing the cue with its own file loaded, every stem of a stem cue included. 3 run, 0 failed.
-  - The cutscene suite also passes, including test_cutscene_sequencer's playthrough (`hush_first_verse` on the deck).
+  - Cutscene suite (`--filter=cutscene`): 87 run, **1 failed, and it isn't audio's**.
+    - The playthrough in test_cutscene_sequencer passes (`hush_first_verse` on the deck).
+    - The failure is `test_act1_cutscene_walks::test_every_act1_cutscene_walk_stays_on_the_floor`: in ch04_shell_is_set, Asha is 0.16 m off the floor, Toma 0.60 m and the Player 1.50 m.
+    - It's cutscene staging (the Ch4 owners, act1-chapters/hero motion). This branch changes no scene, mark or walk data.
+    - (My first note said the suite passed. That run had been cut off by a timeout, and this replaces it.)
   - **Already done, as posted above:**
     - Every Act I creature has its own voice, hit and death sounds, and each boss intro its own sting.
     - The Act I loop and loudness pass found 41 files, 0 problems.
