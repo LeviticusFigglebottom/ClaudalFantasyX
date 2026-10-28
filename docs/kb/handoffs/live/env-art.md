@@ -589,6 +589,38 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
+- **MERGE-READY @ (this push): the big14 gate's `test_zone_dressing_ch01` and walk-through batches 1–2.**
+  - **The gate failure is fixed.** I merged `origin/gpu/gate-big14-shots`; there were no conflicts.
+    - `ov_zone_dressing.py`'s stale layout was regenerated at 9f4d11ab.
+    - `ou_zone_dressing.py`'s stair is guarded.
+    - `wake_zone_dressing.py` is retired from the test. Ch4's wake now stands on the real Haluna (M3-C04-1226), so
+      the old greybox frame is gone.
+    - **For the Lead:** retire M3-ENV-743/744 and the `zone_wake_*` preview shots (my rows; say the word and I'll drop
+      them).
+    - The tools tests for my area pass on the merged tree (139, OK).
+  - **The walk-through pass (the Lead's item 2):**
+    - `tools/act1/walkthrough.py` and `game/levels/_tests/walkthrough/walk_render.tscn` render a player-eye frame
+      (1.6 m over the ground under it) every ≤30 m along each zone's critical path. Each zone loads once.
+    - 71 frames over Ch1–Ch4, all viewed. The Prologue has no player (it is a cinematic), so it is not walked.
+    - **Fixed:**
+      - Oruvel: the run's `LowHull` was a tan greybox box on the bridge. It is now the new kit piece `hull_lashed`: a
+        teal skiff thrown across the planks and lashed to both cut points, which goes with its block. Oruvel now keeps
+        only the StormWall.
+      - Underway: the first bell-room's walls were bare. It now has pipe runs, coral, a fallen lamp-column, fragments
+        and the divers' lantern at the air-bell rest. The gallery breach's cut wall ends got pier jambs.
+      - Ferry: the derelict's deck read near-black at player height, and its three fights happen there. It now has
+        three cold sky-fill omnis (#9DB4D6, 1.4). It now reads, and still as a dead ship.
+    - **Seen and fine:** Haluna, the causeway, the Shell Shrine and the wake night. Frames facing walls are my
+      straight-line path, not the dressing.
+  - **Touchable props (the Lead's item 3), so far:**
+    - The ferry's save point is the deckhouse's Order niche (already a final model; the hidden greybox block was
+      only the stand-in).
+    - The Underway's hinge door, gauge wheel and cord, the ferry's gate, gangplank and name-boards, and Haluna's save
+      shrine are final kit pieces.
+    - Act I has no chests.
+    - Haluna's shop, smith and inn close-ups render next.
+  - **SELF-RENDERED:** walk frames for all seven zones viewed. After the fixes, re-rendered and viewed Oruvel (the
+    skiff), the Underway (the bell-room) and the ferry (the derelict).
 - **MERGE-READY @ aff485af5 (M3-ENV-1306, the Lead's item): `test_arenas`' Lanternfall reproducibility test is green again.**
   - It includes a merge of the Lead's `lead/gate-big14` (8707ff90). The merge had no conflicts. Merge this after big14,
     or with it.
