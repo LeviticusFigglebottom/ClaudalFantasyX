@@ -96,7 +96,7 @@ static func _kind(
 ) -> String:
 	if actor == null:
 		return "absent"
-	if stage.clip_mark(id, clip) != null:
+	if stage.clip_mark(id, clip) != null and not CutsceneClips.has_clip(actor, clip):
 		return "mark"
 	if clip == CutsceneSequencer.ANIM_LOOK_AT:
 		return "real"
