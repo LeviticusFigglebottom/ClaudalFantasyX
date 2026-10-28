@@ -4779,7 +4779,7 @@
         960,
         540
       ],
-      "settle_frames": 60,
+      "settle_frames": 240,
       "setup": {
         "globals": {
           "hymn_wind_time": 40.0
@@ -4793,6 +4793,7 @@
             "level_path": "res://game/levels/ch01/oruvel/oruvel.tscn",
             "spawn": "ScaleHull",
             "scene_id": "ch01_bark_outer_mooring",
+            "hold_line": "ch01_bark_sadi_003",
             "flags": [
               "ch01_started"
             ]
