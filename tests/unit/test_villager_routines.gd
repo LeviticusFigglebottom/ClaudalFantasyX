@@ -124,6 +124,9 @@ func test_a_chat_pair_faces_each_other_and_takes_turns() -> void:
 		b.tick(DT)
 		var a_talks := a.current_clip == &"talk"
 		var b_talks := b.current_clip == &"talk"
+		if a.chat_speaking() != a_talks or b.chat_speaking() != b_talks:
+			fail("chat_speaking() disagrees with the talk clip at frame %d" % i)
+			break
 		if a_talks and b_talks:
 			both += 1
 		if a_talks:
@@ -368,4 +371,31 @@ func test_the_layer_adopts_villagers_a_zone_placed_itself() -> void:
 	assert_eq(walker.get_parent().find_children("*Villager", "FieldNpc", false, false).size(), 0, "none beside it")
 	assert_eq(layer.villager(&"child"), walker.get_node("Villager"), "the zone's own villager")
 	assert_eq(layer.villager(&"child").partner, layer.villager(&"neme"), "the layer wires the chat pair")
+	_done()
+
+
+## The big11 gate's teardown errors ("Trying to cast a freed object"): a zone's teardown can free its villagers and
+## their riders before the layer that drives them. The layer must skip them; the runner fails this test on any
+## script error.
+func test_the_layer_survives_its_villagers_being_freed_first() -> void:
+	var zone := _stage()
+	var layer := VillagerLayer.new()
+	layer.data_path = STAGE_DATA
+	layer.auto_build = false
+	zone.add_child(layer)
+	layer.build()
+	var walker := layer.villager(&"child")
+	var mate := layer.villager(&"neme")
+	walker.partner = mate
+	mate.partner = walker
+	zone.get_node("NPCs/Talk").free()  # a rider goes first
+	layer.tick(DT)
+	walker.get_parent().remove_child(walker)
+	walker.free()  # then a villager, with its partner still standing
+	layer.tick(DT)
+	mate.tick(DT)
+	layer.set_storm(true)
+	assert_eq(layer.villager(&"child"), null, "a freed villager is simply gone")
+	assert_eq(layer.live_villagers().size(), 1, "the other one stays")
+	assert_false(mate.chatting(), "and it stops chatting with nobody")
 	_done()

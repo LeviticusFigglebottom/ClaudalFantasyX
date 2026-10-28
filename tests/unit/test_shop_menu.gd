@@ -276,6 +276,8 @@ func test_open_in_brings_its_own_layer() -> void:
 	assert_true(host.get_tree().paused)
 	m.close()
 	assert_false(host.get_tree().paused)
+	assert_false(layer.is_queued_for_deletion(), "it fades out first (MenuMotion)")
+	m.motion().finish()
 	assert_true(layer.is_queued_for_deletion())
 	_root().remove_child(host)
 	host.free()

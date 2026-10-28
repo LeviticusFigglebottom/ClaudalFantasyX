@@ -2,8 +2,9 @@
 id: M3-RND-03
 title: "Sefir's revenant tells: a reflection that never ripples and a shadow that is faintly too sharp"
 role: rendering
-status: todo
-owner_session: ""
+status: review
+owner_session: "session_01F3vrUMSWVyLnG3asrc8viy (PC GPU, gpu/m3-rnd-03-sefir-tells)"
+reviewer: art
 depends_on: [M3-CHR-02]
 milestone: M3
 request-from: character
@@ -14,18 +15,34 @@ reflection in water never ripples**, and **his shadow is faintly too sharp**. Ar
 the effects are Rendering's (the water shader, the shadow setup).
 
 ## Acceptance criteria
-- [ ] A render layer for "still" actors (proposed name `still_reflection`; Rendering picks the bit, avoiding 19 and 20,
+- [x] A render layer for "still" actors (proposed name `still_reflection`; Rendering picks the bit, avoiding 19 and 20,
       which the sequencer's key light and UndertowHalfRes already use) whose meshes the water's ripple distortion skips
       in the planar or screen-space reflection, so his reflection stays a mirror while everyone else's breaks up.
-- [ ] A per-actor shadow without the soft penumbra the other characters get (for example a separate light-mask layer
+- [x] A per-actor shadow without the soft penumbra the other characters get (for example a separate light-mask layer
       lit by a copy of the key with `shadow_blur` 0, or a per-actor contact-hardening override), "faintly" too sharp:
       noticeable side by side with Ysolde or Asha, not a hard cut-out.
-- [ ] A test scene or shot pair beside another hero, viewed.
+- [x] A test scene or shot pair beside another hero, viewed.
 
 ## Notes
 - The actor: `assets/characters/sefir/sefir.glb` (`sefir_lod1.glb` for distance), stage
   `game/levels/_tests/characters/sefir/sefir_stage.tscn`.
 - Environment owns the Brine Shoals water and the barge (M3-ENV-1000); the effect should be a shader or layer feature
   any level can use, so his Act II scenes (Ansedra's pools, the Drowned Choir) get it too.
+
+## Result (PC, 2026-10-27)
+`RevenantTells` (`game/vfx/revenant/revenant_tells.gd`, `game/data/vfx/revenant_tells.json`;
+`docs/kb/tech/revenant_tells.md`).
+- **Reflection:** the still actor's capsule goes to the new `hymn_still_actor_*` globals. The water's SSR marches a
+  flat ray wherever the mirror ray meets the capsule and lands on him, so his reflection stays a mirror while Asha's
+  ripples.
+- **Shadow:** his meshes move to layer 18; the key stops casting him (`shadow_caster_mask`); a cancelling pair of
+  copies of the key (positive and shadowed with blur 0.12, negative and unshadowed) re-casts his shadow crisper.
+  Nothing is lit twice. Distant spot lights in place of the copies were tried first and failed in Godot 4.6.3
+  (probe on the RX 9070 XT): a spot 200 m out shadowed the light's side of the caster as well; at d <= 80 m
+  (range 2d) the probe was right, but in the scene 60 m gave acne and black tiles.
+- **Shots:** `revenant_tells_{reflection,shadow}` and their `_off` controls. Viewed at High on the RX 9070 XT; the
+  lavapipe renders are on the branch for approval.
+- **Tests:** `tests/unit/test_revenant_tells.gd` (8).
+- **Limits:** no reflection at Low (no SSR); in close cutscene shots the key light takes him off layer 18.
 
 ## Review log

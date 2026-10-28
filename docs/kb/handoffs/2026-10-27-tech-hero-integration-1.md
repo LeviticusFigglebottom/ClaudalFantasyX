@@ -69,3 +69,27 @@ Session `session_01PzF7Jc4XVQdTWcaYUyCjPB`, branch `claude/hero-integration`. Li
 - `game/levels/_tests/hero_motion/battle_heroes_*` (from hero_battle_shots.patch).
 - `docs/kb/`: tasks M2-HER-1103, 1108–1116 and M3-HER-1117; decisions/0192;
   tech/cutscene_no_snap.patch; the live log.
+
+## Update, end of 2026-10-27
+- **Done since the above:**
+  - the battle_heroes_* shots approved after viewing;
+  - Ysolde is her real model in battle (FAST-TRACK, the Lead);
+  - the guards read their zones and scenes from data (15 zones, 79 scenes);
+  - M3-ARC-1216, steep stairs (ADR 0193);
+  - followers never stand inside a wall, and Ysolde follows when she joins;
+  - a foot IK on/off switch;
+  - one combined cutscene-walk patch for slice-polish (`cutscene_walks_combined.patch`: via= plus the no-snap fixes,
+    verified on claude/m2-slice d4921946);
+  - the off-floor walk measurement in the cutscene guard (report-only).
+- **Exact next steps:**
+  1. When the combined patch is on the integration branch: merge it in, empty test_hero_cutscene_snaps' KNOWN list,
+     and re-run it.
+  2. Once act1-chapters has written its via= paths: make the guard's OFF-FLOOR lines fail, with a KNOWN list for
+     what's left.
+  3. When M2-HER-1114 lands: empty test_hero_battle_pops' KNOWN entry.
+  4. When the PC posts the foot IK PERF numbers and the renders: record them, then view and approve the field and
+     hero set.
+  5. When M2-CHR-513 lands: re-check KO, victory and revive.
+- **Merge notes for the Lead:**
+  - battle_sandbox.json (my Ysolde row next to UI's three rows): keep both;
+  - M3-ARC-1216's task file (an add/add with act1-chapters): keep mine.

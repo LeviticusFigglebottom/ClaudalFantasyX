@@ -1,0 +1,4 @@
+{
+  "doc": "M2-FP-24: the Shell Shrine channels' curb collision (game/levels/ch03/shell_shrine/shrine_channel_curbs.gd). Kept out of shell_shrine.json because that file is one of the baked GI's inputs (tools/shrine/gi_inputs.py), and collision never changes the light. h and w: the trough's height and width (the kit's shrine_channel_straight, 0.3 m by 0.7 m); crossing_m: the open floor left at each trough's middle (a step across the water); min_m: the shortest curb built either side of it.",
+  "curbs": {"h": 0.3, "w": 0.7, "crossing_m": 1.2, "min_m": 0.5}
+}

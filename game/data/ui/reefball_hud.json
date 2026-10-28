@@ -7,7 +7,7 @@
                 "yours_role": "focus_gold", "theirs_role": "stone"},
     "read": {"rect": [1272, 40, 600, 312], "pin": "top_right", "pad": 14, "gap": 4, "header_height": 40,
              "row_height": 36, "name_width": 196, "band_width": 116, "gauge_width": 50, "number_width": 72,
-             "gauge_px": 6, "tag_role": "danger", "mark_role": "cursor_wash"},
+             "gauge_px": 6, "tag_role": "danger", "against_role": "stone", "mark_role": "cursor_wash"},
     "side": {"rect": [1272, 788, 600, 244], "pin": "bottom_right", "pad": 14, "gap": 4, "header_height": 40,
              "row_height": 36, "name_width": 196, "band_width": 116, "gauge_width": 50, "number_width": 72,
              "gauge_px": 6, "tag_role": "focus_gold", "mark_role": "cursor_wash"},
@@ -27,9 +27,6 @@
       "story_opponent": "RBL_HUD_READ_BOLD",
       "smart": "RBL_HUD_READ_CAREFUL"
     },
-    "stakes": {
-      "_note": "Until matches.json carries a stakes_key (M3-RBL-201), the framing line comes from here by match id; a match row's own stakes_key wins.",
-      "tidecup_opening": "RBL_HUD_STAKES_TIDECUP_OPENING"
-    }
+    "refused_short": {"_note": "M3-RBL-201: the short reason in the choices' right column for each ReefballMatch.refused_actions() reason_key.", "RBL_REFUSE_RISE_UNFETCHED": "RBL_HUD_REFUSED_UNFETCHED", "RBL_REFUSE_DIVE_BED": "RBL_HUD_REFUSED_AT_WEEP", "RBL_REFUSE_LOFT_UNFETCHED": "RBL_HUD_REFUSED_UNFETCHED", "RBL_REFUSE_LOFT_DEEP": "RBL_HUD_REFUSED_TOO_DEEP", "RBL_REFUSE_PASS_RING": "RBL_HUD_REFUSED_AT_RING"}
   }
 }

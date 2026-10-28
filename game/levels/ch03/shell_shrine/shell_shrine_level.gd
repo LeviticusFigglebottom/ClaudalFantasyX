@@ -368,6 +368,7 @@ func _build() -> void:
 	for id in trial.basin_ids():
 		_build_basin(id)
 	_build_channels()
+	ShrineChannelCurbs.build(channels, ShrineChannelCurbs.load_config())  # M2-FP-24
 	pool_water = _build_inner_pool()
 	_place_water(pool_water, 0.0, float(_g["pool_low"]), float(_g["pool_high"]))
 	side_water = _build_side_pool()
@@ -517,6 +518,7 @@ func _channel(key: String, a: Vector3, b: Vector3, to: StringName) -> void:
 	node.rotation.y = _yaw_to(a, b)
 	room.add_child(node)
 	var length := Vector2(b.x - a.x, b.z - a.z).length()
+	node.set_meta(ShrineChannelCurbs.LENGTH_META, length)
 	var module := float(_g["module_m"])
 	var n := maxi(1, roundi(length / module))
 	var scale_z := length / (n * module)
@@ -541,11 +543,7 @@ func _channel(key: String, a: Vector3, b: Vector3, to: StringName) -> void:
 		)
 		_pool_inlet.name = "PoolInlet"
 		node.add_child(_pool_inlet)
-	var extra := 0.0
-	if to == trial.drain():
-		extra = float(_g["sluice_m"])
-	elif to == trial.goal():
-		extra = float(_g["rim_t"])
+	var extra := float(_g["sluice_m"]) if to == trial.drain() else (float(_g["rim_t"]) if to == trial.goal() else 0.0)
 	var water := _water_strip(
 		"Water_%s" % key.replace(">", "_to_"), a, b + (b - a).normalized() * extra, float(_g["channel_w"])
 	)

@@ -29,6 +29,7 @@
     {"ability": "low_tide_mend", "items": [{"item": "reef_draught", "count": 4}]},
     {"ability": "full_net", "items": [{"item": "lit_age_brass", "count": 10}]},
     {"ability": "light_step", "items": [{"item": "gull_quill", "count": 12}, {"item": "quiet_tea", "count": 2}]},
-    {"ability": "unfettered", "items": [{"item": "salt_glass_shard", "count": 20}]}
+    {"ability": "unfettered", "items": [{"item": "salt_glass_shard", "count": 20}]},
+    {"ability": "sea_legs", "items": [{"item": "sailmakers_needle", "count": 1}, {"item": "tide_pearl", "count": 2}]}
   ]
 }

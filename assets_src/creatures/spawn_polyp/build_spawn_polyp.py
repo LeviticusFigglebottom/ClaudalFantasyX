@@ -20,6 +20,7 @@ import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "common"))
 import creature_kit as ck  # noqa: E402
+import grounding as gr  # noqa: E402
 
 SEED = 7319
 PAL = {k: ck.hexrgb(v) for k, v in {
@@ -283,7 +284,7 @@ def core(mesh: ck.Mesh, rig: ck.Rig) -> None:
         prof.append((math.sin(th), math.cos(th)))
     P, T = ck.lathe(prof, 24)
     P = P * CORE_R
-    P[:, 1] = np.maximum(P[:, 1], -0.012)
+    P[:, 1] = np.maximum(P[:, 1], 0.0)  # the tucked foot sits flat on the floor (M3-CRE-632: was 1.2 cm under it)
     noise = ck.fbm(P * 14.0, SEED + 3)
     seep = ck.smoothstep(-0.05, 0.3, noise)
     col = ck.mix(PAL["abyss_navy"], PAL["deep_teal_shadow"], (0.5 * seep)[:, None])
@@ -498,6 +499,16 @@ def build_clips() -> list[ck.Clip]:
     return [idle, attack, cast, hit, ko]
 
 
+# Kept off the floor (M3-CRE-632, common/grounding.py): as the tubes curl over in the KO, each straightens at its
+# foot the least it takes for its mouth to come to rest on the floor, not through it; and the shell's foot never
+# sinks under the floor (the base lifts out of its squash where it would).
+GROUNDED_LIMBS = [(f"tube{i}_0", tuple(ko_axis(i)), -1.0, 45.0, ("ko",)) for i in range(len(TUBES))] + [("base", gr.LIFT, 1.0, 0.05)]
+
+
+def export_clips(rig: ck.Rig, mesh: ck.Mesh) -> list[ck.Clip]:
+    return gr.grounded(rig, mesh, build_clips(), GROUNDED_LIMBS)
+
+
 def main() -> None:
     argv = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else []
     ap = argparse.ArgumentParser()
@@ -505,7 +516,7 @@ def main() -> None:
     args = ap.parse_args(argv)
     rig = build_rig()
     mesh = build_mesh(rig)
-    info = ck.export_creature(mesh, rig, build_clips(), args.out, extras={"hymn_creature": "spawn_polyp"})
+    info = ck.export_creature(mesh, rig, export_clips(rig, mesh), args.out, extras={"hymn_creature": "spawn_polyp"})
     print(f"spawn_polyp: {info}")
 
 

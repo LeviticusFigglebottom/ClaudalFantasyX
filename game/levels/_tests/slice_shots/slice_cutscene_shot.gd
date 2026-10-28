@@ -19,16 +19,22 @@ extends Node3D
 @export var flags: Array = []
 ## The option every choice takes.
 @export var choice: int = 0
+## A story method to run instead of `scene_id` (e.g. HalunaStory's `_night`: B11's night mood, cast and scene),
+## on the level's `Story` node with its dialogue advancing by itself; its hand-off is recorded, never travelled.
+@export var story_call: StringName = &""
 
 var level: Node3D
 var sequencer: CutsceneSequencer
 
 
 func _ready() -> void:
-	_start.call_deferred()
+	start.call_deferred()  # after CaptureSetup has set the exports
 
 
-func _start() -> void:
+## Stages the level and starts its scene (once). Deferred from _ready; tests, which never step a frame, call it.
+func start() -> void:
+	if level != null:
+		return
 	Game.state = GameStateData.new()
 	for f: Variant in flags:
 		Game.set_flag(StringName(str(f)))
@@ -44,6 +50,15 @@ func _start() -> void:
 	add_child(level)
 	if spawn != &"" and level.has_method(&"place_at"):
 		level.call(&"place_at", spawn)
+	if story_call != &"":
+		var story := level.get_node_or_null(^"Story")
+		if story != null and story.has_method(story_call):
+			story.set(&"hand_off", func(_kind: StringName, _target: String) -> void: pass)
+			sequencer = story.get(&"sequencer") as CutsceneSequencer
+			sequencer.auto_advance = true
+			sequencer.auto_choice = choice
+			story.call(story_call)
+		return
 	if scene_id == &"":
 		return
 	var stage := level.get(&"stage") as CutsceneStage

@@ -65,7 +65,8 @@ RULES = [
     # M3-AUD-14 (assets_src/sfx/creature_sfx.py): movement repeats on every action, idles sit under the battle
     *[(f"sfx/creatures/*_{w}_*.ogg", "momentary", -21.0, 1.0, -1.0, f"creature movement ({w})")
       for w in ("skitter", "slither", "wingbeat", "flutter", "squelch", "flap", "shift", "creak", "surge", "grind",
-                "plod", "scurry", "shimmer", "hop", "pad")],
+                "plod", "scurry", "shimmer", "hop", "pad",
+                "heave", "clank", "trudge", "cut", "scull", "glide", "rattle", "tick")],  # M3-AUD-831: Act II
     ("sfx/creatures/*_idle_*.ogg", "momentary", -20.0, 1.0, -1.0, "a creature's idle voice (under the battle)"),
     ("sfx/creatures/*.ogg", "momentary", -18.0, 1.0, -1.0, "creature voices: attack, hurt, death"),
     # M3-AUD-802 (assets_src/sfx/hero_foley.py): the field heroes' steps (played at walk_db), scuffs and foley layers

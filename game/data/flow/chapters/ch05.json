@@ -23,18 +23,22 @@
           {"play": "ch05_smiths_question"}
         ]},
         "lanternfall": {"when": {"set": ["ch05_arrived"], "unset": ["ch05_met_kerrid"]}, "steps": [
+          {"zone": "place_actor", "args": ["asha", "channel_asha_in"]},
           {"play": "ch05_lanternfall_boats"},
           {"zone": "give_if", "args": ["ch05_kept_leaf_boat", {"pemakar_leaf_boat": 1}, 0]},
           {"zone": "show_actor", "args": ["kerrid", true]},
           {"place": "Weir"},
+          {"zone": "place_actor", "args": ["asha", "weir_asha_in"]},
           {"play": "ch05_lanternfall_weir"},
           {"party": {"party": ["rhen", "asha", "kerrid"], "reserve": ["toma", "ysolde"]}},
           {"place": "InnGate"},
+          {"zone": "place_actor", "args": ["kerrid", "inn_kerrid_in"]},
           {"play": "ch05_inn_gate"},
           {"go": {"location": "ch05/ashcrown", "spawn": "StairFoot"}}
         ]},
         "dawn": {"when": {"set": ["ch05_kahre_bound"], "unset": ["ch05_done"]}, "steps": [
           {"place": "HarbourRoad"},
+          {"zone": "place_actor", "args": ["kerrid", "dawn_kerrid_in"]},
           {"play": "ch05_dawn_gate"},
           {"set": "ch05_done"},
           {"go": {"location": "ch06/brine_shoals", "spawn": "Entry"}}
@@ -46,6 +50,7 @@
       "arrive": [
         {"when": {"set": ["ch05_matron_quieted"], "unset": ["ch05_kahre_bound"]}, "steps": [
           {"place": "AnvilCourt"},
+          {"zone": "place_actor", "args": ["asha", "court_asha_in"]},
           {"play": "ch05_kahre"},
           {"go": {"location": "ch05/pemakar", "spawn": "FromAshcrown"}}
         ]}
@@ -65,6 +70,7 @@
         ]},
         "matron": {"when": {"set": ["ch05_strike_landed"], "unset": ["ch05_matron_quieted"]}, "steps": [
           {"place": "AnvilCourt"},
+          {"zone": "place_actor", "args": ["kerrid", "court_kerrid_in"]},
           {"play": "ch05_matron_wakes"},
           {"battle": "ch05_cinder_matron", "party": ["kerrid", "rhen", "asha"], "reserve": ["toma", "ysolde"],
            "return_spawn": "AnvilCourt", "victory_flag": "ch05_matron_quieted"}

@@ -71,6 +71,60 @@ func test_illegal_actions_are_refused_without_a_roll() -> void:
 	assert_eq(m.strokes_left, 10)
 
 
+## M3-RBL-201: every action not on the menu is listed with why, and only those.
+func test_refused_actions_say_why() -> void:
+	var m := ReefballFixture.begun()
+	m.diver(&"e_mate").depth = 0
+	var got: Array[String] = []
+	for r in m.refused_actions():
+		got.append("%s:%s:%s" % [r["action"], r["target"], r["reason_key"]])
+	var want: Array[String] = [
+		"dive::RBL_REFUSE_DIVE_BED", "pass:e_mate:RBL_REFUSE_PASS_RING", "loft::RBL_REFUSE_LOFT_DEEP"
+	]
+	assert_eq(got, want, "at the weep, a mate at the ring, too deep to loft")
+	_clear_west(m)
+	m.holder.depth = 1
+	m.fetched = false
+	var reasons: Array[String] = []
+	for r in m.refused_actions():
+		reasons.append(str(r["reason_key"]))
+	assert_true(reasons.has("RBL_REFUSE_RISE_UNFETCHED"), "no rise into the ring unfetched")
+	assert_true(reasons.has("RBL_REFUSE_LOFT_UNFETCHED"), "no loft unfetched")
+	for r in m.refused_actions():
+		assert_true(m.preview(r["action"], r["target"]).is_empty(), "a refused action has no preview")
+	for o in m.legal_actions():
+		for r in m.refused_actions():
+			assert_false(o["action"] == r["action"] and o["target"] == r["target"], "never both")
+	m.finished = true
+	assert_true(m.refused_actions().is_empty(), "nothing once the match is over")
+
+
+## M3-RBL-201: who an option is up against, and whether a success fetches the float.
+func test_preview_names_who_presses_and_whether_it_fetches() -> void:
+	var m := ReefballFixture.begun()
+	var rise := m.preview(ReefballMatch.RISE)
+	assert_eq(rise["against"], [&"w_carry", &"w_mate"] as Array[StringName], "the rise's contesters")
+	assert_false(rise["fetches"], "a rise never fetches")
+	var dive_m := ReefballFixture.begun()
+	_clear_west(dive_m)
+	dive_m.holder.depth = 2
+	dive_m.fetched = false
+	var dive := dive_m.preview(ReefballMatch.DIVE)
+	assert_eq(dive["against"], [] as Array[StringName], "a dive is up against nobody")
+	assert_true(dive["fetches"], "down to fetch_depth: fetched on a success")
+	var p := m.preview(ReefballMatch.PASS, &"e_mate")
+	assert_eq(
+		p["against"],
+		m.opponents_at(m.holder.side, m.diver(&"e_mate").depth).map(func(d: ReefballDiver) -> StringName: return d.id)
+	)
+	assert_false(p["fetches"], "the float is already fetched")
+	m.holder.depth = 2
+	_place(m, {&"w_keep": 0, &"w_carry": 2, &"w_mate": 4})
+	var loft := m.preview(ReefballMatch.LOFT)
+	assert_eq(loft["against"], [&"w_keep", &"w_carry"] as Array[StringName], "wardens, then pressers")
+	assert_false(loft["fetches"])
+
+
 func test_unfetched_float_cannot_score() -> void:
 	var m := ReefballFixture.begun()
 	_clear_west(m)
@@ -316,3 +370,41 @@ func _play_out(seed_value: int) -> Dictionary:
 	while not m.finished:
 		m.play_ai_contact()
 	return m.snapshot()
+
+
+func test_a_match_gated_on_a_key_item_opens_only_while_the_party_holds_it() -> void:
+	# ADR 0040: the Oruvel Float is a key item; its effect is a gate (Oruvel's Act III league match).
+	var gated := {"id": "league_oruvel", "requires_item": "oruvel_float"}
+	var held: Array[StringName] = []
+	var holds := func(item: StringName) -> bool: return held.has(item)
+	assert_false(ReefballMatch.is_open(gated, holds), "no Float, no match")
+	held.append(&"oruvel_float")
+	assert_true(ReefballMatch.is_open(gated, holds), "the Float opens it")
+	assert_true(ReefballMatch.is_open({"id": "tidecup_opening"}, holds), "an ungated match is always open")
+
+
+func test_worn_gear_lifts_the_player_side_only_capped_and_refills_breath() -> void:
+	# ADR 0040: Reefball-only gear, worn by the player's side for the match.
+	var raw := ReefballFixture.tables()
+	raw["gear"] = [
+		{"id": "band", "kind": "band", "bonus": {"grip": 2, "breath": 3}},
+		{"id": "big", "kind": "float", "bonus": {"loft": 50}},
+	]
+	var m := ReefballMatch.new()
+	var worn: Array[StringName] = [&"band", &"big", &"nope"]
+	assert_true(m.setup(ReefballFixture.db(raw), ReefballFixture.MATCH, 1, worn), "an unknown piece is skipped")
+	assert_eq(m.worn_gear, [&"band", &"big"] as Array[StringName])
+	var ours := m.diver(&"e_carry")
+	assert_eq(ours.stat("grip"), 14, "+2")
+	assert_eq(ours.stat("loft"), 20, "capped at stat_max")
+	assert_eq(ours.breath, 15, "breath refilled to the new maximum")
+	var theirs := m.diver(&"w_carry")
+	assert_eq(theirs.stat("grip"), 12, "the other side wears nothing")
+	assert_eq(theirs.breath, 12)
+
+
+func test_no_gear_changes_nothing() -> void:
+	var m := ReefballMatch.new()
+	assert_true(m.setup(ReefballFixture.db(), ReefballFixture.MATCH, 1))
+	assert_true(m.worn_gear.is_empty())
+	assert_eq(m.diver(&"e_carry").stat("grip"), 12)

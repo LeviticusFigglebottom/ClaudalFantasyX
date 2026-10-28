@@ -8,5 +8,7 @@ if [ ! -d "$REPO/.git" ]; then git init -q "$REPO"; fi
 cd "$REPO"
 git fetch -q --prune "$WIN" "+refs/remotes/origin/*:refs/remotes/origin/*"
 git checkout -q -f --detach "${1:-origin/claude/undertow-lead-handoff-423ixt}"
-git clean -qfdx -e .godot -e .cache
+# Never keep .godot: Godot does not reimport a model when only its post-import script changed, so a kept cache
+# fails test_post_import with stale LOD ranges (2026-10-24). A fresh import costs about 30 s.
+git clean -qfdx -e .cache
 git log --oneline -1

@@ -1,0 +1,37 @@
+---
+id: M2-QA-100
+title: "Test runner: a test that awaits a frame passes without running its assertions (request to QA & Tools)"
+role: qa
+status: todo
+owner_session: ""
+depends_on: []
+milestone: M2
+request-from: cinematics
+---
+## Goal
+`tests/run_tests.gd` runs every test inside its own `_ready` and calls each method with `tc.call(mname)`, without
+awaiting. The tree never steps a frame during the run. So a test that awaits `process_frame`, `physics_frame`, a
+timer or any signal that isn't emitted synchronously suspends there forever. Every assertion after the await never
+runs, and the test reports PASS.
+
+This was found 2026-10-27 (slice-polish) in two tests, both fixed in claude/m2-slice:
+- `test_slice_shots` only checked the first shot's setup, never staged a level, and hid a real bug (below);
+- `test_causeway_route`'s spawn-floor test never cast a ray.
+
+Awaits that resume synchronously are fine: an instant CutsceneSequencer's `play`, or a signal emitted inside the
+call. Slice-polish probed these in test_haluna_villagers and test_cutscene_pose with a failing assert after the
+await, and they do run.
+
+A related trap: `tree.root.add_child(x)` during the run fails, because the root is busy setting up the runner. Use
+`tree.current_scene`, as most tests do. `test_slice_shots` added to the root, which is why its levels never staged
+once the await stopped hiding it.
+
+## Acceptance criteria
+- [ ] The runner fails a test that suspends. One way: `TestCase` gets a `finished` flag that `begin_test` clears
+  and a wrapper sets at the end of the method, and the runner fails any test that returns with it unset ("test
+  suspended on an await: the runner never steps a frame"). Another: run each test as `await tc.call(mname)` from
+  a deferred driver that does step frames. That costs runtime but lets tests await frames for real.
+- [ ] Run the full suite once after the change, and file each newly failing test with its owner.
+- [ ] Note the rule in tests/README (or test_case.gd's header).
+
+## Review log

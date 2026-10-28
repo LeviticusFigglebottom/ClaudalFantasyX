@@ -64,7 +64,10 @@ Batch requests: one line per push, covering every shot your recent items can aff
 - **The work list** is `docs/kb/qa/act1_final_inventory.md` (integration-qa owns it, from `tools/placeholder_audit.py`). Take its rows for your role first, then your own audit of your Act I area. "Next act" in the self-directed backlog now means "the next Act I chapter".
 - **The quality bar:** a player walking it should never see an unfinished thing. Self-render (below) and VIEW every changed shot, close-ups included.
 
-## WHILE THE PC IS PAUSED (from 2026-10-27 ~21:30, the human's instruction)
+## THE PC IS BACK (10-28 ~03:30)
+Keep self-rendering your own changed shots (below): it stays the fastest loop. The PC now runs the batch gates and an Act I real-GPU QA pass. Its findings arrive as rows for your role in `docs/kb/qa/act1_gpu_qa.md`, so read that file every time you pick work.
+
+## (still in force) SELF-RENDERING, first written WHILE THE PC IS PAUSED (from 2026-10-27 ~21:30, the human's instruction)
 - The PC (`pc-gpu`) is paused until the human says to resume.
 - **The Lead's cloud container serves render requests instead.** The protocol is unchanged: post the same `RENDER-REQUEST @ <sha>: <ids>` lines in your live log.
 - Results go to `lead/gate-render-<track>-<sha7>` (not `gpu/...`), and their RENDERED lines go in `lead-cloud.md`.
