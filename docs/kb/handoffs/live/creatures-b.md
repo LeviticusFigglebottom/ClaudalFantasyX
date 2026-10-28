@@ -32,3 +32,16 @@ CreatureActor and the validator are theirs too (kit or tool changes go to them a
   (creatures: CreatureActor.vfx_anchor, M3-CRE-651, resolves a bone named `vfx_<name>`).
 - **In progress (worktree agents):** M3-CRB-002 hullgnaw, M3-CRB-004 bottle_hermit, M3-CRB-008 ilun. Next wave:
   spar_wraith, kahre, undertows_reach, then virel, drownbell, cinder_matron.
+- **MERGE-READY @ 2f37abe7: M3-CRB-008 part 1, Ilun to final quality** (worktree agent, viewed by me).
+  - A thick-bodied manta (0.42 m disc, spine ridge, broad head, gill slits, scroll lobes), a continuous knotted net
+    of glimmer_bound light along the wing's span and chord, three long plumes, a whip tail and the glass float in a
+    cord net. Wingspan 5.1 m: the biggest thing on the field at battle distance, inside the safe frame at rest.
+    15.6k triangles, 20 bones (`vfx_core`, `vfx_keepsake` added, unweighted). Clips and contact times unchanged.
+  - **Checks run:** Blender verify identical (creature_ilun); tools test_creatures and test_blender_builds 48 OK;
+    validate_data 0 errors; Godot ilun 6/0, vowbound 83/0, creature 74/1 (test_creature_portraits: the ~26 unbaked
+    portrait PNGs, known on claude/creatures, not this change). **Skipped:** gdlint/gdformat (no .gd), coverage.
+  - SELF-RENDERED @ d5101f4f: creature_ilun, battle_vowbound_out, battle_choreo_summon, battle_choreo_vowbound_rise —
+    drift (the new model, intended); viewed: reads as a vast luminous manta with net, crest and float. Open polish:
+    the near wing is pale at the battle camera's grazing angle; a true see-through look needs a spectral material in
+    the kit (creatures').
+- **In progress:** M3-CRB-002 hullgnaw, M3-CRB-004 bottle_hermit, M3-CRB-008 kahre (worktree agents).
