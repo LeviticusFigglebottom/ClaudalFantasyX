@@ -687,3 +687,12 @@ SUPERSEDED RENDER-REQUEST @ db895430: battle_choreo_hit, battle_choreo_ko, battl
   - 7,424 triangles (the budget raised to the regulars' 8k ceiling). The rig, clips, contacts, vfx_anchors and the breast scar are kept, and grounding holds.
 - SELF-RENDERED (by the agent; viewed here): creature_raid_hound and battle_boss_intro_inquisitor (the hound beside Moll's capsule) both read as a real hound; the portrait is re-baked and committed. **Lead: both baselines need your re-render.**
   - Minor issues left (in the handoff): the KO's ears lift slightly; a small gap between the breast strap and the neck ring at the howl's peak.
+- **MERGE-READY: M3-CRE-654, four Act I regulars to final quality** (scree_crawler and fen_leech, the paused Act II variants, were rebuilt from the same builds).
+  - **Shoal skipper:** a real mudskipper: wide head, opening jaw, lidded goggle eyes, fan fins, spined sail, wet mottled skin.
+  - **Slag tortoise:** a dripping slag crust over scaled, clawed legs, and a beaked head.
+  - **Sail leech:** a segmented body with suckers and the wound slits as seams; ribbed, frilled sails.
+  - **Oil slug:** eye-tipped tentacles, a mantle, a ruffled foot and an oily sheen.
+  - Bones, clips, contacts, weak points and anchors are kept; grounding holds.
+  - **Checks run:** Blender verify identical ×6; tools test_creatures; Godot creature 79/1 (the known portrait red); validate_data.
+- SELF-RENDERED (the agent rendered the four review shots, drift 0.04–0.10, all intended; I viewed before/after here) plus the four portraits, re-baked and committed. **Lead: creature_shoal_skipper, creature_slag_tortoise, creature_sail_leech and creature_oil_slug need your re-render** (and the Act II scree_crawler and fen_leech, if you gate them).
+- **The 20 Act I regulars are now all final in my review:** every one has its mesh, rig, full clips, a weak point and vfx_anchors, and has been viewed at the review shot and in its portrait. What's left is the Lead's baseline re-render, and battle VFX using the anchors (M3-CRE-653).
