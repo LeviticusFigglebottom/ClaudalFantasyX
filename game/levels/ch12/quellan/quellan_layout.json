@@ -1,0 +1,496 @@
+{
+ "doc": "M4-C12-02 greybox (tools/act1/ch12_greybox.py; do not edit by hand): Quellan, the highland town (colour script ch12). The road in from Keth Pass (west, FromPass), a street of houses, the inn with its red banner (inn_door: Ysolde's confession to Asha that night), the well in the square, and the road up north to Cloudloom (a ramp; to_cloudloom). Back to the pass at to_pass. The story waits on the beat sheet (M4-C12-01).",
+ "sun": {
+  "pitch_deg": -30.0,
+  "yaw_deg": 40.0,
+  "energy": 2.0,
+  "color": "#faf6ff"
+ },
+ "environment": {
+  "background": "#c8d8e8",
+  "ambient_color": "#7fa6dc",
+  "ambient_energy": 0.8
+ },
+ "block_color": "#8a8478",
+ "blocks": [
+  {
+   "id": "Terrace",
+   "pos": [
+    30.0,
+    -0.25,
+    0.0
+   ],
+   "size": [
+    72.0,
+    0.5,
+    44.0
+   ],
+   "color": "#8a8478"
+  },
+  {
+   "id": "TerraceEdgeS",
+   "pos": [
+    30.0,
+    0.55,
+    22.25
+   ],
+   "size": [
+    72.0,
+    1.1,
+    0.5
+   ],
+   "color": "#4a4038"
+  },
+  {
+   "id": "TerraceEdgeW",
+   "pos": [
+    -6.25,
+    1.0,
+    0.0
+   ],
+   "size": [
+    0.5,
+    2.0,
+    44.0
+   ],
+   "color": "#4a4038"
+  },
+  {
+   "id": "TerraceEdgeNW",
+   "pos": [
+    24.0,
+    1.0,
+    -22.25
+   ],
+   "size": [
+    60.0,
+    2.0,
+    0.5
+   ],
+   "color": "#4a4038"
+  },
+  {
+   "id": "TerraceEdgeNE",
+   "pos": [
+    62.0,
+    1.0,
+    -22.25
+   ],
+   "size": [
+    8.0,
+    2.0,
+    0.5
+   ],
+   "color": "#4a4038"
+  },
+  {
+   "id": "TerraceEdgeE",
+   "pos": [
+    66.25,
+    1.0,
+    0.0
+   ],
+   "size": [
+    0.5,
+    2.0,
+    44.0
+   ],
+   "color": "#4a4038"
+  },
+  {
+   "id": "House0N",
+   "pos": [
+    8.0,
+    2.0,
+    -8.0
+   ],
+   "size": [
+    8.0,
+    4.0,
+    6.0
+   ],
+   "color": "#7a6a58"
+  },
+  {
+   "id": "Roof0N",
+   "pos": [
+    8.0,
+    4.6,
+    -8.0
+   ],
+   "size": [
+    8.6,
+    1.2,
+    6.6
+   ],
+   "color": "#5a4a40"
+  },
+  {
+   "id": "House0S",
+   "pos": [
+    8.0,
+    2.0,
+    8.0
+   ],
+   "size": [
+    8.0,
+    4.0,
+    6.0
+   ],
+   "color": "#7a6a58"
+  },
+  {
+   "id": "Roof0S",
+   "pos": [
+    8.0,
+    4.6,
+    8.0
+   ],
+   "size": [
+    8.6,
+    1.2,
+    6.6
+   ],
+   "color": "#5a4a40"
+  },
+  {
+   "id": "House1N",
+   "pos": [
+    20.0,
+    2.0,
+    -8.0
+   ],
+   "size": [
+    8.0,
+    4.0,
+    6.0
+   ],
+   "color": "#7a6a58"
+  },
+  {
+   "id": "Roof1N",
+   "pos": [
+    20.0,
+    4.6,
+    -8.0
+   ],
+   "size": [
+    8.6,
+    1.2,
+    6.6
+   ],
+   "color": "#5a4a40"
+  },
+  {
+   "id": "House1S",
+   "pos": [
+    20.0,
+    2.0,
+    8.0
+   ],
+   "size": [
+    8.0,
+    4.0,
+    6.0
+   ],
+   "color": "#7a6a58"
+  },
+  {
+   "id": "Roof1S",
+   "pos": [
+    20.0,
+    4.6,
+    8.0
+   ],
+   "size": [
+    8.6,
+    1.2,
+    6.6
+   ],
+   "color": "#5a4a40"
+  },
+  {
+   "id": "House2N",
+   "pos": [
+    44.0,
+    2.0,
+    -8.0
+   ],
+   "size": [
+    8.0,
+    4.0,
+    6.0
+   ],
+   "color": "#7a6a58"
+  },
+  {
+   "id": "Roof2N",
+   "pos": [
+    44.0,
+    4.6,
+    -8.0
+   ],
+   "size": [
+    8.6,
+    1.2,
+    6.6
+   ],
+   "color": "#5a4a40"
+  },
+  {
+   "id": "House2S",
+   "pos": [
+    44.0,
+    2.0,
+    8.0
+   ],
+   "size": [
+    8.0,
+    4.0,
+    6.0
+   ],
+   "color": "#7a6a58"
+  },
+  {
+   "id": "Roof2S",
+   "pos": [
+    44.0,
+    4.6,
+    8.0
+   ],
+   "size": [
+    8.6,
+    1.2,
+    6.6
+   ],
+   "color": "#5a4a40"
+  },
+  {
+   "id": "Inn",
+   "pos": [
+    32.0,
+    2.5,
+    -9.0
+   ],
+   "size": [
+    10.0,
+    5.0,
+    8.0
+   ],
+   "color": "#7a6a58"
+  },
+  {
+   "id": "InnRoof",
+   "pos": [
+    32.0,
+    5.6,
+    -9.0
+   ],
+   "size": [
+    10.6,
+    1.2,
+    8.6
+   ],
+   "color": "#5a4a40"
+  },
+  {
+   "id": "InnBanner",
+   "pos": [
+    32.0,
+    3.2,
+    -4.9
+   ],
+   "size": [
+    1.2,
+    1.8,
+    0.05
+   ],
+   "color": "#b0302a",
+   "solid": false
+  },
+  {
+   "id": "Well",
+   "pos": [
+    54.0,
+    0.5,
+    10.0
+   ],
+   "size": [
+    1.6,
+    1.0,
+    1.6
+   ],
+   "color": "#6a6e74"
+  },
+  {
+   "id": "RoadUpWallW",
+   "pos": [
+    53.75,
+    4.5,
+    -20.0
+   ],
+   "size": [
+    0.5,
+    10.0,
+    32.0
+   ],
+   "color": "#6a6e74"
+  },
+  {
+   "id": "RoadUpWallE",
+   "pos": [
+    58.25,
+    4.5,
+    -20.0
+   ],
+   "size": [
+    0.5,
+    10.0,
+    32.0
+   ],
+   "color": "#6a6e74"
+  },
+  {
+   "id": "RoadTop",
+   "pos": [
+    56.0,
+    7.75,
+    -40.0
+   ],
+   "size": [
+    6.0,
+    0.5,
+    8.0
+   ],
+   "color": "#8a8478"
+  },
+  {
+   "id": "RoadTopBound",
+   "pos": [
+    56.0,
+    9.0,
+    -44.25
+   ],
+   "size": [
+    6.0,
+    2.0,
+    0.5
+   ],
+   "color": "#4a4038"
+  },
+  {
+   "id": "Snowfield",
+   "pos": [
+    30.0,
+    -2.0,
+    0.0
+   ],
+   "size": [
+    160.0,
+    1.0,
+    120.0
+   ],
+   "color": "#e8eef4",
+   "solid": false
+  }
+ ],
+ "ramps": [
+  {
+   "id": "RoadUp",
+   "from": [
+    56.0,
+    0.0,
+    -4.0
+   ],
+   "to": [
+    56.0,
+    8.0,
+    -36.0
+   ],
+   "width": 4.0,
+   "color": "#8a8478"
+  }
+ ],
+ "spawns": {
+  "FromPass": [
+   2.0,
+   0.0,
+   0.0,
+   270.0
+  ],
+  "FromCloudloom": [
+   56.0,
+   8.0,
+   -38.0,
+   180.0
+  ]
+ },
+ "marks": {
+  "inn_door": [
+   32.0,
+   0.0,
+   -3.6,
+   0.0
+  ],
+  "well": [
+   52.4,
+   0.0,
+   10.0,
+   270.0
+  ]
+ },
+ "actors": {},
+ "shots": {
+  "Q01": {
+   "pos": [
+    -2.0,
+    3.0,
+    2.0
+   ],
+   "look_at": [
+    40.0,
+    2.0,
+    -2.0
+   ],
+   "fov": 50
+  }
+ },
+ "triggers": [
+  {
+   "id": "to_pass",
+   "activation": "touch",
+   "at": [
+    -4.5,
+    0.0,
+    0.0
+   ],
+   "size": [
+    1.5,
+    0,
+    6.0
+   ],
+   "payload": {
+    "beat": "to_pass"
+   },
+   "yaw": 0.0
+  },
+  {
+   "id": "to_cloudloom",
+   "activation": "touch",
+   "at": [
+    56.0,
+    8.0,
+    -42.5
+   ],
+   "size": [
+    4.0,
+    0,
+    1.5
+   ],
+   "payload": {
+    "beat": "to_cloudloom"
+   },
+   "yaw": 0.0
+  }
+ ]
+}

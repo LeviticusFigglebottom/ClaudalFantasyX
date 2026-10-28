@@ -1,0 +1,84 @@
+{
+ "doc": "M4-C16-02 (docs/kb/tech/chapter_flow.md): Ch16 'The Edge of the World' as a greybox before the beat sheet (M4-C16-01): the Hollowmere ship leaves the party at the Rim (the chapter becomes 16); the wade over the white shallows to the Drowned Choir. Kesh's binding and the Hush's truth, Sefir's temptation, the Abiding guard, the storm waking early and the act break come with the beat sheet.",
+ "chapter": "ch16",
+ "zones": {
+  "ch16/pale_rim": {
+   "party": {
+    "party": [
+     "rhen",
+     "asha",
+     "toma"
+    ],
+    "reserve": [
+     "ysolde",
+     "kerrid",
+     "liss"
+    ]
+   },
+   "arrive": [
+    {
+     "when": {
+      "unset": [
+       "ch16_started"
+      ]
+     },
+     "steps": [
+      {
+       "place": "Rim"
+      },
+      {
+       "chapter": 16
+      },
+      {
+       "set": "ch16_started"
+      }
+     ]
+    }
+   ],
+   "beats": {
+    "to_choir": {
+     "steps": [
+      {
+       "go": {
+        "location": "ch16/drowned_choir",
+        "spawn": "Approach"
+       }
+      }
+     ]
+    }
+   }
+  },
+  "ch16/drowned_choir": {
+   "party": {
+    "party": [
+     "rhen",
+     "asha",
+     "toma"
+    ],
+    "reserve": [
+     "ysolde",
+     "kerrid",
+     "liss"
+    ]
+   },
+   "arrive": [
+    {
+     "when": {
+      "unset": [
+       "ch16_reached_choir"
+      ]
+     },
+     "steps": [
+      {
+       "place": "Approach"
+      },
+      {
+       "set": "ch16_reached_choir"
+      }
+     ]
+    }
+   ],
+   "beats": {}
+  }
+ }
+}

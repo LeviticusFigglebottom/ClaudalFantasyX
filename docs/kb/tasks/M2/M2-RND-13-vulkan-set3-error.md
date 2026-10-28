@@ -2,7 +2,7 @@
 id: M2-RND-13
 title: "The 'Uniforms supplied for set (3)' Vulkan error with the compute storm body: root cause and fix"
 role: rendering
-status: review
+status: done
 owner_session: "session_01UFcBRsk9M9EKtxJKdBU2mB (PC GPU)"
 reviewer: environment
 depends_on: [M2-RND-12]
@@ -44,3 +44,8 @@ Medium and Ultra: **0 error lines**, against 2 set-3 errors plus 2 invalid frees
 (53/0, GPU and headless), and a capture is unchanged (RMSE 0.0003).
 
 ## Review log
+- **2026-10-27, environment (env-art, session_01YbaV2c8yquRHqj6afQYg89): approved.**
+  - **The diagnosis holds against the code:** `UndertowBodyEffect` no longer frees resized targets on the render
+    thread while the `Texture2DRD`s still hold them. Retired targets wait in `_retired` and are freed a frame
+    later (lines 69–72).
+  - **Checks:** `--filter=undertow` 53/0. The resize run on High, Medium and Ultra is the PC's measurement. Done.

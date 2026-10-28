@@ -37,7 +37,11 @@ const KNOWN: Array[String] = [
 	"ch08_keeping_flame:asha",
 	"ch08_keeping_flame:fenn",
 	"ch08_landfall:kerrid",
+	"ch08_spire_door:liss",
+	"ch08_spire_door:tender",
+	"ch08_stuck_key:liss",
 	"ch09_the_ebbing:asha",
+	"ch09_the_ebbing:kerrid_stair",
 	"ch09_the_ebbing:pell",
 	"ch09_the_road_out:kerrid",
 	"ch09_the_road_out:pell",
@@ -52,17 +56,20 @@ const MOVING_M := 0.01
 const CAMERA_CUT_M := 0.75
 const CAMERA_CUT_DEG := 20.0
 
-var _party_was: Array[StringName] = []
+## The game state before the test: the guard runs on a fresh one (no flags left by earlier tests: a zone's variants and
+## a scene's staging follow the flags) and puts this back.
+var _state_was: GameStateData
 
 
 func before_each() -> void:
-	_party_was = Game.state.party_ids.duplicate()
+	_state_was = Game.state
 
 
 func test_no_actor_snaps_in_any_cutscene() -> void:
 	var data := HeroMotionGuard.load_data()
 	var limits := data.get("transform", {}) as Dictionary
 	var dt := HeroMotionGuard.frame_sec(data)
+	Game.state = GameStateData.new()
 	Game.state.party_ids = [&"rhen", &"asha", &"toma"] as Array[StringName]
 	var played := 0
 	var scenes := HeroGuardSources.cutscenes()
@@ -91,7 +98,7 @@ func test_no_actor_snaps_in_any_cutscene() -> void:
 						print("  KNOWN (M2-HER-1113): %s %s, %d snaps" % [scene_id, who, snaps.size()])
 					continue
 				assert_true(snaps.is_empty(), "%s: %s never snaps (%d)" % [scene_id, who, snaps.size()])
-	Game.state.party_ids = _party_was
+	Game.state = _state_was
 	assert_true(played > 0, "at least one cutscene played")
 
 

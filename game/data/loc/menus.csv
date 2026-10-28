@@ -33,3 +33,7 @@ FIELD_MENU_PARTY_HP_FMT,{hp}/{max}
 FIELD_MENU_PARTY_MP_FMT,{mp}/{max}
 FIELD_MENU_PARTY_HP,HP
 FIELD_MENU_PARTY_MP,MP
+SET_PREVIEW_TEXT_CAPTION,The words appear this fast:
+SET_PREVIEW_TEXT_SAMPLE,"The tide came in at dawn, and the whole village went down to meet it."
+SET_PREVIEW_BATTLE_CAPTION,Each action holds this long:
+SET_PREVIEW_BATTLE_FMT,{sec} seconds an action

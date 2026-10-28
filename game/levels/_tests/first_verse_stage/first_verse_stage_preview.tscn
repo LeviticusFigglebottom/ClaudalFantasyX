@@ -1,0 +1,47 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://assets/environments/zones/shell_shrine/first_verse_stage.tscn" id="1_stage"]
+[ext_resource type="Environment" path="res://game/levels/ch02/haluna/haluna_noon_environment.tres" id="2_env"]
+[ext_resource type="Script" path="res://game/world/camera_shot.gd" id="3_shot"]
+[ext_resource type="Script" path="res://game/levels/ch02/haluna/haluna_shot_camera.gd" id="4_cam"]
+
+[sub_resource type="Resource" id="ShotV01"]
+script = ExtResource("3_shot")
+id = &"V01"
+position = Vector3(-22.5, 0.6, 5.5)
+look_at = Vector3(-15.5, 0.4, 0)
+fov_deg = 45.0
+
+[sub_resource type="Resource" id="ShotV02"]
+script = ExtResource("3_shot")
+id = &"V02"
+position = Vector3(-30, 3.5, -12)
+look_at = Vector3(-6, 2, 0)
+fov_deg = 50.0
+
+[node name="FirstVerseStagePreview" type="Node3D"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = ExtResource("2_env")
+
+[node name="Sun" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.120933, 0.109372, -0.986617, 0, 0.993912, 0.110181, 0.992661, 0.0133245, -0.120197, 0, 30, 0)
+light_color = Color(1, 0.82, 0.62, 1)
+light_energy = 1.4
+shadow_enabled = true
+
+[node name="Stage" parent="." instance=ExtResource("1_stage")]
+
+[node name="Cameras" type="Node3D" parent="."]
+
+[node name="V01" type="Camera3D" parent="Cameras"]
+near = 0.05
+far = 2000.0
+script = ExtResource("4_cam")
+shot = SubResource("ShotV01")
+
+[node name="V02" type="Camera3D" parent="Cameras"]
+near = 0.05
+far = 2000.0
+script = ExtResource("4_cam")
+shot = SubResource("ShotV02")

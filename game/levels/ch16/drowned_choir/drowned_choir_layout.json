@@ -1,0 +1,442 @@
+{
+ "doc": "M4-C16-02 greybox (tools/act1/ch15_16_greybox.py; do not edit by hand): the Drowned Choir at moonrise (colour script ch16): a ring of colossal mouths round a stone floor, the way in from the south (Approach). Kesh's place at the ring's head (kesh), where Sefir comes (sefir), Kerrid's line behind Asha (kerrid_line). Sefir's Abiding guard and the storm waking early are fought here; the act ends on a Rhen voice-over. The story waits on the beat sheet (M4-C16-01).",
+ "sun": {
+  "pitch_deg": -12.0,
+  "yaw_deg": 90.0,
+  "energy": 0.4,
+  "color": "#c8d4e8"
+ },
+ "environment": {
+  "background": "#1c2430",
+  "ambient_color": "#5e8c90",
+  "ambient_energy": 0.4
+ },
+ "block_color": "#6a6e70",
+ "blocks": [
+  {
+   "id": "Water",
+   "pos": [
+    0.0,
+    -0.35,
+    0.0
+   ],
+   "size": [
+    120.0,
+    0.1,
+    120.0
+   ],
+   "color": "#5e8c90",
+   "solid": false
+  },
+  {
+   "id": "Bed",
+   "pos": [
+    0.0,
+    -2.1,
+    0.0
+   ],
+   "size": [
+    120.0,
+    1.0,
+    120.0
+   ],
+   "color": "#1e1511"
+  },
+  {
+   "id": "Floor",
+   "pos": [
+    0.0,
+    -0.25,
+    0.0
+   ],
+   "size": [
+    48.0,
+    0.5,
+    48.0
+   ],
+   "color": "#6a6e70"
+  },
+  {
+   "id": "FloorWallN0",
+   "pos": [
+    0.0,
+    0.5,
+    -24.0
+   ],
+   "size": [
+    48.0,
+    1.0,
+    0.5
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "FloorWallS0",
+   "pos": [
+    -13.5,
+    0.5,
+    24.0
+   ],
+   "size": [
+    21.0,
+    1.0,
+    0.5
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "FloorWallS1",
+   "pos": [
+    13.5,
+    0.5,
+    24.0
+   ],
+   "size": [
+    21.0,
+    1.0,
+    0.5
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "FloorWallW0",
+   "pos": [
+    -24.0,
+    0.5,
+    0.0
+   ],
+   "size": [
+    0.5,
+    1.0,
+    48.0
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "FloorWallE0",
+   "pos": [
+    24.0,
+    0.5,
+    0.0
+   ],
+   "size": [
+    0.5,
+    1.0,
+    48.0
+   ],
+   "color": "#5e6a6a"
+  },
+  {
+   "id": "Mouth0",
+   "pos": [
+    0.0,
+    7.0,
+    -26.0
+   ],
+   "size": [
+    7.0,
+    14.0,
+    4.0
+   ],
+   "color": "#6a6e70",
+   "solid": false
+  },
+  {
+   "id": "Mouth1",
+   "pos": [
+    9.95,
+    7.0,
+    -24.021
+   ],
+   "size": [
+    7.0,
+    14.0,
+    4.0
+   ],
+   "yaw": -22.5,
+   "color": "#6a6e70",
+   "solid": false
+  },
+  {
+   "id": "Mouth2",
+   "pos": [
+    18.385,
+    7.0,
+    -18.385
+   ],
+   "size": [
+    7.0,
+    14.0,
+    4.0
+   ],
+   "yaw": -45.0,
+   "color": "#6a6e70",
+   "solid": false
+  },
+  {
+   "id": "Mouth3",
+   "pos": [
+    24.021,
+    7.0,
+    -9.95
+   ],
+   "size": [
+    7.0,
+    14.0,
+    4.0
+   ],
+   "yaw": -67.5,
+   "color": "#6a6e70",
+   "solid": false
+  },
+  {
+   "id": "Mouth4",
+   "pos": [
+    26.0,
+    7.0,
+    -0.0
+   ],
+   "size": [
+    7.0,
+    14.0,
+    4.0
+   ],
+   "yaw": -90.0,
+   "color": "#6a6e70",
+   "solid": false
+  },
+  {
+   "id": "Mouth5",
+   "pos": [
+    24.021,
+    7.0,
+    9.95
+   ],
+   "size": [
+    7.0,
+    14.0,
+    4.0
+   ],
+   "yaw": -112.5,
+   "color": "#6a6e70",
+   "solid": false
+  },
+  {
+   "id": "Mouth6",
+   "pos": [
+    18.385,
+    7.0,
+    18.385
+   ],
+   "size": [
+    7.0,
+    14.0,
+    4.0
+   ],
+   "yaw": -135.0,
+   "color": "#6a6e70",
+   "solid": false
+  },
+  {
+   "id": "Mouth7",
+   "pos": [
+    9.95,
+    7.0,
+    24.021
+   ],
+   "size": [
+    7.0,
+    14.0,
+    4.0
+   ],
+   "yaw": -157.5,
+   "color": "#6a6e70",
+   "solid": false
+  },
+  {
+   "id": "Mouth9",
+   "pos": [
+    -9.95,
+    7.0,
+    24.021
+   ],
+   "size": [
+    7.0,
+    14.0,
+    4.0
+   ],
+   "yaw": -202.5,
+   "color": "#6a6e70",
+   "solid": false
+  },
+  {
+   "id": "Mouth10",
+   "pos": [
+    -18.385,
+    7.0,
+    18.385
+   ],
+   "size": [
+    7.0,
+    14.0,
+    4.0
+   ],
+   "yaw": -225.0,
+   "color": "#6a6e70",
+   "solid": false
+  },
+  {
+   "id": "Mouth11",
+   "pos": [
+    -24.021,
+    7.0,
+    9.95
+   ],
+   "size": [
+    7.0,
+    14.0,
+    4.0
+   ],
+   "yaw": -247.5,
+   "color": "#6a6e70",
+   "solid": false
+  },
+  {
+   "id": "Mouth12",
+   "pos": [
+    -26.0,
+    7.0,
+    0.0
+   ],
+   "size": [
+    7.0,
+    14.0,
+    4.0
+   ],
+   "yaw": -270.0,
+   "color": "#6a6e70",
+   "solid": false
+  },
+  {
+   "id": "Mouth13",
+   "pos": [
+    -24.021,
+    7.0,
+    -9.95
+   ],
+   "size": [
+    7.0,
+    14.0,
+    4.0
+   ],
+   "yaw": -292.5,
+   "color": "#6a6e70",
+   "solid": false
+  },
+  {
+   "id": "Mouth14",
+   "pos": [
+    -18.385,
+    7.0,
+    -18.385
+   ],
+   "size": [
+    7.0,
+    14.0,
+    4.0
+   ],
+   "yaw": -315.0,
+   "color": "#6a6e70",
+   "solid": false
+  },
+  {
+   "id": "Mouth15",
+   "pos": [
+    -9.95,
+    7.0,
+    -24.021
+   ],
+   "size": [
+    7.0,
+    14.0,
+    4.0
+   ],
+   "yaw": -337.5,
+   "color": "#6a6e70",
+   "solid": false
+  },
+  {
+   "id": "Approach",
+   "pos": [
+    0.0,
+    -0.25,
+    28.0
+   ],
+   "size": [
+    6.0,
+    0.5,
+    8.0
+   ],
+   "color": "#e8e4d8"
+  },
+  {
+   "id": "ApproachBound",
+   "pos": [
+    0.0,
+    1.0,
+    32.25
+   ],
+   "size": [
+    6.0,
+    2.0,
+    0.5
+   ],
+   "color": "#6a6e70"
+  }
+ ],
+ "spawns": {
+  "Approach": [
+   0.0,
+   0.0,
+   27.0,
+   0.0
+  ]
+ },
+ "marks": {
+  "kesh": [
+   0.0,
+   0.0,
+   -20.0,
+   180.0
+  ],
+  "sefir": [
+   5.0,
+   0.0,
+   -17.0,
+   210.0
+  ],
+  "kerrid_line": [
+   0.0,
+   0.0,
+   6.0,
+   0.0
+  ]
+ },
+ "actors": {},
+ "shots": {
+  "D01": {
+   "pos": [
+    0.0,
+    2.0,
+    22.0
+   ],
+   "look_at": [
+    0.0,
+    5.0,
+    -26.0
+   ],
+   "fov": 55
+  }
+ },
+ "triggers": []
+}

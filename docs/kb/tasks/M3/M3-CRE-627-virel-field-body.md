@@ -1,0 +1,24 @@
+---
+id: M3-CRE-627
+title: "Request: Virel, the Fire Vowbound, as a field body in Coilspire's gallery (the last greybox block on Ch8's path)"
+role: character
+status: todo
+owner_session: ""
+depends_on: [M3-C08-1210]
+milestone: M3
+request-from: cinematics
+---
+## Goal
+ADR 0041 (Act I at final quality): Coilspire's gallery still draws Virel, the Fire Vowbound the party binds at the top of
+the spire (act1_ch08.md, the binding), as the greybox block `Virel` (2 x 6 x 2 m, glowing, at the gallery's centre;
+`game/levels/ch08/coilspire/coilspire_layout.json`). Everything else in the zone is kit dressing now (f90e3df1). For
+creatures-b (the Act I bosses and the Vowbound, CONSOLIDATED 2-FOCUS).
+
+## Acceptance criteria
+- [ ] A Virel model with an idle (and the binding's clips the Ch8 beat sheet names), registered in
+      `game/data/creatures/creatures.json` with its PROVENANCE rows.
+- [ ] act1-chapters casts it on the block's spot (`ZoneCast` `creature:<id>`, or a dressing piece following the
+      `Virel` block so the story's show/hide still drives it) and drops `Virel` from `greybox.keep` in
+      `tools/act1/ch08_coilspire_dressing.py`.
+
+## Review log

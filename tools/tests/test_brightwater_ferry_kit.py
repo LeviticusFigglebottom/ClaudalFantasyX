@@ -87,7 +87,7 @@ def tris_of(mb, slot: str) -> np.ndarray:
 
 class KitGeometryTests(unittest.TestCase):
     def test_every_target_is_inside_its_budget_with_a_lod_chain(self) -> None:
-        self.assertEqual(len(TARGETS), 24)
+        self.assertEqual(len(TARGETS), 28)  # + the landing and boarding gear (M3-ENV-746)
         for name, (key, module, _fn) in TARGETS.items():
             with self.subTest(target=name):
                 builders = built(name)

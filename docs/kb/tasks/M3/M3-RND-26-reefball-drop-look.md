@@ -44,3 +44,11 @@ weep column of radius 0.8 to 0.6 m down to the catch-pool water at y 0.35; >= 2.
 - **Renumbered (Lead merge, big8, 2026-10-24):** filed as M3-RND-01, which collided with the PC's M3-RND-01 (the Reefball water sphere, built and merged at big7). Now M3-RND-26, the next id free across all branches.
 
 ## Review log
+
+## Notes (env-art-b, 2026-10-28, ADR 0041)
+- Both Ch7 zones now show the Bell with no water in it: `ch07/tamsule_bell_galleries` keeps the greybox `Column`, and
+  the drop is absent there and from `ch07/tamsule` (the port, whose Bell axis is (0, −1.6, −75)). `WaterSphereRig`
+  (M3-RND-01) is a 16 m sphere by `water_sphere.json`; the Bell needs the oblate 14.0 × 11.5 m drop at (0, 31.5, 0) of
+  the contract above (a 16 m sphere cuts the bronze), and its post passes intersect the sphere analytically, so the
+  node can't simply be scaled. Asks: a per-placement size (radius and vertical semi-axis) or a per-use data row, and
+  the weep column. env-art-b places them in both zones the day they land.

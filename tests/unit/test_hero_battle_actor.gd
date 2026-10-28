@@ -9,6 +9,7 @@ const WRAPPERS := {
 	&"toma": "res://game/hero_motion/battle/toma_battle_actor.tscn",
 	&"ysolde": "res://game/hero_motion/battle/ysolde_battle_actor.tscn",
 	&"liss": "res://game/hero_motion/battle/liss_battle_actor.tscn",
+	&"kerrid": "res://game/hero_motion/battle/kerrid_battle_actor.tscn",
 }
 const RING := {"radius_factor": 1.4, "inner_soft_m": 0.25, "notches": 6}
 ## A clip in the fake player holds the body at this x for its whole length.
@@ -20,7 +21,9 @@ const FRAME_SEC := 1.0 / 60.0
 var made: Array[Node] = []
 
 
-func before_each() -> void:
+## Frees what the test made (each test ends with it: the runner makes a new instance per test, so a before_each
+## never sees the last one's nodes).
+func _done() -> void:
 	for n in made:
 		if is_instance_valid(n):
 			n.get_parent().remove_child(n)
@@ -41,6 +44,7 @@ func test_rows_expand_any_and_a_later_named_pair_wins() -> void:
 	assert_eq(p.get_blend_time(&"ko", &"idle"), 0.9)
 	assert_eq(p.get_blend_time(&"hit", &"hit"), 0.0, "never a clip into itself")
 	assert_eq(p.get_blend_time(&"attack", &"idle"), 0.0, "an unnamed pair keeps the default")
+	_done()
 
 
 func test_play_and_the_queued_idle_use_the_pair_blends() -> void:
@@ -62,6 +66,7 @@ func test_play_and_the_queued_idle_use_the_pair_blends() -> void:
 	_run(p, CLIP_SEC + 0.15)
 	assert_eq(StringName(p.current_animation), &"idle", "the one-shot went back to idle")
 	assert_between(body.position.x, 0.5 - 0.1, 0.5 + 0.1, "through the default 0.3 s blend, not a pop")
+	_done()
 
 
 func test_the_data_reads_well() -> void:
@@ -80,6 +85,7 @@ func test_the_data_reads_well() -> void:
 	assert_true(float(named["*>hit"]) <= 0.1, "a hit reads on the contact")
 	assert_eq(HeroBattleActor.idle_phase(data, &"asha"), 2.1)
 	assert_eq(HeroBattleActor.idle_phase(data, &"nobody"), 0.0)
+	_done()
 
 
 func test_start_idle_wraps_its_phase() -> void:
@@ -87,6 +93,7 @@ func test_start_idle_wraps_its_phase() -> void:
 	HeroBattleActor.start_idle(p, CLIP_SEC + 0.5)
 	assert_eq(StringName(p.current_animation), &"idle")
 	assert_between(p.current_animation_position, 0.5 - EPS, 0.5 + EPS)
+	_done()
 
 
 func test_each_wrapper_tunes_its_hero_and_keeps_the_bc_path() -> void:
@@ -116,8 +123,10 @@ func test_each_wrapper_tunes_its_hero_and_keeps_the_bc_path() -> void:
 		assert_true((f.actor() as HeroBattleActor).skeleton() != null, "%s has a skeleton" % hero)
 		assert_true(HeroMotion.micro_of(f.actor()) != null, "%s breathes (HeroIdleMicro)" % hero)
 
-
 ## Advances `p` by `sec` in 60 Hz steps, as frames would (a pose lands on the step after a play()).
+	_done()
+
+
 func _run(p: AnimationPlayer, sec: float) -> void:
 	var left := sec
 	while left > 0.0:

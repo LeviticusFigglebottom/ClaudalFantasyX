@@ -38,6 +38,7 @@ const BEAT_KO := &"ko"
 const REACT_DAMAGE := "damage"
 const REACT_HEAL := "heal"
 const REACT_MISS := "miss"
+const REACT_IMMUNE := "immune"  # M3-BPR-406: a blow on a damage-immune foe: a hard stop, no recoil
 const REACT_PUSH := "push"  # M3-BPR-411: a landed push down the timeline with no damage (the ward shoved back)
 const FALLBACK_STYLE := "melee"
 const SETTING_SPEED := &"battle_speed"
@@ -132,6 +133,7 @@ static func attached(controller: BattleController, engine: BattleEngine) -> Batt
 	c.summon = BattleSummonCinematic.attached(c, controller, engine)  # M2-BPR-08: C10
 	c.impact = BattleImpact.attached(c, controller, engine)  # M3-BPR-401: battle feel
 	BattleBossIntro.attached(c, controller, engine)  # M3-BPR-02: a boss's intro at the first turn
+	BattlePhaseLooks.attached(c, controller, engine)  # M3-BPR-406: an untargetable phase shows it
 	return c
 
 
@@ -403,6 +405,7 @@ func seek(t: float) -> void:
 	if _plan.is_empty():
 		return
 	_t = clampf(t, 0.0, float(_plan["total"]))
+	_apply()  # everyone where they stand at `t` first: a beat's VFX lands there, not on a mark left long ago
 	_step_beats()
 	if impact != null:
 		impact.finish()  # a freeze-frame jump carries no hit-stop

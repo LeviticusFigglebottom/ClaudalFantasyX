@@ -252,6 +252,7 @@ func skill_rows(engine: BattleEngine) -> Array[Dictionary]:
 		usable = usable and not BossMechanics.forbidden_now(engine, actor, sk)  # Toma and the Stillguard
 		var row := _row(sid, skill_name(engine, sid), _rank_text(rank), _rank_role(rank), usable, sid)
 		row["mp"] = tr("HUD_MP_FMT").format({"mp": mp}) if mp > 0 else ""
+		row["glyph"] = MenuGlyph.for_skill_row(sk)
 		rows.append(row)
 	return rows
 
@@ -265,7 +266,9 @@ func swell_rows(engine: BattleEngine, swell: BattleSwell) -> Array[Dictionary]:
 	for tid in swell.techniques(engine.current):
 		var rank := int(engine.db.skill(tid).get("rank", Formulas.DEFAULT_RANK))
 		var reach := not skill_candidates(engine, tid).is_empty()
-		rows.append(_row(tid, skill_name(engine, tid), _rank_text(rank), _rank_role(rank), full and reach, tid))
+		var row := _row(tid, skill_name(engine, tid), _rank_text(rank), _rank_role(rank), full and reach, tid)
+		row["glyph"] = MenuGlyph.for_skill_row(engine.db.skill(tid))
+		rows.append(row)
 	rows.append_array(swell_mode_rows(swell, engine.current))
 	return rows
 
@@ -356,6 +359,7 @@ func item_rows(engine: BattleEngine, items: BattleItemSource) -> Array[Dictionar
 		var usable := not item_candidates(engine, action).is_empty()
 		var row := _row(iid, item_name(items, iid), _rank_text(action.rank), _rank_role(action.rank), usable)
 		row["item"] = iid
+		row["glyph"] = MenuGlyph.for_goods(iid)
 		row["mp"] = tr("HUD_ITEM_COUNT_FMT").format({"n": items.count(iid)})
 		rows.append(row)
 	return rows

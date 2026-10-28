@@ -28,5 +28,6 @@
     "glimmer_lift": "cs_glimmer_lift",
     "glimmer_held": "cs_glimmer_held",
     "glimmer_bound": "cs_glimmer_bound"
-  }
+  },
+  "lamps": {"_note": "M3-AUD-847: a stage's lit lamps (Light3D nodes whose names match, globs) crackle at the lamp at a random gap of every_sec while visible and lit: Rhen's lantern at the Iskarra vigil", "match": ["LanternLight", "*Wick*", "*Candle*", "*OilLamp*"], "row": "cs_lamp_crackle", "every_sec": [0.6, 2.2]}
 }

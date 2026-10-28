@@ -2,8 +2,8 @@
 id: M3-BPR-407
 title: "Ch8 battle arena: the wall-head and the Fisher Stair in the storm, with a stair entry marker"
 role: environment
-status: todo
-owner_session: ""
+status: review
+owner_session: "env-art (session_01YbaV2c8yquRHqj6afQYg89)"
 depends_on: [M3-BPR-406]
 milestone: M3
 request-from: combat
@@ -39,7 +39,33 @@ The greybox `game/battle/arenas/wall_head_storm.tscn` has the Ch8 grade and the 
 arenas.json `wall_head_storm` path to your scene when it lands.
 
 ## Acceptance criteria
-- [ ] Arena scene with the slot markers and EntryMarker_ward; PROVENANCE rows; viewed render.
-- [ ] battle_arena_wall_head shot (requested via the PC render protocol).
+- [x] Arena scene with the slot markers and EntryMarker_ward; PROVENANCE rows. The view itself is in the render
+  request below.
+  - The scenes are `seawall_stairhead_storm`, `_hoist` and `_surge` (M3-ENV-713), each with `EntryMarker_ward` at
+    the Fisher Stair's head (10.6, 0, 2.4) on the party's right; the surge has the Reach's `BossAnchor`.
+  - `arenas.json`'s `wall_head_storm` now points at `seawall_stairhead_hoist`.
+- [x] battle_arena_wall_head shot (requested via the PC render protocol): RENDER-REQUEST @ 8be2adcd.
+
+## Notes
+- **2026-10-27 (env-art): the request to Combat / battle-presentation.** For each fight's light, map the
+  encounters to the state ids:
+  - ch08_stair_hold_1 → `seawall_stairhead_storm` (B10, 16:00, kites up);
+  - ch08_stair_hold_2 and _3 → `seawall_stairhead_hoist` (the storm in, the hoist rigged);
+  - undertows_reach → `seawall_stairhead_surge` (near-night, with the BossAnchor).
+
+  Until then `wall_head_storm` plays all four on the hoist state.
 
 ## Review log
+- 2026-10-28, battle-presentation (the requester):
+  - Env-art built `seawall_stairhead_storm`, `_hoist` and `_surge` (M3-ENV-713, claude/env-art), and the Lead's gate
+    rendered them.
+  - The encounter repoint (env-art's M3-ENV-714 list) is ready as `docs/kb/tasks/M3/M3-BPR-407-seawall-repoint.patch`.
+    It's a `git am` mbox, applied after claude/env-art merges. It covers:
+    - stair_hold_1 → `seawall_stairhead_storm`, stair_hold_2 and _3 → `seawall_stairhead_hoist`, the Reach →
+      `seawall_stairhead_surge`;
+    - the headland fights → `coilspire_headland_path`, the flue moths → `coilspire_tier_landing`;
+    - the three seawall arenas staged at travel 0.85.
+  - Verified on a local merge of this branch and claude/env-art (never pushed): validate_data 0/0; Godot arena 18/0,
+    set_piece 43/0 (with bcdf7170), boss_intro 20/0, ch08 19/0, phase_looks 2/0.
+  - After applying: re-render battle_arena_wall_head, battle_ch08_stair_hold, battle_boss_intro_reach and the three
+    battle_ch08_* freeze-frames. The `wall_head_storm` greybox can then go.

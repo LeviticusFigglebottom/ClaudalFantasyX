@@ -76,8 +76,9 @@ func test_the_stage_resolves_the_script_ids() -> void:
 func test_the_set_is_the_real_shrine() -> void:
 	assert_eq(scene.find_children("*", "CSGShape3D", true, false).size(), 0, "no CSG on the set")
 	assert_true(scene.get_node_or_null(^"Set/Hall/Floor") != null, "env-art's shrine hall")
-	var pool := scene.stage.clip_mark(&"asha", &"stand_at_pool")
+	var pool := scene.stage.clip_mark(&"asha", &"idle_shift")
 	assert_true(pool != null, "the S08 stand-in mark")
+	assert_true(scene.stage.clip_mark(&"asha", &"walk_to_chamber") == null, "S07's walk is her real clip, not a jump")
 	var ilun := scene.stage.mark(&"ilun_chamber")
 	assert_true(pool.global_position.distance_to(ilun.global_position) < 4.5, "Asha at the pool under Ilun")
 	_free()

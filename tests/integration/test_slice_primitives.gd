@@ -13,10 +13,19 @@ const SCENES: Array[String] = [
 	"res://game/levels/ch01/oruvel/oruvel.tscn",
 	"res://game/levels/ch01/oruvel_underway/oruvel_underway.tscn",
 ]
+## The battle arenas these zones fight in, by their arenas.json id (env-art's kits; the greybox ones under
+## game/battle/arenas/ only feed their preview shots).
+const ARENAS: Array[StringName] = [
+	&"tideline_dawn",
+	&"causeway_route_afternoon",
+	&"causeway_disc_sunset",
+	&"oruvel_raft_morning",
+	&"underway_tower",
+]
+const ARENAS_JSON := "res://game/data/battle/arenas.json"
 ## Path prefixes (from the scene root) still allowed, and why.
 const KNOWN: Dictionary = {
-	"City/": "the Prologue's Iskarra set (M3-ENV-100)",
-	"HalunaMood/SaveShrine/Visual/": "the save shrine's model (M3-ENV-101)",
+	"City/Vigils/": "Kerrid, Pell and Liss: each takes its hero body when it lands (M3-CHR-505/506, Liss)",
 	"NPCs/Neme/Bag": "Neme's bag, a creatures prop",
 	"Set/ChamberPassage": "env-art's passage behind the shrine's east door (part of its dressing)",
 	"Dressing/ChamberPassage": "the same, in the shrine level",
@@ -31,7 +40,15 @@ func test_no_unlisted_primitive_shows_in_the_slice() -> void:
 	var host: Node = tree.current_scene if tree.current_scene != null else tree.root
 	var saved_flags := Game.state.flags.duplicate(true)
 	Game.state.flags.erase(&"ch01_gulls_cried")  # an earlier test's storm brings Oruvel up in it (its StormWall)
-	for path in SCENES:
+	var paths: Array[String] = SCENES.duplicate()
+	var arenas: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(ARENAS_JSON))["arenas"]["scenes"]
+	for id in ARENAS:
+		assert_true(arenas.has(String(id)), "%s is in arenas.json" % id)
+		paths.append(str(arenas.get(String(id), "")))
+	for path in paths:
+		if not ResourceLoader.exists(path):
+			assert_true(false, "%s exists" % path)
+			continue
 		var root := (load(path) as PackedScene).instantiate()
 		if root.has_method(&"prebuild"):
 			root.call(&"prebuild")

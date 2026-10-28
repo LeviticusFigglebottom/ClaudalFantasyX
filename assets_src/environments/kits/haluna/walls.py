@@ -8,6 +8,8 @@
   wakeshell_wall      the Pilgrim's Wake shrine wall at the causeway head: a 7 m arc, 2.2 m tall,
                       ~500 carved wake-shells (6-14 cm) set in lime mortar, each with a name glyph,
                       and the single clean empty gap at shoulder height waiting for Asha (Ch2)
+  wake_shell_set      one named wake-shell the gap's size, no stand, to set in the wall (M3-ENV-743; origin at
+                      its centre, face +Z)
 
 Segments are built along +X, centred on x = 0, the sea face on +Z. Curved runs (R = 12 / 24 m) are
 laid by the zone dresser as rotated straight segments; the cap overlaps 3 cm at each end so the
@@ -39,6 +41,7 @@ BLOCK_EDGE_R_M, BLOCK_DISP_M, BLOCK_DISP_PERIOD_M = 0.018, 0.04, 0.26
 TRI_BUDGET = {
     "tidewall": (5600, 500),
     "wakeshell_wall": (28000, 1500),
+    "wake_shell_set": (300, 60),
 }
 BUDGET_KEY = {"tidewall_straight": "tidewall", "tidewall_windgap": "tidewall", "tidewall_gate": "tidewall"}
 
@@ -228,9 +231,23 @@ def build_wakeshell_wall(seed: int = 51, *, shells: int = WAKE_SHELLS,
     return [mb, lod]
 
 
+def build_wake_shell_set(seed: int = 717) -> list[kc.MeshBuilder]:
+    """M3-ENV-743: one named wake-shell set in the wall (no stand), the gap's size (WAKE_GAP): its centre at the
+    origin, its face out along +Z, the glyph state by material override (`kit_wake_shell_inked`, `_faded`)."""
+    out = []
+    for lod in (False, True):
+        rng = kc.rng_for("wake_shell_set", seed)
+        mb = kc.MeshBuilder("wake_shell_set" + ("-lod1" if lod else ""))
+        _shell(mb, (0.0, 0.0, 0.0), (0.0, 0.0, 1.0), (0.0, 1.0, 0.0), WAKE_GAP[2] * 1.05, 5, 0.0, rng,
+               mb.material(M_SHELL))
+        out.append(mb)
+    return out
+
+
 TARGETS = {
     "tidewall_straight": lambda: build_tidewall("tidewall_straight", 61, "none"),
     "tidewall_windgap": lambda: build_tidewall("tidewall_windgap", 62, "windgap"),
     "tidewall_gate": lambda: build_tidewall("tidewall_gate", 63, "gate"),
     "wakeshell_wall": build_wakeshell_wall,
+    "wake_shell_set": build_wake_shell_set,
 }

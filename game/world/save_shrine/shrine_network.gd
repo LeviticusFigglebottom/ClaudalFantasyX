@@ -108,3 +108,17 @@ static func registry_point(network_id: StringName) -> Dictionary:
 static func name_key_of(network_id: StringName) -> String:
 	var loc := StringName(str(registry_point(network_id).get(LocationRegistry.KEY_LOCATION, "")))
 	return _registry().name_key_of(loc) if loc != &"" else ""
+
+
+## The name_key of a location ("" when not listed): the Kite's words for a place (KiteMapModel).
+static func registry_name_key(location_id: StringName) -> String:
+	return _registry().name_key_of(location_id) if location_id != &"" else ""
+
+
+## Travels to a location through the SceneRouter, as a shrine's trip does, when the registry lets the
+## party enter it (the Kite: KiteMapModel.from_game). False when refused or the router is busy.
+static func travel_to(location_id: StringName, spawn: StringName) -> bool:
+	if not _registry().can_enter(location_id):
+		return false
+	var go := travel if travel.is_valid() else _router_travel()
+	return go.is_valid() and bool(go.call(location_id, spawn))

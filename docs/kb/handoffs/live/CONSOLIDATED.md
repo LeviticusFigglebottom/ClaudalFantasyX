@@ -80,6 +80,11 @@
 - The account's seven-day usage is at its warning level, so no more sessions unless one is clearly the bottleneck.
 
 ## 2a. Merge state (new account)
+- **big13 MERGED 10-28 ~04:00 (90ecee18).**
+  - Cloud gate: 402 shots, 250 pass, and 152 re-approved after the Lead viewed every one (98 drifted, 54 new); the Shell Shrine GI rebake.
+  - Also on the integration branch: the human's playtest crash fix (M3-AUD-814, de5fdc6c).
+  - Issues seen while viewing went to their owners: the Hullgnaw intro rope; the Reach backdrop greybox; the Ch9 strand's glowing bar; the Underway gallery wall; the slice_verse_steps reframe; Liss's hair; primitive creature reads.
+- **Next: big14, gated on the PC.** It carries the human's four playtest fast-tracks (the run, the stacked party, the Prologue grey buildings, the water crouch) and the ADR 0041 Act I work.
 - **10-27: big9 MERGED** (integration 3b7cbf5e). PC gate: Godot 2561/0, coverage and boot OK, Blender 40 identical + 11 M2-CHR-11 DIFFs (rhen, toma, 9 villagers), 281 shots with 48 re-approved after the Lead viewed them. The results are on `gpu/gate-big9-shots`.
 - **10-27: big10 MERGED** (integration f5ec3bda). PC gate: Godot 2637/0, coverage and boot OK, Blender 20 identical + rhen/toma, 292 shots with 51 re-approved (37 identical to big9's; 14 viewed). It includes M3-BPR-404: the Hullgnaw, Drownbell and Matron intros now fit the boss.
 - **10-27 ~21:15: big12 MERGED** (integration e930595c): 111 shots approved after viewing; Blender 28/28 identical; the PC's shrine GI rebake folded in. Open from viewing:

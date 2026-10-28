@@ -7,7 +7,7 @@
     {"id": "SternGate", "pos": [3.45, 0.5, 7.9], "size": [0.3, 1.0, 1.0], "color": "#5e4a32", "solid": true},
     {"id": "OrderShrine", "pos": [0.0, 1.0, 12.121], "size": [1.0, 1.2, 0.1], "color": "#cfd8dc", "emission": "#9fd8e0", "emission_energy": 0.6, "solid": false},
     {"id": "Lookout", "pos": [0.0, 6.5, 1.147], "size": [1.2, 0.2, 1.2], "color": "#5e4a32", "solid": false},
-    {"id": "NameBoardWrapped", "pos": [-2.125, 0.15, 15.7], "size": [2, 0.3, 0.6], "color": "#d8ccb0", "solid": false},
+    {"id": "NameBoardWrapped", "pos": [-0.3, 0.15, 7.7], "size": [2, 0.3, 0.6], "color": "#d8ccb0", "solid": false},
     {"id": "NameBoard", "pos": [-9.24, 1.7, 20.74], "size": [2, 0.4, 0.1], "color": "#b0302a", "emission": "#d4a040", "emission_energy": 0.4, "solid": false},
     {"id": "GalleyBowls", "pos": [-8.68, 0.8, 15.129], "size": [0.4, 0.15, 1.2], "color": "#d8c8a8", "solid": false},
     {"id": "HoldHatch", "pos": [-9.24, -0.07, 7.569], "size": [2, 0.06, 2], "color": "#2a1a18", "solid": false},
@@ -31,9 +31,9 @@
     "derelict_toma": [-7.48, 0.9, 17.676, 0],
     "derelict_ysolde": [-10.04, 0.9, 18.472, 0],
     "rail_ysolde": [2.9, 0.0, 10.2, 90.0],
-    "ferry_asha": [-2.125, 0.0, 16.251, 180],
-    "ferry_toma": [-2.89, 0.0, 15.7, 90],
-    "ferry_ysolde": [1.275, 0.0, 15.7, 270]
+    "ferry_asha": [-0.3, 0.0, 7.05, 0],
+    "ferry_toma": [-1.8, 0.0, 7.7, 90],
+    "ferry_ysolde": [1.5, 0.0, 7.7, 270]
   },
   "actors": {
     "asha": {"at": [2.9, 0.0, 11.3, 90.0], "color": "#d9c3a0"},
@@ -45,7 +45,7 @@
     "trader_a": {"cast": "vendor", "at": [-2.38, 0.0, 7.833, 90], "color": "#9a6a4a"},
     "trader_b": {"cast": "netmender", "at": [-2.38, 0.0, 8.699, 90], "color": "#8a5a5a"},
     "passenger_reed": {"cast": "reed", "at": [2.55, 0.0, 7.597, 270], "color": "#b8b2a8"},
-    "spar_wraith": {"at": [-9.24, 3.1, 4.783, 0], "color": "#141418", "radius": 0.9, "height": 3.4}
+    "spar_wraith": {"cast": "creature:spar_wraith", "at": [-9.24, 3.1, 4.783, 0], "color": "#141418", "radius": 0.9, "height": 3.4}
   },
   "shots": {
     "F01": {"pos": [15.5, 2.0, 2.9], "look_at": [6.5, 1.2, 7.9], "fov": 45},
@@ -53,7 +53,7 @@
     "F03": {"pos": [-2.55, 3.4, 19.24], "look_at": [0.0, 1.2, 10.587], "fov": 50},
     "F04": {"pos": [2.816, 1.8, 2.72], "look_at": [2.626, 1.4, 1.147], "fov": 30},
     "F05": {"pos": [-2.388, 1.8, -0.033], "look_at": [-9.24, 4.9, 10.354], "fov": 40},
-    "F06": {"pos": [-0.51, 1.4, 17.037], "look_at": [-2.125, 0.2, 15.7], "fov": 30},
+    "F06": {"pos": [2.3, 1.5, 6.4], "look_at": [-0.3, 0.2, 7.7], "fov": 35},
     "D01": {"pos": [-2.9, 0.4, 7.44], "look_at": [-6.74, 1.1, 15.925], "fov": 40},
     "D02": {"pos": [-7.32, 3.9, 19.904], "look_at": [-9.24, 0.4, 7.967], "fov": 55},
     "D03": {"pos": [-7.64, 2.5, 16.721], "look_at": [-8.68, 0.8, 15.129], "fov": 35},

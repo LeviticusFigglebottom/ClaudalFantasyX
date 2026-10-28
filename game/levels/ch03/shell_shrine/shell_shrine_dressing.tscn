@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3]
+[gd_scene load_steps=11 format=3]
 
 [ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/shrine_floor.glb" id="1_floor"]
 [ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/shrine_vault.glb" id="2_vault"]
@@ -9,16 +9,7 @@
 [ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/shrine_wall_portal.glb" id="7_wall_portal"]
 [ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/shrine_wall_straight.glb" id="8_wall_straight"]
 [ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/shrine_column_whorl.glb" id="9_column_whorl"]
-
-[sub_resource type="StandardMaterial3D" id="Mat_passage"]
-resource_name = "chamber_passage_dark"
-cull_mode = 1
-albedo_color = Color(0.0627, 0.0745, 0.0745, 1)
-roughness = 1.0
-
-[sub_resource type="BoxMesh" id="Mesh_passage"]
-material = SubResource("Mat_passage")
-size = Vector3(2.5, 3.8, 3.4)
+[ext_resource type="PackedScene" path="res://assets/environments/kits/haluna/shrine_chamber_passage.glb" id="10_passage"]
 
 [node name="ShellShrineDressing" type="Node3D"]
 [node name="Hall" type="Node3D" parent="."]
@@ -121,7 +112,5 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 8.8)
 [node name="WhorlSE" parent="Columns" instance=ExtResource("9_column_whorl")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 0, 8.8)
 
-[node name="ChamberPassage" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15.85, 1.9, 0)
-mesh = SubResource("Mesh_passage")
-cast_shadow = 0
+[node name="ChamberPassage" parent="." instance=ExtResource("10_passage")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15.85, 0, 0)

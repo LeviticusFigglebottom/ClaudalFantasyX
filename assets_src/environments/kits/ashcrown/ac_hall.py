@@ -71,6 +71,34 @@ def _sections():
             (ac.HALL_LOGGIA_Z, zb, ac.LOGGIA_TOP_Y)]
 
 
+
+def _pillar_trim(mb: kc.MeshBuilder, x: float, z: float, ph: float, y0: float, y1: float) -> None:
+    """A hall pillar's dressing (M3-ENV-705: A04 read the pillars as plain square shafts): a bead down each corner, a
+    sunk panel framed on each face between two copper bands, and under the capital a red lacquer frieze edged with
+    gold leaf (Ashcrown's accents, ashcrown.md)."""
+    m_d, cu, red, gold = (mb.material(ac.M_DRESSED), mb.material(ac.M_COPPER), mb.material(ac.M_LACQUER_RED),
+                          mb.material(ac.M_GOLD))
+    for cx, cz in ((x - ph, z - ph), (x + ph, z - ph), (x - ph, z + ph), (x + ph, z + ph)):
+        ac.box(mb, (cx - 0.04, y0, cz - 0.04), (cx + 0.04, y1, cz + 0.04), m_d, radius=0.03)
+    for yb in (y0 + 0.9, y1 - 1.25):  # the copper bands
+        ac.box(mb, (x - ph - 0.03, yb, z - ph - 0.03), (x + ph + 0.03, yb + 0.12, z + ph + 0.03), cu, radius=0.015)
+    fy0, fy1 = y1 - 0.75, y1  # the frieze under the capital
+    ac.box(mb, (x - ph - 0.02, fy0, z - ph - 0.02), (x + ph + 0.02, fy1, z + ph + 0.02), red, radius=0.01)
+    for yy in (fy0, fy1 - 0.04):
+        ac.box(mb, (x - ph - 0.035, yy, z - ph - 0.035), (x + ph + 0.035, yy + 0.04, z + ph + 0.035), gold,
+               radius=0.008)
+    # The sunk panel on each face: a raised frame of four strips between the bands.
+    py0, py1 = y0 + 1.2, y1 - 1.45
+    w = ph - 0.16
+    for ox, oz in ((1.0, 0.0), (-1.0, 0.0), (0.0, 1.0), (0.0, -1.0)):
+        fx, fz = x + ox * (ph + 0.02), z + oz * (ph + 0.02)
+        tx, tz = abs(oz), abs(ox)  # along the face
+        for a0, a1, b0, b1 in ((-w, w, py0, py0 + 0.06), (-w, w, py1 - 0.06, py1), (-w, -w + 0.06, py0, py1),
+                               (w - 0.06, w, py0, py1)):
+            lo = (fx + tx * a0 - abs(ox) * 0.02, b0, fz + tz * a0 - abs(oz) * 0.02)
+            hi = (fx + tx * a1 + abs(ox) * 0.02, b1, fz + tz * a1 + abs(oz) * 0.02)
+            ac.box(mb, lo, hi, m_d, radius=0.01)
+
 def hall(name: str, seed: int, *, lod: bool = False) -> kc.MeshBuilder:
     rng = kc.rng_for(name, seed)
     noise = kc.Noise3(rng)
@@ -167,6 +195,7 @@ def hall(name: str, seed: int, *, lod: bool = False) -> kc.MeshBuilder:
                 ac.wall(mb, start, along, 2 * ph, y0 + 0.45, ac.HALL_CEIL_Y - 1.0, m_d, noise, step=1.6,
                         u0=float(rng.uniform(0, 2)), ao_floor_y=y0)
                 del fname
+            _pillar_trim(mb, x, z, ph, y0 + 0.45, ac.HALL_CEIL_Y - 1.0)
             ac.box(mb, (x - ph - 0.12, ac.HALL_CEIL_Y - 1.0, z - ph - 0.12), (x + ph + 0.12, ac.HALL_CEIL_Y - 0.65,
                    z + ph + 0.12), m_d, noise, radius=0.05)
             ac.box(mb, (x - ph - 0.3, ac.HALL_CEIL_Y - 0.65, z - ph - 0.3), (x + ph + 0.3, ac.HALL_CEIL_Y - 0.3,

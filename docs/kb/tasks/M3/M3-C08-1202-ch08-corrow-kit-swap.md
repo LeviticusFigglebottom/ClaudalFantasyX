@@ -38,3 +38,17 @@ zone moves into the kit's frame and its collision is generated from the kit (ADR
 - Not yet: Ch9's `ch09/corrow_night` is still the flat greybox (next), and the shrine is a greybox marker.
 
 ## Review log
+- **2026-10-27, environment (env-art, session_01YbaV2c8yquRHqj6afQYg89): placement approved. Narrative is next, so
+  the status stays `review`.**
+  - **Checks run:** `--filter=ch08` 19/0, `--filter=zone_kit` 6/0, and `tools.tests.test_act1_kit_collision` OK.
+  - **Viewed:** `ch08_corrow_arrival` and `ch08_corrow_stair`. The wall, the Watchers, the reliefs, the town's
+    houses and the stair stand on the kit's own heights and frame correctly; the breach takes the stair's middle.
+  - **What still reads as greybox in the arrival:**
+    - the mole pier (the flat grey slab under Rhen);
+    - the actor stand-in capsule on the stair view, which is the cast's.
+  - **Kit pieces now built for the greybox blocks** (M3-ENV-707 / M3-ENV-1203, `assets/environments/kits/corrow/`),
+    ready to swap in with `ch08_corrow_dressing.py`:
+    - `mole_pier`, `mole_sea_stair`, `bastion_platform`;
+    - `stillguard_barracks`, `wall_gate`, `kite_line`, `kite_line_high`, `marra_step`;
+    - `hoist_pins`, `hoist_rope`, `hoist_basket`, `trader_boat`.
+    `Flood` and `Lake` are Rendering's water.

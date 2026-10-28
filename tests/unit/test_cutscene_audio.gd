@@ -203,3 +203,45 @@ func test_the_prologue_plays_its_room_tone() -> void:
 	)
 	assert_true(stream != null and stream.loop, "it loops")
 	_done()
+
+
+func test_a_lit_lamp_crackles_at_the_lamp_and_a_dark_one_is_silent() -> void:
+	var a := _audio()
+	var stage := _stage()
+	var lamp := OmniLight3D.new()
+	lamp.name = "LanternLight"
+	lamp.position = Vector3(1.0, 1.2, 0.0)
+	stage.get_node("Actors/rhen").add_child(lamp)
+	var other := OmniLight3D.new()
+	other.name = "KeyLight"
+	stage.add_child(other)
+	a.watch_lamps(stage)
+	a.watch_lamps(stage)
+	assert_eq(a.lamps.size(), 1, "only the named lamp, once")
+	for i in int(20.0 / DT):
+		a.advance(DT)
+	var crackles := _ids().filter(func(id: String) -> bool: return id == "cs_lamp_crackle")
+	assert_between(crackles.size(), 8, 34, "every 0.6-2.2 s over 20 s (%d)" % crackles.size())
+	assert_eq(played.size(), crackles.size(), "nothing else")
+	assert_true((played[0][1] as Vector3).is_equal_approx(lamp.global_position), "at the lamp")
+	played.clear()
+	lamp.light_energy = 0.0
+	for i in int(5.0 / DT):
+		a.advance(DT)
+	assert_eq(played.size(), 0, "a dark lamp is silent")
+	lamp.free()
+	a.advance(DT)
+	assert_eq(a.lamps.size(), 0, "a freed lamp is dropped")
+	_done()
+
+
+func test_the_prologue_stage_has_rhens_lamp() -> void:
+	var zone := (load(PROLOGUE) as PackedScene).instantiate()
+	_add(zone)
+	var a := _audio()
+	var stages := zone.find_children("*", "CutsceneStage", true, false)
+	assert_true(stages.size() > 0, "the prologue has a cutscene stage")
+	for s in stages:
+		a.watch_lamps(s)
+	assert_eq(a.lamps.size(), 1, "Rhen's lantern (LanternLight) is watched")
+	_done()
