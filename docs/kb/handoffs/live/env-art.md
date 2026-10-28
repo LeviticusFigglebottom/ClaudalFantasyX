@@ -589,7 +589,7 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
-- **MERGE-READY @ (this push): the Lead's big16 checks (lead/gate-big16 @ ff82858c, this branch fast-forwarded to it).
+- **MERGE-READY @ 2666255bb: the Lead's big16 checks (lead/gate-big16 @ ff82858c, this branch fast-forwarded to it).
   No code change was needed.**
   - **U03 on my mounted Underway dressing:** `ch01_bell_room` was rendered and viewed. The camera is in the bell-room
     behind Rhen's shoulder, with the door and the lantern in frame; it is not in a wall. Row 23's bell-room is fine.
