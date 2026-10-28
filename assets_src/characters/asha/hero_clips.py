@@ -2372,10 +2372,11 @@ ARMPIT_DRIVER = _HELP["armpit"]["driver_prefix"]  # of the upper arm's own turn
 ARMPIT_SHARE = float(_HELP["armpit"]["share"])
 ARMPIT_RAISE_FULL = math.radians(float(_HELP["armpit"]["raise_full_deg"]))
 HELPER_KEY_TOL = math.radians(float(_HELP["key_tolerance_deg"]))  # a helper key a straight slerp gives is dropped
-# DEF-skirt_<k>: sector k's panel from its pivot to the panels' joint; DEF-skirt_<k>.001: on to the hem. The skirt is
-# solved against its own cloth: each panel bone swings out (about its pivot, in the vertical plane through its sector)
-# by the least angle that keeps every cloth vertex it carries (SKIRT_CLOTH_MIN of its weight or more) within
-# SKIRT_SLACK of its rest distance (capped at SKIRT_CLEAR) from the axis of every leg segment; see the data file.
+# DEF-skirt_<k>: sector k's panel from its pivot to the panels' first joint (mid-thigh); DEF-skirt_<k>.001: on to just
+# below the knee; DEF-skirt_<k>.002 (M2-CHR-522): on to the hem. The skirt is solved against its own cloth: each panel
+# bone swings out (about its head, in the vertical plane through its sector) by the least angle from the vertical
+# that keeps every cloth vertex it carries (SKIRT_CLOTH_MIN of its weight or more) within SKIRT_SLACK of its rest
+# distance (capped at SKIRT_CLEAR) from the axis of every leg segment; see the data file.
 _SK = _HELP["skirt"]
 SKIRT_BONE = _SK["bone_prefix"]
 SKIRT_LEG_SEGMENTS = tuple(tuple(x) for x in _SK["leg_segments"])
@@ -2395,6 +2396,7 @@ SKIRT_OVER_EASE = math.radians(float(_SK["overhang_ease_deg"]))
 SKIRT_OVER_MARGIN = float(_SK["overhang_margin_m"])
 SKIRT_SUPPORT_SIDE = float(_SK["support_lateral_m"])
 SKIRT_SUPPORT_STEPS = int(_SK["support_samples"])
+SKIRT_LEVELS = tuple(_SK["levels"])  # M2-CHR-522: a panel's bones' suffixes, from the hips down (the last gathers)
 SCALE_KEY = "_scale"  # local_pose's entry for the helper bones' scales: {bone: (x, y, z)}
 
 
@@ -2461,12 +2463,14 @@ def helpers_init(sk: "Skeleton", glb: Path, nodes: list, parent: dict) -> None:
     sk.keyed = BONES + sk.helpers
     sk.skirt = sorted(h for h in sk.helpers if h.startswith(SKIRT_BONE) and h.count(".") == 0)
     for h in sk.skirt:
-        assert sk.parent[h] == HIPS and h + ".001" in sk.helpers, h
+        assert sk.parent[h] == HIPS, h
+        for up, x in zip(SKIRT_LEVELS, SKIRT_LEVELS[1:]):
+            assert sk.parent.get(h + x) == h + up, h + x
     for h in sk.helpers:
         if h.startswith(ARMPIT_BONE):
             assert sk.parent[h] == sk.parent[ARMPIT_DRIVER + h[-1]], h
     if sk.skirt:
-        sk.skirt_cloth = _panel_cloth(sk, glb, sk.skirt + [h + ".001" for h in sk.skirt])
+        sk.skirt_cloth = _panel_cloth(sk, glb, [h + x for h in sk.skirt for x in SKIRT_LEVELS])
 
 
 def _panel_cloth(sk: "Skeleton", glb: Path, bones: list) -> dict:
@@ -2518,9 +2522,11 @@ def _rot_about(C: np.ndarray, pivot: np.ndarray, axis: np.ndarray, ang: float) -
     return pivot + v * c + np.cross(axis, v) * s + np.outer(v @ axis, axis) * (1.0 - c)
 
 
-def _swing(C0: np.ndarray, place, A: np.ndarray, B: np.ndarray, A0: np.ndarray, B0: np.ndarray) -> float:
-    """Least angle in [0, SKIRT_MAX_SWING] at which the cloth `place(angle)` keeps its rest clearance from the legs
-    (see SKIRT_SLACK): coarse steps, then bisection; when no angle clears, the one that comes nearest."""
+def _swing(C0: np.ndarray, place, A: np.ndarray, B: np.ndarray, A0: np.ndarray, B0: np.ndarray,
+           top: float | None = None) -> float:
+    """Least angle in [0, top] (default SKIRT_MAX_SWING) at which the cloth `place(angle)` keeps its rest clearance
+    from the legs (see SKIRT_SLACK): coarse steps (the last one at `top`), then bisection; when no angle clears, the
+    one that comes nearest."""
     if not len(C0):
         return 0.0
     need = np.minimum(_seg_dist(C0, A0, B0), SKIRT_CLEAR) - SKIRT_SLACK
@@ -2530,12 +2536,12 @@ def _swing(C0: np.ndarray, place, A: np.ndarray, B: np.ndarray, A0: np.ndarray, 
 
     if margin(0.0) >= 0.0:
         return 0.0
-    top = math.radians(SKIRT_MAX_SWING)
+    top = math.radians(SKIRT_MAX_SWING) if top is None else top
     step = math.radians(SKIRT_GRID)
     best, best_m = 0.0, margin(0.0)
     lo = 0.0
-    ang = step
-    while ang <= top + 1e-9:
+    ang = min(step, top)
+    while True:
         m = margin(ang)
         if m >= 0.0:
             hi = ang
@@ -2549,16 +2555,44 @@ def _swing(C0: np.ndarray, place, A: np.ndarray, B: np.ndarray, A0: np.ndarray, 
         if m > best_m:
             best, best_m = ang, m
         lo = ang
-        ang += step
-    return best
+        if ang >= top - 1e-9:
+            return best
+        ang = min(ang + step, top)
+
+
+def _skirt_chain(sk: "Skeleton", h: str) -> tuple:
+    """(heads, rest axes) of panel `h`'s bones (SKIRT_LEVELS), relative to the hips joint in the rest pelvis frame."""
+    rq_h = sk.rest_q[HIPS]
+    up = np.array([0.0, 1.0, 0.0])
+    heads, axes = [], []
+    g, p = rq_h, np.zeros(3)
+    for x in SKIRT_LEVELS:
+        p = p + qrot(g, sk.rest_t[h + x])
+        g = qmul(g, sk.rest_q[h + x])
+        heads.append(p)
+        axes.append(qrot(g, up))
+    return heads, axes
+
+
+def _skirt_heads_posed(heads: list, ax: np.ndarray, angs) -> list:
+    """The panel bones' heads (rest pelvis frame) with bone i swung angs[i] about `ax` (each from the vertical)."""
+    out = [heads[0]]
+    for i in range(1, len(heads)):
+        out.append(out[-1] + _rot_about(heads[i][None], heads[i - 1], ax, angs[i - 1])[0] - heads[i - 1])
+    return out
 
 
 def skirt_solve(sk: "Skeleton", g: dict, hips=None) -> dict:
-    """{upper panel bone: (outward axis, upper swing, lower swing, gather)} in the pelvis's frame, radians, for the
-    pose's global rotations g and hips offset `hips` (m, from rest; None = at rest). The gather is the lower panel's
-    length scale (SKIRT_GATHER_MIN..1) that keeps its cloth SKIRT_FLOOR above the floor: floor-length cloth that
-    cannot hang its full length (kneeling, crouching) pools on the ground rather than fanning out.
-    AshaStage and the cutscene stages run the same solve (game/characters/hero_helper_bones.gd)."""
+    """{upper panel bone: (outward axis, (swing of each of the SKIRT_LEVELS bones), gather)} in the pelvis's frame,
+    radians (each swing from the vertical), for the pose's global rotations g and hips offset `hips` (m, from rest;
+    None = at rest). The bones are solved from the hips down, each about its head as the bone above placed it: the
+    upper one against its own cloth; a middle one against its own cloth and all the cloth below it carried straight
+    (what M1-CHR-15's rigid lower bone did, so it clears the knee and leaves the bone below a straight line that
+    clears); the lowest one (M2-CHR-522) against its own cloth only, at the least swing from the vertical up to the
+    middle one's (it hangs back from the knee as far as the shin lets it, and never flares past the line above). The
+    gather is the lowest bone's length scale (SKIRT_GATHER_MIN..1) that keeps its cloth SKIRT_FLOOR above the floor:
+    floor-length cloth that cannot hang its full length (kneeling, crouching) pools on the ground rather than fanning
+    out. AshaStage and the cutscene stages run the same solve (game/characters/hero_helper_bones.gd)."""
     rq_h = sk.rest_q[HIPS]
     inv_dp = qinv(qmul(g[HIPS], qinv(rq_h)))  # the pelvis's turn: the skirt is solved in the pelvis's frame
     A, B = _leg_segments(sk, g)
@@ -2572,43 +2606,48 @@ def skirt_solve(sk: "Skeleton", g: dict, hips=None) -> dict:
         sk._rest_legs = _leg_segments(sk, g0)
     A0, B0 = sk._rest_legs
     down = np.array([0.0, -1.0, 0.0])
-    tops, knees, axes, us = [], [], [], []
+    chains, axes, us = [], [], []
     for h in sk.skirt:
-        top = qrot(rq_h, sk.rest_t[h])  # the panel's pivot, relative to the hips joint (rest pelvis frame)
-        tops.append(top)
-        knees.append(top + qrot(qmul(rq_h, sk.rest_q[h]), sk.rest_t[h + ".001"]))  # the lower bone's head at rest
+        chains.append(_skirt_chain(sk, h))
+        top = chains[-1][0][0]  # the panel's pivot, relative to the hips joint (rest pelvis frame)
         u = np.array([top[0], 0.0, top[2]])
         us.append(u / np.linalg.norm(u))
         axes.append(np.cross(down, us[-1]))
-    # neighbouring panels share the cloth between them: neither may lag the other by more than SKIRT_LAG per 45 deg
+    # neighbouring panels share the cloth between them: neither may lag the other by more than SKIRT_LAG per 45 deg,
+    # at each level
     lag = math.radians(SKIRT_LAG) / (math.pi / 4)
     apart = np.arccos(np.clip(np.array(us) @ np.array(us).T, -1.0, 1.0))
-    a1 = np.array([_swing(sk.skirt_cloth[h], lambda ang, C=sk.skirt_cloth[h], t=t, ax=ax: _rot_about(C, t, ax, ang),
-                          A, B, A0, B0) for h, t, ax in zip(sk.skirt, tops, axes)])
-    a1 = np.minimum((a1[None, :] - lag * apart).max(axis=1), math.radians(SKIRT_MAX_SWING))
-    a2 = []
-    for h, t, k, ax, x1 in zip(sk.skirt, tops, knees, axes, a1):
-        C2 = sk.skirt_cloth[h + ".001"]
-        tip = _rot_about(k[None], t, ax, x1)[0]
-        a2.append(_swing(C2, lambda ang, C2=C2, k=k, ax=ax, tip=tip: _rot_about(C2, k, ax, ang) + (tip - k),
-                         A, B, A0, B0))
-    a2 = np.minimum((np.array(a2)[None, :] - lag * apart).max(axis=1), math.radians(SKIRT_MAX_SWING))
+    angs = [[] for _ in sk.skirt]
+    for lv, x in enumerate(SKIRT_LEVELS):
+        a = []
+        for i, (h, (heads, _), ax) in enumerate(zip(sk.skirt, chains, axes)):
+            last = lv == len(SKIRT_LEVELS) - 1
+            C = np.concatenate([sk.skirt_cloth[h + y] for y in (SKIRT_LEVELS[lv:] if 0 < lv and not last else (x,))])
+            k = heads[lv]
+            at = _skirt_heads_posed(heads[:lv + 1], ax, angs[i])[lv]  # where the bones above put this one's head
+            a.append(_swing(C, lambda ang, C=C, k=k, ax=ax, at=at: _rot_about(C, k, ax, ang) + (at - k),
+                            A, B, A0, B0, angs[i][-1] if last and lv else None))
+        a = np.minimum((np.array(a)[None, :] - lag * apart).max(axis=1), math.radians(SKIRT_MAX_SWING))
+        for i in range(len(sk.skirt)):
+            angs[i].append(float(a[i]))
     dp = qmul(g[HIPS], qinv(rq_h))  # back from the pelvis's frame to the skeleton's
     base_y = float(sk.g_t[HIPS][1]) + (0.0 if hips is None else float(hips[1]))
-    up = np.array([0.0, 1.0, 0.0])
     gathers = []
-    for h, t, k, ax, x1, x2 in zip(sk.skirt, tops, knees, axes, a1, a2):
-        bone = qrot(qmul(rq_h, qmul(sk.rest_q[h], sk.rest_q[h + ".001"])), up)  # the lower bone's rest axis
-        V = sk.skirt_cloth[h + ".001"] - k
+    last = SKIRT_LEVELS[-1]
+    for h, (heads, baxes), ax, an in zip(sk.skirt, chains, axes, angs):
+        k = heads[-1]  # the lowest bone's head at rest, its axis, and where the bones above put the head
+        bone = baxes[-1]
+        tip = _skirt_heads_posed(heads, ax, an)[-1]
+        x2 = an[-1]
+        V = sk.skirt_cloth[h + last] - k
         # elementwise only (no dot products): the same bits on every numpy SIMD path
         along = (V[:, 0] * bone[0] + V[:, 1] * bone[1] + V[:, 2] * bone[2])[:, None] * bone[None, :]
-        tip = _rot_about(k[None], t, ax, x1)[0]
         c2, s2 = math.cos(x2), math.sin(x2)
         x, y, z, w = (float(c) for c in dp)
         ry = (2.0 * (x * y + w * z), 1.0 - 2.0 * (x * x + z * z), 2.0 * (y * z - w * x))  # dp's matrix, row y
 
         def low(sc: float, V=V, along=along, ax=ax, tip=tip, c2=c2, s2=s2, ry=ry) -> float:
-            v = V + (sc - 1.0) * along  # Rodrigues about the knee, elementwise
+            v = V + (sc - 1.0) * along  # Rodrigues about the bone's head, elementwise
             va = v[:, 0] * ax[0] + v[:, 1] * ax[1] + v[:, 2] * ax[2]
             cr = np.stack([ax[1] * v[:, 2] - ax[2] * v[:, 1], ax[2] * v[:, 0] - ax[0] * v[:, 2],
                            ax[0] * v[:, 1] - ax[1] * v[:, 0]], axis=1)
@@ -2617,7 +2656,7 @@ def skirt_solve(sk: "Skeleton", g: dict, hips=None) -> dict:
 
         sc = 1.0
         if len(V) and x2 > SKIRT_OVER_FROM:  # lying out over the legs: what runs past them would fall, so gather it
-            d = _rot_about(bone[None], np.zeros(3), ax, x2)[0]  # the lower panel's posed direction
+            d = _rot_about(bone[None], np.zeros(3), ax, x2)[0]  # the lowest bone's posed direction
             reach = 0.0  # how far along it the legs reach (their points beside the panel)
             for f in range(SKIRT_SUPPORT_STEPS + 1):
                 Q = A + (B - A) * (f / SKIRT_SUPPORT_STEPS) - tip
@@ -2625,7 +2664,7 @@ def skirt_solve(sk: "Skeleton", g: dict, hips=None) -> dict:
                 proj = Q[:, 0] * d[0] + Q[:, 1] * d[1] + Q[:, 2] * d[2]
                 if (side < SKIRT_SUPPORT_SIDE).any():
                     reach = max(reach, float(proj[side < SKIRT_SUPPORT_SIDE].max()))
-            full = float((V[:, 0] * bone[0] + V[:, 1] * bone[1] + V[:, 2] * bone[2]).max())  # the panel's length
+            full = float((V[:, 0] * bone[0] + V[:, 1] * bone[1] + V[:, 2] * bone[2]).max())  # the bone's cloth length
             want = min(1.0, max(SKIRT_GATHER_MIN, (reach + SKIRT_OVER_MARGIN) / max(full, 1e-6)))
             sc = 1.0 - smooth(float(x2 - SKIRT_OVER_FROM) / SKIRT_OVER_EASE) * (1.0 - want)
         if len(V) and low(sc) < SKIRT_FLOOR:
@@ -2641,7 +2680,7 @@ def skirt_solve(sk: "Skeleton", g: dict, hips=None) -> dict:
                         hi_s = mid
                 sc = lo_s
         gathers.append(sc)
-    return {h: (ax, float(x1), float(x2), sc) for h, ax, x1, x2, sc in zip(sk.skirt, axes, a1, a2, gathers)}
+    return {h: (ax, tuple(an), sc) for h, ax, an, sc in zip(sk.skirt, axes, angs, gathers)}
 
 
 def helper_pose(sk: "Skeleton", g: dict, out: dict, hips=None) -> None:
@@ -2664,15 +2703,15 @@ def helper_pose(sk: "Skeleton", g: dict, out: dict, hips=None) -> None:
     rq_h = sk.rest_q[HIPS]
     scales = out.setdefault(SCALE_KEY, {})
     sk.last_skirt = skirt_solve(sk, g, hips)  # prop_pivot poses the cloth from the same solve
-    for h, (axis, a1, a2, sc) in sk.last_skirt.items():
-        lo = h + ".001"
+    for h, (axis, angs, sc) in sk.last_skirt.items():
         flare = 1.0 + SKIRT_FLARE * (1.0 - sc)  # pooled cloth spreads a little sideways
-        scales[lo] = (round(flare, 6), round(sc, 6), round(flare, 6))
-        g1 = qmul(rq_h, sk.rest_q[h])  # the upper bone's rest rotation in the pelvis's frame
-        loc1 = qmul(qinv(rq_h), qmul(qaxis(axis, math.degrees(a1)), g1))
-        out[h] = loc1 / np.linalg.norm(loc1)
-        loc2 = qmul(qinv(g1), qmul(qaxis(axis, math.degrees(a2 - a1)), qmul(g1, sk.rest_q[lo])))
-        out[lo] = loc2 / np.linalg.norm(loc2)
+        scales[h + SKIRT_LEVELS[-1]] = (round(flare, 6), round(sc, 6), round(flare, 6))
+        gp, prev = rq_h, 0.0  # the parent's rest rotation in the pelvis's frame, and its swing
+        for x, ang in zip(SKIRT_LEVELS, angs):
+            gr = qmul(gp, sk.rest_q[h + x])  # this bone's rest rotation in the pelvis's frame
+            loc = qmul(qinv(gp), qmul(qaxis(axis, math.degrees(ang - prev)), gr))
+            out[h + x] = loc / np.linalg.norm(loc)
+            gp, prev = gr, ang
 
 
 def helper_locals(sk: "Skeleton", local: dict) -> dict:
@@ -3237,11 +3276,11 @@ def _skirt_cloth_posed(sk: "Skeleton", g: dict, hips) -> np.ndarray:
     dp = qmul(g[HIPS], qinv(rq_h))
     base = sk.rest_t[HIPS] + (np.zeros(3) if hips is None else np.asarray(hips, dtype=float))
     pts = []
-    for h, (ax, a1, a2, _) in sk.last_skirt.items():
-        t = qrot(rq_h, sk.rest_t[h])
-        k = t + qrot(qmul(rq_h, sk.rest_q[h]), sk.rest_t[h + ".001"])
-        tip = _rot_about(k[None], t, ax, a1)[0]
-        pts += [_rot_about(sk.skirt_cloth[h], t, ax, a1), _rot_about(sk.skirt_cloth[h + ".001"], k, ax, a2) + (tip - k)]
+    for h, (ax, angs, _) in sk.last_skirt.items():
+        heads = _skirt_chain(sk, h)[0]
+        at = _skirt_heads_posed(heads, ax, angs)
+        pts += [_rot_about(sk.skirt_cloth[h + x], k, ax, ang) + (p - k)
+                for x, k, p, ang in zip(SKIRT_LEVELS, heads, at, angs)]
     P = np.concatenate(pts)
     x, y, z, w = (float(c) for c in dp)  # the pelvis's turn as a matrix, applied elementwise (same bits on any SIMD)
     R = ((1 - 2 * (y * y + z * z), 2 * (x * y - z * w), 2 * (x * z + y * w)),
