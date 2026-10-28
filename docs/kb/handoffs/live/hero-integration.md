@@ -568,3 +568,11 @@ gdformat, taskboard --check, validate_data, a full suite on this branch and on t
 attribution above). Skipped: screenshots (no rendered change since the approved 1c9bf8b render).
 
 MERGE-READY @ 44295d79: as above, and the runner's leak check reports (LEAK lines) and frees, without failing (M3-HER-1130), so no other track goes red. Checks: the leak probe (a leak is freed and reported; the summary still parses for ci_local.sh and run_coverage.py), gdlint.
+
+### M3-HER-100 (slice-polish: vigil field bodies), 2026-10-28 ~00:45
+- **Liss: DONE on this branch** (`field.heroes.liss` since 1f190eb8). On a scratch merge of this branch, claude/characters
+  @ 24dca3d1 and claude/m2-slice, `dress_vigils()` gives Liss her body and her capsule goes. Checks: prologue 7/0
+  without m2-slice, hero_field_actor 13/0.
+- **The seam that merge shows:** slice-polish's `test_a_vigil_takes_its_body_when_its_hero_has_one` asserts Liss's
+  capsule stays. Filed **M3-HER-1131** (one line: erase liss and pell from the test's private data).
+- **Kerrid, Pell: BLOCKED.** No models yet (M3-CHR-505, M3-CHR-506). Each is one row the day they land.
