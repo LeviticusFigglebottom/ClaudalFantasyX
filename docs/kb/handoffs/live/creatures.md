@@ -752,3 +752,9 @@ Merged `origin/gpu/gate-big14-shots` and the integration branch, then fixed on t
   - Godot: creature 84/0 (0 left), vowbound 87/0 (1 left: test_battle_vowbound, battle UI's), villager 33/0, crowd 6/0, haluna 65/0, field_npc 10/0, portrait 21/0, qa_capsules 2/3 (pell only).
   - Blender verify for avalanche_ram: identical ×3 paths.
   - validate_data, lint and format.
+- **Battle suite (merged tree): 790 run, 3 failed, all from the gate's own list, none ours:**
+  - test_battle_act1_ability_vfx (eight foe skills with no Act I effect, M3-BPR-420 and M4-C11-03);
+  - test_battle_party_stand_ins (Liss's timeline tint);
+  - test_battle_result_motion.
+  - Wildlife 14/0, npc 10/0.
+- **MERGE-READY @ (this push): the big14 gate fixes above.**
