@@ -786,7 +786,7 @@ def build_hit(name: str = "hit", side: float = 1.0, amp: float = 1.0) -> ck.Clip
 def build_defend() -> ck.Clip:
     """The wings close in front of him: each pair swings forward round the vertical and the lower leaves fold in."""
     c = ck.Clip("defend", DEFEND_SEC)
-    closed = ((22.0, 30.0), (50.0, 40.0), (40.0, 34.0))
+    closed = ((12.0, 18.0), (80.0, 70.0), (0.0, 0.0))
     for t, (sp, tn, fd), ar in ((0.0, ((0, 0), (0, 0), (0, 0)), 0.0), (0.3, closed, 1.0), (0.85, closed, 1.0),
                                 (DEFEND_SEC, ((0, 0), (0, 0), (0, 0)), 0.0)):
         wing_pose(c, t, spread=sp, turn=tn, fold=fd)

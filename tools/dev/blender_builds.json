@@ -879,6 +879,16 @@
         ["{blender}", "--python", "assets_src/creatures/virel/build_virel.py", "--", "--out", "assets/creatures/virel/virel.glb"],
         ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "virel"]
       ]
+    },
+    {
+      "id": "creature_ethren",
+      "owner": "character",
+      "sources": ["assets_src/creatures/ethren/**", "assets_src/creatures/common/**"],
+      "outputs": ["assets/creatures/ethren/*.glb", "assets/creatures/ethren/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/creatures/ethren/build_ethren.py", "--", "--out", "assets/creatures/ethren/ethren.glb"],
+        ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "ethren"]
+      ]
     }
 ]
 }
