@@ -16,8 +16,8 @@ Branch `claude/creatures-b` (from integration bd3ab5b, with claude/creatures 851
   `vfx_<name>` bones).
 
 ## In progress
-- A last minor-polish worktree agent: the Hullgnaw's neck gloss, the Matron's big belly cells, Ilun's pale near wing,
-  Kahre's wrist seam. Merge it after viewing its renders.
+- None. (The minor-polish round merged at b4ee2492.)
+
 
 ## Exact next step
 1. Merge the minor-polish agent's branch (view its renders first), run `--filter=creature_bosses`, `creature`,
