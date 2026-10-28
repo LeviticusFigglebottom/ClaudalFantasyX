@@ -8,6 +8,33 @@ The gap (the human's playtest note): battles had no action animation. This track
 Session `session_015hKkhtpX67kS4yZeA8AAhv`. Integration branch `claude/undertow-lead-handoff-ze8rrn` merged in
 (c6a960ab).
 
+**2026-10-28 04:3x: big13 (90ecee18) merged in at 5baf9952. M3-BPR-423 boss-intro hero shots @ 59edc9b9 (the Lead's
+03:41 items, ahead of the rest of the queue).**
+- **Merge notes:**
+  - Shared files resolved by union.
+  - Baselines take the gate's.
+  - `battle_choreo.gd` keeps BattlePhaseLooks; the barks are now attached by the controller (ui's).
+  - `battle_sandbox.json` keeps Ysolde's actor plus Kerrid's and Liss's rows.
+- **Hero shots (`BattleBossHeroShot`, choreo.json `boss_intro.hero`):** a low lens on the viewer's side looks up at
+  the boss, at the biggest fill that holds.
+  - The upper body stays clear of the card; the feet may pass behind it.
+  - Nothing may stand between the lens and the boss: no arena mesh, which fixes Hullgnaw's rail, and no hero.
+  - Heroes are off frame or small, and clear of the timeline.
+  - The old corner test let a hero filling the lens pass as "off screen". The hero shot tests the projected rectangle
+    instead.
+  - The Inquisitor keeps the fitted shot (`hero: false`) until his model lands.
+- SELF-RENDERED @ 59edc9b9: the seven battle_boss_intro_* shots, all viewed. Nothing reads wrong.
+  - Hullgnaw: arched above the card, Rhen on the deck, no rail. rmse 0.298.
+  - Drownbell: the bell fills the frame. 0.202.
+  - Matron: three-quarter profile with the party at the right. 0.118.
+  - Hermit: close and low. 0.038.
+  - Reach: towering over a tiny party on the wall-head. 0.089.
+  - Wraith: centred above the card, still thin and dark on its night deck. 0.046.
+  - Inquisitor: PASS at 0.003 (unchanged).
+  - **For the gate: re-approve the six moved baselines.**
+- Checks: `--filter=boss_intro` 21/0 (3 tests updated to the hero contract, 1 new), gdlint, gdformat, validate_data
+  and taskboard clean.
+
 **FAST-TRACK MERGE-READY @ 4e89c967: M3-BPR-404 boss-intro framing (the human's "Hullgnaw framed too close").**
 - **Cherry-pick exactly these two commits, in order:** `269054a3 4e89c967`. They touch only
   battle_boss_intro.gd, choreo.json (boss_intro), test_battle_boss_intro.gd, the 404 task file, one doc section and
