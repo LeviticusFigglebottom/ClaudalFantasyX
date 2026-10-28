@@ -274,6 +274,98 @@ class Crowd(unittest.TestCase):
             self.assertLess(size, 3_000_000, f"{bid}: {size} bytes")
 
 
+class SkinClearance(unittest.TestCase):
+    """M3-CRE-662: cloth never reads as skin. One metric (vn.skin_delta_e) for the generator and the validator, a
+    floor calibrated on the palette and the crowd's skin range, no silent fallback."""
+
+    def setUp(self) -> None:
+        self.ranges = _load(vn.CROWD_RANGES)
+        self.clear = self.ranges["skin_clearance"]
+        self.pal = {k: v["hex"] for k, v in _load(vn.PALETTE_FILE)["swatches"].items()}
+
+    def _d(self, cloth: str, skin: str) -> float:
+        return vn.skin_delta_e(self.pal.get(cloth, cloth), skin, self.clear["k_l"], self.clear["k_h"])
+
+    def _skins(self) -> list[str]:
+        out = set()
+        for c in self.ranges["communities"].values():
+            a, b = (vn._rgb(h) for h in c["skin"])
+            for t in (0.0, 0.5, 1.0):
+                out.add("#" + "".join(f"{round(x + (y - x) * t):02X}" for x, y in zip(a, b)))
+        return sorted(out)
+
+    def test_lab_and_cie76(self) -> None:
+        for hex_, lab in (("#FFFFFF", (100.0, 0.0, 0.0)), ("#FF0000", (53.24, 80.09, 67.20)),
+                          ("#000000", (0.0, 0.0, 0.0))):
+            for got, want in zip(vn.srgb_to_lab(hex_), lab):
+                self.assertAlmostEqual(got, want, delta=0.05, msg=hex_)
+        for a, b in (("#C9B48E", "#B9876A"), ("#5E6E80", "#74472E"), ("#E2B496", "#C4977A")):
+            la, lb = vn.srgb_to_lab(a), vn.srgb_to_lab(b)
+            cie76 = sum((x - y) ** 2 for x, y in zip(la, lb)) ** 0.5
+            self.assertAlmostEqual(vn.skin_delta_e(a, b, 1.0, 1.0), cie76, places=6, msg="unit weights are CIE76")
+
+    def test_the_floor_separates_the_calibration(self) -> None:
+        """Grey on tan and the strong colours clear on every skin; peach, sand near the skin's hue and the review's
+        two pale tops (M3-CRE-659 crowd_lineup_a) do not."""
+        cal, floor, skins = self.clear["calibration"], self.clear["floor"], self._skins()
+        for c in cal["pass"]:
+            for s in skins:
+                self.assertGreaterEqual(self._d(c, s), floor, f"{c} on {s}")
+        for c, s in cal["pass_pairs"]:
+            self.assertGreaterEqual(self._d(c, s), floor, f"{c} on {s}")
+        for c, s in cal["fail_pairs"]:
+            self.assertLess(self._d(c, s), floor, f"{c} on {s}")
+        greys = [self._d(g, s) for g in ("#5A5A5A", "#8A8A8A", "#B0B0B0") for s in skins]
+        self.assertGreater(min(greys), floor, "a neutral grey on any crowd skin")
+
+    def test_every_committed_cloth_tint_clears(self) -> None:
+        people = _load(vn.CROWD_FILE)["people"]
+        self.assertEqual(vn.skin_errors(ROOT, people), [])
+        bodies = {p["body"] for p in people}
+        for bid in _load(vn.CROWD_FILE)["bodies"]:
+            self.assertIn(bid, bodies, "every body's default tints are checked through a wearer")
+
+    def test_tints_near_skin_are_caught(self) -> None:
+        crowd = _load(vn.CROWD_FILE)
+        p = copy.deepcopy(crowd["people"][0])
+        params = json.loads((ROOT / vn.CROWD_PARAMS.format(id=p["body"])).read_text(encoding="utf-8"))
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / vn.CROWD_RANGES).parent.mkdir(parents=True)
+            (root / vn.CROWD_RANGES).write_text(json.dumps(self.ranges), encoding="utf-8")
+            target = root / vn.CROWD_PARAMS.format(id=p["body"])
+            target.parent.mkdir(parents=True, exist_ok=True)
+            params["_tints"]["cloth_b"] = params["skin_hex"]
+            target.write_text(json.dumps(params), encoding="utf-8")
+            p["tints"]["cloth_a"] = params["skin_hex"]
+            errs = " | ".join(vn.skin_errors(root, [p]))
+        self.assertIn(f"{p['id']}: cloth_a", errs)
+        self.assertIn("_tints: cloth_b", errs)
+        self.assertIn("reads as skin", errs)
+
+    def test_the_generator_widens_and_never_keeps_a_miss(self) -> None:
+        sys.path.insert(0, str(ROOT / "assets_src" / "crowd"))
+        import gen_crowd
+
+        pal = gen_crowd.Palette()
+        skin = "#B9876A"
+        peach = [["sand_cloth", "roof_clay", 0.45, 0.55]]  # every own draw lands on the skin
+        rng = gen_crowd.rng_for("test")
+        # the other sets first
+        c = gen_crowd.draw_cloth(pal, {"a": peach, "b": [["indigo_dye", "indigo_dye", 0.0, 0.0]]}, "a", rng, skin,
+                                 self.clear, "test person")
+        self.assertEqual(c, self.pal["indigo_dye"])
+        # then a darker or lighter mix of the slot's own swatches
+        c = gen_crowd.draw_cloth(pal, {"a": peach}, "a", rng, skin, self.clear, "test person")
+        self.assertGreaterEqual(self._d(c, skin), self.clear["floor"])
+        self.assertLessEqual(vn.mix_distance(vn._rgb(c), vn.tint_swatches(ROOT)), vn.TINT_TOLERANCE, "a palette mix")
+        # and an error naming the person when nothing clears
+        impossible = dict(self.clear, floor=1000.0)
+        with self.assertRaises(SystemExit) as ctx:
+            gen_crowd.draw_cloth(pal, {"a": peach}, "a", rng, skin, impossible, "pemakar_folder")
+        self.assertIn("pemakar_folder", str(ctx.exception))
+
+
 class TuningMistakes(unittest.TestCase):
     def test_ranges_in_order_and_sections_present(self) -> None:
         data = _load(vn.NPC_FILE)

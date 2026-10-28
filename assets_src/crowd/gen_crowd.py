@@ -31,6 +31,9 @@ import numpy as np
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
+sys.path.insert(0, str(ROOT / "tools"))
+import validate_npc as vn  # noqa: E402  (skin_delta_e: the one metric the generator and the validator share)
+
 RANGES = HERE / "ranges.json"
 ROSTER = ROOT / "game" / "data" / "world" / "npc" / "crowd.json"
 PARAMS_DIR = HERE / "params"
@@ -98,21 +101,36 @@ def draw_mix(pal: Palette, specs: list, rng: np.random.Generator) -> tuple[str, 
     return pal.mix(a, b, t), [a, b, t]
 
 
-SKIN_TRIES = 12
+def skin_d(clear: dict, cloth: str, skin: str) -> float:
+    return vn.skin_delta_e(cloth, skin, float(clear["k_l"]), float(clear["k_h"]))
 
 
-def draw_cloth(pal: Palette, specs: list, rng: np.random.Generator, skin: str, min_d: float) -> str:
-    """A cloth mix at least `min_d` (sRGB) from the wearer's skin, so cloth never reads as bare skin (a sand-laterite
-    trouser on a warm brown leg did); else the farthest of SKIN_TRIES draws."""
-    best, best_d = "", -1.0
-    for _ in range(SKIN_TRIES):
-        c = draw_mix(pal, specs, rng)[0]
-        d = float(np.linalg.norm(rgb_of(c) - rgb_of(skin)))
-        if d >= min_d:
-            return c
-        if d > best_d:
-            best, best_d = c, d
-    return best
+def draw_cloth(pal: Palette, sets: dict, key: str, rng: np.random.Generator, skin: str, clear: dict,
+               who: str) -> str:
+    """A cloth mix for set `key` at least clear["floor"] (skin_delta_e, ranges.json skin_clearance) from the
+    wearer's skin, so cloth never reads as bare skin. Widening, in order, never keeping a miss: `tries` draws from
+    the slot's own mixes; as many from each of the community's other sets; each of the slot's swatches mixed toward
+    the dark or the light swatch (away from the skin's lightness first) by each widening step. None: an error
+    naming `who`."""
+    floor = float(clear["floor"])
+    tries = int(clear["tries"])
+    for k in [key] + sorted(s for s in sets if s != key):
+        for _ in range(tries):
+            c = draw_mix(pal, sets[k], rng)[0]
+            if skin_d(clear, c, skin) >= floor:
+                return c
+    w = clear["widen"]
+    skin_l = vn.srgb_to_lab(skin)[0]
+    swatches = list(dict.fromkeys(s for spec in sets[key] for s in spec[:2]))
+    for step in w["steps"]:
+        for s in swatches:
+            lighter = vn.srgb_to_lab(to_hex(pal.rgb(s)))[0] >= skin_l
+            tones = (w["light"], w["dark"]) if lighter else (w["dark"], w["light"])
+            for tone in tones:
+                c = pal.mix(s, tone, float(step))
+                if skin_d(clear, c, skin) >= floor:
+                    return c
+    raise SystemExit(f"gen_crowd: no cloth for {who} ({key}) clears skin_delta_e {floor} from skin {skin}")
 
 
 # ---------------------------------------------------------------------------------------------
@@ -305,9 +323,9 @@ def body_params(ranges: dict, pal: Palette, bid: str, plan: dict, face: dict) ->
     skin["seed"] = seed_of(bid, "skin") % 1000
     hair, hair_mix = hair_block(ranges, pal, bid, plan, comm, rng)
     iris_a, iris_b = ranges["iris"][0]
-    skin_d = float(ranges["assign"]["skin_min_distance"])
     trng = rng_for(bid, "tints")  # its own stream: the default tints never move the body draws
-    tints = {s: draw_cloth(pal, comm["cloth"][CLOTH_KEYS[s]], trng, skin_hex, skin_d) for s in TINT_SLOTS}
+    tints = {s: draw_cloth(pal, comm["cloth"], CLOTH_KEYS[s], trng, skin_hex, ranges["skin_clearance"],
+                           f"body {bid}") for s in TINT_SLOTS}
     tints["leather"] = LEATHER
     pr = ranges["persona"][band]
     persona = {"sway": round(float(rng.uniform(*pr["sway"])), 2), "lean": round(float(rng.uniform(*pr["lean"])), 2),
@@ -419,11 +437,11 @@ def hair_tint(ranges: dict, pal: Palette, body: dict, rng: np.random.Generator) 
 def person_tints(ranges: dict, pal: Palette, person: dict, body: dict, others: list[dict]) -> dict:
     sets = cloth_sets(ranges, person)
     need = float(ranges["assign"]["tint_min_distance"])
-    skin_d = float(ranges["assign"]["skin_min_distance"])
     best, best_d = None, -1.0
     for attempt in range(int(ranges["assign"]["tint_tries"])):
         rng = rng_for(person["id"], "tints", attempt)
-        t = {s: draw_cloth(pal, sets[CLOTH_KEYS[s]], rng, body["skin"], skin_d) for s in TINT_SLOTS}
+        t = {s: draw_cloth(pal, sets, CLOTH_KEYS[s], rng, body["skin"], ranges["skin_clearance"], person["id"])
+             for s in TINT_SLOTS}
         t["hair"] = hair_tint(ranges, pal, body, rng)
         d = min([tint_distance(t, o) for o in others], default=1e9)
         if d >= need:

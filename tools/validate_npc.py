@@ -17,6 +17,10 @@
   cloth_a, cloth_b, cloth_c and hair, each a palette.json swatch or a two-swatch mix of the cloth, earth, stone,
   accent, material, vegetation and hair families; every person has exactly one row in their zone's file. Variety:
   no body twice in one zone, and two people anywhere on one body dress at least VARIETY_MIN apart.
+* Cloth never near skin (M3-CRE-662): every cloth tint, each person's and each body's default `_tints`
+  (assets_src/crowd/params/<body>.json), stands at least the `skin_clearance` floor of assets_src/crowd/ranges.json
+  from that body's skin, by skin_delta_e (CIELAB, lightness and hue weighted; gen_crowd.py draws with the same
+  function).
 """
 
 from __future__ import annotations
@@ -44,6 +48,16 @@ CLOTH_SLOTS = ("cloth_a", "cloth_b", "cloth_c")
 TINT_FAMILIES = {"cloth", "earth", "stone", "accent", "material", "vegetation", "hair"}
 TINT_TOLERANCE = 1.5  # sRGB 0-255 units off the nearest two-swatch mix (hex rounding)
 VARIETY_MIN = 24.0  # sRGB 0-255 distance: two people on one body differ by at least this in some cloth slot
+CROWD_RANGES = "assets_src/crowd/ranges.json"
+CROWD_PARAMS = "assets_src/crowd/params/{id}.json"
+# CIELAB from sRGB (D65): the sRGB transfer curve, the sRGB -> XYZ matrix, the D65 white, the CIE f(t) knee
+SRGB_KNEE = 0.04045
+SRGB_LINEAR_SLOPE = 12.92
+SRGB_OFFSET = 0.055
+SRGB_GAMMA = 2.4
+SRGB_TO_XYZ = ((0.4124564, 0.3575761, 0.1804375), (0.2126729, 0.7151522, 0.0721750), (0.0193339, 0.1191920, 0.9503041))
+D65_WHITE = (0.95047, 1.0, 1.08883)
+LAB_DELTA = 6.0 / 29.0
 PERSON_KEYS = ("id", "zone", "stage_actor", "role", "community", "age_band", "sex", "build", "body", "tints", "work")
 ROUTINE_SECTIONS = {
     "look": {"bones", "max_yaw_deg", "max_pitch_up_deg", "max_pitch_down_deg", "smoothing_sec",
@@ -241,6 +255,73 @@ def mix_distance(c: tuple, swatches: list[tuple]) -> float:
     return best
 
 
+def srgb_to_lab(hex_: str) -> tuple[float, float, float]:
+    """#RRGGBB -> CIELAB (L*, a*, b*) under D65."""
+    lin = []
+    for i in (1, 3, 5):
+        c = int(hex_[i:i + 2], 16) / 255.0
+        lin.append(c / SRGB_LINEAR_SLOPE if c <= SRGB_KNEE else ((c + SRGB_OFFSET) / (1.0 + SRGB_OFFSET)) ** SRGB_GAMMA)
+    xyz = [sum(SRGB_TO_XYZ[r][k] * lin[k] for k in range(3)) / D65_WHITE[r] for r in range(3)]
+    f = [t ** (1.0 / 3.0) if t > LAB_DELTA ** 3 else t / (3.0 * LAB_DELTA ** 2) + 4.0 / 29.0 for t in xyz]
+    return 116.0 * f[1] - 16.0, 500.0 * (f[0] - f[1]), 200.0 * (f[1] - f[2])
+
+
+def skin_delta_e(cloth: str, skin: str, k_l: float, k_h: float) -> float:
+    """How far a cloth colour reads from a skin colour: CIE76 ΔE split into its lightness, chroma and hue parts,
+    sqrt((k_l dL)^2 + dC^2 + (k_h dH)^2), dH the CIE metric hue difference. With k_l = k_h = 1 it is CIE76 itself;
+    k_l, k_h < 1 weigh the chroma step above the lightness and hue steps, so a cloth of the skin's own warmth reads
+    as skin over a wider band of lightness and hue. A neutral grey on tan clears on chroma; a peach or sand near the
+    skin's hue does not (calibration: assets_src/crowd/ranges.json skin_clearance)."""
+    l1, a1, b1 = srgb_to_lab(cloth)
+    l2, a2, b2 = srgb_to_lab(skin)
+    dc = (a1 * a1 + b1 * b1) ** 0.5 - (a2 * a2 + b2 * b2) ** 0.5
+    dh2 = max(0.0, (a1 - a2) ** 2 + (b1 - b2) ** 2 - dc * dc)
+    return ((k_l * (l1 - l2)) ** 2 + dc * dc + k_h * k_h * dh2) ** 0.5
+
+
+def skin_clearance(root: Path) -> dict:
+    """The `skin_clearance` block of the crowd ranges ({} when the generator is absent)."""
+    path = root / CROWD_RANGES
+    return _load(path, []).get("skin_clearance", {}) if path.exists() else {}
+
+
+def skin_errors(root: Path, people: list[dict]) -> list[str]:
+    """Cloth tints (the people's and the bodies' defaults) under the skin_clearance floor from the body's skin."""
+    clear = skin_clearance(root)
+    if not clear:
+        return []
+    floor, k_l, k_h = float(clear["floor"]), float(clear["k_l"]), float(clear["k_h"])
+    errs: list[str] = []
+    params: dict[str, dict] = {}
+
+    def body(bid: str) -> dict:
+        if bid not in params:
+            path = root / CROWD_PARAMS.format(id=bid)
+            params[bid] = _load(path, []) if path.exists() else {}
+        return params[bid]
+
+    def check(where: str, tints: dict, skin: str) -> None:
+        for slot in CLOTH_SLOTS:
+            hex_ = str(tints.get(slot, ""))
+            if _rgb(hex_) is None:
+                continue
+            d = skin_delta_e(hex_, skin, k_l, k_h)
+            if d < floor:
+                errs.append(f"{where}: {slot} {hex_} reads as skin on {skin} (ΔE {d:.1f} < {floor:.0f})")
+
+    seen: set[str] = set()
+    for p in people:
+        bid = str(p.get("body", ""))
+        skin = str(body(bid).get("skin_hex", ""))
+        if _rgb(skin) is None:
+            continue
+        if bid not in seen:
+            seen.add(bid)
+            check(CROWD_PARAMS.format(id=bid) + " _tints", body(bid).get("_tints", {}), skin)
+        check(f"{CROWD_FILE}: {p.get('id')}", p.get("tints", {}) if isinstance(p.get("tints"), dict) else {}, skin)
+    return errs
+
+
 def tint_distance(a: dict, b: dict) -> float:
     """The largest sRGB distance over the cloth slots: how far apart two people on one body dress."""
     out = 0.0
@@ -321,7 +402,7 @@ def crowd_errors(root: Path, locations: set[str]) -> list[str]:
     for pid in sorted(ids):
         if rows.get(pid, 0) != 1:
             errs.append(f"{CROWD_FILE}: {pid} has {rows.get(pid, 0)} zone rows (needs exactly 1)")
-    return errs + variety_errors(people)
+    return errs + variety_errors(people) + skin_errors(root, people)
 
 
 def npc_errors(root: Path) -> list[str]:

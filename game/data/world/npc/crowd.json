@@ -491,7 +491,7 @@
       "build": "heavy",
       "body": "crowd_man_heavy_b",
       "tints": {
-        "cloth_a": "#D1C0A1",
+        "cloth_a": "#D7C9AF",
         "cloth_b": "#34416D",
         "cloth_c": "#588AB1",
         "hair": "#241B15"
@@ -530,9 +530,9 @@
       "body": "crowd_girl_teen",
       "tints": {
         "cloth_a": "#A39F92",
-        "cloth_b": "#4D5C79",
-        "cloth_c": "#90C1BC",
-        "hair": "#241B15"
+        "cloth_b": "#59697E",
+        "cloth_c": "#9CCBC5",
+        "hair": "#251B15"
       },
       "work": "",
       "about": "The girl held at the brazier, her line-marks toward the iron (act1_ch06 W06)."
@@ -549,10 +549,10 @@
       "build": "medium",
       "body": "crowd_order_man",
       "tints": {
-        "cloth_a": "#EBE6DD",
-        "cloth_b": "#DDCEB0",
-        "cloth_c": "#2B3A6B",
-        "hair": "#221B16"
+        "cloth_a": "#EAE5DC",
+        "cloth_b": "#E9E4DC",
+        "cloth_c": "#D0AA57",
+        "hair": "#251B15"
       },
       "work": "",
       "about": "The Order clerk heating the brine-irons (act1_ch06 W06)."
@@ -570,9 +570,9 @@
       "body": "crowd_boy_small",
       "tints": {
         "cloth_a": "#9A9890",
-        "cloth_b": "#668371",
-        "cloth_c": "#A5D2CC",
-        "hair": "#261C15"
+        "cloth_b": "#6C7C69",
+        "cloth_c": "#AAD6D0",
+        "hair": "#201A16"
       },
       "work": "",
       "about": "One of the two wright children Kerrid lifts the hull-rib off (act1_ch06 B05)."
@@ -589,10 +589,10 @@
       "build": "tall",
       "body": "crowd_girl_tall",
       "tints": {
-        "cloth_a": "#BFAA86",
-        "cloth_b": "#4D5D79",
-        "cloth_c": "#9AC9C4",
-        "hair": "#2B1D14"
+        "cloth_a": "#8F918D",
+        "cloth_b": "#4B5B78",
+        "cloth_c": "#7CB1AD",
+        "hair": "#2E1E14"
       },
       "work": ""
     },
@@ -628,9 +628,9 @@
       "build": "lean",
       "body": "crowd_woman_lean_b",
       "tints": {
-        "cloth_a": "#B2A996",
-        "cloth_b": "#4E5E79",
-        "cloth_c": "#97C7C2",
+        "cloth_a": "#4E5E79",
+        "cloth_b": "#6A7E6B",
+        "cloth_c": "#92C3BE",
         "hair": "#2E1E14"
       },
       "work": "kneel_mourn",
@@ -648,10 +648,10 @@
       "build": "lean",
       "body": "crowd_man_lean_a",
       "tints": {
-        "cloth_a": "#8C8F8C",
-        "cloth_b": "#5A6A7E",
-        "cloth_c": "#8EC0BB",
-        "hair": "#231B16"
+        "cloth_a": "#97968F",
+        "cloth_b": "#6B7D6A",
+        "cloth_c": "#90C1BC",
+        "hair": "#251C15"
       },
       "work": "kneel_mourn",
       "about": "The `wrights` stage actor is a group: 'a dozen wrights kneel with their sleeves pushed up' at the waterline (act1_ch06 W06). Six crowd people kneel at it (the capsule's 0.9 m radius holds about six)."
@@ -669,8 +669,8 @@
       "body": "crowd_woman_medium_b",
       "tints": {
         "cloth_a": "#AAA394",
-        "cloth_b": "#4C5C79",
-        "cloth_c": "#A9D5CF",
+        "cloth_b": "#57677D",
+        "cloth_c": "#AAD6D0",
         "hair": "#241B15"
       },
       "work": "kneel_mourn",
@@ -688,10 +688,10 @@
       "build": "heavy",
       "body": "crowd_man_heavy_b",
       "tints": {
-        "cloth_a": "#B8AD98",
-        "cloth_b": "#5D6D80",
-        "cloth_c": "#95C5C0",
-        "hair": "#231B16"
+        "cloth_a": "#96958F",
+        "cloth_b": "#5A6A7E",
+        "cloth_c": "#87BAB6",
+        "hair": "#201A16"
       },
       "work": "kneel_mourn",
       "about": "The `wrights` stage actor is a group: 'a dozen wrights kneel with their sleeves pushed up' at the waterline (act1_ch06 W06). Six crowd people kneel at it (the capsule's 0.9 m radius holds about six)."
@@ -708,10 +708,10 @@
       "build": "heavy",
       "body": "crowd_elder_woman_b",
       "tints": {
-        "cloth_a": "#A89375",
-        "cloth_b": "#4B5A78",
-        "cloth_c": "#A5D2CC",
-        "hair": "#544F4A"
+        "cloth_a": "#90918D",
+        "cloth_b": "#717764",
+        "cloth_c": "#89BCB7",
+        "hair": "#3C3732"
       },
       "work": "kneel_mourn",
       "about": "The `wrights` stage actor is a group: 'a dozen wrights kneel with their sleeves pushed up' at the waterline (act1_ch06 W06). Six crowd people kneel at it (the capsule's 0.9 m radius holds about six)."
@@ -730,8 +730,8 @@
       "tints": {
         "cloth_a": "#E8E3D9",
         "cloth_b": "#89261C",
-        "cloth_c": "#33426E",
-        "hair": "#281C15"
+        "cloth_c": "#D0AA58",
+        "hair": "#291D15"
       },
       "work": "vigil",
       "about": "The beacon's tender at the spire top (act1_ch08)."
@@ -749,9 +749,9 @@
       "body": "crowd_boy_small",
       "tints": {
         "cloth_a": "#D6D5D1",
-        "cloth_b": "#495877",
-        "cloth_c": "#4A5272",
-        "hair": "#241B15"
+        "cloth_b": "#59697E",
+        "cloth_c": "#668370",
+        "hair": "#201A16"
       },
       "work": ""
     },
@@ -769,8 +769,8 @@
       "tints": {
         "cloth_a": "#DAD8D3",
         "cloth_b": "#455576",
-        "cloth_c": "#414B70",
-        "hair": "#241B15"
+        "cloth_c": "#454E71",
+        "hair": "#201A16"
       },
       "work": "",
       "about": "The kite children on the wall-head."
@@ -806,8 +806,8 @@
       "build": "tall",
       "body": "crowd_girl_tall",
       "tints": {
-        "cloth_a": "#BBAF97",
-        "cloth_b": "#50607A",
+        "cloth_a": "#CECECB",
+        "cloth_b": "#52617B",
         "cloth_c": "#2C3B6B",
         "hair": "#2D1E14"
       },
@@ -866,8 +866,8 @@
       "tints": {
         "cloth_a": "#D7D6D2",
         "cloth_b": "#505F7A",
-        "cloth_c": "#414B70",
-        "hair": "#281C15"
+        "cloth_c": "#658471",
+        "hair": "#261C15"
       },
       "work": "carry"
     },
@@ -903,8 +903,8 @@
       "body": "crowd_girl_small",
       "tints": {
         "cloth_a": "#C4B291",
-        "cloth_b": "#495977",
-        "cloth_c": "#33406D",
+        "cloth_b": "#4A5978",
+        "cloth_c": "#2D3B6B",
         "hair": "#201A16"
       },
       "work": "",
@@ -923,9 +923,9 @@
       "body": "crowd_elder_man_b",
       "tints": {
         "cloth_a": "#BCAF96",
-        "cloth_b": "#415074",
-        "cloth_c": "#2A3968",
-        "hair": "#4B4641"
+        "cloth_b": "#646D78",
+        "cloth_c": "#EAE6DD",
+        "hair": "#C4C0B9"
       },
       "work": "kneel_mourn",
       "about": "Mourners kneel facing the water at the Ebbing (bible section 4, Rites)."
@@ -943,9 +943,9 @@
       "body": "crowd_woman_medium_b",
       "tints": {
         "cloth_a": "#DFD6C3",
-        "cloth_b": "#3D4C72",
-        "cloth_c": "#DCD1BC",
-        "hair": "#271C15"
+        "cloth_b": "#6C6C6D",
+        "cloth_c": "#E2D9C9",
+        "hair": "#241B15"
       },
       "work": "kneel_mourn",
       "about": "Mourners kneel facing the water at the Ebbing (bible section 4, Rites)."
@@ -1041,10 +1041,10 @@
       "build": "lean",
       "body": "crowd_elder_man_a",
       "tints": {
-        "cloth_a": "#D4C4A7",
-        "cloth_b": "#4E80A5",
-        "cloth_c": "#4D83AD",
-        "hair": "#3D3733"
+        "cloth_a": "#E6DFD2",
+        "cloth_b": "#475071",
+        "cloth_c": "#3C78A8",
+        "hair": "#8C8781"
       },
       "work": "mend",
       "about": "The net lanes' menders, a pair."
@@ -1100,10 +1100,10 @@
       "build": "tall",
       "body": "crowd_boy_tall",
       "tints": {
-        "cloth_a": "#B6A180",
-        "cloth_b": "#6589A1",
-        "cloth_c": "#497384",
-        "hair": "#201A16"
+        "cloth_a": "#D9CCB5",
+        "cloth_b": "#6087A1",
+        "cloth_c": "#3F7AA9",
+        "hair": "#221A16"
       },
       "work": "",
       "about": "Diving off a cabin roof."
@@ -1122,8 +1122,8 @@
       "tints": {
         "cloth_a": "#D9CCB4",
         "cloth_b": "#295B3A",
-        "cloth_c": "#CD9F3D",
-        "hair": "#2B1D14"
+        "cloth_c": "#CC9E3D",
+        "hair": "#281C15"
       },
       "work": "haul"
     },
@@ -1140,9 +1140,9 @@
       "body": "crowd_woman_heavy",
       "tints": {
         "cloth_a": "#D4C09C",
-        "cloth_b": "#30643A",
-        "cloth_c": "#356D3A",
-        "hair": "#221B16"
+        "cloth_b": "#555B74",
+        "cloth_c": "#C39844",
+        "hair": "#211A16"
       },
       "work": "fold",
       "about": "Selling leaf-boats for Lanternfall."
@@ -1159,9 +1159,9 @@
       "build": "medium",
       "body": "crowd_man_medium_a",
       "tints": {
-        "cloth_a": "#D4BF9B",
-        "cloth_b": "#6E4227",
-        "cloth_c": "#2F643A",
+        "cloth_a": "#DDD2BE",
+        "cloth_b": "#2C5F3A",
+        "cloth_c": "#2C5F3A",
         "hair": "#201A16"
       },
       "work": "haul"
@@ -1180,8 +1180,8 @@
       "tints": {
         "cloth_a": "#D9CDB5",
         "cloth_b": "#28593A",
-        "cloth_c": "#CA9C3F",
-        "hair": "#413B36"
+        "cloth_c": "#30653A",
+        "hair": "#87827C"
       },
       "work": "fold",
       "about": "Folding leaf-boats (bible section 4)."
@@ -1200,8 +1200,8 @@
       "tints": {
         "cloth_a": "#E1D2B5",
         "cloth_b": "#232638",
-        "cloth_c": "#2E633A",
-        "hair": "#281C15"
+        "cloth_c": "#BC9349",
+        "hair": "#2B1D14"
       },
       "work": "fold"
     },
@@ -1238,8 +1238,8 @@
       "tints": {
         "cloth_a": "#E1D3B6",
         "cloth_b": "#242940",
-        "cloth_c": "#31663A",
-        "hair": "#201A16"
+        "cloth_c": "#7C1712",
+        "hair": "#231B16"
       },
       "work": "",
       "about": "At the terrace graves."
@@ -1258,7 +1258,7 @@
       "tints": {
         "cloth_a": "#D6C8AE",
         "cloth_b": "#24293E",
-        "cloth_c": "#32683A",
+        "cloth_c": "#BC9349",
         "hair": "#201A16"
       },
       "work": "mend"
@@ -1276,9 +1276,9 @@
       "body": "crowd_woman_medium_b",
       "tints": {
         "cloth_a": "#D1C0A2",
-        "cloth_b": "#30653A",
-        "cloth_c": "#C89C40",
-        "hair": "#281C15"
+        "cloth_b": "#5A5E75",
+        "cloth_c": "#B0251D",
+        "hair": "#221A16"
       },
       "work": "sweep"
     },
@@ -1315,7 +1315,7 @@
       "tints": {
         "cloth_a": "#E5DED1",
         "cloth_b": "#3A71A1",
-        "cloth_c": "#6592B5",
+        "cloth_c": "#CB9E3F",
         "hair": "#201A16"
       },
       "work": "fold",
@@ -1334,7 +1334,7 @@
       "body": "crowd_man_heavy_b",
       "tints": {
         "cloth_a": "#E8E3D9",
-        "cloth_b": "#314F80",
+        "cloth_b": "#B35139",
         "cloth_c": "#B32F24",
         "hair": "#241B15"
       },
@@ -1353,8 +1353,8 @@
       "body": "crowd_boy_small",
       "tints": {
         "cloth_a": "#E2D9C9",
-        "cloth_b": "#4C7987",
-        "cloth_c": "#437CAA",
+        "cloth_b": "#688043",
+        "cloth_c": "#D0A23A",
         "hair": "#201A16"
       },
       "work": ""
@@ -1391,9 +1391,9 @@
       "body": "crowd_elder_man_b",
       "tints": {
         "cloth_a": "#D0BE9E",
-        "cloth_b": "#52838C",
-        "cloth_c": "#417BA9",
-        "hair": "#D2CEC6"
+        "cloth_b": "#678043",
+        "cloth_c": "#5588B0",
+        "hair": "#AFABA4"
       },
       "work": "mend",
       "about": "The lane elder (ch07_bark_elder)."
@@ -1431,7 +1431,7 @@
       "tints": {
         "cloth_a": "#D6C8AE",
         "cloth_b": "#2F497A",
-        "cloth_c": "#5E8EB3",
+        "cloth_c": "#B43D2C",
         "hair": "#201A16"
       },
       "work": "fold"
@@ -1451,7 +1451,7 @@
         "cloth_a": "#6AA09C",
         "cloth_b": "#21222D",
         "cloth_c": "#BD964B",
-        "hair": "#281C15"
+        "hair": "#261C15"
       },
       "work": "vigil",
       "about": "Oruvel's side."
@@ -1470,8 +1470,8 @@
       "tints": {
         "cloth_a": "#649D99",
         "cloth_b": "#1F1D21",
-        "cloth_c": "#BE964A",
-        "hair": "#62381E"
+        "cloth_c": "#70A49F",
+        "hair": "#4C2D1A"
       },
       "work": "vigil"
     },
@@ -1489,8 +1489,8 @@
       "tints": {
         "cloth_a": "#5588B0",
         "cloth_b": "#D2C2A3",
-        "cloth_c": "#9F3C2B",
-        "hair": "#231B16"
+        "cloth_c": "#A3402E",
+        "hair": "#221B16"
       },
       "work": "vigil",
       "about": "Sorrin's side."
@@ -1508,9 +1508,9 @@
       "body": "crowd_man_lean_a",
       "tints": {
         "cloth_a": "#4B81AD",
-        "cloth_b": "#D4C4A8",
-        "cloth_c": "#A13E2D",
-        "hair": "#261C15"
+        "cloth_b": "#4D83AD",
+        "cloth_c": "#A23F2D",
+        "hair": "#211A16"
       },
       "work": "vigil"
     }
