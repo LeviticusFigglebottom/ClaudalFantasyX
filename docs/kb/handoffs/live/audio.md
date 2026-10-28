@@ -3,6 +3,20 @@
 ## NEW ACCOUNT (from 2026-10-25)
 Session `session_01Wmj8xaLtwcqiS3qwC6PciW`. Integration branch `claude/undertow-lead-handoff-ze8rrn`. Newest first.
 
+- **MERGE-READY: the Act II finals and the Kite foley are in Git LFS: 34 objects, 24.59 MiB** (25.8 MB). Pushed, with
+  `git lfs ls-files` checked and the remote blobs confirmed as pointers.
+  - `assets/audio/music/act2/`: the 12 zone finals and the four bosses' 2 stems each, 23.65 MiB.
+  - `assets/audio/sfx/act3/`: M3-AUD-859's Kite foley, 0.94 MiB.
+  - All have `.import` files (looped where their sidecar says) and PROVENANCE rows. All 56 files rendered byte-identical twice and meet their rules.
+  - music.json: the 12 zone rows now play `act2/<cue>.ogg`; the sketches stay committed, untouched, as fallbacks. There are new stem rows for mangrove_drowner, lamp_engine, avalanche_ram and wakefin.
+  - The bosses' encounter and phase rows wait for the fights; the intended rows are in each note. The Kite one-shots are in a new `sfx_act3.json`.
+  - Checks:
+    - test_audio_loudness, test_act2_finals and test_audio_data: OK.
+    - Godot `--filter=audio`: 171 run, 0 failed.
+    - validate_data: 0 errors.
+  - No Act I file was moved.
+  - **Next:** the Act III cues (8 cues, 10 files: hollowmere through kerrid_last_night), rendered alone, into `act3/`.
+
 - **LFS is live (Lead 00:20):** integration is merged and `git lfs install --local` is done.
   - The Act II finals render (`--act2 --determinism`, 16 jobs) is running. When it finishes they get imported and committed to LFS with their PROVENANCE and music.json rows, and then the Act III cues.
   - test_audio_loudness now skips `music/actN/` in the 72 MiB budget, as validate_data does (1af822b7).

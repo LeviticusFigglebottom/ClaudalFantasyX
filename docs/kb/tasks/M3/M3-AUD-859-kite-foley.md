@@ -34,10 +34,11 @@ SFX follow the music: they are rendered sources held for Git LFS (ADR 0039).
       - All 16 files are byte-identical across `--determinism`. The total is 0.94 MiB, with peak memory at 1.3 GB.
 - [x] tools/tests/test_act2_finals.py checks that every ACT3_SFX job renders from assets_src/sfx/act3/ into
       assets/audio/sfx/act3/, and that nothing there is tracked until `.gitattributes` routes it to LFS.
-- [ ] When LFS is live:
-      - add `assets/audio/sfx/act3/**` to the LFS patterns;
-      - render with `--act3`, import, and add the PROVENANCE rows;
-      - add sfx rows (a `sfx_act3.json`) and the zone row `ch18/kite` → ambience `kite_deck`;
-      - make the ending cutscene beds use `kite_deck_dark`.
+- [x] LFS is live: the 16 files are committed in Git LFS (9ee9c410's parent), each with its `.import` and sidecar.
+      - The two beds are imported with `loop=true`.
+      - PROVENANCE rows are added.
+      - `game/data/audio/sfx_act3.json` holds rows for the one-shots.
+      - Still to do: the zone row `ch18/kite` → ambience `kite_deck` once that scene exists, and the ending cutscenes
+        using `kite_deck_dark`.
 
 ## Review log
