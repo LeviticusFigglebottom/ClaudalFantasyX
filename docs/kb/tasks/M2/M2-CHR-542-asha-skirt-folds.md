@@ -32,7 +32,9 @@ nothing: each panel is too wide to fold. With 16 panels the same fluting rolls t
      changes, a cross-track change.
    - (b) Bake no skirt tracks and let `HeroHelperBones` solve the skirt at runtime on every hero actor (field, cutscene,
      battle). This needs hero-integration to confirm every actor runs it, and a per-frame cost check.
-   - (c) Key the skirt panels at a lower rate, or with a looser `key_tolerance_deg`.
+   - (c) Key the skirt panels at a lower rate, or with a looser `key_tolerance_deg`. **Tried: not enough.** At 0.5° (the
+     parity test allows 1°) the library is still 4.62 MB, because most of the skirt's 2.22 MB is per-track overhead
+     (48 panel tracks in each of 66 clips), not keys. So it is (a) or (b).
 2. **The staff:** its skirt-clearing pivot (`prop_pivot`) solves against the new panels. It tips the staff 41 mm into
    her head at pole_out@24 and across the skirt in walk@6. The pivot's search needs retuning for the narrower panels.
 3. **turn_in_place_180@9:** the left thigh is 2 mm further through the skirt (Costume 35.95 / 34 and Body 48.83 / 47).
@@ -43,6 +45,6 @@ nothing: each panel is too wide to fold. With 16 panels the same fluting rolls t
 - [ ] Self-rendered kneels, walk, run and stand, viewed. Verified on the three numpy paths.
 
 ## Notes
-- Filed 2026-10-28 by the characters track. Next step: ask the Lead which of 1(a)–(c).
+- Filed 2026-10-28 by the characters track. Next step: the Lead picks 1(a) or 1(b) (both are cross-track).
 
 ## Review log
