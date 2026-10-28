@@ -2,12 +2,13 @@
 id: M3-AUD-837
 title: "Prototype ADR 0172's build-time audio render and measure it on 4 CPUs (nothing switched over)"
 role: audio
-status: review
+status: blocked
 owner_session: "audio (cloud session_01Wmj8xaLtwcqiS3qwC6PciW, branch claude/audio)"
 reviewer: tech
 depends_on: []
 milestone: M3
 request-from: lead
+blocked-by: ADR 0041
 ---
 ## Goal
 The Lead (2026-10-27): "prototype the fallback in ADR 0172 (proposed)… Measure render time on 4 CPUs and write the

@@ -1,0 +1,61 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="PackedScene" path="res://assets/characters/toma/toma.glb" id="toma"]
+[ext_resource type="PackedScene" path="res://assets/characters/moll/moll.glb" id="moll"]
+
+[sub_resource type="Environment" id="Flat"]
+background_mode = 1
+background_color = Color(0.93, 0.93, 0.93, 1)
+ambient_light_source = 2
+ambient_light_color = Color(0, 0, 0, 1)
+ambient_light_energy = 0.0
+reflected_light_source = 1
+tonemap_mode = 0
+
+[sub_resource type="CameraAttributesPractical" id="Cam"]
+
+[node name="MollSilhouetteVsToma" type="Node3D"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Flat")
+camera_attributes = SubResource("Cam")
+
+[node name="Toma" parent="." instance=ExtResource("toma")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.35, 0, 0)
+
+[node name="TomaThreeQuarter" parent="." instance=ExtResource("toma")]
+transform = Transform3D(0.707107, 0, -0.707107, 0, 1, 0, 0.707107, 0, 0.707107, -0.45, 0, 0)
+
+[node name="Moll" parent="." instance=ExtResource("moll")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.45, 0, 0)
+
+[node name="MollThreeQuarter" parent="." instance=ExtResource("moll")]
+transform = Transform3D(0.707107, 0, -0.707107, 0, 1, 0, 0.707107, 0, 0.707107, 1.35, 0, 0)
+
+[node name="Cameras" type="Node3D" parent="."]
+
+[node name="Lineup" type="Camera3D" parent="Cameras"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.95, 6.2)
+fov = 34.0
+near = 0.05
+current = true
+
+[node name="AnimationPlayer" parent="Toma"]
+autoplay = &"idle"
+
+[node name="AnimationPlayer" parent="TomaThreeQuarter"]
+autoplay = &"idle"
+
+[node name="AnimationPlayer" parent="Moll"]
+autoplay = &"idle"
+
+[node name="AnimationPlayer" parent="MollThreeQuarter"]
+autoplay = &"idle"
+
+[editable path="Toma"]
+
+[editable path="TomaThreeQuarter"]
+
+[editable path="Moll"]
+
+[editable path="MollThreeQuarter"]

@@ -1330,6 +1330,7 @@ def run(root: Path) -> Report:
     data_keys += check_memories(root, files, declared_flags_quiet(root), rep)  # M3-MNU-02
     data_keys += check_reefball(files, rep)
     data_keys += check_reefball_gear(files, declared_flags_quiet(root), rep)  # ADR 0040
+    data_keys += check_kite(files, declared_flags_quiet(root), rep)  # M3-UI-205
     data_keys += check_set_pieces(files, rep)
     check_loc(root, data_keys, load_loc_keys(root, rep), rep)
     check_flags(root, load_flags(root, rep), rep)
@@ -2488,6 +2489,10 @@ def objective_errors(objectives: object, zone_maps: object, declared: set[str]) 
     od = objectives.get("objectives") if isinstance(objectives, dict) else None
     if not isinstance(od, dict):
         return errs + [f"{OBJECTIVES_FILE}: missing the 'objectives' object"], keys
+    for zid, key in (od.get("idle_keys") or {}).items():
+        keys.append(str(key))
+        if zid not in pois:
+            errs.append(f"{OBJECTIVES_FILE}: idle_keys: zone '{zid}' is not in {ZONE_MAPS_FILE}")
     seen: set[str] = set()
     for row in od.get("rows", []):
         rid = str(row.get("id", ""))
@@ -3169,6 +3174,76 @@ def check_reefball_gear(files: dict[str, object], flags: set[str], rep: Report) 
         rep.err(f"{REEFBALL_GEAR}: missing")
         return []
     for e in reefball_gear_errors(doc, flags):
+        rep.err(e)
+    return collect_keys([doc])
+
+
+KITE_FILE = "game/data/world/kite.json"
+
+
+def kite_errors(doc: object, flags: set[str] | None, locations: dict[str, dict] | None) -> list[str]:
+    """M3-UI-205: the Kite's world map. Every flag declared (`flags`, None: not checked); every region and
+    destination id unique; a destination names a known region and a locations.json location (`locations`,
+    None: not checked); every 'at' is two numbers in 0..1; a secret's cell is a column letter and a row
+    number on the chart."""
+    w = KITE_FILE
+    kite = doc.get("kite") if isinstance(doc, dict) else None
+    if not isinstance(kite, dict):
+        return [f"{w}: needs a top-level 'kite' object"]
+    errs: list[str] = []
+    cols = kite.get("columns")
+    rows = kite.get("rows")
+    if not isinstance(cols, list) or not cols or not all(isinstance(c, str) and c for c in cols):
+        errs.append(f"{w}: columns must list the column letters")
+        cols = []
+    if not _is_int(rows) or rows < 1:
+        errs.append(f"{w}: rows must be an int >= 1")
+        rows = 0
+
+    def flag(where: str, name: object) -> None:
+        if flags is not None and name and name not in flags:
+            errs.append(f"{where}: flag '{name}' is not declared in game/data/flags.tres")
+
+    def at_ok(where: str, at: object) -> None:
+        if not (isinstance(at, list) and len(at) == 2 and all(isinstance(v, (int, float)) and 0 <= v <= 1 for v in at)):
+            errs.append(f"{where}: at must be two numbers in 0..1")
+
+    flag(w, kite.get("open_flag"))
+    regions = set()
+    for r in _rows(kite, "regions", w, errs):
+        regions.add(r["id"])
+        _need_keys(r, f"{w} region {r['id']}", ("name_key",), errs)
+        at_ok(f"{w} region {r['id']}", r.get("at"))
+    seen: set[str] = set()
+    for table in ("destinations", "secrets"):
+        for d in _rows(kite, table, w, errs):
+            dw = f"{w} {table} {d['id']}"
+            if d["id"] in seen:
+                errs.append(f"{dw}: id used twice")
+            seen.add(d["id"])
+            at_ok(dw, d.get("at"))
+            if d.get("region") not in regions:
+                errs.append(f"{dw}: unknown region '{d.get('region')}'")
+            if locations is not None and d.get("location_id") not in locations:
+                errs.append(f"{dw}: unknown location '{d.get('location_id')}'")
+            flag(dw, d.get("requires_flag" if table == "destinations" else "found_flag"))
+            if table == "secrets":
+                cell = str(d.get("cell", ""))
+                if not (cell[:1] in cols and cell[1:].isdigit() and 1 <= int(cell[1:]) <= rows):
+                    errs.append(f"{dw}: cell '{cell}' is not on the chart")
+    return errs
+
+
+def check_kite(files: dict[str, object], flags: set[str], rep: Report) -> list[str]:
+    """Validates game/data/world/kite.json (M3-UI-205). Returns its *_key values for the loc check."""
+    doc = files.get(KITE_FILE)
+    if doc is None:
+        return []
+    loc_doc = files.get(LOCATIONS_FILE)
+    locations = None
+    if isinstance(loc_doc, dict):
+        locations = {r["id"]: r for r in loc_doc.get("locations", []) if isinstance(r, dict) and "id" in r}
+    for e in kite_errors(doc, flags, locations):
         rep.err(e)
     return collect_keys([doc])
 

@@ -166,7 +166,7 @@ deck's value.
 | | `ferry_awning` | Six posts, the ridge spar and two side spars, the cloth sagging between them, a scalloped valance along each side, lashings to the cap rail. In the hull's frame. |
 | | `ferry_cargo` | Lashed down both sides of the main hatch: crates (0.6–0.9 m), bales in sacking, a rack of six water jars, a cargo net over each stack, lashings to ring-bolts. In the hull's frame. |
 | | `ferry_skiff` | The skiff (4.2 m, clinker strakes, thwarts, oars) on two iron davits over the transom with its falls. In the hull's frame. |
-| **Passengers** | `passenger_bundles` | One cluster (origin on the deck at its centre, about 2 × 1.5 m): two cloth bundles tied at the neck (indigo and sand), a basket with a lid, a rolled sleeping mat, a bedroll, a water gourd. Placed several times under the awning and by the rails, turned. |
+| **Passengers** | `passenger_bundles` | One cluster (origin on the deck at its centre, about 2 × 1.5 m): two cloth bundles tied at the neck (indigo and sand; the cloth falls in folds from the gather, a cord binds the neck, a corner hangs loose), a basket with a lid, a rolled sleeping mat, a bedroll, a water gourd. Placed several times under the awning and by the rails, turned. |
 | **Lamps** | `ferry_lantern` | A deck lantern (origin at its hanging ring): iron cage 0.36 m tall, glass chimney (emissive `oil_lamp`, the flame's glass), sheet-iron hood. The preview's rig adds one OmniLight3D at the flame (0.2 m below the ring) per placement, **`light_volumetric_fog_energy` = 0** (the Lead's rule). |
 | **The drowned** | `derelict_hulk_a` | A trader of the ferry's kind, 22 m, grounded on the reef edge with an 8° list to starboard, dismasted (the mainmast a 4 m stump, the foremast gone at the deck), the bulwark stove in along half its length, her deck silvered and half awash. Origin at her waterline on the centre line. |
 | | `derelict_hulk_b` | The fore half of another hull, bow-up at 14°, the stern under water, a raked foremast with a broken yard and a rag of sail. Origin at the waterline. |
@@ -306,7 +306,7 @@ red lacquer on a black ground, inside a copper-banded frame, with a seven-step t
   gangplank in Ch1). Same plank, seam and bulwark proportions as the ferry and `arena_derelict_deck`.
 - **Bands:** copper sheathing below y −1.15 (0.35 m above the waterline: the copper boot-top shows in every
   view), black lacquer above, a red-lacquered wale at y −0.45 and a red sheer strake under the cap rail; the
-  counter (the transom above the wale) in deep red lacquer, so the black name-board stands out on it.
+  counter (the transom above the wale) in deep red lacquer, so the black name-board stands out on it; its planks' seams show, a black moulding frames it, and copper nail-heads run along the wale (M3-ENV-705).
 - **Main hatch (open)** at z −3.6, 1.8 × 1.6 m coaming, a ladder down into **the hold** (y −1.9 floor, from
   z −5.4 to −1.8): copper ingots in crossed stacks, crates, and on a shelf **the lamp-housing** Rhen sold the
   skipper (a dead Lit Age ceramic housing with a brass rim; C4-12 "he finds the housing and puts it back").

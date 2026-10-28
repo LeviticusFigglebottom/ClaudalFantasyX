@@ -4,7 +4,8 @@
                      water jars, a cargo net over the starboard stack, lashings over the port one.
   ferry_skiff        the skiff (clinker strakes, thwarts, oars) athwartships on two iron davits over the transom,
                      with its falls (hull frame).
-  passenger_bundles  one passengers' place (origin on the deck at its centre): two cloth bundles tied at the neck,
+  passenger_bundles  one passengers' place (origin on the deck at its centre): two cloth bundles tied at the neck (folds
+                     from the gather, a cord, a loose corner),
                      a lidded basket, a rolled sleeping mat, a bedroll, a gourd and a flat mat.
   ferry_lantern      a deck lantern (origin at its hanging ring): iron cage, glass chimney (the lit glass), hood.
                      LANTERN_FLAME is where the preview's rig puts its light.
@@ -218,35 +219,66 @@ def build_skiff(seed: int = 851) -> list[kc.MeshBuilder]:
 # Passengers' bundles
 # ---------------------------------------------------------------------------------------------
 def _bundle(mb: kc.MeshBuilder, rng, noise, c, r: float, mat: str, *, lod: bool) -> None:
-    """A cloth bundle: a squashed, lumpy ball of cloth gathered into a knot at the top, its ears out."""
+    """A cloth bundle: a squashed, lumpy ball of cloth gathered into a knot at the top, its ears out. The cloth falls
+    in folds from the gathered neck (radial pleats that fade toward the base), the contents push it out in lumps, a
+    cord binds the neck twice round, and a corner of the cloth hangs loose down one side (M3-ENV-705)."""
     c = np.asarray(c, float)
-    n = 5 if lod else 11
+    n = 5 if lod else 16
     t = np.linspace(0.0, 1.0, n)
     prof = [(0.02 + r * math.sin(math.pi * min(0.96, max(0.06, tt))) ** 0.7, r * 1.25 * tt) for tt in t]
     prof[-1] = (0.05 * r / 0.25, prof[-1][1])
     start, start_t = mb.vertex_count, mb.triangle_count
-    bf.lathe(mb, c, prof, 6 if lod else 12, mat, weather=bf.CLOTH_W, variation=float(rng.random()))
+    bf.lathe(mb, c, prof, 6 if lod else 22, mat, weather=bf.CLOTH_W, variation=float(rng.random()))
     if not lod:
         p = np.asarray(mb.pos[start:], float)
-        lump = (noise.fbm(p / 0.12, 2) - 0.5) * 0.06 * (r / 0.25)
         d = p - c
+        h = np.clip(d[:, 1] / (r * 1.25), 0.0, 1.0)
+        ang = np.arctan2(d[:, 2], d[:, 0])
         d[:, 1] = 0.0
-        d = kc.normalize(d + 1e-9)
-        p = p + d * lump[:, None]
+        rad = np.linalg.norm(d, axis=1)
+        d = d / (rad[:, None] + 1e-9)
+        lump = (noise.fbm(p / 0.09, 3) - 0.5) * 0.09 * (r / 0.25)
+        folds = int(rng.integers(6, 9))
+        pleat = np.abs(np.sin(folds * ang * 0.5 + noise.fbm(p / 0.2, 1) * 2.0)) - 0.6  # sharp creases, soft bellies
+        pleat *= 0.035 * (r / 0.25) * kc.smoothstep(0.25, 0.85, h) * (1.0 - kc.smoothstep(0.92, 1.0, h))
+        p = p + d * (lump + pleat)[:, None]
         p[:, 1] = np.maximum(p[:, 1], c[1])  # it sits flat on the mat
         mb.pos[start:] = p.tolist()
         kc.recompute_normals(mb, start, start_t)
     top = c + np.array([0.0, r * 1.25, 0.0])
     if lod:
         return
-    bf.lathe(mb, top - np.array([0.0, 0.03, 0.0]), [(0.05 * r / 0.25, 0.0), (0.07 * r / 0.25, 0.05), (0.02, 0.1)], 7, mat)
-    # The knot's two ears, short and drooping over the gathered neck.
     k = r / 0.25
+    bf.lathe(mb, top - np.array([0.0, 0.03, 0.0]), [(0.05 * k, 0.0), (0.07 * k, 0.05), (0.02, 0.1)], 9, mat)
+    # The cord bound twice round the neck, its tail hanging.
+    rope = mb.material(bf.M_ROPE)
+    for dy in (-0.035 * k, -0.012 * k):
+        ang = np.linspace(0.0, 2.0 * math.pi, 13)
+        rr = 0.058 * k
+        kc.tube(mb, top + np.stack([np.cos(ang) * rr, np.full_like(ang, dy), np.sin(ang) * rr], -1), 0.008 * k, 4, rope)
+    a = float(rng.uniform(0, 2 * math.pi))
+    dd = np.array([math.cos(a), 0.0, math.sin(a)])
+    kc.tube(mb, np.array([top + dd * 0.06 * k + [0, -0.02 * k, 0], top + dd * 0.11 * k + [0, -0.09 * k, 0],
+                          top + dd * 0.13 * k + [0, -0.17 * k, 0]]), 0.007 * k, 4, rope, cap_end=True)
+    # The knot's two ears, short and drooping over the gathered neck.
     for a in (0.6, 2.4):
         d = np.array([math.cos(a), 0.0, math.sin(a)])
         ear = np.array([top + [0.0, 0.06 * k, 0.0], top + d * 0.05 * k + [0.0, 0.07 * k, 0.0],
                         top + d * 0.09 * k + [0.0, 0.02 * k, 0.0]])
         kc.tube(mb, ear, [0.022 * k, 0.018 * k, 0.008], 5, mb.material(mat), cap_end=True)
+    # A loose corner of the cloth hanging down one side from the gather: a thin curved flap.
+    a = float(rng.uniform(0, 2 * math.pi))
+    out_d = np.array([math.cos(a), 0.0, math.sin(a)])
+    side = np.cross(kc.UP, out_d)
+    tts = np.linspace(0.93, 0.45, 5)  # down the body from just under the gather, hugging its profile
+    spine = np.stack([c + out_d * (0.035 + 0.02 + r * math.sin(math.pi * tt) ** 0.7) + kc.UP * r * 1.25 * tt
+                      for tt in tts])
+    widths = np.linspace(0.03, 0.09, 5) * k
+    grid = np.stack([spine - side * widths[:, None], spine + side * widths[:, None]], axis=1) + out_d * 0.012 * k
+    for flip, off in ((False, -0.003), (True, 0.0)):  # both faces of the cloth, the outer one facing out
+        g = grid + out_d * off
+        kc.quad_strip(mb, g, mb.material(mat), uv=g[..., [0, 1]], col=np.array([0.0, 0.0, 0.2, 0.4]), uv2=(0.8, 0.5),
+                      flip=flip)
 
 
 def build_bundles(seed: int = 861) -> list[kc.MeshBuilder]:

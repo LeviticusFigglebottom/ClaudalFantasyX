@@ -25,11 +25,12 @@ import ov_common as oc  # noqa: E402
 import ov_heroes  # noqa: E402
 import ov_hulls  # noqa: E402
 import ov_props  # noqa: E402
+import ov_rebuilt  # noqa: E402
 import ov_storm  # noqa: E402
 
 kc = oc.kc
 MAX_GLB_BYTES = 5 * 1024 * 1024  # ADR 0005
-MODULES = (ov_hulls, ov_cabins, ov_heroes, ov_props, ov_storm)
+MODULES = (ov_hulls, ov_cabins, ov_heroes, ov_props, ov_storm, ov_rebuilt)
 
 
 def targets() -> dict:

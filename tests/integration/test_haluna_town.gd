@@ -50,7 +50,9 @@ func test_the_keepers_go_home_at_night() -> void:
 	var cfg := FirstPlayableConfig.section(FirstPlayableConfig.SECTION_HALUNA)
 	zone.set_night(cfg.get("night", {}), cfg.get("night_hide", []))
 	for id: StringName in KEEPERS:
-		assert_true(_interactable(id) == null, "%s gone at night" % id)
+		var it := _interactable(id)
+		# Hidden and stopped, not freed (the VillagerLayer still holds them): no prompt, nothing to see.
+		assert_true(it == null or (not it.is_visible_in_tree() and not it.can_process()), "%s gone at night" % id)
 	_done()
 
 

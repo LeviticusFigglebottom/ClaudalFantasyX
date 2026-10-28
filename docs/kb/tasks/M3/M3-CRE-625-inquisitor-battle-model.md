@@ -32,3 +32,4 @@ a long-hafted brine-iron held upright like a standard).
 - Until the model lands the capsule stays (it is the stand-in spec in battle_sandbox.json).
 
 ## Review log
+- 2026-10-28, creatures: the ADR 0041 inventory (M3-HER-1142) also lists the **field** stand-in `inquisitor` in Brine Shoals (brine_shoals_layout.json `actors.inquisitor`). Same person, same body: once Moll has an actor scene, act1-chapters adds `"model"` to that row as for Kell (M2-FP-111).

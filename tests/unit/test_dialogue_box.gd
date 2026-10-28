@@ -210,3 +210,19 @@ func test_speaker_table_loads() -> void:
 	assert_eq(sp.portrait_id(&"asha"), &"portrait_asha_placeholder")
 	assert_eq(sp.blip_pitch(&"nobody"), DialogueSpeakers.UNPITCHED)
 	_done()
+
+
+## Act I final pass (ADR 0041): a spoken line shows its speaker's portrait in the line's emotion (an untagged line
+## keeps it); a speaker without a portrait, and narration, show none (dialogue_portrait.json).
+func test_the_speaker_s_portrait_shows_beside_the_line() -> void:
+	box.show_text(&"rhen", LINE_KEY)
+	box.show_portrait(&"rhen", &"worried")
+	var frame := box.portrait()
+	assert_true(frame != null and frame.picture().texture != null, "Rhen's face")
+	assert_eq(frame.emotion(), &"worried")
+	box.show_portrait(&"vendor")
+	assert_eq(box.portrait(), null, "a speaker with no portrait: none, not a letter")
+	box.show_portrait(&"")
+	assert_eq(box.portrait(), null, "narration: none")
+	assert_eq(DialogueBox.portrait_for(&"inquisitor"), &"moll", "an alias names the character he is")
+	_done()

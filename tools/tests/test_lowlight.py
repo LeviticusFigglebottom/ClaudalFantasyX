@@ -90,5 +90,15 @@ class EngineHallTests(unittest.TestCase):
                 self.assertNotRegex(slot, "ice|frost|snow|frozen")
 
 
+    def test_the_gallery_walk_is_level_with_its_rails_outside(self) -> None:
+        """M3-ENV-735: the Sunken Vey's gallery walk matches act1-chapters' greybox (3.6 m, top at y 0, rails 0.5 m
+        at z +-2.0)."""
+        p = np.asarray(lowlight.TARGETS["vey_gallery_walk_6m"]()[0].pos)
+        band = (np.abs(p[:, 2]) < lowlight.WALK_HALF_W - 0.3) & (np.abs(p[:, 0]) < 2.5)
+        self.assertLess(abs(float(p[band][:, 1].max())), 0.03)
+        high = p[p[:, 1] > 0.3]
+        self.assertGreater(float(np.abs(high[:, 2]).min()), lowlight.WALK_HALF_W - 0.05)
+        self.assertAlmostEqual(float(high[:, 1].max()), lowlight.WALK_RAIL_H, delta=0.05)
+
 if __name__ == "__main__":
     unittest.main()

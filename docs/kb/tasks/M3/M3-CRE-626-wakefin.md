@@ -2,7 +2,8 @@
 id: M3-CRE-626
 title: "Build the Wakefin (Act II, Ch15 boss) from its design sheet"
 role: character
-status: review
+status: blocked
+blocked-by: ADR 0041
 owner_session: "worktree-agent-a1b527f817c65c013 (creatures, cloud session_01EbDaRQ5n7hpvwuRG6jEDQY)"
 reviewer: art
 depends_on: [M3-CRE-620]
@@ -128,3 +129,4 @@ linear blend skinning. The numpy `--report` agrees to the millimetre. "Blade top
   - the three-quarter shot's framing of a 6 m body.
 
 ## Review log
+- 2026-10-28, creatures: **paused by ADR 0041** (Act I at final quality first; the human's directive). The work done so far is merged on claude/creatures as is; nothing reverted. Resume when a new ADR lifts the pause.

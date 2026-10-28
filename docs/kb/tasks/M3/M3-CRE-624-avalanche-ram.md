@@ -2,7 +2,8 @@
 id: M3-CRE-624
 title: "Build the Avalanche Ram (Act II, Ch12 boss) from its design sheet"
 role: character
-status: review
+status: blocked
+blocked-by: ADR 0041
 owner_session: "worktree-agent-a1f335e70d81fd58f (creatures, cloud session_01EbDaRQ5n7hpvwuRG6jEDQY)"
 reviewer: art
 depends_on: [M3-CRE-620]
@@ -72,3 +73,4 @@ an Ullari woolback grown huge: a long-necked shaggy pack animal, not horned and 
   - the muzzle may read long at portrait distance.
 
 ## Review log
+- 2026-10-28, creatures: **paused by ADR 0041** (Act I at final quality first; the human's directive). The work done so far is merged on claude/creatures as is; nothing reverted. Resume when a new ADR lifts the pause.

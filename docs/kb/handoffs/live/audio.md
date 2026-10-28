@@ -3,6 +3,175 @@
 ## NEW ACCOUNT (from 2026-10-25)
 Session `session_01Wmj8xaLtwcqiS3qwC6PciW`. Integration branch `claude/undertow-lead-handoff-ze8rrn`. Newest first.
 
+- **MERGE-READY: M3-AUD-862, the prologue's score** (`prologue_dusk`, Git LFS).
+  - The prologue zone's cue: MEL_A on a breath flute over a drone on A.
+  - A 30.5 s intro timed to the scene: the lantern's chord at 12.5 s, and the voice band held 21 dB down under the line.
+  - Then a quiet 24 s loop. −16.00 LUFS, byte-identical to the composer's render.
+  - **The audit's Zones section is at 0.** Review: design.
+  - Next: Ysolde's theme final (M3-AUD-863), with a composer. It replaces the sketch at the same path, because the sequencer reads `<music_dir>ysolde_theme.ogg`. It has to stay under 0.90 MB to fit plain git's remaining budget.
+
+- **M3-AUD-861 progress: the Act I audit is down from 46 items to 9.** Everything below is pushed; the new audio is in Git LFS under `assets/lfs/audio/` (ADR 0173).
+  - **Zones:**
+    - Music rows: the causeway, the Tidecup match, Corrow and Coilspire.
+    - Beds: the drowned tower, the causeway, the first verse, Haluna's wake and Corrow.
+    - **New beds:** `oruvel_raft`, `brightwater_deck` and `coilspire_flues`.
+    - `coilspire_flues` now plays coilspire (it was the temple_trial prototype), and `corrow_day` is an alias of corrow_seawall.
+  - **Enemies (0 left):**
+    - The Ch6 **Inquisitor** has a voice: armour, haft, shield and breath, and his yield rather than a death.
+    - wreck_crab (its brass housing), wallcrab (laterite), wall_polyp (the Watcher's hum) and stormgull (static) have their own sets.
+    - wickfry owns glassfry's set, since they are the same creature.
+  - **Skills (0 left):** 16 boss and set-piece skills now have sounds, including Pell's Storm-Call in his own voice.
+  - **UI:** CodexMenu, SettingsMenu, ReadPanel and ObjectiveHud are hooked and tested on the real classes. Godot `--filter=audio`: 173 run, 0 failed.
+  - **The 9 that are left:**
+    - **The prologue's score** (`prologue_dusk`, M3-AUD-862): with a composer now.
+    - **Ysolde's theme is still a sketch** (61 s): its final comes next, through a composer, after the prologue.
+    - **Blocked on others:**
+      - The three cutscenes playing only one stem, on the cutscene owner (M3-AUD-834).
+      - ShrineTravelMenu and ReefballOutfitterMenu, until claude/ui merges.
+    - Stale notes (housekeeping).
+  - **For the Lead:** a fresh clone needs `git lfs pull` to hear the new Act I files.
+
+- **REFOCUS (ADR 0041; the Lead's 01:12 message, read at 02:55): Act I as played.** Act II/III audio has stopped.
+  - The M3-AUD-860 composer (cloudloom, undertow_layers) was stopped before it wrote anything.
+  - 19 Act II/III audio tasks are now `blocked` with `blocked-by: ADR 0041`: 804, 805, 831, 836, 837, 839–845, 849, 851, 852, 853, 856, 858 and 859.
+  - What had already landed in LFS stays.
+  - Ilun, Kahre and Virel are Act I (Ch3, Ch5, Ch8), so their tasks stay open.
+  - **The Act I audio audit, M3-AUD-861** (`tools/audio/act1_audio_audit.py`, title→Ch9; 46 items). I'm working through it in this order:
+    1. **Wiring only, no renders:**
+       - **Unwired ambience beds:** oruvel_underway → `drowned_tower`; saltgrass_causeway → `causeway_wind` + `tidepools`;
+         first_verse → `shrine_interior`; haluna_wake → the Haluna night set; corrow → `corrow_seawall`.
+       - **Zone music:** saltgrass_causeway, coilspire, corrow (`corrow_seawall`) and tidecup_match all have cues but no zone row.
+       - **Cutscenes:** `coilspire_flues` plays the old `temple_trial` prototype; its stand-in should be `coilspire`. `corrow_day` needs a same-piece alias for `corrow_seawall`.
+    2. **Enemies:**
+       - The Ch6 boss **stillguard_inquisitor is `silent`**. It needs a real voice, hit and death set.
+       - Five enemies borrow another creature's voice at a different pitch (reused): wickfry (from glassfry), wreck_crab and wallcrab (from reef_crab), wall_polyp (from spawn_polyp), stormgull (from gull_harrier). Each gets its own set.
+    3. **16 silent boss and support skills** (power 0, no hit, heal or status, so only the choreography's accents): rouse_polyp,
+       gnaw_coil, recrust_gather, lines_taut, reach_for_stair, grip_the_stair, rope_dive, climb_up, surge_crawler,
+       surge_wing, surge_ebb, storm_call(_sound), close_the_hand, hand_closes, breach_gather. Each gets a `battle_sfx.skills` row.
+    4. **New beds:** oruvel (the raft town), brightwater_ferry (on the ferry) and coilspire (the flues).
+    5. **The prologue has no score**, only the iskarra_dusk room tone under "Listen. This might be the last time I tell it."
+       It needs its own cue (`iskarra_vigil` is Ch9's echo of it, so it isn't reused here).
+    6. **Blocked on the cutscene owner (slice-polish, `game/cutscene/**`): M3-AUD-834.** Three cutscenes play only the
+       first stem of a stem cue: undertow_rising (ch01_the_rising), seawall_hold (ch08_first_down) and undertow_reach
+       (ch08_the_reach). `@music` has to go through the MusicDeck so stems play, or the sequencer needs an `@stem` cue.
+       **This is an Act I blocker now.**
+    7. **Waiting on claude/ui:** the UI hooks ShrineTravelMenu and ReefballOutfitterMenu stay `pending` until their classes land.
+  - **Budget:** plain git has about 0.48 MiB left, so new Act I audio goes to `assets/lfs/audio/`, which is already routed (ADR 0173).
+
+- **MERGE-READY: the Act III cues are in Git LFS: 9 objects, 9.65 MiB** (a3a21cce).
+  - hollowmere, dace_ledger, the_kite, kite_maiden_flight, iskarra_ruins and iskarra_spire.
+  - hesper_and_ilsabet's s0 and s1, stacked at −16.03 (a new stem rule).
+  - kerrid_last_night.
+  - Each file is byte-identical to its composer's own verified render.
+  - Loops are imported with `loop=true`; there are PROVENANCE rows, and music.json has the 8 cue rows from the task files. Zone, encounter and phase rows wait for their scenes and fights; the intended rows are in each note.
+  - Checks:
+    - test_audio_loudness, test_act2_finals and test_audio_data: OK.
+    - Godot `--filter=audio`: 171 run, 0 failed.
+    - validate_data: 0 errors.
+  - **All audio held for LFS is in now: 43 objects, 34.24 MiB.** That is the Act II finals (23.65), the Kite foley (0.94) and Act III (9.65).
+  - Also fixed: three Act II PROVENANCE rows that were missing sources (29d5982b).
+
+- **MERGE-READY: the Act II finals and the Kite foley are in Git LFS: 34 objects, 24.59 MiB** (25.8 MB). Pushed, with
+  `git lfs ls-files` checked and the remote blobs confirmed as pointers.
+  - `assets/audio/music/act2/`: the 12 zone finals and the four bosses' 2 stems each, 23.65 MiB.
+  - `assets/audio/sfx/act3/`: M3-AUD-859's Kite foley, 0.94 MiB.
+  - All have `.import` files (looped where their sidecar says) and PROVENANCE rows. All 56 files rendered byte-identical twice and meet their rules.
+  - music.json: the 12 zone rows now play `act2/<cue>.ogg`; the sketches stay committed, untouched, as fallbacks. There are new stem rows for mangrove_drowner, lamp_engine, avalanche_ram and wakefin.
+  - The bosses' encounter and phase rows wait for the fights; the intended rows are in each note. The Kite one-shots are in a new `sfx_act3.json`.
+  - Checks:
+    - test_audio_loudness, test_act2_finals and test_audio_data: OK.
+    - Godot `--filter=audio`: 171 run, 0 failed.
+    - validate_data: 0 errors.
+  - No Act I file was moved.
+  - **Next:** the Act III cues (8 cues, 10 files: hollowmere through kerrid_last_night), rendered alone, into `act3/`.
+
+- **LFS is live (Lead 00:20):** integration is merged and `git lfs install --local` is done.
+  - The Act II finals render (`--act2 --determinism`, 16 jobs) is running. When it finishes they get imported and committed to LFS with their PROVENANCE and music.json rows, and then the Act III cues.
+  - test_audio_loudness now skips `music/actN/` in the 72 MiB budget, as validate_data does (1af822b7).
+  - `assets/audio/sfx/act3/` (the Kite foley, M3-AUD-859) is **not** routed by .gitattributes. It stays parked until the Lead adds a pattern.
+- **MERGE-READY: M3-AUD-858, Ch19's revenant pair and Kerrid's night.** Sources only for now.
+  - **hesper_and_ilsabet:** two 90 s stems in E aeolian at 120 BPM over ORDER_HUM as a ground. The two lines never meet: the source checks this at every render. Each stem alone is −19, and the pair is −16.03.
+  - **kerrid_last_night:** 73.7 s in D major at 48 BPM, KERRID_STAIR's tread at a steady tempo, ending open on Gmaj9.
+  - **For Design and Tech:** the encounter must send `hesper_fallen` and `ilsabet_fallen` (stems_off [0] or [1]); the intended rows are in the task file.
+  - Review: design.
+
+- **MERGE-READY: M3-AUD-856, the Ch19 Iskarra cues.** Sources only: six ACT3_FINALS rows, nothing tracked under act3/.
+  - **iskarra_ruins:** a 136.8 s loop in A aeolian, 3/4 at 50 BPM. MEL_A two octaves down over the drone on A, with the vigil's rising glass motes and dusk-gold strings.
+  - **iskarra_spire:** a 129.2 s loop in E minor at 104 BPM. ORDER_HUM is stretched to a bar a beat as the engine's drone, with the Lamp Engine's tick thickening and just-tuned glass climbing.
+  - Both measure −16.0 LUFS, with true peaks under −1.8 dBTP, and both are deterministic.
+  - The intended music.json rows are in the task file. Review: design.
+  - M3-AUD-858 (the revenant pair and Kerrid's night) is still with its composer.
+
+- **MERGE-READY: M3-AUD-859, the Kite's foley**, sources only, held for LFS.
+  - kite_foley.py renders two 40 s deck beds and 14 one-shots:
+    - kite_deck: in flight, with both lift engines.
+    - kite_deck_dark: after H09, gliding on sail alone.
+    - The one-shots: H09's engine stop and lanterns, sail fills, E4's rope strain and landing, the tiller, the ledger chest.
+  - Total 0.94 MiB; deterministic; every file at its rule.
+  - New `ACT3_SFX` in render_all, rendered with `--act3`, into **assets/audio/sfx/act3/**. Nothing there is tracked; test_act2_finals checks it.
+  - **For the Lead, when LFS goes live:** route `assets/audio/sfx/act3/**` as well as the music dirs.
+  - Review: env-art.
+- **Container restart at about 23:40:** two composers and my render running at once ran out of memory. Both composers
+  have been resumed in their worktrees and now render strictly one at a time (they check for another
+  `render_all.py --act3` first): Iskarra (M3-AUD-856) and the revenant pair plus Kerrid's night (M3-AUD-858). Nothing
+  was lost from git.
+
+- **MERGE-READY: M3-AUD-857, Kahre's and Virel's voices** (backlog: the creatures' newest designs). claude/creatures
+  has built both Vowbound, and until now they had only the shared rows.
+  - vowbound_sfx.py now voices them. Kahre: a hornbill's boom, the mane's sparks, thunder off the anvil, and the
+    hammer on the anvil (A4) as his keepsake. Virel: sailcloth luffing, the seams' fire, and the brass key's ping.
+  - Each has five battle events, layers on the call, rise and sink, and `virel` in `no_steps`.
+  - Ilun's files are byte-identical. All files are deterministic and within their rules.
+  - test_vowbound_sfx.py checks every vowbound.json id. Godot `--filter=audio`: 171 run, 0 failed.
+  - **Budget:** shipped audio is 71.52 of 72 MiB, about 0.48 MiB left. Everything large from here waits for LFS.
+  - Review: combat.
+- **MERGE-READY: M3-AUD-853, the_kite (142 s loop, D major, 108 BPM) and kite_maiden_flight (47 s, its D dorian → D
+  major lift lands at about 8.3 s).** Sources only: four ACT3_FINALS rows, nothing tracked under act3/, and the
+  intended music.json rows are in the task file. Review: design. The Iskarra pair (iskarra_ruins and iskarra_spire,
+  M3-AUD-856) is with a composer.
+
+- **Self-directed backlog (TRACK-RULES, from 22:50):**
+  1. **Renders:** none for audio (no shots).
+  2. **Todo tasks:** none on claude/audio.
+  3. **Requests to audio, all answered by work already on integration:**
+     - **M3-HER-1122** (hero-integration QA, 68 sounds and 29 cues) and **M3-AUD-100** (m2-slice): every id they list
+       ships on the integration branch (M3-AUD-818..823, plus M3-AUD-833's stand-ins for the alias and stem cues).
+       Their runs predate those merges, so they should take the integration head and drop the qa_known.json rows.
+       Those files are theirs; I didn't edit them.
+     - **M3-CRE-633** (the teardown cast): fixed by 3224c1d8.
+  4. **Next act (step 5):** Act III cues for the zones env-art has built (Hollowmere M3-ENV-723, the Kite M3-ENV-725,
+     the Lamp Spire M3-ENV-726). render_all.py has `ACT3_FINALS` and `--act3` (assets/audio/music/act3/, LFS, never
+     committed until it's live), covered by test_act2_finals. Two composers are on hollowmere and dace_ledger, and
+     the_kite and kite_maiden_flight (M3-AUD-852..853); iskarra_ruins and iskarra_spire come next.
+
+- **TO THE LEAD: your 21:42 queue is done. MERGE-READY @ 3fc783ed.**
+  1. **Ilun (M3-AUD-846):** his voice (creature_voices `ilun`), and his net-float and wing layers over the summon's
+     call, rise and dismissal (choreo_sfx `vowbound.layers`). Floodnet and the ilun_summon sting already existed.
+  2. **Iskarra (M3-AUD-847):** the vigil's murmur in `iskarra_dusk` (−26.05 LUFS). Rhen's LanternLight crackles at the
+     lamp (CutsceneAudio `lamps`).
+  3. **UI (M3-AUD-848):** the battle result's count-up (`ui_count_run` and `ui_count_done`) and the Reefball outfitter
+     (buy, wear, refuse; `pending`). The Lattice unlock and shrine travel were already done.
+  4. **Creatures (M3-AUD-849):** ridge_lynx, cord_moth, glass_skate, flat_engine and four pitched variants. Every
+     creatures.json row on claude/creatures has a voice; the redesigned Drowner keeps its set.
+  5. **Mix (M3-AUD-850):** the dialogue duck now takes World −3 dB, and villagers' chat is held over a line.
+     mix.md has the layer table and mix_report.md is regenerated.
+  6. **Act III (M3-AUD-851):** `motifs.letting()`, the Hush's first cell turned upward, with a test.
+  - **Checks on this head:** Godot `audio` 169/0, `battle` 720/0, `cutscene` 69/0, `menu` 238/0 (after M3-AUD-848);
+    lint and format clean; validate_data 0/0; shipped audio 71.0 of 72 MiB.
+  - **Tools: 1200 tests; the only failure is `test_iskarra::test_the_vigils_stand_on_the_paving` (3 of 7), and it
+    is not audio's.** It came in with big12 (env-art's kit against the prologue scene); nothing in my diff touches
+    it.
+
+- **TO THE LEAD: the life_audio.gd:124 fix is DONE and pushed:** commit 3224c1d8, on claude/audio since before the big12
+  merge. **MERGE-READY @ 217d4f55** (it includes big12, e930595c). Since then: a headless run-and-quit of Haluna and the
+  causeway (400 frames each, director and villagers live) prints no SCRIPT ERROR and no freed-object line.
+
+- **Act II boss music: the four modelled bosses' sources are merged (M3-AUD-844/845).** They are mangrove_drowner,
+  lamp_engine, avalanche_ram and wakefin. Each has two stems over a 74–84 s loop at −16 LUFS for the stack; the seams
+  are clean and the renders byte-identical. 7.2 MB in all, every file under 1.1 MB. The audio waits for LFS, like the
+  zones, and the intended music.json phase rows are in each task file.
+  - **Open:** Malcor Venn and the Abiding guard wait for their fights; the scene cues wait for Act II's beat sheets.
+
 - **TO THE LEAD: big12 merged in (integration e930595c, a clean merge). MERGE-READY @ 3b9324c4, with the life_audio
   teardown fix (3224c1d8) on top.** Take this head to clear the capture shards' exit 1. Checks on the merged head:
   validate_data 0/0, `--filter=audio` 162/0.

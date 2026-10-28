@@ -149,6 +149,8 @@ class TestHeroLocomotion(unittest.TestCase):
                 hooks = {("position_3d", f"{sk.root_name}/Skeleton3D:{hero_clips.HOOK_BONE}{s}") for s in sk.hooks}
                 for k in hooks:  # M2-CHR-513: Rhen's reef-hooks stay sheathed (one place) in the field
                     self.assertEqual(len(set(tracks[k])), 1, f"{hero} {clip} {k[1]}")
+                if sk.prop:  # M2-CHR-515: the staff or spear slides through the fist to stay on the floor
+                    hooks.add(("position_3d", f"{sk.root_name}/Skeleton3D:{sk.prop['bone']}"))
                 pos = [k for k in tracks if k[0] == "position_3d" and k not in hooks]
                 self.assertEqual(pos, [("position_3d", f"{sk.root_name}/Skeleton3D:{hero_clips.HIPS}")],
                                  f"{hero} {clip}")
