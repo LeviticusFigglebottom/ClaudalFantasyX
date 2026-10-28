@@ -1166,3 +1166,18 @@ MERGE-READY (+ this log): **lead/gate-big16 (ff82858c) merged in; big15's two cl
   follow-up. The fix is f2f67ea1b: the follower test turns the sight step off in before_each (`sight_clear_m` 0),
   since it tests the trail itself and test_qa_field_camera tests the sight step. It's on big16 too.
   **`--filter=hero` on head 575ca4637: 112/0.**
+
+MERGE-READY (+ this log): **party start fixed @ a6e9d5481** (big16 merged in, re-rendered on this head).
+- **SELF-RENDERED** (lavapipe 960x540, Haluna after Cutscene A, a walk up the beach and into the lane), viewed:
+  - **opening**: the camera is close behind the party, not 15 m out over the shallows, and **Rhen, Asha and Toma are
+    all in frame**;
+  - **the wall's gap (turn2) and the lane turn (turn3)**: the camera rides above the party down the lane, clear of
+    the walls, all three in frame. This is the spot where big15's camera swung into the stone walls.
+  So all three of the human's points are fixed.
+- **The guard on this head** (test_qa_field_camera 2/0) found what big16 brought in, all routed:
+  - **M3-HER-1160 → m2-slice:** at the walk's very end, Haluna's NemeTable volume (shot B02, the close shot at
+    Neme's table) covers the Village spawn. The party arrives from behind that camera, so Asha and Toma leave the
+    frame. KNOWN for the walk guard.
+  - **M3-HER-1159 → act1-chapters:** four spawns whose volume's shot faces away. Brightwater DerelictDeck and Stern
+    (FerryWaist), Coilspire Encounter (GallerySouth), Corrow Bastion (WallGate, Rhen behind the camera). KNOWN rows.
+- M3-ARC-1326 (the Ebbing cue hook) has been in since 5f59e2878.
