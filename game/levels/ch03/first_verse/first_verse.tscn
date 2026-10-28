@@ -120,9 +120,9 @@ fov_deg = 67.4
 [sub_resource type="Resource" id="ShotS06"]
 script = ExtResource("5_shot")
 id = &"S06"
-position = Vector3(-23.0, 0.9, 0.7)
-look_at = Vector3(-16.6, 0.2, 0.7)
-fov_deg = 34.0
+position = Vector3(-15.6, 0.3, 3.6)
+look_at = Vector3(-16.5, -0.45, -1.0)
+fov_deg = 30.0
 
 [sub_resource type="Resource" id="ShotS09"]
 script = ExtResource("5_shot")
@@ -134,8 +134,8 @@ fov_deg = 16.1
 [sub_resource type="Resource" id="ShotS10"]
 script = ExtResource("5_shot")
 id = &"S10"
-position = Vector3(-19.0, 0.6, -2.6)
-look_at = Vector3(-16.25, 0.95, -1.1)
+position = Vector3(-19.3, -0.32, 1.15)
+look_at = Vector3(-16.6, 0.03, -0.4)
 fov_deg = 20.9
 
 [sub_resource type="Resource" id="ShotC08"]
@@ -330,13 +330,13 @@ shot = SubResource("ShotC08")
 [node name="Marks" type="Node3D" parent="CutsceneStage"]
 
 [node name="steps_rhen" type="Marker3D" parent="CutsceneStage/Marks"]
-transform = Transform3D(6.12323e-17, 0, 1, 0, 1, 0, -1, 0, 6.12323e-17, -16.25, -0.58, -1.1)
+transform = Transform3D(-0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, -0.707107, -16.61, -1.25, -0.34)
 
 [node name="steps_toma" type="Marker3D" parent="CutsceneStage/Marks"]
-transform = Transform3D(6.12323e-17, 0, 1, 0, 1, 0, -1, 0, 6.12323e-17, -17.0, -1.16, 2.4)
+transform = Transform3D(-0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, -0.707107, -16.11, -0.96, -1.54)
 
 [node name="toma_seaward" type="Marker3D" parent="CutsceneStage/Marks"]
-transform = Transform3D(0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, 0.707107, -17.0, -1.16, 2.4)
+transform = Transform3D(0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, 0.707107, -16.11, -0.58, -1.54)
 
 [node name="asha_start" type="Marker3D" parent="CutsceneStage/Marks"]
 transform = Transform3D(6.12323e-17, 0, 1, 0, 1, 0, -1, 0, 6.12323e-17, -11.8, 0, 0)
