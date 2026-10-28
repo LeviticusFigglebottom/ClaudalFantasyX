@@ -841,3 +841,17 @@ hand_off_radius_m, spawn_search_steps, steer_turns_deg, slide_min_share) and a n
 - **To cherry-pick:** take 8fdf266d, then b66981e9. Or take the whole branch (big14).
 - **On this branch merged with big13 (003fb560):** hero_ is 110/0 (compiles). The qa_ run, including the two
   party-spawn tests and the new encounter guard, is still going.
+MERGE-READY @ c47eaa037 (+ this log): **big13 merged (003fb560); the encounter guard.**
+- **Merged tree:** hero_ 110/0 and qa_ 10/0, so HeroFieldParty compiles and both party-spawn tests pass. Liss's
+  model came with big13, so her field body and battle actor are live (the hero guards run on her real model).
+- **New: tests/integration/test_qa_encounters.gd.** Every Act I fight (33) is entered as the field enters it
+  (BattleRequest.make with its return zone and spawn), won, accepted, and left back to its zone. The party walks
+  there under a QaLogger. All 33 are clean: no engine or script error.
+  - Five scripted fights don't end by attack within 80 turns and are reported, not failed: ch06_inquisitor (he
+    yields), ch08_stair_hold_1–3 and undertows_reach (objectives and a scripted escape).
+  - **It didn't reproduce the human's "cast a freed object" entering a fight.** That likely sits in the real
+    scene-change path (SceneRouter fade, BattleStinger, start_battle_staged), which a headless test can't drive
+    without frames. **Next:** a probe scene that runs the real BattleRequest.submit → router → staged build with
+    real frames, for the slice and Ch1 fights.
+- **SELF-RENDERED @ 003fb560:** ch07_bell_galleries and ch08_corrow_stair, both pixel-identical to big13's
+  approved baselines. No capsule is visible; Liss is too small to read at those distances.
