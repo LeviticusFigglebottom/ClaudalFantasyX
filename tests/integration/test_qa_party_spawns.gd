@@ -14,6 +14,13 @@ const FOLLOW_FRAMES := 30
 const MOVE_M := 0.05
 const WALK_FRAMES := 60
 const EPS_M := 0.01
+## The sight-line guard: the mark Cutscene A walks Rhen to, how long he walks up the beach and then stands, the frames
+## the followers get to settle first, and the slack on sight_clear_m (a follower eases toward its point).
+const BEACH_PATH_MARK := &"beach_path"
+const SIGHT_WALK_FRAMES := 150
+const SIGHT_STOP_FRAMES := 90
+const SIGHT_SETTLE_FRAMES := 60
+const SIGHT_EPS_M := 0.2
 
 var _state_was: GameStateData
 
@@ -95,6 +102,60 @@ func test_the_game_start_hands_the_party_back_after_cutscene_a() -> void:
 		_assert_follow(player, party, "after Cutscene A")
 	zone.free()
 	Game.state = _state_was
+
+
+## The big14 playtest: after Cutscene A the field camera trails Rhen up the beach from the shallows, and Asha, on his
+## trail straight behind him, stood between it and him and hid him ("Rhen is not on screen"). With the camera driven
+## as in play, walking up the beach and stopping, no follower stands in the camera's line of sight to the leader.
+func test_no_follower_hides_the_leader_from_the_field_camera() -> void:
+	Game.new_game()
+	for f: StringName in [&"prologue_seen", &"ch02_met_asha"]:
+		Game.set_flag(f)
+	Game.state.party_ids = [&"rhen", &"asha", &"toma"] as Array[StringName]
+	var zone := (load(HALUNA) as PackedScene).instantiate() as Node3D
+	_host().add_child(zone)
+	var player := _controller(zone)
+	player.set_physics_process(false)
+	player.set_process_unhandled_input(false)
+	var party := player.get_node(NodePath(String(HeroFieldParty.NAME))) as HeroFieldParty
+	party.set_physics_process(false)
+	var director := zone.get_node("CameraDirector") as FieldCameraDirector
+	director.auto_update = false
+	var stage := HeroFieldParty.find_scripted(zone, &"CutsceneStage")[0] as CutsceneStage
+	var mark := stage.mark(BEACH_PATH_MARK)
+	player.global_position = mark.global_position  # where Cutscene A leaves him
+	director.snap()
+	party.catch_up()
+	var clear := float((HeroFieldActor.field_data().get("followers", {}) as Dictionary).get("sight_clear_m", 0.0))
+	assert_true(clear > 0.0, "followers.sight_clear_m is set")
+	var worst := INF
+	for frame in SIGHT_WALK_FRAMES + SIGHT_STOP_FRAMES:
+		player.input_override = Vector2(0, -1) if frame < SIGHT_WALK_FRAMES else Vector2.ZERO
+		player.step(DT)
+		director.update(DT)
+		party.advance(DT)
+		if frame < SIGHT_SETTLE_FRAMES:
+			continue
+		for f in party.followers:
+			worst = minf(worst, _sight_gap(director.camera, player.global_position, f.global_position))
+	player.input_override = Vector2.ZERO
+	assert_true(
+		worst >= clear - SIGHT_EPS_M,
+		"a follower stood %.2f m off the camera's line to the leader (at least %.2f)" % [worst, clear]
+	)
+	zone.free()
+	Game.state = _state_was
+
+
+## How far (flat) `body` stands off the line from `cam` to `lead`; INF when it is not between them.
+static func _sight_gap(cam: Camera3D, lead: Vector3, body: Vector3) -> float:
+	var line := Vector3(lead.x - cam.global_position.x, 0.0, lead.z - cam.global_position.z)
+	var length := line.length()
+	var rel := Vector3(body.x - cam.global_position.x, 0.0, body.z - cam.global_position.z)
+	var along := rel.dot(line / length)
+	if along <= 0.0 or along >= length:
+		return INF
+	return absf(rel.dot((line / length).cross(Vector3.UP)))
 
 
 ## The human's "Trying to cast a freed object" entering a fight: a sequencer the party watches, freed before the party

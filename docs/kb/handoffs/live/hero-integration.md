@@ -983,3 +983,32 @@ TRIAL MERGE @ integration 6b89f4a6: env-art 62409951, env-art-b 6edde924, creatu
   - Env-art went from 4 items to 3.
   - integration-qa's 2 items are Pell and vigil_pell in Ch9's ch09_pell_joined variant, which wait on M3-CHR-506
     as before.
+
+MERGE-READY @ 201d21068 (+ this log): **big14 fixes on the merged tree** (origin/gpu/gate-big14-shots merged as 8268e80b6,
+without the 391 gate-run PNGs, 131 MB).
+- **(5) The human's party-start bug ("Rhen not on screen"): FIXED.** He was on screen, about 20 m out, but Asha's
+  follower stood exactly between the trailing field camera and him and covered him. The playtester read the pair as
+  Asha and Toma; Toma is in reserve then.
+  - HeroFieldParty now keeps every follower off the camera's line of sight to the leader:
+    - A follower point between the camera and him, within `sight_clear_m` (0.9) of that line, steps aside.
+    - It keeps its side until the line is clear, and takes the other side at a wall.
+    - It never comes nearer him than min_gap.
+  - Also: a leader faster than `jump_mps` (20) counts as a teleport, so the party relays out. A 2.0 m place_at, just
+    under teleport_m, left a follower stacked beside him.
+  - **New test** `test_qa_party_spawns::test_no_follower_hides_the_leader_from_the_field_camera`. On the old code a
+    follower stood 0.02 m off the line; it passes with the fix. qa_party 4/0.
+  - **SELF-RENDERED** (lavapipe, 960x540, after Cutscene A at beach_path, a walk up the beach): Rhen and Asha stand
+    side by side by the wall gap, both in frame. Viewed.
+  - The "empty sky" lines inside Cutscene A are H05 framed for Rhen lying down, which he stands up out of →
+    **M3-HER-1155 (cinematics)**.
+- **(1) test_hero_field_snaps haluna_wake:** Rhen falls. The NemeDoor spawn is 7.8 m above the ground (y 9.706,
+  ground 1.90). Act1-chapters' data → **M3-HER-1154** (patch inside), KNOWN in the test. drowned_choir's 2 snaps are an
+  Act II greybox (M4-C14-02, paused), also KNOWN.
+- **(2) test_fp_prologue "Liss waits":** Liss has a body since big13. The test now checks each vigil against
+  HeroFieldActor.scene_path. fp_prologue 8/0.
+- **(3) test_qa_capsules:** Haluna's 7 wake villagers, ossa_fen's pell and the 10 Act II foes (Ch10–16, creatures)
+  are listed with owners. 3/0.
+- **(4) test_qa_save_shrines haluna_wake:** there's no Shrine spawn, **and the shrine respawns in ch02/haluna** (a save
+  there would load in Ch2). Both are in M3-HER-1154 (act1-chapters), KNOWN in the test. 2/0.
+- Still running at the time of this line: the full `--filter=hero / party / fp_ / qa_` on the merged tree. Results
+  follow in the next line.

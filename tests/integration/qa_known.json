@@ -161,17 +161,26 @@
       "kahre": "creatures, M3-HER-1126",
       "virel": "creatures, M3-HER-1126",
       "stillguard_inquisitor": "characters, M3-CRE-625 (Inquisitor Hadric Moll)",
-      "tannin_archer": "act1-chapters, Act II paused (ADR 0041): its regulars' bodies wait on creatures (M3-CRE-620) when the pause lifts",
-      "root_crab": "act1-chapters, Act II paused (ADR 0041): its regulars' bodies wait on creatures (M3-CRE-620) when the pause lifts",
-      "fen_leech": "act1-chapters, Act II paused (ADR 0041): its regulars' bodies wait on creatures (M3-CRE-620) when the pause lifts",
-      "gallery_ray": "act1-chapters, Act II paused (ADR 0041): its regulars' bodies wait on creatures (M3-CRE-620) when the pause lifts",
-      "rime_urchin": "act1-chapters, Act II paused (ADR 0041): its regulars' bodies wait on creatures (M3-CRE-620) when the pause lifts",
-      "ridge_lynx": "act1-chapters, Act II paused (ADR 0041): its regulars' bodies wait on creatures (M3-CRE-620) when the pause lifts",
-      "cord_moth": "act1-chapters, Act II paused (ADR 0041): its regulars' bodies wait on creatures (M3-CRE-620) when the pause lifts",
-      "scree_crawler": "act1-chapters, Act II paused (ADR 0041): its regulars' bodies wait on creatures (M3-CRE-620) when the pause lifts",
-      "glass_skate": "act1-chapters, Act II paused (ADR 0041): its regulars' bodies wait on creatures (M3-CRE-620) when the pause lifts",
-      "rim_crawler": "act1-chapters, Act II paused (ADR 0041): its regulars' bodies wait on creatures (M3-CRE-620) when the pause lifts"
+      "tannin_archer": "creatures, Act II Ch10 (M4-C10-03; paused by ADR 0041)",
+      "root_crab": "creatures, Act II Ch10 (M4-C10-03; paused by ADR 0041)",
+      "fen_leech": "creatures, Act II Ch10 (M4-C10-03; paused by ADR 0041)",
+      "gallery_ray": "creatures, Act II Ch11 (M4-C11-03; paused by ADR 0041)",
+      "rime_urchin": "creatures, Act II Ch11 (M4-C11-03; paused by ADR 0041)",
+      "ridge_lynx": "creatures, Act II Ch12 (M4-C12-03; paused by ADR 0041)",
+      "cord_moth": "creatures, Act II Ch12 (M4-C12-03; paused by ADR 0041)",
+      "scree_crawler": "creatures, Act II Ch12 (M4-C12-03; paused by ADR 0041)",
+      "glass_skate": "creatures, Act II Ch16 (M4-C16-03; paused by ADR 0041)",
+      "rim_crawler": "creatures, Act II Ch16 (M4-C16-03; paused by ADR 0041)"
     },
+    "haluna.tscn": [
+      "Child",
+      "Fisher",
+      "Neme",
+      "Netmender",
+      "Osu",
+      "Reed",
+      "Vendor"
+    ],
     "ossa_fen.tscn": [
       "pell"
     ]

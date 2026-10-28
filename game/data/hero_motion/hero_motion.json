@@ -152,6 +152,8 @@
       "spawn_search_steps": 6,
       "steer_turns_deg": [30.0, -30.0, 60.0, -60.0, 90.0, -90.0],
       "slide_min_share": 0.3,
+      "sight_clear_m": 0.9,
+      "jump_mps": 20.0,
       "catch_up_turns_deg": [0.0, 45.0, -45.0, 90.0, -90.0, 135.0, -135.0, 180.0],
       "step_m": 0.45,
       "vertical_mps": 4.0,
