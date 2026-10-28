@@ -38,6 +38,8 @@
                       "emission": "#4FD2D6", "emission_energy": 0.9},
       "ilun": {"shape": "capsule", "color": "#0E4A55", "radius": 0.5, "height": 2.3, "tint": "#BFE6E0",
                "emission": "#1FA3A6", "emission_energy": 0.45},
+      "stillguard_inquisitor": {"scene": "res://game/characters/foes/moll_battle.tscn", "yaw_deg": 90.0, "height": 1.8,
+                                "radius": 0.35, "tint": "#7E6A55"},
       "wickfry": {"height": 1.27},
       "tower_limpet": {"height": 0.55},
       "oil_slug": {"height": 0.37},

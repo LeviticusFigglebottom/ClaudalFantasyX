@@ -1,9 +1,9 @@
 ---
 id: M3-BPR-411
 title: "Battle VFX coverage: 17 skills and 8 battle items play no effect (proposed library mappings)"
-role: rendering
-status: todo
-owner_session: ""
+role: combat
+status: review
+owner_session: claude/battle-presentation
 depends_on: []
 milestone: M3
 request-from: combat
@@ -57,7 +57,15 @@ telegraph gathers and the cure items.
   `toll_gather` plays through BattleBossVfx on charge_started), so skip any that double.
 
 ## Acceptance criteria
-- [ ] `tools/battle_vfx_coverage.py` reports 0 gaps (or each kept gap is noted as intended).
-- [ ] Viewed on a render (the reduced-motion flash rules already hold: test_battle_reduced_motion_audit).
+- [x] `tools/battle_vfx_coverage.py` reports 0 unexplained gaps; the 5 left are kept on purpose (`INTENDED`).
+- [x] Viewed on a render (the Act I sheets, M3-BPR-420) (the reduced-motion flash rules already hold: test_battle_reduced_motion_audit).
 
 ## Review log
+- 2026-10-28, battle-presentation (the Lead, 13:25: rendering has no track, so battle-presentation owns effects.json):
+  closed by M3-BPR-420. Every Act I ability and battle item has its **own** effect instead of the library mapping
+  proposed here; the cure items, the wick and the drag net have their own too.
+  - Five gaps stay on purpose, each with its reason in `INTENDED`:
+    - the three ward-aimed skills: the stair entry has no fighter, so the push reaction is their motion;
+    - the Drownbell's toll gather, which has its own rig;
+    - Act II's `unravel`, paused.
+  - Test: `test_every_gap_is_explained`.
