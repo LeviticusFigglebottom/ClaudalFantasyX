@@ -347,6 +347,19 @@ def body(mesh: ck.Mesh, rig: ck.Rig, joints: np.ndarray) -> dict:
     cavity = np.clip(0.12 + 0.5 * (fold < -0.006) * np.clip(near_rib + neck, 0, 1) + 0.35 * chafe +
                      0.8 * np.clip(opn - core, 0, 1) + 0.3 * lat, 0.0, 1.0)
     wet = np.clip(1.0 - 0.35 * chafe - 0.3 * scar, 0.4, 1.0)
+    # M3-CRB-002 polish 2: the neck no longer reads as one glossy tube under the battle sun. Its upper ridge has
+    # dried to a dull skin, the slime runs down the flanks in streaks (wet and glossy) between drier bands, and the
+    # wrinkles' valleys hold cavity, so the sheen breaks up along the folds.
+    nk = ck.smoothstep(0.72, 0.8, U) * (1.0 - opn)
+    sph_v = np.tile(sph, NR)
+    ridge = ck.smoothstep(0.15, 0.8, sph_v)  # the top of the neck, the outside of its bend
+    run = ck.fbm(np.column_stack([S * 16.0, np.cos(PH) * 1.2, np.sin(PH) * 1.2]), SEED + 17)
+    slime = ck.smoothstep(0.05, 0.3, run) * (1.0 - 0.7 * ridge)
+    valley = ck.smoothstep(-0.2, -0.75, crease) * (0.4 + 0.6 * patchy)
+    wet_neck = np.clip(0.3 - 0.27 * ridge + 0.65 * slime + 0.12 * valley, 0.03, 1.0)
+    wet = wet * (1.0 - nk) + wet_neck * nk
+    cavity = np.clip(cavity + nk * (0.45 * valley + 0.12 * (1.0 - slime) * (1.0 - ridge)), 0.0, 1.0)
+    col = ck.mix(col, PAL["storm_slate"] * 0.9, (0.3 * nk * ridge * ck.smoothstep(-0.2, 0.3, lump))[:, None])
     skin = rig.chain([f"spine{i}" for i in range(N_SPINE)], joints)
     ck.finish(mesh, P, T, "carapace", col, skin, wet=wet, cavity=cavity, emission=emission)
     N = ck.weld_normals(P, ck.vertex_normals(P, T))
