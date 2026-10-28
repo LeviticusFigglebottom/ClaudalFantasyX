@@ -58,7 +58,16 @@ OWNER_ZONES_EARLY = "env-art"  # Prologue-Ch4 zones, the shared kits, and the ar
 OWNER_ZONES_LATE = "env-art-b"  # Ch5-Ch9 zones and the arenas used there
 OWNER_REGULAR = "creatures"  # regular enemies and wildlife
 OWNER_BOSS = "creatures-b"  # bosses and Vowbound
-OWNER_PEOPLE = "characters"  # the party and named NPCs
+OWNER_PEOPLE = "characters"  # named story NPCs (and the party's models)
+OWNER_PARTY = "integration-qa"  # the party's bodies wherever they stand as capsules (the Lead, 2026-10-28)
+OWNER_FOLK = "creatures"  # generic villagers and background folk (the VillagerLayer/FieldNpc owner)
+# Named story NPCs (the Lead's list): characters builds them. Anyone else on a capsule is background folk.
+NAMED_NPCS = {
+    "hobb", "fenn", "marra", "tavi", "neme", "ione", "ivo", "osu", "sabe", "garo", "reed", "skipper_sadi",
+    "ferrymaster", "elder", "gatekeeper", "poolkeeper", "purser", "scaleman", "stillguard", "kell", "tender",
+    "inquisitor", "officer", "clerk", "sefir",
+}
+PARTY_EXTRA = ["pell"]
 OWNER_FLOW = "act1-chapters"  # placement and flow
 OWNER_VFX = "battle-presentation"
 OWNER_AUDIO = "audio"
@@ -170,6 +179,27 @@ def arena_chapters(root: Path = ROOT) -> dict[str, int]:
     return out
 
 
+def party_hero(actor: str, root: Path = ROOT) -> str:
+    """The party member a stage actor plays (hero_motion.json's actor_aliases and actor_prefixes, as
+    HeroFieldActor.hero_of reads them), or ""."""
+    field = (_json(root / "game/data/hero_motion/hero_motion.json").get("field", {})) or {}
+    hero = str((field.get("actor_aliases", {}) or {}).get(actor, actor))
+    for prefix in field.get("actor_prefixes", []) or []:
+        if hero.startswith(prefix):
+            hero = hero[len(prefix) :]
+    return hero if hero in PARTY or hero in PARTY_EXTRA else ""
+
+
+def battle_model(scene: str, root: Path = ROOT) -> str:
+    """The model a hero's battle wrapper loads by path (HeroBattleActor.model_path), or "" when it has none."""
+    try:
+        text = res_to_path(scene, root).read_text(encoding="utf-8")
+    except OSError:
+        return ""
+    m = re.search(r'^model_path = "([^"]+)"', text, re.M)
+    return m.group(1) if m else ""
+
+
 # --- the static checks ------------------------------------------------------------------------------------------
 
 
@@ -233,8 +263,11 @@ def check_battle(root: Path = ROOT) -> list[Item]:
             out.append(Item("game/data/battle/vowbound.json#%s" % vid, "Vowbound %s is drawn as a primitive (no actor scene)" % vid, None, OWNER_BOSS, "high", "battle_body"))
     for hero in PARTY:
         scene = str((sandbox.get(hero, {}) or {}).get("scene", ""))
+        model = battle_model(scene, root) if scene else ""
         if scene == "" or not res_to_path(scene, root).exists():
-            out.append(Item("game/data/ui/battle_sandbox.json#%s" % hero, "party member %s has no battle actor (a capsule in battle)" % hero, None, OWNER_PEOPLE, "high", "battle_body"))
+            out.append(Item("game/data/ui/battle_sandbox.json#%s" % hero, "party member %s has no battle actor (a capsule in battle)" % hero, None, OWNER_PARTY, "high", "battle_body"))
+        elif model and not res_to_path(model, root).exists():
+            out.append(Item(model.removeprefix("res://"), "party member %s's battle actor waits for its model (a capsule in battle until it lands)" % hero, None, OWNER_PEOPLE, "high", "battle_body"))
     return out
 
 
@@ -426,8 +459,12 @@ def from_scan(scan: list[dict], root: Path = ROOT) -> list[Item]:
             base = re.sub(r"(_\d+|_[a-d])$", "", who)
             if base in creature_ids or who in creature_ids:
                 owner = OWNER_BOSS if base in bosses or who in bosses else OWNER_REGULAR
-            else:
+            elif party_hero(who, root) != "":
+                owner = OWNER_PARTY
+            elif base in NAMED_NPCS or who in NAMED_NPCS:
                 owner = OWNER_PEOPLE
+            else:
+                owner = OWNER_FOLK
             what = "%s is a capsule stand-in" % who + (" (%s)" % ", ".join(variants) if variants else "")
             out.append(Item(rel, what, ch, owner, "high", "capsule", examples=nodes[:3]))
         elif kind == "greybox":
@@ -511,6 +548,7 @@ TASKS = {
     OWNER_REGULAR: "M3-HER-1142",
     OWNER_BOSS: "M3-HER-1143",
     OWNER_PEOPLE: "M3-HER-1144",
+    OWNER_PARTY: "M3-HER-1149",
     OWNER_FLOW: "M3-HER-1145",
     OWNER_AUDIO: "M3-HER-1146",
     OWNER_UI: "M3-HER-1147",

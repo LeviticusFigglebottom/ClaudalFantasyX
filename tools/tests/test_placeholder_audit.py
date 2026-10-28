@@ -110,6 +110,14 @@ class BattleTests(unittest.TestCase):
         self.assertTrue(any("asha has no battle actor" in w for w in whats))
         self.assertFalse(any("rhen has no battle actor" in w for w in whats))
 
+    def test_a_battle_wrapper_waiting_for_its_model_is_reported(self) -> None:
+        _write(self.repo.root, "game/data/ui/battle_sandbox.json",
+               {"sandbox": {"stand_ins": {"liss": {"scene": "res://w.tscn"}}}})
+        _write(self.repo.root, "w.tscn", '[node name="W" type="Node3D"]\nmodel_path = "res://liss_lod1.glb"\n')
+        liss = [i for i in pa.check_battle(self.repo.root) if "liss" in i.what]
+        self.assertEqual(len(liss), 1)
+        self.assertIn("waits for its model", liss[0].what)
+
 
 class VfxTests(unittest.TestCase):
     def test_an_act1_boss_without_set_piece_vfx_is_battle_presentations(self) -> None:
@@ -149,9 +157,24 @@ class ScanTests(unittest.TestCase):
             {"scene": "res://game/levels/ch02/haluna/haluna.tscn", "kind": "named", "node": "D/wall_placeholder",
              "group": "D", "detail": ""},
         ]
-        rows = pa.from_scan(scan, Path(tempfile.gettempdir()))
+        scan += [
+            {"scene": "res://game/levels/ch09/corrow_night/corrow_night.tscn", "kind": "capsule", "node": "A/vigil_toma",
+             "group": "vigil_toma", "detail": "variant ch09_pell_joined"},
+            {"scene": "res://game/levels/ch05/pemakar/pemakar.tscn", "kind": "capsule", "node": "A/sweeper",
+             "group": "sweeper", "detail": ""},
+        ]
+        repo = Repo()
+        try:
+            _write(repo.root, "game/data/hero_motion/hero_motion.json",
+                   {"field": {"actor_aliases": {"ysolde_edge": "ysolde"}, "actor_prefixes": ["vigil_"]}})
+            rows = pa.from_scan(scan, repo.root)
+        finally:
+            repo.close()
         kinds = {(r.kind, r.owner, r.chapter) for r in rows}
-        self.assertIn(("capsule", pa.OWNER_PEOPLE, 5), kinds, "a person on a capsule is characters'")
+        self.assertIn(("capsule", pa.OWNER_PEOPLE, 5), kinds, "a named story NPC on a capsule is characters'")
+        owners = {r.what.split()[0]: r.owner for r in rows if r.kind == "capsule"}
+        self.assertEqual(owners["vigil_toma"], pa.OWNER_PARTY, "a party member's vigil is the party's")
+        self.assertEqual(owners["sweeper"], pa.OWNER_FOLK, "background folk are the villager layer's")
         grey = [r for r in rows if r.kind == "greybox"]
         self.assertEqual(len(grey), 1, "one row per zone")
         self.assertEqual((grey[0].count, grey[0].owner), (2, pa.OWNER_ZONES_LATE))

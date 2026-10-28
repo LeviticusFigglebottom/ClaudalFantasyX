@@ -57,6 +57,9 @@
         "run_clip_mps": 2.19
       }
     },
+    "actor_aliases_doc": "ADR 0041 (the party's stage capsules): a stage actor whose node name isn't a hero id but plays that hero takes the hero's body. actor_aliases names them one by one (Ysolde at the Wake's edge, Kerrid on the stair in Ch9); actor_prefixes strips a prefix (Ch9's vigil_<hero> at the dawn road). An actor whose hero has no field row stays its capsule.",
+    "actor_aliases": {"ysolde_edge": "ysolde", "kerrid_stair": "kerrid"},
+    "actor_prefixes": ["vigil_"],
     "model_yaw_offset_deg": 180.0,
     "ground_offset_m": 0.0,
     "standin_names": [
