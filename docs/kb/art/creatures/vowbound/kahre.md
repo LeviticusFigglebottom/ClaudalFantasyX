@@ -288,3 +288,11 @@ Two flaws seen in the final-pass render; nothing else is redone.
 **As built:** 17,830 triangles (≤ 18k): plates 1,248, collar 448, handle 160, leather 126, hammer head 320, the rest
 as above. 13,162 vertices, 24 bones, the same 14 clips. Rest bounds y 0 to 3.25 m: the hammer is 10 cm lower, so the
 creature is now shorter than its 3.3 m stand-in.
+
+## Polish 2 (2026-10-28)
+
+The wrist, where the forearm runs into the back of the hand, showed a ragged intersection line up close. A **wrist
+cuff of hide folds** now wraps each wrist below the last forearm scute: a short ring loft (4 rings × 10, 80
+triangles) skinned with the forearm, its upper edge tucked under the forearm's hide, swelling 2.5–3 cm proud in four
+creased lobes, and its lower lip turned down over the back of the hand (cavity dark at both edges, ash on its top
+like the rest of the hide). 17,990 triangles (≤ 18k; was 17,830). Bones, clips, contacts and anchors unchanged.
