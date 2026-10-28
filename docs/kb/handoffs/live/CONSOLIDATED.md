@@ -50,6 +50,13 @@ The previous version is `CONSOLIDATED-history-2026-10-28.md`. It has the deep hi
   Estimate: two or three batches.
 
 ## LIVE STATUS (kept current by the outgoing Lead; newest at top)
+- **19:20 UTC:**
+  - big16 cloud gate: 238/~600 shots.
+  - battle-presentation is MERGE-READY @ e641579e (the Ch8 Climb's camera cut with stair effects) and its backlog is empty.
+  - characters is building PELL (M3-CHR-506).
+  - integration-qa is rendering the party-start lane-turn fix.
+  - The PC is still offline.
+  - No open LEAD-ASKs.
 - **18:45 UTC:**
   - The cloud gate of big16 (/home/user/wt/gate16 in the old Lead's container) had 171/~600 shots captured. Expect `lead/gate-big16-shots` around 22:00 UTC if the container survives. If that branch doesn't exist, re-gate big16 on the PC.
   - Every track is idle, with its Act I list done or waiting, except three just nudged: characters (Pell's model), integration-qa (verify or fix the party-start camera), battle-presentation (hook the Fisher Stair).
