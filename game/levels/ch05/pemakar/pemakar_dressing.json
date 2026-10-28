@@ -43552,6 +43552,16 @@
    "yaw_deg": 0.0,
    "block": "Lamps",
    "collide": true
+  },
+  {
+   "piece": "weir_leat",
+   "at": [
+    20.2,
+    24.6
+   ],
+   "y": 0.65,
+   "yaw_deg": 0.0,
+   "block": "SeaCutWeir"
   }
  ]
 }

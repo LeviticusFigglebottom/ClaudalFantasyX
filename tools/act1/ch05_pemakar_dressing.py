@@ -81,6 +81,9 @@ WEIR_LIGHTS = [
     {"at": [WEIR_AT[0], WEIR_AT[1] + 0.3, WEIR_AT[2] + 0.5], "color": "#FF9A4A", "energy": 1.1, "range": 5.0},
 ]
 # The story pieces env-art built for the greybox's stand-ins (M3-ENV-1214): each follows its block
+# The leat feeding the weir (b_leat.py, M3-ENV-1307): from a culvert in tier 0's wall down the flank to the back of
+# the weir's cut (its bed 0.05 under the crest, 3 m upstream of it); it follows the weir's block
+LEAT_AT = (WEIR_AT[0], WEIR_AT[1] - 0.05, WEIR_AT[2] - 3.0)
 STORY_PIECES = {"wake_wall": "WakeWall", "sea_cut_weir": "SeaCutWeir", "crown_bell": "CrownBell"}
 TOWN_HALF_X = 44.0
 SHORE_Z = 29.0
@@ -289,6 +292,8 @@ def dressing() -> dict:
     pieces += ferry()
     pieces.append({"piece": "lamp_pillar", "at": [r3(WEIR_LAMP_AT[0]), r3(WEIR_LAMP_AT[2])], "y": WEIR_LAMP_AT[1],
                    "yaw_deg": 0.0, "block": NIGHT_BLOCK, "collide": True})
+    pieces.append({"piece": "weir_leat", "at": [r3(LEAT_AT[0]), r3(LEAT_AT[2])], "y": r3(LEAT_AT[1]), "yaw_deg": 0.0,
+                   "block": STORY_PIECES["sea_cut_weir"]})
     lights = [dict({k: v for k, v in light.items() if k != "at"}, at=light["at"], block=NIGHT_BLOCK)
               for light in pv["lights"] + WEIR_LIGHTS]
     boats = pv["boats"]

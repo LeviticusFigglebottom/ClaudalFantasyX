@@ -364,6 +364,17 @@
         "wake_wall": 3600,
         "wake_wall-lod1": 24
       }
+    },
+    "weir_leat": {
+      "budget": [
+        6000,
+        900
+      ],
+      "bytes": 298992,
+      "lods": {
+        "weir_leat": 3482,
+        "weir_leat-lod1": 696
+      }
     }
   },
   "schema": "hymn-kit/1"
