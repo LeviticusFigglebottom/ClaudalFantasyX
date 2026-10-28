@@ -296,9 +296,10 @@ RENDER-REQUEST @ 51f1a58d: portraits for flue_moth, oil_slug, spawn_polyp, wall_
     - **Noted for my audit:** in `lattice_overview`, the heroes' small initials crowd their name tags (R R R next to "Rhen"). This predates the render.
   - **`lead/gate-render-ui-da7891c`:** approved earlier (892334f2).
   - **Render requests consolidated (TRACK-RULES: one open per track).** The requests @ 50182f0e, 469851f6, 4d32a621 and 51f1a58d are superseded by the single request below.
-RENDER-REQUEST @ b5136683: battle_ch08_stair_hold, kite_map, field_menu_kite, field_menu_map_keth_pass, field_menu_map_lowlight, field_menu_map_ansedra, field_menu_codex, plus the bestiary portraits for flue_moth, oil_slug, spawn_polyp and wall_polyp (tools/portraits/render.sh). Why:
+RENDER-REQUEST @ a8558176: battle_ch08_stair_hold, kite_map, field_menu_kite, field_menu_map_keth_pass, field_menu_map_lowlight, field_menu_map_ansedra, field_menu_codex, lattice_overview, plus the bestiary portraits for flue_moth, oil_slug, spawn_polyp and wall_polyp (tools/portraits/render.sh). Why:
 - the stair meter clear of the tutorial on the wall_head_storm arena;
 - the Kite's map, and the field menu a row taller with it;
 - three Act II maps;
 - the codex counts (34 → 50);
 - four dark creatures relit.
+- the Lattice overview's initials no longer crowd the name tags (own audit; a8558176; the request above now names this head).
