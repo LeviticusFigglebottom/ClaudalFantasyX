@@ -56,6 +56,7 @@
     "stubble_density": 0.6
   },
   "_hair": {
+    "hairline_feather": 1.0,
     "kind": "short",
     "hairline": "male",
     "seed": 58,

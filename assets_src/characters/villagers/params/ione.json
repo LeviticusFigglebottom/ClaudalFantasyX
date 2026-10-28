@@ -52,6 +52,7 @@
     "lip": "#5E3A30"
   },
   "_hair": {
+    "hairline_feather": 1.0,
     "kind": "short",
     "hairline": "female",
     "seed": 54,
@@ -80,7 +81,8 @@
       "sleeve": 0.0,
       "neck_v_m": 0.04,
       "armhole_drop_m": 0.115,
-      "cover_margin_m": 0.02
+      "cover_margin_m": 0.02,
+      "armhole_cut": "tank"
     },
     "trousers": {
       "mat": "cloth_b",

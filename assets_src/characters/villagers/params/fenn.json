@@ -40,6 +40,7 @@
   "donor_mix_asian": 0.4,
   "donor_mix_caucasian": 0.3,
   "_skin": {
+    "brow_strands": {"count": 70, "dark_share": 0.3, "dark_hex": "#4A4640", "light_hex": "#BDB6AA", "opacity": 0.9},
     "hex": "#9A6A4E",
     "age": 1.0,
     "freckles": 0,
@@ -57,6 +58,7 @@
     "stubble_shadow": 0.2
   },
   "_hair": {
+    "brow_params": {"alpha_boost": "1.0", "strand_value_jitter": "0.4"},
     "kind": "cropped",
     "hairline": "male",
     "seed": 56,

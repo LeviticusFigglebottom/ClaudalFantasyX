@@ -12,7 +12,8 @@ instanced villager GLB is already dressed. Text resources, deterministic.
 Per villager: the skin maps from villager_textures.py; the shared villager cloth atlas tinted per
 material from `_tints` (cloth_a/b/c; leather untinted); hair, grey hair, lash and brow colours from
 `_hair`; the iris from `_eyes`; optional per-material cloth shader parameters from `_cloth_params` (M3-CHR-516: the
-smith's leather apron is the cloth shader, less sheen, smoother). Generic atlases (eyes, hair, lashes, brows, detail normals) are
+smith's leather apron is the cloth shader, less sheen, smoother); optional brow shader parameters from
+`_hair.brow_params` (M3-CHR-536: the old villagers' sparse, salt-and-pepper brows). Generic atlases (eyes, hair, lashes, brows, detail normals) are
 Asha's.
 """
 from __future__ import annotations
@@ -93,7 +94,8 @@ def tables(npc: str, extra: dict) -> tuple[dict, dict, dict]:
         "brow": ("character_hair", 0, {"flow_strength": "0.0", "spec_primary_intensity": "0.08", "alpha_boost": "1.6",
                                        "spec_secondary_intensity": "0.05", "transmission_strength": "0.2",
                                        "root_occlusion": "0.2", "indirect_specular": "0.05",
-                                       "col_root": brow, "col_tip": brow, **still},
+                                       "col_root": brow, "col_tip": brow, **still,
+                                       **hp.get("brow_params", {})},  # M3-CHR-536 (optional): an aged brow
                  {"tex_hair": A + "asha_facehair.png"}),
         "hair": ("character_hair", 0, hair_params, {"tex_hair": A + "asha_hair.png", "tex_hairflow": A + "asha_hairflow.png"}),
         "hair_grey": ("character_hair", 0, {**hair_params, "col_root": grey, "col_tip": grey},

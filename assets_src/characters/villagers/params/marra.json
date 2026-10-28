@@ -40,6 +40,7 @@
   "donor_mix_asian": 0.4,
   "donor_mix_caucasian": 0.3,
   "_skin": {
+    "brow_strands": {"count": 70, "dark_share": 0.3, "dark_hex": "#3E3A34", "light_hex": "#9A948B", "opacity": 0.9},
     "hex": "#A27458",
     "age": 0.9,
     "freckles": 0,
@@ -52,6 +53,7 @@
     "lip": "#80504A"
   },
   "_hair": {
+    "brow_params": {"alpha_boost": "1.0", "strand_value_jitter": "0.4"},
     "kind": "wrap",
     "hairline": "female",
     "seed": 59,
