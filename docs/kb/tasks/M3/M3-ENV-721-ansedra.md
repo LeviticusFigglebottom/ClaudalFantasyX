@@ -2,7 +2,8 @@
 id: M3-ENV-721
 title: "Ansedra (Ch13–14): sheet, kit and the Warden's escape arena"
 role: environment
-status: doing
+status: blocked
+blocked-by: ADR 0041
 owner_session: "env-art (session_01YbaV2c8yquRHqj6afQYg89)"
 depends_on: []
 milestone: M3
@@ -16,7 +17,7 @@ Ch14 boss (Warden Malcor Venn on the Conclave's pursuit barge). The sheet comes 
 - [x] The design sheet: `docs/kb/art/environments/ansedra.md`.
 - [x] `bowl_dome`, `ansedra_far_domes`, `pursuit_barge`, `lut_ch14_wedding`, and the arena `ansedra_lagoon_escape`
       built to the battle contract.
-- [ ] The zone pieces: the Lacquer Court, the Sanctum basin, the Lamp Archive.
+- [x] The zone pieces: `lacquer_hall`, `lacquer_court_ground`, `sanctum_basin`, `archive_stacks` (ansedra.md §1, with composition notes; placement is act1-chapters's).
 - [ ] PC renders viewed and approved.
 
 ## Notes
@@ -30,5 +31,7 @@ Ch14 boss (Warden Malcor Venn on the Conclave's pursuit barge). The sheet comes 
     `battle_arena_ansedra_lagoon_escape`.
   - **Tests.** `tools/tests/test_ansedra.py` (6).
   - **For act1/combat:** set the Ch14 Venn encounter's arena to `ansedra_lagoon_escape` when it exists.
+
+- **2026-10-28 (env-art): paused by ADR 0041** (Act I at final quality first; later-act work stops). The work stays committed and pushed as is; nothing is reverted. Resume when the human lifts the pause.
 
 ## Review log

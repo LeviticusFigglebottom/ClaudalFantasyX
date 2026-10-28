@@ -151,9 +151,9 @@
         4000,
         300
       ],
-      "bytes": 82400,
+      "bytes": 155692,
       "lods": {
-        "market_stall": 1008,
+        "market_stall": 2324,
         "market_stall-lod1": 72
       }
     },

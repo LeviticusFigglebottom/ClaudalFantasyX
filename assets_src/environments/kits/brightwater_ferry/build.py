@@ -24,6 +24,7 @@ import bf_common as bf  # noqa: E402
 import bf_deckhouse  # noqa: E402
 import bf_drowned  # noqa: E402
 import bf_hull  # noqa: E402
+import bf_landing  # noqa: E402
 import bf_props  # noqa: E402
 import bf_rig  # noqa: E402
 import bf_terrace  # noqa: E402
@@ -31,7 +32,7 @@ import bf_terrace_rig  # noqa: E402
 
 kc = bf.kc
 MAX_GLB_BYTES = 5 * 1024 * 1024  # ADR 0005
-MODULES = (bf_hull, bf_rig, bf_deckhouse, bf_props, bf_drowned, bf_terrace, bf_terrace_rig)
+MODULES = (bf_hull, bf_rig, bf_deckhouse, bf_props, bf_drowned, bf_terrace, bf_terrace_rig, bf_landing)
 
 
 def targets() -> dict:

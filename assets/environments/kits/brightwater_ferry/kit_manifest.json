@@ -112,14 +112,36 @@
         "ferry_skiff-lod1": 298
       }
     },
+    "gangplank": {
+      "budget": [
+        4000,
+        300
+      ],
+      "bytes": 46572,
+      "lods": {
+        "gangplank": 552,
+        "gangplank-lod1": 12
+      }
+    },
+    "islet_landing": {
+      "budget": [
+        16000,
+        1500
+      ],
+      "bytes": 406944,
+      "lods": {
+        "islet_landing": 12376,
+        "islet_landing-lod1": 616
+      }
+    },
     "passenger_bundles": {
       "budget": [
         8000,
         800
       ],
-      "bytes": 73284,
+      "bytes": 117016,
       "lods": {
-        "passenger_bundles": 1256,
+        "passenger_bundles": 2568,
         "passenger_bundles-lod1": 282
       }
     },
@@ -132,6 +154,17 @@
       "lods": {
         "reef_awash": 3920,
         "reef_awash-lod1": 320
+      }
+    },
+    "stern_gate": {
+      "budget": [
+        1200,
+        100
+      ],
+      "bytes": 14868,
+      "lods": {
+        "stern_gate": 96,
+        "stern_gate-lod1": 12
       }
     },
     "terrace_derelict": {
@@ -172,9 +205,9 @@
         40000,
         4000
       ],
-      "bytes": 1493212,
+      "bytes": 1528752,
       "lods": {
-        "terrace_hull": 21714,
+        "terrace_hull": 22146,
         "terrace_hull-lod1": 3616
       }
     },
@@ -209,6 +242,17 @@
       "lods": {
         "terrace_name_board": 3588,
         "terrace_name_board-lod1": 132
+      }
+    },
+    "terrace_name_board_wrapped": {
+      "budget": [
+        3000,
+        200
+      ],
+      "bytes": 21308,
+      "lods": {
+        "terrace_name_board_wrapped": 332,
+        "terrace_name_board_wrapped-lod1": 12
       }
     },
     "terrace_rig": {

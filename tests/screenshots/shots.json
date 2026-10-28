@@ -5077,6 +5077,852 @@
           }
         }
       }
+    },
+    {
+      "id": "battle_arena_drowned_choir_ring",
+      "scene": "res://game/levels/_tests/battle_arenas/preview_drowned_choir_ring.tscn",
+      "camera": "BattleCamera",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "battle_arena_iskarra_spire_crown",
+      "scene": "res://game/levels/_tests/battle_arenas/preview_iskarra_spire_crown.tscn",
+      "camera": "BattleCamera",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "battle_arena_undertow_cage",
+      "scene": "res://game/levels/_tests/battle_arenas/preview_undertow_cage.tscn",
+      "camera": "BattleCamera",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "battle_arena_undertow_heart",
+      "scene": "res://game/levels/_tests/battle_arenas/preview_undertow_heart.tscn",
+      "camera": "BattleCamera",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "battle_arena_undertow_heart_letting",
+      "scene": "res://game/levels/_tests/battle_arenas/preview_undertow_heart_letting.tscn",
+      "camera": "BattleCamera",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "hollowmere_m01_dace_hull",
+      "scene": "res://game/levels/_tests/hollowmere_kit/hollowmere_preview.tscn",
+      "camera": "Cameras/M01",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "hollowmere_m02_raft_city_dusk",
+      "scene": "res://game/levels/_tests/hollowmere_kit/hollowmere_preview.tscn",
+      "camera": "Cameras/M02",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "kite_k01_moored",
+      "scene": "res://game/levels/_tests/hollowmere_kit/hollowmere_preview.tscn",
+      "camera": "Cameras/K01",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "kitrow_ansedra_court_hall",
+      "scene": "res://game/levels/_tests/late_kit_rows/late_kit_rows.tscn",
+      "camera": "Cameras/A1",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "kitrow_ansedra_basin_stacks",
+      "scene": "res://game/levels/_tests/late_kit_rows/late_kit_rows.tscn",
+      "camera": "Cameras/A2",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "kitrow_keth_cloudloom_house",
+      "scene": "res://game/levels/_tests/late_kit_rows/late_kit_rows.tscn",
+      "camera": "Cameras/K1",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "kitrow_keth_road_details",
+      "scene": "res://game/levels/_tests/late_kit_rows/late_kit_rows.tscn",
+      "camera": "Cameras/K2",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "kitrow_lowlight_nave_bays",
+      "scene": "res://game/levels/_tests/late_kit_rows/late_kit_rows.tscn",
+      "camera": "Cameras/L1",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "kitrow_lowlight_vey_details",
+      "scene": "res://game/levels/_tests/late_kit_rows/late_kit_rows.tscn",
+      "camera": "Cameras/L2",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "kitrow_fen_roost_cord",
+      "scene": "res://game/levels/_tests/late_kit_rows/late_kit_rows.tscn",
+      "camera": "Cameras/F1",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "kitrow_fen_reedhollow_walks",
+      "scene": "res://game/levels/_tests/late_kit_rows/late_kit_rows.tscn",
+      "camera": "Cameras/F2",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "kitrow_quellan_inn_well_dais",
+      "scene": "res://game/levels/_tests/late_kit_rows/late_kit_rows.tscn",
+      "camera": "Cameras/K3",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "kitrow_vey_gallery_walk_bench",
+      "scene": "res://game/levels/_tests/late_kit_rows/late_kit_rows.tscn",
+      "camera": "Cameras/L3",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "zone_oruvel_o01",
+      "scene": "res://game/levels/_tests/oruvel_zone_dressing/oruvel_dressed.tscn",
+      "camera": "Cameras/O01",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "zone_oruvel_o07",
+      "scene": "res://game/levels/_tests/oruvel_zone_dressing/oruvel_dressed.tscn",
+      "camera": "Cameras/O07",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "zone_oruvel_o09",
+      "scene": "res://game/levels/_tests/oruvel_zone_dressing/oruvel_dressed.tscn",
+      "camera": "Cameras/O09",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "zone_oruvel_o12",
+      "scene": "res://game/levels/_tests/oruvel_zone_dressing/oruvel_dressed.tscn",
+      "camera": "Cameras/O12",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "zone_oruvel_o16",
+      "scene": "res://game/levels/_tests/oruvel_zone_dressing/oruvel_dressed.tscn",
+      "camera": "Cameras/O16",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "zone_underway_u01",
+      "scene": "res://game/levels/_tests/oruvel_underway_zone_dressing/oruvel_underway_dressed.tscn",
+      "camera": "Cameras/U01",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "zone_underway_u03",
+      "scene": "res://game/levels/_tests/oruvel_underway_zone_dressing/oruvel_underway_dressed.tscn",
+      "camera": "Cameras/U03",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "zone_underway_u06",
+      "scene": "res://game/levels/_tests/oruvel_underway_zone_dressing/oruvel_underway_dressed.tscn",
+      "camera": "Cameras/U06",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "zone_underway_u07",
+      "scene": "res://game/levels/_tests/oruvel_underway_zone_dressing/oruvel_underway_dressed.tscn",
+      "camera": "Cameras/U07",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "zone_underway_u08",
+      "scene": "res://game/levels/_tests/oruvel_underway_zone_dressing/oruvel_underway_dressed.tscn",
+      "camera": "Cameras/U08",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "zone_wake_h02",
+      "scene": "res://game/levels/_tests/haluna_wake_dressing/haluna_wake_dressed.tscn",
+      "camera": "Cameras/H02",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0,
+          "hymn_glimmer": [
+            0.2122,
+            0.5647,
+            0.6939,
+            0.6
+          ]
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "zone_wake_h04",
+      "scene": "res://game/levels/_tests/haluna_wake_dressing/haluna_wake_dressed.tscn",
+      "camera": "Cameras/H04",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0,
+          "hymn_glimmer": [
+            0.2122,
+            0.5647,
+            0.6939,
+            0.6
+          ]
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "zone_wake_h07",
+      "scene": "res://game/levels/_tests/haluna_wake_dressing/haluna_wake_dressed.tscn",
+      "camera": "Cameras/H07",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0,
+          "hymn_glimmer": [
+            0.2122,
+            0.5647,
+            0.6939,
+            0.6
+          ]
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "zone_wake_h09",
+      "scene": "res://game/levels/_tests/haluna_wake_dressing/haluna_wake_dressed.tscn",
+      "camera": "Cameras/H09",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0,
+          "hymn_glimmer": [
+            0.2122,
+            0.5647,
+            0.6939,
+            0.6
+          ]
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "zone_wake_h12",
+      "scene": "res://game/levels/_tests/haluna_wake_dressing/haluna_wake_dressed.tscn",
+      "camera": "Cameras/H12",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0,
+          "hymn_glimmer": [
+            0.2122,
+            0.5647,
+            0.6939,
+            0.6
+          ]
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "zone_wake_h13",
+      "scene": "res://game/levels/_tests/haluna_wake_dressing/haluna_wake_dressed.tscn",
+      "camera": "Cameras/H13",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0,
+          "hymn_glimmer": [
+            0.2122,
+            0.5647,
+            0.6939,
+            0.6
+          ]
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "zone_wake_h08",
+      "scene": "res://game/levels/_tests/haluna_wake_dressing/haluna_wake_dressed.tscn",
+      "camera": "Cameras/H08",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0,
+          "hymn_glimmer": [
+            0.2122,
+            0.5647,
+            0.6939,
+            0.6
+          ]
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "zone_wake_c01",
+      "scene": "res://game/levels/_tests/haluna_wake_dressing/haluna_wake_dressed.tscn",
+      "camera": "Cameras/C01",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0,
+          "hymn_glimmer": [
+            0.2122,
+            0.5647,
+            0.6939,
+            0.6
+          ]
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "first_verse_stage_v01",
+      "scene": "res://game/levels/_tests/first_verse_stage/first_verse_stage_preview.tscn",
+      "camera": "Cameras/V01",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "first_verse_stage_v02",
+      "scene": "res://game/levels/_tests/first_verse_stage/first_verse_stage_preview.tscn",
+      "camera": "Cameras/V02",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "brightwater_landing_f01",
+      "scene": "res://game/levels/_tests/brightwater_landing/landing_preview.tscn",
+      "camera": "PreviewCameras/F01",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "brightwater_landing_f06",
+      "scene": "res://game/levels/_tests/brightwater_landing/landing_preview.tscn",
+      "camera": "PreviewCameras/F06",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "zone_oruvel_storm_o12",
+      "scene": "res://game/levels/_tests/oruvel_zone_dressing/oruvel_dressed_storm.tscn",
+      "camera": "Cameras/O12",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "zone_oruvel_storm_o16",
+      "scene": "res://game/levels/_tests/oruvel_zone_dressing/oruvel_dressed_storm.tscn",
+      "camera": "Cameras/O16",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
     }
   ]
 }

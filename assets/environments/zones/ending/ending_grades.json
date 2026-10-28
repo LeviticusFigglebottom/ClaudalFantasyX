@@ -1,0 +1,56 @@
+{
+  "_doc": "The Ending's grades (M3-ENV-729; colour script `ending_unbinding`, `ending_dock`, `post_credits`; act3_ending.md E1-E7): the Environment and the key row for each of the three frames the game closes on.",
+  "ending_unbinding": {
+    "environment": "res://assets/environments/zones/ending/ending_unbinding_environment.tres",
+    "sun": {
+      "pitch_deg": -40.0,
+      "yaw_deg": 180.0,
+      "color": "#FFDCBF",
+      "energy": 0.8
+    },
+    "rim": {
+      "color": "#FFE9B8",
+      "energy": 1.2
+    },
+    "sea_glow": 0.15,
+    "sea_glow_steps": {
+      "E1": 0.15,
+      "E2": 0.11,
+      "E3": 0.08,
+      "E4": 0.07,
+      "E5": 0.06
+    }
+  },
+  "ending_dock": {
+    "environment": "res://assets/environments/zones/ending/ending_dock_environment.tres",
+    "sun": {
+      "pitch_deg": -60.0,
+      "yaw_deg": -20.0,
+      "color": "#D2DFFF",
+      "energy": 0.25
+    },
+    "rim": {
+      "color": "#DCE6FF",
+      "energy": 0.3
+    },
+    "sea_glow": 0.0
+  },
+  "post_credits": {
+    "environment": "res://assets/environments/zones/ending/post_credits_environment.tres",
+    "sun": {
+      "pitch_deg": -12.0,
+      "yaw_deg": 90.0,
+      "color": "#9DB4D9",
+      "energy": 0.4
+    },
+    "rim": {
+      "color": "#9DB4D9",
+      "energy": 0.4
+    },
+    "sea_glow": 0.0,
+    "lamp": {
+      "color": "#FFAE67",
+      "energy": 1.4
+    }
+  }
+}
