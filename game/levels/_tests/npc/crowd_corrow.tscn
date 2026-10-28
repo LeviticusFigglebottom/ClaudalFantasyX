@@ -10,5 +10,5 @@ zone_id = &"ch08/corrow"
 [node name="Cameras" type="Node3D" parent="."]
 
 [node name="Crowd" type="Camera3D" parent="Cameras"]
-transform = Transform3D(0.99753, 0.00881258, -0.0696936, 0, 0.9921, 0.125448, 0.0702486, -0.125139, 0.989649, 8, 13.7, 8.5)
+transform = Transform3D(-0.992278, 0.0167677, -0.122896, 0, 0.99082, 0.135186, 0.124035, 0.134142, -0.983169, 7, 13.8, -6.5)
 fov = 55.0
