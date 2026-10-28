@@ -589,7 +589,7 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
-- **MERGE-READY (M3-ENV-1306, the Lead's item): `test_arenas`' Lanternfall reproducibility test is green again.**
+- **MERGE-READY @ aff485af5 (M3-ENV-1306, the Lead's item): `test_arenas`' Lanternfall reproducibility test is green again.**
   - It includes a merge of the Lead's `lead/gate-big14` (8707ff90). The merge had no conflicts. Merge this after big14,
     or with it.
   - **The fix:**
