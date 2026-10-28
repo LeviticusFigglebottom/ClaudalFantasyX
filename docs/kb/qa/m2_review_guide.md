@@ -60,7 +60,6 @@ Each of these is a known placeholder or gap, and each has an owner:
 | Kerrid, Pell and Liss stand as coloured silhouettes in the Prologue until their models exist. | character / hero track (M3-HER-100) |
 | Rhen has no lying, sitting or wick-trimming clips yet, so on the beach he kneels and on the steps he stands. | character |
 | The shopkeeper, the smith and the innkeeper wear other villagers' models. | character (M2-CHR-100) |
-| The save shrine at Haluna is still a simple shape; a model is on its way. | environment (M3-ENV-101) |
 | Behind the shrine's sunken door there is only a dark passage, so Ilun's chamber shows as light over the inner pool. | environment |
 | The music is still prototypes awaiting your listen (`docs/kb/audio/listening_notes.md`). | audio, and your verdict |
 | The colour grade is a stand-in until Rendering's LUTs land. | rendering |
