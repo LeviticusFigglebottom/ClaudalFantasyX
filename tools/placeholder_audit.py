@@ -433,7 +433,9 @@ def from_scan(scan: list[dict], root: Path = ROOT) -> list[Item]:
         elif kind == "greybox":
             meshes = collections.Counter(i.get("detail", "").split("; ")[-1] for i in its)
             mesh_txt = ", ".join("%d %s" % (n, m) for m, n in meshes.most_common())
-            tops = collections.Counter(i.get("group", "") for i in its)
+            tops = collections.Counter(
+                re.sub(r"\d+$", "*", "/".join(i.get("node", "").split("/")[:2])) or "root" for i in its
+            )
             top_txt = ", ".join("%s %d" % (g or "root", n) for g, n in tops.most_common(8))
             where = "battle arena" if arena else "zone"
             what = "%s greybox: %d visible primitive/CSG meshes (%s), under %s" % (where, len(its), mesh_txt, top_txt)
