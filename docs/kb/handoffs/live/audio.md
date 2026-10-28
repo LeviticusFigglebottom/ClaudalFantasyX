@@ -3,6 +3,16 @@
 ## NEW ACCOUNT (from 2026-10-25)
 Session `session_01Wmj8xaLtwcqiS3qwC6PciW`. Integration branch `claude/undertow-lead-handoff-ze8rrn`. Newest first.
 
+- **BACKLOG EMPTY (Act I audio, ADR 0041). Integration (ADR 0042) is merged into claude/audio, and every check was rerun on the merged tree. Reasons, item by item against the Lead's 10:55 list:**
+  - **raid_hound and slag_tortoise:** their own voice, hit and death sets were written for these designs ("the Order raid's lean coursing dog in a branded leather harness"; "a terrace tortoise under a shell of cooled slag"). M3-CRE-655/660 re-modelled their geometry on the same rig, clips and contact times. The hound's set already has the harness's metal rings on every event and a four-pad trot with claws. No re-render is needed, and the plain-git budget has about 0.2 MiB left.
+  - **Reef crabs and polyps:** reef_crab, wreck_crab and wallcrab each have their own set; so do spawn_polyp, wall_polyp, oil_slug and tower_limpet. The audit's Enemies section (Act I foes, shared files flagged) is 0.
+  - **Spar-Wraith and Cinder Matron:** each has its own set, its own intro sting (b7b31ec65), and its abilities' own sounds (5c31931bc).
+  - **Ilun on creatures-b's new actor:** his call, rise and dismissal (`ilun_call`, `ilun_rise`, `ilun_sink`, M3-AUD-846) are driven by the summon choreography's moments for his combatant id, not by the model, so they play on the manta as on the stand-in. His clips `rise` and `dismiss` are those moments. `defend` and `victory` are the battle's own rows. `release` is Ch20 (Act III), so paused.
+  - **Act I loop and loudness pass:** `tools/audio/act1_loop_check.py` on the merged tree found 41 files and 0 problems: every zone's music loop and every bed is click-free and in budget, with each bed about 10 LU under its music.
+  - **Audit:** `tools/audio/act1_audio_audit.py` is 0 in every section (zones, enemies, battles, intros, abilities, skills, cutscenes, UI, temp notes). validate_data reports 0 errors.
+  - **ADR 0042's music bar** (loudness, seams, deterministic renders, every `@music` resolving) is met: test_cutscene_music_resolves passes.
+  - **Waits on others:** the human's listening notes, which ADR 0042 turns into audio tasks; and the one non-audio cutscene failure (test_act1_cutscene_walks, ch04_shell_is_set, staging).
+
 - **MERGE-READY: the Lead's 09:15 check. The sequencer really does play the music.json cue.**
   - `CutsceneSequencer._cue_music` calls `CutsceneSound.music` first, which hands the cue to `Audio.play_music` and the deck. Only an id with no cue falls back to `music_dir/<id>.ogg` and its stand-in.
   - New test, `test_every_act1_music_id_plays_its_real_file_on_the_deck`: for each Act I `@music` id it runs that path and asserts that the deck is playing the cue with its own file loaded, every stem of a stem cue included. 3 run, 0 failed.
