@@ -119,13 +119,20 @@ No job of this session is running. WSL `hymn` is idle: the batch (PIDs 302 and 2
 
 ## Gate results (newest first)
 
-- **GATE lead/gate-big14@8707ff90 (+ the shrine GI rebake 8f6fd29f): FAIL, Godot suite re-running (Lead to view).**
+- **GATE lead/gate-big14@8707ff90 (+ the shrine GI rebake 8f6fd29f): FAIL (Lead to view). Coverage re-running.**
   - Shrine GI rebaked first; test_shrine_gi_bake passes.
-  - Tools: 6 failing units (test_arenas known; test_screenshots, test_pemakar_kit, test_zone_dressing_ch01, test_zone_map_pois, test_hero_clips).
-  - Godot: 15 FAILs listed, then cut off at the PC's 2400 s step timeout inside test_qa_threads (a long playthrough). Re-running with a 3 h timeout, so coverage and boot run too.
+  - Tools: 6 failing units: test_arenas (known), test_screenshots, test_pemakar_kit, test_zone_dressing_ch01, test_zone_map_pois, test_hero_clips.
+  - Godot: 3161 run, 15 failed. Then a **segfault at exit** in test_villager_routines.gd:489 (creatures), which stops ci_local's pipefail on its own.
+  - The suite now takes ~45 min. ci_local's default 600 s step and run_coverage's 600 s both time out; HYMN_STEP_TIMEOUT has to be raised.
+  - Boot smoke ok. Coverage re-running with 3 h.
   - Blender: 77 changed jobs, 2 DIFF (kirru_roost.glb, avalanche_ram.glb).
-  - Shots: 523 compared, 302 failed (121 new + 181 drift); no shutdown SCRIPT ERROR.
-  - Rhen is out of frame in the human's beach FAST-TRACK shots.
+  - Shots: 523 compared, 302 failed (121 new + 181 drift), no shutdown SCRIPT ERROR.
+  - The human's four FAST-TRACKS on the GPU:
+    - the Prologue colour: yes;
+    - the run: grounded in the stills;
+    - the beach: Rhen not in frame, and 4 lines on empty sky;
+    - the party start: Asha and Toma walk ahead, but Rhen is not on screen.
+  - Every scene change is over the 1000 ms hidden-frame budget (New Game 3.0 s, Ch2 2.0 s, the first fight 1.7 s, Ch1 1.3 s).
   - `docs/kb/qa/gate-runs/big14/` on `gpu/gate-big14-shots`.
 - **GATE lead/gate-big12@8a28be17: FAIL (2 Godot failures = the cloud's, 3 tools failures, drift + 31 new shots; Lead to view).**
   Godot 2820/2: test_creature_portraits (the 4 new creatures "have a portrait in the manifest") and

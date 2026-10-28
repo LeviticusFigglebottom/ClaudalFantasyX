@@ -7,14 +7,16 @@
 - `compare.txt` lists every RMSE; `blender_diffs.txt` is the Blender step's log.
 - The run used a fresh `.godot` import (exit 0 and the DONE line) and 2 shards. Blender ran after the suite, on the jobs changed since `claude/undertow-lead-handoff-ze8rrn` (608db549).
 
-## Summary: FAIL (the Godot suite is being re-run; everything else is final)
+## Summary: FAIL
 
 | Step | Result |
 |---|---|
 | Shell Shrine GI | **Rebaked on this tree** (`bake_shrine_gi.tscn`, both states OK at ~1.5 s and ~930 KB, then `gi_inputs.py --write`). test_shrine_gi_bake passes. Commit 8f6fd29f, the first on this branch. |
 | validate_data, audio, taskboard, gdlint, gdformat, manifest | ok |
 | tools unittests | 1527 run (50 skipped), **6 failing units** (below) |
-| Godot suite | **Re-running.** The first run listed 15 FAILs (below) and was then cut off by the PC's 2400 s step timeout inside `test_qa_threads` (`test_every_thread_plays_through_clean`), a long playthrough. The tests after it, coverage and the boot smoke never ran. Now re-running with a 3 h step timeout; this README and pc-gpu.md get the result. |
+| Godot suite | **3161 run, 15 failed, then a segfault at exit** (below). The first run hit the PC's 2400 s step timeout inside `test_qa_threads`, a long playthrough; the re-run with a 3 h timeout took 45 min. |
+| Boot smoke (60 frames) | **ok** (run on its own after the crash) |
+| Coverage gate | **Re-running.** The first try hit run_coverage's 600 s limit (`HYMN_STEP_TIMEOUT`): the instrumented run is the whole suite, which now takes ~45 min. The default limit fails a cloud run too unless `HYMN_STEP_TIMEOUT` is raised. Re-running with 3 h; the result goes in pc-gpu.md. |
 | Blender (77 jobs changed) | **75 identical, 2 DIFF** (below) |
 | Screenshots | **523 compared, 302 failed** = 121 without a baseline + 181 over the RMSE limit. All 523 captured, **no SCRIPT ERROR at shutdown** (big12's life_audio error is gone) |
 | Wall | lane B 6672 s (523 shots), Blender 1852 s, lane A ~45 min until the timeout |
@@ -34,9 +36,27 @@
   - `test_every_pending_clip_is_called_and_not_built`: a requested clip is no longer called.
   - Owner: characters; the grounded-run FAST-TRACK touched these.
 
-### Godot failures listed before the timeout (15; messages with the rerun)
+### Godot suite (re-run with a 3 h step timeout): **3161 run, 15 failed**, then a crash at exit
 
-test_battle_act1_ability_vfx (every Act I skill has its own effect), test_battle_party_stand_ins (Liss's capsule wrapper), test_battle_result_motion, test_creature_portraits (as big12), test_field_audio (change rows and live hooks), test_hero_field_snaps (no hero body snaps in any zone), test_title_reveal (the reveal ends inside boot_title's settle frames), test_villager_routines ×3 (the wake villagers ride inside their cutscene actors; a layer added in a zone's ready; Oruvel's Kell comes alive), test_act1_cutscene_walks (every Act I cutscene walk stays on the floor), test_fp_prologue (a vigil takes its body when its hero has one), test_qa_capsules ×2 (no zone shows an unknown capsule; every foe and Vowbound has a body), test_qa_save_shrines (every shrine saves and loads back where it stands).
+The same 15 as the first run (test_qa_threads passed). The first message of each:
+
+- `test_battle_act1_ability_vfx.gd::test_every_act_one_skill_has_its_own_effect` (16 messages): did not expect <> tannin_archer tannin_jet has its own effect
+- `test_battle_party_stand_ins.gd::test_liss_names_her_battle_wrapper_with_a_capsule_until_it_lands` (1 message): expected <#7A8F6A> got <#7A8C5A> her timeline tint
+- `test_battle_result_motion.gd::test_the_rows_arrive_in_turn_then_the_choices` (1 message): the open ends before a capture's settle
+- `test_creature_portraits.gd::test_every_manifest_creature_exists_with_a_provenance_row` (36 messages): res://assets/ui/portraits/creatures/ilun.png exists
+- `test_field_audio.gd::test_change_rows_and_live_hooks` (1 message): expected <false> got <true> ReefballOutfitterMenu: pending only while its class is absent
+- `test_hero_field_snaps.gd::test_no_hero_body_snaps_in_any_zone` (2 messages): haluna_wake.tscn: rhen never snaps (38 snaps)
+- `test_title_reveal.gd::test_the_reveal_ends_inside_boot_title_s_settle_frames` (1 message): boot_title captures the title at rest
+- `test_villager_routines.gd::test_wake_villagers_ride_inside_their_cutscene_actors` (2 messages): Osu and the vendor stand 4 m apart: within chat range
+- `test_villager_routines.gd::test_a_layer_added_in_the_zones_ready_adopts_what_the_zone_places_after` (1 message): suspended on an await and never resumed: the runner steps no frame, so nothing after it ran
+- `test_villager_routines.gd::test_oruvels_kell_comes_alive_in_the_real_zone` (1 message): suspended on an await and never resumed: the runner steps no frame, so nothing after it ran
+- `test_act1_cutscene_walks.gd::test_every_act1_cutscene_walk_stays_on_the_floor` (3 messages): a cutscene walk leaves the floor or passes through a box: ch04/haluna_wake ch04_dock_in_the_dark: @mark toma dock_shore: off the floor at (8.0, 0.35, -77.9), floor -0.10; from (10.5, 0.12, -108.0) to 
+- `test_fp_prologue.gd::test_a_vigil_takes_its_body_when_its_hero_has_one` (1 message): Liss waits
+- `test_qa_capsules.gd::test_no_zone_shows_a_capsule_the_owners_do_not_know_of` (8 messages): haluna.tscn shows Child as a capsule
+- `test_qa_capsules.gd::test_every_foe_and_vowbound_has_a_body` (10 messages): cord_moth fights as a primitive stand-in (no actor scene in battle_sandbox or creatures)
+- `test_qa_save_shrines.gd::test_every_shrine_saves_and_loads_back_where_it_stands` (2 messages): haluna_wake.tscn/SaveShrine: its respawn spawn 'Shrine' exists in the zone
+
+**The suite then segfaulted at exit** (signal 11; GDScript backtrace `test_villager_routines.gd:489`, `test_oruvels_kell_comes_alive_in_the_real_zone`, one of the two tests reported "suspended on an await and never resumed"). ci_local's pipefail stops on the crash, so a cloud run fails here too, even if all 15 failures are fixed. Owner: creatures (villager routines).
 
 ### Blender DIFFs (2)
 
