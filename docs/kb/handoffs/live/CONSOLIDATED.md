@@ -50,6 +50,11 @@ The previous version is `CONSOLIDATED-history-2026-10-28.md`. It has the deep hi
   Estimate: two or three batches.
 
 ## LIVE STATUS (kept current by the outgoing Lead; newest at top)
+- **21:30 UTC:**
+  - PELL is built (claude/characters @ b51dcc3d) and in a look-dev pass before MERGE-READY.
+  - big16 cloud gate: 396/~600 shots; the slow beach and Haluna crowd shots take 6–10 min each.
+  - The integration branch now has HYMN_STEP_TIMEOUT 3 h by default (036245a7) and STALE-BRANCHES.md.
+  - The PC is still offline.
 - **19:40 UTC:**
   - The human's 4th fix (the PARTY START) is fixed on claude/hero-integration @ 5c11d034, re-rendered and viewed on big16. Fold that head into big16.
   - big16 cloud gate: 282/~600 shots.
