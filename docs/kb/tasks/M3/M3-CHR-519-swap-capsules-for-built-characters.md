@@ -61,4 +61,17 @@ villager scenes) in place of each capsule, with their field idle.
   The generic villagers built before the Lead's re-split (shopkeeper, smith, innkeeper, reed_a..d, wright_girl,
   wright_child_a/b; M3-CHR-510..517) are committed and work; the creatures track's villager generator may supersede them.
 
+- 2026-10-28 (chr-ivo-wip, M3-CHR-540, status review): **Ivo Brannick** is built: `res://assets/characters/ivo/ivo.glb`
+  (+ `ivo_lod1.glb`, `materials/`, `anim/ivo_clips.tres` with idle, walk, run, talk, hug_lift, kneel_palms_flat; the import
+  rule dresses it and puts the library on an AnimationPlayer). Stage wrapper to copy (materials and the idle set):
+  `game/levels/_tests/characters/stillguard/ivo_stage.tscn`. It replaces the `ivo` capsule in
+  `game/levels/ch08/corrow/corrow.tscn` (`corrow_layout.json` actor `ivo`; actor id = speaker id `ivo`, so
+  `ch08_okeru.dlg`'s `@anim ivo hug_lift toma` and `@anim ivo kneel_palms_flat` resolve; `look_at` is the sequencer's
+  turn). Staging: he carries **no spear**, only the round shield (the GLB's `Shield` mesh, rigid on `DEF-shield`). The
+  scene drops it before he runs (`@sfx shield_dropped`), so the level should hide the `Shield` node there and lay a
+  dropped-shield prop (the same mesh) at his start; he then runs, hugs and kneels without it, and has it back for the W10 shield-line (`shield_line_ivo`). `hug_lift` (3.2 s) opens the
+  arms, wraps, dips and lifts, and holds the last frame leaning back with his arms round Toma's back about 0.4 m in
+  front of him at 1.25-1.3 m: Toma's lift (his feet off the floor) is the scene's placement. Not built: a lying-in-shroud
+  pose for Ch9 N05/N05B (`corrow_night`), which the task leaves to the Ch9 owner's call; ask the characters track.
+
 ## Review log

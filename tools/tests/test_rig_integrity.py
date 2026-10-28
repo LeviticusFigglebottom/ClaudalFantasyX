@@ -274,6 +274,10 @@ class TestRigIntegrityStillguardF(_HeroGuards, unittest.TestCase):
     hero = "stillguard_f"
 
 
+class TestRigIntegrityIvo(_HeroGuards, unittest.TestCase):  # M3-CHR-540: the named Stillguard
+    hero = "ivo"
+
+
 # M3-CHR-03: villager builds with a `"villager": true` entry in rig_checks.json (GLB under assets/characters/villagers/,
 # clips from villager_clips.py)
 class TestRigIntegrityTavi(_HeroGuards, unittest.TestCase):
