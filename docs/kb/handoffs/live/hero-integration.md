@@ -625,3 +625,28 @@ On every new integration batch or track head, I re-run qa_ and hero_ and file wh
 
 MERGE-READY @ 6c4e9d1e: the audit test and doc, and tasks M3-HER-1132–1134. Checks: qa_cutscene_motion_audit 1/0 (0 left
 nodes), gdlint, taskboard, validate_data. No game code changed.
+
+## ADR 0041: THE ACT I INVENTORY (integration-qa owns it, from 2026-10-28 ~02:40)
+MERGE-READY @ ee41e2bd: **first pass of tools/placeholder_audit.py and docs/kb/qa/act1_final_inventory.md.**
+- **159 items** (138 high, 17 medium, 4 low). One task per owner:
+  - characters **107**, M3-HER-1144: the zones' capsule people and NPCs, plus Kerrid's and Liss's battle actors;
+  - env-art 15, M3-HER-1140: greybox in the prologue city, Oruvel and the Underway, Haluna's dressing, the
+    First Verse set, the Wake and the ferry; Haluna's banyan_placeholder and windbreak_placeholder meshes;
+  - env-art-b 11, M3-HER-1141: greybox in Pemakar, Ashcrown, Tamsule, the Ch8/Ch9 Corrows and Coilspire; the Ch8
+    **wall_head_storm arena is still game/battle/arenas' greybox**;
+  - audio 12, M3-HER-1146: Act I music cues that are silent or play a stand-in. **Seam:** music.json has cue rows
+    (oruvel_raft and others) that CutsceneSequencer never reads; it plays music_dir/<id>.ogg only;
+  - creatures-b 6, M3-HER-1143: Moll, Ilun, Kahre and Virel as primitives, and the Matron and Spar Wraith
+    capsules on stage;
+  - act1-chapters 3, M3-HER-1145: Ch8's headland and flue fights have no arena (the sandbox's set);
+  - ui-menus 3, M3-HER-1147: no menu portraits for Ysolde, Liss or Kerrid;
+  - creatures 2, M3-HER-1142.
+- Run it: `python3 tools/placeholder_audit.py --write` (Godot on PATH runs the zone scan itself, ~10 min).
+  `--check` exits 1 while any item is left (ADR 0041's "done").
+- Checks: tools.tests.test_placeholder_audit 7/0, taskboard --check, validate_data, gdlint on the scan script.
+- **Next, refining:**
+  - icons (items have no icon field yet);
+  - NPC and wildlife scenes outside zones;
+  - the battle VFX check (battle-presentation);
+  - Act I cutscene-only actors (from the motion audit);
+  - a recurring re-run on each merge batch.
