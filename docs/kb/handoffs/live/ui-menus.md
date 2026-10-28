@@ -433,3 +433,10 @@ SELF-RENDERED @ 24bc20e15 (the shots' scratch interactable left of the cue): fie
 - **Tamsule (water and bright sky):** clean.
 - **Corrow at night:** the long title is clear of the tip card, which sits below the band. The cue and its words read over the dark sea.
 - No baselines written. No open render request.
+- 2026-10-28 05:10, **the named Act I NPCs landed on claude/characters** (M3-CHR-526..539). Merged at a1c155de9.
+  - **Baked dialogue portraits** (a2882374b): 20 speaking townsfolk, five emotions each (neutral, smile, determined, worried, grief), from their villager stages and face-pose tables. PROVENANCE rows added.
+    - Named: Tavi, Kell, Garo, Neme, Osu, Fenn, Hobb, Marra, Sabe, Ione, Skipper Sadi.
+    - By role: the poolkeeper, scale-man, ferrymaster, tender, Reed, net-mender, fisher, vendor and child.
+  - **New guard:** test_dialogue_box fails when an Act I speaker's model lands without a baked portrait.
+  - **Not modelled yet:** Ivo (M3-CHR-540, a Stillguard variant) and Pell. They show no portrait (no initial letter) until they land.
+SELF-RENDERED @ a2882374b: portraits for all 20 NPCs (contact sheets of neutral, plus Tavi's and Marra's five emotions). What I saw: faces centred, hair and headwear inside the frame, and each emotion reads. The child's portrait frames a little smaller (a smaller body), which is acceptable.
