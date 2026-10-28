@@ -589,23 +589,23 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
-- **MERGE-READY @ (this push): the PC's GPU QA rows (`docs/kb/qa/act1_gpu_qa.md` on `origin/gpu/act1-qa-2`).**
+- **MERGE-READY @ 4c85ffb7b: the PC's GPU QA rows (`docs/kb/qa/act1_gpu_qa.md` on `origin/gpu/act1-qa-2`).**
   Each row self-rendered here and VIEWED.
   - **Rows 1–2 (Iskarra greybox; the vigil set untextured):** Pass A ran on integration 048b0a7f. That build lacked
     the colour pass (d2ae3cb2) and slice-polish's city mount (28b0f97a); both reached the tree in big14. The big14
     gate's own renders (`gate-runs/big14/out/iskarra_p01_plaza_dusk.png`, `slice_prologue_vigil_line.png`) show the
     textured, coloured city. **Fixed in big14**; re-check on the PC.
-  - **Row 19 (the green rectangle in the Prologue's water): fixed @ (this push).**
+  - **Row 19 (the green rectangle in the Prologue's water): fixed @ 4c85ffb7b.**
     - Cause: Haluna's lagoon water was reused for the drowned city. Its turquoise shallow scatter lit the plaza's
       drowned steps and the towers' plinths as flat green panes.
     - Fix: the Prologue and the Iskarra kit preview now use their own `iskarra_water_material.tres` (written by
       `iskarra_city.py`; deep, dark, little scatter).
     - Viewed `iskarra_p01_plaza_dusk` and `slice_prologue_vigil_line`: no panes left; the water carries the sunset.
-  - **Row 4 (`ch04_ferry_deck` nearly black): fixed @ (this push).** A cold sky fill along the ferry's waist and poop
+  - **Row 4 (`ch04_ferry_deck` nearly black): fixed @ 4c85ffb7b.** A cold sky fill along the ferry's waist and poop
     (`ferry_fill()` in `tools/act1/ch04_ferry_dressing.py`), stronger and lower over the poop. The deck, the deckhouse
     face and the rails read now. The "orange sphere" is the party member's back beside the lit stern lantern; nothing
     unlit is left.
-  - **Row 23 (Ch1 cameras in walls): fixed @ (this push).**
+  - **Row 23 (Ch1 cameras in walls): fixed @ 4c85ffb7b.**
     - `ch01_bell_room`: U03 sat on the bell-room's south wall line. It now stands in the room on Rhen.
     - `ch01_kell_stall` and `ch01_scale_hull`: the chandlery and the scale-hull booth were placed backwards, their
       counters facing the sea. They now face their customers. The scale-man stands at his counter (yaw 180), and O02
@@ -613,9 +613,9 @@ Read this section first; everything below it is history. The branch is `claude/e
     - O10 is re-aimed at the chandlery's moved gull.
     - Viewed: Kell behind her counter under the lanterns; the scale-man behind the brass scales; Rhen in the
       bell-room; the gull side-on and lit.
-  - **Row 24 (`zone_wake_h02/h08/c01`): fixed by retiring them @ (this push).** M3-ENV-743/744 are dropped as
+  - **Row 24 (`zone_wake_h02/h08/c01`): fixed by retiring them @ 4c85ffb7b.** M3-ENV-743/744 are dropped as
     superseded (the Lead's word). The preview, the generator and the eight `zone_wake_*` shots are gone.
-  - **Row 25 (`brightwater_landing_f06` against a wall): fixed @ (this push).** F06 is ch04_under_way's camera on the
+  - **Row 25 (`brightwater_landing_f06` against a wall): fixed @ 4c85ffb7b.** F06 is ch04_under_way's camera on the
     wrapped name-board. It sat in the ferry's bulwark and now frames the board on the deck with Toma and Asha (viewed).
     F01 is dark because of the pre-dawn grade; it reads.
   - **Gates:** validate_data; taskboard --check; unittest for ch01_oruvel/underway_dressing, ch04_validate,
