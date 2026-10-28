@@ -4290,6 +4290,36 @@
         540
       ],
       "settle_frames": 30
+    },
+    {
+      "id": "stillguard_b_face",
+      "scene": "res://game/levels/_tests/characters/stillguard/stillguard_b_stage.tscn",
+      "camera": "Cameras/Face",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "stillguard_c_front",
+      "scene": "res://game/levels/_tests/characters/stillguard/stillguard_c_stage.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "stillguard_c_face",
+      "scene": "res://game/levels/_tests/characters/stillguard/stillguard_c_stage.tscn",
+      "camera": "Cameras/Face",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
     }
   ]
 }
