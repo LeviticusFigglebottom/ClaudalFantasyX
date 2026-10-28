@@ -220,7 +220,7 @@
       "vowbound": true,
       "clip_by_skill": {"kite_flare": "cast", "flare_line": "special"},
       "contact": {"attack": 0.5, "cast": 0.6, "special": 1.4},
-      "stand_in": {"yaw_deg": -90.0},
+      "stand_in": {"yaw_deg": -90.0, "height": 2.6, "radius": 0.8},
       "portrait": {"yaw_deg": 72.0, "pitch_deg": 14.0}
     },
     "nhoa": {
@@ -263,7 +263,7 @@
       "ko": "release",
       "contact": {"attack": 0.5, "cast": 0.6, "special": 1.4},
       "phases": {"release": {"clip": "release", "hold": true}},
-      "stand_in": {"yaw_deg": 90.0},
+      "stand_in": {"yaw_deg": 90.0, "height": 2.6, "radius": 0.8},
       "portrait": {"yaw_deg": 72.0, "pitch_deg": 14.0}
     },
     "hesk_held": {

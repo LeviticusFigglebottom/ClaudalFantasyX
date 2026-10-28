@@ -174,3 +174,103 @@ The foe form for the Ch20 release fight (act3_roster.md, "The Vowbound as foes")
 - **`release`** (3.4 s, its KO as a foe; the only clip added, every other clip samples identically): the kite's last flight: the coil draws in once, then unrolls (0.55–1.45 s, bone directions slerped as Flare Line does) into one line climbing 38° away from the party, the panels luffing and the streamers flying; then the line lifts 1.5 m up and 0.6 m back. Let go, not cut.
   Lowest vertex over every frame +0.66 m. GLB 1.05 → 1.13 MB.
 - Scene `game/creatures/virel/virel_held_battle.tscn` (the same GLB; `CreatureActor.material_dir` puts on `assets/creatures/virel/materials_held/`, written by write_materials.py from the `held` block in materials.json: 2 emissive slots glimmer_bound to glimmer_held `#7FC6D9` at the same energy, steady; the rest as they are). creatures.json row `virel_held`: no `vowbound` key, `ko` = `release`, `phases.release` = {clip `release`, `hold` true}, `stand_in.yaw_deg` 90 (facing the party), portrait framing kept. Review shot `creature_virel_held` (not rendered yet). No enemies.json row (Combat's, with the chapter designer). The turn to `glimmer_lift` and the rising motes are presentation (battle VFX), not the model.
+
+## Final pass (M3-CRB-008, 2026-10-28)
+
+ADR 0041 (Act I at final quality). The critique of the M3-CRE-641 render: primitive. The body was a closed ring of
+identical box panels (a tyre, not a serpent in flight), the seams glowed like neon tubing, the head was a flat fish
+cut-out with a stick-on eye and the key a tiny ring on a stick. build_virel.py's spine, layout and mesh are rewritten
+on the same kit; every bone, clip and material slot name, the contact times (creatures.json: attack 0.5 s, cast
+0.6 s, special 1.4 s), the held form (`release`, `materials_held/`, virel_held_battle.tscn) are kept. Where this
+section differs, the sections above are history (the coil, its framing numbers, the seam and key descriptions, the
+budget line).
+
+- **An open S in flight, never a loop.** The head leads, raised, 2.4 m toward the foes (nose 3.1 m ahead of her
+  mark, 2.4 m up); the neck dives to a trough 1.2 m up just ahead of her mark, the body climbs to a second crest
+  (2.1 m) and the tail streams back and down past her mark and away from the cameras, trailing its kite-tail. The
+  S lies in the same plane, turned 22° off the battle axis, and swings a little in depth along its length (the
+  neck toward the cameras, the tail away). The ribbon is 4.85 m behind a 0.70 m head (was 5.5 m: the S has to fit
+  the default camera's safe frame, whose right edge allows little behind her mark), 0.34 m wide at the neck, 0.38 m
+  mid-body, 0.12 m at the tail's end. The 11 spine bones are an eleventh of it each (0.44 m).
+- **Panels of real sailcloth.** 15 panels of 0.3–0.44 m (shorter toward the tail), each cross-seam cut on the bias
+  at its own angle (up to about 40°), so the panels are trapezoids and rhombs, not boxes; each panel is its own
+  bolt (sand, bark-tanned `sand_cloth`/`tortoiseshell`, `sand_dry`, `sand_wet`, a thatch-yellow), with its own cut:
+  a scalloped or bowed upper hem, often a burnt bite out of it, and the belly hem drawn out to a pointed flap at
+  its trailing corner (the serrated kite-cell edge of her underside). The cloth bellies behind the frame, troughs
+  along each batten and carries tension wrinkles; it is sun-faded along the upper hem, grimed toward the belly and
+  tide-line stained. Four Saltwright mends (faded teal, sea blue, new white) are their own sewn-on rectangles with
+  a darker stitched border. A folded hem tape binds both hems.
+- **The frame:** a bamboo spine spar (nodes every 0.27 m) on the outer face, a bowed batten mid-panel following the
+  bias between the seams and standing 1.8 cm past both hems, a cord lashing at each crossing, a brass grommet in the
+  upper hem tape at each batten's end. Cane is `thatch` to `timber_weathered`, darker at the nodes, scorched where it
+  crosses a seam.
+- **Fire along every seam, held still.** Each cross-seam is a raised felled seam (4.8 cm lips to lips) with a thin
+  burning core (`glimmer_bound`, mask 0.32–1.0, its width and heat wandering along the seam in beads of ember), an
+  ember-lit ring of char (mask 0.06–0.22) and black lips; the cloth either side is scorched `tortoiseshell` to
+  `lacquer_black` for about 9.5 cm (a ragged edge), lit faintly through at the seam (0.12). The hem tapes' stitching
+  smoulders in patches (up to 0.4). Clusters of small flame tongues (thin double-faced blades, 4–12 cm, broad at the
+  root and brightest there, curling and leaning back toward the tail as a flare's flames stream downwind) lick off
+  the upper hem where each seam meets it, with a few on the belly hem and between seams. They move only as her body
+  moves: no flicker, no drift, no motes.
+- **The colour rule, and the choice (documented as the brief asked).** The critique asked for fire swatches on the
+  burning seams if palette.json allows. It does not: `ember_orange` is "flame and horizon only; never a surface
+  albedo" and the Fire VFX base, `glimmer_bound` is the light of "Vowbound forms" (steady), act1_ch08.md F07 and §5
+  say her seams read as steady `glimmer_bound` with the fire element in her battle VFX only, and write_materials.py's
+  held swap requires every emissive slot to be `glimmer_bound` (a warm emissive slot would break `materials_held/`).
+  So every light on her is `glimmer_bound` at 1.2, steady: the seam cores, the flame tongues, the eyes and the glow
+  in the mouth (her soul-light). The **fire reads through the burn**, not the hue: the scorched and charred cloth
+  round every seam, the ember ring, the bitten hems and the frozen flame tongues; the warmth comes from the tanned
+  cloth, the scorch and the brass.
+- **The head, a kite-dragon's.** Two double-layered cheek panels meet on a cane skull ridge (a wedge, 0.2 m across
+  at the cheek, not a cut-out), with a raised brow; the lower jaw is its own V of cloth on a keel cane, hung open, the
+  palate and the jaw's floor dark and glowing toward the throat (0.2–0.65), a burning seam along each lip, at the
+  neck and down the cheek seam. A **lantern-eye** on each cheek: a ribbed paper bulb 12 cm across lit from inside,
+  darker ribs, a dark pupil at its crown looking a little forward, in a lashed cane ring, under a cane brow. A
+  painted face (a teal ring round the eye, a dark stroke swept back over the cheek, a pale muzzle, a tanned crown).
+  A cane **nose scroll** curls up at the snout. A **cheek frill** each side: a fan of five cane ribs with cloth
+  cells (sand and faded teal, burnt edges, lit at the rim) swept back over the neck join. Cord **whiskers** from the
+  snout stream back and hang, each ending in a tassel. The bowed **crest-spar** (two rods) sweeps back past the
+  head with a slim faded-teal pennant hung from it.
+- **The keepsake.** The brass tuning key is 0.37 m from the bow's crown to the socket: a cast ring bow (11.6 cm
+  across, facing the cameras) with a bead at its crown where the cord's loop passes, a collar, a turned shaft with
+  two scored bands (`bronze_patina` in them), and a flat-shaded square socket with a dark hollow end; worn bright
+  (`sand_dry`) on the bow's outer rim and the collar, tarnished in the hollows. It hangs on a 7 cm cord from the
+  bridle knot, 0.26 m under the jaw (three lines: two from the jaw's keel, one from the throat). materials.json
+  `key`: metallic 0.75, roughness 0.24, specular 0.7, rim sheen 0.5 (the glint). Still no light of its own.
+- **The tail:** two ribbon streamers (0.86 m faded teal and 0.7 m sand, swallowtail ends, scorched tips) and between
+  them a kite-tail: a 0.95 m cord with three cloth bows (sea blue, faded teal, sand) and a 12 cm tassel. **The
+  kite-tail now hangs** (new `hang_tail`, like the key's `hang_key`): the streamer bone undoes 0.6 of the tail end's
+  world turn, 0.1 s behind, on top of its keyed flutter, so it hangs on its string instead of swinging out with
+  every turn of the tail (not in `release`, where it flies).
+- **Rig (18 bones):** the 16 kept, plus two unweighted VFX anchors: **`vfx_core`** on `body` (the body bone's
+  station, the S's trough, mid-body: 0.71, 1.25, 1.01) and **`vfx_keepsake`** on `key` (the key's bow, 1.03, 1.86,
+  2.50).
+- **Clips.** `idle` is a travelling wave: each spine bone bends in the S's plane (1.9°) and sways out of it (1.4°) a
+  beat behind the one before (0.62 rad a bone, about one wavelength along her), growing toward the tail, while the
+  panels luff twice a cycle (4.5°); she bobs 4 cm and the streamers flutter. Flare Line's wind-in is the S drawn
+  together (the head rears back over her, the tail curls under: head to tail 2.3 m at 1.0 s), then the line (4.75 m
+  head to tail at the contact; tests/unit/test_creature_virel_vowbound.gd `LINE_M` 5.0 → 4.5 for the shorter body),
+  its tail anchored 1.05 m up, 0.2 m behind her mark. The furl (`rise`'s start, `dismiss`'s end) dives the head
+  0.68 m below its rest and curls the tail up; `defend` likewise. The attack's tail and the victory's gust are
+  calmer (the tail's swing kept inside the safe frame). Contact times unchanged.
+- **Framing** (every baked frame, projected through both cameras from the numpy poser). Default camera at rest:
+  left 0.46, right 0.075, top 0.081, bottom 0.211. Tightest: right 0.005 (hit), 0.015 (Flare Line), 0.026
+  (attack), 0.027 (victory); top 0.003 (Flare Line's line), 0.03 (victory). **Every clip she plays as an ally is
+  inside the default camera's safe frame**, Flare Line included now. Summon shot: top 0.21–0.23 on `ready`, `rise`
+  and `idle`; her body (lowest hem 0.92 m) is above the bottom line, and the kite-tail's strands and tassel (to
+  0.38 m) hang under it, as pipeline.md expects for strands.
+- **The stand-in's anchors (was the request to UI above).** creatures.json `virel` and `virel_held` now carry their
+  own `stand_in` `height` 2.6 and `radius` 0.8 (the M3-CRE-640 mechanism Kahre and Nhoa use), so chest (1.56 m) lands
+  on the S's middle and head (2.6 m) at her head's height.
+
+**As built:** 17,750 triangles (≤ 18k): sail 4,860, spars 1,850, seams 1,736, flames 1,272, tapes 1,080, head canes
+940, head cloth 904, tail 772, frills 688, key 662, whiskers 536, eyes 496, lashings 450, head seams 420, grommets
+420, cord 264, nose 140, vane 132, mends 128. 11,133 vertices, 18 bones, 14 clips (with hit_b and idle_b), GLB 1.55 MB.
+Rest bounds: x −1.10 to 1.33, y 0.38 (the tassel; the body 0.92) to 2.96, z −0.45 to 3.11. Lowest vertex per clip:
+idle 0.14 m, ready 0.18, attack 0.38, cast 0.38, hit 0.38, hit_b 0.36, defend 0.37, ko 0.38, victory 0.48, rise
+0.38, dismiss 0.38, special 0.07, release 0.10, idle_b 0.38. Highest: Flare Line 3.44 m, release 5.74 m.
+
+**Not done:** no portrait (test_creature_portraits fails on the missing Vowbound portrait PNGs, before and after this
+pass); creatures.json `portrait` (yaw 72°) is unchanged and should be re-checked against the S when it is rendered.
+The held review shot (`creature_virel_held`, the stage's front-on view of a foe facing the party) sees the S nearly
+on edge, as it saw the coil.
