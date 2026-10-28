@@ -455,7 +455,7 @@ def from_scan(scan: list[dict], root: Path = ROOT) -> list[Item]:
         nodes = sorted({i.get("node", "") for i in its})
         variants = sorted({i.get("detail", "").split(";")[0] for i in its if i.get("detail", "").startswith("variant")})
         if kind == "capsule":
-            who = group
+            who = group.lower()
             base = re.sub(r"(_\d+|_[a-d])$", "", who)
             if base in creature_ids or who in creature_ids:
                 owner = OWNER_BOSS if base in bosses or who in bosses else OWNER_REGULAR
@@ -595,6 +595,7 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--static-only", action="store_true", help="skip the runtime scan")
     ap.add_argument("--write", action="store_true", help="write docs/kb/qa/act1_final_inventory.md")
     ap.add_argument("--check", action="store_true", help="exit 1 while any item is left")
+    ap.add_argument("--source-note", default="", help="appended to the inventory's Source line (e.g. a trial merge)")
     args = ap.parse_args(argv)
     raw: dict | None = None
     source = "static checks only"
@@ -608,6 +609,8 @@ def main(argv: list[str] | None = None) -> int:
         else:
             raw = run_scan(godot)
             source = "the runtime scan and the static checks"
+    if args.source_note:
+        source += "; " + args.source_note
     scan = raw.get("items", []) if raw is not None else None
     scanned = raw.get("scanned", []) if raw is not None else []
     items = audit(scan)
