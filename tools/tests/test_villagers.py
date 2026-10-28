@@ -509,6 +509,50 @@ class TestDialoguePolish(unittest.TestCase):
         self.assertEqual(len(knots.varr()[::52]), 3)
         self.assertTrue(all(0.6 < q < 1.0 for q in z))
 
+    @staticmethod
+    def _fitted(npc: str):
+        import bb_anatomy
+        import bb_donor
+        import bb_params
+        from asha_costume import Fields, TorsoChart
+
+        lm = bb_donor.fit(bb_params.load_params(path=str(SRC / "params" / f"{npc}.json"))).lm
+        body = bb_anatomy.Body(lm)
+        return lm, body, Fields(body), TorsoChart(lm)
+
+    def test_marras_netting_shawl_and_wrist_cord(self):
+        # act1_ch08.md: Marra mends nets in a netting shawl, the one-knot stair-watch cord on her wrist
+        import numpy as np
+        import villager_costume as C
+
+        cp = params("marra")["_costume"]
+        lm, body, fields, chart = self._fitted("marra")
+        shawl = C.build_shawl(fields, chart, cp["shawl"])
+        self.assertLess(shawl.tris(), 6500)  # twine only, inside the NPC budget
+        self.assertGreater(float(body.regions["torso"].sdf(shawl.varr()).min()), 0.004)  # over the top, not in it
+        self.assertEqual(set(shawl.M), {cp["shawl"]["mat"]})
+        cord = C.build_wrist_cord(fields, cp["wrist_cord"])
+        wr = lm.side_pt("wrist", cp["wrist_cord"]["side"])
+        self.assertLess(float(np.linalg.norm(cord.varr() - wr, axis=1).max()), 0.07)
+        self.assertEqual(cp["wrist_cord"]["mat"], cp["sash"]["mat"])  # the faded watch-red
+
+    def test_wrap_edge_tuck_is_opt_in(self):
+        # M3-CHR-539: a head wrap with `edge_off_m` has its edge drawn in to the skin; without it, as before
+        import numpy as np
+        import villager_costume as C
+
+        hw = dict(params("marra")["_costume"]["headwrap"])
+        _lm, body, fields, _chart = self._fitted("marra")
+        tucked = C.build_headwrap(fields, hw)["HeadWrap"].varr()
+        hw.pop("edge_off_m")
+        loose = C.build_headwrap(fields, hw)["HeadWrap"].varr()
+        head = body.regions["head"]
+        n = 40  # the cap's azimuth samples; its last row (the edge) is the panel's last n vertices of the grid
+        rows = 11
+        edge_t = tucked[(rows - 1) * n:rows * n]
+        edge_l = loose[(rows - 1) * n:rows * n]
+        self.assertLess(float(np.median(head.sdf(edge_t))), float(np.median(head.sdf(edge_l))) - 0.004)
+
     def test_hobbs_cord_has_three_knots(self):
         # act1_ch08.md: the three-knot watch-red captain's cord
         self.assertEqual(params("hobb")["_costume"]["sash"]["cord_knots"], 3)

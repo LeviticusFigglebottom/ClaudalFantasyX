@@ -24,6 +24,12 @@ sleeve pushed up and rolled: a thicker band of cloth at its end, the smith and t
 (an apron with no skirt under it: the smith's and the shopkeeper's over their trousers, `apron.flare` its hang) and
 `apron.extra_m` (the apron's offset over what it covers), and a fifth cloth material, `cloth_d` (the smith's leather
 apron, the clerk's tabard), tinted like the other three.
+
+M3-CHR-526..539's dialogue polish adds more optional keys, again leaving every other villager byte-identical:
+`sash.tail_w_k`, `sash.knot_k` and `sash.cord_knots` (a narrow knotted cord: Hobb's captain's cord),
+`headwrap.edge_off_m` (a wrap's or headband's edge drawn in tight to the skin), `top.strap_deg` and
+`top.armhole_deg` (a sleeveless tunic's broad straps instead of a halter-like cut), and two pieces: `shawl` (a
+knotted netting shawl built as twine) and `wrist_cord` (a cord tied round one wrist).
 """
 from __future__ import annotations
 
@@ -67,12 +73,18 @@ CUFF_ROLL_SPAN = 0.14  # of the sleeve's length: the rolled band at a pushed-up 
 WRAP_OFF = 0.0055
 WAIST_KNOT_VERTS = 14 * 7 + 2  # toma_costume.sash's knot: a 14 x 8 uv_sphere, just before the tails
 CORD_KNOT_CLEAR = 0.03  # m at S = 1: the lowest cord knot stays this far above the cropped tail's end
-CORD_KNOT_SPAN = (0.25, 0.85)  # the cord knots' spread down the kept tail (share of its length)
+CORD_KNOT_SPAN = (0.25, 0.85)
+EDGE_CORD_K = 1.4  # a netting shawl's edge cords against its mesh cords
+WRIST_CORD_RING = 16  # segments round a wrist cord  # the cord knots' spread down the kept tail (share of its length)
 TOP_MARGIN = 0.012  # m at S = 1: body hidden this far inside the top's neckline and armholes
 ARMHOLE_DROP = 0.085  # m at S = 1 below the shoulder joint: a sleeveless top's armhole (the M2-CHR-03 default)
 KEEP_ABOVE_KNEE = 0.16  # m at S = 1 of thigh kept above the knee under a skirt with keep_legs (asha_costume's)
 HEADWRAP_OFF = 0.010  # over the scalp (hair is flattened under the wrap)
 HEADWRAP_EDGE = 0.006  # extra roll at the edge
+PRESS_BINS = 72  # `press_hair`: azimuth bins of the band's height span and inner radius
+PRESS_FADE_H = 0.03  # head heights above and below the band over which the hair's pull fades
+BAND_TUCK_ROWS = 5  # a headband with `edge_off_m`: rows across it, so its rounded face reads
+EDGE_TUCK_ROWS = 2.0  # `edge_off_m`: rows over which a wrap's edge rises from its tuck to the cap's offset
 BACK_BULGE = 2.6  # x puff: the hair bundled inside the wrap fills it out behind
 # the head wrap's lower edge (head heights above the chin) by azimuth (0 front, 90 the side, 180 the
 # back): over the hairline at the front, above the ear at the side, down to the nape behind
@@ -184,6 +196,11 @@ def top_line(lm, chart: TorsoChart, th_deg: np.ndarray, top: dict) -> np.ndarray
     # armpit, where a lowered arm cuts it)
     arm = float(lm.P("shoulder")[2] - float(top.get("armhole_drop_m", ARMHOLE_DROP)) * S)
     strap = chart.z_sh + math.radians(24) * chart.k
+    if "strap_deg" in top:  # M3-CHR-526 (optional): a tunic's broad straps, [front start, front end, back start, end]
+        f0, f1, b0, b1 = (float(x) for x in top["strap_deg"])
+        a0, a1 = (float(x) for x in top.get("armhole_deg", (f1 + 14.0, b0 - 12.0)))
+        return RC._sym_interp(th_deg, [0, 12, 28, f0, f1, a0, a1, b0, b1, max(b1 + 18.0, 150.0), 180],
+                              [v, v + 0.025 * S, neck - 0.015 * S, strap, strap, arm, arm, strap, strap, neck, neck])
     return RC._sym_interp(th_deg, [0, 12, 28, 50, 74, 92, 112, 132, 150, 180],
                           [v, v + 0.025 * S, neck - 0.015 * S, strap, arm, arm, strap, neck, neck, neck])
 
@@ -316,6 +333,7 @@ def build_headwrap(fields: Fields, hw: dict) -> dict[str, Part]:
     phase = rng.uniform(0, 2 * math.pi, 3)
     off = float(hw.get("off_m", HEADWRAP_OFF)) * S
     puff = float(hw.get("puff_m", 0.010)) * S
+    tuck = float(hw["edge_off_m"]) * S if "edge_off_m" in hw else None
 
     def edge_dirs(v_line: np.ndarray) -> np.ndarray:
         # direction from hc to the scalp point at height v_line on azimuth phi (iterated on the field)
@@ -333,7 +351,7 @@ def build_headwrap(fields: Fields, hw: dict) -> dict[str, Part]:
     mat = hw["mat"]
     up = np.array([0.0, 0.25, 1.0])
     up /= np.linalg.norm(up)
-    rows = 3 if band_only else 11
+    rows = (BAND_TUCK_ROWS if tuck is not None else 3) if band_only else 11
     width_band = float(hw.get("band_m", 0.035)) * S
     P = np.zeros((rows, n, 3))
     for j in range(rows):
@@ -349,7 +367,15 @@ def build_headwrap(fields: Fields, hw: dict) -> dict[str, Part]:
         fold = 0.0 if band_only else puff * (0.35 + 0.65 * t) * (
             0.6 * np.sin(5 * phi + phase[0] + 2.0 * t) + 0.4 * np.sin(9 * phi + phase[1] - 3.0 * t))
         back = 0.0 if band_only else puff * BACK_BULGE * np.clip(np.cos(phi - math.pi), 0, 1) ** 2 * math.sin(math.pi * t ** 0.8)
-        r = cast_last(lambda Q: head.sdf(Q) - off, O, d, 0.5 * lm.h) + roll + np.maximum(fold, -0.4 * puff) + back
+        off_j = off
+        if tuck is not None:  # M3-CHR-539 (optional `edge_off_m`): the edge drawn in tight to the skin
+            # a cap rises from its tucked edge over EDGE_TUCK_ROWS rows; a headband is tight at both edges
+            k = math.sin(math.pi * t) if band_only else min(j / EDGE_TUCK_ROWS, 1.0)
+            off_j = tuck + (off - tuck) * k
+            fold = fold * k
+            if band_only:
+                roll = roll * k
+        r = cast_last(lambda Q: head.sdf(Q) - off_j, O, d, 0.5 * lm.h) + roll + np.maximum(fold, -0.4 * puff) + back
         P[j] = O + d * r[:, None]
     cap = Part("HeadWrap")
     cap._mat = "cloth"
@@ -383,6 +409,171 @@ def build_headwrap(fields: Fields, hw: dict) -> dict[str, Part]:
         cap.extend(kn)
     out["HeadWrap"] = _mat(_pad(cap), mat)
     return out
+
+
+# ---------------------------------------------------------------------------------------------
+# M3-CHR-539 (optional pieces; a villager without them is untouched): a netting shawl and a wrist cord
+# ---------------------------------------------------------------------------------------------
+SHAWL_OFF = 0.016  # m at S = 1 over the skin: over the top and its folds
+SHAWL_TOP = 50.0  # degrees of elevation over the shoulder (TorsoChart): the shawl's upper edge round the neck
+# the shawl's lower edge, m below the shoulder pivot by |azimuth| (front 0 .. back 180): short over the shoulders, a
+# point down the back, the two ends lying on the chest
+SHAWL_DROP = ([0, 30, 60, 90, 120, 150, 180], [0.14, 0.13, 0.08, 0.045, 0.12, 0.22, 0.27])
+SHAWL_ROWS = 14
+SHAWL_COLS = 64
+NET_SIDES = 3  # a twine cord's cross-section
+NET_SAMPLES = 2  # samples per sheet row along a cord
+
+
+def _cord_tube(part: Part, pts: np.ndarray, out: np.ndarray, r: float, rect, mat: str = "cloth") -> None:
+    """A thin closed tube of NET_SIDES sides along `pts` (its first side faces `out`), for twine and cords."""
+    if len(pts) < 2:
+        return
+    T = np.gradient(pts, axis=0)
+    T /= np.maximum(np.linalg.norm(T, axis=1, keepdims=True), 1e-12)
+    n = out - np.sum(out * T, axis=1, keepdims=True) * T
+    n /= np.maximum(np.linalg.norm(n, axis=1, keepdims=True), 1e-12)
+    b = np.cross(T, n)
+    u0, v0, u1, v1 = rect
+    ids = []
+    for k in range(len(pts)):
+        ring = []
+        for a in range(NET_SIDES):
+            ang = 2.0 * math.pi * a / NET_SIDES
+            ring.append(part.add_v(pts[k] + (n[k] * math.cos(ang) + b[k] * math.sin(ang)) * r, tag=TAG_CLOTH))
+        ids.append(ring)
+    for k in range(len(pts) - 1):
+        for a in range(NET_SIDES):
+            a2 = (a + 1) % NET_SIDES
+            q = (ids[k][a], ids[k][a2], ids[k + 1][a2], ids[k + 1][a])
+            uv = [(u0 + (u1 - u0) * a / NET_SIDES, v0 + (v1 - v0) * k / (len(pts) - 1)),
+                  (u0 + (u1 - u0) * (a + 1) / NET_SIDES, v0 + (v1 - v0) * k / (len(pts) - 1)),
+                  (u0 + (u1 - u0) * (a + 1) / NET_SIDES, v0 + (v1 - v0) * (k + 1) / (len(pts) - 1)),
+                  (u0 + (u1 - u0) * a / NET_SIDES, v0 + (v1 - v0) * (k + 1) / (len(pts) - 1))]
+            part.add_f(q, uv, mat)
+
+
+def build_shawl(fields: Fields, chart: TorsoChart, sh: dict) -> Part:
+    """A knotted netting shawl over the shoulders (act1_ch08.md, Marra): a sheet cast over the top from the neck to
+    SHAWL_DROP, open at the front by `open_deg`, and built as twine only: two families of diagonal cords make the
+    diamond mesh (`mesh_m` across a diamond), with a cord along the neck edge and the hem. `cord_mm` thick."""
+    lm = fields.lm
+    S = lm.S
+    od = float(sh.get("open_deg", 28.0))
+    th = np.linspace(od, 360.0 - od, SHAWL_COLS)
+    top = np.full(len(th), chart.z_sh + math.radians(SHAWL_TOP) * chart.k)
+    bot = chart.z_sh - RC._sym_interp(th, *SHAWL_DROP) * S * float(sh.get("drop_k", 1.0))
+    sheet = RC.torso_sheet(fields, chart, "ShawlSheet", ATLAS["wraps"], th, top, bot,
+                           float(sh.get("off_m", SHAWL_OFF)) * S, SHAWL_ROWS, None, False)
+    P = sheet.grid_P
+    centre = np.array([0.0, chart.y_axis, 0.0])
+    N = AC._outward(P, AC._grid_normals(P, False), centre)
+    r = 0.5e-3 * float(sh.get("cord_mm", 3.0)) * S
+    part = Part("Shawl")
+    part._mat = "cloth"
+    rect = ATLAS["wraps"]
+
+    def sample(ii: np.ndarray, jj: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+        i0 = np.clip(np.floor(ii).astype(int), 0, SHAWL_COLS - 2)
+        j0 = np.clip(np.floor(jj).astype(int), 0, SHAWL_ROWS - 2)
+        fi, fj = (ii - i0)[:, None], (jj - j0)[:, None]
+
+        def bil(A):
+            return (A[j0, i0] * (1 - fi) * (1 - fj) + A[j0, i0 + 1] * fi * (1 - fj) + A[j0 + 1, i0] * (1 - fi) * fj
+                    + A[j0 + 1, i0 + 1] * fi * fj)
+
+        n = bil(N)
+        return bil(P) + n * r, n
+
+    # cell size in grid units: columns per metre along the hem, rows per metre down the back
+    span_u = float(np.sum(np.linalg.norm(np.diff(P[SHAWL_ROWS // 2], axis=0), axis=1))) / (SHAWL_COLS - 1)
+    span_v = float(np.linalg.norm(P[-1, SHAWL_COLS // 2] - P[0, SHAWL_COLS // 2])) / (SHAWL_ROWS - 1)
+    mesh = float(sh.get("mesh_m", 0.05)) * S
+    step_i = 0.5 * mesh / span_u  # columns between neighbouring cords of one family along a row
+    slope = span_v / span_u  # columns per row for a 45-degree cord
+    jj = np.linspace(0.0, SHAWL_ROWS - 1, (SHAWL_ROWS - 1) * NET_SAMPLES + 1)
+    starts = np.arange(-slope * (SHAWL_ROWS - 1), SHAWL_COLS - 1 + slope * (SHAWL_ROWS - 1), 2.0 * step_i)
+    for sgn in (1.0, -1.0):
+        for i0 in starts:
+            ii = i0 + sgn * slope * jj
+            ok = (ii >= 0.0) & (ii <= SHAWL_COLS - 1)
+            if ok.sum() < 2:
+                continue
+            pts, n = sample(ii[ok], jj[ok])
+            _cord_tube(part, pts, n, r, rect)
+    for j in (0.0, SHAWL_ROWS - 1.0):
+        ii = np.linspace(0.0, SHAWL_COLS - 1, (SHAWL_COLS - 1) + 1)
+        pts, n = sample(ii, np.full(len(ii), j))
+        _cord_tube(part, pts, n, r * EDGE_CORD_K, rect)
+    part.C = [(0.0, 0.0, 0.0, 0.0)] * len(part.V)
+    return _mat(part, sh["mat"])
+
+
+def build_wrist_cord(fields: Fields, wc: dict) -> Part:
+    """A cord tied round one wrist with a single knot (act1_ch08.md: Marra's faded watch-red stair-watch cord): a
+    ring cast onto the forearm `at` of the way from the wrist to the elbow, `cord_mm` thick, the knot on the back of
+    the wrist."""
+    lm = fields.lm
+    S = lm.S
+    sd = wc.get("side", "L")
+    wr, el = lm.side_pt("wrist", sd), lm.side_pt("elbow", sd)
+    ax = (el - wr) / np.linalg.norm(el - wr)
+    c = wr + (el - wr) * float(wc.get("at", 0.05))
+    ref = np.array([0.0, 0.0, 1.0]) - ax[2] * ax
+    ref /= np.linalg.norm(ref)
+    e2 = np.cross(ax, ref)
+    n = WRIST_CORD_RING
+    a = np.linspace(0.0, 2.0 * math.pi, n + 1)
+    D = np.cos(a)[:, None] * ref[None, :] + np.sin(a)[:, None] * e2[None, :]
+    r = 0.5e-3 * float(wc.get("cord_mm", 4.0)) * S
+    rad = cast_last(fields.region(f"arm_{sd}"), np.repeat(c[None, :], n + 1, axis=0), D, 0.1 * S) + r * 1.2
+    pts = c + D * rad[:, None]
+    part = Part("WristCord")
+    part._mat = "cloth"
+    _cord_tube(part, pts, D, r, ATLAS["wrap_knot"])
+    k = float(wc.get("knot_m", 0.012)) * S
+    i_top = int(np.argmax(D @ ref))  # the back of the wrist faces up in the A-pose
+    uv_sphere(part, pts[i_top] + D[i_top] * 0.4 * k, np.array([0.55, 0.45, 0.5]) * k, 8, 5, "cloth",
+              axis_fwd=D[i_top], uv_rect=ATLAS["wrap_knot"], tags=TAG_CLOTH)
+    part.C = [(0.0, 0.0, 0.0, 0.0)] * len(part.V)
+    return _mat(part, wc["mat"])
+
+
+def press_under_band(H: np.ndarray, band: Part, lm, clear: float) -> np.ndarray:
+    """Hair under a headband (optional `headwrap.press_hair`, the clearance in m at S = 1): the band grips the hair, so
+    every hair vertex at the band's height, by azimuth, is drawn in radially from the head centre (as build_headwrap
+    casts) to `clear` inside the band's inner face; just above and below it the pull fades over PRESS_FADE_H head
+    heights, so the hair swells back out over the band instead of passing through it."""
+    yc = float(lm.P("head_c")[1])
+    zc = float(lm.P("chin")[2])
+    hc = np.array([0.0, yc + 0.02 * lm.h, zc + 0.55 * lm.h])
+    B = band.varr()
+    nb = len(B) // 2  # the band's front layer (its back layer is inset under it)
+    Bq = B[:nb] - hc
+    bphi = np.arctan2(Bq[:, 0], -Bq[:, 1])
+    bins = np.linspace(-math.pi, math.pi, PRESS_BINS + 1)
+    idx = np.clip(np.digitize(bphi, bins) - 1, 0, PRESS_BINS - 1)
+    lo = np.full(PRESS_BINS, np.inf)
+    hi = np.full(PRESS_BINS, -np.inf)
+    rin = np.full(PRESS_BINS, np.inf)
+    bz = B[:nb, 2]
+    br = np.linalg.norm(Bq, axis=1)
+    for k in range(PRESS_BINS):
+        m = idx == k
+        if m.any():
+            lo[k], hi[k], rin[k] = bz[m].min(), bz[m].max(), br[m].min()
+    Q = H - hc
+    phi = np.arctan2(Q[:, 0], -Q[:, 1])
+    k = np.clip(np.digitize(phi, bins) - 1, 0, PRESS_BINS - 1)
+    ok = np.isfinite(rin[k])
+    fade = PRESS_FADE_H * lm.h
+    z = H[:, 2]
+    w = np.where(ok, np.clip(1.0 - np.maximum(lo[k] - z, z - hi[k]) / fade, 0.0, 1.0), 0.0)
+    w = np.where(ok & (z >= lo[k]) & (z <= hi[k]), 1.0, w)
+    r = np.linalg.norm(Q, axis=1)
+    target = np.where(ok, np.minimum(r, rin[k] - clear), r)
+    r_new = r + (target - r) * w
+    return hc + Q * (r_new / np.maximum(r, 1e-12))[:, None]
 
 
 # ---------------------------------------------------------------------------------------------
@@ -422,6 +613,10 @@ def build_costume(body, params: dict) -> dict[str, Part]:
         out["Sash"] = _mat(p, sash["mat"])
     if params.get("headwrap"):
         out.update(build_headwrap(fields, params["headwrap"]))
+    if params.get("shawl"):  # M3-CHR-539 (optional)
+        out["Shawl"] = build_shawl(fields, chart, params["shawl"])
+    if params.get("wrist_cord"):  # M3-CHR-539 (optional)
+        out["WristCord"] = build_wrist_cord(fields, params["wrist_cord"])
     wr = params.get("wraps")
     if wr:
         wraps = Part("Wraps")
