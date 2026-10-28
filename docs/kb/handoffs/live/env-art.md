@@ -589,6 +589,18 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
+- **The Lead's 17:37 follow-up (big15's `test_the_town_is_dressed_over_the_greybox`, "LowHull (a story block) is not
+  hidden by the kit"): fixed in big16; nothing to change.**
+  - **Cause:** on big15 the zone mounted the old `tools/ch01/ch01_oruvel_dressing.py` output. My walk-through batch 1
+    (62409951b) had that generator dress `LowHull` with `hull_lashed` and stop keeping its greybox mesh, while big15's
+    test still listed `LowHull` in `KEPT`.
+  - **big16 (ff82858c):**
+    - The zone mounts `ov_zone_dressing`'s layout: all greybox hidden, `hull_outrigger` following `LowHull`.
+    - The test expects exactly that (`KEPT = []`; "the low hull follows its block").
+    - Run here: 3 run, 0 failed.
+  - **The booth and chandlery orientation:** viewed on big16 in `ch01_scale_hull` and `ch01_kell_stall` (entry above).
+    Both counters face their customers.
+  - **No code change. LEAD-ASK:** none. If the cloud suite still fails it on big16, send me its log line.
 - **MERGE-READY @ 2666255bb: the Lead's big16 checks (lead/gate-big16 @ ff82858c, this branch fast-forwarded to it).
   No code change was needed.**
   - **U03 on my mounted Underway dressing:** `ch01_bell_room` was rendered and viewed. The camera is in the bell-room
