@@ -117,3 +117,33 @@ func test_a_vowbound_plays_its_call_dismissal_and_fall() -> void:
 	assert_true(vfx.played.has(&"vowbound_fell"), "a fall sinks")
 	ctl.get_parent().remove_child(ctl)
 	ctl.free()
+
+
+func test_a_hit_lands_on_a_big_body_near_face() -> void:
+	# The arena self-render: inside the Cinder Matron's 2.9 m bulk a hit at her middle was hidden. The chest and head
+	# anchors step toward the camera by half the body's depth; the feet stay centred (rings).
+	var ctl := (load("res://game/battle/scene/battle_sandbox.tscn") as PackedScene).instantiate() as BattleController
+	ctl.auto_start = false
+	ctl.pacing_scale = 0.0
+	ctl.persist_progress = false
+	var tree := Engine.get_main_loop() as SceneTree
+	(tree.current_scene if tree.current_scene != null else tree.root).add_child(ctl)
+	ctl.start_battle([&"rhen", &"asha", &"toma"] as Array[StringName], [], &"ch05_cinder_matron", 20261028)
+	var vfx := ctl.stage.get_node(^"BattleVfx") as BattleVfx
+	var matron := ctl.engine.enemies[0].id
+	var f := ctl.stage.stand_in(matron)
+	var cam := vfx.get_viewport().get_camera_3d()
+	var centre := f.global_position
+	var chest := vfx.anchor(matron, "chest")
+	var flat := func(v: Vector3) -> Vector2: return Vector2(v.x, v.z)
+	var stepped: float = (flat.call(chest) as Vector2).distance_to(flat.call(centre))
+	assert_true(stepped > 0.8, "the hit steps out of her bulk (%.2f m)" % stepped)
+	var closer: bool = (
+		(flat.call(chest) as Vector2).distance_to(flat.call(cam.global_position))
+		< (flat.call(centre) as Vector2).distance_to(flat.call(cam.global_position))
+	)
+	assert_true(closer, "toward the camera")
+	var feet := vfx.anchor(matron, "feet")
+	assert_true((flat.call(feet) as Vector2).is_equal_approx(flat.call(centre)), "the feet stay centred")
+	ctl.get_parent().remove_child(ctl)
+	ctl.free()
