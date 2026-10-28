@@ -589,7 +589,7 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
-- **MERGE-READY @ (this push): M3-ENV-102, the Order chapel at the kit's level; M3-ENV-101 viewed. Both to review.**
+- **MERGE-READY @ 2bbf6cd4d: M3-ENV-102, the Order chapel at the kit's level; M3-ENV-101 viewed. Both to review.**
   - **`order_chapel`**, same footprint and door position:
     - a bare coral-stone base course;
     - weathered lime-wash;
