@@ -1161,3 +1161,8 @@ MERGE-READY (+ this log): **lead/gate-big16 (ff82858c) merged in; big15's two cl
   - Ch8 corrow `pell` → integration-qa (M3-CHR-506);
   - Ch8 corrow `figure`, the stranger on the wall → creatures.
   The other two integration-qa rows are Ch9's pell and vigil_pell, also waiting on M3-CHR-506.
+- **Re the Lead's 17:37 note:** test_hero_followers::test_followers_turn_to_face_who_rhen_talks_to ("expected
+  0.6907... facing her walk again") is big15's head of mine, which had the sight-line step without the test's
+  follow-up. The fix is f2f67ea1b: the follower test turns the sight step off in before_each (`sight_clear_m` 0),
+  since it tests the trail itself and test_qa_field_camera tests the sight step. It's on big16 too.
+  **`--filter=hero` on head 575ca4637: 112/0.**
