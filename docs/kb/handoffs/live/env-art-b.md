@@ -291,8 +291,17 @@ that test at this branch's zones.
   - **Request M3-BPR-1325** (battle-presentation): anchor the stair meter and climber VFX on these marks, and cut to the hint when the Climb acts. From the default camera the stair head sits just off frame right.
   - **Checks run:** tools `test_b_arenas` + `test_arenas` (22); Godot `battle_arena` (18), `set_piece` (48), `seawall_stair` (1, new). **MERGE-READY @ 9c8e9c99.**
 
+- **M3-C09-03, the Ebbing's motes (the Lead, 14:47):** built @ 50db241b; the task stays `doing` until the cue hook lands.
+  - **The rig:** `EbbingMotes` (`game/vfx/ebbing/`, data `game/data/vfx/ebbing.json`, docs `tech/ebbing.md`) sits on `ch09/corrow_night` through ZoneKitDressing's `ebbing` row. It plays eight HELD fields by the cue marks, about 5,100 motes at High and 1,800 at Low.
+  - **Attractors:** a staff attractor on a `StaffHead` on Asha, kept low enough that under 5 % of the motes rise under the raised staff (a CPU replica test, which also shows a full-strength pull would lift 38 %). Mourner anchors let go over 4 s as the staff passes. The cutaway's field has no attractor and no focus. Reflections are on for the harbour fields.
+  - **Test scene:** `game/levels/_tests/ebbing/ebbing_shots.tscn`. New shots `ebbing_n11` and `ebbing_n08` need the Lead's baselines.
+  - **Request M3-ARC-1326** (integration-qa): `_cue_vfx` should offer each cue to the `cutscene_vfx_hosts` group first, plus the `follow=` / `anchors=` vocabulary. Until it lands, the chapter's cues still draw the placeholder.
+  - **Checks run:** Godot `ebbing` (5, new), `ch09` (12), `glimmer` (36), `zone_kit` (12); gdlint/gdformat; validate_data; taskboard --check. `tools.tests.test_screenshots` fails on `kerrid_front` already at HEAD (pre-existing, not this branch's), and the two new shots have no baselines yet. **MERGE-READY @ 50db241b.**
+  LEAD-ASK: baselines for the new shots `ebbing_n11` and `ebbing_n08` at your gate. And M3-ARC-1326 needs integration-qa: the one hook that lets Ch9's cues play the real Ebbing. Can you route it?
+
 ### Render requests
 (Self-rendered per TRACK-RULES; lines are SELF-RENDERED notes.)
+SELF-RENDERED @ 50db241b: ebbing_n11, ebbing_n08 (new), plus a strand view (scratch). Viewed: cyan held motes over the harbour, mirrored in the still water and sinking seaward. N11's river overhead reads above and below the waterline, and nothing is gold or rising.
 SELF-RENDERED @ 9c8e9c99: battle_ch08_stair_hold. Viewed: no capsule, and the anchors are invisible so the frame is unchanged. Also viewed `undertows_reach` at the default camera and the new `the_stair_head` hint (scratch): the head landing and its down-steps read clearly from the walk.
 SELF-RENDERED @ 9a9c0043: battle_arena_camp, battle_arena_shoals. Viewed: the columns rise behind the camp, and the fires read as fire up close, with round beds and no trays.
 SELF-RENDERED @ 3eaa64a5: ch06_brine_camp (clocks 40 and 44), ch06_brine_road. Viewed: grey-brown columns that lean downwind with lit tops, read at range, and billow between the clocks. The foot's grain is gone with the gradient-noise offset.
