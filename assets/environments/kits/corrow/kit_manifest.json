@@ -222,6 +222,17 @@
         "milestone-lod1": 12
       }
     },
+    "mole_bridge": {
+      "budget": [
+        9000,
+        800
+      ],
+      "bytes": 197472,
+      "lods": {
+        "mole_bridge": 2528,
+        "mole_bridge-lod1": 552
+      }
+    },
     "mole_pier": {
       "budget": [
         40000,
@@ -363,6 +374,28 @@
       "lods": {
         "strand_lamp": 114,
         "strand_lamp-lod1": 66
+      }
+    },
+    "strand_landing": {
+      "budget": [
+        9000,
+        800
+      ],
+      "bytes": 196636,
+      "lods": {
+        "strand_landing": 2840,
+        "strand_landing-lod1": 620
+      }
+    },
+    "strand_rocks": {
+      "budget": [
+        12000,
+        900
+      ],
+      "bytes": 369044,
+      "lods": {
+        "strand_rocks": 7448,
+        "strand_rocks-lod1": 208
       }
     },
     "trader_boat": {
