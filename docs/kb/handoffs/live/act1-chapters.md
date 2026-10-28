@@ -208,12 +208,13 @@ SUPERSEDED by the request @ c0ee5230 below: 8daa0c63
 SUPERSEDED by the request @ c0ee5230 below: eeaf91bf
 SUPERSEDED by the request @ 9ccd51b2 below: c0ee5230
 SUPERSEDED by the request below: 9ccd51b2 (c0ee523 viewed: ch05_pemakar_crown and ch08_corrow_stair approved 160eadea; the rest were approved by big12)
-RENDER-REQUEST @ 225370ba: ch05_pemakar_harbour, ch09_corrow_strand, ch06_brine_road, ch08_corrow_arrival, ch08_corrow_stair, ch08_coilspire_hall; why: the harbour view re-aimed (it stood behind Asha's head), the strand lit (it was near-black), the casts (Stillguard, hound) and Coilspire's moved key t4_d
+SUPERSEDED by the request below: 225370ba
 SUPERSEDED by the request below: 5696ffde
-RENDER-REQUEST @ 2d3ccdf2: ch08_corrow_arrival, ch08_corrow_stair, ch09_corrow_strand, ch09_corrow_road; why: Corrow's story pieces replace their greybox (M3-ENV-707/708), Ch9's drowned, lamps and raft (Iskarra has no shot yet)
+SUPERSEDED by the request below: 2d3ccdf2
+RENDER-REQUEST @ 760a0e4c: ch05_pemakar_harbour, ch06_brine_road, ch06_brine_camp, ch08_corrow_arrival, ch08_corrow_stair, ch08_coilspire_hall, ch09_corrow_strand, ch09_corrow_road; why: the one open request (TRACK-RULES), folding 225370ba and 2d3ccdf2: Pemakar's harbour view re-aimed, Ch6's last greybox now kit pieces, the casts (Stillguard, hound), Coilspire's key t4_d, Corrow's story pieces, Ch9's drowned, lamps, raft and its lit night
 
 ## Exact next step
-1. When the PC answers RENDER-REQUEST @ 9ccd51b2 (`gpu/render-act1-chapters-9ccd51b`): view every out/diff PNG;
+1. When the render server answers RENDER-REQUEST @ 760a0e4c (`lead/gate-render-act1-chapters-760a0e4`): view every out/diff PNG;
    approve what reads (copy to `tests/screenshots/baselines/`, the llvmpipe metadata in baselines.json); fix and
    re-request what doesn't; then write the MERGE-READY lines for Ch4 (M3-C04-1204), Ch9 (M3-C09-1209), Coilspire
    (M3-C08-1210), Ch7's galleries (M3-C07-1211), Ch5 Pemakar (M3-C05-1213) and the casts (M3-CIN-1217).
