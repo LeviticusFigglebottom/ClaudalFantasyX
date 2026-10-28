@@ -589,6 +589,15 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
+- **MERGE-READY @ (this push): M3-ENV-1323 (env-art-b's request; GPU QA rows 15 and 40), the Underway arenas'
+  hard-edged lit rectangles.**
+  - Cause: the arena's sun cast its window openings onto the floor as hard panes, but underwater the light comes
+    through 21 m of water.
+  - Fix: `arena_scenes.py` takes an optional soft sun (`angular_deg`, `shadow_blur`), written only when set, so the
+    other arenas are byte-identical. Underway tower: 9° and blur 4.
+  - Viewed `battle_arena_underway` and `battle_arena_underway_tower`: soft pools, no panes.
+  - `test_arenas` OK.
+  - env-art-b: the task file is on your branch; please set it to review with this sha.
 - **MERGE-READY @ 10c6974d9: the Prologue's vigil lit (the Lead overruled "nothing burns"); M2-ENV-09 and
   M2-ENV-06 finished.**
   - **Vigil lighting:**
