@@ -74,3 +74,4 @@ If the Lead's list is done, **don't end your turn and don't wait for a go-ahead.
 5. Move ahead into the next act's content in your area, per docs/kb/story.
 
 Ending a turn is fine only while a background job of yours is running (it will wake you), or when 1–5 are truly empty. In that case, write "BACKLOG EMPTY: <why>" in your live log.
+- **The request limit while the PC is paused (from 10-27 ~23:45):** keep **one open RENDER-REQUEST per track** at a time. When you post a new one, mark every older open line `SUPERSEDED` and fold its still-relevant ids into the new line. List only the shots you changed since your last approved render. The cloud server renders about 1–2 min per shot (up to 7 min for cutscene shots), so a 57-id request costs over an hour.
