@@ -6418,6 +6418,18 @@
         960,
         720
       ]
+    },
+    {
+      "id": "battle_ch08_intercept",
+      "scene": "res://game/battle/scene/shots/battle_ch08_intercept.tscn"
+    },
+    {
+      "id": "battle_ch08_counter",
+      "scene": "res://game/battle/scene/shots/battle_ch08_counter.tscn"
+    },
+    {
+      "id": "battle_ch08_withdraw",
+      "scene": "res://game/battle/scene/shots/battle_ch08_withdraw.tscn"
     }
   ]
 }

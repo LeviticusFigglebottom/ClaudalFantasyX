@@ -71,6 +71,40 @@ func test_the_lamp_engine_opens_with_a_moment() -> void:
 	_free()
 
 
+func test_the_drowner_tears_free_with_a_moment() -> void:
+	# M3-BPR-418: the Mangrove Drowner's `uprooted` phase (its creatures.json row) plays its moment, as the Lamp
+	# Engine's `opened` does.
+	var foe := ctl.engine.enemies[0]
+	var row := (ctl.stage.choreo.data["bosses"] as Dictionary)["mangrove_drowner"] as Dictionary
+	var phase_ids := (CreatureActor.row_for(&"mangrove_drowner").get("phases", {}) as Dictionary).keys()
+	assert_true(phase_ids.has("uprooted"), "the creature's own phase id")
+	var boss := BattleBossChoreo.new()
+	boss.attach(ctl.stage.choreo, ctl.engine, foe.id, row)
+	ctl.engine.phase_changed.emit(foe, &"uprooted")
+	assert_eq(boss.moments, [&"uprooted"] as Array[StringName], "tearing free plays its moment")
+	_free()
+
+
+func test_the_wakefin_sinks_its_blade_and_the_dark_closes_in() -> void:
+	# M3-BPR-418: in the dark its telegraph is the blade going under (no light added), and the camera closes in.
+	var foe := ctl.engine.enemies[0]
+	var row := (ctl.stage.choreo.data["bosses"] as Dictionary)["wakefin"] as Dictionary
+	var gather := row["gather"] as Dictionary
+	assert_true(float(gather["crouch_m"]) > 0.0 and float(gather["lift_m"]) == 0.0, "the blade goes under")
+	var boss := BattleBossChoreo.new()
+	boss.attach(ctl.stage.choreo, ctl.engine, foe.id, row)
+	ctl.engine.charge_started.emit(foe, &"some_future_charge", 2)
+	assert_eq(boss.moments, [&"gather"] as Array[StringName], "any charge it gathers")
+	var cam := ctl.stage.choreo.camera
+	foe.id = &"wakefin#1"
+	foe.charge_skill = &"some_future_charge"
+	foe.charge_left = 2
+	var two := cam.rest_fov()
+	foe.charge_left = 1
+	assert_true(two < cam.default_fov and cam.rest_fov() < two, "a step each turn")
+	_free()
+
+
 func _free() -> void:
 	ctl.get_parent().remove_child(ctl)
 	ctl.free()
