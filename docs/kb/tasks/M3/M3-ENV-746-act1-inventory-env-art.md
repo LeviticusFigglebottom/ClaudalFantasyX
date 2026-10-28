@@ -18,8 +18,10 @@ ADR 0041: clear env-art's rows of `docs/kb/qa/act1_final_inventory.md` (integrat
 - [ ] Ch1 `oruvel_underway.tscn`, 36: dressed (M3-ENV-741); slice-polish mounts it (M3-ENV-742).
 - [ ] Ch2 `haluna.tscn`, 11: the save shrine's 10 are Systems' scene `game/world/save_shrine/save_shrine.tscn`; the
       kit pieces are ready (M3-ENV-101), so request M3-ENV-747. Neme's stand-in has a model, so request M3-ENV-748.
-- [ ] Ch3 `first_verse.tscn`, 15 CSG: the stage on the final shrine (M3-ENV-745).
-- [ ] Ch3 `shell_shrine.tscn`, 1 (Dressing/ChamberPassage BoxMesh).
+- [ ] Ch3 `first_verse.tscn`, 15 CSG: env-art built the set, `assets/environments/zones/shell_shrine/first_verse_stage.tscn`
+      (the final shrine, sea, shore, and the marks at their real places). slice-polish instances it (M3-ENV-745).
+- [x] Ch3 `shell_shrine.tscn`, 1: the dark box behind the valve door is now the kit's `shrine_chamber_passage`
+      (coursed walls, a corbelled roof, the dark beyond) in env-art's `shell_shrine_dressing.tscn`; S02/S03 pass.
 - [x] Ch4 `derelict_deck_night.tscn`, 7 SphereMesh flames → the kit's `lamp_flame` (a teardrop on
       `kit_lamp_flame_hot`); also `ash_terrace_lanternfall` (Ch5). Lowlight's teal flames (Act II, paused) keep
       the bead until they get a piece of their own.

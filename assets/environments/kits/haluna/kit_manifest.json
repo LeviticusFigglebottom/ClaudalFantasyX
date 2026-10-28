@@ -1568,6 +1568,17 @@
         "shrine_basin_pedestal-lod1": 210
       }
     },
+    "shrine_chamber_passage": {
+      "budget": [
+        9000,
+        400
+      ],
+      "bytes": 350460,
+      "lods": {
+        "shrine_chamber_passage": 3060,
+        "shrine_chamber_passage-lod1": 60
+      }
+    },
     "shrine_channel_sluice": {
       "budget": [
         3600,

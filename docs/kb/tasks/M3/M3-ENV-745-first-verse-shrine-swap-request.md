@@ -24,6 +24,16 @@ env-art's Shell Shrine is final and in the game: `game/levels/ch03/shell_shrine/
 hall, vault, roof fan, islet, steps, curved walls, the entrance and door portals, the whorl columns). Its renders
 are approved (`shrine_s01_approach` … `s05`).
 
+## Ready-made (env-art, 2026-10-28)
+`assets/environments/zones/shell_shrine/first_verse_stage.tscn` is the set, in the shrine's frame (which is the
+stand-in's). It holds the shrine's dressing, the sea at -2, the islet's shore dressing, and a `Marks` node with the
+stand-in's eight mark names at their real places. So the swap is three steps:
+1. Delete `Island`, `Shrine` and `Sea`.
+2. Instance the stage at the origin.
+3. Copy each mark's position from `Marks/<name>`.
+
+The preview is `game/levels/_tests/first_verse_stage/` (shots `first_verse_stage_v01/v02`).
+
 ## Acceptance criteria
 - [ ] Replace `Island`, `Shrine` (the CSGCombiner3D and its children) and `Sea` with an instance of
       `shell_shrine_dressing.tscn` and a `WaterSurface` (`lagoon_waves.tres`, `haluna_water_material.tres`), as the
