@@ -45,3 +45,15 @@ CreatureActor and the validator are theirs too (kit or tool changes go to them a
     the near wing is pale at the battle camera's grazing angle; a true see-through look needs a spectral material in
     the kit (creatures').
 - **In progress:** M3-CRB-002 hullgnaw, M3-CRB-004 bottle_hermit, M3-CRB-008 kahre (worktree agents).
+- **MERGE-READY @ efdcef1f: M3-CRB-002, the Hullgnaw to final quality** (worktree agent 8323726d, viewed by me).
+  - Eel anatomy (flattened section, slate belly, torn dorsal fin and crest, lateral line, folds, welts, barnacles,
+    a weed and foam collar), six recessed open wound seams (spawn_wound) between squared adzed oak frames with
+    treenails, rusting spikes, splintered salt-pale ends, weed and plank stubs; a real skull with brows, gill slits,
+    lips, a too-wide jaw and nail teeth. 15.8k triangles (sheet budget raised to ≤16k). New clips `ready` and `intro`
+    (2.6 s: rears out, jaw wide, settles); bones `vfx_wound`, `vfx_core`, `vfx_phase`. Contacts unchanged.
+  - **Checks run:** Blender verify identical; validate_data 0 errors; taskboard; tools test_creatures and
+    test_blender_builds 48 OK; Godot creature 74/1 (the known unbaked portraits), ch01_battles 5/0.
+  - SELF-RENDERED @ 8323726d: creature_hullgnaw, battle_boss_intro_hullgnaw — drift (the new model); viewed at battle
+    distance: a black arch caged in broken ship's timbers with cyan seams. Mild: the neck is a little glossy in sun.
+  - **For ui-menus:** the hullgnaw bestiary portrait is stale (re-bake `tools/portraits/render.sh --only hullgnaw`).
+- **In progress:** bottle_hermit, kahre, spar_wraith (worktree agents).
