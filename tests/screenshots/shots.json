@@ -1271,6 +1271,156 @@
       "settle_frames": 30
     },
     {
+      "id": "villager_shopkeeper_front",
+      "scene": "res://game/levels/_tests/characters/villagers/shopkeeper_stage.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_smith_front",
+      "scene": "res://game/levels/_tests/characters/villagers/smith_stage.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_innkeeper_front",
+      "scene": "res://game/levels/_tests/characters/villagers/innkeeper_stage.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_clerk_front",
+      "scene": "res://game/levels/_tests/characters/villagers/clerk_stage.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_wright_girl_front",
+      "scene": "res://game/levels/_tests/characters/villagers/wright_girl_stage.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_wright_child_a_front",
+      "scene": "res://game/levels/_tests/characters/villagers/wright_child_a_stage.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_wright_child_b_front",
+      "scene": "res://game/levels/_tests/characters/villagers/wright_child_b_stage.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_reeds_lineup",
+      "scene": "res://game/levels/_tests/characters/villagers/reeds_lineup.tscn",
+      "camera": "Cameras/Lineup",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_smith_face",
+      "scene": "res://game/levels/_tests/characters/villagers/smith_stage.tscn",
+      "camera": "Cameras/Face",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_innkeeper_face",
+      "scene": "res://game/levels/_tests/characters/villagers/innkeeper_stage.tscn",
+      "camera": "Cameras/Face",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_clerk_face",
+      "scene": "res://game/levels/_tests/characters/villagers/clerk_stage.tscn",
+      "camera": "Cameras/Face",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_clerk_clip_heat_iron",
+      "scene": "res://game/levels/_tests/characters/villagers/clerk_heat_iron.tscn",
+      "camera": "Cameras/ThreeQuarter",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_reed_a_clip_pole_barge",
+      "scene": "res://game/levels/_tests/characters/villagers/reed_a_pole_barge.tscn",
+      "camera": "Cameras/ThreeQuarter",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_wright_girl_clip_arm_held_out",
+      "scene": "res://game/levels/_tests/characters/villagers/wright_girl_arm_held_out.tscn",
+      "camera": "Cameras/ThreeQuarter",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_wright_child_a_clip_crawl_out",
+      "scene": "res://game/levels/_tests/characters/villagers/wright_child_a_crawl_out.tscn",
+      "camera": "Cameras/ThreeQuarter",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
       "id": "battle_swell_ring",
       "scene": "res://game/battle/scene/shots/battle_swell_ring.tscn"
     },

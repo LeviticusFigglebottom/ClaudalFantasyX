@@ -402,6 +402,50 @@
           "Body": 48
         }
       }
+    },
+    "shopkeeper": {
+      "_villager": "M3-CHR-509..517: a villager build (assets/characters/villagers/shopkeeper/shopkeeper.glb, clips from villager_clips.py and villager_story_clips.json). No props in a villager GLB.",
+      "villager": true
+    },
+    "smith": {
+      "_villager": "M3-CHR-509..517: a villager build (assets/characters/villagers/smith/smith.glb, clips from villager_clips.py and villager_story_clips.json). No props in a villager GLB.",
+      "villager": true
+    },
+    "innkeeper": {
+      "_villager": "M3-CHR-509..517: a villager build (assets/characters/villagers/innkeeper/innkeeper.glb, clips from villager_clips.py and villager_story_clips.json). No props in a villager GLB.",
+      "villager": true
+    },
+    "clerk": {
+      "_villager": "M3-CHR-509..517: a villager build (assets/characters/villagers/clerk/clerk.glb, clips from villager_clips.py and villager_story_clips.json). No props in a villager GLB.",
+      "villager": true
+    },
+    "reed_a": {
+      "_villager": "M3-CHR-509..517: a villager build (assets/characters/villagers/reed_a/reed_a.glb, clips from villager_clips.py and villager_story_clips.json). No props in a villager GLB.",
+      "villager": true
+    },
+    "reed_b": {
+      "_villager": "M3-CHR-509..517: a villager build (assets/characters/villagers/reed_b/reed_b.glb, clips from villager_clips.py and villager_story_clips.json). No props in a villager GLB.",
+      "villager": true
+    },
+    "reed_c": {
+      "_villager": "M3-CHR-509..517: a villager build (assets/characters/villagers/reed_c/reed_c.glb, clips from villager_clips.py and villager_story_clips.json). No props in a villager GLB.",
+      "villager": true
+    },
+    "reed_d": {
+      "_villager": "M3-CHR-509..517: a villager build (assets/characters/villagers/reed_d/reed_d.glb, clips from villager_clips.py and villager_story_clips.json). No props in a villager GLB.",
+      "villager": true
+    },
+    "wright_girl": {
+      "_villager": "M3-CHR-509..517: a villager build (assets/characters/villagers/wright_girl/wright_girl.glb, clips from villager_clips.py and villager_story_clips.json). No props in a villager GLB.",
+      "villager": true
+    },
+    "wright_child_a": {
+      "_villager": "M3-CHR-509..517: a villager build (assets/characters/villagers/wright_child_a/wright_child_a.glb, clips from villager_clips.py and villager_story_clips.json). No props in a villager GLB.",
+      "villager": true
+    },
+    "wright_child_b": {
+      "_villager": "M3-CHR-509..517: a villager build (assets/characters/villagers/wright_child_b/wright_child_b.glb, clips from villager_clips.py and villager_story_clips.json). No props in a villager GLB.",
+      "villager": true
     }
   }
 }

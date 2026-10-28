@@ -161,7 +161,14 @@ def story_pose_at(spec: dict, t: float, length: float, sk, pers: dict) -> dict:
     """hero_clips.story_pose_at on the villager postures and gestures."""
     u = t / length
     base = posture(spec.get("from", "stand"), sk, pers)
-    if "to" in spec:
+    if "path" in spec:  # several postures in turn, [u, posture] eased between neighbours (crawl_out: up through a kneel)
+        path = [(float(a), posture(n, sk, pers)) for a, n in spec["path"]]
+        base = path[-1][1] if u >= path[-1][0] else path[0][1]
+        for (ua, pa), (ub, pb) in zip(path, path[1:]):
+            if ua <= u < ub:
+                base = hc.blend(pa, pb, hc.smooth((u - ua) / (ub - ua)))
+                break
+    elif "to" in spec:
         a, b = spec.get("change", (0.0, 1.0))
         base = hc.blend(base, posture(spec["to"], sk, pers), hc.smooth((u - a) / (b - a)))
     keys = [(float(k), _gestures(gs, sk, pers)) for k, gs in spec.get("keys", [[0.0, []]])]

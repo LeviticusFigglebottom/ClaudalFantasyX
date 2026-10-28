@@ -55,13 +55,13 @@
     "kind": "bun",
     "seed": 35,
     "scalp_cards": [
-      170,
-      130,
-      90
+      150,
+      115,
+      80
     ],
-    "hairline_cards": 70,
+    "hairline_cards": 56,
     "bun_r_m": 0.04,
-    "bun_ribbons": 36,
+    "bun_ribbons": 26,
     "grey_share": 0.3,
     "colour": "#141417",
     "grey": "#8C867D",
