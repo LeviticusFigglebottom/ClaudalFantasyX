@@ -5,6 +5,7 @@ extends Node
 ## <out>/<encounter>_<skill>_{lead,contact}.png. Run it like a capture:
 ##   godot-render --path . --audio-driver Dummy --fixed-fps 60 --disable-vsync --rendering-driver vulkan \
 ##     res://tools/vfx/boss_camera_sheet.tscn -- --out=<abs dir> [--lead=0.7] [--only=<encounter>]
+##     [--moment=phase|fall]   (M3-BPR-426: each fight's camera moment instead, mid-hold)
 
 const SCENE := "res://game/battle/scene/battle_sandbox.tscn"
 const PARTY: Array[StringName] = [&"rhen", &"asha", &"toma"]
@@ -15,6 +16,8 @@ const FIGHTS := {
 	&"ch05_cinder_matron": [&"cinder_matron", [&"ladle_swing", &"slag_pour"]],
 	&"ch06_inquisitor": [&"stillguard_inquisitor", [&"brine_iron", &"torch_hulk"]],
 	&"drownbell": [&"drownbell", [&"hood_slam"]],
+	&"ch04_bottle_hermit": [&"bottle_hermit", []],  # moments only (no big move)
+	&"undertows_reach": [&"undertows_reach", []],  # moments only (its moves keep the default frame)
 }
 
 var _opts: Dictionary = {}
@@ -47,6 +50,11 @@ func _run() -> void:
 			if String(e.id).get_slice("#", 0) == String(FIGHTS[enc][0]):
 				boss = e
 		var choreo := ctl.stage.choreo
+		if _opts.has("moment"):  # M3-BPR-426: the phase change's or the fall's camera moment, mid-hold
+			await _moment(ctl, boss, out, enc)
+			remove_child(ctl)
+			ctl.queue_free()
+			continue
 		for sid: StringName in FIGHTS[enc][1]:
 			var r := ActionResult.new()
 			r.actor_id = boss.id
@@ -82,6 +90,29 @@ func _run() -> void:
 		remove_child(ctl)
 		ctl.queue_free()
 	get_tree().quit()
+
+
+## Plays the boss's --moment (phase or fall) and saves <out>/<encounter>_<moment>.png once it is in and held.
+func _moment(ctl: BattleController, boss: BattleCombatant, out: String, enc: StringName) -> void:
+	var choreo := ctl.stage.choreo
+	choreo.reduced_motion = false
+	choreo.skip = false
+	choreo.speed = 1.0
+	var which := str(_opts["moment"])
+	if which == "fall":
+		boss.hp = 0
+		choreo.contact.emit(ActionResult.new())
+	else:
+		ctl.engine.phase_changed.emit(boss, &"_sheet")
+	var row := (choreo.data["camera"]["moments"] as Dictionary).get(which, {}) as Dictionary
+	choreo.advance(float(row.get("in_sec", 0.0)) + float(row.get("hold_sec", 0.0)) * 0.5)
+	for i in 3:
+		await get_tree().process_frame
+	await RenderingServer.frame_post_draw
+	var img := get_viewport().get_texture().get_image()
+	img.convert(Image.FORMAT_RGB8)
+	img.save_png(out.path_join("%s_%s.png" % [enc, which]))
+	print("BOSS_CAMERA_SHEET %s %s %s" % [enc, which, choreo.camera.moments_played])
 
 
 ## A move on the whole party (its enemy_by_skill lead is boss_sweep) hits every hero.
