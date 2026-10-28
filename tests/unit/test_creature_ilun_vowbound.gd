@@ -22,6 +22,7 @@ const CLIPS: Array[StringName] = [
 	&"dismiss",
 	&"special",
 	&"idle_b",
+	&"release",  # M3-CRE-647: the held form's release (its KO as a foe)
 ]
 const YAW_DEG := -90.0
 const SANDBOX_HEIGHT_M := 2.3

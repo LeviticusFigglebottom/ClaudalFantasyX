@@ -25,6 +25,7 @@ const CLIPS: Array[StringName] = [
 	&"dismiss",
 	&"special",
 	&"idle_b",
+	&"release",  # M3-CRE-647: the held form's release (its KO as a foe)
 ]
 const YAW_DEG := -90.0
 ## The stand-in's own size (creatures.json `stand_in`): about her perched height, and a ring round her talons.
@@ -108,6 +109,8 @@ func test_the_stand_in_plays_the_stage_clips_on_the_model() -> void:
 func test_she_stands_on_the_water_in_every_clip() -> void:
 	var a := _actor()
 	for clip in CLIPS:
+		if clip == &"release":
+			continue  # M3-CRE-647: the release is the one clip where she lifts off the water, by design
 		var length := a.clip_length(clip)
 		for k in SAMPLES + 1:
 			var skel := _pose(a, clip, length * k / SAMPLES)
