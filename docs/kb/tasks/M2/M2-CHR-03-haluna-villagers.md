@@ -45,3 +45,4 @@ Neme, Osu (Pila's granddaughter), Pila, the lane child, and three generic villag
 - **Honest gaps:** the child's face reads adolescent up close (no child targets in the vendored donor data); age is
   in the textures, not the shape; short hair is flaky up close; no props (the Reed's broom stays the capsule's node).
 - Dialogue polish, Neme (chr-npc-polish, M3): before, her grey share (12%) read as bright light streaks across the black bun hair, with warm highlight chips. After: the grey cards are thin sparse strands (`_hair.grey_strands`) and the hair specular dimmer and cooler (`_hair.spec`); reads as black hair with a few grey hairs.
+- Dialogue polish, Osu (chr-npc-polish, M3): before, a dark band showed between the head wrap's edge and her brow (the wrap stood off the skin, its shadowed underside and hairline cards showing). After: the wrap's edge drawn in to the skin (`headwrap.edge_off_m`); the white hair shows only at the temples.
