@@ -31,6 +31,7 @@ var _lists: Dictionary = {}
 var _help: Label
 var _name: Label
 var _place: Label
+var _role_text := ""
 var _chosen_line: Label
 var _plan: Label
 var _warn: Label
@@ -238,7 +239,11 @@ func _render() -> void:
 	_name.text = sheet.hero_name(hero) if hero != &"" else tr(FormationMenuModel.OPEN_KEY)
 	var fallen := hero != &"" and bool(model.vitals(hero)["fallen"])
 	_portrait.show_hero(hero, _name.text, HeroPortraits.page_emotion(PORTRAIT_PAGE, fallen))
-	_place.text = model.place_text(at["line"], at["index"])
+	var role := sheet.hero_role(hero) if hero != &"" else ""
+	var place := model.place_text(at["line"], at["index"])
+	# M2-MNU-306: the role word leads the place line, so it adds no height to the detail.
+	_place.text = tr("FORMATION_MENU_ROLE_PLACE_FMT").format({"role": role, "place": place}) if role != "" else place
+	_role_text = role
 	_chosen_line.text = model.chosen_text(_hero_of(chosen)) if not chosen.is_empty() else ""
 	var p := _shown_plan()
 	_plan.text = str(p.get("text", ""))
@@ -257,6 +262,16 @@ func _shown_plan() -> Dictionary:
 	if chosen.is_empty():
 		return model.plan(&"", -1, at["line"], at["index"])
 	return model.plan(chosen["line"], chosen["index"], at["line"], at["index"])
+
+
+## The role word on the place line ("" for an open place or a hero without one; M2-MNU-306).
+func role_text() -> String:
+	return _role_text
+
+
+## The place line under the name (the role word, then where the cursor stands).
+func place_line() -> String:
+	return _place.text
 
 
 ## Name, place, the pick, the plan and the warning, stacked under the active line by their
@@ -281,6 +296,7 @@ func _layout_detail() -> void:
 	y += _name.size.y
 	_place.position = Vector2(r.position.x, y)
 	_place.size = Vector2(r.size.x, HudLayout.num(dm, "line_height"))
+	UiFrame.fit_line(_place, _place.size.x)
 	y += _place.size.y + line_gap
 	for l: Label in [_chosen_line, _plan, _warn]:
 		var col := full if y >= portrait_bottom else r

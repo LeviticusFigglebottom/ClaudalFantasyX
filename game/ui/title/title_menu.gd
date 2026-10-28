@@ -36,6 +36,8 @@ var memories_menu: MemoriesMenu
 var debug_build := OS.is_debug_build()
 var backdrop: TitleBackdrop
 var logo: TitleLogo
+## The opening reveal (logo, then the choices, then the help line; TitleReveal).
+var reveal := TitleReveal.new()
 
 var _d: Dictionary = {}
 var _page: MenuPage
@@ -85,6 +87,7 @@ func _ready() -> void:
 	UiFrame.centre(self)  # M2-UI-29
 	model.changed.connect(_render)
 	_render()
+	reveal.play(self, logo, _page, _help, _d.get("reveal", {}) as Dictionary)
 	if MemoryReplay.take_gallery_request() and model.has_memories:
 		model.set_cursor(model.row_ids().find(TitleMenuModel.CHOICE_MEMORIES))
 		open_memories(MemoryReplay.last_memory)

@@ -35,6 +35,17 @@
         "arena_shoals_ground-lod1": 2592
       }
     },
+    "boat_wake": {
+      "budget": [
+        600,
+        80
+      ],
+      "bytes": 14080,
+      "lods": {
+        "boat_wake": 192,
+        "boat_wake-lod1": 60
+      }
+    },
     "branding_brazier": {
       "budget": [
         3500,
@@ -167,6 +178,17 @@
         "crate_stack_burned-lod1": 48
       }
     },
+    "hand_print": {
+      "budget": [
+        2400,
+        60
+      ],
+      "bytes": 67684,
+      "lods": {
+        "hand_print": 2048,
+        "hand_print-lod1": 8
+      }
+    },
     "hatch": {
       "budget": [
         2000,
@@ -187,6 +209,28 @@
       "lods": {
         "lamp_burial": 440,
         "lamp_burial-lod1": 36
+      }
+    },
+    "lamp_hole_covered": {
+      "budget": [
+        5000,
+        200
+      ],
+      "bytes": 150244,
+      "lods": {
+        "lamp_hole_covered": 4608,
+        "lamp_hole_covered-lod1": 128
+      }
+    },
+    "lamp_hole_open": {
+      "budget": [
+        5000,
+        200
+      ],
+      "bytes": 150228,
+      "lods": {
+        "lamp_hole_open": 4608,
+        "lamp_hole_open-lod1": 128
       }
     },
     "level_stone_shrine": {
@@ -319,6 +363,17 @@
       "lods": {
         "smoke_plume": 936,
         "smoke_plume-lod1": 60
+      }
+    },
+    "stillguard_torch": {
+      "budget": [
+        1500,
+        120
+      ],
+      "bytes": 23976,
+      "lods": {
+        "stillguard_torch": 213,
+        "stillguard_torch-lod1": 54
       }
     },
     "tide_wheel": {

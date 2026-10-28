@@ -2,8 +2,9 @@
   "version": 1,
   "doc": "Battle hero actors (M2-HER-1103, ADR 0190): how a hero's battle model crossfades between the clip contract's clips (docs/kb/tech/battle_presentation.md 'Clip contract'). Read by HeroBattleActor (game/hero_motion/hero_battle_actor.gd), the root of game/hero_motion/battle/<hero>_battle_actor.tscn. Seconds, at battle speed 1 (the AnimationPlayer's speed_scale scales them with the battle speed).",
   "blend": {
-    "doc": "default_sec: any change no row names (the import rule's 0.3). rows: [from, to, sec]; '*' is every clip the model has. Rows apply in order, so a named pair after a '*' row overrides it. A strike clip blends in fast so its anticipation is not swallowed (attack's contact is at 0.33 s); hit, dodge and ko blend in fast so the reaction reads on the contact; a revive (ko -> idle) stands up over a longer blend instead of springing up; victory eases in and out. A model with characters' optional revive clip (M2-CHR-513) stands up through it: it starts on the ko's last frame, so it blends in fast and out at the default.",
+    "doc": "default_sec: any change no row names (the import rule's 0.3). rows: [from, to, sec]; '*' is every clip the model has. Rows apply in order, so a named pair after a '*' row overrides it. A strike clip blends in fast so its anticipation is not swallowed (attack's contact is at 0.33 s); hit, dodge and ko blend in fast so the reaction reads on the contact; a revive (ko -> idle) stands up over a longer blend instead of springing up; victory eases in and out. placeholder_cap_sec caps any blend into a placeholder clip (a model missing part of the contract) that swings a bone faster than placeholder_fast_deg_per_sec: its limbs swing fast and far, and a longer fade blends nearly opposite rotations, which flips (M2-HER-1114). A model with characters' optional revive clip (M2-CHR-513) stands up through it: it starts on the ko's last frame, so it blends in fast and out at the default.",
     "default_sec": 0.3,
+    "placeholder_cap_sec": 0.06,
     "rows": [
       ["*", "attack", 0.12],
       ["*", "item", 0.12],
@@ -24,11 +25,15 @@
       ["victory", "idle", 0.5]
     ]
   },
+  "placeholder_max_key_step_deg": 45.0,
+  "placeholder_fast_deg_per_sec": 600.0,
+  "placeholder_doc": "placeholder_max_key_step_deg: a model missing part of the clip contract gets BattlePlaceholderClips' placeholders; HeroBattleActor splits any of their rotation steps above this (and keeps each key on the short side), so a cross-fade into one never flips a limb (M2-HER-1114).",
   "idle_phase_sec": {
     "doc": "Seconds into the idle loop each hero starts at when the battle opens, so the party does not breathe in step.",
     "rhen": 0.0,
     "asha": 2.1,
     "toma": 4.3,
-    "ysolde": 1.2
+    "ysolde": 1.2,
+    "liss": 3.3
   }
 }

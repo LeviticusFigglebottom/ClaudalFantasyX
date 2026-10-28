@@ -52,12 +52,231 @@ pass (lineup 4/0; it fails with the spread off), and the battle filter gives 638
 so a full battle-shot capture comes next.
 
 ### Render requests
+RENDER-REQUEST @ ed3a458e: battle_choreo_melee,battle_choreo_hit,battle_choreo_ko,battle_choreo_toll,battle_choreo_summon,drownbell_flood,battle_boss_intro_reach,battle_arena_wall_head; why: M3-BPR-416. The reef crab's Brine Spit now stays in place, a timeline push staggers its target, and summoned foes (the flood's polyps) walk onto their marks. The sandbox_reef choreo shots and drownbell_flood may move. The reach and wall_head shots are still unbaselined (repeated from 60b62678).
 RENDER-REQUEST @ 25dcea24: battle_boss_intro_hullgnaw,battle_boss_intro_inquisitor,battle_boss_intro_matron,battle_boss_intro_hermit,battle_boss_intro_wraith,battle_boss_intro_drownbell; why: FAST-TRACK M3-BPR-404, the Hullgnaw boss intro framed too close (the human's playtest). The camera fits the boss model and clears the title card. All six move.
 RENDER-REQUEST @ 25dcea24: battle_hud_preview,battle_swap_menu,battle_victory,battle_statuses,battle_swell_ring,battle_read_panel,battle_opening_banner,battle_swell_modes,battle_vowbound_call,battle_vowbound_out,battle_choreo_melee,battle_choreo_hit,battle_choreo_cast,battle_choreo_support,battle_choreo_read,battle_choreo_ko,battle_choreo_swap,battle_arena_tideline,battle_arena_causeway,battle_choreo_lamp_dive,battle_choreo_toll,battle_choreo_vowbound_rise,battle_choreo_summon,drownbell_flood,battle_swell_chant,battle_swell_brace,battle_swell_glyph,battle_statuses_colorblind,battle_pause,battle_arena_raft,battle_arena_underway,battle_arena_route,battle_arena_derelict,battle_arena_terrace,battle_arena_tideline_dawn,battle_arena_causeway_disc_sunset,battle_arena_causeway_route_afternoon,battle_arena_derelict_deck_night,battle_arena_ash_terrace_lanternfall,battle_arena_oruvel_raft_morning,battle_arena_underway_tower,battle_arena_shoals,battle_arena_camp,battle_hud_21x9,battle_hud_16x10; why: M3-BPR-401 battle feel (flash, recoil, shake by damage, KO slow-mo, the hit-stop hold fix) + M3-BPR-402 melee spacing and detour + M3-BPR-403 opening line-up spread sideways by footprint, now on the big9 real heroes. Expect the choreo_* and every sandbox_reef shot to move; arenas may move where 403 spreads a line-up.
 
 RENDER-REQUEST @ 680cd88e: battle_boss_intro_reach,battle_choreo_melee,battle_choreo_hit,battle_choreo_ko,battle_choreo_toll; why: M3-BPR-406 Ch8 set pieces. The new Reach boss intro (no baseline yet: test_screenshots' baselined check is red until it is approved), and the hit-stop hold fix plus the counter planning re-checked on the choreo shots.
 
 RENDER-REQUEST @ 60b62678: battle_arena_wall_head,battle_boss_intro_reach; why: M3-BPR-406 greybox wall_head_storm arena for Ch8 (new shot, no baseline yet); the Reach intro now stands on it. Supersedes the reach id in the 680cd88e line.
+
+### 2026-10-27 20:50: the audit list, entry by entry (answering the Lead's 20:47)
+The list is empty except for blocked entries. Each one below has its staging, its test and its render request, or
+the reason it's blocked.
+| Entry | State | Test | Render |
+|---|---|---|---|
+| Ysolde's kit (ember, frost, slow_hex, read, attack) | staged: cast, support, read, melee | test_battle_party_kits, test_battle_ysolde | 25dcea24 line |
+| Kerrid's kit | staged: melee, finisher on anchor_fall | test_battle_party_kits | needs his model (below) |
+| Liss's kit | staged: reel_shot cast from range (item), flash_housing support | test_battle_party_kits | needs her model (below) |
+| Every Swell (7) | staged: dive, verse, brace, glyph, chant, cast | test_battle_party_kits (audit) | 25dcea24 line |
+| Ilun's, Kahre's and Virel's first calls and signatures | C10 cinematic for all three, reduced-motion variants, timeline kept | test_battle_summon_cinematic, test_battle_clarity | battle_vowbound_call, battle_choreo_summon |
+| Act I creature specials (28 foes) | every skill has a style; ranged and sweeping blows stay in place; heavy blows play the finisher | test_battle_party_kits (both audits) | ed3a458e line |
+| Telegraphs | every charge gathers on stage | test_battle_telegraph | 25dcea24 line |
+| Timeline pushes and summons | push reaction, summoned foes walk in | test_battle_push_reaction, test_battle_summoned_entrance | ed3a458e line |
+| **Blocked: Sefir** | no characters.json row (Act II) | the kit audit covers it once the row lands | — |
+| **Blocked: Act II creatures and bosses (6)** | no enemies.json rows | the foe audits cover them once the rows land | — |
+| **Blocked: Kerrid's and Liss's real clips** | M3-BPR-412 to characters (Kerrid: M3-CHR-505) | placeholder clips meanwhile | — |
+| **Blocked: VFX particles for 17 skills and 8 items** | effects.json is rendering's; map proposed in M3-BPR-411 | coverage tool test (each gap has a stage answer) | — |
+| **Blocked: a foe dive or sweep style, and the charge style** | need audio choreo_sfx rows (M3-BPR-410) | — | — |
+Nothing else is open on this track until one of those lands or a PC render comes back to view.
+
+### 2026-10-27 night: filling the audit (M3-BPR-416, the Lead's 20:26)
+- **Filled, each with a test that fails without it:**
+  - Foes stage their blows by their reach. Ranged or whole-party blows stay in place: Brine Spit, Shroud Sweep and
+    Undertow Pull no longer run at one hero. The heaviest blows (Gnaw, Ladle Swing, Pounce) play the finisher.
+  - A new `reaction.push`: a hit that only pushes its target down the timeline (Rope Dive, Grip the Stair and Hand
+    Closes on the ward; the Drag Net) staggers the target back. Before, it played nothing.
+  - Summoned foes (the flood's polyps, Rouse Polyp, the Reach's surges) walk onto their marks instead of appearing.
+  - The VFX audit names each gap's stage answer, and a tool test requires one. All 17 skills and 8 items have one.
+- **The audit list is now empty apart from these blocked entries:**
+  - **The VFX particles:** `game/data/vfx/battle/**` is rendering's. Request M3-BPR-411 carries the proposed map.
+  - **Sefir:** there's no characters.json row (Act II).
+  - **The 6 Act II creatures and bosses:** no enemies.json rows.
+  - **Kerrid's and Liss's real clips:** request M3-BPR-412 to characters.
+  - **A dedicated foe dive or sweep style:** it needs an audio choreo_sfx row (the `dive` row plays Rhen's Swell
+    accent), as with M3-BPR-410.
+- **Checks:** the new tests (party_kits 3/0, push_reaction 2/0, summoned_entrance 2/0); audio_live 12/0, creature 29/0, choreo_audio 15/0; tools coverage and choreo_validate OK; gdlint and gdformat clean. Full `--filter=battle` on ed3a458e: **751 run, 0 failed**.
+- **Checks skipped:** coverage (no battle-core change), Blender (none touched), and cloud shots (rendering is on the PC).
+
+### 2026-10-27 night: the Lead's 19:35 queue (items 1-5)
+Status of each item. "Blocked" names the reason and what unblocks it.
+1. **Act I party kits (M3-BPR-412): done, with one gap blocked.**
+   - Every kit skill of Rhen, Asha, Toma, Ysolde, Kerrid and Liss resolves to a real style with a contract clip and
+     camera shots. Reel Shot casts from range, and Anchor Fall plays the finisher.
+   - Every Swell technique resolves through the real `style_id_for`: lamp_dive → dive, shallows_verse → verse,
+     return_tide → brace, written_light → glyph, floodnet → chant, last_strike and flare_line → cast.
+   - Tests: `test_battle_party_kits` (2 tests, 2/0). The second checks every Swell, every Vowbound and every enemy skill.
+   - **Blocked: Sefir.** There's no `sefir` row in characters.json (an Act II hero; there's no kit to stage). This
+     unblocks when design or characters add the row; the test then covers the kit automatically.
+   - **Blocked: real clips for Kerrid and Liss.** Request **M3-BPR-412** goes to characters. The placeholder clips
+     stand in until then.
+2. **Creature specials and telegraphs (M3-BPR-413): done for Act I, Act II blocked.**
+   - Every foe's gathering charge reads on stage through BattleTelegraph and `telegraph.gather`. A boss whose
+     row owns the charge (the Drownbell) keeps its own gather.
+   - All 28 enemies' skills resolve to a real style with a clip and camera shots (the audit above).
+   - **Blocked: the 6 Act II creatures and bosses.** They have no enemies.json rows yet, apart from the Avalanche
+     Ram's intro and charge rows, which are already keyed by id (M3-BPR-408). This unblocks when design adds the
+     rows; the audit then covers them.
+3. **Act I Vowbound cinematics (M3-BPR-414): done.**
+   - Ilun, Kahre and Virel each get the C10 first-call cinematic (the seen-flags are declared in flags.tres).
+     Reduced-motion variants and turn-order visibility are covered by test_battle_summon_cinematic and
+     test_battle_clarity.
+   - Signatures resolve as follows: brine_lash → finisher, tidal_ward → chant, forge_bolt → cast, kite_flare → cast.
+4. **Victory and result handoff (M3-BPR-415): done.** The result panel waits for the real heroes' victory pose
+   (`clip_sec`). A scripted escape walks the party off. ui-menus owns the panel itself.
+5. **VFX coverage gaps (M3-BPR-411): audit done, fill blocked.**
+   - `python3 tools/battle_vfx_coverage.py` lists every skill and battle item that plays no effect, and proposes an
+     existing library effect for each one.
+   - **Blocked:** effects.json belongs to rendering. The map is proposed in request **M3-BPR-411**.
+- **Charge sound:** request **M3-BPR-410** to audio. The `charge` style comes back once audio's choreo_sfx row exists.
+- **Checks run:** full `--filter=battle` **745 run, 0 failed** at 5cd7cad5; party_kits 2/0 after the new audit;
+  gdlint and gdformat clean.
+- **Checks skipped:** coverage (no battle-core change), Blender (none touched), and shots (no scene or visual change
+  since the requests above).
+
+**MERGE-READY @ the branch head (see `git log -1 origin/claude/battle-presentation`):** M3-BPR-404 (the
+FAST-TRACK, with the big11 crowding fix c1d1e3e6), 406, 407 (requested), 408, 409, 411, 412, 413, 414, 415, and
+everything in the 2d988e27 MERGE-READY below.
+- test_screenshots stays red until the PC renders are approved: the boss intros at c1d1e3e6, plus wall_head and reach.
+
+### 2026-10-27 evening
+- **Merged big10** (integration 792ee805) at 19172f4c. Conflicts:
+  - the three boss-intro PNGs: took theirs; my 404 render request supersedes them;
+  - encounters.json: took theirs, which has the new Ch8 encounters, and re-added `arena: wall_head_storm` on the
+    four set pieces.
+  - My final 404 (the card clearance, with no Inquisitor fit_margin) is what the branch carries now; big10 had the
+    WIP fit.
+  - Battle filter: **716 run, 0 failed**.
+- **M2-HER-1114 done @ 56921688** (hero-integration's request):
+  - `_install` stops a playing player before the library swap (the segfault);
+  - rotation keys stay on one hemisphere, with slerped keys between any pair more than 60° apart
+    (`placeholder_clips.max_key_deg`);
+  - the new test fails without the fix (148.7° on the attack).
+  - **hero-integration:** drop your KNOWN `ysolde ready -> finisher` entry once this reaches you, and mark the task
+    done on your branch.
+  - Shots: interpolation for a single clip is unchanged, so no baseline should move. Ysolde's shots are in the
+    25dcea24 render line anyway.
+- Refactor a03c6cd3: the reaction pose moved to BattleChoreoPlan; battle_choreo.gd is now 969 lines.
+- M3-BPR-405 is fulfilled by audio's M3-AUD-816. Audio drops `pending` when this branch merges.
+
+**MERGE-READY @ 2d988e27:** M3-BPR-401 (incl. the hit-stop hold fix f8cd9269), 402, 403, M2-HER-1114, M3-BPR-406
+(Ch8 so far), M3-BPR-408 (Act II intros by enemy id), and M3-C08-100's barks.
+- Merge the branch head; it carries big10.
+- **Checks run:** gdlint, gdformat, validate_data 0/0, taskboard --check, and Godot `--filter=battle` 716/0 at 19172f4c
+  plus the scoped filters after (boss 58/0, set_piece_stage 5/0, placeholder 8/0); full `--filter=battle` at 2d988e27: 719/0.
+- **Checks skipped:** coverage (no battle-core change), Blender (none touched).
+- **Known red until the PC render is approved:** tools test_screenshots, which has no baseline yet for
+  battle_boss_intro_reach and battle_arena_wall_head.
+- **Shots:** every one that can move is in the render requests above. None is approved yet: approval needs the PC
+  renders.
+- **Pillar 4 check:** the boss intro and the C10 summon both keep the timeline and party panel visible, so who acts
+  next stays on screen. Every new impact or motion respects reduced motion and the shake setting (tested): no
+  shake, no withdrawal motion, no Breach push-in, and a dimmer flash.
+
+RENDER-REQUEST @ dcc68922: battle_hud_preview,battle_choreo_toll,drownbell_flood,battle_swell_ring,battle_read_panel; why: M3-BPR-409. The target ring now draws over ground VFX (render_priority 10); view the ring over the toll's wave and the flood.
+
+### 2026-10-27 late: the Lead's queue items 3–7
+- **Battle filter after items 3–7 and the 408 fix-up: 726 run, 0 failed.** An earlier run caught two failures, now
+  fixed:
+  - the Ram's new `charge` style had no sound row in audio's choreo_sfx.json, so the style is withdrawn and asked of
+    audio as M3-BPR-410; its framing moved to camera.enemy_by_actor;
+  - the specials test assumed every boss row names an existing enemy.
+
+
+- **3, M3-BPR-408 (a433b3b3): the Act II bosses' camera language, by enemy id.**
+  - The Lamp Engine opens: a phase moment where the core rises and the party steadies in turn.
+  - The Avalanche Ram's physical moves play a low, side-on `charge` run (style_by_actor, enemy_by_style).
+  - Any charge the Ram gathers paws the ground and closes the camera in (pressure.by_enemy).
+  - Intros come from by_enemy rows.
+  - The Ch10–11 regulars need nothing bespoke: the model fit, the footprint spacing and the line-up all work from
+    their models.
+  - Tests: act2_bosses 3/0; tools test_choreo_validate 21/0.
+  - **Ask** whoever writes the Act II enemies: keep the ids `lamp_engine`, `avalanche_ram` and the phase `opened`.
+- **4, Ysolde (a433b3b3):** `test_battle_ysolde` puts characters' ysolde_battle.tscn on her stand-in.
+  - Every contract clip plays (placeholders) and her footprint is sane.
+  - Ember and Read play to the end (2/0).
+  - Her shots wait on ui-menus' repoint (M2-HER-1108).
+- **5, M3-BPR-409 (71ec1234): the Pillar 4 pass.**
+  - The timeline and party panel stay on screen through the boss intro and the C10 summon (tested).
+  - The target ring now draws over ground VFX.
+  - Reduced motion and the shake setting cover every new impact or motion (tested).
+- **6, the Ch8 staging:**
+  - the greybox wall_head_storm arena with EntryMarker_ward;
+  - the intercept staged by geometry (the stair is behind the party line);
+  - withdrawals, counters, barks, the Breach push-in and the Reach intro.
+  - M3-BPR-407 now points env-art at the corrow seawall kit and act1-chapters' corrow_frame for the final arena.
+- **7, the board:** the combat `todo` tasks are engine and design rulings (M3-C01-03 … M3-C09-07), not presentation.
+  I took M3-C08-100's barks; the needle is an item, so not mine.
+
+**FAST-TRACK MERGE-READY @ 89ffba3c: M3-BPR-404, viewed on the PC render.**
+- Render: gpu/render-battle-presentation-25dcea2. Four drifts, all viewed and re-approved:
+  - Hullgnaw: the whole serpent and its ribs above the card, with the real Rhen beside it;
+  - the Matron and the Drownbell: clear of the card;
+  - the Wraith: a little wider.
+- Inquisitor and Hermit pass unchanged.
+- **To pick onto the integration branch:**
+  1. `git am docs/kb/tasks/M3/M3-BPR-404-boss-intro-fit.patch` (the code).
+  2. Then copy these four PNGs from `89ffba3c`: `git checkout 89ffba3c -- tests/screenshots/baselines/battle_boss_intro_{hullgnaw,matron,drownbell,wraith}.png`.
+- Note: in the Drownbell's frame the real Toma stands large in the right foreground, near the timeline. The boss and
+  the card are clear. I'll look at moving the boss_tall shot's side later.
+
+RENDER-REQUEST @ c1d1e3e6: battle_boss_intro_hullgnaw,battle_boss_intro_inquisitor,battle_boss_intro_matron,battle_boss_intro_hermit,battle_boss_intro_wraith,battle_boss_intro_drownbell; why: FAST-TRACK M3-BPR-404, the big11 regression. The real Toma stood huge over the timeline in the Drownbell's intro; the intro now keeps the party clear. Expect the Drownbell to move and the other five to be unchanged.
+
+**FAST-TRACK @ c1d1e3e6: big11 merged in (5fbbdb2d); the Drownbell party-crowding fix.**
+- **The fix:** `_party_clear`, plus an orbit in `_fit_search`.
+- **Checks:** boss_intro 19/0. The new test fails without the orbit, and only on the Drownbell. validate_data shows
+  0 errors and 1 warning (env-art's missing offering_step.glb row, not mine). gdlint and gdformat are clean.
+- **For the Lead's pick:** the code is in commit c1d1e3e6 (battle_boss_intro.gd, choreo.json boss_intro.fit, the test,
+  the task). Take the baselines from the PC render of the line above once I've viewed it.
+
+RENDER-REQUEST @ db0819b2: battle_hud_preview,battle_swap_menu,battle_victory,battle_statuses,battle_swell_ring,battle_read_panel,battle_opening_banner,battle_swell_modes,battle_vowbound_call,battle_vowbound_out,battle_choreo_melee,battle_choreo_hit,battle_choreo_cast,battle_choreo_support,battle_choreo_read,battle_choreo_ko,battle_choreo_swap,battle_arena_tideline,battle_arena_causeway,battle_choreo_lamp_dive,battle_choreo_toll,battle_choreo_vowbound_rise,battle_choreo_summon,drownbell_flood,battle_swell_chant,battle_swell_brace,battle_swell_glyph,battle_statuses_colorblind,battle_pause,battle_arena_raft,battle_arena_underway,battle_arena_route,battle_arena_derelict,battle_arena_terrace,battle_arena_tideline_dawn,battle_arena_causeway_disc_sunset,battle_arena_causeway_route_afternoon,battle_arena_derelict_deck_night,battle_arena_ash_terrace_lanternfall,battle_arena_oruvel_raft_morning,battle_arena_underway_tower,battle_arena_shoals,battle_arena_camp,battle_arena_wall_head,battle_hud_21x9,battle_hud_16x10,battle_boss_intro_reach; why: one consolidated battle set at the post-big11 head. It covers M3-BPR-401/402/403 (impact, spacing, the sideways line-up), 406 (the Ch8 arena and the Reach intro, both new with no baseline yet), 408 and 409 (the ring over VFX). It **supersedes** the 25dcea24 (second line), 680cd88e, 60b62678 and dcc68922 lines. The boss intros stay on their own FAST-TRACK line (c1d1e3e6).
+
+**MERGE-READY @ e1077bbe** (post-big11), carrying:
+- M3-BPR-401 and 402: the hold fix, the detour, the screen shake setting;
+- M3-BPR-403: the sideways line-up;
+- M3-BPR-404: the card clearance plus the big11 party-clear fix, FAST-TRACK;
+- M3-BPR-406: Ch8 (withdrawals, counters, the arena, the Reach intro, the Breach push-in);
+- M3-BPR-408: the Act II bosses by enemy id;
+- M3-BPR-409: the ring over VFX;
+- M3-C08-100's barks and M2-HER-1114.
+
+**Checks run:** Godot `--filter=battle` 731/0, validate_data 0 errors, taskboard --check, gdlint, gdformat, tools
+test_choreo_validate 21/0.
+**Checks skipped:** coverage (no game/battle core change), Blender.
+**Red until the PC render is approved:** tools test_screenshots, which has no baseline yet for battle_boss_intro_reach
+and battle_arena_wall_head (both in the consolidated request above).
+**Baselines:** 404's four are approved at 89ffba3c. The rest wait on the two open requests (c1d1e3e6 FAST-TRACK, and
+the consolidated one).
+
+RENDER-REQUEST @ 5a5b4fed: battle_arena_wall_head,battle_boss_intro_reach; why: M3-BPR-406, the Ch8 arena reworked after viewing 60b6267 (the Reach's wide intro showed the greybox's edges; the storm read as grey pillars) and the timeline naming the entries. Both are new shots with no baseline yet. This supersedes those two ids in the consolidated line.
+
+**gpu/render-battle-presentation-60b6267 viewed, NOT approved** (the two new shots):
+- the Reach intro pulled back far enough to show the greybox wall-walk as a small slab floating over grey;
+- the arena's "storm" read as near grey pillars;
+- the timeline showed `the_climb` and `the_surge` (BattleController._build_hud skipped entries; fixed).
+
+The arena is reworked (60 m walk, a sea plane, the low town, far storm banks), and the generator is committed
+(tools/arenas/gen_wall_head_storm.py).
+
+**2026-10-27 night (the Lead's items a–e):**
+- (a) test_battle_ysolde covers her whole kit, on hero-integration's wrapper once it lands.
+- (b) Ch8 staging: wall_head_storm travel 0.85; the timeline names the entries. The per-wave beats are asked of
+  act1-chapters (M3-BPR-406).
+- (c) test_battle_reduced_motion_audit.
+- (d) test_battle_clarity: the order stays on screen mid-toll, mid-C10, at a hero's contact and through boss intros.
+- (e) No presentation todo is on the board.
+- Battle filter at the head: **738 run, 0 failed**.
+
+**Renders viewed, 2026-10-27 evening:**
+- gpu/render-battle-presentation-25dcea2: four re-approved at 89ffba3c (above).
+- **gpu/render-battle-presentation-680cd88: viewed, NOT approved.** The renders are fine (Rhen meets the crab with the
+  flash and recoil; the KO flash; the toll). But they are from 680cd88e, before big11, whose PC-approved battle_choreo
+  baselines are now on this branch, and before my later changes (the line-up spread, the ring priority, the Act II
+  rows). Approving them would put older pictures over newer approved ones, so the consolidated request above replaces
+  them. Notes for the next view:
+  - battle_choreo_melee catches Rhen mid-run, because the real clips moved the contact;
+  - in battle_choreo_toll Ysolde is still a capsule (ui-menus' repoint M2-HER-1108).
+- Battle filter at the post-big11 head with the Drownbell fix: **731 run, 0 failed**.
 
 ### FAST-TRACK M3-BPR-404 on the post-big9 integration branch (updated 2026-10-27)
 - **Cherry-picking 269054a3 and 4e89c967 now conflicts on the six baseline PNGs.** big9 re-approved them with the

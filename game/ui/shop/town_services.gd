@@ -3,7 +3,8 @@ extends Node
 ## The zone-agnostic shop and inn hook (M2-UI-06). It listens to FieldEvents.INTERACTED on the
 ## EventBus and opens a menu for these payload keys, so a zone only authors an Interactable:
 ##   {"shop": "<shop id>"}  -> ShopMenu over that shops.json "shops" row,
-##   {"inn": "<inn id>"}    -> InnMenu over that shops.json "inns" row.
+##   {"inn": "<inn id>"}    -> InnMenu over that shops.json "inns" row,
+##   {"reefball_outfitter": "<id>"} -> ReefballOutfitterMenu (Reefball-only gear, ADR 0040).
 ## Any other payload is ignored (story scripts such as HalunaStory read their own keys). Only one
 ## town menu is open at a time; a second interaction while one is open does nothing.
 ## FieldController adds one as a child in every zone, so the menu's layer hangs under the player.
@@ -13,8 +14,10 @@ signal opened(menu: TownMenu)
 
 const KEY_SHOP := "shop"
 const KEY_INN := "inn"
+const KEY_OUTFITTER := "reefball_outfitter"
 
-## Optional func(key: String, id: StringName) -> RefCounted (a ShopMenuModel or InnMenuModel).
+## Optional func(key: String, id: StringName) -> RefCounted (a ShopMenuModel, InnMenuModel or
+## ReefballOutfitterModel).
 ## Unset: the live game (ShopMenuModel.from_game / InnMenuModel.from_game).
 var model_factory: Callable
 ## The menu on show (null when none).
@@ -45,6 +48,9 @@ func handle(payload: Dictionary) -> TownMenu:
 	elif payload.has(KEY_INN):
 		var im := _model(KEY_INN, StringName(str(payload[KEY_INN]))) as InnMenuModel
 		menu = InnMenu.open_in(self, im)
+	elif payload.has(KEY_OUTFITTER):
+		var om := _model(KEY_OUTFITTER, StringName(str(payload[KEY_OUTFITTER]))) as ReefballOutfitterModel
+		menu = ReefballOutfitterMenu.open_in(self, om)
 	else:
 		return null
 	menu.closed.connect(_on_closed)
@@ -55,6 +61,8 @@ func handle(payload: Dictionary) -> TownMenu:
 func _model(key: String, id: StringName) -> RefCounted:
 	if model_factory.is_valid():
 		return model_factory.call(key, id)
+	if key == KEY_OUTFITTER:
+		return ReefballOutfitterModel.from_game()
 	return ShopMenuModel.from_game(id) if key == KEY_SHOP else InnMenuModel.from_game(id)
 
 

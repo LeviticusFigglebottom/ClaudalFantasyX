@@ -135,7 +135,8 @@ def layout() -> dict:
         "lod_margin_m": 2.0,
         "environment": RES_ZONE + "brine_shoals_environment.tres",
         "time_of_day_h": 15.5,
-        "greybox": {"hide_all": True, "keep": ["ChalkMark", "Hatch"]},
+        # the shrine is a rest point: its greybox stands in until M3-ENV-1201
+        "greybox": {"hide_all": True, "keep": ["ChalkMark", "Hatch", "Shrine"]},
         "fire_light_color": "#E0702E",
         "fire_lights": [
             {"at": [11.5, 2.4, -45.5], "energy": 1.6, "range": 9.0, "block": "Smoke"},

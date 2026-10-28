@@ -17,11 +17,20 @@ extends RefCounted
 ## a global. Add a global here when a zone sets it and the next zone must not see it.
 
 ## The per-zone globals: the zone night sea-glow (GlimmerField.set_scene_sea_glow) and the water level
-## (the zone sea's WaterSurface, or a WeatheringTide without one).
-const ZONE_GLOBALS: Array[StringName] = [&"hymn_zone_sea_glow", &"hymn_water_level"]
-## Globals written every frame (the weather clock, WeatherClock, M2-ARC-02): set_value() and reset() never call
-## the listeners for them.
-const FRAME_GLOBALS: Array[StringName] = [&"hymn_wind_time"]
+## (the zone sea's WaterSurface, or a WeatheringTide without one), and the still actors (RevenantTells,
+## M3-RND-03), which a revenant's node resets when it leaves.
+const ZONE_GLOBALS: Array[StringName] = [
+	&"hymn_zone_sea_glow",
+	&"hymn_water_level",
+	&"hymn_still_actor_0",
+	&"hymn_still_actor_1",
+	&"hymn_still_actor_heights",
+]
+## Globals written every frame (the weather clock, WeatherClock, M2-ARC-02; the still actors, M3-RND-03):
+## set_value() and reset() never call the listeners for them.
+const FRAME_GLOBALS: Array[StringName] = [
+	&"hymn_wind_time", &"hymn_still_actor_0", &"hymn_still_actor_1", &"hymn_still_actor_heights"
+]
 const ROUTER_SIGNAL := &"scene_swapping"
 const SETTINGS_PREFIX := "shader_globals/"
 const LISTENERS_GROUP := &"shader_globals_listeners"

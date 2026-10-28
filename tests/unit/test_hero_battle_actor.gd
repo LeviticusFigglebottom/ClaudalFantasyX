@@ -8,6 +8,7 @@ const WRAPPERS := {
 	&"asha": "res://game/hero_motion/battle/asha_battle_actor.tscn",
 	&"toma": "res://game/hero_motion/battle/toma_battle_actor.tscn",
 	&"ysolde": "res://game/hero_motion/battle/ysolde_battle_actor.tscn",
+	&"liss": "res://game/hero_motion/battle/liss_battle_actor.tscn",
 }
 const RING := {"radius_factor": 1.4, "inner_soft_m": 0.25, "notches": 6}
 ## A clip in the fake player holds the body at this x for its whole length.
@@ -97,6 +98,9 @@ func test_each_wrapper_tunes_its_hero_and_keeps_the_bc_path() -> void:
 		assert_true(f.has_actor(), "%s's wrapper is the actor" % hero)
 		assert_true(f.actor() is HeroBattleActor)
 		assert_eq(f.actor().get_meta(HeroBattleActor.META_ACTOR), hero)
+		if (f.actor() as HeroBattleActor).player == null:  # its model has not landed: the stand-in's capsule shows
+			assert_true(f.actor().get_node_or_null(^"StandIn") is MeshInstance3D, "%s shows a capsule meanwhile" % hero)
+			continue
 		var p := BattleClips.player_of(f)
 		assert_true(p != null, "%s has a player" % hero)
 		(f.actor() as HeroBattleActor).retune()  # its next frame does this in play (placeholder clips)

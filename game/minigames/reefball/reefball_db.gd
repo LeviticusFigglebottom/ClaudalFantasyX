@@ -1,15 +1,17 @@
 class_name ReefballDB
 extends RefCounted
 ## Read-only Reefball tables (M3-RBL-01): the rules block, the sides with their divers, and the
-## matches, from res://game/data/reefball/ (checked by tools/validate_data.py). Roles and AI
-## profiles are indexed by id out of the rules block.
+## matches, and the Reefball-only gear (ADR 0040), from res://game/data/reefball/ (checked by
+## tools/validate_data.py). Roles and AI profiles are indexed by id out of the rules block.
 
 const DATA_DIR := "res://game/data/reefball"
-const TABLES: Array[String] = ["rules", "sides", "matches"]
+const TABLES: Array[String] = ["rules", "sides", "matches", "gear"]
 
 var rules: Dictionary = {}
 var sides: Dictionary = {}
 var matches: Dictionary = {}
+## Reefball-only gear rows by id (gear.json; ReefballMatch wears them on the player side).
+var gear: Dictionary = {}
 var roles: Dictionary = {}
 var ai_profiles: Dictionary = {}
 ## One line per table that was missing or failed to parse at load_dir (read as empty).
@@ -40,12 +42,13 @@ static func load_dir(dir: String) -> ReefballDB:
 	return db
 
 
-## Builds a DB from in-memory tables: {rules: {...}, sides: [...], matches: [...]}. Test fixtures use it.
+## Builds a DB from in-memory tables: {rules: {...}, sides: [...], matches: [...], gear: [...]}. Test fixtures use it.
 static func from_tables(raw: Dictionary) -> ReefballDB:
 	var db := ReefballDB.new()
 	db.rules = (raw.get("rules", {}) as Dictionary).duplicate(true)
 	db.sides = _index(raw.get("sides", []))
 	db.matches = _index(raw.get("matches", []))
+	db.gear = _index(raw.get("gear", []))
 	db.roles = _index(db.rules.get("roles", []))
 	db.ai_profiles = _index(db.rules.get("ai_profiles", []))
 	return db

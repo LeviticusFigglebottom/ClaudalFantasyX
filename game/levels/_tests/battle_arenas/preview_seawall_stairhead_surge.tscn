@@ -1,0 +1,13 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://game/levels/_tests/battle_arenas/battle_arena_preview.gd" id="1_preview"]
+[ext_resource type="PackedScene" path="res://assets/environments/arenas/seawall_stairhead_surge/seawall_stairhead_surge.tscn" id="2_arena"]
+
+[node name="BattleArenaPreview" type="Node3D"]
+script = ExtResource("1_preview")
+arena_scene = ExtResource("2_arena")
+party = Array[StringName]([&"toma", &"rhen", &"asha"])
+enemies = Array[StringName]([&"undertows_reach", &"tide_crawler"])
+
+[node name="BattleCamera" type="Camera3D" parent="."]
+current = true

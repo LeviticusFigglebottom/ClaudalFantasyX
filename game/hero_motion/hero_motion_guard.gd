@@ -77,6 +77,20 @@ static func peak_rates(samples: Array[Transform3D], dt: float, cut_m: float = IN
 	return {"speed": speed, "turn": turn}
 
 
+## How far `at` (a body's feet, world) is above the floor under it: a ray from floor_probe_up_m above to
+## floor_probe_down_m below, ignoring `exclude` (the body's own colliders). + is floating, - is sunk (or the ray met
+## something above the feet first: a rail, a table, a wall the walk passes through). NAN when no floor is in reach.
+static func floor_gap(world: World3D, at: Vector3, exclude: Array[RID], limits: Dictionary) -> float:
+	if world == null:
+		return NAN
+	var up := float(limits.get("floor_probe_up_m", 0.0))
+	var down := float(limits.get("floor_probe_down_m", 0.0))
+	var q := PhysicsRayQueryParameters3D.create(at + Vector3.UP * up, at + Vector3.DOWN * down)
+	q.exclude = exclude
+	var hit := world.direct_space_state.intersect_ray(q)
+	return NAN if hit.is_empty() else at.y - (hit["position"] as Vector3).y
+
+
 ## Every bone's position in world space (metres).
 static func bone_points(skel: Skeleton3D) -> PackedVector3Array:
 	var out := PackedVector3Array()

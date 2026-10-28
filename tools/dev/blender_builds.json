@@ -721,16 +721,6 @@
       ]
     },
     {
-      "id": "wildlife_insect",
-      "owner": "character",
-      "sources": ["assets_src/wildlife/insect/**", "assets_src/wildlife/common/**", "assets_src/creatures/common/creature_kit.py"],
-      "outputs": ["assets/wildlife/insect/*.glb", "assets/wildlife/insect/materials/*.tres"],
-      "runs": [
-        ["{blender}", "--python", "assets_src/wildlife/insect/build_insect.py", "--", "--out", "assets/wildlife/insect/insect.glb"],
-        ["{python}", "assets_src/wildlife/common/write_materials.py", "--wildlife", "insect"]
-      ]
-    },
-    {
       "id": "creature_tannin_archer",
       "owner": "character",
       "sources": ["assets_src/creatures/tannin_archer/**", "assets_src/creatures/common/**"],
@@ -838,6 +828,29 @@
       "runs": [
         ["{blender}", "--python", "assets_src/creatures/rim_crawler/build_rim_crawler.py", "--", "--out", "assets/creatures/rim_crawler/rim_crawler.glb"],
         ["{python}", "assets_src/creatures/common/write_materials.py", "--creature", "rim_crawler"]
+      ]
+    },
+    {
+      "id": "wildlife_insect",
+      "owner": "character",
+      "sources": ["assets_src/wildlife/insect/**", "assets_src/wildlife/common/**", "assets_src/creatures/common/creature_kit.py"],
+      "outputs": ["assets/wildlife/insect/*.glb", "assets/wildlife/insect/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/wildlife/insect/build_insect.py", "--", "--out", "assets/wildlife/insect/insect.glb"],
+        ["{python}", "assets_src/wildlife/common/write_materials.py", "--wildlife", "insect"]
+      ]
+    },
+    {
+      "id": "liss",
+      "threads": 4,
+      "owner": "character",
+      "_note": "M3-CHR-03: Liss reuses Asha's modules (build_asha as a helper library, asha_textures with per-hero knobs, PRE_ROUND set) and Rhen's, Toma's and Ysolde's costume helpers (rhen_costume, toma_costume, ysolde_costume, build_toma's rig-extra helpers), so all their sources are hers too. Her texture run holds the Saltwright line-mark generator other builds import (liss_textures.line_marks).",
+      "sources": ["assets_src/characters/liss/**", "assets_src/characters/ysolde/**", "assets_src/characters/toma/**", "assets_src/characters/rhen/**", "assets_src/characters/asha/**", "assets_src/characters/base_body/**", "assets_src/third_party/mpfb2/**"],
+      "outputs": ["assets/characters/liss/*.glb", "assets/characters/liss/textures/*.png", "assets/characters/liss/materials/*.tres"],
+      "runs": [
+        ["{blender}", "--python", "assets_src/characters/liss/build_liss.py", "--", "--out", "assets/characters/liss/liss.glb", "--bake-dir", "{scratch}/liss_bake"],
+        ["{python}", "assets_src/characters/liss/liss_textures.py", "--bake-dir", "{scratch}/liss_bake"],
+        ["{python}", "assets_src/characters/liss/write_materials.py"]
       ]
     },
     {
