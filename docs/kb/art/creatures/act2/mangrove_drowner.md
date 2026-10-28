@@ -99,3 +99,5 @@ weakens the drag.
 - **Clusters in plan:** the roots of a cluster leave the trunk spread round it and converge on its heading toward
   their feet; once risen, the legs' planes turn so the stance is three planted pairs (front-right, front-left under
   the drag, the bank with its trailing roots alongside), the wide gap behind.
+
+**Lean, as approved (2026-10-28):** the risen trunk leans **48°**, not the "about 30°" written above. The render shows it as a felled tree walking, and that is the approved reading.

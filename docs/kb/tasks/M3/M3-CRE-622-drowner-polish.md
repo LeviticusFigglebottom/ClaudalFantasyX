@@ -2,7 +2,7 @@
 id: M3-CRE-622
 title: "The Mangrove Drowner, polish: knuckled tapering prop-roots, a folded core, less spider in the risen stance"
 role: character
-status: review
+status: done
 owner_session: "creatures (worktree agent, redesign pass)"
 reviewer: art
 depends_on: [M3-CRE-621]
@@ -105,3 +105,4 @@ stance; this pass finished the plan, the clusters and the grounding.
   roots) is the one remaining risk: the PC render judges it. Grounded in every clip with no allow-list (+0.002 m).
   14,700 triangles. Stays in review until the render is approved; then amend the sheet's lean (it says ~30°, the
   build leans 48°) to whatever the render keeps.
+- 2026-10-28, art (creatures): **approved on the cloud render** (lead/gate-render-creatures-3b0e44b; baselines dc524c0c, portrait 41493382). Rooted, it reads as a tall bleached stump over a tangle of roots with the dark core wedged low. Risen, it is a tilted trunk on three root clusters. Neither reads as a spider. The sheet's "about 30°" lean stays at the built 48°; the sheet is amended to match.
