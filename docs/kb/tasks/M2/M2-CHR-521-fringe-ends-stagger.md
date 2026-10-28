@@ -27,3 +27,4 @@ compress into a band.
 - Filed and done 2026-10-27 by the characters track (the backlog's "parts look primitive" audit).
 
 ## Review log
+- 2026-10-28 characters: verify --job liss and --job rhen identical on all three numpy paths. MERGE-READY; the render is requested (liss_face, liss_face_stylized, rhen_front, rhen_face_neutral).
