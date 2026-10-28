@@ -17,7 +17,7 @@
         1920,
         1080
       ],
-      "settle_frames": 72,
+      "settle_frames": 10,
       "threshold_rmse": 0.004
     },
     {
@@ -1181,6 +1181,96 @@
       "settle_frames": 30
     },
     {
+      "id": "villager_tavi_front",
+      "scene": "res://game/levels/_tests/characters/villagers/tavi_stage.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_tavi_face",
+      "scene": "res://game/levels/_tests/characters/villagers/tavi_stage.tscn",
+      "camera": "Cameras/Face",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_kell_front",
+      "scene": "res://game/levels/_tests/characters/villagers/kell_stage.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_kell_face",
+      "scene": "res://game/levels/_tests/characters/villagers/kell_stage.tscn",
+      "camera": "Cameras/Face",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_tavi_idle",
+      "scene": "res://game/levels/_tests/characters/villagers/tavi_idle.tscn",
+      "camera": "Cameras/ThreeQuarter",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_kell_idle",
+      "scene": "res://game/levels/_tests/characters/villagers/kell_idle.tscn",
+      "camera": "Cameras/ThreeQuarter",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_tavi_clip_name_rite",
+      "scene": "res://game/levels/_tests/characters/villagers/tavi_name_rite.tscn",
+      "camera": "Cameras/ThreeQuarter",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_kell_clip_press_wick",
+      "scene": "res://game/levels/_tests/characters/villagers/kell_press_wick.tscn",
+      "camera": "Cameras/ThreeQuarter",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_lineup_act1",
+      "scene": "res://game/levels/_tests/characters/villagers/villagers_lineup_act1.tscn",
+      "camera": "Cameras/Lineup",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
       "id": "battle_swell_ring",
       "scene": "res://game/battle/scene/shots/battle_swell_ring.tscn"
     },
@@ -1203,69 +1293,6 @@
     {
       "id": "battle_vowbound_out",
       "scene": "res://game/battle/scene/shots/battle_vowbound_out.tscn"
-    },
-    {
-      "id": "battle_choreo_melee",
-      "scene": "res://game/battle/scene/shots/battle_choreo_melee.tscn"
-    },
-    {
-      "id": "battle_choreo_hit",
-      "scene": "res://game/battle/scene/shots/battle_choreo_hit.tscn"
-    },
-    {
-      "id": "battle_choreo_cast",
-      "scene": "res://game/battle/scene/shots/battle_choreo_cast.tscn"
-    },
-    {
-      "id": "battle_choreo_support",
-      "scene": "res://game/battle/scene/shots/battle_choreo_support.tscn"
-    },
-    {
-      "id": "battle_choreo_read",
-      "scene": "res://game/battle/scene/shots/battle_choreo_read.tscn"
-    },
-    {
-      "id": "battle_choreo_ko",
-      "scene": "res://game/battle/scene/shots/battle_choreo_ko.tscn"
-    },
-    {
-      "id": "battle_choreo_swap",
-      "scene": "res://game/battle/scene/shots/battle_choreo_swap.tscn"
-    },
-    {
-      "id": "battle_arena_tideline",
-      "scene": "res://game/levels/_tests/battle_arenas/arena_tideline.tscn",
-      "setup": {
-        "globals": {
-          "hymn_wind_time": 12.0
-        }
-      }
-    },
-    {
-      "id": "battle_arena_causeway",
-      "scene": "res://game/levels/_tests/battle_arenas/arena_causeway.tscn",
-      "setup": {
-        "globals": {
-          "hymn_wind_time": 12.0
-        }
-      }
-    },
-    {
-      "id": "battle_choreo_lamp_dive",
-      "scene": "res://game/battle/scene/shots/battle_choreo_lamp_dive.tscn"
-    },
-    {
-      "id": "battle_choreo_toll",
-      "scene": "res://game/battle/scene/shots/battle_choreo_toll.tscn",
-      "settle_frames": 45
-    },
-    {
-      "id": "battle_choreo_vowbound_rise",
-      "scene": "res://game/battle/scene/shots/battle_choreo_vowbound_rise.tscn"
-    },
-    {
-      "id": "battle_choreo_summon",
-      "scene": "res://game/battle/scene/shots/battle_choreo_summon.tscn"
     },
     {
       "id": "bestiary_menu",
@@ -1405,6 +1432,259 @@
           }
         }
       }
+    },
+    {
+      "id": "asha_battle_attack",
+      "scene": "res://game/levels/_tests/characters/asha/asha_battle_attack.tscn",
+      "camera": "Cameras/ThreeQuarter",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "rhen_battle_attack",
+      "scene": "res://game/levels/_tests/characters/rhen/rhen_battle_attack.tscn",
+      "camera": "Cameras/ThreeQuarterLeft",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "toma_battle_attack",
+      "scene": "res://game/levels/_tests/characters/toma/toma_battle_attack.tscn",
+      "camera": "Cameras/ThreeQuarter",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "sefir_front",
+      "scene": "res://game/levels/_tests/characters/sefir/sefir_stage.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "sefir_three_quarter",
+      "scene": "res://game/levels/_tests/characters/sefir/sefir_three_quarter.tscn",
+      "camera": "Cameras/ThreeQuarter",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "sefir_back",
+      "scene": "res://game/levels/_tests/characters/sefir/sefir_stage.tscn",
+      "camera": "Cameras/Back",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "sefir_face",
+      "scene": "res://game/levels/_tests/characters/sefir/sefir_stage.tscn",
+      "camera": "Cameras/Face",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "sefir_face_stylized",
+      "scene": "res://game/levels/_tests/characters/sefir/sefir_face_stylized.tscn",
+      "camera": "Cameras/Compare",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "sefir_silhouette_lineup",
+      "scene": "res://game/levels/_tests/characters/sefir/sefir_lineup.tscn",
+      "camera": "Cameras/Lineup",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "sefir_clip_raise_palm",
+      "scene": "res://game/levels/_tests/characters/sefir/sefir_clip_raise_palm.tscn",
+      "camera": "Cameras/ThreeQuarterLeft",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "ysolde_front",
+      "scene": "res://game/levels/_tests/characters/ysolde/ysolde_stage.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "ysolde_back",
+      "scene": "res://game/levels/_tests/characters/ysolde/ysolde_stage.tscn",
+      "camera": "Cameras/Back",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "ysolde_three_quarter",
+      "scene": "res://game/levels/_tests/characters/ysolde/ysolde_stage.tscn",
+      "camera": "Cameras/ThreeQuarterLeft",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "ysolde_face",
+      "scene": "res://game/levels/_tests/characters/ysolde/ysolde_stage.tscn",
+      "camera": "Cameras/Face",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "ysolde_face_stylized",
+      "scene": "res://game/levels/_tests/characters/ysolde/ysolde_face_stylized.tscn",
+      "camera": "Cameras/Compare",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "ysolde_silhouette_lineup",
+      "scene": "res://game/levels/_tests/characters/ysolde/ysolde_silhouette_lineup.tscn",
+      "camera": "Cameras/Lineup",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "ysolde_clip_cast_glyph",
+      "scene": "res://game/levels/_tests/characters/ysolde/ysolde_clip_cast_glyph.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "ysolde_clip_reink_shell",
+      "scene": "res://game/levels/_tests/characters/ysolde/ysolde_clip_reink_shell.tscn",
+      "camera": "Cameras/ThreeQuarterLeft",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "ysolde_night_ch4",
+      "scene": "res://game/levels/_tests/characters/ysolde/ysolde_night_ch4.tscn",
+      "camera": "Cameras/ThreeQuarterLeft",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "battle_choreo_melee",
+      "scene": "res://game/battle/scene/shots/battle_choreo_melee.tscn"
+    },
+    {
+      "id": "battle_choreo_hit",
+      "scene": "res://game/battle/scene/shots/battle_choreo_hit.tscn"
+    },
+    {
+      "id": "battle_choreo_cast",
+      "scene": "res://game/battle/scene/shots/battle_choreo_cast.tscn"
+    },
+    {
+      "id": "battle_choreo_support",
+      "scene": "res://game/battle/scene/shots/battle_choreo_support.tscn"
+    },
+    {
+      "id": "battle_choreo_read",
+      "scene": "res://game/battle/scene/shots/battle_choreo_read.tscn"
+    },
+    {
+      "id": "battle_choreo_ko",
+      "scene": "res://game/battle/scene/shots/battle_choreo_ko.tscn"
+    },
+    {
+      "id": "battle_choreo_swap",
+      "scene": "res://game/battle/scene/shots/battle_choreo_swap.tscn"
+    },
+    {
+      "id": "battle_arena_tideline",
+      "scene": "res://game/levels/_tests/battle_arenas/arena_tideline.tscn",
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 12.0
+        }
+      }
+    },
+    {
+      "id": "battle_arena_causeway",
+      "scene": "res://game/levels/_tests/battle_arenas/arena_causeway.tscn",
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 12.0
+        }
+      }
+    },
+    {
+      "id": "battle_choreo_lamp_dive",
+      "scene": "res://game/battle/scene/shots/battle_choreo_lamp_dive.tscn"
+    },
+    {
+      "id": "battle_choreo_toll",
+      "scene": "res://game/battle/scene/shots/battle_choreo_toll.tscn",
+      "settle_frames": 45
+    },
+    {
+      "id": "battle_choreo_vowbound_rise",
+      "scene": "res://game/battle/scene/shots/battle_choreo_vowbound_rise.tscn"
+    },
+    {
+      "id": "battle_choreo_summon",
+      "scene": "res://game/battle/scene/shots/battle_choreo_summon.tscn"
     },
     {
       "id": "battle_swell_chant",
@@ -1990,6 +2270,66 @@
       ]
     },
     {
+      "id": "asha_clip_walk_cycle",
+      "scene": "res://game/levels/_tests/characters/asha/asha_clip_walk_cycle.tscn",
+      "camera": "Cameras/Profile",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "asha_clip_turn",
+      "scene": "res://game/levels/_tests/characters/asha/asha_clip_turn.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "rhen_clip_walk_cycle",
+      "scene": "res://game/levels/_tests/characters/rhen/rhen_clip_walk_cycle.tscn",
+      "camera": "Cameras/Profile",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "rhen_clip_turn",
+      "scene": "res://game/levels/_tests/characters/rhen/rhen_clip_turn.tscn",
+      "camera": "Cameras/ThreeQuarter",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "toma_clip_walk_cycle",
+      "scene": "res://game/levels/_tests/characters/toma/toma_clip_walk_cycle.tscn",
+      "camera": "Cameras/Profile",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "toma_clip_turn",
+      "scene": "res://game/levels/_tests/characters/toma/toma_clip_turn.tscn",
+      "camera": "Cameras/ThreeQuarter",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
       "id": "field_menu_codex",
       "scene": "res://game/ui/codex/shots/field_menu_codex.tscn"
     },
@@ -2049,36 +2389,6 @@
     {
       "id": "battle_boss_intro_hullgnaw",
       "scene": "res://game/battle/scene/shots/battle_boss_intro_hullgnaw.tscn"
-    },
-    {
-      "id": "asha_battle_attack",
-      "scene": "res://game/levels/_tests/characters/asha/asha_battle_attack.tscn",
-      "camera": "Cameras/ThreeQuarter",
-      "resolution": [
-        960,
-        540
-      ],
-      "settle_frames": 30
-    },
-    {
-      "id": "rhen_battle_attack",
-      "scene": "res://game/levels/_tests/characters/rhen/rhen_battle_attack.tscn",
-      "camera": "Cameras/ThreeQuarterLeft",
-      "resolution": [
-        960,
-        540
-      ],
-      "settle_frames": 30
-    },
-    {
-      "id": "toma_battle_attack",
-      "scene": "res://game/levels/_tests/characters/toma/toma_battle_attack.tscn",
-      "camera": "Cameras/ThreeQuarter",
-      "resolution": [
-        960,
-        540
-      ],
-      "settle_frames": 30
     },
     {
       "id": "tamsule_t01_bell_from_the_mouth",
@@ -2526,42 +2836,124 @@
       "scene": "res://game/battle/scene/shots/battle_boss_intro_drownbell.tscn"
     },
     {
-      "id": "ch06_brine_road",
-      "scene": "res://game/levels/_tests/act1_zones/ch06_brine_shoals_shots.tscn",
-      "camera": "Cameras/Road",
+      "id": "asha_battle_ko",
+      "scene": "res://game/levels/_tests/characters/asha/asha_battle_ko.tscn",
+      "camera": "Cameras/ThreeQuarter",
       "resolution": [
         960,
         540
       ],
-      "settle_frames": 24,
-      "setup": {
-        "globals": {
-          "hymn_wind_time": 40.0
-        },
-        "viewport": {
-          "use_taa": false,
-          "screen_space_aa": 1
-        }
-      }
+      "settle_frames": 30
     },
     {
-      "id": "ch06_brine_camp",
-      "scene": "res://game/levels/_tests/act1_zones/ch06_brine_shoals_shots.tscn",
-      "camera": "Cameras/Camp",
+      "id": "asha_battle_victory",
+      "scene": "res://game/levels/_tests/characters/asha/asha_battle_victory.tscn",
+      "camera": "Cameras/ThreeQuarter",
       "resolution": [
         960,
         540
       ],
-      "settle_frames": 24,
-      "setup": {
-        "globals": {
-          "hymn_wind_time": 40.0
-        },
-        "viewport": {
-          "use_taa": false,
-          "screen_space_aa": 1
-        }
-      }
+      "settle_frames": 30
+    },
+    {
+      "id": "rhen_battle_ko",
+      "scene": "res://game/levels/_tests/characters/rhen/rhen_battle_ko.tscn",
+      "camera": "Cameras/ThreeQuarterLeft",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "rhen_battle_victory",
+      "scene": "res://game/levels/_tests/characters/rhen/rhen_battle_victory.tscn",
+      "camera": "Cameras/ThreeQuarterLeft",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "rhen_battle_finisher",
+      "scene": "res://game/levels/_tests/characters/rhen/rhen_battle_finisher.tscn",
+      "camera": "Cameras/ThreeQuarterLeft",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "toma_battle_ko",
+      "scene": "res://game/levels/_tests/characters/toma/toma_battle_ko.tscn",
+      "camera": "Cameras/ThreeQuarter",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "toma_battle_victory",
+      "scene": "res://game/levels/_tests/characters/toma/toma_battle_victory.tscn",
+      "camera": "Cameras/ThreeQuarter",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "asha_clip_bow_palms_flat",
+      "scene": "res://game/levels/_tests/characters/asha/asha_clip_bow_palms_flat.tscn",
+      "camera": "Cameras/Profile",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "rhen_clip_lift_housing",
+      "scene": "res://game/levels/_tests/characters/rhen/rhen_clip_lift_housing.tscn",
+      "camera": "Cameras/ThreeQuarterLeft",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "toma_clip_stack_bowls",
+      "scene": "res://game/levels/_tests/characters/toma/toma_clip_stack_bowls.tscn",
+      "camera": "Cameras/ThreeQuarterLeft",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "ysolde_clip_read_letter",
+      "scene": "res://game/levels/_tests/characters/ysolde/ysolde_clip_read_letter.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "rhen_clip_talk_explain",
+      "scene": "res://game/levels/_tests/characters/rhen/rhen_clip_talk_explain.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
     },
     {
       "id": "hero_cutscene_turn_strip",
@@ -2592,256 +2984,6 @@
         960,
         540
       ]
-    },
-    {
-      "id": "villager_tavi_front",
-      "scene": "res://game/levels/_tests/characters/villagers/tavi_stage.tscn",
-      "camera": "Cameras/Front",
-      "resolution": [
-        960,
-        540
-      ],
-      "settle_frames": 30
-    },
-    {
-      "id": "villager_tavi_face",
-      "scene": "res://game/levels/_tests/characters/villagers/tavi_stage.tscn",
-      "camera": "Cameras/Face",
-      "resolution": [
-        960,
-        540
-      ],
-      "settle_frames": 30
-    },
-    {
-      "id": "villager_kell_front",
-      "scene": "res://game/levels/_tests/characters/villagers/kell_stage.tscn",
-      "camera": "Cameras/Front",
-      "resolution": [
-        960,
-        540
-      ],
-      "settle_frames": 30
-    },
-    {
-      "id": "villager_kell_face",
-      "scene": "res://game/levels/_tests/characters/villagers/kell_stage.tscn",
-      "camera": "Cameras/Face",
-      "resolution": [
-        960,
-        540
-      ],
-      "settle_frames": 30
-    },
-    {
-      "id": "villager_tavi_idle",
-      "scene": "res://game/levels/_tests/characters/villagers/tavi_idle.tscn",
-      "camera": "Cameras/ThreeQuarter",
-      "resolution": [
-        960,
-        540
-      ],
-      "settle_frames": 30
-    },
-    {
-      "id": "villager_kell_idle",
-      "scene": "res://game/levels/_tests/characters/villagers/kell_idle.tscn",
-      "camera": "Cameras/ThreeQuarter",
-      "resolution": [
-        960,
-        540
-      ],
-      "settle_frames": 30
-    },
-    {
-      "id": "villager_tavi_clip_name_rite",
-      "scene": "res://game/levels/_tests/characters/villagers/tavi_name_rite.tscn",
-      "camera": "Cameras/ThreeQuarter",
-      "resolution": [
-        960,
-        540
-      ],
-      "settle_frames": 30
-    },
-    {
-      "id": "villager_kell_clip_press_wick",
-      "scene": "res://game/levels/_tests/characters/villagers/kell_press_wick.tscn",
-      "camera": "Cameras/ThreeQuarter",
-      "resolution": [
-        960,
-        540
-      ],
-      "settle_frames": 30
-    },
-    {
-      "id": "villager_lineup_act1",
-      "scene": "res://game/levels/_tests/characters/villagers/villagers_lineup_act1.tscn",
-      "camera": "Cameras/Lineup",
-      "resolution": [
-        960,
-        540
-      ],
-      "settle_frames": 30
-    },
-    {
-      "id": "sefir_front",
-      "scene": "res://game/levels/_tests/characters/sefir/sefir_stage.tscn",
-      "camera": "Cameras/Front",
-      "resolution": [
-        960,
-        540
-      ],
-      "settle_frames": 30
-    },
-    {
-      "id": "sefir_three_quarter",
-      "scene": "res://game/levels/_tests/characters/sefir/sefir_three_quarter.tscn",
-      "camera": "Cameras/ThreeQuarter",
-      "resolution": [
-        960,
-        540
-      ],
-      "settle_frames": 30
-    },
-    {
-      "id": "sefir_back",
-      "scene": "res://game/levels/_tests/characters/sefir/sefir_stage.tscn",
-      "camera": "Cameras/Back",
-      "resolution": [
-        960,
-        540
-      ],
-      "settle_frames": 30
-    },
-    {
-      "id": "sefir_face",
-      "scene": "res://game/levels/_tests/characters/sefir/sefir_stage.tscn",
-      "camera": "Cameras/Face",
-      "resolution": [
-        960,
-        540
-      ],
-      "settle_frames": 30
-    },
-    {
-      "id": "sefir_face_stylized",
-      "scene": "res://game/levels/_tests/characters/sefir/sefir_face_stylized.tscn",
-      "camera": "Cameras/Compare",
-      "resolution": [
-        960,
-        540
-      ],
-      "settle_frames": 30
-    },
-    {
-      "id": "sefir_silhouette_lineup",
-      "scene": "res://game/levels/_tests/characters/sefir/sefir_lineup.tscn",
-      "camera": "Cameras/Lineup",
-      "resolution": [
-        960,
-        540
-      ],
-      "settle_frames": 30
-    },
-    {
-      "id": "sefir_clip_raise_palm",
-      "scene": "res://game/levels/_tests/characters/sefir/sefir_clip_raise_palm.tscn",
-      "camera": "Cameras/ThreeQuarterLeft",
-      "resolution": [
-        960,
-        540
-      ],
-      "settle_frames": 30
-    },
-    {
-      "id": "ysolde_front",
-      "scene": "res://game/levels/_tests/characters/ysolde/ysolde_stage.tscn",
-      "camera": "Cameras/Front",
-      "resolution": [
-        960,
-        540
-      ],
-      "settle_frames": 30
-    },
-    {
-      "id": "ysolde_back",
-      "scene": "res://game/levels/_tests/characters/ysolde/ysolde_stage.tscn",
-      "camera": "Cameras/Back",
-      "resolution": [
-        960,
-        540
-      ],
-      "settle_frames": 30
-    },
-    {
-      "id": "ysolde_three_quarter",
-      "scene": "res://game/levels/_tests/characters/ysolde/ysolde_stage.tscn",
-      "camera": "Cameras/ThreeQuarterLeft",
-      "resolution": [
-        960,
-        540
-      ],
-      "settle_frames": 30
-    },
-    {
-      "id": "ysolde_face",
-      "scene": "res://game/levels/_tests/characters/ysolde/ysolde_stage.tscn",
-      "camera": "Cameras/Face",
-      "resolution": [
-        960,
-        540
-      ],
-      "settle_frames": 30
-    },
-    {
-      "id": "ysolde_face_stylized",
-      "scene": "res://game/levels/_tests/characters/ysolde/ysolde_face_stylized.tscn",
-      "camera": "Cameras/Compare",
-      "resolution": [
-        960,
-        540
-      ],
-      "settle_frames": 30
-    },
-    {
-      "id": "ysolde_silhouette_lineup",
-      "scene": "res://game/levels/_tests/characters/ysolde/ysolde_silhouette_lineup.tscn",
-      "camera": "Cameras/Lineup",
-      "resolution": [
-        960,
-        540
-      ],
-      "settle_frames": 30
-    },
-    {
-      "id": "ysolde_clip_cast_glyph",
-      "scene": "res://game/levels/_tests/characters/ysolde/ysolde_clip_cast_glyph.tscn",
-      "camera": "Cameras/Front",
-      "resolution": [
-        960,
-        540
-      ],
-      "settle_frames": 30
-    },
-    {
-      "id": "ysolde_clip_reink_shell",
-      "scene": "res://game/levels/_tests/characters/ysolde/ysolde_clip_reink_shell.tscn",
-      "camera": "Cameras/ThreeQuarterLeft",
-      "resolution": [
-        960,
-        540
-      ],
-      "settle_frames": 30
-    },
-    {
-      "id": "ysolde_night_ch4",
-      "scene": "res://game/levels/_tests/characters/ysolde/ysolde_night_ch4.tscn",
-      "camera": "Cameras/ThreeQuarterLeft",
-      "resolution": [
-        960,
-        540
-      ],
-      "settle_frames": 30
     },
     {
       "id": "field_menu_21x9",
@@ -3070,6 +3212,185 @@
       }
     },
     {
+      "id": "wildlife_stage",
+      "scene": "res://game/levels/_tests/wildlife/wildlife_stage.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
+      "id": "field_hero_gait_strip",
+      "scene": "res://game/levels/_tests/hero_motion/field_hero_gait_strip.tscn",
+      "camera": "ShotCamera",
+      "settle_frames": 30,
+      "resolution": [
+        1280,
+        720
+      ]
+    },
+    {
+      "id": "npc_stage_field",
+      "scene": "res://game/levels/_tests/npc/npc_stage.tscn",
+      "camera": "Camera",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 150
+    },
+    {
+      "id": "oruvel_o17_pen_split",
+      "scene": "res://game/levels/_tests/oruvel_kit/oruvel_preview.tscn",
+      "camera": "Cameras/O17",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        },
+        "nodes": {
+          ".": {
+            "phase": "ch01_storm"
+          }
+        }
+      }
+    },
+    {
+      "id": "ashcrown_a10_plume_from_the_rim",
+      "scene": "res://game/levels/_tests/ashcrown_kit/ashcrown_preview.tscn",
+      "camera": "Cameras/A10",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "liss_front",
+      "scene": "res://game/levels/_tests/characters/liss/liss_stage.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "liss_back",
+      "scene": "res://game/levels/_tests/characters/liss/liss_stage.tscn",
+      "camera": "Cameras/Back",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "liss_three_quarter",
+      "scene": "res://game/levels/_tests/characters/liss/liss_stage.tscn",
+      "camera": "Cameras/ThreeQuarterLeft",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "liss_face",
+      "scene": "res://game/levels/_tests/characters/liss/liss_stage.tscn",
+      "camera": "Cameras/Face",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "liss_face_stylized",
+      "scene": "res://game/levels/_tests/characters/liss/liss_face_stylized.tscn",
+      "camera": "Cameras/Compare",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "liss_silhouette_vs_rhen",
+      "scene": "res://game/levels/_tests/characters/liss/liss_silhouette_vs_rhen.tscn",
+      "camera": "Cameras/Lineup",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "liss_clip_haul_rope",
+      "scene": "res://game/levels/_tests/characters/liss/liss_clip_haul_rope.tscn",
+      "camera": "Cameras/ThreeQuarterLeft",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "ch06_brine_road",
+      "scene": "res://game/levels/_tests/act1_zones/ch06_brine_shoals_shots.tscn",
+      "camera": "Cameras/Road",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "ch06_brine_camp",
+      "scene": "res://game/levels/_tests/act1_zones/ch06_brine_shoals_shots.tscn",
+      "camera": "Cameras/Camp",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
       "id": "ch08_corrow_arrival",
       "scene": "res://game/levels/_tests/act1_zones/ch08_corrow_shots.tscn",
       "camera": "Cameras/Arrival",
@@ -3260,175 +3581,6 @@
       }
     },
     {
-      "id": "ch05_pemakar_harbour",
-      "scene": "res://game/levels/_tests/act1_zones/ch05_pemakar_shots.tscn",
-      "camera": "Cameras/Harbour",
-      "resolution": [
-        960,
-        540
-      ],
-      "settle_frames": 24,
-      "setup": {
-        "globals": {
-          "hymn_wind_time": 40.0
-        },
-        "viewport": {
-          "use_taa": false,
-          "screen_space_aa": 1
-        }
-      }
-    },
-    {
-      "id": "ch05_pemakar_crown",
-      "scene": "res://game/levels/_tests/act1_zones/ch05_pemakar_shots.tscn",
-      "camera": "Cameras/Crown",
-      "resolution": [
-        960,
-        540
-      ],
-      "settle_frames": 24,
-      "setup": {
-        "globals": {
-          "hymn_wind_time": 40.0
-        },
-        "viewport": {
-          "use_taa": false,
-          "screen_space_aa": 1
-        }
-      }
-    },
-    {
-      "id": "wildlife_stage",
-      "scene": "res://game/levels/_tests/wildlife/wildlife_stage.tscn",
-      "resolution": [
-        960,
-        720
-      ]
-    },
-    {
-      "id": "field_hero_gait_strip",
-      "scene": "res://game/levels/_tests/hero_motion/field_hero_gait_strip.tscn",
-      "camera": "ShotCamera",
-      "settle_frames": 30,
-      "resolution": [
-        1280,
-        720
-      ]
-    },
-    {
-      "id": "npc_stage_field",
-      "scene": "res://game/levels/_tests/npc/npc_stage.tscn",
-      "camera": "Camera",
-      "resolution": [
-        960,
-        540
-      ],
-      "settle_frames": 150
-    },
-    {
-      "id": "asha_clip_walk_cycle",
-      "scene": "res://game/levels/_tests/characters/asha/asha_clip_walk_cycle.tscn",
-      "camera": "Cameras/Profile",
-      "resolution": [
-        960,
-        540
-      ],
-      "settle_frames": 30
-    },
-    {
-      "id": "asha_clip_turn",
-      "scene": "res://game/levels/_tests/characters/asha/asha_clip_turn.tscn",
-      "camera": "Cameras/Front",
-      "resolution": [
-        960,
-        540
-      ],
-      "settle_frames": 30
-    },
-    {
-      "id": "rhen_clip_walk_cycle",
-      "scene": "res://game/levels/_tests/characters/rhen/rhen_clip_walk_cycle.tscn",
-      "camera": "Cameras/Profile",
-      "resolution": [
-        960,
-        540
-      ],
-      "settle_frames": 30
-    },
-    {
-      "id": "rhen_clip_turn",
-      "scene": "res://game/levels/_tests/characters/rhen/rhen_clip_turn.tscn",
-      "camera": "Cameras/ThreeQuarter",
-      "resolution": [
-        960,
-        540
-      ],
-      "settle_frames": 30
-    },
-    {
-      "id": "toma_clip_walk_cycle",
-      "scene": "res://game/levels/_tests/characters/toma/toma_clip_walk_cycle.tscn",
-      "camera": "Cameras/Profile",
-      "resolution": [
-        960,
-        540
-      ],
-      "settle_frames": 30
-    },
-    {
-      "id": "toma_clip_turn",
-      "scene": "res://game/levels/_tests/characters/toma/toma_clip_turn.tscn",
-      "camera": "Cameras/ThreeQuarter",
-      "resolution": [
-        960,
-        540
-      ],
-      "settle_frames": 30
-    },
-    {
-      "id": "oruvel_o17_pen_split",
-      "scene": "res://game/levels/_tests/oruvel_kit/oruvel_preview.tscn",
-      "camera": "Cameras/O17",
-      "resolution": [
-        960,
-        540
-      ],
-      "settle_frames": 24,
-      "setup": {
-        "globals": {
-          "hymn_wind_time": 40.0
-        },
-        "viewport": {
-          "use_taa": false,
-          "screen_space_aa": 1
-        },
-        "nodes": {
-          ".": {
-            "phase": "ch01_storm"
-          }
-        }
-      }
-    },
-    {
-      "id": "ashcrown_a10_plume_from_the_rim",
-      "scene": "res://game/levels/_tests/ashcrown_kit/ashcrown_preview.tscn",
-      "camera": "Cameras/A10",
-      "resolution": [
-        960,
-        540
-      ],
-      "settle_frames": 24,
-      "setup": {
-        "globals": {
-          "hymn_wind_time": 40.0
-        },
-        "viewport": {
-          "use_taa": false,
-          "screen_space_aa": 1
-        }
-      }
-    },
-    {
       "id": "reefball_hud_choice",
       "scene": "res://game/ui/reefball/shots/reefball_hud_choice.tscn"
     },
@@ -3559,76 +3711,6 @@
           "screen_space_aa": 1
         }
       }
-    },
-    {
-      "id": "asha_battle_ko",
-      "scene": "res://game/levels/_tests/characters/asha/asha_battle_ko.tscn",
-      "camera": "Cameras/ThreeQuarter",
-      "resolution": [
-        960,
-        540
-      ],
-      "settle_frames": 30
-    },
-    {
-      "id": "asha_battle_victory",
-      "scene": "res://game/levels/_tests/characters/asha/asha_battle_victory.tscn",
-      "camera": "Cameras/ThreeQuarter",
-      "resolution": [
-        960,
-        540
-      ],
-      "settle_frames": 30
-    },
-    {
-      "id": "rhen_battle_ko",
-      "scene": "res://game/levels/_tests/characters/rhen/rhen_battle_ko.tscn",
-      "camera": "Cameras/ThreeQuarterLeft",
-      "resolution": [
-        960,
-        540
-      ],
-      "settle_frames": 30
-    },
-    {
-      "id": "rhen_battle_victory",
-      "scene": "res://game/levels/_tests/characters/rhen/rhen_battle_victory.tscn",
-      "camera": "Cameras/ThreeQuarterLeft",
-      "resolution": [
-        960,
-        540
-      ],
-      "settle_frames": 30
-    },
-    {
-      "id": "rhen_battle_finisher",
-      "scene": "res://game/levels/_tests/characters/rhen/rhen_battle_finisher.tscn",
-      "camera": "Cameras/ThreeQuarterLeft",
-      "resolution": [
-        960,
-        540
-      ],
-      "settle_frames": 30
-    },
-    {
-      "id": "toma_battle_ko",
-      "scene": "res://game/levels/_tests/characters/toma/toma_battle_ko.tscn",
-      "camera": "Cameras/ThreeQuarter",
-      "resolution": [
-        960,
-        540
-      ],
-      "settle_frames": 30
-    },
-    {
-      "id": "toma_battle_victory",
-      "scene": "res://game/levels/_tests/characters/toma/toma_battle_victory.tscn",
-      "camera": "Cameras/ThreeQuarter",
-      "resolution": [
-        960,
-        540
-      ],
-      "settle_frames": 30
     },
     {
       "id": "battle_boss_intro_reach",
@@ -3990,38 +4072,8 @@
       }
     },
     {
-      "id": "asha_clip_bow_palms_flat",
-      "scene": "res://game/levels/_tests/characters/asha/asha_clip_bow_palms_flat.tscn",
-      "camera": "Cameras/Profile",
-      "resolution": [
-        960,
-        540
-      ],
-      "settle_frames": 30
-    },
-    {
-      "id": "rhen_clip_lift_housing",
-      "scene": "res://game/levels/_tests/characters/rhen/rhen_clip_lift_housing.tscn",
-      "camera": "Cameras/ThreeQuarterLeft",
-      "resolution": [
-        960,
-        540
-      ],
-      "settle_frames": 30
-    },
-    {
-      "id": "toma_clip_stack_bowls",
-      "scene": "res://game/levels/_tests/characters/toma/toma_clip_stack_bowls.tscn",
-      "camera": "Cameras/ThreeQuarterLeft",
-      "resolution": [
-        960,
-        540
-      ],
-      "settle_frames": 30
-    },
-    {
-      "id": "ysolde_clip_read_letter",
-      "scene": "res://game/levels/_tests/characters/ysolde/ysolde_clip_read_letter.tscn",
+      "id": "kerrid_front",
+      "scene": "res://game/levels/_tests/characters/kerrid/kerrid_stage.tscn",
       "camera": "Cameras/Front",
       "resolution": [
         960,
@@ -4030,28 +4082,8 @@
       "settle_frames": 30
     },
     {
-      "id": "rhen_clip_talk_explain",
-      "scene": "res://game/levels/_tests/characters/rhen/rhen_clip_talk_explain.tscn",
-      "camera": "Cameras/Front",
-      "resolution": [
-        960,
-        540
-      ],
-      "settle_frames": 30
-    },
-    {
-      "id": "liss_front",
-      "scene": "res://game/levels/_tests/characters/liss/liss_stage.tscn",
-      "camera": "Cameras/Front",
-      "resolution": [
-        960,
-        540
-      ],
-      "settle_frames": 30
-    },
-    {
-      "id": "liss_back",
-      "scene": "res://game/levels/_tests/characters/liss/liss_stage.tscn",
+      "id": "kerrid_back",
+      "scene": "res://game/levels/_tests/characters/kerrid/kerrid_stage.tscn",
       "camera": "Cameras/Back",
       "resolution": [
         960,
@@ -4060,8 +4092,8 @@
       "settle_frames": 30
     },
     {
-      "id": "liss_three_quarter",
-      "scene": "res://game/levels/_tests/characters/liss/liss_stage.tscn",
+      "id": "kerrid_three_quarter",
+      "scene": "res://game/levels/_tests/characters/kerrid/kerrid_stage.tscn",
       "camera": "Cameras/ThreeQuarterLeft",
       "resolution": [
         960,
@@ -4070,8 +4102,8 @@
       "settle_frames": 30
     },
     {
-      "id": "liss_face",
-      "scene": "res://game/levels/_tests/characters/liss/liss_stage.tscn",
+      "id": "kerrid_face",
+      "scene": "res://game/levels/_tests/characters/kerrid/kerrid_stage.tscn",
       "camera": "Cameras/Face",
       "resolution": [
         960,
@@ -4080,8 +4112,8 @@
       "settle_frames": 30
     },
     {
-      "id": "liss_face_stylized",
-      "scene": "res://game/levels/_tests/characters/liss/liss_face_stylized.tscn",
+      "id": "kerrid_face_stylized",
+      "scene": "res://game/levels/_tests/characters/kerrid/kerrid_face_stylized.tscn",
       "camera": "Cameras/Compare",
       "resolution": [
         960,
@@ -4090,8 +4122,8 @@
       "settle_frames": 30
     },
     {
-      "id": "liss_silhouette_vs_rhen",
-      "scene": "res://game/levels/_tests/characters/liss/liss_silhouette_vs_rhen.tscn",
+      "id": "kerrid_silhouette_lineup",
+      "scene": "res://game/levels/_tests/characters/kerrid/kerrid_silhouette_lineup.tscn",
       "camera": "Cameras/Lineup",
       "resolution": [
         960,
@@ -4100,14 +4132,252 @@
       "settle_frames": 30
     },
     {
-      "id": "liss_clip_haul_rope",
-      "scene": "res://game/levels/_tests/characters/liss/liss_clip_haul_rope.tscn",
+      "id": "kerrid_clip_collar_haul",
+      "scene": "res://game/levels/_tests/characters/kerrid/kerrid_clip_collar_haul.tscn",
       "camera": "Cameras/ThreeQuarterLeft",
       "resolution": [
         960,
         540
       ],
       "settle_frames": 30
+    },
+    {
+      "id": "moll_front",
+      "scene": "res://game/levels/_tests/characters/moll/moll_stage.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "moll_three_quarter",
+      "scene": "res://game/levels/_tests/characters/moll/moll_stage.tscn",
+      "camera": "Cameras/ThreeQuarter",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "moll_profile",
+      "scene": "res://game/levels/_tests/characters/moll/moll_stage.tscn",
+      "camera": "Cameras/Profile",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "moll_face",
+      "scene": "res://game/levels/_tests/characters/moll/moll_stage.tscn",
+      "camera": "Cameras/Face",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "moll_face_yield",
+      "scene": "res://game/levels/_tests/characters/moll/moll_face_yield.tscn",
+      "camera": "Cameras/Face",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "moll_clip_yield",
+      "scene": "res://game/levels/_tests/characters/moll/moll_clip_yield.tscn",
+      "camera": "Cameras/ThreeQuarter",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "moll_silhouette_vs_toma",
+      "scene": "res://game/levels/_tests/characters/moll/moll_silhouette_vs_toma.tscn",
+      "camera": "Cameras/Lineup",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "kerrid_battle_idle",
+      "scene": "res://game/levels/_tests/characters/kerrid/kerrid_battle_idle.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "kerrid_battle_attack",
+      "scene": "res://game/levels/_tests/characters/kerrid/kerrid_battle_attack.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "stillguard_a_front",
+      "scene": "res://game/levels/_tests/characters/stillguard/stillguard_a_stage.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "stillguard_a_three_quarter",
+      "scene": "res://game/levels/_tests/characters/stillguard/stillguard_a_stage.tscn",
+      "camera": "Cameras/ThreeQuarter",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "stillguard_a_face",
+      "scene": "res://game/levels/_tests/characters/stillguard/stillguard_a_stage.tscn",
+      "camera": "Cameras/Face",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "stillguard_b_front",
+      "scene": "res://game/levels/_tests/characters/stillguard/stillguard_b_stage.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "stillguard_b_clip_level_spear",
+      "scene": "res://game/levels/_tests/characters/stillguard/stillguard_b_clip_level_spear.tscn",
+      "camera": "Cameras/ThreeQuarter",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "stillguard_d_three_quarter",
+      "scene": "res://game/levels/_tests/characters/stillguard/stillguard_d_stage.tscn",
+      "camera": "Cameras/ThreeQuarter",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "stillguard_d_clip_shield_up",
+      "scene": "res://game/levels/_tests/characters/stillguard/stillguard_d_clip_shield_up.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "stillguard_lineup",
+      "scene": "res://game/levels/_tests/characters/stillguard/stillguard_lineup.tscn",
+      "camera": "Cameras/Lineup",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "stillguard_b_face",
+      "scene": "res://game/levels/_tests/characters/stillguard/stillguard_b_stage.tscn",
+      "camera": "Cameras/Face",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "stillguard_c_front",
+      "scene": "res://game/levels/_tests/characters/stillguard/stillguard_c_stage.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "stillguard_c_face",
+      "scene": "res://game/levels/_tests/characters/stillguard/stillguard_c_stage.tscn",
+      "camera": "Cameras/Face",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "ch05_pemakar_harbour",
+      "scene": "res://game/levels/_tests/act1_zones/ch05_pemakar_shots.tscn",
+      "camera": "Cameras/Harbour",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "ch05_pemakar_crown",
+      "scene": "res://game/levels/_tests/act1_zones/ch05_pemakar_shots.tscn",
+      "camera": "Cameras/Crown",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
     },
     {
       "id": "battle_heroes_idle",

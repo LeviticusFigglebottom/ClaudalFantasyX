@@ -1,0 +1,26 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="PackedScene" path="res://assets/characters/kerrid/kerrid_lod1.glb" id="model"]
+[ext_resource type="PackedScene" path="res://assets/characters/kerrid/kerrid_cleaver.glb" id="cleaver"]
+[ext_resource type="AnimationLibrary" path="res://assets/characters/kerrid/anim/kerrid_battle_clips.tres" id="battle_clips"]
+
+[node name="KerridBattle" type="Node3D"]
+metadata/hymn_battle_actor = &"kerrid"
+
+[node name="Model" parent="." instance=ExtResource("model")]
+
+[node name="AnimationPlayer" parent="Model"]
+libraries = {
+&"": ExtResource("battle_clips")
+}
+
+[node name="Cleaver" parent="Model/kerrid_skeleton/Skeleton3D"]
+visible = false
+
+[node name="HandCleaver" type="BoneAttachment3D" parent="Model/kerrid_skeleton/Skeleton3D"]
+bone_name = "DEF-hand.R"
+
+[node name="CleaverHand" parent="Model/kerrid_skeleton/Skeleton3D/HandCleaver" instance=ExtResource("cleaver")]
+transform = Transform3D(0.547297, 0.753089, 0.365134, 0.028698, 0.41913, -0.907472, -0.836446, 0.507136, 0.207777, 0, 0.109642, 0)
+
+[editable path="Model"]

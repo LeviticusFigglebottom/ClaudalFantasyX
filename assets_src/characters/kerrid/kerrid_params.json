@@ -1,0 +1,188 @@
+{
+  "_about": "Old Kerrid, the fifth party hero (docs/kb/art/characters/kerrid.md). Body block and face sliders from §1 and §9, relative to the MakeHuman donor's own form (ADR 0021: 1.0 / 0.0 = unchanged). Keys starting with '_' are read by the kerrid_* modules and build_kerrid.py, not by bb_params.",
+  "name": "kerrid",
+  "height_m": 1.86,
+  "heads_tall": 7.41,
+  "shoulder_width_heads": 2.15,
+  "chest_width_heads": 1.45,
+  "chest_depth_heads": 1.2,
+  "waist_width_heads": 1.5,
+  "hip_width_heads": 1.55,
+  "crotch_height_heads": 3.45,
+  "arm_span_ratio": 1.03,
+  "hand_length_heads": 0.84,
+  "foot_length_ratio": 0.152,
+  "neck_length_heads": 0.38,
+  "neck_width_ratio": 0.62,
+  "head_width_ratio": 0.7,
+  "femininity": 0.0,
+  "muscle": 0.6,
+  "mass": 0.45,
+  "breast": 0.0,
+  "eye_scale": 1.1,
+  "ipd_m": 0.066,
+  "arm_abduction_deg": 47.0,
+  "skin_hex": "#9A6C50",
+  "eye_tilt_deg": 0.0,
+  "canthus_offset_m": 0.0,
+  "jaw_width": 1.02,
+  "cheekbone_height": 0.002,
+  "cheekbone_width": 1.08,
+  "chin_size": 1.05,
+  "nose_bridge_width": 1.18,
+  "nose_tip_projection": 0.88,
+  "lip_fullness": 0.7,
+  "lip_close": 0.6,
+  "lip_seal": 0.96,
+  "lip_lower_fullness": 0.7,
+  "mouth_corner_lift": -0.001,
+  "brow_ridge": 1.12,
+  "donor_mix_african": 0.3,
+  "donor_mix_asian": 0.4,
+  "donor_mix_caucasian": 0.3,
+  "_kerrid": {
+    "_about": "kerrid.md §9: read only by build_kerrid.py and the kerrid_* modules (the shared bb_params reader is unchanged). The four open Narrative questions of kerrid.md §12 (M3-NAR-01) are each one value here or in the persona: skin_desaturate (Q4), the anchor ring (cleaver.ring_on, Q3); breath and tears are hero_clips' persona and the face table (Q1, Q2).",
+    "nose_break_m": 0.003,
+    "nose_break_side": "L",
+    "skin_desaturate": 0.06,
+    "burn_turns": 3,
+    "burn_width_m": [
+      0.022,
+      0.03
+    ],
+    "burn_relief_m": 0.0006,
+    "burn_lift": 0.14,
+    "burn_desat": 0.3,
+    "burn_roughness": -0.15,
+    "burn_glow_default": 0.0,
+    "burn_glow_energy_per_unit": 0.8,
+    "hunch_deg": 8.0,
+    "age": 0.5,
+    "crow_feet": 0.6,
+    "forehead_lines": 0.4,
+    "nasolabial": 0.5,
+    "sun_redness": 0.05,
+    "lid_squint_rest": [
+      0.15,
+      0.1
+    ],
+    "seed": 23
+  },
+  "_hair": {
+    "length_m": [
+      0.006,
+      0.01
+    ],
+    "card_width_m": [
+      0.005,
+      0.008
+    ],
+    "scalp_cards": [
+      250,
+      180,
+      120
+    ],
+    "grey_share": 0.25,
+    "grey_temple_boost": 1.6,
+    "colour": "#201A16",
+    "grey": "#8A867E",
+    "seed": 29
+  },
+  "_beard": {
+    "length_m": [
+      0.012,
+      0.018
+    ],
+    "card_width_m": [
+      0.0055,
+      0.008
+    ],
+    "cards": [
+      360,
+      280,
+      210
+    ],
+    "grey_share": 0.2,
+    "lip_trim_h": 0.012,
+    "seed": 31
+  },
+  "_costume": {
+    "smock_hem_below_hip_m": 0.06,
+    "smock_armhole_drop_m": 0.12,
+    "sleeve_end_above_elbow_m": 0.03,
+    "sleeve_roll_m": 0.05,
+    "trouser_hem_above_ankle_m": 0.09,
+    "wrap_width_m": 0.06,
+    "wrap_off_m": 0.0025,
+    "belt_width_m": 0.05,
+    "chest_rope_m": 0.022,
+    "chest_rope_below_clavicle_m": [
+      0.1,
+      0.16
+    ],
+    "chest_rope_underarm_drop_m": 0.14,
+    "chest_rope_off_m": 0.006,
+    "watch_cord_m": 0.006,
+    "watch_cord_length_m": 0.34,
+    "watch_cord_knots": 3,
+    "watch_cord_knot_gap_m": 0.08,
+    "watch_cord_bones": 3,
+    "seed": 37
+  },
+  "_cape": {
+    "yoke_out_past_deltoid_m": 0.1,
+    "yoke_neck_clear_m": 0.025,
+    "yoke_top_below_chin_m": 0.052,
+    "yoke_below_jaw_m": 0.04,
+    "yoke_hang_below_shoulder_m": 0.12,
+    "yoke_arm_band_m": 0.05,
+    "yoke_arm_share": 0.5,
+    "yoke_front_open_deg": 26.0,
+    "tier2_reach_deg": 92.0,
+    "tier3_hem_above_floor_m": 0.52,
+    "tier3_centre_band_m": 0.06,
+    "tier3_split_gap_deg": 3.0,
+    "tier3_reach_deg": 84.0,
+    "panel_bones": 3,
+    "mat_off_m": 0.004,
+    "strips_per_10cm": [
+      3,
+      5
+    ],
+    "strip_length_m": [
+      0.12,
+      0.26
+    ],
+    "strip_width_m": [
+      0.035,
+      0.055
+    ],
+    "strip_cross_deg": 70.0,
+    "fibre_depth_m": [
+      0.08,
+      0.14
+    ],
+    "wet_longer_m": 0.03,
+    "wet_closer_m": 0.015,
+    "seed": 41
+  },
+  "_cleaver": {
+    "_about": "kerrid.md §4.1 #11 says 1.30 m (haft 0.42, blade 0.88). Carried rigid on DEF-spine.003 from above the left shoulder, a 1.30 m blade reaches the back of the right knee, where the leg's back-swing passes through it in every walk; 1.00 m (haft 0.34, blade 0.66, the widths unchanged) ends at the buttock and keeps prop penetration at 0 (kerrid_review.md).",
+    "overall_m": 1.0,
+    "haft_m": 0.34,
+    "blade_m": 0.66,
+    "blade_width_haft_m": 0.14,
+    "fluke_width_m": 0.26,
+    "bill_hook_m": 0.09,
+    "spine_thick_m": 0.012,
+    "edge_thick_m": 0.003,
+    "edge_band_m": 0.01,
+    "ring_outer_m": 0.11,
+    "ring_stock_m": 0.02,
+    "ring_on": true,
+    "ring_above_shoulder_m": 0.14,
+    "grip_out_m": 0.012,
+    "grip_wrap_above_fist_m": 0.02,
+    "cape_clear_m": 0.012
+  }
+}
