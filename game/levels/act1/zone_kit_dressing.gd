@@ -22,6 +22,8 @@ extends HalunaDresser
 ##                    towers are squat or tall copies of one tower);
 ##                  "kit_dir" (+ "materials_dir", default <kit_dir>materials/)  a piece from another kit
 ##                    (Corrow's trader is the ferry kit's hull); each kit keeps its own material cache.
+##                  "material_paths": {slot: "res://...tres"}  one slot's material swapped for a zone's own, the
+##                    piece's other slots kept from its kit (Coilspire's inner laterite without its green joints).
 ##   greybox      {"hide_all": bool, "keep": [ids]}: hides the greybox meshes (collision stays), except
 ##                  the kept ones (story pieces no kit has yet).
 ##   fire_lights  [{"at": [x, y, z], "energy", "range", "block"?, "shadow"?, "attenuation"?, "color"?}] omnis
@@ -64,6 +66,7 @@ const KEY_MULTIMESHES := "multimeshes"
 const KEY_FAR_LIGHTS := "far_lights"
 const KEY_WATERS := "waters"
 const KEY_STORMS := "storms"
+const KEY_MATERIAL_PATHS := "material_paths"
 const DEFAULT_WAVES := "res://game/world/water/lagoon_waves.tres"
 ## The waters' plane cells (m): fine enough for the wave field's short waves to read on a still lake.
 const WATER_CELL_M := 2.0
@@ -99,6 +102,8 @@ func dress() -> void:
 		var piece := _place_from_kit(spec)
 		if piece == null:
 			continue
+		if spec.has(KEY_MATERIAL_PATHS):
+			swap_slots(piece, spec[KEY_MATERIAL_PATHS])
 		if spec.has(KEY_SCALE_Y):
 			var s := float(spec.get("scale", 1.0))
 			piece.basis = piece.basis.scaled(Vector3(1.0, float(spec[KEY_SCALE_Y]) / s, 1.0))
@@ -140,6 +145,19 @@ func _process(_delta: float) -> void:
 	if not toward.is_equal_approx(_sun_written):
 		_sun_written = toward
 		ShaderGlobals.set_value(GLOBAL_SUN, toward)
+
+
+## Every surface of `root`'s meshes whose kit slot (its source material's name) is a key of `paths` takes that
+## path's material instead.
+static func swap_slots(root: Node, paths: Dictionary) -> void:
+	for n: Node in root.find_children("*", "MeshInstance3D", true, false):
+		var mi := n as MeshInstance3D
+		if mi.mesh == null:
+			continue
+		for i in mi.mesh.get_surface_count():
+			var src := mi.mesh.surface_get_material(i)
+			if src != null and paths.has(String(src.resource_name)):
+				mi.set_surface_override_material(i, load(String(paths[String(src.resource_name)])) as Material)
 
 
 ## HalunaDresser's placement, from the piece's own kit when it names one.
