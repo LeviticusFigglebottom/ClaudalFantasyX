@@ -2,8 +2,8 @@
 id: M3-BPR-421
 title: "Request: sounds of their own for the 85 Act I ability effects (they borrow hit/heal/status rows for now)"
 role: audio
-status: todo
-owner_session: ""
+status: review
+owner_session: "audio (cloud session_01Wmj8xaLtwcqiS3qwC6PciW, branch claude/audio)"
 depends_on: [M3-BPR-420]
 milestone: M3
 request-from: combat
@@ -16,8 +16,17 @@ These rows were appended by `tools/vfx/gen_act1_ability_vfx.py`, which only fill
 yours.
 
 ## Acceptance criteria
-- [ ] Each Act I ability effect gets its own sfx row (or a deliberate share), in your style.
-- [ ] test_battle_audio's fire-hit expectation goes back to one play if Ember gets its own sound.
+- [x] Each Act I ability effect gets its own sfx row (or a deliberate share), in your style.
+      - 73 effects have their own `abl_<effect>` sound (assets_src/sfx/act1_ability_sfx.py, Git LFS), each made from its
+        note.
+      - The 13 boss and set-piece mechanics share their skill's own row (`skill_<id>`, M3-AUD-861). Inside the 250 ms
+        dedupe they play once.
+      - The audit's Abilities section (`tools/audio/act1_audio_audit.py`) is 0.
+- [x] test_battle_audio: Ember plays `abl_ember`, with the fire hit landing under it as the impact.
+- [x] M3-BPR-422's styles:
+      - `swing` is whoosh_swing → swell_kerrid.
+      - `reel` is reel_whir → swell_liss.
+      - Both have crest times in choreo_sfx.json `peaks`.
 
 ## Review log
 

@@ -1,0 +1,114 @@
+{
+  "version": 1,
+  "doc": "M3-AUD-861 (ADR 0041; Git LFS, ADR 0173): each Act I boss's own intro sting (assets_src/sfx/act1_boss_stings.py), and its reduced-audio twin; battle_stings.json boss_intro.by_arg plays them by encounter id.",
+  "sfx": {
+    "sting_boss_hullgnaw": {
+      "files": [
+        "res://assets/lfs/audio/sfx/battle/sting_boss_hullgnaw.ogg"
+      ],
+      "bus": "Combat",
+      "cooldown_ms": 1000,
+      "voices": 1,
+      "volume_db": 0.0
+    },
+    "sting_boss_hullgnaw_soft": {
+      "files": [
+        "res://assets/lfs/audio/sfx/battle/sting_boss_hullgnaw_soft.ogg"
+      ],
+      "bus": "Combat",
+      "cooldown_ms": 1000,
+      "voices": 1,
+      "volume_db": 0.0
+    },
+    "sting_boss_bottle_hermit": {
+      "files": [
+        "res://assets/lfs/audio/sfx/battle/sting_boss_bottle_hermit.ogg"
+      ],
+      "bus": "Combat",
+      "cooldown_ms": 1000,
+      "voices": 1,
+      "volume_db": 0.0
+    },
+    "sting_boss_bottle_hermit_soft": {
+      "files": [
+        "res://assets/lfs/audio/sfx/battle/sting_boss_bottle_hermit_soft.ogg"
+      ],
+      "bus": "Combat",
+      "cooldown_ms": 1000,
+      "voices": 1,
+      "volume_db": 0.0
+    },
+    "sting_boss_spar_wraith": {
+      "files": [
+        "res://assets/lfs/audio/sfx/battle/sting_boss_spar_wraith.ogg"
+      ],
+      "bus": "Combat",
+      "cooldown_ms": 1000,
+      "voices": 1,
+      "volume_db": 0.0
+    },
+    "sting_boss_spar_wraith_soft": {
+      "files": [
+        "res://assets/lfs/audio/sfx/battle/sting_boss_spar_wraith_soft.ogg"
+      ],
+      "bus": "Combat",
+      "cooldown_ms": 1000,
+      "voices": 1,
+      "volume_db": 0.0
+    },
+    "sting_boss_cinder_matron": {
+      "files": [
+        "res://assets/lfs/audio/sfx/battle/sting_boss_cinder_matron.ogg"
+      ],
+      "bus": "Combat",
+      "cooldown_ms": 1000,
+      "voices": 1,
+      "volume_db": 0.0
+    },
+    "sting_boss_cinder_matron_soft": {
+      "files": [
+        "res://assets/lfs/audio/sfx/battle/sting_boss_cinder_matron_soft.ogg"
+      ],
+      "bus": "Combat",
+      "cooldown_ms": 1000,
+      "voices": 1,
+      "volume_db": 0.0
+    },
+    "sting_boss_inquisitor": {
+      "files": [
+        "res://assets/lfs/audio/sfx/battle/sting_boss_inquisitor.ogg"
+      ],
+      "bus": "Combat",
+      "cooldown_ms": 1000,
+      "voices": 1,
+      "volume_db": 0.0
+    },
+    "sting_boss_inquisitor_soft": {
+      "files": [
+        "res://assets/lfs/audio/sfx/battle/sting_boss_inquisitor_soft.ogg"
+      ],
+      "bus": "Combat",
+      "cooldown_ms": 1000,
+      "voices": 1,
+      "volume_db": 0.0
+    },
+    "sting_boss_undertows_reach": {
+      "files": [
+        "res://assets/lfs/audio/sfx/battle/sting_boss_undertows_reach.ogg"
+      ],
+      "bus": "Combat",
+      "cooldown_ms": 1000,
+      "voices": 1,
+      "volume_db": 0.0
+    },
+    "sting_boss_undertows_reach_soft": {
+      "files": [
+        "res://assets/lfs/audio/sfx/battle/sting_boss_undertows_reach_soft.ogg"
+      ],
+      "bus": "Combat",
+      "cooldown_ms": 1000,
+      "voices": 1,
+      "volume_db": 0.0
+    }
+  }
+}
