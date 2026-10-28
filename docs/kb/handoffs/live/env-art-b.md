@@ -146,6 +146,20 @@ that test at this branch's zones.
   - **Checks skipped:** the tools suite (the only tools change since its last full run is two generators, whose output
     is checked by the Godot tests above); coverage (no battle/progression code).
 
+- **For act1-chapters:** in `ch05_pemakar_harbour` (your rig `ch05_pemakar_shots`, view Harbour), the two big orbs in
+  the foreground are Asha's and Toma's hand lanterns, 2.5 m in front of the camera. Moving the view up or past them
+  would let the town read.
+- **BACKLOG EMPTY @ 749bfc48**, with reasons:
+  - My inventory rows: 9 of 11 done. `Column` waits on Rendering's M3-RND-26; `Virel` is creatures-b's body.
+  - The weir's channel: done (M3-ENV-1307).
+  - The weakest views: done. Contact sheet of all 25 Ch5–Ch9 zone shots; fixed the Undertow (not drawn), Ch9's sea
+    face and rocks (black), and Ashcrown's loggia (a flat wall of plume). What's left is the Pemakar harbour orbs
+    (act1-chapters' rig and props, above).
+  - Open requests: M3-ENV-1306 (env-art, the arena table), M3-BPR-1305 (combat, the Ch5 arenas), M3-RND-26
+    (rendering).
+  - **Next for a fresh env-art-b:** re-run the audit (`tools/placeholder_audit.py`, on hero-integration) after the
+    Lead's merge; take any new Ch5–Ch9 rows; the galleries' `Column` when M3-RND-26 lands.
+
 ### Render requests
 (Self-rendered per TRACK-RULES; lines are SELF-RENDERED notes.)
 SELF-RENDERED @ ea946ec8: ch07_tamsule_mouth, ch07_tamsule_market, ch07_tamsule_gantry — new shots, read final (Liss and Kerrid are capsules: no field body yet).
