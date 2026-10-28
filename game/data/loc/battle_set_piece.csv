@@ -5,3 +5,7 @@ HUD_FLOAT_WITHDRAWN,Withdraws
 HUD_HELP_SWAP_LOCKED_FMT,{name} can't leave the line: {reason}.
 HUD_OBJECTIVE_COUNT_FMT,{count} / {quota}
 HUD_OBJECTIVE_DEFAULT,Objective
+HUD_OBJECTIVE_TOTAL_FMT,{line} · {total} in all
+BARK_SKILL_HOLD_THE_STAIR,Hold.
+BARK_SKILL_HOIST_HAUL,Pull!
+BARK_CALL_VIREL,Virel.

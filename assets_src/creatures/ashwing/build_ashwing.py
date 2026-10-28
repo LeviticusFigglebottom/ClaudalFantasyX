@@ -19,6 +19,7 @@ import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "common"))
 import creature_kit as ck  # noqa: E402
+import grounding as gr  # noqa: E402
 
 SEED = 5101
 PAL = {k: ck.hexrgb(v) for k, v in {
@@ -122,6 +123,9 @@ def antennae(mesh: ck.Mesh, rig: ck.Rig) -> None:
                           rig.rigid(f"ant_{tag}"))
 
 
+KO_WINGS = 55.0  # the KO: the wings close up over the back (degrees, the left side's sign)
+
+
 def build_clips() -> list[ck.Clip]:
     wings = [("fore_l", 1.0), ("hind_l", 1.0), ("fore_r", -1.0), ("hind_r", -1.0)]
     idle = ck.Clip("idle", 1.8, loop=True)
@@ -153,12 +157,26 @@ def build_clips() -> list[ck.Clip]:
         for b, sd in wings:
             hit.key(b, t, (0, 0, -15.0 * s * sd))
 
-    ko = ck.Clip("ko", 1.8)  # it spirals down, wings closing, and lies on its side (hover ~1.4 m)
+    # it spirals down, wings closing, and lies on its side (hover ~1.4 m). M3-CRE-632: the wings close up over its
+    # back (keyed down, -55, the lower pair went 0.63 m through the floor once it rolled onto its side)
+    ko = ck.Clip("ko", 1.8)
     for t, d, spin in ((0.0, 0.0, 0.0), (0.6, 0.35, 120.0), (1.2, 1.1, 260.0), (1.5, 1.36, 330.0), (1.8, 1.38, 340.0)):
         ko.key("root", t, (0, spin, 60.0 * min(d, 1.0)), (0, -d, 0))
         for b, s in wings:
-            ko.key(b, t, (0, 0, -55.0 * min(d, 1.0) * s))
+            ko.key(b, t, (0, 0, KO_WINGS * min(d, 1.0) * s))
     return [idle, attack, cast, hit, ko]
+
+
+HOVER = 1.38  # creatures.json stand_in.hover: the stand-in lifts the model by it, and the KO comes down by it
+# Kept off the floor (M3-CRE-632, common/grounding.py), measured with the hover (the floor is y -HOVER here): where it
+# lands on its side, the wing and antenna under it fold up the least it takes to lie on the floor, and the body comes
+# to rest on it (a lift of at most 4 cm, so the KO still comes down by its hover: test_a_ko_ends_on_the_ground).
+GROUNDED_LIMBS = [(f"{w}_{tag}", 2, s, 40.0, ("ko",)) for tag, s in (("l", 1.0), ("r", -1.0)) for w in ("fore", "hind")]
+GROUNDED_LIMBS += [(f"ant_{tag}", 0, -1.0, 60.0, ("ko",)) for tag in "lr"] + [("root", gr.LIFT, 1.0, 0.04, ("ko",))]
+
+
+def export_clips(rig: ck.Rig, mesh: ck.Mesh) -> list[ck.Clip]:
+    return gr.grounded(rig, mesh, build_clips(), GROUNDED_LIMBS, floor=-HOVER)
 
 
 def main() -> None:
@@ -173,7 +191,7 @@ def main() -> None:
         wing(mesh, rig, s, tag, False)
     body(mesh, rig)
     antennae(mesh, rig)
-    info = ck.export_creature(mesh, rig, build_clips(), args.out, extras={"hymn_creature": "ashwing"})
+    info = ck.export_creature(mesh, rig, export_clips(rig, mesh), args.out, extras={"hymn_creature": "ashwing"})
     print(f"ashwing: {info}")
 
 

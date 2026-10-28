@@ -1,0 +1,8 @@
+{
+  "_doc": "Fen leech surfaces (act2/variants.md): the sail leech's one carapace slot, wetter (the fen's dark water), with the spawn_wound slits and eyes glowing from their mask. Colours are vertex data. write_materials.py on game/shaders/creature/creature.gdshader.",
+  "slots": {
+    "carapace": {"roughness_dry": 0.25, "roughness_wet": 0.1, "specular": 0.6, "clearcoat_wet": 1.0,
+                 "detail_scale": 22.0, "detail_albedo": 0.08, "detail_bump": 0.3, "cavity_albedo": 0.35, "rim_sheen": 0.3,
+                 "emission_color": "#3FE0C8", "emission_energy": 2.2, "emission_pulse_hz": 0.3, "emission_pulse_depth": 0.45}
+  }
+}

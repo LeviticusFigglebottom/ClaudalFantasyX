@@ -112,3 +112,23 @@ func test_crafting_is_deterministic() -> void:
 		cz.craft(bg, uid, &"ember_edge", pair[1])
 	assert_eq(a.data, b.data)
 	assert_eq(ia.counts, ib.counts)
+
+
+func test_the_sailmakers_needle_stitches_sea_legs_into_armour_and_is_spent() -> void:
+	# ADR 0040: the needle is a Customize material, not an accessory (M3-C08-100).
+	assert_eq(
+		cz.cost(&"sea_legs"),
+		[{"item": &"sailmakers_needle", "count": 1}, {"item": &"tide_pearl", "count": 2}] as Array[Dictionary]
+	)
+	var harness := bag.add_piece(&"rhen_patched_tether")
+	inv.add(&"tide_pearl", 2)
+	assert_eq(cz.craft(bag, harness, &"sea_legs", inv), Customize.ERR_MISSING_ITEMS, "no needle, no stitching")
+	inv.add(&"sailmakers_needle", 1)
+	assert_eq(cz.craft(bag, harness, &"sea_legs", inv), Customize.RESULT_OK)
+	assert_eq(bag.slots_of(harness), [&"sea_legs"] as Array[StringName], "into the armour's empty slot")
+	assert_eq(inv.count(&"sailmakers_needle"), 0, "the needle is spent")
+	assert_eq(inv.count(&"tide_pearl"), 0)
+	var hooks := bag.add_piece(&"rhen_salvage_hooks")
+	inv.add(&"sailmakers_needle", 1)
+	inv.add(&"tide_pearl", 2)
+	assert_ne(cz.craft_error(bag, hooks, &"sea_legs", inv), Customize.RESULT_OK, "an armour ability, not a weapon's")

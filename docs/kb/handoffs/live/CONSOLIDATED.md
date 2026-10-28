@@ -72,6 +72,11 @@
   - env-art-b `session_01F3vrUNt6trAMrjeYavaDNC` (claude/env-art-b): the Ch5–Ch9 zones and their arenas;
   - creatures-b `session_01F3vrUMszfxGn5bonYsSJxK` (claude/creatures-b): the Act I bosses and the Vowbound.
   - env-art keeps the Prologue–Ch4 zones and the shared kits; creatures keeps the regular enemies and the wildlife.
+- **Ownership under ADR 0041 (Lead decision, 10-28 02:40):**
+  - Act I dressing (the generated dressing, collision and layout json and their tools/act1 scripts): env-art for the Prologue–Ch4, env-art-b for Ch5–Ch9.
+  - act1-chapters: encounters, NPC and trigger placement, cutscene staging and flow only. Its parallel Ch5–Ch9 dressing is dropped in favour of env-art-b's; act1-chapters merges env-art-b and keeps Ch4 plus its dressing test.
+  - Inventory capsules: party → integration-qa; generic villagers → creatures (a villager generator); named NPCs → characters.
+  - integration-qa runs an hourly TRIAL MERGE of every track branch and logs the conflicts.
 - The account's seven-day usage is at its warning level, so no more sessions unless one is clearly the bottleneck.
 
 ## 2a. Merge state (new account)
@@ -105,7 +110,14 @@
 ## 2b. Rendering is PC-only (human directive, 10-27)
 No cloud session captures screenshots. Tracks post `RENDER-REQUEST @ sha: ids` lines in their live logs, and the PC renders them and pushes `gpu/render-<track>-<sha7>`. The protocol is in TRACK-RULES.md. Gates stay on the PC as before.
 
-## 2b'. The PC is PAUSED (10-27 ~21:30, the human's instruction)
+## 2b''. The PC is RESUMED (10-28 ~03:30, the human: "use it however is most impactful")
+- In priority order:
+  1. batch gates from big14 on, on lavapipe as before (`gpu/gate-bigN-shots`);
+  2. Act I real-GPU QA along the critical path, logged in `docs/kb/qa/act1_gpu_qa.md` with owners, contact sheets on `gpu/act1-qa-<n>`, plus a per-zone frame-time budget;
+  3. heavy Blender verifies of the characters, creatures and creatures-b builds.
+- Its old 13-request render queue is retired. Cloud tracks keep self-rendering their own small sets.
+
+## 2b'. (history) The PC was PAUSED (10-27 ~21:30, the human's instruction)
 - **pc-gpu PAUSED at 10-27 21:29 UTC** (clean; nothing running in WSL). The resume point is pc-gpu.md on `gpu/pc-gpu-paused-1027` @ 1dffdb31. Ready to run on resume: the slice --budget re-sweep (prepared in `hymn_budget`) and the Act I playthrough. Open render requests were handed to the Lead's cloud render server.
 - **Meanwhile the Lead's container takes over** the render requests (`lead/gate-render-*` branches) and the batch gates (big13 and on): the full Godot suite plus the full manifest on cloud lavapipe, about 2–3 h per full gate.
 - **10-28 01:00: tracks self-render (TRACK-RULES).** The shared cloud render queue left six tracks idle, so it is retired. Each track renders its own changed shots in its own container (HYMN_SHOTS ≤15, never baselines) and views them. The Lead's container only runs the batch gates, which re-render everything and approve baselines.

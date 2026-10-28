@@ -43,6 +43,9 @@ func test_a_prompt_plays_once_by_its_seen_flag() -> void:
 	assert_true(zone.prompt("shutter"))
 	assert_true(bool(Game.get_flag(&"tut_shutter_seen")))
 	assert_eq(shown, [&"ch01_tut_003"] as Array[StringName])
+	# M2-FP-30: the line names the shutter's binding, so it follows a rebind and the last device.
+	var filled := InputNames.fill(tr("DLG_CH01_TUT_003"), false)
+	assert_false(filled.contains("{"), "the shutter's action is named: %s" % filled)
 	assert_false(zone.prompt("shutter"), "only once")
 	assert_false(zone.prompt("no_such_prompt"))
 	assert_eq(shown.size(), 1)

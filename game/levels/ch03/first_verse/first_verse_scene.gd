@@ -1,8 +1,11 @@
 class_name FirstVerseScene
 extends Node3D
-## Ch3 Cutscene B, "The First Verse", on a placeholder Shell Shrine set (M2-FP-04): CSG stone, the
-## outer steps, the chamber with its pool, and the Drownbell's hood offshore, at sunset. The shots
-## follow haluna.md §5 (S06–S10, C08) as closely as primitives allow.
+## Ch3 Cutscene B, "The First Verse" (M2-FP-04), at sunset in the real Shell Shrine (M2-FP-116): env-art's
+## shrine (its hall, vault, west portal, outer steps and islet), the trial's pools, basins and spring from the
+## Haluna kit, the shrine level's set dressing, the sea, and the Drownbell's hood offshore. Rhen and Toma watch
+## Asha go in from the portal (S07), wait on the outer steps (S06), and she comes back out onto them (S09, S10).
+## Ilun's chamber beyond the east door is not built: S08 holds him over the inner pool under the vault.
+## The shots follow haluna.md §5 (S06–S10, C08).
 ##
 ## The cutscene ends on `<<event start_battle drownbell>>`: that opens the Drownbell (M2-FP-06)
 ## through BattleRequest with the party, victory flag and following scene of first_playable.json

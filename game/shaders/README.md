@@ -61,6 +61,8 @@ These are declared in `include/globals.gdshaderinc` and **must be registered in 
 | `hymn_sun_direction` | `vec3` | normalized direction *towards* the sun or moon | time-of-day system |
 | `hymn_glimmer` | `vec4` | rgb = linear tint, a = scene glimmer intensity | zone / cutscene |
 | `hymn_glimmer_focus` | `vec4` | xyz = point where motes gather, w = radius in metres (0 = off) | battle / field / cutscene |
+| `hymn_still_actor_0`, `_1` | `vec4` | xyz = base of a revenant's capsule (world), w = radius in metres (0 = slot free); the water's SSR reflects it with a flat normal (M3-RND-03) | RevenantTells |
+| `hymn_still_actor_heights` | `vec2` | the two capsules' heights in metres | RevenantTells |
 
 Write them from GDScript with `RenderingServer.global_shader_parameter_set(&"hymn_wind", value)`. Don't add a new global without updating this table and `project.godot` in the same commit.
 

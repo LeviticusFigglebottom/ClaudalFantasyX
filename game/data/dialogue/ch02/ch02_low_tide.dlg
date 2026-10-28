@@ -16,4 +16,6 @@ Toma [neutral]: The tide-readers set the day. The causeway opens this far twice 
 Asha [smile]: Come and see it, Rhen. It's the most beautiful thing we have. #line:ch02_low_tide_002
 Toma [worried]: He is not sworn to anything, Asha. #line:ch02_low_tide_003
 Asha [soft_smile]: I know. I'm already walking, Toma. #line:ch02_low_tide_004
+// M2-AUD-12: the causeway's cue rises as they set off; Audio's deck carries it into ch03/saltgrass_causeway.
+@music saltgrass_causeway fade=4.0
 ===

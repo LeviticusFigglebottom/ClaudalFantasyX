@@ -4,7 +4,7 @@ title: Pemakar's story pieces the kit lacks (the sea-cut weir, the wake-wall, th
 role: environment
 status: review
 owner_session: "env-art (session_01YbaV2c8yquRHqj6afQYg89)"
-depends_on: []
+depends_on: [M3-C05-1213]
 milestone: M3
 request-from: cinematics
 reviewer: cinematics
@@ -27,7 +27,7 @@ is named above; give it `"block": <id>` so it follows the story).
 - [x] The pieces exist in the Pemakar kit with PROVENANCE rows; the day grade exists.
 
 ## Notes (env-art)
-- Depends on act1-chapters' M3-C05-1213 (on their branch; dropped from `depends_on` here so the board checks clean before the Lead merges it).
+- Depends on act1-chapters' M3-C05-1213 (restored in `depends_on` by the big13 merge, which carries both).
 - `pemakar_harbour.py` builds four pieces (all within budget, with LOD1). Every older Pemakar piece rebuilt
   byte-identical.
   - **`harbour_quay`:** 32 m.

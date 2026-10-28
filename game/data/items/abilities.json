@@ -29,6 +29,7 @@
     {"id": "low_tide_mend", "category": "auto_status", "equip": ["armor"], "name_key": "ABILITY_LOW_TIDE_MEND", "desc_key": "ABILITY_LOW_TIDE_MEND_DESC", "effect": {"status": "regen", "trigger": "low_hp", "hp_below_pct": 50}},
     {"id": "full_net", "category": "economy", "equip": ["weapon", "armor"], "name_key": "ABILITY_FULL_NET", "desc_key": "ABILITY_FULL_NET_DESC", "effect": {"currency_mult": 2}},
     {"id": "light_step", "category": "field", "equip": ["armor"], "name_key": "ABILITY_LIGHT_STEP", "desc_key": "ABILITY_LIGHT_STEP_DESC", "effect": {"encounter_rate_pct": 50}},
-    {"id": "unfettered", "category": "special", "equip": ["weapon"], "name_key": "ABILITY_UNFETTERED", "desc_key": "ABILITY_UNFETTERED_DESC", "effect": {"break_damage_cap": true}}
+    {"id": "unfettered", "category": "special", "equip": ["weapon"], "name_key": "ABILITY_UNFETTERED", "desc_key": "ABILITY_UNFETTERED_DESC", "effect": {"break_damage_cap": true}},
+    {"id": "sea_legs", "category": "status_ward", "equip": ["armor"], "name_key": "ABILITY_SEA_LEGS", "desc_key": "ABILITY_SEA_LEGS_DESC", "effect": {"status": "slow"}}
   ]
 }

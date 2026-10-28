@@ -72,10 +72,13 @@ FIN_J = np.array([(0.0, 0.0, 0.32), (0.0, 0.78, 0.12), (0.0, 1.5, -0.04), (0.0, 
 FIN_RAYS, FIN_ROWS = 46, 12
 SEAM_K = (1, 2)  # the seam band: between these section rows on the right flank (mirrored on the left)
 SEAM_Z = (-2.38, 1.36)
-# Wounds along the spine: (z, side, half-length), high on the flank either side of the ridge.
-WOUNDS = ((1.38, 1, 0.12), (0.95, -1, 0.15), (0.45, 1, 0.17), (-0.15, -1, 0.17), (-0.75, 1, 0.16), (-1.3, -1, 0.14),
-          (-1.78, 1, 0.12), (-2.12, -1, 0.09))
+# Wounds along the spine: (z, side, half-length), high on the flank either side of the ridge. M3-CRE-635: longer and
+# wider open seams that wander across the rows (one barely showed in the first render)
+WOUNDS = ((1.38, 1, 0.18), (0.95, -1, 0.23), (0.45, 1, 0.27), (-0.15, -1, 0.27), (-0.75, 1, 0.25), (-1.3, -1, 0.21),
+          (-1.78, 1, 0.17), (-2.12, -1, 0.12))
 WOUND_K = 7  # the section row (from the lateral line) the wounds lie on: 78.75 degrees, beside the ridge
+WOUND_W = 0.85  # the open seam's half-width, in section rows (the lips' is 2.6 times it)
+WOUND_WANDER = 0.75  # how far a seam wanders off its row, in section rows
 
 PARTS: dict[str, tuple[int, int]] = {}  # part name -> vertex range, for the report
 
@@ -199,17 +202,19 @@ def body(mesh: ck.Mesh, rig: ck.Rig) -> None:
     ang = np.where(ang > SEGS // 2, ang - SEGS, ang).astype(np.float64)
     slit = np.zeros(len(P))
     lip = np.zeros(len(P))
-    for z0, s, half in WOUNDS:
-        along = np.abs(zv - z0) / half
-        win = ck.smoothstep(1.0, 0.55, along) * (side == s)
-        slit = np.maximum(slit, win * np.exp(-((ang - WOUND_K) / 0.45) ** 2))
-        lip = np.maximum(lip, ck.smoothstep(1.35, 0.6, along) * (side == s) * np.exp(-((ang - WOUND_K) / 1.2) ** 2))
+    for i, (z0, s, half) in enumerate(WOUNDS):
+        along = (zv - z0) / half
+        row = WOUND_K + WOUND_WANDER * np.sin(along * 2.6 + i * 1.7)  # a torn seam, not a cut line
+        win = ck.smoothstep(1.0, 0.6, np.abs(along)) * (side == s)
+        slit = np.maximum(slit, win * np.exp(-((ang - row) / WOUND_W) ** 2))
+        lip = np.maximum(lip, ck.smoothstep(1.4, 0.6, np.abs(along)) * (side == s)
+                         * np.exp(-((ang - row) / (2.6 * WOUND_W)) ** 2))
     lip = lip * (1.0 - slit)
     # the gill cover's edge and the mouth's line on the head
     gill = np.exp(-((zv - (1.42 + 0.06 * sav ** 2)) / 0.02) ** 2) * ck.smoothstep(0.85, 0.5, np.abs(sav))
     mouth = np.exp(-((sav + 0.32) / 0.09) ** 2) * ck.smoothstep(1.66, 1.8, zv)
     rough = ck.fbm(P * 7.0, SEED + 1) * 0.004
-    disp = rough - 0.02 * slit + 0.008 * lip - 0.008 * gill - 0.006 * mouth
+    disp = rough - 0.03 * slit + 0.012 * lip - 0.008 * gill - 0.006 * mouth
     P = P + N * disp[:, None]
 
     # colour: the back lacquer black, the flanks and belly lifted toward navy, faint sailfish bars on the flanks
@@ -222,7 +227,7 @@ def body(mesh: ck.Mesh, rig: ck.Rig) -> None:
     col = ck.mix(col, PAL["deep_teal_shadow"] * 0.45 + NAVY * 0.55, (0.5 * belly)[:, None])
     col = ck.mix(col, BLACK, (0.6 * gill + 0.7 * mouth)[:, None])
     col = ck.mix(col, BLACK * 0.5 + PAL["glimmer_held"] * 0.1 + NAVY * 0.4, (0.6 * lip)[:, None])
-    col = ck.mix(col, PAL["spawn_wound"] * 0.65, slit[:, None])
+    col = ck.mix(col, PAL["spawn_wound"] * 0.8, slit[:, None])
     wet = np.full(len(P), 1.0)
     cavity = np.clip(0.8 * slit + 0.35 * lip + 0.6 * gill + 0.5 * mouth, 0.0, 1.0)
 
@@ -235,7 +240,8 @@ def body(mesh: ck.Mesh, rig: ck.Rig) -> None:
     taper = ck.smoothstep(SEAM_Z[0], SEAM_Z[0] + 0.5, zv) * ck.smoothstep(SEAM_Z[1], SEAM_Z[1] - 0.35, zv)
     seam_col = ck.mix(PAL["deep_teal_shadow"], PAL["sea_glow"], (0.4 + 0.6 * taper)[:, None])
     skin = body_skin(rig)
-    for name, tri_mask, c, e, slot in (("body", ~tri_seam, col, slit, "body"),
+    glow = np.clip(slit + 0.2 * lip, 0.0, 1.0)  # the seams' light, spilling a little onto their lips
+    for name, tri_mask, c, e, slot in (("body", ~tri_seam, col, glow, "body"),
                                       ("seam", tri_seam, seam_col, 0.25 + 0.75 * taper, "seam")):
         Ts = T[tri_mask]
         used = np.unique(Ts)

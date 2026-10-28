@@ -143,3 +143,48 @@ func test_the_breach_closes_in_turn_by_turn() -> void:
 	ctl.stage.choreo.reduced_motion = true
 	assert_eq(cam.rest_fov(), cam.default_fov, "reduced motion: no push-in")
 	_free()
+
+
+func test_the_stair_has_its_few_barks() -> void:
+	# M3-C08-100: Toma's "Hold." on Hold the Stair; Asha says Virel's name as she calls her; most skills say nothing.
+	_make()
+	var active: Array[StringName] = [&"rhen", &"asha", &"liss"]
+	var reserve: Array[StringName] = [&"toma"]
+	ctl.start_battle(active, reserve, &"ch08_stair_hold_1", SEED)
+	ctl.stage.choreo.live = false
+	var barks := ctl.hud.get_node(NodePath(BattleBarks.NODE_NAME)) as BattleBarks
+	assert_true(barks != null, "the barks listen")
+	var heard: Array = []
+	barks.barked.connect(func(who: StringName, key: String) -> void: heard.append([who, key]))
+	var guard := 0
+	while ctl.current_actor_id() != &"toma" and guard < 40:
+		guard += 1
+		if ctl.engine.is_party_turn():
+			var a := ctl.engine.current.id
+			ctl.engine.perform(&"stand_fast", [ctl.engine.current])
+			ctl.after_action(a)
+		ctl.tick(STEP_SEC)
+	assert_eq(ctl.current_actor_id(), &"toma", "Toma's turn comes")
+	var targets: Array[StringName] = []
+	for t in ctl.default_targets(&"hold_the_stair"):
+		targets.append(t.id)
+	ctl.act(&"hold_the_stair", targets)
+	assert_eq(heard.size(), 1, "one bark")
+	if heard.size() == 1:
+		assert_eq(heard[0][0], &"toma")
+		assert_eq(heard[0][1], "BARK_SKILL_HOLD_THE_STAIR")
+	# Asha's "Virel." on the call: test_battle_barks.gd (test_asha_names_virel_as_she_calls_him_and_ilun_comes_unnamed).
+	_free()
+
+
+func test_the_timeline_names_the_entries() -> void:
+	# The Fisher Stair and the Surge read by name on the order, not as raw ids (the arena render showed "the_climb").
+	_make()
+	var active: Array[StringName] = [&"rhen", &"asha", &"liss"]
+	var reserve: Array[StringName] = [&"toma"]
+	ctl.start_battle(active, reserve, &"ch08_stair_hold_1", SEED)
+	for c in ctl.engine.entries:
+		var ident := ctl.hud.timeline._identity.get(c.id, {}) as Dictionary
+		assert_eq(str(ident.get("label", "")), tr(c.name_key), "%s reads %s" % [c.id, tr(c.name_key)])
+	assert_false(ctl.engine.entries.is_empty(), "the wave has its entries")
+	_free()

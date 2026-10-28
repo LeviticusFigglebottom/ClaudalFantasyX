@@ -1,12 +1,14 @@
 extends TestCase
 ## M3-AUD-812: the field steps change surface in every slice zone, on the real scenes and with no level marking its
 ## ground: Haluna's sand, its dock's planks (the dock_haluna kit mesh) and its shallows (under the sea's rest plane);
-## the Saltgrass Causeway's stone and its greybox tidepool; the Shell Shrine's stone. When the player carries
+## the Saltgrass Causeway's stone slabs over its sand flats and the sea between them, and its tide pool
+## (env-art's final route, M2-FP-108); the Shell Shrine's stone. When the player carries
 ## hero-integration's HeroBody (HeroFieldActor), a walk steps from its foot_contact signal. Sounds are recorded
 ## through the listener's player Callable, so nothing plays.
 
 const HALUNA := "res://game/levels/ch02/haluna/haluna.tscn"
 const CAUSEWAY := "res://game/levels/ch03/saltgrass_causeway/saltgrass_causeway.tscn"
+const TIDEPOOL := Vector3(64.69, -0.85, -22.96)
 const SHRINE := "res://game/levels/ch03/shell_shrine/shell_shrine.tscn"
 const DT := 1.0 / 60.0
 ## Frames of walking for the hero-body check (3 s).
@@ -88,12 +90,22 @@ func test_haluna_is_sand_with_a_wooden_dock_and_shallows() -> void:
 	_done()
 
 
-func test_the_causeway_is_stone_with_a_tidepool() -> void:
+func test_the_causeway_is_stone_slabs_over_sand_flats_and_the_sea() -> void:
 	_load(CAUSEWAY)
 	var f := _listener(CAUSEWAY)
-	assert_eq(String(f.surface), "stone", "the causeway's own ground")
-	assert_eq(String(f._ground(Vector3(0.0, 0.04, -30.0))), "stone", "on the path")
-	assert_eq(String(f._ground(Vector3(5.0, 0.0, -60.0))), "water", "in the tidepool")
+	assert_eq(String(f.surface), "sand", "the flats are the causeway's own ground")
+	var slabs := zone.find_children("causeway_slab_flat", "MeshInstance3D", true, false)
+	assert_true(slabs.size() > 10, "env-art's final route is dressed (%d slabs)" % slabs.size())
+	var slab := slabs[0] as MeshInstance3D
+	var aabb := slab.get_aabb()
+	var top := slab.global_transform * (aabb.get_center() + Vector3(0.0, aabb.size.y * 0.5, 0.0))
+	assert_eq(String(f._ground(top)), "stone", "on a slab of the path")
+	var off := top + Vector3(0.0, 0.0, 6.0)
+	assert_eq(String(f._ground(Vector3(off.x, 0.0, off.z))), "sand", "off the path, on the flats")
+	assert_eq(String(f._ground(Vector3(off.x, -0.9, off.z))), "water", "down in the sea (under its rest plane)")
+	# M2-FP-108's final route: the tide pools lie off the railed path, under the sea that fills them (env-art's
+	# first pool, as the wildlife file's tidepool shoal places it), so a foot in one wades.
+	assert_eq(String(f._ground(TIDEPOOL)), "water", "in the tidepool")
 	_done()
 
 

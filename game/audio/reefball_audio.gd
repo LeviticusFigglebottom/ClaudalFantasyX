@@ -273,7 +273,7 @@ func advance(delta: float) -> void:
 			set_crowd(_restore["crowd"])
 	var spheres: Array[Node3D] = []
 	for w in watched:
-		if (w["hook"] as Dictionary).has("sphere") and w["node"] is Node3D:
+		if (w["hook"] as Dictionary).has("sphere") and is_instance_valid(w["node"]) and w["node"] is Node3D:
 			spheres.append(w["node"] as Node3D)
 	if spheres.is_empty():
 		swimmers.clear()

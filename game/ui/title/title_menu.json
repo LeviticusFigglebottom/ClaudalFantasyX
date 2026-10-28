@@ -68,6 +68,7 @@
       "shaft_sway_sec": 19,
       "shaft_pulse": 0.35
     },
+    "reveal": {"doc": "The opening reveal (TitleReveal): the logo fades in, the choices fade in rising rise_px, then the help line; each after its delay. Reduced motion shows all at once. The whole reveal (0.75 s) ends inside boot_title's settle frames.", "logo_delay_sec": 0.0, "logo_sec": 0.45, "page_delay_sec": 0.25, "page_sec": 0.35, "help_delay_sec": 0.45, "help_sec": 0.3, "rise_px": 18},
     "version": {
       "rect": [1420, 1030, 476, 34],
       "debug_only": true,

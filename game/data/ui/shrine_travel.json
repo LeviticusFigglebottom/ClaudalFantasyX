@@ -1,0 +1,44 @@
+{
+  "shrine_travel": {
+    "doc": "The save shrines' travel list (ShrineTravelMenu; SPEC 6.6, ShrineNetwork; docs/kb/tech/ui.md section Shrine travel). Rects x, y, w, h at the 1920 x 1080 reference, multiples of 3; centred like the battle pause. max_rows sizes the list (destinations plus Stay here; a longer network scrolls in the MenuPage). dim_alpha darkens the field under the page in the theme's panel_low.",
+    "canvas_layer": 64,
+    "dim_alpha": 0.45,
+    "panel": {
+      "rect": [
+        555,
+        270,
+        810,
+        540
+      ],
+      "pad": 27,
+      "title_height": 56,
+      "help_height": 40
+    },
+    "rows": {
+      "rect": [
+        594,
+        369,
+        732,
+        0
+      ],
+      "header_height": 0,
+      "row_pitch": 48,
+      "max_rows": 5,
+      "row_inset": 12,
+      "text_indent": 40,
+      "cost_width": 60,
+      "rank_width": 60,
+      "submenu_dim": 0.5,
+      "cursor_sec": 0.09,
+      "mote_lag_sec": 0.03,
+      "mote_px": 10,
+      "mote_offset": 14,
+      "breath_sec": 2.4,
+      "breath_min": 0.75
+    },
+    "desc": {
+      "gap": 12,
+      "height": 72
+    }
+  }
+}

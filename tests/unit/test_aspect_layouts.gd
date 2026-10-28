@@ -78,6 +78,7 @@ func test_field_menu_and_its_pages() -> void:
 func test_shop_inn_and_save() -> void:
 	_sweep("shop", _shop, _framed)
 	_sweep("inn", _inn, _framed)
+	_sweep("reefball outfitter", _outfitter, _framed)
 	_sweep("save", _save, _framed)
 	SaveSystem.save_dir = _saved_dir
 
@@ -112,6 +113,23 @@ func test_battle_panels_and_pause() -> void:
 	for script: StringName in [BattleCaptureScript.SCRIPT_READ_PANEL, BattleController.SCRIPT_DEFEAT]:
 		_sweep("battle %s" % script, _battle.bind(script), _battle_pieces)
 	_sweep("battle pause", func() -> Node: return BattlePauseMenu.open_in(ParityHost.scene_root()), _framed)
+
+
+## The shrine travel list: a framed page, centred, its covers full screen.
+func test_shrine_travel() -> void:
+	var saved_state := Game.state
+	_sweep("shrine travel", _shrine_travel, _framed)
+	Game.state = saved_state
+
+
+func _shrine_travel() -> Node:
+	Game.state = GameStateData.new()
+	Game.state.attuned_shrines = [&"save_shrine_test", &"haluna_shrine"] as Array[StringName]
+	var here := SaveShrine.new()
+	here.network_id = &"save_shrine_test"
+	here.opens_menu = false
+	ParityHost.scene_root().add_child(here)
+	return here.open_travel()
 
 
 ## M3-UI-01: the Reefball HUD on a pass choice (menu and preview open) and just after a goal (banner).
@@ -395,6 +413,20 @@ func _inn() -> Node:
 	var heal := func(_source: StringName) -> void: pass
 	menu.configure(
 		InnMenuModel.new(Inn.new(db, &"haluna_inn"), PartyGoods.from_state(db, _state()), FlagReader.new(), heal)
+	)
+	ParityHost.scene_root().add_child(menu)
+	return menu
+
+
+func _outfitter() -> Node:
+	var menu := (load(ReefballOutfitterMenu.SCENE_PATH) as PackedScene).instantiate() as ReefballOutfitterMenu
+	menu.pause_tree = false
+	var none := func(_f: StringName) -> Variant: return ""
+	var keep := func(_f: StringName, _v: Variant) -> void: pass
+	menu.configure(
+		ReefballOutfitterModel.new(
+			ReefballDB.load_default(), PartyGoods.from_state(ItemDB.load_default(), _state()).wallet, none, keep
+		)
 	)
 	ParityHost.scene_root().add_child(menu)
 	return menu

@@ -38,6 +38,7 @@ const TOWN_DRIVERS: Array[String] = [
 	"res://game/ui/shop/shots/shop_buy.tscn",
 	"res://game/ui/shop/shots/shop_sell.tscn",
 	"res://game/ui/shop/shots/inn.tscn",
+	"res://game/ui/reefball/shots/reefball_outfitter.tscn",
 ]
 const REEFBALL_CHOICE := "res://game/ui/reefball/shots/reefball_hud_choice.tscn"
 const REEFBALL_GOAL := "res://game/ui/reefball/shots/reefball_hud_goal.tscn"
@@ -354,6 +355,42 @@ func test_set_piece_fits() -> void:
 		_probe(ctl.hud, "battle set piece")
 		_clear()
 	_done("set piece")
+
+
+## The shrine travel list (the teleport network's menu): the list with a long place name, then the question.
+func test_shrine_travel_fits() -> void:
+	var saved_state := Game.state
+	var saved_registry := ShrineNetwork.registry
+	ShrineNetwork.registry = (
+		LocationRegistry
+		. from_dict(
+			{
+				"default_location": "a",
+				"locations":
+				[
+					{"id": "a", "scene": SANDBOX, "spawn": "S", "name_key": "LOCATION_CH04_BRIGHTWATER_FERRY"},
+					{"id": "b", "scene": SANDBOX, "spawn": "S", "name_key": "LOCATION_CH04_HALUNA_WAKE"},
+				],
+				"shrines": [{"id": "a_shrine", "location_id": "a"}, {"id": "b_shrine", "location_id": "b"}],
+			}
+		)
+	)
+	for scale in _scales():
+		_settings_at(scale)
+		Game.state = GameStateData.new()
+		Game.state.attuned_shrines = [&"a_shrine", &"b_shrine"] as Array[StringName]
+		var here := SaveShrine.new()
+		here.network_id = &"a_shrine"
+		here.opens_menu = false
+		_host(here)
+		var menu := here.open_travel()
+		_probe(menu, "shrine travel list")
+		menu.accept()
+		_probe(menu, "shrine travel question")
+		_clear()
+	Game.state = saved_state
+	ShrineNetwork.registry = saved_registry
+	_done("shrine travel")
 
 
 ## M3-UI-01: the Reefball HUD on a pass choice (menu, preview, the read's marks) and just after a

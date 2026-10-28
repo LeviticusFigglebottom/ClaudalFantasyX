@@ -6,10 +6,13 @@ blender --background --factory-startup --threads 4 --python \
 
 An Ullari woolback that drank where the seep runs and grew: a long-necked, deep-chested pack animal 4 m long with
 its head at 3 m. Its undyed fleece (`sand_cloth`, gone grey to `overcast_slate` in the shadows) has matted into
-plates of ice and wool and hangs in six heavy frozen chains of locks to the knees, `salt_glass` ice at their tips,
-under the jaw and along the belly. Where the fleece parts the seep's cold `spawn_wound` light shows through (the
-weak points). The muzzle and legs are `laterite`, darkened. A faded `lacquer_red` herd-cord with three knots is
-still tied round its neck. Not horned, not demonic: the Ullari's own animal, too big.
+plates of ice and wool and hangs in six heavy frozen chains of locks to the knees, a few uneven `salt_glass`
+icicles hanging past their tips, frost under the jaw and ice along the belly. Where the fleece parts the seep's cold
+`spawn_wound` light shows through (the weak points). The head is a camelid's (M3-CRE-635): long and narrow, a soft
+rounded muzzle in the coat's colour, `laterite` darkened only at the nose and the lips, eyes at the sides under a
+soft brow, long upright ears and a woolly cap; the legs are darkened `laterite` too. A faded `lacquer_red`
+herd-cord with three knots is still tied round its slim neck. Not horned, not demonic: the Ullari's own animal,
+too big.
 
 Rig: root, body (the carrier the legs hang from), spine 5, neck 5, head, jaw, four legs of 3 and six fleece-lock
 chains of 2. The legs are posed by a deterministic grid solve in each leg's plane (`solve_leg`), so a planted foot
@@ -51,11 +54,33 @@ BARREL_SEGS = 40
 SPINE = np.array([(0, 1.54, -1.38), (0, 1.54, -0.84), (0, 1.54, -0.3), (0, 1.56, 0.2), (0, 1.6, 0.56), (0, 1.66, 0.84)])
 BODY_PIVOT = np.array([0.0, 1.46, -0.3])  # the body bone's head: the KO pitches the body about it
 NECK_CTRL = np.array([(0, 1.42, 0.5), (0, 2.2, 0.86), (0, 2.66, 1.1), (0, 2.82, 1.4)])
-NECK_R = ((0.0, 0.2, 0.4, 1.0), (0.38, 0.26, 0.2, 0.16))  # (u, radius) knots: thick where it leaves the chest
+# (u, radius) knots: thick where it leaves the chest, slim up the throat (M3-CRE-635: a camelid's neck)
+NECK_R = ((0.0, 0.2, 0.4, 1.0), (0.36, 0.22, 0.16, 0.13))
+NECK_SHAG = 0.75  # the neck's coat, as a share of the body's
 NECK_RINGS = 24
 NECK_SEGS = 22
-HEAD_C = np.array([0.0, 2.87, 1.54])  # the cranium (the head about 3 m: its top near 3.05)
+# The rig's head points (the head and jaw bones hang off them; unchanged by the M3-CRE-635 re-model)
+HEAD_C = np.array([0.0, 2.87, 1.54])
 MUZZLE_TIP = np.array([0.0, 2.71, 2.02])
+# The head (M3-CRE-635): a camelid's, long and narrow, from the poll to the end of the soft muzzle, its sections as
+# (u along it, half-width, height above its axis, depth below it): the cheeks deepest, the muzzle slim and rounded
+HEAD_BACK = np.array([0.0, 2.95, 1.35])
+NOSE = np.array([0.0, 2.69, 2.05])
+HEAD_SEC = np.array([(0.0, 0.1, 0.1, 0.12), (0.1, 0.118, 0.122, 0.16), (0.24, 0.124, 0.118, 0.182),
+                     (0.38, 0.112, 0.1, 0.16), (0.54, 0.096, 0.084, 0.118), (0.72, 0.086, 0.078, 0.098),
+                     (0.88, 0.09, 0.08, 0.096), (1.0, 0.084, 0.072, 0.088)])
+HEAD_ROUND = (0.07, 0.9)  # the poll and the muzzle's end round off before u = 0 and after this u
+HEAD_SEGS = 18
+EYE_U, EYE_A = 0.3, 64.0  # the eyes: set at the sides (degrees round from the top) under a soft brow
+EAR_U = 0.1
+JAW_PATH = ((0.0, 2.74, 1.6), (0.0, 2.7, 1.8), (0.0, 2.64, 1.93), (0.0, 2.625, 1.98))
+JAW_R = (0.064, 0.058, 0.048, 0.036)
+# Icicles (M3-CRE-635: few and uneven, never a row of even spikes): a few per lock chain at strands' tips, two
+# clumps under the belly ((barrel u, angle off the bottom, count)) and two under the jaw's beard
+LOCK_ICE = (1, 3)
+LOCK_ICE_LEN = (0.14, 0.32)
+LOCK_ICE_PAST = (0.05, 0.11)  # how far past its strand's tip
+BELLY_ICE = ((0.4, 0.2, 2), (0.6, -0.25, 3))
 # Legs: (attach, knee, fetlock, toe) per side; the hind leg's stifle forward and hock back
 FRONT = ((0.34, 1.14, 0.6), (0.36, 0.72, 0.64), (0.36, 0.22, 0.6), (0.36, 0.0, 0.7))
 HIND = ((0.36, 1.18, -1.12), (0.38, 0.86, -0.92), (0.38, 0.5, -1.36), (0.38, 0.0, -1.22))
@@ -69,7 +94,7 @@ LOCKS = ((1.0, 0.76, "spine3"), (1.0, 0.5, "spine2"), (1.0, 0.24, "spine0"),
 STRANDS = 9  # per chain
 BIB = 7  # locks down the chest front
 STRAND_TH = (118.0, 152.0)  # where a lock leaves the barrel (degrees from the top)
-TIP_Y = (0.56, 0.72)  # to the knees
+TIP_Y = (0.56, 0.84)  # to the knees, uneven
 LOCK_JOINT_Y = (0.9, 0.6)  # a chain's two bone tails
 # The partings (weak points): (u0, th0, u1, th1) on the barrel, th in degrees from the top (+ is the +x side)
 PARTINGS = ((0.74, 55.0, 0.69, 100.0), (0.5, 44.0, 0.46, 106.0), (0.24, 50.0, 0.27, 96.0),
@@ -132,10 +157,12 @@ def _nearest(path: np.ndarray, c: np.ndarray) -> np.ndarray:
     return path[np.argmin(d, axis=1)]
 
 
-def icicle(mesh: ck.Mesh, top: np.ndarray, length: float, radius: float, bones, segs: int = 5) -> None:
-    prof = [(0.0, 0.03), (radius, 0.0), (radius * 0.55, -length * 0.45), (0.0, -length)]
+def icicle(mesh: ck.Mesh, top: np.ndarray, length: float, radius: float, bones, segs: int = 5,
+           lean: tuple = (0.0, 0.0), waist: float = 0.55) -> None:
+    """An icicle hanging from `top`: `lean` (x, z degrees) tips it off the vertical, `waist` its girth halfway."""
+    prof = [(0.0, 0.03), (radius, 0.0), (radius * waist, -length * 0.45), (0.0, -length)]
     P, T = ck.lathe(prof, segs)
-    P = P + top
+    P = ck.transform(P, ck.euler(lean[0], 0.0, lean[1])) + top
     tip = ck.smoothstep(0.0, -length, P[:, 1] - top[1])
     col = ck.mix(PAL["salt_glass"] * 0.9, PAL["salt_glass"], tip[:, None])
     ck.finish(mesh, P, T, "ice", col, bones, wet=0.8, cavity=0.05)
@@ -259,13 +286,16 @@ def partings(mesh: ck.Mesh, rig: ck.Rig, paths: list[np.ndarray]) -> None:
 
 
 def belly_ice(mesh: ck.Mesh, rig: ck.Rig, paths: list[np.ndarray]) -> None:
+    """A few icicles in two uneven clumps under the belly (M3-CRE-635: not a row: a row of even spikes reads as
+    teeth)."""
     rng = np.random.default_rng(SEED + 30)
-    for _ in range(10):
-        u = rng.uniform(0.3, 0.72)
-        th = math.pi + rng.uniform(-0.45, 0.45)
-        P, _, _, _ = barrel_surface(np.array([u]), np.array([th]), paths)
-        icicle(mesh, P[0] + np.array([0.0, 0.03, 0.0]), rng.uniform(0.08, 0.15), rng.uniform(0.025, 0.04),
-               spine_skin(rig))
+    for u_c, th_c, n in BELLY_ICE:
+        for _ in range(n):
+            u = u_c + rng.uniform(-0.05, 0.05)
+            th = math.pi + th_c + rng.uniform(-0.18, 0.18)
+            P, _, _, _ = barrel_surface(np.array([u]), np.array([th]), paths)
+            icicle(mesh, P[0] + np.array([0.0, 0.03, 0.0]), rng.uniform(0.05, 0.16), rng.uniform(0.022, 0.04),
+                   spine_skin(rig), lean=(rng.uniform(-9.0, 9.0), rng.uniform(-9.0, 9.0)), waist=rng.uniform(0.4, 0.7))
 
 
 # ---------------------------------------------------------------------------------------------
@@ -298,7 +328,7 @@ def neck(mesh: ck.Mesh, rig: ck.Rig) -> None:
     down = ck.smoothstep(0.3, -0.8, radial[:, 1])
     th = np.arctan2(radial[:, 0], radial[:, 1])
     along = np.concatenate([np.repeat(u, NECK_SEGS), [0.0]])
-    shag = coat_depth(P, th, down, SEED + 40) + 0.08 * down * ck.smoothstep(0.05, 0.3, along)
+    shag = NECK_SHAG * coat_depth(P, th, down, SEED + 40) + 0.06 * down * ck.smoothstep(0.05, 0.3, along)
     P = P + radial * shag[:, None]  # the mane hangs heavier under the throat
     col, wet, cav = fleece_colour(P, down, SEED + 41)
     ck.finish(mesh, P, T, "fleece", col, neck_skin(rig), wet=wet, cavity=cav)
@@ -312,7 +342,7 @@ def neck_surface(u: float, ang: np.ndarray, out: float) -> np.ndarray:
     r = float(np.interp(u, NECK_R[0], NECK_R[1]))
     radial = np.outer(np.cos(ang), nrm[k]) + 0.78 * np.outer(np.sin(ang), bin_[k])
     unit = radial / np.linalg.norm(radial, axis=1, keepdims=True)
-    return path[k] + radial * r + unit * (0.11 + out)
+    return path[k] + radial * r + unit * (0.11 * NECK_SHAG + out)
 
 
 def herd_cord(mesh: ck.Mesh, rig: ck.Rig) -> None:
@@ -339,47 +369,127 @@ def herd_cord(mesh: ck.Mesh, rig: ck.Rig) -> None:
                   cavity=0.2)
 
 
+def head_frame() -> tuple[np.ndarray, np.ndarray, float]:
+    """The head's axis (poll to nose), the up direction across it and its length."""
+    d = NOSE - HEAD_BACK
+    length = float(np.linalg.norm(d))
+    d = d / length
+    up = np.array([0.0, d[2], -d[1]])
+    return d, up / np.linalg.norm(up), length
+
+
+def head_surface(u, a, out: float = 0.0) -> tuple[np.ndarray, np.ndarray]:
+    """Points on the head at u (0 the poll .. 1 the nose) and angle a (radians round the axis, 0 up, + toward +x),
+    `out` metres proud of it: (P, the radial direction)."""
+    u = np.asarray(u, dtype=np.float64)
+    a = np.asarray(a, dtype=np.float64)
+    d, up, length = head_frame()
+    w, t, b = (np.interp(u, HEAD_SEC[:, 0], HEAD_SEC[:, k]) for k in (1, 2, 3))
+    back = np.clip((HEAD_ROUND[0] - u) / HEAD_ROUND[0], 0.0, 1.0)
+    front = np.clip((u - HEAD_ROUND[1]) / (1.0 - HEAD_ROUND[1]), 0.0, 1.0)
+    rnd = np.sqrt(np.clip(1.0 - np.maximum(back, front) ** 2, 0.0, 1.0))  # the ends round off
+    s, c = np.sin(a), np.cos(a)
+    x = w * rnd * np.sign(s) * np.abs(s) ** 0.85  # a little flat-sided
+    y = ck.mix(b, t, ck.smoothstep(-0.25, 0.25, c)) * rnd * c
+    radial = np.outer(x, (1.0, 0.0, 0.0)) + np.outer(y, up)
+    unit = radial / np.maximum(np.linalg.norm(radial, axis=1, keepdims=True), 1e-9)
+    P = HEAD_BACK + np.outer(u * length, d) + radial + unit * out
+    return P, unit
+
+
 def head(mesh: ck.Mesh, rig: ck.Rig) -> None:
+    """M3-CRE-635: a camelid's head (the first render read as a duck's: a dark flat bill on a white face). Long and
+    narrow, deep at the cheeks, the muzzle soft and round in the coat's colour, darkened laterite only at the nose
+    and the lips; the eyes at the sides under a soft brow, long upright ears with a slight droop, the woolly cap."""
     h = rig.rigid("head")
-    # the cranium: a woolly cap over the poll and brow, hide at the face
-    P, T = ck.ellipsoid(HEAD_C, (0.17, 0.18, 0.22), 10, 18)
-    face = ck.smoothstep(0.0, 0.14, P[:, 2] - HEAD_C[2]) * ck.smoothstep(0.1, -0.05, P[:, 1] - HEAD_C[1])
-    fcol, _, fcav = fleece_colour(P, np.full(len(P), 0.2), SEED + 60)
-    col = ck.mix(fcol, HIDE, face[:, None])
-    ck.finish(mesh, P, T, "fleece", col, h, cavity=ck.mix(fcav, 0.2, face))
-    cap, Tc = ck.ellipsoid(HEAD_C + np.array([0.0, 0.07, -0.03]), (0.2, 0.13, 0.21), 7, 16)
-    curls = np.abs(np.sin(np.arctan2(cap[:, 0], cap[:, 2] - HEAD_C[2]) * 8.0))
-    lump = 0.035 * ck.fbm(cap * 5.0, SEED + 61) + 0.025 * curls
-    cap = cap + (cap - HEAD_C) / np.linalg.norm(cap - HEAD_C, axis=1, keepdims=True) * lump[:, None]
+    d, up, length = head_frame()
+    us = np.concatenate([[0.012, 0.035], np.linspace(0.07, 0.86, 16), [0.9, 0.93, 0.955, 0.975, 0.99]])
+    angs = np.arange(HEAD_SEGS) * (2.0 * math.pi / HEAD_SEGS)
+    U, A = (x.ravel() for x in np.meshgrid(us, angs, indexing="ij"))
+    P, unit = head_surface(U, A)
+    # the soft brow over each eye, and the split of the upper lip at the front
+    for s in (-1.0, 1.0):
+        da = np.angle(np.exp(1j * (A - s * math.radians(EYE_A - 18.0))))
+        P += unit * (0.016 * np.exp(-((U - EYE_U) / 0.06) ** 2 - (da / 0.35) ** 2))[:, None]
+    split = ck.smoothstep(0.9, 0.99, U) * np.exp(-(np.sin(A) / 0.12) ** 2) * ck.smoothstep(-0.2, -0.7, np.cos(A))
+    P -= np.outer(0.012 * split, d)
+    T = ck.grid_tris(len(us), HEAD_SEGS, True)
+    ends = []
+    for u, row in ((0.0, 0), (1.0, len(us) - 1)):  # pole caps at the poll and the nose
+        idx = len(P) + len(ends)
+        ends.append(HEAD_BACK + d * length * u)
+        r0 = row * HEAD_SEGS
+        ring = [(r0 + s, idx, r0 + (s + 1) % HEAD_SEGS) for s in range(HEAD_SEGS)]
+        T = np.vstack([T, np.asarray(ring, dtype=np.int64)])
+    P = np.vstack([P, np.asarray(ends)])
+    U = np.concatenate([U, [0.0, 1.0]])
+    A = np.concatenate([A, [0.0, 0.0]])
+    T = outward(P, T, lambda c: HEAD_BACK + np.outer(np.clip((c - HEAD_BACK) @ d, 0.0, length), d))
+    c = np.cos(A)
+    down = 0.15 + 0.45 * ck.smoothstep(0.4, -0.8, c)
+    col, _, cav = fleece_colour(P, down, SEED + 60)
+    # darkened laterite only at the nose (the muzzle's front, above the lip) and along the lips
+    nose = ck.smoothstep(0.93, 0.985, U) * ck.smoothstep(-0.75, -0.2, c) * ck.smoothstep(0.75, 0.2, c)
+    lips = ck.smoothstep(0.8, 0.95, U) * ck.smoothstep(-0.75, -0.95, c)
+    dark = np.maximum(0.75 * nose, 0.6 * lips)
+    col = ck.mix(col, HIDE, (0.85 * dark)[:, None])
+    ck.finish(mesh, P, T, "fleece", col, h, cavity=ck.mix(0.6 * cav, 0.2, dark))
+    # the woolly cap over the poll and the brow (the face's coat is short; the cap is the wool's)
+    rot = np.column_stack([(1.0, 0.0, 0.0), up, d])  # local (x, up, along) to world
+    cap_c = HEAD_BACK + d * length * 0.2 + up * 0.085
+    cap, Tc = ck.ellipsoid((0.0, 0.0, 0.0), (0.125, 0.085, 0.15), 7, 16)
+    cap = cap @ rot.T + cap_c
+    curls = np.abs(np.sin(np.arctan2((cap - cap_c) @ np.array([1.0, 0.0, 0.0]), (cap - cap_c) @ d) * 8.0))
+    lump = 0.03 * ck.fbm(cap * 5.0, SEED + 61) + 0.022 * curls
+    cap = cap + (cap - cap_c) / np.linalg.norm(cap - cap_c, axis=1, keepdims=True) * lump[:, None]
     col, _, cav = fleece_colour(cap, np.full(len(cap), 0.1), SEED + 62)
     ck.finish(mesh, cap, Tc, "fleece", col, h, cavity=cav)
-    # the long soft muzzle
-    mp = ck.bezier([HEAD_C + np.array([0.0, -0.02, 0.06]), HEAD_C + np.array([0.0, -0.07, 0.28]), MUZZLE_TIP], 10)
-    Pm, Tm = ck.tube(mp, np.interp(np.linspace(0.0, 1.0, 10), [0.0, 0.5, 1.0], [0.155, 0.13, 0.105]), 14, squash=0.82)
-    soft = ck.smoothstep(0.28, 0.48, Pm[:, 2] - HEAD_C[2])
-    col = ck.mix(HIDE, ck.mix(HIDE, PAL["sand_cloth"] * 0.8, 0.35), soft[:, None])
-    ck.finish(mesh, Pm, Tm, "hide", col, h, cavity=0.15)
     for s in (-1.0, 1.0):
-        Pe, Te = ck.ellipsoid(HEAD_C + np.array([s * 0.14, 0.03, 0.12]), (0.03, 0.032, 0.034), 5, 8)
+        # the eye, set into the side of the head, a little forward-looking
+        pe, ue = head_surface(np.array([EYE_U]), np.array([s * math.radians(EYE_A)]), -0.012)
+        Pe, Te = ck.ellipsoid((0.0, 0.0, 0.0), (0.028, 0.034, 0.042), 5, 8)
+        Pe = Pe @ rot.T + pe[0]
         ck.finish(mesh, Pe, Te, "eye", PAL["lacquer_black"], h, wet=1.0)
-        Pn, Tn = ck.ellipsoid(MUZZLE_TIP + np.array([s * 0.045, 0.02, -0.005]), (0.022, 0.014, 0.015), 3, 6)
-        ck.finish(mesh, Pn, Tn, "hide", PAL["lacquer_black"], h, wet=0.6)
-        # soft ears, hanging back and out under the wool: nothing upright, nothing like a horn
-        Pr, Tr = ck.ellipsoid((0.0, 0.0, 0.0), (0.035, 0.13, 0.06), 5, 8)
-        Pr = ck.transform(Pr, ck.euler(-62.0, 0.0, s * 62.0), HEAD_C + np.array([s * 0.2, 0.06, -0.08]))
-        col, _, cav = fleece_colour(Pr, np.full(len(Pr), 0.3), SEED + 63)
+        # the nostril: a dark slit on the muzzle's front, slanting up and out
+        pn, _ = head_surface(np.array([0.975]), np.array([s * 0.55]), -0.004)
+        Pn, Tn = ck.ellipsoid((0.0, 0.0, 0.0), (0.011, 0.026, 0.011), 3, 6)
+        Pn = ck.transform(Pn, ck.euler(-30.0, 0.0, -s * 35.0)) + pn[0]
+        ck.finish(mesh, Pn, Tn, "hide", ck.mix(PAL["lacquer_black"], HIDE, 0.3), h, wet=0.6)
+        # the long ear: upright off the poll, flat (its opening forward), the tip drooping a little out and back
+        pb, _ = head_surface(np.array([EAR_U]), np.array([s * 0.62]), -0.02)
+        b0 = pb[0]
+        ep = ck.bezier([b0, b0 + np.array([s * 0.015, 0.15, 0.035]), b0 + np.array([s * 0.04, 0.26, 0.03]),
+                        b0 + np.array([s * 0.1, 0.3, 0.0])], 8)
+        Pr, Tr = ck.tube(ep, np.array([0.034, 0.046, 0.052, 0.05, 0.045, 0.035, 0.023, 0.008]), 10, cap_start=False,
+                         squash=0.6)
+        Pr = ep[0] + (Pr - ep[0]) @ ck.rot_y(s * 40.0).T  # the opening turned out, so it shows from the side too
+        along = np.concatenate([np.repeat(np.linspace(0.0, 1.0, 8), 10), [1.0]])
+        inner = ck.smoothstep(0.0, 0.015, (Pr - np.vstack([np.repeat(ep, 10, axis=0), ep[-1:]])) @ d)
+        col, _, cav = fleece_colour(Pr, 0.2 + 0.45 * inner * ck.smoothstep(0.1, 0.3, along), SEED + 63)
         ck.finish(mesh, Pr, Tr, "fleece", col, h, cavity=cav)
-    # the lower jaw, an ice beard under it
-    jb = rig.bones[rig.index("jaw")]
-    jp = np.array([jb.head, (np.asarray(jb.head) + np.asarray(jb.tail)) / 2, jb.tail])
-    Pj, Tj = ck.tube(jp, np.array([0.085, 0.075, 0.06]), 10, squash=0.75)
-    ck.finish(mesh, Pj, Tj, "hide", ck.mix(HIDE, PAL["sand_cloth"] * 0.8, 0.25), rig.rigid("jaw"), cavity=0.2)
-    rng = np.random.default_rng(SEED + 64)
-    for k in range(7):
-        t = 0.15 + 0.7 * k / 6
-        top = (np.asarray(jb.head) + (np.asarray(jb.tail) - np.asarray(jb.head)) * t
-               + np.array([rng.uniform(-0.04, 0.04), -0.05, 0.0]))
-        icicle(mesh, top, rng.uniform(0.07, 0.15), rng.uniform(0.018, 0.028), rig.rigid("jaw"))
+    # the lower jaw: slim, the coat's colour under it, the lower lip darkened
+    j = rig.rigid("jaw")
+    jp = ck.bezier(JAW_PATH, 7)
+    Pj, Tj = ck.tube(jp, np.interp(np.linspace(0.0, 1.0, 7), np.linspace(0.0, 1.0, len(JAW_R)), JAW_R), 12,
+                     squash=0.88)
+    centre = np.vstack([np.repeat(jp, 12, axis=0), jp[:1], jp[-1:]])
+    rad = (Pj - centre)[:, 1] / np.maximum(np.linalg.norm(Pj - centre, axis=1), 1e-9)
+    along = np.concatenate([np.repeat(np.linspace(0.0, 1.0, 7), 12), [0.0, 1.0]])
+    col, _, cav = fleece_colour(Pj, 0.3 + 0.4 * ck.smoothstep(0.2, -0.8, rad), SEED + 64)
+    frost = ck.smoothstep(-0.3, -0.8, rad) * ck.smoothstep(0.85, 0.4, along)  # the ice beard: frost under the jaw
+    col = ck.mix(col, PAL["salt_glass"] * 0.92, (0.6 * frost)[:, None])
+    lip = ck.smoothstep(0.7, 0.95, along) * ck.smoothstep(-0.2, 0.5, rad)
+    col = ck.mix(col, HIDE, (0.6 * lip)[:, None])
+    ck.finish(mesh, Pj, Tj, "fleece", col, j, wet=0.6 * frost, cavity=ck.mix(0.6 * cav, 0.2, lip))
+    # and two short frozen locks at the jaw's back, under the cheek, one icicle (never a row of them)
+    rng = np.random.default_rng(SEED + 65)
+    for k, (x, z, length) in enumerate(((0.025, 1.61, 0.15), (-0.035, 1.66, 0.1))):
+        root = np.array([x, np.interp(z, [p[2] for p in JAW_PATH], [p[1] for p in JAW_PATH]) - 0.03, z])
+        tip = root + np.array([rng.uniform(-0.03, 0.03), -length, rng.uniform(-0.04, 0.0)])
+        short_lock(mesh, root, tip, j, SEED + 66 + k, r=(0.04, 0.016))
+        if k == 0:
+            icicle(mesh, tip + np.array([0.0, 0.01, 0.0]), rng.uniform(0.06, 0.1), rng.uniform(0.016, 0.024), j,
+                   lean=(rng.uniform(-10.0, 10.0), rng.uniform(-10.0, 10.0)), waist=rng.uniform(0.45, 0.65))
 
 
 # ---------------------------------------------------------------------------------------------
@@ -395,9 +505,11 @@ def lock_frame(k: int) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
 
 def locks(mesh: ck.Mesh, rig: ck.Rig, paths: list[np.ndarray]) -> None:
     rng = np.random.default_rng(SEED + 70)
+    ice_rng = np.random.default_rng(SEED + 75)
     for k, (s, u_c, parent) in enumerate(LOCKS):
         a, m, b = lock_frame(k)
         skin = rig.chain([parent, f"lock{k}_a", f"lock{k}_b"], [a + np.array([-s * 0.25, 0.4, 0.0]), a, m, b])
+        tips: list[np.ndarray] = []  # each strand's path
         for i in range(STRANDS):
             u = u_c + (i - (STRANDS - 1) / 2) * 0.022 + rng.uniform(-0.006, 0.006)
             th = math.radians(s * (STRAND_TH[0] + (STRAND_TH[1] - STRAND_TH[0]) * ((i * 5) % STRANDS) / (STRANDS - 1)))
@@ -407,21 +519,30 @@ def locks(mesh: ck.Mesh, rig: ck.Rig, paths: list[np.ndarray]) -> None:
                             root[2] + rng.uniform(-0.05, 0.05)])
             mid = 0.5 * (root + tip) + np.array([s * rng.uniform(0.04, 0.09), 0.0, 0.0])
             path = ck.bezier([root, root + n * 0.1 + np.array([0.0, -0.08, 0.0]), mid, tip], 7)
-            P, T = ck.tube(path, np.linspace(rng.uniform(0.07, 0.09), 0.03, 7), 5, cap_start=False, squash=0.55)
+            P, T = ck.tube(path, np.linspace(rng.uniform(0.07, 0.09), 0.04, 7), 5, cap_start=False, squash=0.55)
             down = ck.smoothstep(root[1], tip[1], P[:, 1])
             col, wet, cav = fleece_colour(P, 0.45 + 0.4 * down, SEED + 71 + k)
-            frost = ck.smoothstep(0.55, 1.0, down)
-            col = ck.mix(col, PAL["salt_glass"] * 0.92, (0.7 * frost)[:, None])
+            frost = ck.smoothstep(0.65, 1.0, down)  # frosted, not ice: the icicles are the few below
+            col = ck.mix(col, PAL["salt_glass"] * 0.92, (0.45 * frost)[:, None])
             ck.finish(mesh, P, T, "fleece", col, skin, wet=np.maximum(wet, 0.6 * frost), cavity=cav * (1.0 - frost))
-            if i % 2 == 0:
-                icicle(mesh, tip + np.array([0.0, 0.01, 0.0]), rng.uniform(0.06, 0.12), 0.026, skin)
+            tips.append(path)
+        # a few icicles per chain on strands picked at random, of uneven lengths (M3-CRE-635): each sheathes the
+        # strand's frozen end and hangs on past its tip, no further than the old tip icicles did (the KO lays the
+        # locks' ends on the ground)
+        for i in ice_rng.choice(STRANDS, int(ice_rng.integers(LOCK_ICE[0], LOCK_ICE[1] + 1)), replace=False):
+            length, past = ice_rng.uniform(*LOCK_ICE_LEN), ice_rng.uniform(*LOCK_ICE_PAST)
+            path = tips[i]
+            y = path[-1, 1] + length - past
+            top = np.array([np.interp(y, path[::-1, 1], path[::-1, 0]), y, np.interp(y, path[::-1, 1], path[::-1, 2])])
+            icicle(mesh, top, length, ice_rng.uniform(0.026, 0.036), skin,
+                   lean=(ice_rng.uniform(-6.0, 6.0), ice_rng.uniform(-6.0, 6.0)), waist=ice_rng.uniform(0.45, 0.7))
 
 
-def short_lock(mesh: ck.Mesh, root: np.ndarray, tip: np.ndarray, skin, seed: int) -> None:
-    """A short frozen lock hanging from root to tip, frost at its end."""
+def short_lock(mesh: ck.Mesh, root: np.ndarray, tip: np.ndarray, skin, seed: int, r: tuple = (0.07, 0.025)) -> None:
+    """A short frozen lock hanging from root to tip, `r` its radius at the root and the tip, frost at its end."""
     length = float(np.linalg.norm(tip - root))
     path = ck.bezier([root, root + np.array([0.0, -0.4 * length, 0.05]), tip], 6)
-    P, T = ck.tube(path, np.linspace(0.07, 0.025, 6), 5, cap_start=False, squash=0.55)
+    P, T = ck.tube(path, np.linspace(r[0], r[1], 6), 5, cap_start=False, squash=0.55)
     down = ck.smoothstep(root[1], tip[1], P[:, 1])
     col, wet, cav = fleece_colour(P, 0.5 + 0.4 * down, seed)
     frost = ck.smoothstep(0.6, 1.0, down)

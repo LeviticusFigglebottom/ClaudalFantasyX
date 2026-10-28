@@ -6,7 +6,7 @@
     "encounter": "sandbox_reef",
     "seed": 20261022,
     "board": "standard",
-    "ring": {"radius_factor": 1.4, "line_width_m": 0.06, "inner_soft_m": 0.25, "spin_deg_per_sec": 12.0,
+    "ring": {"render_priority": 10, "radius_factor": 1.4, "line_width_m": 0.06, "inner_soft_m": 0.25, "spin_deg_per_sec": 12.0,
              "notches": 6, "lift_m": 0.02, "stagger_sec": 0.08},
     "stand_in_defaults": {"roughness": 0.85, "emission_energy": 0.6, "recoil_m": 0.12, "recoil_sec": 0.16},
     "ko_sink_m": 0.25,

@@ -34,13 +34,6 @@ import ossa_fen  # noqa: E402
 import save_shrine  # noqa: E402
 import bridal_barge  # noqa: E402
 import ansedra  # noqa: E402
-import drowned_choir  # noqa: E402
-import hollowmere  # noqa: E402
-import kite  # noqa: E402
-import iskarra_spire  # noqa: E402
-import undertow_layers  # noqa: E402
-import undertow_heart  # noqa: E402
-import reedhollow  # noqa: E402
 import kit_common as kc  # noqa: E402
 import props  # noqa: E402
 import ruins  # noqa: E402
@@ -108,20 +101,6 @@ def targets() -> dict:
         out[name] = (name, bridal_barge, fn)
     for name, fn in sorted(ansedra.TARGETS.items()):  # M3-ENV-721 Ansedra (Ch13-14)
         out[name] = (ansedra.BUDGET_KEY.get(name, name), ansedra, fn)
-    for name, fn in sorted(drowned_choir.TARGETS.items()):  # M3-ENV-722 the Pale Rim and the Drowned Choir (Ch16)
-        out[name] = (name, drowned_choir, fn)
-    for name, fn in sorted(hollowmere.TARGETS.items()):  # M3-ENV-723 Hollowmere, the Saltwright raft-city (Ch17)
-        out[name] = (name, hollowmere, fn)
-    for name, fn in sorted(kite.TARGETS.items()):  # M3-ENV-725 the Kite, the party's hub from Ch18
-        out[name] = (name, kite, fn)
-    for name, fn in sorted(iskarra_spire.TARGETS.items()):  # M3-ENV-726 the Iskarra Lamp Spire's crown (Ch19)
-        out[name] = (name, iskarra_spire, fn)
-    for name, fn in sorted(undertow_layers.TARGETS.items()):  # M3-ENV-727 the Undertow's layers (Ch20)
-        out[name] = (name, undertow_layers, fn)
-    for name, fn in sorted(undertow_heart.TARGETS.items()):  # M3-ENV-728 the Heart of the Undertow (Ch21)
-        out[name] = (name, undertow_heart, fn)
-    for name, fn in sorted(reedhollow.TARGETS.items()):  # M3-ENV-733 Ossa Fen's root-walks and Reedhollow's reed walks
-        out[name] = (name, reedhollow, fn)
     return out
 
 
