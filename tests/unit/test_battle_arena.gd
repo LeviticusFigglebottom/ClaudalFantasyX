@@ -16,7 +16,7 @@ const ACT_ONE := {
 	&"ch01_hullgnaw": &"oruvel_raft_morning",
 	&"ch03_causeway_shore": &"causeway_route_afternoon",
 	&"ch04_spar_wraith": &"derelict_deck_night",
-	&"ch05_cinder_matron": &"ash_terrace_lanternfall",
+	&"ch05_cinder_matron": &"ashcrown_anvil_court",  # M3-BPR-1305: Ashcrown's anvil court (B09)
 }
 const ACT_ONE_PREFIXES: Array[String] = ["ch01_", "ch03_", "ch04_", "ch05_"]
 ## M3-BPR-03: Ch6 (act1_ch06.md B01, B04).
