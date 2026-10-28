@@ -61,3 +61,39 @@ next walk (windowed, real GPU) is the measurement that counts.
   env-art's to slice.
 - **Not measured yet.** The first fight's arena and creature scenes are not in the list. The PC's next walk will show
   whether the hero actors were the cost.
+
+## Amendment (2026-10-28, the PC's 4–6 s first entries from Ch5 on, act1_gpu_qa rows 22, 41 and 42)
+The Ch5–Ch9 zones spend their swap frame in their own runtime loads, on top of the heroes'. Profiled headless:
+- `ZoneCast` (the villager actor scenes) takes 0.4–1.2 s;
+- `ZoneKitDressing` (env-art's kit pieces, materials and environments) takes 0.4–1.7 s.
+
+Entering a zone again with everything it used cached took Pemakar from 1419 to 430 ms. Coilspire only fell from 2602
+to 1913 ms: the rest is the dressing's own CPU build.
+
+**Decision:**
+- **The list.** `tools/loading/scene_loads.gd` enters every Act I zone headless and writes
+  `game/data/ui/scene_loads.json`: per zone, every resource its nodes hold once in the tree (instanced scenes,
+  meshes, materials, environments).
+- **At a change.** ResidentLoads loads the target zone's list on worker threads behind the same hold. It keeps the
+  list until the next change, then drops it; the heroes stay resident.
+- **Concurrency.** Loads run at most `max_in_flight` (2) at a time. Hundreds of threaded loads at once crashed Godot
+  4.6.3 in this class's test (signal 11), as ADR 0029 saw on Haluna.
+- **Staleness.** `test_resident_loads` fails when an Act I zone has no list or a listed path is gone. Rerun the tool
+  after a zone's cast or dressing changes.
+
+**Measured (cloud box, headless, through SceneRouter; worst hidden swap frame):**
+
+| Change | Before | After |
+|---|---|---|
+| Ch1 (Oruvel Underway) | 1671 ms | 291 ms |
+| Ch5 (Pemakar) | 7624 ms | 1128 ms |
+| Ch8 (Corrow) | 7571 ms | 318 ms |
+
+Pemakar's swap reached the router's 120-frame hold cap before its loads finished. In the game that cap is about 2 s
+at 60 fps (headless frames run uncapped). If the PC still sees Pemakar over 1 s, the Systems Architect could let the
+swap wait while holders make progress, as the reveal hold already does (M2-ARC-08).
+
+**What's left for other tracks:**
+- Coilspire's dressing build (about 1.7 s of CPU on the cloud box): env-art-b and act1-chapters.
+- Haluna's zone build and dresser (about 0.9 s each): first-playable and env-art.
+- Battle arenas and creatures are not listed yet. The field battle's entry is the next measurement.

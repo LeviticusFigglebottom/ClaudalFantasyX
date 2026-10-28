@@ -63,6 +63,51 @@ func test_the_title_scene_starts_them_without_a_hold() -> void:
 	_done()
 
 
+## Each Act I zone has its runtime loads listed (tools/loading/scene_loads.gd), and they are real files.
+func test_every_act1_zone_lists_its_runtime_loads() -> void:
+	var scenes := (_json(ResidentLoads.SCENE_LOADS_PATH)["scene_loads"] as Dictionary)["scenes"] as Dictionary
+	var reg := LocationRegistry.load_default()
+	var zones := 0
+	for id: StringName in reg.location_ids():
+		var s := String(id)
+		if s.begins_with("prologue") or (s.begins_with("ch0") and s.substr(2, 1).is_valid_int()):
+			var path := reg.scene_of(id)
+			if path != "" and ResourceLoader.exists(path):
+				zones += 1
+				assert_true(scenes.has(path), "%s has its loads listed (rerun tools/loading/scene_loads.gd)" % id)
+	assert_true(zones > 10, "the Act I zones were read")
+	for path: String in scenes:
+		for p: Variant in scenes[path]:
+			assert_true(ResourceLoader.exists(str(p)), "%s: %s exists" % [path.get_file(), p])
+
+
+## A change loads the zone's own list behind the same hold, and the next change drops it.
+func test_a_change_loads_the_zone_s_list_and_drops_the_last() -> void:
+	var router := Node.new()
+	router.set_script(load("res://tests/fixtures/resident/hold_router.gd"))
+	_add(router)
+	ResidentLoads.run_headless = true
+	var r := ResidentLoads.install(router)
+	var ch1 := "res://game/levels/ch01/oruvel_underway/oruvel_underway.tscn"
+	r.load_scene(ch1)
+	r.hold()
+	assert_true(r.holding, "held while the zone's loads run")
+	while not r.is_ready():
+		r.poll()
+		OS.delay_msec(5)
+	assert_false(r.scene.is_empty(), "the zone's resources are in")
+	assert_false(r.holding, "released")
+	var one := r.scene.keys()[0] as String
+	r.load_scene("res://game/levels/ch08/coilspire/coilspire.tscn")
+	var lists := (_json(ResidentLoads.SCENE_LOADS_PATH)["scene_loads"] as Dictionary)["scenes"] as Dictionary
+	if not (lists["res://game/levels/ch08/coilspire/coilspire.tscn"] as Array).has(one):
+		assert_false(r.scene.has(one), "the last zone's own resources are dropped")
+	while not r.is_ready():
+		r.poll()
+		OS.delay_msec(5)
+	_done()
+
+
 func test_the_router_starts_them_when_a_change_begins() -> void:
 	assert_true(SceneRouter.has_signal(&"change_started"), "SceneRouter.change_started")
 	assert_true(SceneRouter.get_node_or_null(NodePath(String(ResidentLoads.NAME))) is ResidentLoads, "installed")
@@ -74,7 +119,8 @@ func _json(path: String) -> Dictionary:
 
 
 func _add(n: Node) -> void:
-	(Engine.get_main_loop() as SceneTree).root.add_child(n)
+	var tree := Engine.get_main_loop() as SceneTree
+	(tree.current_scene if tree.current_scene != null else tree.root).add_child(n)
 	_made.append(n)
 
 
