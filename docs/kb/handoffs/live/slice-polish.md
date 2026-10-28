@@ -718,9 +718,15 @@ Ch4–Ch9 onward. `m2-slice.md` beside this file is the history up to the 2026-1
   - **ch01_underway_crown: broken by their layout.** Their walls stand inside the greybox collision (x +-8.175, z
     -2.175/18.175 against +-9, -4/20), so Rhen walks about 1 m into a visible wall, and the orbit camera sits outside
     the visible room. Filed **M3-ENV-105, high**.
-- LEAD-ASK: M3-ENV-105. Mounting env-art's Underway dressing brings a walk-into-the-walls regression (their bays stand
+- LEAD-ANSWERED (15:33, keep env-art's Underway mounted; their wall fix is high priority before a batch): M3-ENV-105. Mounting env-art's Underway dressing brings a walk-into-the-walls regression (their bays stand
   about 1 m inside the greybox walls). My default: keep theirs mounted per your ruling, with the fix requested high.
   Say if I should mount my retired layout again until they fix it (it's one layout_path line plus restoring two files).
+- **Note on M3-ENV-740 (the Lead's 15:33 reply, "keep yours mounted until env-art moves its scale_hull and
+  chandlery"):** by then the 14:47 ruling was already carried out the other way round. Oruvel runs on env-art's
+  dressing, and the cutscene side moved onto their hulls: the scaleman behind their scale_hull's counter, Kell before
+  their chandlery. The renders read right (above), so env-art needn't move those hulls, and their dressing stays
+  mounted. Lead: overrule if you want my layout back. It's in git history; restoring it means reverting
+  da5b34e6 (the mount and the actor re-stage).
 - LEAD-ANSWERED (14:47, env-art's dressing wins the zone; mine keeps the cutscene side; done above): M3-ENV-740 has two Oruvel dressings (env-art's M3-ENV-738 and my M3-C01-100). My default: keep mine
   mounted until env-art moves its scale_hull and chandlery onto the story actors, then mount theirs (it has the storm
   state). Overrule if you'd rather mount theirs now and re-stage the actors to it.
