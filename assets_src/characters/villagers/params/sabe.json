@@ -1,5 +1,5 @@
 {
-  "_about": "Sabe, Oruvel's old diver (Ch1 C1-10/11, speaker `sabe`; act1_ch01.md: sits under the keel-hull's carved lintel-gull, says the gulls have been quiet all morning, then shouts 'Lines in!'), about 72, a woman. Small, hard and weathered, white hair cropped short as divers keep it, dense faded reach-bands to the elbow (a lifetime of dives), a faded sea-blue sleeveless diver's tunic over faded indigo shin trousers, an undyed sash, barefoot on the hulls (M3-CHR-526). Face sliders relative to the MakeHuman donor (ADR 0021: 1.0 / 0.0 = unchanged). Keys starting with '_' are read by the villager_* modules (villager_hair, villager_costume, villager_textures, write_materials, villager_clips), not by bb_params.",
+  "_about": "Sabe, Oruvel's old diver (Ch1 C1-10/11, speaker `sabe`; act1_ch01.md: sits under the keel-hull's carved lintel-gull, says the gulls have been quiet all morning, then shouts 'Lines in!'), about 72, a woman. Small, hard and weathered, white hair cropped short as divers keep it, dense faded reach-bands to the elbow (a lifetime of dives), a faded sea-blue diver's tunic, cut off at the shoulder points (the shortest cap sleeve, `top.sleeve` 0.1) over faded indigo shin trousers, an undyed sash, barefoot on the hulls (M3-CHR-526). Face sliders relative to the MakeHuman donor (ADR 0021: 1.0 / 0.0 = unchanged). Keys starting with '_' are read by the villager_* modules (villager_hair, villager_costume, villager_textures, write_materials, villager_clips), not by bb_params.",
   "name": "sabe",
   "height_m": 1.54,
   "heads_tall": 6.9,
@@ -71,7 +71,9 @@
     "grey_share": 0.5,
     "underpaint": "#B0AAA0",
     "brow": "#9A948A",
-    "spec": "#D8D2C8"
+    "spec": "#D8D2C8",
+    "grey_strands": "all",
+    "grey_width_k": 1.2
   },
   "_eyes": {
     "iris": "#2A1A10"
@@ -80,7 +82,7 @@
     "top": {
       "mat": "cloth_c",
       "hem": "hip",
-      "sleeve": 0.0,
+      "sleeve": 0.1,
       "neck_v_m": 0.05,
       "armhole_drop_m": 0.1,
       "cover_margin_m": 0.02

@@ -25,5 +25,6 @@ pipeline, with the clips their dialogue calls.
 - Who: Sabe, Oruvel's old diver (Ch1 C1-10/11, speaker `sabe`; act1_ch01.md: sits under the keel-hull's carved lintel-gull, says the gulls have been quiet all morning, then shouts 'Lines in!'), about 72, a woman. Small, hard and weathered, white hair cropped short as divers keep it, dense faded reach-bands to the elbow (a lifetime of dives), a faded sea-blue sleeveless diver's tunic over faded indigo shin trousers, an undyed sash, barefoot on the hulls (M3-CHR-526).
 - Budget: LOD0 30,154 tris, 1.88 MB GLB; LOD1 14,109 tris, 0.68 MB.
 - Rendered: front and face read as an old, weathered diver (white crop, dense faded bands to the elbow); the sleeveless tunic's armholes are cut deep (a halter-like front). sit_watch uses hero_clips' step-height sit: place her on the keel-hull's step.
+- Dialogue polish (chr-npc-polish): before, the sleeveless tunic's armholes cut in to the neck like a halter, and her white crop read as bright white rectangular chips. After: the tunic is cut off at the shoulder points (the shortest cap sleeve, `top.sleeve` 0.1) and reads as a diver's tunic; every hair card is a thin strand (`_hair.grey_strands: "all"`), so the crop reads as white hair. The fringe still ends in a fairly blunt line.
 
 ## Review log
