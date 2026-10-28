@@ -65,6 +65,44 @@ RENDER-REQUEST @ 680cd88e: battle_boss_intro_reach,battle_choreo_melee,battle_ch
 
 RENDER-REQUEST @ 60b62678: battle_arena_wall_head,battle_boss_intro_reach; why: M3-BPR-406 greybox wall_head_storm arena for Ch8 (new shot, no baseline yet); the Reach intro now stands on it. Supersedes the reach id in the 680cd88e line.
 
+### 2026-10-28 01:xx: ADR 0041, Act I at final quality first (the Lead's 01:12 refocus)
+- **Act II paused:** M3-BPR-408, 418 and 419 are `status: blocked`, `blocked-by: ADR 0041`. Nothing reverted.
+- **Self-render rule (TRACK-RULES cd23f612):** this track now renders its own shots; open render requests are retired.
+- **M3-BPR-420, every Act I ability's own VFX:**
+  - **The list:** before this, `map.skills` had 3 specials, and every other Act I ability played only its element's
+    generic hit. Supports, stances, gathers, summons and items played nothing.
+  - **Fill:** `tools/vfx/gen_act1_ability_vfx.py` (palette-only, `--check`) writes 85 effects: 77 skills and 8 items.
+    That covers every party kit skill, the Ch8 set-piece skills, the 5 other Swells, the 4 Vowbound skills, and every
+    Act I creature skill and gather.
+    - Exceptions: the ward-aimed skills (the stair has no fighter; the push reaction is their motion) and the
+      Drownbell's toll (its boss view).
+  - **Sounds:** each effect borrows an existing sound row (validate_data needs one per effect). Request **M3-BPR-421**
+    to audio for their own.
+  - **Entry cost:** `BattleVfx.prebuild()` now builds only the effects of abilities in the current battle. Headless,
+    178 emitters took 66 ms; the sandbox fight builds 72.
+  - **Found by viewing:**
+    - effects on fliers landed on the sand below them; `BattleVfx.anchor` now adds the stand-in's hover;
+    - a second impact core stacked on the element hit read as a blob, so the cores are dropped;
+    - three pale ones got darker swatches.
+  - Ownership row appended (rendering is paused with the PC).
+- **M3-BPR-406 fixes found by self-rendering battle_ch08_counter:**
+  - a counter's attacker now stays where it struck until the riposte lands;
+  - a freeze-frame's `seek()` poses the frame before its beats fire. The riposte's VFX had landed on the attacker's
+    empty mark.
+- **SELF-RENDERED (lavapipe, viewed):**
+  - SELF-RENDERED @ 5537f553: battle_ch08_intercept, battle_ch08_counter, battle_ch08_withdraw — new, viewed. The grip
+    lands on Toma; Rhen's riposte now meets the crawler beside him; the crawler is half-way back.
+  - SELF-RENDERED @ 5537f553: battle_choreo_melee, _cast, _support, _read, _ko, _swap, _lamp_dive — pass
+    (rmse 0.000, so the seek change moves nothing else); battle_choreo_toll pass (0.001); battle_choreo_hit drifts
+    0.012 (the same frame).
+  - SELF-RENDERED @ c128eb55: drownbell_flood — pass (the polyp-settle fix brings it back); battle_boss_intro_reach,
+    battle_arena_wall_head, battle_ch08_stair_hold — drift, all intended: the arena rework, Liss's tint, the dark
+    storm banks.
+  - SELF-RENDERED (tool) @ a2770dd8: `tools/vfx/act1_vfx_sheet.tscn`, all 85 Act I ability effects on the battle stage
+    in 15 sheets, at 0.12 s and again at 0.5 s for the slow ones. Each is distinct and on its target. Known limit: the
+    palest (Tidewash Salve, Climb Up) read softly on the noon beach.
+- **Merged the integration branch** at 8bb52fec: clean, re-imported, validate_data 0/0.
+
 ### 2026-10-28 00:3x: the Lead's 00:13 list
 - **Ch10–12 fights:** act1-chapters' a4410fd9 / d0ec6878 has the Act II field greyboxes and flows, but no enemies.json
   or encounters.json rows for Ch10–16 (checked both files on their branch). There are no fights to stage yet; their
