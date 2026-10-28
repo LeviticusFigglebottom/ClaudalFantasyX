@@ -700,7 +700,7 @@
         4000,
         300
       ],
-      "bytes": 98460,
+      "bytes": 99480,
       "lods": {
         "iskarra_crown_fallen": 1904,
         "iskarra_crown_fallen-lod1": 160
@@ -722,7 +722,7 @@
         9000,
         400
       ],
-      "bytes": 131624,
+      "bytes": 131620,
       "lods": {
         "iskarra_drowned_dome": 1860,
         "iskarra_drowned_dome-lod1": 172
@@ -788,7 +788,7 @@
         36000,
         2400
       ],
-      "bytes": 311408,
+      "bytes": 312408,
       "lods": {
         "iskarra_tower_small": 5600,
         "iskarra_tower_small-lod1": 280
@@ -810,7 +810,7 @@
         36000,
         2400
       ],
-      "bytes": 1337364,
+      "bytes": 1338372,
       "lods": {
         "iskarra_tower_spire": 22544,
         "iskarra_tower_spire-lod1": 664
@@ -821,7 +821,7 @@
         36000,
         2400
       ],
-      "bytes": 662008,
+      "bytes": 662004,
       "lods": {
         "iskarra_tower_stepped": 11688,
         "iskarra_tower_stepped-lod1": 424

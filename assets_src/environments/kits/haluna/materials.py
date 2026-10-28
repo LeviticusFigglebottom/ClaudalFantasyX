@@ -235,6 +235,7 @@ def _value(v) -> str:
     return str(v)
 
 
+
 def write_shader_material(path: Path, name: str, spec: dict) -> None:
     textures = sorted({v[1] for v in spec["params"].values() if isinstance(v, tuple)})
     ids = {t: f"{i + 2}_tex" for i, t in enumerate(textures)}
@@ -265,6 +266,7 @@ def write_standard_material(path: Path, name: str, spec: dict) -> None:
 
 def ExtResource(i: str) -> str:  # noqa: N802 (mirrors the .tres syntax)
     return f'ExtResource("{i}")'
+
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -500,5 +502,16 @@ MATERIALS["kit_iskarra_paving"] = stone("iskarra_flag_albedo.png", "iskarra_flag
 STANDARD["kit_glimmer_held"] = {"albedo_color": hexc("#7FC6D9"), "emission_enabled": "true",
                                 "emission": hexc("#7FC6D9"), "emission_energy_multiplier": 2.2, "roughness": 0.4}
 
+# ---- M3-ENV-752 (appended by env-art): FAST-TRACK, the human's playtest found the Prologue "greyscale" ------------
+# "White and gold at dusk, with one saturated note" (iskarra.md §1): the cool lit_ceramic read grey under the dusk's
+# teal fill, so the city's whites go warm (towards sand_dry, palette), its domes and finials gilt (gold_leaf, iskarra.py
+# M_GILT; small in frame, inside gold_max_frame_fraction), and the reef-blue glaze lifts so it reads blue, not slate.
+MATERIALS["kit_iskarra_ceramic"]["params"]["col_paint"] = hexc("#EEE3CB")
+MATERIALS["kit_iskarra_cladding"]["params"]["col_tint"] = hexc("#F4E7C9")
+MATERIALS["kit_iskarra_glaze"]["params"]["col_tint"] = hexc("#1F7FC2")
+MATERIALS["kit_iskarra_paving"]["params"]["col_tint"] = hexc("#EFDDB4")
+
+
 if __name__ == "__main__":
     sys.exit(main())
+
