@@ -41,7 +41,7 @@ OUT = ROOT / "assets" / "characters" / "pell" / "materials"
 PARAMS = HERE / "pell_params.json"
 T = "pell/textures/"
 A = "asha/textures/"
-ROUGH = (0.25, 0.85)  # pell_textures.ROUGH: the ORM's roughness range
+ROUGH = (0.4, 0.9)  # pell_textures.ROUGH: the ORM's roughness range
 
 
 def col(hexv: str, a: float = 1.0) -> str:
@@ -60,7 +60,7 @@ def fur_skin(extra: dict) -> dict:
     return {"col_scatter": col("#4A2E22"), "sss_strength": str(fp["sss_thickness"]), "transmission_strength": "0.1",
             "diffuse_wrap": "0.22", "normal_blur": "0.3", "shadow_scatter": "0.4", "curvature_scale": "0.6",
             "roughness_min": str(ROUGH[0]), "roughness_max": str(ROUGH[1]), "micro_roughness": "0.08",
-            "specular_scale": "0.7", "lobe_roughness_b": "2.2", "lobe_mix": "0.45", "cavity_albedo": "0.3",
+            "specular_scale": "0.45", "lobe_roughness_b": "2.2", "lobe_mix": "0.6", "cavity_albedo": "0.3",
             "cavity_specular": "0.9"}
 
 
@@ -79,18 +79,18 @@ def tables(extra: dict) -> dict[str, tuple[str, int, dict, dict]]:
     fp, cr, wp = extra["_fur"], extra["_crest"], extra["_whiskers"]
     skin_head = {"tex_albedo": T + "pell_head_albedo.png", "tex_normal": T + "pell_head_normal.png",
                  "tex_orm": T + "pell_head_orm.png", "tex_skin_mask": T + "pell_head_skinmask.png",
-                 "tex_detail_normal": A + "asha_skin_detail_normal.png"}
+                 "tex_detail_normal": A + "asha_thread_detail_normal.png"}  # strands, not pores
     skin_body = {"tex_albedo": T + "pell_body_albedo.png", "tex_normal": T + "pell_body_normal.png",
                  "tex_orm": T + "pell_body_orm.png", "tex_skin_mask": T + "pell_body_skinmask.png",
-                 "tex_detail_normal": A + "asha_skin_detail_normal.png"}
+                 "tex_detail_normal": A + "asha_thread_detail_normal.png"}
     cloth = {"tex_albedo": T + "pell_cloth_albedo.png", "tex_normal": T + "pell_cloth_normal.png",
              "tex_orm": T + "pell_cloth_orm.png", "tex_cloth_mask": T + "pell_cloth_clothmask.png",
              "tex_detail_normal": A + "asha_thread_detail_normal.png"}
     fur = fur_skin(extra)
-    head = {**fur, "painterly": "0.2", "detail_tiling": "64.0", "detail_strength": "0.25", "normal_strength": "1.0"}
+    head = {**fur, "painterly": "0.2", "detail_tiling": "96.0", "detail_strength": "0.55", "normal_strength": "1.0"}
     head_dlg = {**fur, "painterly": "0.6", "painterly_form": "0.3", "detail_tiling": "64.0",
                 "detail_strength": "0.35", "normal_strength": "0.8"}
-    body = {**fur, "painterly": "0.2", "detail_tiling": "40.0", "detail_strength": "0.2", "normal_strength": "1.0"}
+    body = {**fur, "painterly": "0.2", "detail_tiling": "70.0", "detail_strength": "0.55", "normal_strength": "1.0"}
     still = {"wind_response": "0.0"}
     flat = {"kajiya_diffuse_mix": "0.15", "diffuse_wrap": "0.3", "flow_strength": "0.0"}
     fur_cards = {**flat, **still, "col_root": col("#2E2219"), "col_tip": col("#4A372A"), "tip_start": "0.5",

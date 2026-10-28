@@ -96,7 +96,8 @@ MANTLE_FALL_BONES = ("DEF-spine", "DEF-spine.001", "DEF-spine.002", "DEF-spine.0
 MANTLE_YOKE_BELOW = 0.10  # m (at s = 1) below the shoulder joint: above this the mantle is the yoke (YOKE bones only)
 HIP_BONES = ("DEF-spine", "DEF-spine.001")
 CARD_MIN_DELTA = bt.BEARD_MIN_DELTA  # m: card deltas under this are zeroed (the sparse morph accessors stay small)
-SKIN_CLEAR = {"mantle": 0.006, "cord": 0.004, "belt": 0.004, "ankle": 0.003, "wrap": 0.003}  # m: least gap over skin
+SKIN_CLEAR = {"mantle": 0.006, "cord": 0.004, "belt": 0.004, "ankle": 0.003, "wrap": 0.003,
+              "shell_cord": 0.008}  # m: least gap over skin (at s = 1)
 WEB_ROWS = 5
 WEB_COLS = 4
 
@@ -112,7 +113,7 @@ hb.MATERIALS.update({
 # name-shell disc, the long fingers and feet; cut detail: the fringe's inner rows, the tiles' bevels, the whiskers,
 # the net round the stone). The crest and the shell keep every triangle (they are a few hundred).
 hb.LOD1_RATIO.clear()
-hb.LOD1_RATIO.update({"Head": 0.34, "Body": 0.46, "Costume": 0.5, "Wraps": 0.35, "Fur": 0.45, "Staff": 0.55,
+hb.LOD1_RATIO.update({"Head": 0.5, "Body": 0.8, "Costume": 0.6, "Wraps": 0.5, "Fur": 0.6, "Staff": 0.6,
                       "Webs": 0.5})
 hb.LOD1_DROP_MATS.update({"whisker", "fur_brow"})
 
@@ -522,6 +523,12 @@ def main() -> int:
     neck_P = V[(torso | (reg == "head")) & (V[:, 2] > float(lm.P("notch")[2]) - 0.01 * S) &
                (V[:, 2] < float(lm.P("chin")[2])) & (np.hypot(V[:, 0], V[:, 1] - float(lm.P("notch")[1])) < 0.11 * S)]
     shell_parts, shinfo = pell_props.name_shell(lm, shp, neck_P, pell_costume.load_motifs())
+    # the cord rides over the trapezius where it rises toward the shoulders: clear of the torso's skin everywhere
+    cord = shell_parts["NameShellCord"]
+    Q = cord.varr()
+    for rn in ("torso", "arm_L", "arm_R", "torso"):  # the trapezius is the arms' charts toward the shoulders
+        Q = by.push_out(Q, V, F, freg == rn, SKIN_CLEAR["shell_cord"] * S, reach=0.08 * S)
+    cord.V = list(Q)
     shell_objs = []
     for name in ("NameShellCord", "NameShellBlank", "NameShellCarved"):
         p = snap_part(shell_parts[name])
@@ -649,8 +656,15 @@ def main() -> int:
         c = ob.copy()
         c.data = ob.data.copy()
         bpy.context.scene.collection.objects.link(c)
-        if c.data.shape_keys:
+        if c.data.shape_keys:  # the crest baked at its battle value (pell.md §10.3: the LOD1 has no shape keys)
+            kb = c.data.shape_keys.key_blocks
+            co = np.array([v.co[:] for v in kb[0].data], dtype=float)
+            if "crest_raise" in kb:
+                up = np.array([v.co[:] for v in kb["crest_raise"].data], dtype=float)
+                co = np.round(co + float(extra["_crest"]["battle_raise"]) * (up - co), 6)
             c.shape_key_clear()
+            for v, p in zip(c.data.vertices, co):
+                v.co = p
         keep_whole.append(c)
         c.data.calc_loop_triangles()
         lod_tris += len(c.data.loop_triangles)

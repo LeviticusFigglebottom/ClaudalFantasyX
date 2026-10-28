@@ -115,7 +115,7 @@ def mantle_lines(lm, chart: TorsoChart, cp: dict, th_deg: np.ndarray) -> tuple[n
     hem = z_w + (z_h - z_w) * float(cp["mantle_hem_at"])  # above the belt cord: the hip gear hangs free below it
     arm = float(lm.side_pt("shoulder", "R")[2]) - float(cp["mantle_arm_drop_m"])
     f0, f1, b0, b1 = (float(x) for x in cp["mantle_arm_band_deg"])  # where the falls hand over to the arm band
-    H_bot = np.interp(-a, [-10.0, -f0, -f1, -b0, -b1, 190.0], [hem, hem, arm, arm, hem, hem])
+    H_bot = np.interp(-a, [-10.0, f0, f1, b0, b1, 190.0], [hem, hem, arm, arm, hem, hem])
     e_edge, e_top = (math.radians(float(x)) for x in cp["mantle_neck_elev_deg"])
     side = smooth01(np.sin(np.radians(-a)) ** 2)  # 0 at the front and back, 1 over the shoulder
     H_top = chart.z_sh + chart.k * (e_edge + (e_top - e_edge) * side)

@@ -4458,6 +4458,8 @@ PELL_TALK = (10.0, 32.0, 50.0, 4.0)  # talk: the right upper arm forward, the fo
 PELL_STORM_STRAIGHTEN = 15.0  # degrees: storm_call straightens the neck's S by this
 PELL_LISTEN = (15.0, 10.0, 8.0)  # listen_tilt: the tilt to his right, the turn to his right, the neck's extension
 PELL_BOW = 10.0  # back_to_sea: the head bowed
+PELL_ELBOW_MAX = 155.0  # degrees: the most the reach search bends an elbow
+PELL_THROAT_ELBOW = 0.22  # m: storm_call's elbow stays this far under the shoulder, tucked (the mantle's cap stays)
 PELL_STEP_DOWN = (0.30, 0.22)  # descend_rocks: each step's drop and its reach forward (m)
 PELL_CROUCH = 25.0  # defend: the knees' bend
 PELL_STAFF_HOLD_L = 0.25  # m: the right hand joins the staff this far below the left fist (defend, attack)
@@ -4505,9 +4507,12 @@ def _neck_len(sk: Skeleton) -> float:
 _PELL_REACH: dict = {}
 
 
-def _pell_reach(sk: Skeleton, pose: dict, side: str, target: np.ndarray, key: str) -> dict:
+def _pell_reach(sk: Skeleton, pose: dict, side: str, target: np.ndarray, key: str,
+                elbow_below: float | None = None) -> dict:
     """The arm turns (world axes, absolute) that bring the `side` wrist (DEF-hand.<side>'s head) to `target`
-    (skeleton frame) on the pose, by coordinate search (deterministic), cached under `key`."""
+    (skeleton frame) on the pose, by coordinate search (deterministic), cached under `key`. `elbow_below` (m): keep
+    the elbow at least this far under the shoulder joint (the mantle's shoulder cap follows the clavicle, so a raised
+    right arm passes up through it)."""
     if key in _PELL_REACH:
         return _PELL_REACH[key]
     ua, fa = f"DEF-upper_arm.{side}", f"DEF-forearm.{side}"
@@ -4518,8 +4523,9 @@ def _pell_reach(sk: Skeleton, pose: dict, side: str, target: np.ndarray, key: st
         q[ua] = (v[0], v[1], v[2])
         q[fa] = (v[3], 0.0, 0.0)
         _g, t = _loco_fk(sk, q)
+        lift = 0.0 if elbow_below is None else max(0.0, float(t[fa][1] - t[ua][1]) + elbow_below)
         return float(np.linalg.norm(t[f"DEF-hand.{side}"] - target)) + 0.0004 * max(0.0, v[3]) + \
-            0.0004 * max(0.0, -150.0 - v[3])  # the elbow bends one way only, and not past 150 degrees
+            0.002 * max(0.0, -PELL_ELBOW_MAX - v[3]) + 2.0 * lift  # the elbow bends one way, to a limit
 
     best = err(x)
     step = 16.0
@@ -4629,7 +4635,7 @@ def _pell_throat_hand(sk: Skeleton, persona: dict, pose: dict) -> dict:
     n4, n5 = t["DEF-spine.004"], t["DEF-spine.005"]
     throat = n4 + (n5 - n4) * 0.35 + np.array([0.0, 0.0, 0.055])
     target = throat + np.array([-0.035, -0.07, 0.035])
-    out = dict(_pell_reach(sk, pose, "R", target, "storm_call"))
+    out = dict(_pell_reach(sk, pose, "R", target, "storm_call", PELL_THROAT_ELBOW))
     out["DEF-hand.R"] = (-20.0, 60.0, 40.0)
     return out
 
@@ -4714,7 +4720,7 @@ def _pell_keys(clip: str, sk: Skeleton, persona: dict, base: dict) -> list:
                                                                           "DEF-hand.R")})
         call = add(call, hand)
         send = add(add(_legs(sk, persona, 0.02), _neck(-6.0)), {
-            "DEF-spine.001": (4.0, 6.0, 0.0), "DEF-upper_arm.R": (-84.0, 0.0, -a * 0.6),
+            "DEF-spine.001": (4.0, 6.0, 0.0), "DEF-upper_arm.R": (-70.0, 0.0, -a * 0.6),
             "DEF-forearm.R": (-6.0, 0.0, 0.0), "DEF-hand.R": (0.0, 0.0, 70.0)})
         return [(0.0, {}), (0.3, call), (0.6, call), (0.8, send), (1.0, {})]
     if clip == "item":
