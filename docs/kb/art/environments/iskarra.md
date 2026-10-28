@@ -27,7 +27,8 @@ standing in a sea that will not give it back.
   - **Inlays and debris:** a Lit Age sunburst inlaid at its middle; fallen glazed tiles from the towers' bands.
   - **The edges:** steps down to the water; the back corner fallen into the sea.
   - **The cast:** every cast mark of the Prologue stands on a slab (test_iskarra).
-- **Colour.** White and gold at dusk, with one saturated note: the reef-blue glaze (`#1569A0`), cool against the
+- **Colour.** White and gold at dusk (warm whites and gilt domes since M3-ENV-752: the cool white read grey on
+  screen), with one saturated note: the reef-blue glaze (`#1569A0`, lifted to `#1F7FC2`), cool against the
   gold. No lamps are lit; the Prologue's only flame is Rhen's.
 - **Influences** (transformed; SPEC §2), combined into an original plan of fluted ceramic towers with galleried
   storeys:

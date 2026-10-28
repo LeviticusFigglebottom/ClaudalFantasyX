@@ -589,6 +589,20 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
+- **2026-10-28 ~10:30: FAST-TRACK M3-ENV-752, the opening cinematic read GREYSCALE (the human's playtest).**
+  - **Cause 1, for the Lead to merge:** the integration build's `prologue.tscn` (7855d016) still builds the city from
+    primitives. slice-polish's mount of the final city and its WaterSurface is on `claude/m2-slice` (ead04bab, 2ab7a66e,
+    c2c9b802, 28b0f97a) and is not on integration yet. **Merge it in big14.**
+  - **Cause 2, fixed (d2ae3cb2):**
+    - The final city, rendered through m2-slice's mount in a worktree, read near-monochrome: the cool lit_ceramic
+      and the paving went grey under the teal dusk fill, and the glaze went slate.
+    - It now has warm whites (towards sand_dry), gilt domes and finials (gold_leaf), and a bluer reef glaze. It still
+      reads "white and gold at dusk" (iskarra.md); the sheet is updated.
+  - **SELF-RENDERED @ d2ae3cb2:**
+    - with m2-slice's prologue: slice_prologue_p01 and slice_prologue_vigil_line — cream towers, gold domes, blue
+      bands, no grey left;
+    - iskarra_p01/i02/i03 viewed.
+    - All five drift on purpose. Re-approve them after merging m2-slice.
 - **2026-10-28 ~09:00: the Lead's queue (inventory M3-HER-1140, the shrine, weak views, storm/night); MERGE-READY.**
   - **Inventory, the 15 rows (task M3-ENV-746):**
     - **Fixed by env-art:**
