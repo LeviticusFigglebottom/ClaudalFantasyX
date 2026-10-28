@@ -12,6 +12,8 @@ import tempfile
 import unittest
 from pathlib import Path
 
+import numpy as np
+
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "tools"))
 import validate_npc as vn  # noqa: E402
@@ -269,9 +271,107 @@ class Crowd(unittest.TestCase):
             self.assertEqual(sorted(p.name for p in d.glob("*.glb")), [f"{bid}.glb"], f"{bid}: one LOD1 GLB")
             imp = (d / f"{bid}.glb.import").read_text(encoding="utf-8")
             self.assertIn('import_script/path="res://game/core/import/crowd_post_import.gd"', imp)
-            self.assertTrue((d / "anim" / f"{bid}_clips.tres").exists())
+            self.assertFalse((d / "anim").exists(), f"{bid}: clips are shared (M3-CRE-662), none per body")
+            lib = rules["animations"]["libraries"][bid]
+            self.assertTrue((ROOT / vn.CROWD_LIBRARY.format(lib=lib)).exists(), f"{bid}: library {lib}")
             size = sum(f.stat().st_size for f in d.rglob("*") if f.is_file() and f.suffix != ".import")
             self.assertLess(size, 3_000_000, f"{bid}: {size} bytes")
+
+
+class SharedClips(unittest.TestCase):
+    """M3-CRE-662: one clip library per group of crowd bodies. Each member playing the library (the reference's local
+    rotations, its hips track scaled by the member's hips rest height, as the import's motion_scale does) stands
+    where its own clips would put it on its own skeleton: world positions of the hands, feet, toes, knees and head
+    sampled over every clip, with the group's persona (the skeleton's part)."""
+
+    TOLERANCE_M = 0.015
+    FEET_TOLERANCE_M = 0.006
+    KEY = ("DEF-hand.L", "DEF-hand.R", "DEF-foot.L", "DEF-foot.R", "DEF-toe.L", "DEF-toe.R", "DEF-spine.006",
+           "DEF-shin.L", "DEF-shin.R")
+    FEET = ("DEF-foot.L", "DEF-foot.R", "DEF-toe.L", "DEF-toe.R")
+    EVERY = 5  # sample every fifth key
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        sys.path.insert(0, str(ROOT / "assets_src" / "crowd"))
+        import build_crowd as bc
+
+        cls.bc = bc
+        bc.sys.path.insert(0, str(bc.VILLAGERS))
+        import crowd_clips as cc
+        import villager_clips as vc
+
+        cls.cc, cls.vc, cls.hc = cc, vc, vc.hc
+
+    def _frames(self, sk, pers: dict, clip: str) -> list:
+        hc, cc, vc = self.hc, self.cc, self.vc
+        length = cc.LENGTHS.get(clip, hc.LENGTHS.get(clip))
+        out = []
+        for i in range(0, int(round(length * hc.FPS)) + 1, self.EVERY):
+            t = i / hc.FPS
+            pose = cc.pose_at(clip, t, length, sk, pers) if clip in cc.POSES else vc.pose_at(clip, t, length, sk, pers)
+            local = sk.local_pose({b: hc.qeuler(v) for b, v in pose.items() if b != "hips"})
+            out.append((local, sk.rest_t[hc.HIPS] + np.asarray(pose.get("hips", (0.0, 0.0, 0.0)), dtype=float)))
+        return out
+
+    def _world(self, sk, local: dict, hips) -> dict:
+        hc = self.hc
+        g_q, g_t = {}, {}
+        for b in hc.BONES:
+            p = sk.parent[b]
+            if p is None:
+                g_q[b], g_t[b] = local[b], hips
+            else:
+                g_q[b] = hc.qmul(g_q[p], local[b])
+                g_t[b] = g_t[p] + hc.qrot(g_q[p], sk.rest_t[b])
+        return g_t
+
+    def test_every_member_plays_its_library_in_place(self) -> None:
+        bc, hc, vc = self.bc, self.hc, self.vc
+        for lib, spec in bc.libraries().items():
+            ref, pers, work = bc.library_spec(lib)
+            pers = {**vc.DEFAULT_PERSONA, **pers, "staff": False}
+            sk_ref = hc.Skeleton(bc.glb_path(ref))
+            clips = ["idle", "talk", "walk"] + work
+            shared = {c: self._frames(sk_ref, pers, c) for c in clips}
+            for body in spec["bodies"]:
+                sk = hc.Skeleton(bc.glb_path(body))
+                scale = float(sk.rest_t[hc.HIPS][1] / sk_ref.rest_t[hc.HIPS][1])
+                for clip in clips:
+                    for (lo, ho), (ls, hs) in zip(self._frames(sk, pers, clip), shared[clip]):
+                        own, played = self._world(sk, lo, ho), self._world(sk, ls, hs * scale)
+                        worst = max(float(np.linalg.norm(own[k] - played[k])) for k in self.KEY)
+                        feet = max(abs(float(own[k][1] - played[k][1])) for k in self.FEET)
+                        self.assertLess(worst, self.TOLERANCE_M, f"{lib}: {body} {clip}")
+                        self.assertLess(feet, self.FEET_TOLERANCE_M, f"{lib}: {body} {clip} feet")
+
+    def test_the_libraries_are_committed_and_rooted_at_the_shared_armature(self) -> None:
+        bc = self.bc
+        for lib in bc.libraries():
+            text = bc.library_path(lib).read_text(encoding="utf-8")
+            roots = {line.split('"')[1].split(":")[0] for line in text.splitlines() if "/path = NodePath(" in line}
+            self.assertEqual(roots, {f"{bc.ARMATURE}/Skeleton3D"}, lib)
+            self.assertIn(f"metadata/{bc.HIPS_META} = ", text, lib)
+            for clip in ["idle", "talk", "walk"] + bc.library_spec(lib)[2]:
+                self.assertIn(f'resource_name = &"{clip}"', text, f"{lib}: {clip}")
+
+    def test_library_mistakes_are_caught(self) -> None:
+        bodies = _load(vn.CROWD_FILE)["bodies"]
+        self.assertEqual(vn.clip_library_errors(ROOT, bodies), [])
+        ranges = _load(vn.CROWD_RANGES)
+        bad = copy.deepcopy(ranges)
+        bad["clip_libraries"]["adult"]["bodies"].remove("crowd_man_heavy")
+        bad["clip_libraries"]["elder"]["bodies"].append("crowd_boy_small")
+        bad["clip_libraries"]["child"]["ref"] = "crowd_man_lean_a"
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            for rel, data in ((vn.CROWD_RANGES, bad), (vn.CROWD_IMPORT_RULES, _load(vn.CROWD_IMPORT_RULES))):
+                (root / rel).parent.mkdir(parents=True, exist_ok=True)
+                (root / rel).write_text(json.dumps(data), encoding="utf-8")
+            errs = " | ".join(vn.clip_library_errors(root, bodies))
+        for needle in ("crowd_man_heavy is in no clip library", "crowd_boy_small is in clip libraries",
+                       "is not one of its bodies", "has no assets/crowd/clips", "differs from"):
+            self.assertIn(needle, errs)
 
 
 class SkinClearance(unittest.TestCase):

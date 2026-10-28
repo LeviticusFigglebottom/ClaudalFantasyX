@@ -9,6 +9,12 @@ const BRINE_SHOALS := "res://game/levels/ch06/brine_shoals/brine_shoals.tscn"
 const TEST_DATA := "user://crowd_layer_test.json"
 const DT := 1.0 / 60.0
 const BASE_CLIPS: Array[StringName] = [&"idle", &"talk", &"walk"]
+## M3-CRE-662: the shared clip libraries. Standing clips sampled at these times keep each body's toes on its own floor.
+const PLANTED_CLIPS: Array[StringName] = [&"idle", &"talk"]
+const PLANTED_TIMES: Array[float] = [0.0, 1.3, 2.6]
+const TOES: Array[String] = ["DEF-toe.L", "DEF-toe.R"]
+const FLOOR_TOLERANCE_M := 0.02
+const SCALE_TOLERANCE := 0.0001
 
 var made: Array[Node] = []
 
@@ -202,6 +208,48 @@ func test_every_crowd_body_loads_with_its_clips() -> void:
 		for slot: StringName in [&"cloth_a", &"cloth_b", &"cloth_c"]:
 			dressed = dressed or _slot_colour(actor, slot).a > 0.0
 		assert_true(dressed, "%s: dressed by its cloth materials" % body)
+	_done()
+
+
+## M3-CRE-662: each body wears its group's one library (the same resource for every member), its armature carries
+## the library's root name, its hips track is scaled to its own height, and its standing clips keep its toes where
+## its own rest pose has them (a child on the adult library's hips would float or sink by tens of cm).
+func test_every_crowd_body_shares_its_groups_clips_at_its_own_height() -> void:
+	var data := VillagerLayer.load_data(CROWD)
+	var rules := AssetImportRules.load_rules("crowd").get("animations", {}) as Dictionary
+	var libraries := rules.get("libraries", {}) as Dictionary
+	var first_of := {}
+	for body: String in data["bodies"] as Dictionary:
+		var actor := (load(VillagerLayer.CROWD_ACTOR_PATH % [body, body]) as PackedScene).instantiate() as Node3D
+		_holder().add_child(actor)
+		var anim := HeroMotion.player_of(actor)
+		var skel := HeroMotion.skeleton_of(actor)
+		assert_true(anim != null and skel != null, "%s: a player and a skeleton" % body)
+		if anim == null or skel == null:
+			continue
+		var lib_name := str(libraries.get(body, ""))
+		var lib := anim.get_animation_library(&"")
+		assert_eq(lib.resource_path, str(rules["library"]).replace(CrowdClipLibrary.LIBRARY_TOKEN, lib_name), body)
+		if first_of.has(lib_name):
+			assert_true(is_same(first_of[lib_name], lib), "%s: the one %s library resource" % [body, lib_name])
+		first_of[lib_name] = lib
+		assert_eq(String(skel.get_parent().name), str(rules["armature"]), "%s: the library's armature" % body)
+		var rest_y := skel.get_bone_rest(skel.find_bone(str(rules["hips_bone"]))).origin.y
+		var want := rest_y / float(lib.get_meta(StringName(str(rules["hips_meta"])), 1.0))
+		assert_between(skel.motion_scale, want - SCALE_TOLERANCE, want + SCALE_TOLERANCE, "%s: motion_scale" % body)
+		for clip in PLANTED_CLIPS:
+			anim.play(clip)
+			for t in PLANTED_TIMES:
+				anim.seek(t, true)
+				for toe in TOES:
+					var b := skel.find_bone(toe)
+					var dy := skel.get_bone_global_pose(b).origin.y - skel.get_bone_global_rest(b).origin.y
+					var what := "%s: %s at %.1f s, %s off the floor" % [body, clip, t, toe]
+					assert_between(dy, -FLOOR_TOLERANCE_M, FLOOR_TOLERANCE_M, what)
+	var distinct := {}
+	for lib_name: Variant in libraries.values():
+		distinct[lib_name] = true
+	assert_eq(first_of.size(), distinct.size(), "every group's library in use")
 	_done()
 
 

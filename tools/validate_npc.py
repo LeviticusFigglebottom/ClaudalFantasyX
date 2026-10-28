@@ -21,6 +21,9 @@
   (assets_src/crowd/params/<body>.json), stands at least the `skin_clearance` floor of assets_src/crowd/ranges.json
   from that body's skin, by skin_delta_e (CIELAB, lightness and hue weighted; gen_crowd.py draws with the same
   function).
+* Shared clips (M3-CRE-662): every planned body sits in exactly one of ranges.json's `clip_libraries` (its
+  reference among the members), each library's file is committed, and the crowd import rules map bodies to the
+  same libraries.
 """
 
 from __future__ import annotations
@@ -50,6 +53,8 @@ TINT_TOLERANCE = 1.5  # sRGB 0-255 units off the nearest two-swatch mix (hex rou
 VARIETY_MIN = 24.0  # sRGB 0-255 distance: two people on one body differ by at least this in some cloth slot
 CROWD_RANGES = "assets_src/crowd/ranges.json"
 CROWD_PARAMS = "assets_src/crowd/params/{id}.json"
+CROWD_LIBRARY = "assets/crowd/clips/crowd_{lib}_clips.tres"
+CROWD_IMPORT_RULES = "game/data/import/crowd.json"
 # CIELAB from sRGB (D65): the sRGB transfer curve, the sRGB -> XYZ matrix, the D65 white, the CIE f(t) knee
 SRGB_KNEE = 0.04045
 SRGB_LINEAR_SLOPE = 12.92
@@ -322,6 +327,36 @@ def skin_errors(root: Path, people: list[dict]) -> list[str]:
     return errs
 
 
+def clip_library_errors(root: Path, bodies: dict) -> list[str]:
+    """M3-CRE-662: every planned body in exactly one shared clip library (ranges.json clip_libraries), its reference
+    among its members, the import rules' `libraries` the same map, and each library's file committed."""
+    ranges_path = root / CROWD_RANGES
+    if not ranges_path.exists():
+        return []
+    errs: list[str] = []
+    libs = {k: v for k, v in _load(ranges_path, errs).get("clip_libraries", {}).items() if not k.startswith("_")}
+    member: dict[str, str] = {}
+    for lib, spec in sorted(libs.items()):
+        if spec.get("ref") not in spec.get("bodies", []):
+            errs.append(f"{CROWD_RANGES}: clip library {lib}'s ref {spec.get('ref')!r} is not one of its bodies")
+        for b in spec.get("bodies", []):
+            if b in member:
+                errs.append(f"{CROWD_RANGES}: {b} is in clip libraries {member[b]} and {lib}")
+            member[b] = lib
+        if not (root / CROWD_LIBRARY.format(lib=lib)).exists():
+            errs.append(f"{CROWD_RANGES}: clip library {lib} has no {CROWD_LIBRARY.format(lib=lib)}")
+    for b in sorted(set(bodies) - set(member)):
+        errs.append(f"{CROWD_RANGES}: body {b} is in no clip library")
+    for b in sorted(set(member) - set(bodies)):
+        errs.append(f"{CROWD_RANGES}: clip library member {b} is not a planned body")
+    rules_path = root / CROWD_IMPORT_RULES
+    if rules_path.exists():
+        mapped = _load(rules_path, errs).get("animations", {}).get("libraries", {})
+        if mapped != member:
+            errs.append(f"{CROWD_IMPORT_RULES}: animations.libraries differs from {CROWD_RANGES} clip_libraries")
+    return errs
+
+
 def tint_distance(a: dict, b: dict) -> float:
     """The largest sRGB distance over the cloth slots: how far apart two people on one body dress."""
     out = 0.0
@@ -402,7 +437,7 @@ def crowd_errors(root: Path, locations: set[str]) -> list[str]:
     for pid in sorted(ids):
         if rows.get(pid, 0) != 1:
             errs.append(f"{CROWD_FILE}: {pid} has {rows.get(pid, 0)} zone rows (needs exactly 1)")
-    return errs + variety_errors(people) + skin_errors(root, people)
+    return errs + variety_errors(people) + skin_errors(root, people) + clip_library_errors(root, bodies)
 
 
 def npc_errors(root: Path) -> list[str]:

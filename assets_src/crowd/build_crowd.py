@@ -14,8 +14,14 @@ and pointed at the crowd folders from outside; none is edited (ADR 0152):
 * materials: write_materials.tables for the body, its texture paths re-rooted (the skin maps under
   assets/crowd/<body>/textures, Asha's generic atlases and the villagers' cloth atlas where they are), written for
   the material slots the LOD1 GLB has; plus `<body>_actor.tscn` (the GLB turned to face -Z, as the villagers').
-* clips: villager_clips.build with its PARAMS_DIR and GLB path moved, and the body's work clips (`_work` in its
-  params, from the roster) added through its EXTRA_CLIPS hook with crowd_clips.pose_at: idle, talk, walk + work.
+* clips (M3-CRE-662): not per body. The crowd bodies share one skeleton (the villager rig, the same bone names), so
+  each age group shares one AnimationLibrary, `assets/crowd/clips/crowd_<library>_clips.tres` (ranges.json
+  `clip_libraries`: adult, elder, child, child_small). The library's reference body builds it, in its own job, from
+  its freshly built GLB: villager_clips.build with its PARAMS_DIR, GLB path and persona moved (the group's mean
+  `_persona`), the members' work clips (`_work`) added through its EXTRA_CLIPS hook with crowd_clips.pose_at. Its
+  tracks are rooted at ARMATURE, not at the reference's own armature node, and it records the reference's hips rest
+  height (`metadata/hips_rest_y`): the crowd import (game/world/npc/crowd_clip_library.gd) names every body's
+  armature ARMATURE and scales each body's hips track to its own height (Skeleton3D.motion_scale).
 
 Deterministic (the villager jobs' snaps are on in every crowd params file: `_build.host_snaps`).
 """
@@ -38,6 +44,11 @@ HEAD_SIZE = (512, 256)  # albedo and normal, ORM and skin mask (the villagers' 1
 BODY_SIZE = (256, 256)  # the villagers' 512
 RES = "res://assets"
 LOD0_DIR = "lod0"
+RANGES = HERE / "ranges.json"
+LIB_DIR = OUT_ROOT / "clips"
+ARMATURE = "crowd_skeleton"  # every crowd body's armature node after import (game/data/import/crowd.json)
+HIPS_META = "hips_rest_y"
+PERSONA_DIGITS = {"sway": 2, "lean": 2, "arms_down": 1}
 ACTOR = """[gd_scene load_steps=2 format=3]
 
 [ext_resource type="PackedScene" path="res://assets/crowd/{body}/{body}.glb" id="glb"]
@@ -164,39 +175,81 @@ def build_materials(body: str) -> list[str]:
     return sorted(written)
 
 
-def build_clips(body: str) -> int:
+def libraries() -> dict[str, dict]:
+    """ranges.json `clip_libraries`: library -> {"ref": body, "bodies": [body, ...]}."""
+    data = json.loads(RANGES.read_text(encoding="utf-8"))["clip_libraries"]
+    return {k: v for k, v in data.items() if not k.startswith("_")}
+
+
+def library_path(lib: str) -> Path:
+    return LIB_DIR / f"crowd_{lib}_clips.tres"
+
+
+def group_persona(params: list[dict]) -> dict:
+    """The library's persona: its members' `_persona` averaged (sway, lean, arms_down)."""
+    return {k: round(sum(float(p["_persona"][k]) for p in params) / len(params), d) for k, d in PERSONA_DIGITS.items()}
+
+
+def library_spec(lib: str) -> tuple[str, dict, list[str]]:
+    """(reference body, persona, work clips) of a library: the work clips any member's wearers play, in
+    crowd_clips order."""
+    sys.path.insert(0, str(HERE))
+    import crowd_clips as cc
+
+    spec = libraries()[lib]
+    params = [json.loads((PARAMS_DIR / f"{b}.json").read_text(encoding="utf-8")) for b in spec["bodies"]]
+    want = {c for p in params for c in p.get("_work", []) if c}
+    unknown = sorted(want - set(cc.CLIPS))
+    if unknown:
+        raise SystemExit(f"build_crowd: library {lib} names unknown work clips {unknown}")
+    return spec["ref"], group_persona(params), [c for c in cc.CLIPS if c in want]
+
+
+def build_library(lib: str) -> str:
+    """The library's AnimationLibrary text: villager_clips.build on the reference body's skeleton with the group's
+    persona and work clips, its tracks rooted at ARMATURE, plus the reference's hips rest height."""
     sys.path.insert(0, str(VILLAGERS))
     sys.path.insert(0, str(HERE))
     import crowd_clips as cc
     import villager_clips as vc
 
-    extra = json.loads((PARAMS_DIR / f"{body}.json").read_text(encoding="utf-8"))
-    work = [c for c in extra.get("_work", []) if c]
-    unknown = sorted(set(work) - set(cc.CLIPS))
-    if unknown:
-        raise SystemExit(f"build_crowd: {body} names unknown work clips {unknown}")
+    ref, pers, work = library_spec(lib)
     vc.PARAMS_DIR = PARAMS_DIR
     vc.glb_path = glb_path
-    vc.EXTRA_CLIPS[body] = work
+    vc.EXTRA_CLIPS[ref] = work
     vc.EXTRA_LENGTHS.update(cc.LENGTHS)
     vc.EXTRA_LOOPS.update(cc.CLIPS)
-    villager_pose = vc.pose_at
+    villager_pose, villager_persona = vc.pose_at, vc.persona
 
-    def pose_at(clip: str, t: float, length: float, sk, pers: dict) -> dict:
+    def pose_at(clip: str, t: float, length: float, sk, p: dict) -> dict:
         if clip in cc.POSES:
-            return cc.pose_at(clip, t, length, sk, pers)
-        return villager_pose(clip, t, length, sk, pers)
+            return cc.pose_at(clip, t, length, sk, p)
+        return villager_pose(clip, t, length, sk, p)
 
     vc.pose_at = pose_at
+    vc.persona = lambda _npc: {**vc.DEFAULT_PERSONA, **pers, "staff": False}
     try:
-        text = vc.build(body)
+        text = vc.build(ref)
     finally:
-        vc.pose_at = villager_pose
-    p = OUT_ROOT / body / "anim" / f"{body}_clips.tres"
-    p.parent.mkdir(parents=True, exist_ok=True)
-    p.write_text(text, encoding="utf-8")
-    log(f"{body}: {len(vc.clips_for(body))} clips ({len(text) / 1e6:.2f} MB)")
-    return len(vc.clips_for(body))
+        vc.pose_at, vc.persona = villager_pose, villager_persona
+    sk = vc.hc.Skeleton(glb_path(ref))
+    text = text.replace(f'NodePath("{sk.root_name}/', f'NodePath("{ARMATURE}/')
+    return text + f"metadata/{HIPS_META} = {vc.hc.fmt(float(sk.rest_t[vc.hc.HIPS][1]))}\n"
+
+
+def build_clips(body: str) -> list[str]:
+    """The libraries `body` is the reference of (each written to assets/crowd/clips/)."""
+    out = []
+    for lib, spec in libraries().items():
+        if spec["ref"] != body:
+            continue
+        text = build_library(lib)
+        p = library_path(lib)
+        p.parent.mkdir(parents=True, exist_ok=True)
+        p.write_text(text, encoding="utf-8")
+        log(f"{body}: library {lib} for {len(spec['bodies'])} bodies ({len(text) / 1e6:.2f} MB)")
+        out.append(lib)
+    return out
 
 
 def finish(args: argparse.Namespace) -> int:
@@ -204,6 +257,9 @@ def finish(args: argparse.Namespace) -> int:
     build_maps(args.body, bake)
     mats = build_materials(args.body)
     log(f"{args.body}: {len(mats)} materials and the actor scene")
+    stale = OUT_ROOT / args.body / "anim"  # M3-CRE-659's per-body clips, now shared (build_clips)
+    if stale.exists():
+        shutil.rmtree(stale)
     build_clips(args.body)
     return 0
 
