@@ -3,6 +3,14 @@
 ## NEW ACCOUNT (from 2026-10-25)
 Session `session_01Wmj8xaLtwcqiS3qwC6PciW`. Integration branch `claude/undertow-lead-handoff-ze8rrn`. Newest first.
 
+- **MERGE-READY: the Lead's 09:15 check. The sequencer really does play the music.json cue.**
+  - `CutsceneSequencer._cue_music` calls `CutsceneSound.music` first, which hands the cue to `Audio.play_music` and the deck. Only an id with no cue falls back to `music_dir/<id>.ogg` and its stand-in.
+  - New test, `test_every_act1_music_id_plays_its_real_file_on_the_deck`: for each Act I `@music` id it runs that path and asserts that the deck is playing the cue with its own file loaded, every stem of a stem cue included. 3 run, 0 failed.
+  - The cutscene suite also passes, including test_cutscene_sequencer's playthrough (`hush_first_verse` on the deck).
+  - **Already done, as posted above:**
+    - Every Act I creature has its own voice, hit and death sounds, and each boss intro its own sting.
+    - The Act I loop and loudness pass found 41 files, 0 problems.
+
 - **MERGE-READY (claude/audio @ fbede303b, gpu/gate-big14-shots merged): the Lead's 08:59 asks.**
   - **test_field_audio::test_change_rows_and_live_hooks:** the gate ran on a commit before my 9c6fea374, which made ReefballOutfitterMenu live. On this branch the test passes (22 run, 0 failed).
   - **The @music seam (M3-HER-1146, 12 items):** the sequencer has resolved through music.json since M2-AUD-07 (CutsceneSound.music plays the cue on Audio's deck, stems and LFS files included). It was the inventory's scanner that still read only `music_dir/<id>.ogg` plus `music_stand_ins`.
