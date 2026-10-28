@@ -1,5 +1,5 @@
 {
-  "_doc": "Ridge lynx (act2/ridge_lynx.md): coat (the winter coat, its frosted ruff, the black ear tufts and tail tip, and the old sling wound's spawn_wound parting on its emission mask) and eye (dusk_gold, the pupils black). write_materials.py on game/shaders/creature/creature.gdshader.",
+  "_doc": "Ridge lynx (act2/ridge_lynx.md): coat (the winter coat, its frosted ruff, the black ear tufts and tail tip, the wedge muzzle with its nose leather, pale whisker pads, whiskers and mouth line, and the old sling wound's spawn_wound parting on its emission mask) and eye (dusk_gold, the pupils black). write_materials.py on game/shaders/creature/creature.gdshader.",
   "slots": {
     "coat": {
       "roughness_dry": 0.92,
