@@ -12,3 +12,11 @@ parameters where the base allows them, and a creatures.json row: SPEC §5's pale
 
 Variants that rebuild a base mesh (the root crab's legs, the fen leech's length) need a parameter in the base's
 build, so the base job lists them; the others need only a materials.json (as the wall crab and the wreck crab do).
+
+M3-CRE-654 (Act I at final quality, 2026-10-28) rebuilt the sail leech and the slag tortoise, so the fen leech and
+the scree crawler changed with them.
+- The fen leech gained the leech's annulated body, its oral and caudal suckers and the battened sails. It keeps its
+  ribbon-flat look through three new base parameters it sets itself: `BODY_W`, `BODY_H` and `DROOP`.
+- The scree crawler gained the skirted crust with clinker, the scaled and nailed legs, the folded neck and the beaked
+  head.
+- Both verify identical, and both were viewed in the self-render.
