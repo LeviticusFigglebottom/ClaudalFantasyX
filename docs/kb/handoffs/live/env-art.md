@@ -589,7 +589,7 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
-- **MERGE-READY @ (this push): the touchable props in Haluna (the Lead's item 3), and the walk-through findings.**
+- **MERGE-READY @ 216c8ee5c: the touchable props in Haluna (the Lead's item 3), and the walk-through findings.**
   - **Haluna's shops were the gap:**
     - The `haluna_forge` smith stood by a boat on the beach with no forge.
     - The goods shop and the inn had only an awning cloth each.
