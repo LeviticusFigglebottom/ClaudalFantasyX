@@ -20,6 +20,7 @@ RULES = [
     ("music/act2/lamp_engine_p*.ogg", "stem", -16.0, 0.5, -1.0, "the Lamp Engine's two stems, stacked at -16 (Git LFS, M3-AUD-844/845)"),
     ("music/act2/avalanche_ram_p*.ogg", "stem", -16.0, 0.5, -1.0, "the Avalanche Ram's two stems, stacked at -16 (Git LFS, M3-AUD-844/845)"),
     ("music/act2/wakefin_p*.ogg", "stem", -16.0, 0.5, -1.0, "the Wakefin's two stems, stacked at -16 (Git LFS, M3-AUD-844/845)"),
+    ("music/act3/hesper_and_ilsabet_s*.ogg", "stem", -16.0, 0.5, -1.0, "the revenant pair's two stems, stacked at -16 (Git LFS, M3-AUD-858)"),
     ("music/*.ogg", "integrated", -16.0, 0.5, -1.0, "music beds, themes and cutscene cues"),
     ("ambience/*.ogg", "integrated", -26.0, 0.5, -5.0, "ambience beds (mix.md: -26, peaks well down)"),
     # M3-AUD-859 (assets_src/sfx/act3/kite_foley.py; Git LFS): the Kite's deck beds and foley
