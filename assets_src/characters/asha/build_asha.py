@@ -748,7 +748,8 @@ def main() -> int:
         legs = np.isin(reg, ["leg_L", "leg_R", "torso"]) & (V[:, 2] < z_pivot)  # the skin under the panels
         W_legs = skirt_weights(Pc[hang], Wc[hang], V, W, reg, lm, spine_i)  # M1-CHR-14's leg-following weights
         Wc[hang] = helper_bones.skirt_weights(Pc[hang], Wc[hang], wnames, centre, z_pivot,
-                                              float(bone_head(skel, "DEF-shin.L")[2]), lm.S, W_legs,
+                                              float(bone_head(skel, "DEF-shin.L")[2]),
+                                              float(bone_head(skel, "DEF-foot.L")[2]), lm.S, W_legs,
                                               nearest_distance(Pc[hang], V[legs]))
         ob = part_object(opaque)
         apply_weights(ob, Wc, wnames, skel)
