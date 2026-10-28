@@ -57,3 +57,27 @@ The protocol:
 Batch requests: one line per push, covering every shot your recent items can affect.
 - **Portrait renders:** post `RENDER-REQUEST @ <sha>: portraits:<id>[,portraits:<id>...]; tool: tools/portraits/render.sh --only <id>`. The PC runs render.sh and pushes the PNGs on the same kind of branch. Shot ids must exist in `tests/screenshots/shots.json` at the requested sha; anything else is skipped.
 - **PC import crashes:** if Godot's import aborts, the PC retries it up to 3 times on a fresh `.godot` and never publishes black captures.
+
+## WHILE THE PC IS PAUSED (from 2026-10-27 ~21:30, the human's instruction)
+- The PC (`pc-gpu`) is paused until the human says to resume.
+- **The Lead's cloud container serves render requests instead.** The protocol is unchanged: post the same `RENDER-REQUEST @ <sha>: <ids>` lines in your live log.
+- Results go to `lead/gate-render-<track>-<sha7>` (not `gpu/...`), and their RENDERED lines go in `lead-cloud.md`.
+- Cloud lavapipe matches the baselines; it is just slower (4 CPUs, one job at a time). **Keep requests small:** list only the shots you changed.
+- **Still never capture in your own session.**
+
+## SELF-DIRECTED BACKLOG (from 2026-10-27 22:50)
+If the Lead's list is done, **don't end your turn and don't wait for a go-ahead.** In order:
+1. View and approve any render branch for your track (`gpu/render-<track>-*`, `lead/gate-render-<track>-*`).
+2. Take the next `todo` task for your role: `python3 tools/taskboard.py --role <role>`.
+3. Take request tasks addressed to you (`request-from:` other tracks).
+4. Run your own "parts look primitive" audit of your area and fix what you find.
+5. Move ahead into the next act's content in your area, per docs/kb/story.
+
+Ending a turn is fine only while a background job of yours is running (it will wake you), or when 1–5 are truly empty. In that case, write "BACKLOG EMPTY: <why>" in your live log.
+- **The request limit while the PC is paused (from 10-27 ~23:45):** keep **one open RENDER-REQUEST per track** at a time. When you post a new one, mark every older open line `SUPERSEDED` and fold its still-relevant ids into the new line. List only the shots you changed since your last approved render. The cloud server renders about 1–2 min per shot (up to 7 min for cutscene shots), so a 57-id request costs over an hour.
+
+## Git LFS is LIVE (ADR 0039, from 2026-10-28)
+- Run `git lfs install --local` once in your clone.
+- **New Act II and later final music** goes in `assets/audio/music/act2/` (`act3/`, …). Any other new binary over 5 MB goes in `assets/lfs/<area>/`. Those paths are stored in LFS automatically (`.gitattributes`).
+- Never move existing files into LFS paths, and never migrate history. Screenshot baselines stay plain git.
+- After `git pull` or `git merge`, run `git lfs pull`: cloud checkouts skip LFS downloads by default. `tools/ci_local.sh` does it for you.
