@@ -758,3 +758,7 @@ Merged `origin/gpu/gate-big14-shots` and the integration branch, then fixed on t
   - test_battle_result_motion.
   - Wildlife 14/0, npc 10/0.
 - **MERGE-READY @ (this push): the big14 gate fixes above.**
+- **BACKLOG EMPTY (after big14):**
+  - The villager generator waits on M3-CRE-657 (slice-polish: GreyboxZone adds the VillagerLayer) and M3-CRE-661 (characters).
+  - The primitive pass waits on M3-CRE-660 (the Lead: "pumice_crawler" and avalanche_ram scope).
+  - The open character-role todos are creatures-b's (M3-HER-1134, M3-HER-1143: Act I bosses) or characters' named people (M3-C07-07, M3-CHR-5xx).
