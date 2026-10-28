@@ -374,7 +374,8 @@ def build_costume(body, params: dict) -> tuple[dict[str, Part], dict]:
         elif len(p.C) < len(p.V):
             p.C = p.C + [(0.0, 0.0, 0.0, 0.0)] * (len(p.V) - len(p.C))
     outer = np.concatenate([out[n].varr() for n in ("Jack", "Cuirass", "TunicSkirt", "TrouserTop")])
-    out["Sash"] = sash(fields, chart, params, outer)
+    if params.get("sash", True):  # M3-CHR-508: the Stillguard soldiers wear no Inquisitor's sash
+        out["Sash"] = sash(fields, chart, params, outer)
     info = {"pauldron": pinfo, "z_hem": z_hem, "z_waist": z_waist, "z_crotch": z_crotch}
     return out, info
 

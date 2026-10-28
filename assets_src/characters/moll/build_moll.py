@@ -107,8 +107,18 @@ hb.LOD1_RATIO.update({"Head": 0.42, "Body": 0.5, "Costume": 0.45, SLEEVES: 0.45,
                       "Shield": 0.6})
 
 
+LOG_TAG = ["moll"]  # build() sets it to the build's name (M3-CHR-508: the Stillguard variants)
+# M3-CHR-508: build() is parametric for the Stillguard soldiers (build_stillguard), whose kit Moll's derives from: the
+# spec names the params file and the skeleton, the face's subdivision (off: an NPC's head, the villagers' brows seated
+# on the shipped skin), the hair, the held prop (`prop`: None for Moll's brine-iron, else a function returning
+# (part, mesh name, bone name, (head, tail))) and an optional helm (a function returning a head-rigid Part). The
+# defaults (MOLL) build Moll exactly as before.
+MOLL = {"name": "moll", "params": PARAMS, "subdiv_face": True, "hair": True, "prop": None, "helm": None}
+BROW_SEAT = 0.0003  # m at S = 1: without the face subdivision the brow cards sit on the shipped skin (build_villager)
+
+
 def log(msg: str) -> None:
-    print(f"[moll] {msg}", flush=True)
+    print(f"[{LOG_TAG[0]}] {msg}", flush=True)
 
 
 def parse_args() -> argparse.Namespace:
@@ -322,14 +332,18 @@ def clear_teeth_corner(ob: bpy.types.Object) -> str:
 
 
 def main() -> int:
-    args = parse_args()
+    return build(parse_args(), MOLL)
+
+
+def build(args: argparse.Namespace, spec: dict) -> int:
+    LOG_TAG[0] = spec["name"]
     t0 = time.time()
     bpy.ops.wm.read_factory_settings(use_empty=True)
-    params = bb_params.load_params(path=str(PARAMS))
-    extra = json.loads(PARAMS.read_text(encoding="utf-8"))
+    params = bb_params.load_params(path=str(spec["params"]))
+    extra = json.loads(Path(spec["params"]).read_text(encoding="utf-8"))
     cparams = extra["_costume"]
-    hparams = extra["_hair"]
-    res = bb_donor.generate(params, log=log, subdiv_face=True)
+    hparams = extra.get("_hair")
+    res = bb_donor.generate(params, log=log, subdiv_face=spec["subdiv_face"])
     lm, body = res["lm"], res["body"]
     face = body.face
     V, F = hb.snap_positions(res["V"]), np.asarray(res["F"])  # M1-CHR-15: host-independent positions
@@ -341,7 +355,7 @@ def main() -> int:
     # ---- rig on our landmarks; the donor's hand-made skin weights ------------------------------
     meta = bb_rig.build_metarig(lm)
     rig = bb_rig.generate_rig(meta)
-    skel = bb_rig.build_game_skeleton(rig, "moll_skeleton")
+    skel = bb_rig.build_game_skeleton(rig, f"{spec['name']}_skeleton")
     W, wnames, dropped = bb_rig.donor_weight_matrix(skel, res["weights"], len(V))
     W = W.astype(np.float32)
     W, wnames, arms = hb.armpit_helpers(skel, V, W, wnames)  # M1-CHR-15: the shoulder correctives, every hero
@@ -379,7 +393,9 @@ def main() -> int:
         y0 = lm.P("head_c")[1] - 0.62 * lm.h
         O = np.stack([xz[:, 0], np.full(len(xz), y0), xz[:, 1]], axis=1)
         D = np.repeat(np.array([[0.0, 1.0, 0.0]]), len(xz), axis=0)
-        return bb_head.cast_in(body, "head", O, D, tmax=0.4 * lm.h * 1.6, steps=320)
+        pts = bb_head.cast_in(body, "head", O, D, tmax=0.4 * lm.h * 1.6, steps=320)
+        # without the face subdivision the brow cards laid on the field sink into the facets (build_villager)
+        return pts if spec["subdiv_face"] else surf.project(pts, BROW_SEAT * lm.S)
 
     for sd in ("L", "R"):
         extras.append(asha_eyes.brow(face, sd, surface_fn))
@@ -419,14 +435,16 @@ def main() -> int:
     hb.apply_weights(ob_head, Wh, wnames, skel)
     log(f"head: {len(Vhead)} verts, {head.tris()} tris ({time.time() - t0:.1f}s)")
 
-    wnames_x = wnames + [PAULDRON_BONE["L"], PAULDRON_BONE["R"], IRON_BONE, SHIELD_BONE]
+    prop_spec = spec["prop"](lm, cparams) if spec["prop"] else None  # (part, mesh, bone, (head, tail))
+    prop_bone = prop_spec[2] if prop_spec else IRON_BONE
+    wnames_x = wnames + [PAULDRON_BONE["L"], PAULDRON_BONE["R"], prop_bone, SHIELD_BONE]
     bone_specs: list = []
 
     # ---- hair: the crop, head-rigid, grey at the temples ----------------------------------------------
     head_i = wnames.index(HEAD_BONE)
     hair_objs = []
     hair_tris = 0
-    if not args.no_hair:
+    if not args.no_hair and spec["hair"] and hparams:
         hair = moll_hair.build_hair(lm, body, hparams, surf)
         crop = Part("HairHead")
         for p in hair.values():
@@ -482,11 +500,10 @@ def main() -> int:
         f"quads {int(hidden.sum())} ({time.time() - t0:.1f}s)")
 
     # ---- costume weights --------------------------------------------------------------------------
-    sash = costume.pop("Sash")
-    costume["SashBand"] = Part("SashBand")  # the band and the knot ride the torso; the tails, the left leg
-    costume["SashTails"] = Part("SashTails")
-    first = sash.tail_first
-    for name, lo, hi in (("SashBand", 0, first), ("SashTails", first, len(sash.V))):
+    sash = costume.pop("Sash", None)  # M3-CHR-508: the soldiers wear no sash
+    first = sash.tail_first if sash else 0
+    for name, lo, hi in ((("SashBand", 0, first), ("SashTails", first, len(sash.V))) if sash else ()):
+        costume[name] = Part(name)  # the band and the knot ride the torso; the tails, the left leg
         sub = costume[name]
         keep = set(range(lo, hi))
         sub.V = sash.V[lo:hi]
@@ -510,12 +527,13 @@ def main() -> int:
     lower_src = np.isin(reg, ["torso", "leg_L", "leg_R"])
     Wc = hb.transfer_weights(Pc, V[lower_src], W[lower_src])
     torso = reg == "torso"
-    for name in TORSO_PARTS:  # M1-CHR-14: torso only; M1-CHR-15: the underarm cloth turns with the correctives
+    for name in [n for n in TORSO_PARTS if n in costume]:  # M1-CHR-14: torso only; M1-CHR-15: the underarm cloth
         Wc[sl(name)] = hb.transfer_weights(Pc[sl(name)], V[torso], W[torso])
         Wc[sl(name)] = hb.helper_bones.armpit_cloth_weights(Pc[sl(name)], Wc[sl(name)], wnames, V, W, arms, lm.S)
     spine_i = wnames.index("DEF-spine")
     Wc[sl("TunicSkirt")] = hb.skirt_weights(Pc[sl("TunicSkirt")], Wc[sl("TunicSkirt")], V, W, reg, lm, spine_i)
-    Wc[sl("SashTails")] = leg_weights(Pc[sl("SashTails")], Wc[sl("SashTails")], V, W, reg, lm, "L")
+    if "SashTails" in costume:
+        Wc[sl("SashTails")] = leg_weights(Pc[sl("SashTails")], Wc[sl("SashTails")], V, W, reg, lm, "L")
     for sd in ("L", "R"):
         legs = np.isin(reg, [f"leg_{sd}", "torso"])
         Wc[sl(f"TrouserLeg{sd}")] = hb.transfer_weights(Pc[sl(f"TrouserLeg{sd}")], V[legs], W[legs])
@@ -541,10 +559,13 @@ def main() -> int:
     garment_objs = [ob_cost, ob_sleeve]
 
     # ---- props ----------------------------------------------------------------------------------------
-    iron = moll_props.iron(lm, cparams)
-    ob_iron = rigid_object(iron, IRON_BONE, wnames_x, skel, "Iron")
-    g_head, g_tail = moll_props.iron_bone(lm, cparams, IRON_BONE_LEN)
-    bone_specs.append((IRON_BONE, g_head, g_tail, HAND_BONE))
+    if prop_spec:  # M3-CHR-508: a soldier's spear
+        iron, prop_mesh, _bone, (g_head, g_tail) = prop_spec
+    else:
+        iron, prop_mesh = moll_props.iron(lm, cparams), "Iron"
+        g_head, g_tail = moll_props.iron_bone(lm, cparams, IRON_BONE_LEN)
+    ob_iron = rigid_object(iron, prop_bone, wnames_x, skel, prop_mesh)
+    bone_specs.append((prop_bone, g_head, g_tail, HAND_BONE))
     el, wr = lm.side_pt("elbow", "L"), lm.side_pt("wrist", "L")
     arm_pts = np.concatenate([V[np.isin(reg, ["arm_L", "hand_L"])], costume["Bracers"].varr(),
                               sleeve.varr()])
@@ -554,6 +575,10 @@ def main() -> int:
     bone_specs.append((SHIELD_BONE, centre, centre + up_d * SHIELD_BONE_LEN, FOREARM_L))
     prop_objs = [ob_iron, ob_shield]
     props_tris = iron.tris() + shield.tris()
+    if spec["helm"]:  # M3-CHR-508: an open-face helm, rigid on the head over the crop
+        helm = spec["helm"](lm, body, cparams, surf, V, F, freg)
+        garment_objs.append(rigid_object(helm, HEAD_BONE, wnames_x, skel, "Helm"))
+        props_tris += helm.tris()
     gap = float(np.linalg.norm(centre - (wr + (el - wr) * 0.5)))
     clearance = {"shield_rim_plane_from_forearm_axis_mm": round(1000 * gap, 1)}
     bt.add_bones(skel, bone_specs)
