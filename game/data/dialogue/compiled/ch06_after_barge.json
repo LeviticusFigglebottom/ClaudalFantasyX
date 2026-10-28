@@ -9,7 +9,7 @@
    "ops": [
     {"op": "cue", "cue": "camera", "args": ["W06_after"], "kwargs": {}, "src": 10},
     {"op": "cue", "cue": "music", "args": ["liss_theme"], "kwargs": {"fade": 2.0}, "src": 11},
-    {"op": "cue", "cue": "mark", "args": ["wrights", "escort_road", "walk"], "kwargs": {}, "src": 12},
+    {"op": "cue", "cue": "mark", "args": ["wrights", "way_tents_s", "walk"], "kwargs": {"via": "way_wrights_n"}, "src": 12},
     {"op": "cue", "cue": "face", "args": ["toma", "tender", 0.5], "kwargs": {}, "src": 13},
     {"op": "line", "id": "ch06_after_001", "key": "DLG_CH06_AFTER_001", "speaker": "toma", "emotion": "smile", "voice": "", "src": 14},
     {"op": "cue", "cue": "anim", "args": ["liss", "look_at", "wrights"], "kwargs": {}, "src": 15},
@@ -22,7 +22,7 @@
     {"op": "line", "id": "ch06_after_004", "key": "DLG_CH06_AFTER_004", "speaker": "toma", "emotion": "neutral", "voice": "", "src": 22},
     {"op": "line", "id": "ch06_after_005", "key": "DLG_CH06_AFTER_005", "speaker": "liss", "emotion": "neutral", "voice": "", "src": 23},
     {"op": "line", "id": "ch06_after_006", "key": "DLG_CH06_AFTER_006", "speaker": "ysolde", "emotion": "soft_smile", "voice": "", "src": 24},
-    {"op": "cue", "cue": "mark", "args": ["asha", "toma_apart", "walk"], "kwargs": {}, "src": 25},
+    {"op": "cue", "cue": "mark", "args": ["asha", "toma_apart", "walk"], "kwargs": {"via": "way_camp_e"}, "src": 25},
     {"op": "cue", "cue": "anim", "args": ["asha", "look_at", "toma"], "kwargs": {}, "src": 26},
     {"op": "line", "id": "ch06_after_007", "key": "DLG_CH06_AFTER_007", "speaker": "asha", "emotion": "tender", "voice": "", "src": 27},
     {"op": "line", "id": "ch06_after_008", "key": "DLG_CH06_AFTER_008", "speaker": "toma", "emotion": "smile", "voice": "", "src": 28},

@@ -27,6 +27,9 @@ TRI_BUDGET = {
     "crown_pavilion": (9000, 900),
 }
 
+CHEEK_RELIEF_M = 0.16  # the stair cheek's string course and pilaster ribs, proud of its outer face (M3-ENV-1316)
+CHEEK_STRING_DROP_M = 0.55
+CHEEK_RIB_M = 3.0
 PARAPET_H = 0.8  # the silhouette's lip: 0.8 m above each tier top
 PARAPET_D = 0.6
 PARAPET_OVER = 0.15  # overhang beyond the face
@@ -375,6 +378,26 @@ def flying_stair(name: str, seed: int, *, lod: bool = False) -> kc.MeshBuilder:
         # The foot's end face.
         ac.plain_box(mb, (min(xin, xout), ac.FLOOR_Y, z_foot - 0.3), (max(xin, xout), ac.FLOOR_Y + CHEEK_H, z_foot),
                      m_d, faces="+z")
+    # M3-ENV-1316: the cheek's outer face read as one flat plane tens of metres long. A string course steps down the
+    # slope under the coping, and pilaster ribs stand proud every CHEEK_RIB_M from the soffit to the coping.
+    for sx in (-1.0, 1.0):
+        xout = sx * ac.STAIR_HALF_W
+        xa, xb = sorted((xout, xout + sx * CHEEK_RELIEF_M))
+        zc = zs[::2] if len(zs) % 2 else np.append(zs[::2], zs[-1])  # 3 m courses, each laid on the stair's slope
+        slope = math.radians(ac.STAIR_DEG)
+        for za, zb in zip(zc[:-1], zc[1:]):
+            zm = (za + zb) * 0.5
+            y = float(ac.stair_nosing_y(zm)) + CHEEK_H - CHEEK_STRING_DROP_M
+            half_len = abs(zb - za) * 0.5 / math.cos(slope) + 0.02
+            kc.rounded_block(mb, ((xa + xb) * 0.5, y, zm), (CHEEK_RELIEF_M * 0.5, 0.14, half_len), m_d,
+                             rot=kc.rot_x(slope), radius=0.03, seg=1, variation=float(rng.random()))
+        n = int(abs(z_foot - z_top) / CHEEK_RIB_M)
+        for k in range(1, n):
+            z = z_foot - k * CHEEK_RIB_M
+            y0 = float(ac.stair_soffit_y(z))
+            y1 = float(ac.stair_nosing_y(z)) + CHEEK_H - CHEEK_STRING_DROP_M - 0.14
+            if y1 - y0 > 0.4:
+                ac.block(mb, (xa, y0, z - 0.25), (xb, y1, z + 0.25), m_a)
     # Soffit (faces down).
     X, Z = np.meshgrid(np.linspace(-ac.STAIR_HALF_W, ac.STAIR_HALF_W, 3), zs)
     P = np.stack([X, ac.stair_soffit_y(Z), Z], axis=-1)

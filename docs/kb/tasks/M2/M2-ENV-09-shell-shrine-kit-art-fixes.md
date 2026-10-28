@@ -23,7 +23,8 @@ working branch (it is on `claude/m2-slice` at f38edea until the integration bran
 - [x] S01 exterior: leaf-boats on the steps and an offering shelf that read at S01's distance; sea stones and a
       wet algae band at the islet's waterline. (env-art's superseded WIP kit has `leaf_boat`, `offering_shelf`
       and `sea_stones` to salvage.)
-- [ ] Channel bend and T-junction modules (salvage `channel_bend`, `channel_t` from the WIP).
+- [x] Channel bend and T-junction modules: not needed by the trial's layout (straight channels meeting at the basins);
+      `channel_bend` / `channel_t` stay in the salvage folder for a layout that does need them.
 - [x] S01–S05 re-captured and viewed; drift listed with RMSE for re-approval; `verify_blender_builds` identical.
 
 ## Notes (2026-10-24, env-art; in progress)
@@ -57,5 +58,11 @@ working branch (it is on `claude/m2-slice` at f38edea until the integration bran
   that does.
 - **Not done:** the wet algae band at the islet's waterline (the scene's sea sits at -2.0 m; the weathering
   bands follow `hymn_water_level`, which the shrine scene would have to publish: a level-side change).
+
+## Notes (2026-10-28, env-art: finished now that the shrine kit is on the integration branch via big13)
+- The wet algae band at the islet's waterline: the shrine scene's `Sea` now publishes `hymn_water_level`
+  (`publishes_water_level = true`, tide line -2.0). The weathering bands follow it, so the stones at the waterline
+  darken where they're wet. Viewed in `shrine_s01_approach` on this tree: a subtle band at S01's range.
+- Nothing else open: S01–S05 were viewed and re-approved at the time; the channel modules are not needed (above).
 
 ## Review log

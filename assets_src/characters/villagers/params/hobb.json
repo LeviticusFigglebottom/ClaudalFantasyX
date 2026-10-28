@@ -1,0 +1,124 @@
+{
+  "_about": "Hobb, captain of Corrow's stair-watch (Ch8-9, speaker `hobb`; act1_ch08.md: a fisher of fifty with the three-knot watch-red captain's cord on his hip, the same cord as Kerrid's; drills the young fishers on the stair: 'First down, last up'). Wiry and loud; grey-black short hair, a grey stubble; a faded indigo sleeveless fisher's vest over a bare chest, storm-grey knee trousers, the watch-red captain's cord as a narrow sash with long tails at the hip tied with its three knots (narrowed tails, `cord_knots`), barefoot on the stair. Reach-bands left 8, right 7. (M3-CHR-538.) Face sliders relative to the MakeHuman donor (ADR 0021: 1.0 / 0.0 = unchanged). Keys starting with '_' are read by the villager_* modules (villager_hair, villager_costume, villager_textures, write_materials, villager_clips), not by bb_params.",
+  "name": "hobb",
+  "height_m": 1.72,
+  "heads_tall": 7.4,
+  "shoulder_width_heads": 1.78,
+  "chest_width_heads": 1.3,
+  "chest_depth_heads": 0.96,
+  "waist_width_heads": 1.12,
+  "hip_width_heads": 1.36,
+  "crotch_height_heads": 3.55,
+  "arm_span_ratio": 1.0,
+  "hand_length_heads": 0.82,
+  "foot_length_ratio": 0.152,
+  "neck_length_heads": 0.4,
+  "neck_width_ratio": 0.56,
+  "head_width_ratio": 0.66,
+  "femininity": 0.0,
+  "muscle": 0.7,
+  "mass": 0.15,
+  "breast": 0.0,
+  "eye_scale": 1.04,
+  "ipd_m": 0.063,
+  "arm_abduction_deg": 47.0,
+  "skin_hex": "#8E5E42",
+  "eye_tilt_deg": 0.0,
+  "jaw_width": 1.02,
+  "cheekbone_height": 0.002,
+  "cheekbone_width": 1.08,
+  "chin_size": 1.04,
+  "nose_bridge_width": 1.06,
+  "nose_tip_projection": 1.06,
+  "lip_fullness": 0.7,
+  "lip_close": 0.6,
+  "lip_seal": 0.96,
+  "lip_lower_fullness": 0.74,
+  "mouth_corner_lift": 0.0,
+  "brow_ridge": 1.15,
+  "donor_mix_african": 0.35,
+  "donor_mix_asian": 0.35,
+  "donor_mix_caucasian": 0.3,
+  "_skin": {
+    "hex": "#8E5E42",
+    "age": 0.5,
+    "freckles": 0,
+    "reach_bands": {
+      "L": 8,
+      "R": 7
+    },
+    "ink_opacity": 0.6,
+    "stubble": 0.6,
+    "stubble_grey": 0.45,
+    "seed": 138,
+    "lip": "#70443A",
+    "stubble_shadow": 0.3,
+    "stubble_density": 0.6
+  },
+  "_hair": {
+    "hairline_feather": 1.0,
+    "kind": "short",
+    "hairline": "male",
+    "seed": 58,
+    "length_m": [
+      0.015,
+      0.026
+    ],
+    "scalp_cards": [
+      190,
+      150,
+      100
+    ],
+    "hairline_cards": 40,
+    "rise": 0.9,
+    "colour": "#3A3632",
+    "grey": "#9C968E",
+    "grey_share": 0.35,
+    "underpaint": "#34302C",
+    "brow": "#34302C",
+    "grey_strands": true
+  },
+  "_eyes": {
+    "iris": "#2A1A10"
+  },
+  "_costume": {
+    "top": {
+      "mat": "cloth_b",
+      "hem": "hip",
+      "sleeve": 0.0,
+      "neck_v_m": 0.06,
+      "open_deg": 24.0
+    },
+    "trousers": {
+      "mat": "cloth_c",
+      "hem": "knee",
+      "loose_m": 0.016
+    },
+    "sash": {
+      "mat": "cloth_a",
+      "width_m": 0.025,
+      "turns": 1,
+      "tails_m": 0.3,
+      "tail_w_k": 0.35,
+      "knot_k": 0.75,
+      "cord_knots": 3,
+      "cord_knot_m": 0.046
+    }
+  },
+  "_tints": {
+    "cloth_a": "#8E3B2E",
+    "cloth_b": "#3A4670",
+    "cloth_c": "#5A616A",
+    "leather": "#FFFFFF"
+  },
+  "_build": {
+    "shapes": "all",
+    "host_snaps": true,
+    "garment_fit": true
+  },
+  "_persona": {
+    "sway": 1.2,
+    "lean": 1.0,
+    "arms_down": 42.0
+  }
+}

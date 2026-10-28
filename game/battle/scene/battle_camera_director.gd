@@ -37,12 +37,15 @@ var default_fov := 0.0
 ## The shots framing the current sequence: {"lead": id, "contact": id}; "" where it stays on the default
 ## (none in the data, or a shot that failed the safe frame).
 var shot_ids: Dictionary = {}
+## Camera moments played (shot ids, in order; tests and tools). M3-BPR-426.
+var moments_played: Array[StringName] = []
 
 var _choreo: BattleChoreo
 var _ctl: BattleController
 var _plan: Dictionary = {}
 var _lead: Dictionary = {}
 var _contact: Dictionary = {}
+var _moment: Dictionary = {}
 var _in_end := 0.0
 var _contact_start := 0.0
 var _contact_end := 0.0
@@ -71,9 +74,73 @@ func attach(controller: BattleController, choreo: BattleChoreo) -> void:
 		camera.set_meta(META_FOV, camera.fov)
 	default_transform = camera.get_meta(META_DEFAULT) as Transform3D
 	default_fov = float(camera.get_meta(META_FOV))
+	_fit_rest_to_the_fight()
 	rest()
 	choreo.posed.connect(_on_posed)
 	choreo.sequence_finished.connect(func(_actor: StringName) -> void: rest())
+
+
+## M3-BPR-425 (the PC's GPU QA row 36): a foe too big for the authored frame (camera.rest_by_enemy, by its enemy id)
+## moves this fight's rest frame back_m along the view and up_m higher, still looking at the authored look point, at
+## its own fov. The authored frame stays the camera's meta, so the next fight starts from it.
+func _fit_rest_to_the_fight() -> void:
+	var rows := data.get("rest_by_enemy", {}) as Dictionary
+	if _ctl.engine == null or rows.is_empty():
+		return
+	for e in _ctl.engine.enemies:
+		var row := rows.get(String(e.id).get_slice("#", 0), {}) as Dictionary
+		if row.is_empty():
+			continue
+		var look := _default_pose()["look"] as Vector3
+		var pos := (
+			default_transform.origin
+			+ default_transform.basis.z * float(row.get("back_m", 0.0))
+			+ Vector3.UP * float(row.get("up_m", 0.0))
+		)
+		default_transform = Transform3D(Basis.looking_at(look - pos, Vector3.UP), pos)
+		default_fov = float(row.get("fov", default_fov))
+		return
+
+
+## M3-BPR-426: a camera moment outside a sequence (a boss's phase change, its fall): `pose` ({pos, look, fov}, the
+## camera's parent space), in over in_sec from the rest frame, held hold_sec, home over out_sec; `tag` names it in
+## moments_played. BattleChoreo.busy_sec waits for it, so the next turn's menu finds the camera home. None under
+## reduced motion, skipped animations or instant pacing (nothing would advance it), or for an empty pose; a sequence
+## that starts takes the camera over. Returns whether it plays.
+func play_moment(tag: StringName, pose: Dictionary, in_sec: float, hold_sec: float, out_sec: float) -> bool:
+	_moment = {}
+	if camera == null or still() or pose.is_empty() or not _choreo.animating():
+		return false  # instant pacing plays no moment: the turn must not wait on one
+	_moment = {"pose": pose, "in": in_sec, "hold": hold_sec, "out": out_sec, "t": 0.0}
+	moments_played.append(tag)
+	return true
+
+
+## Seconds (battle speed applied by the caller) the camera moment still needs; 0 when none plays.
+func moment_left() -> float:
+	if _moment.is_empty():
+		return 0.0
+	return maxf(float(_moment["in"]) + float(_moment["hold"]) + float(_moment["out"]) - float(_moment["t"]), 0.0)
+
+
+## Steps the camera moment (BattleChoreo.advance, while no sequence plays).
+func advance_moment(delta: float) -> void:
+	if _moment.is_empty():
+		return
+	_moment["t"] = float(_moment["t"]) + delta
+	var t := float(_moment["t"])
+	var total := float(_moment["in"]) + float(_moment["hold"]) + float(_moment["out"])
+	if t >= total:
+		_moment = {}
+		rest()
+		return
+	var home := _default_pose()
+	var w_in := _weight(t, 0.0, float(_moment["in"]))
+	var w_out := _weight(t, total - float(_moment["out"]), total)
+	var pose := _mix(_mix(home, _moment["pose"] as Dictionary, w_in), home, w_out)
+	var pos: Vector3 = pose["pos"]
+	camera.transform = Transform3D(Basis.looking_at((pose["look"] as Vector3) - pos, Vector3.UP), pos)
+	camera.fov = float(pose["fov"])
 
 
 ## True when the camera keeps to the default whatever plays (reduced motion, skip animations).
@@ -121,6 +188,7 @@ func _on_posed(t: float) -> void:
 	var plan := _choreo.current()
 	if camera == null or plan.is_empty():
 		return
+	_moment = {}  # a sequence takes the camera over
 	if still():
 		rest()
 		return
@@ -175,11 +243,14 @@ func _setup(plan: Dictionary) -> void:
 	var aim: Vector3 = space * (plan.get("aim", plan["to"]) as Vector3)
 	var targets := _target_points(plan, actor_id)
 	var head := _actor_head(actor_id)
+	# M3-BPR-420: a foe's body at its strike point must not stand between the lens and its targets (the Reach's lunge)
+	var body := _body_box(actor_id) if actor != null and actor.team != BattleCombatant.TEAM_PARTY else AABB()
+	body.position += to - from
 	for slot: String in [LEAD, CONTACT]:
 		var id := str(pair.get(slot, ""))
 		var pose := shot_pose(id, from, to, aim)
 		var actor_pts: Array[Vector3] = [head + to - from]  # the actor at its strike point: who acts
-		if pose.is_empty() or not _frames(pose, targets, actor_pts):
+		if pose.is_empty() or not _frames(pose, targets, actor_pts) or _blocked(pose, body, targets):
 			continue
 		shot_ids[slot] = id
 		if slot == LEAD:
@@ -278,6 +349,34 @@ func _aspect() -> float:
 	var w := float(ProjectSettings.get_setting("display/window/size/viewport_width", 1))
 	var h := float(ProjectSettings.get_setting("display/window/size/viewport_height", 1))
 	return w / maxf(h, 1.0)
+
+
+## The fighter's visible meshes' bounds (camera parent space); an empty AABB for a primitive or a missing fighter.
+func _body_box(actor_id: StringName) -> AABB:
+	var f := _ctl.stage.stand_in(actor_id)
+	if f == null or not f.has_actor():
+		return AABB()
+	var inv := _parent_inverse()
+	var out := AABB()
+	var first := true
+	for n in f.actor().find_children("*", "MeshInstance3D", true, false):
+		var mi := n as MeshInstance3D
+		if mi.mesh != null and mi.is_visible_in_tree():
+			var b := (inv * mi.global_transform) * mi.get_aabb()
+			out = b if first else out.merge(b)
+			first = false
+	return out
+
+
+## True when `body` (non-empty) stands across a sight line from the pose's lens to a target point. A point inside the
+## body's bounds says nothing (a colossus's rest bounds take in the party under its hand) and never blocks.
+static func _blocked(pose: Dictionary, body: AABB, targets: Array[Vector3]) -> bool:
+	if body.size == Vector3.ZERO:
+		return false
+	for p in targets:
+		if not body.has_point(p) and body.intersects_segment(pose["pos"] as Vector3, p) != null:
+			return true
+	return false
 
 
 ## Each target's feet and head (camera parent space), the actor itself left out.

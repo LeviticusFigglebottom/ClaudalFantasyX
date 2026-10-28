@@ -1,0 +1,103 @@
+{
+  "version": 1,
+  "doc": "The Saltwright camp at Brine Shoals (M3-CRE-659, ADR 0152): the girl at the brazier, the Order clerk, two wright children, and six wrights kneeling at the waterline for the `wrights` group capsule (each its own row with an `offset` inside it). Crowd people (game/data/world/npc/crowd.json), attach child; the Inquisitor, the Stillguard and the Reeds are not crowd.",
+  "zone": "ch06/brine_shoals",
+  "villagers": [
+    {
+      "npc_id": "brine_shoals_brand_girl",
+      "crowd": "brine_shoals_brand_girl",
+      "stand_in": "CutsceneStage/Actors/brand_girl",
+      "attach": "child"
+    },
+    {
+      "npc_id": "brine_shoals_clerk",
+      "crowd": "brine_shoals_clerk",
+      "stand_in": "CutsceneStage/Actors/clerk",
+      "attach": "child"
+    },
+    {
+      "npc_id": "brine_shoals_wright_child_a",
+      "crowd": "brine_shoals_wright_child_a",
+      "stand_in": "CutsceneStage/Actors/wright_child_a",
+      "attach": "child"
+    },
+    {
+      "npc_id": "brine_shoals_wright_child_b",
+      "crowd": "brine_shoals_wright_child_b",
+      "stand_in": "CutsceneStage/Actors/wright_child_b",
+      "attach": "child"
+    },
+    {
+      "npc_id": "brine_shoals_wright_1",
+      "crowd": "brine_shoals_wright_1",
+      "stand_in": "CutsceneStage/Actors/wrights",
+      "attach": "child",
+      "offset": [
+        -1.05,
+        0.0,
+        -0.05,
+        6.0
+      ]
+    },
+    {
+      "npc_id": "brine_shoals_wright_2",
+      "crowd": "brine_shoals_wright_2",
+      "stand_in": "CutsceneStage/Actors/wrights",
+      "attach": "child",
+      "offset": [
+        -0.02,
+        0.0,
+        0.08,
+        -4.0
+      ]
+    },
+    {
+      "npc_id": "brine_shoals_wright_3",
+      "crowd": "brine_shoals_wright_3",
+      "stand_in": "CutsceneStage/Actors/wrights",
+      "attach": "child",
+      "offset": [
+        1.0,
+        0.0,
+        -0.02,
+        -9.0
+      ]
+    },
+    {
+      "npc_id": "brine_shoals_wright_4",
+      "crowd": "brine_shoals_wright_4",
+      "stand_in": "CutsceneStage/Actors/wrights",
+      "attach": "child",
+      "offset": [
+        -0.6,
+        0.0,
+        0.92,
+        3.0
+      ]
+    },
+    {
+      "npc_id": "brine_shoals_wright_5",
+      "crowd": "brine_shoals_wright_5",
+      "stand_in": "CutsceneStage/Actors/wrights",
+      "attach": "child",
+      "offset": [
+        0.48,
+        0.0,
+        0.98,
+        -6.0
+      ]
+    },
+    {
+      "npc_id": "brine_shoals_wright_6",
+      "crowd": "brine_shoals_wright_6",
+      "stand_in": "CutsceneStage/Actors/wrights",
+      "attach": "child",
+      "offset": [
+        1.45,
+        0.0,
+        0.86,
+        -12.0
+      ]
+    }
+  ]
+}

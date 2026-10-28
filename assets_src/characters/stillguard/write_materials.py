@@ -2,6 +2,7 @@
 """Writes each Stillguard soldier's materials (assets/characters/stillguard_<v>/materials/*.tres), M3-CHR-508.
 
     python3 assets_src/characters/stillguard/write_materials.py [--variant a ...]   # every variant when none named
+    python3 assets_src/characters/stillguard/write_materials.py --variant ivo       # M3-CHR-540: a named Stillguard
 
 Moll's table (assets_src/characters/moll/write_materials.py, loaded by path) with each soldier's own skin maps and
 colours: his skin and hair colours, his eyes; the clean soldiers' cloth and shield on Moll's maps, the weathered ones'
@@ -23,7 +24,7 @@ _spec = importlib.util.spec_from_file_location("moll_write_materials", HERE.pare
 mw = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(mw)
 
-from sg_table import name, variant_params, variants  # noqa: E402
+from sg_table import builds, name, variant_params, variants  # noqa: E402
 
 M = "moll/textures/"
 WORN = "stillguard/textures/stillguard_worn_"
@@ -34,7 +35,8 @@ SPEAR = ("metallic = 1.0\nroughness = 1.0\nmetallic_texture_channel = 2\nroughne
 SPEAR_TEX = {"albedo_texture": M + "moll_iron_albedo.png", "normal_texture": M + "moll_iron_normal.png",
              "metallic_texture": M + "moll_iron_orm.png", "roughness_texture": M + "moll_iron_orm.png"}
 IRIS = {"a": "Color(0.20, 0.15, 0.10, 1)", "b": "Color(0.12, 0.08, 0.05, 1)", "c": "Color(0.16, 0.12, 0.09, 1)",
-        "d": "Color(0.26, 0.28, 0.27, 1)", "e": "Color(0.10, 0.07, 0.05, 1)", "f": "Color(0.30, 0.24, 0.14, 1)"}
+        "d": "Color(0.26, 0.28, 0.27, 1)", "e": "Color(0.10, 0.07, 0.05, 1)", "f": "Color(0.30, 0.24, 0.14, 1)",
+        "ivo": "Color(0.24, 0.15, 0.08, 1)"}  # M3-CHR-540: Ivo's warm brown
 
 
 def hexcol(h: str, k: float = 1.0) -> str:
@@ -69,6 +71,8 @@ def write(v: str) -> None:
     for key, (shader, prio, params, tex) in table.items():
         mw.wm.write_shader_material(key, shader, prio, params, tex)
     standard = {"bronze": mw.STANDARD_MATERIALS["bronze"], "steel": STEEL, "spear": SPEAR}
+    if not extra["_variant"].get("spear", True):  # M3-CHR-540: no spear, so no shaft or blade materials
+        standard = {"bronze": standard["bronze"]}
     for key, body in standard.items():
         mw.wm.write_standard_material(key, body, SPEAR_TEX if key == "spear" else {})
     print(f"wrote {len(table) + len(standard)} materials to {out}")
@@ -76,7 +80,7 @@ def write(v: str) -> None:
 
 def main() -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--variant", action="append", choices=variants())
+    ap.add_argument("--variant", action="append", choices=builds())  # none named: the six soldiers
     for v in ap.parse_args().variant or variants():
         write(v)
     return 0

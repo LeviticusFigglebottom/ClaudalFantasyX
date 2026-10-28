@@ -120,30 +120,30 @@ fov_deg = 67.4
 [sub_resource type="Resource" id="ShotS06"]
 script = ExtResource("5_shot")
 id = &"S06"
-position = Vector3(-23.0, 0.9, 0.7)
-look_at = Vector3(-16.6, 0.2, 0.7)
-fov_deg = 34.0
+position = Vector3(-15.6, 0.3, 3.6)
+look_at = Vector3(-16.5, -0.45, -1.0)
+fov_deg = 30.0
 
 [sub_resource type="Resource" id="ShotS09"]
 script = ExtResource("5_shot")
 id = &"S09"
-position = Vector3(-20.55, 0.75, 0.4)
+position = Vector3(-20.55, 0.95, 0.4)
 look_at = Vector3(-14.55, 1.3, 0.0)
 fov_deg = 16.1
 
 [sub_resource type="Resource" id="ShotS10"]
 script = ExtResource("5_shot")
 id = &"S10"
-position = Vector3(-19.0, 0.6, -2.6)
-look_at = Vector3(-16.25, 0.95, -1.1)
+position = Vector3(-14.03, 0.83, -0.88)
+look_at = Vector3(-16.49, 0.68, -0.75)
 fov_deg = 20.9
 
 [sub_resource type="Resource" id="ShotC08"]
 script = ExtResource("5_shot")
 id = &"C08"
-position = Vector3(-17.0, 6.2, -10.0)
-look_at = Vector3(-56.0, -2.0, -38.0)
-fov_deg = 67.4
+position = Vector3(-15.0, 5.0, -6.0)
+look_at = Vector3(-37.0, -0.5, -25.0)
+fov_deg = 46.4
 
 [node name="FirstVerse" type="Node3D"]
 script = ExtResource("1_root")
@@ -282,7 +282,7 @@ transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, -2.5, 0, 8.5)
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 2.5, 0, 8.5)
 
 [node name="Drownbell" parent="." instance=ExtResource("21_bell")]
-transform = Transform3D(1.6, 0, 1.2, 0, 2, 0, -1.2, 0, 1.6, -56, -5.5, -38)
+transform = Transform3D(1.6, 0, 1.2, 0, 2, 0, -1.2, 0, 1.6, -38, -5.5, -26)
 
 [node name="Spawns" type="Node3D" parent="."]
 
@@ -330,13 +330,19 @@ shot = SubResource("ShotC08")
 [node name="Marks" type="Node3D" parent="CutsceneStage"]
 
 [node name="steps_rhen" type="Marker3D" parent="CutsceneStage/Marks"]
-transform = Transform3D(6.12323e-17, 0, 1, 0, 1, 0, -1, 0, 6.12323e-17, -16.25, -0.58, -1.1)
+transform = Transform3D(-0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, -0.707107, -16.61, -1.25, -0.34)
 
 [node name="steps_toma" type="Marker3D" parent="CutsceneStage/Marks"]
-transform = Transform3D(6.12323e-17, 0, 1, 0, 1, 0, -1, 0, 6.12323e-17, -17.0, -1.16, 2.4)
+transform = Transform3D(-0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, -0.707107, -16.11, -0.96, -1.54)
 
 [node name="toma_seaward" type="Marker3D" parent="CutsceneStage/Marks"]
-transform = Transform3D(0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, 0.707107, -17.0, -1.16, 2.4)
+transform = Transform3D(0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, 0.707107, -16.05, -0.58, -2.2)
+
+[node name="rhen_rise" type="Marker3D" parent="CutsceneStage/Marks"]
+transform = Transform3D(-0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, -0.707107, -16.55, -0.87, -0.4)
+
+[node name="toma_rise" type="Marker3D" parent="CutsceneStage/Marks"]
+transform = Transform3D(-0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, -0.707107, -16.05, -0.58, -2.2)
 
 [node name="asha_start" type="Marker3D" parent="CutsceneStage/Marks"]
 transform = Transform3D(6.12323e-17, 0, 1, 0, 1, 0, -1, 0, 6.12323e-17, -11.8, 0, 0)
@@ -360,7 +366,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.5, 2.2, 0)
 transform = Transform3D(0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, 0.707107, -21, -1.7, -10)
 
 [node name="drownbell" type="Marker3D" parent="CutsceneStage/Marks"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -56, -0.6, -38)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -38, -0.6, -26)
 
 [node name="causeway" type="Marker3D" parent="CutsceneStage/Marks"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -30, -1.5, 18)

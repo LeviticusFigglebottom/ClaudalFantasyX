@@ -30,8 +30,19 @@ HAIR = "Color(0.125, 0.102, 0.086, 1)"  # #201A16
 # M2-CHR-04: hair_black under the warm stage key read brown on the cards (the warm secondary lobe and
 # the transmission tint, Asha's auburn defaults, lit every strand orange). The cards take a cooler,
 # deeper black (#111013 at the root, #18161A toward the tips) and neutral, low lobes.
-HAIR_ROOT = "Color(0.067, 0.063, 0.075, 1)"  # #111013
-HAIR_TIP = "Color(0.094, 0.086, 0.102, 1)"  # #18161A
+HAIR_ROOT = "Color(0.11, 0.10, 0.10, 1)"  # M2-CHR-524: hair_black cooled (was #111013)
+HAIR_TIP = "Color(0.14, 0.125, 0.12, 1)"  # (was #18161A)
+# M2-CHR-524: at dialogue range the cards drew as near-black specks over the scalp paint. The paint between them is
+# lit as skin, and the cards were darker in albedo (#111013) and darkened again by root and layer occlusion (0.7 x 0.75)
+# meant for long hair's deep layers; cropped cards lie on the skin. The cards now sit near the paint's rendered value,
+# so they add strand grain, not dots, and the grey cards are a thin veil (GREY_ALPHA) over the dark: salt-and-pepper
+# reads as a lighter haze, not as pale chips.
+CROP_AO = {"root_occlusion": "0.85", "depth_occlusion": "0.85"}
+GREY_ALPHA = "0.6"  # alpha_boost of the grey cards
+# alpha_boost of the scalp cards (was 1.15): where the key catches the crown, a card renders a little lighter than
+# the scalp paint between cards, so card-sized coverage steps read as mottling. At 0.85 the paint carries the value
+# and the cards the grain. The beard cards keep 1.1 (a full beard, dense over its own paint).
+CROP_ALPHA = "0.85"
 HAIR_SPEC2 = "Color(0.32, 0.30, 0.30, 1)"
 HAIR_TT = "Color(0.20, 0.17, 0.15, 1)"
 GREY = "Color(0.541, 0.518, 0.471, 1)"  # #8A8478, the grey at the chin
@@ -48,8 +59,8 @@ SKIN = {"tex_albedo": T + "toma_head_albedo.png", "tex_normal": T + "toma_head_n
 BEARD = {"flow_strength": "0.0", "col_root": HAIR_ROOT, "col_tip": HAIR_TIP, "col_spec_primary": HAIR_SPEC,
          "spec_primary_intensity": "0.06", "spec_primary_exponent": "60.0", "spec_secondary_intensity": "0.0",
          "col_spec_secondary": HAIR_SPEC2, "secondary_sparkle": "0.3", "col_transmission": HAIR_TT, **FLAT,
-         "transmission_strength": "0.1", "indirect_specular": "0.04", "root_occlusion": "0.7",
-         "depth_occlusion": "0.75", "alpha_boost": "1.1", "strand_value_jitter": "0.12", **STILL}
+         "transmission_strength": "0.1", "indirect_specular": "0.04", **CROP_AO,
+         "alpha_boost": "1.1", "strand_value_jitter": "0.12", **STILL}
 
 SHADER_MATERIALS: dict[str, tuple[str, int, dict, dict]] = {
     # Asha's tuned skin response (M1-CHR-10); toma.md §6: deep bronze, weathered (a little rougher)
@@ -89,11 +100,11 @@ SHADER_MATERIALS: dict[str, tuple[str, int, dict, dict]] = {
                                    "spec_primary_exponent": "60.0", "spec_secondary_intensity": "0.0",
                                    "col_spec_secondary": HAIR_SPEC2, "secondary_sparkle": "0.3",
                                    "col_transmission": HAIR_TT, "transmission_strength": "0.1",
-                                   "indirect_specular": "0.05", "root_occlusion": "0.7", "depth_occlusion": "0.75",
-                                   "alpha_boost": "1.15", "strand_value_jitter": "0.12", **STILL},
+                                   "indirect_specular": "0.05", **CROP_AO,
+                                   "alpha_boost": CROP_ALPHA, "strand_value_jitter": "0.12", **STILL},
              {"tex_hair": SHORT}),
     "beard": ("character_hair", 0, BEARD, {"tex_hair": SHORT}),
-    "beard_grey": ("character_hair", 0, {**BEARD, "col_root": GREY, "col_tip": GREY}, {"tex_hair": SHORT}),
+    "beard_grey": ("character_hair", 0, {**BEARD, "col_root": GREY, "col_tip": GREY, "alpha_boost": GREY_ALPHA}, {"tex_hair": SHORT}),
     "cloth": ("character_cloth", 0, {"detail_tiling": "140.0"},
               {"tex_albedo": T + "toma_cloth_albedo.png", "tex_normal": T + "toma_cloth_normal.png",
                "tex_orm": T + "toma_cloth_orm.png", "tex_cloth_mask": T + "toma_cloth_clothmask.png",

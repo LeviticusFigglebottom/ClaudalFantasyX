@@ -1,0 +1,93 @@
+[gd_scene load_steps=8 format=3]
+
+[ext_resource type="Script" path="res://game/levels/_tests/npc/crowd_lineup.gd" id="stage"]
+
+[sub_resource type="ProceduralSkyMaterial" id="Sky_mat"]
+sky_top_color = Color(0.18, 0.5, 0.84, 1)
+sky_horizon_color = Color(0.66, 0.86, 0.95, 1)
+sky_curve = 0.12
+ground_bottom_color = Color(0.36, 0.33, 0.31, 1)
+ground_horizon_color = Color(0.62, 0.58, 0.5, 1)
+ground_curve = 0.06
+sun_angle_max = 1.0
+sun_curve = 0.01
+
+[sub_resource type="Sky" id="Sky"]
+sky_material = SubResource("Sky_mat")
+
+[sub_resource type="Environment" id="Env"]
+background_mode = 2
+sky = SubResource("Sky")
+ambient_light_source = 3
+ambient_light_energy = 0.6
+reflected_light_source = 2
+tonemap_mode = 4
+tonemap_exposure = 1.0
+tonemap_white = 12.0
+ssao_enabled = true
+ssao_radius = 0.04
+ssao_intensity = 1.0
+
+[sub_resource type="StandardMaterial3D" id="Ground_mat"]
+albedo_color = Color(0.73, 0.68, 0.6, 1)
+roughness = 0.95
+
+[sub_resource type="PlaneMesh" id="Ground_mesh"]
+material = SubResource("Ground_mat")
+size = Vector2(60, 60)
+
+[node name="CrowdLineup" type="Node3D"]
+script = ExtResource("stage")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Env")
+
+[node name="Sun" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.683157, 0.381423, -0.622746, 0, 0.85276, 0.522303, 0.730271, -0.356815, 0.582569, 0, 4, 0)
+light_color = Color(1, 0.957, 0.878, 1)
+light_energy = 2.4
+shadow_enabled = true
+shadow_bias = 0.02
+shadow_normal_bias = 4.5
+directional_shadow_max_distance = 40.0
+
+[node name="Ground" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9, 0, -6)
+mesh = SubResource("Ground_mesh")
+
+[node name="Cameras" type="Node3D" parent="."]
+
+[node name="LineupA" type="Camera3D" parent="Cameras"]
+transform = Transform3D(1, 0, 0, 0, 0.999459, 0.032877, 0, -0.032877, 0.999459, 0, 1.05, 7.6)
+fov = 30.0
+near = 0.05
+
+[node name="LineupB" type="Camera3D" parent="Cameras"]
+transform = Transform3D(1, 0, 0, 0, 0.999459, 0.032877, 0, -0.032877, 0.999459, 10.6, 1.05, 7.6)
+fov = 30.0
+near = 0.05
+
+[node name="LineupC" type="Camera3D" parent="Cameras"]
+transform = Transform3D(1, 0, 0, 0, 0.999459, 0.032877, 0, -0.032877, 0.999459, 20.25, 1.05, 7.6)
+fov = 30.0
+near = 0.05
+
+[node name="Market" type="Camera3D" parent="Cameras"]
+transform = Transform3D(0.997179, -0.00601645, 0.074815, 0, 0.996782, 0.0801589, -0.0750565, -0.0799328, 0.99397, 1, 1.65, -2.2)
+fov = 45.0
+near = 0.05
+
+[node name="Work" type="Camera3D" parent="Cameras"]
+transform = Transform3D(0.762509, -0.117602, 0.636199, 0, 0.983341, 0.181771, -0.646977, -0.138602, 0.749806, -0.8, 1.35, -5.6)
+fov = 40.0
+near = 0.05
+
+[node name="Mourners" type="Camera3D" parent="Cameras"]
+transform = Transform3D(0.996729, -0.0200364, 0.0782927, 0, 0.968779, 0.247927, -0.0808159, -0.247116, 0.96561, 0.6, 1.45, -10.6)
+fov = 40.0
+near = 0.05
+
+[node name="LineupBackB" type="Camera3D" parent="Cameras"]
+transform = Transform3D(-1, 0, 0, 0, 0.99948, 0.0322413, 0, 0.0322413, -0.99948, 10.6, 1.3, -6.2)
+fov = 34.0
+near = 0.05

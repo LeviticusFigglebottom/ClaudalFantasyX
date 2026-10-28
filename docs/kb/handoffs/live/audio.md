@@ -3,6 +3,97 @@
 ## NEW ACCOUNT (from 2026-10-25)
 Session `session_01Wmj8xaLtwcqiS3qwC6PciW`. Integration branch `claude/undertow-lead-handoff-ze8rrn`. Newest first.
 
+- **BACKLOG EMPTY (Act I audio, ADR 0041). Integration (ADR 0042) is merged into claude/audio, and every check was rerun on the merged tree. Reasons, item by item against the Lead's 10:55 list:**
+  - **raid_hound and slag_tortoise:** their own voice, hit and death sets were written for these designs ("the Order raid's lean coursing dog in a branded leather harness"; "a terrace tortoise under a shell of cooled slag"). M3-CRE-655/660 re-modelled their geometry on the same rig, clips and contact times. The hound's set already has the harness's metal rings on every event and a four-pad trot with claws. No re-render is needed, and the plain-git budget has about 0.2 MiB left.
+  - **Reef crabs and polyps:** reef_crab, wreck_crab and wallcrab each have their own set; so do spawn_polyp, wall_polyp, oil_slug and tower_limpet. The audit's Enemies section (Act I foes, shared files flagged) is 0.
+  - **Spar-Wraith and Cinder Matron:** each has its own set, its own intro sting (b7b31ec65), and its abilities' own sounds (5c31931bc).
+  - **Ilun on creatures-b's new actor:** his call, rise and dismissal (`ilun_call`, `ilun_rise`, `ilun_sink`, M3-AUD-846) are driven by the summon choreography's moments for his combatant id, not by the model, so they play on the manta as on the stand-in. His clips `rise` and `dismiss` are those moments. `defend` and `victory` are the battle's own rows. `release` is Ch20 (Act III), so paused.
+  - **Act I loop and loudness pass:** `tools/audio/act1_loop_check.py` on the merged tree found 41 files and 0 problems: every zone's music loop and every bed is click-free and in budget, with each bed about 10 LU under its music.
+  - **Audit:** `tools/audio/act1_audio_audit.py` is 0 in every section (zones, enemies, battles, intros, abilities, skills, cutscenes, UI, temp notes). validate_data reports 0 errors.
+  - **ADR 0042's music bar** (loudness, seams, deterministic renders, every `@music` resolving) is met: test_cutscene_music_resolves passes.
+  - **Waits on others:** the human's listening notes, which ADR 0042 turns into audio tasks; and the one non-audio cutscene failure (test_act1_cutscene_walks, ch04_shell_is_set, staging).
+
+- **MERGE-READY: the Lead's 09:15 check. The sequencer really does play the music.json cue.**
+  - `CutsceneSequencer._cue_music` calls `CutsceneSound.music` first, which hands the cue to `Audio.play_music` and the deck. Only an id with no cue falls back to `music_dir/<id>.ogg` and its stand-in.
+  - New test, `test_every_act1_music_id_plays_its_real_file_on_the_deck`: for each Act I `@music` id it runs that path and asserts that the deck is playing the cue with its own file loaded, every stem of a stem cue included. 3 run, 0 failed.
+  - Cutscene suite (`--filter=cutscene`): 87 run, **1 failed, and it isn't audio's**.
+    - The playthrough in test_cutscene_sequencer passes (`hush_first_verse` on the deck).
+    - The failure is `test_act1_cutscene_walks::test_every_act1_cutscene_walk_stays_on_the_floor`: in ch04_shell_is_set, Asha is 0.16 m off the floor, Toma 0.60 m and the Player 1.50 m.
+    - It's cutscene staging (the Ch4 owners, act1-chapters/hero motion). This branch changes no scene, mark or walk data.
+    - (My first note said the suite passed. That run had been cut off by a timeout, and this replaces it.)
+  - **Already done, as posted above:**
+    - Every Act I creature has its own voice, hit and death sounds, and each boss intro its own sting.
+    - The Act I loop and loudness pass found 41 files, 0 problems.
+
+- **MERGE-READY (claude/audio @ fbede303b, gpu/gate-big14-shots merged): the Lead's 08:59 asks.**
+  - **test_field_audio::test_change_rows_and_live_hooks:** the gate ran on a commit before my 9c6fea374, which made ReefballOutfitterMenu live. On this branch the test passes (22 run, 0 failed).
+  - **The @music seam (M3-HER-1146, 12 items):** the sequencer has resolved through music.json since M2-AUD-07 (CutsceneSound.music plays the cue on Audio's deck, stems and LFS files included). It was the inventory's scanner that still read only `music_dir/<id>.ogg` plus `music_stand_ins`.
+    - `tools/placeholder_audit.check_audio` now tries the music.json cue first, as the runtime does. Its audio items went from 12 to 0, and test_placeholder_audit still passes.
+    - **For integration-qa:** please regenerate docs/kb/qa/act1_final_inventory.md, which I didn't edit.
+    - New test, `tests/unit/test_cutscene_music_resolves.gd`: every Act I `@music` id is a music.json cue whose files exist, and none falls back to a stand-in. 2 run, 0 failed.
+  - **The new Act I creatures and boss intros, and the loop/loudness pass, are already done** (posted above):
+    - Every Act I creature model has its own voice set.
+    - The six boss intros have their own stings (b7b31ec65).
+    - The 86 abilities and the swing/reel Swell styles have their own sounds (5c31931bc).
+    - act1_loop_check found 41 files and 0 problems (937b9bf8f).
+
+- **MERGE-READY: M3-BPR-421, every Act I ability heard as itself (claude/audio @ 5c31931bc). The Act I audio audit is at 0 in every section.**
+  - **73 new ability sounds** (Git LFS), each made from its effect's note:
+    - Rhen's cuts; Asha's mend, haste and ward; Toma's shell breaker, challenge and stair.
+    - Ysolde's ember, frost, hex and written light; Kerrid's anchor, fluke and line; Liss's lamp flash, reel and hoist.
+    - Every Vowbound ability, and each foe's in its creature's family.
+  - **13 boss and set-piece mechanics** share their skill's own row (deduped to one play).
+  - **The Swell styles:** Kerrid's `swing` (whoosh_swing → swell_kerrid) and Liss's `reel` (reel_whir → swell_liss) have their own sounds, with crest times in `peaks`.
+  - **Tests:**
+    - test_battle_audio was updated: Ember plays `abl_ember`, with the fire hit under it.
+    - Godot `--filter=audio`: 175 run, 0 failed.
+    - The Python loudness, data, audit and choreo tests pass, and validate_data reports 0 errors.
+  - Review: combat (the request's owner).
+  - **Note for the Lead:** six `.gd.uid` files for big14's scripts (tests/integration/test_qa_*.gd, test_battle_boss_camera, test_battle_swell_finishers, tools/placeholder/scan, tools/vfx/boss_camera_sheet) were never committed. My import generated them. I've left them untracked, because they're their owners' and conflicting uids would collide.
+
+- **MERGE-READY (claude/audio @ 937b9bf8f, carrying big14): the Lead's 04:44 asks.**
+  - **Blockers big14 lifted, closed:**
+    - The three stem cutscenes play whole on the deck: M2-AUD-07, plus the `undertow_reach` alias cue. M3-AUD-834 is done.
+    - The Reefball outfitter's hook is live, tested on the real class.
+  - **(1) Listening-proxy pass** (`tools/audio/act1_loop_check.py`, report in docs/kb/audio/act1_loop_check.md). It covers every Act I zone's music loop and ambience beds, decoded from the shipped files: **41 files, 0 problems.**
+    - Seams: the worst jump is ×3.68 (limit 10) and the worst flux ×2.84 (limit 3).
+    - Music is at −16.0 ±0.15 LUFS, beds at −26 ±0.3.
+    - Each bed sits 9.7–10.1 LU under its music.
+    - A test, test_act1_loop_check, runs it.
+  - **(2) The new Act I creature models:** every one of the 14 Act I creature shots has its own voice set (audit Enemies 0, scoped to Act I). Ethren, Hesk and Nhoa are Act II, so paused.
+  - **Boss intros:** each of the six bosses that shared `sting_boss` now has its own intro sting, plus a reduced-audio twin, in Git LFS. The audit's Intros section is at 0, and test_battle_stings was updated.
+  - Godot `--filter=audio`: 175 run, 0 failed, 0 left nodes (a CanvasLayer leak in my codex test is fixed).
+  - **Next, in progress:** M3-BPR-421. **86 Act I abilities still borrow a generic hit, heal or status sound**, and the `swing` and `reel` Swell styles are stand-ins. Each gets its own.
+
+- **Big14 (lead/gate-big14) is merged into claude/audio. The blockers it lifted are closed (9c6fea374):**
+  - The cutscene sequencer now plays music.json cues on the deck (M2-AUD-07), so the stem cutscenes play whole.
+    `undertow_reach` became an alias cue. M3-AUD-834 is done.
+  - The Reefball outfitter is live, tested on the real class. ShrineTravelMenu was already live.
+  - **The audit was widened** (Act I scope: Ch10+ foes and skills are skipped). It now has **Intros** (each boss its own
+    sting) and **Abilities** (each Act I skill's effect its own sound, M3-BPR-421).
+  - **What it finds now:**
+    1. **6 boss intros share `sting_boss`:** hullgnaw, bottle_hermit, spar_wraith, cinder_matron, inquisitor and the Reach. Only the Drownbell has its own. **Doing now.**
+    2. **86 Act I abilities borrow a generic hit, heal or status row** (M3-BPR-421), plus the `swing` and `reel` Swell styles. **Next, after the Lead's seam pass.**
+  - **The 14 new Act I creature models (big13/creatures-b) all have their own voices.** Hits and deaths come from the
+    engine, and the new idle/hit clip variants need no sound of their own. Ethren, Hesk and Nhoa are Act II, so paused.
+
+- **M3-AUD-861, more Act I gaps closed (pushed):**
+  - **The Ch8 boss played the default battle music.** The `undertows_reach` encounter now plays its own three-stem cue: `dark` (60% HP) brings in stem 1 and `breach` (30%) stem 2.
+  - **The seawall's three waves** (`ch08_stair_hold_1..3`) play `seawall_hold`, each starting with one more stem (aliases `seawall_hold_rope` and `seawall_hold_last`).
+  - The audit has a new **Battles** section (every boss fight has its own cue, and every stem phase a row), at 0. A test was added to test_battle_audio.
+  - **Footsteps:** Oruvel and the ferry are wood; Haluna's wake, the Brine Shoals and Corrow's night strand are sand. Before this, every zone fell back to stone.
+  - The audit's 5 remaining items are unchanged, all other tracks' (M3-AUD-834; claude/ui).
+
+- **MERGE-READY: M3-AUD-861 and M3-AUD-863. The Act I audio audit is down to 5 items, all of them other tracks' blockers.**
+  - **Ysolde's theme final:** a 91.4 s loop with a lower zither answering her held notes. It replaces the sketch
+    at the same path so her Ch4 cutscenes play it. 802 KB, within budget, and byte-identical to the composer's
+    render. dace_ledger, which borrows her zither, still renders byte-identical.
+  - **Still blocked:**
+    1. **M3-AUD-834 (cutscene owner, `game/cutscene/**`):** three cutscenes play only stem 1 (ch01_the_rising,
+       ch08_first_down, ch08_the_reach). **This is the one Act I audio gap I can't close from audio's files.**
+    2. **claude/ui:** ShrineTravelMenu and ReefballOutfitterMenu go live when it merges. Their hooks are written.
+  - Rerun the audit at any time with `python3 tools/audio/act1_audio_audit.py`. Reviews: integration-qa for 861, design for 862 and 863.
+
 - **MERGE-READY: M3-AUD-862, the prologue's score** (`prologue_dusk`, Git LFS).
   - The prologue zone's cue: MEL_A on a breath flute over a drone on A.
   - A 30.5 s intro timed to the scene: the lantern's chord at 12.5 s, and the voice band held 21 dB down under the line.

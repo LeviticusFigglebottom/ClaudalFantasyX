@@ -16,9 +16,15 @@ const ACT_ONE := {
 	&"ch01_hullgnaw": &"oruvel_raft_morning",
 	&"ch03_causeway_shore": &"causeway_route_afternoon",
 	&"ch04_spar_wraith": &"derelict_deck_night",
-	&"ch05_cinder_matron": &"ash_terrace_lanternfall",
+	&"ch05_cinder_matron": &"ashcrown_anvil_court",  # M3-BPR-1305: Ashcrown's anvil court (B09)
+	&"ch05_stair_tortoises": &"ashcrown_forecourt_day",
+	&"ch08_stair_hold_1": &"seawall_stairhead_storm",
+	&"ch08_stair_hold_2": &"seawall_stairhead_hoist",
+	&"undertows_reach": &"seawall_stairhead_surge",
+	&"ch08_headland_gulls": &"coilspire_headland_path",
+	&"ch08_flue_moths": &"coilspire_tier_landing",
 }
-const ACT_ONE_PREFIXES: Array[String] = ["ch01_", "ch03_", "ch04_", "ch05_"]
+const ACT_ONE_PREFIXES: Array[String] = ["ch01_", "ch03_", "ch04_", "ch05_", "ch08_"]
 ## M3-BPR-03: Ch6 (act1_ch06.md B01, B04).
 const CH06 := {
 	&"ch06_ridge_skippers": &"brine_shoals_afternoon",

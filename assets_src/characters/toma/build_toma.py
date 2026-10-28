@@ -286,6 +286,8 @@ def main() -> int:
     auto = np.zeros((len(me.vertices), 3))
     me.vertices.foreach_get("normal", auto.ravel())
     auto[:n_skin] = np.array(normals_h)
+    if len(beard.V):  # M2-CHR-524: the beard cards shade with the skin's normal (no separately lit flakes)
+        auto[beard_start:beard_start + len(beard.V)] = toma_hair.surface_normals(beard.varr(), beard.F, surf)
     me.normals_split_custom_set_from_vertices([tuple(map(float, n)) for n in auto])
     cat = np.where(res["face_mask"][is_head], 1, np.where(res["face_socket"][is_head], 3,
                                                        np.where(fh_reg == "mouth", 4, 2)))
@@ -393,7 +395,8 @@ def main() -> int:
         rigid_parts = Part("HairHead")
         for p in hair.values():
             rigid_parts.extend(p)
-        ob = hb.part_object_snapped(rigid_parts)
+        # M2-CHR-524: the cards shade with the scalp's normal
+        ob = hb.part_object_snapped(rigid_parts, toma_hair.surface_normals(rigid_parts.varr(), rigid_parts.F, surf))
         Wr = np.zeros((len(rigid_parts.V), len(wnames)), dtype=np.float32)
         Wr[:, head_i] = 1.0
         hb.apply_weights(ob, Wr, wnames, skel)

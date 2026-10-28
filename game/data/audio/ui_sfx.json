@@ -358,7 +358,6 @@
     },
     {
       "class": "ReefballOutfitterMenu",
-      "pending": true,
       "on_enter": "ui_menu_open",
       "signals": {"closed": "ui_menu_close"},
       "watch": [
@@ -367,7 +366,7 @@
         {"expr": "str(node.model.rows())", "sfx": "ui_equip", "_note": "a piece put on, swapped or taken off (a buy outranks it)"},
         {"expr": "node._notice.get('ok', true) == false", "on_true": true, "sfx": "ui_error", "_note": "can't afford it: the line says why"}
       ],
-      "_note": "M3-AUD-848: the UI track's Reefball outfitter (claude/ui, ADR 0040, M3-C07-05). Pending until it merges"
+      "_note": "M3-AUD-848: the UI track's Reefball outfitter (claude/ui, ADR 0040, M3-C07-05). Live since big14 merged it (M3-AUD-861)"
     },
     {"class": "CodexMenu", "on_enter": "ui_page", "signals": {"closed": "ui_page"}, "watch": [{"expr": "node.column", "rise": "ui_confirm", "fall": "ui_cancel", "_note": "CodexMenu.Column CATEGORIES 0, ENTRIES 1, TEXT 2: in is a confirm, back is a cancel"}, {"expr": "node.categories_page().cursor", "sfx": "ui_cursor"}, {"expr": "node.entries_page().cursor", "sfx": "ui_cursor"}], "_note": "M3-AUD-861: the codex (the Bestiary's sibling: it opens and closes as a page)"},
     {"class": "SettingsMenu", "on_enter": "ui_menu_open", "signals": {"closed": "ui_menu_close"}, "watch": [{"expr": "node.current()", "sfx": "ui_cursor"}, {"expr": "node.is_page_open()", "values": {"true": "ui_confirm"}, "_note": "a settings page opened (a bool: `values`, as rise/fall read numbers only); its close is SettingsPage's row"}], "_note": "M3-AUD-861: the settings list that opens Audio, Graphics, Accessibility and Controls"},

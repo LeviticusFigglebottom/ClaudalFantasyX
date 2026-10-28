@@ -68,22 +68,23 @@ Rhen [angry]: And you said ask her. I'm asking the whole village. #line:ch04_she
 @wait 1.5
 Toma [sad]: No. They do not. #line:ch04_shell_020
 <<endif>>
-@camera H14
+@camera H17
 @face asha soft_smile 0.0
 @wait 2.5
 Come round the long way, love, come round the long way, on the tide. #line:ch04_shell_021 #sung
 @camera H12
 @anim rhen put_down_plate
-@mark rhen feast_edge walk
+@mark rhen leave_rhen walk
 @wait 1.0
 @anim toma follow
 @anim asha touch_arm toma
 Asha [tender]: Let me. #line:ch04_shell_022
 Toma [worried]: It is your wake. #line:ch04_shell_023
 Asha [soft_smile]: Then I can leave it if I like. #line:ch04_shell_024
-@mark asha feast_edge walk
+@mark asha leave_asha walk
 @wait 1.5
-@mark toma feast_edge walk
+@mark toma leave_toma walk
+@wait 3.0
 @fade out 1.0
 @letterbox off
 ===

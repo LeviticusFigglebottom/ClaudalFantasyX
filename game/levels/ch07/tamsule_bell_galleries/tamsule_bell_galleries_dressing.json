@@ -11,9 +11,7 @@
  "time_of_day_h": 12.25,
  "greybox": {
   "hide_all": true,
-  "keep": [
-   "Column"
-  ]
+  "keep": []
  },
  "pieces": [
   {
@@ -1911,6 +1909,33 @@
    ],
    "y": 0.0,
    "yaw_deg": -322.0
+  },
+  {
+   "piece": "weep_column",
+   "at": [
+    0.0,
+    0.0
+   ],
+   "y": 0.35,
+   "yaw_deg": 0.0,
+   "kit_dir": "res://assets/environments/kits/tamsule_bell/",
+   "materials": {
+    "tb_drop_proxy": "weep_column_water_material",
+    "tb_salt_glass": "weep_spray_water_material"
+   },
+   "materials_dir": "res://game/levels/ch07/tamsule_bell_galleries/",
+   "block": "Column"
+  }
+ ],
+ "drops": [
+  {
+   "name": "Drop",
+   "at": [
+    0.0,
+    31.5,
+    0.0
+   ],
+   "profile": "tamsule_drop"
   }
  ]
 }

@@ -16,6 +16,11 @@ const GROUND_KEY := "ground"
 ## keys pieces by their first mesh name, and the zone's piece_rules give this one no shape.
 const NIGHT_LAMPS := &"NightLamps"
 const LAMP_FLAME := &"night_lamp_flame"
+## The kit's oil flame (props.py lamp_flame: a teardrop of radius 0.06 m, 2.4 radii tall, its base at the origin);
+## a night lamp's flame is it scaled to the layout's flame_radius_m, centred where the sphere's centre was.
+const LAMP_FLAME_PIECE := "lamp_flame"
+const LAMP_FLAME_KIT_RADIUS_M := 0.06
+const LAMP_FLAME_CENTRE_RADII := 0.9
 const LAMP_HOUSE_META := &"night_lamp_house"  ## the index (in the layout's pieces) of the house a lamp hangs on
 const SEA_NORMAL := Vector2(1.0, 0.0)
 const STORY_SETS := "StorySets"
@@ -221,10 +226,18 @@ func _place_night_lamps(pieces: Array[Node3D], kinds: Array[String], cfg: Dictio
 	flame_mat.emission_enabled = true
 	flame_mat.emission = color
 	flame_mat.emission_energy_multiplier = float(cfg.get("flame_energy", 1.0))
-	var flame_mesh := SphereMesh.new()
-	flame_mesh.material = flame_mat
-	flame_mesh.radius = float(cfg.get("flame_radius_m", 0.05))
-	flame_mesh.height = flame_mesh.radius * 2.0
+	var radius := float(cfg.get("flame_radius_m", 0.05))
+	# M3-ENV-746: the kit's oil flame (a teardrop off the wick) at the lamp's radius; a sphere only without the kit.
+	var flame_mesh := _kit_mesh(LAMP_FLAME_PIECE)
+	var flame_scale := radius / LAMP_FLAME_KIT_RADIUS_M
+	var flame_drop := Vector3(0.0, radius * LAMP_FLAME_CENTRE_RADII, 0.0)
+	if flame_mesh == null:
+		var sphere := SphereMesh.new()
+		sphere.radius = radius
+		sphere.height = radius * 2.0
+		flame_mesh = sphere
+		flame_scale = 1.0
+		flame_drop = Vector3.ZERO
 	for i in pieces.size():
 		for at: Array in per_piece.get(kinds[i], []):
 			var p := pieces[i].transform * Vector3(float(at[0]), float(at[1]), float(at[2]))
@@ -232,8 +245,10 @@ func _place_night_lamps(pieces: Array[Node3D], kinds: Array[String], cfg: Dictio
 			flame.name = LAMP_FLAME
 			flame.set_meta(LAMP_HOUSE_META, i)
 			flame.mesh = flame_mesh
+			flame.material_override = flame_mat
 			flame.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-			flame.position = p
+			flame.position = p - flame_drop
+			flame.scale = Vector3.ONE * flame_scale
 			lamps.add_child(flame)
 			var light := OmniLight3D.new()
 			light.light_color = color
@@ -404,6 +419,21 @@ func _kit_material(mat_name: String) -> Material:
 		tide.register(mat as ShaderMaterial)
 	_material_cache[mat_name] = mat
 	return mat
+
+
+## The first mesh of a kit piece's LOD0 (the kit's .glb), or null when the kit has no such piece.
+func _kit_mesh(piece: String) -> Mesh:
+	var packed := _load_scene(String(layout.get("kit_dir", "")) + piece + ".glb")
+	if packed == null:
+		return null
+	var root := packed.instantiate()
+	var found: Mesh = null
+	for mi: Node in root.find_children("*", "MeshInstance3D", true, false):
+		if not String(mi.name).ends_with("-lod1") and (mi as MeshInstance3D).mesh != null:
+			found = (mi as MeshInstance3D).mesh
+			break
+	root.free()
+	return found
 
 
 func _load_scene(path: String) -> PackedScene:

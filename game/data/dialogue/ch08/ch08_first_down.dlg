@@ -11,9 +11,9 @@ location: ch08/corrow
 @camera W09
 @sfx crowd_on_stair
 Hobb [determined]: First down! #line:ch08_first_down_001
-@mark watch_a stair_down_a run
-@mark watch_b stair_down_b run
-@mark hobb stair_down_hobb run
+@mark watch_a stair_down_a run via=way_stair_head_w
+@mark watch_b stair_down_b run via=way_stair_head_w
+@mark hobb stair_down_hobb run via=way_stair_head_w
 @wait 2.0
 @camera W10
 @mark toma shield_line_toma walk

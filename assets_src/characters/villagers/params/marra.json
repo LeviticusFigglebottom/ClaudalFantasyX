@@ -1,0 +1,142 @@
+{
+  "_about": "Old Marra, a Corrow fishwife (Ch8-9, speaker `marra`; act1_ch08.md: about 70, mends nets on a doorstep in the low town; one of the 1001 stair-watch, a faded watch-red cord with one knot on her wrist; the only climber who looks back down; in Ch9 holds Toma's hands among the shrouds). Small, round-shouldered, warm; grey hair under a storm-grey head wrap; a faded indigo long-sleeved top, a wrapped storm-grey ankle skirt, an undyed apron, a faded watch-red sash. A grey twine netting shawl over the shoulders (`shawl`) and the faded watch-red cord with one knot on her left wrist (`wrist_cord`). Reach-bands left 6, right 6. (M3-CHR-539.) Face sliders relative to the MakeHuman donor (ADR 0021: 1.0 / 0.0 = unchanged). Keys starting with '_' are read by the villager_* modules (villager_hair, villager_costume, villager_textures, write_materials, villager_clips), not by bb_params.",
+  "name": "marra",
+  "height_m": 1.52,
+  "heads_tall": 6.9,
+  "shoulder_width_heads": 1.58,
+  "chest_width_heads": 1.24,
+  "chest_depth_heads": 1.0,
+  "waist_width_heads": 1.24,
+  "hip_width_heads": 1.52,
+  "crotch_height_heads": 3.25,
+  "arm_span_ratio": 1.0,
+  "hand_length_heads": 0.8,
+  "foot_length_ratio": 0.146,
+  "neck_length_heads": 0.34,
+  "neck_width_ratio": 0.54,
+  "head_width_ratio": 0.69,
+  "femininity": 1.0,
+  "muscle": 0.3,
+  "mass": 0.45,
+  "breast": 0.5,
+  "eye_scale": 1.04,
+  "ipd_m": 0.061,
+  "arm_abduction_deg": 47.0,
+  "skin_hex": "#A27458",
+  "eye_tilt_deg": 1.0,
+  "jaw_width": 1.02,
+  "cheekbone_height": 0.0,
+  "cheekbone_width": 1.08,
+  "chin_size": 0.96,
+  "nose_bridge_width": 1.08,
+  "nose_tip_projection": 0.96,
+  "lip_fullness": 0.7,
+  "lip_close": 0.6,
+  "lip_seal": 0.96,
+  "lip_lower_fullness": 0.7,
+  "mouth_corner_lift": 0.0004,
+  "brow_ridge": 0.95,
+  "donor_mix_african": 0.3,
+  "donor_mix_asian": 0.4,
+  "donor_mix_caucasian": 0.3,
+  "_skin": {
+    "brow_strands": {"count": 70, "dark_share": 0.3, "dark_hex": "#3E3A34", "light_hex": "#9A948B", "opacity": 0.9},
+    "hex": "#A27458",
+    "age": 0.9,
+    "freckles": 0,
+    "reach_bands": {
+      "L": 6,
+      "R": 6
+    },
+    "ink_opacity": 0.45,
+    "seed": 139,
+    "lip": "#80504A"
+  },
+  "_hair": {
+    "brow_params": {"alpha_boost": "1.0", "strand_value_jitter": "0.4"},
+    "kind": "wrap",
+    "hairline": "female",
+    "seed": 59,
+    "hairline_cards": 90,
+    "colour": "#9A948B",
+    "grey": "#C9C3B8",
+    "grey_share": 0.6,
+    "underpaint": "#8C867D",
+    "brow": "#6A645C",
+    "hairline_m": [
+      0.012,
+      0.02
+    ]
+  },
+  "_eyes": {
+    "iris": "#2A1A10"
+  },
+  "_costume": {
+    "top": {
+      "mat": "cloth_b",
+      "hem": "hip",
+      "sleeve": 0.85,
+      "neck_v_m": 0.05
+    },
+    "skirt": {
+      "mat": "cloth_c",
+      "hem": "ankle",
+      "folds": 9,
+      "fold_amp": 0.008,
+      "flare": 0.15,
+      "seed": 191,
+      "keep_above_knee_m": 1.0
+    },
+    "apron": {
+      "mat": "cloth_a",
+      "hem": "knee",
+      "half_deg": 54,
+      "seed": 192
+    },
+    "sash": {
+      "mat": "cloth_d",
+      "width_m": 0.05,
+      "turns": 1
+    },
+    "headwrap": {
+      "mat": "cloth_c",
+      "edge_lift": 0.012,
+      "puff_m": 0.011,
+      "knot_m": 0.032,
+      "seed": 193,
+      "edge_off_m": 0.002
+    },
+    "sandals": "leather",
+    "shawl": {
+      "mat": "cloth_c",
+      "mesh_m": 0.08,
+      "cord_mm": 3.0,
+      "open_deg": 24.0,
+      "off_m": 0.011,
+      "drop_k": 1.35
+    },
+    "wrist_cord": {
+      "mat": "cloth_d",
+      "side": "L",
+      "cord_mm": 5.0,
+      "knot_m": 0.014
+    }
+  },
+  "_tints": {
+    "cloth_a": "#D2C6AC",
+    "cloth_b": "#46557F",
+    "cloth_c": "#5A616A",
+    "leather": "#FFFFFF",
+    "cloth_d": "#8A4A3A"
+  },
+  "_build": {
+    "shapes": "all",
+    "host_snaps": true,
+    "garment_fit": true
+  },
+  "_persona": {
+    "sway": 0.5,
+    "lean": 6.0,
+    "arms_down": 38.0
+  }
+}

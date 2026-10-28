@@ -78,7 +78,7 @@ Asha [tender]: Salt and stone keep you. Come up when you can. #line:ch07_moor_02
 @camera R08
 Tavi [tender]: Thank you. #line:ch07_moor_021
 @mark tavi tavi_away walk
-@wait 2.0
+@wait 5.0
 @letterbox off
 @camera release
 ===

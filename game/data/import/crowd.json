@@ -1,0 +1,39 @@
+{
+  "_about": "M3-CRE-659 post-import rules for Act I's crowd bodies (game/core/import/crowd_post_import.gd, AssetImportRules; ADR 0152): assets/crowd/<body>/<body>.glb, the LOD1 build of the characters' villager pipeline (assets_src/crowd/build_crowd.py). The same rules as the characters' villager folders (game/data/import/characters.json): each glTF material slot maps to <asset dir>/materials/<slot>.tres, Godot's auto LODs, no collision, and its group's shared clip library (M3-CRE-662: assets/crowd/clips/crowd_<library>_clips.tres: idle, talk, walk and the group's work clips) on an AnimationPlayer at the asset root. FieldNpc and VillagerLayer tint cloth and hair per person on top (NpcTints).",
+  "kind": "crowd",
+  "script": "res://game/core/import/crowd_post_import.gd",
+  "assets": ["res://assets/crowd/crowd_boy_small/", "res://assets/crowd/crowd_boy_tall/", "res://assets/crowd/crowd_elder_man_a/",
+             "res://assets/crowd/crowd_elder_man_b/", "res://assets/crowd/crowd_elder_woman_a/", "res://assets/crowd/crowd_elder_woman_b/",
+             "res://assets/crowd/crowd_girl_small/", "res://assets/crowd/crowd_girl_tall/", "res://assets/crowd/crowd_girl_teen/",
+             "res://assets/crowd/crowd_man_heavy/", "res://assets/crowd/crowd_man_heavy_b/", "res://assets/crowd/crowd_man_lean_a/",
+             "res://assets/crowd/crowd_man_lean_b/", "res://assets/crowd/crowd_man_medium_a/", "res://assets/crowd/crowd_man_medium_b/",
+             "res://assets/crowd/crowd_order_man/", "res://assets/crowd/crowd_order_woman/", "res://assets/crowd/crowd_woman_heavy/",
+             "res://assets/crowd/crowd_woman_lean_a/", "res://assets/crowd/crowd_woman_lean_b/", "res://assets/crowd/crowd_woman_medium/",
+             "res://assets/crowd/crowd_woman_medium_b/"],
+  "adoption_pending": {},
+  "generate_lods": true,
+  "materials": {
+    "slot_dir": "{asset_dir}/materials/",
+    "by_node": {},
+    "warn_unmapped": true
+  },
+  "lods": {},
+  "animations": {
+    "_about": "M3-CRE-662: the crowd bodies share one clip library per group (assets_src/crowd/ranges.json clip_libraries; `libraries` is the same map, body -> library, which tools/validate_npc.py checks). CrowdClipLibrary (game/world/npc/crowd_clip_library.gd, run by crowd_post_import.gd) fills {library} in `library`, names the body's armature node `armature` (the library's tracks are rooted there) and sets its Skeleton3D's motion_scale to the body's `hips_bone` rest height over the library's `hips_meta` metadata (the reference body's), so the hips track fits each body's height. AssetImportRules then puts the library on an AnimationPlayer at the asset root, 0.3 s default blend.",
+    "library": "res://assets/crowd/clips/crowd_{library}_clips.tres",
+    "libraries": {
+      "crowd_boy_small": "child_small", "crowd_boy_tall": "child", "crowd_elder_man_a": "elder", "crowd_elder_man_b": "elder",
+      "crowd_elder_woman_a": "elder", "crowd_elder_woman_b": "elder", "crowd_girl_small": "child_small", "crowd_girl_tall": "child",
+      "crowd_girl_teen": "child", "crowd_man_heavy": "adult", "crowd_man_heavy_b": "adult", "crowd_man_lean_a": "adult",
+      "crowd_man_lean_b": "adult", "crowd_man_medium_a": "adult", "crowd_man_medium_b": "adult", "crowd_order_man": "adult",
+      "crowd_order_woman": "adult", "crowd_woman_heavy": "adult", "crowd_woman_lean_a": "adult", "crowd_woman_lean_b": "adult",
+      "crowd_woman_medium": "adult", "crowd_woman_medium_b": "adult"
+    },
+    "armature": "crowd_skeleton",
+    "hips_bone": "DEF-spine",
+    "hips_meta": "hips_rest_y",
+    "strip_suffixes": [],
+    "default_blend_s": 0.3
+  },
+  "collision": {}
+}

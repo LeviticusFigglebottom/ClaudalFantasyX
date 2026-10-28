@@ -7,7 +7,7 @@
 title: ch06_liss_lantern
 location: ch06/brine_shoals
 ---
-@mark asha papers_table walk
+@mark asha way_tents_e walk
 @camera W14
 @music liss_theme
 @anim liss look_at rhen

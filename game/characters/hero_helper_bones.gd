@@ -78,8 +78,10 @@ static func _drive_prop(skel: Skeleton3D) -> void:
 			skel.set_bone_pose_rotation(f, _quat(fingers[name]).normalized())
 	skel.force_update_all_bone_transforms()
 	var rest_local := skel.get_bone_rest(bone)
+	var off: Array = e.get("offset", [0.0, 0.0, 0.0])  # M2-CHR-544: the shaft through the closed fist
+	var origin := rest_local.origin + Vector3(float(off[0]), float(off[1]), float(off[2]))
 	skel.set_bone_pose_rotation(bone, rest_local.basis.get_rotation_quaternion())
-	skel.set_bone_pose_position(bone, rest_local.origin)
+	skel.set_bone_pose_position(bone, origin)
 	skel.force_update_all_bone_transforms()
 	var pose := skel.get_bone_global_pose(bone)
 	var axis := pose.basis.y.normalized()
@@ -94,9 +96,7 @@ static func _drive_prop(skel: Skeleton3D) -> void:
 		if foot_y + slide * axis.y < float(g["floor_m"]):
 			slide = to_floor
 		slide = clampf(slide, -float(g["slide_max_m"]), float(g["slide_max_m"]))
-	skel.set_bone_pose_position(
-		bone, rest_local.origin + rest_local.basis.get_rotation_quaternion() * Vector3(0.0, slide, 0.0)
-	)
+	skel.set_bone_pose_position(bone, origin + rest_local.basis.get_rotation_quaternion() * Vector3(0.0, slide, 0.0))
 
 
 ## True when the skeleton has any helper bone.
@@ -130,7 +130,7 @@ static func _drive_armpits(skel: Skeleton3D, a: Dictionary) -> void:
 ## down as hero_clips.skirt_solve does: each bone's least swing from the vertical, about its head where the bones above
 ## put it, then the lag limit at that level. The upper bone clears its own cloth; a middle one its own and all the
 ## cloth below it carried straight; the lowest its own, up to the middle one's swing (it hangs back from the knee). The
-## lowest bone takes the overhang and floor gathers.
+## lowest bone takes the overhang gather, the floor drape, then the floor gather.
 static func _drive_skirt(skel: Skeleton3D, s: Dictionary) -> void:
 	var prefix := String(s["bone_prefix"])
 	var levels: Array = s["levels"]
@@ -191,6 +191,21 @@ static func _drive_skirt(skel: Skeleton3D, s: Dictionary) -> void:
 	var flare := float(s["gather_flare"])
 	var last := levels.size() - 1
 	for k: int in names.size():
+		var lo_name := names[k] + String(levels[last])
+		var head: Vector3 = heads[k][last]
+		var tip := _head_posed(heads[k], axes[k], angs[k], last)
+		var axis: Vector3 = (rests[k][last] as Quaternion) * Vector3.UP
+		var a_lo: float = angs[k][last]
+		var sc := _overhang(cloth[lo_name], head, axis, axes[k], a_lo, tip, legs, s)
+		var c_lo: PackedVector3Array = cloth[lo_name]
+		var dp := inv_dp.inverse()
+		var base_y := hips_pose.origin.y
+		var sg := _gather(c_lo, head, axis, axes[k], a_lo, tip - head, dp, base_y, sc, s)
+		if sg < float(s["drape_below_gather"]):
+			a_lo = _drape(c_lo, head, axis, axes[k], a_lo, tip - head, dp, base_y, sc, s)
+			angs[k][last] = a_lo
+			sg = _gather(c_lo, head, axis, axes[k], a_lo, tip - head, dp, base_y, sc, s)
+		sc = sg
 		var gp := rq_h
 		var prev := 0.0
 		for lv: int in levels.size():
@@ -200,16 +215,104 @@ static func _drive_skirt(skel: Skeleton3D, s: Dictionary) -> void:
 			skel.set_bone_pose_rotation(skel.find_bone(names[k] + String(levels[lv])), loc.normalized())
 			gp = gr
 			prev = ang
-		var lo_name := names[k] + String(levels[last])
-		var head: Vector3 = heads[k][last]
-		var tip := _head_posed(heads[k], axes[k], angs[k], last)
-		var axis: Vector3 = (rests[k][last] as Quaternion) * Vector3.UP
-		var a_lo: float = angs[k][last]
-		var sc := _overhang(cloth[lo_name], head, axis, axes[k], a_lo, tip, legs, s)
-		sc = _gather(cloth[lo_name], head, axis, axes[k], a_lo, tip - head, inv_dp.inverse(), hips_pose.origin.y, sc, s)
 		skel.set_bone_pose_scale(
 			skel.find_bone(lo_name), Vector3(1.0 + flare * (1.0 - sc), sc, 1.0 + flare * (1.0 - sc))
 		)
+	apply_folds(skel, fold_rig(skel))
+
+
+## ADR 0140: what the even-numbered panels need to be derived from their odd neighbours (HeroSkirtFolds caches it):
+## per even panel, its own and its two neighbours' bone indices per level, and each panel's rest rotations (in the
+## pelvis's frame) and swing axis. Empty when the skeleton has no derived panels.
+static func fold_rig(skel: Skeleton3D) -> Dictionary:
+	var s: Dictionary = data().get("skirt", {})
+	if s.is_empty():
+		return {}
+	var prefix := String(s["bone_prefix"])
+	var levels: Array = s["levels"]
+	var panels := {}  # number -> {bones, rests, axis}
+	for i: int in skel.get_bone_count():
+		var n := skel.get_bone_name(i)
+		if not n.begins_with(prefix) or n.contains("."):
+			continue
+		var hips := skel.get_bone_parent(i)
+		var hips_rest := skel.get_bone_global_rest(hips)
+		var g := hips_rest.basis.get_rotation_quaternion()
+		var bones: Array[int] = []
+		var rests: Array[Quaternion] = []
+		for x: Variant in levels:
+			var b := skel.find_bone(n + String(x))
+			bones.append(b)
+			g = g * _rest_q(skel, b)
+			rests.append(g)
+		var h0 := skel.get_bone_global_rest(i).origin - hips_rest.origin
+		var u := Vector3(h0.x, 0.0, h0.z).normalized()
+		panels[int(n.substr(prefix.length()))] = {
+			"bones": bones,
+			"rests": rests,
+			"axis": Vector3(0.0, -1.0, 0.0).cross(u).normalized(),
+			"hips_q": hips_rest.basis.get_rotation_quaternion()
+		}
+	var count := panels.size()
+	var derived: Array = []
+	for k: int in panels:
+		if k % 2 == 0 and panels.has((k + count - 1) % count) and panels.has((k + 1) % count):
+			derived.append([panels[k], panels[(k + count - 1) % count], panels[(k + 1) % count]])
+	if derived.is_empty():
+		return {}
+	return {
+		"derived": derived,
+		"fold": deg_to_rad(float(s["fold_deg"])),
+		"from": deg_to_rad(float(s["fold_from_deg"])),
+		"ease": deg_to_rad(float(s["fold_ease_deg"])),
+		"top": deg_to_rad(float(s["max_swing_deg"]))
+	}
+
+
+## ADR 0140: sets each even-numbered panel from its odd neighbours' current pose: the larger of their swings (read
+## back out of their rotations; at the hem, their mean) and the mean of their gathers (scales), the lowest bone `fold`
+## further out once that lies past `from` (hero_clips.derive_folds, the same rule).
+static func apply_folds(skel: Skeleton3D, rig: Dictionary) -> void:
+	if rig.is_empty():
+		return
+	for trio: Array in rig["derived"]:
+		var own: Dictionary = trio[0]
+		var a := _swings(skel, trio[1])
+		var b := _swings(skel, trio[2])
+		var last := a.size() - 1
+		var gp: Quaternion = own["hips_q"]
+		var prev := 0.0
+		for lv: int in a.size():
+			var ang := maxf(a[lv], b[lv])  # the outer of the two: the mean cut into a thigh between them
+			if lv == last:
+				ang = 0.5 * (a[lv] + b[lv])  # but the hem their mean: the outer of the two folded it into spikes
+				var t := (ang - float(rig["from"])) / float(rig["ease"])
+				ang = minf(ang + float(rig["fold"]) * smoothstep(0.0, 1.0, t), float(rig["top"]))
+			var gr: Quaternion = own["rests"][lv]
+			var loc := gp.inverse() * Quaternion(own["axis"], ang - prev) * gr
+			skel.set_bone_pose_rotation(own["bones"][lv], loc.normalized())
+			gp = gr
+			prev = ang
+		var lo_a := skel.get_bone_pose_scale((trio[1] as Dictionary)["bones"][last])
+		var lo_b := skel.get_bone_pose_scale((trio[2] as Dictionary)["bones"][last])
+		skel.set_bone_pose_scale(own["bones"][last], 0.5 * (lo_a + lo_b))
+
+
+## A panel's cumulative swing from the vertical at each level, read back out of its bones' pose rotations.
+static func _swings(skel: Skeleton3D, panel: Dictionary) -> Array[float]:
+	var out: Array[float] = []
+	var gp: Quaternion = panel["hips_q"]
+	var axis: Vector3 = panel["axis"]
+	var prev := 0.0
+	var rests: Array = panel["rests"]
+	var bones: Array = panel["bones"]
+	for lv: int in bones.size():
+		var gr: Quaternion = rests[lv]
+		var q := gp * skel.get_bone_pose_rotation(bones[lv]) * gr.inverse()
+		prev += 2.0 * atan2(Vector3(q.x, q.y, q.z).dot(axis), q.w)
+		out.append(prev)
+		gp = gr
+	return out
 
 
 ## Where a panel's bones above level `lv` put its head: each bone `i` swung angs[i] about `axis` (from the vertical).
@@ -218,6 +321,43 @@ static func _head_posed(heads: Array, axis: Vector3, angs: Array, lv: int) -> Ve
 	for i: int in range(1, lv + 1):
 		p += Basis(axis, float(angs[i - 1])) * ((heads[i] as Vector3) - (heads[i - 1] as Vector3))
 	return p
+
+
+## The floor drape (hero_clips.skirt_solve): a lowest bone whose cloth (at length scale `sc`) would gather shorter
+## than drape_below_gather first swings out onto the floor, by the least swing in (ang, drape_max_deg] (grid_deg
+## steps, then `bisect` halvings) at which it stays floor_clear_m above the floor; drape_max_deg when none does.
+static func _drape(
+	cloth: PackedVector3Array,
+	knee: Vector3,
+	along: Vector3,
+	axis: Vector3,
+	ang: float,
+	shift: Vector3,
+	dp: Quaternion,
+	base_y: float,
+	sc: float,
+	s: Dictionary
+) -> float:
+	var floor_y := float(s["floor_clear_m"])
+	var top := deg_to_rad(float(s["drape_max_deg"]))
+	if cloth.is_empty() or ang >= top or _low(cloth, knee, along, axis, ang, shift, dp, base_y, sc) >= floor_y:
+		return ang
+	var step := deg_to_rad(float(s["grid_deg"]))
+	var lo := ang
+	var a := minf(lo + step, top)
+	while _low(cloth, knee, along, axis, a, shift, dp, base_y, sc) < floor_y:
+		if a >= top - 1e-9:
+			return top
+		lo = a
+		a = minf(a + step, top)
+	var hi := a
+	for _i: int in int(s["bisect"]):
+		var mid := 0.5 * (lo + hi)
+		if _low(cloth, knee, along, axis, mid, shift, dp, base_y, sc) >= floor_y:
+			hi = mid
+		else:
+			lo = mid
+	return hi
 
 
 ## The lowest bone's gather: the largest length scale in [gather_min, 1] (`bisect` halvings) at which its cloth (scaled

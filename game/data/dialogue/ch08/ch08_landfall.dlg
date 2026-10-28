@@ -16,19 +16,19 @@ location: ch08/corrow
 @sfx gulls_far
 @wait 3.0
 @camera W02
-@mark townsfolk_a mole_greet_a walk
-@mark townsfolk_b mole_greet_b walk
+@mark townsfolk_a mole_greet_a walk via=way_mole_parapet
+@mark townsfolk_b mole_greet_b walk via=way_mole_parapet
 @face asha smile 0.4
 Townsfolk [smile]: The Cantor! Look up, look, they've put every kite out for you. #line:ch08_landfall_001
 Asha [smile]: They're beautiful. Thank you. Are they all for the Watchers? #line:ch08_landfall_002
 Townsfolk [soft_smile]: So they've got something to look up at, Lady. Their eyes are shut all year. #line:ch08_landfall_003
-@mark asha mole_steps_asha walk
-@mark toma mole_steps_toma walk
+@mark asha day_asha walk via=way_mole_parapet,wall_foot
+@mark toma day_toma walk via=way_mole_parapet,wall_foot
 @wait 0.8
 Kerrid [neutral]: Later. #line:ch08_landfall_004
-@mark kerrid wall_foot walk
+@mark kerrid wall_foot walk via=way_mole_parapet
 @wait 1.5
 Rhen [neutral]: Where's he— #line:ch08_landfall_005
 Toma [neutral]: He does that. #line:ch08_landfall_006
-@wait 0.6
+@wait 4.0
 ===

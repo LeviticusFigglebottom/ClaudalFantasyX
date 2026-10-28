@@ -55,6 +55,7 @@ FIST = (1.17, 0.94, 0.5)                  # where each fist closes (x mirrored)
 # (rad), height, the glass's radius.
 LENS = (-0.62, 1.62, 0.068)
 CRUST_SQUASH, CRUST_DRIPS = 0.8, 12        # the crust's runs (cells about 1.25x taller than wide); drips off its lips
+ROUGH_AREA, ROUGH_ANGLE = 0.05, math.radians(100.0)  # Polish 2: cells this broad (m^2) this near the front get relief
 
 
 def curve(ctrl: list[tuple[float, float]]):
@@ -879,13 +880,13 @@ def inset(V: np.ndarray, h: float) -> np.ndarray | None:
 
 def slag_cells(mesh: ck.Mesh, S: np.ndarray, lo, hi, place, cover, bone: int, seed: int, thick: float,
                gap: float = 0.03, period: float | None = None, cut=None, clear=None, keep: float = 0.25,
-               squash: float = 1.0, drips: int = 0) -> None:
+               squash: float = 1.0, drips: int = 0, rough=None) -> None:
     """Cooled slag as separate flows (M3-CRB-006; the first pass's even pillow cells read as a tortoise shell): each
     cell a lumpy pumice crust whose downhill edge is a thick glassy lip sagging over the crack below, its top bubbled,
     the cracks between of every width, and only the deepest of them (about one in three, more where the slag lies
     thick) still glowing `ember_orange`; the rest are cold, dark seams. `squash` < 1 cuts the cells in a domain
     shortened vertically, so they come out as runs longer than they are wide; `drips` hangs that many cooled drips
-    from the lowest free edges.
+    from the lowest free edges; `rough(P, k) -> bool` picks the cells re-topped with pumice relief (Polish 2).
     `S` the cell seeds in a 2D domain lo..hi (u wraps every `period`); `place(Q) -> (P, D)` maps domain points to
     the surface and its outward directions (NaN off it); `cover(P)` where the slag lies (a cell is kept where its
     centre's cover is > `keep`, thinner where it is low); `cut(V, E, centre) -> (V, E)` an optional extra clip
@@ -939,24 +940,58 @@ def slag_cells(mesh: ck.Mesh, S: np.ndarray, lo, hi, place, cover, bone: int, se
         for r0 in (1, 1 + k):  # the top -> the lip -> the crack's floor
             T.append(np.column_stack([r0 + ring, r0 + k + ring, r0 + k + nx]))
             T.append(np.column_stack([r0 + ring, r0 + k + nx, r0 + nx]))
+        extra = 0
+        if rough is not None and rough(P, k):
+            # Polish 2: the largest cells up front are re-topped with a ring of 2k points (corners and edge middles)
+            # between the centre and the rim, bubbled up and pitted down, with two fine cracks sunk from the centre
+            # to the rim, so the broad flows read as pumice up close (+4k triangles a cell).
+            c3, Mr = P[0], P[1:1 + k]
+            mids = 0.5 * (Mr + np.roll(Mr, -1, axis=0))
+            R1 = np.empty((2 * k, 3))
+            R1[0::2] = c3 + 0.55 * (Mr - c3)
+            R1[1::2] = c3 + 0.58 * (mids - c3)
+            b2 = ck.fbm(R1 * 23.0, seed + 5)
+            crack = np.zeros(2 * k)
+            j0 = int(hash01(np.array([i]), seed + 12)[0] * k) % k  # (not rng: the other cells stay as they were)
+            crack[[2 * j0 + 1, (2 * j0 + 1 + 2 * (k // 2)) % (2 * k)]] = 1.0  # two cracks, across the cell
+            R1 = R1 + D[0] * (h * (0.32 * b2 - 0.5 * crack + 0.08))[:, None]
+            P = np.vstack([P, R1])
+            D = np.vstack([D, np.repeat(D[:1], 2 * k, axis=0)])
+            P[0] = P[0] + D[0] * (0.25 * h * float(ck.fbm(P[:1] * 19.0, seed + 6)[0]))
+            base = 1 + 3 * k
+            rr = np.arange(2 * k)
+            j = np.arange(k)
+            T[0] = np.column_stack([np.zeros(2 * k, dtype=np.int64), base + rr, base + (rr + 1) % (2 * k)])
+            T.append(np.column_stack([base + 2 * j, 1 + j, base + 2 * j + 1]))
+            T.append(np.column_stack([base + 2 * j + 1, 1 + j, 1 + nx]))
+            T.append(np.column_stack([base + 2 * j + 1, 1 + nx, base + (2 * j + 2) % (2 * k)]))
+            extra = 2 * k
         T = np.vstack(T)
         fn = np.cross(P[T[0, 1]] - P[T[0, 0]], P[T[0, 2]] - P[T[0, 0]])
         if fn @ D[0] < 0.0:
             T = T[:, ::-1]
         hot_e = np.array([deep(i, e) for e in E])
         hot = (hot_e | np.roll(hot_e, 1)).astype(np.float64)  # a corner glows if either of its edges does
-        glow = np.concatenate([np.zeros(1 + 2 * k), hot * (0.8 + 0.2 * ck.fbm(P[1 + 2 * k:] * 6.0, seed + 3))])
+        glow = np.concatenate([np.zeros(1 + 2 * k), hot * (0.8 + 0.2 * ck.fbm(P[1 + 2 * k:1 + 3 * k] * 6.0, seed + 3)),
+                               np.zeros(extra)])
         # pumice on top (grey, pitted), a black glassy lip, the crack floor cold-dark or molten
         tone = 0.85 + 0.3 * rng.random()
         pumice = ck.mix(PAL["volcanic_stone"] * 1.25, ck.mix(PAL["cold_blue_stone"], PAL["timber_weathered"], 0.4),
                         (0.25 + 0.35 * ck.fbm(P * 7.0, seed + 2))[:, None]) * tone
         pits = ck.smoothstep(0.1, 0.4, ck.fbm(P * 17.0, seed + 4))
         pumice = ck.mix(pumice, FLOOR, (0.7 * pits)[:, None])
-        zone = np.concatenate([np.zeros(1), 0.15 * low[1:1 + k], 0.3 + 0.7 * low[1 + k:1 + 2 * k], np.ones(k)])
+        zone = np.concatenate([np.zeros(1), 0.15 * low[1:1 + k], 0.3 + 0.7 * low[1 + k:1 + 2 * k], np.ones(k),
+                               np.zeros(extra)])
+        if extra:  # the re-topped cells: darker in the pits and down the two cracks
+            pitv = ck.smoothstep(-0.02, -0.2, b2)  # the sunk points are pits: dark, deep
+            zone[1 + 3 * k:] = np.clip(0.55 * pits[1 + 3 * k:] + 0.6 * pitv + 0.9 * crack, 0.0, 1.0)
         col = ck.mix(pumice, FLOOR * 1.05, zone[:, None])
         col = ck.mix(col, PAL["ember_orange"], glow[:, None])
-        wet = np.concatenate([np.full(1 + k, 0.05), np.full(k, 0.55), np.zeros(k)])  # the lips are glassy
-        cav = np.concatenate([[0.1], 0.2 + 0.4 * pits[1:1 + k], np.full(k, 0.35), 1.0 - 0.8 * glow[1 + 2 * k:]])
+        wet = np.concatenate([np.full(1 + k, 0.05), np.full(k, 0.55), np.zeros(k), np.full(extra, 0.05)])  # glassy lips
+        cav = np.concatenate([[0.1], 0.2 + 0.4 * pits[1:1 + k], np.full(k, 0.35), 1.0 - 0.8 * glow[1 + 2 * k:1 + 3 * k],
+                              np.zeros(extra)])
+        if extra:
+            cav[1 + 3 * k:] = np.clip(0.3 + 0.6 * pits[1 + 3 * k:] + 0.5 * pitv + crack, 0.0, 1.0)
         ck.finish(mesh, P, T, "crust", np.maximum(col, FLOOR), bone, wet=wet, cavity=cav, emission=glow)
         for e in range(k):  # free edges on the cell's underside, where a drip could hang
             if E[e] in built or E[e] == -2:
@@ -1055,8 +1090,13 @@ def crust(rig: ck.Rig) -> ck.Mesh:
     sq = np.array([1.0, CRUST_SQUASH])
     rng = np.random.default_rng(SEED + 61)
     S = poisson(np.asarray(lo) * sq, np.asarray(hi) * sq, lambda Q: cell_size(Q / sq), rng, mixed=True) / sq
+    def rough(P, k):  # Polish 2: the broadest flows the review and boss-intro cameras see (+4k triangles each)
+        c, M = P[0], P[1:1 + k]
+        area = 0.5 * sum(float(np.linalg.norm(np.cross(M[i] - c, M[(i + 1) % k] - c))) for i in range(k))
+        return area > ROUGH_AREA and abs(math.atan2(c[0], c[2])) < ROUGH_ANGLE
+
     slag_cells(mesh, S, lo, hi, place, cover, tb, SEED + 62, 0.085, 0.034, 2.0 * math.pi * rm, slit, clear,
-               squash=CRUST_SQUASH, drips=CRUST_DRIPS)
+               squash=CRUST_SQUASH, drips=CRUST_DRIPS, rough=rough)
 
     P, T = ck.tube(ring_path(WAIST + 0.03, R(WAIST) + 0.06, 30), 0.08, 7, cap_start=False, cap_end=False)  # belt
     lump = ck.fbm(P * 5.0, SEED + 63)

@@ -1,0 +1,299 @@
+{
+  "_about": "M3-CRE-659 (ADR 0152): the crowd generator's range tables. gen_crowd.py samples every crowd body's params (the villager schema of assets_src/characters/villagers/params) and every crowd person's tints from these, seeded. A mix is [swatch_a, swatch_b, t_lo, t_hi]: palette.json swatches by name, sRGB-mixed a -> b by t drawn in [t_lo, t_hi] (t 0 = a). Communities come from docs/kb/story/bible.md section 5 and section 7 and each zone's beat sheet; skin endpoints are hex (skin is baked, not tinted). `accepts` lists the body communities a person of this community may wear (skin and dress close enough), the first its own.",
+  "communities": {
+    "oruvel": {
+      "island": "low_reaches",
+      "about": "Oruvel's raft-town of lashed hulls (bible 5.1; act1_ch01 O01: hulls in every colour the sun has faded). Lamp-divers. Reach-bands.",
+      "accepts": ["oruvel", "sorrin", "brightwater", "tamsule", "saltwright"],
+      "skin": ["#B9876A", "#8A5A3E"],
+      "reach_bands": {"adult": [2, 9], "elder": [9, 14]},
+      "hair": [["hair_black", "hair_dark_brown", 0.0, 0.5]],
+      "cloth": {
+        "a": [["gauze_white", "sand_cloth", 0.0, 1.0], ["sand_cloth", "timber_weathered", 0.0, 0.3]],
+        "b": [["indigo_dye", "sand_cloth", 0.05, 0.3], ["faded_teal_cloth", "gauze_white", 0.0, 0.25], ["sea_blue_cloth", "sand_cloth", 0.1, 0.35]],
+        "c": [["roof_clay", "sand_cloth", 0.0, 0.3], ["faded_teal_cloth", "indigo_dye", 0.2, 0.6], ["brass", "timber_weathered", 0.0, 0.4], ["sea_blue_cloth", "gauze_white", 0.0, 0.2]]
+      }
+    },
+    "sorrin": {
+      "island": "low_reaches",
+      "about": "Sorrin, an atoll side from the Low Reaches (act1_ch07 section 5): quick swimmers, reach-bands to the elbow.",
+      "accepts": ["sorrin", "oruvel", "brightwater", "tamsule"],
+      "skin": ["#A87556", "#7E5236"],
+      "reach_bands": {"adult": [4, 10], "elder": [10, 14]},
+      "hair": [["hair_black", "hair_dark_brown", 0.0, 0.3]],
+      "cloth": {
+        "a": [["sea_blue_cloth", "gauze_white", 0.05, 0.25]],
+        "b": [["sand_cloth", "gauze_white", 0.0, 0.4]],
+        "c": [["roof_clay", "lacquer_red_deep", 0.0, 0.4]]
+      }
+    },
+    "brightwater": {
+      "island": "low_reaches",
+      "about": "The Brightwater ferry's passengers: Low Reaches traders and families on the crossing to Pemakar (act1_ch04).",
+      "accepts": ["brightwater", "oruvel", "sorrin", "tamsule", "saltwright", "pemakar", "corrow"],
+      "skin": ["#B9876A", "#966548"],
+      "reach_bands": {"adult": [1, 6], "elder": [6, 12]},
+      "hair": [["hair_black", "hair_dark_brown", 0.0, 0.6]],
+      "cloth": {
+        "a": [["sand_cloth", "gauze_white", 0.0, 0.6]],
+        "b": [["indigo_dye", "sand_cloth", 0.0, 0.3], ["roof_clay", "sand_cloth", 0.2, 0.5], ["timber_weathered", "sand_cloth", 0.0, 0.4]],
+        "c": [["sea_blue_cloth", "gauze_white", 0.0, 0.3], ["thatch", "sand_cloth", 0.0, 0.3], ["lacquer_red_deep", "roof_clay", 0.3, 0.8]]
+      }
+    },
+    "pemakar": {
+      "island": "pemakar_terraces",
+      "about": "Pemakar's market terraces, smithies and lacquer workshops (bible 5.2): black and red lacquer, gold leaf, terrace green. No reach-bands.",
+      "accepts": ["pemakar", "corrow", "tamsule"],
+      "skin": ["#A87556", "#7A4E34"],
+      "reach_bands": {"adult": [0, 0], "elder": [0, 0]},
+      "hair": [["hair_black", "hair_dark_brown", 0.0, 0.25]],
+      "cloth": {
+        "a": [["gauze_white", "sand_cloth", 0.2, 0.8], ["bone", "thatch", 0.0, 0.4]],
+        "b": [["lacquer_black", "indigo_dye", 0.35, 0.85], ["tortoiseshell", "timber_weathered", 0.0, 0.5], ["indigo_dye", "sand_cloth", 0.05, 0.3], ["palm_green", "foliage_shadow", 0.3, 0.7]],
+        "c": [["lacquer_red", "lacquer_red_deep", 0.0, 1.0], ["gold_leaf", "thatch", 0.2, 0.7], ["palm_green", "foliage_shadow", 0.2, 0.6]]
+      }
+    },
+    "corrow": {
+      "island": "corrow_coast",
+      "about": "Corrow's low town: conscripted fishers and their families under the laterite seawall (bible 5.4). Salt-greyed work cloth, laterite red, cold blue.",
+      "accepts": ["corrow", "pemakar", "tamsule", "saltwright"],
+      "skin": ["#A06A4C", "#76482F"],
+      "reach_bands": {"adult": [0, 0], "elder": [0, 0]},
+      "hair": [["hair_black", "hair_dark_brown", 0.0, 0.4]],
+      "cloth": {
+        "a": [["sand_cloth", "coral_stone_weathered", 0.0, 1.0], ["gauze_white", "cold_blue_stone", 0.1, 0.3]],
+        "b": [["laterite", "sand_cloth", 0.2, 0.5], ["cold_blue_stone", "indigo_dye", 0.0, 0.5], ["timber_weathered", "tortoiseshell", 0.0, 0.5]],
+        "c": [["indigo_dye", "sand_cloth", 0.0, 0.2], ["laterite", "lacquer_red_deep", 0.0, 0.5], ["bronze_patina", "timber_weathered", 0.0, 0.4]]
+      }
+    },
+    "tamsule": {
+      "island": "tamsule",
+      "about": "Tamsule, the stilt trade port of a hundred languages (bible 5.3): every southern dress at once, gilded signboards.",
+      "accepts": ["tamsule", "pemakar", "oruvel", "brightwater", "corrow", "sorrin", "saltwright"],
+      "skin": ["#C09070", "#74472E"],
+      "reach_bands": {"adult": [0, 4], "elder": [0, 8]},
+      "hair": [["hair_black", "hair_dark_brown", 0.0, 0.7]],
+      "cloth": {
+        "a": [["gauze_white", "sand_cloth", 0.0, 1.0]],
+        "b": [["sea_blue_cloth", "indigo_dye", 0.0, 1.0], ["palm_green", "thatch", 0.3, 0.7], ["roof_clay", "tortoiseshell", 0.0, 0.6], ["faded_teal_cloth", "indigo_dye", 0.0, 0.5]],
+        "c": [["gold_leaf", "brass", 0.0, 1.0], ["lacquer_red", "roof_clay", 0.0, 0.6], ["sea_blue_cloth", "gauze_white", 0.0, 0.3]]
+      }
+    },
+    "saltwright": {
+      "island": "hollowmere",
+      "about": "The Saltwright salvage camp at Brine Shoals (bible section 7; act1_ch06 W05-W06): scrap-tech workwear, salt-stained, patina and brass. Their line-marks are not the reach-bands (see the task's request to characters).",
+      "accepts": ["saltwright", "brightwater", "oruvel", "corrow", "tamsule"],
+      "skin": ["#C4977A", "#9A6A4E"],
+      "reach_bands": {"adult": [0, 0], "elder": [0, 0]},
+      "hair": [["hair_dark_brown", "hair_copper", 0.0, 0.3], ["hair_black", "hair_dark_brown", 0.3, 1.0]],
+      "cloth": {
+        "a": [["sand_cloth", "timber_weathered", 0.1, 0.6], ["coral_stone_weathered", "cold_blue_stone", 0.0, 0.5]],
+        "b": [["cold_blue_stone", "indigo_dye", 0.0, 0.4], ["bronze_patina", "timber_weathered", 0.2, 0.6], ["timber_weathered", "tortoiseshell", 0.0, 0.5]],
+        "c": [["brass", "bronze_patina", 0.0, 0.6], ["salt_glass", "faded_teal_cloth", 0.2, 0.7], ["roof_clay", "timber_weathered", 0.2, 0.6]]
+      }
+    },
+    "order": {
+      "island": "order",
+      "about": "The Order of the Still Water (bible section 4): tenders, a clerk and a Reed. Their dress is imported: white and marble, a pale-ochre or indigo sash; a temple tender may wear lacquer red.",
+      "accepts": ["order"],
+      "skin": ["#C4977A", "#7E5236"],
+      "reach_bands": {"adult": [0, 0], "elder": [0, 0]},
+      "hair": [["hair_black", "hair_dark_brown", 0.0, 0.6]],
+      "cloth": {
+        "a": [["gauze_white", "order_marble", 0.0, 1.0], ["gauze_white", "bone", 0.0, 0.4]],
+        "b": [["gauze_white", "order_marble", 0.0, 1.0], ["sand_cloth", "bone", 0.3, 0.8]],
+        "c": [["gold_leaf", "sand_cloth", 0.3, 0.7], ["indigo_dye", "cold_blue_stone", 0.0, 0.3]]
+      }
+    }
+  },
+  "roles": {
+    "_about": "Per role: the costume kits it prefers on a body (assignment scores them; any lay kit will do), its work clip (crowd_clips.py; none: it idles) and, for a few roles, its own cloth sets over the community's.",
+    "netmender": {"kits": ["worker_m", "elder_m", "worker_f", "elder_f"], "work": "mend"},
+    "mourner": {"kits": ["elder_f", "elder_m", "worker_f", "worker_m", "trader_m"], "work": "kneel_mourn",
+                "cloth": {"a": [["sand_cloth", "coral_stone_weathered", 0.0, 1.0], ["gauze_white", "sand_cloth", 0.2, 0.7]],
+                          "b": [["indigo_dye", "cold_blue_stone", 0.0, 0.6], ["cold_blue_stone", "timber_weathered", 0.0, 0.5]],
+                          "c": [["indigo_dye", "lacquer_black", 0.0, 0.5], ["gauze_white", "sand_cloth", 0.0, 0.5]]}},
+    "tender": {"kits": ["robe"], "work": "vigil",
+               "cloth": {"b": [["lacquer_red_deep", "roof_clay", 0.0, 0.3], ["gauze_white", "order_marble", 0.0, 1.0], ["sand_cloth", "bone", 0.2, 0.6]]}},
+    "clerk": {"kits": ["robe"], "work": ""},
+    "passenger": {"kits": ["robe", "trader_m", "market_f", "child_m", "child_f"], "work": ""},
+    "child": {"kits": ["child_m", "child_f"], "work": ""},
+    "vendor": {"kits": ["market_f", "worker_f", "trader_m"], "work": "fold"},
+    "fisher": {"kits": ["fisher_m", "worker_m", "diver"], "work": "haul"},
+    "boatman": {"kits": ["trader_m", "worker_m", "fisher_m"], "work": "haul"},
+    "trader": {"kits": ["trader_m", "market_f", "worker_f"], "work": "carry"},
+    "townsfolk": {"kits": ["worker_f", "market_f", "worker_m", "trader_m"], "work": "carry"},
+    "diver": {"kits": ["diver", "fisher_m", "wright"], "work": "vigil"},
+    "wright": {"kits": ["wright", "worker_m", "worker_f"], "work": "kneel_mourn"},
+    "sweeper": {"kits": ["worker_f", "worker_m", "elder_f"], "work": "sweep"},
+    "folder": {"kits": ["worker_f", "elder_f", "market_f", "child_f"], "work": "fold"},
+    "lacquerer": {"kits": ["worker_m", "trader_m"], "work": "mend"},
+    "cook": {"kits": ["worker_f", "market_f"], "work": "fold"},
+    "ferryman_mate": {"kits": ["worker_m", "fisher_m"], "work": "haul"},
+    "brand_girl": {"kits": ["child_f", "wright"], "work": ""}
+  },
+  "side_cloth": {
+    "_about": "Reefball sides' colours for the divers (act1_ch07 section 8: Oruvel's side is oil-black and brass; Sorrin's is its own sea-blue and clay), by community.",
+    "oruvel": {"a": [["faded_teal_cloth", "gauze_white", 0.0, 0.15]], "b": [["lacquer_black", "indigo_dye", 0.1, 0.4]], "c": [["brass", "gold_leaf", 0.0, 0.4]]},
+    "sorrin": {"a": [["sea_blue_cloth", "gauze_white", 0.05, 0.25]], "b": [["sand_cloth", "gauze_white", 0.0, 0.4]], "c": [["roof_clay", "lacquer_red_deep", 0.0, 0.4]]}
+  },
+  "hair_greys": [["hair_black", "gauze_white", 0.42, 0.72]],
+  "hair_shift": [0.0, 0.35],
+  "iris": [["#24170E", "#30200F"]],
+  "lip_scale": [0.86, 0.76, 0.88],
+  "body": {
+    "_about": "Body sliders (bb_params keys) per age band, sex and build: [lo, hi] drawn per body. Children lerp `young` -> `old` by the body's growth and add the jitter.",
+    "child": {
+      "young": {"height_m": 1.13, "heads_tall": 5.9, "shoulder_width_heads": 1.3, "chest_width_heads": 0.98, "chest_depth_heads": 0.78,
+                "waist_width_heads": 0.98, "hip_width_heads": 1.08, "crotch_height_heads": 2.72, "arm_span_ratio": 0.98, "hand_length_heads": 0.64,
+                "foot_length_ratio": 0.152, "neck_length_heads": 0.28, "neck_width_ratio": 0.46, "head_width_ratio": 0.79, "eye_scale": 1.24,
+                "ipd_m": 0.053, "muscle": 0.18, "mass": 0.42, "breast": 0.0},
+      "old": {"height_m": 1.52, "heads_tall": 6.8, "shoulder_width_heads": 1.48, "chest_width_heads": 1.1, "chest_depth_heads": 0.84,
+              "waist_width_heads": 1.0, "hip_width_heads": 1.26, "crotch_height_heads": 3.18, "arm_span_ratio": 1.0, "hand_length_heads": 0.74,
+              "foot_length_ratio": 0.152, "neck_length_heads": 0.36, "neck_width_ratio": 0.5, "head_width_ratio": 0.72, "eye_scale": 1.14,
+              "ipd_m": 0.059, "muscle": 0.3, "mass": 0.3, "breast": 0.12},
+      "jitter": {"height_m": 0.03, "shoulder_width_heads": 0.04, "waist_width_heads": 0.03, "hip_width_heads": 0.04, "mass": 0.06, "muscle": 0.05},
+      "femininity": {"male": [0.08, 0.2], "female": [0.55, 0.8]},
+      "breast_scale": {"male": 0.0, "female": 1.0}
+    },
+    "adult": {
+      "male": {
+        "lean": {"height_m": [1.68, 1.8], "heads_tall": [7.35, 7.6], "shoulder_width_heads": [1.74, 1.9], "chest_width_heads": [1.26, 1.36],
+                 "chest_depth_heads": [0.92, 0.99], "waist_width_heads": [1.06, 1.14], "hip_width_heads": [1.32, 1.4], "crotch_height_heads": [3.52, 3.64],
+                 "femininity": [0.0, 0.12], "muscle": [0.55, 0.8], "mass": [0.12, 0.22], "breast": [0.0, 0.0]},
+        "medium": {"height_m": [1.63, 1.74], "heads_tall": [7.15, 7.4], "shoulder_width_heads": [1.72, 1.84], "chest_width_heads": [1.3, 1.38],
+                   "chest_depth_heads": [0.98, 1.04], "waist_width_heads": [1.18, 1.28], "hip_width_heads": [1.38, 1.44], "crotch_height_heads": [3.42, 3.55],
+                   "femininity": [0.0, 0.15], "muscle": [0.4, 0.6], "mass": [0.3, 0.45], "breast": [0.0, 0.0]},
+        "heavy": {"height_m": [1.64, 1.76], "heads_tall": [7.0, 7.25], "shoulder_width_heads": [1.82, 1.94], "chest_width_heads": [1.4, 1.48],
+                  "chest_depth_heads": [1.08, 1.16], "waist_width_heads": [1.36, 1.46], "hip_width_heads": [1.46, 1.54], "crotch_height_heads": [3.35, 3.46],
+                  "femininity": [0.0, 0.1], "muscle": [0.45, 0.6], "mass": [0.62, 0.8], "breast": [0.0, 0.0]}
+      },
+      "female": {
+        "lean": {"height_m": [1.57, 1.68], "heads_tall": [7.1, 7.35], "shoulder_width_heads": [1.56, 1.66], "chest_width_heads": [1.14, 1.22],
+                 "chest_depth_heads": [0.86, 0.94], "waist_width_heads": [1.0, 1.08], "hip_width_heads": [1.38, 1.46], "crotch_height_heads": [3.45, 3.58],
+                 "femininity": [0.88, 1.0], "muscle": [0.35, 0.6], "mass": [0.2, 0.32], "breast": [0.3, 0.42]},
+        "medium": {"height_m": [1.53, 1.63], "heads_tall": [7.0, 7.2], "shoulder_width_heads": [1.58, 1.68], "chest_width_heads": [1.18, 1.28],
+                   "chest_depth_heads": [0.92, 1.0], "waist_width_heads": [1.1, 1.2], "hip_width_heads": [1.46, 1.54], "crotch_height_heads": [3.36, 3.48],
+                   "femininity": [0.88, 1.0], "muscle": [0.38, 0.5], "mass": [0.4, 0.52], "breast": [0.42, 0.55]},
+        "heavy": {"height_m": [1.5, 1.6], "heads_tall": [6.85, 7.05], "shoulder_width_heads": [1.62, 1.72], "chest_width_heads": [1.28, 1.36],
+                  "chest_depth_heads": [1.02, 1.1], "waist_width_heads": [1.26, 1.36], "hip_width_heads": [1.54, 1.64], "crotch_height_heads": [3.25, 3.38],
+                  "femininity": [0.9, 1.0], "muscle": [0.3, 0.45], "mass": [0.6, 0.76], "breast": [0.52, 0.65]}
+      },
+      "shared": {"arm_span_ratio": [0.99, 1.04], "hand_length_heads": [0.77, 0.82], "foot_length_ratio": [0.146, 0.154],
+                 "neck_length_heads": [0.34, 0.42], "neck_width_ratio": [0.5, 0.6], "head_width_ratio": [0.65, 0.71],
+                 "eye_scale": [1.03, 1.1], "ipd_m": [0.06, 0.065]}
+    },
+    "elder": {
+      "_about": "Elders: the adult table of the same sex and build, a little shorter (height_scale), the neck shorter, the back rounder (persona lean).",
+      "height_scale": [0.95, 0.98],
+      "neck_length_heads": [0.32, 0.37]
+    }
+  },
+  "face": {
+    "_about": "Face sliders (bb_params, relative to the MakeHuman donor) per age band; male/female rows override. Every crowd face is rejection-sampled until it stands at least face_min_distance (mean squared distance in units of each slider's adult range) from each Haluna villager's and from every other crowd face in its band.",
+    "child": {"eye_tilt_deg": [0.5, 2.0], "jaw_width": [0.76, 0.88], "cheekbone_height": [-0.002, 0.002], "cheekbone_width": [0.88, 0.98],
+              "chin_size": [0.66, 0.8], "nose_bridge_width": [0.66, 0.82], "nose_tip_projection": [0.64, 0.78], "lip_fullness": [0.78, 0.92],
+              "lip_lower_fullness": [0.74, 0.84], "mouth_corner_lift": [-0.0002, 0.0006], "brow_ridge": [0.1, 0.4], "canthus_offset_m": [0.0, 0.001],
+              "donor_mix_african": [0.25, 0.6], "donor_mix_asian": [0.25, 0.6], "donor_mix_caucasian": [0.05, 0.3]},
+    "adult": {"eye_tilt_deg": [-0.5, 2.5], "jaw_width": [0.92, 1.12], "cheekbone_height": [-0.004, 0.004], "cheekbone_width": [0.94, 1.1],
+              "chin_size": [0.9, 1.1], "nose_bridge_width": [0.92, 1.16], "nose_tip_projection": [0.88, 1.06], "lip_fullness": [0.64, 0.88],
+              "lip_lower_fullness": [0.64, 0.82], "mouth_corner_lift": [-0.0006, 0.0006], "brow_ridge": [0.95, 1.3], "canthus_offset_m": [0.0, 0.001],
+              "donor_mix_african": [0.25, 0.6], "donor_mix_asian": [0.25, 0.6], "donor_mix_caucasian": [0.05, 0.3],
+              "female": {"jaw_width": [0.9, 1.04], "brow_ridge": [0.8, 1.05], "lip_fullness": [0.7, 0.9]}},
+    "elder": {"mouth_corner_lift": [-0.0007, 0.0002], "lip_fullness": [0.6, 0.76]},
+    "fixed": {"lip_close": 0.6, "lip_seal": 0.96, "arm_abduction_deg": 47.0},
+    "face_min_distance": 0.28
+  },
+  "skin": {
+    "age": {"child": [0.0, 0.0], "adult": [0.05, 0.4], "elder": [0.65, 0.95]},
+    "stubble": {"male": [0.0, 0.7], "female": [0.0, 0.0]},
+    "stubble_share": 0.5,
+    "ink_opacity": [0.55, 0.72],
+    "elder_scalp_density": [0.6, 0.85]
+  },
+  "persona": {
+    "child": {"sway": [1.3, 1.7], "lean": [-0.5, 0.5], "arms_down": [39.0, 42.0]},
+    "adult": {"sway": [0.7, 1.3], "lean": [0.0, 2.5], "arms_down": [39.0, 43.0]},
+    "elder": {"sway": [0.45, 0.7], "lean": [3.5, 6.5], "arms_down": [37.0, 40.0]}
+  },
+  "hair": {
+    "_about": "Per villager_hair kind (short, cropped, bun, wrap): its params block, [lo, hi] drawn per body; [[lo, hi], [lo, hi]] is a pair of ranges (length_m: the card length's own lo and hi).",
+    "short": {"length_m": [[0.018, 0.028], [0.034, 0.05]], "scalp_cards": [[170, 200], [130, 155], [90, 105]], "hairline_cards": [36, 48], "rise": [0.5, 1.4]},
+    "cropped": {"length_m": [[0.006, 0.009], [0.011, 0.014]], "scalp_cards": [[400, 430], [300, 330], [190, 210]], "hairline_cards": [0, 0], "recede": [0.0, 0.03]},
+    "bun": {"scalp_cards": [[160, 180], [120, 140], [85, 95]], "hairline_cards": [60, 76], "bun_r_m": [0.03, 0.038], "bun_ribbons": [28, 36],
+            "bun_height_h": [0.52, 0.66], "bun_back_h": [0.47, 0.52]},
+    "wrap": {"hairline_cards": [60, 100], "hairline_m": [[0.012, 0.02], [0.022, 0.034]]}
+  },
+  "kits": {
+    "_about": "Costume kits (villager_costume pieces). A value [lo, hi] of numbers is drawn; a list of strings is a choice; `?` before a piece name makes it optional (half the bodies). Materials: cloth_a/b/c take the person's tints, leather is untinted.",
+    "worker_m": {"top": {"mat": "cloth_a", "hem": "hip", "sleeve": [0.0, 0.24], "neck_v_m": [0.03, 0.07], "armhole_drop_m": 0.115, "cover_margin_m": 0.02},
+                 "trousers": {"mat": "cloth_b", "hem": ["knee", "shin"], "loose_m": [0.01, 0.016]},
+                 "sash": {"mat": "cloth_c", "width_m": [0.06, 0.1], "turns": [1, 2]}, "?sandals": "leather"},
+    "fisher_m": {"top": {"mat": "cloth_a", "hem": "hip", "sleeve": 0.0, "neck_v_m": 0.06, "open_deg": [20.0, 30.0]},
+                 "trousers": {"mat": "cloth_b", "hem": "knee", "loose_m": [0.014, 0.018]},
+                 "sash": {"mat": "cloth_c", "width_m": [0.05, 0.07], "turns": 1},
+                 "headwrap": {"mat": "cloth_c", "band_only": true, "edge_lift": [0.0, 0.014], "band_m": [0.028, 0.034]}},
+    "wright": {"top": {"mat": "cloth_a", "hem": "hip", "sleeve": [0.36, 0.44], "neck_v_m": [0.03, 0.05]},
+               "trousers": {"mat": "cloth_b", "hem": "shin", "loose_m": [0.012, 0.016]},
+               "wraps": {"mat": "cloth_c", "span": [[0.03, 0.06], [0.38, 0.46]]},
+               "sash": {"mat": "cloth_c", "width_m": [0.05, 0.07], "turns": 1}},
+    "diver": {"top": {"mat": "cloth_a", "hem": "hip", "sleeve": 0.0, "neck_v_m": [0.03, 0.05], "armhole_drop_m": 0.115, "cover_margin_m": 0.02},
+              "trousers": {"mat": "cloth_b", "hem": "knee", "loose_m": [0.008, 0.011]},
+              "sash": {"mat": "cloth_c", "width_m": [0.06, 0.08], "turns": 1}},
+    "trader_m": {"top": {"mat": "cloth_a", "hem": "hip", "sleeve": [0.45, 0.6], "neck_v_m": [0.04, 0.07]},
+                 "trousers": {"mat": "cloth_b", "hem": "calf", "loose_m": [0.014, 0.018]},
+                 "sash": {"mat": "cloth_c", "width_m": [0.1, 0.12], "turns": 2}, "sandals": "leather"},
+    "robe": {"top": {"mat": "cloth_a", "hem": "hip", "sleeve": [0.88, 0.92], "neck_v_m": [0.03, 0.05]},
+             "skirt": {"mat": "cloth_b", "hem": ["shin", "ankle"], "folds": [7, 9], "fold_amp": [0.005, 0.007], "flare": [0.11, 0.14], "keep_above_knee_m": 1.0},
+             "sash": {"mat": "cloth_c", "width_m": [0.045, 0.06], "turns": 1}, "sandals": "leather"},
+    "market_f": {"top": {"mat": "cloth_c", "hem": "hip", "sleeve": [0.14, 0.3], "neck_v_m": [0.05, 0.07]},
+                 "skirt": {"mat": "cloth_a", "hem": "calf", "folds": [8, 10], "fold_amp": [0.007, 0.009], "flare": [0.14, 0.17], "keep_above_knee_m": 1.0},
+                 "apron": {"mat": "cloth_b", "hem": "knee", "half_deg": [46.0, 58.0]},
+                 "sash": {"mat": "cloth_c", "width_m": [0.07, 0.09], "turns": 2},
+                 "headwrap": {"mat": "cloth_b", "edge_lift": [0.0, 0.01], "puff_m": [0.009, 0.012], "knot_m": [0.03, 0.034]}, "sandals": "leather"},
+    "worker_f": {"top": {"mat": "cloth_c", "hem": "hip", "sleeve": [0.2, 0.45], "neck_v_m": [0.05, 0.07]},
+                 "skirt": {"mat": "cloth_b", "hem": ["calf", "ankle"], "folds": [8, 10], "fold_amp": [0.007, 0.009], "flare": [0.13, 0.16], "keep_above_knee_m": 1.0},
+                 "?apron": {"mat": "cloth_a", "hem": "knee", "half_deg": [46.0, 56.0]},
+                 "sash": {"mat": "cloth_b", "width_m": [0.07, 0.09], "turns": 2}, "sandals": "leather"},
+    "elder_f": {"top": {"mat": "cloth_a", "hem": "hip", "sleeve": [0.4, 0.46], "neck_v_m": [0.04, 0.06]},
+                "skirt": {"mat": "cloth_b", "hem": "ankle", "folds": [7, 9], "fold_amp": [0.006, 0.008], "flare": [0.12, 0.14], "keep_above_knee_m": 1.0},
+                "sash": {"mat": "cloth_c", "width_m": [0.07, 0.09], "turns": 2},
+                "headwrap": {"mat": "cloth_a", "edge_lift": [0.01, 0.02], "puff_m": [0.008, 0.01], "knot_m": [0.028, 0.032]}, "sandals": "leather"},
+    "elder_m": {"top": {"mat": "cloth_c", "hem": "hip", "sleeve": [0.2, 0.45], "neck_v_m": [0.05, 0.07]},
+                "trousers": {"mat": "cloth_b", "hem": "shin", "loose_m": [0.012, 0.016]},
+                "sash": {"mat": "cloth_a", "width_m": [0.09, 0.11], "turns": 2}, "sandals": "leather"},
+    "child_m": {"top": {"mat": "cloth_a", "hem": "hip", "sleeve": [0.1, 0.2], "neck_v_m": [0.025, 0.035]},
+                "trousers": {"mat": "cloth_b", "hem": "knee", "loose_m": [0.009, 0.012]},
+                "sash": {"mat": "cloth_c", "width_m": [0.05, 0.06], "turns": 1}},
+    "child_f": {"top": {"mat": "cloth_a", "hem": "hip", "sleeve": [0.14, 0.24], "neck_v_m": [0.025, 0.04]},
+                "skirt": {"mat": "cloth_b", "hem": "calf", "folds": [7, 9], "fold_amp": [0.006, 0.008], "flare": [0.13, 0.16], "keep_above_knee_m": 1.0},
+                "sash": {"mat": "cloth_c", "width_m": [0.05, 0.06], "turns": 1}, "?sandals": "leather"}
+  },
+  "assign": {
+    "_about": "Person -> body scores (gen_crowd.assign): a body must match the person's age band and sex, be in the community's `accepts` and not be used in the zone yet; robe bodies only wear Order roles and Order roles only robes. Among those: the build, the body's own community, a preferred kit; each earlier use costs `per_use`. Ties break by a seeded hash.",
+    "build": 10.0, "home": 4.0, "accepted_rank": 0.5, "kit": 3.0, "per_use": 2.5,
+    "tint_min_distance": 40.0,
+    "tint_tries": 24
+  },
+  "clip_libraries": {
+    "_about": "M3-CRE-662: the crowd bodies share the villager rig (one skeleton, the same bone names), so each group shares one AnimationLibrary (build_crowd.py build_library: assets/crowd/clips/crowd_<library>_clips.tres, built in `ref`'s job on its skeleton with the members' mean _persona and every member's work clips). The import (game/data/import/crowd.json `libraries`, the same map) gives every member its group's library and scales the hips track to its own height. Groups by measurement (tools/tests/test_npc.py SharedClips samples it): each member's own clips against the reference's played on it, world positions of the hands, feet, toes, knees and head over every clip. Within these groups the skeleton's part is at most 1.0 cm (feet height 0.4 cm); one library for all would be 4.7 cm (the small children) and flatten the elders' lean; the children split at the small pair (4.6 cm from the tall ones' reference).",
+    "adult": {"ref": "crowd_man_medium_b", "bodies": ["crowd_man_heavy", "crowd_man_heavy_b", "crowd_man_lean_a", "crowd_man_lean_b", "crowd_man_medium_a", "crowd_man_medium_b", "crowd_order_man", "crowd_order_woman", "crowd_woman_heavy", "crowd_woman_lean_a", "crowd_woman_lean_b", "crowd_woman_medium", "crowd_woman_medium_b"]},
+    "elder": {"ref": "crowd_elder_man_a", "bodies": ["crowd_elder_man_a", "crowd_elder_man_b", "crowd_elder_woman_a", "crowd_elder_woman_b"]},
+    "child": {"ref": "crowd_girl_teen", "bodies": ["crowd_boy_tall", "crowd_girl_tall", "crowd_girl_teen"]},
+    "child_small": {"ref": "crowd_boy_small", "bodies": ["crowd_boy_small", "crowd_girl_small"]}
+  },
+  "skin_clearance": {
+    "_about": "M3-CRE-662: cloth never reads as bare skin. skin_delta_e (tools/validate_npc.py; gen_crowd.py draws with it and the validator checks it): CIE76 ΔE on CIELAB (D65) split into its lightness, chroma and hue parts, sqrt((k_l dL)^2 + dC^2 + (k_h dH)^2); k_l = k_h = 1 is CIE76 itself. k_l 0.3 and k_h 0.5 weigh the chroma step most: a warm low-chroma cloth (cream, sand, peach) reads as skin over a wide band of lightness and hue (a cream or sand top on mid-brown skin did, in M3-CRE-659's crowd_lineup_a, and a lighter cream on the same body still did in M3-CRE-662's first pass at k 0.75 / floor 24), while a grey (no chroma), white or a strong colour clears. Every cloth tint (a person's and a body's default _tints) must stand at least `floor` from the body's skin. A draw that misses is never kept: draw_cloth tries `tries` draws from the slot's own mixes, then as many from each of the community's other cloth sets (a, b, c), then each of the slot's swatches mixed toward `widen.dark` or `widen.light` (away from the skin's lightness first) by each of `widen.steps`, and stops with an error naming the person or body if none clears.",
+    "k_l": 0.3,
+    "k_h": 0.5,
+    "floor": 18.5,
+    "tries": 12,
+    "widen": {"dark": "lacquer_black", "light": "gauze_white", "steps": [0.15, 0.3, 0.45, 0.6]},
+    "calibration": {
+      "_about": "How the weights and floor were picked; tools/tests/test_npc.py SkinClearance re-measures every entry. `pass`: palette swatches or hex that must clear the floor on every skin of the crowd's range (each community's two skin endpoints and their midpoint). `pass_pairs` / `fail_pairs`: [cloth, skin] that must clear / miss it. The fail pairs are what the renders showed reading as skin: the review's two pale tops in M3-CRE-659's crowd_lineup_a (man_heavy_b's cream #D1C0A1 on #AC7A5D, girl_tall's sand #BFAA86 on #A5765A) and the lighter cream #D7C9AF the first pass of this task gave man_heavy_b (it still read as skin); then peach and sand of the skin's hue and the skin-brown swatches at skin lightness. Measured at k_l 0.3, k_h 0.5: lowest pass order_marble on #C4977A 20.6 (salt_glass 21.3, faded_teal_cloth 21.5, gauze_white 22.5, the greys 25.4-26.7); highest fail the lighter cream on #AC7A5D 16.7 (the old cream 13.9, timber_weathered 13.2, laterite 13.0, girl_tall's sand 9.5, sand_cloth on #C4977A 6.7, tortoiseshell 4.5, peach 3.2-3.5, sand #C8A27E 2.5). The floor 18.5 sits mid-band (16.7-20.6), about 2 from each side; the widest band a grid over k_l in [0.2, 1] and k_h in [0.25, 2.5] finds. Plain CIE76 has none (thatch 13.5 below laterite 14.3; that cream on #AC7A5D is 31.3, far above the greys' 26). Consequence: creams and beiges fail near any crowd skin (cream #D1C0A1 on the dark #87593D is 16.3): they are drawn away to whites, greys and colours.",
+      "pass": ["#5A5A5A", "#8A8A8A", "#B0B0B0", "gauze_white", "order_marble", "lacquer_black", "cold_blue_stone", "indigo_dye", "sea_blue_cloth", "faded_teal_cloth", "palm_green", "lacquer_red", "salt_glass"],
+      "pass_pairs": [["bone", "#8A5A3E"], ["gold_leaf", "#B9876A"]],
+      "fail_pairs": [["#D7C9AF", "#AC7A5D"], ["#D1C0A1", "#AC7A5D"], ["#BFAA86", "#A5765A"], ["#E2B496", "#C4977A"], ["#D9A585", "#B9876A"], ["#C8A27E", "#C4977A"], ["sand_cloth", "#C4977A"], ["tortoiseshell", "#74472E"], ["laterite", "#A06A4C"], ["timber_weathered", "#9A6A4E"]]
+    }
+  }
+}
