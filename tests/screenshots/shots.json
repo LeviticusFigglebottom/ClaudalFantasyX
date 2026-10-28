@@ -21,6 +21,22 @@
       "threshold_rmse": 0.004
     },
     {
+      "id": "slice_end_card_voice",
+      "pending_baseline": true,
+      "scene": "res://game/flow/end_card.tscn",
+      "resolution": [1920, 1080],
+      "settle_frames": 180,
+      "threshold_rmse": 0.004
+    },
+    {
+      "id": "slice_end_card",
+      "pending_baseline": true,
+      "scene": "res://game/flow/end_card.tscn",
+      "resolution": [1920, 1080],
+      "settle_frames": 1000,
+      "threshold_rmse": 0.004
+    },
+    {
       "id": "lighting_probe",
       "scene": "res://tests/screenshots/scenes/lighting_probe.tscn",
       "camera": "ShotCamera"
