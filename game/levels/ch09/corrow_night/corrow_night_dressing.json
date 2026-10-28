@@ -11,18 +11,7 @@
  "time_of_day_h": 22.0,
  "greybox": {
   "hide_all": true,
-  "keep": [
-   "Landing",
-   "LandingEnd",
-   "LandingW",
-   "LandingE",
-   "Rocks",
-   "RocksDown",
-   "LowTownLake",
-   "MoleBridge",
-   "IskarraWater",
-   "VigilBurner"
-  ]
+  "keep": []
  },
  "fire_light_color": "#E0702E",
  "fire_lights": [
@@ -4753,6 +4742,632 @@
    "y": 0.0,
    "yaw_deg": -90.0,
    "block": "IskarraPlaza"
+  },
+  {
+   "piece": "timber_deck_2m",
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "at": [
+    -29.164,
+    29.36
+   ],
+   "y": 0.6,
+   "yaw_deg": 5.73,
+   "tilt_deg": [
+    -0.0,
+    0.0
+   ],
+   "scale": 1.0,
+   "block": "Landing"
+  },
+  {
+   "piece": "timber_deck_2m",
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "at": [
+    -27.174,
+    29.16
+   ],
+   "y": 0.6,
+   "yaw_deg": 5.73,
+   "tilt_deg": [
+    -0.0,
+    0.0
+   ],
+   "scale": 1.0,
+   "block": "Landing"
+  },
+  {
+   "piece": "timber_deck_2m",
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "at": [
+    -25.184,
+    28.96
+   ],
+   "y": 0.6,
+   "yaw_deg": 5.73,
+   "tilt_deg": [
+    -0.0,
+    0.0
+   ],
+   "scale": 1.0,
+   "block": "Landing"
+  },
+  {
+   "piece": "timber_deck_2m",
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "at": [
+    -29.005,
+    30.952
+   ],
+   "y": 0.6,
+   "yaw_deg": 5.73,
+   "tilt_deg": [
+    -0.0,
+    0.0
+   ],
+   "scale": 1.0,
+   "block": "Landing"
+  },
+  {
+   "piece": "timber_deck_2m",
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "at": [
+    -27.015,
+    30.752
+   ],
+   "y": 0.6,
+   "yaw_deg": 5.73,
+   "tilt_deg": [
+    -0.0,
+    0.0
+   ],
+   "scale": 1.0,
+   "block": "Landing"
+  },
+  {
+   "piece": "timber_deck_2m",
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "at": [
+    -25.025,
+    30.552
+   ],
+   "y": 0.6,
+   "yaw_deg": 5.73,
+   "tilt_deg": [
+    -0.0,
+    0.0
+   ],
+   "scale": 1.0,
+   "block": "Landing"
+  },
+  {
+   "piece": "timber_deck_2m",
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "at": [
+    -28.845,
+    32.544
+   ],
+   "y": 0.6,
+   "yaw_deg": 5.73,
+   "tilt_deg": [
+    -0.0,
+    0.0
+   ],
+   "scale": 1.0,
+   "block": "Landing"
+  },
+  {
+   "piece": "timber_deck_2m",
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "at": [
+    -26.855,
+    32.344
+   ],
+   "y": 0.6,
+   "yaw_deg": 5.73,
+   "tilt_deg": [
+    -0.0,
+    0.0
+   ],
+   "scale": 1.0,
+   "block": "Landing"
+  },
+  {
+   "piece": "timber_deck_2m",
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "at": [
+    -24.865,
+    32.144
+   ],
+   "y": 0.6,
+   "yaw_deg": 5.73,
+   "tilt_deg": [
+    -0.0,
+    0.0
+   ],
+   "scale": 1.0,
+   "block": "Landing"
+  },
+  {
+   "piece": "timber_deck_2m",
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "at": [
+    -28.685,
+    34.136
+   ],
+   "y": 0.6,
+   "yaw_deg": 5.73,
+   "tilt_deg": [
+    -0.0,
+    0.0
+   ],
+   "scale": 1.0,
+   "block": "Landing"
+  },
+  {
+   "piece": "timber_deck_2m",
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "at": [
+    -26.695,
+    33.936
+   ],
+   "y": 0.6,
+   "yaw_deg": 5.73,
+   "tilt_deg": [
+    -0.0,
+    0.0
+   ],
+   "scale": 1.0,
+   "block": "Landing"
+  },
+  {
+   "piece": "timber_deck_2m",
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "at": [
+    -24.705,
+    33.736
+   ],
+   "y": 0.6,
+   "yaw_deg": 5.73,
+   "tilt_deg": [
+    -0.0,
+    0.0
+   ],
+   "scale": 1.0,
+   "block": "Landing"
+  },
+  {
+   "piece": "timber_deck_2m",
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "at": [
+    -28.526,
+    35.728
+   ],
+   "y": 0.6,
+   "yaw_deg": 5.73,
+   "tilt_deg": [
+    -0.0,
+    0.0
+   ],
+   "scale": 1.0,
+   "block": "Landing"
+  },
+  {
+   "piece": "timber_deck_2m",
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "at": [
+    -26.536,
+    35.528
+   ],
+   "y": 0.6,
+   "yaw_deg": 5.73,
+   "tilt_deg": [
+    -0.0,
+    0.0
+   ],
+   "scale": 1.0,
+   "block": "Landing"
+  },
+  {
+   "piece": "timber_deck_2m",
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "at": [
+    -24.546,
+    35.328
+   ],
+   "y": 0.6,
+   "yaw_deg": 5.73,
+   "tilt_deg": [
+    -0.0,
+    0.0
+   ],
+   "scale": 1.0,
+   "block": "Landing"
+  },
+  {
+   "piece": "timber_deck_2m",
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "at": [
+    0.826,
+    29.018
+   ],
+   "y": 0.643,
+   "yaw_deg": 88.75,
+   "tilt_deg": [
+    -2.892,
+    0.0
+   ],
+   "scale": 1.0
+  },
+  {
+   "piece": "timber_deck_2m",
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "at": [
+    0.87,
+    27.019
+   ],
+   "y": 0.643,
+   "yaw_deg": 88.75,
+   "tilt_deg": [
+    -2.892,
+    0.0
+   ],
+   "scale": 1.0
+  },
+  {
+   "piece": "timber_deck_2m",
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "at": [
+    2.523,
+    29.055
+   ],
+   "y": 0.729,
+   "yaw_deg": 88.75,
+   "tilt_deg": [
+    -2.892,
+    0.0
+   ],
+   "scale": 1.0
+  },
+  {
+   "piece": "timber_deck_2m",
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "at": [
+    2.566,
+    27.056
+   ],
+   "y": 0.729,
+   "yaw_deg": 88.75,
+   "tilt_deg": [
+    -2.892,
+    0.0
+   ],
+   "scale": 1.0
+  },
+  {
+   "piece": "timber_deck_2m",
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "at": [
+    4.219,
+    29.092
+   ],
+   "y": 0.814,
+   "yaw_deg": 88.75,
+   "tilt_deg": [
+    -2.892,
+    0.0
+   ],
+   "scale": 1.0
+  },
+  {
+   "piece": "timber_deck_2m",
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "at": [
+    4.263,
+    27.093
+   ],
+   "y": 0.814,
+   "yaw_deg": 88.75,
+   "tilt_deg": [
+    -2.892,
+    0.0
+   ],
+   "scale": 1.0
+  },
+  {
+   "piece": "timber_deck_2m",
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "at": [
+    5.915,
+    29.129
+   ],
+   "y": 0.9,
+   "yaw_deg": 88.75,
+   "tilt_deg": [
+    -2.892,
+    0.0
+   ],
+   "scale": 1.0
+  },
+  {
+   "piece": "timber_deck_2m",
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "at": [
+    5.959,
+    27.13
+   ],
+   "y": 0.9,
+   "yaw_deg": 88.75,
+   "tilt_deg": [
+    -2.892,
+    0.0
+   ],
+   "scale": 1.0
+  },
+  {
+   "piece": "timber_deck_2m",
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "at": [
+    7.611,
+    29.166
+   ],
+   "y": 0.986,
+   "yaw_deg": 88.75,
+   "tilt_deg": [
+    -2.892,
+    0.0
+   ],
+   "scale": 1.0
+  },
+  {
+   "piece": "timber_deck_2m",
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "at": [
+    7.655,
+    27.167
+   ],
+   "y": 0.986,
+   "yaw_deg": 88.75,
+   "tilt_deg": [
+    -2.892,
+    0.0
+   ],
+   "scale": 1.0
+  },
+  {
+   "piece": "timber_deck_2m",
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "at": [
+    9.308,
+    29.203
+   ],
+   "y": 1.071,
+   "yaw_deg": 88.75,
+   "tilt_deg": [
+    -2.892,
+    0.0
+   ],
+   "scale": 1.0
+  },
+  {
+   "piece": "timber_deck_2m",
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "at": [
+    9.351,
+    27.204
+   ],
+   "y": 1.071,
+   "yaw_deg": 88.75,
+   "tilt_deg": [
+    -2.892,
+    0.0
+   ],
+   "scale": 1.0
+  },
+  {
+   "piece": "timber_deck_2m",
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "at": [
+    11.004,
+    29.24
+   ],
+   "y": 1.157,
+   "yaw_deg": 88.75,
+   "tilt_deg": [
+    -2.892,
+    0.0
+   ],
+   "scale": 1.0
+  },
+  {
+   "piece": "timber_deck_2m",
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "at": [
+    11.048,
+    27.241
+   ],
+   "y": 1.157,
+   "yaw_deg": 88.75,
+   "tilt_deg": [
+    -2.892,
+    0.0
+   ],
+   "scale": 1.0
+  },
+  {
+   "piece": "mooring_post",
+   "kit_dir": "res://assets/environments/kits/tamsule_bell/",
+   "at": [
+    -0.044,
+    30.0
+   ],
+   "y": 0.1,
+   "yaw_deg": 0.0
+  },
+  {
+   "piece": "mooring_post",
+   "kit_dir": "res://assets/environments/kits/tamsule_bell/",
+   "at": [
+    0.044,
+    26.0
+   ],
+   "y": 0.1,
+   "yaw_deg": 0.0
+  },
+  {
+   "piece": "mooring_post",
+   "kit_dir": "res://assets/environments/kits/tamsule_bell/",
+   "at": [
+    2.956,
+    30.065
+   ],
+   "y": 0.252,
+   "yaw_deg": 0.0
+  },
+  {
+   "piece": "mooring_post",
+   "kit_dir": "res://assets/environments/kits/tamsule_bell/",
+   "at": [
+    3.043,
+    26.066
+   ],
+   "y": 0.252,
+   "yaw_deg": 0.0
+  },
+  {
+   "piece": "mooring_post",
+   "kit_dir": "res://assets/environments/kits/tamsule_bell/",
+   "at": [
+    5.955,
+    30.13
+   ],
+   "y": 0.403,
+   "yaw_deg": 0.0
+  },
+  {
+   "piece": "mooring_post",
+   "kit_dir": "res://assets/environments/kits/tamsule_bell/",
+   "at": [
+    6.042,
+    26.131
+   ],
+   "y": 0.403,
+   "yaw_deg": 0.0
+  },
+  {
+   "piece": "mooring_post",
+   "kit_dir": "res://assets/environments/kits/tamsule_bell/",
+   "at": [
+    8.954,
+    30.196
+   ],
+   "y": 0.555,
+   "yaw_deg": 0.0
+  },
+  {
+   "piece": "mooring_post",
+   "kit_dir": "res://assets/environments/kits/tamsule_bell/",
+   "at": [
+    9.041,
+    26.197
+   ],
+   "y": 0.555,
+   "yaw_deg": 0.0
+  },
+  {
+   "piece": "coral_boulder_c",
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "at": [
+    5.6,
+    20.056
+   ],
+   "y": -0.12,
+   "scale": 2.1,
+   "yaw_deg": 88.85,
+   "block": "Rocks"
+  },
+  {
+   "piece": "coral_boulder_b",
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "at": [
+    8.751,
+    22.52
+   ],
+   "y": 0.4,
+   "scale": 1.5,
+   "yaw_deg": 40.0,
+   "block": "Rocks"
+  },
+  {
+   "piece": "coral_boulder_b",
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "at": [
+    1.314,
+    22.408
+   ],
+   "y": 2.89,
+   "scale": 0.8,
+   "yaw_deg": 0.0,
+   "block": "Rocks"
+  },
+  {
+   "piece": "coral_boulder_b",
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "at": [
+    0.241,
+    22.411
+   ],
+   "y": 2.21,
+   "scale": 0.8,
+   "yaw_deg": 67.0,
+   "block": "Rocks"
+  },
+  {
+   "piece": "coral_boulder_b",
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "at": [
+    -0.833,
+    22.414
+   ],
+   "y": 1.53,
+   "scale": 0.8,
+   "yaw_deg": 134.0,
+   "block": "Rocks"
+  },
+  {
+   "piece": "coral_boulder_b",
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "at": [
+    -1.906,
+    22.417
+   ],
+   "y": 0.85,
+   "scale": 0.8,
+   "yaw_deg": 201.0,
+   "block": "Rocks"
+  },
+  {
+   "piece": "coral_boulder_b",
+   "kit_dir": "res://assets/environments/kits/haluna/",
+   "at": [
+    -2.979,
+    22.42
+   ],
+   "y": 0.17,
+   "scale": 0.8,
+   "yaw_deg": 268.0,
+   "block": "Rocks"
+  },
+  {
+   "piece": "tier_brazier",
+   "kit_dir": "res://assets/environments/kits/coilspire/",
+   "at": [
+    2001.2,
+    -4.6
+   ],
+   "y": 0.8,
+   "scale": 0.5,
+   "yaw_deg": 0.0,
+   "block": "VigilBurner"
   }
  ]
 }

@@ -7,6 +7,7 @@
 [ext_resource type="Script" path="res://game/world/water/wave_set.gd" id="5_set"]
 [ext_resource type="Script" path="res://game/world/water/wave_component.gd" id="6_comp"]
 [ext_resource type="Material" path="res://game/levels/ch08/corrow/corrow_water_material.tres" id="7_water_mat"]
+[ext_resource type="Material" path="res://game/levels/ch09/corrow_night/corrow_lake_material.tres" id="8_lake_mat"]
 [ext_resource type="Script" path="res://game/levels/act1/zone_cast.gd" id="90_cast"]
 
 [sub_resource type="Resource" id="Swell0"]
@@ -46,6 +47,32 @@ script = ExtResource("5_set")
 components = Array[ExtResource("6_comp")]([SubResource("Swell0"), SubResource("Swell1"), SubResource("Swell2"), SubResource("Swell3")])
 amplitude_scale = 1.0
 
+[sub_resource type="Resource" id="LakeRipple0"]
+script = ExtResource("6_comp")
+direction_deg = 300.0
+wavelength_m = 6.0
+amplitude_m = 0.015
+steepness = 0.3
+phase_rad = 0.0
+
+[sub_resource type="Resource" id="LakeRipple1"]
+script = ExtResource("6_comp")
+direction_deg = 20.0
+wavelength_m = 2.7
+amplitude_m = 0.006
+steepness = 0.3
+phase_rad = 2.1
+
+[sub_resource type="Resource" id="LakeWaves"]
+script = ExtResource("5_set")
+components = Array[ExtResource("6_comp")]([SubResource("LakeRipple0"), SubResource("LakeRipple1")])
+amplitude_scale = 1.0
+
+[sub_resource type="PlaneMesh" id="LakePlane"]
+size = Vector2(120, 56)
+subdivide_width = 60
+subdivide_depth = 28
+
 [node name="CorrowNight" type="Node3D"]
 script = ExtResource("1_zone")
 location_id = &"ch09/corrow_night"
@@ -56,6 +83,13 @@ script = ExtResource("4_water")
 publishes_water_level = true
 wave_set = SubResource("StormWaves")
 material = ExtResource("7_water_mat")
+
+[node name="Lake" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -49.016, 3.5, -24.317)
+script = ExtResource("4_water")
+wave_set = SubResource("LakeWaves")
+material = ExtResource("8_lake_mat")
+surface_mesh = SubResource("LakePlane")
 
 [node name="Tide" type="Node" parent="." node_paths=PackedStringArray("water")]
 script = ExtResource("3_tide")
