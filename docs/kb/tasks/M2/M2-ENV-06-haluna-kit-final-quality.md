@@ -95,4 +95,9 @@ materials, kit geometry) and `game/shaders/environment/**`. Set dressing in the 
   m2-slice's baseline, under the limit; viewed (lamp-lit houses, stars, a glowing sea, the new tide walls and
   windbreaks dark against the sky). Left as is. All criteria met; to review.
 
+## Notes (2026-10-28, env-art: finished; h10 is on the integration branch via big13)
+- `haluna_h10_dock_night` re-captured on this tree and viewed. The dock at night reads: the warm lamp pools under
+  the eaves, the lamps' flames now the kit's `lamp_flame` (M3-ENV-746), and the H10 reframe on the dock. It drifts
+  from its baseline on purpose (rmse 0.0224); re-approve. Nothing else open.
+
 ## Review log

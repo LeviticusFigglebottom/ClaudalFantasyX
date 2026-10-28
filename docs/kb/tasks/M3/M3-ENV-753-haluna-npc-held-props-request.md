@@ -2,8 +2,8 @@
 id: M3-ENV-753
 title: "Haluna: the NPCs' held props as kit pieces (Reed's broom, Neme's bag, Osu's bowl) (request to slice-polish)"
 role: cinematics
-status: todo
-owner_session: ""
+status: review
+owner_session: "session_01YbaV2c8yquRHqj6afQYg89 (env-art; the Lead assigned it to env-art 10-28)"
 depends_on: []
 milestone: M3
 request-from: environment
@@ -24,13 +24,24 @@ The rest of the 11 are the NPC stand-in bodies (`StandIn`, `Facing`). Those are 
 not this request.
 
 ## Acceptance criteria
-- [ ] In `haluna.tscn`, the three nodes instance the kit pieces, keeping their transforms. The `Mesh_broom`,
+- [x] In `haluna.tscn`, the three nodes instance the kit pieces, keeping their transforms. The `Mesh_broom`,
       `Mesh_bag` and `Mesh_bowl` sub-resources and their materials go.
 - [ ] `tools/placeholder_audit.py` no longer counts them.
-- [ ] Tell env-art, who views the shots that show them (`npc_haluna_chapel`, `slice_neme_table`).
+- [x] Tell env-art, who views the shots that show them (`npc_haluna_chapel`, `slice_neme_table`).
 
 ## Notes
 - 2026-10-28 (env-art): pieces built and viewed in a scratch preview (M3-ENV-746): a broom, a bag and a bowl that
   read as themselves; PROVENANCE rows and the kit manifest updated.
+
+- 2026-10-28 (env-art, by the Lead's assignment): done in `haluna.tscn`.
+  - Broom, Bag and Bowl instance `hand_broom`, `woven_bag` and `clay_bowl`, keeping their transforms.
+  - Osu's `Shell` (a SphereMesh) is now `wake_shell_loose`, a new 0.14 m wake-shell lying face up. Osu is washing the
+    wake-shells. It rests on the hollow bowl's floor.
+  - The four primitives' meshes and materials are gone.
+  - Gates: Godot `--filter=haluna` 65 run, 0 failed.
+  - Viewed with the walk rig. Neme's woven bag reads beside her. The broom and the bowl are not in frame where the
+    villager layer stands their NPCs (at least the broom is hidden with Reed's stand-in body); either way they are no
+    longer primitives.
+- Reviewer: slice-polish (the zone's owner).
 
 ## Review log

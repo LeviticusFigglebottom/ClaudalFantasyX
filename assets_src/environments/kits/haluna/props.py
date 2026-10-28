@@ -21,6 +21,8 @@
                       along +Y (the reed's broom; drops in for the NPC's CylinderMesh)
   woven_bag           a 0.45 x 0.40 x 0.28 m woven carrying bag with a rope handle, origin at its centre (Neme's)
   clay_bowl           a 0.44 m earthenware serving bowl, 0.12 m tall, origin at its centre (Osu's)
+  wake_shell_loose    one wake-shell off its stand (walls.py's shell), 0.14 m, lying face up, origin at its centre
+                      (the one Osu washes in the bowl)
 
 Origins on the ground plane, +Y up; the front of a piece faces +Z. Leaf-boats are the shrine kit's
 (M2-ENV-03), not duplicated here.
@@ -63,6 +65,7 @@ TRI_BUDGET = {
     "hand_broom": (1500, 120),
     "woven_bag": (1500, 120),
     "clay_bowl": (900, 100),
+    "wake_shell_loose": (600, 80),
 }
 M_IRON = "kit_rebar"  # the kit's rusted iron
 M_LEATHER = "kit_dried_fish"  # tannin-dark: the bellows' goatskin
@@ -556,7 +559,24 @@ def build_clay_bowl(seed: int = 164) -> list[kc.MeshBuilder]:
     return out
 
 
+WAKE_SHELL_LOOSE_M = 0.14
+
+
+def build_wake_shell_loose(seed: int = 165) -> list[kc.MeshBuilder]:
+    import walls  # noqa: PLC0415
+
+    out = []
+    for lod in (False, True):
+        rng = kc.rng_for("wake_shell_loose", seed)
+        mb = kc.MeshBuilder("wake_shell_loose" + ("-lod1" if lod else ""))
+        walls._shell(mb, (0.0, 0.0, 0.0), (0.0, 1.0, 0.0), (0.0, 0.0, 1.0), WAKE_SHELL_LOOSE_M, 0 if lod else 5, 0.0,
+                     rng, mb.material("kit_wake_shell"))
+        out.append(mb)
+    return out
+
+
 TARGETS = {
+    "wake_shell_loose": build_wake_shell_loose,
     "hand_broom": build_hand_broom,
     "woven_bag": build_woven_bag,
     "clay_bowl": build_clay_bowl,

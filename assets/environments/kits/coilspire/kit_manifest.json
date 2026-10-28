@@ -7,9 +7,9 @@
         20000,
         2000
       ],
-      "bytes": 594628,
+      "bytes": 771088,
       "lods": {
-        "arena_headland_ground": 13216,
+        "arena_headland_ground": 19488,
         "arena_headland_ground-lod1": 1536
       }
     },

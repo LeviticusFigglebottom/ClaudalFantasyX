@@ -403,9 +403,9 @@
         12000,
         1000
       ],
-      "bytes": 123816,
+      "bytes": 166756,
       "lods": {
-        "trader_boat": 2781,
+        "trader_boat": 3789,
         "trader_boat-lod1": 147
       }
     },

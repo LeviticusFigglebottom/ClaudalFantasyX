@@ -97,6 +97,7 @@ def _stake_and_guy(mb: kc.MeshBuilder, top, ground, rng, noise) -> None:
 # Tent
 # ---------------------------------------------------------------------------------------------
 TENT_W, TENT_L, TENT_RIDGE = 3.0, 4.0, 2.1
+TENT_SAG_M = 0.26  # the canvas between the frames (M3-ENV-1316, GPU QA row 5: the slopes read as one flat box)
 
 
 def tent(name: str, seed: int, *, burned: bool, lod: bool) -> kc.MeshBuilder:
@@ -137,7 +138,7 @@ def tent(name: str, seed: int, *, burned: bool, lod: bool) -> kc.MeshBuilder:
 
     def canvas_pt(s: float, z: float, g: float, lift: float = 0.0) -> np.ndarray:
         ry = float(ridge_y(z))
-        sag = 0.14 * math.sin(math.pi * (z - zr) / (zf - zr)) if zr <= z <= zf else 0.0
+        sag = TENT_SAG_M * math.sin(math.pi * (z - zr) / (zf - zr)) if zr <= z <= zf else 0.0
         x = s * (0.03 + (hw + 0.08) * g)
         y = ry + (0.18 - ry) * g
         inward = sag * math.sin(math.pi * min(g * 1.15, 1.0)) + 0.06 * math.sin(z * 5.5 + g * 2.0) * g
@@ -152,6 +153,10 @@ def tent(name: str, seed: int, *, burned: bool, lod: bool) -> kc.MeshBuilder:
         grid = np.array([[canvas_pt(s, z, g) for g in gs] for z in zs])
         for k in range(0, len(zs) - 1, step):  # each panel its own UV2.y, so the material's value spread
             _cloth(mb, grid[k:k + step + 1], rng)  # reads the seams
+        if not burned:  # the sewn seams themselves, a doubled hem standing off the cloth down each panel edge
+            for k in range(step, len(zs) - 1, step):
+                seam = np.array([canvas_pt(s, zs[k], g, 0.015) for g in gs])
+                kc.tube(mb, seam, 0.012, 3, mb.material(bc.M_ROPE), variation=0.2)
     # The rear gable, closed; the front flaps tied back.
     rows = np.linspace(0.0, 1.0, 5 if not burned else 10)
     cols = np.linspace(-1.0, 1.0, 7 if not burned else 13)
