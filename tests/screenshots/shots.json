@@ -3903,7 +3903,7 @@
         960,
         540
       ],
-      "settle_frames": 720,
+      "settle_frames": 400,
       "setup": {
         "globals": {
           "hymn_wind_time": 40.0
@@ -3923,7 +3923,7 @@
             "hold_line": "ch02_beach_031"
           }
         },
-        "time_scale": 8.0
+        "time_scale": 14.0
       }
     },
     {
