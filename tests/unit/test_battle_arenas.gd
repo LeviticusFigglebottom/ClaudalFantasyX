@@ -17,6 +17,8 @@ const ARENAS: Array[StringName] = [
 	&"seawall_stairhead_surge",
 	&"coilspire_headland_path",
 	&"coilspire_tier_landing",
+	&"ashcrown_forecourt_day",
+	&"ashcrown_anvil_court",
 	&"keth_seep_terrace",
 	&"lowlight_engine_hall",
 	&"ossa_fen_roots",
