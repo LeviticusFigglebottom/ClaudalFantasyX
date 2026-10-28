@@ -16,11 +16,13 @@ effect to the block so the story's show/hide drives it):
 | Zone | Block | What |
 |---|---|---|
 | ch07/tamsule_bell_galleries | `Column` (0.5 x 31.5 m, pale cyan, from the pool up to the drop) | the Bell's weeping column: a thin unbroken fall of water from the drop to the pool, lit from within, its spray where it lands |
+| ch07/tamsule | `BellColumn` (0.5 x 22 m, the same fall seen from the port, z -40) | the same weeping column at the port's distance (the Bell kit now hangs there too) |
 | ch08/coilspire | `StormWall` (shown from `ch08_virel_bound`) | the storm seen from the gallery after the binding: a wall of rain and cloud on the sea |
 
 ## Acceptance criteria
 - [ ] Each effect as a scene under `game/vfx/` (or a shader on a mesh), reproducible, with PROVENANCE rows where assets.
 - [ ] act1-chapters places them and drops the blocks from `greybox.keep`
-      (`tools/act1/ch07_tamsule_bell_dressing.py`, `tools/act1/ch08_coilspire_dressing.py`).
+      (`tools/act1/ch07_tamsule_bell_dressing.py`, `tools/act1/ch07_tamsule_port_dressing.py`,
+      `tools/act1/ch08_coilspire_dressing.py`).
 
 ## Review log
