@@ -404,48 +404,196 @@
       }
     },
     "shopkeeper": {
-      "_villager": "M3-CHR-509..517: a villager build (assets/characters/villagers/shopkeeper/shopkeeper.glb, clips from villager_clips.py and villager_story_clips.json). No props in a villager GLB.",
-      "villager": true
+      "_villager": "M3-CHR-509..517: a villager build (assets/characters/villagers/shopkeeper/shopkeeper.glb, clips from villager_clips.py and villager_story_clips.json). No props in a villager GLB: the pole, the brine-iron, the hammer and the lamp are scene props.",
+      "villager": true,
+      "_allowances": "M3-CHR-509..517 ratchets (garment_fit build; probe at the default stride, 2026-10-28): Costume 27/6 (26.04, talk@6: Costume:cloth_b on DEF-spine.002 vs DEF-forearm.R); Body 7/12 (7.0, offer_goods@16: Body through Costume:cloth_b on DEF-upper_arm.L vs DEF-shoulder.L); max_exposed 23 (farthest 4.11 mm, walk@3). Linear-blend-skinning limits as Kell's and Tavi's: the top's armhole edge and the hanging arm, and the deep reaches of the story clips (crawl_out's all-fours arms forward, pole_barge's raised arms, hammer_strike's overhead). Lower them when a fix lands.",
+      "penetration": {
+        "limits_mm": {
+          "Costume": 27.0,
+          "Body": 7.0
+        },
+        "limits_count": {
+          "Costume": 6,
+          "Body": 12
+        }
+      },
+      "seams": {
+        "max_exposed": 23
+      }
     },
     "smith": {
-      "_villager": "M3-CHR-509..517: a villager build (assets/characters/villagers/smith/smith.glb, clips from villager_clips.py and villager_story_clips.json). No props in a villager GLB.",
-      "villager": true
+      "_villager": "M3-CHR-509..517: a villager build (assets/characters/villagers/smith/smith.glb, clips from villager_clips.py and villager_story_clips.json). No props in a villager GLB: the pole, the brine-iron, the hammer and the lamp are scene props.",
+      "villager": true,
+      "_allowances": "M3-CHR-509..517 ratchets (garment_fit build; probe at the default stride, 2026-10-28): Costume 31/6 (30.52, walk@3: Costume:cloth_a on DEF-spine.003 vs DEF-upper_arm.R.001); Body 7/8 (6.6, hammer_strike@18: Body through Costume:cloth_a on DEF-shoulder.R vs DEF-shoulder.R); max_exposed 18 (farthest 6.16 mm, hammer_strike@12). Linear-blend-skinning limits as Kell's and Tavi's: the top's armhole edge and the hanging arm, and the deep reaches of the story clips (crawl_out's all-fours arms forward, pole_barge's raised arms, hammer_strike's overhead). Lower them when a fix lands.",
+      "penetration": {
+        "limits_mm": {
+          "Costume": 31.0,
+          "Body": 7.0
+        },
+        "limits_count": {
+          "Costume": 6,
+          "Body": 8
+        }
+      },
+      "seams": {
+        "max_exposed": 18
+      }
     },
     "innkeeper": {
-      "_villager": "M3-CHR-509..517: a villager build (assets/characters/villagers/innkeeper/innkeeper.glb, clips from villager_clips.py and villager_story_clips.json). No props in a villager GLB.",
-      "villager": true
+      "_villager": "M3-CHR-509..517: a villager build (assets/characters/villagers/innkeeper/innkeeper.glb, clips from villager_clips.py and villager_story_clips.json). No props in a villager GLB: the pole, the brine-iron, the hammer and the lamp are scene props.",
+      "villager": true,
+      "_allowances": "M3-CHR-509..517 ratchets (garment_fit build; probe at the default stride, 2026-10-28): Costume 33/6 (32.43, rest: Costume:leather on DEF-foot.R vs DEF-foot.R); max_exposed 2 (farthest 0.47 mm, welcome_bow@12). Linear-blend-skinning limits as Kell's and Tavi's: the top's armhole edge and the hanging arm, and the deep reaches of the story clips (crawl_out's all-fours arms forward, pole_barge's raised arms, hammer_strike's overhead). Lower them when a fix lands. The innkeeper's Costume depth is the sandal sole under the ball of the foot at rest (the probe reads the sole's front edge as inside the foot).",
+      "penetration": {
+        "limits_mm": {
+          "Costume": 33.0
+        },
+        "limits_count": {
+          "Costume": 6
+        }
+      },
+      "seams": {
+        "max_exposed": 2
+      }
     },
     "clerk": {
-      "_villager": "M3-CHR-509..517: a villager build (assets/characters/villagers/clerk/clerk.glb, clips from villager_clips.py and villager_story_clips.json). No props in a villager GLB.",
-      "villager": true
+      "_villager": "M3-CHR-509..517: a villager build (assets/characters/villagers/clerk/clerk.glb, clips from villager_clips.py and villager_story_clips.json). No props in a villager GLB: the pole, the brine-iron, the hammer and the lamp are scene props.",
+      "villager": true,
+      "_allowances": "M3-CHR-509..517 ratchets (garment_fit build; probe at the default stride, 2026-10-28): Costume 45/6 (44.98, idle@20: Costume:cloth_a on DEF-forearm.L vs DEF-pelvis.L); max_exposed 8 (farthest 2.78 mm, iron_into_water@15). Linear-blend-skinning limits as Kell's and Tavi's: the top's armhole edge and the hanging arm, and the deep reaches of the story clips (crawl_out's all-fours arms forward, pole_barge's raised arms, hammer_strike's overhead). Lower them when a fix lands.",
+      "penetration": {
+        "limits_mm": {
+          "Costume": 45.0
+        },
+        "limits_count": {
+          "Costume": 6
+        }
+      },
+      "seams": {
+        "max_exposed": 8
+      }
     },
     "reed_a": {
-      "_villager": "M3-CHR-509..517: a villager build (assets/characters/villagers/reed_a/reed_a.glb, clips from villager_clips.py and villager_story_clips.json). No props in a villager GLB.",
-      "villager": true
+      "_villager": "M3-CHR-509..517: a villager build (assets/characters/villagers/reed_a/reed_a.glb, clips from villager_clips.py and villager_story_clips.json). No props in a villager GLB: the pole, the brine-iron, the hammer and the lamp are scene props.",
+      "villager": true,
+      "_allowances": "M3-CHR-509..517 ratchets (garment_fit build; probe at the default stride, 2026-10-28): Costume 28/6 (27.65, idle@40: Costume:cloth_c on DEF-spine.001 vs DEF-forearm.L); Body 4/1 (3.35, pole_barge@0: Body through Costume:cloth_a on DEF-shoulder.R vs DEF-shoulder.R); max_exposed 9 (farthest 5.37 mm, pole_barge@0). Linear-blend-skinning limits as Kell's and Tavi's: the top's armhole edge and the hanging arm, and the deep reaches of the story clips (crawl_out's all-fours arms forward, pole_barge's raised arms, hammer_strike's overhead). Lower them when a fix lands.",
+      "penetration": {
+        "limits_mm": {
+          "Costume": 28.0,
+          "Body": 4.0
+        },
+        "limits_count": {
+          "Costume": 6,
+          "Body": 1
+        }
+      },
+      "seams": {
+        "max_exposed": 9
+      }
     },
     "reed_b": {
-      "_villager": "M3-CHR-509..517: a villager build (assets/characters/villagers/reed_b/reed_b.glb, clips from villager_clips.py and villager_story_clips.json). No props in a villager GLB.",
-      "villager": true
+      "_villager": "M3-CHR-509..517: a villager build (assets/characters/villagers/reed_b/reed_b.glb, clips from villager_clips.py and villager_story_clips.json). No props in a villager GLB: the pole, the brine-iron, the hammer and the lamp are scene props.",
+      "villager": true,
+      "_allowances": "M3-CHR-509..517 ratchets (garment_fit build; probe at the default stride, 2026-10-28): Costume 18/6 (17.72, walk@12: Costume:cloth_a on DEF-pelvis.L vs DEF-forearm.L.001); Body 7/8 (6.02, pole_barge@49: Body through Costume:cloth_a on DEF-shoulder.R vs DEF-shoulder.R); max_exposed 13 (farthest 3.87 mm, pole_barge@0). Linear-blend-skinning limits as Kell's and Tavi's: the top's armhole edge and the hanging arm, and the deep reaches of the story clips (crawl_out's all-fours arms forward, pole_barge's raised arms, hammer_strike's overhead). Lower them when a fix lands.",
+      "penetration": {
+        "limits_mm": {
+          "Costume": 18.0,
+          "Body": 7.0
+        },
+        "limits_count": {
+          "Costume": 6,
+          "Body": 8
+        }
+      },
+      "seams": {
+        "max_exposed": 13
+      }
     },
     "reed_c": {
-      "_villager": "M3-CHR-509..517: a villager build (assets/characters/villagers/reed_c/reed_c.glb, clips from villager_clips.py and villager_story_clips.json). No props in a villager GLB.",
-      "villager": true
+      "_villager": "M3-CHR-509..517: a villager build (assets/characters/villagers/reed_c/reed_c.glb, clips from villager_clips.py and villager_story_clips.json). No props in a villager GLB: the pole, the brine-iron, the hammer and the lamp are scene props.",
+      "villager": true,
+      "_allowances": "M3-CHR-509..517 ratchets (garment_fit build; probe at the default stride, 2026-10-28): Costume 30/6 (29.17, talk@12: Costume:cloth_a on DEF-spine.002 vs DEF-upper_arm.L.001); max_exposed 20 (farthest 4.17 mm, pole_barge@0). Linear-blend-skinning limits as Kell's and Tavi's: the top's armhole edge and the hanging arm, and the deep reaches of the story clips (crawl_out's all-fours arms forward, pole_barge's raised arms, hammer_strike's overhead). Lower them when a fix lands.",
+      "penetration": {
+        "limits_mm": {
+          "Costume": 30.0
+        },
+        "limits_count": {
+          "Costume": 6
+        }
+      },
+      "seams": {
+        "max_exposed": 20
+      }
     },
     "reed_d": {
-      "_villager": "M3-CHR-509..517: a villager build (assets/characters/villagers/reed_d/reed_d.glb, clips from villager_clips.py and villager_story_clips.json). No props in a villager GLB.",
-      "villager": true
+      "_villager": "M3-CHR-509..517: a villager build (assets/characters/villagers/reed_d/reed_d.glb, clips from villager_clips.py and villager_story_clips.json). No props in a villager GLB: the pole, the brine-iron, the hammer and the lamp are scene props.",
+      "villager": true,
+      "_allowances": "M3-CHR-509..517 ratchets (garment_fit build; probe at the default stride, 2026-10-28): Costume 20/6 (19.36, talk@30: Costume:cloth_a on DEF-forearm.R.001 vs DEF-forearm.R.001); Body 6/6 (5.86, pole_barge@35: Body through Costume:cloth_a on DEF-shoulder.L vs DEF-shoulder.L); max_exposed 15 (farthest 4.19 mm, pole_barge@21). Linear-blend-skinning limits as Kell's and Tavi's: the top's armhole edge and the hanging arm, and the deep reaches of the story clips (crawl_out's all-fours arms forward, pole_barge's raised arms, hammer_strike's overhead). Lower them when a fix lands.",
+      "penetration": {
+        "limits_mm": {
+          "Costume": 20.0,
+          "Body": 6.0
+        },
+        "limits_count": {
+          "Costume": 6,
+          "Body": 6
+        }
+      },
+      "seams": {
+        "max_exposed": 15
+      }
     },
     "wright_girl": {
-      "_villager": "M3-CHR-509..517: a villager build (assets/characters/villagers/wright_girl/wright_girl.glb, clips from villager_clips.py and villager_story_clips.json). No props in a villager GLB.",
-      "villager": true
+      "_villager": "M3-CHR-509..517: a villager build (assets/characters/villagers/wright_girl/wright_girl.glb, clips from villager_clips.py and villager_story_clips.json). No props in a villager GLB: the pole, the brine-iron, the hammer and the lamp are scene props.",
+      "villager": true,
+      "_allowances": "M3-CHR-509..517 ratchets (garment_fit build; probe at the default stride, 2026-10-28): Costume 31/6 (30.57, talk@6: Costume:cloth_a on DEF-spine.002 vs DEF-upper_arm.L.001); Body 4/1 (3.07, arm_held_out@20: Body through Costume:cloth_a on DEF-shoulder.R vs DEF-shoulder.R); max_exposed 7 (farthest 2.38 mm, flatten_sand@35). Linear-blend-skinning limits as Kell's and Tavi's: the top's armhole edge and the hanging arm, and the deep reaches of the story clips (crawl_out's all-fours arms forward, pole_barge's raised arms, hammer_strike's overhead). Lower them when a fix lands.",
+      "penetration": {
+        "limits_mm": {
+          "Costume": 31.0,
+          "Body": 4.0
+        },
+        "limits_count": {
+          "Costume": 6,
+          "Body": 1
+        }
+      },
+      "seams": {
+        "max_exposed": 7
+      }
     },
     "wright_child_a": {
-      "_villager": "M3-CHR-509..517: a villager build (assets/characters/villagers/wright_child_a/wright_child_a.glb, clips from villager_clips.py and villager_story_clips.json). No props in a villager GLB.",
-      "villager": true
+      "_villager": "M3-CHR-509..517: a villager build (assets/characters/villagers/wright_child_a/wright_child_a.glb, clips from villager_clips.py and villager_story_clips.json). No props in a villager GLB: the pole, the brine-iron, the hammer and the lamp are scene props.",
+      "villager": true,
+      "_allowances": "M3-CHR-509..517 ratchets (garment_fit build; probe at the default stride, 2026-10-28): Costume 26/4 (25.35, crawl_out@35: Costume:cloth_a on DEF-shoulder.L vs DEF-upper_arm.L); Body 52/40 (51.86, crawl_out@7: Body through Costume:cloth_a on DEF-upper_arm.L vs DEF-shoulder.L); max_exposed 21 (farthest 5.13 mm, crawl_out@7). Linear-blend-skinning limits as Kell's and Tavi's: the top's armhole edge and the hanging arm, and the deep reaches of the story clips (crawl_out's all-fours arms forward, pole_barge's raised arms, hammer_strike's overhead). Lower them when a fix lands.",
+      "penetration": {
+        "limits_mm": {
+          "Costume": 26.0,
+          "Body": 52.0
+        },
+        "limits_count": {
+          "Costume": 4,
+          "Body": 40
+        }
+      },
+      "seams": {
+        "max_exposed": 21
+      }
     },
     "wright_child_b": {
-      "_villager": "M3-CHR-509..517: a villager build (assets/characters/villagers/wright_child_b/wright_child_b.glb, clips from villager_clips.py and villager_story_clips.json). No props in a villager GLB.",
-      "villager": true
+      "_villager": "M3-CHR-509..517: a villager build (assets/characters/villagers/wright_child_b/wright_child_b.glb, clips from villager_clips.py and villager_story_clips.json). No props in a villager GLB: the pole, the brine-iron, the hammer and the lamp are scene props.",
+      "villager": true,
+      "_allowances": "M3-CHR-509..517 ratchets (garment_fit build; probe at the default stride, 2026-10-28): Costume 33/6 (32.92, crawl_out@42: Costume:cloth_a on DEF-spine vs DEF-thigh.L); Body 48/17 (47.41, crawl_out@7: Body through Costume:cloth_c on DEF-upper_arm.L vs DEF-shoulder.L); max_exposed 23 (farthest 2.96 mm, crawl_out@42). Linear-blend-skinning limits as Kell's and Tavi's: the top's armhole edge and the hanging arm, and the deep reaches of the story clips (crawl_out's all-fours arms forward, pole_barge's raised arms, hammer_strike's overhead). Lower them when a fix lands.",
+      "penetration": {
+        "limits_mm": {
+          "Costume": 33.0,
+          "Body": 48.0
+        },
+        "limits_count": {
+          "Costume": 6,
+          "Body": 17
+        }
+      },
+      "seams": {
+        "max_exposed": 23
+      }
     }
   }
 }

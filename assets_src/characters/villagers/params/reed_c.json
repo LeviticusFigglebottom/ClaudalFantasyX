@@ -85,7 +85,8 @@
       "folds": 7,
       "fold_amp": 0.006,
       "flare": 0.16,
-      "seed": 103
+      "seed": 103,
+      "keep_above_knee_m": 1.0
     },
     "sash": {
       "mat": "cloth_c",
