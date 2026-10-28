@@ -859,10 +859,36 @@ def build_special() -> ck.Clip:
     return still(c)
 
 
+RELEASE_SEC = 3.5  # M3-CRE-647: the held form's release (Ch20), its KO
+RELEASE_AWAY = (0.0, 1.4, -0.5)  # where the release carries him (metres: up, and back away from the party)
+
+
+def build_release() -> ck.Clip:
+    """M3-CRE-647, the held form's KO (vowbound.md, the final fight: the widow's goodbye; the ring is the last thing
+    to fade). The screen of wings opens all the way, slowly, for the only time not as a rite; his left hand comes
+    forward and up, open, the plain copper ring toward her, and holds there; then he rises, up and back, the wings
+    open and the head lifted a little, the ringed hand still held out last, nearest her. The veil is not keyed (its
+    fall is the cinematic's)."""
+    c = ck.Clip("release", RELEASE_SEC)
+    for t, sp, reach, hd, bow in ((0.0, (0, 0), 0.0, 0.0, 0.0), (0.8, (24.0, 38.0), 0.5, -1.0, -1.0),
+                                  (1.5, (36.0, 57.0), 1.0, -2.0, -2.0), (2.1, (37.0, 58.0), 1.0, -2.0, -2.5),
+                                  (2.8, (34.0, 54.0), 1.0, -4.0, -3.0), (RELEASE_SEC, (33.0, 52.0), 1.0, -5.0, -3.0)):
+        wing_pose(c, t, spread=sp, turn=(-sp[0] * 0.9, -sp[1] * 0.8), lift=(sp[0] * 0.25, sp[1] * 0.2))
+        arm_pose(c, t, "l", upper=(-40.0 * reach, 0.0, 8.0 * reach), fore=(35.0 * reach, 0.0, 0.0),
+                 hand=(-10.0 * reach, 0.0, 0.0))  # the ringed hand held out at chest height, toward her
+        arm_pose(c, t, "r", upper=(10.0 * reach, 0.0, 6.0 * reach), fore=(16.0 * reach, 0.0, 0.0),
+                 hand=(6.0 * reach, 0.0, 0.0))
+        torso(c, t, bow=bow, head=hd)
+    lx, ly, lz = RELEASE_AWAY
+    for t, k in ((0.0, 0.0), (2.1, 0.0), (2.8, 0.4), (RELEASE_SEC, 1.0)):
+        c.key("root", t, (0.0, 0.0, 0.0), (lx * k, ly * k, lz * k))
+    return still(c)
+
+
 def build_clips() -> list[ck.Clip]:
     return [build_idle(), build_ready(), build_attack(), build_cast(), build_hit(),
             build_hit("hit_b", -1.0, ck.HIT_B["amp"]), build_defend(), build_ko(), build_victory(), build_rise(),
-            build_dismiss(), build_special(), build_idle_b()]
+            build_dismiss(), build_special(), build_idle_b(), build_release()]
 
 
 # ---------------------------------------------------------------------------------------------

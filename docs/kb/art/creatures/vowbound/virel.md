@@ -166,3 +166,11 @@ sails (the stage's `three_quarter`, yaw 35°, would see the coil nearly on edge)
 the cloth (1.2 is the colour script's value; a set-piece allows 35% glimmer by area, and her seams are a few
 percent), whether the cloth reads as lit through from the seams or just pale, the frame's read on the cloth, the key on
 the summon frame, and whether the teal seams read as fire held still (the point) or simply as teal.
+
+## As built: the held form (M3-CRE-647, 2026-10-28)
+
+The foe form for the Ch20 release fight (act3_roster.md, "The Vowbound as foes").
+
+- **`release`** (3.4 s, its KO as a foe; the only clip added, every other clip samples identically): the kite's last flight: the coil draws in once, then unrolls (0.55–1.45 s, bone directions slerped as Flare Line does) into one line climbing 38° away from the party, the panels luffing and the streamers flying; then the line lifts 1.5 m up and 0.6 m back. Let go, not cut.
+  Lowest vertex over every frame +0.66 m. GLB 1.05 → 1.13 MB.
+- Scene `game/creatures/virel/virel_held_battle.tscn` (the same GLB; `CreatureActor.material_dir` puts on `assets/creatures/virel/materials_held/`, written by write_materials.py from the `held` block in materials.json: 2 emissive slots glimmer_bound to glimmer_held `#7FC6D9` at the same energy, steady; the rest as they are). creatures.json row `virel_held`: no `vowbound` key, `ko` = `release`, `phases.release` = {clip `release`, `hold` true}, `stand_in.yaw_deg` 90 (facing the party), portrait framing kept. Review shot `creature_virel_held` (not rendered yet). No enemies.json row (Combat's, with the chapter designer). The turn to `glimmer_lift` and the rising motes are presentation (battle VFX), not the model.

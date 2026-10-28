@@ -24,6 +24,7 @@ const CLIPS: Array[StringName] = [
 	&"dismiss",
 	&"special",
 	&"idle_b",
+	&"release",  # M3-CRE-647: the held form's release (its KO as a foe)
 ]
 const YAW_DEG := -90.0
 ## creatures.json stand_in: the height the VFX anchors are fractions of, and the ring's radius.

@@ -313,6 +313,36 @@
       "id": "ethren",
       "scene": "res://game/creatures/ethren/ethren_battle.tscn",
       "out_dir": "res://assets/ui/portraits/creatures"
+    },
+    {
+      "id": "ilun_held",
+      "scene": "res://game/creatures/ilun/ilun_held_battle.tscn",
+      "out_dir": "res://assets/ui/portraits/creatures"
+    },
+    {
+      "id": "kahre_held",
+      "scene": "res://game/creatures/kahre/kahre_held_battle.tscn",
+      "out_dir": "res://assets/ui/portraits/creatures"
+    },
+    {
+      "id": "virel_held",
+      "scene": "res://game/creatures/virel/virel_held_battle.tscn",
+      "out_dir": "res://assets/ui/portraits/creatures"
+    },
+    {
+      "id": "hesk_held",
+      "scene": "res://game/creatures/hesk/hesk_held_battle.tscn",
+      "out_dir": "res://assets/ui/portraits/creatures"
+    },
+    {
+      "id": "nhoa_held",
+      "scene": "res://game/creatures/nhoa/nhoa_held_battle.tscn",
+      "out_dir": "res://assets/ui/portraits/creatures"
+    },
+    {
+      "id": "ethren_held",
+      "scene": "res://game/creatures/ethren/ethren_held_battle.tscn",
+      "out_dir": "res://assets/ui/portraits/creatures"
     }
   ],
   "creature_stage": {

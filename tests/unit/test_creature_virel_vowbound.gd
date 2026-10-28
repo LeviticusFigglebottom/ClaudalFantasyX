@@ -22,6 +22,7 @@ const CLIPS: Array[StringName] = [
 	&"dismiss",
 	&"special",
 	&"idle_b",
+	&"release",  # M3-CRE-647: the held form's release (its KO as a foe)
 ]
 const YAW_DEG := -90.0
 ## Built hovering: the body bone (the loop's lowest station) this high over the water at rest, at least.

@@ -145,6 +145,21 @@ table, asset_import.md §3) would add a distance cutoff, which battles, held at 
   the row exists, so drop the key when the row lands. Its integration test binds an in-test copy of a live row under
   its id. The summon shot's bottom safe line is about 0.6 m up on the mark, so anything lower (feet, strands) sits
   under the HUD there, which is expected; check the top edge on that shot instead.
+- **A Vowbound as a foe (M3-CRE-647, the Ch20 releases)** is a second creatures.json row, `<id>_held`, with no
+  `vowbound` key (validate_creatures.py forbids an enemy using the ally's scene). Its scene
+  `game/creatures/<id>/<id>_held_battle.tscn` instances **the same GLB** (one model, so ally and foe never drift)
+  and sets `CreatureActor.material_dir = "res://assets/creatures/<id>/materials_held"`. **Why an actor override,
+  not the import:** one GLB has one import, and the post-import already bakes the `materials/` set onto it as
+  surface overrides, so a second set cannot come from the import. In `_ready` the actor puts
+  `<material_dir>/<slot>.tres` on each surface whose current material's `resource_name` is `<slot>` (the import's
+  `.tres` names itself by slot), the same slot mapping the post-import uses. The set is written by
+  `write_materials.py` from a `held` block in materials.json (`emission_from` glimmer_bound, `emission_to`
+  glimmer_held): every emissive slot swapped at the same energy, steady, the rest copied, so the job lists
+  `materials_held/*.tres` as an output. Without the block nothing more is written. The row's `ko` is the `release`
+  clip, `stand_in.yaw_deg` is 90 (a foe faces the party), and `phases.release` is `{"clip": "release", "hold":
+  true}`: a **`hold`** phase stays on its clip's last frame instead of going back to idle, `settle()` jumps there,
+  and a KO whose clip is the held one doesn't replay it. The change back to `glimmer_lift` and the rising motes are
+  presentation (battle VFX), not the model. No enemies.json row: Combat and the chapter designer add those.
 - **`game/creatures/<id>/<id>_battle.tscn`**: a `Node3D` root with `creature_actor.gd` (`creature_id = &"<id>"`,
   `metadata/hymn_battle_actor = true`) and the GLB instanced as its first child, `Model`.
 - **`CreatureActor`** (`game/creatures/creature_actor.gd`) plays what creatures.json says: an action's clip

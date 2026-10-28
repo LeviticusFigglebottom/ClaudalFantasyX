@@ -54,6 +54,32 @@ the storm's eye are the rendering track's Undertow, not a creature.
   mouths. She is closer to a person than a beast, so her build is a split, our seawater body with the characters
   track's face. Her sheet comes after the six held forms.
 
+**As built (M3-CRE-647, 2026-10-28):** the six held forms exist as planned. Each sheet in `vowbound/` has an "As
+built: the held form" section, and pipeline.md §5 has the mechanism.
+- **Materials:** `write_materials.py` reads a `held` block (`emission_from` glimmer_bound, `emission_to`
+  glimmer_held) and writes `assets/creatures/<id>/materials_held/`. Every emissive slot is swapped at the same
+  energy and stays steady; the other slots are copied. Without the block nothing more is written, and all 53 creature
+  jobs verify identical.
+- **Scene:** `<id>_held_battle.tscn` instances the same GLB. `CreatureActor.material_dir` puts the held set on it by
+  slot name in `_ready`. One GLB has one import, so the second set has to come from the actor, not the import.
+- **Row:** `<id>_held` has no `vowbound` key, `ko` is `release`, `phases.release` is `{"clip": "release", "hold":
+  true}` (a new phase key: it stays on the last frame, and the KO doesn't replay it), and `stand_in.yaw_deg` is 90.
+- **The `release` clips** (3.3–3.5 s) open, hold, then lift each form about 1.5 m up and 0.5 m back, away from the
+  party, ending at peace:
+
+  | Vowbound | Length | The release |
+  |---|---|---|
+  | Ilun | 3.3 s | gentle |
+  | Kahre | 3.4 s | drawn up tall, then the weight let go |
+  | Virel | 3.4 s | unrolls into a climbing kite line |
+  | Hesk | 3.4 s | full span, one down-stroke, a glide |
+  | Nhoa | 3.4 s | her strands of motes lift as she rises |
+  | Ethren | 3.5 s | wings open, the ringed hand held out toward Ysolde, nearest her and last |
+
+- **Still open:** the swap to `glimmer_lift` at the release and the rising motes belong to battle VFX and
+  presentation. The enemies.json rows (`model` = the held scene) belong to Combat and the chapter designer. The
+  review shots and the `_held` portraits are not rendered yet.
+
 ## Order of work (art)
 
 1. **The six held forms first** (cheap: materials plus one `release` clip each). The releases are never cut

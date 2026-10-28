@@ -171,11 +171,81 @@ class ValidatorTest(unittest.TestCase):
         cr["creatures"]["twin"] = dict(first)
         self.assertTrue(any("is also" in x for x in self.errs(creatures=cr)))
 
+    def test_a_held_vowbound_row_is_a_foe_row_with_a_held_release(self) -> None:
+        """M3-CRE-647: `<id>_held` is a Vowbound as a foe (no `vowbound` key); its `release` phase holds its clip."""
+        vb = _load(vc.VOWBOUND_FILE)
+        rows = self.creatures["creatures"]
+        for vid in ("ilun", "kahre", "virel", "hesk", "nhoa", "ethren"):
+            row = rows[f"{vid}_held"]
+            self.assertNotIn("vowbound", row)
+            self.assertEqual(row["ko"], "release")
+            self.assertEqual(row["phases"]["release"], {"clip": "release", "hold": True})
+            self.assertGreater(row["stand_in"]["yaw_deg"], 0.0, "a foe faces the party (the ally's is -90)")
+            self.assertEqual(row["scene"], f"res://game/creatures/{vid}/{vid}_held_battle.tscn")
+        self.assertEqual(vc.creature_errors(self.creatures, self.enemies, self.skills, lambda p: True, vb), [])
+        cr = copy.deepcopy(self.creatures)
+        cr["creatures"]["ilun_held"]["phases"]["release"]["hold"] = "yes"
+        self.assertTrue(any("release.hold: must be true or false" in x for x in self.errs(creatures=cr)))
+        del cr["creatures"]["ilun_held"]["phases"]["release"]["clip"]
+        cr["creatures"]["ilun_held"]["phases"]["release"]["hold"] = True
+        self.assertTrue(any("release.hold: holds the phase's clip" in x for x in self.errs(creatures=cr)))
+
+
+def model_rows(rows: dict) -> dict:
+    """The rows that own a model: a row whose scene lives in game/creatures/<its id>/. A second row on the same model
+    (a Vowbound's `<id>_held` foe form, M3-CRE-647) shares that row's GLB, job and materials."""
+    return {cid: row for cid, row in rows.items() if row["scene"].split("/")[-2] == cid}
+
 
 class PipelineTest(unittest.TestCase):
     def setUp(self) -> None:
-        self.rows = _load(vc.CREATURES_FILE)["creatures"]
+        self.all_rows = _load(vc.CREATURES_FILE)["creatures"]
+        self.rows = model_rows(self.all_rows)
         self.jobs = {j["id"]: j for j in _load("tools/dev/blender_builds.json")["jobs"]}
+
+    def test_every_other_row_shares_a_model_row(self) -> None:
+        for cid, row in self.all_rows.items():
+            if cid not in self.rows:
+                self.assertIn(row["scene"].split("/")[-2], self.rows, cid)
+
+    def test_a_held_block_writes_glimmer_held_and_nothing_else_changes(self) -> None:
+        """M3-CRE-647: the held set swaps each emissive slot's glimmer_bound for glimmer_held (same energy); the other
+        slots and the plain set are byte-identical to a spec without the block."""
+        w = _writer()
+        spec = {"slots": {"lit": {"emission_color": "#4FB3B0", "emission_energy": 1.2, "roughness_dry": 0.3},
+                          "dull": {"emission_energy": 0.0, "roughness_dry": 0.8}}}
+        held = {"emission_from": "#4FB3B0", "emission_to": "#7FC6D9"}
+        with tempfile.TemporaryDirectory() as a, tempfile.TemporaryDirectory() as b:
+            for tmp, s in ((Path(a), spec), (Path(b), dict(spec, held=held))):
+                (tmp / "assets_src/creatures/x").mkdir(parents=True)
+                (tmp / "assets_src/creatures/x/materials.json").write_text(json.dumps(s))
+                w.write("x", tmp)
+            plain, with_held = Path(a) / "assets/creatures/x", Path(b) / "assets/creatures/x"
+            self.assertFalse((plain / "materials_held").exists())
+            for slot in ("lit", "dull"):
+                self.assertEqual((plain / "materials" / f"{slot}.tres").read_bytes(),
+                                 (with_held / "materials" / f"{slot}.tres").read_bytes())
+            self.assertEqual((plain / "materials/dull.tres").read_bytes(),
+                             (with_held / "materials_held/dull.tres").read_bytes())
+            lit = (with_held / "materials_held/lit.tres").read_text()
+            self.assertIn("emission_color = Color(0.498039, 0.776471, 0.85098, 1)", lit)
+            self.assertIn("emission_energy = 1.2", lit)
+        bad = dict(spec["slots"], odd={"emission_color": "#FFFFFF", "emission_energy": 1.0})
+        with self.assertRaises(ValueError):
+            w.held_slots(bad, held)
+        with self.assertRaises(ValueError):
+            w.held_slots({"p": {"emission_color": "#4FB3B0", "emission_energy": 1.0, "emission_pulse_hz": 0.5}}, held)
+
+    def test_each_vowbound_has_a_held_set_and_a_release_clip(self) -> None:
+        sys.path.insert(0, str(ROOT / "tools" / "tests"))
+        from test_post_import import read_glb  # noqa: PLC0415
+
+        for cid in ("ilun", "kahre", "virel", "hesk", "nhoa", "ethren"):
+            self.assertIn(f"assets/creatures/{cid}/materials_held/*.tres", self.jobs[f"creature_{cid}"]["outputs"])
+            js = read_glb(ROOT / "assets/creatures" / cid / f"{cid}.glb")
+            self.assertIn("release", {a["name"] for a in js["animations"]}, cid)
+            for m in {m["name"] for m in js["materials"]}:
+                self.assertTrue((ROOT / "assets/creatures" / cid / "materials_held" / f"{m}.tres").is_file(), (cid, m))
 
     def test_materials_rebuild_byte_for_byte(self) -> None:
         w = _writer()
@@ -360,7 +430,7 @@ class GroundedClipsTest(unittest.TestCase):
 
     def test_clips_stay_above_the_floor(self) -> None:
         data = _load(vc.CREATURES_FILE)
-        for cid, row in data["creatures"].items():
+        for cid, row in model_rows(data["creatures"]).items():  # a held row shares its model row's GLB and stand-in
             if cid in self.ALLOW:
                 continue
             hover = float({**data["defaults"]["stand_in"], **row.get("stand_in", {})}.get("hover", 0.0))

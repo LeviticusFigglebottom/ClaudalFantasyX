@@ -600,6 +600,8 @@ DISMISS_SEC = 1.0
 SPECIAL_SEC = 2.8
 SPECIAL_CONTACT = 1.55
 IDLE_B_SEC = 1.2
+RELEASE_SEC = 3.4  # M3-CRE-647: the held form's release (Ch20), its KO
+RELEASE_AWAY = (0.0, 1.5, -0.5)  # where the release carries him (metres: up, and back away from the party)
 
 
 def pose(c: ck.Clip, t: float, body=(0.0, 0.0, 0.0), lift: float = 0.0, slide: float = 0.0, chest: float = 0.0,
@@ -838,10 +840,35 @@ def build_idle_b() -> ck.Clip:
     return c
 
 
+RELEASE_TALL = dict(body=(-14.0, 0.0, 0.0), lift=0.1, chest=-6.0, neck=(-8.0, -10.0, -12.0), head=-24.0, jaw=4.0,
+                    tail=10.0)
+RELEASE_EASED = dict(body=(-6.0, 0.0, 0.0), lift=0.04, chest=-2.0, neck=(0.0, 0.0, -2.0), head=-4.0, tail=2.0)
+
+
+def build_release() -> ck.Clip:
+    """M3-CRE-647, the held form's KO (vowbound.md, the final fight: "It's like setting the tools down"). He draws
+    himself up to his full height, the casque and its hammer raised to the sky, and holds there; then the weight goes
+    out of him, the head settles, and he lifts off the water, up and back, the legs hanging easy: relieved, not felled.
+    The feet stay solved: planted until the lift, then carried with him."""
+    c = ck.Clip("release", RELEASE_SEC)
+    for t, kw in ((0.0, {}), (0.6, dict(RELEASE_TALL, body=(-11.0, 0.0, 0.0), lift=0.07, head=-16.0, jaw=8.0)),
+                  (1.2, RELEASE_TALL), (1.8, dict(RELEASE_TALL, head=-22.0)), (2.5, dict(RELEASE_EASED, jaw=2.0)),
+                  (RELEASE_SEC, RELEASE_EASED)):
+        pose(c, t, **kw)
+    lx, ly, lz = RELEASE_AWAY
+    for t, k in ((0.0, 0.0), (1.8, 0.0), (2.6, 0.45), (RELEASE_SEC, 1.0)):
+        c.key("root", t, (0.0, 0.0, 0.0), (lx * k, ly * k, lz * k))
+        hang = 0.1 * min(k / 0.45, 1.0)  # the feet come up off the water a little as he goes: hanging, not standing
+        for leg in LEGS:
+            foot(c, leg, t, ly * k + hang, lz * k + (0.06 if leg.startswith("fore") else -0.04) * hang / 0.1,
+                 12.0 * hang / 0.1)
+    return c
+
+
 def authored_clips() -> list[ck.Clip]:
     return [build_idle(), build_ready(), build_attack(), build_cast(), build_hit(), build_hit("hit_b", -1.0, 1.35),
             build_defend(), build_ko(), build_victory(), build_rise(), build_dismiss(), build_special(),
-            build_idle_b()]
+            build_idle_b(), build_release()]
 
 
 def build_clips(rig: ck.Rig, mesh: ck.Mesh) -> list[ck.Clip]:
