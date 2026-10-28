@@ -4102,6 +4102,54 @@
         960,
         720
       ]
+    },
+    {
+      "id": "creature_ilun_held",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_ilun_held.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
+      "id": "creature_kahre_held",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_kahre_held.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
+      "id": "creature_virel_held",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_virel_held.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
+      "id": "creature_hesk_held",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_hesk_held.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
+      "id": "creature_nhoa_held",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_nhoa_held.tscn",
+      "resolution": [
+        960,
+        720
+      ]
+    },
+    {
+      "id": "creature_ethren_held",
+      "scene": "res://game/levels/_tests/creatures/shots/creature_ethren_held.tscn",
+      "resolution": [
+        960,
+        720
+      ]
     }
   ]
 }
