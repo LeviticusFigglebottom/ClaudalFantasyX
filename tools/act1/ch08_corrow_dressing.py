@@ -362,11 +362,30 @@ def dressing() -> dict:
         "lod_margin_m": float(preview.get("lod_margin_m", 2.0)),
         "environment": RES_ZONE + "corrow_ch08_environment.tres",
         "time_of_day_h": 16.0,
-        "greybox": {"hide_all": True, "keep": ["Flood", "Lake"]},  # water (Rendering's, M3-ENV-707)
+        "greybox": {"hide_all": True, "keep": []},
+        "waters": flood_waters(layout_blocks()),
         "fire_light_color": preview.get("fire_light_color", "#E0702E"),
         "fire_lights": [{"at": f[:3], "energy": f[3], "range": f[4]} for f in preview.get("fire_lights", [])],
         "pieces": pieces,
     }
+
+
+FLOOD_MATERIAL = "res://game/levels/ch09/corrow_night/corrow_lake_material.tres"  # still, dark, no foam
+
+
+def layout_blocks() -> dict:
+    return {b["id"]: b for b in json.loads(LAYOUT.read_text(encoding="utf-8"))["blocks"]}
+
+
+def flood_waters(blocks: dict) -> list[dict]:
+    """ADR 0041: the flood over the low town (from ch08_wave3_held) and the lake it leaves when the wall falls, as
+    still water surfaces on their blocks' tops that show and hide with the blocks."""
+    out = []
+    for bid in ("Flood", "Lake"):
+        b = blocks[bid]
+        out.append({"name": bid, "at": [b["pos"][0], round(b["pos"][1] + b["size"][1] * 0.5, 3), b["pos"][2]],
+                    "size": [b["size"][0], b["size"][2]], "material": FLOOD_MATERIAL, "block": bid})
+    return out
 
 
 # The zone's own lift on env-art's grades: Ch9's strand was near-black in the shots (the Lead, 2026-10-27), so the

@@ -100,6 +100,7 @@ def collision() -> dict:
 
 def dressing() -> dict:
     src = json.loads((C8 / "corrow_dressing.json").read_text(encoding="utf-8"))
+    src.pop("waters", None)  # Ch8's flood; Ch9's lake is the scene's own Lake
     pieces = []
     for p in src["pieces"]:
         b = p.get("block")

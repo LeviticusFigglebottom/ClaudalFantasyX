@@ -15,7 +15,7 @@ const ACT1_DRESSINGS := {
 	"res://game/levels/ch06/brine_shoals/brine_shoals_dressing.json": [],
 	"res://game/levels/ch07/tamsule/tamsule_dressing.json": ["BellColumn"],  # M3-RND-27
 	"res://game/levels/ch07/tamsule_bell_galleries/tamsule_bell_galleries_dressing.json": ["Column"],  # M3-RND-27
-	"res://game/levels/ch08/corrow/corrow_dressing.json": ["Flood", "Lake"],  # flood-state water (M3-ENV-707)
+	"res://game/levels/ch08/corrow/corrow_dressing.json": [],
 	"res://game/levels/ch08/coilspire/coilspire_dressing.json": ["Virel", "StormWall"],  # M3-CRE-627, M3-RND-27
 	"res://game/levels/ch09/corrow_night/corrow_night_dressing.json": [],
 }
@@ -178,3 +178,22 @@ func test_act1_dressings_keep_only_blocks_that_wait_on_a_request() -> void:
 			if not seen.has(glb):
 				seen[glb] = true
 				assert_true(ResourceLoader.exists(glb), "%s: %s exists" % [path, glb])
+
+
+func test_a_water_is_a_still_surface_that_follows_its_block() -> void:
+	var d := _dressing()
+	var material := "res://game/levels/ch09/corrow_night/corrow_lake_material.tres"
+	d.layout["waters"] = [
+		{"name": "Pond", "at": [1.0, 0.5, 2.0], "size": [8.0, 4.0], "material": material, "block": "Barge"}
+	]
+	d._place_waters()
+	var pond := d.get_node(^"Waters/Pond") as WaterSurface
+	assert_true(pond != null, "the water is a WaterSurface")
+	assert_eq(pond.position, Vector3(1.0, 0.5, 2.0), "its rest plane where the row puts it")
+	assert_eq((pond.surface_mesh as PlaneMesh).size, Vector2(8.0, 4.0), "on a plane of the row's size")
+	assert_true(pond.material != load(material), "with its own copy of the material")
+	zone.hide_block("Barge")
+	assert_false(pond.visible, "it hides with its block")
+	zone.show_block("Barge")
+	assert_true(pond.visible, "and shows with it")
+	_close()

@@ -30,6 +30,10 @@ extends HalunaDresser
 ##   far_lights   [{"name", "points": [[x, y, z]], "size_m": [near, far], "color", "energy", "block"?}]: lights
 ##                  too small to model at their range, as camera-facing quads (env_far_lights), larger with
 ##                  distance from the origin out to FAR_SIZE_RANGE_M.
+##   waters       [{"name", "at": [x, y, z], "size": [w, d], "material": res, "waves"?: res, "block"?}]: a
+##                  still WaterSurface on a plane of that size, its rest plane at y (a flooded street, a drowned
+##                  town's lake); its own copy of the material, so its waves never overwrite another surface's;
+##                  a "block" one shows and hides with its block.
 ##   environment  a res:// Environment: the zone's WorldEnvironment takes a copy (sky, grade, fog).
 ##   time_of_day_h  the hymn_time_of_day the sky reads.
 ## It writes hymn_sun_direction from the zone's sun every frame, so the sky's sun follows the story's
@@ -46,6 +50,10 @@ const COLLIDE_TRIMESH := "trimesh"
 const COLLIDE_TRIMESH_LOD0 := "trimesh_lod0"
 const KEY_MULTIMESHES := "multimeshes"
 const KEY_FAR_LIGHTS := "far_lights"
+const KEY_WATERS := "waters"
+const WATERS := &"Waters"
+const WATER_WAVES_DEFAULT := "res://game/world/water/lagoon_waves.tres"
+const WATER_CELL_M := 2.0
 const FAR_LIGHT_SHADER := "res://game/shaders/environment/env_far_lights.gdshader"
 const FAR_SIZE_RANGE_M := 700.0
 const KEY_GREYBOX := "greybox"
@@ -94,6 +102,7 @@ func dress() -> void:
 	_place_fire_lights()
 	_place_multimeshes()
 	_place_far_lights()
+	_place_waters()
 	_hide_greybox()
 	_apply_environment()
 	if layout.has(KEY_TIME_OF_DAY):
@@ -370,6 +379,31 @@ func kit_mesh(piece: String) -> Mesh:
 		break
 	node.free()
 	return mesh
+
+
+func _place_waters() -> void:
+	var rows: Array = layout.get(KEY_WATERS, [])
+	if rows.is_empty():
+		return
+	var root := Node3D.new()
+	root.name = WATERS
+	add_child(root)
+	for r: Variant in rows:
+		var row: Dictionary = r
+		var at: Array = row.get("at", [0.0, 0.0, 0.0])
+		var size: Array = row.get("size", [10.0, 10.0])
+		var plane := PlaneMesh.new()
+		plane.size = Vector2(float(size[0]), float(size[1]))
+		plane.subdivide_width = int(float(size[0]) / WATER_CELL_M)
+		plane.subdivide_depth = int(float(size[1]) / WATER_CELL_M)
+		var water := WaterSurface.new()
+		water.name = str(row.get("name", "Water"))
+		water.surface_mesh = plane
+		water.wave_set = load(str(row.get("waves", WATER_WAVES_DEFAULT))) as WaveSet
+		water.material = (load(str(row["material"])) as ShaderMaterial).duplicate() as ShaderMaterial
+		water.position = Vector3(float(at[0]), float(at[1]), float(at[2]))
+		root.add_child(water)
+		_attach(water, str(row.get(KEY_BLOCK, "")))
 
 
 func _place_far_lights() -> void:

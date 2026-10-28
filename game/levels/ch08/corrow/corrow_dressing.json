@@ -11,11 +11,38 @@
  "time_of_day_h": 16.0,
  "greybox": {
   "hide_all": true,
-  "keep": [
-   "Flood",
-   "Lake"
-  ]
+  "keep": []
  },
+ "waters": [
+  {
+   "name": "Flood",
+   "at": [
+    -40.634,
+    1.04,
+    -22.446
+   ],
+   "size": [
+    60,
+    40
+   ],
+   "material": "res://game/levels/ch09/corrow_night/corrow_lake_material.tres",
+   "block": "Flood"
+  },
+  {
+   "name": "Lake",
+   "at": [
+    -40.634,
+    1.62,
+    -27.446
+   ],
+   "size": [
+    80,
+    50
+   ],
+   "material": "res://game/levels/ch09/corrow_night/corrow_lake_material.tres",
+   "block": "Lake"
+  }
+ ],
  "fire_light_color": "#E0702E",
  "fire_lights": [
   {
