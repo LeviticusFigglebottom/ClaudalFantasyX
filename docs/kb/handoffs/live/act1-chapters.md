@@ -179,6 +179,13 @@ cutscene sequencer (`game/cutscene/**`), `game/flow/**` and the playtest fixes.
   act2_greybox_case.gd`); `--filter=ch14_16` 5/0, validate_data, the chapter/location/map/loc tools tests. Beat sheets
   requested M4-C14-01 .. M4-C16-01. **Act II now has a walkable greybox end to end (Ch10-16), story to come.**
   Full Godot suite @ a4410fd9: 2854 run, 2 failed, the same two big12 failures as above (not act1-chapters').
+- **MERGE-READY @ 37789274: M4-C10-03, Ch10's field fights** on creatures' Act II roster: `tannin_archer`, `root_crab`,
+  `fen_leech` (enemies.json, appended), three skills (skills.json, appended in its own commit 3a7a47c6 **for Combat's
+  review**), three encounters and Ossa Fen's table; the three foes "silent" in creature_voices.json (appended, f3e1932d)
+  until audio voices them (request M4-AUD-1001). Suites (1000 seeds, `--check` clean, loadout ch08_seawall): archers
+  54.0/97.3, roots 33.8/93.9/99.9, leeches 48.5/99.9 (two role_answer bands report only, reasons in targets.json).
+  Request M4-CMB-1001 (Combat): a drain on enemy skills for the leech. `--filter=battle` 720/0, `ch10` 3/0, balance
+  and creatures tools tests.
 - **Lead queue (21:23), status:**
   1. Ch9 road capsule: it is **Kerrid** at the milestone (no model yet: M3-CHR-505, characters); so are the two on
      ch06_brine_road (Ysolde, no field body yet: M3-HER-1219; Kerrid). They go when those land; no villager body on a
