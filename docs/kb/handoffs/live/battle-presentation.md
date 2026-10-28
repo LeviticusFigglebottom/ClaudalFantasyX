@@ -79,7 +79,9 @@ RENDER-REQUEST @ 60b62678: battle_arena_wall_head,battle_boss_intro_reach; why: 
     (data only). Verified on a local merge (see M3-BPR-407's review log), then re-render the Ch8 shots it lists.
 - **Fixed, found on the way:** test_set_piece_hud failed on this branch since 5a5b4fed. My entries line in
   `_build_hud` dropped the entry flag that ui-menus' set-piece HUD gives the Climb and the Surge. Fixed at bcdf7170.
-  - Lesson: `--filter=battle` misses test_set_piece_hud. This branch's gate now runs the full Godot suite (running).
+  - Lesson: `--filter=battle` misses test_set_piece_hud. This branch's gate now runs the full Godot suite: **2865 run,
+    2 failed** at bcdf7170. Both are the big12 gate's known reds, owned elsewhere with fixes in flight
+    (test_creature_portraits, test_footsteps_slice_zones::causeway). Nothing else is red.
 - **Boss intros:** the Mangrove Drowner has one (418). **Kahre is not fought anywhere:** it's the Ch5 Vowbound, with no
   enemies.json row in any branch, and its first call has the C10 cinematic (414). If a Kahre fight is planned, its
   enemy row is design's, and its intro is one by_enemy row.
