@@ -724,6 +724,17 @@ Ch4–Ch9 onward. `m2-slice.md` beside this file is the history up to the 2026-1
   50 m on 18 mm. The First Verse set's Drownbell, and its mark for the toll and the motes, came in to about 30 m, and
   C08 is now 28 mm from 5 m up. Viewed: the bronze hood breaking the surface, the sun's glitter beside it. Uncounted
   held fields are sparse too (C08's wounds).
+- **Requests to slice-polish on the board, closed to review:**
+  - **M3-ENV-748 (Neme) and test_qa_capsules' Haluna rows:** Haluna's seven villagers (Neme, Vendor, Reed,
+    Netmender, Fisher, Child, Osu) lose their static capsule and facing meshes. VillagerLayer gives each its body in
+    play; the capsule check reads the scene before that. Viewed slice_neme_table: Neme in her apron.
+    - test_villager_routines (creatures') now accepts an absent capsule.
+    - Left in test_qa_capsules, not mine: Pell (Act II) and five foes (creatures).
+  - **M3-ENV-750:** Haluna's trees under their real piece names.
+  - **M3-ENV-745, M3-ENV-751, M3-CIN-1221, M3-HER-1131:** already done.
+  - **M3-HER-1123 (the placeholder cue parameters):** drift, rate, motion and `@sfx at=` are done. `@camera grade=`
+    needs a grade table (the colour script's frames as Environment/LUTs) that no one has built: a rendering look
+    (env-art-b by the Lead's split). `@vfx form=` is reserved in glimmer.json.
 - **MERGE-READY @ 47f7707b** (everything since 743b94bf; plus the held rows' density in the next commit):
   - the cutscene VFX at final quality;
   - Oruvel and the Underway on env-art's dressings, with the cutscene side re-staged (M3-ENV-739/740/742 to review,

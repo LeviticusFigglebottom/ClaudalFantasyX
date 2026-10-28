@@ -314,7 +314,8 @@ func test_halunas_rows_resolve_in_the_zone() -> void:
 	assert_eq(layer.build(), rows.size(), "every Haluna row finds its stand-in and its body")
 	for row: Dictionary in rows:
 		var stand_in := zone.get_node(NodePath(str(row["stand_in"])))
-		assert_false((stand_in.get_node("StandIn") as Node3D).visible, "%s's capsule is hidden" % row["npc_id"])
+		var capsule := stand_in.get_node_or_null("StandIn") as Node3D  # Haluna's are gone from the scene (M3-ENV-748)
+		assert_true(capsule == null or not capsule.visible, "%s's capsule is hidden" % row["npc_id"])
 		if row.has("talk"):
 			assert_true(zone.get_node_or_null(NodePath(str(row["talk"]))) is Interactable, "talk spot exists")
 	assert_eq(layer.villager(&"fisher").partner, layer.villager(&"netmender"), "the dock pair chats")
