@@ -35,7 +35,10 @@ func test_every_act_one_skill_has_its_own_effect() -> void:
 	for row: Dictionary in BattleVowbound.load_config():
 		for sid: Variant in row.get("skills", []):
 			ids[str(sid)] = str(row["id"])
+	var act_one := _act_one_enemies(db)
 	for eid: StringName in db.enemies:
+		if not act_one.has(eid):
+			continue  # ADR 0041: Act II is paused (its creatures' effects come with it)
 		var row := db.enemies[eid] as Dictionary
 		for sid: Variant in row.get("skills", []):
 			ids[str(sid)] = String(eid)
@@ -49,6 +52,24 @@ func test_every_act_one_skill_has_its_own_effect() -> void:
 		_assert_own("skills", sid, str(ids[sid]))
 		checked += 1
 	assert_true(checked > 60, "the Act I abilities are covered (%d)" % checked)
+
+
+## The Act I foes: those in an encounter before Ch10 (the sandbox, the Drownbell and the Reach included), and those in
+## none at all (summoned by an Act I boss: the Drownbell's spawn polyp).
+func _act_one_enemies(db: BattleDB) -> Dictionary:
+	var later := RegEx.create_from_string("^ch(1[0-9]|[2-9][0-9])_")
+	var seen: Dictionary = {}
+	var out: Dictionary = {}
+	for enc_id: StringName in db.encounters:
+		var enc := db.encounters[enc_id] as Dictionary
+		for eid: Variant in enc.get("enemies", []):
+			seen[StringName(str(eid))] = true
+			if later.search(String(enc_id)) == null:
+				out[StringName(str(eid))] = true
+	for eid: StringName in db.enemies:
+		if not seen.has(eid):
+			out[eid] = true
+	return out
 
 
 func test_every_battle_item_has_its_own_or_a_heal_effect() -> void:
