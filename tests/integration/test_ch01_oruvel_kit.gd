@@ -80,7 +80,10 @@ func test_the_seventh_terrace_and_the_gulls() -> void:
 	assert_false(board[0].visible or terrace.followers("SeventhTerrace")[0].visible, "the storm takes her")
 	var undertow := zone.get_node_or_null(^"Undertow") as UndertowStorm
 	assert_true(undertow != null and undertow.visible, "the real Undertow stands up on the horizon")
-	assert_false(zone.block_shown("StormWall"), "in place of its greybox wall")
+	var wall := zone.get_node(^"Greybox/StormWall/Mesh") as Node3D
+	assert_false(wall.is_visible_in_tree(), "in place of its greybox wall (the slab is never drawn)")
+	var storm_set := (zone.get_node(^"Dressing") as ZoneKitDressing).followers("StormWall")
+	assert_true(storm_set.size() >= 6 and storm_set[0].is_visible_in_tree(), "the storm set is up with it (M3-ENV-751)")
 	var reach := undertow.storm_center().distance_to(zone.field_camera.global_position)
 	assert_true(zone.field_camera.far > reach, "and the camera reaches it (%.0f m)" % reach)
 	zone.set_storm(false)

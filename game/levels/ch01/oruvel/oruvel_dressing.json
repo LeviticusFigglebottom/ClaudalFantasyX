@@ -11,9 +11,7 @@
  "time_of_day_h": 10.5,
  "greybox": {
   "hide_all": true,
-  "keep": [
-   "StormWall"
-  ]
+  "keep": []
  },
  "pieces": [
   {
@@ -332,6 +330,66 @@
    "y": 0.0,
    "yaw_deg": 15.0,
    "block": "LowHull"
+  },
+  {
+   "piece": "storm_debris",
+   "at": [
+    -21.5,
+    -17.0
+   ],
+   "y": -0.8,
+   "yaw_deg": 35.0,
+   "block": "StormWall"
+  },
+  {
+   "piece": "storm_debris",
+   "at": [
+    21.0,
+    1.5
+   ],
+   "y": -0.8,
+   "yaw_deg": -70.0,
+   "block": "StormWall"
+  },
+  {
+   "piece": "storm_debris",
+   "at": [
+    7.0,
+    7.5
+   ],
+   "y": -0.8,
+   "yaw_deg": 150.0,
+   "block": "StormWall"
+  },
+  {
+   "piece": "storm_debris",
+   "at": [
+    -24.0,
+    -1.5
+   ],
+   "y": -0.8,
+   "yaw_deg": 200.0,
+   "block": "StormWall"
+  },
+  {
+   "piece": "hull_capsized",
+   "at": [
+    -33.0,
+    -24.0
+   ],
+   "y": -0.8,
+   "yaw_deg": 60.0,
+   "block": "StormWall"
+  },
+  {
+   "piece": "plank_bridge_broken",
+   "at": [
+    38.5,
+    -10.0
+   ],
+   "y": -0.65,
+   "yaw_deg": 20.0,
+   "block": "StormWall"
   },
   {
    "piece": "hull_outrigger",

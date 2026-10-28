@@ -49,7 +49,7 @@ COPIES = {  # preview file -> zone file (the kit's grade and water look)
 DECK = {"raft_deck": 0.80, "raft_deck_small": 0.70, "dive_raft": 0.75, "net_pen": 0.60, "keel_hull": 1.0,
         "chandlery": 0.5, "scale_hull": 0.4, "cookboat": 0.6, "hull_outrigger": 0.3, "hull_cabin": 0.5}
 SEA_Y = -0.8  # the raft decks' waterline once sunk; the greybox's solid sea floor is at -1.0
-KEEP = ["StormWall"]
+KEEP: list[str] = []  # every story block is dressed; StormWall's slab gives way to the UndertowStorm
 GULL_YAW = -70.0  # the carving's +X out to sea (the kit preview's GULL_YAW)
 GULL_JITTER = 8.0
 # The Seventh Terrace: her origin (main deck amidships) at the greybox's outer mooring, clear of its deck (x -33),
@@ -157,6 +157,12 @@ def pieces() -> list[dict]:
     # with salvage over the greybox LowHull's collision, drifting clear with it (hide_block).
     rows.append(piece("hull_outrigger", 39.0, -17.0, 90.0, block="LowHull"))
     rows.append(piece("salvage_heap", 39.0, -17.0, 15.0, block="LowHull"))
+    # The storm set (env-art's M3-ENV-746 rows, the same greybox frame): debris on the water, a capsized hull and the
+    # dive bridge adrift, all following StormWall, so they show only in the storm.
+    for x, z, yaw in ((-21.5, -17.0, 35.0), (21.0, 1.5, -70.0), (7.0, 7.5, 150.0), (-24.0, -1.5, 200.0)):
+        rows.append(piece("storm_debris", x, z, yaw, y=SEA_Y, block="StormWall"))
+    rows.append(piece("hull_capsized", -33.0, -24.0, 60.0, y=SEA_Y, block="StormWall"))
+    rows.append(piece("plank_bridge_broken", 38.5, -10.0, 20.0, y=-0.65, block="StormWall"))
     # Moored hulls between the rafts, and the far town on the horizon.
     rows.append(piece("hull_outrigger", 8.0, 2.5, 90.0))
     rows.append(piece("hull_cabin", -9.0, 6.0, 0.0))
