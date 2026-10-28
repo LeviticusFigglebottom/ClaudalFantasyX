@@ -133,6 +133,44 @@ def story_marks() -> list[dict]:
     ]
 
 
+HALUNA = "res://assets/environments/kits/haluna/"
+# What the raid left strewn on the flats either side of the plank road (env-art's note from viewing ch06_brine_road, and
+# the shoals arena's mix): (piece, kit_dir or "", sink m, collides)
+AFTERMATH = (("net_heap", HALUNA, 0.05, False), ("tide_debris", HALUNA, 0.0, False), ("crate_stack", "", 0.05, True),
+             ("rope_coil", HALUNA, 0.0, False), ("cargo_sacks", HALUNA, 0.05, True), ("tideline_wrack", "", 0.0, False),
+             ("salvage_pile", "", 0.1, True), ("tide_debris", HALUNA, 0.0, False), ("vendor_boat", "", 0.25, True))
+AFTERMATH_CLEAR_M = 2.5  # off every story point (marks, actors, spawns, triggers)
+
+
+def road_aftermath() -> list[dict]:
+    import random
+
+    rng = random.Random(61)
+    g = json.loads((ZONE / "brine_shoals_layout.json").read_text(encoding="utf-8"))
+    keep = [v[:3] for v in list(g.get("marks", {}).values()) + list(g.get("spawns", {}).values())]
+    keep += [a["at"][:3] for a in g.get("actors", {}).values()] + [t["at"][:3] for t in g.get("triggers", [])]
+    blocks = [b for b in g["blocks"] if b.get("solid", True) is not False and b["pos"][1] > 0.2]
+    rows = []
+    z, k = 70.0, 0
+    while z > 2.0:
+        for side in (-1.0, 1.0):
+            name, kit, sink, collides = AFTERMATH[k % len(AFTERMATH)]
+            k += 1
+            x = side * rng.uniform(3.5, 9.0) + 0.6 * math.sin(z / 14.0)
+            zz = z + rng.uniform(-2.0, 2.0)
+            if any(math.hypot(x - p[0], zz - p[2]) < AFTERMATH_CLEAR_M for p in keep):
+                continue
+            if any(abs(x - b["pos"][0]) < b["size"][0] * 0.5 + 1.5 and abs(zz - b["pos"][2]) < b["size"][2] * 0.5 + 1.5
+                   for b in blocks):
+                continue
+            extra: dict = {"collide": True} if collides else {}
+            if kit:
+                extra.update(kit_dir=kit, materials_dir=kit + "materials/")
+            rows.append(piece(name, x, zz, y=-sink, yaw=rng.uniform(0.0, 360.0), **extra))
+        z -= rng.uniform(6.0, 9.0)
+    return rows
+
+
 def layout() -> dict:
     return {
         "schema": "ZoneKitDressing (game/levels/act1/zone_kit_dressing.gd; ADR 0200)",
@@ -155,7 +193,7 @@ def layout() -> dict:
             {"at": [9.0, 2.4, -35.0], "energy": 1.4, "range": 7.0, "block": "TideWheel"},  # the burning wheel
             {"at": [27.0, 1.2, -44.0], "energy": 0.6, "range": 3.0, "color": "#9fd8e0", "block": "Shrine"},  # rest
         ],
-        "pieces": ground() + road() + wrecks() + camp() + dusk_camp() + story_marks(),
+        "pieces": ground() + road() + wrecks() + camp() + dusk_camp() + story_marks() + road_aftermath(),
     }
 
 
