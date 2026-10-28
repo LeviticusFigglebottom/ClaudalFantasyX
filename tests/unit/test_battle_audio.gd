@@ -113,6 +113,31 @@ func test_the_flood_phase_surges_and_brings_its_stem_in() -> void:
 	_teardown()
 
 
+## M3-AUD-861: the Undertow's Reach plays its own cue, its Dark and Breach bring its stems in, and each seawall
+## wave starts heavier than the last.
+func test_the_reach_and_the_seawall_waves_play_their_stems() -> void:
+	_attach()
+	var cue := AudioData.battle_cue(dir.music_data, &"undertows_reach")
+	assert_eq(cue, &"undertows_reach", "the Reach is not the default battle music")
+	assert_true(dir.play_music(cue, 0.0), "its cue plays")
+	var phases := (dir.music_data.get("battle", {}) as Dictionary).get("phases", {}) as Dictionary
+	for ph: StringName in [&"dark", &"breach"]:
+		var row := phases.get(String(ph), {}) as Dictionary
+		engine.phase_changed.emit(engine.enemies[0], ph)
+		dir.music.advance(float(row.get("sec", 0.0)) + 0.1)
+		for i: Variant in row.get("stems_on", []):
+			assert_true(dir.music.stem_gain(int(i)) > 0.99, "%s brings stem %s in" % [ph, i])
+	var starts: Array[int] = []
+	for enc: StringName in [&"ch08_stair_hold_1", &"ch08_stair_hold_2", &"ch08_stair_hold_3"]:
+		var row := (
+			(dir.music_data.get("cues", {}) as Dictionary).get(String(AudioData.battle_cue(dir.music_data, enc)), {})
+			as Dictionary
+		)
+		starts.append((row.get("start_stems", []) as Array).size())
+	assert_eq(starts, [1, 2, 3] as Array[int], "each wave starts with one more stem of seawall_hold")
+	_teardown()
+
+
 func test_the_opening_stinger_plays_once() -> void:
 	engine.opening = BattleOpening.AMBUSH
 	_attach()

@@ -6,6 +6,7 @@ sound a player can meet from the title through Ch9, from the data the runtime re
               but are not wired are flagged)
   enemies     every enemies.json id: creature_voices.json's five events, each row's files on disk, and rows that
               borrow another creature's files (variant_of, or the same file in two creatures' rows)
+  battles     every boss fight (an encounter with a phased foe): its own cue, and a row for each phase of a stem cue
   skills      every skills.json skill: what BattleVfx plays for it (a skill row, its element, heal, status), and
               so what BattleAudio hears; a skill that does none of those is silent
   cutscenes   every Act I .dlg `@music` / `@sfx` id: a music.json cue, a real file, or a sequencer music_stand_ins
@@ -150,6 +151,29 @@ def audit_skills() -> list[str]:
     return out
 
 
+def audit_battles() -> list[str]:
+    """Every boss fight (an encounter with a phased foe) has its own cue, and every phase of a stem cue has a row."""
+    enc = _json(DATA / "battle" / "encounters.json")["encounters"]
+    foes = {r["id"]: r for r in _json(DATA / "battle" / "enemies.json")["enemies"]}
+    music = _json(AUDIO / "music.json")
+    cues, battle = music["cues"], music["battle"]
+    out = []
+    for e in enc:
+        phased = [f for f in e.get("enemies", []) if foes.get(f, {}).get("phases")]
+        if not phased:
+            continue
+        cue = battle["encounters"].get(e["id"])
+        if cue is None:
+            out.append(f"boss encounter `{e['id']}` ({', '.join(phased)}) plays the default battle music")
+            continue
+        if cues.get(cue, {}).get("stems"):
+            for f in phased:
+                for ph in foes[f]["phases"]:
+                    if ph.get("id") not in battle.get("phases", {}):
+                        out.append(f"`{e['id']}`: {f}'s phase `{ph.get('id')}` has no music row (its stems never change)")
+    return out
+
+
 def _dlg_files() -> list[Path]:
     out = []
     for d in ["game/data/dialogue", "game/cutscene", "game/levels"]:
@@ -254,7 +278,7 @@ def audit_notes() -> list[str]:
     return out
 
 
-SECTIONS = [("Zones", audit_zones), ("Enemies", audit_enemies), ("Skills", audit_skills),
+SECTIONS = [("Zones", audit_zones), ("Enemies", audit_enemies), ("Battles", audit_battles), ("Skills", audit_skills),
             ("Cutscenes", audit_cutscenes), ("UI", audit_ui), ("Notes that say temp", audit_notes)]
 
 
