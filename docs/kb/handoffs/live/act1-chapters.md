@@ -325,6 +325,11 @@ RETIRED (TRACK-RULES 10-28 01:00, tracks self-render; rendered below) @ 760a0e4c
 SELF-RENDERED @ c242d54d: ch05_pemakar_harbour (no baseline: the re-aimed harbour view reads, the stair and lit houses under Ashcrown's lamps; approve at the gate), ch06_brine_road PASS 0.0032 (Kerrid still a capsule, M3-CHR-505), ch06_brine_camp drift 0.0115 (Ch6's kit pieces in place of the last greybox; the Stillguard casts read as red robes at this distance), ch08_corrow_arrival drift 0.072 (the trader boat and the story pieces; the mole's top is flat, env-art's mole_pier), ch08_corrow_stair drift 0.0087 (Kerrid's capsule in the foreground), ch08_coilspire_hall PASS 0, ch09_corrow_strand drift 0.109 (the lit night: shrouds, lamps, the vigil; the landing still greybox, being replaced now), ch09_corrow_road PASS 0.0072 (Kerrid's capsule). For the Lead's gate: all intended.
 
 ## Exact next step
+**BACKLOG EMPTY (2026-10-28, @ fe9bb143b):** in act1-chapters' lane, the Ch4-Ch9 playthrough is done. That covers
+cutscene cameras and staging (three passes of stills), field cameras at every zone-map POI, every Act I walk on
+the floor (known list empty), and pacing (no scene holds past its script beyond a visible walk ending). Ch1-Ch3 are
+slice-polish's. The balance check had no trigger: no spike or trivial fight showed. Everything still open waits on
+another track's request (below), and Act II is paused by ADR 0041.
 1. Nothing left in my lane on the Ch4–Ch9 playthrough list. Every open row waits on another track, each with its
    request: the derelict's and Pemakar harbour's night grades (M3-ENV-1228, M3-ENV-1229); Ashcrown's kit and its
    field volumes after it (M3-ARC-1216); the kneeling mourners for N09 (M3-C09-08 §5); the stand-ins (Virel
