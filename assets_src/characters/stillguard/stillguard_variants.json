@@ -310,5 +310,56 @@
     "stubble": 0.2
    }
   }
+ },
+ "_named_about": "M3-CHR-540: `named` holds the named Stillguards, each built like a variant (build_stillguard.py --variant <id>) but output under its own id (assets/characters/<id>/, the dialogue's speaker id) and never one of the six squad variants. A named entry carries the same keys as a variant plus `_seed` (its skin and hair noise seed, where a variant uses ord(<letter>)) and in `_variant` `spear` (false: no spear, the right hand free) and `broken_tooth` (the chip off the upper central incisor, its depth as a share of the crown's height).",
+ "named": {
+  "ivo": {
+   "_doc": "Ivo Brannick (act1_ch08.md B02 and Character Art 2; act1_ch09.md B02): a Stillguard of the Corrow garrison, about 33, Toma's shield-mate for seven years; broad, warm, a broad grin, a broken front tooth. No helm (in Ch9 his is the only uncovered face), the crop visible; the weathered kit (seven years on the wall), the shield on the left arm, no spear.",
+   "height_m": 1.81,
+   "heads_tall": 7.4,
+   "shoulder_width_heads": 1.9,
+   "chest_width_heads": 1.52,
+   "chest_depth_heads": 1.06,
+   "waist_width_heads": 1.32,
+   "head_width_ratio": 0.64,
+   "neck_width_ratio": 0.6,
+   "muscle": 0.74,
+   "mass": 0.36,
+   "skin_hex": "#A86F52",
+   "jaw_width": 1.07,
+   "chin_size": 1.03,
+   "cheekbone_width": 1.06,
+   "cheekbone_height": 0.0,
+   "nose_bridge_width": 1.05,
+   "nose_tip_projection": 0.97,
+   "brow_ridge": 1.12,
+   "lip_fullness": 0.78,
+   "lip_lower_fullness": 0.7,
+   "mouth_corner_lift": 0.0006,
+   "eye_tilt_deg": -1.5,
+   "donor_mix_african": 0.3,
+   "donor_mix_asian": 0.3,
+   "donor_mix_caucasian": 0.4,
+   "_seed": 540,
+   "_variant": {
+    "hair": "crop",
+    "helm": false,
+    "weathered": true,
+    "spear": false,
+    "broken_tooth": 0.35
+   },
+   "_hair": {
+    "colour": "#2E2117",
+    "underpaint": "#2A1E15",
+    "length_m": [
+     0.02,
+     0.03
+    ]
+   },
+   "_skin": {
+    "age": 0.25,
+    "stubble": 0.55
+   }
+  }
  }
 }

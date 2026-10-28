@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" path="res://game/levels/_tests/characters/stillguard/ivo_stage.tscn" id="stage"]
+
+[node name="IvoStage" instance=ExtResource("stage")]
+clip = &"talk"
+clip_time = 1.6

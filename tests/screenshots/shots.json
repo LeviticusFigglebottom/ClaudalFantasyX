@@ -4772,6 +4772,76 @@
       "settle_frames": 30
     },
     {
+      "id": "ivo_front",
+      "scene": "res://game/levels/_tests/characters/stillguard/ivo_stage.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "ivo_three_quarter",
+      "scene": "res://game/levels/_tests/characters/stillguard/ivo_stage.tscn",
+      "camera": "Cameras/ThreeQuarter",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "ivo_face",
+      "scene": "res://game/levels/_tests/characters/stillguard/ivo_stage.tscn",
+      "camera": "Cameras/Face",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "ivo_face_laugh",
+      "scene": "res://game/levels/_tests/characters/stillguard/ivo_face_laugh.tscn",
+      "camera": "Cameras/Face",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "ivo_clip_hug_lift",
+      "scene": "res://game/levels/_tests/characters/stillguard/ivo_clip_hug_lift.tscn",
+      "camera": "Cameras/ThreeQuarter",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "ivo_clip_kneel_palms_flat",
+      "scene": "res://game/levels/_tests/characters/stillguard/ivo_clip_kneel_palms_flat.tscn",
+      "camera": "Cameras/ThreeQuarter",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "ivo_clip_talk",
+      "scene": "res://game/levels/_tests/characters/stillguard/ivo_clip_talk.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
       "id": "ch05_pemakar_harbour",
       "scene": "res://game/levels/_tests/act1_zones/ch05_pemakar_shots.tscn",
       "camera": "Cameras/Harbour",

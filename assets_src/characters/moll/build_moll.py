@@ -442,7 +442,8 @@ def build(args: argparse.Namespace, spec: dict) -> int:
 
     prop_spec = spec["prop"](lm, cparams) if spec["prop"] else None  # (part, mesh, bone, (head, tail))
     prop_bone = prop_spec[2] if prop_spec else IRON_BONE
-    wnames_x = wnames + [PAULDRON_BONE["L"], PAULDRON_BONE["R"], prop_bone, SHIELD_BONE]
+    no_prop = bool(spec.get("no_prop"))  # M3-CHR-540: the shield only, no right-hand prop (Ivo Brannick)
+    wnames_x = wnames + [PAULDRON_BONE["L"], PAULDRON_BONE["R"]] + ([] if no_prop else [prop_bone]) + [SHIELD_BONE]
     bone_specs: list = []
 
     # ---- hair: the crop, head-rigid, grey at the temples ----------------------------------------------
@@ -566,11 +567,12 @@ def build(args: argparse.Namespace, spec: dict) -> int:
     # ---- props ----------------------------------------------------------------------------------------
     if prop_spec:  # M3-CHR-508: a soldier's spear
         iron, prop_mesh, _bone, (g_head, g_tail) = prop_spec
-    else:
+    elif not no_prop:
         iron, prop_mesh = moll_props.iron(lm, cparams), "Iron"
         g_head, g_tail = moll_props.iron_bone(lm, cparams, IRON_BONE_LEN)
-    ob_iron = rigid_object(iron, prop_bone, wnames_x, skel, prop_mesh)
-    bone_specs.append((prop_bone, g_head, g_tail, HAND_BONE))
+    if not no_prop:
+        ob_iron = rigid_object(iron, prop_bone, wnames_x, skel, prop_mesh)
+        bone_specs.append((prop_bone, g_head, g_tail, HAND_BONE))
     el, wr = lm.side_pt("elbow", "L"), lm.side_pt("wrist", "L")
     arm_pts = np.concatenate([V[np.isin(reg, ["arm_L", "hand_L"])], costume["Bracers"].varr(),
                               sleeve.varr()])
@@ -578,8 +580,9 @@ def build(args: argparse.Namespace, spec: dict) -> int:
     shield = moll_props.shield(centre, out_d, up_d, cparams)
     ob_shield = rigid_object(shield, SHIELD_BONE, wnames_x, skel, "Shield")
     bone_specs.append((SHIELD_BONE, centre, centre + up_d * SHIELD_BONE_LEN, FOREARM_L))
-    prop_objs = [ob_iron, ob_shield]
-    props_tris = iron.tris() + shield.tris()
+    prop_objs = [ob_shield] if no_prop else [ob_iron, ob_shield]
+    iron_tris = 0 if no_prop else iron.tris()
+    props_tris = iron_tris + shield.tris()
     if spec["helm"]:  # M3-CHR-508: an open-face helm, rigid on the head over the crop
         helm = spec["helm"](lm, body, cparams, surf, V, F, freg)
         garment_objs.append(rigid_object(helm, HEAD_BONE, wnames_x, skel, "Helm"))
@@ -588,7 +591,7 @@ def build(args: argparse.Namespace, spec: dict) -> int:
     clearance = {"shield_rim_plane_from_forearm_axis_mm": round(1000 * gap, 1)}
     bt.add_bones(skel, bone_specs)
     log(f"rig extras: {len(bone_specs)} bones, {len(skel.data.bones)} in all; props {props_tris} tris (iron "
-        f"{iron.tris()}, shield {shield.tris()}); {clearance} ({time.time() - t0:.1f}s)")
+        f"{iron_tris}, shield {shield.tris()}); {clearance} ({time.time() - t0:.1f}s)")
 
     # ---- body ---------------------------------------------------------------------------------
     keep_b = ~is_head & ~hidden & ~sleeve_delete
