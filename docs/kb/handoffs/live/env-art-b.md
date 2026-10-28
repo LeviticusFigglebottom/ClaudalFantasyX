@@ -285,8 +285,15 @@ that test at this branch's zones.
 
 - **M3-RND-21 / M3-RND-1315 follow-up:** both Ch6 camp arenas (`salvage_camp_burning`, and `brine_shoals_afternoon` through a new wrapper, `b_shoals_arena.py`) now draw SmokeColumns instead of shells (`b_smoke_columns.py` swaps the written plume instances). The flames have volume (a brighter heart, an orange rim), and the fires sit on round, ragged ash beds instead of square trays (`b_fire.py`, rebuilt; only the two fire pieces changed). M3-ENV-1324 is narrowed to the kit preview. Checks run: tools `test_b_arenas` + `test_brine_shoals_kit` + `test_arenas` (53), Godot `flame`, `battle_arena`, `brine`, `smoke` (all green), gdlint/gdformat, taskboard --check. **MERGE-READY @ 9a9c0043.**
 
+- **The Fisher Stair in Ch8's set piece (the Lead's ask, 14:27; M3-CRB-009 ask 4):** done @ 9c8e9c99.
+  - **The capsule:** it is the greybox `wall_head_storm`'s `StairHead`. The integration branch still sends `ch08_stair_hold_1..3` and `undertows_reach` to that greybox. On this branch, encounters.json already sends them to the seawall arenas, which stand the Corrow kit's real `fisher_stair`, so merging this branch retires the capsule. Self-renders of `battle_ch08_stair_hold`, and of `undertows_reach` at the default camera (scratch), show no capsule.
+  - **Added:** `StairHead_ward` and `StairFlight_ward` anchors on all three wall-head arenas, computed from the kit stair's own frame. The head lands 0.3 m from env-art's `EntryMarker_ward`. A `CameraHints/the_stair_head` hint frames the head landing and its down-steps from the walk.
+  - **Request M3-BPR-1325** (battle-presentation): anchor the stair meter and climber VFX on these marks, and cut to the hint when the Climb acts. From the default camera the stair head sits just off frame right.
+  - **Checks run:** tools `test_b_arenas` + `test_arenas` (22); Godot `battle_arena` (18), `set_piece` (48), `seawall_stair` (1, new). **MERGE-READY @ 9c8e9c99.**
+
 ### Render requests
 (Self-rendered per TRACK-RULES; lines are SELF-RENDERED notes.)
+SELF-RENDERED @ 9c8e9c99: battle_ch08_stair_hold. Viewed: no capsule, and the anchors are invisible so the frame is unchanged. Also viewed `undertows_reach` at the default camera and the new `the_stair_head` hint (scratch): the head landing and its down-steps read clearly from the walk.
 SELF-RENDERED @ 9a9c0043: battle_arena_camp, battle_arena_shoals. Viewed: the columns rise behind the camp, and the fires read as fire up close, with round beds and no trays.
 SELF-RENDERED @ 3eaa64a5: ch06_brine_camp (clocks 40 and 44), ch06_brine_road. Viewed: grey-brown columns that lean downwind with lit tops, read at range, and billow between the clocks. The foot's grain is gone with the gradient-noise offset.
 SELF-RENDERED @ f11aca7d: ch09_corrow_road. Viewed: the dawn road is a washed low gold looking east into the sun, slightly warmer than before.
