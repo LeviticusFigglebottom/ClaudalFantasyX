@@ -1,23 +1,23 @@
 """The Kirru head warp (pell.md §9, M3-CHR-506). No bpy.
 
 Pell keeps the MakeHuman donor's head topology (ADR 0021) and the whole face pipeline by adding one step between the
-face sculpt and the face shapes: `kirru_warp`, a polyharmonic RBF warp (bb_donor.RBF, the kind the donor fit uses)
-from a set of donor face landmarks onto a Kirru landmark set built from pell_params.json's `_kirru` block:
+face sculpt and the face shapes: `kirru_warp`. Since the look-dev review (the RBF push of the donor face into a muzzle
+read as a deformed human with a snout) the warp no longer starts from the donor face's landmarks; it reshapes the
+head onto a Kirru head surface (`KirruWarp.sdf`, from pell_params.json's `_kirru.otter_head`):
 
-* the nose tip, the upper lip and the mouth pushed forward to the muzzle (`muzzle_m`, 5.5 cm), the bridge filled in
-  between the brow and the nose pad (a shallow stop, not a human nose), the nose pad broadened to `nose_pad_width_m`;
-* the whisker pads filled (pushed out and forward beside the pad, `whisker_pad`);
-* the mouth line drawn back toward the cheek (the corners come forward less than the centre) and the chin reduced;
-* the cranium lengthened (`cranium_length`) and rounded behind;
-* the ears scaled to `ear_scale` about their own centre and moved up and back (`ear_offset_m`, in the stage's frame:
-  x left, y up, z forward), with the old notch (`ear_notch`) bitten out of the left ear's rim.
+* a broad, low cranium; a short, broad muzzle flowing straight out of the skull line, with the nose pad and the two
+  whisker pads on it; full jowls and a small chin under the mouth; a thick neck (`thicken_neck`, every vertex below
+  the jaw, so the seam stays welded);
+* the skin goes there along rays from a centre in the skull (one-to-one: nothing folds), the move smoothed over the
+  head, with only `detail_keep` of the donor's own relief kept (the human brow, cheekbones and nose do not show);
+* three regions ride rigidly so the face pipeline keeps working: each eye with its lids (set high and wide on the
+  cranium's front, the eye frames moved with them), the mouth with its bag, teeth and tongue (drawn in to a short line
+  under the muzzle), and each ear (scaled to `ear_scale`, set low and back, the old notch in the left one).
 
-The eyes, the brow and the forehead are anchored (zero displacement), so the eye frames, lids and lashes keep their
-fit; the displacement fades to nothing over SEAM_FADE at the head/neck seam, so the Head stays welded to the Body. The
-warp is a function of position (plus the donor's ear weights), so the same call carries the teeth and tongue built
-on the donor face, and the donor's expression units (`warp_units`: each unit's delta is taken through the warp).
-After it, `reread_landmarks` reads the face points back off the warped skin (as bb_donor's fit reads them off the
-placed donor), so the eyes, teeth, lashes and the 40 shapes are built on the Kirru face under the same names.
+The warp is a function of position (plus the donor's ear weights), so the same call carries the mouth interior built
+on the donor face and the donor's expression units (`warp_units`). After it, `reread_landmarks` reads the face points
+back off the warped skin, so the eyes, teeth, lashes and the 40 shapes are built on the Kirru face under the same
+names. The move fades to nothing at the head/neck seam, so the Head stays welded to the Body.
 
 Deterministic: no random terms; numpy only.
 """
@@ -28,22 +28,7 @@ import numpy as np
 import bb_donor
 import mpfb_data as md
 
-SEAM_FADE = 0.035  # m (at s = 1): the warp fades in over this distance from the head/neck seam
-FRONT_BAND = 0.004  # m: a midline sample takes the front-most skin vertex within this of its x
-# The Kirru midline profile: (height as a fraction from the chin (0) to the brow (1), forward displacement as a
-# fraction of the muzzle, lift as a fraction of the muzzle). The pad (the nose tip) comes forward a little less than
-# the upper lip below it, so the muzzle's front is a flat pad and not a human nose on a block.
-PROFILE = ((-0.25, 0.25, 0.0), (0.0, 0.42, 0.16), (0.15, 0.80, 0.06), (0.31, 1.0, 0.0), (0.42, 1.0, 0.0),
-           (0.516, 0.60, -0.03), (0.62, 0.62, 0.0), (0.72, 0.52, 0.0), (0.83, 0.32, 0.0), (0.95, 0.08, 0.0),
-           (1.05, 0.0, 0.0))
-# Lateral columns (x as a fraction of the mouth's half-width, the share of the midline's forward push, the whisker
-# pad's outward push as a fraction of the muzzle) for the lower face: the muzzle's sides fall away under the eyes
-COLUMNS = ((0.45, 0.97, 0.10, 0.95), (0.9, 0.80, 0.16, 0.6), (1.35, 0.46, 0.08, 0.3), (1.8, 0.16, 0.0, 0.1))
-MOUTH_BACK_BELOW = 0.40  # below this height (fraction chin -> brow) the columns take their last share: the mouth's
-# corners stay back under the whisker pads (the mouth line drawn back toward the cheek)
-FOREHEAD = ((1.25, 0.004), (1.6, 0.012), (2.0, 0.016))  # (height fraction, m back): the forehead's slope
-COLUMN_TOP = 0.62  # the lateral columns reach this high (fraction chin -> brow): below the lower lid
-PAD_SCALE_Z = 0.82  # the nose pad's height against its width: broad and low
+SEAM_FADE = 0.06  # m (at s = 1): the warp fades in over this distance from the head/neck seam
 EAR_NOTCH_RADIUS = 0.006  # m: the notch's reach round its point on the rim (at s = 1)
 
 
@@ -67,80 +52,145 @@ def ear_weights(n: int) -> dict:
     return out
 
 
-def front_point(V: np.ndarray, cand: np.ndarray, x: float, z: float, yc: float) -> np.ndarray:
-    """The front-most skin point of the candidate vertices near (x, z) (the face looks down -Y)."""
-    P = V[cand]
-    d = np.abs(P[:, 0] - x) + 0.5 * np.abs(P[:, 2] - z)
-    near = P[(d < np.sort(d)[min(24, len(d) - 1)] + 1e-12) & (P[:, 1] < yc)]
-    return near[int(np.argmin(near[:, 1]))].copy()
+def _ellipsoid(P: np.ndarray, c, r) -> np.ndarray:
+    """An ellipsoid's approximate signed distance (exact on the surface, scaled by its smallest radius)."""
+    r = np.asarray(r, dtype=float)
+    return (np.linalg.norm((P - np.asarray(c, dtype=float)) / r, axis=1) - 1.0) * float(r.min())
+
+
+def _capsule(P: np.ndarray, a, b, r: float) -> np.ndarray:
+    a, b = np.asarray(a, dtype=float), np.asarray(b, dtype=float)
+    ab = b - a
+    t = np.clip(((P - a) @ ab) / float(ab @ ab), 0.0, 1.0)
+    return np.linalg.norm(P - (a + t[:, None] * ab), axis=1) - r
+
+
+def _smin(a: np.ndarray, b: np.ndarray, k: float) -> np.ndarray:
+    h = np.clip(0.5 + 0.5 * (b - a) / k, 0.0, 1.0)
+    return b + (a - b) * h - k * h * (1.0 - h)
 
 
 class KirruWarp:
-    """The warp (see the module doc). Built once on the sculpted donor head; called on any points."""
+    """The warp (see the module doc). Built once on the sculpted donor head; called on any points.
 
-    def __init__(self, V: np.ndarray, head: np.ndarray, seam: np.ndarray, lm, face, kp: dict) -> None:
+    M3-CHR-506 look-dev (review): the head is no longer the donor's face pushed into a muzzle. The donor head's skin is
+    projected onto a Kirru head surface built from `_kirru.otter_head` (a broad, low cranium; a short, broad muzzle
+    flowing out of the skull line with the nose pad and the whisker pads on it; full jowls; a thick neck), while three
+    regions ride along rigidly so the face pipeline keeps working: each eye (its lids and socket, moved high and wide
+    onto the cranium's front), the mouth (its lips narrowed to a short line on the muzzle's underside, with the
+    teeth and tongue inside) and each ear (scaled, set low and back on the skull). Every point's move fades to nothing
+    at the head/neck seam, so the Head stays welded to the Body."""
+
+    def __init__(self, V: np.ndarray, head: np.ndarray, seam: np.ndarray, lm, face, kp: dict,
+                 inner: np.ndarray | None = None) -> None:
         self.lm, self.kp = lm, kp
         s = lm.h / 0.222
         self.s = s
         self.seam = V[seam]
         self.fade = SEAM_FADE * s
-        mu = float(kp["muzzle_m"])  # his own measure (pell.md §1), not scaled
-        yc = float(lm.P("head_c")[1])
-        self.yc = yc
-        z0, z1 = float(lm.P("chin")[2]), float(lm.P("brow")[2])
-        W = float(face.mouth_half)
-        cand = np.nonzero(head & (V[:, 1] < yc - 0.02 * s))[0]
-        C, D = [], []
-
-        def add(src: np.ndarray, d: np.ndarray) -> None:
-            C.append(np.asarray(src, dtype=float))
-            D.append(np.asarray(d, dtype=float))
-
-        # the midline profile and the lateral columns of the lower face
-        for f, fwd, lift in PROFILE:
-            z = z0 + f * (z1 - z0)
-            add(front_point(V, cand, 0.0, z, yc), (0.0, -fwd * mu, lift * mu))
-            if f > COLUMN_TOP or f < -0.1:
-                continue
-            for cx, share_up, out, share_lo in COLUMNS:
-                share = share_lo if f < MOUTH_BACK_BELOW else share_up
-                for sg in (1.0, -1.0):
-                    pad = out * mu * (1.0 if 0.1 <= f <= 0.5 else 0.5) * float(kp["whisker_pad"])
-                    add(front_point(V, cand, sg * cx * W, z, yc), (sg * pad, -fwd * share * mu, lift * mu * share))
-        # the nose pad: the alae come out to the pad's half-width, the pad lower and broader than the donor's
-        tip = lm.P("nose_tip")
-        half = 0.5 * float(kp["nose_pad_width_m"])
-        zt = float(tip[2])
-        for sg in (1.0, -1.0):
-            ala = front_point(V, cand, sg * 0.55 * half, zt - 0.006 * s, yc)
-            fwd_t = float(np.interp((zt - z0) / (z1 - z0), [p[0] for p in PROFILE], [p[1] for p in PROFILE]))
-            add(ala, (sg * (half - abs(float(ala[0]))) * 0.6, -fwd_t * mu * 0.97, -(1.0 - PAD_SCALE_Z) * 0.004 * s))
-        # anchors: the eyes (two rings round each globe), the brow and forehead, the crown, the ears' neighbourhood
-        ang = np.linspace(0.0, 2.0 * np.pi, 12, endpoint=False)
+        oh = kp["otter_head"]
+        self.oh = oh
+        self.yc = float(lm.P("head_c")[1])
+        E = lm.P("eye")
+        self.E0 = E.copy()
+        self.origin = np.array([0.0, float(E[1]), float(E[2])])  # the shapes are placed relative to the eyes' plane
+        o = self.origin
+        sh = V[seam]
+        # the neck: a capsule through the seam's centre, as thick as the body's neck there
+        nc = np.array([0.0, float(np.median(sh[:, 1])), float(sh[:, 2].min())])
+        self.neck_r = float(np.median(np.hypot(sh[:, 0], sh[:, 1] - nc[1]))) * float(oh["neck_fill"])
+        self.neck = (nc - np.array([0.0, 0.0, 0.25 * s]), nc + np.array([0.0, -0.01 * s, float(oh["neck_top_m"])]))
+        self.parts = [(o + np.asarray(c, dtype=float), r) for c, r in
+                      (oh["cranium"], oh["muzzle"], oh["jowls"], oh["chin"])]
+        self.pad = (o + np.asarray(oh["nose_pad"][0], dtype=float), oh["nose_pad"][1])
+        self.wpads = [(o + np.asarray(oh["whisker_pad"][0], dtype=float) * np.array([sg, 1.0, 1.0]),
+                       oh["whisker_pad"][1]) for sg in (1.0, -1.0)]
+        # the rigid regions' targets
+        self.eye0 = {sd: lm.side_pt("eye", sd).copy() for sd in ("L", "R")}
+        self.eye_d = self._eye_shift(lm, face)
+        m0 = lm.P("mouth")
+        self.mouth0 = m0.copy()
+        mt = self.project((o + np.asarray(oh["mouth_at"], dtype=float))[None, :])[0]
+        self.mouth_d = mt - m0
+        self.mouth_x = float(oh["mouth_width"])
+        self.mouth_r = np.asarray(oh["mouth_region_m"], dtype=float)
+        # each eye set so the skin at its region's rim lands on the surface (no step into the cranium)
+        Hv = V[head]
         for sd in ("L", "R"):
-            fr = face.eyes[sd]
-            for rr in (0.018, 0.026):
-                ring = fr.E + np.stack([np.cos(ang) * rr * 1.15, np.full(12, -0.004), np.sin(ang) * rr], axis=1) * s
-                ring = ring[ring[:, 2] > fr.E[2] - 0.012 * s]  # the lower lid's cheek is free (it joins the muzzle)
-                for p in ring:
-                    add(p, (0.0, 0.0, 0.0))
-            add(fr.E, (0.0, 0.0, 0.0))
-        for f, back in FOREHEAD:  # the forehead slopes back from the brow (no human vertical brow)
-            for cx in (0.0, 0.25, -0.25, 0.5, -0.5):
-                z = z0 + f * (z1 - z0)
-                if z < float(lm.P("crown")[2]) - 0.01 * s:
-                    add(front_point(V, cand, cx * lm.head_w, z, yc), (0.0, back * (1.0 - abs(cx)), -0.5 * back))
-        hc = lm.P("head_c")
-        far = np.linspace(0.0, 2.0 * np.pi, 16, endpoint=False)
-        for zz in (-0.05, 0.03, 0.10):
-            ring = hc + np.stack([np.cos(far) * 0.13, np.sin(far) * 0.15 + 0.03, np.full(16, zz)], axis=1) * s
-            for p in ring:
-                if p[1] > yc:  # the back half only: the front is the face's
-                    add(p, (0.0, 0.0, 0.0))
-        self.C, self.D = np.array(C), np.array(D)
-        self.rbf = bb_donor.RBF(self.C, self.D)
+            Ec = self.eye0[sd]
+            r0 = float(oh["eye_region_m"][0])
+            dist = np.linalg.norm(Hv - Ec, axis=1)
+            rim = Hv[(dist > r0) & (dist < r0 + 0.004)] + self.eye_d[sd]
+            if len(rim):
+                n = self.normal(rim.mean(axis=0)[None, :])[0]
+                self.eye_d[sd] = self.eye_d[sd] - n * float(np.median(self.sdf(rim)))
+        # the move is smoothed over the head (a Gaussian average of the raw move at the donor head's vertices), so
+        # the projection's converging normals and the rigid regions' rims never fold the skin
+        stride = int(oh["sample_stride"])
+        smp = Hv[::stride]
+        raw = self.raw_move(smp)
+        if inner is not None:  # the mouth's bag (its inner walls, back to the throat) rides with the mouth
+            ins = inner[head][::stride]
+            raw[ins] = self.mouth_move(smp[ins]) - smp[ins]
+        # the donor's interior skin (the nose's and the mouth's inner walls) points back through the centre: its rays
+        # find the far side of the skull, so those samples are left out (the points there take their neighbours' move)
+        ok = np.linalg.norm(raw, axis=1) < float(oh["max_move_m"])
+        self.samples, self.raw = smp[ok], raw[ok]
+        self.sigma = float(oh["smooth_m"])
 
-    # -------------------------------------------------------------------------------------------
+    # ---- the Kirru head surface -------------------------------------------------------------------------------
+    def sdf(self, P: np.ndarray) -> np.ndarray:
+        k = float(self.oh["blend_m"])
+        d = _ellipsoid(P, *self.parts[0])
+        for c, r in self.parts[1:]:
+            d = _smin(d, _ellipsoid(P, c, r), k)
+        if float(self.oh["neck_fill"]) > 0.0:
+            d = _smin(d, _capsule(P, self.neck[0], self.neck[1], self.neck_r), k)
+        d = _smin(d, _ellipsoid(P, *self.pad), 0.3 * k)
+        for c, r in self.wpads:
+            d = _smin(d, _ellipsoid(P, c, r), 0.5 * k)
+        return d
+
+    def project(self, P: np.ndarray, steps: int = 6) -> np.ndarray:
+        """Each point moved onto the surface along the field's gradient (Newton steps)."""
+        Q = np.asarray(P, dtype=float).copy()
+        e = 1e-4
+        for _ in range(steps):
+            d = self.sdf(Q)
+            g = np.stack([(self.sdf(Q + np.array(v) * e) - self.sdf(Q - np.array(v) * e)) / (2 * e)
+                          for v in ((1, 0, 0), (0, 1, 0), (0, 0, 1))], axis=1)
+            g2 = np.maximum((g * g).sum(axis=1), 1e-12)
+            Q = Q - (d / g2)[:, None] * g
+        return Q
+
+    def normal(self, P: np.ndarray) -> np.ndarray:
+        e = 1e-4
+        g = np.stack([(self.sdf(P + np.array(v) * e) - self.sdf(P - np.array(v) * e)) / (2 * e)
+                      for v in ((1, 0, 0), (0, 1, 0), (0, 0, 1))], axis=1)
+        return g / np.maximum(np.linalg.norm(g, axis=1, keepdims=True), 1e-12)
+
+    def _eye_shift(self, lm, face) -> dict:
+        """Each eye's move: its globe's front set into the cranium's front at `eye_at` (high and wide), the globe
+        sunk `eye_sink` of its radius below the surface so the lids close over it."""
+        oh = self.oh
+        out = {}
+        for sd in ("L", "R"):
+            sg = 1.0 if sd == "L" else -1.0
+            E = face.eyes[sd].E
+            ax, az = float(oh["eye_at"][0]), float(oh["eye_at"][1])
+            P = np.array([[sg * ax, self.origin[1] - 0.3, self.origin[2] + az]])
+            # march back from in front of the face to the surface
+            for t in np.linspace(0.0, 0.5, 501):
+                q = P + np.array([[0.0, t, 0.0]])
+                if self.sdf(q)[0] < 0.0:
+                    break
+            Sx = self.project(q)[0]
+            n = self.normal(Sx[None, :])[0]
+            tgt = Sx - n * float(face.eyes[sd].R) * float(oh["eye_sink"])
+            out[sd] = tgt - E
+        return out
+
+    # ---- the move -----------------------------------------------------------------------------------------
     def seam_weight(self, P: np.ndarray) -> np.ndarray:
         d = np.full(len(P), np.inf)
         for a in range(0, len(P), 2048):
@@ -148,49 +198,104 @@ class KirruWarp:
             d[a:a + 2048] = np.sqrt(((q[:, None, :] - self.seam[None, :, :]) ** 2).sum(axis=2)).min(axis=1)
         return smoothstep(0.0, self.fade, d)
 
-    def cranium(self, P: np.ndarray) -> np.ndarray:
-        """The skull lengthened behind the ears and rounded (a pure y stretch behind the head centre)."""
-        k = float(self.kp["cranium_length"]) - 1.0
-        dy = np.maximum(P[:, 1] - self.yc, 0.0)
-        out = P.copy()
-        out[:, 1] = out[:, 1] + dy * k * smoothstep(self.yc - 0.01 * self.s, self.yc + 0.05 * self.s, P[:, 1])
-        return out
+    def eye_weight(self, P: np.ndarray, sd: str) -> np.ndarray:
+        r0, r1 = (float(x) for x in self.oh["eye_region_m"])
+        return 1.0 - smoothstep(r0, r1, np.linalg.norm(P - self.eye0[sd], axis=1))
 
-    def ears(self, P: np.ndarray, ear_w: dict) -> np.ndarray:
-        """Each ear scaled about its centre and moved up and back; the old notch in the left ear's rim."""
+    def mouth_weight(self, P: np.ndarray) -> np.ndarray:
+        q = (P - self.mouth0) / self.mouth_r
+        return 1.0 - smoothstep(1.0, 1.8, np.linalg.norm(q, axis=1))
+
+    def ears(self, P: np.ndarray, ear_w: dict) -> tuple[np.ndarray, np.ndarray]:
+        """Each ear's points scaled about its centre and set on the skull's side, low and back (`ear_at`); the old
+        notch bitten out of the left ear's rim. Returns (the moved points, the ear weight)."""
         out = P.copy()
+        wsum = np.zeros(len(P))
         sc = float(self.kp["ear_scale"])
-        ox, oy, oz = (float(v) for v in self.kp["ear_offset_m"])  # the stage's frame: x left, y up, z forward
-        off = np.array([ox, -oz, oy])  # -> Blender's: x left, y back, z up
+        oh = self.oh
         for sd, w in ear_w.items():
             m = w > 0.5
             if not m.any():
                 continue
+            sg = 1.0 if sd == "L" else -1.0
             c = (P[m] * w[m, None]).sum(axis=0) / w[m].sum()
-            tgt = c + off + (P - c) * sc
-            out = out + (tgt - P) * w[:, None]
+            at = self.origin + np.array([sg * 0.3, float(oh["ear_at"][0]), float(oh["ear_at"][1])])
+            # out along x from the skull's mid-plane to its side
+            for t in np.linspace(0.0, 0.3, 301):
+                q = (at + np.array([sg * t, 0.0, 0.0]))[None, :]
+                if self.sdf(q)[0] > 0.0:
+                    break
+            c2 = self.project(q)[0] + self.normal(q)[0] * 0.004 * self.s
+            tgt = c2 + (P - c) * sc
             nt = self.kp.get("ear_notch", {})
             if nt and str(nt.get("side", "L")).upper() == sd:
-                Q = out[m]
-                sgn = 1.0 if sd == "L" else -1.0
-                # the rim's top-back: the point of the ear farthest out and up from its centre
-                c2 = c + off
-                score = (Q[:, 0] - c2[0]) * sgn * 0.3 + (Q[:, 2] - c2[2]) + 0.4 * (Q[:, 1] - c2[1])
+                Q = tgt[m]
+                score = (Q[:, 0] - c2[0]) * sg * 0.3 + (Q[:, 2] - c2[2]) + 0.4 * (Q[:, 1] - c2[1])
                 rim = Q[int(np.argmax(score))]
-                r = EAR_NOTCH_RADIUS * self.s
-                d = np.linalg.norm(out - rim, axis=1)
-                pull = (1.0 - smoothstep(0.0, r, d)) * m * float(nt["depth_m"])
-                to_c = c2 - out
+                d = np.linalg.norm(tgt - rim, axis=1)
+                pull = (1.0 - smoothstep(0.0, EAR_NOTCH_RADIUS * self.s, d)) * float(nt["depth_m"])
+                to_c = c2 - tgt
                 to_c /= np.maximum(np.linalg.norm(to_c, axis=1, keepdims=True), 1e-9)
-                out = out + to_c * pull[:, None]
+                tgt = tgt + to_c * pull[:, None]
+            out = out + (tgt - out) * w[:, None]
+            wsum = np.maximum(wsum, w)
+        return out, wsum
+
+    def radial(self, P: np.ndarray) -> np.ndarray:
+        """Each point moved along its ray from the head's centre (`centre`) to the surface: one-to-one, so the
+        skin never folds (the Kirru head is star-shaped about that point)."""
+        C = self.origin + np.asarray(self.oh["centre"], dtype=float)
+        D = np.asarray(P, dtype=float) - C
+        L = np.maximum(np.linalg.norm(D, axis=1, keepdims=True), 1e-9)
+        U = D / L
+        lo, hi = np.zeros(len(P)), np.full(len(P), 0.5)
+        for _ in range(40):
+            mid = 0.5 * (lo + hi)
+            inside = self.sdf(C + U * mid[:, None]) < 0.0
+            lo, hi = np.where(inside, mid, lo), np.where(inside, hi, mid)
+        return C + U * (0.5 * (lo + hi))[:, None]
+
+    def raw_move(self, P: np.ndarray) -> np.ndarray:
+        """The unsmoothed move: onto the surface along the rays, with the eyes and the mouth carried rigidly."""
+        P = np.asarray(P, dtype=float)
+        Q = self.radial(P)
+        for sd in ("L", "R"):
+            w = self.eye_weight(P, sd)
+            Q = Q + ((P + self.eye_d[sd]) - Q) * w[:, None]
+        wm = self.mouth_weight(P)
+        Q = Q + (self.mouth_move(P) - Q) * wm[:, None]
+        return Q - P
+
+    def mouth_move(self, P: np.ndarray) -> np.ndarray:
+        """The mouth's rigid move, its width drawn in to a short line."""
+        M = P + self.mouth_d
+        M[:, 0] = (P[:, 0] - self.mouth0[0]) * self.mouth_x + self.mouth0[0] + self.mouth_d[0]
+        return M
+
+    def move(self, P: np.ndarray) -> np.ndarray:
+        """The smoothed move. Away from the eyes and the mouth only `detail_keep` of the donor's own relief (its
+        offset from the local average) is kept: the human brow, cheekbones and nose do not show through the skull."""
+        out = np.zeros((len(P), 3))
+        k = -0.5 / (self.sigma * self.sigma)
+        keep0 = float(self.oh["detail_keep"])
+        keep = np.maximum(np.maximum(self.eye_weight(P, "L"), self.eye_weight(P, "R")), self.mouth_weight(P))
+        keep = keep0 + (1.0 - keep0) * keep
+        for a in range(0, len(P), 1024):
+            q = P[a:a + 1024]
+            d2 = ((q[:, None, :] - self.samples[None, :, :]) ** 2).sum(axis=2)
+            w = np.exp(k * d2)
+            ws = np.maximum(w.sum(axis=1, keepdims=True), 1e-30)
+            mv = (w @ self.raw) / ws
+            avg = (w @ self.samples) / ws
+            out[a:a + 1024] = mv - (1.0 - keep[a:a + 1024, None]) * (q - avg)
         return out
 
     def __call__(self, P: np.ndarray, ear_w: dict | None = None) -> np.ndarray:
-        P = np.asarray(P, dtype=float)
-        Q = self.cranium(P)
+        P = thicken_neck(np.asarray(P, dtype=float), self.lm, self.kp)
+        Q = P + self.move(P)
         if ear_w is not None:
-            Q = self.ears(Q, ear_w)
-        Q = self.rbf(Q)
+            E, we = self.ears(P, ear_w)
+            Q = Q + (E - Q) * we[:, None]
         w = self.seam_weight(P)
         return P + (Q - P) * w[:, None]
 
@@ -204,14 +309,40 @@ def head_vertices(F: np.ndarray, freg: np.ndarray, n: int) -> tuple[np.ndarray, 
     return vh, vh & vb
 
 
+def thicken_neck(V: np.ndarray, lm, kp: dict) -> np.ndarray:
+    """The neck thickened round its own axis (`neck_scale`: at the sternal notch, and at the skull's base), fading
+    out above the jaw: the thick otter neck that merges into the head (look-dev review). Every vertex, head and body
+    alike, so the seam stays welded."""
+    a, b = (float(x) for x in kp["otter_head"]["neck_scale"])
+    nb, hc = lm.P("notch"), lm.P("head_c")
+    z0, z1 = float(nb[2]) + 0.02 * lm.S, float(lm.P("chin")[2])
+    z = V[:, 2]
+    t = np.clip((z - z0) / (z1 - z0), 0.0, 1.0)
+    k = (a + (b - a) * smoothstep(0.0, 0.8, t)) * (1.0 - smoothstep(0.85, 1.0, t)) + smoothstep(0.85, 1.0, t)
+    on = smoothstep(z0 - 0.06 * lm.S, z0, z)  # nothing below the notch
+    k = 1.0 + (k - 1.0) * on
+    yc = float(nb[1]) + 0.03 * lm.S + (float(hc[1]) - float(nb[1]) - 0.03 * lm.S) * t
+    out = V.copy()
+    out[:, 0] = V[:, 0] * k
+    out[:, 1] = yc + (V[:, 1] - yc) * k
+    return out
+
+
 def kirru_warp(V: np.ndarray, F: np.ndarray, freg: np.ndarray, lm, face, kp: dict) -> tuple[np.ndarray, KirruWarp]:
     """The donor body with its head warped (body vertices unchanged), and the warp itself."""
+    Vt = thicken_neck(V, lm, kp)
     head, seam = head_vertices(F, freg, len(V))
-    warp = KirruWarp(V, head, seam, lm, face, kp)
+    mf = freg == "mouth"
+    inner = np.zeros(len(V), bool)
+    inner[np.unique(F[mf][F[mf] >= 0])] = True
+    warp = KirruWarp(Vt, head, seam, lm, face, kp, inner)
     ew = ear_weights(len(V))
-    out = V.copy()
+    out = Vt.copy()
     ids = np.nonzero(head & ~seam)[0]
     out[ids] = warp(V[ids], {k: w[ids] for k, w in ew.items()})
+    for sd in ("L", "R"):  # the eye frames ride with their regions (the lids, lashes and globes are built on them)
+        face.eyes[sd].E = face.eyes[sd].E + warp.eye_d[sd]
+    lm.pts["eye"] = face.eyes["L"].E.copy()
     return out, warp
 
 
@@ -242,8 +373,8 @@ def reread_landmarks(lm, face, V: np.ndarray, head: np.ndarray, warp: KirruWarp,
     mid = head & (np.abs(V[:, 0]) < 0.003 * s)
     for k in ("subnasale", "mouth", "chin", "brow"):
         lm.pts[k] = warp(before[k][None, :])[0]
-    # the pad's front: the most forward midline skin within a centimetre of where the warp took the nose tip
-    zt = float(warp(before["nose_tip"][None, :])[0][2])
+    # the pad's front: the most forward midline skin within a centimetre of the nose pad's centre
+    zt = float(warp.pad[0][2])
     band = mid & (np.abs(V[:, 2] - zt) < 0.01 * s) & (V[:, 2] < E[2] - 0.01 * s) & (V[:, 1] < warp.yc)
     lm.pts["nose_tip"] = V[np.nonzero(band)[0][np.argmin(V[band, 1])]].copy()
     corner = warp(np.array([[commissure, before["mouth"][1] + 0.006 * s, before["mouth"][2]]]))[0]
