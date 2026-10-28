@@ -589,6 +589,40 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
+- **MERGE-READY @ 9f4d11ab: the Lead's two Ch1 shots.** It also merges big13 (99a077ef).
+  - **The big13 merge (99a077ef):**
+    - `arenas.json`: kept ours, the final `wall_head_storm` arena, because integration had reverted it to greybox.
+    - The shrine GI was rebaked for the merged inputs.
+    - `shots.json`: theirs plus our 42.
+    - `PROVENANCE.md` and `ownership.md`: line unions.
+    - Baselines: theirs.
+  - **`ch01_underway_gallery`:**
+    - Cause: the follow camera sat outside the gallery's south wall, and the two 3.2 m bays filled the frame.
+    - Fix (`tools/ch01/ch01_underway_dressing.py`): that wall now lies fallen outward onto the terrace. It is two
+      tilted `tower_bay_broken` pieces plus rubble.
+    - The greybox wall still blocks movement but is not drawn.
+  - **`ch01_o10_gull`:** three causes, all fixed.
+    - **The glow veiled the frame.** O10 is a fov-14 telephoto into a cloud bank, and the Oruvel grade's glow
+      (threshold 1.2, bloom 0.03) washed the bloom from the cloud over everything.
+      - The grade now has threshold 3.0 and bloom 0, so sky and cloud no longer bloom; glints and lamps still do.
+      - This is in the kit preview's environment, and both zone copies were re-copied.
+    - **The camera saw the unlit underside.** The real carving, `lintel_gull_open`, sits on the chandlery's roof.
+      From the low camera we saw its underside, which the noon sun doesn't reach, so it read as a flat grey shape.
+      - It is now side-on to O10, with the beak south and clear of the dive raft's post.
+      - A warm water-bounce omni sits below it and in front (energy 6, range 6).
+    - These are in `tools/ch01/ch01_oruvel_dressing.py`.
+  - **Also fixed:** `ou_zone_dressing.py`, my old Underway preview dressing, crashed on the merged greybox's stair
+    (it divided by zero). It is now guarded and regenerated.
+  - **SELF-RENDERED @ 9f4d11ab:** ch01_underway_gallery, ch01_o10_gull, ch01_oruvel_dressed, ch01_o07_name_board,
+    oruvel_o01_surfacing, oruvel_o19_dive_mooring, zone_oruvel_o09.
+    - **Intended drift:** gallery (rmse 0.094) and o10 (0.068).
+      - Gallery: Rhen is framed in the colonnade with the lamp-columns ahead, and the wall lies on the sand.
+      - O10: a carved-wood gull in profile with its throat open, against a clean cloud.
+      - **Re-approve both.**
+    - **Pass:** oruvel_dressed, o07, o01 and o19; the glow change doesn't move them.
+    - zone_oruvel_o09 has no baseline; it is my preview, and I viewed it.
+  - **Gates:** validate_data 0/0; taskboard --check; unittest for ch01_oruvel/underway_dressing, oruvel_kit,
+    zone_dressing_ch01 and post_import (36, OK). No GDScript was touched.
 - **2026-10-28 ~10:30: FAST-TRACK M3-ENV-752, the opening cinematic read GREYSCALE (the human's playtest).**
   - **Cause 1, for the Lead to merge:** the integration build's `prologue.tscn` (7855d016) still builds the city from
     primitives. slice-polish's mount of the final city and its WaterSurface is on `claude/m2-slice` (ead04bab, 2ab7a66e,
