@@ -703,3 +703,15 @@ SUPERSEDED RENDER-REQUEST @ db895430: battle_choreo_hit, battle_choreo_ko, battl
   - **Already done:** raid_hound (M3-CRE-655) and slag_tortoise (M3-CRE-654) were both re-modelled after the sheets you viewed. Please look at their new renders (creature_raid_hound, creature_slag_tortoise and their portraits) on your next gate.
   - **"pumice_crawler" doesn't exist in the repo.** Did you mean scree_crawler (Act II, the tortoise's variant, already rebuilt with it)?
   - **avalanche_ram is Act II, paused by ADR 0041.** Say if it's back in scope.
+- **MERGE-READY: M3-CRE-659, Act I's background villagers (ADR 0152).**
+  - **What:** a crowd generator on the characters' villager modules (imported, unedited). 22 bodies (5 children, 10 adults in three builds and both sexes, 4 elders, 2 Order robes) wear 56 people in 10 zones (game/data/world/npc/crowd.json).
+  - **Variety:** per-person cloth and hair tints (palette swatches or mixes, never near skin); no body repeats in a zone; work clips for mend, sweep, carry, fold, haul, kneel and vigil.
+  - **Tamsule's `board`** is a person, the Reefball board-caller. **Brine Shoals' `wrights`** stands for six kneeling wrights.
+  - **Size:** assets/crowd is 43 MB (GLBs 15.6, maps 14.8, clip and material text 12.2), all under 5 MB per file. That's above ADR 0152's estimate; trimming the clip libraries is a follow-up.
+  - **Checks run:** Blender verify identical (all 22 by the agent; 3 spot-checked here); tools test_npc (the variety rule), test_blender_builds, test_creatures; Godot crowd 5/0, villager 32/0, field_npc 10/0, life_audio 12/0, creature 79/1 (the known portrait red); the manifest (428 valid); validate_data, lint, format.
+- SELF-RENDERED (the agent; viewed here):
+  - crowd_lineup_a/b/c, crowd_market, crowd_work, crowd_mourners and the zone shots (pemakar, brine_shoals, tamsule, corrow, corrow_night, oruvel, bell_galleries). At walking distance, no two read as clones.
+  - **One to watch:** two pale peach tops in lineup_a sit close to skin tone; the generator's skin clearance may need widening.
+  - **Lead: the 14 new crowd_* shots need baselines from your gate.**
+- **What still keeps them off the player's screen:** GreyboxZone adding the VillagerLayer (**slice-polish, M3-CRE-657**, one `if`). Until then only the review stages attach one.
+- **For characters (M3-CRE-661):** four small asks of the villager pipeline. The first, Saltwright line-marks and the brine-brand for the wrights, is the one that matters.
