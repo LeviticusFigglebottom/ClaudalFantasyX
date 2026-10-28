@@ -3,6 +3,13 @@
 ## NEW ACCOUNT (from 2026-10-25)
 Session `session_01Wmj8xaLtwcqiS3qwC6PciW`. Integration branch `claude/undertow-lead-handoff-ze8rrn`. Newest first.
 
+- **M3-AUD-861, more Act I gaps closed (pushed):**
+  - **The Ch8 boss played the default battle music.** The `undertows_reach` encounter now plays its own three-stem cue: `dark` (60% HP) brings in stem 1 and `breach` (30%) stem 2.
+  - **The seawall's three waves** (`ch08_stair_hold_1..3`) play `seawall_hold`, each starting with one more stem (aliases `seawall_hold_rope` and `seawall_hold_last`).
+  - The audit has a new **Battles** section (every boss fight has its own cue, and every stem phase a row), at 0. A test was added to test_battle_audio.
+  - **Footsteps:** Oruvel and the ferry are wood; Haluna's wake, the Brine Shoals and Corrow's night strand are sand. Before this, every zone fell back to stone.
+  - The audit's 5 remaining items are unchanged, all other tracks' (M3-AUD-834; claude/ui).
+
 - **MERGE-READY: M3-AUD-861 and M3-AUD-863. The Act I audio audit is down to 5 items, all of them other tracks' blockers.**
   - **Ysolde's theme final:** a 91.4 s loop with a lower zither answering her held notes. It replaces the sketch
     at the same path so her Ch4 cutscenes play it. 802 KB, within budget, and byte-identical to the composer's
