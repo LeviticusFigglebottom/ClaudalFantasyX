@@ -589,6 +589,19 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
+- **MERGE-READY @ (this push): M3-ENV-1316 (env-art-b's request), part 1: the trader boat's cargo and Ashcrown's
+  flying stair.**
+  - **Corrow `trader_boat`:** the bales were plain sail-white blocks. They are now rounded cloth-wrapped bales (ochre,
+    red) and wicker crates, each bound by three rope bands and set down a little askew.
+  - **Ashcrown `flying_stair`:** the cheek's outer face was one flat plane. A string course now runs down the 48°
+    slope under the coping, and pilaster ribs stand proud every 3 m from the soffit (13.1k → 12.2k after the tilted
+    courses; budget 14k).
+  - **Viewed:** `ch08_corrow_arrival` (the bales read as roped cargo); `ch05_ashcrown_forecourt` (the stair's side
+    has relief and no spikes).
+  - **Row 26 (Ashcrown tiers "untextured grey" at High):** on lavapipe the tiers render textured (ashlar coursing,
+    buttresses, veins). That points at the PC's texture or import state at High, not the meshes. **LEAD-ASK:** have
+    the PC re-check row 26 on a fresh import.
+  - **Next:** 1316's Coilspire far headland ground, and row 5 (the Brine Shoals mudflat and `camp_tent`).
 - **MERGE-READY @ cbd7f5600: M3-ENV-1323 (env-art-b's request; GPU QA rows 15 and 40), the Underway arenas'
   hard-edged lit rectangles.**
   - Cause: the arena's sun cast its window openings onto the floor as hard panes, but underwater the light comes
