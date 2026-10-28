@@ -84,10 +84,11 @@ static func _holds(intro: BattleBossIntro, pose: Dictionary, bounds: AABB, occlu
 	return true
 
 
-## True when each party member is off screen, or inside the safe frame's top and sides (clear of the timeline; the
-## command menu is hidden through the intro, so a hero may stand at the frame's foot) and at most fit.party_max_h of
-## the screen tall. Unlike corner tests, a fighter filling the lens (every corner off screen) counts as on screen: its
-## projected rectangle is what is checked, and a box reaching behind the lens fails outright.
+## True when each party member (its body, _body) is off screen, or inside the safe frame's top and sides (clear of
+## the timeline; the command menu is hidden through the intro, so a hero may stand at the frame's foot) and at most
+## hero.party_max_h (else fit.party_max_h) of the screen tall: the party is welcome at the foot of a hero shot.
+## Unlike corner tests, a fighter filling the lens (every corner off screen) counts as on screen: its projected
+## rectangle is what is checked, and a box reaching behind the lens fails outright.
 static func _party_small(intro: BattleBossIntro, pose: Dictionary) -> bool:
 	var director := intro._choreo.camera
 	var pos: Vector3 = pose["pos"]
@@ -95,12 +96,14 @@ static func _party_small(intro: BattleBossIntro, pose: Dictionary) -> bool:
 	var half := tan(deg_to_rad(float(pose["fov"])) * 0.5)
 	var aspect := director._aspect()
 	var safe := director.data.get("safe_frame", {}) as Dictionary
-	var max_h := float((intro.cfg.get("fit", {}) as Dictionary).get("party_max_h", 1.0))
+	var fit_max := float((intro.cfg.get("fit", {}) as Dictionary).get("party_max_h", 1.0))
+	var hero_cfg := intro.cfg.get("hero", {}) as Dictionary
+	var max_h := float(hero_cfg.get("party_max_h", fit_max))
 	for c in intro._engine.party_active:
 		var f := intro._ctl.stage.stand_in(c.id)
 		if f == null or not f.is_visible_in_tree():
 			continue
-		var b := intro._bounds(f)
+		var b := _body(intro, f)
 		var lo := Vector2(INF, INF)
 		var hi := Vector2(-INF, -INF)
 		var behind := false
@@ -129,6 +132,15 @@ static func _party_small(intro: BattleBossIntro, pose: Dictionary) -> bool:
 	return true
 
 
+## A hero's body (camera parent space): its stand-in's height and radius over its feet. Not its meshes' bounds: big14's
+## actors carry their props (Toma's spear and shield span 1.8 m), which made every hero look in the way.
+static func _body(intro: BattleBossIntro, f: FighterStandIn) -> AABB:
+	var feet := intro._choreo.camera._parent_inverse() * f.global_position
+	var r := float(f.spec.get("radius", 0.3))
+	var h := float(f.spec.get("height", 1.7))
+	return AABB(feet + Vector3(-r, float(f.spec.get("hover", 0.0)), -r), Vector3(r * 2.0, h, r * 2.0))
+
+
 ## True when some party member is (at least partly) on screen in `pose`.
 static func _party_in_frame(intro: BattleBossIntro, pose: Dictionary) -> bool:
 	var director := intro._choreo.camera
@@ -137,7 +149,7 @@ static func _party_in_frame(intro: BattleBossIntro, pose: Dictionary) -> bool:
 	for c in intro._engine.party_active:
 		var f := intro._ctl.stage.stand_in(c.id)
 		if f != null and f.is_visible_in_tree():
-			var b := intro._bounds(f)
+			var b := _body(intro, f)
 			if director.in_frame(xform, float(pose["fov"]), b.get_center(), {}):
 				return true
 	return false
@@ -151,7 +163,7 @@ static func _occluders(intro: BattleBossIntro, boss: AABB) -> Array[AABB]:
 	for c in intro._engine.party_active:  # a hero between the lens and the boss blocks it too
 		var hero := intro._ctl.stage.stand_in(c.id)
 		if hero != null and hero.is_visible_in_tree():
-			out.append(intro._bounds(hero))
+			out.append(_body(intro, hero))
 	var arena := intro._ctl.get_node_or_null(NodePath(String(BattleArena.ARENA_NODE))) as Node3D
 	if arena == null:
 		return out

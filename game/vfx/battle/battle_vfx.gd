@@ -101,6 +101,8 @@ func attach(controller: BattleController, engine: BattleEngine) -> void:
 			func(vb: BattleCombatant) -> void: play_event.call_deferred(&"vowbound_call", vb.id)
 		)
 		engine.vowbound.departed.connect(_on_vowbound_departed)
+	engine.turn_ended.connect(func(_a: BattleCombatant, changes: Array[Dictionary]) -> void: play_ticks(changes))
+	engine.turn_lost.connect(_on_turn_lost)
 	prebuild()
 	var opening_event := _opening_event(engine.opening)
 	if opening_event != &"":
@@ -126,6 +128,27 @@ func prebuild() -> int:
 			_emitter(StringName("%s#%d" % [effect_id, i]), def.merged(layers[i] as Dictionary, true))
 			count += 1
 	return count
+
+
+## M3-BPR-424: an end-of-turn effect shows on its fighter (BattleEngine.turn_ended's changes: poison, regen, a Doom
+## count, Doom falling), each by map.ticks[cause]. Regen under Zombie (amount > 0) hurts: it plays the poison tick.
+func play_ticks(changes: Array[Dictionary]) -> void:
+	var ticks := (data.get("map", {}) as Dictionary).get("ticks", {}) as Dictionary
+	for c in changes:
+		var cause := str(c.get("cause", ""))
+		if cause == "regen" and int(c.get("amount", 0)) > 0:
+			cause = "poison"
+		var eid := str(ticks.get(cause, ""))
+		if eid != "":
+			play(StringName(eid), StringName(str(c.get("target_id", ""))))
+
+
+## A turn eaten by Sleep or Stop shows on the sleeper (map.ticks.sleep / stop), then its Doom ticks.
+func _on_turn_lost(actor: BattleCombatant, reason: StringName, changes: Array[Dictionary]) -> void:
+	var eid := str(((data.get("map", {}) as Dictionary).get("ticks", {}) as Dictionary).get(String(reason), ""))
+	if eid != "":
+		play(StringName(eid), actor.id)
+	play_ticks(changes)
 
 
 func _on_vowbound_departed(vb: BattleCombatant, fell: bool) -> void:

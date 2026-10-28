@@ -260,6 +260,25 @@ SWELL_BY_HERO = {
 }
 SWELL_SOUNDS = {"swell_weighted_swing": "hit_none", "swell_reel_stop": "status_apply"}
 
+# M3-BPR-424: the end-of-turn ticks (BattleEngine.turn_ended / turn_lost; BattleVfx.play_ticks), by cause in map.ticks:
+# poison and regen each turn, a Doom count and Doom falling, a turn lost to Sleep or Stop. Regen is water rising (never
+# glimmer); Doom sinks dark (never a release); a Zombie's regen hurts and plays the poison tick.
+TICKS = {
+    "poison": ("tick_poison", fx("chest", [layer("palm_green", "foliage_shadow", 30, 0.8, 0.55, (0.3, 0.8), 45, (0, 0.5, 0),
+                                                 (0.1, 0.2), radius=0.3, turb=0.3, energy=1.4)],
+                                 "Poison takes its turn's toll: sick green welling out of the fighter.")),
+    "regen": ("tick_regen", fx("chest", rise("turquoise_shallow", "foam_white", 24, 0.9),
+                               "Regen mends a little: shallow water lifting off (water, not glimmer).")),
+    "doom_tick": ("tick_doom", fx("head", sink("night_sky", "abyss_navy", 20), "A Doom count falls: a little dark settling.")),
+    "doom": ("tick_doom_fall", fx("chest", sink("abyss_navy", "night_sky", 64), "Doom comes due: the dark comes down whole.")),
+    "sleep": ("tick_sleep", fx("head", [layer("moon_blue", "starlight", 14, 1.4, 0.2, (0.1, 0.3), 30, (0, 0.25, 0),
+                                              (0.08, 0.16), radius=0.25, turb=0.2, energy=1.3)],
+                               "A turn lost to Sleep: slow pale motes drifting over the sleeper.")),
+    "stop": ("tick_stop", fx("feet", ring("salt_glass", "cold_blue_stone", 30), "A turn lost to Stop: a still ring of salt-glass.")),
+}
+TICK_SOUNDS = {"tick_poison": "status_apply", "tick_regen": "heal", "tick_doom": "status_apply",
+               "tick_doom_fall": "ko_release", "tick_sleep": "status_apply", "tick_stop": "status_apply"}
+
 
 SFX = ROOT / "game/data/audio/battle_sfx.json"
 
@@ -322,6 +341,10 @@ def main() -> int:
         data["map"]["events"][eid] = eid
     for eid, eff in BOSS_EFFECTS.items():
         data["effects"][eid] = eff
+    data["map"]["ticks"] = {}
+    for cause, (eid, eff) in TICKS.items():
+        data["effects"][eid] = eff
+        data["map"]["ticks"][cause] = eid
     data["map"]["swell_by_hero"] = {}
     for hero, (eid, eff) in SWELL_BY_HERO.items():
         data["effects"][eid] = eff
@@ -341,6 +364,8 @@ def main() -> int:
         sfx["vfx"].setdefault(eid, sfx["events"][key])
     for eid in BOSS_EFFECTS:
         sfx["vfx"].setdefault(eid, sfx["vfx"][BOSS_SOUNDS.get(eid, "status_apply")])
+    for eid, key in TICK_SOUNDS.items():
+        sfx["vfx"].setdefault(eid, sfx["vfx"][key])
     for eid, key in SWELL_SOUNDS.items():
         sfx["vfx"].setdefault(eid, sfx["vfx"][key])
     sfx_out = json.dumps(sfx, indent=2) + "\n"
