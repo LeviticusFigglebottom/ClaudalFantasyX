@@ -1,0 +1,131 @@
+{
+  "_about": "The Haluna smith at the forge (haluna.tscn NPCs/Town/Smith, the haluna_forge shop), about 42 (M3-CHR-516). Big, heavy-shouldered and forge-dark: short black hair, a black stubble, soot in the fingertips; an undyed work shirt with the sleeves pushed up and rolled above the elbow, indigo knee trousers, a wide hide apron to the knee straight over them (the fifth cloth slot, cloth_d, tuned less sheeny), a narrow brown tie at the waist, sandals. Reach-bands left 1, right 1: a smith, not a sailor. Face sliders relative to the MakeHuman donor (ADR 0021: 1.0 / 0.0 = unchanged). Keys starting with '_' are read by the villager_* modules (villager_hair, villager_costume, villager_textures, write_materials, villager_clips), not by bb_params.",
+  "name": "smith",
+  "height_m": 1.76,
+  "heads_tall": 7.3,
+  "shoulder_width_heads": 1.92,
+  "chest_width_heads": 1.42,
+  "chest_depth_heads": 1.06,
+  "waist_width_heads": 1.24,
+  "hip_width_heads": 1.42,
+  "crotch_height_heads": 3.5,
+  "arm_span_ratio": 1.03,
+  "hand_length_heads": 0.84,
+  "foot_length_ratio": 0.152,
+  "neck_length_heads": 0.36,
+  "neck_width_ratio": 0.64,
+  "head_width_ratio": 0.68,
+  "femininity": 0.0,
+  "muscle": 0.9,
+  "mass": 0.42,
+  "breast": 0.0,
+  "eye_scale": 1.02,
+  "ipd_m": 0.064,
+  "arm_abduction_deg": 47.0,
+  "skin_hex": "#6E452E",
+  "eye_tilt_deg": 0.0,
+  "jaw_width": 1.12,
+  "cheekbone_height": -0.002,
+  "cheekbone_width": 1.08,
+  "chin_size": 1.08,
+  "nose_bridge_width": 1.12,
+  "nose_tip_projection": 1.04,
+  "lip_fullness": 0.84,
+  "lip_close": 0.6,
+  "lip_seal": 0.96,
+  "lip_lower_fullness": 0.74,
+  "mouth_corner_lift": 0.0,
+  "brow_ridge": 1.2,
+  "donor_mix_african": 0.6,
+  "donor_mix_asian": 0.3,
+  "donor_mix_caucasian": 0.1,
+  "_skin": {
+    "hex": "#6E452E",
+    "age": 0.3,
+    "freckles": 0,
+    "reach_bands": {
+      "L": 1,
+      "R": 1
+    },
+    "ink_opacity": 0.6,
+    "stubble": 0.55,
+    "stubble_grey": 0.0,
+    "fingertip_oil": 0.3,
+    "seed": 114,
+    "lip": "#5A352C"
+  },
+  "_hair": {
+    "kind": "short",
+    "hairline": "male",
+    "seed": 34,
+    "length_m": [
+      0.018,
+      0.03
+    ],
+    "scalp_cards": [
+      200,
+      160,
+      110
+    ],
+    "hairline_cards": 40,
+    "rise": 0.8,
+    "colour": "#141417",
+    "underpaint": "#16161A"
+  },
+  "_eyes": {
+    "iris": "#22160E"
+  },
+  "_costume": {
+    "top": {
+      "mat": "cloth_a",
+      "hem": "hip",
+      "sleeve": 0.36,
+      "cuff_roll_m": 0.013,
+      "neck_v_m": 0.075
+    },
+    "trousers": {
+      "mat": "cloth_b",
+      "hem": "knee",
+      "loose_m": 0.012
+    },
+    "apron": {
+      "mat": "cloth_d",
+      "hem": "knee",
+      "half_deg": 66,
+      "seed": 82,
+      "over_trousers": true,
+      "flare": 0.1,
+      "extra_m": 0.018
+    },
+    "sash": {
+      "mat": "cloth_c",
+      "width_m": 0.035,
+      "turns": 1,
+      "tails_m": 0.16
+    },
+    "sandals": "leather"
+  },
+  "_tints": {
+    "cloth_a": "#C4B394",
+    "cloth_b": "#2F3A62",
+    "cloth_c": "#5E4430",
+    "leather": "#FFFFFF",
+    "cloth_d": "#5A3826"
+  },
+  "_cloth_params": {
+    "cloth_d": {
+      "roughness_scale": "0.7",
+      "sheen_intensity": "0.25"
+    }
+  },
+  "_build": {
+    "shapes": "all",
+    "host_snaps": true,
+    "garment_fit": true
+  },
+  "_persona": {
+    "sway": 0.6,
+    "lean": 1.5,
+    "arms_down": 36.0
+  }
+}

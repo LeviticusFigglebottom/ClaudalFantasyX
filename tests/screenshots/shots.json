@@ -5173,6 +5173,436 @@
         540
       ],
       "settle_frames": 30
+    },
+    {
+      "id": "villager_shopkeeper_front",
+      "scene": "res://game/levels/_tests/characters/villagers/shopkeeper_stage.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_smith_front",
+      "scene": "res://game/levels/_tests/characters/villagers/smith_stage.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_innkeeper_front",
+      "scene": "res://game/levels/_tests/characters/villagers/innkeeper_stage.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_clerk_front",
+      "scene": "res://game/levels/_tests/characters/villagers/clerk_stage.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_wright_girl_front",
+      "scene": "res://game/levels/_tests/characters/villagers/wright_girl_stage.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_wright_child_a_front",
+      "scene": "res://game/levels/_tests/characters/villagers/wright_child_a_stage.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_wright_child_b_front",
+      "scene": "res://game/levels/_tests/characters/villagers/wright_child_b_stage.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_reeds_lineup",
+      "scene": "res://game/levels/_tests/characters/villagers/reeds_lineup.tscn",
+      "camera": "Cameras/Lineup",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_smith_face",
+      "scene": "res://game/levels/_tests/characters/villagers/smith_stage.tscn",
+      "camera": "Cameras/Face",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_innkeeper_face",
+      "scene": "res://game/levels/_tests/characters/villagers/innkeeper_stage.tscn",
+      "camera": "Cameras/Face",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_clerk_face",
+      "scene": "res://game/levels/_tests/characters/villagers/clerk_stage.tscn",
+      "camera": "Cameras/Face",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_clerk_clip_heat_iron",
+      "scene": "res://game/levels/_tests/characters/villagers/clerk_heat_iron.tscn",
+      "camera": "Cameras/ThreeQuarter",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_reed_a_clip_pole_barge",
+      "scene": "res://game/levels/_tests/characters/villagers/reed_a_pole_barge.tscn",
+      "camera": "Cameras/ThreeQuarter",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_wright_girl_clip_arm_held_out",
+      "scene": "res://game/levels/_tests/characters/villagers/wright_girl_arm_held_out.tscn",
+      "camera": "Cameras/ThreeQuarter",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_wright_child_a_clip_crawl_out",
+      "scene": "res://game/levels/_tests/characters/villagers/wright_child_a_crawl_out.tscn",
+      "camera": "Cameras/ThreeQuarter",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_sabe_front",
+      "scene": "res://game/levels/_tests/characters/villagers/sabe_stage.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_sabe_face",
+      "scene": "res://game/levels/_tests/characters/villagers/sabe_stage.tscn",
+      "camera": "Cameras/Face",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_scaleman_front",
+      "scene": "res://game/levels/_tests/characters/villagers/scaleman_stage.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_scaleman_face",
+      "scene": "res://game/levels/_tests/characters/villagers/scaleman_stage.tscn",
+      "camera": "Cameras/Face",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_skipper_sadi_front",
+      "scene": "res://game/levels/_tests/characters/villagers/skipper_sadi_stage.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_skipper_sadi_face",
+      "scene": "res://game/levels/_tests/characters/villagers/skipper_sadi_stage.tscn",
+      "camera": "Cameras/Face",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_ferrymaster_front",
+      "scene": "res://game/levels/_tests/characters/villagers/ferrymaster_stage.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_ferrymaster_face",
+      "scene": "res://game/levels/_tests/characters/villagers/ferrymaster_stage.tscn",
+      "camera": "Cameras/Face",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_purser_front",
+      "scene": "res://game/levels/_tests/characters/villagers/purser_stage.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_purser_face",
+      "scene": "res://game/levels/_tests/characters/villagers/purser_stage.tscn",
+      "camera": "Cameras/Face",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_elder_front",
+      "scene": "res://game/levels/_tests/characters/villagers/elder_stage.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_elder_face",
+      "scene": "res://game/levels/_tests/characters/villagers/elder_stage.tscn",
+      "camera": "Cameras/Face",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_garo_front",
+      "scene": "res://game/levels/_tests/characters/villagers/garo_stage.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_garo_face",
+      "scene": "res://game/levels/_tests/characters/villagers/garo_stage.tscn",
+      "camera": "Cameras/Face",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_tender_front",
+      "scene": "res://game/levels/_tests/characters/villagers/tender_stage.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_tender_face",
+      "scene": "res://game/levels/_tests/characters/villagers/tender_stage.tscn",
+      "camera": "Cameras/Face",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_ione_front",
+      "scene": "res://game/levels/_tests/characters/villagers/ione_stage.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_ione_face",
+      "scene": "res://game/levels/_tests/characters/villagers/ione_stage.tscn",
+      "camera": "Cameras/Face",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_poolkeeper_front",
+      "scene": "res://game/levels/_tests/characters/villagers/poolkeeper_stage.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_poolkeeper_face",
+      "scene": "res://game/levels/_tests/characters/villagers/poolkeeper_stage.tscn",
+      "camera": "Cameras/Face",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_fenn_front",
+      "scene": "res://game/levels/_tests/characters/villagers/fenn_stage.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_fenn_face",
+      "scene": "res://game/levels/_tests/characters/villagers/fenn_stage.tscn",
+      "camera": "Cameras/Face",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_gatekeeper_front",
+      "scene": "res://game/levels/_tests/characters/villagers/gatekeeper_stage.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_gatekeeper_face",
+      "scene": "res://game/levels/_tests/characters/villagers/gatekeeper_stage.tscn",
+      "camera": "Cameras/Face",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_hobb_front",
+      "scene": "res://game/levels/_tests/characters/villagers/hobb_stage.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_hobb_face",
+      "scene": "res://game/levels/_tests/characters/villagers/hobb_stage.tscn",
+      "camera": "Cameras/Face",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_marra_front",
+      "scene": "res://game/levels/_tests/characters/villagers/marra_stage.tscn",
+      "camera": "Cameras/Front",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
+    },
+    {
+      "id": "villager_marra_face",
+      "scene": "res://game/levels/_tests/characters/villagers/marra_stage.tscn",
+      "camera": "Cameras/Face",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 30
     }
   ]
 }

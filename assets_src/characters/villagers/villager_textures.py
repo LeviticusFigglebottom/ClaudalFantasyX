@@ -16,7 +16,11 @@ packing of asha.md §4.2 and the map contract in docs/kb/tech/character_shading.
   - reach-bands (bible §5.1: one per voyage survived; toma.md §9's generator, toma_textures'
     `_reach_bands` and `_forearm`, with the villager's counts, seed and ink opacity; old ink is
     fainter and softer);
-  - stubble (`_skin.stubble`): the toma_hair beard region as a short shadow, a share of it grey.
+  - stubble (`_skin.stubble`): the toma_hair beard region as a short shadow, a share of it grey;
+  - Saltwright line-marks (`_skin.line_marks`, M3-CHR-511): liss_textures' generator (`line_marks`, `paint_marks`
+    on `liss_charts`, right side only) with the villager's own seed, placement (region -> count) and stroke sizes;
+    `_skin.body_size` ([albedo/normal, ORM/mask] px) raises the body maps so the strokes resolve (Liss's 2K rule).
+  Every one of these keys is optional, and a villager without it builds exactly as before.
 * Cloth, shared by every villager (assets/characters/villagers/textures/villagers_cloth_*): one 2K
   atlas for villager_costume.ATLAS in near-neutral undyed tones (light enough that the materials'
   `col_albedo` tints carry the dye colours): plain-weave cotton with fold wear and salt fading for
@@ -48,6 +52,7 @@ import asha_textures as at  # noqa: E402
 from asha_textures import blur, height_to_normal, hexc, periodic_noise, smoothstep, weave  # noqa: E402
 
 PARAMS_DIR = HERE / "params"
+LISS_DIR = HERE.parent / "liss"  # liss_textures: the Saltwright line-mark generator (M3-CHR-511)
 OUT_ROOT = ROOT / "assets" / "characters" / "villagers"
 TATTOO_INK = "#24323A"
 HEAD_SIZE = (1024, 512)  # albedo/normal, ORM/skinmask
@@ -162,6 +167,8 @@ def _albedo_villager(orig, sk: dict, hstyle, hair_hex: str):
     seed = int(sk.get("seed", 1))
     lip = sk.get("lip")
     oil = float(sk.get("fingertip_oil", 0.0))  # a chandler's oil-dark fingertips (act1_npcs.md §4.2)
+    lm_spec = sk.get("line_marks")  # M3-CHR-511: Saltwright line-marks (liss_textures' generator)
+    marks_state: dict = {}
 
     def desat(col, k):
         g = col.mean(axis=1, keepdims=True)
@@ -197,6 +204,8 @@ def _albedo_villager(orig, sk: dict, hstyle, hair_hex: str):
             if oil > 0.0:
                 wt = fingertip_weight(lm, Ph)[:, None]
                 col = col + (col * (1.0 - oil) * np.array(OIL_WARM) - col) * wt
+            if lm_spec:
+                col = _ink_marks(col, Ph, lm, lm_spec, marks_state)
             return np.clip(col, at.FLOOR, at.CEIL)
         haired = orig(Ph, Nh, key, face, lm, hair_mod, r, npz)
         if density < 0.95:
@@ -223,9 +232,27 @@ def _albedo_villager(orig, sk: dict, hstyle, hair_hex: str):
             hcol = hexc(hair_hex) * (1 - grey[:, None]) + hexc(sk.get("stubble_grey_hex", "#9A948A")) * grey[:, None]
             dens = STUBBLE_DENSITY * stub * cover
             col = col * (1 - dens[:, None]) + hcol * dens[:, None]
+        if lm_spec:
+            col = _ink_marks(col, Ph, lm, lm_spec, marks_state)
         return np.clip(col, at.FLOOR, at.CEIL)
 
     return albedo
+
+
+def _ink_marks(col: np.ndarray, P: np.ndarray, lm, spec: dict, state: dict) -> np.ndarray:
+    """Saltwright line-marks over `col` at the points P (M3-CHR-511): liss_textures.line_marks with this villager's
+    seed and placement, painted on its own landmarks' charts (right side only, as Liss's)."""
+    if str(LISS_DIR) not in sys.path:  # appended, never ahead of the villager modules (kerrid and moll import this)
+        sys.path.append(str(LISS_DIR))
+    import liss_textures as lt
+
+    if "marks" not in state:
+        state["marks"] = lt.line_marks(int(spec["seed"]), spec["placement"], tuple(spec.get("length_m", (0.03, 0.06))),
+                                       float(spec.get("line_mm", 0.6)), float(spec.get("gap_mm", 1.2)),
+                                       float(spec.get("dot_mm", 1.5)))
+        state["charts"] = lt.liss_charts(lm)
+    ink = lt.paint_marks(P, lm, state["marks"], state["charts"], int(spec["seed"])) * float(spec.get("opacity", 1.0))
+    return col * (1 - ink[:, None]) + hexc(spec.get("ink_hex", TATTOO_INK)) * ink[:, None]
 
 
 def skin(npc: str, bake_dir: Path) -> None:
@@ -255,7 +282,8 @@ def skin(npc: str, bake_dir: Path) -> None:
         params = bb_params.load_params(path=str(PARAMS_DIR / f"{npc}.json"))
         lm = bb_donor.fit(params).lm
         body = bb_anatomy.Body(lm)
-        for key, (size, small) in (("head", HEAD_SIZE), ("body", BODY_SIZE)):
+        body_size = tuple(int(x) for x in sk.get("body_size", BODY_SIZE))
+        for key, (size, small) in (("head", HEAD_SIZE), ("body", body_size)):
             npz = dict(np.load(bake_dir / f"{key}.npz"))
             at.skin_maps(key, npz, size, small, body, body.face, lm, hstyle)
     finally:
