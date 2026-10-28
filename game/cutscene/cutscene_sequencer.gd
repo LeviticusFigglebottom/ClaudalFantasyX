@@ -723,7 +723,7 @@ func _wants_key(sn: CutsceneShotNode) -> bool:
 	if sn.key_light != CutsceneShotNode.KeyLight.AUTO:
 		return sn.key_light == CutsceneShotNode.KeyLight.ON
 	var shot := sn.shot
-	if shot.mode == CameraShot.Mode.DOLLY or shot.mode == CameraShot.Mode.ORBIT or _director.rail_root == null:
+	if shot.moves_with_player() or _director.rail_root == null:
 		return false  # the camera moves with the player: no fixed framing to judge
 	var root := _director.rail_root.global_transform
 	var aim := _director.aim_point(shot) if not shot.aim_node.is_empty() else root * shot.look_at

@@ -136,9 +136,9 @@ height = 0.22
 [sub_resource type="Resource" id="Shot_beach_shallows"]
 script = ExtResource("7_shot")
 id = &"beach_shallows"
-mode = 1
+mode = 4
 position = Vector3(7, 2.4, 18)
-look_at = Vector3(-4, 0.9, 6)
+look_at = Vector3(-14, 0.9, 9)
 target_offset = Vector3(0, 1, 0)
 fov_deg = 37.8
 follow_weight = 0.75
@@ -147,7 +147,7 @@ max_pan_deg = 45.0
 [sub_resource type="Resource" id="Shot_beach_path"]
 script = ExtResource("7_shot")
 id = &"beach_path"
-mode = 1
+mode = 4
 position = Vector3(-6, 3.2, 15.5)
 look_at = Vector3(-27, 2.4, 6.5)
 target_offset = Vector3(0, 1, 0)
@@ -169,7 +169,7 @@ max_pan_deg = 18.0
 [sub_resource type="Resource" id="Shot_H09"]
 script = ExtResource("7_shot")
 id = &"H09"
-mode = 1
+mode = 4
 position = Vector3(-30.5, 3.5, 5.5)
 look_at = Vector3(-50, 2.6, -2)
 target_offset = Vector3(0, 1, 0)

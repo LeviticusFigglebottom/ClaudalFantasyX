@@ -29,6 +29,8 @@ func before_each() -> void:
 	player.set_process_unhandled_input(false)
 	party = player.get_node(NodePath(String(HeroFieldParty.NAME))) as HeroFieldParty
 	party.set_physics_process(false)
+	party._cfg = party._cfg.duplicate()
+	party._cfg["sight_clear_m"] = 0.0  # the trail itself: the step off the camera's line is test_qa_field_camera's
 	zone.call("place_at", &"Court")
 	party.advance(DT)
 
@@ -178,8 +180,7 @@ func test_followers_turn_to_face_who_rhen_talks_to() -> void:
 		_step()
 	var asha := party.body_of(&"asha")
 	assert_true(asha.loco.speed > 0.5, "she walks on with him")
-	# her walk heads for her follow point (her trail spot, stepped off the camera's line to him when it falls on it)
-	var heading := HeroLocomotion.yaw_of(party.follow_point(0) - party.followers[0].global_position)
+	var heading := HeroLocomotion.yaw_of(player.global_position - party.followers[0].global_position)
 	assert_between(absf(angle_difference(asha.visible_yaw(), heading)), 0.0, deg_to_rad(30.0), "facing her walk again")
 	_done()
 

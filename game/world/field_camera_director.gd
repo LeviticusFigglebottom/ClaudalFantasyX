@@ -507,6 +507,16 @@ func evaluate(shot: CameraShot, delta: float) -> CameraPose:
 			var offset := Basis(Vector3.UP, orbit_yaw) * Vector3(0.0, height, dist)
 			var centre := subject.global_position if subject != null else _to_world(shot.look_at)
 			return CameraPose.looking(centre + offset, aim_target, fov, shot.dof_dict(), shot.roll_deg)
+		CameraShot.Mode.FOLLOW:
+			var heading := _to_world(shot.look_at) - _to_world(shot.position)
+			heading = Vector3(heading.x, 0.0, heading.z).normalized()
+			var dist := shot.follow_distance if shot.follow_distance > 0.0 else _follow_value("distance_m")
+			var height := shot.follow_height if shot.follow_height > 0.0 else _follow_value("height_m")
+			var centre := subject.global_position if subject != null else _to_world(shot.look_at)
+			var desired := centre - heading * dist + Vector3.UP * height
+			var rate := _rate(shot.follow_smoothing, "follow_smoothing_per_sec")
+			var from := _smoothed(shot, "follow_pos", desired, rate, delta) as Vector3
+			return CameraPose.looking(from, aim_target, fov, shot.dof_dict(), shot.roll_deg)
 	var fixed_aim := aim_target if subject != target else _to_world(shot.look_at)
 	return CameraPose.looking(_to_world(shot.position), fixed_aim, fov, shot.dof_dict(), shot.roll_deg)
 
@@ -686,6 +696,10 @@ func _end_blend() -> void:
 	_blend_elapsed = 0.0
 	_blend_duration = 0.0
 	_blend_weight = 1.0
+
+
+func _follow_value(key: String) -> float:
+	return float((data.get("follow", {}) as Dictionary).get(key, 0.0))
 
 
 func _effective_mode(shot: CameraShot) -> CameraShot.Mode:
