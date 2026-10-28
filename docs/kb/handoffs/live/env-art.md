@@ -589,7 +589,7 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
-- **MERGE-READY @ (this push): the Prologue's vigil lit (the Lead overruled "nothing burns"); M2-ENV-09 and
+- **MERGE-READY @ 10c6974d9: the Prologue's vigil lit (the Lead overruled "nothing burns"); M2-ENV-09 and
   M2-ENV-06 finished.**
   - **Vigil lighting:**
     - The four lamp columns hold an oil flame in a warm, emissive lit-glass globe (new material
