@@ -2621,12 +2621,12 @@ def skirt_solve(sk: "Skeleton", g: dict, hips=None) -> dict:
     for lv, x in enumerate(SKIRT_LEVELS):
         a = []
         for i, (h, (heads, _), ax) in enumerate(zip(sk.skirt, chains, axes)):
-            last = lv == len(SKIRT_LEVELS) - 1
-            C = np.concatenate([sk.skirt_cloth[h + y] for y in (SKIRT_LEVELS[lv:] if 0 < lv and not last else (x,))])
+            lowest = lv == len(SKIRT_LEVELS) - 1
+            C = np.concatenate([sk.skirt_cloth[h + y] for y in (SKIRT_LEVELS[lv:] if 0 < lv and not lowest else (x,))])
             k = heads[lv]
             at = _skirt_heads_posed(heads[:lv + 1], ax, angs[i])[lv]  # where the bones above put this one's head
             a.append(_swing(C, lambda ang, C=C, k=k, ax=ax, at=at: _rot_about(C, k, ax, ang) + (at - k),
-                            A, B, A0, B0, angs[i][-1] if last and lv else None))
+                            A, B, A0, B0, angs[i][-1] if lowest and lv else None))
         a = np.minimum((np.array(a)[None, :] - lag * apart).max(axis=1), math.radians(SKIRT_MAX_SWING))
         for i in range(len(sk.skirt)):
             angs[i].append(float(a[i]))
@@ -2685,7 +2685,7 @@ def skirt_solve(sk: "Skeleton", g: dict, hips=None) -> dict:
 
 def helper_pose(sk: "Skeleton", g: dict, out: dict, hips=None) -> None:
     """Local rotations of the helper bones, from the pose's global rotations g of the keyed bones and its hips offset
-    (into out; the lower skirt panels' scales under out[SCALE_KEY])."""
+    (into out; the lowest skirt panel bones' scales under out[SCALE_KEY])."""
     if not sk.helpers:
         return
     for h in sk.helpers:
@@ -3556,7 +3556,7 @@ def build(hero: str) -> str:
         times = [i / FPS for i in range(n + 1)]
         keys_q = {b: [] for b in sk.keyed}  # M1-CHR-15: the body bones, then the GLB's helper bones
         keys_p = []
-        keys_s: dict = {}  # M1-CHR-15: the lower skirt panels' gathers
+        keys_s: dict = {}  # M1-CHR-15: the lowest skirt panel bones' gathers
         keys_h: dict = {}  # M2-CHR-513: the hooks' positions and rotations
         keys_pr: list = []  # M2-CHR-515: the held prop's slide
         keys_pq: list = []  # and its pivot in the fist (prop_pivot)
