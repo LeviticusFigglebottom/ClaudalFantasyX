@@ -30,3 +30,18 @@ tests/screenshots/baselines/** binary
 *.ogg binary
 *.ttf binary
 *.otf binary
+
+# Git LFS (ADR 0039, live from 2026-10-28): new large binaries BY PATH only. Existing files stay plain git, and
+# history is never migrated. Screenshot baselines always stay plain git. Cloud sessions skip LFS smudge, so run
+# `git lfs pull` (tools/ci_local.sh does it).
+assets/audio/music/act2/** filter=lfs diff=lfs merge=lfs -text
+assets/audio/music/act3/** filter=lfs diff=lfs merge=lfs -text
+assets/audio/music/act4/** filter=lfs diff=lfs merge=lfs -text
+assets/lfs/** filter=lfs diff=lfs merge=lfs -text
+# Godot's sidecar files stay plain text.
+assets/audio/music/act*/**/*.import -filter -diff -merge text
+assets/audio/music/act*/**/*.json -filter -diff -merge text
+assets/lfs/**/*.import -filter -diff -merge text
+assets/audio/sfx/act3/** filter=lfs diff=lfs merge=lfs -text
+assets/audio/sfx/act*/**/*.import -filter -diff -merge text
+assets/audio/sfx/act*/**/*.json -filter -diff -merge text

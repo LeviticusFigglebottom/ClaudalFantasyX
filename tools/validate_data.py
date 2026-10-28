@@ -13,7 +13,7 @@ Checks:
     and those tables plus speakers.json and text_box.json are well-formed
   * provenance: every file under assets/ has a row in assets/PROVENANCE.md
   * banned terms (tools/banned_terms.txt) in game/, assets_src/, story docs, glossary
-  * binary size limit while Git LFS is deferred (ADR 0005)
+  * binary size limit for plain-git files (ADR 0005; LFS paths are exempt, ADR 0039)
   * items (game/data/items): schema, dangling refs (abilities, recipe and shop items, characters,
     Facets), at most 4 ability slots, positive prices, declared stock flags (M1-PRG-02)
 
@@ -70,6 +70,9 @@ FACETS_FILE = "game/data/progression/facets.json"
 LATTICE_DIR = "game/data/progression"
 LATTICE_GLOB = "lattice_*.json"
 MAX_BINARY_BYTES = 5 * 1024 * 1024
+# Git LFS paths (ADR 0039; keep in step with .gitattributes): no plain-git size limit there.
+LFS_PREFIXES = ("assets/lfs/",)
+LFS_MUSIC_RE = re.compile(r"^assets/audio/(music/act[0-9]+|sfx/act3)/")
 BINARY_EXT = {".png", ".jpg", ".exr", ".wav", ".ogg", ".glb", ".blend", ".ttf", ".otf", ".webp"}
 BANNED_SCAN = ["game", "assets_src", "docs/kb/story", "docs/kb/glossary.md"]
 BANNED_SCAN_EXT = {".gd", ".json", ".tres", ".tscn", ".csv", ".md", ".dlg", ".py", ".txt", ".gdshader"}
@@ -858,9 +861,12 @@ def check_binary_sizes(root: Path, rep: Report) -> None:
         if not d.exists():
             continue
         for p in d.rglob("*"):
+            rel = p.relative_to(root).as_posix()
+            if rel.startswith(LFS_PREFIXES) or LFS_MUSIC_RE.match(rel):
+                continue  # tracked by Git LFS (ADR 0039, .gitattributes)
             if p.is_file() and p.suffix.lower() in BINARY_EXT and p.stat().st_size > MAX_BINARY_BYTES:
-                rep.err(f"{p.relative_to(root)}: {p.stat().st_size} bytes exceeds the "
-                        f"{MAX_BINARY_BYTES}-byte limit while Git LFS is deferred (ADR 0005)")
+                rep.err(f"{rel}: {p.stat().st_size} bytes exceeds the {MAX_BINARY_BYTES}-byte plain-git limit; "
+                        f"put it under an LFS path (assets/lfs/ or assets/audio/music/actN/, ADR 0039)")
 
 
 def collect_keys(obj: object) -> list[str]:
