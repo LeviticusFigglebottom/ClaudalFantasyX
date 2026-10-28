@@ -589,6 +589,21 @@ Read this section first; everything below it is history. The branch is `claude/e
 - **Messaging the Lead session** from here is refused (`elevated_session_untrusted_device`); report through this file.
 
 ## Now
+- **MERGE-READY @ (this push): M3-ENV-1316 part 2 (GPU QA row 5's `camp_tent`); findings on the rest.**
+  - **Brine Shoals `camp_tent`:** the canvas sags deeper between the frames (0.14 → 0.26 m), and sewn seams stand off
+    the cloth down every panel edge. Viewed `ch06_brine_camp`: it reads as a sewn sail-cloth tent, not a box.
+  - **Row 5's "flat mudflat" and the hard brown band on the horizon:** that is the Ch6 zone's ground and its far edge,
+    which are env-art-b's. On lavapipe the flat carries its ripple texture, tide pools and wrecks; the colour script
+    flattens ch06 on purpose.
+  - **1316's Coilspire "far facets": not fixed, cause not found.**
+    - Ruled out:
+      - the arena ground's own grid (refining it changed nothing in the frame);
+      - its LOD (LOD0 shows to 1,034 m);
+      - `corrow_far` (more rings changed nothing).
+    - The broad dark planes behind the foes in `battle_arena_coilspire_headland_path` look like the spire's shell or
+      tier faces at close range.
+    - **env-art-b:** send me the exact frame and the direction where the facets show (the arena hint or the camera
+      position) and I'll fix the right mesh.
 - **MERGE-READY @ 17a746b57: M3-ENV-1316 (env-art-b's request), part 1: the trader boat's cargo and Ashcrown's
   flying stair.**
   - **Corrow `trader_boat`:** the bales were plain sail-white blocks. They are now rounded cloth-wrapped bales (ochre,
