@@ -4881,6 +4881,139 @@
     {
       "id": "battle_heroes_finisher",
       "scene": "res://game/levels/_tests/hero_motion/battle_heroes_finisher.tscn"
+    },
+    {
+      "id": "ch05_ashcrown_causeway",
+      "scene": "res://game/levels/_tests/act1_zones/ch05_ashcrown_shots.tscn",
+      "camera": "Cameras/Causeway",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "ch05_ashcrown_forecourt",
+      "scene": "res://game/levels/_tests/act1_zones/ch05_ashcrown_shots.tscn",
+      "camera": "Cameras/Forecourt",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "ch05_ashcrown_crown",
+      "scene": "res://game/levels/_tests/act1_zones/ch05_ashcrown_shots.tscn",
+      "camera": "Cameras/Crown",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "ch05_ashcrown_tiers",
+      "scene": "res://game/levels/_tests/act1_zones/ch05_ashcrown_shots.tscn",
+      "camera": "Cameras/Tiers",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "ch05_ashcrown_court",
+      "scene": "res://game/levels/_tests/act1_zones/ch05_ashcrown_shots.tscn",
+      "camera": "Cameras/Court",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "battle_arena_ashcrown_forecourt_day",
+      "scene": "res://game/levels/_tests/battle_arenas/preview_ashcrown_forecourt_day.tscn",
+      "camera": "BattleCamera",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
+    },
+    {
+      "id": "battle_arena_ashcrown_anvil_court",
+      "scene": "res://game/levels/_tests/battle_arenas/preview_ashcrown_anvil_court.tscn",
+      "camera": "BattleCamera",
+      "resolution": [
+        960,
+        540
+      ],
+      "settle_frames": 24,
+      "setup": {
+        "globals": {
+          "hymn_wind_time": 40.0
+        },
+        "viewport": {
+          "use_taa": false,
+          "screen_space_aa": 1
+        }
+      }
     }
   ]
 }

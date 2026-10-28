@@ -9,6 +9,8 @@ extends HalunaDresser
 ##                    drive it with the story's block;
 ##                  "spin_with": <id>  the piece turns about its own Z as Greybox/<id> turns about Y (a flue-key's
 ##                    wheel with the trial's Key block);
+##                  "turn_with": <id>  the piece turns about Y as Greybox/<id> does (Ashcrown's vein-gates, which
+##                    the trial view turns in 90° steps);
 ##                  "collide": true  a box collider from the piece's LOD0 bounds (decor off the route);
 ##                    "trimesh": the piece's LOD1 (else LOD0) mesh as a static trimesh, for a kit's walk
 ##                    surfaces (treads, walls) whose shape is the gameplay. Never for stepped flights: the
@@ -47,6 +49,12 @@ const KEY_BLOCK := "block"
 const KEY_COLLIDE := "collide"
 const KEY_COLLIDE_LOD0_IN := "collide_lod0_in"
 const KEY_SPIN := "spin_with"
+const KEY_TURN := "turn_with"
+const GLOW := &"Glow"
+## glow(): the light a lit story piece casts (a charged bowl), shadowless and never in the fog (test_fog_lamps).
+const GLOW_ENERGY := 2.2
+const GLOW_RANGE_M := 5.0
+const GLOW_HEIGHT_M := 1.2
 const KEY_KIT_DIR := "kit_dir"
 const KEY_SCALE_Y := "scale_y"
 const KEY_MATERIALS_DIR := "materials_dir"
@@ -77,6 +85,7 @@ var _sun_written := Vector3.ZERO
 var _followers: Dictionary = {}  ## block id -> Array of kit nodes
 var _kit_caches: Dictionary = {}  ## materials dir -> that kit's material cache
 var _spinners: Array[Array] = []  ## [piece, block, the piece's own basis]
+var _turners: Array[Array] = []  ## [piece, block, the piece's own basis]
 
 
 func dress() -> void:
@@ -104,6 +113,9 @@ func dress() -> void:
 		var spin := block(str(spec.get(KEY_SPIN, "")))
 		if spin != null:
 			_spinners.append([piece, spin, piece.basis])
+		var turn := block(str(spec.get(KEY_TURN, "")))
+		if turn != null:
+			_turners.append([piece, turn, piece.basis])
 	_place_fire_lights()
 	_place_multimeshes()
 	_place_far_lights()
@@ -120,6 +132,8 @@ func _process(_delta: float) -> void:
 	for sp: Array in _spinners:
 		var turn := deg_to_rad((sp[1] as Node3D).rotation_degrees.y)
 		(sp[0] as Node3D).basis = (sp[2] as Basis) * Basis(Vector3.BACK, turn)
+	for tp: Array in _turners:
+		(tp[0] as Node3D).basis = Basis(Vector3.UP, (tp[1] as Node3D).rotation.y) * (tp[2] as Basis)
 	if zone == null or zone.sun == null or not zone.sun.is_inside_tree():
 		return
 	var toward := zone.sun.global_basis.z.normalized()  # a light shines down its -Z
@@ -296,6 +310,36 @@ func followers(block_id: String) -> Array[Node3D]:
 	var out: Array[Node3D] = []
 	out.assign(_followers.get(block_id, []))
 	return out
+
+
+## Lights or darkens the kit pieces that follow `block_id` (a story piece holding a charge): an OmniLight in `color`
+## over each, and the colour as an emission overlay on its meshes. Returns how many pieces it touched.
+func glow(block_id: String, on: bool, color: Color) -> int:
+	var n := 0
+	for piece: Node3D in followers(block_id):
+		var light := piece.get_node_or_null(NodePath(String(GLOW))) as OmniLight3D
+		if light == null and on:
+			light = OmniLight3D.new()
+			light.name = GLOW
+			light.position = Vector3(0.0, GLOW_HEIGHT_M, 0.0)
+			light.omni_range = GLOW_RANGE_M
+			light.light_volumetric_fog_energy = 0.0  # the fog-lamp rule
+			piece.add_child(light)
+		if light != null:
+			light.light_color = color
+			light.light_energy = GLOW_ENERGY
+			light.visible = on
+		var overlay: StandardMaterial3D = null
+		if on:
+			overlay = StandardMaterial3D.new()
+			overlay.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+			overlay.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+			overlay.blend_mode = BaseMaterial3D.BLEND_MODE_ADD
+			overlay.albedo_color = Color(color, 0.35)
+		for mi: Node in piece.find_children("*", "MeshInstance3D", true, false):
+			(mi as MeshInstance3D).material_overlay = overlay
+		n += 1
+	return n
 
 
 func _attach(node: Node3D, block_id: String) -> void:
