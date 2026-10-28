@@ -523,3 +523,27 @@ Skipped:
   - **Row 22:** the loads already run behind SceneRouter's opaque fade and its ShaderPrewarm stage. ADR 0111 adds the threaded loads behind that fade: the hero bodies (resident), each zone's own runtime loads (scene_loads.json) and a battle's arena and enemies. The router holds the swap until they are in.
   - **Row 33:** the result panel's freed-row count-up is fixed (503b99839).
   - **MERGE-READY @ 045348c44**, as posted above. The PC's next walk on it is the measurement for row 22.
+- 2026-10-28 14:05, **the Lead's 13:25 list:**
+  - **M3-NAR-01 (this track holds the narrative seat), now in review:**
+    - **Reviewed all 26 Act I entries and both records** against the voice guide, the bible and the glossary: 2–4 sentences, sincere, nothing past each entry's flag, no Act II or III terms. Neme's mixed metaphor is fixed.
+    - **Added** (e83b13513): The Calm (`ch02_met_asha`), The Cantors (`ch03_ilun_bound`), The Ebbing (`ch09_ebbing_danced`; the Order's teaching only) and Inquisitor Hadric Moll (`ch06_inquisitor_yielded`).
+    - **Placed both records** (a9bb4fd27):
+      - `causeway_notice` is an Examine trigger on the causeway's first marker post, from the causeway generator.
+      - `basin_steps` is on the shrine's first step inside the entrance, built with the new CodexRecordSpot.
+    - Pell's entry is unchanged and keeps to what Rhen sees at Corrow. That is the canon characters asked about.
+  - **Pemakar's load, still over 1 s: fixed. Coilspire is fixed too.**
+    - **Pemakar** (662935b3a): past the 120-frame cap, a held swap now waits while its holders make progress (ResidentLoads counts finished loads). It still stops on a 30-frame stall or at the 900-frame cap. Its worst hidden frame went 1128 → 585 ms.
+    - **Coilspire** (b82f36b6a): 1.4 s of its frame was ZoneKitDressing clipping every trimesh triangle against every lod0 box. A triangle clear of a box now skips the cut, with the same surface (tested by area). Its worst hidden frame went 1920 → 582 ms.
+    - **Headless, cloud box, the worst hidden frame now:** Ch1 257 ms, Pemakar 585 ms, Corrow 318 ms, Coilspire 582 ms.
+SELF-RENDERED @ b82f36b6a: field_menu_codex. What I saw:
+- World reads "4 of 12" (The Calm unlocks with Haluna), and the total reads "10 of 54".
+- Places and Records are unchanged; the text is clean.
+- **The baseline will move** for the World count.
+MERGE-READY @ b82f36b6a: M3-NAR-01, plus the Pemakar and Coilspire load fixes.
+Checks:
+- codex 15/0, shell_shrine 15/0, causeway 16/0, zone_kit_dressing 10/0, scene_router 16/0, resident_loads 7/0, boot 27/0.
+- The causeway generator's --check is up to date. The Python causeway, codex and loc tests are OK.
+- validate_data has 0 errors, taskboard --check passed, the banned scan is clean, and lint is clean.
+Skipped: the full suite. The swap wait only differs past 120 held frames, and no test holds a swap that long.
+LEAD-ASK: M3-NAR-01 is in review with no narrative reviewer. Will you, or Cinematics, review the four new entries' voice (the Calm, the Cantors, the Ebbing, Moll)? This matters most for the Cantors' last line: "Her village holds her funeral before she leaves, and no one says why."
+LEAD-ASK: ADR 0111 touches the Systems Architect's SceneRouter (change_started and the progress-based swap wait) and act1-chapters' ZoneKitDressing (the clip quick-reject). Please route them for acceptance.
