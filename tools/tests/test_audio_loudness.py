@@ -16,6 +16,7 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -33,6 +34,7 @@ from synth.loudness import integrated_lufs, momentary_max_lufs, true_peak_dbtp  
 from synth.mixer import read_audio  # noqa: E402
 
 AUDIO = ROOT / "assets" / "audio"
+LFS_MUSIC = re.compile(r"^music/act[0-9]+/")  # Git LFS paths, as validate_data.LFS_MUSIC_RE and .gitattributes
 MAX_DEFAULT_JOBS = 4  # each worker can hold ~1 GB while it oversamples a long music bed
 
 
@@ -132,6 +134,8 @@ class AudioLoudnessTest(unittest.TestCase):
     def test_sizes(self) -> None:
         total = 0
         for p in self.files + sorted(AUDIO.rglob("*.json")):
+            if LFS_MUSIC.match(p.relative_to(AUDIO).as_posix()):
+                continue  # Git LFS (ADR 0039): outside the plain-git budget and the 5 MB limit
             size = p.stat().st_size
             total += size
             self.assertLessEqual(size, targets.FILE_LIMIT, f"{p} is over 5 MB")

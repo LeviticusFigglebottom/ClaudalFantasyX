@@ -16,6 +16,10 @@ RULES = [
     ("music/undertows_reach_p*.ogg", "stem", -16.0, 0.5, -1.0, "the Undertow's Reach's three stems, stacked at -16"),
     ("music/seawall_hold_p*.ogg", "stem", -16.0, 0.5, -1.0, "the seawall waves' three stems, stacked at -16 (M3-AUD-822)"),
     ("music/undertow_rising_p*.ogg", "stem", -16.0, 0.5, -1.0, "the Undertow rising's two stems, stacked at -16"),
+    ("music/act2/mangrove_drowner_p*.ogg", "stem", -16.0, 0.5, -1.0, "the Mangrove Drowner's two stems, stacked at -16 (Git LFS, M3-AUD-844/845)"),
+    ("music/act2/lamp_engine_p*.ogg", "stem", -16.0, 0.5, -1.0, "the Lamp Engine's two stems, stacked at -16 (Git LFS, M3-AUD-844/845)"),
+    ("music/act2/avalanche_ram_p*.ogg", "stem", -16.0, 0.5, -1.0, "the Avalanche Ram's two stems, stacked at -16 (Git LFS, M3-AUD-844/845)"),
+    ("music/act2/wakefin_p*.ogg", "stem", -16.0, 0.5, -1.0, "the Wakefin's two stems, stacked at -16 (Git LFS, M3-AUD-844/845)"),
     ("music/*.ogg", "integrated", -16.0, 0.5, -1.0, "music beds, themes and cutscene cues"),
     ("ambience/*.ogg", "integrated", -26.0, 0.5, -5.0, "ambience beds (mix.md: -26, peaks well down)"),
     # M3-AUD-859 (assets_src/sfx/act3/kite_foley.py; Git LFS): the Kite's deck beds and foley
