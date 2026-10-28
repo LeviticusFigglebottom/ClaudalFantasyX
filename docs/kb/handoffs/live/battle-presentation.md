@@ -41,8 +41,8 @@ both fixed and pushed. The branch head also carries:
   - Hullgnaw's clip turns its head away from the camera; noted to creatures-b on the task.
 - **Shots for the gate to re-approve:** battle_boss_intro_* (all seven move: clips, Moll, the court) and
   battle_arena_camp.
-LEAD-ASK: the Fisher Stair still draws as a capsule in the Ch8 fights (M3-CRB-009 ask 4) and needs a prop from
-env-art. Should I file that request, or does M3-BPR-407 already carry it?
+LEAD-ANSWERED (14:27): the Lead gave the Fisher Stair prop to env-art-b directly. When it lands, hook the stair meter
+and the push VFX to its marks.
 
 **BACKLOG EMPTY (2026-10-28 13:xx, @ the branch head, MERGE-READY):** the Lead's 09:35, 10:55, 11:46, 12:11 and
 12:37 lists:
