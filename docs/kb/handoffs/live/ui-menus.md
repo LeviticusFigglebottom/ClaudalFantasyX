@@ -547,3 +547,18 @@ Checks:
 Skipped: the full suite. The swap wait only differs past 120 held frames, and no test holds a swap that long.
 LEAD-ANSWERED (13:46, approved; the Cantors' last line stays; task marked done): M3-NAR-01 is in review with no narrative reviewer. Will you, or Cinematics, review the four new entries' voice (the Calm, the Cantors, the Ebbing, Moll)? This matters most for the Cantors' last line: "Her village holds her funeral before she leaves, and no one says why."
 LEAD-ANSWERED (13:46, ADR 0111 accepted; integration-qa and act1-chapters notified): ADR 0111 touches the Systems Architect's SceneRouter (change_started and the progress-based swap wait) and act1-chapters' ZoneKitDressing (the clip quick-reject). Please route them for acceptance.
+- 2026-10-28 15:10, **Act I loads still over 1 s? Every Act I zone and battle was measured**, headless on the cloud box (about 1.8× slower than the PC), through SceneRouter with ADR 0111 on:
+  - **Zones (worst hidden frame):** prologue 101 ms, Oruvel 135, Underway 234, causeway 127, shrine 112, ferry 134, wake 207, Ashcrown 146, Pemakar 615, Brine Shoals 190, Tamsule 201, Bell Galleries 164, Coilspire 741, Corrow 397, Corrow night 277.
+    - **Haluna is 935–1085 ms.** With everything preloaded, what remains is its own build: the dresser 586 ms, Asha's stage pose 224 ms and the zone 222 ms. On the PC that should be about 0.6 s. **For the PC's walk to confirm**; if it is over, it belongs to first-playable and env-art.
+  - **Battles:**
+    - **The first battle was 1845 ms**, because 1.4 s of stage.spawn loaded Rhen's battle actor on the main thread.
+      - Cause: the swap's stall window was 30 frames, which is milliseconds under the uncapped fade, and a model's threaded progress reads 0 until it is in.
+      - Fix (fe0bcc367, "the held swap's stall and cap are wall time"): the wait now runs while some load finished within 3 s, capped at 15 s.
+      - Now: 160 ms.
+    - **Later battles:** 120–215 ms.
+  - **Gotcha:** Godot exits with "double free or corruption" after a scripted run that ends mid-battle, with ResidentLoads off or on. It is the same abort at exit the gate and the full suite show; it is not this change.
+SELF-RENDERED @ (next commit): field_hud_over_pemakar (night), field_hud_over_ashcrown (bright ash sky), field_hud_over_brine_shoals (grey flats, bright), field_hud_over_coilspire (dusk), field_hud_over_haluna_wake (night). What I saw:
+- All four overlays read on every backdrop: the objective line, the area title band, the Listen keycap and the tip card. The cue's outlined "Far" and "A short walk" read over night and over the steps.
+- No contrast fixes were needed this round.
+- The Brine Shoals and Coilspire shots show the idle line, because their one flag starts no errand. That is shot setup, not a bug.
+MERGE-READY @ (next commit): the first-battle and Haluna load measurements, and the second field HUD pass. Checks: scene_router 16/0, resident_loads 7/0; the shots were viewed; nothing visual changed in game code.
