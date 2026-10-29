@@ -165,9 +165,14 @@ func _sweep(enc: StringName, out: String) -> Dictionary:
 			_checks["dead_max_sec"] = maxf(float(_checks["dead_max_sec"]), dead)
 	# The rest at fast pacing, the stills taken; then the victory on the real stage.
 	var steps := 0
+	var last: BattleCombatant = null
 	while engine.outcome == &"" and steps < MAX_FAST_STEPS:
 		steps += 1
 		if _ctl.state == BattleController.STATE_COMMAND and engine.is_party_turn():
+			var living := engine.enemies.filter(func(e: BattleCombatant) -> bool: return e.is_alive())
+			if living.size() == 1 and engine.ward() == null:  # the last foe falls on the real stage
+				last = living[0]
+				break
 			var actor := engine.current.id
 			policy.take_turn(engine)
 			_ctl.after_action(actor)
@@ -178,6 +183,15 @@ func _sweep(enc: StringName, out: String) -> Dictionary:
 			intro2.skip()
 		_ctl.tick(FAST_STEP_SEC)
 	_pending.clear()
+	if last != null:
+		last.hp = 1
+		_ctl.act(&"attack", [last.id] as Array[StringName])
+		var guard := 0
+		while engine.outcome == &"" and guard < 60 * 20:
+			guard += 1
+			await get_tree().process_frame
+			if _ctl.state == BattleController.STATE_COMMAND and engine.is_party_turn() and not choreo.playing():
+				_ctl.act(&"attack", [last.id] as Array[StringName])
 	for i in 150:  # the victory beat (BattleOutro's poses), before the result panel
 		await get_tree().process_frame
 	await _capture("end_" + String(engine.outcome))

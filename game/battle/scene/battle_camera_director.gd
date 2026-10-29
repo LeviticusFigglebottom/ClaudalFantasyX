@@ -257,13 +257,18 @@ func _setup(plan: Dictionary) -> void:
 		var actor_pts: Array[Vector3] = [head + to - from]  # the actor at its strike point: who acts
 		if pose.is_empty() or not _frames(pose, targets, actor_pts) or _blocked(pose, body, targets):
 			continue
-		if slot == CONTACT and bystanders.any(func(b: AABB) -> bool: return _blocked(pose, b, mids)):
+		if slot == CONTACT and _hidden(pose, bystanders, mids):
 			continue  # the lead frames who acts; at the contact the target must show
 		shot_ids[slot] = id
 		if slot == LEAD:
 			_lead = pose
 		else:
 			_contact = pose
+	# With no contact shot the lead holds through the contact: if a bystander hides the target from there, come home
+	# for the contact instead.
+	if _contact.is_empty() and not _lead.is_empty() and _hidden(_lead, bystanders, mids):
+		_contact = _default_pose()
+		shot_ids[CONTACT] = "default"
 	var c := float(plan["contact"])
 	_in_end = minf(float(data.get("blend_in_sec", 0.0)), c)
 	_contact_end = c
@@ -397,6 +402,11 @@ func _target_points(plan: Dictionary, actor_id: StringName) -> Array[Vector3]:
 		out.append(to_local * f.global_position)
 		out.append(to_local * f.head_position())
 	return out
+
+
+## True when a bystander box stands across the pose's sight line to any of `mids`.
+static func _hidden(pose: Dictionary, boxes: Array[AABB], mids: Array[Vector3]) -> bool:
+	return boxes.any(func(b: AABB) -> bool: return _blocked(pose, b, mids))
 
 
 ## Each target's middle, halfway between its feet and its head (camera parent space), the actor left out.

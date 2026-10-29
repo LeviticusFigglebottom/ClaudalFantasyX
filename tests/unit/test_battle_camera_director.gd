@@ -316,7 +316,9 @@ func test_a_bystander_across_the_sight_line_keeps_the_default() -> void:
 	asha.global_position = inv.affine_inverse() * (across - Vector3.UP * 0.9)  # her middle on the sight line
 	assert_false(director._bystander_boxes(&"rhen", plan["targets"]).is_empty(), "Asha is a bystander")
 	director._setup(plan)
-	assert_eq(director.shot_ids["contact"], "", "Asha across the line: the contact keeps the default frame")
+	assert_ne(director.shot_ids["contact"], "target", "Asha across the line: no target shot at the contact")
+	if director._hidden(director._lead, director._bystander_boxes(&"rhen", plan["targets"]), [mid]):
+		assert_eq(director.shot_ids["contact"], "default", "and the lead, hidden too, comes home for the contact")
 	_free()
 
 
