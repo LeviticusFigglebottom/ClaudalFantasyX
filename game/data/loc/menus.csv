@@ -39,3 +39,24 @@ SET_PREVIEW_BATTLE_CAPTION,Each action holds this long:
 SET_PREVIEW_BATTLE_FMT,{sec} seconds an action
 TIP_SWELL_TITLE,Swell
 TIP_SWELL_BODY,"Each hero's Swell gauge fills as they fight. When it is full, choose Swell in battle to unleash a technique. Under Swell in the field menu, choose what fills it."
+STATUS_POISON_DESC,Loses a tenth of their health at the end of each of their turns.
+STATUS_SLEEP_DESC,Loses their turns until it wears off or they are hurt.
+STATUS_SILENCE_DESC,Cannot use magic.
+STATUS_DARKNESS_DESC,Their physical attacks rarely land.
+STATUS_PETRIFY_DESC,Turned to stone: out of the fight and off the timeline until cured.
+STATUS_SLOW_DESC,Waits twice as long between turns.
+STATUS_HASTE_DESC,Waits half as long between turns.
+STATUS_STOP_DESC,Loses their turns until it wears off.
+STATUS_BERSERK_DESC,"Strikes a random foe with greater strength, beyond your command."
+STATUS_CONFUSE_DESC,"Strikes at random, sometimes an ally. A physical blow brings them back."
+STATUS_DOOM_DESC,"A count runs down on each of their turns. When it reaches one, they fall."
+STATUS_ZOMBIE_DESC,"Healing hurts them, and a revival fells them."
+STATUS_SHELL_DESC,Takes half damage from magic.
+STATUS_PROTECT_DESC,Takes half damage from physical attacks.
+STATUS_REFLECT_DESC,Magic aimed at them alone turns back on the other side.
+STATUS_REGEN_DESC,Recovers a little health at the end of each of their turns.
+STATUS_ARMOR_BREAK_DESC,Their defense is gone.
+STATUS_MENTAL_BREAK_DESC,Their magic defense is gone.
+STATUS_POWER_BREAK_DESC,Their strength is halved.
+STATUS_MAGIC_BREAK_DESC,Their magic is halved.
+STATUS_PROVOKE_DESC,Attacks aimed at a single foe must aim at the one who provoked them.
