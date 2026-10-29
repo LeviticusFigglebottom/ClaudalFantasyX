@@ -631,5 +631,50 @@ battle_result_motion 6/0, battle_rewards 10/0, party_stand_ins 3/0, the UI areas
 29/1 = the Liss vigil, characters'). tools test_act1_swap_sweep OK. Lint, format and validate_data are clean.
 Skipped: screenshots (nothing visual changed: a tint value matching the spec, and the panel's teardown) and coverage (no
 game/battle core or game/progression change).
-- 2026-10-29 19:40, **BACKLOG EMPTY:** the Lead's 18:22 list is done. What's left needs the PC (PC-QUEUE) or other
+- 2026-10-29 19:40 (superseded by the Lead's 19:24 list below) **BACKLOG EMPTY:** the Lead's 18:22 list is done. What's left needs the PC (PC-QUEUE) or other
   tracks' fixes, listed above.
+- 2026-10-29 21:30, **the Lead's 19:24 list:**
+  - **Underwater rig, at the Lead's request (rendering's file, `game/world/water/underwater/underwater_rig.gd`; no
+    rendering track is running)** (ce8c1683): the lantern's bounce-pass refresh is deferred through the rig itself, so a
+    rig or scene freed before the flush drops the call; it no longer hands a freed root to
+    CharacterShaderTiers.refresh_bounce_passes. test_underwater::test_the_lantern_s_bounce_refresh_is_bound_to_the_rig
+    (9/0). The Ch1 playthrough no longer prints the error.
+  - **UI final-quality pass, Act I:**
+    - **4:3 added** to the aspect audit (1440x1080 and 1024x768, laid out at 1920x1440), next to 16:9, 16:10, 21:9 and
+      43:18, at 100 % and 130 % text (2dd514a4).
+    - **No default Godot theme:** the aspect audit now fails on any visible Control drawing a stylebox, font or icon from
+      Godot's built-in theme. None does (the only hits were Label focus styles, which never draw).
+    - **No placeholder icons:** the menus' icons are drawn glyphs, and test_menu_glyphs already gives every item,
+      equipment piece and skill one. No icon.svg or placeholder texture anywhere in game/ui.
+    - **No focus dead ends** (35a18896): test_input_parity_dead_ends opens every field menu page with the keyboard and
+      the pad, goes three Confirms deep, and Cancel always walks out until the menu closes with nothing left showing.
+      Every page already has its own device-parity test (the codex through its action test).
+    - **Text** (b2137061, e40234da): the pseudo-locale walk (+40 % length) passes, but with English strings at 130 % text
+      it showed real trims:
+      - the Customize header at 100 % ("Customize Coral-Bitten Hooks");
+      - Equip's "Magic Defense" stat name;
+      - the Reefball HUD's names, bands, counts and tags;
+      - the battle help line on a Vowbound's call;
+      - the shop and inn description and status lines;
+      - two settings help lines.
+      Fixes:
+      - **HudLayout.fit_label and fit_lines** shrink a label's font to 80 % at the least before it ellipsizes;
+      - MenuPage headers fit their row and are indented on the left only (488 px instead of 460);
+      - Equip's stat-name column is 234 px;
+      - the Reefball outfitter panel is 1400 px wide;
+      - the shop's description has 165 px and its status 120 px;
+      - the not-enough-lume line is shorter ("Not enough lume: 120 lume needed, 100 lume in hand.");
+      - the Reefball Read panel's read line takes what the rows leave, so the panel no longer runs 80 px into the drop
+        panel at 130 %.
+      An English walk now trims nothing.
+    - **Fixed while there:** the backlog parity test leaked its layer (3b792de6).
+SELF-RENDERED (at e40234da's parent, before the text fixes; a temporary manifest, never committed): 17 Act I screens at
+2560x1440, 1440x1080 (4:3) and 2560x1080 (21:9):
+- boot_title, field_menu, equip, lattice, items, status, formation, codex, bestiary, map (Haluna), save, settings hub,
+  shop buy, dialogue_continue, battle_hud_preview, battle_victory and battle_pause.
+- All read. The frame is centred at every aspect; at 4:3 it sits in the middle with room above and below, as `expand`
+  gives.
+- The only oddity: the victory shot's sandbox greybox floor shows its edge at 21:9. That set is the battle sandbox's
+  own, not an Act I arena.
+- No baselines written. Baselines that will move: equip_menu (stat columns), shop_menu_buy (the shorter line), and any
+  page whose title used to ellipsize.
