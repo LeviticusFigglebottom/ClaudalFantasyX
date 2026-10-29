@@ -18,7 +18,7 @@ WRAPPERS = {
     "brine_shoals/b_camp_arena.py": ("salvage_camp_burning",),
     "brine_shoals/b_shoals_arena.py": ("brine_shoals_afternoon",),
     "corrow/b_seawall_storm.py": ("seawall_stairhead_storm", "seawall_stairhead_hoist", "seawall_stairhead_surge"),
-    "coilspire/b_headland_arena.py": ("coilspire_headland_path",),
+    "coilspire/b_headland_arena.py": ("coilspire_headland_path", "coilspire_tier_landing"),
     "ashcrown/b_arenas.py": ("ashcrown_forecourt_day", "ashcrown_anvil_court"),
 }
 WRAPPED = {aid for ids in WRAPPERS.values() for aid in ids}
