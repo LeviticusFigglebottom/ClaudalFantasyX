@@ -68,7 +68,7 @@ This is a **seed**. The Narrative agent owns `docs/kb/story/` and must expand it
 | **Liss Varrow** | Saltwright mechanic and engineer, Rhen's foil | Item specialist; steals and builds gadgets | Represents the outlawed past. Her people are persecuted. |
 | **Old Kerrid** | Silent, scarred ronin-like warrior who knew both Rhen's and Asha's parents | Heavy hitter that breaks armor | Is secretly one of the "unsent" dead who has stayed among the living. Reveals this in Act II. |
 | **Ysolde** | Cold, elegant black mage, Asha's appointed tutor | Elemental magic | Grieving widow who sees the pilgrimage as a mercy. Becomes its fiercest critic. |
-| **Pell** | A Kirru (an original non-human people: tall, quiet, sea-otter/heron-like) | Learns enemy abilities (blue mage) | Outcast who has his own reasons to see the Undertow end. |
+| **Pell** | A Kirru (an original non-human people: tall, quiet, sea-otter/heron-like) | Learns enemy abilities by listening to them | Outcast who has his own reasons to see the Undertow end. |
 
 **Antagonist:** **High Warden Sefir Aurane**, the Order's leader. Charming and reasonable, he is also a centuries-old revenant. He believes stasis is mercy and wants to make the Calm permanent by becoming the Undertow's eternal heart himself, which would also make him eternal.
 
@@ -523,3 +523,4 @@ It must include the following: a link to this spec, the pillars, the guardrails,
 - v1.2 (2026-10-23): §8 item 8 tier wording neutralised. The old suffixes echoed the inspiring game's spell-tier names (IP guardrail §2); no design change.
 - v1.3 (2026-10-24): §4.2's hitch limit now names the visible frames (50 ms) and budgets frames hidden behind a fade as loading time (1 s per frame, 3 s per zone entry); see ADR 0029 (accepted with an amendment by review-sweep-Q).
 - v1.4 (2026-10-24): §4.2 allows a hidden frame of up to 1.7 s on a cold first launch only, behind the boot card with its first-run cue; see ADR 0037 (measured by M2-RND-18; Godot compiles one draw's pipeline set synchronously).
+- v1.5 (2026-10-29): §3's roster row for Pell describes his niche in our own words; it named the inspiring series' job class (IP guardrail §2). See ADR 0201; no design change.
