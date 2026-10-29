@@ -68,3 +68,25 @@ m2-slice's Ch1 framing is right; the Lead judges the shots at review.)
     (two coordinates moved by under 0.01).
 - Blender: 78 jobs touched since `origin/lead/gate-big17` (1bdaea53): heroes, villagers, crowd, creatures and 7
   zone kits. As on big17, they run after the timing-sensitive suite.
+- 22:06 UTC: Godot import clean (pass 2). **Suite: 3271 run, 5 failed** (4330 s), plus the known parse error.
+  big17's routed reds are all green now (ch04 wake camera, Iskarra VigilLights, zone_cast idles, Pell's portrait).
+  - Known on big17: test_cutscene_vfx_hosts.gd parse error (`CutsceneMotes` doesn't exist, ADR 0041's 93c1aa2d).
+  - **NEW, two fixes contradict:** test_battle_party_stand_ins::test_liss_names_her_battle_wrapper...: "expected
+    <#7A8C5A> got <#7A8F6A> her timeline tint". The Lead's big14 fix 0875dc95 set the test to #7A8C5A (her landed
+    actor's row); claude/ui's M3-HER-1120 (c2d3a9b7) put `battle_sandbox.json` back to the spec's #7A8F6A, and its
+    own test says #7A8F6A. The merge kept the Lead's test and ui's data. Not fixed on the gate: which tint is right?
+  - **NEW, cross-branch:** test_cutscene_directives::test_every_cue_key_has_code_behind_it: "@vfx follow= / anchors=
+    is in cues.json but no cutscene code reads it". m2-slice's new guard (f8f4d802) meets hero-integration's
+    M3-ARC-1326 keys (5f59e287), which `cutscene_vfx_hosts.gd` hands to hosts whole and never names. Each branch
+    is green alone. Route to m2-slice and hero-integration (UNSUPPORTED_KWARGS or name the keys in the host).
+  - **NEW, branch content:** test_slice_shots::test_every_slice_shot_boots_its_rig: "slice_dock_night_yes holds a line
+    of its scene (ch03_dock_007)". m2-slice's f7a5f332 gave the shot `hold_line` but it plays a `story_call` with
+    no `scene_id`, so the test reads `compiled/.json`. The shot and test are identical on `claude/m2-slice`. Route
+    to m2-slice.
+  - **NEW:** test_qa_threads::test_every_thread_plays_through_clean: in every chapter thread (ch01, 04–09, fp),
+    "an unexplained warning: WaterSurface <zone>/Water: another WaterSurface already publishes hymn_water_level".
+    Neither water_surface.gd nor the thread test changed since big17. Probing which branch brings it (below).
+- Boot smoke: no ERROR lines.
+- Coverage, report-only: `--filter=battle` aborted with no numbers (the Liss tint red fails under instrumentation
+  too). `--filter=progression` matches no test file (0 run), so it aborted; re-running as `--filter=lattice`
+  (game/progression's lattice tests), and battle in a scratch copy with only the Liss assertion changed.
