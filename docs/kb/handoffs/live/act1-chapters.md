@@ -410,13 +410,13 @@ SELF-RENDERED @ c242d54d: ch05_pemakar_harbour (no baseline: the re-aimed harbou
   "source not found": big18 already fixes those (the wake's map row names its own layout in `points`, dd52da35), and
   they clear once that reaches the integration branch. For big19.
 
-- **IN PROGRESS: the Lead's flow and pacing pass** (brief 10-29 23:10, on lead/gate-big18 @ d00d3284). Done so far
+- **DONE (see `docs/kb/qa/act1_flow_pacing_pass.md`): the Lead's flow and pacing pass** (brief 10-29 23:10, on lead/gate-big18 @ d00d3284). Done so far
   (60b55833): `tools/act1/flow_audit.py` + `tools.tests.test_act1_flow_audit` (flags never set, read early, unreachable
   beats or triggers, unreached zones, orphan scenes): clean on big18 and here; orphans only the Reefball barks
   (M3-RBL-1208). Request **M3-CIN-1233** (slice-polish): the Prologue skips Ch1 and the slice's end card returns to the
   title, so Ch4–Ch9 can't be reached by play; one end_card block serves both end cards (Ch9's too).
   Pacing: no walked leg between beats over ~75 s. Ch1's dive may roll ~7 random fights (slice-polish's zone; noted).
-  Waiting on: the balance sim over every Act I suite.
+  Balance sim, every Act I suite on big18: 138/138 in band; no wall (smart ≥ 84%), no walkover past Ch1's tutorial.
 - LEAD-ANSWERED (10-29 23:31): yes; slice-polish makes it, act1-chapters reviews (run the `_thread` tests on it and view the Ch1 Drop and Ch4 NemeDoor arrivals in stills). Was: M3-CIN-1233: flip first_playable.json's M2 switch (Prologue → ch01/oruvel_underway @ Drop; the slice's
   end card → ch04/haluna_wake @ NemeDoor, Ch9's → the title)? It's slice-polish's file and the notes say the Lead sets it.
 
@@ -429,7 +429,7 @@ SELF-RENDERED @ c242d54d: ch05_pemakar_harbour (no baseline: the re-aimed harbou
   gate's camera with Rhen in it; check Ch4's fights show Toma.
 
 ## Exact next step
-**BACKLOG EMPTY (2026-10-29, again @ cb97a0cf after the Lead's QA rows 23, 34 and 39; first @ f67d6134):** the fresh title → Ch9 playthrough is done (handoff
+**BACKLOG EMPTY (2026-10-29 late: after the flow and pacing pass; before that @ cb97a0cf after QA rows 23, 34, 39):** waiting on M3-CIN-1233 (slice-polish's switch, which I review when MERGE-READY) and M3-CIN-1234. the fresh title → Ch9 playthrough is done (handoff
 `docs/kb/handoffs/2026-10-29-cinematics-act1-chapters-1.md`). Every `_thread` test passes. Every Act I cutscene of
 Ch1 and Ch4–Ch9 was viewed in flow-order stills, and every problem in my lane is fixed and re-viewed (the fourth pass in
 `docs/kb/qa/act1_playthrough_ch04_ch09.md`). Ashcrown's POIs have camera volumes. What is left waits on filed requests:
