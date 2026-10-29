@@ -819,6 +819,34 @@ Ch4–Ch9 onward. `m2-slice.md` beside this file is the history up to the 2026-1
   or a `kneel_over_rhen` override). My default meanwhile: the marks stay; I move Asha only if they say the cloth
   can't clear him.
 
+- **Verified on this branch (self-rendered and viewed):** asha_clip_run and field_hero_gait_strip (the run is grounded:
+  the free arm is bent near the body, with no flop); field_hero_party (three bodies spaced, none stacked), with
+  qa_party_spawns 2/0 under real physics. **All four fast-tracks hold here; they reach the integration branch with
+  big17.**
+- **M2-FP-119, the slice's timing and framing (MERGE-READY @ the branch head):**
+  - `@wait arrive=<actor>`: the sequencer holds until that actor's walk lands. B11's flat `@wait 6.0` assumed a walk
+    length, but the player sets B11 off from anywhere on the dock. Unit test mutation-checked; cues.json and
+    cutscenes.md updated.
+  - **H05:** Toma stood with his head above the top bar. He moved to (-3.0, 0.131, 10.0): off H05; his spear
+    enters H06 from the left; he stands whole in H05_up's left third for his own line.
+  - **The First Verse:** S07's walk gets a beat before its fade; S06's sits and S09's emerge start under the black
+    (a glide and an empty doorway had shown after the fade-ins).
+  - **SELF-RENDERED @ ddcf5f28 (viewed, no baselines written):**
+    - slice_beach_h05_asha: Asha and Rhen only, both faces;
+    - slice_beach_h06_toma: the spear enters from the left. **Lead, judge at the gate:** its shaft passes just behind
+      Asha's head;
+    - slice_beach_standing: all three faces, Toma clear;
+    - slice_verse_threshold: Asha out of the doorway, the light rising.
+    The skirt balloon (row 31) is in H05 and H06 until characters' M3-CHR-102.
+  - **Checks:** cutscene 85 (1 failed: the known Ch4 walks red, act1-chapters'), cutscene_sequencer 18, first_verse 3,
+    dialogue_vs 3, slice_shots 1, prologue 8, fp_ 30, haluna 65, qa_party 2, all 0 failed bar that red;
+    hero_field 29 with 1 failed (snaps in Ch4's haluna_wake and drowned_choir, not the slice). dlgc --check,
+    validate_data 0/0, taskboard --check, gdlint and gdformat clean.
+  - **Skipped:** coverage and Blender (nothing they cover).
+### PC-QUEUE
+- Re-check PC GPU QA rows 18 (C07 harrier) and 32 (beach standing lines) on the GPU: both are fixed here (rendered on
+  lavapipe), and the sheet still lists them open.
+
 ### Render requests
 SUPERSEDED RENDER-REQUEST @ fdec3cc6: slice_prologue_vigil_line, slice_beach_h05_asha, slice_beach_h06_toma, slice_haluna_villagers_village, slice_causeway_head, slice_causeway_harrier_view, haluna_h01_village_from_sea, haluna_h02_tidewall_lane, haluna_h04_dock, haluna_h07_chapel_court, haluna_h10_dock_night, shrine_s01_approach, shrine_s02_threshold, shrine_s03_overview, shrine_s04_lip, shrine_s05_side_pool, drownbell_flood, battle_boss_intro_drownbell, battle_arena_causeway, field_causeway_dolly, boot_title; why: M2-FP-102..109, the human's playtest round (real cast and held poses in the prologue and Cutscene A, live villagers and wildlife, the final causeway), plus the greyscale audit of every slice beat. The six slice_* shots are new (no baseline yet).
 - **Known red until the render lands:** the six new `slice_*` shots have no baseline yet, so the tools test
