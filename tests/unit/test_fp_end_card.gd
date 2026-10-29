@@ -40,7 +40,6 @@ func test_text_comes_from_loc_keys() -> void:
 
 
 func test_accept_waits_for_the_hold_then_returns_to_the_title() -> void:
-	card.next_location = &""  # the title case (Act I's end; test_act1_route covers both)
 	assert_false(card.prompt_shown(), "no prompt during the hold")
 	assert_false(card.handle_input(_accept_event()), "accept is ignored during the hold")
 	assert_eq(swaps, [] as Array[String])
@@ -53,10 +52,11 @@ func test_accept_waits_for_the_hold_then_returns_to_the_title() -> void:
 	_done()
 
 
-func test_the_slice_card_goes_on_into_ch4_since_the_switch_flipped() -> void:
-	# ADR 0042 (M3-CIN-1233, 2026-10-29): the M2 review is approved, so the slice's end card carries on into Act I.
-	assert_eq(card.next_location, &"ch04/haluna_wake", "first_playable.json end_card.next_location")
-	assert_eq(card.next_spawn, &"NemeDoor")
+func test_it_is_act_ones_ending_so_accept_returns_to_the_title() -> void:
+	# M3-CIN-1233 (ADR 0042): the slice goes on into Ch4 through a chapter card; this card ends Act I only.
+	assert_eq(card.next_location, &"", "first_playable.json end_card.next_location stays empty")
+	assert_eq((card.get_node(^"%Title") as Label).text, tr("FLOW_END_CARD_TITLE"))
+	assert_false("first playable" in (card.get_node(^"%Title") as Label).text.to_lower(), "no demo card")
 	_done()
 
 
@@ -74,17 +74,11 @@ func test_with_next_location_set_accept_goes_on_into_the_story() -> void:
 	_done()
 
 
-func test_it_opens_on_rhens_voice_over_then_rolls_the_credits() -> void:
-	var voice := card.get_node(^"%Voice") as Label
-	assert_eq(voice.text, tr("FLOW_END_CARD_VOICE"), "B12's voice-over line (M2-FP-26)")
-	assert_true("two days" in voice.text, "translated")
+func test_it_opens_on_the_card_then_rolls_the_credits() -> void:
+	# B12's voice-over now leads into Ch4 on the chapter card (M3-CIN-1233); Act I's end opens on the card itself.
+	assert_eq((card.get_node(^"%Voice") as Label).text, "", "no voice-over")
 	var content := card.get_node(^"%Content") as Control
 	card.advance(1.5)
-	assert_eq(card.voice_alpha(), 1.0, "the line alone on black")
-	assert_eq(content.modulate.a, 0.0, "before the card")
-	assert_eq(card.credits_shown(), 0)
-	card.advance(6.0)
-	assert_eq(card.voice_alpha(), 0.0, "the line has gone")
 	assert_true(content.modulate.a > 0.0, "the card comes up")
 	card.advance(PAST_HOLD_SEC)
 	var credits := card.get_node(^"%Credits") as VBoxContainer

@@ -20,17 +20,24 @@
     },
     "end_card": {
       "return_scene": "res://game/core/boot.tscn",
-      "voice_key": "FLOW_END_CARD_VOICE",
+      "voice_key": "",
       "voice_sec": 7.0,
       "voice_fade_sec": 1.0,
       "fade_in_sec": 1.2,
       "credits": ["CREDITS_GAME", "CREDITS_SLICE", "CREDITS_MUSIC", "CREDITS_ENGINE", "CREDITS_FONTS", "CREDITS_THANKS"],
       "credit_line_sec": 1.1,
       "min_hold_sec": 16.0,
-      "_next_note": "M3-C04-04: next_location / next_spawn (a locations.json id and spawn) send accept on into the story instead of back to the title. Flipped on 2026-10-29 under ADR 0042 (M3-CIN-1233): the slice's end card carries on into Ch4, ch04/haluna_wake at NemeDoor. final_flag: once Act I is over (Ch9's last scene sets it), accept returns to the title whatever next_location says (Ch9's ending shows this card too).",
+      "_next_note": "M3-C04-04: next_location / next_spawn (a locations.json id and spawn) send accept on into the story instead of back to the title. Since the M2 review switch flipped (2026-10-29, ADR 0042; M3-CIN-1233, the Lead) this card is the end of Act I only: Ch9's last scene shows it, its credits roll, and accept returns to the title, so both stay empty. The slice's dock at night goes on into Ch4 through chapter_card instead (no demo card mid-game). voice_key is empty: B12's voice-over moved to chapter_card, into Ch4.",
+      "next_location": "",
+      "next_spawn": ""
+    },
+    "chapter_card": {
+      "_doc": "M3-CIN-1233: the chapter title card between the slice and Ch4 (game/flow/chapter_card.gd): UI's ActCard on black: voice_key first as a caption alone (B12's voice-over, which closed the slice, now leads into Ch4), then the two-line title (label_key over the rule, title_key), then on to next_location / next_spawn. haluna.night_end_scene opens it after B11.",
+      "voice_key": "FLOW_END_CARD_VOICE",
+      "label_key": "CHAPTER_CARD_CH04_LABEL",
+      "title_key": "CHAPTER_CARD_CH04_TITLE",
       "next_location": "ch04/haluna_wake",
-      "next_spawn": "NemeDoor",
-      "final_flag": "ch09_act_one_complete"
+      "next_spawn": "NemeDoor"
     },
     "haluna": {
       "location_id": "ch02/haluna",
@@ -56,7 +63,7 @@
       "sworn_flag": "ch03_rhen_sworn_guardian",
       "night_scene_id": "ch03_dock_at_night",
       "night_spawn": "DockNight",
-      "night_end_scene": "res://game/flow/end_card.tscn",
+      "night_end_scene": "res://game/flow/chapter_card.tscn",
       "night_cast": {
         "asha": [
           20.6,

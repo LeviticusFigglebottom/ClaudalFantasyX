@@ -1,21 +1,21 @@
 extends TestCase
-## M3-CIN-1233 (the Lead, under ADR 0042: the M2 review is approved): New Game plays Act I as one path. New Game →
-## the prologue → Ch1's Underway at Drop; the slice's end card → Ch4's wake at NemeDoor; and once Ch9's last scene
-## has set Act I's final flag, the same end card returns to the title. Every hand-off resolves to a real scene and
-## spawn in the location registry. Travel is recorded, never performed.
+## M3-CIN-1233 (the Lead, under ADR 0041/0042: Act I as played is one path): New Game → the prologue → Ch1's Underway at
+## Drop; the slice's end (B11, the dock at night) → Ch4's chapter card (B12's voice-over, then "Chapter 4" and its
+## name) → Ch4's wake at NemeDoor, with no demo card and no credits; and Ch9's end → the end card with the credits →
+## the title. Every hand-off resolves to a real scene and spawn in the location registry. Travel is recorded.
 
 const PROLOGUE_SCENE := "res://game/levels/prologue/prologue.tscn"
 const CH1 := &"ch01/oruvel_underway"
 const CH1_SPAWN := &"Drop"
 const CH4 := &"ch04/haluna_wake"
 const CH4_SPAWN := &"NemeDoor"
-const ACT1_DONE := &"ch09_act_one_complete"
 ## Longer than first_playable.json end_card.min_hold_sec.
 const PAST_HOLD_SEC := 60.0
+const DT := 1.0 / 30.0
+const MAX_FRAMES := 3000
 
 var _saved_state: GameStateData
 var _nodes: Array[Node] = []
-var _prompt := ""
 
 
 func before_each() -> void:
@@ -44,36 +44,42 @@ func test_new_game_runs_the_prologue_into_ch01() -> void:
 	_done()
 
 
-func test_the_slice_end_card_goes_on_into_ch04() -> void:
-	var went := _accept_end_card()
-	assert_eq(went, [[CH4, CH4_SPAWN]], "accept carries on into Ch4's wake night")
-	assert_eq(_prompt, tr("FLOW_END_CARD_PROMPT_CONTINUE"), "the prompt says it goes on, not back to the title")
+func test_the_slice_ends_on_ch04s_chapter_card_then_ch04() -> void:
+	var cfg := FirstPlayableConfig.section(FirstPlayableConfig.SECTION_HALUNA)
+	assert_eq(str(cfg.get("night_end_scene", "")), ChapterCard.SCENE, "B11 hands off to the chapter card")
+	var cc := (load(ChapterCard.SCENE) as PackedScene).instantiate() as ChapterCard
+	var went: Array = []
+	cc.travel = func(loc: StringName, spawn: StringName) -> void: went.append([loc, spawn])
+	_add(cc)
+	assert_true(cc.voice_showing(), "B12's voice-over first, alone on black")
+	var saw_title := false
+	var frames := 0
+	while went.is_empty() and frames < MAX_FRAMES:
+		cc.advance(DT)
+		saw_title = saw_title or (not cc.voice_showing() and cc.card.is_showing())
+		frames += 1
+	assert_true(saw_title, "then the chapter's title")
+	assert_eq(went, [[CH4, CH4_SPAWN]], "then on to Ch4's wake night")
+	assert_false(cc.go_on(), "once")
+	assert_eq(tr("CHAPTER_CARD_CH04_TITLE"), "The Pilgrim's Wake", "the card's words are loc keys")
 	_assert_resolves(LocationRegistry.load_default(), CH4, CH4_SPAWN)
 	_done()
 
 
-func test_after_act_one_the_end_card_returns_to_the_title() -> void:
-	Game.set_flag(ACT1_DONE)  # Ch9's ch09_the_road_out sets it, then shows this card
-	var went := _accept_end_card()
-	assert_eq(went.size(), 1)
-	assert_eq(went[0].size(), 1, "a scene change, not a travel")
-	assert_eq(str(went[0][0]), EndCard.DEFAULT_RETURN_SCENE, "back to the title")
-	assert_eq(_prompt, tr("FLOW_END_CARD_PROMPT"), "and says so")
-	_done()
-
-
-## Opens the end card, waits out its hold, accepts, and returns what FlowRouting / the card recorded.
-func _accept_end_card() -> Array:
+func test_act_ones_end_rolls_the_credits_then_the_title() -> void:
+	var ch9: Dictionary = GreyboxZone.read_json("res://game/data/flow/chapters/ch09.json")
+	assert_true(JSON.stringify(ch9).contains(EndCard.SCENE), "Ch9's last beat opens the end card")
 	var went: Array = []
 	FlowRouting.record = func(args: Array) -> void: went.append(args)
 	var card := (load(EndCard.SCENE) as PackedScene).instantiate() as EndCard
 	card.change_scene = func(path: String) -> void: went.append([path])
 	_add(card)
-	_prompt = (card.get_node(^"%Prompt") as Label).text
 	card.advance(PAST_HOLD_SEC)
+	assert_true(card.credits_shown() > 0, "the credits roll")
 	card.accept()
 	FlowRouting.record = Callable()
-	return went
+	assert_eq(went, [[EndCard.DEFAULT_RETURN_SCENE]], "then the title")
+	_done()
 
 
 func _assert_resolves(reg: LocationRegistry, location: StringName, spawn: StringName) -> void:

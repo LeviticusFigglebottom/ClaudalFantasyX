@@ -201,14 +201,14 @@ func test_the_first_playable_thread_end_to_end() -> void:
 	assert_eq(opened, [] as Array[String], "no scene opens: the party travels")
 	assert_eq(travels.back(), [&"ch02/haluna", &"DockNight"], "after the Drownbell, Haluna's dock at night (M2-FP-15)")
 
-	# B11: the dock at night, then the end card.
+	# B11: the dock at night, then Ch4's chapter card (M3-CIN-1233: no demo end card mid-Act I).
 	zone = _load_zone()
 	zone.place_at(&"DockNight", zone.spawn_yaw_deg(&"DockNight"))
 	var night_story := zone.get_node("Story") as HalunaStory
 	night_story.begin()
 	assert_true(zone.is_night, "Haluna at night")
 	assert_true(bool(Game.get_flag(&"ch03_rhen_sworn_guardian")), "Rhen is sworn")
-	assert_eq(routed.back(), [EndCard.SCENE], "then the end card")
+	assert_eq(routed.back(), [ChapterCard.SCENE], "then Ch4's chapter card")
 	_free(zone)
 	_done()
 
