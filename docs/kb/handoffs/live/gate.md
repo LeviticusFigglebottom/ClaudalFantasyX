@@ -28,3 +28,16 @@ claude/characters, which still carries them); big16 had dropped them. Removed.
 
 Checks at the build: validate_data 0 errors 0 warnings; taskboard --check ok; gdlint and gdformat --check clean;
 no duplicate loc keys, PROVENANCE rows or shot ids; no conflict markers; no `docs/kb/qa/gate-runs/**` images.
+
+### big17 gate in progress (on 2e266c6a = 1a986abf + this log)
+- 2026-10-29 17:15 UTC: `tools/ci_local.sh` started (HYMN_STEP_TIMEOUT=10800). Data 0/0. The tool suite: 182 units,
+  1914 tests, 4 failing units, **all four also red on big16 @ ff82858c** (re-run there), so not merge fallout:
+  test_freed_cast_lint (`game/vfx/ebbing/ebbing_motes.gd:168` casts `row["node"] as Node3D` before
+  is_instance_valid; M3-C09-03), test_npc (crowd_girl_teen too near wright_child_a, 0.229 < 0.28, and its generator
+  output differs from the committed json), test_post_import (a `crowd` category with no rules file), test_screenshots
+  (`villager_shopkeeper_front` has no baseline).
+- ci_local stops at the first failure, so the remaining steps run through the same commands without stopping:
+  audio, taskboard, gdlint, gdformat, manifest (612 shots, 2 NO BASE: pell_battle_attack, pell_storm_ch8) all ok.
+- Blender: base = the integration branch (`origin/claude/new-session-mj8c3c`, which holds only big13), so ~150 jobs
+  (heroes, villagers, crowd, creatures, kits). That takes hours, so it runs after the suite and coverage, in
+  parallel with the screenshot capture (both deterministic under load), not before the timing-sensitive suite.
