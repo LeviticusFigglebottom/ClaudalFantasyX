@@ -322,8 +322,33 @@ that test at this branch's zones.
     - One Coilspire view interpolated through the hill.
   - **Checks run:** Godot `ch08` (23), `ch09` (12), `zone_kit` (12), validate_data. **MERGE-READY @ 26a674f8.**
 
+### 2026-10-29 (new Lead session_01Bg3iP7cPGyjbX4CyniBahc; integration `claude/new-session-mj8c3c`)
+- **Merged `origin/claude/new-session-mj8c3c`** (clean). Re-imported.
+- **M3-C09-03 (the Ebbing):** M3-ARC-1326's hook (`CutsceneVfxHosts`) is on `claude/hero-integration` (5c11d034), not
+  yet on integration. My side needs no change: `EbbingMotes.play_vfx` matches its signature, and it reads marks at
+  runtime, so hero-integration's moved `mourner_hand` mark is followed. When it lands: play Ch9 and view N08–N15.
+- **M3-ENV-1325, Ashcrown at player height (GPU QA row 26; the Ch5 half of M3-ENV-1316, zone-side):** a new walk
+  (spawn → triggers at eye height, both ways) showed the tiers' shaded faces and the flying stair's flanks as flat
+  near-black planes, and the trial's copper and the posts as flat mint and red plastic.
+  - **Cause, black faces:** `Ch05Zone.apply_variant` writes the layout's `environment` row (ambient 0.45) over any
+    grade, and the kit's stone bakes an occlusion (UV2) applied at 0.8. Now ambient 1.8 (layout row and the zone's own
+    grade), and zone copies of `ac_ashlar`/`ac_dressed` at occlusion 0.3/0.35.
+  - **Flat metals:** zone materials on `env_bronze` (patina, streaks, edge wear; the lacquers chip to black) swapped in
+    by slot on every Ashcrown kit piece, including the tiers' veins (streaked verdigris).
+  - **The day arenas** take the same swaps through a new `KitSlotSwaps` node (`game/levels/act1/`, additive) written by
+    `b_arenas.py`, and the forecourt takes the zone's fill.
+  - Everything is written by `tools/act1/ch05_ashcrown_dressing.py`.
+  - **Checks run:** Godot `--filter=` ashcrown 22/0, ch05 13/0, zone_kit 12/0, battle_arena 18/0; tools test_b_arenas +
+    test_arenas (22); gdlint/gdformat; validate_data; taskboard --check.
+  - **Checks skipped:** coverage (no battle/progression code); Blender (no kit source touched).
+  - **MERGE-READY @ a209511a.**
+- LEAD-ASK: M3-ENV-1316 (env-art's kit faces, open since 10-28) is all Ch5–Ch9. I'm fixing what the zones can fix
+  (Ashcrown done above; next the trader boat's bales and the Brine Shoals tent and mudflat, by slot swaps or new
+  `b_*.py` pieces). env-art keeps the kit's own materials. Going ahead; overrule if env-art has it in flight.
+
 ### Render requests
 (Self-rendered per TRACK-RULES; lines are SELF-RENDERED notes.)
+SELF-RENDERED @ a209511a: ch05_ashcrown_causeway, _forecourt, _tiers, _crown, _court, battle_arena_ashcrown_forecourt_day, battle_arena_ashcrown_anvil_court, battle_boss_intro_matron, plus 30 Ashcrown walk views (scratch). Viewed: the tiers' coursing and buttresses read in shade, the veins are streaked verdigris, the bowls aged copper; sunlit paving not blown out. None of these zone shots has a baseline yet.
 SELF-RENDERED @ 26a674f8: ch08_corrow_arrival, _stair, _flood, _lake, _storm, ch09_corrow_strand, _road, _landing, _rocks, plus 44 scratch walk views and three bastion views. Viewed: the yard is paved and dressed, Ch9's rocks and rubble read as broken laterite, and nothing regressed.
 SELF-RENDERED @ 50db241b: ebbing_n11, ebbing_n08 (new), plus a strand view (scratch). Viewed: cyan held motes over the harbour, mirrored in the still water and sinking seaward. N11's river overhead reads above and below the waterline, and nothing is gold or rising.
 SELF-RENDERED @ 9c8e9c99: battle_ch08_stair_hold. Viewed: no capsule, and the anchors are invisible so the frame is unchanged. Also viewed `undertows_reach` at the default camera and the new `the_stair_head` hint (scratch): the head landing and its down-steps read clearly from the walk.
