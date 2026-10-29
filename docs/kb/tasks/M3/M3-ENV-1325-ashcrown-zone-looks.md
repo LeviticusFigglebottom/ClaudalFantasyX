@@ -30,11 +30,16 @@ All in `tools/act1/ch05_ashcrown_dressing.py` (writes everything below, reproduc
   `ashcrown_day_environment.tres` (env-art's Ch5 temple grade with the same fill) in the dressing.
 - The flat grey ash dunes are the kit's ash soil as designed (the volcano's slope); not changed.
 
-## Left for env-art (M3-ENV-1316)
-The same flat slots in the kit itself (its preview and any other user of `ac_*`); the `ashcrown_forecourt_day` and
-`ashcrown_anvil_court` arenas are env-art-b's and follow in this task.
+- **The arenas** `ashcrown_forecourt_day` and `ashcrown_anvil_court` (`b_arenas.py`): the same slot swaps through a
+  new `KitSlotSwaps` node (`game/levels/act1/kit_slot_swaps.gd`, ZoneKitDressing's `swap_slots` for written scenes)
+  at the end of each scene; the forecourt's fill is the zone's 1.8 (the court keeps its interior fill).
 
-Checks: Godot `--filter=` ashcrown 22/0, ch05 13/0, zone_kit 12/0; validate_data; taskboard --check. Self-rendered
-`ch05_ashcrown_causeway/_forecourt/_tiers/_crown/_court` (no baselines yet) and 30 player-height walk views.
+## Left for env-art (M3-ENV-1316)
+The same flat slots in the kit itself (its preview and any other user of `ac_*`).
+
+Checks: Godot `--filter=` ashcrown 22/0, ch05 13/0, zone_kit 12/0, battle_arena 18/0; tools test_b_arenas +
+test_arenas (22); gdlint/gdformat; validate_data; taskboard --check. Self-rendered
+`ch05_ashcrown_causeway/_forecourt/_tiers/_crown/_court`, `battle_arena_ashcrown_forecourt_day/_anvil_court`,
+`battle_boss_intro_matron` (no baselines for the zone shots yet) and 30 player-height walk views.
 
 ## Review log

@@ -68,7 +68,9 @@ def _preview() -> dict:
 TEMPLE_LIGHT = {  # ashcrown.md §0 `ch05_temple` (13:00): the sun through the ash veil, ash haze
     "sub_frame": "ch05_temple",
     "sun": {"elev": 58.0, "az": 225.0, "color": "#FFF0DC", "energy": 2.8},
-    "fill": {"color": "#8E959C", "energy": 0.45},
+    # the fill is the zone's (tools/act1/ch05_ashcrown_dressing.py ZONE_AMBIENT_ENERGY, M3-ENV-1325): at 0.45 the tiers'
+    # shaded faces behind the enemy line were black planes
+    "fill": {"color": "#8E959C", "energy": 1.8},
     "exposure": 0.72,
     "glow": (0.35, 0.03, 1.1),
     "fog": {"color": "#8C8882", "aerial": 0.5, "density": 0.0018, "sky_affect": 0.25, "height": 0.0,
@@ -179,12 +181,35 @@ def plume_day(text: str) -> str:
     return text
 
 
+# The zone's slot swaps (M3-ENV-1325: weathered copper, gold and lacquer, the stone's lighter baked occlusion), applied
+# to the written scene by a KitSlotSwaps node at its end (after every kit piece is ready).
+SWAPS_SCRIPT = "res://game/levels/act1/kit_slot_swaps.gd"
+
+
+def _zone_slot_paths() -> dict:
+    spec = importlib.util.spec_from_file_location("ch05_ashcrown_dressing", ROOT / "tools" / "act1" / "ch05_ashcrown_dressing.py")
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod.metal_paths()
+
+
+def slot_swaps(text: str, paths: dict) -> str:
+    head = re.match(r"\[gd_scene load_steps=(\d+) format=3\]", text)
+    text = text.replace(head.group(0), f"[gd_scene load_steps={int(head.group(1)) + 1} format=3]", 1)
+    last = list(re.finditer(r"^\[ext_resource [^\n]*\]$", text, flags=re.M))[-1]
+    text = text[:last.end()] + f'\n[ext_resource type="Script" path="{SWAPS_SCRIPT}" id="slot_swaps"]' + text[last.end():]
+    body = ", ".join(f'"{k}": "{v}"' for k, v in sorted(paths.items()))
+    return text.rstrip("\n") + ('\n\n[node name="KitSlotSwaps" type="Node" parent="."]\n'
+                                 'script = ExtResource("slot_swaps")\npaths = {%s}\n' % body)
+
+
 def main(out_dir: Path | None = None) -> int:
     if out_dir is not None:  # tools/tests/test_b_arenas.py writes to a scratch dir
         AS.OUT_DIR = out_dir
+    paths = _zone_slot_paths()
     for aid, fn in ARENAS.items():
         path = AS.write_arena(fn())
-        path.write_text(plume_day(path.read_text(encoding="utf-8")), encoding="utf-8")
+        path.write_text(slot_swaps(plume_day(path.read_text(encoding="utf-8")), paths), encoding="utf-8")
         print(f"ARENA {path.name}")
     return 0
 
