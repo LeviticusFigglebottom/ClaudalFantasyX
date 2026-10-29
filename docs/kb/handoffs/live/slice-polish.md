@@ -843,6 +843,18 @@ Ch4–Ch9 onward. `m2-slice.md` beside this file is the history up to the 2026-1
     hero_field 29 with 1 failed (snaps in Ch4's haluna_wake and drowned_choir, not the slice). dlgc --check,
     validate_data 0/0, taskboard --check, gdlint and gdformat clean.
   - **Skipped:** coverage and Blender (nothing they cover).
+- **B11 watched in motion** (tools/cutscene_frames from the real DockNight arrival, every 0.1–0.5 s):
+  - `@wait arrive=rhen` works: Rhen reaches Asha, then about 1 s on, the first line (23.0 s in the first run).
+  - **Fixed (e7b19992):** the climax opened on Toma's back and shield, centred on H04's axis with Rhen hidden behind
+    him. Toma now starts behind H04's lens at the dock's root and walks up from the top of the scene.
+  - **Fixed (3f526f99):** the H04→B11 change flew the camera 30 m down the dock and over the water. B11 and B02 are
+    now hard cuts. The camera log shows one clean frame from H04 to B11 in position and aim.
+  - **Fixed (3f526f99):** Toma's dock_toma was 6° outside B11's frame, so his objection and sigh were off screen.
+    He now stops 2.9 m behind Rhen, in the frame's left.
+  - **Investigating:** the first one or two frames after a hard cut render dark (the slope's underside, a house
+    corner) while the camera is already on B11. It looks like temporal history (TAA is on project-wide), so it would
+    hit every hard cut in the game. Rendering it with TAA on and off now.
+  - **Follow-up, not changed:** leaving Neme's door volume may blend from B02 back to H09 (23 m).
 ### PC-QUEUE
 - Re-check PC GPU QA rows 18 (C07 harrier) and 32 (beach standing lines) on the GPU: both are fixed here (rendered on
   lavapipe), and the sheet still lists them open.
