@@ -20,8 +20,8 @@ FIXTURE_DIR = ROOT / "tests" / "fixtures" / "import"
 RULES_DIR = ROOT / "game" / "data" / "import"
 KINDS = {
     "ashcrown_kit", "base_body", "brightwater_ferry_kit", "brine_shoals_kit", "characters", "coilspire_kit",
-    "corrow_kit", "creatures", "crowd", "haluna_kit", "oruvel_kit", "oruvel_underway_kit", "pemakar_kit",
-    "shader_test", "tamsule_bell_kit", "vegetation", "wildlife",
+    "corrow_kit", "creatures", "crowd", "haluna_kit", "oruvel_kit", "oruvel_underway_kit", "pemakar_kit", "shader_test",
+    "tamsule_bell_kit", "vegetation", "wildlife",
 }
 
 

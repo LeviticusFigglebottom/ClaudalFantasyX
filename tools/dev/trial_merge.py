@@ -75,7 +75,7 @@ def prefold(wt: Path, refs: list[str]) -> list[str]:
         cmd = ["git", *IDENT, "merge", "--no-edit", "-q", "origin/%s" % ref]
         r = subprocess.run(cmd, cwd=wt, capture_output=True, text=True)
         if r.returncode != 0:
-            subprocess.run([sys.executable, str(wt / "tools/dev/merge_union.py")], cwd=wt, capture_output=True, text=True)
+            subprocess.run([sys.executable, str(ROOT / "tools/dev/merge_union.py")], cwd=wt, capture_output=True, text=True)
             for f in [f for f in git("diff", "--name-only", "--diff-filter=U", cwd=wt).split() if f]:
                 clashed.append("%s (%s)" % (f, ref))
                 git("checkout", "--theirs", "--", f, cwd=wt, check=False)
@@ -97,7 +97,7 @@ def merge_all(wt: Path, tracks: list[str]) -> list[dict]:
             files = [f for f in git("diff", "--name-only", "--diff-filter=U", cwd=wt).split() if f]
             for f in files:
                 row["conflicts"].append({"file": f, "with": other_sides(f, t, merged, wt)})
-            subprocess.run([sys.executable, str(wt / "tools/dev/merge_union.py")], cwd=wt, capture_output=True, text=True)
+            subprocess.run([sys.executable, str(ROOT / "tools/dev/merge_union.py")], cwd=wt, capture_output=True, text=True)
             left = [f for f in git("diff", "--name-only", "--diff-filter=U", cwd=wt).split() if f]
             row["union"] = sorted(set(files) - set(left))
             for f in left:
