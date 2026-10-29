@@ -58,3 +58,10 @@ no duplicate loc keys, PROVENANCE rows or shot ids; no conflict markers; no `doc
   game/progression changed: 30 files since the integration branch).
 - **Blender narrowed:** base = `origin/lead/gate-big14` (8707ff90, the last Blender-verified gate: 77 jobs, 2 DIFF),
   not the integration branch: ~85 jobs instead of ~150. It runs alongside the full-manifest capture (612 shots).
+
+GATE-PLAYABLE big17 @ 1a986abf (21:00 UTC, the human asked to play it at once): every non-render check is done.
+Data 0/0, lint and format clean, the suite has 3241 run and 5 failed (only the Pell portrait is new; see above), the boot
+smoke is clean, and Blender so far is 12/12 identical. The screenshots (67/612 at 21:00, ~01:00 UTC to finish) and
+the rest of Blender keep running for the Lead's baseline review; GATE-DONE follows.
+LEAD-ASK: the human wants to play big17 now. Merge lead/gate-big17 @ 1a986abf into the integration branch ahead of the
+shots? The gate session doesn't touch the integration branch; until then the human can play `lead/gate-big17` directly.
