@@ -914,7 +914,8 @@ Ch4–Ch9 onward. `m2-slice.md` beside this file is the history up to the 2026-1
     - the field takes over at 170 s.
   - **Fixed (this branch):** in the stay branch the pair rose on H05 (the kneeling height), so for 1.2 s the frame was
     Rhen's legs at the lens before H05_up. The cut to H05_up now comes first, and they rise in the standing two-shot.
-    A frame pass to view it is running.
+    Viewed (every 0.5 s): the cut lands at 134 s, and they rise beside Toma with the dock behind. No legs frame.
+    MERGE-READY.
   - **Not mine, seen:**
     - the skirt balloon on H05 and H06 (row 31, M3-CHR-102, characters);
     - the field opens with the camera far back and the party small on the beach. That is integration-qa's party-start
