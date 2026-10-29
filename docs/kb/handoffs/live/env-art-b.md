@@ -411,6 +411,12 @@ that test at this branch's zones.
   `b_spire_trial.py` (PROVENANCE sources updated; `flue_gate` rebuilt in Blender: byte-identical). Both orders pass.
   **MERGE-READY @ feafc90e.**
 
+- **Full tools suite on this head (`run_tool_tests -j 4`, 1528 tests):** red only in test_screenshots (missing
+  baselines for the new shots), test_shrine_gi_bake, test_hero_clips, test_zone_dressing_ch01 and test_zone_map_pois.
+  The last four are not this branch's work: they come from Ch1/Ch3 files this branch carries from older env-art and
+  m2-slice history that big17 has already reconciled. All four, plus test_b_arenas, pass on `lead/gate-big17` and
+  on a trial merge of this head into it. They clear when big17 reaches integration and I merge it.
+
 ### PC-QUEUE
 - The camp fires are alpha-blended now (M3-ENV-1326, `flame_tongue.gdshader`): add them to M3-RND-1315's cost check
   on the PC presets (two large and three small fires in `ch06/brine_shoals` and `salvage_camp_burning`).
